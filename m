@@ -4,108 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC646C5AD49
-	for <ltp@archiver.kernel.org>; Mon, 26 May 2025 15:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94C39C5AD49
+	for <ltp@archiver.kernel.org>; Mon, 26 May 2025 15:51:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 45C2D3C2F92
-	for <ltp@archiver.kernel.org>; Mon, 26 May 2025 17:09:25 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 003F63C0319
+	for <ltp@archiver.kernel.org>; Mon, 26 May 2025 17:51:56 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E55A73C22DF
- for <ltp@lists.linux.it>; Mon, 26 May 2025 17:09:06 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 8B7E03C0229
+ for <ltp@lists.linux.it>; Mon, 26 May 2025 17:51:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 522A2600A5E
- for <ltp@lists.linux.it>; Mon, 26 May 2025 17:09:04 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 94C4D14000B4
+ for <ltp@lists.linux.it>; Mon, 26 May 2025 17:51:38 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id BA6F4211AA;
- Mon, 26 May 2025 15:09:03 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 824391F793;
+ Mon, 26 May 2025 15:51:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1748272143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=MdgN4sGuTMEYp0yqoQQhT2I1GPI4xb+NKsrQKd5PPqQ=;
- b=Est2D5SHYDTNA55Y3Y7dmy5xS92DytIWJAn1ZpevUG8aM5l0KwSD7pqSm3JS8X/uLXd8zM
- MPGYcEIRr00WihZlox+20hCymrlDRwgJq3OCgwjVsAMFpP7/Z2DG2jmuIKeg93NVaWPKXg
- ho297kbAGk065KEWssS2pbaUhi3xYkA=
+ t=1748274697;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=shVeIiX5r6jYnSqZgzNlsHdqK3Zy3FZHc2brIl1HS8U=;
+ b=3We3eVXzDxTVUILgBkV1MMoDrJxbbTkvdRm+hLOgVn9M109JK3r5zBGZET8s8/L1O31MBk
+ 1TvsrqdVs9ErQSJqGqlm0yqSutjg8cQXnh/AkZjjHxN1WXbcqn2dQJ4Dx825+FAf9oN/r0
+ PUNGdYzJzgmLNZ4Y+XsRCZXRwNdvaqg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1748272143;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=MdgN4sGuTMEYp0yqoQQhT2I1GPI4xb+NKsrQKd5PPqQ=;
- b=+jmK7V/D0RL0U1XdoORYahTQhSSCXvj2BSKGTtDR61eCb5iB7+37e/WRV9dSdtI+Umqy6G
- I9X7W4H5l/w8PECg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Est2D5SH;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="+jmK7V/D"
+ s=susede2_ed25519; t=1748274697;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=shVeIiX5r6jYnSqZgzNlsHdqK3Zy3FZHc2brIl1HS8U=;
+ b=u0Z/FoFU+1/t3fzbT6yFYzc8be/EtJrvHu9FU17yfCVWmgO8KlmVE1bXMQ5kE2S0lWJafz
+ iaF8e/1omDzej+DA==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1748272143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=MdgN4sGuTMEYp0yqoQQhT2I1GPI4xb+NKsrQKd5PPqQ=;
- b=Est2D5SHYDTNA55Y3Y7dmy5xS92DytIWJAn1ZpevUG8aM5l0KwSD7pqSm3JS8X/uLXd8zM
- MPGYcEIRr00WihZlox+20hCymrlDRwgJq3OCgwjVsAMFpP7/Z2DG2jmuIKeg93NVaWPKXg
- ho297kbAGk065KEWssS2pbaUhi3xYkA=
+ t=1748274697;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=shVeIiX5r6jYnSqZgzNlsHdqK3Zy3FZHc2brIl1HS8U=;
+ b=3We3eVXzDxTVUILgBkV1MMoDrJxbbTkvdRm+hLOgVn9M109JK3r5zBGZET8s8/L1O31MBk
+ 1TvsrqdVs9ErQSJqGqlm0yqSutjg8cQXnh/AkZjjHxN1WXbcqn2dQJ4Dx825+FAf9oN/r0
+ PUNGdYzJzgmLNZ4Y+XsRCZXRwNdvaqg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1748272143;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=MdgN4sGuTMEYp0yqoQQhT2I1GPI4xb+NKsrQKd5PPqQ=;
- b=+jmK7V/D0RL0U1XdoORYahTQhSSCXvj2BSKGTtDR61eCb5iB7+37e/WRV9dSdtI+Umqy6G
- I9X7W4H5l/w8PECg==
+ s=susede2_ed25519; t=1748274697;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=shVeIiX5r6jYnSqZgzNlsHdqK3Zy3FZHc2brIl1HS8U=;
+ b=u0Z/FoFU+1/t3fzbT6yFYzc8be/EtJrvHu9FU17yfCVWmgO8KlmVE1bXMQ5kE2S0lWJafz
+ iaF8e/1omDzej+DA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CC3E13964;
- Mon, 26 May 2025 15:09:03 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 578E61397F;
+ Mon, 26 May 2025 15:51:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id cw/lFw+ENGi4WwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 26 May 2025 15:09:03 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 56drFAmONGifaQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 26 May 2025 15:51:37 +0000
+Date: Mon, 26 May 2025 17:51:32 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Mon, 26 May 2025 17:08:54 +0200
-Message-ID: <20250526150854.145995-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.49.0
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20250526155132.GA151544@pevik>
+References: <20250526143429.22997-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- SUSPICIOUS_RECIPS(1.50)[]; MID_CONTAINS_FROM(1.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+Content-Disposition: inline
+In-Reply-To: <20250526143429.22997-1-chrubis@suse.cz>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com];
- FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- FREEMAIL_CC(0.00)[gmail.com,suse.com,redhat.com,suse.cz];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- RCPT_COUNT_SEVEN(0.00)[7]; TAGGED_RCPT(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[opensuse.org:url, suse.com:email,
- imap1.dmz-prg2.suse.org:rdns, imap1.dmz-prg2.suse.org:helo, suse.cz:mid,
- suse.cz:email, suse.cz:dkim]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: BA6F4211AA
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+ RCPT_COUNT_FIVE(0.00)[5]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [RFC PATCH v3 1/1] test_controllers: Skip test when cgroup v2
- is loaded
+Subject: Re: [LTP] [PATCH v4] lib: LTP_SINGLE_FS_TYPE and
+ LTP_FORCE_SINGLE_FS_TYPE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,233 +109,214 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: =?UTF-8?q?Ricardo=20B=20=2E=20Marli=C3=A8re?= <rbm@suse.com>,
- =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-RnJvbTogSmluIEd1b2ppZSA8Z3VvamllLmppbkBnbWFpbC5jb20+CgpXaGVuIHJ1bm5pbmcgImNv
-bnRyb2xsZXJzIiBjYXNlIG9uIHNvbWUgbmV3ZXIgTGludXggZGlzdHJpYnV0aW9ucywgdGhlcmUK
-d2lsbCBiZSAxMCBFUlJPUiBtZXNzYWdlcyBkdXJpbmcgdGhlIHNldHVwIHBoYXNlLCBhbmQgc2V2
-ZXJhbCBURkFJTApyZXN1bHRzIGF0IHRoZSBlbmQgWzFdLgoKQ3VycmVudCAiY29udHJvbGxlcnMi
-IGNhc2VzIG9ubHkgaW1wbGVtZW50IHRlc3RzIGZvciBjZ3JvdXAgdjEgZmlsZSBpbnRlcmZhY2Uu
-Ckl0J3MgYmV0dGVyIHRvIHNraXAgdGhlIHRlc3QgYWZ0ZXIgY2hlY2tpbmcgdGhhdCB2MiBoaWVy
-YXJjaHkgaGFzCmFscmVhZHkgYmVlbiBsb2FkZWQuCgpbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5v
-cmcvbHRwL0NBK0IrTVlTVUFTUk9VXzhTa2ZLbXo1Yy03UGpYMmVwb3ZBelhNUlM0YTFuREZzVldP
-QUBtYWlsLmdtYWlsLmNvbS8KClRlc3RlZC1ieTogUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBz
-dXNlLmNvbT4KUmV2aWV3ZWQtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6PgpTaWduZWQt
-b2ZmLWJ5OiBKaW4gR3VvamllIDxndW9qaWUuamluQGdtYWlsLmNvbT4KWyBwdm9yZWw6IHNpbXBs
-aWZ5LCByZWJhc2VkIF0KU2lnbmVkLW9mZi1ieTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+
-Ci0tLQoqIGNoYW5nZXMgdjItPnYzCi0gcmVtb3ZlIGJhc2hpc21zIChhbHRob3VnaCB3ZSB1c2Ug
-L2Jpbi9iYXNoLCBiZXR0ZXIgdG8gYXZvaWQgJj4gKQotIHNpbXBsaWZ5CgoqIHYyCmh0dHBzOi8v
-cGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9sdHAvcGF0Y2gvQ0ErQitNWVQ9UlJQRVVROFd5
-ZFFXZVFrQjAyeE81PUVKZD1ncU9UWEIxRjVPVVdqOUhRQG1haWwuZ21haWwuY29tLwoKKiB2MQpo
-dHRwczovL3BhdGNod29yay5vemxhYnMub3JnL3Byb2plY3QvbHRwL3BhdGNoL0NBK0IrTVlTVUFT
-Uk9VXzhTa2ZLbXo1Yy03UGpYMmVwb3ZBelhNUlM0YTFuREZzVldPQUBtYWlsLmdtYWlsLmNvbS8K
-CkhpIGFsbCwKCmNhbmRpZGF0ZSBmb3IgdGhlIHJlbGVhc2UuClJpY2hhcmRvIHBvaW50ZWQgb3V0
-IHRoaXMgNiBtb250aHMgb2xkIHBhdGNoIFsxXS4KCklzIGl0IGV2ZW4gdXNlZnVsIG5vd2FkYXlz
-IHdoZW4gd2UgaGF2ZSB2YXJpb3VzIEMgYW5kIHNoZWxsIGJhc2VkCnRlc3RzPyBTaG91bGRuJ3Qg
-d2UganVzdCBkZWxldGUgdGhlIHRlc3Q/CgpJdCBldmVuIHVzZXMgImJsb2NraW8iLCBzaG91bGRu
-J3QgaXQgYmUgImJsa2lvIj8KCkdpdmVuIHRoZSB0ZXN0IGlzIHN0aWxsIHNvbWVob3cgdXNlZnVs
-LCBpJ20gbm90IHN1cmUgaWYgdGhpcyBpcyB3b3J0aCB0bwpyZXdyaXRlIHRvIGNncm91cF9saWIu
-c2ggKG9yIGV2ZW4gdG8gdGhlIEMgQVBJKSwgYnV0IElNSE8gbm93IGJlZm9yZSB0aGUKcmVsZWFz
-ZSBJIHdvdWxkIGp1c3Qgc2tpcCBpdCBvbiB2Mi4KCkknbSBub3Qgc3VyZSBpZiBhbGwgdGVzdHMg
-Y2FsbGVkIGJ5IHRlc3RfY29udHJvbGxlcnMuc2ggWzJdIHNob3VsZCBiZQpza2lwcGVkIHdoZW4g
-cnVuIHdpdGggdjIuIEFjY29yZGluZyB0byBSaWNhcmRvJ3MgcnVuIHZpYSBvcGVuUUEgWzNdCihi
-ZWxvdykgdGhlcmUgYXJlIHF1aXRlIGEgbG90IG9mIGZhaWx1cmVzOgoKVEVTVCAxOiBDUFUgQ09O
-VFJPTExFUiBURVNUSU5HClJVTk5JTkcgU0VUVVAuLi4uLgpFUlJPUjogQ291bGQgbm90IG1vdW50
-IGNncm91cCBmaWxlc3lzdGVtIG9uIC9kZXYvY3B1Y3RsLi5FeGl0aW5nIHRlc3QKQ2xlYW51cCBj
-YWxsZWQKY2F0OiAvZGV2L2NwdWN0bC9ncm91cF9kZWYvdGFza3M6IE5vIHN1Y2ggZmlsZSBvciBk
-aXJlY3RvcnkKVEVTVCAzOiBDUFUgQ09OVFJPTExFUiBURVNUSU5HClJVTk5JTkcgU0VUVVAuLi4u
-LgpFUlJPUjogQ291bGQgbm90IG1vdW50IGNncm91cCBmaWxlc3lzdGVtIG9uIC9kZXYvY3B1Y3Rs
-Li5FeGl0aW5nIHRlc3QKQ2xlYW51cCBjYWxsZWQKY2F0OiAvZGV2L2NwdWN0bC9ncm91cF9kZWYv
-dGFza3M6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKLi4uClRJTkZPIFJ1bm5pbmcgY3B1Y3Rs
-IExhdGVuY3kgVGVzdCAxClRJTkZPIAlUaGUgbGF0ZW5jeSBjaGVjayB0YXNrIHN0YXJ0ZWQKRkFJ
-TCAJVGhlIExhdGVuY3kgdGVzdCAxIGZhaWxlZApNYXggbGF0ZW5jeSBvYnNlcnZlZCA9IDQyMzE4
-IGluIEl0ZXJhdGlvbiAwClRoZSByZXN1bHRzIEZBSUwgaXMganVzdCBpbnR1aXRpdmUgYW5kIG5v
-dCBleGFjdCBmYWlsdXJlLiBQbGVhc2UgbG9vayBhdCBjcHVjdGxfdGVzdHBsYW4udHh0IGluIHRo
-ZSB0ZXN0IGRpcmVjdG9yeS4KVGFzayA0MzExNjQgZXhpdGVkIGFibm9ybWFsbHkgd2l0aCByZXR1
-cm4gdmFsdWU6IDEKVEJST0sgVGVzdCBjb3VsZCdudCBleGVjdXRlIGZvciBleHBlY3RlZCBkdXJh
-dGlvbgpEb2luZyBjbGVhbnVwCkNsZWFudXAgZG9uZSBmb3IgbGF0ZW5jeSB0ZXN0IDEKClRJTkZP
-IFJ1bm5pbmcgY3B1Y3RsIExhdGVuY3kgVGVzdCAyCkVSUk9SOiBDb3VsZCBub3QgbW91bnQgY2dy
-b3VwIGZpbGVzeXN0ZW0gb24gL2Rldi9jcHVjdGwuLkV4aXRpbmcgdGVzdApDbGVhbnVwIGNhbGxl
-ZApjYXQ6IC9kZXYvY3B1Y3RsL2dyb3VwX2RlZi90YXNrczogTm8gc3VjaCBmaWxlIG9yIGRpcmVj
-dG9yeQpEb2luZyBjbGVhbnVwCmNhdDogJy9kZXYvY3B1Y3RsL2dyb3VwKi90YXNrcyc6IE5vIHN1
-Y2ggZmlsZSBvciBkaXJlY3RvcnkKcm1kaXI6IGZhaWxlZCB0byByZW1vdmUgJy9kZXYvY3B1Y3Rs
-L2dyb3VwKic6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKdW1vdW50OiAvZGV2L2NwdWN0bDog
-bm8gbW91bnQgcG9pbnQgc3BlY2lmaWVkLgpybWRpcjogZmFpbGVkIHRvIHJlbW92ZSAnL2Rldi9j
-cHVjdGwnOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5CkNsZWFudXAgZG9uZSBmb3IgbGF0ZW5j
-eSB0ZXN0IDIKCm1vdW50OiAvZGV2L2NwdWN0bDogY3B1Y3RsIGFscmVhZHkgbW91bnRlZCBvciBt
-b3VudCBwb2ludCBidXN5LgogICAgICAgZG1lc2coMSkgbWF5IGhhdmUgbW9yZSBpbmZvcm1hdGlv
-biBhZnRlciBmYWlsZWQgbW91bnQgc3lzdGVtIGNhbGwuCmNwdWN0bF90ZXN0X2ZqICAgIDEgIFRG
-QUlMICA6ICBsdHBhcGljbWQuYzoxODg6IGZhaWxlZCB0byBtb3VudCBjcHUgc3Vic3lzdGVtLi4u
-IEV4aXRpbmcKY3B1Y3RsX3Rlc3RfZmogICAgMSAgVEZBSUwgIDogIGx0cGFwaWNtZC5jOjE4ODog
-Y2FzZTEgICAgRkFJTAptb3VudDogL2Rldi9jcHVjdGw6IGNwdWN0bCBhbHJlYWR5IG1vdW50ZWQg
-b3IgbW91bnQgcG9pbnQgYnVzeS4KICAgICAgIGRtZXNnKDEpIG1heSBoYXZlIG1vcmUgaW5mb3Jt
-YXRpb24gYWZ0ZXIgZmFpbGVkIG1vdW50IHN5c3RlbSBjYWxsLgpjcHVjdGxfdGVzdF9maiAgICAx
-ICBURkFJTCAgOiAgbHRwYXBpY21kLmM6MTg4OiBmYWlsZWQgdG8gbW91bnQgY3B1IHN1YnN5c3Rl
-bS4uLiBFeGl0aW5nCmNwdWN0bF90ZXN0X2ZqICAgIDEgIFRGQUlMICA6ICBsdHBhcGljbWQuYzox
-ODg6IGNhc2UyICAgIEZBSUwKLi4uCmNwdWN0bF90ZXN0X2ZqICAgIDEgIFRGQUlMICA6ICBsdHBh
-cGljbWQuYzoxODg6IGZhaWxlZCB0byBtb3VudCBjcHUgc3Vic3lzdGVtLi4uIEV4aXRpbmcKY3B1
-Y3RsX3Rlc3RfZmogICAgMSAgVEZBSUwgIDogIGx0cGFwaWNtZC5jOjE4ODogY2FzZTIxICAgIEZB
-SUwKbW91bnQ6IC9kZXYvY3B1Y3RsOiBjcHVjdGwgYWxyZWFkeSBtb3VudGVkIG9yIG1vdW50IHBv
-aW50IGJ1c3kuCiAgICAgICBkbWVzZygxKSBtYXkgaGF2ZSBtb3JlIGluZm9ybWF0aW9uIGFmdGVy
-IGZhaWxlZCBtb3VudCBzeXN0ZW0gY2FsbC4KY3B1Y3RsX3Rlc3RfZmogICAgMSAgVEZBSUwgIDog
-IGx0cGFwaWNtZC5jOjE4ODogZmFpbGVkIHRvIG1vdW50IGNwdSBzdWJzeXN0ZW0uLi4gRXhpdGlu
-ZwpjcHVjdGxfdGVzdF9maiAgICAxICBURkFJTCAgOiAgbHRwYXBpY21kLmM6MTg4OiBjYXNlMjIg
-ICAgRkFJTApDT05UUk9MTEVSUyBURVNUQ0FTRVM6IFdBUk5JTkcKRWl0aGVyIEtlcm5lbCBkb2Vz
-IG5vdCBzdXBwb3J0IGZvciBtZW1vcnkgY29udHJvbGxlciBvciBmdW5jdGlvbmFsaXR5IGlzIG5v
-dCBlbmFibGVkClNraXBwaW5nIGFsbCBtZW1vcnkgY29udHJvbGxlciB0ZXN0Y2FzZXMuLi4uCkNP
-TlRST0xMRVJTIFRFU1RDQVNFUzogV0FSTklORwpFaXRoZXIgS2VybmVsIGRvZXMgbm90IHN1cHBv
-cnQgZm9yIGlvIGNvbnRyb2xsZXIgb3IgZnVuY3Rpb25hbGl0eSBpcyBub3QgZW5hYmxlZApTa2lw
-cGluZyBhbGwgYmxvY2sgZGV2aWNlIEkvTyB0aHJvdHRsaW5nIHRlc3RjYXNlcy4uLi4KQ09OVFJP
-TExFUlMgVEVTVENBU0VTOiBXQVJOSU5HCkVpdGhlciBLZXJuZWwgZG9lcyBub3Qgc3VwcG9ydCBm
-b3IgZnJlZXplciBvciBmdW5jdGlvbmFsaXR5IGlzIG5vdCBlbmFibGVkCktlcm5lbCBkb2VzIG5v
-dCBzdXBwb3J0IGZyZWV6ZXIgY29udHJvbGxlcgpTa2lwcGluZyBhbGwgZnJlZXplciB0ZXN0Y2Fz
-ZXMuLi4uCkNvdWxkIG5vdCBzdGFydCBjcHUgYWNjb3VudGluZyBjb250cm9sbGVyIHRlc3QKRWl0
-aGVyIEtlcm5lbCBkb2VzIG5vdCBzdXBwb3J0IGZvciBjcHUgYWNjb3VudGluZyBjb250cm9sbGVy
-IG9yIGZ1bmN0aW9uYWxpdHkgaXMgbm90IGVuYWJsZWQKdXNhZ2U6IHJ1bl9jcHVhY2N0X3Rlc3Qu
-c2gKU2tpcHBpbmcgdGhlIGNwdSBhY2NvdW50aW5nIGNvbnRyb2xsZXIgdGVzdC4uLgoKV2hlbiBJ
-IHJ1biBpdCBvbiBzb21lIG5vdCB0aGF0IG9sZCBUdW1ibGV3ZWVkIFZNIGZpcnN0IDEwIHRlc3Rz
-IHdvcms6CgojIG1vdW50IHwgZ3JlcCAgInR5cGUgY2dyb3VwIgpjZ3JvdXAyIG9uIC9zeXMvZnMv
-Y2dyb3VwIHR5cGUgY2dyb3VwMiAocncsbm9zdWlkLG5vZGV2LG5vZXhlYyxyZWxhdGltZSxuc2Rl
-bGVnYXRlLG1lbW9yeV9yZWN1cnNpdmVwcm90KQpjZ3JvdXAgb24gL2Rldi9jcHVjdGwgdHlwZSBj
-Z3JvdXAgKHJ3LHJlbGF0aW1lLGNwdSkKCiQgdW5hbWUgLWEKTGludXggdHMgNi4xNC4wLTMuZzVl
-Nzc1NGUtZGVmYXVsdCAjMSBTTVAgUFJFRU1QVF9EWU5BTUlDIE1vbiBNYXIgMzEgMTQ6MzQ6MzEg
-VVRDIDIwMjUgKDVlNzc1NGUpIHg4Nl82NCB4ODZfNjQgeDg2XzY0IEdOVS9MaW51eAoKVEVTVCAx
-OiBDUFUgQ09OVFJPTExFUiBURVNUSU5HClJVTk5JTkcgU0VUVVAuLi4uLgpXQVJOOi9kZXYvY3B1
-Y3RsIGFscmVhZHkgZXhpc3QuLm92ZXJ3cml0aW5nCkNsZWFudXAgY2FsbGVkClRFU1QgU1RBUlRF
-RDogUGxlYXNlIGF2b2lkIHVzaW5nIHN5c3RlbSB3aGlsZSB0aGlzIHRlc3QgZXhlY3V0ZXMKL29w
-dC9sdHAvdGVzdGNhc2VzL2Jpbi9wYXJhbWV0ZXJzLnNoOiBsaW5lIDU2OiAvZGV2L2NwdWN0bC9n
-cm91cF9kZWYvY3B1LnJ0X3J1bnRpbWVfdXM6IFBlcm1pc3Npb24gZGVuaWVkClN1Y2Nlc3NmdWxs
-eSBsYXVuY2hlZCBkZWYgdGFzayA2NjEyIHRvbwpUQVNLUyBGSVJFRApDcHUgY29udHJvbGxlciB0
-ZXN0IGV4ZWN1dGVkIHN1Y2Nlc3NmdWxseS5SZXN1bHRzIHdyaXR0ZW4gdG8gZmlsZQpQbGVhc2Ug
-cmV2aWV3IHRoZSByZXN1bHRzIGluIC9vcHQvbHRwL291dHB1dC9jcHVjdGxfcmVzdWx0c18xMi50
-eHQKQ2xlYW51cCBjYWxsZWQKLi4uClRFU1QgNzogQ1BVIENPTlRST0xMRVIgU1RSRVNTIFRFU1RJ
-TkcKUlVOTklORyBTRVRVUC4uLi4uClRFU1QgU1RBUlRFRDogUGxlYXNlIGF2b2lkIHVzaW5nIHN5
-c3RlbSB3aGlsZSB0aGlzIHRlc3QgZXhlY3V0ZXMKL29wdC9sdHAvdGVzdGNhc2VzL2Jpbi9wYXJh
-bWV0ZXJzLnNoOiBsaW5lIDU2OiAvZGV2L2NwdWN0bC9ncm91cF9kZWYvY3B1LnJ0X3J1bnRpbWVf
-dXM6IFBlcm1pc3Npb24gZGVuaWVkClN1Y2Nlc3NmdWxseSBsYXVuY2hlZCBkZWYgdGFzayA3MTY4
-IHRvbwpUQVNLUyBGSVJFRApDcHUgY29udHJvbGxlciB0ZXN0IGV4ZWN1dGVkIHN1Y2Nlc3NmdWxs
-eS5SZXN1bHRzIHdyaXR0ZW4gdG8gZmlsZQpQbGVhc2UgcmV2aWV3IHRoZSByZXN1bHRzIGluIC9v
-cHQvbHRwL291dHB1dC9jcHVjdGxfcmVzdWx0c19zdHJlc3MtNjc4LnR4dApDbGVhbnVwIGNhbGxl
-ZAouLi4KClNvbWUgb2YgdGhlICJsYXRlbmN5IHRlc3RzIDIiIHRlc3RzIGZhaWwsIGJ1dCBub3Qg
-dGhhdCBtdWNoIGFzIG9uIG9wZW5RQQoocHJvYmFibHkgYWZmZWN0ZWQgYnkgb3ZlcmJvb2tlZCBW
-TSk6CgpUSU5GTyBSdW5uaW5nIGNwdWN0bCBMYXRlbmN5IFRlc3QgMQpUSU5GTyAJVGhlIGxhdGVu
-Y3kgY2hlY2sgdGFzayBzdGFydGVkCkZBSUwgCVRoZSBMYXRlbmN5IHRlc3QgMSBmYWlsZWQKTWF4
-IGxhdGVuY3kgb2JzZXJ2ZWQgPSA0MTkyNSBpbiBJdGVyYXRpb24gMApUaGUgcmVzdWx0cyBGQUlM
-IGlzIGp1c3QgaW50dWl0aXZlIGFuZCBub3QgZXhhY3QgZmFpbHVyZS4gUGxlYXNlIGxvb2sgYXQg
-Y3B1Y3RsX3Rlc3RwbGFuLnR4dCBpbiB0aGUgdGVzdCBkaXJlY3RvcnkuClRhc2sgOTY1NyBleGl0
-ZWQgYWJub3JtYWxseSB3aXRoIHJldHVybiB2YWx1ZTogMQpUQlJPSyBUZXN0IGNvdWxkJ250IGV4
-ZWN1dGUgZm9yIGV4cGVjdGVkIGR1cmF0aW9uCkRvaW5nIGNsZWFudXAKQ2xlYW51cCBkb25lIGZv
-ciBsYXRlbmN5IHRlc3QgMQoKVElORk8gUnVubmluZyBjcHVjdGwgTGF0ZW5jeSBUZXN0IDIKVElO
-Rk8gCVRoZSBsYXRlbmN5IGNoZWNrIHRhc2sgc3RhcnRlZApQQVNTIAlUaGUgTGF0ZW5jeSB0ZXN0
-IDIgcGFzc2VkCk1heCBsYXRlbmN5IG9ic2VydmVkID0gMTcwMDIgbWljcm9zZWMgaW4gSXRlcmF0
-aW9uIDAKRG9pbmcgY2xlYW51cApDbGVhbnVwIGRvbmUgZm9yIGxhdGVuY3kgdGVzdCAyCgpjcHVj
-dGxfdGVzdF9maiAgICAxICBUUEFTUyAgOiAgY2FzZTEgICAgUEFTUwpjcHVjdGxfdGVzdF9maiAg
-ICAxICBUUEFTUyAgOiAgY2FzZTIgICAgUEFTUwpjcHVjdGxfdGVzdF9maiAgICAxICBUUEFTUyAg
-OiAgY2FzZTMgICAgUEFTUwpjcHVjdGxfdGVzdF9maiAgICAxICBUUEFTUyAgOiAgY2FzZTQgICAg
-UEFTUwpjcHVjdGxfdGVzdF9maiAgICAxICBURkFJTCAgOiAgbHRwYXBpY21kLmM6MTg4OiBjYXNl
-NSAgICBGQUlMCmNwdWN0bF9mal9zaW1wbGVfZWNobzogd3JpdGUgZXJyb3I6IEludmFsaWQgYXJn
-dW1lbnQKY3B1Y3RsX3Rlc3RfZmogICAgMSAgVFBBU1MgIDogIGNhc2U2ICAgIFBBU1MKY3B1Y3Rs
-X2ZqX3NpbXBsZV9lY2hvOiB3cml0ZSBlcnJvcjogSW52YWxpZCBhcmd1bWVudApjcHVjdGxfdGVz
-dF9maiAgICAxICBUUEFTUyAgOiAgY2FzZTcgICAgUEFTUwpjcHVjdGxfdGVzdF9maiAgICAxICBU
-UEFTUyAgOiAgY2FzZTggICAgUEFTUwpjcHVjdGxfdGVzdF9maiAgICAxICBUUEFTUyAgOiAgY2Fz
-ZTkgICAgUEFTUwpjcHVjdGxfdGVzdF9maiAgICAxICBUUEFTUyAgOiAgY2FzZTEwICAgIFBBU1MK
-Y3B1Y3RsX3Rlc3RfZmogICAgMSAgVFBBU1MgIDogIGNhc2UxMSAgICBQQVNTCmNwdWN0bF90ZXN0
-X2ZqICAgIDEgIFRQQVNTICA6ICBjYXNlMTIgICAgUEFTUwpjcHVjdGxfdGVzdF9maiAgICAxICBU
-UEFTUyAgOiAgY2FzZTEzICAgIFBBU1MKY3B1Y3RsX3Rlc3RfZmogICAgMSAgVFBBU1MgIDogIGNh
-c2UxNCAgICBQQVNTCmNwdWN0bF9mal9zaW1wbGVfZWNobzogd3JpdGUgZXJyb3I6IEludmFsaWQg
-YXJndW1lbnQKY3B1Y3RsX3Rlc3RfZmogICAgMSAgVFBBU1MgIDogIGNhc2UxNSAgICBQQVNTCmNw
-dWN0bF9mal9zaW1wbGVfZWNobzogd3JpdGUgZXJyb3I6IEludmFsaWQgYXJndW1lbnQKY3B1Y3Rs
-X3Rlc3RfZmogICAgMSAgVFBBU1MgIDogIGNhc2UxNiAgICBQQVNTCmNwdWN0bF9mal9zaW1wbGVf
-ZWNobzogd3JpdGUgZXJyb3I6IEludmFsaWQgYXJndW1lbnQKY3B1Y3RsX3Rlc3RfZmogICAgMSAg
-VFBBU1MgIDogIGNhc2UxNyAgICBQQVNTCmNwdWN0bF90ZXN0X2ZqICAgIDEgIFRQQVNTICA6ICBj
-YXNlMTggICAgUEFTUwpwaWQgMTA2NTQgY3B1X3VzYWdlIDEwMApjcHVjdGxfdGVzdF9maiAgICAx
-ICBUUEFTUyAgOiAgY2FzZTE5ICAgIFBBU1MKcGlkIDEwNjgwIGNwdV91c2FnZSA5OApjcHVjdGxf
-dGVzdF9maiAgICAxICBUUEFTUyAgOiAgY2FzZTIwICAgIFBBU1MKcGlkIDEwNzA2IGNwdV91c2Fn
-ZSA0OApwaWQgMTA3MDYgY3B1X3VzYWdlIDQ4CnBpZCAxMDcwNiBjcHVfdXNhZ2UgNDgKcGlkIDEw
-NzA2IGNwdV91c2FnZSA0OApwaWQgMTA3MDYgY3B1X3VzYWdlIDQ2CnBpZCAxMDcwNiBjcHVfdXNh
-Z2UgNDcKcGlkIDEwNzA2IGNwdV91c2FnZSA0OApwaWQgMTA3MDYgY3B1X3VzYWdlIDU5CmNwdWN0
-bF90ZXN0X2ZqICAgIDEgIFRGQUlMICA6ICBsdHBhcGljbWQuYzoxODg6IGNhc2UyMSAgICBGQUlM
-CnBpZCAxMDgxMyBjcHVfdXNhZ2UgOTgKcGlkIDEwODEzIGNwdV91c2FnZSA4OApjcHVjdGxfdGVz
-dF9maiAgICAxICBURkFJTCAgOiAgbHRwYXBpY21kLmM6MTg4OiBjYXNlMjIgICAgRkFJTApDT05U
-Uk9MTEVSUyBURVNUQ0FTRVM6IFdBUk5JTkcKLS0tCgpCdXQgd2hlbiBJIHRyeSB0byBydW4gdGhl
-bSBvbiBTTEVTIDEyLVNQNSAoNC4xMi4xNCBiYXNlZCkgd2l0aCBjZ3JvdXAgdjEKIkxhdGVuY3kg
-VGVzdCAyIiB0ZXN0cyBmYWlsIGV2ZW4gbW9yZToKCiMgbW91bnQgfCBncmVwICJ0eXBlIGNncm91
-cCIKY2dyb3VwIG9uIC9zeXMvZnMvY2dyb3VwL3N5c3RlbWQgdHlwZSBjZ3JvdXAgKHJ3LG5vc3Vp
-ZCxub2Rldixub2V4ZWMscmVsYXRpbWUseGF0dHIscmVsZWFzZV9hZ2VudD0vdXNyL2xpYi9zeXN0
-ZW1kL3N5c3RlbWQtY2dyb3Vwcy1hZ2VudCxuYW1lPXN5c3RlbWQpCmNncm91cCBvbiAvc3lzL2Zz
-L2Nncm91cC9uZXRfY2xzLG5ldF9wcmlvIHR5cGUgY2dyb3VwIChydyxub3N1aWQsbm9kZXYsbm9l
-eGVjLHJlbGF0aW1lLG5ldF9jbHMsbmV0X3ByaW8pCmNncm91cCBvbiAvc3lzL2ZzL2Nncm91cC9w
-ZXJmX2V2ZW50IHR5cGUgY2dyb3VwIChydyxub3N1aWQsbm9kZXYsbm9leGVjLHJlbGF0aW1lLHBl
-cmZfZXZlbnQpCmNncm91cCBvbiAvc3lzL2ZzL2Nncm91cC9jcHVzZXQgdHlwZSBjZ3JvdXAgKHJ3
-LG5vc3VpZCxub2Rldixub2V4ZWMscmVsYXRpbWUsY3B1c2V0KQpjZ3JvdXAgb24gL3N5cy9mcy9j
-Z3JvdXAvY3B1LGNwdWFjY3QgdHlwZSBjZ3JvdXAgKHJ3LG5vc3VpZCxub2Rldixub2V4ZWMscmVs
-YXRpbWUsY3B1LGNwdWFjY3QpCmNncm91cCBvbiAvc3lzL2ZzL2Nncm91cC9tZW1vcnkgdHlwZSBj
-Z3JvdXAgKHJ3LG5vc3VpZCxub2Rldixub2V4ZWMscmVsYXRpbWUsbWVtb3J5KQpjZ3JvdXAgb24g
-L3N5cy9mcy9jZ3JvdXAvZGV2aWNlcyB0eXBlIGNncm91cCAocncsbm9zdWlkLG5vZGV2LG5vZXhl
-YyxyZWxhdGltZSxkZXZpY2VzKQpjZ3JvdXAgb24gL3N5cy9mcy9jZ3JvdXAvZnJlZXplciB0eXBl
-IGNncm91cCAocncsbm9zdWlkLG5vZGV2LG5vZXhlYyxyZWxhdGltZSxmcmVlemVyKQpjZ3JvdXAg
-b24gL3N5cy9mcy9jZ3JvdXAvaHVnZXRsYiB0eXBlIGNncm91cCAocncsbm9zdWlkLG5vZGV2LG5v
-ZXhlYyxyZWxhdGltZSxodWdldGxiKQpjZ3JvdXAgb24gL3N5cy9mcy9jZ3JvdXAvYmxraW8gdHlw
-ZSBjZ3JvdXAgKHJ3LG5vc3VpZCxub2Rldixub2V4ZWMscmVsYXRpbWUsYmxraW8pCmNncm91cCBv
-biAvc3lzL2ZzL2Nncm91cC9waWRzIHR5cGUgY2dyb3VwIChydyxub3N1aWQsbm9kZXYsbm9leGVj
-LHJlbGF0aW1lLHBpZHMpCmNncm91cCBvbiAvc3lzL2ZzL2Nncm91cC9yZG1hIHR5cGUgY2dyb3Vw
-IChydyxub3N1aWQsbm9kZXYsbm9leGVjLHJlbGF0aW1lLHJkbWEpCgpURVNUIDE6IENQVSBDT05U
-Uk9MTEVSIFRFU1RJTkcKUlVOTklORyBTRVRVUC4uLi4uCkVSUk9SOiBDb3VsZCBub3QgbW91bnQg
-Y2dyb3VwIGZpbGVzeXN0ZW0gb24gL2Rldi9jcHVjdGwuLkV4aXRpbmcgdGVzdApDbGVhbnVwIGNh
-bGxlZApjYXQ6IC9kZXYvY3B1Y3RsL2dyb3VwX2RlZi90YXNrczogTm8gc3VjaCBmaWxlIG9yIGRp
-cmVjdG9yeQoKVEVTVCAxMDogQ1BVIENPTlRST0xMRVIgU1RSRVNTIFRFU1RJTkcKUlVOTklORyBT
-RVRVUC4uLi4uCkVSUk9SOiBDb3VsZCBub3QgbW91bnQgY2dyb3VwIGZpbGVzeXN0ZW0gb24gL2Rl
-di9jcHVjdGwuLkV4aXRpbmcgdGVzdApDbGVhbnVwIGNhbGxlZApjYXQ6IC9kZXYvY3B1Y3RsL2dy
-b3VwX2RlZi90YXNrczogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQpUSU5GTyBSdW5uaW5nIGNw
-dWN0bCBMYXRlbmN5IFRlc3QgMQpUSU5GTyAJVGhlIGxhdGVuY3kgY2hlY2sgdGFzayBzdGFydGVk
-ClBBU1MgCVRoZSBMYXRlbmN5IHRlc3QgMSBwYXNzZWQKTWF4IGxhdGVuY3kgb2JzZXJ2ZWQgPSAz
-MzI0IG1pY3Jvc2VjIGluIEl0ZXJhdGlvbiAwCkRvaW5nIGNsZWFudXAKQ2xlYW51cCBkb25lIGZv
-ciBsYXRlbmN5IHRlc3QgMQoKVElORk8gUnVubmluZyBjcHVjdGwgTGF0ZW5jeSBUZXN0IDIKRVJS
-T1I6IENvdWxkIG5vdCBtb3VudCBjZ3JvdXAgZmlsZXN5c3RlbSBvbiAvZGV2L2NwdWN0bC4uRXhp
-dGluZyB0ZXN0CkNsZWFudXAgY2FsbGVkCmNhdDogL2Rldi9jcHVjdGwvZ3JvdXBfZGVmL3Rhc2tz
-OiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5CkRvaW5nIGNsZWFudXAKY2F0OiAnL2Rldi9jcHVj
-dGwvZ3JvdXAqL3Rhc2tzJzogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQpybWRpcjogZmFpbGVk
-IHRvIHJlbW92ZSAnL2Rldi9jcHVjdGwvZ3JvdXAqJzogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9y
-eQp1bW91bnQ6IC9kZXYvY3B1Y3RsOiBubyBtb3VudCBwb2ludCBzcGVjaWZpZWQuCnJtZGlyOiBm
-YWlsZWQgdG8gcmVtb3ZlICcvZGV2L2NwdWN0bCc6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkK
-Q2xlYW51cCBkb25lIGZvciBsYXRlbmN5IHRlc3QgMgoKbW91bnQ6IC9kZXYvY3B1Y3RsOiBjcHVj
-dGwgYWxyZWFkeSBtb3VudGVkIG9yIG1vdW50IHBvaW50IGJ1c3kuCmNwdWN0bF90ZXN0X2ZqICAg
-IDEgIFRGQUlMICA6ICBsdHBhcGljbWQuYzoxODg6IGZhaWxlZCB0byBtb3VudCBjcHUgc3Vic3lz
-dGVtLi4uIEV4aXRpbmcKY3B1Y3RsX3Rlc3RfZmogICAgMSAgVEZBSUwgIDogIGx0cGFwaWNtZC5j
-OjE4ODogY2FzZTEgICAgRkFJTAptb3VudDogL2Rldi9jcHVjdGw6IGNwdWN0bCBhbHJlYWR5IG1v
-dW50ZWQgb3IgbW91bnQgcG9pbnQgYnVzeS4KY3B1Y3RsX3Rlc3RfZmogICAgMSAgVEZBSUwgIDog
-IGx0cGFwaWNtZC5jOjE4ODogZmFpbGVkIHRvIG1vdW50IGNwdSBzdWJzeXN0ZW0uLi4gRXhpdGlu
-ZwpjcHVjdGxfdGVzdF9maiAgICAxICBURkFJTCAgOiAgbHRwYXBpY21kLmM6MTg4OiBjYXNlMiAg
-ICBGQUlMCm1vdW50OiAvZGV2L2NwdWN0bDogY3B1Y3RsIGFscmVhZHkgbW91bnRlZCBvciBtb3Vu
-dCBwb2ludCBidXN5LgpjcHVjdGxfdGVzdF9maiAgICAxICBURkFJTCAgOiAgbHRwYXBpY21kLmM6
-MTg4OiBmYWlsZWQgdG8gbW91bnQgY3B1IHN1YnN5c3RlbS4uLiBFeGl0aW5nCmNwdWN0bF90ZXN0
-X2ZqICAgIDEgIFRGQUlMICA6ICBsdHBhcGljbWQuYzoxODg6IGNhc2UzICAgIEZBSUwKbW91bnQ6
-IC9kZXYvY3B1Y3RsOiBjcHVjdGwgYWxyZWFkeSBtb3VudGVkIG9yIG1vdW50IHBvaW50IGJ1c3ku
-CmNwdWN0bF90ZXN0X2ZqICAgIDEgIFRGQUlMICA6ICBsdHBhcGljbWQuYzoxODg6IGZhaWxlZCB0
-byBtb3VudCBjcHUgc3Vic3lzdGVtLi4uIEV4aXRpbmcKClsxXSBodHRwczovL3BhdGNod29yay5v
-emxhYnMub3JnL3Byb2plY3QvbHRwL3BhdGNoL0NBK0IrTVlUPVJSUEVVUThXeWRRV2VRa0IwMnhP
-NT1FSmQ9Z3FPVFhCMUY1T1VXajlIUUBtYWlsLmdtYWlsLmNvbS8KWzJdIGh0dHBzOi8vZ2l0aHVi
-LmNvbS9saW51eC10ZXN0LXByb2plY3QvbHRwL3RyZWUvbWFzdGVyL3Rlc3RjYXNlcy9rZXJuZWwv
-Y29udHJvbGxlcnMvdGVzdF9jb250cm9sbGVycy5zaApbM10gaHR0cHM6Ly9vcGVucWEub3BlbnN1
-c2Uub3JnL3Rlc3RzLzUwNjYzODgjc3RlcC9jb250cm9sbGVycy84CgogdGVzdGNhc2VzL2tlcm5l
-bC9jb250cm9sbGVycy90ZXN0X2NvbnRyb2xsZXJzLnNoIHwgNSArKysrKwogMSBmaWxlIGNoYW5n
-ZWQsIDUgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJv
-bGxlcnMvdGVzdF9jb250cm9sbGVycy5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMv
-dGVzdF9jb250cm9sbGVycy5zaAppbmRleCA3YWE5NzRmZjI1Li5hMzQ5MzY2MjZjIDEwMDc1NQot
-LS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL3Rlc3RfY29udHJvbGxlcnMuc2gKKysr
-IGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy90ZXN0X2NvbnRyb2xsZXJzLnNoCkBAIC0z
-Nyw2ICszNywxMSBAQAogIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIwogIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIwogCitpZiBtb3VudCB8IGdyZXAgLXcgInR5cGUgY2dyb3VwMiIgPiAvZGV2L251
-bGwgMj4mMTsgdGhlbgorICAgICAgIHRzdF9icmttIFRDT05GICIiICJ0ZXN0X2NvbnRyb2xsZXJz
-LnNoOiBWMSBjb250cm9sbGVyIHJlcXVpcmVkLCBidXQgbW91bnRlZCBvbiBWMiIKKyAgICAgICBl
-eGl0IDMyCitmaQorCiBpZiBbIC1mIC9wcm9jL2Nncm91cHMgXQogdGhlbgogCUNQVV9DT05UUk9M
-TEVSPWBncmVwIC13IGNwdSAvcHJvYy9jZ3JvdXBzIHwgY3V0IC1mMWA7Ci0tIAoyLjQ5LjAKCgot
-LSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRw
-Cg==
+Hi Cyril,
+
+@Li @Jan Could you please have a look?
+It'd be nice to include it in the release.
+
+> Make the LTP_SINGE_FS_TYPE to use the test skiplists both for
+> filesystems and fuse. This fixes the usecase where LTP users want to
+> limit the tests with '.all_filesystems' to a single filesystem type
+> for a testrun.
+
+> The LTP_FORCE_SINGLE_FS_TYPE now replaces what previously
+> LTP_SINGLE_FS_TYPE did and can be used for testing and for that purpose
+> it ignores the test skiplists.
+
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> Suggested-by:  Petr Vorel <pvorel@suse.cz>
+> CC: Jan Polensky <japo@linux.ibm.com>
+> ---
+>  doc/users/setup_tests.rst    |  5 ++-
+>  lib/tst_supported_fs_types.c | 60 ++++++++++++++++++++++++------------
+>  lib/tst_test.c               | 25 +++++++--------
+>  testcases/lib/tst_test.sh    | 19 ++++++------
+>  4 files changed, 67 insertions(+), 42 deletions(-)
+
+> diff --git a/doc/users/setup_tests.rst b/doc/users/setup_tests.rst
+> index 2cce85fdf..38976f3b0 100644
+> --- a/doc/users/setup_tests.rst
+> +++ b/doc/users/setup_tests.rst
+> @@ -47,9 +47,12 @@ users.
+>         printed by the test (suitable for a reproducible output).
+
+>     * - LTP_SINGLE_FS_TYPE
+> -     - Testing only - specifies filesystem instead all supported
+> +     - Specifies single filesystem to run the test on instead all supported
+>         (for tests with ``.all_filesystems``).
+
+> +   * - LTP_FORCE_SINGLE_FS_TYPE
+> +     - Testing only. Behaves like LTP_SINGLE_FS_TYPE but ignores test skiplists.
+> +
+>     * - LTP_DEV_FS_TYPE
+>       - Filesystem used for testing (default: ``ext2``).
+
+> diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+> index bbbb8df19..5e9be1eda 100644
+> --- a/lib/tst_supported_fs_types.c
+> +++ b/lib/tst_supported_fs_types.c
+> @@ -147,40 +147,60 @@ enum tst_fs_impl tst_fs_is_supported(const char *fs_type)
+>  	return TST_FS_UNSUPPORTED;
+>  }
+
+> +int fs_could_be_used(const char *fs_type, const char *const *skiplist, int skip_fuse)
+This should be also static. Please fix it before merge.
+The rest LGTM, thanks for implementing it.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
+
+> +{
+> +	enum tst_fs_impl sup;
+> +
+> +	if (tst_fs_in_skiplist(fs_type, skiplist)) {
+> +		tst_res(TINFO, "Skipping %s as requested by the test",
+> +			fs_type);
+> +		return 0;
+> +	}
+> +
+> +	sup = tst_fs_is_supported(fs_type);
+> +
+> +	if (skip_fuse && sup == TST_FS_FUSE) {
+> +		tst_res(TINFO,
+> +			"Skipping FUSE based %s as requested by the test",
+> +			fs_type);
+> +		return 0;
+> +	}
+> +
+> +	return sup != TST_FS_UNSUPPORTED;
+> +}
+> +
+>  const char **tst_get_supported_fs_types(const char *const *skiplist)
+>  {
+>  	unsigned int i, j = 0;
+>  	int skip_fuse;
+> -	enum tst_fs_impl sup;
+> -	const char *only_fs;
+> +	const char *only_fs, *force_only_fs;
+
+> -	skip_fuse = tst_fs_in_skiplist("fuse", skiplist);
+>  	only_fs = getenv("LTP_SINGLE_FS_TYPE");
+> +	force_only_fs = getenv("LTP_FORCE_SINGLE_FS_TYPE");
+> +
+> +	if (only_fs && force_only_fs) {
+> +		tst_brk(TBROK,
+> +			"Only one of LTP_SINGLE_FS_TYPE and LTP_FORCE_SINGLE_FS_TYPE can be set");
+> +		return NULL;
+> +	}
+> +
+> +	skip_fuse = tst_fs_in_skiplist("fuse", skiplist);
+
+>  	if (only_fs) {
+>  		tst_res(TINFO, "WARNING: testing only %s", only_fs);
+> -		if (tst_fs_is_supported(only_fs))
+> +		if (fs_could_be_used(only_fs, skiplist, skip_fuse))
+>  			fs_types[0] = only_fs;
+>  		return fs_types;
+>  	}
+
+> -	for (i = 0; fs_type_whitelist[i]; i++) {
+> -		if (tst_fs_in_skiplist(fs_type_whitelist[i], skiplist)) {
+> -			tst_res(TINFO, "Skipping %s as requested by the test",
+> -				fs_type_whitelist[i]);
+> -			continue;
+> -		}
+> -
+> -		sup = tst_fs_is_supported(fs_type_whitelist[i]);
+> -
+> -		if (skip_fuse && sup == TST_FS_FUSE) {
+> -			tst_res(TINFO,
+> -				"Skipping FUSE based %s as requested by the test",
+> -				fs_type_whitelist[i]);
+> -			continue;
+> -		}
+> +	if (force_only_fs) {
+> +		tst_res(TINFO, "WARNING: force testing only %s", force_only_fs);
+> +		fs_types[0] = force_only_fs;
+> +		return fs_types;
+> +	}
+
+> -		if (sup)
+> +	for (i = 0; fs_type_whitelist[i]; i++) {
+> +		if (fs_could_be_used(fs_type_whitelist[i], skiplist, skip_fuse))
+>  			fs_types[j++] = fs_type_whitelist[i];
+>  	}
+
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index d1268535c..45fc28498 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -611,18 +611,19 @@ static void print_help(void)
+>  	/* see doc/users/setup_tests.rst, which lists also shell API variables */
+>  	fprintf(stderr, "Environment Variables\n");
+>  	fprintf(stderr, "---------------------\n");
+> -	fprintf(stderr, "KCONFIG_PATH            Specify kernel config file\n");
+> -	fprintf(stderr, "KCONFIG_SKIP_CHECK      Skip kernel config check if variable set (not set by default)\n");
+> -	fprintf(stderr, "LTPROOT                 Prefix for installed LTP (default: /opt/ltp)\n");
+> -	fprintf(stderr, "LTP_COLORIZE_OUTPUT     Force colorized output behaviour (y/1 always, n/0: never)\n");
+> -	fprintf(stderr, "LTP_DEV                 Path to the block device to be used (for .needs_device)\n");
+> -	fprintf(stderr, "LTP_DEV_FS_TYPE         Filesystem used for testing (default: %s)\n", DEFAULT_FS_TYPE);
+> -	fprintf(stderr, "LTP_REPRODUCIBLE_OUTPUT Values 1 or y discard the actual content of the messages printed by the test\n");
+> -	fprintf(stderr, "LTP_SINGLE_FS_TYPE      Testing only - specifies filesystem instead all supported (for .all_filesystems)\n");
+> -	fprintf(stderr, "LTP_TIMEOUT_MUL         Timeout multiplier (must be a number >=1)\n");
+> -	fprintf(stderr, "LTP_RUNTIME_MUL         Runtime multiplier (must be a number >=1)\n");
+> -	fprintf(stderr, "LTP_VIRT_OVERRIDE       Overrides virtual machine detection (values: \"\"|kvm|microsoft|xen|zvm)\n");
+> -	fprintf(stderr, "TMPDIR                  Base directory for template directory (for .needs_tmpdir, default: %s)\n", TEMPDIR);
+> +	fprintf(stderr, "KCONFIG_PATH             Specify kernel config file\n");
+> +	fprintf(stderr, "KCONFIG_SKIP_CHECK       Skip kernel config check if variable set (not set by default)\n");
+> +	fprintf(stderr, "LTPROOT                  Prefix for installed LTP (default: /opt/ltp)\n");
+> +	fprintf(stderr, "LTP_COLORIZE_OUTPUT      Force colorized output behaviour (y/1 always, n/0: never)\n");
+> +	fprintf(stderr, "LTP_DEV                  Path to the block device to be used (for .needs_device)\n");
+> +	fprintf(stderr, "LTP_DEV_FS_TYPE          Filesystem used for testing (default: %s)\n", DEFAULT_FS_TYPE);
+> +	fprintf(stderr, "LTP_REPRODUCIBLE_OUTPUT  Values 1 or y discard the actual content of the messages printed by the test\n");
+> +	fprintf(stderr, "LTP_SINGLE_FS_TYPE       Specifies filesystem instead all supported (for .all_filesystems)\n");
+> +	fprintf(stderr, "LTP_FORCE_SINGLE_FS_TYPE Testing only. The same as LTP_SINGLE_FS_TYPE but ignores test skiplist.\n");
+> +	fprintf(stderr, "LTP_TIMEOUT_MUL          Timeout multiplier (must be a number >=1)\n");
+> +	fprintf(stderr, "LTP_RUNTIME_MUL          Runtime multiplier (must be a number >=1)\n");
+> +	fprintf(stderr, "LTP_VIRT_OVERRIDE        Overrides virtual machine detection (values: \"\"|kvm|microsoft|xen|zvm)\n");
+> +	fprintf(stderr, "TMPDIR                   Base directory for template directory (for .needs_tmpdir, default: %s)\n", TEMPDIR);
+>  	fprintf(stderr, "\n");
+
+>  	fprintf(stderr, "Timeout and runtime\n");
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 50269d40f..c32bd8b19 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -482,15 +482,16 @@ tst_usage()
+
+>  Environment Variables
+>  ---------------------
+> -KCONFIG_PATH         Specify kernel config file
+> -KCONFIG_SKIP_CHECK   Skip kernel config check if variable set (not set by default)
+> -LTPROOT              Prefix for installed LTP (default: /opt/ltp)
+> -LTP_COLORIZE_OUTPUT  Force colorized output behaviour (y/1 always, n/0: never)
+> -LTP_DEV              Path to the block device to be used (for .needs_device)
+> -LTP_DEV_FS_TYPE      Filesystem used for testing (default: ext2)
+> -LTP_SINGLE_FS_TYPE   Testing only - specifies filesystem instead all supported (for TST_ALL_FILESYSTEMS=1)
+> -LTP_TIMEOUT_MUL      Timeout multiplier (must be a number >=1, ceiled to int)
+> -TMPDIR               Base directory for template directory (for .needs_tmpdir, default: /tmp)
+> +KCONFIG_PATH             Specify kernel config file
+> +KCONFIG_SKIP_CHECK       Skip kernel config check if variable set (not set by default)
+> +LTPROOT                  Prefix for installed LTP (default: /opt/ltp)
+> +LTP_COLORIZE_OUTPUT      Force colorized output behaviour (y/1 always, n/0: never)
+> +LTP_DEV                  Path to the block device to be used (for .needs_device)
+> +LTP_DEV_FS_TYPE          Filesystem used for testing (default: ext2)
+> +LTP_SINGLE_FS_TYPE       Specifies filesystem instead all supported (for TST_ALL_FILESYSTEMS=1)
+> +LTP_FORCE_SINGLE_FS_TYPE Testing only. The same as LTP_SINGLE_FS_TYPE but ignores test skiplist
+> +LTP_TIMEOUT_MUL          Timeout multiplier (must be a number >=1, ceiled to int)
+> +TMPDIR                   Base directory for template directory (for .needs_tmpdir, default: /tmp)
+>  EOF
+>  }
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
