@@ -4,107 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73DD1C54ED1
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 05:23:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E66C5C54ED1
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 05:29:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1748323772; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=9Vdz5K8XU8n5YPhS1EvONX05wRn9gQOp1UZPSZ0oa24=;
+ b=b3ulrUxgkPdZz1FuhEDQOxtSlSflkCsfySKiYAPdudoHZN4yuPXVB6M/D0W+Cwop9soOs
+ lx1WkCejIgl+yxIV7LnKIy6tvtzVRuRhoHLorSt0Bx1/aIWqL9xjlz6Z+HutSnM5WA9tjyf
+ daB4rp3xHN2HNGE1JXE80B09L5+DlzA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D6BF3C4D02
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 07:23:04 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 1D3883C3000
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 07:29:32 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8759E3C2F9C
- for <ltp@lists.linux.it>; Tue, 27 May 2025 07:22:47 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 2C1F33C053B
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 07:29:10 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5345B1400E6B
- for <ltp@lists.linux.it>; Tue, 27 May 2025 07:22:46 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 878A41400F8F
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 07:29:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1748323747;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Kr9x6S5cvb7KRt605PDQjBQ1cOMYjjwsJP1BgSbfO/M=;
+ b=cjZzupnhdeHsd+5+y7eOR0hUlPwvQu53VleovvDGwO/sjeEEzOJyCSx8h+bp+l7qVXHE9s
+ l0E8593O5I1rjpNTqHa6scFYvnAc0aKhtbyZbSswBem+XUwYgNVSpZOnf7gEf2Ib20rscp
+ bs7zz7PC+3/tek6biJyDICqlJc7/78M=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-651-p0afl5ICPW-rD--LNusAWA-1; Tue,
+ 27 May 2025 01:29:03 -0400
+X-MC-Unique: p0afl5ICPW-rD--LNusAWA-1
+X-Mimecast-MFC-AGG-ID: p0afl5ICPW-rD--LNusAWA_1748323742
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4F52821D93;
- Tue, 27 May 2025 05:22:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1748323366;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WeezQvPfp2MOY8+D3nbC3YteSbDuJl0GaVBP9QZnYlE=;
- b=UEPgWPQ+Y05u/MJhBRXYurm3+f59VFwDD07fEyNUIuh7AZAdGWKNmDDbnw2mkspMgrXbWW
- /MGC1/4ckhvFxn/awVrzoxdWwa2NfGGEVbqJhh+L2NYo/ziLcl7oQdt1neSODe3mwwXU3+
- rzgVs3uDna0DaOIvNR1k1YjxTnpCK24=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1748323366;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WeezQvPfp2MOY8+D3nbC3YteSbDuJl0GaVBP9QZnYlE=;
- b=f8uiwst7FeEAV1z08DkvJBklwuXEvPFWO2vR44u1YOZLZC2Vyi5gzUcXeydQPmCKGsw8ct
- SuVASKQVmBj+YEAQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1748323366;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WeezQvPfp2MOY8+D3nbC3YteSbDuJl0GaVBP9QZnYlE=;
- b=UEPgWPQ+Y05u/MJhBRXYurm3+f59VFwDD07fEyNUIuh7AZAdGWKNmDDbnw2mkspMgrXbWW
- /MGC1/4ckhvFxn/awVrzoxdWwa2NfGGEVbqJhh+L2NYo/ziLcl7oQdt1neSODe3mwwXU3+
- rzgVs3uDna0DaOIvNR1k1YjxTnpCK24=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1748323366;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WeezQvPfp2MOY8+D3nbC3YteSbDuJl0GaVBP9QZnYlE=;
- b=f8uiwst7FeEAV1z08DkvJBklwuXEvPFWO2vR44u1YOZLZC2Vyi5gzUcXeydQPmCKGsw8ct
- SuVASKQVmBj+YEAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9117413964;
- Tue, 27 May 2025 05:22:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id XY00GiVMNWiZCgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 27 May 2025 05:22:45 +0000
-Date: Tue, 27 May 2025 07:22:42 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20250527052242.GA157657@pevik>
-References: <20250526150854.145995-1-pvorel@suse.cz>
- <CAEemH2efaYBWr-TrMKCT5Ba3_bQtrbFGTY2WW-qwiJtQ=929Wg@mail.gmail.com>
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 8D18A1800373; Tue, 27 May 2025 05:29:02 +0000 (UTC)
+Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
+ (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
+ by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 0C00719560AB; Tue, 27 May 2025 05:29:00 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Tue, 27 May 2025 13:28:55 +0800
+Message-ID: <20250527052855.150398-1-liwang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2efaYBWr-TrMKCT5Ba3_bQtrbFGTY2WW-qwiJtQ=929Wg@mail.gmail.com>
-X-Spamd-Result: default: False [-0.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- SUSPICIOUS_RECIPS(1.50)[]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- MIME_GOOD(-0.10)[text/plain]; MIME_TRACE(0.00)[0:+];
- TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TAGGED_RCPT(0.00)[]; ARC_NA(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
- FROM_EQ_ENVFROM(0.00)[];
- FREEMAIL_CC(0.00)[lists.linux.it,gmail.com,suse.com,suse.cz];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto,suse.com:email]; 
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCPT_COUNT_FIVE(0.00)[6]; REPLYTO_EQ_FROM(0.00)[]
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: EwbRv9Sf38C_fj34W-Z6qY5IhWrBgmLnsZaZIKwj4q0_1748323742
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH v3 1/1] test_controllers: Skip test when
- cgroup v2 is loaded
+Subject: [LTP] [PATCH] test_controllers: remove outdated blockio test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,58 +81,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Michal =?iso-8859-2?Q?Koutn=FD?= <mkoutny@suse.com>,
- Ricardo B =?utf-8?B?LiBNYXJsacOocmU=?= <rbm@suse.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PiBIaSBQZXRyLCBBbGwsCgo+IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6PiB3cm90ZToKCj4g
-Li4uCj4gPiBUZXN0ZWQtYnk6IFJpY2FyZG8gQi4gTWFybGnDqHJlIDxyYm1Ac3VzZS5jb20+Cj4g
-PiBSZXZpZXdlZC1ieTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4gPiBTaWduZWQtb2Zm
-LWJ5OiBKaW4gR3VvamllIDxndW9qaWUuamluQGdtYWlsLmNvbT4KPiA+IFsgcHZvcmVsOiBzaW1w
-bGlmeSwgcmViYXNlZCBdCj4gPiBTaWduZWQtb2ZmLWJ5OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3Vz
-ZS5jej4KCj4gUmV2aWV3ZWQtYnk6IExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPgoKPiA+IElz
-IGl0IGV2ZW4gdXNlZnVsIG5vd2FkYXlzIHdoZW4gd2UgaGF2ZSB2YXJpb3VzIEMgYW5kIHNoZWxs
-IGJhc2VkCj4gPiB0ZXN0cz8gU2hvdWxkbid0IHdlIGp1c3QgZGVsZXRlIHRoZSB0ZXN0PwoKPiBJ
-IHRoaW5rIHdlIG5lZWQgdG8gZGlzc29sdmUgdGhlIHRlc3RfY29udHJvbGxlci5zaCBmaWxlIHN0
-ZXBseSwgcGFydCBvZgo+IHRoZW0gY2FuIGJlIGRlbGV0ZWQgKGUuZy4gYmxvY2tpbyksIGJ1dCBv
-dGhlcnMgbmVlZCB0byBiZSBjaGVja2VkCj4gaWYgaXQgaXMgdXNlZnVsLCB0aGVuIGdvZXM6Cgo+
-ICAxLiBEZWxldGUgdGhlIG92ZXJsYXBwZWQgdGVzdCBjb250ZW50cy4KPiAgMi4gUmV3cml0ZSB0
-aGUgcmVzdCB3aXRoIHRoZSBuZXcgQVBJIGFuZCBtb3ZlIGludG8gcnVudGVzdC9jb250cm9sbGVy
-cy4KCj4gPiBJdCBldmVuIHVzZXMgImJsb2NraW8iLCBzaG91bGRuJ3QgaXQgYmUgImJsa2lvIj8K
-Cj4gSXQncyBvdXRkYXRlZCwgd2UgY2FuJ3QgZXZlbiBmaW5kIHRoZSBydW5faW9fdGhyb3R0bGVf
-dGVzdC5zaCBmaWxlLAo+IEJldHRlciB0byByZW1vdmUgdGhlbToKCj4gLS0tIGEvdGVzdGNhc2Vz
-L2tlcm5lbC9jb250cm9sbGVycy90ZXN0X2NvbnRyb2xsZXJzLnNoCj4gKysrIGIvdGVzdGNhc2Vz
-L2tlcm5lbC9jb250cm9sbGVycy90ZXN0X2NvbnRyb2xsZXJzLnNoCj4gQEAgLTQ4LDggKzQ4LDYg
-QEAgdGhlbgo+ICAgICAgICAgQ1BVX0NPTlRST0xMRVJfVkFMVUU9YGdyZXAgLXcgY3B1IC9wcm9j
-L2Nncm91cHMgfCBjdXQgLWY0YDsKPiAgICAgICAgIE1FTV9DT05UUk9MTEVSPWBncmVwIC13IG1l
-bW9yeSAvcHJvYy9jZ3JvdXBzIHwgY3V0IC1mMWA7Cj4gICAgICAgICBNRU1fQ09OVFJPTExFUl9W
-QUxVRT1gZ3JlcCAtdyBtZW1vcnkgL3Byb2MvY2dyb3VwcyB8IGN1dCAtZjRgOwo+IC0gICAgICAg
-SU9USFJPVFRMRV9DT05UUk9MTEVSPWBncmVwIC13IGJsb2NraW8gL3Byb2MvY2dyb3VwcyB8IGN1
-dCAtZjFgOwo+IC0gICAgICAgSU9USFJPVFRMRV9DT05UUk9MTEVSX1ZBTFVFPWBncmVwIC13IGJs
-b2NraW8gL3Byb2MvY2dyb3VwcyB8IGN1dCAtZjRgOwo+ICAgICAgICAgRlJFRVpFUj1gZ3JlcCAt
-dyBmcmVlemVyIC9wcm9jL2Nncm91cHMgfCBjdXQgLWYxYDsKPiAgICAgICAgIEZSRUVaRVJfVkFM
-VUU9YGdyZXAgLXcgZnJlZXplciAvcHJvYy9jZ3JvdXBzIHwgY3V0IC1mNGA7Cgo+IEBAIC04NSwx
-NSArODMsNiBAQCB0aGVuCj4gICAgICAgICAgICAgICAgIGVjaG8gIlNraXBwaW5nIGFsbCBtZW1v
-cnkgY29udHJvbGxlciB0ZXN0Y2FzZXMuLi4uIjsKPiAgICAgICAgIGZpCgo+IC0gICAgICAgaWYg
-WyAiJElPVEhST1RUTEVfQ09OVFJPTExFUiIgPSAiYmxvY2tpbyIgXSAmJiBbCj4gIiRJT1RIUk9U
-VExFX0NPTlRST0xMRVJfVkFMVUUiID0gIjEiIF0KPiAtICAgICAgIHRoZW4KPiAtICAgICAgICAg
-ICAgICAgJExUUFJPT1QvdGVzdGNhc2VzL2Jpbi9ydW5faW9fdGhyb3R0bGVfdGVzdC5zaDsKPiAt
-ICAgICAgIGVsc2UKPiAtICAgICAgICAgICAgICAgZWNobyAiQ09OVFJPTExFUlMgVEVTVENBU0VT
-OiBXQVJOSU5HIjsKPiAtICAgICAgICAgICAgICAgZWNobyAiRWl0aGVyIEtlcm5lbCBkb2VzIG5v
-dCBzdXBwb3J0IGZvciBpbyBjb250cm9sbGVyCj4gb3IgZnVuY3Rpb25hbGl0eSBpcyBub3QgZW5h
-YmxlZCI7Cj4gLSAgICAgICAgICAgICAgIGVjaG8gIlNraXBwaW5nIGFsbCBibG9jayBkZXZpY2Ug
-SS9PIHRocm90dGxpbmcgdGVzdGNhc2VzLi4uLiI7Cj4gLSAgICAgICBmaQo+IC0KPiAgICAgICAg
-IGlmIFsgIiRGUkVFWkVSIiA9ICJmcmVlemVyIiBdICYmIFsgIiRGUkVFWkVSX1ZBTFVFIiA9ICIx
-IiBdCj4gICAgICAgICB0aGVuCj4gICAgICAgICAgICAgICAgICIkTFRQUk9PVC90ZXN0Y2FzZXMv
-YmluL3J1bl9mcmVlemVyLnNoIgoKKzEsIGZlZWwgZnJlZSB0byByZW1vdmUgYWZ0ZXJ3YXJkcyB3
-aXRoIG15IFJCVCBhZnRlciBJIG1lcmdlLgpJJ2xsIG1lcmdlIG15IHBhdGNoIHRvZGF5LgoKS2lu
-ZCByZWdhcmRzLApQZXRyCgo+ID4gR2l2ZW4gdGhlIHRlc3QgaXMgc3RpbGwgc29tZWhvdyB1c2Vm
-dWwsIGknbSBub3Qgc3VyZSBpZiB0aGlzIGlzIHdvcnRoIHRvCj4gPiByZXdyaXRlIHRvIGNncm91
-cF9saWIuc2ggKG9yIGV2ZW4gdG8gdGhlIEMgQVBJKSwgYnV0IElNSE8gbm93IGJlZm9yZSB0aGUK
-PiA+IHJlbGVhc2UgSSB3b3VsZCBqdXN0IHNraXAgaXQgb24gdjIuCgo+IFN1cmUsIHNraXBwaW5n
-IGZyb20gVjIgaXMgc2FmZSBlbm91Z2ggYnkgbm93LgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBo
-dHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+The run_io_throttle_test.sh is not exist any more, so let's drop it from
+test_controllers file.
+
+Follow-up: commit 7ca7749b54 ("test_controllers: Remove cpuacct")
+Signed-off-by: Li Wang <liwang@redhat.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/controllers/test_controllers.sh | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/testcases/kernel/controllers/test_controllers.sh b/testcases/kernel/controllers/test_controllers.sh
+index 7df3b468c..774feef3f 100755
+--- a/testcases/kernel/controllers/test_controllers.sh
++++ b/testcases/kernel/controllers/test_controllers.sh
+@@ -48,8 +48,6 @@ then
+ 	CPU_CONTROLLER_VALUE=`grep -w cpu /proc/cgroups | cut -f4`;
+ 	MEM_CONTROLLER=`grep -w memory /proc/cgroups | cut -f1`;
+ 	MEM_CONTROLLER_VALUE=`grep -w memory /proc/cgroups | cut -f4`;
+-	IOTHROTTLE_CONTROLLER=`grep -w blockio /proc/cgroups | cut -f1`;
+-	IOTHROTTLE_CONTROLLER_VALUE=`grep -w blockio /proc/cgroups | cut -f4`;
+ 	FREEZER=`grep -w freezer /proc/cgroups | cut -f1`;
+ 	FREEZER_VALUE=`grep -w freezer /proc/cgroups | cut -f4`;
+ 
+@@ -85,15 +83,6 @@ then
+ 		echo "Skipping all memory controller testcases....";
+ 	fi
+ 
+-	if [ "$IOTHROTTLE_CONTROLLER" = "blockio" ] && [ "$IOTHROTTLE_CONTROLLER_VALUE" = "1" ]
+-	then
+-		$LTPROOT/testcases/bin/run_io_throttle_test.sh;
+-	else
+-		echo "CONTROLLERS TESTCASES: WARNING";
+-		echo "Either Kernel does not support for io controller or functionality is not enabled";
+-		echo "Skipping all block device I/O throttling testcases....";
+-	fi
+-
+ 	if [ "$FREEZER" = "freezer" ] && [ "$FREEZER_VALUE" = "1" ]
+ 	then
+ 		"$LTPROOT/testcases/bin/run_freezer.sh"
+-- 
+2.49.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
