@@ -4,90 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1155C54ED1
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 10:42:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1748342533; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=OWPyMX0/RK+SMzmKg2QPDvvgNcgtP6YQSsPyxqj0GUQ=;
- b=bPKiILL3Nls5iGg8FmdJvtgyuqM3FDXabECwMmWKhV1AcxBiZ5iAU7QBUjLEHR9U2y+E7
- vb1JCCFslCc2hVtsFBOIIZiMZPvm6OIPOl8r0gDoL7WSJCYt7naXDSqm7ZX+W58LReRFhH9
- 3ytbC5kEZaXfRCb05EX3yiTgTLgYRs4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B6E8C54ED1
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 10:55:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2C8593C5584
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 12:42:13 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id E98113C57AF
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 12:55:09 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5970F3C023C
- for <ltp@lists.linux.it>; Tue, 27 May 2025 12:41:50 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C9BB33C1AFF
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 12:54:51 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 27D21600636
- for <ltp@lists.linux.it>; Tue, 27 May 2025 12:41:50 +0200 (CEST)
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-43edecbfb94so44200035e9.1
- for <ltp@lists.linux.it>; Tue, 27 May 2025 03:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1748342509; x=1748947309; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=jfFwb8bvMZ5XohczyaS6pljtxzsLDwfjCiF79cCF/1g=;
- b=PB1/w5IFC502LZRIxsbeWrDP3GVB2p8fVeeHce3mPsX03knPzRX9pmDzrMRItdJMrd
- 5Rb2PSQ8CbxbBsN1LAXwCabXYQ69RgATYbghd94KMd55R3YMXPAzbZSZ2oWYBXjXiDtx
- oxHgrxVu/eNbFe4feWpypWk2aRaWJiOKXCMWZfJusuO7jlMuav9R6ZyO6Gt2CUMs7C0v
- 0ZEI82mK0PwLOLwPShxV2KgcVI2UfIUbSYJXl6Yx9aexgZCjOyWldAXmEEyqnW8FkTdo
- Ug2D4gqjIDHM6jjoCAfo7za8GQ9hiIirUX6+PBfH4HCmwFckmzWPMt+SP5nFvehh8hOY
- 0p6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1748342509; x=1748947309;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=jfFwb8bvMZ5XohczyaS6pljtxzsLDwfjCiF79cCF/1g=;
- b=YI3lSf9mGCcHzAOYIp/ZD2oCqTE1g6Bl35+nssDi5SB1JNdHfGWhKZtMXkUHjxjloC
- /BzXZr8Yprqa2Y9/7LobpDpP/gL62xOutDorAFooqH3xnvzrn+gVLsJz0fSfcakSd1Wf
- RorvmHshWvQgZZtKfgC8ipQ2HObRXr1Agh4h6K1Q/7nvidK/IpUxo8J3JbJ8NX+VfsBv
- pMfRm3qYk7JXtEtqUonrpHoJ0I0Hc19eV3AXucSKkIQcul3k5l76Q/aQBPgRkHw3A52C
- +eeRLm6Qd9kcVy6/c6OsIdCVwrkyxxD2Bg5MNKHD5182QE7oRcCuHKR07KfjYKmCuOpz
- OXXw==
-X-Gm-Message-State: AOJu0Yyy+Y3Si2xeVwBsJ5NxuyFE+FUjzQ2OFtvuYfU8rra3lHIvxr2M
- ji+0cNY4aijr2CCUVasQIuP/3CYMUbP1kjra9oJaMzWH83Ipo+PlZDqJFETMCpotMbA7DdIdkx8
- yhzaKBYk=
-X-Gm-Gg: ASbGnctTGz7BqwqoqqIU5xIINKXFQn+U1Wq0sBoxKZU4wPgdZy4Fksfj8bOke2nkGGB
- 3I8yMxYEJ88tqSPtU+1px8iRr7aia1FWQYtGUbxtPYcwHOCBcJXC+cMZWEiOT+zkKyv+mglWmTe
- bXnAFBE4oQYAs/+gh/VCZzYH8ywRBevXgTqj3MR8eYoZ2LPrXa+kS628WFzEju6Neiz4ic9p3nc
- yQXWz1YAf1Y4TPHyopQdZOJwUPAsAIFbGQ4Y28DFD/VwIzmDgNdr9Aowe2t0VAZVtihiG2gXihU
- AHOxkDF8lqRGPf/oxV9bkiRlqXn9QJ42v/4febG9oKpiQK4skEBFOaJLcPRZzQ==
-X-Google-Smtp-Source: AGHT+IFudSgknykVTepl8Y6b3RlBiRgWi+IHAAnb/KIJ9Hh/x6xLt42fiYhRKReE1ZYibCTAtAP/1A==
-X-Received: by 2002:a05:600c:8411:b0:43c:fe15:41cb with SMTP id
- 5b1f17b1804b1-44c91fbb039mr136262635e9.15.1748342509434; 
- Tue, 27 May 2025 03:41:49 -0700 (PDT)
-Received: from [10.232.133.64] ([88.128.90.23])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-447f3dd9c21sm270996985e9.38.2025.05.27.03.41.48
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 27 May 2025 03:41:49 -0700 (PDT)
-Message-ID: <81a131e7-acef-4aa4-b1f2-97dc30c45983@suse.com>
-Date: Tue, 27 May 2025 12:41:47 +0200
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1AD071A00A40
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 12:54:49 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8A6C421EB5;
+ Tue, 27 May 2025 10:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1748343288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=SnovtZpn6QmJ+uMxJeCpgG7TD/aUARZjg6y+RjbNfHM=;
+ b=g4mmN6przuUdh2bMhlTKv/v7AduGCNp/qA5+xfn2O9+X/z6tCqB2N3QvoA2/nie3Vsne9B
+ EaOiZHA8r1sLn6HfFRPIumNiN1ilDVOcyoZmJKnuSMXCRRhPPnTBBVbpK3hVB7dQRMFvMT
+ 1e15MMiNQWn8N//r+4pvQ5eFgXCi4qc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1748343288;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=SnovtZpn6QmJ+uMxJeCpgG7TD/aUARZjg6y+RjbNfHM=;
+ b=+iZOf9/DuKDXeLf9L3H49vrDu5fwPR7gTjZTXosjx/zu13gp4ynYp1FPMFYfFTKoihQMv2
+ C11KkbXJCOqIM/Dg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1748343288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=SnovtZpn6QmJ+uMxJeCpgG7TD/aUARZjg6y+RjbNfHM=;
+ b=g4mmN6przuUdh2bMhlTKv/v7AduGCNp/qA5+xfn2O9+X/z6tCqB2N3QvoA2/nie3Vsne9B
+ EaOiZHA8r1sLn6HfFRPIumNiN1ilDVOcyoZmJKnuSMXCRRhPPnTBBVbpK3hVB7dQRMFvMT
+ 1e15MMiNQWn8N//r+4pvQ5eFgXCi4qc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1748343288;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=SnovtZpn6QmJ+uMxJeCpgG7TD/aUARZjg6y+RjbNfHM=;
+ b=+iZOf9/DuKDXeLf9L3H49vrDu5fwPR7gTjZTXosjx/zu13gp4ynYp1FPMFYfFTKoihQMv2
+ C11KkbXJCOqIM/Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 38FCD1388B;
+ Tue, 27 May 2025 10:54:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Kd6hB/iZNWihdQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 27 May 2025 10:54:48 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue, 27 May 2025 12:54:36 +0200
+Message-Id: <20250527-landlock_unix_socket-v4-0-80d3d579094b@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Li Wang <liwang@redhat.com>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20250527094415.4760-1-andrea.cervesato@suse.de>
- <CAEemH2eGQP6k1cSDH42c=ZXLHtXdekDh5H_nWSr0o1_=j1i8ug@mail.gmail.com>
-Content-Language: en-US
-In-Reply-To: <CAEemH2eGQP6k1cSDH42c=ZXLHtXdekDh5H_nWSr0o1_=j1i8ug@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+X-B4-Tracking: v=1; b=H4sIAOyZNWgC/43OYQuCMBAG4L8S+9xi3rypfep/RIhuZ45Mw6kY4
+ n9vCoFEQd/uPXifu4k5ai05dtxNrKXBOtvUPoT7HdNlVl+JW+MzAwEoJCCvstpUjb6lfW3H1Pm
+ JOo4J5LkQKDEn5quPlgo7ruz54nNpXde0z/XKECzbNxh9B4eAC45xqFAWSplEn1zv6KCbO1u8A
+ bZG/MMAbxgjRQSJAh3ChyH/MaQ3CFTo38AckDbGPM8vYgflLz8BAAA=
+X-Change-ID: 20250325-landlock_unix_socket-592bb00535be
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1748343288; l=1820;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=b8RVqffOSP4zA6bZM9GIQHaKkLznV5opSbdsrThgkX4=;
+ b=uU8E8FZeucQyz+tiI/rV23tSW79B3QUVSW3R2MswvqkjeZvhDjAzTPO4L1ASLIBZ4kaaSzVIT
+ bvheVwJaKYLA+gKnFSEdfomBNB26WrLRAEhG27hiN2bYA4rGBc0dC0b
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-3.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
+ suse.com:mid]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] kirk: version 2.1
+Subject: [LTP] [PATCH v4 0/4] Landlock tests for ABI v6
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,30 +114,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Landlock released a new feature for IPC scoping in the new ABI.
+This includes the following new rules which will be tested in
+this patch-set:
 
-thanks! I guess we can add it to the kirk project under "tools" folder.
-Feel free to send a PR in the kirk project.
+- LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET
+- LANDLOCK_SCOPE_SIGNAL
 
-- Andrea
+https://docs.kernel.org/userspace-api/landlock.html#ipc-scoping
 
-On 5/27/25 12:07, Li Wang wrote:
-> Reviewed-by: Li Wang <liwang@redhat.com>
->
-> RBT is to this patch. Thanks!
->
-> If you feel json2logs (to compatible old log format) can be widely used,
-> I can send it as a separate patch. Otherwise, I will only keep it as our
-> internal patch.
->
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Changes in v4:
+- retrigger patchwork
+- Link to v3: https://lore.kernel.org/r/20250328-landlock_unix_socket-v3-0-e2643f65b25e@suse.com
+
+Changes in v3:
+- import <stddef.h> for offsetof declaration
+- fix build error caused by DOMAIN_CNT in metadata parser. Just use
+  .tst_variants = 3
+- Link to v2: https://lore.kernel.org/r/20250328-landlock_unix_socket-v2-0-dd3072962c42@suse.com
+
+Changes in v2:
+- add landlock09 and landlock10 to runtest file
+- DOMAIN_LENGTH -> DOMAIN_CNT
+- Link to v1: https://lore.kernel.org/r/20250327-landlock_unix_socket-v1-0-584653f66d9c@suse.com
+
+---
+Andrea Cervesato (4):
+      Add landlock ABI v6 fallback
+      landlock02: support landlock ABI v6
+      landlock: add landlock09 test
+      landlock: add landlock10 test
+
+ include/lapi/landlock.h                            |  23 +++-
+ runtest/syscalls                                   |   2 +
+ testcases/kernel/syscalls/landlock/.gitignore      |   2 +
+ testcases/kernel/syscalls/landlock/landlock02.c    |  12 +-
+ testcases/kernel/syscalls/landlock/landlock09.c    | 131 +++++++++++++++++++++
+ testcases/kernel/syscalls/landlock/landlock10.c    | 108 +++++++++++++++++
+ .../kernel/syscalls/landlock/landlock_common.h     |  11 ++
+ 7 files changed, 280 insertions(+), 9 deletions(-)
+---
+base-commit: db887f441f20f4323b1300624dbca2a03c1c8ed1
+change-id: 20250325-landlock_unix_socket-592bb00535be
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
