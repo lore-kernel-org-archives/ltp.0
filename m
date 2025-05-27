@@ -4,90 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B6E8C54ED1
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 10:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90893C54ED1
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 10:55:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E98113C57AF
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 12:55:09 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 312663C5EF3
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 12:55:28 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C9BB33C1AFF
+ by picard.linux.it (Postfix) with ESMTPS id EFFB13C537F
  for <ltp@lists.linux.it>; Tue, 27 May 2025 12:54:51 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1AD071A00A40
- for <ltp@lists.linux.it>; Tue, 27 May 2025 12:54:49 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C8131600126
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 12:54:50 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8A6C421EB5;
- Tue, 27 May 2025 10:54:48 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 330041F7F9;
+ Tue, 27 May 2025 10:54:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1748343288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1748343289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=SnovtZpn6QmJ+uMxJeCpgG7TD/aUARZjg6y+RjbNfHM=;
- b=g4mmN6przuUdh2bMhlTKv/v7AduGCNp/qA5+xfn2O9+X/z6tCqB2N3QvoA2/nie3Vsne9B
- EaOiZHA8r1sLn6HfFRPIumNiN1ilDVOcyoZmJKnuSMXCRRhPPnTBBVbpK3hVB7dQRMFvMT
- 1e15MMiNQWn8N//r+4pvQ5eFgXCi4qc=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=k4/6NmN12zMhARy09p/3zhEqby9RGArkleaXIvP/l5g=;
+ b=rbMUuLmOrWQzJi/RmFKsUnzvUHb9UGH/uYyVL9xT+yMtGEr/MdMnICGP0YuXFmbiMvDCMi
+ RqCB7bB8camyonaSLDUeu5F+2blhXEuJjt6HIBxSSOAEQb268yOukAc6B47BSmEl5geoAz
+ 208xZCMiKV1k8X0/8J9W0WrBjjAqx50=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1748343288;
+ s=susede2_ed25519; t=1748343289;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=SnovtZpn6QmJ+uMxJeCpgG7TD/aUARZjg6y+RjbNfHM=;
- b=+iZOf9/DuKDXeLf9L3H49vrDu5fwPR7gTjZTXosjx/zu13gp4ynYp1FPMFYfFTKoihQMv2
- C11KkbXJCOqIM/Dg==
-Authentication-Results: smtp-out1.suse.de;
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=k4/6NmN12zMhARy09p/3zhEqby9RGArkleaXIvP/l5g=;
+ b=QBI4K5Jb0z4NlAViE31SgI5LkBjB5/JCQSrfodsEPoCYU/X7qs+m4iYI711H7+l49AJU6w
+ OKqjLX24lfeUArBg==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1748343288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1748343289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=SnovtZpn6QmJ+uMxJeCpgG7TD/aUARZjg6y+RjbNfHM=;
- b=g4mmN6przuUdh2bMhlTKv/v7AduGCNp/qA5+xfn2O9+X/z6tCqB2N3QvoA2/nie3Vsne9B
- EaOiZHA8r1sLn6HfFRPIumNiN1ilDVOcyoZmJKnuSMXCRRhPPnTBBVbpK3hVB7dQRMFvMT
- 1e15MMiNQWn8N//r+4pvQ5eFgXCi4qc=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=k4/6NmN12zMhARy09p/3zhEqby9RGArkleaXIvP/l5g=;
+ b=rbMUuLmOrWQzJi/RmFKsUnzvUHb9UGH/uYyVL9xT+yMtGEr/MdMnICGP0YuXFmbiMvDCMi
+ RqCB7bB8camyonaSLDUeu5F+2blhXEuJjt6HIBxSSOAEQb268yOukAc6B47BSmEl5geoAz
+ 208xZCMiKV1k8X0/8J9W0WrBjjAqx50=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1748343288;
+ s=susede2_ed25519; t=1748343289;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=SnovtZpn6QmJ+uMxJeCpgG7TD/aUARZjg6y+RjbNfHM=;
- b=+iZOf9/DuKDXeLf9L3H49vrDu5fwPR7gTjZTXosjx/zu13gp4ynYp1FPMFYfFTKoihQMv2
- C11KkbXJCOqIM/Dg==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=k4/6NmN12zMhARy09p/3zhEqby9RGArkleaXIvP/l5g=;
+ b=QBI4K5Jb0z4NlAViE31SgI5LkBjB5/JCQSrfodsEPoCYU/X7qs+m4iYI711H7+l49AJU6w
+ OKqjLX24lfeUArBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 38FCD1388B;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E85F31388B;
  Tue, 27 May 2025 10:54:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Kd6hB/iZNWihdQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id sNG3NPiZNWihdQAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Tue, 27 May 2025 10:54:48 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 27 May 2025 12:54:36 +0200
-Message-Id: <20250527-landlock_unix_socket-v4-0-80d3d579094b@suse.com>
+Date: Tue, 27 May 2025 12:54:38 +0200
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOyZNWgC/43OYQuCMBAG4L8S+9xi3rypfep/RIhuZ45Mw6kY4
- n9vCoFEQd/uPXifu4k5ai05dtxNrKXBOtvUPoT7HdNlVl+JW+MzAwEoJCCvstpUjb6lfW3H1Pm
- JOo4J5LkQKDEn5quPlgo7ruz54nNpXde0z/XKECzbNxh9B4eAC45xqFAWSplEn1zv6KCbO1u8A
- bZG/MMAbxgjRQSJAh3ChyH/MaQ3CFTo38AckDbGPM8vYgflLz8BAAA=
-X-Change-ID: 20250325-landlock_unix_socket-592bb00535be
+Message-Id: <20250527-landlock_unix_socket-v4-2-80d3d579094b@suse.com>
+References: <20250527-landlock_unix_socket-v4-0-80d3d579094b@suse.com>
+In-Reply-To: <20250527-landlock_unix_socket-v4-0-80d3d579094b@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1748343288; l=1820;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1748343288; l=2317;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=b8RVqffOSP4zA6bZM9GIQHaKkLznV5opSbdsrThgkX4=;
- b=uU8E8FZeucQyz+tiI/rV23tSW79B3QUVSW3R2MswvqkjeZvhDjAzTPO4L1ASLIBZ4kaaSzVIT
- bvheVwJaKYLA+gKnFSEdfomBNB26WrLRAEhG27hiN2bYA4rGBc0dC0b
+ bh=uDQWYCSUB2odNfq6v5J8I71qWSjXqr/wEcMg55NMTaM=;
+ b=tbcI/HhZkWukgfCyBgCBxH/LPgQPMQbvhi2omAzGI+2jW0nViDY3FMoCDb0sMg5dpJTfp+yCd
+ TSv/o6DTMeQCWcGDxGIUOyfbmL8hSaMnwjrsTxMWFHI1p88enxBRtbf
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
 X-Spamd-Result: default: False [-3.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -98,11 +99,11 @@ X-Spamd-Result: default: False [-3.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
  RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.com:mid]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
+ imap1.dmz-prg2.suse.org:helo, suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 0/4] Landlock tests for ABI v6
+Subject: [LTP] [PATCH v4 2/4] landlock02: support landlock ABI v6
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,54 +120,60 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Landlock released a new feature for IPC scoping in the new ABI.
-This includes the following new rules which will be tested in
-this patch-set:
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-- LANDLOCK_SCOPE_ABSTRACT_UNIX_SOCKET
-- LANDLOCK_SCOPE_SIGNAL
-
-https://docs.kernel.org/userspace-api/landlock.html#ipc-scoping
-
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v4:
-- retrigger patchwork
-- Link to v3: https://lore.kernel.org/r/20250328-landlock_unix_socket-v3-0-e2643f65b25e@suse.com
+ testcases/kernel/syscalls/landlock/landlock02.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-Changes in v3:
-- import <stddef.h> for offsetof declaration
-- fix build error caused by DOMAIN_CNT in metadata parser. Just use
-  .tst_variants = 3
-- Link to v2: https://lore.kernel.org/r/20250328-landlock_unix_socket-v2-0-dd3072962c42@suse.com
+diff --git a/testcases/kernel/syscalls/landlock/landlock02.c b/testcases/kernel/syscalls/landlock/landlock02.c
+index 60010f554b001156f3feb30283bb5c22a5fea1fc..37dc72d32c633a2f249c5a9ef879b6d288a63259 100644
+--- a/testcases/kernel/syscalls/landlock/landlock02.c
++++ b/testcases/kernel/syscalls/landlock/landlock02.c
+@@ -20,6 +20,7 @@
+ 
+ static struct tst_landlock_ruleset_attr_abi1 *attr_abi1;
+ static struct tst_landlock_ruleset_attr_abi4 *attr_abi4;
++static struct tst_landlock_ruleset_attr_abi6 *attr_abi6;
+ static struct landlock_path_beneath_attr *path_beneath_attr;
+ static struct landlock_path_beneath_attr *rule_null;
+ static struct landlock_net_port_attr *net_port_attr;
+@@ -144,15 +145,19 @@ static void setup(void)
+ {
+ 	abi_current = verify_landlock_is_enabled();
+ 
+-	attr_abi1->handled_access_fs =
+-		attr_abi4->handled_access_fs = LANDLOCK_ACCESS_FS_EXECUTE;
++	attr_abi1->handled_access_fs = LANDLOCK_ACCESS_FS_EXECUTE;
++	attr_abi4->handled_access_fs = LANDLOCK_ACCESS_FS_EXECUTE;
++	attr_abi6->handled_access_fs = LANDLOCK_ACCESS_FS_EXECUTE;
+ 
+ 	if (abi_current < 4) {
+ 		ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset,
+ 			attr_abi1, sizeof(struct tst_landlock_ruleset_attr_abi1), 0));
+-	} else {
++	} else if (abi_current < 6) {
+ 		ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset,
+ 			attr_abi4, sizeof(struct tst_landlock_ruleset_attr_abi4), 0));
++	} else {
++		ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset,
++			attr_abi6, sizeof(struct tst_landlock_ruleset_attr_abi6), 0));
+ 	}
+ }
+ 
+@@ -171,6 +176,7 @@ static struct tst_test test = {
+ 	.bufs = (struct tst_buffers []) {
+ 		{&attr_abi1, .size = sizeof(struct tst_landlock_ruleset_attr_abi1)},
+ 		{&attr_abi4, .size = sizeof(struct tst_landlock_ruleset_attr_abi4)},
++		{&attr_abi6, .size = sizeof(struct tst_landlock_ruleset_attr_abi6)},
+ 		{&path_beneath_attr, .size = sizeof(struct landlock_path_beneath_attr)},
+ 		{&net_port_attr, .size = sizeof(struct landlock_net_port_attr)},
+ 		{},
 
-Changes in v2:
-- add landlock09 and landlock10 to runtest file
-- DOMAIN_LENGTH -> DOMAIN_CNT
-- Link to v1: https://lore.kernel.org/r/20250327-landlock_unix_socket-v1-0-584653f66d9c@suse.com
-
----
-Andrea Cervesato (4):
-      Add landlock ABI v6 fallback
-      landlock02: support landlock ABI v6
-      landlock: add landlock09 test
-      landlock: add landlock10 test
-
- include/lapi/landlock.h                            |  23 +++-
- runtest/syscalls                                   |   2 +
- testcases/kernel/syscalls/landlock/.gitignore      |   2 +
- testcases/kernel/syscalls/landlock/landlock02.c    |  12 +-
- testcases/kernel/syscalls/landlock/landlock09.c    | 131 +++++++++++++++++++++
- testcases/kernel/syscalls/landlock/landlock10.c    | 108 +++++++++++++++++
- .../kernel/syscalls/landlock/landlock_common.h     |  11 ++
- 7 files changed, 280 insertions(+), 9 deletions(-)
----
-base-commit: db887f441f20f4323b1300624dbca2a03c1c8ed1
-change-id: 20250325-landlock_unix_socket-592bb00535be
-
-Best regards,
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.43.0
 
 
 -- 
