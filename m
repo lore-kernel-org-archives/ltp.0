@@ -4,97 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71D06C54F30
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 11:11:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2C57C54ED1
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 11:11:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1748344310; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=VxzytIPzlHB0Z659gxeUqt0zIFgxvOOAWtpf5QSAyis=;
+ b=Fwg2rTdqrujohN3k2DIKN5/CP//MATMCWY6BwWVBzo9J7RwW+O5vVaT9Qe6U8vcfcmJtb
+ fwGlw2u6MNCSBuzK+6vzd26MEt0YNtMfoK71Xc7hWQIv2d2ecNNPaPOrASLIYshZ51EEpAz
+ IV+IXm1dFbATue7TR8pmDOhYe6IU7EY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E630E3C58A4
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 13:11:10 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 0FA8B3C58EE
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 13:11:50 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AC6193C053B
- for <ltp@lists.linux.it>; Tue, 27 May 2025 13:10:53 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 3F1773C2B90
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 13:11:28 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 843AA600057
- for <ltp@lists.linux.it>; Tue, 27 May 2025 13:10:51 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AE7C4219EF;
- Tue, 27 May 2025 11:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1748344250;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6B322600716
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 13:11:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1748344285;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MMMl/wtKIvtM2YUDtD+C8MkWuIfNBFaf5cvqO4wyt78=;
- b=GwqRAhWtFEJDekIWLG8n67qMyHr0gmJJCdgT7205zGLHq04u36EwfUC1pMYZFqwHB+Tx0O
- FjxRIIlHZp0mmM7h1YXQRsuROLM63IMZYqx50PXzvw1IdE7f5XsDHjJbGEjNC27O3ys0j9
- 0bNRzjKiOzoECLnTKQRalEiUOiytGKw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1748344250;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=MMMl/wtKIvtM2YUDtD+C8MkWuIfNBFaf5cvqO4wyt78=;
- b=BXb/kkEPHgebZB0zPOwc4iwlYPxFzWYVtBkvxyvSa62VNOoPfHd5+hR4lnoOrggj+5nODQ
- CrHorI0Eqer8l3AQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1748344250;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=MMMl/wtKIvtM2YUDtD+C8MkWuIfNBFaf5cvqO4wyt78=;
- b=GwqRAhWtFEJDekIWLG8n67qMyHr0gmJJCdgT7205zGLHq04u36EwfUC1pMYZFqwHB+Tx0O
- FjxRIIlHZp0mmM7h1YXQRsuROLM63IMZYqx50PXzvw1IdE7f5XsDHjJbGEjNC27O3ys0j9
- 0bNRzjKiOzoECLnTKQRalEiUOiytGKw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1748344250;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=MMMl/wtKIvtM2YUDtD+C8MkWuIfNBFaf5cvqO4wyt78=;
- b=BXb/kkEPHgebZB0zPOwc4iwlYPxFzWYVtBkvxyvSa62VNOoPfHd5+hR4lnoOrggj+5nODQ
- CrHorI0Eqer8l3AQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 959601388B;
- Tue, 27 May 2025 11:10:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id l9huI7qdNWhgewAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 27 May 2025 11:10:50 +0000
-Date: Tue, 27 May 2025 13:10:41 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20250527111041.GB181666@pevik>
-References: <CAEemH2czcnak7S50--_nh5Z2Ou+rF0=5kvY7Kx_87k_X5eEj4g@mail.gmail.com>
+ bh=tgHr0Zgf8CfhEw6ZFYs0/JDrc9tELSCA2HKBizrwy8A=;
+ b=Ccm1WQ/Nb5p4ht1Pr2iU87iHnjcQDJU+1SoPZCjL2fy0idWQOSrqjmgw3WG4NKZNtNnk0x
+ LRIlayII2IiilN/XThc5g9qSIa7N83mI6Pnmxpvmkp+RkEgw/B2mbrjhIu6Up2eFGrD8Ge
+ UMunLj8fphpClMe9mYeG+B5JKcV7Xnw=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-671-_SZd1LcwOtuZYq0VWZKCTA-1; Tue, 27 May 2025 07:11:23 -0400
+X-MC-Unique: _SZd1LcwOtuZYq0VWZKCTA-1
+X-Mimecast-MFC-AGG-ID: _SZd1LcwOtuZYq0VWZKCTA_1748344283
+Received: by mail-pj1-f71.google.com with SMTP id
+ 98e67ed59e1d1-30a59538b17so2859001a91.3
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 04:11:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1748344280; x=1748949080;
+ h=content-transfer-encoding:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=tgHr0Zgf8CfhEw6ZFYs0/JDrc9tELSCA2HKBizrwy8A=;
+ b=vFhaA/IUKLD5dOj2lbmfL9DAqJQpeM2RAOuVuzzCql/NFzsDs6z4Xs/9vl2c/o2kp6
+ v3fRbLIqJYR6e/WeOj4O/pgqiMNYNoRBhD5Pq06+9AMy0vzcHCrz4qH236pPYDJQz3FL
+ SuIIHHnTyvo6bdTv3G/hBWUg9NXUEAm6Fwfc4EJne+z0onV+rmZ5gSUGyHngGswmXtEs
+ LLFSQZls+iKtwuc8cSVsf+AcBcS7szUt5NixgzvbxIxDWr7DFisU0jFFJNg3ZbCg/hka
+ VOgyZlAG6ANbYJrIT27d6BlhAYF1GJ4rqJVPL4LzghttHKQMWojAG8opIteAAxy27MZc
+ NYHA==
+X-Gm-Message-State: AOJu0YyMNQ3APLWTZDGURribbVe42cC6ys3KD0ecx5dPD4DxgFfFYMId
+ /et5E2qIOK1kFpp6JEV2FXB2QgQ0kMsSixM4lLDt+0H8ilebGHoxJV9bhi1ktq5/K09DZxfPl1W
+ C5QwRIjP9vBlhb/y19pZpesOGeD0h/D5TDiGNpnNrvRbU8v0/JJL3PrjEB/R5+OpK5TKbgBPLyk
+ xZ8XOegTJAjA6RS1bBhzPSOR2tyUJ1j46zNPw=
+X-Gm-Gg: ASbGncs9HAj7udLvMjVY+xZ3325xFp0M31+dT6x0dmcax3Q3HYE/1BbDzHPIawT1l5x
+ zKbsk9ftnRTO9ZW+UU7yH+9weHayZN1itYFxbVme/IvBjHa74xdjsS10xX2vJXr77qgHkdw==
+X-Received: by 2002:a17:90b:35cc:b0:2ee:6d08:7936 with SMTP id
+ 98e67ed59e1d1-3110f31df19mr19183030a91.20.1748344280351; 
+ Tue, 27 May 2025 04:11:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH+WMgLp/A5NHFii4OSBXonKeKpt8Y5ldWqdklAMssnQJEJFjLGl7O2yVZdqKn101t+tbv4/uVJ9n/0+MIO6J8=
+X-Received: by 2002:a17:90b:35cc:b0:2ee:6d08:7936 with SMTP id
+ 98e67ed59e1d1-3110f31df19mr19183000a91.20.1748344279957; Tue, 27 May 2025
+ 04:11:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
+References: <CAEemH2czcnak7S50--_nh5Z2Ou+rF0=5kvY7Kx_87k_X5eEj4g@mail.gmail.com>
 In-Reply-To: <CAEemH2czcnak7S50--_nh5Z2Ou+rF0=5kvY7Kx_87k_X5eEj4g@mail.gmail.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; REPLY(-4.00)[];
- SUBJECT_ENDS_QUESTION(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- TO_DN_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+Date: Tue, 27 May 2025 19:11:07 +0800
+X-Gm-Features: AX0GCFtcqD2sOAuFll-E5ePGRljl-Cei8_NYCOol27Cliq1tCp26aoN5pDTl78o
+Message-ID: <CAEemH2dD50C9LBpx8eFq3pug3oys-4r05s6K_fT-9N7Vj5D8mA@mail.gmail.com>
+To: LTP List <ltp@lists.linux.it>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: G9MlfGeCyZ-O9iLz20-buSZ7aN8M3GQ0ZxbFhBng3jw_1748344283
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [RFC] Reduce .runtime for Long-Running Tests ?
 X-BeenThere: ltp@lists.linux.it
@@ -108,67 +100,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Martin Doucha <martin.doucha@suse.com>, LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
-
-> Hello All,
-
-> After reviewing some LTP HTML test reports, I noticed that the ten tests
-> alone take nearly 20 minutes to complete. For example:
-
-> --------------------
-> bind06           300.15s
-
-This uses fuzzy sync, I wonder if it could be speedup. I guess better longer run
-than break the test.
-
-> msgstress01      180.44s
-> fsx22            170.47s
-> pty07            150.04s
-> pty06            150.02s
-> gf18             121.09s
-> gf17             120.82s
-> gf16             120.13s
-> dirtyc0w_shmem   120.11s
-> setsockopt07      76.47s
-
-> In total, running the full ltp-lite suite currently takes ~1h20m, which is a bit
-> long for CI or pre-merge validation pipelines.
-
-What is ltp-lite? Is it your internal CI for LTP? bind06 is in cve and syscalls
-runtest files.
-
-> I'm wondering whether all these .runtime values are truly necessary to reproduce
-> the intended issues (e.g., race conditions, fuzzing, sync timing issues).
-> Or if we could:
->  - Set a lower threshold for .runtime on general-purpose stress/fuzz tests
-
-I'd be careful for fuzzy sync.
-
->  - Introduce a runtime _policy_ for different environments (e.g., fast
-> CI vs. full weekly runs)
-
-Or filter out the long running tests if the purpose is just to test LTP itself
-instead of the product?
-
-> It might be beneficial to revisit the .runtime values of long-running tests and
-> set a minimal yet effective duration that balances reproducibility with resource
-> efficiency. This could help save time and free up test resources earlier.
-
-Maybe Martin still have VM's which can trigger the problem to experiment, but
-runtime probably differs across architectures and available resources (number of
-CPU or memory).
-
-Kind regards,
-Petr
-
-> Any thoughts/comments would be appreciated.
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBNYXkgMjcsIDIwMjUgYXQgNzowMOKAr1BNIExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQu
+Y29tPiB3cm90ZToKPgo+IEhlbGxvIEFsbCwKPgo+IEFmdGVyIHJldmlld2luZyBzb21lIExUUCBI
+VE1MIHRlc3QgcmVwb3J0cywgSSBub3RpY2VkIHRoYXQgdGhlIHRlbiB0ZXN0cwo+IGFsb25lIHRh
+a2UgbmVhcmx5IDIwIG1pbnV0ZXMgdG8gY29tcGxldGUuIEZvciBleGFtcGxlOgo+Cj4gLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KPiBiaW5kMDYgICAgICAgICAgIDMwMC4xNXMKPiBtc2dzdHJlc3MwMSAg
+ICAgIDE4MC40NHMKPiBmc3gyMiAgICAgICAgICAgIDE3MC40N3MKPiBwdHkwNyAgICAgICAgICAg
+IDE1MC4wNHMKPiBwdHkwNiAgICAgICAgICAgIDE1MC4wMnMKPiBnZjE4ICAgICAgICAgICAgIDEy
+MS4wOXMKPiBnZjE3ICAgICAgICAgICAgIDEyMC44MnMKPiBnZjE2ICAgICAgICAgICAgIDEyMC4x
+M3MKPiBkaXJ0eWMwd19zaG1lbSAgIDEyMC4xMXMKPiBzZXRzb2Nrb3B0MDcgICAgICA3Ni40N3MK
+Pgo+IEluIHRvdGFsLCBydW5uaW5nIHRoZSBmdWxsIGx0cC1saXRlIHN1aXRlIGN1cnJlbnRseSB0
+YWtlcyB+MWgyMG0sIHdoaWNoIGlzIGEgYml0Cj4gbG9uZyBmb3IgQ0kgb3IgcHJlLW1lcmdlIHZh
+bGlkYXRpb24gcGlwZWxpbmVzLgoKRm9yZ2V0IHRvIG1lbnRpb246CgpUaGUgMWgyMG1pbiBjb250
+YWlucyBMVFAgY29tcGlsaW5nIHRpbWUuIFdlIG5vdyB0cnkgdG8gYnVpbGQgcnBtIHBhY2thZ2UK
+Zm9yIG91ciBDSSB0ZXN0aW5nIHRoYXQgd291bGQgcmVkdWNlIHNvbWUgdW5uZWNlc3NhcnkgdGlt
+ZS4KCkFwYXJ0IGZyb20gdGhhdCwgSWYgd2UgY291bGQgZG8gc29tZXRoaW5nIHRvIHNwZWVkIHVw
+IHRoZSBydW5uaW5nIHRpbWUsCnRoYXQgd291bGQgYmUgZ3JlYXQgdG9vLgoKPgo+IEknbSB3b25k
+ZXJpbmcgd2hldGhlciBhbGwgdGhlc2UgLnJ1bnRpbWUgdmFsdWVzIGFyZSB0cnVseSBuZWNlc3Nh
+cnkgdG8gcmVwcm9kdWNlCj4gdGhlIGludGVuZGVkIGlzc3VlcyAoZS5nLiwgcmFjZSBjb25kaXRp
+b25zLCBmdXp6aW5nLCBzeW5jIHRpbWluZyBpc3N1ZXMpLgo+IE9yIGlmIHdlIGNvdWxkOgo+ICAt
+IFNldCBhIGxvd2VyIHRocmVzaG9sZCBmb3IgLnJ1bnRpbWUgb24gZ2VuZXJhbC1wdXJwb3NlIHN0
+cmVzcy9mdXp6IHRlc3RzCj4gIC0gSW50cm9kdWNlIGEgcnVudGltZSBfcG9saWN5XyBmb3IgZGlm
+ZmVyZW50IGVudmlyb25tZW50cyAoZS5nLiwgZmFzdAo+IENJIHZzLiBmdWxsIHdlZWtseSBydW5z
+KQo+Cj4gSXQgbWlnaHQgYmUgYmVuZWZpY2lhbCB0byByZXZpc2l0IHRoZSAucnVudGltZSB2YWx1
+ZXMgb2YgbG9uZy1ydW5uaW5nIHRlc3RzIGFuZAo+IHNldCBhIG1pbmltYWwgeWV0IGVmZmVjdGl2
+ZSBkdXJhdGlvbiB0aGF0IGJhbGFuY2VzIHJlcHJvZHVjaWJpbGl0eSB3aXRoIHJlc291cmNlCj4g
+ZWZmaWNpZW5jeS4gVGhpcyBjb3VsZCBoZWxwIHNhdmUgdGltZSBhbmQgZnJlZSB1cCB0ZXN0IHJl
+c291cmNlcyBlYXJsaWVyLgo+Cj4gQW55IHRob3VnaHRzL2NvbW1lbnRzIHdvdWxkIGJlIGFwcHJl
+Y2lhdGVkLgo+Cj4gLS0KPiBSZWdhcmRzLAo+IExpIFdhbmcKCgoKLS0gClJlZ2FyZHMsCkxpIFdh
+bmcKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGlu
+Zm8vbHRwCg==
