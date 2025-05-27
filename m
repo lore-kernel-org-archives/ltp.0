@@ -4,92 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 405E3C54F30
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 09:08:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48051C54ED1
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 09:28:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1748336897; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=1H8Fd9UeNo85o7tar7HRKj7LJmE/yDUMXwWpw1zSNMI=;
- b=fzFUSHjMR+SywYJ88GRIHvD0Fn4/uwFfS1+8UMJSrrIqBfiFHwPxTS5zG9NC/Ym26ZkIl
- pAeRK9yoXKRm/Jl3A6BLFBZH469rLKNxblNaMqUMQGN16eOO+cZDmKBXw00xyITM1MmNhRf
- 98Nvi7SulhSEiTH844pduS9BBa6mMIM=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1748338102; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=s5UNebgrSxic7rBTCGSwMiYLArrtdsHY/h3QPGDauQ4=;
+ b=JyJJh9c7gFaP4sAmmpQ0G93+WOFZ77aQIK4a+8eYHsiEQLzJ23/00v5en6Q8GUXkZHn7K
+ rhs6QPGPWtRdtzuMVfPoQBrh8H/4+nViuWTh547ioS7zY2GxWEdVacn7LenppyT/C/GM+oV
+ XupEP6YYxt9QE+cGdOUA+tl+WU7AHSs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 990E63C5529
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 11:08:17 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id A331B3C5788
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 11:28:22 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9F9A13C13E5
- for <ltp@lists.linux.it>; Tue, 27 May 2025 11:07:55 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D446D3C2C13
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 11:28:00 +0200 (CEST)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
+ [IPv6:2a00:1450:4864:20::42b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 337D01400060
- for <ltp@lists.linux.it>; Tue, 27 May 2025 11:07:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1748336872;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mGN4206tDO/CwqSzF6XpZw4iP60hxCKxbDlURDgfNwI=;
- b=be2Ta5wR2k3IVQirtE8BKARqukEOUR5h0QbtH+Y/2Rjpk1Sgh3jAB1tJpWits4EjxsMyLk
- Ih2JudYl0bOCtRL+OxoJcLziqocNFV0QkZRyMdsBffQiPVyyoRatadBdgMHlcEDciczhT6
- +iIO8brxRSwjiTdRGyfp8L71lEnxe7c=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-570-wmddLvDmNhaKKVQl8BCTdg-1; Tue, 27 May 2025 05:07:50 -0400
-X-MC-Unique: wmddLvDmNhaKKVQl8BCTdg-1
-X-Mimecast-MFC-AGG-ID: wmddLvDmNhaKKVQl8BCTdg_1748336870
-Received: by mail-pj1-f71.google.com with SMTP id
- 98e67ed59e1d1-3111a070de6so5169864a91.0
- for <ltp@lists.linux.it>; Tue, 27 May 2025 02:07:50 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BCBE81400323
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 11:27:59 +0200 (CEST)
+Received: by mail-wr1-x42b.google.com with SMTP id
+ ffacd0b85a97d-3a4c6c0a9c7so2134538f8f.3
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 02:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1748338079; x=1748942879; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=gvuYBpe0SmkAn3J1lSohgTiau1w65/n9a6QpK+J56AE=;
+ b=L+GmDMFR/OEGLvHRFi5yfqwf92XhsSuvZbpZ2pMNNKoadXPon6b/lWC9snqEPdT/Hh
+ 8dIIGQBrnhQ21doEvPPvaKTD2rhV8/0YbqIBXqkny+GseEQNGiLTD9IXDPXUzULYQQO8
+ 35XGoIkT5pmkFSHu9EfZjHl22djsHLTYoQbIOvrlByngkYUmMgwAV87TYdE5Yjqe7O0Y
+ uLfiFUI1wn62/hJ/AMpAgN84QY9OSKAeD89DT5TqnSIjXCM0BwOGxSlp9eo8ZderoVjn
+ 4tP5JWr+FKropT+xunmaLRUtB30Imt8vHeNM1ded8H0XI0bmFteNQpdSQWqplZTWZalG
+ 8j9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1748336870; x=1748941670;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=mGN4206tDO/CwqSzF6XpZw4iP60hxCKxbDlURDgfNwI=;
- b=ciImEFO1kYykNqAkNXf2IkmQ2YOforF9CIVR3eJnverjbMNMtlRrznQxs8TGIE/wFS
- j7s2dzsbMbEWfc2vLyPGFWV9paxqewlvYuJcORqcbTPr/Ry+7jc074IxnB1uyFENwH8m
- mMg/F55oXteP2UBhARmLnx/lnI0a4HDbb2he8CbfWoGTclcgEa3cBReOKxvY4M7HjgQ0
- LlJ7HhfjcxMLoYIzzdgGHaezR28anU1vxssYtBrKFFmRD8wbPvWKwrQZsR+Nnat6CrdO
- 6pNBlTz4i4mpDzV0Bid63hJcu+nTGrTY1+1srWLPLk8CYTVA+fA6OAw7t9haiEu7GtjF
- 6Ztw==
-X-Gm-Message-State: AOJu0Yy4tPnzEsot6FwuMI2nI68pnRMEUL8cFY3y8iBrn/17Qqg3290Q
- CPD9Lxna7aT2jy7+ZXieS0l/kOoL171FGM3oiFhO4VNwt/svmvAZeBPoikUih4Q/SInMgcbZj0B
- RUehnLbGgxAhTALdpE2EbfcPjgFBNaWGKgM8Ci+z+xXr5IOolftD1Sxb9g20LXOhqMlsrJCshKb
- 1qu98x/Aa8mjRPxtrTK6kNn4GUp8Q=
-X-Gm-Gg: ASbGnctwJdYjEEJtdrjkVAGIP7nxUD5vdLOjeF0TFTmTVbisWA0dkkKPj2Aje/l6rtK
- YK1OpsZYgETP0jkM0QaCliIz/Z7fKN7aY30pKUHwbeeZ1SX8ELx1uempVwhZQbux6xf8MIQ==
-X-Received: by 2002:a17:90b:2682:b0:2ea:7cd5:4ad6 with SMTP id
- 98e67ed59e1d1-3110f72e2cbmr17396740a91.32.1748336869732; 
- Tue, 27 May 2025 02:07:49 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHs0m7904VWg3UNBnkfhMUXSp9eKxecRdhi8dbRO1qtQufNYPhGrFUWrRfuptFfr49NKzLzH/YQybBvkH/uaEk=
-X-Received: by 2002:a17:90b:2682:b0:2ea:7cd5:4ad6 with SMTP id
- 98e67ed59e1d1-3110f72e2cbmr17396673a91.32.1748336868915; Tue, 27 May 2025
- 02:07:48 -0700 (PDT)
+ d=1e100.net; s=20230601; t=1748338079; x=1748942879;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=gvuYBpe0SmkAn3J1lSohgTiau1w65/n9a6QpK+J56AE=;
+ b=eqR2LMv4nvHHGVKhoDehSOWIz0I/fREMENc/SCtYEuUKnNepRvm2qUP3k1f1FO3iRh
+ DLC4aDf9NJBZC3F9o7OUWRNp3bBW0xl06uFTfiW0M3rZNuLjwlXNDQ0qxGu6JfN9jfmk
+ K5+DqdUMPo5LpkiirsNt/BbxX8b+kwnBWfL50nozL7RgbxEY8dSaNxQWBxF3d+3cq9OK
+ 3Ea6RXIOYpxPUqmeEza/rRKH/FRZeW+ew2qmGujqhRNAoIfNSraFcekzU1C/8nfhVl6t
+ 2lTlJntqU1Wk6LebxFHlrGeBQm7nWJ0kSEvP/PucArruxiRq6tS99iX0CfhfA6xZQa2B
+ ViDg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCU0Mqb90Evk78Y5U9WnpNwH8fzRsrTmEI/22wGVLeI3QBC64OrZ3JgUOxVmSrkbBtAExS4=@lists.linux.it
+X-Gm-Message-State: AOJu0Yw4NXwmx2ocfWVD9/zY5C2rZ1oVP59MQD6TfkvMB3VjClu8FcHn
+ 6YQj2x4ym49E+kwpdJTSVytr87fcwSKLRYOMcMi5dWIc+IzAeknvlErZ01NgYauhCFs=
+X-Gm-Gg: ASbGnctKQxfRk9+GkeIPxNnmq9fINfubeFnzTymA4IV05/nctVXCC/nrOaydXYTcsk2
+ oUxiLqeV/Gux+2uUBBCMirQIV4O7dMxMI/2hNoSbHXDJaTy6gBzNVEcRGXXYwQp1hheCJH4ePBW
+ heqKZf5CnoOi1BBV1uMwDZTqtyhWSprp/z3k2ENW1X99QxSXELS+p4ssYrwV0FrqIw+6/my0k3/
+ 9pYlmJEFoiYXG+ybEUflvl0JoICrcRrL3m2Y+BPFhkFwG7quAEyCewcb3sMrmdv61B1N8Q1zLc+
+ LECZileWrOdqLOgxr3gJh0fBkuQk/mQqGiuH/XIsKqE53WexKDoZP2xeRIDXATmVkoiZd0avkyJ
+ AI47EgYedUqqSxoyEh0Uydx2oYUYvj6MVbJi8/nieEkgc6LP2WyvTzc6QGAAwDMPCG7xsVfCsNz
+ +QlNxvc58gsRq7fw==
+X-Google-Smtp-Source: AGHT+IFjJwxLbFk8L/my8BNvi1AJ5oNGtqHgWULaYhEOGbSIWebW5OOj7koxsRYAQZRR+mk4yFjCLg==
+X-Received: by 2002:a5d:64c5:0:b0:391:3aaf:1d5f with SMTP id
+ ffacd0b85a97d-3a4cb4c6b6amr11834482f8f.52.1748338079129; 
+ Tue, 27 May 2025 02:27:59 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f18:9700:bff9:d9af:e929:c0c4?
+ (p200300ef2f189700bff9d9afe929c0c4.dip0.t-ipconnect.de.
+ [2003:ef:2f18:9700:bff9:d9af:e929:c0c4])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-23411fbfdb2sm56880265ad.235.2025.05.27.02.27.56
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 27 May 2025 02:27:58 -0700 (PDT)
+Message-ID: <bd003583-648c-4793-866f-01b07e46b85d@suse.com>
+Date: Tue, 27 May 2025 11:27:53 +0200
 MIME-Version: 1.0
-References: <20250526143429.22997-1-chrubis@suse.cz>
- <20250526155132.GA151544@pevik>
-In-Reply-To: <20250526155132.GA151544@pevik>
-Date: Tue, 27 May 2025 17:07:36 +0800
-X-Gm-Features: AX0GCFsiNwQV0vfRy5HVdZnaDGT5gtJEoMgOVvTBMxDK5iVtmgMi2qRPcTeDl7M
-Message-ID: <CAEemH2eyj5k5tUAQyo+b-JXKF5-GcLzQA5SXbP7xpqU1xU73NQ@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 92LMA4xOlgMTudV9PgipkRofzHsFyCiTMIgeBjZSTgA_1748336870
-X-Mimecast-Originator: redhat.com
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
+References: <aBSURzY2zu2HGI2x@yuki.lan>
+Content-Language: en-US
+In-Reply-To: <aBSURzY2zu2HGI2x@yuki.lan>
 X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] lib: LTP_SINGLE_FS_TYPE and
- LTP_FORCE_SINGLE_FS_TYPE
+Subject: Re: [LTP] LTP release preparations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,65 +103,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Petr Vorel <pvorel@suse.cz> wrote:
+Hi!
 
-> > -     skip_fuse = tst_fs_in_skiplist("fuse", skiplist);
-> >       only_fs = getenv("LTP_SINGLE_FS_TYPE");
-> > +     force_only_fs = getenv("LTP_FORCE_SINGLE_FS_TYPE");
-> > +
-> > +     if (only_fs && force_only_fs) {
-> > +             tst_brk(TBROK,
-> > +                     "Only one of LTP_SINGLE_FS_TYPE and LTP_FORCE_SINGLE_FS_TYPE can be set");
-> > +             return NULL;
-> > +     }
-> > +
-> > +     skip_fuse = tst_fs_in_skiplist("fuse", skiplist);
+kirk will need to be updated as well to v2.1:
+
+https://github.com/linux-test-project/kirk/releases/tag/v2.1
+
+- Andrea
+
+On 5/2/25 11:45, Cyril Hrubis wrote:
+> Hi!
+> As usuall we are going to produce a release at the end of the May, let's
+> start with pointing out patches that should be reviewed before we freeze
+> the git. If there is anything I should have a look on please let me
+> know.
 >
-> >       if (only_fs) {
-> >               tst_res(TINFO, "WARNING: testing only %s", only_fs);
-> > -             if (tst_fs_is_supported(only_fs))
-> > +             if (fs_could_be_used(only_fs, skiplist, skip_fuse))
-> >                       fs_types[0] = only_fs;
-
-One more thing I'm a bit hesitant about, do we need to explicitly set
-fs_types[1] to NULL here?
-
-> >               return fs_types;
-> >       }
->
-> > -     for (i = 0; fs_type_whitelist[i]; i++) {
-> > -             if (tst_fs_in_skiplist(fs_type_whitelist[i], skiplist)) {
-> > -                     tst_res(TINFO, "Skipping %s as requested by the test",
-> > -                             fs_type_whitelist[i]);
-> > -                     continue;
-> > -             }
-> > -
-> > -             sup = tst_fs_is_supported(fs_type_whitelist[i]);
-> > -
-> > -             if (skip_fuse && sup == TST_FS_FUSE) {
-> > -                     tst_res(TINFO,
-> > -                             "Skipping FUSE based %s as requested by the test",
-> > -                             fs_type_whitelist[i]);
-> > -                     continue;
-> > -             }
-> > +     if (force_only_fs) {
-> > +             tst_res(TINFO, "WARNING: force testing only %s", force_only_fs);
-> > +             fs_types[0] = force_only_fs;
-
-fs_type[1] = NULL; ?
-
--- 
-Regards,
-Li Wang
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
