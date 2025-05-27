@@ -4,96 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02DBFC54ED1
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 07:05:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71A5DC54F30
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 07:28:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B11723C2C71
-	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 09:05:05 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 045B83C5372
+	for <ltp@archiver.kernel.org>; Tue, 27 May 2025 09:28:03 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 03C4D3C0229
- for <ltp@lists.linux.it>; Tue, 27 May 2025 09:04:48 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 9A7C13C4CE4
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 09:27:45 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C349220097F
- for <ltp@lists.linux.it>; Tue, 27 May 2025 09:04:47 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id EF1D121E81;
- Tue, 27 May 2025 07:04:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1748329485; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mqZyCxbeqSPn34b4ntxYgPZAisPMjxQ8dbMEoFp0TUM=;
- b=plYdKXcl9haG53n1mg84t0N/JFprbe6HGDwR4dPe3taKgZG5pxrCcvha1xDz7W2pFmbLNg
- SpU+vhOfO5Abc7ekvHTnPb0Tx41YRo73WaNMeHjiHD8q3Xz/wPSbS5UuXjSAVzuGu7vL0/
- qJiy0ieuTpYruyehEPK79KHAviKjAJ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1748329485;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mqZyCxbeqSPn34b4ntxYgPZAisPMjxQ8dbMEoFp0TUM=;
- b=co6OZzU3/CDc3H8v/dpm67qEIL2FIqOud6vYSkdFWkQRn5oms40tusJR41TGVdJs40EjDh
- ml3nh+PqgTaEVQAg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1748329484; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mqZyCxbeqSPn34b4ntxYgPZAisPMjxQ8dbMEoFp0TUM=;
- b=eI+CJyesu0U8AqfQ/mWM0GRZd5i0jJe7g+dhTCJZ07dX/PJuzc4cGeqOpOo3NzQZKQVHHW
- 454GjQY9JC35SIB6FDSkg8Li+cZz1KeCX2b/1OGxE64FtSXf2nktFdnmrIbVE9QpOs4VBN
- Bugz5heUnHN0hfDhPdcnzqod5Mplq/k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1748329484;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mqZyCxbeqSPn34b4ntxYgPZAisPMjxQ8dbMEoFp0TUM=;
- b=WW1d/peNy70aJwVbouj+g7oFyoaL7/a/QylfpZ5eHqtlKxhby9L8EHpeDuOpx3yDyHgnAJ
- GQBQEZSKZ5KDtSAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D97D41388B;
- Tue, 27 May 2025 07:04:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id VQQ0NAxkNWhcKAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 27 May 2025 07:04:44 +0000
-Date: Tue, 27 May 2025 09:05:12 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <aDVkKHCmBTm1emH5@yuki.lan>
-References: <aBSURzY2zu2HGI2x@yuki.lan> <20250507175707.GC182617@pevik>
- <CAEemH2cYmWZDAXHAR9zBTYiX1JcN69Jvj2Je3vHE427xx-ipkw@mail.gmail.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 83F96200776
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 09:27:43 +0200 (CEST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54R1QPNi001483
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 07:27:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=RfSxobUln+SGLjxhXp2FKNnBzVgAgBmeDUySMv8FX
+ 9Q=; b=adZMjX7URgRQlNvRai9u4P4KgWXG1KsZdpxOXq/lOrTelFk3Muan15vBu
+ xlgvqIUl+ZFMrjXfR6suT/NwDCnihKcxU7QuwCVbnhctMqsL1jbWizJzxua8wQ0v
+ qDI2e76izO8vz9QVisuWCmEaQczyn92FAPoYcpTf+Iu2AmHbEiewYLjjo5+BW/pJ
+ AjTrAU9PqH1d4Lurym8NVbY+O71ioqiW5p+rSs1BnIX5p6C5DCtFLjY09bHkhgwH
+ xQKnQPHdsvJAzdp3eM9OBxw5pHSb6DczauOdJSljizxhDrj4BkiRLUHpaHw5pOZU
+ zMiQFNNi5IyYACK8oHPRw6Mm0g7pg==
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46u5ucmudp-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 07:27:41 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54R3YXAS009963
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 07:27:40 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46usxmsjej-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Tue, 27 May 2025 07:27:40 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
+ [10.20.54.106])
+ by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 54R7RaT353215494
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 27 May 2025 07:27:36 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 6CD342004B;
+ Tue, 27 May 2025 07:27:36 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 565BC20043;
+ Tue, 27 May 2025 07:27:36 +0000 (GMT)
+Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.boeblingen.de.ibm.com
+ (unknown [9.155.201.149])
+ by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Tue, 27 May 2025 07:27:36 +0000 (GMT)
+From: Jan Polensky <japo@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Tue, 27 May 2025 09:27:34 +0200
+Message-ID: <20250527072734.41451-1-japo@linux.ibm.com>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2cYmWZDAXHAR9zBTYiX1JcN69Jvj2Je3vHE427xx-ipkw@mail.gmail.com>
-X-Spamd-Result: default: False [-5.30 / 50.00]; REPLY(-4.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- TO_DN_SOME(0.00)[]
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Mi5jzwFqfyx7ugos1gEbv5ckRB-o2AOf
+X-Proofpoint-GUID: Mi5jzwFqfyx7ugos1gEbv5ckRB-o2AOf
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI3MDA1NSBTYWx0ZWRfX6qOpbXdQYTG1
+ Q/9wtab/3jZS7On/L6pPOaDKZ3kn0MaY1GEy3v5yGWjUZnwQk87NM9ku3BJNsGy/w7wb/sCPxQl
+ u+DJ6BW67TwaF1a4kdNgBRWc+RKuvndaR3rtk5uEXtcJFHKON2DqZxJJme9fIn/a3+JzLd8W7d0
+ EAJJjF0mtbb+cSyQ7IxCE+qPb+IEEhNiecqvK6NxdV5QqIAHRCP4coLcXhEv7X+tISZYcXUqDzo
+ EIjnYR5WwvCTQr0+ugadYejsJ5Cbw6mVMYMeVPAJYXbAKy/vz3x1xuZQ3VkOUivmxC9j1pkMUSV
+ aSph51T/zk7K4Kciyj4gCAEQOwu0VWJyIj9O05c31vnQTn4zelD7WuR1AUEBFwiaINn6C4XEode
+ 9h48X66qwT1vzFu8D6ZnhpI9VS9USw0bNqJDAbP9L5w5VH5NCzTC5C9MQkJ/+NT1VQzql8Wi
+X-Authority-Analysis: v=2.4 cv=fJM53Yae c=1 sm=1 tr=0 ts=6835696d cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=dt9VzEwgFbYA:10 a=VnNF1IyMAAAA:8 a=W6g39UcXUv4zGB-oD4EA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-27_03,2025-05-26_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ mlxscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 adultscore=0 mlxlogscore=965 suspectscore=0
+ phishscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
+ definitions=main-2505270055
 X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP release preparations
+Subject: [LTP] [PATCH v1 1/1] runltp: Enable POSIX regex support for
+ SKIPFILE (-S)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,38 +105,66 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > > As usuall we are going to produce a release at the end of the May, let's
-> > > start with pointing out patches that should be reviewed before we freeze
-> > > the git. If there is anything I should have a look on please let me
-> > > know.
-> >
-> > It'd be nice also this macros doc related patchset merged:
-> >
-> > https://patchwork.ozlabs.org/project/ltp/list/?series=439525&state=*
-> 
-> I completed my pre-release test on both RHEL 9 and 10, everything looks good.
+Enhance the SKIPFILE (-S) option to support POSIX regular expressions, allowing
+users to skip groups of tests using concise patterns instead of listing each
+test individually.
 
-Great, thanks!
+Previous usage:
+	cat > skip_file <<-EOF
+		oom01  # reason foo
+		oom03  # reason foo
+		oom04  # reason foo
+		oom05  # reason foo
+		special_a # reason bar
+		special_b # reason bar
+	EOF
 
-> Btw, I hope we can get this merge:
-> https://patchwork.ozlabs.org/project/ltp/patch/20250520202429.577890-1-luizcap@redhat.com/
+New usage:
+	echo > skip_file <<-EOF
+		oom0[13-5]  # reason foo
+		spe.* # reason bar
+	EOF
 
-Yes, that one is on my radar along with a few more, ideally I think that
-we should get in at least these two:
+Note: The previous behavior remains fully supported for backward compatibility.
 
-http://patchwork.ozlabs.org/project/ltp/patch/20250505105310.15072-1-mdoucha@suse.cz/
-http://patchwork.ozlabs.org/project/ltp/list/?series=458430
+Signed-off-by: Jan Polensky <japo@linux.ibm.com>
+---
+ runltp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+diff --git a/runltp b/runltp
+index 0d9062569141..c535775f2568 100755
+--- a/runltp
++++ b/runltp
+@@ -166,7 +166,7 @@ usage()
+     -r LTPROOT      Fully qualified path where testsuite is installed.
+     -R              Randomize test order.
+     -s PATTERN      Only run test cases which match PATTERN.
+-    -S SKIPFILE     Skip tests specified in SKIPFILE
++    -S SKIPFILE     Skip tests matching PATTERNs listed in SKIPFILE.
+     -t DURATION     Execute the testsuite for given duration. Examples:
+                       -t 60s = 60 seconds
+                       -t 45m = 45 minutes
+@@ -648,9 +648,9 @@ EOF
+
+     # Blacklist or skip tests if a SKIPFILE was specified with -S
+     if [ -n "${SKIPFILE}" ]; then
+-        for test_name in $(awk '{print $1}' "${SKIPFILE}"); do
++        for test_name in $(awk '{gsub(/\./, "[^[:space:]]", $1); print $1}' "${SKIPFILE}"); do
+             case "${test_name}" in \#*) continue;; esac
+-            sed -i "/\<${test_name}\>/c\\${test_name} exit 32;" alltests
++            sed -i "s#\<\(${test_name}\)\>.*#\1 exit 32;#" alltests
+         done
+     fi
+
+--
+2.49.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
