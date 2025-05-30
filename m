@@ -4,105 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C18F7C5B549
-	for <ltp@archiver.kernel.org>; Fri, 30 May 2025 08:20:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85BC0C5B552
+	for <ltp@archiver.kernel.org>; Fri, 30 May 2025 10:22:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E6EFB3C9267
-	for <ltp@archiver.kernel.org>; Fri, 30 May 2025 10:20:01 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id CAA753C9287
+	for <ltp@archiver.kernel.org>; Fri, 30 May 2025 12:22:53 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2FB953C91CB
- for <ltp@lists.linux.it>; Fri, 30 May 2025 10:19:42 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id E31663C8239
+ for <ltp@lists.linux.it>; Fri, 30 May 2025 12:22:35 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7FB852001C0
- for <ltp@lists.linux.it>; Fri, 30 May 2025 10:19:40 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3CB1C1000530
+ for <ltp@lists.linux.it>; Fri, 30 May 2025 12:22:33 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D8F57218B1;
- Fri, 30 May 2025 08:19:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1748593179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8477B21168;
+ Fri, 30 May 2025 10:22:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1748600552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=KFI5NHJKY/0el5JaAfXoAK3KyJ42W3kIxArkoFHkeyE=;
- b=GCHrJGfMBcoba5SHUiu8a5s9oGfxjILqRURdB4ap7+OUl8fjZ52bAm4kpy2tfyMHpOSkX9
- 52H6A9IqNdeJbw4NMHYMVD+8g7wjC+84w8COfwqDvDBPD9kwVre+YDMnHaRcNjkS1fCp9J
- mCSqsn9bpTi7eUC+Usxb1RvKGe1zB2U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1748593179;
+ bh=13iudQBs76wiGjI5xCfq1zHmzqOefT1scs2gY5+miHA=;
+ b=Amv5j18yORC4Y3YcHGNoergVIu9bgHvP4X3UV1Gf8qMsDGXUu94iC+b89j6PN3+/UvlLfA
+ DtwnfTI23JdIkcPotvIddnJQHsgxZjehLgyHO7tFfH+PC2MTfctc+ra8+ZIiPRF+IRa/U1
+ VkEZMGihtl5tFObzQl6cpH1ERDmrXLk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1748600552;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=KFI5NHJKY/0el5JaAfXoAK3KyJ42W3kIxArkoFHkeyE=;
- b=2nchBfLOjVdog81OpQvtjBnJjvN5xR9TRkGm7wYWna+qpuvSSf31FjwpUAYCrpJetliSmP
- KBCPBrFPeAczNoDA==
+ bh=13iudQBs76wiGjI5xCfq1zHmzqOefT1scs2gY5+miHA=;
+ b=ZZjvqsaNOZWJPNB1tRrQgaZR6VO0zHAIr/WdLJStfPyh33IPUi6KkY5TRZ3qUTi5rVrYRN
+ V7wdiTth/7Rz4PAg==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=NoubhwMO;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=bQmANJWM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1748593178; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Amv5j18y;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ZZjvqsaN
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1748600552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=KFI5NHJKY/0el5JaAfXoAK3KyJ42W3kIxArkoFHkeyE=;
- b=NoubhwMO2TfdQeZpMEESj8K6Sf+PFUmPcp0HeMyXRP4wGlokS/7A5TFMCOv1lRrU/0NURd
- pEicoF+iGOGCkjwSEvlW5AubJ2p3gC6hY5+GBTlBHiEayCW9najtwLPFV9BLdmeJJwM+km
- 8/sL3DnGfQ2TSDqJplkD/f6QVgLn1QY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1748593178;
+ bh=13iudQBs76wiGjI5xCfq1zHmzqOefT1scs2gY5+miHA=;
+ b=Amv5j18yORC4Y3YcHGNoergVIu9bgHvP4X3UV1Gf8qMsDGXUu94iC+b89j6PN3+/UvlLfA
+ DtwnfTI23JdIkcPotvIddnJQHsgxZjehLgyHO7tFfH+PC2MTfctc+ra8+ZIiPRF+IRa/U1
+ VkEZMGihtl5tFObzQl6cpH1ERDmrXLk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1748600552;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=KFI5NHJKY/0el5JaAfXoAK3KyJ42W3kIxArkoFHkeyE=;
- b=bQmANJWMwKsynlEa9sgLwX/C8may7pWQTpXTg8rVDLN/QfhuBUvg4y+ot5v5Ux3X/uWgEk
- DwcDZuELuHBTQJAg==
+ bh=13iudQBs76wiGjI5xCfq1zHmzqOefT1scs2gY5+miHA=;
+ b=ZZjvqsaNOZWJPNB1tRrQgaZR6VO0zHAIr/WdLJStfPyh33IPUi6KkY5TRZ3qUTi5rVrYRN
+ V7wdiTth/7Rz4PAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C6EC913889;
- Fri, 30 May 2025 08:19:38 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 667E9132D8;
+ Fri, 30 May 2025 10:22:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2SQ8MBpqOWihXQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 30 May 2025 08:19:38 +0000
-Date: Fri, 30 May 2025 10:20:08 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it, linux-kernel@vger.kernel.org,
- libc-alpha@sourceware.org, valgrind-developers@lists.sourceforge.net
-Message-ID: <aDlqOKWSZTzGqrsN@yuki.lan>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id n77mFuiGOWjFAQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 30 May 2025 10:22:32 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Fri, 30 May 2025 12:22:02 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_SEVEN(0.00)[7]; RCVD_TLS_ALL(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: D8F57218B1
+Message-Id: <20250530-fix_irqbalance-v1-1-6509384f52db@suse.com>
+X-B4-Tracking: v=1; b=H4sIAMmGOWgC/x2MQQqAIBAAvyJ7TjDLrL4SEWZbLYSVQgTi35OOA
+ zMTIaAnDNCzCB4fCnS6DGXBwO7GbchpyQxSSCVUJfhK70T+ns1hnEVu207KWjczWg05ujxm4x8
+ OY0ofWEvGP2AAAAA=
+X-Change-ID: 20250530-fix_irqbalance-c8922476bec7
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1748600552; l=1676;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=wP+FiBdflcCS2twiq9FzEWxgOeO4T7QJhRxI/z+efhs=;
+ b=y/R1t4bPJ8U+0tdVQ25kLfHQX7A6QCkbnRImKC4uxuZmuq2N+Ppn7Te7PtOHrmZxcFgEUwmeT
+ vxalsX3OhRgBokSUxYR83IHdcIr41HJIbdxPVip2PKvAjPGvskkK/Tt
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 8477B21168
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,suse.com:mid,suse.com:email];
+ RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for MAY
- 2025
+Subject: [LTP] [PATCH] irq: informative TINFO for irqbalance01 result
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,220 +120,62 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lwn@lwn.net, akpm@linux-foundation.org, torvalds@linux-foundation.org
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Good news everyone,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-the Linux Test Project test suite stable release for *May 2025* has been
-released.
+Change heuristic message when irqbalance01 test is sending the result.
+The test can't detect if an IRQ balance service is up and running, so
+after a test failure users should verify that:
 
-Since the last release 282 patches by 33 authors were merged.
+- a balancing service is up and running on the system
+- a balancing service is running, but it didn't perform any IRQ
+  assignment on any CPU
+- a balancing service is running, but CPUs didn't performed any
+  interrupt after IRQs assignments
 
-Patch review is what most of the projects struggle with and LTP is no
-different. If you can spare some effort helping with the patch review is mo=
-re
-than welcomed.
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ testcases/kernel/irq/irqbalance01.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-NOTABLE CHANGES
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+diff --git a/testcases/kernel/irq/irqbalance01.c b/testcases/kernel/irq/irqbalance01.c
+index f7c6b027859816052f08b07a4a700787b1460e0e..4120b2eae6e2f862e0d86b4f86e3db5b2760db84 100644
+--- a/testcases/kernel/irq/irqbalance01.c
++++ b/testcases/kernel/irq/irqbalance01.c
+@@ -285,9 +285,17 @@ static void evidence_of_change(void)
+ 		}
+ 	}
+ 
+-	tst_res(changed ? TPASS : TFAIL,
+-		"Heuristic: Detected %zu irq-cpu pairs have been dissallowed",
+-		changed);
++	if (changed) {
++		tst_res(TPASS, "IRQs assignments have changed %zu times",
++			changed);
++		return;
++	}
++
++	tst_res(TFAIL,
++		"IRQ balancing has not been detected. It might be that:\n"
++		"- balancing service is not running\n"
++		"- balancing service is running but rules didn't change\n"
++		"- balancing rules have been changed, but CPUs didn't perform any interrupt");
+ }
+ 
+ static void setup(void)
 
-* New tests
-  - kvm_vmx01 test for emulated VMREAD/VMWRITE instructions
-  - kvm_vmx02 test for Intel VMX virtualized APIC
-  - flock07 test for EINTR error
-  - move_mount03 test for mount beneath top mount
-  - fanotify24 test for FAN_PRE_ACCESS and FAN_DENY_ERRNO
-  - unshare03 check for EMFILE when unsharing fd would hit the limits
-  - fcntl40 test fcntl F_CREATED_QUERY
-  - ioctl_fiemap01 functionality test for fiemap ioctl()
-  - unshare04 tests that unshare(CLONE_NEWNS) unshares CWD
-  - mmap22 test for new MAP_DROPPABLE flag
+---
+base-commit: a16ec9409a99d41cd4268ed3f8bbe49108d51a4d
+change-id: 20250530-fix_irqbalance-c8922476bec7
 
-* Increased coverage
-  - fanotify13 test case for FAN_DELETE_SELF
-  - fanotify05 test reporting overflow event with FAN_REPORT_FD_ERROR
-  - fanotify21 test reporting event with RDWR fd on RO mount
-  - fanotify21 test reporting fd open errors with FAN_REPORT_FD_ERROR
-  - flock02 test for EWOULDBLOCK errno
-  - fchownat03 more tests for invalid inputs
-  - fanotify14 test invalid init flags with permission and pre-content even=
-ts
-  - fanotify03 test cases for permission events on children
-  - pause01 tests now for more signals not just EINTR
-  - setrlimit06 test resource limit64 for process
-
-* Removed tests
-  - The test_controllers.sh is now disabled when v2 hierarchy is present
-  - A few old and broken tests were removed from test_controllers.sh
-
-* kirk was updated to version 2.1 see the release notes at:
-  https://github.com/linux-test-project/kirk/releases
-
-* New test catalogue generated from test metadata is live at:
-  https://linux-test-project.readthedocs.io/en/latest/users/test_catalog.ht=
-ml
-
-* We have a new metadata extractor for a shell and first test that is parse=
-d:
-  https://linux-test-project.readthedocs.io/en/latest/users/test_catalog.ht=
-ml#vma05-sh
-
-* A few tests have been fixed not to be miscompiled by gcc-15
-  - we had problems with changes in structure zero initializations where
-    suddenly anonymous unions were not zero initialized anymore
-  - and also with optimzer changes that now remove malloc() + free() pairs
-    if the memmory is no touched between the calls
-
-* The tst_brk() behavior has finally been clarified and fixed, for details =
-see
-  LTP commit a1f82704c28d ("lib/tst_test.c: Fix tst_brk() handling").
-
-* New library test now have reproducible output that leaves out data that
-  change between runs from the output, it's enabled with setting env variab=
-le
-  LTP_REPRODUCIBLE_OUTPUT=3D1
-
-* Our github CI is now connected to patchwork and runs LTP
-  compilation tests for patches:
-
-  https://patchwork.ozlabs.org/project/ltp/list/
-
-* The LTP_SINGLE_FS_TYPE now honors test specific filesystem skiplists and =
-thus
-  can be used for general testing. There is new variable
-  TST_FORCE_SINGLE_FS_TYPE that ignores skiplists and is supposed to be used
-  for test development (which was previously the case for LTP_SINGLE_FS_TYP=
-E).
-
-* The ipc runtest file that cointained only pipeio test was merged into
-  syscalls runtest file
-
-* The horrible mess in testcases/kernel/mem/lib/ library was untangled into
-  smaller pieces
-
-* 43 testcases were converted to the new test library
-
-+ The usual amount of fixes and cleanups
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
-NOTABLE CHANGES IN IMA TESTS
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-brought to you by Petr Vorel
-
-* Add support to load predefined example IMA policy with LTP_IMA_LOAD_POLIC=
-Y=3D1
-  environment variable.
-
-  This allows to run tests which are otherwise skipped due required policy =
-not
-  being loaded. SUT should be rebooted after each IMA tests (unless
-  CONFIG_IMA_WRITE_POLICY=3Dy` the policy can be written only once or polic=
-ies
-  can influence each other).
-
-* Added additional ToMToU and open-writer violation tests (new in kernel v6=
-.14)
-
-* IMA: Allow to disable LSM warnings and use it for IMA (avoid misleading w=
-arnings)
-
-+ Add some example IMA policies
-
-
-DOWNLOAD AND LINKS
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-The latest version of the test-suite contains 3000+ tests for the Linux
-and can be downloaded at:
-
-https://github.com/linux-test-project/ltp/releases/tag/20250530
-
-The project pages as well as GIT repository are hosted on GitHub:
-
-https://github.com/linux-test-project/ltp
-
-If you ever wondered how to write a LTP testcase, don't miss our developer
-documentation at:
-
-https://linux-test-project.readthedocs.io/en/latest/developers/test_case_tu=
-torial.html
-
-And our library API documentation at:
-
-https://linux-test-project.readthedocs.io/en/latest/developers/api_c_tests.=
-html
-
-Patches, new tests, bugs, comments or questions should go to to our mailing
-list at ltp@lists.linux.it.
-
-
-CREDITS
-=3D=3D=3D=3D=3D=3D=3D
-
-Many thanks to the people contributing to this release:
-
-git shortlog -s -e -n 20250130..
-
-    80  Petr Vorel <pvorel@suse.cz>
-    25  Cyril Hrubis <chrubis@suse.cz>
-    24  Ricardo B. Marli=E8re <rbm@suse.com>
-    22  Martin Doucha <mdoucha@suse.cz>
-    21  Andrea Cervesato <andrea.cervesato@suse.com>
-    17  Ma Xinjian via ltp <ltp@lists.linux.it>
-    14  Li Wang <liwang@redhat.com>
-    13  Amir Goldstein <amir73il@gmail.com>
-    11  Xinjian Ma (Fujitsu) <maxj.fnst@fujitsu.com>
-    10  Jan Stancek <jstancek@redhat.com>
-    10  Wei Gao <wegao@suse.com>
-     5  Mimi Zohar <zohar@linux.ibm.com>
-     4  Shiyang Ruan <ruansy.fnst@fujitsu.com>
-     3  Avinesh Kumar <akumar@suse.de>
-     3  Jeff Moyer <jmoyer@redhat.com>
-     2  Edward Liaw <edliaw@google.com>
-     2  lufei <lufei@uniontech.com>
-     1  Ajay Kaher <ajay.kaher@broadcom.com>
-     1  Binh Hoang <htb511@gmail.com>
-     1  Dan Carpenter <dan.carpenter@linaro.org>
-     1  Jan Polensky <japo@linux.ibm.com>
-     1  Jin Guojie <guojie.jin@gmail.com>
-     1  John Morin <John.Morin@gd-ms.com>
-     1  Li Xiaosong <rj45usb@163.com>
-     1  Luiz Capitulino <luizcap@redhat.com>
-     1  Ross Burton <ross.burton@arm.com>
-     1  Siddhesh Poyarekar <siddhesh@gotplt.org>
-     1  Stuart R. Anderson <anderson@netsweng.com>
-     1  T.J. Mercier <tjmercier@google.com>
-     1  Xiao Liang <xiliang@redhat.com>
-     1  Zhao Mengmeng <zhaomengmeng@kylinos.cn>
-     1  dy455990 <dy455990@alibaba-inc.com>
-     1  wangxuewen <wangxuewen@kylinos.cn>
-
-And also thanks to patch reviewers:
-
-git log 20250130.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | s=
-ort | uniq -c | sort -n -r
-
-    108 Petr Vorel <pvorel@suse.cz>
-     71 Andrea Cervesato <andrea.cervesato@suse.com>
-     62 Cyril Hrubis <chrubis@suse.cz>
-     53 Li Wang <liwang@redhat.com>
-     11 Mimi Zohar <zohar@linux.ibm.com>
-      9 Martin Doucha <mdoucha@suse.cz>
-      7 Jan Stancek <jstancek@redhat.com>
-      7 Ricardo B. Marli=E8re <ricardo@marliere.net>
-      6 Jan Kara <jack@suse.cz>
-      5 Avinesh Kumar <akumar@suse.de>
-
--- =
-
-Cyril Hrubis
-chrubis@suse.cz
-
--- =
-
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
