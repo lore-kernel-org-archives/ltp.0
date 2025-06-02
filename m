@@ -4,46 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98C6DC54FB3
-	for <ltp@archiver.kernel.org>; Mon,  2 Jun 2025 15:22:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC8B7C54FB3
+	for <ltp@archiver.kernel.org>; Mon,  2 Jun 2025 15:57:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 04DC93C9DBD
-	for <ltp@archiver.kernel.org>; Mon,  2 Jun 2025 17:22:11 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 26F383C9D6F
+	for <ltp@archiver.kernel.org>; Mon,  2 Jun 2025 17:57:37 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9BC213C9AA8
- for <ltp@lists.linux.it>; Mon,  2 Jun 2025 03:38:03 +0200 (CEST)
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
- by in-3.smtp.seeweb.it (Postfix) with ESMTP id EFD681A0092B
- for <ltp@lists.linux.it>; Mon,  2 Jun 2025 03:38:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=zV
- dVKQUCrA+ckUSYVZaAnanDPCbVp0/SV3/gQyedqOo=; b=lDZqr8A2osQc34y9ma
- Jz+0J9lxNnQELaE/U28JdIyIqCj5j3VGEkz9B3S5x+l4FWYwlyaEP3uEvl+gibqv
- crk46WiQEQJccnIokRljRt/muR9NO4u4zartc1cep4Q1bNv2vCN84v4yFfH//lZG
- 5QVmkvPO4aaSx3gwk7pjZJrwg=
-Received: from zhangyang.mshome.net (unknown [])
- by gzsmtp1 (Coremail) with SMTP id PCgvCgCHMgF1AD1ohvvhAQ--.48569S2;
- Mon, 02 Jun 2025 09:37:57 +0800 (CST)
-From: "yang.zhang" <gaoshanliukou@163.com>
+ by picard.linux.it (Postfix) with ESMTPS id 962163C8F7F
+ for <ltp@lists.linux.it>; Mon,  2 Jun 2025 17:57:18 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 499011400324
+ for <ltp@lists.linux.it>; Mon,  2 Jun 2025 17:57:17 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 385F4211CF
+ for <ltp@lists.linux.it>; Mon,  2 Jun 2025 15:57:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1748879837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IZz9D7sFGu10u9rrK0Q3fZS4EG6HJf5Y1XpFPkGEqAE=;
+ b=zBOhuotxadfITs+SnQtX15RTfL8gd9W1tqAL/h0UGRyZHJxCtf0UXYrt8JhLwfJkVX4EdQ
+ uk3Mbe1XrrmWEJPRwyBRdM6avei6cp/5i0WBA9QaSR3C6j1475bukuEXYNX3++AFLaJJIy
+ gGhPj5pAuQAaIan7LTWWFGZp7QD149U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1748879837;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IZz9D7sFGu10u9rrK0Q3fZS4EG6HJf5Y1XpFPkGEqAE=;
+ b=ROja2FT10Jbo9dNnDig+TFa4+/x8dDqgeQcaoZ6zBc6haqXINnYd1yrc9SevwShnSAjZ/e
+ 9WDEKOVMRQmrOcBQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1748879837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IZz9D7sFGu10u9rrK0Q3fZS4EG6HJf5Y1XpFPkGEqAE=;
+ b=zBOhuotxadfITs+SnQtX15RTfL8gd9W1tqAL/h0UGRyZHJxCtf0UXYrt8JhLwfJkVX4EdQ
+ uk3Mbe1XrrmWEJPRwyBRdM6avei6cp/5i0WBA9QaSR3C6j1475bukuEXYNX3++AFLaJJIy
+ gGhPj5pAuQAaIan7LTWWFGZp7QD149U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1748879837;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IZz9D7sFGu10u9rrK0Q3fZS4EG6HJf5Y1XpFPkGEqAE=;
+ b=ROja2FT10Jbo9dNnDig+TFa4+/x8dDqgeQcaoZ6zBc6haqXINnYd1yrc9SevwShnSAjZ/e
+ 9WDEKOVMRQmrOcBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C7F613AE0
+ for <ltp@lists.linux.it>; Mon,  2 Jun 2025 15:57:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id mC+rCt3JPWiqBgAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Mon, 02 Jun 2025 15:57:17 +0000
+From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon,  2 Jun 2025 09:37:56 +0800
-Message-Id: <20250602013756.136453-1-gaoshanliukou@163.com>
-X-Mailer: git-send-email 2.34.1
+Date: Mon,  2 Jun 2025 17:57:06 +0200
+Message-ID: <20250602155710.63165-2-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250602155710.63165-1-mdoucha@suse.cz>
+References: <20250602155710.63165-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-CM-TRANSID: PCgvCgCHMgF1AD1ohvvhAQ--.48569S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Zw17tw4fCFWkZr4UXFyDGFg_yoW8ZF1Dp3
- yakw1jkrZ3CF4UA3srKF97Ar15twnrXa1rKr92ya4xZ3Wvv3y3tr4xK3W2qF1kGrWj93Wr
- u3Z8Za1Fqr1DZa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UXTmhUUUUU=
-X-Originating-IP: [123.150.8.43]
-X-CM-SenderInfo: pjdr2x5dqox3xnrxqiywtou0bp/1tbiUQdc8mg4iK+t+gABsZ
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 02 Jun 2025 17:21:55 +0200
-Subject: [LTP] [PATCH LTP] open_posix: fix send_rev_2.c testcase
+Subject: [LTP] [PATCH 2/2] open12: Fix O_APPEND test case
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -55,77 +111,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "yang.zhang" <zhangyang01@kylinos.cn>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: "yang.zhang" <zhangyang01@kylinos.cn>
+The original O_APPEND test case is guaranteed to succeed even if
+O_APPEND doesn't work. Check the cursor position correctly.
 
-1. After fork, using correct switch branch for parent and child.
-2. Fix array out-of-bounds issue when calling mq_send.
-
-Signed-off-by: yang.zhang <zhangyang01@kylinos.cn>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- .../functional/mqueues/send_rev_1.c           | 35 +++++++++----------
- 1 file changed, 17 insertions(+), 18 deletions(-)
+ testcases/kernel/syscalls/open/open12.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/functional/mqueues/send_rev_1.c b/testcases/open_posix_testsuite/functional/mqueues/send_rev_1.c
-index 46eef837a..7c7d2f761 100644
---- a/testcases/open_posix_testsuite/functional/mqueues/send_rev_1.c
-+++ b/testcases/open_posix_testsuite/functional/mqueues/send_rev_1.c
-@@ -57,23 +57,6 @@ int main(void)
- 		ret_code = PTS_UNRESOLVED;
- 		break;
- 	case 0:
--		mq_getattr(mq, &attr);
--		for (i = 0; i < MAX_MSG && ret_code == PTS_PASS; i++) {
--			printf("[%d] s_msg_ptr is '%s' \n", i + 1,
--			       s_msg_ptr[i]);
--			printf("Prepare to send message...\n");
--			if (-1 == mq_send(mq, s_msg_ptr[i], attr.mq_msgsize, 1)) {
--				perror("mq_send doesn't return success \n");
--				ret_code = PTS_UNRESOLVED;
--			} else {
--				printf("Process %ld send message '%s' to "
--				       "process %ld \n",
--				       (long)getpid(), s_msg_ptr[i], (long)pid);
--			}
--		}
--		(void)wait(NULL);
--		break;
--	default:
- 		printf("Enter into child process...\n");
- 		mq_getattr(mq, &attr);
- 		for (i = 0; i < MAX_MSG && ret_code == PTS_PASS; i++) {
-@@ -91,7 +74,23 @@ int main(void)
- 			}
- 		}
- 		exit(ret_code);
--
-+		break;
-+	default:
-+		mq_getattr(mq, &attr);
-+		for (i = 0; i < MAX_MSG && ret_code == PTS_PASS; i++) {
-+			printf("[%d] s_msg_ptr is '%s' \n", i + 1,
-+			       s_msg_ptr[i]);
-+			printf("Prepare to send message...\n");
-+			if (-1 == mq_send(mq, s_msg_ptr[i], strlen(s_msg_ptr[i]) + 1, 1)) {
-+				perror("mq_send doesn't return success \n");
-+				ret_code = PTS_UNRESOLVED;
-+			} else {
-+				printf("Process %ld send message '%s' to "
-+				       "process %ld \n",
-+				       (long)getpid(), s_msg_ptr[i], (long)pid);
-+			}
-+		}
-+		(void)wait(NULL);
- 		break;
- 	}
+diff --git a/testcases/kernel/syscalls/open/open12.c b/testcases/kernel/syscalls/open/open12.c
+index c8147bc9f..0dff26c7c 100644
+--- a/testcases/kernel/syscalls/open/open12.c
++++ b/testcases/kernel/syscalls/open/open12.c
+@@ -45,6 +45,7 @@ static void setup(void)
+ static void test_append(void)
+ {
+ 	off_t len1, len2;
++	struct stat statbuf;
  
+ 	tst_res(TINFO, "Testing O_APPEND");
+ 
+@@ -54,14 +55,24 @@ static void test_append(void)
+ 		return;
+ 
+ 	len1 = SAFE_LSEEK(fd, 0, SEEK_CUR);
+-	SAFE_WRITE(1, fd, TEST_FILE, strlen(TEST_FILE));
++
++	if (len1)
++		tst_res(TFAIL, "Initial cursor position is not zero");
++
++	SAFE_FSTAT(fd, &statbuf);
++	len1 = strlen(TEST_FILE);
++	SAFE_WRITE(1, fd, TEST_FILE, len1);
+ 	len2 = SAFE_LSEEK(fd, 0, SEEK_CUR);
+ 	SAFE_CLOSE(fd);
++	len1 += statbuf.st_size;
+ 
+-	if (len2 > len1)
+-		tst_res(TPASS, "O_APPEND works as expected");
+-	else
+-		tst_res(TFAIL, "O_APPEND did not move write cursor");
++	if (len2 != len1) {
++		tst_res(TFAIL, "Wrong cursor position after write: %ld != %ld",
++			(long)len2, (long)len1);
++		return;
++	}
++
++	tst_res(TPASS, "O_APPEND works as expected");
+ }
+ 
+ static void test_noatime(void)
 -- 
-2.34.1
+2.49.0
 
 
 -- 
