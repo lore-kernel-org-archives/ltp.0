@@ -4,110 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6860C5AE59
-	for <ltp@archiver.kernel.org>; Tue,  3 Jun 2025 14:13:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B3DBC5AD49
+	for <ltp@archiver.kernel.org>; Tue,  3 Jun 2025 14:14:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0C6783CA017
-	for <ltp@archiver.kernel.org>; Tue,  3 Jun 2025 16:13:58 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 892B33CA07F
+	for <ltp@archiver.kernel.org>; Tue,  3 Jun 2025 16:14:14 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 85EB73CA017
- for <ltp@lists.linux.it>; Tue,  3 Jun 2025 16:13:27 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 476973CA000
+ for <ltp@lists.linux.it>; Tue,  3 Jun 2025 16:13:28 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 460E5204724
- for <ltp@lists.linux.it>; Tue,  3 Jun 2025 16:13:24 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BDE5E20472C
+ for <ltp@lists.linux.it>; Tue,  3 Jun 2025 16:13:27 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 36E841FBA6
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2758F219C6
  for <ltp@lists.linux.it>; Tue,  3 Jun 2025 14:13:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1748960003; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kZ9tkbKuFcDuEoSA+0FcOqjnzbrBqiQOuF5ia/m3Rzg=;
- b=VL70/pIZllAe1AzPbUHAdecN2sB9gMdxEBT/BU40m9roPdlWw+u4Ou2LZSNj0QORlgnFBr
- Eze8ZAB3iDFFz42Db9DJNW+6D1fKaTcsoJVXd1DFDV3BJ7xkD+YTFAMKcRmT653VTrWLel
- lMxdx91BYEpHj2tvKOi0NT6FQd3S474=
+ bh=LspcFNgwFRih77cWBnxHYqSpVHOQPVbTFBW7Wvwk4+Y=;
+ b=inTP347mNGW/0LmuS0H5dUVmbFDE5fPaflK3Zu6Zugr8Bmjh3JVsxEpyE/wikTk0A2lmFv
+ yoGKFPGcZMwosbsPXhuqxVezLe/CRuC8bd9IJUut+dQLCfs7T6m7ujt07TPVjgVfWH4x+q
+ m9sYbEnIjoHXgnJ1Su4kkGMLLGQBjl0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1748960003;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kZ9tkbKuFcDuEoSA+0FcOqjnzbrBqiQOuF5ia/m3Rzg=;
- b=npY60mqDQurr12/VRS0QwSp1Xn8fJSrR7mqsY5H/liryd78P5FfnMhQYeN9OP0HHoj4vmz
- 7xmP0l50ZE6YbbBA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="VL70/pIZ";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=npY60mqD
+ bh=LspcFNgwFRih77cWBnxHYqSpVHOQPVbTFBW7Wvwk4+Y=;
+ b=UVLzDYGWhYALWE1R8rmh6gDb2Tkkwh+n87NX4dkHNvRfRAtInOB1uNT/jpQ4TjUh0hDB9i
+ WFFnOzEFwXVuVIAw==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1748960003; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kZ9tkbKuFcDuEoSA+0FcOqjnzbrBqiQOuF5ia/m3Rzg=;
- b=VL70/pIZllAe1AzPbUHAdecN2sB9gMdxEBT/BU40m9roPdlWw+u4Ou2LZSNj0QORlgnFBr
- Eze8ZAB3iDFFz42Db9DJNW+6D1fKaTcsoJVXd1DFDV3BJ7xkD+YTFAMKcRmT653VTrWLel
- lMxdx91BYEpHj2tvKOi0NT6FQd3S474=
+ bh=LspcFNgwFRih77cWBnxHYqSpVHOQPVbTFBW7Wvwk4+Y=;
+ b=inTP347mNGW/0LmuS0H5dUVmbFDE5fPaflK3Zu6Zugr8Bmjh3JVsxEpyE/wikTk0A2lmFv
+ yoGKFPGcZMwosbsPXhuqxVezLe/CRuC8bd9IJUut+dQLCfs7T6m7ujt07TPVjgVfWH4x+q
+ m9sYbEnIjoHXgnJ1Su4kkGMLLGQBjl0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1748960003;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kZ9tkbKuFcDuEoSA+0FcOqjnzbrBqiQOuF5ia/m3Rzg=;
- b=npY60mqDQurr12/VRS0QwSp1Xn8fJSrR7mqsY5H/liryd78P5FfnMhQYeN9OP0HHoj4vmz
- 7xmP0l50ZE6YbbBA==
+ bh=LspcFNgwFRih77cWBnxHYqSpVHOQPVbTFBW7Wvwk4+Y=;
+ b=UVLzDYGWhYALWE1R8rmh6gDb2Tkkwh+n87NX4dkHNvRfRAtInOB1uNT/jpQ4TjUh0hDB9i
+ WFFnOzEFwXVuVIAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 21CCF13AB2
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 18B1B13AAD
  for <ltp@lists.linux.it>; Tue,  3 Jun 2025 14:13:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2EQSCAMDP2htHgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id yNnVBQMDP2htHgAAD6G6ig
  (envelope-from <mdoucha@suse.cz>)
  for <ltp@lists.linux.it>; Tue, 03 Jun 2025 14:13:23 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue,  3 Jun 2025 16:13:17 +0200
-Message-ID: <20250603141320.161026-3-mdoucha@suse.cz>
+Date: Tue,  3 Jun 2025 16:13:16 +0200
+Message-ID: <20250603141320.161026-2-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250603141320.161026-1-mdoucha@suse.cz>
 References: <20250603141320.161026-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
  R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
- MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FROM_EQ_ENVFROM(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCPT_COUNT_ONE(0.00)[1];
+ MIME_GOOD(-0.10)[text/plain]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: 36E841FBA6
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_TLS_ALL(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] Add regression test for epoll_pwait2() timeout
+Subject: [LTP] [PATCH 1/2] epoll_pwait: Refactor timeout to struct timespec
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,130 +115,133 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Support higher precision timeout in do_epoll_pwait() by passing struct
+timespec instead of int value in milliseconds. Only one test actually
+uses the parameter.
+
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
+ .../syscalls/epoll_pwait/epoll_pwait01.c      |  4 ++--
+ .../syscalls/epoll_pwait/epoll_pwait02.c      |  2 +-
+ .../syscalls/epoll_pwait/epoll_pwait03.c      |  9 +++++---
+ .../syscalls/epoll_pwait/epoll_pwait04.c      |  2 +-
+ .../syscalls/epoll_pwait/epoll_pwait_var.h    | 22 +++++++++----------
+ 5 files changed, 21 insertions(+), 18 deletions(-)
 
-Note: The test will get killed by SIGALRM on failure.
-
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/epoll_pwait/.gitignore    |  1 +
- .../syscalls/epoll_pwait/epoll_pwait06.c      | 86 +++++++++++++++++++
- 3 files changed, 88 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_pwait/epoll_pwait06.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index e7bc7b27b..2a968099a 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -192,6 +192,7 @@ epoll_pwait02 epoll_pwait02
- epoll_pwait03 epoll_pwait03
- epoll_pwait04 epoll_pwait04
- epoll_pwait05 epoll_pwait05
-+epoll_pwait06 epoll_pwait06
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
+index 954e77314..012ba1562 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
+@@ -30,7 +30,7 @@ static void sighandler(int sig LTP_ATTRIBUTE_UNUSED) {}
  
- eventfd01 eventfd01
- eventfd02 eventfd02
-diff --git a/testcases/kernel/syscalls/epoll_pwait/.gitignore b/testcases/kernel/syscalls/epoll_pwait/.gitignore
-index fafb2d782..81e77b8d0 100644
---- a/testcases/kernel/syscalls/epoll_pwait/.gitignore
-+++ b/testcases/kernel/syscalls/epoll_pwait/.gitignore
-@@ -3,3 +3,4 @@ epoll_pwait02
- epoll_pwait03
- epoll_pwait04
- epoll_pwait05
-+epoll_pwait06
-diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait06.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait06.c
-new file mode 100644
-index 000000000..487992744
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait06.c
-@@ -0,0 +1,86 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 SUSE LLC <mdoucha@suse.cz>
-+ */
-+
-+/*\
-+ * Verify that various timeout values don't get misinterpreted as infinity
-+ * by epoll_pwait() and epoll_pwait2()
-+ */
-+
-+#include <sys/epoll.h>
-+
-+#include "tst_test.h"
-+#include "tst_timer.h"
-+#include "epoll_pwait_var.h"
-+
-+static int efd;
-+
-+static void run(void)
-+{
-+	struct timespec timeout = {};
-+	struct epoll_event e = {};
-+	int ret;
-+
-+	e.events = EPOLLIN;
-+
-+	TST_FD_FOREACH(fd_in) {
-+		/* File descriptor types not supported by epoll */
-+		switch (fd_in.type) {
-+		case TST_FD_FILE:
-+		case TST_FD_PATH:
-+		case TST_FD_DIR:
-+		case TST_FD_DEV_ZERO:
-+		case TST_FD_PROC_MAPS:
-+		case TST_FD_FSOPEN:
-+		case TST_FD_FSPICK:
-+		case TST_FD_OPEN_TREE:
-+		case TST_FD_MEMFD:
-+		case TST_FD_MEMFD_SECRET:
-+			continue;
-+		default:
-+			break;
+ static void verify_sigmask(void)
+ {
+-	TEST(do_epoll_pwait(efd, &e, 1, -1, &signalset));
++	TEST(do_epoll_pwait(efd, &e, 1, NULL, &signalset));
+ 
+ 	if (TST_RET != 1) {
+ 		tst_res(TFAIL, "do_epoll_pwait() returned %li, expected 1",
+@@ -43,7 +43,7 @@ static void verify_sigmask(void)
+ 
+ static void verify_nonsigmask(void)
+ {
+-	TST_EXP_FAIL(do_epoll_pwait(efd, &e, 1, -1, NULL), EINTR,
++	TST_EXP_FAIL(do_epoll_pwait(efd, &e, 1, NULL, NULL), EINTR,
+ 		     "do_epoll_pwait() without sigmask");
+ }
+ 
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
+index 069620c5d..a27c7db9e 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
+@@ -19,7 +19,7 @@ static struct epoll_event e;
+ 
+ static void run(void)
+ {
+-	TEST(do_epoll_pwait(efd, &e, 1, -1, NULL));
++	TEST(do_epoll_pwait(efd, &e, 1, NULL, NULL));
+ 
+ 	if (TST_RET == 1) {
+ 		tst_res(TPASS, "do_epoll_pwait() succeeded");
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c
+index 8217f9f80..572d347f1 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c
+@@ -13,17 +13,20 @@
+ #include "tst_timer_test.h"
+ #include "epoll_pwait_var.h"
+ 
+-#define USEC_PER_MSEC (1000L)
++#define USEC_PER_NSEC (1000L)
++#define USEC_PER_SEC (1000000L)
+ 
+ static int efd, sfd[2];
+ static struct epoll_event e;
+ 
+ int sample_fn(int clk_id, long long usec)
+ {
+-	unsigned int ms = usec / USEC_PER_MSEC;
++	struct timespec ts;
+ 
++	ts.tv_sec = usec / USEC_PER_SEC;
++	ts.tv_nsec = (usec % USEC_PER_SEC) * USEC_PER_NSEC;
+ 	tst_timer_start(clk_id);
+-	TEST(do_epoll_pwait(efd, &e, 1, ms, NULL));
++	TEST(do_epoll_pwait(efd, &e, 1, &ts, NULL));
+ 	tst_timer_stop();
+ 	tst_timer_sample();
+ 
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c
+index cc1d04e6b..b399225b9 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c
+@@ -20,7 +20,7 @@ static void *bad_addr;
+ 
+ static void run(void)
+ {
+-	TST_EXP_FAIL(do_epoll_pwait(efd, &e, 1, -1, bad_addr),
++	TST_EXP_FAIL(do_epoll_pwait(efd, &e, 1, NULL, bad_addr),
+ 		     EFAULT, "with an invalid sigmask pointer");
+ }
+ 
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait_var.h b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait_var.h
+index 58a3f15a2..454e80a87 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait_var.h
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait_var.h
+@@ -14,22 +14,22 @@
+ #define NSEC_PER_MSEC (1000000L)
+ 
+ static int do_epoll_pwait(int epfd, struct epoll_event *events, int
+-	maxevents, int timeout, const sigset_t *sigmask)
++	maxevents, struct timespec *timeout, const sigset_t *sigmask)
+ {
+-	if (tst_variant == 0)
+-		return epoll_pwait(epfd, events, maxevents, timeout, sigmask);
++	if (tst_variant == 0) {
++		int timeout_ms = -1;
+ 
+-	struct timespec ts;
++		if (timeout) {
++			timeout_ms = timeout->tv_sec * MSEC_PER_SEC;
++			timeout_ms += (timeout->tv_nsec + NSEC_PER_MSEC - 1) /
++				NSEC_PER_MSEC;
 +		}
-+
-+		tst_res(TINFO, "Testing %s", tst_fd_desc(&fd_in));
-+		timeout.tv_nsec = 1000000000;
-+		ret = epoll_ctl(efd, EPOLL_CTL_ADD, fd_in.fd, &e);
-+
-+		if (ret)
-+			tst_brk(TBROK | TERRNO, "epoll_ctl(EPOLL_CTL_ADD)");
-+
-+		do {
-+			alarm(1);
-+			timeout.tv_nsec /= 10;
-+			do_epoll_pwait(efd, &e, 1, &timeout, NULL);
-+			alarm(0);
-+		} while (timeout.tv_nsec);
-+
-+		if (epoll_ctl(efd, EPOLL_CTL_DEL, fd_in.fd, &e))
-+			tst_brk(TBROK | TERRNO, "epoll_ctl(EPOLL_CTL_DEL)");
-+	}
-+
-+	tst_res(TPASS, "Timeout works correctly");
-+}
-+
-+static void setup(void)
-+{
-+	epoll_pwait_init();
-+	efd = epoll_create(1);
-+
-+	if (efd == -1)
-+		tst_brk(TBROK | TERRNO, "epoll_create()");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (efd > 0)
-+		SAFE_CLOSE(efd);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_variants = TEST_VARIANTS,
-+};
+ 
+-	if (timeout < 0) {
+-		return epoll_pwait2(epfd, events, maxevents, NULL, sigmask);
+-	} else {
+-		ts.tv_sec = timeout / MSEC_PER_SEC;
+-		ts.tv_nsec = NSEC_PER_MSEC * (timeout % MSEC_PER_SEC);
++		return epoll_pwait(epfd, events, maxevents, timeout_ms,
++			sigmask);
+ 	}
+ 
+-	return epoll_pwait2(epfd, events, maxevents, &ts, sigmask);
+-
++	return epoll_pwait2(epfd, events, maxevents, timeout, sigmask);
+ }
+ 
+ static void epoll_pwait_init(void)
 -- 
 2.49.0
 
