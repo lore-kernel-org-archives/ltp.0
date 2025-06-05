@@ -4,107 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CE3CC5B543
-	for <ltp@archiver.kernel.org>; Thu,  5 Jun 2025 07:32:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34E74C5B543
+	for <ltp@archiver.kernel.org>; Thu,  5 Jun 2025 08:13:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9D5F03CA280
-	for <ltp@archiver.kernel.org>; Thu,  5 Jun 2025 09:32:52 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 994003CA3C5
+	for <ltp@archiver.kernel.org>; Thu,  5 Jun 2025 10:13:33 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 727213C91FB
- for <ltp@lists.linux.it>; Thu,  5 Jun 2025 09:32:35 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id CBA283CA280
+ for <ltp@lists.linux.it>; Thu,  5 Jun 2025 10:13:17 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B65D51A0153C
- for <ltp@lists.linux.it>; Thu,  5 Jun 2025 09:32:34 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0E4B51000D18
+ for <ltp@lists.linux.it>; Thu,  5 Jun 2025 10:13:16 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DBF402219D;
- Thu,  5 Jun 2025 07:32:32 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1B72420881;
+ Thu,  5 Jun 2025 08:13:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1749108752;
+ t=1749111196;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=d1EcyaZOBI+FVRu6oLNRFqISxEvhNrV3CanfOE/+jfw=;
- b=LVceivnqeSOwsgivWvvBRpORRb5vhZv3Sf9Ft3bwRttBifea5QjxDnk+QK7CUhlqyjUdgE
- ZDeCwuzQq40elfEmP9KulH+GB7uajC8hRrtd95DCqJe4/zXf74C3sx4NUXcXCp4FaI1wxf
- y6rdxORpNofov2Jy1eq+ioM/12iO4eg=
+ bh=4RYO4b/CeI1hoUhImmO/HMeMpnMI8r8Dtfwkw2xvlYo=;
+ b=HADvRxmnxBAr6zDxG1K1sChJqLID/UAnKE63bFCJP9hLajTLlLtuiT0SUNfwqdtT0om6V6
+ ZmVMlUdvmhxQmOupPBSywUxxlQgk4Wj+4Ho3XV/g+oKfJsR6jGfZtkg/89rrZ3Db3ZTIZK
+ RqaUQr+gIClLRPONm8SZiZI357bMoLA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1749108752;
+ s=susede2_ed25519; t=1749111196;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=d1EcyaZOBI+FVRu6oLNRFqISxEvhNrV3CanfOE/+jfw=;
- b=IKttv1I4CAo17brhhnJzvB1u+PqeoXrI79QfEoDYaY4fqyw3n1Y5a8QMNA9LhBTCdiRrzl
- XBoIi7c0AFRSU6DQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LVceivnq;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IKttv1I4
+ bh=4RYO4b/CeI1hoUhImmO/HMeMpnMI8r8Dtfwkw2xvlYo=;
+ b=eq3K7Fo8eD8fGmCgeO0HnrMkXVBsXCZZ+YyLDvkPzOrub1u3uZ3uPGxae0sFKkJHMAyptA
+ G0KTnt2X/hd0T0CA==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1749108752;
+ t=1749111196;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=d1EcyaZOBI+FVRu6oLNRFqISxEvhNrV3CanfOE/+jfw=;
- b=LVceivnqeSOwsgivWvvBRpORRb5vhZv3Sf9Ft3bwRttBifea5QjxDnk+QK7CUhlqyjUdgE
- ZDeCwuzQq40elfEmP9KulH+GB7uajC8hRrtd95DCqJe4/zXf74C3sx4NUXcXCp4FaI1wxf
- y6rdxORpNofov2Jy1eq+ioM/12iO4eg=
+ bh=4RYO4b/CeI1hoUhImmO/HMeMpnMI8r8Dtfwkw2xvlYo=;
+ b=HADvRxmnxBAr6zDxG1K1sChJqLID/UAnKE63bFCJP9hLajTLlLtuiT0SUNfwqdtT0om6V6
+ ZmVMlUdvmhxQmOupPBSywUxxlQgk4Wj+4Ho3XV/g+oKfJsR6jGfZtkg/89rrZ3Db3ZTIZK
+ RqaUQr+gIClLRPONm8SZiZI357bMoLA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1749108752;
+ s=susede2_ed25519; t=1749111196;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=d1EcyaZOBI+FVRu6oLNRFqISxEvhNrV3CanfOE/+jfw=;
- b=IKttv1I4CAo17brhhnJzvB1u+PqeoXrI79QfEoDYaY4fqyw3n1Y5a8QMNA9LhBTCdiRrzl
- XBoIi7c0AFRSU6DQ==
+ bh=4RYO4b/CeI1hoUhImmO/HMeMpnMI8r8Dtfwkw2xvlYo=;
+ b=eq3K7Fo8eD8fGmCgeO0HnrMkXVBsXCZZ+YyLDvkPzOrub1u3uZ3uPGxae0sFKkJHMAyptA
+ G0KTnt2X/hd0T0CA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BAAEF1373E;
- Thu,  5 Jun 2025 07:32:32 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3A57A137FE;
+ Thu,  5 Jun 2025 08:13:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id h6WjLBBIQWg/LgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 05 Jun 2025 07:32:32 +0000
-Date: Thu, 5 Jun 2025 09:32:31 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id sc5WBJtRQWhaPgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 05 Jun 2025 08:13:15 +0000
+Date: Thu, 5 Jun 2025 10:13:09 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Ricardo =?utf-8?B?Qi4gTWFybGnDqHJl?= <rbm@suse.com>
-Message-ID: <20250605073231.GC1190804@pevik>
-References: <20250425-conversions-mknod-v4-0-222e0d2e7ef1@suse.com>
- <20250425-conversions-mknod-v4-3-222e0d2e7ef1@suse.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20250605081309.GD1190804@pevik>
+References: <20250429-lsm-v4-0-602b7097e722@suse.com>
+ <20250429-lsm-v4-7-602b7097e722@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250425-conversions-mknod-v4-3-222e0d2e7ef1@suse.com>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20250429-lsm-v4-7-602b7097e722@suse.com>
+X-Spamd-Result: default: False [-3.48 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
+ NEURAL_HAM_SHORT(-0.18)[-0.900]; MIME_GOOD(-0.10)[text/plain];
+ FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
+ ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_DN_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: DBF402219D
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[6]; RCVD_COUNT_TWO(0.00)[2];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/8] syscalls/mknod03: Convert to new API
+Subject: Re: [LTP] [PATCH v4 7/7] Add lsm_set_self_attr01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,32 +110,98 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: =?iso-8859-2?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+ =?iso-8859-2?Q?G=FCnther?= Noack <gnoack@google.com>,
+ linux-security-module@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Ricardo, Andrea,
+Hi Andrea, all,
+
+> Verify that lsm_set_self_attr syscall is raising errors when invalid
+> data is provided.
 
 ...
+> diff --git a/testcases/kernel/syscalls/lsm/lsm_set_self_attr01.c b/testcases/kernel/syscalls/lsm/lsm_set_self_attr01.c
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..caccdda7ecf2edaac1fa8e2dc2ccdd0aff020804
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/lsm/lsm_set_self_attr01.c
+> @@ -0,0 +1,110 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
 > +/*\
-> + * Verify that mknod(2) succeeds when used to create a filesystem node with
-> + * set-group-ID bit set on a directory with set-group-ID bit set. The node
-> + * created should have set-group-ID bit set and its gid should be equal to
-> + * the "nobody" gid.
->   */
+> + * Verify that lsm_set_self_attr syscall is raising errors when invalid data is
+> + * provided.
+> + */
+> +
+> +#include "lsm_common.h"
+> +
+> +static struct lsm_ctx *ctx;
+> +static struct lsm_ctx *ctx_orig;
+> +static struct lsm_ctx *ctx_null;
+> +static uint32_t ctx_size;
+> +static uint32_t ctx_size_small;
+> +static uint32_t ctx_size_big;
+> +static uint32_t page_size;
+> +
+> +static struct tcase {
+> +	uint32_t attr;
+> +	struct lsm_ctx **ctx;
+> +	uint32_t *size;
+> +	uint32_t flags;
+> +	int exp_errno;
+> +	char *msg;
+> +} tcases[] = {
+> +	{
+> +		.attr = LSM_ATTR_CURRENT,
+> +		.ctx = &ctx_null,
+> +		.size = &ctx_size,
+> +		.exp_errno = EFAULT,
+> +		.msg = "ctx is NULL",
+> +	},
+> +	{
+> +		.attr = LSM_ATTR_CURRENT,
+> +		.ctx = &ctx,
+> +		.size = &ctx_size_small,
+> +		.exp_errno = EINVAL,
+> +		.msg = "size is too small",
+> +	},
+> +	{
+> +		.attr = LSM_ATTR_CURRENT,
+> +		.ctx = &ctx,
+> +		.size = &ctx_size_big,
+> +		.exp_errno = E2BIG,
+> +		.msg = "size is too big",
+> +	},
+> +	{
+> +		.attr = LSM_ATTR_CURRENT,
+> +		.ctx = &ctx,
+> +		.size = &ctx_size,
+> +		.flags = 1,
+> +		.exp_errno = EINVAL,
+> +		.msg = "flags must be zero",
+> +	},
+> +	{
+> +		.attr = LSM_ATTR_CURRENT | LSM_ATTR_EXEC,
+> +		.ctx = &ctx,
+> +		.size = &ctx_size,
+> +		.exp_errno = EINVAL,
+> +		.msg = "attr is overset",
 
-> -#define MODE_RWX	S_IFIFO | S_IRWXU | S_IRWXG | S_IRWXO
-> -#define MODE_SGID       S_IFIFO | S_ISGID | S_IRWXU | S_IRWXG | S_IRWXO
-...
-> +#define MODE_RWX 0777
-> +#define MODE_SGID (S_ISGID | 0777)
+FYI The test fails on this check on current Tumbleweed with new
+6.15.0-1-default. It worked on 6.14.
 
-And here also dropped S_IFIFO. Did I overlook a discussion that mknod() can be
-called without S_IFIFO? (I don't think so).
+Looking at 6.15 landlock related changes (added Landlock audit support and
+Landlock signal scope fixes) test might needs to be updated.
+https://kernelnewbies.org/Linux_6.15#Security
 
-And old tests use S_IFIFO also for mkdir(), but that is IMHO not needed.
+@Andrea could you please have a look?
 
 Kind regards,
 Petr
