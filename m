@@ -4,66 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BE9BC5B543
-	for <ltp@archiver.kernel.org>; Thu,  5 Jun 2025 06:28:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B36FC5B543
+	for <ltp@archiver.kernel.org>; Thu,  5 Jun 2025 06:56:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 64C853CA2CE
-	for <ltp@archiver.kernel.org>; Thu,  5 Jun 2025 08:28:52 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D40503CA2B3
+	for <ltp@archiver.kernel.org>; Thu,  5 Jun 2025 08:56:41 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DEA763C987F
- for <ltp@lists.linux.it>; Thu,  5 Jun 2025 08:28:35 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id CA3F33C064C
+ for <ltp@lists.linux.it>; Thu,  5 Jun 2025 08:56:24 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3EE266000E2
- for <ltp@lists.linux.it>; Thu,  5 Jun 2025 08:28:34 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D262A20074A
+ for <ltp@lists.linux.it>; Thu,  5 Jun 2025 08:56:23 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 38F2A20E26;
- Thu,  5 Jun 2025 06:28:34 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 281175BD0C;
+ Thu,  5 Jun 2025 06:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1749106581;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y7DmcrhkNIQ/niQtAcDn0EafwzfBhjs/ITtA0DL8NLk=;
+ b=l5HBe9FOwBUnRA+lEFmbj2DncCL3BIjP1q/cFSrThjZysEfU8x8sHJLZHQYWsom5mqUF9r
+ LuyTeF+MdspZQpF3xGvaVj7/FFQtKguQpc3tjhjU6rPb9bA14obufhqArDlxEVRGUXrJeV
+ Y2uQH3UuIxmqtOAJakKw5z1uVmqYQ0A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1749106581;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y7DmcrhkNIQ/niQtAcDn0EafwzfBhjs/ITtA0DL8NLk=;
+ b=+nC0KmnbW5Sq7AM06TucYHGuADFPsw7horx1e2gnjyOuOTJiygXTQCmP1Ireazn2ur/lBF
+ 2yWrNW5Ld8285HAA==
 Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1749106581;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y7DmcrhkNIQ/niQtAcDn0EafwzfBhjs/ITtA0DL8NLk=;
+ b=l5HBe9FOwBUnRA+lEFmbj2DncCL3BIjP1q/cFSrThjZysEfU8x8sHJLZHQYWsom5mqUF9r
+ LuyTeF+MdspZQpF3xGvaVj7/FFQtKguQpc3tjhjU6rPb9bA14obufhqArDlxEVRGUXrJeV
+ Y2uQH3UuIxmqtOAJakKw5z1uVmqYQ0A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1749106581;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y7DmcrhkNIQ/niQtAcDn0EafwzfBhjs/ITtA0DL8NLk=;
+ b=+nC0KmnbW5Sq7AM06TucYHGuADFPsw7horx1e2gnjyOuOTJiygXTQCmP1Ireazn2ur/lBF
+ 2yWrNW5Ld8285HAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1BF66137FE;
- Thu,  5 Jun 2025 06:28:34 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0BC1E137FE;
+ Thu,  5 Jun 2025 06:56:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id gF6WBRI5QWj8GQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 05 Jun 2025 06:28:34 +0000
-Date: Thu, 5 Jun 2025 08:28:32 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id SewUApU/QWhuIgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 05 Jun 2025 06:56:21 +0000
+Date: Thu, 5 Jun 2025 08:56:15 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20250605062832.GA1184316@pevik>
-References: <20250603152253.214656-1-mdoucha@suse.cz>
- <20250603152253.214656-2-mdoucha@suse.cz>
- <20250604063521.GA1094733@pevik>
- <5be510c9-7bea-42f8-9232-e6e44a82aea9@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20250605065615.GA1189701@pevik>
+References: <20250515015855.68510-1-liwang@redhat.com>
+ <20250515015855.68510-3-liwang@redhat.com>
+ <aEA0LYNKcPPeS0Uw@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5be510c9-7bea-42f8-9232-e6e44a82aea9@suse.cz>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 38F2A20E26
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+In-Reply-To: <aEA0LYNKcPPeS0Uw@yuki.lan>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] epoll_pwait: Refactor timeout to struct
- timespec
+Subject: Re: [LTP] [PATCH v1 2/2] lib: moves test infrastructure states into
+ a shared context structure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,29 +118,26 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+Hi all,
 
 ...
-> > > +++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait_var.h
-> > > @@ -14,22 +14,22 @@
-> > >   #define NSEC_PER_MSEC (1000000L)
+> >  	case TBROK:
+> > -		tst_atomic_inc(&results->broken);
+> > +		tst_atomic_inc((int *)&results->broken);
+> >  	break;
 
-> > >   static int do_epoll_pwait(int epfd, struct epoll_event *events, int
-> > > -	maxevents, int timeout, const sigset_t *sigmask)
-> > > +	maxevents, struct timespec *timeout, const sigset_t *sigmask)
-> > >   {
-> > > -	if (tst_variant == 0)
-> > > -		return epoll_pwait(epfd, events, maxevents, timeout, sigmask);
-> > > +	if (tst_variant == 0) {
-> > > +		int timeout_ms = -1;
+> This gets ugly. I guess that it would be better to keep the results as
+> int unless we change the tst_atomic.h to work with int32_t.
 
-> > very nit: I would reverse the condition to save indent for tst_variant == 0:
+> Maybe we can actually drop the assembly fallbacks from tst_atomic.h
+> since as far as I can tell the __atomic_*() functions were added to
+> gcc-4.7 and the __sync_*() function were added into gcc-4.1 so unless we
+> need to support compiler older than 4.1 we can drop the assembly and
+> easily add support for atomic operations for int32_t.
 
-> Feel free to do it during merge, but it'd be better to check (tst_variant ==
-> 1) instead in case there will be epoll_pwait3() in the future.
-
-Thanks for your ack + good point, changed as tst_variant == 1.
-Patchset merged, thanks!
+I suppose we can safely remove the fallbacks.  FYI the latest gcc we care about
+the oldest SLES 12-SP3 we still support is 4.8.5. And of course, this release
+has newer non-default gcc (up to gcc 9).
 
 Kind regards,
 Petr
