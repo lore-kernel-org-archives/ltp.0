@@ -4,62 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77310C5B559
-	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 10:34:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 798B4C5B559
+	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 10:49:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DDF0B3C9BD0
-	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 12:34:35 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id D21E63CA30A
+	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 12:49:08 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ACDBF3C9AF0
- for <ltp@lists.linux.it>; Fri,  6 Jun 2025 12:34:19 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 044513C9A55
+ for <ltp@lists.linux.it>; Fri,  6 Jun 2025 12:48:51 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2EAF51A007EB
- for <ltp@lists.linux.it>; Fri,  6 Jun 2025 12:34:18 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 25E9C200067
+ for <ltp@lists.linux.it>; Fri,  6 Jun 2025 12:48:50 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DE4551F38E;
- Fri,  6 Jun 2025 10:34:17 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2C59322AD0;
+ Fri,  6 Jun 2025 10:48:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1749206930;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VGMZpo/ZwXNHku+9+AnFp8YkFo/atwg7yTnjcmyFBqg=;
+ b=T9o/wCXGIOAXmoFIsca4NNQvk2gs/2HtKEIW8+gBxNiWDv6FxlBaOcQOWFbxo9vjd3ibJf
+ bKHwuROpG8HJv2e9tPvn0fFMJJG8kt5EbxTWEfCOXrvHBX8l/5tExdJ3edWgOVKymSg+9h
+ JD3slXCkleEKbD0Yv+49Cc6WGFgv6FE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1749206930;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VGMZpo/ZwXNHku+9+AnFp8YkFo/atwg7yTnjcmyFBqg=;
+ b=5IajFkJhM206V3jlgdwROFvYgj+hi14/mzs/LqGhIfUCpmjTumHSNbJjnLJWFu7BmxBLs1
+ 6uw8G7LAKM/mVBAQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="T9o/wCXG";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5IajFkJh
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1749206930;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VGMZpo/ZwXNHku+9+AnFp8YkFo/atwg7yTnjcmyFBqg=;
+ b=T9o/wCXGIOAXmoFIsca4NNQvk2gs/2HtKEIW8+gBxNiWDv6FxlBaOcQOWFbxo9vjd3ibJf
+ bKHwuROpG8HJv2e9tPvn0fFMJJG8kt5EbxTWEfCOXrvHBX8l/5tExdJ3edWgOVKymSg+9h
+ JD3slXCkleEKbD0Yv+49Cc6WGFgv6FE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1749206930;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VGMZpo/ZwXNHku+9+AnFp8YkFo/atwg7yTnjcmyFBqg=;
+ b=5IajFkJhM206V3jlgdwROFvYgj+hi14/mzs/LqGhIfUCpmjTumHSNbJjnLJWFu7BmxBLs1
+ 6uw8G7LAKM/mVBAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD18F1369F;
- Fri,  6 Jun 2025 10:34:17 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 134281369F;
+ Fri,  6 Jun 2025 10:48:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id oUj9KCnEQmh3MgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 06 Jun 2025 10:34:17 +0000
-Date: Fri, 6 Jun 2025 12:34:12 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id z86NA5LHQmicNwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 06 Jun 2025 10:48:50 +0000
+Date: Fri, 6 Jun 2025 12:48:44 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Ricardo =?utf-8?B?Qi4gTWFybGnDqHJl?= <rbm@suse.com>
-Message-ID: <20250606103412.GA1289709@pevik>
+Message-ID: <20250606104844.GB1289709@pevik>
 References: <20250605-conversions-mknod-v5-0-0b5cff90c21c@suse.com>
- <20250605-conversions-mknod-v5-3-0b5cff90c21c@suse.com>
+ <20250605-conversions-mknod-v5-4-0b5cff90c21c@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250605-conversions-mknod-v5-3-0b5cff90c21c@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
-X-Rspamd-Queue-Id: DE4551F38E
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
+In-Reply-To: <20250605-conversions-mknod-v5-4-0b5cff90c21c@suse.com>
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+]; TO_DN_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto,suse.cz:email];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[];
+ ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+ DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Queue-Id: 2C59322AD0
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 3/8] syscalls/mknod03: Convert to new API
+Subject: Re: [LTP] [PATCH v5 4/8] syscalls/mknod04: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,52 +128,12 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Ricardo, all,
 
-...
-> -	/*
-> -	 * Set the effective group id and user id of the test process
-> -	 * to that of guest user (nobody)
-> -	 */
-> -	SAFE_SETGID(cleanup, group1_gid);
-> -	if (setreuid(-1, user1_uid) < 0) {
-> -		tst_brkm(TBROK, cleanup,
-> -			 "Unable to set process uid to that of ltp user");
-> -	}
-> -
-> -	/* Save the real group ID of the current process */
-> -	mygid = getgid();
-> -
-> -	/* Change directory to DIR_TEMP */
-> -	SAFE_CHDIR(cleanup, DIR_TEMP);
-> +	SAFE_SETGID(nobody_gid);
-> +	SAFE_SETREUID(-1, nobody_uid);
->  }
+I was even thinking whether this test differs enough from mknod03.c to justify
+it's existence (w/a S_ISGID is the only difference). But obviously kernel change
+0fa3ecd87848 ("Fix up non-directory creation in SGID directories") and the need
+to adapt it in LTP in fe002060de justifies it.
 
-> -/*
-> - * cleanup() - Performs all ONE TIME cleanup for this test at
-> - *             completion or premature exit.
-> - *	Print test timing stats and errno log if test executed with options.
-> - *	Restore the real/effective user id of the process changed during
-> - *	setup().
-> - *	Remove temporary directory and sub-directories/files under it
-> - *	created during setup().
-> - *	Exit the test program with normal exit code.
-> - */
-> -void cleanup(void)
-> -{
-> -
-> -	/*
-> -	 * Restore the effective uid of the process changed in the
-> -	 * setup().
-> -	 */
-> -	if (setreuid(-1, save_myuid) < 0) {
-> -		tst_brkm(TBROK, NULL,
-> -			 "resetting process real/effective uid failed");
-> -	}
-
-+1 for avoiding restoring UID in cleanup (I also think that while setreuid(-1,
-nobody_uid) in setup is a subject of testing thus needed, restoring UID is
-indeed *not* needed. IMHO this is often done i real programs which gain root
-in setuid, but that's not the case).
+Thanks for the rewrite!
 
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
