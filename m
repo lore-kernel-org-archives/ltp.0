@@ -4,99 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D1C5C5AD49
-	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 13:59:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01D22C5B555
+	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 14:14:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1749219243; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=0bZcJ8O3XDeg9GIZyE345wl81OWB9fsCJ4sS9K/Zw0Y=;
+ b=qUM4E9W8e7TViuEwk9iS+cNs0DOIa17pMimZ/Smldse+CXEXMJMqCT0aCAHObm5IZ9wuy
+ BQLib8DqxOp6TRxXxsfIhXGNtOSdwhU0vTaY+dDmLtjQlearnPcn94kecpSCz1ckLdQK4tA
+ u4CifZvE9ko9q3CtynidMEq/eZtmA1c=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0B1243CA3FB
-	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 15:59:42 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 5FB563CA55C
+	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 16:14:03 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DE4443C9AD4
- for <ltp@lists.linux.it>; Fri,  6 Jun 2025 15:59:22 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 70DE53C9B27
+ for <ltp@lists.linux.it>; Fri,  6 Jun 2025 16:13:41 +0200 (CEST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1A1FC1400759
- for <ltp@lists.linux.it>; Fri,  6 Jun 2025 15:59:21 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 307151F445;
- Fri,  6 Jun 2025 13:59:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1749218361;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xnzmrUMz47oywaWR0qqHWhToeFt/LN3sjB6osH+bK8k=;
- b=lEAfSv8JWybBHjp2LLkrsLyU3PZHIPSkWnhD/ujXPLk/j//0uuQYxFrYBiELG+s/IR5Vg6
- HbIJEMv16iKG76jiXUuROmjmsI/qR/NLM+IEZIHYC9/NoaUpkdcWZVYVJpYOlM9ecYHoyL
- YWOtwn6hNinb4q43Y5Pg2g4fnrE+5o8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1749218361;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xnzmrUMz47oywaWR0qqHWhToeFt/LN3sjB6osH+bK8k=;
- b=m3aEPhbgoRDoFcTBV9jKmUJbG53ICuMNNHilJX2ntSCFrn0OuTLXEa5eKYmAVMDKLfVvt0
- 9PI/dtzFtE2wmhAQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1749218361;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xnzmrUMz47oywaWR0qqHWhToeFt/LN3sjB6osH+bK8k=;
- b=lEAfSv8JWybBHjp2LLkrsLyU3PZHIPSkWnhD/ujXPLk/j//0uuQYxFrYBiELG+s/IR5Vg6
- HbIJEMv16iKG76jiXUuROmjmsI/qR/NLM+IEZIHYC9/NoaUpkdcWZVYVJpYOlM9ecYHoyL
- YWOtwn6hNinb4q43Y5Pg2g4fnrE+5o8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1749218361;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xnzmrUMz47oywaWR0qqHWhToeFt/LN3sjB6osH+bK8k=;
- b=m3aEPhbgoRDoFcTBV9jKmUJbG53ICuMNNHilJX2ntSCFrn0OuTLXEa5eKYmAVMDKLfVvt0
- 9PI/dtzFtE2wmhAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 172B61336F;
- Fri,  6 Jun 2025 13:59:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +kQjBDn0QmjyCgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 06 Jun 2025 13:59:21 +0000
-Date: Fri, 6 Jun 2025 15:59:19 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Ricardo =?utf-8?B?Qi4gTWFybGnDqHJl?= <rbm@suse.com>
-Message-ID: <20250606135919.GA1312985@pevik>
-References: <20250605-conversions-mknod-v5-0-0b5cff90c21c@suse.com>
- <20250605-conversions-mknod-v5-4-0b5cff90c21c@suse.com>
- <20250606112720.GC1289709@pevik>
- <DAFF0QSC0XFW.12UHYZ9YEBXPT@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 76A8C1400527
+ for <ltp@lists.linux.it>; Fri,  6 Jun 2025 16:13:40 +0200 (CEST)
+Received: by mail-wr1-x434.google.com with SMTP id
+ ffacd0b85a97d-3a507e88b0aso1989974f8f.1
+ for <ltp@lists.linux.it>; Fri, 06 Jun 2025 07:13:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1749219220; x=1749824020; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=+YDUY0ZEbA7MdlEaVYCdMBkqxQbASFloqyCTi3vN7SM=;
+ b=KW5HDvW1n4FglpE1nkb5MT9A1umDtENJR64RWZnwUPgFBR7whKvtfS3o8SbcaM2VQM
+ TFJQo6Xn7m15rYOxcf35n+F8KNpF6O+TFt4/T5sXk6eNWy6eV66p98iztotN4xS8atNs
+ y6/fSyk07sLCaGcxGrons4IVPP3CLypQ26bqS9MUB0GTLLbWonezaMINc7+0H8fnr5sA
+ t4XW9n0Fk6/zWH2HqsBDVTd2pHlMgX8RTf0NrqXKdmJpMuUrhoDrr6rYLfieGm1zodAl
+ ifScy0pds9XY+OZK8RMXo8Z6Fs02beV9j2ioH78VzdkT+2PRgLF+bqV6P35OKVlBGXP0
+ tpdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1749219220; x=1749824020;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=+YDUY0ZEbA7MdlEaVYCdMBkqxQbASFloqyCTi3vN7SM=;
+ b=lT+oUxmswXjLCW1QOMGozZtUTY+LJ82EsvhueuV067fCIy4lil5ZjSXHocHXuWoyOl
+ D8g/RnXO+3rsBSlw+KaowSSMpbuA0mOfCSqvOKPNvEigKJlTVXqKZ208zs0djNwINBSW
+ cd+WDpcJ2ktFLkSDpKtXD8mWGJ6++/gjpW/ELXkfWZiaz0qE/h74cBf0pTjBbCJsoKSt
+ yyQaiNUsPccWmK7htJ8rymaamtKB3HjL1JCHvi4y7d1pjglIQ7VoLIxP30gqB6ObpGyw
+ /lMYUyn8tagLoXbqnwlojQ66fej0akKcbmdthYY+KeiPobGvL7SwtAjDgt6WrGWElySr
+ t+Vw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCU05JJuhMVoGegXKQL8xs9/Ll9HDSZzmVO10qcksO4UqJ25nkAzja/AisW69B1L/lK6GR0=@lists.linux.it
+X-Gm-Message-State: AOJu0Yy3rXIBRudGD/HTf8nbFLjS/qEkXpMQ71SrubSx5qo5Dv6xSKSS
+ qeuLrxeYa06F0vWC0w95Fk/p3Utx+xVAQ+qc/sJaG4vMH19zZYXFl2t4n5CoJmMFSAwnUB01/e2
+ bcfZH
+X-Gm-Gg: ASbGncvOTTxfAgoGyF9n+rEGXGJlNoPDhiqXb4CHsfClyfL4gL5IQ4wK6P7s/y1mfAc
+ jLnEXPBDUxFUfaBkJ/uAkA2yC4oxmjzlblU06ghQ78X0+TqBj7zpOxbBCEmquJwxe/Pev1CwM3a
+ Kj3ONzwggJUr1e3WFRIrDyS2EUlf+e4NB61WgEi2JdSiDG0tDUo4Zwo31pJGucKt9Uxu3wsYlwL
+ OiJPuJgXwzUMFjA4MfTZuWz8DRK3q60hYX9ezxHOS4AK6rQKzN45MkHmw+rQ2Vcayu5N2LYJ6lo
+ 6wXTTCQFcZ1R62ObISGu3ZNihLaTn+UX5+57BJ3o58JOAIwbvGpX6oVUbca3XDPvFHWBKSMBys2
+ XspL7Uu8AFAYpa9P/nWFUGx2vWX3+b8wxrZUv+FdhPFQBjSeE+d4TMgpGgePPyZdvDdMTaRNBUM
+ 2O8oeuZz8B9GGR2COeuR57IZib
+X-Google-Smtp-Source: AGHT+IFOlxj3/jRjPSZtY7rIK1lZqdi6W1IfcBSc/TP2ynJj4WZ9/lpACPexT+oE9Kry7rN1gMWAzw==
+X-Received: by 2002:a05:6000:109:b0:3a4:e75f:53f5 with SMTP id
+ ffacd0b85a97d-3a5318a0719mr2859227f8f.35.1749219219688; 
+ Fri, 06 Jun 2025 07:13:39 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f18:9700:bff9:d9af:e929:c0c4?
+ (p200300ef2f189700bff9d9afe929c0c4.dip0.t-ipconnect.de.
+ [2003:ef:2f18:9700:bff9:d9af:e929:c0c4])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-23603077f8asm12757285ad.12.2025.06.06.07.13.37
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 06 Jun 2025 07:13:39 -0700 (PDT)
+Message-ID: <ee456371-4f20-4be7-9cc6-ab20b3bc4c5a@suse.com>
+Date: Fri, 6 Jun 2025 16:13:33 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <DAFF0QSC0XFW.12UHYZ9YEBXPT@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
+References: <20250606132100.20145-1-chrubis@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20250606132100.20145-1-chrubis@suse.cz>
 X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 4/8] syscalls/mknod04: Convert to new API
+Subject: Re: [LTP] [PATCH] [RFC] doc: Add testers guide
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,156 +104,17 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Ricardo,
+It looks really good to me. Nice idea!
 
-> > +++ testcases/kernel/syscalls/mknod/mknod04.c
-> > @@ -17,6 +17,7 @@
-> >  #include "tst_test.h"
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-> >  #define MODE_RWX 0777
-> > +#define MODE_FIFO (S_IFIFO | 0777)
-> >  #define MODE_SGID (S_ISGID | 0777)
-
-> >  #define TEMP_DIR "testdir"
-> > @@ -29,7 +30,7 @@ static void run(void)
-> >  {
-> >  	struct stat buf;
-
-> > -	SAFE_MKNOD(TEMP_NODE, MODE_RWX, 0);
-> > +	SAFE_MKNOD(TEMP_NODE, MODE_FIFO, 0);
-
-> >  	SAFE_STAT(TEMP_NODE, &buf);
-> >  	TST_EXP_EQ_LI(buf.st_mode & S_ISGID, 0);
-
-> Can you please also apply this one:
-
-> diff --git a/testcases/kernel/syscalls/mknod/mknod05.c b/testcases/kernel/syscalls/mknod/mknod05.c
-> index 4b7e9577266e..34611b57ee92 100644
-> --- a/testcases/kernel/syscalls/mknod/mknod05.c
-> +++ b/testcases/kernel/syscalls/mknod/mknod05.c
-> @@ -18,6 +18,7 @@
-
->  #define MODE_RWX 0777
->  #define MODE_SGID (S_ISGID | 0777)
-> +#define MODE_FIFO_SGID (S_IFIFO | S_ISGID | 0777)
-
->  #define TEMP_DIR "testdir"
->  #define TEMP_NODE TEMP_DIR "/testnode"
-> @@ -29,7 +30,7 @@ static void run(void)
->  {
->  	struct stat buf;
-
-> -	SAFE_MKNOD(TEMP_NODE, MODE_SGID, 0);
-> +	SAFE_MKNOD(TEMP_NODE, MODE_FIFO_SGID, 0);
-
->  	SAFE_STAT(TEMP_NODE, &buf);
->  	TST_EXP_EQ_LI(buf.st_mode & S_ISGID, S_ISGID);
-
-> Thanks a lot,
-
-Sure. Yeah, both mknod[45].c should use also S_IFIFO for both mknod() and
-chmod(). Changed both.
-
-Merged the rest of the patchset, thank you for the rewrite!
-
-As there were quite a lot of changes, here is the following diff for mknod[3-8].c.
-
-Kind regards,
-Petr
-
-> RBM
-
-diff --git testcases/kernel/syscalls/mknod/mknod03.c testcases/kernel/syscalls/mknod/mknod03.c
-index 00a6133f7a..8cb9be9287 100644
---- testcases/kernel/syscalls/mknod/mknod03.c
-+++ testcases/kernel/syscalls/mknod/mknod03.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL-2.0-only
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) International Business Machines Corp., 2001
-  *	07/2001 Ported by Wayne Boyer
-diff --git testcases/kernel/syscalls/mknod/mknod04.c testcases/kernel/syscalls/mknod/mknod04.c
-index ceb9565b4d..441894b3b9 100644
---- testcases/kernel/syscalls/mknod/mknod04.c
-+++ testcases/kernel/syscalls/mknod/mknod04.c
-@@ -17,7 +17,8 @@
- #include "tst_test.h"
- 
- #define MODE_RWX 0777
--#define MODE_SGID (S_ISGID | 0777)
-+#define MODE_FIFO (S_IFIFO | 0777)
-+#define MODE_FIFO_SGID (S_IFIFO | S_ISGID | 0777)
- 
- #define TEMP_DIR "testdir"
- #define TEMP_NODE TEMP_DIR "/testnode"
-@@ -29,7 +30,7 @@ static void run(void)
- {
- 	struct stat buf;
- 
--	SAFE_MKNOD(TEMP_NODE, MODE_RWX, 0);
-+	SAFE_MKNOD(TEMP_NODE, MODE_FIFO, 0);
- 
- 	SAFE_STAT(TEMP_NODE, &buf);
- 	TST_EXP_EQ_LI(buf.st_mode & S_ISGID, 0);
-@@ -48,7 +49,7 @@ static void setup(void)
- 
- 	SAFE_MKDIR(TEMP_DIR, MODE_RWX);
- 	SAFE_CHOWN(TEMP_DIR, nobody_uid, free_gid);
--	SAFE_CHMOD(TEMP_DIR, MODE_SGID);
-+	SAFE_CHMOD(TEMP_DIR, MODE_FIFO_SGID);
- 
- 	SAFE_SETGID(nobody_gid);
- 	SAFE_SETREUID(-1, nobody_uid);
-diff --git testcases/kernel/syscalls/mknod/mknod05.c testcases/kernel/syscalls/mknod/mknod05.c
-index 4b7e957726..bfac9227b9 100644
---- testcases/kernel/syscalls/mknod/mknod05.c
-+++ testcases/kernel/syscalls/mknod/mknod05.c
-@@ -7,8 +7,8 @@
- 
- /*\
-  * Verify that mknod(2) succeeds when used to create a filesystem node with
-- * set group-ID bit set on a directory with set group-ID bit set. The node
-- * created should have set group-ID bit set and its gid should be equal to
-+ * set-group-ID bit set on a directory with set-group-ID bit set. The node
-+ * created should have set-group-ID bit set and its gid should be equal to
-  * that of its parent directory.
-  */
- 
-@@ -17,7 +17,7 @@
- #include "tst_test.h"
- 
- #define MODE_RWX 0777
--#define MODE_SGID (S_ISGID | 0777)
-+#define MODE_FIFO_SGID (S_IFIFO | S_ISGID | 0777)
- 
- #define TEMP_DIR "testdir"
- #define TEMP_NODE TEMP_DIR "/testnode"
-@@ -29,7 +29,7 @@ static void run(void)
- {
- 	struct stat buf;
- 
--	SAFE_MKNOD(TEMP_NODE, MODE_SGID, 0);
-+	SAFE_MKNOD(TEMP_NODE, MODE_FIFO_SGID, 0);
- 
- 	SAFE_STAT(TEMP_NODE, &buf);
- 	TST_EXP_EQ_LI(buf.st_mode & S_ISGID, S_ISGID);
-@@ -48,7 +48,7 @@ static void setup(void)
- 
- 	SAFE_MKDIR(TEMP_DIR, MODE_RWX);
- 	SAFE_CHOWN(TEMP_DIR, nobody_uid, free_gid);
--	SAFE_CHMOD(TEMP_DIR, MODE_SGID);
-+	SAFE_CHMOD(TEMP_DIR, MODE_FIFO_SGID);
- }
- 
- static struct tst_test test = {
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
