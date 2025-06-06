@@ -4,78 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E14CEC5AD49
-	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 11:06:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC2D0C5AD49
+	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 11:06:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1749207978; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=PmibjY0S6epxi3IFl2ZoN+yJYaSKcF6lRT+oRF1bm0A=;
- b=A++afG8l6T3pG6F7mVMeTiF7EBZfGhXqEKQuf9c5rXYV4XmJN+6Bi3i0PIlqGmZUZ4aWl
- arnKpK7JNnu1bX67cKf9HxRzXhul5y1cTzAoEAMj/B+rU04SXLkRle2bHSSEtzngvHZSool
- Ik9fgDwwRxNLtUV6lxMt+MibvlqoG9E=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1749208007; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=LlimGM973TtwzmhufGUHZb72KWOQPXkmbB+1pKoEMDQ=;
+ b=T0PUrzzAq/xI7gZCadJBDc0KMn5DcsrpV3Yz2HteulUpXclufFHFkjQyLg5DQLp7q6Lez
+ 1ziP2pRY8NJCFDbdzmb6r33S0xZC2lsHCTWHAIoBJaemQ5Xy1y3L7s+mMTW94kkKODKvJsT
+ bJyOpxyl5upYXt/ESs5e/5TqI0U8wLU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 49A483C01FE
-	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 13:06:18 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 28EAD3CA100
+	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 13:06:47 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3B5E83C1A2E
+ by picard.linux.it (Postfix) with ESMTPS id 209CF3C1A2E
  for <ltp@lists.linux.it>; Fri,  6 Jun 2025 13:05:56 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 15118601551
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 15260601554
  for <ltp@lists.linux.it>; Fri,  6 Jun 2025 13:05:54 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1749207953;
+ s=mimecast20190719; t=1749207952;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=xegOkOTaLuDUKavpsT+gWrHG6pgN1rOzxHetR0lA+XY=;
- b=KsIhdkvWyChx2YdTajY+vTEyAioM06rp+aQuqbIASHvPeZiqxdMKYeAvM/47POnQ+t8oZ/
- 4TUJCoaoqoa3NPjz7uSBc2JBcyyhRh7JKx96Kjzv9srPJdnQ7HZkYNhK9/LucOlSXkuqod
- N/vwNJHC4uOdrUhkY+E5/tGGwEAo8gk=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=h+9ngYUdnyj3f/Mr1ENw9gMoRwBvr/Vqmt8G9vyTUeg=;
+ b=U0wLM7BuBtX5sA7JGhASUw/MuQM1D1RoJ+SBkLfhCSHsQ382Il1re/30dWrUKtZ1qgcL5N
+ xJHFDFYNFswJVx0dao2OaIdEImgUI6G5oS+YpRhuVJCMvG3L+6LZD+VZwXWLlbCuV3/jmh
+ CE14dTWj6CLZ3UMhi7M7Ijvx/vC6NTc=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-647-qdovklKaOHiAI0V-GivViw-1; Fri,
- 06 Jun 2025 07:05:52 -0400
-X-MC-Unique: qdovklKaOHiAI0V-GivViw-1
-X-Mimecast-MFC-AGG-ID: qdovklKaOHiAI0V-GivViw_1749207951
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-283-XM1oNTfDM-qVOU-6buTDaA-1; Fri,
+ 06 Jun 2025 07:05:49 -0400
+X-MC-Unique: XM1oNTfDM-qVOU-6buTDaA-1
+X-Mimecast-MFC-AGG-ID: XM1oNTfDM-qVOU-6buTDaA_1749207949
 Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
  (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 1FDE219560B2
- for <ltp@lists.linux.it>; Fri,  6 Jun 2025 11:05:51 +0000 (UTC)
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id BBA221801BC1; Fri,  6 Jun 2025 11:05:48 +0000 (UTC)
 Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
  (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
  by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 9F4AB18002B3
- for <ltp@lists.linux.it>; Fri,  6 Jun 2025 11:05:49 +0000 (UTC)
+ id 2FE8E180049D; Fri,  6 Jun 2025 11:05:46 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Fri,  6 Jun 2025 19:05:40 +0800
-Message-ID: <20250606110541.220472-2-liwang@redhat.com>
-In-Reply-To: <20250606110541.220472-1-liwang@redhat.com>
-References: <20250606110541.220472-1-liwang@redhat.com>
+Date: Fri,  6 Jun 2025 19:05:39 +0800
+Message-ID: <20250606110541.220472-1-liwang@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: e8BHjQWDAih6rx9I8UaMGUiIeL-ALzxWugBIitKUszg_1749207951
+X-Mimecast-MFC-PROC-ID: cqbWFB0eGBjlNshXjEtXIhgecAS1GnVRmSV36WFAYe8_1749207949
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/3] tst_atomic: Introduce tst_atomic_t and apply
- it consistently
+Subject: [LTP] [PATCH v3 1/3] tst_atomic: drop legacy inline assembly and
+ use __atomic or __sync builtins
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,381 +84,171 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Li Wang via ltp <ltp@lists.linux.it>
 Reply-To: Li Wang <liwang@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This patch introduces a new tst_atomic_t typedef (int32_t) to replace
-direct usage of int in atomic operations across the test framework.
-
-The changes ensure:
-
-- Consistent 32-bit atomic operations across platforms
-- Clearer intent for variables used in atomic contexts
-- Better maintainability through centralized type definition
-- Fixed declaration consistency in atomic APIs
-
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- include/tst_atomic.h                          | 23 +++++++++++--------
- include/tst_fuzzy_sync.h                      |  6 ++---
- lib/newlib_tests/test08.c                     |  2 +-
- lib/newlib_tests/test09.c                     |  2 +-
- lib/newlib_tests/test15.c                     |  2 +-
- lib/newlib_tests/tst_fuzzy_sync01.c           |  2 +-
- lib/newlib_tests/tst_fuzzy_sync02.c           |  2 +-
- testcases/kernel/containers/pidns/pidns32.c   |  2 +-
- .../kernel/controllers/cgroup/cgroup_core03.c |  2 +-
- testcases/kernel/fs/fs_fill/fs_fill.c         |  2 +-
- testcases/kernel/fs/read_all/read_all.c       |  4 ++--
- testcases/kernel/io/ltp-aiodio/dio_read.c     |  2 +-
- testcases/kernel/mem/mtest06/mmap1.c          |  2 +-
- testcases/kernel/mem/mtest06/mmap3.c          |  2 +-
- .../kernel/syscalls/exit_group/exit_group01.c |  2 +-
- .../syscalls/futex/futex_cmp_requeue01.c      |  4 ++--
- .../syscalls/ipc/msgstress/msgstress01.c      |  2 +-
- testcases/kernel/syscalls/writev/writev03.c   |  2 +-
- .../func/sched_football/sched_football.c      |  4 ++--
- 19 files changed, 36 insertions(+), 33 deletions(-)
-
-diff --git a/include/tst_atomic.h b/include/tst_atomic.h
-index 7c320c633..57b6b6bd5 100644
---- a/include/tst_atomic.h
-+++ b/include/tst_atomic.h
-@@ -6,23 +6,26 @@
- #ifndef TST_ATOMIC_H__
- #define TST_ATOMIC_H__
- 
-+#include <stdint.h>
- #include "config.h"
- 
-+typedef int32_t tst_atomic_t;
-+
- #if HAVE_ATOMIC_MEMORY_MODEL == 1
- 
- /* Use __atomic built-ins (GCC >= 4.7), with sequential consistency. */
- 
--static inline int tst_atomic_add_return(int i, int *v)
-+static inline int tst_atomic_add_return(int32_t i, tst_atomic_t *v)
- {
- 	return __atomic_add_fetch(v, i, __ATOMIC_SEQ_CST);
- }
- 
--static inline int tst_atomic_load(int *v)
-+static inline int32_t tst_atomic_load(tst_atomic_t *v)
- {
- 	return __atomic_load_n(v, __ATOMIC_SEQ_CST);
- }
- 
--static inline void tst_atomic_store(int i, int *v)
-+static inline void tst_atomic_store(int32_t i, tst_atomic_t *v)
- {
- 	__atomic_store_n(v, i, __ATOMIC_SEQ_CST);
- }
-@@ -31,14 +34,14 @@ static inline void tst_atomic_store(int i, int *v)
- 
- /* Use __sync built-ins (GCC >= 4.1), with explicit memory barriers. */
- 
--static inline int tst_atomic_add_return(int i, int *v)
-+static inline int tst_atomic_add_return(int32_t i, tst_atomic_t *v)
- {
- 	return __sync_add_and_fetch(v, i);
- }
- 
--static inline int tst_atomic_load(int *v)
-+static inline int32_t tst_atomic_load(tst_atomic_t *v)
- {
--	int ret;
-+	tst_atomic_t ret;
- 
- 	__sync_synchronize();
- 	ret = *v;
-@@ -46,7 +49,7 @@ static inline int tst_atomic_load(int *v)
- 	return ret;
- }
- 
--static inline void tst_atomic_store(int i, int *v)
-+static inline void tst_atomic_store(int32_t i, tst_atomic_t *v)
- {
- 	__sync_synchronize();
- 	*v = i;
-@@ -57,14 +60,14 @@ static inline void tst_atomic_store(int i, int *v)
- # error "Your compiler does not support atomic operations (__atomic or __sync)"
- #endif
- 
--static inline int tst_atomic_inc(int *v)
-+static inline int tst_atomic_inc(tst_atomic_t *v)
- {
- 	return tst_atomic_add_return(1, v);
- }
- 
--static inline int tst_atomic_dec(int *v)
-+static inline int tst_atomic_dec(tst_atomic_t *v)
- {
- 	return tst_atomic_add_return(-1, v);
- }
- 
--#endif	/* TST_ATOMIC_H__ */
-+#endif /* TST_ATOMIC_H__ */
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index bef424002..b22364cab 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -155,11 +155,11 @@ struct tst_fzsync_pair {
- 	float max_dev_ratio;
- 
- 	/** Internal; Atomic counter used by fzsync_pair_wait() */
--	int a_cntr;
-+	tst_atomic_t a_cntr;
- 	/** Internal; Atomic counter used by fzsync_pair_wait() */
--	int b_cntr;
-+	tst_atomic_t b_cntr;
- 	/** Internal; Used by tst_fzsync_pair_exit() and fzsync_pair_wait() */
--	int exit;
-+	tst_atomic_t exit;
- 	/** Internal; The test time remaining on tst_fzsync_pair_reset() */
- 	float exec_time_start;
- 	/**
-diff --git a/lib/newlib_tests/test08.c b/lib/newlib_tests/test08.c
-index 5099b08d3..d48bf29ee 100644
---- a/lib/newlib_tests/test08.c
-+++ b/lib/newlib_tests/test08.c
-@@ -22,7 +22,7 @@ static void setup(void)
- 
- static void cleanup(void)
- {
--	static int flag;
-+	static tst_atomic_t flag;
- 
- 	/* Avoid subsequent threads to enter the cleanup */
- 	if (tst_atomic_inc(&flag) != 1)
-diff --git a/lib/newlib_tests/test09.c b/lib/newlib_tests/test09.c
-index 0f42bacc6..eae258e2d 100644
---- a/lib/newlib_tests/test09.c
-+++ b/lib/newlib_tests/test09.c
-@@ -13,7 +13,7 @@
- #define THREADS 64
- #define ITERATIONS 100000
- 
--static int atomic;
-+static tst_atomic_t atomic;
- 
- static void *worker(void *id)
- {
-diff --git a/lib/newlib_tests/test15.c b/lib/newlib_tests/test15.c
-index 3a2ac362e..c63da18fc 100644
---- a/lib/newlib_tests/test15.c
-+++ b/lib/newlib_tests/test15.c
-@@ -39,7 +39,7 @@ struct block {
- 	intptr_t filler[FILLER];
- };
- 
--static int atomic;
-+static tst_atomic_t atomic;
- /* Instead of storing seq_n on the stack (probably next to the atomic variable
-  * above), we store it in the middle of some anonymous mapped memory and keep
-  * a pointer to it. This should decrease the probability that the value of
-diff --git a/lib/newlib_tests/tst_fuzzy_sync01.c b/lib/newlib_tests/tst_fuzzy_sync01.c
-index 6c361e8cc..b1390f460 100644
---- a/lib/newlib_tests/tst_fuzzy_sync01.c
-+++ b/lib/newlib_tests/tst_fuzzy_sync01.c
-@@ -88,7 +88,7 @@ struct race {
- 	const struct window b;
- };
- 
--static int H;
-+static tst_atomic_t H;
- static struct tst_fzsync_pair pair;
- 
- static const struct race races[] = {
-diff --git a/lib/newlib_tests/tst_fuzzy_sync02.c b/lib/newlib_tests/tst_fuzzy_sync02.c
-index 0a595b1e2..bc079f6ff 100644
---- a/lib/newlib_tests/tst_fuzzy_sync02.c
-+++ b/lib/newlib_tests/tst_fuzzy_sync02.c
-@@ -61,7 +61,7 @@ struct race {
- 	const struct window b;
- };
- 
--static int H, D;
-+static tst_atomic_t H, D;
- static struct tst_fzsync_pair pair;
- 
- /**
-diff --git a/testcases/kernel/containers/pidns/pidns32.c b/testcases/kernel/containers/pidns/pidns32.c
-index 3798f798b..a192c128d 100644
---- a/testcases/kernel/containers/pidns/pidns32.c
-+++ b/testcases/kernel/containers/pidns/pidns32.c
-@@ -21,7 +21,7 @@ static const struct tst_clone_args args = {
- 	.flags = CLONE_NEWPID,
- 	.exit_signal = SIGCHLD,
- };
--static int *level;
-+static tst_atomic_t *level;
- 
- static pid_t child_func(void)
- {
-diff --git a/testcases/kernel/controllers/cgroup/cgroup_core03.c b/testcases/kernel/controllers/cgroup/cgroup_core03.c
-index 49b8eff40..846c00f29 100644
---- a/testcases/kernel/controllers/cgroup/cgroup_core03.c
-+++ b/testcases/kernel/controllers/cgroup/cgroup_core03.c
-@@ -22,7 +22,7 @@
- #define PID_NUM MIN(MAX_PID_NUM, (tst_ncpus_available() + 1))
- #define BUF_LEN (20 * PID_NUM)
- 
--static int *data_ptr;
-+static tst_atomic_t *data_ptr;
- static char *buf;
- static struct tst_cg_group *cg_child_test_simple;
- 
-diff --git a/testcases/kernel/fs/fs_fill/fs_fill.c b/testcases/kernel/fs/fs_fill/fs_fill.c
-index 1662cdb50..131128db5 100644
---- a/testcases/kernel/fs/fs_fill/fs_fill.c
-+++ b/testcases/kernel/fs/fs_fill/fs_fill.c
-@@ -22,7 +22,7 @@
- 
- static volatile int run;
- static unsigned int nthreads;
--static int enospc_cnt;
-+static tst_atomic_t enospc_cnt;
- static struct worker *workers;
- 
- struct worker {
-diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
-index 14588a829..e18945a34 100644
---- a/testcases/kernel/fs/read_all/read_all.c
-+++ b/testcases/kernel/fs/read_all/read_all.c
-@@ -57,7 +57,7 @@
- 
- struct queue {
- 	sem_t sem;
--	int front;
-+	tst_atomic_t front;
- 	int back;
- 	char data[QUEUE_SIZE];
- 	char popped[BUFFER_SIZE];
-@@ -67,7 +67,7 @@ struct worker {
- 	int i;
- 	pid_t pid;
- 	struct queue *q;
--	int last_seen;
-+	tst_atomic_t last_seen;
- 	unsigned int kill_sent:1;
- };
- 
-diff --git a/testcases/kernel/io/ltp-aiodio/dio_read.c b/testcases/kernel/io/ltp-aiodio/dio_read.c
-index f9587ef3d..1c913cc2b 100644
---- a/testcases/kernel/io/ltp-aiodio/dio_read.c
-+++ b/testcases/kernel/io/ltp-aiodio/dio_read.c
-@@ -28,7 +28,7 @@ static int numchildren = 8;
- static long long writesize = 32 * 1024 * 1024;
- static long long readsize = 32 * 1024 * 1024;
- static long long filesize = 128 * 1024 * 1024;
--static int *children_completed;
-+static tst_atomic_t *children_completed;
- static char *iobuf;
- static int fd;
- 
-diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
-index 4e67f5fb9..5c4ffa665 100644
---- a/testcases/kernel/mem/mtest06/mmap1.c
-+++ b/testcases/kernel/mem/mtest06/mmap1.c
-@@ -55,7 +55,7 @@ static unsigned long data_matched;
- static unsigned long repeated_reads;
- 
- /* sequence id for each map/unmap performed */
--static int mapcnt, unmapcnt;
-+static tst_atomic_t mapcnt, unmapcnt;
- /* stored sequence id before making read attempt */
- static int br_map, br_unmap;
- 
-diff --git a/testcases/kernel/mem/mtest06/mmap3.c b/testcases/kernel/mem/mtest06/mmap3.c
-index 6cebc6fbe..58127ad9a 100644
---- a/testcases/kernel/mem/mtest06/mmap3.c
-+++ b/testcases/kernel/mem/mtest06/mmap3.c
-@@ -28,7 +28,7 @@ static int loops = 1000;
- static int threads = 40;
- 
- static volatile int sig_caught;
--static int threads_running;
-+static tst_atomic_t threads_running;
- 
- static int mkfile(int *size)
- {
-diff --git a/testcases/kernel/syscalls/exit_group/exit_group01.c b/testcases/kernel/syscalls/exit_group/exit_group01.c
-index 585bb7cdb..9005f4679 100644
---- a/testcases/kernel/syscalls/exit_group/exit_group01.c
-+++ b/testcases/kernel/syscalls/exit_group/exit_group01.c
-@@ -23,7 +23,7 @@ static int cpu_count;
- 
- static struct worker_data {
- 	pid_t tid;
--	int counter;
-+	tst_atomic_t counter;
- } *workers_data;
- 
- static void *worker(void *arg)
-diff --git a/testcases/kernel/syscalls/futex/futex_cmp_requeue01.c b/testcases/kernel/syscalls/futex/futex_cmp_requeue01.c
-index 946e4e949..51b5c6a8d 100644
---- a/testcases/kernel/syscalls/futex/futex_cmp_requeue01.c
-+++ b/testcases/kernel/syscalls/futex/futex_cmp_requeue01.c
-@@ -22,8 +22,8 @@
- 
- struct shared_data {
- 	futex_t futexes[2];
--	int spurious;
--	int test_done;
-+	tst_atomic_t spurious;
-+	tst_atomic_t test_done;
- };
- 
- static struct shared_data *sd;
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-index 22a2c0e7a..10c9adcb0 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-@@ -49,7 +49,7 @@ static int num_messages = 1000;
- static int num_iterations = MAXNREPS;
- static volatile int *stop;
- static volatile int *fail;
--static int *finished;
-+static tst_atomic_t *finished;
- static int *flags;
- 
- static int get_used_sysvipc(void)
-diff --git a/testcases/kernel/syscalls/writev/writev03.c b/testcases/kernel/syscalls/writev/writev03.c
-index f2326095e..a0b237112 100644
---- a/testcases/kernel/syscalls/writev/writev03.c
-+++ b/testcases/kernel/syscalls/writev/writev03.c
-@@ -33,7 +33,7 @@
- 
- static unsigned char buf[BUF_SIZE], *map_ptr;
- static int mapfd = -1, writefd = -1, readfd = -1;
--static int written;
-+static tst_atomic_t written;
- static struct tst_fzsync_pair fzsync_pair;
- struct iovec iov[5];
- 
-diff --git a/testcases/realtime/func/sched_football/sched_football.c b/testcases/realtime/func/sched_football/sched_football.c
-index b89970542..1d761d43c 100644
---- a/testcases/realtime/func/sched_football/sched_football.c
-+++ b/testcases/realtime/func/sched_football/sched_football.c
-@@ -41,10 +41,10 @@
- #define SPIN_TIME_NS 200000000ULL
- #define SLEEP_TIME_NS 50000000ULL
- 
--static int the_ball;
-+static tst_atomic_t the_ball;
- static int players_per_team = 0;
- static int game_length = DEF_GAME_LENGTH;
--static int players_ready;
-+static tst_atomic_t players_ready;
- 
- static char *str_game_length;
- static char *str_players_per_team;
--- 
-2.49.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+UmVmYWN0b3IgdHN0X2F0b21pYy5oIHRvIHJlbW92ZSBhbGwgbGVnYWN5IGFyY2hpdGVjdHVyZS1z
+cGVjaWZpYyBpbmxpbmUKYXNzZW1ibHkgYW5kIGZhbGxiYWNrIGNvZGUgcGF0aHMuIFRoZSBuZXcg
+aW1wbGVtZW50YXRpb24gc3VwcG9ydHMgb25seQp0d28gd2VsbC1kZWZpbmVkIGludGVyZmFjZXM6
+IF9fYXRvbWljXyogYnVpbHQtaW5zIChHQ0Mg4omlIDQuNykgYW5kIF9fc3luY18qCmJ1aWx0LWlu
+cyAoR0NDIOKJpSA0LjEpLgoKVGhpcyBzaW1wbGlmaWNhdGlvbiBpbXByb3ZlcyBtYWludGFpbmFi
+aWxpdHksIGNsYXJpdHksIGFuZCBwb3J0YWJpbGl0eQphY3Jvc3MgcGxhdGZvcm1zLgoKVGhlIG1l
+bW9yeSBvcmRlciBpcyBleHBsaWNpdGx5IHNldCB0byBfX0FUT01JQ19TRVFfQ1NUIHRvIHByZXNl
+cnZlIHN0cmljdApzZXF1ZW50aWFsIGNvbnNpc3RlbmN5LCB3aGljaCBhbGlnbnMgd2l0aCB0aGUg
+QysrMTEgbWVtb3J5IG1vZGVsLgoKUmVmZXJlbmNlOiBodHRwczovL2djYy5nbnUub3JnL29ubGlu
+ZWRvY3MvZ2NjL18wMDVmXzAwNWZhdG9taWMtQnVpbHRpbnMuaHRtbApTaWduZWQtb2ZmLWJ5OiBM
+aSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KU3VnZ2VzdGVkLWJ5OiBDeXJpbCBIcnViaXMgPGNo
+cnViaXNAc3VzZS5jej4KLS0tCiBpbmNsdWRlL3RzdF9hdG9taWMuaCB8IDI4MCArKy0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgOCBpbnNl
+cnRpb25zKCspLCAyNzIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS90c3RfYXRv
+bWljLmggYi9pbmNsdWRlL3RzdF9hdG9taWMuaAppbmRleCAwNjFjZDNkYzYuLjdjMzIwYzYzMyAx
+MDA2NDQKLS0tIGEvaW5jbHVkZS90c3RfYXRvbWljLmgKKysrIGIvaW5jbHVkZS90c3RfYXRvbWlj
+LmgKQEAgLTEsNDkgKzEsNiBAQAogLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAt
+b3ItbGF0ZXIKICAqIENvcHlyaWdodCAoYykgMjAxNiBDeXJpbCBIcnViaXMgPGNocnViaXNAc3Vz
+ZS5jej4KLSAqLwotCi0vKiBUaGUgTFRQIGxpYnJhcnkgaGFzIHNvbWUgb2YgaXRzIG93biBhdG9t
+aWMgc3luY2hyb25pc2F0aW9uIHByaW1pdGl2ZXMKLSAqIGNvbnRhaW5lZCBpbiB0aGlzIGZpbGUu
+IEdlbmVyYWxseSBzcGVha2luZyB0aGVzZSBzaG91bGQgbm90IGJlIHVzZWQKLSAqIGRpcmVjdGx5
+IGluIHRlc3RzIGZvciBzeW5jaHJvbmlzYXRpb24sIGluc3RlYWQgdXNlIHRzdF9jaGVja3BvaW50
+LmgsCi0gKiB0c3RfZnV6enlfc3luYy5oIG9yIHRoZSBQT1NJWCBsaWJyYXJ5LgotICoKLSAqIE5v
+dGVzIG9uIGNvbXBpbGUgYW5kIHJ1bnRpbWUgbWVtb3J5IGJhcnJpZXJzIGFuZCBhdG9taWNzLgot
+ICoKLSAqIFdpdGhpbiB0aGUgTFRQIGxpYnJhcnkgd2UgaGF2ZSB0aHJlZSBjb25jZXJucyB3aGVu
+IGFjY2Vzc2luZyB2YXJpYWJsZXMKLSAqIHNoYXJlZCBieSBtdWx0aXBsZSB0aHJlYWRzIG9yIHBy
+b2Nlc3NlczoKLSAqCi0gKiAoMSkgUmVtb3ZhbCBvciByZW9yZGVyaW5nIG9mIGFjY2Vzc2VzIGJ5
+IHRoZSBjb21waWxlci4KLSAqICgyKSBBdG9taWNpdHkgb2YgYWRkaXRpb24uCi0gKiAoMykgTE9B
+RC1TVE9SRSBvcmRlcmluZyBiZXR3ZWVuIHRocmVhZHMuCi0gKgotICogVGhlIGZpcnN0ICgxKSBp
+cyB0aGUgbW9zdCBsaWtlbHkgdG8gY2F1c2UgYW4gZXJyb3IgaWYgbm90IHByb3Blcmx5Ci0gKiBo
+YW5kbGVkLiBXZSBhdm9pZCBpdCBieSB1c2luZyB2b2xhdGlsZSB2YXJpYWJsZXMgYW5kIHN0YXRl
+bWVudHMgd2hpY2ggd2lsbAotICogbm90IGJlIHJlbW92ZWQgb3IgcmVvcmRlcmVkIGJ5IHRoZSBj
+b21waWxlciBkdXJpbmcgb3B0aW1pc2F0aW9uLiBUaGlzIGluY2x1ZGVzCi0gKiB0aGUgX19hdG9t
+aWMgYW5kIF9fc3luYyBpbnRyaW5zaWNzIGFuZCB2b2xhdGlsZSBhc20gc3RhdGVtZW50cyBtYXJr
+ZWQgd2l0aAotICogIm1lbW9yeSIgYXMgd2VsbCBhcyB2YXJpYWJsZXMgbWFya2VkIHdpdGggdm9s
+YXRpbGUuCi0gKgotICogT24gYW55IHBsYXRmb3JtIExpbnV4IGlzIGxpa2VseSB0byBydW4gb24s
+IGEgTE9BRCAoZmV0Y2gpIG9yIFNUT1JFIG9mIGEKLSAqIDMyLWJpdCBpbnRlZ2VyIHdpbGwgYmUg
+YXRvbWljLiBIb3dldmVyIGZldGNoaW5nIGFuZCBhZGRpbmcgdG8gYSB2YXJpYWJsZSBpcwotICog
+cXVpdGUgbGlrZWx5IG5vdDsgc28gZm9yICgyKSB3ZSBuZWVkIHRvIGVuc3VyZSB3ZSB1c2UgYXRv
+bWljIGFkZGl0aW9uLgotICoKLSAqIEZpbmFsbHksIGZvciB0c3RfZnV6enlfc3luYyBhdCBsZWFz
+dCwgd2UgbmVlZCB0byBlbnN1cmUgdGhhdCBMT0FEcyBhbmQKLSAqIFNUT1JFcyBvZiBhbnkgc2hh
+cmVkIHZhcmlhYmxlcyAoaW5jbHVkaW5nIG5vbi1hdG9taWNzKSB0aGF0IGFyZSBtYWRlCi0gKiBi
+ZXR3ZWVuIGNhbGxzIHRvIHRzdF9menN5bmNfd2FpdCBhcmUgY29tcGxldGVkIChnbG9iYWxseSB2
+aXNpYmxlKSBiZWZvcmUKLSAqIHRzdF9menN5bmNfd2FpdCBjb21wbGV0ZXMuIEZvciB0aGlzLCBy
+dW50aW1lIG1lbW9yeSBhbmQgaW5zdHJ1Y3Rpb24KLSAqIGJhcnJpZXJzIGFyZSByZXF1aXJlZCBp
+biBhZGRpdGlvbiB0byBjb21waWxlIHRpbWUuCi0gKgotICogV2UgdXNlIGZ1bGwgc2VxdWVudGlh
+bCBvcmRlcmluZyAoX19BVE9NSUNfU0VRX0NTVCkgZm9yIHRoZSBzYWtlIG9mCi0gKiBzaW1wbGlj
+aXR5LiBMVFAgdGVzdHMgdGVuZCB0byBiZSBzeXNjYWxsIGhlYXZ5IHNvIGFueSBwZXJmb3JtYW5j
+ZSBnYWluIGZyb20KLSAqIHVzaW5nIGEgd2Vha2VyIG1lbW9yeSBtb2RlbCBpcyB1bmxpa2VseSB0
+byByZXN1bHQgaW4gYSByZWxhdGl2ZWx5IGxhcmdlCi0gKiBwZXJmb3JtYW5jZSBpbXByb3ZlbWVu
+dCB3aGlsZSBhdCB0aGUgc2FtZSB0aW1lIGJlaW5nIGEgcG90ZW50IHNvdXJjZSBvZgotICogY29u
+ZnVzaW9uLgotICoKLSAqIExpa2V3aXNlLCBmb3IgdGhlIGZhbGxiYWNrIEFTTSwgdGhlIHNpbXBs
+ZXN0ICJkZWZpbml0ZWx5IHdpbGwgd29yaywgYWx3YXlzIgotICogYXBwcm9hY2ggaXMgcHJlZmVy
+cmVkIG92ZXIgYW55dGhpbmcgbW9yZSBwZXJmb3JtYW50LgotICoKLSAqIEFsc28gc2VlIERvY3Vt
+ZW50YXRpb24vbWVtb3J5LWJhcnJpZXJzLnR4dCBpbiB0aGUga2VybmVsIHRyZWUgYW5kCi0gKiBo
+dHRwczovL2djYy5nbnUub3JnL29ubGluZWRvY3MvZ2NjL18wMDVmXzAwNWZhdG9taWMtQnVpbHRp
+bnMuaHRtbAotICogdGVybWlub2xvZ3kgbWF5IHZhcnkgYmV0d2VlbiBzb3VyY2VzLgorICogQ29w
+eXJpZ2h0IChjKSAyMDI1IExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPgogICovCiAKICNpZm5k
+ZWYgVFNUX0FUT01JQ19IX18KQEAgLTUyLDYgKzksOSBAQAogI2luY2x1ZGUgImNvbmZpZy5oIgog
+CiAjaWYgSEFWRV9BVE9NSUNfTUVNT1JZX01PREVMID09IDEKKworLyogVXNlIF9fYXRvbWljIGJ1
+aWx0LWlucyAoR0NDID49IDQuNyksIHdpdGggc2VxdWVudGlhbCBjb25zaXN0ZW5jeS4gKi8KKwog
+c3RhdGljIGlubGluZSBpbnQgdHN0X2F0b21pY19hZGRfcmV0dXJuKGludCBpLCBpbnQgKnYpCiB7
+CiAJcmV0dXJuIF9fYXRvbWljX2FkZF9mZXRjaCh2LCBpLCBfX0FUT01JQ19TRVFfQ1NUKTsKQEAg
+LTY4LDYgKzI4LDkgQEAgc3RhdGljIGlubGluZSB2b2lkIHRzdF9hdG9taWNfc3RvcmUoaW50IGks
+IGludCAqdikKIH0KIAogI2VsaWYgSEFWRV9TWU5DX0FERF9BTkRfRkVUQ0ggPT0gMQorCisvKiBV
+c2UgX19zeW5jIGJ1aWx0LWlucyAoR0NDID49IDQuMSksIHdpdGggZXhwbGljaXQgbWVtb3J5IGJh
+cnJpZXJzLiAqLworCiBzdGF0aWMgaW5saW5lIGludCB0c3RfYXRvbWljX2FkZF9yZXR1cm4oaW50
+IGksIGludCAqdikKIHsKIAlyZXR1cm4gX19zeW5jX2FkZF9hbmRfZmV0Y2godiwgaSk7CkBAIC05
+MCwyMzUgKzUzLDggQEAgc3RhdGljIGlubGluZSB2b2lkIHRzdF9hdG9taWNfc3RvcmUoaW50IGks
+IGludCAqdikKIAlfX3N5bmNfc3luY2hyb25pemUoKTsKIH0KIAotI2VsaWYgZGVmaW5lZChfX2kz
+ODZfXykgfHwgZGVmaW5lZChfX3g4Nl82NF9fKQotIyBkZWZpbmUgTFRQX1VTRV9HRU5FUklDX0xP
+QURfU1RPUkVfQVNNIDEKLQotc3RhdGljIGlubGluZSBpbnQgdHN0X2F0b21pY19hZGRfcmV0dXJu
+KGludCBpLCBpbnQgKnYpCi17Ci0JaW50IF9fcmV0ID0gaTsKLQotCS8qCi0JICogdGFrZW4gZnJv
+bSBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9jbXB4Y2hnLmgKLQkgKi8KLQlhc20gdm9sYXRpbGUgKCJs
+b2NrOyB4YWRkbCAlMCwgJTFcbiIKLQkJOiAiK3IiIChfX3JldCksICIrbSIgKCp2KSA6IDogIm1l
+bW9yeSIsICJjYyIpOwotCi0JcmV0dXJuIGkgKyBfX3JldDsKLX0KLQotI2VsaWYgZGVmaW5lZChf
+X3Bvd2VycGNfXykgfHwgZGVmaW5lZChfX3Bvd2VycGM2NF9fKQotc3RhdGljIGlubGluZSBpbnQg
+dHN0X2F0b21pY19hZGRfcmV0dXJuKGludCBpLCBpbnQgKnYpCi17Ci0JaW50IHQ7Ci0KLQkvKiB0
+YWtlbiBmcm9tIGFyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9hdG9taWMuaCAqLwotCWFzbSB2b2xh
+dGlsZSgKLQkJIglzeW5jXG4iCi0JCSIxOglsd2FyeAklMCwwLCUyCQkjIGF0b21pY19hZGRfcmV0
+dXJuXG4iCi0JCSIJYWRkICUwLCUxLCUwXG4iCi0JCSIJc3R3Y3guCSUwLDAsJTIgXG4iCi0JCSIJ
+Ym5lLQkxYlxuIgotCQkiCXN5bmNcbiIKLQkJOiAiPSZyIiAodCkKLQkJOiAiciIgKGkpLCAiciIg
+KHYpCi0JCTogImNjIiwgIm1lbW9yeSIpOwotCi0JcmV0dXJuIHQ7Ci19Ci0KLXN0YXRpYyBpbmxp
+bmUgaW50IHRzdF9hdG9taWNfbG9hZChpbnQgKnYpCi17Ci0JaW50IHJldDsKLQotCWFzbSB2b2xh
+dGlsZSgic3luY1xuIiA6IDogOiAibWVtb3J5Iik7Ci0JcmV0ID0gKnY7Ci0JYXNtIHZvbGF0aWxl
+KCJzeW5jXG4iIDogOiA6ICJtZW1vcnkiKTsKLQotCXJldHVybiByZXQ7Ci19Ci0KLXN0YXRpYyBp
+bmxpbmUgdm9pZCB0c3RfYXRvbWljX3N0b3JlKGludCBpLCBpbnQgKnYpCi17Ci0JYXNtIHZvbGF0
+aWxlKCJzeW5jXG4iIDogOiA6ICJtZW1vcnkiKTsKLQkqdiA9IGk7Ci0JYXNtIHZvbGF0aWxlKCJz
+eW5jXG4iIDogOiA6ICJtZW1vcnkiKTsKLX0KLQotI2VsaWYgZGVmaW5lZChfX3MzOTBfXykgfHwg
+ZGVmaW5lZChfX3MzOTB4X18pCi0jIGRlZmluZSBMVFBfVVNFX0dFTkVSSUNfTE9BRF9TVE9SRV9B
+U00gMQotCi1zdGF0aWMgaW5saW5lIGludCB0c3RfYXRvbWljX2FkZF9yZXR1cm4oaW50IGksIGlu
+dCAqdikKLXsKLQlpbnQgb2xkX3ZhbCwgbmV3X3ZhbDsKLQotCS8qIHRha2VuIGZyb20gYXJjaC9z
+MzkwL2luY2x1ZGUvYXNtL2F0b21pYy5oICovCi0JYXNtIHZvbGF0aWxlKAotCQkiCWwJJTAsJTJc
+biIKLQkJIjA6CWxyCSUxLCUwXG4iCi0JCSIJYXIJJTEsJTNcbiIKLQkJIgljcwklMCwlMSwlMlxu
+IgotCQkiCWpsCTBiIgotCQk6ICI9JmQiIChvbGRfdmFsKSwgIj0mZCIgKG5ld192YWwpLCAiK1Ei
+ICgqdikKLQkJOiAiZCIgKGkpCi0JCTogImNjIiwgIm1lbW9yeSIpOwotCi0JcmV0dXJuIG9sZF92
+YWwgKyBpOwotfQotCi0jZWxpZiBkZWZpbmVkKF9fYXJjX18pCi0KLS8qQVJDdjIgZGVmaW5lcyB0
+aGUgc21wIGJhcnJpZXJzICovCi0jaWZkZWYgX19BUkM3MDBfXwotI2RlZmluZSBzbXBfbWIoKQlh
+c20gdm9sYXRpbGUoIiIgOiA6IDogIm1lbW9yeSIpCiAjZWxzZQotI2RlZmluZSBzbXBfbWIoKQlh
+c20gdm9sYXRpbGUoImRtYiAzXG4iIDogOiA6ICJtZW1vcnkiKQotI2VuZGlmCi0KLXN0YXRpYyBp
+bmxpbmUgaW50IHRzdF9hdG9taWNfYWRkX3JldHVybihpbnQgaSwgaW50ICp2KQotewotCXVuc2ln
+bmVkIGludCB2YWw7Ci0KLQlzbXBfbWIoKTsKLQotCWFzbSB2b2xhdGlsZSgKLQkJIjE6CWxsb2Nr
+ICAgJVt2YWxdLCBbJVtjdHJdXQlcbiIKLQkJIglhZGQgICAgICVbdmFsXSwgJVt2YWxdLCAlW2ld
+CVxuIgotCQkiCXNjb25kICAgJVt2YWxdLCBbJVtjdHJdXQlcbiIKLQkJIglibnogICAgIDFiCQkJ
+XG4iCi0JCTogW3ZhbF0JIj0mciIJKHZhbCkKLQkJOiBbY3RyXQkiciIJKHYpLAotCQkgIFtpXQki
+aXIiCShpKQotCQk6ICJjYyIsICJtZW1vcnkiKTsKLQotCXNtcF9tYigpOwotCi0JcmV0dXJuIHZh
+bDsKLX0KLQotc3RhdGljIGlubGluZSBpbnQgdHN0X2F0b21pY19sb2FkKGludCAqdikKLXsKLQlp
+bnQgcmV0OwotCi0Jc21wX21iKCk7Ci0JcmV0ID0gKnY7Ci0Jc21wX21iKCk7Ci0KLQlyZXR1cm4g
+cmV0OwotfQotCi1zdGF0aWMgaW5saW5lIHZvaWQgdHN0X2F0b21pY19zdG9yZShpbnQgaSwgaW50
+ICp2KQotewotCXNtcF9tYigpOwotCSp2ID0gaTsKLQlzbXBfbWIoKTsKLX0KLQotI2VsaWYgZGVm
+aW5lZCAoX19hYXJjaDY0X18pCi1zdGF0aWMgaW5saW5lIGludCB0c3RfYXRvbWljX2FkZF9yZXR1
+cm4oaW50IGksIGludCAqdikKLXsKLQl1bnNpZ25lZCBsb25nIHRtcDsKLQlpbnQgcmVzdWx0Owot
+Ci0JX19hc21fXyBfX3ZvbGF0aWxlX18oCi0iICAgICAgIHByZm0gICAgcHN0bDFzdHJtLCAlMglc
+biIKLSIxOiAgICAgbGRheHIJJXcwLCAlMgkJXG4iCi0iICAgICAgIGFkZAkldzAsICV3MCwgJXcz
+CVxuIgotIiAgICAgICBzdGx4cgkldzEsICV3MCwgJTIJXG4iCi0iICAgICAgIGNibnoJJXcxLCAx
+YgkJXG4iCi0iICAgICAgIGRtYiBpc2gJCQlcbiIKLQk6ICI9JnIiIChyZXN1bHQpLCAiPSZyIiAo
+dG1wKSwgIitRIiAoKnYpCi0JOiAiSXIiIChpKQotCTogIm1lbW9yeSIpOwotCi0JcmV0dXJuIHJl
+c3VsdDsKLX0KLQotLyogV2UgYXJlIHVzaW5nIGxvYWQgYW5kIHN0b3JlIGV4Y2x1c2l2ZSAobGRh
+eHIgJiBzdGx4cikgaW5zdHJ1Y3Rpb25zIHRvIHRyeQotICogYW5kIGhlbHAgcHJldmVudCB0aGUg
+dHN0X2F0b21pY19sb2FkIGFuZCwgbW9yZSBsaWtlbHksIHRzdF9hdG9taWNfc3RvcmUKLSAqIGZ1
+bmN0aW9ucyBmcm9tIGludGVyZmVyaW5nIHdpdGggdHN0X2F0b21pY19hZGRfcmV0dXJuIHdoaWNo
+IHRha2VzIGFkdmFudGFnZQotICogb2YgZXhjbHVzaXZpdHkuIEl0IGlzIG5vdCBjbGVhciBpZiB0
+aGlzIGlzIGEgZ29vZCBpZGVhIG9yIG5vdCwgYnV0IGRvZXMKLSAqIG1lYW4gdGhhdCBhbGwgdGhy
+ZWUgZnVuY3Rpb25zIGFyZSB2ZXJ5IHNpbWlsYXIuCi0gKi8KLXN0YXRpYyBpbmxpbmUgaW50IHRz
+dF9hdG9taWNfbG9hZChpbnQgKnYpCi17Ci0JaW50IHJldDsKLQl1bnNpZ25lZCBsb25nIHRtcDsK
+LQotCWFzbSB2b2xhdGlsZSgiLy9hdG9taWNfbG9hZAkJCVxuIgotCQkiCXByZm0JcHN0bDFzdHJt
+LCAgJVt2XQlcbiIKLQkJIjE6CWxkYXhyCSV3W3JldF0sICVbdl0JCVxuIgotCQkiCXN0bHhyICAg
+JXdbdG1wXSwgJXdbcmV0XSwgJVt2XSAgXG4iCi0JCSIJY2JueiAgICAld1t0bXBdLCAxYgkJXG4i
+Ci0JCSIJZG1iIGlzaAkJCQlcbiIKLQkJOiBbdG1wXSAiPSZyIiAodG1wKSwgW3JldF0gIj0mciIg
+KHJldCksIFt2XSAiK1EiICgqdikKLQkJOiA6ICJtZW1vcnkiKTsKLQotCXJldHVybiByZXQ7Ci19
+Ci0KLXN0YXRpYyBpbmxpbmUgdm9pZCB0c3RfYXRvbWljX3N0b3JlKGludCBpLCBpbnQgKnYpCi17
+Ci0JdW5zaWduZWQgbG9uZyB0bXA7Ci0KLQlhc20gdm9sYXRpbGUoIi8vYXRvbWljX3N0b3JlCQkJ
+XG4iCi0JCSIJcHJmbQlwc3RsMXN0cm0sICVbdl0JCVxuIgotCQkiMToJbGRheHIJJXdbdG1wXSwg
+JVt2XQkJXG4iCi0JCSIJc3RseHIgICAld1t0bXBdLCAld1tpXSwgJVt2XQlcbiIKLQkJIgljYm56
+ICAgICV3W3RtcF0sIDFiCQlcbiIKLQkJIglkbWIgaXNoCQkJCVxuIgotCQk6IFt0bXBdICI9JnIi
+ICh0bXApLCBbdl0gIitRIiAoKnYpCi0JCTogW2ldICJyIiAoaSkKLQkJOiAibWVtb3J5Iik7Ci19
+Ci0KLSNlbGlmIGRlZmluZWQoX19zcGFyY19fKSAmJiBkZWZpbmVkKF9fYXJjaDY0X18pCi0jIGRl
+ZmluZSBMVFBfVVNFX0dFTkVSSUNfTE9BRF9TVE9SRV9BU00gMQotc3RhdGljIGlubGluZSBpbnQg
+dHN0X2F0b21pY19hZGRfcmV0dXJuKGludCBpLCBpbnQgKnYpCi17Ci0JaW50IHJldCwgdG1wOwot
+Ci0JLyogQmFzZWQgb24gYXJjaC9zcGFyYy9saWIvYXRvbWljXzY0LlMgd2l0aCB0aGUgZXhwb25l
+bnRpYWwgYmFja29mZgotCSAqIGZ1bmN0aW9uIHJlbW92ZWQgYmVjYXVzZSB3ZSBhcmUgdW5saWtl
+bHkgdG8gaGF2ZSBhIGxhcmdlICg+PSAxNj8pCi0JICogbnVtYmVyIG9mIGNvcmVzIGNvbnRpbnVv
+dXNseSB0cnlpbmcgdG8gdXBkYXRlIG9uZSB2YXJpYWJsZS4KLQkgKi8KLQlhc20gdm9sYXRpbGUo
+Ii8qYXRvbWljX2FkZF9yZXR1cm4qLwkJXG4iCi0JCSIxOglsZHN3CVslW3ZdXSwgJVtyZXRdOwkJ
+XG4iCi0JCSIJYWRkCSVbcmV0XSwgJVtpXSwgJVt0bXBdOwlcbiIKLQkJIgljYXMJWyVbdl1dLCAl
+W3JldF0sICVbdG1wXTsJXG4iCi0JCSIJY21wCSVbcmV0XSwgJVt0bXBdOwkJXG4iCi0JCSIJYm5l
+LHBuCSUlaWNjLCAxYjsJCVxuIgotCQkiCW5vcDsJCQkJXG4iCi0JCSIJYWRkCSVbcmV0XSwgJVtp
+XSwgJVtyZXRdOwlcbiIKLQkJOiBbcmV0XSAiPXImIiAocmV0KSwgW3RtcF0gIj1yJiIgKHRtcCkK
+LQkJOiBbaV0gInIiIChpKSwgW3ZdICJyIiAodikKLQkJOiAibWVtb3J5IiwgImNjIik7Ci0KLQly
+ZXR1cm4gcmV0OwotfQotCi0jZWxzZSAvKiBIQVZFX1NZTkNfQUREX0FORF9GRVRDSCA9PSAxICov
+Ci0jIGVycm9yIFlvdXIgY29tcGlsZXIgZG9lcyBub3QgcHJvdmlkZSBfX2F0b21pY19hZGRfZmV0
+Y2gsIF9fc3luY19hZGRfYW5kX2ZldGNoIFwKLSAgICAgICAgYW5kIGFuIExUUCBpbXBsZW1lbnRh
+dGlvbiBpcyBtaXNzaW5nIGZvciB5b3VyIGFyY2hpdGVjdHVyZS4KLSNlbmRpZgotCi0jaWZkZWYg
+TFRQX1VTRV9HRU5FUklDX0xPQURfU1RPUkVfQVNNCi1zdGF0aWMgaW5saW5lIGludCB0c3RfYXRv
+bWljX2xvYWQoaW50ICp2KQotewotCWludCByZXQ7Ci0KLQlhc20gdm9sYXRpbGUoIiIgOiA6IDog
+Im1lbW9yeSIpOwotCXJldCA9ICp2OwotCWFzbSB2b2xhdGlsZSgiIiA6IDogOiAibWVtb3J5Iik7
+Ci0KLQlyZXR1cm4gcmV0OwotfQotCi1zdGF0aWMgaW5saW5lIHZvaWQgdHN0X2F0b21pY19zdG9y
+ZShpbnQgaSwgaW50ICp2KQotewotCWFzbSB2b2xhdGlsZSgiIiA6IDogOiAibWVtb3J5Iik7Ci0J
+KnYgPSBpOwotCWFzbSB2b2xhdGlsZSgiIiA6IDogOiAibWVtb3J5Iik7Ci19CisjIGVycm9yICJZ
+b3VyIGNvbXBpbGVyIGRvZXMgbm90IHN1cHBvcnQgYXRvbWljIG9wZXJhdGlvbnMgKF9fYXRvbWlj
+IG9yIF9fc3luYykiCiAjZW5kaWYKIAogc3RhdGljIGlubGluZSBpbnQgdHN0X2F0b21pY19pbmMo
+aW50ICp2KQotLSAKMi40OS4wCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
+LmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
