@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AD35C61DB8
-	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 12:07:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BBBBC5AD49
+	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 12:22:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A1A6B3C9A93
-	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 14:07:01 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 8778A3CA30A
+	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 14:22:08 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 64F723C9A93
- for <ltp@lists.linux.it>; Fri,  6 Jun 2025 14:06:44 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 9629D3C9A93
+ for <ltp@lists.linux.it>; Fri,  6 Jun 2025 14:21:52 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D561F600703
- for <ltp@lists.linux.it>; Fri,  6 Jun 2025 14:06:43 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BFDA31400067
+ for <ltp@lists.linux.it>; Fri,  6 Jun 2025 14:21:51 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 572461F38E;
- Fri,  6 Jun 2025 12:06:42 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F36081F82C;
+ Fri,  6 Jun 2025 12:21:49 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 315441336F;
- Fri,  6 Jun 2025 12:06:42 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D42E71369F;
+ Fri,  6 Jun 2025 12:21:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ghDcCdLZQmggWgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 06 Jun 2025 12:06:42 +0000
-Date: Fri, 6 Jun 2025 14:06:36 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id hTlVMl3dQmjEYAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 06 Jun 2025 12:21:49 +0000
+Date: Fri, 6 Jun 2025 14:21:44 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Ricardo =?utf-8?B?Qi4gTWFybGnDqHJl?= <rbm@suse.com>
-Message-ID: <20250606120636.GF1289709@pevik>
+Message-ID: <20250606122144.GG1289709@pevik>
 References: <20250605-conversions-mknod-v5-0-0b5cff90c21c@suse.com>
- <20250605-conversions-mknod-v5-6-0b5cff90c21c@suse.com>
+ <20250605-conversions-mknod-v5-7-0b5cff90c21c@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250605-conversions-mknod-v5-6-0b5cff90c21c@suse.com>
+In-Reply-To: <20250605-conversions-mknod-v5-7-0b5cff90c21c@suse.com>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
  ASN(0.00)[asn:25478, ipnet:::/0, country:RU]
-X-Rspamd-Queue-Id: 572461F38E
+X-Rspamd-Queue-Id: F36081F82C
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 6/8] syscalls/mknod06: Convert to new API
+Subject: Re: [LTP] [PATCH v5 7/8] syscalls/mknod07: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,58 +83,40 @@ Hi Ricardo,
 
 > +static struct tcase {
 >  	char *pathname;
->  	char *desc;
+>  	int mode;
 >  	int exp_errno;
-> -	int (*setupfunc) ();
-> -} Test_cases[] = {
-> -	{"tnode_1", "Specified node already exists", EEXIST, setup1}, {
-> -	NULL, "Invalid address", EFAULT, no_setup}, {
-> -	"testdir_2/tnode_2", "Non-existent file", ENOENT, no_setup}, {
-> -	"", "Pathname is empty", ENOENT, no_setup}, {
-> -	Longpathname, "Pathname too long", ENAMETOOLONG, longpath_setup}, {
-> -	"tnode/tnode_3", "Path contains regular file", ENOTDIR, setup3}, {
-
-> -	NULL, NULL, 0, no_setup}
+>  	int major, minor;
+> -} test_cases[] = {
+> -	{ "testdir_1/tnode_1", SOCKET_MODE, EACCES, 0, 0 },
+> -	{ "testdir_1/tnode_2", FIFO_MODE, EACCES, 0, 0 },
+> -	{ "tnode_3", CHR_MODE, EPERM, 1, 3 },
+> -	{ "tnode_4", BLK_MODE, EPERM, 0, 0 },
+> -	{ "mntpoint/tnode_5", SOCKET_MODE, EROFS, 0, 0 },
+> -	{ elooppathname, FIFO_MODE, ELOOP, 0, 0 },
 > +} tcases[] = {
-> +	{ NULL, "Pathname too long", ENAMETOOLONG },
-> +	{ "tnode_1", "Specified node already exists", EEXIST },
-> +	{ NULL, "Invalid address", EFAULT },
-> +	{ "testdir_2/tnode_2", "Non-existent file", ENOENT },
-> +	{ "", "Pathname is empty", ENOENT },
-> +	{ "tnode/tnode_3", "Path contains regular file", ENOTDIR },
->  };
-Using some constants for path reused ("tnode_1" and "tnode") would be slightly
-clearer, but it can stay as is.
+> +	{ NULL, FIFO_MODE, ELOOP, 0, 0 },
+> +	{ TEMP_DIR "/tnode1", SOCKET_MODE, EACCES, 0, 0 },
 
-...
-> +static void setup(void)
->  {
-> +	SAFE_MKNOD("tnode_1", MODE_FIFO_RWX, 0);
-> +	SAFE_MKNOD("tnode", MODE_FIFO_RWX, 0);
+I would slightly prefer to use designated initializers as it's more descriptive
+and allows to avoid setting 0 or NULL:
 
-NOTE: if I were the original patch writer, I would really create an empty file,
-not a named pipe:
-fd = SAFE_OPEN("tnode", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-SAFE_CLOSE(fd);
+	{ .mode = FIFO_MODE, .exp_errno = ELOOP },
+	{ .pathname = TEMP_DIR "/tnode1", .mode = SOCKET_MODE, .exp_errno = EACCES },
 
-But maybe there was a reason to create named pipe instead of a regular file.
+But let's ignore it.
 
-...
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test = run,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.needs_tmpdir = 1,
-> +	.bufs = (struct tst_buffers[]) {
-> +		{ &longpathname, .size = PATH_MAX + 2 },
-> +		{},
-
-+1 for using Guarded buffers.
+Thanks for the rewrite!
 
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
+
+> +	{ TEMP_DIR "/tnode2", FIFO_MODE, EACCES, 0, 0 },
+> +	{ "tnode3", CHR_MODE, EPERM, 1, 3 },
+> +	{ "tnode4", BLK_MODE, EPERM, 0, 0 },
+> +	{ TEMP_MNT "/tnode5", SOCKET_MODE, EROFS, 0, 0 },
+>  };
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
