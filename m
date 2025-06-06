@@ -4,73 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC2D0C5AD49
-	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 11:06:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33893C5AD49
+	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 11:07:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1749208007; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=LlimGM973TtwzmhufGUHZb72KWOQPXkmbB+1pKoEMDQ=;
- b=T0PUrzzAq/xI7gZCadJBDc0KMn5DcsrpV3Yz2HteulUpXclufFHFkjQyLg5DQLp7q6Lez
- 1ziP2pRY8NJCFDbdzmb6r33S0xZC2lsHCTWHAIoBJaemQ5Xy1y3L7s+mMTW94kkKODKvJsT
- bJyOpxyl5upYXt/ESs5e/5TqI0U8wLU=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1749208030; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=9HJ6Ojnid4v4RR7s4MdFqPBhiM9PjOjRj/pVpoAIJYU=;
+ b=igaRhC4n/PNReA+UA4yLE13NAOeyhYXWUZvuIlmoGXkxr5BAr/O8ULJWlFMGX5v3tpSdi
+ 5wPKPFQVW9sRU6r5fKs9xmlZc6hRNexR2OZiTtkuqu8zYOkhkISJOgWA2tYlYSGgRa44uCX
+ vqzvnP2BGckYSX1hoqeZ7flJNfJyg2k=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 28EAD3CA100
-	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 13:06:47 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id BE1B43CA0EF
+	for <ltp@archiver.kernel.org>; Fri,  6 Jun 2025 13:07:10 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 209CF3C1A2E
- for <ltp@lists.linux.it>; Fri,  6 Jun 2025 13:05:56 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id E05973C9B45
+ for <ltp@lists.linux.it>; Fri,  6 Jun 2025 13:05:58 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 15260601554
- for <ltp@lists.linux.it>; Fri,  6 Jun 2025 13:05:54 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CF12B2000A9
+ for <ltp@lists.linux.it>; Fri,  6 Jun 2025 13:05:57 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1749207952;
+ s=mimecast20190719; t=1749207956;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=h+9ngYUdnyj3f/Mr1ENw9gMoRwBvr/Vqmt8G9vyTUeg=;
- b=U0wLM7BuBtX5sA7JGhASUw/MuQM1D1RoJ+SBkLfhCSHsQ382Il1re/30dWrUKtZ1qgcL5N
- xJHFDFYNFswJVx0dao2OaIdEImgUI6G5oS+YpRhuVJCMvG3L+6LZD+VZwXWLlbCuV3/jmh
- CE14dTWj6CLZ3UMhi7M7Ijvx/vC6NTc=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=W1rQygz7A5L+MgYeDAIta334UnBMiytOiYsCwzjut6I=;
+ b=iJQdGXZOxsyo/KwEMzAI2mA/3wAXSodDemHABt1LLuCILShdQJMwqyhIJ7ksK2wPP910nj
+ tQpLn9vbuymXq5ddMSf+OUZF+KLSdmr1L+W8ikcrrNmbfsr4FhzpP3O2eKp9Dht4+Lta8N
+ ot0V59DtnIL/z/mjTTKMM3a1x1sySqs=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-283-XM1oNTfDM-qVOU-6buTDaA-1; Fri,
- 06 Jun 2025 07:05:49 -0400
-X-MC-Unique: XM1oNTfDM-qVOU-6buTDaA-1
-X-Mimecast-MFC-AGG-ID: XM1oNTfDM-qVOU-6buTDaA_1749207949
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-614-HMui0rnIMEm08jYJLchlAg-1; Fri,
+ 06 Jun 2025 07:05:54 -0400
+X-MC-Unique: HMui0rnIMEm08jYJLchlAg-1
+X-Mimecast-MFC-AGG-ID: HMui0rnIMEm08jYJLchlAg_1749207953
 Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
  (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id BBA221801BC1; Fri,  6 Jun 2025 11:05:48 +0000 (UTC)
+ by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 4E91818002BC; Fri,  6 Jun 2025 11:05:53 +0000 (UTC)
 Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
  (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
  by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 2FE8E180049D; Fri,  6 Jun 2025 11:05:46 +0000 (UTC)
+ id CDDDB180049D; Fri,  6 Jun 2025 11:05:51 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Fri,  6 Jun 2025 19:05:39 +0800
-Message-ID: <20250606110541.220472-1-liwang@redhat.com>
+Date: Fri,  6 Jun 2025 19:05:41 +0800
+Message-ID: <20250606110541.220472-3-liwang@redhat.com>
+In-Reply-To: <20250606110541.220472-1-liwang@redhat.com>
+References: <20250606110541.220472-1-liwang@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: cqbWFB0eGBjlNshXjEtXIhgecAS1GnVRmSV36WFAYe8_1749207949
+X-Mimecast-MFC-PROC-ID: _vakZ-wtbobkgl3nHLA_274nnCWeivhNiNETk1Fxotc_1749207953
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/3] tst_atomic: drop legacy inline assembly and
- use __atomic or __sync builtins
+Subject: [LTP] [PATCH v3 3/3] lib: moves test infrastructure states into a
+ shared context structure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,171 +87,572 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Li Wang via ltp <ltp@lists.linux.it>
 Reply-To: Li Wang <liwang@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-UmVmYWN0b3IgdHN0X2F0b21pYy5oIHRvIHJlbW92ZSBhbGwgbGVnYWN5IGFyY2hpdGVjdHVyZS1z
-cGVjaWZpYyBpbmxpbmUKYXNzZW1ibHkgYW5kIGZhbGxiYWNrIGNvZGUgcGF0aHMuIFRoZSBuZXcg
-aW1wbGVtZW50YXRpb24gc3VwcG9ydHMgb25seQp0d28gd2VsbC1kZWZpbmVkIGludGVyZmFjZXM6
-IF9fYXRvbWljXyogYnVpbHQtaW5zIChHQ0Mg4omlIDQuNykgYW5kIF9fc3luY18qCmJ1aWx0LWlu
-cyAoR0NDIOKJpSA0LjEpLgoKVGhpcyBzaW1wbGlmaWNhdGlvbiBpbXByb3ZlcyBtYWludGFpbmFi
-aWxpdHksIGNsYXJpdHksIGFuZCBwb3J0YWJpbGl0eQphY3Jvc3MgcGxhdGZvcm1zLgoKVGhlIG1l
-bW9yeSBvcmRlciBpcyBleHBsaWNpdGx5IHNldCB0byBfX0FUT01JQ19TRVFfQ1NUIHRvIHByZXNl
-cnZlIHN0cmljdApzZXF1ZW50aWFsIGNvbnNpc3RlbmN5LCB3aGljaCBhbGlnbnMgd2l0aCB0aGUg
-QysrMTEgbWVtb3J5IG1vZGVsLgoKUmVmZXJlbmNlOiBodHRwczovL2djYy5nbnUub3JnL29ubGlu
-ZWRvY3MvZ2NjL18wMDVmXzAwNWZhdG9taWMtQnVpbHRpbnMuaHRtbApTaWduZWQtb2ZmLWJ5OiBM
-aSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KU3VnZ2VzdGVkLWJ5OiBDeXJpbCBIcnViaXMgPGNo
-cnViaXNAc3VzZS5jej4KLS0tCiBpbmNsdWRlL3RzdF9hdG9taWMuaCB8IDI4MCArKy0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgOCBpbnNl
-cnRpb25zKCspLCAyNzIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS90c3RfYXRv
-bWljLmggYi9pbmNsdWRlL3RzdF9hdG9taWMuaAppbmRleCAwNjFjZDNkYzYuLjdjMzIwYzYzMyAx
-MDA2NDQKLS0tIGEvaW5jbHVkZS90c3RfYXRvbWljLmgKKysrIGIvaW5jbHVkZS90c3RfYXRvbWlj
-LmgKQEAgLTEsNDkgKzEsNiBAQAogLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAt
-b3ItbGF0ZXIKICAqIENvcHlyaWdodCAoYykgMjAxNiBDeXJpbCBIcnViaXMgPGNocnViaXNAc3Vz
-ZS5jej4KLSAqLwotCi0vKiBUaGUgTFRQIGxpYnJhcnkgaGFzIHNvbWUgb2YgaXRzIG93biBhdG9t
-aWMgc3luY2hyb25pc2F0aW9uIHByaW1pdGl2ZXMKLSAqIGNvbnRhaW5lZCBpbiB0aGlzIGZpbGUu
-IEdlbmVyYWxseSBzcGVha2luZyB0aGVzZSBzaG91bGQgbm90IGJlIHVzZWQKLSAqIGRpcmVjdGx5
-IGluIHRlc3RzIGZvciBzeW5jaHJvbmlzYXRpb24sIGluc3RlYWQgdXNlIHRzdF9jaGVja3BvaW50
-LmgsCi0gKiB0c3RfZnV6enlfc3luYy5oIG9yIHRoZSBQT1NJWCBsaWJyYXJ5LgotICoKLSAqIE5v
-dGVzIG9uIGNvbXBpbGUgYW5kIHJ1bnRpbWUgbWVtb3J5IGJhcnJpZXJzIGFuZCBhdG9taWNzLgot
-ICoKLSAqIFdpdGhpbiB0aGUgTFRQIGxpYnJhcnkgd2UgaGF2ZSB0aHJlZSBjb25jZXJucyB3aGVu
-IGFjY2Vzc2luZyB2YXJpYWJsZXMKLSAqIHNoYXJlZCBieSBtdWx0aXBsZSB0aHJlYWRzIG9yIHBy
-b2Nlc3NlczoKLSAqCi0gKiAoMSkgUmVtb3ZhbCBvciByZW9yZGVyaW5nIG9mIGFjY2Vzc2VzIGJ5
-IHRoZSBjb21waWxlci4KLSAqICgyKSBBdG9taWNpdHkgb2YgYWRkaXRpb24uCi0gKiAoMykgTE9B
-RC1TVE9SRSBvcmRlcmluZyBiZXR3ZWVuIHRocmVhZHMuCi0gKgotICogVGhlIGZpcnN0ICgxKSBp
-cyB0aGUgbW9zdCBsaWtlbHkgdG8gY2F1c2UgYW4gZXJyb3IgaWYgbm90IHByb3Blcmx5Ci0gKiBo
-YW5kbGVkLiBXZSBhdm9pZCBpdCBieSB1c2luZyB2b2xhdGlsZSB2YXJpYWJsZXMgYW5kIHN0YXRl
-bWVudHMgd2hpY2ggd2lsbAotICogbm90IGJlIHJlbW92ZWQgb3IgcmVvcmRlcmVkIGJ5IHRoZSBj
-b21waWxlciBkdXJpbmcgb3B0aW1pc2F0aW9uLiBUaGlzIGluY2x1ZGVzCi0gKiB0aGUgX19hdG9t
-aWMgYW5kIF9fc3luYyBpbnRyaW5zaWNzIGFuZCB2b2xhdGlsZSBhc20gc3RhdGVtZW50cyBtYXJr
-ZWQgd2l0aAotICogIm1lbW9yeSIgYXMgd2VsbCBhcyB2YXJpYWJsZXMgbWFya2VkIHdpdGggdm9s
-YXRpbGUuCi0gKgotICogT24gYW55IHBsYXRmb3JtIExpbnV4IGlzIGxpa2VseSB0byBydW4gb24s
-IGEgTE9BRCAoZmV0Y2gpIG9yIFNUT1JFIG9mIGEKLSAqIDMyLWJpdCBpbnRlZ2VyIHdpbGwgYmUg
-YXRvbWljLiBIb3dldmVyIGZldGNoaW5nIGFuZCBhZGRpbmcgdG8gYSB2YXJpYWJsZSBpcwotICog
-cXVpdGUgbGlrZWx5IG5vdDsgc28gZm9yICgyKSB3ZSBuZWVkIHRvIGVuc3VyZSB3ZSB1c2UgYXRv
-bWljIGFkZGl0aW9uLgotICoKLSAqIEZpbmFsbHksIGZvciB0c3RfZnV6enlfc3luYyBhdCBsZWFz
-dCwgd2UgbmVlZCB0byBlbnN1cmUgdGhhdCBMT0FEcyBhbmQKLSAqIFNUT1JFcyBvZiBhbnkgc2hh
-cmVkIHZhcmlhYmxlcyAoaW5jbHVkaW5nIG5vbi1hdG9taWNzKSB0aGF0IGFyZSBtYWRlCi0gKiBi
-ZXR3ZWVuIGNhbGxzIHRvIHRzdF9menN5bmNfd2FpdCBhcmUgY29tcGxldGVkIChnbG9iYWxseSB2
-aXNpYmxlKSBiZWZvcmUKLSAqIHRzdF9menN5bmNfd2FpdCBjb21wbGV0ZXMuIEZvciB0aGlzLCBy
-dW50aW1lIG1lbW9yeSBhbmQgaW5zdHJ1Y3Rpb24KLSAqIGJhcnJpZXJzIGFyZSByZXF1aXJlZCBp
-biBhZGRpdGlvbiB0byBjb21waWxlIHRpbWUuCi0gKgotICogV2UgdXNlIGZ1bGwgc2VxdWVudGlh
-bCBvcmRlcmluZyAoX19BVE9NSUNfU0VRX0NTVCkgZm9yIHRoZSBzYWtlIG9mCi0gKiBzaW1wbGlj
-aXR5LiBMVFAgdGVzdHMgdGVuZCB0byBiZSBzeXNjYWxsIGhlYXZ5IHNvIGFueSBwZXJmb3JtYW5j
-ZSBnYWluIGZyb20KLSAqIHVzaW5nIGEgd2Vha2VyIG1lbW9yeSBtb2RlbCBpcyB1bmxpa2VseSB0
-byByZXN1bHQgaW4gYSByZWxhdGl2ZWx5IGxhcmdlCi0gKiBwZXJmb3JtYW5jZSBpbXByb3ZlbWVu
-dCB3aGlsZSBhdCB0aGUgc2FtZSB0aW1lIGJlaW5nIGEgcG90ZW50IHNvdXJjZSBvZgotICogY29u
-ZnVzaW9uLgotICoKLSAqIExpa2V3aXNlLCBmb3IgdGhlIGZhbGxiYWNrIEFTTSwgdGhlIHNpbXBs
-ZXN0ICJkZWZpbml0ZWx5IHdpbGwgd29yaywgYWx3YXlzIgotICogYXBwcm9hY2ggaXMgcHJlZmVy
-cmVkIG92ZXIgYW55dGhpbmcgbW9yZSBwZXJmb3JtYW50LgotICoKLSAqIEFsc28gc2VlIERvY3Vt
-ZW50YXRpb24vbWVtb3J5LWJhcnJpZXJzLnR4dCBpbiB0aGUga2VybmVsIHRyZWUgYW5kCi0gKiBo
-dHRwczovL2djYy5nbnUub3JnL29ubGluZWRvY3MvZ2NjL18wMDVmXzAwNWZhdG9taWMtQnVpbHRp
-bnMuaHRtbAotICogdGVybWlub2xvZ3kgbWF5IHZhcnkgYmV0d2VlbiBzb3VyY2VzLgorICogQ29w
-eXJpZ2h0IChjKSAyMDI1IExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPgogICovCiAKICNpZm5k
-ZWYgVFNUX0FUT01JQ19IX18KQEAgLTUyLDYgKzksOSBAQAogI2luY2x1ZGUgImNvbmZpZy5oIgog
-CiAjaWYgSEFWRV9BVE9NSUNfTUVNT1JZX01PREVMID09IDEKKworLyogVXNlIF9fYXRvbWljIGJ1
-aWx0LWlucyAoR0NDID49IDQuNyksIHdpdGggc2VxdWVudGlhbCBjb25zaXN0ZW5jeS4gKi8KKwog
-c3RhdGljIGlubGluZSBpbnQgdHN0X2F0b21pY19hZGRfcmV0dXJuKGludCBpLCBpbnQgKnYpCiB7
-CiAJcmV0dXJuIF9fYXRvbWljX2FkZF9mZXRjaCh2LCBpLCBfX0FUT01JQ19TRVFfQ1NUKTsKQEAg
-LTY4LDYgKzI4LDkgQEAgc3RhdGljIGlubGluZSB2b2lkIHRzdF9hdG9taWNfc3RvcmUoaW50IGks
-IGludCAqdikKIH0KIAogI2VsaWYgSEFWRV9TWU5DX0FERF9BTkRfRkVUQ0ggPT0gMQorCisvKiBV
-c2UgX19zeW5jIGJ1aWx0LWlucyAoR0NDID49IDQuMSksIHdpdGggZXhwbGljaXQgbWVtb3J5IGJh
-cnJpZXJzLiAqLworCiBzdGF0aWMgaW5saW5lIGludCB0c3RfYXRvbWljX2FkZF9yZXR1cm4oaW50
-IGksIGludCAqdikKIHsKIAlyZXR1cm4gX19zeW5jX2FkZF9hbmRfZmV0Y2godiwgaSk7CkBAIC05
-MCwyMzUgKzUzLDggQEAgc3RhdGljIGlubGluZSB2b2lkIHRzdF9hdG9taWNfc3RvcmUoaW50IGks
-IGludCAqdikKIAlfX3N5bmNfc3luY2hyb25pemUoKTsKIH0KIAotI2VsaWYgZGVmaW5lZChfX2kz
-ODZfXykgfHwgZGVmaW5lZChfX3g4Nl82NF9fKQotIyBkZWZpbmUgTFRQX1VTRV9HRU5FUklDX0xP
-QURfU1RPUkVfQVNNIDEKLQotc3RhdGljIGlubGluZSBpbnQgdHN0X2F0b21pY19hZGRfcmV0dXJu
-KGludCBpLCBpbnQgKnYpCi17Ci0JaW50IF9fcmV0ID0gaTsKLQotCS8qCi0JICogdGFrZW4gZnJv
-bSBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9jbXB4Y2hnLmgKLQkgKi8KLQlhc20gdm9sYXRpbGUgKCJs
-b2NrOyB4YWRkbCAlMCwgJTFcbiIKLQkJOiAiK3IiIChfX3JldCksICIrbSIgKCp2KSA6IDogIm1l
-bW9yeSIsICJjYyIpOwotCi0JcmV0dXJuIGkgKyBfX3JldDsKLX0KLQotI2VsaWYgZGVmaW5lZChf
-X3Bvd2VycGNfXykgfHwgZGVmaW5lZChfX3Bvd2VycGM2NF9fKQotc3RhdGljIGlubGluZSBpbnQg
-dHN0X2F0b21pY19hZGRfcmV0dXJuKGludCBpLCBpbnQgKnYpCi17Ci0JaW50IHQ7Ci0KLQkvKiB0
-YWtlbiBmcm9tIGFyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9hdG9taWMuaCAqLwotCWFzbSB2b2xh
-dGlsZSgKLQkJIglzeW5jXG4iCi0JCSIxOglsd2FyeAklMCwwLCUyCQkjIGF0b21pY19hZGRfcmV0
-dXJuXG4iCi0JCSIJYWRkICUwLCUxLCUwXG4iCi0JCSIJc3R3Y3guCSUwLDAsJTIgXG4iCi0JCSIJ
-Ym5lLQkxYlxuIgotCQkiCXN5bmNcbiIKLQkJOiAiPSZyIiAodCkKLQkJOiAiciIgKGkpLCAiciIg
-KHYpCi0JCTogImNjIiwgIm1lbW9yeSIpOwotCi0JcmV0dXJuIHQ7Ci19Ci0KLXN0YXRpYyBpbmxp
-bmUgaW50IHRzdF9hdG9taWNfbG9hZChpbnQgKnYpCi17Ci0JaW50IHJldDsKLQotCWFzbSB2b2xh
-dGlsZSgic3luY1xuIiA6IDogOiAibWVtb3J5Iik7Ci0JcmV0ID0gKnY7Ci0JYXNtIHZvbGF0aWxl
-KCJzeW5jXG4iIDogOiA6ICJtZW1vcnkiKTsKLQotCXJldHVybiByZXQ7Ci19Ci0KLXN0YXRpYyBp
-bmxpbmUgdm9pZCB0c3RfYXRvbWljX3N0b3JlKGludCBpLCBpbnQgKnYpCi17Ci0JYXNtIHZvbGF0
-aWxlKCJzeW5jXG4iIDogOiA6ICJtZW1vcnkiKTsKLQkqdiA9IGk7Ci0JYXNtIHZvbGF0aWxlKCJz
-eW5jXG4iIDogOiA6ICJtZW1vcnkiKTsKLX0KLQotI2VsaWYgZGVmaW5lZChfX3MzOTBfXykgfHwg
-ZGVmaW5lZChfX3MzOTB4X18pCi0jIGRlZmluZSBMVFBfVVNFX0dFTkVSSUNfTE9BRF9TVE9SRV9B
-U00gMQotCi1zdGF0aWMgaW5saW5lIGludCB0c3RfYXRvbWljX2FkZF9yZXR1cm4oaW50IGksIGlu
-dCAqdikKLXsKLQlpbnQgb2xkX3ZhbCwgbmV3X3ZhbDsKLQotCS8qIHRha2VuIGZyb20gYXJjaC9z
-MzkwL2luY2x1ZGUvYXNtL2F0b21pYy5oICovCi0JYXNtIHZvbGF0aWxlKAotCQkiCWwJJTAsJTJc
-biIKLQkJIjA6CWxyCSUxLCUwXG4iCi0JCSIJYXIJJTEsJTNcbiIKLQkJIgljcwklMCwlMSwlMlxu
-IgotCQkiCWpsCTBiIgotCQk6ICI9JmQiIChvbGRfdmFsKSwgIj0mZCIgKG5ld192YWwpLCAiK1Ei
-ICgqdikKLQkJOiAiZCIgKGkpCi0JCTogImNjIiwgIm1lbW9yeSIpOwotCi0JcmV0dXJuIG9sZF92
-YWwgKyBpOwotfQotCi0jZWxpZiBkZWZpbmVkKF9fYXJjX18pCi0KLS8qQVJDdjIgZGVmaW5lcyB0
-aGUgc21wIGJhcnJpZXJzICovCi0jaWZkZWYgX19BUkM3MDBfXwotI2RlZmluZSBzbXBfbWIoKQlh
-c20gdm9sYXRpbGUoIiIgOiA6IDogIm1lbW9yeSIpCiAjZWxzZQotI2RlZmluZSBzbXBfbWIoKQlh
-c20gdm9sYXRpbGUoImRtYiAzXG4iIDogOiA6ICJtZW1vcnkiKQotI2VuZGlmCi0KLXN0YXRpYyBp
-bmxpbmUgaW50IHRzdF9hdG9taWNfYWRkX3JldHVybihpbnQgaSwgaW50ICp2KQotewotCXVuc2ln
-bmVkIGludCB2YWw7Ci0KLQlzbXBfbWIoKTsKLQotCWFzbSB2b2xhdGlsZSgKLQkJIjE6CWxsb2Nr
-ICAgJVt2YWxdLCBbJVtjdHJdXQlcbiIKLQkJIglhZGQgICAgICVbdmFsXSwgJVt2YWxdLCAlW2ld
-CVxuIgotCQkiCXNjb25kICAgJVt2YWxdLCBbJVtjdHJdXQlcbiIKLQkJIglibnogICAgIDFiCQkJ
-XG4iCi0JCTogW3ZhbF0JIj0mciIJKHZhbCkKLQkJOiBbY3RyXQkiciIJKHYpLAotCQkgIFtpXQki
-aXIiCShpKQotCQk6ICJjYyIsICJtZW1vcnkiKTsKLQotCXNtcF9tYigpOwotCi0JcmV0dXJuIHZh
-bDsKLX0KLQotc3RhdGljIGlubGluZSBpbnQgdHN0X2F0b21pY19sb2FkKGludCAqdikKLXsKLQlp
-bnQgcmV0OwotCi0Jc21wX21iKCk7Ci0JcmV0ID0gKnY7Ci0Jc21wX21iKCk7Ci0KLQlyZXR1cm4g
-cmV0OwotfQotCi1zdGF0aWMgaW5saW5lIHZvaWQgdHN0X2F0b21pY19zdG9yZShpbnQgaSwgaW50
-ICp2KQotewotCXNtcF9tYigpOwotCSp2ID0gaTsKLQlzbXBfbWIoKTsKLX0KLQotI2VsaWYgZGVm
-aW5lZCAoX19hYXJjaDY0X18pCi1zdGF0aWMgaW5saW5lIGludCB0c3RfYXRvbWljX2FkZF9yZXR1
-cm4oaW50IGksIGludCAqdikKLXsKLQl1bnNpZ25lZCBsb25nIHRtcDsKLQlpbnQgcmVzdWx0Owot
-Ci0JX19hc21fXyBfX3ZvbGF0aWxlX18oCi0iICAgICAgIHByZm0gICAgcHN0bDFzdHJtLCAlMglc
-biIKLSIxOiAgICAgbGRheHIJJXcwLCAlMgkJXG4iCi0iICAgICAgIGFkZAkldzAsICV3MCwgJXcz
-CVxuIgotIiAgICAgICBzdGx4cgkldzEsICV3MCwgJTIJXG4iCi0iICAgICAgIGNibnoJJXcxLCAx
-YgkJXG4iCi0iICAgICAgIGRtYiBpc2gJCQlcbiIKLQk6ICI9JnIiIChyZXN1bHQpLCAiPSZyIiAo
-dG1wKSwgIitRIiAoKnYpCi0JOiAiSXIiIChpKQotCTogIm1lbW9yeSIpOwotCi0JcmV0dXJuIHJl
-c3VsdDsKLX0KLQotLyogV2UgYXJlIHVzaW5nIGxvYWQgYW5kIHN0b3JlIGV4Y2x1c2l2ZSAobGRh
-eHIgJiBzdGx4cikgaW5zdHJ1Y3Rpb25zIHRvIHRyeQotICogYW5kIGhlbHAgcHJldmVudCB0aGUg
-dHN0X2F0b21pY19sb2FkIGFuZCwgbW9yZSBsaWtlbHksIHRzdF9hdG9taWNfc3RvcmUKLSAqIGZ1
-bmN0aW9ucyBmcm9tIGludGVyZmVyaW5nIHdpdGggdHN0X2F0b21pY19hZGRfcmV0dXJuIHdoaWNo
-IHRha2VzIGFkdmFudGFnZQotICogb2YgZXhjbHVzaXZpdHkuIEl0IGlzIG5vdCBjbGVhciBpZiB0
-aGlzIGlzIGEgZ29vZCBpZGVhIG9yIG5vdCwgYnV0IGRvZXMKLSAqIG1lYW4gdGhhdCBhbGwgdGhy
-ZWUgZnVuY3Rpb25zIGFyZSB2ZXJ5IHNpbWlsYXIuCi0gKi8KLXN0YXRpYyBpbmxpbmUgaW50IHRz
-dF9hdG9taWNfbG9hZChpbnQgKnYpCi17Ci0JaW50IHJldDsKLQl1bnNpZ25lZCBsb25nIHRtcDsK
-LQotCWFzbSB2b2xhdGlsZSgiLy9hdG9taWNfbG9hZAkJCVxuIgotCQkiCXByZm0JcHN0bDFzdHJt
-LCAgJVt2XQlcbiIKLQkJIjE6CWxkYXhyCSV3W3JldF0sICVbdl0JCVxuIgotCQkiCXN0bHhyICAg
-JXdbdG1wXSwgJXdbcmV0XSwgJVt2XSAgXG4iCi0JCSIJY2JueiAgICAld1t0bXBdLCAxYgkJXG4i
-Ci0JCSIJZG1iIGlzaAkJCQlcbiIKLQkJOiBbdG1wXSAiPSZyIiAodG1wKSwgW3JldF0gIj0mciIg
-KHJldCksIFt2XSAiK1EiICgqdikKLQkJOiA6ICJtZW1vcnkiKTsKLQotCXJldHVybiByZXQ7Ci19
-Ci0KLXN0YXRpYyBpbmxpbmUgdm9pZCB0c3RfYXRvbWljX3N0b3JlKGludCBpLCBpbnQgKnYpCi17
-Ci0JdW5zaWduZWQgbG9uZyB0bXA7Ci0KLQlhc20gdm9sYXRpbGUoIi8vYXRvbWljX3N0b3JlCQkJ
-XG4iCi0JCSIJcHJmbQlwc3RsMXN0cm0sICVbdl0JCVxuIgotCQkiMToJbGRheHIJJXdbdG1wXSwg
-JVt2XQkJXG4iCi0JCSIJc3RseHIgICAld1t0bXBdLCAld1tpXSwgJVt2XQlcbiIKLQkJIgljYm56
-ICAgICV3W3RtcF0sIDFiCQlcbiIKLQkJIglkbWIgaXNoCQkJCVxuIgotCQk6IFt0bXBdICI9JnIi
-ICh0bXApLCBbdl0gIitRIiAoKnYpCi0JCTogW2ldICJyIiAoaSkKLQkJOiAibWVtb3J5Iik7Ci19
-Ci0KLSNlbGlmIGRlZmluZWQoX19zcGFyY19fKSAmJiBkZWZpbmVkKF9fYXJjaDY0X18pCi0jIGRl
-ZmluZSBMVFBfVVNFX0dFTkVSSUNfTE9BRF9TVE9SRV9BU00gMQotc3RhdGljIGlubGluZSBpbnQg
-dHN0X2F0b21pY19hZGRfcmV0dXJuKGludCBpLCBpbnQgKnYpCi17Ci0JaW50IHJldCwgdG1wOwot
-Ci0JLyogQmFzZWQgb24gYXJjaC9zcGFyYy9saWIvYXRvbWljXzY0LlMgd2l0aCB0aGUgZXhwb25l
-bnRpYWwgYmFja29mZgotCSAqIGZ1bmN0aW9uIHJlbW92ZWQgYmVjYXVzZSB3ZSBhcmUgdW5saWtl
-bHkgdG8gaGF2ZSBhIGxhcmdlICg+PSAxNj8pCi0JICogbnVtYmVyIG9mIGNvcmVzIGNvbnRpbnVv
-dXNseSB0cnlpbmcgdG8gdXBkYXRlIG9uZSB2YXJpYWJsZS4KLQkgKi8KLQlhc20gdm9sYXRpbGUo
-Ii8qYXRvbWljX2FkZF9yZXR1cm4qLwkJXG4iCi0JCSIxOglsZHN3CVslW3ZdXSwgJVtyZXRdOwkJ
-XG4iCi0JCSIJYWRkCSVbcmV0XSwgJVtpXSwgJVt0bXBdOwlcbiIKLQkJIgljYXMJWyVbdl1dLCAl
-W3JldF0sICVbdG1wXTsJXG4iCi0JCSIJY21wCSVbcmV0XSwgJVt0bXBdOwkJXG4iCi0JCSIJYm5l
-LHBuCSUlaWNjLCAxYjsJCVxuIgotCQkiCW5vcDsJCQkJXG4iCi0JCSIJYWRkCSVbcmV0XSwgJVtp
-XSwgJVtyZXRdOwlcbiIKLQkJOiBbcmV0XSAiPXImIiAocmV0KSwgW3RtcF0gIj1yJiIgKHRtcCkK
-LQkJOiBbaV0gInIiIChpKSwgW3ZdICJyIiAodikKLQkJOiAibWVtb3J5IiwgImNjIik7Ci0KLQly
-ZXR1cm4gcmV0OwotfQotCi0jZWxzZSAvKiBIQVZFX1NZTkNfQUREX0FORF9GRVRDSCA9PSAxICov
-Ci0jIGVycm9yIFlvdXIgY29tcGlsZXIgZG9lcyBub3QgcHJvdmlkZSBfX2F0b21pY19hZGRfZmV0
-Y2gsIF9fc3luY19hZGRfYW5kX2ZldGNoIFwKLSAgICAgICAgYW5kIGFuIExUUCBpbXBsZW1lbnRh
-dGlvbiBpcyBtaXNzaW5nIGZvciB5b3VyIGFyY2hpdGVjdHVyZS4KLSNlbmRpZgotCi0jaWZkZWYg
-TFRQX1VTRV9HRU5FUklDX0xPQURfU1RPUkVfQVNNCi1zdGF0aWMgaW5saW5lIGludCB0c3RfYXRv
-bWljX2xvYWQoaW50ICp2KQotewotCWludCByZXQ7Ci0KLQlhc20gdm9sYXRpbGUoIiIgOiA6IDog
-Im1lbW9yeSIpOwotCXJldCA9ICp2OwotCWFzbSB2b2xhdGlsZSgiIiA6IDogOiAibWVtb3J5Iik7
-Ci0KLQlyZXR1cm4gcmV0OwotfQotCi1zdGF0aWMgaW5saW5lIHZvaWQgdHN0X2F0b21pY19zdG9y
-ZShpbnQgaSwgaW50ICp2KQotewotCWFzbSB2b2xhdGlsZSgiIiA6IDogOiAibWVtb3J5Iik7Ci0J
-KnYgPSBpOwotCWFzbSB2b2xhdGlsZSgiIiA6IDogOiAibWVtb3J5Iik7Ci19CisjIGVycm9yICJZ
-b3VyIGNvbXBpbGVyIGRvZXMgbm90IHN1cHBvcnQgYXRvbWljIG9wZXJhdGlvbnMgKF9fYXRvbWlj
-IG9yIF9fc3luYykiCiAjZW5kaWYKIAogc3RhdGljIGlubGluZSBpbnQgdHN0X2F0b21pY19pbmMo
-aW50ICp2KQotLSAKMi40OS4wCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
-LmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+This patch introduces a new struct context to consolidate various
+runtime state variables previously maintained as global variables
+in tst_test.c. The goal is to support better state sharing between
+parent and child processes particularly in scenarios that involve
+checkpointing or fork/exec patterns.
+
+To achieve this, a new struct ipc_region is defined, which encapsulates
+three components: a magic field for validation, a context structure for
+runtime metadata, and a results structure for test result counters.
+Optionally, a futex array is appended for test checkpoint synchronization.
+
+Test library IPC region (only one page size):
+
+        +----------------------+
+        |   Magic Number       |
+        +----------------------+
+        |   struct context     |
+        +----------------------+
+        |   struct results     |
+        +----------------------+
+        |   futexes[], or N/A  |
+        +----------------------+
+
+The shared memory region is allocated with a single page using mmap()
+and is zero-initialized with memset() to ensure a clean initial state.
+
+The patch refactors setup_ipc() and tst_reinit() to map this shared
+region and properly initialize internal pointers to the `context`,
+`results`, and `futexes` regions.
+
+Overall, this refactor reduces global state pollution, centralizes the
+runtime state management, and enables safe and efficient state sharing
+across test lifecycle phases. It also sets the foundation for future
+improvements such as multi-threaded test coordination or enhanced IPC
+mechanisms.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+---
+ lib/tst_test.c | 209 ++++++++++++++++++++++++++++---------------------
+ 1 file changed, 118 insertions(+), 91 deletions(-)
+
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 92dd6279d..8cb3507c9 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -52,6 +52,7 @@ const char *TCID __attribute__((weak));
+ #define CVE_DB_URL "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"
+ 
+ #define DEFAULT_TIMEOUT 30
++#define LTP_MAGIC 0x4C54504D /* Magic number is "LTPM" */
+ 
+ struct tst_test *tst_test;
+ 
+@@ -59,36 +60,47 @@ static const char *tcid;
+ static int iterations = 1;
+ static float duration = -1;
+ static float timeout_mul = -1;
+-static int mntpoint_mounted;
+-static int ovl_mounted;
+-static struct timespec tst_start_time; /* valid only for test pid */
+-static int tdebug;
+ static int reproducible_output;
+ 
+-struct results {
+-	int passed;
+-	int skipped;
+-	int failed;
+-	int warnings;
+-	int broken;
++struct context {
++	int32_t lib_pid;
++	int32_t main_pid;
++	struct timespec start_time;
++	int32_t runtime;
++	int32_t overall_time;
+ 	/*
+ 	 * This is set by a call to tst_brk() with TBROK parameter and means
+ 	 * that the test should exit immediately.
+ 	 */
+-	int abort_flag;
+-	unsigned int runtime;
+-	unsigned int overall_time;
+-	pid_t lib_pid;
+-	pid_t main_pid;
++	tst_atomic_t abort_flag;
++	uint32_t mntpoint_mounted:1;
++	uint32_t ovl_mounted:1;
++	uint32_t tdebug:1;
+ };
+ 
+-static struct results *results;
++struct results {
++	tst_atomic_t passed;
++	tst_atomic_t skipped;
++	tst_atomic_t failed;
++	tst_atomic_t warnings;
++	tst_atomic_t broken;
++};
+ 
+-static int ipc_fd;
++struct ipc_region {
++	int32_t magic;
++	struct context context;
++	struct results results;
++	futex_t futexes[];
++};
+ 
+-extern void *tst_futexes;
++static struct ipc_region *ipc;
++static struct context *context;
++static struct results *results;
++
++extern volatile void *tst_futexes;
+ extern unsigned int tst_max_futexes;
+ 
++static int ipc_fd;
+ static char ipc_path[1064];
+ const char *tst_ipc_path = ipc_path;
+ 
+@@ -127,25 +139,29 @@ static void setup_ipc(void)
+ 
+ 	SAFE_FTRUNCATE(ipc_fd, size);
+ 
+-	results = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, ipc_fd, 0);
+-
+-	/* Checkpoints needs to be accessible from processes started by exec() */
+-	if (tst_test->needs_checkpoints || tst_test->child_needs_reinit) {
+-		sprintf(ipc_path, IPC_ENV_VAR "=%s", shm_path);
+-		putenv(ipc_path);
+-	} else {
+-		SAFE_UNLINK(shm_path);
+-	}
++	ipc = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, ipc_fd, 0);
+ 
+ 	SAFE_CLOSE(ipc_fd);
+ 
++	memset(ipc, 0, size);
++
++	ipc->magic = LTP_MAGIC;
++	context = &ipc->context;
++	results = &ipc->results;
++	context->lib_pid = getpid();
++
+ 	if (tst_test->needs_checkpoints) {
+-		tst_futexes = (char *)results + sizeof(struct results);
+-		tst_max_futexes = (size - sizeof(struct results))/sizeof(futex_t);
++		tst_futexes = ipc->futexes;
++		tst_max_futexes = (size - offsetof(struct ipc_region, futexes)) / sizeof(futex_t);
+ 	}
+ 
+-	memset(results, 0 , size);
+-	results->lib_pid = getpid();
++	/* Set environment variable for exec()'d children */
++	if (tst_test->needs_checkpoints || tst_test->child_needs_reinit) {
++		snprintf(ipc_path, sizeof(ipc_path), IPC_ENV_VAR "=%s", shm_path);
++		putenv(ipc_path);
++	} else {
++		SAFE_UNLINK(shm_path);
++	}
+ }
+ 
+ static void cleanup_ipc(void)
+@@ -158,9 +174,11 @@ static void cleanup_ipc(void)
+ 	if (shm_path[0] && !access(shm_path, F_OK) && unlink(shm_path))
+ 		tst_res(TWARN | TERRNO, "unlink(%s) failed", shm_path);
+ 
+-	if (results) {
+-		msync((void *)results, size, MS_SYNC);
+-		munmap((void *)results, size);
++	if (ipc) {
++		msync((void *)ipc, size, MS_SYNC);
++		munmap((void *)ipc, size);
++		ipc = NULL;
++		context = NULL;
+ 		results = NULL;
+ 	}
+ }
+@@ -178,12 +196,21 @@ void tst_reinit(void)
+ 		tst_brk(TBROK, "File %s does not exist!", path);
+ 
+ 	fd = SAFE_OPEN(path, O_RDWR);
++	ipc = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++	SAFE_CLOSE(fd);
+ 
+-	results = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+-	tst_futexes = (char *)results + sizeof(struct results);
+-	tst_max_futexes = (size - sizeof(struct results))/sizeof(futex_t);
++	if (ipc->magic != LTP_MAGIC)
++		tst_brk(TBROK, "Invalid shared memory region (bad magic)");
+ 
+-	SAFE_CLOSE(fd);
++	/* Restore the parent context from IPC region */
++	context = &ipc->context;
++	results = &ipc->results;
++
++	tst_futexes = ipc->futexes;
++	tst_max_futexes = (size - offsetof(struct ipc_region, futexes)) / sizeof(futex_t);
++
++	if (context->tdebug)
++		tst_res(TINFO, "tst_reinit(): restored metadata for PID %d", getpid());
+ }
+ 
+ extern char **environ;
+@@ -400,7 +427,7 @@ void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
+ 	 * If tst_brk() is called from some of the C helpers even before the
+ 	 * library was initialized, just exit.
+ 	 */
+-	if (!results || !results->lib_pid)
++	if (!results || !context->lib_pid)
+ 		exit(TTYPE_RESULT(ttype));
+ 
+ 	update_results(TTYPE_RESULT(ttype));
+@@ -411,13 +438,13 @@ void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
+ 	 * specified but CLONE_THREAD is not. Use direct syscall to avoid
+ 	 * cleanup running in the child.
+ 	 */
+-	if (tst_getpid() == results->main_pid)
++	if (tst_getpid() == context->main_pid)
+ 		do_test_cleanup();
+ 
+ 	/*
+ 	 * The test library process reports result statistics and exits.
+ 	 */
+-	if (getpid() == results->lib_pid)
++	if (getpid() == context->lib_pid)
+ 		do_exit(TTYPE_RESULT(ttype));
+ 
+ 	/*
+@@ -428,16 +455,16 @@ void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
+ 	 */
+ 	if (TTYPE_RESULT(ttype) == TBROK) {
+ 		if (results)
+-			tst_atomic_inc(&results->abort_flag);
++			tst_atomic_inc(&context->abort_flag);
+ 
+ 		/*
+ 		 * If TBROK was called from one of the child processes we kill
+ 		 * the main test process. That in turn triggers the code that
+ 		 * kills leftover children once the main test process did exit.
+ 		 */
+-		if (results->main_pid && tst_getpid() != results->main_pid) {
++		if (context->main_pid && tst_getpid() != context->main_pid) {
+ 			tst_res(TINFO, "Child process reported TBROK killing the test");
+-			kill(results->main_pid, SIGKILL);
++			kill(context->main_pid, SIGKILL);
+ 		}
+ 	}
+ 
+@@ -449,7 +476,7 @@ void tst_res_(const char *file, const int lineno, int ttype,
+ {
+ 	va_list va;
+ 
+-	if (ttype == TDEBUG && !tdebug)
++	if (ttype == TDEBUG && context && !context->tdebug)
+ 		return;
+ 
+ 	va_start(va, fmt);
+@@ -766,7 +793,7 @@ static void parse_opts(int argc, char *argv[])
+ 		break;
+ 		case 'D':
+ 			tst_res(TINFO, "Enabling debug info");
+-			tdebug = 1;
++			context->tdebug = 1;
+ 		break;
+ 		case 'h':
+ 			print_help();
+@@ -1111,7 +1138,7 @@ static int prepare_and_mount_ro_fs(const char *dev, const char *mntpoint,
+ 		return 1;
+ 	}
+ 
+-	mntpoint_mounted = 1;
++	context->mntpoint_mounted = 1;
+ 
+ 	snprintf(buf, sizeof(buf), "%s/dir/", mntpoint);
+ 	SAFE_MKDIR(buf, 0777);
+@@ -1135,14 +1162,14 @@ static void prepare_and_mount_dev_fs(const char *mntpoint)
+ 		tst_res(TINFO, "tmpdir isn't suitable for creating devices, "
+ 			"mounting tmpfs without nodev on %s", mntpoint);
+ 		SAFE_MOUNT(NULL, mntpoint, "tmpfs", 0, NULL);
+-		mntpoint_mounted = 1;
++		context->mntpoint_mounted = 1;
+ 	}
+ }
+ 
+ static void prepare_and_mount_hugetlb_fs(void)
+ {
+ 	SAFE_MOUNT("none", tst_test->mntpoint, "hugetlbfs", 0, NULL);
+-	mntpoint_mounted = 1;
++	context->mntpoint_mounted = 1;
+ }
+ 
+ int tst_creat_unlinked(const char *path, int flags, mode_t mode)
+@@ -1228,7 +1255,7 @@ static void prepare_device(struct tst_fs *fs)
+ 
+ 		SAFE_MOUNT(get_device_name(tdev.fs_type), tst_test->mntpoint,
+ 				tdev.fs_type, fs->mnt_flags, mnt_data);
+-		mntpoint_mounted = 1;
++		context->mntpoint_mounted = 1;
+ 	}
+ }
+ 
+@@ -1324,6 +1351,14 @@ static void do_setup(int argc, char *argv[])
+ 	if (tst_test->supported_archs && !tst_is_on_arch(tst_test->supported_archs))
+ 		tst_brk(TCONF, "This arch '%s' is not supported for test!", tst_arch.name);
+ 
++	if (tst_test->sample)
++		tst_test = tst_timer_test_setup(tst_test);
++
++	if (tst_test->runs_script) {
++		tst_test->child_needs_reinit = 1;
++		tst_test->forks_child = 1;
++	}
++
+ 	if (reproducible_env &&
+ 	    (!strcmp(reproducible_env, "1") || !strcmp(reproducible_env, "y")))
+ 		reproducible_output = 1;
+@@ -1332,23 +1367,15 @@ static void do_setup(int argc, char *argv[])
+ 
+ 	TCID = tcid = get_tcid(argv);
+ 
+-	if (tst_test->sample)
+-		tst_test = tst_timer_test_setup(tst_test);
++	setup_ipc();
+ 
+ 	parse_opts(argc, argv);
+ 
+ 	if (tdebug_env && (!strcmp(tdebug_env, "1") || !strcmp(tdebug_env, "y"))) {
+ 		tst_res(TINFO, "Enabling debug info");
+-		tdebug = 1;
++		context->tdebug = 1;
+ 	}
+ 
+-	if (tst_test->runs_script) {
+-		tst_test->child_needs_reinit = 1;
+-		tst_test->forks_child = 1;
+-	}
+-
+-	setup_ipc();
+-
+ 	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
+ 		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
+ 
+@@ -1466,7 +1493,7 @@ static void do_setup(int argc, char *argv[])
+ 	if (tst_test->needs_hugetlbfs)
+ 		prepare_and_mount_hugetlb_fs();
+ 
+-	if (tst_test->needs_device && !mntpoint_mounted) {
++	if (tst_test->needs_device && !context->mntpoint_mounted) {
+ 		tdev.dev = tst_acquire_device_(NULL, tst_test->dev_min_size);
+ 
+ 		if (!tdev.dev)
+@@ -1492,12 +1519,12 @@ static void do_setup(int argc, char *argv[])
+ 	if (tst_test->needs_overlay && !tst_test->mount_device)
+ 		tst_brk(TBROK, "tst_test->mount_device must be set");
+ 
+-	if (tst_test->needs_overlay && !mntpoint_mounted)
++	if (tst_test->needs_overlay && !context->mntpoint_mounted)
+ 		tst_brk(TBROK, "tst_test->mntpoint must be mounted");
+ 
+-	if (tst_test->needs_overlay && !ovl_mounted) {
++	if (tst_test->needs_overlay && !context->ovl_mounted) {
+ 		SAFE_MOUNT_OVERLAY();
+-		ovl_mounted = 1;
++		context->ovl_mounted = 1;
+ 	}
+ 
+ 	if (tst_test->resource_files)
+@@ -1517,7 +1544,7 @@ static void do_setup(int argc, char *argv[])
+ 
+ static void do_test_setup(void)
+ {
+-	results->main_pid = getpid();
++	context->main_pid = getpid();
+ 
+ 	if (!tst_test->all_filesystems && tst_test->skip_filesystems) {
+ 		long fs_type = tst_fs_type(".");
+@@ -1537,7 +1564,7 @@ static void do_test_setup(void)
+ 	if (tst_test->setup)
+ 		tst_test->setup();
+ 
+-	if (results->main_pid != tst_getpid())
++	if (context->main_pid != tst_getpid())
+ 		tst_brk(TBROK, "Runaway child in setup()!");
+ 
+ 	if (tst_test->caps)
+@@ -1549,10 +1576,10 @@ static void do_cleanup(void)
+ 	if (tst_test->needs_cgroup_ctrls)
+ 		tst_cg_cleanup();
+ 
+-	if (ovl_mounted)
++	if (context->ovl_mounted)
+ 		SAFE_UMOUNT(OVL_MNT);
+ 
+-	if (mntpoint_mounted)
++	if (context->mntpoint_mounted)
+ 		tst_umount(tst_test->mntpoint);
+ 
+ 	if (tst_test->needs_device && tdev.dev)
+@@ -1574,7 +1601,7 @@ static void do_cleanup(void)
+ 
+ static void heartbeat(void)
+ {
+-	if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
++	if (tst_clock_gettime(CLOCK_MONOTONIC, &context->start_time))
+ 		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+ 
+ 	if (getppid() == 1) {
+@@ -1600,7 +1627,7 @@ static void run_tests(void)
+ 		heartbeat();
+ 		tst_test->test_all();
+ 
+-		if (tst_getpid() != results->main_pid)
++		if (tst_getpid() != context->main_pid)
+ 			exit(0);
+ 
+ 		tst_reap_children();
+@@ -1616,7 +1643,7 @@ static void run_tests(void)
+ 		heartbeat();
+ 		tst_test->test(i);
+ 
+-		if (tst_getpid() != results->main_pid)
++		if (tst_getpid() != context->main_pid)
+ 			exit(0);
+ 
+ 		tst_reap_children();
+@@ -1716,7 +1743,7 @@ static void alarm_handler(int sig LTP_ATTRIBUTE_UNUSED)
+ 
+ static void heartbeat_handler(int sig LTP_ATTRIBUTE_UNUSED)
+ {
+-	alarm(results->overall_time);
++	alarm(context->overall_time);
+ 	sigkill_retries = 0;
+ }
+ 
+@@ -1733,15 +1760,15 @@ unsigned int tst_remaining_runtime(void)
+ 	static struct timespec now;
+ 	int elapsed;
+ 
+-	if (results->runtime == 0)
++	if (context->runtime == 0)
+ 		tst_brk(TBROK, "Runtime not set!");
+ 
+ 	if (tst_clock_gettime(CLOCK_MONOTONIC, &now))
+ 		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+ 
+-	elapsed = tst_timespec_diff_ms(now, tst_start_time) / 1000;
+-	if (results->runtime > (unsigned int) elapsed)
+-		return results->runtime - elapsed;
++	elapsed = tst_timespec_diff_ms(now, context->start_time) / 1000;
++	if (context->runtime > elapsed)
++		return context->runtime - elapsed;
+ 
+ 	return 0;
+ }
+@@ -1769,29 +1796,29 @@ static void set_overall_timeout(void)
+ 		return;
+ 	}
+ 
+-	results->overall_time = tst_multiply_timeout(timeout) + results->runtime;
++	context->overall_time = tst_multiply_timeout(timeout) + context->runtime;
+ 
+ 	tst_res(TINFO, "Overall timeout per run is %uh %02um %02us",
+-		results->overall_time/3600, (results->overall_time%3600)/60,
+-		results->overall_time % 60);
++		context->overall_time/3600, (context->overall_time%3600)/60,
++		context->overall_time % 60);
+ }
+ 
+ void tst_set_timeout(int timeout)
+ {
+ 	int timeout_adj = DEFAULT_TIMEOUT + timeout;
+ 
+-	results->overall_time = tst_multiply_timeout(timeout_adj) + results->runtime;
++	context->overall_time = tst_multiply_timeout(timeout_adj) + context->runtime;
+ 
+ 	tst_res(TINFO, "Overall timeout per run is %uh %02um %02us",
+-		results->overall_time/3600, (results->overall_time%3600)/60,
+-		results->overall_time % 60);
++		context->overall_time/3600, (context->overall_time%3600)/60,
++		context->overall_time % 60);
+ 
+ 	heartbeat();
+ }
+ 
+ void tst_set_runtime(int runtime)
+ {
+-	results->runtime = multiply_runtime(runtime);
++	context->runtime = multiply_runtime(runtime);
+ 	tst_res(TINFO, "Updating runtime to %uh %02um %02us",
+ 		runtime/3600, (runtime%3600)/60, runtime % 60);
+ 	set_overall_timeout();
+@@ -1805,7 +1832,7 @@ static int fork_testrun(void)
+ 	SAFE_SIGNAL(SIGINT, sigint_handler);
+ 	SAFE_SIGNAL(SIGTERM, sigint_handler);
+ 
+-	alarm(results->overall_time);
++	alarm(context->overall_time);
+ 
+ 	show_failure_hints = 1;
+ 
+@@ -1839,7 +1866,7 @@ static int fork_testrun(void)
+ 	if (WIFEXITED(status) && WEXITSTATUS(status))
+ 		tst_brk(TBROK, "Child returned with %i", WEXITSTATUS(status));
+ 
+-	if (results->abort_flag)
++	if (context->abort_flag)
+ 		return 0;
+ 
+ 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL) {
+@@ -1898,9 +1925,9 @@ static int run_tcase_on_fs(struct tst_fs *fs, const char *fs_type)
+ 
+ 	ret = fork_testrun();
+ 
+-	if (mntpoint_mounted) {
++	if (context->mntpoint_mounted) {
+ 		tst_umount(tst_test->mntpoint);
+-		mntpoint_mounted = 0;
++		context->mntpoint_mounted = 0;
+ 	}
+ 
+ 	return ret;
+@@ -1925,7 +1952,7 @@ static int run_tcases_per_fs(void)
+ 		found_valid_fs = true;
+ 		run_tcase_on_fs(fs, filesystems[i]);
+ 
+-		if (tst_atomic_load(&results->abort_flag))
++		if (tst_atomic_load(&context->abort_flag))
+ 			do_exit(0);
+ 	}
+ 
+@@ -1945,7 +1972,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+ 	tst_test = self;
+ 
+ 	do_setup(argc, argv);
+-	tst_enable_oom_protection(results->lib_pid);
++	tst_enable_oom_protection(context->lib_pid);
+ 
+ 	SAFE_SIGNAL(SIGALRM, alarm_handler);
+ 	SAFE_SIGNAL(SIGUSR1, heartbeat_handler);
+@@ -1956,7 +1983,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+ 	tst_res(TINFO, "Tested kernel: %s %s %s", uval.release, uval.version, uval.machine);
+ 
+ 	if (tst_test->runtime)
+-		results->runtime = multiply_runtime(tst_test->runtime);
++		context->runtime = multiply_runtime(tst_test->runtime);
+ 
+ 	set_overall_timeout();
+ 
+@@ -1969,7 +1996,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+ 		else
+ 			fork_testrun();
+ 
+-		if (tst_atomic_load(&results->abort_flag))
++		if (tst_atomic_load(&context->abort_flag))
+ 			do_exit(0);
+ 	}
+ 
+-- 
+2.49.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
