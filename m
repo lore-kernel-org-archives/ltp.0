@@ -4,85 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA107C5B543
-	for <ltp@archiver.kernel.org>; Sat,  7 Jun 2025 04:02:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7A2EC5B543
+	for <ltp@archiver.kernel.org>; Sat,  7 Jun 2025 06:43:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1749268939; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1749278585; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=HW8tHJLYLE6CRZUvSicr8IcrQ8i+bU47y8x9CckfjlI=;
- b=F3o3LuBx2eQvmwywwiXfelvrCAlRD/C7QU0qLDHR0tFv5HpOHQGH/QdYUy7Q9Uh0UvdtE
- x1ZAw/DxZ2cpwvKf+rxgng6nHDnhy/PXL0Q9yz7FzB0ZAsGKp5myevItVctGa6Rd4cBGEe0
- lKTnr3VJ7UBDnFGQIIE+j3Sjh2fUbgg=
+ bh=eeEteqZa1wrPh3lfZz5St1Hw56bwbWqpLZRK6yHcdm4=;
+ b=Xzojx6d4zoBcmCumWNNAYSPUEGB6NTc1mD7rAM7ZjxEtqWkg3Q3B/wTuv9nW3H5D/NBNw
+ EEB+Yw5gFYDd2zqdRhB868hFg5gRibha9b/RmfDJcznE/s56pps0xYrQM8yNSegsC02ABSB
+ 2Dhon7WXkyOMaqvBB+PbSdKv5+sQ3pI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A53F83CA627
-	for <ltp@archiver.kernel.org>; Sat,  7 Jun 2025 06:02:19 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id E71A13CA69D
+	for <ltp@archiver.kernel.org>; Sat,  7 Jun 2025 08:43:05 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F139B3C9B17
- for <ltp@lists.linux.it>; Sat,  7 Jun 2025 06:01:57 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
+ by picard.linux.it (Postfix) with ESMTPS id 9E89C3C67EF
+ for <ltp@lists.linux.it>; Sat,  7 Jun 2025 08:42:43 +0200 (CEST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 22BD720024F
- for <ltp@lists.linux.it>; Sat,  7 Jun 2025 06:01:57 +0200 (CEST)
-Received: by mail-wr1-x432.google.com with SMTP id
- ffacd0b85a97d-3a4f78ebec8so1627382f8f.0
- for <ltp@lists.linux.it>; Fri, 06 Jun 2025 21:01:57 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 649542000D2
+ for <ltp@lists.linux.it>; Sat,  7 Jun 2025 08:42:42 +0200 (CEST)
+Received: by mail-wr1-x429.google.com with SMTP id
+ ffacd0b85a97d-3a4fb9c2436so1419293f8f.1
+ for <ltp@lists.linux.it>; Fri, 06 Jun 2025 23:42:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1749268916; x=1749873716; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=i/I7ZJGMXj9JnrttNVV1gUFzwUnh4tf2RyDlxViGYwY=;
- b=NIQpP+nemDthjM497XvokbLz5Unfb9ueT8sx4Ncg/XS4j/FFnCu4ETOvjb1douAlWY
- cCZiNcZ3ov8Fb9zWakFuDyb7JcebOUm/1RJidKzjjhB74zxP0e9C7aIrpsQt9XVrJlqt
- PEYmr1Zi416aMIreTjpKuxOQ8cXY2GeDx2zwAe/Fw770z6j/MyN2DhfIiwSqZRhoDGWq
- 3O8412fanNpze8YIS9vuytQDydABRiWTFMf3+O3mT7/9uubHQ89bKC/jdtqgPLUsTqlF
- SvMyDg4H9sz+c7eAIe9tWQXEpPFYaQD6VZmah/TAUXme8cPDiApCpCdf9FBy2phcTc37
- qIxg==
+ d=suse.com; s=google; t=1749278562; x=1749883362; darn=lists.linux.it;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :mime-version:references:message-id:subject:cc:to:from:date:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=mrUXViwDkqJhoI4YedUPeKtoVXSUs9aUlsZd2VKVLQk=;
+ b=OFAT6FV/7kLn2wjuO6Ix2xns+DQHF2PjWxTBV84iXpj8w07BL2JLoGdCqpUQj79XFO
+ ny7zqShaYEqOimqz7FO4EIUdEvSnUArJJrNGBkF3jQCLjL58nBPQWs0waGMFXFL2mGPs
+ lmBWy31sICX/rxCQiskavIvVRpzB9c8TrsxbSYlb07kz0l6XQhJ2+glFEaaB2kFK+0qP
+ lxxKCnEvZqigLmW2IJp0IEoc+/8GnNfTUeyEDK7O+AUz+rF29zXwWHLH5Nwf8acfrcuJ
+ KjrDcmwe//5/CdifXRwonHxA5GTkhjttEFf13YQAVTovrbMdAfWe1/0bZhjcAh6vHgFP
+ LS/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1749268916; x=1749873716;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=i/I7ZJGMXj9JnrttNVV1gUFzwUnh4tf2RyDlxViGYwY=;
- b=hw8DmpnIUEghXetTRWOL4RNtY9rHvgAE67zrQfSOOY0HwTf4RvFCWCGlqcCYSG9nSx
- ziJz4+jdHojVVcF/GkQvcgfrOyp+RDMfqdXMsdNVYz6S7f/j8b8AcA1pIyNkfiG+VIUE
- MPzYXiUnY15J7awbBWglmpvDWvP38nSZ2k7OsqpkMlfwseZH9MwWU0At5c90fNo+2e2m
- loMwYBM1fbERBBtQVHny9ClA9kidzjMMhNqBMQnuBmGtHVDop5i8HNAQmb8avUUeXUGl
- VOonacd7Ui+V4pUFOqPuI/WQon/RE0N/1lj/9N7A712N2f4u07VPNGp6XPJyasMsEhrj
- q46A==
+ d=1e100.net; s=20230601; t=1749278562; x=1749883362;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :mime-version:references:message-id:subject:cc:to:from:date
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=mrUXViwDkqJhoI4YedUPeKtoVXSUs9aUlsZd2VKVLQk=;
+ b=H34SZY82xRZXrNUMvCKbTfs0zzGRp+2+4BzfGOmCKj/uvv7gTZTC7w8uZ6e8/N/8Oq
+ EySpT7RwkMibdzT+tKhq0EzIL+ztn//fDvtmxEIDWh3BYQtVyE4aDkjFIB5wXVLZpzMx
+ YGjHAAeli72744G3z1s7OpG2Syl2egT4l8t6e/cwXooqDSnixuS9WuNBZ9d3TYkA5W2g
+ qb1tu1umXoFEfaAIqGAmSua4+ogm3EMOiB8Yi+Y0q3Hq6pToXZuLmzalkscYwId2sYcC
+ n6NyA2YWh7XDXaWVV2HhjBQWT57ylElzczflfg55QiG55qNq/a1MxOGog2hHBlw20n6J
+ ICMw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXIoWrmULlzngWttqlBPbX0qHwxbC5Fs8sNStP4gTGoG10B45l5pWniAwv1GaMj5hXIkRM=@lists.linux.it
-X-Gm-Message-State: AOJu0YzhvOAk3HbmzxyGriy92CsBAtrKV8QvL7+p07oYTkzZOQRvAZJ7
- LGz9V6KgIX1l7KBsNWrZLmJdhkLC0JKfgQdHmu10jHBAT+5LvjZzznpaVQ9BWvfdMtk0cOFpNZn
- 7LTbn5MfhiHLGvEiu+lrBcsyy3JSYYiWVJefTJFYu
-X-Gm-Gg: ASbGnctUfSyEPaVXqEzctvf7gBRkGacRnCTn/vb3oI+RnMn4YhLkhkfX6kw4WLWt8Zr
- KWJPK+mblIil9Wbu9d9qHF37Mtn2FOKmzO9dekE6zC+4rQFeasBQDeYEuXgbv9U1rrCV1/wsNNL
- PLnaVS0GCvGY3RmVt79eWvt/FaHWWh
-X-Google-Smtp-Source: AGHT+IGpwADNOCWP1+z3K5i8C8peUT6dlf2RJi6nKdrAtEaDPoPi4EoGv1LsxJRZSMtOe7OEANbS/oWqgWcooOpRbcQ=
-X-Received: by 2002:a05:6000:18a2:b0:3a5:2208:41e3 with SMTP id
- ffacd0b85a97d-3a5319ba177mr3814674f8f.4.1749268916375; Fri, 06 Jun 2025
- 21:01:56 -0700 (PDT)
-MIME-Version: 1.0
+ AJvYcCWlVQA3STpTuZi00ydiDRstUBxXicLZmxd/3YaesIyUgQaccLjKpuTRqEXPDT9FTkuXb84=@lists.linux.it
+X-Gm-Message-State: AOJu0YxzyGgpmjR6kJ29lR4WC7wc56oWa8bmk9gRjxIp1qMVGdAxUkB8
+ W18EFQsrnQIezLSPKZzOftA4i6SyDQHIylR8HmLgRKnfP7eRKaNSamRMSmdmBcPSXA==
+X-Gm-Gg: ASbGncvBC8xsaSAMV3eQH74WEXkZgfHVVgCglpe9tAxpMCUkVMQlIXE5acgCWMOL4Ha
+ nTXcZ4QPxRXCUMaOUvOpvojIpnB+OTEGFCaYXHN8vYo4kE7OMas1sF3XPrvKAGz3o+YsrzExCic
+ PZdmHzLvprt+hUePVpHVQSzxjkHSJ/CCCh+gkcdd5nHCpNZ1DWxIj4mY9upFKAJIzp60AQlogvb
+ y7ESwXbwwABqQWeGfHWgBkVHyL/lI2kvzrKSgfZM0kUKYmygv20zpxJVec54RJWQmatRfR3vC1x
+ oB4RBdD7SSc55YEgx/kYaMK6X236vRfJ7IyVU2A3yR9bv58q3vvf6RHHZiWU8Q==
+X-Google-Smtp-Source: AGHT+IEQpXVKIqGfsJsoMkweH+85T0leIdWCXGXZFYX0Iygo8VSgKAgnvV96Ffv+VcOEWsJk83bygQ==
+X-Received: by 2002:a05:6000:2304:b0:3a4:d3ff:cef2 with SMTP id
+ ffacd0b85a97d-3a53188dea2mr5422014f8f.27.1749278561634; 
+ Fri, 06 Jun 2025 23:42:41 -0700 (PDT)
+Received: from MiWiFi-CR6608-srv ([202.127.77.110])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-23603092f38sm21889275ad.79.2025.06.06.23.42.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 06 Jun 2025 23:42:41 -0700 (PDT)
+Date: Sat, 7 Jun 2025 14:42:22 -0400
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Message-ID: <aESIDuS42cY_sLBe@MiWiFi-CR6608-srv>
 References: <20250605142943.229010-1-wegao@suse.com>
  <20250605094019.GA1206250@pevik>
  <orzx7vfokvwuceowwjctea4yvujn75djunyhsqvdfr5bw7kqe7@rkn5tlnzwllu>
+MIME-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <orzx7vfokvwuceowwjctea4yvujn75djunyhsqvdfr5bw7kqe7@rkn5tlnzwllu>
-Date: Sat, 7 Jun 2025 12:01:45 +0800
-X-Gm-Features: AX0GCFtNqzsrwO-5FPZ6OtsI2qy_NWZ37XgJ5QgSA7Qo4bjLAtIWHXdMeiWVnFw
-Message-ID: <CAJs-1pX-L=SD1=QQb3okn+yMcygLA8x9JhmbChfnFdP7Kw3n=w@mail.gmail.com>
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
 X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 Subject: Re: [LTP] [PATCH v1] sched_rr_get_interval01.c: Put test process
  into absolute root cgroup (0::/)
 X-BeenThere: ltp@lists.linux.it
@@ -99,33 +105,55 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
 From: Wei Gao via ltp <ltp@lists.linux.it>
 Reply-To: Wei Gao <wegao@suse.com>
 Cc: ltp@lists.linux.it, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-IEBNaWNoYWwgS291dG7DvSA8bWtvdXRueUBzdXNlLmNvbT4gIFNvIHdlIHNob3VsZCBza2lwIHRl
-c3QgY2dyb3VwdjIgd2l0aApDT05GSUdfUlRfR1JPVVBfU0NIRUQ9eWVzLCBjb3JyZWN0PyBMaWtl
-IGZvbGxvd2luZyBjaGFuZ2U/CgpkaWZmIC0tZ2l0CmEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9zY2hlZF9ycl9nZXRfaW50ZXJ2YWwvc2NoZWRfcnJfZ2V0X2ludGVydmFsMDEuYwpiL3Rlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvc2NoZWRfcnJfZ2V0X2ludGVydmFsL3NjaGVkX3JyX2dldF9p
-bnRlcnZhbDAxLmMKaW5kZXggNTU1MTZlYzg5Li5iMTJiZDc4NTcgMTAwNjQ0Ci0tLQphL3Rlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvc2NoZWRfcnJfZ2V0X2ludGVydmFsL3NjaGVkX3JyX2dldF9p
-bnRlcnZhbDAxLmMKKysrCmIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zY2hlZF9ycl9nZXRf
-aW50ZXJ2YWwvc2NoZWRfcnJfZ2V0X2ludGVydmFsMDEuYwpAQCAtNDMsMTAgKzQzLDkgQEAgc3Rh
-dGljIHZvaWQgc2V0dXAodm9pZCkKCiAgICAgICAgdHAudHlwZSA9IHR2LT50c190eXBlOwoKKyAg
-ICAgICBzdGF0aWMgY29uc3QgY2hhciAqIGNvbnN0IGtjb25mW10gPSB7IkNPTkZJR19SVF9HUk9V
-UF9TQ0hFRD15IiwKTlVMTH07CisgICAgICAgaWYgKChhY2Nlc3MoIi9zeXMvZnMvY2dyb3VwL2Nn
-cm91cC5jb250cm9sbGVycyIsIEZfT0spID09IDApICYmCiF0c3Rfa2NvbmZpZ19jaGVjayhrY29u
-Zl9zdHJpY3QpKSB7CisgICAgICAgICAgICAgICB0c3RfYnJrKFRDT05GLCAiQ09ORklHX1JUX0dS
-T1VQX1NDSEVEIG5vdCBzdXBwb3J0IG9uCmNncm91cHYyIik7CisgICAgICAgfQoKICAgICAgICBp
-ZiAoKHN5c19zY2hlZF9zZXRzY2hlZHVsZXIoMCwgU0NIRURfUlIsICZwKSkgPT0gLTEpCgoKT24g
-VGh1LCBKdW4gNSwgMjAyNSBhdCAxMTo1NuKAr1BNIE1pY2hhbCBLb3V0bsO9IDxta291dG55QHN1
-c2UuY29tPiB3cm90ZToKCj4gT24gVGh1LCBKdW4gMDUsIDIwMjUgYXQgMTE6NDA6MTlBTSArMDIw
-MCwgUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4gd3JvdGU6Cj4gPiBATWljaGFsIEBMaSBX
-RFlUPwo+Cj4gUlRfR1JPVVAgc2NoZWR1bGluZyBpcyB2MSBmZWF0dXJlIGFzIG9mIG5vdy4KPgo+
-IFRlc3RpbmcgY2dyb3VwIHYyIG1ha2VzIG9ubHkgc2Vuc2Ugd2l0aAo+IENPTkZJR19SVF9HUk9V
-UF9TQ0hFRD15IGFuZCBDT05GSUdfUlRfR1JPVVBfU0NIRURfREVGQVVMVF9ESVNBQkxFRD15Cj4g
-KHRoaXMgY29tYmluYXRpb24gaXMgZXF1aXZhbGVudCB0byBDT05GSUdfUlRfR1JPVVBfU0NIRUQ9
-biBvbiB2MikuCj4KPiBIVEgsCj4gTWljaGFsCj4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0
-cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+On Thu, Jun 05, 2025 at 05:56:11PM +0200, Michal Koutn=FD wrote:
+> On Thu, Jun 05, 2025 at 11:40:19AM +0200, Petr Vorel <pvorel@suse.cz> wro=
+te:
+> > @Michal @Li WDYT?
+> =
+
+> RT_GROUP scheduling is v1 feature as of now.
+> =
+
+> Testing cgroup v2 makes only sense with =
+
+> CONFIG_RT_GROUP_SCHED=3Dy and CONFIG_RT_GROUP_SCHED_DEFAULT_DISABLED=3Dy
+> (this combination is equivalent to CONFIG_RT_GROUP_SCHED=3Dn on v2).
+
+@Michal Koutn=FD  So we should skip test cgroupv2 with CONFIG_RT_GROUP_SCHE=
+D=3Dyes, correct? Like following change?
+
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_i=
+nterval01.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_=
+interval01.c
+index 55516ec89..b12bd7857 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval=
+01.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval=
+01.c
+@@ -43,10 +43,9 @@ static void setup(void)
+
+        tp.type =3D tv->ts_type;
+
++       static const char * const kconf[] =3D {"CONFIG_RT_GROUP_SCHED=3Dy",=
+ NULL};
++       if ((access("/sys/fs/cgroup/cgroup.controllers", F_OK) =3D=3D 0) &&=
+ !tst_kconfig_check(kconf_strict)) {
++               tst_brk(TCONF, "CONFIG_RT_GROUP_SCHED not support on cgroup=
+v2");
++       }
+
+> =
+
+> HTH,
+> Michal
+
+
+
+-- =
+
+Mailing list info: https://lists.linux.it/listinfo/ltp
