@@ -4,92 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D8B5C61CE7
-	for <ltp@archiver.kernel.org>; Wed, 11 Jun 2025 04:21:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1749615682; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=+Vmr6PqSObkpe0jRVoPbINIc83Iptz7KSmNeFk3bLDk=;
- b=ZOzJIn1SZW+BjScrm+GmaYFCFyLa+w8euHBa/WVtX9eoPvPcgWtmL3w84RtIPJqEJUYNq
- QkMluK9H1YWqPdgIbX0BrX82L+lRv0sv+KGkeLzyVKMMVbqeMAoqK52Eb8gSkx3PKJkSv1o
- e12s8Egj//yDFCI4+Zp/VhaNb4cF9cg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2091CC678DC
+	for <ltp@archiver.kernel.org>; Wed, 11 Jun 2025 13:25:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 18CA43CAFE1
-	for <ltp@archiver.kernel.org>; Wed, 11 Jun 2025 06:21:22 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 3943A3CB1AA
+	for <ltp@archiver.kernel.org>; Wed, 11 Jun 2025 15:25:02 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CD7F13C9AC2
- for <ltp@lists.linux.it>; Wed, 11 Jun 2025 06:21:00 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 08A633C8A7F
+ for <ltp@lists.linux.it>; Wed, 11 Jun 2025 15:24:43 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B6E82600CF0
- for <ltp@lists.linux.it>; Wed, 11 Jun 2025 06:20:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1749615656;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=S3CHCqt0jNizWgRLKFu6pf1sy3XauRTnOPJGmdaADR8=;
- b=e52KGCZ86fFjSQcvWHO7VgU5tRpOi4jla2B9ut1lov/M6+Zq0e1gTvSz9ryXakgXG90dHH
- RJ3hcBtbTd5Lt9LvjLbVkrNM4pvRjARF88lq6BuZBN2r/EmBAVYdt9F/o+q+CBDowZiqGX
- ypem00BxzSbMD4lusKBJNNLhPqgcg1s=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-661-L81TPVYJMge0G8nnoSe4AQ-1; Wed, 11 Jun 2025 00:20:54 -0400
-X-MC-Unique: L81TPVYJMge0G8nnoSe4AQ-1
-X-Mimecast-MFC-AGG-ID: L81TPVYJMge0G8nnoSe4AQ_1749615654
-Received: by mail-pj1-f72.google.com with SMTP id
- 98e67ed59e1d1-313360ce7fcso5420211a91.2
- for <ltp@lists.linux.it>; Tue, 10 Jun 2025 21:20:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1749615654; x=1750220454;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=S3CHCqt0jNizWgRLKFu6pf1sy3XauRTnOPJGmdaADR8=;
- b=arzAg5B3JLWeuKQJc7lojLM0YXj55olujlMUAPuzQJpT/UHLZ2xjxGscqmWxf3MIDt
- YPlFVNf71Ig9GH3NjLoiDAAZm0axn/aafoM2Qy48pmXASJrZGcekoeWI7jaRlhumHdvU
- bRW1FFd2Ppxsp7Yr1zoiiemLbeGKBd1ka2q74K6/yVyIXF555at07/bbAyo8bjZFnwhp
- VYp1CUu0U42rcwcMwWw+1WGz/vjn67VvbC0OJcfy31aWEbpGWbPAdzQc3iX9x0YxxOcW
- aWShpDqajhBKp9AXStbwd0TQhdEMKEgF+3Ctix9rGXUgmsYFrnkTy/3gcgF2gdh1yo2n
- KcUg==
-X-Gm-Message-State: AOJu0YxrzKa2FvTdOpUQZmhaorazfWNUzdTzo1ouLvCoGNvRwvdLnrlF
- p45p73UN6Eyu845X/4o2qxAQNi4lVYOr3tRq/zJ/RmHhjte8UBHixs2aa8D5gDy81CePn9o71T4
- 5H9ZkBUDX+vUfAzWVtDom4e62Jv28nIfa9gJ/cFsIkly3L40cZSq7TgkmDhSoKSvVnIsTAwQ/1O
- HSei2DU/DntxW3WPvBxztKKuYg3WY=
-X-Gm-Gg: ASbGncvwr3e4goF7Yy+1VAHleBX365NF2F9Eb96c4St5pT274Gcf/LiF4aB4O1h8YCN
- WG/qfWfQEgMRrBoNoTPzNmbOX3vCqe44JjANYHv93pcy5+Dnw5GBl7pDIDPrZ7Z0Jky9b4NSy2a
- Py0ALc
-X-Received: by 2002:a17:90b:438f:b0:312:e76f:5213 with SMTP id
- 98e67ed59e1d1-313af2034damr2167491a91.28.1749615653553; 
- Tue, 10 Jun 2025 21:20:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF7y3JbFHz6ZPXx8TZqGDJ3zGlTKBf2yD7GESqGbx7Mx7zI3U1rGcsFPatpZnxDFULnYSUS6b+KPkZpszcqrGo=
-X-Received: by 2002:a17:90b:438f:b0:312:e76f:5213 with SMTP id
- 98e67ed59e1d1-313af2034damr2167440a91.28.1749615652655; Tue, 10 Jun 2025
- 21:20:52 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9A5CE100075F
+ for <ltp@lists.linux.it>; Wed, 11 Jun 2025 15:24:41 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 92CBD219FC;
+ Wed, 11 Jun 2025 13:24:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1749648279; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=suV2hZ84X8xao51hs4aXHbio6498gg+IJiFdYdP9Dog=;
+ b=iML0lw5OGYpZmCSf1bBkKNSt/sIaMqoZy3VIpU+fvG8+TxzwtDFLbi26Z9I42T0s9q8Kbk
+ DiORCeG411r3j3Boe6aEVtbc8IOonekob4m6wCH5aZJokp9EXHcjOcXMw6y6G2F0e1A0Kt
+ WwZqKdCtb3vSPaPgJsqYtYzeh/SiADE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1749648279;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=suV2hZ84X8xao51hs4aXHbio6498gg+IJiFdYdP9Dog=;
+ b=TqPnJ9AhtsT1Uicv0h9eopgDxh1M24eip9cwdDJE2wZXKK5nJ4W7vUmodje2N3NNvHVycs
+ sLs/xawRAh+JH6CQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=iML0lw5O;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=TqPnJ9Ah
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1749648279; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=suV2hZ84X8xao51hs4aXHbio6498gg+IJiFdYdP9Dog=;
+ b=iML0lw5OGYpZmCSf1bBkKNSt/sIaMqoZy3VIpU+fvG8+TxzwtDFLbi26Z9I42T0s9q8Kbk
+ DiORCeG411r3j3Boe6aEVtbc8IOonekob4m6wCH5aZJokp9EXHcjOcXMw6y6G2F0e1A0Kt
+ WwZqKdCtb3vSPaPgJsqYtYzeh/SiADE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1749648279;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=suV2hZ84X8xao51hs4aXHbio6498gg+IJiFdYdP9Dog=;
+ b=TqPnJ9AhtsT1Uicv0h9eopgDxh1M24eip9cwdDJE2wZXKK5nJ4W7vUmodje2N3NNvHVycs
+ sLs/xawRAh+JH6CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7062B139CE;
+ Wed, 11 Jun 2025 13:24:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id CqqdGZeDSWiATgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 11 Jun 2025 13:24:39 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 11 Jun 2025 15:24:38 +0200
 MIME-Version: 1.0
-References: <20250610104538.15687-1-chrubis@suse.cz>
-In-Reply-To: <20250610104538.15687-1-chrubis@suse.cz>
-Date: Wed, 11 Jun 2025 12:20:40 +0800
-X-Gm-Features: AX0GCFvTHbhoFA2a_Bi_34hUnTOJuS9R_7rrcjuztqg7IU2U3qJ5vu0FGhdpQZM
-Message-ID: <CAEemH2fAyGeni-DLizvG38AnuR0ZfFCFz50K9jJf6vHZAw_RJw@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: JQcI7UEUCc2b-jehkCXPr7EyD11eOxAPFloHzKagB-I_1749615654
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+Message-Id: <20250611-crash02_rewrite-v1-1-1becd9dc163d@suse.com>
+X-B4-Tracking: v=1; b=H4sIAJWDSWgC/x3MTQqAIBBA4avErBN0+iG6SkSYTjUbizEqCO+et
+ PwW770QSZgi9MULQhdH3kOGKQtwmw0rKfbZgBob3RqjnNi4aZyEbuGT1NzV5CqvPaKFXB1CCz/
+ /cRhT+gB8r6kXYQAAAA==
+X-Change-ID: 20250611-crash02_rewrite-b84ec3d0d22a
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1749648279; l=15590;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=8C25LosrZvFSnT6igemlGD2h+yBPSAFzkBpuIRgMRec=;
+ b=gj2tlKJi+Sf7bBT5zaB4M7MQcNY/sOX2xC0vwi5e6tWsqh2Mp0xVJ/QI0ixzv2p3RPghm4bzV
+ nbhVybq3pK4AxaVm97pJiAbxuL4xHJgRyQucspZF2yYgNDgE8ukCDGg
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+ RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Queue-Id: 92CBD219FC
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] doc: Add testers guide
+Subject: [LTP] [PATCH] misc: rewrite crash02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,219 +121,656 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-TWF5YmUgd2UgY2FuIHJlbmFtZSB0aGUgc3ViamVjdCBhczoKICAiZG9jOiBBZGQgYSBjb21wcmVo
-ZW5zaXZlIGd1aWRlIGZvciBMVFAgdGVzdGVycyIKCk9uIFR1ZSwgSnVuIDEwLCAyMDI1IGF0IDY6
-NDXigK9QTSBDeXJpbCBIcnViaXMgPGNocnViaXNAc3VzZS5jej4gd3JvdGU6Cgo+IFdoaWxlIHdl
-IGhhdmUgYWRkZWQgYSBkb2N1bWVudGF0aW9uIG9uIHN1cHBvcnRlZCBrZXJuZWxzLCBjb21waWxl
-cnMsIGhvdwo+IHRvIGNvbXBpbGUgYW5kIHJ1biBMVFAgZXRjLiBTb21lIGtpbmQgb2YgYSBjb21w
-cmVoZW5zaXZlIGd1aWRlIGZvcgo+IHBlb3BsZSBuZXcgdG8gTFRQIGFuZCBrZXJuZWwgdGVzdGlu
-ZyB3YXMgbWlzc2luZy4gVGhpcyBwYXRjaCBhZGRzIGEKPiBzaG9ydCBndWlkZSB0aGF0IHRyaWVz
-IHRvIGV4cGxhaW4gc29tZSBvZiB0aGUgcGl0ZmFsbHMgb2Yga2VybmVsCj4gdGVzdGluZy4gRmVl
-bCBmcmVlIHRvIHBvaW50IG91dCB3aGF0IGlzIG1pc3NpbmcgYW5kIHN1Z2dlc3QgYWRkaXRpb25h
-bAo+IGNoYXB0ZXJzLgo+Cj4gU2lnbmVkLW9mZi1ieTogQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1
-c2UuY3o+Cj4gUmV2aWV3ZWQtYnk6IEFuZHJlYSBDZXJ2ZXNhdG8gPGFuZHJlYS5jZXJ2ZXNhdG9A
-c3VzZS5jb20+Cj4gUmV2aWV3ZWQtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6Pgo+IFJl
-dmlld2VkLWJ5OiA6IFdlaSBHYW8gPHdlZ2FvQHN1c2UuY29tPgo+CgpSZXZpZXdlZC1ieTogTGkg
-V2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+CgotLS0KPgo+IENoYW5nZXMgYWdhaW50cyB0aGUgUkZD
-Ogo+Cj4gLSBmaXhlZCBtYW55IHR5cG9zCj4gLSBhZGRlZCBhIHBhcmFncmFwaCBhYm91dCBmaWxl
-c3lzdGVtcwo+IC0gYWRkZWQgbGlua3MgYW5kIHNvbWUgZm9ybWF0dGluZwo+Cj4gIGRvYy9pbmRl
-eC5yc3QgICAgICAgICAgICAgICB8ICAgMSArCj4gIGRvYy91c2Vycy90ZXN0ZXJzX2d1aWRlLnJz
-dCB8IDE1MSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPiAgMiBmaWxlcyBj
-aGFuZ2VkLCAxNTIgaW5zZXJ0aW9ucygrKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZG9jL3VzZXJz
-L3Rlc3RlcnNfZ3VpZGUucnN0Cj4KPiBkaWZmIC0tZ2l0IGEvZG9jL2luZGV4LnJzdCBiL2RvYy9p
-bmRleC5yc3QKPiBpbmRleCBjMDBhNTlkMzEuLmFjZDE2Y2RiZiAxMDA2NDQKPiAtLS0gYS9kb2Mv
-aW5kZXgucnN0Cj4gKysrIGIvZG9jL2luZGV4LnJzdAo+IEBAIC05LDYgKzksNyBAQAo+Cj4gICAg
-IHVzZXJzL3F1aWNrX3N0YXJ0Cj4gICAgIHVzZXJzL3NldHVwX3Rlc3RzCj4gKyAgIHVzZXJzL3Rl
-c3RlcnNfZ3VpZGUKPiAgICAgdXNlcnMvc3VwcG9ydGVkX3N5c3RlbXMKPiAgICAgdXNlcnMvc3Rh
-dHMKPiAgICAgdXNlcnMvdGVzdF9jYXRhbG9nCj4gZGlmZiAtLWdpdCBhL2RvYy91c2Vycy90ZXN0
-ZXJzX2d1aWRlLnJzdCBiL2RvYy91c2Vycy90ZXN0ZXJzX2d1aWRlLnJzdAo+IG5ldyBmaWxlIG1v
-ZGUgMTAwNjQ0Cj4gaW5kZXggMDAwMDAwMDAwLi44NmY4MDA2ZjkKPiAtLS0gL2Rldi9udWxsCj4g
-KysrIGIvZG9jL3VzZXJzL3Rlc3RlcnNfZ3VpZGUucnN0Cj4gQEAgLTAsMCArMSwxNTEgQEAKPiAr
-Li4gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIKPiArCj4gK1Rlc3Rl
-cnMgZ3VpZGUgdG8gdGhlIExpbnV4IHRlc3QgcHJvamVjdAo+ICs9PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT0KPiArCj4gK1doaWxlIHdlIHRyeSB0byBtYWtlIExUUCB3b3Jr
-IG91dCBvZiB0aGUgYm94IGFzIG11Y2ggYXMgcG9zc2libGUgdGhlcmUgYXJlCj4gK3N0aWxsIG1h
-bnkgdGhpbmdzIHRoYXQgdGVzdGVycyBuZWVkIHRvIGNvbnNpZGVyIGJlZm9yZSB0aGUgYWN0dWFs
-IHRlc3RpbmcKPiArc3RhcnRzLiBJdCdzIGFkdmlzYWJsZSB0byBtYWtlIGEgdGVzdCBwbGFucyBp
-biBvcmRlciB0byBhc3NlcyBhbmQKPiBmb3JtYWxpemUgdGhlCj4gK2V4cGVjdGVkIHRlc3QgY292
-ZXJhZ2Ugb3IgZXZlbiBqdXN0IHNpdCBkb3duIGZvciBhIHdoaWxlIGFuZCBjb25zaWRlcgo+IGRp
-ZmZlcmVudAo+ICthc3BlY3RzIG9mIHRoZSBwcm9ibGVtIGF0IGhhbmQuCj4gKwo+ICsKPgoKCgo+
-ICtJcyB0ZXN0aW5nIGV2ZW4gcmVxdWlyZWQ/Cj4gKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-PiArCj4gK1NvbWV0aW1lcyBwZW9wbGUgdGVuZCB0byBtYWtlIGFuIGFyZ3VtZW50IHRoYXQgdGhl
-cmUgaXMgbm8gbmVlZCB0byB0ZXN0Cj4gdGhlCj4gK0xpbnV4IGtlcm5lbCBiZWNhdXNlIGl0J3Mg
-aGVhdmlseSB0ZXN0ZWQgaW4gdXBzdHJlYW0gYW5kIGhlbmNlIHZlcnkKPiBzdGFibGUuCj4gK1Ro
-YXQgbWF5IGJlIHRydWUsIG9yIGF0IGxlYXN0IG9uZSBjYW4gc2F5IHRoYXQgdXBzdHJlYW0gcmVs
-ZWFzZXMgYXJlIG5vdAo+ICt0ZXJyaWJseSB1bnN0YWJsZS4KPiArCj4gK0hvd2V2ZXIgdGhhdCBh
-cmd1bWVudCBob2xkcyBvbmx5IGFzIGxvbmcgYXMgeW91IHRha2UgdGhlIHVwc3RyZWFtIHNvdXJj
-ZXMKPiArdmVyYmF0aW0sIGkuZS4gd2l0aG91dCBhbnkgbW9kaWZpY2F0aW9ucyBhbmQgdGhhdCBp
-bmNsdWRlcyB0YWtpbmcgdGhlCj4gZGVmYXVsdAo+ICtgLmNvbmZpZ2Agb3B0aW9ucyB0b28uIE9u
-Y2UgeW91IHN0cmF5IGF3YXkgZnJvbSB3aGF0IHlvdSBjb25zaWRlciB0aGUKPiBzdGFibGUKPiAr
-dXBzdHJlYW0gc291cmNlIHlvdSBpbnRyb2R1Y2UgZGlmZmVyZW5jZXMgaW4gYmVoYXZpb3IsIHBv
-c3NpYmxlIGJ1Z3MgYW5kCj4gK3Byb2JsZW1zIGludG8geW91ciBjb2RlYmFzZS4gVGhhdCBhcHBs
-aWVzIHRvIHBhdGNoIGJhY2twb3J0cyB0b28sIGl0J3MKPiBxdWl0ZQo+ICtlYXN5IHRvIG1pc3Mg
-cHJlLXJlcXVpc2l0ZXMgd2hlbiBiYWNrcG9ydGluZyBwYXRjaGVzIHdoaWNoIG1heSByZXN1bHQg
-aW4KPiBhbGwKPiAra2luZHMgb2YgYnJlYWthZ2VzLgo+CgpUaGUgcGFyYWdyYXBoIGFib3ZlIHNl
-ZW1zIGEgYml0IHZhZ3VlIG9yIG1pc2xlYWRpbmcsIGVzcGVjaWFsbHkgZ2l2ZW4gdGhhdAp0aGUg
-dXBzdHJlYW0ga2VybmVsIGl0c2VsZiBpcyB0ZXN0ZWQgd2l0aCBMVFAgYW5kIG1hbnkgb3RoZXIg
-dGVzdCBzdWl0ZXMuCgpNYXliZSByZWZpbmUgdGhlIHdvcmRzIGxpa2U6Ci0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQpTb21lIG1heSBhcmd1ZSB0aGF0IHRlc3RpbmcgdGhlIExpbnV4IGtlcm5l
-bCBsb2NhbGx5IGlzIHVubmVjZXNzYXJ5IGJlY2F1c2UKaXQgaXMgYWxyZWFkeSB0aG9yb3VnaGx5
-IHRlc3RlZCB1cHN0cmVhbSBhbmQgY29uc2lkZXJlZCBzdGFibGUuIFdoaWxlIGl0J3MKdHJ1ZQp0
-aGF0IHVwc3RyZWFtIHJlbGVhc2VzIGdlbmVyYWxseSBnbyB0aHJvdWdoIGV4dGVuc2l2ZSB2YWxp
-ZGF0aW9uLCBpbmNsdWRpbmcKdGVzdCBzdWl0ZXMgbGlrZSBMVFAsIHN0YWJpbGl0eSBpcyBvbmx5
-IGd1YXJhbnRlZWQgd2hlbiB5b3UgdXNlIHRoZSB1cHN0cmVhbQprZXJuZWwgc291cmNlcyBhbmQg
-Y29uZmlndXJhdGlvbiBleGFjdGx5IGFzIHJlbGVhc2VkLgoKSG93ZXZlciwgdGhpcyBhc3N1bXB0
-aW9uIGJyZWFrcyBkb3duIG9uY2UgeW91IGFwcGx5IGFueSBjaGFuZ2VzOiB3aGV0aGVyCnRoYXQn
-cyBtb2RpZnlpbmcgdGhlIHNvdXJjZSBjb2RlLCBlbmFibGluZy9kaXNhYmxpbmcgZGlmZmVyZW50
-IGAuY29uZmlnYApvcHRpb25zLApvciBiYWNrcG9ydGluZyBwYXRjaGVzLiBTdWNoIGRldmlhdGlv
-bnMgY2FuIGludHJvZHVjZSBzdWJ0bGUgYnVncyBvcgp1bmludGVuZGVkCmJlaGF2aW9yLCBldmVu
-IGlmIHRoZSB1cHN0cmVhbSBrZXJuZWwgaXMgc3RhYmxlLgoKRm9yIGV4YW1wbGUsIGJhY2twb3J0
-aW5nIHBhdGNoZXMgd2l0aG91dCB0aGVpciBmdWxsIGRlcGVuZGVuY3kgY2hhaW4gY2FuCmxlYWQg
-dG8KdW5leHBlY3RlZCByZWdyZXNzaW9ucy4gVGhlcmVmb3JlLCBpdOKAmXMgY3J1Y2lhbCB0byB0
-ZXN0IHlvdXIgb3duIGtlcm5lbApidWlsZHMgaW4gdGhlCmVudmlyb25tZW50IHdoZXJlIHRoZXkg
-d2lsbCBhY3R1YWxseSBydW4sIHVzaW5nIHRvb2xzIGxpa2UgTFRQIHRvIGhlbHAgY2F0Y2gKIGlz
-c3Vlcwp0aGF0IHVwc3RyZWFtIHRlc3RpbmcgbWlnaHQgbm90IGNvdmVyIGluIHlvdXIgc3BlY2lm
-aWMgY29uZmlndXJhdGlvbi4KCgoKPiArCj4gKwo+ICtNdWx0aSBkaW1lbnNpb25hbGl0eQo+ICst
-LS0tLS0tLS0tLS0tLS0tLS0tLQo+ICsKPiArRmlyc3Qgb2YgYWxsIGtlcm5lbCB0ZXN0aW5nIGlz
-IGEgbXVsdGkgZGltZW5zaW9uYWwgcHJvYmxlbSwganVzdAo+IGNvbXBpbGluZyBhbmQKPiArcnVu
-bmluZyBMVFAgd2lsbCBnaXZlIHlvdSBzb21lIGNvdmVyYWdlIGJ1dCB2ZXJ5IGxpa2VseSBub3Qg
-ZW5vdWdoLiBUaGVyZQo+IGFyZQo+ICtzZXZlcmFsIGJpZyBnYXBzIHRoYXQgbWF5IGJlIGVhc2ls
-eSBtaXNzZWQuCj4gKwo+ICtGb3IgZXhhbXBsZSA2NGJpdCBMaW51eCBrZXJuZWwgcHJvdmlkZXMg
-Y29tcGF0aWJpbGl0eSBsYXllciBmb3IgMzJiaXQKPiArYXBwbGljYXRpb25zIHdoaWNoIGNvZGUg
-cXVhbGl0eSBpcyB1c3VhbGx5IGEgYml0IHdvcnNlIHRoYW4gdGhlIDY0Yml0IEFCSS4KPiArSGVu
-Y2UgcmVjb21waWxpbmcgTFRQIHdpdGggYC1tMzJgIGluIGNvbXBpbGVyIGZsYWdzIGFuZCBydW5u
-aW5nIGJvdGggNjRiaXQKPiArYW5kIDMyYml0IHRlc3QgYmluYXJpZXMgaXMgYSBnb29kIHN0YXJ0
-LiBJZiB5b3UgdHJ5IHRvIG1ha2UgYW4gYXJndW1lbnQKPiB0aGF0Cj4gK3lvdXIgYXBwbGljYXRp
-b24gZG9lcyBub3QgbmVlZCAzMmJpdCBzdXBwb3J0IGl0J3MgYmV0dGVyIHRvIGRpc2FibGUgdGhl
-Cj4gY29tcGF0Cj4gK2xheWVyIGNvbXBsZXRlbHkgc2luY2UgaXQncyBwb3NzaWJsZSBzb3VyY2Ug
-b2Ygc2VjdXJpdHkgYnVncy4KPiArCj4gK0Fub3RoZXIgZGltZW5zaW9uIGlzIHRoZSBudW1iZXIg
-b2YgYXJjaGl0ZWN0dXJlcyB5b3UgbmVlZCB0byB0ZXN0LCBmb3IgYQo+ICtnZW5lcmFsIGRpc3Ry
-aWJ1dGlvbiB0ZXN0aW5nIHlvdSBtYXkgZW5kIHVwIHdpdGggYSBjb3VwbGUgb2YgdGhlbS4KPiBE
-aWZmZXJlbnQKPiArYXJjaGl0ZWN0dXJlcyBoYXZlIGRpZmZlcmVudCBwbGF0Zm9ybSBjb2RlIGFz
-IHdlbGwgYXMgZGlmZmVyZW5jZXMgaW4KPiBtZW1vcnkKPiArb3JkZXJpbmdzLCBldGMuIHRoYXQg
-YWxsIG1lYW5zIHRoYXQgcnVubmluZyB0ZXN0cyBvbiBvbmUgYXJjaGl0ZWN0dXJlIG91dAo+IG9m
-Cj4gK3NldmVyYWwgd2lsbCBnaXZlIHlvdSBpbmNvbXBsZXRlIGNvdmVyYWdlLgo+ICsKPiArU2lu
-Y2UgbW9zdCBvZiB0aGUgUE9TSVggQVBJIGRlYWxzIHdpdGggZmlsZXMgdGhlIGNob2lzZSBvZiBm
-aWxlc3lzdGVtIGZvcgo+IHRoZQo+ICt0ZXN0aW5nIGNoYW5nZXMgdGhlIGZvY3VzIGFuZCBjb3Zl
-cmFnZSB0b28uIExUUCBkZWZhdWx0cyB0byB1c2luZyBgL3RtcC9gCj4gYXMKPiArYSB0ZW1wb3Jh
-cnkgZGlyZWN0b3J5IGZvciB0aGUgdGVzdHMuIElmIGAvdG1wL2AgaXMgbW91bnRlZCBhcyB0bXBm
-cwo+IHN1YnNldCBvZgo+ICt0ZXN0cyB3aWxsIGJlIHNraXBwZWQsIGlmIHRoYXQgaXMgdGhlIGNh
-c2UgaXQncyBhZHZpc2FibGUgdG8gcG9pbnQKPiBlbnZpcm9ubWVudAo+ICt2YXJpYWJsZSBgVE1Q
-RElSYCB0byBhIHBhdGggd2l0aCBhIGRpZmZlcmVudCBmaWxlc3lzdGVtIGluc3RlYWQuIFRoZW4K
-PiB0aGVyZQo+ICthcmUgdGVzdHMgdGhhdCBmb3JtYXQgYSBkZXZpY2Ugd2l0aCBhIGZpbGVzeXN0
-ZW0uIExUUCBkZWZhdWx0cyB0byBgZXh0MmAKPiBhbmQKPiArbG9vcCBkZXZpY2VzIGZvciB0aGVz
-ZSB0ZXN0Y2FzZXMsIHRoYXQgY2FuIGJlIGNoYW5nZWQgd2l0aCBlbnZpcm9ubWVudAo+ICt2YXJp
-YWJsZXMgYXMgd2VsbC4gTGFzdGx5IGJ1dCBub3QgbGVhc3QgYSBmZXcgdGVzdGNhc2VzIHJlcGVh
-dCB0aGUgdGVzdAo+IGZvciBhbGwKPiArc3VwcG9ydGVkIGZpbGVzeXN0ZW0sIGlmIHlvdSBhcmUg
-aW50ZXJlc3RlZCBpbiB0ZXN0aW5nIG9uIGEgc2luZ2xlCj4gZmlsZXN5c3RlbQo+ICtvbmx5IHlv
-dSBjYW4gbGltaXQgdGhlc2UgdGVzdHMgdG8gYSBzaW5nbGUgZmlsZXN5c3RlbSB0b28uIFNlZSB0
-aGUgdGVzdHMKPiBzZXR1cAo+ICtmb3IgYSBjb21wcmVoZW5zaXZlIGxpc3Qgb2YgdGhlIGBldmly
-b25tZW50IHZhcmlhYmxlcwo+ICs8c2V0dXBfdGVzdHMuaHRtbCNsaWJyYXJ5LWVudmlyb25tZW50
-LXZhcmlhYmxlcz5gXy4KPiArCj4gK1RoZXkgeW91IGFsc28gaGF2ZSB0byBkZWNpZGUgaWYgeW91
-IGFyZSBnb2luZyB0byBydW4gdGVzdHMgaW4gdmlydHVhbAo+IG1hY2hpbmUKPiArZS5nLiBgcWVt
-dS1rdm1gLCBvbiBiYXJlIG1ldGFsIG9yIGJvdGguIFRlc3RpbmcgaW4gdmlydHVhbCBtYWNoaW5l
-IHdpbGwKPiBnaXZlIHlvdQo+ICthYm91dCA5MCUgb2YgdGhlIGNvdmVyYWdlIGZvciBiYXJlIG1l
-dGFsIGFuZCB2aWNlIHZlcnNhLgo+ICsKPiArVGhlcmUgYXJlIG90aGVyIG9wdGlvbnMgd29ydGgg
-b2YgY29uc2lkZXJhdGlvbiB0b28sIExpbnV4IGtlcm5lbCBoYXMgbWFueQo+ICtkZWJ1Z2dpbmcg
-b3B0aW9ucyB0aGF0IGFyZSB1c3VhbGx5IGRpc2FibGVkIG9uIHJ1bnRpbWUgc2luY2UgdGhleSBp
-bmN1cgo+ICtzaWduaWZpY2FudCBwZXJmb3JtYW5jZSBwZW5hbHR5LiBIYXZpbmcgYSBmZXcgbW9y
-ZSBMVFAgdGVzdHJ1bnMgd2l0aAo+IGRpZmZlcmVudAo+ICtkZWJ1ZyBvcHRpb25zIGVuYWJsZWQg
-ZS5nLiBgS0FTQU4KPiArPGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvZG9jL2h0bWwvbGF0ZXN0L2Rl
-di10b29scy9rYXNhbi5odG1sPmBfIG9yCj4gYEtNRU1MRUFLCj4gKzxodHRwczovL3d3dy5rZXJu
-ZWwub3JnL2RvYy9odG1sL2xhdGVzdC9kZXYtdG9vbHMva21lbWxlYWsuaHRtbD5gXyBtYXkKPiBo
-ZWxwCj4gK2NhdGNoIGJ1Z3MgYmVmb3JlIHRoZXkgbWF0ZXJpYWxpemUgaW4gcHJvZHVjdGlvbi4K
-PiArCj4gK0luIHByYWN0aWNlIHlvdXIgdGVzdCBtYXRyaXggbWF5IGVhc2lseSBleHBsb2RlIGFu
-ZCB5b3UgbWF5IGVuZCB1cCB3aXRoCj4gZG96ZW5zCj4gK29mIGRpZmZlcmVudGx5IGNvbmZpZ3Vy
-ZWQgdGVzdHJ1bnMgYmFzZWQgb24gZGlmZmVyZW50IGNvbnNpZGVyYXRpb25zLiBUaGUKPiBoYXJk
-Cj4gK3Rhc2sgYXQgaGFuZCBpcyBub3QgdG8gaGF2ZSB0b28gbWFueSBzaW5jZSBjb21wdXRpbmcg
-cG93ZXIgaXMgbm90IGFuCj4gaW5maW5pdGUKPiArcmVzb3VyY2UgYW5kIGRvZXMgbm90IHNjYWxl
-IHRoYXQgZWFzaWx5LiBJZiB5b3UgbWFuYWdlZCB0byByZWFkIHVwIHRvIHRoaXMKPiArcG9pbnQg
-KiJEb24ndCBQYW5pYyEiKiB0aGluZ3MgYXJlIGFsbW9zdCBuZXZlciBhcyBiYWQgYXMgdGhleSBt
-YXkgc2VlbSBhdAo+IGZpcnN0Cj4gK2dsYW5jZS4KPiArCj4gK0l0J3MgYSBnb29kIGlkZWEgdG8g
-c3RhcnQgc21hbGwgd2l0aCBhbiBlbnZpcm9ubWVudCB0aGF0IG1vZGVscyB5b3VyCj4gK3Byb2R1
-Y3Rpb24uICBPbmNlIHRoYXQgd29ya3Mgd2VsbCB5b3UgY2FuIHRyeSBkaWZmZXJlbnQgY29uZmln
-dXJhdGlvbnMuCj4gU2VsZWN0Cj4gK2EgZmV3IGludGVyZXN0aW5nIG9uZXMgYW5kIHJ1biB0aGVt
-IGZvciBzb21lIHRpbWUgaW4gb3JkZXIgdG8gZ2V0IGFuIGlkZWEKPiBvZgo+ICt0aGVpciB1c2Vm
-dWxuZXNzLiBJZiB5b3UgYXJlIGZlZWxpbmcgYWR2ZW50dXJvdXMgeW91IG1heSB0cnkgdG8gbWVh
-c3VyZQo+IGFuZAo+ICtjb21wYXJlIGFjdHVhbCB0ZXN0IGNvdmVyYWdlIHdpdGggb25lIG9mIHRo
-ZSB0b29scyBzdWNoIGFzIGBnY292Cj4gKzxodHRwczovL3d3dy5rZXJuZWwub3JnL2RvYy9odG1s
-L2xhdGVzdC9kZXYtdG9vbHMvZ2Nvdi5odG1sPmBfIGFuZCBgbGNvdgo+ICs8aHR0cHM6Ly9naXRo
-dWIuY29tL2xpbnV4LXRlc3QtcHJvamVjdC9sY292PmAuIElmIHlvdSBkbyBzbyBkbyBub3QgZmFs
-bAo+IGludG8gYQo+ICt0cmFwIG9mIGF0dGVtcHRpbmcgdG8gaGF2ZSAxMDAlIGxpbmUgY292ZXJh
-Z2UuIEhhdmluZyAxMDAlIG9mIGxpbmVzCj4gZXhlY3V0ZWQKPiArZHVyaW5nIHRoZSB0ZXN0IGRv
-ZXMgbm90IG1lYW4gdGhhdCB5b3VyIHRlc3QgY292ZXJhZ2UgaXMgMTAwJS4gIEdvb2QgdGVzdHMK
-PiArdmFsaWRhdGUgbXVjaCBtb3JlIHRoYW4ganVzdCBob3cgbXVjaCBjb2RlIGZyb20gdGhlIHRl
-c3RlZCBiaW5hcnkgd2FzCj4gZXhlY3V0ZWQuCj4gKwo+ICtZb3UgbWF5IG5lZWQgdG8gc2Fjcmlm
-aWNlIHNvbWUgY292ZXJhZ2UgaW4gb3JkZXIgdG8gbWF0Y2ggdGhlIHRlc3RzCj4gcnVudGltZSB0
-bwo+ICt0aGUgYXZhaWxhYmxlIGNvbXB1dGluZyBwb3dlci4gV2hlbiBkb2luZyBzbyBgUGFyZXRv
-IHByaW5jaXBsZQo+ICs8aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvUGFyZXRvX3ByaW5j
-aXBsZT5gXyBpcyB5b3VyIGZyaWVuZC4KPiArCj4gKwo+ICtUZXN0IHNjb3BlCj4gKy0tLS0tLS0t
-LS0KPiArCj4gK1NvIGZhciB3ZSB3ZXJlIHRhbGtpbmcgYWJvdXQgYSBjb2RlIGNvdmVyYWdlIGZy
-b20gYSBwb2ludCBvZiBtYXhpbWl6aW5nCj4gdGVzdAo+ICtjb3ZlcmFnZSB3aGlsZSBrZWVwaW5n
-IG91ciB0ZXN0IG1hdHJpeCBhcyBzbWFsbCBhcyBwb3NzaWJsZS4gV2hpbGUgdGhhdAo+IGlzIGEK
-PiArbm9ibGUgZ29hbCBpdCdzIG5vdCB0aGUgdW5pdmVyc2FsIGhvbHkgZ3JhaWwgb2YgdGVzdGlu
-Zy4gRGlmZmVyZW50IHVzZQo+IGNhc2VzCj4gK2hhdmUgZGlmZmVyZW50IGNvbnNpZGVyYXRpb25z
-IGFuZCBzY29wZS4gRm9yIGEgdGVzdGluZyBiZWZvcmUgYSBmaW5hbAo+IHJlbGVhc2UKPiArc3Vj
-aCB0ZXN0aW5nIGlzIHZlcnkgZGVzaXJhYmxlLCBob3dldmVyIGZvciBhIGNvbnRpbnVvdXMgaW50
-ZWdyYXRpb24gb3IKPiBzbW9rZQo+ICt0ZXN0aW5nIHRoZSBtYWluIHJlcXVpcmVtZW50IGlzIHRo
-YXQgZmVlZGJhY2sgbG9vcHMgYXJlIGFzIHNob3J0IGFzCj4gcG9zc2libGUuCj4gKwo+ICtXaGVu
-IGEgZGV2ZWxvcGVyIGNoYW5nZXMgdGhlIGtlcm5lbCBhbmQgc3VibWl0cyB0aGUgY2hhbmdlcyB0
-byBiZSBtZXJnZWQKPiBpdCdzCj4gK2Rlc2lyYWJsZSB0byBydW4gc29tZSB0ZXN0cy4gQWdhaW4g
-dGhlIGhhcmQgcXVlc3Rpb24gaXMgd2hpY2ggdGVzdHMuIElmCj4gd2UgcnVuCj4gK2FsbCBwb3Nz
-aWJsZSB0ZXN0cyBpbiBhbGwgcG9zc2libGUgY29tYmluYXRpb25zIGl0IG1heSB0YWtlIGEgZGF5
-IG9yIHR3bwo+IGFuZAo+ICt0aGUgZGV2ZWxvcGVyIHdpbGwgbW92ZSB0byBhIGRpZmZlcmVudCB0
-YXNrcyBiZWZvcmUgdGhlIHRlc3RzIGhhdmUgYQo+IGNoYW5jZSB0bwo+ICtmaW5pc2guIElmIHlv
-dSBtdWx0aXBseSB0aGF0IGJ5IGEgbnVtYmVyIG9mIGRldmVsb3BlcnMgaW4gdGhlIHRlYW0geW91
-Cj4gbWF5IGVuZAo+ICt1cCBpbiBhIHNpdHVhdGlvbiB3aGVyZSBhIGRldmVsb3BlciB3aWxsIHJl
-dGlyZSBiZWZvcmUgdGVzdHMgZm9yIGhpcwo+IHBhdGNoIG1heQo+ICtoYXZlIGhhZCBhIGNoYW5j
-ZSB0byBmaW5pc2guCj4gKwo+ICtJbiB0aGlzIGNhc2UgY2FyZWZ1bCBzZWxlY3Rpb24gb2YgdGVz
-dHMgaXMgZXZlbiBtb3JlIGltcG9ydGFudC4gSGF2aW5nCj4gbGVzcyBpcwo+ICttb3JlIGluIHRo
-aXMgY29udGV4dC4gT25lIG9mIHRoZSBmaXJzdCBpZGVhcyBmb3IgQ0kgaXMgdG8gc2tpcCB0ZXN0
-cyB0aGF0Cj4gcnVuCj4gK2ZvciBtb3JlIHRoYW4gYSBzZWNvbmQgb3Igc28sIGhhcHBpbHkgdGhp
-cyBjYW4gYmUgZWFzaWx5IGRvbmUgd2l0aCBga2lyawo+ICs8aHR0cHM6Ly9naXRodWIuY29tL2xp
-bnV4LXRlc3QtcHJvamVjdC9raXJrLz5gXy4gSW4gdGhlIGZ1dHVyZSB3ZSBtYXkKPiB3YW50IHRv
-Cj4gK2V4cGxvcmUgc29tZSBoZXVyaXN0aWNzIHRoYXQgd291bGQgbWFwIHRoZSBjb2RlIGNoYW5n
-ZXMgaW4ga2VybmVsIGludG8gYQo+IHN1YnNldAo+ICtvZiB0ZXN0cywgd2hpY2ggd291bGQgYWxs
-b3cgZm9yIGEgdmVyeSBxdWljayBmZWVkYmFjay4KPiArCj4gKwo+CgoKCj4gK0RlYnVnZ2luZyB0
-ZXN0IGZhaWx1cmVzCj4gKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gKwo+ICtZb3UgbWF5IHRo
-aW5rIHRoYXQgeW91IHdpbGwgZW5qb3kgc29tZSByZXN0IG9uY2UgeW91IGhhdmUgeW91ciB0ZXN0
-IG1hdHJpeAo+ICtyZWFkeSBhbmQgeW91ciB0ZXN0cyBhcmUgcnVubmluZy4gVW5mb3J0dW5hdGVs
-eSB0aGF0J3Mgd2hlcmUgdGhlIGFjdHVhbAo+IHdvcmsKPiArc3RhcnRzLiBEZWJ1Z2dpbmcgdGVz
-dCBmYWlsdXJlcyBpcyBwcm9iYWJseSB0aGUgaGFyZGVzdCBwYXJ0IG9mIHRoZQo+IHRlc3RpbmcK
-PiArcHJvY2Vzcy4gSW4gc29tZSBjYXNlcyBmYWlsdXJlcyBhcmUgZWFzaWx5IHJlcHJvZHVjaWJs
-ZSBhbmQgaXQncyBub3QgdGhhdAo+IGhhcmQKPiArdG8gbG9jYXRlIHRoZSBidWcsIGVpdGhlciBp
-biB0aGUgdGVzdCBvciBpbiB0aGUga2VybmVsIGl0c2VsZi4gVGhlcmUgYXJlCj4gK2hvd2V2ZXIs
-IHF1aXRlIGNvbW1vbiwgY2FzZXMgd2hlcmUgdGhlIHRlc3QgZmFpbHVyZSByZXByb2R1Y2VzIG9u
-bHkgaW4KPiAxMCUgb3IKPiArZXZlbiAxJSBvZiB0aGUgdGVzdCBydW5zLiBTb21ldGltZXMgdGVz
-dHMgYXJlIG5vdCBmYWlsaW5nIGluIGlzb2xhdGlvbiwKPiB0aGF0IGlzCj4gK2JlY2F1c2Ugb3Bl
-cmF0aW5nIHN5c3RlbSBoYXMgYSBodWdlIGludGVybmFsIHN0YXRlIGFuZCBhIHRlc3QgZmFpbHVy
-ZQo+IG1hbmlmZXN0cwo+ICtvbmx5IGFmdGVyIHJ1bm5pbmcgcmlnaHQgc2VxdWVuY2Ugb2YgdGVz
-dHMuIEFsbCBvZiB0aGF0IGRvZXMgbm90IG1lYW4gdGhhdAo+ICt0aGVyZSBpcyBubyBidWcsIHRo
-YXQgdXN1YWxseSBtZWFucyB0aGF0IHRoZSBidWcgZGVwZW5kcyBvbiBtb3JlCj4gcHJlcmVxdWlz
-aXRlcwo+ICt0aGF0IGhhdmUgdG8gbWFuaWZlc3QgYXQgdGhlIHJpZ2h0IHRpbWUgaW4gb3JkZXIg
-dG8gdHJpZ2dlciB0aGUgZmFpbHVyZS4KPiBTYWRseQo+ICtmb3IgbW9kZXJuIHN5c3RlbXMgdGhh
-dCBhcmUgYXN5bmNocm9ub3VzIGluIG5hdHVyZSBzdWNoIGJ1Z3MgYXJlIG1vcmUgYW5kCj4gbW9y
-ZQo+ICtjb21tb24uCj4gKwo+ICtUaGUgZGVidWdnaW5nIHByb2Nlc3MgaXRzZWxmIGlzIG5vdCBj
-b21wbGljYXRlZCBieSBpdHMgbmF0dXJlLiBZb3UgaGF2ZSB0bwo+ICthdHRlbXB0IHRvIHVuZGVy
-c3RhbmQgdGhlIGZhaWx1cmUgYnkgY2hlY2tpbmcgdGhlIGxvZ3MsIHJlYWRpbmcgYW5kCj4gK3Vu
-ZGVyc3RhbmRpbmcgdGhlIHNvdXJjZSBjb2RlLCBkZWJ1Z2dpbmcgd2l0aCBzdHJhY2UsIGdkYiwg
-ZXRjLiBUaGVuIGZvcm0KPiBhCj4gK2h5cG90aGVzaXMgYW5kIGVpdGhlciBwcm92ZSBvciBkaXNw
-cm92ZSBpdC4gUmluc2UgYW5kIHJlcGVhdCB1bnRpbCB5b3UKPiBlbmQgdXAKPiArd2l0aCBhIGNs
-ZWFyIGRlc2NyaXB0aW9uIG9mIHdoYXQgd2VudCB3cm9uZy4gSG9wZWZ1bGx5IHlvdSB3aWxsIG1h
-bmFnZSB0bwo+IGZpbmQKPiArdGhlIHJvb3QgY2F1c2UsIGJ1dCB5b3Ugc2hvdWxkIG5vdCBiZSBk
-aXNjb3VyYWdlZCwgaWYgeW91IGRvIG5vdC4KPiBEZWJ1Z2dpbmcKPiAra2VybmVsIGJ1Z3MgdGFr
-ZXMgYSBsb3Qgb2YgZXhwZXJpZW5jZSBhbmQgc2tpbGwgb25lIGNhbiBzYXkgYXMgbXVjaCBhcyBp
-cwo+ICtuZWVkZWQgdG8gd3JpdGUgdGhlIGtlcm5lbCBjb2RlLgo+CgorMSBJIGZlZWwgZGVlcGx5
-IGFib3V0IHRoaXMuIFNvbWVvbmUgd2l0aG91dCBtYW55IHllYXJzIG9mIHRlc3RpbmcKZXhwZXJp
-ZW5jZQpjYW4ndCB3cml0ZSB0aGlzIHBhcmFncmFwaCEgOikKCkJ0dywgaXQgd291bGQgYmUgYmV0
-dGVyIHRvIHNwbGl0IGludG8gbW9yZSBwYXJhZ3JhcGhzIGZvciBhIGJldHRlciBmb3JtYXQuCgot
-LSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
-LmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+Rewrite the crash02 test, introducing new API but maintaining the logic
+behind it. The test generates random syscall executions with random data
+and it verifies that system didn't crash.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ testcases/misc/crash/crash02.c | 577 +++++++++--------------------------------
+ 1 file changed, 123 insertions(+), 454 deletions(-)
+
+diff --git a/testcases/misc/crash/crash02.c b/testcases/misc/crash/crash02.c
+index c68f580ef62ad3b3c644093f72646a8908e55076..417c2aa2b8e4facf9ddcde358fe59a7f4419e859 100644
+--- a/testcases/misc/crash/crash02.c
++++ b/testcases/misc/crash/crash02.c
+@@ -1,497 +1,166 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * crash02.c - Test OS robustness by executing syscalls with random args.
+- *
+- * Copyright (C) 2001 Stephane Fillod <f4cfe@free.fr>
+- *
+- * This test program was inspired from crashme, by GEORGE J. CARRETT.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License
+- * as published by the Free Software Foundation; either version 2
+- * of the License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA	02111-1307, USA.
++ * Copyright (C) 2025 SUSE LLC <andrea.cervesato@suse.com>
+  */
+ 
+-/*
+-A signal handler is set up so that in most cases the machine exception
+-generated by the illegal syscall, bad operands, etc in the procedure
+-made up of random data are caught; and another round of randomness may
+-be tried. Eventually a random syscall may corrupt the program or
+-the machine state in such a way that the program must halt. This is
+-a test of the robustness of the hardware/software for instruction
+-fault handling.
+-
+-Note: Running this program just a few times, using total CPU time of
+-less than a few seconds SHOULD NOT GIVE YOU ANY CONFIDENCE in system
+-robustness. Having it run for hours, with tens of thousands of cases
+-would be a different thing. It would also make sense to run this
+-stress test at the same time you run other tests, like a multi-user
+-benchmark.
+-
+-CAUTION: running this program may crash your system, your disk and all
+-	your data along! DO NOT RUN IT ON PRODUCTION SYSTEMS!
+-	CONSIDER YOUR DISK FRIED.
+-	REMEMBER THE DISCLAIMER PART OF THE LICENSE.
+-
+-	Running as user nobody and with all your filesystems
+-	remounted to readonly may be wise..
+-
+-TODO:
+-	* in rand_long(), stuff in some real pointers to random data
+-	* Does a syscall is supposed to send SIGSEGV?
+-*/
+-
+-#define _GNU_SOURCE
+-#include <sys/syscall.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <setjmp.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include <errno.h>
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-
+-#include "test.h"
+-
+-char *TCID = "crash02";
+-int TST_TOTAL = 1;
+-
+-static int x_opt = 0;
+-static int v_opt = 0;
+-static char *v_copt;
+-static int s_opt = 0;
+-static char *s_copt;
+-static int l_opt = 0;
+-static char *l_copt;
+-static int n_opt = 0;
+-static char *n_copt;
+-
+-int verbose_level = 2;
+-
+-/* depends on architecture.. */
+-unsigned int sysno_max = 127;
+-
+-int nseed;
+-int ntries = 100;
+-
+-/* max time allowed per try, in seconds */
+-#define MAX_TRY_TIME 5
+-
+-void cleanup(void)
+-{
+-
+-	tst_rmdir();
+-
+-}
+-
+-void setup(void)
+-{
+-	/*
+-	 * setup a default signal hander and a
+-	 * temporary working directory.
+-	 */
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
++/*\
++ * Test the robustness of the system generating random syscalls execution
++ * with random data and expecting that the current system is not crashing.
++ */
+ 
+-	TEST_PAUSE;
++#include <limits.h>
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/getrandom.h"
+ 
+-	tst_tmpdir();
+-}
++#define MAX_SYSCALLS 465
+ 
+-void help(void)
+-{
+-	printf
+-	    ("	-x		dry run, hexdump random code instead\n");
+-	printf("	-l x		max syscall no\n");
+-	printf("	-v x		verbose level\n");
+-	printf("	-s x		random seed\n");
+-	printf("	-n x		ntries\n");
+-}
++static int *num_errors;
++static char *str_num_tries;
++static int num_tries = 1000;
+ 
+-/*
+- */
+-option_t options[] = {
+-	{"v:", &v_opt, &v_copt},
+-	{"l:", &l_opt, &l_copt},
+-	{"s:", &s_opt, &s_copt},
+-	{"n:", &n_opt, &n_copt},
+-	{"x", &x_opt, NULL},
+-
+-	{NULL, NULL, NULL}
++static int blacklist[] = {
++#if defined(__ia64__)
++	__NR_clone2,	/* IA-64 uses clone2 instead of fork/vfork */
++#else
++# if defined(__NR_vfork)
++	__NR_vfork,
++# endif
++# if defined(__NR_fork)
++	__NR_fork,
++# endif
++#endif /* __ia64__ */
++#if defined(__NR_clone)
++	__NR_clone,
++#endif
++#if defined(__NR_clone3)
++	__NR_clone3,
++#endif
++#if defined(__NR_vhangup)
++	__NR_vhangup,	/* terminal logout */
++#endif
++#if defined(__NR_pause)
++	__NR_pause,	/* sleep indefinitely */
++#endif
++#if defined(__NR_read)
++	__NR_read,	/* sleep indefinitely if the first argument is 0 */
++#endif
++	__LTP__NR_INVALID_SYSCALL,
+ };
+ 
+-void badboy_fork();
+-void badboy_loop();
+-
+-void summarize_errno();
+-void record_errno(unsigned int n);
+-
+-int main(int argc, char *argv[])
++static inline long rand_number(void)
+ {
+-	int lc;
+-
+-	tst_parse_opts(argc, argv, options, help);
+-
+-	if (v_opt)
+-		verbose_level = atoi(v_copt);
++	int64_t num = 0;
++	char buff[4];
+ 
+-	if (n_opt)
+-		ntries = atoi(n_copt);
++	if (getrandom(buff, 4, 0) == -1)
++		tst_brk(TBROK | TERRNO, "getrandom error");
+ 
+-	if (l_opt)
+-		sysno_max = atoi(l_copt);
++	num = (buff[0] << 24) | (buff[1] << 16) | (buff[2] << 8) | buff[3];
++	if (num < 0)
++		num *= -1;
++	num = (num % MAX_SYSCALLS) - 1;
+ 
+-	if (s_opt)
+-		nseed = atoi(s_copt);
+-	else
+-		nseed = time(NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		tst_resm(TINFO, "crashme02 %d %d %d", sysno_max, nseed, ntries);
+-
+-		srand(nseed);
+-		badboy_fork();
+-
+-		/* still there? */
+-		tst_resm(TPASS, "we're still here, OS seems to be robust");
+-
+-		nseed++;
+-	}
+-	cleanup();
+-	tst_exit();
++	return (long)num;
+ }
+ 
+-/* ************************* */
+-int badboy_pid;
+-
+-void my_signal(int sig, void (*func) ());
+-
+-void monitor_fcn(int sig)
+-{
+-	int status;
+-
+-	if (verbose_level >= 3)
+-		printf("time limit reached on pid. using kill.\n");
+-
+-	status = kill(badboy_pid, SIGKILL);
+-	if (status < 0) {
+-		if (verbose_level >= 3)
+-			printf("failed to kill process\n");
+-	}
+-}
+-
+-void badboy_fork(void)
++static void try_crash(const int num)
+ {
+-	int status, pid;
+-	pid_t child = fork();
++	long sysno, arg0, arg1, arg2, arg3, arg4, arg5, arg6;
++	int invalid;
++	int ret;
+ 
+-	switch (child) {
+-	case -1:
+-		perror("fork");
+-	case 0:
+-#ifdef DEBUG_LATE_BADBOY
+-		sleep(ntries * MAX_TRY_TIME + 10);
+-#else
+-		badboy_loop();
+-#endif
+-		exit(0);
+-	default:
+-		badboy_pid = child;
+-		if (verbose_level > 3)
+-			printf("badboy pid = %d\n", badboy_pid);
+-
+-		/* don't trust the child to return at night */
+-		my_signal(SIGALRM, monitor_fcn);
+-		alarm(ntries * MAX_TRY_TIME);
+-
+-		pid = waitpid(-1, &status, WUNTRACED);
+-		if (pid <= 0)
+-			perror("wait");
+-		else {
+-			if (verbose_level > 3)
+-				printf("pid %d exited with status %d\n",
+-				       pid, status);
+-#if 0
+-			record_status(status);
+-#endif
++	do {
++		invalid = 0;
++		sysno = rand_number() % MAX_SYSCALLS;
++
++		for (size_t i = 0; i < ARRAY_SIZE(blacklist); i++) {
++			if (blacklist[i] == sysno) {
++				invalid = 1;
++				break;
++			}
+ 		}
+-	}
+-	alarm(0);
+-}
+-
+-/* *************** status recording ************************* */
+ 
+-/* errno status table (max is actually around 127) */
+-#define STATUS_MAX 256
+-static int errno_table[STATUS_MAX];
+-
+-void record_errno(unsigned int n)
+-{
+-	if (n >= STATUS_MAX)
+-		return;
++		if (!invalid)
++			break;
++	} while (1);
+ 
+-	errno_table[n]++;
+-}
++	arg0 = rand_number();
++	arg1 = rand_number();
++	arg2 = rand_number();
++	arg3 = rand_number();
++	arg4 = rand_number();
++	arg5 = rand_number();
++	arg6 = rand_number();
+ 
+-/* may not work with -c option */
+-void summarize_errno(void)
+-{
+-	int i;
++	tst_res(TDEBUG,
++		"%d: syscall(%ld, %#lx, %#lx, %#lx, %#lx, %#lx, %#lx, %#lx)",
++		num, sysno, arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+ 
+-	if (x_opt || verbose_level < 2)
+-		return;
++	ret = syscall(sysno, arg0, arg1, arg2, arg3, arg4, arg5, arg6);
++	if (ret == -1) {
++		(*num_errors)++;
+ 
+-	printf("errno status ... number of cases\n");
+-	for (i = 0; i < STATUS_MAX; i++) {
+-		if (errno_table[i])
+-			printf("%12d ... %5d\n", i, errno_table[i]);
++		tst_res(TDEBUG, "syscall error: %s", strerror(errno));
+ 	}
+ }
+ 
+-/* ************* badboy ******************************************* */
+-
+-jmp_buf again_buff;
+-
+-unsigned char *bad_malloc(int n);
+-void my_signal(int sig, void (*func) ());
+-void again_handler(int sig);
+-void try_one_crash(int try_num);
+-void set_up_signals();
+-int in_blacklist(int sysno);
+-
+-/* badboy "entry" point */
+-
+-/*
+- * Unlike crashme, faulty syscalls are not supposed to barf
+- */
+-void badboy_loop(void)
++static void run(void)
+ {
+-	int i;
+-
+-	for (i = 0; i < ntries; ++i) {
+-		/* level 5 */
++	pid_t pid;
++	int status;
++	int num_signals = 0;
+ 
+-		if (!x_opt && verbose_level >= 5) {
+-			printf("try %d\n", i);
++	for (int i = 0; i < num_tries; i++) {
++		pid = SAFE_FORK();
++		if (!pid) {
++			try_crash(i);
++			exit(0);
+ 		}
+ 
+-		if (setjmp(again_buff) == 3) {
+-			if (verbose_level >= 5)
+-				printf("Barfed\n");
+-		} else {
+-			set_up_signals();
+-			alarm(MAX_TRY_TIME);
+-			try_one_crash(i);
+-		}
+-	}
+-	summarize_errno();
+-}
++		SAFE_WAITPID(pid, &status, 0);
+ 
+-void again_handler(int sig)
+-{
+-	char *ss;
++		if (WIFSIGNALED(status)) {
++			num_signals++;
+ 
+-	switch (sig) {
+-	case SIGILL:
+-		ss = " illegal instruction";
+-		break;
+-#ifdef SIGTRAP
+-	case SIGTRAP:
+-		ss = " trace trap";
+-		break;
+-#endif
+-	case SIGFPE:
+-		ss = " arithmetic exception";
+-		break;
+-#ifdef SIGBUS
+-	case SIGBUS:
+-		ss = " bus error";
+-		break;
+-#endif
+-	case SIGSEGV:
+-		ss = " segmentation violation";
+-		break;
+-#ifdef SIGIOT
+-	case SIGIOT:
+-		ss = " IOT instruction";
+-		break;
+-#endif
+-#ifdef SIGEMT
+-	case SIGEMT:
+-		ss = " EMT instruction";
+-		break;
+-#endif
+-#ifdef SIGALRM
+-	case SIGALRM:
+-		ss = " alarm clock";
+-		break;
+-#endif
+-	case SIGINT:
+-		ss = " interrupt";
+-		break;
+-	default:
+-		ss = "";
++			tst_res(TDEBUG, "syscall signaled: %s",
++				strsignal(WTERMSIG(status)));
++		}
+ 	}
+-	if (verbose_level >= 5)
+-		printf("Got signal %d%s\n", sig, ss);
+ 
+-	longjmp(again_buff, 3);
+-}
+-
+-void my_signal(int sig, void (*func) ())
+-{
+-	struct sigaction act;
++	tst_res(TINFO, "Detected errors: %d", *num_errors);
++	tst_res(TINFO, "Detected signals: %d", num_signals);
+ 
+-	act.sa_handler = func;
+-	memset(&act.sa_mask, 0x00, sizeof(sigset_t));
+-	act.sa_flags = SA_NOMASK | SA_RESTART;
+-	sigaction(sig, &act, 0);
+-}
+-
+-void set_up_signals(void)
+-{
+-	my_signal(SIGILL, again_handler);
+-#ifdef SIGTRAP
+-	my_signal(SIGTRAP, again_handler);
+-#endif
+-	my_signal(SIGFPE, again_handler);
+-#ifdef SIGBUS
+-	my_signal(SIGBUS, again_handler);
+-#endif
+-	my_signal(SIGSEGV, again_handler);
+-#ifdef SIGIOT
+-	my_signal(SIGIOT, again_handler);
+-#endif
+-#ifdef SIGEMT
+-	my_signal(SIGEMT, again_handler);
+-#endif
+-#ifdef SIGALRM
+-	my_signal(SIGALRM, again_handler);
+-#endif
+-	my_signal(SIGINT, again_handler);
++	tst_res(TPASS, "System is still up and running");
+ }
+ 
+-/*
+- * NB: rand() (ie. RAND_MAX) might be on 31bits only!
+- *
+- * FIXME: 64-bit systems
+- *
+- * TODO: improve arg mixing (16bits and 8bits values, NULLs, etc.).
+- *	big values as returned by rand() are no so interresting
+- *	(except when used as pointers) because they may fall too
+- *	quickly in the invalid parameter sieve. Smaller values,
+- *	will be more insidious because they may refer to existing
+- *	objects (pids, fd, etc.).
+- */
+-long int rand_long(void)
++static void setup(void)
+ {
+-	int r1, r2;
+-
+-	r1 = rand();
+-	r2 = rand();
+-
+-	if (r1 & 0x10000L)
+-		r1 = 0;
+-	if (!r1 && (r2 & 0x50000L))
+-		r2 = 0;
+-	else if (!r1 && (r2 & 0x20000L))
+-		r2 &= 0x00ffL;
+-
+-	return (long int)((r1 & 0xffffL) << 16) | (r2 & 0xffffL);
++	num_errors = SAFE_MMAP(
++		NULL, sizeof(int),
++		PROT_READ | PROT_WRITE,
++		MAP_SHARED | MAP_ANONYMOUS,
++		-1, 0);
++
++	if (tst_parse_int(str_num_tries, &num_tries, 1, INT_MAX))
++		tst_brk(TBROK, "Invalid number of entries '%s'", str_num_tries);
+ }
+ 
+-void try_one_crash(int try_num)
++static void cleanup(void)
+ {
+-	long int sysno, arg1, arg2, arg3, arg4, arg5, arg6, arg7;
+-
+-	do {
+-		sysno = rand() % sysno_max;
+-	} while (in_blacklist(sysno));
+-
+-	arg1 = rand_long();
+-	arg2 = rand_long();
+-	arg3 = rand_long();
+-	arg4 = rand_long();
+-	arg5 = rand_long();
+-	arg6 = rand_long();
+-	arg7 = rand_long();
+-
+-	if (x_opt || verbose_level >= 1)
+-		printf("%04d: syscall(%ld, %#lx, %#lx, %#lx, %#lx, %#lx, "
+-		       "%#lx, %#lx)\n", try_num, sysno, arg1, arg2, arg3,
+-		       arg4, arg5, arg6, arg7);
+-
+-	if (!x_opt) {
+-		syscall(sysno, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+-		record_errno(errno);
+-	}
++	if (num_errors)
++		SAFE_MUNMAP(num_errors, sizeof(int));
+ }
+ 
+-/* The following syscalls create new processes which may cause the test
+-	 unable to finish. */
+-int in_blacklist(int sysno)
+-{
+-	int i;
+-	const int list[] = {
+-#if defined(__ia64__)
+-		SYS_clone2,
+-#else
+-		/*
+-		 * No SYS_fork(vfork) on IA-64. Instead, it uses,
+-		 * clone(child_stack=0, flags=CLONE_VM|CLONE_VFORK|SIGCHLD)
+-		 * clone2()
+-		 */
+-
+-		/*
+-		 * NOTE (garrcoop):
+-		 * Could not find reference to SYS_fork(vfork) on mips32
+-		 * with the Montavista / Octeon toolchain. Need to develop an
+-		 * autoconf check for this item.
+-		 */
+-#if defined(__NR_vfork) && __NR_vfork
+-		SYS_vfork,
+-#endif
+-#if defined(__NR_fork) && __NR_fork
+-		SYS_fork,
+-#endif
+-#endif /* __ia64__ */
+-#if defined(__NR_clone) && __NR_clone
+-		SYS_clone,
+-#endif
+-#if defined(__NR_vhangup) && __NR_vhangup
+-		__NR_vhangup,	/* int vhangup(void); - terminal logout */
+-#endif
+-#if defined(__NR_pause) && __NR_pause
+-		__NR_pause,	/* int pause(void); - sleep indefinitely */
+-#endif
+-#if defined(__NR_read) && __NR_read
+-		/*
+-		 * ssize_t read(int fd, void *buf, size_t count); - will sleep
+-		 * indefinitely if the first argument is 0
+-		 */
+-		__NR_read,
+-#endif
+-		-1
+-	};
+-
+-	for (i = 0; list[i] != -1; i++) {
+-		if (sysno == list[i])
+-			return 1;
+-	}
+-
+-	return 0;
+-}
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.forks_child = 1,
++	.runtime = 40,
++	.options = (struct tst_option []) {
++		{"n:", &str_num_tries, "Number of retries (default: 1000)"},
++		{}
++	},
++};
+
+---
+base-commit: bf9589d5bdeef15b3dbb03f896793306552d0d0f
+change-id: 20250611-crash02_rewrite-b84ec3d0d22a
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
