@@ -4,92 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 091E9C71136
-	for <ltp@archiver.kernel.org>; Thu, 12 Jun 2025 01:53:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 770E3C71135
+	for <ltp@archiver.kernel.org>; Thu, 12 Jun 2025 03:43:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1749693187; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=axsBv09T8M5IXnSay0avyPQRQNXLiiAFWn2E8OFOAEM=;
- b=NVB60bu0uyoP5/2m1kX3IOUSkVL3XWIhXJn6W17k5a52ShzdBugVPr2QwDCZ72+3v40Ie
- TXt5i0ODpTaQYiGCKZf9gQNKaQWqMiuNYYPHrFOcflZFGFvGJmQu9hKkZ0q+c2wqm2mp4MP
- PcFmEykH5yYGQ92RsOPeD/0zOjmDTR8=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1749699781; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=X2TXst1mZ+kj0JOvapcnGxuk4JEDamtDlawGVda6poA=;
+ b=Nn9AzSl9wB6LA36nqI66EuOYozJFpsWFvn1/QZLZIN1AEImbPGiV4JIqx55HLL0e+Nwd4
+ CkgtZTpaiMe1ApyXbyuu86DQXypeEsckR2YGWsCNlr6b0jlJDP9F7Nx762aYrvCir0Xw/ZS
+ RpxtEAR3y9FEpwgWw8epFTcaIaaG37w=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DEB813CB2CF
-	for <ltp@archiver.kernel.org>; Thu, 12 Jun 2025 03:53:07 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id A1C053CB2D8
+	for <ltp@archiver.kernel.org>; Thu, 12 Jun 2025 05:43:01 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ABCC93C8A7F
- for <ltp@lists.linux.it>; Thu, 12 Jun 2025 03:52:47 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 6C6293CB24E
+ for <ltp@lists.linux.it>; Thu, 12 Jun 2025 05:42:41 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5DEE01A004D3
- for <ltp@lists.linux.it>; Thu, 12 Jun 2025 03:52:42 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BED71140024C
+ for <ltp@lists.linux.it>; Thu, 12 Jun 2025 05:42:39 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1749693161;
+ s=mimecast20190719; t=1749699758;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9po71QMpxPWdwdxVSa5jJNl7sEswja3gJtDCZvxDRIY=;
- b=WWE/v71hTMtlBvSuVy4UFUDc+Yzp0PvyBElKtqJsD6yqWNozCAXPrOzqe3bkYQtdwRhM4I
- 0UVpCRrYER0L0cydfn3vX+Av30ByK3u8okZ7W6/mvVuUbbxBDkFnnKg0+Y9/Xa5AOvU3QX
- M+9pQT6kUvP7s/G478SFJl2sGReeFfU=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-398-lz1qUzfxNhe1PO2POdDq_g-1; Wed, 11 Jun 2025 21:52:39 -0400
-X-MC-Unique: lz1qUzfxNhe1PO2POdDq_g-1
-X-Mimecast-MFC-AGG-ID: lz1qUzfxNhe1PO2POdDq_g_1749693158
-Received: by mail-pj1-f69.google.com with SMTP id
- 98e67ed59e1d1-3132e7266d3so487862a91.2
- for <ltp@lists.linux.it>; Wed, 11 Jun 2025 18:52:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1749693158; x=1750297958;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=9po71QMpxPWdwdxVSa5jJNl7sEswja3gJtDCZvxDRIY=;
- b=n5mK3qqNmggdygYDH2OsjjIAUTVMLLp3/bn9//xE7C+BSKvadOj/zSr+/jSyH9zvgL
- wqr+Oi5LIl/wUquTVgrBzKWhkXv7z/xou0IKYDWai1ERAvR+xv5riN7EZQJXXYz5EQW+
- AaUbpDh8D8zjzPEyo5SNLMT8DFOrDuAwL5imaPSW4OEKegWbUAcgq+jSjx9C/kNhAxs7
- Q83JmN5nEZyzJvCERo7xY9cVBBkcJEqNdtMFHt+55lq9nPz3KRY1tcUSHS1TX10zOlua
- 5u5hLvOjY5pS4O5g63G2Hn4TaKCrF+Ldtmk4RqDIvPAVjjlkQ0P8PnNxvHu2XPZYVzMe
- BqAQ==
-X-Gm-Message-State: AOJu0YxrQW/L+sMnKXoA3ul4j99UfM8zXwXJe7BnP/Ti9xVWmVOcI3TS
- yVjf4FXYQeDoCZHoiZ4R+5M0LtoFWzgzT9r1F2oSeCwQyjsMuiWZ4+d6pLQOz+uqP9aKg6/qre6
- WOqlxc3AIO/ZiRNDIBa1WlVlqs/kLyEGZFSO9msYC25oMNt5EbRK9yHNd2DW/3s/zENThBwzEYR
- U+Dd9RYlzDQiVuI3ojzE/8FedL5XA=
-X-Gm-Gg: ASbGncv04Dbe8grU5RX72onLIAd2VCF84U0cgj32wFDz7pgJ4NrFz9+ZY16UO2nPLMS
- +9i3+eqhjL4zmnMUNWReWBxdtsiZ3ljly9Cb8sPwSwnSlAzw9Z+dSok/ZQR1xbOInE+AnEPZuf+
- HMAKNC
-X-Received: by 2002:a17:90a:fd0c:b0:312:639:a058 with SMTP id
- 98e67ed59e1d1-313c08d2882mr1377034a91.27.1749693158102; 
- Wed, 11 Jun 2025 18:52:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEusftLGyDMpcEYAynp2lV5Fe0KWK2q+nICWhTC7/upJ0RQbY9E+9R3aUaVrwDOIBSl43qQAHtS7pQuRJoUcjA=
-X-Received: by 2002:a17:90a:fd0c:b0:312:639:a058 with SMTP id
- 98e67ed59e1d1-313c08d2882mr1377001a91.27.1749693157538; Wed, 11 Jun 2025
- 18:52:37 -0700 (PDT)
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Xv3LBCFGrQsQvqraIchVbLSfcOHEgCe0898jIl4FrO8=;
+ b=IjAqliQD++2Xj8zyustX51ajnLH0ihm20+5fOYa9EaVJ4Xk3N5KekI0fBYosrmMzZQBgmb
+ wxfxXy1uvCzuRCcz/hTudzDuLWEcWi1buUojhLMI0Ezs7yI0ki0r8ft3L6Q9oYOeFTEZgr
+ bEAMB3B/LBFrkaGepR9Ps2c8mEwFqJo=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-480-hW02XT3XOtOJk2sWPe0m_A-1; Wed,
+ 11 Jun 2025 23:42:36 -0400
+X-MC-Unique: hW02XT3XOtOJk2sWPe0m_A-1
+X-Mimecast-MFC-AGG-ID: hW02XT3XOtOJk2sWPe0m_A_1749699756
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id CAE7E1801BD8
+ for <ltp@lists.linux.it>; Thu, 12 Jun 2025 03:42:35 +0000 (UTC)
+Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
+ (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
+ by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id ABF191956048
+ for <ltp@lists.linux.it>; Thu, 12 Jun 2025 03:42:34 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Thu, 12 Jun 2025 11:42:29 +0800
+Message-ID: <20250612034229.310523-1-liwang@redhat.com>
 MIME-Version: 1.0
-References: <20250611-conversions-kill-v1-1-a5d7312df7fe@suse.com>
-In-Reply-To: <20250611-conversions-kill-v1-1-a5d7312df7fe@suse.com>
-Date: Thu, 12 Jun 2025 09:52:24 +0800
-X-Gm-Features: AX0GCFthZF5oQgzyqhSpZm-mi-pV5zE7Gq4Pz5vUqt9gXyBywabc9gRqA8LUNsQ
-Message-ID: <CAEemH2d1JwuFBVVTLTji172qZHss0AgK6n6-uEH1v+Xz_P7P-Q@mail.gmail.com>
-To: =?UTF-8?Q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: -SjYB8OBUOqGhNEuNHFWfV6cZBx_VqdJe4lsCM4XeAo_1749693158
+X-Mimecast-MFC-PROC-ID: 1L0XUk8sxgaiAzFq9tDUIuNeA9Kys30rcHXvGLEoRus_1749699756
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] syscalls: kill: Remove kill07
+Subject: [LTP] [PATCH] safe_mmap: Avoid using TDEBUG before IPC is
+ initialized
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,21 +85,64 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Li Wang via ltp <ltp@lists.linux.it>
 Reply-To: Li Wang <liwang@redhat.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-UmljYXJkbyBCLiBNYXJsacOocmUgdmlhIGx0cCA8bHRwQGxpc3RzLmxpbnV4Lml0PiB3cm90ZToK
-CkZyb206IFJpY2FyZG8gQi4gTWFybGnDqHJlIDxyYm1Ac3VzZS5jb20+Cj4KPiBUaGUgdGVzdCBj
-YXNlIGRlc2NyaXB0aW9uIHJlYWRzOgo+Cj4gIlRlc3QgY2FzZSB0byBjaGVjayB0aGF0IFNJR0tJ
-TEwgY2FuIG5vdCBiZSBjYXVnaHQuIgo+Cj4gSXQgbWFrZXMgdXNlIG9mIHNpZ2FjdGlvbigpIHRv
-IHNldCB1cCBhIGhhbmRsZXIgZm9yIFNJR0tJTEwsIGJ1dAo+IGFjY29yZGluZyB0byBpdHMgbWFu
-dWFsIHBhZ2U6Cj4KPiAiRUlOVkFMIEFuIGludmFsaWQgc2lnbmFsIHdhcyBzcGVjaWZpZWQuICBU
-aGlzIHdpbGwgYWxzbyBiZSBnZW5lcmF0ZWQgaWYgYW4KPiBhdHRlbXB0IGlzIG1hZGUgdG8gY2hh
-bmdlIHRoZSBhY3Rpb24gZm9yIFNJR0tJTEwgb3IgU0lHU1RPUCwgd2hpY2ggY2Fubm90Cj4gYmUg
-Y2F1Z2h0IG9yIGlnbm9yZWQuIgo+CgpPciBjb3VsZCB3ZSByZWZhY3RvciBraWxsMDcgdG8gdmFs
-aWRhdGUgdGhlIEVJTlZBTCB3aGVuIGNoYW5naW5nIGFjdGlvbiBvbgpTSUdLSUxML1NJR1NUT1A/
-CgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9s
-aXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+After commit bf9589d5bd ("lib: move test infrastructure states into a shared context structure"),
+each test began printing unexpected TDEBUG messages like:
+
+  tst_test.c:142: TDEBUG: mmap((nil), 4096, PROT_READ | PROT_WRITE(3), 1, 3, 0)
+  ...
+  tst_test.c:199: TDEBUG: mmap((nil), 4096, PROT_READ | PROT_WRITE(3), 1, 3, 0)
+
+This happens because the logic in tst_res_():
+
+  if (ttype == TDEBUG && context && !context->tdebug)
+
+allows TDEBUG messages to be printed even the context is not yet initialized.
+During early test setup (such as in SAFE_MMAP), the shared context may
+not be initialized yet, causing debug logs to be emitted unintentionally.
+
+This patch removes the TDEBUG logging from SAFE_MMAP to avoid these
+misleading logs during early initialization.
+
+Follow-up: commit bf9589d5bd ("lib: move test infrastructure states into a shared context structure")
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+
+Notes:
+    I admit that this removal may result in the loss of early debug
+    output from the LTP library. However, after reviewing the codebase,
+    it appears that this was the only place using TDEBUG during early
+    initialization, so removing it simplifies the behavior without
+    significant loss of functionality.
+    
+    But, if someone argues that we need this, I guess we can add a
+    macro tst_early_debug(fmt, ...) to replace the tst_res_(TDEBUG, ...).
+
+ include/tst_safe_macros_inline.h | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/include/tst_safe_macros_inline.h b/include/tst_safe_macros_inline.h
+index 15b756860..15500b20a 100644
+--- a/include/tst_safe_macros_inline.h
++++ b/include/tst_safe_macros_inline.h
+@@ -237,10 +237,6 @@ static inline void *safe_mmap(const char *file, const int lineno,
+ 
+ 	tst_prot_to_str(prot, prot_buf);
+ 
+-	tst_res_(file, lineno, TDEBUG,
+-		"mmap(%p, %zu, %s(%x), %d, %d, %lld)",
+-		addr, length, prot_buf, prot, flags, fd, (long long int)offset);
+-
+ 	rval = mmap(addr, length, prot, flags, fd, offset);
+ 	if (rval == MAP_FAILED) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+-- 
+2.49.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
