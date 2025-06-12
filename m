@@ -4,94 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 035E9C61CE8
-	for <ltp@archiver.kernel.org>; Thu, 12 Jun 2025 07:19:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AA2CC61CE8
+	for <ltp@archiver.kernel.org>; Thu, 12 Jun 2025 07:49:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1749712749; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1749714542; h=mime-version :
  references : in-reply-to : date : message-id : to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=/5PFc4uzGfdkyJ3mG1szyz9TG3PxQ+8p3ppJtH//Q6Y=;
- b=nfgRBem2HVQBk8fH179XR/E2vunAqPyQS0BAe+RKD+U8NPAA21lg8jcNcWHB56wa9MEUS
- 2CR03hLModvjsv+pm5pljo9sjDl19GN/dOhH2vzOcyqzEtqRbFtbqd32cLJJjXiaDA3D1je
- UNDNUFdLcgLgFPk89zF/5nDrJxKapsA=
+ bh=RkPwuMhOp3i9D7SbzbsCA5CqpiTuHExfwBzl0g2bSow=;
+ b=T9cLPhKD06AIcXX9uLO8GC4lnCqEZJ31M7N89yE+zdWcuZ2hzCGDDfueYnP8Ccjd1DtT4
+ 4m251PePc+fC2hPKqvaGsfGAUQb9GBdR0ldbL0qvaYwcOhwa2bueQ4YOD6Qo7gZHhAneCkM
+ N/136CpsUgLq15wE1oCCnonIHcVBjpc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 35F083CB314
-	for <ltp@archiver.kernel.org>; Thu, 12 Jun 2025 09:19:09 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 4237B3CB304
+	for <ltp@archiver.kernel.org>; Thu, 12 Jun 2025 09:49:02 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 645DC3CAB6D
- for <ltp@lists.linux.it>; Thu, 12 Jun 2025 09:18:48 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 665063CA59D
+ for <ltp@lists.linux.it>; Thu, 12 Jun 2025 09:48:41 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A45F460004C
- for <ltp@lists.linux.it>; Thu, 12 Jun 2025 09:18:46 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BF8FB10002AC
+ for <ltp@lists.linux.it>; Thu, 12 Jun 2025 09:48:40 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1749712725;
+ s=mimecast20190719; t=1749714519;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6YoWbrLtocmLlQlAeG+yHYR96UJ4Z665gS+z4yIgmes=;
- b=dDUkTZ93AGWBfMxH3veawlcTiafPFz+TAlNRhysVhE8PIk5KqVd2Ts+/z/hD2jmhyJBvHm
- L5b5qG+3V6yjZwZaH7iTKbstWdSDQig20bM0n87hlwn8WraUQdtKACvcmpU9VbTUp3o+cX
- C8g/v5X3CfonfrXBmMcJ6UBOPcx3R20=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=0dpk3oEpAQg8dp0Zjg69cTiXZsN3U2j6d/INaU0nepw=;
+ b=gUAjxZ5nxl3PEH9amBAb/NVDSu7aMDnNAlzhRMxZ16uaqJgWuOJFBXjnN+1vwoXGbrkdJS
+ BVUzuceO3GGJHcsuhwK35URPW/JaikH/LNlYuvgn/yg0II6iGWgiDpsR6OLEYRSbj1cgwS
+ GrrRRiUFyg8MmuEWGZ3xDZYa+8UqQVQ=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-623-kcHYwJWVNNaJYc3oi1Gvqw-1; Thu, 12 Jun 2025 03:18:43 -0400
-X-MC-Unique: kcHYwJWVNNaJYc3oi1Gvqw-1
-X-Mimecast-MFC-AGG-ID: kcHYwJWVNNaJYc3oi1Gvqw_1749712722
-Received: by mail-pj1-f72.google.com with SMTP id
- 98e67ed59e1d1-310e7c24158so687177a91.3
- for <ltp@lists.linux.it>; Thu, 12 Jun 2025 00:18:43 -0700 (PDT)
+ us-mta-600-JQVd-RITOyCTJNAOfPyqEQ-1; Thu, 12 Jun 2025 03:48:37 -0400
+X-MC-Unique: JQVd-RITOyCTJNAOfPyqEQ-1
+X-Mimecast-MFC-AGG-ID: JQVd-RITOyCTJNAOfPyqEQ_1749714516
+Received: by mail-pj1-f70.google.com with SMTP id
+ 98e67ed59e1d1-31171a736b2so1059023a91.1
+ for <ltp@lists.linux.it>; Thu, 12 Jun 2025 00:48:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1749712721; x=1750317521;
+ d=1e100.net; s=20230601; t=1749714516; x=1750319316;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=6YoWbrLtocmLlQlAeG+yHYR96UJ4Z665gS+z4yIgmes=;
- b=uXbV3Yu0XV4yLQthBUEwkWruF+vh2tSs926dMGgf8b4V7J1OICjoSHslI/eq4eeSR4
- 7iyRXcaMtG3YXJBhrMRTR3Indlajf1ZguUQUyXnv1ElZ1XNeDux/eztn5tOK6wB2i89u
- rd6wJ+hO264usfPDToWt8Nx75lDNzqXyxYvaa+EwgOogLdAGLkYOiUyBuRZX7ytKCn6B
- MlyLjt/DoHRlmDU019d5xKM+OImMqNFQY0nqjIxKTZY67BfEJcHqJK8t1GWMa/ARJ9ou
- 2ZFZumLgME8zfpvy2fFkTQz7+grc9s4dFc4WFt4C5zl2D5GqwDWC97FtMk+dcxKMoUVt
- FqVA==
-X-Gm-Message-State: AOJu0YyhS7M5/4X5JLA+0MpUoogC628IxAQhxN8XBb9JAGPvk1a05gZu
- Niv3nYreP+iMShPsRbBHYeelmOw0e1/GlB/pyfYxaHmrS4V+OxF6b60Re+wwgStF7loOAPNfbpd
- IQzMoSGosp0TdUtIubROkCW4cFrHk+mkeANbH49binfeUejgQyQqatGEjrwJ3NpATxqV9ZTwzY/
- U5ar8bJ4BoB1s/Q33cKLKQhLgUt2H5h76x8qha2Q==
-X-Gm-Gg: ASbGncs4fdMVEhJiC0vEjLTZBP8SDeu/w5VQumhqzYt6nImyV6evSKdm8Qj3tKfA/Oh
- z8Ly0st+RmL4uWO8cFJEV3rXUSJ3Lel5hq3pAiHkOxyS3BYR0fZZv2Prlt8CRZsAZK875IqNwQQ
- veq2gP
-X-Received: by 2002:a17:90b:274e:b0:311:afd1:745b with SMTP id
- 98e67ed59e1d1-313bfb6768dmr3616471a91.11.1749712720898; 
- Thu, 12 Jun 2025 00:18:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG3nuHP4FqgdUrWGeEGizKnHRo/Bshv/SWYbT32NacAKFs1S7vmS5E0ZdV99WOmoecM3NXtq5Q1QfaFUW0a0Kk=
-X-Received: by 2002:a17:90b:274e:b0:311:afd1:745b with SMTP id
- 98e67ed59e1d1-313bfb6768dmr3616452a91.11.1749712720520; Thu, 12 Jun 2025
- 00:18:40 -0700 (PDT)
+ bh=0dpk3oEpAQg8dp0Zjg69cTiXZsN3U2j6d/INaU0nepw=;
+ b=Ciy1KiUSui4Ck0n0947LH8Npt3AY1BiUvN7Iy7otmxtSlhABmYlNa6ImFrro1j8Ser
+ xCCBhtP20ymFPzXM6DIGLjLXtEWFrMv3GM4nvFX9c92qWCbmDdLn8JgSRHOQMk1x/TME
+ XLA2k4QlqznVoPadpvs0PJgE90uJ1MIs5pw0ujDtd7sfkGW9Jbe+4q8+giIs25nH1tcc
+ MbOvIDhR+bA6JkS21zNw6QrbNmqfxv7enK7BxLJ6AQo0whcVcT1yt0M06t9wHmfkFZ78
+ 6XHDE6ssqP5lppWoGdsAhFw+55+SKCvzFUB+NKE4VrN4pm94vt9WkENl3cy++x+YDKjy
+ HlXQ==
+X-Gm-Message-State: AOJu0YxIVSeaEHXWjroXvjv8B8Pfgialkr3PYjBV5Ri8lQ8/i/pXQl7e
+ 7ModOymksJpMOx30fUwADWE6Ec3Ae6Lwzgaz4hqewlBSzvRzN/GFmWPTt/ukjtIkjMQe1I1bRPb
+ tNrfVrFDIgcuOPSU2iVxnHos2pj2f5c6g5eRaSIho7ghAvKEP3+SWMd8mzimJf5oO8BfU8jiMWD
+ 6njuGATv9YJEc4sIwrwDgum4SFV+Q=
+X-Gm-Gg: ASbGncv0tSgXxhqBhJu7VEXbF6SSmsBeBafRo3Ou71UIgkEhQhj6vTmcj/6Hk5Xb2ms
+ 7ALzQuLJM2GhPbYZRB8TffKkp0eSLclU+Ifco0+xnXGQC3NmIVvsVJvL7ENzROgu0aAQuJO0hC5
+ MWPmo9
+X-Received: by 2002:a17:90b:3508:b0:312:eaea:afa1 with SMTP id
+ 98e67ed59e1d1-313c08cfd2emr2465303a91.29.1749714516515; 
+ Thu, 12 Jun 2025 00:48:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF2y8fVYRzMqICQGMqVvaQL2FMOUE5lVd3FYmDUTxcX4imcJaxRmrtVNUa5ObHWsmCgULcUxU0lOKIbM9/D96E=
+X-Received: by 2002:a17:90b:3508:b0:312:eaea:afa1 with SMTP id
+ 98e67ed59e1d1-313c08cfd2emr2465284a91.29.1749714516212; Thu, 12 Jun 2025
+ 00:48:36 -0700 (PDT)
 MIME-Version: 1.0
 References: <20250609124506.1454420-1-pvorel@suse.cz>
- <20250609124506.1454420-5-pvorel@suse.cz>
-In-Reply-To: <20250609124506.1454420-5-pvorel@suse.cz>
-Date: Thu, 12 Jun 2025 15:18:28 +0800
-X-Gm-Features: AX0GCFuYA0cs0GkWyE2oJm00tkdcSGEepT4XUWmsmrXC-d7OfF72BYu34-D-X1o
-Message-ID: <CAEemH2daxDgyXu2Hm4X7qaB+UDCP-A3g6Z7p7-P4NbdhBpLPtQ@mail.gmail.com>
+ <20250609124506.1454420-4-pvorel@suse.cz>
+In-Reply-To: <20250609124506.1454420-4-pvorel@suse.cz>
+Date: Thu, 12 Jun 2025 15:48:23 +0800
+X-Gm-Features: AX0GCFvXu0pgojPp-AJk8EXTl_1i-vO0Cig4s-scVils1Rv_Z2_0yd9Md-kLsAs
+Message-ID: <CAEemH2coV_yJM5Kg5JN9FVqx6b=_CLTLzhCtCfCwqHnP-_j=yA@mail.gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: YzKClho-pZBLSds2B9RLOooYFZerwGETz2wZXZ_7Ug0_1749712722
+X-Mimecast-MFC-PROC-ID: MBYeIlpCvQh7O0sJKWDIfG7h2UnC_YGXML_KQo9j_0g_1749714516
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v3 4/4] shell: Add shell_loader_setup_cleanup.sh
- test
+Subject: Re: [LTP] [PATCH v3 3/4] shell lib: Add basic support for test setup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,21 +110,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Petr Vorel <pvorel@suse.cz> wrote:
+PM Petr Vorel <pvorel@suse.cz> wrote:
 
 
-> --- a/testcases/lib/run_tests.sh
-> +++ b/testcases/lib/run_tests.sh
-> @@ -10,6 +10,7 @@ shell_loader_kconfigs.sh
->  shell_loader_supported_archs.sh
->  shell_loader_tcnt.sh
->  shell_loader_cleanup.sh
-> +shell_loader_setup_cleanup.sh
+> --- /dev/null
+> +++ b/testcases/lib/tst_run.sh
+> @@ -0,0 +1,16 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2025 Cyril Hrubis <chrubis@suse.cz>
+> +# Copyright (c) 2025 Petr Vorel <pvorel@suse.cz>
+> +
+> +. tst_env.sh
+> +
+> +if [ -n "$TST_CLEANUP" ]; then
+> +       trap $TST_CLEANUP EXIT
+> +fi
+> +
+> +if [ -n "$TST_SETUP" ]; then
+> +    $TST_SETUP
+> +fi
+> +
 >
 
-One more word: With this shell_loader_setup_cleanup.sh, which contains
-test shell_loader_cleanup.sh, maybe we can remove the latter one?
+Here maybe better to have a check before the tst_test:
 
+if ! declare -F tst_test > /dev/null; then
+    tst_brk TBROK "tst_test() function is not defined"
+fi
+
+
+> +tst_test
+> --
+> 2.49.0
+>
+
+Sorry, I should have pointed this out at the first review, but
+the idea came to my mind a little bit delayed :).
 
 -- 
 Regards,
