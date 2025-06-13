@@ -4,75 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60B45C71135
-	for <ltp@archiver.kernel.org>; Fri, 13 Jun 2025 08:14:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1749802484; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=qF4tqItHRGZ2HxJSUoq10EUjjoM8LzjRdltj/bFb5RU=;
- b=RFt9IsdB0IWnD00xmR5HQtaz5yI2BgsU4TiOGpXjPQFPxTe1GGlkF5zbslbWd655ZQdOB
- UNWO5E12dQDmSU4NLRUYOIoKrA2ug+g55r3aMGyf0JYkJsfedKIPtDugNc5iQ4XQhwNuVt/
- WDj1IehWdjmuVPTne5BkuvccT2w1Mo8=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33412C71148
+	for <ltp@archiver.kernel.org>; Fri, 13 Jun 2025 14:55:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A625E3CB4F6
-	for <ltp@archiver.kernel.org>; Fri, 13 Jun 2025 10:14:44 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 23EDE3CB5CA
+	for <ltp@archiver.kernel.org>; Fri, 13 Jun 2025 16:55:18 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BDE883CABE9
- for <ltp@lists.linux.it>; Fri, 13 Jun 2025 10:14:21 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 6CA893C9188
+ for <ltp@lists.linux.it>; Fri, 13 Jun 2025 16:55:00 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CC66B140077B
- for <ltp@lists.linux.it>; Fri, 13 Jun 2025 10:14:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1749802458;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=NCRtrkop3KMWf12TzRMrRfzjk3OThr0AffCxadal86Y=;
- b=SSyidfo+T00rVHF+kKQAi/Qd3fDq+ttMW6PUur96QGwa3RSoFFAAHYS+JbGP7sAekRm4ll
- FlQ4zI/xVKc3mnHLkzXLo5e3/5FyF6TCIxVaM+iYNw5IjmvlKFsHRLmzhQC+qv+opU9ndq
- coZyAnIkaG1MJbHeyJgPm3WHCEJBOGU=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-520-Et5onoKMMReWwdffw1MmcQ-1; Fri,
- 13 Jun 2025 04:14:16 -0400
-X-MC-Unique: Et5onoKMMReWwdffw1MmcQ-1
-X-Mimecast-MFC-AGG-ID: Et5onoKMMReWwdffw1MmcQ_1749802456
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2D18D1A0092B
+ for <ltp@lists.linux.it>; Fri, 13 Jun 2025 16:54:58 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id CCA271956048
- for <ltp@lists.linux.it>; Fri, 13 Jun 2025 08:14:15 +0000 (UTC)
-Received: from dell-per430-17.gsslab.pek2.redhat.com
- (dell-per430-17.gsslab.pek2.redhat.com [10.72.36.28])
- by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 3582719560AF
- for <ltp@lists.linux.it>; Fri, 13 Jun 2025 08:14:13 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Fri, 13 Jun 2025 04:14:09 -0400
-Message-ID: <20250613081409.2391948-1-chwen@redhat.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 594B31F397;
+ Fri, 13 Jun 2025 14:54:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1749826497; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=g+7xJuyHfrBg47cysf79eiD4tI1KTvOf2+VBLR/Q2Bs=;
+ b=qT+tbuxJ5431zF6tGhGsz+xFNP2YGXdYmF7ozk4cCkdGvPS6uoB00pJjOJfZn8BEi79o/H
+ sBzu+gQBdGCsB/daRE/c6RV99E+sTHZmLmVmPTkzL2qUrPsft7/iGNdmtzF9ZopsTZVAch
+ Klpfp5G2gn47zIoZRnfvJBBxlX2UydY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1749826497;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=g+7xJuyHfrBg47cysf79eiD4tI1KTvOf2+VBLR/Q2Bs=;
+ b=Wyamt5ylWYH8GVeEXKfbTtdSEiM0LSli2NcdroKgRw1ykx4cD/I495fycedGtqf0D80SHQ
+ rU+xscJouyQwKlDg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=qT+tbuxJ;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Wyamt5yl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1749826497; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=g+7xJuyHfrBg47cysf79eiD4tI1KTvOf2+VBLR/Q2Bs=;
+ b=qT+tbuxJ5431zF6tGhGsz+xFNP2YGXdYmF7ozk4cCkdGvPS6uoB00pJjOJfZn8BEi79o/H
+ sBzu+gQBdGCsB/daRE/c6RV99E+sTHZmLmVmPTkzL2qUrPsft7/iGNdmtzF9ZopsTZVAch
+ Klpfp5G2gn47zIoZRnfvJBBxlX2UydY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1749826497;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=g+7xJuyHfrBg47cysf79eiD4tI1KTvOf2+VBLR/Q2Bs=;
+ b=Wyamt5ylWYH8GVeEXKfbTtdSEiM0LSli2NcdroKgRw1ykx4cD/I495fycedGtqf0D80SHQ
+ rU+xscJouyQwKlDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4712913782;
+ Fri, 13 Jun 2025 14:54:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id cTGQEME7TGhIHwAAD6G6ig
+ (envelope-from <akumar@suse.de>); Fri, 13 Jun 2025 14:54:57 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: Li Wang <liwang@redhat.com>
+Date: Fri, 13 Jun 2025 16:54:56 +0200
+Message-ID: <2804439.mvXUDI8C0e@thinkpad>
+In-Reply-To: <20250606110541.220472-3-liwang@redhat.com>
+References: <20250606110541.220472-1-liwang@redhat.com>
+ <20250606110541.220472-3-liwang@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: wOqPAARvdR9s6KUtLzjw4-s0uVf8yk5Q56dyPgQqJb4_1749802456
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 594B31F397
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; CTE_CASE(0.50)[];
+ MID_RHS_NOT_FQDN(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v10] Add tls parameter and flag:CLONE_SETTLS cover for
- clone and clone3 syscall
+Subject: Re: [LTP] [PATCH v3 3/3] lib: moves test infrastructure states into
+ a shared context structure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,444 +120,608 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: chunfuwen via ltp <ltp@lists.linux.it>
-Reply-To: chunfuwen <chwen@redhat.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-tls parameter and related flag:CLONE_SETTLS are missed in the testing,
-so add them into existed test case
+Hi Li,
 
-Signed-off-by: chunfuwen <chwen@redhat.com>
----
-Changes in v10:
-- Fix fedora42 failure by adding tcb
-- Add missing usleep(1000) in free_tls
+This seems to be causing a regression with connectors/pec test:
 
-Changes in v9:
-- allow small delay by using usleep before call free_tls
-- validate ./clone10 -i 10 on aarch64 and x86_64, both pass 
+susetest:~/ltp/testcases/kernel/connectors/pec # ./cn_pec.sh 
+cn_pec 1 TINFO: Running: cn_pec.sh 
+cn_pec 1 TINFO: Tested kernel: Linux susetest 6.14.6-2-default #1 SMP PREEMPT_DYNAMIC Tue May 13 09:56:22 UTC 2025 (ad69173) x86_64 x86_64 x86_64 GNU/Linux
+cn_pec 1 TINFO: Using /tmp/LTP_cn_pec.djtsC3Zcsz as tmpdir (tmpfs filesystem)
+cn_pec 1 TINFO: timeout per run is 0h 5m 0s
+cn_pec 1 TINFO: Test process events connector
+cn_pec 1 TINFO: Testing fork event (nevents=10)
+tst_test.c:199: TDEBUG: mmap((nil), 4096, PROT_READ | PROT_WRITE(3), 1, 4, 0)
+tst_test.c:203: TBROK: Invalid shared memory region (bad magic)
+tst_test.c:199: TDEBUG: mmap((nil), 4096, PROT_READ | PROT_WRITE(3), 1, 3, 0)
+tst_test.c:203: TBROK: Invalid shared memory region (bad magic)
+tst_test.c:199: TDEBUG: mmap((nil), 4096, PROT_READ | PROT_WRITE(3), 1, 3, 0)
+tst_test.c:203: TBROK: Invalid shared memory region (bad magic)
+cn_pec 1 TBROK: tst_checkpoint wait 10000 0 failed
+cn_pec 1 TINFO: SELinux enabled in enforcing mode, this may affect test results
+cn_pec 1 TINFO: it can be disabled with TST_DISABLE_SELINUX=1 (requires super/root)
+cn_pec 1 TINFO: loaded SELinux profiles: none
 
-Changes in v8:
-- call free_tls() in touch_tls_in_child instead of cleanup
-- remove CFLAGS += -fsanitize=address in Makefile to fix memory double free
-  issue
+Summary:
+passed   0
+failed   0
+broken   1
+skipped  0
+warnings 0
 
-Changes in v7:
-- remove unnecessary in verify_tls()
-- add CFLAGS += -fsanitize=address in Makefile to fix memory double free
-  issue
 
-Changes in v6:
-- update flag to effective combination
-- combine x86_64 with other arches
-- rename child function
-- remove inproper exit
-- remove unused code lines
-- remove sleep statement
 
-Changes in v5:
-- wrap duplicate code into one single methold
-- remove duplicately malloc
 
-Changes in v4:
-- remove riscv and loongarch definition
+On Friday, June 6, 2025 1:05:41 PM CEST Li Wang via ltp wrote:
+> This patch introduces a new struct context to consolidate various
+> runtime state variables previously maintained as global variables
+> in tst_test.c. The goal is to support better state sharing between
+> parent and child processes particularly in scenarios that involve
+> checkpointing or fork/exec patterns.
+> 
+> To achieve this, a new struct ipc_region is defined, which encapsulates
+> three components: a magic field for validation, a context structure for
+> runtime metadata, and a results structure for test result counters.
+> Optionally, a futex array is appended for test checkpoint synchronization.
+> 
+> Test library IPC region (only one page size):
+> 
+>         +----------------------+
+>         |   Magic Number       |
+>         +----------------------+
+>         |   struct context     |
+>         +----------------------+
+>         |   struct results     |
+>         +----------------------+
+>         |   futexes[], or N/A  |
+>         +----------------------+
+> 
+> The shared memory region is allocated with a single page using mmap()
+> and is zero-initialized with memset() to ensure a clean initial state.
+> 
+> The patch refactors setup_ipc() and tst_reinit() to map this shared
+> region and properly initialize internal pointers to the `context`,
+> `results`, and `futexes` regions.
+> 
+> Overall, this refactor reduces global state pollution, centralizes the
+> runtime state management, and enables safe and efficient state sharing
+> across test lifecycle phases. It also sets the foundation for future
+> improvements such as multi-threaded test coordination or enhanced IPC
+> mechanisms.
+> 
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  lib/tst_test.c | 209 ++++++++++++++++++++++++++++---------------------
+>  1 file changed, 118 insertions(+), 91 deletions(-)
+> 
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 92dd6279d..8cb3507c9 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -52,6 +52,7 @@ const char *TCID __attribute__((weak));
+>  #define CVE_DB_URL "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"
+>  
+>  #define DEFAULT_TIMEOUT 30
+> +#define LTP_MAGIC 0x4C54504D /* Magic number is "LTPM" */
+>  
+>  struct tst_test *tst_test;
+>  
+> @@ -59,36 +60,47 @@ static const char *tcid;
+>  static int iterations = 1;
+>  static float duration = -1;
+>  static float timeout_mul = -1;
+> -static int mntpoint_mounted;
+> -static int ovl_mounted;
+> -static struct timespec tst_start_time; /* valid only for test pid */
+> -static int tdebug;
+>  static int reproducible_output;
+>  
+> -struct results {
+> -	int passed;
+> -	int skipped;
+> -	int failed;
+> -	int warnings;
+> -	int broken;
+> +struct context {
+> +	int32_t lib_pid;
+> +	int32_t main_pid;
+> +	struct timespec start_time;
+> +	int32_t runtime;
+> +	int32_t overall_time;
+>  	/*
+>  	 * This is set by a call to tst_brk() with TBROK parameter and means
+>  	 * that the test should exit immediately.
+>  	 */
+> -	int abort_flag;
+> -	unsigned int runtime;
+> -	unsigned int overall_time;
+> -	pid_t lib_pid;
+> -	pid_t main_pid;
+> +	tst_atomic_t abort_flag;
+> +	uint32_t mntpoint_mounted:1;
+> +	uint32_t ovl_mounted:1;
+> +	uint32_t tdebug:1;
+>  };
+>  
+> -static struct results *results;
+> +struct results {
+> +	tst_atomic_t passed;
+> +	tst_atomic_t skipped;
+> +	tst_atomic_t failed;
+> +	tst_atomic_t warnings;
+> +	tst_atomic_t broken;
+> +};
+>  
+> -static int ipc_fd;
+> +struct ipc_region {
+> +	int32_t magic;
+> +	struct context context;
+> +	struct results results;
+> +	futex_t futexes[];
+> +};
+>  
+> -extern void *tst_futexes;
+> +static struct ipc_region *ipc;
+> +static struct context *context;
+> +static struct results *results;
+> +
+> +extern volatile void *tst_futexes;
+>  extern unsigned int tst_max_futexes;
+>  
+> +static int ipc_fd;
+>  static char ipc_path[1064];
+>  const char *tst_ipc_path = ipc_path;
+>  
+> @@ -127,25 +139,29 @@ static void setup_ipc(void)
+>  
+>  	SAFE_FTRUNCATE(ipc_fd, size);
+>  
+> -	results = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, ipc_fd, 0);
+> -
+> -	/* Checkpoints needs to be accessible from processes started by exec() */
+> -	if (tst_test->needs_checkpoints || tst_test->child_needs_reinit) {
+> -		sprintf(ipc_path, IPC_ENV_VAR "=%s", shm_path);
+> -		putenv(ipc_path);
+> -	} else {
+> -		SAFE_UNLINK(shm_path);
+> -	}
+> +	ipc = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, ipc_fd, 0);
+>  
+>  	SAFE_CLOSE(ipc_fd);
+>  
+> +	memset(ipc, 0, size);
+> +
+> +	ipc->magic = LTP_MAGIC;
+> +	context = &ipc->context;
+> +	results = &ipc->results;
+> +	context->lib_pid = getpid();
+> +
+>  	if (tst_test->needs_checkpoints) {
+> -		tst_futexes = (char *)results + sizeof(struct results);
+> -		tst_max_futexes = (size - sizeof(struct results))/sizeof(futex_t);
+> +		tst_futexes = ipc->futexes;
+> +		tst_max_futexes = (size - offsetof(struct ipc_region, futexes)) / sizeof(futex_t);
+>  	}
+>  
+> -	memset(results, 0 , size);
+> -	results->lib_pid = getpid();
+> +	/* Set environment variable for exec()'d children */
+> +	if (tst_test->needs_checkpoints || tst_test->child_needs_reinit) {
+> +		snprintf(ipc_path, sizeof(ipc_path), IPC_ENV_VAR "=%s", shm_path);
+> +		putenv(ipc_path);
+> +	} else {
+> +		SAFE_UNLINK(shm_path);
+> +	}
+>  }
+>  
+>  static void cleanup_ipc(void)
+> @@ -158,9 +174,11 @@ static void cleanup_ipc(void)
+>  	if (shm_path[0] && !access(shm_path, F_OK) && unlink(shm_path))
+>  		tst_res(TWARN | TERRNO, "unlink(%s) failed", shm_path);
+>  
+> -	if (results) {
+> -		msync((void *)results, size, MS_SYNC);
+> -		munmap((void *)results, size);
+> +	if (ipc) {
+> +		msync((void *)ipc, size, MS_SYNC);
+> +		munmap((void *)ipc, size);
+> +		ipc = NULL;
+> +		context = NULL;
+>  		results = NULL;
+>  	}
+>  }
+> @@ -178,12 +196,21 @@ void tst_reinit(void)
+>  		tst_brk(TBROK, "File %s does not exist!", path);
+>  
+>  	fd = SAFE_OPEN(path, O_RDWR);
+> +	ipc = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+> +	SAFE_CLOSE(fd);
+>  
+> -	results = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+> -	tst_futexes = (char *)results + sizeof(struct results);
+> -	tst_max_futexes = (size - sizeof(struct results))/sizeof(futex_t);
+> +	if (ipc->magic != LTP_MAGIC)
+> +		tst_brk(TBROK, "Invalid shared memory region (bad magic)");
+>  
+> -	SAFE_CLOSE(fd);
+> +	/* Restore the parent context from IPC region */
+> +	context = &ipc->context;
+> +	results = &ipc->results;
+> +
+> +	tst_futexes = ipc->futexes;
+> +	tst_max_futexes = (size - offsetof(struct ipc_region, futexes)) / sizeof(futex_t);
+> +
+> +	if (context->tdebug)
+> +		tst_res(TINFO, "tst_reinit(): restored metadata for PID %d", getpid());
+>  }
+>  
+>  extern char **environ;
+> @@ -400,7 +427,7 @@ void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
+>  	 * If tst_brk() is called from some of the C helpers even before the
+>  	 * library was initialized, just exit.
+>  	 */
+> -	if (!results || !results->lib_pid)
+> +	if (!results || !context->lib_pid)
+>  		exit(TTYPE_RESULT(ttype));
+>  
+>  	update_results(TTYPE_RESULT(ttype));
+> @@ -411,13 +438,13 @@ void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
+>  	 * specified but CLONE_THREAD is not. Use direct syscall to avoid
+>  	 * cleanup running in the child.
+>  	 */
+> -	if (tst_getpid() == results->main_pid)
+> +	if (tst_getpid() == context->main_pid)
+>  		do_test_cleanup();
+>  
+>  	/*
+>  	 * The test library process reports result statistics and exits.
+>  	 */
+> -	if (getpid() == results->lib_pid)
+> +	if (getpid() == context->lib_pid)
+>  		do_exit(TTYPE_RESULT(ttype));
+>  
+>  	/*
+> @@ -428,16 +455,16 @@ void tst_vbrk_(const char *file, const int lineno, int ttype, const char *fmt,
+>  	 */
+>  	if (TTYPE_RESULT(ttype) == TBROK) {
+>  		if (results)
+> -			tst_atomic_inc(&results->abort_flag);
+> +			tst_atomic_inc(&context->abort_flag);
+>  
+>  		/*
+>  		 * If TBROK was called from one of the child processes we kill
+>  		 * the main test process. That in turn triggers the code that
+>  		 * kills leftover children once the main test process did exit.
+>  		 */
+> -		if (results->main_pid && tst_getpid() != results->main_pid) {
+> +		if (context->main_pid && tst_getpid() != context->main_pid) {
+>  			tst_res(TINFO, "Child process reported TBROK killing the test");
+> -			kill(results->main_pid, SIGKILL);
+> +			kill(context->main_pid, SIGKILL);
+>  		}
+>  	}
+>  
+> @@ -449,7 +476,7 @@ void tst_res_(const char *file, const int lineno, int ttype,
+>  {
+>  	va_list va;
+>  
+> -	if (ttype == TDEBUG && !tdebug)
+> +	if (ttype == TDEBUG && context && !context->tdebug)
+>  		return;
+>  
+>  	va_start(va, fmt);
+> @@ -766,7 +793,7 @@ static void parse_opts(int argc, char *argv[])
+>  		break;
+>  		case 'D':
+>  			tst_res(TINFO, "Enabling debug info");
+> -			tdebug = 1;
+> +			context->tdebug = 1;
+>  		break;
+>  		case 'h':
+>  			print_help();
+> @@ -1111,7 +1138,7 @@ static int prepare_and_mount_ro_fs(const char *dev, const char *mntpoint,
+>  		return 1;
+>  	}
+>  
+> -	mntpoint_mounted = 1;
+> +	context->mntpoint_mounted = 1;
+>  
+>  	snprintf(buf, sizeof(buf), "%s/dir/", mntpoint);
+>  	SAFE_MKDIR(buf, 0777);
+> @@ -1135,14 +1162,14 @@ static void prepare_and_mount_dev_fs(const char *mntpoint)
+>  		tst_res(TINFO, "tmpdir isn't suitable for creating devices, "
+>  			"mounting tmpfs without nodev on %s", mntpoint);
+>  		SAFE_MOUNT(NULL, mntpoint, "tmpfs", 0, NULL);
+> -		mntpoint_mounted = 1;
+> +		context->mntpoint_mounted = 1;
+>  	}
+>  }
+>  
+>  static void prepare_and_mount_hugetlb_fs(void)
+>  {
+>  	SAFE_MOUNT("none", tst_test->mntpoint, "hugetlbfs", 0, NULL);
+> -	mntpoint_mounted = 1;
+> +	context->mntpoint_mounted = 1;
+>  }
+>  
+>  int tst_creat_unlinked(const char *path, int flags, mode_t mode)
+> @@ -1228,7 +1255,7 @@ static void prepare_device(struct tst_fs *fs)
+>  
+>  		SAFE_MOUNT(get_device_name(tdev.fs_type), tst_test->mntpoint,
+>  				tdev.fs_type, fs->mnt_flags, mnt_data);
+> -		mntpoint_mounted = 1;
+> +		context->mntpoint_mounted = 1;
+>  	}
+>  }
+>  
+> @@ -1324,6 +1351,14 @@ static void do_setup(int argc, char *argv[])
+>  	if (tst_test->supported_archs && !tst_is_on_arch(tst_test->supported_archs))
+>  		tst_brk(TCONF, "This arch '%s' is not supported for test!", tst_arch.name);
+>  
+> +	if (tst_test->sample)
+> +		tst_test = tst_timer_test_setup(tst_test);
+> +
+> +	if (tst_test->runs_script) {
+> +		tst_test->child_needs_reinit = 1;
+> +		tst_test->forks_child = 1;
+> +	}
+> +
+>  	if (reproducible_env &&
+>  	    (!strcmp(reproducible_env, "1") || !strcmp(reproducible_env, "y")))
+>  		reproducible_output = 1;
+> @@ -1332,23 +1367,15 @@ static void do_setup(int argc, char *argv[])
+>  
+>  	TCID = tcid = get_tcid(argv);
+>  
+> -	if (tst_test->sample)
+> -		tst_test = tst_timer_test_setup(tst_test);
+> +	setup_ipc();
+>  
+>  	parse_opts(argc, argv);
+>  
+>  	if (tdebug_env && (!strcmp(tdebug_env, "1") || !strcmp(tdebug_env, "y"))) {
+>  		tst_res(TINFO, "Enabling debug info");
+> -		tdebug = 1;
+> +		context->tdebug = 1;
+>  	}
+>  
+> -	if (tst_test->runs_script) {
+> -		tst_test->child_needs_reinit = 1;
+> -		tst_test->forks_child = 1;
+> -	}
+> -
+> -	setup_ipc();
+> -
+>  	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
+>  		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
+>  
+> @@ -1466,7 +1493,7 @@ static void do_setup(int argc, char *argv[])
+>  	if (tst_test->needs_hugetlbfs)
+>  		prepare_and_mount_hugetlb_fs();
+>  
+> -	if (tst_test->needs_device && !mntpoint_mounted) {
+> +	if (tst_test->needs_device && !context->mntpoint_mounted) {
+>  		tdev.dev = tst_acquire_device_(NULL, tst_test->dev_min_size);
+>  
+>  		if (!tdev.dev)
+> @@ -1492,12 +1519,12 @@ static void do_setup(int argc, char *argv[])
+>  	if (tst_test->needs_overlay && !tst_test->mount_device)
+>  		tst_brk(TBROK, "tst_test->mount_device must be set");
+>  
+> -	if (tst_test->needs_overlay && !mntpoint_mounted)
+> +	if (tst_test->needs_overlay && !context->mntpoint_mounted)
+>  		tst_brk(TBROK, "tst_test->mntpoint must be mounted");
+>  
+> -	if (tst_test->needs_overlay && !ovl_mounted) {
+> +	if (tst_test->needs_overlay && !context->ovl_mounted) {
+>  		SAFE_MOUNT_OVERLAY();
+> -		ovl_mounted = 1;
+> +		context->ovl_mounted = 1;
+>  	}
+>  
+>  	if (tst_test->resource_files)
+> @@ -1517,7 +1544,7 @@ static void do_setup(int argc, char *argv[])
+>  
+>  static void do_test_setup(void)
+>  {
+> -	results->main_pid = getpid();
+> +	context->main_pid = getpid();
+>  
+>  	if (!tst_test->all_filesystems && tst_test->skip_filesystems) {
+>  		long fs_type = tst_fs_type(".");
+> @@ -1537,7 +1564,7 @@ static void do_test_setup(void)
+>  	if (tst_test->setup)
+>  		tst_test->setup();
+>  
+> -	if (results->main_pid != tst_getpid())
+> +	if (context->main_pid != tst_getpid())
+>  		tst_brk(TBROK, "Runaway child in setup()!");
+>  
+>  	if (tst_test->caps)
+> @@ -1549,10 +1576,10 @@ static void do_cleanup(void)
+>  	if (tst_test->needs_cgroup_ctrls)
+>  		tst_cg_cleanup();
+>  
+> -	if (ovl_mounted)
+> +	if (context->ovl_mounted)
+>  		SAFE_UMOUNT(OVL_MNT);
+>  
+> -	if (mntpoint_mounted)
+> +	if (context->mntpoint_mounted)
+>  		tst_umount(tst_test->mntpoint);
+>  
+>  	if (tst_test->needs_device && tdev.dev)
+> @@ -1574,7 +1601,7 @@ static void do_cleanup(void)
+>  
+>  static void heartbeat(void)
+>  {
+> -	if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
+> +	if (tst_clock_gettime(CLOCK_MONOTONIC, &context->start_time))
+>  		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+>  
+>  	if (getppid() == 1) {
+> @@ -1600,7 +1627,7 @@ static void run_tests(void)
+>  		heartbeat();
+>  		tst_test->test_all();
+>  
+> -		if (tst_getpid() != results->main_pid)
+> +		if (tst_getpid() != context->main_pid)
+>  			exit(0);
+>  
+>  		tst_reap_children();
+> @@ -1616,7 +1643,7 @@ static void run_tests(void)
+>  		heartbeat();
+>  		tst_test->test(i);
+>  
+> -		if (tst_getpid() != results->main_pid)
+> +		if (tst_getpid() != context->main_pid)
+>  			exit(0);
+>  
+>  		tst_reap_children();
+> @@ -1716,7 +1743,7 @@ static void alarm_handler(int sig LTP_ATTRIBUTE_UNUSED)
+>  
+>  static void heartbeat_handler(int sig LTP_ATTRIBUTE_UNUSED)
+>  {
+> -	alarm(results->overall_time);
+> +	alarm(context->overall_time);
+>  	sigkill_retries = 0;
+>  }
+>  
+> @@ -1733,15 +1760,15 @@ unsigned int tst_remaining_runtime(void)
+>  	static struct timespec now;
+>  	int elapsed;
+>  
+> -	if (results->runtime == 0)
+> +	if (context->runtime == 0)
+>  		tst_brk(TBROK, "Runtime not set!");
+>  
+>  	if (tst_clock_gettime(CLOCK_MONOTONIC, &now))
+>  		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+>  
+> -	elapsed = tst_timespec_diff_ms(now, tst_start_time) / 1000;
+> -	if (results->runtime > (unsigned int) elapsed)
+> -		return results->runtime - elapsed;
+> +	elapsed = tst_timespec_diff_ms(now, context->start_time) / 1000;
+> +	if (context->runtime > elapsed)
+> +		return context->runtime - elapsed;
+>  
+>  	return 0;
+>  }
+> @@ -1769,29 +1796,29 @@ static void set_overall_timeout(void)
+>  		return;
+>  	}
+>  
+> -	results->overall_time = tst_multiply_timeout(timeout) + results->runtime;
+> +	context->overall_time = tst_multiply_timeout(timeout) + context->runtime;
+>  
+>  	tst_res(TINFO, "Overall timeout per run is %uh %02um %02us",
+> -		results->overall_time/3600, (results->overall_time%3600)/60,
+> -		results->overall_time % 60);
+> +		context->overall_time/3600, (context->overall_time%3600)/60,
+> +		context->overall_time % 60);
+>  }
+>  
+>  void tst_set_timeout(int timeout)
+>  {
+>  	int timeout_adj = DEFAULT_TIMEOUT + timeout;
+>  
+> -	results->overall_time = tst_multiply_timeout(timeout_adj) + results->runtime;
+> +	context->overall_time = tst_multiply_timeout(timeout_adj) + context->runtime;
+>  
+>  	tst_res(TINFO, "Overall timeout per run is %uh %02um %02us",
+> -		results->overall_time/3600, (results->overall_time%3600)/60,
+> -		results->overall_time % 60);
+> +		context->overall_time/3600, (context->overall_time%3600)/60,
+> +		context->overall_time % 60);
+>  
+>  	heartbeat();
+>  }
+>  
+>  void tst_set_runtime(int runtime)
+>  {
+> -	results->runtime = multiply_runtime(runtime);
+> +	context->runtime = multiply_runtime(runtime);
+>  	tst_res(TINFO, "Updating runtime to %uh %02um %02us",
+>  		runtime/3600, (runtime%3600)/60, runtime % 60);
+>  	set_overall_timeout();
+> @@ -1805,7 +1832,7 @@ static int fork_testrun(void)
+>  	SAFE_SIGNAL(SIGINT, sigint_handler);
+>  	SAFE_SIGNAL(SIGTERM, sigint_handler);
+>  
+> -	alarm(results->overall_time);
+> +	alarm(context->overall_time);
+>  
+>  	show_failure_hints = 1;
+>  
+> @@ -1839,7 +1866,7 @@ static int fork_testrun(void)
+>  	if (WIFEXITED(status) && WEXITSTATUS(status))
+>  		tst_brk(TBROK, "Child returned with %i", WEXITSTATUS(status));
+>  
+> -	if (results->abort_flag)
+> +	if (context->abort_flag)
+>  		return 0;
+>  
+>  	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL) {
+> @@ -1898,9 +1925,9 @@ static int run_tcase_on_fs(struct tst_fs *fs, const char *fs_type)
+>  
+>  	ret = fork_testrun();
+>  
+> -	if (mntpoint_mounted) {
+> +	if (context->mntpoint_mounted) {
+>  		tst_umount(tst_test->mntpoint);
+> -		mntpoint_mounted = 0;
+> +		context->mntpoint_mounted = 0;
+>  	}
+>  
+>  	return ret;
+> @@ -1925,7 +1952,7 @@ static int run_tcases_per_fs(void)
+>  		found_valid_fs = true;
+>  		run_tcase_on_fs(fs, filesystems[i]);
+>  
+> -		if (tst_atomic_load(&results->abort_flag))
+> +		if (tst_atomic_load(&context->abort_flag))
+>  			do_exit(0);
+>  	}
+>  
+> @@ -1945,7 +1972,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+>  	tst_test = self;
+>  
+>  	do_setup(argc, argv);
+> -	tst_enable_oom_protection(results->lib_pid);
+> +	tst_enable_oom_protection(context->lib_pid);
+>  
+>  	SAFE_SIGNAL(SIGALRM, alarm_handler);
+>  	SAFE_SIGNAL(SIGUSR1, heartbeat_handler);
+> @@ -1956,7 +1983,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+>  	tst_res(TINFO, "Tested kernel: %s %s %s", uval.release, uval.version, uval.machine);
+>  
+>  	if (tst_test->runtime)
+> -		results->runtime = multiply_runtime(tst_test->runtime);
+> +		context->runtime = multiply_runtime(tst_test->runtime);
+>  
+>  	set_overall_timeout();
+>  
+> @@ -1969,7 +1996,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+>  		else
+>  			fork_testrun();
+>  
+> -		if (tst_atomic_load(&results->abort_flag))
+> +		if (tst_atomic_load(&context->abort_flag))
+>  			do_exit(0);
+>  	}
+>  
+> 
 
-Changes in v3:
-- fix missing head file for x86
+Regards,
+Avinesh
 
-Changes in v2:
-- create separate files for clone and clone3
-
----
- runtest/syscalls                            |   2 +
- testcases/kernel/syscalls/clone/.gitignore  |   1 +
- testcases/kernel/syscalls/clone/clone10.c   | 170 ++++++++++++++++++++
- testcases/kernel/syscalls/clone3/.gitignore |   1 +
- testcases/kernel/syscalls/clone3/clone304.c | 158 ++++++++++++++++++
- 5 files changed, 332 insertions(+)
- create mode 100644 testcases/kernel/syscalls/clone/clone10.c
- create mode 100644 testcases/kernel/syscalls/clone3/clone304.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 844ae7a13..10f64270a 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -122,10 +122,12 @@ clone06 clone06
- clone07 clone07
- clone08 clone08
- clone09 clone09
-+clone10 clone10
- 
- clone301 clone301
- clone302 clone302
- clone303 clone303
-+clone304 clone304
- 
- close01 close01
- close02 close02
-diff --git a/testcases/kernel/syscalls/clone/.gitignore b/testcases/kernel/syscalls/clone/.gitignore
-index 900cac19c..adfb8257d 100644
---- a/testcases/kernel/syscalls/clone/.gitignore
-+++ b/testcases/kernel/syscalls/clone/.gitignore
-@@ -7,3 +7,4 @@
- /clone07
- /clone08
- /clone09
-+/clone10
-diff --git a/testcases/kernel/syscalls/clone/clone10.c b/testcases/kernel/syscalls/clone/clone10.c
-new file mode 100644
-index 000000000..badcf263d
---- /dev/null
-+++ b/testcases/kernel/syscalls/clone/clone10.c
-@@ -0,0 +1,170 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 Red Hat Inc. All Rights Reserved.
-+ * Author: Chunfu Wen <chwen@redhat.com>
-+ */
-+
-+/*\
-+ * Add tls parameter and flag:CLONE_SETTLS cover for clone
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include <sched.h>
-+#include <sys/wait.h>
-+
-+#if defined(__i386__)
-+#include <asm/ldt.h>
-+#endif
-+
-+#include "tst_test.h"
-+#include "clone_platform.h"
-+#include "lapi/syscalls.h"
-+
-+#define TLS_EXP 100
-+#define TLS_SIZE 4096
-+#define TLS_ALIGN 16
-+
-+#ifndef ARCH_SET_FS
-+#define ARCH_SET_FS 0x1002
-+#endif
-+
-+#if defined(__x86_64__)
-+
-+// Structure mimicking glibc's TCB to be simplified for x86_64
-+typedef struct {
-+    void *tcb;
-+    void *dtv;
-+    void *self;
-+    int multiple_threads;
-+    char padding[64];
-+} tcb_t;
-+
-+#endif /* __x86_64__ */
-+
-+static __thread int tls_var = 0;
-+
-+static void *tls_ptr;
-+static struct user_desc *tls_desc;
-+static char *child_stack;
-+static volatile int child_done = 0;
-+
-+static int flags = CLONE_THREAD |  CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_SETTLS;
-+
-+static void *allocate_tls_area(void)
-+{
-+	void *tls_area = aligned_alloc(TLS_ALIGN, TLS_SIZE);
-+	if (!tls_area)
-+		tst_brk(TBROK | TERRNO, "aligned_alloc failed");
-+	memset(tls_area, 0, TLS_SIZE);
-+
-+#if defined(__x86_64__)
-+	// Set up a minimal TCB for x86_64
-+	tcb_t *tcb = (tcb_t *)tls_area;
-+	tcb->tcb = tls_area;
-+	tcb->self = tls_area;
-+	tcb->multiple_threads = 1;
-+#endif
-+
-+	return tls_area;
-+}
-+
-+static void init_tls(void)
-+{
-+#if defined(__x86_64__) || defined(__aarch64__) || defined(__s390x__)
-+	tls_ptr = allocate_tls_area();
-+
-+#elif defined(__i386__)
-+	tls_ptr = allocate_tls_area();
-+	tls_desc = SAFE_MALLOC(sizeof(*tls_desc));
-+	memset(tls_desc, 0, sizeof(*tls_desc));
-+	tls_desc->entry_number = -1;
-+	tls_desc->base_addr = (unsigned long)tls_ptr;
-+	tls_desc->limit = TLS_SIZE;
-+	tls_desc->seg_32bit = 1;
-+	tls_desc->contents = 0;
-+	tls_desc->read_exec_only = 0;
-+	tls_desc->limit_in_pages = 0;
-+	tls_desc->seg_not_present = 0;
-+	tls_desc->useable = 1;
-+
-+#else
-+	tst_brk(TCONF, "Unsupported architecture for TLS");
-+#endif
-+}
-+
-+static void free_tls(void)
-+{
-+	usleep(1000);
-+#if defined(__x86_64__) || defined(__aarch64__) || defined(__s390x__)
-+	if (tls_ptr) {
-+		free(tls_ptr);
-+		tls_ptr = NULL;
-+	}
-+#elif defined(__i386__)
-+	if (tls_desc) {
-+		free((void *)(uintptr_t)tls_desc->base_addr);
-+		free(tls_desc);
-+		tls_desc = NULL;
-+	}
-+#endif
-+
-+}
-+
-+static int touch_tls_in_child(void *arg LTP_ATTRIBUTE_UNUSED)
-+{
-+#if defined(__x86_64__)
-+	// Set the %fs register to point to the TCB
-+	if (syscall(SYS_arch_prctl, ARCH_SET_FS, tls_ptr) == -1) {
-+	    exit(EXIT_FAILURE);
-+	}
-+#endif
-+	tls_var = TLS_EXP + 1;
-+	tst_res(TINFO, "Child (PID: %d, TID: %d): TLS value set to: %d", getpid(),  gettid(), tls_var);
-+
-+	child_done = 1;
-+	free_tls();
-+	return 0;
-+}
-+
-+static void verify_tls(void)
-+{
-+	tls_var = TLS_EXP;
-+
-+	TEST(ltp_clone7(flags, touch_tls_in_child, NULL, CHILD_STACK_SIZE, child_stack, NULL, tls_ptr, NULL));
-+
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "clone() failed");
-+
-+	while (!child_done)
-+		sched_yield();
-+
-+	if (TLS_EXP == tls_var) {
-+		tst_res(TPASS,
-+			"Parent (PID: %d, TID: %d): TLS value correct: %d",
-+			getpid(), gettid(), tls_var);
-+	} else {
-+		tst_res(TFAIL,
-+			"Parent (PID: %d, TID: %d): TLS value mismatch: got %d, expected %d",
-+			getpid(), gettid(), tls_var, TLS_EXP);
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
-+	init_tls();
-+}
-+
-+static void cleanup(void)
-+{
-+	free(child_stack);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_tls,
-+};
-diff --git a/testcases/kernel/syscalls/clone3/.gitignore b/testcases/kernel/syscalls/clone3/.gitignore
-index 10369954b..e9b5312f4 100644
---- a/testcases/kernel/syscalls/clone3/.gitignore
-+++ b/testcases/kernel/syscalls/clone3/.gitignore
-@@ -1,3 +1,4 @@
- clone301
- clone302
- clone303
-+clone304
-diff --git a/testcases/kernel/syscalls/clone3/clone304.c b/testcases/kernel/syscalls/clone3/clone304.c
-new file mode 100644
-index 000000000..c0e815d28
---- /dev/null
-+++ b/testcases/kernel/syscalls/clone3/clone304.c
-@@ -0,0 +1,158 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 Red Hat Inc. All Rights Reserved.
-+ * Author: Chunfu Wen <chwen@redhat.com>
-+ */
-+
-+/*\
-+ * Add tls parameter and flag:CLONE_SETTLS cover for clone3
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <stdlib.h>
-+#include <sys/wait.h>
-+
-+#if defined(__i386__)
-+#include <asm/ldt.h>
-+#endif
-+
-+#include "tst_test.h"
-+#include "lapi/sched.h"
-+#include "lapi/pidfd.h"
-+
-+#define TLS_EXP 100
-+#define TLS_SIZE 4096
-+#define TLS_ALIGN 16
-+#define CHILD_STACK_SIZE (1024*1024)
-+
-+static int pidfd, child_tid, parent_tid;
-+static struct clone_args *args;
-+static void *tls_ptr;
-+static struct user_desc *tls_desc;
-+static void *child_stack;
-+
-+static volatile int child_done = 0;
-+/* TLS variable to validate in child */
-+static __thread int tls_var = 0;
-+
-+static int test_flags = CLONE_THREAD |  CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_SETTLS;
-+
-+static void *allocate_tls_region(void)
-+{
-+	void *tls_area = aligned_alloc(TLS_ALIGN, TLS_SIZE);
-+	if (!tls_area) {
-+		perror("aligned_alloc");
-+		exit(EXIT_FAILURE);
-+	}
-+	memset(tls_area, 0, TLS_SIZE);
-+	return tls_area;
-+}
-+
-+static void initialize_tls(void)
-+{
-+#if defined(__x86_64__) || defined(__aarch64__) || defined(__s390x__)
-+	tls_ptr = allocate_tls_region();
-+
-+#elif defined(__i386__)
-+	/* x86 32-bit: TLS is a struct user_desc */
-+	tls_ptr = allocate_tls_region();
-+	tls_desc = SAFE_MALLOC(sizeof(*tls_desc));
-+	memset(tls_desc, 0, sizeof(*tls_desc));
-+	tls_desc->entry_number = -1;
-+	tls_desc->base_addr = (unsigned long)tls_ptr;
-+	tls_desc->limit = TLS_SIZE;
-+	tls_desc->seg_32bit = 1;
-+	tls_desc->contents = 0;
-+	tls_desc->read_exec_only = 0;
-+	tls_desc->limit_in_pages = 0;
-+	tls_desc->seg_not_present = 0;
-+	tls_desc->useable = 1;
-+
-+#else
-+	tst_brk(TCONF, "This architecture does not support TLS");
-+#endif
-+}
-+
-+static void free_tls(void)
-+{
-+#if defined(__x86_64__) || defined(__aarch64__) || defined(__s390x__)
-+	if (tls_ptr) {
-+		free(tls_ptr);
-+	}
-+#elif defined(__i386__)
-+	if (tls_desc) {
-+		free((void *)(uintptr_t)tls_desc->base_addr);
-+		free(tls_desc);
-+	}
-+#endif
-+}
-+
-+static int check_tls_in_child(void)
-+{
-+	tls_var = TLS_EXP + 1;
-+	tst_res(TINFO, "Child (PID: %d, TID: %d): TLS value set to: %d", getpid(),  gettid(), tls_var);
-+
-+	child_done = 1;
-+	tst_syscall(__NR_exit, 0);
-+	return 0;
-+}
-+
-+static void run(void)
-+{
-+	pid_t pid;
-+	int status;
-+	tls_var = TLS_EXP;
-+
-+	args->flags = test_flags;
-+	args->pidfd = (uint64_t)(&pidfd);
-+	args->child_tid = (uint64_t)(&child_tid);
-+	args->parent_tid = (uint64_t)(&parent_tid);
-+	args->stack = (uint64_t)(child_stack);
-+	args->stack_size = CHILD_STACK_SIZE;
-+	args->tls = (uint64_t)tls_ptr;
-+
-+	TEST(pid = clone3(args, sizeof(*args)));
-+
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "clone() failed");
-+
-+	if (!pid)
-+		check_tls_in_child();
-+
-+	while (!child_done)
-+		sched_yield();
-+
-+	if (TLS_EXP == tls_var) {
-+		tst_res(TPASS,
-+			"Parent (PID: %d, TID: %d): TLS value correct: %d",
-+			getpid(), gettid(), tls_var);
-+	} else {
-+		tst_res(TFAIL,
-+			"Parent (PID: %d, TID: %d): TLS value mismatch: got %d, expected %d",
-+			getpid(), gettid(), tls_var, TLS_EXP);
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	clone3_supported_by_kernel();
-+	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
-+	initialize_tls();
-+}
-+
-+static void cleanup(void)
-+{
-+	free(child_stack);
-+	free_tls();
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.bufs = (struct tst_buffers []) {
-+		{&args, .size = sizeof(*args)},
-+		{},
-+	}
-+};
--- 
-2.43.5
 
 
 -- 
