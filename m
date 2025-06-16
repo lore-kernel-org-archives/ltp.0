@@ -4,77 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77F58C71136
-	for <ltp@archiver.kernel.org>; Mon, 16 Jun 2025 14:43:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A026C71136
+	for <ltp@archiver.kernel.org>; Mon, 16 Jun 2025 14:45:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1750084992; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1750085140; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=Kv/C26miKTSZj8tUha/XvHBtYWcFjUvFkCyzgDNQT6Q=;
- b=YXBu8A507fIKVwQdlzIgsb93BtXk2GMIY7mUrz1mwpiwMswMoVKoG06ix1aeQz+BwhwHr
- xuSgBGGkM8rIFP0/Adugay88YOcGC7yA/wYGPZEAfTNUsYcqTVwFDeVskETIgxU43qGNp2C
- iS8QAdZ/9QJpvmiWU1sTzCqCexlQAcQ=
+ bh=Lgbf5j6KTA8tevr8aN7/3BjGkTcBeBIeCTMfUttBODY=;
+ b=S6f/WqcpnVtwlDgO5ZLBjzEZmpMZ16tmHx7yzx24AW3k1soP0hfpVULVN/3R83gSWZVwf
+ uyaiDDIEQyUr88wAFDF7XBk3E9Iu4PTBW9wFQflORLcCCzC/E1OgrtZw9SrCpF67c9My3Lj
+ jm0A+yNOHXIbLfLOowSSbajUXb3aDbc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BA76B3CC0DC
-	for <ltp@archiver.kernel.org>; Mon, 16 Jun 2025 16:43:12 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id A4FF03CC0BC
+	for <ltp@archiver.kernel.org>; Mon, 16 Jun 2025 16:45:40 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C1FC43CC01F
- for <ltp@lists.linux.it>; Mon, 16 Jun 2025 16:42:51 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3AEA63CC01F
+ for <ltp@lists.linux.it>; Mon, 16 Jun 2025 16:45:19 +0200 (CEST)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9A17A1A000BB
- for <ltp@lists.linux.it>; Mon, 16 Jun 2025 16:42:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1750084969;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=vhlHbuuA8EScKJdWaakogvk8vhnE3K3ggQTdLzAq7H8=;
- b=Cf6IYIhOusyvAIQDRHLZ0Doqp2L1A9VWuORvRe+UcuFuv9gVJcNnXnFxtEAPTTYq0HsaxD
- l+zKBcmlTAdywsiAg0L8Gu9K+JxoEAfg2Ku5LxvJamozi3zt3HoZEIdxrpQSlyJV/3VziM
- WQ3h74cQ6+kPllMdA+wAzQ0+H1bsS0s=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-223-5w4jMbocNFSTVIFsqfm0rg-1; Mon,
- 16 Jun 2025 10:42:47 -0400
-X-MC-Unique: 5w4jMbocNFSTVIFsqfm0rg-1
-X-Mimecast-MFC-AGG-ID: 5w4jMbocNFSTVIFsqfm0rg_1750084961
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 5E4F21955E79; Mon, 16 Jun 2025 14:42:41 +0000 (UTC)
-Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
- (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
- by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id D0CC518003FC; Mon, 16 Jun 2025 14:42:39 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Mon, 16 Jun 2025 22:42:34 +0800
-Message-ID: <20250616144234.336032-1-liwang@redhat.com>
-In-Reply-To: <20250612034229.310523-1-liwang@redhat.com>
-References: <20250612034229.310523-1-liwang@redhat.com>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: nZcpzGfEZMCdRORs1peqr0qF2bWRGF775xFsdUPKQt8_1750084961
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 52B66600425
+ for <ltp@lists.linux.it>; Mon, 16 Jun 2025 16:45:18 +0200 (CEST)
+Received: by mail-wm1-x330.google.com with SMTP id
+ 5b1f17b1804b1-43ea40a6e98so57424795e9.1
+ for <ltp@lists.linux.it>; Mon, 16 Jun 2025 07:45:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1750085118; x=1750689918; darn=lists.linux.it;
+ h=in-reply-to:references:subject:to:cc:message-id:date
+ :content-transfer-encoding:mime-version:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=7YXjhH/ny6gf9QyV+ywmJt0vY6nx3oVjli2XIml/JzY=;
+ b=Ku4wA7+CQUqFn5QTtcSKEjqFRSgadCS3wrAN2yvR5h89lQa4Onl81aMDIII7SwVaIm
+ NNXsdLkQC65idBOHAEpd7l+/k3eukPJsJ/6X9s9z1U/4IWpyJEFInesSPYqXJ8s3y9HB
+ 1brN3CLAIl7S3WCZaTd8a7A6igKJ6hXPvEXX4KHsHOL1arBC1p4Hr7DTdNaE1bLkhvSN
+ rQBBTJlHaSPZqiDMMFaGgg+BCx6Wkd4HjWyO/YukCjYhfEeV4d/iKS7IJaVov0Uivto5
+ adQ/85PxAGilVUCPA2P58hjMB8ihbNnOk+wkFqFpOVKaSVIX44lA7YSrLhvY9R+QqHcm
+ Zdmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1750085118; x=1750689918;
+ h=in-reply-to:references:subject:to:cc:message-id:date
+ :content-transfer-encoding:mime-version:from:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=7YXjhH/ny6gf9QyV+ywmJt0vY6nx3oVjli2XIml/JzY=;
+ b=UD97yUDMw76xMsNikDMhoJRWk6m7tjlknx1Eic3eX/ZM/v2/oTJKIbCEDTL9s4OwE0
+ VXNx/+Zqjm9MoxwZ6czy5p+vyTFtSKIzT5YB/2VRlttZdryz4OV+LCgutQ3YCx0e2WH9
+ 9t9TD7c2bcTCpgbwgsivEbNF2J34vczYIrMguR4vqHNy7sEmJQbblILy9cPXlYdp76HE
+ qFlzYlGgmK3MWscq4YGlqRluXu1rpQqlOYQ1tDjuNZZumFWsRA/4Wh6r1Vh/u+deaD6g
+ 8rGEB5r9PbvprkRRCaunBTFTKESaYSNazdNjnhpeWgUMnoMMj29suGViXDVcnKUJaY8l
+ RPPw==
+X-Gm-Message-State: AOJu0Yx0vMk3/iRbm2THC+rULdd92m3GGrhVJmoWV/Mw5UpoPFmcmjtx
+ fxVfHJ5tEYobRnZoH7kQxyngFv/v2EQo2SO4cITF2S/KM2EJTjHQGt1xAWCz+RAu4EY=
+X-Gm-Gg: ASbGncv/5xQunq62m3RZtUgiAZ0yHAfXLuNvLajJDx0tgjWIf5fhUkNCXv6JQvLow0Z
+ 3RJS0sd+oL5x/ZtpPzdnjczyyLXfQJ6Mz3XX8kt+6yeqHZdjtSe/647+bhtsuxlCWyhs+dyo/1p
+ qEna2GFx6eMACxDozMtzp2SWW41D4zWVSLbgi3x1Hz00YzgoMhmCBIPnpz6njAOcOkDEat1A2TC
+ xJSHsELEX3H3K7mvXtuCyiDLjLOtP82APJ8GPFcODt6IzQ2Hx33hy6GgZXZM4UUs5x95PW8gIab
+ 71+GdTHx2ADmCAC24QYq1jtma0PhfCDuvK+is4EC32zwUg//
+X-Google-Smtp-Source: AGHT+IG3JOPtwhmCdXsp7oHuluzE0Whn3poB+VqJYoWnBUVxdTi+O/suNBb9OdtY4/L3B7TSDxw9Ng==
+X-Received: by 2002:a05:6000:2dc2:b0:3a5:5299:3ae2 with SMTP id
+ ffacd0b85a97d-3a572398b75mr7506655f8f.3.1750085117577; 
+ Mon, 16 Jun 2025 07:45:17 -0700 (PDT)
+Received: from localhost ([189.99.236.25]) by smtp.gmail.com with UTF8SMTPSA id
+ 98e67ed59e1d1-313c1b6d560sm8679415a91.49.2025.06.16.07.45.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 16 Jun 2025 07:45:17 -0700 (PDT)
+Mime-Version: 1.0
+Date: Mon, 16 Jun 2025 11:45:14 -0300
+Message-Id: <DAO1EAF66R6D.2C6FDIWYBQHNN@suse.com>
+To: "Li Wang" <liwang@redhat.com>, =?utf-8?b?UmljYXJkbyBCLiBNYXJsacOocmU=?=
+ <rbm@suse.com>
+X-Mailer: aerc 0.20.1-80-g1fe8ed687c05-dirty
+References: <20250611-conversions-kill-v1-1-a5d7312df7fe@suse.com>
+ <CAEemH2d1JwuFBVVTLTji172qZHss0AgK6n6-uEH1v+Xz_P7P-Q@mail.gmail.com>
+ <DANWNAKXH7UY.11MJ8Q7L3MWG@suse.com>
+ <CAEemH2fM82gZitSh5wjcp34N6GoTd=EtSh-AVtxSm_+qAh1suA@mail.gmail.com>
+ <DAO0MWF8LETA.1PY8DUWS4A6W7@suse.com>
+ <CAEemH2dKfFdCv3C7pEjjivs2Z=6cyC=WvifyEF9mrse0FCiYSg@mail.gmail.com>
+In-Reply-To: <CAEemH2dKfFdCv3C7pEjjivs2Z=6cyC=WvifyEF9mrse0FCiYSg@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] lib: suppress early TDEBUG output before context
- initialization
+Subject: Re: [LTP] [PATCH] syscalls: kill: Remove kill07
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,74 +101,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
+Reply-To: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-After commit bf9589d5bd ("lib: move test infrastructure states into
-a shared context structure"), each test began printing unexpected
-TDEBUG messages like:
-
-  tst_test.c:142: TDEBUG: mmap((nil), 4096, PROT_READ | PROT_WRITE(3), 1, 3, 0)
-  tst_test.c:199: TDEBUG: mmap((nil), 4096, PROT_READ | PROT_WRITE(3), 1, 3, 0)
-
-This happens because the logic in tst_res_():
-
-  if (ttype == TDEBUG && context && !context->tdebug)
-
-allows TDEBUG messages to be printed even the context is not yet initialized.
-During early test setup (such as in SAFE_MMAP), the shared context may
-not be initialized yet, causing debug logs to be emitted unintentionally.
-
-This patch refines the suppression logic in tst_res_() by explicitly checking:
-  - Whether `context` has been initialized
-  - Whether current is the library test process (`lib_pid`)
-  - Whether `tdebug` is enabled
-
-This improves test log clarity and avoids misleading noise during test setup.
-
-Follow-up: commit bf9589d5bd ("lib: move test infrastructure states into a shared context structure")
-Signed-off-by: Li Wang <liwang@redhat.com>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
----
- lib/tst_test.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 6fcd40030..495e022f7 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -476,8 +476,22 @@ void tst_res_(const char *file, const int lineno, int ttype,
- {
- 	va_list va;
- 
--	if (ttype == TDEBUG && context && !context->tdebug)
--		return;
-+	/*
-+	 * Suppress TDEBUG output in these cases:
-+	 * 1. No context available (e.g., called before IPC initialization)
-+	 * 2. Called from the library process, unless explicitly enabled
-+	 * 3. Debug output is not enabled (context->tdebug == 0)
-+	 */
-+	if (ttype == TDEBUG) {
-+		if (!context)
-+			return;
-+
-+		if (context->lib_pid == getpid())
-+			return;
-+
-+		if (!context->tdebug)
-+			return;
-+	}
- 
- 	va_start(va, fmt);
- 	tst_vres_(file, lineno, ttype, fmt, va);
--- 
-2.49.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uIEp1biAxNiwgMjAyNSBhdCAxMToxOCBBTSAtMDMsIExpIFdhbmcgd3JvdGU6Cj4gT24g
+TW9uLCBKdW4gMTYsIDIwMjUgYXQgMTA6MDnigK9QTSBSaWNhcmRvIEIuIE1hcmxpw6hyZSA8cmJt
+QHN1c2UuY29tPiB3cm90ZToKPgo+PiBPbiBNb24gSnVuIDE2LCAyMDI1IGF0IDExOjA4IEFNIC0w
+MywgTGkgV2FuZyB3cm90ZToKPj4gPiBPbiBNb24sIEp1biAxNiwgMjAyNSBhdCA3OjAy4oCvUE0g
+UmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KPj4gd3JvdGU6Cj4+ID4KPj4gPj4g
+T24gV2VkIEp1biAxMSwgMjAyNSBhdCAxMDo1MiBQTSAtMDMsIExpIFdhbmcgd3JvdGU6Cj4+ID4+
+ID4gUmljYXJkbyBCLiBNYXJsacOocmUgdmlhIGx0cCA8bHRwQGxpc3RzLmxpbnV4Lml0PiB3cm90
+ZToKPj4gPj4gPgo+PiA+PiA+IEZyb206IFJpY2FyZG8gQi4gTWFybGnDqHJlIDxyYm1Ac3VzZS5j
+b20+Cj4+ID4+ID4+Cj4+ID4+ID4+IFRoZSB0ZXN0IGNhc2UgZGVzY3JpcHRpb24gcmVhZHM6Cj4+
+ID4+ID4+Cj4+ID4+ID4+ICJUZXN0IGNhc2UgdG8gY2hlY2sgdGhhdCBTSUdLSUxMIGNhbiBub3Qg
+YmUgY2F1Z2h0LiIKPj4gPj4gPj4KPj4gPj4gPj4gSXQgbWFrZXMgdXNlIG9mIHNpZ2FjdGlvbigp
+IHRvIHNldCB1cCBhIGhhbmRsZXIgZm9yIFNJR0tJTEwsIGJ1dAo+PiA+PiA+PiBhY2NvcmRpbmcg
+dG8gaXRzIG1hbnVhbCBwYWdlOgo+PiA+PiA+Pgo+PiA+PiA+PiAiRUlOVkFMIEFuIGludmFsaWQg
+c2lnbmFsIHdhcyBzcGVjaWZpZWQuICBUaGlzIHdpbGwgYWxzbyBiZSBnZW5lcmF0ZWQKPj4gPj4g
+aWYgYW4KPj4gPj4gPj4gYXR0ZW1wdCBpcyBtYWRlIHRvIGNoYW5nZSB0aGUgYWN0aW9uIGZvciBT
+SUdLSUxMIG9yIFNJR1NUT1AsIHdoaWNoCj4+ID4+IGNhbm5vdAo+PiA+PiA+PiBiZSBjYXVnaHQg
+b3IgaWdub3JlZC4iCj4+ID4+ID4+Cj4+ID4+ID4KPj4gPj4gPiBPciBjb3VsZCB3ZSByZWZhY3Rv
+ciBraWxsMDcgdG8gdmFsaWRhdGUgdGhlIEVJTlZBTCB3aGVuIGNoYW5naW5nCj4+IGFjdGlvbgo+
+PiA+PiBvbgo+PiA+PiA+IFNJR0tJTEwvU0lHU1RPUD8KPj4gPj4KPj4gPj4gQnV0IHRoZW4gd2Ug
+d291bGQgYmUgdGVzdGluZyBzaWdhY3Rpb24oKS4gQ291bGQgeW91IHBsZWFzZSBlbGFib3JhdGU/
+Cj4+ID4+Cj4+ID4KPj4gPiBZb3UncmUgcmlnaHQsIGlmIHdlIHRlc3Qgc2lnYWN0aW9uKCksIHRo
+ZW4gdGhlIGNvZGUgc2hvdWxkIGJlIHB1dCBpbnRvCj4+ID4ga2VybmVsL3N5c2NhbGxzL3NpZ2Fj
+dGlvbi9zaWdhY3Rpb24wMy5jLgo+PiA+Cj4+ID4gTWF5YmUgd2UgY2FuIHRyeToKPj4KPj4gU3Vy
+ZSEgQnV0IGluIGFueSBjYXNlIGtpbGwwNyBzaG91bGQgc3RpbGwgYmUgcmVtb3ZlZCBJTUhPLgo+
+Pgo+Cj4gQWdyZWVkLiBJZiB5b3UgcGxhbiB0byBhZGQgc2lnYWN0aW9uMDMuYyBzZXBhcmF0ZWx5
+LCB0aGlzIG9uZSBzaG91bGQgYmUKPiBnb29kLgoKSSB0aGluayB0aGlzIGlzIGFscmVhZHkgY292
+ZXJlZCBpbiBzaWdhY3Rpb24wMi5jOgoKaHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXRlc3QtcHJv
+amVjdC9sdHAvYmxvYi83NjUxYmIyMmQ3MTU1NThjOGE2ZDg3MzJlZjk4MmUyMTQ2MDUwYjEwL3Rl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2lnYWN0aW9uL3NpZ2FjdGlvbjAyLmMjTDI5CgpUaGV5
+IHNob3VsZCBiZSBjb252ZXJ0ZWQgdG8gdGhlIG5ldyBBUEksIHRob3VnaC4KCj4KPiBSZXZpZXdl
+ZC1ieTogTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+CgpUaGFua3MgZm9yIHJldmlld2luZywK
+LQlSaWNhcmRvLgoKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXgu
+aXQvbGlzdGluZm8vbHRwCg==
