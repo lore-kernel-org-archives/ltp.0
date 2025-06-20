@@ -4,73 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DF32C7115B
-	for <ltp@archiver.kernel.org>; Fri, 20 Jun 2025 08:56:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1750409781; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=nNKfyxKAWBBR1/UX+JnE++bevDZbBe+XQaqDN9ci4f8=;
- b=WcxvgtxFsQz04bDe4OF1CxBneOpVh3FRrBKWxgHax/zh3KLeIwhtsOGpX4V/GkMSMcGA3
- Wq9JtiF57zXcaNkVAGKJQYD7fkOQo2y2zHcQCNLbIGt/veun9vuDvIDbGQJlVq7oO1FvQUu
- oyAFIGBS0OOApOuealFRLQqBV0sXKIA=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 537CCC7115B
+	for <ltp@archiver.kernel.org>; Fri, 20 Jun 2025 09:03:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1A1783CC82E
-	for <ltp@archiver.kernel.org>; Fri, 20 Jun 2025 10:56:21 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 9DD593CC848
+	for <ltp@archiver.kernel.org>; Fri, 20 Jun 2025 11:03:56 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1B7913CB18C
- for <ltp@lists.linux.it>; Fri, 20 Jun 2025 10:55:58 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 79DCB3CC794
+ for <ltp@lists.linux.it>; Fri, 20 Jun 2025 11:03:41 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 408E82009E8
- for <ltp@lists.linux.it>; Fri, 20 Jun 2025 10:55:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1750409756;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=y9QzwD+bShPGBHHM1CrvDrT39M3IYdd8jx/VXaVc6LQ=;
- b=Xft8qzFkgRlHH64f/YY15RoMMYhmOZYe3xrmm1osx0rZPobiXNgknxiuLAazDOY4rnf2nv
- 6fY4GWCqWrxjTly3YuRLtGWGzmKwphLW5cFR0yvEaRT0teLBgFDy63HvL1XSXqQU1GNNLf
- a3Ku5it1dTq12xDQr6JnR7QbYRtbR+8=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-186-kNmm5V8NOA6EMGGm4Xun8Q-1; Fri,
- 20 Jun 2025 04:55:54 -0400
-X-MC-Unique: kNmm5V8NOA6EMGGm4Xun8Q-1
-X-Mimecast-MFC-AGG-ID: kNmm5V8NOA6EMGGm4Xun8Q_1750409753
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CBB7D6009C9
+ for <ltp@lists.linux.it>; Fri, 20 Jun 2025 11:03:40 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 57C8519560B5
- for <ltp@lists.linux.it>; Fri, 20 Jun 2025 08:55:53 +0000 (UTC)
-Received: from fedora-laptop-x1.redhat.com (unknown [10.72.112.218])
- by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id 307A918003FC
- for <ltp@lists.linux.it>; Fri, 20 Jun 2025 08:55:50 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Fri, 20 Jun 2025 16:55:48 +0800
-Message-ID: <20250620085548.519702-1-liwang@redhat.com>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0FE8021165;
+ Fri, 20 Jun 2025 09:03:40 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F009B136BA;
+ Fri, 20 Jun 2025 09:03:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id h6ioOesjVWivawAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 20 Jun 2025 09:03:39 +0000
+Date: Fri, 20 Jun 2025 11:04:17 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <aFUkEQXv7Wcy0lvv@yuki.lan>
+References: <CAEemH2czcnak7S50--_nh5Z2Ou+rF0=5kvY7Kx_87k_X5eEj4g@mail.gmail.com>
+ <aDcRHXhOBcqVDp05@yuki.lan>
+ <CAEemH2f6qeojmFXfisc-_o3iFbda98p2JCVAV_K09gbKtVQp1g@mail.gmail.com>
+ <CAEemH2f8B5aJffcnbkYsr9j5KfZutgQkken8vbokNhsu19C8MA@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 5eLNSTI_2G44jCWWCsB4ldWAc8X7wKzd9K9qqri7aSM_1750409753
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2f8B5aJffcnbkYsr9j5KfZutgQkken8vbokNhsu19C8MA@mail.gmail.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 0FE8021165
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] preadv203: avoid false failures when runtime is
- scaled down
+Subject: Re: [LTP] [RFC] Reduce .runtime for Long-Running Tests ?
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,57 +74,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This test relies on a certain number of iterations of I/O operations to
-probabilistically trigger EAGAIN, which is a core part of the test's pass
-condition.
+Hi!
+> After a round of experiments and internal discussions (thanks to
+> Ian Wien for sharing his thoughts with me), we think that making
+> LTP_RUNTIME_MUL support floating point numbers [0, 1] may
+> a possible way to reduce the .runtime values set in tests.
+> 
+> For example, setting LTP_RUNTIME_MUL to 0.1 can obviously
+> reduce the test time of 600 seconds to 60 seconds.
+> 
+> One may think that reducing the .runtime value in aproduction
+> environment is potentially risky, and to some extent the answer
+> is yes.
+> 
+> But looking back, LTP is triggered very frequently in CI and various
+> production flows, so to compensate for this loss, we can use floating
+> point LTP_RUNTIME_MUL only in designated quick CI, instead of
+> using it in daily tests. This will help cover more scenarios.
 
-When .runtime is scaled down with LTP_RUNTIME_MUL=0.1, the main test loop
-(while (!stop && tst_remaining_runtime())) exits too early, before enough
-contention or conditions are created to hit EAGAIN, especially on fast
-filesystems (e.g., ext2, ext4).
+Having reduced runtime for CI makes sense, as you said you are making up
+for the reduction by the number of testruns. It may not work well for
+fuzzy sync though where we depend on having good enough sampling period.
 
-This leads to false negatives like:
-  preadv203.c:224: TFAIL: Haven't got EAGAIN
+Also limiting the smallest multiplier to be 0.1 or so does make sense. I
+assume that if we set it to 0.01 or smaller most tests with runtime
+woudn't even execute.
 
-To address this, we now report TCONF (configuration issue) when the test
-finishes without EAGAIN but also before the expected runtime could be met.
-This avoids misreporting test failures due to overly aggressive runtime scaling.
+> From our CI report, use 0.1 in runtime_mul find a few failures in the round
+> down problem with nice05.c (.runtime = 3), this is a defect of
+> multply_runtime().
+> Also, another preadv203 possible failure related this. But they are tiny
+> issues. And the rest .runtime tests so far no obvious problem on that.
 
-Rely-on: https://lists.linux.it/pipermail/ltp/2025-June/043960.html
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/preadv2/preadv203.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+I guess that we need to make sure that the runtime stays positive. So
+maybe we need something as:
 
-diff --git a/testcases/kernel/syscalls/preadv2/preadv203.c b/testcases/kernel/syscalls/preadv2/preadv203.c
-index 72a35d3ab..128e7ae34 100644
---- a/testcases/kernel/syscalls/preadv2/preadv203.c
-+++ b/testcases/kernel/syscalls/preadv2/preadv203.c
-@@ -218,8 +218,13 @@ static void verify_preadv2(void)
- 	SAFE_PTHREAD_JOIN(dropper, NULL);
- 	SAFE_PTHREAD_JOIN(writer, NULL);
- 
--	if (eagains)
-+	if (eagains) {
- 		tst_res(TPASS, "Got some EAGAIN");
-+		return;
-+	}
-+
-+	if (!tst_remaining_runtime())
-+		tst_res(TCONF, "Runtime too short to reliably trigger EAGAIN");
- 	else
- 		tst_res(TFAIL, "Haven't got EAGAIN");
- }
+runtime = MAX(2, tst_test->runtime * runtime_mul)
+
+> So I would like to start the work from this point to reduce execution time.
+
+Sounds good to me.
+
 -- 
-2.49.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
