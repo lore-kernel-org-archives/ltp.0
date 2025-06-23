@@ -4,105 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC53DC77B7F
-	for <ltp@archiver.kernel.org>; Mon, 23 Jun 2025 13:42:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D8D0C77B7F
+	for <ltp@archiver.kernel.org>; Mon, 23 Jun 2025 14:02:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1750686139; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=m9XwhXbt3/+a8Wlt6IfIXrJSFGIHPRofD9Irs7auG80=;
- b=V3OfG3ME/t679UxPcZXXbCbS/pA37rGBDNd4s2Wvg2OTKCCBb2RKnc5no907Cv1BDl29k
- iZT9S/hl9DElCbRx5aDqFhCwIthZnJbtTpomti9Xbndi9TkQwaROYFOArEOJAy9Pw7nEtJS
- SBVAA3kcOB+RVwp5wUU2GUWKegKdhrg=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1750687364; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=qU7+bPjBRkfD8mJg8Q5Euye/usZ33ZV7RwYS+B4sQ6M=;
+ b=UfKogENNv1l9EVzxkLbbucZn7+2kKb9Zcsl7jppPoLP6XbbmKEqLHstW5AptGpmD9TYP3
+ OuGvf/3nmlpgdLwQf2gXoOXaM/l29hM6ULh30lLE3UzSRznOidqpvaM7NL1RfMrSQkq3sN6
+ +p2CyrbpW7ViuTUT53yfNvsimpy2geI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3190E3CC52B
-	for <ltp@archiver.kernel.org>; Mon, 23 Jun 2025 15:42:19 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id AF1273CCA90
+	for <ltp@archiver.kernel.org>; Mon, 23 Jun 2025 16:02:44 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AC5063C9982
- for <ltp@lists.linux.it>; Mon, 23 Jun 2025 15:41:57 +0200 (CEST)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7C1A03CA807
+ for <ltp@lists.linux.it>; Mon, 23 Jun 2025 16:02:22 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4F60A60043C
- for <ltp@lists.linux.it>; Mon, 23 Jun 2025 15:41:56 +0200 (CEST)
-Received: by mail-wm1-x329.google.com with SMTP id
- 5b1f17b1804b1-451d7b50815so32932775e9.2
- for <ltp@lists.linux.it>; Mon, 23 Jun 2025 06:41:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1750686115; x=1751290915; darn=lists.linux.it;
- h=cc:to:message-id:content-transfer-encoding:mime-version:subject
- :date:from:from:to:cc:subject:date:message-id:reply-to;
- bh=86dTRWRd2VHwGwVCg2XgL8ISOXwl/7IFLauJX/hJsVs=;
- b=dNV0EiVXXojIq9Fxvwv5VTpazhmbIdvTBsYUcbmvBteIabh7RkvHzRV65v+JJON3Q3
- z3GKiqClnC3g+cp6ZI9Q4/CJ9gARy3mv4RRXlOb6e+yyIHO+KhEHjDy8nrdnKnUyDCkb
- FjbkmwvGfWhBeelCBLqMgE8u2RAGZXbpo4S1F8fs7a5QaTi82P3tNBLPFje+OY1DuQ9s
- kxI6uRgQ9zmM1r1G+K+MYuTn4EE39YYA5vGm/svIU7cf0I4girrgTircfe2BepiH1/Ov
- OLmvDJk6Hp+dtwBNwxtvV8ua11LF5ZKiuWwCCNJBKJ2fZoGHBDyZy1Lj8YGuB+H234D7
- 5Oag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1750686115; x=1751290915;
- h=cc:to:message-id:content-transfer-encoding:mime-version:subject
- :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=86dTRWRd2VHwGwVCg2XgL8ISOXwl/7IFLauJX/hJsVs=;
- b=T1VZoY0BShqzW4l4ZMwyJ7UCuL4QiDIB2YP3EyuMxfgLz6WebPBwwh2AG3TxiDQsTW
- 7hMbcF4+F9EvAf+9obfbFYy3fjGxld4zRzAxhPFoW62ELjrDezA/HBdhpEC2t+ZjYCtr
- CdZyvnFQzwIwegMshk3GuXzCIAMp5wCxBA0LiD1fCwB0JQKAxMpayUlx82/hmbrCmijf
- UT931nTmSqckAl99NWDgEkMlHAyq/qErmpekFFyvfOl7oJVfXnDHscNsUFqCk/lCUPR+
- fI6NAqwMngdUBR7KIuTmU4GCWvqdibGa+xC5kABWapcWoMy8FWoD7d1flnQKqg1I+5bp
- DqYA==
-X-Gm-Message-State: AOJu0Ywd989w1PIn2BnPi9qugM/OMbMG+U1bLRsHNW51GbjNWJndQVsP
- 93Hw93H29/sXuhXLdRSBfg1WFoQuG8xgRLTAmcS/+fL3vtxooiAkG5eAkVb39qFJUPG5j5ogYDu
- PiutU
-X-Gm-Gg: ASbGncujBhNbloIZ587Ffd6/Cx3OEZjtzkrQqRxYr79uXaMnAiFmmg1TGzQwl2tp3Ml
- t4DuTyOp1zViox+5EafnKrRzY2Q8fK6vyxoYwpFSBwDGEA4VFcQnesqeHiQFVzKEJdIUfZw1/NS
- kETc0eRvCjRG1a3DYS1wx7i78NQNAgrXXVeGQTEyeqvRnJVcMxgM2zQ/JhNUI8ijFbhLXlQ9m64
- Q6JZD6zqmi4te57Pw1SHNuDWVEpoTof+JKxsX9+lTvJdgPwd0soY7sJ4+UaVV4t8Kuln9vOpxVe
- fLO26gBrThTDO8zE4h7vT+JeH3ElWeorjuQew4K26Eb5CDEkdlxekVlfjRA+
-X-Google-Smtp-Source: AGHT+IG3UZsSCNnSQhYOYWL8tm1SFL+BYEQXxjZGW3k6s2gmTNt1Wvg/ePGFprnmPBQYRQTdofFRSg==
-X-Received: by 2002:a5d:64c4:0:b0:3a5:2b75:56cc with SMTP id
- ffacd0b85a97d-3a6d12a595emr10308047f8f.23.1750686115197; 
- Mon, 23 Jun 2025 06:41:55 -0700 (PDT)
-Received: from localhost ([177.45.162.214])
- by smtp.gmail.com with UTF8SMTPSA id
- d9443c01a7336-237d839325fsm83403425ad.47.2025.06.23.06.41.54
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 23 Jun 2025 06:41:54 -0700 (PDT)
-Date: Mon, 23 Jun 2025 10:41:50 -0300
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EF17B600922
+ for <ltp@lists.linux.it>; Mon, 23 Jun 2025 16:02:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1750687339;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=IxBK4mTQjjW00ZH2lr7LCUHXckWfFjwCljOP3XxN0HU=;
+ b=BWXqssf7miSYkANu/5RI5urNYkoT9wIcSPny5S5jPKp7WESxBiZJ8qMOmWD6yww5DwBWs0
+ ShCtegTR/3AJnkHWevcEj6ox7QLFoiDk0UFZcDuAFhV/6+i7IVUY2cGbu2/gaynqBuVbx/
+ 5kNviDyOR1JzhsbBM6/pL9+Q00VUpqw=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-672-E5hK7F0IM7OZfVnTWN4IVw-1; Mon,
+ 23 Jun 2025 10:02:16 -0400
+X-MC-Unique: E5hK7F0IM7OZfVnTWN4IVw-1
+X-Mimecast-MFC-AGG-ID: E5hK7F0IM7OZfVnTWN4IVw_1750687335
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 4D3071956089; Mon, 23 Jun 2025 14:02:15 +0000 (UTC)
+Received: from fedora-laptop-x1.redhat.com (unknown [10.72.112.30])
+ by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id 59DD519560A3; Mon, 23 Jun 2025 14:02:12 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Mon, 23 Jun 2025 22:02:10 +0800
+Message-ID: <20250623140210.32347-1-liwang@redhat.com>
 MIME-Version: 1.0
-Message-Id: <20250623-conversions-set_thread_area-v5-1-7fb49fcf54d6@suse.com>
-X-B4-Tracking: v=1; b=H4sIAJ1ZWWgC/32OzQ7CIBAGX8VwFlMptNWT72Gahp+tcCgYFomm6
- bsL9e5lk0km8+1KEKIDJNfDSiJkhy74AuJ4INpK/wDqTGHCGiaajrVUB58hVg0pQpqSjSDNJMu
- lvRqY0rMAEAMphWeE2b33+n0srCQCVVF6bWtzkZggVtE6TCF+9i8yr/pvkDf872Dm9EwNdF07y
- 96Yi7rhC+Gkw0LGbdu+O9SHdd4AAAA=
-X-Change-ID: 20250623-conversions-set_thread_area-7b82bcf5ee58
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=12022; i=rbm@suse.com;
- h=from:subject:message-id; bh=ElOOkvRQdkGy+4mq5k0ybMSv8z2EVopD/Y9kStN1OdI=;
- b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBoWVmfVK/3mDqgRR0eZupgTlT7iZiT/OWcN2zm6
- yWZcXkT5xeJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCaFlZnwAKCRDJC4p8Y4ZY
- pkCFD/oDwNHzGaTyYAtLbAfySeS7Yf3D/DE/5lA8J3Vf6HzPV+EGBviRJV3Fy8LcEnJzUt/2kST
- zJgbpUir0GU7p7HwQaTLLAbChoN1UgsCgXpmhzRKN1htm315JDmXVAp0IjY1hweIsBwd8zrslRF
- 4EKUov/WWDUy/ULWSQdBmrsVqy515OziUKkA2Q/AoBGTY0opKTaQ/OCgXR+6Yp3cd4oX7Mcfork
- pdMf+GJQbDJNHC0/YNh5RpT3xM/TRz4icdnBDYzWjewIpATiThoT4haErB8uKnKaLIAhAUw/JRL
- 3V4eia7AxI7EuWwkEHpbkFb2iNae8tzbn1FT+n0hGOvVhNMEwR7RghUMPvUsT6MDUJwzBkgNsEk
- MDlh5m2wQFxtH93/pVm+9mVbmRwQtX7d+6jHkOSdNgiCGIXfbE0mh5KSvFvwyK9dCKhYwLkT27+
- /uu7rRrdwppCoK/QlRf2ESZ/Cl6z0GyO9YdeBfFTm+W8mMlX79p0lVGaPE8RJnghC6ZMOkdcjK3
- u9vtvB9NjKE95WO7qlrBF5wc/AEqJRVLlP6SAQUkN/Gx8DfFPPWMfYkeg+AvTT4DtSdZSRt0ZdU
- bFtrD98ZUrOWgwNMOJk9rRLUk0p+ts02Y0smDj0fbyJmW7aqjzuIkCyR9EtQAOGebTSqlOFMjmU
- i3k7+iaHsKVLl4w==
-X-Developer-Key: i=rbm@suse.com; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: y5ZfDdVzPY_cpRQ5nqcXeqtsrGw7gHwfQhAjDX7xKhc_1750687335
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5] syscalls/set_thread_area01: Refactor into new API
+Subject: [LTP] [PATCH v2] tst_test: Add min_runtime to control lower bound
+ of scaled runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,218 +81,172 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
-Reply-To: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
-Cc: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-RnJvbTogUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KClJldmlld2VkLWJ5OiBB
-bmRyZWEgQ2VydmVzYXRvIDxhbmRyZWEuY2VydmVzYXRvQHN1c2UuY29tPgpTaWduZWQtb2ZmLWJ5
-OiBSaWNhcmRvIEIuIE1hcmxpw6hyZSA8cmJtQHN1c2UuY29tPgotLS0KQ2hhbmdlcyBpbiB2NToK
-LSBSZWJhc2VkIG5vdyB0aGF0IHRoZSBwcmVyZXF1aXNpdGVzIGFyZSBtZXJnZWQKLSBMaW5rIHRv
-IHY0OiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjUwNDA0LWNvbnZlcnNpb25zLXNldF90
-aHJlYWRfYXJlYS12NC0xLWRlNjYzZmE3ZGQ5YkBzdXNlLmNvbQoKQ2hhbmdlcyBpbiB2NDoKLSBB
-ZGRlZCBzZXRfdGhyZWFkX2FyZWEwMiB0byBydW50ZXN0L3N5c2NhbGxzCi0gQWRkZWQgbWlzc2lu
-ZyBzdGF0aWMgbW9kaWZpZXJzCi0gRml4ZWQgZm9ybWF0dGluZyBpc3N1ZSBpbiAuYnVmcwotIFJl
-bW92ZWQgc3RydWN0IHR2YXJpYW50IGluIHNldF90aHJlYWRfYXJlYTAyCi0gUmVuYW1lZCBlbnRy
-eSAtPiB1X2luZm8gdG8gZm9sbG93IG1hbnBhZ2Ugc3RhbmRhcmQKLSBBZGRlZCBleHBlY3RlZCBl
-cnJub3MgdG8gc2V0X3RocmVhZF9hcmVhMDIgZGVzY3JpcHRpb24KLSBMaW5rIHRvIHYzOiBodHRw
-czovL2xvcmUua2VybmVsLm9yZy9yLzIwMjUwNDAzLWNvbnZlcnNpb25zLXNldF90aHJlYWRfYXJl
-YS12My0xLWRmOTc3MzY2YmUzMkBzdXNlLmNvbQoKQ2hhbmdlcyBpbiB2MzoKLSBNb3ZlZCBzeXNj
-YWxsIHdyYXBwZXJzIHRvIGluY2x1ZGUvbGFwaS9sZHQuaAotIFNwbGl0IHRoZSB0ZXN0IGludG8g
-YSBuZXcgc2V0X3RocmVhZF9hcmVhMDIuYyBmaWxlCi0gVXNlZCBndWFyZGVkIGJ1ZmZlcnMKLSBV
-c2VkIC5zdXBwb3J0ZWRfYXJjaHMgaW5zdGVhZCBvZiAjaWZkZWYgX19pMzg2X18KLSBVc2VkIC50
-ZXN0X3ZhcmlhbnRzIGFuZCAudGNudCsudGVzdCBpbiBzZXRfdGhyZWFkX2FyZWEwMi5jCi0gVHdl
-YWtlZCB0ZXN0IGRlY3JpcHRpb25zCi0gTGluayB0byB2MjogaHR0cHM6Ly9sb3JlLmtlcm5lbC5v
-cmcvci8yMDI1MDQwMy1jb252ZXJzaW9ucy1zZXRfdGhyZWFkX2FyZWEtdjItMS1hMTc3ZTVjMmIy
-OGRAc3VzZS5jb20KCkNoYW5nZXMgaW4gdjI6Ci0gVXNlZCB0c3RfdGVzdC50ZXN0X2FsbCBpbnN0
-ZWFkIG9mIC50ZXN0Ci0gUmVtb3ZlZCBWQUxVRV9BTkRfU1RSSU5HIG1hY3JvCi0gQWRkZWQgbG9j
-YWwgd3JhcHBlcnMgdG8gdGhlIHN5c2NhbGxzCi0gRml4ZWQgdGhlIHRlc3QgZGVzY3JpcHRpb24K
-LSBBZGRlZCBhIGNvbW1lbnQgcXVvdGUgZnJvbSB0aGUgc2V0X3RocmVhZF9hcmVhIG1hbnVhbCB0
-byBhZGQgY29udGV4dAotIExpbmsgdG8gdjE6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8y
-MDI1MDMyNy1jb252ZXJzaW9ucy1tb2RpZnlfbGR0LXYyLTYtMjkwN2Q0ZDNmNmMwQHN1c2UuY29t
-Ci0tLQogaW5jbHVkZS9sYXBpL2xkdC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMTAgKysKIHJ1bnRlc3Qvc3lzY2FsbHMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgICAxICsKIC4uLi9rZXJuZWwvc3lzY2FsbHMvc2V0X3RocmVhZF9hcmVhLy5naXRpZ25v
-cmUgICAgIHwgICAzICstCiAuLi4vc3lzY2FsbHMvc2V0X3RocmVhZF9hcmVhL3NldF90aHJlYWRf
-YXJlYS5oICAgICB8ICAzMSAtLS0tLQogLi4uL3N5c2NhbGxzL3NldF90aHJlYWRfYXJlYS9zZXRf
-dGhyZWFkX2FyZWEwMS5jICAgfCAxMzcgKysrKysrKy0tLS0tLS0tLS0tLS0tCiAuLi4vc3lzY2Fs
-bHMvc2V0X3RocmVhZF9hcmVhL3NldF90aHJlYWRfYXJlYTAyLmMgICB8ICA1NyArKysrKysrKysK
-IDYgZmlsZXMgY2hhbmdlZCwgMTEzIGluc2VydGlvbnMoKyksIDEyNiBkZWxldGlvbnMoLSkKCmRp
-ZmYgLS1naXQgYS9pbmNsdWRlL2xhcGkvbGR0LmggYi9pbmNsdWRlL2xhcGkvbGR0LmgKaW5kZXgg
-MzMxZjI1YjQ0NGE0OGM0YzdmMTgzM2MzNzZmYjY5NDA0MDI5ODQ2Yy4uZDkyMzNkMDliZWU5NDdh
-OTBkMjI1MzhlMmUzY2YxM2RlY2U2NDIwOCAxMDA2NDQKLS0tIGEvaW5jbHVkZS9sYXBpL2xkdC5o
-CisrKyBiL2luY2x1ZGUvbGFwaS9sZHQuaApAQCAtNzYsNCArNzYsMTQgQEAgc3RhdGljIGlubGlu
-ZSBpbnQgc2FmZV9tb2RpZnlfbGR0KGNvbnN0IGNoYXIgKmZpbGUsIGNvbnN0IGludCBsaW5lbm8s
-IGludCBmdW5jLAogI2RlZmluZSBTQUZFX01PRElGWV9MRFQoZnVuYywgcHRyLCBieXRlY291bnQp
-IFwKIAlzYWZlX21vZGlmeV9sZHQoX19GSUxFX18sIF9fTElORV9fLCAoZnVuYyksIChwdHIpLCAo
-Ynl0ZWNvdW50KSkKIAorc3RhdGljIGlubGluZSBpbnQgc2V0X3RocmVhZF9hcmVhKGNvbnN0IHN0
-cnVjdCB1c2VyX2Rlc2MgKnVfaW5mbykKK3sKKwlyZXR1cm4gdHN0X3N5c2NhbGwoX19OUl9zZXRf
-dGhyZWFkX2FyZWEsIHVfaW5mbyk7Cit9CisKK3N0YXRpYyBpbmxpbmUgaW50IGdldF90aHJlYWRf
-YXJlYShjb25zdCBzdHJ1Y3QgdXNlcl9kZXNjICp1X2luZm8pCit7CisJcmV0dXJuIHRzdF9zeXNj
-YWxsKF9fTlJfZ2V0X3RocmVhZF9hcmVhLCB1X2luZm8pOworfQorCiAjZW5kaWYgLyogTEFQSV9M
-RFRfSF9fICovCmRpZmYgLS1naXQgYS9ydW50ZXN0L3N5c2NhbGxzIGIvcnVudGVzdC9zeXNjYWxs
-cwppbmRleCBkNTU4MmNhOGRhMDFmMTFhZGJhNzVhNTZkMjJjYjZlNWM0OTk2YzY4Li41ODI0MjJh
-YzljYThjY2FlNTk4YzYyNmExMWNmNmVlN2MzMGYwZTNhIDEwMDY0NAotLS0gYS9ydW50ZXN0L3N5
-c2NhbGxzCisrKyBiL3J1bnRlc3Qvc3lzY2FsbHMKQEAgLTEzNjEsNiArMTM2MSw3IEBAIHNldF9t
-ZW1wb2xpY3kwNCBzZXRfbWVtcG9saWN5MDQKIAogc2V0X3JvYnVzdF9saXN0MDEgc2V0X3JvYnVz
-dF9saXN0MDEKIHNldF90aHJlYWRfYXJlYTAxIHNldF90aHJlYWRfYXJlYTAxCitzZXRfdGhyZWFk
-X2FyZWEwMiBzZXRfdGhyZWFkX2FyZWEwMgogc2V0X3RpZF9hZGRyZXNzMDEgc2V0X3RpZF9hZGRy
-ZXNzMDEKIAogc2V0ZG9tYWlubmFtZTAxCXNldGRvbWFpbm5hbWUwMQpkaWZmIC0tZ2l0IGEvdGVz
-dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfdGhyZWFkX2FyZWEvLmdpdGlnbm9yZSBiL3Rlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X3RocmVhZF9hcmVhLy5naXRpZ25vcmUKaW5kZXggNTQ3
-ZWI4NmUzYzRlZTg2ZTIzNDMwNjc4NjdjM2JiMDI3ZTBlZTg1YS4uYjgwY2U3NDE4MTJjMzNmZDlh
-ZjQ3ZWNiYTg1NjFlZjM4NTIxMmU5NyAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9zZXRfdGhyZWFkX2FyZWEvLmdpdGlnbm9yZQorKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5
-c2NhbGxzL3NldF90aHJlYWRfYXJlYS8uZ2l0aWdub3JlCkBAIC0xICsxLDIgQEAKLS9zZXRfdGhy
-ZWFkX2FyZWEwMQorc2V0X3RocmVhZF9hcmVhMDEKK3NldF90aHJlYWRfYXJlYTAyCmRpZmYgLS1n
-aXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldF90aHJlYWRfYXJlYS9zZXRfdGhyZWFk
-X2FyZWEuaCBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X3RocmVhZF9hcmVhL3NldF90
-aHJlYWRfYXJlYS5oCmRlbGV0ZWQgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAyYmQyNDY5ZDU0OWVj
-ZjhjNWM1ODlhMGE5NDg1Zjg4NmQwNDNmN2VkLi4wMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwCi0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X3RocmVhZF9h
-cmVhL3NldF90aHJlYWRfYXJlYS5oCisrKyAvZGV2L251bGwKQEAgLTEsMzEgKzAsMCBAQAotI2lu
-Y2x1ZGUgPHN0ZGlvLmg+Ci0jaW5jbHVkZSA8ZXJybm8uaD4KLQotLyogSGFybmVzcyBTcGVjaWZp
-YyBJbmNsdWRlIEZpbGVzLiAqLwotI2luY2x1ZGUgInRlc3QuaCIKLSNpbmNsdWRlICJsYXBpL3N5
-c2NhbGxzLmgiCi0jaW5jbHVkZSAiY29uZmlnLmgiCi0KLSNpZiBkZWZpbmVkIEhBVkVfQVNNX0xE
-VF9ICi0jaW5jbHVkZSA8bGludXgvdW5pc3RkLmg+Ci0jaW5jbHVkZSA8YXNtL2xkdC5oPgotCi0j
-aWYgZGVmaW5lZCBIQVZFX1NUUlVDVF9VU0VSX0RFU0MKLXR5cGVkZWYgc3RydWN0IHVzZXJfZGVz
-YyB0aHJlYWRfYXJlYV9zOwotI2VsaWYgZGVmaW5lZCBIQVZFX1NUUlVDVF9NT0RJRllfTERUX0xE
-VF9TCi10eXBlZGVmIHN0cnVjdCBtb2RpZnlfbGR0X2xkdF9zIHRocmVhZF9hcmVhX3M7Ci0jZWxz
-ZQotdHlwZWRlZiBzdHJ1Y3QgdXNlcl9kZXNjIHsKLQl1bnNpZ25lZCBpbnQgZW50cnlfbnVtYmVy
-OwotCXVuc2lnbmVkIGxvbmcgaW50IGJhc2VfYWRkcjsKLQl1bnNpZ25lZCBpbnQgbGltaXQ7Ci0J
-dW5zaWduZWQgaW50IHNlZ18zMmJpdDoxOwotCXVuc2lnbmVkIGludCBjb250ZW50czoyOwotCXVu
-c2lnbmVkIGludCByZWFkX2V4ZWNfb25seToxOwotCXVuc2lnbmVkIGludCBsaW1pdF9pbl9wYWdl
-czoxOwotCXVuc2lnbmVkIGludCBzZWdfbm90X3ByZXNlbnQ6MTsKLQl1bnNpZ25lZCBpbnQgdXNl
-YWJsZToxOwotCXVuc2lnbmVkIGludCBlbXB0eToyNTsKLX0gdGhyZWFkX2FyZWFfczsKLSNlbmRp
-ZiAvKiBIQVZFX1NUUlVDVF9VU0VSX0RFU0MgKi8KLSNlbmRpZiAvKiBIQVZFX0FTTV9MRFRfSCAq
-LwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfdGhyZWFkX2FyZWEv
-c2V0X3RocmVhZF9hcmVhMDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X3RocmVh
-ZF9hcmVhL3NldF90aHJlYWRfYXJlYTAxLmMKaW5kZXggMzA2MjZkNWU5MGViZjhlMjA2MjRjMzcw
-Y2M0NDc0Y2I1MWE2YjEwMi4uMzg5MmQ0MmE1M2E4YWQyMDY1YzRkYTMzN2U4OWQ1MjY1YTUyOWVl
-NSAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfdGhyZWFkX2FyZWEv
-c2V0X3RocmVhZF9hcmVhMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldF90
-aHJlYWRfYXJlYS9zZXRfdGhyZWFkX2FyZWEwMS5jCkBAIC0xLDExMSArMSw2MCBAQAotLyoqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioKKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVy
-CisvKgogICogQ29weXJpZ2h0IChjKSBDcmFja2VyamFjayBQcm9qZWN0LiwgMjAwNwogICogQ29w
-eXJpZ2h0IChjKSBNYW5hcyBLdW1hciBOYXlhayA8bWFrbmF5YWtAaW4uaWJtLmNvbT4KICAqIENv
-cHlyaWdodCAoYykgQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1c2UuY3o+IDIwMTEKKyAqIENvcHly
-aWdodCAoYykgMjAyNSBTVVNFIExMQyBSaWNhcmRvIEIuIE1hcmxpw6hyZSA8cmJtQHN1c2UuY29t
-PgorICovCisKKy8qXAorICogQmFzaWMgdGVzdCBvZiBpMzg2IHRocmVhZC1sb2NhbCBzdG9yYWdl
-IGZvciBzZXRfdGhyZWFkX2FyZWEgYW5kCisgKiBnZXRfdGhyZWFkX2FyZWEgc3lzY2FsbHMuIEl0
-IHZlcmlmaWVzIGEgc2ltcGxlIHdyaXRlIGFuZCByZWFkIG9mIGFuIGVudHJ5CisgKiB3b3Jrcy4K
-ICAqCi0gKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgIHlvdSBjYW4gcmVkaXN0cmli
-dXRlIGl0IGFuZC9vciBtb2RpZnkKLSAqIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdl
-bmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5Ci0gKiB0aGUgRnJlZSBTb2Z0d2Fy
-ZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNlbnNlLCBvcgotICogKGF0
-IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KLSAqCi0gKiBUaGlzIHByb2dyYW0gaXMg
-ZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwKLSAqIGJ1dCBX
-SVRIT1VUIEFOWSBXQVJSQU5UWTsgIHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBv
-ZgotICogTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NF
-LiAgU2VlCi0gKiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWls
-cy4KLSAqCi0gKiBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2Vu
-ZXJhbCBQdWJsaWMgTGljZW5zZQotICogYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07ICBpZiBub3Qs
-IHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCi0gKiBGb3VuZGF0aW9uLCBJbmMuLCA1MSBGcmFu
-a2xpbiBTdHJlZXQsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BIDAyMTEwLTEzMDEgVVNBCisgKiBb
-QWxnb3JpdGhtXQogICoKLSAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCisgKiAtIENhbGwgc2V0X3RocmVhZF9h
-cmVhIHRvIGEgc3RydWN0IHVzZXJfZGVzYyBwb2ludGVyIHdpdGggZW50cnlfbnVtYmVyID0gLTEs
-CisgKiAgIHdoaWNoIHdpbGwgYmUgc2V0IHRvIGEgZnJlZSBlbnRyeV9udW1iZXIgdXBvbiBleGl0
-aW5nLgorICogLSBDYWxsIGdldF90aHJlYWRfYXJlYSB0byByZWFkIHRoZSBuZXcgZW50cnkuCisg
-KiAtIFVzZSB0aGUgbmV3IGVudHJ5X251bWJlciBpbiBhbm90aGVyIHBvaW50ZXIgYW5kIGNhbGwg
-Z2V0X3RocmVhZF9hcmVhLgorICogLSBNYWtlIHN1cmUgdGhleSBoYXZlIHRoZSBzYW1lIGRhdGEu
-CisgKi8KIAotI2luY2x1ZGUgInNldF90aHJlYWRfYXJlYS5oIgorI2luY2x1ZGUgInRzdF90ZXN0
-LmgiCiAKLWNoYXIgKlRDSUQgPSAic2V0X3RocmVhZF9hcmVhXzAxIjsKLWludCBUU1RfVE9UQUwg
-PSA2OworI2luY2x1ZGUgImxhcGkvbGR0LmgiCiAKLSNpZiBkZWZpbmVkKEhBVkVfQVNNX0xEVF9I
-KSAmJiBkZWZpbmVkKEhBVkVfU1RSVUNUX1VTRVJfREVTQykKK3N0YXRpYyBzdHJ1Y3QgdXNlcl9k
-ZXNjICp1X2luZm8xOworc3RhdGljIHN0cnVjdCB1c2VyX2Rlc2MgKnVfaW5mbzI7CiAKLXN0YXRp
-YyB2b2lkIGNsZWFudXAodm9pZCkKK3N0YXRpYyB2b2lkIHJ1bih2b2lkKQogeworCVRTVF9FWFBf
-UEFTU19TSUxFTlQoc2V0X3RocmVhZF9hcmVhKHVfaW5mbzEpKTsKKwlUU1RfRVhQX1BBU1NfU0lM
-RU5UKGdldF90aHJlYWRfYXJlYSh1X2luZm8xKSk7CisKKwl1X2luZm8yLT5lbnRyeV9udW1iZXIg
-PSB1X2luZm8xLT5lbnRyeV9udW1iZXI7CisJVFNUX0VYUF9QQVNTX1NJTEVOVChnZXRfdGhyZWFk
-X2FyZWEodV9pbmZvMikpOworCisJVFNUX0VYUF9QQVNTKG1lbWNtcCh1X2luZm8xLCB1X2luZm8y
-LCBzaXplb2Yoc3RydWN0IHVzZXJfZGVzYykpKTsKIH0KIAogc3RhdGljIHZvaWQgc2V0dXAodm9p
-ZCkKIHsKLQlURVNUX1BBVVNFOworCS8qIFdoZW4gc2V0X3RocmVhZF9hcmVhKCkgaXMgcGFzc2Vk
-IGFuIGVudHJ5X251bWJlciBvZiAtMSwgaXQgIHNlYXJjaGVzCisJICogZm9yIGEgZnJlZSBUTFMg
-ZW50cnkuIElmIHNldF90aHJlYWRfYXJlYSgpIGZpbmRzIGEgZnJlZSBUTFMgZW50cnksCisJICog
-dGhlIHZhbHVlIG9mIHVfaW5mby0+ZW50cnlfbnVtYmVyIGlzIHNldCB1cG9uIHJldHVybiB0byBz
-aG93IHdoaWNoCisJICogZW50cnkgd2FzIGNoYW5nZWQuCisJICovCisJdV9pbmZvMS0+ZW50cnlf
-bnVtYmVyID0gLTE7CiB9CiAKLXN0cnVjdCB0ZXN0IHsKLQlpbnQgc3lzY2FsbDsKLQljb25zdCBj
-aGFyICpjb25zdCBzeXNjYWxsX25hbWU7Ci0JdGhyZWFkX2FyZWFfcyAqdV9pbmZvOwotCWludCBl
-eHBfcmV0OwotCWludCBleHBfZXJybm87Ci19OwotCi0vKgotICogVGhlIHNldF90aHJlYWRfYXJl
-YSB1c2VzIGEgZnJlZSBlbnRyeV9udW1iZXIgaWYgZW50cnkgbnVtYmVyIGlzIHNldCB0byAtMQot
-ICogYW5kIHVwb24gdGhlIHN5c2NhbGwgZXhpdCB0aGUgZW50cnkgbnVtYmVyIGlzIHNldCB0byBl
-bnRyeSB3aGljaCB3YXMgdXNlZC4KLSAqIFNvIHdoZW4gd2UgY2FsbCBnZXRfdGhyZWFkX2FyZWEg
-b24gdV9pbmZvMSwgdGhlIGVudHJ5IG51bWJlciBpcyBpbml0YWxpemVkCi0gKiBjb3JlY3RseSBi
-eSB0aGUgcHJldmlvdXMgc2V0X3RocmVhZF9hcmVhLgotICovCi1zdGF0aWMgc3RydWN0IHVzZXJf
-ZGVzYyB1X2luZm8xID0gey5lbnRyeV9udW1iZXIgPSAtMSB9Owotc3RhdGljIHN0cnVjdCB1c2Vy
-X2Rlc2MgdV9pbmZvMiA9IHsuZW50cnlfbnVtYmVyID0gLTIgfTsKLQotI2RlZmluZSBWQUxVRV9B
-TkRfU1RSSU5HKHZhbCkgdmFsLCAjdmFsCi0KLXN0YXRpYyBzdHJ1Y3QgdGVzdCB0ZXN0c1tdID0g
-ewotCXtWQUxVRV9BTkRfU1RSSU5HKF9fTlJfc2V0X3RocmVhZF9hcmVhKSwgJnVfaW5mbzEsIDAs
-IDB9LAotCXtWQUxVRV9BTkRfU1RSSU5HKF9fTlJfZ2V0X3RocmVhZF9hcmVhKSwgJnVfaW5mbzEs
-IDAsIDB9LAotCXtWQUxVRV9BTkRfU1RSSU5HKF9fTlJfc2V0X3RocmVhZF9hcmVhKSwgJnVfaW5m
-bzIsIC0xLCBFSU5WQUx9LAotCXtWQUxVRV9BTkRfU1RSSU5HKF9fTlJfZ2V0X3RocmVhZF9hcmVh
-KSwgJnVfaW5mbzIsIC0xLCBFSU5WQUx9LAotCXtWQUxVRV9BTkRfU1RSSU5HKF9fTlJfc2V0X3Ro
-cmVhZF9hcmVhKSwgKHZvaWQgKiktOSwgLTEsIEVGQVVMVH0sCi0Je1ZBTFVFX0FORF9TVFJJTkco
-X19OUl9nZXRfdGhyZWFkX2FyZWEpLCAodm9pZCAqKS05LCAtMSwgRUZBVUxUfSwKK3N0YXRpYyBz
-dHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKKwkuc2V0dXAgPSBzZXR1cCwKKwkudGVzdF9hbGwgPSBy
-dW4sCisJLnN1cHBvcnRlZF9hcmNocyA9IChjb25zdCBjaGFyICpjb25zdFtdKXsgIng4NiIsIE5V
-TEwgfSwKKwkuYnVmcyA9IChzdHJ1Y3QgdHN0X2J1ZmZlcnNbXSkgeworCQkJeyAmdV9pbmZvMSwg
-LnNpemUgPSBzaXplb2Yoc3RydWN0IHVzZXJfZGVzYykgfSwKKwkJCXsgJnVfaW5mbzIsIC5zaXpl
-ID0gc2l6ZW9mKHN0cnVjdCB1c2VyX2Rlc2MpIH0sCisJCQl7fSwKKwkJfSwKIH07Ci0KLWludCBt
-YWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCi17Ci0JaW50IGxjOwotCXVuc2lnbmVkIGk7Ci0K
-LQl0c3RfcGFyc2Vfb3B0cyhhcmdjLCBhcmd2LCBOVUxMLCBOVUxMKTsKLQotCXNldHVwKCk7Ci0K
-LQlmb3IgKGxjID0gMDsgVEVTVF9MT09QSU5HKGxjKTsgbGMrKykgewotCQlmb3IgKGkgPSAwOyBp
-IDwgc2l6ZW9mKHRlc3RzKSAvIHNpemVvZihzdHJ1Y3QgdGVzdCk7IGkrKykgewotCQkJVEVTVCh0
-c3Rfc3lzY2FsbCh0ZXN0c1tpXS5zeXNjYWxsLCB0ZXN0c1tpXS51X2luZm8pKTsKLQotCQkJaWYg
-KFRFU1RfUkVUVVJOICE9IHRlc3RzW2ldLmV4cF9yZXQpIHsKLQkJCQl0c3RfcmVzbShURkFJTCwg
-IiVzIHJldHVybmVkICVsaSBleHBlY3RlZCAlaSIsCi0JCQkJCSB0ZXN0c1tpXS5zeXNjYWxsX25h
-bWUsCi0JCQkJCSBURVNUX1JFVFVSTiwgdGVzdHNbaV0uZXhwX3JldCk7Ci0JCQkJY29udGludWU7
-Ci0JCQl9Ci0KLQkJCWlmIChURVNUX0VSUk5PICE9IHRlc3RzW2ldLmV4cF9lcnJubykgewotCQkJ
-CXRzdF9yZXNtKFRGQUlMLAotCQkJCQkgIiVzIGZhaWxlZCB3aXRoICVpICglcykgZXhwZWN0ZWQg
-JWkgKCVzKSIsCi0JCQkJCSB0ZXN0c1tpXS5zeXNjYWxsX25hbWUsIFRFU1RfRVJSTk8sCi0JCQkJ
-CSBzdHJlcnJvcihURVNUX0VSUk5PKSwKLQkJCQkJIHRlc3RzW2ldLmV4cF9lcnJubywKLQkJCQkJ
-IHN0cmVycm9yKHRlc3RzW2ldLmV4cF9lcnJubykpOwotCQkJCWNvbnRpbnVlOwotCQkJfQotCi0J
-CQl0c3RfcmVzbShUUEFTUywgIiVzIHJldHVybmVkICVsaSBlcnJubyAlaSAoJXMpIiwKLQkJCQkg
-dGVzdHNbaV0uc3lzY2FsbF9uYW1lLCBURVNUX1JFVFVSTiwKLQkJCQkgVEVTVF9FUlJOTywgc3Ry
-ZXJyb3IoVEVTVF9FUlJOTykpOwotCQl9Ci0JfQotCi0JY2xlYW51cCgpOwotCXRzdF9leGl0KCk7
-Ci19Ci0jZWxzZQotaW50IG1haW4odm9pZCkKLXsKLQl0c3RfYnJrbShUQ09ORiwgTlVMTCwKLQkJ
-ICJzZXRfdGhyZWFkX2FyZWEgaXNuJ3QgYXZhaWxhYmxlIGZvciB0aGlzIGFyY2hpdGVjdHVyZSIp
-OwotfQotI2VuZGlmCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldF90
-aHJlYWRfYXJlYS9zZXRfdGhyZWFkX2FyZWEwMi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9zZXRfdGhyZWFkX2FyZWEvc2V0X3RocmVhZF9hcmVhMDIuYwpuZXcgZmlsZSBtb2RlIDEwMDY0
-NAppbmRleCAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwLi5mMTk5Nzk3
-NGU2MmE5ZGI2YzRhOTg0ZjJkYmUyNzI1ZGMxYmYxN2RmCi0tLSAvZGV2L251bGwKKysrIGIvdGVz
-dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfdGhyZWFkX2FyZWEvc2V0X3RocmVhZF9hcmVhMDIu
-YwpAQCAtMCwwICsxLDU3IEBACisvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1v
-ci1sYXRlcgorLyoKKyAqIENvcHlyaWdodCAoYykgQ3JhY2tlcmphY2sgUHJvamVjdC4sIDIwMDcK
-KyAqIENvcHlyaWdodCAoYykgTWFuYXMgS3VtYXIgTmF5YWsgPG1ha25heWFrQGluLmlibS5jb20+
-CisgKiBDb3B5cmlnaHQgKGMpIEN5cmlsIEhydWJpcyA8Y2hydWJpc0BzdXNlLmN6PiAyMDExCisg
-KiBDb3B5cmlnaHQgKGMpIDIwMjUgU1VTRSBMTEMgUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBz
-dXNlLmNvbT4KKyAqLworCisvKlwKKyAqIFRlc3RzIHNldF90aHJlYWRfYXJlYSBhbmQgZ2V0X3Ro
-cmVhZF9hcmVhIHN5c2NhbGxzIGZvciB0aGVpciBleHBlY3RlZCBlcnJvcnM6CisgKgorICogLSBF
-SU5WQUwgdV9pbmZvLT5lbnRyeV9udW1iZXIgaXMgb3V0IG9mIGJvdW5kcy4KKyAqIC0gRUZBVUxU
-IHVfaW5mbyBpcyBhbiBpbnZhbGlkIHBvaW50ZXIuCisgKi8KKworI2luY2x1ZGUgInRzdF90ZXN0
-LmgiCisKKyNpbmNsdWRlICJsYXBpL2xkdC5oIgorCitzdGF0aWMgc3RydWN0IHVzZXJfZGVzYyAq
-dV9pbmZvOworCitzdGF0aWMgc3RydWN0IHRjYXNlIHsKKwlzdHJ1Y3QgdXNlcl9kZXNjICp1X2lu
-Zm87CisJaW50IGV4cF9lcnJubzsKK30gdGNhc2VzW10gPSB7CisJeyBOVUxMLCBFSU5WQUwgfSwK
-Kwl7ICh2b2lkICopLTksIEVGQVVMVCB9LAorfTsKKworc3RhdGljIHZvaWQgcnVuKHVuc2lnbmVk
-IGludCBpKQoreworCXN0cnVjdCB0Y2FzZSB0YyA9IHRjYXNlc1tpXTsKKworCWlmICh0c3RfdmFy
-aWFudCkKKwkJVFNUX0VYUF9GQUlMKGdldF90aHJlYWRfYXJlYSh0Yy51X2luZm8pLCB0Yy5leHBf
-ZXJybm8pOworCWVsc2UKKwkJVFNUX0VYUF9GQUlMKHNldF90aHJlYWRfYXJlYSh0Yy51X2luZm8p
-LCB0Yy5leHBfZXJybm8pOworfQorCitzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQoreworCS8qIFRo
-aXMgbWFrZXMgKmVudHJ5IGludmFsaWQgKi8KKwl1X2luZm8tPmVudHJ5X251bWJlciA9IC0yOwor
-CXRjYXNlc1swXS51X2luZm8gPSB1X2luZm87Cit9CisKK3N0YXRpYyBzdHJ1Y3QgdHN0X3Rlc3Qg
-dGVzdCA9IHsKKwkuc2V0dXAgPSBzZXR1cCwKKwkudGNudCA9IEFSUkFZX1NJWkUodGNhc2VzKSwK
-KwkudGVzdCA9IHJ1biwKKwkudGVzdF92YXJpYW50cyA9IDIsCisJLnN1cHBvcnRlZF9hcmNocyA9
-IChjb25zdCBjaGFyICpjb25zdFtdKXsgIng4NiIsIE5VTEwgfSwKKwkuYnVmcyA9IChzdHJ1Y3Qg
-dHN0X2J1ZmZlcnNbXSkgeworCQkJeyAmdV9pbmZvLCAuc2l6ZSA9IHNpemVvZihzdHJ1Y3QgdXNl
-cl9kZXNjKSB9LAorCQkJe30sCisJCX0sCit9OwoKLS0tCmJhc2UtY29tbWl0OiBkZjU5MTExM2Fm
-ZWIzMTEwN2JjNDViZDViYTI4YTk5YjU1NmQxMDI4CmNoYW5nZS1pZDogMjAyNTA2MjMtY29udmVy
-c2lvbnMtc2V0X3RocmVhZF9hcmVhLTdiODJiY2Y1ZWU1OAoKQmVzdCByZWdhcmRzLAotLSAKUmlj
-YXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KCgotLSAKTWFpbGluZyBsaXN0IGluZm86
-IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+When LTP_RUNTIME_MUL is set to a value < 1.0 (commonly in CI or fast test
+modes), the effective runtime of tests may be scaled down too aggressively.
+For some tests especially those relying on probabilistic triggers or sampling
+(e.g., fuzzy sync, CVE stress loops, long fault injection), this can result in
+too few iterations or missed conditions, leading to unreliable results.
+
+This patch introduces a new field: .min_runtime;
+
+If set, this specifies the minimum allowed runtime (in seconds) after applying
+the LTP_RUNTIME_MUL scaling factor. The final runtime is calculated as:
+
+  MAX(runtime * LTP_RUNTIME_MUL, min_runtime)
+
+If min_runtime is not set, a default minimum of 1 second is enforced.
+
+This approach replaces the need for special flags such as
+TST_NO_FRAC_RUNTIME_MUL and provides a more systematic, flexible solution.
+
+The following tests are updated to set .min_runtime:
+  - preadv203
+  - cve-2016-7117
+  - tst_fuzzy_sync01
+  - tst_fuzzy_sync02
+
+Suggested-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Ian Wienand <iwienand@redhat.com>
+---
+
+Notes:
+    v1 --> v2:
+    	* replace the .flags by a new min_runtime filed
+    	* set 1 second as the default minimal runtime regardless
+    	  LTP_RUNTIME_MUL value
+
+ include/tst_test.h                            |  9 +++++++++
+ lib/newlib_tests/tst_fuzzy_sync01.c           |  2 +-
+ lib/newlib_tests/tst_fuzzy_sync02.c           |  2 +-
+ lib/tst_test.c                                | 11 +++++++++--
+ testcases/cve/cve-2016-7117.c                 |  2 +-
+ testcases/kernel/syscalls/preadv2/preadv203.c |  2 +-
+ 6 files changed, 22 insertions(+), 6 deletions(-)
+
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 6fd8cbae3..9c21c1728 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -460,6 +460,14 @@ struct tst_fs {
+  *           (e.g., TIMEOUT_MUL), ensuring consistent test duration across
+  *           different environments (e.g., debug vs. stock kernels).
+  *
++ * @min_runtime: Optional lower bound (in seconds) applied after runtime is
++ *           scaled by LTP_RUNTIME_MUL. If the scaled runtime is smaller
++ *           than this value, it will be clamped up to min_runtime.
++ *           This is useful for tests that require a minimum execution
++ *           time to gather sufficient samples or trigger events (e.g.,
++ *           probabilistic or fuzzy synchronization tests).
++ *           If not set, a default minimum of 1 second is enforced.
++ *
+  * @setup: Setup callback is called once at the start of the test in order to
+  *         prepare the test environment.
+  *
+@@ -584,6 +592,7 @@ struct tst_fs {
+ 
+ 	int timeout;
+ 	int runtime;
++	int min_runtime;
+ 
+ 	void (*setup)(void);
+ 	void (*cleanup)(void);
+diff --git a/lib/newlib_tests/tst_fuzzy_sync01.c b/lib/newlib_tests/tst_fuzzy_sync01.c
+index b1390f460..16f30de57 100644
+--- a/lib/newlib_tests/tst_fuzzy_sync01.c
++++ b/lib/newlib_tests/tst_fuzzy_sync01.c
+@@ -246,5 +246,5 @@ static struct tst_test test = {
+ 	.test = run,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+-	.runtime = 150,
++	.min_runtime = 150,
+ };
+diff --git a/lib/newlib_tests/tst_fuzzy_sync02.c b/lib/newlib_tests/tst_fuzzy_sync02.c
+index bc079f6ff..3b0fb8a9b 100644
+--- a/lib/newlib_tests/tst_fuzzy_sync02.c
++++ b/lib/newlib_tests/tst_fuzzy_sync02.c
+@@ -223,5 +223,5 @@ static struct tst_test test = {
+ 	.test = run,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+-	.runtime = 150,
++	.min_runtime = 150,
+ };
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 495e022f7..75a78be9a 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -627,10 +627,14 @@ static void parse_mul(float *mul, const char *env_name, float min, float max)
+ static int multiply_runtime(unsigned int runtime)
+ {
+ 	static float runtime_mul = -1;
++	int min_runtime = 1;
++
++	if (tst_test->min_runtime)
++		min_runtime = MAX(1, tst_test->min_runtime);
+ 
+ 	parse_mul(&runtime_mul, "LTP_RUNTIME_MUL", 0.0099, 100);
+ 
+-	return runtime * runtime_mul;
++	return MAX(runtime * runtime_mul, min_runtime);
+ }
+ 
+ static struct option {
+@@ -662,7 +666,7 @@ static void print_help(void)
+ 	fprintf(stderr, "LTP_SINGLE_FS_TYPE       Specifies filesystem instead all supported (for .all_filesystems)\n");
+ 	fprintf(stderr, "LTP_FORCE_SINGLE_FS_TYPE Testing only. The same as LTP_SINGLE_FS_TYPE but ignores test skiplist.\n");
+ 	fprintf(stderr, "LTP_TIMEOUT_MUL          Timeout multiplier (must be a number >=1)\n");
+-	fprintf(stderr, "LTP_RUNTIME_MUL          Runtime multiplier (must be a number >=1)\n");
++	fprintf(stderr, "LTP_RUNTIME_MUL          Runtime multiplier (must be a number >0)\n");
+ 	fprintf(stderr, "LTP_VIRT_OVERRIDE        Overrides virtual machine detection (values: \"\"|kvm|microsoft|xen|zvm)\n");
+ 	fprintf(stderr, "TMPDIR                   Base directory for template directory (for .needs_tmpdir, default: %s)\n", TEMPDIR);
+ 	fprintf(stderr, "\n");
+@@ -1996,6 +2000,9 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+ 	uname(&uval);
+ 	tst_res(TINFO, "Tested kernel: %s %s %s", uval.release, uval.version, uval.machine);
+ 
++	if (tst_test->min_runtime)
++		tst_test->runtime =tst_test->min_runtime;
++
+ 	if (tst_test->runtime)
+ 		context->runtime = multiply_runtime(tst_test->runtime);
+ 
+diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+index dbec2b28b..8c488f447 100644
+--- a/testcases/cve/cve-2016-7117.c
++++ b/testcases/cve/cve-2016-7117.c
+@@ -151,7 +151,7 @@ static struct tst_test test = {
+ 	.test_all = run,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+-	.runtime = 60,
++	.min_runtime = 60,
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "34b88a68f26a"},
+ 		{"CVE", "2016-7117"},
+diff --git a/testcases/kernel/syscalls/preadv2/preadv203.c b/testcases/kernel/syscalls/preadv2/preadv203.c
+index 72a35d3ab..472543e5c 100644
+--- a/testcases/kernel/syscalls/preadv2/preadv203.c
++++ b/testcases/kernel/syscalls/preadv2/preadv203.c
+@@ -278,6 +278,6 @@ static struct tst_test test = {
+ 	.mntpoint = MNTPOINT,
+ 	.mount_device = 1,
+ 	.all_filesystems = 1,
+-	.runtime = 60,
++	.min_runtime = 60,
+ 	.needs_root = 1,
+ };
+-- 
+2.49.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
