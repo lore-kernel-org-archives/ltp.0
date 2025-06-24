@@ -4,95 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDE21C77B7C
-	for <ltp@archiver.kernel.org>; Tue, 24 Jun 2025 09:21:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 639D8C77B7F
+	for <ltp@archiver.kernel.org>; Tue, 24 Jun 2025 09:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1750756866; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1750758934; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=4uVI9urUBC0OTth/v/mTc4xtTyhvgCMen1mfTBoBplg=;
- b=kUAYWMYpj3IXF74sCHzQyQ3cwOYAbIbUhxQXKtTu+7GTFMgQISN+pxSzt0yAuA0OzFIAQ
- iObEGDTuCJWF+bfv6USJ2AOjK9s6SN6EAhCGFDZ3ePbAghXWATYshv3efVhhnZyXhD5rgUt
- uFhV6X4cPSGTJzojGmY2mP/Jx18l2JI=
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=NoN/6dhZ7Kdl0lm88E3drbUxXLM8yLN5E8zltm1dw/M=;
+ b=lSmTMzu0vk40gRZPhQQcEWLzwgwHn8Z7KlU3OX2ITlF+kVWWOMv8e8zK3RDe8ZXo2LlHB
+ wHcbmDDnD5aSAT+FTUcmXN143pOOkBKD0ybjplxdEpDrm35GLiZGsfMPjDczNye8qWXYtTk
+ tbAwuO4nCRZpdvy+lOCKHhMsbbzDJCM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E22A83CCA98
-	for <ltp@archiver.kernel.org>; Tue, 24 Jun 2025 11:21:06 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id CF9CE3CCAAE
+	for <ltp@archiver.kernel.org>; Tue, 24 Jun 2025 11:55:34 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BF45E3C9AE2
- for <ltp@lists.linux.it>; Tue, 24 Jun 2025 11:20:46 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
+ by picard.linux.it (Postfix) with ESMTPS id 4C2603CB863
+ for <ltp@lists.linux.it>; Tue, 24 Jun 2025 11:55:12 +0200 (CEST)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 111C920075D
- for <ltp@lists.linux.it>; Tue, 24 Jun 2025 11:20:45 +0200 (CEST)
-Received: by mail-wr1-x434.google.com with SMTP id
- ffacd0b85a97d-3a4f379662cso4162129f8f.0
- for <ltp@lists.linux.it>; Tue, 24 Jun 2025 02:20:45 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8333C1000A62
+ for <ltp@lists.linux.it>; Tue, 24 Jun 2025 11:55:11 +0200 (CEST)
+Received: by mail-wr1-x42f.google.com with SMTP id
+ ffacd0b85a97d-3a6cdc27438so4365558f8f.2
+ for <ltp@lists.linux.it>; Tue, 24 Jun 2025 02:55:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1750756845; x=1751361645; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=8clCHOw72muWgeKNQj1PQG295z7swspaTJNfdmafXqA=;
- b=XwJR1d9vT9SKX4+wTltiFbPpbtM65LKlihHHzifBUIaPPv4OK50CMng3pDjgS674xw
- IsgXz5u2GijETojaUT9hf7UDA2IcWtECyOFwZLVtjRJVTR8IealvQ0x+ds2BJY2agSQF
- 1IRxiCgz9scnTAL0xn6mCn+CW6wYEPixCYaA0CCGMF1aRvWs4Qw+j4hQYlpKGYiQ3VGp
- jf71Gk+r+D4VyFqcqF5G5RF3XRM6zgPmsQJrkhcxGSczuz5giVsRdc0gX/vx7mN8LGXr
- x0vKne1aiS9kKiB8+RXVklRV13EzVZui7F94UKccB/dLQoj/STNCmveWrFPpfOm5M+LT
- E1yg==
+ d=suse.com; s=google; t=1750758911; x=1751363711; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=BhMzJ6mL6N2MK/Vp3r9BHZc8o06AaDxjnnWo8I8rXcw=;
+ b=awfcoEFlMni+07PVUuRjf4eXKda8nEv1d56rfuduHiFwmN01NoTeAZbYD0lb0Rl3UC
+ 5kYVYWgcoZTmUh1QHcJjrgT/qrSVVX11EreKUK1S6TEYYgUf+xGzsNfwO6YasdXJwCEB
+ upRnN5wl6OapavIND0NDi4wWnx1Lo3dStvMlcKo/911uQMOb9V4Dj19VFoP0zWVqa1Z3
+ HnzdGzLD46ezpijmnohE+lkBPkHU4uRwusHujAcRZSgG8MMiKmjnJZeY0ESqA4GPy0gw
+ Zm7krz5KneOk7YDfpFMW1kdjXnJFME/mEi2mUIR/4tc5JFDrJC6W6amYgkqYAt7orFJC
+ l6fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1750756845; x=1751361645;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=8clCHOw72muWgeKNQj1PQG295z7swspaTJNfdmafXqA=;
- b=KlTGu2cXEPxuYlborqLI3IimzCe7AQS7ar+sMEWgWSQGuKn/nuvGl+egoq2LxutH8T
- Jqhim192wxMHQ6qC7R7GumfUiwr8yC7rjfJj3jrjO/rC5mSr3B5G6NrU5LvjTBjsoQys
- 35F0UI8kV1gVfv9bp3Fa64iUU881EYC7ovXJpyzA1nzlMW+NYjnlD2Pe+JbxSJ9j2yM7
- FZG3u60YmpXWRtcvgk0HQQojeC5LDm9K2k5OQlFwjbfNyC4k63iDy0rTv/kJjr/avid4
- u8PZoO1oXRvtmZvHTPjl7OWqkcgB0WseCp7vZq0BZTkxhOYeI0G67zegFm3DVSUiTpbI
- yffQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWkgXHti2Hn17o4AlVLTZGEDC1n7eMWOzGkcoP5B5Os+fvSeU3TBGYCoIB1a3LwBjsjZjw=@lists.linux.it
-X-Gm-Message-State: AOJu0YxiZJYniy9e7z3HIqN+erLBMjio7fiF5+PgUtkYdzvTzaHJknb0
- h8EN45kcTmL1v6BuAOcxtDM7tPsQLV9K6i6k959t0NlcnsncDiEessN5IHpqpO1mkqQ=
-X-Gm-Gg: ASbGncvUMoEzOC6yKfOg260O+q2n42hH4ZYJMxCEpKnxuHv6Pcu9l7h3vFvSo2nO3RA
- Ww5ciCtiJuwH4eSIZVwq4+6oaAUlJofKJ2ZUeneGFzW70ljLXo45/7XQ2xqfoXIGHiRPUZTlu2i
- FC68CEJw/F0u9nEk9LQfckWB3T2UW4JLa5NFGtloeRjPTs0LaXLMwvZa9BfuhTTEVEI33mcSQu6
- wsSHDwcB4DNBPTi8V1po9Dlyia9rexlXUtklWaJsA1Sjh5yvnaB/tqzcSWc0PhEK2tc26s1NnzP
- LO3nwrBsnUb/HLuLV7ACSE22ScO/T7hN9zKHJNz6a1GRoplvweHRJ+1cTH54hnip6jO7LFEw8U+
- Swp9lOx8SmperSGDuWhP8sOHMRhqWvYmHvvLq7jx3M2X+cFWx+5o4so3RoGfSej4Gc4IfAAUxFX
- BttxdyiZ4lYQO3EMUg52avgsmevkQJ+JJ0Rhy0
-X-Google-Smtp-Source: AGHT+IFe918bGnP7P/DAziiU+ar0lYAzWMXu09AjM+5cD3qNktMO3U2jnJQ1ZgTVWJgM3r7aQUrldw==
-X-Received: by 2002:a05:6000:2c0d:b0:3a5:1c0d:85e8 with SMTP id
- ffacd0b85a97d-3a6d12a9e08mr12270766f8f.22.1750756845336; 
- Tue, 24 Jun 2025 02:20:45 -0700 (PDT)
-Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
- (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
- [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
+ d=1e100.net; s=20230601; t=1750758911; x=1751363711;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=BhMzJ6mL6N2MK/Vp3r9BHZc8o06AaDxjnnWo8I8rXcw=;
+ b=vZH5uYR+xHF5354/6d6qYRANpEf5M7w7J7g3WpzzXvI07mr3qTtlKgMZVNqotnaRVd
+ p9XgoAy405uDh3It5FqiThUfola6HSQJpadStxtKVI5l5rbk24f1nk9OBxM+NArUvthb
+ U2w2iaXeK2DOpPIIj9Il7QrnXXRt3+fHPJ/FmAxU+NNWMKhtelvTiuu9Laeu2SlgibXf
+ hpGRHKo3X85hLIQyRAZ6pyLiEvZ1qN9RH2fD+fyJ1Ggh8yWIlbLeuhrcqqassYuiv9WX
+ 5ugBfp1Ujhe40c9typLZvQBTnz3hAh+89DLY41uCb/bysepz0NGpUx1S8PmlCdsBiVgi
+ Lq5w==
+X-Gm-Message-State: AOJu0YwtOs5j9XSAUTdLuY0B0jfXf7nTreb1j8WknQYb2QfHznOznwKr
+ OUCWFaA49lRr3gOiPpqG5Em94ywHMo9ZHb8+0lALsFXl/34wwwx2ICm2WIMZIhm2PwMGCxpKFoF
+ Dn34=
+X-Gm-Gg: ASbGncvrWHBu/hbJqQpb1w/VMZUZ4xRpVFOILGwTZdZdZQDkYXcMHY+dTiMaXZ75vSd
+ YZGeXKwNFRqGKqfsb+kLrZ7D62eskr4RBLKMkEjEpCH7uZOuDsn4WRuiXBI23sO+nW+JBVydLHa
+ iJ7ZGCOUoDSXSx60+GlfSmuiLwXzRdEjhB4ve2Dwwh2nV4EtOr9eQu6FMTs6Qyooq//42UqAHDR
+ pLfhArbnNSy0WaV3gGCy0isFJHAkb3173tXYK+Qi6AW89l4WuWYhAwyjXimTueegL8tdDjuNXRW
+ FN3TqEDqZll6cfmSSuZkcdeFxpyyco8SdhGKEfYVeHxAfVmA1YsvZUTXDzlPJyg/wP95etoL
+X-Google-Smtp-Source: AGHT+IFylCcT6JhoDNnjOnU1toYv2JmjPNOw4nT2c20JRz3Y5QuwUrSWKDtj9zjuhOTr3wGJwtrQmg==
+X-Received: by 2002:a5d:584d:0:b0:3a5:2694:d75f with SMTP id
+ ffacd0b85a97d-3a6d1331a3fmr12595645f8f.52.1750758910827; 
+ Tue, 24 Jun 2025 02:55:10 -0700 (PDT)
+Received: from MiWiFi-CR6608-srv ([202.127.77.110])
  by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-315cdf995b8sm443942a91.0.2025.06.24.02.20.41
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 24 Jun 2025 02:20:44 -0700 (PDT)
-Message-ID: <5be82391-d798-4200-840a-87b9e41385bf@suse.com>
-Date: Tue, 24 Jun 2025 11:20:37 +0200
+ d9443c01a7336-237d83f029csm106633605ad.76.2025.06.24.02.55.09
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 24 Jun 2025 02:55:10 -0700 (PDT)
+Date: Tue, 24 Jun 2025 17:54:41 -0400
+To: Li Wang <liwang@redhat.com>
+Message-ID: <aFseoXtM19UYP8bp@MiWiFi-CR6608-srv>
+References: <20250623140210.32347-1-liwang@redhat.com>
+ <aFrxBElBT0jg6IOy@MiWiFi-CR6608-srv>
+ <CAEemH2ctXX_-xs3UPu4wCikok-b7qq747wgTBoer8q6+vELzXw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20250602170831.404641-1-pvorel@suse.cz>
- <20250602170831.404641-2-pvorel@suse.cz>
-Content-Language: en-US
-In-Reply-To: <20250602170831.404641-2-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2ctXX_-xs3UPu4wCikok-b7qq747wgTBoer8q6+vELzXw@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] lapi/mount.h: Add missing mnt_ns_id member
+Subject: Re: [LTP] [PATCH v2] tst_test: Add min_runtime to control lower
+ bound of scaled runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,41 +100,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Moved to Superseeded. Check statmount09 patch.
+On Tue, Jun 24, 2025 at 03:52:31PM +0800, Li Wang wrote:
+> Wei Gao <wegao@suse.com> wrote:
+> 
+> 
+> > > + * @min_runtime: Optional lower bound (in seconds) applied after
+> > runtime is
+> > > + *           scaled by LTP_RUNTIME_MUL. If the scaled runtime is smaller
+> > > + *           than this value, it will be clamped up to min_runtime.
+> > > + *           This is useful for tests that require a minimum execution
+> > > + *           time to gather sufficient samples or trigger events (e.g.,
+> > > + *           probabilistic or fuzzy synchronization tests).
+> > > + *           If not set, a default minimum of 1 second is enforced.
+> > Base your logic once .min_runtime is set then .runtime value effectively
+> > becomes irrelevant.
+> > So i guess we need mention it in above description?
+> >
+> 
+> Yes, combined with Martin's comment, we should at least ensure that
+> .runtime is not overwritten when it exists.
+> 
+> +       if (tst_test->min_runtime && !tst_test->runtime)
+> +               tst_test->runtime = tst_test->min_runtime;
+Thanks for clarification. I think above logic is better.
+> 
+> 
+> Also, I make the .min_runtime uses the value of .runtime (then
+> remove .runtime) for those fuzzy_sync tests, that have a large
+> 'pair.min_smaples' value.
+> 
+> But the default 1024 min_samples I still have no idea how long
+> the .min_runtime needs. Maybe we can estimate and set .min_runtime
+> on a slow system manually.
+> 
+> For others, which do not have strict requirements on execution
+> time, we only need to set .runtime.
+No experience on *good* value for .min_runtime.
+But i guess reusing value of .runtime is the safest option.
 
-- Andrea
-
-On 6/2/25 7:08 PM, Petr Vorel wrote:
-> It was added 09b31295f8330 ("fs: export the mount ns id via statmount")
-> in v6.10-rc1. It also added STATMOUNT_MNT_NS_ID definition, but that's
-> not needed yet.
->
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Not needed for the fix (it can wait).
->
->   include/lapi/mount.h | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/include/lapi/mount.h b/include/lapi/mount.h
-> index aea6bca77a..daca14e551 100644
-> --- a/include/lapi/mount.h
-> +++ b/include/lapi/mount.h
-> @@ -51,6 +51,7 @@ struct mnt_id_req {
->   	uint32_t spare;
->   	uint64_t mnt_id;
->   	uint64_t param;
-> +	uint64_t mnt_ns_id;
->   };
->   #endif
->   
+> 
+> -- 
+> Regards,
+> Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
