@@ -4,72 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B61F3C77B7F
-	for <ltp@archiver.kernel.org>; Tue, 24 Jun 2025 13:14:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1750770889; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=SGfRMiJcrH6mWrGQ02XXAVC0wFZQ3+dm1AXqrtbw2Ak=;
- b=We7/Gt9LfJmCQl6aAj9Y59DMGBtrqRZlGS3UTMIFlwQveGMjx0a6X/J3hwtQauP7HnWbn
- IatJezcOHWtL73aYZ0ue6ZasR1lk1j0MXlZTU8hX5XwhrqtDq4iYlsFVmbs2hl8/pB4FjSw
- GYrKofqcp/k6ke8RqaetOyfktSImvBA=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECF7FC77B7C
+	for <ltp@archiver.kernel.org>; Tue, 24 Jun 2025 14:30:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F190E3CCAA9
-	for <ltp@archiver.kernel.org>; Tue, 24 Jun 2025 15:14:48 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 3D8233CCAC1
+	for <ltp@archiver.kernel.org>; Tue, 24 Jun 2025 16:30:04 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DBE043CCA8D
- for <ltp@lists.linux.it>; Tue, 24 Jun 2025 15:14:26 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 6D8CF3CB863
+ for <ltp@lists.linux.it>; Tue, 24 Jun 2025 16:29:45 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 89CBA200AD6
- for <ltp@lists.linux.it>; Tue, 24 Jun 2025 15:14:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1750770863;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1E646600669
+ for <ltp@lists.linux.it>; Tue, 24 Jun 2025 16:29:43 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C3ABF1F441;
+ Tue, 24 Jun 2025 14:29:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1750775382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=EAJsAOP/6RwBTJdYdTPRXhiRSeVd6Hinf1V5IoEfl0o=;
- b=d9TFM2Z07lIsOhOYpgBlXnaa7DKBNEni2s/yJz51iklB0Q7EzV5Dl+jmkIy5BtGVPPt4wk
- oeBxx+2FwXVFAUoXZ0sd7Sb5JVymFpg5FvLKMMTWuemEfwynxZTtA4PewO14vUEKWAzXRO
- HnD4fI9bJGqlT5gv0GWxBf9b6+DXeN8=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-454-JSHgHiAvPUaQN5dize3-Qw-1; Tue,
- 24 Jun 2025 09:14:20 -0400
-X-MC-Unique: JSHgHiAvPUaQN5dize3-Qw-1
-X-Mimecast-MFC-AGG-ID: JSHgHiAvPUaQN5dize3-Qw_1750770859
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+ bh=TrsPoWjgBPLTXsJBW+RhRv5igqdDgmTgRxctBbgm/cY=;
+ b=rIv1kT0zZjuRHWxRYncCuCqe0e+bJK0u4HMZzmec2t+h1H+ZecdMIzGjBA6N5rAymnq3Sc
+ gsjjeol5lwj0r4cnRlqW6zod5zI/nJ+6kxlJhp5zC1XkFEI63cjRMeXxmZqRNYeKuvXKQi
+ IfJ4RDp7+RldJYodfbb1HKeCvxLUX3Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1750775382;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=TrsPoWjgBPLTXsJBW+RhRv5igqdDgmTgRxctBbgm/cY=;
+ b=AGIoyC5YGzCF1dOpYMdqkmBfwFGXnubjTqBII9NfYwppEsBcpoJm2jxmBGawaxVKTxgrOh
+ uRBlRtl+9lX/J9CQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=rIv1kT0z;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=AGIoyC5Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1750775382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=TrsPoWjgBPLTXsJBW+RhRv5igqdDgmTgRxctBbgm/cY=;
+ b=rIv1kT0zZjuRHWxRYncCuCqe0e+bJK0u4HMZzmec2t+h1H+ZecdMIzGjBA6N5rAymnq3Sc
+ gsjjeol5lwj0r4cnRlqW6zod5zI/nJ+6kxlJhp5zC1XkFEI63cjRMeXxmZqRNYeKuvXKQi
+ IfJ4RDp7+RldJYodfbb1HKeCvxLUX3Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1750775382;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=TrsPoWjgBPLTXsJBW+RhRv5igqdDgmTgRxctBbgm/cY=;
+ b=AGIoyC5YGzCF1dOpYMdqkmBfwFGXnubjTqBII9NfYwppEsBcpoJm2jxmBGawaxVKTxgrOh
+ uRBlRtl+9lX/J9CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 953AA195609F; Tue, 24 Jun 2025 13:14:18 +0000 (UTC)
-Received: from fedora-laptop-x1.redhat.com (unknown [10.72.112.18])
- by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id 148DC195E342; Tue, 24 Jun 2025 13:14:15 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue, 24 Jun 2025 21:14:13 +0800
-Message-ID: <20250624131413.63830-1-liwang@redhat.com>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9BE7C13A24;
+ Tue, 24 Jun 2025 14:29:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Fe4HJFa2Wmj+fAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 24 Jun 2025 14:29:42 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue, 24 Jun 2025 16:29:00 +0200
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: d8BmGvgQ2sIcnvbCK47mmjLaGWznmeMdbs5yx0jVuJw_1750770859
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+Message-Id: <20250624-crash02_rewrite-v2-1-c4eaeee8598f@suse.com>
+X-B4-Tracking: v=1; b=H4sIACu2WmgC/3WNwQrCMBBEf6Xs2UiSalFP/ocUSZPV7MGm7Naol
+ Py7sXeZ0xuYNwsIMqHAqVmAMZNQGivYTQM+uvGOikJlsNrudWeM8uwkantlfDHNqIbDDn0bdLD
+ WQV1NjDd6r8ZLXzmSzIk/60E2v/a/KxtVM6APx+BN14azPAW3Pj2gL6V8Afc7o2+tAAAA
+X-Change-ID: 20250611-crash02_rewrite-b84ec3d0d22a
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1750775382; l=15666;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=P9cNUHM3PNX9a9pc+dJXP9Od+8AQ8ssPu/ebadrQ3Dg=;
+ b=RwE6RwOMdVaCuYHjYAdEBlthwc/W+wvLcYMrJbiCOXLSdabwTj+oQ5IkxElL+WDrRHBdj27Q+
+ J+s8LEgy7lhApp5OibmhwCGpkrqtYddPRS7tB4RZ+KBgoUaya88hjyG
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:email,suse.com:mid];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Queue-Id: C3ABF1F441
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] tst_test: Add min_runtime to control lower bound
- of scaled runtime
+Subject: [LTP] [PATCH v2] misc: rewrite crash02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,422 +122,643 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-When LTP_RUNTIME_MUL is set to a value < 1.0 (commonly in CI or fast test
-modes), the effective runtime of tests may be scaled down too aggressively.
-For some tests especially those relying on probabilistic triggers or sampling
-(e.g., fuzzy sync, CVE stress loops, long fault injection), this can result in
-too few iterations or missed conditions, leading to unreliable results.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-This patch introduces a new field: .min_runtime;
+Rewrite the crash02 test, introducing new API but maintaining the logic
+behind it. The test generates random syscall executions with random data
+and it verifies that system didn't crash.
 
-If set, this specifies the minimum allowed runtime (in seconds) after applying
-the LTP_RUNTIME_MUL scaling factor. The final runtime is calculated as:
-
-  MAX(runtime * LTP_RUNTIME_MUL, min_runtime)
-
-If min_runtime is not set, a default minimum of 1 second is enforced.
-
-This approach replaces the need for special flags such as
-TST_NO_FRAC_RUNTIME_MUL and provides a more systematic, flexible solution.
-
-To validate this logic, I ran the `fuzzy_sync` tests on a Cortex-A55
-CPU at 1.2GHz, running Linux 5.14 (aarch64), with only a single core
-assigned using `taskset` to simulate a worst-case, single-core execution
-scenario:
-
-    time taskset -c 0 ./cve-2016-7117
-
-(The test was locally modified to only perform the sampling phase.)
-
-This setup allows accurate measurement of sampling duration under
-heavily constrained CPU conditions.
-
-Based on the observed sampling time, I apply the following policy
-for setting `.min_runtime` in affected tests:
-
-  1. If the sampling time is very short (< 1s), set .min_runtime = 2.
-
-  2. If the sampling time is > 2s but still less than .runtime,
-     set .min_runtime = 2 * sampling_time, and leave .runtime unchanged.
-
-  3. If the sampling time exceeds .runtime, set .min_runtime = .runtime
-     and remove .runtime.
-
-This ensures that the sampling phase is not prematurely interrupted due
-to aggressive runtime scaling, which is especially important in CI and
-low-power platforms.
-
-This change improves test reliability under constrained runtime conditions
-without sacrificing flexibility for fast-path test execution.
-
-Tested on:
-  - Cortex-A55, 1.2GHz
-  - Linux 5.14.0-587.536.el9iv.aarch64
-
-Suggested-by: Martin Doucha <mdoucha@suse.cz>
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Ian Wienand <iwienand@redhat.com>
-Cc: Wei Gao <wegao@suse.com>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/tst_test.h                                    |  9 +++++++++
- lib/tst_test.c                                        | 11 +++++++++--
- testcases/cve/cve-2014-0196.c                         |  2 +-
- testcases/cve/cve-2016-7117.c                         |  1 +
- testcases/cve/cve-2017-2671.c                         |  1 +
- testcases/kernel/crypto/af_alg07.c                    |  1 +
- testcases/kernel/pty/pty03.c                          |  1 +
- testcases/kernel/pty/pty05.c                          |  1 +
- testcases/kernel/pty/pty07.c                          |  1 +
- testcases/kernel/sound/snd_seq01.c                    |  1 +
- testcases/kernel/sound/snd_timer01.c                  |  1 +
- testcases/kernel/syscalls/bind/bind06.c               |  2 +-
- testcases/kernel/syscalls/inotify/inotify09.c         |  1 +
- testcases/kernel/syscalls/ipc/shmctl/shmctl05.c       |  2 +-
- testcases/kernel/syscalls/preadv2/preadv203.c         |  2 +-
- testcases/kernel/syscalls/sendmsg/sendmsg03.c         |  1 +
- testcases/kernel/syscalls/setsockopt/setsockopt06.c   |  2 +-
- testcases/kernel/syscalls/setsockopt/setsockopt07.c   |  2 +-
- testcases/kernel/syscalls/timerfd/timerfd_settime02.c |  1 +
- testcases/kernel/syscalls/writev/writev03.c           |  1 +
- testcases/network/can/cve/can_bcm01.c                 |  2 +-
- testcases/network/packet/fanout01.c                   |  2 +-
- testcases/network/sockets/vsock01.c                   |  1 +
- 23 files changed, 39 insertions(+), 10 deletions(-)
+Changes in v2:
+- simplify number generator
+- take seed with -s parameter or use time(NULL)
+- move loop inside child, so we can use the same seed  via srand()
+- take back in_blacklist() method
+- Link to v1: https://lore.kernel.org/r/20250611-crash02_rewrite-v1-1-1becd9dc163d@suse.com
+---
+ testcases/misc/crash/crash02.c | 553 ++++++++---------------------------------
+ 1 file changed, 104 insertions(+), 449 deletions(-)
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 6fd8cbae3..9c21c1728 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -460,6 +460,14 @@ struct tst_fs {
-  *           (e.g., TIMEOUT_MUL), ensuring consistent test duration across
-  *           different environments (e.g., debug vs. stock kernels).
-  *
-+ * @min_runtime: Optional lower bound (in seconds) applied after runtime is
-+ *           scaled by LTP_RUNTIME_MUL. If the scaled runtime is smaller
-+ *           than this value, it will be clamped up to min_runtime.
-+ *           This is useful for tests that require a minimum execution
-+ *           time to gather sufficient samples or trigger events (e.g.,
-+ *           probabilistic or fuzzy synchronization tests).
-+ *           If not set, a default minimum of 1 second is enforced.
-+ *
-  * @setup: Setup callback is called once at the start of the test in order to
-  *         prepare the test environment.
-  *
-@@ -584,6 +592,7 @@ struct tst_fs {
+diff --git a/testcases/misc/crash/crash02.c b/testcases/misc/crash/crash02.c
+index c68f580ef62ad3b3c644093f72646a8908e55076..5cd7d05808e97b0a7a67842723310fd3462944df 100644
+--- a/testcases/misc/crash/crash02.c
++++ b/testcases/misc/crash/crash02.c
+@@ -1,497 +1,152 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * crash02.c - Test OS robustness by executing syscalls with random args.
+- *
+- * Copyright (C) 2001 Stephane Fillod <f4cfe@free.fr>
+- *
+- * This test program was inspired from crashme, by GEORGE J. CARRETT.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License
+- * as published by the Free Software Foundation; either version 2
+- * of the License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA	02111-1307, USA.
++ * Copyright (C) 2025 SUSE LLC <andrea.cervesato@suse.com>
+  */
  
- 	int timeout;
- 	int runtime;
-+	int min_runtime;
+-/*
+-A signal handler is set up so that in most cases the machine exception
+-generated by the illegal syscall, bad operands, etc in the procedure
+-made up of random data are caught; and another round of randomness may
+-be tried. Eventually a random syscall may corrupt the program or
+-the machine state in such a way that the program must halt. This is
+-a test of the robustness of the hardware/software for instruction
+-fault handling.
+-
+-Note: Running this program just a few times, using total CPU time of
+-less than a few seconds SHOULD NOT GIVE YOU ANY CONFIDENCE in system
+-robustness. Having it run for hours, with tens of thousands of cases
+-would be a different thing. It would also make sense to run this
+-stress test at the same time you run other tests, like a multi-user
+-benchmark.
+-
+-CAUTION: running this program may crash your system, your disk and all
+-	your data along! DO NOT RUN IT ON PRODUCTION SYSTEMS!
+-	CONSIDER YOUR DISK FRIED.
+-	REMEMBER THE DISCLAIMER PART OF THE LICENSE.
+-
+-	Running as user nobody and with all your filesystems
+-	remounted to readonly may be wise..
+-
+-TODO:
+-	* in rand_long(), stuff in some real pointers to random data
+-	* Does a syscall is supposed to send SIGSEGV?
+-*/
++/*\
++ * Test the robustness of the system generating random syscalls execution
++ * with random data and expecting that the current system is not crashing.
++ */
  
- 	void (*setup)(void);
- 	void (*cleanup)(void);
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 495e022f7..bbe39b549 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -627,10 +627,14 @@ static void parse_mul(float *mul, const char *env_name, float min, float max)
- static int multiply_runtime(unsigned int runtime)
+-#define _GNU_SOURCE
+-#include <sys/syscall.h>
+-#include <stdio.h>
+ #include <stdlib.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <setjmp.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include <errno.h>
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-
+-#include "test.h"
+-
+-char *TCID = "crash02";
+-int TST_TOTAL = 1;
+-
+-static int x_opt = 0;
+-static int v_opt = 0;
+-static char *v_copt;
+-static int s_opt = 0;
+-static char *s_copt;
+-static int l_opt = 0;
+-static char *l_copt;
+-static int n_opt = 0;
+-static char *n_copt;
+-
+-int verbose_level = 2;
+-
+-/* depends on architecture.. */
+-unsigned int sysno_max = 127;
+-
+-int nseed;
+-int ntries = 100;
+-
+-/* max time allowed per try, in seconds */
+-#define MAX_TRY_TIME 5
++#include <limits.h>
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++
++#define MAX_SYSCALLS 465
++
++static int *num_errors;
++static char *str_num_tries;
++static char *str_seed;
++static int num_tries = 1000;
++static int seed;
++
++static int blacklist[] = {
++	__NR_vfork,
++	__NR_fork,
++	__NR_clone,
++	__NR_clone3,
++	__NR_vhangup,		/* terminal logout */
++	__NR_pause,		/* sleep indefinitely */
++	__NR_read,		/* sleep indefinitely if the first argument is 0 */
++	__NR_kill,		/* might kill test */
++	__NR_restart_syscall,	/* restart random syscalls */
++	__LTP__NR_INVALID_SYSCALL,
++};
+ 
+-void cleanup(void)
++static long rand_number(void)
  {
- 	static float runtime_mul = -1;
-+	int min_runtime = 1;
-+
-+	if (tst_test->min_runtime)
-+		min_runtime = MAX(1, tst_test->min_runtime);
++	int64_t num = 0;
  
- 	parse_mul(&runtime_mul, "LTP_RUNTIME_MUL", 0.0099, 100);
+-	tst_rmdir();
++	for (int i = 0; i < 4; i++)
++		num |= ((rand() & 0xFF) << (i * 8));
  
--	return runtime * runtime_mul;
-+	return MAX(runtime * runtime_mul, min_runtime);
++	return (long)num;
  }
  
- static struct option {
-@@ -662,7 +666,7 @@ static void print_help(void)
- 	fprintf(stderr, "LTP_SINGLE_FS_TYPE       Specifies filesystem instead all supported (for .all_filesystems)\n");
- 	fprintf(stderr, "LTP_FORCE_SINGLE_FS_TYPE Testing only. The same as LTP_SINGLE_FS_TYPE but ignores test skiplist.\n");
- 	fprintf(stderr, "LTP_TIMEOUT_MUL          Timeout multiplier (must be a number >=1)\n");
--	fprintf(stderr, "LTP_RUNTIME_MUL          Runtime multiplier (must be a number >=1)\n");
-+	fprintf(stderr, "LTP_RUNTIME_MUL          Runtime multiplier (must be a number >0)\n");
- 	fprintf(stderr, "LTP_VIRT_OVERRIDE        Overrides virtual machine detection (values: \"\"|kvm|microsoft|xen|zvm)\n");
- 	fprintf(stderr, "TMPDIR                   Base directory for template directory (for .needs_tmpdir, default: %s)\n", TEMPDIR);
- 	fprintf(stderr, "\n");
-@@ -1996,6 +2000,9 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- 	uname(&uval);
- 	tst_res(TINFO, "Tested kernel: %s %s %s", uval.release, uval.version, uval.machine);
+-void setup(void)
++static int in_blacklist(const int sysno)
+ {
+-	/*
+-	 * setup a default signal hander and a
+-	 * temporary working directory.
+-	 */
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	for (size_t i = 0; i < ARRAY_SIZE(blacklist); i++)
++		if (sysno == blacklist[i])
++			return 1;
  
-+	if (tst_test->min_runtime && !tst_test->runtime)
-+		tst_test->runtime = tst_test->min_runtime;
-+
- 	if (tst_test->runtime)
- 		context->runtime = multiply_runtime(tst_test->runtime);
- 
-diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
-index 5e5b55e07..d9c4fb7eb 100644
---- a/testcases/cve/cve-2014-0196.c
-+++ b/testcases/cve/cve-2014-0196.c
-@@ -144,7 +144,7 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = run,
--	.runtime = 60,
-+	.min_runtime = 60,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "4291086b1f08"},
- 		{"CVE", "2014-0196"},
-diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
-index dbec2b28b..d9c44a0b3 100644
---- a/testcases/cve/cve-2016-7117.c
-+++ b/testcases/cve/cve-2016-7117.c
-@@ -152,6 +152,7 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.runtime = 60,
-+	.min_runtime = 12,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "34b88a68f26a"},
- 		{"CVE", "2016-7117"},
-diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
-index 5d8425248..fb30266eb 100644
---- a/testcases/cve/cve-2017-2671.c
-+++ b/testcases/cve/cve-2017-2671.c
-@@ -110,6 +110,7 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.needs_root = 1,
- 	.runtime = 40,
-+	.min_runtime = 2,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "43a6684519ab"},
- 		{"CVE", "2017-2671"},
-diff --git a/testcases/kernel/crypto/af_alg07.c b/testcases/kernel/crypto/af_alg07.c
-index b18d40a6f..b680efbaa 100644
---- a/testcases/kernel/crypto/af_alg07.c
-+++ b/testcases/kernel/crypto/af_alg07.c
-@@ -126,6 +126,7 @@ static struct tst_test test = {
- 	.min_kver = "4.10.0",
- 	.min_cpus = 2,
- 	.runtime = 150,
-+	.min_runtime = 2,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "ff7b11aa481f"},
-diff --git a/testcases/kernel/pty/pty03.c b/testcases/kernel/pty/pty03.c
-index 229aa1393..99c659264 100644
---- a/testcases/kernel/pty/pty03.c
-+++ b/testcases/kernel/pty/pty03.c
-@@ -151,6 +151,7 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.needs_root = 1,
- 	.runtime = 30,
-+	.min_runtime = 16,
- 	.needs_kconfigs = (const char *const[]){
- 		"CONFIG_SERIO_SERPORT",
- 		NULL
-diff --git a/testcases/kernel/pty/pty05.c b/testcases/kernel/pty/pty05.c
-index 6f6a9bce7..fb76d43b8 100644
---- a/testcases/kernel/pty/pty05.c
-+++ b/testcases/kernel/pty/pty05.c
-@@ -98,6 +98,7 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.runtime = 150,
-+	.min_runtime = 16,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "82f2341c94d27"},
- 		{"CVE", "2017-2636"},
-diff --git a/testcases/kernel/pty/pty07.c b/testcases/kernel/pty/pty07.c
-index 1a1c5871b..5d1e26a64 100644
---- a/testcases/kernel/pty/pty07.c
-+++ b/testcases/kernel/pty/pty07.c
-@@ -113,6 +113,7 @@ static struct tst_test test = {
- 	.needs_root = 1,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.runtime = 150,
-+	.min_runtime = 16,
- 	.tags = (const struct tst_tag[]) {
- 		{ "linux-git", "6cd1ed50efd8"},
- 		{}
-diff --git a/testcases/kernel/sound/snd_seq01.c b/testcases/kernel/sound/snd_seq01.c
-index a23fdb34e..8231e1858 100644
---- a/testcases/kernel/sound/snd_seq01.c
-+++ b/testcases/kernel/sound/snd_seq01.c
-@@ -124,6 +124,7 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.runtime = 60,
-+	.min_runtime = 2,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "d15d662e89fc"},
-diff --git a/testcases/kernel/sound/snd_timer01.c b/testcases/kernel/sound/snd_timer01.c
-index bbc5f72a4..53d1ec91b 100644
---- a/testcases/kernel/sound/snd_timer01.c
-+++ b/testcases/kernel/sound/snd_timer01.c
-@@ -137,6 +137,7 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.runtime = 150,
-+	.min_runtime = 2,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "d11662f4f798"},
- 		{"linux-git", "ba3021b2c79b"},
-diff --git a/testcases/kernel/syscalls/bind/bind06.c b/testcases/kernel/syscalls/bind/bind06.c
-index 4e7a8d11f..988574a80 100644
---- a/testcases/kernel/syscalls/bind/bind06.c
-+++ b/testcases/kernel/syscalls/bind/bind06.c
-@@ -92,7 +92,7 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
--	.runtime = 300,
-+	.min_runtime = 300,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_USER_NS=y",
-diff --git a/testcases/kernel/syscalls/inotify/inotify09.c b/testcases/kernel/syscalls/inotify/inotify09.c
-index 5c9ff3a3b..e61808b69 100644
---- a/testcases/kernel/syscalls/inotify/inotify09.c
-+++ b/testcases/kernel/syscalls/inotify/inotify09.c
-@@ -96,6 +96,7 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.test_all = verify_inotify,
- 	.runtime = 150,
-+	.min_runtime = 2,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "d90a10e2444b"},
- 		{}
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-index 84d512cfd..6d2415bb9 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-@@ -104,7 +104,7 @@ static void cleanup(void)
+-	tst_tmpdir();
++	return 0;
  }
  
- static struct tst_test test = {
--	.runtime = 10,
-+	.min_runtime = 40,
- 	.setup = setup,
- 	.test_all = do_test,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/preadv2/preadv203.c b/testcases/kernel/syscalls/preadv2/preadv203.c
-index 72a35d3ab..472543e5c 100644
---- a/testcases/kernel/syscalls/preadv2/preadv203.c
-+++ b/testcases/kernel/syscalls/preadv2/preadv203.c
-@@ -278,6 +278,6 @@ static struct tst_test test = {
- 	.mntpoint = MNTPOINT,
- 	.mount_device = 1,
- 	.all_filesystems = 1,
--	.runtime = 60,
-+	.min_runtime = 60,
- 	.needs_root = 1,
- };
-diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg03.c b/testcases/kernel/syscalls/sendmsg/sendmsg03.c
-index 4a9943a3b..34ebc7e95 100644
---- a/testcases/kernel/syscalls/sendmsg/sendmsg03.c
-+++ b/testcases/kernel/syscalls/sendmsg/sendmsg03.c
-@@ -104,6 +104,7 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.runtime = 150,
-+	.min_runtime = 2,
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_USER_NS=y",
- 		"CONFIG_NET_NS=y",
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt06.c b/testcases/kernel/syscalls/setsockopt/setsockopt06.c
-index 3f266123f..2160b29e7 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt06.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt06.c
-@@ -108,7 +108,7 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
--	.runtime = 270,
-+	.min_runtime = 270,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_USER_NS=y",
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt07.c b/testcases/kernel/syscalls/setsockopt/setsockopt07.c
-index ea3dead0f..6eeec8a6f 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt07.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt07.c
-@@ -121,7 +121,7 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
--	.runtime = 150,
-+	.min_runtime = 150,
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_USER_NS=y",
- 		"CONFIG_NET_NS=y",
-diff --git a/testcases/kernel/syscalls/timerfd/timerfd_settime02.c b/testcases/kernel/syscalls/timerfd/timerfd_settime02.c
-index 769ff3647..a5a6573e8 100644
---- a/testcases/kernel/syscalls/timerfd/timerfd_settime02.c
-+++ b/testcases/kernel/syscalls/timerfd/timerfd_settime02.c
-@@ -112,6 +112,7 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.runtime = 150,
-+	.min_runtime = 2,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "1e38da300e1e"},
- 		{"CVE", "2017-10661"},
-diff --git a/testcases/kernel/syscalls/writev/writev03.c b/testcases/kernel/syscalls/writev/writev03.c
-index a0b237112..7ef209706 100644
---- a/testcases/kernel/syscalls/writev/writev03.c
-+++ b/testcases/kernel/syscalls/writev/writev03.c
-@@ -144,6 +144,7 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.runtime = 75,
-+	.min_runtime = 16,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "d4690f1e1cda"},
- 		{}
-diff --git a/testcases/network/can/cve/can_bcm01.c b/testcases/network/can/cve/can_bcm01.c
-index e316a8deb..57ec4989f 100644
---- a/testcases/network/can/cve/can_bcm01.c
-+++ b/testcases/network/can/cve/can_bcm01.c
-@@ -139,7 +139,7 @@ static struct tst_test test = {
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.needs_root = 1,
- 	.skip_in_compat = 1,
--	.runtime = 30,
-+	.min_runtime = 30,
- 	.needs_drivers = (const char *const[]) {
- 		"vcan",
- 		"can-bcm",
-diff --git a/testcases/network/packet/fanout01.c b/testcases/network/packet/fanout01.c
-index b2b271aea..dc1ff6ce5 100644
---- a/testcases/network/packet/fanout01.c
-+++ b/testcases/network/packet/fanout01.c
-@@ -89,7 +89,7 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.cleanup = cleanup,
- 	.needs_root = 1,
--	.runtime = 180,
-+	.min_runtime = 180,
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_USER_NS=y",
- 		"CONFIG_NET_NS=y",
-diff --git a/testcases/network/sockets/vsock01.c b/testcases/network/sockets/vsock01.c
-index 416bd65d0..e46f663ed 100644
---- a/testcases/network/sockets/vsock01.c
-+++ b/testcases/network/sockets/vsock01.c
-@@ -111,6 +111,7 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.runtime = 60,
-+	.min_runtime = 2,
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_VSOCKETS_LOOPBACK",
- 		NULL
+-void help(void)
++static void try_crash(const int num)
+ {
+-	printf
+-	    ("	-x		dry run, hexdump random code instead\n");
+-	printf("	-l x		max syscall no\n");
+-	printf("	-v x		verbose level\n");
+-	printf("	-s x		random seed\n");
+-	printf("	-n x		ntries\n");
+-}
+-
+-/*
+- */
+-option_t options[] = {
+-	{"v:", &v_opt, &v_copt},
+-	{"l:", &l_opt, &l_copt},
+-	{"s:", &s_opt, &s_copt},
+-	{"n:", &n_opt, &n_copt},
+-	{"x", &x_opt, NULL},
+-
+-	{NULL, NULL, NULL}
+-};
+-
+-void badboy_fork();
+-void badboy_loop();
++	long sysno, arg0, arg1, arg2, arg3, arg4, arg5, arg6;
++	int ret;
+ 
+-void summarize_errno();
+-void record_errno(unsigned int n);
+-
+-int main(int argc, char *argv[])
+-{
+-	int lc;
+-
+-	tst_parse_opts(argc, argv, options, help);
+-
+-	if (v_opt)
+-		verbose_level = atoi(v_copt);
+-
+-	if (n_opt)
+-		ntries = atoi(n_copt);
+-
+-	if (l_opt)
+-		sysno_max = atoi(l_copt);
+-
+-	if (s_opt)
+-		nseed = atoi(s_copt);
+-	else
+-		nseed = time(NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
++	do {
++		sysno = rand() % MAX_SYSCALLS;
++	} while (in_blacklist(sysno));
+ 
+-		tst_resm(TINFO, "crashme02 %d %d %d", sysno_max, nseed, ntries);
++	arg0 = rand_number();
++	arg1 = rand_number();
++	arg2 = rand_number();
++	arg3 = rand_number();
++	arg4 = rand_number();
++	arg5 = rand_number();
++	arg6 = rand_number();
+ 
+-		srand(nseed);
+-		badboy_fork();
++	tst_res(TDEBUG,
++		"%d: syscall(%ld, %#lx, %#lx, %#lx, %#lx, %#lx, %#lx, %#lx)",
++		num, sysno, arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+ 
+-		/* still there? */
+-		tst_resm(TPASS, "we're still here, OS seems to be robust");
++	ret = syscall(sysno, arg0, arg1, arg2, arg3, arg4, arg5, arg6);
++	if (ret == -1) {
++		(*num_errors)++;
+ 
+-		nseed++;
++		tst_res(TDEBUG, "syscall error: %s", strerror(errno));
+ 	}
+-	cleanup();
+-	tst_exit();
+ }
+ 
+-/* ************************* */
+-int badboy_pid;
+-
+-void my_signal(int sig, void (*func) ());
+-
+-void monitor_fcn(int sig)
++static void run(void)
+ {
++	pid_t pid;
+ 	int status;
++	int num_signals = 0;
+ 
+-	if (verbose_level >= 3)
+-		printf("time limit reached on pid. using kill.\n");
+-
+-	status = kill(badboy_pid, SIGKILL);
+-	if (status < 0) {
+-		if (verbose_level >= 3)
+-			printf("failed to kill process\n");
+-	}
+-}
+-
+-void badboy_fork(void)
+-{
+-	int status, pid;
+-	pid_t child = fork();
++	pid = SAFE_FORK();
++	if (!pid) {
++		for (int i = 0; i < num_tries; i++)
++			try_crash(i);
+ 
+-	switch (child) {
+-	case -1:
+-		perror("fork");
+-	case 0:
+-#ifdef DEBUG_LATE_BADBOY
+-		sleep(ntries * MAX_TRY_TIME + 10);
+-#else
+-		badboy_loop();
+-#endif
+ 		exit(0);
+-	default:
+-		badboy_pid = child;
+-		if (verbose_level > 3)
+-			printf("badboy pid = %d\n", badboy_pid);
+-
+-		/* don't trust the child to return at night */
+-		my_signal(SIGALRM, monitor_fcn);
+-		alarm(ntries * MAX_TRY_TIME);
+-
+-		pid = waitpid(-1, &status, WUNTRACED);
+-		if (pid <= 0)
+-			perror("wait");
+-		else {
+-			if (verbose_level > 3)
+-				printf("pid %d exited with status %d\n",
+-				       pid, status);
+-#if 0
+-			record_status(status);
+-#endif
+-		}
+ 	}
+-	alarm(0);
+-}
+ 
+-/* *************** status recording ************************* */
++	SAFE_WAITPID(pid, &status, 0);
+ 
+-/* errno status table (max is actually around 127) */
+-#define STATUS_MAX 256
+-static int errno_table[STATUS_MAX];
+-
+-void record_errno(unsigned int n)
+-{
+-	if (n >= STATUS_MAX)
+-		return;
++	if (WIFSIGNALED(status)) {
++		num_signals++;
+ 
+-	errno_table[n]++;
+-}
+-
+-/* may not work with -c option */
+-void summarize_errno(void)
+-{
+-	int i;
+-
+-	if (x_opt || verbose_level < 2)
+-		return;
+-
+-	printf("errno status ... number of cases\n");
+-	for (i = 0; i < STATUS_MAX; i++) {
+-		if (errno_table[i])
+-			printf("%12d ... %5d\n", i, errno_table[i]);
+-	}
+-}
+-
+-/* ************* badboy ******************************************* */
+-
+-jmp_buf again_buff;
+-
+-unsigned char *bad_malloc(int n);
+-void my_signal(int sig, void (*func) ());
+-void again_handler(int sig);
+-void try_one_crash(int try_num);
+-void set_up_signals();
+-int in_blacklist(int sysno);
+-
+-/* badboy "entry" point */
+-
+-/*
+- * Unlike crashme, faulty syscalls are not supposed to barf
+- */
+-void badboy_loop(void)
+-{
+-	int i;
+-
+-	for (i = 0; i < ntries; ++i) {
+-		/* level 5 */
+-
+-		if (!x_opt && verbose_level >= 5) {
+-			printf("try %d\n", i);
+-		}
+-
+-		if (setjmp(again_buff) == 3) {
+-			if (verbose_level >= 5)
+-				printf("Barfed\n");
+-		} else {
+-			set_up_signals();
+-			alarm(MAX_TRY_TIME);
+-			try_one_crash(i);
+-		}
+-	}
+-	summarize_errno();
+-}
+-
+-void again_handler(int sig)
+-{
+-	char *ss;
+-
+-	switch (sig) {
+-	case SIGILL:
+-		ss = " illegal instruction";
+-		break;
+-#ifdef SIGTRAP
+-	case SIGTRAP:
+-		ss = " trace trap";
+-		break;
+-#endif
+-	case SIGFPE:
+-		ss = " arithmetic exception";
+-		break;
+-#ifdef SIGBUS
+-	case SIGBUS:
+-		ss = " bus error";
+-		break;
+-#endif
+-	case SIGSEGV:
+-		ss = " segmentation violation";
+-		break;
+-#ifdef SIGIOT
+-	case SIGIOT:
+-		ss = " IOT instruction";
+-		break;
+-#endif
+-#ifdef SIGEMT
+-	case SIGEMT:
+-		ss = " EMT instruction";
+-		break;
+-#endif
+-#ifdef SIGALRM
+-	case SIGALRM:
+-		ss = " alarm clock";
+-		break;
+-#endif
+-	case SIGINT:
+-		ss = " interrupt";
+-		break;
+-	default:
+-		ss = "";
++		tst_res(TDEBUG, "syscall signaled: %s",
++			strsignal(WTERMSIG(status)));
+ 	}
+-	if (verbose_level >= 5)
+-		printf("Got signal %d%s\n", sig, ss);
+ 
+-	longjmp(again_buff, 3);
+-}
+-
+-void my_signal(int sig, void (*func) ())
+-{
+-	struct sigaction act;
++	tst_res(TINFO, "Detected errors: %d", *num_errors);
++	tst_res(TINFO, "Detected signals: %d", num_signals);
+ 
+-	act.sa_handler = func;
+-	memset(&act.sa_mask, 0x00, sizeof(sigset_t));
+-	act.sa_flags = SA_NOMASK | SA_RESTART;
+-	sigaction(sig, &act, 0);
++	tst_res(TPASS, "System is still up and running");
+ }
+ 
+-void set_up_signals(void)
++static void setup(void)
+ {
+-	my_signal(SIGILL, again_handler);
+-#ifdef SIGTRAP
+-	my_signal(SIGTRAP, again_handler);
+-#endif
+-	my_signal(SIGFPE, again_handler);
+-#ifdef SIGBUS
+-	my_signal(SIGBUS, again_handler);
+-#endif
+-	my_signal(SIGSEGV, again_handler);
+-#ifdef SIGIOT
+-	my_signal(SIGIOT, again_handler);
+-#endif
+-#ifdef SIGEMT
+-	my_signal(SIGEMT, again_handler);
+-#endif
+-#ifdef SIGALRM
+-	my_signal(SIGALRM, again_handler);
+-#endif
+-	my_signal(SIGINT, again_handler);
+-}
++	if (tst_parse_int(str_num_tries, &num_tries, 1, INT_MAX))
++		tst_brk(TBROK, "Invalid number of entries '%s'", str_num_tries);
+ 
+-/*
+- * NB: rand() (ie. RAND_MAX) might be on 31bits only!
+- *
+- * FIXME: 64-bit systems
+- *
+- * TODO: improve arg mixing (16bits and 8bits values, NULLs, etc.).
+- *	big values as returned by rand() are no so interresting
+- *	(except when used as pointers) because they may fall too
+- *	quickly in the invalid parameter sieve. Smaller values,
+- *	will be more insidious because they may refer to existing
+- *	objects (pids, fd, etc.).
+- */
+-long int rand_long(void)
+-{
+-	int r1, r2;
++	if (tst_parse_int(str_seed, &seed, 0, INT_MAX))
++		tst_brk(TBROK, "Invalid seed number '%s'", str_num_tries);
+ 
+-	r1 = rand();
+-	r2 = rand();
++	num_errors = SAFE_MMAP(
++		NULL, sizeof(int),
++		PROT_READ | PROT_WRITE,
++		MAP_SHARED | MAP_ANONYMOUS,
++		-1, 0);
+ 
+-	if (r1 & 0x10000L)
+-		r1 = 0;
+-	if (!r1 && (r2 & 0x50000L))
+-		r2 = 0;
+-	else if (!r1 && (r2 & 0x20000L))
+-		r2 &= 0x00ffL;
++	seed = str_seed ? seed : time(NULL);
++	srand(seed);
+ 
+-	return (long int)((r1 & 0xffffL) << 16) | (r2 & 0xffffL);
++	tst_res(TINFO, "Random seed: %d", seed);
+ }
+ 
+-void try_one_crash(int try_num)
++static void cleanup(void)
+ {
+-	long int sysno, arg1, arg2, arg3, arg4, arg5, arg6, arg7;
+-
+-	do {
+-		sysno = rand() % sysno_max;
+-	} while (in_blacklist(sysno));
+-
+-	arg1 = rand_long();
+-	arg2 = rand_long();
+-	arg3 = rand_long();
+-	arg4 = rand_long();
+-	arg5 = rand_long();
+-	arg6 = rand_long();
+-	arg7 = rand_long();
+-
+-	if (x_opt || verbose_level >= 1)
+-		printf("%04d: syscall(%ld, %#lx, %#lx, %#lx, %#lx, %#lx, "
+-		       "%#lx, %#lx)\n", try_num, sysno, arg1, arg2, arg3,
+-		       arg4, arg5, arg6, arg7);
+-
+-	if (!x_opt) {
+-		syscall(sysno, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+-		record_errno(errno);
+-	}
++	if (num_errors)
++		SAFE_MUNMAP(num_errors, sizeof(int));
+ }
+ 
+-/* The following syscalls create new processes which may cause the test
+-	 unable to finish. */
+-int in_blacklist(int sysno)
+-{
+-	int i;
+-	const int list[] = {
+-#if defined(__ia64__)
+-		SYS_clone2,
+-#else
+-		/*
+-		 * No SYS_fork(vfork) on IA-64. Instead, it uses,
+-		 * clone(child_stack=0, flags=CLONE_VM|CLONE_VFORK|SIGCHLD)
+-		 * clone2()
+-		 */
+-
+-		/*
+-		 * NOTE (garrcoop):
+-		 * Could not find reference to SYS_fork(vfork) on mips32
+-		 * with the Montavista / Octeon toolchain. Need to develop an
+-		 * autoconf check for this item.
+-		 */
+-#if defined(__NR_vfork) && __NR_vfork
+-		SYS_vfork,
+-#endif
+-#if defined(__NR_fork) && __NR_fork
+-		SYS_fork,
+-#endif
+-#endif /* __ia64__ */
+-#if defined(__NR_clone) && __NR_clone
+-		SYS_clone,
+-#endif
+-#if defined(__NR_vhangup) && __NR_vhangup
+-		__NR_vhangup,	/* int vhangup(void); - terminal logout */
+-#endif
+-#if defined(__NR_pause) && __NR_pause
+-		__NR_pause,	/* int pause(void); - sleep indefinitely */
+-#endif
+-#if defined(__NR_read) && __NR_read
+-		/*
+-		 * ssize_t read(int fd, void *buf, size_t count); - will sleep
+-		 * indefinitely if the first argument is 0
+-		 */
+-		__NR_read,
+-#endif
+-		-1
+-	};
+-
+-	for (i = 0; list[i] != -1; i++) {
+-		if (sysno == list[i])
+-			return 1;
+-	}
+-
+-	return 0;
+-}
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.forks_child = 1,
++	.runtime = 40,
++	.options = (struct tst_option []) {
++		{"n:", &str_num_tries, "Number of retries (default: 1000)"},
++		{"s:", &str_seed, "Initial seed for random generator"},
++		{}
++	},
++};
+
+---
+base-commit: 747cbc6b461b64975282e1fb998cf8cea5454267
+change-id: 20250611-crash02_rewrite-b84ec3d0d22a
+
+Best regards,
 -- 
-2.49.0
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
