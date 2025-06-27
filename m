@@ -4,98 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C47E4C77B7F
-	for <ltp@archiver.kernel.org>; Fri, 27 Jun 2025 07:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1BE6C7EE31
+	for <ltp@archiver.kernel.org>; Fri, 27 Jun 2025 09:11:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B5ABB3C6E96
-	for <ltp@archiver.kernel.org>; Fri, 27 Jun 2025 09:49:19 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 0005F3C7438
+	for <ltp@archiver.kernel.org>; Fri, 27 Jun 2025 11:11:40 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 174513C597B
- for <ltp@lists.linux.it>; Fri, 27 Jun 2025 09:49:02 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 9C46D3C3070
+ for <ltp@lists.linux.it>; Fri, 27 Jun 2025 11:11:23 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 20AB7600C45
- for <ltp@lists.linux.it>; Fri, 27 Jun 2025 09:49:01 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1284660005C
+ for <ltp@lists.linux.it>; Fri, 27 Jun 2025 11:11:22 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 177CA21171;
- Fri, 27 Jun 2025 07:49:00 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CC3C91F387;
+ Fri, 27 Jun 2025 09:11:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1751010540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1751015481; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EZKamrn3zhiXqOG7Q0G3q8vYBmO1T8skidnSQ4QbqSo=;
- b=fFT+ZRQ+fWEE3k+G9inRLHDwFYPE7wQas0YMbsQlKIvEBt9eoQ93EbdrET6o1booaVrylx
- XtEntBra9mBogoMTtf+PEGWbKov4p8FDUzfZAG1grAPO+VY0aYO8+MjHD48e4Rfu1e804+
- J13dqURQ/qmq55YXL4U2sc803xgLvjI=
+ bh=B37kP2t7Veie8UkSpM/RMyhxc3r5J7tgdfv9y2d26eY=;
+ b=U6Z1DNt8wLWEMBe/7Me6jBKtKFimD4pGCuQud2lPAmvLE3Y8mdbAyFsQBMJxIbKfIhZeJ6
+ 8FyIdfgZk4T8DDQucFkgdZnYdDUy3RaLr6NO4QTrrViLGJIhwFbnfCxwojBdN8c5I21pdA
+ YOoP7YlB91a/DoBf5cC4JgDKBwzUhAg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1751010540;
+ s=susede2_ed25519; t=1751015481;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EZKamrn3zhiXqOG7Q0G3q8vYBmO1T8skidnSQ4QbqSo=;
- b=Nq0j6cDipygZVi3lt1NQQRtnwLpfhPX92fpj6gDkIguVT+BIZKokyMZr9czm/PQyzU9ub6
- fEO3F+Wzc0/7rKBQ==
-Authentication-Results: smtp-out1.suse.de;
+ bh=B37kP2t7Veie8UkSpM/RMyhxc3r5J7tgdfv9y2d26eY=;
+ b=vhwAD2IoTZSncGypc8dyBsNE0mMGwY6bniDTsO2ad7yhKYohFQDHXydv77oFH83qDg0XwY
+ AiLRmCyUM5RcqDDw==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1751010540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1751015481; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EZKamrn3zhiXqOG7Q0G3q8vYBmO1T8skidnSQ4QbqSo=;
- b=fFT+ZRQ+fWEE3k+G9inRLHDwFYPE7wQas0YMbsQlKIvEBt9eoQ93EbdrET6o1booaVrylx
- XtEntBra9mBogoMTtf+PEGWbKov4p8FDUzfZAG1grAPO+VY0aYO8+MjHD48e4Rfu1e804+
- J13dqURQ/qmq55YXL4U2sc803xgLvjI=
+ bh=B37kP2t7Veie8UkSpM/RMyhxc3r5J7tgdfv9y2d26eY=;
+ b=U6Z1DNt8wLWEMBe/7Me6jBKtKFimD4pGCuQud2lPAmvLE3Y8mdbAyFsQBMJxIbKfIhZeJ6
+ 8FyIdfgZk4T8DDQucFkgdZnYdDUy3RaLr6NO4QTrrViLGJIhwFbnfCxwojBdN8c5I21pdA
+ YOoP7YlB91a/DoBf5cC4JgDKBwzUhAg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1751010540;
+ s=susede2_ed25519; t=1751015481;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EZKamrn3zhiXqOG7Q0G3q8vYBmO1T8skidnSQ4QbqSo=;
- b=Nq0j6cDipygZVi3lt1NQQRtnwLpfhPX92fpj6gDkIguVT+BIZKokyMZr9czm/PQyzU9ub6
- fEO3F+Wzc0/7rKBQ==
+ bh=B37kP2t7Veie8UkSpM/RMyhxc3r5J7tgdfv9y2d26eY=;
+ b=vhwAD2IoTZSncGypc8dyBsNE0mMGwY6bniDTsO2ad7yhKYohFQDHXydv77oFH83qDg0XwY
+ AiLRmCyUM5RcqDDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 05E6613786;
- Fri, 27 Jun 2025 07:49:00 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BC1C5138A7;
+ Fri, 27 Jun 2025 09:11:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id l1QkAexMXmhQTwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 27 Jun 2025 07:49:00 +0000
-Date: Fri, 27 Jun 2025 09:49:40 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 3/3jLDlgXmjuZwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 27 Jun 2025 09:11:21 +0000
+Date: Fri, 27 Jun 2025 11:11:58 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <aF5NFP5KpuebdkwV@yuki.lan>
-References: <20250616102619.54254-1-liwang@redhat.com>
- <aF1KmkMhXNWBbUwi@yuki.lan>
- <CAEemH2esWnKqv2q-UM3tHoTRfR6caLp-0yZN1yF6XCk79XSOyA@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <aF5gXnHipDoPXla6@yuki.lan>
+References: <20250626-ioctl_pidfd_suite-v1-0-165b9abf0296@suse.com>
+ <20250626-ioctl_pidfd_suite-v1-4-165b9abf0296@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2esWnKqv2q-UM3tHoTRfR6caLp-0yZN1yF6XCk79XSOyA@mail.gmail.com>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[];
+In-Reply-To: <20250626-ioctl_pidfd_suite-v1-4-165b9abf0296@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
  TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, imap1.dmz-prg2.suse.org:helo,
+ suse.cz:email]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/3] checkpoint: Refactor and unify shell/C reinit
- support
+Subject: Re: [LTP] [PATCH 4/6] Add ioctl_pidfd02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,74 +113,119 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > I think that the root of the problem is that the shell function
-> > _tst_init_checkpoints() does not create the IPC region with the magic.
-> >
-> > What about this patch:
-> >
-> > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> > index c32bd8b19..a310d3922 100644
-> > --- a/testcases/lib/tst_test.sh
-> > +++ b/testcases/lib/tst_test.sh
-> > @@ -627,6 +627,7 @@ _tst_init_checkpoints()
-> >                 tst_brk TBROK "tst_getconf PAGESIZE failed"
-> >         fi
-> >         ROD_SILENT dd if=/dev/zero of="$LTP_IPC_PATH" bs="$pagesize"
-> > count=1
-> > +       ROD_SILENT printf LTPM | dd of="$LTP_IPC_PATH" bs=1 seek=0
-> > conv=notrunc
-> >
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 7f6312ce5fa241a778d8dda7f8ee9edd0a8800e6..23f335846663d62a39e6de3a8f6948c1b0acf8a5 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -613,6 +613,7 @@ ioctl_ficlonerange02 ioctl_ficlonerange02
+>  ioctl_fiemap01 ioctl_fiemap01
+>  
+>  ioctl_pidfd01 ioctl_pidfd01
+> +ioctl_pidfd02 ioctl_pidfd02
+>  
+>  inotify_init1_01 inotify_init1_01
+>  inotify_init1_02 inotify_init1_02
+> diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
+> index aa952c1a7bae0ae2dbb04de0595f10d508b6759a..1c81c2bed8db952af0c93fb1ce5bfbad82794b60 100644
+> --- a/testcases/kernel/syscalls/ioctl/.gitignore
+> +++ b/testcases/kernel/syscalls/ioctl/.gitignore
+> @@ -30,3 +30,4 @@
+>  /ioctl_ficlonerange02
+>  /ioctl_fiemap01
+>  /ioctl_pidfd01
+> +/ioctl_pidfd02
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_pidfd02.c b/testcases/kernel/syscalls/ioctl/ioctl_pidfd02.c
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..82dd8c359938cdc7bf69cc2fd6afc90ce2a95290
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl_pidfd02.c
+> @@ -0,0 +1,62 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +/*\
+> + * Check if the ioctl() function allows retrieval of a child's exit code
+> + * using PIDFD_INFO_EXIT from a process that is isolated from the child.
+> + */
+> +
+> +#include "tst_test.h"
+> +#include "lapi/pidfd.h"
+> +#include "lapi/sched.h"
+> +
+> +static struct tst_clone_args *args;
+> +static struct pidfd_info *info;
+> +
+> +static void run(void)
+> +{
+> +	int status;
+> +	int pidfd = 0;
+> +	pid_t pid_child;
+> +
+> +	memset(args, 0, sizeof(struct tst_clone_args));
+> +
+> +	args->flags = CLONE_PIDFD | CLONE_NEWUSER | CLONE_NEWPID;
+> +	args->pidfd = (uint64_t)&pidfd;
+> +	args->exit_signal = SIGCHLD;
+> +
+> +	pid_child = SAFE_CLONE(args);
+> +	if (!pid_child) {
+> +		TST_CHECKPOINT_WAIT(0);
+> +		exit(100);
+> +	}
+> +
+> +	/* child is not reaped, so ioctl() will pass */
+> +	info->mask = 0;
+> +	SAFE_IOCTL(pidfd, PIDFD_GET_INFO, info);
+
+
+It will pass and:
+
+- fill in some fields unconditionally
+ - if PIDFD_INFO_CREDS is set the info.*{uid,gid} should be checked
+ - if PIDFD_INFO_PID is set the info.*pid should be checked
+ - if PIDFD_INFO_CGROUPID is set the info.cgroupid will be also set
+
+- the PIDFD_INFO_EXIT flag will not be set before the process did exit
+
+
+
+> +	TST_CHECKPOINT_WAKE(0);
+> +	SAFE_WAITPID(pid_child, &status, 0);
+> +
+> +	/* child is now reaped, so we can ask for the exit status */
+> +	info->mask = PIDFD_INFO_EXIT;
+> +	SAFE_IOCTL(pidfd, PIDFD_GET_INFO, info);
+> +
+> +	TST_EXP_EQ_LI(info->mask & PIDFD_INFO_EXIT, PIDFD_INFO_EXIT);
+> +	TST_EXP_EQ_LI(WIFEXITED(info->exit_code), WIFEXITED(status));
+> +	TST_EXP_EQ_LI(WEXITSTATUS(info->exit_code), WEXITSTATUS(status));
+
+And here we should check that we got the same fields set as in the
+previous case when the process was still running plus the exit_code.
+
+I suppose that we will need two info structures so that we can do the
+comparsion. Also it wouldn't harm to clear the structures with memset
+before use.
+
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.forks_child = 1,
+> +	.needs_checkpoints = 1,
+> +	.min_kver = "6.15",
+> +	.bufs = (struct tst_buffers []) {
+> +		{&args, .size = sizeof(*args)},
+> +		{&info, .size = sizeof(*info)},
+> +		{}
+> +	}
+> +};
 > 
-> No, I'm afraid this won't work as expected.
+> -- 
+> 2.50.0
 > 
-> The PEC failure wasn't caused by the shell checkpoint missing the "LTPM"
-> magic. Instead, the root cause was that the reinitialization logic
-> (tst_reinit())
-> expected a different IPC format.
-
-I do not think so, both the PEC C helpers and the tst_checkpoint.c call
-tst_reinit() so as long as the function succeeds the memory layout will
-be the same. The checkpoints will start at some offset in the page of
-the IPC memory, but that was always the case.
-
-And it turns out that the patch I've send yesterday does not work
-because of endianity. The magic in the IPC region is MPTL on little
-endian.
-
-This patch actually works:
-
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 495e022f7..17ce91932 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -52,7 +52,13 @@ const char *TCID __attribute__((weak));
- #define CVE_DB_URL "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"
-
- #define DEFAULT_TIMEOUT 30
--#define LTP_MAGIC 0x4C54504D /* Magic number is "LTPM" */
-+
-+/* Magic number is "LTPM" */
-+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-+# define LTP_MAGIC 0x4C54504D
-+#else
-+# define LTP_MAGIC 0x4D50544C
-+#endif
-
- struct tst_test *tst_test;
-
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index c32bd8b19..4be10a4f9 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -627,6 +627,7 @@ _tst_init_checkpoints()
-                tst_brk TBROK "tst_getconf PAGESIZE failed"
-        fi
-        ROD_SILENT dd if=/dev/zero of="$LTP_IPC_PATH" bs="$pagesize" count=1
-+       ROD_SILENT "printf LTPM | dd of="$LTP_IPC_PATH" bs=1 seek=0 conv=notrunc"
-        ROD_SILENT chmod 600 "$LTP_IPC_PATH"
-        export LTP_IPC_PATH
- }
-
 
 -- 
 Cyril Hrubis
