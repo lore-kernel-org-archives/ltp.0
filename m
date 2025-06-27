@@ -4,63 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 228ECC77B7F
-	for <ltp@archiver.kernel.org>; Fri, 27 Jun 2025 15:00:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33939C7EE2A
+	for <ltp@archiver.kernel.org>; Fri, 27 Jun 2025 16:03:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1751040195; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=mrn21VxES8b4UbtfIaVhAOeArVyN+fI6JSrYkrPN+VQ=;
+ b=Y4v/criVWJugzsZRcE4P2HAZDuHi7uXBS5lm1M4m4CDagc86uTXKbDBDfemnGuvbtJ6T4
+ GO2jimZUChqvsMxKdkx5WJPm5YJwxhoDuMzfv6T2Trnj5NeAtsQBsYSxV5EnXqqdGqkCayc
+ 2tTkHC8mwDh/o2kC3F7ZMvwjB53Ac2k=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 32FBE3C92AE
-	for <ltp@archiver.kernel.org>; Fri, 27 Jun 2025 17:00:49 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 6442D3C91C2
+	for <ltp@archiver.kernel.org>; Fri, 27 Jun 2025 18:03:15 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 088F63C597B
- for <ltp@lists.linux.it>; Fri, 27 Jun 2025 17:00:30 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 439803C5371
+ for <ltp@lists.linux.it>; Fri, 27 Jun 2025 18:02:54 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 62CAF600C54
- for <ltp@lists.linux.it>; Fri, 27 Jun 2025 17:00:28 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C6E5721172;
- Fri, 27 Jun 2025 15:00:25 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B09E0138A7;
- Fri, 27 Jun 2025 15:00:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id is0nKgmyXmj6WAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 27 Jun 2025 15:00:25 +0000
-Date: Fri, 27 Jun 2025 17:01:06 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aF6yMvf2xLHZ6Y0d@yuki.lan>
-References: <20250627-clock_nanosleep05-v1-1-1357109a2c81@suse.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A3531600A31
+ for <ltp@lists.linux.it>; Fri, 27 Jun 2025 18:02:51 +0200 (CEST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55RCdeWt017712
+ for <ltp@lists.linux.it>; Fri, 27 Jun 2025 16:02:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+ cc:content-type:date:from:in-reply-to:message-id:mime-version
+ :references:subject:to; s=qcppdkim1; bh=LJWyIcrltDzf0ElNOTH2Bq3+
+ 3z6uSpuZKaRF6dwkkWg=; b=h5PB8HyNxwMMqCXaph3Cz4SQqi7pH3s5vLBwHTq6
+ Mglv+OxUGMvqtoiH4KFO1uZQ1gIsCSfeopOWLkIs420GJFDub/4xdj56m+PqjwvO
+ OLTZQIGSFG5WDkKtKlO44Ziv9PyJWGnCN4c37BNNLQy3LJ78xeVTOEseBfE1XTyy
+ RAJKNuMpta9B8VfdJODyeFUXKaUFwOEq8WUzGof9b1HqVkHyt6vARLz0ybzKY66b
+ qke1ifOIhpz1yOqIwv1PbTDc5r+k4cOys5XiwlNap/y/w3DupItcDexdzp07EWoO
+ sWkVAVZFU+fQy82EL6oYEQ0J3ChAVx7NjfVvLudbjElswA==
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198])
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 47fdfx5q35-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+ for <ltp@lists.linux.it>; Fri, 27 Jun 2025 16:02:49 +0000 (GMT)
+Received: by mail-pf1-f198.google.com with SMTP id
+ d2e1a72fcca58-7377139d8b1so1893441b3a.0
+ for <ltp@lists.linux.it>; Fri, 27 Jun 2025 09:02:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1751040168; x=1751644968;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=LJWyIcrltDzf0ElNOTH2Bq3+3z6uSpuZKaRF6dwkkWg=;
+ b=W/uQ0kigqhVPbzy3/iWeLeDsOVOTfEvMth8Mita0MnYOw+6dGG1avDXirnGTZcRkxG
+ ubB+gVA9WT8fVsRaUWwbNMT72Fy+NXUvviZ42KQ2QWZAm/VtkO8SqLsmQ/FJvkzGf6cq
+ W/UeVABWQqkAeg43iYyBB6njfzR8nTBcT8IgeciN6EXUSNiJ3xHpsGrW9QTtRPWdt67p
+ +TB0qtBTTIioielYop0o4jYaR/gouLC1/KHYp9beci9Eztg89Z+FJaiLVWJ4iqe53D1O
+ Gxe08AS/rdULSE53DnDkpktQZxtO/yqSv47ONLlqmlS6BjoBt6VAvlXdgVyLjQCXQ1mf
+ /2IA==
+X-Gm-Message-State: AOJu0YyFf5peV8V1Rkm4viVrOkxSV0jEwtJ967wvXNluJ79V9gwiLWo9
+ WjRWulALqrDPKQWoDycQppGZqetn42SoSKS2mA2wfkKzWCrdSB/jaVRzN/UbgNqLs78i19wOjOg
+ eNGxMYmHHTKLo1kHvvhwXxlglWad6Jr1LkoPHLZcuM98cPD+0vg76Bw==
+X-Gm-Gg: ASbGncsYYwVwPUah9HBO8a009t6uGV3obbVft2K50GlV4NyMju9dhhAxInavGSFHnKH
+ evfHmXyTZgQRDgU4qJAXYi1Bb2MTPKWjHrSUe5vx9RwVGXrdcuXszIqyZ+3hL98/2hkxROZQf+1
+ 6nbRfB6+Aq7lldXZH1N5/YB9Dbvfsa/lX48VHeV9WDLe/WF6+E6ZJAu9wH+5ub+RyCtiDpEkO6+
+ Q9YdKvV9jHPwYgwzNvafgz7sPEKwKEUb/xROb6ZjVrZ3uMUKzMC1Yioly8pPSZ0hF7zs4CDtmxq
+ wqsZii0VwW9vA7lF+e6DI93pUVT9u/sWMZcrJb8x7FR7CV9ePUN/DpEx4K2THyRNhx2L4VTCypL
+ P
+X-Received: by 2002:a05:6a00:399e:b0:748:ffaf:9b53 with SMTP id
+ d2e1a72fcca58-74af6fe14d5mr5329537b3a.16.1751040167815; 
+ Fri, 27 Jun 2025 09:02:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGiw/VzyUtmotDnIzCjbVHeCEbDEgC8ndsD7FuqQDl/ohWEPT7Y2Li2iak2PGy4Mpo/wQLvtA==
+X-Received: by 2002:a05:6a00:399e:b0:748:ffaf:9b53 with SMTP id
+ d2e1a72fcca58-74af6fe14d5mr5329453b3a.16.1751040167175; 
+ Fri, 27 Jun 2025 09:02:47 -0700 (PDT)
+Received: from hu-mdtipton-lv.qualcomm.com (Global_NAT1.qualcomm.com.
+ [129.46.96.20]) by smtp.gmail.com with ESMTPSA id
+ 41be03b00d2f7-b34e3023a11sm1661131a12.25.2025.06.27.09.02.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 27 Jun 2025 09:02:46 -0700 (PDT)
+Date: Fri, 27 Jun 2025 09:02:44 -0700
+To: ALOK TIWARI <alok.a.tiwari@oracle.com>
+Message-ID: <aF7ApP/89jnW6PUu@hu-mdtipton-lv.qualcomm.com>
+References: <20250626194707.3053036-1-mike.tipton@oss.qualcomm.com>
+ <94bce2af-8b36-4846-959a-3a2a798b2a59@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250627-clock_nanosleep05-v1-1-1357109a2c81@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: C6E5721172
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+In-Reply-To: <94bce2af-8b36-4846-959a-3a2a798b2a59@oracle.com>
+X-Proofpoint-GUID: tBQeK1CVvKnRCeYKMlLpxUhkYb-3g2Mj
+X-Proofpoint-ORIG-GUID: tBQeK1CVvKnRCeYKMlLpxUhkYb-3g2Mj
+X-Authority-Analysis: v=2.4 cv=MtZS63ae c=1 sm=1 tr=0 ts=685ec0a9 cx=c_pps
+ a=m5Vt/hrsBiPMCU0y4gIsQw==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=kj9zAlcOel0A:10 a=6IFa9wvqVegA:10 a=EUspDBNiAAAA:8 a=1HPUncCyJOTKReP4n_oA:9
+ a=CjuIK1q_8ugA:10 a=IoOABgeZipijB_acs4fv:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjI3MDEzMCBTYWx0ZWRfXyr901Phrk6M0
+ Xhif+9dlIlv+n18bAqbdUujkHa3/NEakxzWZSwUIS3MODwo6BjwgR9pnGLZygFBV57eO7LsHKAo
+ PvV3RbCdyLrlooGraN4/3+/jRaP9VBXzETazFnrbjRDHkIwK+q7MI5NC4eN2Hn5f/ZUN4rASqsW
+ D2ndRjD6JrD2l9nidWaPgvh0EB7IwzlO7UwZqlph1H6iOceW+3U+HparLaWyfUjOS07lAa/tTKm
+ uEWdK7dSPGoQ0ASTBrGIgpsoickYELkpaJxt3x/RP/g0Lkh9DscBWohirrGSqhKlur6N4bonpT0
+ yc39V3eBIxtJRCChupSbcKq/GSoic71wcE+wEMj2u/jt1fi9vGUS4jKlSkhHs/Nxovu+OSVqdb7
+ jhmjEXSN29hOwyLSKNo/bA4F2DxmvkaqK3tSfvFRnUhnsOCoKPlNZunWvNdzAub/C3Kh890Y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-06-27_05,2025-06-26_05,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 impostorscore=0 suspectscore=0 adultscore=0 phishscore=0
+ mlxlogscore=999 spamscore=0 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 mlxscore=0 classifier=spam authscore=0
+ authtc=n/a authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2505280000 definitions=main-2506270130
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Add clock_settime04 test
+Subject: Re: [LTP] [External] : [PATCH] device-drivers/cpufreq_boost: Don't
+ hardcode to CPU0
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,273 +130,100 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Mike Tipton via ltp <ltp@lists.linux.it>
+Reply-To: Mike Tipton <mike.tipton@oss.qualcomm.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Test that changing the value of the CLOCK_REALTIME clock via
-> clock_settime(2) shall have no effect on a thread that is blocked
-> on a relative clock_nanosleep().
-> 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
-> Both clock_settime_7-1 and clock_settime_8-1 are affected by the
-> same bug which is probably related to the way tests are written.
-> 
-> sleep() is used by the parent and is not reliable. It can oversleep
-> or undersleep according to system overload or signals which are
-> received. And we never check for its return value. Using
-> clock_nanosleep would make parent more reliable in this case.
-> 
-> At the same time, the test is taking for granted a certain
-> synchronization between child and parent, which is not always true
-> in case of system overload.
-> 
-> My suggestion is to rewrite the test using LTP, which has better
-> timing handling (see tst_timer.h).
-> ---
->  runtest/syscalls                                   |   1 +
->  testcases/kernel/syscalls/clock_settime/.gitignore |   1 +
->  .../syscalls/clock_settime/clock_settime04.c       | 170 +++++++++++++++++++++
->  3 files changed, 172 insertions(+)
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index d5582ca8da01f11adba75a56d22cb6e5c4996c68..2dc734c5537f1d5477f4c98d08b9717fb89ac05c 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -112,6 +112,7 @@ leapsec01 leapsec01
->  clock_settime01 clock_settime01
->  clock_settime02 clock_settime02
->  clock_settime03 clock_settime03
-> +clock_settime04 clock_settime04
->  
->  clone01 clone01
->  clone02 clone02
-> diff --git a/testcases/kernel/syscalls/clock_settime/.gitignore b/testcases/kernel/syscalls/clock_settime/.gitignore
-> index b66169b3eb7b4d8c8ea95e9e689b612d8da37b11..8bcc83d6fc9162087e99193a00b8d3d784d4737d 100644
-> --- a/testcases/kernel/syscalls/clock_settime/.gitignore
-> +++ b/testcases/kernel/syscalls/clock_settime/.gitignore
-> @@ -1,3 +1,4 @@
->  clock_settime01
->  clock_settime02
->  clock_settime03
-> +clock_settime04
-> diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime04.c b/testcases/kernel/syscalls/clock_settime/clock_settime04.c
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..6050fb3c6dabe81116d4a3697605d8137691458a
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/clock_settime/clock_settime04.c
-> @@ -0,0 +1,170 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
-> + */
-> +
-> +/*\
-> + * Verify that changing the value of the CLOCK_REALTIME clock via
-> + * clock_settime() shall have no effect on a thread that is blocked on
-> + * absolute clock_nanosleep().
-> + */
-> +
-> +#include "tst_test.h"
-> +#include "tst_timer.h"
-> +#include "time64_variants.h"
-> +
-> +#define SEC_TO_US(x)     (x * 1000 * 1000)
-> +
-> +#define CHILD_SLEEP_US   SEC_TO_US(5)
-> +#define PARENT_SLEEP_US  SEC_TO_US(2)
-> +#define DELTA_US         SEC_TO_US(1)
-> +
-> +static struct tst_ts *begin, *sleep_child, *sleep_parent, *end;
-> +
-> +static struct time64_variants variants[] = {
-> +	{
-> +		.clock_gettime = libc_clock_gettime,
-> +		.clock_settime = libc_clock_settime,
-> +		.clock_nanosleep = libc_clock_nanosleep,
-> +		.ts_type = TST_LIBC_TIMESPEC,
-> +		.desc = "vDSO or syscall with libc spec"
-> +	},
-> +
-> +#if (__NR_clock_nanosleep != __LTP__NR_INVALID_SYSCALL)
-> +	{
-> +		.clock_gettime = sys_clock_gettime,
-> +		.clock_settime = sys_clock_settime,
-> +		.clock_nanosleep = sys_clock_nanosleep,
-> +		.ts_type = TST_KERN_OLD_TIMESPEC,
-> +		.desc = "syscall with old kernel spec"
-> +	},
-> +#endif
-> +
-> +#if (__NR_clock_nanosleep_time64 != __LTP__NR_INVALID_SYSCALL)
-> +	{
-> +		.clock_gettime = sys_clock_gettime64,
-> +		.clock_settime = sys_clock_settime64,
-> +		.clock_nanosleep = sys_clock_nanosleep64,
-> +		.ts_type = TST_KERN_TIMESPEC,
-> +		.desc = "syscall time64 with kernel spec"
-> +	},
-> +#endif
-> +};
-> +
-> +static void child_nanosleep(struct time64_variants *tv, unsigned int tc_index)
-> +{
-> +	long long delta;
-> +
-> +	if (tc_index) {
-> +		tst_res(TINFO, "Using absolute time sleep");
-> +
-> +		*sleep_child = tst_ts_add_us(*begin, CHILD_SLEEP_US);
-> +
-> +		TST_CHECKPOINT_WAKE(0);
-
-The elapsed time measurement would be much better if we took a
-CLOCK_MONOTONIC timestamp here.
-
-> +		TEST(tv->clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME,
-> +				  tst_ts_get(sleep_child), NULL));
-> +		if (TST_RET)
-> +			tst_brk(TBROK | TERRNO, "clock_nanosleep() error");
-
-And another one here. Getting the time in the parent before the fork and
-checkpoints introduces quite a bit of randomness in the measurement that
-does not need to be there.
-
-Also I do not think that we need to use the variants for the interval
-measurement here or in the parent that makes the wall clock jump back.
-
-I would only use the variants for the clock_nanosleep() we are
-measuring.
-
-> +	} else {
-> +		tst_res(TINFO, "Using relative time sleep");
-> +
-> +		tst_ts_set_sec(sleep_child, 0);
-> +		tst_ts_set_nsec(sleep_child, 0);
-> +
-> +		*sleep_child = tst_ts_add_us(*sleep_child, CHILD_SLEEP_US);
-> +
-> +		TST_CHECKPOINT_WAKE(0);
-> +
-> +		TEST(tv->clock_nanosleep(CLOCK_REALTIME, 0,
-> +				tst_ts_get(sleep_child), NULL));
-> +		if (TST_RET)
-> +			tst_brk(TBROK | TERRNO, "clock_nanosleep() error");
-> +
-> +		/* normalize to absolute time so we can compare times later on */
-> +		*sleep_child = tst_ts_add_us(*begin, CHILD_SLEEP_US - PARENT_SLEEP_US);
-> +	}
-> +
-> +	TEST(tv->clock_gettime(CLOCK_REALTIME, tst_ts_get(end)));
-> +	if (TST_RET == -1)
-> +		tst_brk(TBROK | TERRNO, "clock_gettime() error");
-> +
-> +	if (tst_ts_lt(*end, *sleep_child)) {
-> +		tst_res(TFAIL, "clock_settime() didn't sleep enough. "
-> +			"end=%lld < sleep=%lld", tst_ts_get_sec(*end),
-> +			tst_ts_get_sec(*sleep_child));
-> +		return;
-> +	}
-> +
-> +	delta = tst_ts_abs_diff_us(*sleep_child, *end);
-> +	if (delta > DELTA_US) {
-> +		tst_res(TFAIL, "clock_settime() affected child sleep. "
-> +			"end=%lld <= sleep=%lld", tst_ts_get_nsec(*end),
-> +			tst_ts_get_nsec(*sleep_child));
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS, "clock_settime() didn't affect child sleep "
-> +		"(delta time: %lld us)", delta);
-> +}
-> +
-> +static void run(unsigned int tc_index)
-> +{
-> +	struct time64_variants *tv = &variants[tst_variant];
-> +
-> +	TEST(tv->clock_gettime(CLOCK_REALTIME, tst_ts_get(begin)));
-> +	if (TST_RET == -1)
-> +		tst_brk(TBROK | TERRNO, "clock_gettime() error");
-> +
-> +	if (!SAFE_FORK()) {
-> +		child_nanosleep(tv, tc_index);
-> +		exit(0);
-> +	}
-> +
-> +	*sleep_parent = tst_ts_add_us(*begin, PARENT_SLEEP_US);
-> +
-> +	TST_CHECKPOINT_WAIT(0);
-> +
-> +	TEST(tv->clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME,
-> +			  tst_ts_get(sleep_parent), NULL));
-> +	if (TST_RET)
-> +		tst_brk(TBROK | TERRNO, "clock_nanosleep() error");
-> +
-> +	TEST(tv->clock_settime(CLOCK_REALTIME, tst_ts_get(begin)));
-> +	if (TST_RET)
-> +		tst_brk(TBROK | TERRNO, "clock_settime() error");
-> +
-> +	tst_reap_children();
-> +
-> +	/* restore initial clock */
-> +	*end = tst_ts_sub_us(*begin, PARENT_SLEEP_US);
-> +
-> +	TEST(tv->clock_settime(CLOCK_REALTIME, tst_ts_get(end)));
-> +	if (TST_RET)
-> +		tst_brk(TBROK | TERRNO, "clock_settime() error");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	begin->type = end->type = sleep_child->type = sleep_parent->type =
-> +		variants[tst_variant].ts_type;
-> +
-> +	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test = run,
-> +	.setup = setup,
-> +	.tcnt = 2,
-> +	.needs_root = 1,
-> +	.forks_child = 1,
-> +	.needs_checkpoints = 1,
-
-We have .restore_wallclock which should be set by tests that mess with
-wall time and the library will restore the clock automatically after the
-test has finished. With that and the use of monotonic clock for the
-interval measurement we can make the wall clock jump much more in the
-parent. E.g. jump in random direction each 100ms or something like that.
-
-> +	.test_variants = ARRAY_SIZE(variants),
-> +	.bufs = (struct tst_buffers []) {
-> +		{&begin, .size = sizeof(struct tst_ts)},
-> +		{&sleep_child, .size = sizeof(struct tst_ts)},
-> +		{&sleep_parent, .size = sizeof(struct tst_ts)},
-> +		{&end, .size = sizeof(struct tst_ts)},
-> +		{},
-> +	}
-> +};
-> 
-> ---
-> base-commit: df591113afeb31107bc45bd5ba28a99b556d1028
-> change-id: 20250620-clock_nanosleep05-60b3cfba52fe
-> 
-> Best regards,
-> -- 
-> Andrea Cervesato <andrea.cervesato@suse.com>
+On Fri, Jun 27, 2025 at 08:43:31AM +0530, ALOK TIWARI wrote:
 > 
 > 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> On 6/27/2025 1:17 AM, Mike Tipton via ltp wrote:
+> > Some systems don't support boost on every CPU, such as on many Qualcomm
+> > chipsets. And if boost isn't supported on CPU0, then the test will fail
+> > since there's no performance improvement.
+> > 
+> > Instead of hardcoding CPU0, find the first CPU that belongs to a cpufreq
+> > policy with boost enabled.
+> > 
+> > Signed-off-by: Mike Tipton <mike.tipton@oss.qualcomm.com>
+> > ---
+> >   .../device-drivers/cpufreq/cpufreq_boost.c    | 58 ++++++++++++++++---
+> >   1 file changed, 50 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> > index 67917b3fea25..5469126d2d12 100644
+> > --- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> > +++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> > @@ -55,10 +55,14 @@ static int id = -1;
+> >   static int boost_value;
+> > -const char governor[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_governor";
+> > +static int cpu;
+> > +
+> > +static const char _governor[] = SYSFS_CPU_DIR "cpu%d/cpufreq/scaling_governor";
+> > +static char governor[64];
+> >   static char governor_name[16];
+> > -const char maxspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_max_freq";
+> > +static const char _maxspeed[] = SYSFS_CPU_DIR "cpu%d/cpufreq/scaling_max_freq";
+> > +static char maxspeed[64];
+> >   static void check_set_turbo(char *file, char *off)
+> >   {
+> > @@ -84,6 +88,40 @@ static void cleanup(void)
+> >   		FILE_PRINTF(governor, "%s", governor_name);
+> >   }
+> > +static int find_boost_cpu(void)
+> > +{
+> > +	char buf[64];
+> > +	int fd, i;
+> > +
+> > +	/*
+> > +	 * The files we're looking for only exist for acpi_cpufreq. Continue
+> > +	 * assuming CPU0 for intel_pstate.
+> > +	 */
+> > +	if (!strcmp(cdrv[id].name, "intel_pstate"))
+> > +		return 0;
+> > +
+> > +	for (i = 0;; i++) {
+> > +		snprintf(buf, sizeof(buf), SYSFS_CPU_DIR "cpu%d", i);
+> > +		fd = open(buf, O_RDONLY);
+> > +		if (fd == -1)
+> > +			break;
+> > +
+> > +		close(fd);
+> > +
+> > +		snprintf(buf, sizeof(buf), SYSFS_CPU_DIR "cpu%d/cpufreq/boost", i);
+> > +		fd = open(buf, O_RDONLY);
+> > +		if (fd == -1)
+> > +			continue;
+> > +
+> > +		close(fd);
+> > +		tst_resm(TINFO, "found boost-capable CPU (CPU%d)", i);
+> > +		return i;
+> > +	}
+> > +
+> > +	tst_resm(TINFO, "didn't find boost-capable CPU (assuming CPU0)");
+> > +	return 0;
+> > +}
+> > +
+> >   static void setup(void)
+> >   {
+> >   	int fd;
+> > @@ -109,6 +147,10 @@ static void setup(void)
+> >   	tst_resm(TINFO, "found '%s' driver, sysfs knob '%s'",
+> >   		cdrv[id].name, cdrv[id].file);
+> > +	cpu = find_boost_cpu();
+> > +	snprintf(governor, sizeof(governor), _governor, cpu);
+> > +	snprintf(maxspeed, sizeof(governor), _maxspeed, cpu);
+> 
+> why sizeof(governor) not sizeof(maxspeed)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Whoops, copy/paste mistake. I'll fix that.
+
+Thanks,
+Mike
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
