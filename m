@@ -4,93 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F4EEC7EE32
-	for <ltp@archiver.kernel.org>; Sat, 28 Jun 2025 09:30:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1751103049; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=C9AT/+fH/ua+bdoeO0pz5PHmv4HLBwGP1kwraqSp1lY=;
- b=ceoegJx8EqbDEna0Cl0KaRYMXMGSEb6As50BZ01oVHf4+FHn13nGon3BzAtYKT8EgYbC2
- OzcyN9pNAlyJp1PkFPv1AHohvTpgTqlwPgRcEAAPr7pKdPxu7p/FzjsseU+ZWN55wN8HwUz
- mPQXI+bk5p1zh3bJAsoAtLtQYuWYYA4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0A40C54ED1
+	for <ltp@archiver.kernel.org>; Sat, 28 Jun 2025 11:33:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 945753C9BE7
-	for <ltp@archiver.kernel.org>; Sat, 28 Jun 2025 11:30:49 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 1A58C3C9D27
+	for <ltp@archiver.kernel.org>; Sat, 28 Jun 2025 13:33:56 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 009A73C937D
- for <ltp@lists.linux.it>; Sat, 28 Jun 2025 11:30:27 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 594A83C9B85
+ for <ltp@lists.linux.it>; Sat, 28 Jun 2025 13:33:39 +0200 (CEST)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
+ [IPv6:2a00:1450:4864:20::62d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 21BB460004C
- for <ltp@lists.linux.it>; Sat, 28 Jun 2025 11:30:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1751103024;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FQZUiPsHZLTGywVKegmwuUUJ9x6Ug8mqAZo2C0O0U88=;
- b=KIF32FzQkg8iAGY6g/gekGdaVzMbF+5DPknEoIhZKPYPsHXMJhY8m1VacTpxMkRwqVt559
- iAmcpoI9ChO5ged6EK/XEP8zAopCdZA8NQ09fFt4XUfP8waVZ7NGxps13jAclQBaYQnxAg
- 1lDdPgaHtW2nmsVAp7j+hzWCXzQaF0s=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-94-S0nTMJMhN6GMvZ4PRyir0Q-1; Sat, 28 Jun 2025 05:30:21 -0400
-X-MC-Unique: S0nTMJMhN6GMvZ4PRyir0Q-1
-X-Mimecast-MFC-AGG-ID: S0nTMJMhN6GMvZ4PRyir0Q_1751103020
-Received: by mail-pj1-f71.google.com with SMTP id
- 98e67ed59e1d1-3138e671316so2189534a91.0
- for <ltp@lists.linux.it>; Sat, 28 Jun 2025 02:30:21 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B76FA200061
+ for <ltp@lists.linux.it>; Sat, 28 Jun 2025 13:33:38 +0200 (CEST)
+Received: by mail-ej1-x62d.google.com with SMTP id
+ a640c23a62f3a-ade5b8aab41so133476766b.0
+ for <ltp@lists.linux.it>; Sat, 28 Jun 2025 04:33:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1751110418; x=1751715218; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=+kUnDhtTDGCWEzjkUyJJ9PTIjYYljoYBQoC7iSa9y8g=;
+ b=IeykqqZPNDzL5J3utJ+MUxF7XAea3+mixBeBQFZM8ssJ3o7X/41BCP0P7fynT9GmVG
+ mc1k3wXl7foX28JqhJn3awAbhRklVgxqeDj0JxZoZ5pg7ReirJ28GJWB0CYd9Fc/2BIW
+ FkJADBSFgq1yrRrKnk7AWnYnkXBVUfbFVeVxfKjxiPfA+kFnxowTAOoZ/EwndSEbRGko
+ hu6Do0mhlgTOJMgnRo4TW5ErX45T/z+DbpGDFgKG6jirk40OXqmOXreBrzABDbLTWaj0
+ /ku7ogcwY+Wbvj5NvVKr2Tegsbx5zRSrh+8v4GvjTz/nhKXJLzaGOyIEQLBhG3muvsJ4
+ z6Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1751103020; x=1751707820;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ d=1e100.net; s=20230601; t=1751110418; x=1751715218;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=FQZUiPsHZLTGywVKegmwuUUJ9x6Ug8mqAZo2C0O0U88=;
- b=T//IXtQATZmJ4XmoICURUM28BahZydm5COUQeBm2Q2S563F/4QLT4Pyl7EcZrWExKM
- NrxWQcwQfd3cEr2hrg5+QbOAhPvmAB7RNiM1EDfTfvAIB4Wfy7HjTA74THzyN78/4ZyR
- NFQu+r+0FIQhgaXtQ96VOt6jaWmd+0ixCRUNBATZsqN+8+RDW5d8II7O8Cmpq+0pFSoZ
- wR17g/wsOa2Pn3aNqgIVGX9TKO+cdTpr7mxXkDDQqmO+08VdM9jOS7Jmajx65rx0O+GD
- TS+F2bkz49RyhM8yhDtzsrQ0lCPRB+RLQ/Qf+VGPwHcsznFxfEd4bKPaXeF1oMEa48Ph
- LK2Q==
-X-Gm-Message-State: AOJu0YxqZnVOYnlDR/1Gk6+QAcRHAOX11ekXqhP+fe1hXPxX8KVdnK+2
- +lFroHFSMWcgNOVsAinzIR4aW7Qe561UoHYXBGdZmx+UdxJ8HmKkK17D2XsuSpYOzmMN++LW9x6
- cscsYGqY+l2xwAUxX5xkN3osQpC/y/E7GuPkf5qA71Ej4ztoElKX0q+M90bsK0v3XICfaBJNF4B
- i0xMeYUcSdZeR2UiaLdRdRShJmx/Q=
-X-Gm-Gg: ASbGncvyhSOiSDQMvEbBI2KxK9VHajjNpxf/Ib8W3ooWzAmpMSeChQ9geHegmrPFWMq
- Vq6BaWvA1dfiSAlopwRWL7JL+lVdXHrGeptIwqA//sUK3V8EayfMBZ04b0bXOyNR8FDLr3gd+FF
- dt5/or
-X-Received: by 2002:a17:90b:5408:b0:2ff:4a8d:74f9 with SMTP id
- 98e67ed59e1d1-318c929aae1mr8706711a91.10.1751103020161; 
- Sat, 28 Jun 2025 02:30:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEtFir0crCvm/jRFXEB+9S3hFM61OCyS9gmNEzv12jtDdTRcmolWhuaEY5MdKoTH6ECoE8u3Ny7RUnJMNBlXKE=
-X-Received: by 2002:a17:90b:5408:b0:2ff:4a8d:74f9 with SMTP id
- 98e67ed59e1d1-318c929aae1mr8706667a91.10.1751103019467; Sat, 28 Jun 2025
- 02:30:19 -0700 (PDT)
+ bh=+kUnDhtTDGCWEzjkUyJJ9PTIjYYljoYBQoC7iSa9y8g=;
+ b=QLcIK5Xd0yKEoB8sFQg4vh6tWHA1NfqWtbJjMSWLpjuV1FwO11/Ghi/25cqLbz5CI6
+ WTdXcDSlU/hzxrI4herfSohma83e2a0Gqd3qHBD2QZ2Q246mfox167AZqSfxpdV8eoXT
+ 0JqWZm3NZ4J2HN3P2aPvbyh/tGK9NyNnpaprpfwA9mcbf86L9kPWHgfB7EMGvGI0wEER
+ H3uEkGnd56nkHv1mFGXtJ6/nWdn6Kk1uso1OJ1NrydTQ/XIl2gg2PrsC5QdtwzpZDDyC
+ 7dW4A4XKXU2p7yXvJYw673TExyKXtKAHYTtHgU+BGCFV4DR6SJPXXMiDbhmaq+Uyl3F4
+ 6C6A==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXWruXC5xbUW/NnaQvXhZfK7QMjWWYp2yIRKnvdwkDJusyDJTdXsP9VIGme+3rkHjSws0c=@lists.linux.it
+X-Gm-Message-State: AOJu0Yz6f5LEpYMz2nVWJWweDMxGfIOiiFp0ugLjAVy5Ymx2xOdjkVFv
+ +Y4EsGyRS97uIPwBpZO9TyzTPso2yLiLmMmp6qwp0opMPka7TOGpRxfg39gaS7Iv
+X-Gm-Gg: ASbGncsu+LcLFqizY7LinTodjx6gNoVdrUxhrqBE4tQaOv848pB1VXJnUYl1WrdLud+
+ 36dmTl34LO9XGp3U0Kjh18Yw3LmeA3I6OKiPELhh5fG/WF2uZzLH4mFe2JJcnsa8AjIBOZPKjPT
+ CZmECAmJoG3Da9HyvvLKpKyhnbrj5nw6iNsLFzUk5wl46DHxths/JEpx+2JPtxlWPCj1d0DtpJs
+ EAczoLpzqZi34lO7V9KYu4ilNpRM0TNInCC5lv1jcKnyEP9GTqXdGdXmsc+GpwxsPh9OiiNznso
+ lpS5mSOLgwvxPVBlWIOkvT/fhKygDaafJFhy8JiivbvyUG/8ri3b3D0VFDgUJ0yDEU527BRSAs0
+ afzK3zBpnpjXzNH5FTIcFbVFDsW3vY8R7vJux0JctWmJXfJ9gfIiVrANK9FA=
+X-Google-Smtp-Source: AGHT+IGXNwTD3P+ARmwrZ3CLDTC2ttTCbXZnIxzboQjFlY059Utc2rZi0xvOpfqumDaAVFYm5VdihQ==
+X-Received: by 2002:a17:907:c881:b0:ae3:6659:180b with SMTP id
+ a640c23a62f3a-ae3665919f1mr401664066b.29.1751110417628; 
+ Sat, 28 Jun 2025 04:33:37 -0700 (PDT)
+Received: from amir-ThinkPad-T480.arnhem.chello.nl
+ (92-109-99-123.cable.dynamic.v4.ziggo.nl. [92.109.99.123])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-ae353c011d1sm304324366b.95.2025.06.28.04.33.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 28 Jun 2025 04:33:36 -0700 (PDT)
+From: Amir Goldstein <amir73il@gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Sat, 28 Jun 2025 13:33:34 +0200
+Message-ID: <20250628113334.228198-1-amir73il@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <20250628031302.196715-1-liwang@redhat.com>
-In-Reply-To: <20250628031302.196715-1-liwang@redhat.com>
-Date: Sat, 28 Jun 2025 17:30:07 +0800
-X-Gm-Features: Ac12FXxeCjVsHiBN9VVJ0OHTSZdzTR4LeB4po1Awoi0vQrdI6PpDXOeHfgWuODM
-Message-ID: <CAEemH2fYeQipm1J15MteTRmVPsq6pvyxL2wpsy+Tv7M3g7s5Eg@mail.gmail.com>
-To: Li Wang <liwang@redhat.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 8cKiGIZnIXRCbCEPjirmRUhli2Wcv0wmMUIeM1BrN_k_1751103020
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] lib/checkpoint: remove deprecated
- tst_checkpoint_init() and legacy macro
+Subject: [LTP] [PATCH] fanotify01: Fix regression on kernels < v6.8
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,30 +89,82 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gU2F0LCBKdW4gMjgsIDIwMjUgYXQgMTE6MTPigK9BTSBMaSBXYW5nIHZpYSBsdHAgPGx0cEBs
-aXN0cy5saW51eC5pdD4gd3JvdGU6Cgo+IFRoZSBmdW5jdGlvbiB0c3RfY2hlY2twb2ludF9pbml0
-KCkgYW5kIG1hY3JvIFRTVF9DSEVDS1BPSU5UX0lOSVQgd2VyZQo+IHVzZWQgYnkgb2xkIGxpYnJh
-cnkgdGVzdHMgZm9yIHNldHRpbmcgdXAgY2hlY2twb2ludCBmdXRleCBtZW1vcnkuCj4KPiBUaGVz
-ZSBBUElzIGhhdmUgYmVlbiBmdWxseSByZXBsYWNlZCBieSB0c3RfcmVpbml0KCkgYW5kIGluIHRo
-ZSBuZXcKPiBjaGVja3BvaW50IGluZnJhc3RydWN0dXJlLgo+Cj4gU28gbGV0J3MgZ2V0IHJpZCBv
-ZiB0aGVtIGFuZCByZXdyaXRlIHRoZSBjaGVja3BvaW50IHRlc3RzIGluIG5ld2xpYl90ZXN0cy8u
-Cj4KClNlZW1zIHRzdF9pcGNfcGF0aCBzaG91bGQgYmUgZGVsZXRlZCBhcyB3ZWxsOgoKLS0tIGEv
-aW5jbHVkZS90c3RfY2hlY2twb2ludC5oCisrKyBiL2luY2x1ZGUvdHN0X2NoZWNrcG9pbnQuaApA
-QCAtODYsNiArODYsNCBAQAogICAgICAgICB0c3Rfc2FmZV9jaGVja3BvaW50X3dhaXQoX19GSUxF
-X18sIF9fTElORV9fLCBOVUxMLCBpZCwgMCk7IFwKIH0gd2hpbGUgKDApCgotZXh0ZXJuIGNvbnN0
-IGNoYXIgKnRzdF9pcGNfcGF0aDsKLQogI2VuZGlmIC8qIFRTVF9DSEVDS1BPSU5UX18gKi8KZGlm
-ZiAtLWdpdCBhL2xpYi90c3RfdGVzdC5jIGIvbGliL3RzdF90ZXN0LmMKaW5kZXggMTdjZTkxOTMy
-Li4zM2YzY2ZhMGIgMTAwNjQ0Ci0tLSBhL2xpYi90c3RfdGVzdC5jCisrKyBiL2xpYi90c3RfdGVz
-dC5jCkBAIC0xMDgsNyArMTA4LDYgQEAgZXh0ZXJuIHVuc2lnbmVkIGludCB0c3RfbWF4X2Z1dGV4
-ZXM7Cgogc3RhdGljIGludCBpcGNfZmQ7CiBzdGF0aWMgY2hhciBpcGNfcGF0aFsxMDY0XTsKLWNv
-bnN0IGNoYXIgKnRzdF9pcGNfcGF0aCA9IGlwY19wYXRoOwoKIHN0YXRpYyBjaGFyIHNobV9wYXRo
-WzEwMjRdOwoKCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
-dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+There was a test regression in case the TMPDIR has a zero fsid.
+
+Kernels < v6.8 do not allow setting inodes marks on such fs, while
+kernels >= v6.8 do allow to set inode marks but on on a single fs.
+
+Adjust the test expectation in those two different cases.
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Link: https://lore.kernel.org/ltp/CA+G9fYtJO4DbiabJwpSamTPHjPzyrD3O6ZCwm2+CDEUA7f+ZYw@mail.gmail.com/
+Fixes: db197b7b5 ("fanotify01: fix test failure when running with nfs TMPDIR")
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+---
+
+Petr,
+
+I reproduced this but with TMPDIR set to ntfs-3g mount path,
+which has zero fsid link nfs.
+
+Tested that fix works on new (upstream) and old v6.6 kernels.
+
+Thanks,
+Amir.
+
+ testcases/kernel/syscalls/fanotify/fanotify01.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
+index f514dc1df..df50d84a1 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify01.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
+@@ -75,6 +75,7 @@ static char fname[BUF_SIZE];
+ static char buf[BUF_SIZE];
+ static int fd_notify;
+ static int fan_report_fid_unsupported;
++static int tmpfs_report_fid_unsupported;
+ static int mount_mark_fid_unsupported;
+ static int inode_mark_fid_xdev;
+ static int filesystem_mark_unsupported;
+@@ -335,9 +336,11 @@ pass:
+ 	 * When tested fs has zero fsid (e.g. fuse) and events are reported
+ 	 * with fsid+fid, watching different filesystems is not supported.
+ 	 */
+-	ret = report_fid ? inode_mark_fid_xdev : 0;
+-	TST_EXP_FD_OR_FAIL(fanotify_mark(fd_notify, FAN_MARK_ADD, FAN_CLOSE_WRITE,
+-					 AT_FDCWD, "."), ret);
++	if (!tmpfs_report_fid_unsupported) {
++		ret = report_fid ? inode_mark_fid_xdev : 0;
++		TST_EXP_FD_OR_FAIL(fanotify_mark(fd_notify, FAN_MARK_ADD, FAN_CLOSE_WRITE,
++						 AT_FDCWD, "."), ret);
++	}
+ 
+ 	/* Remove mark to clear FAN_MARK_IGNORED_SURV_MODIFY */
+ 	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE | mark->flag,
+@@ -373,8 +376,11 @@ static void setup(void)
+ 		inode_mark_fid_xdev = EXDEV;
+ 	}
+ 
+-	if (fanotify_flags_supported_on_fs(FAN_REPORT_FID, FAN_MARK_MOUNT, FAN_OPEN, ".")) {
+-		inode_mark_fid_xdev = (errno == ENODEV) ? EXDEV : errno;
++	tmpfs_report_fid_unsupported = fanotify_init_flags_supported_on_fs(FAN_REPORT_FID, ".");
++	if (!tmpfs_report_fid_unsupported &&
++	    fanotify_flags_supported_on_fs(FAN_REPORT_FID, FAN_MARK_MOUNT, FAN_OPEN, ".") &&
++	    (errno == ENODEV || errno == EXDEV)) {
++		inode_mark_fid_xdev = EXDEV;
+ 		tst_res(TINFO | TERRNO, "TMPDIR does not support reporting events with fid from multi fs");
+ 	}
+ }
+-- 
+2.43.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
