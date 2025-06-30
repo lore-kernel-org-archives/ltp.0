@@ -4,95 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE1ECC8302D
-	for <ltp@archiver.kernel.org>; Mon, 30 Jun 2025 10:01:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1751277678; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=xmvEmXr1BtD6t664EokFmcE14GKd32iiKXqxIJBWBQ0=;
- b=XI8wnVs3Aona5cfA/iT2XqItA12aFrHF0nzOiH8W+RN9OHMPKM4gZw3OX0uoPSPjyd1H4
- pzfJHU0DUIyYPF89Syk7ZadazGScBTC1Cle3OPQd6KLn+D1UHYHxAEDN/cbqSyn771zvo7f
- pIIiQSjlWGOiwo1ADSLKZaOKVY5604s=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2242C83030
+	for <ltp@archiver.kernel.org>; Mon, 30 Jun 2025 11:56:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 53C253C5906
-	for <ltp@archiver.kernel.org>; Mon, 30 Jun 2025 12:01:18 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 567873C5669
+	for <ltp@archiver.kernel.org>; Mon, 30 Jun 2025 13:56:54 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 23F043C22AF
- for <ltp@lists.linux.it>; Mon, 30 Jun 2025 12:00:56 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id C0DA53C0131
+ for <ltp@lists.linux.it>; Mon, 30 Jun 2025 13:56:37 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 213CA1000B57
- for <ltp@lists.linux.it>; Mon, 30 Jun 2025 12:00:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1751277653;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=q/m4p2YeIAJpaguKk3ROzJsFR4aCOciTUpskTdXiH98=;
- b=DIWo1K7HoGWDYAegzhVrb+7oPokEOUCZfxuOIOZ3q1IUUO1MRmi8uRQaYsC4ZxhxbASifH
- E0MXdPiBhBWzqNdqQJSqXsBrn0MXWE0VZduMFt7V0oqNzQfXlF7c7XVuNos+CMEUvaoiPk
- FxiwHbXeL5TGSXtf9fqrP1D8wcP471s=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-657-AlSZ14ZdM9Ci5oMep6-50w-1; Mon, 30 Jun 2025 06:00:50 -0400
-X-MC-Unique: AlSZ14ZdM9Ci5oMep6-50w-1
-X-Mimecast-MFC-AGG-ID: AlSZ14ZdM9Ci5oMep6-50w_1751277648
-Received: by mail-pj1-f70.google.com with SMTP id
- 98e67ed59e1d1-31215090074so3354114a91.0
- for <ltp@lists.linux.it>; Mon, 30 Jun 2025 03:00:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1751277648; x=1751882448;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=q/m4p2YeIAJpaguKk3ROzJsFR4aCOciTUpskTdXiH98=;
- b=kYykcD1N1nFK2N+67cCBB9UV59kjygmkQNb90bkuodVJYjOvgPi/2ye+qyR4WBAqWM
- ++Kp6T3SuiZpcPYqebgCMza4mS9crWu0be3/c2QYaxk4du1NU3t/wjHrslegj3sodIZU
- u+VZAbEFFS0xy6vQvz2ChVlMYiL1d9IiA+3VAVUdOgV8iIC4mgg9DpkJYsQhSYVficWS
- Wd3nEHu0Zv7poRdv2NviTfqrY/AMX0OnX27YhJwW+iso5Vp/t/1RJtUkmKDrc9qwVX4N
- Y21CPir88QfMx32Np499JdhU5SsQBTBEH1LmuOZ8XL2W1PfKRnBhX25P5VDV0TupsMh7
- x1lg==
-X-Gm-Message-State: AOJu0YwJ5YezbY4cOHeSZw3fMm/8otBQBL3wW72+KCFme3fE2/gfKLUw
- 3lunT3kZXXPB61ETttOcW8cX3SSB0sQatPpezkG0IOdahBHxSVuYDAC2wUPMYmW9NXyV5uyTNNO
- IUgDz/S7hggavaHuQQmLFiWbqiZZBJ+nmaV7AMFhiMLGiHY6ulFpidvO9uJECa6lhRToJSwbeXF
- Z54Gp7uoZN9tdBexHFEjL6O8dCFTzhS75xrFgytg==
-X-Gm-Gg: ASbGncu0DKEThNdZs/e3Cd+XHWpn+NubG/JYBaaYz2AqiMNc7UcRxc9zZCLNOD9tIac
- 5CY9i/kZL1m5a/1giXcTLnn4D3ZAOR3KHmX5MRWhhAr5+pDXFr+akLleKocyRH+joP4bE+5spgz
- CPljtN
-X-Received: by 2002:a17:90b:3e8a:b0:312:eaea:afa1 with SMTP id
- 98e67ed59e1d1-318c92f09ecmr18228103a91.29.1751277647933; 
- Mon, 30 Jun 2025 03:00:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH0RCim3GzdHIIru2nCpEI3OXpJMEheTBKyLwTuU46d6Dr13OZlpZ+xAGmMGkwpS348h1vZnB2t5Zu8oH4zrfA=
-X-Received: by 2002:a17:90b:3e8a:b0:312:eaea:afa1 with SMTP id
- 98e67ed59e1d1-318c92f09ecmr18228053a91.29.1751277647447; Mon, 30 Jun 2025
- 03:00:47 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1B995200ADA
+ for <ltp@lists.linux.it>; Mon, 30 Jun 2025 13:56:36 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AA31B1F390;
+ Mon, 30 Jun 2025 11:56:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1751284595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=dhzFomPa57e6ZVgkv3htQfz0+LGtMkYeZ2mV00WBLHY=;
+ b=TgQXKBpDVt3IwGzzA8nFiQIyr8RCF5Zn5RYNs7/XOD7rLq5kDqkh8LfTbnOkQyohrkkTpH
+ KPQstg3YZUgzMdkXjmPhtV8tHYmbvzl7uoNpgVsYHF6i2xQPOqVNOT+AK9orlhYiCH4fuc
+ wJw9CbdnpXB/gL8lXp+hxaLa2l9UUt8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1751284595;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=dhzFomPa57e6ZVgkv3htQfz0+LGtMkYeZ2mV00WBLHY=;
+ b=pHGYLRbZGZJ0vtsyMXMuVQKy5vsgR5+Y4GIxn1gqZobOz4NSCAG7RyXgDSMHdPT9npJmoC
+ TBfsYrxTFXMDO4Bg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1751284595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=dhzFomPa57e6ZVgkv3htQfz0+LGtMkYeZ2mV00WBLHY=;
+ b=TgQXKBpDVt3IwGzzA8nFiQIyr8RCF5Zn5RYNs7/XOD7rLq5kDqkh8LfTbnOkQyohrkkTpH
+ KPQstg3YZUgzMdkXjmPhtV8tHYmbvzl7uoNpgVsYHF6i2xQPOqVNOT+AK9orlhYiCH4fuc
+ wJw9CbdnpXB/gL8lXp+hxaLa2l9UUt8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1751284595;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=dhzFomPa57e6ZVgkv3htQfz0+LGtMkYeZ2mV00WBLHY=;
+ b=pHGYLRbZGZJ0vtsyMXMuVQKy5vsgR5+Y4GIxn1gqZobOz4NSCAG7RyXgDSMHdPT9npJmoC
+ TBfsYrxTFXMDO4Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7ED9213983;
+ Mon, 30 Jun 2025 11:56:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id rLIyHXN7YmiTQAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 30 Jun 2025 11:56:35 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Mon, 30 Jun 2025 13:56:33 +0200
+Message-Id: <20250630-clock_nanosleep05-v2-0-15522d5551c6@suse.com>
 MIME-Version: 1.0
-References: <20250628031302.196715-1-liwang@redhat.com>
- <aGJZgezUO3X52_iY@yuki.lan>
-In-Reply-To: <aGJZgezUO3X52_iY@yuki.lan>
-Date: Mon, 30 Jun 2025 18:00:34 +0800
-X-Gm-Features: Ac12FXzebdUyZYN6VKeU3tQY0lRRiz1ChTSqi52mLl_rVheASg7iyzJ6CR0Xsbc
-Message-ID: <CAEemH2dHB=ihfQ2nijszJy9VeGKcv181tkKKkyj_rbDBFB=Erg@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 97nlbCxut-bbgwZOESWx2lqqg-THbmj3NzLbS_VjXhw_1751277648
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+X-B4-Tracking: v=1; b=H4sIAHF7YmgC/22NwQrCMBBEf6Xs2UiSklY9+R9SJI0bu1iTktWil
+ Py7seBN5vQG5s0CjImQ4VAtkHAmphgK6E0FbrDhioIuhUFLbWSjpXBjdLdzsCHyiDhJIxrZ187
+ 31miPUHZTQk+v1XnqCg/Ej5je68Wsvu3P1v6xzUqU1KZVcm+126kjPxm3Lt6hyzl/ADFROQyxA
+ AAA
+X-Change-ID: 20250620-clock_nanosleep05-60b3cfba52fe
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1751284595; l=1641;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=XTugBsgu6oelfLn6zYezaIK0l3gP3CAgDx1yNoLg/Sk=;
+ b=pENUTM/l2U+qo973Y4Ua70HWbaLdiFTB5jiQ4/xJCb3gUDwm+9/1BqguxctEwxr2QJzvRnb7D
+ u8aIUf5P5JmAIEytnCN06oN8iUShyRLW7NJBQKjY+jGt5rZ3OkDXkzt
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] lib/checkpoint: remove deprecated
- tst_checkpoint_init() and legacy macro
+Subject: [LTP] [PATCH v2 0/2] Rewrite openposix clock_settime bugged tests
+ inside LTP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,25 +115,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
->
+Both clock_settime_7-1 and clock_settime_8-1 are affected by the
+same bug which is probably related to the way tests are written.
 
-Patchset pushed with minor adjustments (GPL License update, tst_ipc_path
-drop).
-Thanks for the review!
+sleep() is used by the parent and is not reliable. It can oversleep
+or undersleep according to system overload or signals which are
+received. And we never check for its return value. Using
+clock_nanosleep would make parent more reliable in this case.
 
+At the same time, the test is taking for granted a certain
+synchronization between child and parent, which is not always true
+in case of system overload.
 
+My suggestion is to rewrite the test using LTP, which has better
+timing handling (see tst_timer.h).
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Changes in v2:
+- add SAFE_CLOCK_NANOSLEEP
+- move child to MONOTONIC clock
+- simplify child_nanosleep by passing flags
+- calculate delta by checking sleep() time between beginning and ending time
+- keep variants only for child
+- Link to v1: https://lore.kernel.org/r/20250627-clock_nanosleep05-v1-1-1357109a2c81@suse.com
+
+---
+Andrea Cervesato (2):
+      Add SAFE_CLOCK_NANOSLEEP macro utility
+      Add clock_settime04 test
+
+ include/tst_safe_clocks.h                          |  23 ++++
+ runtest/syscalls                                   |   1 +
+ testcases/kernel/syscalls/clock_settime/.gitignore |   1 +
+ .../syscalls/clock_settime/clock_settime04.c       | 153 +++++++++++++++++++++
+ 4 files changed, 178 insertions(+)
+---
+base-commit: df591113afeb31107bc45bd5ba28a99b556d1028
+change-id: 20250620-clock_nanosleep05-60b3cfba52fe
+
+Best regards,
 -- 
-Regards,
-Li Wang
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
