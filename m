@@ -4,74 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFCE8C8302D
-	for <ltp@archiver.kernel.org>; Mon, 30 Jun 2025 14:03:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22AE3C83029
+	for <ltp@archiver.kernel.org>; Mon, 30 Jun 2025 14:29:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 874B43C63C7
-	for <ltp@archiver.kernel.org>; Mon, 30 Jun 2025 16:03:49 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 92AE43C59BF
+	for <ltp@archiver.kernel.org>; Mon, 30 Jun 2025 16:29:56 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 460203C0433
- for <ltp@lists.linux.it>; Mon, 30 Jun 2025 16:03:33 +0200 (CEST)
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com
- [IPv6:2607:f8b0:4864:20::52d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C75D33C5842
+ for <ltp@lists.linux.it>; Mon, 30 Jun 2025 16:29:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1EF991400771
- for <ltp@lists.linux.it>; Mon, 30 Jun 2025 16:03:32 +0200 (CEST)
-Received: by mail-pg1-x52d.google.com with SMTP id
- 41be03b00d2f7-b34c068faf8so4901855a12.2
- for <ltp@lists.linux.it>; Mon, 30 Jun 2025 07:03:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1751292210; x=1751897010; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=cONKzeK8VrAOkpWuxUHZ6fItx3glR99GPYW+lL8iviE=;
- b=TiUwOpTt+91uCZS7+mzd+vtOM/dCVw02g31/Usr3RxAslSaJH6+I/Kach0eFoKR1la
- xCBA4nKfvJDgsw+OIIsldJ99JJheKi0zYQJzxbxyLTiG+vVeygq0crMwXWZ9nV9nxLSY
- 2HDb4VIO3QldS77waLVCrINZDUUOIPQJ9fSupiZLYXN5naMtq+VhboR+7xirXeNwXC0U
- AlT4EIRHmYSsbIQ0trh2aZLKFJaHJoSM8qQLJD6D2Ye7ILOR49p/xO6uySpgHhvilHKP
- vh7WDA2lARdQNpkfEVHtQ12s6OFFkhp3D7gVfx8QJZGbC1OkH7qK1NF2kafxHXf3V1Q2
- pApQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1751292210; x=1751897010;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=cONKzeK8VrAOkpWuxUHZ6fItx3glR99GPYW+lL8iviE=;
- b=dqXvrOaMV/Lttunc5k8gQuluhRPV+9M6U6/OhuxvKzLdfU0Y0rBupIybH3/LaYAvnR
- pQ4MR/54t9Pqh7rW+sVhPWSoddrKVYRlNQ15Gh7S/feY/+nNnOYFP86cCJkAuID4U4n/
- 2PGgd8v6VEF5z5ft7E49/kSVtCWBZArl9inPUtpdWW37x+qm1NzXrTwJ7K5n4E4OR4yz
- R7u2rGa48pULP2wrn1q9SM2nUnCUz6QwXRAaQj/JmM4iuVfPItmmtbjHy1l9RWwr397E
- QJIETZFwCsnbhDJlQMt5IqIe9MMWdX3yj6waRtypLTWR6lJC47pgiozivWk9UxIMWj0w
- /ZCg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVRo7rmxcBD1u/eaUg0PziLDUATCVz4L1rZtXI4xGsiYCF4WcHNLsFdI+R3/lkmNdOS3mQ=@lists.linux.it
-X-Gm-Message-State: AOJu0YyLI/Dypa/cXaXblD6d/1gG9aZ4v9mTmFMR9b+Dg5gG0zicsFfw
- X9TVQIoDv9ZYwVg93+VwNBwRzCX3dFTkPhpm/97bgODjBy02X28vn+T2gWrMyjZme1ywjpFtAWH
- sR9gm62KOcKrcS51IPrrERs13qCAzlz6mLecG1pSsvZkCUIsZ8EtWWqK5ag==
-X-Gm-Gg: ASbGnctFSvHiq2mSpI8DWICBacKojDAqsgrjDCNgUYfGjmKkDXG0/6uc5VQj88mVg6j
- jhX0yY5O1j8S+PsqSEBP8fL3IfAVv9eajMf1iztpkQrMROKTO5WxpDPuVd5RR+KqLpDYPw9rF0g
- BH8qTJjZwPXifh0bAOcXCJd6Fwo+zKuelJg8siUtYfCI99c/J16fOTLl3BMT8/kfy8kDHQOPg/z
- SRz
-X-Google-Smtp-Source: AGHT+IGt/2SkRJoPTzPMauY6Q5fFxqud16pW5YOgy3Hu20xo7R+bNp6WZV7gaTWzuGGhHl40R2ta+KxYdvwLJPIy/n0=
-X-Received: by 2002:a17:90b:1c09:b0:311:c1ec:7d05 with SMTP id
- 98e67ed59e1d1-318c93274fdmr19329888a91.35.1751292210168; Mon, 30 Jun 2025
- 07:03:30 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F1A451400E63
+ for <ltp@lists.linux.it>; Mon, 30 Jun 2025 16:29:38 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E14821F393;
+ Mon, 30 Jun 2025 14:29:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1751293778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ViUEQWh21QXsuYGFlNXHzSUIYyoOjy8k3Ac14+1fP3U=;
+ b=jFWlliou9vcQee1f5fBwgmQuxSCgefrVTHFcGdTLMb1irerVam2ZjPfy2hFRYfW/tvBdw+
+ HuHL4EwtHQMqFHI/Bo0Atw8RroMNy1kEdktnTAxVf0DwGy+Z7ej5jeb/7GMsWeUrQHT4C4
+ AO8EarljZ8h5enADyHpzsJrHIEptzNE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1751293778;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ViUEQWh21QXsuYGFlNXHzSUIYyoOjy8k3Ac14+1fP3U=;
+ b=rXMEXJg41wcjd8EvnA5wp5NohJAkkJw+ybou2RMBf7FU6zcmJu3pSA2vW4rK0CJP8138+M
+ ToldPwVbhwE+34DQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1751293776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ViUEQWh21QXsuYGFlNXHzSUIYyoOjy8k3Ac14+1fP3U=;
+ b=QLummArhSw5x1xfhdbRVi2w2B4/GqXbv4cRkEV8slyy9Z3KiugKTh9qyZ6o7dmCeH8/6Bv
+ GQtC6o1nXM4U1bwNZLjuqARWZ6rUNFAhLN1g5SNUWm67gOuy11jUZijlb98o2KPdLcHMGn
+ D0WCJtGb8c/ImjVM3rYFzoMAXlSRiwc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1751293776;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ViUEQWh21QXsuYGFlNXHzSUIYyoOjy8k3Ac14+1fP3U=;
+ b=lqfNeaJeefDcBD4h8758KUR/I8ZulZcJkK93+gYnFONO+6BzZHEYa1KbZWmqKIs/P1hYk9
+ Z+lVxQigQhbFanBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CD71E1399F;
+ Mon, 30 Jun 2025 14:29:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id okvhMFCfYmgZcQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 30 Jun 2025 14:29:36 +0000
+Date: Mon, 30 Jun 2025 16:30:18 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <aGKferpgXPDQ5fSt@yuki.lan>
+References: <20250626-ioctl_pidfd_suite-v1-0-165b9abf0296@suse.com>
+ <20250626-ioctl_pidfd_suite-v1-5-165b9abf0296@suse.com>
+ <aF5q3GYpIvqI82bZ@yuki.lan>
+ <df64c1e1-79bb-4fb8-8360-cc9d0e85e774@suse.com>
 MIME-Version: 1.0
-References: <20250628113334.228198-1-amir73il@gmail.com>
-In-Reply-To: <20250628113334.228198-1-amir73il@gmail.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 30 Jun 2025 19:33:18 +0530
-X-Gm-Features: Ac12FXywduYrJPfagjBcz-1-ELJyU0uTMEk0BKocqPbGuoViZNpPe6hvVtg4qDo
-Message-ID: <CA+G9fYtRPh8UJjanvcafx4x6xz=bUKieQPuhzBFXO4KcvNr96w@mail.gmail.com>
-To: Amir Goldstein <amir73il@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <df64c1e1-79bb-4fb8-8360-cc9d0e85e774@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, imap1.dmz-prg2.suse.org:helo,
+ yuki.lan:mid]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] fanotify01: Fix regression on kernels < v6.8
+Subject: Re: [LTP] [PATCH 5/6] Add ioctl_pidfd03 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,97 +108,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Amir,
+Hi!
+> > If I'm reading the kernel code correctly, we should get the same result
+> > even before the pid was waited for, so we may as well do this check
+> > twice, once before the WAITPID() and once after the WAITPID().
+> In this case, ESRCH is obtained only when info->mask == 0 __after__ 
+> child has been reaped.
+> If child has not completed, we obtain the same result of the 
+> ioctl_pidfd02 check before waitpid().
 
-On Sat, 28 Jun 2025 at 17:03, Amir Goldstein <amir73il@gmail.com> wrote:
->
-> There was a test regression in case the TMPDIR has a zero fsid.
->
-> Kernels < v6.8 do not allow setting inodes marks on such fs, while
-> kernels >= v6.8 do allow to set inode marks but on on a single fs.
->
-> Adjust the test expectation in those two different cases.
+Sigh, right, I misread the kernel code again.
 
-Thanks for providing a fix patch,
-this patch was tested and the reported failures have been fixed.
+We get ESRCH in the case of:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+- the target pid is not in our namespace or child namespace
+- task was reaped and PIDFD_INFO_EXIT was not set
 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Link: https://lore.kernel.org/ltp/CA+G9fYtJO4DbiabJwpSamTPHjPzyrD3O6ZCwm2+CDEUA7f+ZYw@mail.gmail.com/
-> Fixes: db197b7b5 ("fanotify01: fix test failure when running with nfs TMPDIR")
-> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> ---
->
-> Petr,
->
-> I reproduced this but with TMPDIR set to ntfs-3g mount path,
-> which has zero fsid link nfs.
->
-> Tested that fix works on new (upstream) and old v6.6 kernels.
->
-> Thanks,
-> Amir.
->
->  testcases/kernel/syscalls/fanotify/fanotify01.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
-> index f514dc1df..df50d84a1 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify01.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
-> @@ -75,6 +75,7 @@ static char fname[BUF_SIZE];
->  static char buf[BUF_SIZE];
->  static int fd_notify;
->  static int fan_report_fid_unsupported;
-> +static int tmpfs_report_fid_unsupported;
->  static int mount_mark_fid_unsupported;
->  static int inode_mark_fid_xdev;
->  static int filesystem_mark_unsupported;
-> @@ -335,9 +336,11 @@ pass:
->          * When tested fs has zero fsid (e.g. fuse) and events are reported
->          * with fsid+fid, watching different filesystems is not supported.
->          */
-> -       ret = report_fid ? inode_mark_fid_xdev : 0;
-> -       TST_EXP_FD_OR_FAIL(fanotify_mark(fd_notify, FAN_MARK_ADD, FAN_CLOSE_WRITE,
-> -                                        AT_FDCWD, "."), ret);
-> +       if (!tmpfs_report_fid_unsupported) {
-> +               ret = report_fid ? inode_mark_fid_xdev : 0;
-> +               TST_EXP_FD_OR_FAIL(fanotify_mark(fd_notify, FAN_MARK_ADD, FAN_CLOSE_WRITE,
-> +                                                AT_FDCWD, "."), ret);
-> +       }
->
->         /* Remove mark to clear FAN_MARK_IGNORED_SURV_MODIFY */
->         SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE | mark->flag,
-> @@ -373,8 +376,11 @@ static void setup(void)
->                 inode_mark_fid_xdev = EXDEV;
->         }
->
-> -       if (fanotify_flags_supported_on_fs(FAN_REPORT_FID, FAN_MARK_MOUNT, FAN_OPEN, ".")) {
-> -               inode_mark_fid_xdev = (errno == ENODEV) ? EXDEV : errno;
-> +       tmpfs_report_fid_unsupported = fanotify_init_flags_supported_on_fs(FAN_REPORT_FID, ".");
-> +       if (!tmpfs_report_fid_unsupported &&
-> +           fanotify_flags_supported_on_fs(FAN_REPORT_FID, FAN_MARK_MOUNT, FAN_OPEN, ".") &&
-> +           (errno == ENODEV || errno == EXDEV)) {
-> +               inode_mark_fid_xdev = EXDEV;
->                 tst_res(TINFO | TERRNO, "TMPDIR does not support reporting events with fid from multi fs");
->         }
->  }
-> --
-> 2.43.0
+- task was reaped before we called get_task_cred()
+- task was reaped after we filled in data from task_cred
+  (there is another check at the end of the function to make sure we do
+  not return stale data)
 
-LAVA test jobs 1 :
-https://lkft.validation.linaro.org/scheduler/job/8338092#L2028
-LAVA test jobs 2 :
-https://lkft.validation.linaro.org/scheduler/job/8338077#L4569
+So I suppose that we can hit the first two, the second two are
+inherently racy.
 
-- Naresh
+
+So after all with a pidfd pointing to a process in a child pid namespace
+we get all the uids/gids and pid filled in. Possibly changed by
+mappings, but I suppose these are going to be 1:1 since we haven't set
+any mapping tables.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
