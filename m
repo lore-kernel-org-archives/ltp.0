@@ -4,90 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C9CFC8302F
-	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 09:50:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63208C8302F
+	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 11:16:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1751363399; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=a4MqL+aeV5ea7rKV5RDJZHfnwA7O6rsGPZGBim1IjPg=;
- b=NVMilnEhYJ2bxxhI84LCEWIO6O36d1bk0hHOm6HKAjkv72zwMhnrZQhmCZw8L1J9XJL8s
- FTu1UQ44QG9KXZzIFABYrqq1co9Oh0yc2OQUB/MvDDCorO4x8P2pj+t5mKbZHdC5wOEL4ec
- WWxBvOif32VVEJ9UbuvLJUySfZnVNy0=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1751368561; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=EKWLxa/P50BZZfvpigfmd3a22Onu+87D+u6SveLLyHs=;
+ b=l80GJloISCZxha6G3y8O3lc0sz5ocrG2qgMGh+hD4q/0PuJERMEnx2tDHxG9Ctj/i8Bc4
+ O1m3v52F0/cekIJh3Gl+aCsh7e/wex5VxmzD2LXyb5C8TYVm8/6PqqSyF8d/P5P9hTDhydq
+ dutEjNWqAlxu+BWjgWzDR3EtZqqCUfc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0F7003C74D3
-	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 11:49:59 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 785E83C75C9
+	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 13:16:01 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 272AD3C6DDB
- for <ltp@lists.linux.it>; Tue,  1 Jul 2025 11:49:35 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+ by picard.linux.it (Postfix) with ESMTPS id 84FB03C6E4E
+ for <ltp@lists.linux.it>; Tue,  1 Jul 2025 13:15:39 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 01E071400F45
- for <ltp@lists.linux.it>; Tue,  1 Jul 2025 11:49:34 +0200 (CEST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-451d7b50815so22149925e9.2
- for <ltp@lists.linux.it>; Tue, 01 Jul 2025 02:49:34 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A6016200912
+ for <ltp@lists.linux.it>; Tue,  1 Jul 2025 13:15:37 +0200 (CEST)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-45363645a8eso37966595e9.1
+ for <ltp@lists.linux.it>; Tue, 01 Jul 2025 04:15:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1751363374; x=1751968174; darn=lists.linux.it;
- h=in-reply-to:references:subject:to:cc:message-id:date
- :content-transfer-encoding:mime-version:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=gLfNCmXYq1Nr2IpT53GuJfeMLIatqagCTEn2IDFDdbg=;
- b=aepXLsDfh2lGVu5ASZcf1pLS/48/1gGMjQrrhH3IfDQOsuGX705Q8RFq72nYzaEagX
- F7ieCy5Qz4TUoB2WDzZEyYV9n5O9MRRiS5RpBzQxA5jpVy9Bgt/oFgGfyFK9ZrMfloEf
- fk0ifrDsKY2ZRgVH6t61rmwywUd2I2XCLrikl6SIhVqOiTRJJLwSrDSJpc8xpUz16Khh
- +1BMbZbMDUDwcDXkTo9uURte2qysLEOij9z+KuSz1BKtljBwR47RtDyJ2i3Vohhrooi3
- f/6bNn20G3UXJd1SeVMnQ96fTm7RUkEHPxdiobRSTTgYkwppYq+fq5mJurlqYGC4SxXD
- 8I2Q==
+ d=suse.com; s=google; t=1751368537; x=1751973337; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=fClVh5GrutU0MzIHzm5BUy55dU67mAlC7l2kklm956U=;
+ b=Lp0aAVekHPEPzDO00RAQv7Zv42ymlkLcE80pNKuabWeXf4K/ANrblTV0NsAxvWr89Q
+ SoNL717dS8bdHPqXUxw4bwyhOXmA0zCNw93JEJq5hixs9T4nxG6zA9BCcCTTqU3u94Hd
+ Uil3XccIQVtQnd6PV/2kN1f4dJfUmxl8Xu9dOPC2J/LMViUsvwQGLF/SjJoALaSTsRdh
+ kkrACDmoKfgAce24UNZHkRkhmdDzW1VAQMqX+Bl6f0dIKXVJiU6t8aANpe2as72FO7ut
+ bV9SuHsEwmc4A/YP2vD2WTn1wDho0Qb9ngZM4aojkR1vWn9cljxhL7f/qLAaLNk21G2i
+ XvwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1751363374; x=1751968174;
- h=in-reply-to:references:subject:to:cc:message-id:date
- :content-transfer-encoding:mime-version:from:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=gLfNCmXYq1Nr2IpT53GuJfeMLIatqagCTEn2IDFDdbg=;
- b=Or7r5pQB2MWiEton8y8ECJDSpLVStnwlZtp7lUbTMzr5KFcSp+1OmFfeM345S5WqRk
- CCHYdrFIT3oehLwKSUlU8D8lfx43mlPduL3iZy9caLyreT/WcO+mLvPYb3D6LifrjDRY
- lDBQVmvmrj5yRbQIV04H4soaMIxJgnD6K6oAKgEmQi0Zwj1EMBHAxAGN61tE31lUzAa0
- g5lwbuOjGDttNir2+0jEmRAHAtDm86OqNh/HEwHuVhvMrD6kWLYVd2M6hXWX6zl9J4Ub
- Sna9JaZPY0jemrAxK06bZdeskdodkT9eDpTbaUWfq1gu88NiBRVzFHzVQQqnQBfCkmSP
- mJ0g==
-X-Gm-Message-State: AOJu0YwM/0lCnUxDeTPFfprMnrz7FB5ef5XqqRnvqX0JcuNrSbTQtoo+
- ywx2oxEuyrwpohKs4sljen22Q1SKdS6T1uz4j17Wvf122zGR/TY0yukLgHa0EQ+Aqe4=
-X-Gm-Gg: ASbGnctJayvIshQRVkkfE+QDaDUgSyyYdTydZMjQDJUTgjVjH6z8WbC6nZZKVWP4cR8
- RvLx2wZ/U7hDFUI/G7Y1W2J5YvHMGMycl/H2/rWjtwgBhedOOHqFe9LWWA1XizbGCAqzzCQg3qW
- LhRPIatRFAgr2aqgM58WMcrt2OD67POEBCqn0UNQMJUZL62s2suwu688i3icVUi6N/ViGDLy2jX
- gzm/QDSZDCquXp4m3SvE9ZY3Rr/aL3eMgscuhAVnTP/zobfkm//6Riz9iNv92mNK47HL79JusiP
- rX/WRewNj1rwetKsoEs/7fYJW6uDjFK9jp3f+J8EaKQKEWbgLTEd8I+JtPBQ
-X-Google-Smtp-Source: AGHT+IG4W4jnYcBUVPAGZ4mzbNkFCvJYumIszn6RxTkF/9BGhUoMeMDMOtU5W9hS05GtlDMMVSWhGQ==
-X-Received: by 2002:a05:6000:2082:b0:3a4:f8fa:9c94 with SMTP id
- ffacd0b85a97d-3a8f482c971mr14538865f8f.13.1751363374252; 
- Tue, 01 Jul 2025 02:49:34 -0700 (PDT)
-Received: from localhost ([177.45.162.214])
- by smtp.gmail.com with UTF8SMTPSA id
- 6a1803df08f44-6fd772e34besm80581476d6.75.2025.07.01.02.49.32
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 01 Jul 2025 02:49:33 -0700 (PDT)
-Mime-Version: 1.0
-Date: Tue, 01 Jul 2025 06:49:28 -0300
-Message-Id: <DB0MI07GMSJY.25OY7MTPT0W29@suse.com>
-To: "Li Wang" <liwang@redhat.com>, =?utf-8?b?UmljYXJkbyBCLiBNYXJsacOocmU=?=
- <rbm@suse.com>
-X-Mailer: aerc 0.20.1-80-g1fe8ed687c05-dirty
-References: <20250630-conversions-shmt-v2-0-6bb1bf315cce@suse.com>
- <CAEemH2d2zv+L=K6Mv2AEWcyOyb=R+-WOQ-50f_NYxHuac4SNWg@mail.gmail.com>
-In-Reply-To: <CAEemH2d2zv+L=K6Mv2AEWcyOyb=R+-WOQ-50f_NYxHuac4SNWg@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+ d=1e100.net; s=20230601; t=1751368537; x=1751973337;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=fClVh5GrutU0MzIHzm5BUy55dU67mAlC7l2kklm956U=;
+ b=Kt0FZe1z5gFXGFoB3gRASrXAOK4+TD3loNaJFr5Sbn4b6BEzjolSPRcs9a0wdSAIGE
+ w0C96lggBDftukXGH7Jm+XCPh4ez7NRGgWIE7hvda1ZyO2P2nKVrBrsZok0SjtjiCfur
+ y8SOWTaORartDiCAFTD9smwvpGpXddzrp/azhGARde2E4SUQI3i0iRQuxgzwt8ZKtkwv
+ 4NEwAGWOBrzC7649hU/XAb1s4wVg9ZfH8FHXE3KnMwgSObBEv/Rct/wy5Ey3SP6l5ak8
+ lBZrXFx+gnMsTSu32balbE3Da4OCn4AqdtuBHDZb7xdML46vbdI23yGipsjR7PFOiDAk
+ SyNw==
+X-Gm-Message-State: AOJu0YyJbJf8vIddKy+9BI/8foOytfFC7ts4QKjAIngTb78+QTITuhw1
+ JFNgR759dqIq829zsTthV/RaoOE8E1ZuCpbBJZLrI9TXQZBtG5h/JjNMfnzL0ozp6lQ=
+X-Gm-Gg: ASbGnct1B34MSjhbUTCO0JSBCcKEd8/dOpcH3yNYpLjwd1phjThrUkRs++7Sx6erHWj
+ Qy27fS/WyEFCaicswjcQZSmSzLJtwuSko6xZHkmXazhA8NUU5OmLk4TVijOCoAcLR22o0Rp9eEb
+ LKGnXFulOw9/hhygemfPnUztHXH2tWcxhhFlyDuDzj4RxUIdUUSbyoTIDBlB8VDYS4oVP1SPi+L
+ Nx5uz86Eywriltj8Q6WYCCENv3AaGNthaW8l9v7RHVT0PktdwYKkI5WnYqZSQtMNmaIaLYc/Aqg
+ wYwDtnlGD0lIDZU8Ayxc4ZrLfSuWRruEZi3uh8EqE/gLOwP4PnAjWKLrQcu19XiDzEvHJNxtkeP
+ JLQ2quPIX5t1OLUpe2xPFrNH7s79BcwCPQHWmaSUCKMIQLT9m79DdMdO1Pf71Cq+Dp2RS+k7pWY
+ RkZQzQnk6LqQBVAhMXfdMSUeEPIw==
+X-Google-Smtp-Source: AGHT+IE59evrgIHggyggjNFt1jzh2Xpf6vY52MIhJw/h3c5bKvMQBVPa8v41kZlXLbkrQtaFaBRAzg==
+X-Received: by 2002:a05:600c:b8d:b0:445:49e:796b with SMTP id
+ 5b1f17b1804b1-4539b91b159mr114533735e9.17.1751368536900; 
+ Tue, 01 Jul 2025 04:15:36 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
+ (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
+ [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-3a88c80bb28sm12671772f8f.43.2025.07.01.04.15.36
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 01 Jul 2025 04:15:36 -0700 (PDT)
+Message-ID: <4df2c4de-46ee-48d0-b451-fc7f4f74eac8@suse.com>
+Date: Tue, 1 Jul 2025 13:15:35 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20250626-ioctl_pidfd_suite-v1-0-165b9abf0296@suse.com>
+ <aF5u9ZBRzv-a18Mt@yuki.lan>
+Content-Language: en-US
+In-Reply-To: <aF5u9ZBRzv-a18Mt@yuki.lan>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 0/9] mem: shmt: Convert to new API
+Subject: Re: [LTP] [PATCH 0/6] ioctl_pidfd testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,18 +103,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
-Reply-To: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue Jul 1, 2025 at 12:19 AM -03, Li Wang wrote:
-> Patchset merged with minor adjustments(code format), thanks!
+On 6/27/25 12:14 PM, Cyril Hrubis wrote:
+> I guess that we miss a test for the case where the processes are in the
+> same pid namespace, e.g. process created by a plain old fork(). In that
+> case calling the ioctl() before the the process was waited for would
+> return the information I've mistakenly pointed out for the second test.
 
-Thank you, Li!
+Sorry but I don't get this one. When we fork() a process and we check 
+its exit code via ioctl(PIDFD_GET_INFO) __before__ the child has been 
+reaped, we only need to check if mask is still having PIDFD_INFO_EXIT, 
+because that's not available.The same for exit_code.
+
+Am I missing something?
+
+- Andrea
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
