@@ -4,106 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74AF0C7EE30
-	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 12:15:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A5A5C83038
+	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 12:54:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1751374450; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=6LgEOJtx37+vMEnvu+cUFqzigk+AYjlMA2KLoX2AJvM=;
+ b=qcoii+pBn9NgQl1fBeOt6RnPwRfMcANlgp3O3BQAfZOMJkPj4pobWmEJOJdWRvuQn2L9U
+ +vx42uXDej0tjbdRQhnoW+IO612wg255HjDYLSX64KK1MM2q8Vz+l5Sf30VH/LPBpR4ENFV
+ oRz7n4XqzDZcbTXB5CeDUjHMewfFr0g=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D19DE3C7514
-	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 14:15:33 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 91D523C75EF
+	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 14:54:10 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AB2E53C72F6
- for <ltp@lists.linux.it>; Tue,  1 Jul 2025 14:15:15 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DD62E3C7113
+ for <ltp@lists.linux.it>; Tue,  1 Jul 2025 14:53:48 +0200 (CEST)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 297D91000371
- for <ltp@lists.linux.it>; Tue,  1 Jul 2025 14:15:13 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 821AE1F393;
- Tue,  1 Jul 2025 12:15:13 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CD691364B;
- Tue,  1 Jul 2025 12:15:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id N9aZGVHRY2glZAAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Tue, 01 Jul 2025 12:15:13 +0000
-Message-ID: <fec0312d-ddfc-4664-9f8d-1c0fb2e68b8d@suse.cz>
-Date: Tue, 1 Jul 2025 14:15:13 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A9F001000A3A
+ for <ltp@lists.linux.it>; Tue,  1 Jul 2025 14:53:47 +0200 (CEST)
+Received: by mail-wm1-x330.google.com with SMTP id
+ 5b1f17b1804b1-451d7b50815so23847675e9.2
+ for <ltp@lists.linux.it>; Tue, 01 Jul 2025 05:53:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1751374427; x=1751979227; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=puIPuC52dBgtVz2WsAA2hPJigGYR8ZM+qOn5TQ8GfiA=;
+ b=eOSEPj1xgwhcygDSY8ViYqgjKTaH4YGG4qtwkxCXzrhcJnjtzPObPEITLmmmUBzvkJ
+ oSp48sk3ivzvrs2d4+PcEd7796vitRLrPn6IqzyIvJEMJ5mUBpFYAKU6PSisaBbmeMnt
+ N/jvNj5lmtP0jdWqRi2krT1BGoPnjc5/0r3hpIQK+DiJ7xpAGvbXb3VBADNCJkbMAqzN
+ TC1GvpXZr6tkb5DJ7BD0P/h/fmJs6Q0j2UAK2PNsVaY0iG8LTXBkXYPe8R9qoXkfkXV+
+ 4bQrkU+urGhInH0aMgP6I6fZFZFUYTIEmZebj/GRarPi4vCF29RygTr92u3DfCg6Gq3J
+ f++w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1751374427; x=1751979227;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=puIPuC52dBgtVz2WsAA2hPJigGYR8ZM+qOn5TQ8GfiA=;
+ b=t9R2PnEMuLcR/7SVjOa8Ejqgm4r4g1pkUqvIM9b45n5b9SyC5YY9RcX1P5EfA5vVVz
+ Dd3dXEG4s988dI5Y8H9Gv9PLKrUuWhXhf1Kkt8wF6G+Rx9o8mGngurcTv1QciqCJ8Sn3
+ TO3iXyzAfYlBcsFNkSrhSU42iL6EvtZOXoY9iJNEqBi10OtkJqMipC7RF5ChoWkvlZp1
+ ukdtCQ6xETkL34G0JlY+lhidtLcDmooGmw3rx5s0yINe3BNC714aUwmUmdneJO2wRgaG
+ WaT8B8Qnj8lOUs7thKt4hDXcyCelm4g1H7xQBwj3AkPbr1NjwUcjHjW16Tna/efnLgTr
+ l3qA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUjUbqORYMKAWzwWGq05OWgEHrv6GbUyk8M0AUSotvlyYKSwck9dLAn0cro0oIeTYEl9UY=@lists.linux.it
+X-Gm-Message-State: AOJu0Yx71fMEtVXQf3qtlp/yKXq1ZPZTvdztuGWg7zrN1VrdYwcOdMWp
+ XdkT1BxiFvgIuKrHooF430wRGRGI3p6+UDBUkLZX3gSWDDxC+oTOBvrq1G9Lw+Si+8L+ahZgymo
+ Ma0kysCY=
+X-Gm-Gg: ASbGncu6C7iBZKZ5f6WpBnB2TFQyE7VH2FLqoqUl1fKdkJe2SlVIjpbnCfz/jKSj09+
+ TuzKzXikraFib2XPqQD5cRLCxsbvhNfCa3vofZaGo0YGQB21NRvNtGi6Dtf3BT3FDCESxrO8I1a
+ osMxesLhgjd6j8a27NNbJ6nSMnHIK0m04RtAUxorEttgq8qqZ2hnHWI8gpFAGyge0XxkOhxIS6i
+ LM7J7FTQIJI94O7nGNKjfkOQdpq6M5xupXcFDz8rFNzqEZgaE1ogVQWKuFSXnjT1tN4ZEWDFdTG
+ eQa8vHMoXLVCXdgEa/Qvnck0KLQTQLKmi8LQUY05nQ5yrfBt8/59RPZ/lcvYtzb2rVKdHqG2Ghl
+ OBdcemMlGgkHSSI4dEpyRxkZaqO0dfiKUTCN0yeFSUD5VuOztQ2XMk9zys8rPDHEt8koUIDQhPR
+ inrwuL4QLxdKExRzZqc3HHYe7FFQ==
+X-Google-Smtp-Source: AGHT+IHQgY0eW1vQXi8/R7J+Z31Rkguhw/xOR/fwgYcnqeix+WzM0A532Eu+oUyDqfKBDLwBRGk27w==
+X-Received: by 2002:a05:6000:4109:b0:3a3:6a9a:5ebf with SMTP id
+ ffacd0b85a97d-3a8f4ee1d85mr14049799f8f.20.1751374426976; 
+ Tue, 01 Jul 2025 05:53:46 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
+ (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
+ [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-3a892e52b9esm13347558f8f.61.2025.07.01.05.53.46
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 01 Jul 2025 05:53:46 -0700 (PDT)
+Message-ID: <bec71130-b780-4dcd-ac51-f1cf93d664f6@suse.com>
+Date: Tue, 1 Jul 2025 14:53:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Andrea Cervesato <andrea.cervesato@suse.com>,
+To: Martin Doucha <mdoucha@suse.cz>,
  Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it
 References: <20250624-crash02_rewrite-v2-1-c4eaeee8598f@suse.com>
  <39406791-8bbd-4447-bbcd-0b25710a55e8@suse.cz>
  <c4dc4603-3adf-4da6-b0b2-a464ad453eb6@suse.com>
+ <fec0312d-ddfc-4664-9f8d-1c0fb2e68b8d@suse.cz>
 Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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 ag==
-In-Reply-To: <c4dc4603-3adf-4da6-b0b2-a464ad453eb6@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 821AE1F393
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+In-Reply-To: <fec0312d-ddfc-4664-9f8d-1c0fb2e68b8d@suse.cz>
 X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] misc: rewrite crash02 test
@@ -118,46 +109,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 01. 07. 25 13:39, Andrea Cervesato wrote:
-> 
-> On 6/30/25 3:51 PM, Martin Doucha wrote:
->> This algorithm has two problems:
->> 1. Undefined behavior if i == 3 && (rand() & 0xFF) > 0x7f
->> 2. Except as a result of the above undefined behavior, the algorithm 
->> will never generate a negative value nor a value larger than INT_MAX.
-> I see that using multiple rand() create an issue on the numeric 
-> dimension. By calling rand() multiple times and move the bytes results 
-> around, usually generates big numbers values.
-> Probably we should just get back to the old algorithm. WDYT?
-
-No, this is how to fix the algorithm:
-
-static long rand_number(void)
-{
-	unsigned long ret = 0;
-
-	for (int i = 0; i < sizeof(unsigned long); i++)
-		num |= ((rand() & 0xffUL) << (i * 8));
-
-	return ret;
-}
-
-This will generate random numbers in the full range from LONG_MIN to 
-LONG_MAX and without any undefined behavior.
-
--- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gNy8xLzI1IDI6MTUgUE0sIE1hcnRpbiBEb3VjaGEgd3JvdGU6Cj4KPiBObywgdGhpcyBpcyBo
+b3cgdG8gZml4IHRoZSBhbGdvcml0aG06Cj4KPiBzdGF0aWMgbG9uZyByYW5kX251bWJlcih2b2lk
+KQo+IHsKPiDCoMKgwqDCoHVuc2lnbmVkIGxvbmcgcmV0ID0gMDsKPgo+IMKgwqDCoMKgZm9yIChp
+bnQgaSA9IDA7IGkgPCBzaXplb2YodW5zaWduZWQgbG9uZyk7IGkrKykKPiDCoMKgwqDCoMKgwqDC
+oCBudW0gfD0gKChyYW5kKCkgJiAweGZmVUwpIDw8IChpICogOCkpOwo+Cj4gwqDCoMKgwqByZXR1
+cm4gcmV0Owo+IH0KPgo+IFRoaXMgd2lsbCBnZW5lcmF0ZSByYW5kb20gbnVtYmVycyBpbiB0aGUg
+ZnVsbCByYW5nZSBmcm9tIExPTkdfTUlOIHRvIAo+IExPTkdfTUFYIGFuZCB3aXRob3V0IGFueSB1
+bmRlZmluZWQgYmVoYXZpb3IuIAoKV2h5IG1peGluZyB1cCB1bnNpZ25lZCBhbmQgc2lnbmVkPyBB
+bHNvLCBhcyBJIG1lbnRpb25lZCBpbiB0aGUgcHJldmlvdXMgCmNvbW1lbnQsIHRoZSBtb3JlIHdl
+IHVzZSByYW5kKCkgYW5kIHRoZSBoaWdoZXIgaXMgdGhlIGNoYW5jZSB3ZSB3aWxsIAptb3ZlIHNv
+bWUgZGF0YSB3aGljaCBpcyBub3QgZ29pbmcgdG8gYmUgMCBvciBjbG9zZSB0byAwIG5laXRoZXIs
+IHNpbmNlIApldmVyeSBjYWxsIHdpbGwgYWRkIGEgc2VxdWVuY2Ugb2YgYml0cyB3aGljaCBoYXJk
+bHkgd2lsbCBiZSBzb21ldGhpbmcgCnJlYWxseSBjbG9zZSB0byB0aGF0IHZhbHVlLgoKLSBBbmRy
+ZWEKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGlu
+Zm8vbHRwCg==
