@@ -4,111 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B805C8303D
-	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 11:40:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74AF0C7EE30
+	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 12:15:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AAA483C755D
-	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 13:40:32 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D19DE3C7514
+	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 14:15:33 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0B8EA3C72A2
- for <ltp@lists.linux.it>; Tue,  1 Jul 2025 13:40:15 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id AB2E53C72F6
+ for <ltp@lists.linux.it>; Tue,  1 Jul 2025 14:15:15 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 653737EEB55
- for <ltp@lists.linux.it>; Tue,  1 Jul 2025 13:40:14 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 297D91000371
+ for <ltp@lists.linux.it>; Tue,  1 Jul 2025 14:15:13 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 39F611F457;
- Tue,  1 Jul 2025 11:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1751370013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=p5Xo7aOoL2wkq86nsuN5XQ2MhefaOtwhtnh5KJ822ik=;
- b=BCsDm53xGiyLUTyNO3xgQ1sGDXrfCTdeDMyR81g3pQqxcuOAn+Bqc9Ey+6rRFtYRvZ7T1h
- AL+f2W0TOI2YOA67fii0aXvQLPCRtDnlo30MP1o/AlHhBkNUaX1Q2+VwG4DXH1nV0V7i4Y
- mRpH1D1w8u1OxWk/alo2QlKYfEsPb+k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1751370013;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=p5Xo7aOoL2wkq86nsuN5XQ2MhefaOtwhtnh5KJ822ik=;
- b=JmWXi/ET9Qemz19AHEcoHJWFHWaWc83BGjhT75nYsU/FzAbSG+DA+A4rWlLa3glBG+k58B
- bD9bh2dteImiIUCA==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 821AE1F393;
+ Tue,  1 Jul 2025 12:15:13 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=WZ1UrEuV;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5gibFoU5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1751370012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=p5Xo7aOoL2wkq86nsuN5XQ2MhefaOtwhtnh5KJ822ik=;
- b=WZ1UrEuV6qwQExnWqUfcIEwROxLPYw/GF1CAxHYfIXYQbX5JjLMmdbgB5zKSNdURsVJKkr
- xyNHzumzro0EwNw9DP8GrnRmtGbuos3E9P2s+JQL0q0oozxaAlV0YcteG3jAJxGcu0VLt5
- rHlxji3YBL9V56cUNnPbbbZ3gajN1CY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1751370012;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=p5Xo7aOoL2wkq86nsuN5XQ2MhefaOtwhtnh5KJ822ik=;
- b=5gibFoU5khwQV4LxTXvvTu4PG1+ha3RRaCgAG0Q8gawa2HlEB4uWIsBCid+ImB4plpmlwI
- DSHA0KulEWuZxgAw==
+	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 26C2C13890;
- Tue,  1 Jul 2025 11:40:12 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CD691364B;
+ Tue,  1 Jul 2025 12:15:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id LbpfCBzJY2g0WAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 01 Jul 2025 11:40:12 +0000
-Date: Tue, 1 Jul 2025 13:40:50 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <aGPJQi0L5iD_w1tF@yuki.lan>
-References: <20250626-ioctl_pidfd_suite-v1-0-165b9abf0296@suse.com>
- <aF5u9ZBRzv-a18Mt@yuki.lan>
- <4df2c4de-46ee-48d0-b451-fc7f4f74eac8@suse.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id N9aZGVHRY2glZAAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Tue, 01 Jul 2025 12:15:13 +0000
+Message-ID: <fec0312d-ddfc-4664-9f8d-1c0fb2e68b8d@suse.cz>
+Date: Tue, 1 Jul 2025 14:15:13 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4df2c4de-46ee-48d0-b451-fc7f4f74eac8@suse.com>
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: 39F611F457
+User-Agent: Mozilla Thunderbird
+To: Andrea Cervesato <andrea.cervesato@suse.com>,
+ Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it
+References: <20250624-crash02_rewrite-v2-1-c4eaeee8598f@suse.com>
+ <39406791-8bbd-4447-bbcd-0b25710a55e8@suse.cz>
+ <c4dc4603-3adf-4da6-b0b2-a464ad453eb6@suse.com>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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 ag==
+In-Reply-To: <c4dc4603-3adf-4da6-b0b2-a464ad453eb6@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 821AE1F393
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/6] ioctl_pidfd testing suite
+Subject: Re: [LTP] [PATCH v2] misc: rewrite crash02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,38 +118,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > I guess that we miss a test for the case where the processes are in the
-> > same pid namespace, e.g. process created by a plain old fork(). In that
-> > case calling the ioctl() before the the process was waited for would
-> > return the information I've mistakenly pointed out for the second test.
+On 01. 07. 25 13:39, Andrea Cervesato wrote:
 > 
-> Sorry but I don't get this one. When we fork() a process and we check 
-> its exit code via ioctl(PIDFD_GET_INFO) __before__ the child has been 
-> reaped, we only need to check if mask is still having PIDFD_INFO_EXIT, 
-> because that's not available.The same for exit_code.
-> 
-> Am I missing something?
+> On 6/30/25 3:51 PM, Martin Doucha wrote:
+>> This algorithm has two problems:
+>> 1. Undefined behavior if i == 3 && (rand() & 0xFF) > 0x7f
+>> 2. Except as a result of the above undefined behavior, the algorithm 
+>> will never generate a negative value nor a value larger than INT_MAX.
+> I see that using multiple rand() create an issue on the numeric 
+> dimension. By calling rand() multiple times and move the bytes results 
+> around, usually generates big numbers values.
+> Probably we should just get back to the old algorithm. WDYT?
 
-That paragraph was still written under the assumption that you are not
-supposed to get anything else than exit vaule from a process that is in
-a different namespace.
+No, this is how to fix the algorithm:
 
-The main point should have been that all the tests you have sumbitted
-are written so that the child process is cloned into a new pid
-namespace. We need at least one test where both the child and the parent
-are in the same namespace. Either cloned without pid namespace or
-created by plain old fork().
+static long rand_number(void)
+{
+	unsigned long ret = 0;
+
+	for (int i = 0; i < sizeof(unsigned long); i++)
+		num |= ((rand() & 0xffUL) << (i * 8));
+
+	return ret;
+}
+
+This will generate random numbers in the full range from LONG_MIN to 
+LONG_MAX and without any undefined behavior.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
