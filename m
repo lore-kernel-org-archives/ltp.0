@@ -4,149 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83061C83038
-	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 13:21:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8ACA6C8303D
+	for <ltp@archiver.kernel.org>; Wed,  2 Jul 2025 01:19:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1751419158; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=pc1m3VtbdeDm2e0JUNFdJG/qW4UwvdMgJ2tIJtMHDl8=;
+ b=ZcgrvvCcPoHKBNEqT+CLZTccEkmx5yLe7btEwlzexx7nmiRQDgOw9w3Tr8hUIK24ok84K
+ VEjfEKIRyA0ZNUCDG6oxbI6w/Pnp6rX2tBai5NIPaN0VWrlpo1pDjqJahs75t14hj6lICoG
+ c5Q+rybqj9A2HSd6KeTkvV3qDT2sYdk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1A9ED3C713A
-	for <ltp@archiver.kernel.org>; Tue,  1 Jul 2025 15:21:24 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id AB6333C8613
+	for <ltp@archiver.kernel.org>; Wed,  2 Jul 2025 03:19:18 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 86B643C753D
- for <ltp@lists.linux.it>; Tue,  1 Jul 2025 15:21:07 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2DDC33C6B80
+ for <ltp@lists.linux.it>; Wed,  2 Jul 2025 03:18:57 +0200 (CEST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 32ACA600678
- for <ltp@lists.linux.it>; Tue,  1 Jul 2025 15:21:05 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2EA6C1F393;
- Tue,  1 Jul 2025 13:21:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1751376064; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=2lI/YJzHbZqDiJYiZZBRFqm6NmuMtcf8W+h96QKERVE=;
- b=irpRt+XBLjRNf4f0rBHFoM75Eyy1R/FO/sNHz0S9fx+IIV/Q2l0Ufn0xOnXd59H5e3QjCj
- fk+w3c0+1zU5XHwAQ42Sxws6i1nbTg4JuIL05LSruLRmxx46faXEUmERS3QAhtL4DQLVMA
- I6Ie0YO9xS3GFILjEr7hVvfVmaP0qOc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1751376064;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=2lI/YJzHbZqDiJYiZZBRFqm6NmuMtcf8W+h96QKERVE=;
- b=/7fc7Lca8aZb7S/zzF43MjlDBsUg8ESUmDk77TVmC4IW6O+hUL6Aklptrme92lCuoegJ7e
- OKIgSyRY0sjPaTCw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1751376064; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=2lI/YJzHbZqDiJYiZZBRFqm6NmuMtcf8W+h96QKERVE=;
- b=irpRt+XBLjRNf4f0rBHFoM75Eyy1R/FO/sNHz0S9fx+IIV/Q2l0Ufn0xOnXd59H5e3QjCj
- fk+w3c0+1zU5XHwAQ42Sxws6i1nbTg4JuIL05LSruLRmxx46faXEUmERS3QAhtL4DQLVMA
- I6Ie0YO9xS3GFILjEr7hVvfVmaP0qOc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1751376064;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=2lI/YJzHbZqDiJYiZZBRFqm6NmuMtcf8W+h96QKERVE=;
- b=/7fc7Lca8aZb7S/zzF43MjlDBsUg8ESUmDk77TVmC4IW6O+hUL6Aklptrme92lCuoegJ7e
- OKIgSyRY0sjPaTCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 20F0E13890;
- Tue,  1 Jul 2025 13:21:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id QrZZB8DgY2jOeQAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Tue, 01 Jul 2025 13:21:04 +0000
-Message-ID: <f91ea506-652e-4c62-ad68-382ea521730a@suse.cz>
-Date: Tue, 1 Jul 2025 15:21:03 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id ED84D1400B6A
+ for <ltp@lists.linux.it>; Wed,  2 Jul 2025 03:18:55 +0200 (CEST)
+Received: by mail-wr1-x42a.google.com with SMTP id
+ ffacd0b85a97d-3a548a73ff2so5598137f8f.0
+ for <ltp@lists.linux.it>; Tue, 01 Jul 2025 18:18:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1751419135; x=1752023935; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=FH7nIEyhivxvhCqJUs5lcdZf1OE2GQ3Q4WG9TZDZvg4=;
+ b=cLkOuswhIJMW2d1+QhlGx/hnLzZJy28G8mGo3EBLtlOUE2UYzS5uM6/tbKFDwHGG7O
+ XYFhJR2efcdn5KzeKsMI+wO7vx8455YLdaiGT0hHFNUoojVSArPbJcHRuyJHBcf/MNWL
+ IVFHkhBRFUH/4iyysShweA7aQ17gao2FaJdiKxGXC2wk2x2PM23juUHU+qWWI92kQqs3
+ OblTt/dvMfSwU9DBsFh8f3LzFN9d6nnBiN1Mgj4ajPzk4i1lFqSiLgMR+y5c5RSdnWxw
+ BHmhqjP8VKk3HmIPbqf9y51RsInZD/wR18hnkiD7dkP2gDQtlN67WCUH+NnnU5H24qJe
+ /xmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1751419135; x=1752023935;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=FH7nIEyhivxvhCqJUs5lcdZf1OE2GQ3Q4WG9TZDZvg4=;
+ b=JWjzpueW6/vQwPi+UxSuFEp13QZyC62HFqyoWNSAo8wkjx7rNXmiIBVKuxLuLoHtFp
+ MLTHwKupjon7wntD3bcpirTZ8zzLgOxtm68SDz2Bo/dosVxnMmlLhV/UyS4YyY5ZZZTi
+ I2Q86TlzPCjsD0VwhTZrj3K0GCzGbTpbNKu8h6SUVHrI1F1TjrnCZLckK7bej51Q+Oao
+ z1+Sc5w9B+UbJyafrA9QOB2MMqC8L35qSOpoRsJMw9pO4oPtORNduphy1rL8NJf4zoTu
+ +qSekgwBIcJhcb6hFYSSTPasUXG96hHxCqMgsdl+JV7KrNujx766ecrZYuJoPVm7CMv/
+ 11EQ==
+X-Gm-Message-State: AOJu0YxtDl3B8q1y9XyQMvhK9k6xq+/0bIjiBBQ0e5Nlmk5tMPEnzyfs
+ W+fld3lep2GSELHdX9C+NFA0eZKsaMlYqDqd7tzMh+uCuoxQmbLAuleFREe4cwU6zw==
+X-Gm-Gg: ASbGnctcV/5aUSHKuR0PhUwXduuiQ8U4viiOHBVeHFEZMrjsYRYfk5lTG4UTSByRR23
+ 4I8FLg+CHR5p+lcRbMZRSqwsnQn8E5/J6Myp9UQHKx58JVrGO2cGZN2aKfsNHC8opuBEEDBCQH7
+ lZSNMQVGflmkzn7VKrxQoHrvBe7dCpmNYGXkIHVzGyZukpY3TmNvVvvN0PCpM0ND6x911jSU9db
+ 7l3s4QDFPWTe3hmIQ4ATj2BJDE8ihkniJhcDu6iBPO5xOAF8XNpa9KBmRS0fcSFEbpT0irIGH5H
+ wlWXGPqkD/G1HZCIiwZ8ttDJ+oQDX1MY0IE+3Ys2fjzVkp0+MOjgkFsfTjHMYQ==
+X-Google-Smtp-Source: AGHT+IHyQ+Psj/Cyov8ueLCLUt+meTeMuWQqxVA7fXbarREgUKpTMWZXur4FhijxbLGQm3xyOPkDFg==
+X-Received: by 2002:a05:6000:43d4:20b0:3a4:d722:5278 with SMTP id
+ ffacd0b85a97d-3b20067a807mr253655f8f.39.1751419135205; 
+ Tue, 01 Jul 2025 18:18:55 -0700 (PDT)
+Received: from MiWiFi-CR6608-srv ([202.127.77.110])
+ by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-74af55c5f38sm13262861b3a.108.2025.07.01.18.18.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 01 Jul 2025 18:18:54 -0700 (PDT)
+Date: Wed, 2 Jul 2025 09:18:19 -0400
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <aGUxm-Sgsi7U8NWA@MiWiFi-CR6608-srv>
+References: <20250630153205.19017-1-chrubis@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Andrea Cervesato <andrea.cervesato@suse.com>,
- Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it
-References: <20250624-crash02_rewrite-v2-1-c4eaeee8598f@suse.com>
- <39406791-8bbd-4447-bbcd-0b25710a55e8@suse.cz>
- <c4dc4603-3adf-4da6-b0b2-a464ad453eb6@suse.com>
- <fec0312d-ddfc-4664-9f8d-1c0fb2e68b8d@suse.cz>
- <bec71130-b780-4dcd-ac51-f1cf93d664f6@suse.com>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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 ag==
-In-Reply-To: <bec71130-b780-4dcd-ac51-f1cf93d664f6@suse.com>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MID_RHS_MATCH_FROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:mid,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250630153205.19017-1-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] misc: rewrite crash02 test
+Subject: Re: [LTP] [PATCH 1/2] lib: Add is_fuse flag to SAFE_MOUNT() and
+ tst_device
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -158,39 +97,141 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 01. 07. 25 14:53, Andrea Cervesato wrote:
-> Why mixing up unsigned and signed?
-
-Because signed bit shifts that end up setting the highest bit or 
-truncating high bits result in undefined behavior. C99 standard section 
-6.5.7 paragraph 4.
-
-> Also, as I mentioned in the previous comment, the more we use rand()
-> and the higher is the chance we will move some data which is not
-> going to be 0 or close to 0 neither, since every call will add a
-> sequence of bits which hardly will be something really close to that
-> value.
-
-I don't see any problem there. If you want to increase the probability 
-of returning zero, do something like this before the loop. Adjust the 
-constant according to your desired probability.
-
-if (rand() <= 0xff)
-	return 0;
-
--- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+On Mon, Jun 30, 2025 at 05:32:04PM +0200, Cyril Hrubis wrote:
+> This allows us to adjust tests that need different expectations on FUSE
+> based filesystems.
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Very nit: Reported-by: Jan Polensky <japo@linux.ibm.com>
+Is there any issue link can be provide? 
+> ---
+>  include/old/safe_macros.h |  2 +-
+>  include/safe_macros_fn.h  |  2 +-
+>  include/tst_device.h      |  2 ++
+>  include/tst_safe_macros.h |  7 ++++++-
+>  lib/safe_macros.c         | 10 ++++++++--
+>  lib/tst_test.c            |  4 ++--
+>  6 files changed, 20 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/old/safe_macros.h b/include/old/safe_macros.h
+> index fb1d7a110..307843ab0 100644
+> --- a/include/old/safe_macros.h
+> +++ b/include/old/safe_macros.h
+> @@ -150,7 +150,7 @@
+>  #define SAFE_MOUNT(cleanup_fn, source, target, filesystemtype, \
+>  		   mountflags, data) \
+>  	safe_mount(__FILE__, __LINE__, (cleanup_fn), (source), (target), \
+> -		   (filesystemtype), (mountflags), (data))
+> +		   (filesystemtype), (mountflags), (data), NULL)
+>  
+>  #define SAFE_UMOUNT(cleanup_fn, target) \
+>  	safe_umount(__FILE__, __LINE__, (cleanup_fn), (target))
+> diff --git a/include/safe_macros_fn.h b/include/safe_macros_fn.h
+> index d256091b7..b4be482c1 100644
+> --- a/include/safe_macros_fn.h
+> +++ b/include/safe_macros_fn.h
+> @@ -172,7 +172,7 @@ int safe_rename(const char *file, const int lineno, void (*cleanup_fn)(void),
+>  int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
+>  	       const char *source, const char *target,
+>  	       const char *filesystemtype, unsigned long mountflags,
+> -	       const void *data);
+> +	       const void *data, int *is_fuse);
+>  
+>  int safe_umount(const char *file, const int lineno, void (*cleanup_fn)(void),
+>  		const char *target);
+> diff --git a/include/tst_device.h b/include/tst_device.h
+> index 2597fb4e2..9ca802735 100644
+> --- a/include/tst_device.h
+> +++ b/include/tst_device.h
+> @@ -15,6 +15,8 @@ struct tst_device {
+>  	const char *dev;
+>  	const char *fs_type;
+>  	uint64_t size;
+> +	/* If device was mounted by the test library this flag is set for fuse fileystems. */
+> +	int is_fuse;
+>  };
+>  
+>  /*
+> diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+> index 19504beb5..6d53c0bbc 100644
+> --- a/include/tst_safe_macros.h
+> +++ b/include/tst_safe_macros.h
+> @@ -241,7 +241,12 @@ int safe_getgroups(const char *file, const int lineno, int size, gid_t list[]);
+>  #define SAFE_MOUNT(source, target, filesystemtype, \
+>  		   mountflags, data) \
+>  	safe_mount(__FILE__, __LINE__, NULL, (source), (target), \
+> -		   (filesystemtype), (mountflags), (data))
+> +		   (filesystemtype), (mountflags), (data), NULL)
+> +
+> +#define SAFE_MOUNT2(source, target, filesystemtype, \
+> +		    mountflags, data, is_fuse) \
+> +	safe_mount(__FILE__, __LINE__, NULL, (source), (target), \
+> +		   (filesystemtype), (mountflags), (data), (is_fuse))
+>  
+>  #define SAFE_UMOUNT(target) \
+>  	safe_umount(__FILE__, __LINE__, NULL, (target))
+> diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+> index 726c9ae8e..6d267522f 100644
+> --- a/lib/safe_macros.c
+> +++ b/lib/safe_macros.c
+> @@ -907,11 +907,14 @@ static int possibly_fuse(const char *fs_type)
+>  int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
+>  	       const char *source, const char *target,
+>  	       const char *filesystemtype, unsigned long mountflags,
+> -	       const void *data)
+> +	       const void *data, int *is_fuse)
+>  {
+>  	int rval = -1;
+>  	char mpath[PATH_MAX];
+>  
+> +	if (is_fuse)
+> +		*is_fuse = 0;
+> +
+>  	if (realpath(target, mpath)) {
+>  		tst_resm_(file, lineno, TINFO,
+>  			"Mounting %s to %s fstyp=%s flags=%lx",
+> @@ -957,8 +960,11 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
+>  			filesystemtype, mount_ro, source, target);
+>  
+>  		rval = tst_system(buf);
+> -		if (WIFEXITED(rval) && WEXITSTATUS(rval) == 0)
+> +		if (WIFEXITED(rval) && WEXITSTATUS(rval) == 0) {
+> +			if (is_fuse)
+> +				*is_fuse = 1;
+>  			return 0;
+> +		}
+>  
+>  		tst_brkm_(file, lineno, TBROK, cleanup_fn,
+>  			"mount.%s failed with %i", filesystemtype, rval);
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 17ce91932..2130e4be8 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -1273,8 +1273,8 @@ static void prepare_device(struct tst_fs *fs)
+>  		mnt_data = limit_tmpfs_mount_size(fs->mnt_data,
+>  				buf, sizeof(buf), tdev.fs_type);
+>  
+> -		SAFE_MOUNT(get_device_name(tdev.fs_type), tst_test->mntpoint,
+> -				tdev.fs_type, fs->mnt_flags, mnt_data);
+> +		SAFE_MOUNT2(get_device_name(tdev.fs_type), tst_test->mntpoint,
+> +				tdev.fs_type, fs->mnt_flags, mnt_data, &tdev.is_fuse);
+>  		context->mntpoint_mounted = 1;
+>  	}
+>  }
+> -- 
+> 2.49.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
