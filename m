@@ -4,159 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6449EC83030
-	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 09:36:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00819C83030
+	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 10:54:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 082C03C9584
-	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 11:36:56 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 0FEB83C9AA8
+	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 12:54:10 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 274653C5F9B
- for <ltp@lists.linux.it>; Thu,  3 Jul 2025 11:36:39 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id AFCDD3C9199
+ for <ltp@lists.linux.it>; Thu,  3 Jul 2025 12:47:14 +0200 (CEST)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com
+ [IPv6:2607:f8b0:4864:20::629])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 91501140052A
- for <ltp@lists.linux.it>; Thu,  3 Jul 2025 11:36:38 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5BB091F387;
- Thu,  3 Jul 2025 09:36:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1751535397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=WQ3ZftM/42MpPUPlh/THb26vjphaCgnuem28juElg5I=;
- b=yLplLUbONk08AXdp1ZYMrIr4ZPJ1xvJilXhF4JJDCZ1H9EqjTxYI8AIa4NgrMfjG1h2yrG
- RlYJlhrTJ7tX0LW6Ic/lQG3oGynV/VRDf8UJnw8WIPm03Sm6sRQKUr/6kQ+K3kLZKn/94E
- K5lFmucLuUxwPFc55WrcPd3/OSsLyoA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1751535397;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=WQ3ZftM/42MpPUPlh/THb26vjphaCgnuem28juElg5I=;
- b=GbK3usbpDpF31dl7V9hJjR35jfuaYpHGQNp4kxO6X2WCtLhTPNlF86hQJfgEU6oFkYoUmQ
- VOwFLC2dLRfJN8Dw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yLplLUbO;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=GbK3usbp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1751535397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=WQ3ZftM/42MpPUPlh/THb26vjphaCgnuem28juElg5I=;
- b=yLplLUbONk08AXdp1ZYMrIr4ZPJ1xvJilXhF4JJDCZ1H9EqjTxYI8AIa4NgrMfjG1h2yrG
- RlYJlhrTJ7tX0LW6Ic/lQG3oGynV/VRDf8UJnw8WIPm03Sm6sRQKUr/6kQ+K3kLZKn/94E
- K5lFmucLuUxwPFc55WrcPd3/OSsLyoA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1751535397;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=WQ3ZftM/42MpPUPlh/THb26vjphaCgnuem28juElg5I=;
- b=GbK3usbpDpF31dl7V9hJjR35jfuaYpHGQNp4kxO6X2WCtLhTPNlF86hQJfgEU6oFkYoUmQ
- VOwFLC2dLRfJN8Dw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4EFE713721;
- Thu,  3 Jul 2025 09:36:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Z8wIEyVPZmjnAwAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Thu, 03 Jul 2025 09:36:37 +0000
-Message-ID: <ae68f9b7-0225-4b11-8ba6-80476c76c222@suse.cz>
-Date: Thu, 3 Jul 2025 11:36:33 +0200
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 12DAD1A0049E
+ for <ltp@lists.linux.it>; Thu,  3 Jul 2025 12:47:14 +0200 (CEST)
+Received: by mail-pl1-x629.google.com with SMTP id
+ d9443c01a7336-23c76ed4a7fso11298945ad.1
+ for <ltp@lists.linux.it>; Thu, 03 Jul 2025 03:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1751539632; x=1752144432; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+ :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=yT116BmQVYQp7TgXBQY166ymvqYjgN3gIl7mlb2d3wM=;
+ b=YZD68nmxEuVVH9ct1m+KyEQQMtE4DcFF6/9dDeDJX8q6gYifhCjXRoXnpHqh49Lwh5
+ GLZF31mjWrkXk+x0gB3vpPWHjQZbDhQWR+Iq0mCAT0ALFlj6En5tl0fuLd6mRHb4ipI0
+ HChrQCgQPhgEeioyrl7UxRnYF/vNpocEoRO/NpB5Yz5i+6Qe3hGeKGZbzzWR3C6pslb5
+ OKVrbZ5IEkKvPiztkvk5M383pcSaP3XRQy7ta7tyO5NlDZwBidquqLF3sSgTJiHWmHcR
+ NmeOkNVr5f7vBQ4egf1cfu7gHFnGXimN2jXltBdY6lEg+nY7Dka8OTX0l03y0xmpZXEA
+ CXeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1751539632; x=1752144432;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+ :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=yT116BmQVYQp7TgXBQY166ymvqYjgN3gIl7mlb2d3wM=;
+ b=UYcrTzqVTJ3Hq1GTuvHGZfboMp12DOSg3dD68AGtvsGsOHqPAOqoInq1ZRhSF1oRZl
+ p+4+pTqJ4OKVWqePYVYXtm1298WPmgPlZuiirXk9TYUlQHXsuCYK7LBwXuVQJfoVFQtI
+ RaMJ4ufBn6E/0T0Eu5z1ioHY5H1AkG3GA5MNjpK7tH10h83QED/yAHMsX8fYZ8neeY7s
+ J6/SXP3L6yVXSiQhUBylkRne/duQIbFfVzQ77G15Dp/6MZEqp4FYr0SrazroGQIzwpHc
+ ko0f7VyJBXhQutyajROA0M3a00Nefd5ojpS3r26ZdEhau+0he2lBKa91lSbGVUwzAJ5N
+ r0cA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVe6GFBNF5MKXCXa5wgq9b8qDcK5GMuZqBN84ikbReUg+BT2ye32ahQnIlTJRn+E8dwdhw=@lists.linux.it
+X-Gm-Message-State: AOJu0Yy86rE+iAqIMV6KKSuBhlBicJC9oDYH8SNB1Htzzs6COiTc0Y6Y
+ KUhKYSHApmL1nXCaGHKSFk1SPNcgfHIPer//B0wgvU3re6W49V+vy7as
+X-Gm-Gg: ASbGncvoSjO5xpnMaJxHGC4npz2VDM/sPBjKBLlssB4niQmxz+21u8l/0YIN0e1irGt
+ HMDUkp8ir21I+tjj+kWrCh7ue+3/jH8ntneYhObsFAWe+Wu/W9CrscfzEG+//9ZqRjL7FiIRtZ4
+ q5WUDeeHMWCJDhaPzn+Bl7SsNaG06WnyHT/r2EgL7fJk6cjcFqyW/C7r6T4vcshnP8GUmIx1LMD
+ zC1KEEvEAiyr/63WR1uM8liX0846yT9mNo+n0/906hbbgJvN/EleJHqiBO0mc4iKoSJiKe5PBZy
+ ynIw2KxN6RGh6GrS7tFWreaXx9Xte+YjEM8tvIh0dpvDEDlxWjDstRKT7cOpLNoVLgJzxMXIYAs
+ S/7Y=
+X-Google-Smtp-Source: AGHT+IE+BSY2N3Ksp1Ngu882oItJhHDV437LBfkyE/yfOf+Y7Tt3xVRjNgqMrrvyEVdLEqjOCjXpZg==
+X-Received: by 2002:a17:903:1aab:b0:234:f825:b2c3 with SMTP id
+ d9443c01a7336-23c7a1f0e25mr31795975ad.17.1751539632373; 
+ Thu, 03 Jul 2025 03:47:12 -0700 (PDT)
+Received: from [30.221.128.104] ([47.246.101.56])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-23acb39b9f2sm162265655ad.99.2025.07.03.03.47.09
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 03 Jul 2025 03:47:12 -0700 (PDT)
+Message-ID: <2ee5547a-fa11-49fb-98b7-898d20457d7e@gmail.com>
+Date: Thu, 3 Jul 2025 18:47:08 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-References: <20250505105310.15072-1-mdoucha@suse.cz>
- <aBts4kDaqLKLJUuw@yuki.lan> <3ff8ee4c-881a-435d-a416-8bd32c35a17e@suse.cz>
- <aB3JFz8PK2okhULz@yuki.lan> <f3cbed38-82b1-45e3-b037-a943f9956ae8@suse.cz>
- <aB3Si02rxzhhZYFv@yuki.lan>
- <qbca5sxzfw53o6nku5ulu2dl2xygxqghgsuerjjjfoea62bacs@a5qm6cl7hhnu>
- <144b6bac-edba-470a-bf87-abf492d85ef5@suse.cz>
- <6msduqbs42k7lnysck7oxoqyicbo6yzktstxdjan5ktpv4qzrx@s2xpicy3johi>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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 ag==
-In-Reply-To: <6msduqbs42k7lnysck7oxoqyicbo6yzktstxdjan5ktpv4qzrx@s2xpicy3johi>
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_MATCH_FROM(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: 5BB091F387
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+To: Naresh Kamboju <naresh.kamboju@linaro.org>,
+ Zhang Yi <yi.zhang@huaweicloud.com>
+References: <CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com>
+ <2dbc199b-ef22-4c22-9dbd-5e5876e9f9b4@huaweicloud.com>
+ <CA+G9fYv5zpLxeVLqYbDLLUOxmAzuXDbaZobvpCBBBuZJKLMpPQ@mail.gmail.com>
+From: Joseph Qi <jiangqi903@gmail.com>
+In-Reply-To: <CA+G9fYv5zpLxeVLqYbDLLUOxmAzuXDbaZobvpCBBBuZJKLMpPQ@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [TEST PATCH] memcontrol: Wait for draining of remote
- stocks when charging
+X-Mailman-Approved-At: Thu, 03 Jul 2025 12:53:54 +0200
+Subject: Re: [LTP] next-20250626: WARNING fs jbd2 transaction.c
+ start_this_handle with ARM64_64K_PAGES
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -168,22 +95,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: Theodore Ts'o <tytso@mit.edu>,
+ Linux Regressions <regressions@lists.linux.dev>, Arnd Bergmann <arnd@arndb.de>,
+ open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ Dan Carpenter <dan.carpenter@linaro.org>, linux-fsdevel@vger.kernel.org,
+ Jan Kara <jack@suse.cz>, linux-ext4 <linux-ext4@vger.kernel.org>,
+ LTP List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gMjguIDA1LiAyNSAxMzo0MCwgTWljaGFsIEtvdXRuw70gd3JvdGU6Cj4gSGVsbG8uCj4gCj4g
-U28gSSB0cmllZCBsb29raW5nIGludG8gdGhlIGJlaGF2aW9yIGFuZCBJJ3ZlIGNvbWUgdXAgd2l0
-aCBhIHRoZW9yeSB0aGF0Cj4gSSBkZXNjcmliZSBpbiB0aGUgY29tbWl0IG1lc3NhZ2UgYWJvdmUu
-IEkgZG9uJ3QgaGF2ZSBhIHJlcHJvZHVjZXIgZm9yCj4gdGhpcyBhdCBoYW5kIChuYW1lbHkgYSA2
-NGsgcGFnZXMgbWFjaGluZSkuIFdvdWxkIHlvdSBiZSBhYmxlIHRvIHRlc3QKPiB0aGlzIGlmIHRo
-ZXJlIHdhcyBhIHRlc3Qga2VybmVsIGluIE9CUz8KPiAKPiBUaGFua3MsCj4gTWljaGFsCgpIZWxs
-bywKd2hhdCBpcyB0aGUgY29uY2x1c2lvbiB3aXRoIHlvdXIga2VybmVsIHBhdGNoPyBJcyB0aGUg
-T09NIGlzc3VlIGdvaW5nIHRvIApiZSBmaXhlZCBpbiB0aGUga2VybmVsLCBvciBzaG91bGQgd2Ug
-cHJvY2VlZCB3aXRoIGZpeGluZyB0aGUgdGVzdCB1c2luZyAKbXkgcGF0Y2g/CgotLSAKTWFydGlu
-IERvdWNoYSAgIG1kb3VjaGFAc3VzZS5jegpTVyBRdWFsaXR5IEVuZ2luZWVyClNVU0UgTElOVVgs
-IHMuci5vLgpDT1JTTyBJSWEKS3Jpemlrb3ZhIDE0OC8zNAoxODYgMDAgUHJhZ3VlIDgKQ3plY2gg
-UmVwdWJsaWMKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9s
-aXN0aW5mby9sdHAK
+
+
+On 2025/7/3 15:26, Naresh Kamboju wrote:
+> On Thu, 26 Jun 2025 at 19:23, Zhang Yi <yi.zhang@huaweicloud.com> wrote:
+>>
+>> Hi, Naresh!
+>>
+>> On 2025/6/26 20:31, Naresh Kamboju wrote:
+>>> Regressions noticed on arm64 devices while running LTP syscalls mmap16
+>>> test case on the Linux next-20250616..next-20250626 with the extra build
+>>> config fragment CONFIG_ARM64_64K_PAGES=y the kernel warning noticed.
+>>>
+>>> Not reproducible with 4K page size.
+>>>
+>>> Test environments:
+>>> - Dragonboard-410c
+>>> - Juno-r2
+>>> - rk3399-rock-pi-4b
+>>> - qemu-arm64
+>>>
+>>> Regression Analysis:
+>>> - New regression? Yes
+>>> - Reproducibility? Yes
+>>>
+>>> Test regression: next-20250626 LTP mmap16 WARNING fs jbd2
+>>> transaction.c start_this_handle
+>>>
+>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>
+>> Thank you for the report. The block size for this test is 1 KB, so I
+>> suspect this is the issue with insufficient journal credits that we
+>> are going to resolve.
+> 
+> I have applied your patch set [1] and tested and the reported
+> regressions did not fix.
+> Am I missing anything ?
+> 
+> [1] https://lore.kernel.org/linux-ext4/20250611111625.1668035-1-yi.zhang@huaweicloud.com/
+> 
+
+I can also reproduce the similar warning with xfstests generic/730 under
+64k page size + 4k block size.
+
+Thanks,
+Joseph
+
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
