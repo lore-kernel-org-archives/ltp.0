@@ -4,114 +4,159 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D39DC83030
-	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 08:18:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6449EC83030
+	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 09:36:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A80E33C95BF
-	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 10:18:56 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 082C03C9584
+	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 11:36:56 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AE33A3C9199
- for <ltp@lists.linux.it>; Thu,  3 Jul 2025 10:18:40 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 274653C5F9B
+ for <ltp@lists.linux.it>; Thu,  3 Jul 2025 11:36:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0B553200966
- for <ltp@lists.linux.it>; Thu,  3 Jul 2025 10:18:39 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 91501140052A
+ for <ltp@lists.linux.it>; Thu,  3 Jul 2025 11:36:38 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CBC9B1F457;
- Thu,  3 Jul 2025 08:18:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1751530717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5BB091F387;
+ Thu,  3 Jul 2025 09:36:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1751535397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=yo+z49ElNXJ7UcbpZnMRb38QHD+BdBC/aLOZ35ZUM7s=;
- b=Fy1y+hsqFbMwPFNpanqIJarO+NckIvIUO1MvkzuQGfNj1z/k/pkvd3O/sPpyCmFTJr7Gmc
- m3SpbJlBP48KGu1inzotsomIEfI1QD/qhymsT7ujlV2vIJb1W455ZKL+Q604n4XZRYRuwB
- nPNxZDQ6HlFiNk5V7OmFQXK/6mksm8Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1751530717;
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=WQ3ZftM/42MpPUPlh/THb26vjphaCgnuem28juElg5I=;
+ b=yLplLUbONk08AXdp1ZYMrIr4ZPJ1xvJilXhF4JJDCZ1H9EqjTxYI8AIa4NgrMfjG1h2yrG
+ RlYJlhrTJ7tX0LW6Ic/lQG3oGynV/VRDf8UJnw8WIPm03Sm6sRQKUr/6kQ+K3kLZKn/94E
+ K5lFmucLuUxwPFc55WrcPd3/OSsLyoA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1751535397;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=yo+z49ElNXJ7UcbpZnMRb38QHD+BdBC/aLOZ35ZUM7s=;
- b=fl9JL42ExW6Ncni9JVz9hyDxczaoOme5qAY26VVnBjncRZn2Iuol+IcXJg5H6BdIPTDh8g
- +21dTGtmCVWSeRAA==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=WQ3ZftM/42MpPUPlh/THb26vjphaCgnuem28juElg5I=;
+ b=GbK3usbpDpF31dl7V9hJjR35jfuaYpHGQNp4kxO6X2WCtLhTPNlF86hQJfgEU6oFkYoUmQ
+ VOwFLC2dLRfJN8Dw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=fGIXC6mp;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="TODPSq/5"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1751530716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yLplLUbO;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=GbK3usbp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1751535397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=yo+z49ElNXJ7UcbpZnMRb38QHD+BdBC/aLOZ35ZUM7s=;
- b=fGIXC6mpspGHR1pQPunOcnuked2L+09Q8YzxsGYhoaI+HlHB1wXCuHJz5Kpd46COSFGxbG
- vPa1GW2JnR0k8lOmpadnV+4XdToJCSqPDnrA0CTSwdsaGcXix26P5o+3JI7xktIIxcUrxl
- +u3/+W4NTpNk7aEUfrKfrSQzoFaCgPA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1751530716;
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=WQ3ZftM/42MpPUPlh/THb26vjphaCgnuem28juElg5I=;
+ b=yLplLUbONk08AXdp1ZYMrIr4ZPJ1xvJilXhF4JJDCZ1H9EqjTxYI8AIa4NgrMfjG1h2yrG
+ RlYJlhrTJ7tX0LW6Ic/lQG3oGynV/VRDf8UJnw8WIPm03Sm6sRQKUr/6kQ+K3kLZKn/94E
+ K5lFmucLuUxwPFc55WrcPd3/OSsLyoA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1751535397;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=yo+z49ElNXJ7UcbpZnMRb38QHD+BdBC/aLOZ35ZUM7s=;
- b=TODPSq/5jMDjYYsrvQCNyBSQxxNRCgyDtlWbnyLqd8Z3pzrCqBqX77o7+lXkcGjYSx5lZ3
- /mllp/0Q/Gj1IEDw==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=WQ3ZftM/42MpPUPlh/THb26vjphaCgnuem28juElg5I=;
+ b=GbK3usbpDpF31dl7V9hJjR35jfuaYpHGQNp4kxO6X2WCtLhTPNlF86hQJfgEU6oFkYoUmQ
+ VOwFLC2dLRfJN8Dw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B14781368E;
- Thu,  3 Jul 2025 08:18:36 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4EFE713721;
+ Thu,  3 Jul 2025 09:36:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Wbp5Kdw8ZmjEagAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 03 Jul 2025 08:18:36 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 03 Jul 2025 10:17:56 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Z8wIEyVPZmjnAwAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Thu, 03 Jul 2025 09:36:37 +0000
+Message-ID: <ae68f9b7-0225-4b11-8ba6-80476c76c222@suse.cz>
+Date: Thu, 3 Jul 2025 11:36:33 +0200
 MIME-Version: 1.0
-Message-Id: <20250703-xattr_bug_repr-v1-1-5dcf5dde8b61@suse.com>
-X-B4-Tracking: v=1; b=H4sIALM8ZmgC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI1MDcwMj3YrEkpKi+KTS9Pii1IIiXVMLc+MkCxNzS6O0JCWgpoKi1LTMCrC
- B0bG1tQCR/PoSYAAAAA==
-X-Change-ID: 20250702-xattr_bug_repr-5873b84792fb
-To: ltp@lists.linux.it
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1751530716; l=5116;
- i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=loIXX+sU9zXUAV025N3sGx6tfClqxCylWQvEb+F8DMQ=;
- b=G+8OF/1s3aPbi+IVIm1Dsb7WVx1jHMH1pxyCzDanL+3x7V8BCaCosag9bx2JxJcNYjhLUJpfF
- O6BJWD8tUSWAEfXhmsxM8GcUrjBrp9Ot5LaS6OVjvv2WDjhI3XILJhU
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: CBC9B1F457
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+User-Agent: Mozilla Thunderbird
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+References: <20250505105310.15072-1-mdoucha@suse.cz>
+ <aBts4kDaqLKLJUuw@yuki.lan> <3ff8ee4c-881a-435d-a416-8bd32c35a17e@suse.cz>
+ <aB3JFz8PK2okhULz@yuki.lan> <f3cbed38-82b1-45e3-b037-a943f9956ae8@suse.cz>
+ <aB3Si02rxzhhZYFv@yuki.lan>
+ <qbca5sxzfw53o6nku5ulu2dl2xygxqghgsuerjjjfoea62bacs@a5qm6cl7hhnu>
+ <144b6bac-edba-470a-bf87-abf492d85ef5@suse.cz>
+ <6msduqbs42k7lnysck7oxoqyicbo6yzktstxdjan5ktpv4qzrx@s2xpicy3johi>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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 ag==
+In-Reply-To: <6msduqbs42k7lnysck7oxoqyicbo6yzktstxdjan5ktpv4qzrx@s2xpicy3johi>
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  MX_GOOD(-0.01)[];
  RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_MATCH_FROM(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,suse.de:dkim];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: 5BB091F387
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Add listxattr04 reproducer
+Subject: Re: [LTP] [TEST PATCH] memcontrol: Wait for draining of remote
+ stocks when charging
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,183 +168,22 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Test reproducer for a bug introduced in 8b0ba61df5a1 ("fs/xattr.c: fix
-simple_xattr_list to always include security.* xattrs").
-
-Bug can be reproduced when SELinux and ACL are activated on inodes as
-following:
-
-    $ touch testfile
-    $ setfacl -m u:myuser:rwx testfile
-    $ getfattr -dm. /tmp/testfile
-    Segmentation fault (core dumped)
-
-The reason why this happens is that simple_xattr_list() always includes
-security.* xattrs without resetting error flag after
-security_inode_listsecurity(). This results into an incorrect length of the
-returned xattr name if POSIX ACL is also applied on the inode.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-Reproducer for https://lore.kernel.org/linux-fsdevel/m1wm9qund4.fsf@gmail.com/T/
----
- testcases/kernel/syscalls/listxattr/.gitignore    |   1 +
- testcases/kernel/syscalls/listxattr/Makefile      |   2 +
- testcases/kernel/syscalls/listxattr/listxattr04.c | 110 ++++++++++++++++++++++
- 3 files changed, 113 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/listxattr/.gitignore b/testcases/kernel/syscalls/listxattr/.gitignore
-index be0675a6df0080d176d53d70194442bbc9ed376c..0d672b6ea5eec03aab37ee89316c56e24356c1d9 100644
---- a/testcases/kernel/syscalls/listxattr/.gitignore
-+++ b/testcases/kernel/syscalls/listxattr/.gitignore
-@@ -1,3 +1,4 @@
- /listxattr01
- /listxattr02
- /listxattr03
-+/listxattr04
-diff --git a/testcases/kernel/syscalls/listxattr/Makefile b/testcases/kernel/syscalls/listxattr/Makefile
-index c2f84b1590fc24a7a98f890ea7706771d944aa79..e96bb3fa4c2c6b14b8d2bc8fd4c475e4789d72fe 100644
---- a/testcases/kernel/syscalls/listxattr/Makefile
-+++ b/testcases/kernel/syscalls/listxattr/Makefile
-@@ -6,4 +6,6 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
-+listxattr04: LDLIBS	+= $(ACL_LIBS)
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/listxattr/listxattr04.c b/testcases/kernel/syscalls/listxattr/listxattr04.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..11f559094c3dd85da0dd1bd8b0716a478e8cdb0f
---- /dev/null
-+++ b/testcases/kernel/syscalls/listxattr/listxattr04.c
-@@ -0,0 +1,110 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Test reproducer for a bug introduced in 8b0ba61df5a1 ("fs/xattr.c: fix
-+ * simple_xattr_list to always include security.* xattrs").
-+ *
-+ * Bug can be reproduced when SELinux and ACL are activated on inodes as
-+ * following:
-+ *
-+ *     $ touch testfile
-+ *     $ setfacl -m u:myuser:rwx testfile
-+ *     $ getfattr -dm. /tmp/testfile
-+ *     Segmentation fault (core dumped)
-+ *
-+ * The reason why this happens is that simple_xattr_list() always includes
-+ * security.* xattrs without resetting error flag after
-+ * security_inode_listsecurity(). This results into an incorrect length of the
-+ * returned xattr name if POSIX ACL is also applied on the inode.
-+ */
-+
-+#include "config.h"
-+#include "tst_test.h"
-+
-+#if defined(HAVE_SYS_XATTR_H) && defined(HAVE_LIBACL)
-+
-+#include <pwd.h>
-+#include <sys/acl.h>
-+#include <sys/xattr.h>
-+
-+#define TEST_FILE "test.bin"
-+#define ACL_PERM "u::rw-,u:root:rwx,g::r--,o::r--,m::rwx"
-+
-+static acl_t acl;
-+
-+static void verify_xattr(const int size)
-+{
-+	char buf[size];
-+
-+	memset(buf, 0, sizeof(buf));
-+
-+	if (listxattr(TEST_FILE, buf, size) == -1) {
-+		if (errno != ERANGE)
-+			tst_brk(TBROK | TERRNO, "listxattr() error");
-+
-+		tst_res(TFAIL, "listxattr() failed with ERANGE. "
-+			"xattr might be bugged if combining ACL with SELinux on inodes.");
-+
-+		return;
-+	}
-+
-+	tst_res(TPASS, "listxattr() correctly read attributes length");
-+}
-+
-+static void run(void)
-+{
-+	int size;
-+
-+	size = listxattr(TEST_FILE, NULL, 0);
-+	if (size == -1)
-+		tst_brk(TBROK | TERRNO, "listxattr() error");
-+
-+	verify_xattr(size);
-+}
-+
-+static void setup(void)
-+{
-+	int res;
-+
-+	if (!tst_selinux_enforcing())
-+		tst_brk(TCONF, "SELinux is not enabled with enforcing");
-+
-+	SAFE_TOUCH(TEST_FILE, 0644, NULL);
-+
-+	acl = acl_from_text(ACL_PERM);
-+	if (!acl)
-+		tst_brk(TBROK | TERRNO, "acl_from_text() failed");
-+
-+	res = acl_set_file(TEST_FILE, ACL_TYPE_ACCESS, acl);
-+	if (res == -1) {
-+		if (errno == EOPNOTSUPP)
-+			tst_brk(TCONF | TERRNO, "acl_set_file()");
-+
-+		tst_brk(TBROK | TERRNO, "acl_set_file(%s) failed", TEST_FILE);
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	if (acl)
-+		acl_free(acl);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "800d0b9b6a8b"},
-+		{}
-+	}
-+};
-+
-+#else /* HAVE_SYS_XATTR_H && HAVE_LIBACL */
-+	TST_TEST_TCONF("<sys/xattr.h> or <sys/acl.h> does not exist.");
-+#endif
-
----
-base-commit: a908cff70f9389c2dd2bf535976cb179bfa8f340
-change-id: 20250702-xattr_bug_repr-5873b84792fb
-
-Best regards,
--- 
-Andrea Cervesato <andrea.cervesato@suse.com>
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gMjguIDA1LiAyNSAxMzo0MCwgTWljaGFsIEtvdXRuw70gd3JvdGU6Cj4gSGVsbG8uCj4gCj4g
+U28gSSB0cmllZCBsb29raW5nIGludG8gdGhlIGJlaGF2aW9yIGFuZCBJJ3ZlIGNvbWUgdXAgd2l0
+aCBhIHRoZW9yeSB0aGF0Cj4gSSBkZXNjcmliZSBpbiB0aGUgY29tbWl0IG1lc3NhZ2UgYWJvdmUu
+IEkgZG9uJ3QgaGF2ZSBhIHJlcHJvZHVjZXIgZm9yCj4gdGhpcyBhdCBoYW5kIChuYW1lbHkgYSA2
+NGsgcGFnZXMgbWFjaGluZSkuIFdvdWxkIHlvdSBiZSBhYmxlIHRvIHRlc3QKPiB0aGlzIGlmIHRo
+ZXJlIHdhcyBhIHRlc3Qga2VybmVsIGluIE9CUz8KPiAKPiBUaGFua3MsCj4gTWljaGFsCgpIZWxs
+bywKd2hhdCBpcyB0aGUgY29uY2x1c2lvbiB3aXRoIHlvdXIga2VybmVsIHBhdGNoPyBJcyB0aGUg
+T09NIGlzc3VlIGdvaW5nIHRvIApiZSBmaXhlZCBpbiB0aGUga2VybmVsLCBvciBzaG91bGQgd2Ug
+cHJvY2VlZCB3aXRoIGZpeGluZyB0aGUgdGVzdCB1c2luZyAKbXkgcGF0Y2g/CgotLSAKTWFydGlu
+IERvdWNoYSAgIG1kb3VjaGFAc3VzZS5jegpTVyBRdWFsaXR5IEVuZ2luZWVyClNVU0UgTElOVVgs
+IHMuci5vLgpDT1JTTyBJSWEKS3Jpemlrb3ZhIDE0OC8zNAoxODYgMDAgUHJhZ3VlIDgKQ3plY2gg
+UmVwdWJsaWMKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9s
+aXN0aW5mby9sdHAK
