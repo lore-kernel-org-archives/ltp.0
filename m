@@ -4,96 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF77FC77B7C
-	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 14:18:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80B35C83F0A
+	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 15:19:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 701E43C9B32
-	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 16:18:20 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id B5D803C9918
+	for <ltp@archiver.kernel.org>; Thu,  3 Jul 2025 17:19:27 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3B0C73C6BA5
- for <ltp@lists.linux.it>; Thu,  3 Jul 2025 16:18:02 +0200 (CEST)
-Received: from fhigh-a7-smtp.messagingengine.com
- (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
+ by picard.linux.it (Postfix) with ESMTPS id C39463C7153
+ for <ltp@lists.linux.it>; Thu,  3 Jul 2025 13:34:19 +0200 (CEST)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com
+ [45.249.212.51])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 723041A00EF0
- for <ltp@lists.linux.it>; Thu,  3 Jul 2025 16:17:59 +0200 (CEST)
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal
- [10.202.2.45])
- by mailfhigh.phl.internal (Postfix) with ESMTP id 82284140025B;
- Thu,  3 Jul 2025 10:17:58 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
- by phl-compute-05.internal (MEProxy); Thu, 03 Jul 2025 10:17:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
- :cc:content-transfer-encoding:content-type:content-type:date
- :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
- :references:reply-to:subject:subject:to:to; s=fm1; t=1751552278;
- x=1751638678; bh=ELCjAt/SQjWiLxFaoE+JA5BBE4/Ck0GCWWDaqcUeh0I=; b=
- OGq5NsqUjbvwQUp3jXfP/VhUv9L0Zv8mVx1gfFsb97HuCKdrzGEi7mOvANqRkSuh
- By1v5kBRSYwr0PcgyvckLfBc4VnEw703oCRlTiz7S1PRRxZtU7n8nkV2JyfE68bm
- gD/Jmbvu87r5afVjk79b4f11loDBAaSgGdhn5TE/BnNiC3xwfyMfXkibijQdQKfH
- evBv6kaRJM9XSuJCMz7zo7Ne1EHzuEP5xDFOySQMovFWorp+HRLXSnjuYRYCITr9
- 796wyifi4KTy/Mqbq23gpKdvtjJGdKcC9GlzknejT13M40QjkNBY2xeSZmTkFNwF
- 5CiA05Up1XH9nYqJXKGLDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-transfer-encoding
- :content-type:content-type:date:date:feedback-id:feedback-id
- :from:from:in-reply-to:in-reply-to:message-id:mime-version
- :references:reply-to:subject:subject:to:to:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1751552278; x=
- 1751638678; bh=ELCjAt/SQjWiLxFaoE+JA5BBE4/Ck0GCWWDaqcUeh0I=; b=S
- t5ttD5lG6oy9bmYeAuYxR6XzfgrgGFNiH8TXGuRwa74uqR45wk+nBWP1FWocfEVe
- smdNtWXfeaveUDf0fZkn3sFpQAYGsIZtb5jV584YjHKx6kOTvBZhkwepkAVMWBGY
- +Sa+UKZZTBDEuz0klklpwR9GptmVI6Y6YzcaSIGTxAmnVZdm92S3zCtuI8Q7V6xf
- 9LWvYIuE3Yr+7KqzI+xdTra4ncDNC9go7PgTpgQJpjdStI79YcL5ebL87qZCrqKu
- NH0bK8+WYxWhcAfHGnpQ7cL4l6iG0XyAq7BUxzb/l2msB58eU9aEMmaT7cUbzeir
- dKLh46wFYwNBlKDrC6IPQ==
-X-ME-Sender: <xms:FZFmaIVBDFSS6YWEvqAIES-J0lUknGFuVds09p-xXbhMMO0h_g4VfQ>
- <xme:FZFmaMl_p9Avmch4AV-4yNVPmYh1PNqBc_dRs54rpa-ZwKG4GH9ecFco8vPTdJyM-
- bCvGsfyXwFWxavkcq0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddvtdeglecutefuodetggdotefrod
- ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
- ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
- hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdetrhhnugcu
- uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
- hnpefhtdfhvddtfeehudekteeggffghfejgeegteefgffgvedugeduveelvdekhfdvieen
- ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnug
- esrghrnhgusgdruggvpdhnsggprhgtphhtthhopeekpdhmohguvgepshhmthhpohhuthdp
- rhgtphhtthhopegrnhguvghrshdrrhhogigvlhhlsehlihhnrghrohdrohhrghdprhgtph
- htthhopegurghnrdgtrghrphgvnhhtvghrsehlihhnrghrohdrohhrghdprhgtphhtthho
- pehnrghrvghshhdrkhgrmhgsohhjuheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplh
- htpheslhhishhtshdrlhhinhhugidrihhtpdhrtghpthhtoheplhhifigrnhhgsehrvggu
- hhgrthdrtghomhdprhgtphhtthhopegthhhruhgsihhssehsuhhsvgdrtgiipdhrtghpth
- htohepphhvohhrvghlsehsuhhsvgdrtgiipdhrtghpthhtoheplhhinhhugidqkhhsvghl
- fhhtvghsthesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:FZFmaMZWzGb93E1bKyalCazjYS2yec3eP_BRZurVKVcb62OySSfSaQ>
- <xmx:FZFmaHVCYlJXuQElBfP6NHHIfhaciteV393AR-Vh6cZDAQTf2aV6xw>
- <xmx:FZFmaCkuq1FHhz8xDE8owbJh4lTIExVs7DtWA1EuPZTg6NQI6ugK_w>
- <xmx:FZFmaMcZDi4kKmt5d37reVBXuw8zO7K6SjTiwRF5CE_GGKOi5WD3_A>
- <xmx:FpFmaNLnn1XFE78JkCVpoE-Gd3bQ5ywX2lbmN9m_phGFjuEjcGHK9zfw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
- id CC865700065; Thu,  3 Jul 2025 10:17:57 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 29B9C200BA6
+ for <ltp@lists.linux.it>; Thu,  3 Jul 2025 13:34:16 +0200 (CEST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+ by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bXvm31ZJHzYQvQ0
+ for <ltp@lists.linux.it>; Thu,  3 Jul 2025 19:33:39 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+ by mail.maildlp.com (Postfix) with ESMTP id 177781A0D2D
+ for <ltp@lists.linux.it>; Thu,  3 Jul 2025 19:33:38 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+ by APP3 (Coremail) with SMTP id _Ch0CgAHaCWMamZo5y0WAg--.10583S3;
+ Thu, 03 Jul 2025 19:33:33 +0800 (CST)
+Message-ID: <1c7ae5cb-61ad-404c-950a-ba1b5895e6c3@huaweicloud.com>
+Date: Thu, 3 Jul 2025 19:33:32 +0800
 MIME-Version: 1.0
-X-ThreadId: Tb53dd688bc639d41
-Date: Thu, 03 Jul 2025 16:17:37 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
- "LTP List" <ltp@lists.linux.it>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Message-Id: <c9ba86f6-dea8-47bd-88e1-edf49e4bf9fd@app.fastmail.com>
-In-Reply-To: <CA+G9fYvD1A12WE36NjELe5cD-LbPsmwJnH5aUAcufBZ7ndt2Hw@mail.gmail.com>
-References: <CA+G9fYvD1A12WE36NjELe5cD-LbPsmwJnH5aUAcufBZ7ndt2Hw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Naresh Kamboju <naresh.kamboju@linaro.org>, Theodore Ts'o
+ <tytso@mit.edu>, Jan Kara <jack@suse.cz>
+References: <CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com>
+ <2dbc199b-ef22-4c22-9dbd-5e5876e9f9b4@huaweicloud.com>
+ <CA+G9fYv5zpLxeVLqYbDLLUOxmAzuXDbaZobvpCBBBuZJKLMpPQ@mail.gmail.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <CA+G9fYv5zpLxeVLqYbDLLUOxmAzuXDbaZobvpCBBBuZJKLMpPQ@mail.gmail.com>
+X-CM-TRANSID: _Ch0CgAHaCWMamZo5y0WAg--.10583S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jw43Zry5uF47Jry8tFWxXrb_yoWxtw17pa
+ y3tF1UKrW0vr1xJrWvq3WFqryUtr1qyF97JrnFqr1rGFnFvF18JFWIgryFgF9rJ348u34x
+ Zr4qy3srKr4jy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+ 6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+ vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+ xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+ 0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+ 6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+ Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+ 14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+ 8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+ ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+ 0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+ Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+ 7KsUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP syscalls mseal02 and shmctl03 fails on compat mode
- 64-bit kernel on 32-bit rootfs
+X-Mailman-Approved-At: Thu, 03 Jul 2025 17:19:11 +0200
+Subject: Re: [LTP] next-20250626: WARNING fs jbd2 transaction.c
+ start_this_handle with ARM64_64K_PAGES
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,79 +78,175 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Linux Regressions <regressions@lists.linux.dev>,
+ Arnd Bergmann <arnd@arndb.de>, open list <linux-kernel@vger.kernel.org>,
+ lkft-triage@lists.linaro.org, Dan Carpenter <dan.carpenter@linaro.org>,
+ linux-fsdevel@vger.kernel.org, linux-ext4 <linux-ext4@vger.kernel.org>,
+ LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Jul 3, 2025, at 15:47, Naresh Kamboju wrote:
-> The LTP syscalls mseal02 and shmctl03 failed only with compat mode testing
-> with 64-bit kernel with 32-bit rootfs combination.
->
-> Would it be possible to detect compat mode test environment and handle the test
-> expectation in LTP test development ?
+On 2025/7/3 15:26, Naresh Kamboju wrote:
+> On Thu, 26 Jun 2025 at 19:23, Zhang Yi <yi.zhang@huaweicloud.com> wrote:
+>>
+>> Hi, Naresh!
+>>
+>> On 2025/6/26 20:31, Naresh Kamboju wrote:
+>>> Regressions noticed on arm64 devices while running LTP syscalls mmap16
+>>> test case on the Linux next-20250616..next-20250626 with the extra build
+>>> config fragment CONFIG_ARM64_64K_PAGES=y the kernel warning noticed.
+>>>
+>>> Not reproducible with 4K page size.
+>>>
+>>> Test environments:
+>>> - Dragonboard-410c
+>>> - Juno-r2
+>>> - rk3399-rock-pi-4b
+>>> - qemu-arm64
+>>>
+>>> Regression Analysis:
+>>> - New regression? Yes
+>>> - Reproducibility? Yes
+>>>
+>>> Test regression: next-20250626 LTP mmap16 WARNING fs jbd2
+>>> transaction.c start_this_handle
+>>>
+>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>
+>> Thank you for the report. The block size for this test is 1 KB, so I
+>> suspect this is the issue with insufficient journal credits that we
+>> are going to resolve.
+> 
+> I have applied your patch set [1] and tested and the reported
+> regressions did not fix.
+> Am I missing anything ?
+> 
+> [1] https://lore.kernel.org/linux-ext4/20250611111625.1668035-1-yi.zhang@huaweicloud.com/
+> 
 
-I think we should either make the kernel behave the same way in
-both environments, or accept either behavior as correct in LTP.
-NVAL (22)
-> mseal02.c:45: TPASS: mseal(0xf7a8e001, 4096, 0) : EINVAL (22)
-> mseal02.c:45: TFAIL: mseal(0xf7a8e000, 4294963201, 0) expected EINVAL:
-> ENOMEM (12)
+Hmm. It seems that my fix for the insufficient journal credit series
+cannot handle cases with a page size of 64k. The problem is the folio
+size can up to 128M, and the 'rsv_blocks' in ext4_do_writepages() can
+up to 1577 on 1K block size filesystems, this is too large.
 
-This is "length=ULONG_MAX-page_size+2", which overflows on 32-bit
-but not on 64-bit.
+Therefore, at this time, I think we should disable the large folio
+support for 64K page size. Then, we may need to reserve rsv_blocks
+for one extent and implement the same journal extension logic for
+reserved credits.
 
-How about this?
+Ted and Jan, what do you think?
 
---- a/mm/mseal.c
-+++ b/mm/mseal.c
-@@ -234,6 +234,9 @@ int do_mseal(unsigned long start, size_t len_in, unsigned long flags)
-        if (end < start)
-                return -EINVAL;
- 
-+       if (end > TASK_SIZE)
-+               return -EINVAL;
-+
-        if (end == start)
-                return 0;
- 
-Since TASK_SIZE is smaller for 32-bit tasks, it would detect
-the overflow in the same way.
+Thanks,
+Yi.
 
-> tst_test.c:1774: TINFO: Overall timeout per run is 0h 21m 36s
-> shmctl03.c:31: TPASS: shmmin = 1
-> shmctl03.c:33: TFAIL: /proc/sys/kernel/shmmax != 2147483647 got 4294967295
+> 
+>>>
+>>> ## Test log
+>>> <6>[   89.498969] loop0: detected capacity change from 0 to 614400
+>>> <3>[   89.609561] operation not supported error, dev loop0, sector
+>>> 20352 op 0x9:(WRITE_ZEROES) flags 0x20000800 phys_seg 0 prio class 0
+>>> <6>[   89.707795] EXT4-fs (loop0): mounted filesystem
+>>> 6786a191-5e0d-472b-8bce-4714e1a4fb44 r/w with ordered data mode. Quota
+>>> mode: none.
+>>> <3>[   90.023985] JBD2: kworker/u8:2 wants too many credits
+>>> credits:416 rsv_credits:21 max:334
+>>> <4>[   90.024973] ------------[ cut here ]------------
+>>> <4>[ 90.025062] WARNING: fs/jbd2/transaction.c:334 at
+>>> start_this_handle+0x4c0/0x4e0, CPU#0: 2/42
+>>> <4>[   90.026661] Modules linked in: btrfs blake2b_generic xor
+>>> xor_neon raid6_pq zstd_compress sm3_ce sha3_ce fuse drm backlight
+>>> ip_tables x_tables
+>>> <4>[   90.027952] CPU: 0 UID: 0 PID: 42 Comm: kworker/u8:2 Not tainted
+>>> 6.16.0-rc3-next-20250626 #1 PREEMPT
+>>> <4>[   90.029043] Hardware name: linux,dummy-virt (DT)
+>>> <4>[   90.029524] Workqueue: writeback wb_workfn (flush-7:0)
+>>> <4>[   90.030050] pstate: 63402009 (nZCv daif +PAN -UAO +TCO +DIT
+>>> -SSBS BTYPE=--)
+>>> <4>[ 90.030311] pc : start_this_handle (fs/jbd2/transaction.c:334
+>>> (discriminator 1))
+>>> <4>[ 90.030481] lr : start_this_handle (fs/jbd2/transaction.c:334
+>>> (discriminator 1))
+>>> <4>[   90.030656] sp : ffffc000805cb650
+>>> <4>[   90.030785] x29: ffffc000805cb690 x28: fff00000dd1f5000 x27:
+>>> ffffde2ec0272000
+>>> <4>[   90.031097] x26: 00000000000001a0 x25: 0000000000000015 x24:
+>>> 0000000000000002
+>>> <4>[   90.031360] x23: 0000000000000015 x22: 0000000000000c40 x21:
+>>> 0000000000000008
+>>> <4>[   90.031618] x20: fff00000c231da78 x19: fff00000c231da78 x18:
+>>> 0000000000000000
+>>> <4>[   90.031875] x17: 0000000000000000 x16: 0000000000000000 x15:
+>>> 0000000000000000
+>>> <4>[   90.032859] x14: 0000000000000000 x13: 00000000ffffffff x12:
+>>> 0000000000000000
+>>> <4>[   90.033225] x11: 0000000000000000 x10: ffffde2ebfba8bd0 x9 :
+>>> ffffde2ebd34e944
+>>> <4>[   90.033607] x8 : ffffc000805cb278 x7 : 0000000000000000 x6 :
+>>> 0000000000000001
+>>> <4>[   90.033971] x5 : ffffde2ebfb29000 x4 : ffffde2ebfb293d0 x3 :
+>>> 0000000000000000
+>>> <4>[   90.034294] x2 : 0000000000000000 x1 : fff00000c04dc080 x0 :
+>>> 000000000000004c
+>>> <4>[   90.034772] Call trace:
+>>> <4>[ 90.035068] start_this_handle (fs/jbd2/transaction.c:334
+>>> (discriminator 1)) (P)
+>>> <4>[ 90.035366] jbd2__journal_start (fs/jbd2/transaction.c:501)
+>>> <4>[ 90.035586] __ext4_journal_start_sb (fs/ext4/ext4_jbd2.c:117)
+>>> <4>[ 90.035807] ext4_do_writepages (fs/ext4/ext4_jbd2.h:242
+>>> fs/ext4/inode.c:2846)
+>>> <4>[ 90.036004] ext4_writepages (fs/ext4/inode.c:2953)
+>>> <4>[ 90.036233] do_writepages (mm/page-writeback.c:2636)
+>>> <4>[ 90.036406] __writeback_single_inode (fs/fs-writeback.c:1680)
+>>> <4>[ 90.036616] writeback_sb_inodes (fs/fs-writeback.c:1978)
+>>> <4>[ 90.036891] wb_writeback (fs/fs-writeback.c:2156)
+>>> <4>[ 90.037122] wb_workfn (fs/fs-writeback.c:2303 (discriminator 1)
+>>> fs/fs-writeback.c:2343 (discriminator 1))
+>>> <4>[ 90.037318] process_one_work (kernel/workqueue.c:3244)
+>>> <4>[ 90.037517] worker_thread (kernel/workqueue.c:3316 (discriminator
+>>> 2) kernel/workqueue.c:3403 (discriminator 2))
+>>> <4>[ 90.037752] kthread (kernel/kthread.c:463)
+>>> <4>[ 90.037903] ret_from_fork (arch/arm64/kernel/entry.S:863)
+>>> <4>[   90.038217] ---[ end trace 0000000000000000 ]---
+>>> <2>[   90.039950] EXT4-fs (loop0): ext4_do_writepages: jbd2_start:
+>>> 9223372036854775807 pages, ino 14; err -28
+>>> <3>[   90.040291] JBD2: kworker/u8:2 wants too many credits
+>>> credits:416 rsv_credits:21 max:334
+>>> <4>[   90.040374] ------------[ cut here ]------------
+>>> <4>[ 90.040386] WARNING: fs/jbd2/transaction.c:334 at
+>>> start_this_handle+0x4c0/0x4e0, CPU#1: 2/42
+>>>
+>>>
+>>> ## Source
+>>> * Kernel version: 6.16.0-rc3-next-20250626
+>>> * Git tree: https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next.git
+>>> * Git sha: ecb259c4f70dd5c83907809f45bf4dc6869961d7
+>>> * Git describe: 6.16.0-rc3-next-20250626
+>>> * Project details:
+>>> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250626/
+>>> * Architectures: arm64
+>>> * Toolchains: gcc-13
+>>> * Kconfigs: gcc-13-lkftconfig-64k_page_size
+>>>
+>>> ## Build arm64
+>>> * Test log: https://qa-reports.linaro.org/api/testruns/28894530/log_file/
+>>> * Test LAVA log 1:
+>>> https://lkft.validation.linaro.org/scheduler/job/8331353#L6841
+>>> * Test LAVA log 2:
+>>> https://lkft.validation.linaro.org/scheduler/job/8331352#L8854
+>>> * Test details:
+>>> https://regressions.linaro.org/lkft/linux-next-master/next-20250626/log-parser-test/exception-warning-fsjbd2transaction-at-start_this_handle/
+>>> * Build link: https://storage.tuxsuite.com/public/linaro/lkft/builds/2z2V7LhiJecGzINkU7ObVQTwoR1/
+>>> * Kernel config:
+>>> https://storage.tuxsuite.com/public/linaro/lkft/builds/2z2V7LhiJecGzINkU7ObVQTwoR1/config
+>>>
+>>> --
+>>> Linaro LKFT
+>>> https://lkft.linaro.org
+>>>
+>>
 
-I see this is being intentionally truncated to INT_MAX:
-
-static int copy_compat_shminfo_to_user(void __user *buf, struct shminfo64 *in,
-                                        int version)
-{
-        if (in->shmmax > INT_MAX)
-                in->shmmax = INT_MAX;
-        ...
-}
-
-> shmctl03.c:35: TFAIL: /proc/sys/kernel/shmall != 4278190079 got 4294967295
-
-Here the value from /proc is defined in the kernel as
-"#define SHMALL (ULONG_MAX - (1UL << 24))"
-
-On a 64-bit machine this is 0xfffffffffeffffff.
-
-However the 32-bit ltp tst_assert_ulong() truncates it
-to 0xfeffffff, which happens to be the exact same value
-that it would see on a 32-bit kernel.
-
-The second one is 0xffffffff, and I don't know how that gets
-computed, as it is derived from the same number in
-info.shmall = in->shmall;
-
-Are you running this inside of a container that its own ipc
-namespace?
-
-     Arnd
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
