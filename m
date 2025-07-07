@@ -4,90 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A41AC8303C
-	for <ltp@archiver.kernel.org>; Mon,  7 Jul 2025 09:18:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AF0BC8303C
+	for <ltp@archiver.kernel.org>; Mon,  7 Jul 2025 09:24:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1751879902; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1751880260; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ list-subscribe : from : reply-to : content-transfer-encoding :
  content-type : sender : from;
- bh=dvSqBZGctDxmXrc+PBlqpXwfsaUcX8Izk8BGnfsKxYg=;
- b=VqMmWRkTQKDJTdeam14EuiJLq82YSYCwdg2P9A61815JTOccPcOgRk7zG9B3RBE6zLwY9
- IuHyog4JNf6bI6hJIXmFkTyEu7kk96tXDKarhRtWx4bPGRbAyMiQY1z1hYcAszIqxgCeQ1Z
- QkqviOQhCnrrmgc7zc7mEB7+oMeqbmE=
+ bh=FS92s+KG5bsf6pUGQ+K1RG7TefvOl+gKwJS3WMgzX64=;
+ b=a2eO63kK8XGssOp4oMGeYbSy9PrY+KlIok2gf/nwyPBbNYdyvkN/zQQtcX8QQrF0FuPzN
+ MDIjVk8DSqB46hyiw8qz7Gng7UW53nuAAr62LE2WR1GfAeiHd1Guv3QtwDWGmnTqAtE3ZCH
+ SnKpYVe0OsmyiZmau7/NtvK62hpNBmI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 87F133C7207
-	for <ltp@archiver.kernel.org>; Mon,  7 Jul 2025 11:18:22 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id DD6443C9ABB
+	for <ltp@archiver.kernel.org>; Mon,  7 Jul 2025 11:24:20 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 010913C659B
- for <ltp@lists.linux.it>; Mon,  7 Jul 2025 11:18:00 +0200 (CEST)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
- [IPv6:2a00:1450:4864:20::536])
+ by picard.linux.it (Postfix) with ESMTPS id AA50F3C659B
+ for <ltp@lists.linux.it>; Mon,  7 Jul 2025 11:24:00 +0200 (CEST)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
+ [IPv6:2a00:1450:4864:20::52e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 03DEB200753
- for <ltp@lists.linux.it>; Mon,  7 Jul 2025 11:17:59 +0200 (CEST)
-Received: by mail-ed1-x536.google.com with SMTP id
- 4fb4d7f45d1cf-6077dea37easo4565811a12.3
- for <ltp@lists.linux.it>; Mon, 07 Jul 2025 02:17:59 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F336F600181
+ for <ltp@lists.linux.it>; Mon,  7 Jul 2025 11:23:59 +0200 (CEST)
+Received: by mail-ed1-x52e.google.com with SMTP id
+ 4fb4d7f45d1cf-607cf70b00aso5547933a12.2
+ for <ltp@lists.linux.it>; Mon, 07 Jul 2025 02:23:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1751879879; x=1752484679; darn=lists.linux.it;
+ d=suse.com; s=google; t=1751880239; x=1752485039; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=MrsLGDQw6NCZqDod8ZwtqQHMmWY4YOWTyiRwgCbyD5U=;
- b=LXyqV5mK1yV7S1lSphXk7dy5I8XDB8jYhJdlvHGf0qG1A/yg4ITfA7ftcCiL7ioy6h
- T2AMAmCvfomoBwCs54FxaE5jw7AmTZH7aQWcoyH8nr5p3hjT3UjKG7XWdGedjtMjg23z
- 6xcmkgFdgM5tAAeZoLvV9BCeYNqEysgIapzuDWWCf0RtQcYu+1TSSFoMhiOd1CZkw2KT
- 24fbRhBCmxQbAeEkr0aFkqon9gHHUtRx8+14BV1eM6pKFk38bBVCl9AKc/jl3KCO5Ywb
- dMIztwFAb6SStqxNgVmN8OCBTVezrjmgsgxGhTHaEtJqiDhNes3tq3gXAnDKQyaA8RLP
- 5d2w==
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=ILjEnkjWeBbJ8H/8Izj6q02IqNzU65bSl7o90lJkOPQ=;
+ b=WkDXi3qXdwVdjOV8EWhqJJoOX+ibNHpxPMb0dlQw9VgViKsziQD9WSp0M8cALD4PVy
+ J2hu22VWWpN0rkF2nqjJd8+GX5Rhf+ErzSRoqHXxaOvB1Vg9s/S7a5HNR/3RdjcbyTD8
+ uK7ik1foFjFs5Wi/WzH1JtuCgpFZhreA0tjVougHcJyzVmfQh4eWlZhQrbWBDTIVfAgr
+ hcTa9fVNH99vo/dilmUXQP3CA1Qiiz+9SDHxLxUVkQCJo917vN1FFgoJPiKYor2LXxUS
+ P+7w5NDLZBdrF94rQjov26aBy0FETLceofk9LDdWSX9iXA5lcv9rJXr9jmX0PMNiaN+6
+ 4NeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1751879879; x=1752484679;
+ d=1e100.net; s=20230601; t=1751880239; x=1752485039;
  h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :references:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=MrsLGDQw6NCZqDod8ZwtqQHMmWY4YOWTyiRwgCbyD5U=;
- b=f6V7djYL+hNyW2A96DVLnt4hbkrnIaNy5kdexAanVs1j4qGdjKJi79MckGJcEJyJoW
- VEKfwDuSJwduSc1QL3CKNe0l1CCNG5H3HkAyttvesKkduVyiGL74ayRSI8nhHkagDANb
- RINjP4CvauWqqo+SZQhYgvzrSZ1+gbiQLJoC3tM/9Qy/66mNayne/WQ3qQWKchmearFp
- jFTW+fq34tiyoe7sIz+BjmnDc9wwVnajOQBisd6Kx9iJNCKVHJzreuFDkYYAwuupPCnm
- rKzZkjsfGt2kZgnxMno3k9oXp4FL8mO2OifXnVHe8LhcxLFkryhtXIS7V6tnN8TZVO26
- V//g==
+ bh=ILjEnkjWeBbJ8H/8Izj6q02IqNzU65bSl7o90lJkOPQ=;
+ b=dG7mByRb2IjSlzrIxNyiwWM/Iu51m0GdOaEU5zIAyLRVH6jd0Q0fCgXP6xV+8Dtbwe
+ lM/d8jcCQsHFTLEvFnS3VPd1dK/8jVYbyF5tijE7TIo8Xyw71LbPJ9y0ivoFB0wOQXIc
+ dK6EQvEhW9tvF6nfbsxvRu6Ft2uTLuWyuHPqdIS+v8Z3SJgLe5wk3YnH44DBEMYHLGyq
+ EHAzDu686nfrRy+VAuHQO24Zt38sAHKuhJASfabrRGM6ykL1H2uGPzTXSWDBvgYuHruB
+ ZK2t+kXmvE04wrNKd8qeTtL4A28EHnHeAZQjJbUD48y3WKeOyYFJ2KNoPxU/xjSfIqT5
+ Je1w==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVOE0wpxWF6u3dBv8sIltQxUN3RKeZfkAWZfZPQ2KqClCh9tbvoR1tFFtLwIdakhEoLaaM=@lists.linux.it
-X-Gm-Message-State: AOJu0YwOBex34cjhCfYMabYyY0PiBmg/5ydb77UUbMSDdzwgia5wQwtu
- 7WbV4t2xUCTkRXtCaf7JgIJ9XYUcj8O8k5+88+Q5l8t2VjmorfFFWwZnguD+UefDyUQ=
-X-Gm-Gg: ASbGncvfRYkVKpIuQPL3NUsTjDbUzJiYY9ps8avWIdrt0uCi25berczOcl0gLsVEmTQ
- 6ccASWbJfz869jCb3Q9ThouXbByOC8xV8UHF/0BMeA7Bffc4luzEM3JMtUVTaYSXtjAGdNNdcBp
- /jlneKG5NP4ZGp6Fm2xc9AnvJY+venmpMRWTqfWXc5s98GRYG99x3qtO3O7p8jhRUSzNTDOnE7V
- o0TcScXv/OcRuzQ+aq/4gQx5OaeNXrNvZUR6RYJ4VG+bjCKsGWi1+iGxlOyaCZUEDNzosHIxG8N
- kukAGDh4alglvXmpZnYWI9sDYkjIKhDOK13hK35Iby313lSO/54GIgtlyxanKLuKXeN1pT6k
-X-Google-Smtp-Source: AGHT+IE3ZSkvJpxJKRR5AtSNZkexHb9NKxWtNzGZ3+B4bopVQ5esh42HJPajQ9dVY6NtatOp+I2V/A==
-X-Received: by 2002:a17:907:9621:b0:ae3:a717:e90c with SMTP id
- a640c23a62f3a-ae3fe695451mr991578366b.23.1751879879198; 
- Mon, 07 Jul 2025 02:17:59 -0700 (PDT)
+ AJvYcCX74fCQw9TSirMUD4C6L8/MnXn2g15/Uw4WPsAMP3XI24YnCptLpOz8pZWg8SZ9JEX9i4M=@lists.linux.it
+X-Gm-Message-State: AOJu0YwiOonMxbcmuI5Hw37BXMSxhvoLStRFNwhj+aY8pXHZ0hEEwQBx
+ j2E6SDppf5l2KEwl1Zh0HKlmonkFq5rG62P2fS/dIIGyHw+UPIjOBlQvHmipwYOVYcM=
+X-Gm-Gg: ASbGncvwMlrrHOCebPoGpXYHewd6WxmTBoJjEIyX1CNiyr6GtX0tVP8hqNSl9Fz8KGE
+ AcTmob24HAXJzbQKSu2RdmPJToH34xPOGK5+HXuDgpLcFUDsPmKU+y1GiJM7eS+3GHM+0iwV25j
+ V6vfU0RWS5a1xpEVU1G2dhqLg7Qu0MYi77HaNgHLcElmT/97/rbFLMNBjRDOsk3ePGEmuQQM0ZV
+ st5TVk+hKuYqCFrKvkIsJnJROf0mHwOQ1PYwDSbHNdcbqtiUzElYWHM6GID30Gdos6sjtltajS2
+ Acvkuc6/ZrXcObKJ56j6ywK6yu+KOcxXQ7sj4HFe8xb3RngqTulRRsqs1YWrcSJA5bFlSKpm
+X-Google-Smtp-Source: AGHT+IFv6QHeVUSHzKoAyOC4aofiY1mGorxbThlCBTwKN/C0T4ahob1rZuou+RiWt+1KQbKwHV19kA==
+X-Received: by 2002:a17:907:2da7:b0:ae0:a245:d940 with SMTP id
+ a640c23a62f3a-ae4109009e7mr752120466b.51.1751880239249; 
+ Mon, 07 Jul 2025 02:23:59 -0700 (PDT)
 Received: from [192.168.0.223] ([83.1.218.186])
  by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-ae3f6ac5474sm670769666b.77.2025.07.07.02.17.58
+ a640c23a62f3a-ae3f6b5fbfbsm668243166b.152.2025.07.07.02.23.58
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 07 Jul 2025 02:17:58 -0700 (PDT)
-Message-ID: <ecc8797b-14ee-4532-8e4e-79bd2a32884e@suse.com>
-Date: Mon, 7 Jul 2025 11:17:57 +0200
+ Mon, 07 Jul 2025 02:23:58 -0700 (PDT)
+Message-ID: <9fe4918b-431b-4ce0-9094-710385d5dd89@suse.com>
+Date: Mon, 7 Jul 2025 11:23:58 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Amir Goldstein <amir73il@gmail.com>, Petr Vorel <pvorel@suse.cz>
-References: <20250628113334.228198-1-amir73il@gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
+References: <20250620154346.19864-1-chrubis@suse.cz>
 Content-Language: en-US
-In-Reply-To: <20250628113334.228198-1-amir73il@gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+In-Reply-To: <20250620154346.19864-1-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] fanotify01: Fix regression on kernels < v6.8
+Subject: Re: [LTP] [PATCH 0/2] Two more metadata parser fixes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,7 +102,6 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Andrea Cervesato via ltp <ltp@lists.linux.it>
 Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -109,10 +109,30 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
 
-Merged, thanks.
+Feel free to merge, I will fix kirk later on.
+
+Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
 - Andrea
 
+On 6/20/25 5:43 PM, Cyril Hrubis wrote:
+> This series fixes a metadata parser for the ".filesystems" entry of the
+> tst_test structure. First patch fixes the data storage to JSON
+> serialization and second patch changes the parser to convert structure
+> intialization with only designated initializers into a hash (object)
+> rather than an arrray.
+>
+> @Andrea I suppose that the documentation generator needs a fix after
+>          this is applied.
+>
+> Cyril Hrubis (2):
+>    metadata: data_storage: Fix hash to json object serialization
+>    metaparse: Map arrays with designated initializers to JSON objects
+>
+>   metadata/data_storage.h |  28 +++++++--
+>   metadata/metaparse.c    | 134 +++++++++++++++++++++++++++++++++-------
+>   2 files changed, 135 insertions(+), 27 deletions(-)
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
