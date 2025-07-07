@@ -4,74 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A676C83F07
-	for <ltp@archiver.kernel.org>; Mon,  7 Jul 2025 08:43:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A41AC8303C
+	for <ltp@archiver.kernel.org>; Mon,  7 Jul 2025 09:18:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1751879902; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=dvSqBZGctDxmXrc+PBlqpXwfsaUcX8Izk8BGnfsKxYg=;
+ b=VqMmWRkTQKDJTdeam14EuiJLq82YSYCwdg2P9A61815JTOccPcOgRk7zG9B3RBE6zLwY9
+ IuHyog4JNf6bI6hJIXmFkTyEu7kk96tXDKarhRtWx4bPGRbAyMiQY1z1hYcAszIqxgCeQ1Z
+ QkqviOQhCnrrmgc7zc7mEB7+oMeqbmE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 06EF43C71A4
-	for <ltp@archiver.kernel.org>; Mon,  7 Jul 2025 10:43:48 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 87F133C7207
+	for <ltp@archiver.kernel.org>; Mon,  7 Jul 2025 11:18:22 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2B7AD3C091D
- for <ltp@lists.linux.it>; Mon,  7 Jul 2025 10:43:31 +0200 (CEST)
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com
- [IPv6:2607:f8b0:4864:20::52e])
+ by picard.linux.it (Postfix) with ESMTPS id 010913C659B
+ for <ltp@lists.linux.it>; Mon,  7 Jul 2025 11:18:00 +0200 (CEST)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
+ [IPv6:2a00:1450:4864:20::536])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 918832003B6
- for <ltp@lists.linux.it>; Mon,  7 Jul 2025 10:43:30 +0200 (CEST)
-Received: by mail-pg1-x52e.google.com with SMTP id
- 41be03b00d2f7-b350704f506so1992112a12.0
- for <ltp@lists.linux.it>; Mon, 07 Jul 2025 01:43:30 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 03DEB200753
+ for <ltp@lists.linux.it>; Mon,  7 Jul 2025 11:17:59 +0200 (CEST)
+Received: by mail-ed1-x536.google.com with SMTP id
+ 4fb4d7f45d1cf-6077dea37easo4565811a12.3
+ for <ltp@lists.linux.it>; Mon, 07 Jul 2025 02:17:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1751877809; x=1752482609; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=LklowgplYENw1i7IrjdnHI57VuSnPOYFZ+BKhHkshBI=;
- b=ldG3TFuVNne9F4A+8pGgomGu+kJJO+10U56TXF/ty3GJKfEhtNul5rXCnRi2nyn1i5
- hfTMUSOa0TBisi4Lw0iepy8dRN7U+XHzRoA0P/LA2dEXV1ILzLVSboG4+N77bjfhKL5p
- jijRPXIajgI63r2wvT0wvVJtyR/y7TXUfXJBsLFOdD1y15BmA3QCrX2lKEiVKUKcFjnN
- 1BcMiOf89Aa9tzEmEy+hG4A9WRPAzsEmB97VEwRbwoZTXLCymaV4HcOQOFlQEb/YVRJ7
- h1jMXrMiQW/GnO4muj6srlqlRum3BqZmHotromrRIcF4eaV8GQ88eLiuaWN0TAWUh6P1
- vo1A==
+ d=suse.com; s=google; t=1751879879; x=1752484679; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=MrsLGDQw6NCZqDod8ZwtqQHMmWY4YOWTyiRwgCbyD5U=;
+ b=LXyqV5mK1yV7S1lSphXk7dy5I8XDB8jYhJdlvHGf0qG1A/yg4ITfA7ftcCiL7ioy6h
+ T2AMAmCvfomoBwCs54FxaE5jw7AmTZH7aQWcoyH8nr5p3hjT3UjKG7XWdGedjtMjg23z
+ 6xcmkgFdgM5tAAeZoLvV9BCeYNqEysgIapzuDWWCf0RtQcYu+1TSSFoMhiOd1CZkw2KT
+ 24fbRhBCmxQbAeEkr0aFkqon9gHHUtRx8+14BV1eM6pKFk38bBVCl9AKc/jl3KCO5Ywb
+ dMIztwFAb6SStqxNgVmN8OCBTVezrjmgsgxGhTHaEtJqiDhNes3tq3gXAnDKQyaA8RLP
+ 5d2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1751877809; x=1752482609;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=LklowgplYENw1i7IrjdnHI57VuSnPOYFZ+BKhHkshBI=;
- b=jrkbMaFJPllkN4lWy8dMUNQhCO4iYLZVtClnphzQh9Ffm9h8XCt44MCMJHulpC+pVq
- sHtvdb2OOh1rlreWNhItC1PFpBjvOwKkfOxIEwbZE+t0RQSnYkDTpA7z0Dj1KAJgrIQf
- TnGg7cfyu7Fr1xgBO/RARuyPXVt4O4LbsN+XFeHfB3hzMyq0lAcDkZmrPkQJIDs3H2+j
- yCtjuiIUgW9gRTEjvKcgAqolJzCD7V36IiAJJSbihdCtXO6ve2ytxQVuyWp/hL7yUI+Q
- xTV6xo6tURijGY0LDfA/ChMvHyJfVDkqjEKdyfEjnvih5pxm1QJ+OXNXYydHK3WWfn9Q
- sbEg==
-X-Gm-Message-State: AOJu0Yx2E1R1JXT1tCVT9SCmdaYd5GNyz299bbOPyK+TxAuduDBw7BNi
- FeygxXTZwNVF5nmYxTGdbd+CDf9qKxNFASNtQvWYxmATQ0tVcBsVMtsWewDF8M3qIiMpfDrsEbJ
- woT1nYp2UYM5EBauiHjtVKF5O74Mq1i1CnQ/3oLZ0UwInALTVdqho
-X-Gm-Gg: ASbGnctCKpCO1/ubBDcglaqSWFJYllVPgB1b8BHX6dlT69mgBfHYz2J9lgVW0vwta+Z
- Ad0on5IBVCZkhUcg61Zxe4zMoBsE9lx3wjqxEkchTRlhWkGOX8EV+rQpoCb7ROjR1LJl0dRkxKY
- F79/eOQXYwYYkwAHUfVyhtjoCOH6n37P+OaI3n6wbANTkkYpIrG6m+jTFQfCI/jcmo0COhSOT9W
- fGR
-X-Google-Smtp-Source: AGHT+IHukxRqvzepVhYBRpt+PLlMQ3SlnLL5W6s2lImeMWjf2sMY2i4Bu4SdjhsaHOmFNGgSz7dhys43qu/uU2e4sN8=
-X-Received: by 2002:a17:90b:33d1:b0:30e:3737:7c87 with SMTP id
- 98e67ed59e1d1-31aab854dadmr18730822a91.5.1751877808741; Mon, 07 Jul 2025
- 01:43:28 -0700 (PDT)
+ d=1e100.net; s=20230601; t=1751879879; x=1752484679;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=MrsLGDQw6NCZqDod8ZwtqQHMmWY4YOWTyiRwgCbyD5U=;
+ b=f6V7djYL+hNyW2A96DVLnt4hbkrnIaNy5kdexAanVs1j4qGdjKJi79MckGJcEJyJoW
+ VEKfwDuSJwduSc1QL3CKNe0l1CCNG5H3HkAyttvesKkduVyiGL74ayRSI8nhHkagDANb
+ RINjP4CvauWqqo+SZQhYgvzrSZ1+gbiQLJoC3tM/9Qy/66mNayne/WQ3qQWKchmearFp
+ jFTW+fq34tiyoe7sIz+BjmnDc9wwVnajOQBisd6Kx9iJNCKVHJzreuFDkYYAwuupPCnm
+ rKzZkjsfGt2kZgnxMno3k9oXp4FL8mO2OifXnVHe8LhcxLFkryhtXIS7V6tnN8TZVO26
+ V//g==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVOE0wpxWF6u3dBv8sIltQxUN3RKeZfkAWZfZPQ2KqClCh9tbvoR1tFFtLwIdakhEoLaaM=@lists.linux.it
+X-Gm-Message-State: AOJu0YwOBex34cjhCfYMabYyY0PiBmg/5ydb77UUbMSDdzwgia5wQwtu
+ 7WbV4t2xUCTkRXtCaf7JgIJ9XYUcj8O8k5+88+Q5l8t2VjmorfFFWwZnguD+UefDyUQ=
+X-Gm-Gg: ASbGncvfRYkVKpIuQPL3NUsTjDbUzJiYY9ps8avWIdrt0uCi25berczOcl0gLsVEmTQ
+ 6ccASWbJfz869jCb3Q9ThouXbByOC8xV8UHF/0BMeA7Bffc4luzEM3JMtUVTaYSXtjAGdNNdcBp
+ /jlneKG5NP4ZGp6Fm2xc9AnvJY+venmpMRWTqfWXc5s98GRYG99x3qtO3O7p8jhRUSzNTDOnE7V
+ o0TcScXv/OcRuzQ+aq/4gQx5OaeNXrNvZUR6RYJ4VG+bjCKsGWi1+iGxlOyaCZUEDNzosHIxG8N
+ kukAGDh4alglvXmpZnYWI9sDYkjIKhDOK13hK35Iby313lSO/54GIgtlyxanKLuKXeN1pT6k
+X-Google-Smtp-Source: AGHT+IE3ZSkvJpxJKRR5AtSNZkexHb9NKxWtNzGZ3+B4bopVQ5esh42HJPajQ9dVY6NtatOp+I2V/A==
+X-Received: by 2002:a17:907:9621:b0:ae3:a717:e90c with SMTP id
+ a640c23a62f3a-ae3fe695451mr991578366b.23.1751879879198; 
+ Mon, 07 Jul 2025 02:17:59 -0700 (PDT)
+Received: from [192.168.0.223] ([83.1.218.186])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-ae3f6ac5474sm670769666b.77.2025.07.07.02.17.58
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 07 Jul 2025 02:17:58 -0700 (PDT)
+Message-ID: <ecc8797b-14ee-4532-8e4e-79bd2a32884e@suse.com>
+Date: Mon, 7 Jul 2025 11:17:57 +0200
 MIME-Version: 1.0
-References: <CA+G9fYvD1A12WE36NjELe5cD-LbPsmwJnH5aUAcufBZ7ndt2Hw@mail.gmail.com>
- <c9ba86f6-dea8-47bd-88e1-edf49e4bf9fd@app.fastmail.com>
-In-Reply-To: <c9ba86f6-dea8-47bd-88e1-edf49e4bf9fd@app.fastmail.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 7 Jul 2025 14:13:17 +0530
-X-Gm-Features: Ac12FXw-G_lNwP97raxqWFOZUtf2EluymJriGyENT10NUGjfSc__f9FGW09O5J8
-Message-ID: <CA+G9fYtuh0FwKfjadb7c+jr=ZZ-wXjmkbcPA4sp8OqzARBV1Dg@mail.gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
+User-Agent: Mozilla Thunderbird
+To: Amir Goldstein <amir73il@gmail.com>, Petr Vorel <pvorel@suse.cz>
+References: <20250628113334.228198-1-amir73il@gmail.com>
+Content-Language: en-US
+In-Reply-To: <20250628113334.228198-1-amir73il@gmail.com>
 X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP syscalls mseal02 and shmctl03 fails on compat mode
- 64-bit kernel on 32-bit rootfs
+Subject: Re: [LTP] [PATCH] fanotify01: Fix regression on kernels < v6.8
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,89 +99,20 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, 3 Jul 2025 at 19:47, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Jul 3, 2025, at 15:47, Naresh Kamboju wrote:
-> > The LTP syscalls mseal02 and shmctl03 failed only with compat mode testing
-> > with 64-bit kernel with 32-bit rootfs combination.
-> >
-> > Would it be possible to detect compat mode test environment and handle the test
-> > expectation in LTP test development ?
->
-> I think we should either make the kernel behave the same way in
-> both environments, or accept either behavior as correct in LTP.
-> NVAL (22)
-> > mseal02.c:45: TPASS: mseal(0xf7a8e001, 4096, 0) : EINVAL (22)
-> > mseal02.c:45: TFAIL: mseal(0xf7a8e000, 4294963201, 0) expected EINVAL:
-> > ENOMEM (12)
->
-> This is "length=ULONG_MAX-page_size+2", which overflows on 32-bit
-> but not on 64-bit.
->
-> How about this?
->
-> --- a/mm/mseal.c
-> +++ b/mm/mseal.c
-> @@ -234,6 +234,9 @@ int do_mseal(unsigned long start, size_t len_in, unsigned long flags)
->         if (end < start)
->                 return -EINVAL;
->
-> +       if (end > TASK_SIZE)
-> +               return -EINVAL;
-> +
->         if (end == start)
->                 return 0;
->
-> Since TASK_SIZE is smaller for 32-bit tasks, it would detect
-> the overflow in the same way.
->
-> > tst_test.c:1774: TINFO: Overall timeout per run is 0h 21m 36s
-> > shmctl03.c:31: TPASS: shmmin = 1
-> > shmctl03.c:33: TFAIL: /proc/sys/kernel/shmmax != 2147483647 got 4294967295
->
-> I see this is being intentionally truncated to INT_MAX:
->
-> static int copy_compat_shminfo_to_user(void __user *buf, struct shminfo64 *in,
->                                         int version)
-> {
->         if (in->shmmax > INT_MAX)
->                 in->shmmax = INT_MAX;
->         ...
-> }
->
-> > shmctl03.c:35: TFAIL: /proc/sys/kernel/shmall != 4278190079 got 4294967295
->
-> Here the value from /proc is defined in the kernel as
-> "#define SHMALL (ULONG_MAX - (1UL << 24))"
->
-> On a 64-bit machine this is 0xfffffffffeffffff.
->
-> However the 32-bit ltp tst_assert_ulong() truncates it
-> to 0xfeffffff, which happens to be the exact same value
-> that it would see on a 32-bit kernel.
->
-> The second one is 0xffffffff, and I don't know how that gets
-> computed, as it is derived from the same number in
-> info.shmall = in->shmall;
->
-> Are you running this inside of a container that its own ipc
-> namespace?
+Hi!
 
-No.
-Running on the real x86_64 machine.
+Merged, thanks.
 
-- Naresh
+- Andrea
 
->
->      Arnd
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
