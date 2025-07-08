@@ -4,96 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36483C8303C
-	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 10:55:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1751972150; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=pP8AW0ls2ayHsLLB2Vrq1aXZDtDHtZeWtEmc/WiEZHM=;
- b=OLAFuYs8eq2nS/xswACRhbusvVuGbe2kVLQJY9WQvfmAbxDgeAICQBtngn8V2/T22TatF
- DozQ09zIuN9xij1dGEcIcfKTAu9zropASAOFn0wYXpmy475gvMFJn9tOWoAYni9kJPbcLd6
- bOaU3j+FvDbgzkd8nBTitjunNV5A0cc=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DC1DC8303C
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 11:28:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9D2103CA2C1
-	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 12:55:50 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id B7FDD3CA3F1
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 13:28:36 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A37B33C647F
- for <ltp@lists.linux.it>; Tue,  8 Jul 2025 12:55:29 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4AAEF276FC62
- for <ltp@lists.linux.it>; Tue,  8 Jul 2025 12:55:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1751972123;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5Apm5zm1lin8qVsRYaZs4zVJf4riH7uoRA3502crpBU=;
- b=T2kl9z9TI2F6N1hnPmrexf5BHFa163NT8c+ym8DnXmaXwQnhempDCSPXlzzJ2OlSJfS5FR
- gP+IdIn6/izystKrMDGAsinnjKBtoSBpfz/Fk1Gl4tUlYa7rUbUK/RSTgmVvit7xOjEQmG
- bD3jfiITpU1kX/Ch69nHuvoS7/V2Pr8=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-231-2AH5TrlfNYeALDFX7L9Hgg-1; Tue, 08 Jul 2025 06:55:22 -0400
-X-MC-Unique: 2AH5TrlfNYeALDFX7L9Hgg-1
-X-Mimecast-MFC-AGG-ID: 2AH5TrlfNYeALDFX7L9Hgg_1751972121
-Received: by mail-pj1-f69.google.com with SMTP id
- 98e67ed59e1d1-313f702d37fso3834754a91.3
- for <ltp@lists.linux.it>; Tue, 08 Jul 2025 03:55:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1751972120; x=1752576920;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=5Apm5zm1lin8qVsRYaZs4zVJf4riH7uoRA3502crpBU=;
- b=gg65/Utxjr5DikbI7EV4lgzKZE64KiBSyrnwp1jdu21/ETDs2iS3DzXyUVt9VIgCm2
- WzbIPAPcgVa7w5FsdJ4Ja0Td9WKL6JCATYKjR7pAMmUOgTDIxEQ9y/iMIJP6/Rsh6TwN
- Lb6mJBcYor3RhhXX212CreLCLDrUfAblQyVWTKzlkINOAukrtI2uRltbxW9Y+mrE+Ztl
- dCx9Xk1HAOY9G+8JAZgiE0osOdcP+3PzYG7PIN5WmY2z6JJ46yGXANNJp7n7dya795gU
- 0bfl2JVN1lnErW837gqc54jT7uysxTMFhwjBbx87HqgNDwFziHYwyLaZNpWa8r41n5gf
- 8F9Q==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWPXLz1jm9Ur9JpvsgBmwPW1MbWw2WzR0Wg/dAGoFMzvjzR1YWgAX/R4UcqUPi6AP3zq3o=@lists.linux.it
-X-Gm-Message-State: AOJu0YwgdsEAcMYbk2SO9dWwulVrr11T4wwq9alyBJ7Il4t3bt5C7+gX
- +gqsZx5+VdTWu2Mb1dwFli2tKVivAZOW5BqzlixJzB35lV+xdMenM4W9dFkLVv/f7T4Ks3UwsuN
- 62nnCfvz1xgTTJPovP2M2eBUfOu6et1fTQRy08q61PcEkHRLMSloKhbAdsXSKw3HdD4zITN98Zj
- mTfrRMVuC8XdTXDskaJn53KcfpNdx6B9OkQy7nPA==
-X-Gm-Gg: ASbGncshA8nCLqQEME4Pndv7uIIofpM9mcCACvZRQJSbT8615QDjJEAjrJmluZ3T3cf
- /VIZrIvuRFOK8arPkAW2G4f24mtTO80o2K8kaLiv6Xw2gU5Apy1CHQYTg4wXBPWH4BMDtcaRolu
- EJzHJt
-X-Received: by 2002:a17:90b:3fcd:b0:313:db0b:75d7 with SMTP id
- 98e67ed59e1d1-31aadd9fd3amr22214158a91.27.1751972119550; 
- Tue, 08 Jul 2025 03:55:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGJuJKiHd7zTRMNbU8XC93NmkxOlIgE6q/MDv/Eklwh5yhYFaLkKLmD2J9QdtLg/Sw1JVrvl6bLXF4SgBSvYWE=
-X-Received: by 2002:a17:90b:3fcd:b0:313:db0b:75d7 with SMTP id
- 98e67ed59e1d1-31aadd9fd3amr22214127a91.27.1751972118920; Tue, 08 Jul 2025
- 03:55:18 -0700 (PDT)
+ by picard.linux.it (Postfix) with ESMTPS id E39C03CA066
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 13:28:18 +0200 (CEST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTP id 8B2A345C2630
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 13:28:14 +0200 (CEST)
+Received: from loongson.cn (unknown [113.200.148.30])
+ by gateway (Coremail) with SMTP id _____8BxjazMAG1ooVokAQ--.44623S3;
+ Tue, 08 Jul 2025 19:28:13 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+ by front1 (Coremail) with SMTP id qMiowJAxE+TKAG1oC0wOAA--.17047S2;
+ Tue, 08 Jul 2025 19:28:11 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: ltp@lists.linux.it
+Date: Tue,  8 Jul 2025 19:28:10 +0800
+Message-ID: <20250708112810.3298-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20250708071706.19639-1-yangtiezhu@loongson.cn>
- <aG2RT7_tgYolFqMC@MiWiFi-CR6608-srv>
-In-Reply-To: <aG2RT7_tgYolFqMC@MiWiFi-CR6608-srv>
-Date: Tue, 8 Jul 2025 18:55:06 +0800
-X-Gm-Features: Ac12FXylgEOmMbRt-_M5kzxCLhb9ybwigEIWWRfNGBTvwLXED1wJNuRAPuAI6Ws
-Message-ID: <CAEemH2cqL5qn4=zrEPAmbVrUHvBtmF2G=x7=Ooa1T84SBwh88g@mail.gmail.com>
-To: Wei Gao <wegao@suse.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: mvpkbvQdWIzlZe6idxsA5UwODnw05Q9xMVvtr-tvNcU_1751972121
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+X-CM-TRANSID: qMiowJAxE+TKAG1oC0wOAA--.17047S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxWrWUXw18Wr4fXr1Duw45Jwc_yoWrCFy7p3
+ 4xGa4jkFW5ta42yw18trWfZayfXr18Cr43trs8CrykZF4UGw15G3Wxu3WFvw17Xry5J3y7
+ tF1ktFWqya1UArbCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+ sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+ 0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+ IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+ e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+ 0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+ GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4
+ xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v2
+ 6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwI
+ xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+ Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jr0_JrylIxkGc2Ij64vIr41lIxAIcVC0I7
+ IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k2
+ 6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+ AFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] getrlimit/getrlimit03: Skip test if
- __NR_getrlimit not implemented
+Subject: [LTP] [PATCH v2] getrlimit/getrlimit03: Skip test if
+ __NR_getrlimit_ulong not implemented
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,127 +64,115 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBKdWwgOCwgMjAyNSBhdCA1OjQ14oCvUE0gV2VpIEdhbyB2aWEgbHRwIDxsdHBAbGlz
-dHMubGludXguaXQ+IHdyb3RlOgoKPiBPbiBUdWUsIEp1bCAwOCwgMjAyNSBhdCAwMzoxNzowNlBN
-ICswODAwLCBUaWV6aHUgWWFuZyB3cm90ZToKPiA+IEluIHRoZSBMaW51eCBrZXJuZWwsIExvb25n
-QXJjaCB1c2VzIHRoZSBnZW5lcmljIHN5c2NhbGwgdGFibGUgd2hpY2gKPiA+IGlzIGRlZmluZWQg
-aW4gaW5jbHVkZS91YXBpL2FzbS1nZW5lcmljL3VuaXN0ZC5oLCBhbmQgYWxzbyB0aGVyZSBpcwo+
-ID4gbm8gX19BUkNIX1dBTlRfU0VUX0dFVF9STElNSVQgaW4gYXJjaC9sb29uZ2FyY2gvaW5jbHVk
-ZS9hc20vdW5pc3RkLmgsCj4gPiBzbyBfX05SX2dldHJsaW1pdCBpcyBub3QgaW1wbGVtZW50ZWQg
-b24gTG9vbmdBcmNoLgo+ID4KPiA+IFRoYXQgaXMgdG8gc2F5LCBnZXRybGltaXQgYXJlIHN1cGVy
-c2VkZWQgd2l0aCBwcmxpbWl0NjQuIFRoZXJlIGlzIG5vCj4gPiBuZWVkIHRvIGNvbXBhcmUgdGhl
-IHJldHVybiB2YWx1ZSBhbmQgZXJybm8gYWJvdXQgdGhlIHN5c2NhbGwgbnVtYmVycwo+ID4gX19O
-Ul9wcmxpbWl0NjQgYW5kIF9fTlJfZ2V0cmxpbWl0LCBqdXN0IGNoZWNrIHRoaXMgY2FzZSBhbmQg
-dGhlbiBza2lwCj4gPiB0aGUgdGVzdC4KPiA+Cj4gPiBXaXRob3V0IHRoaXMgcGF0Y2g6Cj4gPgo+
-ID4gJCAvb3B0L2x0cC90ZXN0Y2FzZXMvYmluL2dldHJsaW1pdDAzCj4gPiAuLi4KPiA+IGdldHJs
-aW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoMCkgcmV0dXJuZWQgMCAoU1VDQ0VT
-UykgYnV0Cj4gX19OUl9nZXRybGltaXQoMCkgcmV0dXJuZWQgLTEgKEVOT1NZUykKPiA+IGdldHJs
-aW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoMSkgcmV0dXJuZWQgMCAoU1VDQ0VT
-UykgYnV0Cj4gX19OUl9nZXRybGltaXQoMSkgcmV0dXJuZWQgLTEgKEVOT1NZUykKPiA+IGdldHJs
-aW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoMikgcmV0dXJuZWQgMCAoU1VDQ0VT
-UykgYnV0Cj4gX19OUl9nZXRybGltaXQoMikgcmV0dXJuZWQgLTEgKEVOT1NZUykKPiA+IGdldHJs
-aW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoMykgcmV0dXJuZWQgMCAoU1VDQ0VT
-UykgYnV0Cj4gX19OUl9nZXRybGltaXQoMykgcmV0dXJuZWQgLTEgKEVOT1NZUykKPiA+IGdldHJs
-aW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoNCkgcmV0dXJuZWQgMCAoU1VDQ0VT
-UykgYnV0Cj4gX19OUl9nZXRybGltaXQoNCkgcmV0dXJuZWQgLTEgKEVOT1NZUykKPiA+IGdldHJs
-aW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoNSkgcmV0dXJuZWQgMCAoU1VDQ0VT
-UykgYnV0Cj4gX19OUl9nZXRybGltaXQoNSkgcmV0dXJuZWQgLTEgKEVOT1NZUykKPiA+IGdldHJs
-aW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoNikgcmV0dXJuZWQgMCAoU1VDQ0VT
-UykgYnV0Cj4gX19OUl9nZXRybGltaXQoNikgcmV0dXJuZWQgLTEgKEVOT1NZUykKPiA+IGdldHJs
-aW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoNykgcmV0dXJuZWQgMCAoU1VDQ0VT
-UykgYnV0Cj4gX19OUl9nZXRybGltaXQoNykgcmV0dXJuZWQgLTEgKEVOT1NZUykKPiA+IGdldHJs
-aW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoOCkgcmV0dXJuZWQgMCAoU1VDQ0VT
-UykgYnV0Cj4gX19OUl9nZXRybGltaXQoOCkgcmV0dXJuZWQgLTEgKEVOT1NZUykKPiA+IGdldHJs
-aW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoOSkgcmV0dXJuZWQgMCAoU1VDQ0VT
-UykgYnV0Cj4gX19OUl9nZXRybGltaXQoOSkgcmV0dXJuZWQgLTEgKEVOT1NZUykKPiA+IGdldHJs
-aW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoMTApIHJldHVybmVkIDAgKFNVQ0NF
-U1MpIGJ1dAo+IF9fTlJfZ2V0cmxpbWl0KDEwKSByZXR1cm5lZCAtMSAoRU5PU1lTKQo+ID4gZ2V0
-cmxpbWl0MDMuYzoxMDI6IFRGQUlMOiBfX05SX3BybGltaXQ2NCgxMSkgcmV0dXJuZWQgMCAoU1VD
-Q0VTUykgYnV0Cj4gX19OUl9nZXRybGltaXQoMTEpIHJldHVybmVkIC0xIChFTk9TWVMpCj4gPiBn
-ZXRybGltaXQwMy5jOjEwMjogVEZBSUw6IF9fTlJfcHJsaW1pdDY0KDEyKSByZXR1cm5lZCAwIChT
-VUNDRVNTKSBidXQKPiBfX05SX2dldHJsaW1pdCgxMikgcmV0dXJuZWQgLTEgKEVOT1NZUykKPiA+
-IGdldHJsaW1pdDAzLmM6MTAyOiBURkFJTDogX19OUl9wcmxpbWl0NjQoMTMpIHJldHVybmVkIDAg
-KFNVQ0NFU1MpIGJ1dAo+IF9fTlJfZ2V0cmxpbWl0KDEzKSByZXR1cm5lZCAtMSAoRU5PU1lTKQo+
-ID4gZ2V0cmxpbWl0MDMuYzoxMDI6IFRGQUlMOiBfX05SX3BybGltaXQ2NCgxNCkgcmV0dXJuZWQg
-MCAoU1VDQ0VTUykgYnV0Cj4gX19OUl9nZXRybGltaXQoMTQpIHJldHVybmVkIC0xIChFTk9TWVMp
-Cj4gPiBnZXRybGltaXQwMy5jOjEwMjogVEZBSUw6IF9fTlJfcHJsaW1pdDY0KDE1KSByZXR1cm5l
-ZCAwIChTVUNDRVNTKSBidXQKPiBfX05SX2dldHJsaW1pdCgxNSkgcmV0dXJuZWQgLTEgKEVOT1NZ
-UykKPiA+Cj4gPiBTdW1tYXJ5Ogo+ID4gcGFzc2VkICAgMAo+ID4gZmFpbGVkICAgMTYKPiA+IGJy
-b2tlbiAgIDAKPiA+IHNraXBwZWQgIDAKPiA+IHdhcm5pbmdzIDAKPiA+Cj4gPiBXaXRoIHRoaXMg
-cGF0Y2g6Cj4gPgo+ID4gJCAvb3B0L2x0cC90ZXN0Y2FzZXMvYmluL2dldHJsaW1pdDAzCj4gPiAu
-Li4KPiA+IGdldHJsaW1pdDAzLmM6MTY3OiBUQ09ORjogX19OUl9nZXRybGltaXQgbm90IGltcGxl
-bWVudGVkOiBFTk9TWVMgKDM4KQo+ID4gZ2V0cmxpbWl0MDMuYzoxNjc6IFRDT05GOiBfX05SX2dl
-dHJsaW1pdCBub3QgaW1wbGVtZW50ZWQ6IEVOT1NZUyAoMzgpCj4gPiBnZXRybGltaXQwMy5jOjE2
-NzogVENPTkY6IF9fTlJfZ2V0cmxpbWl0IG5vdCBpbXBsZW1lbnRlZDogRU5PU1lTICgzOCkKPiA+
-IGdldHJsaW1pdDAzLmM6MTY3OiBUQ09ORjogX19OUl9nZXRybGltaXQgbm90IGltcGxlbWVudGVk
-OiBFTk9TWVMgKDM4KQo+ID4gZ2V0cmxpbWl0MDMuYzoxNjc6IFRDT05GOiBfX05SX2dldHJsaW1p
-dCBub3QgaW1wbGVtZW50ZWQ6IEVOT1NZUyAoMzgpCj4gPiBnZXRybGltaXQwMy5jOjE2NzogVENP
-TkY6IF9fTlJfZ2V0cmxpbWl0IG5vdCBpbXBsZW1lbnRlZDogRU5PU1lTICgzOCkKPiA+IGdldHJs
-aW1pdDAzLmM6MTY3OiBUQ09ORjogX19OUl9nZXRybGltaXQgbm90IGltcGxlbWVudGVkOiBFTk9T
-WVMgKDM4KQo+ID4gZ2V0cmxpbWl0MDMuYzoxNjc6IFRDT05GOiBfX05SX2dldHJsaW1pdCBub3Qg
-aW1wbGVtZW50ZWQ6IEVOT1NZUyAoMzgpCj4gPiBnZXRybGltaXQwMy5jOjE2NzogVENPTkY6IF9f
-TlJfZ2V0cmxpbWl0IG5vdCBpbXBsZW1lbnRlZDogRU5PU1lTICgzOCkKPiA+IGdldHJsaW1pdDAz
-LmM6MTY3OiBUQ09ORjogX19OUl9nZXRybGltaXQgbm90IGltcGxlbWVudGVkOiBFTk9TWVMgKDM4
-KQo+ID4gZ2V0cmxpbWl0MDMuYzoxNjc6IFRDT05GOiBfX05SX2dldHJsaW1pdCBub3QgaW1wbGVt
-ZW50ZWQ6IEVOT1NZUyAoMzgpCj4gPiBnZXRybGltaXQwMy5jOjE2NzogVENPTkY6IF9fTlJfZ2V0
-cmxpbWl0IG5vdCBpbXBsZW1lbnRlZDogRU5PU1lTICgzOCkKPiA+IGdldHJsaW1pdDAzLmM6MTY3
-OiBUQ09ORjogX19OUl9nZXRybGltaXQgbm90IGltcGxlbWVudGVkOiBFTk9TWVMgKDM4KQo+ID4g
-Z2V0cmxpbWl0MDMuYzoxNjc6IFRDT05GOiBfX05SX2dldHJsaW1pdCBub3QgaW1wbGVtZW50ZWQ6
-IEVOT1NZUyAoMzgpCj4gPiBnZXRybGltaXQwMy5jOjE2NzogVENPTkY6IF9fTlJfZ2V0cmxpbWl0
-IG5vdCBpbXBsZW1lbnRlZDogRU5PU1lTICgzOCkKPiA+IGdldHJsaW1pdDAzLmM6MTY3OiBUQ09O
-RjogX19OUl9nZXRybGltaXQgbm90IGltcGxlbWVudGVkOiBFTk9TWVMgKDM4KQo+ID4KPiA+IFN1
-bW1hcnk6Cj4gPiBwYXNzZWQgICAwCj4gPiBmYWlsZWQgICAwCj4gPiBicm9rZW4gICAwCj4gPiBz
-a2lwcGVkICAxNgo+ID4gd2FybmluZ3MgMAo+ID4KPiA+IEhvdyB0byByZXByb2R1Y2U6Cj4gPgo+
-ID4gZ2l0IGNsb25lIGh0dHBzOi8vZ2l0aHViLmNvbS9saW51eC10ZXN0LXByb2plY3QvbHRwLmdp
-dAo+ID4gY2QgbHRwCj4gPiBtYWtlIGF1dG90b29scwo+ID4gLi9jb25maWd1cmUKPiA+IG1ha2Ug
-YWxsCj4gPiBzdWRvIG1ha2UgaW5zdGFsbAo+ID4gL29wdC9sdHAvdGVzdGNhc2VzL2Jpbi9nZXRy
-bGltaXQwMwo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IFRpZXpodSBZYW5nIDx5YW5ndGllemh1QGxv
-b25nc29uLmNuPgo+ID4gLS0tCj4gPiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRybGlt
-aXQvZ2V0cmxpbWl0MDMuYyB8IDUgKysrKysKPiA+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRp
-b25zKCspCj4gPgo+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0
-cmxpbWl0L2dldHJsaW1pdDAzLmMKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cmxp
-bWl0L2dldHJsaW1pdDAzLmMKPiA+IGluZGV4IDYwNDA4MmNjZi4uMmQ3OTA1N2RhIDEwMDY0NAo+
-ID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRybGltaXQvZ2V0cmxpbWl0MDMu
-Ywo+ID4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRybGltaXQvZ2V0cmxpbWl0
-MDMuYwo+ID4gQEAgLTE2Miw2ICsxNjIsMTEgQEAgc3RhdGljIHZvaWQgcnVuKHVuc2lnbmVkIGlu
-dCByZXNvdXJjZSkKPiA+ICAgICAgIGVycm5vID0gMDsKPiA+ICAgICAgIHJldF91bCA9IGdldHJs
-aW1pdF91bG9uZyhyZXNvdXJjZSwgJnJsaW1fdWwpOwo+ID4gICAgICAgZXJybm9fdWwgPSBlcnJu
-bzsKPiA+ICsgICAgIGlmIChlcnJub191bCA9PSBFTk9TWVMpIHsKPiA+ICsgICAgICAgICAgICAg
-dHN0X3JlcyhUQ09ORiB8IFRFUlJOTywKPiA+ICsgICAgICAgICAgICAgICAgICAgICAiJXMgbm90
-IGltcGxlbWVudGVkIiwgX19OUl9nZXRybGltaXRfdWxvbmdfc3RyKTsKPiA+ICsgICAgICAgICAg
-ICAgcmV0dXJuOwo+ID4gKyAgICAgfQo+Cj4gTWF5YmUgZm9sbG93aW5nIGNoYW5nZSBjYW4gZml4
-IHlvdXIgaXNzdWUgc2luY2UgdHN0X3N5c2NhbGwgd2lsbAo+IGhhbmRsZSBFTk9TWVMuIFlvdSBj
-YW4gaGF2ZSBhIHRyeSwgdGhhbmtzLgo+Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvZ2V0cmxpbWl0L2dldHJsaW1pdDAzLmMKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvZ2V0cmxpbWl0L2dldHJsaW1pdDAzLmMKPiBpbmRleCA2MDQwODJjY2YuLmFhZDI3YTQw
-MiAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldHJsaW1pdC9nZXRy
-bGltaXQwMy5jCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRybGltaXQvZ2V0
-cmxpbWl0MDMuYwo+IEBAIC03Nyw3ICs3Nyw3IEBAIHN0cnVjdCBybGltaXRfdWxvbmcgewo+Cj4g
-IHN0YXRpYyBpbnQgZ2V0cmxpbWl0X3Vsb25nKGludCByZXNvdXJjZSwgc3RydWN0IHJsaW1pdF91
-bG9uZyAqcmxpbSkKPiAgewo+IC0gICAgICAgcmV0dXJuIHN5c2NhbGwoX19OUl9nZXRybGltaXRf
-dWxvbmcsIHJlc291cmNlLCBybGltKTsKPiArICAgICAgIHJldHVybiB0c3Rfc3lzY2FsbChfX05S
-X2dldHJsaW1pdF91bG9uZywgcmVzb3VyY2UsIHJsaW0pOwo+ICB9Cj4KPiAgY29uc3QgbG9uZyBS
-TElNX0lORklOSVRZX0wgPSBMT05HX01BWDsKPiBAQCAtOTAsNyArOTAsNyBAQCBzdHJ1Y3Qgcmxp
-bWl0X2xvbmcgewo+Cj4gIHN0YXRpYyBpbnQgZ2V0cmxpbWl0X2xvbmcoaW50IHJlc291cmNlLCBz
-dHJ1Y3QgcmxpbWl0X2xvbmcgKnJsaW0pCj4gIHsKPiAtICAgICAgIHJldHVybiBzeXNjYWxsKF9f
-TlJfZ2V0cmxpbWl0LCByZXNvdXJjZSwgcmxpbSk7Cj4gKyAgICAgICByZXR1cm4gdHN0X3N5c2Nh
-bGwoX19OUl9nZXRybGltaXQsIHJlc291cmNlLCBybGltKTsKPgoKVGhpcyBtaWdodCBub3QgYSBn
-b29kIGlkZWEsIGltYWdpbmUgaWYgdGhlIHRlc3RiZW5jaCBkZWZpbmVzClNJR05FRF9HRVRSTElN
-SVQKd2l0aCBlbmFibGVzIGFuIGFkZGl0aW9uYWwgZ2V0cmxpbWl0X2xvbmcocmVzb3VyY2UsICZy
-bGltX2wpIHRlc3QgYnV0IGdldApFTk9TWVMsCnRoZW4gdGhlIHdob2xlIHRlc3Qgd2lsbCBiZSBU
-Q09ORiwgd2hpY2ggaXMgbm90IHdoYXQgd2Ugd2FudC4KCgoKPiAgfQo+ICAjZW5kaWYKPgo+Cj4g
-Pgo+ID4gICAgICAgaWYgKGNvbXBhcmVfcmV0dmFsKHJlc291cmNlLCByZXRfdTY0LCBlcnJub191
-NjQsIHJldF91bCwgZXJybm9fdWwsCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgX19OUl9n
-ZXRybGltaXRfdWxvbmdfc3RyKSB8fAo+ID4gLS0KPiA+IDIuNDguMQo+ID4KPiA+Cj4gPiAtLQo+
-ID4gTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRw
-Cj4KPiAtLQo+IE1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
-bmZvL2x0cAo+Cj4KCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86
-IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+In the LTP code, __NR_getrlimit_ulong is defined as __NR_ugetrlimit
+or __NR_getrlimit.
+
+In the Linux kernel, LoongArch uses the generic syscall table
+which is defined in include/uapi/asm-generic/unistd.h. We can
+see that __NR_ugetrlimit is not defined in the generic header,
+and also there is no __ARCH_WANT_SET_GET_RLIMIT definition in
+the arch specific header arch/loongarch/include/asm/unistd.h,
+so both __NR_ugetrlimit and __NR_getrlimit are not implemented
+on LoongArch.
+
+That is to say, no need to compare the return value and errno
+about the syscall numbers __NR_prlimit64 and __NR_{u}getrlimit,
+just check this case and then skip the test.
+
+While at it, modify the value of test.tcnt as 1 to skip only
+once if the errno of getrlimit_ulong() or getrlimit_long() is
+ENOSYS.
+
+Without this patch:
+
+$ /opt/ltp/testcases/bin/getrlimit03
+...
+getrlimit03.c:102: TFAIL: __NR_prlimit64(0) returned 0 (SUCCESS) but __NR_getrlimit(0) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(1) returned 0 (SUCCESS) but __NR_getrlimit(1) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(2) returned 0 (SUCCESS) but __NR_getrlimit(2) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(3) returned 0 (SUCCESS) but __NR_getrlimit(3) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(4) returned 0 (SUCCESS) but __NR_getrlimit(4) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(5) returned 0 (SUCCESS) but __NR_getrlimit(5) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(6) returned 0 (SUCCESS) but __NR_getrlimit(6) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(7) returned 0 (SUCCESS) but __NR_getrlimit(7) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(8) returned 0 (SUCCESS) but __NR_getrlimit(8) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(9) returned 0 (SUCCESS) but __NR_getrlimit(9) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(10) returned 0 (SUCCESS) but __NR_getrlimit(10) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(11) returned 0 (SUCCESS) but __NR_getrlimit(11) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(12) returned 0 (SUCCESS) but __NR_getrlimit(12) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(13) returned 0 (SUCCESS) but __NR_getrlimit(13) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(14) returned 0 (SUCCESS) but __NR_getrlimit(14) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(15) returned 0 (SUCCESS) but __NR_getrlimit(15) returned -1 (ENOSYS)
+
+Summary:
+passed   0
+failed   16
+broken   0
+skipped  0
+warnings 0
+
+With this patch:
+
+$ /opt/ltp/testcases/bin/getrlimit03
+...
+getrlimit03.c:166: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+
+How to reproduce:
+
+git clone https://github.com/linux-test-project/ltp.git
+cd ltp
+make autotools
+./configure
+make all
+sudo make install
+/opt/ltp/testcases/bin/getrlimit03
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Reviewed-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/syscalls/getrlimit/getrlimit03.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+index 604082ccf..bb6160c2b 100644
+--- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
++++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+@@ -162,6 +162,12 @@ static void run(unsigned int resource)
+ 	errno = 0;
+ 	ret_ul = getrlimit_ulong(resource, &rlim_ul);
+ 	errno_ul = errno;
++	if (errno_ul == ENOSYS) {
++		tst_res(TCONF | TERRNO,
++			"%s not implemented", __NR_getrlimit_ulong_str);
++		test.tcnt = 1;
++		return;
++	}
+ 
+ 	if (compare_retval(resource, ret_u64, errno_u64, ret_ul, errno_ul,
+ 			   __NR_getrlimit_ulong_str) ||
+@@ -181,6 +187,7 @@ static void run(unsigned int resource)
+ 	if (errno_l == ENOSYS) {
+ 		tst_res(TCONF | TERRNO,
+ 			"__NR_getrlimit(%d) not implemented", __NR_getrlimit);
++		test.tcnt = 1;
+ 		return;
+ 	}
+ 
+-- 
+2.42.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
