@@ -4,55 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3B16C71130
-	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 07:22:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55A23C83F0F
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 07:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1751961512; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=fU/iO+vMjfGdfH21pZKX+PsuBTIwqqOziVhIB+ubCDA=;
+ b=b2F6Ch2EmWmSSqPlgp+t3eycnYrrzUR6AkFY0JNiBmgQ3NQ1i1bOcLnEsejRW0zvTx+18
+ TKCCCvpvb8cvtcf7pcZOqDp8qz6mw9JoH8j51e6jrYGjaieYh3vgNw6x9LHkJNYBFNoKaL8
+ 739YKb6NNQlKRbj6IFBA3tPflArMoGM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6DAF83CA330
-	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 09:22:47 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id A84943CA2FC
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 09:58:32 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A6BC43CA14F
- for <ltp@lists.linux.it>; Tue,  8 Jul 2025 09:12:25 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
- by in-3.smtp.seeweb.it (Postfix) with ESMTP id A5CF82C4FE24
- for <ltp@lists.linux.it>; Tue,  8 Jul 2025 09:12:21 +0200 (CEST)
-Received: from loongson.cn (unknown [113.200.148.30])
- by gateway (Coremail) with SMTP id _____8DxQK_SxGxoRzUkAQ--.43079S3;
- Tue, 08 Jul 2025 15:12:18 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
- by front1 (Coremail) with SMTP id qMiowJCxocLQxGxoVhIOAA--.15507S2;
- Tue, 08 Jul 2025 15:12:17 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: ltp@lists.linux.it
-Date: Tue,  8 Jul 2025 15:12:15 +0800
-Message-ID: <20250708071215.17515-1-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
+ by picard.linux.it (Postfix) with ESMTPS id 482403C7A4B
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 09:58:12 +0200 (CEST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EB77017A72FF
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 09:58:10 +0200 (CEST)
+Received: by mail-wr1-x441.google.com with SMTP id
+ ffacd0b85a97d-3a5257748e1so3268265f8f.2
+ for <ltp@lists.linux.it>; Tue, 08 Jul 2025 00:58:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1751961490; x=1752566290; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=h+T5VY2HqqCdBkVmxazLBpW21wMXxfqZBxnx7mgfrAo=;
+ b=WvKg73P6eDk3igpy1JNLN69EkzBjf4Gx1oL/wqjwgvD9fYMHIWIfP85TPCfSj0miX2
+ 3nWFfPnCWZktc0XWk7ssCDD0c+tzcvJLyMPm73OTtAZgDSE9VEtAKgOsfUQp+rlPfYov
+ kIaFgAbYGSEKUGgYEyL3XV90DjzLxCYQcB27yU6bcQeVuX6VFySio9pJw22gFGQmVVhn
+ Z+FUjh7GDiMv/+XfdAChhxK93n1JgMXCt9q/bjIr4LQ26tmPnY4k5zvJkb9lrw3QRQIx
+ TDHACsdMwPrN4cBsi7W7rjUafgyxz7FZ2DtpicjbW2TMOWk4yOOF1CQ2Ztc+P4+9Y17U
+ dZWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1751961490; x=1752566290;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=h+T5VY2HqqCdBkVmxazLBpW21wMXxfqZBxnx7mgfrAo=;
+ b=d2CiLgDrD+pY9zmCAEFuHBT/wiNNDmkw9XwKeoZSvKjEaIL4aXTa0d+K+45PSvgQny
+ cUExOAOdsblewneEUJI0VcS5C8wCvfxSknNTU3o2m+RFpoUUbQGYaDKFh8o0phYNAK+W
+ H0vZeV+x2CMVF6MwVStbyiDIkpczbX7cwhlFVdUX6tI2MujXUQy5/ux3PqLThfmnJbHi
+ mrrssOC6AL+B8X9Q86rjRYPc0j9q8sEI5letgzZ3tSWMjCpwKfrmSwcYouMOLCf2VJTn
+ gAmbW+Ea6kBtiVabGw8W6jtUkRyKzijb1E8VxOiv2FlUca+Dz8vXbbZoJkG/PAYQsTbm
+ 0UMw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWUT/oVr5vwl0BOFpwjFr0iH4i4nVyGXr7mjrVRjXoZ5hGSUtJ7d3tGLK+QJfoxuMi0Pms=@lists.linux.it
+X-Gm-Message-State: AOJu0Yx/VM6IukIUmFZHhrFeL5Gx4rwp1rWh9x+1JKCGeZx0vhpiBbqu
+ j5Lql0ySLD5Rx8SXadbFJhTFHkTL18ab5GznZF6ZC7xVVIuiX6CIifRJI4XlUel8SN4=
+X-Gm-Gg: ASbGncuNvAoZQRtoP9R4ywOtcnR/HNLZy5MS4tGfcLBR8ARK9SEvhg7tC21GhGO/n5Z
+ xT3Y3ilQGwBpLule4dBF4I0kSX95WbL4TD2ER9nWgeX7TbLe1bbbfmlcfSaqnKjnaiuItSvQKDi
+ 8nuRwnRdLZVpZ0TYPLiq1nfdcGZFs5jEqWPuwg8zWrOTD7u7cUr4kDDByJyJM3abHC/+BX1Z1cX
+ aDZr2+DxSuEwOELpyjuowXVfldkANzn1XpUTabGycL1heFwNLNofrx9vX6hlP3q6gpdcZeRE/Yl
+ nOjvd+GOQ0pfNRUcAcDLyTUBVmbgfXgmAitXkYGsBLIztowP55Qe/9keQRXt/Kr0rFihPMJdURV
+ 2AcQHk3wplS4Uz35PsTXh/SsFfZc5jj3F8z3eVy3utMLjPqWVMsqAK2cLTODWNfy6MRp8J+h+nH
+ GsMznMFUpj5vPD8lczI4zJJQL8NA==
+X-Google-Smtp-Source: AGHT+IG2wE7uKx4NCIBagiEx5cX7cJdXu8H4cUWFXTYCQIiE403Rj1cZNvCeRgiDiOjyKTLQrZreUQ==
+X-Received: by 2002:a05:6000:1a8b:b0:3a4:d994:be7d with SMTP id
+ ffacd0b85a97d-3b49702067dmr11754320f8f.23.1751961490328; 
+ Tue, 08 Jul 2025 00:58:10 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
+ (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
+ [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-454cd4a6235sm13642635e9.37.2025.07.08.00.58.09
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 08 Jul 2025 00:58:10 -0700 (PDT)
+Message-ID: <02d35ee7-79c5-411f-8009-193d3aacc6a1@suse.com>
+Date: Tue, 8 Jul 2025 09:58:09 +0200
 MIME-Version: 1.0
-X-CM-TRANSID: qMiowJCxocLQxGxoVhIOAA--.15507S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxZFWDuw47ZrW7uryUZF1DurX_yoW7JrWkpa
- 4xKa4jqay5tayjv3yxtr93Z3ySqr18Cr1aqrn8CrykZF1UGw15GF1xW3WYvw17Xr4Ykw47
- tF1DtFWvya1UArbCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
- sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
- 0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
- IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
- e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
- 0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
- 6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
- 8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AK
- xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
- vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
- jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE2I
- x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
- 8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
- 0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWHqcUUUUU=
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Zorro Lang <zlang@redhat.com>, ltp@lists.linux.it
+References: <20250708055950.m25zfqyfr4n4qkcm@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Content-Language: en-US
+In-Reply-To: <20250708055950.m25zfqyfr4n4qkcm@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 08 Jul 2025 09:22:13 +0200
-Subject: [LTP] [PATCH] getrlimit/getrlimit03: Skip test if __NR_getrlimit
- not implemented
+Subject: Re: [LTP] [Bug report] kirk can't run ltp's fs_readonly
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,110 +104,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In the Linux kernel, LoongArch uses the generic syscall table which
-is defined in include/uapi/asm-generic/unistd.h, and also there is
-no __ARCH_WANT_SET_GET_RLIMIT in arch/loongarch/include/asm/unistd.h,
-so __NR_getrlimit is not implemented on LoongArch.
+Hi!
 
-That is to say, getrlimit are superseded with prlimit64. There is no
-need to compare the return value and errno about the syscall numbers
-__NR_prlimit64 and __NR_getrlimit, just check this case and then skip
-the test.
+On 7/8/25 7:59 AM, Zorro Lang via ltp wrote:
+> Hi,
+>
+> When I run ltp's fs_readonly command file with kirk, I always hit:
+>
+>    /var/lib/ltp/testcases/bin/test_robind.sh: illegal option -- W
+> 	usage: /var/lib/ltp/testcases/bin/test_robind.sh -c command [ext3,ext2,jfs,xfs,reiserfs,ramfs]
+>
+> 	This script verifies ReadOnly-filesystem, by mounting block device and
+> 	executing the filesystem tests.
+>
+> 	OPTIONS
+> 		-h    display this message and exit
+> 		-c    command to be executed
+>
+> Looks like kirk can't treat "..." as an entirety and give it to test_robind.sh.
+> Although it can be fixed by:
+>
+>    -test_robind01 test_robind.sh -c "growfiles -W gf01 -b -e 1 -u -i 0 -L 5 -w -C 1 -l -I r -T 10 glseek20 glseek20.2"
+>    +test_robind01 test_robind.sh -c \"growfiles -W gf01 -b -e 1 -u -i 0 -L 5 -w -C 1 -l -I r -T 10 glseek20 glseek20.2\"
+>
+> but old runltp fails with that. So I'm trying to ask is there a
+> better way fix this issue on kirk side.
+>
+> Thanks,
+> Zorro
+>
+>
+Thanks for this report, I opened a issues in 
+https://github.com/linux-test-project/kirk/issues/60
 
-Without this patch:
-
-$ /opt/ltp/testcases/bin/getrlimit03
-...
-getrlimit03.c:102: TFAIL: __NR_prlimit64(0) returned 0 (SUCCESS) but __NR_getrlimit(0) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(1) returned 0 (SUCCESS) but __NR_getrlimit(1) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(2) returned 0 (SUCCESS) but __NR_getrlimit(2) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(3) returned 0 (SUCCESS) but __NR_getrlimit(3) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(4) returned 0 (SUCCESS) but __NR_getrlimit(4) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(5) returned 0 (SUCCESS) but __NR_getrlimit(5) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(6) returned 0 (SUCCESS) but __NR_getrlimit(6) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(7) returned 0 (SUCCESS) but __NR_getrlimit(7) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(8) returned 0 (SUCCESS) but __NR_getrlimit(8) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(9) returned 0 (SUCCESS) but __NR_getrlimit(9) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(10) returned 0 (SUCCESS) but __NR_getrlimit(10) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(11) returned 0 (SUCCESS) but __NR_getrlimit(11) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(12) returned 0 (SUCCESS) but __NR_getrlimit(12) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(13) returned 0 (SUCCESS) but __NR_getrlimit(13) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(14) returned 0 (SUCCESS) but __NR_getrlimit(14) returned -1 (ENOSYS)
-getrlimit03.c:102: TFAIL: __NR_prlimit64(15) returned 0 (SUCCESS) but __NR_getrlimit(15) returned -1 (ENOSYS)
-
-Summary:
-passed   0
-failed   16
-broken   0
-skipped  0
-warnings 0
-
-With this patch:
-
-$ /opt/ltp/testcases/bin/getrlimit03
-...
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
-
-Summary:
-passed   0
-failed   0
-broken   0
-skipped  16
-warnings 0
-
-How to reproduce:
-
-git clone https://github.com/linux-test-project/ltp.git
-cd ltp
-make autotools
-./configure
-make all
-sudo make install
-/opt/ltp/testcases/bin/getrlimit03
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- testcases/kernel/syscalls/getrlimit/getrlimit03.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
-index 604082ccf..2d79057da 100644
---- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
-+++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
-@@ -162,6 +162,11 @@ static void run(unsigned int resource)
- 	errno = 0;
- 	ret_ul = getrlimit_ulong(resource, &rlim_ul);
- 	errno_ul = errno;
-+	if (errno_ul == ENOSYS) {
-+		tst_res(TCONF | TERRNO,
-+			"%s not implemented", __NR_getrlimit_ulong_str);
-+		return;
-+	}
- 
- 	if (compare_retval(resource, ret_u64, errno_u64, ret_ul, errno_ul,
- 			   __NR_getrlimit_ulong_str) ||
--- 
-2.48.1
+- Andrea
 
 
 -- 
