@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55A23C83F0F
-	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 07:58:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFEDBC83F0F
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 08:59:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1751961512; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1751965187; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-transfer-encoding :
  content-type : sender : from;
- bh=fU/iO+vMjfGdfH21pZKX+PsuBTIwqqOziVhIB+ubCDA=;
- b=b2F6Ch2EmWmSSqPlgp+t3eycnYrrzUR6AkFY0JNiBmgQ3NQ1i1bOcLnEsejRW0zvTx+18
- TKCCCvpvb8cvtcf7pcZOqDp8qz6mw9JoH8j51e6jrYGjaieYh3vgNw6x9LHkJNYBFNoKaL8
- 739YKb6NNQlKRbj6IFBA3tPflArMoGM=
+ bh=keikFGcwCj+nKCtBF5AbfLGBCQfXkbeCFPPq9M2UYMw=;
+ b=HBf9Glp1etWECnYKRUaeVw+FbmJKEdmp0Td+8eRarPLHLpGDEHnN63PDMaJjrnJ3iyRUy
+ QGHkwh4ku88xf0ChNzfgoKHSPCDDYb2mKhxDTA0JVpuhsDLUZO/5uruG1P6X3CkiDg4pfc2
+ lBg/Lu4+Cv+1wIcjMuzPBRSkzPMPb1o=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A84943CA2FC
-	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 09:58:32 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 066FE3CA1EC
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 10:59:47 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 482403C7A4B
- for <ltp@lists.linux.it>; Tue,  8 Jul 2025 09:58:12 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
+ by picard.linux.it (Postfix) with ESMTPS id 78E383C94BC
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 10:59:25 +0200 (CEST)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EB77017A72FF
- for <ltp@lists.linux.it>; Tue,  8 Jul 2025 09:58:10 +0200 (CEST)
-Received: by mail-wr1-x441.google.com with SMTP id
- ffacd0b85a97d-3a5257748e1so3268265f8f.2
- for <ltp@lists.linux.it>; Tue, 08 Jul 2025 00:58:10 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 72F253D75CA5
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 10:59:24 +0200 (CEST)
+Received: by mail-wm1-x342.google.com with SMTP id
+ 5b1f17b1804b1-4538a2fc7ffso35803135e9.0
+ for <ltp@lists.linux.it>; Tue, 08 Jul 2025 01:59:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1751961490; x=1752566290; darn=lists.linux.it;
+ d=suse.com; s=google; t=1751965164; x=1752569964; darn=lists.linux.it;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:to:subject:user-agent:mime-version:date:message-id:from
  :to:cc:subject:date:message-id:reply-to;
- bh=h+T5VY2HqqCdBkVmxazLBpW21wMXxfqZBxnx7mgfrAo=;
- b=WvKg73P6eDk3igpy1JNLN69EkzBjf4Gx1oL/wqjwgvD9fYMHIWIfP85TPCfSj0miX2
- 3nWFfPnCWZktc0XWk7ssCDD0c+tzcvJLyMPm73OTtAZgDSE9VEtAKgOsfUQp+rlPfYov
- kIaFgAbYGSEKUGgYEyL3XV90DjzLxCYQcB27yU6bcQeVuX6VFySio9pJw22gFGQmVVhn
- Z+FUjh7GDiMv/+XfdAChhxK93n1JgMXCt9q/bjIr4LQ26tmPnY4k5zvJkb9lrw3QRQIx
- TDHACsdMwPrN4cBsi7W7rjUafgyxz7FZ2DtpicjbW2TMOWk4yOOF1CQ2Ztc+P4+9Y17U
- dZWw==
+ bh=SWox9S5X4PiBvZfIWMyx+xiep7PkYnonXGZN4iUY+ZA=;
+ b=FDVGZGboAdaxGtHo20bMzb4rzxWmfvq0fzwmMxSYBc2DpBhY/NT1NMspMSjWGQIhDi
+ Rb6wDl/RoAM12l9NI6LoGeN1ZQZD9xeyWs7dye65hLuV348SFG47mtZyPK96nII8+zy2
+ 3XgFIjrsxtjBzZEhNIppTaNTgQEuIsAbCiOSmAeycX2jwSLoBqDri0VJYnDT28zIiuY3
+ lHvsVu98SxHcwhFsCfXAAdHTAlzUuXI9f/4iaMQlxyq/Wc/+lCRV979WrXURhYEFPv6V
+ hNhORIyI1aXA6Y/JwsGjKouNnPzchfsUa3ci3nko5szUl0xtzH+p/2az76YxlOAXlReB
+ 9OEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1751961490; x=1752566290;
+ d=1e100.net; s=20230601; t=1751965164; x=1752569964;
  h=content-transfer-encoding:in-reply-to:from:content-language
  :references:to:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=h+T5VY2HqqCdBkVmxazLBpW21wMXxfqZBxnx7mgfrAo=;
- b=d2CiLgDrD+pY9zmCAEFuHBT/wiNNDmkw9XwKeoZSvKjEaIL4aXTa0d+K+45PSvgQny
- cUExOAOdsblewneEUJI0VcS5C8wCvfxSknNTU3o2m+RFpoUUbQGYaDKFh8o0phYNAK+W
- H0vZeV+x2CMVF6MwVStbyiDIkpczbX7cwhlFVdUX6tI2MujXUQy5/ux3PqLThfmnJbHi
- mrrssOC6AL+B8X9Q86rjRYPc0j9q8sEI5letgzZ3tSWMjCpwKfrmSwcYouMOLCf2VJTn
- gAmbW+Ea6kBtiVabGw8W6jtUkRyKzijb1E8VxOiv2FlUca+Dz8vXbbZoJkG/PAYQsTbm
- 0UMw==
+ bh=SWox9S5X4PiBvZfIWMyx+xiep7PkYnonXGZN4iUY+ZA=;
+ b=J0ZwSPYM5xwoFE9HydPHvajQ9rfl6CtmbVtGsinA3OST2df7jM3sSLukT8uBG6Rrpk
+ U6t6MAevJx79ATrn8iHWgbRSg/Ik3u7UwB76oosWqRUIxbUAqZJPHZdR9XV9vi6hqNqL
+ gUIA7ynBUHQjWTytmRo1+NNsrFZuJL083Gqkt9qMuG7hvclvrfiizbN7GbvB/wYNOYGY
+ s7zSCpbPHV0nQAO0LIpo3KxGipdoR3iqA++8vdlU4M7g/sOZOldzK8/5S4PMh5vvdUiG
+ 7YgYWc/KGGWP1vM3g0CNDiBNXUjeXSz0ZyMV0VRJe9UhGMHO97H2zkkH3QptC6pj5N3k
+ nGjg==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWUT/oVr5vwl0BOFpwjFr0iH4i4nVyGXr7mjrVRjXoZ5hGSUtJ7d3tGLK+QJfoxuMi0Pms=@lists.linux.it
-X-Gm-Message-State: AOJu0Yx/VM6IukIUmFZHhrFeL5Gx4rwp1rWh9x+1JKCGeZx0vhpiBbqu
- j5Lql0ySLD5Rx8SXadbFJhTFHkTL18ab5GznZF6ZC7xVVIuiX6CIifRJI4XlUel8SN4=
-X-Gm-Gg: ASbGncuNvAoZQRtoP9R4ywOtcnR/HNLZy5MS4tGfcLBR8ARK9SEvhg7tC21GhGO/n5Z
- xT3Y3ilQGwBpLule4dBF4I0kSX95WbL4TD2ER9nWgeX7TbLe1bbbfmlcfSaqnKjnaiuItSvQKDi
- 8nuRwnRdLZVpZ0TYPLiq1nfdcGZFs5jEqWPuwg8zWrOTD7u7cUr4kDDByJyJM3abHC/+BX1Z1cX
- aDZr2+DxSuEwOELpyjuowXVfldkANzn1XpUTabGycL1heFwNLNofrx9vX6hlP3q6gpdcZeRE/Yl
- nOjvd+GOQ0pfNRUcAcDLyTUBVmbgfXgmAitXkYGsBLIztowP55Qe/9keQRXt/Kr0rFihPMJdURV
- 2AcQHk3wplS4Uz35PsTXh/SsFfZc5jj3F8z3eVy3utMLjPqWVMsqAK2cLTODWNfy6MRp8J+h+nH
- GsMznMFUpj5vPD8lczI4zJJQL8NA==
-X-Google-Smtp-Source: AGHT+IG2wE7uKx4NCIBagiEx5cX7cJdXu8H4cUWFXTYCQIiE403Rj1cZNvCeRgiDiOjyKTLQrZreUQ==
-X-Received: by 2002:a05:6000:1a8b:b0:3a4:d994:be7d with SMTP id
- ffacd0b85a97d-3b49702067dmr11754320f8f.23.1751961490328; 
- Tue, 08 Jul 2025 00:58:10 -0700 (PDT)
+ AJvYcCW13GJwadhogCYNURYAoKOUnclamTd2tnwis2x+L9hT3JMhgxIB3mZUtwtBAeVcQ2YpCfY=@lists.linux.it
+X-Gm-Message-State: AOJu0Yxw7g3LYWXo4yfzW9o231PM6nqQypduI2mXzIJSsj8l+7p5AY9A
+ 7FuyO+1rqZfhPeYpV6w8+7ZlVo2iVfEIaVVzNmL5YAlQVjaD6ZpvR7p2KgQQPXVdZaHBdJxXTte
+ ivMWvfal5/534
+X-Gm-Gg: ASbGnctW2Ng8y1tC16TiW4ia1c4MfLOa5+FNqvpuaIbToX3eC13SGWBc1JNvwBVcouI
+ bod6YvlRrIJSG6/IRsdkybo04Je/VRvaUbHZKE02TOe9nxoKW1HcrWQH0sJ5AjyFAEoRsxGa+87
+ a0Vf4cbYoXR6fW6L4RyAOKBPRzh8S4hKYhu59r3rK6y+SO1shMNrWnTNXp/nFGBpI16rkkxSDqF
+ Uo21e2KFRJBBQInuK9nhOquOh2v8SqdzWP0ofqMdieu3CtpT7nbaYlxuC8B0lKa5xQQGniH71pq
+ LcRhIeIyRKnU84AMbk14adUtjxmP48xjHpfOo/LRNEZRd49aBHBwUIXFiZKRIjfHGYWi59JK/XA
+ AUzjLM2ebsfP5YU91W5AJW7Y+dLDf+VvRyITeKDYfmFtvGBSY1QHXOlIgGZQfBy5fFEeFAQqh+k
+ jvrsYEHFnfr76qe1Baw1FmGV//gw==
+X-Google-Smtp-Source: AGHT+IHW/RyW5Kc9eA/xeQZhb/IOg/uaz/02zLt+ApKBrOq0cRGWwfUq9X0/o49inZhyhcMOskvQMw==
+X-Received: by 2002:a05:6000:481c:b0:3b4:9ade:4e8a with SMTP id
+ ffacd0b85a97d-3b5de12a3ecmr1665280f8f.21.1751965163649; 
+ Tue, 08 Jul 2025 01:59:23 -0700 (PDT)
 Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
  (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
  [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-454cd4a6235sm13642635e9.37.2025.07.08.00.58.09
+ ffacd0b85a97d-3b47285c90esm12574584f8f.91.2025.07.08.01.59.23
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 08 Jul 2025 00:58:10 -0700 (PDT)
-Message-ID: <02d35ee7-79c5-411f-8009-193d3aacc6a1@suse.com>
-Date: Tue, 8 Jul 2025 09:58:09 +0200
+ Tue, 08 Jul 2025 01:59:23 -0700 (PDT)
+Message-ID: <c5247046-97ab-4d21-aacc-e4018ed4a366@suse.com>
+Date: Tue, 8 Jul 2025 10:59:22 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 To: Zorro Lang <zlang@redhat.com>, ltp@lists.linux.it
 References: <20250708055950.m25zfqyfr4n4qkcm@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 Content-Language: en-US
 In-Reply-To: <20250708055950.m25zfqyfr4n4qkcm@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [Bug report] kirk can't run ltp's fs_readonly
 X-BeenThere: ltp@lists.linux.it
@@ -113,36 +113,7 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
 
-On 7/8/25 7:59 AM, Zorro Lang via ltp wrote:
-> Hi,
->
-> When I run ltp's fs_readonly command file with kirk, I always hit:
->
->    /var/lib/ltp/testcases/bin/test_robind.sh: illegal option -- W
-> 	usage: /var/lib/ltp/testcases/bin/test_robind.sh -c command [ext3,ext2,jfs,xfs,reiserfs,ramfs]
->
-> 	This script verifies ReadOnly-filesystem, by mounting block device and
-> 	executing the filesystem tests.
->
-> 	OPTIONS
-> 		-h    display this message and exit
-> 		-c    command to be executed
->
-> Looks like kirk can't treat "..." as an entirety and give it to test_robind.sh.
-> Although it can be fixed by:
->
->    -test_robind01 test_robind.sh -c "growfiles -W gf01 -b -e 1 -u -i 0 -L 5 -w -C 1 -l -I r -T 10 glseek20 glseek20.2"
->    +test_robind01 test_robind.sh -c \"growfiles -W gf01 -b -e 1 -u -i 0 -L 5 -w -C 1 -l -I r -T 10 glseek20 glseek20.2\"
->
-> but old runltp fails with that. So I'm trying to ask is there a
-> better way fix this issue on kirk side.
->
-> Thanks,
-> Zorro
->
->
-Thanks for this report, I opened a issues in 
-https://github.com/linux-test-project/kirk/issues/60
+fixed by https://github.com/linux-test-project/kirk/pull/61
 
 - Andrea
 
