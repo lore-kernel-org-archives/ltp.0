@@ -4,94 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D67C7C8303C
-	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 06:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1751954426; h=date : to :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=Houu2klne5N0iLa5ijgmlA+zI4HXzp7724yue3Zb/DU=;
- b=hRJfplVE+ku+0WL4AzJaLD6dguyomCq7EhierOqBkCXgYBbMOsjTw1qqqc4kWPZZVn+AA
- mp0lMOuFWZo6l5rl/Sj73TdY4NflveYQt4seMW7dCXDZT8xn2h4XAewKl4uB7/pMjhHvqNd
- zdFgfDBnIiZOx+poDRAD/NXhvLv/Ra0=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4D75C8303C
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 07:17:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ED40F3CA33B
-	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 08:00:25 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 5C5AC3CA1EC
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 09:17:29 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D94773CA182
- for <ltp@lists.linux.it>; Tue,  8 Jul 2025 08:00:02 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 22F52C420D7
- for <ltp@lists.linux.it>; Tue,  8 Jul 2025 08:00:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1751954399;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type;
- bh=qnHezoufGfhoWY87g+SQ2mh9fecbRak9a4cxqsfSZ44=;
- b=LnHYdgC0mBY1YiP5o18Mxdfwf7eLLc+l2iXZImXzXuZDyc8aB2JSt6xo6ESotW2HdFKby3
- W44NBif5DHhl5iHRTSawmJ+feBVZ8LWQ2ssn3xc5qxAdtjYuvWMb5rsyXf0yjaxkmAc7QK
- bvbWYaVUKNucqyzIA2hkb18fLameYsQ=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-371-W8JijhP-PjK2lB7J7h5lKg-1; Tue, 08 Jul 2025 01:59:57 -0400
-X-MC-Unique: W8JijhP-PjK2lB7J7h5lKg-1
-X-Mimecast-MFC-AGG-ID: W8JijhP-PjK2lB7J7h5lKg_1751954396
-Received: by mail-pg1-f200.google.com with SMTP id
- 41be03b00d2f7-b2fb347b3e6so4805401a12.1
- for <ltp@lists.linux.it>; Mon, 07 Jul 2025 22:59:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1751954396; x=1752559196;
- h=content-disposition:mime-version:message-id:subject:to:from:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=qnHezoufGfhoWY87g+SQ2mh9fecbRak9a4cxqsfSZ44=;
- b=tePrwCxowg9whSDTdTmXNn+nUtzIAtItFC6AUQdYkczpiz+P6lj0D3yKraNZv5InTt
- WITerwo93dBdhfKt2wEIvF/7UGq25UZrQlUj8vOrhtBFgoPP14eGuh6KWe5JZI9bfzm9
- SQQrS67AzsIV4awvyody3NhkvKhwj2EppGv9bKN9t3QxlG6XgTdL7mS5CYWNdGYM5ztX
- L/l7Ebip67s6W2BR+/yOY2+/jxtKaTywhnYhi3qDK26SqmLpwA5/nG5QngoCgthSG3V6
- R6vpc7ltvitXUJvwVlpsrULOrjsA1pmEd0Xy0Vjq4ZjrjAUQV/jAz3kB+aBK4uXtU+2U
- Iz8Q==
-X-Gm-Message-State: AOJu0Yx2g08gVUEVqjeOzkhS/yoC82KZadipTbveQ2NT8VsaFVhG1JyH
- TN9I6XZVrremhwJ2NAk0L4ZfcIAa3Mos+80ajwYrqEthIC/QtYn7dXUW+DXHTbo+fq9IaB62d1c
- hxUc2K25KXZjS0eEJCeK7Fh5jBBXCCC8XQsjc6xUoHLEhPp6mWTUQCAWHWCW5SbqK+nlSZ6k/Ed
- lzo01eeg/7/wqYbFVvTClYlorKDvYAYtNT
-X-Gm-Gg: ASbGncvvd/feKw16d+NlKfAGEYoDmerYk9GvIZ6i0Pa+lMwo6onAFMkRNVKCBc2YyUb
- T5wXZkVFX8Bcx72yaAIsfwQIdrBsPbriF/Wso2bVM1xozlqbxPHEUJIIpkskJfcaTvNQOgixwBn
- H/30++t9FBYtndmn74u8GFievvBVnr9GbDHIiAJBTJZv7NB0hVvIfxW55xZYhhdI/c4govAvxPt
- lbJzYUBy4U0GbwKHuH1itsga+FjI9mWwK/vzYXQkle6tKUzXw/eWWzNvM/CUUOSspaeQvQfgcew
- VWUa4yZXXF1mEG8U0wyqlDqvgWCe3OJJmI+ygOTs1GLtCBMcKQcdQGKPr9EtzyQ=
-X-Received: by 2002:a05:6a20:9153:b0:1f5:717b:46dc with SMTP id
- adf61e73a8af0-22b43bca8f0mr2888215637.27.1751954395996; 
- Mon, 07 Jul 2025 22:59:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG1WgjHrZAvLQ8LCHK5/2ji1wbse7wSNo75Jcmpq7bikCaYeK2W01UB0pnSvW9yqn8C2kbXMw==
-X-Received: by 2002:a05:6a20:9153:b0:1f5:717b:46dc with SMTP id
- adf61e73a8af0-22b43bca8f0mr2888163637.27.1751954395154; 
- Mon, 07 Jul 2025 22:59:55 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
- by smtp.gmail.com with ESMTPSA id
- 41be03b00d2f7-b38ee5f5d8csm10518675a12.39.2025.07.07.22.59.53
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 07 Jul 2025 22:59:54 -0700 (PDT)
-Date: Tue, 8 Jul 2025 13:59:50 +0800
+ by picard.linux.it (Postfix) with ESMTPS id 409063CA0F2
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 09:17:11 +0200 (CEST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTP id 1B27C1C2ABAE
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 09:17:09 +0200 (CEST)
+Received: from loongson.cn (unknown [113.200.148.30])
+ by gateway (Coremail) with SMTP id _____8CxdXD0xWxoAjYkAQ--.36914S3;
+ Tue, 08 Jul 2025 15:17:08 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+ by front1 (Coremail) with SMTP id qMiowJCxdOTyxWxoMxMOAA--.16021S2;
+ Tue, 08 Jul 2025 15:17:07 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 To: ltp@lists.linux.it
-Message-ID: <20250708055950.m25zfqyfr4n4qkcm@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Date: Tue,  8 Jul 2025 15:17:06 +0800
+Message-ID: <20250708071706.19639-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: tO9o5J0XILUvYWlnzQ2G3QmOh5H9mA51f4cKr5hbBZk_1751954396
-X-Mimecast-Originator: redhat.com
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-CM-TRANSID: qMiowJCxdOTyxWxoMxMOAA--.16021S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxZFWDuw47ZrW7uryUZF1DurX_yoW7JrWkpa
+ 4xKa4jqay5tayjv3yxtr93Z3ySqr18Cr1aqrn8CrykZF1UGw15GF1xW3WYvw17Xr4Ykw47
+ tF1DtFWvya1UArbCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+ sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+ 0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+ IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+ e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+ 0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+ 6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+ 8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AK
+ xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
+ vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+ jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE2I
+ x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+ 8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+ 0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UNvtZUUUUU=
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [Bug report] kirk can't run ltp's fs_readonly
+Subject: [LTP] [PATCH] getrlimit/getrlimit03: Skip test if __NR_getrlimit
+ not implemented
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,38 +64,110 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Zorro Lang via ltp <ltp@lists.linux.it>
-Reply-To: Zorro Lang <zlang@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+In the Linux kernel, LoongArch uses the generic syscall table which
+is defined in include/uapi/asm-generic/unistd.h, and also there is
+no __ARCH_WANT_SET_GET_RLIMIT in arch/loongarch/include/asm/unistd.h,
+so __NR_getrlimit is not implemented on LoongArch.
 
-When I run ltp's fs_readonly command file with kirk, I always hit:
+That is to say, getrlimit are superseded with prlimit64. There is no
+need to compare the return value and errno about the syscall numbers
+__NR_prlimit64 and __NR_getrlimit, just check this case and then skip
+the test.
 
-  /var/lib/ltp/testcases/bin/test_robind.sh: illegal option -- W
-	usage: /var/lib/ltp/testcases/bin/test_robind.sh -c command [ext3,ext2,jfs,xfs,reiserfs,ramfs]
+Without this patch:
 
-	This script verifies ReadOnly-filesystem, by mounting block device and
-	executing the filesystem tests.
+$ /opt/ltp/testcases/bin/getrlimit03
+...
+getrlimit03.c:102: TFAIL: __NR_prlimit64(0) returned 0 (SUCCESS) but __NR_getrlimit(0) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(1) returned 0 (SUCCESS) but __NR_getrlimit(1) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(2) returned 0 (SUCCESS) but __NR_getrlimit(2) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(3) returned 0 (SUCCESS) but __NR_getrlimit(3) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(4) returned 0 (SUCCESS) but __NR_getrlimit(4) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(5) returned 0 (SUCCESS) but __NR_getrlimit(5) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(6) returned 0 (SUCCESS) but __NR_getrlimit(6) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(7) returned 0 (SUCCESS) but __NR_getrlimit(7) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(8) returned 0 (SUCCESS) but __NR_getrlimit(8) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(9) returned 0 (SUCCESS) but __NR_getrlimit(9) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(10) returned 0 (SUCCESS) but __NR_getrlimit(10) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(11) returned 0 (SUCCESS) but __NR_getrlimit(11) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(12) returned 0 (SUCCESS) but __NR_getrlimit(12) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(13) returned 0 (SUCCESS) but __NR_getrlimit(13) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(14) returned 0 (SUCCESS) but __NR_getrlimit(14) returned -1 (ENOSYS)
+getrlimit03.c:102: TFAIL: __NR_prlimit64(15) returned 0 (SUCCESS) but __NR_getrlimit(15) returned -1 (ENOSYS)
 
-	OPTIONS
-		-h    display this message and exit
-		-c    command to be executed
+Summary:
+passed   0
+failed   16
+broken   0
+skipped  0
+warnings 0
 
-Looks like kirk can't treat "..." as an entirety and give it to test_robind.sh.
-Although it can be fixed by:
+With this patch:
 
-  -test_robind01 test_robind.sh -c "growfiles -W gf01 -b -e 1 -u -i 0 -L 5 -w -C 1 -l -I r -T 10 glseek20 glseek20.2"
-  +test_robind01 test_robind.sh -c \"growfiles -W gf01 -b -e 1 -u -i 0 -L 5 -w -C 1 -l -I r -T 10 glseek20 glseek20.2\"
+$ /opt/ltp/testcases/bin/getrlimit03
+...
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
 
-but old runltp fails with that. So I'm trying to ask is there a
-better way fix this issue on kirk side.
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  16
+warnings 0
 
-Thanks,
-Zorro
+How to reproduce:
+
+git clone https://github.com/linux-test-project/ltp.git
+cd ltp
+make autotools
+./configure
+make all
+sudo make install
+/opt/ltp/testcases/bin/getrlimit03
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ testcases/kernel/syscalls/getrlimit/getrlimit03.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+index 604082ccf..2d79057da 100644
+--- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
++++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+@@ -162,6 +162,11 @@ static void run(unsigned int resource)
+ 	errno = 0;
+ 	ret_ul = getrlimit_ulong(resource, &rlim_ul);
+ 	errno_ul = errno;
++	if (errno_ul == ENOSYS) {
++		tst_res(TCONF | TERRNO,
++			"%s not implemented", __NR_getrlimit_ulong_str);
++		return;
++	}
+ 
+ 	if (compare_retval(resource, ret_u64, errno_u64, ret_ul, errno_ul,
+ 			   __NR_getrlimit_ulong_str) ||
+-- 
+2.48.1
 
 
 -- 
