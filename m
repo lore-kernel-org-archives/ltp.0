@@ -4,102 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64CF0C8303C
-	for <ltp@archiver.kernel.org>; Mon,  7 Jul 2025 19:41:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1751917315; h=date :
- mime-version : message-id : references : in-reply-to : to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=qqJ+1wpi0nIhkRzWH84YGp84kCflHLehPXkENBFmv0I=;
- b=ZlhOMr1M0kQWYf1KMzT+6gWgtlQCQqPx/U6oWWdFL12WnmXaQQBFL2I+iLGgP1//d4UmU
- 1LllXTdJRJwXvk2IOo1fW8YpiNi6dAjyDo5vw+TxDbSaCmBzqeqbs3uhb/EFmiXuH8ZO+eg
- Moox7bQmcex1R/rCerynODEeOpQwuO4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70239C83030
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 02:11:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F09243CA2B3
-	for <ltp@archiver.kernel.org>; Mon,  7 Jul 2025 21:41:54 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 9BCDF3CA13B
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 04:11:53 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A642C3CA08B
- for <ltp@lists.linux.it>; Mon,  7 Jul 2025 21:40:29 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B6AD13C7A03
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 04:11:35 +0200 (CEST)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com
+ [45.249.212.56])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CE0FA1A0195D
- for <ltp@lists.linux.it>; Mon,  7 Jul 2025 21:40:28 +0200 (CEST)
-Received: by mail-wr1-x434.google.com with SMTP id
- ffacd0b85a97d-3a50fc7ac4dso1599521f8f.0
- for <ltp@lists.linux.it>; Mon, 07 Jul 2025 12:40:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1751917228; x=1752522028; darn=lists.linux.it;
- h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
- :mime-version:subject:date:from:from:to:cc:subject:date:message-id
- :reply-to; bh=1iVQ6bKqS6tlkEMYwV2tb7Ig9DctaY0XwRDl3SbZqrg=;
- b=Vju9XZc189Xq30JYof3xS3Wu3pxHv/xY1+JRH55mA9TPfAUK3rZEA6kSQ6tI0X1oW/
- q9IdrDXLK1uJt49bQ9/Cd4O3w193Bn/S3HbEll659OFhBdV3P7z1LudcAAaUheqGZGHC
- B0I9SSOw63xHjE25KaDtX/dc8G/ON7cfRuX/TINSlq6bx6VanTP3TwYLKaXnDztyGn8C
- xLKXPg3CiSTneLqoQ1vn03Pb94BKjh50oLhW+/0FtE7XStaj4cCWMW6fliXGgOWF+VXp
- rc8yMzfaHzHYZK7h8GdsqzJOxKv2Xvxr940GpexfakUZCikgVWXcQoYIXqPU2p93CEjx
- Uw/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1751917228; x=1752522028;
- h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
- :mime-version:subject:date:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=1iVQ6bKqS6tlkEMYwV2tb7Ig9DctaY0XwRDl3SbZqrg=;
- b=PnFZklB8VoWbL2WWgxqNVTQonhVOzmquc1OQ7UFW8xBtN9gVyeM73jAF0rgjHOJZ5Q
- XKEJ9J0I9+eh+aJb7rMekjJynLxbP/0fyc5PLcU2lSo47o+moFjakg9pUruMKMbUy7fr
- QP5vo1VZNVQzJ1SVO0oAN1incE3FNRWyfjSjxQJjJ/ERTHjR1u4cdYXnHKjPKEe8C3bS
- OSd79CVIaSq1NewKh2cISOOUKDZRYX9haXe6KqPSi5hPDCw4O6tLNh82oguzYq4kWoL5
- Jt0r6UnHn5kT5iRloiXzQHNu9PjJc7K+GjIFqT8D6FUvsMX8Jqk469Uwc19Ws53urasR
- kuqg==
-X-Gm-Message-State: AOJu0YwuzvU2ZzjU2V7BedoeGWpuUxXd91mLjp0He2Yj2ZKWsWNS30aA
- yvYaiYE6xSlTQ8l+3cIVaQ4DjmZeMt+GSqbyeEHIl9c4473alChHvUS9JdPx3l7R7W8=
-X-Gm-Gg: ASbGncsByOUZ3QrEXPWlIpXCuEpXilDjOPpYhFwHGJ1+z5yYqyBpi3Z2egwt7yrwkKU
- EYbAH/eY/ftMJM3309OuufD2TDvlkmp4k8EPfkPy7NdAFyU0c4MNsyUQuMmkXzSuBAgRQpaiiUD
- cnw+f6NDSejxb9VMq/hN8MlpYFsqJzJKuD4iQhlXKgP6LdAOIN+1ANowKG7lyRFGwE3fZJTeOZk
- KVP3dr4bthIi17IjY4LTPgg2heDIdOWdSrWUlBM7rk/WYZ9T30bZIcE2sineEOB6jqf4+T5wqtz
- L8iUTUCQRb8dc/09YtWAuXYSwVAnskQ8TxJAcDKF55UexjV4l6bu7ewiccsk
-X-Google-Smtp-Source: AGHT+IF7xOlmbBsIw5+pwS6eFgZROYVSD1sRxNmf4MtY9ffybUPURwg2Z4cKdetSchIJikEswi825Q==
-X-Received: by 2002:a05:6000:26d1:b0:3a5:2beb:7493 with SMTP id
- ffacd0b85a97d-3b5dde90d6dmr73751f8f.9.1751917227958; 
- Mon, 07 Jul 2025 12:40:27 -0700 (PDT)
-Received: from localhost ([177.45.162.214])
- by smtp.gmail.com with UTF8SMTPSA id
- af79cd13be357-7d5dbdb38d9sm659560385a.26.2025.07.07.12.40.27
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 07 Jul 2025 12:40:27 -0700 (PDT)
-Date: Mon, 07 Jul 2025 16:40:14 -0300
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2210C11F647B
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 04:11:32 +0200 (CEST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+ by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bbl352Jn1zKHMn6
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 10:11:29 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+ by mail.maildlp.com (Postfix) with ESMTP id C50771A108B
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 10:11:27 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+ by APP3 (Coremail) with SMTP id _Ch0CgA3mSZJfmxoAK0BBA--.64195S3;
+ Tue, 08 Jul 2025 10:11:23 +0800 (CST)
+Message-ID: <683b8d88-0ded-476f-9ed0-bd76a0c3128f@huaweicloud.com>
+Date: Tue, 8 Jul 2025 10:11:21 +0800
 MIME-Version: 1.0
-Message-Id: <20250707-conversions-munmap-v5-3-f273ec86e50f@suse.com>
-References: <20250707-conversions-munmap-v5-0-f273ec86e50f@suse.com>
-In-Reply-To: <20250707-conversions-munmap-v5-0-f273ec86e50f@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6653; i=rbm@suse.com;
- h=from:subject:message-id; bh=D+nD2YEV4NHOCvAWJk2dSV4bT82hwAjI09UgHxdZ16E=;
- b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBobCKdPzBfT0lvb145lxKJ3M+BTirH9+6uJJ4M9
- GTJmXqxglGJAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCaGwinQAKCRDJC4p8Y4ZY
- pjqKEACGVG1RkD3b35wjIUNOng8dB54qsQ4PS6x+aZuL3UASo6S7WT2thtLiZ5GsSrdDcDBxF4D
- DF0J1esIR4N5dvOKXcY9vWUb/sheVeZBAUr88DCfkWo/MDTO6z3XQdImKtv13ovFgIWOJRypOGs
- BYMJ/wPMjOuCso9qRoiPSvxlHVnkd96XmUT7+44ASGvrRpYRzyExztfVs+EPCdNGZp/a+gTpY79
- kLA1sZZnfxzR/RABURBZVv1eT93h62G7eRuYTuDVMcbULTNba8IFJEzcOmmaklmOT0gpmG++kQQ
- /S61klwM/YIGIo6MRkYy/RNpzCLSVcMhzQurG/sv1sSb1lSJcL7bcIJywVTgu79kZHKslmlOMxU
- m/qe4cvoSVNH3A4RGQ17yyOAiGOJXDH0d/URNGTUAMqbXbOLOeF1/aUZHYHmmqYpPKwZ/jxBK5U
- DZd0a066N87JdqYMWogtJgE8F+G7MHNSN1ucDn+4CKh4ZY89ZzECvHfwmCpx1mf10VQ1RovAYWD
- aK6ARAbrV7EpqNMu75+1jjMX+g/bg/vI+jujNmue2ZOT3+fLvE7WJpZBfrTMTe4oLv9Qt6f+Ena
- KZ8ud84Tk+v162qYU06WNeQ52yDpHT818xkecmVoxtpXs4hxhxJ20aYx7/C/vFAZk7JLAaTyFZT
- SVGixNZjePHkFOg==
-X-Developer-Key: i=rbm@suse.com; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Naresh Kamboju <naresh.kamboju@linaro.org>,
+ Joseph Qi <jiangqi903@gmail.com>
+References: <CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com>
+ <2dbc199b-ef22-4c22-9dbd-5e5876e9f9b4@huaweicloud.com>
+ <CA+G9fYv5zpLxeVLqYbDLLUOxmAzuXDbaZobvpCBBBuZJKLMpPQ@mail.gmail.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <CA+G9fYv5zpLxeVLqYbDLLUOxmAzuXDbaZobvpCBBBuZJKLMpPQ@mail.gmail.com>
+X-CM-TRANSID: _Ch0CgA3mSZJfmxoAK0BBA--.64195S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jw43Zry5uF17XrWkJFyUAwb_yoWxZFWxpa
+ 43tF1UKr40vr1xJrW0q3WFqryUtr1qyFykJrnFqr18GFnFvF18JFWIgryrKF9rJ348u34x
+ Ar4qk3srKr4jy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+ 6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+ vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+ xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+ 0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+ 6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+ Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+ 14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+ 8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+ ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+ 0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+ Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+ 7KsUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 3/3] syscalls: munmap03: Convert to new API
+Subject: Re: [LTP] next-20250626: WARNING fs jbd2 transaction.c
+ start_this_handle with ARM64_64K_PAGES
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,126 +76,173 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
-Reply-To: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
-Cc: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Theodore Ts'o <tytso@mit.edu>,
+ Linux Regressions <regressions@lists.linux.dev>, Arnd Bergmann <arnd@arndb.de>,
+ open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ Dan Carpenter <dan.carpenter@linaro.org>, linux-fsdevel@vger.kernel.org,
+ Jan Kara <jack@suse.cz>, linux-ext4 <linux-ext4@vger.kernel.org>,
+ LTP List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-RnJvbTogUmljYXJkbyBCLiBNYXJsacOocmUgPHJibUBzdXNlLmNvbT4KClJldmlld2VkLWJ5OiBM
-aSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KUmV2aWV3ZWQtYnk6IEFuZHJlYSBDZXJ2ZXNhdG8g
-PGFuZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5jb20+ClNpZ25lZC1vZmYtYnk6IFJpY2FyZG8gQi4gTWFy
-bGnDqHJlIDxyYm1Ac3VzZS5jb20+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tdW5t
-YXAvbXVubWFwMDEuYyB8ICAxMyArKy0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbXVubWFw
-L211bm1hcDAzLmMgfCAxNjkgKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLQogMiBmaWxlcyBj
-aGFuZ2VkLCA1MiBpbnNlcnRpb25zKCspLCAxMzAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEv
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tdW5tYXAvbXVubWFwMDEuYyBiL3Rlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvbXVubWFwL211bm1hcDAxLmMKaW5kZXggYjJhZWNhNTNhMTEwYzMyOTdl
-MGFlYmFjNWZiZWNmMjE5ZjI3MmNiYi4uODI2MDAxYzhiMTU0NzMxYzgzYmNkNGM0NGUyMzYwMTQ1
-MjY0NTQyMyAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tdW5tYXAvbXVu
-bWFwMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL211bm1hcC9tdW5tYXAwMS5j
-CkBAIC04MiwxMSArODIsMTQgQEAgc3RhdGljIHZvaWQgc2V0dXAodm9pZCkKIAogc3RhdGljIHZv
-aWQgY2xlYW51cCh2b2lkKQogewotCWxvbmcgbGVuOwotCi0JaWYgKG1hcF9iYXNlKSB7Ci0JCWxl
-biA9IHRzdF92YXJpYW50ID8gcGFnZV9zeiA6IG1hcF9sZW47Ci0JCVNBRkVfTVVOTUFQKG1hcF9i
-YXNlLCBsZW4pOworCWlmICh0c3RfdmFyaWFudCkgeworCQlpZiAobWFwX2FkZHIpCisJCQlTQUZF
-X01VTk1BUChtYXBfYmFzZSwgbWFwX2xlbl9mdWxsKTsKKwkJZWxzZSBpZiAobWFwX2Jhc2UpCisJ
-CQlTQUZFX01VTk1BUChtYXBfYmFzZSwgcGFnZV9zeik7CisJfSBlbHNlIHsKKwkJaWYgKG1hcF9h
-ZGRyKQorCQkJU0FGRV9NVU5NQVAobWFwX2FkZHIsIG1hcF9sZW4pOwogCX0KIAlpZiAoZmQgIT0g
-LTEpCiAJCVNBRkVfQ0xPU0UoZmQpOwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9tdW5tYXAvbXVubWFwMDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbXVubWFw
-L211bm1hcDAzLmMKaW5kZXggNjBiY2I5M2IwZTM1OWI1NzkyOTRkNjc0NWUxZTcyOTM0MGMwZDky
-ZS4uYmU2MDdlNzZhNTM5ZTcxMGU4Zjg1YmQ2MDgwYTI4NGM5MDBkMjRlMiAxMDA2NDQKLS0tIGEv
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tdW5tYXAvbXVubWFwMDMuYworKysgYi90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL211bm1hcC9tdW5tYXAwMy5jCkBAIC0xLDE0OCArMSw2NyBAQAor
-Ly8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIKIC8qCi0gKgotICog
-ICBDb3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENvcnAuLCAy
-MDAxCi0gKgotICogICBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgIHlvdSBjYW4gcmVk
-aXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKLSAqICAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRo
-ZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKLSAqICAgdGhlIEZy
-ZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwg
-b3IKLSAqICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KLSAqCi0gKiAgIFRo
-aXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNl
-ZnVsLAotICogICBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7ICB3aXRob3V0IGV2ZW4gdGhlIGlt
-cGxpZWQgd2FycmFudHkgb2YKLSAqICAgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEg
-UEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlCi0gKiAgIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGlj
-ZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgotICoKLSAqICAgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVk
-IGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKLSAqICAgYWxvbmcgd2l0
-aCB0aGlzIHByb2dyYW07ICBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCi0gKiAg
-IEZvdW5kYXRpb24sIEluYy4sIDUxIEZyYW5rbGluIFN0cmVldCwgRmlmdGggRmxvb3IsIEJvc3Rv
-biwgTUEgMDIxMTAtMTMwMSBVU0EKKyAqIENvcHlyaWdodCAoYykgSW50ZXJuYXRpb25hbCBCdXNp
-bmVzcyBNYWNoaW5lcyAgQ29ycC4sIDIwMDEKKyAqCTA3LzIwMDEgUG9ydGVkIGJ5IFdheW5lIEJv
-eWVyCisgKiBDb3B5cmlnaHQgKGMpIDIwMjUgU1VTRSBMTEMgUmljYXJkbyBCLiBNYXJsacOocmUg
-PHJibUBzdXNlLmNvbT4KICAqLwogCi0vKgotICogVGVzdCBEZXNjcmlwdGlvbjoKLSAqICBWZXJp
-ZnkgdGhhdCwKLSAqICAgMS4gbXVubWFwKCkgZmFpbHMgd2l0aCAtMSByZXR1cm4gdmFsdWUgYW5k
-IHNldHMgZXJybm8gdG8gRUlOVkFMCi0gKiAgICAgIGlmIGFkZHJlc3NlcyBpbiB0aGUgcmFuZ2Ug
-W2FkZHIsYWRkcitsZW4pIGFyZSBvdXRzaWRlIHRoZSB2YWxpZAotICoJcmFuZ2UgZm9yIHRoZSBh
-ZGRyZXNzIHNwYWNlIG9mIGEgcHJvY2Vzcy4KLSAqICAgMi4gbXVubWFwKCkgZmFpbHMgd2l0aCAt
-MSByZXR1cm4gdmFsdWUgYW5kIHNldHMgZXJybm8gdG8gRUlOVkFMCi0gKiAgICAgIGlmIHRoZSBs
-ZW4gYXJndW1lbnQgaXMgMC4KLSAqICAgMy4gbXVubWFwKCkgZmFpbHMgd2l0aCAtMSByZXR1cm4g
-dmFsdWUgYW5kIHNldHMgZXJybm8gdG8gRUlOVkFMCi0gKiAgICAgIGlmIHRoZSBhZGRyIGFyZ3Vt
-ZW50IGlzIG5vdCBhIG11bHRpcGxlIG9mIHRoZSBwYWdlIHNpemUgYXMKLSAqICAgICAgcmV0dXJu
-ZWQgYnkgc3lzY29uZigpLgorLypcCisgKiBWZXJpZnkgdGhhdCwgbXVubWFwKCkgZmFpbHMgd2l0
-aCBlcnJubzoKICAqCi0gKiBISVNUT1JZCi0gKgkwNy8yMDAxIFBvcnRlZCBieSBXYXluZSBCb3ll
-cgorICogLSBFSU5WQUwsIGlmIGFkZHJlc3NlcyBpbiB0aGUgcmFuZ2UgW2FkZHIsYWRkcitsZW4p
-IGFyZSBvdXRzaWRlIHRoZSB2YWxpZAorICogICByYW5nZSBmb3IgdGhlIGFkZHJlc3Mgc3BhY2Ug
-b2YgYSBwcm9jZXNzLgorICogLSBFSU5WQUwsIGlmIHRoZSBsZW4gYXJndW1lbnQgaXMgMC4KKyAq
-IC0gRUlOVkFMLCBpZiB0aGUgYWRkciBhcmd1bWVudCBpcyBub3QgYSBtdWx0aXBsZSBvZiB0aGUg
-cGFnZSBzaXplIGFzCisgKiAgIHJldHVybmVkIGJ5IHN5c2NvbmYoKS4KICAqLwogCi0jaW5jbHVk
-ZSA8ZXJybm8uaD4KLSNpbmNsdWRlIDx1bmlzdGQuaD4KLSNpbmNsdWRlIDxmY250bC5oPgotI2lu
-Y2x1ZGUgPHN5cy9tbWFuLmg+Ci0jaW5jbHVkZSA8c3lzL3Jlc291cmNlLmg+Ci0jaW5jbHVkZSA8
-c3lzL3N0YXQuaD4KLQotI2luY2x1ZGUgInRlc3QuaCIKLSNpbmNsdWRlICJzYWZlX21hY3Jvcy5o
-IgotCi1jaGFyICpUQ0lEID0gIm11bm1hcDAzIjsKKyNpbmNsdWRlICJ0c3RfdGVzdC5oIgogCiBz
-dGF0aWMgc2l6ZV90IHBhZ2Vfc3o7Ci1zdGF0aWMgY2hhciAqZ2xvYmFsX2FkZHI7Ci1zdGF0aWMg
-c2l6ZV90IGdsb2JhbF9tYXBsZW47Ci0KLXN0YXRpYyB2b2lkIHNldHVwKHZvaWQpOwotc3RhdGlj
-IHZvaWQgY2xlYW51cCh2b2lkKTsKLQotc3RhdGljIHZvaWQgdGVzdF9laW52YWwxKHZvaWQpOwot
-c3RhdGljIHZvaWQgdGVzdF9laW52YWwyKHZvaWQpOwotc3RhdGljIHZvaWQgdGVzdF9laW52YWwz
-KHZvaWQpOwotc3RhdGljIHZvaWQgKCp0ZXN0ZnVuY1tdKSh2b2lkKSA9IHsgdGVzdF9laW52YWwx
-LCB0ZXN0X2VpbnZhbDIsIHRlc3RfZWludmFsMyB9OwotaW50IFRTVF9UT1RBTCA9IEFSUkFZX1NJ
-WkUodGVzdGZ1bmMpOwotCi1pbnQgbWFpbihpbnQgYWMsIGNoYXIgKiphdikKK3N0YXRpYyBjaGFy
-ICptYXBfYWRkcjsKK3N0YXRpYyBjaGFyICptYXBfYWRkcl9vdXQ7CitzdGF0aWMgc2l6ZV90IG1h
-cF9sZW47CitzdGF0aWMgc2l6ZV90IG1hcF9sZW5femVybzsKKworc3RhdGljIHN0cnVjdCB0Y2Fz
-ZSB7CisJaW50IGV4cF9lcnJubzsKKwljaGFyICoqYWRkcjsKKwlzaXplX3QgKmxlbjsKK30gdGNh
-c2VzW10gPSB7CisJeyBFSU5WQUwsICZtYXBfYWRkcl9vdXQsICZtYXBfbGVuIH0sCisJeyBFSU5W
-QUwsICZtYXBfYWRkciwgJm1hcF9sZW5femVybyB9LAorCXsgRUlOVkFMLCAmbWFwX2FkZHIgKyAx
-LCAmbWFwX2xlbiB9LAorfTsKKworc3RhdGljIHZvaWQgcnVuKHVuc2lnbmVkIGludCBpKQogewot
-CWludCBpLCBsYzsKLQotCXRzdF9wYXJzZV9vcHRzKGFjLCBhdiwgTlVMTCwgTlVMTCk7Ci0KLQlz
-ZXR1cCgpOwotCi0JZm9yIChsYyA9IDA7IFRFU1RfTE9PUElORyhsYyk7IGxjKyspIHsKLQkJdHN0
-X2NvdW50ID0gMDsKKwlzdHJ1Y3QgdGNhc2UgKnRjID0gJnRjYXNlc1tpXTsKIAotCQlmb3IgKGkg
-PSAwOyBpIDwgVFNUX1RPVEFMOyBpKyspCi0JCQkoKnRlc3RmdW5jW2ldKSgpOwotCX0KLQotCWNs
-ZWFudXAoKTsKLQl0c3RfZXhpdCgpOworCVRTVF9FWFBfRkFJTChtdW5tYXAodGMtPmFkZHIsICp0
-Yy0+bGVuKSwgdGMtPmV4cF9lcnJubyk7CiB9CiAKIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCi17
-Ci0JdHN0X3NpZyhOT0ZPUkssIERFRl9IQU5ETEVSLCBjbGVhbnVwKTsKLQotCVRFU1RfUEFVU0U7
-Ci0KLQlwYWdlX3N6ID0gKHNpemVfdClzeXNjb25mKF9TQ19QQUdFU0laRSk7Ci0KLQlnbG9iYWxf
-bWFwbGVuID0gcGFnZV9zeiAqIDI7Ci0JZ2xvYmFsX2FkZHIgPSBTQUZFX01NQVAoY2xlYW51cCwg
-TlVMTCwgZ2xvYmFsX21hcGxlbiwgUFJPVF9SRUFEIHwKLQkJCQlQUk9UX1dSSVRFLCBNQVBfUFJJ
-VkFURSB8IE1BUF9BTk9OWU1PVVMsIC0xLCAwKTsKLX0KLQotc3RhdGljIHZvaWQgY2hlY2tfYW5k
-X3ByaW50KGludCBleHBlY3RlZF9lcnJubykKLXsKLQlpZiAoVEVTVF9SRVRVUk4gPT0gLTEpIHsK
-LQkJaWYgKFRFU1RfRVJSTk8gPT0gZXhwZWN0ZWRfZXJybm8pIHsKLQkJCXRzdF9yZXNtKFRQQVNT
-IHwgVFRFUlJOTywgImZhaWxlZCBhcyBleHBlY3RlZCIpOwotCQl9IGVsc2UgewotCQkJdHN0X3Jl
-c20oVEZBSUwgfCBUVEVSUk5PLAotCQkJCSAiZmFpbGVkIHVuZXhwZWN0ZWRseTsgZXhwZWN0ZWQg
-LSAlZCA6ICVzIiwKLQkJCQkgZXhwZWN0ZWRfZXJybm8sIHN0cmVycm9yKGV4cGVjdGVkX2Vycm5v
-KSk7Ci0JCX0KLQl9IGVsc2UgewotCQl0c3RfcmVzbShURkFJTCwgIm11bm1hcCBzdWNjZWVkZWQg
-dW5leHBlY3RlZGx5Iik7Ci0JfQotfQotCi1zdGF0aWMgdm9pZCB0ZXN0X2VpbnZhbDEodm9pZCkK
-IHsKIAlzdHJ1Y3QgcmxpbWl0IGJya3ZhbDsKLQljaGFyICphZGRyOwotCXNpemVfdCBtYXBfbGVu
-OwotCi0JU0FGRV9HRVRSTElNSVQoY2xlYW51cCwgUkxJTUlUX0RBVEEsICZicmt2YWwpOwogCi0J
-YWRkciA9IChjaGFyICopYnJrdmFsLnJsaW1fbWF4OworCXBhZ2Vfc3ogPSBTQUZFX1NZU0NPTkYo
-X1NDX1BBR0VTSVpFKTsKIAltYXBfbGVuID0gcGFnZV9zeiAqIDI7CisJbWFwX2FkZHIgPSBTQUZF
-X01NQVAoTlVMTCwgbWFwX2xlbiwgUFJPVF9SRUFEIHwgUFJPVF9XUklURSwKKwkJCSAgICAgTUFQ
-X1BSSVZBVEUgfCBNQVBfQU5PTllNT1VTLCAtMSwgMCk7CiAKLQlURVNUKG11bm1hcChhZGRyLCBt
-YXBfbGVuKSk7Ci0KLQljaGVja19hbmRfcHJpbnQoRUlOVkFMKTsKLX0KLQotc3RhdGljIHZvaWQg
-dGVzdF9laW52YWwyKHZvaWQpCi17Ci0JY2hhciAqYWRkciA9IGdsb2JhbF9hZGRyOwotCXNpemVf
-dCBtYXBfbGVuID0gMDsKLQotCVRFU1QobXVubWFwKGFkZHIsIG1hcF9sZW4pKTsKLQotCWNoZWNr
-X2FuZF9wcmludChFSU5WQUwpOwotfQotCi1zdGF0aWMgdm9pZCB0ZXN0X2VpbnZhbDModm9pZCkK
-LXsKLQljaGFyICphZGRyID0gKGNoYXIgKikoZ2xvYmFsX2FkZHIgKyAxKTsKLQlzaXplX3QgbWFw
-X2xlbiA9IHBhZ2Vfc3o7Ci0KLQlURVNUKG11bm1hcChhZGRyLCBtYXBfbGVuKSk7Ci0KLQljaGVj
-a19hbmRfcHJpbnQoRUlOVkFMKTsKKwlTQUZFX0dFVFJMSU1JVChSTElNSVRfREFUQSwgJmJya3Zh
-bCk7CisJbWFwX2FkZHJfb3V0ID0gKGNoYXIgKilicmt2YWwucmxpbV9tYXg7CiB9CiAKIHN0YXRp
-YyB2b2lkIGNsZWFudXAodm9pZCkKIHsKLQlpZiAobXVubWFwKGdsb2JhbF9hZGRyLCBnbG9iYWxf
-bWFwbGVuKSA9PSAtMSkKLQkJdHN0X3Jlc20oVFdBUk4gfCBURVJSTk8sICJtdW5tYXAgZmFpbGVk
-Iik7CisJaWYgKG1hcF9hZGRyKQorCQlTQUZFX01VTk1BUChtYXBfYWRkciwgbWFwX2xlbik7CiB9
-CisKK3N0YXRpYyBzdHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKKwkudGVzdCA9IHJ1biwKKwkudGNu
-dCA9IEFSUkFZX1NJWkUodGNhc2VzKSwKKwkuc2V0dXAgPSBzZXR1cCwKKwkuY2xlYW51cCA9IGNs
-ZWFudXAsCit9OwoKLS0gCjIuNTAuMAoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9s
-aXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+On 2025/7/3 15:26, Naresh Kamboju wrote:
+> On Thu, 26 Jun 2025 at 19:23, Zhang Yi <yi.zhang@huaweicloud.com> wrote:
+>>
+>> Hi, Naresh!
+>>
+>> On 2025/6/26 20:31, Naresh Kamboju wrote:
+>>> Regressions noticed on arm64 devices while running LTP syscalls mmap16
+>>> test case on the Linux next-20250616..next-20250626 with the extra build
+>>> config fragment CONFIG_ARM64_64K_PAGES=y the kernel warning noticed.
+>>>
+>>> Not reproducible with 4K page size.
+>>>
+>>> Test environments:
+>>> - Dragonboard-410c
+>>> - Juno-r2
+>>> - rk3399-rock-pi-4b
+>>> - qemu-arm64
+>>>
+>>> Regression Analysis:
+>>> - New regression? Yes
+>>> - Reproducibility? Yes
+>>>
+>>> Test regression: next-20250626 LTP mmap16 WARNING fs jbd2
+>>> transaction.c start_this_handle
+>>>
+>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>
+>> Thank you for the report. The block size for this test is 1 KB, so I
+>> suspect this is the issue with insufficient journal credits that we
+>> are going to resolve.
+> 
+> I have applied your patch set [1] and tested and the reported
+> regressions did not fix.
+> Am I missing anything ?
+> 
+> [1] https://lore.kernel.org/linux-ext4/20250611111625.1668035-1-yi.zhang@huaweicloud.com/
+> 
+
+Hi, Naresh and Joseph!
+
+Thanks to Jan's assistance, I've fixed this issue in my latest series
+and both tests passed on my machine. Could you please give it a try?
+
+https://lore.kernel.org/linux-ext4/20250707140814.542883-1-yi.zhang@huaweicloud.com/
+
+Thanks,
+Yi.
+
+
+>>>
+>>> ## Test log
+>>> <6>[   89.498969] loop0: detected capacity change from 0 to 614400
+>>> <3>[   89.609561] operation not supported error, dev loop0, sector
+>>> 20352 op 0x9:(WRITE_ZEROES) flags 0x20000800 phys_seg 0 prio class 0
+>>> <6>[   89.707795] EXT4-fs (loop0): mounted filesystem
+>>> 6786a191-5e0d-472b-8bce-4714e1a4fb44 r/w with ordered data mode. Quota
+>>> mode: none.
+>>> <3>[   90.023985] JBD2: kworker/u8:2 wants too many credits
+>>> credits:416 rsv_credits:21 max:334
+>>> <4>[   90.024973] ------------[ cut here ]------------
+>>> <4>[ 90.025062] WARNING: fs/jbd2/transaction.c:334 at
+>>> start_this_handle+0x4c0/0x4e0, CPU#0: 2/42
+>>> <4>[   90.026661] Modules linked in: btrfs blake2b_generic xor
+>>> xor_neon raid6_pq zstd_compress sm3_ce sha3_ce fuse drm backlight
+>>> ip_tables x_tables
+>>> <4>[   90.027952] CPU: 0 UID: 0 PID: 42 Comm: kworker/u8:2 Not tainted
+>>> 6.16.0-rc3-next-20250626 #1 PREEMPT
+>>> <4>[   90.029043] Hardware name: linux,dummy-virt (DT)
+>>> <4>[   90.029524] Workqueue: writeback wb_workfn (flush-7:0)
+>>> <4>[   90.030050] pstate: 63402009 (nZCv daif +PAN -UAO +TCO +DIT
+>>> -SSBS BTYPE=--)
+>>> <4>[ 90.030311] pc : start_this_handle (fs/jbd2/transaction.c:334
+>>> (discriminator 1))
+>>> <4>[ 90.030481] lr : start_this_handle (fs/jbd2/transaction.c:334
+>>> (discriminator 1))
+>>> <4>[   90.030656] sp : ffffc000805cb650
+>>> <4>[   90.030785] x29: ffffc000805cb690 x28: fff00000dd1f5000 x27:
+>>> ffffde2ec0272000
+>>> <4>[   90.031097] x26: 00000000000001a0 x25: 0000000000000015 x24:
+>>> 0000000000000002
+>>> <4>[   90.031360] x23: 0000000000000015 x22: 0000000000000c40 x21:
+>>> 0000000000000008
+>>> <4>[   90.031618] x20: fff00000c231da78 x19: fff00000c231da78 x18:
+>>> 0000000000000000
+>>> <4>[   90.031875] x17: 0000000000000000 x16: 0000000000000000 x15:
+>>> 0000000000000000
+>>> <4>[   90.032859] x14: 0000000000000000 x13: 00000000ffffffff x12:
+>>> 0000000000000000
+>>> <4>[   90.033225] x11: 0000000000000000 x10: ffffde2ebfba8bd0 x9 :
+>>> ffffde2ebd34e944
+>>> <4>[   90.033607] x8 : ffffc000805cb278 x7 : 0000000000000000 x6 :
+>>> 0000000000000001
+>>> <4>[   90.033971] x5 : ffffde2ebfb29000 x4 : ffffde2ebfb293d0 x3 :
+>>> 0000000000000000
+>>> <4>[   90.034294] x2 : 0000000000000000 x1 : fff00000c04dc080 x0 :
+>>> 000000000000004c
+>>> <4>[   90.034772] Call trace:
+>>> <4>[ 90.035068] start_this_handle (fs/jbd2/transaction.c:334
+>>> (discriminator 1)) (P)
+>>> <4>[ 90.035366] jbd2__journal_start (fs/jbd2/transaction.c:501)
+>>> <4>[ 90.035586] __ext4_journal_start_sb (fs/ext4/ext4_jbd2.c:117)
+>>> <4>[ 90.035807] ext4_do_writepages (fs/ext4/ext4_jbd2.h:242
+>>> fs/ext4/inode.c:2846)
+>>> <4>[ 90.036004] ext4_writepages (fs/ext4/inode.c:2953)
+>>> <4>[ 90.036233] do_writepages (mm/page-writeback.c:2636)
+>>> <4>[ 90.036406] __writeback_single_inode (fs/fs-writeback.c:1680)
+>>> <4>[ 90.036616] writeback_sb_inodes (fs/fs-writeback.c:1978)
+>>> <4>[ 90.036891] wb_writeback (fs/fs-writeback.c:2156)
+>>> <4>[ 90.037122] wb_workfn (fs/fs-writeback.c:2303 (discriminator 1)
+>>> fs/fs-writeback.c:2343 (discriminator 1))
+>>> <4>[ 90.037318] process_one_work (kernel/workqueue.c:3244)
+>>> <4>[ 90.037517] worker_thread (kernel/workqueue.c:3316 (discriminator
+>>> 2) kernel/workqueue.c:3403 (discriminator 2))
+>>> <4>[ 90.037752] kthread (kernel/kthread.c:463)
+>>> <4>[ 90.037903] ret_from_fork (arch/arm64/kernel/entry.S:863)
+>>> <4>[   90.038217] ---[ end trace 0000000000000000 ]---
+>>> <2>[   90.039950] EXT4-fs (loop0): ext4_do_writepages: jbd2_start:
+>>> 9223372036854775807 pages, ino 14; err -28
+>>> <3>[   90.040291] JBD2: kworker/u8:2 wants too many credits
+>>> credits:416 rsv_credits:21 max:334
+>>> <4>[   90.040374] ------------[ cut here ]------------
+>>> <4>[ 90.040386] WARNING: fs/jbd2/transaction.c:334 at
+>>> start_this_handle+0x4c0/0x4e0, CPU#1: 2/42
+>>>
+>>>
+>>> ## Source
+>>> * Kernel version: 6.16.0-rc3-next-20250626
+>>> * Git tree: https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next.git
+>>> * Git sha: ecb259c4f70dd5c83907809f45bf4dc6869961d7
+>>> * Git describe: 6.16.0-rc3-next-20250626
+>>> * Project details:
+>>> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250626/
+>>> * Architectures: arm64
+>>> * Toolchains: gcc-13
+>>> * Kconfigs: gcc-13-lkftconfig-64k_page_size
+>>>
+>>> ## Build arm64
+>>> * Test log: https://qa-reports.linaro.org/api/testruns/28894530/log_file/
+>>> * Test LAVA log 1:
+>>> https://lkft.validation.linaro.org/scheduler/job/8331353#L6841
+>>> * Test LAVA log 2:
+>>> https://lkft.validation.linaro.org/scheduler/job/8331352#L8854
+>>> * Test details:
+>>> https://regressions.linaro.org/lkft/linux-next-master/next-20250626/log-parser-test/exception-warning-fsjbd2transaction-at-start_this_handle/
+>>> * Build link: https://storage.tuxsuite.com/public/linaro/lkft/builds/2z2V7LhiJecGzINkU7ObVQTwoR1/
+>>> * Kernel config:
+>>> https://storage.tuxsuite.com/public/linaro/lkft/builds/2z2V7LhiJecGzINkU7ObVQTwoR1/config
+>>>
+>>> --
+>>> Linaro LKFT
+>>> https://lkft.linaro.org
+>>>
+>>
+> 
+> 
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
