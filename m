@@ -4,56 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4780EC8303C
-	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 09:16:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48CB6C83F0F
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 09:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1751967951; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=XhBu93Op2dm1qYGExy8ksEVGpoDmOIjgKUw2UpZmQxE=;
+ b=nwVewR5sClUFv+A2Y/MxA3kW6pkvw5gtR85c6d5HtM8afOkdNOXRlip6fZtAarIxWh31Y
+ Dl+4DlkkoXTq+zBsRakskkYv2Cj89UPpqD6pJIqy0lsgV1dJsp+LwAUr/m1fRf53Uz6EWZb
+ FN95wiWXsmiRlM3jx+aB5/7P5PIdbcs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CE79E3CA1EC
-	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 11:16:26 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 747643CA1ED
+	for <ltp@archiver.kernel.org>; Tue,  8 Jul 2025 11:45:51 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C61B43C647F
- for <ltp@lists.linux.it>; Tue,  8 Jul 2025 11:16:10 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
- by in-3.smtp.seeweb.it (Postfix) with ESMTP id B51441BBC6F3
- for <ltp@lists.linux.it>; Tue,  8 Jul 2025 11:16:05 +0200 (CEST)
-Received: from loongson.cn (unknown [113.200.148.30])
- by gateway (Coremail) with SMTP id _____8BxJHDS4WxoAUkkAQ--.36946S3;
- Tue, 08 Jul 2025 17:16:03 +0800 (CST)
-Received: from [10.130.10.66] (unknown [113.200.148.30])
- by front1 (Coremail) with SMTP id qMiowJBxZOTQ4WxodC0OAA--.16281S3;
- Tue, 08 Jul 2025 17:16:01 +0800 (CST)
-To: ltp@lists.linux.it
+ by picard.linux.it (Postfix) with ESMTPS id 25CB53C65DA
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 11:45:28 +0200 (CEST)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 49405122B323
+ for <ltp@lists.linux.it>; Tue,  8 Jul 2025 11:45:27 +0200 (CEST)
+Received: by mail-wr1-x42d.google.com with SMTP id
+ ffacd0b85a97d-3a6e2d85705so1900558f8f.0
+ for <ltp@lists.linux.it>; Tue, 08 Jul 2025 02:45:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1751967927; x=1752572727; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=N97GeIyflEGoqAZvkX3UeIFKYzI6R8Eq0b/IFBOLgfM=;
+ b=KPQ78+7Yzb8e5AYjnJIOrHuIWB/8jdJoyK/uq2aKaQj36xsX4ccGrINquixUSzVrpZ
+ nGLwEGcmmPQeU9dHXUG8BHgj60iOLdfRMI60ktO1EFYmHysqkpBx0J7D/7BWm8iZhi2G
+ phT9KZBLrrbnPCZCDG8Dj428GGn5HDfFm60KEqW4WWE3eYwghQ9N5IjwGzW07on1Tnyw
+ FCGK+J6XEEPxJqWBRTqMAfRSDeJ7k4FxawxIHqrS6MY40GPaGZOkpcp3BwkQ0O2uutPR
+ e0xQPMf0VsqPQEBeS0ol/+lNo8rbr+juk2HHcjKgYu3vQTFv2kXB4fHeL+D7xWIK+l/p
+ Do7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1751967927; x=1752572727;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=N97GeIyflEGoqAZvkX3UeIFKYzI6R8Eq0b/IFBOLgfM=;
+ b=dMsoaL0UjKo21VOwqtomzPrrwRvARYxkxwq2RcgL125vr6teYujc9xBZSTa7LfLYNE
+ wIUQH3kzfmUf+ljrEBFYHZzS3SnDxtM++oiivUuw+ZOswnA48lPNDpLLA71TeX6vnKVs
+ BLbZiJXGdESunEfAbePBlqomDYX38j3EFhDgo2AzU8OKQvWPww6Yt8tdusnwAjecYLzU
+ YWevlDvtQASIGQTi2vTAnMS2QR4jsAtuH9b9B9s6i819aDJ6EcmTzKM0CaPLqTZx6PrP
+ 9C+B7qMKfjF1dcRcXYekQPV7r5EfAOxERoK5H4udGMdjKHwMNNE7lLLSWXt2tiT5p3O4
+ syVA==
+X-Gm-Message-State: AOJu0YwXn5vrpg5mwgrjga7zFv0E48OxrzF3BFWT6gw2uPmwkxmw7hbD
+ pSdCYUxac0QJh2rteIJJFTuPQn8axE+RqmclOhCUi18QSuenthmg+5az3qfWHPfcnkJbdEWg34j
+ zOgQ=
+X-Gm-Gg: ASbGnctdFhvUgJPmRQ7HZHVSJ/qPFUNs6T4wXHeGKmNNqcXW0Z0wtTDu53vu2NTx8ja
+ OwpGw4DrZmCPi7Rqd7siMWGeNxGQKzTO5l4+hx4do3INMi724tN/pH6Txegr9+eVOuYggsSs8cZ
+ oZESqUc6XpuVzqzwF3Xa1YOWfANjnHYG1VWSSGcqo8MbVcbhombuJJyGKhhGTN7m7OdBtPdgLIh
+ ICTYjqVk/KZVjcMZRkhxmzZRkZss9oDb3H4j2KKveqvnY1e+BZWQWHalzkqcSJRvJN5z6zz4373
+ 9NfDEeHTEOenmkB4HBhrOfZYb9SZdyRy49CJ0VD+FvM4VUMKd7eHrja7RAuJQA==
+X-Google-Smtp-Source: AGHT+IGvqYKjkUxxo3+4cF4zOD1NOKGv53jVMBdYPhU5winFNTjUP8g9RwfCZwvADGXdgKzMICDl7w==
+X-Received: by 2002:a5d:64e1:0:b0:3b3:9c75:acc6 with SMTP id
+ ffacd0b85a97d-3b5ddeb0bb6mr1685179f8f.59.1751967926570; 
+ Tue, 08 Jul 2025 02:45:26 -0700 (PDT)
+Received: from MiWiFi-CR6608-srv ([202.127.77.110])
+ by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-74ce359eadcsm11742470b3a.10.2025.07.08.02.45.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 08 Jul 2025 02:45:26 -0700 (PDT)
+Date: Tue, 8 Jul 2025 17:44:47 -0400
+To: Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <aG2RT7_tgYolFqMC@MiWiFi-CR6608-srv>
 References: <20250708071706.19639-1-yangtiezhu@loongson.cn>
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <ca899670-c391-c214-f0ad-c762cccd201b@loongson.cn>
-Date: Tue, 8 Jul 2025 17:15:59 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
 MIME-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <20250708071706.19639-1-yangtiezhu@loongson.cn>
-Content-Language: en-US
-X-CM-TRANSID: qMiowJBxZOTQ4WxodC0OAA--.16281S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7trWDZF1UKryUZFyfXrykXrc_yoW8ur18pr
- 4Syay7tFs8tFyUAw1xAF9xZFZ2q34xCrWIgry5trykAan8J3s5GF4Iga45Zw42qryfK34I
- yF48tFWqk3WUXFgCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
- sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
- 0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
- IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
- e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
- 0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
- GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4
- xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v2
- 6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67
- vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
- wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUJVWUXwCIc4
- 0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AK
- xVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
- 1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUrNtxDUUU
- U
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] getrlimit/getrlimit03: Skip test if
  __NR_getrlimit not implemented
@@ -68,47 +98,145 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gMjAyNS83Lzgg5LiL5Y2IMzoxNywgVGllemh1IFlhbmcgd3JvdGU6Cj4gSW4gdGhlIExpbnV4
-IGtlcm5lbCwgTG9vbmdBcmNoIHVzZXMgdGhlIGdlbmVyaWMgc3lzY2FsbCB0YWJsZSB3aGljaAo+
-IGlzIGRlZmluZWQgaW4gaW5jbHVkZS91YXBpL2FzbS1nZW5lcmljL3VuaXN0ZC5oLCBhbmQgYWxz
-byB0aGVyZSBpcwo+IG5vIF9fQVJDSF9XQU5UX1NFVF9HRVRfUkxJTUlUIGluIGFyY2gvbG9vbmdh
-cmNoL2luY2x1ZGUvYXNtL3VuaXN0ZC5oLAo+IHNvIF9fTlJfZ2V0cmxpbWl0IGlzIG5vdCBpbXBs
-ZW1lbnRlZCBvbiBMb29uZ0FyY2guCj4gCj4gVGhhdCBpcyB0byBzYXksIGdldHJsaW1pdCBhcmUg
-c3VwZXJzZWRlZCB3aXRoIHBybGltaXQ2NC4gVGhlcmUgaXMgbm8KPiBuZWVkIHRvIGNvbXBhcmUg
-dGhlIHJldHVybiB2YWx1ZSBhbmQgZXJybm8gYWJvdXQgdGhlIHN5c2NhbGwgbnVtYmVycwo+IF9f
-TlJfcHJsaW1pdDY0IGFuZCBfX05SX2dldHJsaW1pdCwganVzdCBjaGVjayB0aGlzIGNhc2UgYW5k
-IHRoZW4gc2tpcAo+IHRoZSB0ZXN0LgoKLi4uCgo+IAo+IFNpZ25lZC1vZmYtYnk6IFRpZXpodSBZ
-YW5nIDx5YW5ndGllemh1QGxvb25nc29uLmNuPgo+IC0tLQo+ICAgdGVzdGNhc2VzL2tlcm5lbC9z
-eXNjYWxscy9nZXRybGltaXQvZ2V0cmxpbWl0MDMuYyB8IDUgKysrKysKPiAgIDEgZmlsZSBjaGFu
-Z2VkLCA1IGluc2VydGlvbnMoKykKPiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9z
-eXNjYWxscy9nZXRybGltaXQvZ2V0cmxpbWl0MDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvZ2V0cmxpbWl0L2dldHJsaW1pdDAzLmMKPiBpbmRleCA2MDQwODJjY2YuLjJkNzkwNTdkYSAx
-MDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldHJsaW1pdC9nZXRybGlt
-aXQwMy5jCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRybGltaXQvZ2V0cmxp
-bWl0MDMuYwo+IEBAIC0xNjIsNiArMTYyLDExIEBAIHN0YXRpYyB2b2lkIHJ1bih1bnNpZ25lZCBp
-bnQgcmVzb3VyY2UpCj4gICAJZXJybm8gPSAwOwo+ICAgCXJldF91bCA9IGdldHJsaW1pdF91bG9u
-ZyhyZXNvdXJjZSwgJnJsaW1fdWwpOwo+ICAgCWVycm5vX3VsID0gZXJybm87Cj4gKwlpZiAoZXJy
-bm9fdWwgPT0gRU5PU1lTKSB7Cj4gKwkJdHN0X3JlcyhUQ09ORiB8IFRFUlJOTywKPiArCQkJIiVz
-IG5vdCBpbXBsZW1lbnRlZCIsIF9fTlJfZ2V0cmxpbWl0X3Vsb25nX3N0cik7CgpTZWxmIHJldmll
-dzoKCkkgYW0gbm90IHN1cmUgd2hldGhlciBpdCBzaG91bGQgYWRkIHRoZSBmb2xsb3dpbmcgY29k
-ZToKCisgICAgICAgICAgICAgICB0ZXN0LnRjbnQgPSAxOwoKdG8gc2tpcCBvbmx5IG9uY2UgaWYg
-X19OUl9nZXRybGltaXRfdWxvbmdfc3RyIChtYXliZSBfX05SX2dldHJsaW1pdApvciBfX05SX3Vn
-ZXRybGltaXQpIG5vdCBpbXBsZW1lbnRlZC4KCj4gKwkJcmV0dXJuOwo+ICsJfQo+ICAgCj4gICAJ
-aWYgKGNvbXBhcmVfcmV0dmFsKHJlc291cmNlLCByZXRfdTY0LCBlcnJub191NjQsIHJldF91bCwg
-ZXJybm9fdWwsCj4gICAJCQkgICBfX05SX2dldHJsaW1pdF91bG9uZ19zdHIpIHx8Cj4gCgpJZiB5
-ZXMsIGl0IGlzIG5lY2Vzc2FyeSB0byBtb2RpZnkgYW5vdGhlciBwbGFjZSBpbiB0aGlzIGZ1bmN0
-aW9uLApzb21ldGhpbmcgbGlrZSB0aGlzOgoKQEAgLTE4Niw2ICsxODcsNyBAQCBzdGF0aWMgdm9p
-ZCBydW4odW5zaWduZWQgaW50IHJlc291cmNlKQogICAgICAgICBpZiAoZXJybm9fbCA9PSBFTk9T
-WVMpIHsKICAgICAgICAgICAgICAgICB0c3RfcmVzKFRDT05GIHwgVEVSUk5PLAogICAgICAgICAg
-ICAgICAgICAgICAgICAgIl9fTlJfZ2V0cmxpbWl0KCVkKSBub3QgaW1wbGVtZW50ZWQiLCAKX19O
-Ul9nZXRybGltaXQpOworICAgICAgICAgICAgICAgdGVzdC50Y250ID0gMTsKICAgICAgICAgICAg
-ICAgICByZXR1cm47CiAgICAgICAgIH0KClBsZWFzZSBsZXQgbWUga25vdyB5b3VyIG9waW5pb25z
-LCBzaG91bGQgSSBzcXVhc2ggdGhlIGFib3ZlIGNoYW5nZXMKaW50byB0aGlzIHBhdGNoIG9yIHNo
-b3VsZCBJIHNlbmQgYSBzbWFsbCBwYXRjaCBzZXJpZXMgd2l0aCB0d28gcGF0Y2hlcz8KClRoYW5r
-cywKVGllemh1CgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0
-L2xpc3RpbmZvL2x0cAo=
+On Tue, Jul 08, 2025 at 03:17:06PM +0800, Tiezhu Yang wrote:
+> In the Linux kernel, LoongArch uses the generic syscall table which
+> is defined in include/uapi/asm-generic/unistd.h, and also there is
+> no __ARCH_WANT_SET_GET_RLIMIT in arch/loongarch/include/asm/unistd.h,
+> so __NR_getrlimit is not implemented on LoongArch.
+> 
+> That is to say, getrlimit are superseded with prlimit64. There is no
+> need to compare the return value and errno about the syscall numbers
+> __NR_prlimit64 and __NR_getrlimit, just check this case and then skip
+> the test.
+> 
+> Without this patch:
+> 
+> $ /opt/ltp/testcases/bin/getrlimit03
+> ...
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(0) returned 0 (SUCCESS) but __NR_getrlimit(0) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(1) returned 0 (SUCCESS) but __NR_getrlimit(1) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(2) returned 0 (SUCCESS) but __NR_getrlimit(2) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(3) returned 0 (SUCCESS) but __NR_getrlimit(3) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(4) returned 0 (SUCCESS) but __NR_getrlimit(4) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(5) returned 0 (SUCCESS) but __NR_getrlimit(5) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(6) returned 0 (SUCCESS) but __NR_getrlimit(6) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(7) returned 0 (SUCCESS) but __NR_getrlimit(7) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(8) returned 0 (SUCCESS) but __NR_getrlimit(8) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(9) returned 0 (SUCCESS) but __NR_getrlimit(9) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(10) returned 0 (SUCCESS) but __NR_getrlimit(10) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(11) returned 0 (SUCCESS) but __NR_getrlimit(11) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(12) returned 0 (SUCCESS) but __NR_getrlimit(12) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(13) returned 0 (SUCCESS) but __NR_getrlimit(13) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(14) returned 0 (SUCCESS) but __NR_getrlimit(14) returned -1 (ENOSYS)
+> getrlimit03.c:102: TFAIL: __NR_prlimit64(15) returned 0 (SUCCESS) but __NR_getrlimit(15) returned -1 (ENOSYS)
+> 
+> Summary:
+> passed   0
+> failed   16
+> broken   0
+> skipped  0
+> warnings 0
+> 
+> With this patch:
+> 
+> $ /opt/ltp/testcases/bin/getrlimit03
+> ...
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> getrlimit03.c:167: TCONF: __NR_getrlimit not implemented: ENOSYS (38)
+> 
+> Summary:
+> passed   0
+> failed   0
+> broken   0
+> skipped  16
+> warnings 0
+> 
+> How to reproduce:
+> 
+> git clone https://github.com/linux-test-project/ltp.git
+> cd ltp
+> make autotools
+> ./configure
+> make all
+> sudo make install
+> /opt/ltp/testcases/bin/getrlimit03
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  testcases/kernel/syscalls/getrlimit/getrlimit03.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+> index 604082ccf..2d79057da 100644
+> --- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+> +++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+> @@ -162,6 +162,11 @@ static void run(unsigned int resource)
+>  	errno = 0;
+>  	ret_ul = getrlimit_ulong(resource, &rlim_ul);
+>  	errno_ul = errno;
+> +	if (errno_ul == ENOSYS) {
+> +		tst_res(TCONF | TERRNO,
+> +			"%s not implemented", __NR_getrlimit_ulong_str);
+> +		return;
+> +	}
+
+Maybe following change can fix your issue since tst_syscall will
+handle ENOSYS. You can have a try, thanks.
+
+diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+index 604082ccf..aad27a402 100644
+--- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
++++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+@@ -77,7 +77,7 @@ struct rlimit_ulong {
+
+ static int getrlimit_ulong(int resource, struct rlimit_ulong *rlim)
+ {
+-       return syscall(__NR_getrlimit_ulong, resource, rlim);
++       return tst_syscall(__NR_getrlimit_ulong, resource, rlim);
+ }
+
+ const long RLIM_INFINITY_L = LONG_MAX;
+@@ -90,7 +90,7 @@ struct rlimit_long {
+
+ static int getrlimit_long(int resource, struct rlimit_long *rlim)
+ {
+-       return syscall(__NR_getrlimit, resource, rlim);
++       return tst_syscall(__NR_getrlimit, resource, rlim);
+ }
+ #endif
+
+
+>  
+>  	if (compare_retval(resource, ret_u64, errno_u64, ret_ul, errno_ul,
+>  			   __NR_getrlimit_ulong_str) ||
+> -- 
+> 2.48.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
