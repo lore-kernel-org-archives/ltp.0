@@ -4,91 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E84BBC83F03
-	for <ltp@archiver.kernel.org>; Wed,  9 Jul 2025 14:36:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45DF6C83F03
+	for <ltp@archiver.kernel.org>; Wed,  9 Jul 2025 15:15:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1752071780; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=GCJUKz2ZhRjgJarU5BusTJU9rEGGLhZaOGmcrg2lYyY=;
- b=j2dPddvBnEiZJFTs+qBTB5IpuqnQk8XgIF4BeMBDMkIX3Ob0VxBxPXOLeNO4zsol+PQUr
- NKA+djgHkp1wpaf/CB1FNTAIAec2g1G4Mss++cLdfBFVGVPfV2ER2ADIUuXPH4xVh4LgifK
- bTyt79pyXCXfudfsezOuJYxvsBHUjTg=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1752074109; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=Fmr7OK1+V8ougOILkboA1aag5FaYpvfTr72cGEKI7qM=;
+ b=rPnzMVLYf7giPWfGtFBcERxcmukjPJH8cAcl7U4srM0oYkA2u9g1FIdqJ/kA61OUGVFwN
+ 23Dfzf9XN0IgTv/PkE5Bxy8nJYj1JQrcKiQNp5/3UnAMWNwNbLTn+f/5K8JPtrWExxZGopU
+ dUkWsRyCZO1RuyQe0FAgujBkLso20aQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 712983CAC65
-	for <ltp@archiver.kernel.org>; Wed,  9 Jul 2025 16:36:20 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 9F1D63CAC6A
+	for <ltp@archiver.kernel.org>; Wed,  9 Jul 2025 17:15:09 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 62FBF3C8C3D
- for <ltp@lists.linux.it>; Wed,  9 Jul 2025 16:35:58 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 3A42F3CA304
+ for <ltp@lists.linux.it>; Wed,  9 Jul 2025 17:14:49 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 98DF5609247
- for <ltp@lists.linux.it>; Wed,  9 Jul 2025 16:35:57 +0200 (CEST)
-Received: by mail-wr1-x434.google.com with SMTP id
- ffacd0b85a97d-3a57ae5cb17so13074f8f.0
- for <ltp@lists.linux.it>; Wed, 09 Jul 2025 07:35:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1752071757; x=1752676557; darn=lists.linux.it;
- h=in-reply-to:content-transfer-encoding:content-disposition
- :mime-version:references:message-id:subject:cc:to:from:date:from:to
- :cc:subject:date:message-id:reply-to;
- bh=Z6Vc8YuJV5E5dK+UuErYRwh+Xngxbs+BHDg9LI1oXK0=;
- b=E8/9dGFQaHmD0QkUSosPEUqGEdTTuid8wBT8VVGb6NZN/hPwRpHkBo99xjRI4VGeLk
- 0+CxGT8gdzxype3voLGxes90TT9l3yS4Z2aPAOwPSPiuhig8/tKklGpCS99cT5L1E+t0
- AEYPvLwtKebwQSSDjvntzfQsJp9P/CkuUG0X1pQbKOqndN+aiHz0YpEozTU9SpeZ8lEJ
- /FTpREB5jTUjsq+zAmYSyyFgxTd8LuNVdkZyGRq0/SuKq2a/KCauNq3VLaO54/+wJWDD
- fG6J+zqCkKlXVRNy1gRxZ73+6b1AOOVlw30VLnbsKuZuV51mL0vJ0XuZ0q4IJ4pAKvUF
- PLRQ==
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3D4441A01084
+ for <ltp@lists.linux.it>; Wed,  9 Jul 2025 17:14:47 +0200 (CEST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 569CoduV009974
+ for <ltp@lists.linux.it>; Wed, 9 Jul 2025 15:14:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+ cc:content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=qcppdkim1; bh=miGQOFmxto0a+4i4oS4UdZRI6Pwt6CCfGwC
+ P2u8Qly0=; b=IhsMhUXQhfYrT4O/sXlTd/EG3MbWJYzvSOokPAzW5BLp7j0Qz5O
+ qMYYEs7Wp+eUjD0Gp5U8LABDW8DD/1l5WBoLXvFBBsh5C+Gd7gMMtb7PA5ilrUw/
+ 7MnTfu9HGYG89rwWpitkqhTwqUYIjJuB9+Q/x7sPb2xThiSzCOjh13IQXVK7RlX4
+ GRCWkSo+rigj01IyUQ80v0QMUQkUEQpIy12bchNEeEJDg8bypFQht/SIgctE9gC7
+ ODGp1Rf3g1DAuEDDBxlZ8zeLAf7q8BFywZAgBkU0bGQX6FnDkrBtr8HHvc2jijTH
+ gPv5dcgynMA1QRmZOnz5wKZStkVGcsJ3K2g==
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200])
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 47sm9dsh6c-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+ for <ltp@lists.linux.it>; Wed, 09 Jul 2025 15:14:45 +0000 (GMT)
+Received: by mail-pl1-f200.google.com with SMTP id
+ d9443c01a7336-235c897d378so131205ad.1
+ for <ltp@lists.linux.it>; Wed, 09 Jul 2025 08:14:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1752071757; x=1752676557;
- h=in-reply-to:content-transfer-encoding:content-disposition
- :mime-version:references:message-id:subject:cc:to:from:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=Z6Vc8YuJV5E5dK+UuErYRwh+Xngxbs+BHDg9LI1oXK0=;
- b=dyHexxqaORqVcmigtrSu1E8mYFLxrQc0bbLcC9w5wXgyvU0RqAYt1N62E8/Lc0y7UH
- Xco2UCr5SKNIzH3sM5B+BkOTLWPa7DugRrTJo9bbPWaXL24eB97OOejCYkpbkbNnFEdc
- GiarR9H3tg9toih0/HHRY9unFrKEdIy5dp9bUk/F3JItyUTPWqZSwYoJFuQmLSvTgIOx
- dzyYUdYeCDFBge8TAwsJ1jB8CnnNHbvdWb3eKypnI0oO1HGNjPzn9hLnVyt4SDP8tPNI
- fqGKPiMhyw/gD6q6ahHrPQ0/JCgy1svJM1T6PalofCID5LqTMSDsxHoCMLhgWOHAxZna
- Ebjg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXL3HcFGEzupMD3XuMtXKapxuJZP/rMK1A95belWvtVLo6H0ioMrYGvqUYioEdWP4IuddE=@lists.linux.it
-X-Gm-Message-State: AOJu0YwXiqB4D09JJjRjeyidKsmOXJKNVisPsDSaHvrhWgEdPgW0KaMk
- GH2Y9140McWBOm9xJ/2aRzSD00nBag/f7OV6SaiGz8mxZ9NCv9EUD7Q6jcDFYYioIw==
-X-Gm-Gg: ASbGnct5i8qXORuvEGxnq9s6PBUYbQtyVAxNIBqniQl0Xvr5wMkXkFjLLin0ylCv5R6
- C6Voo4+qDzZZTj3sY4qFIjHo2ZOP9OIDlfqv7ON4sEBfCqKN2U3iXoXt8PUH50eo09aXvIClqNA
- fBnOnliQ2f64MBGK4Hn0Y7eS2fkW90eDsgEm6KTC5eE0HyRw2ZFjmJAhVLgnj7mo+6nY6/9wBR2
- 9Q5x/BXaTQ/PGrBRH5pDkKmvXZPk0mOyLW/SAMQkR1P1t1saD4wvUZTVyE8K1Br00mjQMpIqcpS
- n0mDRNwL/I5NNe/7CIAOZMI9Y7knkZ/rcMHse9fKh2MmfXdQShC7pODxqJMIwg==
-X-Google-Smtp-Source: AGHT+IFDNuOplHvChiEdcKKqFJEu6LoUoKePvqNCVknYzEb52ul+/f3iVPXUQ7TkFGvvbuUMMTh8aA==
-X-Received: by 2002:a05:6000:26c2:b0:3a4:f918:9db9 with SMTP id
- ffacd0b85a97d-3b5e78d7cc7mr154429f8f.32.1752071756902; 
- Wed, 09 Jul 2025 07:35:56 -0700 (PDT)
-Received: from MiWiFi-CR6608-srv ([202.127.77.110])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-74ce43d67fbsm16006756b3a.178.2025.07.09.07.35.54
+ d=1e100.net; s=20230601; t=1752074084; x=1752678884;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=miGQOFmxto0a+4i4oS4UdZRI6Pwt6CCfGwCP2u8Qly0=;
+ b=fpLmU48FdaaaRCpM3AwU4rlOaVfULNowCn3oLeIkbgxJDS6cpPP04PZ+hUCltOu3Y2
+ X8CdfAWkDxk81AOripGnIyx5oNg16sc1QvlN3Dkwgz+Y40pSWH0M72QsPKLICCO+52IT
+ a3/23aMLTmvwQLsadNJHqtQn0DkIN0oG1Mt+FaEX+aN6IchSXlOBWtev9/UK5DY0zH0L
+ wal9if/9Bhzx6cMHayASw6V4IqYGkPPwgKJFZ+lM/w4ptoq9PA6awhSxpeLx9Ik6PgXz
+ v1uQzqjXm/CEjHwWMDzqLKIlQ2IuBj9OVUpa7qyaF1onstMBiipGU5BQ1zkc5qK+OYsM
+ sVgw==
+X-Gm-Message-State: AOJu0Yz19iH6XhZX0b2K5yFwKxmBDGFiEiqZb2aP53FL87wI1FiTGD++
+ PS63bvqu97K4dZNp6Nge5SKyxUH6//Wy0ek4A80CFYfJEaepdrgpbl1iYOmTlSp98o1zeDlQrkj
+ eZabLur2X//WXdgH06fQeKbWXnh7+wKI+uN+D42sCBktt87w/gc62q+CmVfA8/A==
+X-Gm-Gg: ASbGnctT7F1bZurDL0M+6US2CBsYUauGI6TJlm5S/c02SsploWGO6FJskXX8RGO9jkh
+ kYCueRQReyRp5oTchlSExd8N08bfFXFfOYOCTHF20iKToYHHJfsDd0cgxsFsEE3tDwrJEbJOtLu
+ 3XdWeOUih4PNUiNaE55eld40TEnMNVi1qHqdcMMcYcZOz3YFcdNxYETn1cJ1uWvjJCjGDG2BKHU
+ dUDt5DzP9sF3jRny7NGAA1pMEmNVwHZrLwUrmvmCyCkijoYBH/kWpT3zLnchclN6djgBDAyrlpQ
+ NTW1UOEbeMzqzUMo58bBmsNSEpZIBXP1PFy9M9vsGpYUnR7uQD/Xvfi7NXWAsaUxGVFnw3o2OIp
+ q
+X-Received: by 2002:a17:903:74e:b0:234:ed31:fc94 with SMTP id
+ d9443c01a7336-23ddb312601mr30207855ad.26.1752074084019; 
+ Wed, 09 Jul 2025 08:14:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEE71IoyUlNs9TNddPM9BPVHvlNOsG9jbS6PESvBbruMy55wk5AOqVg77t40NsC/AyRTprqxQ==
+X-Received: by 2002:a17:903:74e:b0:234:ed31:fc94 with SMTP id
+ d9443c01a7336-23ddb312601mr30207435ad.26.1752074083361; 
+ Wed, 09 Jul 2025 08:14:43 -0700 (PDT)
+Received: from hu-mdtipton-lv.qualcomm.com (Global_NAT1.qualcomm.com.
+ [129.46.96.20]) by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-23dc3090346sm92661065ad.168.2025.07.09.08.14.42
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 09 Jul 2025 07:35:56 -0700 (PDT)
-Date: Wed, 9 Jul 2025 22:35:16 -0400
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <aG8m5AiKWMNFxXyQ@MiWiFi-CR6608-srv>
-References: <20250708-conversions-mremap-v1-0-aa043b0182fc@suse.com>
- <20250708-conversions-mremap-v1-2-aa043b0182fc@suse.com>
- <456d5d63-737f-441e-bc3f-4fa012983264@suse.com>
+ Wed, 09 Jul 2025 08:14:42 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Wed,  9 Jul 2025 08:14:39 -0700
+Message-Id: <20250709151439.2840206-1-mike.tipton@oss.qualcomm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <456d5d63-737f-441e-bc3f-4fa012983264@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-Proofpoint-GUID: 492GvEOqy5HqWZZXbI1OIAK8kJ9TBWFG
+X-Authority-Analysis: v=2.4 cv=W7k4VQWk c=1 sm=1 tr=0 ts=686e8765 cx=c_pps
+ a=IZJwPbhc+fLeJZngyXXI0A==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=Wb1JkmetP80A:10 a=VwQbUJbxAAAA:8 a=EUspDBNiAAAA:8 a=_eI-3EgdN9IBFPxNkDQA:9
+ a=uG9DUKGECoFWVXl0Dc02:22
+X-Proofpoint-ORIG-GUID: 492GvEOqy5HqWZZXbI1OIAK8kJ9TBWFG
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzA5MDEzNyBTYWx0ZWRfX7li0Huh8MJGw
+ f9RmuFt0hiaIxaoQQ90mRpbXBj5a2J3kumr3vStcBCjxj2kDnBHtJme8HfHIUNIzUXjYynrXLDH
+ tVVF9ZVEbhCgZNf2SdFmpW4grC2KD5amyIkpe/x3+SRZNQG5n2mnU0cwH5+wnZ3HUiBY0m2/l3e
+ tWmUs4M7pY1WmDTIAazGd4Au6V5JlxJsXjR7antxFCuxGwjyhhp/4i5CUnYB68tJgVTJjSNuW0Y
+ kmrnVF6ofIXBoLEPkwhE7+WTHJVNx5CIxIzSXfTpu/SqX8Zx1OvLzLpsJEg8nSAT8c2RkAQR9RT
+ x62JdVC0sbclCeaUwMkcIqYOwiqsJGgc/ziJ0nYEtF99ZDH9D7NjHIrRyzywrFg9cYiplW4/qK1
+ EBKqzCVMeOB9UZKRBfKe/HFF8Y4+5vUUHPusYIDlDCWhR+aK58nqItGDCyCGTNtj1GRA+YOV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-07-09_03,2025-07-08_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 lowpriorityscore=0 clxscore=1015 suspectscore=0 phishscore=0
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 bulkscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2507090137
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/7] lib: safe_macros: Add SAFE_MREMAP
+Subject: [LTP] [PATCH v3] device-drivers/cpufreq_boost: Don't hardcode to
+ CPU0
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,73 +125,145 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>,
- Ricardo =?iso-8859-1?Q?B=2E_Marli=E8re?= <rbm@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Mike Tipton via ltp <ltp@lists.linux.it>
+Reply-To: Mike Tipton <mike.tipton@oss.qualcomm.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gV2VkLCBKdWwgMDksIDIwMjUgYXQgMDM6MTY6MDJQTSArMDIwMCwgQW5kcmVhIENlcnZlc2F0
-byB2aWEgbHRwIHdyb3RlOgo+IEhpIQo+IAo+IE9uIDcvOC8yNSAxMDoxMSBQTSwgUmljYXJkbyBC
-LiBNYXJsacOocmUgdmlhIGx0cCB3cm90ZToKPiA+IEZyb206IFJpY2FyZG8gQi4gTWFybGnDqHJl
-IDxyYm1Ac3VzZS5jb20+Cj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IFJpY2FyZG8gQi4gTWFybGnD
-qHJlIDxyYm1Ac3VzZS5jb20+Cj4gPiAtLS0KPiA+ICAgaW5jbHVkZS9zYWZlX21hY3Jvc19mbi5o
-ICB8ICAyICsrCj4gPiAgIGluY2x1ZGUvdHN0X3NhZmVfbWFjcm9zLmggfCAgNCArKysrCj4gPiAg
-IGxpYi9zYWZlX21hY3Jvcy5jICAgICAgICAgfCAxNiArKysrKysrKysrKysrKysrCj4gPiAgIDMg
-ZmlsZXMgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvaW5j
-bHVkZS9zYWZlX21hY3Jvc19mbi5oIGIvaW5jbHVkZS9zYWZlX21hY3Jvc19mbi5oCj4gPiBpbmRl
-eCBkMjU2MDkxYjc2YWQxMGIwNmIyOWUzZmQ1ZmFkODg1M2ZhYTE0YzA4Li40ODkyNzA2ZmEzMTFh
-ZTIzMTMxY2QxYmEzZDM2ZThlYjMyNTdkOWM0IDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS9zYWZl
-X21hY3Jvc19mbi5oCj4gPiArKysgYi9pbmNsdWRlL3NhZmVfbWFjcm9zX2ZuLmgKPiA+IEBAIC02
-OSw2ICs2OSw4IEBAIGludCBzYWZlX21rZGlyKGNvbnN0IGNoYXIgKmZpbGUsIGNvbnN0IGludCBs
-aW5lbm8sCj4gPiAgIGludCBzYWZlX3JtZGlyKGNvbnN0IGNoYXIgKmZpbGUsIGNvbnN0IGludCBs
-aW5lbm8sCj4gPiAgICAgICAgICAgICAgICAgIHZvaWQgKCpjbGVhbnVwX2ZuKSh2b2lkKSwgY29u
-c3QgY2hhciAqcGF0aG5hbWUpOwo+ID4gK3ZvaWQqIHNhZmVfbXJlbWFwKGNvbnN0IGNoYXIgKmZp
-bGUsIGNvbnN0IGludCBsaW5lbm8sIHZvaWQgKCpjbGVhbnVwX2ZuKSh2b2lkKSwKPiA+ICsJCXZv
-aWQgKm9sZF9hZGRyZXNzLCBzaXplX3Qgb2xkX3NpemUsIHNpemVfdCBuZXdfc2l6ZSwgaW50IGZs
-YWdzKTsKPiA+ICAgaW50IHNhZmVfbXVubWFwKGNvbnN0IGNoYXIgKmZpbGUsIGNvbnN0IGludCBs
-aW5lbm8sCj4gPiAgICAgICAgICAgICAgICAgICB2b2lkICgqY2xlYW51cF9mbikodm9pZCksIHZv
-aWQgKmFkZHIsIHNpemVfdCBsZW5ndGgpOwo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvdHN0X3Nh
-ZmVfbWFjcm9zLmggYi9pbmNsdWRlL3RzdF9zYWZlX21hY3Jvcy5oCj4gPiBpbmRleCAxOTUwNGJl
-YjU3YWQzNzljODM1YTEzZWQ1ZDM1ZmUwNmU0MmE2ZWQ2Li45Y2E3MDMxOWYwODZkZWE0Mzc0Njdj
-Nzc1ZGQ5Y2I0OGI5NTY1ODNlIDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS90c3Rfc2FmZV9tYWNy
-b3MuaAo+ID4gKysrIGIvaW5jbHVkZS90c3Rfc2FmZV9tYWNyb3MuaAo+ID4gQEAgLTkzLDYgKzkz
-LDEwIEBAIHZvaWQgKnNhZmVfcmVhbGxvYyhjb25zdCBjaGFyICpmaWxlLCBjb25zdCBpbnQgbGlu
-ZW5vLCB2b2lkICpwdHIsIHNpemVfdCBzaXplKTsKPiA+ICAgI2RlZmluZSBTQUZFX1JNRElSKHBh
-dGhuYW1lKSBcCj4gPiAgIAlzYWZlX3JtZGlyKF9fRklMRV9fLCBfX0xJTkVfXywgTlVMTCwgKHBh
-dGhuYW1lKSkKPiA+ICsjZGVmaW5lIFNBRkVfTVJFTUFQKG9sZF9hZGRyZXNzLCBvbGRfc2l6ZSwg
-bmV3X3NpemUsIGZsYWdzKSAgICAgICAgICAgICAgXAo+ID4gKwlzYWZlX21yZW1hcChfX0ZJTEVf
-XywgX19MSU5FX18sIE5VTEwsIChvbGRfYWRkcmVzcyksIChvbGRfc2l6ZSksIFwKPiA+ICsJCSAg
-ICAobmV3X3NpemUpLCAoZmxhZ3MpKQo+ID4gKwo+ID4gICAjZGVmaW5lIFNBRkVfTVVOTUFQKGFk
-ZHIsIGxlbmd0aCkgXAo+ID4gICAJc2FmZV9tdW5tYXAoX19GSUxFX18sIF9fTElORV9fLCBOVUxM
-LCAoYWRkciksIChsZW5ndGgpKQo+ID4gZGlmZiAtLWdpdCBhL2xpYi9zYWZlX21hY3Jvcy5jIGIv
-bGliL3NhZmVfbWFjcm9zLmMKPiA+IGluZGV4IDU3YmMwYmM3NDk3MTJmMWI4OTA1OTQxMjNiNmI5
-ZjNjYWJjZTgyMWEuLjRiYjRjNzAwZjFkMjVlOTUyMGUzZDVhMmY5OTY5YmZlY2FmZDI1Y2MgMTAw
-NjQ0Cj4gPiAtLS0gYS9saWIvc2FmZV9tYWNyb3MuYwo+ID4gKysrIGIvbGliL3NhZmVfbWFjcm9z
-LmMKPiA+IEBAIC0yMTUsNiArMjE1LDIyIEBAIGludCBzYWZlX3JtZGlyKGNvbnN0IGNoYXIgKmZp
-bGUsIGNvbnN0IGludCBsaW5lbm8sIHZvaWQgKCpjbGVhbnVwX2ZuKSAodm9pZCksCj4gPiAgIAly
-ZXR1cm4gKHJ2YWwpOwo+ID4gICB9Cj4gPiArdm9pZCAqc2FmZV9tcmVtYXAoY29uc3QgY2hhciAq
-ZmlsZSwgY29uc3QgaW50IGxpbmVubywgdm9pZCAoKmNsZWFudXBfZm4pKHZvaWQpLAo+ID4gKwkJ
-dm9pZCAqb2xkX2FkZHJlc3MsIHNpemVfdCBvbGRfc2l6ZSwgc2l6ZV90IG5ld19zaXplLCBpbnQg
-ZmxhZ3MpCj4gPiArewo+ID4gKwl2b2lkICpydmFsOwo+ID4gKwo+ID4gKwlydmFsID0gbXJlbWFw
-KG9sZF9hZGRyZXNzLCBvbGRfc2l6ZSwgbmV3X3NpemUsIGZsYWdzKTsKPiA+ICsKPiA+ICsJaWYg
-KHJ2YWwgPT0gTUFQX0ZBSUxFRCkgewo+ID4gKwkJdHN0X2Jya21fKGZpbGUsIGxpbmVubywgVEJS
-T0sgfCBURVJSTk8sIGNsZWFudXBfZm4sCj4gPiArCQkJICAibXJlbWFwKCVwLCV6dSwlenUsJWQp
-IGZhaWxlZCIsIG9sZF9hZGRyZXNzLCBvbGRfc2l6ZSwKPiA+ICsJCQkgIG5ld19zaXplLCBmbGFn
-cyk7Cj4gPiArCX0KPiBIZXJlIHdlIGNhbiBoYW5kbGUgYWxzbyB1bmV4cGVjdGVkIHJldHVybiB2
-YWx1ZXMuIFBsZWFzZSBjaGVjayBzYWZlX211bm1hcCgpCgpCYXNlIGJlbG93IG1hbiBwYWdlIG9m
-IG1yZW1hcCAsIGl0IHdpbGwgcmV0dXJuIGEgcG9pbnRlciBvciBNQVBfRkFJTEVELiBTbyBpIGd1
-ZXNzIGFib3ZlIGxvZ2ljIGNvdmVyZWQgYWxsIHNpdHVhdGlvbi4KClJFVFVSTiBWQUxVRQogICAg
-ICAgT24gc3VjY2VzcyBtcmVtYXAoKSByZXR1cm5zIGEgcG9pbnRlciB0byB0aGUgbmV3IHZpcnR1
-YWwgbWVtb3J5IGFyZWEuICBPbiBlcnJvciwgdGhlIHZhbHVlIE1BUF9GQUlMRUQgKHRoYXQgaXMs
-ICh2b2lkICopIC0xKSBpcyByZXR1cm5lZCwgYW5kIGVy4oCQCiAgICAgICBybm8gaXMgc2V0IHRv
-IGluZGljYXRlIHRoZSBlcnJvci4KCj4gPiArCj4gPiArCXJldHVybiBydmFsOwo+ID4gK30KPiA+
-ICsKPiA+ICAgaW50IHNhZmVfbXVubWFwKGNvbnN0IGNoYXIgKmZpbGUsIGNvbnN0IGludCBsaW5l
-bm8sIHZvaWQgKCpjbGVhbnVwX2ZuKSAodm9pZCksCj4gPiAgICAgICAgICAgICAgICAgICB2b2lk
-ICphZGRyLCBzaXplX3QgbGVuZ3RoKQo+ID4gICB7Cj4gPiAKPiAtIEFuZHJlYQo+IAo+IC0tIAo+
-IE1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAoK
-LS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0
-cAo=
+Some systems don't support boost on every CPU, such as on many Qualcomm
+chipsets. And if boost isn't supported on CPU0, then the test will fail
+since there's no performance improvement.
+
+Instead of hardcoding CPU0, find the first CPU that belongs to a cpufreq
+policy with boost enabled.
+
+Signed-off-by: Mike Tipton <mike.tipton@oss.qualcomm.com>
+---
+Changes in v3:
+- Abort when no CPUs report supporting boost instead of assuming CPU0.
+- Link to v2: https://lore.kernel.org/ltp/20250630145128.1254269-1-mike.tipton@oss.qualcomm.com/
+
+Changes in v2:
+- Use proper maxspeed buf size in snprintf.
+- Link to v1: https://lore.kernel.org/ltp/20250626194707.3053036-1-mike.tipton@oss.qualcomm.com/
+
+ .../device-drivers/cpufreq/cpufreq_boost.c    | 58 ++++++++++++++++---
+ 1 file changed, 50 insertions(+), 8 deletions(-)
+
+diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+index 67917b3fea25..17d89c0cc164 100644
+--- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
++++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+@@ -55,10 +55,14 @@ static int id = -1;
+ 
+ static int boost_value;
+ 
+-const char governor[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_governor";
++static int cpu;
++
++static const char _governor[] = SYSFS_CPU_DIR "cpu%d/cpufreq/scaling_governor";
++static char governor[64];
+ static char governor_name[16];
+ 
+-const char maxspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_max_freq";
++static const char _maxspeed[] = SYSFS_CPU_DIR "cpu%d/cpufreq/scaling_max_freq";
++static char maxspeed[64];
+ 
+ static void check_set_turbo(char *file, char *off)
+ {
+@@ -84,6 +88,40 @@ static void cleanup(void)
+ 		FILE_PRINTF(governor, "%s", governor_name);
+ }
+ 
++static int find_boost_cpu(void)
++{
++	char buf[64];
++	int fd, i;
++
++	/*
++	 * The files we're looking for only exist for acpi_cpufreq. Continue
++	 * assuming CPU0 for intel_pstate.
++	 */
++	if (!strcmp(cdrv[id].name, "intel_pstate"))
++		return 0;
++
++	for (i = 0;; i++) {
++		snprintf(buf, sizeof(buf), SYSFS_CPU_DIR "cpu%d", i);
++		fd = open(buf, O_RDONLY);
++		if (fd == -1)
++			break;
++
++		close(fd);
++
++		snprintf(buf, sizeof(buf), SYSFS_CPU_DIR "cpu%d/cpufreq/boost", i);
++		fd = open(buf, O_RDONLY);
++		if (fd == -1)
++			continue;
++
++		close(fd);
++		tst_resm(TINFO, "found boost-capable CPU (CPU%d)", i);
++		return i;
++	}
++
++	tst_brkm(TCONF, NULL, "boost not supported by any CPUs");
++	return 0;
++}
++
+ static void setup(void)
+ {
+ 	int fd;
+@@ -109,6 +147,10 @@ static void setup(void)
+ 	tst_resm(TINFO, "found '%s' driver, sysfs knob '%s'",
+ 		cdrv[id].name, cdrv[id].file);
+ 
++	cpu = find_boost_cpu();
++	snprintf(governor, sizeof(governor), _governor, cpu);
++	snprintf(maxspeed, sizeof(maxspeed), _maxspeed, cpu);
++
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 
+ 	SAFE_FILE_SCANF(NULL, cdrv[i].file, "%d", &boost_value);
+@@ -120,16 +162,16 @@ static void setup(void)
+ 	if (!strcmp(cdrv[i].name, "intel_pstate") && boost_value == cdrv[i].off)
+ 		check_set_turbo(cdrv[i].file, cdrv[i].off_str);
+ 
+-	/* change cpu0 scaling governor */
++	/* change cpu scaling governor */
+ 	SAFE_FILE_SCANF(NULL, governor, "%s", governor_name);
+ 	SAFE_FILE_PRINTF(cleanup, governor, "%s", "performance");
+ 
+-	/* use only cpu0 */
++	/* use only a single cpu */
+ 	cpu_set_t set;
+ 	CPU_ZERO(&set);
+-	CPU_SET(0, &set);
++	CPU_SET(cpu, &set);
+ 	if (sched_setaffinity(0, sizeof(cpu_set_t), &set) < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "failed to set CPU0");
++		tst_brkm(TBROK | TERRNO, cleanup, "failed to set CPU%d", cpu);
+ 
+ 	struct sched_param params;
+ 	params.sched_priority = sched_get_priority_max(SCHED_FIFO);
+@@ -176,12 +218,12 @@ static void test_run(void)
+ 	/* Enable boost */
+ 	if (boost_value == cdrv[id].off)
+ 		SAFE_FILE_PRINTF(cleanup, cdrv[id].file, "%s", cdrv[id].on_str);
+-	tst_resm(TINFO, "load CPU0 with boost enabled");
++	tst_resm(TINFO, "load CPU%d with boost enabled", cpu);
+ 	boost_time = load_cpu(max_freq_khz);
+ 
+ 	/* Disable boost */
+ 	SAFE_FILE_PRINTF(cleanup, cdrv[id].file, "%s", cdrv[id].off_str);
+-	tst_resm(TINFO, "load CPU0 with boost disabled");
++	tst_resm(TINFO, "load CPU%d with boost disabled", cpu);
+ 	boost_off_time = load_cpu(max_freq_khz);
+ 
+ 	boost_off_time *= .98;
+-- 
+2.34.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
