@@ -4,98 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CE20C83F03
-	for <ltp@archiver.kernel.org>; Wed,  9 Jul 2025 13:40:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1752068421; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=07rZLFbTuCrxqUru8beQjFt+RlOG5FzPZ10nV81tVMs=;
- b=RP5tRCsHG6hs8FVuf1VM+1tWN9ZdYx/VMGfGsQvgAD5BxBF5kjchWRoQZsewCsl0sLlbJ
- tk9HjEVsprRSejnqXPWPn/PSeIA+RdrS6mXjOUxJikHsNVYexPOmSPYp6Srwivb6+l+HaBW
- +Snt1QgAlxUKTtQ49Xr2hhgcE/O7+ds=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52A82C83F09
+	for <ltp@archiver.kernel.org>; Wed,  9 Jul 2025 13:49:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D28853CAC6A
-	for <ltp@archiver.kernel.org>; Wed,  9 Jul 2025 15:40:21 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id BF2583CACF0
+	for <ltp@archiver.kernel.org>; Wed,  9 Jul 2025 15:49:25 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9A09A3CA066
- for <ltp@lists.linux.it>; Wed,  9 Jul 2025 15:39:59 +0200 (CEST)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+ by picard.linux.it (Postfix) with ESMTPS id A6C303CA066
+ for <ltp@lists.linux.it>; Wed,  9 Jul 2025 15:49:08 +0200 (CEST)
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com
+ [IPv6:2607:f8b0:4864:20::530])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D513460026A
- for <ltp@lists.linux.it>; Wed,  9 Jul 2025 15:39:58 +0200 (CEST)
-Received: by mail-wm1-x329.google.com with SMTP id
- 5b1f17b1804b1-4538a2fc7ffso7479305e9.0
- for <ltp@lists.linux.it>; Wed, 09 Jul 2025 06:39:58 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6CD49609253
+ for <ltp@lists.linux.it>; Wed,  9 Jul 2025 15:49:07 +0200 (CEST)
+Received: by mail-pg1-x530.google.com with SMTP id
+ 41be03b00d2f7-b26f7d2c1f1so7541265a12.0
+ for <ltp@lists.linux.it>; Wed, 09 Jul 2025 06:49:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1752068398; x=1752673198; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=0EWhJ7au8HJrxEBjewO2J427zxG98QOihGuBzmImprU=;
- b=PUb0S1iSTD52hJt74Tqud0rCaalFfkI5zEbtnwb+4Bh71Ehn8FrXxNbroQbf7Py2mz
- GNwe6cSlk6bTocs69kpBajZI+AGY/29ZNwzCy7Tb/GSR6FCSNfJ8td0zdzImETgkkEVl
- 2pYEGQMbq+TzZOBDcDDgdlFHCw6dnPLx79RBw2BTm/b9rlBvwT9zO1Ybc8LFE+Sp+1Tl
- KUFunntgNMY4tl3XJ2zduoihY2sxWEDMDWfbQ5su+fHZ4qoUgodqbl7izmOd4UilcgKz
- pSs5ln3i+YVNkyKGxFXWW4YNWIYXErdEOuaBfTK96x655/n32Lxe6VsC01WA25icv7fS
- HSKw==
+ d=linaro.org; s=google; t=1752068945; x=1752673745; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=8ateKzkbCHc5sIaL8yEpNYKQqvJ9cJ8N1E9YOvRIl00=;
+ b=LxvJP8rtGuS91t3GuI0empIY6dO9dPNYVZX28muZkpjf4Lx5mIyZg2Jho8uBj9nnJV
+ Kt5IOmM3DjveKs1TuM7COUBcWIlvdyKkz3kkUMDJJR0nhT6EbCM7gvavXetmeSU2xY9g
+ tnDFfvgxHUhM2IJqU4BVf1TTBkvjxRzoPJRCn9m/tjkSRL0aPDhW86z/zOWnmL+sQ7Z0
+ SQs49aaEgQdW++Byt6a4oY49TktsOwLt69w39H8KTlaBTPEhq8hujlM0rst0G/ye+aef
+ GgQSoOfYwUHOhQtLTokKtw0JvpMZHdsY7jj5F/DV4dvSyXNulZ7zsixv4w5anyny4MDM
+ lMYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1752068398; x=1752673198;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=0EWhJ7au8HJrxEBjewO2J427zxG98QOihGuBzmImprU=;
- b=NRAM22FFqFnMW3PA8BkZZJohUNfD3LD5RT7BUQyPOi1xI1FDTcJzWI1e9aVgCE5UyA
- NSgCXiBEvGfkQPpCDPJMSBWNWAFimb6rK4nY/pijUeEV7V6MrITT4HPSX5c3Tqyz7Gd7
- jZFH5dskmeuAhfXBbPHeSHhtI60IotvH3Iowo1xIGbGl0xF0GLmzuwXpn4wYI51Yg/WK
- 1fna+5vxbYZzWInrJpsJhpQGJat+kLlC47ke+uj4Har/vPYN/y+7lRvmZjmk1zqlga+q
- o/aSX75D5d7AO/DaKO3IXBH3ZYT1V/M13vyVEStCrbCvdcxwvt+/5jSCkimiBhCmMTzN
- 5UOw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVnBzStq6s/lZSTf0xoN7+drR6z5CpojX3WxA3KZFc5h6UGsdRX5CrbLmL6RVqPM3SwekI=@lists.linux.it
-X-Gm-Message-State: AOJu0YxiUNTEukIjszfD81DMJY+TW/4gt5lpyvmeDOQD4QI049+4RmBl
- /UKUNbzg0f1/IHLAhERnt1c5zuuAdCXXRC6mkcAAosowAFDm5iilgCsAaMHnH5Cdqwo4AgZT72Y
- XlLQ3OseSHA==
-X-Gm-Gg: ASbGncvSLr90L3q3xUbyxxrnRJJYwanyVzEfJVd7f+5m92ZWGsTHKKXCyd+R5fu2IUN
- I1kJtWH5kfD/2DmDNm0l3E71cIvdrMpBLRTianIfTdPfEKO8HPp7ptXW5wK/ZkkFYT3HjusTe5R
- bRe5itmhE9tl5xYbDCUg5BaR+xTYHwYr0rmVgCDa/oAjJ+CpVOqf6PLijclikML3xC7NNidHpr4
- X97AJRM905RB5/onBoN8ZSj6xzOsbrvPOY41a6KubGoH33a6b7cIclQ7gMl2EBlYWWxYlQZssbc
- hNG+x1AUz1z1xAY2Wwmu6/TOID7NN9b3xm3xvwy+3c13mmSdDqzxtSoFPLfNdl68hdF5YqX2x9N
- 1TAfDu3Xv3pQtjUe8x1vyOhohRVfmw4ujOedVP2+33XFbxtqCHj5GAj15In6T7vLK0AnLJcggtH
- 2ZOFdOO4jI0nI2GupkxLb35UQtOhfkDXIZjQga
-X-Google-Smtp-Source: AGHT+IEdK7quw6KPOHvlJ2PWMjzIWqhaKgUz9lywrjMhv3kAls36f9Uj5mcDbTgeQu8cZi9v8z4yxQ==
-X-Received: by 2002:a5d:64c6:0:b0:3a5:1388:9a55 with SMTP id
- ffacd0b85a97d-3b5ddfb8af3mr6264183f8f.5.1752068398110; 
- Wed, 09 Jul 2025 06:39:58 -0700 (PDT)
-Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
- (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
- [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
- by smtp.gmail.com with ESMTPSA id
- 41be03b00d2f7-b38ee62f8bdsm14418711a12.57.2025.07.09.06.39.55
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 09 Jul 2025 06:39:57 -0700 (PDT)
-Message-ID: <ad8919eb-5803-4712-8da1-8744cfa76053@suse.com>
-Date: Wed, 9 Jul 2025 15:39:52 +0200
+ d=1e100.net; s=20230601; t=1752068945; x=1752673745;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=8ateKzkbCHc5sIaL8yEpNYKQqvJ9cJ8N1E9YOvRIl00=;
+ b=KygCVhxfe4mtFwbE4HHO0C4nMfKgrprq63ZcJMg3NlY6ASG97vX4wpE334n7m7/QD/
+ GLFX6B3YDHS8GS0mPmubOgWkPdCtwZwz2HlmSijLQj6q9fPaEWw+7LjnGgPBbYz1Xwur
+ 1wSvms5uY2QuABQ0fF+oSf0GW6wkwZZmROBCdN1vDRZmPS/LUhF9U8FM/081W2SZCN4g
+ 6RXmcD5bsS/h7WlmjDhxMuZhbknY2lr8l9WHz6qXIzPW6sNFau1Dl7Yg3hWz9LZo7JRB
+ ZtNEvC3ddA5Tm9zqrXqDZJN9r6ODFmeKWjKMKPXt5XHh+peyu8Mw6QZUIjSUDxu4a7bU
+ Hl7g==
+X-Gm-Message-State: AOJu0Yz0wAb9x2+P7jEJYgxo7BbcIqGtwzx7kNOIpwavjcKgb5euLfxe
+ STs2aJ3c7j4C6SqCJx3Ftgz+Rjg5YwEPv+HlnE4R3ja8OPT5XZSGzFXMFl0S/fH9CQCb1Uf9wSC
+ s2hZY9heN3NCbA4xp9kqIm16TWCbA/5HVicpWyHRhrMSADzw0lVKXmUQ=
+X-Gm-Gg: ASbGnct5s74eXjPI6x2/0uQ0xtwI49GrVvNK0gRAS71rtNxuDxOi61Ji9Fu7qENGOAP
+ iL6DfJo+VMEV44jf4VMaea7+zH2dH0NszpBd3ZQJmKZIpnnAz/PrQ0WTwVxVKCBt8HmhMEttWau
+ 9P4RXnJCkkaDVhG/axRXLggBrN8gY6jCrkItvJ1seBF+F9cXpbydnfh/UGF+DJrsopEG1cy5HAK
+ shJ
+X-Google-Smtp-Source: AGHT+IEQhV/nQ/B4d0iM22W5NrME2JaC25s+7CHkU0EidyyHVczc0JiUB1Lee+thAVIgRRGr45oEj47FGwEV1HtC4tQ=
+X-Received: by 2002:a17:90b:1c83:b0:312:1d2d:18e2 with SMTP id
+ 98e67ed59e1d1-31c2fda93a0mr4025868a91.20.1752068945122; Wed, 09 Jul 2025
+ 06:49:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: =?UTF-8?Q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>,
- Linux Test Project <ltp@lists.linux.it>
-References: <20250708-conversions-mremap-v1-0-aa043b0182fc@suse.com>
- <20250708-conversions-mremap-v1-4-aa043b0182fc@suse.com>
-Content-Language: en-US
-In-Reply-To: <20250708-conversions-mremap-v1-4-aa043b0182fc@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+References: <CA+G9fYvk9HHE5UJ7cdJHTcY6P5JKnp+_e+sdC5U-ZQFTP9_hqQ@mail.gmail.com>
+In-Reply-To: <CA+G9fYvk9HHE5UJ7cdJHTcY6P5JKnp+_e+sdC5U-ZQFTP9_hqQ@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 9 Jul 2025 19:18:53 +0530
+X-Gm-Features: Ac12FXzgk6k00MV94kKXG4l_JDYuhQNs3d5XgUxk-gImCMO8BtDoIe_cQgiLU2U
+Message-ID: <CA+G9fYs=3LHdf1ge1MiCoCOUpW=VjPdVWrNJX8+wi7u6N18j3Q@mail.gmail.com>
+To: LTP List <ltp@lists.linux.it>, open list <linux-kernel@vger.kernel.org>, 
+ lkft-triage@lists.linaro.org, linux-fsdevel@vger.kernel.org, 
+ linux-block <linux-block@vger.kernel.org>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 4/7] syscalls: mremap02: Convert to new API
+Subject: Re: [LTP] LTP: syscalls: TWARN ioctl(/dev/loop0, LOOP_SET_STATUS,
+ test_dev.img) failed EOPNOTSUPP (95)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,20 +85,227 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Jens Axboe <axboe@kernel.dk>, Christian Brauner <brauner@kernel.org>,
+ rbm@suse.com, Arnd Bergmann <arnd@arndb.de>, Anuj Gupta <anuj20.g@samsung.com>,
+ willy@infradead.org, "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Kanchan Joshi <joshi.k@samsung.com>,
+ Ben Copeland <benjamin.copeland@linaro.org>, Christoph Hellwig <hch@lst.de>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+On Tue, 8 Jul 2025 at 18:28, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> Regressions were observed while testing LTP syscalls cachestat01 and
+> other related tests on the next-20250702 Linux kernel across several devices.
+>
+> The issue appears to be related to the inability to configure /dev/loop0
+> via the LOOP_SET_STATUS ioctl, which returned EOPNOTSUPP
+> (Operation not supported). This results in a TBROK condition,
+> causing the test to fail.
 
-This test has been already covered by mremap05 that you are refactoring 
-in this patch-set.
+Anders, bisected this down to this commit id,
+   # first bad commit:
+       [9eb22f7fedfc9eb1b7f431a5359abd4d15b0b0cd]
+       fs: add ioctl to query metadata and protection info capabilities
 
-- Andrea
+> Test environments:
+> - arm64
+> - qemu-x86_64
+> - qemu-riscv
+>
+> Regression Analysis:
+> - New regression? Yes
+> - Reproducibility? Yes
+>
+> Regressions started from next-20250702 ( next-20250708)
+> Good: next-20250701
+> Bad: next-20250702
+>
+> Test regression: Linux next-20250702 TWARN ioctl(/dev/loop0,
+> LOOP_SET_STATUS, test_dev.img) failed EOPNOTSUPP (95) TBROK Failed to
+> acquire device
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> ## Test log
+> tst_buffers.c:57: TINFO: Test is using guarded buffers
+> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_cacQ9AfS0 as tmpdir (tmpfs filesystem)
+> tst_device.c:98: TINFO: Found free device 0 '/dev/loop0'
+> tst_device.c:190: TWARN: ioctl(/dev/loop0, LOOP_SET_STATUS,
+> test_dev.img) failed: EOPNOTSUPP (95)
+> tst_device.c:362: TBROK: Failed to acquire device
 
+Lore link,
+* https://lore.kernel.org/all/CA+G9fYvk9HHE5UJ7cdJHTcY6P5JKnp+_e+sdC5U-ZQFTP9_hqQ@mail.gmail.com/
+
+>
+> ## Source
+> * Kernel version: 6.16.0-rc4-next-20250702
+> * Git tree: https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next.git
+> * Git sha: 50c8770a42faf8b1c7abe93e7c114337f580a97d
+> * Git describe: next-20250702
+> * Project: https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250704/testrun/29017637
+> * Architectures: arm64, x86_64, riscv64.
+> * Toolchains: gcc-13 and clang-20
+> * Kconfigs: defconfig+ltp
+>
+> ## Build
+> * Test log: https://qa-reports.linaro.org/api/testruns/28986655/log_file/
+> * Test details:
+> https://regressions.linaro.org/lkft/linux-next-master/next-20250702/ltp-syscalls/cachestat01/
+> * Test history:
+> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250704/testrun/29017637/suite/ltp-syscalls/test/cachestat01/history/
+> * Build link: https://storage.tuxsuite.com/public/linaro/lkft/builds/2zJjY2EmRMul6P0UgjdOm4Ssiqh/
+> * Kernel config:
+> https://storage.tuxsuite.com/public/linaro/lkft/builds/2zJjY2EmRMul6P0UgjdOm4Ssiqh/config
+>
+> ## List of tests
+>   - cachestat01
+>   - cachestat04
+>   - chdir01
+>   - chmod09
+>   - close_range01
+>   - copy_file_range01
+>   - copy_file_range02
+>   - creat09
+>   - fallocate04
+>   - fallocate05
+>   - fallocate06
+>   - fanotify01
+>   - fanotify05
+>   - fanotify06
+>   - fanotify10
+>   - fanotify13
+>   - fanotify14
+>   - fanotify15
+>   - fanotify16
+>   - fanotify17
+>   - fanotify18
+>   - fanotify19
+>   - fanotify20
+>   - fanotify21
+>   - fanotify22
+>   - fanotify23
+>   - fchmodat2_01
+>   - fdatasync03
+>   - fgetxattr01
+>   - fremovexattr01
+>   - fremovexattr02
+>   - fsetxattr01
+>   - fsmount01
+>   - fsmount02
+>   - fsopen01
+>   - fsopen02
+>   - fspick01
+>   - fspick02
+>   - fsskipig01
+>   - fsskipig02
+>   - fsskipig03
+>   - fstatfs01
+>   - fstatfs01_64
+>   - fsync01
+>   - fsync04
+>   - getdents01
+>   - getdents02
+>   - getxattr02
+>   - getxattr03
+>   - inotify03
+>   - ioctl04
+>   - ioctl05
+>   - ioctl06
+>   - ioctl_ficlone02
+>   - ioctl_fiemap01
+>   - ioctl_loop01
+>   - lchown03
+>   - linkat02
+>   - listmount01
+>   - listmount02
+>   - lremovexattr01
+>   - lstat03
+>   - lstat03_64
+>   - mkdir09
+>   - mknodat02
+>   - mmap16
+>   - mount01
+>   - mount02
+>   - mount03
+>   - mount04
+>   - mount05
+>   - mount06
+>   - mount07
+>   - mount_setattr01
+>   - move_mount01
+>   - move_mount02
+>   - msync04
+>   - open_tree01
+>   - open_tree02
+>   - prctl06
+>   - preadv03
+>   - preadv03_64
+>   - preadv203
+>   - preadv203_64
+>   - pwritev03
+>   - pwritev03_64
+>   - quotactl01
+>   - quotactl04
+>   - quotactl06
+>   - quotactl08
+>   - quotactl09
+>   - readahead02
+>   - readdir01
+>   - rename01
+>   - rename03
+>   - rename04
+>   - rename05
+>   - rename06
+>   - rename07
+>   - rename08
+>   - rename10
+>   - rename11
+>   - rename12
+>   - rename13
+>   - rename15
+>   - renameat01
+>   - setxattr01
+>   - stat04
+>   - stat04_64
+>   - statfs01
+>   - statfs01_64
+>   - statmount01
+>   - statmount02
+>   - statmount04
+>   - statmount05
+>   - statmount06
+>   - statmount07
+>   - statvfs01
+>   - statx06
+>   - statx08
+>   - statx10
+>   - statx11
+>   - statx12
+>   - sync01
+>   - syncfs01
+>   - umount01
+>   - umount02
+>   - umount03
+>   - umount2_01
+>   - umount2_02
+>   - unlink09
+>   - utime01
+>   - utime02
+>   - utime03
+>   - utime04
+>   - utime05
+>   - utimensat01
+>   - writev03
+>
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
