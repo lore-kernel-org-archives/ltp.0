@@ -4,122 +4,164 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71A94C83F0F
-	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 03:11:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1752117079; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=QIyhsRsPaLD13u5K1vY0qqLHmucJbZ4xR0uXvWeKdqI=;
- b=Lvy4g/C8Rtx1vsYdjuOA9jzt45PLd0lCR+WjQpUgfmVs7gi7p29T2jhKI7Q1nY6W36qkw
- dhie6NdBT5ITSQ2E6L0D+bL5JhkSOzFN5BNonl8fwHE78QMheYGZaSQ2Xq/NJdNd8A4m3qs
- 1vJ6q3OqGjasCAMefezIkVYXLNE+gwU=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B518C83F09
+	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 05:01:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ADA083CAE45
-	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 05:11:19 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 4D6E03C6DC7
+	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 07:01:25 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 528AF3C73E4
- for <ltp@lists.linux.it>; Thu, 10 Jul 2025 05:10:58 +0200 (CEST)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+ by picard.linux.it (Postfix) with ESMTPS id 4154F3C6DC7
+ for <ltp@lists.linux.it>; Thu, 10 Jul 2025 07:01:07 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 283C4600731
- for <ltp@lists.linux.it>; Thu, 10 Jul 2025 05:10:55 +0200 (CEST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
- by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56A0uDTb014483
- for <ltp@lists.linux.it>; Thu, 10 Jul 2025 03:10:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
- cc:content-type:date:from:in-reply-to:message-id:mime-version
- :references:subject:to; s=qcppdkim1; bh=C8GD71NMUqyCLGNSbw7zq043
- YLRGNSn0ZiEAcpFzHjQ=; b=NWHgfOMzeG+J7Nn8DJ0IZFPJb2qXshoqa6YLW0u0
- R5MEgdCJ0T9VS2e0311NhAzPks7zuVLG3QEimOqYbBAaJmgPIXxEyYVgH0cUfsGn
- 8UDG9D6iWmFbkzf5Icoo7tBQVproDjxNHdrbcAoKPBYI2tvbY9aYYe5G47Nux/K2
- oHNg0YdNrx5PrbF8PYDYV31tB0jUoUUJNHEm7Cn70HtYzZyoAFD/aPJ+Azj991oy
- B4eI8k7rm5vh4FMcP+B1RHJrMetyo+6FFFf+s2muD57WCtwcgdxMEl52wqYijWPJ
- A77/PxBSlBLioqwo949J1K2OhYD9FdWAWEHNMAc3Qf1qDQ==
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 47r9b144x0-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
- for <ltp@lists.linux.it>; Thu, 10 Jul 2025 03:10:53 +0000 (GMT)
-Received: by mail-pj1-f72.google.com with SMTP id
- 98e67ed59e1d1-315af0857f2so637532a91.0
- for <ltp@lists.linux.it>; Wed, 09 Jul 2025 20:10:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1752117053; x=1752721853;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=C8GD71NMUqyCLGNSbw7zq043YLRGNSn0ZiEAcpFzHjQ=;
- b=XmX8uq/f9euFxd1e1IWXkt602//XIbLSGeVA/Qwcz4lNzXSu+A1Sey7hRHrJO+5tHj
- nYUG+dpyjtK2fyztHh2hpZvvzzZqGE4Sr/q0BByxOi4ra8M9MC3vA4raczzyBMpehsPe
- CsFh/IYtyCBl8P5mTQH+B2vFHmvo8RR5e0vdPbAkx+KNrHXZxWvS+/dwMd6AwdmaUQma
- vnwvVqBMpmrBQ3m/K5sZDdkmSHr8stwWcovlhrqRtNQYrMw6gjVllEepSZc5uzR5ZC8r
- 2vjhwFKaGZzbuvEr2kIY1ZD/hExOTBVb6A53JTRQnSmNfdmJ0fSfkhTwm+GCUEbZYyE7
- cqGw==
-X-Gm-Message-State: AOJu0YwXVuPBlVEDMm7FdM/ud0UKnBjSE2fgJOym0o3Dn7dHCsNCJd7R
- jJjGOGmtUD88qnqKdja98OsJZhVFOwPKkZ/tEvzeTQkMjIX8FJxgmPB7RpnsGALgAEK64pwqAH7
- fYaZYYegETtNhlybvDEnoZZ5Q5n2xcnFzzmP29Ec5tz9sr5OdQmpbvg==
-X-Gm-Gg: ASbGncugyv/TWwuXIXPWnuZYChl4L4sBneH6ybFCsKUAzGEePPcJfj7gll/eE1P3LQf
- rK2TUJ/RdblFvek5EaHHA5dGJpO+l5H9o47x4Doe3ZiJIdzDm/DJjhym1PYUlV3lfPRQeXhspZk
- FNZk8WlATujYsYXDHu3G7C+WzEHgWZ8dvmyC+2C4d6qnA1OStU/ngvBUH3A2h3L/IAXzzEhC3TR
- rJBlmuod8ZBs2naXfcB9oV3dFd6HaiPMEZFhv0drYsFdKr9JdW8brflcDYdL+NB0BUgaGhEMQhA
- Dac4GlKmoW0ItSZ1VOh66dKG1kIwAddRzfUSbNBOiBGaqZDaEqoZLypWipZJET/FzaiNm8zLQnx
- 5
-X-Received: by 2002:a17:90b:35d1:b0:311:ba32:164f with SMTP id
- 98e67ed59e1d1-31c3ef6ff56mr1835225a91.8.1752117052575; 
- Wed, 09 Jul 2025 20:10:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFS8E/NJXNeqyW7kqNa+k0+ElNy9MUFKpxPT2B1Qq96r6xEs1IJ4Pf2jKzyXd3M9ENP/wKBuA==
-X-Received: by 2002:a17:90b:35d1:b0:311:ba32:164f with SMTP id
- 98e67ed59e1d1-31c3ef6ff56mr1835167a91.8.1752117052056; 
- Wed, 09 Jul 2025 20:10:52 -0700 (PDT)
-Received: from hu-mdtipton-lv.qualcomm.com (Global_NAT1.qualcomm.com.
- [129.46.96.20]) by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-31c301a8862sm3653576a91.37.2025.07.09.20.10.51
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 09 Jul 2025 20:10:51 -0700 (PDT)
-Date: Wed, 9 Jul 2025 20:10:49 -0700
-To: Wei Gao <wegao@suse.com>
-Message-ID: <aG8vOXhoS/F3IEng@hu-mdtipton-lv.qualcomm.com>
-References: <20250709151439.2840206-1-mike.tipton@oss.qualcomm.com>
- <aG-1OzeP-mB2MPq1@MiWiFi-CR6608-srv>
- <aG8bYZWlls9MiJW9@hu-mdtipton-lv.qualcomm.com>
- <aG_JlPhs4DMJfVEi@MiWiFi-CR6608-srv>
-MIME-Version: 1.0
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5A511600731
+ for <ltp@lists.linux.it>; Thu, 10 Jul 2025 07:01:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1752123666; x=1783659666;
+ h=date:from:to:cc:subject:message-id:mime-version;
+ bh=qkXYAGGDHYjY/ZGp/w31eFbxNtVu8EWXJj9V8726F3Y=;
+ b=KeeFLDDiuPOKLptnB6p4Ly4V5i3fmKAYQyVoq18HhCMARXLTcm5+U3AC
+ A0hbTWKnjfs99RnzjeaBy0pl0KIe4uNoj2iP36RjV1wAM5l2tpsBMe85p
+ P1XqmeATEz81s9GeT+5kXFRKv7aOa5nlRZWQ2vzO3ayphY0ndfE/tNqSQ
+ eh8t559vZ2NcFbOkQLpGfvlasBtr/e6K8YKA/3iDckvnEVo1pD/DVdmDv
+ XRX0wx+A3sQQi3heZMsOsxVfjVor9oB97cIjOOTUp+r5RLSpJPJoGaEwR
+ ySViQAdL3h9eXxfEoSBEHJu9sBzRkd1Hy4zLtmF/jVjK9eeJF5Em5d7ok Q==;
+X-CSE-ConnectionGUID: tIbZJwPzRYCSQcRtPSP90g==
+X-CSE-MsgGUID: GcJKe6ROT3ehrKz/ZIUN3A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11489"; a="54246994"
+X-IronPort-AV: E=Sophos;i="6.16,299,1744095600"; d="scan'208";a="54246994"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+ by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Jul 2025 22:01:02 -0700
+X-CSE-ConnectionGUID: lylh2zuRQhO5wKYPtlf2sg==
+X-CSE-MsgGUID: mMH7eKC+QqufpQN/IRiRqg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,299,1744095600"; d="scan'208";a="161523696"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+ by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Jul 2025 22:01:02 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25; Wed, 9 Jul 2025 22:01:01 -0700
+Received: from ORSEDG903.ED.cps.intel.com (10.7.248.13) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25 via Frontend Transport; Wed, 9 Jul 2025 22:01:01 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (40.107.92.89) by
+ edgegateway.intel.com (134.134.137.113) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25; Wed, 9 Jul 2025 22:00:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=TKxhfxBBPVLfzavML69z/X/Lxvo/nj0BE7A5LjMUl2KjMgvpEf6wf+m7EPVeSqMmJNBFxmtGqZc7mqI7n0GPS720yPwmyrkQeTwF2qbCkMNgqAFdwnUQ/3G3KKCwYaAYrDTRY4OeAwVjlmEIFoZUxXzhccSVZdFeigwb9jCaBEA5Zm97oxKVo/X5OCXfgIgWYQM3doe1UFkPKfhnVQqnmm6Qh4Cao8gT03xRT4IrqW2+8v/9RGvCBFBrJgA/to7V4nFeTu+xf2HxZ96B8lnSUm2Pp53Syvuzt4W9T3JPYMtf5jfdnvT7MpFP4QpKKdjWxKkAW2ZDPndbpaSCLtfE0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1VJCkumMFpvPyGekNQcizFhop9c6qMRx8a7yxB11r9o=;
+ b=WM1SC9YKeQ9nHkSHqolfXty4sEIUuaWp6oHJEIo6FB46gam5cmLrn2GNP8snl02R5djl0+Q2Ny/GRY/dcATXmgY6ChZFmTBJ+45+NOvsm+AtkIvtXLG/7K+GaP99XDzRlFwOc8yHUSMR5PzPV5ElCl+b1NzmKiqnKI2DcTUN3f+DHeVra2AbBEaelb3/vvmpBzbrxKkN1EMF2vN1nnG4vSSAI4pRxmFgbCLV8RnLNOzJFZebk2nYHQXw4K2tUMAnu6jad5Ma/AntpBuL7asMxGeGqvC8Nk7YId/S/XYWxcAKclImRSRf4T5mWLf3Wp6gnQE8XgXJ9/jqKI61nx/NLg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by SA1PR11MB5923.namprd11.prod.outlook.com (2603:10b6:806:23a::17)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.27; Thu, 10 Jul
+ 2025 05:00:57 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%3]) with mapi id 15.20.8901.018; Thu, 10 Jul 2025
+ 05:00:57 +0000
+Date: Thu, 10 Jul 2025 13:00:47 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Anuj Gupta <anuj20.g@samsung.com>
+Message-ID: <202507100657.c1353cf9-lkp@intel.com>
 Content-Disposition: inline
-In-Reply-To: <aG_JlPhs4DMJfVEi@MiWiFi-CR6608-srv>
-X-Authority-Analysis: v=2.4 cv=dYuA3WXe c=1 sm=1 tr=0 ts=686f2f3d cx=c_pps
- a=RP+M6JBNLl+fLTcSJhASfg==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
- a=kj9zAlcOel0A:10 a=Wb1JkmetP80A:10 a=VwQbUJbxAAAA:8 a=EUspDBNiAAAA:8
- a=5bnX7-EcccOwkvf7-l4A:9 a=CjuIK1q_8ugA:10 a=iS9zxrgQBfv6-_F4QbHw:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDAyNiBTYWx0ZWRfX/O1J5uisZh1u
- Ht73/YeFbczOhlhqOxTys0AnmgBLes+GxE5nbCTj+cB/+jteMe6wHeBvUhCt2n7jKSA85fbjf0O
- N8iFaXaI6JbtkXGA7SW4tlxz/Pg7nSFiXkiDNtQ2ml5HNqjU4yOskz0bPfRMTNIetfx7EPf1LtS
- 5y/p/UER5N0wMmieOuDe0ky70npwIAnJc07mQVBWwXN6PQGQOipISZKzLaJHn0zJ+gROZJKyQPU
- lTBoDrub1LoWUzvPTWkn+ngpMCyFxFq5RpRcEqpVRzOSKcjwHmqjQl5yTM3YNXWRFD6Xgs6/rSi
- Fe07JFeAZTw82rUwiMOePjELC7/H80W/W4XmlBwKu6VSp9mvivAcqH7Ppd3TyS9atY566JC3Qw8
- nGm4AfzM5DdIY4BFNk/+hKJhjTZSZsmeVcssuTI6ToN9D1VeEdYm4oAnhUjN3VbY3cNcIjyz
-X-Proofpoint-GUID: JBVqgCr1eipzXUMxnxmM-6tmWy7FTKOb
-X-Proofpoint-ORIG-GUID: JBVqgCr1eipzXUMxnxmM-6tmWy7FTKOb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-07-09_05,2025-07-09_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 suspectscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0
- priorityscore=1501 spamscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 bulkscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2507100026
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+X-ClientProxiedBy: SG2PR02CA0052.apcprd02.prod.outlook.com
+ (2603:1096:4:54::16) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|SA1PR11MB5923:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1158670b-2e61-483e-8561-08ddbf6ec151
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?OLMORlHzKq0Em6EEJyHwMuCsuOhvBTU7FGFAIL8aVJ45MS9Rm8W3MnCA7tTu?=
+ =?us-ascii?Q?Y2vKcXHRBBg8Y40cmrQhl5cnB2uFajI68vxW3FnR8iGQCKw5//Zs9zBwW9Sr?=
+ =?us-ascii?Q?b4ryBrOyYH6Nf71j+G9Nt09fyXvUIt95U63aPZrL0q98ouhGDnJf1+V5pv5B?=
+ =?us-ascii?Q?MWgmteMA0DUomayd+bMi1vbyIZkLXO9MRCI2LizUs3EzTwZYY3L9zo4Pr/Gl?=
+ =?us-ascii?Q?QMIhFX20UfFjk6ErM8S9IoHkfDXezKQ19y0WXa3oufWslP20xewqvB6bL1VD?=
+ =?us-ascii?Q?6uRThY0KQ7MuMvsmV/meOCxPQzDGyj/7eFKkfg7+XvtpFYjMPWiIBTqnUQr0?=
+ =?us-ascii?Q?tXJgLdoZC8Lpsxbbe8MB+ydAtzCa4BQgUako36b6obHKERGMkSqTxaSCn/lS?=
+ =?us-ascii?Q?VM9nXaSbJCQlhHsTEGtQf0CW8wfdsWjbqsReV9QSIvEiG99CU/zui0wa0Z+H?=
+ =?us-ascii?Q?X6XHHX9gWSscXS1wBC8gTmg0QEhAV6wk0fEQlPdwGBIEAfAPdevyf1OdCTuV?=
+ =?us-ascii?Q?1N2tLxa/kqB24uJvEOjZpNlbbYi5+9CDCH6qVZmpy+boWW4ujRy6WL2Izf4m?=
+ =?us-ascii?Q?1+N7rnjMlviBatCH4WV78C4FF8xOv59qspG2HAUlFKPdZGe+bG4b8oMeB9T9?=
+ =?us-ascii?Q?zLdz11t7nbQhe94wPXZiUCuouegQIf2lTsBrRyofAcrVY4LFBog888dS+HDD?=
+ =?us-ascii?Q?MCa2Krvspj3PZQwswARTyToM/zcvs74iQJ5sSQIpqoNZ38xP13GGTAoh/1YR?=
+ =?us-ascii?Q?GCxk6nbQQnOTXa8+vy+bVVYbyeCdxSJUw/ixMS3daD9inUKf5cuNsUHsjGUp?=
+ =?us-ascii?Q?PHxhztVSqbuvqg1/sYHBa/0DeJrpPlpvBuIctyChqdtFTAWOIWP7NSQp7xn9?=
+ =?us-ascii?Q?mkQfM8QWBD/8/5ewjQHWIwAg9z9dZMzKfkQ95gSjM86fjLLEjcLYlFWL3cvs?=
+ =?us-ascii?Q?QBPi/L3yzlGLF8NQDAvpMKvptRlkP85EsVMjfiitJVPUJlJGJHf5Hhpjv3md?=
+ =?us-ascii?Q?Ny2xSTQi7BC6xpp4lPjeW7WwQi1uQzdBgDhCVbiL5o6M0gVUIFq9FMhw4uaM?=
+ =?us-ascii?Q?1Rk5/7TnXehsQz75G+4/sdv3lyKadCq0ydj+YptJg+6TiJjoRoTN7i1FOj+F?=
+ =?us-ascii?Q?d50Lbz84so7pFgZ1bnj4jx2jnI5V7EjENJq27vlUlHfKcqhHIkHbYLZtuGbX?=
+ =?us-ascii?Q?jo+gaqcmh+RxE6PCrgJg6KOxtEhJ6KAcIaJLmGRH93f5256+qORX9jd5jQLR?=
+ =?us-ascii?Q?MNFkyn9rn/tpVCYaRhlMN59XVjdajHiExRcxHqyRR6H9r9eLt4ohpkmTxyYQ?=
+ =?us-ascii?Q?D+pU03jDSuVr1uyvemYxcE7I00m+9EBLLh4DF29fIcf4VUCsyodaiz60Gpdp?=
+ =?us-ascii?Q?ead8W8JZvj2DCFxBLoQ+g+2aaj7o?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:LV3PR11MB8603.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(1800799024)(366016)(376014); DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Xk21QZqGgRr11IzNj/Mr49lWwTiIucYKS5qxqfkDJy3362hiy7o5cmSGVPNL?=
+ =?us-ascii?Q?6Q5ItTDPlX6F4xvzs2jEv83wPxMh5nqp4wEScjwwUj8LK9ZrlvHlQ6JVER3c?=
+ =?us-ascii?Q?fAFZL08l0iHU7kKDN8iOb8v2jMfIlBw+UANYhwAVgTFljVm53IeLqau+x2e5?=
+ =?us-ascii?Q?LCRr8h7giH/vVc73i6/nSvq3oS8EMz/GO3a2uwPJ/VHjV5oNBbUA/IrBxR1M?=
+ =?us-ascii?Q?E9daX7mC8qAdxFZHcN1n67uNzspziar3t4rlWZj3hzho+nSoMK1eU6GBVDhB?=
+ =?us-ascii?Q?WDYYok0sF4dyzkH/z48tbI3drEst4Q29PKnGCUjtCk1Ctf8rgO/5oUNNxOn5?=
+ =?us-ascii?Q?YPIHZvd6IyO4hkrFgiBblGYRy5yf+9UJa+n7N9uCivpqiIi4pcexwZlq1rjp?=
+ =?us-ascii?Q?vcaj7a+150PiWgUROA9B1uq/v2aWakj2HTFQ1t14A3MYV3V0CN5zVPDY3K12?=
+ =?us-ascii?Q?UwjuJYOrYKoEwXuNDRJPlMZyN9TB7nSThD1O8MQBAo/38X3YVHEi3caViF2v?=
+ =?us-ascii?Q?ZZ+DD/6pRmmbZw/ifMeP4JYDkIIottUV+g/nFe/cnQXkNm6JJliwnwf3Itle?=
+ =?us-ascii?Q?WvZKck164dq1EiMvFHdHHGTKlV8vj8auoVVeCms2VBPtENpeSDruoVGrlDIV?=
+ =?us-ascii?Q?DgAJnImkC2Jy6yCoOlTfaEc5MSnz9kZy87/eqivTKcaK3XtvKqCo58XDP/iC?=
+ =?us-ascii?Q?wB7LfsMMXKHAJT3rM9lkNxHljZJP8rHSrnIj1SxjmiGzYb9c72tThp9Qexnj?=
+ =?us-ascii?Q?ey7xyIE2A3IH4Yol8v5lmi5KJckqDGG2aodTVd91cEM3c/HB/yPgECYY0Qmk?=
+ =?us-ascii?Q?VOCfJP4OSikWyXxWrNb5q6bwO1PmvG4uGfSN+Br4XxC10tPKiNUQS2h6Z5z3?=
+ =?us-ascii?Q?i7p3PrXx9JkPc1aRzaVyzdP9HGF7UOuLMPml+zuuSg4/mHnnYWRH+zDG9dgc?=
+ =?us-ascii?Q?4ZHIgukAIChp0Jul0pDQj+4gF90dNFtn5z8Mi7/EK5hBrK3vCNKal2zdW9TI?=
+ =?us-ascii?Q?KBMZHY7OilpX8LRxThP22lv041dA4kubRKCQsXWRoOgOhmQ8uLqaFrL5wJWD?=
+ =?us-ascii?Q?2sB7TrPgxWLo+lhxuKx9zH7xtReXyOnH09wOM4uHST0F82vADpwook67Zjcw?=
+ =?us-ascii?Q?g3RFTUmzmOQvD4Uvwo7sBeYQvjmi/aZGKLo01ufWVqP5IoWCRbX14SoZhmQY?=
+ =?us-ascii?Q?kBpUreDgMDVyOLBH3z4Yoa02+QeD2oTSg/c47KUMrY2Bz8WjEEvlc43/GdDJ?=
+ =?us-ascii?Q?IirXcbN93927LVuVTTGGPxEZZvfAPUxadbsFPy+OeAOYixZh/YPaOLo1tbrj?=
+ =?us-ascii?Q?BJu3qs1weTs69V247ku9IlMPMVCAkQN1xHdWvce24h898hSEv/w1Y1g3nok6?=
+ =?us-ascii?Q?WYY0v9Ih4gdxjKSz+1X/HUGYKhP74qRqIgUAGM2istwhqbwbrUlgXEzim5ve?=
+ =?us-ascii?Q?VRr1wbnRfJGceMSACcllHgxqBZpKNQoxS9x0o23W4kqVFsZhbImT8BVeferx?=
+ =?us-ascii?Q?G+QcN9B0xokBvQDNR/tfaa2i2MwBZStmLHby1c7RMDxUuGnb2wQvLcgARcYW?=
+ =?us-ascii?Q?oLS1bRTm58AJufRaD0lIW4seeARmfoXvbOFL3M75zd/pvm6eZ6NcH4FSLcYc?=
+ =?us-ascii?Q?Rw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1158670b-2e61-483e-8561-08ddbf6ec151
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2025 05:00:56.9433 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0s/Eqr838C5s0NHo9l95TvMBBcn8fTrmMK1OknwHzJbZI1zqZTIZB8ALgxcPAdt9iAlk4myAe06as28ONqK9KA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB5923
+X-OriginatorOrg: intel.com
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] device-drivers/cpufreq_boost: Don't hardcode
- to CPU0
+Subject: [LTP] [linux-next:master] [fs]  9eb22f7fed: ltp.uevent01.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -131,107 +173,122 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Mike Tipton via ltp <ltp@lists.linux.it>
-Reply-To: Mike Tipton <mike.tipton@oss.qualcomm.com>
-Cc: ltp@lists.linux.it
+Cc: Christian Brauner <brauner@kernel.org>, lkp@intel.com,
+ "Martin K. Petersen" <martin.petersen@oracle.com>, linux-block@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, oliver.sang@intel.com,
+ Kanchan Joshi <joshi.k@samsung.com>, oe-lkp@lists.linux.dev,
+ Christoph Hellwig <hch@lst.de>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Jul 10, 2025 at 10:09:24AM -0400, Wei Gao wrote:
-> On Wed, Jul 09, 2025 at 06:46:09PM -0700, Mike Tipton wrote:
-> > On Thu, Jul 10, 2025 at 08:42:35AM -0400, Wei Gao wrote:
-> > > On Wed, Jul 09, 2025 at 08:14:39AM -0700, Mike Tipton wrote:
-> > > > Some systems don't support boost on every CPU, such as on many Qualcomm
-> > > > chipsets. And if boost isn't supported on CPU0, then the test will fail
-> > > > since there's no performance improvement.
-> > > > 
-> > > > Instead of hardcoding CPU0, find the first CPU that belongs to a cpufreq
-> > > > policy with boost enabled.
-> > > > 
-> > > > Signed-off-by: Mike Tipton <mike.tipton@oss.qualcomm.com>
-> > > > ---
-> > > > Changes in v3:
-> > > > - Abort when no CPUs report supporting boost instead of assuming CPU0.
-> > > > - Link to v2: https://lore.kernel.org/ltp/20250630145128.1254269-1-mike.tipton@oss.qualcomm.com/
-> > > > 
-> > > > Changes in v2:
-> > > > - Use proper maxspeed buf size in snprintf.
-> > > > - Link to v1: https://lore.kernel.org/ltp/20250626194707.3053036-1-mike.tipton@oss.qualcomm.com/
-> > > > 
-> > > >  .../device-drivers/cpufreq/cpufreq_boost.c    | 58 ++++++++++++++++---
-> > > >  1 file changed, 50 insertions(+), 8 deletions(-)
-> > > > 
-> > > > diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-> > > > index 67917b3fea25..17d89c0cc164 100644
-> > > > --- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-> > > > +++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-> > > > @@ -55,10 +55,14 @@ static int id = -1;
-> > > >  
-> > > >  static int boost_value;
-> > > >  
-> > > > -const char governor[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_governor";
-> > > > +static int cpu;
-> > > > +
-> > > > +static const char _governor[] = SYSFS_CPU_DIR "cpu%d/cpufreq/scaling_governor";
-> > > > +static char governor[64];
-> > > >  static char governor_name[16];
-> > > >  
-> > > > -const char maxspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_max_freq";
-> > > > +static const char _maxspeed[] = SYSFS_CPU_DIR "cpu%d/cpufreq/scaling_max_freq";
-> > > > +static char maxspeed[64];
-> > > >  
-> > > >  static void check_set_turbo(char *file, char *off)
-> > > >  {
-> > > > @@ -84,6 +88,40 @@ static void cleanup(void)
-> > > >  		FILE_PRINTF(governor, "%s", governor_name);
-> > > >  }
-> > > >  
-> > > > +static int find_boost_cpu(void)
-> > > > +{
-> > > > +	char buf[64];
-> > > > +	int fd, i;
-> > > > +
-> > > > +	/*
-> > > > +	 * The files we're looking for only exist for acpi_cpufreq. Continue
-> > > > +	 * assuming CPU0 for intel_pstate.
-> > > > +	 */
-> > > > +	if (!strcmp(cdrv[id].name, "intel_pstate"))
-> > > > +		return 0;
-> > > > +
-> > > > +	for (i = 0;; i++) {
-> > > > +		snprintf(buf, sizeof(buf), SYSFS_CPU_DIR "cpu%d", i);
-> > > > +		fd = open(buf, O_RDONLY);
-> > > > +		if (fd == -1)
-> > > > +			break;
-> > > > +
-> > > > +		close(fd);
-> > > > +
-> > > > +		snprintf(buf, sizeof(buf), SYSFS_CPU_DIR "cpu%d/cpufreq/boost", i);
-> > > > +		fd = open(buf, O_RDONLY);
-> > > > +		if (fd == -1)
-> > > > +			continue;
-> > > > +
-> > > > +		close(fd);
-> > > > +		tst_resm(TINFO, "found boost-capable CPU (CPU%d)", i);
-> > > > +		return i;
-> > > > +	}
-> > > > +
-> > > > +	tst_brkm(TCONF, NULL, "boost not supported by any CPUs");
-> > > > +	return 0;
-> > > I suppose we do not need above line since brkm will jump out of the test
-> > > directly.
-> > 
-> > Yes, that's true. But it feels wrong to reach the end of a non-void
-> > function without returning something. Even though in this case it'll
-> > never actually reach the return statement.
-> > 
-> 
-> Or return -1 and handle error outside of the function?
 
-Yeah, could do. Makes it slightly more obvious what's happening, I
-guess.
+
+Hello,
+
+kernel test robot noticed "ltp.uevent01.fail" on:
+
+commit: 9eb22f7fedfc9eb1b7f431a5359abd4d15b0b0cd ("fs: add ioctl to query metadata and protection info capabilities")
+https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+
+[test failed on linux-next/master 835244aba90de290b4b0b1fa92b6734f3ee7b3d9]
+
+in testcase: ltp
+version: ltp-x86_64-df591113a-1_20250622
+with following parameters:
+
+	test: uevent/uevent01
+
+
+
+config: x86_64-rhel-9.4-ltp
+compiler: gcc-12
+test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-3770K CPU @ 3.50GHz (Ivy Bridge) with 16G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202507100657.c1353cf9-lkp@intel.com
+
+
+<<<test_start>>>
+tag=uevent01 stime=1752075642
+cmdline="uevent01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_tmpdir.c:316: TINFO: Using /tmp/ltp-agSWS1iC6f/LTP_uevIF0Neu as tmpdir (tmpfs filesystem)
+tst_test.c:1994: TINFO: LTP version: 20250530-43-gdf591113a
+tst_test.c:1997: TINFO: Tested kernel: 6.16.0-rc1-00004-g9eb22f7fedfc #1 SMP PREEMPT_DYNAMIC Wed Jul  9 17:57:45 CST 2025 x86_64
+tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+tst_kconfig.c:676: TINFO: CONFIG_KASAN kernel option detected which might slow the execution
+tst_test.c:1815: TINFO: Overall timeout per run is 0h 02m 00s
+tst_device.c:98: TINFO: Found free device 0 '/dev/loop0'
+uevent01.c:25: TINFO: Attaching device /dev/loop0
+tst_device.c:190: TWARN: ioctl(/dev/loop0, LOOP_SET_STATUS, loop.img) failed: EINVAL (22)
+uevent01.c:27: TINFO: Detaching device /dev/loop0
+uevent.h:49: TINFO: Got uevent:
+uevent.h:52: TINFO: change@/devices/virtual/block/loop0
+uevent.h:52: TINFO: ACTION=change
+uevent.h:52: TINFO: DEVPATH=/devices/virtual/block/loop0
+uevent.h:52: TINFO: SUBSYSTEM=block
+uevent.h:52: TINFO: MAJOR=7
+uevent.h:52: TINFO: MINOR=0
+uevent.h:52: TINFO: DEVNAME=loop0
+uevent.h:52: TINFO: DEVTYPE=disk
+uevent.h:52: TINFO: DISKSEQ=4
+uevent.h:52: TINFO: SEQNUM=2501
+uevent.h:140: TPASS: Got expected UEVENT
+uevent.h:49: TINFO: Got uevent:
+uevent.h:52: TINFO: change@/devices/virtual/block/loop0
+uevent.h:52: TINFO: ACTION=change
+uevent.h:52: TINFO: DEVPATH=/devices/virtual/block/loop0
+uevent.h:52: TINFO: SUBSYSTEM=block
+uevent.h:52: TINFO: MAJOR=7
+uevent.h:52: TINFO: MINOR=0
+uevent.h:52: TINFO: DEVNAME=loop0
+uevent.h:52: TINFO: DEVTYPE=disk
+uevent.h:52: TINFO: DISKSEQ=4
+uevent.h:52: TINFO: SEQNUM=2502
+uevent.h:140: TPASS: Got expected UEVENT
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 1
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=4 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20250530-43-gdf591113a
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20250530-43-gdf591113a
+       ###############################################################
+
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20250710/202507100657.c1353cf9-lkp@intel.com
+
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
