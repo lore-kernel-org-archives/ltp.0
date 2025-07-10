@@ -4,97 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7A1EC83F1A
-	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 08:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FC29C83F1A
+	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 08:48:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1752137302; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=oim+42BXsdUGQJa03+cVmInMqiBWvok+tQA9qRdHaeE=;
+ b=nKrM6lEuhY50AYkYDAxYAz1MQP6pPo5tv5FKI9YECFnlBgPqGOeTBf/BWsZl+tmA56PB1
+ THI+6V6Ce18lAZAyXpG1oAa4ipo4hocaKOiQERp4TtrADitRr6/9Axm1Z7Y1J6XMbQX1ZME
+ xWeYbobAxg/lJpz8/jUqsShgbccCUU0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7C6153CAF4A
-	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 10:24:22 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id C53373CAEDC
+	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 10:48:22 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CD04C3C65DA
- for <ltp@lists.linux.it>; Thu, 10 Jul 2025 10:24:05 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E980E3C627B
+ for <ltp@lists.linux.it>; Thu, 10 Jul 2025 10:48:02 +0200 (CEST)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 21DB11400E4C
- for <ltp@lists.linux.it>; Thu, 10 Jul 2025 10:24:04 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B373C2117A;
- Thu, 10 Jul 2025 08:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1752135843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=+rEvM4qfGNRKZ8z0RRPpaszmFsRPSsy2W5a+tm8bYgM=;
- b=bU4tT+wzHRNvxsfuT2Zdd5uEkFslo60HYEtOkA5vXLCxfGuI+FwNPwaQGYVEk1RnuJsvlk
- U2Xp/s9TmNUGR5JPNz7aAbiQ8nSkLE37sFtDQRB2xFJ1E2Sve5kDC7Mu00FxdJSxqWDJFB
- KAJTkWwkh7XTnLBDDhOjlRa5bnKYvxo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1752135843;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=+rEvM4qfGNRKZ8z0RRPpaszmFsRPSsy2W5a+tm8bYgM=;
- b=/eksGL8NdNk8gScL6d3YJmFHbWRm0jm0HJEmcTnusVwZnJPMti1LAmCiTmyr3DqClbjFK3
- yPcEof0jTmmWrdAA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1752135843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=+rEvM4qfGNRKZ8z0RRPpaszmFsRPSsy2W5a+tm8bYgM=;
- b=bU4tT+wzHRNvxsfuT2Zdd5uEkFslo60HYEtOkA5vXLCxfGuI+FwNPwaQGYVEk1RnuJsvlk
- U2Xp/s9TmNUGR5JPNz7aAbiQ8nSkLE37sFtDQRB2xFJ1E2Sve5kDC7Mu00FxdJSxqWDJFB
- KAJTkWwkh7XTnLBDDhOjlRa5bnKYvxo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1752135843;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=+rEvM4qfGNRKZ8z0RRPpaszmFsRPSsy2W5a+tm8bYgM=;
- b=/eksGL8NdNk8gScL6d3YJmFHbWRm0jm0HJEmcTnusVwZnJPMti1LAmCiTmyr3DqClbjFK3
- yPcEof0jTmmWrdAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A4093136CB;
- Thu, 10 Jul 2025 08:24:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6vwoJ6N4b2i7NgAAD6G6ig
- (envelope-from <akumar@suse.de>); Thu, 10 Jul 2025 08:24:03 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Thu, 10 Jul 2025 10:24:03 +0200
-Message-ID: <12708664.O9o76ZdvQC@thinkpad>
-In-Reply-To: <20250710082000.11641-1-akumar@suse.de>
-References: <20250710082000.11641-1-akumar@suse.de>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 36A921000347
+ for <ltp@lists.linux.it>; Thu, 10 Jul 2025 10:48:02 +0200 (CEST)
+Received: by mail-wm1-x332.google.com with SMTP id
+ 5b1f17b1804b1-450cfb790f7so4962325e9.0
+ for <ltp@lists.linux.it>; Thu, 10 Jul 2025 01:48:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1752137281; x=1752742081; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=QbU+VV8lxZ6grXeBxG4vZ5JNU9S3qNktJkgDUuxobfY=;
+ b=X7Ood4wStx/0UM8aR14IfxEvwErkcBsKNtJEpKKn/2h3n/1st6BYvUpNSAOee2JAb0
+ WGxqulxMkq4IeA6Cer7DxKhj6jcENgA/BO6oZfxPQBtMJaFOHxrgId8Sn2Y20WUlYJYF
+ Kxr5r+mOdIGpm4XtMfTxB7RGfJ/CS5O6/1x5usxmOOl3Yd4UGJJDa5+OCyJp7pC5DQgg
+ P0HiKzk/QL37Z2nsS7kfhUy34xmXUg8u0QDAeBkUc2gn6HRMPcIX6ixYH3M4oKa3SGXJ
+ eCMmkeGYYv4X8rxXxANovENIqTBvXs75uzF0mrxF1omm9fKKuF19O47d4OSje0w0bRhQ
+ zDpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1752137281; x=1752742081;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=QbU+VV8lxZ6grXeBxG4vZ5JNU9S3qNktJkgDUuxobfY=;
+ b=a1S1mufI/IdVpVAqnYY4dZXZE1QtU8me/FSGF2jTaYDJi3ax54hxT3veOkUK1FRie+
+ OyNlE6300JAcfHbsP/Wbf3xfzOV/ZTvDH/MvrQrvaNN5PpM1mIpUb+NY1gdkfAez2aoo
+ EMO6OTHeOg7FYUNyX79k1cVGMUuu3cmWeqsj1nbq9V0v5SfMIDZnRSF6GkUS4+XWIxt9
+ pgNOin81W4PntE9cOc/f2jTaYTvIBMQpLUGTN9OkpP4EmK9z69bvEgwXJg9Rau88SV4z
+ KqO6w5325EiHjHnvjW4dG6ikOhY+5N6QrGEL12KOeg4rgJO1h0K99IeWyho1sBXOYB5e
+ 7D0A==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCV5shd32bfwHYFDRkBHj2qcTK038A/tQIUPiE3kHkk6tPS+PIMWsvga+dDgFtspngGhKNw=@lists.linux.it
+X-Gm-Message-State: AOJu0YxXxKXs11CjF0+L408MuftinsYuiHZ0YUcy6iOzu9hVvzHKPaRz
+ W7u4Av/Q6QdQFBzC79nsyzljmo15O6SjtUnocjMdilPRO53MaCGjT53oBmn39Hxbx9k=
+X-Gm-Gg: ASbGnctOhnVO6jUOQr7tkrRabhHu3zTCREaxpkfvLAeSP5cj8vzAl4T0fP95l/jU1CQ
+ J6VDhSdRCE8Vea6blLpeLExQ330waKvgyUyCHzokaNSqZgXEMnjcufBHmgviJlu8ZYUqj650Vg/
+ vb5S3tWuK9nl772wM3/ZPwd/SFlakVx3J1I5+P18L4i4/2ddD7FrpBXHK62+cSidb/bjegmeoYB
+ hhzRotdFX4ckMucO4VwEc691+5DIGwE19JMRqeMUElLGWlxMFCdvsR4IXPLmkH7P1p2F5hGlAtC
+ FjNvF46O24bPuRvlQBSrWkKEqr2gVtz1OwMtmoT9vIju1+sK9Qb87+VV4OyGt67RZGt0/HCQVbZ
+ EtNX/8eKV4YWOAbH7tUC+mBY2ckkJCpOLrZb3q29sROfe/AgP8XAKjAwTCLEUPecwLZsmo8R4S2
+ 47YEWpwC7SRG8Iecyn630nZxrKrw==
+X-Google-Smtp-Source: AGHT+IFY4HN5hThRo6+jeqwJfbXVyPGzplXvqLOXnJdBZ8P1RUgQmsuB7NqSSthPXSzecKSkyO7fpA==
+X-Received: by 2002:a5d:5f8d:0:b0:3a6:ec1b:5742 with SMTP id
+ ffacd0b85a97d-3b5e44e6a71mr4592191f8f.22.1752137281398; 
+ Thu, 10 Jul 2025 01:48:01 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
+ (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
+ [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-23de4322e23sm15011875ad.104.2025.07.10.01.47.57
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 10 Jul 2025 01:48:00 -0700 (PDT)
+Message-ID: <581805f2-0633-4e94-9252-b1be2bd47112@suse.com>
+Date: Thu, 10 Jul 2025 10:47:55 +0200
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.de:email,
- suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Avinesh Kumar <akumar@suse.de>, ltp@lists.linux.it
+References: <20250710082000.11641-1-akumar@suse.de>
+ <12708664.O9o76ZdvQC@thinkpad>
+Content-Language: en-US
+In-Reply-To: <12708664.O9o76ZdvQC@thinkpad>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] cgroup_regression_test: Use unique names for
  hierarchies in each test
@@ -109,101 +105,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: mkoutny@suse.com
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-I forgot to mention that I also tried to use
-tst_umount() helper routine, but that did not help as umount does not
-really report any failures here.
+On 7/10/25 10:24 AM, Avinesh Kumar wrote:
+> I forgot to mention that I also tried to use
+> tst_umount() helper routine, but that did not help as umount does not
+> really report any failures here.
 
-On Thursday, July 10, 2025 10:17:09 AM CEST Avinesh Kumar wrote:
-> Recently we started having failures where mounting cgroup in quick
-> succession after umount of same named hierarchy fails with EBUSY
-> =
+The solution doesn't really convince me. If it's true that a util-linux 
+upgrade to v2.41 is causing this issue, we should probably research why 
+this is happening in there and (eventually) fix it. Or, if it's not a 
+library bug, we should fix tst_umount() in order to recognize when a 
+cgroups folder hasn't been fully unmounted.
 
-> cgroup_regression_test 1 TPASS: no kernel bug was found
-> mount: /tmp/LTP_cgroup_regression_test.ZFwS3JkX4c/cgroup: cgroup already =
-mounted or mount point busy.
->        dmesg(1) may have more information after failed mount system call.
-> cgroup_regression_test 2 TFAIL: Failed to mount cgroup filesystem
-> =
+@Cyril WDYT ?
 
-> Updating test to use unique names for cgroup hierarchies in each
-> subtest.
-> =
-
-> Suggested-by: Michal Koutn=FD <mkoutny@suse.com>
-> Signed-off-by: Avinesh Kumar <akumar@suse.de>
-> ---
->  .../controllers/cgroup/cgroup_regression_test.sh       | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> =
-
-> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.s=
-h b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> index 276231fe8..c1bf4810f 100755
-> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> @@ -93,7 +93,7 @@ test1()
->  	cgroup_regression_fork_processes &
->  	sleep 1
->  =
-
-> -	mount -t cgroup -o none,name=3Dfoo cgroup cgroup/
-> +	mount -t cgroup -o none,name=3Dfoo1 cgroup cgroup/
->  	if [ $? -ne 0 ]; then
->  		tst_res TFAIL "failed to mount cgroup filesystem"
->  		kill -TERM $!
-> @@ -118,7 +118,7 @@ test2()
->  	local val1
->  	local val2
->  =
-
-> -	mount -t cgroup -o none,name=3Dfoo cgroup cgroup/
-> +	mount -t cgroup -o none,name=3Dfoo2 cgroup cgroup/
->  	if [ $? -ne 0 ]; then
->  		tst_res TFAIL "Failed to mount cgroup filesystem"
->  		return
-> @@ -204,7 +204,7 @@ test4()
->  		return
->  	fi
->  =
-
-> -	mount -t cgroup -o none,name=3Dfoo cgroup cgroup/
-> +	mount -t cgroup -o none,name=3Dfoo4 cgroup cgroup/
->  	mkdir cgroup/0
->  	rmdir cgroup/0
->  	tst_umount $PWD/cgroup
-> @@ -309,7 +309,7 @@ test_7_2()
->  {
->  	local subsys=3D$1
->  =
-
-> -	mount -t cgroup -o none,name=3Dfoo cgroup cgroup/
-> +	mount -t cgroup -o none,name=3Dfoo72 cgroup cgroup/
->  	if [ $? -ne 0 ]; then
->  		tst_res TFAIL "failed to mount cgroup"
->  		return
-> @@ -370,7 +370,7 @@ test7()
->  #-----------------------------------------------------------------------=
-----
->  test8()
->  {
-> -	mount -t cgroup -o none,name=3Dfoo cgroup cgroup/
-> +	mount -t cgroup -o none,name=3Dfoo8 cgroup cgroup/
->  	if [ $? -ne 0 ]; then
->  		tst_res TFAIL "failed to mount cgroup filesystem"
->  		return
-> =
+- Andrea
 
 
-
-
-
-
--- =
-
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
