@@ -4,103 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9459C83F09
-	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 07:43:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7BE5C83F09
+	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 08:01:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1752134481; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=vwemXk/mVMuosvJj97Ok5WV8cyhDt2a3T4qoL8pTKtY=;
+ b=nv7+U+7qI8etP+doEievGIZo4RotAnlh48/uafB/kWgW8nXeabQySAc1kmP+JCpZKy/pB
+ jdyANIz9FyHLscIl7aAU0zhjQh9bTWw3FYrzzIETf/oipiNjS51sJLpO076WnEIrY4HAB5G
+ FIpgxL4xi+SQ0ZA8otfHkKM7UJYZVoo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AACCB3C627B
-	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 09:43:40 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 2D3DA3CAFAA
+	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 10:01:21 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 35BCA3C627B
- for <ltp@lists.linux.it>; Thu, 10 Jul 2025 09:43:24 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id D17A53CAE45
+ for <ltp@lists.linux.it>; Thu, 10 Jul 2025 10:00:59 +0200 (CEST)
+Received: from tor.source.kernel.org (tor.source.kernel.org
+ [IPv6:2600:3c04:e001:324:0:1991:8:25])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 64461600732
- for <ltp@lists.linux.it>; Thu, 10 Jul 2025 09:43:22 +0200 (CEST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 569NO5ui009230;
- Thu, 10 Jul 2025 07:43:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=a/UV+D
- H+bJbZMeoco859H+8K8ipj5CvHEK2z9mENtsw=; b=BZToQg3f6OvlWGTdRBjnzw
- CFk407JQxZm1/HDYDC3zCFCN1aWKbTE3xC3DylDHD3ipNxAJ6TEDY1EoBA8SfdGc
- H3FHFuCtLx4ulIYiWYm3dicQJ827/kfbMvIszWaTing5Comva8NcuJL7NOVMqUOr
- G18m4orP5WObHpo9qYo9xyXZ6NKKZ1WYdHZHGfA9mOvFLVwgu/ZjxG0IKk4xQQmG
- NFnt4zabQmYhrgzFDwk4IjAWKE/jG7SEalZdSWDh0EEDPwMy+1Em3ezd6bBOWmSu
- 5DElHCv+MS1mCYbneaAsAud0ixyBqDH8ggsxnVDjyR6T44Vgs2kLzOPKYwhonk1A
- ==
-Received: from ppma12.dal12v.mail.ibm.com
- (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47svb23pqe-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 10 Jul 2025 07:43:21 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
- by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56A5kVdq021519;
- Thu, 10 Jul 2025 07:43:20 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 47qectvr14-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 10 Jul 2025 07:43:20 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
- [10.20.54.103])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 56A7hIbc8257902
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 10 Jul 2025 07:43:18 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 927DD2004D;
- Thu, 10 Jul 2025 07:43:18 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 76F592004B;
- Thu, 10 Jul 2025 07:43:18 +0000 (GMT)
-Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com (unknown
- [9.155.201.149])
- by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Thu, 10 Jul 2025 07:43:18 +0000 (GMT)
-Date: Thu, 10 Jul 2025 09:43:17 +0200
-From: Jan Polensky <japo@linux.ibm.com>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <aG9vFbcjhu648vx3@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
-References: <20250709163022.69985-1-japo@linux.ibm.com>
- <aG_A3DvZ0yRAdWbJ@MiWiFi-CR6608-srv>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9FC38600BB5
+ for <ltp@lists.linux.it>; Thu, 10 Jul 2025 10:00:57 +0200 (CEST)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+ by tor.source.kernel.org (Postfix) with ESMTP id B942A61476;
+ Thu, 10 Jul 2025 08:00:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9BDC4CEE3;
+ Thu, 10 Jul 2025 08:00:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1752134455;
+ bh=3kJXKGVy19HwRS0v8G4JAZbl9NgESNksh+wuchZQHok=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=GGf2wODUPZB/EEXI0mi84RwgS5MLrJXyRX17IKrUPTWEWDDQQ+nINLDhMYWR5/uoO
+ go2vPoVflCUWA3uyRgB11W5vOfq7RKfENtWfYwj6BiLnNLSlipSmfzLKVnPfl1eS/+
+ t+SfH91y5Qs4IbTW8SzuLoyyzuhnG/rXubMaQTSo1r6DphveXGcxcpXQ/NamJHBStM
+ 3q06LyImZ559wXvkq7miclNeKMHLEciIx/esPs/ZueLMqe0q4lmJYaTLBnhchQjef7
+ dyvfBjs9ez5J/FKNxug3E7XivS1a+IMXqf2Mg6oyROilNFuRXi67c4C46GB4GTBQCC
+ jdAYHoKSrlkHw==
+Date: Thu, 10 Jul 2025 10:00:48 +0200
+To: Arnd Bergmann <arnd@kernel.org>
+Message-ID: <20250710-passen-petersilie-32f6f1e9a1fc@brauner>
+References: <20250709181030.236190-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <aG_A3DvZ0yRAdWbJ@MiWiFi-CR6608-srv>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDA2MSBTYWx0ZWRfX93FS3D25NZ1D
- b1iq8fBMb5OTe+e6GYjeXW2d3BVD7Tyq3l+nRtPK1ysOFIYXvQBAPv391fQESXnpTcPnkLW/BJ7
- qrjfU6jLjHyIe26/vmOat8ujPkF+/Rj7b2ZKiT+RgBko2LYZ2Np3aLCM0COSAO7D9wIdZ+fsxCt
- z2qUszMT5m58aHiYk7cJjddclNb+8cRNDuXzXNPlfZI2xW46ZDKCwpfRg6UUOCOLHt8xj4jTm5m
- UmG5lzVFLlHP23YEbGFZV8gOVFOSOUykuL0GjQTNvAejJ8l2VB8e/xLVh30BfADiLDBQ3UCB1Xd
- HxXR+W7hBcvUpPOwumqz59EgwioWonrpM5TRbg6ixQYWuaWO2sR/LtDI8dF3esWo30D3m55SfSD
- 1C+Qepqkhd2JALTMS+EVwJzMmPGjBbHRGc7RApn1Y6JrfI4hodVf7xq6FNle2Pu01aQ8epKF
-X-Authority-Analysis: v=2.4 cv=Y774sgeN c=1 sm=1 tr=0 ts=686f6f19 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=0Ni6rV8TAAAA:8 a=ipqwzSV8Wgpfka_ekeAA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=MEv8DOuCJPEGjlO0Qob3:22
-X-Proofpoint-ORIG-GUID: HbQ7UsN-eWtS45rWp8-Z9OG5689y09bj
-X-Proofpoint-GUID: HbQ7UsN-eWtS45rWp8-Z9OG5689y09bj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-07-09_05,2025-07-09_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 adultscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 impostorscore=0
- lowpriorityscore=0 phishscore=0 suspectscore=0 mlxlogscore=984 mlxscore=0
- clxscore=1011 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2507100061
+In-Reply-To: <20250709181030.236190-1-arnd@kernel.org>
 X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH v1 1/1] splice07.c: Skip invalid splice()
- tests involving memfd secret
+Subject: Re: [LTP] [PATCH] block: fix FS_IOC_GETLBMD_CAP parsing in
+ blkdev_common_ioctl()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,25 +70,141 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Christian Brauner via ltp <ltp@lists.linux.it>
+Reply-To: Christian Brauner <brauner@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Kanchan Joshi <joshi.k@samsung.com>, Eric Biggers <ebiggers@google.com>,
+ "Darrick J. Wong" <djwong@kernel.org>, Anuj Gupta <anuj20.g@samsung.com>,
+ linux-kernel@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+ linux-block@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ dan.carpenter@linaro.org, rbm@suse.com, linux-fsdevel@vger.kernel.org,
+ benjamin.copeland@linaro.org, ltp@lists.linux.it,
+ Alexey Dobriyan <adobriyan@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgV2VpLApPbiBUaHUsIEp1bCAxMCwgMjAyNSBhdCAwOTozMjoxMkFNIC0wNDAwLCBXZWkgR2Fv
-IHdyb3RlOgo+IE9uIFdlZCwgSnVsIDA5LCAyMDI1IGF0IDA2OjMwOjIyUE0gKzAyMDAsIEphbiBQ
-b2xlbnNreSB3cm90ZToKPiA+IExpbnV4IGNvbW1pdCBjYmU0MTM0ZWE0YmMgKCJmczogZXhwb3J0
-IGFub25faW5vZGVfbWFrZV9zZWN1cmVfaW5vZGUoKSBhbmQgZml4Cltza2lwXQo+ID4gIAkJY2Fz
-ZSBUU1RfRkRfSU5FVF9TT0NLOgo+Cj4gQW5vdGhlciBvcHRpb24gbWF5YmUgd2UgY2FuIGFkZCB0
-aGlzIGVycm9yIGludG8gZXhwX2Vycm5vcywgaSBndWVzcyBjYW4KPiBmaXggeW91ciBpc3N1ZT8K
-Pgo+IGZvciBleGFtcGxlOgo+ICAgICAgICAgY29uc3QgaW50IGV4cF9lcnJub3NbXSA9IHtFQkFE
-RiwgRUlOVkFMfTsKPiArICAgICAgIGNvbnN0IGludCBleHBfZXJybm9zW10gPSB7RUJBREYsIEVJ
-TlZBTCwgRUFDQ0VTfTsKPgpJ4oCZbSBjb25jZXJuZWQgdGhhdCB0aGlzIGFwcHJvYWNoIG1pZ2h0
-IG1ha2UgdGhlIHRlc3RzIHRvbyB1bnNwZWNpZmljLgoKQXNzb2NpYXRpbmcgc3BlY2lmaWMgY29t
-YmluYXRpb25zIHdpdGggY29ycmVzcG9uZGluZyBlcnJvciBjb2RlcyB3b3VsZApwcm92aWRlIG11
-Y2ggbW9yZSBwcmVjaXNlIHJlc3VsdHMuIEhvd2V2ZXIsIGdpdmVuIHRoZSB2YXN0IG51bWJlciBv
-Zgpwb3NzaWJsZSBjb21iaW5hdGlvbnMsIHN1Y2ggYW4gZWZmb3J0IHNlZW1zIGhhcmRseSBwcmFj
-dGljYWwuCj4gPiAtLQo+ID4gMi41MC4wCj4gPgo+ID4KPiA+IC0tCj4gPiBNYWlsaW5nIGxpc3Qg
-aW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAKCi0tIApNYWlsaW5nIGxp
-c3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+On Wed, Jul 09, 2025 at 08:10:14PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Anders and Naresh found that the addition of the FS_IOC_GETLBMD_CAP
+> handling in the blockdev ioctl handler breaks all ioctls with
+> _IOC_NR==2, as the new command is not added to the switch but only
+> a few of the command bits are check.
+> 
+> Refine the check to also validate the direction/type/length bits,
+> but still allow all supported sizes for future extensions.
+> 
+> Move the new command to the end of the function to avoid slowing
+> down normal ioctl commands with the added branches.
+> 
+> Fixes: 9eb22f7fedfc ("fs: add ioctl to query metadata and protection info capabilities")
+> Link: https://lore.kernel.org/all/CA+G9fYvk9HHE5UJ7cdJHTcY6P5JKnp+_e+sdC5U-ZQFTP9_hqQ@mail.gmail.com/
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Cc: Anders Roxell <anders.roxell@linaro.org>
+> Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+
+Thanks!
+
+> It seems that we have a lot of drivers with the same bug, as the
+> large majority of all _IOC_NR() users in the kernel fail to also
+> check the other bits of the ioctl command code. There are currently
+> 55 files referencing _IOC_NR, and they all need to be manually
+> checked for this problem.
+> ---
+
+The current documentation in Documentation/dev-tools/checkuapi.rst needs
+updating too then.
+
+I want this to work. So as a start we should have a common static inline
+helper that encapsulates the barrage of checks.
+
+>  block/ioctl.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/block/ioctl.c b/block/ioctl.c
+> index 9ad403733e19..5e5a422bd09f 100644
+> --- a/block/ioctl.c
+> +++ b/block/ioctl.c
+> @@ -567,9 +567,6 @@ static int blkdev_common_ioctl(struct block_device *bdev, blk_mode_t mode,
+>  {
+>  	unsigned int max_sectors;
+>  
+> -	if (_IOC_NR(cmd) == _IOC_NR(FS_IOC_GETLBMD_CAP))
+> -		return blk_get_meta_cap(bdev, cmd, argp);
+> -
+>  	switch (cmd) {
+>  	case BLKFLSBUF:
+>  		return blkdev_flushbuf(bdev, cmd, arg);
+> @@ -647,9 +644,16 @@ static int blkdev_common_ioctl(struct block_device *bdev, blk_mode_t mode,
+>  		return blkdev_pr_preempt(bdev, mode, argp, true);
+>  	case IOC_PR_CLEAR:
+>  		return blkdev_pr_clear(bdev, mode, argp);
+> -	default:
+> -		return -ENOIOCTLCMD;
+>  	}
+> +
+> +	if (_IOC_DIR(cmd)  == _IOC_DIR(FS_IOC_GETLBMD_CAP) &&
+> +	    _IOC_TYPE(cmd) == _IOC_TYPE(FS_IOC_GETLBMD_CAP) &&
+> +	    _IOC_NR(cmd)   == _IOC_NR(FS_IOC_GETLBMD_CAP) &&
+> +	    _IOC_SIZE(cmd) >= LBMD_SIZE_VER0 &&
+> +	    _IOC_SIZE(cmd) <= _IOC_SIZE(FS_IOC_GETLBMD_CAP))
+
+This part is wrong as we handle larger sizes just fine via
+copy_struct_{from,to}_user().
+
+Arnd, objections to writing it as follows?:
+
+diff --git a/block/ioctl.c b/block/ioctl.c
+index 9ad403733e19..9887ec55f8ce 100644
+--- a/block/ioctl.c
++++ b/block/ioctl.c
+@@ -567,9 +567,6 @@ static int blkdev_common_ioctl(struct block_device *bdev, blk_mode_t mode,
+ {
+        unsigned int max_sectors;
+
+-       if (_IOC_NR(cmd) == _IOC_NR(FS_IOC_GETLBMD_CAP))
+-               return blk_get_meta_cap(bdev, cmd, argp);
+-
+        switch (cmd) {
+        case BLKFLSBUF:
+                return blkdev_flushbuf(bdev, cmd, arg);
+@@ -647,9 +644,25 @@ static int blkdev_common_ioctl(struct block_device *bdev, blk_mode_t mode,
+                return blkdev_pr_preempt(bdev, mode, argp, true);
+        case IOC_PR_CLEAR:
+                return blkdev_pr_clear(bdev, mode, argp);
+-       default:
+-               return -ENOIOCTLCMD;
+        }
++
++       /* extensible ioctls */
++       switch (_IOC_NR(cmd)) {
++       case _IOC_NR(FS_IOC_GETLBMD_CAP):
++               if (_IOC_DIR(cmd) != _IOC_DIR(FS_IOC_GETLBMD_CAP))
++                       break;
++               if (_IOC_TYPE(cmd) != _IOC_TYPE(FS_IOC_GETLBMD_CAP))
++                       break;
++               if (_IOC_NR(cmd) != _IOC_NR(FS_IOC_GETLBMD_CAP))
++                       break;
++               if (_IOC_SIZE(cmd) < LBMD_SIZE_VER0)
++                       break;
++               if (_IOC_SIZE(cmd) > PAGE_SIZE)
++                       break;
++               return blk_get_meta_cap(bdev, cmd, argp);
++       }
++
++       return -ENOIOCTLCMD;
+ }
+
+ /*
+
+And can I ask you to please take a look at fs/pidfs.c:pidfd_ioctl() and
+fs/nsfs.c:ns_ioctl()?
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
