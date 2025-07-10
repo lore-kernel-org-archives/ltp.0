@@ -4,90 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A17D7C83F0F
-	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 01:33:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B6D7C83F10
+	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 01:46:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1752111194; h=date : to :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1752111999; h=date : to :
  message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=Z3XGAz2upvrVoTlJgQ2VZQmTkjDEPeN8XMcsrgUOtd0=;
- b=jVh7ZXFkwea85vCb5Kpo7QRCNKwDea8Vso59Ect/ZwKg/NYsvVzPYU/p4CrQRw7YlzUP4
- 53/9A+X8MnIcsJdAK0k/IW7+JltUJd/+wbO9A11+OyRffEnyyz4zE2dAMKRLer7NIJrzZ1f
- CbaxpTWCYhurhdWFbW0kCIr2FUjhTjk=
+ bh=TVU7/X4iymflgU9X8SZCl050qoD/KmZESpVzXui+Y4U=;
+ b=Hzyrl2QcrlstN2tkycTc6lcxPPycNmKSde0IacVho+JZW0IxI9QzTESjOjwDxYoXgTHyV
+ 6cvP5+nsxI0ENezR4/Xs9LieoftuGlofLqtaX6huAAkfKq/TDJZ7lwDV6KvT6DPB3+M7uGX
+ SE3iObnVLDod8OXpmxoIPDcm+QALtf4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0E1433CAEA3
-	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 03:33:14 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id E00393CAD71
+	for <ltp@archiver.kernel.org>; Thu, 10 Jul 2025 03:46:39 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 595AA3C6277
- for <ltp@lists.linux.it>; Thu, 10 Jul 2025 03:32:53 +0200 (CEST)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
- [IPv6:2a00:1450:4864:20::433])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 1FC573C65DA
+ for <ltp@lists.linux.it>; Thu, 10 Jul 2025 03:46:18 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5A1EB60046A
- for <ltp@lists.linux.it>; Thu, 10 Jul 2025 03:32:52 +0200 (CEST)
-Received: by mail-wr1-x433.google.com with SMTP id
- ffacd0b85a97d-3a6e2d85705so340394f8f.0
- for <ltp@lists.linux.it>; Wed, 09 Jul 2025 18:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1752111172; x=1752715972; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=+w8vbPorJHg+gG6Zf5Gac/xVA7+ulBBg/3p5bArZOsY=;
- b=EAVov7hP8200oROiAiLOJRvy5sU+/FR1n3KFFM7ch9+oX0uhxrkv1gHz52OphzXZ2i
- w5+uUIl4glUbMvdIKgPGA5DgiSzT2ZnAxC/wmi4KYKgUTnO0HZgO/Kdj97I0L6uYrDtS
- f6ZiNwvWuwdhC0IxH/Q7X2eu+2pR2GEpZgxLU3ibxuJHvNUEuj6R3O4czF7d9Ixu8iAS
- hsxh3KbVdfvz5BJsY3Fds9dhdQJqOHcGVRKWC4ATuOvHuIEceygn7t+phq6TMQmNMY+S
- 4nlnAMUqMObIxKuhD+BKk54mkGxUWSm46ZZzjbx6s+djT0rQ2FLK2mD+ljSNM8yLzcOs
- aJNA==
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 488D12002BF
+ for <ltp@lists.linux.it>; Thu, 10 Jul 2025 03:46:16 +0200 (CEST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56A0tqcQ002824
+ for <ltp@lists.linux.it>; Thu, 10 Jul 2025 01:46:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+ cc:content-type:date:from:in-reply-to:message-id:mime-version
+ :references:subject:to; s=qcppdkim1; bh=CFSq5biy33Dhg48FrkRG4qgS
+ 5589vUj+u+srVmzOd6o=; b=JrIn/36dVo8Lwc+6ICk+c2EDKh6NcsNKol0e69T4
+ g6YwT6t91OCWdb2yZ3NP7Fkb5xLiih1XerYNODoVlTeWk/52LYfV1YTCCbkn97tg
+ OKGAn1E11MV+DaH3pIuc7q25ywlWkFzuD/dJtY/Cv4BjxXG3J+d5i88KZgOZHc9d
+ 0khgkiSGwIS+J67p3ztzfT7O5o+/ghxLtNzqk/gC4iV4XSda4AWmmN0fpg4b1xyW
+ K1K6gP78e9AN5qRTJsJnF42/C++ZFxccMCwGq7J3ih+eIYS27Z+Penp38ztrNrGZ
+ dfW1u2Fvzklywr+U7NfS14BaE05Uth0yQ/Nrn9xI1AvIeA==
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197])
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 47pu2bec7p-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 10 Jul 2025 01:46:14 +0000 (GMT)
+Received: by mail-pf1-f197.google.com with SMTP id
+ d2e1a72fcca58-748e1e474f8so740124b3a.2
+ for <ltp@lists.linux.it>; Wed, 09 Jul 2025 18:46:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1752111172; x=1752715972;
+ d=1e100.net; s=20230601; t=1752111973; x=1752716773;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=+w8vbPorJHg+gG6Zf5Gac/xVA7+ulBBg/3p5bArZOsY=;
- b=OEGjbtgbfQMm2TpSz9nX/cpK6pXRfGVrK2QWb1ovROJCNU62kn9tjYeZG8IGIm5t3T
- QclunTJ4Soac7NJTUvETg2QmvvipjPozO506Udocz9XdVNelLz7+M8UYmWs4276e9dVC
- PJUa3BukvX00qI46it2Q7g1dsJj6Unt1e3JpUTt8fKXLYsSdMX1ZD6TKzf0ScleZWHUD
- 9uo6zVmr4Tr3tvbtxWPQMdie2zzK/1GnHC60mFXkjD8SweyDGsy2xLoEwVcu9PmZKDG+
- C3lPGyjKm9mtYI6vFWPxt9IBuddr1ThakUAmRopbXD0yROlsyNYMNqhtOoEJSY5VICyi
- 9X4g==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUeSjwKiO/+5bJbM3o2oe8LMPwCMaZc9iy9rWO326DRAKRzIpSJ5MH5Lvec6NSYse/QQFg=@lists.linux.it
-X-Gm-Message-State: AOJu0YyWWFMAGxfA8fVieZFgOSBnNw8HGzzyDqkWcIHzoLO5qkEgAwt3
- 0lN37N0CbTG42yTWMvChwQxrbCMpRh+OMTTZi6ABXL3zxLt7fCgdpLOWqgxPxG+AK0Zo3iqFHqk
- k50s=
-X-Gm-Gg: ASbGncvScWatZ0KjKyLkXH2c+jNuAQLqHbAfGf4QLtsPlNGxKFTGn6NL3xDgD8lBM9y
- Lz4NDV+kLytrQGUpTxPMWmocPC5CMwxVh6Cu8GM+o6H9R7VxE4DShwnPlU9pgapS/EsvRkaZRGE
- cA5tbnSdDQDKMuqYoVJH+T/KANiVyXUPhfKtG7jFSkahUYOX8Vge8+oprHpB40s/5iInAAC7Wfp
- 2n1briS/SD74ge9Sv2ALIlAlIbzTJNfHP47+8e06iH6BMECJTOjqXMYdGQCEbN5LYFka1AOs9S8
- grCujZmnSWLI62wG5AGujBN632E8qgKv4jgrn1ZrW1lyhAHu4hhnjGKvEz84Mg==
-X-Google-Smtp-Source: AGHT+IFZA/2Y0FCRgSje6F87ztH1AuNCyMqqw1MlkRzTIO/bd8MqWrnBhjmu0jyQa+16IevdOeu54g==
-X-Received: by 2002:a05:6000:4a12:b0:3a5:2f23:3783 with SMTP id
- ffacd0b85a97d-3b5e44ea414mr4346262f8f.24.1752111171682; 
- Wed, 09 Jul 2025 18:32:51 -0700 (PDT)
-Received: from MiWiFi-CR6608-srv ([202.127.77.110])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-74eb9f1b360sm388128b3a.78.2025.07.09.18.32.49
+ bh=CFSq5biy33Dhg48FrkRG4qgS5589vUj+u+srVmzOd6o=;
+ b=Bl6gQvIhVPrVbAWk5FD/jXLoFMxgqSO2sJmLGoZXoY2X4Yu3jSixBIVlCzJybXMJmu
+ SFVezUhvBqaFSiGKZi1InwUuv3FW+rSA+74/MKIdga0qGRx15MveGaZe3dxzvUxZj8h/
+ 2JIMql/ieiLOzfYtraBDKm/HB+L1T6uvDBNbow8ehWCiVhVeo1iPXrEFOAOSPXN14iEV
+ FdCaWMjBScK1uzpiztBqCAebVfpiVEWdOzdsDYRhNTbdTWYt+J88c//DJjy4X2b4k4Ip
+ B7M6yCB/qg9bZkLZlKTdrvsUS/v7VlL3qAz2y40+IL/do55QJsIBgBFyB1+mFREbadnx
+ cGPQ==
+X-Gm-Message-State: AOJu0YySh5KkNhdmQ+lSQv7kMrezQ9XDOAnFSQprhnpdAAFjMinrKbEC
+ d+mLiOW4r6owQqLhb0UaQGs8KtAU5CRUNiqfUZC6FjU2Y2VDLrbmx3OrpBQnksfMboyHA26nZ+x
+ leAOlu2X0gdImlDB5AJqWzx/viQ/GHaAORnPecxj+301WzdfEqep7vg==
+X-Gm-Gg: ASbGncvFBz1QChgMU+SBDFaKfJw2RoSOcVwHOUvU0xRz057HIV36PFVHrlQwMHcsawz
+ Pz08UYv5JNmJCGb7KODtwMOqkBzn7EBsdvjuIYtMzoxLrUAEDkUKPNBT0lM0wAC6emX0kXctDVt
+ v1a/BfLrjq58FcmKPFdR0sMZNCoPB9MzJsBBuVq8lgbCUwSPyLA9P71BP2lRllNxllZwo2pagrp
+ /w8iF8q46Zq2QXinzYSPO7kDz713YvkBcneOoQAOmGVen88u4QHwPt5jBs92YVx/HFn3Nqmk1Jm
+ iLAmFfOSzituqpzOSxAXdd5t9QEjna1WyqPkPTNSNyjmtd2ybqWCXIZ/LILXErSVFlaHyrdFtL+
+ F
+X-Received: by 2002:a05:6a00:2d05:b0:736:3d7c:236c with SMTP id
+ d2e1a72fcca58-74eb8f67e16mr1124479b3a.14.1752111972872; 
+ Wed, 09 Jul 2025 18:46:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHmybCt8kgQqRxMk+H+Csthqm/ezWb6c/HldalzDfroyXjqBM+tNm/xQHmEm1CKVbdfEv9Ytg==
+X-Received: by 2002:a05:6a00:2d05:b0:736:3d7c:236c with SMTP id
+ d2e1a72fcca58-74eb8f67e16mr1124449b3a.14.1752111972438; 
+ Wed, 09 Jul 2025 18:46:12 -0700 (PDT)
+Received: from hu-mdtipton-lv.qualcomm.com (Global_NAT1.qualcomm.com.
+ [129.46.96.20]) by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-74eb9e06a04sm364353b3a.44.2025.07.09.18.46.11
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 09 Jul 2025 18:32:51 -0700 (PDT)
-Date: Thu, 10 Jul 2025 09:32:12 -0400
-To: Jan Polensky <japo@linux.ibm.com>
-Message-ID: <aG_A3DvZ0yRAdWbJ@MiWiFi-CR6608-srv>
-References: <20250709163022.69985-1-japo@linux.ibm.com>
+ Wed, 09 Jul 2025 18:46:11 -0700 (PDT)
+Date: Wed, 9 Jul 2025 18:46:09 -0700
+To: Wei Gao <wegao@suse.com>
+Message-ID: <aG8bYZWlls9MiJW9@hu-mdtipton-lv.qualcomm.com>
+References: <20250709151439.2840206-1-mike.tipton@oss.qualcomm.com>
+ <aG-1OzeP-mB2MPq1@MiWiFi-CR6608-srv>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250709163022.69985-1-japo@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+In-Reply-To: <aG-1OzeP-mB2MPq1@MiWiFi-CR6608-srv>
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDAxMyBTYWx0ZWRfX4qIlD4sp5hkj
+ kNYlXEZKvhyjji5A00QW+6EMq9jy9EVnCVds1J/cMoNGO48Y1mDx+gmw0sQP2gidL+YUKb/pbnn
+ Y/fQpXoHoMyHpOaKJnakpHBb2XHkz04QVBvs4BZx+EVt6K6ng1708KnQoiiiUVgdli7lkHEnsdg
+ ELIWrJC3xIiRANd2IVjKl2mXhrFwD+X+DjszQm+BmWu5sWJ7RA7KD+Uc6XDsFDPdsI3WYUXemQR
+ ohzy7cvvKdk7gxQDxFrOrw86cOffDADunv1NdhCNKr76Kq4RnDtuLQtoMZ4cHJpPCabtt0P5K+i
+ TkuUSw+hs6Bug9nC8n+pzMF7loKustQTkeqzMxSuqGe8N3+IfUx/PdFDBVL6pDqGw6F+WKUvP9Y
+ JchGm1o7pGW4uFDeGXv8ayE17FPEHxxd4Emh/6ZUQbLAvtNJtY0IGpkXuRCJkloNhFQoB8QX
+X-Proofpoint-ORIG-GUID: q_U8YGeChq1-VP_KT3QmysiNxA5tMN5g
+X-Proofpoint-GUID: q_U8YGeChq1-VP_KT3QmysiNxA5tMN5g
+X-Authority-Analysis: v=2.4 cv=erTfzppX c=1 sm=1 tr=0 ts=686f1b66 cx=c_pps
+ a=rEQLjTOiSrHUhVqRoksmgQ==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=kj9zAlcOel0A:10 a=Wb1JkmetP80A:10 a=VwQbUJbxAAAA:8 a=EUspDBNiAAAA:8
+ a=iox4zFpeAAAA:8 a=qCBJvXPrj-7--cnkmfEA:9 a=CjuIK1q_8ugA:10
+ a=2VI0MkxyNR6bbpdq8BZq:22 a=WzC6qhA0u3u7Ye7llzcV:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-07-09_05,2025-07-09_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ mlxscore=0 clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501
+ mlxlogscore=999 bulkscore=0 adultscore=0 malwarescore=0 phishscore=0
+ lowpriorityscore=0 suspectscore=0 classifier=spam authscore=0 authtc=n/a
+ authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2505280000 definitions=main-2507100013
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH v1 1/1] splice07.c: Skip invalid splice()
- tests involving memfd secret
+Subject: Re: [LTP] [PATCH v3] device-drivers/cpufreq_boost: Don't hardcode
+ to CPU0
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,70 +131,107 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
+From: Mike Tipton via ltp <ltp@lists.linux.it>
+Reply-To: Mike Tipton <mike.tipton@oss.qualcomm.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Jul 09, 2025 at 06:30:22PM +0200, Jan Polensky wrote:
-> Linux commit cbe4134ea4bc ("fs: export anon_inode_make_secure_inode() and fix
-> secretmem LSM bypass") prevents any access to secret memory pages from other
-> kernel subsystems.
-> 
-> Splice operations involving memfd secret are no longer valid and return EACCES.
-> These test cases are skipped accordingly.
-> 
-> This avoids false negatives in splice07 test:
-> 
->     [skip]
->     splice07.c:54: TFAIL: splice() on pipe read end -> memfd secret expected EBADF, EINVAL: EACCES (13)
->     [skip]
->     splice07.c:54: TFAIL: splice() on memfd secret -> pipe write end expected EBADF, EINVAL: EACCES (13)
->     [skip]
-> 
-> Reference: cbe4134ea4bc ("fs: export anon_inode_make_secure_inode() and fix secretmem LSM bypass")
-> Signed-off-by: Jan Polensky <japo@linux.ibm.com>
-> ---
->  testcases/kernel/syscalls/splice/splice07.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/splice/splice07.c b/testcases/kernel/syscalls/splice/splice07.c
-> index 2228e2f269de..c750a14bf439 100644
-> --- a/testcases/kernel/syscalls/splice/splice07.c
-> +++ b/testcases/kernel/syscalls/splice/splice07.c
-> @@ -27,6 +27,7 @@ static void check_splice(struct tst_fd *fd_in, struct tst_fd *fd_out)
->  		case TST_FD_UNIX_SOCK:
->  		case TST_FD_INET_SOCK:
->  		case TST_FD_MEMFD:
-> +		case TST_FD_MEMFD_SECRET:
->  			return;
->  		default:
->  		break;
-> @@ -40,6 +41,7 @@ static void check_splice(struct tst_fd *fd_in, struct tst_fd *fd_out)
->  		case TST_FD_FILE:
->  		case TST_FD_PROC_MAPS:
->  		case TST_FD_MEMFD:
-> +		case TST_FD_MEMFD_SECRET:
->  			return;
->  		/* And this complains about socket not being connected */
->  		case TST_FD_INET_SOCK:
+On Thu, Jul 10, 2025 at 08:42:35AM -0400, Wei Gao wrote:
+> On Wed, Jul 09, 2025 at 08:14:39AM -0700, Mike Tipton wrote:
+> > Some systems don't support boost on every CPU, such as on many Qualcomm
+> > chipsets. And if boost isn't supported on CPU0, then the test will fail
+> > since there's no performance improvement.
+> > 
+> > Instead of hardcoding CPU0, find the first CPU that belongs to a cpufreq
+> > policy with boost enabled.
+> > 
+> > Signed-off-by: Mike Tipton <mike.tipton@oss.qualcomm.com>
+> > ---
+> > Changes in v3:
+> > - Abort when no CPUs report supporting boost instead of assuming CPU0.
+> > - Link to v2: https://lore.kernel.org/ltp/20250630145128.1254269-1-mike.tipton@oss.qualcomm.com/
+> > 
+> > Changes in v2:
+> > - Use proper maxspeed buf size in snprintf.
+> > - Link to v1: https://lore.kernel.org/ltp/20250626194707.3053036-1-mike.tipton@oss.qualcomm.com/
+> > 
+> >  .../device-drivers/cpufreq/cpufreq_boost.c    | 58 ++++++++++++++++---
+> >  1 file changed, 50 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> > index 67917b3fea25..17d89c0cc164 100644
+> > --- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> > +++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> > @@ -55,10 +55,14 @@ static int id = -1;
+> >  
+> >  static int boost_value;
+> >  
+> > -const char governor[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_governor";
+> > +static int cpu;
+> > +
+> > +static const char _governor[] = SYSFS_CPU_DIR "cpu%d/cpufreq/scaling_governor";
+> > +static char governor[64];
+> >  static char governor_name[16];
+> >  
+> > -const char maxspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_max_freq";
+> > +static const char _maxspeed[] = SYSFS_CPU_DIR "cpu%d/cpufreq/scaling_max_freq";
+> > +static char maxspeed[64];
+> >  
+> >  static void check_set_turbo(char *file, char *off)
+> >  {
+> > @@ -84,6 +88,40 @@ static void cleanup(void)
+> >  		FILE_PRINTF(governor, "%s", governor_name);
+> >  }
+> >  
+> > +static int find_boost_cpu(void)
+> > +{
+> > +	char buf[64];
+> > +	int fd, i;
+> > +
+> > +	/*
+> > +	 * The files we're looking for only exist for acpi_cpufreq. Continue
+> > +	 * assuming CPU0 for intel_pstate.
+> > +	 */
+> > +	if (!strcmp(cdrv[id].name, "intel_pstate"))
+> > +		return 0;
+> > +
+> > +	for (i = 0;; i++) {
+> > +		snprintf(buf, sizeof(buf), SYSFS_CPU_DIR "cpu%d", i);
+> > +		fd = open(buf, O_RDONLY);
+> > +		if (fd == -1)
+> > +			break;
+> > +
+> > +		close(fd);
+> > +
+> > +		snprintf(buf, sizeof(buf), SYSFS_CPU_DIR "cpu%d/cpufreq/boost", i);
+> > +		fd = open(buf, O_RDONLY);
+> > +		if (fd == -1)
+> > +			continue;
+> > +
+> > +		close(fd);
+> > +		tst_resm(TINFO, "found boost-capable CPU (CPU%d)", i);
+> > +		return i;
+> > +	}
+> > +
+> > +	tst_brkm(TCONF, NULL, "boost not supported by any CPUs");
+> > +	return 0;
+> I suppose we do not need above line since brkm will jump out of the test
+> directly.
 
-Another option maybe we can add this error into exp_errnos, i guess can
-fix your issue?
+Yes, that's true. But it feels wrong to reach the end of a non-void
+function without returning something. Even though in this case it'll
+never actually reach the return statement.
 
-for example:
-        const int exp_errnos[] = {EBADF, EINVAL};
-+       const int exp_errnos[] = {EBADF, EINVAL, EACCES};
+> 
+> Other parts LGTM, thanks for your patch.
+> Acked-by: Wei Gao <wegao@suse.com>
+> 
 
-> -- 
-> 2.50.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Thanks!
+Mike
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
