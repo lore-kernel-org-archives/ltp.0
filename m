@@ -4,64 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CFF3C8303C
-	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 11:33:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D690C83F1A
+	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 11:36:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 592943CAD82
-	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 13:33:01 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 14EF33CB28D
+	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 13:36:17 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 24DDA3C6BC7
- for <ltp@lists.linux.it>; Fri, 11 Jul 2025 13:32:45 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 4BF003C6BC7
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 13:35:59 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4E4FF1A00704
- for <ltp@lists.linux.it>; Fri, 11 Jul 2025 13:32:28 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9C4FE200AD6
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 13:35:58 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D4B711F7DC;
- Fri, 11 Jul 2025 11:32:25 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 171FE1F78C
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 11:35:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1752233757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ePMy26ohEdUmAJm2Zw455qGii1N//hIECbL2Y7ekQTc=;
+ b=DVBcrkKl9i23P/7gqTRsMxl69UOl3RKT3x/BjOnVYrbmlf1njULwj7LeayiiY3yXvdtwzg
+ oMA8QS306yeifDs+SfZ/ISHpJ5ZEucP90FI9puEnF2BR38GAZ94dQRcM2QuwSRShk8vLzN
+ OKkZDssBtuzPIN398xGqwgUf4KGVO70=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1752233757;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ePMy26ohEdUmAJm2Zw455qGii1N//hIECbL2Y7ekQTc=;
+ b=BekYl2inLJNgmo5U9RpzYFGzmZyTBHRmf079I3plvX+aCHSaznZ2glFlnGRQnVtFzYPg13
+ qdsrSKALDvNsp0AQ==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DVBcrkKl;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BekYl2in
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1752233757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ePMy26ohEdUmAJm2Zw455qGii1N//hIECbL2Y7ekQTc=;
+ b=DVBcrkKl9i23P/7gqTRsMxl69UOl3RKT3x/BjOnVYrbmlf1njULwj7LeayiiY3yXvdtwzg
+ oMA8QS306yeifDs+SfZ/ISHpJ5ZEucP90FI9puEnF2BR38GAZ94dQRcM2QuwSRShk8vLzN
+ OKkZDssBtuzPIN398xGqwgUf4KGVO70=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1752233757;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ePMy26ohEdUmAJm2Zw455qGii1N//hIECbL2Y7ekQTc=;
+ b=BekYl2inLJNgmo5U9RpzYFGzmZyTBHRmf079I3plvX+aCHSaznZ2glFlnGRQnVtFzYPg13
+ qdsrSKALDvNsp0AQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BEF321388B;
- Fri, 11 Jul 2025 11:32:25 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F3A911388B
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 11:35:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 1ysyLkn2cGgaFgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 11 Jul 2025 11:32:25 +0000
-Date: Fri, 11 Jul 2025 13:33:04 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +9qXOhz3cGhlFwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 11:35:56 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <aHD2cISM0-xPAHz_@yuki.lan>
-References: <20250620154346.19864-1-chrubis@suse.cz>
- <20250620154346.19864-3-chrubis@suse.cz>
- <c712df4f-2438-4376-8c21-c20b623a5bfa@suse.com>
+To: ltp@lists.linux.it
+Date: Fri, 11 Jul 2025 13:36:30 +0200
+Message-ID: <20250711113632.11391-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <c712df4f-2438-4376-8c21-c20b623a5bfa@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: D4B711F7DC
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
+X-Rspamd-Queue-Id: 171FE1F78C
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+]; TO_DN_NONE(0.00)[];
+ DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,
+ imap1.dmz-prg2.suse.org:helo, suse.cz:dkim, suse.cz:mid]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] metaparse: Map arrays with designated
- initializers to JSON objects
+Subject: [LTP] [PATCH v2 0/2] Two more metadata parser fixes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,73 +112,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> This patch is actually causing documentation build failure due to the =
+This series fixes a metadata parser for the ".filesystems" entry of the
+tst_test structure. First patch fixes the data storage to JSON
+serialization and second patch changes the parser to convert structure
+intialization with only designated initializers into a hash (object)
+rather than an arrray.
 
-> way we are defining .hugepages as:
-> =
+V2: Fixed corner case in structure parsing as reported by Andrea
 
->  =A0=A0=A0 .hugepages =3D {TST_NO_HUGEPAGES},
-> =
+Cyril Hrubis (2):
+  metadata: data_storage: Fix hash to json object serialization
+  metaparse: Map arrays with designated initializers to JSON objects
 
-> The shmget02 metadata (for instance) will have an empty hugepages =
+ metadata/data_storage.h |  28 ++++++--
+ metadata/metaparse.c    | 142 +++++++++++++++++++++++++++++++++-------
+ 2 files changed, 143 insertions(+), 27 deletions(-)
 
-> dictionary:
-
-Ah, right, I've missed a special case in the C structure parsing.
-
-This on the top of the patchset fixes the problem:
-
-diff --git a/metadata/metaparse.c b/metadata/metaparse.c
-index e9e9aee10..36736ac06 100644
---- a/metadata/metaparse.c
-+++ b/metadata/metaparse.c
-@@ -379,13 +379,17 @@ static int array_is_hash(FILE *f)
-        long pos =3D ftell(f);
-        int has_ids =3D 1;
-        int elem_seen =3D 0;
-+       int comma_last =3D 0;
-        int in_id =3D 1;
-        char *token;
-
-        while ((token =3D next_token(f, NULL))) {
-
--               if (!strcmp(token, "}"))
-+               if (!strcmp(token, "}")) {
-+                       if (in_id && !comma_last)
-+                               has_ids =3D 0;
-                        goto ret;
-+               }
-
-                elem_seen =3D 1;
-
-@@ -419,8 +423,12 @@ static int array_is_hash(FILE *f)
-                        }
-
-                        in_id =3D 1;
-+
-+                       comma_last =3D 1;
-                } else if (!strcmp(token, "=3D")) {
-                        in_id =3D 0;
-+               } else {
-+                       comma_last =3D 0;
-                }
-        }
+-- 
+2.49.0
 
 
-I will send a new version.
-
--- =
-
-Cyril Hrubis
-chrubis@suse.cz
-
--- =
-
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
