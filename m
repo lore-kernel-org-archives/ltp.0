@@ -4,88 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A40AC83F1A
-	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 03:48:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1752205734; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=OFUDBVoJW6WxFQXuMPQ8GBB4PofzdHAqlIor6lT9cfo=;
- b=LaoHkK1pRlS05NYEcyyyu3FjpCB2GFj3ik9l8TipJ3AXjz1QFq0lRrbwvb7q/rZxBWqNR
- rzcsXobYCpCOCBLnea+GgDmeRazii3aaxhpdgcvtWwnqPe4RIxsQ7epaFIOGMP01XIbP3WX
- 6m10olnmf7vOSza1eJTRNEi23UBOux8=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC0ACC83F1A
+	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 07:24:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1C7723CB2BB
-	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 05:48:54 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 1975D3CB1BB
+	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 09:24:43 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 673B63CAF8E
- for <ltp@lists.linux.it>; Fri, 11 Jul 2025 05:48:33 +0200 (CEST)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 05AEB3C218B
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 09:24:26 +0200 (CEST)
+Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0A59D1A00666
- for <ltp@lists.linux.it>; Fri, 11 Jul 2025 05:48:31 +0200 (CEST)
-Received: by mail-wm1-x332.google.com with SMTP id
- 5b1f17b1804b1-4538bc52a8dso11827915e9.2
- for <ltp@lists.linux.it>; Thu, 10 Jul 2025 20:48:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1752205711; x=1752810511; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=96JxJF9UuYryDobI5D/PHhOKBv2eUzCzaVKWGqAb9Hk=;
- b=glTDMxXgi4manxFdDBBQgpiC/psAqfNLDJqwC9wcEdBCkbWkjkQLAV3b4PMyjJZYne
- lVMt73qdy0m3WUfXpn4xQLZ55cgvgP8EVQK8VYAAa2RAPSR4S8tVnwM856BSkKRWO0MN
- dPFLgTVVhh4sI+dgzfxMoZy0jtH7WxOtY7uvrO/XX8CPgEWhFbbzr5ml6ReWouf59Hy0
- 3OrRITgXjkE1Krx+gizyucnUdZldcAUdRlbW3FJL/BCUZTmDUVuJHj+I+JcCLYkK8oAS
- 6V97ywsUU9mZstW15/KHHAghgYqVYaahodHtjqWNGmrSfOL+UFgO08s2o29Qsbk349rq
- JZgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1752205711; x=1752810511;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=96JxJF9UuYryDobI5D/PHhOKBv2eUzCzaVKWGqAb9Hk=;
- b=FCVetaQhLllDz9e0R9ZrkNwTghI7BCP+gSeYK/KIplJZdOes5n7mxobi2wcKGaPn/D
- w8C6X0JEpoVVF1zwiKXAI6nJQ0yhzBCrE7fQ/ssrxWVsKVuSf/bg7Dju9yRSIrW//7Xx
- fMJlE4YTkR1zOmVsUo78AicB8sCUZSbK4idjbs8ngauXy8eLEpmafyI8NnI9BY+J3jSM
- 5PSSW8n7SyoDHonMzjlGrWNJ3MLrsSONuImsCXFbxwSGP4lfGwcDIbzzdshmaD/VYyrx
- V1lmEzbDHXjgpFnzAPyDe0LKLeN+pIBZhHykCvkwW9eb3660XjjMvAgFGpjmKL83rR+E
- 5akg==
-X-Gm-Message-State: AOJu0YyL9CPe06iRA9LeaiioxAKPtfFakhHMNJo9/XZ+7lrgEvMW34+Y
- 9nhT4TgLVfNABlZMpCG7jSsRmA5BqsbROj2CWVHhNRjq4vQs+ZNUx14NTNpymK1udw==
-X-Gm-Gg: ASbGncuHxvYKwHFDm/hwsKiYDt5NjM1/dQ4KYEuIWXSZjSv3JXvLh1j0hVM5kNhgC4h
- XQbHf6IevY006WJp9M2rtCcLem7rqQSOARAgKTu/YExZlZ1Fl+7SER14Fd0REJXS77rhNMg8h7H
- 53DUCPrqY0MOd/S+CI1lYNQVm4XWUREcANnNyWYb0D0IL9b9R46ZuUtRznJgipPbndLoDaa0VUx
- F7x4U8nJOqmImwzgKlx5QnS+DhwXbyQxDHZbkJ4tSbTKX2FuDvj2N0rl9niZYxHCn4zXA3MUI2k
- UcMZw6Oh9AX3PVv7x0zsK6g2RYOq/gupswuyCmfLn0tmgRxLQ//Cx72quOeT3/ASxPsf3G7ua7o
- 54nx7q2pFxqYeOmlh8wGxZw==
-X-Google-Smtp-Source: AGHT+IGnNS78z2RUnwr+tE4TE3kYUUAHyYZ2JypXGIiuz1+sqwjYfSSif/Ad+qx8IbTnoDPm2cMOZw==
-X-Received: by 2002:a05:6000:e06:b0:3a5:1cc5:4a17 with SMTP id
- ffacd0b85a97d-3b5f18d835emr1031165f8f.42.1752205711298; 
- Thu, 10 Jul 2025 20:48:31 -0700 (PDT)
-Received: from MiWiFi-CR6608-srv ([202.127.77.110])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-74eb9f8f878sm3746752b3a.166.2025.07.10.20.48.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 10 Jul 2025 20:48:30 -0700 (PDT)
-Date: Fri, 11 Jul 2025 11:47:49 -0400
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <aHEyJQpeSY-fLpdH@MiWiFi-CR6608-srv>
-References: <20250113055231.5908-1-wegao@suse.com>
- <20250226125141.27417-1-wegao@suse.com> <aG_bpRMoMs0XCGiD@yuki.lan>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B51091A00CB7
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 09:24:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+ s=onoh2408; t=1752218657;
+ bh=SJmbo7QaEQHp4QoztTiMX5kxp8SEQeuq3xccE2NaDDA=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version;
+ b=Rj3IoLDQhjJt1c0l0lu+FBBkofaBDqRYSG0H5nQGO9tuutzQbGnfB0BiwSARv+5iA
+ H0CEBeZiijkJZ9KHPOr1h9VGks0PKfEzcRJTiVVjHFAwaZOw1yYR/hxj52pI/+EqvB
+ 6SPgnsfxQ2QrgZtz1F+M3vnQcg2FlgueQFEqR9do=
+X-QQ-mid: zesmtpgz7t1752218653t8110959a
+X-QQ-Originating-IP: /+iaDU7Y1KijdWJw2KMNzUuSyjWj93aYuuznSNQ8B2g=
+Received: from localhost.localdomain ( [1.85.7.34])
+ by bizesmtp.qq.com (ESMTP) with 
+ id ; Fri, 11 Jul 2025 15:24:11 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 17497584149694867037
+EX-QQ-RecipientCnt: 2
+From: lufei <lufei@uniontech.com>
+To: ltp@lists.linux.it
+Date: Fri, 11 Jul 2025 15:24:06 +0800
+Message-Id: <20250711072406.41444-1-lufei@uniontech.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <aG_bpRMoMs0XCGiD@yuki.lan>
+X-QQ-SENDSIZE: 520
+Feedback-ID: zesmtpgz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-0
+X-QQ-XMAILINFO: MACXe2l6e7j9bt3c3YVwG15ZzXb3tDI1JHi5NqJAx7FqgkCmFUWZosSA
+ JCtGC5hq4MAEBhUwyfQ5hsTqN3RCXvPUwUYizxRJGHF1fWfzrbXSmht8eKARCc+l7TwAaL8
+ zvFci3zN0/RqJJoYeBgeThA+N+pSfp7UbW2E/FI6ewY3WpVh0ckfFjsFB/SfSeR/dhN3OyD
+ F7kdjZ8rWQabKWgqVNXIBWmmKWnPHfnzHi0vD/mUEqwAY/PbEkXifnmbkhvEgLiZxvXt6lG
+ a7rHrP5+T7DuXdQ5I5NNJGQW6cbNoXvyYecAnQP8wXt2+eMrPbwjJN86IIcsAWBQ9iW1s8x
+ 0+sLWuxg7q0bbVNzMGgx/YyPUP+ElQyNivwO9SQn483JD4r1HIWs0OZfyKv5pKP2qDvUvKm
+ KKF/XDRaqUXnd+xQwbmOjJjwCTttP3wU8N2zM6YtAvsPm+vsvLQKhgTXgEZOsiKgEUVAsEh
+ 8z8GawR+4WJyn5q9WBRsbFLoecb74S2/Ff53z+C010s7HENsjgg4/dRTZrek8fl9ShxMyFY
+ sGweXeqnWhvT+q6OWgOyYPLaR43T18Qdn13N1ILrScPZWX8Y6ZKqNRAv4jYjU1qM4QGe1hf
+ NsxQmKm95x+P4yUe76Xp+80sesIj9dgBc7n3EnM1vRWBctDH3cx7GnKa6ixKnXnaEyvsxOE
+ 8BUEEG5LjmKN8kS9W9EVVv15KdcbhxahwJtrpV9w2AH2Frnpx4QnQi/YFR+61g5PxuZuJNo
+ lkVjNcQrr9N6fGnBrspiH0qbwGc3rP26Ug4lkiklpX/YkvM64NiUV9tiAAATcnYYR3SZ8Yg
+ v76j9MSEZIN44pg+iZ8uiNKoT8Vg9z3A/CxhCt09YfaDr4MwDDWdbiYwycF1Ddbrro37T90
+ 13wcKe870E3jT+DzqALdEbL84ktscb9XCroOw1jj3RB6m/cQdNIxmfLq6sviyUlD4qHRGi4
+ CGJecVv0JrY5M/iqUGarsaeC1MECAUTb6CQx+FMxF6p5DIw==
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+X-QQ-RECHKSPAM: 0
 X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] ioctl10.c: New case test PROCMAP_QUERY ioctl()
+Subject: [LTP] [PATCH] Add unshare(CLONE_NEWPID) test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,46 +76,107 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
+Cc: lufei <lufei@uniontech.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Jul 10, 2025 at 05:26:29PM +0200, Cyril Hrubis wrote:
-> Hi!
-> I've pushed the patch with following changes:
-> 
-> - removed .needs_root since the test runs fine without root
-> 
-> - moved the check for ioctl() support into the test setup() and the
->   check for availability is only done on kernels older than 6.11 since
->   it has to be available since that kernel version
-> 
-> - made use of guarded buffers for the procmap_query structure passed to
->   the syscalls
-> 
-> What should still be done:
-> 
-> - we miss a few more errnos:
->   - EINVAL if q->size is too small
->   - E2BIG if q->size is larger than page size
->   - EINVAL on invalid q->flags
->   - EINVAL if only one of q->vma_name_size and q->qma_name_addr is set
->   - EINVAL if only one of q->build_id_size and q->build_id_addr is set
->   - ENAMETOOLONG if build_id_size or name_buf_size is too small
->   - possibly ESRCH if we attempt to get memory map of a process that did exit and was waited for
-> 
-> - the invalid tests should be split into a separate test and stored in
->   a tcase structure as we usually do, which makes it easier to add tests
-Thanks, i will check it.
-> 
-> Full diff:
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+Test unshare(CLONE_NEWPID) to make first child in new PID namespce get
+pid 1.
+
+Signed-off-by: lufei <lufei@uniontech.com>
+---
+ runtest/syscalls                              |  1 +
+ testcases/kernel/syscalls/unshare/.gitignore  |  1 +
+ testcases/kernel/syscalls/unshare/unshare05.c | 54 +++++++++++++++++++
+ 3 files changed, 56 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/unshare/unshare05.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 57338297a..82e222bf4 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1726,6 +1726,7 @@ unshare01 unshare01
+ unshare02 unshare02
+ unshare03 unshare03
+ unshare04 unshare04
++unshare05 unshare05
+ 
+ #
+ # These tests require an unmounted block device
+diff --git a/testcases/kernel/syscalls/unshare/.gitignore b/testcases/kernel/syscalls/unshare/.gitignore
+index b1206e452..8ece5f988 100644
+--- a/testcases/kernel/syscalls/unshare/.gitignore
++++ b/testcases/kernel/syscalls/unshare/.gitignore
+@@ -2,3 +2,4 @@
+ /unshare02
+ /unshare03
+ /unshare04
++/unshare05
+diff --git a/testcases/kernel/syscalls/unshare/unshare05.c b/testcases/kernel/syscalls/unshare/unshare05.c
+new file mode 100644
+index 000000000..cfc5877da
+--- /dev/null
++++ b/testcases/kernel/syscalls/unshare/unshare05.c
+@@ -0,0 +1,54 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 lufei <lufei@uniontech.com>
++ */
++
++/*\
++ * This test case verifies unshare(CLONE_NEWPID) creates a new PID namespace
++ * and that the first child process in the new namespace gets PID 1.
++ */
++
++#define _GNU_SOURCE
++
++#include "tst_test.h"
++#include "lapi/sched.h"
++
++static void run(void)
++{
++	struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
++
++	if (!SAFE_CLONE(&args)) {
++		TST_EXP_PASS(unshare(CLONE_NEWPID));
++
++		pid_t child_pid = SAFE_FORK();
++
++		if (child_pid == 0) {
++			pid_t pid = getpid();
++
++			if (pid == 1)
++				tst_res(TPASS, "First child in new PID "
++						"namespace has PID 1");
++			else
++				tst_res(TFAIL, "First child in new PID "
++						"namespace has PID %d, "
++						"expected 1", pid);
++			exit(0);
++		} else {
++			SAFE_WAIT(NULL);
++		}
++
++		exit(0);
++	}
++
++	SAFE_WAIT(NULL);
++}
++
++static struct tst_test test = {
++	.forks_child = 1,
++	.needs_root = 1,
++	.test_all = run,
++	.min_kver = "3.8",
++};
+-- 
+2.39.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
