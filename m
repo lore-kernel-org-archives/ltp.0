@@ -4,100 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 480BDC83F1A
-	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 09:21:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7E07C8303C
+	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 09:29:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1752226163; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=GoKkX4+7sp/11VagAAxSGwyU0aUpjS8tcwb0dgu2uCk=;
+ b=E3DSA1uSbKUiaHpZ4CxpTZcdpSO730wO5Rewsmv+4mArK0SydjaSJ9yGXgl3D4Bcyea+/
+ d5IVZWQj95rjNht7KUvKu53q4gAo+Rgu8STqLAPdTeuV8XPYJgoT9aSj1wm3wBI127KCFRK
+ O1kjzFwP1IfVnb7XWgBt7a7jITjVUNE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9EDE03CB098
-	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 11:21:28 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 360693CB0A3
+	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 11:29:23 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 94D383C03F4
- for <ltp@lists.linux.it>; Fri, 11 Jul 2025 11:21:12 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 046573C03F4
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 11:29:02 +0200 (CEST)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
+ [IPv6:2a00:1450:4864:20::432])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C96D01A007AE
- for <ltp@lists.linux.it>; Fri, 11 Jul 2025 11:21:11 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7A38E1F74C;
- Fri, 11 Jul 2025 09:21:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1752225668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0Q8pE+20EJpBndvx8qPau99A9KRKDKORzWYtGceMay8=;
- b=RPXNp9MIR2S+lbB/jDDdKoRmDiKICUBMqOxDHfPi4RsN85VpGBSwIzCfiombz18ou7DLFv
- C2Z1Xucsn3aqZIetcn/uFPmBv8cNSoy+Y8fAXDz3M9hkkH7j7nu1vM5ZBw94aC4izzh061
- QRHQwfvLIREcskzC8sefFoQqG8IjS+c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1752225668;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0Q8pE+20EJpBndvx8qPau99A9KRKDKORzWYtGceMay8=;
- b=ugpRbJxR0bHInysY9SNNPKFDJm4FswO0Ep0+lWlWFLdol2+PKFiBqCVCYIDlhXlPnOBRoA
- XL1XymLdASjvZcDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1752225668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0Q8pE+20EJpBndvx8qPau99A9KRKDKORzWYtGceMay8=;
- b=RPXNp9MIR2S+lbB/jDDdKoRmDiKICUBMqOxDHfPi4RsN85VpGBSwIzCfiombz18ou7DLFv
- C2Z1Xucsn3aqZIetcn/uFPmBv8cNSoy+Y8fAXDz3M9hkkH7j7nu1vM5ZBw94aC4izzh061
- QRHQwfvLIREcskzC8sefFoQqG8IjS+c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1752225668;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0Q8pE+20EJpBndvx8qPau99A9KRKDKORzWYtGceMay8=;
- b=ugpRbJxR0bHInysY9SNNPKFDJm4FswO0Ep0+lWlWFLdol2+PKFiBqCVCYIDlhXlPnOBRoA
- XL1XymLdASjvZcDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 685CC1388B;
- Fri, 11 Jul 2025 09:21:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id tfuKGITXcGhbagAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 11 Jul 2025 09:21:08 +0000
-Date: Fri, 11 Jul 2025 11:21:47 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <aHDXqyMUZ_KdNV1U@yuki.lan>
-References: <20250219082954.23552-1-wegao@suse.com>
- <20250319114144.24349-1-wegao@suse.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2BC5910008F5
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 11:29:02 +0200 (CEST)
+Received: by mail-wr1-x432.google.com with SMTP id
+ ffacd0b85a97d-3a575a988f9so1219935f8f.0
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 02:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1752226141; x=1752830941; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=8JPnwnqMSvZm92oIxQE54/bpFeFQWQsqNVBTd61Xbd0=;
+ b=H5QskK3Zr1cf9U3isF+JJ+aAbNCkXyedVUvUx77Rpcwhx8IlHc2CkW9GjbvXtXU1mp
+ ENJ1P/BOng21i7lrCkBX02tAk6KktaJJmU+mIfCW+WZb8oe2fy4U2UMFx+tMnFh/VwUj
+ ZcgmqFhI4TDu8hk48rbWUdZeBOcsF7fBq4cYZ3w/qwehCX/QldP//c510v4i41jxqkDr
+ ubEuf5T3+cw4A/q/IY+xUavnpQn5sZ6a8JCJd4Xb+lWdgMZqoTjS70d4oscso8ppEsi2
+ KKgcPByWDypL4l2L+9Erxl6HwDvhJwtKljuWtH32ECCASzr4pnwWVhHhAlQcmwZ7FD8O
+ /D4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1752226141; x=1752830941;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=8JPnwnqMSvZm92oIxQE54/bpFeFQWQsqNVBTd61Xbd0=;
+ b=CJYCeLiVrXlwVLtx8Q5wKnXrI+tml7bKqLLOwKFY0yPSPSMnhYyitxWhBeu66/hBWH
+ 5LZ4f1zJUONR20jySOqHrY1pTogDFC/5aHuMhYcsB+zjz2hWs+5Gd+2eqMvHYNriXJj6
+ MP0/Ai6XBINiVQFfZI2BVzaMkbnd8bcYP8tOnnCG/gIivFh4iR3HcJGQAjLjKWtAldNd
+ JGqvHcJWTAyd/TcUM2v1oZtqyzQqN51uuBzOjgR6SWf3Zqlxiw9jN5TSSH4FCAvdxenf
+ UTB3ym99IIHh9PmlNOIbZkA0+FANcVWbAGFzg991x2Ge9eviWTKLxLf0tRvKc4WS8pze
+ BqFQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWLGsb28joY5yAzemmA+YXPP0NR6D+VIaJJLjMFKs8NEwsWybSbl6q85N8+27vBZ/zIRu8=@lists.linux.it
+X-Gm-Message-State: AOJu0YxNyxzdoB6t+423lV5BZ9PfUlsAwlnfpOcGypblGuxZ95p0PfZR
+ oIH4NDKmsGMjb4fD0PFRTvUdze0MxE2XHc6hMwjQp528AVYHt6bnp74waMcB9ko+lrJImW2/W3+
+ TpVeRxLbuKg==
+X-Gm-Gg: ASbGnctHlTHDlQxEpBoK0enguCuvJ+Xz8UxJl/AMtMF7Eyxr8YaUBozYy4s+Fl7iWaN
+ 7VIjgl9c1bVaEe5fi5buOfOyzbicDcLT+M/bCCpw9Su6HCb3bh76kCEVw3OM4Sxk+4ULFSCvLCJ
+ y1BI665AXAwc1Sj1dSaoXstHanTjW6atV0NPluNDkbWUhnNFdhwOIoP3OjSb1bkk8eYpvWvOLY9
+ AOPofY/V3SxTnsBp8ayusJjFHdeM2Rlik+rASRPE0mqIC9WAqeOAd297ILl8wFMeuYOSFRFCxTq
+ /pUkixKiihjrugTsMaCt28sStBY72u3cYezAdl5zGLOpB/c+bwAcxq3kS1yQqbiQHfzRzEJKa2L
+ LKdVT43vJ6xnngpln9mzjAbkfTRIvKAyGuMHIO+2rrjmY2wmFC+9GuAyyZiOSYjWU8bpkR1Lwzo
+ pJo9+PbyEe1+rg2sJQOll4ujHiK6DxxTRae4IcKlc7u7MlkTzAfRp/L7eBKJi//g==
+X-Google-Smtp-Source: AGHT+IECUqG45ST+BxLpUkj570F/lPPUVTvkprTs4tcoi+rWQ3ABncuUIpc0x+qfacd4S11M5XK8pA==
+X-Received: by 2002:a5d:698d:0:b0:3a4:c909:ce16 with SMTP id
+ ffacd0b85a97d-3b5f18d97e9mr1808793f8f.49.1752226141432; 
+ Fri, 11 Jul 2025 02:29:01 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
+ (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
+ [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
+ by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-74eb9f22617sm5125552b3a.102.2025.07.11.02.28.58
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 11 Jul 2025 02:29:00 -0700 (PDT)
+Message-ID: <c712df4f-2438-4376-8c21-c20b623a5bfa@suse.com>
+Date: Fri, 11 Jul 2025 11:28:55 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250319114144.24349-1-wegao@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, linux.it:url, suse.com:email,
- yuki.lan:mid, imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
+References: <20250620154346.19864-1-chrubis@suse.cz>
+ <20250620154346.19864-3-chrubis@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20250620154346.19864-3-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] mount_setattr02.c: Check mount_setattr attr
- propagation
+Subject: Re: [LTP] [PATCH 2/2] metaparse: Map arrays with designated
+ initializers to JSON objects
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,170 +106,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
->  move_mount01 move_mount01
->  move_mount02 move_mount02
-> diff --git a/testcases/kernel/syscalls/mount_setattr/.gitignore b/testcases/kernel/syscalls/mount_setattr/.gitignore
-> index 52a77b9ca..1654f27de 100644
-> --- a/testcases/kernel/syscalls/mount_setattr/.gitignore
-> +++ b/testcases/kernel/syscalls/mount_setattr/.gitignore
-> @@ -1 +1,2 @@
->  /mount_setattr01
-> +/mount_setattr02
-> diff --git a/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c b/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
-> new file mode 100644
-> index 000000000..fcc088e3b
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
-> @@ -0,0 +1,99 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2025 SUSE LLC Wei Gao <wegao@suse.com>
-> + */
-> +
-> +/*\
-> + * Basic mount_setattr() test.
-> + *
-> + * Test basic propagation mount attributes are set correctly.
-
-This is too sparse. We should at least write here which parameters we
-are testing, obviously the test is checking if the propagation field of
-the structure is handled properly.
-
-And then we should list what we are trying to test
-
-- When propagation is set to 0 it's not changed
-- EINVAL with propagation set to -1
-- MS_SHARED turns propagation on
-- MS_PRIVATE turns propagation off
-...
-
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <sys/statvfs.h>
-> +#include "tst_test.h"
-> +#include "lapi/fsmount.h"
-> +#include "tst_safe_stdio.h"
-> +
-> +static char *tmpdir;
-> +
-> +static int mounted;
-> +
-> +static bool is_shared_mount(const char *path)
-> +{
-> +	FILE *file = SAFE_FOPEN("/proc/self/mountinfo", "r");
-> +
-> +	char line[PATH_MAX];
-> +	bool found = false;
-> +
-> +	while (fgets(line, sizeof(line), file)) {
-> +		char mntpoint[PATH_MAX];
-> +		char opts[256];
-> +
-> +		if (sscanf(line, "%*d %*d %*d:%*d %*s %255s %*s %255s",
-> +					mntpoint, opts) != 2)
-> +			continue;
-> +
-> +		if (strcmp(mntpoint, path) != 0)
-> +			continue;
-> +
-> +		if (strstr(opts, "shared:") != NULL) {
-> +			found = true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	fclose(file);
-> +	return found;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (mounted)
-> +		SAFE_UMOUNT(tmpdir);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tmpdir = tst_tmpdir_path();
-> +	SAFE_UNSHARE(CLONE_NEWNS);
-> +	SAFE_MOUNT(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
-> +	SAFE_MOUNT("testing", tmpdir, "tmpfs", MS_NOATIME | MS_NODEV, "");
-                     ^
-		     We tend to include ltp in names that are visible on
-		     the system so that's clear where they came from.
-
-		     It would be a bit better if the name of the mount
-		     was "ltp-mount_setattr" or something that makes it clear
-		     which test was mounting it.
-> +	mounted = 1;
-> +}
-> +
-> +static void run(void)
-> +{
-> +	struct mount_attr attr = {
-> +		.attr_set       = MOUNT_ATTR_RDONLY | MOUNT_ATTR_NOEXEC | MOUNT_ATTR_RELATIME,
-> +		.attr_clr       = MOUNT_ATTR__ATIME,
-
-
-I suppose that we can as well set these to zero as we are trying to test
-only the propagation part. Or is there a reason why we are specifying
-any attributes here?
-
-> +	};
-> +
-> +	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
-> +	TST_EXP_EQ_LI(is_shared_mount(tmpdir), 0);
-> +
-> +	attr.propagation = -1;
-> +	TST_EXP_FAIL_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)), EINVAL);
-> +	TST_EXP_EQ_LI(is_shared_mount(tmpdir), 0);
-> +
-> +	attr.propagation = MS_SHARED;
-> +	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
-> +	TST_EXP_EQ_LI(is_shared_mount(tmpdir), 1);
-
-Here we should once more check with propagation = 0 and expect that the
-mount is shared after that call.
-
-> +	attr.propagation = MS_PRIVATE;
-> +	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
-> +	TST_EXP_EQ_LI(is_shared_mount(tmpdir), 0);
-> +
-> +	attr.propagation = MS_SLAVE;
-> +	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
-> +	TST_EXP_EQ_LI(is_shared_mount(tmpdir), 0);
-
-Can we figure out slave mount from the mountinfo? I suppose there will
-be slave in in the opts.
-
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +	.needs_tmpdir = 1,
-> +};
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkhCgpUaGlzIHBhdGNoIGlzIGFjdHVhbGx5IGNhdXNpbmcgZG9jdW1lbnRhdGlvbiBidWlsZCBm
+YWlsdXJlIGR1ZSB0byB0aGUgCndheSB3ZSBhcmUgZGVmaW5pbmcgLmh1Z2VwYWdlcyBhczoKCiDC
+oMKgwqAgLmh1Z2VwYWdlcyA9IHtUU1RfTk9fSFVHRVBBR0VTfSwKClRoZSBzaG1nZXQwMiBtZXRh
+ZGF0YSAoZm9yIGluc3RhbmNlKSB3aWxsIGhhdmUgYW4gZW1wdHkgaHVnZXBhZ2VzIApkaWN0aW9u
+YXJ5OgoKIMKgICJzaG1nZXQwMiI6IHsKIMKgwqAgIm5lZWRzX3RtcGRpciI6ICIxIiwKIMKgwqAg
+Im5lZWRzX3Jvb3QiOiAiMSIsCiDCoMKgICJmb3Jrc19jaGlsZCI6ICIxIiwKIMKgwqAgInNhdmVf
+cmVzdG9yZSI6IFsKIMKgwqDCoCBbCiDCoMKgwqDCoCAiL3Byb2Mvc3lzL2tlcm5lbC9zaG1tYXgi
+LAogwqDCoMKgwqAgIjgxOTIiLAogwqDCoMKgwqAgIlRDT05GX01JU1NJTkd8VEJST0tfUk8iCiDC
+oMKgwqAgXQogwqDCoCBdLAogwqDCoCAiZG9jIjogWwogwqDCoMKgICJUZXN0IGZvciBFTk9FTlQs
+IEVFWElTVCwgRUlOVkFMLCBFQUNDRVMsIEVQRVJNIGVycm9ycy4iLAogwqDCoMKgICIiLAogwqDC
+oMKgICItIEVOT0VOVCAtIE5vIHNlZ21lbnQgZXhpc3RzIGZvciB0aGUgZ2l2ZW4ga2V5IGFuZCBJ
+UENfQ1JFQVQgd2FzIApub3Qgc3BlY2lmaWVkLiIsCiDCoMKgwqAgIi0gRUVYSVNUIC0gdGhlIHNl
+Z21lbnQgZXhpc3RzIGFuZCBJUENfQ1JFQVQgfCBJUENfRVhDTCBpcyBnaXZlbi4iLAogwqDCoMKg
+ICItIEVJTlZBTCAtIEEgbmV3IHNlZ21lbnQgd2FzIHRvIGJlIGNyZWF0ZWQgYW5kIHNpemUgaXMg
+bGVzcyB0aGFuIApTSE1NSU4gb3IiLAogwqDCoMKgICLCoCBncmVhdGVyIHRoYW4gU0hNTUFYLiBP
+ciBhIHNlZ21lbnQgZm9yIHRoZSBnaXZlbiBrZXkgZXhpc3RzLCBidXQgCnNpemUgaXMiLAogwqDC
+oMKgICLCoCBncmFuIGVhdGVyIHRoYW4gdGhlIHNpemUgb2YgdGhhdCBzZWdtZW50LiIsCiDCoMKg
+wqAgIi0gRUFDQ0VTIC0gVGhlIHVzZXIgZG9lcyBub3QgaGF2ZSBwZXJtaXNzaW9uIHRvIGFjY2Vz
+cyB0aGUgc2hhcmVkIAptZW1vcnkgc2VnbWVudC4iLAogwqDCoMKgICItIEVQRVJNIC0gVGhlIFNI
+TV9IVUdFVExCIGZsYWcgd2FzIHNwZWNpZmllZCwgYnV0IHRoZSBjYWxsZXIgd2FzIG5vdCIsCiDC
+oMKgwqAgIsKgIHByaXZpbGVnZWQgKGRpZCBub3QgaGF2ZSB0aGUgQ0FQX0lQQ19MT0NLIGNhcGFi
+aWxpdHkpIGFuZCBpcyBub3QgCmEgbWVtYmVyIiwKIMKgwqDCoCAiwqAgb2YgdGhlIHN5c2N0bF9o
+dWdldGxiX3NobV9ncm91cCBncm91cC4iLAogwqDCoMKgICItIEVOT01FTSAtIFRoZSBTSE1fSFVH
+RVRMQiBmbGFnIHdhcyBzcGVjaWZpZWQsIHRoZSBjYWxsZXIgd2FzIApwcml2aWxlZ2VkIGJ1dCIs
+CiDCoMKgwqAgIsKgIG5vdCBoYXZlIGVub3VnaCBodWdlcGFnZSBtZW1vcnkgc3BhY2UuIgogwqDC
+oCBdLAogwqDCoCAiaHVnZXBhZ2VzIjogewogwqDCoCB9LAogwqDCoCAiZm5hbWUiOiAidGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htZ2V0L3NobWdldDAyLmMiCiDCoCB9CgpXaGljaCB3
+aWxsIGNhdXNlIHRoZSBmb2xsb3dpbmcgZXJyb3IgaW4gdGhlIGRvY3VtZW50YXRpb24gYnVpbGQ6
+CgpUcmFjZWJhY2sgKG1vc3QgcmVjZW50IGNhbGwgbGFzdCk6CiDCoCBGaWxlIAoiL2hvbWUvYWNl
+ci9Qcm9qZWN0cy9sdHAvZG9jLy52ZW52L2xpYi9weXRob24zLjEyL3NpdGUtcGFja2FnZXMvc3Bo
+aW54L2V2ZW50cy5weSIsIApsaW5lIDk4LCBpbiBlbWl0CiDCoMKgwqAgcmVzdWx0cy5hcHBlbmQo
+bGlzdGVuZXIuaGFuZGxlcihzZWxmLmFwcCwgKmFyZ3MpKQogwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIF5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXgogwqAgRmls
+ZSAiL2hvbWUvYWNlci9Qcm9qZWN0cy9sdHAvZG9jL2NvbmYucHkiLCBsaW5lIDUxOCwgaW4gCmdl
+bmVyYXRlX3Rlc3RfY2F0YWxvZwogwqDCoMKgIHRleHQuZXh0ZW5kKF9nZW5lcmF0ZV9zZXR1cF90
+YWJsZShjb25mKSkKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBeXl5eXl5eXl5eXl5e
+Xl5eXl5eXl5eXl5eXl4KIMKgIEZpbGUgIi9ob21lL2FjZXIvUHJvamVjdHMvbHRwL2RvYy9jb25m
+LnB5IiwgbGluZSA0MDcsIGluIApfZ2VuZXJhdGVfc2V0dXBfdGFibGUKIMKgwqDCoCB2YWx1ZXMu
+YXBwZW5kKGYne3ZhbHVlWzBdfSwge3ZhbHVlWzFdfScpCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIH5+fn5+Xl5eCktleUVycm9yOiAwCgotIEFuZHJlYQoKCi0tIApN
+YWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
