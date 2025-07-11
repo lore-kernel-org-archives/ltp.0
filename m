@@ -4,53 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67EFEC8303C
-	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 08:02:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C61AC8303C
+	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 08:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1752223793; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=Wjnnjzzm11j4gyGZztwZbCRstWpUtc8kbXiH3HQHIvY=;
+ b=dK8VN+SFDvRRe6gdWgZlWg+2yRzPjA8Zfxgzh+nb+Cr+3ySBXUE2nVOBNt3FWF2dFesln
+ J8nPmY06mhoTR2E8B7m2vFT+povCZn9ELC1TmAWDczvtJXGDf5VJo73OCha2GiUfJjCFtjn
+ +cP1MJNlmU9+/IMNqyivKMkI9uVPGws=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 859883CB161
-	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 10:02:30 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id AA11A3CB17D
+	for <ltp@archiver.kernel.org>; Fri, 11 Jul 2025 10:49:53 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 855E33C65DA
- for <ltp@lists.linux.it>; Fri, 11 Jul 2025 10:02:15 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
- by in-2.smtp.seeweb.it (Postfix) with ESMTP id B81EA600914
- for <ltp@lists.linux.it>; Fri, 11 Jul 2025 10:02:11 +0200 (CEST)
-Received: from loongson.cn (unknown [113.200.148.30])
- by gateway (Coremail) with SMTP id _____8BxrnL7xHBozwwnAQ--.18003S3;
- Fri, 11 Jul 2025 16:02:04 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
- by front1 (Coremail) with SMTP id qMiowJCxocL0xHBoaHoSAA--.38948S2;
- Fri, 11 Jul 2025 16:01:57 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: ltp@lists.linux.it
-Date: Fri, 11 Jul 2025 16:01:55 +0800
-Message-ID: <20250711080155.7473-1-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
+ by picard.linux.it (Postfix) with ESMTPS id 7C6B53C0882
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 10:49:31 +0200 (CEST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8E341200916
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 10:49:29 +0200 (CEST)
+Received: by mail-wr1-x443.google.com with SMTP id
+ ffacd0b85a97d-3a4e742dc97so1893225f8f.0
+ for <ltp@lists.linux.it>; Fri, 11 Jul 2025 01:49:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1752223769; x=1752828569; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=ZUEx0bpvFzZJsLogIB0/rb0fXe1nejHyR924SBFq488=;
+ b=ZkJPWrbpx9KfDSX9scyiyg4UdgjWf5GQxfP5pS+RMhNOx7pSRuCbopVXyRSGwHQNHZ
+ Tiz9Gu7xHiud84KkxeBKB/28nh0xWgJDYOFOBVxRB3m6ybUhL4ofO8nCA7Rv6THYYaLf
+ FX6XDL8rQs+qQYgybX78vNxItXy1ujnPFOBUG/VA+NeSGOi2iODFaBBxpk73zs3W47nC
+ pzPyD6XPYtvXYaZUvPI5L+YJFtpkdh/I/7E9P4hMVbaZbf9+TGWtCWaX1isDE3pAbms3
+ vEBXDmf69nz1nKZtEuFjkSbBKaBJq7WoBaxuguN5Njh4p03OBAyT5P/G1EqZO6fDlGUN
+ DRAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1752223769; x=1752828569;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=ZUEx0bpvFzZJsLogIB0/rb0fXe1nejHyR924SBFq488=;
+ b=L1oNl/UmuHqQu/MEo+pYnh3GCix4u3rgWXzfySXWE4JknAr0iqE1ygLxvLdNz1IRpp
+ Hz9nJ/f/wMSA5dPIQSoF3ty0Tr61MMc3tYpfFq6jg0I6WvUEEoEmlJa8ap2kYl0DgHFF
+ l2cnf23salDLqF0AiFG+3ZslGKFILnEioQYV++r6IYv+s0NQDlCsA9oVpDeGeXwAFrsU
+ zFIvZYg/5KvmLCqEWOkRF5eMY9s9Nu0cORE+Q9o1Ib8Jhqsk4J8CW9jhxWxjDQIILjme
+ A0fRzRdI09s6MeGRV1PAJy+ccY6mUT+Z5BMfFLx4C36kXVflIAM/7HohxAU2F+n0BMQR
+ ZK/g==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXfLHT98fvTdF4ZOpJMRpWGqSQBQEFcWS98zxv+4RIjKYH6ySV0lHOid0PQQ1gjmBsrcR0=@lists.linux.it
+X-Gm-Message-State: AOJu0YxkLVfdlya4vwEyK4gXufO8XabZXmFaHKvElKtYOEv9CjrX6xsU
+ U32ep8bKkreH3twCuW7/SczfQ8P2YGuBzsFVJZhgYwmwrOgbsnGeBsVTIz+RWAVLpV9VLv8Hu+2
+ /xrHHuYha6rbn
+X-Gm-Gg: ASbGncvnGshvAPQtgXlluaS9zb1t4sGL8Arh7DYUHfNCfExWCfwJpkNjNQycsbymj3j
+ 16jEBvXWUXSzkrzZRKWyLeQduw43NhfzbfIJ8naR1BzvKMzFLICd5+cDcKhdqGtRelAJwWoZu+A
+ P4mo61fACHWdGlwRs7z3p2PaYZmMi7UNCSsnEraIcMHBHokf7gV/CMSb3grBnR09H9Ay91cWKoD
+ f3PwwlgCjx20V50E80K5A50hokwqCa9PI9cacrd+UOeu+tQMTdsUDfQN/Tf48LRZelXPsKAnLFi
+ Ll5Of9uEfvryKPHboXQ6QO4MewdXyOphSz+VRWggTGBsMEBdtXN5VbOOaJe2J7FYkkJXlLuFSQ3
+ yF99nbzBBZ+7k2KcuoU+sHDB3ZPwYEKO+EP7YpSq2HMANq8CRkYHt5iVk2Lhx2WPV0rZx5uTzx2
+ pCm0DayUer1Dq/AHwM5e8+lhDwuxxGAr3JCi0hOBXsqRL73Z88yk3hG14OUivItg==
+X-Google-Smtp-Source: AGHT+IGQpHMFBZ5HRoiM0FZntEgNTBgfPDfsvr8LgPE4JTizFmYlgZXpgHUubHoyG0TRjqHRTeVYiw==
+X-Received: by 2002:a05:6000:240e:b0:3a3:70ab:b274 with SMTP id
+ ffacd0b85a97d-3b5e7f13a0amr5146890f8f.12.1752223768761; 
+ Fri, 11 Jul 2025 01:49:28 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
+ (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
+ [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-23de4335c8asm47739915ad.167.2025.07.11.01.49.25
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 11 Jul 2025 01:49:28 -0700 (PDT)
+Message-ID: <b8686bfd-b452-4b7b-905a-7be11ceddd0c@suse.com>
+Date: Fri, 11 Jul 2025 10:49:22 +0200
 MIME-Version: 1.0
-X-CM-TRANSID: qMiowJCxocL0xHBoaHoSAA--.38948S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGry5AryfGF1DXryfJF4UJrc_yoW5JFWDpF
- W7KFWqkrWDGr18GF1kAF4Y9Fy5AwnrZ34fGr4DG3s2kanI9r95JrykWr1aqFy09rWqgayx
- uFy7JFnYgr4UZFcCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
- sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
- 0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
- IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
- e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
- 0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
- GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4
- xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v2
- 6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwI
- xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
- Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jr0_JrylIxkGc2Ij64vIr41lIxAIcVC0I7
- IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k2
- 6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
- AFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: lufei <lufei@uniontech.com>, ltp@lists.linux.it
+References: <20250711072406.41444-1-lufei@uniontech.com>
+Content-Language: en-US
+In-Reply-To: <20250711072406.41444-1-lufei@uniontech.com>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] device-drivers/acpi/ltp_acpi_cmds: Fix build errors
+Subject: Re: [LTP] [PATCH] Add unshare(CLONE_NEWPID) test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,82 +105,66 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-There exist the following errors when building LTP:
-
-  ltp_acpi_cmds.c:39:10: fatal error: linux/genhd.h: No such file or directory
-  ltp_acpi_cmds.c:131:18: error: implicit declaration of function 'acpi_bus_get_device'
-  ltp_acpi_cmds.c:400:18: error: implicit declaration of function 'acpi_bus_get_device'
-
-For the first error:
-
-This is because genhd.h has been removed in the Linux kernel, the contents
-of genhd.h was folded into blkdev.h [1]. Since blkdev.h has been included
-in the C file, just remove unused include genhd.h to fix the build error.
-
-For the second and third errors:
-
-This is because acpi_bus_get_device() has been droped in the Linux kernel,
-in order to fix the build errors, just replace acpi_bus_get_device() with
-acpi_fetch_acpi_dev() like the kernel commit [2].
-
-[1] https://git.kernel.org/torvalds/c/322cbb50de71
-[2] https://git.kernel.org/torvalds/c/ac2a3feefad5
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
-
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-index d12dd6b94..b2d46e1a8 100644
---- a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-@@ -36,7 +36,6 @@
- #include <linux/ioctl.h>
- #include <linux/pm.h>
- #include <linux/acpi.h>
--#include <linux/genhd.h>
- #include <linux/dmi.h>
- #include <linux/nls.h>
- 
-@@ -123,14 +122,13 @@ static void get_crs_object(acpi_handle handle)
- 
- static void get_sysfs_path(acpi_handle handle)
- {
--	acpi_status status;
- 	struct acpi_device *device;
- 
- 	kfree(sysfs_path);
- 	sysfs_path = NULL;
- 
--	status = acpi_bus_get_device(handle, &device);
--	if (ACPI_SUCCESS(status))
-+	device = acpi_fetch_acpi_dev(handle);
-+	if (device)
- 		sysfs_path = kobject_get_path(&device->dev.kobj, GFP_KERNEL);
- }
- 
-@@ -398,9 +396,9 @@ static int acpi_test_bus(void)
- 	if (acpi_failure(status, "acpi_get_handle"))
- 		return 1;
- 
--	prk_alert("TEST -- acpi_bus_get_device");
--	status = acpi_bus_get_device(bus_handle, &device);
--	if (acpi_failure(status, "acpi_bus_get_device"))
-+	prk_alert("TEST -- acpi_fetch_acpi_dev");
-+	device = acpi_fetch_acpi_dev(bus_handle);
-+	if (!device)
- 		return 1;
- 
- 	prk_alert("TEST -- acpi_bus_update_power ");
--- 
-2.42.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkhCgpPbiA3LzExLzI1IDk6MjQgQU0sIGx1ZmVpIHdyb3RlOgo+IFRlc3QgdW5zaGFyZShDTE9O
+RV9ORVdQSUQpIHRvIG1ha2UgZmlyc3QgY2hpbGQgaW4gbmV3IFBJRCBuYW1lc3BjZSBnZXQKPiBw
+aWQgMS4KPgo+IFNpZ25lZC1vZmYtYnk6IGx1ZmVpIDxsdWZlaUB1bmlvbnRlY2guY29tPgo+IC0t
+LQo+ICAgcnVudGVzdC9zeXNjYWxscyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEg
+Kwo+ICAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91bnNoYXJlLy5naXRpZ25vcmUgIHwgIDEg
+Kwo+ICAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91bnNoYXJlL3Vuc2hhcmUwNS5jIHwgNTQg
+KysrKysrKysrKysrKysrKysrKwo+ICAgMyBmaWxlcyBjaGFuZ2VkLCA1NiBpbnNlcnRpb25zKCsp
+Cj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91bnNoYXJl
+L3Vuc2hhcmUwNS5jCj4KPiBkaWZmIC0tZ2l0IGEvcnVudGVzdC9zeXNjYWxscyBiL3J1bnRlc3Qv
+c3lzY2FsbHMKPiBpbmRleCA1NzMzODI5N2EuLjgyZTIyMmJmNCAxMDA2NDQKPiAtLS0gYS9ydW50
+ZXN0L3N5c2NhbGxzCj4gKysrIGIvcnVudGVzdC9zeXNjYWxscwo+IEBAIC0xNzI2LDYgKzE3MjYs
+NyBAQCB1bnNoYXJlMDEgdW5zaGFyZTAxCj4gICB1bnNoYXJlMDIgdW5zaGFyZTAyCj4gICB1bnNo
+YXJlMDMgdW5zaGFyZTAzCj4gICB1bnNoYXJlMDQgdW5zaGFyZTA0Cj4gK3Vuc2hhcmUwNSB1bnNo
+YXJlMDUKPiAgIAo+ICAgIwo+ICAgIyBUaGVzZSB0ZXN0cyByZXF1aXJlIGFuIHVubW91bnRlZCBi
+bG9jayBkZXZpY2UKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91bnNo
+YXJlLy5naXRpZ25vcmUgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3Vuc2hhcmUvLmdpdGln
+bm9yZQo+IGluZGV4IGIxMjA2ZTQ1Mi4uOGVjZTVmOTg4IDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvdW5zaGFyZS8uZ2l0aWdub3JlCj4gKysrIGIvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy91bnNoYXJlLy5naXRpZ25vcmUKPiBAQCAtMiwzICsyLDQgQEAKPiAgIC91
+bnNoYXJlMDIKPiAgIC91bnNoYXJlMDMKPiAgIC91bnNoYXJlMDQKPiArL3Vuc2hhcmUwNQo+IGRp
+ZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3Vuc2hhcmUvdW5zaGFyZTA1LmMg
+Yi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3Vuc2hhcmUvdW5zaGFyZTA1LmMKPiBuZXcgZmls
+ZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMC4uY2ZjNTg3N2RhCj4gLS0tIC9kZXYvbnVs
+bAo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdW5zaGFyZS91bnNoYXJlMDUuYwo+
+IEBAIC0wLDAgKzEsNTQgQEAKPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAt
+b3ItbGF0ZXIKPiArLyoKPiArICogQ29weXJpZ2h0IChjKSAyMDI1IGx1ZmVpIDxsdWZlaUB1bmlv
+bnRlY2guY29tPgo+ICsgKi8KPiArCj4gKy8qXAo+ICsgKiBUaGlzIHRlc3QgY2FzZSB2ZXJpZmll
+cyB1bnNoYXJlKENMT05FX05FV1BJRCkgY3JlYXRlcyBhIG5ldyBQSUQgbmFtZXNwYWNlCj4gKyAq
+IGFuZCB0aGF0IHRoZSBmaXJzdCBjaGlsZCBwcm9jZXNzIGluIHRoZSBuZXcgbmFtZXNwYWNlIGdl
+dHMgUElEIDEuCj4gKyAqLwo+ICsKPiArI2RlZmluZSBfR05VX1NPVVJDRQo+ICsKPiArI2luY2x1
+ZGUgInRzdF90ZXN0LmgiCj4gKyNpbmNsdWRlICJsYXBpL3NjaGVkLmgiCj4gKwo+ICtzdGF0aWMg
+dm9pZCBydW4odm9pZCkKPiArewo+ICsJc3RydWN0IHRzdF9jbG9uZV9hcmdzIGFyZ3MgPSB7Cj4g
+KwkJLmZsYWdzID0gQ0xPTkVfTkVXUElELAo+ICsJCS5leGl0X3NpZ25hbCA9IFNJR0NITEQsCj4g
+Kwl9OwpUaGlzIHNob3VsZCBiZSBjcmVhdGVkIGluIHRzdF90ZXN0LmJ1ZnMgYW5kIGluaXRpYWxp
+emVkIGluc2lkZSBzZXR1cCgpLgo+ICsKPiArCWlmICghU0FGRV9DTE9ORSgmYXJncykpIHsKPiAr
+CQlUU1RfRVhQX1BBU1ModW5zaGFyZShDTE9ORV9ORVdQSUQpKTsKV2UgY2FuIHVzZSBTQUZFX1VO
+U0hBUkUoKSBzaW5jZSB3ZSBuZWVkIHRvIGJyZWFrIHRoZSB0ZXN0IGlmIHVuc2hhcmUoKSAKaXMg
+bm90IHBhc3NpbmcuCj4gKwo+ICsJCXBpZF90IGNoaWxkX3BpZCA9IFNBRkVfRk9SSygpOwo+ICsK
+PiArCQlpZiAoY2hpbGRfcGlkID09IDApIHsKPiArCQkJcGlkX3QgcGlkID0gZ2V0cGlkKCk7Cj4g
+Kwo+ICsJCQlpZiAocGlkID09IDEpCj4gKwkJCQl0c3RfcmVzKFRQQVNTLCAiRmlyc3QgY2hpbGQg
+aW4gbmV3IFBJRCAiCj4gKwkJCQkJCSJuYW1lc3BhY2UgaGFzIFBJRCAxIik7Cj4gKwkJCWVsc2UK
+PiArCQkJCXRzdF9yZXMoVEZBSUwsICJGaXJzdCBjaGlsZCBpbiBuZXcgUElEICIKPiArCQkJCQkJ
+Im5hbWVzcGFjZSBoYXMgUElEICVkLCAiCj4gKwkJCQkJCSJleHBlY3RlZCAxIiwgcGlkKTsKPiAr
+CQkJZXhpdCgwKTsKPiArCQl9IGVsc2Ugewo+ICsJCQlTQUZFX1dBSVQoTlVMTCk7Cj4gKwkJfQo+
+ICsKPiArCQlleGl0KDApOwo+ICsJfQo+ICsKPiArCVNBRkVfV0FJVChOVUxMKTsKQWxsIHRoaXMg
+cGFydCBjYW4gYmUgc3VtbWVkIHVwIGxpa2UgdGhpczoKCmlmICghU0FGRV9GT1JLKCkpIHsKIMKg
+wqDCoCBUU1RfRVhQX0VRX0xJKGdldHBpZCgpLCAxKTsKIMKgwqDCoCBleGl0KDApOwp9CgpBbmQg
+bm8gbmVlZCBmb3Igd2FpdCgpIHNpbmNlIExUUCB3aWxsIHRha2UgY2FyZSBvZiBjb2xsZWN0aW5n
+IGNoaWxkIApyZXN1bHRzIGFmdGVyIHJlYXBpbmcgaXQuCgo+ICt9Cj4gKwo+ICtzdGF0aWMgc3Ry
+dWN0IHRzdF90ZXN0IHRlc3QgPSB7Cj4gKwkuZm9ya3NfY2hpbGQgPSAxLAo+ICsJLm5lZWRzX3Jv
+b3QgPSAxLAo+ICsJLnRlc3RfYWxsID0gcnVuLAo+ICsJLm1pbl9rdmVyID0gIjMuOCIsCldlIHN1
+cHBvcnQgZnJvbSA0LjE1LCBzbyB3ZSBkb24ndCBuZWVkIHRvIGRlZmluZSB0aGUgbWluaW11bSBr
+ZXJuZWwgCnZlcnNpb24gaGVyZS4KaHR0cHM6Ly9saW51eC10ZXN0LXByb2plY3QucmVhZHRoZWRv
+Y3MuaW8vZW4vbGF0ZXN0L3VzZXJzL3N1cHBvcnRlZF9zeXN0ZW1zLmh0bWwKPiArfTsKLSBBbmRy
+ZWEKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5m
+by9sdHAK
