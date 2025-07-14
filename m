@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96F90C83F1B
-	for <ltp@archiver.kernel.org>; Mon, 14 Jul 2025 07:33:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6424C83F1A
+	for <ltp@archiver.kernel.org>; Mon, 14 Jul 2025 10:15:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1752478378; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1752488100; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-transfer-encoding :
  content-type : sender : from;
- bh=cgnvze5eVV1bpvxJc45xvp0atnfdv2fj79eOEFSZi5Q=;
- b=NCmXKP9E2RSFCxdf5eCUL7NT31ZucARlsTis6AJLJJ7mkoLGg5diXL/nHqIRXmxzMJjs7
- xSgmjoywA9A9ihDJJTOtF4qPxlo5cSWqPWxSOhcrPovLmCqo9iok+pJPZvOgty0sd4gXzz1
- 0c1DbQ+hC7W9BgB2qZ5+VIfMO7JDV4s=
+ bh=STFgRJNc52uWllGKFc6u0sV5BxJFLKC2u/YapFWxXSk=;
+ b=hyVZkFTauPpGbxPIBdjharngrkGEmKjRWX0ic/PTnIkF9r83YZ+Atk+c8ssiGS0Niu2j+
+ IjX4+D2ePhr2AnbgZ4z7Fty5sr39mm06BuNE69LCRVs1vOcRcfUWhC9125dhebUZVsBSUZu
+ VyCud72QDa23qDaHXBJKeIHYIxK5d2s=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D33443CB534
-	for <ltp@archiver.kernel.org>; Mon, 14 Jul 2025 09:32:58 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 0BB763CB5A4
+	for <ltp@archiver.kernel.org>; Mon, 14 Jul 2025 12:15:00 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0681C3C103A
- for <ltp@lists.linux.it>; Mon, 14 Jul 2025 09:32:37 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
+ by picard.linux.it (Postfix) with ESMTPS id 9CA023C0EF7
+ for <ltp@lists.linux.it>; Mon, 14 Jul 2025 12:14:38 +0200 (CEST)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CA32A2009D9
- for <ltp@lists.linux.it>; Mon, 14 Jul 2025 09:32:36 +0200 (CEST)
-Received: by mail-wr1-x441.google.com with SMTP id
- ffacd0b85a97d-3a522224582so1970173f8f.3
- for <ltp@lists.linux.it>; Mon, 14 Jul 2025 00:32:36 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 00CCA1400DE3
+ for <ltp@lists.linux.it>; Mon, 14 Jul 2025 12:14:37 +0200 (CEST)
+Received: by mail-wm1-x341.google.com with SMTP id
+ 5b1f17b1804b1-45600581226so20068605e9.1
+ for <ltp@lists.linux.it>; Mon, 14 Jul 2025 03:14:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1752478356; x=1753083156; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=IExCcQyQ5Y+Qyz0mENzQWFSAvD/YIPyddp9QKbuYQPE=;
- b=g9SHosJ6lodgVfVep1spO7WGXWlHssTuu6qV8pk4R884wF7QFu4h2jdBGLnRg+0kjM
- 0njik5+r2LznmSO24gGtW52s/A0SsVI0zMaaQFOJ9OK4j9PIJ8YkyYzAuZpFp4pkE1Nw
- eWX3p4muyJkn8DoJ1Q3PlqwXYSvdnYukSJ7hNbhd0BlkjtDkElu7rRkKEVD7DRlHHZB4
- yt7OQtCeXzZzvc7leDN2wS54YMAbthcsqs4w0EQbwAOjt4u/WlNkJ6KY9BNg2LHbW0SD
- Y/1KXmVyteXFO/ge2AAFwAziH+fr/9WthT8W0r/9MQ7d4a8bqYFz/UuYUiMz3uJ9NaHO
- AnIw==
+ d=suse.com; s=google; t=1752488077; x=1753092877; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:content-language:references
+ :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=ITB/P+N824LJT8yTqivp8/imiUoC4JSMbYhEM98Q0Bg=;
+ b=eA17WMJME4weFPXgIb4N1fkaD8AUrpKZI7vDiExH9I5LHbEFMkXs8hAEI6YE+t50gA
+ PM7oC2QIdLYWycUxQeRbrkOqk/4W1r5z5HXHN2LOKR/Vig9EMJ7I9ewFg4VUji93YQzn
+ YRbr0BAW8kEQpBUs4lVE1JVPwqw5GtYej0eojRRvsV5kBWOsqKaEDb8lt2EOOM16QpNS
+ GjDFfoqeWjxVY47v41Qo8dnqTJdzQU/Vs6vjsoos5k4Intkez24ASuOtUkhX+qJi+y0+
+ QTTkTm6wq1wdUnuJkTzqeB7ALGtq+oveI/edl//d7AQTL1VdrHmw+eSNXhdsirjPTkxr
+ B/nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1752478356; x=1753083156;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
+ d=1e100.net; s=20230601; t=1752488077; x=1753092877;
+ h=content-transfer-encoding:in-reply-to:content-language:references
+ :cc:to:from:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=IExCcQyQ5Y+Qyz0mENzQWFSAvD/YIPyddp9QKbuYQPE=;
- b=hUzGMyQiMuWijgAf5upf0cJMB83QfLrM2BpXxDz1NWl6yVENh8QeetB30MhqbL2zxs
- Q0BlIsC/8jcZGvOtgjQyGmzx2b9vnriSBQz2zwdaMVQRgjWi84HSa8RNdpC/9Y097U/w
- aTkq2HMPsKu+bhG11HA6et2IxwFljqtmb88+4u9JmuBYB1g9dF51aoH6YLVFFYkrSXLg
- 7+lRKnXaJ+Im/aIaFVA442uRQFUXsr/2nvBnuB6GGmzbNJnrPNLaAlzkSr/oHRk1O4BD
- ujOq3tbgoHbK+VKPpFh6u3zeFfggxYpfad4NqV5XD+cuSZ8ZLkAVADhv+K9IiIVJWmWC
- J4Og==
-X-Gm-Message-State: AOJu0Yy+Mi0wp8gvYbOfEy2XR38iRSBxh3Y6CEtWkZUSIeqt/zTvjZ4k
- +PM4INPWuwHK5q+wKZmzHzVLn+CKqj3SB5YA5cSjywiziaYG7Wie47s/fHYttWvXlas=
-X-Gm-Gg: ASbGnctZV/0p5opd1DzM67T5oR75zQ5BKKVxnKXjDPbu4/cRH7pJ+dl+bKe4nwbh8gS
- eAV9h4L6IZS7mvgLoqpvm7xjKZ94NuwdtrpBlAQBUyMocvYSMx0TAFsEItlS73cR3kxFeYjBmjZ
- YjRMo+VCx+ohdNj0jKo1gUH5MZjNKjEx8d9sPa9Cu5XwvPjc3kozpO2ralQrgh8hhTMakwqIPV4
- NixX3tLN85lkuntEdvfsrT9EF50Vdaz8NDXp84FnaQHHGXH9AT+AYf+gkR8i89pNTTTSa2Y90OK
- gOpM4mCZW78LylIAuafps2REqTvi9+jSQ5jMzyYAm797w2+MuI8A+XNE7OnF+XwsNX5KfNqEpW8
- ij3j72f64i/1woqLW7Salfm/uDcplx3EhfVuPEIX+tiYThZ7T5k+9AxXfkIWsiPCQwJg0YTi621
- sbRaBlWvtRP5ZtmIpXS3mIFeHT6wXiW9HRcHIaG3nLloxzTIlCUYaihD8PMtBhHA==
-X-Google-Smtp-Source: AGHT+IHYVm8wXx2IBqNPmwYHWwd6rrFHjsDjcnwjx9sIqDZefvR8gzXc7PymTnOitZehLTE3fZRQPQ==
-X-Received: by 2002:a05:6000:288a:b0:3a3:7ba5:9618 with SMTP id
- ffacd0b85a97d-3b5f35784femr7181082f8f.29.1752478356157; 
- Mon, 14 Jul 2025 00:32:36 -0700 (PDT)
+ bh=ITB/P+N824LJT8yTqivp8/imiUoC4JSMbYhEM98Q0Bg=;
+ b=kz6hCsrM5RCEgNXDEWhxDM9VQIFqodHfDHvzGNNOhY6a2BEVhRLkiAk0yWY2fcgRPj
+ C9Z7DdQ1i0w8FQtsnRq2XyN2QTWaGWsMUqtTdqhHV9Igv4Lk+dJ3bWBQZMnTFFA1c2WL
+ VX7EDFrwzr47swNMUGxYsiEL/VGDMCJDGF0bsbogjuqwyDYOVGecwD4buGbv4BfR1gNE
+ DvUcWcF5UQ/oa7AIMbvUdOYo0uzNvqCOigV3bCd5kzUX5n9b6sBkCMZFXSKeWnspdbCc
+ BQV3XSc/cE8maDEN1AdXw+N6TRsTHYeRKxFiyiSyO4zSC7ZIA4UyffgWx9EJ6Aw1Sqpj
+ fUsg==
+X-Gm-Message-State: AOJu0YxxG+1LtM0ovWJN5JVhucz656iIYPVZQHEO2ef1O2lYHT3ji4Rf
+ t0gNDMYDOmAiEJo3/KClX5E0n73wvK/gpmzk3RfgasMrnZmxBbQtOAhaolvYHMCZQK8=
+X-Gm-Gg: ASbGnctueVVv5syQTML3YExUOWkDJwRPIPt/jJNtbowAb9o+8MO0/zX3BeOWcPX4xTW
+ BzEcLs7o0YAc+NN2RduO3hCpENNKWd8BkY6u5SjkqQ/P0k834RXAaTU+2YrzgJqbRtkh/rNY2mL
+ Da32CPRXP6z3QvQlXVNuWVuOEFfXbpgB0gBZYzwIrKSf0FI2Dj3oVsGhrenNdCL0n/vNl/adult
+ BeFaqaIeOHsdXXNwAX2fpH4zE/Vwo8sdlAkugngKAK7fKyxuDMWNUCQv+Cx8v5wjJuDTT4XzOkd
+ krmwjut2/k22YLbzU21/HH/tRw00U0XwGemz04xExpltttsyLL+QH1J3SRb70ircMxaXJNJq9bE
+ oZUYZeXPXSszD4YNvHfD6Voh/8K+4mVQwGtYANV8/fn3X6nAv6+GANEhzUb+RSffkREN9slw6bj
+ TagXrGEwQhTvJzskAvFrar1jSq0B6JuhHWog8CAjIQ/Y2epzw4RlXlBNhca7qlWA==
+X-Google-Smtp-Source: AGHT+IF6AstJqFSHS7y0CVp58fTotegwctrcu3/zk5NB69hSLcRQ4TGQWQYu8PvS8YRioOswulztVg==
+X-Received: by 2002:adf:b650:0:b0:3a4:d722:5278 with SMTP id
+ ffacd0b85a97d-3b5f1895d50mr9006594f8f.39.1752488077266; 
+ Mon, 14 Jul 2025 03:14:37 -0700 (PDT)
 Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
  (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
  [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
  by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-23de4285fcasm85636265ad.5.2025.07.14.00.32.33
+ 98e67ed59e1d1-31c301a95ffsm12794445a91.40.2025.07.14.03.14.34
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 14 Jul 2025 00:32:35 -0700 (PDT)
-Message-ID: <6995b29c-54df-421c-a649-e4b9db119cfb@suse.com>
-Date: Mon, 14 Jul 2025 09:32:30 +0200
+ Mon, 14 Jul 2025 03:14:36 -0700 (PDT)
+Message-ID: <b65060b7-b41e-4938-ae4b-342a748cb6e3@suse.com>
+Date: Mon, 14 Jul 2025 12:14:30 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 To: Zorro Lang <zlang@redhat.com>
 References: <20250708055950.m25zfqyfr4n4qkcm@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
  <c5247046-97ab-4d21-aacc-e4018ed4a366@suse.com>
  <20250713152142.2pe2sfgq4s2bd5xv@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <6995b29c-54df-421c-a649-e4b9db119cfb@suse.com>
 Content-Language: en-US
-In-Reply-To: <20250713152142.2pe2sfgq4s2bd5xv@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+In-Reply-To: <6995b29c-54df-421c-a649-e4b9db119cfb@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [Bug report] kirk can't run ltp's fs_readonly
 X-BeenThere: ltp@lists.linux.it
@@ -112,39 +112,8 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-
-On 7/13/25 5:21 PM, Zorro Lang wrote:
-> On Tue, Jul 08, 2025 at 10:59:22AM +0200, Andrea Cervesato wrote:
->> Hi!
->>
->> fixed by https://github.com/linux-test-project/kirk/pull/61
-> Hmm... Looks like a regression from this change. After updating kirk to
-> this fix/commit, old issues disappeared, but I started to hit some gf*
-> fails (from runtest/fs), e.g.
->
-> gf12 fails as:
->
-> mkfifo: cannot create fifo '$': File exists
-> mkfifo: cannot create fifo 'TMPDIR/gffifo17': No such file or directory
-> growfiles(gf12): 147154 growfiles.c/1453: open($, 0102, 0777) returned -1, errno:21 Is a directory
-> growfiles(gf12): 147154 growfiles.c/1765: 1 Hit max errors value of 1
-> gf12        1  TFAIL  :  growfiles.c:134: Test failed
->
-> gf19 fails as:
-> growfiles(gf19): 147261 growfiles.c/1453: open(,, 02, 0777) returned -1, errno:2 No such file or directory
-> growfiles(gf19): 147261 growfiles.c/1765: 1 Hit max errors value of 1
-> gf19        1  TFAIL  :  growfiles.c:134: Test failed
->
-> gf20 fails as:
-> growfiles(gf20): 147275 growfiles.c/1453: open($, 0102, 0777) returned -1, errno:21 Is a directory
-> growfiles(gf20): 147275 growfiles.c/1765: 1 Hit max errors value of 1
-> gf20        1  TFAIL  :  growfiles.c:134: Test failed
->
->> - Andrea
->>
-Thanks, I will check what's going on. It seems $ symbol is separated for 
-some reason. I will fix it ASAP.
+Feel free to test it now that this PR has been merged: 
+https://github.com/linux-test-project/kirk/pull/62
 
 - Andrea
 
