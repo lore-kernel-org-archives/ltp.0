@@ -4,150 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B716C83F21
-	for <ltp@archiver.kernel.org>; Tue, 15 Jul 2025 09:20:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE1BBC83F21
+	for <ltp@archiver.kernel.org>; Tue, 15 Jul 2025 09:25:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1752571245; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1752571503; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=S3fMNA4Bx8vmxNG2Dk2NiV4u72YRJVOnRUIWDXHpeOQ=;
- b=X5s8UMDKizV1/Q4Hci1JrpNNCxqHNLPkepjLZ026KOW6W5cseaNq9UG1fXpPq/I49BoV3
- oxmABoVNnY9JkG2wMu1ppS8s9OcVp9WkVKFQ/WLFIcYYQBKmW89hqp6tchs+gmRUI6/PmpP
- wdBuYTmhl7P+5LoCGxqMQac+kk70Vzo=
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=W90DShXsLUa6KC/ImaiEBTB3TxoHzGlY1hKVhp5h/FE=;
+ b=Pejc9t+K1ip4IOCXki2A0Fy1yfkSTG58ZVoyZhfYHmHXvCy9nQUxSuBQ2L0AakYxGw3nv
+ J6LKIF6XQqxijOTYxydb7zc0d2/U3A9oN7UqufxJrHARLFt28MuPPIdIrgJmLNmZtUYfqtx
+ Yw03C94BVa4coWBcQJZZXnJg6YsbmDM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BB83E3CCE2A
-	for <ltp@archiver.kernel.org>; Tue, 15 Jul 2025 11:20:45 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 0FEE23CCEB9
+	for <ltp@archiver.kernel.org>; Tue, 15 Jul 2025 11:25:03 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 92B2D3CCD87
- for <ltp@lists.linux.it>; Tue, 15 Jul 2025 11:20:22 +0200 (CEST)
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
- (mail-am6eur05on20720.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:2612::720])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (secp384r1) server-signature RSA-PSS (2048 bits)
- server-digest SHA256) (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3CEE01A00784
- for <ltp@lists.linux.it>; Tue, 15 Jul 2025 11:20:20 +0200 (CEST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=V2SEb7/I5H6RHdYdvXMIvXmENGc7tB+0UopC9W7fKxQ6ThputAEVuGXyVmdDEUsvwY8AT7JvDE9ehAKlW4gFxf3fr1uGibxBtOoNNZDgGHKlPA9Sb7trMh439zEvCINHYMoDu0lzACfIEovLT+n12RJ6T4Q2a6Ngdjp9swsuXj/RQAc+B1iRu1ecWRaUlTPfPg3IwqiGdXBSDhyRnqHH/83QJKGma41lTVxRBFmVqz4rrXHITi+gv/kJp902JQEoD9BpOPn2Eut6MmjR1KRD8wT2V4I6xb38/PaEkNqb3Ij7lPJnxTcSQF+Qs0+HH5Wv+d28fI7Ex9BxXT/ihtvFIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tlqtcvw2lt6znBffm2Nk60o9iFxU7y0AiVzIWqSwcFY=;
- b=gbqrnmS+JIG8fxfnfXXQ4uBnefg5BQHPNIM8WNVSkA+Tet7qrR3ksNvH2RT8aezG61YrR0Nt+hJyUNMci7G8I08AF3Wz1g2dQqM4rYW9GE1cizGUZVhsH1+lrdWUC8eX8cs6crZNpGIidYKszUAQvcu1AyE0Ut42tj/2OZO0GuD41FHjOmevJssrr/7VPSofWCbgKgZF42lrB7RNQEPeAaPzUzJZrMsGVLdeKL0MnOaXGVIhevxepORR+dDnFxRsVT2rRhZf9ACLw2ZfFVfhO2fFwWetoGj0k+NqkFz0BN2CmWHMY+EyGzvc8gJgpXT6IbxTPF01Wrc/cbyBybomjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=codasip.com; dmarc=pass action=none header.from=codasip.com;
- dkim=pass header.d=codasip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codasip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tlqtcvw2lt6znBffm2Nk60o9iFxU7y0AiVzIWqSwcFY=;
- b=enWOHGEOj3IKO9OFg7gt6KMgTqYj7rUebR8fwB0Z8rIM/8IggfIPUT7+qszLBu7pRZmukbUMuWTQiDIkW+8DqXmOumHQLdUxkKhfgM02R0G8ZovHgzcZr9i/NYlnM3/yuQXeF/Di2pasUoec4fvFBeIjZ+xPjDbyqaVSuz3/QnHbYf+wMZQ1GDzLSxuqNZfSJk01o2G8WGeglbszM1F+cn7dab+H4vrMmeIXKdMTK1Q3DojCq9oOGW3ewxCOvySZacm2hkgQblYGAXW2fYnBqAtivA1GGn9SpH4EbUq9uxNv0z8b6DEBfRjAS7UATTgD+lzjHP6tI4eji5GG8Sft0w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=codasip.com;
-Received: from AM9P192MB0983.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:1f4::5)
- by DU0P192MB1452.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:344::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8943.15; Tue, 15 Jul
- 2025 09:20:19 +0000
-Received: from AM9P192MB0983.EURP192.PROD.OUTLOOK.COM
- ([fe80::dda0:cbaf:a692:8443]) by AM9P192MB0983.EURP192.PROD.OUTLOOK.COM
- ([fe80::dda0:cbaf:a692:8443%5]) with mapi id 15.20.8943.012; Tue, 15 Jul 2025
- 09:20:19 +0000
-To: ltp@lists.linux.it
-Date: Tue, 15 Jul 2025 11:20:15 +0200
-Message-ID: <20250715092015.505957-1-florian.schmaus@codasip.com>
-X-Mailer: git-send-email 2.49.1
-In-Reply-To: <fef71466-54df-4561-a19f-e904c6f79c3b@suse.com>
-References: <fef71466-54df-4561-a19f-e904c6f79c3b@suse.com>
-X-ClientProxiedBy: FR4P281CA0110.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:bb::18) To AM9P192MB0983.EURP192.PROD.OUTLOOK.COM
- (2603:10a6:20b:1f4::5)
+ by picard.linux.it (Postfix) with ESMTPS id AD96A3CCE09
+ for <ltp@lists.linux.it>; Tue, 15 Jul 2025 11:24:41 +0200 (CEST)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
+ [IPv6:2a00:1450:4864:20::431])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DD5C12009AD
+ for <ltp@lists.linux.it>; Tue, 15 Jul 2025 11:24:40 +0200 (CEST)
+Received: by mail-wr1-x431.google.com with SMTP id
+ ffacd0b85a97d-3b45edf2303so4477519f8f.2
+ for <ltp@lists.linux.it>; Tue, 15 Jul 2025 02:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1752571480; x=1753176280; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=E9F9Ngmf+EeBDwkJ4tnYv4yxf3Fp6b7p5m/TpKEcz/s=;
+ b=YrAiShQqLgeefKCk0mFUVP+AYV8Tf8tLuWLn6kwqgxkSv9VinWpc3I+6JN8ebkbtiQ
+ YTsCX/CzjsKH+jZJV0uX0jthkVfhzChBBd19HGkwksQPBhg/udjxqbZ1kSJlr7Ch9Jty
+ Vm2oEgfY/lpVtsHy2xsi4++8XnTdO1uUMULmb22R2NIALUOGcEKy+3LJ7Iw0mPuPg5Qh
+ vNaS5+f7qLff+JzY3fFTa4lS6Cp3TuDkfVXXqeLnuQwtTWj78Qwx8V/g+8uu9SHuGbdG
+ RWEbzo/N+n/WCUVLeWwbQlKZhU2Y7mL6KSMxpDOvI55SR4y1In6LamDGNUOY4Wwsdq7D
+ EjSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1752571480; x=1753176280;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=E9F9Ngmf+EeBDwkJ4tnYv4yxf3Fp6b7p5m/TpKEcz/s=;
+ b=Ij1U3l4/eU509fT5xyTWjp303fjs4/myrs6jFsmBaE+V+DYbNvRm8TxxBX+x4h5T8z
+ HIOATFkk6+ogv5SQlUC1X9tyKAtOdpkba53moLGrn86NgqfnbZI2ctbMC/fQh/yb2gqD
+ 0cy6oyIPOYNF46dvWPMx+8h+zHiCmVVPnFG65s5NLtrGyOHP7yhUmH9cbU5UC+n9biPL
+ M+LKOmBgICZOc7p6xSpEKx2RtYeRtOa/xNcKwnHAmW1hkzK3Zr6axbg7fNAj8T7wzbuz
+ 2sqd9PH4Vvbygi7bEdR2ni/m3YaJANSO1u02dIfXTYTGfffyTiSpXuWtJ6y8iA9ypmGb
+ Peqw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWDY90+Ij6w7RJCc3L7ES2z1scPolH+NkukYKpNIkeVpETCfAuRajGEy77+DONJOXUFC6Q=@lists.linux.it
+X-Gm-Message-State: AOJu0Yzq4ZGSCrq1aHJCouKJVcncIv5BeALS3gegWGEetDXDUes5ICM8
+ MoOLmOe7c8jIwmN/gqVBATABbMgZHn+bF7nBeRBQWNwS/xgXZz4fqho4mtU9ZvDTJdOOPq+u1Z5
+ 5fkf/rPc=
+X-Gm-Gg: ASbGncuwXqhv9Vf+LTXIofLQ4jseHGSAxPjShgH0fxqBb8j5mS39YsLpNhEN4wslMAJ
+ tq01LXeVUoEEfH9LbOHxcO2r6y5Mukk86m9BlB6wfZW8imoaDrbHn8L3NwqizFY185aXxt+pF/c
+ GOQTszRL8/BgpyPbGjuVVQ3YesFcTWT2uH+6cZwfUftLVdFY8Wmm742h8EWL3viMROVp3b3xERp
+ BCJ7OEpiLixLojT9gbxCI5pvvqtujJwetcoofR4/JXpouoy3cuUINBtrkGcKc9YrHU0uo2EJVq8
+ GzkGtYbO5mNZXhzfnDzAxQz4ReZbuhDKM1FdKrfEG6isonf4uwAvAmvGeM3n1JCNuIEw8b8mgk1
+ c7exOe9DV2wrNAghCNnxj9TFCcsox1MWbqqCqbY92VPiwhTy/KHFFujsA621mq7skfM1OYQOqXj
+ AdaDKAUmewcoj/bY8R3AbGFNL6A9WnF0YTibtlutuK4fxCAOweSlOxQHOgXVnI8A==
+X-Google-Smtp-Source: AGHT+IG7+J/xl50ex90NXV87FwYaA7LR87E45dMzoBqrPT7k20/VNUnPfrLWUEtClga9kMHqEjyPGQ==
+X-Received: by 2002:a5d:48d1:0:b0:3a5:3062:793a with SMTP id
+ ffacd0b85a97d-3b60a195abamr1223887f8f.33.1752571480184; 
+ Tue, 15 Jul 2025 02:24:40 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
+ (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
+ [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-3b5e8e0d76fsm14941295f8f.64.2025.07.15.02.24.39
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 15 Jul 2025 02:24:39 -0700 (PDT)
+Message-ID: <6479ff64-d82c-401c-89f3-c4adbf3f330f@suse.com>
+Date: Tue, 15 Jul 2025 11:24:39 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM9P192MB0983:EE_|DU0P192MB1452:EE_
-X-MS-Office365-Filtering-Correlation-Id: e7328a6f-3f10-49e3-4575-08ddc380d12b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0; ARA:13230040|1800799024|376014|10070799003|366016;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?BgEmTRzXOmhMoRFR0a6KrNgwut7Ub3yyU5/dwxv+8AzFr3/XurF0PVTFFnHd?=
- =?us-ascii?Q?RSpyzp5IDt+/v6D7ubwoxmT6q/oPa4yr/45gxsstEyyECqXQCtA1FEWV7xCm?=
- =?us-ascii?Q?5dFjES+GZnUYjWsT+/w/4BqrRf6vM6H4lPEjT46EgQ/WdXqMqsDUnLJNc7Xk?=
- =?us-ascii?Q?A+Q7BivGyOiaaoYmp1IY3Ab+Pp3sTZglTo9JyGrmDmSzFmAA8ah6SpPT4zRW?=
- =?us-ascii?Q?ifqvFb3phVhtzDPxkV28hEX0WsJ+m21Ho7gkQ/A7Vi6OCubFljBTBxHwivuP?=
- =?us-ascii?Q?iLLIbPO4cigpn1QyzdeQJH7XkMpYtzSOWFZzPxdSDAtlro4dYD0rYYiNmueW?=
- =?us-ascii?Q?k7+MyoZYXZO/q4DWqbeokKnZe4arWr85ECQ/PdriLXpxpSy4HYhNGSW2Zgzo?=
- =?us-ascii?Q?DcG7+Zy7XCuCa+Pf1HJQ1L0xAr7lM26htYrXDN4qAOCaoR5r+ZaxItmD8L3y?=
- =?us-ascii?Q?9i42e3lkyrlsgM2wy8taSBQ27Hqwz4JkOai3GKRtiSPVbCwZymkAXRYaUoz/?=
- =?us-ascii?Q?YO0gn35Yo/uDYA2gKmpUmO3J0UWvnn1/Ck/Vj3IrDDU9zPivaxcwjNkbGdid?=
- =?us-ascii?Q?u+NywTG+I1a7FQKZFSzTQrZ5AAYWxncSZdkN0aHv1OZgw7cbnqVD2/juI3Lf?=
- =?us-ascii?Q?ji+wBissay4DODudr5sJ8NVaeXIWBXZH80gMiO6O++3XdZrasy26veTKpYqO?=
- =?us-ascii?Q?mENCCpM8s1INK0Hiez8KpQ3TlMSpT5gEGCYSBr7DnMUJYUCAr51rQewVOCgz?=
- =?us-ascii?Q?aWuMcw42/cTpKsbPpHPx/ckaAIy+fP7JHjY8yUZjnBULq7qFMcmacLmQi0Cb?=
- =?us-ascii?Q?mPSSZi0reX3uptkO2ahJZ7p3P1931WYzmtOfISQlvLt0nsOUVSCMqeYY8k1I?=
- =?us-ascii?Q?Xn20MOgnwrap6ih1MFU7+egARcpgAeFEW7Co73gjnweGAwlKyw3H+of465N1?=
- =?us-ascii?Q?SVzdrsEd4sjU9GzjFfo9X7Sn2gqLdUHqQkaj8bfkhuyyyq4zbrM0Ky4oS9/S?=
- =?us-ascii?Q?7DY4FMcWBuqSi11zhZlp84wMNOZBfHVv7BzT4EfCf+3G/m/tLXh8/r33+3Jb?=
- =?us-ascii?Q?2sDh/4EDxOy+ZmkHU0Jz7ZqvYf/bJ2wOFlWQzvhsrfLI8Z6+SpfCj3EC3GEI?=
- =?us-ascii?Q?SIoQAB+4GPttLj0ALCw8IP6DOukIoVV3HSnFzRkd1/gNF5oHlTkQWxhv1pAD?=
- =?us-ascii?Q?xngPCuxby/Zoj5vbhfUOHO5RMTQIy745UULeZLnI8AV9REbWHSIf6Y4DbeUY?=
- =?us-ascii?Q?PYfm7JVz2C8Dxxdlc89fR/ZAhPVhE/vRB3ZzJD4pvPw8OHB+WYw8JAXdHwhG?=
- =?us-ascii?Q?+P45MT4zlfmGQWI9a8fEuK7L753ur2a0kYG0ljGTRhmq67DmWrBSOgh983gT?=
- =?us-ascii?Q?Hg7l1Osd4Jhiu40BnzhJGfjDnNPI920rcbOtW4NN/ifvhBUQMdhB3js07Q0L?=
- =?us-ascii?Q?Mnt2vIUTUag=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:AM9P192MB0983.EURP192.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
- SFS:(13230040)(1800799024)(376014)(10070799003)(366016); DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QJRj65j7nMkZceL2uHx13lnylPItNBM6EgWAd/6V2u4AkhF8Ii+DBvMO1KJq?=
- =?us-ascii?Q?6JC9YGMFrpID0O20A46DtWXYvBUkSo7K5TpXahrN92I/B8/Pg6u0LyEdnnAb?=
- =?us-ascii?Q?xzarGDCA6KmpnimWDsmxKVgh+l4rajoCaTCBZa+AGpMKeLQoPMpSvDPWOa94?=
- =?us-ascii?Q?7Ky7WXISuh9Lh1KJdN9PGogzti/nD97vpkos6IjPQmEsyot8GontQro06mGN?=
- =?us-ascii?Q?FB/93oGcTy8frJyhzpqOeRXmC0ZewLDdCeZzz7Nu7iYXuHUXLD6bFWVhW5KG?=
- =?us-ascii?Q?Y6ei/7hlTgjzgc0by55+rUjeczdAnMQiv2SefdiHv3H+MBocC4kPr33GGanU?=
- =?us-ascii?Q?3GHAPfFgXQCoPYrxyyW3+5GjKzOawtZpsVjv7vd4/FVi5BzylmkXlMTJcFWG?=
- =?us-ascii?Q?KmHYVdt/XFmdLRJCCId0+9ydW9jiO4rfx660ZXP+cPJz6izmBUCh97OklOvR?=
- =?us-ascii?Q?w+fg/AlL1VjEmEQHGC0kWSrTvjGU3hLoCe+a2D5ElWngsXz47clAZg616l7X?=
- =?us-ascii?Q?uK5WGyKI+ctuNZvQGosdfbAMh2hHnFINoYQu71vUroy/d4JZakdclYMTuFoR?=
- =?us-ascii?Q?sZjRV2RyXzu70twhcQjnzLQ6uo+NwnTXnCGAS1i538OBlTsDcaX+YedwSlU7?=
- =?us-ascii?Q?K/5frtlOVBTcsO1vNNHng2POY2DKGAnyGnlZrg2XyQa77Egbs/VN/EDunTRP?=
- =?us-ascii?Q?48ShXD5daVf+fibatZAYyvZFVVRBnMWk9sY3Rb6AeBx/qd65EfomjK8JVP/X?=
- =?us-ascii?Q?mu/TfJi4YKFYWTYWmc6cbJBrAQXfxGSCirejt/xHuBFjAS1nbZ9rlYNh+dPk?=
- =?us-ascii?Q?lwHD42XdVq7N3cxha7FUZMqQK2lFIF6JUgZfOiHxE6qSP/VDFSAjXlaYlZx7?=
- =?us-ascii?Q?jWwzG7y2Z7cSxmxdfwdYbRosv0EWWNQ7GISMAcQq11jhUG229m9nxQeYqhcX?=
- =?us-ascii?Q?BJfCfNrSHE3lh6wMqUIeCVWsAt/Fj8WemKRP+OT2V7/T4GRqy439IeLgovlv?=
- =?us-ascii?Q?QfAV5qZ4phmsAS/F1DRhZqafVfG7lQ7XYC0BcWEtcmZIURQRpoovMoMAjbFr?=
- =?us-ascii?Q?FQJOrVf/JAEWSJcILW7D01GH1IZwu2sRjpNeXuMQPlIGRj8tSNmsTdGJJy/s?=
- =?us-ascii?Q?r9niNvPjGliWoOi/Yq+61fLfbR7VhVV4FSqYx2L2dZzGI/SU+8mzK6yTGfTA?=
- =?us-ascii?Q?q68+7RQQ6maSP/soKu0p30nfm0kzk+nF4DOo9/TpCPmYys04VrX/r0Op3lma?=
- =?us-ascii?Q?FXhrYUnCvtqCkcUk+VBRGMRtfLYwHixPlGaCEtRwdVbCLj3skNvpkDJMpC7d?=
- =?us-ascii?Q?OUMJeeQG1qSTQiS8UtReXqiV1CAJoi01Yz4USJRrILzFNZlYLUzi54sE2boY?=
- =?us-ascii?Q?Q66Ft/lr7a+1d+IiiK7nXOFtctqeB+zPlMp9mfflBI/A2WoeiC7QGnH4Cyo5?=
- =?us-ascii?Q?Kn1mIn0jf0iJZnvzGZAcg5t4zwiUaCGCmpKZv9UVXw1MKPqdKyvQJj5hbGz1?=
- =?us-ascii?Q?ruWUcnxj7bq/ACOz+rG2vTJC8MkTG4m7gNa8JlSpTkhRThjbG1Kb34TXYX+p?=
- =?us-ascii?Q?Sy8qVhWsHxYTAzNVN0Mq7FAOWFHCDm1NONr0CQsY3T8Ncx8lIZOWuktdL7Fb?=
- =?us-ascii?Q?PnO9panREgHK/fD6RofHhTYOuiP4weWfETu+7xGjOnDggTDJ8Am8WCXy1Ui4?=
- =?us-ascii?Q?dviZ3Q=3D=3D?=
-X-OriginatorOrg: codasip.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7328a6f-3f10-49e3-4575-08ddc380d12b
-X-MS-Exchange-CrossTenant-AuthSource: AM9P192MB0983.EURP192.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2025 09:20:18.9849 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0d91ffef-bb81-4cbd-b9b8-552583685f20
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wmmjaXAPleffltNF4QmfPvXVqrITm4+gCiEZAmAqTJB0RoFxc4JoaUshMGQ9vvoRBOzPLswniJksEXcoa8eyEXynM1EkHdmNch0cmhKYg70=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0P192MB1452
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Tiezhu Yang <yangtiezhu@loongson.cn>, ltp@lists.linux.it
+References: <20250711080155.7473-1-yangtiezhu@loongson.cn>
+Content-Language: en-US
+In-Reply-To: <20250711080155.7473-1-yangtiezhu@loongson.cn>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] sigrelse01: Fix out-of-bounds read when invoking
- write()
+Subject: Re: [LTP] [PATCH] device-drivers/acpi/ltp_acpi_cmds: Fix build
+ errors
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -159,82 +105,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Florian Schmaus via ltp <ltp@lists.linux.it>
-Reply-To: Florian Schmaus <florian.schmaus@codasip.com>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The sigrelse01 test would invoke write(fd, msg, MAXMESG), where
-MAXMESG=512. However, msg is often as short as "ready", i.e., 6
-bytes (5 bytes + \0).
+Hi!
 
-This mismatch causes write() to read additional bytes outside the *msg
-buffer and write everything to the file descriptor. For example, the
-strace output of sigrelese01 contains the following:
+On 7/11/25 10:01 AM, Tiezhu Yang wrote:
+> There exist the following errors when building LTP:
+>
+>    ltp_acpi_cmds.c:39:10: fatal error: linux/genhd.h: No such file or directory
+>    ltp_acpi_cmds.c:131:18: error: implicit declaration of function 'acpi_bus_get_device'
+>    ltp_acpi_cmds.c:400:18: error: implicit declaration of function 'acpi_bus_get_device'
+>
+> For the first error:
+>
+> This is because genhd.h has been removed in the Linux kernel, the contents
+> of genhd.h was folded into blkdev.h [1]. Since blkdev.h has been included
+> in the C file, just remove unused include genhd.h to fix the build error.
+>
+> For the second and third errors:
+>
+> This is because acpi_bus_get_device() has been droped in the Linux kernel,
+> in order to fix the build errors, just replace acpi_bus_get_device() with
+> acpi_fetch_acpi_dev() like the kernel commit [2].
+>
+> [1] https://git.kernel.org/torvalds/c/322cbb50de71
+> [2] https://git.kernel.org/torvalds/c/ac2a3feefad5
 
-    write(6, "ready\0Unable to tell child to go"..., 512)
+These patches have been introduced in v5.18, but we support kernel until 
+v4.4. If we really want to keep this code, we need to use autoconf in 
+order to recognize acpi functions and to create a fallback file in 
+lapi/genhd.h like we usually do for the older API.
 
-Fix the out-of-bounds read in sigrelse01 by invoking write() with the
-correct number of bytes to (read and) write by using strlen(). There
-is one case where sigrelese01 invoked write_pipe() not passing a
-string: when the child sends sig_array to its parent process. We
-convert this case from write_pipe() to write() using the proper
-arguments. After doing so, the memcpy() of sig_array is no longer
-required.
+https://github.com/linux-test-project/ltp/blob/master/configure.ac
+https://github.com/linux-test-project/ltp/tree/master/include/lapi
 
-We identified this issue on a CHERI [1] system, which provides
-fine-grained memory protection through architectural
-capabilities. Unlike traditional MMU-based protection, which would not
-detect this specific out-of-bounds access, CHERI precisely bounds
-memory regions. In sigrelse01's case, CHERI correctly identified that
-the 6-byte buffer containing "ready" was being overread. Consequently,
-this out-of-bounds read during the write() syscall would cause the
-Linux kernel to return -EFAULT, revealing this hidden bug.
+- Andrea
 
-1: https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/
-
-Signed-off-by: Florian Schmaus <florian.schmaus@codasip.com>
----
- testcases/kernel/syscalls/sigrelse/sigrelse01.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/sigrelse/sigrelse01.c b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
-index 95754212053e..f7fdfbab3a28 100644
---- a/testcases/kernel/syscalls/sigrelse/sigrelse01.c
-+++ b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
-@@ -486,12 +486,14 @@ static void child(void)
- 	 * then PASS, otherwise FAIL.
- 	 */
- 
--	if (exit_val == EXIT_OK) {
--		(void)memcpy(note, (char *)sig_array, sizeof(sig_array));
--	}
--
- 	/* send note to parent and exit */
--	if (write_pipe(pipe_fd[1], note) < 0) {
-+	if (exit_val == EXIT_OK) {
-+		if (write(pipe_fd[1], sig_array, sizeof(sig_array)) < 0) {
-+			tst_resm(TBROK, "write() pipe failed. error:%d %s.\n", errno, strerror(errno));
-+			exit(WRITE_BROK);
-+		}
-+	}
-+	else if (write_pipe(pipe_fd[1], note) < 0) {
- 		/*
- 		 * write_pipe() failed.  Set exit value to WRITE_BROK to let
- 		 * parent know what happened
-@@ -622,7 +624,7 @@ static int write_pipe(int fd, char *msg)
- 	printf("write_pipe: pid=%d, sending %s.\n", getpid(), msg);
- #endif
- 
--	if (write(fd, msg, MAXMESG) < 0) {
-+	if (write(fd, msg, strlen(msg) + 1) < 0) {
- 		(void)sprintf(mesg, "write() pipe failed. error:%d %s.",
- 			      errno, strerror(errno));
- 
--- 
-2.49.1
 
 
 -- 
