@@ -4,96 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B7FEC83F17
-	for <ltp@archiver.kernel.org>; Tue, 15 Jul 2025 07:29:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1752564570; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=NL6JI4VqpqAT+Wytsw0agEDP0TEWhDE+LBKI2igLz3g=;
- b=U+Bc/zK504rCLU9i+vGApOdG7AN/X5v/AdX2lvsgb0d2nfbouXkOaIZIqTvHbEluo7NjW
- KRqFLxH+iwKHZ8BPouO2v950GqfBN689ZgUqBEw/++BICgkE7gWIMbvGc8BXNlyDGWyPQg1
- LXSpGzo2+8tqcUOIZyfg+2IUJjE3qoE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BF52C83F17
+	for <ltp@archiver.kernel.org>; Tue, 15 Jul 2025 07:36:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E821D3CC62C
-	for <ltp@archiver.kernel.org>; Tue, 15 Jul 2025 09:29:30 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id E15E23CC822
+	for <ltp@archiver.kernel.org>; Tue, 15 Jul 2025 09:36:57 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ADDF73C66F5
- for <ltp@lists.linux.it>; Tue, 15 Jul 2025 09:29:09 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id A121D3CC5C2
+ for <ltp@lists.linux.it>; Tue, 15 Jul 2025 09:36:41 +0200 (CEST)
+Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 25F9B1400F83
- for <ltp@lists.linux.it>; Tue, 15 Jul 2025 09:29:06 +0200 (CEST)
-Received: by mail-wr1-x436.google.com with SMTP id
- ffacd0b85a97d-3a588da60dfso3428910f8f.1
- for <ltp@lists.linux.it>; Tue, 15 Jul 2025 00:29:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1752564545; x=1753169345; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=VYAO+WngD7zQuScar+ZI+qWXLp8GpMwBxyhuskKOQUU=;
- b=Rx/FomGgWw3hlc2IFxdL3N4BDFxglMsRNq0ECAZcNs01luxoLeYL/l4U7ZSqB2/30i
- cRBmC+wlx0zf5gTBfq1MnNZKX+n7vhGVek59iQnGCTayOQa7GLc9OLryFzU942vehNPu
- EFpEtKbwU47sPEQiLIKbPPIoKkDwucKSd1A4gJx9B+tLcHUCkEMTk5Hbq+2Afk8zYK4O
- lhdhw1ZULpFg3sVVn4TYAFXR58jZfdX+58dK9rNnfRCB1IUhw7GNWeV8W+ZeK65FRJk7
- pcVtl1ehmBaMoJJZgEH3huT41cjaSIUe5Aq+Q6/YiLxXqqh41069dsErp9bRO6qSZJsD
- GgzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1752564545; x=1753169345;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=VYAO+WngD7zQuScar+ZI+qWXLp8GpMwBxyhuskKOQUU=;
- b=s4dWOzKBgm/i/mrjaegvRtw2d4Cy1i32qpihgUgyLmq2B4powrAdbs8Najwo1mQ9K4
- ctlYaxONFtX5r4M0aWcD4iK3EGkrQ4wcPGQPPf1P//wbRCA4unzj+tBBNehMS3WWBTk3
- X4BfmyTre8Fd475uMuklweOjrbqpbHjVY7TuRrNxZcEszdMKJwF3uEdKcrEs02wXyI/0
- bvI2YqgTK/u+GuIlqcfwKk+y7mb/6BW8/jnmkDrfi0qlPX0zEh56cW0UYWgjk5PI9XqZ
- TGzxyVtNGlM5vzG4nO2KzdLmRrMmwqcHkhgcaxRzYmvPqQvefzXcnlaSdIvChIV0slY+
- m0Hw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCW7RtQ+Nr7AS50Cohhl1MhclErH9C600HbWXlkPbKNlTam0M7o0BhBMQIKb9VcUgLbKcY0=@lists.linux.it
-X-Gm-Message-State: AOJu0YyqAlhh6krQ9OxJm4GRCk7JxkZ5Wqnv+KXHt2gJyKE7CjMI/pVZ
- kDJ51KA7qVDlIROuHw/SWWVqEn8K1kxpGOXJA1HOTGVVo7uyhvDOClBMBjdunowKWT656mQKmgQ
- iKiJbjhc=
-X-Gm-Gg: ASbGnctxwuy0JwYyNEbRF2PiapZoCU9NH6rXJtVgP3uCmDUn8DCSPOAdsfjlvTwF8me
- BarB+m8RMlV7/Qgh4ns5/i6EiUWOSZhSpr6XHJv8wwFkZ7yk9r6IUNdJgdjAbFxduRZMNOJZrej
- k9ZVfCw9MrPYn1NqiTRb+YnvS1aMoBF6vh/5+09Uh+16/xDo8uekckSEgDS9nlKHedceUZs+Vcx
- 12cs3qsY/LH1pyXFCGUJWSuVva8UjYwMFvxpltS4cYSBBiijPRtaPEeQK6n8hrbvhNyFU4o0bsf
- s4xWkCxOFewhejjW4OBEm/j+W+lkJEmwilcS6Yuxaf6EEt9M/myuxOPE+8OfjTL2U4t5KKRDmXz
- Sf7IDuM3eJ7cNhl2dlH5fb8zzEoOnxOO0byW+7/3H0KYuF1x8CFgzhEOKCzC1Kk+8QFgfoNLfFJ
- rD9mvm6EFJW5nEjiO/59IXxBMJke5ii2PiqwbuaCGTVOXqVacRIfM+x/iB/+LVQA==
-X-Google-Smtp-Source: AGHT+IHxtwcy/CU42w3VVyQIl/vF9A/z4gZa/AdS/tK0XCldzImsDMV56GmdzHo1unZ7jvSMmcmArw==
-X-Received: by 2002:a05:6000:2710:b0:3a3:ec58:ebf2 with SMTP id
- ffacd0b85a97d-3b5f187e8f5mr9774637f8f.7.1752564545504; 
- Tue, 15 Jul 2025 00:29:05 -0700 (PDT)
-Received: from ?IPV6:2003:ef:2f2e:9a00:8d36:debd:d407:5caf?
- (p200300ef2f2e9a008d36debdd4075caf.dip0.t-ipconnect.de.
- [2003:ef:2f2e:9a00:8d36:debd:d407:5caf])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4560538da14sm96256625e9.23.2025.07.15.00.29.05
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 15 Jul 2025 00:29:05 -0700 (PDT)
-Message-ID: <2eb02736-bdc1-4b6b-88a7-64e3d6e07c8e@suse.com>
-Date: Tue, 15 Jul 2025 09:29:04 +0200
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4DE896EEE9B
+ for <ltp@lists.linux.it>; Tue, 15 Jul 2025 09:36:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+ s=onoh2408; t=1752564994;
+ bh=jmJcqW722WZdK4I4b3QiTcZFTwkZwY/8V8r9FlotoYM=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version;
+ b=oSOvaZKBkia3PbZMadYj4VHqWzPmlDHqkWcIcl8BZtPU94pbj8xKccy8dxiz85Irj
+ 9vZ7celMLRWrcDKHUAjvRYSg/44Q9BcUkOQHNdfNQga72jY2HvyKBZAX15Jg1WaLPU
+ JnZ6IS4IGfSCu1pnEtiLxN45xbh80NiLbhrrfaLk=
+X-QQ-mid: zesmtpgz5t1752564992t78b2840c
+X-QQ-Originating-IP: ndBdypBpw27yGl0nyZzBT8mayZHl0a0DmPv1HqEt9qA=
+Received: from localhost.localdomain ( [1.85.7.34])
+ by bizesmtp.qq.com (ESMTP) with 
+ id ; Tue, 15 Jul 2025 15:36:29 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 11710209410143582040
+EX-QQ-RecipientCnt: 3
+From: lufei <lufei@uniontech.com>
+To: ltp@lists.linux.it
+Date: Tue, 15 Jul 2025 15:36:22 +0800
+Message-Id: <20250715073622.60572-1-lufei@uniontech.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20250711072406.41444-1-lufei@uniontech.com>
+References: <20250711072406.41444-1-lufei@uniontech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: =?UTF-8?Q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>,
- Linux Test Project <ltp@lists.linux.it>
-References: <20250714-new-munmap04-v6-1-f043e764e475@suse.com>
-Content-Language: en-US
-In-Reply-To: <20250714-new-munmap04-v6-1-f043e764e475@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+X-QQ-SENDSIZE: 520
+Feedback-ID: zesmtpgz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-0
+X-QQ-XMAILINFO: Mbko2vceDzPNVomOhcronlv4gUPnTatieNcsOPeUjakbIoOOna8jIvk4
+ f5X/nporJ2ha2WGoNxJJG52qVN2J9xrHZJceAlghUHylsTjGEgL0+HcyaBRrxv4J5esaVVM
+ b8VBx57xHeprS8+WbwvtCjLMDVDu8/anLLDhCYFcHUs96DrIxtMwNPzn/t4EIfqq/2aqIoC
+ hMD5qD8qrUV8fhfveFExvnylbsbV2JX/TvE9Zxfe2uDx1EynXVcFb1kVj8qbnnLhVihMYQC
+ JbRawlbgUDfU84/TEwi9GILJjcijFOQrtl5+EpvmQb60Q44xr31XkveXOjI8Or8NrMpB+KS
+ UCscDU3eVVpMl/WLQKQSW3hjnLHoruLqlM+OoREMlUVVHLKSKdpzfuZ2TPBroPGTCeCpk69
+ lrJnoMFxT44s4zAzq52A4iMltoVOQEWvMe9fTwPmR+lA52FKrZ9WX2uH97IsWZ2Ue3LdKfI
+ 2X9qDYB0QshL3Kd+DXITB6FW6fbko+ewnz4jjwZUPUzT5ksgaFNhCmNnazmR5JEjrjqFnD6
+ KkRsV8fQs7Erkm97KVAEDuSncPXPhGj1vGN0sniU8HrppMa5pqZrORUPBX9EnPjRcuUzTbN
+ +XtwgWCIrMjFHK2NRTE9KwrENJT0ZR9SPL6clwCcQh6tAqzJbN7nPdFZVrj9RC1b9po7fRr
+ f9vQvMCWqr65h3gACttEF4DK0VhH1ch8SqnKlsxI5f3JC48VFnmuHjsW+kczmAUhjXs2ovI
+ Qcs4FFa5w67ALloDJf3InGpSHHQziIgGrAdwxsAVoTLdor9rl6bPSWQnkHYJ4iQRbv+vIoR
+ FFI/fRIj1Dkbr2WclfSjluP3RNnKHmPMZmZZtFhqF0jL3HrHcusPXgEW7iqgHNWo/G2tYcN
+ pJq8USwyZ0EfI1PJQHKWXRLKEuYmU1rl9LkXWkg4EPkrkCTIFTOV+tmqzO2A0wOwG4w8jLN
+ 6zq/JZQUIai107/1rQvxdqJoldVZUfL1ILk8fZ9t8UZVimpYrjKEWIZqRF5aKicNSfMupFA
+ oSGvSTQg==
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+X-QQ-RECHKSPAM: 0
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6] syscalls: munmap: Add munmap04 to check ENOMEM
+Subject: [LTP] [PATCH v4] Add unshare(CLONE_NEWPID) test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,18 +78,100 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: lufei <lufei@uniontech.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+Test unshare(CLONE_NEWPID) to make first child in new PID namespce get
+pid 1.
 
-Merged. Thanks!
+Signed-off-by: lufei <lufei@uniontech.com>
+---
+ runtest/syscalls                              |  1 +
+ testcases/kernel/syscalls/unshare/.gitignore  |  1 +
+ testcases/kernel/syscalls/unshare/unshare05.c | 48 +++++++++++++++++++
+ 3 files changed, 50 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/unshare/unshare05.c
 
-- Andrea
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 57338297a..82e222bf4 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1726,6 +1726,7 @@ unshare01 unshare01
+ unshare02 unshare02
+ unshare03 unshare03
+ unshare04 unshare04
++unshare05 unshare05
+ 
+ #
+ # These tests require an unmounted block device
+diff --git a/testcases/kernel/syscalls/unshare/.gitignore b/testcases/kernel/syscalls/unshare/.gitignore
+index b1206e452..8ece5f988 100644
+--- a/testcases/kernel/syscalls/unshare/.gitignore
++++ b/testcases/kernel/syscalls/unshare/.gitignore
+@@ -2,3 +2,4 @@
+ /unshare02
+ /unshare03
+ /unshare04
++/unshare05
+diff --git a/testcases/kernel/syscalls/unshare/unshare05.c b/testcases/kernel/syscalls/unshare/unshare05.c
+new file mode 100644
+index 000000000..3185d4d2a
+--- /dev/null
++++ b/testcases/kernel/syscalls/unshare/unshare05.c
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 lufei <lufei@uniontech.com>
++ */
++
++/*\
++ * This test case verifies unshare(CLONE_NEWPID) creates a new PID namespace
++ * and that the first child process in the new namespace gets PID 1.
++ */
++
++#define _GNU_SOURCE
++
++#include "tst_test.h"
++#include "lapi/sched.h"
++
++static struct tst_clone_args *args;
++
++static void setup(void)
++{
++	args->flags = CLONE_NEWPID;
++	args->exit_signal = SIGCHLD;
++}
++
++static void run(void)
++{
++	if (SAFE_CLONE(args))
++		return;
++
++	SAFE_UNSHARE(CLONE_NEWPID);
++
++	if (!SAFE_FORK()) {
++		TST_EXP_EQ_LI(getpid(), 1);
++		exit(0);
++	}
++
++	tst_reap_children();
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.forks_child = 1,
++	.needs_root = 1,
++	.test_all = run,
++	.bufs = (struct tst_buffers []) {
++		{&args, .size = sizeof(*args)},
++		{},
++	}
++};
+-- 
+2.39.3
 
 
 -- 
