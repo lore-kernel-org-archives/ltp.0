@@ -4,97 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A751C83F27
-	for <ltp@archiver.kernel.org>; Wed, 16 Jul 2025 06:00:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA50CC83F27
+	for <ltp@archiver.kernel.org>; Wed, 16 Jul 2025 06:47:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1752648442; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=o3b8P5luhleE3JhdBb+dE0PZIWzCjKSiX+kHdlLPujY=;
+ b=eGCqkme21gANnLDEhZ4xDWxhihkEWGcf6S8x8ge6ilG8fWgAPbzgSRf6SHtl+CzB9fNtN
+ wVUhacw4RRDp7H23Civswf3R28fnBr0XWOVdxTX7COzgOZiovTZs7i/Ua78Pdb13p1pjiLh
+ MO88h6spxvhZ/ADA6f9e27fftpsgZ5Q=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 858733CB926
-	for <ltp@archiver.kernel.org>; Wed, 16 Jul 2025 08:00:57 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 125BB3CBD0D
+	for <ltp@archiver.kernel.org>; Wed, 16 Jul 2025 08:47:22 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 960203C651D
- for <ltp@lists.linux.it>; Wed, 16 Jul 2025 08:00:40 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3436A3C9B01
+ for <ltp@lists.linux.it>; Wed, 16 Jul 2025 08:47:00 +0200 (CEST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1BAE26008CE
- for <ltp@lists.linux.it>; Wed, 16 Jul 2025 08:00:39 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 060362123B;
- Wed, 16 Jul 2025 06:00:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1752645639;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rZ4QyPTSGsZJOWPBnw83Z5Oe7XiygwklRjXjuwOAsR0=;
- b=cWw8hWGoxeapx3s/+g0tYrClexKbFg70T9a8jA8PaJFLN/MeLTc4F1LrfHGDnrwUSP5wlj
- 2vZbO1zfE1lP9Z7i9RcxcRhWuDmEYrPAgX81VWfLrA02Y8y5tL+R4hVa9GVh3FMGjkfXtb
- 8X7Pm9KdbgUYv4Uc1hjBDPwX7weYtb8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1752645639;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rZ4QyPTSGsZJOWPBnw83Z5Oe7XiygwklRjXjuwOAsR0=;
- b=IgxlJbaQPGxAbCeq0RTGC4SbBNhX7KPrw5pgw5KCJVjTxbNM/bG9tns+1xAaTgqKfuOnR3
- 1XpJCMKocGmmvDBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1752645639;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rZ4QyPTSGsZJOWPBnw83Z5Oe7XiygwklRjXjuwOAsR0=;
- b=cWw8hWGoxeapx3s/+g0tYrClexKbFg70T9a8jA8PaJFLN/MeLTc4F1LrfHGDnrwUSP5wlj
- 2vZbO1zfE1lP9Z7i9RcxcRhWuDmEYrPAgX81VWfLrA02Y8y5tL+R4hVa9GVh3FMGjkfXtb
- 8X7Pm9KdbgUYv4Uc1hjBDPwX7weYtb8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1752645639;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rZ4QyPTSGsZJOWPBnw83Z5Oe7XiygwklRjXjuwOAsR0=;
- b=IgxlJbaQPGxAbCeq0RTGC4SbBNhX7KPrw5pgw5KCJVjTxbNM/bG9tns+1xAaTgqKfuOnR3
- 1XpJCMKocGmmvDBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DF005138D2;
- Wed, 16 Jul 2025 06:00:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id PKUCNQZAd2gzYwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 16 Jul 2025 06:00:38 +0000
-Date: Wed, 16 Jul 2025 08:00:37 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20250716060037.GA17458@pevik>
-References: <20250710123455.20199-1-chrubis@suse.cz>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 231621000C1F
+ for <ltp@lists.linux.it>; Wed, 16 Jul 2025 08:46:59 +0200 (CEST)
+Received: by mail-wm1-x32f.google.com with SMTP id
+ 5b1f17b1804b1-4561607166aso23723055e9.2
+ for <ltp@lists.linux.it>; Tue, 15 Jul 2025 23:46:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1752648418; x=1753253218; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=HUg1mhAjJjs05RckNcFA81kslKLxjVX5Zzh0P1p46+A=;
+ b=XyNJSMGY/jqcmA5dl/GClBrU3tV+4Qz9FTweCCXeAERp2lebWSfZtrksh14wqauG3h
+ KN8n4QYc4CPJeltYHBnc3Ia1B8TiT7D8eX3Yn1IWO5drf58eQS4CeQwu33OuS8OmFwTf
+ x/sUIhcyIj5gtIRL79UrYuSxwH8ScnmWyWCWweDXPBSJwTn8FXspy2dQYKiqTsIBzCCG
+ NqbM1RKGaULHy17uvSrcGpFe+lu6Rq64GKRkKUh2QlO4IM5Ttbah052HT8AnB1yeDlpF
+ RMNNzcSbQ3L3/CeOB5S4WXBCd9X0UFr107QMlgIxYTaJjY/13LfkIr50d4dXhEF/Iwts
+ OEhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1752648418; x=1753253218;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=HUg1mhAjJjs05RckNcFA81kslKLxjVX5Zzh0P1p46+A=;
+ b=GBlRUffiT+cKihXAktZCqKRvUScyf+OyX/vxRpbzqi6ThjcJmXynyUnYc6tcn7AoEg
+ 8yq2+qXXMWuTag2xO3Ln8FW+wPqNKO4Zq+T7nUvHJN90ssrboEhu1og5EbqzpkBQnFny
+ Msk90y+kWdEzaybSJ/YjbIjg3uJlE9yl2z31koiZkhjzce07oYP3DZx0BxW82as+Qy53
+ 2SvbP8ylzIpMzL6K67qneh61QgVjJ+UUYwQApIi0X1qMKd2CLEp2YtkzRfRTIzu3jhX0
+ iMYMiUwpRMfgcTbsxLUewJCcoweF6XAll72I4MsAu/TxCwlh+Lz4qVg6FeYaHBNVFc+z
+ +vqw==
+X-Gm-Message-State: AOJu0YwNQZ3dA2pX+h/aIEPGTmn0EzWTzXny6pjSKluDWfg5zbBfmNFr
+ pRZglw0bgWEDgpP5fskAXqqoaV/YgNVXgqBqLzI8NO1ABWvIUcbqLFwNFw4h9OB8jBJfEYCh/s4
+ HJW6pIQ==
+X-Gm-Gg: ASbGnculrgH2aSMGE5l1+VlJET76w45frKJdl2alNnk8SqXQy8mK/5SI3JppLaN0GjA
+ He+b23xQDPYOncejtigM/aPabINymDRdzo/f2U7XF4sjBaTdmnUAJDLDr3XTVvVGFGq+JBqA3Qy
+ 9fwNimaZ4FqnoacKEho5p+CEVWLzEzXJjW3Bqgd8lIiAv2IejNAmrPfpnynql8aRQ472Ew1O/FT
+ H/0UE07k+Y3Q4ChUAxKnYlYwkBh6djkboQBya2DSj9w22VyN3oOoCpoMWOsvyu5vNIr8lkH1yBq
+ eOKvPCBUvbqEpxpcnoeyTBBMcJZmeYFWS5kpxNYYbxp4sRZShW589NWsUQDMf6ggFkqcLnUDlEI
+ vdtOp0VZNBOjGCammPQVFzA==
+X-Google-Smtp-Source: AGHT+IH63G7+JeXq0Z49uxLVgF1D34ufbd1TpeJeXQdSysD98l5AmVJqK03KRlyN5E23QYrg4VW3/Q==
+X-Received: by 2002:a05:6000:4305:b0:3a4:d0dc:184d with SMTP id
+ ffacd0b85a97d-3b60dd95c4dmr1325248f8f.27.1752648418431; 
+ Tue, 15 Jul 2025 23:46:58 -0700 (PDT)
+Received: from MiWiFi-CR6608-srv ([202.127.77.110])
+ by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-74eb9f8ce06sm13588186b3a.157.2025.07.15.23.46.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 15 Jul 2025 23:46:57 -0700 (PDT)
+Date: Wed, 16 Jul 2025 14:46:13 -0400
+To: Florian Schmaus <florian.schmaus@codasip.com>
+Message-ID: <aHfzdQIGbChfW13s@MiWiFi-CR6608-srv>
+References: <fef71466-54df-4561-a19f-e904c6f79c3b@suse.com>
+ <20250715092015.505957-1-florian.schmaus@codasip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250710123455.20199-1-chrubis@suse.cz>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+In-Reply-To: <20250715092015.505957-1-florian.schmaus@codasip.com>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] macros: Add basic docs
+Subject: Re: [LTP] [PATCH] sigrelse01: Fix out-of-bounds read when invoking
+ write()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,37 +99,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
-
-> Describe all "public" macros.
-> Move variables to the top.
-> Add header to the sphinx doc.
-
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+On Tue, Jul 15, 2025 at 11:20:15AM +0200, Florian Schmaus via ltp wrote:
+> The sigrelse01 test would invoke write(fd, msg, MAXMESG), where
+> MAXMESG=512. However, msg is often as short as "ready", i.e., 6
+> bytes (5 bytes + \0).
+> 
+> This mismatch causes write() to read additional bytes outside the *msg
+> buffer and write everything to the file descriptor. For example, the
+> strace output of sigrelese01 contains the following:
+> 
+>     write(6, "ready\0Unable to tell child to go"..., 512)
+> 
+> Fix the out-of-bounds read in sigrelse01 by invoking write() with the
+> correct number of bytes to (read and) write by using strlen(). There
+> is one case where sigrelese01 invoked write_pipe() not passing a
+> string: when the child sends sig_array to its parent process. We
+> convert this case from write_pipe() to write() using the proper
+> arguments. After doing so, the memcpy() of sig_array is no longer
+> required.
+> 
+> We identified this issue on a CHERI [1] system, which provides
+> fine-grained memory protection through architectural
+> capabilities. Unlike traditional MMU-based protection, which would not
+> detect this specific out-of-bounds access, CHERI precisely bounds
+> memory regions. In sigrelse01's case, CHERI correctly identified that
+> the 6-byte buffer containing "ready" was being overread. Consequently,
+> this out-of-bounds read during the write() syscall would cause the
+> Linux kernel to return -EFAULT, revealing this hidden bug.
+> 
+> 1: https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/
+> 
+> Signed-off-by: Florian Schmaus <florian.schmaus@codasip.com>
 > ---
-> I've took the changes from Peter and:
-
-> - added more verbose description that would hopefully explain the macros
->   better
-
-> - added documentation for a few macros that was missing previously
-
-> - moved the macros into its own menu category since the Core LTP API is
->   long enough already
-
-Thanks a lot for greatly improving and finishing the work. This will help not
-only to the newcomers to understand the test code.
-
-Kind regards,
-Petr
+>  testcases/kernel/syscalls/sigrelse/sigrelse01.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/sigrelse/sigrelse01.c b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
+> index 95754212053e..f7fdfbab3a28 100644
+> --- a/testcases/kernel/syscalls/sigrelse/sigrelse01.c
+> +++ b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
+> @@ -486,12 +486,14 @@ static void child(void)
+>  	 * then PASS, otherwise FAIL.
+>  	 */
+>  
+> -	if (exit_val == EXIT_OK) {
+> -		(void)memcpy(note, (char *)sig_array, sizeof(sig_array));
+> -	}
+> -
+>  	/* send note to parent and exit */
+> -	if (write_pipe(pipe_fd[1], note) < 0) {
+> +	if (exit_val == EXIT_OK) {
+> +		if (write(pipe_fd[1], sig_array, sizeof(sig_array)) < 0) {
+> +			tst_resm(TBROK, "write() pipe failed. error:%d %s.\n", errno, strerror(errno));
+tst_resm will add "\n" at the end of string so you do not need add it.
+> +			exit(WRITE_BROK);
+> +		}
+> +	}
+> +	else if (write_pipe(pipe_fd[1], note) < 0) {
+>  		/*
+>  		 * write_pipe() failed.  Set exit value to WRITE_BROK to let
+>  		 * parent know what happened
+> @@ -622,7 +624,7 @@ static int write_pipe(int fd, char *msg)
+>  	printf("write_pipe: pid=%d, sending %s.\n", getpid(), msg);
+>  #endif
+>  
+> -	if (write(fd, msg, MAXMESG) < 0) {
+> +	if (write(fd, msg, strlen(msg) + 1) < 0) {
+>  		(void)sprintf(mesg, "write() pipe failed. error:%d %s.",
+>  			      errno, strerror(errno));
+>  
+> -- 
+> 2.49.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
