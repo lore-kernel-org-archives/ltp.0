@@ -4,94 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D27CC83F1A
-	for <ltp@archiver.kernel.org>; Thu, 17 Jul 2025 09:42:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 555E2C83F1A
+	for <ltp@archiver.kernel.org>; Thu, 17 Jul 2025 09:42:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AF3CF3CC22F
-	for <ltp@archiver.kernel.org>; Thu, 17 Jul 2025 11:42:35 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id B05B93CC255
+	for <ltp@archiver.kernel.org>; Thu, 17 Jul 2025 11:42:53 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 509933CC16E
- for <ltp@lists.linux.it>; Thu, 17 Jul 2025 11:42:03 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id A454F3CC2A8
+ for <ltp@lists.linux.it>; Thu, 17 Jul 2025 11:42:08 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BAA41600048
- for <ltp@lists.linux.it>; Thu, 17 Jul 2025 11:42:02 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7268E140006D
+ for <ltp@lists.linux.it>; Thu, 17 Jul 2025 11:42:07 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D167021746;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AE0DC216EF;
  Thu, 17 Jul 2025 09:41:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1752745319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WbGxXKk8iCt3PT730/FmTFYC0T/G1tyZa+L8UXTGDc4=;
- b=bRSSETDx9Pgik4usONc70ezGOqcU3ZnAmxhBAIwWp5V55rN86Ud/BXZzreHPWGOKCkofDy
- uKKXjmuU30y4i9Z8Eez4U0ApaifTwTTzA9Pg7SzdL8vvABfIjN24h9cVuARUgosCbJmeNS
- DbGBjQWGLNwFjqjaL52ETEL3h2E6zdc=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=r31wLrCDvqOC+CaAbrWviMnhrcEGH2H+2M+OhwBfAhI=;
+ b=bYFsXpk9cN/e0t+dlqNicgl0akXxv3y86bsOATRkF6gUjP8h47dg7/v5Hyd1kM72SpuWt5
+ h5BIUzCmmgJ+hZpeFtoGsG4V7dppF4E2fLaC/mkT8baFQdk/s599KvtvKu9F50r04ZE13V
+ jIQ7JlINBqJZI3jG6laNeRjCLtyseK4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1752745319;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WbGxXKk8iCt3PT730/FmTFYC0T/G1tyZa+L8UXTGDc4=;
- b=FtYcxW2yfDCCjMIDCaUtJzYFN8DSGjg3xC1cIqfq16qKEGBInGMYGGzpDgA4fEpPDQacPG
- 8/0RTdoXDiFPo5Bw==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=r31wLrCDvqOC+CaAbrWviMnhrcEGH2H+2M+OhwBfAhI=;
+ b=744JiyAuZbUY4Lc/EDMCx/MXrPd3bjD/f7/o7C8wG3ehudaY3+fTT7Cg0o8n/oVf0bM4F8
+ z4AzlDSjBy5niwDQ==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=A9eSUty5;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=OXHEJby9
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=cZ8Dh27E;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=LX4eAYyD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1752745318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WbGxXKk8iCt3PT730/FmTFYC0T/G1tyZa+L8UXTGDc4=;
- b=A9eSUty5sRFdykpG23ATMGvoU1rhyFVnpgBfYneKGuOOo7J1EFx7STpBgqc6I4CJox3AA+
- vp9C/eS1Q9gBNGDWq9e/mZ8woL/a79cNFsjT4/1GRJHqWMNdaaMPTmSFIBnpVU7eUcIpk/
- B0Ri007gBECNd13AyNF74enzRsO7qsg=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=r31wLrCDvqOC+CaAbrWviMnhrcEGH2H+2M+OhwBfAhI=;
+ b=cZ8Dh27ESNRoH62QbmpgUEY0Hkyzo50GYMil6opnLdkcVef9hf0AhDRMAndEBej1AU/VjW
+ JAS4SFvzqFGoj8uw0KifoQR8ybrTYYKZa16LO4Zccz5pxPhiGR2kdcFeTMRQ2Nj9DzToXt
+ XvKWgN1Bzm8jibU4KOZJO9NyZynwDdQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1752745318;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WbGxXKk8iCt3PT730/FmTFYC0T/G1tyZa+L8UXTGDc4=;
- b=OXHEJby9Wfch/5zVIOY4880ImByo7swyK/PioHvVpdExmVZscEarWaSpSQ3CRdDV2RqEh6
- hC6Ioka61ltjKWCQ==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=r31wLrCDvqOC+CaAbrWviMnhrcEGH2H+2M+OhwBfAhI=;
+ b=LX4eAYyDCiI0Yzx3kkr/4LcM+pzGhW+K9gLj3z3wdoxkKcEaxfY/F3e8FbIJbNEh2HYl33
+ 1Jqv5OL+woi1TRAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AED2213A75;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8306013A6C;
  Thu, 17 Jul 2025 09:41:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2Ce5KGbFeGjdWwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 4Q0RHmbFeGjdWwAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Thu, 17 Jul 2025 09:41:58 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 17 Jul 2025 11:41:57 +0200
+Date: Thu, 17 Jul 2025 11:41:56 +0200
+Message-Id: <20250717-clock_nanosleep05-v3-0-6934fc1a2505@suse.com>
 MIME-Version: 1.0
-Message-Id: <20250717-clock_nanosleep05-v3-1-6934fc1a2505@suse.com>
-References: <20250717-clock_nanosleep05-v3-0-6934fc1a2505@suse.com>
-In-Reply-To: <20250717-clock_nanosleep05-v3-0-6934fc1a2505@suse.com>
+X-B4-Tracking: v=1; b=H4sIAGTFeGgC/23OwQrCMAwG4FcZPVtpU7KpJ99DRLouc8XZjlaLM
+ vbudgNhh5HTH/i/ZGSRgqXITsXIAiUbrXc5qF3BTKfdnbhtcmYgAEUJgpvem8fNaedjTzQI5KW
+ olWlrjdASy70hUGs/i3m55tzZ+PLhu5xIct7+tWpDS5LnUVhJcdRgDvIc35H2xj/ZjCVYAWrrn
+ QRccIkI0CCiNOUKmKbpB/GVUa7yAAAA
+X-Change-ID: 20250620-clock_nanosleep05-60b3cfba52fe
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1752745318; l=1623;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1752745318; l=1866;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=trOfrZwu7PkqQL5Yh3mIlY9jnpqCiFvV2lAnSTaiHLQ=;
- b=wynb+0PbAr5PElfVMvTjTv9MDbM4oUFAPLRrIIRYXfFgg9qoA+nmCb1QCVS91KeVE0RhA/8/q
- H8ynbnAJrRZAJqN7I5v7TDE00zlgUUdbtumZBNV430TaiaqP79bx/kw
+ bh=PR9pDLcGaUuLo7LOY1q22AQuQwmzmiqJmWB53iXJXUg=;
+ b=6qZOy5GaKMJWjkF90sDPGzVrJM7zYNNCz7ZcxITo2i7lCkv+7kpKoavHu8DJQXcATDE1w4/oY
+ d9eLFaZrMQ0CIj0fX9wvNjurq5dpR4wvdQ4rFzwRxT1Si9wvMS2w6hA
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Rspamd-Queue-Id: AE0DC216EF
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
@@ -108,15 +111,13 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
  DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
  DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: D167021746
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/2] Add SAFE_CLOCK_NANOSLEEP macro utility
+Subject: [LTP] [PATCH v3 0/2] Rewrite openposix clock_settime bugged tests
+ inside LTP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -133,57 +134,54 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Both clock_settime_7-1 and clock_settime_8-1 are affected by the
+same bug which is probably related to the way tests are written.
+
+sleep() is used by the parent and is not reliable. It can oversleep
+or undersleep according to system overload or signals which are
+received. And we never check for its return value. Using
+clock_nanosleep would make parent more reliable in this case.
+
+At the same time, the test is taking for granted a certain
+synchronization between child and parent, which is not always true
+in case of system overload.
+
+My suggestion is to rewrite the test using LTP, which has better
+timing handling (see tst_timer.h).
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/tst_safe_clocks.h | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+Changes in v3:
+- remove checkpoints
+- sleep with REALTIME only, but take time in MONOTONIC
+- use only clock_settime variant
+- Link to v2: https://lore.kernel.org/r/20250630-clock_nanosleep05-v2-0-15522d5551c6@suse.com
 
-diff --git a/include/tst_safe_clocks.h b/include/tst_safe_clocks.h
-index 5661ce57bf7c7b2b0eb3ada9d01049abdd99dab0..5b0e8c5b8c2baad9b41e7f3bf56274d94ebddc7e 100644
---- a/include/tst_safe_clocks.h
-+++ b/include/tst_safe_clocks.h
-@@ -73,6 +73,26 @@ static inline int safe_clock_settime(const char *file, const int lineno,
- 	return rval;
- }
- 
-+static inline int safe_clock_nanosleep(const char *file, const int lineno,
-+	clockid_t clockid, int flags, const struct timespec *ts,
-+	struct timespec *remain)
-+{
-+	int ret;
-+
-+	errno = 0;
-+	ret = clock_nanosleep(clockid, flags, ts, remain);
-+
-+	if (ret == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"clock_nanosleep() failed");
-+	} else if (ret) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"Invalid clock_nanosleep() return value %d", ret);
-+	}
-+
-+	return ret;
-+}
-+
- static inline int safe_timer_create(const char *file, const int lineno,
- 	clockid_t clockid, struct sigevent *sevp, timer_t *timerid)
- {
-@@ -159,6 +179,9 @@ static inline int safe_timer_delete(const char *file, const int lineno,
- #define SAFE_CLOCK_SETTIME(clk_id, tp)\
- 	safe_clock_settime(__FILE__, __LINE__, (clk_id), (tp))
- 
-+#define SAFE_CLOCK_NANOSLEEP(clockid, flags, ts, remain)\
-+	safe_clock_nanosleep(__FILE__, __LINE__, clockid, flags, ts, remain)
-+
- #define SAFE_TIMER_CREATE(clockid, sevp, timerid)\
- 	safe_timer_create(__FILE__, __LINE__, (clockid), (sevp), (timerid))
- 
+Changes in v2:
+- add SAFE_CLOCK_NANOSLEEP
+- move child to MONOTONIC clock
+- simplify child_nanosleep by passing flags
+- calculate delta by checking sleep() time between beginning and ending time
+- keep variants only for child
+- Link to v1: https://lore.kernel.org/r/20250627-clock_nanosleep05-v1-1-1357109a2c81@suse.com
 
+---
+Andrea Cervesato (2):
+      Add SAFE_CLOCK_NANOSLEEP macro utility
+      Add clock_settime04 test
+
+ include/tst_safe_clocks.h                          |  23 ++++
+ runtest/syscalls                                   |   1 +
+ testcases/kernel/syscalls/clock_settime/.gitignore |   1 +
+ .../syscalls/clock_settime/clock_settime04.c       | 140 +++++++++++++++++++++
+ 4 files changed, 165 insertions(+)
+---
+base-commit: 39072797fa63be2a5e85b1a79379b98a8bfa8d29
+change-id: 20250620-clock_nanosleep05-60b3cfba52fe
+
+Best regards,
 -- 
-2.50.1
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
