@@ -4,89 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80E51C83F1A
-	for <ltp@archiver.kernel.org>; Thu, 17 Jul 2025 04:09:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1752725394; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=S02P3NHOnA/3hyWhTz7LG1g46zO5oughGyXKuklJy9w=;
- b=BIJgo9cOOZgLqaF2VM1XyVt+SZ9Li1rOntZHpq9lDqxqgZMOOLOeRNlVXHTblykVQT0PI
- okZn81XSNeWMbNUSfnxjhJmzFpz/onP9OHcd4zYATpkxpwMfjG2OUMTsHyw0XSI1vlDILer
- OJQDIGYd+aR5SuXzTYybQU07mqrNv+Y=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5D03C83F1B
+	for <ltp@archiver.kernel.org>; Thu, 17 Jul 2025 09:42:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D1393CC17D
-	for <ltp@archiver.kernel.org>; Thu, 17 Jul 2025 06:09:54 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 840F93CC16E
+	for <ltp@archiver.kernel.org>; Thu, 17 Jul 2025 11:42:18 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1B5223C64EF
- for <ltp@lists.linux.it>; Thu, 17 Jul 2025 06:09:32 +0200 (CEST)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B0AC53C0277
+ for <ltp@lists.linux.it>; Thu, 17 Jul 2025 11:42:00 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AA3436002CD
- for <ltp@lists.linux.it>; Thu, 17 Jul 2025 06:09:31 +0200 (CEST)
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-451d54214adso2892835e9.3
- for <ltp@lists.linux.it>; Wed, 16 Jul 2025 21:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1752725371; x=1753330171; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=k6rsfRah7tQZa7iVIpOzrjeRDWOIID241jAL8IeklOU=;
- b=YHIpXHfF8x0t+PBYvC/wbjOEkP/hwruvUnBXbn+Qk0OSHjBmqXTL3nS/l3Kp5oLxPD
- kIb4/8xZwEGTodMHhxfKBxwDC53bsubpX5mjM9ApB5wztWioMdsuU/drHJD/puvCBuQY
- SzbWkU/qvpEVODCu5Kf6qiuCkF7dC+crFvr4OnLCRVqP7gxWg2BM/5ah5GDjvk/RuZsW
- qfn3hyMFr5Ke/sJjtMTQTNFv4e9SY1fsQMv6Wflnh8EfIl6m7gJczZvX9QAxtwgEGANp
- mSTVVPLvla4XlJA4Sd+qYjnxbAqx0qUdldk4TaRXfWIQHE2JFRpMXzvDliS6XxGHVq0I
- dOLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1752725371; x=1753330171;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=k6rsfRah7tQZa7iVIpOzrjeRDWOIID241jAL8IeklOU=;
- b=v78lLNaCBPHm/cBGmfZUiX5R23F88CpR7Vern8w69Ti08PTWnk0ETOX1s8VfPxuh0G
- ZilqgzdQjlvRUQvKWqVmJGBHjrnfXFtibQZsSJ/VeghrdceIk+zxko+Qa4k7qZwXsmqL
- MXFmSOqasF/WRNjGWTU9hwf15UHPXsXrfc3c5GHMGQqe4sWwj8kXbDi9fh2eXRcIXavl
- vHoYZnRYQ13FCpFOql+jrhWcAHy+RFYI2xlWrRWXOKQoIIJ325poLr1gdHaDP/mFhxvp
- iOFymtIoCARqzFl4bOIYTqmsCJrF1HGggWYGZLfgPbHBWcAlpX2flpnJQ9Kq17Jt2MCP
- nZeQ==
-X-Gm-Message-State: AOJu0YxnKH+o6nTA2vxvTQcveNSwrwc8DrP0amZSHY3pQ5gZQh1n8/vZ
- sV8slnWsw6anCs+kdIe30NKHcTgMyB7VgLwaOU9sslXsJJlVPpkVbnqXXKFD2ALb6w==
-X-Gm-Gg: ASbGnct1ziTU3Ih6d+mnmcD4YI8mwr2P0w5jS4rFVWlwrfnvzXp8xXvLYSsYv2WsUNI
- Hoc2DaOUwIG3ArC4GCuD6pw3SXNXa90dmfWS53zcjEu0Img4rW62FVkqU1UbbOH+ywqXxVvHMm4
- AX4kTf/O9ULPut36Oaj4gqSMQwjFpBVdxrE75u83xr9ipcOzEipPdLu4Ibj2j6LzUixt1hGkZWO
- tdy6YAqi+D8I5JhcbkxkIy4E5vJolIahoBqltG7C+rslFMZhICwn05bdHqf87G73xclmvtX2gTw
- FKQ7tKF3wvsoItd9PgZBR0Sgv9KlzMnYo4THggs9qU/DIpTnCjPZx7Pdtv3ekw6aGCQyf1AlZXv
- aVNNZu8aF6/AruuzixQaeNw==
-X-Google-Smtp-Source: AGHT+IFG9I5j0SNJX7quuIRwsrKiXNF9gcZVMOfT/SK+RcJ8qEotb2E066zMZuY5FkVEgp08X0yJ6Q==
-X-Received: by 2002:a05:6000:490d:b0:3a5:2653:7308 with SMTP id
- ffacd0b85a97d-3b613eac813mr858032f8f.57.1752725370935; 
- Wed, 16 Jul 2025 21:09:30 -0700 (PDT)
-Received: from MiWiFi-CR6608-srv ([202.127.77.110])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-74eb9f8b990sm15196906b3a.153.2025.07.16.21.09.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 16 Jul 2025 21:09:30 -0700 (PDT)
-Date: Thu, 17 Jul 2025 12:08:46 -0400
-To: Florian Schmaus <florian.schmaus@codasip.com>
-Message-ID: <aHkgDtMtVINthghW@MiWiFi-CR6608-srv>
-References: <20250716072846.600659-1-florian.schmaus@codasip.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E6BAA60071C
+ for <ltp@lists.linux.it>; Thu, 17 Jul 2025 11:41:59 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 051A31F7DD;
+ Thu, 17 Jul 2025 09:41:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1752745319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZmR1j+/sHGES4U/29Z0tGH7xARcsbIiTly46KKh5nb8=;
+ b=dULbtX8YoPbbl0c/lKnVAN78rzhngpEcUbYPj4hNJ66iArDZ++H/gfq3W2c3zuYPapbKzg
+ G8LaQON3cVwfG21hnvgs91NophuCkbfFKHgA7HWy3YgWf3TBhxwftjkKUux/30MHFgyt7S
+ W1rSZkkSoqKuB5gPj6t8CTdHmitQ5SE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1752745319;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZmR1j+/sHGES4U/29Z0tGH7xARcsbIiTly46KKh5nb8=;
+ b=HE4GiHaPVvHs4lYnzfERyOWkKs+T7qB0ZnaKPFgzko5j1Gk1vF6DrKm4fOuQPLHf69Ce+x
+ qaCbCvjzdvyRWyCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1752745319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZmR1j+/sHGES4U/29Z0tGH7xARcsbIiTly46KKh5nb8=;
+ b=dULbtX8YoPbbl0c/lKnVAN78rzhngpEcUbYPj4hNJ66iArDZ++H/gfq3W2c3zuYPapbKzg
+ G8LaQON3cVwfG21hnvgs91NophuCkbfFKHgA7HWy3YgWf3TBhxwftjkKUux/30MHFgyt7S
+ W1rSZkkSoqKuB5gPj6t8CTdHmitQ5SE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1752745319;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZmR1j+/sHGES4U/29Z0tGH7xARcsbIiTly46KKh5nb8=;
+ b=HE4GiHaPVvHs4lYnzfERyOWkKs+T7qB0ZnaKPFgzko5j1Gk1vF6DrKm4fOuQPLHf69Ce+x
+ qaCbCvjzdvyRWyCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D821613A88;
+ Thu, 17 Jul 2025 09:41:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2MrKMmbFeGjdWwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 17 Jul 2025 09:41:58 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 17 Jul 2025 11:41:58 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250716072846.600659-1-florian.schmaus@codasip.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+Message-Id: <20250717-clock_nanosleep05-v3-2-6934fc1a2505@suse.com>
+References: <20250717-clock_nanosleep05-v3-0-6934fc1a2505@suse.com>
+In-Reply-To: <20250717-clock_nanosleep05-v3-0-6934fc1a2505@suse.com>
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1752745318; l=5536;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=XFdMs/yPW2dx4aeqCcuQ3B608L1yQJKtBhajjR5oOM0=;
+ b=afAovUXA6ALIGOohTI7CLC9XI+KLSLluVRnngrmfFp9VCRBzMfZ2UYjL+CSIqovI+aiXvit+A
+ SiR9rgPDcocDU0wGTepp/sKj+OS/OYTQlfoNCUt+ahIWAPeeQoAshvb
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
+ suse.com:mid]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] sigrelse01: Fix out-of-bounds read when
- invoking write()
+Subject: [LTP] [PATCH v3 2/2] Add clock_settime04 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,94 +115,195 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Jul 16, 2025 at 09:28:46AM +0200, Florian Schmaus via ltp wrote:
-> The sigrelse01 test would invoke write(fd, msg, MAXMESG), where
-> MAXMESG=512. However, msg is often as short as "ready", i.e., 6
-> bytes (5 bytes + \0).
-> 
-> This mismatch causes write() to read additional bytes outside the *msg
-> buffer and write everything to the file descriptor. For example, the
-> strace output of sigrelese01 contains the following:
-> 
->     write(6, "ready\0Unable to tell child to go"..., 512)
-> 
-> Fix the out-of-bounds read in sigrelse01 by invoking write() with the
-> correct number of bytes to (read and) write by using strlen(). There
-> is one case where sigrelese01 invoked write_pipe() not passing a
-> string: when the child sends sig_array to its parent process. We
-> convert this case from write_pipe() to write() using the proper
-> arguments. After doing so, the memcpy() of sig_array is no longer
-> required.
-> 
-> We identified this issue on a CHERI [1] system, which provides
-> fine-grained memory protection through architectural
-> capabilities. Unlike traditional MMU-based protection, which would not
-> detect this specific out-of-bounds access, CHERI precisely bounds
-> memory regions. In sigrelse01's case, CHERI correctly identified that
-> the 6-byte buffer containing "ready" was being overread. Consequently,
-> this out-of-bounds read during the write() syscall would cause the
-> Linux kernel to return -EFAULT, revealing this hidden bug.
-> 
-> 1: https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/
-> 
-> Signed-off-by: Florian Schmaus <florian.schmaus@codasip.com>
-> ---
-> 
-> Changes in v2:
->     - remove unnecessary '\n' in tst_resm
-> 
->  testcases/kernel/syscalls/sigrelse/sigrelse01.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/sigrelse/sigrelse01.c b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
-> index 95754212053e..68d69c3ef5e7 100644
-> --- a/testcases/kernel/syscalls/sigrelse/sigrelse01.c
-> +++ b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
-> @@ -486,12 +486,14 @@ static void child(void)
->  	 * then PASS, otherwise FAIL.
->  	 */
->  
-> -	if (exit_val == EXIT_OK) {
-> -		(void)memcpy(note, (char *)sig_array, sizeof(sig_array));
-> -	}
-> -
->  	/* send note to parent and exit */
-> -	if (write_pipe(pipe_fd[1], note) < 0) {
-> +	if (exit_val == EXIT_OK) {
-> +		if (write(pipe_fd[1], sig_array, sizeof(sig_array)) < 0) {
-> +			tst_resm(TBROK, "write() pipe failed. error:%d %s.", errno, strerror(errno));
-> +			exit(WRITE_BROK);
-> +		}
-> +	}
-> +	else if (write_pipe(pipe_fd[1], note) < 0) {
->  		/*
->  		 * write_pipe() failed.  Set exit value to WRITE_BROK to let
->  		 * parent know what happened
-> @@ -622,7 +624,7 @@ static int write_pipe(int fd, char *msg)
->  	printf("write_pipe: pid=%d, sending %s.\n", getpid(), msg);
->  #endif
->  
-> -	if (write(fd, msg, MAXMESG) < 0) {
-> +	if (write(fd, msg, strlen(msg) + 1) < 0) {
->  		(void)sprintf(mesg, "write() pipe failed. error:%d %s.",
->  			      errno, strerror(errno));
->  
-Thanks for your update. I don't see any obvious mistakes.
-Reviewed-by: Wei Gao <wegao@suse.com>
-> -- 
-> 2.49.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+Test that changing the value of the CLOCK_MONOTONIC clock via
+clock_settime(2) shall have no effect on a thread that is blocked
+on a relative/absolute clock_nanosleep().
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ runtest/syscalls                                   |   1 +
+ testcases/kernel/syscalls/clock_settime/.gitignore |   1 +
+ .../syscalls/clock_settime/clock_settime04.c       | 140 +++++++++++++++++++++
+ 3 files changed, 142 insertions(+)
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index e738c332bf973840e6cc0bde489882eb65018991..5f392e4845e9ac7bcda30065997a5e6a7fb56945 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -112,6 +112,7 @@ leapsec01 leapsec01
+ clock_settime01 clock_settime01
+ clock_settime02 clock_settime02
+ clock_settime03 clock_settime03
++clock_settime04 clock_settime04
+ 
+ clone01 clone01
+ clone02 clone02
+diff --git a/testcases/kernel/syscalls/clock_settime/.gitignore b/testcases/kernel/syscalls/clock_settime/.gitignore
+index b66169b3eb7b4d8c8ea95e9e689b612d8da37b11..8bcc83d6fc9162087e99193a00b8d3d784d4737d 100644
+--- a/testcases/kernel/syscalls/clock_settime/.gitignore
++++ b/testcases/kernel/syscalls/clock_settime/.gitignore
+@@ -1,3 +1,4 @@
+ clock_settime01
+ clock_settime02
+ clock_settime03
++clock_settime04
+diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime04.c b/testcases/kernel/syscalls/clock_settime/clock_settime04.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..ddbffd1abaaa62de4a942f4244b8329240614cf2
+--- /dev/null
++++ b/testcases/kernel/syscalls/clock_settime/clock_settime04.c
+@@ -0,0 +1,140 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * Verify that changing the value of the CLOCK_MONOTONIC clock via
++ * clock_settime() shall have no effect on a thread that is blocked on
++ * absolute/relative clock_nanosleep().
++ */
++
++#include "tst_test.h"
++#include "tst_timer.h"
++#include "tst_safe_clocks.h"
++#include "time64_variants.h"
++
++#define SEC_TO_US(x)     (x * 1000 * 1000)
++
++#define CHILD_SLEEP_US   SEC_TO_US(5)
++#define PARENT_SLEEP_US  SEC_TO_US(2)
++#define DELTA_US         SEC_TO_US(1)
++
++static struct tst_ts *begin, *sleep_child, *sleep_parent, *end;
++
++static struct time64_variants variants[] = {
++	{
++		.clock_nanosleep = libc_clock_nanosleep,
++		.ts_type = TST_LIBC_TIMESPEC,
++		.desc = "vDSO or syscall with libc spec"
++	},
++
++#if (__NR_clock_nanosleep != __LTP__NR_INVALID_SYSCALL)
++	{
++		.clock_nanosleep = sys_clock_nanosleep,
++		.ts_type = TST_KERN_OLD_TIMESPEC,
++		.desc = "syscall with old kernel spec"
++	},
++#endif
++
++#if (__NR_clock_nanosleep_time64 != __LTP__NR_INVALID_SYSCALL)
++	{
++		.clock_nanosleep = sys_clock_nanosleep64,
++		.ts_type = TST_KERN_TIMESPEC,
++		.desc = "syscall time64 with kernel spec"
++	},
++#endif
++};
++
++static void child_nanosleep(struct time64_variants *tv, const int flags)
++{
++	long long delta;
++
++	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, tst_ts_get(begin));
++
++	if (flags & TIMER_ABSTIME) {
++		tst_res(TINFO, "Using absolute time sleep");
++
++		*sleep_child = tst_ts_add_us(*begin, CHILD_SLEEP_US);
++	} else {
++		tst_res(TINFO, "Using relative time sleep");
++
++		tst_ts_set_sec(sleep_child, 0);
++		tst_ts_set_nsec(sleep_child, 0);
++
++		*sleep_child = tst_ts_add_us(*sleep_child, CHILD_SLEEP_US);
++	}
++
++	TEST(tv->clock_nanosleep(CLOCK_REALTIME, flags, tst_ts_get(sleep_child), NULL));
++	if (TST_RET)
++		tst_brk(TBROK | TERRNO, "clock_nanosleep() error");
++
++	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, tst_ts_get(end));
++
++	if (tst_ts_lt(*end, *begin)) {
++		tst_res(TFAIL, "clock_settime() didn't sleep enough. "
++			"begin: %lld ms >= end: %lld ms",
++			tst_ts_to_ms(*begin),
++			tst_ts_to_ms(*end));
++		return;
++	}
++
++	delta = tst_ts_abs_diff_us(*begin, *end);
++	if (!(flags & TIMER_ABSTIME))
++		delta -= CHILD_SLEEP_US;
++
++	if (delta > DELTA_US) {
++		tst_res(TFAIL, "parent clock_settime() affected child sleep. "
++			"begin: %lld ms, end: %lld ms",
++			tst_ts_to_ms(*begin),
++			tst_ts_to_ms(*end));
++		return;
++	}
++
++	tst_res(TPASS, "parent clock_settime() didn't affect child sleep "
++		"(delta time: %lld us)", delta);
++}
++
++static void run(unsigned int tc_index)
++{
++	struct time64_variants *tv = &variants[tst_variant];
++
++	if (!SAFE_FORK()) {
++		child_nanosleep(tv, tc_index ? TIMER_ABSTIME : 0);
++		exit(0);
++	}
++
++	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, tst_ts_get(begin));
++	SAFE_CLOCK_NANOSLEEP(CLOCK_REALTIME, 0, tst_ts_get(sleep_parent), NULL);
++	SAFE_CLOCK_SETTIME(CLOCK_REALTIME, tst_ts_get(begin));
++}
++
++static void setup(void)
++{
++	begin->type = end->type = sleep_child->type = sleep_parent->type =
++		variants[tst_variant].ts_type;
++
++	tst_ts_set_sec(sleep_parent, 0);
++	tst_ts_set_nsec(sleep_parent, 0);
++
++	*sleep_parent = tst_ts_add_us(*sleep_parent, PARENT_SLEEP_US);
++
++	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
++}
++
++static struct tst_test test = {
++	.test = run,
++	.setup = setup,
++	.tcnt = 2,
++	.needs_root = 1,
++	.forks_child = 1,
++	.restore_wallclock = 1,
++	.test_variants = ARRAY_SIZE(variants),
++	.bufs = (struct tst_buffers []) {
++		{&sleep_child, .size = sizeof(struct tst_ts)},
++		{&sleep_parent, .size = sizeof(struct tst_ts)},
++		{&begin, .size = sizeof(struct tst_ts)},
++		{&end, .size = sizeof(struct tst_ts)},
++		{},
++	}
++};
+
+-- 
+2.50.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
