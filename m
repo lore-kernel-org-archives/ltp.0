@@ -4,108 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCB2CC83F17
-	for <ltp@archiver.kernel.org>; Fri, 18 Jul 2025 06:30:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1EA8C83F17
+	for <ltp@archiver.kernel.org>; Fri, 18 Jul 2025 08:30:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 09C5C3CC488
-	for <ltp@archiver.kernel.org>; Fri, 18 Jul 2025 08:30:54 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 9A2313CC3CA
+	for <ltp@archiver.kernel.org>; Fri, 18 Jul 2025 10:30:06 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5A2AB3CB145
- for <ltp@lists.linux.it>; Fri, 18 Jul 2025 08:30:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3076C10006C5
- for <ltp@lists.linux.it>; Fri, 18 Jul 2025 08:30:36 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B60A11F38A;
- Fri, 18 Jul 2025 06:30:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1752820233;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=HUg+bFSI//4mxqflViQg/QILzSZKPnVhjzhkaDNhjIE=;
- b=H0owf3VzSQHMh8ogSxWC9R/xgXL81jXTYnPd8I8zXJZTJcQfKB+th1sAPDP11z4W5niGY/
- ul3b/FZqXAhKuWDHt9jQS4QG4nLeMuR8fXDyp4cfDtYrY3aeG5kTNJu2IhKumXrxBB1Mor
- 7YFowxK/GjIsfRiD9lX5dm5skejCZsc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1752820233;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=HUg+bFSI//4mxqflViQg/QILzSZKPnVhjzhkaDNhjIE=;
- b=TixgIlWRuRRb6uU+CO225Ivb5JbYC/nHp0mIq1e5jmWVwxXVR3nALFRTKfudb1w8O3F5Iu
- SQTgp6/x3/n1BZAg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1752820233;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=HUg+bFSI//4mxqflViQg/QILzSZKPnVhjzhkaDNhjIE=;
- b=H0owf3VzSQHMh8ogSxWC9R/xgXL81jXTYnPd8I8zXJZTJcQfKB+th1sAPDP11z4W5niGY/
- ul3b/FZqXAhKuWDHt9jQS4QG4nLeMuR8fXDyp4cfDtYrY3aeG5kTNJu2IhKumXrxBB1Mor
- 7YFowxK/GjIsfRiD9lX5dm5skejCZsc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1752820233;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=HUg+bFSI//4mxqflViQg/QILzSZKPnVhjzhkaDNhjIE=;
- b=TixgIlWRuRRb6uU+CO225Ivb5JbYC/nHp0mIq1e5jmWVwxXVR3nALFRTKfudb1w8O3F5Iu
- SQTgp6/x3/n1BZAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 72E2813A52;
- Fri, 18 Jul 2025 06:30:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id N/NvGgnqeWgpJQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 18 Jul 2025 06:30:33 +0000
-Date: Fri, 18 Jul 2025 08:30:28 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <20250718063028.GA1387837@pevik>
-References: <20250711080155.7473-1-yangtiezhu@loongson.cn>
- <6479ff64-d82c-401c-89f3-c4adbf3f330f@suse.com>
- <51cdca77-e93e-7df5-e50a-7604c2a3cb10@loongson.cn>
- <20250717140907.GA11016@pevik>
- <bba4b00c-e75c-4cda-9b92-9692edac2c73@loongson.cn>
+ by picard.linux.it (Postfix) with ESMTPS id 247703CA504
+ for <ltp@lists.linux.it>; Fri, 18 Jul 2025 10:29:48 +0200 (CEST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTP id 16D201A00812
+ for <ltp@lists.linux.it>; Fri, 18 Jul 2025 10:29:44 +0200 (CEST)
+Received: from loongson.cn (unknown [113.200.148.30])
+ by gateway (Coremail) with SMTP id _____8CxLGvzBXpo7NQsAQ--.27054S3;
+ Fri, 18 Jul 2025 16:29:40 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+ by front1 (Coremail) with SMTP id qMiowJCxM+TwBXpowR0cAA--.18333S2;
+ Fri, 18 Jul 2025 16:29:36 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Linux Test Project <ltp@lists.linux.it>
+Date: Fri, 18 Jul 2025 16:29:35 +0800
+Message-ID: <20250718082935.9466-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <bba4b00c-e75c-4cda-9b92-9692edac2c73@loongson.cn>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+X-CM-TRANSID: qMiowJCxM+TwBXpowR0cAA--.18333S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxAF4xXw48Wry5ZF4fZw1UArc_yoWrXFWxpF
+ W2kF4jkF4kGr18GFs5AF1FkFy5X397Z34fGrZrGr9FkF4qgrn5Zr9rur9IqFy09FWDWay0
+ 9r1UtFn0gr4UZabCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+ sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+ 0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+ IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+ e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+ 0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+ 6F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+ 02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAF
+ wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
+ AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+ r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6x
+ IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
+ w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+ 0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwmhFDUUUU
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] device-drivers/acpi/ltp_acpi_cmds: Fix build
- errors
+Subject: [LTP] [PATCH v2] device-drivers/acpi/ltp_acpi_cmds: Fix build errors
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,98 +62,126 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "Ricardo B. Marliere" <rbm@suse.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgVGllemh1LAoKPiBPbiAyMDI1LzcvMTcg5LiL5Y2IMTA6MDksIFBldHIgVm9yZWwgd3JvdGU6
-Cj4gPiBIaSBUaWV6aHUsIGFsbCwKCj4gLi4uCgo+ID4gRHVlIHRoZSBhYm92ZSBjb3VsZCB5b3Ug
-cGxlYXNlIHRha2UgdGhlIGFwcHJvYWNoIFJpY2FyZG8gZGlkIGluIDgyZTM4YTFmMjQKPiA+ICgi
-YmxvY2tfZGV2OiBDb252ZXJ0IHRvIG5ldyBBUEkiKSAtIHdyYXAgd2l0aCBpZm5kZWY/Cgo+ID4g
-I2lmbmRlZiBESVNLX05BTUVfTEVOCj4gPiAjIGluY2x1ZGUgPGxpbnV4L2dlbmhkLmg+Cj4gPiAj
-ZW5kaWYKCj4gPiBCVFcgSSB3b3VsZCBwZXJzb25hbGx5IHVzZSAjaWZuZGVmIEhBVkVfTElOVVhf
-QkxLREVWX0ggdGhhbiBjaGVja2luZyBmb3IKPiA+IERJU0tfTkFNRV9MRU4gYXMgd2UgYWxyZWFk
-eSBjaGVjayBmb3IgbGludXgvYmxrZGV2LmggaW4gY29uZmlndXJlLmFjLCBidXQgdGhhdCdzCj4g
-PiBhIG1pbm9yIGRldGFpbC4KCj4gSSB0aGluayB1c2UgIiNpZm5kZWYgRElTS19OQU1FX0xFTiIg
-aXMgcHJvcGVyLgoKSSdtIHNvcnJ5LCBJIG1lYW50ICNpZmRlZiBIQVZFX0xJTlVYX0dFTkhEX0gg
-KHRoYXQgaXMgd2hhdCBpcyBiZWluZyBjaGVja2VkIGluCmNvbmZpZ3VyZS5hYykuCgo+IEJlY2F1
-c2UgYm90aCBnZW5oZC5oIGFuZCBibGtkZXYuaCBhcmUgZXhpc3QgYmVmb3JlIHRoZSBrZXJuZWwK
-PiBjb21taXQgMzIyY2JiNTBkZTcxICgiYmxvY2s6IHJlbW92ZSBnZW5oZC5oIiksIEhBVkVfTElO
-VVhfQkxLREVWX0gKPiBzZWVtcyBhbHdheXMgZGVmaW5lIGFzIDEgZm9yIHRoZSBuZXcgYW5kIG9s
-ZCBrZXJuZWwgdmVyc2lvbnMuCgo+IEJ1dCB0aGUgZGVmaW5pdGlvbiBESVNLX05BTUVfTEVOIHdh
-cyBtb3ZlZCBmcm9tIGdlbmhkLmggaW50byBibGtkZXYuaAo+IGFmdGVyIHRoYXQgY29tbWl0LCBi
-ZWNhdXNlIGJsa2Rldi5oIGlzIGluY2x1ZGVkIGZpcnN0LCBzbyB3ZSBjYW4gY2hlY2sKPiBESVNL
-X05BTUVfTEVOLCBpdCBzaG91bGQgaW5jbHVkZSBnZW5oZC5oIGlmbmRlZiBESVNLX05BTUVfTEVO
-LgoKU3VyZSwgdGhpcyB3b3JrcyBub3cgYW5kIGl0J3MgZ29vZCBlbm91Z2guIFRoZSByZWFzb24g
-SSB3b3VsZCBwZXJzb25hbGx5IGRlcGVuZApvbiBoZWFkZXIgYmFzZWQgY2hlY2sgI2lmZGVmIEhB
-VkVfTElOVVhfR0VOSERfSCBpcyB0aGF0IGlmIGtlcm5lbCBkZXZzIGFyZSBvayB0bwpyZW1vdmUg
-d2hvbGUgaGVhZGVyIHRoZXkgY2FuIG9mIGNvdXJzZSBhbHNvIHJlbmFtZSBvciBjb21wbGV0ZWx5
-IHJlbW92ZQpESVNLX05BTUVfTEVOIGRlZmluaXRpb24uCgo+ID4gWWVzIHdlIG5lZWQgdG8gI2lm
-ICNlbHNlIG1hY3JvcyBmb3IgYWNwaV9idXNfZ2V0X2RldmljZSgpIHZzLgo+ID4gYWNwaV9mZXRj
-aF9hY3BpX2RldigpLgoKPiBIZXJlIGlzIGEgZHJhZnQgY2hhbmdlLCBJIHdpbGwgcG9zdCBhIGZv
-cm1hbCB2MiBwYXRjaCBpZiB5b3UgYXJlIE9LLgoKPiAtLS0tLT44LS0tLS0KPiBkaWZmIC0tZ2l0
-IGEvY29uZmlndXJlLmFjIGIvY29uZmlndXJlLmFjCj4gaW5kZXggMTFlNTk5YTgxLi4xZjZlMmIx
-YjkgMTAwNjQ0Cj4gLS0tIGEvY29uZmlndXJlLmFjCj4gKysrIGIvY29uZmlndXJlLmFjCj4gQEAg
-LTEwMCw2ICsxMDAsNyBAQCBBQ19TVUJTVChIQVZFX0ZUU19ILCAkaGF2ZV9mdHMpCj4gIEFDX0NI
-RUNLX0hFQURFUlMobGludXgvdm1fc29ja2V0cy5oLCBbXSwgW10sIFsjaW5jbHVkZSA8c3lzL3Nv
-Y2tldC5oPl0pCgo+ICBBQ19DSEVDS19GVU5DU19PTkNFKFsgXAo+ICsgICAgYWNwaV9idXNfZ2V0
-X2RldmljZSBcCgpJJ20gc29ycnkgdGhpcyB3aWxsIG5vdCB3b3JrLiBBQ19DSEVDS19GVU5DU19P
-TkNFKCkgd29ya3Mgb25seSBmb3IgdXNlcnNwYWNlCmZ1bmN0aW9ucyAoYW5kIHJlcXVpcmUgQUNf
-Q0hFQ0tfSEVBREVSUygpIHdpdGggdGhlIHVzZXJzcGFjZSBoZWFkZXIgdG8gYmUgcGFzc2VkCmJl
-Zm9yZSkuCgpCdXQgYXMgSSB3cm90ZSBiZWZvcmUgYWNwaV9idXNfZ2V0X2RldmljZSgpIGFuZCBh
-Y3BpX2ZldGNoX2FjcGlfZGV2KCkgaXMgb25seSBpbgprZXJuZWwgc291cmNlIGRyaXZlcnMvYWNw
-aS9zY2FuLmMgKCsgcHJvdG90eXBlIGlzIG9ubHkgaW4ga2VybmVsIG9ubHkgaGVhZGVyCmluY2x1
-ZGUvYWNwaS9hY3BpX2J1cy5oIGJ1dCBpdCB3b3VsZCBub3QgaGVscCkuCgpXZSBoYXZlIEFDX0NP
-TVBJTEVfSUZFTFNFKCksIHdoaWNoIGNhbiBiZSB1c2VkIGZvciBkZXRlY3Rpbmcgc3RhdGljIGlu
-bGluZSBVQVBJCmZ1bmN0aW9ucywgZS5nLiAKCkFDX0NPTVBJTEVfSUZFTFNFKAoJCQkJICBbQUNf
-TEFOR19QUk9HUkFNKAoJCQkJICAgW1sKCQkJCQkjaW5jbHVkZSA8bGludXgvZGNjcC5oPgoJCQkJ
-CSNpbmNsdWRlIDxzdGRkZWYuaD4KCQkJCQldXSwKCQkJCSAgIFtbCgkJCQkJc3RydWN0IGRjY3Bf
-aGRyICpkaDsKCQkJCQkodm9pZClkY2NwX3BhY2tldF9oZHJfbGVuKGRoLT5kY2NwaF90eXBlKTsK
-CQkJCQldXQoJCQkJICAgKV0sCgkJCQkgICBbQUNfREVGSU5FKFtIQVZFX0RDQ1BfUEFDS0VUX0hE
-Ul9MRU5dLCBbMV0sIFtEZWZpbmUgaWYgZGNjcF9wYWNrZXRfaGRyX2xlbiBpcyBhdmFpbGFibGVd
-KV0sCgkJCQkgICBbXQoJCQkJICAgKQpCdXQgYWdhaW4sIHRoaXMgaXMgbm90IHRoZSBjYXNlIG9m
-IGFjcGlfYnVzX2dldF9kZXZpY2UoKSBub3IKYWNwaV9mZXRjaF9hY3BpX2RldigpLgoKQ2FuIHdl
-IGdldCBiYWNrIHRvIDUuMTggYmFzZWQgY2hlY2s/CgpHaXZlbiB0aGUgdGltZWxpbmUgSSB3cm90
-ZSBhYm92ZSB0aGlzIHNob3VsZCBiZSBzdWZmaWNpZW50OgoKI2lmZGVmIEhBVkVfTElOVVhfR0VO
-SERfSAo9PiBhY3BpX2ZldGNoX2FjcGlfZGV2KCkKI2Vsc2UKPT4gYWNwaV9idXNfZ2V0X2Rldmlj
-ZSgpCiNlbmRpZgoKQnV0IHByb2JhYmx5IHRoZSBiZXN0IHdheSB3b3VsZCBiZSB0byBjaGVjayBh
-Z2FpbnN0IDUuMTg6CgojaW5jbHVkZSA8bGludXgvdmVyc2lvbi5oPgojaWYgTElOVVhfVkVSU0lP
-Tl9DT0RFIDwgS0VSTkVMX1ZFUlNJT04oNSwgMTgsIDApCj0+IGFjcGlfZmV0Y2hfYWNwaV9kZXYo
-KQojZWxzZQo9PiBhY3BpX2J1c19nZXRfZGV2aWNlKCkKI2VuZGlmCgo+ICAgICAgY2FjaGVzdGF0
-IFwKPiAgICAgIGNsb25lMyBcCj4gICAgICBjbG9zZV9yYW5nZSBcCj4gZGlmZiAtLWdpdCBhL3Rl
-c3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZlcnMvYWNwaS9sdHBfYWNwaV9jbWRzLmMKPiBiL3Rl
-c3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZlcnMvYWNwaS9sdHBfYWNwaV9jbWRzLmMKPiBpbmRl
-eCBkMTJkZDZiOTQuLmY2ODAxNDczMiAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL2Rl
-dmljZS1kcml2ZXJzL2FjcGkvbHRwX2FjcGlfY21kcy5jCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5l
-bC9kZXZpY2UtZHJpdmVycy9hY3BpL2x0cF9hY3BpX2NtZHMuYwo+IEBAIC0zNiw3ICszNiw5IEBA
-Cj4gICNpbmNsdWRlIDxsaW51eC9pb2N0bC5oPgo+ICAjaW5jbHVkZSA8bGludXgvcG0uaD4KPiAg
-I2luY2x1ZGUgPGxpbnV4L2FjcGkuaD4KPiArI2lmbmRlZiBESVNLX05BTUVfTEVOCj4gICNpbmNs
-dWRlIDxsaW51eC9nZW5oZC5oPgo+ICsjZW5kaWYKPiAgI2luY2x1ZGUgPGxpbnV4L2RtaS5oPgo+
-ICAjaW5jbHVkZSA8bGludXgvbmxzLmg+Cgo+IEBAIC0xMjMsMTQgKzEyNSwyMCBAQCBzdGF0aWMg
-dm9pZCBnZXRfY3JzX29iamVjdChhY3BpX2hhbmRsZSBoYW5kbGUpCgo+ICBzdGF0aWMgdm9pZCBn
-ZXRfc3lzZnNfcGF0aChhY3BpX2hhbmRsZSBoYW5kbGUpCj4gIHsKPiAtICAgICAgIGFjcGlfc3Rh
-dHVzIHN0YXR1czsKPiAgICAgICAgIHN0cnVjdCBhY3BpX2RldmljZSAqZGV2aWNlOwoKPiAgICAg
-ICAgIGtmcmVlKHN5c2ZzX3BhdGgpOwo+ICAgICAgICAgc3lzZnNfcGF0aCA9IE5VTEw7Cgo+ICsj
-aWZkZWYgSEFWRV9BQ1BJX0JVU19HRVRfREVWSUNFCj4gKyAgICAgICBhY3BpX3N0YXR1cyBzdGF0
-dXM7Cj4gKwo+ICAgICAgICAgc3RhdHVzID0gYWNwaV9idXNfZ2V0X2RldmljZShoYW5kbGUsICZk
-ZXZpY2UpOwo+ICAgICAgICAgaWYgKEFDUElfU1VDQ0VTUyhzdGF0dXMpKQo+ICsjZWxzZQo+ICsg
-ICAgICAgZGV2aWNlID0gYWNwaV9mZXRjaF9hY3BpX2RldihoYW5kbGUpOwo+ICsgICAgICAgaWYg
-KGRldmljZSkKPiArI2VuZGlmCj4gICAgICAgICAgICAgICAgIHN5c2ZzX3BhdGggPSBrb2JqZWN0
-X2dldF9wYXRoKCZkZXZpY2UtPmRldi5rb2JqLAo+IEdGUF9LRVJORUwpOwo+ICB9Cgo+IEBAIC0z
-OTgsOSArNDA2LDE1IEBAIHN0YXRpYyBpbnQgYWNwaV90ZXN0X2J1cyh2b2lkKQo+ICAgICAgICAg
-aWYgKGFjcGlfZmFpbHVyZShzdGF0dXMsICJhY3BpX2dldF9oYW5kbGUiKSkKPiAgICAgICAgICAg
-ICAgICAgcmV0dXJuIDE7Cgo+ICsjaWZkZWYgSEFWRV9BQ1BJX0JVU19HRVRfREVWSUNFCj4gICAg
-ICAgICBwcmtfYWxlcnQoIlRFU1QgLS0gYWNwaV9idXNfZ2V0X2RldmljZSIpOwo+ICAgICAgICAg
-c3RhdHVzID0gYWNwaV9idXNfZ2V0X2RldmljZShidXNfaGFuZGxlLCAmZGV2aWNlKTsKPiAgICAg
-ICAgIGlmIChhY3BpX2ZhaWx1cmUoc3RhdHVzLCAiYWNwaV9idXNfZ2V0X2RldmljZSIpKQo+ICsj
-ZWxzZQo+ICsgICAgICAgcHJrX2FsZXJ0KCJURVNUIC0tIGFjcGlfZmV0Y2hfYWNwaV9kZXYiKTsK
-PiArICAgICAgIGRldmljZSA9IGFjcGlfZmV0Y2hfYWNwaV9kZXYoYnVzX2hhbmRsZSk7Cj4gKyAg
-ICAgICBpZiAoIWRldmljZSkKPiArI2VuZGlmCj4gICAgICAgICAgICAgICAgIHJldHVybiAxOwoK
-PiAgICAgICAgIHBya19hbGVydCgiVEVTVCAtLSBhY3BpX2J1c191cGRhdGVfcG93ZXIgIik7CgpQ
-bGVhc2Ugd2hpbGUgeW91J3JlIGF0IGl0IHJlbW92ZSB0cmFpbGluZyB3aGl0ZXNwYWNlOgogICAg
-ICAgICAgcHJrX2FsZXJ0KCJURVNUIC0tIGFjcGlfYnVzX3VwZGF0ZV9wb3dlciIpOwoKVGhlIHJl
-c3QgTEdUTS4KCktpbmQgcmVnYXJkcywKUGV0cgoKPiBUaGFua3MsCj4gVGllemh1CgotLSAKTWFp
-bGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+There exist the following errors when building LTP on the
+latest Linux kernel v6.16-rc6:
+
+  ltp_acpi_cmds.c:39:10: fatal error: linux/genhd.h: No such file or directory
+  ltp_acpi_cmds.c:131:18: error: implicit declaration of function 'acpi_bus_get_device'
+  ltp_acpi_cmds.c:400:18: error: implicit declaration of function 'acpi_bus_get_device'
+
+For the first error:
+
+This is because genhd.h has been removed in the Linux kernel,
+the contents of genhd.h was folded into blkdev.h [1].
+
+Add linux/genhd.h into AC_CHECK_HEADERS_ONCE of configure.ac,
+define HAVE_LINUX_GENHD_H to 1 if you have the <linux/genhd.h>
+header file, then use #ifdef HAVE_LINUX_GENHD_H to include it.
+
+For the second and third errors:
+
+This is because acpi_bus_get_device() has been removed in the
+Linux kernel [2] since v5.18-rc2 [3], the best way is to use
+acpi_bus_get_device() if the kernel version < 5.18 and use
+acpi_fetch_acpi_dev() if the kernel version >= 5.18.
+
+While at it, remove the trailing whitespace in the following
+code: prk_alert("TEST -- acpi_bus_update_power ").
+
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=322cbb50de71 [1]
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ac2a3feefad5 [2]
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?h=v5.18-rc2 [3]
+
+Suggested-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Suggested-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+
+Thanks Andrea and Petr very much for your suggestions, I appreciate it.
+
+ configure.ac                                  |  1 +
+ .../device-drivers/acpi/ltp_acpi_cmds.c       | 19 +++++++++++++++++--
+ 2 files changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 11e599a81..cf37c58be 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -62,6 +62,7 @@ AC_CHECK_HEADERS_ONCE([ \
+     linux/dccp.h \
+     linux/futex.h \
+     linux/genetlink.h \
++    linux/genhd.h \
+     linux/if_alg.h \
+     linux/if_ether.h \
+     linux/if_packet.h \
+diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
+index d12dd6b94..02c1567b4 100644
+--- a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
++++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
+@@ -36,9 +36,12 @@
+ #include <linux/ioctl.h>
+ #include <linux/pm.h>
+ #include <linux/acpi.h>
++#ifdef HAVE_LINUX_GENHD_H
+ #include <linux/genhd.h>
++#endif
+ #include <linux/dmi.h>
+ #include <linux/nls.h>
++#include <linux/version.h>
+ 
+ #include "ltp_acpi.h"
+ 
+@@ -123,14 +126,20 @@ static void get_crs_object(acpi_handle handle)
+ 
+ static void get_sysfs_path(acpi_handle handle)
+ {
+-	acpi_status status;
+ 	struct acpi_device *device;
+ 
+ 	kfree(sysfs_path);
+ 	sysfs_path = NULL;
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 18, 0)
++	acpi_status status;
++
+ 	status = acpi_bus_get_device(handle, &device);
+ 	if (ACPI_SUCCESS(status))
++#else
++	device = acpi_fetch_acpi_dev(handle);
++	if (device)
++#endif
+ 		sysfs_path = kobject_get_path(&device->dev.kobj, GFP_KERNEL);
+ }
+ 
+@@ -398,12 +407,18 @@ static int acpi_test_bus(void)
+ 	if (acpi_failure(status, "acpi_get_handle"))
+ 		return 1;
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 18, 0)
+ 	prk_alert("TEST -- acpi_bus_get_device");
+ 	status = acpi_bus_get_device(bus_handle, &device);
+ 	if (acpi_failure(status, "acpi_bus_get_device"))
++#else
++	prk_alert("TEST -- acpi_fetch_acpi_dev");
++	device = acpi_fetch_acpi_dev(bus_handle);
++	if (!device)
++#endif
+ 		return 1;
+ 
+-	prk_alert("TEST -- acpi_bus_update_power ");
++	prk_alert("TEST -- acpi_bus_update_power");
+ 	status = acpi_bus_update_power(device->handle, &state);
+ 	if (acpi_failure(status, "error reading power state"))
+ 		return 1;
+-- 
+2.42.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
