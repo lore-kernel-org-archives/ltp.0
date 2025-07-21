@@ -4,90 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF403C83F1A
-	for <ltp@archiver.kernel.org>; Mon, 21 Jul 2025 02:23:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD186C83F17
+	for <ltp@archiver.kernel.org>; Mon, 21 Jul 2025 02:26:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1753064593; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1753064811; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=ycVL62ivlwJFQI2rgzrJq4QgxVQZv1ch2/L2ZJKY8ng=;
- b=aheLRqlpB/zh9MRRy87GB7p+tZrLYZ8C6lycXpvCnotUqoXjHpPKx3mIcFg2dyF6y3QU+
- hm7mhNC6SBZQ8mQLNQNajqdwwLapqTnv6c3c5l7jFlWOJfnJmcFV1rpECyYDMNj6JxpjZ7X
- Qi/HkpSnhTLzjTql88+Tn3tpG4TRFPc=
+ bh=UecUw0OIe95nvoTfwqoA1GESa7d54vt5FcbNX1vI29w=;
+ b=mhJuh90s9gs3EtRq/8b0EaBBewklAbAi0XSEOlQ+SzvzonR/ckFbo/d/1H2GvoTFlJ7hP
+ BoNRTYEjnyXcbX3h7v7W0u98/eN5PeHiGiwnTHkbrhUGxqbEOc/JnX7EaWJI5aO0jMQzOZL
+ UGEkcVCfy3QeLt5pODUvHP3/XWY3zAM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AD5D33CCB38
-	for <ltp@archiver.kernel.org>; Mon, 21 Jul 2025 04:23:13 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 5CCD63CCB0E
+	for <ltp@archiver.kernel.org>; Mon, 21 Jul 2025 04:26:51 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C2E3B3CC5C0
- for <ltp@lists.linux.it>; Mon, 21 Jul 2025 04:22:50 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 723CA3CC5C0
+ for <ltp@lists.linux.it>; Mon, 21 Jul 2025 04:26:29 +0200 (CEST)
 Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
  [IPv6:2a00:1450:4864:20::42a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7AA1E2002AF
- for <ltp@lists.linux.it>; Mon, 21 Jul 2025 04:22:49 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 73C942002C8
+ for <ltp@lists.linux.it>; Mon, 21 Jul 2025 04:26:28 +0200 (CEST)
 Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-3a50956e5d3so2916110f8f.1
- for <ltp@lists.linux.it>; Sun, 20 Jul 2025 19:22:49 -0700 (PDT)
+ ffacd0b85a97d-3a50956e5d3so2917132f8f.1
+ for <ltp@lists.linux.it>; Sun, 20 Jul 2025 19:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1753064569; x=1753669369; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=PqZ1MYAtHQNGSFr0QKLl0hnsBzzOttTO8c3o/NdHam4=;
- b=Gy8v5g7wjvAfD2OorTOUPEDY7gtEO5OvBWRfr96H9wm/DC6TE9AtyUl+Qob+YRfkO/
- 04uLpZfYPo1vQyq0mx00+ekT4p6q11Qo7gHmEsKTCUvxJU+8HuJzwCiKMi2e36Ni/Tgf
- esCefYpN+egz8Uqysxw3bj3J0Cla5Nlz5UMvjezORySXx2Efbw3AUud3DWawFRC4vbDv
- +dlrOBl86aDT0K5Z3bXYOty/b2GDJZIhp2ul1yC/1rUWF2yCNGE6wZ5rb5k5CiAx0To/
- 5BLv3gPEj40aymx4bwRSnF+ncZAOaV9y9cm+rpv2tJ3dha9HdKjnkyVUFVBm5Pl6HIHS
- 4R+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1753064569; x=1753669369;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ d=suse.com; s=google; t=1753064788; x=1753669588; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=PqZ1MYAtHQNGSFr0QKLl0hnsBzzOttTO8c3o/NdHam4=;
- b=XtM1HRzctQwRfS3vwEvqGJfD3Xle4KqE18dXJIFheX9qH7iFodD9qIJqr4J8PdBpWN
- Q/jAGRwwsfmv7K6t959j14Yt1Ib9OpxfYYTR+deCFfFdjC7wG63/I6bjeh/fGiUvccTL
- GD2Akk5FQ3p4lxJfWnkgEYG1sG5mvP3iEZ4j+UT+OsRFHzR/Y7gt9TP2lru4umOIdM6Y
- 9YEJbvCs/o3dublIHOJjGZ8zbN0rKbBYys2rZsaB6FmbtL7/e1oJp7IZV5k8fr2zH5vI
- 02LonLDKtajOtPoT0TOW+w+cp4t7B8xr6fAG+UL2voR2ornqg35mx+omqcNYrYmCRVI3
- 2qXQ==
-X-Gm-Message-State: AOJu0Yz6jnya2zaEttOKPjKLQsgLIjZewcngRMFffZRAJtM3vbfg7NKf
- itDLiqS8aGZ8ov2PhzGnRtPCd4Ii7K5Fq3UEIPp6GWWtSYQzpwJk8KhIz5ynPez0ww==
-X-Gm-Gg: ASbGncvt6+rp0cRDybUzNe2MLsJcsPGhnvj8NN93iNJZsrcZq7ei27DnY6ulyOQ25um
- Wb7mPCTYpOjc4Ke/MCG5bsgtYBCVElijl6RAc0tzxaNlU9YjGcQCqyCSoEgnlRyJL2ilrfqnU4y
- 9w99XZ/T2o14oi35+ana8jCRHSOxJp7okaUiw0F2NoNF/Dw2EoufxLaBRQLE/Qjep+Lp2ULWq5e
- LQJw7VKwufVuRtTHIH4lhizxmoyug6gT7N+25IYE7Cw56ZnaLtVJg9Y3JKOhbb+c0kI4EEfK8aQ
- kMJKPvozvRHqAYwCmZlFOLQLM+GWLSvuC+unEexBldpLGmTfX/QxC73oPUVAA9IVjC2ZbRhSKYk
- Rsul2v4eVoSTh+NvCR8H8jfFk2g47x0RF
-X-Google-Smtp-Source: AGHT+IFAAaMmCFaaT5S4w/5g4md7rxybCRFW5EqVjEe4b+i5XFrvjZ47853EqJLCK/jm07mTATj9fw==
-X-Received: by 2002:adf:b646:0:b0:3a4:f50a:bd5f with SMTP id
- ffacd0b85a97d-3b60dd7303cmr11394613f8f.31.1753064568856; 
- Sun, 20 Jul 2025 19:22:48 -0700 (PDT)
-Received: from MiWiFi-CR6608-srv ([202.127.77.110])
- by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-23e3c3b2c4esm47161665ad.189.2025.07.20.19.22.47
+ bh=TJZqcW8a8r4K53GNw8Xe8eykfM7Hn3e7jcr/eui/lw8=;
+ b=fBbxAubboANmM7Qe4N4GnD6cL+5u3wXvsTs+5IjLtfUfE3DMN1w6qt2MwdJofBag7j
+ GdCPZLUoAJSEaZm1u9lUNhorn8hvPTDsthpRC5wRquLV1+t7HCU/AdTIho00kqQZfgO0
+ 6oWJ86c2iCKrNJXYMr41RjWM1pbczpsPMMTJ2NP/ClRFHeKut+2jiN6Ew0MS9FUvrlx+
+ kJFfwIav+xginfGFNiw3q/i+C2hPnOIPBxXXpM4s0dAAXviCf7auh2I3tPhTTOcdIPJ9
+ 3AGCigvdRc3+vk+cyNVMiVDAE57uSA6CCPKeqvf7JZrT7xuh+dzH7mkmYr14/X6oXI2Q
+ HEwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1753064788; x=1753669588;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=TJZqcW8a8r4K53GNw8Xe8eykfM7Hn3e7jcr/eui/lw8=;
+ b=KrYen5rcDPzE4r1ClxFtWJCRAHCcaS7TLDuNpGq0ztx2MhsAtinCbbUdXQC50tqckj
+ BgyIfPyVfgNi+3aUb7YaEdXScBeiY8GlbSHAkwXt2xqM1eMTAzLHWjNyRdrFY0kyHDaP
+ /nsDlJFgLSQtS2OYt/Cv+ep4gmXlpYllRj2w+rHzj9w93ERF/EL5/SPNtV5QIHnt8p01
+ UGjufQo09syysO6NZFdRT7+w9IK580YxLRTjPxtrM4CnX6yjccWPS4e4qamkEHVQH8bJ
+ e6TK9FBBCQ3HFCIkyV7/icx4crijAaiokzX0+ABEtebfef9D8DmfAe7EIUMb9DohwATe
+ xmzA==
+X-Gm-Message-State: AOJu0Yz7YubwjgKNsJY+FCtwCOupAKyhQZ1LLR5QZkQBPKsqBiABR2dv
+ cOSYEGQ7lCE4yW1Wu0R2A/1ycaaQs7nwpUIlo1t9FW68Wy0bWuGvjQgHBlQ6nZerPRahRiC9P+S
+ 9zCs=
+X-Gm-Gg: ASbGnctku+rWhrmFfVZ6kf6SF6EUjMq8Y/4SNKznZs22wF6UkdmZgTJe12Aka2JmilI
+ KXv2u6eOa7pIyQ+qDqjs+BfVZi0wlop1B7I1IZpTRqq9x9JxGh6oPG4w2AEgSfO9pi+xhekLRCe
+ O4mDmbmisxLPWBkY68IlNIz9EobNfoU4oNgXu9d/3eujRAU7VYGw+kEgLoWDF0PycP7pB0bNhB5
+ 62/ZvKNmrpNGm9qVeUH38OhbOOxBip9sFlQoSeI7GbdkXxCi9CCCc17IJjH/42ZlGNFFwSJJKap
+ nb0PKR94VX+J/Uuh5BW+nVYjExIA3fX8k4v3hVME3y7SpF6uko4JPxaA8y87g9KpTOsMHZx7is6
+ 7gbM18Jr1mWk=
+X-Google-Smtp-Source: AGHT+IG25IjARmOo0z9riT7lUYvwcVpcqExfsSQ9/krVtGCslyjRCW2Sj+iV8IayGGQAkNP3gJg5UQ==
+X-Received: by 2002:a5d:5d85:0:b0:3a6:ec41:b9df with SMTP id
+ ffacd0b85a97d-3b60dd82984mr14118541f8f.49.1753064787679; 
+ Sun, 20 Jul 2025 19:26:27 -0700 (PDT)
+Received: from localhost ([202.127.77.110])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 98e67ed59e1d1-31cc3f161f8sm5078129a91.26.2025.07.20.19.26.26
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 20 Jul 2025 19:22:48 -0700 (PDT)
-Date: Mon, 21 Jul 2025 10:22:01 -0400
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <aH5NCcXw3tgpGeci@MiWiFi-CR6608-srv>
+ Sun, 20 Jul 2025 19:26:27 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Mon, 21 Jul 2025 10:25:23 -0400
+Message-ID: <20250721142531.2223584-1-wegao@suse.com>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250716120600.2855395-1-wegao@suse.com>
 References: <20250716120600.2855395-1-wegao@suse.com>
- <a1a3bf02-5d2a-454d-bbe5-5460cb2dda60@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <a1a3bf02-5d2a-454d-bbe5-5460cb2dda60@suse.com>
 X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] splice10.c: New splice tests involving memfd
- secret
+Subject: [LTP] [PATCH v2] splice10.c: New splice tests involving memfd secret
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,29 +100,129 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Wei Gao via ltp <ltp@lists.linux.it>
 Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Jul 16, 2025 at 09:13:14AM +0200, Andrea Cervesato wrote:
-> Hi!
-> 
-> > +{
-> > +	char buf[1024];
-> > +	int fd;
-> > +	int pipefd[2];
-> Since we are testing only a failure, it makes sense to create input
-> arguments via tst_test.bufs and initialize them in the setup().
-> > +
-> > +	memset(buf, 0xff, sizeof(buf));
-> > +
-> > +	if (!tst_selinux_enforcing())
-> Maybe it's better to use tst_selinux_enabled() after merging: https://patchwork.ozlabs.org/project/ltp/patch/20250709-xattr_bug_repr-v3-1-379c2c291bb7@suse.com/
-This case need check selinux runing status instead of enable or not.
-So i will keep this unchanged for next patch, correct me if any
-misunderstanding, thanks :)
+Linux commit cbe4134ea4bc ("fs: export anon_inode_make_secure_inode() and fix
+secretmem LSM bypass") prevents any access to secret memory pages from other
+kernel subsystems.
+
+Splice operations involving memfd secret are checked within this case.
+
+Discussed-on: https://lists.linux.it/pipermail/ltp/2025-July/044351.html
+Reference: cbe4134ea4bc ("fs: export anon_inode_make_secure_inode() and fix secretmem LSM bypass")
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/splice/.gitignore |  1 +
+ testcases/kernel/syscalls/splice/splice10.c | 72 +++++++++++++++++++++
+ 3 files changed, 74 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/splice/splice10.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index b4a387b28..d6da59bd2 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1585,6 +1585,7 @@ splice06 splice06
+ splice07 splice07
+ splice08 splice08
+ splice09 splice09
++splice10 splice10
+ 
+ tee01 tee01
+ tee02 tee02
+diff --git a/testcases/kernel/syscalls/splice/.gitignore b/testcases/kernel/syscalls/splice/.gitignore
+index 96b1727a1..5e98981fe 100644
+--- a/testcases/kernel/syscalls/splice/.gitignore
++++ b/testcases/kernel/syscalls/splice/.gitignore
+@@ -7,3 +7,4 @@
+ /splice07
+ /splice08
+ /splice09
++/splice10
+diff --git a/testcases/kernel/syscalls/splice/splice10.c b/testcases/kernel/syscalls/splice/splice10.c
+new file mode 100644
+index 000000000..871899b3f
+--- /dev/null
++++ b/testcases/kernel/syscalls/splice/splice10.c
+@@ -0,0 +1,72 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2025 Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * Test if splice syscall prevents any access to secret memory pages from
++ * other kernel subsystems.
++ *
++ * Reference kernel commit:
++ * commit cbe4134ea4bc493239786220bd69cb8a13493190
++ * Author: Shivank Garg <shivankg@amd.com>
++ * Date:   Fri Jun 20 07:03:30 2025 +0000
++ *
++ *    fs: export anon_inode_make_secure_inode() and fix secretmem LSM bypass
++ */
++
++#define _GNU_SOURCE
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++
++static char *buf;
++static int fd = -1;
++static int pipefd[2] = {-1, -1};
++
++static void verify_splice(void)
++{
++	SAFE_WRITE(1, pipefd[1], buf, sizeof(buf));
++
++	TST_EXP_FAIL(splice(pipefd[0], NULL, fd, NULL, sizeof(buf), 0), EACCES);
++	TST_EXP_FAIL(splice(fd, NULL, pipefd[1], NULL, sizeof(buf), 0), EACCES);
++}
++
++static void setup(void)
++{
++	if (!tst_selinux_enforcing())
++		tst_brk(TCONF, "SELinux not running");
++
++	fd = syscall(__NR_memfd_secret, 0);
++	if (fd < 0) {
++		tst_brk(TCONF | TERRNO,
++			"Skipping __NR_memfd_secret check");
++	}
++
++	SAFE_PIPE(pipefd);
++}
++
++static void cleanup(void)
++{
++	for (int i = 0; i < 2; i++) {
++		if (pipefd[i] >= 0)
++			SAFE_CLOSE(pipefd[i]);
++	}
++
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_splice,
++	.min_kver = "6.16",
++	.bufs = (struct tst_buffers []) {
++		{&buf, .size = 1024},
++		{}
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "cbe4134ea4b"},
++		{}
++	}
++};
+-- 
+2.49.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
