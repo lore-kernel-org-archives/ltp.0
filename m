@@ -4,98 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95877C83F25
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 06:57:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0190C83F25
+	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 06:57:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2DD513CCC54
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 08:57:04 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 6785D3CCC53
+	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 08:57:27 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 884413C2E57
+ by picard.linux.it (Postfix) with ESMTPS id 94E4D3CCC4A
  for <ltp@lists.linux.it>; Tue, 22 Jul 2025 08:56:47 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CB9FF200ACA
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B27C410001FE
  for <ltp@lists.linux.it>; Tue, 22 Jul 2025 08:56:46 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2151E21294;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 43FBB1F852;
  Tue, 22 Jul 2025 06:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1753167404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RRDn5fLn4MC1w7fnkX0NYSGyjqDIWvSG79VDIFkWuCo=;
- b=idVIPoHzZuXGUu/FOjXY1F5ChD8wuQOScLL0gdWq6LznTVjE5SnhZwmJXdSbXBom7TdCbx
- eL9mYWBuamiNDvTCUmj0Eri62JSvFc2M0HXaV1a3YDbNGOEKv+yQHQVlTfwArPjXCqMXx1
- CYYsXBDeN5fc4+d53rnOOUMFiip2Sac=
+ bh=x32f+6L53Ke/h8U6Ayc1rWud+XnWPiHtjUvZV6wYftA=;
+ b=AItLTrRZsxI6SPHe11ta5O4+RB1ums2X2vUiB0436hdBVjM1NBrWJ+JRStroOkCWa32geP
+ WbWCUJ55IVkbSi5BcFaHhg0xQBcRf2UGVnGuEFw+ujw+5XTiN+aeWve+ibTUzGxhaGSpUM
+ XavJP+Kwp8lSsHaf5k0d1QNTSV6nmww=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1753167404;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RRDn5fLn4MC1w7fnkX0NYSGyjqDIWvSG79VDIFkWuCo=;
- b=mLUXNG2jK2Y8jcTPW6+D0HARzOudDBrA64jccz00scK6OLWU1YgEdj/rVxC3EUwZx6kwjc
- 393qPUTHbGiDEvDQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=idVIPoHz;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=mLUXNG2j
+ bh=x32f+6L53Ke/h8U6Ayc1rWud+XnWPiHtjUvZV6wYftA=;
+ b=YKILRSotfYGh6qkND2nw93q6QTa8Dn4Dli7ieRAPCBrp2xXJROakFoDqWTH5JdW/mH2fKv
+ 6cFTaelTNSZ2sYAA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=AItLTrRZ;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=YKILRSot
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1753167404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RRDn5fLn4MC1w7fnkX0NYSGyjqDIWvSG79VDIFkWuCo=;
- b=idVIPoHzZuXGUu/FOjXY1F5ChD8wuQOScLL0gdWq6LznTVjE5SnhZwmJXdSbXBom7TdCbx
- eL9mYWBuamiNDvTCUmj0Eri62JSvFc2M0HXaV1a3YDbNGOEKv+yQHQVlTfwArPjXCqMXx1
- CYYsXBDeN5fc4+d53rnOOUMFiip2Sac=
+ bh=x32f+6L53Ke/h8U6Ayc1rWud+XnWPiHtjUvZV6wYftA=;
+ b=AItLTrRZsxI6SPHe11ta5O4+RB1ums2X2vUiB0436hdBVjM1NBrWJ+JRStroOkCWa32geP
+ WbWCUJ55IVkbSi5BcFaHhg0xQBcRf2UGVnGuEFw+ujw+5XTiN+aeWve+ibTUzGxhaGSpUM
+ XavJP+Kwp8lSsHaf5k0d1QNTSV6nmww=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1753167404;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RRDn5fLn4MC1w7fnkX0NYSGyjqDIWvSG79VDIFkWuCo=;
- b=mLUXNG2jK2Y8jcTPW6+D0HARzOudDBrA64jccz00scK6OLWU1YgEdj/rVxC3EUwZx6kwjc
- 393qPUTHbGiDEvDQ==
+ bh=x32f+6L53Ke/h8U6Ayc1rWud+XnWPiHtjUvZV6wYftA=;
+ b=YKILRSotfYGh6qkND2nw93q6QTa8Dn4Dli7ieRAPCBrp2xXJROakFoDqWTH5JdW/mH2fKv
+ 6cFTaelTNSZ2sYAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 018EC13A73;
- Tue, 22 Jul 2025 06:56:43 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 261B313A7E;
+ Tue, 22 Jul 2025 06:56:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id eFIKOis2f2iKcAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 22 Jul 2025 06:56:43 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +G6bByw2f2iKcAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 22 Jul 2025 06:56:44 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 22 Jul 2025 08:55:56 +0200
+Date: Tue, 22 Jul 2025 08:55:57 +0200
 MIME-Version: 1.0
-Message-Id: <20250722-xattr_bug_repr-v4-1-4be1e52e97c6@suse.com>
+Message-Id: <20250722-xattr_bug_repr-v4-2-4be1e52e97c6@suse.com>
 References: <20250722-xattr_bug_repr-v4-0-4be1e52e97c6@suse.com>
 In-Reply-To: <20250722-xattr_bug_repr-v4-0-4be1e52e97c6@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1753167403; l=1726;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1753167403; l=4808;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=eRQwUjpYtadxi14KFl/szDdC6025JqOskfqqvQNLsBw=;
- b=TpmBDXKcudE8y+Owgg1PTzGODh575brfOSr1vCz0KSY6PMkqOZ638QOt0gcpqcceL7YGsZLLb
- 1M7B5mUgArnB6Obi2k3biqhrnoolect7Gdkdqz5O8UcTaE9C+urcGo8
+ bh=fzXAJne7XKK1q74A8tWyrJ6QhI9x1ZQjajspIZFNgQ0=;
+ b=5PAQFjE6BTp9AZYNchdMMjb5qCzNvn6PiDe2jnvM1W0rcnZ2QbHTrl4vHXXJOO22K80Cnb+cE
+ t6kMNEOERhrAYfdtMYe/QvaGb6GeXjQih/n16IJJIaX8lzfIiPPwHm1
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Rspamd-Queue-Id: 2151E21294
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
@@ -106,12 +104,15 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.de:dkim];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:mid,suse.com:email];
  DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
  DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+X-Rspamd-Queue-Id: 43FBB1F852
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 1/2] core: add tst_selinux_enabled() utility
+Subject: [LTP] [PATCH v4 2/2] Add listxattr04 reproducer
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -130,59 +131,163 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add tst_selinux_enabled() utility in tst_security.h in order to verify
-if SELinux is currently up and running in the system.
+Test reproducer for a bug introduced in 8b0ba61df5a1 ("fs/xattr.c: fix
+simple_xattr_list to always include security.* xattrs").
+
+Bug can be reproduced when SELinux and ACL are activated on inodes as
+following:
+
+    $ touch testfile
+    $ setfacl -m u:myuser:rwx testfile
+    $ getfattr -dm. /tmp/testfile
+    Segmentation fault (core dumped)
+
+The reason why this happens is that simple_xattr_list() always includes
+security.* xattrs without resetting error flag after
+security_inode_listsecurity(). This results into an incorrect length of the
+returned xattr name if POSIX ACL is also applied on the inode.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/tst_security.h |  1 +
- lib/tst_security.c     | 15 ++++++++++++++-
- 2 files changed, 15 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/listxattr/.gitignore    |   1 +
+ testcases/kernel/syscalls/listxattr/Makefile      |   2 +
+ testcases/kernel/syscalls/listxattr/listxattr04.c | 108 ++++++++++++++++++++++
+ 3 files changed, 111 insertions(+)
 
-diff --git a/include/tst_security.h b/include/tst_security.h
-index 5d91f8a98f104b0cafaaf2046bc0ceec06870606..cb5490a896f027245064abebb9d7c36270fd2e8a 100644
---- a/include/tst_security.h
-+++ b/include/tst_security.h
-@@ -14,5 +14,6 @@ int tst_fips_enabled(void);
- int tst_lockdown_enabled(void);
- int tst_secureboot_enabled(void);
- int tst_selinux_enforcing(void);
-+int tst_selinux_enabled(void);
+diff --git a/testcases/kernel/syscalls/listxattr/.gitignore b/testcases/kernel/syscalls/listxattr/.gitignore
+index be0675a6df0080d176d53d70194442bbc9ed376c..0d672b6ea5eec03aab37ee89316c56e24356c1d9 100644
+--- a/testcases/kernel/syscalls/listxattr/.gitignore
++++ b/testcases/kernel/syscalls/listxattr/.gitignore
+@@ -1,3 +1,4 @@
+ /listxattr01
+ /listxattr02
+ /listxattr03
++/listxattr04
+diff --git a/testcases/kernel/syscalls/listxattr/Makefile b/testcases/kernel/syscalls/listxattr/Makefile
+index c2f84b1590fc24a7a98f890ea7706771d944aa79..e96bb3fa4c2c6b14b8d2bc8fd4c475e4789d72fe 100644
+--- a/testcases/kernel/syscalls/listxattr/Makefile
++++ b/testcases/kernel/syscalls/listxattr/Makefile
+@@ -6,4 +6,6 @@ top_srcdir		?= ../../../..
  
- #endif /* TST_SECURITY_H__ */
-diff --git a/lib/tst_security.c b/lib/tst_security.c
-index 7d929fafe729058f55b921bf5cf7806b253496e0..f4669c60fbcafeddcab23835ee8c568a4aab46c3 100644
---- a/lib/tst_security.c
-+++ b/lib/tst_security.c
-@@ -7,7 +7,8 @@
+ include $(top_srcdir)/include/mk/testcases.mk
  
- #define PATH_FIPS	"/proc/sys/crypto/fips_enabled"
- #define PATH_LOCKDOWN	"/sys/kernel/security/lockdown"
--#define SELINUX_STATUS_PATH "/sys/fs/selinux/enforce"
-+#define SELINUX_PATH "/sys/fs/selinux"
-+#define SELINUX_STATUS_PATH (SELINUX_PATH "/enforce")
- 
- #if defined(__powerpc64__) || defined(__ppc64__)
- # define SECUREBOOT_VAR "/proc/device-tree/ibm,secure-boot"
-@@ -102,6 +103,18 @@ int tst_secureboot_enabled(void)
- 	return data[VAR_DATA_SIZE - 1];
- }
- 
-+int tst_selinux_enabled(void)
++listxattr04: LDLIBS	+= $(ACL_LIBS)
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/listxattr/listxattr04.c b/testcases/kernel/syscalls/listxattr/listxattr04.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..473ed45b5c2da8ff8e49c513eeb82158ec2dc066
+--- /dev/null
++++ b/testcases/kernel/syscalls/listxattr/listxattr04.c
+@@ -0,0 +1,108 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * Test reproducer for a bug introduced in 8b0ba61df5a1 ("fs/xattr.c: fix
++ * simple_xattr_list to always include security.* xattrs").
++ *
++ * Bug can be reproduced when SELinux and ACL are activated on inodes as
++ * following:
++ *
++ *     $ touch testfile
++ *     $ setfacl -m u:myuser:rwx testfile
++ *     $ getfattr -dm. /tmp/testfile
++ *     Segmentation fault (core dumped)
++ *
++ * The reason why this happens is that simple_xattr_list() always includes
++ * security.* xattrs without resetting error flag after
++ * security_inode_listsecurity(). This results into an incorrect length of the
++ * returned xattr name if POSIX ACL is also applied on the inode.
++ */
++
++#include "config.h"
++#include "tst_test.h"
++
++#if defined(HAVE_SYS_XATTR_H) && defined(HAVE_LIBACL)
++
++#include <pwd.h>
++#include <sys/acl.h>
++#include <sys/xattr.h>
++
++#define ACL_PERM        "u::rw-,u:root:rwx,g::r--,o::r--,m::rwx"
++#define TEST_FILE       "test.bin"
++
++static acl_t acl;
++
++static void verify_xattr(const int size)
 +{
-+	int res = 0;
++	char buf[size];
 +
-+	if (tst_is_mounted(SELINUX_PATH))
-+		res = 1;
++	memset(buf, 0, sizeof(buf));
 +
-+	tst_res(TINFO, "SELinux enabled: %s", res ? "yes" : "no");
++	if (listxattr(TEST_FILE, buf, size) == -1) {
++		if (errno != ERANGE)
++			tst_brk(TBROK | TERRNO, "listxattr() error");
 +
-+	return res;
++		tst_res(TFAIL, "listxattr() failed to read attributes length: ERANGE");
++		return;
++	}
++
++	tst_res(TPASS, "listxattr() correctly read attributes length");
 +}
 +
- int tst_selinux_enforcing(void)
- {
- 	int res = 0;
++static void run(void)
++{
++	int size;
++
++	size = listxattr(TEST_FILE, NULL, 0);
++	if (size == -1)
++		tst_brk(TBROK | TERRNO, "listxattr() error");
++
++	verify_xattr(size);
++}
++
++static void setup(void)
++{
++	int res;
++
++	if (!tst_selinux_enabled())
++		tst_brk(TCONF, "SELinux is not enabled");
++
++	SAFE_TOUCH(TEST_FILE, 0644, NULL);
++
++	acl = acl_from_text(ACL_PERM);
++	if (!acl)
++		tst_brk(TBROK | TERRNO, "acl_from_text() failed");
++
++	res = acl_set_file(TEST_FILE, ACL_TYPE_ACCESS, acl);
++	if (res == -1) {
++		if (errno == EOPNOTSUPP)
++			tst_brk(TCONF | TERRNO, "acl_set_file()");
++
++		tst_brk(TBROK | TERRNO, "acl_set_file(%s) failed", TEST_FILE);
++	}
++}
++
++static void cleanup(void)
++{
++	if (acl)
++		acl_free(acl);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "800d0b9b6a8b"},
++		{}
++	}
++};
++
++#else /* HAVE_SYS_XATTR_H && HAVE_LIBACL */
++	TST_TEST_TCONF("<sys/xattr.h> or <sys/acl.h> does not exist.");
++#endif
 
 -- 
 2.50.1
