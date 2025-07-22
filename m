@@ -4,66 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E702BC83F1A
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 11:41:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0AB8C83F27
+	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 11:52:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1C0533CCCCA
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 13:41:54 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 303FD3CCCB9
+	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 13:52:56 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8C9533C6CFE
- for <ltp@lists.linux.it>; Tue, 22 Jul 2025 13:41:38 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BD93A600C8C
- for <ltp@lists.linux.it>; Tue, 22 Jul 2025 13:41:36 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A657321A64;
- Tue, 22 Jul 2025 11:41:35 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9AB6B13A32;
- Tue, 22 Jul 2025 11:41:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id nau/Je94f2jDSgAAD6G6ig
- (envelope-from <jack@suse.cz>); Tue, 22 Jul 2025 11:41:35 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
- id 0EDFAA0A69; Tue, 22 Jul 2025 13:41:35 +0200 (CEST)
-Date: Tue, 22 Jul 2025 13:41:35 +0200
-From: Jan Kara <jack@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <azo7y22pblcngf6y5xkzda5cew4p3kxylfse7i32hixjtld2mh@ml2bonivmpbe>
-References: <20250326142259.50981-1-pvorel@suse.cz> <aHEccDO8lJiTzbEs@yuki.lan>
- <20250722102346.GA6890@pevik>
+ by picard.linux.it (Postfix) with ESMTPS id 66DA43CAE38
+ for <ltp@lists.linux.it>; Tue, 22 Jul 2025 13:52:40 +0200 (CEST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTP id 1455B1400432
+ for <ltp@lists.linux.it>; Tue, 22 Jul 2025 13:52:36 +0200 (CEST)
+Received: from loongson.cn (unknown [113.200.148.30])
+ by gateway (Coremail) with SMTP id _____8AxHHKAe39oSZIvAQ--.30860S3;
+ Tue, 22 Jul 2025 19:52:33 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+ by front1 (Coremail) with SMTP id qMiowJBxpeR_e39oPdUhAA--.45195S2;
+ Tue, 22 Jul 2025 19:52:31 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Linux Test Project <ltp@lists.linux.it>
+Date: Tue, 22 Jul 2025 19:52:30 +0800
+Message-ID: <20250722115230.2521-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250722102346.GA6890@pevik>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: A657321A64
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-CM-TRANSID: qMiowJBxpeR_e39oPdUhAA--.45195S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Cr1UJr43XF4UXF4UCryxXrc_yoW8Jw1xpF
+ WDCFWUCr4UWF17WF95XF4I9Fy8X3WkC34fu3ZFy3s0grZIkFZ2qr4vgr9Iqw1IqrZ7JFWa
+ ga1UtrW0g3W8A3gCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+ sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+ 0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+ IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+ e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+ 0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+ 6F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+ 02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAF
+ wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
+ AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+ r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUJVWUXwCIc40Y0x0EwIxGrwCI42IY6x
+ IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
+ w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x
+ 0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU82-e7UUUUU==
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] ioctl_ficlone03.c: Support test on more
- filesystems
+Subject: [LTP] [PATCH] ltp_block_dev: Check HAVE_LINUX_GENHD_H to include
+ genhd.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,62 +64,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+After the LTP commit d4dd360b05f8 ("device-drivers/acpi/ltp_acpi_cmds:
+Fix build errors"), HAVE_LINUX_GENHD_H is defined to 1 if you have the
+<linux/genhd.h> header file.
 
-On Tue 22-07-25 12:23:46, Petr Vorel wrote:
-> ...
-> > >  static void setup(void)
-> 
-> > I find it strange that we manage to set the FS_IMMUTABLE_FL in the setup
-> > with the FS_IOC_SETFLAGS without any error. Maybe it would make sense to
-> > check with ext devs what is going on here.
-> 
-> > > @@ -117,6 +123,10 @@ static struct tst_test test = {
-> > >  			.mkfs_ver = "mkfs.xfs >= 1.5.0",
-> > >  			.mkfs_opts = (const char *const []) {"-m", "reflink=1", NULL},
-> > >  		},
-> > > +		{.type = "ext2"},
-> > > +		{.type = "ext3"},
-> > > +		{.type = "ext4"},
-> > > +		{.type = "tmpfs"},
-> > >  		{}
-> 
-> While I was working on extending [1] LTP ioctl_ficlone03.c to run on more
-> filesystems [2], I found that ext[2-4] don't support FS_IMMUTABLE_FL.
+The macro definition DISK_NAME_LEN may be completely removed, so it is
+better to use #ifdef HAVE_LINUX_GENHD_H to include genhd.h.
 
-Why do you think FS_IMMUTABLE_FL is unsupported? ext2 was the filesystem
-actually introducing it to the kernel ;)
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+By the way, it seems that the following file is not used, should it be
+deleted? If yes, I will send a formal patch later.
 
-> 	immut_fd = open(MNTPOINT"/immutable", O_CREAT | O_RDWR, 0640);
-> 	mnt_file = open(MNTPOINT"/file", O_CREAT | O_RDWR, 0640);
-> 	int attr = FS_IMMUTABLE_FL;
-> 	ioctl(immut_fd, FS_IOC_SETFLAGS, &attr);
-> 	...
-> 
-> 	struct file_clone_range *clone_range;
-> 	ioctl(immut_fd, FICLONE, mnt_file),
-> 	ioctl(immut_fd, FICLONERANGE, clone_range),
-> 
-> The last two ioctl() with FICLONE and FICLONERANGE get errno EOPNOTSUPP
-> (instead of EPERM as on other fs). Cyril raised concern [3], why first
-> ioctl() FS_IOC_SETFLAGS even works. Shouldn't it also gets EINVAL as
-> vfat, exfat and ntfs get?
+  testcases/kernel/device-drivers/block/block_dev_kernel/test_genhd.c
 
-Unlink FICLONE and FICLONERANGE which are indeed unsupported on any ext?
-based filesystem so EOPNOTSUPP seems like a correct answer to me.
-So I'm confused where you see a problem.
+ .../device-drivers/block/block_dev_kernel/ltp_block_dev.c       | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-								Honza
+diff --git a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
+index 0fd278981..f50530f23 100644
+--- a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
++++ b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
+@@ -13,7 +13,7 @@
+ #include <linux/device.h>
+ #include <linux/fs.h>
+ #include <linux/blkdev.h>
+-#ifndef DISK_NAME_LEN
++#ifdef HAVE_LINUX_GENHD_H
+ # include <linux/genhd.h>
+ #endif
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.42.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
