@@ -4,95 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B077C83F25
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 03:00:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52F70C83F25
+	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 03:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1753153238; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=BaPUBiLhsr6LB/UhGLbJcWYfWXryBHtyYCAlq3M7Kho=;
- b=VDuT8j9PbSCQiIyahrexZ5Vo7ISwvO8iZRl/wxct/YkGnc8vktBdPYQkONRFpOv3TYNCC
- phXVoYMbmRznXw5S80SRTd+gJgSAMTriIPuOOwLS2Go/opB5matsrDf0GJLyeP5BdqcrCBh
- 0dTWPO+DkhWxD828oYMtWB6TAOiUVPo=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1753154138; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=Xgy0WPpWYBTACmXUGgq4hIY6qZ0SA4RsK2NWtZg+09o=;
+ b=i+uAOEfwjbOlk1DRsY3mKdcYwvx1gcv5J3NcFMfEYMSAd8Z3UGTczhLHCpe+QozwLNDay
+ Z9JqUfgORW+9nblC9F9HWY09T1Q+ypWCEMD7UOoJnpV3zLts59f/QN6BXpLN1CvIZvwr3Vx
+ +YIGwqtULgFKxduDe70+ynrBh5ika2Q=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3EAE43CCC53
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 05:00:38 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 486F73CCC16
+	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 05:15:38 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1F1103CBCFB
- for <ltp@lists.linux.it>; Tue, 22 Jul 2025 05:00:16 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 815BE3CBCFB
+ for <ltp@lists.linux.it>; Tue, 22 Jul 2025 05:15:17 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D473A1400DD3
- for <ltp@lists.linux.it>; Tue, 22 Jul 2025 05:00:14 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9312F1A00430
+ for <ltp@lists.linux.it>; Tue, 22 Jul 2025 05:15:15 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1753153213;
+ s=mimecast20190719; t=1753154114;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=i1CWCRlPqpOdigzPICWIenK0Qm8TvS5W2nEQGhOI5G8=;
- b=OQvi75n7ZjTKiLo45hK/b5HtuDT6fPsVw43TOqzShc0+vzxP9jriK5KeWVkgmRaEnuoU1n
- v31mXMlMZ7pa0gO2F2Nf3bKitE5NQ04j7iZ3CZqXDoGjqe8TjwfD0hsh19o7oDL1Y0optk
- +rSx5MRU3zgCooQYr+zifQz3MY776No=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-649-MWF4qt9ZPxuNb6oKpvWTfQ-1; Mon, 21 Jul 2025 23:00:11 -0400
-X-MC-Unique: MWF4qt9ZPxuNb6oKpvWTfQ-1
-X-Mimecast-MFC-AGG-ID: MWF4qt9ZPxuNb6oKpvWTfQ_1753153210
-Received: by mail-yw1-f197.google.com with SMTP id
- 00721157ae682-7194c6ce830so61268627b3.1
- for <ltp@lists.linux.it>; Mon, 21 Jul 2025 20:00:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1753153210; x=1753758010;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=i1CWCRlPqpOdigzPICWIenK0Qm8TvS5W2nEQGhOI5G8=;
- b=L/HU+lDEFNsuTimqdhyRYREYthQD1HLWZRgy9KAoKjh/HUGcH+rbCyrnYe6eumWq6p
- Lz/BbXN/K73CWW/unaH55iZTyaLX2IZ7IsLnZzFUntlcdrV9zEvi2qDMdkfpO0cs63Av
- ApOYhv2nRVnrmslLWW+8Wf4GhKm1wwKjGemQJux0YjgZ5iGk5gibywjLOGZjeXYavTO9
- LD/S+eP1aIY57MnNLxGoZtOLJslFM9G9RwoHXM6W7i19aoorwLaEqJLTySY0Jne5lVtk
- aDNieuPf9q+TS3CSDehmyywYNnLTjY+sY75BFbY9Usr1nYpxsA/9w01T9BUmsh1b6Ay/
- /Zsw==
-X-Gm-Message-State: AOJu0Yxve/evmnvLmaREykQ4+6q4uvRtyYQ7fDLaedOP0upLXbJGq+CR
- 0+24LGqSO2aVmEvldIoACOAV8AxEoFqNhcAT3ea5XZJlBB1DoeSEOXgrgxymc8JOBLh8d3hiDRF
- L7I7pqgZR19z+yDM2dsDMyMVSXuxflaxo7L8KWwEOAWx6GXFd0mfMDxMTdR2HFreHssJ/t7O+Fd
- O6V8RY7nODGTS+c6lDxmzCwD+unWQ=
-X-Gm-Gg: ASbGncsTrw79qAtfMd1CUJUtQPVvn4cy41bOX6LVQTSavvKObdUJgmXbny/saQX8l1p
- 5nmRkDiqLIeY5nbKHYmsDl4K/Yvs32W50RjL09NpxqlPE0xYxPRro98hkzfc9MxU0tRvd0eRZWO
- VnKjMHI9iFucuMHh3lIiWVRQ==
-X-Received: by 2002:a05:690c:b0f:b0:714:268:a9f8 with SMTP id
- 00721157ae682-718374ab626mr270272017b3.27.1753153210307; 
- Mon, 21 Jul 2025 20:00:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFTj1iP4CbL9Zaqvw9XcwwO8MV+FxxOzEzd1OCWGUOxdzTXwpHpwbTsxZUKrtRYrAr8SFRJGJiZ/f5kju7h3+c=
-X-Received: by 2002:a05:690c:b0f:b0:714:268:a9f8 with SMTP id
- 00721157ae682-718374ab626mr270271727b3.27.1753153209791; Mon, 21 Jul 2025
- 20:00:09 -0700 (PDT)
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=G8UY/NkhtH7584aGLkAwvnhLF7ljSbIsIBT0LS0sYXk=;
+ b=i0QAYp8ekXicW03mC7e7zUxFkNPRACmiVw8nWXE7sTh783AS8UOzcNWEIAXGG+PT3ymHkR
+ V4/FF1Hgs5mQhRh0W+LXU2s02gcs50uvRfTCAD5lBf8Y3MA+hb1pJXA/w0dVsDdzEcAhJ8
+ sVIz4NO2NfOvN/3PwpeVzge1c5NpaAM=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-588-RhcquhKJO_q6QbtplHLTbg-1; Mon,
+ 21 Jul 2025 23:15:11 -0400
+X-MC-Unique: RhcquhKJO_q6QbtplHLTbg-1
+X-Mimecast-MFC-AGG-ID: RhcquhKJO_q6QbtplHLTbg_1753154111
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id AB67419560A2
+ for <ltp@lists.linux.it>; Tue, 22 Jul 2025 03:15:10 +0000 (UTC)
+Received: from dell-per430-17.gsslab.pek2.redhat.com
+ (dell-per430-17.gsslab.pek2.redhat.com [10.72.36.28])
+ by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 470E818003FC
+ for <ltp@lists.linux.it>; Tue, 22 Jul 2025 03:15:08 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Mon, 21 Jul 2025 23:15:04 -0400
+Message-ID: <20250722031504.3772974-1-chwen@redhat.com>
 MIME-Version: 1.0
-References: <20250718090321.3632996-1-chwen@redhat.com>
- <aHpnqXdFCSHwImaO@yuki.lan>
-In-Reply-To: <aHpnqXdFCSHwImaO@yuki.lan>
-Date: Tue, 22 Jul 2025 10:59:58 +0800
-X-Gm-Features: Ac12FXxghp-YvP90X_uXD6w0wsQ7h_-1hGBkPAageWZc43ZLRWskoYGUYFzeWd8
-Message-ID: <CAAA2g-3W6HOGKC4WTvajxkpNJUss74h2bv=VCJzNtZPaj2iFbQ@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: -WCU36xdONahDRwt6pYe-HQK9F5cdCpMVIKULXSjI8s_1753153210
+X-Mimecast-MFC-PROC-ID: iIFYdbwF3n5_R3z1H2VxuQgXpwJvaIWYUIaiNu6z_vY_1753154111
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v11] Add tls parameter and flag:CLONE_SETTLS cover
- for clone and clone3 syscall
+Subject: [LTP] [PATCH v12] Add tls parameter and flag:CLONE_SETTLS cover for
+ clone and clone3 syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,250 +83,448 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Chunfu Wen via ltp <ltp@lists.linux.it>
-Reply-To: Chunfu Wen <chwen@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: chunfuwen via ltp <ltp@lists.linux.it>
+Reply-To: chunfuwen <chwen@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGVsbG8sClRoYW5rIHlvdSBmb3IgeW91ciByZXZpZXcuClNlZSBpbmxpbmUgY29tbWVudHMgZm9y
-ICBteSByZXBseS4KQWxzbyB1cGRhdGVkIHBhdGNoIHYxMiB3YXMgc2VudCBvdXQgYXMgd2VsbAoK
-Q2h1bmZ1IFdlbgoKT24gRnJpLCBKdWwgMTgsIDIwMjUgYXQgMTE6MjbigK9QTSBDeXJpbCBIcnVi
-aXMgPGNocnViaXNAc3VzZS5jej4gd3JvdGU6Cgo+IEhpIQo+ID4gIGluY2x1ZGUvbGFwaS90bHMu
-aCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMDIgKysrKysrKysrKysrKysrKysrCj4gPiAg
-cnVudGVzdC9zeXNjYWxscyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArCj4gPiAg
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS8uZ2l0aWdub3JlICB8ICAgMSArCj4gPiAg
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTEwLmMgICB8ICA5OCArKysrKysr
-KysrKysrKysrKysKPiA+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lMy8uZ2l0aWdu
-b3JlIHwgICAxICsKPiA+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lMy9jbG9uZTMw
-NC5jIHwgMTA4ICsrKysrKysrKysrKysrKysrKysrCj4KPiBUaGVyZSBhIGZldyBjb3VwbGUgb2Yg
-dGhpbmdzIHRvIGZpeC4gUGxlYXNlIHJ1biBtYWtlIGNoZWNrIGluIHRoZQo+IGRpcmVjdG9yaWVz
-IHRoaXMgcGF0Y2ggYWRkcyBmaWxlcyAoaW5jbHVkZS9sYXBpLyBzeXNjYWxscy9jbG9uZS8gYW5k
-Cj4gc3lzY2FsbHMvY2xvbmUzLykgYW5kIGZpeCB0aGUgZXJyb3JzIGFuZCB3YXJuaW5ncyByZXBv
-cnRlZCBmb3IgdGhlIG5ld2x5Cj4gYWRkZWQgZmlsZXMuCj4gW2NodW5mdV0gVXBkYXRlZCBhcyBj
-b21tZW50LgoKCgoKPiA+ICA2IGZpbGVzIGNoYW5nZWQsIDMxMiBpbnNlcnRpb25zKCspCj4gPiAg
-Y3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGFwaS90bHMuaAo+ID4gIGNyZWF0ZSBtb2RlIDEw
-MDY0NCB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25lMTAuYwo+ID4gIGNyZWF0
-ZSBtb2RlIDEwMDY0NCB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lMy9jbG9uZTMwNC5j
-Cj4gPgo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGFwaS90bHMuaCBiL2luY2x1ZGUvbGFwaS90
-bHMuaAo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiA+IGluZGV4IDAwMDAwMDAwMC4uZjQzM2Zj
-MzkyCj4gPiAtLS0gL2Rldi9udWxsCj4gPiArKysgYi9pbmNsdWRlL2xhcGkvdGxzLmgKPiA+IEBA
-IC0wLDAgKzEsMTAyIEBACj4gPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAt
-b3ItbGF0ZXIKPiA+ICsvKgo+ID4gKyAqIENvcHlyaWdodCAoYykgMjAyNSBSZWQgSGF0IEluYy4g
-QWxsIFJpZ2h0cyBSZXNlcnZlZC4KPiA+ICsgKiBBdXRob3I6IENodW5mdSBXZW4gPGNod2VuQHJl
-ZGhhdC5jb20+Cj4gPiArICovCj4gPiArCj4gPiArLypcCj4gPiArICogdGxzIGluaXQvYWxsb2Mv
-ZnJlZSBjb21tb24gZnVuY3Rpb25zCj4gPiArICovCj4gPiArCj4gPiArI2lmbmRlZiBfTEFQSV9U
-TFNfSAo+ID4gKyNkZWZpbmUgX0xBUElfVExTX0gKPiA+ICsKPiA+ICsjaW5jbHVkZSA8c3RkbGli
-Lmg+Cj4gPiArI2luY2x1ZGUgPHN0cmluZy5oPgo+ID4gKyNpbmNsdWRlIDxzdGRpbnQuaD4KPiA+
-ICsjaW5jbHVkZSA8c3RkaW8uaD4KPiA+ICsjaW5jbHVkZSA8dW5pc3RkLmg+Cj4gPiArCj4gPiAr
-I2lmIGRlZmluZWQoX19pMzg2X18pCj4gPiArI2luY2x1ZGUgPGFzbS9sZHQuaD4KPiA+ICsjZW5k
-aWYKPiA+ICsKPiA+ICsjaW5jbHVkZSAidHN0X3Rlc3QuaCIKPiA+ICsKPiA+ICsjZGVmaW5lIFRM
-U19TSVpFIDQwOTYKPiA+ICsjZGVmaW5lIFRMU19BTElHTiAxNgo+ID4gKwo+ID4gKyNpZiBkZWZp
-bmVkKF9feDg2XzY0X18pCj4gPiArLy8gU3RydWN0dXJlIG1pbWlja2luZyBnbGliYydzIFRDQiB0
-byBiZSBzaW1wbGlmaWVkIGZvciB4ODZfNjQKPiA+ICt0eXBlZGVmIHN0cnVjdCB7Cj4gPiArICAg
-IHZvaWQgKnRjYjsKPiA+ICsgICAgdm9pZCAqZHR2Owo+ID4gKyAgICB2b2lkICpzZWxmOwo+ID4g
-KyAgICBpbnQgbXVsdGlwbGVfdGhyZWFkczsKPiA+ICsgICAgY2hhciBwYWRkaW5nWzY0XTsKPiA+
-ICt9IHRjYl90Owo+ID4gKyNlbmRpZgo+ID4gKwo+ID4gKy8vIEdsb2JhbCBwb2ludGVycyBmb3Ig
-VExTIG1hbmFnZW1lbnQKPiA+ICtleHRlcm4gdm9pZCAqdGxzX3B0cjsKPiA+ICtleHRlcm4gc3Ry
-dWN0IHVzZXJfZGVzYyAqdGxzX2Rlc2M7Cj4gPiArCj4gPiArc3RhdGljIGlubGluZSB2b2lkICph
-bGxvY2F0ZV90bHNfYXJlYSh2b2lkKQo+ID4gK3sKPiA+ICsgICAgICAgIHZvaWQgKnRsc19hcmVh
-ID0gYWxpZ25lZF9hbGxvYyhUTFNfQUxJR04sIFRMU19TSVpFKTsKPiA+ICsgICAgIGlmICghdGxz
-X2FyZWEpCj4gPiArICAgICAgICAgICAgIHRzdF9icmsoVEJST0sgfCBURVJSTk8sICJhbGlnbmVk
-X2FsbG9jIGZhaWxlZCIpOwo+ID4gKyAgICAgbWVtc2V0KHRsc19hcmVhLCAwLCBUTFNfU0laRSk7
-Cj4gPiArCj4gPiArI2lmIGRlZmluZWQoX194ODZfNjRfXykKPiA+ICsgICAgIC8vIFNldCB1cCBh
-IG1pbmltYWwgVENCIGZvciB4ODZfNjQKPiA+ICsgICAgIHRjYl90ICp0Y2IgPSAodGNiX3QgKil0
-bHNfYXJlYTsKPiA+ICsgICAgIHRjYi0+dGNiID0gdGxzX2FyZWE7Cj4gPiArICAgICB0Y2ItPnNl
-bGYgPSB0bHNfYXJlYTsKPiA+ICsgICAgIHRjYi0+bXVsdGlwbGVfdGhyZWFkcyA9IDE7Cj4gPiAr
-I2VuZGlmCj4gPiArICAgICByZXR1cm4gdGxzX2FyZWE7Cj4gPiArfQo+ID4gKwo+ID4gK3N0YXRp
-YyBpbmxpbmUgdm9pZCBpbml0X3Rscyh2b2lkKQo+ID4gK3sKPiA+ICsjaWYgZGVmaW5lZChfX3g4
-Nl82NF9fKSB8fCBkZWZpbmVkKF9fYWFyY2g2NF9fKSB8fCBkZWZpbmVkKF9fczM5MHhfXykKPiA+
-ICsgICAgICAgIHRsc19wdHIgPSBhbGxvY2F0ZV90bHNfYXJlYSgpOwo+ID4gKwo+ID4gKyNlbGlm
-IGRlZmluZWQoX19pMzg2X18pCj4gPiArICAgICB0bHNfcHRyID0gYWxsb2NhdGVfdGxzX2FyZWEo
-KTsKPiA+ICsgICAgIHRsc19kZXNjID0gU0FGRV9NQUxMT0Moc2l6ZW9mKCp0bHNfZGVzYykpOwo+
-ID4gKyAgICAgbWVtc2V0KHRsc19kZXNjLCAwLCBzaXplb2YoKnRsc19kZXNjKSk7Cj4gPiArICAg
-ICB0bHNfZGVzYy0+ZW50cnlfbnVtYmVyID0gLTE7Cj4gPiArICAgICB0bHNfZGVzYy0+YmFzZV9h
-ZGRyID0gKHVuc2lnbmVkIGxvbmcpdGxzX3B0cjsKPiA+ICsgICAgIHRsc19kZXNjLT5saW1pdCA9
-IFRMU19TSVpFOwo+ID4gKyAgICAgdGxzX2Rlc2MtPnNlZ18zMmJpdCA9IDE7Cj4gPiArICAgICB0
-bHNfZGVzYy0+Y29udGVudHMgPSAwOwo+ID4gKyAgICAgdGxzX2Rlc2MtPnJlYWRfZXhlY19vbmx5
-ID0gMDsKPiA+ICsgICAgIHRsc19kZXNjLT5saW1pdF9pbl9wYWdlcyA9IDA7Cj4gPiArICAgICB0
-bHNfZGVzYy0+c2VnX25vdF9wcmVzZW50ID0gMDsKPiA+ICsgICAgIHRsc19kZXNjLT51c2VhYmxl
-ID0gMTsKPiA+ICsKPiA+ICsjZWxzZQo+ID4gKyAgICAgdHN0X2JyayhUQ09ORiwgIlVuc3VwcG9y
-dGVkIGFyY2hpdGVjdHVyZSBmb3IgVExTIik7Cj4gPiArI2VuZGlmCj4gPiArfQo+ID4gKwo+ID4g
-K3N0YXRpYyBpbmxpbmUgdm9pZCBmcmVlX3Rscyh2b2lkKQo+ID4gK3sKPiA+ICsgICAgIHVzbGVl
-cCgxMDAwKTsKPgo+IFdoeSBpcyB0aGlzIHNsZWVwIG5lZWRlZCBoZXJlPwo+CgoKPiBbY2h1bmZ1
-XSBUaGlzIGlzIG5lY2Nlc3NhcnkuIElmIHJlbW92ZSB0aGlzLCB0aGUgdGVzdCB3aWxsIGZhaWwg
-b24gc29tZQo+IGxpbnV4IGRpc3RyaWJ1dGlvbnMsIHN1Y2ggYXMgbGltaXRlZCBjb21wdXRpbmcg
-cmVzb3VyY2VzLCB3aXRoIGVycm9yOlRCUk9LOgo+IFRlc3Qga2lsbGVkIGJ5IFNJR1NFR1YKCgo+
-ICsjaWYgZGVmaW5lZChfX3g4Nl82NF9fKSB8fCBkZWZpbmVkKF9fYWFyY2g2NF9fKSB8fCBkZWZp
-bmVkKF9fczM5MHhfXykKPiA+ICsgICAgIGlmICh0bHNfcHRyKSB7Cj4gPiArICAgICAgICAgICAg
-ICAgIGZyZWUodGxzX3B0cik7Cj4gPiArICAgICAgICAgICAgIHRsc19wdHIgPSBOVUxMOwo+ID4g
-KyAgICAgfQo+ID4gKyNlbGlmIGRlZmluZWQoX19pMzg2X18pCj4gPiArICAgICBpZiAodGxzX2Rl
-c2MpIHsKPiA+ICsgICAgICAgICAgICAgZnJlZSgodm9pZCAqKSh1aW50cHRyX3QpdGxzX2Rlc2Mt
-PmJhc2VfYWRkcik7Cj4gPiArICAgICAgICAgICAgIGZyZWUodGxzX2Rlc2MpOwo+ID4gKyAgICAg
-ICAgICAgICB0bHNfZGVzYyA9IE5VTEw7Cj4gPiArICAgICB9Cj4gPiArI2VuZGlmCj4gPiArfQo+
-ID4gKwo+ID4gKyNlbmRpZiAvLyBfTEFQSV9UTFNfSAo+ID4gZGlmZiAtLWdpdCBhL3J1bnRlc3Qv
-c3lzY2FsbHMgYi9ydW50ZXN0L3N5c2NhbGxzCj4gPiBpbmRleCA4NDRhZTdhMTMuLjEwZjY0Mjcw
-YSAxMDA2NDQKPiA+IC0tLSBhL3J1bnRlc3Qvc3lzY2FsbHMKPiA+ICsrKyBiL3J1bnRlc3Qvc3lz
-Y2FsbHMKPiA+IEBAIC0xMjIsMTAgKzEyMiwxMiBAQCBjbG9uZTA2IGNsb25lMDYKPiA+ICBjbG9u
-ZTA3IGNsb25lMDcKPiA+ICBjbG9uZTA4IGNsb25lMDgKPiA+ICBjbG9uZTA5IGNsb25lMDkKPiA+
-ICtjbG9uZTEwIGNsb25lMTAKPiA+Cj4gPiAgY2xvbmUzMDEgY2xvbmUzMDEKPiA+ICBjbG9uZTMw
-MiBjbG9uZTMwMgo+ID4gIGNsb25lMzAzIGNsb25lMzAzCj4gPiArY2xvbmUzMDQgY2xvbmUzMDQK
-PiA+Cj4gPiAgY2xvc2UwMSBjbG9zZTAxCj4gPiAgY2xvc2UwMiBjbG9zZTAyCj4gPiBkaWZmIC0t
-Z2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS8uZ2l0aWdub3JlCj4gYi90ZXN0
-Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lLy5naXRpZ25vcmUKPiA+IGluZGV4IDkwMGNhYzE5
-Yy4uYWRmYjgyNTdkIDEwMDY0NAo+ID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9j
-bG9uZS8uZ2l0aWdub3JlCj4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25l
-Ly5naXRpZ25vcmUKPiA+IEBAIC03LDMgKzcsNCBAQAo+ID4gIC9jbG9uZTA3Cj4gPiAgL2Nsb25l
-MDgKPiA+ICAvY2xvbmUwOQo+ID4gKy9jbG9uZTEwCj4gPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2Vz
-L2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTEwLmMKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvY2xvbmUvY2xvbmUxMC5jCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+ID4gaW5kZXgg
-MDAwMDAwMDAwLi5iMDg5OWE2YjgKPiA+IC0tLSAvZGV2L251bGwKPiA+ICsrKyBiL3Rlc3RjYXNl
-cy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUvY2xvbmUxMC5jCj4gPiBAQCAtMCwwICsxLDk4IEBACj4g
-PiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIKPiA+ICsvKgo+
-ID4gKyAqIENvcHlyaWdodCAoYykgMjAyNSBSZWQgSGF0IEluYy4gQWxsIFJpZ2h0cyBSZXNlcnZl
-ZC4KPiA+ICsgKiBBdXRob3I6IENodW5mdSBXZW4gPGNod2VuQHJlZGhhdC5jb20+Cj4gPiArICov
-Cj4gPiArCj4gPiArLypcCj4gPiArICogQWRkIHRscyBwYXJhbWV0ZXIgYW5kIGZsYWc6Q0xPTkVf
-U0VUVExTIGNvdmVyIGZvciBjbG9uZQo+Cj4KPiBUaGlzIHNob3VsZCBleHBsYWluIHdoYXQgdGhl
-IHRlc3QgaXMgZG9pbmcgYmV0dGVyLiBBcyBmYXIgYXMgSSBjYW4gdGVsbAo+IHdlIGRvOgo+Cj4g
-VGVzdCB0aGF0IGluIGEgdGhyZWFkIHN0YXJ0ZWQgYnkgY2xvbmUoKSB0aGF0IHJ1bnMgaW4gdGhl
-IHNhbWUgYWRkcmVzcwo+IHNwYWNlIChDTE9ORV9WTSkgYnV0IHdpdGggYSBkaWZmZXJlbnQgVExT
-IChDTE9ORV9TRVRUTFMpIHdyaXR0ZXMgdG8gYQo+IHRocmVhZCBsb2NhbCB2YXJpYWJsZXMgYXJl
-IG5vdCBwcm9wYWdhdGVkIGJhY2sgZnJvbSB0aGUgY2xvbmVkIHRocmVhZC4KPgoKCj4gW2NodW5m
-dV0gVXBkYXRlZCBhcyBjb21tZW50Cj4gPiArICovCj4gPiArCj4gPiArI2RlZmluZSBfR05VX1NP
-VVJDRQo+ID4gKyNpbmNsdWRlIDxzdGRsaWIuaD4KPiA+ICsjaW5jbHVkZSA8c3RkaW8uaD4KPiA+
-ICsjaW5jbHVkZSA8ZXJybm8uaD4KPiA+ICsjaW5jbHVkZSA8c2NoZWQuaD4KPiA+ICsjaW5jbHVk
-ZSA8c3lzL3dhaXQuaD4KPiA+ICsKPiA+ICsjaWYgZGVmaW5lZChfX2kzODZfXykKPiA+ICsjaW5j
-bHVkZSA8YXNtL2xkdC5oPgo+ID4gKyNlbmRpZgo+ID4gKwo+ID4gKyNpbmNsdWRlICJ0c3RfdGVz
-dC5oIgo+ID4gKyNpbmNsdWRlICJjbG9uZV9wbGF0Zm9ybS5oIgo+ID4gKyNpbmNsdWRlICJsYXBp
-L3N5c2NhbGxzLmgiCj4gPiArI2luY2x1ZGUgImxhcGkvdGxzLmgiCj4gPiArCj4gPiArI2RlZmlu
-ZSBUTFNfRVhQIDEwMAo+ID4gKwo+ID4gKyNpZm5kZWYgQVJDSF9TRVRfRlMKPiA+ICsjZGVmaW5l
-IEFSQ0hfU0VUX0ZTIDB4MTAwMgo+ID4gKyNlbmRpZgo+ID4gKwo+ID4gKy8vIEdsb2JhbCBwb2lu
-dGVycyBmb3IgVExTIG1hbmFnZW1lbnQKPiA+ICt2b2lkICp0bHNfcHRyID0gTlVMTDsKPiA+ICtz
-dHJ1Y3QgdXNlcl9kZXNjICp0bHNfZGVzYyA9IE5VTEw7Cj4gPiArCj4gPiArc3RhdGljIF9fdGhy
-ZWFkIGludCB0bHNfdmFyID0gMDsKPiA+ICsKPiA+ICtzdGF0aWMgY2hhciAqY2hpbGRfc3RhY2s7
-Cj4gPiArc3RhdGljIHZvbGF0aWxlIGludCBjaGlsZF9kb25lID0gMDsKPiA+ICsKPiA+ICtzdGF0
-aWMgaW50IGZsYWdzID0gQ0xPTkVfVEhSRUFEIHwgIENMT05FX1ZNIHwgQ0xPTkVfRlMgfCBDTE9O
-RV9GSUxFUyB8Cj4gQ0xPTkVfU0lHSEFORCB8IENMT05FX1NFVFRMUzsKPiA+ICsKPiA+ICtzdGF0
-aWMgaW50IHRvdWNoX3Rsc19pbl9jaGlsZCh2b2lkICphcmcgTFRQX0FUVFJJQlVURV9VTlVTRUQp
-Cj4gPiArewo+ID4gKyNpZiBkZWZpbmVkKF9feDg2XzY0X18pCj4gPiArICAgICAvLyBTZXQgdGhl
-ICVmcyByZWdpc3RlciB0byBwb2ludCB0byB0aGUgVENCCj4gPiArICAgICBpZiAoc3lzY2FsbChT
-WVNfYXJjaF9wcmN0bCwgQVJDSF9TRVRfRlMsIHRsc19wdHIpID09IC0xKSB7Cj4gPiArICAgICAg
-ICAgICAgIGV4aXQoRVhJVF9GQUlMVVJFKTsKPiA+ICsgICAgIH0KPgo+IFNvIHRoaXMgaXMgc3Rp
-bCBuZWVkZWQgZGVzcGl0ZSB0aGUgdHN0X3B0ciBwYXNzZWQgdG8gdGhlIGtlcm5lbCBpbiB0aGUK
-PiBjbG9uZSgpIGNhbGw/Cj4KICAgW2NodW5mdV0gT24gc29tZSBsaW51eCBkaXN0cmlidXRpb25z
-LCB0aGUgdGVzdCB3aWxsIGZhaWwgaWYgd2l0aG91dCBpdC4KCj4KPiBDYW4gd2UgbW92ZSB0aGlz
-IHRvIGEgZnVuY3Rpb24gaW4gdGhlIGxhcGkgaGVhZGVyIGFzIHdlbGw/IFNvbWV0aGluZyBhcwo+
-ICJjaGlsZF9pbml0X3RscygpIiBhbmQgY2FsbCBpdCBoZXJlPwo+IFtjaHVuZnVdIEl0IGxvb2tz
-IGxpa2UgaXQgaXMgbm90IHByb3BlciB0byBtb3ZlIGludG8gbGFwaS4gV2hpbGUgdGhlIFRMUwo+
-IHNldHVwIGFuZCB0ZWFyZG93biBhcmUgZ2VuZXJhbCwgdGhlIGFjdHVhbCB0ZXN0aW5nIG9mIHRo
-ZSBUTFMgdmFyaWFibGUKPiB3aXRoaW4gdGhlIGNoaWxkIGNvbnRleHQgb2Z0ZW4gaW52b2x2ZXMg
-dGVzdC1zcGVjaWZpYyB2YXJpYWJsZXMgYW5kIGxvZ2ljLgo+IFNpbmNlIHRoaXMgbWV0aG9kIGNv
-bnN1bWUgdGxzX3ZhciwgbWFraW5nIHRsc192YXIgKGEgX190aHJlYWQgdmFyaWFibGUpCj4gZ2xv
-YmFsIGFuZCBleHRlcm4gYWNyb3NzIGRpZmZlcmVudCBmaWxlcywgZXNwZWNpYWxseSB3aGVuIGl0
-cyBwdXJwb3NlIGlzCj4gc3BlY2lmaWMgdG8gaG93IGEgY2hpbGQgcHJvY2VzcyBpbnRlcmFjdHMg
-d2l0aCBUTFMgaW4gYSB0ZXN0LCBjYW4gbGVhZCB0bwo+IGNvbXBsZXhpdHkgYW5kIHBvdGVudGlh
-bCBpc3N1ZXMgd2l0aCB0aHJlYWQtbG9jYWwgc3RvcmFnZSBiZWhhdmlvciBhY3Jvc3MKPiBkaWZm
-ZXJlbnQgZXhlY3V0YWJsZXMgb3Igc2hhcmVkIGxpYnJhcmllcwo+ID4gKyNlbmRpZgo+ID4gKyAg
-ICAgdGxzX3ZhciA9IFRMU19FWFAgKyAxOwo+ID4gKyAgICAgdHN0X3JlcyhUSU5GTywgIkNoaWxk
-IChQSUQ6ICVkLCBUSUQ6ICVkKTogVExTIHZhbHVlIHNldCB0bzogJWQiLAo+IGdldHBpZCgpLCAg
-Z2V0dGlkKCksIHRsc192YXIpOwo+ID4gKwo+ID4gKyAgICAgVFNUX0NIRUNLUE9JTlRfV0FLRSgw
-KTsKPiA+ICsgICAgIGZyZWVfdGxzKCk7Cj4gPiArICAgICByZXR1cm4gMDsKPgo+IFNob3VsZG4n
-dCB3ZSBjYWxsIHRoZSBfX05SX2V4aXQgaGVyZSBhcyB3ZWxsPwo+IFtjaHVuZnVdIEFkZGVkIGFz
-IGNvbW1lbnQKPiA+ICt9Cj4gPiArCj4gPiArc3RhdGljIHZvaWQgdmVyaWZ5X3Rscyh2b2lkKQo+
-ID4gK3sKPiA+ICsgICAgIHRsc192YXIgPSBUTFNfRVhQOwo+ID4gKwo+ID4gKyAgICAgVEVTVChs
-dHBfY2xvbmU3KGZsYWdzLCB0b3VjaF90bHNfaW5fY2hpbGQsIE5VTEwsIENISUxEX1NUQUNLX1NJ
-WkUsCj4gY2hpbGRfc3RhY2ssIE5VTEwsIHRsc19wdHIsIE5VTEwpKTsKPiA+ICsKPiA+ICsgICAg
-IGlmIChUU1RfUkVUID09IC0xKQo+ID4gKyAgICAgICAgICAgICB0c3RfYnJrKFRCUk9LIHwgVFRF
-UlJOTywgImNsb25lKCkgZmFpbGVkIik7Cj4gPiArCj4gPiArICAgICBUU1RfQ0hFQ0tQT0lOVF9X
-QUlUKDApOwo+ID4gKwo+ID4gKyAgICAgaWYgKFRMU19FWFAgPT0gdGxzX3Zhcikgewo+ID4gKyAg
-ICAgICAgICAgICB0c3RfcmVzKFRQQVNTLAo+ID4gKyAgICAgICAgICAgICAgICAgICAgICJQYXJl
-bnQgKFBJRDogJWQsIFRJRDogJWQpOiBUTFMgdmFsdWUgY29ycmVjdDogJWQiLAo+ID4gKyAgICAg
-ICAgICAgICAgICAgICAgIGdldHBpZCgpLCBnZXR0aWQoKSwgdGxzX3Zhcik7Cj4gPiArICAgICB9
-IGVsc2Ugewo+ID4gKyAgICAgICAgICAgICB0c3RfcmVzKFRGQUlMLAo+ID4gKyAgICAgICAgICAg
-ICAgICAgICAgICJQYXJlbnQgKFBJRDogJWQsIFRJRDogJWQpOiBUTFMgdmFsdWUgbWlzbWF0Y2g6
-Cj4gZ290ICVkLCBleHBlY3RlZCAlZCIsCj4gPiArICAgICAgICAgICAgICAgICAgICAgZ2V0cGlk
-KCksIGdldHRpZCgpLCB0bHNfdmFyLCBUTFNfRVhQKTsKPiA+ICsgICAgIH0KPiA+ICt9Cj4gPiAr
-Cj4gPiArc3RhdGljIHZvaWQgc2V0dXAodm9pZCkKPiA+ICt7Cj4gPiArICAgICBjaGlsZF9zdGFj
-ayA9IFNBRkVfTUFMTE9DKENISUxEX1NUQUNLX1NJWkUpOwo+ID4gKyAgICAgaW5pdF90bHMoKTsK
-PiA+ICt9Cj4gPiArCj4gPiArc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKQo+ID4gK3sKPiA+ICsg
-ICAgIGZyZWUoY2hpbGRfc3RhY2spOwo+ID4gK30KPiA+ICsKPiA+ICtzdGF0aWMgc3RydWN0IHRz
-dF90ZXN0IHRlc3QgPSB7Cj4gPiArICAgICAgICAgLnNldHVwID0gc2V0dXAsCj4gPiArICAgICAg
-ICAgLmNsZWFudXAgPSBjbGVhbnVwLAo+ID4gKyAgICAgICAgIC5uZWVkc19jaGVja3BvaW50cyA9
-IDEsCj4gPiArICAgICAgICAgLnRlc3RfYWxsID0gdmVyaWZ5X3RscywKPiA+ICt9Owo+ID4gZGlm
-ZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUzLy5naXRpZ25vcmUKPiBi
-L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUzLy5naXRpZ25vcmUKPiA+IGluZGV4IDEw
-MzY5OTU0Yi4uZTliNTMxMmY0IDEwMDY0NAo+ID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9jbG9uZTMvLmdpdGlnbm9yZQo+ID4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9jbG9uZTMvLmdpdGlnbm9yZQo+ID4gQEAgLTEsMyArMSw0IEBACj4gPiAgY2xvbmUzMDEKPiA+
-ICBjbG9uZTMwMgo+ID4gIGNsb25lMzAzCj4gPiArY2xvbmUzMDQKPiA+IGRpZmYgLS1naXQgYS90
-ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lMy9jbG9uZTMwNC5jCj4gYi90ZXN0Y2FzZXMv
-a2VybmVsL3N5c2NhbGxzL2Nsb25lMy9jbG9uZTMwNC5jCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0
-NAo+ID4gaW5kZXggMDAwMDAwMDAwLi5kNDVhYzIzOTUKPiA+IC0tLSAvZGV2L251bGwKPiA+ICsr
-KyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUzL2Nsb25lMzA0LmMKPiA+IEBAIC0w
-LDAgKzEsMTA4IEBACj4gPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3It
-bGF0ZXIKPiA+ICsvKgo+ID4gKyAqIENvcHlyaWdodCAoYykgMjAyNSBSZWQgSGF0IEluYy4gQWxs
-IFJpZ2h0cyBSZXNlcnZlZC4KPiA+ICsgKiBBdXRob3I6IENodW5mdSBXZW4gPGNod2VuQHJlZGhh
-dC5jb20+Cj4gPiArICovCj4gPiArCj4gPiArLypcCj4gPiArICogQWRkIHRscyBwYXJhbWV0ZXIg
-YW5kIGZsYWc6Q0xPTkVfU0VUVExTIGNvdmVyIGZvciBjbG9uZTMKPgo+IFRoZSBkZXNjcmlwdGlv
-biBoZXJlIHNob3VsZCBiZSB0aGUgc2FtZSBhcyBpbiB0aGUgcHJldmlvdXMgb25lIGJ1dCBpdAo+
-IHNob3VsZCBzYXkgY2xvbmUzIGluc3RlYWQgb2YgY2xvbmUKPiBbY2h1bmZ1XSBVcGRhdGVkIGFz
-IGNvbW1lbnQuCj4KCiAgW2NodW5mdV0gT25lIG1vcmUgY29tbWVudCByZWxhdGVkIHRvIFBhcmVu
-dC9DaGlsZCBTeW5jIHdpdGggVFNUX0NIRUNLUE9JTlRfLAppbiBjbG9uZTMwNC5jCiAgaXQgZG9l
-c24ndCB3b3JrIGFzIGV4cGVjdGVkIHdpdGggdGhlIGJlbG93IGVycm9yOiAgVEJST0s6IFRlc3Qg
-a2lsbGVkIGJ5ClNJR1NFR1YhCiBTbyBJIGtlZXAgdGhlIHByZXZpb3VzIHNvbHV0aW9uIHVzaW5n
-IHNpbmdsZSB2b2xhdGlsZSBpbnQgY2hpbGRfZG9uZS4KCgoKCj4gPiArICovCj4gPiArCj4gPiAr
-I2RlZmluZSBfR05VX1NPVVJDRQo+ID4gKwo+ID4gKyNpbmNsdWRlIDxzdGRsaWIuaD4KPiA+ICsj
-aW5jbHVkZSA8c3lzL3dhaXQuaD4KPiA+ICsKPiA+ICsjaWYgZGVmaW5lZChfX2kzODZfXykKPiA+
-ICsjaW5jbHVkZSA8YXNtL2xkdC5oPgo+ID4gKyNlbmRpZgo+ID4gKwo+ID4gKyNpbmNsdWRlICJ0
-c3RfdGVzdC5oIgo+ID4gKyNpbmNsdWRlICJsYXBpL3NjaGVkLmgiCj4gPiArI2luY2x1ZGUgImxh
-cGkvcGlkZmQuaCIKPiA+ICsjaW5jbHVkZSAibGFwaS90bHMuaCIKPiA+ICsKPiA+ICsjZGVmaW5l
-IFRMU19FWFAgMTAwCj4gPiArCj4gPiArI2RlZmluZSBDSElMRF9TVEFDS19TSVpFICgxMDI0KjEw
-MjQpCj4gPiArCj4gPiArLy8gR2xvYmFsIHBvaW50ZXJzIGZvciBUTFMgbWFuYWdlbWVudAo+ID4g
-K3ZvaWQgKnRsc19wdHIgPSBOVUxMOwo+ID4gK3N0cnVjdCB1c2VyX2Rlc2MgKnRsc19kZXNjID0g
-TlVMTDsKPiA+ICsKPiA+ICtzdGF0aWMgaW50IHBpZGZkLCBjaGlsZF90aWQsIHBhcmVudF90aWQ7
-Cj4gPiArc3RhdGljIHN0cnVjdCBjbG9uZV9hcmdzICphcmdzOwo+ID4gK3N0YXRpYyB2b2lkICpj
-aGlsZF9zdGFjazsKPiA+ICsKPiA+ICsvKiBUTFMgdmFyaWFibGUgdG8gdmFsaWRhdGUgaW4gY2hp
-bGQgKi8KPiA+ICtzdGF0aWMgX190aHJlYWQgaW50IHRsc192YXIgPSAwOwo+ID4gKwo+ID4gK3N0
-YXRpYyBpbnQgdGVzdF9mbGFncyA9IENMT05FX1RIUkVBRCB8ICBDTE9ORV9WTSB8IENMT05FX0ZT
-IHwKPiBDTE9ORV9GSUxFUyB8IENMT05FX1NJR0hBTkQgfCBDTE9ORV9TRVRUTFM7Cj4gPiArCj4g
-PiArc3RhdGljIGludCBjaGVja190bHNfaW5fY2hpbGQodm9pZCkKPiA+ICt7Cj4gPiArICAgICB0
-bHNfdmFyID0gVExTX0VYUCArIDE7Cj4gPiArICAgICB0c3RfcmVzKFRJTkZPLCAiQ2hpbGQgKFBJ
-RDogJWQsIFRJRDogJWQpOiBUTFMgdmFsdWUgc2V0IHRvOiAlZCIsCj4gZ2V0cGlkKCksICBnZXR0
-aWQoKSwgdGxzX3Zhcik7Cj4gPiArCj4gPiArICAgICBUU1RfQ0hFQ0tQT0lOVF9XQUtFKDApOwo+
-ID4gKyAgICAgdHN0X3N5c2NhbGwoX19OUl9leGl0LCAwKTsKPiA+ICsgICAgIHJldHVybiAwOwo+
-ID4gK30KPiA+ICsKPiA+ICtzdGF0aWMgdm9pZCBydW4odm9pZCkKPiA+ICt7Cj4gPiArICAgICBw
-aWRfdCBwaWQ7Cj4gPiArICAgICB0bHNfdmFyID0gVExTX0VYUDsKPiA+ICsKPiA+ICsgICAgIGFy
-Z3MtPmZsYWdzID0gdGVzdF9mbGFnczsKPiA+ICsgICAgIGFyZ3MtPnBpZGZkID0gKHVpbnQ2NF90
-KSgmcGlkZmQpOwo+ID4gKyAgICAgYXJncy0+Y2hpbGRfdGlkID0gKHVpbnQ2NF90KSgmY2hpbGRf
-dGlkKTsKPiA+ICsgICAgIGFyZ3MtPnBhcmVudF90aWQgPSAodWludDY0X3QpKCZwYXJlbnRfdGlk
-KTsKPiA+ICsgICAgIGFyZ3MtPnN0YWNrID0gKHVpbnQ2NF90KShjaGlsZF9zdGFjayk7Cj4gPiAr
-ICAgICBhcmdzLT5zdGFja19zaXplID0gQ0hJTERfU1RBQ0tfU0laRTsKPiA+ICsgICAgIGFyZ3Mt
-PnRscyA9ICh1aW50NjRfdCl0bHNfcHRyOwo+ID4gKwo+ID4gKyAgICAgVEVTVChwaWQgPSBjbG9u
-ZTMoYXJncywgc2l6ZW9mKCphcmdzKSkpOwo+ID4gKwo+ID4gKyAgICAgaWYgKFRTVF9SRVQgPT0g
-LTEpCj4gPiArICAgICAgICAgICAgIHRzdF9icmsoVEJST0sgfCBUVEVSUk5PLCAiY2xvbmUoKSBm
-YWlsZWQiKTsKPiA+ICsKPiA+ICsgICAgIGlmICghcGlkKQo+ID4gKyAgICAgICAgICAgICBjaGVj
-a190bHNfaW5fY2hpbGQoKTsKPiA+ICsKPiA+ICsgICAgIFRTVF9DSEVDS1BPSU5UX1dBSVQoMCk7
-Cj4gPiArCj4gPiArICAgICBpZiAoVExTX0VYUCA9PSB0bHNfdmFyKSB7Cj4gPiArICAgICAgICAg
-ICAgIHRzdF9yZXMoVFBBU1MsCj4gPiArICAgICAgICAgICAgICAgICAgICAgIlBhcmVudCAoUElE
-OiAlZCwgVElEOiAlZCk6IFRMUyB2YWx1ZSBjb3JyZWN0OiAlZCIsCj4gPiArICAgICAgICAgICAg
-ICAgICAgICAgZ2V0cGlkKCksIGdldHRpZCgpLCB0bHNfdmFyKTsKPiA+ICsgICAgIH0gZWxzZSB7
-Cj4gPiArICAgICAgICAgICAgIHRzdF9yZXMoVEZBSUwsCj4gPiArICAgICAgICAgICAgICAgICAg
-ICAgIlBhcmVudCAoUElEOiAlZCwgVElEOiAlZCk6IFRMUyB2YWx1ZSBtaXNtYXRjaDoKPiBnb3Qg
-JWQsIGV4cGVjdGVkICVkIiwKPiA+ICsgICAgICAgICAgICAgICAgICAgICBnZXRwaWQoKSwgZ2V0
-dGlkKCksIHRsc192YXIsIFRMU19FWFApOwo+ID4gKyAgICAgfQo+ID4gK30KPiA+ICsKPiA+ICtz
-dGF0aWMgdm9pZCBzZXR1cCh2b2lkKQo+ID4gK3sKPiA+ICsgICAgIGNsb25lM19zdXBwb3J0ZWRf
-Ynlfa2VybmVsKCk7Cj4gPiArICAgICBjaGlsZF9zdGFjayA9IFNBRkVfTUFMTE9DKENISUxEX1NU
-QUNLX1NJWkUpOwo+ID4gKyAgICAgaW5pdF90bHMoKTsKPiA+ICt9Cj4gPiArCj4gPiArc3RhdGlj
-IHZvaWQgY2xlYW51cCh2b2lkKQo+ID4gK3sKPiA+ICsgICAgIGZyZWUoY2hpbGRfc3RhY2spOwo+
-ID4gKyAgICAgZnJlZV90bHMoKTsKPiA+ICt9Cj4gPiArCj4gPiArc3RhdGljIHN0cnVjdCB0c3Rf
-dGVzdCB0ZXN0ID0gewo+ID4gKyAgICAgLnNldHVwID0gc2V0dXAsCj4gPiArICAgICAuY2xlYW51
-cCA9IGNsZWFudXAsCj4gPiArICAgICAubmVlZHNfY2hlY2twb2ludHMgPSAxLAo+ID4gKyAgICAg
-LnRlc3RfYWxsID0gcnVuLAo+ID4gKyAgICAgLmJ1ZnMgPSAoc3RydWN0IHRzdF9idWZmZXJzIFtd
-KSB7Cj4gPiArICAgICAgICAgICAgIHsmYXJncywgLnNpemUgPSBzaXplb2YoKmFyZ3MpfSwKPiA+
-ICsgICAgICAgICAgICAge30sCj4gPiArICAgICB9Cj4gPiArfTsKPiA+IC0tCj4gPiAyLjQzLjUK
-PiA+Cj4gPgo+ID4gLS0KPiA+IE1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4
-Lml0L2xpc3RpbmZvL2x0cAo+Cj4gLS0KPiBDeXJpbCBIcnViaXMKPiBjaHJ1YmlzQHN1c2UuY3oK
-Pgo+CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGlu
-Zm8vbHRwCg==
+tls parameter and related flag:CLONE_SETTLS are missed in the testing,
+so add them into existed test case
+
+Signed-off-by: chunfuwen <chwen@redhat.com>
+---
+Changes in v12:
+- Fix make check reporting errors and warnings
+- Add the __NR_exit
+
+Changes in v11:
+- Put the tls init/alloc/free functions into a common header in lapi/tls.h
+- Use TST_CHECKPOINT_* for parent/child synchronization
+
+Changes in v10:
+- Fix fedora42 failure by adding tcb
+- Add missing usleep(1000) in free_tls
+
+Changes in v9:
+- allow small delay by using usleep before call free_tls
+- validate ./clone10 -i 10 on aarch64 and x86_64, both pass
+
+Changes in v8:
+- call free_tls() in touch_tls_in_child instead of cleanup
+- remove CFLAGS += -fsanitize=address in Makefile to fix memory double free
+  issue
+
+Changes in v7:
+- remove unnecessary in verify_tls()
+- add CFLAGS += -fsanitize=address in Makefile to fix memory double free
+  issue
+
+Changes in v6:
+- update flag to effective combination
+- combine x86_64 with other arches
+- rename child function
+- remove inproper exit
+- remove unused code lines
+- remove sleep statement
+Changes in v5:
+- wrap duplicate code into one single methold
+- remove duplicately malloc
+
+Changes in v4:
+- remove riscv and loongarch definition
+
+Changes in v3:
+- fix missing head file for x86
+
+Changes in v2:
+- create separate files for clone and clone3
+
+---
+ include/lapi/tls.h                          | 102 ++++++++++++++++++
+ runtest/syscalls                            |   2 +
+ testcases/kernel/syscalls/clone/.gitignore  |   1 +
+ testcases/kernel/syscalls/clone/clone10.c   | 100 +++++++++++++++++
+ testcases/kernel/syscalls/clone3/.gitignore |   1 +
+ testcases/kernel/syscalls/clone3/clone304.c | 114 ++++++++++++++++++++
+ 6 files changed, 320 insertions(+)
+ create mode 100644 include/lapi/tls.h
+ create mode 100644 testcases/kernel/syscalls/clone/clone10.c
+ create mode 100644 testcases/kernel/syscalls/clone3/clone304.c
+
+diff --git a/include/lapi/tls.h b/include/lapi/tls.h
+new file mode 100644
+index 000000000..801e765a3
+--- /dev/null
++++ b/include/lapi/tls.h
+@@ -0,0 +1,102 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Red Hat Inc. All Rights Reserved.
++ * Author: Chunfu Wen <chwen@redhat.com>
++ */
++
++/*\
++ * tls init/alloc/free common functions
++ */
++
++#ifndef _LAPI_TLS_H
++#define _LAPI_TLS_H
++
++#include <stdlib.h>
++#include <string.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <unistd.h>
++
++#if defined(__i386__)
++#include <asm/ldt.h>
++#endif
++
++#include "tst_test.h"
++
++#define TLS_SIZE 4096
++#define TLS_ALIGN 16
++
++#if defined(__x86_64__)
++// Structure mimicking glibc's TCB to be simplified for x86_64
++typedef struct {
++    void *tcb;
++    void *dtv;
++    void *self;
++    int multiple_threads;
++    char padding[64];
++} tcb_t;
++#endif
++
++// Global pointers for TLS management
++extern void *tls_ptr;
++extern struct user_desc *tls_desc;
++
++static inline void *allocate_tls_area(void)
++{
++	void *tls_area = aligned_alloc(TLS_ALIGN, TLS_SIZE);
++	if (!tls_area)
++	        tst_brk(TBROK | TERRNO, "aligned_alloc failed");
++	memset(tls_area, 0, TLS_SIZE);
++
++#if defined(__x86_64__)
++	// Set up a minimal TCB for x86_64
++	tcb_t *tcb = (tcb_t *)tls_area;
++	tcb->tcb = tls_area;
++	tcb->self = tls_area;
++	tcb->multiple_threads = 1;
++#endif
++	return tls_area;
++}
++
++static inline void init_tls(void)
++{
++#if defined(__x86_64__) || defined(__aarch64__) || defined(__s390x__)
++	tls_ptr = allocate_tls_area();
++
++#elif defined(__i386__)
++	tls_ptr = allocate_tls_area();
++	tls_desc = SAFE_MALLOC(sizeof(*tls_desc));
++	memset(tls_desc, 0, sizeof(*tls_desc));
++	tls_desc->entry_number = -1;
++	tls_desc->base_addr = (unsigned long)tls_ptr;
++	tls_desc->limit = TLS_SIZE;
++	tls_desc->seg_32bit = 1;
++	tls_desc->contents = 0;
++	tls_desc->read_exec_only = 0;
++	tls_desc->limit_in_pages = 0;
++	tls_desc->seg_not_present = 0;
++	tls_desc->useable = 1;
++
++#else
++	tst_brk(TCONF, "Unsupported architecture for TLS");
++#endif
++}
++
++static inline void free_tls(void)
++{
++	usleep(1000);
++#if defined(__x86_64__) || defined(__aarch64__) || defined(__s390x__)
++	if (tls_ptr) {
++		free(tls_ptr);
++		tls_ptr = NULL;
++	}
++#elif defined(__i386__)
++	if (tls_desc) {
++		free((void *)(uintptr_t)tls_desc->base_addr);
++		free(tls_desc);
++		tls_desc = NULL;
++	}
++#endif
++}
++
++#endif // _LAPI_TLS_H
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 844ae7a13..10f64270a 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -122,10 +122,12 @@ clone06 clone06
+ clone07 clone07
+ clone08 clone08
+ clone09 clone09
++clone10 clone10
+ 
+ clone301 clone301
+ clone302 clone302
+ clone303 clone303
++clone304 clone304
+ 
+ close01 close01
+ close02 close02
+diff --git a/testcases/kernel/syscalls/clone/.gitignore b/testcases/kernel/syscalls/clone/.gitignore
+index 900cac19c..adfb8257d 100644
+--- a/testcases/kernel/syscalls/clone/.gitignore
++++ b/testcases/kernel/syscalls/clone/.gitignore
+@@ -7,3 +7,4 @@
+ /clone07
+ /clone08
+ /clone09
++/clone10
+diff --git a/testcases/kernel/syscalls/clone/clone10.c b/testcases/kernel/syscalls/clone/clone10.c
+new file mode 100644
+index 000000000..c66b207c7
+--- /dev/null
++++ b/testcases/kernel/syscalls/clone/clone10.c
+@@ -0,0 +1,100 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Red Hat Inc. All Rights Reserved.
++ * Author: Chunfu Wen <chwen@redhat.com>
++ */
++
++/*\
++ * Test that in a thread started by clone() that runs in the same address
++ * space (CLONE_VM) but with a different TLS (CLONE_SETTLS) writtes to a
++ * thread local variables are not propagated back from the cloned thread.
++ */
++
++#define _GNU_SOURCE
++#include <stdlib.h>
++#include <stdio.h>
++#include <errno.h>
++#include <sched.h>
++#include <sys/wait.h>
++
++#if defined(__i386__)
++#include <asm/ldt.h>
++#endif
++
++#include "tst_test.h"
++#include "clone_platform.h"
++#include "lapi/syscalls.h"
++#include "lapi/tls.h"
++
++#define TLS_EXP 100
++
++#ifndef ARCH_SET_FS
++#define ARCH_SET_FS 0x1002
++#endif
++
++// Global pointers for TLS management
++void *tls_ptr;
++struct user_desc *tls_desc;
++
++static __thread int tls_var;
++
++static char *child_stack;
++static volatile int child_done;
++
++static int flags = CLONE_THREAD |  CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_SETTLS;
++
++static int touch_tls_in_child(void *arg LTP_ATTRIBUTE_UNUSED)
++{
++#if defined(__x86_64__)
++	// Set the %fs register to point to the TCB
++	if (syscall(SYS_arch_prctl, ARCH_SET_FS, tls_ptr) == -1)
++		exit(EXIT_FAILURE);
++#endif
++	tls_var = TLS_EXP + 1;
++	tst_res(TINFO, "Child (PID: %d, TID: %d): TLS value set to: %d", getpid(),  gettid(), tls_var);
++
++	TST_CHECKPOINT_WAKE(0);
++	free_tls();
++	tst_syscall(__NR_exit, 0);
++	return 0;
++}
++
++static void verify_tls(void)
++{
++	tls_var = TLS_EXP;
++
++	TEST(ltp_clone7(flags, touch_tls_in_child, NULL, CHILD_STACK_SIZE, child_stack, NULL, tls_ptr, NULL));
++
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "clone() failed");
++
++	TST_CHECKPOINT_WAIT(0);
++
++	if (tls_var == TLS_EXP) {
++		tst_res(TPASS,
++			"Parent (PID: %d, TID: %d): TLS value correct: %d",
++			getpid(), gettid(), tls_var);
++	} else {
++		tst_res(TFAIL,
++			"Parent (PID: %d, TID: %d): TLS value mismatch: got %d, expected %d",
++			getpid(), gettid(), tls_var, TLS_EXP);
++	}
++}
++
++static void setup(void)
++{
++	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
++	init_tls();
++}
++
++static void cleanup(void)
++{
++	free(child_stack);
++}
++
++static struct tst_test test = {
++	    .setup = setup,
++	    .cleanup = cleanup,
++	    .needs_checkpoints = 1,
++	    .test_all = verify_tls,
++};
+diff --git a/testcases/kernel/syscalls/clone3/.gitignore b/testcases/kernel/syscalls/clone3/.gitignore
+index 10369954b..e9b5312f4 100644
+--- a/testcases/kernel/syscalls/clone3/.gitignore
++++ b/testcases/kernel/syscalls/clone3/.gitignore
+@@ -1,3 +1,4 @@
+ clone301
+ clone302
+ clone303
++clone304
+diff --git a/testcases/kernel/syscalls/clone3/clone304.c b/testcases/kernel/syscalls/clone3/clone304.c
+new file mode 100644
+index 000000000..53716ac4b
+--- /dev/null
++++ b/testcases/kernel/syscalls/clone3/clone304.c
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Red Hat Inc. All Rights Reserved.
++ * Author: Chunfu Wen <chwen@redhat.com>
++ */
++
++/*\
++ * Test that in a thread started by clone3() that runs in the same address
++ * space (CLONE_VM) but with a different TLS (CLONE_SETTLS) writtes to a
++ * thread local variables are not propagated back from the cloned thread.
++ */
++
++#define _GNU_SOURCE
++
++#include <stdlib.h>
++#include <sys/wait.h>
++
++#if defined(__i386__)
++#include <asm/ldt.h>
++#endif
++
++#include "tst_test.h"
++#include "lapi/sched.h"
++#include "lapi/pidfd.h"
++#include "lapi/tls.h"
++
++#define TLS_EXP 100
++
++#define CHILD_STACK_SIZE (1024*1024)
++
++// Global pointers for TLS management
++void *tls_ptr;
++struct user_desc *tls_desc;
++
++static int pidfd, child_tid, parent_tid;
++static struct clone_args *args;
++static void *child_stack;
++
++/* TLS variable to validate in child */
++static __thread int tls_var;
++
++static volatile int child_done;
++
++static int test_flags = CLONE_THREAD |  CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_SETTLS;
++
++static int check_tls_in_child(void)
++{
++	tls_var = TLS_EXP + 1;
++	tst_res(TINFO, "Child (PID: %d, TID: %d): TLS value set to: %d", getpid(),  gettid(), tls_var);
++
++	child_done = 1;
++	tst_syscall(__NR_exit, 0);
++	return 0;
++}
++
++static void run(void)
++{
++	pid_t pid;
++
++	tls_var = TLS_EXP;
++
++	args->flags = test_flags;
++	args->pidfd = (uint64_t)(&pidfd);
++	args->child_tid = (uint64_t)(&child_tid);
++	args->parent_tid = (uint64_t)(&parent_tid);
++	args->stack = (uint64_t)(child_stack);
++	args->stack_size = CHILD_STACK_SIZE;
++	args->tls = (uint64_t)tls_ptr;
++
++	TEST(pid = clone3(args, sizeof(*args)));
++
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "clone() failed");
++
++	if (!pid)
++		check_tls_in_child();
++
++	while (!child_done)
++		sched_yield();
++
++	if (tls_var == TLS_EXP) {
++		tst_res(TPASS,
++			"Parent (PID: %d, TID: %d): TLS value correct: %d",
++			getpid(), gettid(), tls_var);
++	} else {
++		tst_res(TFAIL,
++			"Parent (PID: %d, TID: %d): TLS value mismatch: got %d, expected %d",
++			getpid(), gettid(), tls_var, TLS_EXP);
++	}
++}
++
++static void setup(void)
++{
++	clone3_supported_by_kernel();
++	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
++	init_tls();
++}
++
++static void cleanup(void)
++{
++	free(child_stack);
++	free_tls();
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_checkpoints = 1,
++	.test_all = run,
++	.bufs = (struct tst_buffers []) {
++		{&args, .size = sizeof(*args)},
++		{},
++	}
++};
+-- 
+2.43.5
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
