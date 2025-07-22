@@ -4,116 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F880C83F25
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 08:03:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0C20C83F25
+	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 08:32:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4E03B3CCC78
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 10:03:47 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 7440D3CCC78
+	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 10:32:50 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7514F3CB8B7
- for <ltp@lists.linux.it>; Tue, 22 Jul 2025 10:03:29 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 8C7C83C1CE9
+ for <ltp@lists.linux.it>; Tue, 22 Jul 2025 10:32:33 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A03C11000A50
- for <ltp@lists.linux.it>; Tue, 22 Jul 2025 10:03:28 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AF6251400043
+ for <ltp@lists.linux.it>; Tue, 22 Jul 2025 10:32:32 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5472A1F785;
- Tue, 22 Jul 2025 08:03:24 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D71CC1FB3F;
+ Tue, 22 Jul 2025 08:32:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1753171405;
+ t=1753173151;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/RW/BQs9JtOTtL8OdaMrQlI9hDp0KoAb1coznKv9LEA=;
- b=VGhEZzJS8AZcJ7eK+rOb3C+bLI1c1LA/pFO/TPbOPU8LyEQK2xptLRV0DZMw8zmEGKxlCQ
- wBpe2E35hq1mew4wVXuqoelevib1KBy8/Tqw5kIBbqu9p64d478WZG8Uyl8fQJ1xrmiwZb
- PeXCggzMZR7NZqRJU5EEQfjcnd1lEXk=
+ bh=boXWKL7GWIHnoRsxVXkSfDPAVDIgPKFsUyTyeytbmqc=;
+ b=Y6V8BuVzteRPVQXqnpUuB3jioeiu+f2gp4IK2M/oidWsj5bmztsm4FowwzLh5fb+B515yt
+ 9TOIMS2u5ALEectDA76D+wxzA4QP+4IVwxainK1X9fUHj8ymUz6aHpGA1P0zx+LAJFuxDE
+ I5ZbHQ57owq0w9KzKT8kwRJWARIdBqQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1753171405;
+ s=susede2_ed25519; t=1753173151;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/RW/BQs9JtOTtL8OdaMrQlI9hDp0KoAb1coznKv9LEA=;
- b=IyijJCutUnfXX+M+4BQyiDoF3Sl57JxkMYllsO5xcgo2zcgXy4qu7/Oe7OPZk2JtxLYn5E
- 7BJiLSu9gXt8HZDA==
+ bh=boXWKL7GWIHnoRsxVXkSfDPAVDIgPKFsUyTyeytbmqc=;
+ b=Opm9//eOz8wAKPEcyEMBvxEDzlmnmXDEqxNpjCOo5tKpJ63XqFq0AyGdrB4hGLZ1sVXAuy
+ UfvE9eLnDBYmvZBw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FMTV5CCE;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="/UWs8N8E"
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1753171404;
+ t=1753173150;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/RW/BQs9JtOTtL8OdaMrQlI9hDp0KoAb1coznKv9LEA=;
- b=FMTV5CCE/WhUub5pm3ms8wciAM5yv/VuwpnOVQSpSIQPX46D8t/YxcoQr5p6D1frIIoIpX
- C7HKnFpS/Rp4a+6myJVXHmdGggJfdZdNv0OsY1M+/5nwnDWt53FA7Fxqutcydh7anAnIrf
- ujM2KnxoQ3Ff9Dkp2ty+ytir9MVRcAU=
+ bh=boXWKL7GWIHnoRsxVXkSfDPAVDIgPKFsUyTyeytbmqc=;
+ b=ZLvBWoZiIkArlXIxhw/z90a/iDadtMaZQaMcjVgYaonD+a0pp2JJzoDo4qFoZA/jIyv3pJ
+ 1HltC0QZspObf8IHM1Yr7jzxDu0dsjfICX+9UPrDABDsYMts5SzaoRFpmHTwZSN8IoJ5xx
+ bFoYlgv+x1/3qMdgA9+6UZ0NJmzi8Q8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1753171404;
+ s=susede2_ed25519; t=1753173150;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/RW/BQs9JtOTtL8OdaMrQlI9hDp0KoAb1coznKv9LEA=;
- b=/UWs8N8EYZDS9Nm5pKEJauRe2Sppr7rnVtOCAB9OqCy2+NIGBro8fTUnz9YQgyHQlMmy0H
- COhGjM7QfZn6wPCg==
+ bh=boXWKL7GWIHnoRsxVXkSfDPAVDIgPKFsUyTyeytbmqc=;
+ b=dSLYETvSd2o40+/eB1BZgnJhOiUdLnKya/A75VDYs+yjGfKMg4m6NTYgC1XI3BKpW+CVFd
+ uG1qyxsN0qaCvwDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 212E8132EA;
- Tue, 22 Jul 2025 08:03:24 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B2BAA132EA;
+ Tue, 22 Jul 2025 08:32:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Q0H3BsxFf2iSBgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 22 Jul 2025 08:03:24 +0000
-Date: Tue, 22 Jul 2025 10:03:22 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id zR/wKZ5Mf2g/EAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 22 Jul 2025 08:32:30 +0000
+Date: Tue, 22 Jul 2025 10:32:21 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>, Li Wang <liwang@redhat.com>,
- Jan Stancek <jstancek@redhat.com>
-Message-ID: <20250722080322.GA19816@pevik>
-References: <20250718162928.71364-1-mdoucha@suse.cz>
- <64694997-ff37-4a60-80cd-b780616bdf98@suse.com>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20250722083221.GB19816@pevik>
+References: <20250721154946.34223-1-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <64694997-ff37-4a60-80cd-b780616bdf98@suse.com>
-X-Rspamd-Queue-Id: 5472A1F785
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+In-Reply-To: <20250721154946.34223-1-mdoucha@suse.cz>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; REPLYTO_EQ_FROM(0.00)[];
- ARC_NA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_FIVE(0.00)[6];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:replyto];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- SUBJECT_HAS_QUESTION(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [RFC] .all_filesystems imply .needs_root? [was Re: [PATCH]
- open14: Rewrite to new API]
+Subject: Re: [LTP] [PATCH v2] open14: Rewrite to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -132,73 +115,75 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Martin,
+
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+
+> Changes since v1:
+> - Added subtest info to test description
+> - Added .needs_root = 1
+Thank you!
 
 ...
-> > +static struct tst_test test = {
-> > +	.setup = setup,
-> > +	.test_all = run,
-> > +	.cleanup = cleanup,
-> > +	.mntpoint = MNTPOINT,
-> > +	.all_filesystems = 1
-> We need .needs_root if we acquire a device.
+> -#define _GNU_SOURCE
+I also think that _GNU_SOURCE is not needed, hopefully this will not break some
+non-glibc libc. But it looks to be ok for MUSL and uclibc-ng follows glibc API.
 
-We LTP library allows to run test under non-root user with rw permissions to
-/dev/loop-control:
+> -#include <sys/types.h>
+> -#include <sys/stat.h>
+> -#include <unistd.h>
+> -#include <errno.h>
+> +/*\
+> + * Check the functionality of O_TMPFILE flag for open() syscall:
+Unfortunately, this requires a blank line otherwise the text in generated doc [1] will be inline:
 
-tst_device.c:110: TINFO: Not allowed to open /dev/loop-control. Are you root?: EACCES (13)
-tst_device.c:149: TINFO: No free devices found
-tst_device.c:362: TBROK: Failed to acquire device
+Check the functionality of O_TMPFILE flag for open() syscall: 1) Creation and linking (naming) of a single temp file 2) Creation of multiple unlinked temp files in a hierarchy of directories 3) Access permissions of linked temp files match creation mode argument
 
-In openSUSE that would be to run tests with user which is in disk group.
-Although this should theoretically work, root is often required for something
-else:
+I plan to modify doc/conf.py to add this blank line if it's missing. (I would
+prefer this would be already in json generated metadata/metaparse.c but Cyril
+wanted to be in the code which generates output from JSON.
 
-$ open14
+[1] https://linux-test-project.readthedocs.io/en/latest/users/test_catalog.html#open14
+
+> + * 1) Creation and linking (naming) of a single temp file
+> + * 2) Creation of multiple unlinked temp files in a hierarchy of directories
+> + * 3) Access permissions of linked temp files match creation mode argument
+> + */
 ...
-tst_supported_fs_types.c:49: TINFO: mkfs is not needed for tmpfs
-tst_test.c:1938: TINFO: === Testing on ext2 ===
-...
-open14.c:141: TINFO: Closing temporary files
-open14.c:146: TPASS: Multiple files test passed
-open14.c:168: TINFO: Testing linked temp files access mode
-open14.c:186: TFAIL: Unexpected access mode: 1755 != 7755
-open14.c:186: TFAIL: Unexpected access mode: 1755 != 7755
-open14.c:186: TFAIL: Unexpected access mode: 1755 != 7755
-open14.c:186: TFAIL: Unexpected access mode: 1755 != 7755
-open14.c:186: TFAIL: Unexpected access mode: 1755 != 7755
 
-Obviously with root everything works:
-...
-open14.c:193: TPASS: File access modes are correct
+>  	for (i = 0; i < blocks_num; ++i)
+> -		SAFE_WRITE(cleanup, SAFE_WRITE_ALL, fd, buf, size);
+> +		SAFE_WRITE(1, fd, buf, size);
+Although SAFE_WRITE_ALL is ugly it's IMHO more descriptive than 1.
+It's also more widely used in LTP tests than 1, but I'm ok with it.
 
-Also I'm not sure if anybody would bother with configuring group for a test
-user. I suppose most of testers run LTP under root.
+The rest LGTM.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Also, not all tests define needs_device for these tests:
-
-$ git grep -l -e needs_device -e all_filesystems testcases/ | wc -l
-121
-
-$ git grep -l needs_root $(git grep -l -e needs_device -e all_filesystems testcases/) | wc -l
-108
-
-Therefore I wonder if we should just imply .needs_root on .all_filesystems (and
-other flags). Also doc could be tweaked to show .needs_root in the test catalog
-for these tests [1].
-
-And there are other flags which effectively enforce root, e.g. .mount_device
-(mount() requires CAP_SYS_ADMIN). Here IMHO implying root makes even more sense.
+If you don't mind I would amend the code before merge (diff below).
 
 Kind regards,
 Petr
 
-[1] https://linux-test-project.readthedocs.io/en/latest/users/test_catalog.html
-
-> > +};
-...
-
-> - Andrea
++++ testcases/kernel/syscalls/open/open14.c
+@@ -7,6 +7,7 @@
+ 
+ /*\
+  * Check the functionality of O_TMPFILE flag for open() syscall:
++ *
+  * 1) Creation and linking (naming) of a single temp file
+  * 2) Creation of multiple unlinked temp files in a hierarchy of directories
+  * 3) Access permissions of linked temp files match creation mode argument
+@@ -53,7 +54,7 @@ static void write_file(int fd)
+ 		SAFE_WRITE(1, fd, buf, size);
+ }
+ 
+-void test01(void)
++static void test01(void)
+ {
+ 	struct stat st;
+ 	char path[PATH_MAX];
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
