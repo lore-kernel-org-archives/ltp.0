@@ -4,112 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62F3CC83F27
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 13:51:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAB3BC83F27
+	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 14:11:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E5D6C3CCCCC
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 15:51:10 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 5DC7C3CCD2B
+	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 16:11:24 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4B8413C58D0
- for <ltp@lists.linux.it>; Tue, 22 Jul 2025 15:50:53 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id B60F33CAD64
+ for <ltp@lists.linux.it>; Tue, 22 Jul 2025 16:11:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8D862600866
- for <ltp@lists.linux.it>; Tue, 22 Jul 2025 15:50:52 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AD658600CC7
+ for <ltp@lists.linux.it>; Tue, 22 Jul 2025 16:11:07 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7523C2121A;
- Tue, 22 Jul 2025 13:50:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1753192251;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DgeJXPfYMI3yalQSdZxfZdgdWFe+DHRFpjFSkmFBoSY=;
- b=cJbNamUSEo3n1ITQEAGXILii0szuLPGe9ZjAMdVgqb/eHFkojjrKF9yHA4AAFAxXvLL4kP
- vPJN06Zbx6XWeDvAwKBlqSXqGCZ8c67AeHV7PqhyaGtV3UIhVih2VLdwqY3Hw7mfWPzw/N
- Xu1ORQzH0jY2R7OG4o/EV1rYwtiffaw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1753192251;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DgeJXPfYMI3yalQSdZxfZdgdWFe+DHRFpjFSkmFBoSY=;
- b=FK+eNgqKNahipJtLYLp2pa/MTCNSXK6vVlaBK5G7OJLW39MGuz88W0boJsENRh4PwLbw6P
- FSpW5Aw0b8s4HQAA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5C4952116B;
+ Tue, 22 Jul 2025 14:11:06 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=cJbNamUS;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FK+eNgqK
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1753192251;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DgeJXPfYMI3yalQSdZxfZdgdWFe+DHRFpjFSkmFBoSY=;
- b=cJbNamUSEo3n1ITQEAGXILii0szuLPGe9ZjAMdVgqb/eHFkojjrKF9yHA4AAFAxXvLL4kP
- vPJN06Zbx6XWeDvAwKBlqSXqGCZ8c67AeHV7PqhyaGtV3UIhVih2VLdwqY3Hw7mfWPzw/N
- Xu1ORQzH0jY2R7OG4o/EV1rYwtiffaw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1753192251;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DgeJXPfYMI3yalQSdZxfZdgdWFe+DHRFpjFSkmFBoSY=;
- b=FK+eNgqKNahipJtLYLp2pa/MTCNSXK6vVlaBK5G7OJLW39MGuz88W0boJsENRh4PwLbw6P
- FSpW5Aw0b8s4HQAA==
+	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4135113A32;
- Tue, 22 Jul 2025 13:50:51 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2BC27132EA;
+ Tue, 22 Jul 2025 14:11:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id uHVODjuXf2h4GwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 22 Jul 2025 13:50:51 +0000
-Date: Tue, 22 Jul 2025 15:50:49 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Or97Cfqbf2gsIgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 22 Jul 2025 14:11:06 +0000
+Date: Tue, 22 Jul 2025 16:11:04 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Jan Kara <jack@suse.cz>
-Message-ID: <20250722135049.GB84869@pevik>
-References: <20250326142259.50981-1-pvorel@suse.cz> <aHEccDO8lJiTzbEs@yuki.lan>
- <20250722102346.GA6890@pevik>
- <azo7y22pblcngf6y5xkzda5cew4p3kxylfse7i32hixjtld2mh@ml2bonivmpbe>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20250722141104.GC84869@pevik>
+References: <20250722-xattr_bug_repr-v4-0-4be1e52e97c6@suse.com>
+ <20250722-xattr_bug_repr-v4-2-4be1e52e97c6@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <azo7y22pblcngf6y5xkzda5cew4p3kxylfse7i32hixjtld2mh@ml2bonivmpbe>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_SEVEN(0.00)[7];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: 7523C2121A
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+In-Reply-To: <20250722-xattr_bug_repr-v4-2-4be1e52e97c6@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
+ TAGGED_RCPT(0.00)[]
+X-Rspamd-Queue-Id: 5C4952116B
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] ioctl_ficlone03.c: Support test on more
- filesystems
+Subject: Re: [LTP] [PATCH v4 2/2] Add listxattr04 reproducer
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,71 +73,193 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org, ltp@lists.linux.it
+Cc: linux-fsdevel@vger.kernel.org, selinux@vger.kernel.org,
+ Stephen Smalley <stephen.smalley.work@gmail.com>,
+ Paul Eggert <eggert@cs.ucla.edu>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan, all,
+Hi Andrea,
 
-> Hi!
+FYI Andrea's LTP reproducer for a bug introduced in
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8b0ba61df5a1
+and fixed in
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=800d0b9b6a8b
 
-> On Tue 22-07-25 12:23:46, Petr Vorel wrote:
-> > ...
-> > > >  static void setup(void)
+> From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-> > > I find it strange that we manage to set the FS_IMMUTABLE_FL in the setup
-> > > with the FS_IOC_SETFLAGS without any error. Maybe it would make sense to
-> > > check with ext devs what is going on here.
+> Test reproducer for a bug introduced in 8b0ba61df5a1 ("fs/xattr.c: fix
+> simple_xattr_list to always include security.* xattrs").
 
-> > > > @@ -117,6 +123,10 @@ static struct tst_test test = {
-> > > >  			.mkfs_ver = "mkfs.xfs >= 1.5.0",
-> > > >  			.mkfs_opts = (const char *const []) {"-m", "reflink=1", NULL},
-> > > >  		},
-> > > > +		{.type = "ext2"},
-> > > > +		{.type = "ext3"},
-> > > > +		{.type = "ext4"},
-> > > > +		{.type = "tmpfs"},
-> > > >  		{}
+> Bug can be reproduced when SELinux and ACL are activated on inodes as
+> following:
 
-> > While I was working on extending [1] LTP ioctl_ficlone03.c to run on more
-> > filesystems [2], I found that ext[2-4] don't support FS_IMMUTABLE_FL.
+>     $ touch testfile
+>     $ setfacl -m u:myuser:rwx testfile
+>     $ getfattr -dm. /tmp/testfile
+>     Segmentation fault (core dumped)
 
-> Why do you think FS_IMMUTABLE_FL is unsupported? ext2 was the filesystem
-> actually introducing it to the kernel ;)
+> The reason why this happens is that simple_xattr_list() always includes
+> security.* xattrs without resetting error flag after
+> security_inode_listsecurity(). This results into an incorrect length of the
+> returned xattr name if POSIX ACL is also applied on the inode.
 
-Lol, I should have git grep kernel sources and google before asking silly
-question :). Thanks for correcting me.
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+>  testcases/kernel/syscalls/listxattr/.gitignore    |   1 +
+>  testcases/kernel/syscalls/listxattr/Makefile      |   2 +
+>  testcases/kernel/syscalls/listxattr/listxattr04.c | 108 ++++++++++++++++++++++
+>  3 files changed, 111 insertions(+)
 
-> > 	immut_fd = open(MNTPOINT"/immutable", O_CREAT | O_RDWR, 0640);
-> > 	mnt_file = open(MNTPOINT"/file", O_CREAT | O_RDWR, 0640);
-> > 	int attr = FS_IMMUTABLE_FL;
-> > 	ioctl(immut_fd, FS_IOC_SETFLAGS, &attr);
-> > 	...
+> diff --git a/testcases/kernel/syscalls/listxattr/.gitignore b/testcases/kernel/syscalls/listxattr/.gitignore
+> index be0675a6df0080d176d53d70194442bbc9ed376c..0d672b6ea5eec03aab37ee89316c56e24356c1d9 100644
+> --- a/testcases/kernel/syscalls/listxattr/.gitignore
+> +++ b/testcases/kernel/syscalls/listxattr/.gitignore
+> @@ -1,3 +1,4 @@
+>  /listxattr01
+>  /listxattr02
+>  /listxattr03
+> +/listxattr04
+> diff --git a/testcases/kernel/syscalls/listxattr/Makefile b/testcases/kernel/syscalls/listxattr/Makefile
+> index c2f84b1590fc24a7a98f890ea7706771d944aa79..e96bb3fa4c2c6b14b8d2bc8fd4c475e4789d72fe 100644
+> --- a/testcases/kernel/syscalls/listxattr/Makefile
+> +++ b/testcases/kernel/syscalls/listxattr/Makefile
+> @@ -6,4 +6,6 @@ top_srcdir		?= ../../../..
 
-> > 	struct file_clone_range *clone_range;
-> > 	ioctl(immut_fd, FICLONE, mnt_file),
-> > 	ioctl(immut_fd, FICLONERANGE, clone_range),
+>  include $(top_srcdir)/include/mk/testcases.mk
 
-> > The last two ioctl() with FICLONE and FICLONERANGE get errno EOPNOTSUPP
-> > (instead of EPERM as on other fs). Cyril raised concern [3], why first
-> > ioctl() FS_IOC_SETFLAGS even works. Shouldn't it also gets EINVAL as
-> > vfat, exfat and ntfs get?
+> +listxattr04: LDLIBS	+= $(ACL_LIBS)
+> +
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/listxattr/listxattr04.c b/testcases/kernel/syscalls/listxattr/listxattr04.c
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..473ed45b5c2da8ff8e49c513eeb82158ec2dc066
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/listxattr/listxattr04.c
+> @@ -0,0 +1,108 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +/*\
+> + * Test reproducer for a bug introduced in 8b0ba61df5a1 ("fs/xattr.c: fix
+> + * simple_xattr_list to always include security.* xattrs").
+> + *
+> + * Bug can be reproduced when SELinux and ACL are activated on inodes as
+> + * following:
+> + *
+> + *     $ touch testfile
+> + *     $ setfacl -m u:myuser:rwx testfile
+> + *     $ getfattr -dm. /tmp/testfile
+> + *     Segmentation fault (core dumped)
+> + *
+> + * The reason why this happens is that simple_xattr_list() always includes
+> + * security.* xattrs without resetting error flag after
+> + * security_inode_listsecurity(). This results into an incorrect length of the
+> + * returned xattr name if POSIX ACL is also applied on the inode.
+> + */
+> +
+> +#include "config.h"
+> +#include "tst_test.h"
+> +
+> +#if defined(HAVE_SYS_XATTR_H) && defined(HAVE_LIBACL)
+> +
+> +#include <pwd.h>
+> +#include <sys/acl.h>
+> +#include <sys/xattr.h>
+> +
+> +#define ACL_PERM        "u::rw-,u:root:rwx,g::r--,o::r--,m::rwx"
+> +#define TEST_FILE       "test.bin"
+> +
+> +static acl_t acl;
+> +
+> +static void verify_xattr(const int size)
+> +{
+> +	char buf[size];
+> +
+> +	memset(buf, 0, sizeof(buf));
+> +
+> +	if (listxattr(TEST_FILE, buf, size) == -1) {
+> +		if (errno != ERANGE)
+> +			tst_brk(TBROK | TERRNO, "listxattr() error");
 
-> Unlink FICLONE and FICLONERANGE which are indeed unsupported on any ext?
-> based filesystem so EOPNOTSUPP seems like a correct answer to me.
-> So I'm confused where you see a problem.
+The original verifier from RH bugreport check sizes and also works if size > -1
+is returned, but I guess it's not necessary, because Andrea's reproducer works
+as expected (fails on affected 6.16-rc1 based openSUSE kernel, works on 6.15.x).
 
-Thanks for info, obviously there is no problem now :).
-I'll amend the commit message before merge that FICLONE and FICLONERANGE are not
-supported (not FS_IMMUTABLE_FL).
+LGTM.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
 
-> 								Honza
+[1] https://bugzilla.redhat.com/show_bug.cgi?id=2369561
+> +
+> +		tst_res(TFAIL, "listxattr() failed to read attributes length: ERANGE");
+> +		return;
+> +	}
+> +
+> +	tst_res(TPASS, "listxattr() correctly read attributes length");
+> +}
+> +
+> +static void run(void)
+> +{
+> +	int size;
+> +
+> +	size = listxattr(TEST_FILE, NULL, 0);
+> +	if (size == -1)
+> +		tst_brk(TBROK | TERRNO, "listxattr() error");
+> +
+> +	verify_xattr(size);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	int res;
+> +
+> +	if (!tst_selinux_enabled())
+> +		tst_brk(TCONF, "SELinux is not enabled");
+> +
+> +	SAFE_TOUCH(TEST_FILE, 0644, NULL);
+> +
+> +	acl = acl_from_text(ACL_PERM);
+> +	if (!acl)
+> +		tst_brk(TBROK | TERRNO, "acl_from_text() failed");
+> +
+> +	res = acl_set_file(TEST_FILE, ACL_TYPE_ACCESS, acl);
+> +	if (res == -1) {
+> +		if (errno == EOPNOTSUPP)
+> +			tst_brk(TCONF | TERRNO, "acl_set_file()");
+> +
+> +		tst_brk(TBROK | TERRNO, "acl_set_file(%s) failed", TEST_FILE);
+> +	}
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (acl)
+> +		acl_free(acl);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "800d0b9b6a8b"},
+> +		{}
+> +	}
+> +};
+> +
+> +#else /* HAVE_SYS_XATTR_H && HAVE_LIBACL */
+> +	TST_TEST_TCONF("<sys/xattr.h> or <sys/acl.h> does not exist.");
+> +#endif
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
