@@ -4,55 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4124C83F1A
-	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 01:18:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66C37C83F17
+	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 03:47:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1753242447; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=T33W4YNMz7Z1gIpZR4VaKBoJ/SVi/zRs897BTOUJi+A=;
+ b=KYoc9rQ7+7rzT9gWOiy1jkvTsU4tu9FV3EBoAkCfvXL/lyttLaTK34v/5OXZ5y7X1sqLV
+ tudoThN9/z0tyr4AFvFK3xO6EMLDH8tvs32MvNNb5qP4EPnfAmqnguK1+HXgrav/yxT3Waj
+ kGucKQ6MsD1EJ5DBb1RCIvhRlqZAM6g=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2E6753CCD39
-	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 03:18:32 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 99DFF3CCCCC
+	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 05:47:27 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 290B33CAE38
- for <ltp@lists.linux.it>; Wed, 23 Jul 2025 03:18:14 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
- by in-7.smtp.seeweb.it (Postfix) with ESMTP id 5A8842005D0
- for <ltp@lists.linux.it>; Wed, 23 Jul 2025 03:18:11 +0200 (CEST)
-Received: from loongson.cn (unknown [113.200.148.30])
- by gateway (Coremail) with SMTP id _____8AxDGtQOIBo7_ovAQ--.32218S3;
- Wed, 23 Jul 2025 09:18:09 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
- by front1 (Coremail) with SMTP id qMiowJBxzsFPOIBoC4giAA--.21870S2;
- Wed, 23 Jul 2025 09:18:07 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Linux Test Project <ltp@lists.linux.it>
-Date: Wed, 23 Jul 2025 09:18:06 +0800
-Message-ID: <20250723011807.15857-1-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
+ by picard.linux.it (Postfix) with ESMTPS id 5CF073CA60D
+ for <ltp@lists.linux.it>; Wed, 23 Jul 2025 05:47:06 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B7C2D100036C
+ for <ltp@lists.linux.it>; Wed, 23 Jul 2025 05:47:04 +0200 (CEST)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-455ecacfc32so28214645e9.3
+ for <ltp@lists.linux.it>; Tue, 22 Jul 2025 20:47:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1753242424; x=1753847224; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=5Ti0JIbQTtGQ3Jp1WIJKlWICAGQlqsxj59rfIKMTeBg=;
+ b=CPxRgFvfY5MoaX3AJHifgYvvZZjRpKlUedtwj/zMUwKG439tLTer0hIpgmWaLQJ/Ba
+ SzkTp54iROCsfwyyrkQOGeu8XaSBd8SagrjMrlA1UpwuoQejGj9R74AUJ8++UZ/9SI4Z
+ Hb4a4MeDjDDyvrfi6txRJk2RD/PpMATolPsIapYuTlGniKgso+1pZ3Qz7YzIlhCnqHzD
+ J8jr+0PxaDwNvmirabaTkjhvI0e37g9fEBHPbDs2ie9ABhiddFiClzaKDonoN7NjuI4v
+ DDoXEm3EJLX4/JItqgqEUFwMG/TpbsAeIwnwFEgbvZ3W68m4IXWrmGGkQnxnIgo78K3n
+ KgbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1753242424; x=1753847224;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=5Ti0JIbQTtGQ3Jp1WIJKlWICAGQlqsxj59rfIKMTeBg=;
+ b=f5nLVDRk8hNqNJrmB4vyOTELFfkvi4Lq6jS5EFhW+021+dfowI3yEQ8sLmER8fhZfx
+ kgKPi6bjPDBfuy3JRPuJysveglnaYsemHlh0MmWi3bJfSkgQC8HylP/uXCYao0LLWrO+
+ QoGmGhLqfFzApS2fOPifIsHnYYymAB3ccyLpwGjY+Dw2Yu9iRcL9RpnM//JLrUgc8pOi
+ +V83dKCLk0CNCqtmcWoI/I6BSIRymLLjoWNMPmeSpBYYYqcSf6AwSeaKuxkYLPOozJfD
+ 5MM7jBGfvWFclYlG/ib62F3MQVUOlV4zuDEs/BE5NiUdK/6nSOLSNDdX4HqPq07CnWH9
+ skFg==
+X-Gm-Message-State: AOJu0YwXPkkR7KKGk8iXXDdgikyJuZvszBDzp4K+7gsoU3m6g5Z8w6l4
+ i49hGrhaz8rD3bkiD1wv94tU/Ydylk4uQhQsTnB+4kpfSEZRdskDVNtmzmBvHIjE5qCsmSqLQd3
+ EKbc=
+X-Gm-Gg: ASbGncsbzT99iTiObZMKZpKb5zzofQaHHNovTQd5rXU5b2y6Z+gn9YP5w/8vYUsG7NY
+ FN+1FyzKqHiSwV1kaiAE23MZusJNL0m5Oo3BYLSQMdYdHwtysYDKg56wRfuR/miyeYXzzpbK46M
+ oVPUzSPjvfhQ9dDcFwL9LnAf+H6JLWFLf3qbedWqLowaWYzTY0rbPbO4DB+NrIqlk1IsgWfJKS+
+ 4CV6W2H4Y6zTfcRrca0rd/0RI2MhhmlOEM0bFtZsB42nJwgL6HGjDmYi8gnj+qVzpsPa/nB3Dj+
+ ox44FLjiB+aDzOsp9OTTo45wwTL1n735gE60s05BF9HDGju0Lf+4huG0Upz2At/PhTNVwcaVxS9
+ h4et1wJyPHC/AIbMrT6Uduw==
+X-Google-Smtp-Source: AGHT+IFZ1ZMZI3FYMxgFnpP5ZYK6QdWG93ERhfH+x6mFXUC7RLZNmu5Fv+BN1TkwXgkNH8PetOCgyA==
+X-Received: by 2002:a05:6000:4382:b0:3a5:8a68:b82d with SMTP id
+ ffacd0b85a97d-3b768f079fdmr1017960f8f.43.1753242423893; 
+ Tue, 22 Jul 2025 20:47:03 -0700 (PDT)
+Received: from localhost ([202.127.77.110])
+ by smtp.gmail.com with UTF8SMTPSA id
+ d9443c01a7336-23e3b6d23aasm85769435ad.167.2025.07.22.20.47.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 22 Jul 2025 20:47:03 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Wed, 23 Jul 2025 11:46:02 -0400
+Message-ID: <20250723154610.3860563-1-wegao@suse.com>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250319142310.30036-1-wegao@suse.com>
+References: <20250319142310.30036-1-wegao@suse.com>
 MIME-Version: 1.0
-X-CM-TRANSID: qMiowJBxzsFPOIBoC4giAA--.21870S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxAryrJr43uF1fKryDZr1UJwc_yoW5Zw47pr
- WfGFZIyrWUGFWUWF48J3WxZF15Jan7C3ySg34DC34S9rZ5AFZ2q3Wqg3s2qryqgrWkXFWY
- ka1UGrnrK348uacCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
- sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
- 0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
- IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
- e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
- 0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
- xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
- 1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
- 67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
- Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
- 6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0x
- vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
- 42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
- kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07URa0PUUUUU=
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] device-drivers/block/block_dev_kernel: Delete
- test_genhd.c
+Subject: [LTP] [PATCH v5] open16: allow restricted O_CREAT of FIFOs and
+ regular files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,67 +100,178 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-dGVzdF9nZW5oZC5jIGlzIG5vdCB1c2VkIGFueSBtb3JlLCBqdXN0IGRlbGV0ZSBpdC4gV2hpbGUg
-YXQgaXQsCnVwZGF0ZSBSRUFETUUgdG8gcmVmbGVjdCB0aGUgcmVhbGl0eS4KClN1Z2dlc3RlZC1i
-eTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+ClNpZ25lZC1vZmYtYnk6IFRpZXpodSBZYW5n
-IDx5YW5ndGllemh1QGxvb25nc29uLmNuPgotLS0KIHRlc3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRy
-aXZlcnMvYmxvY2svUkVBRE1FICB8IDE3ICstLS0tLQogLi4uL2Jsb2NrL2Jsb2NrX2Rldl9rZXJu
-ZWwvdGVzdF9nZW5oZC5jICAgICAgIHwgNTMgLS0tLS0tLS0tLS0tLS0tLS0tLQogMiBmaWxlcyBj
-aGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDY4IGRlbGV0aW9ucygtKQogZGVsZXRlIG1vZGUgMTAw
-NjQ0IHRlc3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZlcnMvYmxvY2svYmxvY2tfZGV2X2tlcm5l
-bC90ZXN0X2dlbmhkLmMKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2RldmljZS1kcml2
-ZXJzL2Jsb2NrL1JFQURNRSBiL3Rlc3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZlcnMvYmxvY2sv
-UkVBRE1FCmluZGV4IDgxMjQzNmJiOC4uMTQ5MGZkMjk1IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMv
-a2VybmVsL2RldmljZS1kcml2ZXJzL2Jsb2NrL1JFQURNRQorKysgYi90ZXN0Y2FzZXMva2VybmVs
-L2RldmljZS1kcml2ZXJzL2Jsb2NrL1JFQURNRQpAQCAtNSwxOSArNSw2IEBAIE1vZHVsZSB1bmRl
-ciB0ZXN0OiBsaW51eC9ibG9jay9nZW5oZC5jCiAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0rLS0tLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLQogICByZWdpc3Rlcl9ibGtkZXYoKSAg
-ICAgICAgICAgfCBsaW51eC9mcy5oICAgIHwgbHRwX2Jsb2NrX2Rldi5jCiAgIHVucmVnaXN0ZXJf
-YmxrZGV2KCkgICAgICAgICB8IGxpbnV4L2ZzLmggICAgfCBsdHBfYmxvY2tfZGV2LmMKLSAgYmxr
-X3JlZ2lzdGVyX3JlZ2lvbigpICAgICAgIHwgbGludXgvZ2VuaGQuaCB8Ci0gIGJsa191bnJlZ2lz
-dGVyX3JlZ2lvbigpICAgICB8IGxpbnV4L2dlbmhkLmggfAotICBhZGRfZGlzaygpICAgICAgICAg
-ICAgICAgICAgfCBsaW51eC9nZW5oZC5oIHwKLSAgZGVsX2dlbmRpc2soKSAgICAgICAgICAgICAg
-IHwgbGludXgvZ2VuaGQuaCB8IHRlc3RfZ2VuaGQuYwotICBibGtfbG9va3VwX2RldnQoKSAgICAg
-ICAgICAgfCBsaW51eC9nZW5oZC5oIHwKLSAgYWxsb2NfZGlzaygpICAgICAgICAgICAgICAgIHwg
-bGludXgvZ2VuaGQuaCB8IHRlc3RfZ2VuaGQuYwotICBhbGxvY19kaXNrX25vZGUoKSAgICAgICAg
-ICAgfCBsaW51eC9nZW5oZC5oIHwKLSAgZ2V0X2Rpc2soKSAgICAgICAgICAgICAgICAgIHwgbGlu
-dXgvZ2VuaGQuaCB8Ci0gIHB1dF9kaXNrKCkgICAgICAgICAgICAgICAgICB8IGxpbnV4L2dlbmhk
-LmggfAotICBzZXRfZGV2aWNlX3JvKCkgICAgICAgICAgICAgfCBsaW51eC9nZW5oZC5oIHwKLSAg
-c2V0X2Rpc2tfcm8oKSAgICAgICAgICAgICAgIHwgbGludXgvZ2VuaGQuaCB8Ci0gIGJkZXZfcmVh
-ZF9vbmx5KCkgICAgICAgICAgICB8IGxpbnV4L2ZzLmggICAgfAotICBpbnZhbGlkYXRlX3BhcnRp
-dGlvbigpICAgICAgfCBsaW51eC9mcy5oICAgIHwKIAotRm9yIHBvc3NpYmxlIHRlc3QgcmVzdWx0
-cyBwbGVhc2Ugc2VlICJBIFBPU0lYIGNvbmZvcm1pbmcgdGVzdCBmcmFtZXdvcmsiIGF0Ci1odHRw
-Oi8vd3d3LmdudS5vcmcvc29mdHdhcmUvZGVqYWdudS9tYW51YWwveDQ3Lmh0bWwjcG9zaXgKK0Zv
-ciBwb3NzaWJsZSB0ZXN0IHJlc3VsdHMgcGxlYXNlIHNlZSAiQSBQT1NJWCBjb21wbGlhbnQgdGVz
-dCBmcmFtZXdvcmsiIGF0CitodHRwczovL3d3dy5nbnUub3JnL3NvZnR3YXJlL2RlamFnbnUvbWFu
-dWFsL0EtUE9TSVgtQ29uZm9ybWluZy1UZXN0LUZyYW1ld29yay5odG1sCmRpZmYgLS1naXQgYS90
-ZXN0Y2FzZXMva2VybmVsL2RldmljZS1kcml2ZXJzL2Jsb2NrL2Jsb2NrX2Rldl9rZXJuZWwvdGVz
-dF9nZW5oZC5jIGIvdGVzdGNhc2VzL2tlcm5lbC9kZXZpY2UtZHJpdmVycy9ibG9jay9ibG9ja19k
-ZXZfa2VybmVsL3Rlc3RfZ2VuaGQuYwpkZWxldGVkIGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggZDM0
-YTIzNmI0Li4wMDAwMDAwMDAKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9kZXZpY2UtZHJpdmVycy9i
-bG9jay9ibG9ja19kZXZfa2VybmVsL3Rlc3RfZ2VuaGQuYworKysgL2Rldi9udWxsCkBAIC0xLDUz
-ICswLDAgQEAKLQotLyoKLSAqIE1vZHVsZSB1bmRlciB0ZXN0OiBsaW51eC9ibG9jay9nZW5oZC5j
-Ci0gKgotICogT25seSB0aG9zZSBmdW5jdGlvbnMgYXJlIHRlc3RlZCBoZXJlIHdoaWNoIGFyZSBk
-ZWNsYXJlZCBpbiA8bGludXgvZ2VuaGQuaD4KLSAqCi0gKiBVc2FnZToKLSAqICAgMS4gbWFrZQot
-ICogICAyLiBzdQotICogICAzLiBpbnNtb2QgLi90ZXN0X2dlbmhkLmtvCi0gKiAgIDQuIENoZWNr
-IHRoZSB0ZXN0IHJlc3VsdHMgaW4gImRtZXNnIgotICogICA1LiBybW1vZCB0ZXN0X2dlbmhkCi0g
-Ki8KLQotI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgotI2luY2x1ZGUgPGxpbnV4L2dlbmhkLmg+
-Ci0KLU1PRFVMRV9BVVRIT1IoIk3DoXJ0b24gTsOpbWV0aCA8bm0xMjdAZnJlZW1haWwuaHU+Iik7
-Ci1NT0RVTEVfREVTQ1JJUFRJT04oIlRlc3QgYmxvY2sgZHJpdmVycyIpOwotTU9EVUxFX0xJQ0VO
-U0UoIkdQTCIpOwotCi0jZGVmaW5lIEJMS19ERVZfTkFNRQkJInRlc3RfYmxvY2siCi0jZGVmaW5l
-IE1BWF9NQUpPUgkJMjU1Ci0KLXN0YXRpYyB2b2lkIHRjMjAodm9pZCkKLXsKLQlzdHJ1Y3QgZ2Vu
-ZGlzayAqZ2RfcHRyOwotCi0JZ2RfcHRyID0gYWxsb2NfZGlzaygxKTsKLQlpZiAoIWdkX3B0cikg
-ewotCQlyZXR1cm47Ci0JfQotCXByaW50ayhLRVJOX0RFQlVHICJnZF9wdHIgYWZ0ZXIgYWxsb2M9
-JXBcbiIsIGdkX3B0cik7Ci0KLQlkZWxfZ2VuZGlzayhnZF9wdHIpOwotfQotCi1zdGF0aWMgaW50
-IHRlc3RfaW5pdF9tb2R1bGUodm9pZCkKLXsKLQlwcmludGsoS0VSTl9JTkZPICJTdGFydGluZyB0
-ZXN0X2dlbmhkIG1vZHVsZVxuIik7Ci0KLQl0YzIwKCk7Ci0KLQlyZXR1cm4gMDsKLX0KLQotc3Rh
-dGljIHZvaWQgdGVzdF9leGl0X21vZHVsZSh2b2lkKQotewotCXByaW50ayhLRVJOX0RFQlVHICJV
-bmxvYWRpbmcgdGVzdF9nZW5oZCBtb2R1bGVcbiIpOwotfQotCi1tb2R1bGVfaW5pdCh0ZXN0X2lu
-aXRfbW9kdWxlKTsKLW1vZHVsZV9leGl0KHRlc3RfZXhpdF9tb2R1bGUpOwotLSAKMi40Mi4wCgoK
-LS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0
-cAo=
+This commit adds test cases to verify the security restrictions for opening
+FIFOs and regular files in world-writable sticky directories.
+
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/open/.gitignore |   1 +
+ testcases/kernel/syscalls/open/open16.c   | 124 ++++++++++++++++++++++
+ 3 files changed, 126 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/open/open16.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 3531c2a3c..0de9bfaef 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -984,6 +984,7 @@ open12 open12
+ open13 open13
+ open14 open14
+ open15 open15
++open16 open16
+ 
+ openat01 openat01
+ openat02 openat02
+diff --git a/testcases/kernel/syscalls/open/.gitignore b/testcases/kernel/syscalls/open/.gitignore
+index af5997572..d2cacc02e 100644
+--- a/testcases/kernel/syscalls/open/.gitignore
++++ b/testcases/kernel/syscalls/open/.gitignore
+@@ -13,3 +13,4 @@
+ /open13
+ /open14
+ /open15
++/open16
+diff --git a/testcases/kernel/syscalls/open/open16.c b/testcases/kernel/syscalls/open/open16.c
+new file mode 100644
+index 000000000..6e01dde26
+--- /dev/null
++++ b/testcases/kernel/syscalls/open/open16.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * Verify disallows open of FIFOs or regular files not owned by the user in world
++ * writable sticky directories
++ */
++
++#include <pwd.h>
++#include <stdlib.h>
++#include "tst_test.h"
++#include "tst_safe_file_at.h"
++
++#define FILENAME  "setuid04_testfile"
++#define DIR "ltp_tmp_check1"
++#define TEST_FILE "test_file_1"
++#define TEST_FIFO "test_fifo_1"
++#define LTP_USR_UID1 1000
++#define LTP_USR_UID2 1001
++#define PROTECTED_REGULAR "/proc/sys/fs/protected_regular"
++#define PROTECTED_FIFOS "/proc/sys/fs/protected_fifos"
++#define TEST_FIFO_PATH DIR "/" TEST_FIFO
++
++static int dir_fd;
++
++static void run(void)
++{
++	SAFE_CHMOD(DIR, 0777 | S_ISVTX);
++	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "0");
++	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "0");
++
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(LTP_USR_UID1);
++
++		int fd = SAFE_OPENAT(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777);
++
++		SAFE_CLOSE(fd);
++
++		SAFE_MKFIFO(TEST_FIFO_PATH, 0777);
++
++		exit(0);
++	}
++
++	tst_reap_children();
++
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(LTP_USR_UID2);
++
++		int fd = TST_EXP_FD(openat(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777));
++
++		if (TST_PASS)
++			SAFE_CLOSE(fd);
++
++		fd = TST_EXP_FD(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777));
++
++		if (TST_PASS)
++			SAFE_CLOSE(fd);
++
++		exit(0);
++	}
++
++	tst_reap_children();
++
++	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "1");
++	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "1");
++
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(LTP_USR_UID2);
++		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
++		TST_EXP_FAIL(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777), EACCES);
++
++		exit(0);
++	}
++
++	tst_reap_children();
++
++	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "2");
++	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "2");
++	SAFE_CHMOD(DIR, 0020 | S_ISVTX);
++
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(LTP_USR_UID2);
++		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
++		TST_EXP_FAIL(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777), EACCES);
++
++		exit(0);
++	}
++
++	tst_reap_children();
++	SAFE_UNLINK(TEST_FIFO_PATH);
++}
++
++static void setup(void)
++{
++	umask(0);
++	SAFE_MKDIR(DIR, 0777 | S_ISVTX);
++	dir_fd = SAFE_OPEN(DIR, O_DIRECTORY);
++}
++
++static void cleanup(void)
++{
++	if (dir_fd != -1)
++		SAFE_CLOSE(dir_fd);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.test_all = run,
++	.needs_tmpdir = 1,
++	.forks_child = 1,
++	.save_restore = (const struct tst_path_val[]) {
++		{PROTECTED_REGULAR, NULL, TST_SR_TCONF},
++		{PROTECTED_FIFOS, NULL, TST_SR_TCONF},
++		{}
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "30aba6656f61"},
++		{}
++	}
++};
+-- 
+2.49.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
