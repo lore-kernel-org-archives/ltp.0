@@ -4,106 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D76DC83F17
-	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 16:06:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3241C83F1A
+	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 16:06:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AB6603CCD5A
-	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 18:06:17 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 7663E3CCDB8
+	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 18:06:34 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 786933CCDC8
- for <ltp@lists.linux.it>; Wed, 23 Jul 2025 18:05:43 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 622413CBDA9
+ for <ltp@lists.linux.it>; Wed, 23 Jul 2025 18:05:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F034510008FC
- for <ltp@lists.linux.it>; Wed, 23 Jul 2025 18:05:42 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A087B600826
+ for <ltp@lists.linux.it>; Wed, 23 Jul 2025 18:05:47 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 66164218F7;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8D45F218FD;
  Wed, 23 Jul 2025 16:05:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1753286735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Dl9IZJLvzlNLVxm6hPwN2PQ9D2ggDcLaArM4eYPJ2gA=;
- b=muy8tU24QB4UkLoCSQQmkqLZQS/nzsoGLwoMZm0FxVAaSULPxcHpllZMkTLjOb/9H+Nd9a
- wEd1mMUZ9vIC30mrWfsJIGTZiaXJeVX7ul8uam0FqR9GXSGfrwzhNTpWV1d+PoS/8MrR1c
- gxupQxlaYgsNkimfy9GDxUpERwfVHw4=
+ bh=Fynd6ig+gAP3r6fITIUGDjoP4dNdmNyEycdfwWtRRSs=;
+ b=vt+csf++KmBpngKFTbeaANJOfUBUWr0imRnHFbg3/5MEIMpdzhPnKUQYt3iIw5hB/c+WFn
+ /EiXOqvU7TMAofwOGRayFz2NLGNnkYlwv/Her6F9wCz5/WUJgthVZSPaRt3lwn5E4FWtIi
+ zxJM1VKH6ewiTaxgMBdviwOqKZkLsTw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1753286735;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Dl9IZJLvzlNLVxm6hPwN2PQ9D2ggDcLaArM4eYPJ2gA=;
- b=8SyqrqJjxJ7tL3tb+C+8s4c87WBCSrKgSZ/3x/spnQgrLldb69oOX3imfsD524qkuH+ZW2
- mrJ4Tyfo2t7aFwCA==
+ bh=Fynd6ig+gAP3r6fITIUGDjoP4dNdmNyEycdfwWtRRSs=;
+ b=3aUGkahISHw6Vtqr5L1joK4pfib/DfuuZ9SC/FtbVRW0jC2xgm7yN87OctyEG4TATuKXdT
+ 2oe39VrwtwEgJeAQ==
 Authentication-Results: smtp-out1.suse.de;
-	none
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=vt+csf++;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=3aUGkahI
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1753286735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Dl9IZJLvzlNLVxm6hPwN2PQ9D2ggDcLaArM4eYPJ2gA=;
- b=muy8tU24QB4UkLoCSQQmkqLZQS/nzsoGLwoMZm0FxVAaSULPxcHpllZMkTLjOb/9H+Nd9a
- wEd1mMUZ9vIC30mrWfsJIGTZiaXJeVX7ul8uam0FqR9GXSGfrwzhNTpWV1d+PoS/8MrR1c
- gxupQxlaYgsNkimfy9GDxUpERwfVHw4=
+ bh=Fynd6ig+gAP3r6fITIUGDjoP4dNdmNyEycdfwWtRRSs=;
+ b=vt+csf++KmBpngKFTbeaANJOfUBUWr0imRnHFbg3/5MEIMpdzhPnKUQYt3iIw5hB/c+WFn
+ /EiXOqvU7TMAofwOGRayFz2NLGNnkYlwv/Her6F9wCz5/WUJgthVZSPaRt3lwn5E4FWtIi
+ zxJM1VKH6ewiTaxgMBdviwOqKZkLsTw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1753286735;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Dl9IZJLvzlNLVxm6hPwN2PQ9D2ggDcLaArM4eYPJ2gA=;
- b=8SyqrqJjxJ7tL3tb+C+8s4c87WBCSrKgSZ/3x/spnQgrLldb69oOX3imfsD524qkuH+ZW2
- mrJ4Tyfo2t7aFwCA==
+ bh=Fynd6ig+gAP3r6fITIUGDjoP4dNdmNyEycdfwWtRRSs=;
+ b=3aUGkahISHw6Vtqr5L1joK4pfib/DfuuZ9SC/FtbVRW0jC2xgm7yN87OctyEG4TATuKXdT
+ 2oe39VrwtwEgJeAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 39EB213ADD;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C9EC13ABE;
  Wed, 23 Jul 2025 16:05:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id MKGBDE8IgWhiUAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id mKDWGE8IgWhiUAAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Wed, 23 Jul 2025 16:05:35 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 23 Jul 2025 18:04:49 +0200
+Date: Wed, 23 Jul 2025 18:04:50 +0200
 MIME-Version: 1.0
-Message-Id: <20250723-xattr_bug_repr-v5-1-63183d865e97@suse.com>
+Message-Id: <20250723-xattr_bug_repr-v5-2-63183d865e97@suse.com>
 References: <20250723-xattr_bug_repr-v5-0-63183d865e97@suse.com>
 In-Reply-To: <20250723-xattr_bug_repr-v5-0-63183d865e97@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1753286734; l=3980;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1753286734; l=5082;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=TGmQZNBKhKrD3HH7q5OHz8ym1h+ql1UVZEYuoOfk5YU=;
- b=I+XNTeUMD3+lZW21hmifupVAffjgbOfTfVRFeEfv5VL9pAC3SKhDaqXfP0cRi4yognmx/FT5l
- 6mx5KDObv4gDVoVH/NOnKufiM/Od0e/S7OxDZYjyLPux983gw9btNVE
+ bh=TNmAFFlla4mpe9ZKFmnXhuch5eym0196T9xcnSvjhmA=;
+ b=3ryZopsvtVJbkkC3JcwpFskhq7OiWkV787jj+BhS7O9jARjRa4RiGiKMWX+hNEYYFtZcH2Lq+
+ eaHcKBO7/p/A6m6QulLFsuF0Xq+QjeYXn2CQP5+G1kDIyXNWMG3JkDf
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Queue-Id: 8D45F218FD
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.de:dkim];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 1/2] core: add tst_selinux_enabled() utility
+Subject: [LTP] [PATCH v5 2/2] Add listxattr04 reproducer
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,148 +131,171 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add tst_lsm_enabled() utility in tst_security.h in order to verify
-if a certain LSM is up and running.
+Test reproducer for a bug introduced in 8b0ba61df5a1 ("fs/xattr.c: fix
+simple_xattr_list to always include security.* xattrs").
+
+Bug can be reproduced when SELinux and ACL are activated on inodes as
+following:
+
+    $ touch testfile
+    $ setfacl -m u:myuser:rwx testfile
+    $ getfattr -dm. /tmp/testfile
+    Segmentation fault (core dumped)
+
+The reason why this happens is that simple_xattr_list() always includes
+security.* xattrs without resetting error flag after
+security_inode_listsecurity(). This results into an incorrect length of the
+returned xattr name if POSIX ACL is also applied on the inode.
 
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Reviewed-by: Wei Gao <wegao@suse.com>
+Tested-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/tst_security.h                     |  4 ++++
- lib/tst_security.c                         | 30 +++++++++++++++++++++++++-
- testcases/kernel/syscalls/lsm/lsm_common.h | 34 +++---------------------------
- 3 files changed, 36 insertions(+), 32 deletions(-)
+ testcases/kernel/syscalls/listxattr/.gitignore    |   1 +
+ testcases/kernel/syscalls/listxattr/Makefile      |   2 +
+ testcases/kernel/syscalls/listxattr/listxattr04.c | 114 ++++++++++++++++++++++
+ 3 files changed, 117 insertions(+)
 
-diff --git a/include/tst_security.h b/include/tst_security.h
-index 5d91f8a98f104b0cafaaf2046bc0ceec06870606..e2d7270daedcd5a303aa6a6184965cacf25c8fad 100644
---- a/include/tst_security.h
-+++ b/include/tst_security.h
-@@ -5,6 +5,10 @@
- #ifndef TST_SECURITY_H__
- #define TST_SECURITY_H__
+diff --git a/testcases/kernel/syscalls/listxattr/.gitignore b/testcases/kernel/syscalls/listxattr/.gitignore
+index be0675a6df0080d176d53d70194442bbc9ed376c..0d672b6ea5eec03aab37ee89316c56e24356c1d9 100644
+--- a/testcases/kernel/syscalls/listxattr/.gitignore
++++ b/testcases/kernel/syscalls/listxattr/.gitignore
+@@ -1,3 +1,4 @@
+ /listxattr01
+ /listxattr02
+ /listxattr03
++/listxattr04
+diff --git a/testcases/kernel/syscalls/listxattr/Makefile b/testcases/kernel/syscalls/listxattr/Makefile
+index c2f84b1590fc24a7a98f890ea7706771d944aa79..e96bb3fa4c2c6b14b8d2bc8fd4c475e4789d72fe 100644
+--- a/testcases/kernel/syscalls/listxattr/Makefile
++++ b/testcases/kernel/syscalls/listxattr/Makefile
+@@ -6,4 +6,6 @@ top_srcdir		?= ../../../..
  
-+#define LSM_SYS_FILE "/sys/kernel/security/lsm"
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
++listxattr04: LDLIBS	+= $(ACL_LIBS)
 +
-+int tst_lsm_enabled(const char *name);
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/listxattr/listxattr04.c b/testcases/kernel/syscalls/listxattr/listxattr04.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..1e1db091e12ddfe9c694a99348a793d8cf43a2f4
+--- /dev/null
++++ b/testcases/kernel/syscalls/listxattr/listxattr04.c
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
++ */
 +
- /*
-  * Detect whether FIPS enabled
-  * @return 0: FIPS not enabled, 1: FIPS enabled
-diff --git a/lib/tst_security.c b/lib/tst_security.c
-index 7d929fafe729058f55b921bf5cf7806b253496e0..c515271351bbc3126e58feef28dc2a88f2d40509 100644
---- a/lib/tst_security.c
-+++ b/lib/tst_security.c
-@@ -7,7 +7,8 @@
- 
- #define PATH_FIPS	"/proc/sys/crypto/fips_enabled"
- #define PATH_LOCKDOWN	"/sys/kernel/security/lockdown"
--#define SELINUX_STATUS_PATH "/sys/fs/selinux/enforce"
-+#define SELINUX_PATH "/sys/fs/selinux"
-+#define SELINUX_STATUS_PATH (SELINUX_PATH "/enforce")
- 
- #if defined(__powerpc64__) || defined(__ppc64__)
- # define SECUREBOOT_VAR "/proc/device-tree/ibm,secure-boot"
-@@ -19,6 +20,7 @@
- 
- #include <fcntl.h>
- #include <stdio.h>
-+#include <string.h>
- #include <stdlib.h>
- #include <sys/mount.h>
- 
-@@ -28,6 +30,32 @@
- #include "tst_security.h"
- #include "tst_private.h"
- 
-+int tst_lsm_enabled(const char *name)
++/*\
++ * Test reproducer for a bug introduced in 8b0ba61df5a1 ("fs/xattr.c: fix
++ * simple_xattr_list to always include security.* xattrs") and fixed in
++ * 800d0b9b6a8b (fs/xattr.c: fix simple_xattr_list()).
++ *
++ * Bug can be reproduced when SELinux and ACL are activated on inodes as
++ * following:
++ *
++ *     $ touch testfile
++ *     $ setfacl -m u:myuser:rwx testfile
++ *     $ getfattr -dm. /tmp/testfile
++ *     Segmentation fault (core dumped)
++ *
++ * The reason why this happens is that simple_xattr_list() always includes
++ * security.* xattrs without resetting error flag after
++ * security_inode_listsecurity(). This results into an incorrect length of the
++ * returned xattr name if POSIX ACL is also applied on the inode.
++ */
++
++#include "config.h"
++#include "tst_test.h"
++
++#if defined(HAVE_SYS_XATTR_H) && defined(HAVE_LIBACL)
++
++#include <pwd.h>
++#include <sys/acl.h>
++#include <sys/xattr.h>
++
++#define ACL_PERM        "u::rw-,u:root:rwx,g::r--,o::r--,m::rwx"
++#define TEST_FILE       "test.bin"
++
++static acl_t acl;
++
++static void verify_xattr(const int size)
 +{
-+	int fd;
-+	char *ptr;
-+	char data[BUFSIZ];
++	char buf[size];
 +
-+	if (access(LSM_SYS_FILE, F_OK))
-+		tst_brk(TCONF, "%s file is not present", LSM_SYS_FILE);
++	memset(buf, 0, sizeof(buf));
 +
-+	fd = SAFE_OPEN(LSM_SYS_FILE, O_RDONLY);
-+	SAFE_READ(0, fd, data, BUFSIZ);
-+	SAFE_CLOSE(fd);
++	if (listxattr(TEST_FILE, buf, size) == -1) {
++		if (errno != ERANGE)
++			tst_brk(TBROK | TERRNO, "listxattr() error");
 +
-+	ptr = strtok(data, ",");
-+	while (ptr != NULL) {
-+		if (!strcmp(ptr, name)) {
-+			tst_res(TINFO, "%s is enabled", name);
-+			return 1;
-+		}
-+
-+		ptr = strtok(NULL, ",");
++		tst_res(TFAIL, "listxattr() failed to read attributes length: ERANGE");
++		return;
 +	}
 +
-+	return 0;
++	tst_res(TPASS, "listxattr() correctly read attributes length");
 +}
 +
- int tst_fips_enabled(void)
- {
- 	int fips = 0;
-diff --git a/testcases/kernel/syscalls/lsm/lsm_common.h b/testcases/kernel/syscalls/lsm/lsm_common.h
-index 549f2d49b0b9290c4d75c87025911a81f4fa3c19..cc063eeab25545e8fc9ee40314c591b68c07dda7 100644
---- a/testcases/kernel/syscalls/lsm/lsm_common.h
-+++ b/testcases/kernel/syscalls/lsm/lsm_common.h
-@@ -9,8 +9,6 @@
- #include "tst_test.h"
- #include "lapi/lsm.h"
- 
--#define LSM_SYS_FILE "/sys/kernel/security/lsm"
--
- static inline struct lsm_ctx *next_ctx(struct lsm_ctx *tctx)
- {
- 	return (struct lsm_ctx *)((char *)tctx + sizeof(*tctx) + tctx->ctx_len);
-@@ -40,43 +38,17 @@ static inline void read_proc_attr(const char *attr, char *val, const size_t size
- 	SAFE_CLOSE(fd);
- }
- 
--static inline int verify_enabled_lsm(const char *name)
--{
--	int fd;
--	char *ptr;
--	char data[BUFSIZ];
--
--	if (access(LSM_SYS_FILE, F_OK))
--		tst_brk(TCONF, "%s file is not present", LSM_SYS_FILE);
--
--	fd = SAFE_OPEN(LSM_SYS_FILE, O_RDONLY);
--	SAFE_READ(0, fd, data, BUFSIZ);
--	SAFE_CLOSE(fd);
--
--	ptr = strtok(data, ",");
--	while (ptr != NULL) {
--		if (!strcmp(ptr, name)) {
--			tst_res(TINFO, "%s is enabled", name);
--			return 1;
--		}
--
--		ptr = strtok(NULL, ",");
--	}
--
--	return 0;
--}
--
- static inline uint32_t count_supported_attr_current(void)
- {
- 	uint32_t lsm_count = 0;
- 
--	if (verify_enabled_lsm("selinux"))
-+	if (tst_lsm_enabled("selinux"))
- 		lsm_count++;
- 
--	if (verify_enabled_lsm("apparmor"))
-+	if (tst_lsm_enabled("apparmor"))
- 		lsm_count++;
- 
--	if (verify_enabled_lsm("smack"))
-+	if (tst_lsm_enabled("smack"))
- 		lsm_count++;
- 
- 	return lsm_count;
++static void run(void)
++{
++	int size;
++
++	size = listxattr(TEST_FILE, NULL, 0);
++	if (size == -1)
++		tst_brk(TBROK | TERRNO, "listxattr() error");
++
++	verify_xattr(size);
++}
++
++static void setup(void)
++{
++	int res;
++	int selinux;
++	int smack;
++
++	selinux = tst_lsm_enabled("selinux");
++	smack = tst_lsm_enabled("smack");
++
++	if (!selinux && !smack)
++		tst_brk(TCONF, "There are no LSM(s) implementing xattr");
++
++	SAFE_TOUCH(TEST_FILE, 0644, NULL);
++
++	acl = acl_from_text(ACL_PERM);
++	if (!acl)
++		tst_brk(TBROK | TERRNO, "acl_from_text() failed");
++
++	res = acl_set_file(TEST_FILE, ACL_TYPE_ACCESS, acl);
++	if (res == -1) {
++		if (errno == EOPNOTSUPP)
++			tst_brk(TCONF | TERRNO, "acl_set_file()");
++
++		tst_brk(TBROK | TERRNO, "acl_set_file(%s) failed", TEST_FILE);
++	}
++}
++
++static void cleanup(void)
++{
++	if (acl)
++		acl_free(acl);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "800d0b9b6a8b"},
++		{}
++	}
++};
++
++#else /* HAVE_SYS_XATTR_H && HAVE_LIBACL */
++	TST_TEST_TCONF("<sys/xattr.h> or <sys/acl.h> does not exist.");
++#endif
 
 -- 
 2.50.1
