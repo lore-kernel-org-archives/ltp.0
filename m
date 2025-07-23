@@ -4,63 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAB3BC83F27
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 14:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 359F1C83F27
+	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 00:51:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5DC7C3CCD2B
-	for <ltp@archiver.kernel.org>; Tue, 22 Jul 2025 16:11:24 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 23D863CCD37
+	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 02:51:44 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B60F33CAD64
- for <ltp@lists.linux.it>; Tue, 22 Jul 2025 16:11:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AD658600CC7
- for <ltp@lists.linux.it>; Tue, 22 Jul 2025 16:11:07 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5C4952116B;
- Tue, 22 Jul 2025 14:11:06 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2BC27132EA;
- Tue, 22 Jul 2025 14:11:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Or97Cfqbf2gsIgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 22 Jul 2025 14:11:06 +0000
-Date: Tue, 22 Jul 2025 16:11:04 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20250722141104.GC84869@pevik>
-References: <20250722-xattr_bug_repr-v4-0-4be1e52e97c6@suse.com>
- <20250722-xattr_bug_repr-v4-2-4be1e52e97c6@suse.com>
+ by picard.linux.it (Postfix) with ESMTPS id 2251F3C20D2
+ for <ltp@lists.linux.it>; Wed, 23 Jul 2025 02:51:25 +0200 (CEST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTP id 02E791A000BC
+ for <ltp@lists.linux.it>; Wed, 23 Jul 2025 02:51:22 +0200 (CEST)
+Received: from loongson.cn (unknown [113.200.148.30])
+ by gateway (Coremail) with SMTP id _____8CxbWsGMoBo5fMvAQ--.31135S3;
+ Wed, 23 Jul 2025 08:51:19 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+ by front1 (Coremail) with SMTP id qMiowJAxT+YFMoBoE4AiAA--.47415S2;
+ Wed, 23 Jul 2025 08:51:18 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Linux Test Project <ltp@lists.linux.it>
+Date: Wed, 23 Jul 2025 08:51:16 +0800
+Message-ID: <20250723005117.4282-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250722-xattr_bug_repr-v4-2-4be1e52e97c6@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- TAGGED_RCPT(0.00)[]
-X-Rspamd-Queue-Id: 5C4952116B
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-CM-TRANSID: qMiowJAxT+YFMoBoE4AiAA--.47415S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrKF4rCr1fKw1ktF1xWw4fCrX_yoWktrb_uw
+ 1xur1xGr1rAF1Fvw4UAFs3Zr45tw42qFWSvFnFq3s5Was7Wan8Wwn5Xas8tFs8Wa1Durn5
+ Gr1DWrs5tr42gosvyTuYvTs0mTUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUj1kv1TuYvT
+ s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+ cSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+ vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+ w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+ WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+ 6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+ Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE
+ 14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+ 0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+ 7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcV
+ C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
+ 04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+ CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 2/2] Add listxattr04 reproducer
+Subject: [LTP] [PATCH v2] ltp_block_dev: Check HAVE_LINUX_GENHD_H to include
+ genhd.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,194 +64,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org, selinux@vger.kernel.org,
- Stephen Smalley <stephen.smalley.work@gmail.com>,
- Paul Eggert <eggert@cs.ucla.edu>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+After the LTP commit d4dd360b05f8 ("device-drivers/acpi/ltp_acpi_cmds:
+Fix build errors"), HAVE_LINUX_GENHD_H is defined to 1 if you have the
+<linux/genhd.h> header file.
 
-FYI Andrea's LTP reproducer for a bug introduced in
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8b0ba61df5a1
-and fixed in
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=800d0b9b6a8b
+The macro definition DISK_NAME_LEN may be completely removed, so it is
+better to use #ifdef HAVE_LINUX_GENHD_H to include genhd.h.
 
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
+Suggested-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+v2: Add Suggested-by tag
 
-> Test reproducer for a bug introduced in 8b0ba61df5a1 ("fs/xattr.c: fix
-> simple_xattr_list to always include security.* xattrs").
+ .../device-drivers/block/block_dev_kernel/ltp_block_dev.c       | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Bug can be reproduced when SELinux and ACL are activated on inodes as
-> following:
+diff --git a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
+index 0fd278981..f50530f23 100644
+--- a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
++++ b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
+@@ -13,7 +13,7 @@
+ #include <linux/device.h>
+ #include <linux/fs.h>
+ #include <linux/blkdev.h>
+-#ifndef DISK_NAME_LEN
++#ifdef HAVE_LINUX_GENHD_H
+ # include <linux/genhd.h>
+ #endif
+ 
+-- 
+2.42.0
 
->     $ touch testfile
->     $ setfacl -m u:myuser:rwx testfile
->     $ getfattr -dm. /tmp/testfile
->     Segmentation fault (core dumped)
-
-> The reason why this happens is that simple_xattr_list() always includes
-> security.* xattrs without resetting error flag after
-> security_inode_listsecurity(). This results into an incorrect length of the
-> returned xattr name if POSIX ACL is also applied on the inode.
-
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  testcases/kernel/syscalls/listxattr/.gitignore    |   1 +
->  testcases/kernel/syscalls/listxattr/Makefile      |   2 +
->  testcases/kernel/syscalls/listxattr/listxattr04.c | 108 ++++++++++++++++++++++
->  3 files changed, 111 insertions(+)
-
-> diff --git a/testcases/kernel/syscalls/listxattr/.gitignore b/testcases/kernel/syscalls/listxattr/.gitignore
-> index be0675a6df0080d176d53d70194442bbc9ed376c..0d672b6ea5eec03aab37ee89316c56e24356c1d9 100644
-> --- a/testcases/kernel/syscalls/listxattr/.gitignore
-> +++ b/testcases/kernel/syscalls/listxattr/.gitignore
-> @@ -1,3 +1,4 @@
->  /listxattr01
->  /listxattr02
->  /listxattr03
-> +/listxattr04
-> diff --git a/testcases/kernel/syscalls/listxattr/Makefile b/testcases/kernel/syscalls/listxattr/Makefile
-> index c2f84b1590fc24a7a98f890ea7706771d944aa79..e96bb3fa4c2c6b14b8d2bc8fd4c475e4789d72fe 100644
-> --- a/testcases/kernel/syscalls/listxattr/Makefile
-> +++ b/testcases/kernel/syscalls/listxattr/Makefile
-> @@ -6,4 +6,6 @@ top_srcdir		?= ../../../..
-
->  include $(top_srcdir)/include/mk/testcases.mk
-
-> +listxattr04: LDLIBS	+= $(ACL_LIBS)
-> +
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/listxattr/listxattr04.c b/testcases/kernel/syscalls/listxattr/listxattr04.c
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..473ed45b5c2da8ff8e49c513eeb82158ec2dc066
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/listxattr/listxattr04.c
-> @@ -0,0 +1,108 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
-> + */
-> +
-> +/*\
-> + * Test reproducer for a bug introduced in 8b0ba61df5a1 ("fs/xattr.c: fix
-> + * simple_xattr_list to always include security.* xattrs").
-> + *
-> + * Bug can be reproduced when SELinux and ACL are activated on inodes as
-> + * following:
-> + *
-> + *     $ touch testfile
-> + *     $ setfacl -m u:myuser:rwx testfile
-> + *     $ getfattr -dm. /tmp/testfile
-> + *     Segmentation fault (core dumped)
-> + *
-> + * The reason why this happens is that simple_xattr_list() always includes
-> + * security.* xattrs without resetting error flag after
-> + * security_inode_listsecurity(). This results into an incorrect length of the
-> + * returned xattr name if POSIX ACL is also applied on the inode.
-> + */
-> +
-> +#include "config.h"
-> +#include "tst_test.h"
-> +
-> +#if defined(HAVE_SYS_XATTR_H) && defined(HAVE_LIBACL)
-> +
-> +#include <pwd.h>
-> +#include <sys/acl.h>
-> +#include <sys/xattr.h>
-> +
-> +#define ACL_PERM        "u::rw-,u:root:rwx,g::r--,o::r--,m::rwx"
-> +#define TEST_FILE       "test.bin"
-> +
-> +static acl_t acl;
-> +
-> +static void verify_xattr(const int size)
-> +{
-> +	char buf[size];
-> +
-> +	memset(buf, 0, sizeof(buf));
-> +
-> +	if (listxattr(TEST_FILE, buf, size) == -1) {
-> +		if (errno != ERANGE)
-> +			tst_brk(TBROK | TERRNO, "listxattr() error");
-
-The original verifier from RH bugreport check sizes and also works if size > -1
-is returned, but I guess it's not necessary, because Andrea's reproducer works
-as expected (fails on affected 6.16-rc1 based openSUSE kernel, works on 6.15.x).
-
-LGTM.
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
-
-[1] https://bugzilla.redhat.com/show_bug.cgi?id=2369561
-> +
-> +		tst_res(TFAIL, "listxattr() failed to read attributes length: ERANGE");
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS, "listxattr() correctly read attributes length");
-> +}
-> +
-> +static void run(void)
-> +{
-> +	int size;
-> +
-> +	size = listxattr(TEST_FILE, NULL, 0);
-> +	if (size == -1)
-> +		tst_brk(TBROK | TERRNO, "listxattr() error");
-> +
-> +	verify_xattr(size);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int res;
-> +
-> +	if (!tst_selinux_enabled())
-> +		tst_brk(TCONF, "SELinux is not enabled");
-> +
-> +	SAFE_TOUCH(TEST_FILE, 0644, NULL);
-> +
-> +	acl = acl_from_text(ACL_PERM);
-> +	if (!acl)
-> +		tst_brk(TBROK | TERRNO, "acl_from_text() failed");
-> +
-> +	res = acl_set_file(TEST_FILE, ACL_TYPE_ACCESS, acl);
-> +	if (res == -1) {
-> +		if (errno == EOPNOTSUPP)
-> +			tst_brk(TCONF | TERRNO, "acl_set_file()");
-> +
-> +		tst_brk(TBROK | TERRNO, "acl_set_file(%s) failed", TEST_FILE);
-> +	}
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (acl)
-> +		acl_free(acl);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +	.needs_tmpdir = 1,
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "800d0b9b6a8b"},
-> +		{}
-> +	}
-> +};
-> +
-> +#else /* HAVE_SYS_XATTR_H && HAVE_LIBACL */
-> +	TST_TEST_TCONF("<sys/xattr.h> or <sys/acl.h> does not exist.");
-> +#endif
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
