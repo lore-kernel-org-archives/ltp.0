@@ -4,99 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04925C83F1A
-	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 12:41:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4140C83F17
+	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 12:42:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 702C83CCD5B
-	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 14:41:46 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 6CA9B3CCD7F
+	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 14:42:03 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8CEAD3CAF64
- for <ltp@lists.linux.it>; Wed, 23 Jul 2025 14:41:29 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id AA4BD3CCD68
+ for <ltp@lists.linux.it>; Wed, 23 Jul 2025 14:41:31 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 86E841400511
- for <ltp@lists.linux.it>; Wed, 23 Jul 2025 14:41:28 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0CCAF14004F5
+ for <ltp@lists.linux.it>; Wed, 23 Jul 2025 14:41:30 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 011F01F399;
- Wed, 23 Jul 2025 12:41:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1753274486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
- b=EW3kLwOhWrQwdO5jQKnh3RiY95uhv1XP8cyaQHSxlvUGLcCtU5qp0Ybb3Z7ZVzlv7mDEl9
- qcqbRxhm0wedEqHjiCYAczaGIslGeGCzrYYFp2iUalrIkR0M8nRjD39W67tgxWBHFmeA8j
- QhhaHNQJwlLfb9t/HPJ/C/EnI7hOruk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1753274486;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
- b=J5/QbKlCbcUioh+A+4cACYvVlwyStqokdA5+wBLb0KGmo2OGNfMsT2aHaeMci+0TwqLK/K
- 8PzVWWyiHCDyquCA==
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6CD0F21223;
+ Wed, 23 Jul 2025 12:41:29 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1753274486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
- b=EW3kLwOhWrQwdO5jQKnh3RiY95uhv1XP8cyaQHSxlvUGLcCtU5qp0Ybb3Z7ZVzlv7mDEl9
- qcqbRxhm0wedEqHjiCYAczaGIslGeGCzrYYFp2iUalrIkR0M8nRjD39W67tgxWBHFmeA8j
- QhhaHNQJwlLfb9t/HPJ/C/EnI7hOruk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1753274486;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
- b=J5/QbKlCbcUioh+A+4cACYvVlwyStqokdA5+wBLb0KGmo2OGNfMsT2aHaeMci+0TwqLK/K
- 8PzVWWyiHCDyquCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DB16D13302;
- Wed, 23 Jul 2025 12:41:25 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3C4CA13302;
+ Wed, 23 Jul 2025 12:41:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id lWRCNHXYgGikEgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 23 Jul 2025 12:41:25 +0000
-Date: Wed, 23 Jul 2025 14:42:09 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <aIDYocm2gqwqbsWW@yuki.lan>
-References: <20250721200428.2627117-1-wegao@suse.com>
- <20250722185503.3224765-1-wegao@suse.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id KOvADXnYgGitEgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 23 Jul 2025 12:41:29 +0000
+Date: Wed, 23 Jul 2025 14:41:27 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20250723124127.GA154226@pevik>
+References: <20250722-xattr_bug_repr-v4-0-4be1e52e97c6@suse.com>
+ <20250722-xattr_bug_repr-v4-1-4be1e52e97c6@suse.com>
+ <20250722120635.GB22975@pevik>
+ <a911cbc1-ad7e-4b0e-97f0-4e2c594c7084@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250722185503.3224765-1-wegao@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; SINGLE_SHORT_PART(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+In-Reply-To: <a911cbc1-ad7e-4b0e-97f0-4e2c594c7084@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
+ TAGGED_RCPT(0.00)[]
+X-Rspamd-Queue-Id: 6CD0F21223
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
 X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6] mount08.c: Restrict overmounting of ephemeral
- entities
+Subject: Re: [LTP] [PATCH v4 1/2] core: add tst_selinux_enabled() utility
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,18 +74,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Stephen Smalley <stephen.smalley.work@gmail.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Pushed, thanks.
+Hi all,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> On 7/22/25 2:06 PM, Petr Vorel wrote:
+> > +++ lib/tst_security.c
+> > @@ -107,7 +107,7 @@ int tst_selinux_enabled(void)
+> >   {
+> >   	int res = 0;
+> > -	if (tst_is_mounted(SELINUX_PATH))
+> > +	if (access(SELINUX_STATUS_PATH, F_OK) == 0)
+> >   		res = 1;
+> >   	tst_res(TINFO, "SELinux enabled: %s", res ? "yes" : "no");
+
+> This is more or less what I was doing at the beginning, but Cyril suggested
+> this approach which is more similar to libselinux. Please, check v3.
+
+Sure :). FYI I did check v3 before replying to v4 (I always try to get to the
+context looking into older versions, I also noted v3 in one of my replies :)).
+
+And yes, I think you were right, that's why I raised my concern again.
+
+But ok, to quote it here Cyril's reply in v3:
+https://lore.kernel.org/ltp/aG5v6enhdqFGgiBj@yuki.lan/
+
+	> +	if (access(SELINUX_PATH, F_OK) == 0 && !tst_dir_is_empty(SELINUX_PATH, 0))
+	> +		res = 1;
+
+	Maybe we we can do tst_is_mounted(SELINUX_PATH) here instead. At least
+	that seems to be what is_selinux_enabled() seems to be doing.
+---
+
+Enabled SELinux means both /sys/fs/selinux/enforce and mounted /sys/fs/selinux/.
+I even checked to boot kernel with SELinux compiled in but disabled in the
+command line via 'security=selinux selinux=0 enforcing=0' and the result is
+expected: no /sys/fs/selinux directory.
+
+Both ways of checking are OK, just "access(SELINUX_STATUS_PATH, F_OK) == 0" is
+the quickest way (given test requires just SELinux enabled, not enforcing mode).
+
+This can be changed before merge. Or, feel free to keep the original version as
+it also works.
+
+Kind regards,
+Petr
+
+> - Andrea
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
