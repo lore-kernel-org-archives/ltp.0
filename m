@@ -4,62 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6990C83F1A
-	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 20:04:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 292C1C83F17
+	for <ltp@archiver.kernel.org>; Thu, 24 Jul 2025 01:42:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1753321323; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=hnV8ElGdYTk2PMHPmFrYZ0qwZDTKsKahJiLkARrOlk8=;
+ b=pjDG+SPhh1Qcwo3+BaR08LFKIAhAD65fuN8kUUaDvLa/HXejvepQbuEEN4eJM2jtwl1qU
+ Mw+DcizHI+qYJrJ+yqpma2kGmIowUr4Bk86i1Dc8YyCJJJPcTdiNPZIVc3X11AdRJ6ssSKH
+ Us41MldVHQ0UQVBPreOAjJpreJj48pU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1E6883CCDDA
-	for <ltp@archiver.kernel.org>; Wed, 23 Jul 2025 22:04:02 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id D0B153CCDE5
+	for <ltp@archiver.kernel.org>; Thu, 24 Jul 2025 03:42:03 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ECBE13CCDD5
- for <ltp@lists.linux.it>; Wed, 23 Jul 2025 22:03:43 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C9C593CB13C
+ for <ltp@lists.linux.it>; Thu, 24 Jul 2025 03:41:42 +0200 (CEST)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4A37B1A00E24
- for <ltp@lists.linux.it>; Wed, 23 Jul 2025 22:03:42 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 96843218B8;
- Wed, 23 Jul 2025 20:03:42 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5B86713ABE;
- Wed, 23 Jul 2025 20:03:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Wqj3Eh5AgWhvDQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 23 Jul 2025 20:03:42 +0000
-Date: Wed, 23 Jul 2025 22:03:36 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20250723200336.GF162896@pevik>
-References: <20250723-xattr_bug_repr-v5-0-63183d865e97@suse.com>
- <20250723-xattr_bug_repr-v5-2-63183d865e97@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F0201600543
+ for <ltp@lists.linux.it>; Thu, 24 Jul 2025 03:41:41 +0200 (CEST)
+Received: by mail-wr1-x42e.google.com with SMTP id
+ ffacd0b85a97d-3a54690d369so391484f8f.3
+ for <ltp@lists.linux.it>; Wed, 23 Jul 2025 18:41:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1753321301; x=1753926101; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=jNVa8OPxYUcXxmddeyr/HZUEF5Y+Lf5Cjpz+HByGPf0=;
+ b=DaFE2zXS8Hx+BQRZYqgbvM8aRMy6Rlxbkq/CEp0G6oy+OpP08zh51T71KHf58APR1f
+ Lu2sKDjNDadjbMxiTJMd7s7qpok5dssdJGdO5K3SkF2eBUXgSYuFYhPu3xOzapJDpVMo
+ P5VVeOSrOty3T61pCCDlbKaMx4dOb7ZyFFF/VgCY+R249BjD6roKI0NZFbePsSd9zQVy
+ DMmnVvdw+zKUavHC02o6HU8ga4RlCdNzUdapqkNkcRfxJVefi0IhODnwinhZlqqv9BbO
+ kWe6bVipkmMXaQHcOpNG2tNZo0K94bFxxi7jq3GbVAj+CrFNmJUAXq+ph479wiiS1se4
+ 81Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1753321301; x=1753926101;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=jNVa8OPxYUcXxmddeyr/HZUEF5Y+Lf5Cjpz+HByGPf0=;
+ b=UaiMnh4soY6FZBEwMiXD0/re74WzdXloeSj8Ju/nQhcLXFVp1z1Uoqee1hw554HJ3J
+ OiXymLdGnLaINmS7YXjMp5pRubLu6iOjYwI/eBnNIV2oKWRon35QyvfFhQDHfCFvL9+C
+ qitjW/HT88x2t35Q1JUhwrbCxINxA6mceUdT3nZ++Lt46GHuLpOLQJFRNUk+5BgKq8Xh
+ Lj0ctufNGRJoA/gyXdnsCqlKQMyWMJeBYyPosXvYYwGU4qD+WmXA3YiNZnVrH8/tpfia
+ ve/IiQhBoV7PWiFoyShiOdv9xsZ523qg4rd/41Vw6LAldTb55bjfZqfB3T+hqCyytQYv
+ vsAw==
+X-Gm-Message-State: AOJu0YxtCB6LEoKx63Sn53cB3S6A2SVX+rwbkOVLbfZHb2ddK2dpjMeq
+ 57txrNXV0MH5o6mSWaofslM38x6Wi+ojSzsEzPQoGbkwHVe8PvGQFzudirjyOhTt0E4ASH+KMbc
+ 41tM=
+X-Gm-Gg: ASbGnctnE1snMX/0xhhC1GyHdNy+xB2tDJiHA/ReK28D1/I8H5arnkX23RcYGbGdMAl
+ +r6SS/AViiKeue6R4Jz7hZG7dMreNF9dxfZjvqnVglYZwivVOc9SHTjGMnr4uCfOLwQyD8tsTP5
+ soKF0eJFaafdvGMEXXfq9l0Di9pYJ2VQLmDAaP88iapwQwwpr35RhadBSySc+nSDLUzXoffgG8H
+ 7/xloEuan0h3bk4YQIGTfLm4vDe/x5s6XvCEcNfAc6HunhKXZmZjjf48KmkwzHMvMV08PstduH5
+ o++L5e2MYpMcoC0lwrF/ygKg5JW1jrPl7JjnpuMwShW/MgOA1ia1nwLqzpi3yv7SsrW49xb3bL9
+ yDjGEOWB0Fvw=
+X-Google-Smtp-Source: AGHT+IEcXB4Sh6bRmuc9Aj9Qqms+7gHd50SUKMbsughjfPaWA2GXjmyrL6euB0F9Aj1ytkjx+6csbQ==
+X-Received: by 2002:a05:6000:2484:b0:3a4:e502:81e1 with SMTP id
+ ffacd0b85a97d-3b768f105ddmr4279356f8f.52.1753321301048; 
+ Wed, 23 Jul 2025 18:41:41 -0700 (PDT)
+Received: from localhost ([202.127.77.110])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 98e67ed59e1d1-31e663a67e7sm63451a91.41.2025.07.23.18.41.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 23 Jul 2025 18:41:40 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Thu, 24 Jul 2025 09:40:34 -0400
+Message-ID: <20250724134052.568308-1-wegao@suse.com>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250319114144.24349-1-wegao@suse.com>
+References: <20250319114144.24349-1-wegao@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250723-xattr_bug_repr-v5-2-63183d865e97@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 96843218B8
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 2/2] Add listxattr04 reproducer
+Subject: [LTP] [PATCH v4] mount_setattr02.c: Check mount_setattr attr
+ propagation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,123 +100,176 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/mount_setattr/.gitignore  |   1 +
+ .../syscalls/mount_setattr/mount_setattr02.c  | 127 ++++++++++++++++++
+ 3 files changed, 129 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
 
-First, can you please before merge add
-listxattr04 to runtest/syscalls?
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9c80bccb0..2528fec52 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -866,6 +866,7 @@ mount06 mount06
+ mount07 mount07
+ 
+ mount_setattr01 mount_setattr01
++mount_setattr02 mount_setattr02
+ 
+ move_mount01 move_mount01
+ move_mount02 move_mount02
+diff --git a/testcases/kernel/syscalls/mount_setattr/.gitignore b/testcases/kernel/syscalls/mount_setattr/.gitignore
+index 52a77b9ca..1654f27de 100644
+--- a/testcases/kernel/syscalls/mount_setattr/.gitignore
++++ b/testcases/kernel/syscalls/mount_setattr/.gitignore
+@@ -1 +1,2 @@
+ /mount_setattr01
++/mount_setattr02
+diff --git a/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c b/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
+new file mode 100644
+index 000000000..640778f7c
+--- /dev/null
++++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr02.c
+@@ -0,0 +1,127 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2025 SUSE LLC Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * This test is checking if the propagation field of the
++ * structure is handled properly.
++ *
++ * - EINVAL with propagation set to -1
++ * - When propagation is set to 0 it's not changed
++ * - MS_SHARED turns propagation on
++ * - MS_SLAVE turns propagation off
++ * - MS_PRIVATE turns propagation off
++ */
++
++#define _GNU_SOURCE
++
++#include <sys/statvfs.h>
++#include "tst_test.h"
++#include "lapi/fsmount.h"
++#include "tst_safe_stdio.h"
++
++static char *tmpdir;
++static char slavedir[PATH_MAX];
++static int mounted;
++
++enum mount_type {
++	MOUNT_TYPE_SHARED,
++	MOUNT_TYPE_MASTER
++};
++
++static bool check_mount_type(const char *path, enum mount_type type_to_check)
++{
++	FILE *file = SAFE_FOPEN("/proc/self/mountinfo", "r");
++
++	char line[PATH_MAX];
++	bool found = false;
++
++	while (fgets(line, sizeof(line), file)) {
++		char mntpoint[PATH_MAX];
++		char opts[256];
++
++		if (sscanf(line, "%*d %*d %*d:%*d %*s %255s %*s %255s",
++					mntpoint, opts) != 2)
++			continue;
++
++		if (strcmp(mntpoint, path) != 0)
++			continue;
++
++		switch (type_to_check) {
++		case MOUNT_TYPE_SHARED:
++			if (strstr(opts, "shared:") != NULL)
++				found = true;
++			break;
++		case MOUNT_TYPE_MASTER:
++			if (strstr(opts, "master:") != NULL)
++				found = true;
++			break;
++		default:
++			tst_res(TFAIL, "Unexpected mount_type value: %d", type_to_check);
++		}
++	}
++
++	fclose(file);
++	return found;
++}
++
++static void cleanup(void)
++{
++	if (mounted) {
++		SAFE_UMOUNT(slavedir);
++		SAFE_UMOUNT(tmpdir);
++	}
++}
++
++static void setup(void)
++{
++	tmpdir = tst_tmpdir_path();
++	sprintf(slavedir, "%s/slavedir", tmpdir);
++	SAFE_UNSHARE(CLONE_NEWNS);
++	SAFE_MOUNT(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
++	SAFE_MOUNT("ltp-mount_setattr", tmpdir, "tmpfs", MS_NOATIME | MS_NODEV, "");
++	SAFE_MKDIR(slavedir, 0777);
++	mounted = 1;
++}
++
++static void run(void)
++{
++	struct mount_attr attr = {
++		.attr_set       = 0,
++		.attr_clr       = 0,
++	};
++
++	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
++	TST_EXP_EQ_LI(check_mount_type(tmpdir, MOUNT_TYPE_SHARED), 0);
++
++	attr.propagation = -1;
++	TST_EXP_FAIL_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)), EINVAL);
++	TST_EXP_EQ_LI(check_mount_type(tmpdir, MOUNT_TYPE_SHARED), 0);
++
++	attr.propagation = MS_SHARED;
++	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
++	TST_EXP_EQ_LI(check_mount_type(tmpdir, MOUNT_TYPE_SHARED), 1);
++
++	attr.propagation = 0;
++	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
++	TST_EXP_EQ_LI(check_mount_type(tmpdir, MOUNT_TYPE_SHARED), 1);
++
++	attr.propagation = MS_SLAVE;
++	SAFE_MOUNT(tmpdir, slavedir, "none", MS_BIND, NULL);
++	TST_EXP_PASS_SILENT(mount_setattr(-1, slavedir, 0, &attr, sizeof(attr)));
++	TST_EXP_EQ_LI(check_mount_type(slavedir, MOUNT_TYPE_MASTER), 1);
++	TST_EXP_EQ_LI(check_mount_type(slavedir, MOUNT_TYPE_SHARED), 0);
++
++	attr.propagation = MS_PRIVATE;
++	TST_EXP_PASS_SILENT(mount_setattr(-1, tmpdir, 0, &attr, sizeof(attr)));
++	TST_EXP_EQ_LI(check_mount_type(tmpdir, MOUNT_TYPE_SHARED), 0);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++};
+-- 
+2.49.0
 
-With that you may add my RBT
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Thanks for the test.
-
-3 very minor notes, up to you if you change it before merge.
-
-> +#include <pwd.h>
-I guess this is now not needed, right?
-
-> +#include <sys/acl.h>
-> +#include <sys/xattr.h>
-> +
-> +#define ACL_PERM        "u::rw-,u:root:rwx,g::r--,o::r--,m::rwx"
-> +#define TEST_FILE       "test.bin"
-> +
-> +static acl_t acl;
-> +
-> +static void verify_xattr(const int size)
-> +{
-> +	char buf[size];
-> +
-> +	memset(buf, 0, sizeof(buf));
-> +
-> +	if (listxattr(TEST_FILE, buf, size) == -1) {
-> +		if (errno != ERANGE)
-> +			tst_brk(TBROK | TERRNO, "listxattr() error");
-> +
-> +		tst_res(TFAIL, "listxattr() failed to read attributes length: ERANGE");
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS, "listxattr() correctly read attributes length");
-> +}
-> +
-> +static void run(void)
-> +{
-> +	int size;
-> +
-> +	size = listxattr(TEST_FILE, NULL, 0);
-> +	if (size == -1)
-> +		tst_brk(TBROK | TERRNO, "listxattr() error");
-> +
-> +	verify_xattr(size);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int res;
-> +	int selinux;
-> +	int smack;
-> +
-> +	selinux = tst_lsm_enabled("selinux");
-> +	smack = tst_lsm_enabled("smack");
-> +
-> +	if (!selinux && !smack)
-very nit: up to you, but I would avoid variables and just
-
-	if (!tst_lsm_enabled("selinux") && !tst_lsm_enabled("smack"))
-		tst_brk(TCONF, "There are no LSM(s) implementing xattr");
-
-> +		tst_brk(TCONF, "There are no LSM(s) implementing xattr");
-
-> +
-> +	SAFE_TOUCH(TEST_FILE, 0644, NULL);
-> +
-> +	acl = acl_from_text(ACL_PERM);
-> +	if (!acl)
-> +		tst_brk(TBROK | TERRNO, "acl_from_text() failed");
-> +
-> +	res = acl_set_file(TEST_FILE, ACL_TYPE_ACCESS, acl);
-> +	if (res == -1) {
-> +		if (errno == EOPNOTSUPP)
-> +			tst_brk(TCONF | TERRNO, "acl_set_file()");
-> +
-> +		tst_brk(TBROK | TERRNO, "acl_set_file(%s) failed", TEST_FILE);
-> +	}
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (acl)
-> +		acl_free(acl);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +	.needs_tmpdir = 1,
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "800d0b9b6a8b"},
-> +		{}
-> +	}
-> +};
-> +
-> +#else /* HAVE_SYS_XATTR_H && HAVE_LIBACL */
-> +	TST_TEST_TCONF("<sys/xattr.h> or <sys/acl.h> does not exist.");
-very very nit: please no dot in LTP messages.
-
-Kind regards,
-Petr
-
-> +#endif
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
