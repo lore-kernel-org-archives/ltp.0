@@ -4,113 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B7B0C87FC5
-	for <ltp@archiver.kernel.org>; Thu, 24 Jul 2025 17:11:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17EADC83F26
+	for <ltp@archiver.kernel.org>; Thu, 24 Jul 2025 19:10:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EE5F13CCE4F
-	for <ltp@archiver.kernel.org>; Thu, 24 Jul 2025 19:11:04 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 8BDB43CCE5F
+	for <ltp@archiver.kernel.org>; Thu, 24 Jul 2025 21:10:10 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9FDEE3C9E07
- for <ltp@lists.linux.it>; Thu, 24 Jul 2025 19:10:46 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7E6793C91B5
+ for <ltp@lists.linux.it>; Thu, 24 Jul 2025 21:09:54 +0200 (CEST)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
+ [IPv6:2a00:1450:4864:20::62e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D82F02009B8
- for <ltp@lists.linux.it>; Thu, 24 Jul 2025 19:10:44 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 706C31F7A7;
- Thu, 24 Jul 2025 17:10:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1753377043;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mNYHAqJl5gRfVz8bAX3LhIAOlnvS8Ko2T0n32pusHzo=;
- b=LhXzxBK5vicYmTxwaKbchjYH7QPVU+IIpoRx4gr4z6zfpg9zu6vYSSg2FORPEZWXsr3ciJ
- BMJCzkDFKmHO+mC5HX3poSar2ZTgtXoqxaA4eMYX0Kv4KMhNbQQew7i16bKKSzeF27LInN
- ZNPgNWPtqDYGQ81tktIriAxFMdoDksY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1753377043;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mNYHAqJl5gRfVz8bAX3LhIAOlnvS8Ko2T0n32pusHzo=;
- b=jZf8AxI56m5fETlqfi97ivIZyi5GA6ZazxwL8r1iR9EN9xfGPINbofBCifW2cIMezL/Gkq
- 0JkkDoGPvRw3kMCg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LhXzxBK5;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jZf8AxI5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1753377043;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mNYHAqJl5gRfVz8bAX3LhIAOlnvS8Ko2T0n32pusHzo=;
- b=LhXzxBK5vicYmTxwaKbchjYH7QPVU+IIpoRx4gr4z6zfpg9zu6vYSSg2FORPEZWXsr3ciJ
- BMJCzkDFKmHO+mC5HX3poSar2ZTgtXoqxaA4eMYX0Kv4KMhNbQQew7i16bKKSzeF27LInN
- ZNPgNWPtqDYGQ81tktIriAxFMdoDksY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1753377043;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mNYHAqJl5gRfVz8bAX3LhIAOlnvS8Ko2T0n32pusHzo=;
- b=jZf8AxI56m5fETlqfi97ivIZyi5GA6ZazxwL8r1iR9EN9xfGPINbofBCifW2cIMezL/Gkq
- 0JkkDoGPvRw3kMCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 04FCC13302;
- Thu, 24 Jul 2025 17:10:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Jrd3NxJpgmjUYQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 24 Jul 2025 17:10:42 +0000
-Date: Thu, 24 Jul 2025 19:10:36 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>, ltp@lists.linux.it,
- Andrea Cervesato <andrea.cervesato@suse.de>, Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20250724171036.GB108771@pevik>
-References: <20250721200428.2627117-1-wegao@suse.com>
- <20250722185503.3224765-1-wegao@suse.com>
- <20250724170424.GA108771@pevik>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B157F200914
+ for <ltp@lists.linux.it>; Thu, 24 Jul 2025 21:09:53 +0200 (CEST)
+Received: by mail-ej1-x62e.google.com with SMTP id
+ a640c23a62f3a-ae0d7b32322so220371166b.2
+ for <ltp@lists.linux.it>; Thu, 24 Jul 2025 12:09:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1753384193; x=1753988993; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=9LqfXKAvVEtud9EERMEbY0MkdiiIPOYbag0U6oWeTfg=;
+ b=OKkpuuMg5kx5DIByMOGi61u033ZxbAjOTJ+A7MQU8x90MYaJgkABtWd06yKAK0DPVP
+ i4idszNOJ+G0+ZbIFbgaVhyMNCNw8k9Bw2T8HuoQPxegUj/48aKXh2dG5jZgqKnHPXur
+ QJt3u7XhzZvWyeLfschRlXK47bjNm0m2d6BjG6o3I7Y0+9xEgGhmcdFLYof/ehSYVRxL
+ Y89LjU2TD82RtYY/kLSL3jeoBzL4bUbGQ0qWSB7G6NmjSF7Wzs53DMiZxHXD6o33VHfz
+ yLJlCo7Gt8cRC7/1PX6TXn4RtP7tkJq78Ltk8xAuAOEJnQrIPEgeRYtFCVQGlYiayfl9
+ JGrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1753384193; x=1753988993;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=9LqfXKAvVEtud9EERMEbY0MkdiiIPOYbag0U6oWeTfg=;
+ b=tpbcEOZFo0BIG77b2Z4qXX33hkBM/toTDtXrXbgSfYEFG4fl2Eo74dIoSjMl0aEywL
+ FhNI5nIVTm0now2WOjv3EQJrjRZy4WT4ubmePdryBinu64UmzYtP+4Y6vV3C3Gcfnrle
+ HU8XZEx7Q0C1tPFt6oqIFK64AQqHu8LHz5PX4A3adkqhvGSwj/LVVFpCUfb5rPaWX0rU
+ U3LLHdenbKfa+nccYqLfi4hWh/L4O4oXAElR4kq0yK6NWMi/Q72qmLX4dL108QY6170R
+ a5Zn9dR/IWnI5ujDUnD3RLUrm7lsYoBWz8FuTA8cbAAPREa+t9QhEkLIlIf8yC+d4Kin
+ ay5A==
+X-Gm-Message-State: AOJu0Yxek0GllMfcJKMn4kTZPfxjFO1Eljche5sGbGh/BAI/d9LPCYh1
+ 01DT+HeFWRKgxj39cokIz/ykP212xIcP92d9VchAsianzHPQkZkOJMvCgUaSPQ==
+X-Gm-Gg: ASbGncux4mu85J99epE6hm64JYKmv4mvnqnLId/xFY049KQ9dWEXaYmTJubtjhnabLM
+ L+nWU6Y6fRriZMzoPPY/CopzWKHc/VBnMcMgeZhgWQl8nS7U2W6p44vIr7ij2edA+zS5QXMXIzP
+ jZ/td1NKZFiBBWV0uEE1KGITyVANfvoIJuyxMyyKzg4CXGI+q7cdT7xOMTf9HM4hs1CNVO/lUXG
+ 3uzMuTec5PPr/7X8MYsp0+OCogJ3gtMaK7gQRVOHO58qk4Knoves4zMLpNvXR0iNvCP0iZD1T+A
+ PqISliRjjjhBhh7aqeQ5EPBIfSbkaxiDKjoaT+nE3D7I+4PZi/H9fQ9EeuKaxZbVvMnQg458lSa
+ n1Sr2/FtAYFzsQSJPbNyC/EIvnuXiHTL+s00s
+X-Google-Smtp-Source: AGHT+IHuiLZp5i/IGfsIMoXSiQfheK1gJmcwxG8+IEPp0ncHNjd4hmygpHxwtL5zoMqBONGB3M+oGg==
+X-Received: by 2002:a17:907:3c95:b0:ae0:d798:2ebd with SMTP id
+ a640c23a62f3a-af2f8958823mr849803466b.35.1753384192692; 
+ Thu, 24 Jul 2025 12:09:52 -0700 (PDT)
+Received: from x230 (gw1.ms-free.net. [185.243.124.10])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-af47cc6cb75sm150481466b.41.2025.07.24.12.09.51
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 24 Jul 2025 12:09:52 -0700 (PDT)
+From: Petr Vorel <petr.vorel@gmail.com>
+To: ltp@lists.linux.it
+Date: Thu, 24 Jul 2025 21:09:45 +0200
+Message-ID: <20250724190946.338828-1-petr.vorel@gmail.com>
+X-Mailer: git-send-email 2.50.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250724170424.GA108771@pevik>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_SOME(0.00)[];
- MISSING_XM_UA(0.00)[]; ARC_NA(0.00)[]; REPLYTO_EQ_FROM(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: 706C31F7A7
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6] mount08.c: Restrict overmounting of ephemeral
- entities
+Subject: [LTP] [PATCH 1/2] tlibio: Restore uclibc-ng support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,99 +85,342 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Wei, all,
+uclibc-ng does not implement <aio.h>. Requiring it for the core LTP
+library breaks the build. Restore unintentional removal in fed3e3ee63.
 
-> > Add a new test to verify that mount will raise ENOENT if we try to mount
-> > on magic links under /proc/<pid>/fd/<nr>.
-> > Refer to the following kernel commit for more information:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d80b065bb172
+Simplify original macros:
+* Comment out also if block first and last 'line if (...) {' and '}' if
+  the block would be empty anyway.
+* Simplify check - use just __UCLIBC__ - no need for defined(__linux__)
+* Further join #ifndef __UCLIBC__ as code prior fed3e3ee63 contained
+  code compiled for old unixes, which fed3e3ee63 removed.
+* lio_wait4asyncio() was commented out for uclibc, there is no point to
+  add further !uclibc checks in it's content
+* Detecting __UCLIBC__ requires to include <features.h>
 
-> ...
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/mount/mount08.c
-> > @@ -0,0 +1,57 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright (C) 2024 Wei Gao <wegao@suse.com>
-> > + */
-> > +
-> > +/*\
-> > + * Verify that mount will raise ENOENT if we try to mount on magic links
-> > + * under /proc/<pid>/fd/<nr>.
-> > + */
-> > +
-> > +#include "tst_test.h"
-> > +#include <sys/mount.h>
-> > +#include "tst_safe_file_at.h"
-> > +
-> > +#define MNTPOINT "mntpoint"
-> > +#define FOO MNTPOINT "/foo"
-> > +#define BAR MNTPOINT "/bar"
-> > +
-> > +static void run(void)
-> > +{
-> > +	char path[PATH_MAX];
-> > +	int fd, proc_fd;
-> > +
-> > +	fd = SAFE_OPEN(FOO, O_RDONLY | O_NONBLOCK, 0640);
-> > +
-> > +	sprintf(path, "/proc/%d/fd/%d", getpid(), fd);
-> > +
-> > +	proc_fd = SAFE_OPENAT(AT_FDCWD, path, O_PATH | O_NOFOLLOW);
-> > +
-> > +	sprintf(path, "/proc/%d/fd/%d", getpid(), proc_fd);
-> > +
-> > +	TST_EXP_FAIL(
-> > +		mount(BAR, path, "", MS_BIND, 0),
-> > +		ENOENT,
-> > +		"mount(%s)", path
+NOTE: original #endif comments in the commit prior fed3e3ee63 was
+sometimes wrong.
 
-> FYI Test is failing on Tumbleweed 6.15.7, can you please have look?
-> mount08.c:32: TFAIL: mount(/proc/130511/fd/4) expected ENOENT: EACCES (13)
+Fixes: fed3e3ee63 ("lib/tlibio: Get rid of support for old UNIXes")
+Fixes: https://autobuild.buildroot.org/results/f3e/f3e03b9a1a69988d6497f36c9d64a37a66e9ad20/
+Fixes: https://autobuild.buildroot.org/results/856/856365f467efc449faee1951250e63d8d4442bbc/
+Fixes: https://autobuild.buildroot.org/results/2ac/2ac08cecd6a505f1bac1a673efc280b3a8dcb23a/
+Fixes: https://autobuild.buildroot.org/results/59b/59b3ad33667b7e87c81e49dd434d5f494e189e0d/
+Fixes: https://autobuild.buildroot.org/results/b1a/b1a36f9971c97300670d8d772ace11e5fedceaaa/
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ lib/tlibio.c | 53 +++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 44 insertions(+), 9 deletions(-)
 
-> As Tumbleweed is very close to mainline kernel it will probably fail on mainline
-> as well. But maybe it's one of few Tumbleweed patches which causes that.
+diff --git a/lib/tlibio.c b/lib/tlibio.c
+index b877393df2..fe87c65ea4 100644
+--- a/lib/tlibio.c
++++ b/lib/tlibio.c
+@@ -73,6 +73,7 @@
+ #define _LARGEFILE64_SOURCE
+ 
+ #include "config.h"
++#include <features.h>
+ #include <stdio.h>
+ #include <ctype.h>
+ #include <fcntl.h>
+@@ -88,7 +89,9 @@
+ #include <stdint.h>
+ #include <sys/uio.h>		/* readv(2)/writev(2) */
+ #include <string.h>
+-#include <aio.h>
++#ifndef __UCLIBC__
++# include <aio.h>
++#endif
+ #include <stdlib.h>		/* atoi, abs */
+ 
+ #include "tlibio.h"		/* defines LIO* macros */
+@@ -515,9 +518,11 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 	int omethod = method;
+ 	int listio_cmd;		/* Holds the listio/lio_listio cmd */
+ 	struct iovec iov;	/* iovec for writev(2) */
++#ifndef __UCLIBC__
+ 	struct aiocb aiocbp;	/* POSIX aio control block */
+ 	struct aiocb *aiolist[1];	/* list of aio control blocks for lio_listio */
+ 	off64_t poffset;	/* pwrite(2) offset */
++#endif
+ 
+ 	/*
+ 	 * If LIO_RANDOM bit specified, get new method randomly.
+@@ -536,12 +541,15 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 		*errmsg = Errormsg;
+ 
+ 	Rec_signal = Received_signal;	/* get the current number of signals received */
++#ifndef __UCLIBC__
+ 	Rec_callback = Received_callback;	/* get the current number of callbacks received */
++#endif
+ 
+ 	memset(&iov, 0x00, sizeof(struct iovec));
+ 	iov.iov_base = buffer;
+ 	iov.iov_len = size;
+ 
++#ifndef __UCLIBC__
+ 	memset(&aiocbp, 0x00, sizeof(struct aiocb));
+ 
+ 	aiocbp.aio_fildes = fd;
+@@ -589,6 +597,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 
+ 	poffset = (off64_t) ret;
+ 	aiocbp.aio_offset = ret;
++#endif
+ 
+ 	/*
+ 	 * If the LIO_USE_SIGNAL bit is not set, only use the signal
+@@ -600,6 +609,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 
+ 		sig = 0;	/* ignore signal parameter */
+ 	}
++#ifndef __UCLIBC__
+ 	if (sig && (method & LIO_WAIT_CBTYPES))
+ 		sig = 0;	/* ignore signal parameter */
+ 
+@@ -626,6 +636,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 		aiocbp.aio_sigevent.sigev_notify_attributes =
+ 		    (void *)(uintptr_t) size;
+ 	}
++#endif
+ 
+ 	/*
+ 	 * Determine the system call that will be called and produce
+@@ -684,6 +695,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 	}
+ 
+ 	else if (method & LIO_IO_ASYNC) {
++#ifndef __UCLIBC__
+ 		sprintf(Lio_SysCall,
+ 			"aio_write(fildes=%d, buf, nbytes=%d, signo=%d)", fd,
+ 			size, sig);
+@@ -705,9 +717,11 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 				sigrelse(sig);
+ 			return -errno;
+ 		}
++#endif
+ 	}
+ 	/* LIO_IO_ASYNC */
+ 	else if (method & LIO_IO_SLISTIO) {
++#ifndef __UCLIBC__
+ 		aiocbp.aio_lio_opcode = LIO_WRITE;
+ 		listio_cmd = LIO_WAIT;
+ 		io_type = "lio_listio(3) sync write";
+@@ -739,9 +753,11 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 
+ 		ret = lio_check_asyncio(io_type, size, &aiocbp, method);
+ 		return ret;
++#endif
+ 	}
+ 	/* LIO_IO_SLISTIO */
+ 	else if (method & LIO_IO_ALISTIO) {
++#ifndef __UCLIBC__
+ 		aiocbp.aio_lio_opcode = LIO_WRITE;
+ 		listio_cmd = LIO_NOWAIT;
+ 		io_type = "lio_listio(3) async write";
+@@ -766,6 +782,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 				sigrelse(sig);
+ 			return -errno;
+ 		}
++#endif
+ 	}
+ 	/* LIO_IO_ALISTIO */
+ 	else if (method & LIO_IO_SYNCV) {
+@@ -796,6 +813,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 
+ 		return ret;
+ 	}			/* LIO_IO_SYNCV */
++#ifndef __UCLIBC__
+ 	else if (method & LIO_IO_SYNCP) {
+ 		io_type = "pwrite(2)";
+ 
+@@ -827,6 +845,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 
+ 		return ret;
+ 	}			/* LIO_IO_SYNCP */
++#endif
+ 	else {
+ 		printf("DEBUG %s/%d: No I/O method chosen\n", __FILE__,
+ 		       __LINE__);
+@@ -836,7 +855,9 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 	/*
+ 	 * wait for async io to complete.
+ 	 */
++#ifndef __UCLIBC__
+ 	ret = lio_wait4asyncio(method, fd, &aiocbp);
++#endif
+ 
+ 	/*
+ 	 * If there was an error waiting for async i/o to complete,
+@@ -862,7 +883,9 @@ int lio_write_buffer(int fd,		/* open file descriptor */
+ 	 * have been updated but the actual i/o size if returned.
+ 	 */
+ 
++#ifndef __UCLIBC__
+ 	ret = lio_check_asyncio(io_type, size, &aiocbp, method);
++#endif
+ 
+ 	return ret;
+ }				/* end of lio_write_buffer */
+@@ -924,9 +947,11 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 	int listio_cmd;		/* Holds the listio/lio_listio cmd */
+ 	int omethod = method;
+ 	struct iovec iov;	/* iovec for readv(2) */
++#ifndef __UCLIBC__
+ 	struct aiocb aiocbp;	/* POSIX aio control block */
+ 	struct aiocb *aiolist[1];	/* list of aio control blocks for lio_listio */
+ 	off64_t poffset;	/* pread(2) offset */
++#endif
+ 
+ 	/*
+ 	 * If LIO_RANDOM bit specified, get new method randomly.
+@@ -945,12 +970,15 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 		*errmsg = Errormsg;
+ 
+ 	Rec_signal = Received_signal;	/* get the current number of signals received */
++#ifndef __UCLIBC__
+ 	Rec_callback = Received_callback;	/* get the current number of callbacks received */
++#endif
+ 
+ 	memset(&iov, 0x00, sizeof(struct iovec));
+ 	iov.iov_base = buffer;
+ 	iov.iov_len = size;
+ 
++#ifndef __UCLIBC__
+ 	memset(&aiocbp, 0x00, sizeof(struct aiocb));
+ 
+ 	aiocbp.aio_fildes = fd;
+@@ -962,7 +990,6 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 
+ 	aiocbp.aio_sigevent.sigev_notify_function = NULL;
+ 	aiocbp.aio_sigevent.sigev_notify_attributes = 0;
+-
+ 	aiolist[0] = &aiocbp;
+ 
+ 	if ((ret = lseek(fd, 0, SEEK_CUR)) == -1) {
+@@ -998,6 +1025,7 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 	}
+ 	poffset = (off64_t) ret;
+ 	aiocbp.aio_offset = ret;
++#endif
+ 
+ 	/*
+ 	 * If the LIO_USE_SIGNAL bit is not set, only use the signal
+@@ -1010,6 +1038,7 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 		sig = 0;	/* ignore signal parameter */
+ 	}
+ 
++#ifndef __UCLIBC__
+ 	if (sig && (method & LIO_WAIT_CBTYPES))
+ 		sig = 0;	/* ignore signal parameter */
+ 
+@@ -1020,7 +1049,6 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 	 * old signal handler will not be restored.
+ 	 *** restoring the signal handler could be added ***
+ 	 */
+-
+ 	if (sig && (method & LIO_WAIT_SIGTYPES)) {
+ 		aiocbp.aio_sigevent.sigev_notify = SIGEV_SIGNAL;
+ 		aiocbp.aio_sigevent.sigev_signo = sig;
+@@ -1035,6 +1063,7 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 		aiocbp.aio_sigevent.sigev_notify_attributes =
+ 		    (void *)(uintptr_t) size;
+ 	}
++#endif
+ 
+ 	/*
+ 	 * Determine the system call that will be called and produce
+@@ -1093,7 +1122,9 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 			wait4sync_io(fd, 1);
+ 		}
+ 
+-	} else if (method & LIO_IO_ASYNC) {
++	}
++#ifndef __UCLIBC__
++	else if (method & LIO_IO_ASYNC) {
+ 		sprintf(Lio_SysCall,
+ 			"aio_read(fildes=%d, buf, nbytes=%d, signo=%d)", fd,
+ 			size, sig);
+@@ -1116,9 +1147,7 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 			return -errno;
+ 		}
+ 	}
+-	/* LIO_IO_ASYNC */
+ 	else if (method & LIO_IO_SLISTIO) {
+-		aiocbp.aio_lio_opcode = LIO_READ;
+ 		listio_cmd = LIO_WAIT;
+ 		io_type = "lio_listio(3) sync read";
+ 
+@@ -1150,7 +1179,6 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 		ret = lio_check_asyncio(io_type, size, &aiocbp, method);
+ 		return ret;
+ 	}
+-	/* LIO_IO_SLISTIO */
+ 	else if (method & LIO_IO_ALISTIO) {
+ 		aiocbp.aio_lio_opcode = LIO_READ;
+ 		listio_cmd = LIO_NOWAIT;
+@@ -1177,7 +1205,6 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 			return -errno;
+ 		}
+ 	}
+-	/* LIO_IO_ALISTIO */
+ 	else if (method & LIO_IO_SYNCV) {
+ 		io_type = "readv(2)";
+ 
+@@ -1236,7 +1263,9 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 			     __FILE__, __LINE__, ret);
+ 
+ 		return ret;
+-	}			/* LIO_IO_SYNCP */
++	}
++
++#endif
+ 
+ 	else {
+ 		printf("DEBUG %s/%d: No I/O method chosen\n", __FILE__,
+@@ -1248,7 +1277,9 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 	 * wait for async io to complete.
+ 	 * Note: Sync io should have returned prior to getting here.
+ 	 */
++#ifndef __UCLIBC__
+ 	ret = lio_wait4asyncio(method, fd, &aiocbp);
++#endif
+ 
+ 	/*
+ 	 * If there was an error waiting for async i/o to complete,
+@@ -1274,12 +1305,15 @@ int lio_read_buffer(int fd,	/* open file descriptor */
+ 	 * have been updated but the actual i/o size if returned.
+ 	 */
+ 
++#ifndef __UCLIBC__
+ 	ret = lio_check_asyncio(io_type, size, &aiocbp, method);
++#endif
+ 
+ 	return ret;
+ }				/* end of lio_read_buffer */
+ 
+ #if !defined(__sun) && !defined(__hpux) && !defined(_AIX)
++#ifndef __UCLIBC__
+ /***********************************************************************
+  * This function will check that async io was successful.
+  * It can also be used to check sync listio since it uses the
+@@ -1479,6 +1513,7 @@ int lio_wait4asyncio(int method, int fd, struct aiocb *aiocbp)
+ 
+ }				/* end of lio_wait4asyncio */
+ 
++#endif
+ #endif
+ 
+ #if UNIT_TEST
+-- 
+2.50.0
 
-Maybe it's just the environment in openQA, because running on Tumbleweed VM with
-enabled SELinux it works well on both 6.15.6 and 6.16-rc1.
-
-The same applies to recent error on ioctl_pidfd01:
-ioctl_pidfd01.c:28: TFAIL: ioctl(memfd secret, PIDFD_GET_INFO, info) expected EINVAL, EBADF, ENOTTY: EACCES (13)
-
-Kind regards,
-Petr
-
-> Kind regards,
-> Petr
-
-> > +	);
-> > +
-> > +	SAFE_CLOSE(fd);
-> > +	SAFE_CLOSE(proc_fd);
-> > +}
-> > +
-> > +static void setup(void)
-> > +{
-> > +	SAFE_TOUCH(FOO, 0777, NULL);
-> > +	SAFE_TOUCH(BAR, 0777, NULL);
-> > +}
-> > +
-> > +static struct tst_test test = {
-> > +	.setup = setup,
-> > +	.test_all = run,
-> > +	.needs_root = 1,
-> > +	.mntpoint = MNTPOINT,
-> > +	.tags = (const struct tst_tag[]) {
-> > +		{"linux-git", "d80b065bb172"},
-> > +		{}
-> > +	}
-> > +};
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
