@@ -4,65 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 701E3C87FCA
-	for <ltp@archiver.kernel.org>; Fri, 25 Jul 2025 14:33:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57753C87FCA
+	for <ltp@archiver.kernel.org>; Fri, 25 Jul 2025 15:45:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EBCAE3CCEAA
-	for <ltp@archiver.kernel.org>; Fri, 25 Jul 2025 16:33:05 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 7F4423CCE96
+	for <ltp@archiver.kernel.org>; Fri, 25 Jul 2025 17:45:26 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BCB423C7F3F
- for <ltp@lists.linux.it>; Fri, 25 Jul 2025 16:32:48 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 618063C6907
+ for <ltp@lists.linux.it>; Fri, 25 Jul 2025 17:45:09 +0200 (CEST)
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 03C32600C81
- for <ltp@lists.linux.it>; Fri, 25 Jul 2025 16:32:47 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A56731F394;
- Fri, 25 Jul 2025 14:32:46 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 80FE613A8D;
- Fri, 25 Jul 2025 14:32:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id YJRZHo6Vg2iPUwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 25 Jul 2025 14:32:46 +0000
-Date: Fri, 25 Jul 2025 16:33:27 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Mike Tipton <mike.tipton@oss.qualcomm.com>
-Message-ID: <aIOVt0t96IbXcehy@yuki.lan>
-References: <20250710170255.4190556-1-mike.tipton@oss.qualcomm.com>
- <aIN5Btk4Sn2azE14@yuki.lan>
- <aIOQ60MoHO/OJm/k@hu-mdtipton-lv.qualcomm.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 35F4C600629
+ for <ltp@lists.linux.it>; Fri, 25 Jul 2025 17:45:06 +0200 (CEST)
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020; t=1753458305;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=zfNlU9QkQSDk6X3acZW9Zv6watdmS4XLb2lpyLgX3PU=;
+ b=nWi+22jj/D7vpJ3jHZNLznk1KJL9waj+gQWBvee9c3DCDjBGRQxnd34ePojIYdP6v+eVKG
+ yG5tj6U0W7XvzcafeahhiJ7DsZKZL6kJKmzMVL+Ks4v2x2urTkyCLbR1OnkDjrqoOl6sj+
+ VnOF6P3Ga+8BpoAwTI8VywKIdWY0K+7xbhld/p0uekv7pnRBIEx6fFFyji+bMunGgJuuVR
+ URcoNjbaLEWjMDmaTrtJMO4834tjUkaAgIjqQOLkccuir0WvwA/yq2VibB7phjMZHWuSQX
+ g2prDMKR6GuQEP0js+MSZVdBI+cCC7zeSkfA3PhRO2hIPyB1B09Vv+ZLZ/v7ww==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020e; t=1753458305;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=zfNlU9QkQSDk6X3acZW9Zv6watdmS4XLb2lpyLgX3PU=;
+ b=2wlev3Mb1+z/3Pnnum1fsrCZ/wKE+6fI5t7UzhlvwaPmKxn6SEQEbGzJg3YvvNkBEQ1RKj
+ qNo7Fzzu1wV4ZADg==
+To: Oliver Sang <oliver.sang@intel.com>
+In-Reply-To: <aINKAQt3qcj2s38N@xsang-OptiPlex-9020>
+References: <202507231021.dcf24373-lkp@intel.com> <87a54usty4.ffs@tglx>
+ <aINKAQt3qcj2s38N@xsang-OptiPlex-9020>
+Date: Fri, 25 Jul 2025 17:45:04 +0200
+Message-ID: <87seikp94v.ffs@tglx>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <aIOQ60MoHO/OJm/k@hu-mdtipton-lv.qualcomm.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: A56731F394
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] device-drivers/cpufreq_boost: Don't hardcode
- to CPU0
+Subject: Re: [LTP] [tip:locking/futex] [futex] 56180dd20c:
+ BUG:sleeping_function_called_from_invalid_context_at_kernel/nsproxy.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,20 +64,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: lkp@intel.com, Peter Zijlstra <peterz@infradead.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, oliver.sang@intel.com,
+ oe-lkp@lists.linux.dev, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Sure, sounds good to me.
+Oliver!
 
-Applied, thanks.
+On Fri, Jul 25 2025 at 17:10, Oliver Sang wrote:
+> On Wed, Jul 23, 2025 at 07:22:43PM +0200, Thomas Gleixner wrote:
+>> > [  286.673775][   C97] BUG: sleeping function called from invalid context at kernel/nsproxy.c:233   <---- (1)
+>> > [  286.673784][   C97] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 6748, name: oom03
+>> > [  286.673787][   C97] preempt_count: 7ffffffe, expected: 0
+>> 
+>> Ooops. That's a corrupted preempt counter, which has underflown twice.
+>> 
+>> Can you please enable CONFIG_DEBUG_PREEMPT, so we can see where this
+>> happens?
+>
+> after enable CONFIG_DEBUG_PREEMPT, the config is as attached
+> config-6.16.0-rc5-00002-g56180dd20c19
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you for trying, but I just realized that it tells us only when it
+underflows, but we don't see where the actual extra decrement happens
+before that.
+
+Can you please enable CONFIG_PREEMPT_TRACER and add
+
+'trace_event=preemptirq:preempt_disable,preemptirq:preempt_enable ftrace_dump_on_oops'
+
+to the kernel command line. The latter will dump the recorded
+preempt_enable/disable events and we can pinpoint the function which is
+responsible for that.
+
+Thanks,
+
+        tglx
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
