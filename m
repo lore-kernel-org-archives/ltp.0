@@ -4,79 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34277C83F26
-	for <ltp@archiver.kernel.org>; Thu, 24 Jul 2025 19:10:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A717C83F26
+	for <ltp@archiver.kernel.org>; Fri, 25 Jul 2025 00:55:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1753404956; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=/tKqWppvGR2PD4crZ3h+T5sCaZ74eTEEe6Yf1U2Kk3U=;
+ b=MrCHRh+unm+BJEFPyYngCxwagiOthohnlZ7DucO67Yj/a7vw13IpNNQZN6pyus0UmPQ7u
+ RfwA4xHVJ7kN87ya8WvUatDw+XnupHyWkYW5Sn6I+ZGNhaOkpCde5CxFEptPr/h7wlC9lmG
+ OgaWMaDL1H1ACAGzT63OOuSZmEMVaZA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9B1F23CCDF9
-	for <ltp@archiver.kernel.org>; Thu, 24 Jul 2025 21:10:26 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 803F13CBF98
+	for <ltp@archiver.kernel.org>; Fri, 25 Jul 2025 02:55:56 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D90113C91B5
- for <ltp@lists.linux.it>; Thu, 24 Jul 2025 21:09:54 +0200 (CEST)
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com
- [IPv6:2a00:1450:4864:20::62c])
+ by picard.linux.it (Postfix) with ESMTPS id 4E4AA3CA085
+ for <ltp@lists.linux.it>; Fri, 25 Jul 2025 02:55:33 +0200 (CEST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 805642009C1
- for <ltp@lists.linux.it>; Thu, 24 Jul 2025 21:09:54 +0200 (CEST)
-Received: by mail-ej1-x62c.google.com with SMTP id
- a640c23a62f3a-ae3be3eabd8so307530866b.1
- for <ltp@lists.linux.it>; Thu, 24 Jul 2025 12:09:54 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D66B2600940
+ for <ltp@lists.linux.it>; Fri, 25 Jul 2025 02:55:31 +0200 (CEST)
+Received: by mail-wr1-x436.google.com with SMTP id
+ ffacd0b85a97d-3a510432236so1208422f8f.0
+ for <ltp@lists.linux.it>; Thu, 24 Jul 2025 17:55:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1753384194; x=1753988994; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=e1S45zhIgSYaLAtMWTDcWgW0WkkRxD6U1jxnuGWxCbI=;
- b=TPOV+yVhAaZAhGBDXD8NQX1+SiL4rS6BySp0nOfK6Wu8p0nRskiaVAZwDMhI0bwnQM
- mNofAoCt3WzaeTRJUIhzTh/V0imL20AUvVcBaT7YI58gFh5DV6JiF/EP7A3d/IXoBrbc
- a0tmwwGpBKRyiP7nOvVku3g5qzCmInO2yBtVPcivEHEm9pFfn4EuBX4VXTqlsiUwPnoS
- sm4tkpol7fF0IxKDuHxUXGBegO9pmzLNoSUVrFj1YwHiCABwRdnG7jPG8ljglijd8cBo
- tCyw0T2lhbmlvwb+VDmk2dWI4KmH4REaGP19Dl0kGVzgsQFVWflAeWbfwyODx+at906M
- 7m7g==
+ d=suse.com; s=google; t=1753404931; x=1754009731; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=gIlEGlpJXgdwypn/kNzxogGy+xiY+wS/wHbWEs6P/BE=;
+ b=SG8x68FkFWYBEyfWl3AQHUt/du0x3cbEFCySFg+9urwMGfKC0fKAtFwn8gWYoo42m3
+ RwHP546UAZQjceIssaOgKYV4oawvf6b/kTMfhvHEJio0+JdAup5DBXgjx8c+fdt6GJFb
+ Cl9GyQkTg6+LDclgL9Pud61D1YPnraUiJtgjvtVBY2oeoDCZe8pUq5IBg28EX05I+C5V
+ GUvgl5d+6tkOj1X8WzSHe4U8Z+U0r/iwoEwXOcKEd5wujsqyDinBZBPOJmB1zT50inKb
+ MoODD6p3stTihA5XigpfMIp4B+gcK38kAaqUyvUY9BBCOjTfNRFrypDKBbsnYtKaKoam
+ X6LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1753384194; x=1753988994;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=e1S45zhIgSYaLAtMWTDcWgW0WkkRxD6U1jxnuGWxCbI=;
- b=afKpzNmAPw+pC9+6VeB6xXlB0GHICmbNIKcNm7NcrOcoWKvw0VQBO6Gu+97wEtk0+q
- lCoDvjCTvl+3xnirdY6NyDrDSGdAHfKMRgZ3/u9GCAxCn1Me2YFOYIEgm/io7Hj6KYvO
- WKBu78a6lpmGlz+A1usn0TggnmqIL7VR9w15o9JQfl2mcKWECh8QSAfhzMk6oWcgBYpI
- h/92TVqMURDc6LFJlKhtOkN/VLVj5xnRqCjJ4cvd00nu8YunSl8hCYBjBybevZjb1fSo
- 9dCJkM++De9RLf/0Ux1LZZlzVzQYNgvjqZ3Za8FLmp6mni0oQzE3i0EKyiJ7PN+PotB4
- B+sg==
-X-Gm-Message-State: AOJu0YzVDjeu5fRYEkoiziIB/GhAgL1XEn+7F7t8KqIreJGLKfRE17oG
- g6Ih44i0TliIPHChg9n9O/+t3rMIOoX2sG2ctv2aD227ZS3JnZ71jHyYwm1f2A==
-X-Gm-Gg: ASbGncs4hWxrlH90Ojf+uDP8r3cEprelVm/izDFz/HNS97DlABRpZVUwXLeSmUJFe7z
- VLVFdNfpprtqmvpbGc1epQb5s8eiTdmN2oo8p/uFt1EmNzR1rzWy8m0kZ9nxuTrmyBslGVWZOEG
- LeRhb7QKhiqH3TTWIuaqlHlQhuHPS3mw93igpkmYwOQEk9dOy4igDQeVick6UsgxGrbVuTJpy6o
- 0vLllnD8IgwpJj42HqXs9CqOjzqEK3zVWxIbCqfsDVquDz1bEQtCjO2vfuhGAce43lb9yTW4Ck0
- /fy57KzF0qbRBUOd5BFSyG5hTFfVuRi6DMZH1jTerA6ZiBrclFDdpk2A0pMsLiL6r99g/h1hE2/
- EgiE/pyxEoaOOg2z+C/VDrmhunw==
-X-Google-Smtp-Source: AGHT+IEE/NbVoXiId8YL9BR/l4hTiahEhhPe8/OrxbCMPFdCZDQxeURgFbVdVyIkPD9HEe1aY1sWwA==
-X-Received: by 2002:a17:907:bb49:b0:ad8:e448:6c64 with SMTP id
- a640c23a62f3a-af4c43209ecmr365536966b.24.1753384193716; 
- Thu, 24 Jul 2025 12:09:53 -0700 (PDT)
-Received: from x230 (gw1.ms-free.net. [185.243.124.10])
+ d=1e100.net; s=20230601; t=1753404931; x=1754009731;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=gIlEGlpJXgdwypn/kNzxogGy+xiY+wS/wHbWEs6P/BE=;
+ b=k/lUrP/P8nf1MJNRyDFb1ziC9ZvGiqeTue1Z3w9iMcVYiZuvIoBcunjY4H/u575oRP
+ nuOILURJ8ufAmuwgbPjzQusCL329buZAFGT2wmkV1/fGzMkOjwPmaXYERaOdBxy7cSSZ
+ muN5HS7CL5kCNfPIU4YGkfo6KZhMZobqcc5VS+nw0p7Nu39+1Fe1MttOeRlrVbhLPFTy
+ fgydrpYov/hl6efaJYW6YcicbYVLjSZ7qnDO4Tv8NXOkGtXb5yffvQzcuS+JqSLGA8ug
+ 5zgRJz9Mz+MZ86HikD+gPtNlhRYDqbsCT7lAWBjgRxNOEpw+GEvmQFxM9wQGDZ3vSnvO
+ mzCQ==
+X-Gm-Message-State: AOJu0YxGusJW/B1iaX2fXUf7lFwqFSycapMzp6f9CzlSjzsPO5DyWNeP
+ gUyjUV58aN8dlmaxsOdD2VeG8TR9BUc04CvOlY2Awq/CtT+UZWKGfeKTqR6hQsv+sA==
+X-Gm-Gg: ASbGncs8Z2OlXzZJY58cRPjanVqFrb7wqdNLgAyeLDgVaIDibsKZ+raxn4ujS2pTCHm
+ cyC+eaWapxvc97UPRA3kTFpydgrTjZpbB8PmFGl4K/unwWQt0lNuzGZA/f1XXHsuj9K/oHCsZXk
+ +IYKzrn6MvgN2fGiOSc7GutLfc76jA/xQFgtlSHdwsa9t41DfFZoWs9A0vVGu9ADOY/rj8T4Ubi
+ UfAI8Yt8PWpwTxl6Hfz0XCNhAbDQIEQQ+4QaQAQHpsHMxyXfPyPpMEGfavcBYUDWS8N4eu7Ov3z
+ csfD7Pvxd9B6PYf90cb8PM+QhgVwc3zbCZ9FIabbULqWXjsynP1F6hHA6eMugRnoTnDOEz6XfHy
+ iMquuSm5sECdf46AcfFSXwA==
+X-Google-Smtp-Source: AGHT+IEAB4pMsYTwjcKLmBsteF1h5Mqtc/Q8RETbTEQ1gCYq30sWzI/iF62/Jq88mkp1b3vcVXKREQ==
+X-Received: by 2002:a05:6000:2883:b0:3a5:2e9c:edb with SMTP id
+ ffacd0b85a97d-3b77668d454mr75251f8f.47.1753404931194; 
+ Thu, 24 Jul 2025 17:55:31 -0700 (PDT)
+Received: from MiWiFi-CR6608-srv ([202.127.77.110])
  by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-af47cc6cb75sm150481466b.41.2025.07.24.12.09.52
+ d2e1a72fcca58-761b04ba67asm2407125b3a.65.2025.07.24.17.55.29
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 24 Jul 2025 12:09:53 -0700 (PDT)
-From: Petr Vorel <petr.vorel@gmail.com>
-To: ltp@lists.linux.it
-Date: Thu, 24 Jul 2025 21:09:46 +0200
-Message-ID: <20250724190946.338828-2-petr.vorel@gmail.com>
-X-Mailer: git-send-email 2.50.0
-In-Reply-To: <20250724190946.338828-1-petr.vorel@gmail.com>
-References: <20250724190946.338828-1-petr.vorel@gmail.com>
+ Thu, 24 Jul 2025 17:55:30 -0700 (PDT)
+Date: Fri, 25 Jul 2025 08:54:40 -0400
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aIN-kNB2moTpjM5U@MiWiFi-CR6608-srv>
+References: <20250721200428.2627117-1-wegao@suse.com>
+ <20250722185503.3224765-1-wegao@suse.com>
+ <20250724170424.GA108771@pevik> <20250724171036.GB108771@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250724171036.GB108771@pevik>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] tlibio: Further cleanup of old unixes
+Subject: Re: [LTP] [PATCH v6] mount08.c: Restrict overmounting of ephemeral
+ entities
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,85 +100,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Petr Vorel <pvorel@suse.cz>
-
-I also wonder if #else part of struct lio_info_type Lio_info1[]
-should be really defined for uclibc/uclibc-ng.
-
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
----
-Hi,
-
-I can squash this one into previous commit if you don't think it's worth
-to keep it separate.
-
- lib/tlibio.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/lib/tlibio.c b/lib/tlibio.c
-index fe87c65ea4..bc1172f0c6 100644
---- a/lib/tlibio.c
-+++ b/lib/tlibio.c
-@@ -111,7 +111,7 @@ struct lio_info_type Lio_info1[] = {
- 	{"b", LIO_IO_ASYNC | LIO_WAIT_SIGPAUSE, "async i/o using pause"},
- 	{"a", LIO_IO_ASYNC | LIO_WAIT_RECALL,
- 	 "async i/o using recall/aio_suspend"},
--#if defined(sgi) || (defined(__linux__) && !defined(__UCLIBC__))
-+#ifndef __UCLIBC__
- 	{"r",
- 	 LIO_RANDOM | LIO_IO_TYPES | LIO_WAIT_TYPES,
- 	 "random sync i/o types and wait methods"},
-@@ -162,7 +162,7 @@ char Lio_SysCall[PATH_MAX];	/* string containing last i/o system call */
- 
- static volatile int Received_signal = 0;	/* number of signals received */
- static volatile int Rec_signal;
--#if defined(sgi) || (defined(__linux__) && !defined(__UCLIBC__))
-+#ifndef __UCLIBC__
- static volatile int Received_callback = 0;	/* number of callbacks received */
- static volatile int Rec_callback;
- #endif
-@@ -402,7 +402,7 @@ static void lio_async_signal_handler(int sig)
- 	return;
- }
- 
--#if defined(sgi) || (defined(__linux__) && !defined(__UCLIBC__))
-+#ifndef __UCLIBC__
- /***********************************************************************
-  * This is an internal callback handler.
-  * If the handler is called, it will increment the Received_callback
-@@ -420,7 +420,7 @@ static void lio_async_callback_handler(union sigval sigval)
- 
- 	return;
- }
--#endif /* sgi */
-+#endif
- 
- /***********************************************************************
-  * lio_random_methods
-@@ -1312,7 +1312,6 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 	return ret;
- }				/* end of lio_read_buffer */
- 
--#if !defined(__sun) && !defined(__hpux) && !defined(_AIX)
- #ifndef __UCLIBC__
- /***********************************************************************
-  * This function will check that async io was successful.
-@@ -1513,7 +1512,6 @@ int lio_wait4asyncio(int method, int fd, struct aiocb *aiocbp)
- 
- }				/* end of lio_wait4asyncio */
- 
--#endif
- #endif
- 
- #if UNIT_TEST
--- 
-2.50.0
-
+On Thu, Jul 24, 2025 at 07:10:36PM +0200, Petr Vorel wrote:
+> > Hi Wei, all,
+> 
+> > FYI Test is failing on Tumbleweed 6.15.7, can you please have look?
+> > mount08.c:32: TFAIL: mount(/proc/130511/fd/4) expected ENOENT: EACCES (13)
+> 
+> > As Tumbleweed is very close to mainline kernel it will probably fail on mainline
+> > as well. But maybe it's one of few Tumbleweed patches which causes that.
+> 
+> Maybe it's just the environment in openQA, because running on Tumbleweed VM with
+> enabled SELinux it works well on both 6.15.6 and 6.16-rc1.
+> 
+> The same applies to recent error on ioctl_pidfd01:
+> ioctl_pidfd01.c:28: TFAIL: ioctl(memfd secret, PIDFD_GET_INFO, info) expected EINVAL, EBADF, ENOTTY: EACCES (13)
+> 
+> Kind regards,
+> Petr
+Will check this, thanks for notification.
+> 
+> > Kind regards,
+> > Petr
+> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
