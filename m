@@ -4,91 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7BC3C87FCC
-	for <ltp@archiver.kernel.org>; Sun, 27 Jul 2025 20:55:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C764C87FCE
+	for <ltp@archiver.kernel.org>; Mon, 28 Jul 2025 06:37:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1753684666; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=CTtw5TkvqSCV6HyDsPNvDWiH0mAS+jPJcqY8BhA/udc=;
+ b=hx/lAlCniA3OYuGsZD33HPWTTI6iZRyqFc7MGvGUI6ZIpK3pPbLdZ3+GEfpbgO1EG9w7d
+ ffRfLrpIz+YCkDAFJNG1N0onaiz133rJcgXneyo/LMqNJTe9GdTx4Ssj6xMFRO8ThtoU+xB
+ LT5MBf2WD+iGTnwGMk0oUSs6vVts2+0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 257F23C75F5
-	for <ltp@archiver.kernel.org>; Sun, 27 Jul 2025 22:55:23 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 363F33C860F
+	for <ltp@archiver.kernel.org>; Mon, 28 Jul 2025 08:37:46 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2FBDB3C68DA
- for <ltp@lists.linux.it>; Sun, 27 Jul 2025 22:55:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id E3F293C088D
+ for <ltp@lists.linux.it>; Mon, 28 Jul 2025 08:37:25 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C20521A002F3
- for <ltp@lists.linux.it>; Sun, 27 Jul 2025 22:55:03 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 88BBE211C7;
- Sun, 27 Jul 2025 20:55:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1753649702; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=7RLb6zH2sTDsMHDEjX9JOSPu+ITRu+BwpCfY8bLpc3c=;
- b=cOLCqC8CVUJKDMTlhF6NxXyc+vfyepTFci+GvmCmrJT01wSR6S1mbiFWCdzapWsU1Aj97Z
- y7hMgo48S+UaZJw3D/sHyN/QGKauuUNjQkqz/WZLE/RKIZCMk/VBIbBugbnh9QBd++DIhE
- 50bb54KY8k/PlcYNX+dMZwSCn/zMkFE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1753649702;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=7RLb6zH2sTDsMHDEjX9JOSPu+ITRu+BwpCfY8bLpc3c=;
- b=iFX864tf2ooyqG7/PVaVaXgk849ZM67xeh4XI0sSw5Eqc9L6ERlA1I6epnJm8+TurZgInO
- sX5Ti2wR5y1OCTAQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1753649702; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=7RLb6zH2sTDsMHDEjX9JOSPu+ITRu+BwpCfY8bLpc3c=;
- b=cOLCqC8CVUJKDMTlhF6NxXyc+vfyepTFci+GvmCmrJT01wSR6S1mbiFWCdzapWsU1Aj97Z
- y7hMgo48S+UaZJw3D/sHyN/QGKauuUNjQkqz/WZLE/RKIZCMk/VBIbBugbnh9QBd++DIhE
- 50bb54KY8k/PlcYNX+dMZwSCn/zMkFE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1753649702;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=7RLb6zH2sTDsMHDEjX9JOSPu+ITRu+BwpCfY8bLpc3c=;
- b=iFX864tf2ooyqG7/PVaVaXgk849ZM67xeh4XI0sSw5Eqc9L6ERlA1I6epnJm8+TurZgInO
- sX5Ti2wR5y1OCTAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5C50413A43;
- Sun, 27 Jul 2025 20:55:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id psxRFSaShmhZVQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Sun, 27 Jul 2025 20:55:02 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Sun, 27 Jul 2025 22:54:54 +0200
-Message-ID: <20250727205455.728650-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.50.0
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 027521000533
+ for <ltp@lists.linux.it>; Mon, 28 Jul 2025 08:37:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1753684642;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hKU0gGddFiUzT1prkTeF6cROMcWlVsedJLPOIRkC9tU=;
+ b=O2ERyRT1ds09b6lGWE3YHzmUpfKdEKzMjQIMhQ/n+OKXdOPRJnlUk630uEljzPpfpHh0mX
+ cPxSS0cB1I+CC+2ry5SDA70DoDFE/DiKO2ggAX3jCir6DEOLGWMhN3VJvepFh9wK3zTc0Q
+ fCjpJZ4K/ilKh36K2eutFBC7Zr4asE8=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-193-vHKlM0HGPHKNy3NsWUsWSA-1; Mon, 28 Jul 2025 02:37:19 -0400
+X-MC-Unique: vHKlM0HGPHKNy3NsWUsWSA-1
+X-Mimecast-MFC-AGG-ID: vHKlM0HGPHKNy3NsWUsWSA_1753684638
+Received: by mail-pj1-f70.google.com with SMTP id
+ 98e67ed59e1d1-31f04280a88so237949a91.0
+ for <ltp@lists.linux.it>; Sun, 27 Jul 2025 23:37:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1753684638; x=1754289438;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=hKU0gGddFiUzT1prkTeF6cROMcWlVsedJLPOIRkC9tU=;
+ b=Jbry7m66mmPV2Ins7+jiutjq0CIE7vbzqTUXsGvpqf+XspW+Hb7HuD2lbMERh1h5X2
+ InbmNgpdHUSQM1GGTaqBaBn+TCbFssqsN4XonlO3t8bqF2mBKda6hbF5W+iEF8b4t/Ad
+ 23PLh1bgAJkuEJvntzM8CeOup4qQnku9yi3RlIFxLcmhTY0qUgX52wkZSSlfIhPH0NVM
+ MgZFvn1me3khunawYERcO3agft+QuS64NH4HXGIaVQRLc00N/izXY/F9SoBzqI080Juv
+ miv3gMZn0rdZ3jj5+0GKyTy7C+SJU+Py7X0oY7XEnci6iX/+swOm6edhEwnqJ2X/oa7s
+ c+vw==
+X-Gm-Message-State: AOJu0Yy/riJ+qZTbBIvUtXidbFtwDoEKlvgx9O7ZN5xYGykRkOUOyd7J
+ QXtsXaN19BuaJOGf1t8QAqVHdPzvadaTjGwD67Y1V8cgjS6ZJdan4eA8tQw9jd3+vA2cWgMZb0p
+ ASe8XueUGZB2VG0UxGSJ42c14GX+Agc+0bKtXHZ456ILI5o8DyEKE47CHQMZtU4OTdM2BKND2Bh
+ BQjpVDPTRoB+s8dOf65Y2v7tKggys=
+X-Gm-Gg: ASbGncsSruvE5YdUpj32Gwy4Dq8Rf4k90JeQkEer2iBqDMOV14BoXC1k2d4WaJVtfbD
+ F1vRREjnO+iHXhDWz+0Ubd6edmgGjYinMAqHAy0mHIxD8824gsEs9vgqPPNNfb08li0/VpXBPw2
+ QNYU7GfYZnIY3PqbVy0FI+Og==
+X-Received: by 2002:a17:90b:1e4b:b0:31e:cdbc:8d4c with SMTP id
+ 98e67ed59e1d1-31ecdbc958fmr5465994a91.0.1753684637947; 
+ Sun, 27 Jul 2025 23:37:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE93M0BiAIby91pGkU9Hx+ihUXDuIRFgKbRFfcA9MAtrE9uA1u6+0UQXrIPsUOt/Il3eJY69BkZJlr2xI160gw=
+X-Received: by 2002:a17:90b:1e4b:b0:31e:cdbc:8d4c with SMTP id
+ 98e67ed59e1d1-31ecdbc958fmr5465964a91.0.1753684637365; Sun, 27 Jul 2025
+ 23:37:17 -0700 (PDT)
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-1.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- SUSPICIOUS_RECIPS(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_CONTAINS_FROM(1.00)[]; R_MISSING_CHARSET(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,imap1.dmz-prg2.suse.org:helo,ozlabs.org:url];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+]; TAGGED_RCPT(0.00)[];
- FREEMAIL_CC(0.00)[gmail.com,suse.com,redhat.com,suse.cz];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+References: <20250727205455.728650-1-pvorel@suse.cz>
+In-Reply-To: <20250727205455.728650-1-pvorel@suse.cz>
+Date: Mon, 28 Jul 2025 14:37:04 +0800
+X-Gm-Features: Ac12FXzVwOSBMuXo51mtLZqOKXQ3laE4kTArJrevxrpiDorzaXGhEdhn-Bo9dvk
+Message-ID: <CAEemH2chPTCfEOXmKbn5BWd=8=iVUGn2WJ-myJRhnGPK5JwUJA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 2MAv9X0o9gmtDDJC6j58mhtOReOKATMHV9ykFT2iXiQ_1753684638
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/1] tlibio: Detect <aio.h> support
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v2 1/1] tlibio: Detect <aio.h> support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,358 +102,257 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Petr Vorel <petr.vorel@gmail.com>
-
-Some libc (i.e. uclibc-ng or uclibc) does not implement <aio.h>.
-Requiring it for the core LTP library breaks build of these libc.
-Restore unintentional removal in fed3e3ee63.
-
-Changes:
-* Fix for all libc without <aio.h> support: previous check
-  'defined(__linux__) && !defined(__UCLIBC__)' was uclibc-ng specific
-  (and check for __linux__ was not needed anyway). All of these used
-  prior fed3e3ee63 is replaced just by HAVE_AIO_H.
-* Comment out also if block first and last 'line if (...) {' and '}' if
-  the block would be empty anyway.
-* Further join preprocessor checks as code prior fed3e3ee63 contained
-  code compiled for old unixes (e.g. sgi), which fed3e3ee63 removed.
-* Remove nested preprocessors checks in code which is already checked
-  (i.e. lio_wait4asyncio()).
-* Fix wrong #endif comments.
-* Add further cleanup of old unixes.
-
-I also wonder if #else part of struct lio_info_type Lio_info1[]
-should be really defined for code without <aio.h>.
-
-Fixes: fed3e3ee63 ("lib/tlibio: Get rid of support for old UNIXes")
-Fixes: https://autobuild.buildroot.org/results/f3e/f3e03b9a1a69988d6497f36c9d64a37a66e9ad20/
-Fixes: https://autobuild.buildroot.org/results/856/856365f467efc449faee1951250e63d8d4442bbc/
-Fixes: https://autobuild.buildroot.org/results/2ac/2ac08cecd6a505f1bac1a673efc280b3a8dcb23a/
-Fixes: https://autobuild.buildroot.org/results/59b/59b3ad33667b7e87c81e49dd434d5f494e189e0d/
-Fixes: https://autobuild.buildroot.org/results/b1a/b1a36f9971c97300670d8d772ace11e5fedceaaa/
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
----
-Changes v1->v2:
-* instead of hardcoding UCLIBC add a proper configure check for <aio.h> (Cyril)
-* join 2 commits into single
-
-v1:
-https://lore.kernel.org/ltp/20250724190946.338828-1-petr.vorel@gmail.com/
-https://patchwork.ozlabs.org/project/ltp/list/?series=466584&state=*
-
-Kind regards,
-Petr
-
- configure.ac |  1 +
- lib/tlibio.c | 52 +++++++++++++++++++++++++++++++++++++++++++---------
- 2 files changed, 44 insertions(+), 9 deletions(-)
-
-diff --git a/configure.ac b/configure.ac
-index 8ec37639c1..12025be51c 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -48,6 +48,7 @@ AC_CHECK_DECLS([PR_CAPBSET_DROP, PR_CAPBSET_READ],,,[#include <sys/prctl.h>])
- AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
- 
- AC_CHECK_HEADERS_ONCE([ \
-+    aio.h \
-     asm/ldt.h \
-     asm/prctl.h \
-     cpuid.h \
-diff --git a/lib/tlibio.c b/lib/tlibio.c
-index b877393df2..70e0c6f7d2 100644
---- a/lib/tlibio.c
-+++ b/lib/tlibio.c
-@@ -88,7 +88,9 @@
- #include <stdint.h>
- #include <sys/uio.h>		/* readv(2)/writev(2) */
- #include <string.h>
--#include <aio.h>
-+#ifdef HAVE_AIO_H
-+# include <aio.h>
-+#endif
- #include <stdlib.h>		/* atoi, abs */
- 
- #include "tlibio.h"		/* defines LIO* macros */
-@@ -108,7 +110,7 @@ struct lio_info_type Lio_info1[] = {
- 	{"b", LIO_IO_ASYNC | LIO_WAIT_SIGPAUSE, "async i/o using pause"},
- 	{"a", LIO_IO_ASYNC | LIO_WAIT_RECALL,
- 	 "async i/o using recall/aio_suspend"},
--#if defined(sgi) || (defined(__linux__) && !defined(__UCLIBC__))
-+#ifdef HAVE_AIO_H
- 	{"r",
- 	 LIO_RANDOM | LIO_IO_TYPES | LIO_WAIT_TYPES,
- 	 "random sync i/o types and wait methods"},
-@@ -159,7 +161,7 @@ char Lio_SysCall[PATH_MAX];	/* string containing last i/o system call */
- 
- static volatile int Received_signal = 0;	/* number of signals received */
- static volatile int Rec_signal;
--#if defined(sgi) || (defined(__linux__) && !defined(__UCLIBC__))
-+#ifdef HAVE_AIO_H
- static volatile int Received_callback = 0;	/* number of callbacks received */
- static volatile int Rec_callback;
- #endif
-@@ -399,7 +401,7 @@ static void lio_async_signal_handler(int sig)
- 	return;
- }
- 
--#if defined(sgi) || (defined(__linux__) && !defined(__UCLIBC__))
-+#ifdef HAVE_AIO_H
- /***********************************************************************
-  * This is an internal callback handler.
-  * If the handler is called, it will increment the Received_callback
-@@ -417,7 +419,7 @@ static void lio_async_callback_handler(union sigval sigval)
- 
- 	return;
- }
--#endif /* sgi */
-+#endif
- 
- /***********************************************************************
-  * lio_random_methods
-@@ -515,9 +517,11 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 	int omethod = method;
- 	int listio_cmd;		/* Holds the listio/lio_listio cmd */
- 	struct iovec iov;	/* iovec for writev(2) */
-+#ifdef HAVE_AIO_H
- 	struct aiocb aiocbp;	/* POSIX aio control block */
- 	struct aiocb *aiolist[1];	/* list of aio control blocks for lio_listio */
- 	off64_t poffset;	/* pwrite(2) offset */
-+#endif
- 
- 	/*
- 	 * If LIO_RANDOM bit specified, get new method randomly.
-@@ -536,12 +540,15 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 		*errmsg = Errormsg;
- 
- 	Rec_signal = Received_signal;	/* get the current number of signals received */
-+#ifdef HAVE_AIO_H
- 	Rec_callback = Received_callback;	/* get the current number of callbacks received */
-+#endif
- 
- 	memset(&iov, 0x00, sizeof(struct iovec));
- 	iov.iov_base = buffer;
- 	iov.iov_len = size;
- 
-+#ifdef HAVE_AIO_H
- 	memset(&aiocbp, 0x00, sizeof(struct aiocb));
- 
- 	aiocbp.aio_fildes = fd;
-@@ -589,6 +596,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 
- 	poffset = (off64_t) ret;
- 	aiocbp.aio_offset = ret;
-+#endif
- 
- 	/*
- 	 * If the LIO_USE_SIGNAL bit is not set, only use the signal
-@@ -597,9 +605,9 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 	 * the signal.
- 	 */
- 	if (sig && !(method & LIO_USE_SIGNAL) && !(method & LIO_WAIT_SIGTYPES)) {
--
- 		sig = 0;	/* ignore signal parameter */
- 	}
-+#ifdef HAVE_AIO_H
- 	if (sig && (method & LIO_WAIT_CBTYPES))
- 		sig = 0;	/* ignore signal parameter */
- 
-@@ -626,6 +634,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 		aiocbp.aio_sigevent.sigev_notify_attributes =
- 		    (void *)(uintptr_t) size;
- 	}
-+#endif
- 
- 	/*
- 	 * Determine the system call that will be called and produce
-@@ -684,6 +693,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 	}
- 
- 	else if (method & LIO_IO_ASYNC) {
-+#ifdef HAVE_AIO_H
- 		sprintf(Lio_SysCall,
- 			"aio_write(fildes=%d, buf, nbytes=%d, signo=%d)", fd,
- 			size, sig);
-@@ -705,9 +715,11 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 				sigrelse(sig);
- 			return -errno;
- 		}
-+#endif
- 	}
- 	/* LIO_IO_ASYNC */
- 	else if (method & LIO_IO_SLISTIO) {
-+#ifdef HAVE_AIO_H
- 		aiocbp.aio_lio_opcode = LIO_WRITE;
- 		listio_cmd = LIO_WAIT;
- 		io_type = "lio_listio(3) sync write";
-@@ -739,9 +751,11 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 
- 		ret = lio_check_asyncio(io_type, size, &aiocbp, method);
- 		return ret;
-+#endif
- 	}
- 	/* LIO_IO_SLISTIO */
- 	else if (method & LIO_IO_ALISTIO) {
-+#ifdef HAVE_AIO_H
- 		aiocbp.aio_lio_opcode = LIO_WRITE;
- 		listio_cmd = LIO_NOWAIT;
- 		io_type = "lio_listio(3) async write";
-@@ -766,6 +780,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 				sigrelse(sig);
- 			return -errno;
- 		}
-+#endif
- 	}
- 	/* LIO_IO_ALISTIO */
- 	else if (method & LIO_IO_SYNCV) {
-@@ -796,6 +811,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 
- 		return ret;
- 	}			/* LIO_IO_SYNCV */
-+#ifdef HAVE_AIO_H
- 	else if (method & LIO_IO_SYNCP) {
- 		io_type = "pwrite(2)";
- 
-@@ -827,6 +843,7 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 
- 		return ret;
- 	}			/* LIO_IO_SYNCP */
-+#endif
- 	else {
- 		printf("DEBUG %s/%d: No I/O method chosen\n", __FILE__,
- 		       __LINE__);
-@@ -836,7 +853,9 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 	/*
- 	 * wait for async io to complete.
- 	 */
-+#ifdef HAVE_AIO_H
- 	ret = lio_wait4asyncio(method, fd, &aiocbp);
-+#endif
- 
- 	/*
- 	 * If there was an error waiting for async i/o to complete,
-@@ -862,7 +881,9 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 	 * have been updated but the actual i/o size if returned.
- 	 */
- 
-+#ifdef HAVE_AIO_H
- 	ret = lio_check_asyncio(io_type, size, &aiocbp, method);
-+#endif
- 
- 	return ret;
- }				/* end of lio_write_buffer */
-@@ -924,9 +945,11 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 	int listio_cmd;		/* Holds the listio/lio_listio cmd */
- 	int omethod = method;
- 	struct iovec iov;	/* iovec for readv(2) */
-+#ifdef HAVE_AIO_H
- 	struct aiocb aiocbp;	/* POSIX aio control block */
- 	struct aiocb *aiolist[1];	/* list of aio control blocks for lio_listio */
- 	off64_t poffset;	/* pread(2) offset */
-+#endif
- 
- 	/*
- 	 * If LIO_RANDOM bit specified, get new method randomly.
-@@ -945,12 +968,15 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 		*errmsg = Errormsg;
- 
- 	Rec_signal = Received_signal;	/* get the current number of signals received */
-+#ifdef HAVE_AIO_H
- 	Rec_callback = Received_callback;	/* get the current number of callbacks received */
-+#endif
- 
- 	memset(&iov, 0x00, sizeof(struct iovec));
- 	iov.iov_base = buffer;
- 	iov.iov_len = size;
- 
-+#ifdef HAVE_AIO_H
- 	memset(&aiocbp, 0x00, sizeof(struct aiocb));
- 
- 	aiocbp.aio_fildes = fd;
-@@ -998,6 +1024,7 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 	}
- 	poffset = (off64_t) ret;
- 	aiocbp.aio_offset = ret;
-+#endif
- 
- 	/*
- 	 * If the LIO_USE_SIGNAL bit is not set, only use the signal
-@@ -1010,6 +1037,7 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 		sig = 0;	/* ignore signal parameter */
- 	}
- 
-+#ifdef HAVE_AIO_H
- 	if (sig && (method & LIO_WAIT_CBTYPES))
- 		sig = 0;	/* ignore signal parameter */
- 
-@@ -1020,7 +1048,6 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 	 * old signal handler will not be restored.
- 	 *** restoring the signal handler could be added ***
- 	 */
--
- 	if (sig && (method & LIO_WAIT_SIGTYPES)) {
- 		aiocbp.aio_sigevent.sigev_notify = SIGEV_SIGNAL;
- 		aiocbp.aio_sigevent.sigev_signo = sig;
-@@ -1035,6 +1062,7 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 		aiocbp.aio_sigevent.sigev_notify_attributes =
- 		    (void *)(uintptr_t) size;
- 	}
-+#endif
- 
- 	/*
- 	 * Determine the system call that will be called and produce
-@@ -1093,6 +1121,7 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 			wait4sync_io(fd, 1);
- 		}
- 
-+#ifdef HAVE_AIO_H
- 	} else if (method & LIO_IO_ASYNC) {
- 		sprintf(Lio_SysCall,
- 			"aio_read(fildes=%d, buf, nbytes=%d, signo=%d)", fd,
-@@ -1236,7 +1265,8 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 			     __FILE__, __LINE__, ret);
- 
- 		return ret;
--	}			/* LIO_IO_SYNCP */
-+#endif
-+	}
- 
- 	else {
- 		printf("DEBUG %s/%d: No I/O method chosen\n", __FILE__,
-@@ -1248,7 +1278,9 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 	 * wait for async io to complete.
- 	 * Note: Sync io should have returned prior to getting here.
- 	 */
-+#ifdef HAVE_AIO_H
- 	ret = lio_wait4asyncio(method, fd, &aiocbp);
-+#endif
- 
- 	/*
- 	 * If there was an error waiting for async i/o to complete,
-@@ -1274,12 +1306,14 @@ int lio_read_buffer(int fd,	/* open file descriptor */
- 	 * have been updated but the actual i/o size if returned.
- 	 */
- 
-+#ifdef HAVE_AIO_H
- 	ret = lio_check_asyncio(io_type, size, &aiocbp, method);
-+#endif
- 
- 	return ret;
- }				/* end of lio_read_buffer */
- 
--#if !defined(__sun) && !defined(__hpux) && !defined(_AIX)
-+#ifdef HAVE_AIO_H
- /***********************************************************************
-  * This function will check that async io was successful.
-  * It can also be used to check sync listio since it uses the
--- 
-2.50.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBKdWwgMjgsIDIwMjUgYXQgNDo1NeKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKCj4gRnJvbTogUGV0ciBWb3JlbCA8cGV0ci52b3JlbEBnbWFpbC5jb20+Cj4K
+PiBTb21lIGxpYmMgKGkuZS4gdWNsaWJjLW5nIG9yIHVjbGliYykgZG9lcyBub3QgaW1wbGVtZW50
+IDxhaW8uaD4uCj4gUmVxdWlyaW5nIGl0IGZvciB0aGUgY29yZSBMVFAgbGlicmFyeSBicmVha3Mg
+YnVpbGQgb2YgdGhlc2UgbGliYy4KPiBSZXN0b3JlIHVuaW50ZW50aW9uYWwgcmVtb3ZhbCBpbiBm
+ZWQzZTNlZTYzLgo+Cj4gQ2hhbmdlczoKPiAqIEZpeCBmb3IgYWxsIGxpYmMgd2l0aG91dCA8YWlv
+Lmg+IHN1cHBvcnQ6IHByZXZpb3VzIGNoZWNrCj4gICAnZGVmaW5lZChfX2xpbnV4X18pICYmICFk
+ZWZpbmVkKF9fVUNMSUJDX18pJyB3YXMgdWNsaWJjLW5nIHNwZWNpZmljCj4gICAoYW5kIGNoZWNr
+IGZvciBfX2xpbnV4X18gd2FzIG5vdCBuZWVkZWQgYW55d2F5KS4gQWxsIG9mIHRoZXNlIHVzZWQK
+PiAgIHByaW9yIGZlZDNlM2VlNjMgaXMgcmVwbGFjZWQganVzdCBieSBIQVZFX0FJT19ILgo+ICog
+Q29tbWVudCBvdXQgYWxzbyBpZiBibG9jayBmaXJzdCBhbmQgbGFzdCAnbGluZSBpZiAoLi4uKSB7
+JyBhbmQgJ30nIGlmCj4gICB0aGUgYmxvY2sgd291bGQgYmUgZW1wdHkgYW55d2F5Lgo+ICogRnVy
+dGhlciBqb2luIHByZXByb2Nlc3NvciBjaGVja3MgYXMgY29kZSBwcmlvciBmZWQzZTNlZTYzIGNv
+bnRhaW5lZAo+ICAgY29kZSBjb21waWxlZCBmb3Igb2xkIHVuaXhlcyAoZS5nLiBzZ2kpLCB3aGlj
+aCBmZWQzZTNlZTYzIHJlbW92ZWQuCj4gKiBSZW1vdmUgbmVzdGVkIHByZXByb2Nlc3NvcnMgY2hl
+Y2tzIGluIGNvZGUgd2hpY2ggaXMgYWxyZWFkeSBjaGVja2VkCj4gICAoaS5lLiBsaW9fd2FpdDRh
+c3luY2lvKCkpLgo+ICogRml4IHdyb25nICNlbmRpZiBjb21tZW50cy4KPiAqIEFkZCBmdXJ0aGVy
+IGNsZWFudXAgb2Ygb2xkIHVuaXhlcy4KPgo+IEkgYWxzbyB3b25kZXIgaWYgI2Vsc2UgcGFydCBv
+ZiBzdHJ1Y3QgbGlvX2luZm9fdHlwZSBMaW9faW5mbzFbXQo+IHNob3VsZCBiZSByZWFsbHkgZGVm
+aW5lZCBmb3IgY29kZSB3aXRob3V0IDxhaW8uaD4uCj4KPiBGaXhlczogZmVkM2UzZWU2MyAoImxp
+Yi90bGliaW86IEdldCByaWQgb2Ygc3VwcG9ydCBmb3Igb2xkIFVOSVhlcyIpCj4gRml4ZXM6Cj4g
+aHR0cHM6Ly9hdXRvYnVpbGQuYnVpbGRyb290Lm9yZy9yZXN1bHRzL2YzZS9mM2UwM2I5YTFhNjk5
+ODhkNjQ5N2YzNmM5ZDY0YTM3YTY2ZTlhZDIwLwo+IEZpeGVzOgo+IGh0dHBzOi8vYXV0b2J1aWxk
+LmJ1aWxkcm9vdC5vcmcvcmVzdWx0cy84NTYvODU2MzY1ZjQ2N2VmYzQ0OWZhZWUxOTUxMjUwZTYz
+ZDhkNDQ0MmJiYy8KPiBGaXhlczoKPiBodHRwczovL2F1dG9idWlsZC5idWlsZHJvb3Qub3JnL3Jl
+c3VsdHMvMmFjLzJhYzA4Y2VjZDZhNTA1ZjFiYWMxYTY3M2VmYzI4MGIzYThkY2IyM2EvCj4gRml4
+ZXM6Cj4gaHR0cHM6Ly9hdXRvYnVpbGQuYnVpbGRyb290Lm9yZy9yZXN1bHRzLzU5Yi81OWIzYWQz
+MzY2N2I3ZTg3YzgxZTQ5ZGQ0MzRkNWY0OTRlMTg5ZTBkLwo+IEZpeGVzOgo+IGh0dHBzOi8vYXV0
+b2J1aWxkLmJ1aWxkcm9vdC5vcmcvcmVzdWx0cy9iMWEvYjFhMzZmOTk3MWM5NzMwMDY3MGQ4ZDc3
+MmFjZTExZTVmZWRjZWFhYS8KPiBTaWduZWQtb2ZmLWJ5Cj4gPGh0dHBzOi8vYXV0b2J1aWxkLmJ1
+aWxkcm9vdC5vcmcvcmVzdWx0cy9iMWEvYjFhMzZmOTk3MWM5NzMwMDY3MGQ4ZDc3MmFjZTExZTVm
+ZWRjZWFhYS9TaWduZWQtb2ZmLWJ5PjoKPiBQZXRyIFZvcmVsIDxwZXRyLnZvcmVsQGdtYWlsLmNv
+bT4KPgoKClJldmlld2VkLWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KCgotLS0KPiBD
+aGFuZ2VzIHYxLT52MjoKPiAqIGluc3RlYWQgb2YgaGFyZGNvZGluZyBVQ0xJQkMgYWRkIGEgcHJv
+cGVyIGNvbmZpZ3VyZSBjaGVjayBmb3IgPGFpby5oPgo+IChDeXJpbCkKPiAqIGpvaW4gMiBjb21t
+aXRzIGludG8gc2luZ2xlCj4KPiB2MToKPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvMjAy
+NTA3MjQxOTA5NDYuMzM4ODI4LTEtcGV0ci52b3JlbEBnbWFpbC5jb20vCj4gaHR0cHM6Ly9wYXRj
+aHdvcmsub3psYWJzLm9yZy9wcm9qZWN0L2x0cC9saXN0Lz9zZXJpZXM9NDY2NTg0JnN0YXRlPSoK
+Pgo+IEtpbmQgcmVnYXJkcywKPiBQZXRyCj4KPiAgY29uZmlndXJlLmFjIHwgIDEgKwo+ICBsaWIv
+dGxpYmlvLmMgfCA1MiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+LS0tLS0tLS0tCj4gIDIgZmlsZXMgY2hhbmdlZCwgNDQgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlv
+bnMoLSkKPgo+IGRpZmYgLS1naXQgYS9jb25maWd1cmUuYWMgYi9jb25maWd1cmUuYWMKPiBpbmRl
+eCA4ZWMzNzYzOWMxLi4xMjAyNWJlNTFjIDEwMDY0NAo+IC0tLSBhL2NvbmZpZ3VyZS5hYwo+ICsr
+KyBiL2NvbmZpZ3VyZS5hYwo+IEBAIC00OCw2ICs0OCw3IEBAIEFDX0NIRUNLX0RFQ0xTKFtQUl9D
+QVBCU0VUX0RST1AsCj4gUFJfQ0FQQlNFVF9SRUFEXSwsLFsjaW5jbHVkZSA8c3lzL3ByY3RsLmg+
+XSkKPiAgQUNfQ0hFQ0tfREVDTFMoW1NFTV9TVEFUX0FOWV0sLCxbI2luY2x1ZGUgPHN5cy9zZW0u
+aD5dKQo+Cj4gIEFDX0NIRUNLX0hFQURFUlNfT05DRShbIFwKPiArICAgIGFpby5oIFwKPiAgICAg
+IGFzbS9sZHQuaCBcCj4gICAgICBhc20vcHJjdGwuaCBcCj4gICAgICBjcHVpZC5oIFwKPiBkaWZm
+IC0tZ2l0IGEvbGliL3RsaWJpby5jIGIvbGliL3RsaWJpby5jCj4gaW5kZXggYjg3NzM5M2RmMi4u
+NzBlMGM2ZjdkMiAxMDA2NDQKPiAtLS0gYS9saWIvdGxpYmlvLmMKPiArKysgYi9saWIvdGxpYmlv
+LmMKPiBAQCAtODgsNyArODgsOSBAQAo+ICAjaW5jbHVkZSA8c3RkaW50Lmg+Cj4gICNpbmNsdWRl
+IDxzeXMvdWlvLmg+ICAgICAgICAgICAvKiByZWFkdigyKS93cml0ZXYoMikgKi8KPiAgI2luY2x1
+ZGUgPHN0cmluZy5oPgo+IC0jaW5jbHVkZSA8YWlvLmg+Cj4gKyNpZmRlZiBIQVZFX0FJT19ICj4g
+KyMgaW5jbHVkZSA8YWlvLmg+Cj4gKyNlbmRpZgo+ICAjaW5jbHVkZSA8c3RkbGliLmg+ICAgICAg
+ICAgICAgLyogYXRvaSwgYWJzICovCj4KPiAgI2luY2x1ZGUgInRsaWJpby5oIiAgICAgICAgICAg
+IC8qIGRlZmluZXMgTElPKiBtYWNyb3MgKi8KPiBAQCAtMTA4LDcgKzExMCw3IEBAIHN0cnVjdCBs
+aW9faW5mb190eXBlIExpb19pbmZvMVtdID0gewo+ICAgICAgICAgeyJiIiwgTElPX0lPX0FTWU5D
+IHwgTElPX1dBSVRfU0lHUEFVU0UsICJhc3luYyBpL28gdXNpbmcgcGF1c2UifSwKPiAgICAgICAg
+IHsiYSIsIExJT19JT19BU1lOQyB8IExJT19XQUlUX1JFQ0FMTCwKPiAgICAgICAgICAiYXN5bmMg
+aS9vIHVzaW5nIHJlY2FsbC9haW9fc3VzcGVuZCJ9LAo+IC0jaWYgZGVmaW5lZChzZ2kpIHx8IChk
+ZWZpbmVkKF9fbGludXhfXykgJiYgIWRlZmluZWQoX19VQ0xJQkNfXykpCj4gKyNpZmRlZiBIQVZF
+X0FJT19ICj4gICAgICAgICB7InIiLAo+ICAgICAgICAgIExJT19SQU5ET00gfCBMSU9fSU9fVFlQ
+RVMgfCBMSU9fV0FJVF9UWVBFUywKPiAgICAgICAgICAicmFuZG9tIHN5bmMgaS9vIHR5cGVzIGFu
+ZCB3YWl0IG1ldGhvZHMifSwKPiBAQCAtMTU5LDcgKzE2MSw3IEBAIGNoYXIgTGlvX1N5c0NhbGxb
+UEFUSF9NQVhdOyAvKiBzdHJpbmcgY29udGFpbmluZyBsYXN0Cj4gaS9vIHN5c3RlbSBjYWxsICov
+Cj4KPiAgc3RhdGljIHZvbGF0aWxlIGludCBSZWNlaXZlZF9zaWduYWwgPSAwOyAgICAgICAvKiBu
+dW1iZXIgb2Ygc2lnbmFscwo+IHJlY2VpdmVkICovCj4gIHN0YXRpYyB2b2xhdGlsZSBpbnQgUmVj
+X3NpZ25hbDsKPiAtI2lmIGRlZmluZWQoc2dpKSB8fCAoZGVmaW5lZChfX2xpbnV4X18pICYmICFk
+ZWZpbmVkKF9fVUNMSUJDX18pKQo+ICsjaWZkZWYgSEFWRV9BSU9fSAo+ICBzdGF0aWMgdm9sYXRp
+bGUgaW50IFJlY2VpdmVkX2NhbGxiYWNrID0gMDsgICAgIC8qIG51bWJlciBvZiBjYWxsYmFja3MK
+PiByZWNlaXZlZCAqLwo+ICBzdGF0aWMgdm9sYXRpbGUgaW50IFJlY19jYWxsYmFjazsKPiAgI2Vu
+ZGlmCj4gQEAgLTM5OSw3ICs0MDEsNyBAQCBzdGF0aWMgdm9pZCBsaW9fYXN5bmNfc2lnbmFsX2hh
+bmRsZXIoaW50IHNpZykKPiAgICAgICAgIHJldHVybjsKPiAgfQo+Cj4gLSNpZiBkZWZpbmVkKHNn
+aSkgfHwgKGRlZmluZWQoX19saW51eF9fKSAmJiAhZGVmaW5lZChfX1VDTElCQ19fKSkKPiArI2lm
+ZGVmIEhBVkVfQUlPX0gKPiAgLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCj4gICAqIFRoaXMgaXMgYW4gaW50ZXJu
+YWwgY2FsbGJhY2sgaGFuZGxlci4KPiAgICogSWYgdGhlIGhhbmRsZXIgaXMgY2FsbGVkLCBpdCB3
+aWxsIGluY3JlbWVudCB0aGUgUmVjZWl2ZWRfY2FsbGJhY2sKPiBAQCAtNDE3LDcgKzQxOSw3IEBA
+IHN0YXRpYyB2b2lkIGxpb19hc3luY19jYWxsYmFja19oYW5kbGVyKHVuaW9uIHNpZ3ZhbAo+IHNp
+Z3ZhbCkKPgo+ICAgICAgICAgcmV0dXJuOwo+ICB9Cj4gLSNlbmRpZiAvKiBzZ2kgKi8KPiArI2Vu
+ZGlmCj4KPiAgLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqCj4gICAqIGxpb19yYW5kb21fbWV0aG9kcwo+IEBAIC01
+MTUsOSArNTE3LDExIEBAIGludCBsaW9fd3JpdGVfYnVmZmVyKGludCBmZCwgICAgICAgICAgICAg
+ICAvKiBvcGVuCj4gZmlsZSBkZXNjcmlwdG9yICovCj4gICAgICAgICBpbnQgb21ldGhvZCA9IG1l
+dGhvZDsKPiAgICAgICAgIGludCBsaXN0aW9fY21kOyAgICAgICAgIC8qIEhvbGRzIHRoZSBsaXN0
+aW8vbGlvX2xpc3RpbyBjbWQgKi8KPiAgICAgICAgIHN0cnVjdCBpb3ZlYyBpb3Y7ICAgICAgIC8q
+IGlvdmVjIGZvciB3cml0ZXYoMikgKi8KPiArI2lmZGVmIEhBVkVfQUlPX0gKPiAgICAgICAgIHN0
+cnVjdCBhaW9jYiBhaW9jYnA7ICAgIC8qIFBPU0lYIGFpbyBjb250cm9sIGJsb2NrICovCj4gICAg
+ICAgICBzdHJ1Y3QgYWlvY2IgKmFpb2xpc3RbMV07ICAgICAgIC8qIGxpc3Qgb2YgYWlvIGNvbnRy
+b2wgYmxvY2tzIGZvcgo+IGxpb19saXN0aW8gKi8KPiAgICAgICAgIG9mZjY0X3QgcG9mZnNldDsg
+ICAgICAgIC8qIHB3cml0ZSgyKSBvZmZzZXQgKi8KPiArI2VuZGlmCj4KPiAgICAgICAgIC8qCj4g
+ICAgICAgICAgKiBJZiBMSU9fUkFORE9NIGJpdCBzcGVjaWZpZWQsIGdldCBuZXcgbWV0aG9kIHJh
+bmRvbWx5Lgo+IEBAIC01MzYsMTIgKzU0MCwxNSBAQCBpbnQgbGlvX3dyaXRlX2J1ZmZlcihpbnQg
+ZmQsICAgICAgICAgICAgICAvKiBvcGVuCj4gZmlsZSBkZXNjcmlwdG9yICovCj4gICAgICAgICAg
+ICAgICAgICplcnJtc2cgPSBFcnJvcm1zZzsKPgo+ICAgICAgICAgUmVjX3NpZ25hbCA9IFJlY2Vp
+dmVkX3NpZ25hbDsgICAvKiBnZXQgdGhlIGN1cnJlbnQgbnVtYmVyIG9mCj4gc2lnbmFscyByZWNl
+aXZlZCAqLwo+ICsjaWZkZWYgSEFWRV9BSU9fSAo+ICAgICAgICAgUmVjX2NhbGxiYWNrID0gUmVj
+ZWl2ZWRfY2FsbGJhY2s7ICAgICAgIC8qIGdldCB0aGUgY3VycmVudCBudW1iZXIKPiBvZiBjYWxs
+YmFja3MgcmVjZWl2ZWQgKi8KPiArI2VuZGlmCj4KPiAgICAgICAgIG1lbXNldCgmaW92LCAweDAw
+LCBzaXplb2Yoc3RydWN0IGlvdmVjKSk7Cj4gICAgICAgICBpb3YuaW92X2Jhc2UgPSBidWZmZXI7
+Cj4gICAgICAgICBpb3YuaW92X2xlbiA9IHNpemU7Cj4KPiArI2lmZGVmIEhBVkVfQUlPX0gKPiAg
+ICAgICAgIG1lbXNldCgmYWlvY2JwLCAweDAwLCBzaXplb2Yoc3RydWN0IGFpb2NiKSk7Cj4KPiAg
+ICAgICAgIGFpb2NicC5haW9fZmlsZGVzID0gZmQ7Cj4gQEAgLTU4OSw2ICs1OTYsNyBAQCBpbnQg
+bGlvX3dyaXRlX2J1ZmZlcihpbnQgZmQsICAgICAgICAgICAgICAgIC8qIG9wZW4KPiBmaWxlIGRl
+c2NyaXB0b3IgKi8KPgo+ICAgICAgICAgcG9mZnNldCA9IChvZmY2NF90KSByZXQ7Cj4gICAgICAg
+ICBhaW9jYnAuYWlvX29mZnNldCA9IHJldDsKPiArI2VuZGlmCj4KPiAgICAgICAgIC8qCj4gICAg
+ICAgICAgKiBJZiB0aGUgTElPX1VTRV9TSUdOQUwgYml0IGlzIG5vdCBzZXQsIG9ubHkgdXNlIHRo
+ZSBzaWduYWwKPiBAQCAtNTk3LDkgKzYwNSw5IEBAIGludCBsaW9fd3JpdGVfYnVmZmVyKGludCBm
+ZCwgICAgICAgICAgICAgICAgLyogb3Blbgo+IGZpbGUgZGVzY3JpcHRvciAqLwo+ICAgICAgICAg
+ICogdGhlIHNpZ25hbC4KPiAgICAgICAgICAqLwo+ICAgICAgICAgaWYgKHNpZyAmJiAhKG1ldGhv
+ZCAmIExJT19VU0VfU0lHTkFMKSAmJiAhKG1ldGhvZCAmCj4gTElPX1dBSVRfU0lHVFlQRVMpKSB7
+Cj4gLQo+ICAgICAgICAgICAgICAgICBzaWcgPSAwOyAgICAgICAgLyogaWdub3JlIHNpZ25hbCBw
+YXJhbWV0ZXIgKi8KPiAgICAgICAgIH0KPiArI2lmZGVmIEhBVkVfQUlPX0gKPiAgICAgICAgIGlm
+IChzaWcgJiYgKG1ldGhvZCAmIExJT19XQUlUX0NCVFlQRVMpKQo+ICAgICAgICAgICAgICAgICBz
+aWcgPSAwOyAgICAgICAgLyogaWdub3JlIHNpZ25hbCBwYXJhbWV0ZXIgKi8KPgo+IEBAIC02MjYs
+NiArNjM0LDcgQEAgaW50IGxpb193cml0ZV9idWZmZXIoaW50IGZkLCAgICAgICAgICAgICAgICAv
+KiBvcGVuCj4gZmlsZSBkZXNjcmlwdG9yICovCj4gICAgICAgICAgICAgICAgIGFpb2NicC5haW9f
+c2lnZXZlbnQuc2lnZXZfbm90aWZ5X2F0dHJpYnV0ZXMgPQo+ICAgICAgICAgICAgICAgICAgICAg
+KHZvaWQgKikodWludHB0cl90KSBzaXplOwo+ICAgICAgICAgfQo+ICsjZW5kaWYKPgo+ICAgICAg
+ICAgLyoKPiAgICAgICAgICAqIERldGVybWluZSB0aGUgc3lzdGVtIGNhbGwgdGhhdCB3aWxsIGJl
+IGNhbGxlZCBhbmQgcHJvZHVjZQo+IEBAIC02ODQsNiArNjkzLDcgQEAgaW50IGxpb193cml0ZV9i
+dWZmZXIoaW50IGZkLCAgICAgICAgICAgICAgICAvKiBvcGVuCj4gZmlsZSBkZXNjcmlwdG9yICov
+Cj4gICAgICAgICB9Cj4KPiAgICAgICAgIGVsc2UgaWYgKG1ldGhvZCAmIExJT19JT19BU1lOQykg
+ewo+ICsjaWZkZWYgSEFWRV9BSU9fSAo+ICAgICAgICAgICAgICAgICBzcHJpbnRmKExpb19TeXND
+YWxsLAo+ICAgICAgICAgICAgICAgICAgICAgICAgICJhaW9fd3JpdGUoZmlsZGVzPSVkLCBidWYs
+IG5ieXRlcz0lZCwgc2lnbm89JWQpIiwKPiBmZCwKPiAgICAgICAgICAgICAgICAgICAgICAgICBz
+aXplLCBzaWcpOwo+IEBAIC03MDUsOSArNzE1LDExIEBAIGludCBsaW9fd3JpdGVfYnVmZmVyKGlu
+dCBmZCwgICAgICAgICAgICAgICAvKiBvcGVuCj4gZmlsZSBkZXNjcmlwdG9yICovCj4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBzaWdyZWxzZShzaWcpOwo+ICAgICAgICAgICAgICAg
+ICAgICAgICAgIHJldHVybiAtZXJybm87Cj4gICAgICAgICAgICAgICAgIH0KPiArI2VuZGlmCj4g
+ICAgICAgICB9Cj4gICAgICAgICAvKiBMSU9fSU9fQVNZTkMgKi8KPiAgICAgICAgIGVsc2UgaWYg
+KG1ldGhvZCAmIExJT19JT19TTElTVElPKSB7Cj4gKyNpZmRlZiBIQVZFX0FJT19ICj4gICAgICAg
+ICAgICAgICAgIGFpb2NicC5haW9fbGlvX29wY29kZSA9IExJT19XUklURTsKPiAgICAgICAgICAg
+ICAgICAgbGlzdGlvX2NtZCA9IExJT19XQUlUOwo+ICAgICAgICAgICAgICAgICBpb190eXBlID0g
+Imxpb19saXN0aW8oMykgc3luYyB3cml0ZSI7Cj4gQEAgLTczOSw5ICs3NTEsMTEgQEAgaW50IGxp
+b193cml0ZV9idWZmZXIoaW50IGZkLCAgICAgICAgICAgICAgIC8qIG9wZW4KPiBmaWxlIGRlc2Ny
+aXB0b3IgKi8KPgo+ICAgICAgICAgICAgICAgICByZXQgPSBsaW9fY2hlY2tfYXN5bmNpbyhpb190
+eXBlLCBzaXplLCAmYWlvY2JwLCBtZXRob2QpOwo+ICAgICAgICAgICAgICAgICByZXR1cm4gcmV0
+Owo+ICsjZW5kaWYKPiAgICAgICAgIH0KPiAgICAgICAgIC8qIExJT19JT19TTElTVElPICovCj4g
+ICAgICAgICBlbHNlIGlmIChtZXRob2QgJiBMSU9fSU9fQUxJU1RJTykgewo+ICsjaWZkZWYgSEFW
+RV9BSU9fSAo+ICAgICAgICAgICAgICAgICBhaW9jYnAuYWlvX2xpb19vcGNvZGUgPSBMSU9fV1JJ
+VEU7Cj4gICAgICAgICAgICAgICAgIGxpc3Rpb19jbWQgPSBMSU9fTk9XQUlUOwo+ICAgICAgICAg
+ICAgICAgICBpb190eXBlID0gImxpb19saXN0aW8oMykgYXN5bmMgd3JpdGUiOwo+IEBAIC03NjYs
+NiArNzgwLDcgQEAgaW50IGxpb193cml0ZV9idWZmZXIoaW50IGZkLCAgICAgICAgICAgICAgICAv
+KiBvcGVuCj4gZmlsZSBkZXNjcmlwdG9yICovCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBzaWdyZWxzZShzaWcpOwo+ICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAtZXJy
+bm87Cj4gICAgICAgICAgICAgICAgIH0KPiArI2VuZGlmCj4gICAgICAgICB9Cj4gICAgICAgICAv
+KiBMSU9fSU9fQUxJU1RJTyAqLwo+ICAgICAgICAgZWxzZSBpZiAobWV0aG9kICYgTElPX0lPX1NZ
+TkNWKSB7Cj4gQEAgLTc5Niw2ICs4MTEsNyBAQCBpbnQgbGlvX3dyaXRlX2J1ZmZlcihpbnQgZmQs
+ICAgICAgICAgICAgICAgIC8qIG9wZW4KPiBmaWxlIGRlc2NyaXB0b3IgKi8KPgo+ICAgICAgICAg
+ICAgICAgICByZXR1cm4gcmV0Owo+ICAgICAgICAgfSAgICAgICAgICAgICAgICAgICAgICAgLyog
+TElPX0lPX1NZTkNWICovCj4gKyNpZmRlZiBIQVZFX0FJT19ICj4gICAgICAgICBlbHNlIGlmICht
+ZXRob2QgJiBMSU9fSU9fU1lOQ1ApIHsKPiAgICAgICAgICAgICAgICAgaW9fdHlwZSA9ICJwd3Jp
+dGUoMikiOwo+Cj4gQEAgLTgyNyw2ICs4NDMsNyBAQCBpbnQgbGlvX3dyaXRlX2J1ZmZlcihpbnQg
+ZmQsICAgICAgICAgICAgICAgIC8qIG9wZW4KPiBmaWxlIGRlc2NyaXB0b3IgKi8KPgo+ICAgICAg
+ICAgICAgICAgICByZXR1cm4gcmV0Owo+ICAgICAgICAgfSAgICAgICAgICAgICAgICAgICAgICAg
+LyogTElPX0lPX1NZTkNQICovCj4gKyNlbmRpZgo+ICAgICAgICAgZWxzZSB7Cj4gICAgICAgICAg
+ICAgICAgIHByaW50ZigiREVCVUcgJXMvJWQ6IE5vIEkvTyBtZXRob2QgY2hvc2VuXG4iLCBfX0ZJ
+TEVfXywKPiAgICAgICAgICAgICAgICAgICAgICAgIF9fTElORV9fKTsKPiBAQCAtODM2LDcgKzg1
+Myw5IEBAIGludCBsaW9fd3JpdGVfYnVmZmVyKGludCBmZCwgICAgICAgICAgICAgICAgLyogb3Bl
+bgo+IGZpbGUgZGVzY3JpcHRvciAqLwo+ICAgICAgICAgLyoKPiAgICAgICAgICAqIHdhaXQgZm9y
+IGFzeW5jIGlvIHRvIGNvbXBsZXRlLgo+ICAgICAgICAgICovCj4gKyNpZmRlZiBIQVZFX0FJT19I
+Cj4gICAgICAgICByZXQgPSBsaW9fd2FpdDRhc3luY2lvKG1ldGhvZCwgZmQsICZhaW9jYnApOwo+
+ICsjZW5kaWYKPgo+ICAgICAgICAgLyoKPiAgICAgICAgICAqIElmIHRoZXJlIHdhcyBhbiBlcnJv
+ciB3YWl0aW5nIGZvciBhc3luYyBpL28gdG8gY29tcGxldGUsCj4gQEAgLTg2Miw3ICs4ODEsOSBA
+QCBpbnQgbGlvX3dyaXRlX2J1ZmZlcihpbnQgZmQsICAgICAgICAgICAgICAgIC8qIG9wZW4KPiBm
+aWxlIGRlc2NyaXB0b3IgKi8KPiAgICAgICAgICAqIGhhdmUgYmVlbiB1cGRhdGVkIGJ1dCB0aGUg
+YWN0dWFsIGkvbyBzaXplIGlmIHJldHVybmVkLgo+ICAgICAgICAgICovCj4KPiArI2lmZGVmIEhB
+VkVfQUlPX0gKPiAgICAgICAgIHJldCA9IGxpb19jaGVja19hc3luY2lvKGlvX3R5cGUsIHNpemUs
+ICZhaW9jYnAsIG1ldGhvZCk7Cj4gKyNlbmRpZgo+Cj4gICAgICAgICByZXR1cm4gcmV0Owo+ICB9
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogZW5kIG9mIGxpb193cml0ZV9idWZmZXIg
+Ki8KPiBAQCAtOTI0LDkgKzk0NSwxMSBAQCBpbnQgbGlvX3JlYWRfYnVmZmVyKGludCBmZCwgICAg
+ICAgIC8qIG9wZW4gZmlsZQo+IGRlc2NyaXB0b3IgKi8KPiAgICAgICAgIGludCBsaXN0aW9fY21k
+OyAgICAgICAgIC8qIEhvbGRzIHRoZSBsaXN0aW8vbGlvX2xpc3RpbyBjbWQgKi8KPiAgICAgICAg
+IGludCBvbWV0aG9kID0gbWV0aG9kOwo+ICAgICAgICAgc3RydWN0IGlvdmVjIGlvdjsgICAgICAg
+LyogaW92ZWMgZm9yIHJlYWR2KDIpICovCj4gKyNpZmRlZiBIQVZFX0FJT19ICj4gICAgICAgICBz
+dHJ1Y3QgYWlvY2IgYWlvY2JwOyAgICAvKiBQT1NJWCBhaW8gY29udHJvbCBibG9jayAqLwo+ICAg
+ICAgICAgc3RydWN0IGFpb2NiICphaW9saXN0WzFdOyAgICAgICAvKiBsaXN0IG9mIGFpbyBjb250
+cm9sIGJsb2NrcyBmb3IKPiBsaW9fbGlzdGlvICovCj4gICAgICAgICBvZmY2NF90IHBvZmZzZXQ7
+ICAgICAgICAvKiBwcmVhZCgyKSBvZmZzZXQgKi8KPiArI2VuZGlmCj4KPiAgICAgICAgIC8qCj4g
+ICAgICAgICAgKiBJZiBMSU9fUkFORE9NIGJpdCBzcGVjaWZpZWQsIGdldCBuZXcgbWV0aG9kIHJh
+bmRvbWx5Lgo+IEBAIC05NDUsMTIgKzk2OCwxNSBAQCBpbnQgbGlvX3JlYWRfYnVmZmVyKGludCBm
+ZCwgICAgICAgLyogb3BlbiBmaWxlCj4gZGVzY3JpcHRvciAqLwo+ICAgICAgICAgICAgICAgICAq
+ZXJybXNnID0gRXJyb3Jtc2c7Cj4KPiAgICAgICAgIFJlY19zaWduYWwgPSBSZWNlaXZlZF9zaWdu
+YWw7ICAgLyogZ2V0IHRoZSBjdXJyZW50IG51bWJlciBvZgo+IHNpZ25hbHMgcmVjZWl2ZWQgKi8K
+PiArI2lmZGVmIEhBVkVfQUlPX0gKPiAgICAgICAgIFJlY19jYWxsYmFjayA9IFJlY2VpdmVkX2Nh
+bGxiYWNrOyAgICAgICAvKiBnZXQgdGhlIGN1cnJlbnQgbnVtYmVyCj4gb2YgY2FsbGJhY2tzIHJl
+Y2VpdmVkICovCj4gKyNlbmRpZgo+Cj4gICAgICAgICBtZW1zZXQoJmlvdiwgMHgwMCwgc2l6ZW9m
+KHN0cnVjdCBpb3ZlYykpOwo+ICAgICAgICAgaW92Lmlvdl9iYXNlID0gYnVmZmVyOwo+ICAgICAg
+ICAgaW92Lmlvdl9sZW4gPSBzaXplOwo+Cj4gKyNpZmRlZiBIQVZFX0FJT19ICj4gICAgICAgICBt
+ZW1zZXQoJmFpb2NicCwgMHgwMCwgc2l6ZW9mKHN0cnVjdCBhaW9jYikpOwo+Cj4gICAgICAgICBh
+aW9jYnAuYWlvX2ZpbGRlcyA9IGZkOwo+IEBAIC05OTgsNiArMTAyNCw3IEBAIGludCBsaW9fcmVh
+ZF9idWZmZXIoaW50IGZkLCAgICAgICAgLyogb3BlbiBmaWxlCj4gZGVzY3JpcHRvciAqLwo+ICAg
+ICAgICAgfQo+ICAgICAgICAgcG9mZnNldCA9IChvZmY2NF90KSByZXQ7Cj4gICAgICAgICBhaW9j
+YnAuYWlvX29mZnNldCA9IHJldDsKPiArI2VuZGlmCj4KPiAgICAgICAgIC8qCj4gICAgICAgICAg
+KiBJZiB0aGUgTElPX1VTRV9TSUdOQUwgYml0IGlzIG5vdCBzZXQsIG9ubHkgdXNlIHRoZSBzaWdu
+YWwKPiBAQCAtMTAxMCw2ICsxMDM3LDcgQEAgaW50IGxpb19yZWFkX2J1ZmZlcihpbnQgZmQsICAg
+ICAgIC8qIG9wZW4gZmlsZQo+IGRlc2NyaXB0b3IgKi8KPiAgICAgICAgICAgICAgICAgc2lnID0g
+MDsgICAgICAgIC8qIGlnbm9yZSBzaWduYWwgcGFyYW1ldGVyICovCj4gICAgICAgICB9Cj4KPiAr
+I2lmZGVmIEhBVkVfQUlPX0gKPiAgICAgICAgIGlmIChzaWcgJiYgKG1ldGhvZCAmIExJT19XQUlU
+X0NCVFlQRVMpKQo+ICAgICAgICAgICAgICAgICBzaWcgPSAwOyAgICAgICAgLyogaWdub3JlIHNp
+Z25hbCBwYXJhbWV0ZXIgKi8KPgo+IEBAIC0xMDIwLDcgKzEwNDgsNiBAQCBpbnQgbGlvX3JlYWRf
+YnVmZmVyKGludCBmZCwgICAgICAgLyogb3BlbiBmaWxlCj4gZGVzY3JpcHRvciAqLwo+ICAgICAg
+ICAgICogb2xkIHNpZ25hbCBoYW5kbGVyIHdpbGwgbm90IGJlIHJlc3RvcmVkLgo+ICAgICAgICAg
+ICoqKiByZXN0b3JpbmcgdGhlIHNpZ25hbCBoYW5kbGVyIGNvdWxkIGJlIGFkZGVkICoqKgo+ICAg
+ICAgICAgICovCj4gLQo+ICAgICAgICAgaWYgKHNpZyAmJiAobWV0aG9kICYgTElPX1dBSVRfU0lH
+VFlQRVMpKSB7Cj4gICAgICAgICAgICAgICAgIGFpb2NicC5haW9fc2lnZXZlbnQuc2lnZXZfbm90
+aWZ5ID0gU0lHRVZfU0lHTkFMOwo+ICAgICAgICAgICAgICAgICBhaW9jYnAuYWlvX3NpZ2V2ZW50
+LnNpZ2V2X3NpZ25vID0gc2lnOwo+IEBAIC0xMDM1LDYgKzEwNjIsNyBAQCBpbnQgbGlvX3JlYWRf
+YnVmZmVyKGludCBmZCwgICAgICAgLyogb3BlbiBmaWxlCj4gZGVzY3JpcHRvciAqLwo+ICAgICAg
+ICAgICAgICAgICBhaW9jYnAuYWlvX3NpZ2V2ZW50LnNpZ2V2X25vdGlmeV9hdHRyaWJ1dGVzID0K
+PiAgICAgICAgICAgICAgICAgICAgICh2b2lkICopKHVpbnRwdHJfdCkgc2l6ZTsKPiAgICAgICAg
+IH0KPiArI2VuZGlmCj4KPiAgICAgICAgIC8qCj4gICAgICAgICAgKiBEZXRlcm1pbmUgdGhlIHN5
+c3RlbSBjYWxsIHRoYXQgd2lsbCBiZSBjYWxsZWQgYW5kIHByb2R1Y2UKPiBAQCAtMTA5Myw2ICsx
+MTIxLDcgQEAgaW50IGxpb19yZWFkX2J1ZmZlcihpbnQgZmQsICAgICAgIC8qIG9wZW4gZmlsZQo+
+IGRlc2NyaXB0b3IgKi8KPiAgICAgICAgICAgICAgICAgICAgICAgICB3YWl0NHN5bmNfaW8oZmQs
+IDEpOwo+ICAgICAgICAgICAgICAgICB9Cj4KPiArI2lmZGVmIEhBVkVfQUlPX0gKPiAgICAgICAg
+IH0gZWxzZSBpZiAobWV0aG9kICYgTElPX0lPX0FTWU5DKSB7Cj4gICAgICAgICAgICAgICAgIHNw
+cmludGYoTGlvX1N5c0NhbGwsCj4gICAgICAgICAgICAgICAgICAgICAgICAgImFpb19yZWFkKGZp
+bGRlcz0lZCwgYnVmLCBuYnl0ZXM9JWQsIHNpZ25vPSVkKSIsCj4gZmQsCj4gQEAgLTEyMzYsNyAr
+MTI2NSw4IEBAIGludCBsaW9fcmVhZF9idWZmZXIoaW50IGZkLCAgICAgICAvKiBvcGVuIGZpbGUK
+PiBkZXNjcmlwdG9yICovCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBfX0ZJTEVfXywg
+X19MSU5FX18sIHJldCk7Cj4KPiAgICAgICAgICAgICAgICAgcmV0dXJuIHJldDsKPiAtICAgICAg
+IH0gICAgICAgICAgICAgICAgICAgICAgIC8qIExJT19JT19TWU5DUCAqLwo+ICsjZW5kaWYKPiAr
+ICAgICAgIH0KPgo+ICAgICAgICAgZWxzZSB7Cj4gICAgICAgICAgICAgICAgIHByaW50ZigiREVC
+VUcgJXMvJWQ6IE5vIEkvTyBtZXRob2QgY2hvc2VuXG4iLCBfX0ZJTEVfXywKPiBAQCAtMTI0OCw3
+ICsxMjc4LDkgQEAgaW50IGxpb19yZWFkX2J1ZmZlcihpbnQgZmQsICAgICAgIC8qIG9wZW4gZmls
+ZQo+IGRlc2NyaXB0b3IgKi8KPiAgICAgICAgICAqIHdhaXQgZm9yIGFzeW5jIGlvIHRvIGNvbXBs
+ZXRlLgo+ICAgICAgICAgICogTm90ZTogU3luYyBpbyBzaG91bGQgaGF2ZSByZXR1cm5lZCBwcmlv
+ciB0byBnZXR0aW5nIGhlcmUuCj4gICAgICAgICAgKi8KPiArI2lmZGVmIEhBVkVfQUlPX0gKPiAg
+ICAgICAgIHJldCA9IGxpb193YWl0NGFzeW5jaW8obWV0aG9kLCBmZCwgJmFpb2NicCk7Cj4gKyNl
+bmRpZgo+Cj4gICAgICAgICAvKgo+ICAgICAgICAgICogSWYgdGhlcmUgd2FzIGFuIGVycm9yIHdh
+aXRpbmcgZm9yIGFzeW5jIGkvbyB0byBjb21wbGV0ZSwKPiBAQCAtMTI3NCwxMiArMTMwNiwxNCBA
+QCBpbnQgbGlvX3JlYWRfYnVmZmVyKGludCBmZCwgICAgIC8qIG9wZW4gZmlsZQo+IGRlc2NyaXB0
+b3IgKi8KPiAgICAgICAgICAqIGhhdmUgYmVlbiB1cGRhdGVkIGJ1dCB0aGUgYWN0dWFsIGkvbyBz
+aXplIGlmIHJldHVybmVkLgo+ICAgICAgICAgICovCj4KPiArI2lmZGVmIEhBVkVfQUlPX0gKPiAg
+ICAgICAgIHJldCA9IGxpb19jaGVja19hc3luY2lvKGlvX3R5cGUsIHNpemUsICZhaW9jYnAsIG1l
+dGhvZCk7Cj4gKyNlbmRpZgo+Cj4gICAgICAgICByZXR1cm4gcmV0Owo+ICB9ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgLyogZW5kIG9mIGxpb19yZWFkX2J1ZmZlciAqLwo+Cj4gLSNpZiAh
+ZGVmaW5lZChfX3N1bikgJiYgIWRlZmluZWQoX19ocHV4KSAmJiAhZGVmaW5lZChfQUlYKQo+ICsj
+aWZkZWYgSEFWRV9BSU9fSAo+ICAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKPiAgICogVGhpcyBmdW5jdGlvbiB3
+aWxsIGNoZWNrIHRoYXQgYXN5bmMgaW8gd2FzIHN1Y2Nlc3NmdWwuCj4gICAqIEl0IGNhbiBhbHNv
+IGJlIHVzZWQgdG8gY2hlY2sgc3luYyBsaXN0aW8gc2luY2UgaXQgdXNlcyB0aGUKPiAtLQo+IDIu
+NTAuMAo+Cj4KCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
+dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
