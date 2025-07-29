@@ -4,106 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B1D4C87FC9
-	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 16:39:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72FBEC87FC9
+	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 16:48:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1753807726; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=BzdrN9IdOPJLyuzcM6qNdz+u3HITd7CgnmJ94ndBSBM=;
+ b=dw2Kr//QkJF0czsZ9INMky5wkOofpX2QHiPfop1wsesW+UMxm3bKP73haevYUo8uKzNpl
+ KoRnY+Uv9t6X/uqrNs0epoCcZOfu2Oab7PI5Goe4ry2iBIIAI6abNCFWgWaPpXyYhQb17hd
+ YUUwLKQ/8YH2n9S41oaXjJRQN6S8DV0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D51683CA395
-	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 18:39:45 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id CED363C0433
+	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 18:48:46 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5FFF43C0433
- for <ltp@lists.linux.it>; Tue, 29 Jul 2025 18:39:30 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 155D03C0433
+ for <ltp@lists.linux.it>; Tue, 29 Jul 2025 18:48:26 +0200 (CEST)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
+ [IPv6:2a00:1450:4864:20::431])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AD960600921
- for <ltp@lists.linux.it>; Tue, 29 Jul 2025 18:39:29 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A8B651F385;
- Tue, 29 Jul 2025 16:39:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1753807168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=66T2H0zM8G+Nui+dnHNUj/d3Bfk46yLtVgWdgcJUBjw=;
- b=0qprJO8ht+EiM2WDUagN/pvPvCMZ0eHBxe6JrGl9yvZ70Kx16j0DUxdnc07WdgsY9mwJz/
- 0IYg1yd3FMVmXsj8gRWFN1qGLo62WTwwM8t3RTSs9bRRJjrmCf5bhwvJnTNPmhIe6F/0P6
- XeB0HcT8fA9f9P4itMjSKXvbmb+QNfs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1753807168;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=66T2H0zM8G+Nui+dnHNUj/d3Bfk46yLtVgWdgcJUBjw=;
- b=qiqI5mS/obmf3Qn0QKCb/h6FOiSRmAFy9og4QnGWgeC/ph8tkQ8JQW/meX4sFLiLJ0cDsk
- YD7TLotKGBbkzBAQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1753807168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=66T2H0zM8G+Nui+dnHNUj/d3Bfk46yLtVgWdgcJUBjw=;
- b=0qprJO8ht+EiM2WDUagN/pvPvCMZ0eHBxe6JrGl9yvZ70Kx16j0DUxdnc07WdgsY9mwJz/
- 0IYg1yd3FMVmXsj8gRWFN1qGLo62WTwwM8t3RTSs9bRRJjrmCf5bhwvJnTNPmhIe6F/0P6
- XeB0HcT8fA9f9P4itMjSKXvbmb+QNfs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1753807168;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=66T2H0zM8G+Nui+dnHNUj/d3Bfk46yLtVgWdgcJUBjw=;
- b=qiqI5mS/obmf3Qn0QKCb/h6FOiSRmAFy9og4QnGWgeC/ph8tkQ8JQW/meX4sFLiLJ0cDsk
- YD7TLotKGBbkzBAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F63813A73;
- Tue, 29 Jul 2025 16:39:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id GjkzHED5iGigYAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 29 Jul 2025 16:39:28 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 29 Jul 2025 18:39:27 +0200
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 661511A006A1
+ for <ltp@lists.linux.it>; Tue, 29 Jul 2025 18:48:25 +0200 (CEST)
+Received: by mail-wr1-x431.google.com with SMTP id
+ ffacd0b85a97d-3b783d851e6so2848319f8f.0
+ for <ltp@lists.linux.it>; Tue, 29 Jul 2025 09:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1753807705; x=1754412505; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=pLTTyp+YcUhajAq3Y6K37jjoejY19woX304AwaxVRzA=;
+ b=gosdbXV6a24G571VwyLsDQGWF8s3a4PxPtb3OWdNFm1VjBcGl8UH6ybhDvFaxZxFQc
+ swoXYZSPr6cimXq0tNQxzMKQYUx11IAy/XDVejswLA94RPAdsBIW6c8VCNxnh0n7CIWj
+ XHIK8/3MiOvwIinjkHPdh1jcMabpumH4H3b7fc6QW652IUMJULyYg9X62YexWQnq0Av4
+ ImLs+OrsxxzEgfRLhjrUJUJLpU6KLICEaqylo/fpxUWPRC4YtVWWrJcrfo4e4qYwfUvR
+ nOqD4wcuUNqXmSAtLYWLSG4vNo5iS0zfHjBPBrgw4D1qO3BFjq11ENwxI4HabSFED9oL
+ 4Qng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1753807705; x=1754412505;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=pLTTyp+YcUhajAq3Y6K37jjoejY19woX304AwaxVRzA=;
+ b=ioilE55tZEJk3UqS7m59t6Ff3vrx+MH/y6cmvCapk+mnnKnD88xiOePt+XUJuqOzGs
+ SoYSm5vfgC9aQI/x7lMNwchDoiFv+eh38O5gWLAnx83WxDDWzgkiJrFfbL07HSY4OHFY
+ I5jLqMaunnaYQ+zN42ELcnnDHWdj9w01llGlrnQymdbgOnkOH1SBuMF/KU1Ik6TlNYuh
+ fIavfOLcWhLtD0LqDLMDhWV0qbBCXWIAkEj72vBuqteNFvxGrdniIfov/th+1baTNwoW
+ z90x8lTCk5ocFjm2zM+laejafRDbbPxd0KmyWXZePSXnzCkM8njdCZjnSDkQ9hXZ8/FT
+ TpfA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCV08ZCyK48Y7JfTqmBxDPFt3Mo71Eg7gOIIvxV15DFHv6gkNy4zDV1okApTyjS+N8xvESw=@lists.linux.it
+X-Gm-Message-State: AOJu0Yz55m0+E3K3mMXXqrjKr7VLOnFMwHC0zDGT8XZl5mvsnqHVWVkE
+ wy3svs5EJa/ZNFmKmUndT9nyb267P+3qyvwEMH+I6sDOhCBEcv34vVgU+ZjCUavwK7s=
+X-Gm-Gg: ASbGncuI9S7TS2EY0Vfxm8S7jnagMFrC6KZB2c2ZFd8MZNGE1O9agcoZOyFrbyIDozd
+ 4RSaEM0w+Mm3lx6emKAHFKHPKij7vwVN7uOMWfrQ0UEUJfHvdFiWymvHNn7llkmnn6taOM+UKQP
+ M3sPQvqc2aHBwuV4hB0fOjA7YWfV2A0zgHC+Tx5lPjBXWVHmGbW36y8jS0WG1HhLJ0bPboT0gly
+ 9TIKE22uxMZKtPLjtsONMF1r+6RQhwN0OIcIPXAPXDfa3wkBye1rfBtWDvN6pKwIFNr0Eom+EcG
+ fJl3sTqtPHpMTwTl6idg9lODWYRWmBL9yn3Qua0m2jitWLzVCE3MMQl+Nvrh2otdwMoMhUT0JiY
+ Xh9pVivwa5gA8oC77PkcXQGspz0V2YmTkKw==
+X-Google-Smtp-Source: AGHT+IH6/DIWjC27D8ogbLMf4Sqp+yTcXErvCJko+W81vGW/p8BlM1UYacrFeW3xGNDQx1/XF6YVAw==
+X-Received: by 2002:a05:6000:40e0:b0:3a4:f038:af76 with SMTP id
+ ffacd0b85a97d-3b79501d7d5mr308802f8f.53.1753807704822; 
+ Tue, 29 Jul 2025 09:48:24 -0700 (PDT)
+Received: from [192.168.1.91] ([151.71.248.226])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-23fbe536e6dsm82807665ad.171.2025.07.29.09.48.19
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 29 Jul 2025 09:48:24 -0700 (PDT)
+Message-ID: <46e5368a-71a2-4a7d-9987-a9face630f20@suse.com>
+Date: Tue, 29 Jul 2025 18:48:15 +0200
 MIME-Version: 1.0
-Message-Id: <20250729-ioctl_pidfd_supported-v2-1-f9ef90134138@suse.com>
-X-B4-Tracking: v=1; b=H4sIAD75iGgC/4WNWw6CMBBFt0Lm2xoY3n65D0MItoNMorTpANGQ7
- t3KBvw8J7nn7iDkmQQuyQ6eNha2cwQ8JaCnYX6QYhMZMMUyrbFVbPXy7B2b0fSyOmf9QkYVeW2
- wHAqdNwhx6zyN/D66ty7yxLJY/zlutuxn/xW3TGWqbcoKqyHVRXW/yip01vYFXQjhCyhvbeC5A
- AAA
-X-Change-ID: 20250729-ioctl_pidfd_supported-437d25a4c382
-To: ltp@lists.linux.it
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1753807168; l=1961;
- i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=t2Zd5knx1FlH/ONz4A0vY0ZF4i9DWSQobeY3m0K9Szs=;
- b=hi7KRPoqaf9CMD4aUgOxYHZFCxHFkmQYcGJ+h+x/J/A+J8gnb42fV13GDrBHzQkNSg2y3R3ua
- nENmn5FQoP+D8UAWoT2wQK6wNwd9JJMlon6+hrGgdzSixU3JELRsTfQ
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
- suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>
+References: <20250729-ioctl_pidfd01_selinux-v1-1-432e100a5a53@suse.com>
+ <5913636.DvuYhMxLoT@thinkpad> <ea4c0dbb-c4ba-46dd-b10c-c628d6093936@suse.com>
+ <20250729084720.GA13357@pevik> <aIj0Jyn9cq9JVNbI@yuki.lan>
+Content-Language: en-US
+In-Reply-To: <aIj0Jyn9cq9JVNbI@yuki.lan>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Correctly check if PIDFD_INFO_EXIT is available
+Subject: Re: [LTP] [PATCH] Disable io_uring fd in ioctl_pidfd01 for selinux
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,79 +102,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+On 7/29/25 6:17 PM, Cyril Hrubis wrote:
+> Maybe it would make sense to inject additional errno EACESS to the
+> TST_EXP_FAIL() automatically if we detect that selinux is enforcing.
 
-When systems are not having the PIDFD_INFO_EXIT implementation,
-ioctl_pidfd testing suite might fail with:
+This is potentially true for every LTP test, because SELinux can be 
+customized in many ways. Technically, we should not take care about 
+SELinux inside tests if they fail because of it and to threat failures 
+according to the LSM configuration, considering that as a known issue or 
+a soft failure.
 
-	ioctl_pidfd.h:32: TBROK: ioctl(...) failed: ENOTTY (25)
+At least, this was my first idea. This patch was introduced after 
+talking to other devs and I'm also not 100% sure about it.
 
-Fix the ioctl_pidfd_info_exit_supported() behavior, considering ENOTTY
-error like a sign for not having PIDFD_INFO_EXIT implemented in the
-system.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-Changes in v2:
-- close pidfd when PIDFD_INFO_EXIT is supported
-- Link to v1: https://lore.kernel.org/r/20250729-ioctl_pidfd_supported-v1-1-985626a0c46b@suse.com
----
- testcases/kernel/syscalls/ioctl/ioctl_pidfd.h | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_pidfd.h b/testcases/kernel/syscalls/ioctl/ioctl_pidfd.h
-index 8249ac753cf7fb8a3b749d55c7f0c3b30482c114..72ed3c8ae21bfa462ac76aaa865f5c71ce921e9a 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_pidfd.h
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_pidfd.h
-@@ -11,9 +11,10 @@
- 
- static inline int ioctl_pidfd_info_exit_supported(void)
- {
--	int ret = 0;
-+	int ret;
- 	pid_t pid;
- 	int pidfd;
-+	int supported = 0;
- 	struct pidfd_info info;
- 
- 	if (tst_kvercmp(6, 15, 0) >= 0)
-@@ -29,13 +30,18 @@ static inline int ioctl_pidfd_info_exit_supported(void)
- 	pidfd = SAFE_PIDFD_OPEN(pid, 0);
- 	SAFE_WAITPID(pid, NULL, 0);
- 
--	SAFE_IOCTL(pidfd, PIDFD_GET_INFO, &info);
--	SAFE_CLOSE(pidfd);
-+	ret = ioctl(pidfd, PIDFD_GET_INFO, &info);
-+	if (ret == -1) {
-+		if (errno != ENOTTY)
-+			tst_brk(TBROK | TERRNO, "ioctl error");
-+	} else {
-+		if (info.mask & PIDFD_INFO_EXIT)
-+			supported = 1;
-+	}
- 
--	if (info.mask & PIDFD_INFO_EXIT)
--		ret = 1;
-+	SAFE_CLOSE(pidfd);
- 
--	return ret;
-+	return supported;
- }
- 
- #endif
-
----
-base-commit: 91e6272febf95e19a8300695dfc2089569adf9d8
-change-id: 20250729-ioctl_pidfd_supported-437d25a4c382
-
-Best regards,
--- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+- Andrea
 
 
 -- 
