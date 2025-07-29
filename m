@@ -4,100 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24B4CC83F26
-	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 10:20:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A35D8C87FC9
+	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 12:16:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 48A7B3CA535
-	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 12:20:05 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 2359E3CA0CD
+	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 14:16:30 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B5E6F3C9BE2
- for <ltp@lists.linux.it>; Tue, 29 Jul 2025 12:19:49 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 458A93C0BCC
+ for <ltp@lists.linux.it>; Tue, 29 Jul 2025 14:16:13 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9AFDC1400DE0
- for <ltp@lists.linux.it>; Tue, 29 Jul 2025 12:19:48 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7518B1400DE0
+ for <ltp@lists.linux.it>; Tue, 29 Jul 2025 14:16:12 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 935C621A10;
- Tue, 29 Jul 2025 10:19:45 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5E1771F385;
+ Tue, 29 Jul 2025 12:16:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1753784385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1753791371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=m8vltcQjghInqBDSmdSIcojZtkXlLBUVE+3l4auRBN8=;
- b=xEIB+nzMOkgEdEwGnJ+LB8SBptwTcfG638a3WMIAjR0Ccj7Oix0xOx8jiIY18TrmXj869Q
- fJPbxojZBFdZma2LX+QuN3wmuo1QTwMXFma8u+fIHAogWkV7gidPv8tnI6PAUAzpnajZv8
- aWCKCoeoJo7NIFvBXFWs7Y8RtO1tKXc=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=1qAJE+YPeRqC91LhT6JQ179d0fUftO9E5Fha9Q+R+6E=;
+ b=urCZrW9AQlRexazNhnWmvcq4Mu2BQ6QJR78mNeHP88UMpFQywr/dX1fqfaKNkkA6GgbdwJ
+ hcL2lnY/XOM2o+/BJS9aLz83fxiJmqrFr31zKY+NGm17Llfht2fkSRW+mM/amvph0FoeGq
+ x4HAk1JfakrHpG0hibVNjqBbRzIyH/0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1753784385;
+ s=susede2_ed25519; t=1753791371;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=m8vltcQjghInqBDSmdSIcojZtkXlLBUVE+3l4auRBN8=;
- b=X1ySGDjMmPAi8TmscYNYAn0d+HiQBZemB/susdx+njqKxpKiTUcGfb/4ctaXI1A5pLkCYb
- 9AsOr9o3bcNCLXAg==
-Authentication-Results: smtp-out1.suse.de;
+ content-transfer-encoding:content-transfer-encoding;
+ bh=1qAJE+YPeRqC91LhT6JQ179d0fUftO9E5Fha9Q+R+6E=;
+ b=2bLVRWZi4x+yVZp3Vt+cvrqT2cbbqYlDrUKLexZReWhOXcN5vsxI+X+v6X3KjujJcFbfLq
+ 75AgKEObx4IiuXAA==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1753784385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1753791371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=m8vltcQjghInqBDSmdSIcojZtkXlLBUVE+3l4auRBN8=;
- b=xEIB+nzMOkgEdEwGnJ+LB8SBptwTcfG638a3WMIAjR0Ccj7Oix0xOx8jiIY18TrmXj869Q
- fJPbxojZBFdZma2LX+QuN3wmuo1QTwMXFma8u+fIHAogWkV7gidPv8tnI6PAUAzpnajZv8
- aWCKCoeoJo7NIFvBXFWs7Y8RtO1tKXc=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=1qAJE+YPeRqC91LhT6JQ179d0fUftO9E5Fha9Q+R+6E=;
+ b=urCZrW9AQlRexazNhnWmvcq4Mu2BQ6QJR78mNeHP88UMpFQywr/dX1fqfaKNkkA6GgbdwJ
+ hcL2lnY/XOM2o+/BJS9aLz83fxiJmqrFr31zKY+NGm17Llfht2fkSRW+mM/amvph0FoeGq
+ x4HAk1JfakrHpG0hibVNjqBbRzIyH/0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1753784385;
+ s=susede2_ed25519; t=1753791371;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=m8vltcQjghInqBDSmdSIcojZtkXlLBUVE+3l4auRBN8=;
- b=X1ySGDjMmPAi8TmscYNYAn0d+HiQBZemB/susdx+njqKxpKiTUcGfb/4ctaXI1A5pLkCYb
- 9AsOr9o3bcNCLXAg==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=1qAJE+YPeRqC91LhT6JQ179d0fUftO9E5Fha9Q+R+6E=;
+ b=2bLVRWZi4x+yVZp3Vt+cvrqT2cbbqYlDrUKLexZReWhOXcN5vsxI+X+v6X3KjujJcFbfLq
+ 75AgKEObx4IiuXAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8307A13A73;
- Tue, 29 Jul 2025 10:19:45 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 35BEF13A73;
+ Tue, 29 Jul 2025 12:16:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id qSnLH0GgiGh9YAAAD6G6ig
- (envelope-from <akumar@suse.de>); Tue, 29 Jul 2025 10:19:45 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: Jan Polensky <japo@linux.ibm.com>
-Date: Tue, 29 Jul 2025 12:19:45 +0200
-Message-ID: <5005196.GXAFRqVoOG@thinkpad>
-In-Reply-To: <20250727152454.682633-1-japo@linux.ibm.com>
-References: <20250727152454.682633-1-japo@linux.ibm.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ZwFUCou7iGjSBwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 29 Jul 2025 12:16:11 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue, 29 Jul 2025 14:16:06 +0200
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-3.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; CTE_CASE(0.50)[];
- MID_RHS_NOT_FQDN(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+Message-Id: <20250729-ioctl_pidfd01_selinux-v2-1-2d92c0e56b25@suse.com>
+X-B4-Tracking: v=1; b=H4sIAIW7iGgC/4WNQQqDMBBFryKzbkoSE6xd9R5FJCRjHbBGMioW8
+ e5NvUCX78F/fwfGRMhwL3ZIuBJTHDPoSwG+d+MLBYXMoKW2stK1oOjnoZ0odEGqlnGgcdmEMlW
+ NztjqZiXk7ZSwo+3sPpvMPfEc0+e8WdXP/iuuSihhSo1KSmedLR+8MF59fENzHMcXLroY3rkAA
+ AA=
+X-Change-ID: 20250729-ioctl_pidfd01_selinux-1479ea457850
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1753791371; l=1682;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=0mBdF4r+LOKyZKBlhP3jFqLqWwwv5dn3naJyFiLsv8s=;
+ b=4nFNtb3XX7ebtBDGIH7K2xBBoxeMl4CLYjrxgUEvoSEyoXK9efy1llInTsRidM7LYroOUBsbO
+ vKB9CW5FyVzD0NfiMLXcQBExNdkOl70Ark0EZ7+Ig62B/GTlXWbComv
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.de:email,
- imap1.dmz-prg2.suse.org:helo]
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email]; 
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
+ suse.com:email]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] safe_macros.c: Fix missing ro flag for
- FUSE NTFS mounts
+Subject: [LTP] [PATCH v2] ioctl_pidfd01: disable with SELinux enforcing
+ policy
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,77 +118,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Reviewed-by: Avinesh Kumar <akumar@suse.de>
-nit: maybe the patch title also should not mention NTFS.
+When SELinux is enabled with enforcing policy, ioctl_pidfd01 might fail
+with EACCESS. This is an error triggered by ioctl() syscall, before we
+actually reach the code we are about to test, so we need to skip the
+test just in case enforcing policy is on.
 
--
-Avinesh
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Following errors are caused by SELinux, trying to block any access to
+the file descriptor before actually accessing to it.
 
-On Sunday, July 27, 2025 5:24:54 PM CEST Jan Polensky wrote:
-> The test incorrectly assumes that NTFS mounts are read-only, but the mount
-> command does not explicitly set the read-only flag. As a result, the test fails
-> when checking `sb_flags` against `MS_RDONLY`.
-> 
-> Old behavior:
-> 
->     sudo LTP_SINGLE_FS_TYPE=ntfs strace -e trace=mount,statmount -o log.log -s 128 -f ./statmount02
->     ...
->     statmount02.c:47: TFAIL: st_mount->sb_flags (0) != MS_RDONLY (1)
->     ...
-> 
-> Relevant log excerpt:
-> 
->     3890601 mount("/dev/zero", "/tmp/mountBDSEqk", "ntfs", 0, NULL) = -1 ENOTBLK (Block device required)
->     3890608 mount("/dev/loop0", "/tmp/LTP_staTPRruR/mntpoint", "fuseblk", 0, "allow_other,blksize=4096,fd=4,rootmode=40000,user_id=0,group_id=0") = 0
->     3890607 statmount({size=24, mnt_id=0x80010957, param=STATMOUNT_SB_BASIC}, {size=512, mask=STATMOUNT_SB_BASIC, sb_dev_major=7, sb_dev_minor=0, sb_magic=FUSE_SUPER_MAGIC, sb_flags=0}, 512, 0) = 0
-> 
-> Signed-off-by: Jan Polensky <japo@linux.ibm.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Change since v1 (Thanks Cyril & thanks for the ping):
-> * Removed restriction for NTFS.
-> 
->  lib/safe_macros.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-> index 6946cc5bcb94..be04eb455d57 100644
-> --- a/lib/safe_macros.c
-> +++ b/lib/safe_macros.c
-> @@ -942,10 +942,15 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
->  	 */
->  	if (possibly_fuse(filesystemtype)) {
->  		char buf[1024];
-> +		const char* mount_fmt;
-> 
->  		tst_resm_(file, lineno, TINFO, "Trying FUSE...");
-> -		snprintf(buf, sizeof(buf), "mount.%s '%s' '%s'",
-> -			filesystemtype, source, target);
-> +		if (mountflags == MS_RDONLY)
-> +			mount_fmt = "mount.%s -o ro '%s' '%s'";
-> +		else
-> +			mount_fmt = "mount.%s '%s' '%s'";
-> +		snprintf(buf, sizeof(buf), mount_fmt, filesystemtype,
-> +				source, target);
-> 
->  		rval = tst_system(buf);
->  		if (WIFEXITED(rval) && WEXITSTATUS(rval) == 0)
-> --
-> 2.50.1
-> 
-> 
-> 
+ioctl_pidfd01.c:37: TINFO: io uring -> ...
+ioctl_pidfd01.c:28: TFAIL: ioctl(io uring, PIDFD_GET_INFO, info) expected EINVAL, EBADF, ENOTTY: EACCES (13)
+---
+Changes in v2:
+- disable the whole test if enforcing policy is on
+- Link to v1: https://lore.kernel.org/r/20250729-ioctl_pidfd01_selinux-v1-1-432e100a5a53@suse.com
+---
+ testcases/kernel/syscalls/ioctl/ioctl_pidfd01.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_pidfd01.c b/testcases/kernel/syscalls/ioctl/ioctl_pidfd01.c
+index 92c51c6c0d0dcbb2308c1a8d82b2a92650f3a6b3..22921bfc7f5e7fa11d511f8aab03707426ae62ba 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_pidfd01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_pidfd01.c
+@@ -44,6 +44,9 @@ static void setup(void)
+ 	if (!ioctl_pidfd_info_exit_supported())
+ 		tst_brk(TCONF, "PIDFD_INFO_EXIT is not supported by ioctl()");
+ 
++	if (tst_selinux_enforcing())
++		tst_brk(TCONF, "Unstable test with SELinux enforcing mode on");
++
+ 	info->mask = PIDFD_INFO_EXIT;
+ }
+ 
 
+---
+base-commit: 91e6272febf95e19a8300695dfc2089569adf9d8
+change-id: 20250729-ioctl_pidfd01_selinux-1479ea457850
 
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
