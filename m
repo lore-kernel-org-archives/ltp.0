@@ -4,62 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D4E7C87FC9
-	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 13:02:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBB94C87FC9
+	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 13:14:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7BA273CA6BE
-	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 15:02:50 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 5B8E73CA1EC
+	for <ltp@archiver.kernel.org>; Tue, 29 Jul 2025 15:14:28 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 15B883C9FF2
- for <ltp@lists.linux.it>; Tue, 29 Jul 2025 15:02:32 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 9E4E83C9F6C
+ for <ltp@lists.linux.it>; Tue, 29 Jul 2025 15:14:11 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0E3A010009A1
- for <ltp@lists.linux.it>; Tue, 29 Jul 2025 15:02:31 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B0269600160
+ for <ltp@lists.linux.it>; Tue, 29 Jul 2025 15:14:09 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DD62E21A06;
- Tue, 29 Jul 2025 13:02:30 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BD4381F80D;
+ Tue, 29 Jul 2025 13:14:07 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D489313876;
- Tue, 29 Jul 2025 13:02:30 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD6C013876;
+ Tue, 29 Jul 2025 13:14:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 4jSmM2bGiGjLFgAAD6G6ig
- (envelope-from <akumar@suse.de>); Tue, 29 Jul 2025 13:02:30 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 29 Jul 2025 15:02:22 +0200
-Message-ID: <2237115.irdbgypaU6@thinkpad>
-In-Reply-To: <20250729-ioctl_pidfd01_selinux-v2-1-2d92c0e56b25@suse.com>
-References: <20250729-ioctl_pidfd01_selinux-v2-1-2d92c0e56b25@suse.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id HqloKR/JiGiHGgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 29 Jul 2025 13:14:07 +0000
+Date: Tue, 29 Jul 2025 15:14:49 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Message-ID: <aIjJSaYFAZPGzzGF@yuki.lan>
+References: <CAL0q8a7ZKQKN2U-tWDaAui9Yr47oZGZgiF3qdxTaX8+-6Aogzg@mail.gmail.com>
+ <CAL0q8a5vePcnKkrPab+aK3U_qCaKvuUYw3NMNN=D-+fwE5TwOA@mail.gmail.com>
+ <CA+G9fYtxbfWsPfBkryN_K_SzZvsrdQH2thZWPDK3huo=FoVpJw@mail.gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYtxbfWsPfBkryN_K_SzZvsrdQH2thZWPDK3huo=FoVpJw@mail.gmail.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: BD4381F80D
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: DD62E21A06
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] ioctl_pidfd01: disable with SELinux enforcing
- policy
+Subject: Re: [LTP] vma05: Fix false positives from stripped system libraries
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,67 +74,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Ben Copeland <ben.copeland@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
+ Dan Carpenter <dan.carpenter@linaro.org>, LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi!
+> > > 2: https://github.com/bhcopeland/ltp/commit/67ecbfcfe2313c4b16ce7191ded9949fdf5728d9
 
-Reviewed-by: Avinesh Kumar <akumar@suse.de>
+Filtering out records with /lib/ and /usr/lib/ looks reasonable to me.
 
-Thanks,
-Avinesh
-
-On Tuesday, July 29, 2025 2:16:06 PM CEST Andrea Cervesato wrote:
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-> When SELinux is enabled with enforcing policy, ioctl_pidfd01 might fail
-> with EACCESS. This is an error triggered by ioctl() syscall, before we
-> actually reach the code we are about to test, so we need to skip the
-> test just in case enforcing policy is on.
-> 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
-> Following errors are caused by SELinux, trying to block any access to
-> the file descriptor before actually accessing to it.
-> 
-> ioctl_pidfd01.c:37: TINFO: io uring -> ...
-> ioctl_pidfd01.c:28: TFAIL: ioctl(io uring, PIDFD_GET_INFO, info) expected EINVAL, EBADF, ENOTTY: EACCES (13)
-> ---
-> Changes in v2:
-> - disable the whole test if enforcing policy is on
-> - Link to v1: https://lore.kernel.org/r/20250729-ioctl_pidfd01_selinux-v1-1-432e100a5a53@suse.com
-> ---
->  testcases/kernel/syscalls/ioctl/ioctl_pidfd01.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_pidfd01.c b/testcases/kernel/syscalls/ioctl/ioctl_pidfd01.c
-> index 92c51c6c0d0dcbb2308c1a8d82b2a92650f3a6b3..22921bfc7f5e7fa11d511f8aab03707426ae62ba 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl_pidfd01.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl_pidfd01.c
-> @@ -44,6 +44,9 @@ static void setup(void)
->  	if (!ioctl_pidfd_info_exit_supported())
->  		tst_brk(TCONF, "PIDFD_INFO_EXIT is not supported by ioctl()");
->  
-> +	if (tst_selinux_enforcing())
-> +		tst_brk(TCONF, "Unstable test with SELinux enforcing mode on");
-> +
->  	info->mask = PIDFD_INFO_EXIT;
->  }
->  
-> 
-> ---
-> base-commit: 91e6272febf95e19a8300695dfc2089569adf9d8
-> change-id: 20250729-ioctl_pidfd01_selinux-1479ea457850
-> 
-> Best regards,
-> 
-
-
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
