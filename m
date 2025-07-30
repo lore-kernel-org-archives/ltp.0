@@ -4,78 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41DF4C87FCB
-	for <ltp@archiver.kernel.org>; Wed, 30 Jul 2025 07:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C7ADC87FC9
+	for <ltp@archiver.kernel.org>; Wed, 30 Jul 2025 07:53:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5A7873CAE35
-	for <ltp@archiver.kernel.org>; Wed, 30 Jul 2025 09:14:05 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 554663CAE4D
+	for <ltp@archiver.kernel.org>; Wed, 30 Jul 2025 09:53:21 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 007FD3C79EE
- for <ltp@lists.linux.it>; Wed, 30 Jul 2025 09:13:48 +0200 (CEST)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
- [IPv6:2a00:1450:4864:20::42f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B56E33CA14E
+ for <ltp@lists.linux.it>; Wed, 30 Jul 2025 09:53:03 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 597AC2009D0
- for <ltp@lists.linux.it>; Wed, 30 Jul 2025 09:13:48 +0200 (CEST)
-Received: by mail-wr1-x42f.google.com with SMTP id
- ffacd0b85a97d-3b78127c5d1so2316565f8f.3
- for <ltp@lists.linux.it>; Wed, 30 Jul 2025 00:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1753859627; x=1754464427; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=tiRueV2gmzlDOhnB/nTG1zYZCIVXS+Thg7/A717DhTc=;
- b=cA29PJ5eGwCbndCqlIwXkg14HiUe9WPqkImi3tuOrHXtMgmlYy5jdKsi++y/XecJll
- xMH0bs+2IrIgKhZDh3P8fUohEKJP8yt94Up0wQk2YGW+v1HUZf+JoCc/6wdXfKMj1nep
- 9KcgZyqs5iktjzA+owkftacyKnseii/gMBOC/pphQ5IRlsP6KOhkHqj0Kx70X/K0zHQv
- sEtYH9C+zT58mYKYbjSrTBLGHBR01VY52WRUykGPEk6ecu7Dh1Klb/eG9jfBI+PzI697
- vikptE2O8euB2i32GA32rBKgKzoId6xogYd0nUOlmAAROgLOFoHopFyqQXS5JpAxJCBe
- NMWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1753859627; x=1754464427;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=tiRueV2gmzlDOhnB/nTG1zYZCIVXS+Thg7/A717DhTc=;
- b=ZUY5GDvHo+sLNF25eyNdQykw6mFSeqanrdVelqDLBsLsypWUof5V4nrsURob220aMg
- Qw3WYWJtFD+Hl4Vzpyy2juWqaPQr5WpOYUs+ztBaz0ctVtvSiWIO23DR+FgCsuetqHUp
- hbap6g+bTNFW4nXdhbpFIlgRkXDeKNhwZnZhavXQtxWB+4Cbw4eD8sbPbxUwLRjDBDWi
- pqtbrjsYarMQGKNZzqPxBAlFGGhXFl/QEW7YstlflHL1F7GA2TZmc9zIAU81zuaiI33T
- /em6KEEbvIgHIpAnp/VmHSbkxs19JzcMbgzjQB/L7m0nqpVkWhviLFYYuI96Zl5oI8Yg
- cVTg==
-X-Gm-Message-State: AOJu0YyBcbLwaWVzJdtmdpN2x3WU82VcA6IzqGIiV182zXWIP/x+fq5G
- pDGoccFw7zCiDYFWFpUs64ZxYrFmgbuyXa7l5HyeWtlZ6VwGc9lvfHpUbi2bmzRTd6ciX1qkhvi
- SuKDolQ==
-X-Gm-Gg: ASbGnctUF5hKs4Ol56UeLlf8gDdjb3izRtVwMT5/5iOfNeiPRQOHG99D0yM4ZfjAABh
- R0j6lem3zi1XvjKPhNQnLAl5MEHafMPDToI6dwMMs7jqdcT6IPmw57VZGtdI3VpfCOCt+2SolYE
- 2cXZV9xtrj3A3Z9uCHMOndY5CSnyPdskf1XL5h9yjxZCOAN7i8NixL9oDdeuoF8AUPRfLQ5AKZp
- NUmkQ3+QeCA5FA5zsUigBK8iWyOYRuYY2OES5dszZWlLDUxcvJm24sUmKEwa1ej5cHfMc8ojkkB
- lJ8d9s0yZ8KjkmqudAt14MB7vGyOOaAg8LEOr6vEZX1ZWiCQ/lkXIPn14zxbVyPuGDulCoCT1d0
- FR1SQP5NQerGsaY3B0OZ93Ylidx0tSLqW5Gf8BscqLmrBgCigGjaU
-X-Google-Smtp-Source: AGHT+IGxeKQl8ibIgV4ns5cPoU/lwTrWzGJXDNykxdbYgMvIv07VYwTBkVK0ywIelGoBHuq1GLrd1A==
-X-Received: by 2002:a05:6000:2003:b0:3b7:6d94:a032 with SMTP id
- ffacd0b85a97d-3b794fb5753mr1775290f8f.3.1753859626964; 
- Wed, 30 Jul 2025 00:13:46 -0700 (PDT)
-Received: from pickles.copeland.me.uk ([213.152.161.101])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3b788ec4580sm8943541f8f.45.2025.07.30.00.13.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 30 Jul 2025 00:13:46 -0700 (PDT)
-From: Ben Copeland <ben.copeland@linaro.org>
-To: ltp@lists.linux.it
-Date: Wed, 30 Jul 2025 08:13:42 +0100
-Message-ID: <20250730071342.817400-1-ben.copeland@linaro.org>
-X-Mailer: git-send-email 2.50.1
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AF4872009DC
+ for <ltp@lists.linux.it>; Wed, 30 Jul 2025 09:53:02 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1296321995;
+ Wed, 30 Jul 2025 07:53:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1753861981;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5Kkfx5twkT0QiJZRnHVfee1/WoL9YAnNAaLP7HEOoSA=;
+ b=daD9DwwgowBdyU1g3Ee546JuOs3rvCWjmaI8CESlUW4cdZ/tgGrSBEfrL/y00BBcaFzuK5
+ Ri0M4EvHltTk4qtkXH1+HYBQ0yF/AudXhRW1LkhqqEfCipWfOKN4C4Cayuwb/umK7URU3l
+ 0SG2c7ADMJSXKtylfYyo/zy4mcm5NVk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1753861981;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5Kkfx5twkT0QiJZRnHVfee1/WoL9YAnNAaLP7HEOoSA=;
+ b=6PP7B8sYT3MoDmeRm4XkMFxJicqJsDLYkTfWOEcivHKZNXp6W92gI5vQ0AM4gAL2G4a4lw
+ asZzoJ5ufixTqxDw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="fVhS8/6o";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="gK03/61U"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1753861980;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5Kkfx5twkT0QiJZRnHVfee1/WoL9YAnNAaLP7HEOoSA=;
+ b=fVhS8/6oSz5vWP0DgW70fASxZ6gX1G7sqvafRrOfNSVaSWVby63nRyVIFxoXwyXpUIu3DE
+ 9cNkm7h4bDJ2ivJLxTT9xR0TWlzhpkSQJHJ9cQ7dghO6H5K7LxfAYo4yNkVmVru9Z/L5l5
+ 6wYkRcDgxklmmO+28v115djto1jvYio=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1753861980;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5Kkfx5twkT0QiJZRnHVfee1/WoL9YAnNAaLP7HEOoSA=;
+ b=gK03/61UfSNVQ/tS+fVYIza+NPktWJAuJvBjvPF4J+wIRij4Pi6IZRtAmPQQhJwzGHGvCr
+ P9RNAiuJ6gcMzeAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BF8D313942;
+ Wed, 30 Jul 2025 07:52:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id GdqnLVvPiWjlSwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 30 Jul 2025 07:52:59 +0000
+Date: Wed, 30 Jul 2025 09:52:54 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Ben Copeland <ben.copeland@linaro.org>
+Message-ID: <20250730075254.GA50561@pevik>
+References: <20250730071342.817400-1-ben.copeland@linaro.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20250730071342.817400-1-ben.copeland@linaro.org>
+X-Rspamd-Queue-Id: 1296321995
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email,suse.cz:replyto];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] vma05: Fix false positives from stripped system
- libraries
+Subject: Re: [LTP] [PATCH v1] vma05: Fix false positives from stripped
+ system libraries
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,52 +119,82 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: dan.carpenter@linaro.org, lkft-triage@lists.linaro.org
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: dan.carpenter@linaro.org, lkft-triage@lists.linaro.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The vma05 test was producing false positive failures by flagging any
-"??" symbols in gdb backtraces as vDSO kernel bugs, including those
-from normal stripped system libraries.
+Hi Ben,
 
-This caused widespread false failures in production environments where
-system libraries like libc.so.6 are typically stripped of debug symbols.
+> The vma05 test was producing false positive failures by flagging any
+> "??" symbols in gdb backtraces as vDSO kernel bugs, including those
+> from normal stripped system libraries.
 
-The fix filters out "??" symbols that originate from system libraries
-(paths containing "/lib/" or "/usr/lib/") while still detecting genuine
-unresolved symbols in application code that could indicate real vDSO bugs.
+> This caused widespread false failures in production environments where
+> system libraries like libc.so.6 are typically stripped of debug symbols.
 
-Signed-off-by: Ben Copeland <ben.copeland@linaro.org>
----
- testcases/kernel/mem/vma/vma05.sh | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+> The fix filters out "??" symbols that originate from system libraries
+> (paths containing "/lib/" or "/usr/lib/") while still detecting genuine
+> unresolved symbols in application code that could indicate real vDSO bugs.
 
-diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
-index c560eecbc..09757a0fe 100755
---- a/testcases/kernel/mem/vma/vma05.sh
-+++ b/testcases/kernel/mem/vma/vma05.sh
-@@ -64,11 +64,14 @@ tst_test()
- 	TRACE=$(gdb -silent -ex="thread apply all backtrace" -ex="quit"\
+Sounds reasonable, but I would prefer Cyril or Jan acked this.
+
+> Signed-off-by: Ben Copeland <ben.copeland@linaro.org>
+> ---
+>  testcases/kernel/mem/vma/vma05.sh | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+
+> diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
+> index c560eecbc..09757a0fe 100755
+> --- a/testcases/kernel/mem/vma/vma05.sh
+> +++ b/testcases/kernel/mem/vma/vma05.sh
+> @@ -64,11 +64,14 @@ tst_test()
+>  	TRACE=$(gdb -silent -ex="thread apply all backtrace" -ex="quit"\
+>  		vma05_vdso ./core* 2> /dev/null)
+
+> -	if echo "$TRACE" | grep -qF "??"; then
+> -		tst_res TFAIL "[vdso] bug not patched"
+> +	# Only check for ?? symbols in application code, not system libraries
+> +	APP_UNKNOWN=$(echo "$TRACE" | grep -F "??" | grep -v "from /lib/" | grep -v "from /usr/lib/")
+You can pass more regexes to grep to save one pipe:
+
+	APP_UNKNOWN=$(echo "$TRACE" | grep -F "??" | grep -v -e "from /lib/" -e "from /usr/lib/")
+
+(or have single more complicated regexp).
+
+> +	if [ -n "$APP_UNKNOWN" ]; then
+> +		tst_res TFAIL "[vdso] bug not patched - unknown symbols in application code"
+>  	else
+>  		tst_res TPASS "[vdso] backtrace complete"
+>  	fi
+> +	fi
+
+Suggested changes.
+
+With that you can add:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
+
++++ testcases/kernel/mem/vma/vma05.sh
+@@ -65,13 +65,12 @@ tst_test()
  		vma05_vdso ./core* 2> /dev/null)
  
--	if echo "$TRACE" | grep -qF "??"; then
--		tst_res TFAIL "[vdso] bug not patched"
-+	# Only check for ?? symbols in application code, not system libraries
-+	APP_UNKNOWN=$(echo "$TRACE" | grep -F "??" | grep -v "from /lib/" | grep -v "from /usr/lib/")
-+	if [ -n "$APP_UNKNOWN" ]; then
-+		tst_res TFAIL "[vdso] bug not patched - unknown symbols in application code"
+ 	# Only check for ?? symbols in application code, not system libraries
+-	APP_UNKNOWN=$(echo "$TRACE" | grep -F "??" | grep -v "from /lib/" | grep -v "from /usr/lib/")
++	APP_UNKNOWN=$(echo "$TRACE" | grep -F "??" | grep -v -e "from /lib/" -e "from /usr/lib/")
+ 	if [ -n "$APP_UNKNOWN" ]; then
+ 		tst_res TFAIL "[vdso] bug not patched - unknown symbols in application code"
  	else
  		tst_res TPASS "[vdso] backtrace complete"
  	fi
-+	fi
+-	fi
  }
  
  . tst_run.sh
--- 
-2.50.1
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
