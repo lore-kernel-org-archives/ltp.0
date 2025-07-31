@@ -4,95 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 553C9C83F17
-	for <ltp@archiver.kernel.org>; Thu, 31 Jul 2025 11:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1753961227; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=DnIhjbRy5Vns4lyNhVuS7bZ2FG6SgG9l0MslrgSwWlU=;
- b=XwVFYBJc9wNKap0zckaHxwaw+AxxPKvGnoXrk0CWtbdwWFyQMLINNgXfQIsVDiH5drCEV
- A4tc4Rf+E8FKyvpx/n+nRmVw49KGx6V01E/PrE5/xtoO7Dt9zzZFME3sMXV9n09b1iasLl2
- oWtLK0p5IylhL1qTWXb0CQbbzx3Yr+4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4729AC87FCC
+	for <ltp@archiver.kernel.org>; Thu, 31 Jul 2025 11:46:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CBA5B3CBFDA
-	for <ltp@archiver.kernel.org>; Thu, 31 Jul 2025 13:27:07 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id C3CE23CBE60
+	for <ltp@archiver.kernel.org>; Thu, 31 Jul 2025 13:46:50 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CE9153CB93E
- for <ltp@lists.linux.it>; Thu, 31 Jul 2025 13:26:45 +0200 (CEST)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A84CD3CB1A6
+ for <ltp@lists.linux.it>; Thu, 31 Jul 2025 13:46:33 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F34371400351
- for <ltp@lists.linux.it>; Thu, 31 Jul 2025 13:26:44 +0200 (CEST)
-Received: by mail-wm1-x332.google.com with SMTP id
- 5b1f17b1804b1-45600581226so8504055e9.1
- for <ltp@lists.linux.it>; Thu, 31 Jul 2025 04:26:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1753961204; x=1754566004; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=cdar2TOqSWT9Vjo8xxzpSYo7dYfQVBm6UVvwHPtTRgw=;
- b=R9gtWsQ4frDtiavBybEBaBXa0YQBXdT5cI8eku/UbFCEYdtrmuKedPAcRV0PwncxJC
- jZjGPhjZEhpJNx2OlRZlDyyG/CtYZIX2fcSu5agB2mhVbkj9jXSmtSGhsYVhgCOjsH+c
- Vkrv3M9Nb/jIY2sPwRazXihpXBquVZ370wJyalP0G44icLtLwDOjD8TXKk9qgyFtRsgP
- 09aIDE8Xh4f8F7CCwbMPhVF4hWSVhj2ChU73NYhKbmO81DYETEhpWaBjz6Dq0ejIioWC
- 0MVP3i2eIwkxBOVnBO1zkiomUnh7Z3hQ/r/sD+2Oy0CRpKTOafzVNKWLjlX0cbJL0eRD
- x41Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1753961204; x=1754566004;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=cdar2TOqSWT9Vjo8xxzpSYo7dYfQVBm6UVvwHPtTRgw=;
- b=kUFtcUTby4/qZrXoP5BdABc3YsuJs7rl9+hOMeU0AlTCpcEZnN+Ys1rtzWlhyO3lpM
- yHQ0uqSdyJAGnekmIM/gqwBLTnPRLb8qasi2pch3CJ3zPM5HBXBTAf90v71Pt9acM9Xr
- RNeKnOGoO4ACGzx+0HZCN1N4oQpGei8a6iI5wQHd30H1XVSATf+D+DgCj21TSsZAZsuH
- aYVR0xPO5Yi6/oehpWh10WpzefMcOXEq1kPIxaY2wWi4g0vUwuhvTR3Z8dUg6WYfxqeI
- trEPGCD3ZdiYfhb+4nKwLpGyOHDxy+WJZT48rrW+forPALr/L2dV0/XhHXqi23igIKKS
- ge4w==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXKUTLT36zpXBQw2jV4MCRAylilcnCd02LcrsaE2gyBQrtznvzMGfx5sIXJY12rsON7Yg8=@lists.linux.it
-X-Gm-Message-State: AOJu0YxDQrTB/K+y//xba9nmuQQvmuVRNYWVjEZhsnS1rlbFMZvMQMS/
- O3acN+1NKVL6nB0yInSTeBdE8ZuWOBG6JdSBE0KMWg26NwQDRJa3U+q336Ir1C0P1hcd4x2zW8V
- AIs4cDpQ=
-X-Gm-Gg: ASbGncvIhdfnrD6gY3h7qjdryvUdFhN7pfi8rs9uaWcUcYQGpUk8EHLWH7XmaoCcr8V
- 83bJfKlH8bNMgxtnfzzWJOiepwdtSdPHvxHw2aka5SQirbUbJBnKGTvmCgbtXXUD8hKCwl0NRS6
- qIdd2KrlzuZuYqV4H62svLrBeiEJR+pOvNT3/o8+JadMpPhMR3yxUxzLW3wgbmH+OLT/I8ISPfh
- Pxg05suuy8IgiIg7X2p2mE4MQewlbBhedRCMgiRgTNJML4gBYriC2/0WzvYbrj3lgfUP+LWWsYn
- ehquTDr8wlW83uSNSt9KwOeC4Eb/LxZPHB/62PkYY3nvVvJlIieJdv7BbueesTZ7OguHd0deT1N
- lle08JLDVmAPYNUI+8LvU30vshf++UTJrHQ==
-X-Google-Smtp-Source: AGHT+IEg9gU0WbZ2cMAdfamF+rpPwBr/swrWiZbvjDdevoM0Bo5GhJPE1qzJCNxdYeFgfiGvtWc6lg==
-X-Received: by 2002:a5d:584c:0:b0:3b6:17c0:f094 with SMTP id
- ffacd0b85a97d-3b794fecd5bmr5878386f8f.14.1753961204144; 
- Thu, 31 Jul 2025 04:26:44 -0700 (PDT)
-Received: from [192.168.1.91] ([151.51.222.116])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-76bccfdf9bdsm1389394b3a.111.2025.07.31.04.26.41
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 31 Jul 2025 04:26:43 -0700 (PDT)
-Message-ID: <53d86959-f4a0-4f75-a623-8ede62b4383b@suse.com>
-Date: Thu, 31 Jul 2025 13:26:37 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DFB5A1400247
+ for <ltp@lists.linux.it>; Thu, 31 Jul 2025 13:46:32 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C23A41F7F3;
+ Thu, 31 Jul 2025 11:46:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1753962391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nU9qDAox2J6XVZ/C+A8wXA3z39YdTv+hk8BUVrDqIAs=;
+ b=FcY7iIJq8onDkh0/gpjuWZmVdJsSu8EmwMfhxZKRWYHAKAoQSafs+0vCWQqv7qY4gAh/ar
+ 675uGd3yRJ5akoJ+yoLHrgAfArt36LBevIsn0Qo2I0VM2TLtAedO6AdBKqDQs5mK42SRbL
+ XuQEwfgt2pR9k5cZ4wkd0YGlOd2XR8Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1753962391;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nU9qDAox2J6XVZ/C+A8wXA3z39YdTv+hk8BUVrDqIAs=;
+ b=jlLwqRehAPnbl1uVPP3V2orL8gWscpo/qQyGoJPcOfK2EsCi10SEGNyHS0RZCzTADk2NBN
+ MtBv9o1p8jlAtiAg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=FcY7iIJq;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=jlLwqReh
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1753962391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nU9qDAox2J6XVZ/C+A8wXA3z39YdTv+hk8BUVrDqIAs=;
+ b=FcY7iIJq8onDkh0/gpjuWZmVdJsSu8EmwMfhxZKRWYHAKAoQSafs+0vCWQqv7qY4gAh/ar
+ 675uGd3yRJ5akoJ+yoLHrgAfArt36LBevIsn0Qo2I0VM2TLtAedO6AdBKqDQs5mK42SRbL
+ XuQEwfgt2pR9k5cZ4wkd0YGlOd2XR8Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1753962391;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nU9qDAox2J6XVZ/C+A8wXA3z39YdTv+hk8BUVrDqIAs=;
+ b=jlLwqRehAPnbl1uVPP3V2orL8gWscpo/qQyGoJPcOfK2EsCi10SEGNyHS0RZCzTADk2NBN
+ MtBv9o1p8jlAtiAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9AC9B13A8A;
+ Thu, 31 Jul 2025 11:46:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id kKEeI5dXi2h2SgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 31 Jul 2025 11:46:31 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 31 Jul 2025 13:46:26 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: =?UTF-8?Q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>,
- Linux Test Project <ltp@lists.linux.it>
-References: <20250731-fixes-munmap04-v2-1-41cfdd2367e5@suse.com>
-Content-Language: en-US
-In-Reply-To: <20250731-fixes-munmap04-v2-1-41cfdd2367e5@suse.com>
+Message-Id: <20250731-clock_nanosleep05-v5-2-0118cf6b2454@suse.com>
+References: <20250731-clock_nanosleep05-v5-0-0118cf6b2454@suse.com>
+In-Reply-To: <20250731-clock_nanosleep05-v5-0-0118cf6b2454@suse.com>
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1753962391; l=6202;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=uy9MeTKl4w6E6GhD+X2pdqzMfG6AamCxdO59jClkcMs=;
+ b=Jkbvddip3fGb/M8AxudIUU4rjXT1tKCiE8tlV/Q8Shd0lmstqY4xqkmUwgHZ9Yr+wTNp32pGU
+ K3ZynpgkyZmBWK6ivmLmkvlFYn1cwlotq5uRXq9JWjsmYpInvTYD3JU
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Rspamd-Queue-Id: C23A41F7F3
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.de:+]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/munmap04: Increase target map address
- in case of EEXIST
+Subject: [LTP] [PATCH v5 2/2] Add clock_settime04 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,16 +121,214 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Merged! Thanks
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-- Andrea
+Test that changing the value of the CLOCK_REALTIME clock via
+clock_settime(2) shall have no effect on a thread that is blocked
+on a relative/absolute clock_nanosleep().
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ runtest/syscalls                                   |   1 +
+ testcases/kernel/syscalls/clock_settime/.gitignore |   1 +
+ .../syscalls/clock_settime/clock_settime04.c       | 160 +++++++++++++++++++++
+ 3 files changed, 162 insertions(+)
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index f15331da3711ec3fe19baed10efb5fe21dfa0e0d..6a17a34f8b5fc1289947d4504b7a146f3d022f1c 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -112,6 +112,7 @@ leapsec01 leapsec01
+ clock_settime01 clock_settime01
+ clock_settime02 clock_settime02
+ clock_settime03 clock_settime03
++clock_settime04 clock_settime04
+ 
+ clone01 clone01
+ clone02 clone02
+diff --git a/testcases/kernel/syscalls/clock_settime/.gitignore b/testcases/kernel/syscalls/clock_settime/.gitignore
+index b66169b3eb7b4d8c8ea95e9e689b612d8da37b11..8bcc83d6fc9162087e99193a00b8d3d784d4737d 100644
+--- a/testcases/kernel/syscalls/clock_settime/.gitignore
++++ b/testcases/kernel/syscalls/clock_settime/.gitignore
+@@ -1,3 +1,4 @@
+ clock_settime01
+ clock_settime02
+ clock_settime03
++clock_settime04
+diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime04.c b/testcases/kernel/syscalls/clock_settime/clock_settime04.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..6326c96e62d6914ac924f65b817153d56108fb08
+--- /dev/null
++++ b/testcases/kernel/syscalls/clock_settime/clock_settime04.c
+@@ -0,0 +1,160 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * Verify that changing the value of the CLOCK_REALTIME clock via
++ * clock_settime() shall have no effect on a thread that is blocked on
++ * absolute/relative clock_nanosleep().
++ */
++
++#include "tst_test.h"
++#include "tst_timer.h"
++#include "tst_safe_clocks.h"
++#include "time64_variants.h"
++
++#define SEC_TO_US(x)     (x * 1000 * 1000)
++
++#define CHILD_SLEEP_US   SEC_TO_US(5)
++#define PARENT_SLEEP_US  SEC_TO_US(2)
++#define DELTA_US         SEC_TO_US(1)
++
++static struct tst_ts *begin, *sleep_child, *sleep_parent, *end;
++
++static struct time64_variants variants[] = {
++	{
++		.clock_nanosleep = libc_clock_nanosleep,
++		.clock_settime = libc_clock_settime,
++		.clock_gettime = libc_clock_gettime,
++		.ts_type = TST_LIBC_TIMESPEC,
++		.desc = "vDSO or syscall with libc spec"
++	},
++
++#if (__NR_clock_nanosleep != __LTP__NR_INVALID_SYSCALL)
++	{
++		.clock_nanosleep = sys_clock_nanosleep,
++		.clock_settime = sys_clock_settime,
++		.clock_gettime = sys_clock_gettime,
++		.ts_type = TST_KERN_OLD_TIMESPEC,
++		.desc = "syscall with old kernel spec"
++	},
++#endif
++
++#if (__NR_clock_nanosleep_time64 != __LTP__NR_INVALID_SYSCALL)
++	{
++		.clock_nanosleep = sys_clock_nanosleep64,
++		.clock_settime = sys_clock_settime64,
++		.clock_gettime = sys_clock_gettime64,
++		.ts_type = TST_KERN_TIMESPEC,
++		.desc = "syscall time64 with kernel spec"
++	},
++#endif
++};
++
++static void child_nanosleep(struct time64_variants *tv, const int flags)
++{
++	int ret;
++	long long delta;
++
++	ret = tv->clock_gettime(CLOCK_MONOTONIC, tst_ts_get(begin));
++	if (ret == -1)
++		tst_brk(TBROK | TERRNO, "clock_gettime() failed");
++
++	if (flags & TIMER_ABSTIME) {
++		tst_res(TINFO, "Using absolute time sleep");
++
++		*sleep_child = tst_ts_add_us(*begin, CHILD_SLEEP_US);
++	} else {
++		tst_res(TINFO, "Using relative time sleep");
++
++		tst_ts_set_sec(sleep_child, 0);
++		tst_ts_set_nsec(sleep_child, 0);
++
++		*sleep_child = tst_ts_add_us(*sleep_child, CHILD_SLEEP_US);
++	}
++
++	TEST(tv->clock_nanosleep(CLOCK_REALTIME, flags, tst_ts_get(sleep_child), NULL));
++	if (TST_RET)
++		tst_brk(TBROK | TERRNO, "clock_nanosleep() error");
++
++	ret = tv->clock_gettime(CLOCK_MONOTONIC, tst_ts_get(end));
++	if (ret == -1)
++		tst_brk(TBROK | TERRNO, "clock_gettime() failed");
++
++	if (tst_ts_lt(*end, *begin)) {
++		tst_res(TFAIL, "clock_settime() didn't sleep enough. "
++			"begin: %lld ms >= end: %lld ms",
++			tst_ts_to_ms(*begin),
++			tst_ts_to_ms(*end));
++		return;
++	}
++
++	delta = tst_ts_abs_diff_us(*begin, *end);
++	if (!(flags & TIMER_ABSTIME))
++		delta -= CHILD_SLEEP_US;
++
++	if (delta > DELTA_US) {
++		tst_res(TFAIL, "parent clock_settime() affected child sleep. "
++			"begin: %lld ms, end: %lld ms",
++			tst_ts_to_ms(*begin),
++			tst_ts_to_ms(*end));
++		return;
++	}
++
++	tst_res(TPASS, "parent clock_settime() didn't affect child sleep "
++		"(delta time: %lld us)", delta);
++}
++
++static void run(unsigned int tc_index)
++{
++	int ret;
++	struct time64_variants *tv = &variants[tst_variant];
++
++	if (!SAFE_FORK()) {
++		child_nanosleep(tv, tc_index ? TIMER_ABSTIME : 0);
++		exit(0);
++	}
++
++	ret = tv->clock_gettime(CLOCK_REALTIME, tst_ts_get(begin));
++	if (ret == -1)
++		tst_brk(TBROK | TERRNO, "clock_gettime() failed");
++
++	ret = tv->clock_nanosleep(CLOCK_REALTIME, 0, tst_ts_get(sleep_parent), NULL);
++	if (ret == -1)
++		tst_brk(TBROK | TERRNO, "clock_nanosleep() failed");
++
++	ret = tv->clock_settime(CLOCK_REALTIME, tst_ts_get(begin));
++	if (ret == -1)
++		tst_brk(TBROK | TERRNO, "clock_settime() failed");
++}
++
++static void setup(void)
++{
++	begin->type = end->type = sleep_child->type = sleep_parent->type =
++		variants[tst_variant].ts_type;
++
++	tst_ts_set_sec(sleep_parent, 0);
++	tst_ts_set_nsec(sleep_parent, 0);
++
++	*sleep_parent = tst_ts_add_us(*sleep_parent, PARENT_SLEEP_US);
++
++	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
++}
++
++static struct tst_test test = {
++	.test = run,
++	.setup = setup,
++	.tcnt = 2,
++	.needs_root = 1,
++	.forks_child = 1,
++	.restore_wallclock = 1,
++	.test_variants = ARRAY_SIZE(variants),
++	.bufs = (struct tst_buffers []) {
++		{&sleep_child, .size = sizeof(struct tst_ts)},
++		{&sleep_parent, .size = sizeof(struct tst_ts)},
++		{&begin, .size = sizeof(struct tst_ts)},
++		{&end, .size = sizeof(struct tst_ts)},
++		{},
++	}
++};
+
+-- 
+2.50.1
 
 
 -- 
