@@ -4,91 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70FAFC87FCB
-	for <ltp@archiver.kernel.org>; Mon,  4 Aug 2025 20:05:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7A9CC87FCF
+	for <ltp@archiver.kernel.org>; Mon,  4 Aug 2025 20:12:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1754337951; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=ML4yIi1sNyY3CIw/5mnE1nluGBGTjvQemW+30govpUE=;
- b=RNNJtCRqI0duaVuGF8UuXBQcuitJQPqLiaSREwHaMon+iRv222XmZgEdErJwdJBLj6t1e
- j7WZRAdYLLdTfYcHlURHhmD0uffHG6qtu8wNSyVJOVURngAbUWMh15WNYn0M/g67OKguaaz
- icVKUYFCs2D6zRhSoKu0vmbPSU3EoU0=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1754338333; h=date : to :
+ message-id : mime-version : content-type : subject : list-id :
+ list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : sender : from;
+ bh=Ff/Ah/Qy60KCal2bTJkS1B3R6B6stws7Nb0cQ7sQWnI=;
+ b=kpiNl2oE6DFE2eG6UWlOklmKnJTdpF9gnAsQJvJa3Yrcpp3FLSlS8iKMCoxNBExmv0WfU
+ U9iXOg/BKBUq40tBAzCobH5BpcsrQPKE9JS8tfRx2EtDIr4rqhcaU7V5MGeEGJx4jSGWhf9
+ 1aePe3WGaAur8tFp2HmNScj1MLa+SYg=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ACF103CCFEB
-	for <ltp@archiver.kernel.org>; Mon,  4 Aug 2025 22:05:51 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 69EAB3C209C
+	for <ltp@archiver.kernel.org>; Mon,  4 Aug 2025 22:12:13 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 850F93CCDE8
- for <ltp@lists.linux.it>; Mon,  4 Aug 2025 22:05:30 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 51C263C028F
+ for <ltp@lists.linux.it>; Mon,  4 Aug 2025 22:11:53 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 51B4310007DC
- for <ltp@lists.linux.it>; Mon,  4 Aug 2025 22:05:29 +0200 (CEST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-459d62184c9so10517905e9.1
- for <ltp@lists.linux.it>; Mon, 04 Aug 2025 13:05:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1754337928; x=1754942728; darn=lists.linux.it;
- h=in-reply-to:references:to:cc:subject:message-id:date
- :content-transfer-encoding:mime-version:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=YmPG0FKm2eAyzDHde4Egrl0xCMz2N9w7HJrELY6R1t0=;
- b=ZQKhtCgTOQbDYRqT4yrIFh6ER59N0b+JF1zQMFDwjMAVmdERVB+abJ7+JNdIaCBBYT
- yE1lOUqE0PkZOADoIKjcFyd9siHJDbYmg9o87FM+ziJ6xaFEZ5qFy9FnFT8WXCgCPk2l
- isxiEhCM7OaduPZERVv0ENdM2vYV9JTDVeUbGoWbDNOPs6uFDaF/e3p22xVytYqtZQ/3
- M1ijPzED/g5X3E7/3WWMf68Q1FzTACQyNLo5+h1Bo0Q8U3sGRM/iD+MSnYHoccTTtOXv
- 533UP6BQdPNSKyXTyK4NKxOT4UjwbnXumH/A/Vi4OGpIr4fngBK4gVF5ThmaNRA6orq9
- Luug==
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 620D614004E5
+ for <ltp@lists.linux.it>; Mon,  4 Aug 2025 22:11:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1754338309;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=cL9nhX1ePalSd9hAo5fwiHgREguJRRz2+iRgjXW743c=;
+ b=H8oa4mxRt84pjSHihlYycvyjtRaAULyr+r5GkOPHPC5dBav51Vbf4fWmggnazyfByskcRr
+ dP2f4lVryNVL+c1+PUv5BzgsJeMQGRj8xgx+TKXEWDK8XqfiEY4u7eI1YqSF932AdoX9qE
+ lIOgl0wRRorHPhwMca8DiRjH2ws8E5g=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-147-n4zfgsncPJi8zP1TxeEfZw-1; Mon, 04 Aug 2025 16:11:46 -0400
+X-MC-Unique: n4zfgsncPJi8zP1TxeEfZw-1
+X-Mimecast-MFC-AGG-ID: n4zfgsncPJi8zP1TxeEfZw_1754338305
+Received: by mail-qv1-f71.google.com with SMTP id
+ 6a1803df08f44-70732006280so66026576d6.3
+ for <ltp@lists.linux.it>; Mon, 04 Aug 2025 13:11:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1754337928; x=1754942728;
- h=in-reply-to:references:to:cc:subject:message-id:date
- :content-transfer-encoding:mime-version:from:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=YmPG0FKm2eAyzDHde4Egrl0xCMz2N9w7HJrELY6R1t0=;
- b=AXjAdYRNL4b1prYYCtNfMv+B9eYzLkdz9o627vddnp2Nkm2sgcj39vJyw3njxh8pUg
- eBLcBNmOxtrLPkWGzEoHS//aFGfEmuWI1bmmvqQKpRyewhHXC+b/yXOXWy16G3/GpuAo
- /HLMqdF7xq4OofjjbY/QGPWM5oXSqopTGfZJSmvGuDXmu4l9Q8AU/QMt5EtG3j6FdVT6
- EGV0W4utJVTZdxLfALKrVYImC3WzY/QtD0vRB7szKXb3aTgW9YlGYHxM6MvAOSRdIOPq
- 1y6dekH25J/Gk5Gok+NN2bgqDww67vS1dIb1bwpTYh68lawbpKifgH2RKLxdJUT4A9FU
- YU/Q==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUE0Chd9r79jP4AUQYa6OHn2o/f7aokaeJRDsoyUj1GAzRrrcgG19SJ69ToIgvfOPF1hbU=@lists.linux.it
-X-Gm-Message-State: AOJu0YxnLrgZL0GZ0mTp4PbaMjfQkYZL0oVAHlG9Kp/RsjwJOUo3Lxtm
- hgoS/U2x+RQjYczkQIcgef9j8KbQVt9Uqwlffr/VXw474A06kkbwSaBDjXPOq4ttGO4=
-X-Gm-Gg: ASbGncuMILWCRi84bEIg46hM15FigQCr6L/lAmcooDm4SrvH02KWvk3jXa2b+PbGSur
- hhgry+Bojrc6gs5zNp0iv/Y97z2IdcDM4FP/ukYdN+f+AJ3uc9qDzXmpkEZYfNGzXJILL6/w7mt
- UDM9yfjgPs2SQSSjf6nLpSEKPwLvEA1BCO2gHMFBsiJAm1fde6picrQt8FUJssm/Qw76Vi/4YU6
- zC7s6WxgoNw6JOwIVla4/L5vPttzbocT+Wdrf8mkULgpRoXci2FfU4Us5R9meq1imSQuZUGJN+1
- tMc8a4nIWrfyNTUNTRTptzc3uTcdOsMQidA4SqaPxzvO7fZRucD9QNeDYJPbue0gsrC41V7yZWR
- uGGa9D8rLzg==
-X-Google-Smtp-Source: AGHT+IH0Tm5gj2pfB1FVxEPIxds22Zf0DAyL9qwR/YYyJRPBbokvT/sTG6pJsqWLZ4dzh0YZml/s8g==
-X-Received: by 2002:a05:6000:228a:b0:3b7:9233:ebb with SMTP id
- ffacd0b85a97d-3b8d946a592mr6970538f8f.6.1754337928474; 
- Mon, 04 Aug 2025 13:05:28 -0700 (PDT)
-Received: from localhost ([177.94.120.255]) by smtp.gmail.com with ESMTPSA id
- 71dfb90a1353d-53936b15df5sm2998456e0c.3.2025.08.04.13.05.27
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 04 Aug 2025 13:05:28 -0700 (PDT)
-Mime-Version: 1.0
-Date: Mon, 04 Aug 2025 17:05:22 -0300
-Message-Id: <DBTWW3QOSI3I.2LBV7VWPR4C0B@suse.com>
-To: "Petr Vorel" <pvorel@suse.cz>, <ltp@lists.linux.it>
-X-Mailer: aerc 0.20.1-80-g1fe8ed687c05-dirty
-References: <20250804184850.313101-1-pvorel@suse.cz>
-In-Reply-To: <20250804184850.313101-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+ d=1e100.net; s=20230601; t=1754338305; x=1754943105;
+ h=user-agent:content-disposition:mime-version:message-id:subject:cc
+ :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=ZgQfNQE8PXQumQXJNHyVkNGmTX/tpqIRRCwz/YbJmlk=;
+ b=L5CwZMF86tS3ghY47al5nAjgBJwq/DW1X+2fDDJyOPposmekDOaC+FQXAChoMqayGi
+ 9jZn/KYRKV+8F81LUwfB0YlCEUi42u9mzB4VwZ2JZAkXoxEoL699kX5VpvqBzvwHExiV
+ FNpeASYKWH8qqB3VtIRuqHUmS9GMOO5a1AxfRgSemHkz62lyAWInz03UYKnysaB/UDd3
+ QKbc/qPEBMAqzKO9wBOu+jaeG2X5dgQc8TSYTxDNrMJy+S5vl13nO6d9dgJzihhvwTAt
+ IkCfzumFSqWgRkhaJkxEoo6OCBBlWJ7NzAIZUjiNyu2pAF1CvTgZTeKaENtcrb1UqzwY
+ /ryw==
+X-Gm-Message-State: AOJu0YxpLyGlH1mruP+xHH1wZ7Dew4iIgGN2ORfsXbtnzOpEN3OlUu/q
+ 8rKJtP+vROZvtSd/z6Sqh5JUjkR2e/djEPyR7Vzqfnf7rBvf8rUhRS10J9s/6ZoJwNRyRLtTLe5
+ sB3J8nJfInzGEBJZ9BQi5qrub6rIc8lNAci2oVGo3VJSeA32iobZkUqxLKDhM9s1mz+PRTBm8aG
+ bN7ZvHIWZHjFROfl3x1y1oyefZTpm6IM29DHE=
+X-Gm-Gg: ASbGncvog3aGgphDD9t/P7Qe9RTCJmgXMxJb7L1hrFqHpW5AJ8DPAg7G1vhsteJol57
+ zCtf74hl7BBD3v3BmlsnE4/81Udc60SP+bOvuuqs5hq8Wq2NZ4LI2J6Yi1nVzIVP0+Rnv7bH53e
+ N/qbEngnK2xDsiQW0mCBXhq50Im5aacTxwAylmFcuvSUFDBNjXRe9sF3EygaCFHQ9xhH1Jx23Q4
+ HtqOcuMLa/Ckzs6Jyz6rhoTFvO+Vu3FVmqC5trwyC0Oo6Tg7FIjKXaCvoRnrAG9uumtV1ssQ7yW
+ b0Js60m2RqFQtD3VKpPsQZ3It95Cxtte0ztzO62acoCBExInR7KUglc2rg==
+X-Received: by 2002:a05:6214:19e5:b0:707:76a8:ee9d with SMTP id
+ 6a1803df08f44-7093636737dmr152563876d6.51.1754338305474; 
+ Mon, 04 Aug 2025 13:11:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGDMpLubUuDHoIPHCCRLdIQjdiud8ToNyZ38VVlnwGhqxEjNFSLRFzS6WOyud4/f0vCXoG7Xw==
+X-Received: by 2002:a05:6214:19e5:b0:707:76a8:ee9d with SMTP id
+ 6a1803df08f44-7093636737dmr152563536d6.51.1754338304940; 
+ Mon, 04 Aug 2025 13:11:44 -0700 (PDT)
+Received: from lida.tpb.lab.eng.brq.redhat.com ([85.93.96.130])
+ by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-7077ca464acsm62681726d6.36.2025.08.04.13.11.43
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 04 Aug 2025 13:11:44 -0700 (PDT)
+Date: Mon, 4 Aug 2025 22:11:41 +0200
+To: ltp@lists.linux.it
+Message-ID: <20250804201141.y5pncvmjhqv7mpjz@lida.tpb.lab.eng.brq.redhat.com>
+MIME-Version: 1.0
+User-Agent: NeoMutt/20180716
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: EKAiKDZylKamgfzlSCaaIvqCOU0Ms29QmHEQCBoKZj0_1754338305
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/mixed; boundary="lyruc4oydlekwbpa"
+Content-Disposition: inline
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] rpc_test.sh: Check for rpcbind remote calls
- support
+Subject: [LTP] Make sure 32-bit powerpc syscall defs don't leak to 64-bit
+ powerpc systems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,86 +106,86 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "Ricardo B. Marliere via ltp" <ltp@lists.linux.it>
-Reply-To: rbm@suse.com
-Cc: libtirpc-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
- Steve Dickson <steved@redhat.com>,
- =?utf-8?b?UmljYXJkbyBCIC4gTWFybGnDqHJl?= <rbm@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Martin Cermak via ltp <ltp@lists.linux.it>
+Reply-To: Martin Cermak <mcermak@redhat.com>
+Cc: mjw@redhat.com
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uIEF1ZyA0LCAyMDI1IGF0IDM6NDggUE0gLTAzLCBQZXRyIFZvcmVsIHdyb3RlOgo+IGNs
-aWVudCBiaW5hcmllcyBycGNfcG1hcF9ybXRjYWxsIGFuZCB0aXJwY19ycGNiX3JtdGNhbGwgcmVx
-dWlyZSBycGNiaW5kCj4gY29tcGlsZWQgd2l0aCByZW1vdGUgY2FsbHMuICBycGNiaW5kIGhhcyBk
-aXNhYmxlZCByZW1vdGUgY2FsbHMgYnkKPiBkZWZhdWx0IGluIDEuMi41LiBCdXQgdGhpcyB3YXMg
-bm90IGRldGVjdGFibGUgdW50aWwgMS4yLjgsIHdoaWNoIGJyb3VnaHQKPiB0aGlzIGluZm8gaW4g
-LXYgZmxhZy4KPgo+IERldGVjdCB0aGUgc3VwcG9ydCBhbmQgc2tpcCBvbiB0aGVzZSAyIGZ1bmN0
-aW9ucyB3aGVuIGRpc2FibGVkLgo+Cj4gU2lnbmVkLW9mZi1ieTogUGV0ciBWb3JlbCA8cHZvcmVs
-QHN1c2UuY3o+Cj4gLS0tCj4gSGksCj4KPiBCVFcgaXQnZCBiZSBuaWNlIHRvIGludmVzdGlnYXRl
-IHdoeSB0aGUgYnJvYWRjYXN0IGZ1bmN0aW9ucyBmYWlsLAo+IGVuYWJsaW5nIHJlbW90ZSBjYWxs
-cyBkb2VzIG5vdCBoZWxwLCB0ZXN0aW5nIG9uOgo+IC4vY29uZmlndXJlIC0tZW5hYmxlLWxpYndy
-YXAgLS1lbmFibGUtd2FybXN0YXJ0cyAtLWVuYWJsZS1kZWJ1ZyAtLXdpdGgtc3RhdGVkaXI9L3J1
-bi9ycGNiaW5kIC0td2l0aC1ycGN1c2VyPXJwYyAtLXdpdGgtc3lzdGVtZHN5c3RlbXVuaXRkaXI9
-L3Vzci9saWIvc3lzdGVtZC9zeXN0ZW0gJy0td2l0aC1uc3MtbW9kdWxlcz1maWxlcyB1c3JmaWxl
-cycgLS1lbmFibGUtcm10Y2FsbHMKCkJ1dCBkaWQgeW91IHN0YXJ0IHRoZSBkYWVtb24gd2l0aCBg
-LXJgPyBlLmcuCgojIC9zYmluL3JwY2JpbmQgLWYgLXcgLXIgJgoKPgo+IEtpbmQgcmVnYXJkcywK
-PiBQZXRyCj4KPiAjIFBBVEg9Ii9vcHQvbHRwL3Rlc3RjYXNlcy9iaW46JFBBVEgiIC4vcnBjX3Rl
-c3Quc2ggLXMgcnBjX3N2Y18xIC1jIHJwY19jbG50X2Jyb2FkY2FzdAo+IHJwY190ZXN0LnNoIC1z
-IHJwY19zdmNfMSAtYyBycGNfY2xudF9icm9hZGNhc3QKPiBycGNfdGVzdCAxIFRJTkZPOiBSdW5u
-aW5nOiBycGNfdGVzdC5zaCAtcyBycGNfc3ZjXzEgLWMgcnBjX2NsbnRfYnJvYWRjYXN0Cj4gcnBj
-X3Rlc3QgMSBUSU5GTzogVGVzdGVkIGtlcm5lbDogTGludXggdHMgNi4xMy42LTEtZGVmYXVsdCAj
-MSBTTVAgUFJFRU1QVF9EWU5BTUlDIE1vbiBNYXIgMTAgMDg6NDk6MjQgVVRDIDIwMjUgKDQ5NWQ4
-MmEpIHg4Nl82NCB4ODZfNjQgeDg2XzY0IEdOVS9MaW51eAo+IHJwY190ZXN0IDEgVElORk86IGlu
-aXRpYWxpemUgJ2xob3N0JyAnbHRwX25zX3ZldGgyJyBpbnRlcmZhY2UKPiBycGNfdGVzdCAxIFRJ
-TkZPOiBhZGQgbG9jYWwgYWRkciAxMC4wLjAuMi8yNAo+IHJwY190ZXN0IDEgVElORk86IGFkZCBs
-b2NhbCBhZGRyIGZkMDA6MToxOjE6OjIvNjQKPiBycGNfdGVzdCAxIFRJTkZPOiBpbml0aWFsaXpl
-ICdyaG9zdCcgJ2x0cF9uc192ZXRoMScgaW50ZXJmYWNlCj4gcnBjX3Rlc3QgMSBUSU5GTzogYWRk
-IHJlbW90ZSBhZGRyIDEwLjAuMC4xLzI0Cj4gcnBjX3Rlc3QgMSBUSU5GTzogYWRkIHJlbW90ZSBh
-ZGRyIGZkMDA6MToxOjE6OjEvNjQKPiBycGNfdGVzdCAxIFRJTkZPOiBOZXR3b3JrIGNvbmZpZyAo
-bG9jYWwgLS0gcmVtb3RlKToKPiBycGNfdGVzdCAxIFRJTkZPOiBsdHBfbnNfdmV0aDIgLS0gbHRw
-X25zX3ZldGgxCj4gcnBjX3Rlc3QgMSBUSU5GTzogMTAuMC4wLjIvMjQgLS0gMTAuMC4wLjEvMjQK
-PiBycGNfdGVzdCAxIFRJTkZPOiBmZDAwOjE6MToxOjoyLzY0IC0tIGZkMDA6MToxOjE6OjEvNjQK
-PiBycGNfdGVzdCAxIFRJTkZPOiB0aW1lb3V0IHBlciBydW4gaXMgMGggNW0gMHMKPiBycGNfdGVz
-dCAxIFRJTkZPOiBjaGVjayByZWdpc3RlcmVkIFJQQyB3aXRoIHJwY2luZm8KPiBycGNfdGVzdCAx
-IFRJTkZPOiByZWdpc3RlcmVkIFJQQzoKPiAgICBwcm9ncmFtIHZlcnMgcHJvdG8gICBwb3J0ICBz
-ZXJ2aWNlCj4gICAgIDEwMDAwMCAgICA0ICAgdGNwICAgIDExMSAgcG9ydG1hcHBlcgo+ICAgICAx
-MDAwMDAgICAgMyAgIHRjcCAgICAxMTEgIHBvcnRtYXBwZXIKPiAgICAgMTAwMDAwICAgIDIgICB0
-Y3AgICAgMTExICBwb3J0bWFwcGVyCj4gICAgIDEwMDAwMCAgICA0ICAgdWRwICAgIDExMSAgcG9y
-dG1hcHBlcgo+ICAgICAxMDAwMDAgICAgMyAgIHVkcCAgICAxMTEgIHBvcnRtYXBwZXIKPiAgICAg
-MTAwMDAwICAgIDIgICB1ZHAgICAgMTExICBwb3J0bWFwcGVyCj4gICAgIDEwMDAwNSAgICAxICAg
-dWRwICAyMDA0OCAgbW91bnRkCj4gICAgIDEwMDAyNCAgICAxICAgdWRwICAzNjIzNSAgc3RhdHVz
-Cj4gICAgIDEwMDAwNSAgICAxICAgdGNwICAyMDA0OCAgbW91bnRkCj4gICAgIDEwMDAyNCAgICAx
-ICAgdGNwICA2MDc0MyAgc3RhdHVzCj4gICAgIDEwMDAwNSAgICAyICAgdWRwICAyMDA0OCAgbW91
-bnRkCj4gICAgIDEwMDAwNSAgICAyICAgdGNwICAyMDA0OCAgbW91bnRkCj4gICAgIDEwMDAwNSAg
-ICAzICAgdWRwICAyMDA0OCAgbW91bnRkCj4gICAgIDEwMDAwNSAgICAzICAgdGNwICAyMDA0OCAg
-bW91bnRkCj4gICAgIDEwMDAwMyAgICAzICAgdGNwICAgMjA0OSAgbmZzCj4gICAgIDEwMDAwMyAg
-ICA0ICAgdGNwICAgMjA0OSAgbmZzCj4gICAgIDEwMDIyNyAgICAzICAgdGNwICAgMjA0OSAgbmZz
-X2FjbAo+ICAgICAxMDAwMjEgICAgMSAgIHVkcCAgNDA5MzkgIG5sb2NrbWdyCj4gICAgIDEwMDAy
-MSAgICAzICAgdWRwICA0MDkzOSAgbmxvY2ttZ3IKPiAgICAgMTAwMDIxICAgIDQgICB1ZHAgIDQw
-OTM5ICBubG9ja21ncgo+ICAgICAxMDAwMjEgICAgMSAgIHRjcCAgMzgwNDcgIG5sb2NrbWdyCj4g
-ICAgIDEwMDAyMSAgICAzICAgdGNwICAzODA0NyAgbmxvY2ttZ3IKPiAgICAgMTAwMDIxICAgIDQg
-ICB0Y3AgIDM4MDQ3ICBubG9ja21ncgo+IHJwY190ZXN0IDEgVElORk86IHVzaW5nIGxpYnRpcnBj
-OiB5ZXMKPiBycGNfdGVzdCAxIFRGQUlMOiBycGNfY2xudF9icm9hZGNhc3QgMTAuMC4wLjIgNTM2
-ODc1MDAwIGZhaWxlZCB1bmV4cGVjdGVkbHkKPiBSUEM6IFRpbWVkIG91dAo+IDEKPiBycGNfdGVz
-dCAyIFRJTkZPOiBTRUxpbnV4IGVuYWJsZWQgaW4gZW5mb3JjaW5nIG1vZGUsIHRoaXMgbWF5IGFm
-ZmVjdCB0ZXN0IHJlc3VsdHMKPiBycGNfdGVzdCAyIFRJTkZPOiBpdCBjYW4gYmUgZGlzYWJsZWQg
-d2l0aCBUU1RfRElTQUJMRV9TRUxJTlVYPTEgKHJlcXVpcmVzIHN1cGVyL3Jvb3QpCj4gcnBjX3Rl
-c3QgMiBUSU5GTzogbG9hZGVkIFNFTGludXggcHJvZmlsZXM6IG5vbmUKPgo+Cj4KPiAgdGVzdGNh
-c2VzL25ldHdvcmsvcnBjL3JwYy10aXJwYy9ycGNfdGVzdC5zaCB8IDUgKysrKysKPiAgMSBmaWxl
-IGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9uZXR3
-b3JrL3JwYy9ycGMtdGlycGMvcnBjX3Rlc3Quc2ggYi90ZXN0Y2FzZXMvbmV0d29yay9ycGMvcnBj
-LXRpcnBjL3JwY190ZXN0LnNoCj4gaW5kZXggY2FkYWU1NTIwMy4uMWE4Y2Y0NjM5OSAxMDA3NTUK
-PiAtLS0gYS90ZXN0Y2FzZXMvbmV0d29yay9ycGMvcnBjLXRpcnBjL3JwY190ZXN0LnNoCj4gKysr
-IGIvdGVzdGNhc2VzL25ldHdvcmsvcnBjL3JwYy10aXJwYy9ycGNfdGVzdC5zaAo+IEBAIC01Myw2
-ICs1MywxMSBAQCBzZXR1cCgpCj4gIAkJZmkKPiAgCWZpCj4gIAo+ICsJaWYgWyAiJENMSUVOVCIg
-PSAncnBjX3BtYXBfcm10Y2FsbCcgLW8gIiRDTElFTlQiID0gJ3RpcnBjX3JwY2Jfcm10Y2FsbCcg
-XSAmJiBcCj4gKwkJcnBjYmluZCAtdiAyPi9kZXYvbnVsbCAmJiBycGNiaW5kIC12IDI+JjEgfCBn
-cmVwIC1xICdyZW1vdGUgY2FsbHM6IG5vJzsgdGhlbgo+ICsJCXRzdF9icmsgVENPTkYgInNraXAg
-ZHVlIHJwY2JpbmQgY29tcGlsZWQgd2l0aG91dCByZW1vdGUgY2FsbHMiCj4gKwlmaQo+ICsKClJl
-dmlld2VkLWJ5OiBSaWNhcmRvIEIuIE1hcmxpw6hyZSA8cmJtQHN1c2UuY29tPgoKVGhhbmtzIQoK
-PiAgCVsgLW4gIiRDTElFTlQiIF0gfHwgdHN0X2JyayBUQlJPSyAiY2xpZW50IHByb2dyYW0gbm90
-IHNldCIKPiAgCXRzdF9jaGVja19jbWRzICRDTElFTlQgJFNFUlZFUiB8fCB0c3RfYnJrIFRDT05G
-ICJMVFAgY29tcGlsZWQgd2l0aG91dCBUSS1SUEMgc3VwcG9ydD8iCj4gIAoKCi0tIApNYWlsaW5n
-IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+--lyruc4oydlekwbpa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hello folks,
+
+I think I see a problem in how generate_syscalls.sh generates the
+syscalls.h header on 64-bit powerpc systems.  I've filed [1] to
+cover this.  But folks seem to prefer the mailing list patch
+submission, so let me try :)  Please review the attached patch.
+
+Thanks,
+Martin
+
+
+---------------
+[1] https://github.com/linux-test-project/ltp/issues/1251
+
+
+--lyruc4oydlekwbpa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="0001-Make-sure-32-bit-powerpc-syscall-defs-don-t-leak-to-.patch"
+
+From a90b2aac69028bd6b9e0fcc1e36760639b937b99 Mon Sep 17 00:00:00 2001
+From: Martin Cermak <mcermak@redhat.com>
+Date: Mon, 4 Aug 2025 21:46:52 +0200
+Subject: [PATCH] Make sure 32-bit powerpc syscall defs don't leak to 64-bit
+ powerpc systems
+
+generate_syscalls.sh generates the syscalls.h header at the configure
+time.  At the moment, that header has a set of 32-bit syscalls defined
+with the __powerpc__ gate, plus another set of 64-bit syscalls defined
+with the __powerpc64__ gate.  For 32-bit powerpc systems that's fine.
+But for a 64-bit powerpc system this means that both sets of syscalls
+become defined, which isn't right.
+
+Thing is that on a 64-bit powerpc system, both __powerpc__ and
+__powerpc64__ are defined compiler macros, while on a 32-bit powerpc
+system, only the former is defined while the latter is not.
+
+That said, the correct gate for a 32-bit only powerpc code is:
+  #if defined(__powerpc__) && !defined(__powerpc64__)
+
+Without this patch, e.g. __NR_clock_gettime64 def leaks to
+64-bit powerpc systems, which is wrong.  This patch fixes it.
+---
+ include/lapi/syscalls/generate_syscalls.sh | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/lapi/syscalls/generate_syscalls.sh b/include/lapi/syscalls/generate_syscalls.sh
+index b17c72ddf..19f280dfb 100755
+--- a/include/lapi/syscalls/generate_syscalls.sh
++++ b/include/lapi/syscalls/generate_syscalls.sh
+@@ -78,6 +78,7 @@ while IFS= read -r arch; do
+ 		parisc) echo "#ifdef __hppa__" ;;
+ 		loongarch64) echo "#ifdef __loongarch__" ;;
+ 		arm64) echo "#ifdef __aarch64__" ;;
++		powerpc) echo "#if defined(__powerpc__) && !defined(__powerpc64__)" ;;
+ 		*) echo "#ifdef __${arch}__" ;;
+ 		esac
+ 
+-- 
+2.48.1
+
+
+--lyruc4oydlekwbpa
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--lyruc4oydlekwbpa--
+
