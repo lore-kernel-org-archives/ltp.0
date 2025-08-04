@@ -4,88 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFBE3C87FCF
-	for <ltp@archiver.kernel.org>; Mon,  4 Aug 2025 18:17:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 008FEC87FCF
+	for <ltp@archiver.kernel.org>; Mon,  4 Aug 2025 18:18:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ECBBB3CCFEF
-	for <ltp@archiver.kernel.org>; Mon,  4 Aug 2025 20:17:49 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 92A6B3CCFD9
+	for <ltp@archiver.kernel.org>; Mon,  4 Aug 2025 20:18:12 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 05C483C8D08
- for <ltp@lists.linux.it>; Mon,  4 Aug 2025 20:17:14 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 1CDBF3CCFDA
+ for <ltp@lists.linux.it>; Mon,  4 Aug 2025 20:17:18 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3B9F1100023A
- for <ltp@lists.linux.it>; Mon,  4 Aug 2025 20:17:13 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7D757600049
+ for <ltp@lists.linux.it>; Mon,  4 Aug 2025 20:17:18 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6268C1F393;
- Mon,  4 Aug 2025 18:17:12 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B559E1F441;
+ Mon,  4 Aug 2025 18:17:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1754331433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=edpSunDmJFnyKY8vhDBQRD/XyftDkh14yDy5N39FJOA=;
- b=TTH+TEBq3UGOn2fifPs4MtR5Ii4G+WzXGMFVac+XpvXlQB/OzqtjMs3O0vJy2aPgYEN+3Y
- Q5RmRcEqsDCWUaL2wDh7vFqTXCEaEru0RIEFhh4czE2sSgj7t7M5s6crPzKDI9yH89DhAa
- u/hUdkpLyUCqGeAi9RW4S2mxJsDUOXU=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nTyj4ok+Fqqd0ELrJMpsI/LJlWwTUtZypHVBJK5lLx8=;
+ b=w8P8DoCX2/ZaqOZtl/jBOSf/cXNfX1da6kKi1zue8MO7UBr3NpCCjCpDjSrHPlsJjofKtc
+ nGfM7/6hetYfLI8clz1d5h2tVhkswPNoZyHjAyJKQXfhYiONoPug9d0K2fHOFJl1bJc8Wq
+ 2m8z/MV9+iGUho5yJWWB8Lz8bkSBi4A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1754331433;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=edpSunDmJFnyKY8vhDBQRD/XyftDkh14yDy5N39FJOA=;
- b=EiUDoZBZZeedKTAkwPO+Cwm7/caCTcNu7GP6ZGgoIFzWBrDg3Ysgeik5GzXlka81EIUHGt
- nVgQ8tPvZx084LCQ==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nTyj4ok+Fqqd0ELrJMpsI/LJlWwTUtZypHVBJK5lLx8=;
+ b=LEY9yT/Q7R11/GpFtg88rWRm58aVr4CE0tmVsOKuLwi9n96yAbndbSbNX3sWPLqYRx+cnp
+ Ip+70QOb16KaUIAA==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1754331432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1754331433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=edpSunDmJFnyKY8vhDBQRD/XyftDkh14yDy5N39FJOA=;
- b=MGu7xnRNZYBHFGx0/1mpMrM4XjG53XnFSLaol7sxqdCj+IushN99hkB073Ihj6TJRPfwdc
- pcodVFxXsvycK874Q0Z2kOWZgmQWwvxB/PlScLZY2weCtDjiZ1xjqhUC8NcqTj1DLDs6WM
- a0Bmi6J/cfZJv7gQsfBJIJZy9q0xzyM=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nTyj4ok+Fqqd0ELrJMpsI/LJlWwTUtZypHVBJK5lLx8=;
+ b=w8P8DoCX2/ZaqOZtl/jBOSf/cXNfX1da6kKi1zue8MO7UBr3NpCCjCpDjSrHPlsJjofKtc
+ nGfM7/6hetYfLI8clz1d5h2tVhkswPNoZyHjAyJKQXfhYiONoPug9d0K2fHOFJl1bJc8Wq
+ 2m8z/MV9+iGUho5yJWWB8Lz8bkSBi4A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1754331432;
+ s=susede2_ed25519; t=1754331433;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=edpSunDmJFnyKY8vhDBQRD/XyftDkh14yDy5N39FJOA=;
- b=L+vKCYNazupEdzuYUXlJjEBwNSfGxUAFQwhS/xY33Haw2qV1iJVYqHBNUYqgdr0q7LQRrF
- clLqc+/mmpm8noAQ==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nTyj4ok+Fqqd0ELrJMpsI/LJlWwTUtZypHVBJK5lLx8=;
+ b=LEY9yT/Q7R11/GpFtg88rWRm58aVr4CE0tmVsOKuLwi9n96yAbndbSbNX3sWPLqYRx+cnp
+ Ip+70QOb16KaUIAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D711133D1;
- Mon,  4 Aug 2025 18:17:12 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8FF8C133D1;
+ Mon,  4 Aug 2025 18:17:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 9TdwDCj5kGgoKQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 04 Aug 2025 18:17:12 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MBGeICn5kGgoKQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 04 Aug 2025 18:17:13 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 04 Aug 2025 20:17:09 +0200
-Message-Id: <20250804-file_setattr_getattr-v2-0-651e50ec59e7@suse.com>
+Date: Mon, 04 Aug 2025 20:17:15 +0200
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIACX5kGgC/22NzQ6CMBCEX4Xs2ZpSKH8n38MQgmWBTZSabiUa0
- ne3Yrx5mnyTzDcbMDpChibZwOFKTHaJoA4JmLlfJhQ0RAYllZaVTMVIV+wYfe+966ZvijKvi2w
- ctLpIDXF6dzjSc9ee28gzsbfutb+s6af9CfP/wjUVUhR9npmsLpSpyhM/GI/G3qANIbwBuc9O/
- 7cAAAA=
-X-Change-ID: 20250801-file_setattr_getattr-74963fd52b05
+Message-Id: <20250804-file_setattr_getattr-v2-6-651e50ec59e7@suse.com>
+References: <20250804-file_setattr_getattr-v2-0-651e50ec59e7@suse.com>
+In-Reply-To: <20250804-file_setattr_getattr-v2-0-651e50ec59e7@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1754331432; l=2539;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1754331432; l=3686;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=VgE0NpawM6VIxXZ05nyoxhh4WK6jiU2jvTAgc6vtNMg=;
- b=jFjBC2kQg8i2iRby5Tn1TgvqkrUxR0nf82sSf0RUyAWM2V7VeCt/ViuPCYT9LpmDnL5xRjUHL
- gkdoVrCjENYBTpOHT0ejAKrp5roK2vQl2YOF5qyQGxu5wQTBZFxKp44
+ bh=u3ao1eikKUsufts+U2g6t27tkno62ZwdcIMy2JJ9oD0=;
+ b=gjMqrOleTM6U/PpEbcr5GK7U5tL8Vu/A5I9CI3lQNP3zDzKHToWg0SkA9bDX4Ugf69oaszsje
+ kxK9lttndEkAsON3Oq6VWvLmVZB+6UutRf0yoJ3nV693GWPCJ/T2bI/
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -98,11 +99,11 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, configure.ac:url,
- suse.com:email, suse.com:mid]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/6] file_setattr/file_getattr testing suite
+Subject: [LTP] [PATCH v2 6/6] Add file_attr03 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,61 +120,129 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This testing suite is validating file_getattr and file_setattr
-syscalls, introducing tests for error validation and basic
-functionalities. These features have been introduced in the kernel 6.17.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-https://lore.kernel.org/lkml/20250725-vfs-fileattr-fcfc534aac44@brauner/
+Verify that `file_setattr` is correctly setting filesystems additional
+attributes. We are running test on XFS only, since it's the only filesystem
+currently implementing the features we need.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v2:
-- remove unrelated files
-- fix fs.h ifndef
-- Link to v1: https://lore.kernel.org/r/20250804-file_setattr_getattr-v1-0-6a43c3962c87@suse.com
+ runtest/syscalls                                  |  1 +
+ testcases/kernel/syscalls/file_attr/.gitignore    |  1 +
+ testcases/kernel/syscalls/file_attr/file_attr03.c | 81 +++++++++++++++++++++++
+ 3 files changed, 83 insertions(+)
 
----
-Andrea Cervesato (6):
-      Update LTP to the latest syscalls
-      fs: add struct fsxattr fallback definitions
-      fs: add file_setattr/file_getattr fallback definitions
-      Add file_attr01 test
-      Add file_attr02 test
-      Add file_attr03 test
+diff --git a/runtest/syscalls b/runtest/syscalls
+index b69e474a6a596359bb1ace30312b55d6bf2b65cc..c33987328d3d6ec96660260aaee4f9ca8c4f0aee 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -248,6 +248,7 @@ fsetxattr02 fsetxattr02
+ 
+ file_attr01 file_attr01
+ file_attr02 file_attr02
++file_attr03 file_attr03
+ 
+ #posix_fadvise test cases
+ posix_fadvise01                      posix_fadvise01
+diff --git a/testcases/kernel/syscalls/file_attr/.gitignore b/testcases/kernel/syscalls/file_attr/.gitignore
+index afe9c2fc9a4218dc032f044c1d317355a784a525..b79a340b733f7407dc135c5c3b0a9cd0e003e6c9 100644
+--- a/testcases/kernel/syscalls/file_attr/.gitignore
++++ b/testcases/kernel/syscalls/file_attr/.gitignore
+@@ -1,2 +1,3 @@
+ file_attr01
+ file_attr02
++file_attr03
+diff --git a/testcases/kernel/syscalls/file_attr/file_attr03.c b/testcases/kernel/syscalls/file_attr/file_attr03.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..3ee97377db402ef09e6bcd04d482428f9f13deb1
+--- /dev/null
++++ b/testcases/kernel/syscalls/file_attr/file_attr03.c
+@@ -0,0 +1,81 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2025 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * Verify that `file_setattr` is correctly setting filesystems additional
++ * attributes. We are running test on XFS only, since it's the only filesystem
++ * currently implementing the features we need.
++ */
++
++#include "tst_test.h"
++#include "lapi/fs.h"
++#include <linux/fs.h>
++
++#define MNTPOINT "mntpoint"
++#define FILENAME "ltp_file"
++#define BLOCKS 1024
++#define PROJID 16
++
++static int fd = -1;
++static int dfd = -1;
++static int block_size;
++static struct fsxattr xattr;
++static struct file_attr *attr;
++
++static void run(void)
++{
++	dfd = SAFE_OPEN(MNTPOINT, O_DIRECTORY);
++	fd = SAFE_CREAT(MNTPOINT "/" FILENAME, 0777);
++
++	TST_EXP_PASS(file_setattr(dfd, FILENAME, attr, FILE_ATTR_SIZE_LATEST, 0));
++	SAFE_IOCTL(fd, FS_IOC_FSGETXATTR, &xattr);
++	SAFE_CLOSE(dfd);
++	SAFE_CLOSE(fd);
++
++	TST_EXP_EQ_LI(xattr.fsx_xflags & FS_XFLAG_EXTSIZE, FS_XFLAG_EXTSIZE);
++	TST_EXP_EQ_LI(xattr.fsx_xflags & FS_XFLAG_COWEXTSIZE, FS_XFLAG_COWEXTSIZE);
++	TST_EXP_EQ_LI(xattr.fsx_extsize, BLOCKS * block_size);
++	TST_EXP_EQ_LI(xattr.fsx_cowextsize, BLOCKS * block_size);
++	TST_EXP_EQ_LI(xattr.fsx_projid, PROJID);
++
++	SAFE_UNLINK(MNTPOINT "/" FILENAME);
++}
++
++static void setup(void)
++{
++	block_size = tst_dev_block_size(MNTPOINT);
++
++	attr->fa_xflags |= FS_XFLAG_EXTSIZE;
++	attr->fa_xflags |= FS_XFLAG_COWEXTSIZE;
++	attr->fa_extsize = BLOCKS * block_size;
++	attr->fa_cowextsize = BLOCKS * block_size;
++	attr->fa_projid = PROJID;
++}
++
++static void cleanup(void)
++{
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++
++	if (dfd != -1)
++		SAFE_CLOSE(dfd);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.mntpoint = MNTPOINT,
++	.needs_root = 1,
++	.mount_device = 1,
++	.filesystems = (struct tst_fs []) {
++		{.type = "xfs"},
++		{}
++	},
++	.bufs = (struct tst_buffers []) {
++		{&attr, .size = sizeof(struct file_attr)},
++		{}
++	}
++};
 
- configure.ac                                      |   3 +
- include/lapi/fs.h                                 |  52 +++++++
- include/lapi/syscalls/arc.in                      |   7 +
- include/lapi/syscalls/arm.in                      |   7 +
- include/lapi/syscalls/arm64.in                    |   7 +
- include/lapi/syscalls/i386.in                     |   7 +
- include/lapi/syscalls/loongarch64.in              |   7 +
- include/lapi/syscalls/mips64.in                   |   7 +
- include/lapi/syscalls/mips64n32.in                |   7 +
- include/lapi/syscalls/mipso32.in                  |   7 +
- include/lapi/syscalls/parisc.in                   |   7 +
- include/lapi/syscalls/powerpc.in                  |   7 +
- include/lapi/syscalls/powerpc64.in                |   7 +
- include/lapi/syscalls/s390.in                     |   7 +
- include/lapi/syscalls/s390x.in                    |   7 +
- include/lapi/syscalls/sh.in                       |   7 +
- include/lapi/syscalls/sparc.in                    |   7 +
- include/lapi/syscalls/sparc64.in                  |   7 +
- include/lapi/syscalls/x86_64.in                   |   7 +
- runtest/syscalls                                  |   4 +
- testcases/kernel/syscalls/file_attr/.gitignore    |   3 +
- testcases/kernel/syscalls/file_attr/Makefile      |   8 +
- testcases/kernel/syscalls/file_attr/file_attr01.c | 171 ++++++++++++++++++++++
- testcases/kernel/syscalls/file_attr/file_attr02.c |  94 ++++++++++++
- testcases/kernel/syscalls/file_attr/file_attr03.c |  81 ++++++++++
- 25 files changed, 535 insertions(+)
----
-base-commit: 6505f9e29960fa842067ee622cdc6632f9142fb7
-change-id: 20250801-file_setattr_getattr-74963fd52b05
-
-Best regards,
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.50.1
 
 
 -- 
