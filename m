@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31AF6C87FD1
-	for <ltp@archiver.kernel.org>; Tue,  5 Aug 2025 13:04:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A2D9C87FD1
+	for <ltp@archiver.kernel.org>; Tue,  5 Aug 2025 13:05:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A4BB33C4CD2
-	for <ltp@archiver.kernel.org>; Tue,  5 Aug 2025 15:04:57 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id ED88C3C324A
+	for <ltp@archiver.kernel.org>; Tue,  5 Aug 2025 15:05:14 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6B07E3C2CC1
- for <ltp@lists.linux.it>; Tue,  5 Aug 2025 15:03:40 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 84AC33C2EFA
+ for <ltp@lists.linux.it>; Tue,  5 Aug 2025 15:03:44 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B2A6B200230
- for <ltp@lists.linux.it>; Tue,  5 Aug 2025 15:03:39 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0C1441400BED
+ for <ltp@lists.linux.it>; Tue,  5 Aug 2025 15:03:43 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 18A26210F6;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 95E1C211A7;
  Tue,  5 Aug 2025 13:03:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1754399002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EYWSqQAR/Ik4OatlHIF1saEjUiutO75nVQNSdEGtEqg=;
- b=FfWCGjwZ34E3hu3Du0/ZWlxHd98px1oUEwNyW/5fQnbRFWE1tNid5cVhElVxmaZUKFe/RG
- 4k5XpejlO4IsSy0PnqChVYya5BlNA1K5tGdvUNJbXjnLDNYLgIB8LcvaPvKihp+NOTnhhW
- gl303kPbNnMeirFeuUsRwGgIwoqy8ag=
+ bh=H2yX/Q7alf1TwWgLaBWC4vheJ4eaekpAhYCc079mBE8=;
+ b=lrBeJY7GYqtFT+WlsxeLeWOK6bQ3C+MmifV5EOhsd42bcMW1D1GOLMytUMu4lj72ecxpFT
+ OhwVjpD/PNNrfPFWc5qj6Ym93UVqmjkzW0kO+hdTYNqJ3QnWkFFwrAdzRf7fMZ9oppTuxm
+ 3a6kmuhIyQhmEGhae54UMpzO+gP0g00=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1754399002;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EYWSqQAR/Ik4OatlHIF1saEjUiutO75nVQNSdEGtEqg=;
- b=K8X2vbhDbHnS/nTQevqewsgEzS3HUcutjaGwtdJ6J4nvs+PJSRv6NXppEao5zX9LOup/hv
- 4oGFG28n2Xl3cmDw==
+ bh=H2yX/Q7alf1TwWgLaBWC4vheJ4eaekpAhYCc079mBE8=;
+ b=kq+ENz09Qs3GFqC7EmXor44vQ1hdWt0libcUzMl8vuVed+oMNW72sRljlLIgw+n+bJwUA0
+ FUdMWkQMOwgWlQCg==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
@@ -53,46 +53,46 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EYWSqQAR/Ik4OatlHIF1saEjUiutO75nVQNSdEGtEqg=;
- b=FfWCGjwZ34E3hu3Du0/ZWlxHd98px1oUEwNyW/5fQnbRFWE1tNid5cVhElVxmaZUKFe/RG
- 4k5XpejlO4IsSy0PnqChVYya5BlNA1K5tGdvUNJbXjnLDNYLgIB8LcvaPvKihp+NOTnhhW
- gl303kPbNnMeirFeuUsRwGgIwoqy8ag=
+ bh=H2yX/Q7alf1TwWgLaBWC4vheJ4eaekpAhYCc079mBE8=;
+ b=lrBeJY7GYqtFT+WlsxeLeWOK6bQ3C+MmifV5EOhsd42bcMW1D1GOLMytUMu4lj72ecxpFT
+ OhwVjpD/PNNrfPFWc5qj6Ym93UVqmjkzW0kO+hdTYNqJ3QnWkFFwrAdzRf7fMZ9oppTuxm
+ 3a6kmuhIyQhmEGhae54UMpzO+gP0g00=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1754399002;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EYWSqQAR/Ik4OatlHIF1saEjUiutO75nVQNSdEGtEqg=;
- b=K8X2vbhDbHnS/nTQevqewsgEzS3HUcutjaGwtdJ6J4nvs+PJSRv6NXppEao5zX9LOup/hv
- 4oGFG28n2Xl3cmDw==
+ bh=H2yX/Q7alf1TwWgLaBWC4vheJ4eaekpAhYCc079mBE8=;
+ b=kq+ENz09Qs3GFqC7EmXor44vQ1hdWt0libcUzMl8vuVed+oMNW72sRljlLIgw+n+bJwUA0
+ FUdMWkQMOwgWlQCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4B3013A50;
- Tue,  5 Aug 2025 13:03:21 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 67C1013A50;
+ Tue,  5 Aug 2025 13:03:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UGW6MBkBkmhpFAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 05 Aug 2025 13:03:21 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +OEZFhoBkmhpFAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 05 Aug 2025 13:03:22 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 05 Aug 2025 15:03:16 +0200
+Date: Tue, 05 Aug 2025 15:03:18 +0200
 MIME-Version: 1.0
-Message-Id: <20250805-file_setattr_getattr-v4-3-08e23354abc8@suse.com>
+Message-Id: <20250805-file_setattr_getattr-v4-5-08e23354abc8@suse.com>
 References: <20250805-file_setattr_getattr-v4-0-08e23354abc8@suse.com>
 In-Reply-To: <20250805-file_setattr_getattr-v4-0-08e23354abc8@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1754399000; l=2860;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1754399000; l=3849;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=ZgInZTLOEsronct/5hT8hF/IfiaOubNMK4tb+0JSXBY=;
- b=FVcYV3OAYeAQCloNkXxhpch4vPlWohTZSyFfkpG2zSt45etdKrEQmITHDS1wNQae9rPfeM7wW
- UP4MqK/OdqaA2DGj2dNisGNwipe77cAxfCjCaPPUWbDmB1XKvhP0Db8
+ bh=RsmgnXCm5F19jZqMjvdaY4rpmPbQ+4NxE/20xEPJHIg=;
+ b=2ECG7dDR/PZWDFSI8k0bqQIHcZKZjW6huAX6PYeKHt+rftvxw7swgloRIQxIV2o6fOYTvfHdg
+ gKsEp1mcP0vAlGQ1V1DziNqKUKJn6O4WcZvV0J4bcsCZPfKJR90x8IC
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
  RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
  RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
@@ -100,12 +100,11 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid, configure.ac:url,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
+ suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 3/7] fs: add file_setattr/file_getattr fallback
- definitions
+Subject: [LTP] [PATCH v4 5/7] Add file_attr02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,95 +123,134 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
+Verify that `file_getattr` is correctly reading filesystems additional
+attributes. We are running test on XFS only, since it's the only filesystem
+currently implementing the features we need.
+
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- configure.ac      |  1 +
- include/lapi/fs.h | 44 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 45 insertions(+)
+ runtest/syscalls                                  |  1 +
+ testcases/kernel/syscalls/file_attr/.gitignore    |  1 +
+ testcases/kernel/syscalls/file_attr/file_attr02.c | 92 +++++++++++++++++++++++
+ 3 files changed, 94 insertions(+)
 
-diff --git a/configure.ac b/configure.ac
-index 8b506e43f8c8549f6dc9cbc4154db2be95851e59..9657adfcf5fc26d704f36e159f7e3abb7de86900 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -264,6 +264,7 @@ AC_CHECK_TYPES([struct mnt_id_req],,,[#include <sys/mount.h>])
- AC_CHECK_TYPES([struct statmount],,,[#include <sys/mount.h>])
+diff --git a/runtest/syscalls b/runtest/syscalls
+index fed17a38baf0586ec886876b58c04158fa11e8e0..b69e474a6a596359bb1ace30312b55d6bf2b65cc 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -247,6 +247,7 @@ fsetxattr01 fsetxattr01
+ fsetxattr02 fsetxattr02
  
- AC_CHECK_TYPES([struct pidfd_info],,,[#include <sys/pidfd.h>])
-+AC_CHECK_TYPES([struct file_attr],,,[#include <linux/fs.h>])
+ file_attr01 file_attr01
++file_attr02 file_attr02
  
- AC_CHECK_TYPES([struct fsxattr],,,[#include <linux/fs.h>])
- 
-diff --git a/include/lapi/fs.h b/include/lapi/fs.h
-index 44f299149abd9415c243b2052b93f1524442beb7..66eb0abfb675b6209ad4f9d47c1217fc9b1742e2 100644
---- a/include/lapi/fs.h
-+++ b/include/lapi/fs.h
-@@ -14,10 +14,13 @@
- # include <linux/fs.h>
- #endif
- 
-+#include <stddef.h>
- #include <stdint.h>
- #include <sys/user.h>
- #include <limits.h>
+ #posix_fadvise test cases
+ posix_fadvise01                      posix_fadvise01
+diff --git a/testcases/kernel/syscalls/file_attr/.gitignore b/testcases/kernel/syscalls/file_attr/.gitignore
+index de06f204d34be482a6401f2a5e7931caa5e3ab12..afe9c2fc9a4218dc032f044c1d317355a784a525 100644
+--- a/testcases/kernel/syscalls/file_attr/.gitignore
++++ b/testcases/kernel/syscalls/file_attr/.gitignore
+@@ -1 +1,2 @@
+ file_attr01
++file_attr02
+diff --git a/testcases/kernel/syscalls/file_attr/file_attr02.c b/testcases/kernel/syscalls/file_attr/file_attr02.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..4e0d87f0f3edc946bf9cd14e76cce9518bf928d0
+--- /dev/null
++++ b/testcases/kernel/syscalls/file_attr/file_attr02.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2025 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * Verify that `file_getattr` is correctly reading filesystems additional
++ * attributes. We are running test on XFS only, since it's the only filesystem
++ * currently implementing the features we need.
++ */
++
 +#include "tst_test.h"
- #include "lapi/abisize.h"
-+#include "lapi/syscalls.h"
- 
- #ifndef HAVE_STRUCT_FSXATTR
- struct fsxattr {
-@@ -66,6 +69,18 @@ struct fsxattr {
- # define FS_VERITY_FL	   0x00100000 /* Verity protected inode */
- #endif
- 
-+#ifndef FS_XFLAG_APPEND
-+# define FS_XFLAG_APPEND	0x00000010	/* all writes append */
-+#endif
++#include "lapi/fs.h"
 +
-+#ifndef FS_XFLAG_EXTSIZE
-+# define FS_XFLAG_EXTSIZE	0x00000800	/* extent size allocator hint */
-+#endif
++#define MNTPOINT "mntpoint"
++#define FILENAME "ltp_file"
++#define BLOCKS 1024
++#define PROJID 16
 +
-+#ifndef FS_XFLAG_COWEXTSIZE
-+# define FS_XFLAG_COWEXTSIZE	0x00010000	/* CoW extent size allocator hint */
-+#endif
++static int fd = -1;
++static int dfd = -1;
++static struct fsxattr xattr;
++static struct file_attr *attr;
 +
- /*
-  * Helper function to get MAX_LFS_FILESIZE.
-  * Missing PAGE_SHIFT on some libc prevents defining MAX_LFS_FILESIZE.
-@@ -88,4 +103,33 @@ static inline long long tst_max_lfs_filesize(void)
- #endif
- }
- 
-+#ifndef HAVE_STRUCT_FILE_ATTR
-+struct file_attr {
-+	uint64_t fa_xflags;	/* xflags field value (get/set) */
-+	uint32_t fa_extsize;	/* extsize field value (get/set)*/
-+	uint32_t fa_nextents;	/* nextents field value (get)   */
-+	uint32_t fa_projid;	/* project identifier (get/set) */
-+	uint32_t fa_cowextsize;	/* CoW extsize field value (get/set) */
++static void run(void)
++{
++	memset(attr, 0, sizeof(*attr));
++
++	TST_EXP_PASS(file_getattr(
++		dfd, FILENAME,
++		attr, FILE_ATTR_SIZE_LATEST,
++		0));
++
++	TST_EXP_EQ_LI(attr->fa_xflags, xattr.fsx_xflags);
++	TST_EXP_EQ_LI(attr->fa_extsize, xattr.fsx_extsize);
++	TST_EXP_EQ_LI(attr->fa_cowextsize, xattr.fsx_cowextsize);
++	TST_EXP_EQ_LI(attr->fa_nextents, xattr.fsx_nextents);
++	TST_EXP_EQ_LI(attr->fa_projid, PROJID);
++	TST_EXP_EQ_LI(attr->fa_projid, xattr.fsx_projid);
++}
++
++static void setup(void)
++{
++	int block_size;
++
++	block_size = tst_dev_block_size(MNTPOINT);
++
++	dfd = SAFE_OPEN(MNTPOINT, O_RDONLY);
++	fd = SAFE_CREAT(MNTPOINT "/" FILENAME, 0777);
++
++	SAFE_IOCTL(fd, FS_IOC_FSGETXATTR, &xattr);
++
++	xattr.fsx_xflags |= FS_XFLAG_EXTSIZE;
++	xattr.fsx_xflags |= FS_XFLAG_COWEXTSIZE;
++	xattr.fsx_extsize = BLOCKS * block_size;
++	xattr.fsx_cowextsize = BLOCKS * block_size;
++	xattr.fsx_projid = PROJID;
++
++	SAFE_IOCTL(fd, FS_IOC_FSSETXATTR, &xattr);
++
++	/* this will force at least one extent to be allocated */
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, "a", 1);
++
++	SAFE_IOCTL(fd, FS_IOC_FSGETXATTR, &xattr);
++	SAFE_CLOSE(fd);
++}
++
++static void cleanup(void)
++{
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++
++	if (dfd != -1)
++		SAFE_CLOSE(dfd);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.mntpoint = MNTPOINT,
++	.needs_root = 1,
++	.mount_device = 1,
++	.filesystems = (struct tst_fs []) {
++		{.type = "xfs"},
++		{}
++	},
++	.bufs = (struct tst_buffers []) {
++		{&attr, .size = sizeof(struct file_attr)},
++		{}
++	}
 +};
-+#endif
-+
-+#define FILE_ATTR_SIZE_VER0 24
-+#define FILE_ATTR_SIZE_LATEST FILE_ATTR_SIZE_VER0
-+
-+static inline int file_getattr(int dfd, const char *filename,
-+			    struct file_attr *ufattr, size_t usize,
-+			    unsigned int at_flags)
-+{
-+	return tst_syscall(__NR_file_getattr, dfd, filename, ufattr, usize,
-+		    at_flags);
-+}
-+
-+static inline int file_setattr(int dfd, const char *filename,
-+			    struct file_attr *ufattr, size_t usize,
-+			    unsigned int at_flags)
-+{
-+	return tst_syscall(__NR_file_setattr, dfd, filename, ufattr, usize,
-+		    at_flags);
-+}
-+
- #endif /* LAPI_FS_H__ */
 
 -- 
 2.50.1
