@@ -4,72 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B821FC87FD1
-	for <ltp@archiver.kernel.org>; Tue,  5 Aug 2025 09:26:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1B5FC87FCB
+	for <ltp@archiver.kernel.org>; Tue,  5 Aug 2025 09:40:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1754385999; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=a+Iz6KWE7HUzXHtVifpDdjb4rDjNJiox0SJpyylB8gw=;
- b=LKtRzPczZ1Bx4UNvTtedDHeps69csFgSN5XhWOZ6PVJPYyfl90aDMhw1zd7bvuEU8sucB
- 7gC1AUwenY7NTwd+0JlOVREXVgza3HHLiHu9142sFoUIkhPGz+vS6n9TMEuXdPW2NJpGCs+
- /nM803cf/seSAcKgaAp12THQAtzad+g=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1754386812; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=avepEhDLrmOgoUZzJb0m5ySb8BywYgOkKGZM6oeWeB4=;
+ b=gV+g4Q0ZsWQSwKfqBFZSSkxsizhTDbYnu4yZoplV6oheZpZWzWrxvAaLqMSdclemG+9ia
+ kGYUe3QETGoepfZxEpsA7zfwZ39qQiLxO38OYYBJh2Vi4JpVPThFDlac8zbnwdojvmRCGCf
+ qGshwXOYmioUO7rc7+CWB2iVLQ+D4Eo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E4E843C7BB9
-	for <ltp@archiver.kernel.org>; Tue,  5 Aug 2025 11:26:39 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 2AB8A3C7F6B
+	for <ltp@archiver.kernel.org>; Tue,  5 Aug 2025 11:40:12 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5B1C33C736A
- for <ltp@lists.linux.it>; Tue,  5 Aug 2025 11:26:20 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8735D3C1C2D
+ for <ltp@lists.linux.it>; Tue,  5 Aug 2025 11:39:49 +0200 (CEST)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
+ [IPv6:2a00:1450:4864:20::630])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 94E781A00939
- for <ltp@lists.linux.it>; Tue,  5 Aug 2025 11:26:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1754385978;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=biXOO8Qew6azqDkaqGBjAcgeBoNg3mIN+z9BQ7XWwZg=;
- b=e2YGjviE9hD/luefUy+1/0ITqPmASQov/Oofqs59cNut9+zyFXn2iQmJ+4JAEYKVaSCFYS
- V5VH7VTlVL181blkPS/Qetz7LzyR0BsreYwVi2NUKGm01ri0LkUkXONn0E+DvEqad8WJL6
- usrsdCOfRGnB5oMT+z4hjtqtv74fSIY=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-688-YfQGIEhrMlegw-a8CRO7pQ-1; Tue,
- 05 Aug 2025 05:26:16 -0400
-X-MC-Unique: YfQGIEhrMlegw-a8CRO7pQ-1
-X-Mimecast-MFC-AGG-ID: YfQGIEhrMlegw-a8CRO7pQ_1754385975
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id A4ECA1800115
- for <ltp@lists.linux.it>; Tue,  5 Aug 2025 09:26:15 +0000 (UTC)
-Received: from t14ultra.redhat.com (unknown [10.44.32.5])
- by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id CB5761800B75
- for <ltp@lists.linux.it>; Tue,  5 Aug 2025 09:26:14 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue,  5 Aug 2025 11:27:23 +0200
-Message-ID: <39ee7abdee12e22074b40d46775d69d37725b932.1754386027.git.jstancek@redhat.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 98C631A0091C
+ for <ltp@lists.linux.it>; Tue,  5 Aug 2025 11:39:48 +0200 (CEST)
+Received: by mail-ej1-x630.google.com with SMTP id
+ a640c23a62f3a-af9180a11bcso1125148266b.0
+ for <ltp@lists.linux.it>; Tue, 05 Aug 2025 02:39:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1754386788; x=1754991588; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=csZVEEPFOb8ekjyBL8PIEVHhLpz6ZHMewKiIDjRM4vY=;
+ b=dfqR6D+01w8qVSZ1/W24oxlVOeDLv/JWNXHKmt/W9d+qvJfZ41vbDVONQUMtnM181A
+ 8zrzUtoTi3jlNl43gg0ss0EN71nkyPMZ6jd5Mxg8SH5YT0EBGvY26OLNeEdv/dUp/DGR
+ VBjL2sq7eKJJwW7/5k8Zpnkeu15XA9UTVcyNChYUiw9J0eMTilD9ovMnBudz1nvnX3uF
+ YXfjxRGcBy0zyCqMz21uOtls+DATxLk6HdqTpCASGmkkLq//xXXR45mG0cbsQG3KqU4a
+ iBezBdtLJXkce69B884qpx1NNk4t0Cy+Lp1onREGKwtAV7hP+x+iIfF/u+XDZdogLsZl
+ 1ygg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1754386788; x=1754991588;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=csZVEEPFOb8ekjyBL8PIEVHhLpz6ZHMewKiIDjRM4vY=;
+ b=phcXow1Ukb8sO9gm/ZLxth9f5G/KXjTP9JE119wm8RGRzXgXaUkWLFlNQsQOBqhndl
+ /imSP8feHDFAFx9buRnaxCxHPZAUVXMl7iXxXhyMQEKkl7QW4ARdZjUUxfR6ty8wd6sv
+ to7cIW1zRx2OKTEzEg2WzeuQyNV5XSeVF7hcjoofSAzCxHzzahX6NO77/LGwj0X00pKx
+ sYPLnzGc5Tj33YKX/8REr8C69Aa9WCuQlfp6VPSy4fDgFM6FM3OqdDh8XEKmGHpvt7Cv
+ tNs1gtmBJgjpPl0UHL3c/q574OrN9M17tw6HS4ACOEx235M8uXvfkTExh9p7FUKTDht9
+ 3Q9g==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCU/bq4E8797zkd4pX++vRQPiEpGhGxQlfQirbjfYzvnzdvhRsDudBAHjqUbPgSdVRkZR5w=@lists.linux.it
+X-Gm-Message-State: AOJu0YxHnUHW+8+r7r3DIvDXt/Yz353W3Mf6HYg8ei/JO/uLsk1qpx/j
+ Rps+CsWhlC8KowwoNcstcy6Ss1NWShuNRvQ3c4QmXXsmMoyqCnyioxSatxAtZxg8bLZ/2qJOES/
+ EzfVU
+X-Gm-Gg: ASbGncuD4XnV0vv+O123Fvbbbx0a3Qo9YoapQCY33LrX6gmPgcKJ6w1g2lxuPdt3QjX
+ zsScj8wJie+6CXnvQtgJQGl3sYS9V7LCHfhbYen0RUVMZfXVOWxkIDifMBvtR+5BgpPPURtTYSM
+ Yej7JH+k1Ms4jLh9cFVfLPCOJvwA6Yq70+mG+QfHaFoSq2Lv+IU+Z7NvYHCV+sEYhwoX/OZBwVP
+ cKVhBZJmfBdBJzodmgg8Ys9gLtM8g+LYPlLmnp1bWJc5Uigjn+s/Mt53YdG83R6YDhpuSzBoggl
+ z5Y5j8igct1yrIuxQjiORCmlZbFUPHg5jULo0qhHazSwrLuV2A0Yf1KkoxRuvVCAZaUi1trZZIa
+ x1ptyaF0dQQhsoouTAoXRHyUh2qAvUBTXHg==
+X-Google-Smtp-Source: AGHT+IEkpJLUpJk+bBDZIod41BnUOcQ9oC0TDOAsoZdtbVGfWLqSv+2lnWqfd7izxglrN9Ydid/6dQ==
+X-Received: by 2002:a17:906:478c:b0:af9:7025:7d5a with SMTP id
+ a640c23a62f3a-af97d325d91mr322318966b.18.1754386787759; 
+ Tue, 05 Aug 2025 02:39:47 -0700 (PDT)
+Received: from [192.168.1.91] ([151.71.162.118])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-af91a0a3149sm872644266b.38.2025.08.05.02.39.46
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 05 Aug 2025 02:39:47 -0700 (PDT)
+Message-ID: <982022cf-4d39-4b7c-8ce2-1616497a57eb@suse.com>
+Date: Tue, 5 Aug 2025 11:39:46 +0200
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: _hgB1KKTwxqtwvXGvT5TVXmTusu_E0ovRozjWat9EW4_1754385975
-X-Mimecast-Originator: redhat.com
+User-Agent: Mozilla Thunderbird
+To: Jan Stancek <jstancek@redhat.com>, ltp@lists.linux.it
+References: <39ee7abdee12e22074b40d46775d69d37725b932.1754386027.git.jstancek@redhat.com>
+Content-Language: en-US
+In-Reply-To: <39ee7abdee12e22074b40d46775d69d37725b932.1754386027.git.jstancek@redhat.com>
 X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/epoll_ctl04: add ELOOP to expected errnos
+Subject: Re: [LTP] [PATCH] syscalls/epoll_ctl04: add ELOOP to expected errnos
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,49 +102,16 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Kernel commit f2e467a48287 ("eventpoll: Fix semi-unbounded recursion")
-added an extra checks for determining the maximum depth of an upwards walk,
-which startign with 6.17-rc kernels now hits ELOOP before EINVAL.
+Thanks, it looks good.
 
-Add ELOOP to list of expected errnos.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c
-index 955959b6b266..feb49623b15e 100644
---- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c
-+++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c
-@@ -51,13 +51,16 @@ static void cleanup(void)
- 
- static void verify_epoll_ctl(void)
- {
-+	const int exp_errnos[] = {EINVAL, ELOOP};
-+
- 	new_epfd = epoll_create(1);
- 	if (new_epfd == -1)
- 		tst_brk(TBROK | TERRNO, "fail to create epoll instance");
- 
- 	events.data.fd = epfd;
--	TST_EXP_FAIL(epoll_ctl(new_epfd, EPOLL_CTL_ADD, epfd, &events), EINVAL,
--		     "epoll_ctl(..., EPOLL_CTL_ADD, ...) with number of nesting is 5");
-+	TST_EXP_FAIL2_ARR(epoll_ctl(new_epfd, EPOLL_CTL_ADD, epfd, &events),
-+		exp_errnos, ARRAY_SIZE(exp_errnos),
-+		"epoll_ctl(..., EPOLL_CTL_ADD, ...) with number of nesting is 5");
- 	SAFE_CLOSE(new_epfd);
- }
- 
--- 
-2.47.1
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
