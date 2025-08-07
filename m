@@ -4,106 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3AE4C87FD2
-	for <ltp@archiver.kernel.org>; Thu,  7 Aug 2025 06:40:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34DA4C87FCF
+	for <ltp@archiver.kernel.org>; Thu,  7 Aug 2025 07:02:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6DD223C900A
-	for <ltp@archiver.kernel.org>; Thu,  7 Aug 2025 08:40:10 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 6295E3C8FDF
+	for <ltp@archiver.kernel.org>; Thu,  7 Aug 2025 09:02:02 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 66BC13C8FFC
- for <ltp@lists.linux.it>; Thu,  7 Aug 2025 08:39:34 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id B3BA83C73A6
+ for <ltp@lists.linux.it>; Thu,  7 Aug 2025 09:01:44 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BAE7E10007EF
- for <ltp@lists.linux.it>; Thu,  7 Aug 2025 08:39:33 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B508E200970
+ for <ltp@lists.linux.it>; Thu,  7 Aug 2025 09:01:43 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E48D01F7F7;
- Thu,  7 Aug 2025 06:39:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1754548773;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CE6731F7F7;
+ Thu,  7 Aug 2025 07:01:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1754550102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=o0tjV72QnlYyWcqQQ7nsmggYhqCavqY1y7WxHZIYx6Y=;
- b=pT92xkGpHdHZJLlZ+tXrGQ9CGsZUZlu3GinXRKU9YT2sx0aNTcPnK+gzZYmY8S3gOUgW1E
- 9LQgRlBNXB9EmvQIXNj+YtRg1zbo9Va9JnGkCD8maARHRcH4jAEv8BnAeMJ1HRyA5HWVgu
- ui15GeJ4DXTZp0cpnafXkzqSpGw45Is=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1754548773;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=8HlDo2pV0SUqHwkNWb5orkk3a7EdzVlIlk/E4gVWb+s=;
+ b=RlTlP3DtodzjwzaGLJcJMVjU1h1Z+2sJoD/klQUtpDyamNajjNHhz4bpijoWlqi1cJGw0N
+ jsVnhO95j31uQRZKH7BdDYQHD0Mp3XDtWX2VeVrljwP9pdU7IZNEewrMxGuo3ZnVjVIVRt
+ ocVT7VFowXPMXBpeCXpV/g5S5pi09Jk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1754550102;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=o0tjV72QnlYyWcqQQ7nsmggYhqCavqY1y7WxHZIYx6Y=;
- b=Mja7L85uWsu61x75U98drHJ9SiflTPRfvAIAPABr3RzCGYY2VRstn+eHLb9Pp6VTEJl8gu
- mocowvr/hQXBb2Dg==
+ bh=8HlDo2pV0SUqHwkNWb5orkk3a7EdzVlIlk/E4gVWb+s=;
+ b=omfzJMx4WXiS7g71GplC9YxSlo3mQh1uaRctgkisUuSHjnYpEH/5jBb1c5N7w/11PFGMgX
+ 2ZurLxrrspIpWqCw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DurMLdd0;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=0by92y1+
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1754548772;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1754550102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=o0tjV72QnlYyWcqQQ7nsmggYhqCavqY1y7WxHZIYx6Y=;
- b=DurMLdd0RcD2TFb9SvHQGbM8HGu0gD0bSKx7tk6x1mNt6agS6cNX75OfqDf+Mu+yu6oS6E
- FDx/jp9/szJvh2Z5WzZ/NtDj8e3whkHY5m6UukcIB62/wvLIKCX8O4vEEYlYNhmacwk2Oy
- cZgv9XiFGrlKHWjob0zowHXRMWkOb1Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1754548772;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=8HlDo2pV0SUqHwkNWb5orkk3a7EdzVlIlk/E4gVWb+s=;
+ b=RlTlP3DtodzjwzaGLJcJMVjU1h1Z+2sJoD/klQUtpDyamNajjNHhz4bpijoWlqi1cJGw0N
+ jsVnhO95j31uQRZKH7BdDYQHD0Mp3XDtWX2VeVrljwP9pdU7IZNEewrMxGuo3ZnVjVIVRt
+ ocVT7VFowXPMXBpeCXpV/g5S5pi09Jk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1754550102;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=o0tjV72QnlYyWcqQQ7nsmggYhqCavqY1y7WxHZIYx6Y=;
- b=0by92y1+wArBEGzP+FcKJ3QyXKlSaaYjizym3viRWPzQLaBJkj9I+4FRXiX/PQwI9fmktJ
- DirrD+1D8OV9MvCA==
+ bh=8HlDo2pV0SUqHwkNWb5orkk3a7EdzVlIlk/E4gVWb+s=;
+ b=omfzJMx4WXiS7g71GplC9YxSlo3mQh1uaRctgkisUuSHjnYpEH/5jBb1c5N7w/11PFGMgX
+ 2ZurLxrrspIpWqCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ACAD6136DC;
- Thu,  7 Aug 2025 06:39:32 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9E44713969;
+ Thu,  7 Aug 2025 07:01:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id QoIGKSRKlGgnCAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 07 Aug 2025 06:39:32 +0000
-Date: Thu, 7 Aug 2025 08:39:16 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20250807063916.GA349310@pevik>
-References: <20250630122719.12948-1-chrubis@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2GJfJFZPlGhaDgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 07 Aug 2025 07:01:42 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 07 Aug 2025 09:01:39 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250630122719.12948-1-chrubis@suse.cz>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: E48D01F7F7
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+Message-Id: <20250807-file_setattr_getattr-v6-1-ebe32b282d49@suse.com>
+References: <20250807-file_setattr_getattr-v6-0-ebe32b282d49@suse.com>
+In-Reply-To: <20250807-file_setattr_getattr-v6-0-ebe32b282d49@suse.com>
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1754550102; l=9510;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=y+07UrQBSyfjRpuZg6B100wWyYbqhB5CVTXOTYIsbgg=;
+ b=VL3l7TGtIXAUG7kya0WCV4gv7NzLu0Kx1gD2R4OpJ/3IfJbAS9olTCtIcsnRUPSuUv8rnjuxY
+ Lngz0kLn4HsACPbTS3dL9vtiPoIqoI7/X50XV8mhA1y0yoJAk1Z/oKd
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] SAFE_MOUNT: Fix mountflags handling for FUSE
+Subject: [LTP] [PATCH v6 1/7] Update LTP to the latest syscalls
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,88 +114,304 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-> - abort tests on FUSE when particular mount flag is not implemented
-> - implement MS_RDONLY for FUSE
-> - enable statmount02 that failed previously because of missing MS_RDONLY
-I would personally split the change but understand why you want to keep it
-together (it's related) and I'm ok with it. Anyway, it's important that you
-remember to enable it.
+Add the following syscalls:
 
-> Reported-by: Signed-off-by: Jan Polensky <japo@linux.ibm.com>
-very nit: I haven't seen joining tags on single line. That will break stat
-scripts. And that might be the reason why Jan was noc Cc when sending with git
-send-email.
+- setxattrat
+- getxattrat
+- listxattrat
+- removexattrat
+- open_tree_attr
+- file_getattr
+- file_setattr
 
-Maybe change before merge:
-Reported-by: Jan Polensky <japo@linux.ibm.com>
-Signed-off-by: Jan Polensky <japo@linux.ibm.com>
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ include/lapi/syscalls/arc.in         | 7 +++++++
+ include/lapi/syscalls/arm.in         | 7 +++++++
+ include/lapi/syscalls/arm64.in       | 7 +++++++
+ include/lapi/syscalls/i386.in        | 7 +++++++
+ include/lapi/syscalls/loongarch64.in | 7 +++++++
+ include/lapi/syscalls/mips64.in      | 7 +++++++
+ include/lapi/syscalls/mips64n32.in   | 7 +++++++
+ include/lapi/syscalls/mipso32.in     | 7 +++++++
+ include/lapi/syscalls/parisc.in      | 7 +++++++
+ include/lapi/syscalls/powerpc.in     | 7 +++++++
+ include/lapi/syscalls/powerpc64.in   | 7 +++++++
+ include/lapi/syscalls/s390.in        | 7 +++++++
+ include/lapi/syscalls/s390x.in       | 7 +++++++
+ include/lapi/syscalls/sh.in          | 7 +++++++
+ include/lapi/syscalls/sparc.in       | 7 +++++++
+ include/lapi/syscalls/sparc64.in     | 7 +++++++
+ include/lapi/syscalls/x86_64.in      | 7 +++++++
+ 17 files changed, 119 insertions(+)
 
-or to:
-Reported-by: Jan Polensky <japo@linux.ibm.com>
-Co-developed-by: Jan Polensky <japo@linux.ibm.com>
+diff --git a/include/lapi/syscalls/arc.in b/include/lapi/syscalls/arc.in
+index f680d4119c10f73e2f1b8938c3be4a7254965ed0..0f0fbef6be74d06abbf4f1bbf77eeaf72a1e6b71 100644
+--- a/include/lapi/syscalls/arc.in
++++ b/include/lapi/syscalls/arc.in
+@@ -340,3 +340,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
+index 32e48b2151afbf55a19e493518395e4265c670a0..d0238dec5ecbf3849dff3b2c91ec88866dfb440c 100644
+--- a/include/lapi/syscalls/arm.in
++++ b/include/lapi/syscalls/arm.in
+@@ -413,3 +413,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/arm64.in b/include/lapi/syscalls/arm64.in
+index be7e9df6480c065ff63345d55082b1a6b2532760..c76930e20df02905c9c640a749b4ec2df421c665 100644
+--- a/include/lapi/syscalls/arm64.in
++++ b/include/lapi/syscalls/arm64.in
+@@ -316,3 +316,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
+index 13f72e7950ded9393e665cb1a44fe955343f820c..38ea71fb282d9dc69914b863cba352349fd1c9b9 100644
+--- a/include/lapi/syscalls/i386.in
++++ b/include/lapi/syscalls/i386.in
+@@ -447,3 +447,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/loongarch64.in b/include/lapi/syscalls/loongarch64.in
+index 2c1ecd7aeeb2fa4f38999bad144cfceee39a4a54..5407b86eaf738354f645f894bd95900ff614b3e1 100644
+--- a/include/lapi/syscalls/loongarch64.in
++++ b/include/lapi/syscalls/loongarch64.in
+@@ -312,3 +312,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/mips64.in b/include/lapi/syscalls/mips64.in
+index 8be734158fb7840b7757a012b6ed823f29eb7ab9..436d5c681c21f32623d779268b9c3daaaac5b5e0 100644
+--- a/include/lapi/syscalls/mips64.in
++++ b/include/lapi/syscalls/mips64.in
+@@ -362,3 +362,10 @@ lsm_get_self_attr 5459
+ lsm_set_self_attr 5460
+ lsm_list_modules 5461
+ mseal 5462
++setxattrat 5463
++getxattrat 5464
++listxattrat 5465
++removexattrat 5466
++open_tree_attr 5467
++file_getattr 5468
++file_setattr 5469
+diff --git a/include/lapi/syscalls/mips64n32.in b/include/lapi/syscalls/mips64n32.in
+index 153fe50bf9a7c62978e458e1cb7225aa63b9edda..860a19c8b62866aeaf5b03c5c45ef5d6d58cab0f 100644
+--- a/include/lapi/syscalls/mips64n32.in
++++ b/include/lapi/syscalls/mips64n32.in
+@@ -386,3 +386,10 @@ lsm_get_self_attr 6459
+ lsm_set_self_attr 6460
+ lsm_list_modules 6461
+ mseal 6462
++setxattrat 6463
++getxattrat 6464
++listxattrat 6465
++removexattrat 6466
++open_tree_attr 6467
++file_getattr 6468
++file_setattr 6469
+diff --git a/include/lapi/syscalls/mipso32.in b/include/lapi/syscalls/mipso32.in
+index 1ed74c1ecf281a3d208eded4a0dbd35fcc57e45f..5e53e46ce1e47c4618ceeeda03130cbdd621b180 100644
+--- a/include/lapi/syscalls/mipso32.in
++++ b/include/lapi/syscalls/mipso32.in
+@@ -426,3 +426,10 @@ lsm_get_self_attr 4459
+ lsm_set_self_attr 4460
+ lsm_list_modules 4461
+ mseal 4462
++setxattrat 4463
++getxattrat 4464
++listxattrat 4465
++removexattrat 4466
++open_tree_attr 4467
++file_getattr 4468
++file_setattr 4469
+diff --git a/include/lapi/syscalls/parisc.in b/include/lapi/syscalls/parisc.in
+index 662bfea4428cf3b090b03632f2087251aaf3b513..238756694d9a03bcb063c21d3644aaa2af47f3fc 100644
+--- a/include/lapi/syscalls/parisc.in
++++ b/include/lapi/syscalls/parisc.in
+@@ -395,3 +395,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
+index faaa75883a7d2a0b70ca0e8064b6c91dae21d20c..6911f9af96247739a1ba7020aa3df77ef70ef55a 100644
+--- a/include/lapi/syscalls/powerpc.in
++++ b/include/lapi/syscalls/powerpc.in
+@@ -437,3 +437,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
+index 23b65e7840869c0cc08559324271b3b0d865ac01..98190ba266a1c7a6c3dbca1346e9d5e55783e271 100644
+--- a/include/lapi/syscalls/powerpc64.in
++++ b/include/lapi/syscalls/powerpc64.in
+@@ -409,3 +409,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+index 69d7408b7bdf0d9019d3c319cd52ff48022aca39..a6cb85da805bec2540433783be9445645ab913ab 100644
+--- a/include/lapi/syscalls/s390.in
++++ b/include/lapi/syscalls/s390.in
+@@ -430,3 +430,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
+index fa98054c732787b62528c71f60b04de490b98958..31f3ec5532c8c3017188b60907f7666b41f44102 100644
+--- a/include/lapi/syscalls/s390x.in
++++ b/include/lapi/syscalls/s390x.in
+@@ -378,3 +378,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
+index 2e584253c61d51b140c3b2f586e3c49e5740e7af..ac281acf81ffe6770fa0d941d406714fbdce1bbd 100644
+--- a/include/lapi/syscalls/sh.in
++++ b/include/lapi/syscalls/sh.in
+@@ -424,3 +424,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+index fcdb9b812ee6844d4981550f3eeed7ff081852f8..ffc0d9f7abdaa8873ec73ed1a5e0ec98b5f8b1d7 100644
+--- a/include/lapi/syscalls/sparc.in
++++ b/include/lapi/syscalls/sparc.in
+@@ -428,3 +428,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
+index 4256aaf77674ed0c00bbd092d7c715038e52f1c3..992bd307deb07d50ff814c603406842b5aedb431 100644
+--- a/include/lapi/syscalls/sparc64.in
++++ b/include/lapi/syscalls/sparc64.in
+@@ -391,3 +391,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
+diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
+index e6c0a3b4047d60e0e372c023c8f6a9bab76697af..e9c0d0599e25e3fa408686544c5d80c5a3e876d7 100644
+--- a/include/lapi/syscalls/x86_64.in
++++ b/include/lapi/syscalls/x86_64.in
+@@ -373,3 +373,10 @@ lsm_get_self_attr 459
+ lsm_set_self_attr 460
+ lsm_list_modules 461
+ mseal 462
++setxattrat 463
++getxattrat 464
++listxattrat 465
++removexattrat 466
++open_tree_attr 467
++file_getattr 468
++file_setattr 469
 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  lib/safe_macros.c                                 | 13 +++++++++++--
->  testcases/kernel/syscalls/statmount/statmount02.c |  1 -
->  2 files changed, 11 insertions(+), 3 deletions(-)
+-- 
+2.50.1
 
-> diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-> index 6946cc5bc..726c9ae8e 100644
-> --- a/lib/safe_macros.c
-> +++ b/lib/safe_macros.c
-> @@ -942,10 +942,19 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
->  	 */
->  	if (possibly_fuse(filesystemtype)) {
->  		char buf[1024];
-> +		const char *mount_ro = "";
-> +
-> +		if (mountflags & MS_RDONLY)
-> +			mount_ro = "-o ro";
-
-Your version is slightly better than Jan's as it avoids duplicity.
-Let's merge this one. Maybe add
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
-
-> +
-> +		if (mountflags & (~MS_RDONLY)) {
-> +			tst_brkm_(file, lineno, TBROK, cleanup_fn,
-> +			          "FUSE mount flag(s) not implemented!");
-> +		}
-
->  		tst_resm_(file, lineno, TINFO, "Trying FUSE...");
-> -		snprintf(buf, sizeof(buf), "mount.%s '%s' '%s'",
-> -			filesystemtype, source, target);
-> +		snprintf(buf, sizeof(buf), "mount.%s %s '%s' '%s'",
-> +			filesystemtype, mount_ro, source, target);
-
->  		rval = tst_system(buf);
->  		if (WIFEXITED(rval) && WEXITSTATUS(rval) == 0)
-> diff --git a/testcases/kernel/syscalls/statmount/statmount02.c b/testcases/kernel/syscalls/statmount/statmount02.c
-> index 07f877e04..f322fe930 100644
-> --- a/testcases/kernel/syscalls/statmount/statmount02.c
-> +++ b/testcases/kernel/syscalls/statmount/statmount02.c
-> @@ -68,7 +68,6 @@ static struct tst_test test = {
->  	.format_device = 1,
->  	.all_filesystems = 1,
->  	.skip_filesystems = (const char *const []) {
-> -		"fuse",
->  		"btrfs",
->  		NULL
->  	},
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
