@@ -4,116 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACBE2CA0EC4
-	for <ltp@archiver.kernel.org>; Tue, 12 Aug 2025 12:30:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 088DEC87FCB
+	for <ltp@archiver.kernel.org>; Tue, 12 Aug 2025 12:31:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1755001895; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=zz/frjX6jBDvRz2iDxR14dTb0KmKDkPvLo1QeRzm7LQ=;
+ b=dnmuawcWX8Egh4RyLRcX9iXhhDzdscFPrr7jFms8C1jUKw25T14XDBR83OKOmHTdt5cDe
+ 2oUgFc1UVhH21uTpFAS8i19LUd517h+u4HicjIzo/6p7KITwGItCDomXA8xrfD/XcUPQT5W
+ 57MneGlvHY2z39rSCL78MuAIXhS76Qc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 447093CB3E5
-	for <ltp@archiver.kernel.org>; Tue, 12 Aug 2025 14:30:40 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 303273CB35B
+	for <ltp@archiver.kernel.org>; Tue, 12 Aug 2025 14:31:35 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C715F3C8E87
- for <ltp@lists.linux.it>; Tue, 12 Aug 2025 14:30:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D6CFD3C8E87
+ for <ltp@lists.linux.it>; Tue, 12 Aug 2025 14:31:14 +0200 (CEST)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BC7CC1400779
- for <ltp@lists.linux.it>; Tue, 12 Aug 2025 14:30:22 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id F0EF721ABA;
- Tue, 12 Aug 2025 12:30:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1755001821; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=bamjKNBM2ZRbDc0EPt2Xv5NmjNfIs0CVCwlqw1XPztw=;
- b=GpPepMyEXlhpAtnmlR4iD+kZkAW+Ys6DJ4FevcuaOshRG6NICMdBZL/Ld1+Kxo3Ct3jBq0
- +Xz7P2+CQVIFBmTMEMMiWLTouV+0+udgS2A4sV6PbqIcg6viaFEYBokT6iDcsBtevlcucc
- 54MrPyf+BPMCqjxE0kSFC8d25a/IQu0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1755001821;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=bamjKNBM2ZRbDc0EPt2Xv5NmjNfIs0CVCwlqw1XPztw=;
- b=h+R97KW5u90mNkI0AcBEeurZHWvDWuHYursciZOWn62wtyf4v53Cy8BS9IY/TYLtm/nLd/
- DEHIqJ2fb0MNq5CQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=GpPepMyE;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=h+R97KW5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1755001821; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=bamjKNBM2ZRbDc0EPt2Xv5NmjNfIs0CVCwlqw1XPztw=;
- b=GpPepMyEXlhpAtnmlR4iD+kZkAW+Ys6DJ4FevcuaOshRG6NICMdBZL/Ld1+Kxo3Ct3jBq0
- +Xz7P2+CQVIFBmTMEMMiWLTouV+0+udgS2A4sV6PbqIcg6viaFEYBokT6iDcsBtevlcucc
- 54MrPyf+BPMCqjxE0kSFC8d25a/IQu0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1755001821;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=bamjKNBM2ZRbDc0EPt2Xv5NmjNfIs0CVCwlqw1XPztw=;
- b=h+R97KW5u90mNkI0AcBEeurZHWvDWuHYursciZOWn62wtyf4v53Cy8BS9IY/TYLtm/nLd/
- DEHIqJ2fb0MNq5CQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 851F61351A;
- Tue, 12 Aug 2025 12:30:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id fFHtHNwzm2jkLAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 12 Aug 2025 12:30:20 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 12 Aug 2025 14:30:18 +0200
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 335EA2003BA
+ for <ltp@lists.linux.it>; Tue, 12 Aug 2025 14:31:14 +0200 (CEST)
+Received: by mail-wm1-x334.google.com with SMTP id
+ 5b1f17b1804b1-45a11a138faso3573315e9.2
+ for <ltp@lists.linux.it>; Tue, 12 Aug 2025 05:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1755001873; x=1755606673; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=HKohlPsqX9yIdzM27h8Uc+G8sv8wqX/t4nKkZl5Cm5M=;
+ b=XQJALvImKIL4/VWLXBqyq8DP3JZZwhjHv+Cu8ODYBlA6MR4SSiGvJlZXED6Ye+vbY9
+ TEboprN/hegUvSQ5ZUlM1jxbLqXTY5fNKRwWFG2GKr7/pK7lpTWlQ303jMhFuUssw5uo
+ qRHvSV2YxEV10itiyKbhCw/PYG57MCKpK5KOzVdA+P9x+Dz1mAOmtlg54CZ3Heo8OvyR
+ Vc03Loq4hz8VOYo0NVUn/+p5iUIAk/GUlVeOIF5SuNXmJ10/+/leFedhbPs7G0IeaQil
+ TyLO4vJWS9v1QE3ROcUWuzzZvJgbogn8iQ1qWLSiBO3XD6KitZG3FmhL0VkDr0T1mQE6
+ HfkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1755001873; x=1755606673;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=HKohlPsqX9yIdzM27h8Uc+G8sv8wqX/t4nKkZl5Cm5M=;
+ b=mFXRMkbXL4c6ZfRF6OOrmnG7zVwa4ChSra7GPZ8RnHQ8H6KsPiUNHkwbWhT6xc9vPo
+ Q1DDph0OpHm1H0HCx6lP3o298tJ8EbN8i8CZAI7z6RgD//zqCg7elLJ34qyJXyj5m7P3
+ mfASdx309qfxNTyc45WSV51uhbhe6Stxzd1TNoVAj6XzTL4yWgkuBKuJlPjBZ9NlK4gZ
+ moVWIToRaFNrhTbcVx7iMeVkcv00ZWmAPdLuglDjapy/ui85osLQp8DG4PLhBsGgO4jh
+ VMr8p/MfjhlsGpOe6+ID5d2JOzXfe8bfaSnOA/4PljimRmxbD8jWP2HaxIqynYb1JDOD
+ pMKw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWh+19BNum1CLu7REykST0vbCC8e8I7Ljd6yVeDkNcsjhFcaNhz2sIG0K+BzG9L9Da7oeA=@lists.linux.it
+X-Gm-Message-State: AOJu0YwXEJnbZ1ZPnjHtjj7RRpUFZkRSfl88YesUaAsaAs0QuHgMYrFk
+ NTf6LfEBIr+SDogk4JQVCr1AKI1TMWaNpWzuZP3VLYe+rXeSDtXGJgDoMOftzJTUhJA=
+X-Gm-Gg: ASbGnctUxenSTJTotfnYkKx5a6bDUmIIxrBg2uW+D8TKeo4hZVr4UuDk8PHflZjnGpB
+ m6JQvsjbqjiwwlv8peqO0faFSKQoR03mlqr8pRA7MCe2tn6wC16zIh0hXQXFpRRgJMO4M355hz9
+ viInc9wZYmiSTolDopQ+6MfXZyrk13bg+7DJqOp8pawhfBNpv3n0zqpZeGb5rHawo8NytPEegNa
+ hLI/p+hVbRUkQ4SDyQy/lnq1RcWICS9P97PpxBfAk5EITmfxykN3l/daWiEqbgmYQAnnZyl8/pn
+ WUPeZALPUR6NndkRen2kpel5Aa2voRM+OlyWW+NUIsNz8wqOM7UubzfJmThGkhCaVoL7P5vq59B
+ qH62IwAs7pdYXXK0CGn/bKqYhP+uoFpbNLw==
+X-Google-Smtp-Source: AGHT+IE+3OLT8tJPBk7v+IhSADpClwK3EW+NXhDrAMmQFqFR50/42vqkrSoVi74qCzvWEYDJuvB7ZA==
+X-Received: by 2002:a05:600c:1c27:b0:456:eb9:5236 with SMTP id
+ 5b1f17b1804b1-45a10bb6cb7mr35758795e9.15.1755001873412; 
+ Tue, 12 Aug 2025 05:31:13 -0700 (PDT)
+Received: from [192.168.1.91] ([151.71.217.151])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-459e6867193sm299800775e9.6.2025.08.12.05.31.12
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 12 Aug 2025 05:31:13 -0700 (PDT)
+Message-ID: <d20c29a5-1852-4eec-964b-5b8f9d1eb851@suse.com>
+Date: Tue, 12 Aug 2025 14:31:11 +0200
 MIME-Version: 1.0
-Message-Id: <20250812-cve_2025_38236-v3-1-48ce90adc216@suse.com>
-X-B4-Tracking: v=1; b=H4sIANkzm2gC/32Myw6CMBBFf4XM2po+pEVX/ocxpEwH6UJKWm00h
- H+3sHKjuatzk3NmSBQ9JThVM0TKPvkwFlC7CnCw442Yd4VBclnzRkiGmdoVWtVIpZnBjqM79K7
- rayjSFKn3ry14uRYefHqE+N76Wazvz1QWTDBSWhjrrD6iPqdnoj2GO6ylLP/bsthG247IltG3v
- SzLByssCpHpAAAA
-X-Change-ID: 20250812-cve_2025_38236-7cb0cd4fdbf5
-To: ltp@lists.linux.it
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1755001820; l=5281;
- i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=3tCcnv1QFgKmSHO+OIWTjXLN0pc8qDO3Gyatn2ZHk+A=;
- b=z0reMEt/85OeRtECR/tRVJ0nz8ibvxO8ym7wZ2xPaevrsPjaCsvm3+SXeI+qhd2ow0ageAaIw
- pOE5EeZICmMAq77PuMRsfnESo/CDgaHerA8/FYwiBXz1hQrSchZH9mf
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Rspamd-Queue-Id: F0EF721ABA
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_DN_SOME(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it
+References: <20250812-cve_2025_38236-v3-1-48ce90adc216@suse.com>
+Content-Language: en-US
+In-Reply-To: <20250812-cve_2025_38236-v3-1-48ce90adc216@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] cve: add CVE-2025-38236 test
+Subject: Re: [LTP] [PATCH v3] cve: add CVE-2025-38236 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,180 +100,16 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+I can merge v3, should I add Reviewed-by tag for Cyril and Wei?
 
-Test for CVE-2025-38236 fixed in kernel v6.16-rc4:
-32ca245464e1 ("af_unix: Don't leave consecutive consumed OOB skbs").
-
-The bug is triggered by sending multiple out-of-band data to a socket and
-reading it back from it. According to the MSG_OOB implementation, this
-shouldn't be possible. When system is affected by CVE-2025-38236, instead,
-skb queue holds MSG_OOB data, breaking recv() and causing a use-after-free
-condition.
-
-Even if MSG_OOB is mostly used inside Oracle's product, it is enabled by
-default in linux kernel via CONFIG_AF_UNIX_OOB. This is accessible via
-Chrome's renderer sandbox, which might cause an attacker to escalate and to
-obtain privileges in the system.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-Changes in v3:
-- remove return
-- add tag reference in the description and commit log
-- Link to v2: https://lore.kernel.org/r/20250812-cve_2025_38236-v2-1-76abeeaeaee6@suse.com
-
-Changes in v2:
-- use MSG_DONTWAIT
-- add reference in the description
-- reduce if/else nesting
-- use different data for send()
-- Link to v1: https://lore.kernel.org/r/20250812-cve_2025_38236-v1-1-e3617ada69c6@suse.com
----
- runtest/cve                    |   1 +
- testcases/cve/.gitignore       |   1 +
- testcases/cve/cve-2025-38236.c | 100 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 102 insertions(+)
-
-diff --git a/runtest/cve b/runtest/cve
-index 1d1d875974f0ce545005faedb78125d33ec7c989..6d575aa2165bcd46e5ca36a07db33f69a91bd94a 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -91,3 +91,4 @@ cve-2023-31248 nft02
- cve-2020-25704 perf_event_open03
- cve-2022-0185 fsconfig03
- cve-2022-4378 cve-2022-4378
-+cve-2025-38236 cve-2025-38236
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index 3a2b2bed619c99a592f51afe50b7196c593f1f45..8eb17ce56b01070e47917f9bb44cf146c0c5b338 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -13,3 +13,4 @@ cve-2017-17053
- cve-2022-4378
- icmp_rate_limit01
- tcindex01
-+cve-2025-38236
-diff --git a/testcases/cve/cve-2025-38236.c b/testcases/cve/cve-2025-38236.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..16582fe6435005eb3b7741fa6b6d727d6b566320
---- /dev/null
-+++ b/testcases/cve/cve-2025-38236.c
-@@ -0,0 +1,100 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2025 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Test for CVE-2025-38236 fixed in kernel v6.16-rc4:
-+ * 32ca245464e1 ("af_unix: Don't leave consecutive consumed OOB skbs").
-+ *
-+ * The bug is triggered by sending multiple out-of-band data to a socket and
-+ * reading it back from it. According to the MSG_OOB implementation, this
-+ * shouldn't be possible. When system is affected by CVE-2025-38236, instead,
-+ * skb queue holds MSG_OOB data, breaking recv() and causing a use-after-free
-+ * condition.
-+ *
-+ * Even if MSG_OOB is mostly used inside Oracle's product, it is enabled by
-+ * default in linux kernel via CONFIG_AF_UNIX_OOB. This is accessible via
-+ * Chrome's renderer sandbox, which might cause an attacker to escalate and to
-+ * obtain privileges in the system.
-+ *
-+ * Reproducer is based on:
-+ * https://project-zero.issues.chromium.org/issues/423023990
-+ */
-+
-+#include "tst_test.h"
-+
-+static char dummy;
-+static int sock[2];
-+
-+static void run(void)
-+{
-+	int ret;
-+
-+	dummy = '\0';
-+
-+	tst_res(TINFO, "#1 send and receive out-of-band data");
-+	SAFE_SEND(0, sock[1], "A", 1, MSG_OOB);
-+	SAFE_RECV(0, sock[0], &dummy, 1, MSG_OOB);
-+
-+	tst_res(TINFO, "#2 send and receive out-of-band data");
-+	SAFE_SEND(0, sock[1], "B", 1, MSG_OOB);
-+	SAFE_RECV(0, sock[0], &dummy, 1, MSG_OOB);
-+
-+	tst_res(TINFO, "Send out-of-band data");
-+	SAFE_SEND(0, sock[1], "C", 1, MSG_OOB);
-+
-+	tst_res(TINFO, "Receive data from normal stream");
-+
-+	ret = recv(sock[0], &dummy, 1, MSG_DONTWAIT);
-+	if (ret == -1) {
-+		if (errno == EWOULDBLOCK) {
-+			tst_res(TPASS, "Can't read out-of-band data from normal stream");
-+			return;
-+		}
-+
-+		tst_brk(TBROK | TERRNO, "recv error");
-+	}
-+
-+	const char *msg = "We are able to read out-of-band data from normal stream";
-+
-+	if (dummy == 'C') {
-+		tst_res(TFAIL, "%s", msg);
-+	} else {
-+		tst_res(TFAIL, "%s, but data doesn't match: '%c' != 'A'",
-+			msg, dummy);
-+	}
-+
-+	SAFE_RECV(0, sock[0], &dummy, 1, MSG_OOB);
-+
-+	tst_res(TFAIL, "We are able to access data from skb queue (use-after-free)");
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_SOCKETPAIR(AF_UNIX, SOCK_STREAM, 0, sock);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (sock[0] != -1)
-+		SAFE_CLOSE(sock[0]);
-+
-+	if (sock[1] != -1)
-+		SAFE_CLOSE(sock[1]);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_AF_UNIX_OOB=y",
-+		NULL
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "32ca245464e1"},
-+		{"CVE", "2025-38236"},
-+		{}
-+	}
-+};
-
----
-base-commit: e2c58cfcb82be0b376098a67c8f45264282be67a
-change-id: 20250812-cve_2025_38236-7cb0cd4fdbf5
-
-Best regards,
--- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+- Andrea
 
 
 -- 
