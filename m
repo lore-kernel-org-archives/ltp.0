@@ -4,90 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF7FEC87FCB
-	for <ltp@archiver.kernel.org>; Tue, 12 Aug 2025 06:15:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59686C87FCB
+	for <ltp@archiver.kernel.org>; Tue, 12 Aug 2025 08:40:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1754979312; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1754988053; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=7hvFjwo4rCQ/DvU75qml7BgfBG0fo+b1Ujiad1IRyUA=;
- b=Fc1QszUSDVzzbdKY4PrwUDUDwTcLtEox5WvH89+ZAR/BPW7NmM0qq34p+923cvdaAkgeY
- oL5oyJ+L8zoZyv++RiEM+f16P62SKh+AeyUBlygj3aJqlP7Gv5YMNPgk1EUBkwnMHHi3Cin
- DUIHRgHm/fwKloe6qvmIshiH+iTRp+E=
+ bh=ET0JX7xZoF9s5gXeAsZH6s128zYTtaCchWA+Suy1jXY=;
+ b=ro9ttDv429oF+oV/3vX2ffTJN7E1tblmDdHYJbKN+G62cvbNV9+aj+mpcl09N/f8OBAvX
+ qFVieKcAGl/iKXIMQkDcpzOB3zGLGF8qxHigw0YSC7FV7I7ivEsYnw17DGSRcCIwR7Z/bnh
+ J2WMx9MzoIpXmwnlIVKzDwZMwhxx3mQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 15A903CB1B0
-	for <ltp@archiver.kernel.org>; Tue, 12 Aug 2025 08:15:12 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 2FF1E3CB322
+	for <ltp@archiver.kernel.org>; Tue, 12 Aug 2025 10:40:53 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0EA0E3C856B
- for <ltp@lists.linux.it>; Tue, 12 Aug 2025 08:14:51 +0200 (CEST)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 194CE3C052E
+ for <ltp@lists.linux.it>; Tue, 12 Aug 2025 10:40:30 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A68E51400072
- for <ltp@lists.linux.it>; Tue, 12 Aug 2025 08:14:50 +0200 (CEST)
-Received: by mail-ej1-x633.google.com with SMTP id
- a640c23a62f3a-af93150f7c2so775712366b.3
- for <ltp@lists.linux.it>; Mon, 11 Aug 2025 23:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1754979290; x=1755584090; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=NpLQNS9vpQKRoXIf+LoWOvrHwoMVFz0rViRpM5yisI4=;
- b=fHpo4D6wVh5QypGNQsmqrVXG7NSuPx518AKrowmgxvzwQ8wApKEcCpPmK9ep7elQSN
- hYGDX6PqmwYWAGBO5jUQ/tvgx5IzL6IqeUct6EK+Y+8OkdIs3CBQwaCp0pIAkZFvXaLc
- zxtEiyWOqqTmiAOkimHFVk1n8BlPEPfvA8hV9Ac9ftgN0okigl8SqaM4IgYzOMxexKDl
- pswR/c/nOXIokWGq/MJWxcymNtQF3GgNNZDjFuBKc4GjtesvoZavpsJqi7zFxX5FwffY
- Dwsa0RoolWXit4oJFrO+zKHbQuL7keFDLj9XrLScFf4aVqMctdXVOyT1UBsxk4qb9Fct
- 5t8w==
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CB5786007A9
+ for <ltp@lists.linux.it>; Tue, 12 Aug 2025 10:40:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1754988027;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WT5VH2ips7oRD9VIlyKygI/+mnPlH26CPohibHpxD/k=;
+ b=g7bmtwyhszzh164qaA+Yfq/8JJzjjmdl218MPQCu2AbhLaLhX1hvsAu/7rtWLF6VnZ196a
+ jQykXEosMVTCQRLHmqQR1qkhx0uyfBZ9WWe73fhSsh3Y2xs3qpY5osjaIJyJzxQMNqx67D
+ G0aQ0ffIPqjvNC9flbk2D6kdkTwf+4Y=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-656-KfRMa8xGMkC5dqKDoyr9Lg-1; Tue, 12 Aug 2025 04:40:25 -0400
+X-MC-Unique: KfRMa8xGMkC5dqKDoyr9Lg-1
+X-Mimecast-MFC-AGG-ID: KfRMa8xGMkC5dqKDoyr9Lg_1754988024
+Received: by mail-pg1-f197.google.com with SMTP id
+ 41be03b00d2f7-b42a11d7427so3156197a12.3
+ for <ltp@lists.linux.it>; Tue, 12 Aug 2025 01:40:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1754979290; x=1755584090;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=NpLQNS9vpQKRoXIf+LoWOvrHwoMVFz0rViRpM5yisI4=;
- b=Xsp6irim/AHIYdE/zxm3sheL62L9XWv8zoKpCqWfUDWJrrOKg8weKUI/fa/RPT4Wjn
- VZgDQP/O/Arj8BFA9YuatURmrXIf7cMYYWFE5uUU57u4WEexnQ1lkBMKklM4JKXwc6k8
- A+HSg/VXbIIKcTf3MSLzF+p9EVKAWYw3yBp9HymOI4xNWt/PrjhYf+N1YnvV2Ug0Pv+U
- VO4njtZ4/FyObSPe/8b9/LXnEhmStz+zG0dPy5dn29WCziZQSgIMloAp3My1kDBj5JYn
- 2V5pmRu5BvjFUF7Xa0BhfwMm9WOQw/9JsToAjWsCisCLdX1wreHk3Cpt0qwl/rxCDjsN
- tDXg==
-X-Gm-Message-State: AOJu0YzPTv4ei9RcH0gQOwAQMH9JRCPIIEOiwHUn5zSbunibVzQrpFXU
- rWMJ86gjFuXzFUA+qd/kZTvp45om2W4cwobX9PaYej6ief0vke3u2Ye320IuFDuK2HPmwawUzRX
- 3UXk=
-X-Gm-Gg: ASbGncsKeHkPP6oet3OO+2nodgeP9Jr2ElLcp30HxqXT7ucsK1WgfWT7sHlv7JOlHvb
- DVCDyZhOjmpKTSwXMabqh6ryrTA1T/onDLVt5vvCmAQq0Pl3Mef8nt9uQ6K0/F9Ag3DdHFxXj56
- ZCngtKDvhHqht9hrSd0BiLcKSnFilXuimUs4SZZBJmIwEde10ai4oPIJdr1OEZVXIhO1fEPIhZQ
- FiRElbwAHwCzySZG2MQVD1r9YtHW0XfkN52J7EKs5yxz0BAwnVMFTPPafsTFLUqUd9eiv1I9fqd
- Ty780RasuuV46WnaZq0OBn52laSqAOEUoK2H4POWsc6xeJbxGwvAKCm8Budu8kouMSl2yxOE/Hd
- lKvQSRRjqCbQ=
-X-Google-Smtp-Source: AGHT+IEGnWVofhtch8bwm1uC1ld4XkF8vQM4JH72BkLYrHKJbjTNaqCqijnNt4PVrhxvVl+VB58ZiQ==
-X-Received: by 2002:a17:907:9496:b0:af9:3116:e0f6 with SMTP id
- a640c23a62f3a-afa1e21545cmr181292666b.53.1754979289658; 
- Mon, 11 Aug 2025 23:14:49 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- a640c23a62f3a-af91a21c10asm2166893466b.116.2025.08.11.23.14.49
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 11 Aug 2025 23:14:49 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue, 12 Aug 2025 06:14:19 +0000
-Message-ID: <20250812061435.21209-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250808163045.2033518-1-wegao@suse.com>
-References: <20250808163045.2033518-1-wegao@suse.com>
+ d=1e100.net; s=20230601; t=1754988024; x=1755592824;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=WT5VH2ips7oRD9VIlyKygI/+mnPlH26CPohibHpxD/k=;
+ b=b+gjWx5TZ9+XfWptjXbzHL2pYVZ3fBD1hG64E6hg9JH5sTWbk4liAWzryB3hTYEYbV
+ SRHBQ20jxQYoTIPGVWNTzRjHJBtKYqLd5OB0BZCt6nb41uEY7EtQHJ8DZtRg8dx/Wst9
+ 50k6p1rJhHxgfhRQRT3VwbNsZt/81uuAnSbMkGXI+Ims+k70iXsM8L6ooWbhtKsUSgOg
+ vZiSpToRlZfAIScjzVuaiF3ma5ABIYa3DrIk2gTghUDx49Qe86TuSqx5/csUMb0P7FzG
+ ryEEORRTxhv1JHVCHs7pTNWgyMu86PvGVa9ndEGj0HWUemYBqAI+Mgto/+80qo6Em8o5
+ MMcA==
+X-Gm-Message-State: AOJu0YxTpElIcxcUQhZJ5GwQVwY+79H+kNRSdTOZOOtAsdJI/0bzjT13
+ bOoioIngr/cbUyoawniOlpG9wwZmDa20p6SkNfs9uyuFv7UwK3Ubp0Y2C1tRTRAs8ra1yceqUIo
+ S4m0FpnmvXGnKJae7zDXpxbyiVKbAv5VYZr8zq7+lcmYgDj7FoqZG8J1Ouf/iDZedoBpwk4VZJO
+ xApv8j/9a+t+gJ9Yip1HoA0BV6H66rFcNCkxFk+A==
+X-Gm-Gg: ASbGnctcKaalruic70nwvV0qgAWzPdA1nEQnODu4Fl9HBVJcoDeUnnCh2LogGHeNv1Q
+ or4I1XdFWMZRmCgoMAPpHbzndUcBePJ4vFMTNU/idfbdagncJQHhWDdpuNG1DkEdX7bwAM4du7N
+ uPXH0qP/cLxMH3XcMMbOUmIA==
+X-Received: by 2002:a17:90a:fc50:b0:321:c8e1:82e with SMTP id
+ 98e67ed59e1d1-321c8e10bf5mr270693a91.26.1754988023764; 
+ Tue, 12 Aug 2025 01:40:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGHAUGJqL/0HU2MiIlZ/5ohS7m9kLBtFxtrnfwHFQ7CMOsZROF8mdxbS1eWbCJWRUZyKrpMp3MUAE6sl+BswnM=
+X-Received: by 2002:a17:90a:fc50:b0:321:c8e1:82e with SMTP id
+ 98e67ed59e1d1-321c8e10bf5mr270673a91.26.1754988023333; Tue, 12 Aug 2025
+ 01:40:23 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+References: <aJYBSmcQpbHUvOqW@stanley.mountain>
+ <CAEemH2cBH+usbwMsHnDW=QM-qDKOCg2wp063O=1gtrRdqNFpug@mail.gmail.com>
+ <aJmj6kmNvgzbd1Zi@stanley.mountain>
+In-Reply-To: <aJmj6kmNvgzbd1Zi@stanley.mountain>
+Date: Tue, 12 Aug 2025 16:40:11 +0800
+X-Gm-Features: Ac12FXwSqi_zI9GcaMHhlgBswDPJ_gBz5CmNBOiSCSGYkaREzo3NDXkYZkPNcXc
+Message-ID: <CAEemH2eoW0LUq5ynrh9KFfHbMVqw+yJDBOEAo9g4QCS+SbEKmA@mail.gmail.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: cPzLMoyEMl8UcRKSad9KlT7KIIixuNVVQ8UtFmrS1cI_1754988024
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] ioctl11.c: New case check PROCMAP_QUERY ioctl()
- errnos
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] shmctl03.c is broken for 32bit compat mode
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,268 +104,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Cc: Theodore Grey <theodore.grey@linaro.org>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/ioctl/.gitignore |   1 +
- testcases/kernel/syscalls/ioctl/ioctl11.c  | 214 +++++++++++++++++++++
- 3 files changed, 216 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl11.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 6a17a34f8..8bc7f60d2 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -588,6 +588,7 @@ ioctl07      ioctl07
- ioctl08      ioctl08
- ioctl09      ioctl09
- ioctl10      ioctl10
-+ioctl11      ioctl11
- 
- ioctl_loop01 ioctl_loop01
- ioctl_loop02 ioctl_loop02
-diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index dac4583fa..54685e916 100644
---- a/testcases/kernel/syscalls/ioctl/.gitignore
-+++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -8,6 +8,7 @@
- /ioctl08
- /ioctl09
- /ioctl10
-+/ioctl11
- /ioctl_loop01
- /ioctl_loop02
- /ioctl_loop03
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl11.c b/testcases/kernel/syscalls/ioctl/ioctl11.c
-new file mode 100644
-index 000000000..68e5cc275
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl11.c
-@@ -0,0 +1,214 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Test PROCMAP_QUERY ioctl() errnos:
-+ *
-+ * - EINVAL if q->size is too small
-+ * - E2BIG if q->size is larger than page size
-+ * - EINVAL on invalid q->flags
-+ * - EINVAL if only one of q->vma_name_size and q->vma_name_addr is set
-+ * - EINVAL if only one of q->build_id_size and q->build_id_addr is set
-+ * - ENAMETOOLONG if build_id_size or name_buf_size is too small
-+ * - ESRCH if attempt to get memory map of a process that did exit and was waited for
-+ *
-+ *   [1] https://kernelnewbies.org/Linux_6.11#Memory_management
-+ *   [2] https://kernelnewbies.org/Linux_6.11#Binary_interface_for_.2Fproc.2F.3Cpid.3E.2Fmaps
-+ *   [3] https://lore.kernel.org/all/20240627170900.1672542-1-andrii@kernel.org/
-+ *       ed5d583a88a9 ("fs/procfs: implement efficient VMA querying API for /proc/<pid>/maps")
-+ */
-+
-+#include <errno.h>
-+#include <linux/fs.h>
-+#include "config.h"
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+#include "lapi/ioctl.h"
-+
-+#define PROC_MAP_PATH "/proc/self/maps"
-+
-+static struct procmap_query *q;
-+static int fd = -1;
-+static char buf[PATH_MAX];
-+static char small_buf[1];
-+static unsigned long vm_start_addr;
-+
-+static void setup_normal(void);
-+static void setup_big_size(void);
-+static void fork_child_setup(void);
-+
-+static struct tcase {
-+	uint64_t size;
-+	uint64_t query_addr;
-+	uint64_t query_flags;
-+	uint64_t vma_name_addr;
-+	uint32_t vma_name_size;
-+	uint64_t build_id_addr;
-+	uint32_t build_id_size;
-+	int exp_errno;
-+	void (*setup)(void);
-+} tcases[] = {
-+	{
-+		.size = 1,
-+		.exp_errno = EINVAL,
-+	},
-+	{
-+		.exp_errno = E2BIG,
-+		.setup = setup_big_size
-+	},
-+	{
-+		.query_flags = -1,
-+		.exp_errno = EINVAL,
-+	},
-+	{
-+		.vma_name_size = sizeof(buf),
-+		.exp_errno = EINVAL,
-+	},
-+	{
-+		.vma_name_addr = (uint64_t)(unsigned long)buf,
-+		.exp_errno = EINVAL,
-+	},
-+	{
-+		.build_id_size = sizeof(buf),
-+		.exp_errno = EINVAL,
-+	},
-+	{
-+		.build_id_addr = (uint64_t)(unsigned long)buf,
-+		.exp_errno = EINVAL,
-+	},
-+	{
-+		.vma_name_addr = (uint64_t)(unsigned long)small_buf,
-+		.vma_name_size = sizeof(small_buf),
-+		.exp_errno = ENAMETOOLONG,
-+	},
-+	{
-+		.build_id_addr = (uint64_t)(unsigned long)small_buf,
-+		.build_id_size = sizeof(small_buf),
-+		.exp_errno = ENAMETOOLONG,
-+	},
-+	{
-+		.exp_errno = ESRCH,
-+		.setup = fork_child_setup
-+	},
-+};
-+
-+static void fork_child_setup(void)
-+{
-+	int pid = SAFE_FORK();
-+
-+	if (pid == 0) {
-+		TST_CHECKPOINT_WAKE(0);
-+		TST_CHECKPOINT_WAIT(1);
-+		exit(0);
-+	}
-+
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	char proc_path[PATH_MAX];
-+
-+	snprintf(proc_path, PATH_MAX, "/proc/%d/maps", pid);
-+	fd = SAFE_OPEN(proc_path, O_RDONLY);
-+
-+	TST_CHECKPOINT_WAKE(1);
-+	SAFE_WAITPID(pid, NULL, 0);
-+}
-+
-+static void get_vm_start(void)
-+{
-+	FILE *fp = SAFE_FOPEN(PROC_MAP_PATH, "r");
-+	char line[1024];
-+
-+	if (fgets(line, sizeof(line), fp) != NULL) {
-+		if (sscanf(line, "%lx-", &vm_start_addr) != 1)
-+			tst_brk(TFAIL, "maps not found in %s", PROC_MAP_PATH);
-+	} else {
-+		tst_brk(TFAIL, "maps not found in %s", PROC_MAP_PATH);
-+	}
-+
-+	SAFE_FCLOSE(fp);
-+}
-+
-+static void setup_normal(void)
-+{
-+	fd = SAFE_OPEN(PROC_MAP_PATH, O_RDONLY);
-+
-+	q->size = sizeof(*q);
-+	q->query_addr = (uint64_t)vm_start_addr;
-+	q->query_flags = 0;
-+}
-+
-+static void setup_big_size(void)
-+{
-+	q->size = getpagesize() + 1;
-+}
-+
-+static void run(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+
-+	memset(q, 0, sizeof(*q));
-+
-+	setup_normal();
-+	if (tc->setup)
-+		tc->setup();
-+
-+	if (tc->size != 0)
-+		q->size = tc->size;
-+
-+	if (tc->query_flags != 0)
-+		q->query_flags = tc->query_flags;
-+
-+	if (tc->vma_name_addr != 0)
-+		q->vma_name_addr = tc->vma_name_addr;
-+
-+	if (tc->vma_name_size != 0)
-+		q->vma_name_size = tc->vma_name_size;
-+
-+	if (tc->build_id_addr != 0)
-+		q->build_id_addr = tc->build_id_addr;
-+
-+	if (tc->build_id_size != 0)
-+		q->build_id_size = tc->build_id_size;
-+
-+	TST_EXP_FAIL(ioctl(fd, PROCMAP_QUERY, q), tc->exp_errno);
-+}
-+
-+static void setup(void)
-+{
-+	struct procmap_query q = {};
-+
-+	fd = SAFE_OPEN(PROC_MAP_PATH, O_RDONLY);
-+
-+	if (tst_kvercmp(6, 11, 0) < 0)
-+		return;
-+
-+	TEST(ioctl(fd, PROCMAP_QUERY, q));
-+	if ((TST_RET == -1) && (TST_ERR == ENOTTY))
-+		tst_brk(TCONF,
-+				"This system does not provide support for ioctl(PROCMAP_QUERY)");
-+
-+	get_vm_start();
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd != -1)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.cleanup = cleanup,
-+	.needs_checkpoints = 1,
-+	.forks_child = 1,
-+	.bufs = (struct tst_buffers []) {
-+		{&q, .size = sizeof(*q)},
-+		{}
-+	}
-+};
--- 
-2.43.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBBdWcgMTEsIDIwMjUgYXQgNDowNOKAr1BNIERhbiBDYXJwZW50ZXIgPGRhbi5jYXJw
+ZW50ZXJAbGluYXJvLm9yZz4Kd3JvdGU6Cgo+IE9uIFN1biwgQXVnIDEwLCAyMDI1IGF0IDExOjQ2
+OjMyQU0gKzA4MDAsIExpIFdhbmcgd3JvdGU6Cj4gPiBIaSBEYW4sCj4gPgo+ID4gT24gRnJpLCBB
+dWcgOCwgMjAyNSBhdCA5OjUz4oCvUE0gRGFuIENhcnBlbnRlciA8ZGFuLmNhcnBlbnRlckBsaW5h
+cm8ub3JnPgo+ID4gd3JvdGU6Cj4gPgo+ID4gPiBJbiAzMmJpdCBjb21wYXQgbW9kZSB0aGUgc2ht
+Y3RsMDMuYyB0ZXN0IHdpbGwgYWx3YXlzIGZhaWw6Cj4gPiA+Cj4gPiA+IHNobWN0bDAzLmM6MzM6
+IFRGQUlMOiAvcHJvYy9zeXMva2VybmVsL3NobW1heCAhPSAyMTQ3NDgzNjQ3IGdvdAo+IDQyOTQ5
+NjcyOTUKPiA+ID4gc2htY3RsMDMuYzozNDogVFBBU1M6IC9wcm9jL3N5cy9rZXJuZWwvc2htbW5p
+ID0gNDA5Ngo+ID4gPiBzaG1jdGwwMy5jOjM1OiBURkFJTDogL3Byb2Mvc3lzL2tlcm5lbC9zaG1h
+bGwgIT0gNDI3ODE5MDA3OSBnb3QKPiA0Mjk0OTY3Mjk1Cj4gPiA+Cj4gPiA+IFRoZSB0ZXN0IGJh
+c2ljYWxseSBkb2VzIHRoaXM6Cj4gPiA+IC8vID09PSA9PT0gPT09Cj4gPiA+ICNkZWZpbmUgX0dO
+VV9TT1VSQ0UKPiA+ID4gI2luY2x1ZGUgPHN5cy9zaG0uaD4KPiA+ID4gI2luY2x1ZGUgPHN0ZGlv
+Lmg+Cj4gPiA+Cj4gPiA+IGludCBtYWluKHZvaWQpCj4gPiA+IHsKPiA+ID4gICAgICAgICBzdHJ1
+Y3Qgc2htaW5mbyBpbmZvOwo+ID4gPgo+ID4gPiAgICAgICAgIHNobWN0bCgwLCBJUENfSU5GTywg
+KHN0cnVjdCBzaG1pZF9kcyAqKSZpbmZvKTsKPiA+ID4KPiA+ID4gICAgICAgICBwcmludGYoInNo
+bW1heCA9ICVsdVxuIiwgaW5mby5zaG1tYXgpOwo+ID4gPiAgICAgICAgIHByaW50Zigic2htbW5p
+ID0gJWx1XG4iLCBpbmZvLnNobW1uaSk7Cj4gPiA+ICAgICAgICAgcHJpbnRmKCJzaG1hbGwgPSAl
+bHVcbiIsIGluZm8uc2htYWxsKTsKPiA+ID4KPiA+ID4gICAgICAgICByZXR1cm4gMDsKPiA+ID4g
+fQo+ID4gPiAvLyA9PT0gPT09ID09PQo+ID4gPgo+ID4gPiBJdCBjb21wYXJlcyB0aGF0IG91dHB1
+dCB3aXRoIHdoYXQgd2UgcmVhZCBmcm9tIHRoZSBmaWxlLiAgWW91IGNhbiBydW4KPiA+ID4gImdj
+YyAtbTMyIHRlc3QuYyAmJiAuL2Eub3V0IiB0byBzZWUgdGhlIGlzc3VlLgo+ID4gPgo+ID4gPiBJ
+biB0aGUgZmlyc3QgbGluZSBzaG1tYXggaXMgbm90IHRoZSB2YWx1ZSB0aGF0IHdlIHJlYWQgZnJv
+bSB0aGUgZmlsZQo+ID4gPiBiZWNhdXNlIGl0IHdhcyBjYXBwZWQgYXQgSU5UX01BWCBieSB0aGUg
+a2VybmVsIGluIGNvbW1pdCBhZjdjNjkzZjE0NjAKPiA+ID4gKCJDYXAgc2htbWF4IGF0IElOVF9N
+QVggaW4gY29tcGF0IHNobWluZm8iKS4KPiA+ID4gaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20v
+bGludXgvdjYuMTYvc291cmNlL2lwYy9zaG0uYyNMMTM0Nwo+ID4gPgo+ID4gPiBXaXRoIHRoZSBs
+YXN0IGxpbmUgd2UncmUgdHJ5aW5nIHRvIHN0b3JlIGEgdTY0IHZhbHVlIGludG8gYSB1MzIuICBX
+ZSdyZQo+ID4gPiBnb2luZyB0byBsb3NlIHNvbWV0aGluZyBzbyBpdCdzIG5vdCBnb2luZyB0byBi
+ZSBhY2N1cmF0ZS4gIFRoZQo+IGRpZmZlcmVuY2UKPiA+ID4gaXMgaG93IHNjYW5mKCkgdHJ1bmNh
+dGVzIGl0LiAgSWYgeW91IGhhdmUgMzJiaXQgbG9uZ3MgdGhlbiBpdCB3aWxsIGdpdmUKPiA+ID4g
+eW91IHRoZSBmaXJzdCB1MzIgYnV0IGlmIHlvdSBhc3NpZ24gYSB1NjQgdG8gYSB1MzIgbGlrZSB0
+aGUgcmVzdCBvZiB0aGUKPiA+ID4gY29kZSBkb2VzIHRoZW4geW91J2xsIGdldCB0aGUgbGFzdCAz
+MiBiaXRzLgo+ID4gPgo+ID4gPiBXaGF0J3MgdGhlIHJpZ2h0IHdheSB0byBnbyBhYm91dCBmaXhp
+bmcgdGhpcz8KPiA+ID4KPiA+Cj4gPiBNYXliZSB3ZSBjYW4gc2ltcGx5IHNwbGl0IHRoZSBjb21w
+YXJpc29uIHBhcnQgaW50byB0d286Cj4gPgo+ID4gICAjaWZkZWYgVFNUX0FCSTY0OiBnbyB3aXRo
+IHRoZSBvcmlnaW5hbCB3YXkuCj4gPgo+ID4gICAjaWZkZWYgVFNUX0FCSTMyOgo+Cj4gV2lsbCB0
+aGlzIGFmZmVjdCByZWFsIDMyYml0IHN5c3RlbXM/ICBUaGUgcHJvYmxlbSBpcyBvbmx5IHdoZW4g
+d2UncmUKPiBlbXVsYXRpbmcgYSAzMmJpdCBzeXN0ZW0gb24gYSA2NGJpdCBzeXN0ZW0gdXNpbmcg
+dGhlIENPTVBBVCBjb2RlLgo+CgpZZXMsIHlvdSdyZSByaWdodC4KCkxvb2tpbmcgaW50byB0aGUg
+a2VybmVsIGFuZCB0ZXN0IHJlbGF0ZWQgY29kZSwgdGhhdCBzZWVtcyB0aGUgdGVzdCB3aWxsIHBh
+c3MKYXMgbG9uZyBhcyB0aGF0IC9wcm9jL3N5cy9rZXJuZWwve3NobW1heCxzaG1tbmksc2htYWxs
+fSBlcXVhbHMgd2l0aCB0aGUKaW5mby57c2htbWF4LHNobW1uaSxzaG1hbGx9LgoKT24gYSBtb2Rl
+cm4gbmF0aXZlIDMyYml0IHBsYXRmb3JtLCBpdCB3aWxsIHN0aWxsIGNob29zZSB0aGUgSVBDXzY0
+IGJyYW5jaAphbmQgdGhlCmtlcm5lbCBjb3BpZXMgc2htaW5mbzY0IGZpZWxkcyBkaXJlY3RseS4g
+U28gdGVzdCBzaG91bGQgcGFzcyBhcyB3ZWxsLgpodHRwczovL2VsaXhpci5ib290bGluLmNvbS9s
+aW51eC92Ni4xNi9zb3VyY2UvaXBjL3NobS5jI0w5MDYKCgoKPgo+ID4gICAgICAgJ3NobW1heCcg
+ZXhwZWN0cyBJTlRfTUFYIGZyb20gc2htY3RsKDAsIElQQ19JTkZPLCAuLi4pLCBldmVuIGlmICcK
+PiA+IC9wcm9jL3N5cy9rZXJuZWwvc2htbWF4JyBpcyBoaWdoZXIuCj4gPiAgICAgICAnc2htYWxs
+JyBjb21wYXJlcyB0aGUgbG93ZXIgMzIgYml0cyBvZiB0aGUgdmFsdWUgKGV4cGVjdF9zaG1hbGwg
+PQo+ID4gc2htYWxsICYgMHhGRkZGRkZGRjspCj4gPgo+Cj4gVG8gYmUgaG9uZXN0LCB0aGUgY29y
+cmVjdCB0aGluZyB3aXRoIHJlZ2FyZHMgdG8gc2htYWxsIGlzIHRvIGNhcCBpdCBhdAo+IElOVF9N
+QVggaW4gdGhlIGtlcm5lbCBhcyB3ZWxsLiAgSSBkaWRuJ3Qgd2FudCB0byBzdWdnZXN0IHRoaXMg
+YmVjYXVzZSBpdAo+IHdhcyBGcmlkYXkgYWZ0ZXJub29uLiAgUmVwb3J0aW5nIHdoYXRldmVyIGlz
+IGluIHRoZSBsb3cgMzJiaXRzIGlzIHNvcnQKPiBvZiByYW5kb20uICBCdXQgdGhhdCB3b3VsZCBt
+YWtlIGl0IGV2ZW4gbW9yZSB0cmlja3kgdG8gaGFuZGxlIGluIExUUC4KPgoKT2theSwgeW91IGNh
+biB0cnkgQ3lyaWwncyBzdWdnZXN0aW9uLCB3aGljaCBzb3VuZHMgbW9yZSByZWxpYWJsZS4KCi0t
+IApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMu
+bGludXguaXQvbGlzdGluZm8vbHRwCg==
