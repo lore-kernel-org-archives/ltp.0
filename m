@@ -4,45 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 094FFCA0EE0
-	for <ltp@archiver.kernel.org>; Wed, 13 Aug 2025 14:00:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61A96CA0EE0
+	for <ltp@archiver.kernel.org>; Wed, 13 Aug 2025 14:00:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5FAB23CBA30
-	for <ltp@archiver.kernel.org>; Wed, 13 Aug 2025 16:00:16 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 7A8C23CB83A
+	for <ltp@archiver.kernel.org>; Wed, 13 Aug 2025 16:00:32 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D95623C79F9
- for <ltp@lists.linux.it>; Wed, 13 Aug 2025 14:51:01 +0200 (CEST)
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3B2F03CB3B3
+ for <ltp@lists.linux.it>; Wed, 13 Aug 2025 15:41:19 +0200 (CEST)
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com
+ [IPv6:2607:f8b0:4864:20::536])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D1704600275
- for <ltp@lists.linux.it>; Wed, 13 Aug 2025 14:50:59 +0200 (CEST)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by nyc.source.kernel.org (Postfix) with ESMTP id BA50CA55C47;
- Wed, 13 Aug 2025 12:50:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9B4EC4CEF6;
- Wed, 13 Aug 2025 12:50:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1755089452;
- bh=1sFEp7tfTZsLqsEbQ6yN/DfqybrcqHWTfRSt7pluUnU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=G/lvod9qaNFe8MgiqMNtSrnZl6ICr4ny7PsTyyOhzVZeCv/MZyhfDLlgNxCv37Z7r
- GYSIKBF/pteVt/vjuJB94/MdSefsCgRAQaRxWEIW2/awDVXuZZFSfXB+5rMnnQexLI
- cxOX0SSrpyCPB+x6DMMiVzgiv5VergRxG6Bl2MhE=
-Date: Wed, 13 Aug 2025 14:50:49 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Message-ID: <2025081300-frown-sketch-f5bd@gregkh>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7D9F61400429
+ for <ltp@lists.linux.it>; Wed, 13 Aug 2025 15:41:18 +0200 (CEST)
+Received: by mail-pg1-x536.google.com with SMTP id
+ 41be03b00d2f7-af51596da56so5124833a12.0
+ for <ltp@lists.linux.it>; Wed, 13 Aug 2025 06:41:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1755092477; x=1755697277; darn=lists.linux.it;
+ h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=BuoYHGYkCh033zSzlMciRVTnS9J8QMWvk5NZ+OdGx/A=;
+ b=hh40xfFDRwIR0S5tODoT2OSz/TFIQmcKylU0rbN/iCoDA9e1bGYdK8Wq7ptLE2eSkm
+ 1pVB2u2OEYY2fEsBYccXyPnUpHP/9CK9fB/GAEpTpctmzaC1Z+rS3IGGCeRwouO9zVpa
+ 8bUVLA6CW56mU/6MfVSiRkzK6552d+uEFG+QSO5Gjvjxyf0T7TWmp7YANDUEhFqDEhMc
+ QhE4IOJl2MylxEbZ1Zz6Z2svmX44XB1aUZ8uM96IxYAHNF2yDezfRtRjAmiWa3699q0e
+ 1KjuV69Sj9AqqvyJCCsCZ860PN9Ma9vm84qrgUP22vJ0NdL4SUXZLigkMpU1rulZx7lQ
+ L9BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1755092477; x=1755697277;
+ h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=BuoYHGYkCh033zSzlMciRVTnS9J8QMWvk5NZ+OdGx/A=;
+ b=CdYAWcZnyz65ZOtltgwRplzs7IEf8M3fRyaCBi4R7BE3gg344O8GBQsl+0av88YBUa
+ sObAZrMdrb3PSAFcABI+IvjDi9teS1UlaZ1Q3LVJB0+OZxfAu7rXuw2mGW3OgkVQrlcm
+ 9h7A1iLATUwui4doXRLqolUrx+z4m8KJg2iH4MHqyRdBJc6P8uGwodTeyHSh6QahoBiX
+ 6tf5Re+peBDZsksAP/lzCmR/csLXy4UGAu9JfVXWKxLef+i0HYMzXOOMpq0cr9EyA13Q
+ 7FBtak+gHJ9js7KtG8MI008aiGi2zrjXo8fl5pKs88FjHa5lf8SVHxNzPHsZxJAjiAJw
+ 1cbA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVr9loznRGp9+XhDUWWT1l2VLuMVZliq8YebGUd+FVCqhwJOYD1qgoTW+o0s8dlZQGQoi0=@lists.linux.it
+X-Gm-Message-State: AOJu0YxH5qYan/MBhzjNvJoNgVwWml9nBABiEK9O5WvXofJRHkZLrOlw
+ aQsaqTAonxJSaaXFRqieHo91MTWc+3EQ1PB3XM2iGk5Z0NSUxtnDHQXayIMDIeb+csj6x1Js71v
+ vnvdFgXB9YqB2l+i+1Hz1OqoaRg32lIY/GMN5TmvkPg==
+X-Gm-Gg: ASbGncsn4uZ68hl9WHMMY0e3bkk3nQGnrRFnCKn+MUSXVPN3IFyzQ/e1eFav8EM69ch
+ v3LTs8+uHtBLeX0sGiWcSJYdyTcZPOU8XIM4a5SHpMjSgTh6b0kErosxaHSLKL2+UYMI/+0u9yg
+ eMZxvXG1yxzzANSAgH5PMwSlYOIlEBnpvqOlRIvUNlJXWGto/Zuz2jmG2+5b/ThP5WcQ3ldlEUu
+ XksocBUZTdJi1QKBbGXVWN7KbquC1pnrSNCZDPF
+X-Google-Smtp-Source: AGHT+IHJ5NorMBOk/mMmvjq4NxC90d+IjwHZjpyxn70pQloc6AgGTp1y/wa+zMeluJYPNCBvRdh21gvKSjV030UR2Pk=
+X-Received: by 2002:a17:902:f785:b0:23f:e51b:2189 with SMTP id
+ d9443c01a7336-2430d0f9a4bmr54705775ad.17.1755092476818; Wed, 13 Aug 2025
+ 06:41:16 -0700 (PDT)
+MIME-Version: 1.0
 References: <20250812173419.303046420@linuxfoundation.org>
  <CA+G9fYtBnCSa2zkaCn-oZKYz8jz5FZj0HS7DjSfMeamq3AXqNg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYtBnCSa2zkaCn-oZKYz8jz5FZj0HS7DjSfMeamq3AXqNg@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+ <bf9ccc7d-036d-46eb-85a1-b46317e2d556@sirena.org.uk>
+In-Reply-To: <bf9ccc7d-036d-46eb-85a1-b46317e2d556@sirena.org.uk>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 13 Aug 2025 19:11:05 +0530
+X-Gm-Features: Ac12FXxKeYVh06szquTrecWrS7rqGYyi8ckXtXfcapehmWdAEuqul8ZUWvjf2tw
+Message-ID: <CA+G9fYtjAWpeFfb3DesEY8y6aOefkLOVBE=zxsROWLzP_V_iDg@mail.gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Naresh Kamboju <naresh.kamboju@linaro.org>, 
+ stable@vger.kernel.org, patches@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
+ shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
+ pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, 
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, 
+ conor@kernel.org, hargar@microsoft.com, achill@achill.org, 
+ qemu-devel@nongnu.org, =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>, 
+ Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
+ Anders Roxell <anders.roxell@linaro.org>,
+ Ben Copeland <benjamin.copeland@linaro.org>, 
+ LTP List <ltp@lists.linux.it>, chrubis <chrubis@suse.cz>,
+ Petr Vorel <pvorel@suse.cz>, 
+ Ian Rogers <irogers@google.com>, linux-perf-users@vger.kernel.org, 
+ Zhang Yi <yi.zhang@huaweicloud.com>, Joseph Qi <jiangqi903@gmail.com>,
+ Jan Kara <jack@suse.cz>, 
+ linux-fsdevel@vger.kernel.org, linux-ext4 <linux-ext4@vger.kernel.org>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Wed, 13 Aug 2025 15:59:43 +0200
 Subject: Re: [LTP] [PATCH 6.16 000/627] 6.16.1-rc1 review
@@ -57,100 +102,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Ian Rogers <irogers@google.com>, Jan Kara <jack@suse.cz>,
- qemu-devel@nongnu.org, lkft-triage@lists.linaro.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, hargar@microsoft.com,
- Dan Carpenter <dan.carpenter@linaro.org>, f.fainelli@gmail.com,
- shuah@kernel.org, jonathanh@nvidia.com, Joseph Qi <jiangqi903@gmail.com>,
- patches@kernelci.org, linux-ext4 <linux-ext4@vger.kernel.org>,
- linux@roeck-us.net, Arnd Bergmann <arnd@arndb.de>, srw@sladewatkins.net,
- broonie@kernel.org, Ben Copeland <benjamin.copeland@linaro.org>,
- LTP List <ltp@lists.linux.it>, rwarsow@gmx.de, pavel@denx.de,
- patches@lists.linux.dev, conor@kernel.org, linux-perf-users@vger.kernel.org,
- Zhang Yi <yi.zhang@huaweicloud.com>, achill@achill.org,
- linux-fsdevel@vger.kernel.org, akpm@linux-foundation.org,
- torvalds@linux-foundation.org, sudipm.mukherjee@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Aug 13, 2025 at 05:46:26PM +0530, Naresh Kamboju wrote:
-> Long story:
-> 1)
-> The perf gcc-13 build failed on x86_64 and i386.
-> 
-> Build regression: qemu-arm64 ARM64_64K_PAGES ltp syscalls swap fsync
-> fallocate failed.
-> 
-> > Ian Rogers <irogers@google.com>
-> >     perf topdown: Use attribute to see an event is a topdown metic or slots
-> 
-> Build error:
-> 
-> arch/x86/tests/topdown.c: In function 'event_cb':
-> arch/x86/tests/topdown.c:53:25: error: implicit declaration of
-> function 'pr_debug' [-Werror=implicit-function-declaration]
->    53 |                         pr_debug("Broken topdown information
-> for '%s'\n", evsel__name(evsel));
->       |                         ^~~~~~~~
-> cc1: all warnings being treated as errors
+On Wed, 13 Aug 2025 at 18:21, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Wed, Aug 13, 2025 at 05:46:26PM +0530, Naresh Kamboju wrote:
+> > On Tue, 12 Aug 2025 at 23:57, Greg Kroah-Hartman
+>
+> > The following list of LTP syscalls failure noticed on qemu-arm64 with
+> > stable-rc 6.16.1-rc1 with CONFIG_ARM64_64K_PAGES=y build configuration.
+> >
+> > Most failures report ENOSPC (28) or mkswap errors, which may be related
+> > to disk space handling in the 64K page configuration on qemu-arm64.
+> >
+> > The issue is reproducible on multiple runs.
+> >
+> > * qemu-arm64, ltp-syscalls - 64K page size test failures list,
+> >
+> >   - fallocate04
+> >   - fallocate05
+> >   - fdatasync03
+> >   - fsync01
+> >   - fsync04
+> >   - ioctl_fiemap01
+> >   - swapoff01
+> >   - swapoff02
+> >   - swapon01
+> >   - swapon02
+> >   - swapon03
+> >   - sync01
+> >   - sync_file_range02
+> >   - syncfs01
 
-Already fixed.
+These test failures are not seen on Linus tree v6.16 or v6.15.
 
-> 2)
-> 
-> The following list of LTP syscalls failure noticed on qemu-arm64 with
-> stable-rc 6.16.1-rc1 with CONFIG_ARM64_64K_PAGES=y build configuration.
-> 
-> Most failures report ENOSPC (28) or mkswap errors, which may be related
-> to disk space handling in the 64K page configuration on qemu-arm64.
-> 
-> The issue is reproducible on multiple runs.
-> 
-> * qemu-arm64, ltp-syscalls - 64K page size test failures list,
-> 
->   - fallocate04
->   - fallocate05
->   - fdatasync03
->   - fsync01
->   - fsync04
->   - ioctl_fiemap01
->   - swapoff01
->   - swapoff02
->   - swapon01
->   - swapon02
->   - swapon03
->   - sync01
->   - sync_file_range02
->   - syncfs01
-> 
-> Reproducibility:
->  - 64K config above listed test fails
->  - 4K config above listed test pass.
-> 
-> Regression Analysis:
-> - New regression? yes
+>
+> I'm also seeing epoll_ctl04 failing on Raspberry Pi 4, there's a bisect
+> still running but I suspect given the error message:
 
-Regression from 6.16?  Or just from 6.15.y?
+Right !
+LTP syscalls epoll_ctl04 test is failing on Linux mainline as well
+with this error on LKFT CI system on several platforms.
 
-> 3)
-> 
-> Test regression: stable-rc 6.16.1-rc1 WARNING fs jbd2 transaction.c
-> start_this_handle
-> 
-> Kernel warning noticed on this stable-rc 6.16.1-rc1 this regression was
-> reported last month on the Linux next,
-> 
-> - https://lore.kernel.org/all/CA+G9fYsyYQ3ZL4xaSg1-Tt5Evto7Zd+hgNWZEa9cQLbahA1+xg@mail.gmail.com/
+>
+> epoll_ctl04.c:59: TFAIL: epoll_ctl(..., EPOLL_CTL_ADD, ...) with number of nesting is 5 expected EINVAL: ELOOP (40)
+>
+> that it might be:
+>
+> # bad: [b47ce23d38c737a2f84af2b18c5e6b6e09e4932d] eventpoll: Fix semi-unbounded recursion
+>
+> which already got tested, or something adjacent.
 
-Ok, no real regression here if this was already in 6.16.
+A patch has been proposed to update the LTP test case to align with
+recent changes in the Linux kernel code.
 
-Doesn't look like it got fixed in 6.17-rc1 either :(
+[LTP] [PATCH] syscalls/epoll_ctl04: add ELOOP to expected errnos
 
-thanks,
+-https://lore.kernel.org/ltp/39ee7abdee12e22074b40d46775d69d37725b932.1754386027.git.jstancek@redhat.com/
 
-greg k-h
+- Naresh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
