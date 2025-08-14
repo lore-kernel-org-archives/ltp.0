@@ -4,99 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 228A0CA0EDC
-	for <ltp@archiver.kernel.org>; Thu, 14 Aug 2025 13:07:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B92DCA0EDC
+	for <ltp@archiver.kernel.org>; Thu, 14 Aug 2025 13:16:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 37F5C3CBC31
-	for <ltp@archiver.kernel.org>; Thu, 14 Aug 2025 15:07:01 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D88B23CBB58
+	for <ltp@archiver.kernel.org>; Thu, 14 Aug 2025 15:16:40 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1BB863CB133
- for <ltp@lists.linux.it>; Thu, 14 Aug 2025 15:06:45 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 28D973CB133
+ for <ltp@lists.linux.it>; Thu, 14 Aug 2025 15:16:25 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 85A1D6002C4
- for <ltp@lists.linux.it>; Thu, 14 Aug 2025 15:06:43 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8C4FA100040D
+ for <ltp@lists.linux.it>; Thu, 14 Aug 2025 15:16:24 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 226901F458;
- Thu, 14 Aug 2025 13:06:43 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3ADEC219C7
+ for <ltp@lists.linux.it>; Thu, 14 Aug 2025 13:16:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1755176803;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Bg24rUVvXSKfAY29dUSfx5/TyoWVdoZas6MBhmp8XpQ=;
- b=aoAkg2p0iPqtLTt15PMVF0ywV+J8122Ma4lN6srCZfwk7keXaUcr6ouNzn5S6VgZ2B/pOA
- jqKciCzE+mCm5j0jZpqJ20ov83K4xrcNMLwrPQ1GBDh9lc9r46GsRm8/xgm/YfKi49SCYa
- Cvu7+GEC9Yz6/JdA9+4HEclGy9soVwU=
+ t=1755177382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=HE0qGOxw38tplh62/Epi2GYgMcQl7yAH7TEqp0Y/olE=;
+ b=lUisLAeBbX5GY1cN9PzAma8GMi1eUV0SgyVsqJFQnXucbq2qMuPjT6HljeUe84nEBdd6bc
+ TAlq54olwIRpkzkczxWhg6r7UxAX4A26d9gjLHQw5wOjvONmUWOw1BDJPeCxh+SKLD+875
+ B4WOgEaLUPrR69GSXeeDnjnkWLmeHOI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1755176803;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Bg24rUVvXSKfAY29dUSfx5/TyoWVdoZas6MBhmp8XpQ=;
- b=tGH0f9tFgQdSaSROW9lp8uGsO72lrq+CZgV2B0hKpbFw8jt4gpCrgfXKy+YOG1G1GCkdZh
- k6/MmXkxAnK3xlAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ s=susede2_ed25519; t=1755177382;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=HE0qGOxw38tplh62/Epi2GYgMcQl7yAH7TEqp0Y/olE=;
+ b=1niK/SpNmHPhwKe7ImLPeH0pDczUstzK2YBvViZyx0P/EGHuLR2+eZwO4HQrXtaHiGop/z
+ Am4+DLS7JU3YiYBw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=lUisLAeB;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="1niK/SpN"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1755176803;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Bg24rUVvXSKfAY29dUSfx5/TyoWVdoZas6MBhmp8XpQ=;
- b=aoAkg2p0iPqtLTt15PMVF0ywV+J8122Ma4lN6srCZfwk7keXaUcr6ouNzn5S6VgZ2B/pOA
- jqKciCzE+mCm5j0jZpqJ20ov83K4xrcNMLwrPQ1GBDh9lc9r46GsRm8/xgm/YfKi49SCYa
- Cvu7+GEC9Yz6/JdA9+4HEclGy9soVwU=
+ t=1755177382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=HE0qGOxw38tplh62/Epi2GYgMcQl7yAH7TEqp0Y/olE=;
+ b=lUisLAeBbX5GY1cN9PzAma8GMi1eUV0SgyVsqJFQnXucbq2qMuPjT6HljeUe84nEBdd6bc
+ TAlq54olwIRpkzkczxWhg6r7UxAX4A26d9gjLHQw5wOjvONmUWOw1BDJPeCxh+SKLD+875
+ B4WOgEaLUPrR69GSXeeDnjnkWLmeHOI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1755176803;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Bg24rUVvXSKfAY29dUSfx5/TyoWVdoZas6MBhmp8XpQ=;
- b=tGH0f9tFgQdSaSROW9lp8uGsO72lrq+CZgV2B0hKpbFw8jt4gpCrgfXKy+YOG1G1GCkdZh
- k6/MmXkxAnK3xlAw==
+ s=susede2_ed25519; t=1755177382;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=HE0qGOxw38tplh62/Epi2GYgMcQl7yAH7TEqp0Y/olE=;
+ b=1niK/SpNmHPhwKe7ImLPeH0pDczUstzK2YBvViZyx0P/EGHuLR2+eZwO4HQrXtaHiGop/z
+ Am4+DLS7JU3YiYBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 49DC01368C;
- Thu, 14 Aug 2025 13:06:40 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 313581368C
+ for <ltp@lists.linux.it>; Thu, 14 Aug 2025 13:16:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id qFBwEGDfnWg7YgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 14 Aug 2025 13:06:40 +0000
-Date: Thu, 14 Aug 2025 15:06:29 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20250814130629.GA575710@pevik>
-References: <20250812141709.33540-1-liwang@redhat.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id c73SC6bhnWj4ZAAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Thu, 14 Aug 2025 13:16:22 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu, 14 Aug 2025 15:16:13 +0200
+Message-ID: <20250814131615.19626-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250812141709.33540-1-liwang@redhat.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid, suse.cz:dkim, suse.cz:email,
+ imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Queue-Id: 3ADEC219C7
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] tst_mkfs: print short hint when mkfs fails in
- device busy
+Subject: [LTP] [PATCH] aio_cancel_7-1: Write into a socket
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,137 +115,209 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: rafael.tinoco@linaro.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+The test schedules multiple async writes into a file and then hopes that
+at least one will block long enough that it can be canceled
+before completion. Use a socket pair instead of a file to force async
+writes to block indefinitely and make sure at least one can be canceled.
 
+Also add another case to the final result check because the aio_cancel()
+call may happen between one write finishing and another write starting.
+Then the cancel will be successful and all non-zero task results will be
+ECANCELED.
 
-> During daily CI testing of LTP, we were intermittently getting EBUSY (in many
-> testcases) when mkfs the /dev/loop0 device. It seemed that userspace was
-> reopening the block device immediately after unmounting it. Debugging with
-> bpftrace revealed that the udisks2 daemon was the culprit (probing the block
-> device on every change). As this was outside the scope of the LTP code, we
-> added a printout suggesting that testers stop the udisk2 service when
-> encountering this failure during testing.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ .../conformance/interfaces/aio_cancel/7-1.c   | 81 ++++++++++++-------
+ 1 file changed, 54 insertions(+), 27 deletions(-)
 
->   ==== setxattr01 ====
->   tst_test.c:1888: TINFO: === Testing on ext2 ===
->   tst_test.c:1217: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts='' mke2fs 1.47.1 (20-May-2024)
->   tst_test.c:1229: TINFO: Mounting /dev/loop0 to /tmp/LTP_setd24dAf/mntpoint fstyp=ext2 flags=0
->   ...
->   setxattr01.c:174: TPASS: setxattr(2) failed: EFAULT (14)
->   tst_test.c:1888: TINFO: === Testing on ext3 ===
->   tst_test.c:1217: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts='' mke2fs 1.47.1 (20-May-2024)
->   /dev/loop0 is apparently in use by the system; will not make a filesystem here!
->   tst_test.c:1217: TBROK: mkfs.ext3 failed with exit code 1
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/7-1.c
+index 268408ab1..28c8fe78a 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/7-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/7-1.c
+@@ -29,71 +29,82 @@
+ #include <sys/types.h>
+ #include <unistd.h>
+ #include <sys/stat.h>
+-#include <fcntl.h>
+ #include <string.h>
+ #include <errno.h>
+ #include <stdlib.h>
+ #include <aio.h>
++#include <sys/socket.h>
+ 
+ #include "posixtest.h"
+-#include "tempfile.h"
+ 
+ #define TNAME "aio_cancel/7-1.c"
+ 
+-#define BUF_NB		128
+-#define BUF_SIZE	1024
++#define BUF_NB		8
+ 
+ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ {
+-	char tmpfname[PATH_MAX];
+-	int fd;
++	int fds[2];
+ 	struct aiocb *aiocb[BUF_NB];
+ 	int i;
+ 	int in_progress;
+ 	int gret;
++	int bufsize;
++	unsigned int argsize = sizeof(bufsize);
+ 
+ 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+ 		return PTS_UNSUPPORTED;
+ 
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_cancel_7_1");
+-	unlink(tmpfname);
+-	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+-	if (fd == -1) {
+-		printf(TNAME " Error at open(): %s\n", strerror(errno));
++	gret = socketpair(AF_UNIX, SOCK_DGRAM, 0, fds);
++	if (gret == -1) {
++		printf(TNAME " Error creating sockets(): %s\n",
++			strerror(errno));
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	unlink(tmpfname);
++	gret = getsockopt(fds[0], SOL_SOCKET, SO_SNDBUF, &bufsize, &argsize);
++	if (gret == -1) {
++		printf(TNAME " Error reading socket buffer size: %s\n",
++			strerror(errno));
++		close(fds[0]);
++		close(fds[1]);
++		return PTS_UNRESOLVED;
++	}
++
++	/* Socket buffer size is twice the maximum message size */
++	bufsize /= 2;
+ 
+ 	/* create AIO req */
+ 	for (i = 0; i < BUF_NB; i++) {
+ 		aiocb[i] = calloc(1, sizeof(struct aiocb));
+ 
+ 		if (aiocb[i] == NULL) {
+-			printf(TNAME " Error at malloc(): %s\n",
++			printf(TNAME " Error at calloc(): %s\n",
+ 			       strerror(errno));
+-			close(fd);
++			close(fds[0]);
++			close(fds[1]);
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
+-		aiocb[i]->aio_fildes = fd;
+-		aiocb[i]->aio_buf = malloc(BUF_SIZE);
++		aiocb[i]->aio_fildes = fds[0];
++		aiocb[i]->aio_buf = malloc(bufsize);
+ 
+ 		if (aiocb[i]->aio_buf == NULL) {
+ 			printf(TNAME " Error at malloc(): %s\n",
+ 			       strerror(errno));
+-			close(fd);
++			close(fds[0]);
++			close(fds[1]);
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
+-		aiocb[i]->aio_nbytes = BUF_SIZE;
++		aiocb[i]->aio_nbytes = bufsize;
+ 		aiocb[i]->aio_offset = 0;
+ 		aiocb[i]->aio_sigevent.sigev_notify = SIGEV_NONE;
+ 
+ 		if (aio_write(aiocb[i]) == -1) {
+ 			printf(TNAME " loop %d: Error at aio_write(): %s\n",
+ 			       i, strerror(errno));
+-			close(fd);
++			close(fds[0]);
++			close(fds[1]);
+ 			return PTS_FAIL;
+ 		}
+ 	}
+@@ -101,10 +112,11 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ 	/* try to cancel all
+ 	 * we hope to have enough time to cancel at least one
+ 	 */
+-	gret = aio_cancel(fd, NULL);
++	gret = aio_cancel(fds[0], NULL);
+ 	if (gret == -1) {
+ 		printf(TNAME " Error at aio_cancel(): %s\n", strerror(errno));
+-		close(fd);
++		close(fds[0]);
++		close(fds[1]);
+ 		return PTS_FAIL;
+ 	}
+ 
+@@ -117,9 +129,9 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ 			case -1:
+ 				printf(TNAME " Error at aio_error(): %s\n",
+ 				       strerror(errno));
+-				close(fd);
++				close(fds[0]);
++				close(fds[1]);
+ 				return PTS_FAIL;
+-				break;
+ 			case EINPROGRESS:
+ 				/* at this point, all operations should be:
+ 				 *    canceled
+@@ -130,12 +142,26 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ 					printf(TNAME
+ 					       " Error at aio_error(): %s\n",
+ 					       strerror(errno));
+-					close(fd);
++					close(fds[0]);
++					close(fds[1]);
+ 					return PTS_FAIL;
+ 				}
+ 
+ 				in_progress = 1;
+ 				break;
++			case ECANCELED:
++				/* aio_cancel() happened between one
++				 * write finishing and another starting.
++				 * aio_cancel() returned AIO_CANCELED
++				 * and the first non-zero result is ECANCELED.
++				 */
++				if (gret == AIO_CANCELED) {
++					printf("Test PASSED\n");
++					close(fds[0]);
++					close(fds[1]);
++					return PTS_PASS;
++				}
++				break;
+ 			case 0:
+ 				/* we seek one not canceled and check why.
+ 				 * (perhaps) it has not been canceled
+@@ -144,7 +170,8 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ 				 */
+ 				if (gret == AIO_NOTCANCELED) {
+ 					printf("Test PASSED\n");
+-					close(fd);
++					close(fds[0]);
++					close(fds[1]);
+ 					return PTS_PASS;
+ 				}
+ 				break;
+@@ -152,7 +179,7 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ 		}
+ 	} while (in_progress);
+ 
+-	close(fd);
+-
++	close(fds[0]);
++	close(fds[1]);
+ 	return PTS_UNRESOLVED;
+ }
+-- 
+2.50.1
 
->   ==== close_range01 ====
->   tst_test.c:1888: TINFO: === Testing on ext2 ===
->   tst_test.c:1217: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts='' mke2fs 1.47.1 (20-May-2024)
->   tst_test.c:1229: TINFO: Mounting /dev/loop0 to /tmp/LTP_cloXeXI39/mnt fstyp=ext2 flags=0
->   ...
->   close_range01.c:188: TPASS: No kernel taints
->   tst_test.c:1888: TINFO: === Testing on ext3 ===
->   tst_test.c:1217: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts='' mke2fs 1.47.1 (20-May-2024)
->   /dev/loop0 is apparently in use by the system; will not make a filesystem here!
->   tst_test.c:1217: TBROK: mkfs.ext3 failed with exit code 1
-
-> Running bpftrace in a separate terminal and also with ./close_range01
-> simultaneously to get the output shows that another daemon (udisksd) is
-> probing the block device on every change.
-
-Good catch!
-
->   # bpftrace -e 'tracepoint:syscalls:sys_enter_openat /str(args->filename)=="/dev/loop0"/ \
->       { printf("%s pid=%d flags=0x%x %s\n", comm, pid, args->flags, str(args->filename)); }'
->   Attaching 1 probe...
->   close_range01 pid=298948 flags=0x2 /dev/loop0
->   (udev-worker) pid=298949 flags=0x288000 /dev/loop0
->   close_range01 pid=298948 flags=0x0 /dev/loop0
->   systemd-udevd pid=702 flags=0x288000 /dev/loop0
->   (udev-worker) pid=298949 flags=0x288000 /dev/loop0
->   (udev-worker) pid=298949 flags=0x280000 /dev/loop0
->   udisksd pid=87323 flags=0x0 /dev/loop0
->   (udev-worker) pid=298949 flags=0x288000 /dev/loop0
->   (udev-worker) pid=298949 flags=0x288000 /dev/loop0
->   (udev-worker) pid=298949 flags=0x280000 /dev/loop0
->   udisksd pid=87323 flags=0x0 /dev/loop0
->   close_range01 pid=298948 flags=0x241 /dev/loop0
->   systemd-udevd pid=702 flags=0x288000 /dev/loop0
->   (udev-worker) pid=298949 flags=0x288000 /dev/loop0
->   (udev-worker) pid=298949 flags=0x288000 /dev/loop0
->   mkfs.ext2 pid=298969 flags=0x80 /dev/loop0
->   mkfs.ext2 pid=298969 flags=0x0 /dev/loop0
->   mkfs.ext2 pid=298969 flags=0x0 /dev/loop0
->   mkfs.ext2 pid=298969 flags=0x0 /dev/loop0
->   mkfs.ext2 pid=298969 flags=0x80800 /dev/loop0
->   mkfs.ext2 pid=298969 flags=0x0 /dev/loop0
->   mkfs.ext2 pid=298969 flags=0x82 /dev/loop0
->   (udev-worker) pid=298949 flags=0x280000 /dev/loop0
->   udisksd pid=87323 flags=0x0 /dev/loop0
->   systemd-udevd pid=702 flags=0x288000 /dev/loop0
->   (udev-worker) pid=298949 flags=0x288000 /dev/loop0
->   (udev-worker) pid=298949 flags=0x288000 /dev/loop0
->   udisksd pid=87323 flags=0x0 /dev/loop0
->   (udev-worker) pid=298949 flags=0x280000 /dev/loop0
->   udisksd pid=87323 flags=0x0 /dev/loop0
->   udisksd pid=87323 flags=0x0 /dev/loop0        <--------
->   close_range01 pid=298948 flags=0x241 /dev/loop0
->   systemd-udevd pid=702 flags=0x288000 /dev/loop0
->   (udev-worker) pid=298949 flags=0x288000 /dev/loop0
->   (udev-worker) pid=298949 flags=0x288000 /dev/loop0
->   mkfs.ext3 pid=298977 flags=0x80 /dev/loop0
->   mkfs.ext3 pid=298977 flags=0x0 /dev/loop0
->   mkfs.ext3 pid=298977 flags=0x0 /dev/loop0
->   ...
-
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  lib/tst_mkfs.c | 4 ++++
->  1 file changed, 4 insertions(+)
-
-> diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-> index 736324f04..dfec06a21 100644
-> --- a/lib/tst_mkfs.c
-> +++ b/lib/tst_mkfs.c
-> @@ -107,6 +107,10 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
->  			"%s not found in $PATH", mkfs);
->  	break;
->  	default:
-> +		tst_resm_(file, lineno, TWARN,
-> +			"Check if mkfs failed with the (loop) device busy. "
-> +			"Background probing (e.g., udisks2) can cause this. \n"
-When 2 lines are needed, could it be without trailing space?
-			"Background probing (e.g., udisks2) can cause this.\n"
-
-nit: I don't like LTP messages are split on more lines, but this is indeed too
-long.
-
-> +			"Consider temporarily stopping udisks2 during the test.");
-
-We already have suggestion about some process running in tst_umount()
-in lib/tst_device.c:
-
-			tst_resm(TINFO, "Likely gvfsd-trash is probing newly "
-				 "mounted fs, kill it to speed up tests.");
-
-Would you agree to have a library function which would parse
-/proc/*/comm to check if particular process is running?
-(I would do it as a separate effort).
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
-
->  		tst_brkm_(file, lineno, TBROK, cleanup_fn,
->  			"%s failed with exit code %i", mkfs, ret);
->  	}
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
