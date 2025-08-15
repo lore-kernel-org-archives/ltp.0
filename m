@@ -4,96 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66DF5CA0EDC
-	for <ltp@archiver.kernel.org>; Thu, 14 Aug 2025 23:57:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06F6ACA0EE4
+	for <ltp@archiver.kernel.org>; Fri, 15 Aug 2025 00:45:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1755215866; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1755218708; h=mime-version :
  references : in-reply-to : date : message-id : to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=cerhdn8ohf3DEP6DKY2QeEtxcHFByPxwmRFb++1S0JA=;
- b=Xg3hqw3TayJKB/QQRgFuwmp+UcPclgAVKTGUzwBpUO0pJ64Oz5LmA+kv9wgrB5SjfCd2q
- 6YWQaKTCl7ygizHCTZmj89NShTlvePSTi+CGvOr1LI1QN8G6eHB6bsbr0UfqufMbB7BohPj
- z6QrYfHyR7aKfbSJP1iL0hTJTJ21JIE=
+ bh=64CRfGKWVIlNlzZoZWkrjq1TMFj+Txv7P88qkeKT2Es=;
+ b=ic5g9TsTY1l7KOjHakZAiEqvUtjCpDrg+bXVLcWkUUtIAxF9kJVdsk11FTmg0NGR8KubB
+ pY99Fc4CybrHkYA71HA1Ov66/QyOYrwjbDXQFELhm4NQmdKRMhTx3CyOAuIk03QNxLscVXW
+ Lndw0+QsKmKZAYLlLhOnrGhk/sBdBsY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 67B7B3CBDF0
-	for <ltp@archiver.kernel.org>; Fri, 15 Aug 2025 01:57:46 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id DE46A3CBDF6
+	for <ltp@archiver.kernel.org>; Fri, 15 Aug 2025 02:45:08 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0CD723CA46D
- for <ltp@lists.linux.it>; Fri, 15 Aug 2025 01:57:25 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 830853C6846
+ for <ltp@lists.linux.it>; Fri, 15 Aug 2025 02:44:47 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2114560029D
- for <ltp@lists.linux.it>; Fri, 15 Aug 2025 01:57:23 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9AF946168CC
+ for <ltp@lists.linux.it>; Fri, 15 Aug 2025 02:44:45 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1755215842;
+ s=mimecast20190719; t=1755218684;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GL+vjokp9FCTU49RF/MZstClYa6R78oXTeQHbwIF6zM=;
- b=Gsd+Qo061W+b2GlhwZf5FC+/GF7AF2O+Ongta14kPjrBc+adO7vDAFiT8DIzq0aMC/r5Pm
- tO4bRy9dsfokF0PtlsLcz3wOhKxzwlvBUfNmAxnatpEWjWBftvgd1fA68HmWaDkx/yO6wu
- fy3iYbD3OkR3Exeh+twz2WybAAWKwG4=
+ bh=spqasDZV4sleQKSvBeM7vD0Z3kuSIZKviFYDijF+JWk=;
+ b=Z+HSyCWGqtD7ulFhNLxpVJM0lxUM4marSQXaOjkXfvBFgGrVpg9YSiiH3d+GYxzmDABPsU
+ 0KVMLsWmdpgezXE5dBY7WOVktl7Efhz5FYXcrsTrKFNpXfZlyC/8DsqME6BGo+mvA3JPak
+ PouQ7k1cWakCyngb1aJBlIkF8Ov+qfY=
 Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
  [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-111-U3jqfsZ_OTe2Svzzjr6zMw-1; Thu, 14 Aug 2025 19:57:21 -0400
-X-MC-Unique: U3jqfsZ_OTe2Svzzjr6zMw-1
-X-Mimecast-MFC-AGG-ID: U3jqfsZ_OTe2Svzzjr6zMw_1755215840
+ us-mta-125-JBVeYS6yOJS0kePYQsCqQw-1; Thu, 14 Aug 2025 20:44:42 -0400
+X-MC-Unique: JBVeYS6yOJS0kePYQsCqQw-1
+X-Mimecast-MFC-AGG-ID: JBVeYS6yOJS0kePYQsCqQw_1755218682
 Received: by mail-pl1-f197.google.com with SMTP id
- d9443c01a7336-244581950a1so17036695ad.2
- for <ltp@lists.linux.it>; Thu, 14 Aug 2025 16:57:21 -0700 (PDT)
+ d9443c01a7336-244581950a1so17431815ad.2
+ for <ltp@lists.linux.it>; Thu, 14 Aug 2025 17:44:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1755215840; x=1755820640;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=GL+vjokp9FCTU49RF/MZstClYa6R78oXTeQHbwIF6zM=;
- b=Y8AZTmdBT6ttDQGC+ljvnNVbCrKjrZUrBLQv/q/zrCGjIUKOK/PiirtylFFThXZm6O
- WkgXF69rzeoLNOF4PnMC2/949Rwh1yqBo83RdKkGkB5SjwuGSBPj6wlvfkrcqQmJjqUk
- 1hJBoDBcTdjUBXFux8CLM0hILYqeumiyP0U6TFC3Suxhj9HMWddhDmRmAOmoRk5Of1hf
- VW3FCgCps/c7tt5NVmXM+6pscB7p3+yF1XCAz2D7mJLt+B/mldcHbSpIgjz5rSxnzKW6
- n7hVSnR+MuG+FWU507U0ExXPB0zraAyeVseaRjFnB1AvXii4IO2QDwm0zrWG18bACecs
- qehg==
-X-Gm-Message-State: AOJu0Yzs029CkHyPMCCX67/YERA7AJbB1OMvCgDv0uYXr3JFca+FNK0D
- mx6D8upBEfshLz92of5cZaaztOeaoYggfH3Wg4iLNlRZmlX3RPDNfrOfWmbE61cCnzkJCnfmuCf
- 5nuOAnaq8Z1DbentzkamAUwIgVQ0QO9aL6Z578mR4CxeZXzdGOmIKPkXjCdSNKLDkQTDt6jzoLY
- 81ifKOIFvp298mdfq0KFgWWlDReLQ=
-X-Gm-Gg: ASbGnctR2jkZdsrHbGZLUE9208YSRVvVOSQZU8bvJ+lsPXG7o3mFc6LtveOKDLJaAAO
- CDJhwWklQMxVft5Zl+7gQ5CJzfISwhA4WogAN1CruegJeCWdAHaBhJO6kni0hZrOLe4CKLx8CFk
- vZ85A4D8JcVWQLNThrUvdwGg==
-X-Received: by 2002:a17:902:ef02:b0:244:6b77:5b10 with SMTP id
- d9443c01a7336-2446d89d221mr698305ad.36.1755215840179; 
- Thu, 14 Aug 2025 16:57:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFlP/6sEx7OnJtA4trymsvk3/U75eHuFdW43OTcKJK89NLveyLSm0ARbglZ35bPZNIQQqiJBAxKC8kxbMPh6y4=
-X-Received: by 2002:a17:902:ef02:b0:244:6b77:5b10 with SMTP id
- d9443c01a7336-2446d89d221mr698035ad.36.1755215839685; Thu, 14 Aug 2025
- 16:57:19 -0700 (PDT)
+ d=1e100.net; s=20230601; t=1755218682; x=1755823482;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=spqasDZV4sleQKSvBeM7vD0Z3kuSIZKviFYDijF+JWk=;
+ b=oi2OW4p132zP6CFzUx1exYgmh4DM0tUg5gxUSjB+i1PAqOp3Dd6eG3F8rXOBVwxkRc
+ zSd/BxCxM+KLAbE9IBQbEt3KP+a7fIKG2vqENmilz8d/jiK4SWOEhtMGeggqpp9gRoI3
+ fkkcNV1PAdJUEz/F8u8zno+hD/NkjeaNu53OofqpMKoVXETE/OUsG16tQzNWflusfRm8
+ HKejPglcRXUgyrmFAwyUkjLxKOncHFcKreciy6iLlgu32KBOC5GriFaLxGxJQYgGpS2C
+ SgQx3Ko7jF2YM8Kq65c9xueqXa5IkyI2WgiZBuWEbSJUN8628Nke5W3TAlRvPupgMzFs
+ mqDg==
+X-Gm-Message-State: AOJu0Yy3AN9qgKzMThUbDsIVJ8F+EqquhHg8p711uSxchnB032uBqBp/
+ Wp35cCz4RzOw0wvdtp+eMQug/6ZYtuPxtBMjHJs5gOg8acKBeep60//MkmEUmCcC8ceFgW09xpJ
+ 8oEJeeIoxzajhcRsmNIwaAgEyMv4y+bAGqVvZxeKeDNy3BIGlgYJ2JpYsRvD2JZQgZr9J5SNFOK
+ pkZh9kT/vqXDk4sAR6k6VuTPJrcvk=
+X-Gm-Gg: ASbGncvgvdw6fj+LaQbnmwLIHH2IBA+EppGFgq7yGcaHMdaY2nLPNqwPyMZYJhJ7QHu
+ DdN8wn6uYOfUdLL4NK60cOB3wpJKlaMVNs/cu4A/616FkQyQE1FNwu5FudltUKgbLTIrv79AWUd
+ mjiE0DLn6TFs6XYrhiCsaB3Q==
+X-Received: by 2002:a17:902:cccb:b0:235:7c6:ebdb with SMTP id
+ d9443c01a7336-2446d6dc1bemr2664555ad.10.1755218681623; 
+ Thu, 14 Aug 2025 17:44:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHMvIE9ZleD/E4Wjkxc0YsyVnhm0RzkIy7w7ZcdNoNQhProsXMSaVPCoS4FrXvORSLxweU8RbyvsFkyHLF1wwQ=
+X-Received: by 2002:a17:902:cccb:b0:235:7c6:ebdb with SMTP id
+ d9443c01a7336-2446d6dc1bemr2664335ad.10.1755218681217; Thu, 14 Aug 2025
+ 17:44:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20250807062941.348971-1-pvorel@suse.cz>
- <20250807062941.348971-2-pvorel@suse.cz>
- <CAEemH2e1CbqCv8Bq4dJgBoRU2hJ72fPTsHJDYV8oLXRgs7SdAw@mail.gmail.com>
- <20250814131857.GB575710@pevik>
-In-Reply-To: <20250814131857.GB575710@pevik>
-Date: Fri, 15 Aug 2025 07:57:08 +0800
-X-Gm-Features: Ac12FXwYfM6pP1I5voJuGXAeLTs1M33rCB680CjyDdN0odAk9iCh_KeDQs91dDA
-Message-ID: <CAEemH2cLYOrZkHxj=EYcC3MYvB2cAEUhwF+jL9v6KZi2YvysNQ@mail.gmail.com>
+References: <20250812141709.33540-1-liwang@redhat.com>
+ <20250814130629.GA575710@pevik>
+In-Reply-To: <20250814130629.GA575710@pevik>
+Date: Fri, 15 Aug 2025 08:44:28 +0800
+X-Gm-Features: Ac12FXxnMamBjJbnlR7uF9v20FZ5A1JQVE-nQSpriAtaWMx4snxys82LtX5wnZ0
+Message-ID: <CAEemH2fgnJH201_fvDvPRbAFrfdEz4v_cEg-LXudWje-+w68VA@mail.gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: Aljcn3FZp9oVF3r_L8XYDLHAklGKz4lwH0aPwjiqT8s_1755215840
+X-Mimecast-MFC-PROC-ID: -QEJUIe8Hp_MIcfiOIkvi4T5BAPve_PZTqovb5pjnxI_1755218682
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 2/2] modules.mk: Add FORCE_MODULES=1 to fail on
- error
+Subject: Re: [LTP] [PATCH v2] tst_mkfs: print short hint when mkfs fails in
+ device busy
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,43 +105,72 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Li Wang via ltp <ltp@lists.linux.it>
 Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: rafael.tinoco@linaro.org, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBBdWcgMTQsIDIwMjUgYXQgOToxOeKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKPgo+IEhpIExpLAo+Cj4gPiBIaSBQZXRyLAo+Cj4gPiBJIGFtIHN0aWxsIHRy
-eWluZyB0byBtYWtlIHN1cmUgbXkgdW5kZXJzdGFuZGluZyBpcyBjb3JyZWN0IG9uCj4gPiAnRk9S
-Q0VfTU9EVUxFUz0xJywKPiA+IHdoaWNoIG9uZSBiZWxvdyBkbyB5b3UgbWVhbjoKPgo+ID4gICAx
-LiBJZiBhIHN1YmRpcmVjdG9yeSBmYWlscywgaXQgc3RvcHMgZm9yIHRoYXQgc3ViZGlyZWN0b3J5
-IGJ1dCB0aGUKPiA+IHRvcC1sZXZlbCBtYWtlCj4gPiAgICAgICBjb250aW51ZXMgd2l0aCB0aGUg
-bmV4dCBkaXJlY3RvcnkgaW4gdGhlIGxpc3QuCj4KPiA+ICAgMi4gVGhlIHRvcC1sZXZlbCBidWls
-ZCBzaG91bGQgc3RvcCBpbW1lZGlhdGVseSB3aGVuIGFueSBzdWJkaXJlY3RvcnkKPiA+IGZhaWxz
-Lgo+Cj4gPiBJZiB0aGUgYW5zd2VyIGlzICgxKSwgSSBiZWxpZXZlIG91ciBjdXJyZW50IHBhdGNo
-IGlzIGNvcnJlY3QgKGZlZWwgZnJlZSB0bwo+ID4gYWRkIG15IFJCVCkuCj4gPiBIb3dldmVyLCBp
-ZiB0aGUgaW50ZW5kZWQgYmVoYXZpb3IgaXMgKDIpLCB3ZSB3aWxsIG5lZWQgdG8gYW1lbmQgdGhl
-Cj4gPiB0b3AtbGV2ZWwgTWFrZWZpbGUKPiA+IHRvIGVuc3VyZSB0aGUgYnVpbGQgc3RvcHMgYXQg
-dGhlIGZpcnN0IGZhaWx1cmUuCj4KPiBJIGludGVuZGVkIDEuLCBidXQgZXhpdCBhZnRlcndhcmRz
-IG5vbi16ZXJvIG9uIGVycm9yLiBCdXQgdGhpcyBhY3R1YWxseSBpcyBub3QKPiB0cnVlLiAgPT4g
-djUgaXMgbmVlZGVkLgo+Cj4gVGhlIHJlYXNvbiBmb3IgMS4gd2FzIHRvIHNlZSB3aGljaCBtb2R1
-bGVzIGZhaWxlZCAoYWxsIG9mIHRoZW0pLgo+IE1heWJlIGl0J2QgYmUgZW5vdWdoIHRvIGltcGxl
-bWVudCAyLgoKWWVzLCBidXQgRk9SQ0VfTU9EVUxFUz0xIGlzIHN0aWxsIG1ha2Ugc2Vuc2UsIHBl
-b3BsZSBtYXkgbm90IGxpa2UKdG8gc2VlIHRoZSBtb2R1bGUncyBlcnJvciBzdG9wIHRoZSBidWls
-ZCBldmVyeSB0aW1lLgoKPgo+IFRoaXMgd29ya3MgZm9yIG1lIChzZW5kaW5nIHY1IHRvZGF5KToK
-PiAtICAgICAgICAgICAgICAgJChNQUtFKSAtQyAkKGFic19zcmNkaXIpLyQoZGlyKTsgXAo+ICsg
-ICAgICAgICAgICAgICAkKE1BS0UpIC1DICQoYWJzX3NyY2RpcikvJChkaXIpOyBbICQkPyAtZXEg
-MCBdIHx8IGV4aXQgZXhpdCAkJD87IFwKCldoeSBub3Q6CiAgICAkKE1BS0UpIC1DICQoYWJzX3Ny
-Y2RpcikvJChkaXIpIHx8IGV4aXQgJCQ/OyBcCgo+Cj4gSSB3b25kZXIgaWYgaXQncyBlbm91Z2gg
-dG8gYWRkIHRoZSBjaGFuZ2Ugb25seSB0byAnbW9kdWxlcycgdGFyZ2V0IG9yIHdoZXRoZXIgSQo+
-IHNob3VsZCBhZGQgaXQgdG8gdGhlIG90aGVycyAobW9kdWxlcy1jbGVhbiwgbW9kdWxlcy1pbnN0
-YWxsKSBhcyB3ZWxsLgoKVG8gZW5zdXJlcyBjb25zaXN0ZW50IGFuZCBjb3JyZWN0IGVycm9yIGhh
-bmRsaW5nLCB3ZSBwcm9iYWJseSBuZWVkIHRvCnRha2UgY2FyZSBhbGwuCgpOb3JtYWxseSwgd2Ug
-d291bGRuJ3QgZW5jb3VudGVyIGNsZWFudXAvaW5zdGFsbGF0aW9uIGVycm9ycywgYnV0IGltYWdp
-bmUgaWYKbW9kdWxlcy1jbGVhbiBmYWlsZWQgaW4gYSBzdWJkaXJlY3RvcnkgYnV0IGNvbnRpbnVl
-ZCBzaWxlbnRseS4gV2UgbWlnaHQgdGhpbmsKZXZlcnl0aGluZyB3YXMgY2xlYW5lZCwgYnV0IG91
-dGRhdGVkIC5rbyBvciAubyBmaWxlcyBtaWdodCByZW1haW4uCgpGb3IgbW9kdWxlcy1pbnN0YWxs
-OiBmYWlsIGZhc3QgYnkgZGVmYXVsdCB0byBhdm9pZCBhIHBhcnRpYWxseQppbnN0YWxsZWQgdHJl
-ZSBpcyBuZWNlc3NhcnkuCgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCgotLSAKTWFpbGluZyBsaXN0
-IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Petr Vorel <pvorel@suse.cz> wrote:
+
+> > diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+> > index 736324f04..dfec06a21 100644
+> > --- a/lib/tst_mkfs.c
+> > +++ b/lib/tst_mkfs.c
+> > @@ -107,6 +107,10 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+> >                       "%s not found in $PATH", mkfs);
+> >       break;
+> >       default:
+> > +             tst_resm_(file, lineno, TWARN,
+> > +                     "Check if mkfs failed with the (loop) device busy. "
+> > +                     "Background probing (e.g., udisks2) can cause this. \n"
+> When 2 lines are needed, could it be without trailing space?
+>                         "Background probing (e.g., udisks2) can cause this.\n"
+>
+> nit: I don't like LTP messages are split on more lines, but this is indeed too
+> long.
+
++1
+
+> > +                     "Consider temporarily stopping udisks2 during the test.");
+>
+> We already have suggestion about some process running in tst_umount()
+> in lib/tst_device.c:
+>
+>                         tst_resm(TINFO, "Likely gvfsd-trash is probing newly "
+>                                  "mounted fs, kill it to speed up tests.");
+
+This is a good example, thanks!!
+
+(The debugging work exhausted my energy this week, and I felt like my
+brain was stuck there, unable to write a simple printed message.)
+
+So what about:
+
+ tst_resm_(file, lineno, TWARN,
+    "mkfs may have failed because the device is busy (e.g., udisks2 probing). "
+    "Consider disabling background probing services.");
+
+
+> Would you agree to have a library function which would parse
+> /proc/*/comm to check if particular process is running?
+> (I would do it as a separate effort).
+
+Yes, that would be helpful to confirm some special damon is running,
+if something you were mean:
+
+if (tst_proc_comm_running("udisksd", NULL) ||
+    tst_proc_comm_running("gvfsd-trash", NULL)) {
+    tst_resm_(file, lineno, TINFO,
+              "Likely udisksd/gvfsd-trash is probing newly mounted fs
+in backgroud... ");
+}
+
+
+-- 
+Regards,
+Li Wang
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
