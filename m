@@ -4,97 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB9B9CA0ED1
-	for <ltp@archiver.kernel.org>; Sat, 16 Aug 2025 01:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BE34CA0EE4
+	for <ltp@archiver.kernel.org>; Sat, 16 Aug 2025 02:18:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1755308347; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1755310728; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=SeC0HRNXzzKO4CXrte4V8VFGTkPurLjVYqBPetsdSFw=;
- b=Ma73RPC1SV5/Z3qI3R96sv0pQgWYqiscixcrasSkzsAatGPD6dbqA4FBbouQJzeMQjyGl
- tab3/fLvFfrTdeIb1R7ih9GSSSEsIVr4DC8FuZRaskB6zEErS59VC5IjmJ8hyy12NOt2q8w
- 3IxdCyvF65uIGydNR4bNIfZ+i9Fv7lw=
+ bh=Eig0hU1GegKsB41VYZ4CS19vO8DYX981FsCXDG0Yj4I=;
+ b=RGzXF8yYwcCVKaIM8JH9FImiI9tycDRyhQ/fGEt+L2n8iFstO7HBzlgOkzpC/Bzwb96iA
+ wQ7GI6KjAJP2+yQBhFfq6McAPmpuDHkvq9XsZ6NZm3kjyHfFUNlFKtLcuTSoB+XIxMJ/iuW
+ 90853qdevp+JzFNk2UNFHmhXXDDiNy4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 94E7D3CC251
-	for <ltp@archiver.kernel.org>; Sat, 16 Aug 2025 03:39:07 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 1FABE3CC2FE
+	for <ltp@archiver.kernel.org>; Sat, 16 Aug 2025 04:18:48 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5070F3C23EC
- for <ltp@lists.linux.it>; Sat, 16 Aug 2025 03:38:44 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 742F83C6B54
+ for <ltp@lists.linux.it>; Sat, 16 Aug 2025 04:18:26 +0200 (CEST)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
+ [IPv6:2a00:1450:4864:20::529])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5D3DF2003B5
- for <ltp@lists.linux.it>; Sat, 16 Aug 2025 03:38:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1755308321;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Ee4tTGd8cl4NO0LXIEBka0wD6u+8xWDzQCJ5xZQbi+8=;
- b=H420KuIsJeLYnypAfuAPzEj2g9Jj92Z1h7gBsz3A/5TwTW/q9ghNcR+u60MBue6QJkaVrg
- 5SDNq1mCxMZMJyMhpmeHrFZdwicmiS27AsPPQ4aKFAwZzpvjLXXU/5iQgMkJBp1KxKkt10
- uBD+RPEP4ZXLeDGWlwfetRF3PQ0zuaU=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-295-wod-N2YIMIuQ0hkI2XawKA-1; Fri, 15 Aug 2025 21:38:40 -0400
-X-MC-Unique: wod-N2YIMIuQ0hkI2XawKA-1
-X-Mimecast-MFC-AGG-ID: wod-N2YIMIuQ0hkI2XawKA_1755308319
-Received: by mail-pl1-f199.google.com with SMTP id
- d9443c01a7336-244581950a1so27809875ad.2
- for <ltp@lists.linux.it>; Fri, 15 Aug 2025 18:38:39 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CEDEC140019F
+ for <ltp@lists.linux.it>; Sat, 16 Aug 2025 04:18:24 +0200 (CEST)
+Received: by mail-ed1-x529.google.com with SMTP id
+ 4fb4d7f45d1cf-61868d83059so5939811a12.0
+ for <ltp@lists.linux.it>; Fri, 15 Aug 2025 19:18:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1755310704; x=1755915504; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=bwsXpXXIuYQCL/FW90IpYibOz6Dfp82j0b3aRU8rwPo=;
+ b=NzQ+peLBmQS1qYveixlaXiLZsVr4nb5bXwaAujD3BC4KxfJqLSFf55P5mpf0aNBQtL
+ 5u7FJuHcp9jm7aMSJvGb7YkoAjZRFVdMyd6cyvqTumFaM//VbMIsOQ8MsjIQe4ZK/ENX
+ si5DfgEFknzH+uo+/jXwBsNkY13WIq/pW+Wq9j/M2H/PHopGbZ666GtO0jY7vqkRZD1a
+ XQdN/sAoIfILObwFY9F/WPBYN0gDEGybA7mGHpjWisJG8OnUbDy4j0R8JADaIKC2eUYa
+ jtt9tygKg17W7yuxjqNG7ODwWvjeBkZeLA7bhwt4BLHMdXzACNyak9Nm0HJsA6RstX+/
+ 6arw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1755308319; x=1755913119;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=Ee4tTGd8cl4NO0LXIEBka0wD6u+8xWDzQCJ5xZQbi+8=;
- b=AGnjvSGijkZRjZ2X40w5lZfJ+TPY8iDqhISR9tfr4ubK42vISvJEXokaQIkrddvKQT
- xrZDLOSqaqHhzqh8c62TGZNI7FNmleAj2Qft7embmL4CpERJ1xmn+KFKkJQt1kj+zhTU
- fkvrmGSRPXvJcxROEa2YRl6zj3/aSdUpWSr+H8HKsrvww2q94rEaTDuqgQjxBujgMhuM
- EpPNLH7IFtRqpkJFMO6MEB9j/dghskpW/WpTVTHCYxf3pvURFmDhQ+zmhSm+rTSMymDA
- WSgoOZtk7grWHrYrVTCSKGg0Sdkg0abK0b+0b/puQ1EfI8b/0lGup9nVJHrevmEdfboe
- iB2A==
-X-Gm-Message-State: AOJu0YzffzTKBs2xpPni2c0qEJJupb8MYneKdzP0Astia7TXB707znhH
- 6NOhSFkXycdI6osDBVjz1za3WPYGeDjDP1dzLHmS0PoDvQyss3YtKsgWp0joLS45sH/236Ue6iS
- ZYxFzllVRqZQhJaoySZd0XDhl4+/bx+wbnkyYgBd3qnu0leMEOOVUmxCphilBeEfQOCn4qXKG2u
- 1RVQrWvP3n1SdpzAxCe2jeRv44MZw=
-X-Gm-Gg: ASbGncuYMCQ4qSojP0Ksb3NJME/+YAWhQIHeVK/JIep0+PFm53h75eKFnSaq0pglLSr
- PNyFHlFCp3G7W5OJwk1ep+ZflVpg5F+o+5ENSuXI4hdyK3yn/cZQ5c9IzgZaP+JU4ICGFXUcKyy
- LD7EkSpyKUuT3fuUX5qOinqw==
-X-Received: by 2002:a17:903:3bc6:b0:240:1f19:d35c with SMTP id
- d9443c01a7336-2446d8f0fc8mr61571285ad.39.1755308319079; 
- Fri, 15 Aug 2025 18:38:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH1k/RFtuk+q/5yhljE+JrY6fYsLUNZCsV6jzFQJq6FKyrsiYqgduGCIuHNBgm5p9Csrv5sy7txxq/nri0blZ4=
-X-Received: by 2002:a17:903:3bc6:b0:240:1f19:d35c with SMTP id
- d9443c01a7336-2446d8f0fc8mr61570925ad.39.1755308318618; Fri, 15 Aug 2025
- 18:38:38 -0700 (PDT)
+ d=1e100.net; s=20230601; t=1755310704; x=1755915504;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=bwsXpXXIuYQCL/FW90IpYibOz6Dfp82j0b3aRU8rwPo=;
+ b=DF37ZbFOFmA0gQK/NB8JL+eMbr9HWwinCYW5lDxr/2YuZ3BZXM7lH0ip9XPhM1YphY
+ KTJQThVbO8YSOVHHvujw9lw+pYejYdcIFA5kuKKmjEirJqe9UY0gAPj1iV3ZZrG0Gjkt
+ gQC0aTwxYP1SgOMc38t7s6gzSaB3ocshSKPhcQwcW0p0qHT27nscxWZXbgZr2t3KQ7PG
+ hAboglyMUy0kUg3sivbxjIC4dzEPO/Hhbd8ALdHdM7/YZvYpm7hd93FjLAp+e9w7uUjY
+ DvNEu9TmTk1/gck9y2/iRnzUnrEJBaE6dA6u8gYvUCqcumcmCvbfTzNbBA2h4W85byKK
+ pZEg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUTrOf6MloMtl9s6nFfzLHdsPKunjf6EEuOchwmzjIk4BFIrtT1NrMCAXCcNs5qB0gZ0+E=@lists.linux.it
+X-Gm-Message-State: AOJu0YxH26LhyTERXd5xrFRy/1kVUuNVCFCuCFMoY+M6YPh2A4V7UzCt
+ ui1cGgXAr0aMie4Dk6ARV8zJdzz2BNOgVxWE7ogfJlhkS44s1nVPARKGhYRRUO0GlA==
+X-Gm-Gg: ASbGncvqgHzeTLIUJwF6qnKu+TYLCumOqhVzzUx4hZBVQPor8ekj1I5udUPFSAXwC9X
+ J0o+u6UJ8PQKet9x0s0p+gYggln3Wj1dkQf4WD4PBfB9/kDz5J8Ak15hRGvb9blbNpzrpvRtwoU
+ XC/g0fYvHfoth6d64+Su6gc4k+0QK0sPzutDpIMfA41P1NpKbHVRV87qytdTxUOl9k+hrZjA4Kl
+ 7M8fSZSClUWaR1qvSmbKqc0CECa7S1e3pYgoNQglJR6Up6jvvbE5Uf5DuV5GCumH8EiEyfsOJMQ
+ PxJ3MUINDemZ7VIpWPSIll1ZPgAe0GygJHTpcXKK9vkwoHJTL3605XUu14MSzK9UxIO3Swskgz1
+ YlLRG9kRGIAHwDzu5SJtINQ==
+X-Google-Smtp-Source: AGHT+IHNk8PBKUNrSPx10ifAUYOJvFnn2Jc4DOTuWB3OZc7DjYdpAwzxQ0MKpk/V8JZvySJfquvRNQ==
+X-Received: by 2002:a17:907:7f09:b0:ae3:5185:5416 with SMTP id
+ a640c23a62f3a-afcdb1a2e5amr388545866b.13.1755310704049; 
+ Fri, 15 Aug 2025 19:18:24 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-afcdd01168csm262745266b.91.2025.08.15.19.18.23
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 15 Aug 2025 19:18:23 -0700 (PDT)
+Date: Sat, 16 Aug 2025 02:18:21 +0000
+To: kernel test robot <oliver.sang@intel.com>
+Message-ID: <aJ_qbZDvDJwVoZGA@localhost>
+References: <20250801090949.129941-1-dongml2@chinatelecom.cn>
+ <202508110750.a66a4225-lkp@intel.com>
 MIME-Version: 1.0
-References: <20250812141709.33540-1-liwang@redhat.com>
- <20250814130629.GA575710@pevik>
- <CAEemH2fgnJH201_fvDvPRbAFrfdEz4v_cEg-LXudWje-+w68VA@mail.gmail.com>
- <20250815052231.GA32490@pevik>
-In-Reply-To: <20250815052231.GA32490@pevik>
-Date: Sat, 16 Aug 2025 09:38:26 +0800
-X-Gm-Features: Ac12FXxBmJX5WW8V4Xi53VUZdQRIsXWJz2HHEozyHKnf_8C_Fsf_GT11cdfgVbE
-Message-ID: <CAEemH2fJO8a4cEZcdLkCGMjSRQSprs4ZLM+1930qVZaiu7TO_w@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: QElsA6gHLwHEOcVBzhzIyRQw3RecyXDX4LUYbmD_2wc_1755308319
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <202508110750.a66a4225-lkp@intel.com>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] tst_mkfs: print short hint when mkfs fails in
- device busy
+Subject: Re: [LTP] [PATCH net v2] net: ip: order the reuseport socket in
+ __inet_hash
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,18 +101,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: rafael.tinoco@linaro.org, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: kuniyu@google.com, kraig@google.com, lkp@intel.com, netdev@vger.kernel.org,
+ dsahern@kernel.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+ edumazet@google.com, horms@kernel.org, oe-lkp@lists.linux.dev, kuba@kernel.org,
+ Menglong Dong <menglong8.dong@gmail.com>, pabeni@redhat.com,
+ ncardwell@google.com, davem@davemloft.net, ltp@lists.linux.it,
+ Menglong Dong <dongml2@chinatelecom.cn>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBBdWcgMTUsIDIwMjUgYXQgMToyMuKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKCj4gPiBTbyB3aGF0IGFib3V0Ogo+Cj4gPiAgdHN0X3Jlc21fKGZpbGUsIGxp
-bmVubywgVFdBUk4sCj4gPiAgICAgIm1rZnMgbWF5IGhhdmUgZmFpbGVkIGJlY2F1c2UgdGhlIGRl
-dmljZSBpcyBidXN5IChlLmcuLCB1ZGlza3MyIHByb2JpbmcpLiAiCj4gPiAgICAgIkNvbnNpZGVy
-IGRpc2FibGluZyBiYWNrZ3JvdW5kIHByb2Jpbmcgc2VydmljZXMuIik7CgpQYXRjaCBtZXJnZWQg
-d2l0aCB0aGlzIHJlZmluZW1lbnQuCgotLSAKUmVnYXJkcywKTGkgV2FuZwoKCi0tIApNYWlsaW5n
-IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+On Mon, Aug 11, 2025 at 01:27:12PM +0800, kernel test robot wrote:
+> 
+> 
+> Hello,
+> 
+> kernel test robot noticed "BUG:KASAN:slab-use-after-free_in__inet_hash" on:
+> 
+> commit: 859ca60b71ef223e210d3d003a225d9ca70879fd ("[PATCH net v2] net: ip: order the reuseport socket in __inet_hash")
+> url: https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/net-ip-order-the-reuseport-socket-in-__inet_hash/20250801-171131
+> base: https://git.kernel.org/cgit/linux/kernel/git/davem/net.git 01051012887329ea78eaca19b1d2eac4c9f601b5
+> patch link: https://lore.kernel.org/all/20250801090949.129941-1-dongml2@chinatelecom.cn/
+> patch subject: [PATCH net v2] net: ip: order the reuseport socket in __inet_hash
+> 
+> in testcase: ltp
+> version: ltp-x86_64-6505f9e29-1_20250802
+> with following parameters:
+> 
+> 	disk: 1HDD
+> 	fs: ext4
+> 	test: fs_perms_simple
+> 
+> 
+> 
+> config: x86_64-rhel-9.4-ltp
+> compiler: gcc-12
+> test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> 
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202508110750.a66a4225-lkp@intel.com
+> 
+> 
+> kern :err : [  128.186735] BUG: KASAN: slab-use-after-free in __inet_hash (net/ipv4/inet_hashtables.c:749 net/ipv4/inet_hashtables.c:800) 
+
+This kasan error not related with LTP case, i guess it triggered by network
+related process such as bind etc. I try to give following patch to fix
+kasan error, correct me if any mistake, thanks.
+
+From: Wei Gao <wegao@suse.com>
+Date: Sat, 16 Aug 2025 09:32:56 +0800
+Subject: [PATCH v1] net: Fix BUG:KASAN:slab-use-after-free_in__inet_hash
+
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202508110750.a66a4225-lkp@intel.com
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ include/linux/rculist_nulls.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+index da500f4ae142..5def9009c507 100644
+--- a/include/linux/rculist_nulls.h
++++ b/include/linux/rculist_nulls.h
+@@ -57,7 +57,7 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
+  * @node: element of the list.
+  */
+ #define hlist_nulls_pprev_rcu(node) \
+-       (*((struct hlist_nulls_node __rcu __force **)&(node)->pprev))
++       (*((struct hlist_nulls_node __rcu __force **)(node)->pprev))
+
+ /**
+  * hlist_nulls_del_rcu - deletes entry from hash list without re-initialization
+@@ -175,7 +175,7 @@ static inline void hlist_nulls_add_before_rcu(struct hlist_nulls_node *n,
+ {
+        WRITE_ONCE(n->pprev, next->pprev);
+        n->next = next;
+-       rcu_assign_pointer(hlist_nulls_pprev_rcu(n), n);
++       rcu_assign_pointer(hlist_nulls_pprev_rcu(next), n);
+        WRITE_ONCE(next->pprev, &n->next);
+ }
+
+--
+2.43.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
