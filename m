@@ -4,92 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2BF7CA0EE4
-	for <ltp@archiver.kernel.org>; Mon, 18 Aug 2025 14:17:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA391CA0ED1
+	for <ltp@archiver.kernel.org>; Mon, 18 Aug 2025 15:36:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EFD773CC815
-	for <ltp@archiver.kernel.org>; Mon, 18 Aug 2025 16:17:12 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 2A0BB3CC912
+	for <ltp@archiver.kernel.org>; Mon, 18 Aug 2025 17:36:04 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5B5103CC791
- for <ltp@lists.linux.it>; Mon, 18 Aug 2025 16:16:55 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 19D3A3C0639
+ for <ltp@lists.linux.it>; Mon, 18 Aug 2025 17:35:46 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B69DC6007A9
- for <ltp@lists.linux.it>; Mon, 18 Aug 2025 16:16:54 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 658161A006F7
+ for <ltp@lists.linux.it>; Mon, 18 Aug 2025 17:35:45 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id EA476210F6
- for <ltp@lists.linux.it>; Mon, 18 Aug 2025 14:16:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1755526614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Q6LpPccPEM7IC904Mba14Fwqm8qC8cMHDo6yA1nijVs=;
- b=iLNnD8yI6Ji+N9Ez1yiQ42uVMY/OrXj4jW2Cr5wdfvxaLJ7VuZdx0aGhfnemLapZ7pXcXG
- pX4DVDamBspnfTCIhWk95eBOgd2ZYsBYxgOw+UGuKvmq3aVjxmCVIJ4ocSDXXwJJL1v38k
- yhmXcp4xeV8SbM+6stIYYOJ0ubBzYww=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1755526614;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Q6LpPccPEM7IC904Mba14Fwqm8qC8cMHDo6yA1nijVs=;
- b=vqrGNFM1otpElH7pbiZByjUaA407HzILdd11d6Ojvjj04kpdYtrO7qAVoIFe4BWuzDo8ZY
- fuOg12bBEhdJdWBA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 08A5F21249;
+ Mon, 18 Aug 2025 15:35:43 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1755526613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Q6LpPccPEM7IC904Mba14Fwqm8qC8cMHDo6yA1nijVs=;
- b=lh09Sq0HOdI1Q1anRHA7h0OUxq30eMOX8AP9w3uCfSR+/t+vySWypkaTqL3arZ+HN6PDD/
- 1ZdFOx575qkuic9wyKXatrUrh3VNDi87foEDyW+hyIdkTgnh8W4+HcOUWOCn3JQgVdrrUh
- e/MQo6FOyhQ0pa9Bhx/gk8AlQUiBRx0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1755526613;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Q6LpPccPEM7IC904Mba14Fwqm8qC8cMHDo6yA1nijVs=;
- b=/QuXo0MPV2irwVCHMXYJN7j7KBIJ1CeGPCyXbl5firMqIoVTnkZJLPnYWC8bwAM9ORBR9K
- Pkk9w8lW45tkZkAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DE2C113686
- for <ltp@lists.linux.it>; Mon, 18 Aug 2025 14:16:53 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B2DA813A55;
+ Mon, 18 Aug 2025 15:35:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id zW7VNdU1o2ifGAAAD6G6ig
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Mon, 18 Aug 2025 14:16:53 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Mon, 18 Aug 2025 16:16:50 +0200
-Message-ID: <20250818141653.11720-1-akumar@suse.de>
-X-Mailer: git-send-email 2.43.0
+ by imap1.dmz-prg2.suse.org with ESMTPSA id M/uwJ05Io2gXNAAAD6G6ig
+ (envelope-from <pfalcato@suse.de>); Mon, 18 Aug 2025 15:35:42 +0000
+Date: Mon, 18 Aug 2025 16:35:44 +0100
+From: Pedro Falcato <pfalcato@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <wfecvwzibjekda24wzhou5ppngxhptrmn4ks4kg4adwwiizefz@z2ddqcqhr6pd>
+References: <20250814152659.1368713-1-florian.schmaus@codasip.com>
+ <20250818130038.GA21418@pevik>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
- ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:email,suse.de:mid];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250818130038.GA21418@pevik>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 08A5F21249
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] timer_create02: minor typo fix
+Subject: Re: [LTP] [PATCH v3] sigrelse01: Select signals based on
+ SIGRTMIN/SIGRTMAX for musl compat
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,32 +74,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/timer_create/timer_create02.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Aug 18, 2025 at 03:00:38PM +0200, Petr Vorel wrote:
+> Hi Florian, Pedro,
+> 
+> > This avoids selecting signal 34 when the test is run using
+> > musl. Signal 34 is used internally by musl as SIGSYNCCALL.
+> > Consequently, musl's signal() will return with an error status and
+> > errno set to EINVAL when trying to setup a signal handler for signal
+> > 34, causing the sigrelse01 test to fail.
+> 
+> +1, now it works on both glibc and musl (and hopefully in the rest of libc).
+> 
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Tested-by: Petr Vorel <pvorel@suse.cz>
+> 
+> > Thanks to Pedro Falcato for suggesting using SIGRTMIN and SIGRTMAX for
+> > this check.
+> 
+> nit: @Florian instead of the above I'll add:
+> Suggested-by: Pedro Falcato <pfalcato@suse.de>
+> 
+> @Pedro Can I merge with your RBT?
 
-diff --git a/testcases/kernel/syscalls/timer_create/timer_create02.c b/testcases/kernel/syscalls/timer_create/timer_create02.c
-index 551cf50b9..1fd0dd945 100644
---- a/testcases/kernel/syscalls/timer_create/timer_create02.c
-+++ b/testcases/kernel/syscalls/timer_create/timer_create02.c
-@@ -65,7 +65,7 @@ static void run(unsigned int n)
- 
- 	if (TST_RET != -1 || TST_ERR != tc->error) {
- 		tst_res(TFAIL | TTERRNO,
--			"%s idn't fail as expected (%s) - Got",
-+			"%s did not fail as expected (%s) - Got",
- 			tc->desc, tst_strerrno(tc->error));
- 		return;
- 	}
+Assuming you mean Reviewed-by, yep, all fine by me.
+
 -- 
-2.43.0
-
+Pedro
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
