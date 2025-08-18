@@ -4,99 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EB00CA0EE4
-	for <ltp@archiver.kernel.org>; Mon, 18 Aug 2025 07:55:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6B61CA0ED1
+	for <ltp@archiver.kernel.org>; Mon, 18 Aug 2025 12:57:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1755521827; h=message-id :
+ to : date : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=MvgfO3MirhfFWV8cnjk39v5K2KxrTAE9dM07A/QAPMQ=;
+ b=Jee1Mq+SDiaKSTVccLRc8tYmmJUx+BwzgYGSxieC82ixj61NZ3pGtIe90+h0khHg26gEp
+ MEYa2Xu12gAPZyW31sSHg2hzpZum7r0sSnB/fAaGJpKO2J+x30zCN4OrOI+TKztRSCIgpOd
+ IeXhpt7fxCOAt2TJUp8pCij+dl22b+E=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 91B1F3CC7DC
-	for <ltp@archiver.kernel.org>; Mon, 18 Aug 2025 09:55:02 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 473493CC8BE
+	for <ltp@archiver.kernel.org>; Mon, 18 Aug 2025 14:57:07 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C976E3C0639
- for <ltp@lists.linux.it>; Mon, 18 Aug 2025 09:54:44 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with UTF8SMTPS id 76C1B3C82CD
+ for <ltp@lists.linux.it>; Mon, 18 Aug 2025 10:59:47 +0200 (CEST)
+Received: from out162-62-57-64.mail.qq.com (out162-62-57-64.mail.qq.com
+ [162.62.57.64])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7AA8D600731
- for <ltp@lists.linux.it>; Mon, 18 Aug 2025 09:54:42 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2D6411F749;
- Mon, 18 Aug 2025 07:54:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1755503682; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=33Q2gPacfSDasS5Hx8ffEWoqwHBBZ4oTHWuJL/npu8Q=;
- b=Ejl7pGUVBEnJhWBmaK7J/8z3GOoVWm5zyTNJQHQ1MwSbpcBDbaB14x2ZjU+i1DhP/KEEqI
- bja0M/kmCifP+x23W/jUy89qlDR97HB6GdbNor/SOirOtm9uoG8ZNxQu16leardKcxF833
- jUthEijBuAfE8YRQ/CQvh9Mmfv971Bg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1755503682;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=33Q2gPacfSDasS5Hx8ffEWoqwHBBZ4oTHWuJL/npu8Q=;
- b=nUhda3B6d9us0ukkdCrVo4rLwFtYPy6sqhbS8JuFGHPET/ztZRwxGNX8Dx2bcRY/w2DY8C
- Nx5zkmhsbuQJ0uDg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Ejl7pGUV;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nUhda3B6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1755503682; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=33Q2gPacfSDasS5Hx8ffEWoqwHBBZ4oTHWuJL/npu8Q=;
- b=Ejl7pGUVBEnJhWBmaK7J/8z3GOoVWm5zyTNJQHQ1MwSbpcBDbaB14x2ZjU+i1DhP/KEEqI
- bja0M/kmCifP+x23W/jUy89qlDR97HB6GdbNor/SOirOtm9uoG8ZNxQu16leardKcxF833
- jUthEijBuAfE8YRQ/CQvh9Mmfv971Bg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1755503682;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=33Q2gPacfSDasS5Hx8ffEWoqwHBBZ4oTHWuJL/npu8Q=;
- b=nUhda3B6d9us0ukkdCrVo4rLwFtYPy6sqhbS8JuFGHPET/ztZRwxGNX8Dx2bcRY/w2DY8C
- Nx5zkmhsbuQJ0uDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 04F1613A55;
- Mon, 18 Aug 2025 07:54:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id vNcbOkHcomh4HAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 18 Aug 2025 07:54:41 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by in-2.smtp.seeweb.it (Postfix) with UTF8SMTPS id E536A6168DB
+ for <ltp@lists.linux.it>; Mon, 18 Aug 2025 10:59:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+ t=1755507579; bh=cpZkW2r7ImB8kaGre3DYAw+MDS+CfRsRLGn8cyttQTk=;
+ h=From:To:Cc:Subject:Date;
+ b=V6OXuREdTJfSGmfAhJhOmPNWCnoYFiEh1YPvHDiXlmXKgQ33D8WBivRM30hONikeF
+ 7JRU4ONZmRaV5p/OCg06MdWVURQybfSUwqdfJlcJRlHnR2ltMnsnc4HyT+D9rSN5a4
+ QMVvyAF3nC6ZuWpbVTnhNmUuStamoiei/swjT9bs=
+Received: from b0d8a1e10007.. ([202.112.47.78])
+ by newxmesmtplogicsvrszb16-1.qq.com (NewEsmtp) with SMTP
+ id EE592802; Mon, 18 Aug 2025 16:59:37 +0800
+X-QQ-mid: xmsmtpt1755507577tl362l24v
+Message-ID: <tencent_05DE07BA6C168B5D5A26E2E54EC881EB6509@qq.com>
+X-QQ-XMAILINFO: M/es4o3+cmdNKUXgeZtzh4RTvYBPNs2wWkfFSicOPBvwLk6OdmvqegHpSUheNN
+ gy4hhbMfaMZF3NZdYtwECL9LFCCmnYk7jOWXjU1KSrLtduApaDmnQJ65C6CMw7pR+rwOlfFzS8ut
+ CWThgW75PttdCSkoMPyVWk2twA0Ae7IF/vSA07AV7jUpkUDCNcVWJLJ/htbe4rnsur0S8Q6YZdTM
+ p55NJDlG75RrGpEQGSifz8Cc+GSF5RD6zKzDdPrZOvytRycaF0yjED9Ilk0vwDVrItoccOUgDOIH
+ NMOiSCLgWKOEQlbxdGk4VWOGxAd2c1MyS4JVxSMJM9m+E3Vn103XI0mKhjbvdnYciZscWkPvkDE6
+ +ViFTvSb58hpqrRBvkS5yRO0aPb7SZNRh2/LUhQmrsMpdoHc6bMhao2UbDjaYkGWBzjp7ucBb9hd
+ pUXJahtoPbHd2cKQigQ1nOIlM8zYboSTs1bj5P8Ax3dBtAteqDNi7OwrH0sxxQtaG8u9hyDUIbba
+ 36IVw6lyaGuXZnwTeqBlhZo84tcY3U2KtCXamPbhpMujVnB5AVnaoAP8xffW7EDVg1S9Q7/XPbPI
+ DJj9nhPF/yStZE06w3evNolBKMnIhHRpSwVUz1lfnuoOD7FSfj4zyrA3d/ZygXUp41oO7HlxVlrG
+ JMqE7jVIYjeYfz3CpnhmQELL+t6/jWo3H+IbSyFgUu5WJusOywWSEVzLPbLLi3iDM2wBezUnpHrP
+ 3AGPuyexmLBAjZgRQi/NwpTCW0MCBCgZkNnWKdbAVhTklk7ChBKM273NEZog6+HE6/DUo7BvcS7Z
+ BoFtzJAlX+KjNFo0HbxvVjdF3HP/PVosP6oBbJUDN1Ce7et09kK4TmKqLUqQiW1T6O4JDcWdBsNX
+ 6wI/SZ+6ZGQST3sQwcHP2p9ynSivdxRWvwxJP9Accb1NGljDE0s1s9ZvM5YbVywSZmFVF6Xu3OdG
+ JuKAWrCZEPA9PbzxVpmchT3iYPTnaWQwZ3hwnzujPoSVpalQPxpgtieEpgrcumTMOPlmeZkPF+0K
+ nxJzkjDhTEV3KyACL+ojitCBcxqV/Hp6erk2ctwZhk6SudDVC0ARiAd/hZMVNgONAns16ZxlXDxA
+ UazCjy
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
 To: ltp@lists.linux.it
-Date: Mon, 18 Aug 2025 09:54:38 +0200
-Message-ID: <20250818075438.151407-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.50.1
+Date: Mon, 18 Aug 2025 08:58:38 +0000
+X-OQ-MSGID: <20250818085837.2332368-1-791960492@qq.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 2D6411F749
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[ozlabs.org:url,suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[3]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 1/1] tst_res_: Print error to stderr,
- with filename and lineno
+X-Mailman-Approved-At: Mon, 18 Aug 2025 14:56:46 +0200
+Subject: [LTP] [PATCH] sigaltstack01: Fix check about alternative stack
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,83 +78,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Liheng Chen via ltp <ltp@lists.linux.it>
+Reply-To: Liheng Chen <791960492@qq.com>
+Cc: Liheng Chen <791960492@qq.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Print not only tst_res_.c filename and lineno but also script which
-invoked tst_res_.c (if available). That helps find wrong tst_res_.c
-invocation:
+Hi all,
 
-    tst_res_.c:42: Wrong type 'TPASS_EE' (invoked by shell_loader.sh:-1)
-    Usage: tst_{res,brk} filename lineno [TPASS|TBROK|TFAIL|TWARN|TCONF|TINFO|TDEBUG] 'A short description'
+This check seems should be (alt_stk < sigstk.ss_sp) || (alt_stk > (sigstk.ss_sp + SIGSTKSZ)), not &&
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Kind regards,
+Liheng Chen
+
+Signed-off-by: Liheng Chen <791960492@qq.com>
 ---
-Changes v4->v5:
-* Use argv[1] and argv[2] (Cyril)
-https://lore.kernel.org/ltp/aIC1A9yNXKX6QN2N@yuki.lan/
-https://lore.kernel.org/ltp/aIIHh2CYcraAJHqG@yuki.lan/
+ testcases/kernel/syscalls/sigaltstack/sigaltstack01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Link to v4:
-https://patchwork.ozlabs.org/project/ltp/patch/20250722125916.74967-5-pvorel@suse.cz/
-https://lore.kernel.org/ltp/20250722125916.74967-5-pvorel@suse.cz/
-
- testcases/lib/tst_res_.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/lib/tst_res_.c b/testcases/lib/tst_res_.c
-index c09d689ee5..2cc31e740f 100644
---- a/testcases/lib/tst_res_.c
-+++ b/testcases/lib/tst_res_.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2024 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (c) Linux Test Project, 2025
-  */
- 
- #define TST_NO_DEFAULT_MAIN
-@@ -13,13 +14,15 @@ static void print_help(void)
- 
- int main(int argc, char *argv[])
- {
--	int type, i;
-+	int i, lineno, type;
- 
- 	if (argc < 5) {
--		printf("argc = %i expected 5\n", argc);
-+		fprintf(stderr, "%s:%d: argc = %i expected 5\n", __FILE__, __LINE__, argc);
- 		goto help;
- 	}
- 
-+	lineno = atoi(argv[2]);
-+
- 	if (!strcmp(argv[3], "TPASS")) {
- 		type = TPASS;
- 	} else if (!strcmp(argv[3], "TFAIL")) {
-@@ -35,7 +38,8 @@ int main(int argc, char *argv[])
- 	} else if (!strcmp(argv[3], "TBROK")) {
- 		type = TBROK;
- 	} else {
--		printf("Wrong type '%s'\n", argv[3]);
-+		fprintf(stderr, "%s:%d: Wrong type '%s' (invoked by %s:%d)\n", __FILE__,
-+				__LINE__, argv[3], argv[1], lineno);
- 		goto help;
- 	}
- 
-@@ -57,7 +61,7 @@ int main(int argc, char *argv[])
- 
- 	tst_reinit();
- 
--	tst_res_(argv[1], atoi(argv[2]), type, "%s", msg);
-+	tst_res_(argv[1], lineno, type, "%s", msg);
- 
- 	return 0;
- help:
+diff --git a/testcases/kernel/syscalls/sigaltstack/sigaltstack01.c b/testcases/kernel/syscalls/sigaltstack/sigaltstack01.c
+index 9a2e3a440..147659467 100644
+--- a/testcases/kernel/syscalls/sigaltstack/sigaltstack01.c
++++ b/testcases/kernel/syscalls/sigaltstack/sigaltstack01.c
+@@ -142,7 +142,7 @@ int main(int ac, char **av)
+ 			 * Check that main_stk is outside the
+ 			 * alternate stk boundaries.
+ 			 */
+-			if ((alt_stk < sigstk.ss_sp) &&
++			if ((alt_stk < sigstk.ss_sp) ||
+ 			    (alt_stk > (sigstk.ss_sp + SIGSTKSZ))) {
+ 				tst_resm(TFAIL,
+ 					 "alt. stack is not within the "
 -- 
-2.50.1
+2.34.1
 
 
 -- 
