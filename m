@@ -4,92 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E436CA0EF8
-	for <ltp@archiver.kernel.org>; Wed, 20 Aug 2025 09:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1755682803; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=ukvJWcRejSx7bJaaO3Oi6bb0NiCTtxTLAcJ/hm7BSSI=;
- b=Eucf2u6fH2UR2UC0SPSJiNlIR5kjaNcsziEMGHdRAiwvpk9W7dZZHjduDTEW5AxFcuUlv
- DrXJG0I5bX8Gm6BC3G3R7cLzMzbIlEEezFEQc5sbhr5f8DIXaSQYECte8S9L0Uz7nNJJC+o
- 09PS7ICYsqddf2fXze2CIMHuefwHDdM=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA5F6CA0EDC
+	for <ltp@archiver.kernel.org>; Thu, 21 Aug 2025 06:24:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7C89A3CCADC
-	for <ltp@archiver.kernel.org>; Wed, 20 Aug 2025 11:40:03 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id D959F3CCD29
+	for <ltp@archiver.kernel.org>; Thu, 21 Aug 2025 08:24:02 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EF1E73C782A
- for <ltp@lists.linux.it>; Wed, 20 Aug 2025 11:39:42 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7C8E93CA75E
+ for <ltp@lists.linux.it>; Wed, 20 Aug 2025 13:14:56 +0200 (CEST)
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com
+ [IPv6:2607:f8b0:4864:20::1031])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4C2616017D4
- for <ltp@lists.linux.it>; Wed, 20 Aug 2025 11:39:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1755682780;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=heqte+8IKC6leU/XuqesFao/Dx3kT12kOukcbYMRyFg=;
- b=ZyQMI7obOX75xJv8tm+SW+XT7Z9NAPMcBzOKEmRvmfod1YXEbTmOyHQ8tViB4fbW6wUnQ8
- yJ830FZCUUILazwswIyY97pZZPfF1WNiu9K9urIjXZGguRYjmEYBBQNkFJaqg09lQ/7hjk
- SKcbpzQToOdenIaw86pD7JNsxXMc6Ac=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-H7MjuroxOcS0hpSFNwYxEA-1; Wed, 20 Aug 2025 05:39:37 -0400
-X-MC-Unique: H7MjuroxOcS0hpSFNwYxEA-1
-X-Mimecast-MFC-AGG-ID: H7MjuroxOcS0hpSFNwYxEA_1755682777
-Received: by mail-pl1-f200.google.com with SMTP id
- d9443c01a7336-2430c5d4d73so10396575ad.1
- for <ltp@lists.linux.it>; Wed, 20 Aug 2025 02:39:37 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5C0C71400E44
+ for <ltp@lists.linux.it>; Wed, 20 Aug 2025 13:14:52 +0200 (CEST)
+Received: by mail-pj1-x1031.google.com with SMTP id
+ 98e67ed59e1d1-323267bcee7so7451601a91.1
+ for <ltp@lists.linux.it>; Wed, 20 Aug 2025 04:14:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1755688491; x=1756293291; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=muBzYbQwxrYcHt2ZzYNW1McoBEsmE8ndMXrCYhBaxoI=;
+ b=xbPmCu6PoZTeZ7xRCG0WR4D0UX8GbLCI8XnxcuEhFTlbpAOnpVbn8V44stsftLkrm2
+ C8rD7uTG7c+wwqmNXKisH4ASOg1pYmKXOfOY6D+5o4IDWX02Apv8OIq73o8pTReDidh4
+ tPMq8X8jPcsoYdgJjxjIfvm7xICNs1pEhadGTB2vVuGHN+tbcCFt3zlunEgs8tWDIRoA
+ QnbVB7T95j3xfp9kAzz3+pXV4Vtr77yaXrJ/7RIgW1O0m0aX6nsq/obScNCuSArwRPXd
+ VR2rZYRMiSNy59ik8FC+YA6tTd73QijhkuOdy5upWd7YbX2mTxSos4b8G8h/SFx+MdMd
+ SSCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1755682776; x=1756287576;
+ d=1e100.net; s=20230601; t=1755688491; x=1756293291;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=heqte+8IKC6leU/XuqesFao/Dx3kT12kOukcbYMRyFg=;
- b=bV+Ki5q6aR2rRPJwjcEaF7sHUbuNXOt7r6XnWhJuQtwGdQ87PjkgL/NZHKZVv5biie
- PGVakce8z6zhmUzpkDWSC61uiCFhghVl381FkxcAwj+f6/a6/mMamJtPwKeqdQCjLeKn
- bFw+S4U0W4272z98MO3fyoLgdznlaMDTlEAb4py4F+YI3Q3hSvGQRRRlR63F3uV0uF9h
- RRgGmV649Rn1+I6z1Kb1spm9hRb/9fwa7WcAVS8OjoY2j5EVVMTCBTMHv1K2MM6FHVPI
- pTkma8vkzKElpZwlbYG50foJkDdWt0Zq57irlssQvaRWbyaojO/A/PkNHd8jk3xd1XPp
- 9r0Q==
-X-Gm-Message-State: AOJu0YygxEhg20eo85/uPwGTs51wfPn2/FoNeOB9uE676f9CnIFJ5W02
- DqwSqvY7duwFFwWRKT8v6McRHezNLiJ4JTtF3xr2WS/U/TA74fYHmlASwrlqIxqgonVnplgy5YV
- pOr4CWVfO7Rb4lyOSclhd4BnI0SZmRthKkBHQpTMtBTat5B0Xn8a3fQDzXCzYQXsrJAysQsgJMx
- WTX7CCGqgeqMIvF+e0Nq/5wE2zBYg=
-X-Gm-Gg: ASbGncvGOiMI9Abt4XGQZXDrGv6tKZGWHGGUY6JT3hlNVRgkvZ2OcQY5pM37w5BRC/n
- MxSEBdQEuXMfuoygOXwOubRkhukqQXIq23aBAdqffowCNvIieQ1lok+Tx31vA8qbxPCtyz/IVmM
- NTY6UNu1gZJtIKB/DwucEayQ==
-X-Received: by 2002:a17:903:2311:b0:23f:b00a:d4c with SMTP id
- d9443c01a7336-245edfd95f0mr35419795ad.2.1755682776605; 
- Wed, 20 Aug 2025 02:39:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHYK0SuKyC29yM7uVd8au0XaYqAZNqSVOabP8V47fUn3FVZggpj9JecpE+48ifEeV/D7puXtUEda3jtFppr1Jc=
-X-Received: by 2002:a17:903:2311:b0:23f:b00a:d4c with SMTP id
- d9443c01a7336-245edfd95f0mr35419535ad.2.1755682776106; Wed, 20 Aug 2025
- 02:39:36 -0700 (PDT)
+ bh=muBzYbQwxrYcHt2ZzYNW1McoBEsmE8ndMXrCYhBaxoI=;
+ b=iThYLZBabl2vVydSwS7axcfmYBjLdJaKhUOYEVLidipyyuD8oaXKbbwRHz4fPh+UnT
+ MdeEZWr+ZTTPDYx4VCxcu0vLkfcUhCYCdRg6ZFdpAgxbHeuB+4QblPMozFCkQT2XPhkG
+ fjzgtUxMgNOh9Svkb2/VwocnC9wNXBVbipNzBVTvuBUIFPnMAZFsOpmXdwruArx+MfYT
+ VRwLfaz6UmErA0Mye6xT3j+RIE/4LeQcdQbD9GaWbEQO9BVcnhAc/FT4XLxXn/bXzuTM
+ UcPvLNtSjyIFmCB4hlZFheQKac/3VQemDWvaKTv766m5/oo48+595j0Z+2NptSTkkCHe
+ +NIQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVoWSPGDLlp9ftp/uk3b9r5zdAW+LirTlyg0E+trEEdtMDWrEw/R/cRWFr51lFI087cxcQ=@lists.linux.it
+X-Gm-Message-State: AOJu0YzXuPBk1Wmun1Uhsku0sPD9IJrkY6ERoqHE14fnenrb5JLRiB/V
+ v9T9G1Tni5t+9zzKWZF6suzckA8mG8bdkgyIQ5cdeU6LsMzdeDj5P+ujplDkCBf4bLKch856+u3
+ R7CGRfamQvPanv6dSkK+VENo2vhuZJN0QzCroIr/kog==
+X-Gm-Gg: ASbGnctGArBiKSd7qIFx/b6Sw66nS1Clnkn0/w/HtiYeGo66MUk+FViGlm3EPF4sLXU
+ AoL81qGN1vGHwlxV4fRtC5JILaVo+1NM2ODi0Y1vmlMhUEwH2p5jfY4pooAjS/5QIL7s0vG6hwu
+ i7FlY4DFryUzU67mHnTwazeSa4PHXCLqRMedBT01CWEz455dm8B7TPoB0yx0XcpHJHo6QkNAVo0
+ OG/uwCy1UGeWWEYgw+C6tTGHxCAWSRmFv5yPpCpaTa4TXJ+JmvcXBGikVB8vQ==
+X-Google-Smtp-Source: AGHT+IG2rFRwhQibaBR6aAuao3jI7K3VUg5l8QmVj2/VN7gYQHbUXOtPenTQq/0/FJwW3Jci4oXLWJuLEGGEEC67RlQ=
+X-Received: by 2002:a17:902:c40f:b0:245:f88a:704d with SMTP id
+ d9443c01a7336-245f88a713emr4555415ad.34.1755688490626; Wed, 20 Aug 2025
+ 04:14:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20250820085937.50868-1-mdoucha@suse.cz>
-In-Reply-To: <20250820085937.50868-1-mdoucha@suse.cz>
-Date: Wed, 20 Aug 2025 17:39:23 +0800
-X-Gm-Features: Ac12FXwYQlcn_Uhu3pdixDpB5q4vIJb3_kv1uFx7z7wmAzQC_-AlsfvADdS6l2g
-Message-ID: <CAEemH2dd+KW+4fQQ2vFRp9-=QAQBHGwK40rqw-GMdbDA-PHaYg@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: wnyt_c2zVlsOhhSxc1EVav28JpdlXKI2DADP8Re2fPY_1755682777
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+References: <20250819122834.836683687@linuxfoundation.org>
+In-Reply-To: <20250819122834.836683687@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 20 Aug 2025 16:44:37 +0530
+X-Gm-Features: Ac12FXwHvZKUbm7j9QcsajfSa1g8XXDxhc8LwavjUmCAPCSQWY0oLDxVXkRXAVM
+Message-ID: <CA+G9fYvdck=4i9EkdxJH7O1nTJu8NzeHbu-Q6_pn3bg0cV12KA@mail.gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2] Makefile: Fix module dirs search
+X-Mailman-Approved-At: Thu, 21 Aug 2025 08:23:47 +0200
+Subject: Re: [LTP] [PATCH 6.15 000/509] 6.15.11-rc2 review
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,28 +84,189 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
+Cc: Jan Kara <jack@suse.cz>, lkft-triage@lists.linaro.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org, hargar@microsoft.com,
+ Dan Carpenter <dan.carpenter@linaro.org>, f.fainelli@gmail.com,
+ shuah@kernel.org, jonathanh@nvidia.com, patches@kernelci.org,
+ linux-ext4 <linux-ext4@vger.kernel.org>, linux@roeck-us.net,
+ Arnd Bergmann <arnd@arndb.de>, Jann Horn <jannh@google.com>,
+ srw@sladewatkins.net, broonie@kernel.org,
+ Ben Copeland <benjamin.copeland@linaro.org>, LTP List <ltp@lists.linux.it>,
+ Christian Brauner <brauner@kernel.org>, rwarsow@gmx.de, pavel@denx.de,
+ patches@lists.linux.dev, conor@kernel.org, achill@achill.org,
+ linux-fsdevel@vger.kernel.org, akpm@linux-foundation.org,
+ torvalds@linux-foundation.org, sudipm.mukherjee@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Martin Doucha <mdoucha@suse.cz> wrote:
-
-Module dirs search runs relative to current working directory instead
-> of the source directory. In an out-of-tree build, the search for makefiles
-> will come up empty and grep will try to read from standard input, blocking
-> indefinitely. Search for makefiles relative to the source directory to fix
-> the issue.
+On Tue, 19 Aug 2025 at 18:01, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
+> This is the start of the stable review cycle for the 6.15.11 release.
+> There are 509 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 21 Aug 2025 12:27:20 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.15.11-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Patch merged, thanks for the fix!
+As we discussed from the last time LTP syscalls epoll_ctl04 is a known issue
+on the Linus master and Linux next.
 
--- 
-Regards,
-Li Wang
+* ltp-syscalls
+  - epoll_ctl04
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+1)
+The bisection results pointing to
+
+First bad commit,
+eventpoll: Fix semi-unbounded recursion
+commit f2e467a48287c868818085aa35389a224d226732 upstream.
+
+2)
+A patch has been proposed to update the LTP test case to align with
+recent changes in the Linux kernel code.
+
+[LTP] [PATCH] syscalls/epoll_ctl04: add ELOOP to expected errnos
+- https://lore.kernel.org/ltp/39ee7abdee12e22074b40d46775d69d37725b932.1754386027.git.jstancek@redhat.com/
+- https://regressions.linaro.org/lkft/linux-stable-rc-linux-6.15.y/v6.15.9-987-gcf068471031d/ltp-syscalls/epoll_ctl04/
+
+## Build
+* kernel: 6.15.11-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+* git commit: cf068471031d89c4d7ce04f477ba69a043736a58
+* git describe: v6.15.9-987-gcf068471031d
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.15.y/build/v6.15.9-987-gcf068471031d
+
+## Test Regressions (compared to v6.15.9-481-g2510f67e2e34)
+
+* ltp-syscalls
+  - epoll_ctl04
+
+## Metric Regressions (compared to v6.15.9-481-g2510f67e2e34)
+
+## Test Fixes (compared to v6.15.9-481-g2510f67e2e34)
+
+## Metric Fixes (compared to v6.15.9-481-g2510f67e2e34)
+
+## Test result summary
+total: 335595, pass: 313546, fail: 6512, skip: 15537, xfail: 0
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 139 total, 137 passed, 2 failed
+* arm64: 57 total, 56 passed, 1 failed
+* i386: 18 total, 18 passed, 0 failed
+* mips: 34 total, 27 passed, 7 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 40 total, 39 passed, 1 failed
+* riscv: 25 total, 24 passed, 1 failed
+* s390: 22 total, 22 passed, 0 failed
+* sh: 5 total, 5 passed, 0 failed
+* sparc: 4 total, 3 passed, 1 failed
+* x86_64: 49 total, 48 passed, 1 failed
+
+## Test suites summary
+* boot
+* commands
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-mincore
+* kselftest-mm
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-mptcp
+* kselftest-openat2
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-rust
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-tc-testing
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-x86
+* kunit
+* kvm-unit-tests
+* lava
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-build-clang
+* log-parser-build-gcc
+* log-parser-test
+* ltp-capability
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-hugetlb
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* modules
+* perf
+* rcutorture
+* rt-tests-cyclicdeadline
+* rt-tests-pi-stress
+* rt-tests-pmqtest
+* rt-tests-rt-migrate-test
+* rt-tests-signaltest
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
