@@ -4,92 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FD43CA0EED
-	for <ltp@archiver.kernel.org>; Fri, 22 Aug 2025 04:05:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20784CA0EED
+	for <ltp@archiver.kernel.org>; Fri, 22 Aug 2025 04:06:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1755835557; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1755835579; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=mKOD3RRIIfT6LWqt5499L2I2aU3S8PmuTlu+KJyi9EM=;
- b=FSgALYxkUFV0rBQ9shdQcmGLHmw8mwgXIPneWI5SpJ9tFRehc96MzTVCzQ8WGSb4ElVza
- 4mTqH6wrf5xv96WpAnaA4lRzdKMEu5YAnDToDyYkofouO7YO9xL0cL4r8CzV5Y3Lf64BYX5
- wYsBaA6pJiYUTPBWiiyDJXXcpqi3nro=
+ bh=k27Lj96FnVOdSqyqtyPslQXVFdolNB5DAmqzU8p7G2o=;
+ b=E0u6rmSHYn2UuVNkRmcRFnOnxiA+uceA6OIrG3HqwbSEogETrXtn1793Pl+xCnoRqlQjX
+ FB25DLZFPDHG57ycuZVTK+kuBwjYsGXfNC8phi61ofWT+5FOUQDhYT+qzBS+LpvaPyrCI+t
+ +JVtQEZfbpsWu5aIZ/9V+AVN6o7ETl4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C639C3CCC6B
-	for <ltp@archiver.kernel.org>; Fri, 22 Aug 2025 06:05:57 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id A1A603CCC74
+	for <ltp@archiver.kernel.org>; Fri, 22 Aug 2025 06:06:19 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1FAA33CCC17
- for <ltp@lists.linux.it>; Fri, 22 Aug 2025 06:05:11 +0200 (CEST)
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
- [IPv6:2a00:1450:4864:20::52c])
+ by picard.linux.it (Postfix) with ESMTPS id 0D1543CCBCC
+ for <ltp@lists.linux.it>; Fri, 22 Aug 2025 06:05:12 +0200 (CEST)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
+ [IPv6:2a00:1450:4864:20::636])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9B4731000410
- for <ltp@lists.linux.it>; Fri, 22 Aug 2025 06:05:10 +0200 (CEST)
-Received: by mail-ed1-x52c.google.com with SMTP id
- 4fb4d7f45d1cf-61a8b640e34so3506962a12.1
- for <ltp@lists.linux.it>; Thu, 21 Aug 2025 21:05:10 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 77E622000D2
+ for <ltp@lists.linux.it>; Fri, 22 Aug 2025 06:05:12 +0200 (CEST)
+Received: by mail-ej1-x636.google.com with SMTP id
+ a640c23a62f3a-afcb78ead12so238287466b.1
+ for <ltp@lists.linux.it>; Thu, 21 Aug 2025 21:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1755835510; x=1756440310; darn=lists.linux.it;
+ d=suse.com; s=google; t=1755835511; x=1756440311; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=qarRCNk/EYVjoDzyGbo12uPdBczRVvbKHgTiYFp6F3U=;
- b=RlPrRGzKM0NTpBNPen6L5tHdi1BTL9Rnx1fhHZC3XnhIBE6HO0vFX+85s5KbTWpIYK
- wT2HwNYTSSFBuNRRQ+lmsgAzOSM/qyI4mkN+eRPgBOtcOOPOu26UAFCkNe8IRaFnQVVQ
- KGp2+3ame0VmthKrseUpEWtHlpTGNkcidgUgdABsoXYAyUAhuEjBXGPksYWTmMb+hOdG
- 8Vei4Lj/Vvrh4IsWCMCauAMpTQ2x+9ixDIp2CmiqzLLw6RnZdEkVlZ0VWZgYdCbx814P
- 6O12QO9ddS2dSEKxwP2FNw6I8cJlVjaHW9HkB8Q2iuOBHUcp/hMx0BBjlfV3RlLT11tc
- LbNQ==
+ bh=TsmvjpybWkTqEQWvuWkWayohcsSLUjuou6QuyouUE/Q=;
+ b=faX4adkVgnIhASN8adgh+Hu130jakAit4U6Pr+sCsLsm5rX2G5CwAnT86b3cqQDQvU
+ hAEerwp7ss1uLz0JaRpTd9bn5aBSWQ5or13Gey2aNORkxJ/6GwELYRxV6v/z8vuuuIMe
+ nJkCrPLo0wDwUYHRMZsJg+JujSTz+O9At4HUEywvSRDLCt83+0jqMPif0lFw+F1a3WL/
+ Fs3Uwd9qknX85J63Ew54SOxfskEYhRSxrBmEdXRrzgY++D+eyHuVtgUgVxrHXnRQs3rg
+ VDRNzB/HYmqpt9NkE7Z4rzUYu0dYczQ2ojUPn7Hoiw2ctPvoSI/2nIPDb/eQfmb03zAu
+ K/VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1755835510; x=1756440310;
+ d=1e100.net; s=20230601; t=1755835511; x=1756440311;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=qarRCNk/EYVjoDzyGbo12uPdBczRVvbKHgTiYFp6F3U=;
- b=ED5sW4P5GHKwC5V4HQdYRw+tPV7gn59jCFoNyTyXqyYzo8SuNlEZw3FZNir1/xfxE2
- L4a98juGenPdoBPSPXeb01khhthAeEeXeA4Jd9tmowWQBB3UpNPsI4EgMf8uuP4WrkSy
- aS+84XFchToY+XXmmvNxvE+gRtb4lf1DOnP40SmtZOowfwAETB770AEqksEz+VFjE61+
- 3OaUFjsYFEvFtU+tbzFWHyAmpyKB0f5xfZjxfu8+GlukYHAQy5aYDqT394aZEXbz1wR5
- iDP8kTEm6mAd+Y64nVB1O/qMvv5+B3Msm1OTYY0Hc+U3VhugUOBwD9Ls3V9tLgz/Xsy+
- 1c7Q==
-X-Gm-Message-State: AOJu0YwqtB+X+lPalgdBOdMLRBT/wnQEnglg9sjZ8uzJeZN16ocJAd4T
- o3Z2/gfi524nO4xZb/LhppinA12C/cHL1kqEYgZ2D7T5RYzpgYfE8tHKl+8vJ5FIRpaeO2jAL6X
- socU=
-X-Gm-Gg: ASbGncuB6SktiUwP22pSf3aV/FvLvhAjz7s8d4o9Ltc469j+vikZSE/VJx64T9NjRyz
- ZLVXaa+OC6TVpB4KzaPTS4Kb28DVnH3uV5GXFe2iGlh6YRWlbO30Bs5o6HcGCRDTdq05TGn7WLs
- 00DQNb9yZAe0bUEypTY5lhDd4iwRRPNtaUMNBreLpOm2SlzzxIxS5a9sAuWmiramcXTtG0oya0f
- MfgXCsIfY0k6/YHcZHJEOLYLZ7DwCZg5OvjrJI5q9R7U0jPUC3XYdvvnWH5TjGwuWLxkKupMtYV
- eFr3prxWwXkuTbh/hvz79WmaiuDVGifMVZQ2OLQWHOHrEkspifjiCbMSftXhOjv7NQ3l+beLXHx
- l7Lea0HIwEU9i0Rl9pCq3oYXgxqU93TwzVTQWylchj6g=
-X-Google-Smtp-Source: AGHT+IFQp+qug2ORmlmn73nrfnagQIuH1+ugv4Y795cFPJchcwpPfpaNzSpkxDWZc0P1Ies+e52YGg==
-X-Received: by 2002:a17:907:96ac:b0:afc:b618:ca7c with SMTP id
- a640c23a62f3a-afe2965ac11mr117804666b.48.1755835509769; 
- Thu, 21 Aug 2025 21:05:09 -0700 (PDT)
+ bh=TsmvjpybWkTqEQWvuWkWayohcsSLUjuou6QuyouUE/Q=;
+ b=tSEdmqGR73sciQ/4q4delzhe8CymH/dfgN6vx7Gg1Jox9EAzWIiUjmqJ0weNxx1V9m
+ nyUYBlA0kojDq2rNZvuA7ItCxHGYC73cmwcxnsKQd4DQv7ArjH/9OPUmDWv/sN4EXsre
+ yDLxUdJxSnvS3AceloFZq5BstJQM4FPQBrv79fN08MXtk6mH3T/uBMFJK3Nf5840QpcX
+ LW+Dw1IHBEVH97w9TJaPxmUAcvWDnY6PtZR8f6Rx5k1aoFn9ZTstPD4RK5IBOQ4PeEGV
+ rtEQAVAusidUjKXH0xP3Xrpz0aocEhi4H+trMbByW1abU+X7mQWP2LlJmn4hbP3ejfC/
+ Hchg==
+X-Gm-Message-State: AOJu0YxGLNwNvsPEAEeUbmWsE7wyB2YnnKuXCHHeJfp2ywC/CAzYWxth
+ IY/StIWqFu/5iKFSmjQkvDTB8/xP/zHB07dEt3Lx8M1WyPnXDqFyVEBxFQsFiQdwenS/SFFQ+mg
+ CkoI=
+X-Gm-Gg: ASbGnctOV1q48UikX1EET3FWmCnoJnRzIoaj/GqqENVcayuTSJHtOR0BbtNwMPkVUEf
+ dG5JeKM7VVR4/J0A5RJ00CtDfaUIRFYR7GJQyUflKLM9eTzIvPWuv3l+Vw3KWFViLzPfCf8dgjj
+ HlVW5FBGIC6qfYMSZUqal5+KuPCXHn6gOkyYQvc/yhsuZvrqmNTp1/gjQOu9Dt4y2bGG0VJEa/v
+ SJM8l5BKtWqrrVz/Q8kqo8AhO5TmdTjA2vqeJKHw6R3ZtAMLrB/N/KCjWCfI26WMk7AdWJ+IvoI
+ M/AKWeHAP0RpS5MPo4S4Hd75BPmxSOXLm+9r8Dh/dd6zbAN3gSkk/BD7v5WRkADg2XYlmh3Ksej
+ lMIhD2GBxb401czhZrAfPTEx96jjPx4KUWzOcBxlv5dk=
+X-Google-Smtp-Source: AGHT+IHRM6C177PYpZ0n4xNqnMBJ7b3xkw82ft8ZZZdko7Ef4irY9XoBZ80Er6+PYo5K+H0cDycpuw==
+X-Received: by 2002:a17:907:2d07:b0:af9:4075:4ea5 with SMTP id
+ a640c23a62f3a-afe28f5ba80mr139400766b.25.1755835511558; 
+ Thu, 21 Aug 2025 21:05:11 -0700 (PDT)
 Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
  by smtp.gmail.com with UTF8SMTPSA id
- a640c23a62f3a-afded478d74sm518056566b.69.2025.08.21.21.05.09
+ a640c23a62f3a-afded2bacd2sm522745766b.24.2025.08.21.21.05.11
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 21 Aug 2025 21:05:09 -0700 (PDT)
+ Thu, 21 Aug 2025 21:05:11 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Fri, 22 Aug 2025 04:03:58 +0000
-Message-ID: <20250822040501.28640-2-wegao@suse.com>
+Date: Fri, 22 Aug 2025 04:03:59 +0000
+Message-ID: <20250822040501.28640-3-wegao@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250822040501.28640-1-wegao@suse.com>
 References: <20250822034215.28533-1-wegao@suse.com>
  <20250822040501.28640-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/2] tst_device.c: Add tst_is_mounted_ro/w check
- mount option
+Subject: [LTP] [PATCH v3 2/2] fspick01.c: Check mount point was really
+ remounted read only
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,78 +107,65 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Fixes: #1171
+The fspick01 test does not test if FSCONFIG_CMD_RECONFIGURE really
+reconfigures the mount point, e.g. if the mount point was really
+remounted read only.
+
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- include/tst_device.h |  2 ++
- lib/tst_device.c     | 42 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 44 insertions(+)
+ testcases/kernel/syscalls/fspick/fspick01.c | 23 ++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/include/tst_device.h b/include/tst_device.h
-index 2597fb4e2..3ea7b5500 100644
---- a/include/tst_device.h
-+++ b/include/tst_device.h
-@@ -34,6 +34,8 @@ int tst_umount(const char *path);
+diff --git a/testcases/kernel/syscalls/fspick/fspick01.c b/testcases/kernel/syscalls/fspick/fspick01.c
+index d03cacd3d..8cb2d3669 100644
+--- a/testcases/kernel/syscalls/fspick/fspick01.c
++++ b/testcases/kernel/syscalls/fspick/fspick01.c
+@@ -6,6 +6,7 @@
   */
- int tst_is_mounted(const char *path);
- int tst_is_mounted_at_tmpdir(const char *path);
-+int tst_is_mounted_ro(const char *path);
-+int tst_is_mounted_rw(const char *path);
+ #include "tst_test.h"
+ #include "lapi/fsmount.h"
++#include "tst_safe_stdio.h"
  
- /*
-  * Clears a first few blocks of the device. This is needed when device has
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 6d1abf065..34f24be7d 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -473,6 +473,48 @@ int tst_is_mounted_at_tmpdir(const char *path)
- 	return tst_is_mounted(mpath);
- }
+ #define MNTPOINT		"mntpoint"
+ #define TCASE_ENTRY(_flags)	{.name = "Flag " #_flags, .flags = _flags}
+@@ -24,6 +25,12 @@ static void run(unsigned int n)
+ {
+ 	struct tcase *tc = &tcases[n];
+ 	int fspick_fd;
++	char abspath[PATH_MAX];
++	char *tmpdir = tst_tmpdir_path();
++
++	snprintf(abspath, sizeof(abspath), "%s/%s", tmpdir, MNTPOINT);
++
++	TST_EXP_VAL(tst_is_mounted_rw(abspath), 1);
  
-+static int tst_mount_has_opt(const char *path, const char *opt)
-+{
-+	char line[PATH_MAX];
-+	FILE *file;
-+	int ret = 0;
+ 	TEST(fspick_fd = fspick(AT_FDCWD, MNTPOINT, tc->flags));
+ 	if (fspick_fd == -1) {
+@@ -49,8 +56,22 @@ static void run(unsigned int n)
+ 		goto out;
+ 	}
+ 
+-	tst_res(TPASS, "%s: fspick() passed", tc->name);
++	TST_EXP_VAL(tst_is_mounted_ro(abspath), 1);
 +
-+	file = SAFE_FOPEN(NULL, "/proc/mounts", "r");
-+
-+	while (fgets(line, sizeof(line), file)) {
-+		char mount_point[PATH_MAX], options[PATH_MAX];
-+
-+		if (sscanf(line, "%*s %s %*s %s", mount_point, options) < 2)
-+			continue;
-+
-+		if (strcmp(mount_point, path) != 0)
-+			continue;
-+
-+		char *tok = strtok(options, ",");
-+		while (tok) {
-+			if (strcmp(tok, opt) == 0) {
-+				ret = 1;
-+				break;
-+			}
-+			tok = strtok(NULL, ",");
-+		}
-+		if (ret)
-+			break;
++	TEST(fsconfig(fspick_fd, FSCONFIG_SET_FLAG, "rw", NULL, 0));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_FLAG) failed");
++		goto out;
++	}
+ 
++	TEST(fsconfig(fspick_fd, FSCONFIG_CMD_RECONFIGURE, NULL, NULL, 0));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_RECONFIGURE) failed");
++		goto out;
 +	}
 +
-+	return ret;
-+}
-+
-+int tst_is_mounted_ro(const char *path)
-+{
-+	return tst_mount_has_opt(path, "ro");
-+}
-+
-+int tst_is_mounted_rw(const char *path)
-+{
-+	return tst_mount_has_opt(path, "rw");
-+}
-+
- static int find_stat_file(const char *dev, char *path, size_t path_len)
- {
- 	const char *devname = strrchr(dev, '/') + 1;
++	TST_EXP_VAL(tst_is_mounted_rw(abspath), 1);
++	tst_res(TPASS, "%s: fspick() passed", tc->name);
+ out:
+ 	SAFE_CLOSE(fspick_fd);
+ }
 -- 
 2.43.0
 
