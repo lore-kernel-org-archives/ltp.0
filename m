@@ -4,87 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CFD8CA0EEB
-	for <ltp@archiver.kernel.org>; Fri, 22 Aug 2025 07:46:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5781CA0EEB
+	for <ltp@archiver.kernel.org>; Fri, 22 Aug 2025 07:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1755848778; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1755848924; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=H8agHTdSxep+6jrSYbT12LGhJMSZdy7f9hdteEUAPeo=;
- b=jT75Y12gJg3zssiFvY/SK9nzK3WkwlNQ/UWnJoUD2rm/+Y8FLX4rP2hwjDCkGS2vf4v3Z
- qMoCEDvnEHIjSFa30wWMIvXaZq7G/96Yv0ITYJ5nJgXgaFIa7XisuKq0UC4HMFBUhzq3Paw
- uQP+kga0+FoKbXJ+mb7qwYG6Y+bZzVY=
+ bh=TJVTnGrAY8aLBJORexdt4ILseHiZKFDjPlWeloNsZgk=;
+ b=MR3hjsPX9jwCCYjoeyqmOgdyOvZIjl7hTCSQ4gCN9qf/Uubeq3oFTNMKTlRe6LpQY6Fk2
+ H2fwsjk26GTAS7zrnJo90HH68dz4NwlMjy9jTebyD62egccH6RiNXwGKWyHcFy9dFfJLU5A
+ d7rW8fIn+b383jwksVZifj9BsKAr/nk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CE0BC3CCE41
-	for <ltp@archiver.kernel.org>; Fri, 22 Aug 2025 09:46:18 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 3350F3CCD8B
+	for <ltp@archiver.kernel.org>; Fri, 22 Aug 2025 09:48:44 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 09BB63CCCE7
- for <ltp@lists.linux.it>; Fri, 22 Aug 2025 09:45:57 +0200 (CEST)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
- [IPv6:2a00:1450:4864:20::632])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E69133CCCE7
+ for <ltp@lists.linux.it>; Fri, 22 Aug 2025 09:48:22 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5AAAB1A00359
- for <ltp@lists.linux.it>; Fri, 22 Aug 2025 09:45:57 +0200 (CEST)
-Received: by mail-ej1-x632.google.com with SMTP id
- a640c23a62f3a-afcb7ae31caso337281366b.3
- for <ltp@lists.linux.it>; Fri, 22 Aug 2025 00:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1755848757; x=1756453557; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=JNpeVpNAea9FMsg+BVbjmwav0EwSWFHb3a1wALyP6+c=;
- b=ILi519bLFhFVcO/lr9TbECPOe47OrQ0uZ0CrXHYibhL3u+lcLyZPjdMkdBW5ah9tJv
- OsD0d6ioXFCrDMDVPa6xdnyq8mcbJKk3+4WTogV8muejqJ5ggM5p3NknVQh7TXpa+Xvq
- 1pdMdlrXhSQVuiAMp0fIKQi3N2EqHewnHMcWze6aae+mHxojxnQFJgJbONBH/cjefPgA
- I3o2XrR8oysTKI4Jtqi0TXqVsb1qWN8U3ZE4V5ZOKZnQ2foTj8s8q1pKk9waodTKIXFg
- 5TVQXY2YWnOnqoDGMuHH/fhymXWznehy26dAHA5DkJ01cW6ngXsw0NuTtN6iuFAgbPcG
- 2U4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1755848757; x=1756453557;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=JNpeVpNAea9FMsg+BVbjmwav0EwSWFHb3a1wALyP6+c=;
- b=eKaT1eJQkj93KOcdJEgghoXu/2EJmmYBXJAJ8kE93efnvY6jsqMp4XjCXooRBnbXNK
- mRoFpYfrDx3HeIwuv4KIc5ZAiAawDvdOKDpJ9kveoN4R+Ab4SKQsobo+63EwZVxBfdQf
- Zcb8WoE8eNKEAsYcbXSJaB6iqhmCeMe1xJr7LDMdx+6YS5gjY5bcSiSw0ckHeVw5gDsT
- 3HVoW6bpeJLDQzKcEjzeVpMlGdgUzCBQWv1q6dfQrx+4ApHAoC8u1Yk0nQob0XT968Z9
- t2f6OMdjwESugYwQU2dNglSHqWRJY7JkCRdGBlouhMVtkqpK/xT5JCY8Dd14RrH/oujM
- zBfw==
-X-Gm-Message-State: AOJu0Yy92uBacJA8YCl65mwlF4IWxe68j2IWxErnH5+dyENjAxCJEoGJ
- gfv+CstDJB4BG04Ostey9pLVmi4yIDIW2wDGjXGOeDzuiANC/rbPHIcFT69Fv+uxNw==
-X-Gm-Gg: ASbGncvkiW2Sv7y3F6oz8bNd1uzmwFVgVCMs8rYpDwvQJSXJ7cNrqc5JYNBnhdlLS4F
- T7k2CZTHIaOwSFbROkCZoHFu+c7dkuWQrKWbdDsEok25quFv2NPN9AXcD2GUkVJlqB6HjC+WZ7W
- i788SdJzW0QJepKtXQUIDUq0IPfzhHPBuV37Bh8t9pXAFdxPnizwmrRfWVUubVDL+tUw/pMToSK
- 0/zQ6gBapk/6X7ps5hXhOpovLCBABWzdPD/ndX1yrFXP8Ueyhyi2z45Cn5RLFsDnlpyRlb9FgwB
- SAX2fAWL/IXJRIIhoHbx/7/PVKrIDZFD+qKmcPA0MvHZIW78J+led96h9MS8xYRPPqa1PKaNxst
- gc/Tz4MTPgXnh1kmdLMgldtk/VYby/Nhibv7ko9f0dzM=
-X-Google-Smtp-Source: AGHT+IGfnuKumqZ4AYCG8NrXE1dxZdk3h9LVx+eNw9JD09+g8loLlbCi0A4MpOZDEUDcG8aCJhXyVg==
-X-Received: by 2002:a17:907:60ca:b0:aeb:3df1:2e75 with SMTP id
- a640c23a62f3a-afe29748f87mr175368866b.46.1755848756686; 
- Fri, 22 Aug 2025 00:45:56 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-afe0c411a55sm297987366b.100.2025.08.22.00.45.56
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 22 Aug 2025 00:45:56 -0700 (PDT)
-Date: Fri, 22 Aug 2025 07:45:55 +0000
-To: Li Wang <liwang@redhat.com>
-Message-ID: <aKggM4ZVmjt7x6fJ@localhost>
-References: <20250822072204.2191382-1-liwang@redhat.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 53BD81000434
+ for <ltp@lists.linux.it>; Fri, 22 Aug 2025 09:48:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1755848900;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=p2Nn4rHWP1hYuiMwlvGncX2vTd78IXkx6QMhXGyODJk=;
+ b=OW86Bm2QFvISpvmCNfDO07UeyUh8vatN77AeYzb0666FJ/zsa76Xnwr4JTnZJkxOS2L/My
+ lwshz3PkXc7MzQEYN7kH0bFv0lmV0rocXtxKlLtIXZ225E1JRWocYw0Sl9o72gny0I8dEP
+ MMp+AEA4YsygjL0PXZQUTvdAl/ZzWbA=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-556-cosB9JMgMOeb_5Itycsu_w-1; Fri,
+ 22 Aug 2025 03:48:18 -0400
+X-MC-Unique: cosB9JMgMOeb_5Itycsu_w-1
+X-Mimecast-MFC-AGG-ID: cosB9JMgMOeb_5Itycsu_w_1755848898
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id B762418004A7
+ for <ltp@lists.linux.it>; Fri, 22 Aug 2025 07:48:17 +0000 (UTC)
+Received: from dell-per7425-02.rhts.eng.pek2.redhat.com
+ (dell-per7425-02.rhts.eng.pek2.redhat.com [10.73.116.18])
+ by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 97BCC3001453
+ for <ltp@lists.linux.it>; Fri, 22 Aug 2025 07:48:16 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Fri, 22 Aug 2025 15:48:11 +0800
+Message-ID: <20250822074811.2192404-1-liwang@redhat.com>
+In-Reply-To: <CAEemH2fM4vHRdgHh62krquK5CFuHvpKdJtj--S6Vvt_i0xRBFw@mail.gmail.com>
+References: <CAEemH2fM4vHRdgHh62krquK5CFuHvpKdJtj--S6Vvt_i0xRBFw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250822072204.2191382-1-liwang@redhat.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: llkj1QW75oWHZ4VL2aGDctprjUPua33ZF_YpFKK-q8Y_1755848898
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] tst_device: refine tst_is_mounted()
+Subject: [LTP] [PATCH v2 2/2] mount: check path exists before tst_is_mounted
+ in cleanup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,144 +87,75 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Aug 22, 2025 at 03:22:03PM +0800, Li Wang wrote:
-> Refactor tst_is_mounted() to reuse tst_mount_has_opt() instead of
-> parsing /proc/mounts with strstr(). This makes the check more
-> accurate and consistent with tst_is_mounted_ro()/rw().
-> 
-> Also moved tst_is_mounted_at_tmpdir() below for consistency.
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Wei Gao <wegao@suse.com>
-> ---
->  lib/tst_device.c | 79 +++++++++++++++++++++---------------------------
->  1 file changed, 35 insertions(+), 44 deletions(-)
-> 
-> diff --git a/lib/tst_device.c b/lib/tst_device.c
-> index b610cf14b..5b0498c03 100644
-> --- a/lib/tst_device.c
-> +++ b/lib/tst_device.c
-> @@ -429,50 +429,6 @@ int tst_umount(const char *path)
->  	return -1;
->  }
->  
-> -int tst_is_mounted(const char *path)
-> -{
-> -	char line[PATH_MAX];
-> -	FILE *file;
-> -	int ret = 0;
-> -
-> -	file = SAFE_FOPEN(NULL, "/proc/mounts", "r");
-> -
-> -	while (fgets(line, sizeof(line), file)) {
-> -		if (strstr(line, path) != NULL) {
-> -			ret = 1;
-> -			break;
-> -		}
-> -	}
-> -
-> -	SAFE_FCLOSE(NULL, file);
-> -
-> -	if (!ret)
-> -		tst_resm(TINFO, "No device is mounted at %s", path);
-> -
-> -	return ret;
-> -}
-> -
-> -int tst_is_mounted_at_tmpdir(const char *path)
-> -{
-> -	char cdir[PATH_MAX], mpath[PATH_MAX];
-> -	int ret;
-> -
-> -	if (!getcwd(cdir, PATH_MAX)) {
-> -		tst_resm(TWARN | TERRNO, "Failed to find current directory");
-> -		return 0;
-> -	}
-> -
-> -	ret = snprintf(mpath, PATH_MAX, "%s/%s", cdir, path);
-> -	if (ret < 0 || ret >= PATH_MAX) {
-> -		tst_resm(TWARN | TERRNO,
-> -			 "snprintf() should have returned %d instead of %d",
-> -			 PATH_MAX, ret);
-> -		return 0;
-> -	}
-> -
-> -	return tst_is_mounted(mpath);
-> -}
-> -
->  static int tst_mount_has_opt(const char *path, const char *opt)
->  {
->  	char line[PATH_MAX];
-> @@ -496,6 +452,11 @@ static int tst_mount_has_opt(const char *path, const char *opt)
->  		if (strcmp(mount_point, abspath) != 0)
->  			continue;
->  
-> +		if (!opt) {
-> +			ret = 1;
-> +			break;
-> +		}
-> +
->  		char *tok = strtok(options, ",");
->  		while (tok) {
->  			if (strcmp(tok, opt) == 0) {
-> @@ -512,6 +473,15 @@ static int tst_mount_has_opt(const char *path, const char *opt)
->  	return ret;
->  }
->  
-> +int tst_is_mounted(const char *path)
-> +{
-> +	int ret = tst_mount_has_opt(path, NULL);
-> +	if (!ret)
-> +		tst_resm(TINFO, "No device is mounted at %s", path);
-> +
-> +	return ret;
-> +}
-> +
->  int tst_is_mounted_ro(const char *path)
->  {
->  	return tst_mount_has_opt(path, "ro");
-> @@ -522,6 +492,27 @@ int tst_is_mounted_rw(const char *path)
->  	return tst_mount_has_opt(path, "rw");
->  }
->  
-> +int tst_is_mounted_at_tmpdir(const char *path)
-> +{
-> +	char cdir[PATH_MAX], mpath[PATH_MAX];
-> +	int ret;
-> +
-> +	if (!getcwd(cdir, PATH_MAX)) {
-> +		tst_resm(TWARN | TERRNO, "Failed to find current directory");
-> +		return 0;
-> +	}
-> +
-> +	ret = snprintf(mpath, PATH_MAX, "%s/%s", cdir, path);
-> +	if (ret < 0 || ret >= PATH_MAX) {
-> +		tst_resm(TWARN | TERRNO,
-> +			 "snprintf() should have returned %d instead of %d",
-> +			 PATH_MAX, ret);
-> +		return 0;
-> +	}
-> +
-> +	return tst_is_mounted(mpath);
-> +}
-> +
->  static int find_stat_file(const char *dev, char *path, size_t path_len)
->  {
->  	const char *devname = strrchr(dev, '/') + 1;
-> -- 
-> 2.49.0
-> 
-Thanks for your patch!
-Reviewed-by: Wei Gao <wegao@suse.com>
+tst_is_mounted() now internally resolves the mount path via realpath(),
+which will fail if the path does not exist. In sometest (e.g. mount05),
+MNTPOINT2 may not exist yet during cleanup, calling tst_is_mounted()
+directly could produce misleading warnings or errors.
 
+Add an explicit access(PATH, F_OK) check before calling tst_is_mounted()
+in the cleanup, ensuring we only query mounts for existing paths.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+
+Notes:
+    v1 --> v2:
+            patch 1/2, keep no change, do not send v2.
+            patch 2/2, adding two more files for path exist check
+
+ testcases/kernel/containers/mqns/mqns_03.c | 2 +-
+ testcases/kernel/containers/mqns/mqns_04.c | 2 +-
+ testcases/kernel/syscalls/mount/mount05.c  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/containers/mqns/mqns_03.c b/testcases/kernel/containers/mqns/mqns_03.c
+index 4d3bfc52f..ac8311559 100644
+--- a/testcases/kernel/containers/mqns/mqns_03.c
++++ b/testcases/kernel/containers/mqns/mqns_03.c
+@@ -130,7 +130,7 @@ static void cleanup(void)
+ 	if (!access(MQUEUE2, F_OK))
+ 		SAFE_MQ_UNLINK(MQNAME2);
+ 
+-	if (tst_is_mounted(DEVDIR))
++	if (!access(DEVDIR, F_OK) && tst_is_mounted(DEVDIR))
+ 		SAFE_UMOUNT(DEVDIR);
+ }
+ 
+diff --git a/testcases/kernel/containers/mqns/mqns_04.c b/testcases/kernel/containers/mqns/mqns_04.c
+index d28c330c4..790607ecd 100644
+--- a/testcases/kernel/containers/mqns/mqns_04.c
++++ b/testcases/kernel/containers/mqns/mqns_04.c
+@@ -123,7 +123,7 @@ static void cleanup(void)
+ 	if (!access(MQUEUE2, F_OK))
+ 		SAFE_MQ_UNLINK(MQNAME2);
+ 
+-	if (tst_is_mounted(DEVDIR))
++	if (!access(DEVDIR, F_OK) && tst_is_mounted(DEVDIR))
+ 		SAFE_UMOUNT(DEVDIR);
+ }
+ 
+diff --git a/testcases/kernel/syscalls/mount/mount05.c b/testcases/kernel/syscalls/mount/mount05.c
+index 66e102a32..5585e230e 100644
+--- a/testcases/kernel/syscalls/mount/mount05.c
++++ b/testcases/kernel/syscalls/mount/mount05.c
+@@ -35,7 +35,7 @@ static void cleanup(void)
+ 	if (tst_is_mounted(MNTPOINT1))
+ 		SAFE_UMOUNT(MNTPOINT1);
+ 
+-	if (tst_is_mounted(MNTPOINT2))
++	if (!access(MNTPOINT2, F_OK) && tst_is_mounted(MNTPOINT2))
+ 		SAFE_UMOUNT(MNTPOINT2);
+ }
+ 
+-- 
+2.49.0
 
 
 -- 
