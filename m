@@ -4,93 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94B5CC8303F
-	for <ltp@archiver.kernel.org>; Tue, 26 Aug 2025 01:17:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2D7ACA0EFA
+	for <ltp@archiver.kernel.org>; Tue, 26 Aug 2025 04:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1756171027; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=5nCNei7O35oXtkRl/pc/y0pio4oxTVN7vsdTyhLhgr0=;
- b=cJkPYiM47S7JfHPvUWwL1kM1tzAyOhRScE/un5B49jD9gjzHGuRwzhaCw6l6Ky24jzDkv
- xMBcyHLHZy+f4TQK3VCLV07d9cGgfyRUkNZElrvLuPkjjwac/kEPBqPTt4sc/JBv7nkj3cb
- pfd51A8LHJhYo7G2VmQAHrlE3ckmGYo=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1756183322; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=uX8iZyle3M7OIKYETSIY0kzZmE+w/7xuPxblym1eTKM=;
+ b=ZqT0RWh5KgFA3lb6SL5BSUOBY9mYce3zsBXS2v1csi4NjSX+tA3d70Iy0XiCR7QAzKzCh
+ dcRf0v4W/MVOkIVf71ijKPrrG+/ofRKRtEbdMwGlaG0ZUgmR0zyTNlcvZaCOm2BROkUwIp2
+ qQMy2C3zGqQwRsejkCPMauvAvMnFJgM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7956F3CA3BF
-	for <ltp@archiver.kernel.org>; Tue, 26 Aug 2025 03:17:07 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0A1BD3CAE75
+	for <ltp@archiver.kernel.org>; Tue, 26 Aug 2025 06:42:02 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2483C3C0372
- for <ltp@lists.linux.it>; Tue, 26 Aug 2025 03:16:46 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id D700C3C5837
+ for <ltp@lists.linux.it>; Tue, 26 Aug 2025 06:41:41 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 81CD510005F5
- for <ltp@lists.linux.it>; Tue, 26 Aug 2025 03:16:45 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CF543600768
+ for <ltp@lists.linux.it>; Tue, 26 Aug 2025 06:41:40 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1756171004;
+ s=mimecast20190719; t=1756183299;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GsAy5q31mQuCJ99NKUztDu5RL1rSO/n5Snu2zLrlyHE=;
- b=QiHfiPIrZVa8srIA9gYgL2+okshl20AIjXQc8mXZoG5J+twFWV3EwCjh8N+tMVJ5iWxeq5
- 5i8j0qqJs30TlO0RNW7epyskrgdKLrRH32gMYDYY5f9jL2rHo5IoyUnuV+I4ExTQ8ThR0t
- 2CjQeMDJmPyeDqXAAoBSx0JFuEMqCOs=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-92-XNPP0gkRM0-fqdQFxRHimA-1; Mon, 25 Aug 2025 21:16:42 -0400
-X-MC-Unique: XNPP0gkRM0-fqdQFxRHimA-1
-X-Mimecast-MFC-AGG-ID: XNPP0gkRM0-fqdQFxRHimA_1756171001
-Received: by mail-pl1-f200.google.com with SMTP id
- d9443c01a7336-2461c537540so51103305ad.0
- for <ltp@lists.linux.it>; Mon, 25 Aug 2025 18:16:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1756171001; x=1756775801;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=GsAy5q31mQuCJ99NKUztDu5RL1rSO/n5Snu2zLrlyHE=;
- b=bgh/tAWDw4u8bEQ4tnMwavdpPHlVOlHf6vhByDjfy0p1zgmA7wa9+Sxda8v6MqRzA4
- +vmmzOAErnrHljGdpR0W51delbBuErNCO+HobhD2Jr0vWTvRs36bCj62qSzd1oVUtNgO
- yiNJpwdyGZfmKYSmCGMsjfbBmeW1hMPtX9bAmkFZ/9FXJvKAD3eQai9fljX7OGP2wgln
- X5mt6Ux1RlVbNLIbn57krImb83HNoj4/4JPGXNBBmXtHV3wREm3Ib3z3aeJ5haCeaf25
- BvrNwsk9WtHUkg+1WcHn4Pq8jIicNogdLZfrQnilVLD/R17LmdK8ZcbCnasHzlbK8h4r
- +wZA==
-X-Gm-Message-State: AOJu0YwYibNFdyWGPS9k9jfjR7jUgKWmlEatLNHV7TscPS8zsfD6unHQ
- ovMhk21I18tiYY73wY9AcmqYxA6ai5V/2BZ0+BWLmkPIbrd6GS4MmYjZkjes47f/JlKu8Di9E+x
- 6ytBDgwITjEAfHBGmw3NoTk8Us6nUtaxieiakJ6v2CGkPF2odjtB90bcvLvWUsm0xf7OD0ArYkj
- 75ce03ukfpBeHNpUcRl4E8F0pu+LY=
-X-Gm-Gg: ASbGncve4LG0ONYBEE4LgzxBKKrgKIuLg04kZooR89LOb4xKkj0VxGy8LojZfMeczuZ
- Nh7/7YIhtqcRNpforCXF9SJkGBgsCItSzdp3pYZNukgtLY3kPUBhy6vyNk5/zw+D4SwxLBEa5ef
- F69C01yoMVnGr4xfrch9ImAQ==
-X-Received: by 2002:a17:902:d488:b0:246:a4ec:c3a5 with SMTP id
- d9443c01a7336-246a4ecc618mr102032165ad.25.1756171001012; 
- Mon, 25 Aug 2025 18:16:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFELVk/SbTGkNq45V19YRX9Rwcy+UaYbJFFh1bplZEG1e5zu787kuEstZqtc1vW8dzydzrIjIwJXlj7L4OD/Iw=
-X-Received: by 2002:a17:902:d488:b0:246:a4ec:c3a5 with SMTP id
- d9443c01a7336-246a4ecc618mr102031795ad.25.1756171000575; Mon, 25 Aug 2025
- 18:16:40 -0700 (PDT)
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=qvv/MjXrQ+wBmF1dejM2wwgdw753+APjcDZ2a1unjWc=;
+ b=LDYdG+6e9hj0yFO0umw0rtr/hkpoVwGOLwg2ucPfrn6cCVptzvjjvMts10JbdEhv38TBgR
+ gLcckLuH45aTBEUfQILF6ww6jQyPo15pfiGrElpp20YRSaUNppNPCmB+0a+1paUQm3oQJD
+ dXUInKSjyNyn3upK8MazPUrLUzZ7cxE=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-593-7lLPUwM3Oh20gmlYgQvPnQ-1; Tue,
+ 26 Aug 2025 00:41:37 -0400
+X-MC-Unique: 7lLPUwM3Oh20gmlYgQvPnQ-1
+X-Mimecast-MFC-AGG-ID: 7lLPUwM3Oh20gmlYgQvPnQ_1756183296
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 0F65519560B4
+ for <ltp@lists.linux.it>; Tue, 26 Aug 2025 04:41:36 +0000 (UTC)
+Received: from dell-per430-17.gsslab.pek2.redhat.com
+ (dell-per430-17.gsslab.pek2.redhat.com [10.72.36.28])
+ by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 8BC3819560AB
+ for <ltp@lists.linux.it>; Tue, 26 Aug 2025 04:41:34 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Tue, 26 Aug 2025 00:41:29 -0400
+Message-ID: <20250826044129.946421-1-chwen@redhat.com>
 MIME-Version: 1.0
-References: <20250822072204.2191382-1-liwang@redhat.com>
- <aKggM4ZVmjt7x6fJ@localhost>
-In-Reply-To: <aKggM4ZVmjt7x6fJ@localhost>
-Date: Tue, 26 Aug 2025 09:16:28 +0800
-X-Gm-Features: Ac12FXxEAqh04402vRMwrGum7ELEvJhmpWCPYvbBgixcYNBbIqovIWI4CM2e6wM
-Message-ID: <CAEemH2f3AG1=BNKh5dE-Vva088ndp4E6doszbf=4XjCf+A97Vw@mail.gmail.com>
-To: Wei Gao <wegao@suse.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: rBoAVbTse-RGkvssICwNuwQt4YnBk3Ad1qetj4CMfJU_1756171001
+X-Mimecast-MFC-PROC-ID: aS23Bwd6l_ZRuGTrUHwdCvhH2wyKCoUTcp080srVvT0_1756183296
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 1/2] tst_device: refine tst_is_mounted()
+Subject: [LTP] [PATCH v14] Add tls parameter and flag:CLONE_SETTLS cover for
+ clone and clone3 syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,26 +83,450 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
+From: chunfuwen via ltp <ltp@lists.linux.it>
+Reply-To: chunfuwen <chwen@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Wei Gao <wegao@suse.com> wrote:
+tls parameter and related flag:CLONE_SETTLS are missed in the testing,
+so add them into existed test case
 
+Signed-off-by: chunfuwen <chwen@redhat.com>
+---
+Changes in v14:
+- Fix clone304 occasional failure on Fedora x86_64 by removing CLONE_THREAD since threads created with CLONE_THREAD are in the same thread group as the caller
 
-> Thanks for your patch!
-> Reviewed-by: Wei Gao <wegao@suse.com>
->
+Changes in v13:
+- Fix clone304 failure on Fedora x86_64 by moving free_tls() into check_tls_in_child method
 
-Patchset merged, thanks for the review.
+Changes in v12:
+- Fix make check reporting errors and warnings
+- Add the __NR_exit
 
+Changes in v11:
+- Put the tls init/alloc/free functions into a common header in lapi/tls.h
+- Use TST_CHECKPOINT_* for parent/child synchronization
+
+Changes in v10:
+- Fix fedora42 failure by adding tcb
+- Add missing usleep(1000) in free_tls
+
+Changes in v9:
+- allow small delay by using usleep before call free_tls
+- validate ./clone10 -i 10 on aarch64 and x86_64, both pass
+
+Changes in v8:
+- call free_tls() in touch_tls_in_child instead of cleanup
+- remove CFLAGS += -fsanitize=address in Makefile to fix memory double free
+  issue
+
+Changes in v7:
+- remove unnecessary in verify_tls()
+- add CFLAGS += -fsanitize=address in Makefile to fix memory double free
+  issue
+
+Changes in v6:
+- update flag to effective combination
+- combine x86_64 with other arches
+- rename child function
+- remove inproper exit
+- remove unused code lines
+- remove sleep statement
+Changes in v5:
+- wrap duplicate code into one single methold
+- remove duplicately malloc
+
+Changes in v4:
+- remove riscv and loongarch definition
+
+Changes in v3:
+- fix missing head file for x86
+
+Changes in v2:
+- create separate files for clone and clone3
+
+---
+ include/lapi/tls.h                          | 102 ++++++++++++++++++
+ runtest/syscalls                            |   2 +
+ testcases/kernel/syscalls/clone/.gitignore  |   1 +
+ testcases/kernel/syscalls/clone/clone10.c   | 100 ++++++++++++++++++
+ testcases/kernel/syscalls/clone3/.gitignore |   1 +
+ testcases/kernel/syscalls/clone3/clone304.c | 110 ++++++++++++++++++++
+ 6 files changed, 316 insertions(+)
+ create mode 100644 include/lapi/tls.h
+ create mode 100644 testcases/kernel/syscalls/clone/clone10.c
+ create mode 100644 testcases/kernel/syscalls/clone3/clone304.c
+
+diff --git a/include/lapi/tls.h b/include/lapi/tls.h
+new file mode 100644
+index 000000000..801e765a3
+--- /dev/null
++++ b/include/lapi/tls.h
+@@ -0,0 +1,102 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Red Hat Inc. All Rights Reserved.
++ * Author: Chunfu Wen <chwen@redhat.com>
++ */
++
++/*\
++ * tls init/alloc/free common functions
++ */
++
++#ifndef _LAPI_TLS_H
++#define _LAPI_TLS_H
++
++#include <stdlib.h>
++#include <string.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <unistd.h>
++
++#if defined(__i386__)
++#include <asm/ldt.h>
++#endif
++
++#include "tst_test.h"
++
++#define TLS_SIZE 4096
++#define TLS_ALIGN 16
++
++#if defined(__x86_64__)
++// Structure mimicking glibc's TCB to be simplified for x86_64
++typedef struct {
++    void *tcb;
++    void *dtv;
++    void *self;
++    int multiple_threads;
++    char padding[64];
++} tcb_t;
++#endif
++
++// Global pointers for TLS management
++extern void *tls_ptr;
++extern struct user_desc *tls_desc;
++
++static inline void *allocate_tls_area(void)
++{
++	void *tls_area = aligned_alloc(TLS_ALIGN, TLS_SIZE);
++	if (!tls_area)
++	        tst_brk(TBROK | TERRNO, "aligned_alloc failed");
++	memset(tls_area, 0, TLS_SIZE);
++
++#if defined(__x86_64__)
++	// Set up a minimal TCB for x86_64
++	tcb_t *tcb = (tcb_t *)tls_area;
++	tcb->tcb = tls_area;
++	tcb->self = tls_area;
++	tcb->multiple_threads = 1;
++#endif
++	return tls_area;
++}
++
++static inline void init_tls(void)
++{
++#if defined(__x86_64__) || defined(__aarch64__) || defined(__s390x__)
++	tls_ptr = allocate_tls_area();
++
++#elif defined(__i386__)
++	tls_ptr = allocate_tls_area();
++	tls_desc = SAFE_MALLOC(sizeof(*tls_desc));
++	memset(tls_desc, 0, sizeof(*tls_desc));
++	tls_desc->entry_number = -1;
++	tls_desc->base_addr = (unsigned long)tls_ptr;
++	tls_desc->limit = TLS_SIZE;
++	tls_desc->seg_32bit = 1;
++	tls_desc->contents = 0;
++	tls_desc->read_exec_only = 0;
++	tls_desc->limit_in_pages = 0;
++	tls_desc->seg_not_present = 0;
++	tls_desc->useable = 1;
++
++#else
++	tst_brk(TCONF, "Unsupported architecture for TLS");
++#endif
++}
++
++static inline void free_tls(void)
++{
++	usleep(1000);
++#if defined(__x86_64__) || defined(__aarch64__) || defined(__s390x__)
++	if (tls_ptr) {
++		free(tls_ptr);
++		tls_ptr = NULL;
++	}
++#elif defined(__i386__)
++	if (tls_desc) {
++		free((void *)(uintptr_t)tls_desc->base_addr);
++		free(tls_desc);
++		tls_desc = NULL;
++	}
++#endif
++}
++
++#endif // _LAPI_TLS_H
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 844ae7a13..10f64270a 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -122,10 +122,12 @@ clone06 clone06
+ clone07 clone07
+ clone08 clone08
+ clone09 clone09
++clone10 clone10
+ 
+ clone301 clone301
+ clone302 clone302
+ clone303 clone303
++clone304 clone304
+ 
+ close01 close01
+ close02 close02
+diff --git a/testcases/kernel/syscalls/clone/.gitignore b/testcases/kernel/syscalls/clone/.gitignore
+index 900cac19c..adfb8257d 100644
+--- a/testcases/kernel/syscalls/clone/.gitignore
++++ b/testcases/kernel/syscalls/clone/.gitignore
+@@ -7,3 +7,4 @@
+ /clone07
+ /clone08
+ /clone09
++/clone10
+diff --git a/testcases/kernel/syscalls/clone/clone10.c b/testcases/kernel/syscalls/clone/clone10.c
+new file mode 100644
+index 000000000..c66b207c7
+--- /dev/null
++++ b/testcases/kernel/syscalls/clone/clone10.c
+@@ -0,0 +1,100 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Red Hat Inc. All Rights Reserved.
++ * Author: Chunfu Wen <chwen@redhat.com>
++ */
++
++/*\
++ * Test that in a thread started by clone() that runs in the same address
++ * space (CLONE_VM) but with a different TLS (CLONE_SETTLS) writtes to a
++ * thread local variables are not propagated back from the cloned thread.
++ */
++
++#define _GNU_SOURCE
++#include <stdlib.h>
++#include <stdio.h>
++#include <errno.h>
++#include <sched.h>
++#include <sys/wait.h>
++
++#if defined(__i386__)
++#include <asm/ldt.h>
++#endif
++
++#include "tst_test.h"
++#include "clone_platform.h"
++#include "lapi/syscalls.h"
++#include "lapi/tls.h"
++
++#define TLS_EXP 100
++
++#ifndef ARCH_SET_FS
++#define ARCH_SET_FS 0x1002
++#endif
++
++// Global pointers for TLS management
++void *tls_ptr;
++struct user_desc *tls_desc;
++
++static __thread int tls_var;
++
++static char *child_stack;
++static volatile int child_done;
++
++static int flags = CLONE_THREAD |  CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_SETTLS;
++
++static int touch_tls_in_child(void *arg LTP_ATTRIBUTE_UNUSED)
++{
++#if defined(__x86_64__)
++	// Set the %fs register to point to the TCB
++	if (syscall(SYS_arch_prctl, ARCH_SET_FS, tls_ptr) == -1)
++		exit(EXIT_FAILURE);
++#endif
++	tls_var = TLS_EXP + 1;
++	tst_res(TINFO, "Child (PID: %d, TID: %d): TLS value set to: %d", getpid(),  gettid(), tls_var);
++
++	TST_CHECKPOINT_WAKE(0);
++	free_tls();
++	tst_syscall(__NR_exit, 0);
++	return 0;
++}
++
++static void verify_tls(void)
++{
++	tls_var = TLS_EXP;
++
++	TEST(ltp_clone7(flags, touch_tls_in_child, NULL, CHILD_STACK_SIZE, child_stack, NULL, tls_ptr, NULL));
++
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "clone() failed");
++
++	TST_CHECKPOINT_WAIT(0);
++
++	if (tls_var == TLS_EXP) {
++		tst_res(TPASS,
++			"Parent (PID: %d, TID: %d): TLS value correct: %d",
++			getpid(), gettid(), tls_var);
++	} else {
++		tst_res(TFAIL,
++			"Parent (PID: %d, TID: %d): TLS value mismatch: got %d, expected %d",
++			getpid(), gettid(), tls_var, TLS_EXP);
++	}
++}
++
++static void setup(void)
++{
++	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
++	init_tls();
++}
++
++static void cleanup(void)
++{
++	free(child_stack);
++}
++
++static struct tst_test test = {
++	    .setup = setup,
++	    .cleanup = cleanup,
++	    .needs_checkpoints = 1,
++	    .test_all = verify_tls,
++};
+diff --git a/testcases/kernel/syscalls/clone3/.gitignore b/testcases/kernel/syscalls/clone3/.gitignore
+index 10369954b..e9b5312f4 100644
+--- a/testcases/kernel/syscalls/clone3/.gitignore
++++ b/testcases/kernel/syscalls/clone3/.gitignore
+@@ -1,3 +1,4 @@
+ clone301
+ clone302
+ clone303
++clone304
+diff --git a/testcases/kernel/syscalls/clone3/clone304.c b/testcases/kernel/syscalls/clone3/clone304.c
+new file mode 100644
+index 000000000..7cfc81ad0
+--- /dev/null
++++ b/testcases/kernel/syscalls/clone3/clone304.c
+@@ -0,0 +1,110 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Red Hat Inc. All Rights Reserved.
++ * Author: Chunfu Wen <chwen@redhat.com>
++ */
++
++/*\
++ * Test that in a thread started by clone3() that runs in the same address
++ * space (CLONE_VM) but with a different TLS (CLONE_SETTLS) writtes to a
++ * thread local variables are not propagated back from the cloned thread.
++ */
++
++#define _GNU_SOURCE
++
++#include <stdlib.h>
++#include <sys/wait.h>
++
++#if defined(__i386__)
++#include <asm/ldt.h>
++#endif
++
++#include "tst_test.h"
++#include "lapi/sched.h"
++#include "lapi/pidfd.h"
++#include "lapi/tls.h"
++
++#define TLS_EXP 100
++
++#define CHILD_STACK_SIZE (1024*1024)
++
++// Global pointers for TLS management
++void *tls_ptr;
++struct user_desc *tls_desc;
++
++static int pidfd, child_tid, parent_tid;
++static struct clone_args *args;
++static void *child_stack;
++
++/* TLS variable to validate in child */
++static __thread int tls_var;
++
++static int test_flags = CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_SETTLS;
++
++static int check_tls_in_child(void)
++{
++	tls_var = TLS_EXP + 1;
++	tst_res(TINFO, "Child (PID: %d, TID: %d): TLS value set to: %d", getpid(),  gettid(), tls_var);
++
++	free_tls();
++	tst_syscall(__NR_exit, 0);
++	return 0;
++}
++
++static void run(void)
++{
++	pid_t pid;
++
++	tls_var = TLS_EXP;
++
++	args->flags = test_flags;
++	args->pidfd = (uint64_t)(&pidfd);
++	args->child_tid = (uint64_t)(&child_tid);
++	args->parent_tid = (uint64_t)(&parent_tid);
++	args->stack = (uint64_t)(child_stack);
++	args->stack_size = CHILD_STACK_SIZE;
++	args->tls = (uint64_t)tls_ptr;
++
++	TEST(pid = clone3(args, sizeof(*args)));
++
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "clone() failed");
++
++	if (!pid)
++		check_tls_in_child();
++
++	waitpid(pid, NULL, 0);
++
++	if (tls_var == TLS_EXP) {
++		tst_res(TPASS,
++			"Parent (PID: %d, TID: %d): TLS value correct: %d",
++			getpid(), gettid(), tls_var);
++	} else {
++		tst_res(TFAIL,
++			"Parent (PID: %d, TID: %d): TLS value mismatch: got %d, expected %d",
++			getpid(), gettid(), tls_var, TLS_EXP);
++	}
++}
++
++static void setup(void)
++{
++	clone3_supported_by_kernel();
++	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
++	init_tls();
++}
++
++static void cleanup(void)
++{
++	free(child_stack);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_checkpoints = 1,
++	.test_all = run,
++	.bufs = (struct tst_buffers []) {
++		{&args, .size = sizeof(*args)},
++		{},
++	}
++};
 -- 
-Regards,
-Li Wang
+2.43.5
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
