@@ -4,96 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30630C8303F
-	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 10:26:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E543AC8303F
+	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 11:14:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AF4593CCFFD
-	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 12:26:10 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 546E63C782A
+	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 13:14:53 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3C7AC3CCFED
- for <ltp@lists.linux.it>; Thu, 28 Aug 2025 12:25:42 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 091A43C782A
+ for <ltp@lists.linux.it>; Thu, 28 Aug 2025 13:14:36 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A5F3760083A
- for <ltp@lists.linux.it>; Thu, 28 Aug 2025 12:25:41 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9C71A1A00356
+ for <ltp@lists.linux.it>; Thu, 28 Aug 2025 13:14:36 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D6FF4337F2;
- Thu, 28 Aug 2025 10:25:40 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C65E520AF7;
+ Thu, 28 Aug 2025 11:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1756376741; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1756379675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=O4cHGVRhgzuTSJxLV2V3Jg59s6a1SvJgVW7yVTfNMiY=;
- b=FO/zAkkrYF+AUtM2nYdlWlrIHyfGDzrAHFv7P8ndhp28WaoB5Zi5stmN31IEVqeTqJo3bN
- ihZhBELNl5kuP7viSb9ZjMTcF3iGyCxCzelXv+TZcHAf9DuzXDOXFibnu9dUWDp5RaGzkV
- sYxZR9ZlaFiMDYomeIfODvzWD9fnNtg=
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=QzkEmyyj+Swzab3JykvWrDFUjNhw7CtdTaxi8Y2s8Mt8NpLmEn0YabLDCgfgwkp4Mt3LVR
+ yAEKZc+60a7T3CmAu7O8yFmQbV23TpvEJxDSjyKl58zJSR6o+q8UQySPQwLUmbEOiKT6si
+ +CgAFp6gEGXYhS0+tpFMZpTrY89ID+I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1756376741;
+ s=susede2_ed25519; t=1756379675;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=O4cHGVRhgzuTSJxLV2V3Jg59s6a1SvJgVW7yVTfNMiY=;
- b=5p0DLWwTsfVvMfE/DGTd7Rv+vlNhzwKGk9hAq0djd0FV1n75kRdydibSnxIgr7CeS+F93y
- mDO0o5VukqHPXHDA==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=E2AcZpbW64l7slQsDVUMfKq+SFTHGY4rjSu0I3BUy4bXH0joqbMrXpDeIhZLa7Cn3L7NVm
+ KDajSNMvB3A7wYBQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=QzkEmyyj;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=E2AcZpbW
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1756376740; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1756379675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=O4cHGVRhgzuTSJxLV2V3Jg59s6a1SvJgVW7yVTfNMiY=;
- b=gDmzVtKPbNizR0GvWOzoz/F9Jn8Bt8P9VJpFrYGJwl5D2kAeYE1fiZP0GqNHQ0nPjJEZTx
- TuoQFR05Jm+kphSEIN+uHB0tc4X2c6SMeot5o46b3NKF8ehmyuGpjCTspeYvZG0S8Y9aSO
- KG5d+UZcaOZGxaQqqpjw+MCEr8GKmsM=
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=QzkEmyyj+Swzab3JykvWrDFUjNhw7CtdTaxi8Y2s8Mt8NpLmEn0YabLDCgfgwkp4Mt3LVR
+ yAEKZc+60a7T3CmAu7O8yFmQbV23TpvEJxDSjyKl58zJSR6o+q8UQySPQwLUmbEOiKT6si
+ +CgAFp6gEGXYhS0+tpFMZpTrY89ID+I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1756376740;
+ s=susede2_ed25519; t=1756379675;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=O4cHGVRhgzuTSJxLV2V3Jg59s6a1SvJgVW7yVTfNMiY=;
- b=mfKrlTZnxYnLubt/D32uAW8+KoeaGQaXaT8iCFd5XUyATvTc2KzuZEicDA+Hydt1sRMMgc
- EC3j9sp1dpSS6XAA==
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=E2AcZpbW64l7slQsDVUMfKq+SFTHGY4rjSu0I3BUy4bXH0joqbMrXpDeIhZLa7Cn3L7NVm
+ KDajSNMvB3A7wYBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4C1013326;
- Thu, 28 Aug 2025 10:25:40 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AC5461368B;
+ Thu, 28 Aug 2025 11:14:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ThHfLqQusGhZUgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 28 Aug 2025 10:25:40 +0000
-Date: Thu, 28 Aug 2025 12:26:15 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 69c6KRs6sGjGYQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 28 Aug 2025 11:14:35 +0000
+Date: Thu, 28 Aug 2025 13:15:10 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <aLAuxxi5DLz22ztX@yuki.lan>
-References: <20250822135702.23337-1-mdoucha@suse.cz>
+To: Ricardo =?iso-8859-1?Q?B=2E_Marli=E8re?= <rbm@suse.com>
+Message-ID: <aLA6PkO82l5fDebY@yuki.lan>
+References: <20250828-conversions-lchown-v4-0-60dd9a0145f3@suse.com>
+ <20250828-conversions-lchown-v4-1-60dd9a0145f3@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250822135702.23337-1-mdoucha@suse.cz>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20250828-conversions-lchown-v4-1-60dd9a0145f3@suse.com>
+X-Rspamd-Queue-Id: C65E520AF7
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_TWO(0.00)[2];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] aio_cancel_7-1: Write into a socket
+Subject: Re: [LTP] [PATCH v4 1/4] lib: Add SAFE_LCHOWN
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,63 +116,14 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> -	unlink(tmpfname);
-> +	/* Socket buffer size is twice the maximum message size */
-> +	bufsize /= 2;
->  
->  	/* create AIO req */
->  	for (i = 0; i < BUF_NB; i++) {
->  		aiocb[i] = calloc(1, sizeof(struct aiocb));
->  
->  		if (aiocb[i] == NULL) {
-> -			printf(TNAME " Error at malloc(): %s\n",
-> +			printf(TNAME " Error at calloc(): %s\n",
->  			       strerror(errno));
-> -			close(fd);
-> +			cleanup();
->  			return PTS_UNRESOLVED;
->  		}
-> 
-> -		aiocb[i]->aio_fildes = fd;
-> -		aiocb[i]->aio_buf = malloc(BUF_SIZE);
-> +		aiocb[i]->aio_fildes = fds[0];
-> +		aiocb[i]->aio_buf = malloc(bufsize);
->  
->  		if (aiocb[i]->aio_buf == NULL) {
->  			printf(TNAME " Error at malloc(): %s\n",
->  			       strerror(errno));
-> -			close(fd);
-> +			cleanup();
->  			return PTS_UNRESOLVED;
->  		}
->  
-> -		aiocb[i]->aio_nbytes = BUF_SIZE;
-> +		aiocb[i]->aio_nbytes = bufsize;
->  		aiocb[i]->aio_offset = 0;
->  		aiocb[i]->aio_sigevent.sigev_notify = SIGEV_NONE;
->  
->  		if (aio_write(aiocb[i]) == -1) {
->  			printf(TNAME " loop %d: Error at aio_write(): %s\n",
->  			       i, strerror(errno));
-> -			close(fd);
-> +			cleanup();
->  			return PTS_FAIL;
->  		}
->  	}
-
-Do I get it right that we queue eight aio writes and four of them finish
-before the socket buffer is full and then the writing gets stuck with
-the fift one?
-
-So in the end we have four finished writes, one in progress and three
-canceled?
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
