@@ -4,116 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B0C5C8303F
-	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 13:12:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3B5CCA0EED
+	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 13:12:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1F2743CCFFD
-	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 15:12:04 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 3E64A3CCFB1
+	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 15:12:26 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9E1913CCEEA
- for <ltp@lists.linux.it>; Thu, 28 Aug 2025 15:11:28 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id BE6953CD0B3
+ for <ltp@lists.linux.it>; Thu, 28 Aug 2025 15:11:37 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 81A161400061
- for <ltp@lists.linux.it>; Thu, 28 Aug 2025 15:11:27 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A7F4F1A001CB
+ for <ltp@lists.linux.it>; Thu, 28 Aug 2025 15:11:32 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 292142225F;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 58E8E20BCF;
  Thu, 28 Aug 2025 13:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1756386686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=eXbFffUzDZSALWNb+3dCQGk8dfdZTFnl29hTgIS+Piw=;
- b=J5Eblnx9h6VAdL/tM5EXJb10Ys/0DHISs3DsZQUQTFQ0JJHL16rBUii5zW2xmodkQtuw6n
- PNSsOxIU5vIkXeYYzma4Lh95DU1VKWgcjcPtXLM9bjCNHZtCySy27JfXoivoR/DgRfjAq5
- kUgFfWa+LEUx4HPxQN+hZu3VmJtKZWU=
+ bh=WUMtMVDMzazFJ+FqaUqBOTy5TDXd44YnOjfiIilseHg=;
+ b=TGFVtVzRO+wWMnQZEs2BmPzFhBg8+4HZx8Z0yYSsEoARkLvlPmvZjOnO2hEfJiYZMbGIes
+ k1q8seLkktW4hxJeJzd4nsHDHMMHWdla/p6tzDn3JmibJQ/LhueQLekyYKdg65EhJtyaHr
+ sJyVrT0r4jbdROY6oKzekZm/TKBtzVA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1756386686;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=eXbFffUzDZSALWNb+3dCQGk8dfdZTFnl29hTgIS+Piw=;
- b=5J2bO2k4D158+VPBCk/FUR/2p6qnHekjzi4Cy3T+q9miiqpXEYbNii4JlOyHD6H3eSdPti
- 3eTREhyhHplT6+CQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=J5Eblnx9;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=5J2bO2k4
+ bh=WUMtMVDMzazFJ+FqaUqBOTy5TDXd44YnOjfiIilseHg=;
+ b=wlwqo07K2vx3EcuW6geHr9NH1CZzhx55iHZ2keSyiH+Es1Yigc3CnzhJJdUFydYExwiBHb
+ I+uoXh06pKLeLdCw==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1756386686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=eXbFffUzDZSALWNb+3dCQGk8dfdZTFnl29hTgIS+Piw=;
- b=J5Eblnx9h6VAdL/tM5EXJb10Ys/0DHISs3DsZQUQTFQ0JJHL16rBUii5zW2xmodkQtuw6n
- PNSsOxIU5vIkXeYYzma4Lh95DU1VKWgcjcPtXLM9bjCNHZtCySy27JfXoivoR/DgRfjAq5
- kUgFfWa+LEUx4HPxQN+hZu3VmJtKZWU=
+ bh=WUMtMVDMzazFJ+FqaUqBOTy5TDXd44YnOjfiIilseHg=;
+ b=TGFVtVzRO+wWMnQZEs2BmPzFhBg8+4HZx8Z0yYSsEoARkLvlPmvZjOnO2hEfJiYZMbGIes
+ k1q8seLkktW4hxJeJzd4nsHDHMMHWdla/p6tzDn3JmibJQ/LhueQLekyYKdg65EhJtyaHr
+ sJyVrT0r4jbdROY6oKzekZm/TKBtzVA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1756386686;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=eXbFffUzDZSALWNb+3dCQGk8dfdZTFnl29hTgIS+Piw=;
- b=5J2bO2k4D158+VPBCk/FUR/2p6qnHekjzi4Cy3T+q9miiqpXEYbNii4JlOyHD6H3eSdPti
- 3eTREhyhHplT6+CQ==
+ bh=WUMtMVDMzazFJ+FqaUqBOTy5TDXd44YnOjfiIilseHg=;
+ b=wlwqo07K2vx3EcuW6geHr9NH1CZzhx55iHZ2keSyiH+Es1Yigc3CnzhJJdUFydYExwiBHb
+ I+uoXh06pKLeLdCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 023DD1368B;
- Thu, 28 Aug 2025 13:11:25 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 34C6E13890;
+ Thu, 28 Aug 2025 13:11:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +LKxOX1VsGjfCAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 28 Aug 2025 13:11:25 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ULSCCn5VsGjfCAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 28 Aug 2025 13:11:26 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 28 Aug 2025 15:11:24 +0200
+Date: Thu, 28 Aug 2025 15:11:25 +0200
 MIME-Version: 1.0
-Message-Id: <20250828-open_tree_attr-v1-1-f339a0e51e22@suse.com>
+Message-Id: <20250828-open_tree_attr-v1-2-f339a0e51e22@suse.com>
 References: <20250828-open_tree_attr-v1-0-f339a0e51e22@suse.com>
 In-Reply-To: <20250828-open_tree_attr-v1-0-f339a0e51e22@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1756386685; l=1463;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1756386685; l=4029;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=Dhq/cBc6PX6ComRKaQAdb8sb1xRmOAb8S3xIte/tJO4=;
- b=JTQmThwIsUaDcdpwy9wZ1fYBVRula3P07ATPVbeS96MzG71kvE9UCjLhTPAkYOtaMR1OcBNXE
- QA8UB+Tdw8JBOBz8asgsUrnxFI+8tBZSsePhx6S8XkRK1SEti+uD3/b
+ bh=E1FRskNPZ1CANlLZ+kjCdcEk7iHQUJ5KTWTILxESpqw=;
+ b=PEKPYLECffw9Gri61PDAv2BtHl0B+eU42GTYGEx+CQHbkmp5ZJqv8vEezLlnZdsK+orFOU0rR
+ td4XbOJg9kCDjkzouiYur2H7NEGWKA0cCppXAzYZYeBuKajjXnTvihJ
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_TLS_ALL(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:email,suse.de:dkim];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: 292142225F
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] Add open_tree_attr fallback
+Subject: [LTP] [PATCH 2/2] mount_setattr01: add open_tree_attr variant
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -132,46 +123,144 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-open_tree_attr syscall has been introduced in kernel 6.15 and it's
-now defined in lapi/fsmount.h.
+This patch simply introduces a new variant to the mount_setattr01
+test, in order to verify that open_tree_attr() works correctly.
+The open_tree_attr() syscall has been introduced in the kernel v6.15 by
+commit "c4a16820d901 - fs: add open_tree_attr()".
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- configure.ac           | 1 +
- include/lapi/fsmount.h | 8 ++++++++
- 2 files changed, 9 insertions(+)
+ .../syscalls/mount_setattr/mount_setattr01.c       | 69 ++++++++++++++++------
+ 1 file changed, 52 insertions(+), 17 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 62ae27d494474fe342b1cceeac7f4c21c0b1028c..2d4d527bcaa675dae5d712a96d266d17184b8a0d 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -137,6 +137,7 @@ AC_CHECK_FUNCS_ONCE([ \
-     move_mount \
-     name_to_handle_at \
-     open_tree \
-+    open_tree_attr \
-     openat \
-     openat2 \
-     pidfd_getfd \
-diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
-index 1783272a00a1a049031cacbb417239123450a0e4..451987ae637d040e08970b7ffcf015bae07a6f11 100644
---- a/include/lapi/fsmount.h
-+++ b/include/lapi/fsmount.h
-@@ -105,6 +105,14 @@ static inline int open_tree(int dirfd, const char *pathname, unsigned int flags)
- }
- #endif /* HAVE_OPEN_TREE */
+diff --git a/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
+index eb32cd91a7fcb4cb303e184dd40d5e10a280874c..bede26318a6985339b5b4bbb2db4a91744110eda 100644
+--- a/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
++++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
+@@ -3,10 +3,11 @@
+  * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
+  * Author: Dai Shili <daisl.fnst@fujitsu.com>
+  * Author: Chen Hanxiao <chenhx.fnst@fujitsu.com>
++ * Copyright (C) 2025 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+  */
  
-+#ifndef HAVE_OPEN_TREE_ATTR
-+static inline int open_tree_attr(int dirfd, const char *pathname, unsigned int flags,
-+				 struct mount_attr *attr, size_t size)
+ /*\
+- * Basic mount_setattr() test.
++ * Basic mount_setattr()/open_tree_attr() test.
+  * Test whether the basic mount attributes are set correctly.
+  *
+  * Verify some MOUNT_SETATTR(2) attributes:
+@@ -22,7 +23,8 @@
+  * - MOUNT_ATTR_NODIRATIME - prevents updating access time for
+  *   directories on this mount
+  *
+- * The functionality was added in v5.12.
++ * The mount_setattr functionality was added in v5.12, while the open_tree_attr
++ * functionality was added in v6.15.
+  */
+ 
+ #define _GNU_SOURCE
+@@ -41,6 +43,7 @@
+ 	}
+ 
+ static int mount_flag, otfd = -1;
++struct mount_attr *attr;
+ 
+ static struct tcase {
+ 	char *name;
+@@ -66,35 +69,59 @@ static void cleanup(void)
+ static void setup(void)
+ {
+ 	fsopen_supported_by_kernel();
+-	struct stat st = {0};
+ 
+-	if (stat(OT_MNTPOINT, &st) == -1)
++	if (access(OT_MNTPOINT, F_OK) != 0)
+ 		SAFE_MKDIR(OT_MNTPOINT, 0777);
+ }
+ 
++static int open_tree_variant1(struct mount_attr *attr)
 +{
-+	return tst_syscall(__NR_open_tree_attr, dirfd, pathname, flags, attr, size);
-+}
-+#endif /* HAVE_OPEN_TREE_ATTR */
++	tst_res(TINFO, "Variant using open_tree() + mount_setattr()");
 +
- #ifndef HAVE_MOUNT_SETATTR
- static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned int flags,
- 				struct mount_attr *attr, size_t size)
++	otfd = TST_EXP_FD(open_tree(AT_FDCWD, MNTPOINT,
++			AT_EMPTY_PATH | OPEN_TREE_CLONE));
++	if (otfd == -1)
++		return -1;
++
++	TST_EXP_PASS(mount_setattr(otfd, "", AT_EMPTY_PATH,
++			attr, sizeof(*attr)));
++	if (TST_RET == -1)
++		return -1;
++
++	return otfd;
++}
++
++static int open_tree_variant2(struct mount_attr *attr)
++{
++	tst_res(TINFO, "Variant using open_tree_attr()");
++
++	otfd = TST_EXP_FD(open_tree_attr(AT_FDCWD, MNTPOINT,
++			AT_EMPTY_PATH | OPEN_TREE_CLONE,
++			attr, sizeof(*attr)));
++
++	return otfd;
++}
++
+ static void run(unsigned int n)
+ {
+ 	struct tcase *tc = &tcases[n];
+-	struct mount_attr attr = {
+-		.attr_set = tc->mount_attrs,
+-	};
+ 	struct statvfs buf;
+ 
+-	TST_EXP_FD_SILENT(open_tree(AT_FDCWD, MNTPOINT, AT_EMPTY_PATH |
+-		AT_SYMLINK_NOFOLLOW | OPEN_TREE_CLOEXEC | OPEN_TREE_CLONE));
+-	if (!TST_PASS)
+-		return;
++	memset(attr, 0, sizeof(*attr));
++	attr->attr_set = tc->mount_attrs;
+ 
+-	otfd = (int)TST_RET;
++	if (tst_variant)
++		otfd = open_tree_variant1(attr);
++	else
++		otfd = open_tree_variant2(attr);
+ 
+-	TST_EXP_PASS_SILENT(mount_setattr(otfd, "", AT_EMPTY_PATH, &attr, sizeof(attr)),
+-		"%s set", tc->name);
+-	if (!TST_PASS)
+-		goto out1;
++	if (otfd == -1)
++		goto out2;
+ 
+ 	TST_EXP_PASS_SILENT(move_mount(otfd, "", AT_FDCWD, OT_MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
+ 	if (!TST_PASS)
+ 		goto out1;
++
+ 	mount_flag = 1;
+ 	SAFE_CLOSE(otfd);
+ 
+@@ -123,9 +150,17 @@ static struct tst_test test = {
+ 	.test = run,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
++	.test_variants = 2,
+ 	.needs_root = 1,
+ 	.mount_device = 1,
+ 	.mntpoint = MNTPOINT,
+ 	.all_filesystems = 1,
+-	.skip_filesystems = (const char *const []){"fuse", NULL},
++	.skip_filesystems = (const char *const []) {
++		"fuse",
++		NULL
++	},
++	.bufs = (struct tst_buffers []) {
++		{&attr, .size = sizeof(struct mount_attr)},
++		{}
++	}
+ };
 
 -- 
 2.51.0
