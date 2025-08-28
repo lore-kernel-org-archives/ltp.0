@@ -4,107 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3B5CCA0EED
-	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 13:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DBCECA0FF6
+	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 22:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1756421549; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=Ntd6J1HIEZqnwq9oN/7Rc8Dgrm6csY/Ui+HFc/R3914=;
+ b=Gij2v4Ow+l9s3sBfh4q7B6uIPRMrJFQLNQsIlu6heNCMdKuaiDDY+wtvZ6aOzxKdJTVf5
+ J3v5ZuVXVSfnshTSVm1HQw9gS2mx8PFsYt69R5i9r4e7SZPH+/66uD/f7fICp/bC9n2V8oW
+ K/aWbWG1EvMV+c6wo9xuDonJZPVEoXc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3E64A3CCFB1
-	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 15:12:26 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id EF0403CD07F
+	for <ltp@archiver.kernel.org>; Fri, 29 Aug 2025 00:52:28 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BE6953CD0B3
- for <ltp@lists.linux.it>; Thu, 28 Aug 2025 15:11:37 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 44A613C4F42
+ for <ltp@lists.linux.it>; Fri, 29 Aug 2025 00:52:08 +0200 (CEST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
+ [IPv6:2a00:1450:4864:20::62b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A7F4F1A001CB
- for <ltp@lists.linux.it>; Thu, 28 Aug 2025 15:11:32 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 58E8E20BCF;
- Thu, 28 Aug 2025 13:11:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1756386686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WUMtMVDMzazFJ+FqaUqBOTy5TDXd44YnOjfiIilseHg=;
- b=TGFVtVzRO+wWMnQZEs2BmPzFhBg8+4HZx8Z0yYSsEoARkLvlPmvZjOnO2hEfJiYZMbGIes
- k1q8seLkktW4hxJeJzd4nsHDHMMHWdla/p6tzDn3JmibJQ/LhueQLekyYKdg65EhJtyaHr
- sJyVrT0r4jbdROY6oKzekZm/TKBtzVA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1756386686;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WUMtMVDMzazFJ+FqaUqBOTy5TDXd44YnOjfiIilseHg=;
- b=wlwqo07K2vx3EcuW6geHr9NH1CZzhx55iHZ2keSyiH+Es1Yigc3CnzhJJdUFydYExwiBHb
- I+uoXh06pKLeLdCw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1756386686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WUMtMVDMzazFJ+FqaUqBOTy5TDXd44YnOjfiIilseHg=;
- b=TGFVtVzRO+wWMnQZEs2BmPzFhBg8+4HZx8Z0yYSsEoARkLvlPmvZjOnO2hEfJiYZMbGIes
- k1q8seLkktW4hxJeJzd4nsHDHMMHWdla/p6tzDn3JmibJQ/LhueQLekyYKdg65EhJtyaHr
- sJyVrT0r4jbdROY6oKzekZm/TKBtzVA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1756386686;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WUMtMVDMzazFJ+FqaUqBOTy5TDXd44YnOjfiIilseHg=;
- b=wlwqo07K2vx3EcuW6geHr9NH1CZzhx55iHZ2keSyiH+Es1Yigc3CnzhJJdUFydYExwiBHb
- I+uoXh06pKLeLdCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 34C6E13890;
- Thu, 28 Aug 2025 13:11:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ULSCCn5VsGjfCAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 28 Aug 2025 13:11:26 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 28 Aug 2025 15:11:25 +0200
-MIME-Version: 1.0
-Message-Id: <20250828-open_tree_attr-v1-2-f339a0e51e22@suse.com>
-References: <20250828-open_tree_attr-v1-0-f339a0e51e22@suse.com>
-In-Reply-To: <20250828-open_tree_attr-v1-0-f339a0e51e22@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9B3591400205
+ for <ltp@lists.linux.it>; Fri, 29 Aug 2025 00:52:07 +0200 (CEST)
+Received: by mail-ej1-x62b.google.com with SMTP id
+ a640c23a62f3a-afe9358fe77so158700966b.1
+ for <ltp@lists.linux.it>; Thu, 28 Aug 2025 15:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1756421527; x=1757026327; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=wBHoxbdfXdwlqRVMnPIdi2Hm9QpQVro1IGxR6IllijM=;
+ b=fx+e8ZD8vkQQXRkLm46/OCPadb/lG3Dpp57Sn458VQiTrYFfcvRyyjSLf+7V3GyZjC
+ UpP+YAO7pS0KKvtRyR7xG0Voy8gMt7Up1HxFih7Uxgqye+z9AJXl/nysst1F+0S2XkLY
+ +MILXHMoYCgg8Vc0XbLfo5x9o8zHIUtNdaT9PaofoerX/SnZfCuhYildoAlkf+JU/nmw
+ 3UG2poyi06daN12av6eQufCCecvpC7pjOO4IUhfuK9c2SRXqbqdsZIqQSxxYURcRVVfe
+ ViEYUcfjOzR3pvX8taFMG53U2E/v/4GhN1a/6w8I81c63xV/oAJcyPaaILBly+kzNOLo
+ CX8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1756421527; x=1757026327;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=wBHoxbdfXdwlqRVMnPIdi2Hm9QpQVro1IGxR6IllijM=;
+ b=KiIoszNNIG6j7uwmgeSilzr6eSYhM9fp4olARujea4Ekfc88kMJZRJVsI6obc+dknK
+ TaOxy11aHOxOnHYBznULXUryKpK9r0rT5Z6NG/Xj393zS8n5KX38PZPBOMV1rRfzxg7G
+ uacuDpR0imdCyx9Gx69yNqunZoeTUdBkySKhGA3UAjVwSnwpLNArhlJKvhC0yKN1FCWz
+ vhJvysk0ZLcyCB/FV/nVGjzqHPFMNlCK8JMNvSeHrho9wlF2WEM31zP+51PrguTBG1Vj
+ 5hWO+VhW9JmmW6eexJa4NSZ+7It6EKkERRU0IQ/G9QuRlib3oZK3RiYiuEZ1sc5pFaoZ
+ K1CA==
+X-Gm-Message-State: AOJu0YzobpRzmPAi+nqzQtuyo6+oOjnb6+PDtdL1AC4jRR+j1aOf+shJ
+ hxktncMTpHIxsHP45jmxtZtP8izi7r0oA1utaKUltiNWr/t3lzIUW9MxwBnHnvNGvLW0aWpJ6me
+ gYX4=
+X-Gm-Gg: ASbGncuEvELn89Ie05Q2/vCN9khPYOjzN2AkK4yxiZwv7lhMQneq7Th5hw0ILO7hVp/
+ acK+coVBjgbaE6vEV/2vZ/G5a6+omi6NUL1mGZ0RWCnvHjov5ZhaSHb96FTn99WMLqwjjB6Nwqg
+ yQ92KnvvlHrst6VD7n8sT6UQAhRR5tEuSSyPyjOsXgkLmozRZSJTPg5FWK8Nbi9mJoWrbBisKdK
+ L22RPV+kLE491Xb+UGMbCNeZKvpO5kv4yJehDGCnzwTppFy8agc4XBcw1WnYXz0mzti7tcKBRhI
+ p13c+fWj4poIlwERjv/CkjRq0BLRhcEh7mAsof2A+XX0vcPjx6df/tsk27uBlJwUGEefc+g+jIx
+ +4WiXLdUEBqIH9s+Bfm9Ws0Bgd6tWJ0xUBVPFhnFNSNc=
+X-Google-Smtp-Source: AGHT+IF+WhGd6rrcJL5zV2zoB9wf1P0ZvzudsxMnKPzZXuzS+VIsDfjG6QyOsrJsqFc45DuQX9pY8w==
+X-Received: by 2002:a17:907:9805:b0:ae3:7b53:31bd with SMTP id
+ a640c23a62f3a-afe2943d059mr2218820266b.28.1756421526732; 
+ Thu, 28 Aug 2025 15:52:06 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ a640c23a62f3a-afefca0a8b1sm56375066b.33.2025.08.28.15.52.05
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 28 Aug 2025 15:52:06 -0700 (PDT)
 To: ltp@lists.linux.it
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1756386685; l=4029;
- i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=E1FRskNPZ1CANlLZ+kjCdcEk7iHQUJ5KTWTILxESpqw=;
- b=PEKPYLECffw9Gri61PDAv2BtHl0B+eU42GTYGEx+CQHbkmp5ZJqv8vEezLlnZdsK+orFOU0rR
- td4XbOJg9kCDjkzouiYur2H7NEGWKA0cCppXAzYZYeBuKajjXnTvihJ
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+Date: Thu, 28 Aug 2025 22:51:54 +0000
+Message-ID: <20250828225157.982-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] mount_setattr01: add open_tree_attr variant
+Subject: [LTP] [PATCH v1] fsmount01: Add test if MOUNT_ATTR_* have expected
+ effect on the mount
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,152 +95,94 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+The fsmount01 test does not test if MOUNT_ATTR_* have expected effect
+on the mount, e.g. if MOUNT_ATTR_RDONLY mounts the FS read only etc.
 
-This patch simply introduces a new variant to the mount_setattr01
-test, in order to verify that open_tree_attr() works correctly.
-The open_tree_attr() syscall has been introduced in the kernel v6.15 by
-commit "c4a16820d901 - fs: add open_tree_attr()".
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Fixes: #1170
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- .../syscalls/mount_setattr/mount_setattr01.c       | 69 ++++++++++++++++------
- 1 file changed, 52 insertions(+), 17 deletions(-)
+ include/tst_device.h                          |  1 +
+ lib/tst_device.c                              |  2 +-
+ testcases/kernel/syscalls/fsmount/fsmount01.c | 27 +++++++++++++++++++
+ 3 files changed, 29 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
-index eb32cd91a7fcb4cb303e184dd40d5e10a280874c..bede26318a6985339b5b4bbb2db4a91744110eda 100644
---- a/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
-+++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
-@@ -3,10 +3,11 @@
-  * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
-  * Author: Dai Shili <daisl.fnst@fujitsu.com>
-  * Author: Chen Hanxiao <chenhx.fnst@fujitsu.com>
-+ * Copyright (C) 2025 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-  */
+diff --git a/include/tst_device.h b/include/tst_device.h
+index e0627a24d..24b5201c5 100644
+--- a/include/tst_device.h
++++ b/include/tst_device.h
+@@ -35,6 +35,7 @@ int tst_umount(const char *path);
+ int tst_is_mounted(const char *path);
+ int tst_is_mounted_ro(const char *path);
+ int tst_is_mounted_rw(const char *path);
++int tst_mount_has_opt(const char *path, const char *opt);
+ int tst_is_mounted_at_tmpdir(const char *path);
  
- /*\
-- * Basic mount_setattr() test.
-+ * Basic mount_setattr()/open_tree_attr() test.
-  * Test whether the basic mount attributes are set correctly.
-  *
-  * Verify some MOUNT_SETATTR(2) attributes:
-@@ -22,7 +23,8 @@
-  * - MOUNT_ATTR_NODIRATIME - prevents updating access time for
-  *   directories on this mount
-  *
-- * The functionality was added in v5.12.
-+ * The mount_setattr functionality was added in v5.12, while the open_tree_attr
-+ * functionality was added in v6.15.
-  */
- 
- #define _GNU_SOURCE
-@@ -41,6 +43,7 @@
- 	}
- 
- static int mount_flag, otfd = -1;
-+struct mount_attr *attr;
- 
- static struct tcase {
- 	char *name;
-@@ -66,35 +69,59 @@ static void cleanup(void)
- static void setup(void)
- {
- 	fsopen_supported_by_kernel();
--	struct stat st = {0};
- 
--	if (stat(OT_MNTPOINT, &st) == -1)
-+	if (access(OT_MNTPOINT, F_OK) != 0)
- 		SAFE_MKDIR(OT_MNTPOINT, 0777);
+ /*
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 5b0498c03..2364df052 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -429,7 +429,7 @@ int tst_umount(const char *path)
+ 	return -1;
  }
  
-+static int open_tree_variant1(struct mount_attr *attr)
-+{
-+	tst_res(TINFO, "Variant using open_tree() + mount_setattr()");
-+
-+	otfd = TST_EXP_FD(open_tree(AT_FDCWD, MNTPOINT,
-+			AT_EMPTY_PATH | OPEN_TREE_CLONE));
-+	if (otfd == -1)
-+		return -1;
-+
-+	TST_EXP_PASS(mount_setattr(otfd, "", AT_EMPTY_PATH,
-+			attr, sizeof(*attr)));
-+	if (TST_RET == -1)
-+		return -1;
-+
-+	return otfd;
-+}
-+
-+static int open_tree_variant2(struct mount_attr *attr)
-+{
-+	tst_res(TINFO, "Variant using open_tree_attr()");
-+
-+	otfd = TST_EXP_FD(open_tree_attr(AT_FDCWD, MNTPOINT,
-+			AT_EMPTY_PATH | OPEN_TREE_CLONE,
-+			attr, sizeof(*attr)));
-+
-+	return otfd;
-+}
-+
- static void run(unsigned int n)
+-static int tst_mount_has_opt(const char *path, const char *opt)
++int tst_mount_has_opt(const char *path, const char *opt)
  {
- 	struct tcase *tc = &tcases[n];
--	struct mount_attr attr = {
--		.attr_set = tc->mount_attrs,
--	};
- 	struct statvfs buf;
+ 	char line[PATH_MAX];
+ 	char abspath[PATH_MAX];
+diff --git a/testcases/kernel/syscalls/fsmount/fsmount01.c b/testcases/kernel/syscalls/fsmount/fsmount01.c
+index 6dafe25a8..bf0f5f100 100644
+--- a/testcases/kernel/syscalls/fsmount/fsmount01.c
++++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
+@@ -8,6 +8,7 @@
  
--	TST_EXP_FD_SILENT(open_tree(AT_FDCWD, MNTPOINT, AT_EMPTY_PATH |
--		AT_SYMLINK_NOFOLLOW | OPEN_TREE_CLOEXEC | OPEN_TREE_CLONE));
--	if (!TST_PASS)
--		return;
-+	memset(attr, 0, sizeof(*attr));
-+	attr->attr_set = tc->mount_attrs;
+ #include "tst_test.h"
+ #include "lapi/fsmount.h"
++#include "tst_safe_stdio.h"
  
--	otfd = (int)TST_RET;
-+	if (tst_variant)
-+		otfd = open_tree_variant1(attr);
-+	else
-+		otfd = open_tree_variant2(attr);
+ #define MNTPOINT	"mntpoint"
  
--	TST_EXP_PASS_SILENT(mount_setattr(otfd, "", AT_EMPTY_PATH, &attr, sizeof(attr)),
--		"%s set", tc->name);
--	if (!TST_PASS)
--		goto out1;
-+	if (otfd == -1)
-+		goto out2;
+@@ -75,6 +76,32 @@ static void run(unsigned int n)
+ 	TEST(move_mount(mfd, "", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
+ 	SAFE_CLOSE(mfd);
  
- 	TST_EXP_PASS_SILENT(move_mount(otfd, "", AT_FDCWD, OT_MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
- 	if (!TST_PASS)
- 		goto out1;
-+
- 	mount_flag = 1;
- 	SAFE_CLOSE(otfd);
- 
-@@ -123,9 +150,17 @@ static struct tst_test test = {
- 	.test = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-+	.test_variants = 2,
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
--	.skip_filesystems = (const char *const []){"fuse", NULL},
-+	.skip_filesystems = (const char *const []) {
-+		"fuse",
-+		NULL
-+	},
-+	.bufs = (struct tst_buffers []) {
-+		{&attr, .size = sizeof(struct mount_attr)},
-+		{}
++	switch (tc->attrs) {
++	case MOUNT_ATTR_RDONLY:
++		TST_EXP_VAL(tst_is_mounted_ro(MNTPOINT), 1);
++		break;
++	case MOUNT_ATTR_NOSUID:
++		TST_EXP_VAL(tst_mount_has_opt(MNTPOINT, "nosuid"), 1);
++		break;
++	case MOUNT_ATTR_NODEV:
++		TST_EXP_VAL(tst_mount_has_opt(MNTPOINT, "nodev"), 1);
++		break;
++	case MOUNT_ATTR_NOEXEC:
++		TST_EXP_VAL(tst_mount_has_opt(MNTPOINT, "noexec"), 1);
++		break;
++	case MOUNT_ATTR_RELATIME:
++		TST_EXP_VAL(tst_mount_has_opt(MNTPOINT, "relatime"), 1);
++		break;
++	case MOUNT_ATTR_NOATIME:
++		TST_EXP_VAL(tst_mount_has_opt(MNTPOINT, "noatime"), 1);
++		break;
++	case MOUNT_ATTR_NODIRATIME:
++		TST_EXP_VAL(tst_mount_has_opt(MNTPOINT, "nodiratime"), 1);
++		break;
++	default:
++		break;
 +	}
- };
-
++
+ 	if (TST_RET == -1) {
+ 		tst_res(TFAIL | TTERRNO,
+ 			"move_mount() failed to attach to the mount point");
 -- 
 2.51.0
 
