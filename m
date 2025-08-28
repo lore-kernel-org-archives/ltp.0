@@ -4,95 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DFE5CA0EED
-	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 13:11:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B0C5C8303F
+	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 13:12:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6F6CA3CCE90
-	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 15:11:46 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 1F2743CCFFD
+	for <ltp@archiver.kernel.org>; Thu, 28 Aug 2025 15:12:04 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9385A3CCE90
+ by picard.linux.it (Postfix) with ESMTPS id 9E1913CCEEA
  for <ltp@lists.linux.it>; Thu, 28 Aug 2025 15:11:28 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EAC8510000C7
- for <ltp@lists.linux.it>; Thu, 28 Aug 2025 15:11:26 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 81A161400061
+ for <ltp@lists.linux.it>; Thu, 28 Aug 2025 15:11:27 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E765B20BCE;
- Thu, 28 Aug 2025 13:11:25 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 292142225F;
+ Thu, 28 Aug 2025 13:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1756386686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=wBix2VuPh1h3vl3s9L9kuRmDWZOK9kjI9FpsB+iA96I=;
- b=WV7xnldH91VxRt81P981Q0oxahAw3eH8Hys0e/nuoSq5AcrmQta00mGTJAgxxDHgNkKBIY
- s6T5PtlwMvgmueLxLf/3pajosJpIWUL4aa+xzyobaVm3HGmTXbdaePXrghTLtbRcVG+x9i
- zYyDvNaAvFZ0J+WaAkADl/mnJJ2G3ZI=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=eXbFffUzDZSALWNb+3dCQGk8dfdZTFnl29hTgIS+Piw=;
+ b=J5Eblnx9h6VAdL/tM5EXJb10Ys/0DHISs3DsZQUQTFQ0JJHL16rBUii5zW2xmodkQtuw6n
+ PNSsOxIU5vIkXeYYzma4Lh95DU1VKWgcjcPtXLM9bjCNHZtCySy27JfXoivoR/DgRfjAq5
+ kUgFfWa+LEUx4HPxQN+hZu3VmJtKZWU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1756386686;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=wBix2VuPh1h3vl3s9L9kuRmDWZOK9kjI9FpsB+iA96I=;
- b=fXPVTf8LlCE9wcl7uU2FeUS2DhVYHhHA+iZWzqZ+5J5tnI+VGumq3VgiOFulowGfPD/AsA
- t5Nn2188Wz0FZqBQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=gO5YL3Lr;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=IAyEoOcS
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=eXbFffUzDZSALWNb+3dCQGk8dfdZTFnl29hTgIS+Piw=;
+ b=5J2bO2k4D158+VPBCk/FUR/2p6qnHekjzi4Cy3T+q9miiqpXEYbNii4JlOyHD6H3eSdPti
+ 3eTREhyhHplT6+CQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=J5Eblnx9;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=5J2bO2k4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1756386685; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1756386686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=wBix2VuPh1h3vl3s9L9kuRmDWZOK9kjI9FpsB+iA96I=;
- b=gO5YL3LrtEVvw7pE9Zas16kTS38QFCrQQKxYZfxchilhnSn9uBEM1ovhh+KndoRYBgxA0W
- L1wQMIhwa6rNx5Qu4SDi67eoj5YGQZrOv1P+qs045u2NxzCcFdeOmoYyYmtD335IdkHjDy
- dfI9l5jeZITnS/cMSk0jEfj/gUHluj4=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=eXbFffUzDZSALWNb+3dCQGk8dfdZTFnl29hTgIS+Piw=;
+ b=J5Eblnx9h6VAdL/tM5EXJb10Ys/0DHISs3DsZQUQTFQ0JJHL16rBUii5zW2xmodkQtuw6n
+ PNSsOxIU5vIkXeYYzma4Lh95DU1VKWgcjcPtXLM9bjCNHZtCySy27JfXoivoR/DgRfjAq5
+ kUgFfWa+LEUx4HPxQN+hZu3VmJtKZWU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1756386685;
+ s=susede2_ed25519; t=1756386686;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=wBix2VuPh1h3vl3s9L9kuRmDWZOK9kjI9FpsB+iA96I=;
- b=IAyEoOcSYOCAX0RAqUofz+auFI+76T3Wy68HH8YTKQ/pS5AvVk5Q7t/jkaQ9thY/FRoDHl
- q3crfAcYZjkUssDw==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=eXbFffUzDZSALWNb+3dCQGk8dfdZTFnl29hTgIS+Piw=;
+ b=5J2bO2k4D158+VPBCk/FUR/2p6qnHekjzi4Cy3T+q9miiqpXEYbNii4JlOyHD6H3eSdPti
+ 3eTREhyhHplT6+CQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C324B13326;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 023DD1368B;
  Thu, 28 Aug 2025 13:11:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 7R0iLX1VsGjfCAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +LKxOX1VsGjfCAAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Thu, 28 Aug 2025 13:11:25 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 28 Aug 2025 15:11:23 +0200
-Message-Id: <20250828-open_tree_attr-v1-0-f339a0e51e22@suse.com>
+Date: Thu, 28 Aug 2025 15:11:24 +0200
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAHxVsGgC/x3MQQqAIBBG4avErBNKsqKrREjZX83GYpQIwrsnL
- b/Fey8FCCPQULwkuDnw6TPqsiB3zH6H4jWbdKVN1etenRe8jQLYOUZRzaLhYLrW1Y5ydAk2fv7
- hOKX0ARjPWxBgAAAA
-X-Change-ID: 20250828-open_tree_attr-4b2ece576c1c
+Message-Id: <20250828-open_tree_attr-v1-1-f339a0e51e22@suse.com>
+References: <20250828-open_tree_attr-v1-0-f339a0e51e22@suse.com>
+In-Reply-To: <20250828-open_tree_attr-v1-0-f339a0e51e22@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1756386685; l=776;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1756386685; l=1463;
  i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
- bh=QcRkZ/wZMw7xfXggBkZlh6Q0LLoxsiGp92CnQ+/0ofQ=;
- b=BBDtFzxMxG8lx3fcQ7z54yoEuhHSQcbNgzxvFi6/X/HvaiTZzEwVy6Fo9zodCMR9GNs29L/fI
- oCgRgsCFK5fDi5upjbaCjENoB6olMxCBRVgjlp7GN68o1r0YCt7FB1a
+ bh=Dhq/cBc6PX6ComRKaQAdb8sb1xRmOAb8S3xIte/tJO4=;
+ b=JTQmThwIsUaDcdpwy9wZ1fYBVRula3P07ATPVbeS96MzG71kvE9UCjLhTPAkYOtaMR1OcBNXE
+ QA8UB+Tdw8JBOBz8asgsUrnxFI+8tBZSsePhx6S8XkRK1SEti+uD3/b
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
-X-Rspamd-Queue-Id: E765B20BCE
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
@@ -106,12 +105,15 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid,suse.de:dkim];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:email,suse.de:dkim];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+X-Rspamd-Queue-Id: 292142225F
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/2] open_tree_attr syscall coverage
+Subject: [LTP] [PATCH 1/2] Add open_tree_attr fallback
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -128,26 +130,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-open_tree_attr has been added in kernel 6.15 in the following commit:
-https://lore.kernel.org/all/20250128-work-mnt_idmap-update-v2-v1-3-c25feb0d2eb3@kernel.org/
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+open_tree_attr syscall has been introduced in kernel 6.15 and it's
+now defined in lapi/fsmount.h.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Andrea Cervesato (2):
-      Add open_tree_attr fallback
-      mount_setattr01: add open_tree_attr variant
+ configure.ac           | 1 +
+ include/lapi/fsmount.h | 8 ++++++++
+ 2 files changed, 9 insertions(+)
 
- configure.ac                                       |  1 +
- include/lapi/fsmount.h                             |  8 +++
- .../syscalls/mount_setattr/mount_setattr01.c       | 69 ++++++++++++++++------
- 3 files changed, 61 insertions(+), 17 deletions(-)
----
-base-commit: 2f465c71bc999ed1796b69f68330495f2c69e131
-change-id: 20250828-open_tree_attr-4b2ece576c1c
+diff --git a/configure.ac b/configure.ac
+index 62ae27d494474fe342b1cceeac7f4c21c0b1028c..2d4d527bcaa675dae5d712a96d266d17184b8a0d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -137,6 +137,7 @@ AC_CHECK_FUNCS_ONCE([ \
+     move_mount \
+     name_to_handle_at \
+     open_tree \
++    open_tree_attr \
+     openat \
+     openat2 \
+     pidfd_getfd \
+diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
+index 1783272a00a1a049031cacbb417239123450a0e4..451987ae637d040e08970b7ffcf015bae07a6f11 100644
+--- a/include/lapi/fsmount.h
++++ b/include/lapi/fsmount.h
+@@ -105,6 +105,14 @@ static inline int open_tree(int dirfd, const char *pathname, unsigned int flags)
+ }
+ #endif /* HAVE_OPEN_TREE */
+ 
++#ifndef HAVE_OPEN_TREE_ATTR
++static inline int open_tree_attr(int dirfd, const char *pathname, unsigned int flags,
++				 struct mount_attr *attr, size_t size)
++{
++	return tst_syscall(__NR_open_tree_attr, dirfd, pathname, flags, attr, size);
++}
++#endif /* HAVE_OPEN_TREE_ATTR */
++
+ #ifndef HAVE_MOUNT_SETATTR
+ static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned int flags,
+ 				struct mount_attr *attr, size_t size)
 
-Best regards,
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.51.0
 
 
 -- 
