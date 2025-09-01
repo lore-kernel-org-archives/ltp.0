@@ -4,100 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AE6ECA0FF0
-	for <ltp@archiver.kernel.org>; Mon,  1 Sep 2025 10:38:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 931DCCA0FF0
+	for <ltp@archiver.kernel.org>; Mon,  1 Sep 2025 14:49:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9009D3CD2C8
-	for <ltp@archiver.kernel.org>; Mon,  1 Sep 2025 12:38:25 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 9E3913CD351
+	for <ltp@archiver.kernel.org>; Mon,  1 Sep 2025 16:49:51 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E19293CD1DB
- for <ltp@lists.linux.it>; Mon,  1 Sep 2025 12:38:09 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id E2FF33CD300
+ for <ltp@lists.linux.it>; Mon,  1 Sep 2025 16:49:34 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2714B200225
- for <ltp@lists.linux.it>; Mon,  1 Sep 2025 12:38:07 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2C9D46002D7
+ for <ltp@lists.linux.it>; Mon,  1 Sep 2025 16:49:33 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B0A151F388;
- Mon,  1 Sep 2025 10:38:06 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6CB1F21191;
+ Mon,  1 Sep 2025 14:49:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1756723086;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3nMbn44Yq34UIF0frP56M7YCOuJM5iho4mH8qsxxGH0=;
- b=qTfSNP7jn/3UOQFpe6gkzzgzkdtDWBCVX8Jwvr9qgwHP60qK6wnx7rqScZO4ccG03l9oQv
- utXu82YlAwiJBrkzgZNHM0NXdKSjNmvLbG4Jf3yaT4nUTfoWmyPSWhdGSjwwtyHN5ySCuN
- kfmPHdBPibxIMBTAsaszzSasIeyTcH4=
+ t=1756738173; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=jji8eFUwrC8r3IC5Y3+v0QN0gK3OUSxCcYtByZ7L2a0=;
+ b=NFNO+liTEuIAFPOnSZYEZVa3zUCl+WU8qivlVscWnDF0Q6nM3bMxi9DW5WCNoVPsW67eXY
+ BFvqbfonRdGPu+kVnT+SstIuaokSb66cYz6MgkCnCcXoBEuZPM4QyiDm+6EQ038nIWX7o9
+ tPyG+CS86H4JRImWdp4exVnPPjp/sig=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1756723086;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3nMbn44Yq34UIF0frP56M7YCOuJM5iho4mH8qsxxGH0=;
- b=HLISP82afMZUEfWHyae8KddNyy2YgMmnagie91eKh+I6F3HwrMyeOJ8qA4a+L1Mr12tJS6
- wXTRIva91fBdy6Aw==
-Authentication-Results: smtp-out2.suse.de;
+ s=susede2_ed25519; t=1756738173;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=jji8eFUwrC8r3IC5Y3+v0QN0gK3OUSxCcYtByZ7L2a0=;
+ b=/bcSqHrRcMFV8bQKfF8xqLlHGjb4GoIi5J0iCbo36jm8jQtLyHlYj3arg60nLE2mmawM5D
+ Eepahj8TB1EuxNAQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1756723086;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3nMbn44Yq34UIF0frP56M7YCOuJM5iho4mH8qsxxGH0=;
- b=qTfSNP7jn/3UOQFpe6gkzzgzkdtDWBCVX8Jwvr9qgwHP60qK6wnx7rqScZO4ccG03l9oQv
- utXu82YlAwiJBrkzgZNHM0NXdKSjNmvLbG4Jf3yaT4nUTfoWmyPSWhdGSjwwtyHN5ySCuN
- kfmPHdBPibxIMBTAsaszzSasIeyTcH4=
+ t=1756738173; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=jji8eFUwrC8r3IC5Y3+v0QN0gK3OUSxCcYtByZ7L2a0=;
+ b=NFNO+liTEuIAFPOnSZYEZVa3zUCl+WU8qivlVscWnDF0Q6nM3bMxi9DW5WCNoVPsW67eXY
+ BFvqbfonRdGPu+kVnT+SstIuaokSb66cYz6MgkCnCcXoBEuZPM4QyiDm+6EQ038nIWX7o9
+ tPyG+CS86H4JRImWdp4exVnPPjp/sig=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1756723086;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3nMbn44Yq34UIF0frP56M7YCOuJM5iho4mH8qsxxGH0=;
- b=HLISP82afMZUEfWHyae8KddNyy2YgMmnagie91eKh+I6F3HwrMyeOJ8qA4a+L1Mr12tJS6
- wXTRIva91fBdy6Aw==
+ s=susede2_ed25519; t=1756738173;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=jji8eFUwrC8r3IC5Y3+v0QN0gK3OUSxCcYtByZ7L2a0=;
+ b=/bcSqHrRcMFV8bQKfF8xqLlHGjb4GoIi5J0iCbo36jm8jQtLyHlYj3arg60nLE2mmawM5D
+ Eepahj8TB1EuxNAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 80F0F136ED;
- Mon,  1 Sep 2025 10:38:06 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 613D9136ED;
+ Mon,  1 Sep 2025 14:49:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id bV+IHo53tWgKBQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 01 Sep 2025 10:38:06 +0000
-Date: Mon, 1 Sep 2025 12:38:05 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20250901103805.GA30224@pevik>
-References: <20250901074758.5094-1-wegao@suse.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id NQWEF32ytWjPVwAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Mon, 01 Sep 2025 14:49:33 +0000
+Message-ID: <2c892b5c-5902-44ac-b23f-14b0855df573@suse.cz>
+Date: Mon, 1 Sep 2025 16:49:29 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250901074758.5094-1-wegao@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>
+References: <20250822135702.23337-1-mdoucha@suse.cz>
+ <aLAuxxi5DLz22ztX@yuki.lan>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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 ag==
+In-Reply-To: <aLAuxxi5DLz22ztX@yuki.lan>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_MATCH_FROM(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.com:email,imap1.dmz-prg2.suse.org:helo];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] ioctl_loop01.c: Use proper device for
- partitioning
+Subject: Re: [LTP] [PATCH v3] aio_cancel_7-1: Write into a socket
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,140 +154,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+On 28. 08. 25 12:26, Cyril Hrubis wrote:
+> Hi!
+> 
+> Do I get it right that we queue eight aio writes and four of them finish
+> before the socket buffer is full and then the writing gets stuck with
+> the fift one?
+> 
+> So in the end we have four finished writes, one in progress and three
+> canceled?
 
-> This is same patch used on ioctl09,the page cache of loop0 can cache old
-> version of the partition table which is then used by the partitioning
-> code. Fix the problem by calling parted against the loop device directly.
+Yes, that's roughly what the test expects to happen, both before and 
+after this patch. Except the file scenario didn't get stuck at all and 
+the socket version will get stuck on the third write since the socket 
+buffer is big enough for exactly 2 writes.
 
-> Link: https://lore.kernel.org/ltp/20250829141932.31997-1-jack@suse.cz/
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  testcases/kernel/syscalls/ioctl/ioctl_loop01.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+But there was a bunch of valid corner cases that would result in the 
+test failing without this patch:
+- aio_cancel() was called before the first write started
+- aio_cancel() was called after all writes finished
+- aio_cancel was called between one write finishing and another starting
 
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-> index c9137bf1e..5ee7a474a 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-> @@ -98,7 +98,7 @@ static void verify_ioctl_loop(void)
->  static void setup(void)
->  {
->  	int ret;
-> -	const char *const cmd_parted[] = {"parted", "-s", "test.img", "mklabel", "msdos", "mkpart",
-> +	const char *const cmd_parted[] = {"parted", "-s", dev_path, "mklabel", "msdos", "mkpart",
->  	                                  "primary", "ext4", "1M", "10M", NULL};
+In all three cases, none of the passing combinations aio_cancel() and 
+aio_error() return values would match.
 
-Indeed I was able to trigger the same error:
-
-[ 2642.979234] ioctl_loop01
-[ 2642.997424] loop8: detected capacity change from 0 to 20480
-[ 2643.015094]  loop8: p1
-[ 2643.040903] blk_update_request: I/O error, dev loop8, sector 20352 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
-[ 2643.042105] blk_update_request: I/O error, dev loop8, sector 20352 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
-[ 2643.043361] Buffer I/O error on dev loop8p1, logical block 2288, async page read
-[ 2643.044539] __loop_clr_fd: partition scan of loop8 failed (rc=-16)
-[ 2643.097517] blk_update_request: I/O error, dev loop8, sector 20352 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
-[ 2643.098175] blk_update_request: I/O error, dev loop8, sector 20352 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
-[ 2643.098767] Buffer I/O error on dev loop8p1, logical block 2288, async page read
-[ 2643.109133] ioctl_ficlone02
-[ 2643.109824] loop8: detected capacity change from 0 to 614400
-[ 2643.175605] /dev/zero: Can't open blockdev
-[ 2643.307531] EXT4-fs (loop8): mounting ext2 file system using the ext4 subsystem
-[ 2643.312401] EXT4-fs (loop8): mounted filesystem without journal. Opts: (null). Quota mode: none.
-[ 2643.471527] EXT4-fs (loop8): mounting ext3 file system using the ext4 subsystem
-[ 2643.476826] EXT4-fs (loop8): mounted filesystem with ordered data mode. Opts: (null). Quota mode: none.
-[ 2643.644734] EXT4-fs (loop8): mounted filesystem with ordered data mode. Opts: (null). Quota mode: none.
-
-But you change introduces one TCONF:
-
---- old	2025-09-01 05:05:50.401105483 -0400
-+++ new	2025-09-01 05:05:01.925105483 -0400
-@@ -5,6 +5,7 @@
- tst_kconfig.c:678: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
- tst_test.c:1827: TINFO: Overall timeout per run is 0h 02m 04s
- tst_device.c:99: TINFO: Found free device 6 '/dev/loop6'
-+ioctl_loop01.c:119: TCONF: parted exited with 1
- tst_buffers.c:57: TINFO: Test is using guarded buffers
- ioctl_loop01.c:84: TPASS: /sys/block/loop6/loop/partscan = 0
- ioctl_loop01.c:85: TPASS: /sys/block/loop6/loop/autoclear = 0
-@@ -12,18 +13,16 @@
- ioctl_loop01.c:56: TPASS: get expected lo_flag 12
- ioctl_loop01.c:58: TPASS: /sys/block/loop6/loop/partscan = 1
- ioctl_loop01.c:59: TPASS: /sys/block/loop6/loop/autoclear = 1
--ioctl_loop01.c:68: TPASS: access /dev/loop6p1 succeeds
--ioctl_loop01.c:74: TPASS: access /sys/block/loop6/loop6p1 succeeds
-+ioctl_loop01.c:62: TINFO: Current environment doesn't have parted disk, skip it
- ioctl_loop01.c:90: TINFO: Test flag can be clear
- ioctl_loop01.c:56: TPASS: get expected lo_flag 8
- ioctl_loop01.c:58: TPASS: /sys/block/loop6/loop/partscan = 1
- ioctl_loop01.c:59: TPASS: /sys/block/loop6/loop/autoclear = 0
--ioctl_loop01.c:68: TPASS: access /dev/loop6p1 succeeds
--ioctl_loop01.c:74: TPASS: access /sys/block/loop6/loop6p1 succeeds
-+ioctl_loop01.c:62: TINFO: Current environment doesn't have parted disk, skip it
- 
- Summary:
--passed   13
-+passed   9
- failed   0
- broken   0
--skipped  0
-+skipped  1
- warnings 0
-
-That means your change effectively disable that code. => NACK
-
-in ioctl09.c uses the first command with "test.img", then loop device on the
-second run.
-
-Surprisingly trying to attach helps 'parted' to use it, although it produces a
-warning:
-
-+++ testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-@@ -106,6 +106,7 @@ static void setup(void)
-                tst_brk(TBROK, "Failed to find free loop device");
-
-        tst_fill_file("test.img", 0, 1024 * 1024, 10);
-+       tst_attach_device(dev_path, "test.img");
-
-        ret = tst_cmd(cmd_parted, NULL, NULL, TST_CMD_PASS_RETVAL);
-        switch (ret) {
-
-tst_device.c:99: TINFO: Found free device 9 '/dev/loop9'
-tst_buffers.c:57: TINFO: Test is using guarded buffers
-tst_device.c:176: TWARN: ioctl(/dev/loop9, LOOP_SET_FD, test.img) failed: EBUSY (16)
-ioctl_loop01.c:84: TPASS: /sys/block/loop9/loop/partscan = 0
-ioctl_loop01.c:85: TPASS: /sys/block/loop9/loop/autoclear = 0
-ioctl_loop01.c:86: TPASS: /sys/block/loop9/loop/backing_file = '/tmp/LTP_iocfMLSpX/test.img'
-ioctl_loop01.c:56: TPASS: get expected lo_flag 12
-ioctl_loop01.c:58: TPASS: /sys/block/loop9/loop/partscan = 1
-ioctl_loop01.c:59: TPASS: /sys/block/loop9/loop/autoclear = 1
-ioctl_loop01.c:68: TPASS: access /dev/loop9p1 succeeds
-ioctl_loop01.c:74: TPASS: access /sys/block/loop9/loop9p1 succeeds
-ioctl_loop01.c:90: TINFO: Test flag can be clear
-ioctl_loop01.c:56: TPASS: get expected lo_flag 8
-ioctl_loop01.c:58: TPASS: /sys/block/loop9/loop/partscan = 1
-ioctl_loop01.c:59: TPASS: /sys/block/loop9/loop/autoclear = 0
-ioctl_loop01.c:68: TPASS: access /dev/loop9p1 succeeds
-ioctl_loop01.c:74: TPASS: access /sys/block/loop9/loop9p1 succeeds
-
-Of course TWARN is also no-go.
-@Jan @Cyril @Li Any hint what am I missing.
-
-Besides missing there is missing TST_CMD_TCONF_ON_MISSING on the flags (see
-today's fix [1]), but that's minor.
-
-Kind regards,
-Petr
-
-[1] https://github.com/linux-test-project/ltp/commit/9691c4b2bea4f772d61ca9e9a93d2087c88f6040
+-- 
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
