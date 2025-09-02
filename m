@@ -4,109 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0974FCA1005
-	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 14:20:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8F45CA1005
+	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 14:26:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5C3BA3CD1C8
-	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 16:20:01 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 0186E3CD1D1
+	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 16:26:49 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CA40E3CC834
- for <ltp@lists.linux.it>; Tue,  2 Sep 2025 16:19:45 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 9C0913CCB6F
+ for <ltp@lists.linux.it>; Tue,  2 Sep 2025 16:26:33 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3AAE1200924
- for <ltp@lists.linux.it>; Tue,  2 Sep 2025 16:19:44 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5011A1400B70
+ for <ltp@lists.linux.it>; Tue,  2 Sep 2025 16:26:28 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 73FDA211D3;
- Tue,  2 Sep 2025 14:19:43 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9A7D92118D;
+ Tue,  2 Sep 2025 14:26:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1756822783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1756823187; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CJPjkfn+IamcgK2L0hRpaYhW+5B9D8GocaDWY4elQj8=;
- b=u/LQLy4byzS4ZWcFtAcaZ6QcNRvjW/8NVXMoSwSjJgq1YbDOmcv/M0joeNYV+aTdY+gdXe
- HeytRgo6UHCQO2eKgxI03W5v9hLCj6qlK/H0f8LrBVEPFVbNC+P/eIUH+c07YUJEzrQKj4
- uTHBL8VCRh2k02HqYMrf5URIqwQkrSQ=
+ bh=uzAzJpM7M7NOpl+QiPT6zcG1fCeczR+TdIXmv4J2Y6A=;
+ b=zcxLXrfxhG7AP27j6OemSiMQ/s6ZLzJGsP1WkPp0Qko6xY33Gp1NR1ciAGrbOLTrOgpyF9
+ cF8ILWKENhYUTg6ckr/7rv25Wj+Fh1NAbtg7RfIMxSH7wk8DdCRs9Dx2Bd3qrmBOwsAvve
+ QiXt/CZjFCy3Ct9oFroowJlaD2/xfSE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1756822783;
+ s=susede2_ed25519; t=1756823187;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CJPjkfn+IamcgK2L0hRpaYhW+5B9D8GocaDWY4elQj8=;
- b=sHKW25Ac/AoSQV8tSUS7mXvBa14ySkByohPf9MhrzgydrtImQ3tfgyGpZ3MIBlD6TaOL/j
- FIVInLCUuWTEMqCg==
+ bh=uzAzJpM7M7NOpl+QiPT6zcG1fCeczR+TdIXmv4J2Y6A=;
+ b=r73O0j9Z/zCmctwDvtXVBOrOaxnWhDe60x7V++yp4Y5fsSg56LWJhUQA0c9BsGm/SvPCy5
+ cN+Ww9+oP+LieRAw==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="u/LQLy4b";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=sHKW25Ac
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1756822783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1756823187; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CJPjkfn+IamcgK2L0hRpaYhW+5B9D8GocaDWY4elQj8=;
- b=u/LQLy4byzS4ZWcFtAcaZ6QcNRvjW/8NVXMoSwSjJgq1YbDOmcv/M0joeNYV+aTdY+gdXe
- HeytRgo6UHCQO2eKgxI03W5v9hLCj6qlK/H0f8LrBVEPFVbNC+P/eIUH+c07YUJEzrQKj4
- uTHBL8VCRh2k02HqYMrf5URIqwQkrSQ=
+ bh=uzAzJpM7M7NOpl+QiPT6zcG1fCeczR+TdIXmv4J2Y6A=;
+ b=zcxLXrfxhG7AP27j6OemSiMQ/s6ZLzJGsP1WkPp0Qko6xY33Gp1NR1ciAGrbOLTrOgpyF9
+ cF8ILWKENhYUTg6ckr/7rv25Wj+Fh1NAbtg7RfIMxSH7wk8DdCRs9Dx2Bd3qrmBOwsAvve
+ QiXt/CZjFCy3Ct9oFroowJlaD2/xfSE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1756822783;
+ s=susede2_ed25519; t=1756823187;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CJPjkfn+IamcgK2L0hRpaYhW+5B9D8GocaDWY4elQj8=;
- b=sHKW25Ac/AoSQV8tSUS7mXvBa14ySkByohPf9MhrzgydrtImQ3tfgyGpZ3MIBlD6TaOL/j
- FIVInLCUuWTEMqCg==
+ bh=uzAzJpM7M7NOpl+QiPT6zcG1fCeczR+TdIXmv4J2Y6A=;
+ b=r73O0j9Z/zCmctwDvtXVBOrOaxnWhDe60x7V++yp4Y5fsSg56LWJhUQA0c9BsGm/SvPCy5
+ cN+Ww9+oP+LieRAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5BC4A13888;
- Tue,  2 Sep 2025 14:19:43 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8160113A54;
+ Tue,  2 Sep 2025 14:26:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id AaygE//8tmi8bgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 02 Sep 2025 14:19:43 +0000
-Date: Tue, 2 Sep 2025 16:20:20 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1DWPHpP+tmjXcAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 02 Sep 2025 14:26:27 +0000
+Date: Tue, 2 Sep 2025 16:27:04 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Ricardo =?iso-8859-1?Q?B=2E_Marli=E8re?= <rbm@suse.com>
-Message-ID: <aLb9JFildIcrsu7v@yuki.lan>
+Message-ID: <aLb-uPKS6ZCmpUTc@yuki.lan>
 References: <20250829-conversions-lchown-v5-0-7c3f25cd1de4@suse.com>
- <20250829-conversions-lchown-v5-3-7c3f25cd1de4@suse.com>
+ <20250829-conversions-lchown-v5-4-7c3f25cd1de4@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250829-conversions-lchown-v5-3-7c3f25cd1de4@suse.com>
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20250829-conversions-lchown-v5-4-7c3f25cd1de4@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; MISSING_XM_UA(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- ARC_NA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- MIME_TRACE(0.00)[0:+];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: 73FDA211D3
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 3/4] syscalls: lchown02: Convert to new API
+Subject: Re: [LTP] [PATCH v5 4/4] syscalls: lchown03: Merge into lchown02
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,16 +112,29 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +	UID16_CHECK((user_id = geteuid()), "lchown");
-> +	GID16_CHECK((group_id = getegid()), "lchown");
+>  static void run(unsigned int i)
+> @@ -70,8 +77,14 @@ static void setup(void)
+>  {
+>  	bad_addr = tst_get_bad_addr(NULL);
+>  
+> -	memset(longpath, 'a', LONGPATHSIZE - 1);
+> -	longpath[LONGPATHSIZE-1] = 0;
+> +	memset(maxpath, 'a', MAXPATH - 1);
+> +	maxpath[MAXPATH-1] = 0;
+> +
+> +	snprintf(longpath, sizeof(longpath), ".");
+> +	SAFE_MKDIR("longpath", 0755);
+> +	SAFE_SYMLINK("../longpath", "longpath/longpath");
+> +	for (int i = 0; i < 43; i++)
+> +		strcat(longpath, "/longpath");
 
-The test does not change the uid/git during it's run so user_id and
-group_id can be checked and initialized once in the test setup. We also
-set it to ltpuser ids so we know the value there as well.
+There is much more easier way how to get ELOOP, just create two symlinks
+pointing to each other.
 
-Anyways that is very minor so with that fixed:
+	SAFE_SYMLINK("infinte_loop_a", "infinite_loop_b");
+	SAFE_SYMLINK("infinte_loop_b", "infinite_loop_a");
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Trying to resolve either of these ends up in ELOOP.
 
 -- 
 Cyril Hrubis
