@@ -4,91 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D532CA0FFE
-	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 10:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1756809635; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=Xtj4+tkGsyu6Nbh/EgPDndGPbNNEWLSOfhol7IpzNOM=;
- b=EnFNSPhLhjCvtvS8f0bTS9DSu2fBXtfEHZnTxDjU0Lm/jrTgaCVkmbrH7WYDNBmT9Jy0z
- ELzlO2SAaM8S8AlH/ej0gZ4zO5p2flEJK1vl27zFN6RjZWU9V2HA3gopHRfq2U16SaxRpJP
- QFWvwIHPJdr4g2b7OUGe4EI9uD+R+Eg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E6FDCA0FFE
+	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 10:44:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2E02C3CD1C8
-	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 12:40:35 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id A2D9B3CD3A8
+	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 12:44:22 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0DC3A3CD1C8
- for <ltp@lists.linux.it>; Tue,  2 Sep 2025 12:40:14 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CA5693CCA65
+ for <ltp@lists.linux.it>; Tue,  2 Sep 2025 12:44:07 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 65F261400071
- for <ltp@lists.linux.it>; Tue,  2 Sep 2025 12:40:13 +0200 (CEST)
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-3c46686d1e6so3546183f8f.3
- for <ltp@lists.linux.it>; Tue, 02 Sep 2025 03:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1756809613; x=1757414413; darn=lists.linux.it;
- h=in-reply-to:references:subject:from:to:cc:message-id:date
- :content-transfer-encoding:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=0AcYhW6PwS8qz4nl9MjIxEHQqD/noLgZZ3zfHfEizSs=;
- b=bHwNK+qk4NWd7mjXCeXCJg6FYeX4Ei/bXUZ6MtBY0rWPn6iIZoxXYaVhHxH+gkV/tZ
- gH1K8oyjdO5yG+mLoGcD8tZStF/5DOdweCRbEbryIN3Bc6/kf8IeLdxwJDng+7fLNV2/
- vomXsPG/ueeDdYus8Bmyc8B6iRk2xi14S0M9z0BejZEgWqTn9UnlgCji5jaTRZc/dfPD
- J9uODKhYYc6LfX+MMoBfNx/6Egz2FvAOwNkUlL4B1DEHD8s9KqMD0G4AhV+HNW7UwSkb
- CAHmA7T8M/ueAHoeqsdEkxJPqtB1RKhX85FnZnRDjvtMcO7CU+QVRMlDAZ0ShJVwaKo8
- /rIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1756809613; x=1757414413;
- h=in-reply-to:references:subject:from:to:cc:message-id:date
- :content-transfer-encoding:mime-version:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to;
- bh=0AcYhW6PwS8qz4nl9MjIxEHQqD/noLgZZ3zfHfEizSs=;
- b=t7dvR3/A21W6/kCtWWh/eJ7Q1bIEaJeM787aoIeMMUIsXcDUyqPc3p+QPAzpHY/xM8
- uipP/IbE1DaD8onLun97APt3qQrEYViZiyv9liAIQeG+VQcmDkUSWEcxyVTiD1aFKWqM
- If+bjG48+4zWkzvoKFTxEcZsyNRGQd0ZIXU3je/KviE95S3ELm6fS1Q6DaJ7qpYUtQMj
- yOOeoHm+fGamZqxonUzLl1npf6crQ7xa8NlqRB028pAoeJyQkip4OjQIUTn3YYmazttq
- 3tbVCCedTpJlpfHilFUd6PoMMpjD+eWW9e+FGYW/GwWFMK4BlZ5PChDpDnlK6Uin3OBJ
- gmGw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWz9kG9AivPj2nFdaHBoqRZDpDEBZCJq1Eq7G8h4vZcdF35iId7nVaxMTpapmIj387aDik=@lists.linux.it
-X-Gm-Message-State: AOJu0YysuMYCGjZzj/6rruFfVJL9nuqyRhIjkICDItCctwUwSG4mAY2C
- tL838uEy5628mQIBdtxWKoaqMMXQgQ00zPvE2hm4kQG47hZ4fWkCL3cgS/cH9Tk1g28=
-X-Gm-Gg: ASbGncur+8vi3XPI2wkmgshFQD3wrbYMV4ahfqPceFNYS1pMiOVIQyy+lVBMN/5zpqi
- dD5ZoOg9fWOxKqdB43XVrKRwQDzNnzZ+8Nj9oJowhoExSWrfwPVG2pZ0rmN6A+a2G0XAvgcJDo4
- oV0TP676y93Xb18pxhX4hnnfB266JlcMDaFDvN94k7FNAt37ikaoJUxfjsUIBqCav1VDIgmim2e
- ipTfoL6adp1VICkxoZoXe0jqB5rh5gRsCC/cwwjyTZKAAMIh+Xobbm8M+h/B6D2cDsC5EpaCV+5
- irVUrtdn63od0ehmeR56nItZSOIGQe0tJ/UhsvnSYXo0Gd5iUb/AIA9ao5Ok3PvUFnUzFDJ2EDG
- 4mYaP0FlCRw==
-X-Google-Smtp-Source: AGHT+IF/myRsOS+eLNKETDu0Bi210UqEXfRtdqZluul5YVruWX7HiGIvOCDrppc8ez+2aLHHwXGmvg==
-X-Received: by 2002:a05:6000:250f:b0:3b7:9c79:32bb with SMTP id
- ffacd0b85a97d-3d1e01d54b6mr10385379f8f.44.1756809612792; 
- Tue, 02 Sep 2025 03:40:12 -0700 (PDT)
-Received: from localhost ([177.94.120.255]) by smtp.gmail.com with ESMTPSA id
- 00721157ae682-723a82d58c3sm4222097b3.7.2025.09.02.03.40.11
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 02 Sep 2025 03:40:12 -0700 (PDT)
-Mime-Version: 1.0
-Date: Tue, 02 Sep 2025 07:40:06 -0300
-Message-Id: <DCI913J2P8P6.2PAJP94GAZKSY@suse.com>
-To: "Andrea Cervesato" <andrea.cervesato@suse.com>, "Cyril Hrubis"
- <chrubis@suse.cz>, <ltp@lists.linux.it>
-X-Mailer: aerc 0.20.1-125-gabe5bb884bbc-dirty
-References: <aLVzVyaVhr4IHkyd@yuki.lan>
- <69ec2719-0603-4cf2-8774-9f3ceb70a3ca@suse.com>
-In-Reply-To: <69ec2719-0603-4cf2-8774-9f3ceb70a3ca@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2CBD020023F
+ for <ltp@lists.linux.it>; Tue,  2 Sep 2025 12:44:06 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 878CF2118F;
+ Tue,  2 Sep 2025 10:44:05 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3FD1613888;
+ Tue,  2 Sep 2025 10:44:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id QLleC3XKtmiDJQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 02 Sep 2025 10:44:05 +0000
+Date: Tue, 2 Sep 2025 12:44:03 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20250902104403.GA189155@pevik>
+References: <20250901074758.5094-1-wegao@suse.com>
+ <20250902031236.5719-1-wegao@suse.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20250902031236.5719-1-wegao@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 878CF2118F
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP Release preparations
+Subject: Re: [LTP] [PATCH v2] ioctl_loop01.c: Use proper device for
+ partitioning
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,48 +74,131 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
-Reply-To: =?utf-8?b?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
-Cc: "Ricardo B. Marliere" <rbm@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue Sep 2, 2025 at 7:23 AM -03, Andrea Cervesato wrote:
-> Hi!
->
-> On 9/1/25 12:20 PM, Cyril Hrubis wrote:
->> Hi!
->> It's about the time we start to prepare for the September release. As
->> usuall I will go over the patches in the patchwork in the next week or
->> two. If there is something that you think should be part of the release,
->> please point it out so that I can have a look ASAP.
->>
-> Thanks. It would be nice to merge these patches before release:
->
-> - doc testing in CI: 
-> https://patchwork.ozlabs.org/project/ltp/list/?series=454189
-> - open_tree_attr() coverage: 
-> https://patchwork.ozlabs.org/project/ltp/list/?series=471820
->
-> Also @Ricardo has many patches sent which are waiting to be merged and 
-> some of them are interesting.
+Hi Wei,
 
-There seems to be a glitch in patchwork... This submitter is not me:
+> This is same patch used on ioctl09,the page cache of loop0 can cache old
+> version of the partition table which is then used by the partitioning
+> code. Fix the problem by calling parted against the loop device directly.
 
-https://patchwork.ozlabs.org/project/ltp/list/?submitter=77627
+LGTM, thanks!
 
-I only have pending lchown conversion and pthread_rwlock_rdlock fix:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-https://patchwork.ozlabs.org/project/ltp/list/?series=471445
-https://patchwork.ozlabs.org/project/ltp/list/?series=457701
+> Link: https://lore.kernel.org/ltp/20250829141932.31997-1-jack@suse.cz/
+very nit: Link in kernel commits (and I use this approach) is used for the link
+to the patch which was merged (kernel maintainer or here LTP maintainer adds
+it).  Linking everything else I would use [1].
 
-Thanks !
+> Signed-off-by: Wei Gao <wegao@suse.com>
+> ---
+>  .../kernel/syscalls/ioctl/ioctl_loop01.c      | 26 +++++--------------
+>  1 file changed, 7 insertions(+), 19 deletions(-)
 
->
-> - Andrea
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+> index c9137bf1e..695aaeb0b 100644
+> --- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+> @@ -78,7 +78,13 @@ static void check_loop_value(int set_flag, int get_flag, int autoclear_field)
 
+>  static void verify_ioctl_loop(void)
+>  {
+> +	const char *const cmd_parted[] = {"parted", "-s", dev_path, "mklabel", "msdos", "mkpart",
+> +					"primary", "ext4", "1M", "10M", NULL};
+> +
+> +	tst_fill_file("test.img", 0, 1024 * 1024, 10);
+>  	tst_attach_device(dev_path, "test.img");
+> +	SAFE_CMD(cmd_parted, NULL, NULL);
+
+I'll would probably keep the previous approach where the rest of the testing is
+now quited:
+
+Now:
+...
+tst_cmd.c:65: TCONF: Couldn't find 'parted' in $PATH at tst_cmd.c:65
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+
+Previously:
+ioctl_loop01.c:116: TCONF: parted binary not installed or failed
+tst_buffers.c:57: TINFO: Test is using guarded buffers
+ioctl_loop01.c:84: TPASS: /sys/block/loop2/loop/partscan = 0
+ioctl_loop01.c:85: TPASS: /sys/block/loop2/loop/autoclear = 0
+ioctl_loop01.c:86: TPASS: /sys/block/loop2/loop/backing_file = '/tmp/LTP_ioco0FWzP/test.img'
+ioctl_loop01.c:56: TPASS: get expected lo_flag 12
+ioctl_loop01.c:58: TPASS: /sys/block/loop2/loop/partscan = 1
+ioctl_loop01.c:59: TPASS: /sys/block/loop2/loop/autoclear = 1
+ioctl_loop01.c:62: TINFO: Current environment doesn't have parted disk, skip it
+ioctl_loop01.c:90: TINFO: Test flag can be clear
+ioctl_loop01.c:56: TPASS: get expected lo_flag 8
+ioctl_loop01.c:58: TPASS: /sys/block/loop2/loop/partscan = 1
+ioctl_loop01.c:59: TPASS: /sys/block/loop2/loop/autoclear = 0
+ioctl_loop01.c:62: TINFO: Current environment doesn't have parted disk, skip it
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  1
+warnings 0
+
+My point was to add TST_CMD_TCONF_ON_MISSING to the previous call. But I was
+wrong, that would work the same (skip whole testing on missing 'parted').
+
+...
+>  static void setup(void)
+>  {
+> -	int ret;
+> -	const char *const cmd_parted[] = {"parted", "-s", "test.img", "mklabel", "msdos", "mkpart",
+> -	                                  "primary", "ext4", "1M", "10M", NULL};
+> -
+>  	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
+>  	if (dev_num < 0)
+>  		tst_brk(TBROK, "Failed to find free loop device");
+
+> -	tst_fill_file("test.img", 0, 1024 * 1024, 10);
+> -
+> -	ret = tst_cmd(cmd_parted, NULL, NULL, TST_CMD_PASS_RETVAL);
+> -	switch (ret) {
+> -	case 0:
+> -		parted_sup = 1;
+> -	break;
+> -	case 255:
+> -		tst_res(TCONF, "parted binary not installed or failed");
+> -	break;
+> -	default:
+> -		tst_res(TCONF, "parted exited with %i", ret);
+> -	break;
+
+Therefore either keeping this, or use if/else equivalent (IMHO more readable):
+
+	ret = tst_cmd(cmd_parted, NULL, NULL, TST_CMD_PASS_RETVAL);
+	if (!ret)
+		parted_sup = 1;
+	else if (ret == 255)
+		tst_res(TCONF, "parted binary not installed or failed");
+	else
+		tst_res(TCONF, "parted exited with %i", ret);
+
+Kind regards,
+Petr
+
+> -	}
+> -
+>  	sprintf(partscan_path, "/sys/block/loop%d/loop/partscan", dev_num);
+>  	sprintf(autoclear_path, "/sys/block/loop%d/loop/autoclear", dev_num);
+>  	sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", dev_num);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
