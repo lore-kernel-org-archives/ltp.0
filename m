@@ -4,90 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51E4FCA1002
-	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 03:13:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1756782779; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=Xus+ynE05RPgLIyIIpYuh8Cjz/mOt0mvQp1ATFg/+wQ=;
- b=n9j03jSfTDxhOOngpjoP1SqgqJ+lu0f8Mce28o22hMfUSr48ZiDX8EJvXgOxEMkOYI0w0
- XTxrAb9QG46V2zCw1zD6eDGBjjy/5rXstBvPeHGISwL4D77qyzEjk6p1WKhUqBFOO5MKA+P
- btgygGTv3lcw+ZNLGW0z3Yus8UaiMOY=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87D0CCA100C
+	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 08:30:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A55B33CD1FD
-	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 05:12:59 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 6A4E13CD3B2
+	for <ltp@archiver.kernel.org>; Tue,  2 Sep 2025 10:29:59 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F280B3CD1F2
- for <ltp@lists.linux.it>; Tue,  2 Sep 2025 05:12:39 +0200 (CEST)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
- [IPv6:2a00:1450:4864:20::62a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B610A3CD2C8
+ for <ltp@lists.linux.it>; Tue,  2 Sep 2025 10:29:42 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0CC5E1000249
- for <ltp@lists.linux.it>; Tue,  2 Sep 2025 05:12:39 +0200 (CEST)
-Received: by mail-ej1-x62a.google.com with SMTP id
- a640c23a62f3a-afebb6d4093so809539866b.1
- for <ltp@lists.linux.it>; Mon, 01 Sep 2025 20:12:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1756782758; x=1757387558; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=Q25NssvAfdbOzusUS+A6i6UcbUIhUkYYNC5KWqVO+8A=;
- b=GT0n5wDJWPw7kphlZIsmuWB3k4hg3pzDY8+74gASESwuOrZzFSYcca4oIsIvkEsbYs
- +fum4n20gUYrvAjcBn8sWUd2P1QRak8by6DBrNbq1IP4btn6pkGMOpvh/OsP2lGIJwKm
- h2/59lw3tvNIOCHwt05yEySVkOpGzYqgLXVMKbXkgNsDGGISdefosQK9m0VczzMoZZKl
- n13MNiX9SpEx5DRlpFzU6v20FTFQSBDd2R5ERDWkKFfmQndYWfPcaTog/PeaqPtaJmmG
- uJ/dc3Fhic0RPGHu7fobGxX4Lk5UbHvqlxDtzgASIUJbm1HnInZz66Yf6vo/86XxD1RD
- 8QuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1756782758; x=1757387558;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=Q25NssvAfdbOzusUS+A6i6UcbUIhUkYYNC5KWqVO+8A=;
- b=l6GijFNJ8X+QV7zlHXO3h68epZTDWYcOivLVB44IgTu0DcvSN8QejJJmtzJT7XAkp0
- 4/3Q3BycKZrtH8rK4BE5DxfwKEcyQOv8a6lddvz14siQi6mYap7JbwgbvM9IwShDV6+u
- hlVps8GbF8hVXIp3XURGgOjH2lToqaj6+HjCKbrR/Vz4W+zQ8sHHfbH+7w3D+zUN0mSy
- UCBZGrG7VrL+73f99dTMFsyy9D0xOboLQnWhvFWN87cbt1KSC8Etb9QHM6kgO9E45J0S
- t0rtmQYrKjCohXa+9TCh+J49BnYmYOJ3fESKCi6h1XTUrKjldC6gIzEPezCj4xRGorIK
- c4bQ==
-X-Gm-Message-State: AOJu0YzyqFktt0PfPiLxy6GwxgMkk8HGCNG9itwjVWZb1lBltQR/DwnR
- VowwzGIO2zvFp5uKAMv/mlCXvp5L1eUGSbgRkouE+tEOtLna+3zu3+4Y/eORwAZq6wWWOqW1Sb9
- oLkg=
-X-Gm-Gg: ASbGncuhTLfxl7rnYPYNJiTh9METbUEm7ebAhVVZQTpNzOLaSmaUWwOYI7I6Wo3opfo
- 6YFoavft0270AiqInLKf0nGdCp4eLe4tNCIBNCx5CG5galhulmtJeLFE27IQUrvLzg3Am4rfKvN
- pv0RVC5pmKchPEboqc65+x/8C1Vib1R/r/oEBZp4lkMupMBsLGbzDcQ7v5cS7dAWC0eEOEi7oqj
- YNpnWldUtC00VmbW/MYEcvXydsduRQ+Q846jykW2f1mVDzVxk3bzACd4mcUzN/X7SycGRACshku
- yDwAWp+RAnI4GWCOigmxNjBPrtzmgO908Wk8YLhIl5hBM+9UYutJda+dTuXqEbWhx8XnaxBY4D3
- SKFbfKJDYKoZPsVM77CnGZIWkoTlvb/Ql2LLmWffpRpfdjfbH2nC84A==
-X-Google-Smtp-Source: AGHT+IF1maO1ifpBwJz2m3EjYJBqCw7zxNv4y18fC7P6b1b3E4UYxsENZhcxEtieqjlx0bx7OqLfew==
-X-Received: by 2002:a17:906:9f85:b0:afc:cbf4:ca7d with SMTP id
- a640c23a62f3a-b01d979fe6emr1109648166b.54.1756782758256; 
- Mon, 01 Sep 2025 20:12:38 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- 4fb4d7f45d1cf-61cfc4ea764sm8467074a12.40.2025.09.01.20.12.37
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 01 Sep 2025 20:12:37 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue,  2 Sep 2025 03:12:21 +0000
-Message-ID: <20250902031236.5719-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250901074758.5094-1-wegao@suse.com>
-References: <20250901074758.5094-1-wegao@suse.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 34AFB1000350
+ for <ltp@lists.linux.it>; Tue,  2 Sep 2025 10:29:40 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6AE941F454;
+ Tue,  2 Sep 2025 08:29:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1756801780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=bZBf4Dy/wp2oKRIlhU7td9NTpFrL3rjTVhLy0cVJrzQ=;
+ b=qbr8XLxcCuYZp8OCRnsdMgUybdEJCP0RtXsPWZEjK/z/ttQQ0qd9dXwcHGSeQ9dugUN8QE
+ 9m5EUrTaDjSKTPC6qTLxtXwechGkhKkaYtNYBk998/9BP4zBwdKEkRu0gmJ0uW6/O8GRuG
+ VqyyNYUcy9/emelW1ZXQJD8ab4LxYck=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1756801780;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=bZBf4Dy/wp2oKRIlhU7td9NTpFrL3rjTVhLy0cVJrzQ=;
+ b=3p4cmSYYs1uaO+niKghJ+5YyEeW0sOBwP9Vssd2+iXC3Eox+CP+gABmbRF5djGsMdPhICX
+ BGYJK7UnXOaubMCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1756801780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=bZBf4Dy/wp2oKRIlhU7td9NTpFrL3rjTVhLy0cVJrzQ=;
+ b=qbr8XLxcCuYZp8OCRnsdMgUybdEJCP0RtXsPWZEjK/z/ttQQ0qd9dXwcHGSeQ9dugUN8QE
+ 9m5EUrTaDjSKTPC6qTLxtXwechGkhKkaYtNYBk998/9BP4zBwdKEkRu0gmJ0uW6/O8GRuG
+ VqyyNYUcy9/emelW1ZXQJD8ab4LxYck=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1756801780;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=bZBf4Dy/wp2oKRIlhU7td9NTpFrL3rjTVhLy0cVJrzQ=;
+ b=3p4cmSYYs1uaO+niKghJ+5YyEeW0sOBwP9Vssd2+iXC3Eox+CP+gABmbRF5djGsMdPhICX
+ BGYJK7UnXOaubMCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1A27E13888;
+ Tue,  2 Sep 2025 08:29:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id WGSjNfOqtmiDdwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 02 Sep 2025 08:29:39 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue, 02 Sep 2025 10:29:35 +0200
+Message-Id: <20250902-open_tree_attr-v2-0-b23d2585986d@suse.com>
 MIME-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAO+qtmgC/3XMQQ7CIBSE4as0by0GXkVrV97DNA3i1LKwNICNp
+ uHuYvcu/0nmWykiOERqq5UCFhedn0rwriI7mukB4e6liSVr2XAj/IypTwHoTUpBHG4MC306WmW
+ pnOaAwb038NqVHl1MPnw2f1G/9S+1KCHFUNdnI6EVmC/xFbG3/kldzvkL/IblO6sAAAA=
+X-Change-ID: 20250828-open_tree_attr-4b2ece576c1c
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1756801779; l=996;
+ i=andrea.cervesato@suse.com; s=20240812; h=from:subject:message-id;
+ bh=FeQcaiWcvPHQn3fuA1EMcdGLN1Vu/BTUWS3keAv8K9E=;
+ b=U/XHSlO9ATmj31PCMbT7kIxSz6qZv7+7R9Cb3GsyYWR7YfzFlLzwnPfzaJV9FjfD9zNmOO7BB
+ OiZkAGyU1xAAHfARAOHdF8/QCVNc3A8WvtIxJLH4kQcONH/1kmi7Pej
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=RG/nLJ5snb1tLKGwSORQXBJ5XA4juT0WF2Pc/lq9meo=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
+ suse.com:mid]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] ioctl_loop01.c: Use proper device for partitioning
+Subject: [LTP] [PATCH v2 0/2] open_tree_attr syscall coverage
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,80 +113,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: Jan Kara <jack@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This is same patch used on ioctl09,the page cache of loop0 can cache old
-version of the partition table which is then used by the partitioning
-code. Fix the problem by calling parted against the loop device directly.
+open_tree_attr has been added in kernel 6.15 in the following commit:
+https://lore.kernel.org/all/20250128-work-mnt_idmap-update-v2-v1-3-c25feb0d2eb3@kernel.org/
 
-Link: https://lore.kernel.org/ltp/20250829141932.31997-1-jack@suse.cz/
-Signed-off-by: Wei Gao <wegao@suse.com>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- .../kernel/syscalls/ioctl/ioctl_loop01.c      | 26 +++++--------------
- 1 file changed, 7 insertions(+), 19 deletions(-)
+Changes in v2:
+- close FD after opening it with open_tree()
+- revert style edit in setup()
+- use TST_EXP_FD_SILENT()
+- Link to v1: https://lore.kernel.org/r/20250828-open_tree_attr-v1-0-f339a0e51e22@suse.com
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-index c9137bf1e..695aaeb0b 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-@@ -78,7 +78,13 @@ static void check_loop_value(int set_flag, int get_flag, int autoclear_field)
- 
- static void verify_ioctl_loop(void)
- {
-+	const char *const cmd_parted[] = {"parted", "-s", dev_path, "mklabel", "msdos", "mkpart",
-+					"primary", "ext4", "1M", "10M", NULL};
-+
-+	tst_fill_file("test.img", 0, 1024 * 1024, 10);
- 	tst_attach_device(dev_path, "test.img");
-+	SAFE_CMD(cmd_parted, NULL, NULL);
-+
- 	attach_flag = 1;
- 
- 	TST_ASSERT_INT(partscan_path, 0);
-@@ -92,34 +98,16 @@ static void verify_ioctl_loop(void)
- 
- 	tst_detach_device_by_fd(dev_path, dev_fd);
- 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+
- 	attach_flag = 0;
- }
- 
- static void setup(void)
- {
--	int ret;
--	const char *const cmd_parted[] = {"parted", "-s", "test.img", "mklabel", "msdos", "mkpart",
--	                                  "primary", "ext4", "1M", "10M", NULL};
--
- 	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
- 	if (dev_num < 0)
- 		tst_brk(TBROK, "Failed to find free loop device");
- 
--	tst_fill_file("test.img", 0, 1024 * 1024, 10);
--
--	ret = tst_cmd(cmd_parted, NULL, NULL, TST_CMD_PASS_RETVAL);
--	switch (ret) {
--	case 0:
--		parted_sup = 1;
--	break;
--	case 255:
--		tst_res(TCONF, "parted binary not installed or failed");
--	break;
--	default:
--		tst_res(TCONF, "parted exited with %i", ret);
--	break;
--	}
--
- 	sprintf(partscan_path, "/sys/block/loop%d/loop/partscan", dev_num);
- 	sprintf(autoclear_path, "/sys/block/loop%d/loop/autoclear", dev_num);
- 	sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", dev_num);
+---
+Andrea Cervesato (2):
+      Add open_tree_attr fallback
+      mount_setattr01: add open_tree_attr variant
+
+ configure.ac                                       |  1 +
+ include/lapi/fsmount.h                             |  8 +++
+ .../syscalls/mount_setattr/mount_setattr01.c       | 68 ++++++++++++++++------
+ 3 files changed, 60 insertions(+), 17 deletions(-)
+---
+base-commit: 9691c4b2bea4f772d61ca9e9a93d2087c88f6040
+change-id: 20250828-open_tree_attr-4b2ece576c1c
+
+Best regards,
 -- 
-2.51.0
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
