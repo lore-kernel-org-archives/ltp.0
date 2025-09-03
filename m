@@ -4,94 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81537CA1009
-	for <ltp@archiver.kernel.org>; Wed,  3 Sep 2025 13:20:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DC40CA0FF2
+	for <ltp@archiver.kernel.org>; Wed,  3 Sep 2025 13:20:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B2F793CD3E9
-	for <ltp@archiver.kernel.org>; Wed,  3 Sep 2025 15:20:01 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 39BE73CD3E3
+	for <ltp@archiver.kernel.org>; Wed,  3 Sep 2025 15:20:47 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6B0EA3CCE5E
- for <ltp@lists.linux.it>; Wed,  3 Sep 2025 15:19:46 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 61D4B3CD3C3
+ for <ltp@lists.linux.it>; Wed,  3 Sep 2025 15:20:32 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 96589140097F
- for <ltp@lists.linux.it>; Wed,  3 Sep 2025 15:19:39 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0FAB720092C
+ for <ltp@lists.linux.it>; Wed,  3 Sep 2025 15:20:31 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3BFFB1F38A;
- Wed,  3 Sep 2025 13:19:38 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6A4F41F453;
+ Wed,  3 Sep 2025 13:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1756905578; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1756905631; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=nCCKchFqSF1K11fJ7OWm2pZT2JgSb8cQZLmdcq5FGDg=;
- b=2n2Hky2CaNcvMIqXV4zuKLbCBk4UfcnS9rL+LhXSMbqQQfGaK8sxIWTNC50WZGqkKaRZD5
- nEEdDsLRZ+blscQTGVwQNqqXH4iDsk6qwAtZb82GWEVyva5nYkJ7NBg9CgyqBqjSmOyfNM
- 4SXFdB8SLzM/pFnQ52QJ4jdUSgQ4FwI=
+ bh=iSnzZB56ET+28pCkhoYVKym/Fx5MZ7C2LM1lUFJ04Ec=;
+ b=f1GobV6gcbygbg2Ho0Shz6AEAyS0hpovQkSpXfF0+PQdm0JQaJBfgn2MzyeP7uNP7JK7pL
+ 8839aoNNx3Qm3FvV43+HSON2kaT3sIWjbrhdQrEn0P9MAUfJgTwMqAirlcX/NJeswqhyrE
+ pyHhN2J1CZ9KHhMSVBLDOVEWoEC/esY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1756905578;
+ s=susede2_ed25519; t=1756905631;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=nCCKchFqSF1K11fJ7OWm2pZT2JgSb8cQZLmdcq5FGDg=;
- b=uAxkR8yZ5z+DRoo+R/3PjUOJCTkS1JCktKT6z+VVDTXIeZlqYnALS7RjSFSV7XlqJ+9LKc
- 3SfluJJOYP15J1Cw==
+ bh=iSnzZB56ET+28pCkhoYVKym/Fx5MZ7C2LM1lUFJ04Ec=;
+ b=DIEJ+SBy1wL7s+5dUfRFoGNCg9QopZrVJZriGohJsApyyVIv65mjvM/7E71ZbDuZi3qwlI
+ Ogt7oaqesx7c0FAA==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dHWndeVs;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=bQKvtb51
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1756905578; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1756905630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=nCCKchFqSF1K11fJ7OWm2pZT2JgSb8cQZLmdcq5FGDg=;
- b=2n2Hky2CaNcvMIqXV4zuKLbCBk4UfcnS9rL+LhXSMbqQQfGaK8sxIWTNC50WZGqkKaRZD5
- nEEdDsLRZ+blscQTGVwQNqqXH4iDsk6qwAtZb82GWEVyva5nYkJ7NBg9CgyqBqjSmOyfNM
- 4SXFdB8SLzM/pFnQ52QJ4jdUSgQ4FwI=
+ bh=iSnzZB56ET+28pCkhoYVKym/Fx5MZ7C2LM1lUFJ04Ec=;
+ b=dHWndeVsdonJm8eGbPnJo4IK3szqTOIJniJbEub6xPDa3QFYTvpI0M/d59hGnpGAEwpngG
+ tphuErH5oNA85xbBelnGfmb78ac4p7iA8Q3Qj2X9OmcKMU8nGoRPyci8LC1BRgU9woc1cz
+ 5b2+q+4W7jAGI3gduDtLpUiDqi9yJKI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1756905578;
+ s=susede2_ed25519; t=1756905630;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=nCCKchFqSF1K11fJ7OWm2pZT2JgSb8cQZLmdcq5FGDg=;
- b=uAxkR8yZ5z+DRoo+R/3PjUOJCTkS1JCktKT6z+VVDTXIeZlqYnALS7RjSFSV7XlqJ+9LKc
- 3SfluJJOYP15J1Cw==
+ bh=iSnzZB56ET+28pCkhoYVKym/Fx5MZ7C2LM1lUFJ04Ec=;
+ b=bQKvtb51xYSJ9/I3mdIwi+7hAQziAAzopvRhuiAIF9po1J/vnzBCiuha6omAnhDbeABA+J
+ ScfDKKEn8IiYOHBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 29A1C13888;
- Wed,  3 Sep 2025 13:19:38 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5BAAE13888;
+ Wed,  3 Sep 2025 13:20:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ECOoCGpAuGhGPwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 03 Sep 2025 13:19:38 +0000
-Date: Wed, 3 Sep 2025 15:20:15 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 659yFZ5AuGiRPwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 03 Sep 2025 13:20:30 +0000
+Date: Wed, 3 Sep 2025 15:21:07 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <aLhAj_-gzjmzvOoX@yuki.lan>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aLhAwykZPUXnH-u7@yuki.lan>
 References: <aLVzVyaVhr4IHkyd@yuki.lan>
- <f014f48a-294c-4205-b147-e20074a8da48@suse.com>
- <aLgxmUJ7e05X1seP@yuki.lan>
+ <20250903131815.GA310083@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <aLgxmUJ7e05X1seP@yuki.lan>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20250903131815.GA310083@pevik>
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+ TO_DN_SOME(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: 6A4F41F453
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] LTP Release preparations
 X-BeenThere: ltp@lists.linux.it
@@ -112,69 +118,15 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > After an analysis we are now sure that it's not a product bug but a test 
-> > issue. There might be a need to fallback the patch if we can't fix the 
-> > test before release. @Li WDYT?
+> > It's about the time we start to prepare for the September release. As
+> > usuall I will go over the patches in the patchwork in the next week or
+> > two. If there is something that you think should be part of the release,
+> > please point it out so that I can have a look ASAP.
 > 
-> Try this:
-> 
-> diff --git a/testcases/realtime/func/sched_football/sched_football.c b/testcases/realtime/func/sched_football/sched_football.c
-> index 0617bdb87..0d64210b0 100644
-> --- a/testcases/realtime/func/sched_football/sched_football.c
-> +++ b/testcases/realtime/func/sched_football/sched_football.c
-> @@ -115,8 +115,8 @@ void referee(int game_length)
->         now = start;
->  
->         /* Start the game! */
-> -       tst_atomic_store(0, &the_ball);
->         pthread_barrier_wait(&start_barrier);
-> +       tst_atomic_store(0, &the_ball);
->         atrace_marker_write("sched_football", "Game_started!");
-> 
-> 
-> We have to be sure that the defense has started before we clear the
-> ball. Previously we had the loop that waited for the players to be ready
-> before we called referee() function so all the players were ready when
-> we cleared it.
+> Cyril, I'd like to contribute 2 IMA fixes. Hopefully I'll send the patch this
+> week on early next week.
 
-Uff and we have to get the final ball position before we stop the
-threads as well, otherwise there is always chance, that we may end up
-moving the ball right after the high priority defence threads has been
-stopped:
-
-diff --git a/testcases/realtime/func/sched_football/sched_football.c b/testcases/realtime/func/sched_football/sched_football.c
-index 0617bdb87..54317bed9 100644
---- a/testcases/realtime/func/sched_football/sched_football.c
-+++ b/testcases/realtime/func/sched_football/sched_football.c
-@@ -115,8 +115,8 @@ void referee(int game_length)
-        now = start;
-
-        /* Start the game! */
--       tst_atomic_store(0, &the_ball);
-        pthread_barrier_wait(&start_barrier);
-+       tst_atomic_store(0, &the_ball);
-        atrace_marker_write("sched_football", "Game_started!");
-
-        /* Watch the game */
-@@ -125,14 +125,14 @@ void referee(int game_length)
-                gettimeofday(&now, NULL);
-        }
-
--       /* Stop the game! */
--       tst_atomic_store(1, &game_over);
--       atrace_marker_write("sched_football", "Game_Over!");
--
-        /* Blow the whistle */
-        final_ball = tst_atomic_load(&the_ball);
-        tst_res(TINFO, "Final ball position: %d", final_ball);
-
-+       /* Stop the game! */
-+       tst_atomic_store(1, &game_over);
-+       atrace_marker_write("sched_football", "Game_Over!");
-+
-        TST_EXP_EXPR(final_ball == 0);
- }
-
+Ack, that should be doable.
 
 -- 
 Cyril Hrubis
