@@ -4,99 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71A94CA1015
-	for <ltp@archiver.kernel.org>; Thu,  4 Sep 2025 06:32:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 516F5CA1012
+	for <ltp@archiver.kernel.org>; Thu,  4 Sep 2025 06:41:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1756967569; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=RKt0v3ptGzG5fYIxuO2rzMERQQqFWwnAgrwZI6fITx0=;
- b=eS3Zt+nWubLUas48FyRxkIQMYJ6oC0vM31brBM3YgwtJgmfPP2y5mSyGs9DAKFD5xH0s1
- 6/HjJfMHlBqUvTIzURSKd/Ysq8tvzy/iuPziLYpiWpXKMTOu7eVF8aY/OVEPlC1FQ7xNu8g
- nxGYiQJecMpFC/5qk5+Rezk/MVSJLqc=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1756968116; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=/TBmcLyRdhr7XBlUeMibVrdojtGnJUDPL/l9srKDdlo=;
+ b=lM5K+ZYSrr1njsGzifNo1nL8zGav1qeEnZJ9XNaRjcTNjuCRrnKYDGAk+Imbhck8OEqjm
+ Vo2Gl9Ga8PhIXQkP3bLFAAW3DHeaUN1qk4flRx5W7iD2mg/Frz2lOzVLhfZZf0UmVMc237B
+ WXV9bKDaDEcuM8t8sZmu9v2XomjgHk0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D3B13CD3ED
-	for <ltp@archiver.kernel.org>; Thu,  4 Sep 2025 08:32:49 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 9CDF43CD14A
+	for <ltp@archiver.kernel.org>; Thu,  4 Sep 2025 08:41:56 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 281E23CA14B
- for <ltp@lists.linux.it>; Thu,  4 Sep 2025 08:32:27 +0200 (CEST)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4591E3CB5B0
+ for <ltp@lists.linux.it>; Thu,  4 Sep 2025 08:41:36 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7801F60008A
- for <ltp@lists.linux.it>; Thu,  4 Sep 2025 08:32:26 +0200 (CEST)
-Received: by mail-ej1-x635.google.com with SMTP id
- a640c23a62f3a-b02c719a117so118865466b.1
- for <ltp@lists.linux.it>; Wed, 03 Sep 2025 23:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1756967546; x=1757572346; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=eWPHi+lyQeTtidbbSjP4twQYohfx/pM5h3tyBKwjDeQ=;
- b=dpCi04K5pFRiLcy1azPgHTkhIW0g0suznZ4yu9LZr30ew9/aT/0gcpqPU177txsFd+
- zgLxkiOtYZuTG/7f4uPv+WathGyGk1FKqLD6e5gbceWljU+GRXyamqwJRS0Qarq9LbzK
- LZmQlesL4OpZIVF/nJPr6DCIgwWrY8twoLPNnXBF4yXp7+BjWVR85PHXbrHEdq1oRm9t
- bFse+djciP/4QCW2kDZzb3bPKYq5zjXo1eqYXv4YHcEzG1fmo3L8nDdw/v9zVHtHv32c
- WQTDD6fKoL9RbQadxFsdBKs+42qwKW8xyw5y5tNb0jUZwDTmYHphGkejbzrV5Sz3BG7S
- 8yow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1756967546; x=1757572346;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=eWPHi+lyQeTtidbbSjP4twQYohfx/pM5h3tyBKwjDeQ=;
- b=cGUhTedvcI9TrIlEphNCRJdjEEHPZkwaQGazhyL/zPbJaoCtmO0ww8fkEn/xpw/o7R
- wklo7pJBzYdRjq5sxOEX9vsNMH6AtVBw1vdM7lpGwrRy8Gq9UzRLu0Z5cJ5h4W/JyT0w
- /M5SIBpq7byrzkkaLo+LsD7muO/8wonWIyEEJJ6Dh182XDc2yDR7bMNmEDBIDdsWqUQt
- LJCuvUS52p3CAKCkVfiqqqMovAUPhtARDtyHI4MR+SIiW7M71xuWWpt7F42V71fZrbtz
- 04XH2V0ZHmkczfgufS5Nb2a769f6SRyYlQCckNdoeAwAQY0WYXR+DxFFEXLVafLaVeqv
- x/SQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVPL9r7IYB93FsYSsfqJLDlWp1se5ycBwXmhWi2k7FOZ2x6fFk4MNMSH0hZQ+bPfN8GFpc=@lists.linux.it
-X-Gm-Message-State: AOJu0Yww9KTZ+b4MTBS7OTjnC8K7xnQ0YgWfgaXa9lOojMo66Dd3e+J8
- E9UNyaxAN4V/CDTZpN0G1vUndiRnVdsiKPaDMnl7cYnBuht7V7/zlgp7AXFz6xhvXdY=
-X-Gm-Gg: ASbGnct7dEHf1JSBTz5qFGTWsgN6PXIlTSYYQqeOjF5DqD+yCnbLieNRD9Da4DDuSQa
- zpzzNPNb5dU7CP/kfdEFZV9CqKXk6/QYocd5ebPwJNNDZqP8vCKINTfVzJphQeHVlsOySzwYFU9
- oYvzqe+TZCp1SZYZVaAKip6cDlAL+20cqt5WuM6x61HcJKGfvTaYWIfgmUaJJJJkmSB3U82iq2i
- b/bgOihOOMjnaZqIRDDQc5rmw+we5VMK/yhNls0vRzsNn9H7n23P5ReMoTNYq7fasJkzvzIdMyE
- UUFEV/pQov+sSJGBRisao4OSm25keFfzu+/e2209DvdyD3dQ/AGUYnl7XwvWpsSksM6QqYRa5a8
- XNur9J+mV1/pqB+mKDqcTx5AQr6i60ol533tTVYw3LxbnLUUtx3CwmNN3IC6a8dx4x1Z0NDLGMQ
- B6z56HEIgKjJj/XFCp
-X-Google-Smtp-Source: AGHT+IHcMSvqXRWHPueVeICHslJUviYsOywhDYwc2LetftVvvm/TQ0XK8qKiAfFFVEqpGJJhAdeVAg==
-X-Received: by 2002:a17:906:4fca:b0:b04:6546:347e with SMTP id
- a640c23a62f3a-b0465463a5bmr561040566b.51.1756967545783; 
- Wed, 03 Sep 2025 23:32:25 -0700 (PDT)
-Received: from ?IPV6:2a02:a31b:84a1:b780:5af0:a75d:357e:866e?
- ([2a02:a31b:84a1:b780:5af0:a75d:357e:866e])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-b04709b3effsm263979266b.5.2025.09.03.23.32.24
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 03 Sep 2025 23:32:25 -0700 (PDT)
-Message-ID: <a612977e-59b4-41f5-a7eb-8fed2bb86f3b@suse.com>
-Date: Thu, 4 Sep 2025 08:32:23 +0200
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 65CDF1A002DB
+ for <ltp@lists.linux.it>; Thu,  4 Sep 2025 08:41:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1756968093;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=xAAzf454nmJTCk+or6eCJakKQnZ2sK2TQ4l7UD7fC/U=;
+ b=EaZ2aWK5MAZyWH8PgjAcmUB/br3ixsXf16CtYJ/Lca/zGZ03LkrjyMwwii9nvQKjUjQ20O
+ rNs/NYKktADNlpQ8gSIFUsZJANr45T6cuOXvmghnIQ0/VvIk45ugNzTtoAsF/Ye9fH0Dyy
+ 0wZY7mmeZU6NOM2IVCVctCdICW7xqSo=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-304-i2n2XbLUMBSmL_V-HJp3sg-1; Thu,
+ 04 Sep 2025 02:41:31 -0400
+X-MC-Unique: i2n2XbLUMBSmL_V-HJp3sg-1
+X-Mimecast-MFC-AGG-ID: i2n2XbLUMBSmL_V-HJp3sg_1756968090
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 9C1D7195608B; Thu,  4 Sep 2025 06:41:30 +0000 (UTC)
+Received: from fedora-laptop-x1.redhat.com (unknown [10.72.112.183])
+ by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id 9EDEF180044F; Thu,  4 Sep 2025 06:41:27 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Thu,  4 Sep 2025 14:41:26 +0800
+Message-ID: <20250904064126.125661-1-liwang@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Li Wang <liwang@redhat.com>
-References: <aLVzVyaVhr4IHkyd@yuki.lan>
- <f014f48a-294c-4205-b147-e20074a8da48@suse.com> <aLgxmUJ7e05X1seP@yuki.lan>
- <aLhAj_-gzjmzvOoX@yuki.lan>
- <CAEemH2dzju5n1FZ8TyG0=YBJY-A80VD7Sv1PLJZuj_AYNERYvg@mail.gmail.com>
- <CAEemH2dPTgYX3LZ4Ux6YUZ3vuddNsOSoGw=eN-dD=-qOodkLzg@mail.gmail.com>
- <a991f7b9-0493-46e4-b0e2-a3ec284b3e13@suse.com>
- <CAEemH2cuVP5n0HuMQBZjXjyL0BLv4=2AfZU+8Y7DtMjRyPx0KA@mail.gmail.com>
-Content-Language: en-US
-In-Reply-To: <CAEemH2cuVP5n0HuMQBZjXjyL0BLv4=2AfZU+8Y7DtMjRyPx0KA@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: bo67Z5gb2b-T9ZY_wTjX2tyQlfeWZ8ngXJFQaOiNULM_1756968090
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP Release preparations
+Subject: [LTP] [PATCH] sched_football: synchronize with kickoff flag to
+ reduce skew
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,20 +80,143 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 9/4/25 8:29 AM, Li Wang wrote:
-> Yes, I will send a strengthened patch based on Cyril's method.
+Previously, thread synchronization in sched_football only relied on a
+thread_barrier. This ensured that all threads were created before the
+referee started the game, but did not fully prevent offense threads from
+getting a scheduling opportunity before defense threads were migrated,
+leading to occasional non-zero final ball positions on kvm or debug kernels.
 
-Thank you! Looking forward :)
+This patch introduces an explicit `kickoff_flag`:
 
-- Andrea
+* All player threads (offense, defense, fans) wait at the barrier and
+  then spin until the referee sets `kickoff_flag`. This reduces kernel
+  scheduling skew, as threads only proceed once the referee explicitly
+  signals the kickoff.
+
+* The referee now:
+  - Waits at the barrier.
+  - Clears the ball position.
+  - Sets `kickoff_flag` to start the ball.
+
+* Game termination is also slightly reordered (by Cyril):
+  - Final ball position is read before `game_over` is set,
+    avoiding a race where the ball could still move right after
+    defense threads stop.
+
+* Only test on RT-kernels.
+
+This makes startup sequencing more deterministic while still allowing
+some nondeterminism, which is intentional for testing scheduler
+behavior under load.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Cc: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ .../func/sched_football/sched_football.c      | 27 ++++++++++++++-----
+ 1 file changed, 21 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/realtime/func/sched_football/sched_football.c b/testcases/realtime/func/sched_football/sched_football.c
+index 0617bdb87..97ac9d413 100644
+--- a/testcases/realtime/func/sched_football/sched_football.c
++++ b/testcases/realtime/func/sched_football/sched_football.c
+@@ -44,6 +44,7 @@
+ static tst_atomic_t the_ball;
+ static int players_per_team = 0;
+ static int game_length = DEF_GAME_LENGTH;
++static tst_atomic_t kickoff_flag;
+ static tst_atomic_t game_over;
+ 
+ static char *str_game_length;
+@@ -55,6 +56,9 @@ void *thread_fan(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+ 	prctl(PR_SET_NAME, "crazy_fan", 0, 0, 0);
+ 	pthread_barrier_wait(&start_barrier);
++	while (!tst_atomic_load(&kickoff_flag))
++		;
++
+ 	/*occasionally wake up and run across the field */
+ 	while (!tst_atomic_load(&game_over)) {
+ 		struct timespec start, stop;
+@@ -80,6 +84,9 @@ void *thread_defense(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+ 	prctl(PR_SET_NAME, "defense", 0, 0, 0);
+ 	pthread_barrier_wait(&start_barrier);
++	while (!tst_atomic_load(&kickoff_flag))
++		;
++
+ 	/*keep the ball from being moved */
+ 	while (!tst_atomic_load(&game_over)) {
+ 	}
+@@ -92,6 +99,9 @@ void *thread_offense(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+ 	prctl(PR_SET_NAME, "offense", 0, 0, 0);
+ 	pthread_barrier_wait(&start_barrier);
++	while (!tst_atomic_load(&kickoff_flag))
++		;
++
+ 	while (!tst_atomic_load(&game_over)) {
+ 		tst_atomic_add_return(1, &the_ball); /* move the ball ahead one yard */
+ 	}
+@@ -115,9 +125,10 @@ void referee(int game_length)
+ 	now = start;
+ 
+ 	/* Start the game! */
+-	tst_atomic_store(0, &the_ball);
+-	pthread_barrier_wait(&start_barrier);
+ 	atrace_marker_write("sched_football", "Game_started!");
++	pthread_barrier_wait(&start_barrier);
++	tst_atomic_store(0, &the_ball);
++	tst_atomic_store(1, &kickoff_flag);
+ 
+ 	/* Watch the game */
+ 	while ((now.tv_sec - start.tv_sec) < game_length) {
+@@ -125,14 +136,14 @@ void referee(int game_length)
+ 		gettimeofday(&now, NULL);
+ 	}
+ 
+-	/* Stop the game! */
+-	tst_atomic_store(1, &game_over);
+-	atrace_marker_write("sched_football", "Game_Over!");
+-
+ 	/* Blow the whistle */
+ 	final_ball = tst_atomic_load(&the_ball);
+ 	tst_res(TINFO, "Final ball position: %d", final_ball);
+ 
++	/* Stop the game! */
++	tst_atomic_store(1, &game_over);
++	atrace_marker_write("sched_football", "Game_Over!");
++
+ 	TST_EXP_EXPR(final_ball == 0);
+ }
+ 
+@@ -154,6 +165,7 @@ static void do_test(void)
+ 	/* We're the ref, so set our priority right */
+ 	param.sched_priority = sched_get_priority_min(SCHED_FIFO) + 80;
+ 	sched_setscheduler(0, SCHED_FIFO, &param);
++	tst_atomic_store(0, &kickoff_flag);
+ 
+ 	/*
+ 	 * Start the offense
+@@ -186,6 +198,9 @@ static void do_test(void)
+ 
+ static void do_setup(void)
+ {
++	if (!tst_check_preempt_rt())
++		tst_brk(TCONF, "Test requires real-time kernel");
++
+ 	if (tst_parse_int(str_game_length, &game_length, 1, INT_MAX))
+ 		tst_brk(TBROK, "Invalid game length '%s'", str_game_length);
+ 
+-- 
+2.51.0
 
 
 -- 
