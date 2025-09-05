@@ -4,89 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0B6DCA1015
-	for <ltp@archiver.kernel.org>; Fri,  5 Sep 2025 08:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1757059969; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=i2/GnImdOYZpnNv/IBpf+jR84eoPwAUoJVUSbyXSGLI=;
- b=DB/qETV1yzILoLfhg8lwbhcxs9oTyx5vRY/MMOwoW3PGQ5HCk7MA49cGXwiP+zuctZOzT
- h7IbExRM7/6uDYGnjYJFW9YgpCbOa4YbbA0NkF/0Bc/KM6FvQvJHLg3yVFKGGvZ2yj2TNGf
- l8ek/XHuqpQVV3mmL1XNQTeD0l98WRM=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18166CA1015
+	for <ltp@archiver.kernel.org>; Fri,  5 Sep 2025 08:46:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5DAF73CD4DF
-	for <ltp@archiver.kernel.org>; Fri,  5 Sep 2025 10:12:49 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 387223CD4ED
+	for <ltp@archiver.kernel.org>; Fri,  5 Sep 2025 10:46:35 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5136E3CAC22
- for <ltp@lists.linux.it>; Fri,  5 Sep 2025 10:12:28 +0200 (CEST)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
- [IPv6:2a00:1450:4864:20::636])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 10FA43CD49F
+ for <ltp@lists.linux.it>; Fri,  5 Sep 2025 10:46:17 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BDB8B6009E6
- for <ltp@lists.linux.it>; Fri,  5 Sep 2025 10:12:27 +0200 (CEST)
-Received: by mail-ej1-x636.google.com with SMTP id
- a640c23a62f3a-b0473327e70so321153366b.3
- for <ltp@lists.linux.it>; Fri, 05 Sep 2025 01:12:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1757059947; x=1757664747; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=x6m83jcsEcmv/jrG/S3yC08WDOXh+CIrui99HH8+pwk=;
- b=GXtZ5vw99GHQooj++sbSV2wYDLZ18jQbUix57Cj7u0UBGg6Z2zgu714QJQu8u4ouTY
- YNb+AAiP1v1/HR+RgG42WgHOSmPwd/Q7RNCWRhmMEnW0syAMK2gFFFk2qpSwamvSX2Nz
- IrYmwjLuWUpJPfzyNqVdY6xWPbe0k3HaYmJBml+yi2iLwPpvIH8+Ea5SVR7FWALR4IWi
- JmLdWDIc8VABT8uWzKzr0UM5J5fu1JhhdXb9iyAq0oL9woxXWcM8Lok3pa+uadlZ7mQ2
- QD+FKiwjWie4Mv8i+T+65UUG5Tgp48h9q3tYmxVKPExMdqbFFWmA2WqQFdAtPgmAwv5H
- IqsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1757059947; x=1757664747;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=x6m83jcsEcmv/jrG/S3yC08WDOXh+CIrui99HH8+pwk=;
- b=d9jmNOs97OYgV34NsRS9BSB1C4E6+POmp35i/BQltv0TIC2EE/Ogn0uLpAHbfvnRmA
- nGpmT0vfLCwkridW5RrT1dcNOS4wT1t4Y+dtOu7WCE7UYCrzpifj8NrVoWvWnyzMnVsA
- +OPUztNOiAOx/N0Y2RoH/3OO7Yu0lPqpXcNJOfxTyhkFU+bhIcO3zl7JKrKevyJekwGm
- SQsBAbscKyZIiXfDW9Wj+enThu7BGqCFuw0dRRpbViLK9ZY7JNqd3SX04JS2iqhDF+nA
- zwnzSHQnKMp3PEVTL3EKOD2ILHb+x45sbyQYQw8ltsMO/rXsAoMJj1TxHJ2rOYKKBrX/
- EKRA==
-X-Gm-Message-State: AOJu0Yxyhd4EP32k2lCesFReheKoKRNwo12LK3KDHIqi8Q+XRq8f92JJ
- 9vbS87/RcbEt+H5igHwuRmtMt1mBS6kI6qY0F3vOY8P1oNxgVVWwA7SJMCZik6hU9TTPVhmmHQ5
- g+Wrk5g==
-X-Gm-Gg: ASbGnct1hau6c1CPvYlkeRH/+DtlQkAuRrxnbQ4v7+YU/9LWeGyGR+eNokB7us+WXC9
- UPD9cztfpZXJelEYGXghXLB+emmqdu9i3p4IpsGOkKjffMx/rkkZqSA1hx2QUfBpcZRqlgj/mVy
- iN0nNowwZZEGhl3bIm08VRsOoc+eUKU3b5f89tSqzO+SO1tQyO2zp5mI33hDmbTGPmDRQyugISO
- oBDpQohY38AXbxLOrPJ9TBMWhkCjbKoYkyk3ztXXOlF6+7BcI+1CPAD91lzHuz8HUOmXSb3fxWh
- OdxjVOF64CqJUc5ge/yjZe3aOoRXM/hvHaaL9bxkkH6Jquvs4qwiZvtAr7IgdkU+/L7PpHiKeHh
- IggL+M5iJi8IFOzr+1BAHhzoaYMdxQuz3kXX17yMcz5o=
-X-Google-Smtp-Source: AGHT+IF6EZwfjLF8FkT8LpfOAgrcN+RgTCa5IZU//OE/73N3Nj7ASVys34X2/1HqqgV4X11KwWGBSw==
-X-Received: by 2002:a17:907:9703:b0:b04:9acf:46cd with SMTP id
- a640c23a62f3a-b049acf49f5mr137875766b.42.1757059947104; 
- Fri, 05 Sep 2025 01:12:27 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-b02152cc1b8sm1509063766b.36.2025.09.05.01.12.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 05 Sep 2025 01:12:26 -0700 (PDT)
-Date: Fri, 5 Sep 2025 08:12:25 +0000
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <aLqbaZKE2TNvHSgK@localhost>
-References: <aLVzVyaVhr4IHkyd@yuki.lan>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0C0E2600972
+ for <ltp@lists.linux.it>; Fri,  5 Sep 2025 10:46:15 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 51E2E438C;
+ Fri,  5 Sep 2025 08:46:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1757061969; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=OLv7HgDXWCCHSjDqZLU5d2imNn9u/kKwyV0jOrUGiPw=;
+ b=mjZDugsvtxxy5C7JfTiaosHjMb2e/uQD4nZ8N7KsCXhVP8g4US0wHVA3y5eE8KvLKv9mam
+ BI+4e5ilL5tePQX2nGYpB9pm8XOi0oOlOBmsIFA7U+UmFDfzfW9xAuEmQaqvZAJfBCdLxI
+ oadEPZLL1XfG+cyg9zuU35KSGdeCK2k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1757061969;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=OLv7HgDXWCCHSjDqZLU5d2imNn9u/kKwyV0jOrUGiPw=;
+ b=MXQzHNIZU4SRL81LfEIa5SG6bPBBXLHQV/Ka2qHljpdD+vpT3ahx27+lt6RW3HlcWOcYVL
+ 7tdWkw2KNCfwu7AA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=mjZDugsv;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=MXQzHNIZ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1757061969; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=OLv7HgDXWCCHSjDqZLU5d2imNn9u/kKwyV0jOrUGiPw=;
+ b=mjZDugsvtxxy5C7JfTiaosHjMb2e/uQD4nZ8N7KsCXhVP8g4US0wHVA3y5eE8KvLKv9mam
+ BI+4e5ilL5tePQX2nGYpB9pm8XOi0oOlOBmsIFA7U+UmFDfzfW9xAuEmQaqvZAJfBCdLxI
+ oadEPZLL1XfG+cyg9zuU35KSGdeCK2k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1757061969;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=OLv7HgDXWCCHSjDqZLU5d2imNn9u/kKwyV0jOrUGiPw=;
+ b=MXQzHNIZU4SRL81LfEIa5SG6bPBBXLHQV/Ka2qHljpdD+vpT3ahx27+lt6RW3HlcWOcYVL
+ 7tdWkw2KNCfwu7AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 454DF139B9;
+ Fri,  5 Sep 2025 08:46:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id JTqYEFGjumj5HgAAD6G6ig
+ (envelope-from <akumar@suse.de>); Fri, 05 Sep 2025 08:46:09 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Fri,  5 Sep 2025 10:46:07 +0200
+Message-ID: <20250905084608.11958-1-akumar@suse.de>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <aLVzVyaVhr4IHkyd@yuki.lan>
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.de:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCPT_COUNT_THREE(0.00)[4]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns, suse.cz:email, suse.de:mid, suse.de:dkim,
+ suse.de:email]
+X-Rspamd-Queue-Id: 51E2E438C
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP Release preparations
+Subject: [LTP] [PATCH] Add tst_get_max_clocks() routine based on
+ tst_kconfig_check()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,31 +113,205 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Sep 01, 2025 at 12:20:07PM +0200, Cyril Hrubis wrote:
-> Hi!
-> It's about the time we start to prepare for the September release. As
-> usuall I will go over the patches in the patchwork in the next week or
-> two. If there is something that you think should be part of the release,
-> please point it out so that I can have a look ASAP.
-I would like add fix for current openqa failed case cpuset02. Futher
-more fix is simple and should not trigger side effect.
-https://patchwork.ozlabs.org/project/ltp/cover/20250904015920.7432-1-wegao@suse.com/
-Thanks.
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+current logic for defining TST_MAX_CLOCKS is based on checking the kernel
+version provided by glibc headers which is not right as there are
+mismatches possible between kernel version being tested and version
+provided by headers.
+Instead use tst_kconfig_check() routine for checking if the
+CONFIG_POSIX_AUX_CLOCKS config option is set and define max clocks
+accordingly in the tests for invalid clock types.
+
+Fixes: da6b61438 ("define TST_MAX_CLOCKS to account MAX_AUX_CLOCKS also")
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Suggested-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ include/lapi/common_timers.h                         |  6 ------
+ include/tst_clocks.h                                 |  2 ++
+ lib/tst_clocks.c                                     | 12 ++++++++++++
+ .../kernel/syscalls/clock_adjtime/clock_adjtime02.c  |  7 +++++--
+ .../kernel/syscalls/clock_gettime/clock_gettime02.c  |  7 +++++--
+ .../kernel/syscalls/clock_settime/clock_settime02.c  |  7 +++++--
+ .../kernel/syscalls/timer_create/timer_create02.c    |  5 ++++-
+ 7 files changed, 33 insertions(+), 13 deletions(-)
+
+diff --git a/include/lapi/common_timers.h b/include/lapi/common_timers.h
+index f68cea811..6a615c3f4 100644
+--- a/include/lapi/common_timers.h
++++ b/include/lapi/common_timers.h
+@@ -33,12 +33,6 @@ static const clock_t clock_list[] = {
+ 
+ #define MAX_AUX_CLOCKS 8
+ 
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
+-#define TST_MAX_CLOCKS (MAX_CLOCKS + MAX_AUX_CLOCKS)
+-#else
+-#define TST_MAX_CLOCKS (MAX_CLOCKS)
+-#endif
+-
+ #define CLOCK_TO_STR(def_name)	\
+ 	case def_name:		\
+ 		return #def_name;
+diff --git a/include/tst_clocks.h b/include/tst_clocks.h
+index 8b7f33d4f..69251d5d4 100644
+--- a/include/tst_clocks.h
++++ b/include/tst_clocks.h
+@@ -48,4 +48,6 @@ time_t tst_fs_timestamp_start(void);
+  */
+ time_t tst_fs_timestamp_end(void);
+ 
++int tst_get_max_clocks(void);
++
+ #endif /* TST_CLOCKS__ */
+diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
+index fba4a4f7b..704ce9551 100644
+--- a/lib/tst_clocks.c
++++ b/lib/tst_clocks.c
+@@ -11,6 +11,8 @@
+ #include "tst_clocks.h"
+ #include "lapi/syscalls.h"
+ #include "lapi/posix_clocks.h"
++#include "lapi/common_timers.h"
++#include "tst_kconfig.h"
+ 
+ typedef int (*mysyscall)(clockid_t clk_id, void *ts);
+ 
+@@ -168,3 +170,13 @@ time_t tst_fs_timestamp_end(void)
+ {
+ 	return tst_clock_get_timestamp(CLOCK_REALTIME);
+ }
++
++int tst_get_max_clocks(void)
++{
++	static const char * const kconf_aux[] = {"CONFIG_POSIX_AUX_CLOCKS=y", NULL};
++
++	if (!tst_kconfig_check(kconf_aux))
++		return MAX_CLOCKS + MAX_AUX_CLOCKS;
++	else
++		return MAX_CLOCKS;
++}
+diff --git a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c
+index 0c5e6ac21..ba62bf716 100644
+--- a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c
++++ b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c
+@@ -76,11 +76,11 @@ struct test_case {
+ 
+ struct test_case tc[] = {
+ 	{
+-	 .clktype = TST_MAX_CLOCKS,
++	 .clktype = 0,
+ 	 .exp_err = EINVAL,
+ 	},
+ 	{
+-	 .clktype = TST_MAX_CLOCKS + 1,
++	 .clktype = 0,
+ 	 .exp_err = EINVAL,
+ 	},
+ 	{
+@@ -223,6 +223,9 @@ static void setup(void)
+ 			tc[i].lowlimit /= hz;
+ 		}
+ 	}
++
++	tc[0].clktype = tst_get_max_clocks();
++	tc[1].clktype = tst_get_max_clocks() + 1;
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
+index 1e1769864..091188d8a 100644
+--- a/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
++++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
+@@ -34,11 +34,11 @@ struct test_case {
+ 
+ static struct test_case tc[] = {
+ 	{
+-	 .clktype = TST_MAX_CLOCKS,
++	 .clktype = 0,
+ 	 .exp_err = EINVAL,
+ 	 },
+ 	{
+-	 .clktype = TST_MAX_CLOCKS + 1,
++	 .clktype = 0,
+ 	 .exp_err = EINVAL,
+ 	 },
+ 	/*
+@@ -103,6 +103,9 @@ static void setup(void)
+ 	tst_res(TINFO, "Testing variant: %d: %s", tst_variant, variants[tst_variant].desc);
+ 
+ 	bad_addr = tst_get_bad_addr(NULL);
++
++	tc[0].clktype = tst_get_max_clocks();
++	tc[1].clktype = tst_get_max_clocks() + 1;
+ }
+ 
+ static void verify_clock_gettime(unsigned int i)
+diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime02.c b/testcases/kernel/syscalls/clock_settime/clock_settime02.c
+index 9d703565b..cf002b30e 100644
+--- a/testcases/kernel/syscalls/clock_settime/clock_settime02.c
++++ b/testcases/kernel/syscalls/clock_settime/clock_settime02.c
+@@ -59,11 +59,11 @@ struct test_case tc[] = {
+ 	 .exp_err = EINVAL,
+ 	 },
+ 	{				/* case 06: MAXCLOCK		      */
+-	 .type = TST_MAX_CLOCKS,
++	 .type = 0,
+ 	 .exp_err = EINVAL,
+ 	 },
+ 	{				/* case 07: MAXCLOCK+1		      */
+-	 .type = TST_MAX_CLOCKS + 1,
++	 .type = 0,
+ 	 .exp_err = EINVAL,
+ 	 },
+ 	/* Linux specific */
+@@ -106,6 +106,9 @@ static void setup(void)
+ 	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
+ 
+ 	bad_addr = tst_get_bad_addr(NULL);
++
++	tc[5].type = tst_get_max_clocks();
++	tc[6].type = tst_get_max_clocks() + 1;
+ }
+ 
+ static void verify_clock_settime(unsigned int i)
+diff --git a/testcases/kernel/syscalls/timer_create/timer_create02.c b/testcases/kernel/syscalls/timer_create/timer_create02.c
+index af3a5203e..cc7b6d0d0 100644
+--- a/testcases/kernel/syscalls/timer_create/timer_create02.c
++++ b/testcases/kernel/syscalls/timer_create/timer_create02.c
+@@ -25,6 +25,7 @@
+ #include <signal.h>
+ #include "tst_test.h"
+ #include "lapi/common_timers.h"
++#include "tst_safe_clocks.h"
+ 
+ static struct sigevent sig_ev = {
+ 	.sigev_notify = SIGEV_NONE,
+@@ -52,7 +53,7 @@ static struct testcase {
+ } tcases[] = {
+ 	{CLOCK_REALTIME, NULL, &timer_id, EFAULT, "invalid sigevent struct"},
+ 	{CLOCK_REALTIME, &sig_ev, NULL, EFAULT, "invalid timer ID"},
+-	{TST_MAX_CLOCKS, &sig_ev, &timer_id, EINVAL, "invalid clock"},
++	{0, &sig_ev, &timer_id, EINVAL, "invalid clock"},
+ 	{CLOCK_REALTIME, &sig_ev_inv_not, &timer_id, EINVAL, "wrong sigev_notify"},
+ 	{CLOCK_REALTIME, &sig_ev_inv_sig, &timer_id, EINVAL, "wrong sigev_signo"},
+ };
+@@ -84,6 +85,8 @@ static void setup(void)
+ 		if (!tcases[i].kt_ptr)
+ 			tcases[i].kt_ptr = tst_get_bad_addr(NULL);
+ 	}
++
++    tcases[2].clock = tst_get_max_clocks();
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.51.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
