@@ -4,90 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E97ACA0FED
-	for <ltp@archiver.kernel.org>; Tue,  9 Sep 2025 14:49:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6618CA0FED
+	for <ltp@archiver.kernel.org>; Wed, 10 Sep 2025 01:35:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1757429361; h=date :
- message-id : to : mime-version : references : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1757468140; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=ild6JqS70C6JSeAmcpBI6yUX6qrMks5AifSNNsWaems=;
- b=Z284/RpSDafxikxMffhI9jmXlxMnujMXIctl+zTFO9X6NnNtAhzvHKBquu9U7hdiXoPwr
- jCWqZDWry/YKwQey0ADHC8kJEUTS6YP/Un4/3CtPeOATPnhCrZBH3S4TRZDYbiREc7aeH74
- 4oW0E4BbXBPQWlpkfZ/VLGsAO+jwG4k=
+ bh=xx2EtjZB9b4ITvl68SpQdwMMo/4wIhE7TKB2dfhFPyQ=;
+ b=GK9imM9VO1OFXnlLAew8tzG2NZ4XCX7cdqN2HnnwnKpjAf/tZolA6ypewoqKlmPBAx9r7
+ SboJyf7SCI34vwdrzmXPQAAYE6KsBmP5227vT68HJRGYLLTY/9wTF6Ah/jmVpQIr0jBAXy5
+ z0z+VV7Urim25f7ol8n+MHB7MHx3c1Y=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0C49B3CD3DC
-	for <ltp@archiver.kernel.org>; Tue,  9 Sep 2025 16:49:21 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 85ED03CD783
+	for <ltp@archiver.kernel.org>; Wed, 10 Sep 2025 03:35:40 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 235813C84D0
- for <ltp@lists.linux.it>; Tue,  9 Sep 2025 16:48:58 +0200 (CEST)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
+ by picard.linux.it (Postfix) with ESMTPS id F189C3C7A25
+ for <ltp@lists.linux.it>; Wed, 10 Sep 2025 03:35:20 +0200 (CEST)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
+ [IPv6:2a00:1450:4864:20::636])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 601C72005EB
- for <ltp@lists.linux.it>; Tue,  9 Sep 2025 16:48:58 +0200 (CEST)
-Received: by mail-wr1-x42b.google.com with SMTP id
- ffacd0b85a97d-3e07ffffb87so2721098f8f.2
- for <ltp@lists.linux.it>; Tue, 09 Sep 2025 07:48:58 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0167C600740
+ for <ltp@lists.linux.it>; Wed, 10 Sep 2025 03:35:19 +0200 (CEST)
+Received: by mail-ej1-x636.google.com with SMTP id
+ a640c23a62f3a-afcb7322da8so1172209966b.0
+ for <ltp@lists.linux.it>; Tue, 09 Sep 2025 18:35:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1757429338; x=1758034138; darn=lists.linux.it;
- h=in-reply-to:references:mime-version:content-transfer-encoding:cc
- :subject:from:to:message-id:date:from:to:cc:subject:date:message-id
- :reply-to; bh=mM6EY+qvR/YqOntTKGXNSeR2dt9g3iUyjTVl0i3Joic=;
- b=dCc898AM4JmHKXHBtVt2BMwop2XvVigTMqHQ+xvr9Xo95iFJ1OlH+jBFnepd7iEM3x
- JSj2zrgEPuV4s9KroLkWwv7iN4HqwGCqTyyXJ8u+msTPN+3q1wM5F25GsxtZyyXTmCpH
- TqgzunoyGrCG5VmCBbfcf/ND8NmICxOmCedKIJwB+WzD3Ag7SGiDFJEzHtNlYVJYx1xj
- KMTbiIFPsIUNZGhbpLXKWFFB6sAf2gAeg5hXD/FD9Y7LDY4NVncY+iTJUbRDKkdD2FaF
- ariKGO4Up12RieY3rF4yPIbvC7EzE/GmFhB+gy0WcYawEEeF6MDA/yrtRMvQ0Ah/HHPW
- O2Dw==
+ d=suse.com; s=google; t=1757468119; x=1758072919; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=Y/NqnWjLd8Mc8mIA1D2vZ3USBHk5C2FZ7g55f1PPNk0=;
+ b=CwiGAijO89A+Vm3yHJin6Nj/Ta+M/aqJnQrimpzDZxaPvebp75e45DxbqZ6uUHRAZT
+ VOYewNLO3JBpcC1d13s58d1EorOpoM8+b5tjcUGLdBd7VOxTDWSdgtJM3dCzz640mdJe
+ SjHZbDk/vyvpcvjmX6ulsgoTnDsirKoqvPIljrp8oEa+Quuv9DXEFZX7Qs2/VXV+v+jZ
+ gJ69v97rY7MLu+3MXQDhjDvX6FO1TPMDHOJYQ3ibdtNFLQbbDmDrjajHLaRtVyQIoNk1
+ rzT0tGrGuWVMeb+Mu/s8H9X3ExBRd/DSEZ1qFeHNg205V/yr4gtq2t82gT+FeIR66xA8
+ VyYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1757429338; x=1758034138;
- h=in-reply-to:references:mime-version:content-transfer-encoding:cc
- :subject:from:to:message-id:date:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=mM6EY+qvR/YqOntTKGXNSeR2dt9g3iUyjTVl0i3Joic=;
- b=v6wRM2iVJWU0Uqm8r861dSJE/4o80c7z/Mc66PqpBqaKt7udU/nRWUT5w6jkrWCCG1
- ZyG07NrvkrJX1r1buEz41IWwTeM65IJdpYHnq1pQzTpkA6k8IfyxKo7YhT4MNYqiBMOL
- rRTGGGO2Iq/Hm9GlzyNaDhQFL7dDp9LVMuI691EemBXs6lCnNYVFfQmrgNAAAabXHByi
- allR9Nv5PVt4RRi+796bFuDp8SywYfGYogZsLwZEbH66r5C5MzAIZKY7eMxjUFZ4JIA4
- 9fJnjga5o68aSfeQVFJdWIEsbIe+uTjWwNHb6ntpVpjsmQauseFKdKMREoNEgGMUWHzY
- 5vTQ==
-X-Gm-Message-State: AOJu0YwM7JnmUj733aADeaDsiI6BU7wQvfGmiI6UJUO8HRgzJv6UeYXw
- ySJhI7BfU85GoWuTaBX31V8g6i/EG5OWbT2+xDd0twsMW9n0IJ3KRV2QB31/I5Likog=
-X-Gm-Gg: ASbGncso9tNVLO4QzajU3vWhYNV0ia7aQHqgkZCLpMy+/SwqP+Xvnka/O0hcnhWdV+Y
- pvg5eQU+OLK5Z5pkM9ihcQHjArjHi+NAYg96VhT9MUn9bs+XwjfyPxYyQ7wcSId/fTn5N0j/kX3
- NANUNGo/wANG9ILegGXIyamZ+xVLLIbkQ6nTLKms/jP7eDaoK0Vbvhm0mElsFP0EIIptLR04+01
- E7hbsU5RhV0uPv/bZ7oFNs8xuJLg8KKzivQhDoEJ7bqUolbGeq4b0+t0mamhbNo5I912Ng3ADLU
- 0AZriXAA1tIZBf9nVqR/2/znMsQBfBamvtuuUVv+J2BXI7mYs2y4jlaqJvDLXQbAfKLvvgOSMr3
- zOBZ34MZcKw==
-X-Google-Smtp-Source: AGHT+IEYSh61qEFCHNmfHeySVPDar8Hu4dAfzSfHZndR5LG9CLBHzfgWys8daCuDbI2V7ojb9RhOhA==
-X-Received: by 2002:a05:6000:40da:b0:3b8:d360:336f with SMTP id
- ffacd0b85a97d-3e643555d57mr9503326f8f.28.1757429337720; 
- Tue, 09 Sep 2025 07:48:57 -0700 (PDT)
-Received: from localhost ([177.94.120.255]) by smtp.gmail.com with ESMTPSA id
- a1e0cc1a2514c-8982751bf54sm8358799241.21.2025.09.09.07.48.56
+ d=1e100.net; s=20230601; t=1757468119; x=1758072919;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=Y/NqnWjLd8Mc8mIA1D2vZ3USBHk5C2FZ7g55f1PPNk0=;
+ b=MNk8C3ek9+TjdYC/sFvvp/xSBvfeMVdavmW3kDj4H5rdptZ+w0gKZHNTDZJF4/54zm
+ kP3urL8h57nN3UGOtUJePSI0utyduxgTNdIiVawHpOn0I4NNd7IAxMXx6qHx8/pJFthw
+ +693et45O1W6U1Jwo8rWbnsSnZhad91DmfvHgR2/vPOGVBXyD/i6YOMdWSAOWJjvbNsl
+ ed+L2xPWHQS2WnyINCVZjH9ujNG3sfVbjyy6OhgBJbx7QNa5T5neVoh1JB6eIz5NbnQu
+ axPLeQtyRrXFRxUlX3KjLcDf5kabZ1BdRxqobhSx+VXtLRsw90+cWYUqo79mp158GUf9
+ ievw==
+X-Gm-Message-State: AOJu0YzJ/i4YBbx6oKw3ncScQENCRPa7Bwmyew1CwysrBvRWEOUEidRP
+ vdv4dBpx2MaGgZf6aTYlRLcnky+YgwtXoU6AL5ZC72TOOHy8x0PcMURTilnxOL9LeA==
+X-Gm-Gg: ASbGnctaWq0RXhNXwggJxfLBquaTLF83zPVhJqQJr/gObsgbReHbjQV72EYBxvsz4lu
+ yuZdNqIH1spye5xsNrTXHEnH5PwvYjbl5905Oe/rCOXl6SE/HlUdaIqI6lI0CX+cMkzePLg14b4
+ qZzfLJ306xFNC/5VH0tm0OMwUoOejV05BtrY7o5U1NtMQovCU6IaTUsoy9Vyu65We3zD2rKa3Q/
+ AEUD9sG2jb1/xbB3o2n4uDdynExfIaAmZxXrcNk6OUpsjT2gSoA453M1f8fuSSLhJwNToHf8ScY
+ bI6C8wLcQZCA3qgWBqrX1+UhAMuR1JICrCB3qI17BejcpQ5gMKsC1omdFeg3/86Xwgk5syGzHsk
+ 4yDx/ErIeQIBStq/e+uKAlImiL9u/3QAJ4RzxKNsXttK/ifPQ1MCxug==
+X-Google-Smtp-Source: AGHT+IHB7JZ+W1LQWPUuF7U86bcQpTu/wFSd810ileVYUELdQBsU/NR/hG7clbVq/GLZYK50zzeOxw==
+X-Received: by 2002:a17:907:6d0d:b0:ae3:8c9b:bd61 with SMTP id
+ a640c23a62f3a-b04b13fb3d7mr1331619666b.12.1757468119265; 
+ Tue, 09 Sep 2025 18:35:19 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-b07830451a0sm77646566b.21.2025.09.09.18.35.18
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 09 Sep 2025 07:48:57 -0700 (PDT)
-Date: Tue, 09 Sep 2025 11:48:52 -0300
-Message-Id: <DCOCPDWMUTF5.PXSIFKQYF1IW@suse.com>
-To: "Cyril Hrubis" <chrubis@suse.cz>,
- =?utf-8?b?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
-Mime-Version: 1.0
-X-Mailer: aerc 0.20.1-125-gabe5bb884bbc-dirty
-References: <20250829-conversions-lchown-v5-0-7c3f25cd1de4@suse.com>
- <20250829-conversions-lchown-v5-4-7c3f25cd1de4@suse.com>
- <aLb-uPKS6ZCmpUTc@yuki.lan>
-In-Reply-To: <aLb-uPKS6ZCmpUTc@yuki.lan>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+ Tue, 09 Sep 2025 18:35:18 -0700 (PDT)
+Date: Wed, 10 Sep 2025 01:35:17 +0000
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <aMDV1aTCZ--ElqfY@localhost>
+References: <20250902031236.5719-1-wegao@suse.com>
+ <20250902111809.6071-1-wegao@suse.com> <aMAUhpxi1GaDBfGF@yuki.lan>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <aMAUhpxi1GaDBfGF@yuki.lan>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 4/4] syscalls: lchown03: Merge into lchown02
+Subject: Re: [LTP] [PATCH v3] ioctl_loop01.c: Use proper device for
+ partitioning
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,76 +98,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re_via_ltp?= <ltp@lists.linux.it>
-Reply-To: =?utf-8?b?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlIFNlcCAyLCAyMDI1IGF0IDExOjI3IEFNIC0wMywgQ3lyaWwgSHJ1YmlzIHdyb3RlOgo+
-IEhpIQo+PiAgc3RhdGljIHZvaWQgcnVuKHVuc2lnbmVkIGludCBpKQo+PiBAQCAtNzAsOCArNzcs
-MTQgQEAgc3RhdGljIHZvaWQgc2V0dXAodm9pZCkKPj4gIHsKPj4gIAliYWRfYWRkciA9IHRzdF9n
-ZXRfYmFkX2FkZHIoTlVMTCk7Cj4+ICAKPj4gLQltZW1zZXQobG9uZ3BhdGgsICdhJywgTE9OR1BB
-VEhTSVpFIC0gMSk7Cj4+IC0JbG9uZ3BhdGhbTE9OR1BBVEhTSVpFLTFdID0gMDsKPj4gKwltZW1z
-ZXQobWF4cGF0aCwgJ2EnLCBNQVhQQVRIIC0gMSk7Cj4+ICsJbWF4cGF0aFtNQVhQQVRILTFdID0g
-MDsKPj4gKwo+PiArCXNucHJpbnRmKGxvbmdwYXRoLCBzaXplb2YobG9uZ3BhdGgpLCAiLiIpOwo+
-PiArCVNBRkVfTUtESVIoImxvbmdwYXRoIiwgMDc1NSk7Cj4+ICsJU0FGRV9TWU1MSU5LKCIuLi9s
-b25ncGF0aCIsICJsb25ncGF0aC9sb25ncGF0aCIpOwo+PiArCWZvciAoaW50IGkgPSAwOyBpIDwg
-NDM7IGkrKykKPj4gKwkJc3RyY2F0KGxvbmdwYXRoLCAiL2xvbmdwYXRoIik7Cj4KPiBUaGVyZSBp
-cyBtdWNoIG1vcmUgZWFzaWVyIHdheSBob3cgdG8gZ2V0IEVMT09QLCBqdXN0IGNyZWF0ZSB0d28g
-c3ltbGlua3MKPiBwb2ludGluZyB0byBlYWNoIG90aGVyLgo+Cj4gCVNBRkVfU1lNTElOSygiaW5m
-aW50ZV9sb29wX2EiLCAiaW5maW5pdGVfbG9vcF9iIik7Cj4gCVNBRkVfU1lNTElOSygiaW5maW50
-ZV9sb29wX2IiLCAiaW5maW5pdGVfbG9vcF9hIik7Cj4KPiBUcnlpbmcgdG8gcmVzb2x2ZSBlaXRo
-ZXIgb2YgdGhlc2UgZW5kcyB1cCBpbiBFTE9PUC4KCkkgZG9uJ3QgdGhpbmsgdGhhdCB3aWxsIHdv
-cmsgZm9yIGxjaG93biwgZnJvbSBpdCdzIG1hbiBwYWdlOgoKICAgICAgIOKAoiAgbGNob3duKCkg
-aXMgbGlrZSBjaG93bigpLCBidXQgZG9lcyBub3QgZGVyZWZlcmVuY2Ugc3ltYm9saWMgbGlua3Mu
-CgpJIGd1ZXNzIHRoZSBvcmlnaW5hbCBjb2RlIHdvcmtzIGJlY2F1c2UgdGhlIGZpbmFsIGNvbXBv
-bmVudCBpcyBub3QgYSBsaW5rLgoKSGVyZSdzIHRoZSBkaWZmIChmYWlscyB3aXRoIEVQRVJNKToK
-CgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9sY2hvd24vbGNob3duMDIu
-YyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbGNob3duL2xjaG93bjAyLmMKaW5kZXggZGIw
-Njg4NjVhY2RjLi5kYjhiMjljNjFkMDcgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvbGNob3duL2xjaG93bjAyLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9s
-Y2hvd24vbGNob3duMDIuYwpAQCAtMzMsNiArMzMsNyBAQAogI2RlZmluZSBTRklMRTIgInRlc3Rk
-aXJfMS9zZmlsZV8yIgogI2RlZmluZSBURklMRTMgInRfZmlsZSIKICNkZWZpbmUgU0ZJTEUzICJ0
-X2ZpbGUvc2ZpbGUiCisjZGVmaW5lIEVGSUxFMSAiZWxvb3AiCiAjZGVmaW5lIFRFU1RfRVJPRlMg
-Im1udHBvaW50IgogI2RlZmluZSBNQVhQQVRIIChQQVRIX01BWCsyKQogCkBAIC00Miw3ICs0Myw3
-IEBAIHN0YXRpYyBjaGFyICpiYWRfYWRkcjsKIHN0YXRpYyBjaGFyICptYXhwYXRoOwogc3RhdGlj
-IGNoYXIgKnNmaWxlMzsKIHN0YXRpYyBjaGFyICplbXB0eTsKLXN0YXRpYyBjaGFyICpsb25ncGF0
-aDsKK3N0YXRpYyBjaGFyICplbG9vcDsKIHN0YXRpYyBjaGFyICplcm9mczsKIHN0YXRpYyBzdHJ1
-Y3QgcGFzc3dkICpsdHB1c2VyOwogCkBAIC01NywyMCArNTgsMTUgQEAgc3RhdGljIHN0cnVjdCB0
-ZXN0X2Nhc2VfdCB7CiAJeyAmbWF4cGF0aCwgIlBhdGhuYW1lIHRvbyBsb25nIiwgRU5BTUVUT09M
-T05HIH0sCiAJeyAmc2ZpbGUzLCAiUGF0aCBjb250YWlucyByZWd1bGFyIGZpbGUiLCBFTk9URElS
-IH0sCiAJeyAmZW1wdHksICJQYXRobmFtZSBpcyBlbXB0eSIsIEVOT0VOVCB9LAotCXsgJmxvbmdw
-YXRoLCAiVG9vIG1hbnkgc3ltbGlua3MiLCBFTE9PUCB9LAorCXsgJmVsb29wLCAiVG9vIG1hbnkg
-c3ltbGlua3MiLCBFTE9PUCB9LAogCXsgJmVyb2ZzLCAiUmVhZC1vbmx5IGZpbGVzeXN0ZW0iLCBF
-Uk9GUyB9LAogfTsKIAogc3RhdGljIHZvaWQgcnVuKHVuc2lnbmVkIGludCBpKQogewotCXVpZF90
-IHVzZXJfaWQ7Ci0JZ2lkX3QgZ3JvdXBfaWQ7CiAJc3RydWN0IHRlc3RfY2FzZV90ICp0YyA9ICZ0
-ZXN0X2Nhc2VzW2ldOwogCi0JVUlEMTZfQ0hFQ0soKHVzZXJfaWQgPSBnZXRldWlkKCkpLCAibGNo
-b3duIik7Ci0JR0lEMTZfQ0hFQ0soKGdyb3VwX2lkID0gZ2V0ZWdpZCgpKSwgImxjaG93biIpOwot
-Ci0JVFNUX0VYUF9GQUlMKGxjaG93bigqdGMtPnBhdGhuYW1lLCB1c2VyX2lkLCBncm91cF9pZCks
-IHRjLT5leHBfZXJybm8sICIlcyIsIHRjLT5kZXNjKTsKKwlUU1RfRVhQX0ZBSUwobGNob3duKCp0
-Yy0+cGF0aG5hbWUsIGx0cHVzZXItPnB3X3VpZCwgbHRwdXNlci0+cHdfZ2lkKSwgdGMtPmV4cF9l
-cnJubywgIiVzIiwgdGMtPmRlc2MpOwogfQogCiBzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQpAQCAt
-ODAsMTUgKzc2LDIxIEBAIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCiAJbWVtc2V0KG1heHBhdGgs
-ICdhJywgTUFYUEFUSCAtIDEpOwogCW1heHBhdGhbTUFYUEFUSC0xXSA9IDA7CiAKLQlzbnByaW50
-Zihsb25ncGF0aCwgc2l6ZW9mKGxvbmdwYXRoKSwgIi4iKTsKLQlTQUZFX01LRElSKCJsb25ncGF0
-aCIsIDA3NTUpOwotCVNBRkVfU1lNTElOSygiLi4vbG9uZ3BhdGgiLCAibG9uZ3BhdGgvbG9uZ3Bh
-dGgiKTsKLQlmb3IgKGludCBpID0gMDsgaSA8IDQzOyBpKyspCi0JCXN0cmNhdChsb25ncGF0aCwg
-Ii9sb25ncGF0aCIpOworCS8vIHNucHJpbnRmKGxvbmdwYXRoLCBzaXplb2YobG9uZ3BhdGgpLCAi
-LiIpOworCS8vIFNBRkVfTUtESVIoImxvbmdwYXRoIiwgMDc1NSk7CisJLy8gU0FGRV9TWU1MSU5L
-KCIuLi9sb25ncGF0aCIsICJsb25ncGF0aC9sb25ncGF0aCIpOworCS8vIGZvciAoaW50IGkgPSAw
-OyBpIDwgNDM7IGkrKykKKwkvLyAJc3RyY2F0KGxvbmdwYXRoLCAiL2xvbmdwYXRoIik7CisKKwlT
-QUZFX1NZTUxJTksoRUZJTEUxLCAiaW5maW5pdGVfbG9vcCIpOworCVNBRkVfU1lNTElOSygiaW5m
-aW5pdGVfbG9vcCIsIEVGSUxFMSk7CiAKIAlsdHB1c2VyID0gU0FGRV9HRVRQV05BTShURVNUX1VT
-RVIpOwogCVNBRkVfU0VUR0lEKGx0cHVzZXItPnB3X3VpZCk7CiAKKwlVSUQxNl9DSEVDSyhsdHB1
-c2VyLT5wd191aWQsICJsY2hvd24iKTsKKwlHSUQxNl9DSEVDSyhsdHB1c2VyLT5wd19naWQsICJs
-Y2hvd24iKTsKKwogCVNBRkVfVE9VQ0goVEZJTEUxLCAwNjY2LCBOVUxMKTsKIAlTQUZFX1NFVEVV
-SUQoMCk7CiAJU0FGRV9TWU1MSU5LKFRGSUxFMSwgU0ZJTEUxKTsKQEAgLTExNSw3ICsxMTcsNyBA
-QCBzdGF0aWMgc3RydWN0IHRzdF90ZXN0IHRlc3QgPSB7CiAJCXsmc2ZpbGUxLCAuc3RyID0gU0ZJ
-TEUxfSwKIAkJeyZzZmlsZTIsIC5zdHIgPSBTRklMRTJ9LAogCQl7JnNmaWxlMywgLnN0ciA9IFNG
-SUxFM30sCi0JCXsmbG9uZ3BhdGgsIC5zaXplID0gUEFUSF9NQVh9LAorCQl7JmVsb29wLCAuc3Ry
-ID0gRUZJTEUxfSwKIAkJeyZlbXB0eSwgLnN0ciA9ICIifSwKIAkJeyAmZXJvZnMsIC5zdHIgPSBU
-RVNUX0VST0ZTIH0sCiAJCXt9CgoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+On Tue, Sep 09, 2025 at 01:50:30PM +0200, Cyril Hrubis wrote:
+> Hi!
+> >  .../kernel/syscalls/ioctl/ioctl_loop01.c      | 34 ++++++++-----------
+> >  1 file changed, 15 insertions(+), 19 deletions(-)
+> > 
+> > diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+> > index c9137bf1e..b70e9fc22 100644
+> > --- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+> > +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+> > @@ -78,7 +78,21 @@ static void check_loop_value(int set_flag, int get_flag, int autoclear_field)
+> >  
+> >  static void verify_ioctl_loop(void)
+> >  {
+> > +	int ret;
+> > +	const char *const cmd_parted[] = {"parted", "-s", dev_path, "mklabel", "msdos", "mkpart",
+> > +					"primary", "ext4", "1M", "10M", NULL};
+> > +
+> > +	tst_fill_file("test.img", 0, 1024 * 1024, 10);
+> >  	tst_attach_device(dev_path, "test.img");
+> > +
+> > +	ret = tst_cmd(cmd_parted, NULL, NULL, TST_CMD_PASS_RETVAL);
+> > +	if (!ret)
+> > +		parted_sup = 1;
+> > +	else if (ret == 255)
+> > +		tst_res(TCONF, "parted binary not installed or failed");
+> > +	else
+> > +		tst_res(TCONF, "parted exited with %i", ret);
+> 
+> The test should have needs_cmds set to parted (we do that properly in
+> ioctl09.c) then we do not have to handle the 255 exit code here since
+> the test would be skipped if it's missing.
+
+If we use needs_cmds all the check will be skipped in this case.
+
+Current test case will still continue do some check even parted is
+missing. Such as following test log:
+
+tst_tmpdir.c:316: TINFO: Using /tmp/LTP_iocxxPKhg as tmpdir (ext2/ext3/ext4 filesystem)
+tst_test.c:2004: TINFO: LTP version: 20250130-399-g47167e082
+tst_test.c:2007: TINFO: Tested kernel: 6.11.0-1027-oem #27-Ubuntu SMP PREEMPT_DYNAMIC Tue Jul 22 06:12:35 UTC 2025 x86_64
+tst_kconfig.c:88: TINFO: Parsing kernel config '/lib/modules/6.11.0-1027-oem/build/.config'
+tst_test.c:1825: TINFO: Overall timeout per run is 0h 00m 31s
+tst_device.c:98: TINFO: Found free device 14 '/dev/loop14'
+tst_buffers.c:57: TINFO: Test is using guarded buffers
+ioctl_loop01.c:92: TCONF: parted binary not installed or failed
+ioctl_loop01.c:98: TPASS: /sys/block/loop14/loop/partscan = 0
+ioctl_loop01.c:99: TPASS: /sys/block/loop14/loop/autoclear = 0
+ioctl_loop01.c:100: TPASS: /sys/block/loop14/loop/backing_file = '/tmp/LTP_iocxxPKhg/test.img'
+ioctl_loop01.c:56: TPASS: get expected lo_flag 12
+ioctl_loop01.c:58: TPASS: /sys/block/loop14/loop/partscan = 1
+ioctl_loop01.c:59: TPASS: /sys/block/loop14/loop/autoclear = 1
+ioctl_loop01.c:62: TINFO: Current environment doesn't have parted disk, skip it
+ioctl_loop01.c:104: TINFO: Test flag can be clear
+ioctl_loop01.c:56: TPASS: get expected lo_flag 8
+ioctl_loop01.c:58: TPASS: /sys/block/loop14/loop/partscan = 1
+ioctl_loop01.c:59: TPASS: /sys/block/loop14/loop/autoclear = 0
+ioctl_loop01.c:62: TINFO: Current environment doesn't have parted disk, skip it
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  1
+warnings 0
+
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
