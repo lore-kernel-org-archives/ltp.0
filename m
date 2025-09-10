@@ -4,90 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B8E3CA0FED
-	for <ltp@archiver.kernel.org>; Wed, 10 Sep 2025 09:28:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D11BFCA0FED
+	for <ltp@archiver.kernel.org>; Wed, 10 Sep 2025 10:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1757496518; h=date : to :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1757501405; h=date : to :
  message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=IxTOLLHMDZvNiEpHfeEa3fb57CG3rDtk3f9cRY7d5Q0=;
- b=FCxkB9LVL63vwaUpV6/wPwzFgx5R3GUOWApO/sJgWgByaWB+LSpwlw2nS74F+UbMw0vaY
- pAzhlodPV9Qd/9lfXYpaDantKnFH+Dl8UciRXezV3R5GGV3hdPRjIsXYu/Vu83SeRMwyogk
- h/vrpXYTQP2iEvHx2HIzN2l0D3XmoAA=
+ bh=3SCTjQ7iLeVSHn3w9iBdBNC4H2F6iZDwnO/G0WgbLRU=;
+ b=RpFMRpRFPcnbHKRzsyE0yIuVE/LhYYvWtIgn4cRh/5QpMV/mcDEZRrx6CywvlcpCFoUxY
+ uwJheBqpjxASjupdGKD0AX6RR3WdOGzMUuJ8Wl9L/DqTZT4CsgzL5bfT77BjUEJKk5cVt4X
+ DtStTjAkIp79APoG4u6mdNPH26/mbrk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CB42F3CD788
-	for <ltp@archiver.kernel.org>; Wed, 10 Sep 2025 11:28:38 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 260C93CD796
+	for <ltp@archiver.kernel.org>; Wed, 10 Sep 2025 12:50:05 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AB3A03C2472
- for <ltp@lists.linux.it>; Wed, 10 Sep 2025 11:28:17 +0200 (CEST)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
- [IPv6:2a00:1450:4864:20::52a])
+ by picard.linux.it (Postfix) with ESMTPS id 300463C2966
+ for <ltp@lists.linux.it>; Wed, 10 Sep 2025 12:49:45 +0200 (CEST)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
+ [IPv6:2a00:1450:4864:20::631])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E63956000FA
- for <ltp@lists.linux.it>; Wed, 10 Sep 2025 11:28:16 +0200 (CEST)
-Received: by mail-ed1-x52a.google.com with SMTP id
- 4fb4d7f45d1cf-62105d21297so9996105a12.0
- for <ltp@lists.linux.it>; Wed, 10 Sep 2025 02:28:16 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 65C27600133
+ for <ltp@lists.linux.it>; Wed, 10 Sep 2025 12:49:44 +0200 (CEST)
+Received: by mail-ej1-x631.google.com with SMTP id
+ a640c23a62f3a-aff0775410eso107622366b.0
+ for <ltp@lists.linux.it>; Wed, 10 Sep 2025 03:49:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1757496496; x=1758101296; darn=lists.linux.it;
+ d=suse.com; s=google; t=1757501384; x=1758106184; darn=lists.linux.it;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=cAYqNyb7KfKIaAMOHMzDD50W8BBTNCIAwHbYVnz5TXU=;
- b=QJZdG7HI8lOZsZhg7igIZNLYtjlTYiVU/sUYXkbf5c3mcHG0wI8NuUrLhc5yBuRah3
- JipE74i19GlUBneXY95X6DhhEuudND8Qr07j7zu3HdRnc2u0ykr49vXGf2oUiI5NYrEq
- tg7HunYlNlutIROifKqmjLksoYumgGlQeSP75nHBKnqWoI/sypEQq6raI2yuE8Ya3XE3
- 52my588RoLvuRxpgaya2FBB0YAePJ+CuD/Sk5VRMZsxofdIryNiYsrurM1GM3kwtF2mO
- 0xmJxda+pny+1X1DpXR5nuvCizOo56VJdfEeIK12TyOTUE9LuLpjqhyAQfmrL3TDR7Xh
- bBnA==
+ bh=5FceR7TWYCPkhRKQx5zb/EsAXruY8fECG0se9Gtjmck=;
+ b=GChROOe5BBCgJZj2aGUST8JaZFme/uGfZO4gQTg+KjCLkAXqHbAgKtqb2CXKPNluvt
+ FrQxCFUbfoBxl6qTlwm55Tgm9W+67mT7ev7JatKeGaPjVfRFxO34VqYTPpcSNoTfRoSu
+ k0ZMzWac9LEbo4wQ6/6lMzHxQ123irPoRp0Dj2ovFwIqlOBLH3oIzyqP8DUrAyNICt7G
+ uU0ExuaArmv/QyQZGLEmlotllHoAn74wA7oQmR/l16DNeiBfv49rMKtE4crTu3Iu02DG
+ 17tpFXyK6qcR8wEOvygO1SoZ3Bcp+La39tBUcbXf+63TCUthWMjp9daFX0TntMZMj4B1
+ MAGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1757496496; x=1758101296;
+ d=1e100.net; s=20230601; t=1757501384; x=1758106184;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=cAYqNyb7KfKIaAMOHMzDD50W8BBTNCIAwHbYVnz5TXU=;
- b=uYnuLPPesdrV8aJb4cV53nkUCQjCU6eraSGQ2yCMwagb2pGYizVt71i3sLpT7hX/w3
- Inwip/t55YcR1JVyIUJKpzsEVMYx98lbN5wFLt9ihqTJgYxtuuIIuMRJrJ02KwCN6qor
- 99b4QhIDAF2wQgHvjBc3mVGrcJzzFGYVmMMPQDGh+Q73oCe/nAQZVYF+keFalSVgEW57
- ELxYGqUhXWlT/4G5SCwrgFHB+ZIe1LzOWawq6EM7qM2PHMFaZkgKFxDYWOXRKjKmx4Rg
- 1LsUzrCk68GvIoCPbJSTBWq8n4f4DcKCIAzoM7rc+hjxMiuk8dMt/CNRFqN/lJ8Tzkrw
- V/0A==
-X-Gm-Message-State: AOJu0YxNfO4q3tuJl3cIdxmJHA/4e+jBa/8vmYLf1uCiP3XW9YlVSR9o
- S7imSlJEYAoVWkhDNERrR0LCt/CrrIPriZ6btv+V6L+YEntivsDQdUdz/Lk4clHLU8u7gBMVv1X
- CQvE=
-X-Gm-Gg: ASbGncuq++3Gq1+e6sGOlPckhoGvt6rhPMhTXi4qo9rbsXIVMs1Jpl+wfxOOrBO8gGN
- WhLHs2dHJTPtHcSyEdy9XoofKEC0Q1AE9yCjXJcFT1gq2IDrTzj/MWzXSVIBiOlHsWgxtRsUY5u
- qWg6dIAEO2nhAlm1qkgBjrHn3rffLGPfg1AxBKaU/s1s//bdkZxKUGQS5At/89MeHP+WQC7lw3v
- UKZUEeba1VajGvef+kP/2BUxyIzzEWe0ZSMKWp7flajS1ZA/6PSTS0nIwDN3KoxdFBZmnBLjkhJ
- VP4YqB9LCjD1+zEf3j+ReYVF1/t/p+uERgYI0LKRYkx/EHqgTQkQCjfmBwWDRScp25Zkm8TW9uX
- 4pbojGpYFJkuOLq9mWMoZpcYyiaHDdj7saynNnNNngKU=
-X-Google-Smtp-Source: AGHT+IG1RqSg3SQDjjtbuLJbrSC1tnIgbXLLDuT7laF6AIY751qeDEE3ZqdiI8dRS/EtdrPioe+gMA==
-X-Received: by 2002:a17:907:3c83:b0:b04:2252:7cb1 with SMTP id
- a640c23a62f3a-b04b13fe9d2mr1475592566b.12.1757496496150; 
- Wed, 10 Sep 2025 02:28:16 -0700 (PDT)
+ bh=5FceR7TWYCPkhRKQx5zb/EsAXruY8fECG0se9Gtjmck=;
+ b=UuRErKEL8R9vCYbQfmRSHi9YU4RS3C5GWWwCJirTslxcl0W0jzc4QtP0RNfMAMZ1A6
+ EGrYk84Bs35h1xH8T+woeKC6VfjV+7LM41l+j4RzoXiAn8BfjUfmHcVV+3j5ILw5nBLu
+ fsuEefJB/gwCK/Fj5LQRU0TqCW7R5swT2E/16VVgJ/3+UCnmTQgDWjikr0rJtnpfUc+T
+ 5jOJPnhqjCVjTXqnJkQGE7NHC5a7VfNIocwItptzBx0QNjBEPIKOIiPl3Ts5c73m5YDc
+ rfjMd8CLIjbSv92+btMsQMynt1Lpb2DagW4+TclWWUYDSGL1OBG9s4RVBsyP20Y0GFVH
+ XKIA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCU75soQe2eWzyOpgUWbNFc++oVn4IbKxew/Byux3WOmYvO9V3K2td5q9ZAJCm9q94kKK5g=@lists.linux.it
+X-Gm-Message-State: AOJu0YzK0tvc5XpOgEQEUwMaMoUPS1L4/FjCn0uji1aoOymEsK9WiyTz
+ on5iy4s+K+Q5O/1v+V/66BSf8n7C0vuoIWIeRm9GoTbasvive5a59Sb0PG+56QqFCA==
+X-Gm-Gg: ASbGncvE0jl46twg8JjZ0OTBjo7QhhJN8AAQwEnRvLv6n4SrLnR+SUBVAqsMjcvfiq2
+ TB14OqAWQgJLGAHMRl+5DY7BwzwXHiKK5Mvh+QdfS0U36nmLemVb/wPEj9lMntMZeYccHUg4ELR
+ IdNQwMS2ms2Z1GQvN+irbU4lNCOoU+ndoY4zLdgSFvoDg+1U5Rjcw3qXnB/BfegSBlruXyrA6Dq
+ Zy0Bx8N3Mkuy9YI9sBKDhEOJlH+TcJbUf9J3117z/rF0l7Um4hrcNddmCwma7HWT424nq2TzN7s
+ ES01A+/ocZI1afHIRp+smJxSSKd5XTUke6nvwU57KLIQY+haBrnZdGPg5pyNtkGXH9InGoR15Mg
+ MpddlpIUemoGfHELz/fy03iYrw+C7+UioT+FjB0XzDkw=
+X-Google-Smtp-Source: AGHT+IG5+qfpe2iGYV73DyfCn/7bVbfYElwjwLj5Kp6vDn+d+H0GRExqHq46hp0bIi73tU3DWg03Nw==
+X-Received: by 2002:a17:907:1ca2:b0:b04:16fd:9539 with SMTP id
+ a640c23a62f3a-b0493291242mr1999779966b.29.1757501383685; 
+ Wed, 10 Sep 2025 03:49:43 -0700 (PDT)
 Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
  by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-b07833ffa54sm133061266b.90.2025.09.10.02.28.15
+ 4fb4d7f45d1cf-62c018f6656sm3159423a12.36.2025.09.10.03.49.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 10 Sep 2025 02:28:15 -0700 (PDT)
-Date: Wed, 10 Sep 2025 09:28:14 +0000
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aMFErlYQPS-iH20n@localhost>
+ Wed, 10 Sep 2025 03:49:43 -0700 (PDT)
+Date: Wed, 10 Sep 2025 10:49:42 +0000
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <aMFXkjca4Wc8qavK@localhost>
 References: <20240812-process_mrelease-v2-0-e61249986a0a@suse.com>
- <20240812-process_mrelease-v2-3-e61249986a0a@suse.com>
+ <20240812-process_mrelease-v2-2-e61249986a0a@suse.com>
+ <ZuMWkXlr5XPzosn3@yuki.lan>
+ <3c6b0382-ca23-4ac0-ae2d-2cf5ca294abf@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240812-process_mrelease-v2-3-e61249986a0a@suse.com>
+In-Reply-To: <3c6b0382-ca23-4ac0-ae2d-2cf5ca294abf@suse.com>
 X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] Add process_mrelease02 test
+Subject: Re: [LTP] [PATCH v2 2/3] Add process_mrelease01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,146 +104,143 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Wei Gao via ltp <ltp@lists.linux.it>
 Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
+Cc: Michal Hocko <mhocko@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Aug 12, 2024 at 01:46:30PM +0200, Andrea Cervesato wrote:
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
+On Thu, Oct 10, 2024 at 02:33:09PM +0200, Andrea Cervesato via ltp wrote:
+> Hi!
 > 
-> This test verifies that process_mrelease() syscall correctly raises
-> the errors.
-> 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  runtest/syscalls                                   |  1 +
->  .../kernel/syscalls/process_mrelease/.gitignore    |  1 +
->  .../syscalls/process_mrelease/process_mrelease02.c | 84 ++++++++++++++++++++++
->  3 files changed, 86 insertions(+)
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index de90e9ba3..f3cb7d465 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1074,6 +1074,7 @@ preadv203_64 preadv203_64
->  profil01 profil01
->  
->  process_mrelease01 process_mrelease01
-> +process_mrelease02 process_mrelease02
->  
->  process_vm_readv01 process_vm01 -r
->  process_vm_readv02 process_vm_readv02
-> diff --git a/testcases/kernel/syscalls/process_mrelease/.gitignore b/testcases/kernel/syscalls/process_mrelease/.gitignore
-> index 673983858..f1e7a8fea 100644
-> --- a/testcases/kernel/syscalls/process_mrelease/.gitignore
-> +++ b/testcases/kernel/syscalls/process_mrelease/.gitignore
-> @@ -1 +1,2 @@
->  /process_mrelease01
-> +/process_mrelease02
-> diff --git a/testcases/kernel/syscalls/process_mrelease/process_mrelease02.c b/testcases/kernel/syscalls/process_mrelease/process_mrelease02.c
-> new file mode 100644
-> index 000000000..ced556243
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/process_mrelease/process_mrelease02.c
-> @@ -0,0 +1,84 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2024 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * This test verifies that process_mrelease() syscall is raising errors:
-> + * * EBADF when a bad file descriptor is given
-> + * * EINVAL when flags is not zero
-> + * * EINVAL when memory of a task cannot be released because it's still running
-> + * * ESRCH when child has been closed
-> + */
-> +
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +
-> +static int badfd = -1;
-> +static int pidfd;
-> +
-> +enum {
-> +	NO_CHILD,
-> +	EXIT_CHILD,
-> +	WAIT_CHILD,
-> +};
-> +
-> +static struct tcase {
-> +	int child_type;
-> +	int *fd;
-> +	int flags;
-> +	int exp_errno;
-> +	char *msg;
-> +} tcases[] = {
-> +	{NO_CHILD, &badfd, 0, EBADF, "bad file descriptor"},
-> +	{WAIT_CHILD, &pidfd, -1, EINVAL, "flags is not 0"},
-> +	{WAIT_CHILD, &pidfd, 0, EINVAL, "task memory cannot be released"},
-> +	{EXIT_CHILD, &pidfd, 0, ESRCH, "child is not running"},
-> +};
-> +
-> +static void run(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +	int status;
-> +
-> +	if (tc->child_type != NO_CHILD) {
-> +		pid_t pid;
-> +
-> +		pid = SAFE_FORK();
-> +		if (!pid) {
-> +			if (tc->child_type == WAIT_CHILD)
-> +				TST_CHECKPOINT_WAIT(0);
-> +
-> +			exit(0);
-> +		}
-> +
-> +		tst_res(TINFO, "Spawned waiting child with pid=%d", pid);
-> +
-> +		pidfd = SAFE_PIDFD_OPEN(pid, 0);
-> +
-> +		if (tc->child_type == EXIT_CHILD)
-> +			SAFE_WAITPID(pid, &status, 0);
-> +	}
-> +
-> +	TST_EXP_FAIL(tst_syscall(__NR_process_mrelease, *tc->fd, tc->flags),
-> +		tc->exp_errno,
-> +		"%s", tc->msg);
-> +
-> +	if (tc->child_type != NO_CHILD) {
-> +		if (tc->child_type == WAIT_CHILD)
-> +			TST_CHECKPOINT_WAKE(0);
-> +
-> +		SAFE_CLOSE(pidfd);
-> +	}
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test = run,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.needs_root = 1,
-> +	.forks_child = 1,
-> +	.min_kver = "5.15",
-
-I suggest also using syscall check process_mrelease support or not like
-kernel selftest. Such as:
-        if (!syscall(__NR_process_mrelease, -1, 0) || errno != EBADF) {
-                if (errno == ENOSYS) {
-                        ksft_test_result_skip("process_mrelease not implemented\n");
-                        ksft_finished();
-
-> +	.needs_checkpoints = 1,
-> +};
-> 
-> -- 
-> 2.43.0
-> 
+> On 9/12/24 18:28, Cyril Hrubis wrote:
+> > Hi!
+> > > +static void run(void)
+> > > +{
+> > > +	int ret;
+> > > +	int pidfd;
+> > > +	int status;
+> > > +	pid_t pid;
+> > > +	int restart;
+> > > +
+> > > +	for (mem_size = CHUNK; mem_size < MAX_SIZE_MB; mem_size += CHUNK) {
+> > > +		restart = 0;
+> > > +
+> > > +		pid = SAFE_FORK();
+> > > +		if (!pid) {
+> > > +			do_child(mem_size);
+> > > +			exit(0);
+> > > +		}
+> > > +
+> > > +		TST_CHECKPOINT_WAIT(0);
+> > > +
+> > > +		tst_disable_oom_protection(pid);
+> > > +
+> > > +		if (!memory_is_mapped(pid, *mem_addr, *mem_addr + mem_size)) {
+> > > +			tst_res(TFAIL, "Memory is not mapped");
+> > > +			break;
+> > > +		}
+> > > +
+> > > +		pidfd = SAFE_PIDFD_OPEN(pid, 0);
+> > > +
+> > > +		tst_res(TINFO, "Parent: killing child with PID=%d", pid);
+> > > +
+> > > +		SAFE_KILL(pid, SIGKILL);
+> > > +
+> > > +		ret = tst_syscall(__NR_process_mrelease, pidfd, 0);
+> > > +		if (ret == -1) {
+> > > +			if (errno == ESRCH) {
+> > > +				tst_res(TINFO, "Parent: child terminated before "
+> > > +					"process_mrelease(). Increase memory size and "
+> > > +					"restart test");
+> > > +
+> > > +				restart = 1;
+> > Does this even happen? I suppose that until the child has been waited
+> > for you shouldn't get ESRCH at all. The memory may be freed
+> > asynchronously but the pidfd is valid until we do waitpid, at least
+> > that's what the description says:
+> > 
+> > https://lore.kernel.org/linux-mm/20210902220029.bfau3YxNP%25akpm@linux-foundation.org/
+> > 
+> > But selftest seems to do the same loop on ESRCH so either the test or
+> > the documentation is wrong.
+If you add extra sleep between SAFE_KILL(pid, SIGKILL) and tst_syscall
+you will get ESRCH, so i guess child process has chance to be fully
+reaped before process_mrelease syscall.
+> > 
+> > Michal any idea which is correct?
+> > 
+> > > +			} else {
+> > > +				tst_res(TFAIL | TERRNO, "process_mrelease(%d,0) error", pidfd);
+> > > +			}
+> > > +		} else {
+> > > +			int timeout_ms = 1000;
+> > > +
+> > > +			tst_res(TPASS, "process_mrelease(%d,0) passed", pidfd);
+> > > +
+> > > +			while (memory_is_mapped(pid, *mem_addr, *mem_addr + mem_size) &&
+> > > +				timeout_ms--)
+> > > +				usleep(1000);
+> > > +
+> > > +			if (memory_is_mapped(pid, *mem_addr, *mem_addr + mem_size))
+> > > +				tst_res(TFAIL, "Memory is still mapped inside child memory");
+> > > +			else
+> > > +				tst_res(TPASS, "Memory has been released");
+> > As far as I understand this this will likely pass even without the
+> > process_mrelease() call since the process address space is being teared
+> > down anyways. But I do not have an idea how to make things better. I
+> > guess that if we wanted to know for sure we would have to run some
+> > complex statistics with and without the syscall and compare the
+> > timings...
+> I don't know, I tried to port the kselftest that seemed to be reasonable.
+> Let me know if this is still good, otherwise we need to change the whole
+> algorithm. But honestly I don't see many other options than the current one.
+kselftest does not has this memory check, i have done some test in my
+env, this memory check can pass even without the process_mrelease, so i
+think we do not need this check.
+> > 
+> > > +		}
+> > > +
+> > > +		SAFE_WAITPID(-1, &status, 0);
+> > > +		SAFE_CLOSE(pidfd);
+> > > +
+> > > +		if (!restart)
+> > > +			break;
+> > > +	}
+> > > +}
+> > > +
+> > > +static void setup(void)
+> > > +{
+> > > +	mem_addr = SAFE_MMAP(NULL,
+> > > +		sizeof(unsigned long),
+> > > +		PROT_READ | PROT_WRITE,
+> > > +		MAP_SHARED | MAP_ANON,
+> > > +		0, 0);
+> > > +}
+> > > +
+> > > +static void cleanup(void)
+> > > +{
+> > > +	if (mem_addr)
+> > > +		SAFE_MUNMAP(mem_addr, sizeof(unsigned long));
+> > > +}
+> > > +
+> > > +static struct tst_test test = {
+> > > +	.test_all = run,
+> > > +	.setup = setup,
+> > > +	.cleanup = cleanup,
+> > > +	.needs_root = 1,
+> > > +	.forks_child = 1,
+> > > +	.min_kver = "5.15",
+> > > +	.needs_checkpoints = 1,
+> > > +};
+> > > 
+> > > -- 
+> > > 2.43.0
+> > > 
+> > > 
+> > > -- 
+> > > Mailing list info: https://lists.linux.it/listinfo/ltp
+> Andrea
 > 
 > -- 
 > Mailing list info: https://lists.linux.it/listinfo/ltp
