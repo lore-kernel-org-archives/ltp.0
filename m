@@ -4,74 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36832CA0EE8
-	for <ltp@archiver.kernel.org>; Wed, 17 Sep 2025 07:58:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4724BCAC598
+	for <ltp@archiver.kernel.org>; Wed, 17 Sep 2025 09:07:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1758095881; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=8tfNbdFVrEh/ocpjCk7qwDdb5igrndazspZC4eQ08Vo=;
- b=EEBOozu0I2cZLepV48Iq4AqL5wmnx6SaMcOQr3tpnPfKuyGIszrZ+70fIOYGVc79gI2w3
- kLgMqEuzcAm0OdFqYkVzc25cGVKofmHZ4GhmVPtnteTiZCQgJV24Xf0fsH9zb/99JFVqdNQ
- aTvy+11OknliFEC3+Xzii5PtR38kDCQ=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1758100064; h=date : to :
+ message-id : mime-version : content-type : subject : list-id :
+ list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : sender : from;
+ bh=wOzr2jkboekSKE+k3jJZkDSN/zUdSFIIOHiWLlQlQjY=;
+ b=RYseUGaCxspYqdfku6bQoyiuZ29uf47tBoR6Up2ntUDRX4LNQi+4vK6JZ4bClS+anS6v2
+ QIBNOBHnYuYcsq80fUe2ozRDtvYR41OHuceSZtlPeiaWeDpDm773onCOBP79TPNO9J++41X
+ 4tWIQkQ/YuLmngxaSjsGmSGDUjECti0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 77A013CDBE7
-	for <ltp@archiver.kernel.org>; Wed, 17 Sep 2025 09:58:01 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 2CDAF3CDBDE
+	for <ltp@archiver.kernel.org>; Wed, 17 Sep 2025 11:07:44 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1CE0B3CD858
- for <ltp@lists.linux.it>; Wed, 17 Sep 2025 09:57:39 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 332983C7F94
+ for <ltp@lists.linux.it>; Wed, 17 Sep 2025 11:07:22 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 572891400C67
- for <ltp@lists.linux.it>; Wed, 17 Sep 2025 09:57:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1758095856;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=Ny8zjO7w54/u5MkHhTGTHxgrkzVQTR77iuLzzDDmRiA=;
- b=CEUf2aPnprffWcd747hkucdGkx1Ne8FsfuleAyjdqC/79NR8tHjRDZM9ILOZyNq/eAZQkT
- GWU3sLjt31SO7iEzGJEz2UI+fcWH47/9kAWMuUoLnM3zTV3ZtZO7ILlyP1jPpgR3zUlP4P
- zwBltsttwZXhRyT8Vg108wvuJ+W0Xho=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-131-7S_O64xbPWaATnUHZE3zxA-1; Wed,
- 17 Sep 2025 03:57:34 -0400
-X-MC-Unique: 7S_O64xbPWaATnUHZE3zxA-1
-X-Mimecast-MFC-AGG-ID: 7S_O64xbPWaATnUHZE3zxA_1758095853
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 5F8F618004D8
- for <ltp@lists.linux.it>; Wed, 17 Sep 2025 07:57:33 +0000 (UTC)
-Received: from fedora-laptop-x1.redhat.com (unknown [10.72.112.245])
- by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id 3C44119560BA
- for <ltp@lists.linux.it>; Wed, 17 Sep 2025 07:57:31 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Wed, 17 Sep 2025 15:57:29 +0800
-Message-ID: <20250917075729.30093-1-liwang@redhat.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F1C89600811
+ for <ltp@lists.linux.it>; Wed, 17 Sep 2025 11:07:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1758100039;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type;
+ bh=ihdP8UrJlzj9uDVJ57NzyWhsnnCcsDToS+KlMTZuPZc=;
+ b=UkNClEbc1IemnASWQH4eBbv0RwJjBtzEVQy2z0KEW2JCaoJJMprUpkH5fBPxLOCup8Vyee
+ rWyuGV+0nJbbxSYkaNf+qXtfmoVwimpouPrJ50dsi3JKQ3lutXh/iQDx3uhON54hLAb5X4
+ F7N49X4i/8y4r6gJ3267vrnz7dpuFkw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-588-OG1gIeZBO52btg5zC0HdYw-1; Wed, 17 Sep 2025 05:07:16 -0400
+X-MC-Unique: OG1gIeZBO52btg5zC0HdYw-1
+X-Mimecast-MFC-AGG-ID: OG1gIeZBO52btg5zC0HdYw_1758100036
+Received: by mail-wr1-f72.google.com with SMTP id
+ ffacd0b85a97d-3eb5130a9efso1908014f8f.2
+ for <ltp@lists.linux.it>; Wed, 17 Sep 2025 02:07:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1758100035; x=1758704835;
+ h=user-agent:content-disposition:mime-version:message-id:subject:to
+ :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=+J67pTOz12UMJkEupyLERbrjHqhTfeIe4BJj/hgOoY4=;
+ b=K4xdz20IF3r5ZQ28dZFdtTamrNG5BkciTARxoUpymBwQiJ0yE6pMOXKmE8nQEeEoCf
+ pZyA/apz2d7lqPe9zWRbo862DnaUDTXyoEt3lTM7gPRiFhoJQKUINMn47SP9QBOwoLed
+ ODS6DXO4J3X1JdRpTJEnpWAmgHmf9O1wdJeveCPhbqKFT3EFNc9IMXfwm+EaWwTIuSwd
+ z5zxqlTvvA1gM5Xfe33Ku1jcxjDtPU3jZudRRu4VzNbiAQYLoNrX981s4KCo1hU15eOU
+ uNGrrhTm7zCqVocR1E/KFy0jO/riGwc+AG1iwsK/+4yw8wPj+Omc1Y+uX2GiEKixuUlg
+ Q8Dw==
+X-Gm-Message-State: AOJu0YxUpomYd9invZ2vmX2QL0immxES7WxZFjRFUOWQaQaAqnOwcSHr
+ Ihi7zzgwyptXTYbbwA+TJhAkhC5EvZzAPEStWwiO1ginJBO5oAw45SAz9Cek9e9cXTVBP7XkkUI
+ Wme2IvbgBxaMor5j037vqpUiOiAf5LdtKmgac4gzvMoqfP7xCii63lu0fjNuBwZJGbtRnnenS1J
+ C7z3jQop0cIF4tPDz44TOG0GKTXCdgmF/pWug=
+X-Gm-Gg: ASbGncujGMMEG/rsS8//GIH0rbNPkDIgpxh9YqM8fAnkE1I7eBxa1DhO9c/RdIuf6aK
+ OQGTr0jwc4AlTI0p95i4aMoo/oe66fHdpEjMcEqFJ9+ywy1nvMEmMvi3VisMxt+wVwVDYtFXjg8
+ 4jcaQgNhunGa4K5XN5QitqQAUzZf4gjXhgss1T8g4jRaQ7fEAC+Xpw/vFOUx9206PQvuIDkKY6a
+ kErxZT6ns4cyGIdKqZJcuTkZIgMwo62vgdvYalXiwM8npWyBa9EcXSnzx5Ewxsc+TikuvSh5git
+ Ekjx4STmDV1Dym2d0eH4bi6PVMuw0dyqljGxj82Bdd+qav61WCV9aKRZPg==
+X-Received: by 2002:a5d:64c7:0:b0:3ec:db87:e8a8 with SMTP id
+ ffacd0b85a97d-3ecdfa07b86mr1009954f8f.37.1758100035556; 
+ Wed, 17 Sep 2025 02:07:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHDbnwPtC3cq6g5WQx0ON7MiVlfpUknJHcqZvfMsFM9Z0Zu/o/+7vieRGcOuJpwuZ9k+i1vAw==
+X-Received: by 2002:a5d:64c7:0:b0:3ec:db87:e8a8 with SMTP id
+ ffacd0b85a97d-3ecdfa07b86mr1009922f8f.37.1758100035014; 
+ Wed, 17 Sep 2025 02:07:15 -0700 (PDT)
+Received: from lida.tpb.lab.eng.brq.redhat.com ([85.93.96.130])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-461383b7a40sm28613315e9.11.2025.09.17.02.07.13
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 17 Sep 2025 02:07:14 -0700 (PDT)
+Date: Wed, 17 Sep 2025 11:07:12 +0200
+To: ltp@lists.linux.it, valgrind-developers@lists.sourceforge.net,
+ Mark Wielaard <mark@klomp.org>, Martin Cermak <mcermak@redhat.com>,
+ "Bird, Tim" <Tim.Bird@sony.com>
+Message-ID: <20250917090712.5tbidlr7yvqvikj7@lida.tpb.lab.eng.brq.redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+User-Agent: NeoMutt/20180716
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: PMwZUxw6aHSlX7-tuhhCQv4vqqVWySL6t2TA3KE4Y90_1758095853
+X-Mimecast-MFC-PROC-ID: CIP3pnRrrWL59oLZheNEkchCPWhYulSFpETN_Jti9E8_1758100036
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+Content-Type: multipart/mixed; boundary="fb2tnhla5owrwfrb"
+Content-Disposition: inline
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] mmap22: Improve MAP_DROPPABLE test stability using
- mincore()
+Subject: [LTP] Proposal for new LTP config knob: LTP_QUIET
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,189 +108,168 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Martin Cermak via ltp <ltp@lists.linux.it>
+Reply-To: Martin Cermak <mcermak@redhat.com>
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The current mmap22 test validates MAP_DROPPABLE by writing to the
-allocated memory and checking for zero-filled pages under memory
-pressure. However, this approach is unreliable because:
+--fb2tnhla5owrwfrb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-  - Child process memory pressure (malloc + single writes) may not
-    reliably trigger cgroup memory reclaim.
-  - Checking memory content (alloc[i] == 0) is insufficient to
-    confirm kernel reclamation, as pages may remain resident but not
-    overwritten.
-  - Race conditions during child cleanup could leave residual cgroup
-    processes.
+Hi folks,
 
-Error logs:
+some time back, LTP_REPRODUCIBLE_OUTPUT was introduced in LTP.
+I'd like to propose a new, related LTP knob for our Valgrind
+test automation purposes: LTP_QUIET.  See attached patch.
 
-   command: mmap22
-   tst_tmpdir.c:316: TINFO: Using /tmp/LTP_mmaxrtyKb as tmpdir (xfs filesystem)
-   tst_test.c:1953: TINFO: LTP version: 20250530
-   tst_kconfig.c:88: TINFO: Parsing kernel config '/lib/modules/6.12.0-130.1445_2041086229.el10.x86_64+rt/build/.config'
-   tst_test.c:1774: TINFO: Overall timeout per run is 0h 05m 54s
-   tst_test.c:1837: TINFO: Killed the leftover descendant processes
-   tst_test.c:1846: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
-   tst_test.c:1848: TBROK: Test killed! (timeout?)
-   tst_cgroup.c:1043: TBROK: unlinkat(5</sys/fs/cgroup/ltp>, 'test-92902', AT_REMOVEDIR): EBUSY (16)
-   ...
+LTP_QUIET is supposed to suppress certain types of test output
+messages, such as: TCONF, TWARN, TINFO, and TDEBUG.  This would
+help us keep our test logs briefer, while still keeping the
+information we need in the logs.
 
-This patch improves the test in the following ways:
+Please, consider merging upstream.
 
-  * Use mincore() to precisely detect if MAP_DROPPABLE pages have
-    been reclaimed by the kernel.
-  * Replace the old child loop with a stronger memory pressure loop
-    (malloc + memset), ensuring cgroup limits are hit quickly.
-  * Use SAFE_KILL + SAFE_WAITPID for robust child cleanup.
-  * Extend runtime and add short sleeps to reduce busy looping and
-    stabilize test results.
-  * Record page size during setup for consistent use across functions.
+Thank you,
+Martin
 
-As a result, the test becomes more stable, deterministic, and easier
-to reproduce under different kernels and configurations.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
+
+--fb2tnhla5owrwfrb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="0001-Introduce-and-use-LTP_QUIET.patch"
+
+From fb13e461ac76f6843f0fd9cc37ff42b971e8057c Mon Sep 17 00:00:00 2001
+From: Martin Cermak <mcermak@redhat.com>
+Date: Tue, 16 Sep 2025 16:15:22 +0200
+Subject: [PATCH] Introduce and use LTP_QUIET
+
+Introduce LTP_QUIET env variable.  When set to  1 or y, it will
+suppress printing TCONF, TWARN, TINFO, and TDEBUG messages, making
+valgrind ltp test logs cleaner.  In some cases such as  eventfd2_03,
+shmctl05, mlock03, poll02, prctl09, setsockopt10, and select02 this
+update avoids false positives.
 ---
- testcases/kernel/syscalls/mmap/mmap22.c | 78 ++++++++++++++++---------
- 1 file changed, 52 insertions(+), 26 deletions(-)
+ .../0002-Introduce-LTP_QUIET-env-var.patch    | 73 +++++++++++++++++++
+ auxprogs/ltp-tester.sh                        |  7 ++
+ 2 files changed, 80 insertions(+)
+ create mode 100644 auxprogs/ltp-patches/0002-Introduce-LTP_QUIET-env-var.patch
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap22.c b/testcases/kernel/syscalls/mmap/mmap22.c
-index 1507fdfa7..b9db8e1b6 100644
---- a/testcases/kernel/syscalls/mmap/mmap22.c
-+++ b/testcases/kernel/syscalls/mmap/mmap22.c
-@@ -9,12 +9,19 @@
-  * Test mmap(2) with MAP_DROPPABLE flag.
-  *
-  * Test base on kernel selftests/mm/droppable.c
-+ *
-+ * Ensure that memory allocated with MAP_DROPPABLE can be reclaimed
-+ * under memory pressure within a cgroup.
-  */
- 
- #define _GNU_SOURCE
- #include <errno.h>
- #include <stdio.h>
- #include <sys/types.h>
-+#include <sys/mman.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <sys/wait.h>
- #include "tst_test.h"
- #include "lapi/mmap.h"
- 
-@@ -22,13 +29,24 @@
- #define ALLOC_SIZE (128 * TST_MB)
- 
- static struct tst_cg_group *cg_child;
-+static pid_t child;
-+static int page_size;
+diff --git a/auxprogs/ltp-patches/0002-Introduce-LTP_QUIET-env-var.patch b/auxprogs/ltp-patches/0002-Introduce-LTP_QUIET-env-var.patch
+new file mode 100644
+index 000000000..a77162bfc
+--- /dev/null
++++ b/auxprogs/ltp-patches/0002-Introduce-LTP_QUIET-env-var.patch
+@@ -0,0 +1,73 @@
++From 183df3240f8e7ca38fbe2fd472c31c9417ae7eb2 Mon Sep 17 00:00:00 2001
++From: Martin Cermak <mcermak@redhat.com>
++Date: Tue, 16 Sep 2025 15:46:40 +0200
++Subject: [PATCH] Introduce LTP_QUIET env var
 +
-+static void stress_child(void)
-+{
-+	for (;;) {
-+		char *buf = malloc(page_size);
-+		if (!buf)
-+			exit(1);
-+		memset(buf, 'B', page_size);
-+	}
-+}
- 
- static void test_mmap(void)
- {
--	size_t alloc_size = ALLOC_SIZE;
--	size_t page_size = getpagesize();
- 	char *alloc;
--	pid_t child;
-+	unsigned char *vec;
-+	size_t npages = ALLOC_SIZE / page_size;
- 
- 	cg_child = tst_cg_group_mk(tst_cg, "child");
- 	SAFE_CG_PRINTF(tst_cg, "memory.max", "%d", MEM_LIMIT);
-@@ -38,38 +56,45 @@ static void test_mmap(void)
- 		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%d", MEM_LIMIT);
- 	SAFE_CG_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
- 
--	alloc = SAFE_MMAP(0, alloc_size, PROT_READ | PROT_WRITE,
-+	alloc = SAFE_MMAP(0, ALLOC_SIZE, PROT_READ | PROT_WRITE,
- 			MAP_ANONYMOUS | MAP_DROPPABLE, -1, 0);
- 
--	memset(alloc, 'A', alloc_size);
--	for (size_t i = 0; i < alloc_size; i += page_size) {
--		if (alloc[i]  != 'A')
--			tst_res(TFAIL, "memset failed");
--	}
-+	memset(alloc, 'A', ALLOC_SIZE);
++Introduce LTP_QUIET env variable.  When set to  1 or y, it will
++suppress printing TCONF, TWARN, TINFO, and TDEBUG messages.
++---
++ lib/tst_test.c | 11 +++++++++++
++ 1 file changed, 11 insertions(+)
 +
-+	vec = SAFE_MALLOC(npages);
- 
- 	child = SAFE_FORK();
--	if (!child) {
--		for (;;)
--			*(char *)malloc(page_size) = 'B';
--	}
-+	if (!child)
-+		stress_child();
- 
--	while (1) {
--		for (size_t i = 0; i < alloc_size; i += page_size) {
--			if (!tst_remaining_runtime()) {
--				tst_res(TFAIL, "MAP_DROPPABLE did not drop memory within the timeout period.");
--				goto kill_child;
--			}
--			if (!alloc[i]) {
--				tst_res(TPASS, "MAP_DROPPABLE test pass.");
--				goto kill_child;
-+	for (;;) {
-+		if (!tst_remaining_runtime()) {
-+			tst_res(TFAIL, "MAP_DROPPABLE did not drop pages within timeout");
-+			goto cleanup;
-+		}
++diff --git a/lib/tst_test.c b/lib/tst_test.c
++index 92872cc89..609a7b075 100644
++--- a/lib/tst_test.c
+++++ b/lib/tst_test.c
++@@ -68,6 +68,7 @@ static int iterations = 1;
++ static float duration = -1;
++ static float timeout_mul = -1;
++ static int reproducible_output;
+++static int quiet_output;
++ 
++ struct context {
++ 	int32_t lib_pid;
++@@ -307,15 +308,19 @@ static void print_result(const char *file, const int lineno, int ttype,
++ 		res = "TBROK";
++ 	break;
++ 	case TCONF:
+++		if (quiet_output) return;
++ 		res = "TCONF";
++ 	break;
++ 	case TWARN:
+++		if (quiet_output) return;
++ 		res = "TWARN";
++ 	break;
++ 	case TINFO:
+++		if (quiet_output) return;
++ 		res = "TINFO";
++ 	break;
++ 	case TDEBUG:
+++		if (quiet_output) return;
++ 		res = "TDEBUG";
++ 	break;
++ 	default:
++@@ -670,6 +675,7 @@ static void print_help(void)
++ 	fprintf(stderr, "LTP_DEV_FS_TYPE          Filesystem used for testing (default: %s)\n", DEFAULT_FS_TYPE);
++ 	fprintf(stderr, "LTP_ENABLE_DEBUG         Print debug messages (set 1 or y)\n");
++ 	fprintf(stderr, "LTP_REPRODUCIBLE_OUTPUT  Values 1 or y discard the actual content of the messages printed by the test\n");
+++	fprintf(stderr, "LTP_QUIET                Values 1 or y will suppress printing TCONF, TWARN, TINFO, and TDEBUG messages\n");
++ 	fprintf(stderr, "LTP_SINGLE_FS_TYPE       Specifies filesystem instead all supported (for .all_filesystems)\n");
++ 	fprintf(stderr, "LTP_FORCE_SINGLE_FS_TYPE Testing only. The same as LTP_SINGLE_FS_TYPE but ignores test skiplist.\n");
++ 	fprintf(stderr, "LTP_TIMEOUT_MUL          Timeout multiplier (must be a number >=1)\n");
++@@ -1361,6 +1367,7 @@ static void do_setup(int argc, char *argv[])
++ {
++ 	char *tdebug_env = getenv("LTP_ENABLE_DEBUG");
++ 	char *reproducible_env = getenv("LTP_REPRODUCIBLE_OUTPUT");
+++	char *quiet_env = getenv("LTP_QUIET");
++ 
++ 	if (!tst_test)
++ 		tst_brk(TBROK, "No tests to run");
++@@ -1391,6 +1398,10 @@ static void do_setup(int argc, char *argv[])
++ 	    (!strcmp(reproducible_env, "1") || !strcmp(reproducible_env, "y")))
++ 		reproducible_output = 1;
++ 
+++	if (quiet_env &&
+++	    (!strcmp(quiet_env, "1") || !strcmp(quiet_env, "y")))
+++		quiet_output = 1;
+++
++ 	assert_test_fn();
++ 
++ 	TCID = tcid = get_tcid(argv);
++-- 
++2.48.1
 +
-+		if (mincore(alloc, ALLOC_SIZE, vec) == -1)
-+			tst_brk(TBROK | TERRNO, "mincore failed");
+diff --git a/auxprogs/ltp-tester.sh b/auxprogs/ltp-tester.sh
+index ba8fd8be4..a95c603c5 100755
+--- a/auxprogs/ltp-tester.sh
++++ b/auxprogs/ltp-tester.sh
+@@ -21,6 +21,7 @@ PARALLEL_JOBS=${PARALLEL_JOBS:-$(nproc)}
+ # https://lore.kernel.org/ltp/20250505195003.GB137650@pevik/T/#t
+ export LTP_COLORIZE_OUTPUT=0
+ export LTP_REPRODUCIBLE_OUTPUT=1
++export LTP_QUIET=1
+ 
+ # Initialize LOGDIR for bunsen upload (https://sourceware.org/bunsen/)
+ mkdir -p $LOGDIR; rm -rf ${LOGDIR:?}/*
+@@ -110,4 +111,10 @@ done
+ 
+ wait
+ 
++echo -e "\nBrief LTP test results summary"
++echo "-----------------------------------------"
++find $LOGDIR -type f -name '*.trs' -exec grep -F ':test-result:' '{}' ';' |\
++    sort -r | uniq -c | awk '{print $NF": "$1}'
++echo -e "-----------------------------------------\n"
 +
-+		for (size_t i = 0; i < npages; i++) {
-+			if (!(vec[i] & 1)) {
-+				tst_res(TPASS, "MAP_DROPPABLE page reclaimed by kernel");
-+				goto cleanup;
- 			}
- 		}
-+
-+		usleep(100000);
- 	}
- 
--kill_child:
--	SAFE_KILL(child, SIGKILL);
--	SAFE_WAITPID(child, NULL, 0);
--	SAFE_MUNMAP(alloc, alloc_size);
-+cleanup:
-+	if (child > 0) {
-+		SAFE_KILL(child, SIGKILL);
-+		SAFE_WAITPID(child, NULL, 0);
-+	}
-+	SAFE_MUNMAP(alloc, ALLOC_SIZE);
-+	free(vec);
-+	SAFE_CG_PRINTF(tst_cg_drain, "cgroup.procs", "%d", getpid());
-+	cg_child = tst_cg_group_rm(cg_child);
- }
- 
- static void setup(void)
-@@ -84,6 +109,7 @@ static void setup(void)
- 		tst_brk(TBROK | TERRNO, "mmap() MAP_DROPPABLE failed");
- 
- 	SAFE_MUNMAP(addr, 1);
-+	page_size = getpagesize();
- }
- 
- static void cleanup(void)
+ echo "TESTING FINISHED, logs in $LOGDIR"
 -- 
-2.51.0
+2.48.1
+
+
+--fb2tnhla5owrwfrb
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--fb2tnhla5owrwfrb--
+
