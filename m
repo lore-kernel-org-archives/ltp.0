@@ -4,97 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C91AFCA0EE8
-	for <ltp@archiver.kernel.org>; Wed, 17 Sep 2025 10:37:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 282C8CA0EE8
+	for <ltp@archiver.kernel.org>; Wed, 17 Sep 2025 11:13:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1758107631; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=rqiNZ5eXHOwguivF0k+7j3k8O3+4qWtcwbEKBfpHiPc=;
+ b=ErjCI0gpEdMkl53g8pWcYVsL4LY5AjZoSHhTg5rBhWt8s4uQk3HIHGBh5E+PyjRz612Kp
+ dMnpsMOWjdipdum/m7APGm/YlzoPqKT1zJs3mpXApgLTmMAmivmHIE+pZmBLQNNkRv9HROu
+ KI+JPTA0Joo7FqWN2ZfDqxl0N+ZBT2o=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 347003CDC09
-	for <ltp@archiver.kernel.org>; Wed, 17 Sep 2025 12:37:38 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 7AEAC3CDC16
+	for <ltp@archiver.kernel.org>; Wed, 17 Sep 2025 13:13:51 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C02C73CDBC5
- for <ltp@lists.linux.it>; Wed, 17 Sep 2025 12:37:20 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 88E973C0433
+ for <ltp@lists.linux.it>; Wed, 17 Sep 2025 13:13:30 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 33F68200ADE
- for <ltp@lists.linux.it>; Wed, 17 Sep 2025 12:37:19 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DAC0A22213;
- Wed, 17 Sep 2025 10:37:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1758105439;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A45F11A00994
+ for <ltp@lists.linux.it>; Wed, 17 Sep 2025 13:13:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1758107606;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fHfj9QtuGM/YVm6SM5sRd/dmqh4SWqXV8g4WkVrDlVg=;
- b=PWjOgVLT4/uHgMx7F/hlGDL7HnO1blZQp+xtO+O3fkqTYx8nWnUxKfsC2ZwYVbPlIU4j5u
- k0duQRnlg0b3Mi2ssf+PFFCb3KX4r7x8GV35AyLfVAs18HXrInOiQZK/G7CS0fuTuD4LIE
- nojqERp6b3Fzl9yBf/cvr0wqhmD8q6E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1758105439;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fHfj9QtuGM/YVm6SM5sRd/dmqh4SWqXV8g4WkVrDlVg=;
- b=oLLXR30/G1MltrofTWh0Tt3PH8cAKp6m4wFVlWnkcad5zawv0daMmam/mWkB3jX/uBOPyC
- 2FoSR2UT8c5atQAQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1758105438;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fHfj9QtuGM/YVm6SM5sRd/dmqh4SWqXV8g4WkVrDlVg=;
- b=n4Ua4kyDu/DPvcRy6VWmSEZWLCkKpv8t0tSq93vMrwPHzSc/3dmiEhHLLnHMPy6k3zgZ6t
- Fp1IdUovDc25qOjX/P7EwBIC3cHkTWD/W16ZjvRCO2Br2gC0OSRz3fKsA34GA6rNVa9nWM
- jOGRLMlYepUwrpcKMdMu8vsexMGhx44=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1758105438;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fHfj9QtuGM/YVm6SM5sRd/dmqh4SWqXV8g4WkVrDlVg=;
- b=ksdqcHVx2JiCobwv3asOX3TTucM3l08BRJkPpssoJz4HvDKvUl/8vvi1ME9qYL41kIrbVT
- 2NIv42rGb9LqSFAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A8C5313A92;
- Wed, 17 Sep 2025 10:37:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id /vcsKF6Pymj+OAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 17 Sep 2025 10:37:18 +0000
-Date: Wed, 17 Sep 2025 12:37:17 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Cermak <mcermak@redhat.com>
-Message-ID: <20250917103717.GB336745@pevik>
+ bh=HnbDe0mNJ2jfGL2mN2xss7N3a/EF1XZLDkotMXKW/J4=;
+ b=FhGiY3HBVxz1+1NPnFjCvdSFYgjTMr8FzwcVx5dO1TBzza+5LDVPM4lzDb1zIj81f6XxMU
+ C/vxQCJkEWgzK9gx9DE/h2vAPtWGqD7YGgebC53bdjudHd+FdtZjbyE18L+yd4UHJ8WYTI
+ KT+j54MN2be8mnIEcsBROSuv82RYNUI=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-384-nf99quPYN2KVq18nA1YKfQ-1; Wed, 17 Sep 2025 07:13:23 -0400
+X-MC-Unique: nf99quPYN2KVq18nA1YKfQ-1
+X-Mimecast-MFC-AGG-ID: nf99quPYN2KVq18nA1YKfQ_1758107602
+Received: by mail-wm1-f70.google.com with SMTP id
+ 5b1f17b1804b1-45cb604427fso41379275e9.1
+ for <ltp@lists.linux.it>; Wed, 17 Sep 2025 04:13:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1758107602; x=1758712402;
+ h=user-agent:in-reply-to:content-disposition:mime-version:references
+ :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=HnbDe0mNJ2jfGL2mN2xss7N3a/EF1XZLDkotMXKW/J4=;
+ b=GmKn1ZVtgQT/pZYO3s1/ipFfe7IG1bc9v6oMYur4j7HaeaL2JjDZZmkYqc0vJTa5Hu
+ vnW5l18S8yGscnYR+Va5I75mEXBF1rIQ73caJIjmuVFT810FJNRBn9hDWGEL1HsRqwNY
+ zp5szvpQroz4xNrp25a7NAxxaooc+L/hYqi5xp42kQqBzGpW1dLIEn9XaauJWlyKmUSv
+ AiXASeZ0HUxp30N3NVAT3IUYxYsbCpk3CwfGcS19gTaU2rvLx9ewbl0fy0ynfNQQPwoQ
+ 8yT4hlnDPxEWVBqAJkpskJZbGzUcmr3ik3IJQGYaq6ZK7rCHhDAFUwowMXqHzHLFZxo5
+ LGIw==
+X-Gm-Message-State: AOJu0Yy9SZR4N+WLnZbgeZzpz2zIVH+9fiY0C8k2g/OemRyowkAqugpJ
+ a3e4AKyh+6nKjqHmmoiLNx2QD66BorcCXqsuhD2ZHc6zpwcTTYX9OAdW+gz0HMWHt2G9ccHGmsn
+ Kkw1HvAuVycQS9p7at19EMlaD17B+rB4qXZDaSFciYKpmna2KvEaI
+X-Gm-Gg: ASbGncsBJgQLkZd6cMUpXMH3eNRNT50QPr86i4BMLe8prHHtO3APyrZXMovIeJf8Mgm
+ yZAkxDO+evtL0QfWt0UinYGIdoBYVgOqRjzA6iQnwIc91TnxFY+xiFARgqJkODmIyLV6ALueOSK
+ 8EPIrcw64re0su0x1QeWiHpG4DqwiM9QwW+jDEmgI7QrsWbiTXNtFW6o4pXpQIxlkBSvoP9lrOd
+ pY4DQ9Szt1/UWPNyM4nuzBW4YXo3Ln8ZZfYrNNFjy/tIfmV3BXGftkH+mzupI30vzrjBZOogeW8
+ uuQK4aX+TVVyls+TBWpMORcNQpF2kZ5l2EE0X5442ddFsg9WErkvU2G1gQ==
+X-Received: by 2002:a05:6000:40e0:b0:3e4:1e29:47db with SMTP id
+ ffacd0b85a97d-3ecdfa3c714mr1770782f8f.43.1758107601692; 
+ Wed, 17 Sep 2025 04:13:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFvEJQp9IcTTklTTcVpBCm2nQFyQOAa99Eb8/WyN5aK0JqjIn9e2NphID88a+HTpKgTb/djOw==
+X-Received: by 2002:a05:6000:40e0:b0:3e4:1e29:47db with SMTP id
+ ffacd0b85a97d-3ecdfa3c714mr1770757f8f.43.1758107601310; 
+ Wed, 17 Sep 2025 04:13:21 -0700 (PDT)
+Received: from lida.tpb.lab.eng.brq.redhat.com ([85.93.96.130])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-3ecdfea6965sm1863153f8f.13.2025.09.17.04.13.20
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 17 Sep 2025 04:13:20 -0700 (PDT)
+Date: Wed, 17 Sep 2025 13:13:19 +0200
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <20250917111319.wgfpjmkicmv2rjti@lida.tpb.lab.eng.brq.redhat.com>
 References: <20250917090712.5tbidlr7yvqvikj7@lida.tpb.lab.eng.brq.redhat.com>
+ <20250917103717.GB336745@pevik>
 MIME-Version: 1.0
+In-Reply-To: <20250917103717.GB336745@pevik>
+User-Agent: NeoMutt/20180716
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: G6gLMt8iaOBTThH0MwxJ51hd2yW4F8gSaJZgeyR5aaM_1758107602
+X-Mimecast-Originator: redhat.com
 Content-Disposition: inline
-In-Reply-To: <20250917090712.5tbidlr7yvqvikj7@lida.tpb.lab.eng.brq.redhat.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_SEVEN(0.00)[7];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] Proposal for new LTP config knob: LTP_QUIET
 X-BeenThere: ltp@lists.linux.it
@@ -108,7 +108,8 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Martin Cermak via ltp <ltp@lists.linux.it>
+Reply-To: Martin Cermak <mcermak@redhat.com>
 Cc: valgrind-developers@lists.sourceforge.net, Mark Wielaard <mark@klomp.org>,
  ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
@@ -116,162 +117,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+On  Wed  2025-09-17  12:37 , Petr Vorel wrote:
+> Hi Martin,
+> 
+> > Hi folks,
+> 
+> > some time back, LTP_REPRODUCIBLE_OUTPUT was introduced in LTP.
+> > I'd like to propose a new, related LTP knob for our Valgrind
+> > test automation purposes: LTP_QUIET.  See attached patch.
+> 
+> > LTP_QUIET is supposed to suppress certain types of test output
+> > messages, such as: TCONF, TWARN, TINFO, and TDEBUG.  This would
+> > help us keep our test logs briefer, while still keeping the
+> > information we need in the logs.
+> 
+> > Please, consider merging upstream.
+> 
+> Thanks for contributing this. So the point is to have only the final summary
+> printed, right? (summary of TCONF/TWARN/TBROK/...).
+> 
+> I'm ok for merging this + to introduce the same for shell API (tst_test.sh),
+> although you in valgrind don't use it.  And we could even introduce '-q' getopt
+> (easier for manual debugging).
+> 
+> Do we then want to keep the "reproducible output" part? Or should it quiet
+> replace it?
 
-> Hi folks,
+Hi Petr,  you are right that these two knobs (LTP_QUIET and
+LTP_REPRODUCIBLE_OUTPUT) partly overlap.  In my proposal, LTP_QUIET
+doesn't silence everything.  It does silence TCONF, TWARN, TINFO,
+and TDEBUG messages.  But it keeps TPASS, TFAIL, and TBROK.
 
-> some time back, LTP_REPRODUCIBLE_OUTPUT was introduced in LTP.
-> I'd like to propose a new, related LTP knob for our Valgrind
-> test automation purposes: LTP_QUIET.  See attached patch.
+Suppressing everything except the final summary seemed too
+aggressive to me initially.  But as we speak, it would work for
+Valgrind testing purposes just fine.
 
-> LTP_QUIET is supposed to suppress certain types of test output
-> messages, such as: TCONF, TWARN, TINFO, and TDEBUG.  This would
-> help us keep our test logs briefer, while still keeping the
-> information we need in the logs.
-
-> Please, consider merging upstream.
-
-Thanks for contributing this. So the point is to have only the final summary
-printed, right? (summary of TCONF/TWARN/TBROK/...).
-
-I'm ok for merging this + to introduce the same for shell API (tst_test.sh),
-although you in valgrind don't use it.  And we could even introduce '-q' getopt
-(easier for manual debugging).
-
-Do we then want to keep the "reproducible output" part? Or should it quiet
-replace it?
-
-@Cyril, if you agree, do we dare to have it before the release?
-
-> Thank you,
-> Martin
+> @Cyril, if you agree, do we dare to have it before the release?
 
 
-
-> From fb13e461ac76f6843f0fd9cc37ff42b971e8057c Mon Sep 17 00:00:00 2001
-> From: Martin Cermak <mcermak@redhat.com>
-> Date: Tue, 16 Sep 2025 16:15:22 +0200
-> Subject: [PATCH] Introduce and use LTP_QUIET
-
-> Introduce LTP_QUIET env variable.  When set to  1 or y, it will
-> suppress printing TCONF, TWARN, TINFO, and TDEBUG messages, making
-> valgrind ltp test logs cleaner.  In some cases such as  eventfd2_03,
-> shmctl05, mlock03, poll02, prctl09, setsockopt10, and select02 this
-> update avoids false positives.
-> ---
->  .../0002-Introduce-LTP_QUIET-env-var.patch    | 73 +++++++++++++++++++
->  auxprogs/ltp-tester.sh                        |  7 ++
->  2 files changed, 80 insertions(+)
->  create mode 100644 auxprogs/ltp-patches/0002-Introduce-LTP_QUIET-env-var.patch
-
-> diff --git a/auxprogs/ltp-patches/0002-Introduce-LTP_QUIET-env-var.patch b/auxprogs/ltp-patches/0002-Introduce-LTP_QUIET-env-var.patch
-> new file mode 100644
-> index 000000000..a77162bfc
-> --- /dev/null
-> +++ b/auxprogs/ltp-patches/0002-Introduce-LTP_QUIET-env-var.patch
-> @@ -0,0 +1,73 @@
-> +From 183df3240f8e7ca38fbe2fd472c31c9417ae7eb2 Mon Sep 17 00:00:00 2001
-> +From: Martin Cermak <mcermak@redhat.com>
-> +Date: Tue, 16 Sep 2025 15:46:40 +0200
-> +Subject: [PATCH] Introduce LTP_QUIET env var
-> +
-> +Introduce LTP_QUIET env variable.  When set to  1 or y, it will
-> +suppress printing TCONF, TWARN, TINFO, and TDEBUG messages.
-> +---
-> + lib/tst_test.c | 11 +++++++++++
-> + 1 file changed, 11 insertions(+)
-> +
-> +diff --git a/lib/tst_test.c b/lib/tst_test.c
-> +index 92872cc89..609a7b075 100644
-> +--- a/lib/tst_test.c
-> ++++ b/lib/tst_test.c
-> +@@ -68,6 +68,7 @@ static int iterations = 1;
-> + static float duration = -1;
-> + static float timeout_mul = -1;
-> + static int reproducible_output;
-> ++static int quiet_output;
-> + 
-> + struct context {
-> + 	int32_t lib_pid;
-> +@@ -307,15 +308,19 @@ static void print_result(const char *file, const int lineno, int ttype,
-> + 		res = "TBROK";
-> + 	break;
-> + 	case TCONF:
-> ++		if (quiet_output) return;
-> + 		res = "TCONF";
-> + 	break;
-> + 	case TWARN:
-> ++		if (quiet_output) return;
-> + 		res = "TWARN";
-> + 	break;
-> + 	case TINFO:
-> ++		if (quiet_output) return;
-> + 		res = "TINFO";
-> + 	break;
-> + 	case TDEBUG:
-> ++		if (quiet_output) return;
-> + 		res = "TDEBUG";
-> + 	break;
-> + 	default:
-> +@@ -670,6 +675,7 @@ static void print_help(void)
-> + 	fprintf(stderr, "LTP_DEV_FS_TYPE          Filesystem used for testing (default: %s)\n", DEFAULT_FS_TYPE);
-> + 	fprintf(stderr, "LTP_ENABLE_DEBUG         Print debug messages (set 1 or y)\n");
-> + 	fprintf(stderr, "LTP_REPRODUCIBLE_OUTPUT  Values 1 or y discard the actual content of the messages printed by the test\n");
-> ++	fprintf(stderr, "LTP_QUIET                Values 1 or y will suppress printing TCONF, TWARN, TINFO, and TDEBUG messages\n");
-> + 	fprintf(stderr, "LTP_SINGLE_FS_TYPE       Specifies filesystem instead all supported (for .all_filesystems)\n");
-> + 	fprintf(stderr, "LTP_FORCE_SINGLE_FS_TYPE Testing only. The same as LTP_SINGLE_FS_TYPE but ignores test skiplist.\n");
-> + 	fprintf(stderr, "LTP_TIMEOUT_MUL          Timeout multiplier (must be a number >=1)\n");
-> +@@ -1361,6 +1367,7 @@ static void do_setup(int argc, char *argv[])
-> + {
-> + 	char *tdebug_env = getenv("LTP_ENABLE_DEBUG");
-> + 	char *reproducible_env = getenv("LTP_REPRODUCIBLE_OUTPUT");
-> ++	char *quiet_env = getenv("LTP_QUIET");
-> + 
-> + 	if (!tst_test)
-> + 		tst_brk(TBROK, "No tests to run");
-> +@@ -1391,6 +1398,10 @@ static void do_setup(int argc, char *argv[])
-> + 	    (!strcmp(reproducible_env, "1") || !strcmp(reproducible_env, "y")))
-> + 		reproducible_output = 1;
-> + 
-> ++	if (quiet_env &&
-> ++	    (!strcmp(quiet_env, "1") || !strcmp(quiet_env, "y")))
-> ++		quiet_output = 1;
-> ++
-> + 	assert_test_fn();
-> + 
-> + 	TCID = tcid = get_tcid(argv);
-> +-- 
-> +2.48.1
-> +
-> diff --git a/auxprogs/ltp-tester.sh b/auxprogs/ltp-tester.sh
-> index ba8fd8be4..a95c603c5 100755
-> --- a/auxprogs/ltp-tester.sh
-> +++ b/auxprogs/ltp-tester.sh
-
-This part is your valgrind runner right? (i.e. not for LTP).
-
-Kind regards,
-Petr
-
-> @@ -21,6 +21,7 @@ PARALLEL_JOBS=${PARALLEL_JOBS:-$(nproc)}
->  # https://lore.kernel.org/ltp/20250505195003.GB137650@pevik/T/#t
->  export LTP_COLORIZE_OUTPUT=0
->  export LTP_REPRODUCIBLE_OUTPUT=1
-> +export LTP_QUIET=1
-
->  # Initialize LOGDIR for bunsen upload (https://sourceware.org/bunsen/)
->  mkdir -p $LOGDIR; rm -rf ${LOGDIR:?}/*
-> @@ -110,4 +111,10 @@ done
-
->  wait
-
-> +echo -e "\nBrief LTP test results summary"
-> +echo "-----------------------------------------"
-> +find $LOGDIR -type f -name '*.trs' -exec grep -F ':test-result:' '{}' ';' |\
-> +    sort -r | uniq -c | awk '{print $NF": "$1}'
-> +echo -e "-----------------------------------------\n"
-> +
->  echo "TESTING FINISHED, logs in $LOGDIR"
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
