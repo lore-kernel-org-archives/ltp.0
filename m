@@ -4,99 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1471CAC59A
-	for <ltp@archiver.kernel.org>; Wed, 17 Sep 2025 17:46:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EA24CAC597
+	for <ltp@archiver.kernel.org>; Thu, 18 Sep 2025 10:27:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 123FF3CDC7B
-	for <ltp@archiver.kernel.org>; Wed, 17 Sep 2025 19:46:22 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 01A843CDCFF
+	for <ltp@archiver.kernel.org>; Thu, 18 Sep 2025 12:27:10 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4257F3CD3F8
- for <ltp@lists.linux.it>; Wed, 17 Sep 2025 19:46:04 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id A4C5A3CDBC9
+ for <ltp@lists.linux.it>; Thu, 18 Sep 2025 12:26:53 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8375010005F7
- for <ltp@lists.linux.it>; Wed, 17 Sep 2025 19:46:04 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DA687140005D
+ for <ltp@lists.linux.it>; Thu, 18 Sep 2025 12:26:52 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3DB265BEC9;
- Wed, 17 Sep 2025 17:46:03 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 683843370E;
+ Thu, 18 Sep 2025 10:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1758131163;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PUqcJjIhJDhpseOAcAsRSztwy1b5WBTrhJPI336NrnI=;
- b=lMiOyXWAfj4pbHUoIQ7I/ChbIB4drMnJL2UT9REkwV6QkcTL2CtyKAG79hnHrxQf+M7+DH
- lOP3iKyhQ6X5XBx6mmzslDNjcNS0NtUFLcT2E3qQu95okRbEuVajtSSI290gVFZDIhHWt5
- 7uap4ulSziIGZYGdHrpfnB5Eky1U+m4=
+ t=1758191210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=m3k6NCq9ThFMgnENfwBchg7fSqv7ePRaCT5p4aXg7wk=;
+ b=mke/9QfjtbI88nKOogYQllJQV6T9ibBBzCXXj6dF4/+8NdloH9KYiGSrykgJ8uuoOBQm0m
+ PTCKIYGg9vhH+Vkn1ZUyeTuhQyVM8XeF8tOUOnAbAQ4dDCd3V/0nB2nqaT/JiAEgTcUMDB
+ ICdvkeMACQLXyuIcJpRQbiB74Cql2eo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1758131163;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PUqcJjIhJDhpseOAcAsRSztwy1b5WBTrhJPI336NrnI=;
- b=I+B7Ng+EdQVy55+CX1/DsTG0hAX+NxNutlyByl+cHH5M1dD3NCDbt5ypB5RBsrsarJrwcc
- RJYK4+k9WXGfCdBA==
-Authentication-Results: smtp-out2.suse.de;
+ s=susede2_ed25519; t=1758191210;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=m3k6NCq9ThFMgnENfwBchg7fSqv7ePRaCT5p4aXg7wk=;
+ b=9i5W7NkQ7zWSldVaG0MkRNX4MGdLbAerggt10F5CBhsm2Cwc3w+w1uuTnbFt9PfyHBV/XX
+ KkbVRUf4NRsiVZDQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1758131163;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PUqcJjIhJDhpseOAcAsRSztwy1b5WBTrhJPI336NrnI=;
- b=lMiOyXWAfj4pbHUoIQ7I/ChbIB4drMnJL2UT9REkwV6QkcTL2CtyKAG79hnHrxQf+M7+DH
- lOP3iKyhQ6X5XBx6mmzslDNjcNS0NtUFLcT2E3qQu95okRbEuVajtSSI290gVFZDIhHWt5
- 7uap4ulSziIGZYGdHrpfnB5Eky1U+m4=
+ t=1758191209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=m3k6NCq9ThFMgnENfwBchg7fSqv7ePRaCT5p4aXg7wk=;
+ b=vKvETKgitM5gw27KaajfwgOMHoK3TFu6U+ekpBp4uOAqWxbSfj8X8RlaVNocKoGxBHL9nE
+ +f9p/squcvqa7oxHnkepSen78KwilzjkuN06ItWhhl2mgX38z/9KUbPuxhIAWUMZ10nhzJ
+ r2VU05LRascPhaBBHBQw2Ukv4RhGYkw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1758131163;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PUqcJjIhJDhpseOAcAsRSztwy1b5WBTrhJPI336NrnI=;
- b=I+B7Ng+EdQVy55+CX1/DsTG0hAX+NxNutlyByl+cHH5M1dD3NCDbt5ypB5RBsrsarJrwcc
- RJYK4+k9WXGfCdBA==
+ s=susede2_ed25519; t=1758191209;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=m3k6NCq9ThFMgnENfwBchg7fSqv7ePRaCT5p4aXg7wk=;
+ b=Eespccwz1Eotd6KgE9kccmYy1/H49BtbUNgheKfJMD7TItE9Mx3AA5YU1vmvclnhYqr3RS
+ 1c8zgBIkFK70jdDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0EAF6137C3;
- Wed, 17 Sep 2025 17:46:02 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 251D213A51;
+ Thu, 18 Sep 2025 10:26:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id bO59O9rzymhCSAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 17 Sep 2025 17:46:02 +0000
-Date: Wed, 17 Sep 2025 19:46:00 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1l77B2ney2iubQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 18 Sep 2025 10:26:49 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <20250917174600.GA354055@pevik>
-References: <20250917165403.6038-1-akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Thu, 18 Sep 2025 12:26:46 +0200
+Message-ID: <20250918102646.403590-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250917165403.6038-1-akumar@suse.de>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_HAS_DN(0.00)[];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.999];
+ MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_DN_SOME(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email, suse.cz:mid, suse.cz:email,
+ suse.com:email, imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] ioctl_pidfd05: Check if PIDFD_INFO_EXIT is
- available
+Subject: [LTP] [COMMITTED] Revert "ima_policy.sh: Optimize check for policy
+ writable"
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,41 +100,99 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: linux-integrity@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
+This reverts commit 31bb2bbdd3ecfe4b4557d3678f80fe61ace340d0.
 
-> This test also needs this check as it might fail with
-> ioctl_pidfd05.c:45: TFAIL: ioctl(pidfd, PIDFD_GET_INFO, NULL) expected EINVAL: ENOTTY (25)
-> ioctl_pidfd05.c:46: TFAIL: ioctl(pidfd, PIDFD_GET_INFO_SHORT, info_invalid) expected EINVAL: ENOTTY (25)
-> when system does not have PIDFD_INFO_EXIT implementation.
+c38b528783 demonstrated a bug introuduced by 31bb2bbdd3 on SUT on kernel
+without CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+on tmpfs TMPDIR fails on umount:
+...
+ima_policy 2 TCONF: IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)
+ima_policy 2 TCONF: IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)
+umount: /tmp/LTP_ima_policy.23MpPS2XWr/mntpoint: target is busy.
+ima_policy 2 TINFO: umount(/tmp/LTP_ima_policy.23MpPS2XWr/mntpoint) failed, try 1 ...
+ima_policy 2 TINFO: Likely gvfsd-trash is probing newly mounted  fs, kill it to speed up tests.
 
-Thanks for the fix!.  As a quick fix this would work, because
-ioctl_pidfd_info_exit_supported() is using ioctl(fd, PIDFD_GET_INFO, ...).
+on non-tmpfs TMPDIR (fails to remove temporary directory):
+...
+ima_policy 2 ima_policy 2 TCONF: IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)
+TCONF: IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)
+rm: cannot remove '/var/tmp/LTP_ima_policy.bujyrIYMGz': No such file or directory
 
-But because PIDFD_GET_INFO was added in 6.12:
-cdda1f26e74b ("pidfd: add ioctl to retrieve pid info") # v6.12-rc3
-and PIDFD_INFO_EXIT in v6.14:
-7477d7dce48a ("pidfs: allow to retrieve exit information") # v6.14-rc1
-it'd make sense to create ioctl_pidfd_get_info_supported() which would
-be also used by ioctl_pidfd_info_exit_supported().
-Why? There is 6.12 LTSS kernel branch which will get TCONF instead of being
-tested.
+Both errors are caused due load_policy() calling require_policy_writable(),
+which calls tst_brk(). load_policy() spaws a new process, therefore it
+should not call tst_brk (or otherwise exit a test) because ima_cleanup()
+is then called twice (which causes the above problems).
 
-It could be done ioctl_pidfd_get_info_supported() could return int64_t mask
-(__u64 mask struct pidfd_info member if supported or -1 if ioctl() returned -1.
-ioctl_pidfd_info_exit_supported() would just evaluate that. Other option is just
-code duplicity.
+Reported-by: Avinesh Kumar <akumar@suse.de>
+Reported-by: Petr Cervinka <pcervinka@suse.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ .../kernel/security/integrity/ima/tests/ima_policy.sh  | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Kind regards,
-Petr
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+index 490c8b6c2e..d66f261a81 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2009 IBM Corporation
+-# Copyright (c) 2018-2025 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
+ # Author: Mimi Zohar <zohar@linux.ibm.com>
+ #
+ # Test replacing the default integrity measurement policy.
+@@ -11,6 +11,8 @@ TST_CNT=2
+ 
+ setup()
+ {
++	require_policy_writable
++
+ 	VALID_POLICY="$TST_DATAROOT/measure.policy"
+ 	[ -f $VALID_POLICY ] || tst_brk TCONF "missing $VALID_POLICY"
+ 
+@@ -18,11 +20,13 @@ setup()
+ 	[ -f $INVALID_POLICY ] || tst_brk TCONF "missing $INVALID_POLICY"
+ }
+ 
++# NOTE: function spaws a new process, therefore it should not call tst_brk()
++# (or otherwise exit a test), because that calls ima_cleanup() twice (which
++# breaks umount on TMPDIR or removing TMPDIR).
+ load_policy()
+ {
+ 	local ret
+ 
+-	require_policy_writable
+ 	exec 2>/dev/null 4>$IMA_POLICY
+ 	[ $? -eq 0 ] || exit 1
+ 
+@@ -42,6 +46,7 @@ test1()
+ 
+ 	local p1
+ 
++	require_policy_writable
+ 	load_policy $INVALID_POLICY & p1=$!
+ 	wait "$p1"
+ 	if [ $? -ne 0 ]; then
+@@ -57,6 +62,7 @@ test2()
+ 
+ 	local p1 p2 rc1 rc2
+ 
++	require_policy_writable
+ 	load_policy $VALID_POLICY & p1=$!
+ 	load_policy $VALID_POLICY & p2=$!
+ 	wait "$p1"; rc1=$?
+-- 
+2.51.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
