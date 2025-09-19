@@ -4,98 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21FB5CAC592
-	for <ltp@archiver.kernel.org>; Fri, 19 Sep 2025 11:54:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E06ECCAC59A
+	for <ltp@archiver.kernel.org>; Fri, 19 Sep 2025 13:22:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3113D3CDD41
-	for <ltp@archiver.kernel.org>; Fri, 19 Sep 2025 13:54:07 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 424133CDD4C
+	for <ltp@archiver.kernel.org>; Fri, 19 Sep 2025 15:22:36 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4A63E3CD779
- for <ltp@lists.linux.it>; Fri, 19 Sep 2025 13:53:50 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 628413C23A0
+ for <ltp@lists.linux.it>; Fri, 19 Sep 2025 15:22:19 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 84C566008C5
- for <ltp@lists.linux.it>; Fri, 19 Sep 2025 13:53:49 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D51D42002C8
+ for <ltp@lists.linux.it>; Fri, 19 Sep 2025 15:22:18 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E8DD6336A7;
- Fri, 19 Sep 2025 11:53:47 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7B9431F38F;
+ Fri, 19 Sep 2025 13:22:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1758282828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1758288137;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YvtWImJsOyYAsoEvTFAEBhecAgEa+XCTTsGEV7aW8dI=;
- b=jrYH6gHhUF2uzDRaCGlZXtlf/X6So7ULJtzyJ8gKa87KXu8inQX0dtpOQegl5lmVuUOEfn
- 27xlr2WIPOxFaqzEUWzJCkiv6jRfrcTGsexlO/ydUyWkK5TyyhUpo5IzYdoYCbawnnwvQY
- RsAL5nIjw/+FJpJe9+sr9b0DDEn3IrE=
+ bh=WXoOSoeaWSLKs2by/wvOW9xl5zBFSL8Ni+nXR+mbDXs=;
+ b=pAC6HdbhNEL75aB1xnojjJAEpUOtnWQCCs4r+e5b8bUb6hUhOe47zF/dmdYBCyCU2wbv42
+ Ld+v2UnUzYjx4TQoa9plwATOCtUilb119Jr7b49g39t4xWORlGOM/iCA3o7LPiwrjRqzf3
+ 8KqitZch1oQ+8Hb1LkexKwwtuK4KDcw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1758282828;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1758288137;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YvtWImJsOyYAsoEvTFAEBhecAgEa+XCTTsGEV7aW8dI=;
- b=XOfZTj/TmJzGS5aVMagaDAOlt2kLoVooHQlo3MRyXmridRojOxNTaDvyjHxsNS2vQPSzLq
- feDZc2b2RzAoTGBQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=WXoOSoeaWSLKs2by/wvOW9xl5zBFSL8Ni+nXR+mbDXs=;
+ b=qr04ktzUEvMbIQkg6YwvQn/DvkrlebyFPu9lmyhY0ylmE1CDicMFa1Abft3LZs2AuiyHOj
+ NgL4gDYBNDnX2SCw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Ti3EVQey;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kJcHM2M9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1758282827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1758288136;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YvtWImJsOyYAsoEvTFAEBhecAgEa+XCTTsGEV7aW8dI=;
- b=wjM7Jp7IKbJfq1c8/WX+xsEZ0a+D/jIqzYzYO4Ktf9SQvlVee8XYOE3K1JIbwqn/lL7Q+A
- cdVAi7HhW7fAgx/YAEgnKZQ6MZLsYPsCNQy+Ph78w5nevW+AXKZlzFuGo79SLUGLoxFGiN
- 06Q1YPPcohlRSM1OpjGiux5i/DYk+/o=
+ bh=WXoOSoeaWSLKs2by/wvOW9xl5zBFSL8Ni+nXR+mbDXs=;
+ b=Ti3EVQeyG+m8jnFdBxnYf+enHZoyDazXuvfllo16Nf3YWMt2q4LracVkRtpNN1EXILujsX
+ hfC7DBj5LS2vo8BN4WZdSnCUPOprVcooyIM3EmYheXS+3KiB/4b6D1j6dXpo9uy535zokw
+ xYzZiaiKE1WSXI3N0jLBiadh4I6YwQU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1758282827;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1758288136;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YvtWImJsOyYAsoEvTFAEBhecAgEa+XCTTsGEV7aW8dI=;
- b=gdnlNICEk2Tgv2yjASwABTF4/W2DPNrAD3+625Py7wauAsJXuQ+ePJSjJSOD73JQF9MXw0
- KX4BDAQ5i+WP9tCQ==
+ bh=WXoOSoeaWSLKs2by/wvOW9xl5zBFSL8Ni+nXR+mbDXs=;
+ b=kJcHM2M9yqX1msqaO9/7Ole76hWcfV7k0VhEvCszQg4PIVvghOg6FUr0d0+kycLBZuFFF5
+ pm4kd5MBk0gpYqDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D1C2E13A39;
- Fri, 19 Sep 2025 11:53:47 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3F06413A78;
+ Fri, 19 Sep 2025 13:22:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UFqYMUtEzWhnbQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 19 Sep 2025 11:53:47 +0000
-Date: Fri, 19 Sep 2025 13:54:30 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Ricardo =?iso-8859-1?Q?B=2E_Marli=E8re?= <rbm@suse.com>
-Message-ID: <aM1EdqFm48EyjtWz@yuki.lan>
-References: <20250520-fixes-pthread_rwlock_rdlock-v1-1-402ee45114cc@suse.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Y64PDQhZzWjcEgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 19 Sep 2025 13:22:16 +0000
+Date: Fri, 19 Sep 2025 15:22:14 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20250919132214.GA499767@pevik>
+References: <20250902031236.5719-1-wegao@suse.com>
+ <20250902111809.6071-1-wegao@suse.com> <aMAUhpxi1GaDBfGF@yuki.lan>
+ <aMDV1aTCZ--ElqfY@localhost> <20250918145335.GA432906@pevik>
+ <aMwms-DHHeF5U7PG@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250520-fixes-pthread_rwlock_rdlock-v1-1-402ee45114cc@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
+In-Reply-To: <aMwms-DHHeF5U7PG@yuki.lan>
+X-Rspamd-Queue-Id: 7B9431F38F
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+ ARC_NA(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[4];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] open_posix: Update pthread_rwlock_rdlock 2nd
- assertion
+Subject: Re: [LTP] [PATCH v3] ioctl_loop01.c: Use proper device for
+ partitioning
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,58 +122,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> The pthread_rwlock_rdlock/2-*.c tests are broken because they rely on an
-> old version of the POSIX standard which says:
-> 
->   If the Thread Execution Scheduling option is supported, and the threads
->   involved in the lock are executing with the scheduling policies
->   SCHED_FIFO or SCHED_RR, the calling thread shall not acquire the lock if
->   a writer holds the lock or if writers of higher or equal priority are
->   blocked on the lock; otherwise, the calling thread shall acquire the
->   lock.
-> 
-> Whereas the new version says:
-> 
->   If the Thread Execution Scheduling option is supported, and the threads
->   that hold or are blocked on the lock are executing with the scheduling
->   policies SCHED_FIFO or SCHED_RR, the calling thread shall not acquire the
->   lock if a writer holds the lock or if the calling thread does not already
->   hold a read lock and writers of higher or equal priority are blocked on
->   the lock; otherwise, the calling thread shall acquire the lock.
+Hi Cyril,
 
-I wouldn't say that these tests are broken because of the change in
-POSIX. The change in POSIX only fixed the specs in the case of recursive
-locking that is situation where we have a thread that has rdlock and
-attempts to do rwlock while there is higher priority thread that
-attempts rwlock. In that situation the previous definition would caused
-deadlock.
+> Hi!
+> > > > The test should have needs_cmds set to parted (we do that properly in
+> > > > ioctl09.c) then we do not have to handle the 255 exit code here since
+> > > > the test would be skipped if it's missing.
 
-But as far as I can see these tests do not attempt recursive locks, so
-that part of POSIX wasn't really problem.
+> > > If we use needs_cmds all the check will be skipped in this case.
 
-> This behaviour is not supported by default on GNU/Linux, so add a call to
-> Glibc pthread_rwlockattr_setkind_np() to set the correct lock kind as a
-> prerequisite to the 2-1.c and 2-2.c tests.
+> > @Cyril: only single test require 'parted' as I reported in v1 [1].
+> > Yeah, code gets slightly more complicated just because single test requires
+> > parted. Or you would not care? IMHO it does not make sense to split test into
+> > two (too much duplicity).
 
-This is where the problem is, glibc decided to deviate from the POSIX
-since they think that the standard is not well designed. That is a glibc
-design choice. I'm not againts working around that with requesting POSIX
-confirming variant on glibc, but the patch should clearly say this
-instead.
+> The problem here is how to handle the metadata. One posible solution is
+> to add a notion of optional dependencies so that we would have
+> 'needs_foo' and 'wants_foo'. Or turn the needs_foo into a structure with
+> an .optional boolean flag.
 
-Also we should split this into two patches, one that adjusts the specs
-and one that adds glibc workaround.
++1 but that should wait after the release.
+Can I merge it with your RBT with the following diff below?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
+
+> > But TINFO message should be turned in TCONF so that people notice.
+> > tst_res(TINFO, "Current environment doesn't have parted disk, skip it");
+
+> Yes please.
+
++++ testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+@@ -59,7 +59,7 @@ static void check_loop_value(int set_flag, int get_flag, int autoclear_field)
+ 	TST_ASSERT_INT(autoclear_path, autoclear_field);
+ 
+ 	if (!parted_sup) {
+-		tst_res(TINFO, "Current environment doesn't have parted disk, skip it");
++		tst_res(TCONF, "Current environment doesn't have parted disk, skip it");
+ 		return;
+ 	}
+ 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
