@@ -4,63 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 098F1CAC5A7
-	for <ltp@archiver.kernel.org>; Tue, 23 Sep 2025 15:03:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C38F0CAC5AC
+	for <ltp@archiver.kernel.org>; Tue, 23 Sep 2025 15:33:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2C04E3CDEA7
-	for <ltp@archiver.kernel.org>; Tue, 23 Sep 2025 17:03:55 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 4C98C3CDEAB
+	for <ltp@archiver.kernel.org>; Tue, 23 Sep 2025 17:33:09 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8B8A03CAC1E
- for <ltp@lists.linux.it>; Tue, 23 Sep 2025 17:03:39 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 8BD633CDD49
+ for <ltp@lists.linux.it>; Tue, 23 Sep 2025 17:32:52 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D0393600272
- for <ltp@lists.linux.it>; Tue, 23 Sep 2025 17:03:38 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EE3721000924
+ for <ltp@lists.linux.it>; Tue, 23 Sep 2025 17:32:47 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 91E0F1F7F2;
- Tue, 23 Sep 2025 15:03:37 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 95ECF1F803;
+ Tue, 23 Sep 2025 15:32:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1758641566; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=7lFsmlQf8AKvpCYQRMGfSGTmoEN8GpjLZxdlNLqA/YQ=;
+ b=xmXab6jaAdBh9DOkOJZqbm0doFq0v0FCgynnNZ0FH1/wDy+kM3Oet+jAFpcqdJ9rDpCX+w
+ 9mvm3EbtHRl7WzYUOYbHRblzxSxXrS58X5/8Gn3A0+HGeidvobfOn0IrKtIFOxs2b/PKLz
+ Q45xfiDr0+kcEQwd6dxI8R9telDOgxI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1758641566;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=7lFsmlQf8AKvpCYQRMGfSGTmoEN8GpjLZxdlNLqA/YQ=;
+ b=bhHEQxA5axVYRzUzy5Ka6/WZEbWHyPPxf6ZE3zShZPl5YFQyFeUi3uE4977/eQXbGumZX6
+ z4YgIB1CD5SpToBA==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xmXab6ja;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=bhHEQxA5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1758641566; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=7lFsmlQf8AKvpCYQRMGfSGTmoEN8GpjLZxdlNLqA/YQ=;
+ b=xmXab6jaAdBh9DOkOJZqbm0doFq0v0FCgynnNZ0FH1/wDy+kM3Oet+jAFpcqdJ9rDpCX+w
+ 9mvm3EbtHRl7WzYUOYbHRblzxSxXrS58X5/8Gn3A0+HGeidvobfOn0IrKtIFOxs2b/PKLz
+ Q45xfiDr0+kcEQwd6dxI8R9telDOgxI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1758641566;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=7lFsmlQf8AKvpCYQRMGfSGTmoEN8GpjLZxdlNLqA/YQ=;
+ b=bhHEQxA5axVYRzUzy5Ka6/WZEbWHyPPxf6ZE3zShZPl5YFQyFeUi3uE4977/eQXbGumZX6
+ z4YgIB1CD5SpToBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 867101388C;
- Tue, 23 Sep 2025 15:03:37 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E2AB1388C;
+ Tue, 23 Sep 2025 15:32:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 7d/WIMm20miFUQAAD6G6ig
- (envelope-from <akumar@suse.de>); Tue, 23 Sep 2025 15:03:37 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Tue, 23 Sep 2025 17:03:36 +0200
-Message-ID: <20250923150337.19821-1-akumar@suse.de>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2EyHIp690minWwAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Tue, 23 Sep 2025 15:32:46 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: andrea.cervesato@suse.de,
+	ltp@lists.linux.it
+Date: Tue, 23 Sep 2025 17:32:24 +0200
+Message-ID: <20250923153234.73227-1-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <aNKJP8fKNn6JcT5I@yuki.lan>
-References: <aNKJP8fKNn6JcT5I@yuki.lan>
 MIME-Version: 1.0
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim,suse.cz:email];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: 95ECF1F803
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 91E0F1F7F2
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] Introduce ioctl_pidfd_get_info_supported() function
+Subject: [LTP] [PATCH] file_attr02: Enable reflinks and fix blocksize
+ detection
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,97 +118,82 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-use this routine in ioctl_pidfd05 before proceeding with the test
+Copy on write XFS features require reflink support. Enable it in mkfs
+options for older systems which don't enable it by default and mount
+the filesystem explicitly with checks for feature support.
 
-Suggested-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
+Also use the correct (filesystem) blocksize instead of block device
+blocksize.
+
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/syscalls/ioctl/ioctl_pidfd.h | 42 +++++++++++++++++++
- .../kernel/syscalls/ioctl/ioctl_pidfd05.c     |  9 +++-
- 2 files changed, 50 insertions(+), 1 deletion(-)
+ .../kernel/syscalls/file_attr/file_attr02.c   | 30 ++++++++++++++-----
+ 1 file changed, 23 insertions(+), 7 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_pidfd.h b/testcases/kernel/syscalls/ioctl/ioctl_pidfd.h
-index 811f969cd..29bc60cfb 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_pidfd.h
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_pidfd.h
-@@ -9,6 +9,48 @@
- #include "tst_test.h"
- #include "lapi/pidfd.h"
+diff --git a/testcases/kernel/syscalls/file_attr/file_attr02.c b/testcases/kernel/syscalls/file_attr/file_attr02.c
+index 4e0d87f0f..d565a2687 100644
+--- a/testcases/kernel/syscalls/file_attr/file_attr02.c
++++ b/testcases/kernel/syscalls/file_attr/file_attr02.c
+@@ -41,9 +41,18 @@ static void run(void)
  
-+static inline bool ioctl_pidfd_get_info_supported(void)
-+{
-+	pid_t pid;
-+	int pidfd, ret;
-+	int supported = 0;
-+	struct pidfd_info info;
-+
-+	if (tst_kvercmp(6, 12, 0) >= 0)
-+		return 1;
-+
-+	memset(&info, 0, sizeof(struct pidfd_info));
-+
-+	pid = SAFE_FORK();
-+	if (!pid)
-+		exit(100);
-+
-+	pidfd = SAFE_PIDFD_OPEN(pid, 0);
-+	SAFE_WAITPID(pid, NULL, 0);
-+
-+	ret = ioctl(pidfd, PIDFD_GET_INFO, &info);
-+	SAFE_CLOSE(pidfd);
-+
-+	if (ret == -1) {
-+		/* - ENOTTY: kernel too old, ioctl(PIDFD_GET_INFO) not implemented */
-+		if (errno == ENOTTY)
-+			supported = 0;
-+
-+		/* - EINVAL: ioctl(PIDFD_GET_INFO) exists but args invalid
-+		 * - ESRCH: ioctl(PIDFD_GET_INFO) exists but task already exited
-+		 * supported in both cases, but info.mask not set
-+		 */
-+		else if (errno == EINVAL || errno == ESRCH)
-+			supported = 1;
-+		else
-+			tst_brk(TBROK | TERRNO, "unexpected ioctl(PIDFD_GET_INFO) error");
-+	} else {
-+		supported = 1;
-+	}
-+
-+	return supported;
-+}
-+
- static inline int ioctl_pidfd_info_exit_supported(void)
+ static void setup(void)
  {
- 	int ret;
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_pidfd05.c b/testcases/kernel/syscalls/ioctl/ioctl_pidfd05.c
-index c379717b3..d20c6f074 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_pidfd05.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_pidfd05.c
-@@ -14,7 +14,7 @@
- #include "tst_test.h"
- #include "lapi/pidfd.h"
- #include "lapi/sched.h"
--#include "lapi/ioctl.h"
-+#include "ioctl_pidfd.h"
+-	int block_size;
++	struct stat statbuf;
  
- struct pidfd_info_invalid {
- 	uint32_t dummy;
-@@ -48,8 +48,15 @@ static void run(void)
- 	SAFE_CLOSE(pidfd);
+-	block_size = tst_dev_block_size(MNTPOINT);
++	SAFE_MKDIR(MNTPOINT, 0755);
++	TEST(mount(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL));
++
++	if (TST_RET == -1 && TST_ERR == EOPNOTSUPP)
++		tst_brk(TCONF, "Kernel does not support XFS reflinks");
++
++	if (TST_RET)
++		tst_brk(TBROK | TTERRNO, "Mount failed");
++
++	SAFE_STAT(MNTPOINT, &statbuf);
+ 
+ 	dfd = SAFE_OPEN(MNTPOINT, O_RDONLY);
+ 	fd = SAFE_CREAT(MNTPOINT "/" FILENAME, 0777);
+@@ -52,8 +61,8 @@ static void setup(void)
+ 
+ 	xattr.fsx_xflags |= FS_XFLAG_EXTSIZE;
+ 	xattr.fsx_xflags |= FS_XFLAG_COWEXTSIZE;
+-	xattr.fsx_extsize = BLOCKS * block_size;
+-	xattr.fsx_cowextsize = BLOCKS * block_size;
++	xattr.fsx_extsize = BLOCKS * statbuf.st_blksize;
++	xattr.fsx_cowextsize = BLOCKS * statbuf.st_blksize;
+ 	xattr.fsx_projid = PROJID;
+ 
+ 	SAFE_IOCTL(fd, FS_IOC_FSSETXATTR, &xattr);
+@@ -72,17 +81,24 @@ static void cleanup(void)
+ 
+ 	if (dfd != -1)
+ 		SAFE_CLOSE(dfd);
++
++	if (tst_is_mounted(MNTPOINT))
++		SAFE_UMOUNT(MNTPOINT);
  }
  
-+static void setup(void)
-+{
-+	if (!ioctl_pidfd_get_info_supported())
-+		tst_brk(TCONF, "ioctl(PIDFD_GET_INFO) is not implemented");
-+}
-+
  static struct tst_test test = {
  	.test_all = run,
-+	.setup = setup,
- 	.forks_child = 1,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+-	.mntpoint = MNTPOINT,
+ 	.needs_root = 1,
+-	.mount_device = 1,
++	.format_device = 1,
+ 	.filesystems = (struct tst_fs []) {
+-		{.type = "xfs"},
++		{
++			.type = "xfs",
++			.mkfs_opts = (const char *const[]){
++				"-m", "reflink=1", NULL
++			},
++		},
+ 		{}
+ 	},
  	.bufs = (struct tst_buffers []) {
- 		{&args, .size = sizeof(*args)},
 -- 
 2.51.0
 
