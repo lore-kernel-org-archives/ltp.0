@@ -4,66 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E15ACA100F
-	for <ltp@archiver.kernel.org>; Mon, 22 Sep 2025 21:27:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20FB7CAC5A7
+	for <ltp@archiver.kernel.org>; Tue, 23 Sep 2025 02:28:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1758594518; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=mSoyiP3DBy9ypoQKTvlqCcx7dYcLsRByDR4CH3u+RYw=;
+ b=QdifgLTy0WOyMSSWBCql7FgxOeTh6f18hiKypnAZAMdO1WtIqkuxbD5kSpouxSfEFyPHD
+ 93ZWyOCF42Sa0AJ1WrJKAneJ22/QOC3tGayjnnqj3FIRDMTJWHn/omXodF41swa3+kpoXHK
+ z4cJZ2aggcMqZ9HhM5O8F0J7LxI4dR4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8449A3CDE91
-	for <ltp@archiver.kernel.org>; Mon, 22 Sep 2025 23:27:12 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 4598F3CDE78
+	for <ltp@archiver.kernel.org>; Tue, 23 Sep 2025 04:28:38 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 171B23C6EF3
- for <ltp@lists.linux.it>; Mon, 22 Sep 2025 23:26:56 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 0C4F23C2566
+ for <ltp@lists.linux.it>; Tue, 23 Sep 2025 04:28:18 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7635A1000405
- for <ltp@lists.linux.it>; Mon, 22 Sep 2025 23:26:56 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4ECEE22D25;
- Mon, 22 Sep 2025 21:26:55 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 30DCF1388C;
- Mon, 22 Sep 2025 21:26:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id zKEeCx+/0WgzDQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 22 Sep 2025 21:26:55 +0000
-Date: Mon, 22 Sep 2025 23:26:45 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20250922212645.GA57626@pevik>
-References: <20250918152640.1146279-1-mark@klomp.org>
- <aND_aLgsukouVATL@yuki.lan>
- <20250922082452.GH19408@gnu.wildebeest.org>
- <aNEJyIv9QdQdyKQN@yuki.lan>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0C902600B2A
+ for <ltp@lists.linux.it>; Tue, 23 Sep 2025 04:28:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1758594496;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WhDuVbJYxp20nc6Eho9UZu6hjWmwa3aZcAWW9LucoCc=;
+ b=RGriGOo0NAlp5Glg7LhAKM4jo6TiNuMjCJ63wAeQO/hwxhYjNvq4iybNizbYDYKh3Dmaos
+ 7wvQkHMzuI+w8EHYVqVGRqpMuGFXfJ0xYAv6rBjrsSv5J/1kIUWMxqm41684n0hQYf+5rG
+ 0RoX2oZD0df88pLw3XP/9mLYJtMM+8Y=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-308-4I2BTvr_NiqKRy0Q32RBvQ-1; Mon, 22 Sep 2025 22:28:13 -0400
+X-MC-Unique: 4I2BTvr_NiqKRy0Q32RBvQ-1
+X-Mimecast-MFC-AGG-ID: 4I2BTvr_NiqKRy0Q32RBvQ_1758594493
+Received: by mail-pl1-f197.google.com with SMTP id
+ d9443c01a7336-24ae30bd2d0so45268055ad.3
+ for <ltp@lists.linux.it>; Mon, 22 Sep 2025 19:28:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1758594493; x=1759199293;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=WhDuVbJYxp20nc6Eho9UZu6hjWmwa3aZcAWW9LucoCc=;
+ b=enJepiiixTY7FJmdn+E8o6BjRFKHRJsG8CFS0smjlpw3N25q+m8R7KCc109Qojq1xz
+ sYAEmpIVy0/drjSSEnQfUkkbQV/XMSqXTHKPNSaijloH+7qGz5vok85ZD6Kw0BkLFUKC
+ MVI185bLiHXB/9CuW0CwRMiHc4nA9VrZA5mVA/KjGavhs/cV+3hC/euE0VQlSmEYg8ZJ
+ oIFp9suwPIs6TUdKjn0dalAUdiRYTALUNUs86Nn2cIWFKZY6+p6oRwPxLiS1bySlIZQk
+ f4lkm6zXBDXQTw9VXjUCSzQVhRSqXDVwlbUKwFHMCT4vn9hqdQxMvqa9szgRevVmtaMz
+ rCpA==
+X-Gm-Message-State: AOJu0YyzVn2UnBM5uLjGtQ5GbK6878nz9VxYuVrZFg7symnLlV/IyYFs
+ LjoTdCm1uChJ+tbLavKEHWx22xeyb8Hn4A9dPkg7YM3yiW4IMIi7p1WKjCkf1xHnM5ns/1BJlu7
+ IufWZl5++abDzt7NW5aXW6UEYi4aqzRRTvIbzIJ5AkQ0jyipHgfyHsbKjQZIy8lCcAGPi5tAqQH
+ aTMG4Ml+2yTj+YGl+aYaDaRDgX2FM=
+X-Gm-Gg: ASbGncsACugEwpq96vfKd5oO8zPN58J1Q/XCGJ2bZ+O7FNBMlIkb1eoemO0th0dBD7s
+ qLwvsQdR20fmXnyILpiM+bPXxJZIjQfsn1h25It0L49RrAQ0c5I89o1HBZcwJhK6D55gRW0hBoE
+ nkJSRVjBLehfF/zsw8r0tgvg==
+X-Received: by 2002:a17:903:3550:b0:246:a543:199 with SMTP id
+ d9443c01a7336-27cc836c35emr12375735ad.54.1758594492782; 
+ Mon, 22 Sep 2025 19:28:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHE/hZUZYykakwQBUI6D0I0J/snYm+Jsu/FBHx1wFsEm2mA2VX5C8tKMxFwWmEcgg7FNIquKuaTAbpknmB0Qvg=
+X-Received: by 2002:a17:903:3550:b0:246:a543:199 with SMTP id
+ d9443c01a7336-27cc836c35emr12375455ad.54.1758594492230; Mon, 22 Sep 2025
+ 19:28:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <aNEJyIv9QdQdyKQN@yuki.lan>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 4ECEE22D25
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+References: <aLVzVyaVhr4IHkyd@yuki.lan>
+In-Reply-To: <aLVzVyaVhr4IHkyd@yuki.lan>
+Date: Tue, 23 Sep 2025 10:28:00 +0800
+X-Gm-Features: AS18NWDhOQIIvBHQ7m2AHVlIXNc_DZkStFHDEIB2LrDXBhUq6j2I3XTMRgzmHSc
+Message-ID: <CAEemH2d_0eTYA+DtV5Dy16vTJ5s9a94mpKY6cp+Ofh2Ze1S68Q@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: ykz8ilUxS2iFLj33MvLjV19wmbOOcN8YdqHIEbjg4Qs_1758594493
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] mmap04: Make sure the scanf address format is at
- least 8 hex chars
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] LTP Release preparations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,51 +101,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Mark Wielaard <mark@klomp.org>, Martin Cermak <mcermak@redhat.com>,
- ltp@lists.linux.it
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Mark, Cyril,
+Hi Cyril, Petr,
 
-> Hi!
-> > > > The addresses in /proc/self/maps are at least 8 hex chars. Zeros are
-> > > > added to the front of the address when shorted (both on 32bit and
-> > > > 64bit systems.
+Cyril Hrubis <chrubis@suse.cz> wrote:
 
-> > > > Under valgrind the mmaps used in kernel/syscalls/mmap/mmap04.c come
-> > > > out very low in the address space and might be shorter than 8 hex
-> > > > chars. This causes the scanf to fail:
-> > > > mmap04.c:62: TBROK: Expected 1 conversions got 0 FILE '/proc/self/maps'
+Hi!
+> It's about the time we start to prepare for the September release. As
+> usuall I will go over the patches in the patchwork in the next week or
+> two. If there is something that you think should be part of the release,
+> please point it out so that I can have a look ASAP.
+>
 
-> > > I guess I do not understand the problem here. The PRIxPTR translates to
-> > > "x", "lx", or "llx" depending on architecture and as far as I can tell
-> > > the %x modifier handles leading zeroes just fine.
 
-> > The problem is that we want to match (scanf) an absolute address
-> > (addr2) at the start of the line. It is this absolute/literal address
-> > that doesn't match (because it might not have leading zeros).
+LTP pre-release test looks good on our latest RHEL 9/10 series.
+Just few minor errors that need the following two fix patches:
 
-> > e.g. We might want to match the address 403a000 and want to match
-> > against: 0403a000-04048000 rw-p
+https://patchwork.ozlabs.org/project/ltp/patch/20250922203927.14552-1-akumar@suse.de/
+https://patchwork.ozlabs.org/project/ltp/patch/20250917075729.30093-1-liwang@redhat.com/
 
-> > When creating the fmt which we want to use for scanf we currently
-> > generate: "403a000-%*x %s" Which doesn't match because it is missing
-> > the leading zero (the "-%*x %s" would match the rest, except that the
-> > start of the line doesn't). So with the "%08" fix we would generate:
-> > "0403a000-%*x %s" which does match because it has the same number of
-> > leading zeros.
 
-> Ah right, I'm blind, we generate the fmt on the fly. In that case
-> padding to eight zeroes will match what kernel does.
+Note:  Next week is our public holiday (7days), so I may not be able to
+reply to emails in time.
 
-Mark, thanks for fixing our test! Merged.
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
