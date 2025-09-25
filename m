@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F18ABCAC5A5
-	for <ltp@archiver.kernel.org>; Thu, 25 Sep 2025 06:01:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADF91CAC5A5
+	for <ltp@archiver.kernel.org>; Thu, 25 Sep 2025 06:05:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5C1003CDCE2
-	for <ltp@archiver.kernel.org>; Thu, 25 Sep 2025 08:01:14 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D18ED3CDCCB
+	for <ltp@archiver.kernel.org>; Thu, 25 Sep 2025 08:05:42 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C29FC3C29E9
- for <ltp@lists.linux.it>; Thu, 25 Sep 2025 08:00:58 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id 49C183C29E9
+ for <ltp@lists.linux.it>; Thu, 25 Sep 2025 08:05:26 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C56BA10004A1
- for <ltp@lists.linux.it>; Thu, 25 Sep 2025 08:00:57 +0200 (CEST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58P1FCda005703;
- Thu, 25 Sep 2025 06:00:56 GMT
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7621D20007D
+ for <ltp@lists.linux.it>; Thu, 25 Sep 2025 08:05:22 +0200 (CEST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58P0lEvZ007713;
+ Thu, 25 Sep 2025 06:05:20 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:message-id
- :mime-version:subject:to; s=pp1; bh=U7gnQnc1Y8zjvVWM9hsS4b/BxXnz
- FoWgyXnNiPNQN90=; b=XZmc3wC63a+C+gDa0yi5KNzc6VRWyI77AhbtkYq619fu
- 3CrZIBfE+OH4RFARaY7uKqrphJSJ4yGA9/oLoGbrzTXstOcO7daI5xCsqjsXIz2K
- GsdmFt/bWG7R4pCw6DQ2MruUBCIdYGOMh0QJS0PoFr9jpomszXv0C2dHYb7jgrl/
- RiFylC4pHHZFAoXouEp4eBwl8JY0c4Ar6uQRHznuPLnGdR11tR+JFO9izP6bCVzu
- OT3lPIlol5Scjo9bZHQlhRA0oivJU8+4HM9e5mOVx9hq5gRitbXqhBzDGhokRla2
- ut1MFvXaUympS+ngO5Z0kNzMHFwvhoqO9R1staL40A==
-Received: from ppma23.wdc07v.mail.ibm.com
- (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 499kwytybg-1
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=hTpkAbgW5mseRx4Vv88QthSD9Gsq7Z2v7BKBAwByl
+ VQ=; b=FGIvbEGyzSqbz6Eh7ot1CnL+0GmMu2BVoSMLo2OPLFgqr1c1sHS+ZAnLk
+ YBCkwRPNz+W1Csg7lrw0KL/LpzzDwK6mFiFQvg5zkiD1fjSXZd65ubNCZT786AEf
+ mXgQqZt4WW4mg+s7DjXZvQEPRbdE1M7eLMIBUyG8b+UE4wegziv+ieHEuXQ4Aomt
+ zwmoNDfMktvyuTgmBvRwyOrll4YVEwr3dLCt5d6tEcgtzXb4QPDeE1P1pO5GBQRo
+ 1zGkfSTIROMOrSy1d6ciiXGM95t+0SMV6t1LnvTdYooIyoBSsVk1AP5w73nkHkSG
+ tEMlwlIk3X0oZW25JU0iZIDublsxQ==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 499n0juqju-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 25 Sep 2025 06:00:55 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58P5p1S1019675;
- Thu, 25 Sep 2025 06:00:55 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
- by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 49a83kc83k-1
+ Thu, 25 Sep 2025 06:05:20 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58P5AbbJ031153;
+ Thu, 25 Sep 2025 06:05:19 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 49b9vddbev-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 25 Sep 2025 06:00:54 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
- [10.20.54.106])
- by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 58P60rmZ52887918
+ Thu, 25 Sep 2025 06:05:19 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com
+ [10.20.54.100])
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 58P65Hwf61473156
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 25 Sep 2025 06:00:53 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id EC6B420040;
- Thu, 25 Sep 2025 06:00:52 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id CFC8420043;
- Thu, 25 Sep 2025 06:00:51 +0000 (GMT)
+ Thu, 25 Sep 2025 06:05:17 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id B1E3F2004B;
+ Thu, 25 Sep 2025 06:05:17 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id C56F920040;
+ Thu, 25 Sep 2025 06:05:16 +0000 (GMT)
 Received: from li-6442e9cc-24ed-11b2-a85c-915a5b5fa426.in.ibm.com (unknown
- [9.109.212.52]) by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Thu, 25 Sep 2025 06:00:51 +0000 (GMT)
+ [9.109.212.52]) by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Thu, 25 Sep 2025 06:05:16 +0000 (GMT)
 From: Pavithra <pavrampu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Thu, 25 Sep 2025 11:30:45 +0530
-Message-ID: <20250925060046.1006111-1-pavrampu@linux.ibm.com>
+Date: Thu, 25 Sep 2025 11:35:14 +0530
+Message-ID: <20250925060514.1009709-1-pavrampu@linux.ibm.com>
 X-Mailer: git-send-email 2.43.5
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=J5Cq7BnS c=1 sm=1 tr=0 ts=68d4da97 cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=NEAV23lmAAAA:8
- a=j77m7DWCv6wA:10 a=IkcTkHD0fZMA:10 a=yJojWOMRYYMA:10 a=VnNF1IyMAAAA:8
- a=qlThe8qJfWNvhCPcO8wA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: A1X3wSo_U37jpto_KdGGhTRtcvTVy_Q6
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTIwMDAxNSBTYWx0ZWRfX6Oc/KCgkg5NI
- tyzhm5Moq7jft3mtcqcQ8myCemGpdhrtLMMH2PvCpCyr64W4GkVyy7qbvXS9rvHIsIothsBs22X
- GG3z7GoP5vfH9fyKWxKlKIf427tESHkF0QLCuHIdoGgEPzY3arujrgQtjJvGGa9Pg4Wn8f3nNxS
- 8tIU2Z4pzohK5FCoBpSRD1ioiz2m3UarCBWDuqkjSDYReLwl58peaN22BoK8zqkGFn9HFMkv3Sh
- iWG/tJ9VehfwX7oTfmj5JfTyP7eX0yJxCUTItXINZFppn6k1hBkm0kFZWkFmYBuybzsp6G86PhU
- rt8IuoIRfNZ8C1IncxT37EN64v43L+ejfmHr1kC/dBBENp5RRAy2x/Ff1qpvSSNwpNlxk21l9GF
- hdP2o4+Z
-X-Proofpoint-ORIG-GUID: A1X3wSo_U37jpto_KdGGhTRtcvTVy_Q6
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTIwMDAzMyBTYWx0ZWRfX6vHVVJjtd4kS
+ EBXtc1rvfW7DQe8vb3ZijA9edFgWUvnQEa3Lj4pNqggE6G0bzkQKDAP0rVRN/58XF+mfqCx8M81
+ MxIFThkrvCO+y7Cn4qY4iTmVuEMSsFduB7ZdhxKi//FB48MD6PAipuFlZY0kNIM788pOLBRNprt
+ iBtjvrpsbD/GLnKeQAhYOxGeOWALFLWvJDCOARnTq2yZalFjIQQH6lqL6AKj25UseUAoxWbC82P
+ W67DZsc+rASqd7zjU8Acd8Xl4nWPKpxCTKTfNvG8dLCRIRdQuBEIp6fi9wsTQPhjDi+TzK48oXR
+ gzC710ZB7RQVOjJ9vZssZKgLfRoqu0Iyubihk22QQIDrrqTWF/fECiw50iJLd5Hs0zCi8/FJ54Y
+ DCYOK64u
+X-Authority-Analysis: v=2.4 cv=TOlFS0la c=1 sm=1 tr=0 ts=68d4dba0 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=yJojWOMRYYMA:10 a=NEAV23lmAAAA:8 a=VnNF1IyMAAAA:8 a=Rdwaqp5c8bHwGkfL22sA:9
+X-Proofpoint-ORIG-GUID: MQ882GVhTZIeQzDmAD8dIkoVw21oJFKz
+X-Proofpoint-GUID: MQ882GVhTZIeQzDmAD8dIkoVw21oJFKz
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-09-24_07,2025-09-24_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 impostorscore=0 malwarescore=0 spamscore=0 bulkscore=0
- phishscore=0 clxscore=1011 adultscore=0 suspectscore=0 classifier=typeunknown
+ clxscore=1011 priorityscore=1501 phishscore=0 impostorscore=0 adultscore=0
+ suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0 classifier=typeunknown
  authscore=0 authtc= authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2507300000 definitions=main-2509200015
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+ engine=8.19.0-2507300000 definitions=main-2509200033
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6] Origin:
- https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/shm-getraw.c
+Subject: [LTP] [PATCH] [PATCH v4] Hugetlb: Migrating libhugetlbfs test
+ truncate_reserve_wraparound.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,74 +104,195 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: pavrampu@linux.ibm.com, Pavithra <pavrampu@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-RnJvbTogUGF2aXRocmEgPHBhdnJhbXB1QGxpbnV4LnZuZXQuaWJtLmNvbT4KClRoZSB0ZXN0IGNy
-ZWF0ZXMgYSBzaGFyZWQgbWVtb3J5IHNlZ21lbnQsIHRoZW4gYXR0YWNoZXMgaXQgdG8gdGhlIHBy
-b2Nlc3PigJlzIGFkZHJlc3Mgc3BhY2UuCkl0IHdyaXRlcyBhIHN0cmluZyB0byB0aGUgc2hhcmVk
-IG1lbW9yeSBmcm9tIHJhdyBkZXZpY2UgYW5kIGRldGFjaGVzIHRoZSBzaGFyZWQgbWVtb3J5CnNl
-Z21lbnQgYW5kIGZpbmFsbHkgcmVtb3ZlcyBpdC4KVGhlIHB1cnBvc2Ugb2YgdGhpcyB0ZXN0IGlz
-IHRvIGVuc3VyZSB0aGF0IHRoZSBzaGFyZWQgbWVtb3J5IHN1YnN5c3RlbSBpcyB3b3JraW5nIGNv
-cnJlY3RseQp3aXRoIGh1Z2VwYWdlcy4gSXQgY2hlY2tzIHRoYXQgc2hhcmVkIG1lbW9yeSBzZWdt
-ZW50cyBjYW4gYmUgY3JlYXRlZCwgYXR0YWNoZWQsIHdyaXR0ZW4gdG8sCnJlYWQgZnJvbSwgZGV0
-YWNoZWQsIGFuZCByZW1vdmVkIHdpdGhvdXQgZXJyb3JzCgpTaWduZWQtb2ZmLWJ5OiBQYXZpdGhy
-YSA8cGF2cmFtcHVAbGludXgudm5ldC5pYm0uY29tPgotLS0KIHJ1bnRlc3Qvc3lzY2FsbHMtaXBj
-ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxICsKIHRlc3RjYXNlcy9rZXJuZWwvbWVtLy5n
-aXRpZ25vcmUgICAgICAgICAgICAgICB8ICAxICsKIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL3No
-bWdldC9zaG1nZXQwNy5jICAgICB8IDczICsrKysrKysrKysrKysrKysrKysKIDMgZmlsZXMgY2hh
-bmdlZCwgNzUgaW5zZXJ0aW9ucygrKQogY3JlYXRlIG1vZGUgMTAwNjQ0IHRlc3RjYXNlcy9rZXJu
-ZWwvc3lzY2FsbHMvaXBjL3NobWdldC9zaG1nZXQwNy5jCgpkaWZmIC0tZ2l0IGEvcnVudGVzdC9z
-eXNjYWxscy1pcGMgYi9ydW50ZXN0L3N5c2NhbGxzLWlwYwppbmRleCA4OTYwYzQ4N2MuLjQxNTlm
-MjMzMSAxMDA2NDQKLS0tIGEvcnVudGVzdC9zeXNjYWxscy1pcGMKKysrIGIvcnVudGVzdC9zeXNj
-YWxscy1pcGMKQEAgLTY2LDMgKzY2LDQgQEAgc2htZ2V0MDMgc2htZ2V0MDMKIHNobWdldDA0IHNo
-bWdldDA0CiBzaG1nZXQwNSBzaG1nZXQwNQogc2htZ2V0MDYgc2htZ2V0MDYKK3NobWdldDA3IHNo
-bWdldDA3CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL21lbS8uZ2l0aWdub3JlIGIvdGVz
-dGNhc2VzL2tlcm5lbC9tZW0vLmdpdGlnbm9yZQppbmRleCBiNDQ1NWRlNTEuLmY5NDM4NjA2ZSAx
-MDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vLmdpdGlnbm9yZQorKysgYi90ZXN0Y2Fz
-ZXMva2VybmVsL21lbS8uZ2l0aWdub3JlCkBAIC01MCw2ICs1MCw3IEBACiAvaHVnZXRsYi9odWdl
-c2htZ2V0L2h1Z2VzaG1nZXQwMwogL2h1Z2V0bGIvaHVnZXNobWdldC9odWdlc2htZ2V0MDUKIC9o
-dWdldGxiL2h1Z2VzaG1nZXQvaHVnZXNobWdldDA2CisvaHVnZXRsYi9odWdlc2htZ2V0L2h1Z2Vz
-aG1nZXQwNwogL2tzbS9rc20wMQogL2tzbS9rc20wMgogL2tzbS9rc20wMwpkaWZmIC0tZ2l0IGEv
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htZ2V0L3NobWdldDA3LmMgYi90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1nZXQvc2htZ2V0MDcuYwpuZXcgZmlsZSBtb2RlIDEw
-MDY0NAppbmRleCAwMDAwMDAwMDAuLmIxYmVlMDZmOQotLS0gL2Rldi9udWxsCisrKyBiL3Rlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWdldC9zaG1nZXQwNy5jCkBAIC0wLDAgKzEsNzMg
-QEAKKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBMR1BMLTIuMS1vci1sYXRlcgorLyoKKyAq
-IENvcHlyaWdodCAoQykgMjAwNS0yMDA2IERhdmlkIEdpYnNvbiAmIEFkYW0gTGl0a2UsIElCTSBD
-b3Jwb3JhdGlvbi4KKyAqLworCisvKlwKKyAqIFtEZXNjcmlwaXRvbl0KKyAqCisgKiBPcmlnaW46
-IGh0dHBzOi8vZ2l0aHViLmNvbS9saWJodWdldGxiZnMvbGliaHVnZXRsYmZzL2Jsb2IvbWFzdGVy
-L3Rlc3RzL3NobS1nZXRyYXcuYworICoKKyAqIFRoZSB0ZXN0IGNyZWF0ZXMgYSBzaGFyZWQgbWVt
-b3J5IHNlZ21lbnQsIHRoZW4gYXR0YWNoZXMgaXQgdG8gdGhlIHByb2Nlc3PigJlzIGFkZHJlc3Mg
-c3BhY2UuCisgKiBJdCB3cml0ZXMgYSBzdHJpbmcgdG8gdGhlIHNoYXJlZCBtZW1vcnkgZnJvbSBy
-YXcgZGV2aWNlIGFuZCBkZXRhY2hlcyB0aGUgc2hhcmVkIG1lbW9yeQorICogc2VnbWVudCBhbmQg
-ZmluYWxseSByZW1vdmVzIGl0LgorICogVGhlIHB1cnBvc2Ugb2YgdGhpcyB0ZXN0IGlzIHRvIGVu
-c3VyZSB0aGF0IHRoZSBzaGFyZWQgbWVtb3J5IHN1YnN5c3RlbSBpcyB3b3JraW5nIGNvcnJlY3Rs
-eQorICogd2l0aCBodWdlcGFnZXMuIEl0IGNoZWNrcyB0aGF0IHNoYXJlZCBtZW1vcnkgc2VnbWVu
-dHMgY2FuIGJlIGNyZWF0ZWQsIGF0dGFjaGVkLCB3cml0dGVuIHRvLAorICogcmVhZCBmcm9tLCBk
-ZXRhY2hlZCwgYW5kIHJlbW92ZWQgd2l0aG91dCBlcnJvcnMKKyAqCisgKi8KKworI2luY2x1ZGUg
-Ii4uLy4uLy4uL21lbS9odWdldGxiL2xpYi9odWdldGxiLmgiCisjaW5jbHVkZSAidHN0X3NhZmVf
-c3lzdl9pcGMuaCIKKworI2RlZmluZSBNTlRQT0lOVCAiaHVnZXRsYmZzLyIKKyNkZWZpbmUgTlJf
-SFVHRVBBR0VTIDIKKworc3RhdGljIGludCBzaG1pZCA9IC0xOworc3RhdGljIHNpemVfdCBzaXpl
-Oworc3RhdGljIHNpemVfdCBpOworCitzdGF0aWMgY2hhciAqc2htYWRkcjsKK3N0YXRpYyBpbnQg
-cmF3X2ZkOworc3RhdGljIGxvbmcgaHBhZ2Vfc2l6ZTsKKworc3RhdGljIHZvaWQgc2V0dXAodm9p
-ZCkKK3sKKwlocGFnZV9zaXplID0gdHN0X2dldF9odWdlcGFnZV9zaXplKCk7Cit9CisKK3N0YXRp
-YyB2b2lkIGNsZWFudXAodm9pZCkKK3sKKwlpZiAoc2htaWQgPj0gMCkKKwkJU0FGRV9TSE1DVEwo
-c2htaWQsIElQQ19STUlELCBOVUxMKTsKK30KKworc3RhdGljIHZvaWQgcnVuX3Rlc3Qodm9pZCkK
-K3sKKwlzaXplID0gaHBhZ2Vfc2l6ZSAqIE5SX0hVR0VQQUdFUzsKKwlyYXdfZmQgPSBTQUZFX09Q
-RU4oIi9kZXYvemVybyIsIE9fUkRPTkxZKTsKKworCXNobWlkID0gU0FGRV9TSE1HRVQoSVBDX1BS
-SVZBVEUsIHNpemUsIFNITV9IVUdFVExCfFNITV9SfFNITV9XKTsKKworCXNobWFkZHIgPSBTQUZF
-X1NITUFUKHNobWlkLCAwLCBTSE1fUk5EKTsKKwl0c3RfcmVzKFRJTkZPLCAic2htYWRkcjogJXBc
-biIsIHNobWFkZHIpOworCisJLyogUmVhZCBhIHBhZ2UgZnJvbSBkZXZpY2UgYW5kIHdyaXRlIHRv
-IHNobSBzZWdtZW50ICovCisKKwlmb3IgKGkgPSAwOyBpIDwgc2l6ZTsgaSArPSBocGFnZV9zaXpl
-KSB7CisJCVRTVF9SRVQgPSByZWFkKHJhd19mZCwgc2htYWRkciwgaHBhZ2Vfc2l6ZSk7CisJCVRT
-VF9FWFBfVkFMKFRTVF9SRVQsIGhwYWdlX3NpemUsICJyZWFkIHJldHVybmVkICVsZCIsIFRTVF9S
-RVQpOworCQlpZiAoVFNUX1JFVCAhPSBocGFnZV9zaXplKQorCQkJdHN0X3JlcyhURkFJTCB8IFRF
-UlJOTywgIkNhbid0IHJlYWQgZnVsbCBwYWdlIGZyb20gcmF3IGRldmljZSEiKTsKKwl9CisKKwlT
-QUZFX1NITURUKHNobWFkZHIpOworfQorCitzdGF0aWMgc3RydWN0IHRzdF90ZXN0IHRlc3QgPSB7
-CisJLm5lZWRzX3Jvb3QgPSAxLAorCS5zZXR1cCA9IHNldHVwLAorCS5jbGVhbnVwID0gY2xlYW51
-cCwKKwkudGVzdF9hbGwgPSBydW5fdGVzdCwKKwkuaHVnZXBhZ2VzID0gezIsIFRTVF9ORUVEU30s
-Cit9OwotLSAKMi40My41CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGlu
-dXguaXQvbGlzdGluZm8vbHRwCg==
+Test Description:
+Test to verify the Hugepages_Rsvd before and after mmap, truncate and sigbus operations.
+At one stage, improper handling of tests against i_size could mess
+up accounting of reserved hugepages on certain truncate operations.
+
+Tested and verified that test passes for iterations: i10
+
+Signed-off-by: Pavithra <pavrampu@linux.vnet.ibm.com>
+---
+Changes in v4:
+- Moved local variables to run_test()
+- Moved signal handler setup to setup()
+- Added check for after_touch_rsvd == initial_rsvd
+- Modified TFAIL messages based on review comments 
+---
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap35.c  | 130 ++++++++++++++++++
+ 3 files changed, 132 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap35.c
+
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 0896d3c94..8ee0e6f82 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -36,6 +36,7 @@ hugemmap30 hugemmap30
+ hugemmap31 hugemmap31
+ hugemmap32 hugemmap32
+ hugemmap34 hugemmap34
++hugemmap35 hugemmap35
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+ hugemmap05_3 hugemmap05 -s -m
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index b4455de51..0e59035df 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -36,6 +36,7 @@
+ /hugetlb/hugemmap/hugemmap31
+ /hugetlb/hugemmap/hugemmap32
+ /hugetlb/hugemmap/hugemmap34
++/hugetlb/hugemmap/hugemmap35
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap35.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap35.c
+new file mode 100644
+index 000000000..b7d63fd1a
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap35.c
+@@ -0,0 +1,130 @@
++// SPDX-License-Identifier: LGPL-2.1-or-later
++/*
++ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
++ */
++
++/*\
++ *[Descripiton]
++ *
++ * Origin: https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/truncate_reserve_wraparound.c
++ *
++ * At one stage, improper handling of tests against i_size could mess
++ * up accounting of reserved hugepages on certain truncate
++ * operations.
++ *
++ */
++
++#include <signal.h>
++#include <setjmp.h>
++#include "hugetlb.h"
++
++#define MNTPOINT "hugetlbfs/"
++
++static long hpage_size;
++static int fd = -1;
++
++static sigjmp_buf sig_escape;
++
++static void sigbus_handler(int signum LTP_ATTRIBUTE_UNUSED, siginfo_t *si LTP_ATTRIBUTE_UNUSED, void *uc LTP_ATTRIBUTE_UNUSED)
++{
++	siglongjmp(sig_escape, 17);
++}
++
++static void run_test(void)
++{
++
++	static int sigbus_count;
++	unsigned long initial_rsvd, after_map_rsvd, after_touch_rsvd;
++	unsigned long after_trunc_rsvd, after_unmap_rsvd, after_sigbus_rsvd;
++	volatile unsigned int *q;
++	void *p;
++
++	sigbus_count = 0;
++
++	initial_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count before map: %lu", initial_rsvd);
++
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
++			fd, 0);
++	q = p;
++
++	after_map_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count after map: %lu", after_map_rsvd);
++
++	*q = 0;
++	after_touch_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count after touch: %lu", after_touch_rsvd);
++
++	if (after_touch_rsvd != initial_rsvd) {
++		tst_res(TFAIL, "Reserved after touch %lu instead of %lu", after_touch_rsvd, initial_rsvd);
++		goto windup;
++	}
++
++	SAFE_FTRUNCATE(fd, 0);
++	after_trunc_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count after truncate: %lu", after_trunc_rsvd);
++
++	if (after_trunc_rsvd != initial_rsvd) {
++		tst_res(TFAIL, "Reserved after truncate %lu instead of %lu", after_trunc_rsvd, initial_rsvd);
++		goto windup;
++	}
++
++	if (sigsetjmp(sig_escape, 1) == 0)
++		*q; /* Fault, triggering a SIGBUS */
++	else
++		sigbus_count++;
++
++	if (sigbus_count != 1) {
++		tst_res(TFAIL, "Didn't SIGBUS after truncate");
++		goto windup;
++	}
++
++	after_sigbus_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count after sigbus: %lu", after_sigbus_rsvd);
++
++	if (after_sigbus_rsvd != initial_rsvd) {
++		tst_res(TFAIL, "Reserved after SIGBUS %lu instead of %lu", after_sigbus_rsvd, initial_rsvd);
++		goto windup;
++	}
++
++	tst_res(TPASS, "Test passed!");
++
++windup:
++	SAFE_MUNMAP(p, hpage_size);
++	after_unmap_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count after munmap: %lu", after_unmap_rsvd);
++
++}
++
++static void setup(void)
++{
++	hpage_size = tst_get_hugepage_size();
++	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
++
++	struct sigaction sa = {
++		.sa_sigaction = sigbus_handler,
++		.sa_flags = SA_SIGINFO,
++	};
++
++	SAFE_SIGACTION(SIGBUS, &sa, NULL);
++}
++
++static void cleanup(void)
++{
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.tags = (struct tst_tag[]) {
++		{"linux-git", "ebed4bfc8da8"},
++		{}
++	},
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.hugepages = {4, TST_NEEDS},
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++};
+-- 
+2.43.5
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
