@@ -4,94 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25703CAC5A5
-	for <ltp@archiver.kernel.org>; Thu, 25 Sep 2025 06:07:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70E87CAC5A5
+	for <ltp@archiver.kernel.org>; Thu, 25 Sep 2025 06:13:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9DA683CDD0A
-	for <ltp@archiver.kernel.org>; Thu, 25 Sep 2025 08:07:57 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id A10653CDC15
+	for <ltp@archiver.kernel.org>; Thu, 25 Sep 2025 08:13:39 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3F9973CCF83
- for <ltp@lists.linux.it>; Thu, 25 Sep 2025 08:07:41 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 2F82D3CDB9A
+ for <ltp@lists.linux.it>; Thu, 25 Sep 2025 08:13:23 +0200 (CEST)
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
  [148.163.158.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 70DC41000612
- for <ltp@lists.linux.it>; Thu, 25 Sep 2025 08:07:37 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 59968100036F
+ for <ltp@lists.linux.it>; Thu, 25 Sep 2025 08:13:22 +0200 (CEST)
 Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58P3ZuMd028034;
- Thu, 25 Sep 2025 06:07:36 GMT
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58OJqkhq006661;
+ Thu, 25 Sep 2025 06:13:21 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
  :content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=VldDdJ3684YJO8Blq81sS8doaueBTUgysmriEqZZG
- rQ=; b=XopYf/Lm/aTYO7H9YTjRkL1gNScgBd9P0jopk4z+o2IuTD/fHZn/QTgCm
- et1FBcQzpMz3OjaVA1Kj8oEpGNOSQ01IaPW8k24vMYf8JH6f5DVkGPJsS/+adnwF
- 3v7ZPC0ihJ8oglftabPnB66P74Qlep0R07dKYTdy9mx0d4gx5TmYRZoSyFzSsh9b
- x3OWX2Ney4DdCDnAbWhigsZijeoFsTlosoiYAck9hsevSBtd/jVFy7lgtU6oV1/q
- E7zZa0z+2mF9ZqSv8dyU2vslfzGkUTo9JPj5Ffvo7NUwusUHa5m66piUm8ByF8hd
- YykrWLV/ETHiT0sZ8/EbZsVzDaxFw==
+ :subject:to; s=pp1; bh=VDZPQPmLSHgpNOAmlqe9Oz5pPSdjnP7B/XqsoUZBy
+ A8=; b=EXUyD9D6nx0eIBNKfpRErVbIDQB78JdI8rKCreqSIBftDwnQuYGIzQXM3
+ UOWMrYg/MNiT6B/4Vj9XPDYymYaFp0i+TRmuRkQKXxdFTMR9P5+vYNJtQ/TvS/T8
+ a8Zk7E8ufz3g4zO+72DXfxJcHKwd2iSjAkXU+XVv+G3plOIX4yg/m1WO8GeTTRbb
+ eCcZVeStPlfURYEu5+kf2z3Mbf2hFkyo2Wgkk/D7ziyRo8iCNDRu//ZXtWX/+AkE
+ U2hshYoKslp8pSfPxQk8mYADFiVMexBLof6F+V9pyHks3ij4LwoakUtkxvE0kR/H
+ 6xVHn0IbkT+9V+FQ0T2PBOm2nzHGQ==
 Received: from ppma11.dal12v.mail.ibm.com
  (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 499kwyu0fg-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 499kwyu18d-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 25 Sep 2025 06:07:36 +0000 (GMT)
+ Thu, 25 Sep 2025 06:13:20 +0000 (GMT)
 Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58P2Hict030367;
- Thu, 25 Sep 2025 06:07:35 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 49a9a1c3n1-1
+ by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58P2VJrZ030345;
+ Thu, 25 Sep 2025 06:13:19 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 49a9a1c48y-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 25 Sep 2025 06:07:35 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
- [10.20.54.101])
- by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 58P67Xko52953520
+ Thu, 25 Sep 2025 06:13:19 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
+ [10.20.54.102])
+ by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 58P6DISi57344302
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 25 Sep 2025 06:07:33 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C87C620043;
- Thu, 25 Sep 2025 06:07:33 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id DC75220040;
- Thu, 25 Sep 2025 06:07:32 +0000 (GMT)
+ Thu, 25 Sep 2025 06:13:18 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 08C1420040;
+ Thu, 25 Sep 2025 06:13:18 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 1E3262004B;
+ Thu, 25 Sep 2025 06:13:17 +0000 (GMT)
 Received: from li-6442e9cc-24ed-11b2-a85c-915a5b5fa426.in.ibm.com (unknown
- [9.109.212.52]) by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Thu, 25 Sep 2025 06:07:32 +0000 (GMT)
+ [9.109.212.52]) by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Thu, 25 Sep 2025 06:13:16 +0000 (GMT)
 From: Pavithra <pavrampu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Thu, 25 Sep 2025 11:37:30 +0530
-Message-ID: <20250925060730.1010196-1-pavrampu@linux.ibm.com>
+Date: Thu, 25 Sep 2025 11:43:14 +0530
+Message-ID: <20250925061314.1015138-1-pavrampu@linux.ibm.com>
 X-Mailer: git-send-email 2.43.5
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=J5Cq7BnS c=1 sm=1 tr=0 ts=68d4dc28 cx=c_pps
+X-Authority-Analysis: v=2.4 cv=J5Cq7BnS c=1 sm=1 tr=0 ts=68d4dd80 cx=c_pps
  a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=yJojWOMRYYMA:10 a=VnNF1IyMAAAA:8 a=npRE8wLiAAAA:8 a=YGqHw-mjlB8INSgoCskA:9
- a=RAb4T5FLMvhYbp7Aw4eJ:22
-X-Proofpoint-GUID: 97OZlCvqzETnA0URXu_6mhkne1wAHfSj
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTIwMDAxNSBTYWx0ZWRfX4aUDTBgDSIKK
- z3GDItUD2RP5eRvL5KhliV+a1nucAosE5vWOQyqlFS2Q03JkVvR3b9RvC/c/6k8fOM9umbYE+h4
- TRSXpHsS1TPs16rCLKUsfWF8RcLywnXynLWa2V0/F6aZVgVIVL5/SLojRlj6yVlNM0qN3bOP3JB
- JYCNQ5bcFpRIB2wx5of1M/77UDutz0F7IiTSmpak7B7LXNH6DMvofkjD3NPApkkM2JVti8/UbKp
- QaEYIF9Q0pRPcxiHJ7P4onzwcmxrpa05s5u+6qm4DhxGBESpDAmzycDlEktsC7ZYjURXmAGnlOA
- ELq6nSPAsvistmX7EyjFxkP9rrgA3Ctrp1MT0YR75odP+vNIL44Ms168BDY6eaqoDyMp6rID6zY
- N3R988IV
-X-Proofpoint-ORIG-GUID: 97OZlCvqzETnA0URXu_6mhkne1wAHfSj
+ a=yJojWOMRYYMA:10 a=NEAV23lmAAAA:8 a=VnNF1IyMAAAA:8 a=SIIyn1N24zmu28-d07wA:9
+X-Proofpoint-GUID: LY6O82khSvcvDHfYylPhM9erj8cJgFUA
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTIwMDAxNSBTYWx0ZWRfX9vVdCKihb3Jc
+ yNwG9PLnKyVz/w9FHCCpuQaKQPwOp3NafpF+9qOzpEq9PPu/YPytRDpcf/HlTejTMiIvokxLaSP
+ 6f73lvOZAFFWSsU9fWI0N3blYD+D6tzVgMvuKw6CLzjrFDf1kRFZaSZXmHenagENtNGr+W7P6+N
+ rot8yPjz6J70x+CdZWDaTzr5A+IvVD1qpX2CU+diWn1JAa1ICEbdXQAF5Q6rZMa0GJg1l0fPIrm
+ r5NTm3A/UTQUbslv6lWNblVnifAjqnoDnASJzvZHJUej/o/ogPsIxQ+n0BGOAfeMTMORrtSOWl/
+ 9KMP32Yb9shOP6n4EjmRyeB7Q4xdIuZpUu6fUp04rjwBhXgozg9mezFPX/ACnBNmfB0uxavWEdX
+ ppDlDEfo
+X-Proofpoint-ORIG-GUID: LY6O82khSvcvDHfYylPhM9erj8cJgFUA
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-09-24_07,2025-09-24_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  priorityscore=1501 impostorscore=0 malwarescore=0 spamscore=0 bulkscore=0
- phishscore=0 clxscore=1015 adultscore=0 suspectscore=0 classifier=typeunknown
+ phishscore=0 clxscore=1011 adultscore=0 suspectscore=0 classifier=typeunknown
  authscore=0 authtc= authcc= route=outbound adjust=0 reason=mlx scancount=1
  engine=8.19.0-2507300000 definitions=main-2509200015
 X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] [PATCH v3] Migrating the
- libhugetlbfs/testcases/truncate_above_4GB.c test
+Subject: [LTP] [PATCH]  [PATCH] Add hugemmap37,
+ migrated task-size-overrun.c from libhugetlbfs v2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,228 +110,193 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Pavithra <pavrampu@linux.vnet.ibm.com>
 
-Test Description:
+This test is migrated from :
+https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/task-size-overrun.c
 
-A misconversion of hugetlb_vmtruncate_list to a prio_tree meant that
-on 32-bit machines, truncates at or above 4GB could truncate lower pages,
-resulting in BUG_ON()s. This kernel bug was fixed with
-'commit 856fc2950555'.
+This test verifies the behavior of mmap across the TASK_SIZE boundary.
+It checks whether mmap with and without MAP_FIXED correctly handles
+mappings that straddle the TASK_SIZE boundary.
 
-The purpose of this test is to check whether huge pages are handled correctly
-when a file is truncated above the 4GB boundary. It ensures that the memory is
-not corrupted or lost during the truncation process, and that the expected data
-is still present in the memory after truncation.
+Verified that test runs with multiple iterations
 
 Signed-off-by: Pavithra <pavrampu@linux.vnet.ibm.com>
 ---
-Changes in v3:
-- Fixed Warnings
----
  runtest/hugetlb                               |   1 +
  testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap36.c  | 170 ++++++++++++++++++
- 3 files changed, 172 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+ .../kernel/mem/hugetlb/hugemmap/hugemmap37.c  | 141 ++++++++++++++++++
+ 3 files changed, 143 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 0896d3c94..bd40a7a30 100644
+index 0896d3c94..8aaafeee3 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
 @@ -36,6 +36,7 @@ hugemmap30 hugemmap30
  hugemmap31 hugemmap31
  hugemmap32 hugemmap32
  hugemmap34 hugemmap34
-+hugemmap36 hugemmap36
++hugemmap37 hugemmap37
  hugemmap05_1 hugemmap05 -m
  hugemmap05_2 hugemmap05 -s
  hugemmap05_3 hugemmap05 -s -m
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index b4455de51..2ddef6bf1 100644
+index b4455de51..38d428fe8 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
 @@ -36,6 +36,7 @@
  /hugetlb/hugemmap/hugemmap31
  /hugetlb/hugemmap/hugemmap32
  /hugetlb/hugemmap/hugemmap34
-+/hugetlb/hugemmap/hugemmap36
++/hugetlb/hugemmap/hugemmap37
  /hugetlb/hugeshmat/hugeshmat01
  /hugetlb/hugeshmat/hugeshmat02
  /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
 new file mode 100644
-index 000000000..a575d601e
+index 000000000..3fd6631d4
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
-@@ -0,0 +1,170 @@
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
+@@ -0,0 +1,141 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
 + * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
-+ * Copyright (C) 2006 Hugh Dickins <hugh@veritas.com>
 + */
 +
 +/*\
 + *[Descripiton]
 + *
-+ * At one stage, a misconversion of hugetlb_vmtruncate_list to a
-+ * prio_tree meant that on 32-bit machines, truncates at or above 4GB
-+ * could truncate lower pages, resulting in BUG_ON()s.
++ * Origin: https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/task-size-overrun.c
 + *
-+ * WARNING: The offsets and addresses used within are specifically
-+ * calculated to trigger the bug as it existed.  Don't mess with them
-+ * unless you *really* know what you're doing.
++ * This test verifies the behavior of mmap across the TASK_SIZE boundary.
++ * It checks whether mmap with and without MAP_FIXED correctly handles
++ * mappings that straddle the TASK_SIZE boundary.
 + *
 + */
 +
-+#define _GNU_SOURCE
-+#define _LARGEFILE64_SOURCE
-+#define FOURGIG ((off64_t)0x100000000ULL)
-+#define MNTPOINT "hugetlbfs/"
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <sys/mman.h>
++#include <errno.h>
++#include <assert.h>
 +
-+#include <signal.h>
-+#include <setjmp.h>
 +#include "hugetlb.h"
++#include "tst_test.h"
++#include "tst_safe_stdio.h"
++#include "tst_safe_macros.h"
 +
-+static int page_size;
++#define MAPS_BUF_SZ 4096
++#define _LARGEFILE64_SOURCE
++#define MNTPOINT "hugetlbfs/"
++#define ALIGN(x, a) (((x) + (a) - 1) & ~((a) - 1))
++
 +static long hpage_size;
-+static int fd = -1;
-+static volatile int test_pass;
-+static int err;
-+static int sigbus_count;
-+static sigjmp_buf sig_escape;
++static int fd;
 +
-+static void sigbus_handler_fail(void)
++static unsigned long find_last_mapped(void)
 +{
-+	siglongjmp(sig_escape, 17);
++	char line[MAPS_BUF_SZ];
++	char *tmp;
++	unsigned long start, end, off, ino;
++	FILE *f;
++
++	f = SAFE_FOPEN("/proc/self/maps", "r");
++	do {
++		tmp = fgets(line, MAPS_BUF_SZ, f);
++	} while (tmp);
++	SAFE_FCLOSE(f);
++
++	tst_res(TINFO, "Last map: %s", line);
++	SAFE_SSCANF(line, "%lx-%lx %*s %lx %*s %ld %*s", &start, &end, &off, &ino);
++	tst_res(TINFO, "Last map: at 0x%lx-0x%lx\n", start, end);
++	return end;
 +}
 +
-+static void sigbus_handler_pass(void)
++static unsigned long find_task_size(void)
 +{
-+	test_pass = 1;
-+	siglongjmp(sig_escape, 17);
++	unsigned long low, high; /* PFNs */
++	void *p;
++
++	low = find_last_mapped();
++	if (!low || ((low % getpagesize()) != 0))
++		tst_brk(TBROK, "Bogus stack end address, 0x%lx!?", low);
++	low = low / getpagesize();
++
++	/* This sum should get us (2^(wordsize) - 2 pages) */
++	high = (unsigned long)(-2 * getpagesize()) / tst_get_hugepage_size();
++	tst_res(TINFO, "Binary searching for task size PFNs 0x%lx..0x%lx\n", low, high);
++
++	while (high > low + 1) {
++		unsigned long pfn = (low + high) / 2;
++		unsigned long addr = pfn * getpagesize();
++
++		assert((pfn >= low) && (pfn <= high));
++
++		p = mmap((void *)addr, getpagesize(), PROT_READ,
++			   MAP_PRIVATE|MAP_ANONYMOUS|MAP_FIXED, -1, 0);
++		if (p == MAP_FAILED) {
++			tst_res(TINFO | TERRNO, "Map failed at 0x%lx", addr);
++			high = pfn;
++		} else {
++			tst_res(TINFO, "Map succeeded at 0x%lx\n", addr);
++			SAFE_MUNMAP(p, getpagesize());
++			low = pfn;
++		}
++	}
++
++	return low * getpagesize();
 +}
 +
 +static void run_test(void)
 +{
-+	static long long buggy_offset, truncate_point;
-+	void *p, *q;
-+	volatile unsigned int *pi, *qi;
++	void *p;
++	unsigned long task_size;
++	unsigned long straddle_addr;
 +
-+	struct sigaction sa_pass = {
-+		.sa_sigaction = sigbus_handler_pass,
-+		.sa_flags = SA_SIGINFO,
-+	};
++	task_size = find_task_size();
++	tst_res(TINFO, "TASK_SIZE = 0x%lx\n", task_size);
 +
-+	struct sigaction sa_fail = {
-+    		.sa_sigaction = sigbus_handler_fail,
-+    		.sa_flags = SA_SIGINFO,
-+	};
++	straddle_addr = task_size - hpage_size;
++	straddle_addr = ALIGN(straddle_addr, hpage_size);
 +
-+	sigbus_count = 0;
-+	test_pass = 0;
++	tst_res(TINFO, "Mapping without MAP_FIXED at %lx...", straddle_addr);
++	errno = 0;
++	p = mmap((void *)straddle_addr, 2*hpage_size, PROT_READ|PROT_WRITE,
++		 MAP_SHARED, fd, 0);
++	if (p == (void *)straddle_addr)
++		tst_res(TFAIL, "Apparently suceeded in mapping across TASK_SIZE boundary");
 +
-+	buggy_offset = truncate_point / (hpage_size / page_size);
-+	buggy_offset = (long long)PALIGN(buggy_offset, hpage_size);
++	tst_res(TINFO, "Mapping with MAP_FIXED at %lx...", straddle_addr);
++	errno = 0;
++	p = mmap((void *)straddle_addr, 2*hpage_size, PROT_READ|PROT_WRITE,
++		 MAP_SHARED|MAP_FIXED, fd, 0);
++	if (p != MAP_FAILED)
++		tst_res(TFAIL, "Apparently suceeded in mapping across TASK_SIZE boundary");
 +
-+	/* First get arena of three hpages size, at file offset 4GB */
-+	q = mmap64(NULL, 3*hpage_size, PROT_READ|PROT_WRITE,
-+		 MAP_PRIVATE, fd, truncate_point);
-+	if (q == MAP_FAILED)
-+		tst_brk(TBROK, "mmap() offset 4GB: %s", strerror(errno));
-+	qi = q;
-+	/* Touch the high page */
-+	*qi = 0;
-+
-+	/* This part of the test makes the problem more obvious, but
-+	 * is not essential.  It can't be done on segmented powerpc, where
-+	 * segment restrictions prohibit us from performing such a
-+	 * mapping, so skip it there. Similarly, ia64's address space
-+	 * restrictions prevent this.
-+	 */
-+#if (defined(__powerpc__) && defined(PPC_NO_SEGMENTS)) \
-+	|| !defined(__powerpc__) && !defined(__powerpc64__) \
-+	&& !defined(__ia64__)
-+	/* Replace middle hpage by tinypage mapping to trigger
-+	 * nr_ptes BUG
-+	 */
-+	p = mmap64(q + hpage_size, hpage_size, PROT_READ|PROT_WRITE,
-+		   MAP_FIXED|MAP_PRIVATE|MAP_ANON, -1, 0);
-+	if (p != q + hpage_size)
-+		tst_brk(TBROK, "mmap() offset 4GB: %s", strerror(errno));
-+	pi = p;
-+	/* Touch one page to allocate its page table */
-+	*pi = 0;
-+#endif
-+
-+	/* Replace top hpage by hpage mapping at confusing file offset */
-+	p = mmap64(q + 2*hpage_size, hpage_size, PROT_READ|PROT_WRITE,
-+		 MAP_FIXED|MAP_PRIVATE, fd, buggy_offset);
-+	if (p != q + 2*hpage_size)
-+		tst_brk(TBROK, "mmap() buggy offset 0x%llx", buggy_offset);
-+	pi = p;
-+	/* Touch the low page with something non-zero */
-+	*pi = 1;
-+
-+	err = ftruncate64(fd, truncate_point);
-+	if (err) {
-+		tst_res(TFAIL, "ftruncate failed");
-+		goto cleanup;
-+	}
-+
-+	SAFE_SIGACTION(SIGBUS, &sa_fail, NULL);
-+	if (sigsetjmp(sig_escape, 1) == 0)
-+		if (*pi != 1) {
-+			tst_res(TFAIL, "Data 1 has changed!");
-+			goto cleanup;
-+		}
-+
-+	SAFE_SIGACTION(SIGBUS, &sa_pass, NULL);
-+	if (sigsetjmp(sig_escape, 1) == 0)
-+		*qi;
-+	else
-+		sigbus_count++;
-+	if (sigbus_count != 1)
-+		/* Should have SIGBUSed above */
-+		tst_res(TFAIL, "Didn't SIGBUS on truncated page.");
-+	if (test_pass == 1)
-+		tst_res(TPASS, "Expected SIGBUS");
-+
-+cleanup:
-+	SAFE_MUNMAP(q, 3*hpage_size);
-+	SAFE_MUNMAP(p, hpage_size);
++	tst_res(TPASS, "Test passed!");
 +}
 +
 +static void setup(void)
 +{
-+	long long truncate_point;
-+
-+	page_size = getpagesize();
-+	hpage_size = tst_get_hugepage_size();
++	hpage_size = getpagesize();
 +	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
-+	truncate_point = FOURGIG;
-+	if (hpage_size > truncate_point)
-+		tst_brk(TCONF, "Huge page size is too large!");
-+	if (truncate_point % hpage_size > 0)
-+		tst_brk(TCONF, "Truncation point is not aligned to huge page size!");
 +}
 +
 +static void cleanup(void)
 +{
-+	if (fd >= 0)
++	if (fd > 0)
 +		SAFE_CLOSE(fd);
 +}
 +
 +static struct tst_test test = {
-+	.tags = (struct tst_tag[]) {
-+		{"linux-git", "856fc2950555"},
-+		{}
-+	},
 +	.needs_root = 1,
 +	.mntpoint = MNTPOINT,
 +	.needs_hugetlbfs = 1,
-+	.hugepages = {4, TST_NEEDS},
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.test_all = run_test,
++	.hugepages = {3, TST_NEEDS},
 +};
 -- 
 2.43.5
