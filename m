@@ -4,144 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8C86CAC5B9
-	for <ltp@archiver.kernel.org>; Fri, 26 Sep 2025 12:46:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5839FCAC5AE
+	for <ltp@archiver.kernel.org>; Fri, 26 Sep 2025 13:24:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1758893064; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=UB/kFsh/WfIbGA/77igp3qmdUiMFB/EjSDyWWo6ldZM=;
+ b=IDRN9DbJ+xGultSwKzFuLsG7DCzpxx3NCcIMD672fE/UvH86S71ZzxCm0TZuxBVQbhXjL
+ dmkj/4fZIdufAO0pQoCC2gSETun2nh/w7MC6Ry5UJMF+oRYmuS7mQ/R7BzA6mOE/PBm5tgN
+ K6N28fYUZp4o0917erJNTtgjPOTprmA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F258E3CE128
-	for <ltp@archiver.kernel.org>; Fri, 26 Sep 2025 14:46:32 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 8FF973CE11F
+	for <ltp@archiver.kernel.org>; Fri, 26 Sep 2025 15:24:24 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B642E3CE106
- for <ltp@lists.linux.it>; Fri, 26 Sep 2025 14:46:17 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 83A7C3CE0BA
+ for <ltp@lists.linux.it>; Fri, 26 Sep 2025 15:24:03 +0200 (CEST)
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
+ [IPv6:2a00:1450:4864:20::634])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E2D2B60096B
- for <ltp@lists.linux.it>; Fri, 26 Sep 2025 14:46:16 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2BFC65D77F;
- Fri, 26 Sep 2025 12:46:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1758890776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=3DBR48RBmLvgvK0LDWPWYY9TmQOXFnJnQFcgD6RZNw4=;
- b=PbLUEGVqTQvhdEleMYxyvN3ZDNUMy8bThn0bWEbmZX6Rnf7GiZATXpb9btF0NpcIuZVT3m
- +NIV3M7t72lrK/w7kGREBHJtY3aBLjHEV2u0KqaCiuAooIllBbDj51L9oplt65fu+57bbG
- TcMk2tFyFtFuyursH9IyZ30UE+yYzpk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1758890776;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=3DBR48RBmLvgvK0LDWPWYY9TmQOXFnJnQFcgD6RZNw4=;
- b=tQy7etR/xFePND6OcfI+GuBB0YB9z0SB6SP5LijWJseE9vaVs6//RmE7gb2Cs5NeMURYJs
- WERfijYk4XD88eDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1758890776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=3DBR48RBmLvgvK0LDWPWYY9TmQOXFnJnQFcgD6RZNw4=;
- b=PbLUEGVqTQvhdEleMYxyvN3ZDNUMy8bThn0bWEbmZX6Rnf7GiZATXpb9btF0NpcIuZVT3m
- +NIV3M7t72lrK/w7kGREBHJtY3aBLjHEV2u0KqaCiuAooIllBbDj51L9oplt65fu+57bbG
- TcMk2tFyFtFuyursH9IyZ30UE+yYzpk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1758890776;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=3DBR48RBmLvgvK0LDWPWYY9TmQOXFnJnQFcgD6RZNw4=;
- b=tQy7etR/xFePND6OcfI+GuBB0YB9z0SB6SP5LijWJseE9vaVs6//RmE7gb2Cs5NeMURYJs
- WERfijYk4XD88eDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1402E1386E;
- Fri, 26 Sep 2025 12:46:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2BpaBBiL1mjGSgAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Fri, 26 Sep 2025 12:46:16 +0000
-Message-ID: <adce3124-2a21-4726-a93a-bcde02e71c07@suse.cz>
-Date: Fri, 26 Sep 2025 14:46:15 +0200
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CAF11600795
+ for <ltp@lists.linux.it>; Fri, 26 Sep 2025 15:24:02 +0200 (CEST)
+Received: by mail-ej1-x634.google.com with SMTP id
+ a640c23a62f3a-b33d785de7cso363864766b.1
+ for <ltp@lists.linux.it>; Fri, 26 Sep 2025 06:24:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1758893042; x=1759497842; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=mrCp85iHRSr4mhN4gYizf3lcWOW3hSYXN8olpbvvbnM=;
+ b=g7gownJWZyAdrCcvshyUMBLS9xs0NyU9JLpyXWq9klgitIoVvB+WTC/Kb4eHjJyHDn
+ xHB4d9mDiSSPuPbhlVE3ZalRTA3XAhuDC2wmgco36DMqKUw3z2EbcKJR0QYZ5zoBSLV3
+ kxU5pTJYfsYuhTv+M4I1Du3bClohnMqcS1PdK8CPE+UYy1ksqXpmbeDRhWPrwaineDS2
+ 0i4UMrZMrqIcK+ZSuv5Irw+McUCa8jjMVF2bzMwNG5SendUWmcIZyrIt6MZFcBtY2e37
+ 9O4I5cE7Zi0m2tKDvRsNPob2LCf1415Il3Z8IOniqWM8+5BpeM5e+VYkwhtAUJZhRCTA
+ 9wrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1758893042; x=1759497842;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=mrCp85iHRSr4mhN4gYizf3lcWOW3hSYXN8olpbvvbnM=;
+ b=MXQSUbjv/UoSWumMeQY/YluCn29TS26rvbiCKyJiuuINQILUYLpMviv6iyfsKj9ntJ
+ gE0DbKt7Ah1ZG4FnOqt+N76B2fJLlkd8m+gK/D5ovW3Rmg235PWJTOXvqdQHjcMiNi8r
+ JisL1ZC2uGV1pDFGagnBV99kGpMYOvHLoAOq0ne28uxQ71ebhrmA/T3UHvcXZ9wfrjNW
+ ZtGgocZw3WfJtPvcu+hh/cpuUduMitbua2//+irSUk2RoZiohnpVeTbD77j7eeLTGfOI
+ 5fT72LDzzGzO9de/4/g5K0DSuyVA8nEz3bp6deyc3Jv3kwSSdhO5MHKvNVNBWyqV909c
+ eNhw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVE+5f5hTLWAh26Q5vNgp4tDHLLNWC6kUzPMY5Mc98iuMjW8duibKYX8ykej1zOilAQbcs=@lists.linux.it
+X-Gm-Message-State: AOJu0YxWLzWS88bPMBpM/5xJ/GyHNIKYyIBmG96xeC6gfUs7Gefo8Wqm
+ TpsBDHAjzTqSi/GsVHI5+ny9seER7Yd2VRdMtwiED1BnVwiMK230CtTrTMmRS2wqXfuv2mPuOpd
+ LzxHqkw4=
+X-Gm-Gg: ASbGnctnU2/T/Yv7w3ismO3zUDr6Rb8eqOqz+2EogWoLIVxV0x4jzQl8v3pzwW4CrKw
+ 8/+2kKGLmVDP+qN8+I7nDyjtTs9twXYVRYxVoG1G65M5PKC+u/Y5EXfr2uh4RNQmkYqyOcu1OOn
+ 7nl2ZALdqunQe3A8Rko8kgyKD3aNtsNEr3q9gB20Gmn0I6w42IBZIg+Wmd42CWljMaHojfGtVS5
+ jUXlETjbed1k4P9cC15COxgGh5gRNUjhkOzlJ1HcTzLmeazsczAFMnowi2BCJMKWP4AuoAu9ooS
+ h5vfgNRH7lMtCXQsh8A5423HrqQd4Fvqg1LI6xYIyMv3XrMPHNT5FmrUO5Gtcqkg600Kn91ziZ9
+ yMn8p9+bnh1S8q1FtzgZB8WNLvz4dIroGgeVrVb0E80mLM/wA4TjGsjh/dKRLzPR5ggEb6PlXyD
+ mQkLFzDhCihvFFTHkiHbB7nXMPzISn10UHEl5ukfQL6J3G8ht60M1q/bjTX8pXbgY=
+X-Google-Smtp-Source: AGHT+IFvG9yNMLzAyCnwTDCAqw2hfhkwPTHNUv7+zXd7UlOge1qT3+90dQ0Im2ss5ZcACfQwPoEs2Q==
+X-Received: by 2002:a17:907:3d9e:b0:b2d:830a:8c17 with SMTP id
+ a640c23a62f3a-b34bd068ecdmr822846766b.56.1758893042107; 
+ Fri, 26 Sep 2025 06:24:02 -0700 (PDT)
+Received: from ?IPV6:2003:ef:2f17:6d00:961b:d261:4569:b9c8?
+ (p200300ef2f176d00961bd2614569b9c8.dip0.t-ipconnect.de.
+ [2003:ef:2f17:6d00:961b:d261:4569:b9c8])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-b35446f7834sm363261466b.65.2025.09.26.06.24.01
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 26 Sep 2025 06:24:01 -0700 (PDT)
+Message-ID: <aa769509-d4b8-46eb-b02d-699a573b0080@suse.com>
+Date: Fri, 26 Sep 2025 15:24:01 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20250923153234.73227-1-mdoucha@suse.cz>
- <aNOwZlXJpZnXBB2y@yuki.lan> <aNOxwtuLCUNEy_vx@yuki.lan>
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+References: <20250917102737.GA336745@pevik>
 Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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 ag==
-In-Reply-To: <aNOxwtuLCUNEy_vx@yuki.lan>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- MID_RHS_MATCH_FROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- URIBL_BLOCKED(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+In-Reply-To: <20250917102737.GA336745@pevik>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] file_attr02: Enable reflinks and fix blocksize
- detection
+Subject: Re: [LTP] [RFC] 'nobody' user for testing
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -153,28 +104,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Betty Zhou <bettyzhou@google.com>, Edward Liaw <edliaw@google.com>
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 9/24/25 10:54, Cyril Hrubis wrote:
-> Hi!
-> And it looks like our CI builds fail because of implicit defintion of
-> the mount() function. I guess that we need to add #include <sys/mount.h>
-> before applying.
+Hi Petr,
 
-Yes, please add it during merge. Or should I submit v2?
+On 9/17/25 12:27 PM, Petr Vorel wrote:
+> Hi,
+>
+> I found a setup bug on LTP IMA tests ima_conditionals.sh and
+> ima_measurements.sh which use 'sudo' (with user 'nobody'). We have many C tests
+> in LTP which use 'nobody' user somehow, but they don't actually execute
+> anything with this account. IMHO these are the only tests which execute with 'sudo'
+> (please double check me).
+>
+> $ git grep -l nobody testcases/kernel/syscalls/ | wc -l
+> 160
+>
+> Because on newer systems (I checked Tumblewed, Fedora, Debian) 'nobody' account use
+> /usr/sbin/nologin which prevents logging, we 1) either need to change account
+> to use bash (and restore it back after testing) or 2) create a dedicated user
+> for testing. I'd try to use 'useradd' and check with grep /etc/passwd if the
+> user is not already defined.
+>
+> I tend to use 2), add it only to IMA tests (to ima_setup.sh). But I could
+> put some more generic code to tst_test.sh so that it can be reused by other
+> tests in the future. WDYT?
+>
+> Also, as we heavily use 'nobody' already I'm not sure if it's worth to bother
+> with putting environment variable allowing a different user. Nobody so far complained,
+> even AOSP folks seem to be used C tests which use 'nobody' (e.g. fchmod06.c is
+> compiled [1] and not disabled [2]).
+>
+> Also, we agreed with Cyril, that it'd be good to convert these 2 IMA tests to
+> use 'su' instead of 'sudo' because 'su' is simpler than 'sudo' (although when
+> testing with rapido [3] none of them works out of the box).
+>
+> [1] https://android.googlesource.com/platform/external/ltp/+/refs/heads/main/android/Android.bp
+> [2] https://android.googlesource.com/platform/external/ltp/+/refs/heads/main/android/tools/disabled_tests.txt
+> [3] https://github.com/rapido-linux/rapido
+As far as I understand, the ima_conditionals.sh and ima_measurements.sh 
+tests are using sudo for creating a file from a specific user/group. 
+This is already achieved in other tests such as dirtyc0w_shmem, where we 
+spawn a new process, changing its current user/group to 'nobody' and 
+executing a command.
+
+I don't know the internal sudo implementation, but I guess that's enough 
+for the IMA tests, unless IMA testing suite wants to verify that sudo 
+command is working properly within the IMA support.
+
+In short, I would re-implement those two tests in C to make it easy.
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Andrea Cervesato
+
+andrea.cervesato@suse.com
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
