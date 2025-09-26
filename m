@@ -4,92 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A34ECAC5A7
-	for <ltp@archiver.kernel.org>; Thu, 25 Sep 2025 14:03:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1758808989; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=92L8n0wXES8G9s90p1AOEX8cFmmScUfQv4qCOdrcFZM=;
- b=UaBvLFEEhRlMBOilW/0xm70rnKsMIA+Xj1608/YIk2AMs4pEzUapcCkSo7V0HPHTYtXsi
- vwreqMLdELcaJO2kfgE0dtADAike9HdZv/mFSZR304h5laMQ2GGc48bWB4k519OmkhZD/l2
- BnhTY/sfVrYz6HnnbB99C/w+fHh2/x8=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB381CAC5B5
+	for <ltp@archiver.kernel.org>; Fri, 26 Sep 2025 02:54:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ACEE23CE08A
-	for <ltp@archiver.kernel.org>; Thu, 25 Sep 2025 16:03:09 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id CF2623CE09A
+	for <ltp@archiver.kernel.org>; Fri, 26 Sep 2025 04:54:34 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1581E3CB2AF
- for <ltp@lists.linux.it>; Thu, 25 Sep 2025 16:02:47 +0200 (CEST)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
- [IPv6:2a00:1450:4864:20::629])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1F94B3CD9F8
+ for <ltp@lists.linux.it>; Fri, 26 Sep 2025 04:54:18 +0200 (CEST)
+Received: from mail-24421.protonmail.ch (mail-24421.protonmail.ch
+ [109.224.244.21])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DEFAE1400DA3
- for <ltp@lists.linux.it>; Thu, 25 Sep 2025 16:02:46 +0200 (CEST)
-Received: by mail-ej1-x629.google.com with SMTP id
- a640c23a62f3a-b30f8d14b9cso159909366b.3
- for <ltp@lists.linux.it>; Thu, 25 Sep 2025 07:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1758808966; x=1759413766; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=Eq1yFAojs2H4LeGIQa5l7j+fmeYOdodvxjv3KZ67Lqg=;
- b=Vm5ZB3lS4hhnZ+dYEtYzzzeaEic8/5RZmkTzejFfLL5W+CWHJhxatus+lJF7pgCvq9
- OlRbmZJKFP4/Yj63mMzqcp/NprsDLQDR5Iy+oZ0rn5ejsJVBWSJ4J9KuMxftDZ1Pl+nq
- wevfyAvMtOiY1Z9bvxgGEcI16uIOl2AISNRr6HMsgYhnugrLFHUb1Bp5lmnpT6voeOrn
- z4S1ZRZFJ7SznFEB6JD7T+RSXBgUZcEEJpU4MVVP0gpv5DjbRzO6fhZcSUgfclCI2F9e
- YmUdIPBdx7nXVkja5Ls8Izq61eCMoIkc/tDmRW0SVSuoPm+Yj5mPTPh2WA/wICGoxRzw
- W4dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1758808966; x=1759413766;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=Eq1yFAojs2H4LeGIQa5l7j+fmeYOdodvxjv3KZ67Lqg=;
- b=qD7OL2dPQZ1xEw9vyOIriBSZRw1dMdJdurYVo/ixyUhEdbjckLyQl/05YydmZQi6JS
- EZcsmP/jLdkDIz+iRQcx9z1h5xr8vRO7uCPzWlmtIX2biNN0QgD8l3vRaUYFgBX1Er5T
- 5xIEj+7J8HygNm2fNvmDdMPn80ICZk5ouaua04qT+kIv92I899CG9Ratozn1iP/776QD
- H4N2rvtmCG2bZmfbczSQZQHNhHtP5qIfLhpjWgly473Tayvqae7lsASLNQEocFg2UoVx
- r/fGwYy64xNn+gJ7vnZCKMNraW8BgTLWtKzabWduDqevolvttNPOU5QAuEokaGxYfvCC
- f39g==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVTFajMq0fe+GUyWWpfSphA727Xt8Sd9opXzhoW7G4/uM3gvMq5vKp5mspaY/8Y5ncmNa4=@lists.linux.it
-X-Gm-Message-State: AOJu0Yxduk9zH++c2TpvpT/lRlBB2G35Kq++U44K/18rCJi+5179/sgA
- A99YagKLSVl/Xs8KQXdbsXzKd7kCc6LY8311sQ/f7LPYnIh2oBXkHnrd47pAkeJF51c=
-X-Gm-Gg: ASbGncswmh+toV2f8yPERC2EJVoe9QsFr8AK5zpz0+/cw9wA9wGI25cTVH5+7/r7VaD
- +SUzeAGjEJPJ0k0yJKb0dBKjgItVYSkx2V/uYOGJo5Fherafurb7jcsVh9t/58Ctk3M+NgiLV/q
- dxPFmKJUcm4cNJW0MKfIKrJJshY5HXdzuyyvYqtfqoxP3GlwkuV/9te2ZobpElyzVx05HZrx+rt
- ZTnS1tqoLpmah8YKSvKpMoirca43svBp2hnxF+la0Wn874GLKc5wSmLmlEfmHYatbD4+UHzJlSA
- Uxq/Miy/o/IuFuZLCBvoStJn9lvqGFNS63eLkZ5wZefgHLnzfrEMZs4k7QCnocVyme6WVaAW3Ld
- CrzwnIPXX2VY9DGgZI0LuIaqywebHisrQ
-X-Google-Smtp-Source: AGHT+IEO1am32/sR0Xk0Uf1WBG1V9LUNAQVmR/dYvdU8ttC9mFc6zC9DpaDmkkqX+dpWqnPrKcUEhw==
-X-Received: by 2002:a17:907:6e92:b0:af9:6bfb:58b7 with SMTP id
- a640c23a62f3a-b34b80b52demr380214266b.5.1758808965824; 
- Thu, 25 Sep 2025 07:02:45 -0700 (PDT)
-Received: from [10.232.133.64] ([88.128.90.0])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-b35446f7834sm170332566b.65.2025.09.25.07.02.44
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 25 Sep 2025 07:02:45 -0700 (PDT)
-Message-ID: <f7783e14-67d0-4158-9112-c4d803215323@suse.com>
-Date: Thu, 25 Sep 2025 16:02:43 +0200
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DB076600716
+ for <ltp@lists.linux.it>; Fri, 26 Sep 2025 04:54:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=naotchy.com;
+ s=protonmail; t=1758855255; x=1759114455;
+ bh=0PL/WLz4gt0ipZMuSG2jphy3dofSLA86w1lkbnKc8oM=;
+ h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+ Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+ b=I999kfWhcLPzk9DWG4d0VaYGUVvqJc6WLqxFyCE34PrRRLYiq0ZH0t5WhC2NzM0vP
+ AdB+KjclC593oJ/GdT0P9l+13h4UMHBBInhjyqwWWmodqVpRuLuDweFCTi9WnxYvn5
+ 3xPP5HBSyX5d5SulUZw/ZKKeRrhuHemqSUtvBPdo4tU/2LZIqz+1oyC0N/HEkm72kI
+ PPaMGWQDIaO/ESTn5hXPoMGYXcfuovttch42orFIWD43tZe4UvAv6E+C05PuPk22g1
+ opr5/O5/O12kT1LAJk/P2IF4OvWF5JYYCg7KwgOrJSc453MEykm/Xu422MvXoceA9Y
+ ezBNCUhl7wn+Q==
+Date: Fri, 26 Sep 2025 02:54:08 +0000
+To: ltp@lists.linux.it
+From: Jack Morgan <jmorgan@naotchy.com>
+Message-ID: <20250926025318.612308-1-jmorgan@naotchy.com>
+Feedback-ID: 96944049:user:proton
+X-Pm-Message-ID: fdf90428354cbf070037a6e3ec0ac86f6eb0e2df
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20250917-open_tree_attr-v3-0-d78d4150b662@suse.com>
- <d9c5cee7-4f95-4c3e-8915-eedeffe1b6e6@suse.com> <aNVLGcXFcOnKPX-b@rei>
-Content-Language: en-US
-In-Reply-To: <aNVLGcXFcOnKPX-b@rei>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 0/2] open_tree_attr syscall coverage
+Subject: [LTP] [PATCH] configure.ac: Add check for STATMOUNT_MNT_NS_ID
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,23 +54,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 9/25/25 4:00 PM, Cyril Hrubis wrote:
-> Hi!
->> Should I merge this one? I got Reviewed tag already.
-> We are in a pre-release git freeze now, so only fixes should go in until
-> the release.
->
-Ok thanks, I will merge it once we have the release.
+mnt_ns_id was removed from struct statmount in newer kernels.
+This check determines whether the headers have this field or not.
 
-- Andrea
+Signed-off-by: Jack Morgan <jmorgan@naotchy.com>
+---
+ configure.ac | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/configure.ac b/configure.ac
+index d4dd13033..0480f46ca 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -264,6 +264,8 @@ AC_CHECK_TYPES([struct cachestat],,,[#include <sys/mman.h>])
+ # Defined in <linux/mount.h>, but include/lapi/mount.h includes <sys/mount.h> */
+ AC_CHECK_TYPES([struct mnt_id_req],,,[#include <sys/mount.h>])
+ AC_CHECK_TYPES([struct statmount],,,[#include <sys/mount.h>])
++AC_CHECK_MEMBERS([struct statmount.mnt_ns_id],,,[#include <unistd.h>
++#include <linux/mount.h>])
+ 
+ AC_CHECK_TYPES([struct pidfd_info],,,[#include <sys/pidfd.h>])
+ AC_CHECK_TYPES([struct file_attr],,,[#include <linux/fs.h>])
+-- 
+2.51.0
+
 
 
 -- 
