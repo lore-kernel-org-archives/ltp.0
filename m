@@ -4,101 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C631ECAC5B5
-	for <ltp@archiver.kernel.org>; Mon, 29 Sep 2025 10:52:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1759143160; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=JEOQOmHwZE54gt5T2OQfXUt3SdZZ1fD8/GZCT3p1gcc=;
- b=gtT6Z7jUB2JffO9DiQ/IitQE6qk8TlXGsGrfdBx+g8QtgoqWQUEIH2pFRT3s5G7w19MYe
- LkFvCkojOm1UYGxTAfCSUOjyK2hw2PKhysWXJNyjPWEU+GaObSp8imLPBP7Bh1JGcAC5nAN
- ojv4UAevWZl/0y4Fw7wvX1xDbxrSZtc=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B99AACAC5BE
+	for <ltp@archiver.kernel.org>; Mon, 29 Sep 2025 10:57:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 128A33CE1E2
-	for <ltp@archiver.kernel.org>; Mon, 29 Sep 2025 12:52:40 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 20D2F3CE1E0
+	for <ltp@archiver.kernel.org>; Mon, 29 Sep 2025 12:57:53 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2DEE03C4F80
- for <ltp@lists.linux.it>; Mon, 29 Sep 2025 12:52:19 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id A9D273C4F80
+ for <ltp@lists.linux.it>; Mon, 29 Sep 2025 12:57:37 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 277BB2005F1
- for <ltp@lists.linux.it>; Mon, 29 Sep 2025 12:52:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1759143137;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9B60B1A006E8
+ for <ltp@lists.linux.it>; Mon, 29 Sep 2025 12:57:36 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7BB953243D;
+ Mon, 29 Sep 2025 10:57:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1759143454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pWynaJ+sfpvXgmxrjfrAlVWda+W/H2/49GGyVJFR57Q=;
- b=ZVGBxz7WEy81UkZ2Hhl6xFxrUp0nHnKnoUussqPijL2Sj9LX7B9l0gdspkSXQR2hfxWSZL
- xUa1PRryfePVU/9TUtGOQRksaaDmrm/TXa8atkiZVwEm4xFBNloLbS7+wxZofIhvnnIkiE
- aurY14z+CGzlcOopnFeSL73ODx8jr7I=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-464-Q1cU4R3DMr2y1Gd89xqbPQ-1; Mon, 29 Sep 2025 06:52:16 -0400
-X-MC-Unique: Q1cU4R3DMr2y1Gd89xqbPQ-1
-X-Mimecast-MFC-AGG-ID: Q1cU4R3DMr2y1Gd89xqbPQ_1759143135
-Received: by mail-wr1-f69.google.com with SMTP id
- ffacd0b85a97d-3ecdfe971abso3022241f8f.2
- for <ltp@lists.linux.it>; Mon, 29 Sep 2025 03:52:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1759143135; x=1759747935;
- h=user-agent:in-reply-to:content-disposition:mime-version:references
- :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=pWynaJ+sfpvXgmxrjfrAlVWda+W/H2/49GGyVJFR57Q=;
- b=pk2G+b1ixN5CZ+2lpRwjwvBPVPHPu/pzaDGMFtEtaaJuFPStGJWD+p0YVoCoD5eZy/
- 9kOzN9V7GSurl5tqTIL1mxGsAJ/0/VFzzvRGgDsVaHtU9M4EeyrN/gAn/1/lPb2mcV29
- iI1N0jkc4FhFG2MuDAJXW/4wGLOMTNe8U/8tfNAPlSwiVjMVaXuzt6Nsu11QiACWcaoV
- te9wrH9PWTT3AFrmdG8LFCbKDsJDhZqiIlFQ96BcgYuphoFh9XH25ZvjmYw8Cis3m3fl
- n9Jg/pJQLnDyTkoXGvEIGecnc8ygLOurm9/kkxlCCAx8lklZGgK7Js4d8qhZaIN+6oc7
- Bjpw==
-X-Gm-Message-State: AOJu0Yw9LeqGXX2bgIfP89Z8GWLgiM5lQH9m3oqoSVStfe3oliHNKZLe
- djk9qLvksMZAjnyV1JWzdtQcp4BE9sawR5XETWI4MSj36kdUGul4BioUVZXY2hqvWfBAY4rfHJR
- 6/hw1AAU8ThsVsc1UleSKVyqrJqeTNYNNIHC77aDV1KNjX0wYDdTj
-X-Gm-Gg: ASbGncuhbZW/wLsT9HxYZdIhabIBvnFyZvQJtQLrPqZL02k7b3h/jmStFfTS1/zIRmc
- k9nkWoBayBqoWJHGtlebkou+1rNn72SvnuZHeNhFNB0KwIgj6nuL37xq99AJJGV0l09fST4smqT
- GOGGTYOkxh8ZcimJkJK20A1XlOKyR7CCZbOpfFLw79xkDdgcYtpXPZUWAQKIyHIPUFvR86nRWS7
- FcOJhNkf1zmYNOmmb71XG7CVORpIqtNgEvq4AIOK72UHkGWoqlZ7BF9VsXuCy0T+G0FR+K727Yd
- 6IKHEcIQod2287B3SFhAwU2WsZ1OBDVVoz3c4yG0gwEduvlPz+73VtZOlg==
-X-Received: by 2002:a05:6000:26ce:b0:3e6:f91e:fa72 with SMTP id
- ffacd0b85a97d-40e4354d383mr13005840f8f.7.1759143134938; 
- Mon, 29 Sep 2025 03:52:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFkTQn6n0Wgm+qO9PGOu1p0Vbxrokb7fDVvALoBhK/bYZM9gJg3CqA2vRcYXqq4pipvxmNxAA==
-X-Received: by 2002:a05:6000:26ce:b0:3e6:f91e:fa72 with SMTP id
- ffacd0b85a97d-40e4354d383mr13005818f8f.7.1759143134561; 
- Mon, 29 Sep 2025 03:52:14 -0700 (PDT)
-Received: from lida.tpb.lab.eng.brq.redhat.com ([85.93.96.130])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-40fc82f2965sm17724637f8f.55.2025.09.29.03.52.13
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 29 Sep 2025 03:52:14 -0700 (PDT)
-Date: Mon, 29 Sep 2025 12:52:12 +0200
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20250929105212.rygpolrvz2kr7nkp@lida.tpb.lab.eng.brq.redhat.com>
-References: <20250917090712.5tbidlr7yvqvikj7@lida.tpb.lab.eng.brq.redhat.com>
- <aNECd4Qw4JSpjqxP@yuki.lan>
- <20250922110611.duahjf4vqvwp4zs4@lida.tpb.lab.eng.brq.redhat.com>
- <aNpjeHgpAWTa8sIo@yuki.lan>
+ bh=gF2ymndufxLXF6l5Nd6un/VKJG4nVUSPy0roXoaogaQ=;
+ b=2RtNynkkSsZQ1DibZgba8Ut6Lh1piMVckeKlyumS/Au1u2JeCRV+JaWQi9EZBPdANYNXH5
+ WdZHR3Ds9MxT6U1GQ2fbfYwsIE0JYj71nOJlCHQKLYrGt3XVLMXHs3cKHSUpPrbkcBwtXa
+ 4wH9lwK+ViVUqkSxa27YhG4DvcIkrqI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1759143454;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gF2ymndufxLXF6l5Nd6un/VKJG4nVUSPy0roXoaogaQ=;
+ b=JzOVM1JaEDzQFefknL4Zkco1QJGgamQB1mX8exO5jgaIs/1ctRv1RIlSLIkkVE7IqSuJ7B
+ GsXEilp3EzBPRvCQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1759143454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gF2ymndufxLXF6l5Nd6un/VKJG4nVUSPy0roXoaogaQ=;
+ b=2RtNynkkSsZQ1DibZgba8Ut6Lh1piMVckeKlyumS/Au1u2JeCRV+JaWQi9EZBPdANYNXH5
+ WdZHR3Ds9MxT6U1GQ2fbfYwsIE0JYj71nOJlCHQKLYrGt3XVLMXHs3cKHSUpPrbkcBwtXa
+ 4wH9lwK+ViVUqkSxa27YhG4DvcIkrqI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1759143454;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gF2ymndufxLXF6l5Nd6un/VKJG4nVUSPy0roXoaogaQ=;
+ b=JzOVM1JaEDzQFefknL4Zkco1QJGgamQB1mX8exO5jgaIs/1ctRv1RIlSLIkkVE7IqSuJ7B
+ GsXEilp3EzBPRvCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6312313782;
+ Mon, 29 Sep 2025 10:57:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ZHWEFh5m2migZQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 29 Sep 2025 10:57:34 +0000
+Date: Mon, 29 Sep 2025 12:58:17 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Jack Morgan <jmorgan@naotchy.com>
+Message-ID: <aNpmSc71aNmPoEDY@yuki.lan>
+References: <20250926203502.1350861-1-jmorgan@naotchy.com>
 MIME-Version: 1.0
-In-Reply-To: <aNpjeHgpAWTa8sIo@yuki.lan>
-User-Agent: NeoMutt/20180716
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: CGfGnNz-efCjBzEZFskMPffjUi3iuKjs6Ce75KwATaQ_1759143135
-X-Mimecast-Originator: redhat.com
 Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
+In-Reply-To: <20250926203502.1350861-1-jmorgan@naotchy.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Proposal for new LTP config knob: LTP_QUIET
+Subject: Re: [LTP] [PATCH v3] statmount09.c: Enable mnt_ns_id for
+ STATMOUNT_MNT_NS_ID
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,35 +107,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Martin Cermak via ltp <ltp@lists.linux.it>
-Reply-To: Martin Cermak <mcermak@redhat.com>
-Cc: valgrind-developers@lists.sourceforge.net, Mark Wielaard <mark@klomp.org>,
- "Bird, Tim" <Tim.Bird@sony.com>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Thank-you Cyril.  Looks perfect.
+Hi!
+Since we are nearing next release I pushed the patch with minor
+adjustenments, thanks!
 
-Martin
+> statmount09.c: Enable mnt_ns_id for STATMOUNT_MNT_NS_ID
 
-On  Mon  2025-09-29  12:46 , Cyril Hrubis wrote:
-> Hi!
-> > I'm attaching updated patch.  Hope it does address your comments.
-> > Please check.
-> 
-> I dared to add your Signed-off-by: (I hope you do not mind) and merged,
-> thanks.
-> 
-> Ah, and also removed the TWARN from the patch description since we does
-> not skip TWARN in this patch revision.
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+I've removed this duplicate line.
 
+> When HAVE_STATMOUNT_MNT_NS_ID is defined, use mnt_ns_id
+> for statmount09 test case. Otherswise, use mnt_id.
+> 
+> Fixes: #1260
+
+Replaced this with a full link to the issue (it's easier to dig things
+up that way).
+
+> Signed-off-by: Jack Morgan <jmorgan@naotchy.com>
+> ---
+>  testcases/kernel/syscalls/statmount/statmount09.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/statmount/statmount09.c b/testcases/kernel/syscalls/statmount/statmount09.c
+> index 20c76ba24..03f54f2b8 100644
+> --- a/testcases/kernel/syscalls/statmount/statmount09.c
+> +++ b/testcases/kernel/syscalls/statmount/statmount09.c
+> @@ -39,7 +39,11 @@ static void run(void)
+>  		return;
+> 
+>  	TST_EXP_EQ_LI(st_mount->mask, STATMOUNT_MNT_NS_ID);
+> -	TST_EXP_EQ_LI(st_mount->mnt_ns_id, mnt_ns_id);
+> +#if !defined(HAVE_STRUCT_STATMOUNT) || defined(HAVE_STRUCT_STATMOUNT_MNT_NS_ID)
+> +    TST_EXP_EQ_LI(st_mount->mnt_ns_id, mnt_ns_id);
+> +#else
+> +    tst_res(TCONF, "statmount.mnt_ns_id not available in current headers, skipping check");
+
+Replaced the spaces with tabs, we use tabs in LTP (hint: 'make check'
+will print errors and warnings to catch such issues).
+
+And also shortened the line a bit, the ", skipping check" part is
+redundand since the message type is TCONF already.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
