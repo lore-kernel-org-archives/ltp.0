@@ -4,91 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2162CAC5BB
-	for <ltp@archiver.kernel.org>; Sun, 28 Sep 2025 23:28:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1759102099; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=bEcoRFiVBgB+vEYuAN8kHZgj02oOAPoVwsJLNbrhFTI=;
- b=WAIFWZ5N7yt4BvHQcu0fc5nCaQyu5zJLOtEGIpGNLt9NJsOm/RXMCiEzBYZu72a+frpEf
- Ed5yNbf0uCgQIHH3rH6fmp/Nl9iwRA7xsBpCRMfW6Je6JAUpOqoqUk5QLkYVxQqWTCQNFG1
- rH9TQrFZkUfQ8By0fwOUgudAMun7FBw=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB6A0CAC5B0
+	for <ltp@archiver.kernel.org>; Mon, 29 Sep 2025 08:32:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 150BE3CE1AB
-	for <ltp@archiver.kernel.org>; Mon, 29 Sep 2025 01:28:19 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id AB8013CE1C6
+	for <ltp@archiver.kernel.org>; Mon, 29 Sep 2025 10:32:31 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C54703CE1A2
- for <ltp@lists.linux.it>; Mon, 29 Sep 2025 01:27:17 +0200 (CEST)
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
- [IPv6:2a00:1450:4864:20::52b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0BE1C3C4F80
+ for <ltp@lists.linux.it>; Mon, 29 Sep 2025 10:32:15 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1162D100045D
- for <ltp@lists.linux.it>; Mon, 29 Sep 2025 01:27:17 +0200 (CEST)
-Received: by mail-ed1-x52b.google.com with SMTP id
- 4fb4d7f45d1cf-62fc686dc41so3904973a12.1
- for <ltp@lists.linux.it>; Sun, 28 Sep 2025 16:27:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1759102036; x=1759706836; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=tSGCTw7emV00vu570aoB6WeifBoeoHtLfkXUX1uZ2tA=;
- b=d1sSWYruKZW6ylUPwbYWmDHMm4CiiEZGlyND6misbpR45BkBxKqeF4rhU1x2BvrY5w
- tCviQpCtiB6FEx2drIiaixMc25rtqcwozp3jjzm5XzrdNgAXJSSY92GXHzCJnG2ht8JN
- xH+E+GMHnEbN/1n0xTdxX5gqQvRkHAGOFbpD/su1Xue2nZkFEpZ6UcSlLl0AC+VOtBJz
- J87Ty8tjeMQQeC/t9ok9ybQUzNEPNi3JDDrdEb0jgiUFsmYdTyZS6YybsOEJ5pARVpjT
- uSyr+yvHXjXd8kqHxMHIg2tMOA7g+mN8kAcBuQ2XGlA/tDFX59z3VelCsVoAM7H0Shz+
- 3nGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1759102036; x=1759706836;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=tSGCTw7emV00vu570aoB6WeifBoeoHtLfkXUX1uZ2tA=;
- b=E0UBruHKAKVfmExgJ9wgWOIqlMZAIVleUF9/Gm5eytaX1n4/rkYm+z8iUvDQqrXBUp
- /uW9OBeQJDM8jSkw4y/9KSNwU4KoMY0wlx2yswAmi79xUEDxQ6rsM1o2ffJOa/+H0siJ
- wNu+HuxAINJTK8TKnMfPs+WPAzXoCDkAB4a7lOrmpCN8PqNJH0Y2RgC8zUxZOgR2W2Dv
- 7eyhgAt9lXbMNhHEwXTYSN08jTcPo9Zj/6yOGkJwKpKCBqD4V7Yd9Emsiw4JDygYPnnh
- XgV3ubGhsn1jG9omQLiSMjv3O3BL2gA1aRqbjxHlIAbI5ltEHqJ5l32knSkw3ydrjWEh
- jE7w==
-X-Gm-Message-State: AOJu0YzDOcSWZX2TUTfyjl5cXLqDDiJBgWFNnwpElXJ2Rxw0HjBu0rqP
- 3M+hYgaCPxbE6h3w092usIHXQGAyjrolDcFWoyktO3g8HtE3UfJqY5h4q5CgNvWH+ZhRLhCFcJT
- Y3u7Uxw==
-X-Gm-Gg: ASbGncuXyOV7NvHYBjCDhLeB1Z2y3sVfyVSs5T+cJ6wHAMIltsTWxn3YfEKMezh8KoG
- mlw9Ko2tr/PLpBQPedPk6GqcexixfTm9D9HrQRT7en01OoKV0nOWDMt0NGmUEfFLSrbbh9nz+KS
- youh+2kIwqW78j6F6FtuyZ3bzJBvpPaKI6dsgYIaZDrGrAXc9wOsrEqG75FtGJEyZk7uhTtspFq
- hRnhbBdgnW/pw6KC04XDbF0MB+Oe8KBGt6XkeDrDCe7Dqc+WaylxsCVtfn/4/hIA/vAbr6FoQVi
- eGoPPQRQpIOe69TPVRo2Foz6I78UqeXOxIEcOfa/LZaoCB5dfqLJsC62qa3x1zUWpxk5w6jMbvp
- SssVtYi2zYsHlYE6O10Q9SKrfAvk7KVN+k5dogNu4i3c=
-X-Google-Smtp-Source: AGHT+IHmAW+aaxkXAACTZztjlOGURk9KoTFtAr4xaGwf7LW0OgtPezj7UmiOKU1t5umnG/OaEycxdg==
-X-Received: by 2002:a05:6402:210a:b0:634:bdb3:e656 with SMTP id
- 4fb4d7f45d1cf-634bdb3e8ccmr9171500a12.17.1759102036174; 
- Sun, 28 Sep 2025 16:27:16 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- 4fb4d7f45d1cf-634a3af5483sm6740358a12.42.2025.09.28.16.27.15
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 28 Sep 2025 16:27:15 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Sun, 28 Sep 2025 23:26:58 +0000
-Message-ID: <20250928232708.24007-3-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250928232708.24007-1-wegao@suse.com>
-References: <20250926085021.22141-1-wegao@suse.com>
- <20250928232708.24007-1-wegao@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 14DF1140020B
+ for <ltp@lists.linux.it>; Mon, 29 Sep 2025 10:32:14 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5DC53314B6;
+ Mon, 29 Sep 2025 08:32:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1759134722;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Bvs2oavNjSVaUUckUlOza9rx0E0NtK9gvVDOR8SHJaQ=;
+ b=0Sc5z9mQdCZHWeG1fzwKAZDwUoEcWbNIXKeOSuIfSHXHodtoq8PVaZeBaGRjY5z4W6ixZl
+ nihkPKwsjzWa7BaRCuk9xE4rYTdnxeyFqCG7aDXcJokMevqBaGFu5sBf5F6cWdRerri0ND
+ idoxphwyW9FbdSs8w6MTDgLMVli0Wfc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1759134722;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Bvs2oavNjSVaUUckUlOza9rx0E0NtK9gvVDOR8SHJaQ=;
+ b=cQScN28JVej9Mpf79Za750E0GgyA2mLdBhsIAXbiNIoqgMNDEJanH4RyEI8h2g+gzUAo+y
+ 8Q5omf0PCpG+6TAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0Sc5z9mQ;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=cQScN28J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1759134722;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Bvs2oavNjSVaUUckUlOza9rx0E0NtK9gvVDOR8SHJaQ=;
+ b=0Sc5z9mQdCZHWeG1fzwKAZDwUoEcWbNIXKeOSuIfSHXHodtoq8PVaZeBaGRjY5z4W6ixZl
+ nihkPKwsjzWa7BaRCuk9xE4rYTdnxeyFqCG7aDXcJokMevqBaGFu5sBf5F6cWdRerri0ND
+ idoxphwyW9FbdSs8w6MTDgLMVli0Wfc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1759134722;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Bvs2oavNjSVaUUckUlOza9rx0E0NtK9gvVDOR8SHJaQ=;
+ b=cQScN28JVej9Mpf79Za750E0GgyA2mLdBhsIAXbiNIoqgMNDEJanH4RyEI8h2g+gzUAo+y
+ 8Q5omf0PCpG+6TAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D1F913A21;
+ Mon, 29 Sep 2025 08:32:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ca/KAQJE2mgsNQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 29 Sep 2025 08:32:02 +0000
+Date: Mon, 29 Sep 2025 10:31:56 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20250929083156.GA199802@pevik>
+References: <20250917102737.GA336745@pevik>
+ <aa769509-d4b8-46eb-b02d-699a573b0080@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <aa769509-d4b8-46eb-b02d-699a573b0080@suse.com>
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Queue-Id: 5DC53314B6
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] ioctl_loop01.c: Update to new .needs_cmds
- struct
+Subject: Re: [LTP] [RFC] 'nobody' user for testing
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,70 +120,79 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- .../kernel/syscalls/ioctl/ioctl_loop01.c      | 23 ++++++++-----------
- 1 file changed, 9 insertions(+), 14 deletions(-)
+> Hi Petr,
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-index c9137bf1e..70036d6ef 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-@@ -97,9 +97,10 @@ static void verify_ioctl_loop(void)
- 
- static void setup(void)
- {
--	int ret;
-+	parted_sup = tst_cmd_present("parted");
-+
- 	const char *const cmd_parted[] = {"parted", "-s", "test.img", "mklabel", "msdos", "mkpart",
--	                                  "primary", "ext4", "1M", "10M", NULL};
-+					"primary", "ext4", "1M", "10M", NULL};
- 
- 	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
- 	if (dev_num < 0)
-@@ -107,18 +108,8 @@ static void setup(void)
- 
- 	tst_fill_file("test.img", 0, 1024 * 1024, 10);
- 
--	ret = tst_cmd(cmd_parted, NULL, NULL, TST_CMD_PASS_RETVAL);
--	switch (ret) {
--	case 0:
--		parted_sup = 1;
--	break;
--	case 255:
--		tst_res(TCONF, "parted binary not installed or failed");
--	break;
--	default:
--		tst_res(TCONF, "parted exited with %i", ret);
--	break;
--	}
-+	if (parted_sup)
-+		SAFE_CMD(cmd_parted, NULL, NULL);
- 
- 	sprintf(partscan_path, "/sys/block/loop%d/loop/partscan", dev_num);
- 	sprintf(autoclear_path, "/sys/block/loop%d/loop/autoclear", dev_num);
-@@ -152,5 +143,9 @@ static struct tst_test test = {
- 		{"linux-git", "6ac92fb5cdff"},
- 		{}
- 	},
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "parted", .optional = 1},
-+		{}
-+	},
- 	.needs_tmpdir = 1,
- };
--- 
-2.51.0
+> On 9/17/25 12:27 PM, Petr Vorel wrote:
+> > Hi,
 
+> > I found a setup bug on LTP IMA tests ima_conditionals.sh and
+> > ima_measurements.sh which use 'sudo' (with user 'nobody'). We have many C tests
+> > in LTP which use 'nobody' user somehow, but they don't actually execute
+> > anything with this account. IMHO these are the only tests which execute with 'sudo'
+> > (please double check me).
+
+> > $ git grep -l nobody testcases/kernel/syscalls/ | wc -l
+> > 160
+
+> > Because on newer systems (I checked Tumblewed, Fedora, Debian) 'nobody' account use
+> > /usr/sbin/nologin which prevents logging, we 1) either need to change account
+> > to use bash (and restore it back after testing) or 2) create a dedicated user
+> > for testing. I'd try to use 'useradd' and check with grep /etc/passwd if the
+> > user is not already defined.
+
+> > I tend to use 2), add it only to IMA tests (to ima_setup.sh). But I could
+> > put some more generic code to tst_test.sh so that it can be reused by other
+> > tests in the future. WDYT?
+
+> > Also, as we heavily use 'nobody' already I'm not sure if it's worth to bother
+> > with putting environment variable allowing a different user. Nobody so far complained,
+> > even AOSP folks seem to be used C tests which use 'nobody' (e.g. fchmod06.c is
+> > compiled [1] and not disabled [2]).
+
+> > Also, we agreed with Cyril, that it'd be good to convert these 2 IMA tests to
+> > use 'su' instead of 'sudo' because 'su' is simpler than 'sudo' (although when
+> > testing with rapido [3] none of them works out of the box).
+
+> > [1] https://android.googlesource.com/platform/external/ltp/+/refs/heads/main/android/Android.bp
+> > [2] https://android.googlesource.com/platform/external/ltp/+/refs/heads/main/android/tools/disabled_tests.txt
+> > [3] https://github.com/rapido-linux/rapido
+> As far as I understand, the ima_conditionals.sh and ima_measurements.sh
+> tests are using sudo for creating a file from a specific user/group. This is
+> already achieved in other tests such as dirtyc0w_shmem, where we spawn a new
+> process, changing its current user/group to 'nobody' and executing a
+> command.
+
+> I don't know the internal sudo implementation, but I guess that's enough for
+> the IMA tests, unless IMA testing suite wants to verify that sudo command is
+> working properly within the IMA support.
+
+> In short, I would re-implement those two tests in C to make it easy.
+
+All tests use ima_setup.sh (more code than the test themselves) which needs to
+be rewritten into C. And ideally rewrite all code at once, not having to
+maintain helper implementations in both C and shell. i.e. bigger task than
+simple pre-release fix.
+
+Short term solution will be Jan's suggestion to write simple "sudo" binary or
+even just let testers to fix the setup (i.e. fix it for us in openQA).
+
+In a long term all shell tests will be either rewritten to C or
+abandoned/removed (if not relevant). But because it's quite a lot of code in
+helping libraries (e.g. for networking tests tst_net.sh) and we have still 248 C
+API and 48 shell API legacy tests Cyril wrote shell loader (way to drop
+implementing C API library functionality in shell API).
+
+Kind regards,
+Petr
+
+[1] https://lore.kernel.org/ltp/CAASaF6yjdrLLVnehESx1TjsrB_z48nmN_2i585GPfkG3Vvg15Q@mail.gmail.com/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
