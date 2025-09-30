@@ -4,111 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D395CCA470
-	for <ltp@archiver.kernel.org>; Tue, 30 Sep 2025 13:36:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F0DDCCA470
+	for <ltp@archiver.kernel.org>; Tue, 30 Sep 2025 23:30:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3CDB43CE2E3
-	for <ltp@archiver.kernel.org>; Tue, 30 Sep 2025 15:36:46 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 4522D3CE2D2
+	for <ltp@archiver.kernel.org>; Wed,  1 Oct 2025 01:30:24 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 47FD73CDEE4
- for <ltp@lists.linux.it>; Tue, 30 Sep 2025 15:36:30 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2EEC63CD1C1
+ for <ltp@lists.linux.it>; Wed,  1 Oct 2025 01:30:06 +0200 (CEST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8EB3E1A00920
- for <ltp@lists.linux.it>; Tue, 30 Sep 2025 15:36:28 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DEAEF336F8;
- Tue, 30 Sep 2025 13:36:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1759239387;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=l2VMPOcx4TNxAF5wV74woKPq3oo7wzzSvvfpx8sUFYc=;
- b=WYTiVdMpA25Qttn7u5pzn0BEgJp+BKzJv3rEeuyjCwET62z0n9WaFIaRADwNqeF5SbHDxZ
- fzEQuyI3tZHRKgywGCm2TPlMk32W7ZqRCdp6Hzl1f8rRO4VCZpbn34PjQxTavLOD2l6rZf
- jSVlOeOO2g8vt+Ruj9piYB8ydLQVTdQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1759239387;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=l2VMPOcx4TNxAF5wV74woKPq3oo7wzzSvvfpx8sUFYc=;
- b=n9LEhXDbIMSpZz4j0onLzEVkqKhaFHjTrCub6sRSfB3KJ0mP3WCZarvpH4D10TKqIGuo2g
- V4AKacl90p9zh1BA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1VKVvl7Z;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BzbVVOLD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1759239385;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=l2VMPOcx4TNxAF5wV74woKPq3oo7wzzSvvfpx8sUFYc=;
- b=1VKVvl7Z0XjJuMhCgoLV07MrrjEJRXfEjl9X3TbjdODzDCoaqIdaUQ05VpZno+tA4Uq2fv
- bSRIZWGMjY4rnmUzmgDJDOVBDASTS2mdVnvbMQr+i6K41e2lpyasC6VGUw96YUJDMgEnRZ
- O/o7EYOCP07GjHCyW/eqQPz27zr5Zig=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1759239385;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=l2VMPOcx4TNxAF5wV74woKPq3oo7wzzSvvfpx8sUFYc=;
- b=BzbVVOLDtcEDW5M+QAv57jR4wgVHZeAs8OdJDMuJva97HmQxR5POgduF7WhEXvK5uO1EoN
- GoeoEvtEXcYmnlDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 869BA1342D;
- Tue, 30 Sep 2025 13:36:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id JgxlG9nc22iFRgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 30 Sep 2025 13:36:25 +0000
-Date: Tue, 30 Sep 2025 15:36:23 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20250930133623.GB238065@pevik>
-References: <20250926085021.22141-1-wegao@suse.com>
- <20250928232708.24007-1-wegao@suse.com>
- <20250928232708.24007-2-wegao@suse.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CA82F600685
+ for <ltp@lists.linux.it>; Wed,  1 Oct 2025 01:30:04 +0200 (CEST)
+Received: by mail-wr1-x42a.google.com with SMTP id
+ ffacd0b85a97d-3f0308469a4so3708161f8f.0
+ for <ltp@lists.linux.it>; Tue, 30 Sep 2025 16:30:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1759275004; x=1759879804; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=WKocoFyhYs5voJ1j0rINOqN8fPDxe4oLJZbuE7DLMzA=;
+ b=YR557VqPO0u2Kpc0m/57Pw/k6DdWXaS772bSgBYw87mAmJcAYOhLfMIBvGg+osBErw
+ 9lwZa3qgFfwYknwk6mqE3Zjbm/MIdbkeaLlgwRcZhQ+0dvgV7tC0+XWm4W5cKdYykL8Q
+ yoSedfEHif0Ip/r963ijzNMyOR50u6HRbM2CkGouSocVAWGB3alrKST8rV3nbwrNPkxG
+ fW7zRF/HJebho8A6K4JV2IXDhQu55csMw86XAGq5pE4HF616PeR6YntPFtKQItQ0ExBd
+ Ffb8bnz/rJwM5Jlh5aQ3AiTuzQCfGWyJhsfjeh2A4BLUKP4jcWNY3jKNGeT+CcGJzin1
+ 9yMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1759275004; x=1759879804;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=WKocoFyhYs5voJ1j0rINOqN8fPDxe4oLJZbuE7DLMzA=;
+ b=LfRFTPlleWTVLWBV9kRRm0usMhpsyonNbbt7POnG7Hvu9EGmKAX8ZsiJac5hzkapSM
+ O/omVNdDHQXnuqK06gcV2xbe74+kTPhUh2fhagW6xerO+Po9MsjTA58vJX0Wou2keRMf
+ dHLbLcJ/5giBeGSt8nIJ+HZ3JP72dYmfexl+fufNwz7UaTiwwhugxuljRFB1sF/wHVAP
+ FkDj4NyDejt54+qfSfx1o8c6SK4dRG6zQJpZ4zf8SlFAD5Sj7sBsRskaMTySbHQkfWy2
+ 1nVrPSNs9UCE5AIHlXEKgAb6K/g0eKC66RAAnu7wV36G/VvRVi9r7XdCZ+GQKLcqIuS2
+ 8y2w==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUdolWC/3VmWWk0rzS+6RuwAT6ymxnzDaTXJfyTbxiLxrh68ey5lqNnScwDRTfyqvKcCL4=@lists.linux.it
+X-Gm-Message-State: AOJu0Yw2Z27qYJ9vy7mQe4kKmiiwP8XsWxskJLRAz0NnFtq0gpOVIxcs
+ y8hmXHNC14M/iXhfrJSSSawAqCS/+IGti6QLY2VfJYjs8sgnaNce6qbo
+X-Gm-Gg: ASbGncsN4XvmP6/fyxrHt5EwnDE71AaH5dp6gnwUxdUv7D8EpVpt7MFCQX2F2BVS+Jd
+ j0BORMVtGdo2NT2tZ3AxGNR8KKG/0rjTM4+VZ97BqTKppFZxkF7New5Rd/Ano90ZBtzJHKl066o
+ lq8aH0BKEciFM7tqVn6ygRtckveO1+ZShPBxrMVte17QX4KVJujMWe44Tm3cN5S6Wv/Wkjyd9Cy
+ yYmDb/tMgCg5mp5wARkz0M6P0rrRkAX0UYTOTOXKCeONdES7hg6p7X8k3uMFBkobRccrwxfXFve
+ O0xJX4YTFeguOZ3Df00jkt7THd8zlRXcIZiOtqvplilmZlZpg3BAWyc3epWqYyP1tTuFFKtq0+N
+ O1pGv9TYOHZ1WEeyiWVVhlRuwSry9xl959cM+R9a6i5BF9vRy02D1MO00Fe9NHJpjtXFf0O2XlH
+ EP21//RJ4J/ITCuyzwPEmYtQ==
+X-Google-Smtp-Source: AGHT+IGrlrBcqkdbjFn8gHHNIH9V5H/OJUSkp8w+fjG+KJIkz3Qh/I+P4TAxPxRIKI9Oo1ZDCt+OuA==
+X-Received: by 2002:a05:6000:2381:b0:3ec:e0d0:60e5 with SMTP id
+ ffacd0b85a97d-425577f0a74mr1070502f8f.15.1759275003933; 
+ Tue, 30 Sep 2025 16:30:03 -0700 (PDT)
+Received: from f.. (cst-prg-21-74.cust.vodafone.cz. [46.135.21.74])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-40fb72fb2eesm25156984f8f.12.2025.09.30.16.30.01
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 30 Sep 2025 16:30:03 -0700 (PDT)
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: brauner@kernel.org
+Date: Wed,  1 Oct 2025 01:29:57 +0200
+Message-ID: <20250930232957.14361-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <202509301450.138b448f-lkp@intel.com>
+References: <202509301450.138b448f-lkp@intel.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250928232708.24007-2-wegao@suse.com>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto,suse.cz:dkim];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[3];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: DEAEF336F8
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] lib: Add support option for .needs_cmds
+Subject: [LTP] [PATCH] f2fs: don't call iput() from f2fs_drop_inode()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,140 +92,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Mateusz Guzik <mjguzik@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, oe-lkp@lists.linux.dev,
+ oliver.sang@intel.com, linux-fsdevel@vger.kernel.org, josef@toxicpanda.com,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+iput() calls the problematic routine, which does a ->i_count inc/dec
+cycle. Undoing it with iput() recurses into the problem.
 
-...
-> +++ b/include/tst_cmd.h
-> @@ -16,6 +16,12 @@ enum tst_cmd_flags {
->  	TST_CMD_TCONF_ON_MISSING = 2,
->  };
+Note f2fs should not be playing games with the refcount to begin with,
+but that will be handled later. Right now solve the immediate
+regression.
 
-> +struct tst_cmd {
-> +	const char *cmd;
-> +	unsigned int optional:1;
-> +	unsigned int present:1;
+Fixes: bc986b1d756482a ("fs: stop accessing ->i_count directly in f2fs and gfs2")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202509301450.138b448f-lkp@intel.com
+Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+---
+ fs/f2fs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Maybe s/present/available/ ?
-> +};
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 2619cbbd7d2d..26ec31eb8c80 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1769,7 +1769,7 @@ static int f2fs_drop_inode(struct inode *inode)
+ 			sb_end_intwrite(inode->i_sb);
+ 
+ 			spin_lock(&inode->i_lock);
+-			iput(inode);
++			atomic_dec(&inode->i_count);
+ 		}
+ 		trace_f2fs_drop_inode(inode, 0);
+ 		return 0;
+-- 
+2.43.0
 
-Could you please add doc? Whole include/tst_cmd.h is documented, it's obvious
-that new functionality should be documented.
-
-And best would be if you use kerneldoc syntax.
-https://docs.kernel.org/doc-guide/kernel-doc.html
-https://www.sphinx-doc.org/en/master/usage/domains/c.html
-
-> +
->  /*
->   * vfork() + execvp() specified program.
->   *
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index 9c21c1728..bef836525 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -617,7 +617,7 @@ struct tst_fs {
-
->  	const struct tst_tag *tags;
-
-> -	const char *const *needs_cmds;
-> +	struct tst_cmd *needs_cmds;
-
-This effectively breaks build, because you haven't update any of these users (24
-tests + 2 doc files.
-
->  	const enum tst_cg_ver needs_cgroup_ver;
-
-> @@ -721,6 +721,12 @@ int tst_creat_unlinked(const char *path, int flags, mode_t mode);
->   */
->  const char *tst_get_tmpdir_root(void);
-
-> +/*
-> + * tst_cmd_present would loop over the tst_cmd array and return the supported flag
-
-I'm not a native speaker, but I think:
-
-s/would loop/loops/
-
-> + * value.
-> + */
-Please use kernel doc syntax (see links above).
-
-> +bool tst_cmd_present(const char *cmd);
-> +
->  /*
->   * Validates exit status of child processes
->   */
-> diff --git a/lib/tst_cmd.c b/lib/tst_cmd.c
-> index 82d60497a..cfd38c31a 100644
-> --- a/lib/tst_cmd.c
-> +++ b/lib/tst_cmd.c
-> @@ -265,7 +265,12 @@ int tst_check_cmd(const char *cmd, const int brk_nosupp)
->  	str = strtok_r(NULL, " ", &next);
-
->  	if (tst_get_path(cmd_token, path, sizeof(path)))
-> -		tst_brkm(TCONF, NULL, "Couldn't find '%s' in $PATH", cmd_token);
-> +		if (brk_nosupp) {
-> +			tst_brkm(TCONF, NULL, "Couldn't find '%s' in $PATH", cmd_token);
-> +		} else {
-> +			tst_resm(TCONF, "Couldn't find '%s' in $PATH", cmd_token);
-> +			return 1;
-> +		}
-
-+1
-
-...
-> +++ b/lib/tst_test.c
-> @@ -1353,6 +1353,19 @@ static const char *default_fs_type(void)
->  	return tst_dev_fs_type();
->  }
-
-> +bool tst_cmd_present(const char *cmd)
-> +{
-> +	struct tst_cmd *pcmd = tst_test->needs_cmds;
-> +
-> +	while (pcmd->cmd) {
-> +		if (!strcmp(pcmd->cmd, cmd))
-> +			return pcmd->present;
-> +
-> +		pcmd++;
-> +	}
-> +	return false;
-> +}
-> +
->  static void do_setup(int argc, char *argv[])
->  {
->  	char *tdebug_env = getenv("LTP_ENABLE_DEBUG");
-> @@ -1422,11 +1435,15 @@ static void do_setup(int argc, char *argv[])
->  		tst_brk(TCONF, "%dbit ABI is not supported", tst_test->needs_abi_bits);
-
->  	if (tst_test->needs_cmds) {
-> -		const char *cmd;
-> -		int i;
-> +		struct tst_cmd *pcmd = tst_test->needs_cmds;
-
-> -		for (i = 0; (cmd = tst_test->needs_cmds[i]); ++i)
-> -			tst_check_cmd(cmd, 1);
-> +		while (pcmd->cmd) {
-> +			if (tst_check_cmd(pcmd->cmd, !pcmd->optional))
-> +				pcmd->present = 0;
-> +			else
-> +				pcmd->present = 1;
-very nit: use ternary operator?
-
-				pcmd->present = tst_check_cmd(pcmd->cmd, !pcmd->optional) ? 0 : 1;
-
-Kind regards,
-Petr
-
-> +			pcmd++;
-> +		}
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
