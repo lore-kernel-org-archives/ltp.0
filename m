@@ -4,113 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DACD0CCA470
-	for <ltp@archiver.kernel.org>; Wed,  1 Oct 2025 10:47:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59F76CCA470
+	for <ltp@archiver.kernel.org>; Wed,  1 Oct 2025 14:56:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 062883CE393
-	for <ltp@archiver.kernel.org>; Wed,  1 Oct 2025 12:47:38 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 5CC6A3CE3BF
+	for <ltp@archiver.kernel.org>; Wed,  1 Oct 2025 16:56:23 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 933F83CE2E3
- for <ltp@lists.linux.it>; Wed,  1 Oct 2025 12:47:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id C6FC43CDFD3
+ for <ltp@lists.linux.it>; Wed,  1 Oct 2025 16:56:06 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D4E5320005C
- for <ltp@lists.linux.it>; Wed,  1 Oct 2025 12:47:20 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 30FB92009E9
+ for <ltp@lists.linux.it>; Wed,  1 Oct 2025 16:56:05 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0D86E3373E;
- Wed,  1 Oct 2025 10:47:18 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 055881FB6C;
+ Wed,  1 Oct 2025 14:56:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1759315638;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=bnnZ61k4ypmAp/HXMzyKFHFSt/ak0Al0rAl+3LKPB9M=;
- b=iegbdIPV4WatBQubVclsM88d6f5Zm1dXld+MdGf9J+0ygDa39APbTC61F8Eq3v/8SmKm6s
- gLt3iY2na6LjJWymkXaTbR7geKor3vndw181Hlz/zR9FhIVx21vm8X9gpX3kgaEadxSQd3
- r9BLFyNTQC2p11NvZBzyCAOObnwaFrY=
+ t=1759330565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=OsoHHn8Fp4/LDLTQa+fKdkLXB5Q3k/7uVRjOjDfLLWk=;
+ b=kuBnRj/0x9vIHnu5ny26SAJ7yBIt+fuxAaX3z+HIigzcSbAo/ITfR8mp8wugkIlO3pl//k
+ Z0bDG/0MURokJ79znknFBuzr+EA1/VILUVP6RV2oQslYeJyP0D9t3hx68Y+9FPPp2B5oo+
+ yRwwGoO2AJv1OuvpsVEJX9hEeeejbQI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1759315638;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=bnnZ61k4ypmAp/HXMzyKFHFSt/ak0Al0rAl+3LKPB9M=;
- b=qXbICzEtFKO4WVv4dwR8bzObSSj3vhgOR0C8tKQs3VZPBFEGqsZFZ7MXCzLeJYWBkNnOml
- 6WGfFOaJjXZhaRCg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=iegbdIPV;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qXbICzEt
+ s=susede2_ed25519; t=1759330565;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=OsoHHn8Fp4/LDLTQa+fKdkLXB5Q3k/7uVRjOjDfLLWk=;
+ b=21SknBpWrd7pCbCHxJVZVfmBU6tpg8DrVK5wz/It1fIw+o7zhLwhhWlMONtnvIJCOtSrSb
+ obgXoqMgZfVonhDg==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1759315638;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=bnnZ61k4ypmAp/HXMzyKFHFSt/ak0Al0rAl+3LKPB9M=;
- b=iegbdIPV4WatBQubVclsM88d6f5Zm1dXld+MdGf9J+0ygDa39APbTC61F8Eq3v/8SmKm6s
- gLt3iY2na6LjJWymkXaTbR7geKor3vndw181Hlz/zR9FhIVx21vm8X9gpX3kgaEadxSQd3
- r9BLFyNTQC2p11NvZBzyCAOObnwaFrY=
+ t=1759330564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=OsoHHn8Fp4/LDLTQa+fKdkLXB5Q3k/7uVRjOjDfLLWk=;
+ b=OltbIAPe8Rsy3Qf0uUo8fLuO4elLl2xFNtDZN5HrEX+oRdzwgjqSDyu1N8lPzpikFyhB7O
+ qX+wyQiGG/6XGFAMVrZqlrYmnqkTGOoo/JM/JJXbN/oWUeijo5N2xJUjPgvqzkUf7h15mc
+ HxTqEAmkZkKWjdz9XI2xzdyeYvV6j9U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1759315638;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=bnnZ61k4ypmAp/HXMzyKFHFSt/ak0Al0rAl+3LKPB9M=;
- b=qXbICzEtFKO4WVv4dwR8bzObSSj3vhgOR0C8tKQs3VZPBFEGqsZFZ7MXCzLeJYWBkNnOml
- 6WGfFOaJjXZhaRCg==
+ s=susede2_ed25519; t=1759330564;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=OsoHHn8Fp4/LDLTQa+fKdkLXB5Q3k/7uVRjOjDfLLWk=;
+ b=QF0g8IaixNp5uSI2Qb7I3QhExB3Rue6dUOOlCjWXXruEb74dSarFLpINHaLGlRi94pVaaA
+ rONLVw0JDHlSYADA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A204013A42;
- Wed,  1 Oct 2025 10:47:17 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EADC413A42;
+ Wed,  1 Oct 2025 14:56:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id K/AGJbUG3WhKXQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 01 Oct 2025 10:47:17 +0000
-Date: Wed, 1 Oct 2025 12:47:11 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>, Cyril Hrubis <chrubis@suse.cz>,
- Wei Gao <wegao@suse.com>
-Message-ID: <20251001104711.GA265041@pevik>
-References: <20250929112950.24420-1-wegao@suse.com> <aNp1-2OnRNauyQ2e@yuki.lan>
- <c4c658bc-1a29-45de-972b-c6582e926db6@suse.cz>
- <20250929181114.GA217041@pevik> <20250930085858.GA224315@pevik>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /khOOQNB3WhcLwAAD6G6ig
+ (envelope-from <jack@suse.cz>); Wed, 01 Oct 2025 14:56:03 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id 9243DA094F; Wed,  1 Oct 2025 16:56:03 +0200 (CEST)
+From: Jan Kara <jack@suse.cz>
+To: ltp@lists.linux.it
+Date: Wed,  1 Oct 2025 16:56:00 +0200
+Message-ID: <20251001145600.24767-1-jack@suse.cz>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250930085858.GA224315@pevik>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.999];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo];
+ FROM_HAS_DN(0.00)[]; FREEMAIL_CC(0.00)[gmail.com,suse.cz];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[4];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: 0D86E3373E
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+ DBL_BLOCKED_OPENRESOLVER(0.00)[linaro.org:email,imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
+ RCVD_TLS_LAST(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] mount08.c: Add min_kver for test case
+Subject: [LTP] [PATCH] name_to_handle_at: Add test cases for AT_HANDLE_FID
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,38 +102,136 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Jan Kara <jack@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Add a few testcases verifying AT_HANDLE_FID flag.
 
-...
-> ...
-> > For a record, d80b065bb172 is a merge commit, the fix contains actually 7
-> > commits. IMHO none of them has been backported to any stable / LTS kernel.  I'll
-> > ask Christian and Greg if it makes sense to backport it.
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ include/lapi/fcntl.h                          |  4 +
+ .../name_to_handle_at/name_to_handle_at03.c   | 88 +++++++++++++++++++
+ 2 files changed, 92 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at03.c
 
-> asked [1]. (unfortunately I forgot to delete message-id and From: from the
-> original message).
+This is actually a testcase for a kernel regression, the kernel fix is on the
+way.
 
-FYI answer from Aleksa [2] suggests it will not be backported, but let's wait
-if somebody else give his opinion. Anyway, I'm not advocating for this patch
-(to add .min_kver = "6.12"), although it wouldn't harm to document it in the
-test that unlike kernel folks which consider it as a "new feature" we consider
-it as a "security fix".
+diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
+index 7c050248892e..55a5e8b40432 100644
+--- a/include/lapi/fcntl.h
++++ b/include/lapi/fcntl.h
+@@ -98,6 +98,10 @@
+ # define AT_HANDLE_FID		AT_REMOVEDIR
+ #endif
+ 
++#ifndef AT_HANDLE_CONNECTABLE
++# define AT_HANDLE_CONNECTABLE	0x002
++#endif
++
+ #ifndef AT_SYMLINK_FOLLOW
+ # define AT_SYMLINK_FOLLOW	0x400
+ #endif
+diff --git a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at03.c b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at03.c
+new file mode 100644
+index 000000000000..4a6df5e46fd7
+--- /dev/null
++++ b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at03.c
+@@ -0,0 +1,88 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
++ */
++
++/*\
++ * Basic name_to_handle_at() tests.
++ *
++ * [Algorithm]
++ *  - Check that EOVERFLOW is returned as expected by name_to_handle_at().
++ *  - Check that we were able to access a file's stat with name_to_handle_at()
++ *    and open_by_handle_at().
++ */
++
++#define _GNU_SOURCE
++#include <sys/stat.h>
++#include "lapi/name_to_handle_at.h"
++
++#define TEST_FILE "test_file"
++
++static int fd_atcwd = AT_FDCWD;
++static struct file_handle *fhp;
++
++static struct tcase {
++	const char *name;
++	int *dfd;
++	const char *pathname;
++	int name_flags;
++	int exp_errno;
++} tcases[] = {
++	{"test-file", &fd_atcwd, TEST_FILE, AT_HANDLE_FID, 0},
++	{"unexportable-file", &fd_atcwd, "/proc/filesystems", AT_HANDLE_FID, 0},
++	{"test-file-connectable", &fd_atcwd, TEST_FILE, AT_HANDLE_FID | AT_HANDLE_CONNECTABLE, EINVAL},
++};
++
++static bool handle_type_supported(unsigned int flag, const char *name)
++{
++	if (name_to_handle_at(-1, ".", NULL, NULL, flag) && errno == EINVAL) {
++		tst_brk(TCONF, "%s not supported by the kernel.", name);
++		return false;
++	}
++	return true;
++}
++
++#define REQUIRE_HANDLE_TYPE_SUPPORT(flag) handle_type_supported(flag, #flag)
++
++static void setup(void)
++{
++	SAFE_TOUCH(TEST_FILE, 0600, NULL);
++	fhp = malloc(MAX_HANDLE_SZ);
++	if (!fhp)
++		tst_brk(TBROK, "malloc failed");
++
++	REQUIRE_HANDLE_TYPE_SUPPORT(AT_HANDLE_FID);
++	REQUIRE_HANDLE_TYPE_SUPPORT(AT_HANDLE_CONNECTABLE);
++}
++
++static void run(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++	int mount_id;
++
++	fhp->handle_bytes = MAX_HANDLE_SZ;
++	TEST(name_to_handle_at(*tc->dfd, tc->pathname, fhp, &mount_id,
++			       tc->name_flags));
++	if (!tc->exp_errno) {
++		if (TST_RET)
++			tst_res(TFAIL | TTERRNO, "%s: name_to_handle_at() failed", tc->name);
++		else
++			tst_res(TPASS, "%s: name_to_handle_at() passed", tc->name);
++		return;
++	}
++
++	if (TST_RET != -1)
++		tst_res(TFAIL, "%s: name_to_handle_at() unexpectedly succeeded", tc->name);
++	else if (TST_ERR != tc->exp_errno)
++		tst_res(TFAIL | TTERRNO, "%s: name_to_handle_at() should fail with errno %s",
++			tc->name, tst_strerrno(tc->exp_errno));
++	else
++		tst_res(TPASS, "%s: name_to_handle_at() failed as expected", tc->name);
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = run,
++	.setup = setup,
++	.needs_tmpdir = 1,
++};
+-- 
+2.51.0
 
-Kind regards,
-Petr
-
-> Kind regards,
-> Petr
-
-> [1] https://lore.kernel.org/all/20240806-work-procfs-v1-0-fb04e1d09f0c@kernel.org/
-[2] https://lore.kernel.org/linux-fsdevel/2025-09-30-emerald-unsure-pillow-prism-nKVGLB@cyphar.com/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
