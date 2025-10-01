@@ -4,83 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F0DDCCA470
-	for <ltp@archiver.kernel.org>; Tue, 30 Sep 2025 23:30:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DACD0CCA470
+	for <ltp@archiver.kernel.org>; Wed,  1 Oct 2025 10:47:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4522D3CE2D2
-	for <ltp@archiver.kernel.org>; Wed,  1 Oct 2025 01:30:24 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 062883CE393
+	for <ltp@archiver.kernel.org>; Wed,  1 Oct 2025 12:47:38 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2EEC63CD1C1
- for <ltp@lists.linux.it>; Wed,  1 Oct 2025 01:30:06 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 933F83CE2E3
+ for <ltp@lists.linux.it>; Wed,  1 Oct 2025 12:47:21 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CA82F600685
- for <ltp@lists.linux.it>; Wed,  1 Oct 2025 01:30:04 +0200 (CEST)
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-3f0308469a4so3708161f8f.0
- for <ltp@lists.linux.it>; Tue, 30 Sep 2025 16:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1759275004; x=1759879804; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=WKocoFyhYs5voJ1j0rINOqN8fPDxe4oLJZbuE7DLMzA=;
- b=YR557VqPO0u2Kpc0m/57Pw/k6DdWXaS772bSgBYw87mAmJcAYOhLfMIBvGg+osBErw
- 9lwZa3qgFfwYknwk6mqE3Zjbm/MIdbkeaLlgwRcZhQ+0dvgV7tC0+XWm4W5cKdYykL8Q
- yoSedfEHif0Ip/r963ijzNMyOR50u6HRbM2CkGouSocVAWGB3alrKST8rV3nbwrNPkxG
- fW7zRF/HJebho8A6K4JV2IXDhQu55csMw86XAGq5pE4HF616PeR6YntPFtKQItQ0ExBd
- Ffb8bnz/rJwM5Jlh5aQ3AiTuzQCfGWyJhsfjeh2A4BLUKP4jcWNY3jKNGeT+CcGJzin1
- 9yMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1759275004; x=1759879804;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=WKocoFyhYs5voJ1j0rINOqN8fPDxe4oLJZbuE7DLMzA=;
- b=LfRFTPlleWTVLWBV9kRRm0usMhpsyonNbbt7POnG7Hvu9EGmKAX8ZsiJac5hzkapSM
- O/omVNdDHQXnuqK06gcV2xbe74+kTPhUh2fhagW6xerO+Po9MsjTA58vJX0Wou2keRMf
- dHLbLcJ/5giBeGSt8nIJ+HZ3JP72dYmfexl+fufNwz7UaTiwwhugxuljRFB1sF/wHVAP
- FkDj4NyDejt54+qfSfx1o8c6SK4dRG6zQJpZ4zf8SlFAD5Sj7sBsRskaMTySbHQkfWy2
- 1nVrPSNs9UCE5AIHlXEKgAb6K/g0eKC66RAAnu7wV36G/VvRVi9r7XdCZ+GQKLcqIuS2
- 8y2w==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUdolWC/3VmWWk0rzS+6RuwAT6ymxnzDaTXJfyTbxiLxrh68ey5lqNnScwDRTfyqvKcCL4=@lists.linux.it
-X-Gm-Message-State: AOJu0Yw2Z27qYJ9vy7mQe4kKmiiwP8XsWxskJLRAz0NnFtq0gpOVIxcs
- y8hmXHNC14M/iXhfrJSSSawAqCS/+IGti6QLY2VfJYjs8sgnaNce6qbo
-X-Gm-Gg: ASbGncsN4XvmP6/fyxrHt5EwnDE71AaH5dp6gnwUxdUv7D8EpVpt7MFCQX2F2BVS+Jd
- j0BORMVtGdo2NT2tZ3AxGNR8KKG/0rjTM4+VZ97BqTKppFZxkF7New5Rd/Ano90ZBtzJHKl066o
- lq8aH0BKEciFM7tqVn6ygRtckveO1+ZShPBxrMVte17QX4KVJujMWe44Tm3cN5S6Wv/Wkjyd9Cy
- yYmDb/tMgCg5mp5wARkz0M6P0rrRkAX0UYTOTOXKCeONdES7hg6p7X8k3uMFBkobRccrwxfXFve
- O0xJX4YTFeguOZ3Df00jkt7THd8zlRXcIZiOtqvplilmZlZpg3BAWyc3epWqYyP1tTuFFKtq0+N
- O1pGv9TYOHZ1WEeyiWVVhlRuwSry9xl959cM+R9a6i5BF9vRy02D1MO00Fe9NHJpjtXFf0O2XlH
- EP21//RJ4J/ITCuyzwPEmYtQ==
-X-Google-Smtp-Source: AGHT+IGrlrBcqkdbjFn8gHHNIH9V5H/OJUSkp8w+fjG+KJIkz3Qh/I+P4TAxPxRIKI9Oo1ZDCt+OuA==
-X-Received: by 2002:a05:6000:2381:b0:3ec:e0d0:60e5 with SMTP id
- ffacd0b85a97d-425577f0a74mr1070502f8f.15.1759275003933; 
- Tue, 30 Sep 2025 16:30:03 -0700 (PDT)
-Received: from f.. (cst-prg-21-74.cust.vodafone.cz. [46.135.21.74])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-40fb72fb2eesm25156984f8f.12.2025.09.30.16.30.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 30 Sep 2025 16:30:03 -0700 (PDT)
-From: Mateusz Guzik <mjguzik@gmail.com>
-To: brauner@kernel.org
-Date: Wed,  1 Oct 2025 01:29:57 +0200
-Message-ID: <20250930232957.14361-1-mjguzik@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <202509301450.138b448f-lkp@intel.com>
-References: <202509301450.138b448f-lkp@intel.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D4E5320005C
+ for <ltp@lists.linux.it>; Wed,  1 Oct 2025 12:47:20 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0D86E3373E;
+ Wed,  1 Oct 2025 10:47:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1759315638;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bnnZ61k4ypmAp/HXMzyKFHFSt/ak0Al0rAl+3LKPB9M=;
+ b=iegbdIPV4WatBQubVclsM88d6f5Zm1dXld+MdGf9J+0ygDa39APbTC61F8Eq3v/8SmKm6s
+ gLt3iY2na6LjJWymkXaTbR7geKor3vndw181Hlz/zR9FhIVx21vm8X9gpX3kgaEadxSQd3
+ r9BLFyNTQC2p11NvZBzyCAOObnwaFrY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1759315638;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bnnZ61k4ypmAp/HXMzyKFHFSt/ak0Al0rAl+3LKPB9M=;
+ b=qXbICzEtFKO4WVv4dwR8bzObSSj3vhgOR0C8tKQs3VZPBFEGqsZFZ7MXCzLeJYWBkNnOml
+ 6WGfFOaJjXZhaRCg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=iegbdIPV;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qXbICzEt
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1759315638;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bnnZ61k4ypmAp/HXMzyKFHFSt/ak0Al0rAl+3LKPB9M=;
+ b=iegbdIPV4WatBQubVclsM88d6f5Zm1dXld+MdGf9J+0ygDa39APbTC61F8Eq3v/8SmKm6s
+ gLt3iY2na6LjJWymkXaTbR7geKor3vndw181Hlz/zR9FhIVx21vm8X9gpX3kgaEadxSQd3
+ r9BLFyNTQC2p11NvZBzyCAOObnwaFrY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1759315638;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bnnZ61k4ypmAp/HXMzyKFHFSt/ak0Al0rAl+3LKPB9M=;
+ b=qXbICzEtFKO4WVv4dwR8bzObSSj3vhgOR0C8tKQs3VZPBFEGqsZFZ7MXCzLeJYWBkNnOml
+ 6WGfFOaJjXZhaRCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A204013A42;
+ Wed,  1 Oct 2025 10:47:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id K/AGJbUG3WhKXQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 01 Oct 2025 10:47:17 +0000
+Date: Wed, 1 Oct 2025 12:47:11 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>, Cyril Hrubis <chrubis@suse.cz>,
+ Wei Gao <wegao@suse.com>
+Message-ID: <20251001104711.GA265041@pevik>
+References: <20250929112950.24420-1-wegao@suse.com> <aNp1-2OnRNauyQ2e@yuki.lan>
+ <c4c658bc-1a29-45de-972b-c6582e926db6@suse.cz>
+ <20250929181114.GA217041@pevik> <20250930085858.GA224315@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250930085858.GA224315@pevik>
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[4];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Queue-Id: 0D86E3373E
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] f2fs: don't call iput() from f2fs_drop_inode()
+Subject: Re: [LTP] [PATCH v1] mount08.c: Add min_kver for test case
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,46 +122,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Mateusz Guzik <mjguzik@gmail.com>, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, oe-lkp@lists.linux.dev,
- oliver.sang@intel.com, linux-fsdevel@vger.kernel.org, josef@toxicpanda.com,
- ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-iput() calls the problematic routine, which does a ->i_count inc/dec
-cycle. Undoing it with iput() recurses into the problem.
+Hi all,
 
-Note f2fs should not be playing games with the refcount to begin with,
-but that will be handled later. Right now solve the immediate
-regression.
+...
+> ...
+> > For a record, d80b065bb172 is a merge commit, the fix contains actually 7
+> > commits. IMHO none of them has been backported to any stable / LTS kernel.  I'll
+> > ask Christian and Greg if it makes sense to backport it.
 
-Fixes: bc986b1d756482a ("fs: stop accessing ->i_count directly in f2fs and gfs2")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202509301450.138b448f-lkp@intel.com
-Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
----
- fs/f2fs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> asked [1]. (unfortunately I forgot to delete message-id and From: from the
+> original message).
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 2619cbbd7d2d..26ec31eb8c80 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1769,7 +1769,7 @@ static int f2fs_drop_inode(struct inode *inode)
- 			sb_end_intwrite(inode->i_sb);
- 
- 			spin_lock(&inode->i_lock);
--			iput(inode);
-+			atomic_dec(&inode->i_count);
- 		}
- 		trace_f2fs_drop_inode(inode, 0);
- 		return 0;
--- 
-2.43.0
+FYI answer from Aleksa [2] suggests it will not be backported, but let's wait
+if somebody else give his opinion. Anyway, I'm not advocating for this patch
+(to add .min_kver = "6.12"), although it wouldn't harm to document it in the
+test that unlike kernel folks which consider it as a "new feature" we consider
+it as a "security fix".
 
+Kind regards,
+Petr
+
+> Kind regards,
+> Petr
+
+> [1] https://lore.kernel.org/all/20240806-work-procfs-v1-0-fb04e1d09f0c@kernel.org/
+[2] https://lore.kernel.org/linux-fsdevel/2025-09-30-emerald-unsure-pillow-prism-nKVGLB@cyphar.com/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
