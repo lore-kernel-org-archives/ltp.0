@@ -4,74 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 502F7CAC5B8
-	for <ltp@archiver.kernel.org>; Thu,  2 Oct 2025 09:49:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA35DCAC5B0
+	for <ltp@archiver.kernel.org>; Fri,  3 Oct 2025 10:13:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 91EC43CE451
-	for <ltp@archiver.kernel.org>; Thu,  2 Oct 2025 11:49:57 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 04E6D3CE521
+	for <ltp@archiver.kernel.org>; Fri,  3 Oct 2025 12:13:30 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 38C973CE195
- for <ltp@lists.linux.it>; Thu,  2 Oct 2025 11:49:41 +0200 (CEST)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com
- [IPv6:2a00:1450:4864:20::535])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 08BB93CDD07
+ for <ltp@lists.linux.it>; Fri,  3 Oct 2025 12:13:12 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9C27660004A
- for <ltp@lists.linux.it>; Thu,  2 Oct 2025 11:49:40 +0200 (CEST)
-Received: by mail-ed1-x535.google.com with SMTP id
- 4fb4d7f45d1cf-637dbabdb32so1406844a12.2
- for <ltp@lists.linux.it>; Thu, 02 Oct 2025 02:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1759398580; x=1760003380; darn=lists.linux.it;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=hmvGdPYf94A33d/6kJQ5V6yPfYQM9UDg82ZS0GL/cZo=;
- b=JQotUZZbgskHgcidusfgHZjYjoDq5uFJ3qzzq6N7h1qhAwXh0dqivIdtwy6cbSPjPQ
- JIZ0lFaGs61+yRFbsY5xty7JWwzHSZXGxDxJU7wH6XdiuaNxI97gXqhfD0XAMrFDZ8ML
- YQIAGB7Z6wWKr7ZY6myzglQ5QlNhOJ6yFQY1cyDQEtVhGfMi/RjhiSqLAVK+DKb5sgzq
- Q8QZwu6GxQg7ZSheEZx9ixSOHZoOMUy7lD2Q8G/g8IX9UJqLq+OnKdWgXImImOsAyjos
- 4ftPG82wxcPPHa9QenTSmQehX471AnrHBqADR0v6UMVqrcVQjHnbZAB0OS3zlqqT4msl
- 52uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1759398580; x=1760003380;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=hmvGdPYf94A33d/6kJQ5V6yPfYQM9UDg82ZS0GL/cZo=;
- b=PerHuuyfDd3lIjVKb8YoYkFooHjFs2bq6r1i0j5SeDd56bH23isAyzAcE1QmmtKTYr
- l2ECT76/hGGxJV9kXbLheqEGtb8Ku8u7+wC9+EYmzY9BHICFg8ekWKyevw+ppOPQwlgK
- FbBAd2OFynQP7U67Uu0wmzs0fkHLNfVptzkl0+5CmmyMDYCmzqK2r+Esr9cr8akq9z7b
- w5IJVvwl8eogdxDtAFIaPQaRbAS5EP+e/mhBMVSRxe8C0FYrYtlNLb/qyvbl6zhksGx5
- fv1XWZl4i3DL9UWvyXRxhMcgrI02GAnYftelBFiLdW9r98vR5h+cPmHlq/Dr71pwX6tH
- Bw+g==
-X-Gm-Message-State: AOJu0Yzh+lAsqJPTcckqquRqw2nym5R/eU1nDf2MoqHXCgGtPyHqGYXe
- 8xb8Itim7tJ/kG++2lrw0/B4d2MoRmnyKCgIojHh8IPr3r2hhMDyo8Z20l+ABAJVxjYLsVpIiSG
- b+4ld6L1IB2B/WVmjGumDDuWrOV2w5deDhTJLy4Y=
-X-Gm-Gg: ASbGnctgYNQ9FR9JqmgyzMgCI0I891H7WhfC+A+Fodh4x/VxBfsicQgM/l4pFsrVSOj
- o5LAP/HqARq6qR3y8Q5JnXE/b9FA26VzM5BttJrHpICU7OAHf0DfyuKpuPWBFg9wo9/97M9DI+c
- Jk0unbRCjHrUFyqFKi9+b1gScsSTWNNAcIrfkfpIwFwDdUgOmL2C9KF2bQ+tT17fSFkbFSFT71d
- krAjhJ1iPvXGIgXYDuCBJDCV5pOBTczbeaJqEMmwo1hgXvRP6zSDR5R9SBg3oVclg==
-X-Google-Smtp-Source: AGHT+IGSM2z2OaI9aAu+A5uUdSlDCFlOijNvAxjCAQsf2qYIDu6Ck8JsWMlvN/qrOC7g6F/TfyGqa1pqda9X8+kpKQA=
-X-Received: by 2002:a05:6402:2271:b0:634:6bca:2d1c with SMTP id
- 4fb4d7f45d1cf-63678c7e037mr6087639a12.26.1759398579851; Thu, 02 Oct 2025
- 02:49:39 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5251C600C60
+ for <ltp@lists.linux.it>; Fri,  3 Oct 2025 12:13:12 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0D4273389B;
+ Fri,  3 Oct 2025 10:13:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1759486391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=yK8AyqDFyzdRY5dcHgJHqU6s6VLvDHVoFisy1pdslmI=;
+ b=JBQHfFkzl7oifCd1G1TzN+lwTz4Chj0OTuHdrjPcm/jGFk1+uXDKyl44xj3yC/OVBW+qPx
+ 6uODqJVcVByU1BQOIMf2dcP4rsi0F0ju9dkyj6LgmAeKHMSJJQmdZgw2lSIsJnoiOMSPyo
+ SA6fCS26A0SiLy7+DU3OkPL9wYwN65E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1759486391;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=yK8AyqDFyzdRY5dcHgJHqU6s6VLvDHVoFisy1pdslmI=;
+ b=eH3/jKUcLDexShth036Nn7lm8uBgBvpPBFG8MMaTYMyI+YmRWxRNaqDI5fd7bXV5AioG6E
+ P594zOsGzrZIZyBw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=JBQHfFkz;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="eH3/jKUc"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1759486391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=yK8AyqDFyzdRY5dcHgJHqU6s6VLvDHVoFisy1pdslmI=;
+ b=JBQHfFkzl7oifCd1G1TzN+lwTz4Chj0OTuHdrjPcm/jGFk1+uXDKyl44xj3yC/OVBW+qPx
+ 6uODqJVcVByU1BQOIMf2dcP4rsi0F0ju9dkyj6LgmAeKHMSJJQmdZgw2lSIsJnoiOMSPyo
+ SA6fCS26A0SiLy7+DU3OkPL9wYwN65E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1759486391;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=yK8AyqDFyzdRY5dcHgJHqU6s6VLvDHVoFisy1pdslmI=;
+ b=eH3/jKUcLDexShth036Nn7lm8uBgBvpPBFG8MMaTYMyI+YmRWxRNaqDI5fd7bXV5AioG6E
+ P594zOsGzrZIZyBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0477D13AAD;
+ Fri,  3 Oct 2025 10:13:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 3AiMALeh32hNDgAAD6G6ig
+ (envelope-from <akumar@suse.de>); Fri, 03 Oct 2025 10:13:11 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Fri,  3 Oct 2025 12:13:08 +0200
+Message-ID: <20251003101310.13359-1-akumar@suse.de>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-References: <20251001145600.24767-1-jack@suse.cz>
-In-Reply-To: <20251001145600.24767-1-jack@suse.cz>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 2 Oct 2025 11:49:28 +0200
-X-Gm-Features: AS18NWBOgdkXYDcy9JNuZhAVgnDteQ5G4-KsIfTN2DYNb8IqDy1mjO8q-y1H2sM
-Message-ID: <CAOQ4uxj8LEckipTS6jzLf6qXd+g7mGCYyDf-xNx18cZEo2wMqg@mail.gmail.com>
-To: Jan Kara <jack@suse.cz>
+X-Rspamd-Queue-Id: 0D4273389B
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[lkml.org:url,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,suse.de:mid,suse.de:email];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.de:+]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] name_to_handle_at: Add test cases for
- AT_HANDLE_FID
+Subject: [LTP] [PATCH] openposix: update invalid clock id to accomodate new
+ auxiliary clock ids
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,90 +110,93 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gV2VkLCBPY3QgMSwgMjAyNSBhdCA0OjU24oCvUE0gSmFuIEthcmEgPGphY2tAc3VzZS5jej4g
-d3JvdGU6Cj4KPiBBZGQgYSBmZXcgdGVzdGNhc2VzIHZlcmlmeWluZyBBVF9IQU5ETEVfRklEIGZs
-YWcuCj4KPiBTaWduZWQtb2ZmLWJ5OiBKYW4gS2FyYSA8amFja0BzdXNlLmN6Pgo+IC0tLQo+ICBp
-bmNsdWRlL2xhcGkvZmNudGwuaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNCArCj4gIC4u
-Li9uYW1lX3RvX2hhbmRsZV9hdC9uYW1lX3RvX2hhbmRsZV9hdDAzLmMgICB8IDg4ICsrKysrKysr
-KysrKysrKysrKysKPiAgMiBmaWxlcyBjaGFuZ2VkLCA5MiBpbnNlcnRpb25zKCspCj4gIGNyZWF0
-ZSBtb2RlIDEwMDY0NCB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL25hbWVfdG9faGFuZGxlX2F0
-L25hbWVfdG9faGFuZGxlX2F0MDMuYwo+Cj4gVGhpcyBpcyBhY3R1YWxseSBhIHRlc3RjYXNlIGZv
-ciBhIGtlcm5lbCByZWdyZXNzaW9uLCB0aGUga2VybmVsIGZpeCBpcyBvbiB0aGUKPiB3YXkuCgpC
-ZXN0IHRoYXQgd2Ugd2FpdCBmb3IgZml4IHRvIGxhbmQgYmVmb3JlIG1lcmdpbmcgdGhlIHRlc3Qg
-c28gdGhhdCB3ZSBjYW4KYWRkIGxpbnV4LWdpdCB0YWcgdG8gdGhlIHRlc3QgKG9yIGNhbiBhZGQg
-aXQgbGF0ZXIpCgpXaXRoIG1pbm9yIG5pdHMgYmVsb3cgZml4ZWQsIGZlZWwgZnJlZSB0byBhZGQ6
-ClJldmlld2VkLWJ5OiBBbWlyIEdvbGRzdGVpbiA8YW1pcjczaWxAZ21haWwuY29tPgoKVGhhbmtz
-IGZvciBjb3ZlcmluZyBteSB0ZXN0IGRlYnQhIQpBbWlyLgoKPgo+IGRpZmYgLS1naXQgYS9pbmNs
-dWRlL2xhcGkvZmNudGwuaCBiL2luY2x1ZGUvbGFwaS9mY250bC5oCj4gaW5kZXggN2MwNTAyNDg4
-OTJlLi41NWE1ZThiNDA0MzIgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9sYXBpL2ZjbnRsLmgKPiAr
-KysgYi9pbmNsdWRlL2xhcGkvZmNudGwuaAo+IEBAIC05OCw2ICs5OCwxMCBAQAo+ICAjIGRlZmlu
-ZSBBVF9IQU5ETEVfRklEICAgICAgICAgQVRfUkVNT1ZFRElSCj4gICNlbmRpZgo+Cj4gKyNpZm5k
-ZWYgQVRfSEFORExFX0NPTk5FQ1RBQkxFCj4gKyMgZGVmaW5lIEFUX0hBTkRMRV9DT05ORUNUQUJM
-RSAweDAwMgo+ICsjZW5kaWYKPiArCj4gICNpZm5kZWYgQVRfU1lNTElOS19GT0xMT1cKPiAgIyBk
-ZWZpbmUgQVRfU1lNTElOS19GT0xMT1cgICAgIDB4NDAwCj4gICNlbmRpZgo+IGRpZmYgLS1naXQg
-YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL25hbWVfdG9faGFuZGxlX2F0L25hbWVfdG9faGFu
-ZGxlX2F0MDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbmFtZV90b19oYW5kbGVfYXQv
-bmFtZV90b19oYW5kbGVfYXQwMy5jCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAw
-MDAwMDAwMDAuLjRhNmRmNWU0NmZkNwo+IC0tLSAvZGV2L251bGwKPiArKysgYi90ZXN0Y2FzZXMv
-a2VybmVsL3N5c2NhbGxzL25hbWVfdG9faGFuZGxlX2F0L25hbWVfdG9faGFuZGxlX2F0MDMuYwo+
-IEBAIC0wLDAgKzEsODggQEAKPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAt
-b3ItbGF0ZXIKPiArLyoKPiArICogQ29weXJpZ2h0IChjKSAyMDIwIFZpcmVzaCBLdW1hciA8dmly
-ZXNoLmt1bWFyQGxpbmFyby5vcmc+Cj4gKyAqLwo+ICsKPiArLypcCj4gKyAqIEJhc2ljIG5hbWVf
-dG9faGFuZGxlX2F0KCkgdGVzdHMuCj4gKyAqCj4gKyAqIFtBbGdvcml0aG1dCj4gKyAqICAtIENo
-ZWNrIHRoYXQgRU9WRVJGTE9XIGlzIHJldHVybmVkIGFzIGV4cGVjdGVkIGJ5IG5hbWVfdG9faGFu
-ZGxlX2F0KCkuCj4gKyAqICAtIENoZWNrIHRoYXQgd2Ugd2VyZSBhYmxlIHRvIGFjY2VzcyBhIGZp
-bGUncyBzdGF0IHdpdGggbmFtZV90b19oYW5kbGVfYXQoKQo+ICsgKiAgICBhbmQgb3Blbl9ieV9o
-YW5kbGVfYXQoKS4KCnN0YWxlIGRlc2NyaXB0aW9uCgo+ICsgKi8KPiArCj4gKyNkZWZpbmUgX0dO
-VV9TT1VSQ0UKPiArI2luY2x1ZGUgPHN5cy9zdGF0Lmg+Cj4gKyNpbmNsdWRlICJsYXBpL25hbWVf
-dG9faGFuZGxlX2F0LmgiCj4gKwo+ICsjZGVmaW5lIFRFU1RfRklMRSAidGVzdF9maWxlIgo+ICsK
-PiArc3RhdGljIGludCBmZF9hdGN3ZCA9IEFUX0ZEQ1dEOwo+ICtzdGF0aWMgc3RydWN0IGZpbGVf
-aGFuZGxlICpmaHA7Cj4gKwo+ICtzdGF0aWMgc3RydWN0IHRjYXNlIHsKPiArICAgICAgIGNvbnN0
-IGNoYXIgKm5hbWU7Cj4gKyAgICAgICBpbnQgKmRmZDsKPiArICAgICAgIGNvbnN0IGNoYXIgKnBh
-dGhuYW1lOwo+ICsgICAgICAgaW50IG5hbWVfZmxhZ3M7Cj4gKyAgICAgICBpbnQgZXhwX2Vycm5v
-Owo+ICt9IHRjYXNlc1tdID0gewo+ICsgICAgICAgeyJ0ZXN0LWZpbGUiLCAmZmRfYXRjd2QsIFRF
-U1RfRklMRSwgQVRfSEFORExFX0ZJRCwgMH0sCj4gKyAgICAgICB7InVuZXhwb3J0YWJsZS1maWxl
-IiwgJmZkX2F0Y3dkLCAiL3Byb2MvZmlsZXN5c3RlbXMiLCBBVF9IQU5ETEVfRklELCAwfSwKPiAr
-ICAgICAgIHsidGVzdC1maWxlLWNvbm5lY3RhYmxlIiwgJmZkX2F0Y3dkLCBURVNUX0ZJTEUsIEFU
-X0hBTkRMRV9GSUQgfCBBVF9IQU5ETEVfQ09OTkVDVEFCTEUsIEVJTlZBTH0sCj4gK307Cj4gKwo+
-ICtzdGF0aWMgYm9vbCBoYW5kbGVfdHlwZV9zdXBwb3J0ZWQodW5zaWduZWQgaW50IGZsYWcsIGNv
-bnN0IGNoYXIgKm5hbWUpCj4gK3sKPiArICAgICAgIGlmIChuYW1lX3RvX2hhbmRsZV9hdCgtMSwg
-Ii4iLCBOVUxMLCBOVUxMLCBmbGFnKSAmJiBlcnJubyA9PSBFSU5WQUwpIHsKCmV4cGxhaW4gdGhh
-dCAtMSB3b3VsZCBmYWlsIHdpdGggRUJBREYgaWYgZmxhZ3MgYXJlIHN1cHBvcnRlZD8KCj4gKyAg
-ICAgICAgICAgICAgIHRzdF9icmsoVENPTkYsICIlcyBub3Qgc3VwcG9ydGVkIGJ5IHRoZSBrZXJu
-ZWwuIiwgbmFtZSk7Cj4gKyAgICAgICAgICAgICAgIHJldHVybiBmYWxzZTsKPiArICAgICAgIH0K
-PiArICAgICAgIHJldHVybiB0cnVlOwo+ICt9Cj4gKwo+ICsjZGVmaW5lIFJFUVVJUkVfSEFORExF
-X1RZUEVfU1VQUE9SVChmbGFnKSBoYW5kbGVfdHlwZV9zdXBwb3J0ZWQoZmxhZywgI2ZsYWcpCj4g
-Kwo+ICtzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQo+ICt7Cj4gKyAgICAgICBTQUZFX1RPVUNIKFRF
-U1RfRklMRSwgMDYwMCwgTlVMTCk7Cj4gKyAgICAgICBmaHAgPSBtYWxsb2MoTUFYX0hBTkRMRV9T
-Wik7Cj4gKyAgICAgICBpZiAoIWZocCkKPiArICAgICAgICAgICAgICAgdHN0X2JyayhUQlJPSywg
-Im1hbGxvYyBmYWlsZWQiKTsKPiArCj4gKyAgICAgICBSRVFVSVJFX0hBTkRMRV9UWVBFX1NVUFBP
-UlQoQVRfSEFORExFX0ZJRCk7Cj4gKyAgICAgICBSRVFVSVJFX0hBTkRMRV9UWVBFX1NVUFBPUlQo
-QVRfSEFORExFX0NPTk5FQ1RBQkxFKTsKPiArfQo+ICsKPiArc3RhdGljIHZvaWQgcnVuKHVuc2ln
-bmVkIGludCBuKQo+ICt7Cj4gKyAgICAgICBzdHJ1Y3QgdGNhc2UgKnRjID0gJnRjYXNlc1tuXTsK
-PiArICAgICAgIGludCBtb3VudF9pZDsKPiArCj4gKyAgICAgICBmaHAtPmhhbmRsZV9ieXRlcyA9
-IE1BWF9IQU5ETEVfU1o7Cj4gKyAgICAgICBURVNUKG5hbWVfdG9faGFuZGxlX2F0KCp0Yy0+ZGZk
-LCB0Yy0+cGF0aG5hbWUsIGZocCwgJm1vdW50X2lkLAo+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB0Yy0+bmFtZV9mbGFncykpOwo+ICsgICAgICAgaWYgKCF0Yy0+ZXhwX2Vycm5vKSB7
-Cj4gKyAgICAgICAgICAgICAgIGlmIChUU1RfUkVUKQo+ICsgICAgICAgICAgICAgICAgICAgICAg
-IHRzdF9yZXMoVEZBSUwgfCBUVEVSUk5PLCAiJXM6IG5hbWVfdG9faGFuZGxlX2F0KCkgZmFpbGVk
-IiwgdGMtPm5hbWUpOwo+ICsgICAgICAgICAgICAgICBlbHNlCj4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgdHN0X3JlcyhUUEFTUywgIiVzOiBuYW1lX3RvX2hhbmRsZV9hdCgpIHBhc3NlZCIsIHRj
-LT5uYW1lKTsKPiArICAgICAgICAgICAgICAgcmV0dXJuOwo+ICsgICAgICAgfQo+ICsKPiArICAg
-ICAgIGlmIChUU1RfUkVUICE9IC0xKQo+ICsgICAgICAgICAgICAgICB0c3RfcmVzKFRGQUlMLCAi
-JXM6IG5hbWVfdG9faGFuZGxlX2F0KCkgdW5leHBlY3RlZGx5IHN1Y2NlZWRlZCIsIHRjLT5uYW1l
-KTsKPiArICAgICAgIGVsc2UgaWYgKFRTVF9FUlIgIT0gdGMtPmV4cF9lcnJubykKPiArICAgICAg
-ICAgICAgICAgdHN0X3JlcyhURkFJTCB8IFRURVJSTk8sICIlczogbmFtZV90b19oYW5kbGVfYXQo
-KSBzaG91bGQgZmFpbCB3aXRoIGVycm5vICVzIiwKPiArICAgICAgICAgICAgICAgICAgICAgICB0
-Yy0+bmFtZSwgdHN0X3N0cmVycm5vKHRjLT5leHBfZXJybm8pKTsKPiArICAgICAgIGVsc2UKPiAr
-ICAgICAgICAgICAgICAgdHN0X3JlcyhUUEFTUywgIiVzOiBuYW1lX3RvX2hhbmRsZV9hdCgpIGZh
-aWxlZCBhcyBleHBlY3RlZCIsIHRjLT5uYW1lKTsKPiArfQo+ICsKPiArc3RhdGljIHN0cnVjdCB0
-c3RfdGVzdCB0ZXN0ID0gewo+ICsgICAgICAgLnRjbnQgPSBBUlJBWV9TSVpFKHRjYXNlcyksCj4g
-KyAgICAgICAudGVzdCA9IHJ1biwKPiArICAgICAgIC5zZXR1cCA9IHNldHVwLAo+ICsgICAgICAg
-Lm5lZWRzX3RtcGRpciA9IDEsCj4gK307Cj4gLS0KPiAyLjUxLjAKPgoKLS0gCk1haWxpbmcgbGlz
-dCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+There can be 8 more clock ids reserved on systems with
+CONFIG_POSIX_AUX_CLOCK=y [1]
+consequently clock 17 no longer remains an invalid id.
+
+[1] https://lkml.org/lkml/2025/5/19/341
+
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ .../conformance/interfaces/clock_getres/6-2.c                 | 4 ++--
+ .../conformance/interfaces/clock_gettime/8-2.c                | 4 ++--
+ .../conformance/interfaces/clock_settime/17-2.c               | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_getres/6-2.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_getres/6-2.c
+index c44809012..62de33c4f 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_getres/6-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_getres/6-2.c
+@@ -17,7 +17,7 @@
+  *   unassigned value = -1073743192 (ex. of what gcc will set to)
+  *   unassigned value = 1073743192 (ex. of what gcc will set to)
+  *   -1
+- *   17 (currently not = to any clock)
++ *   25 (not associated to any clock, considering posix auxiliary clocks also)
+  *
+  */
+ #include <stdio.h>
+@@ -33,7 +33,7 @@ int main(void)
+ 	struct timespec res;
+ 	int invalid_tests[NUMINVALIDTESTS] = {
+ 		INT32_MIN, INT32_MAX, 2147483647, -2147483647, -1073743192,
+-		1073743192, -1, 17
++		1073743192, -1, 25
+ 	};
+ 	int i;
+ 	int failure = 0;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_gettime/8-2.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_gettime/8-2.c
+index ed4cd4078..66bed9332 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_gettime/8-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_gettime/8-2.c
+@@ -15,7 +15,7 @@
+  *   unassigned value = -1073743192 (ex. of what gcc will set to)
+  *   unassigned value = 1073743192 (ex. of what gcc will set to)
+  *   -1
+- *   17 (currently not = to any clock)
++ *   25 (not associated to any clock, considering posix auxiliary clocks also)
+  */
+ #include <stdio.h>
+ #include <time.h>
+@@ -27,7 +27,7 @@
+ 
+ static int invalid_tests[NUMINVALIDTESTS] = {
+ 	INT32_MIN, INT32_MAX, 2147483647, -2147483647, -1073743192,
+-	1073743192, -1, 17
++	1073743192, -1, 25
+ };
+ 
+ int main(void)
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/17-2.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/17-2.c
+index 990e41470..3580ade5b 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/17-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/17-2.c
+@@ -16,7 +16,7 @@
+  *   unassigned value = -1073743192 (ex. of what gcc will set to)
+  *   unassigned value = 1073743192 (ex. of what gcc will set to)
+  *   -1
+- *   17 (currently not = to any clock)
++ *   25 (not associated to any clock, considering posix auxiliary clocks also)
+  *
+  * The date chosen is Nov 12, 2002 ~11:13am (date when test was first
+  * written).
+@@ -34,7 +34,7 @@
+ 
+ static int invalid_tests[NUMINVALIDTESTS] = {
+ 	INT32_MIN, INT32_MAX, 2147483647, -2147483647, -1073743192,
+-	1073743192, -1, 17
++	1073743192, -1, 25
+ };
+ 
+ int main(void)
+-- 
+2.51.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
