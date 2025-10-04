@@ -4,92 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0166CCD18A
-	for <ltp@archiver.kernel.org>; Tue,  7 Oct 2025 11:26:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46742CCA472
+	for <ltp@archiver.kernel.org>; Tue,  7 Oct 2025 11:33:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F10683CE3CB
-	for <ltp@archiver.kernel.org>; Tue,  7 Oct 2025 13:26:48 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id BAE453CE3F1
+	for <ltp@archiver.kernel.org>; Tue,  7 Oct 2025 13:33:56 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AFBCE3C0F15
- for <ltp@lists.linux.it>; Tue,  7 Oct 2025 13:26:32 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 370CC3CE54F
+ for <ltp@lists.linux.it>; Sat,  4 Oct 2025 14:05:57 +0200 (CEST)
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com
+ [IPv6:2607:f8b0:4864:20::536])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BCA8B140045A
- for <ltp@lists.linux.it>; Tue,  7 Oct 2025 13:26:31 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3C61233737
- for <ltp@lists.linux.it>; Tue,  7 Oct 2025 11:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1759836390; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=XGUPYjOlWobFr5QsuUjcIPNKeMT/pO/iZVDjC0Qxjq0=;
- b=tWK6KMxD9fl185pQgqbNd3MHi4E0GaGfAXekplhfi+9fyN8DceHXFqbe4WKjyegM7S7vcp
- kvjrrEwF6w+vBzYNZ/8JjZmnp+btXWHNjdQYTpnkjweHpxxvh4v+M+FEHGd2LrkN4FIfyK
- NgYrHdRhkuL+Oam62ahL5L9rpqC42+8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1759836390;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=XGUPYjOlWobFr5QsuUjcIPNKeMT/pO/iZVDjC0Qxjq0=;
- b=qm8Bz3CXeLkbbWNLPvlP2Z3q3+x8Tk5vSxkI+yDIZU4mwNVKlhzU0smGbPhDpN3hY9vcrv
- L9CCLyhy42IplSCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1759836389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=XGUPYjOlWobFr5QsuUjcIPNKeMT/pO/iZVDjC0Qxjq0=;
- b=E8KDDu3aPRHZK1NNJ/L1Z0SzphV2YtpUkM9l+zuPiQ4Q3kV+5DJ6ljBl6/Co4sAeZ//1bg
- X5gJ7EyIyGfy2C6odbZEjjXw0UcydUtYFg+0uXAXNPerGt5m19mlTyW9wMsZebOJLbctZh
- u8hJ9dPOuZIYVvFySVBlp9ieLwyrUB0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1759836389;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=XGUPYjOlWobFr5QsuUjcIPNKeMT/pO/iZVDjC0Qxjq0=;
- b=A+MLQyVF1+LCmE9sH4aDeGrv8JyqynltVDwfR6gQJnR539+99hG7z1K+ipNMDBPMzFtlEl
- UTZWsCZdLglJ2GCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D8CF13693
- for <ltp@lists.linux.it>; Tue,  7 Oct 2025 11:26:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id om3tCeX45GjwdgAAD6G6ig
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 07 Oct 2025 11:26:29 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue,  7 Oct 2025 13:27:19 +0200
-Message-ID: <20251007112719.13289-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.49.1
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 478E860065C
+ for <ltp@lists.linux.it>; Sat,  4 Oct 2025 14:05:57 +0200 (CEST)
+Received: by mail-pg1-x536.google.com with SMTP id
+ 41be03b00d2f7-b550eff972eso2201078a12.3
+ for <ltp@lists.linux.it>; Sat, 04 Oct 2025 05:05:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1759579555; x=1760184355; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=RvMiexLJvP6E79APrj0rLj11cSNtbanirw2a0dqWnQY=;
+ b=rlCRnLYBcpuNCQukoYIN108JH5sshWX0AMXoPc2GHVahL95mW2VpXq55KwhNzJHmU8
+ u4h9TTDFbXmeGCJpW5UbTaWq55ar5DCfAK98aKLKV8gPHpPxMfVMeRUwISFbsAYI1xWh
+ ozoLzP38Y899VIyU605+dycdpupO7qKNna0aJlQ6h8/J/I4T7RakBn56hx5tdEKKWzu+
+ 7lOoFmNdhUPh0Qtaq9BrVqdl7qLGCZEzs0PMCnoaimEr99jp2qp85QIEzzr4y+Exe5LP
+ QWPAvHX+hivLnIN0PVKrtcQHQlRHAgOLZZf+Uo+AS7Hn18JKaO0jsU5gizfpRsHyGkcK
+ Azow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1759579555; x=1760184355;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=RvMiexLJvP6E79APrj0rLj11cSNtbanirw2a0dqWnQY=;
+ b=XN+TYIQq9PVT5g9Gcen0sXQcini0kBa9+G9kKBy6tg6gXG8tvHLAYU38ko8YhuaxmW
+ +Kf6nQGBwMxwreoETUN8vNbJxsQkErOvhmx2PaN4oKwwq12L5BcNwJydbxsFoOOlyYaN
+ 3ldJ7ZNEqMjoqxrP/B1jmRBlEA2PrQhMTR7o2js3AWda1oZWKFwCfd3Pu5nx6H+LCWZR
+ 0SkMIMekxQF22GS+P92iUYHQu/lAQCtQ7MumCxuxrmfQDzKwlhWgDcE6iSatf4RWNXIL
+ 40Rc0fhnkTpLzene0kgb7VxeL/SLUaphOc+h7v9uSIbrWEe2OcPBqJAjU3vne22mgeLS
+ wSTA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUKNUaEjssSsHY9PUPymS4y/UBwkLMRc4N9eG4fqxL5WYhz2kNxrAqwhHFvrhe4Eos0IXo=@lists.linux.it
+X-Gm-Message-State: AOJu0YwH4FdZ7mknLJ1uDjHv+gAG9xgjJkqLeZM9q96LDqjzg0w1z3Gi
+ 4edZI8G5ThnW0KT4Ia2i+1kyblY7MKNGhCg+45sSzgo9tMUuureF/AaxSlPRHqyCW/nlhlpFflU
+ 0BMCVTemTcUDiFbugJTmIp4DWqvNslePdWM5ho8NamQ==
+X-Gm-Gg: ASbGnctwywFfVMUL91VItFNH4XgNB3aVshMBjE1OKniRWp5booZcZlhWtSgHtHsPOsY
+ otiX8/tRa0Y0byajqj7GTpxJy8O+kQ60pqFjI0sxSaNoWCMAYYwULhbdn2/2flflNwV9Apu4mln
+ gopjaavy1njUqf2im30T9GwjPGG9XvczG/NKjFSnfzOW8uXpaiZxmxJ8TIZcZtAyVG6MBlvvkfx
+ o0Wr7yeq7IoK9ChZ6UWo0CA0bIA6dRBJawOBHyT/QQ8FEanXXmwyqUUuic63NLcFyT9StUysRGK
+ 37ZhE19KPdqGuzFR0abJH6bN
+X-Google-Smtp-Source: AGHT+IHUcUiJvywAA3BHIQxICROug7QzGkP3JuEDSXUGBs+FalO/ecqWea7HGT/2uJb78TWgsqTWeIQtZungiwh66Xk=
+X-Received: by 2002:a17:902:e78b:b0:26d:353c:75cd with SMTP id
+ d9443c01a7336-28e9a567016mr83165785ad.21.1759579555517; Sat, 04 Oct 2025
+ 05:05:55 -0700 (PDT)
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
- ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+References: <20251003160359.831046052@linuxfoundation.org>
+In-Reply-To: <20251003160359.831046052@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Sat, 4 Oct 2025 17:35:44 +0530
+X-Gm-Features: AS18NWAObnZ1L7fWSoS2-NJL7inBt0GzGopLp_3E_Hq02ONyESgBFKR13d7cVUw
+Message-ID: <CA+G9fYuW6+KiuVd+ONpyo-vWCvF=dSNJzc0cdarBXjNY_XGaAg@mail.gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lib: tst_detach_device_by_fd() set dev_fd to -1
+X-Mailman-Approved-At: Tue, 07 Oct 2025 13:33:40 +0200
+Subject: Re: [LTP] [PATCH 6.17 00/15] 6.17.1-rc1 review
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,222 +85,198 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, lkft-triage@lists.linaro.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Kalesh Singh <kaleshsingh@google.com>, hargar@microsoft.com,
+ Dan Carpenter <dan.carpenter@linaro.org>, f.fainelli@gmail.com,
+ shuah@kernel.org, jonathanh@nvidia.com, Joanne Koong <joannelkoong@gmail.com>,
+ patches@kernelci.org, linux@roeck-us.net, Miklos Szeredi <mszeredi@redhat.com>,
+ Arnd Bergmann <arnd@arndb.de>, broonie@kernel.org,
+ Ben Copeland <benjamin.copeland@linaro.org>, LTP List <ltp@lists.linux.it>,
+ Juan Yescas <jyescas@google.com>, rwarsow@gmx.de, pavel@denx.de,
+ patches@lists.linux.dev, conor@kernel.org, achill@achill.org,
+ akpm@linux-foundation.org, torvalds@linux-foundation.org,
+ sudipm.mukherjee@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Apparently I tend to forget that tst_detach_device_by_fd() closes the
-file descriptor. This change makes it more obvious by chaning the fd to
-a pointer and also sets the dev_fd to -1, which matches the SAFE_CLOSE()
-behavior.
+On Fri, 3 Oct 2025 at 21:37, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.17.1 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 05 Oct 2025 16:02:25 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.17.1-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.17.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/tst_device.h                          |  4 ++--
- lib/tst_device.c                              | 21 ++++++++++---------
- testcases/kernel/syscalls/ioctl/ioctl09.c     |  2 +-
- .../kernel/syscalls/ioctl/ioctl_loop01.c      |  6 +++---
- .../kernel/syscalls/ioctl/ioctl_loop02.c      |  2 +-
- .../kernel/syscalls/ioctl/ioctl_loop04.c      |  2 +-
- .../kernel/syscalls/ioctl/ioctl_loop06.c      |  4 ++--
- .../kernel/syscalls/ioctl/ioctl_loop07.c      |  4 ++--
- 8 files changed, 23 insertions(+), 22 deletions(-)
 
-diff --git a/include/tst_device.h b/include/tst_device.h
-index 898335b16..252942f8b 100644
---- a/include/tst_device.h
-+++ b/include/tst_device.h
-@@ -77,10 +77,10 @@ uint64_t tst_get_device_size(const char *dev_path);
-  * it is up to caller to open it again for further usage.
-  *
-  * @dev_path Path to the loop device e.g. /dev/loop0
-- * @dev_fd a open fd for the loop device
-+ * @dev_fd An open fd for the loop device, set to -1 after the completion.
-  * @return Zero on succes, non-zero otherwise.
-  */
--int tst_detach_device_by_fd(const char *dev_path, int dev_fd);
-+int tst_detach_device_by_fd(const char *dev_path, int *dev_fd);
- 
- /*
-  * Detaches a file from a loop device.
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 2364df052..6ae914720 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -239,9 +239,9 @@ uint64_t tst_get_device_size(const char *dev_path)
- 	return size/1024/1024;
- }
- 
--int tst_detach_device_by_fd(const char *dev, int dev_fd)
-+int tst_detach_device_by_fd(const char *dev, int *dev_fd)
- {
--	int ret, i;
-+	int ret, i, retval = 1;
- 
- 	/* keep trying to clear LOOPDEV until we get ENXIO, a quick succession
- 	 * of attach/detach might not give udev enough time to complete
-@@ -250,19 +250,18 @@ int tst_detach_device_by_fd(const char *dev, int dev_fd)
- 	 * device is detached only after last close.
- 	 */
- 	for (i = 0; i < 40; i++) {
--		ret = ioctl(dev_fd, LOOP_CLR_FD, 0);
-+		ret = ioctl(*dev_fd, LOOP_CLR_FD, 0);
- 
- 		if (ret && (errno == ENXIO)) {
--			SAFE_CLOSE(NULL, dev_fd);
--			return 0;
-+			retval = 0;
-+			goto exit;
- 		}
- 
- 		if (ret && (errno != EBUSY)) {
- 			tst_resm(TWARN,
- 				 "ioctl(%s, LOOP_CLR_FD, 0) unexpectedly failed with: %s",
- 				 dev, tst_strerrno(errno));
--			SAFE_CLOSE(NULL, dev_fd);
--			return 1;
-+			goto exit;
- 		}
- 
- 		usleep(50000);
-@@ -270,8 +269,10 @@ int tst_detach_device_by_fd(const char *dev, int dev_fd)
- 
- 	tst_resm(TWARN,
- 		"ioctl(%s, LOOP_CLR_FD, 0) no ENXIO for too long", dev);
--	SAFE_CLOSE(NULL, dev_fd);
--	return 1;
-+exit:
-+	SAFE_CLOSE(NULL, *dev_fd);
-+	*dev_fd = -1;
-+	return retval;
- }
- 
- int tst_detach_device(const char *dev)
-@@ -284,7 +285,7 @@ int tst_detach_device(const char *dev)
- 		return 1;
- 	}
- 
--	ret = tst_detach_device_by_fd(dev, dev_fd);
-+	ret = tst_detach_device_by_fd(dev, &dev_fd);
- 	return ret;
- }
- 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl09.c b/testcases/kernel/syscalls/ioctl/ioctl09.c
-index f86355f2c..262d6fcab 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl09.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl09.c
-@@ -76,7 +76,7 @@ static void verify_ioctl(void)
- 	check_partition(1, true);
- 	check_partition(2, true);
- 
--	tst_detach_device_by_fd(dev_path, dev_fd);
-+	tst_detach_device_by_fd(dev_path, &dev_fd);
- 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- 	attach_flag = 0;
- }
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-index cb1b506d2..4ecc93b1e 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-@@ -99,13 +99,14 @@ static void verify_ioctl_loop(void)
- 	TST_ASSERT_INT(autoclear_path, 0);
- 	TST_ASSERT_STR(backing_path, backing_file_path);
- 
-+	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+
- 	check_loop_value(SET_FLAGS, GET_FLAGS, 1);
- 
- 	tst_res(TINFO, "Test flag can be clear");
- 	check_loop_value(0, LO_FLAGS_PARTSCAN, 0);
- 
--	tst_detach_device_by_fd(dev_path, dev_fd);
--	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	tst_detach_device_by_fd(dev_path, &dev_fd);
- 
- 	attach_flag = 0;
- }
-@@ -122,7 +123,6 @@ static void setup(void)
- 	sprintf(sys_loop_partpath, "/sys/block/loop%d/loop%dp1", dev_num, dev_num);
- 	backing_file_path = tst_tmpdir_genpath("test.img");
- 	sprintf(loop_partpath, "%sp1", dev_path);
--	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- }
- 
- static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop02.c b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
-index 6026af1e2..10776d0b6 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
-@@ -100,7 +100,7 @@ static void verify_ioctl_loop(unsigned int n)
- 	}
- 
- 	SAFE_CLOSE(file_fd);
--	tst_detach_device_by_fd(dev_path, dev_fd);
-+	tst_detach_device_by_fd(dev_path, &dev_fd);
- 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- 	attach_flag = 0;
- }
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop04.c b/testcases/kernel/syscalls/ioctl/ioctl_loop04.c
-index 839648f26..59f9de643 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop04.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop04.c
-@@ -60,7 +60,7 @@ static void verify_ioctl_loop(void)
- 	TST_ASSERT_INT(sys_loop_sizepath, NEW_SIZE/512);
- 
- 	SAFE_CLOSE(file_fd);
--	tst_detach_device_by_fd(dev_path, dev_fd);
-+	tst_detach_device_by_fd(dev_path, &dev_fd);
- 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- 	unlink("test.img");
- 	attach_flag = 0;
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-index 35e9e79e9..0a9618d00 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-@@ -58,7 +58,7 @@ static void verify_ioctl_loop(unsigned int n)
- 	if (TST_RET == 0) {
- 		tst_res(TFAIL, "Set block size succeed unexpectedly");
- 		if (tcases[n].ioctl_flag == LOOP_CONFIGURE) {
--			tst_detach_device_by_fd(dev_path, dev_fd);
-+			tst_detach_device_by_fd(dev_path, &dev_fd);
- 			dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- 		}
- 		return;
-@@ -88,7 +88,7 @@ static void run(unsigned int n)
- 		return;
- 	}
- 	if (attach_flag) {
--		tst_detach_device_by_fd(dev_path, dev_fd);
-+		tst_detach_device_by_fd(dev_path, &dev_fd);
- 		dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- 		attach_flag = 0;
- 	}
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop07.c b/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
-index be136fe0d..0e05b2021 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
-@@ -70,7 +70,7 @@ static void verify_ioctl_loop(unsigned int n)
- 				loopinfoget.lo_sizelimit, tc->set_sizelimit);
- 	/*Reset*/
- 	if (tc->ioctl_flag == LOOP_CONFIGURE) {
--		tst_detach_device_by_fd(dev_path, dev_fd);
-+		tst_detach_device_by_fd(dev_path, &dev_fd);
- 		dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- 	} else {
- 		loopinfo.lo_sizelimit = 0;
-@@ -99,7 +99,7 @@ static void run(unsigned int n)
- 		return;
- 	}
- 	if (attach_flag) {
--		tst_detach_device_by_fd(dev_path, dev_fd);
-+		tst_detach_device_by_fd(dev_path, &dev_fd);
- 		dev_fd = SAFE_OPEN(dev_path, O_RDWR);
- 		attach_flag = 0;
- 	}
--- 
-2.49.1
+LTP syscalls swapon01, swapon02, swapon03, swapoff01 and swapoff02 test failing
+on 16K and 64K page arm64 devices and passed with default 4K page size.
 
+These failures are noticed on Linux next and mainline master (v6.17).
+
+This test failed on 16K page size builds and 64K page size builds.
+ * CONFIG_ARM64_64K_PAGES=y
+ * CONFIG_ARM64_16K_PAGES=y
+
+Test regression: LTP swapon/off 16K and 64K page size LTP
+libswap.c:230: TFAIL: swapon() on fuse failed: EINVAL (22)
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Anders, bisected this on the Linux next and found the,
+# first bad commit:
+  [bd24d2108e9c8459d2c9f3d6d910b0053887df57]
+  fuse: fix fuseblk i_blkbits for iomap partial writes
+
+## Test logs
+### swapon01
+
+libswap.c:230: TFAIL: swapon() on fuse failed: EINVAL (22)
+swapon01.c:39: TINFO: create a swapfile size of 128 megabytes (MB)
+swapon01.c:25: TFAIL: tst_syscall(__NR_swapon, SWAP_FILE, 0) failed: EINVAL (22)
+
+Lore link,
+- https://lore.kernel.org/all/CA+G9fYtnXeG6oVrq+5v70sE2W7Wws_zcc63VaXZjy1b1O1S-FQ@mail.gmail.com/
+
+## Build
+* kernel: 6.17.1-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+* git commit: e7da5b86b53db5f0fb8e2a4e0936eab2e6491ec7
+* git describe: v6.17-16-ge7da5b86b53d
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.17.y/build/v6.17-16-ge7da5b86b53d
+
+## Test Regressions (compared to v6.17-16-ge7da5b86b53d)
+* qemu-arm64, ltp-syscalls
+  - swapoff01
+  - swapoff02
+  - swapon01
+  - swapon02
+  - swapon03
+
+## Metric Regressions (compared to v6.17-16-ge7da5b86b53d)
+
+## Test Fixes (compared to v6.17-16-ge7da5b86b53d)
+
+## Metric Fixes (compared to v6.17-16-ge7da5b86b53d)
+
+## Test result summary
+total: 162823, pass: 136895, fail: 4815, skip: 21113, xfail: 0
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 139 total, 138 passed, 1 failed
+* arm64: 57 total, 51 passed, 6 failed
+* i386: 18 total, 18 passed, 0 failed
+* mips: 34 total, 33 passed, 1 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 40 total, 39 passed, 1 failed
+* riscv: 25 total, 24 passed, 1 failed
+* s390: 22 total, 21 passed, 1 failed
+* sh: 5 total, 5 passed, 0 failed
+* sparc: 4 total, 3 passed, 1 failed
+* x86_64: 49 total, 46 passed, 3 failed
+
+## Test suites summary
+* boot
+* commands
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-mincore
+* kselftest-mm
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-mptcp
+* kselftest-openat2
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-rust
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-tc-testing
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-x86
+* kunit
+* kvm-unit-tests
+* lava
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-build-clang
+* log-parser-build-gcc
+* log-parser-test
+* ltp-capability
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-hugetlb
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+* rt-tests-cyclicdeadline
+* rt-tests-pi-stress
+* rt-tests-pmqtest
+* rt-tests-rt-migrate-test
+* rt-tests-signaltest
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
