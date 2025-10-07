@@ -4,91 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60FEBCAC5B0
-	for <ltp@archiver.kernel.org>; Tue,  7 Oct 2025 06:50:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 139ACCAC5B0
+	for <ltp@archiver.kernel.org>; Tue,  7 Oct 2025 06:50:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9EBDB3CE33B
-	for <ltp@archiver.kernel.org>; Tue,  7 Oct 2025 08:50:19 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9A83A3CE33C
+	for <ltp@archiver.kernel.org>; Tue,  7 Oct 2025 08:50:37 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CD4853CE187
- for <ltp@lists.linux.it>; Tue,  7 Oct 2025 08:47:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id D90A93CE1B5
+ for <ltp@lists.linux.it>; Tue,  7 Oct 2025 08:47:42 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5491C10007C5
- for <ltp@lists.linux.it>; Tue,  7 Oct 2025 08:47:38 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 46356600850
+ for <ltp@lists.linux.it>; Tue,  7 Oct 2025 08:47:41 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3F3D71F7A2;
- Tue,  7 Oct 2025 06:47:16 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5A1711F452;
+ Tue,  7 Oct 2025 06:47:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1759819636; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1759819638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4fMlDQi9uKxVSOlIGyLiHOpDLKve/eubWxwt6X7eyk8=;
- b=fHHpEO/hZ5u25ewhfVIvS3+2kgFVMCuFnN31foAxnShlrrpPiOv/wp+LmmrNXOt3PaSNop
- zaZwAwxhIHyrhB2t5RmOOiIzY9lpMzsGu2Wwi2exlBoki1vdMY2Xr4R255Gr5iAZmd4m8Z
- omqMj6AB53k08HBwPraG7xNUPugT6QQ=
+ bh=Yu7Xx0y3ulwlUyIZn5mX08gpbbX4O+AqgBjCWlrASDg=;
+ b=dhWx3adc5ypdD16rYJ1IqBdI20k7QLxkp9Gp4YHBgflzDjFl+bnkf7MnfgDBmrDSeiPOsz
+ runQMvgu647fzOUztbAimlEs2zWQWVAiug3ULPc2V3rGgGpJ6YjkedzoF4aFBtMfl1Zqcu
+ PcT1UFaLFe8Cd7p8f5Mvi78ZZcBHeSA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1759819636;
+ s=susede2_ed25519; t=1759819638;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4fMlDQi9uKxVSOlIGyLiHOpDLKve/eubWxwt6X7eyk8=;
- b=t9Qng9u1dT00f0EpGiERwi5WfR7PgpHI+HBshvNYb8udsp7NmCrk6y2A5fXGhMeboPRXf9
- R5G4R64ks2UBxZCQ==
+ bh=Yu7Xx0y3ulwlUyIZn5mX08gpbbX4O+AqgBjCWlrASDg=;
+ b=WVCyjUllzmqJtMQEEfIV+hvlIJm/JpZfDepibgY6UYb1D8QHFqFD1ti7HJun5GrYHaGSIH
+ hn05NSjajWZ0HXBg==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1759819636; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1759819638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4fMlDQi9uKxVSOlIGyLiHOpDLKve/eubWxwt6X7eyk8=;
- b=fHHpEO/hZ5u25ewhfVIvS3+2kgFVMCuFnN31foAxnShlrrpPiOv/wp+LmmrNXOt3PaSNop
- zaZwAwxhIHyrhB2t5RmOOiIzY9lpMzsGu2Wwi2exlBoki1vdMY2Xr4R255Gr5iAZmd4m8Z
- omqMj6AB53k08HBwPraG7xNUPugT6QQ=
+ bh=Yu7Xx0y3ulwlUyIZn5mX08gpbbX4O+AqgBjCWlrASDg=;
+ b=dhWx3adc5ypdD16rYJ1IqBdI20k7QLxkp9Gp4YHBgflzDjFl+bnkf7MnfgDBmrDSeiPOsz
+ runQMvgu647fzOUztbAimlEs2zWQWVAiug3ULPc2V3rGgGpJ6YjkedzoF4aFBtMfl1Zqcu
+ PcT1UFaLFe8Cd7p8f5Mvi78ZZcBHeSA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1759819636;
+ s=susede2_ed25519; t=1759819638;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4fMlDQi9uKxVSOlIGyLiHOpDLKve/eubWxwt6X7eyk8=;
- b=t9Qng9u1dT00f0EpGiERwi5WfR7PgpHI+HBshvNYb8udsp7NmCrk6y2A5fXGhMeboPRXf9
- R5G4R64ks2UBxZCQ==
+ bh=Yu7Xx0y3ulwlUyIZn5mX08gpbbX4O+AqgBjCWlrASDg=;
+ b=WVCyjUllzmqJtMQEEfIV+hvlIJm/JpZfDepibgY6UYb1D8QHFqFD1ti7HJun5GrYHaGSIH
+ hn05NSjajWZ0HXBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9519013AAC;
- Tue,  7 Oct 2025 06:47:15 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A15C913AAC;
+ Tue,  7 Oct 2025 06:47:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ELhDF3O35Gj1GgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 07 Oct 2025 06:47:15 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MAtGGnW35Gj1GgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 07 Oct 2025 06:47:17 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 07 Oct 2025 08:47:00 +0200
+Date: Tue, 07 Oct 2025 08:47:02 +0200
 MIME-Version: 1.0
-Message-Id: <20251007-xattrat-v2-8-bf458fa66358@suse.com>
+Message-Id: <20251007-xattrat-v2-10-bf458fa66358@suse.com>
 References: <20251007-xattrat-v2-0-bf458fa66358@suse.com>
 In-Reply-To: <20251007-xattrat-v2-0-bf458fa66358@suse.com>
 To: ltp@lists.linux.it
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1759819626; l=3396;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1759819626; l=3691;
  i=andrea.cervesato@suse.com; s=20250922; h=from:subject:message-id;
- bh=5FAQYGR2ElRl9Hsy3wCMnyL6CjVcWkj1h5SQ6BX79MQ=;
- b=1FlIOL8hNdWEGhBsR/psiuTJbqmLsE4k022TJ4gHeV1O8sEUcS673oB68G60f5tfp6u8PWcG+
- UfeD4s7yEeYC5QnsPFDwg/zUl7s+KK33lArjpIHL2FzMlB0QC8SW6mJ
+ bh=Us3bCmZjvBWr/V8P/hfsa6t9V52h7BCLzMmRW+LZYIs=;
+ b=8fz6c2Ok4Ly1Qi2Jz+AxBwOL4lksUb7NnRQZ3wMYWr52zMQ0hpQNHI3XIwuQB0BsLdPxLoUN8
+ 0XnqAxF2ID7DjqCpq05YFjXoPmJedHajqMmX74pfeinZp8gT/m1Nqkp
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=+8M3XgViLdcdNBM+Jdd90m3pV4jCw2tNsGCy5Rd+qHk=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -103,9 +102,9 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  RCVD_COUNT_TWO(0.00)[2];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
  imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 08/10] lapi: add safe *xattrat macros
+Subject: [LTP] [PATCH v2 10/10] Add setxattrat02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,120 +123,154 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Introduce the following new safe macros:
-
-- SAFE_SETXATTRAT
-- SAFE_GETXATTRAT
-- SAFE_REMOVEXATTRAT
+Test if setxattrat() syscall is correctly raising errors when giving
+invalid inputs.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/lapi/xattr.h | 94 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
+ testcases/kernel/syscalls/setxattrat/.gitignore    |   1 +
+ .../kernel/syscalls/setxattrat/setxattrat02.c      | 126 +++++++++++++++++++++
+ 2 files changed, 127 insertions(+)
 
-diff --git a/include/lapi/xattr.h b/include/lapi/xattr.h
-index 2ca05c787..cfd1cca40 100644
---- a/include/lapi/xattr.h
-+++ b/include/lapi/xattr.h
-@@ -59,4 +59,98 @@ static inline int removexattrat(int dfd, const char *pathname,
- }
- #endif
- 
-+int safe_setxattrat(const char *file, const int lineno,
-+		int dfd, const char *path, int at_flags,
-+		const char *key, struct xattr_args *args, size_t size)
+diff --git a/testcases/kernel/syscalls/setxattrat/.gitignore b/testcases/kernel/syscalls/setxattrat/.gitignore
+index e636401d7..9d007a44d 100644
+--- a/testcases/kernel/syscalls/setxattrat/.gitignore
++++ b/testcases/kernel/syscalls/setxattrat/.gitignore
+@@ -1 +1,2 @@
+ setxattrat01
++setxattrat02
+diff --git a/testcases/kernel/syscalls/setxattrat/setxattrat02.c b/testcases/kernel/syscalls/setxattrat/setxattrat02.c
+new file mode 100644
+index 000000000..8092fef26
+--- /dev/null
++++ b/testcases/kernel/syscalls/setxattrat/setxattrat02.c
+@@ -0,0 +1,126 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2025 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Test if setxattrat() syscall is correctly raising errors when giving invalid
++ * inputs.
++ */
++
++#include "tst_test.h"
++#include "lapi/xattr.h"
++#include "lapi/syscalls.h"
++
++#include <sys/xattr.h>
++
++#define FNAME "ltp_file"
++#define XATTR_TEST_KEY "trusted.ltptestkey"
++#define XATTR_TEST_VALUE "ltprulez"
++#define XATTR_TEST_VALUE_SIZE 8
++
++static struct xattr_args *args;
++static struct xattr_args *null_args;
++static int invalid_fd = -1;
++static int tmpdir_fd = -1;
++
++static struct tcase {
++	int *dfd;
++	int at_flags;
++	struct xattr_args **args;
++	size_t args_size;
++	int exp_errno;
++	char *reason;
++} tcases[] = {
++	{
++		.dfd = &invalid_fd,
++		.args = &args,
++		.args_size = sizeof(struct xattr_args),
++		.exp_errno = EBADF,
++		.reason = "Invalid directory file descriptor",
++	},
++	{
++		.dfd = &tmpdir_fd,
++		.at_flags = -1,
++		.args = &args,
++		.args_size = sizeof(struct xattr_args),
++		.exp_errno = EINVAL,
++		.reason = "Invalid AT flags",
++	},
++	{
++		.dfd = &tmpdir_fd,
++		.at_flags = AT_SYMLINK_NOFOLLOW + 1,
++		.args = &args,
++		.args_size = sizeof(struct xattr_args),
++		.exp_errno = EINVAL,
++		.reason = "Out of bound AT flags",
++	},
++	{
++		.dfd = &tmpdir_fd,
++		.args = &null_args,
++		.args_size = sizeof(struct xattr_args),
++		.exp_errno = EINVAL,
++		.reason = "Invalid arguments",
++	},
++	{
++		.dfd = &tmpdir_fd,
++		.args = &args,
++		.args_size = SIZE_MAX,
++		.exp_errno = E2BIG,
++		.reason = "Arguments size is too big",
++	},
++	{
++		.dfd = &tmpdir_fd,
++		.args = &args,
++		.args_size = sizeof(struct xattr_args) - 1,
++		.exp_errno = EINVAL,
++		.reason = "Invalid arguments size",
++	},
++};
++
++static void run(unsigned int i)
 +{
-+	int rval;
++	struct tcase *tc = &tcases[i];
 +
-+	rval = setxattrat(dfd, path, at_flags, key, args, size);
++	args->flags = XATTR_CREATE;
++	args->value = (uint64_t)XATTR_TEST_VALUE;
++	args->size = XATTR_TEST_VALUE_SIZE;
 +
-+	if (rval == -1) {
-+		if (errno == ENOTSUP) {
-+			tst_brk_(file, lineno, TCONF,
-+				"no xattr support in fs, mounted without user_xattr option "
-+				"or invalid namespace/name format");
-+			return rval;
-+		}
-+
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"setxattrat(%d, %s, %d, %s, %p, %zu) failed",
-+			dfd, path, at_flags, key, args, size);
-+	} else if (rval) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"Invalid setxattrat(%d, %s, %d, %s, %p, %zu) return value %d",
-+			dfd, path, at_flags, key, args, size, rval);
-+	}
-+
-+	return rval;
++	TST_EXP_FAIL(tst_syscall(__NR_setxattrat,
++		tc->dfd, FNAME, tc->at_flags, XATTR_TEST_KEY,
++		tc->args, tc->args_size),
++		tc->exp_errno, "%s", tc->reason);
 +}
 +
-+#define SAFE_SETXATTRAT(dfd, path, at_flags, key, args, size) \
-+	safe_setxattrat(__FILE__, __LINE__, \
-+		 (dfd), (path), (at_flags), (key), (args), (size))
-+
-+int safe_getxattrat(const char *file, const int lineno,
-+		int dfd, const char *path, int at_flags,
-+		const char *key, struct xattr_args *args, size_t size)
++static void setup(void)
 +{
-+	int rval;
++	char *tmpdir;
 +
-+	rval = getxattrat(dfd, path, at_flags, key, args, size);
++	tmpdir = tst_tmpdir_path();
++	tmpdir_fd = SAFE_OPEN(tmpdir, O_DIRECTORY);
 +
-+	if (rval == -1) {
-+		if (errno == ENOTSUP) {
-+			tst_brk_(file, lineno, TCONF,
-+				"no xattr support in fs, mounted without user_xattr option "
-+				"or invalid namespace/name format");
-+			return rval;
-+		}
-+
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"getxattrat(%d, %s, %d, %s, %p, %zu) failed",
-+			dfd, path, at_flags, key, args, size);
-+	} else if (rval < 0) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"Invalid getxattrat(%d, %s, %d, %s, %p, %zu) return value %d",
-+			dfd, path, at_flags, key, args, size, rval);
-+	}
-+
-+	return rval;
++	SAFE_TOUCH(FNAME, 0777, NULL);
 +}
 +
-+#define SAFE_GETXATTRAT(dfd, path, at_flags, key, args, size) \
-+	safe_getxattrat(__FILE__, __LINE__, \
-+		 (dfd), (path), (at_flags), (key), (args), (size))
-+
-+int safe_removexattrat(const char *file, const int lineno,
-+		int dfd, const char *path, int at_flags, const char *name)
++static void cleanup(void)
 +{
-+	int rval;
++	if (tmpdir_fd != -1)
++		SAFE_CLOSE(tmpdir_fd);
 +
-+	rval = removexattrat(dfd, path, at_flags, name);
-+
-+	if (rval == -1) {
-+		if (errno == ENOTSUP) {
-+			tst_brk_(file, lineno, TCONF,
-+				"no xattr support in fs or mounted without user_xattr option");
-+			return rval;
-+		}
-+
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"removexattrat(%d, %s, %d, %s) failed",
-+			dfd, path, at_flags, name);
-+	} else if (rval) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"Invalid removexattrat(%d, %s, %d, %s) return value %d",
-+			dfd, path, at_flags, name, rval);
-+	}
-+
-+	return rval;
++	SAFE_UNLINK(FNAME);
 +}
 +
-+#define SAFE_REMOVEXATTRAT(dfd, path, at_flags, name) \
-+	safe_removexattrat(__FILE__, __LINE__, \
-+		 (dfd), (path), (at_flags), (name))
-+
- #endif /* LAPI_XATTR_H__ */
++static struct tst_test test = {
++	.test = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.bufs = (struct tst_buffers []) {
++		{&args, .size = sizeof(struct xattr_args)},
++		{},
++	}
++};
 
 -- 
 2.51.0
