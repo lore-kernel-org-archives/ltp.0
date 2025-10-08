@@ -4,96 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA889CCA470
-	for <ltp@archiver.kernel.org>; Wed,  8 Oct 2025 09:44:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 842AACCA470
+	for <ltp@archiver.kernel.org>; Wed,  8 Oct 2025 10:02:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 424873CE71C
-	for <ltp@archiver.kernel.org>; Wed,  8 Oct 2025 11:44:24 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id E2A373CE6F7
+	for <ltp@archiver.kernel.org>; Wed,  8 Oct 2025 12:02:26 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C43853CE70F
- for <ltp@lists.linux.it>; Wed,  8 Oct 2025 11:44:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 1C59C3C9B2B
+ for <ltp@lists.linux.it>; Wed,  8 Oct 2025 12:02:09 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3F8DB140004E
- for <ltp@lists.linux.it>; Wed,  8 Oct 2025 11:44:07 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5373C1400C48
+ for <ltp@lists.linux.it>; Wed,  8 Oct 2025 12:02:08 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 503CB219D6;
- Wed,  8 Oct 2025 09:44:07 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3E2E51F792;
+ Wed,  8 Oct 2025 10:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1759916647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1759917728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=LA2hul1bsqSmk613N4mzVxdVztZvCOQ41eZ98JEW0QE=;
- b=lehHNqOFE9AD+ftws5MORBifYKGWnE3Tc71gykw+SJDxUJ0WQpux59GOXN2264RLqpynA6
- zlmLbQHe8QM0ut//NqpI3zWDUEVaHbMVBt4l9FseC2TPaqAsoB42nZTxFz3Y4x1mOgC6RQ
- +5PlSJbzWZlf57hP61yUvN+tuxe1YCw=
+ bh=X/acn4urQ/YTf2qQbLvtI3EboFLtr1AbyAY9w5r3BxE=;
+ b=e9kQvz3BUe/9d7eRUdewSuHdUKYYazDm6WY29MWQGC7ZqCr/QuAjmw/Pgei/E5s+6n+E8m
+ KFPG9G45mMltB+T5XV/PSVUSi0aLDquQolIdQou0rLhfDL6TpI0faN+z0wdYlK+gIsjWMD
+ w81sA8CPNtXRX2YpOrDpzaIAWmaASwo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1759916647;
+ s=susede2_ed25519; t=1759917728;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=LA2hul1bsqSmk613N4mzVxdVztZvCOQ41eZ98JEW0QE=;
- b=OVUc+wHDSPnYHxOd23gE57WG4p5U4uvfoJ3luCO+iKeYXUkw+/Cvo1PPzMvZdceIhnO3wM
- IPOSM2gLV8pnRlDg==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=X/acn4urQ/YTf2qQbLvtI3EboFLtr1AbyAY9w5r3BxE=;
+ b=EpyBLguFe1bkaHwtAJNJ1uWhwMIsP1IM2zTptUi6qJlo7yA9KP5Nrk8g6iFeel26g786YD
+ Bh+eBfNbJ6h7WGBw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=e9kQvz3B;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=EpyBLguF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1759916647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1759917728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=LA2hul1bsqSmk613N4mzVxdVztZvCOQ41eZ98JEW0QE=;
- b=lehHNqOFE9AD+ftws5MORBifYKGWnE3Tc71gykw+SJDxUJ0WQpux59GOXN2264RLqpynA6
- zlmLbQHe8QM0ut//NqpI3zWDUEVaHbMVBt4l9FseC2TPaqAsoB42nZTxFz3Y4x1mOgC6RQ
- +5PlSJbzWZlf57hP61yUvN+tuxe1YCw=
+ bh=X/acn4urQ/YTf2qQbLvtI3EboFLtr1AbyAY9w5r3BxE=;
+ b=e9kQvz3BUe/9d7eRUdewSuHdUKYYazDm6WY29MWQGC7ZqCr/QuAjmw/Pgei/E5s+6n+E8m
+ KFPG9G45mMltB+T5XV/PSVUSi0aLDquQolIdQou0rLhfDL6TpI0faN+z0wdYlK+gIsjWMD
+ w81sA8CPNtXRX2YpOrDpzaIAWmaASwo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1759916647;
+ s=susede2_ed25519; t=1759917728;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=LA2hul1bsqSmk613N4mzVxdVztZvCOQ41eZ98JEW0QE=;
- b=OVUc+wHDSPnYHxOd23gE57WG4p5U4uvfoJ3luCO+iKeYXUkw+/Cvo1PPzMvZdceIhnO3wM
- IPOSM2gLV8pnRlDg==
+ bh=X/acn4urQ/YTf2qQbLvtI3EboFLtr1AbyAY9w5r3BxE=;
+ b=EpyBLguFe1bkaHwtAJNJ1uWhwMIsP1IM2zTptUi6qJlo7yA9KP5Nrk8g6iFeel26g786YD
+ Bh+eBfNbJ6h7WGBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3F11313A3D;
- Wed,  8 Oct 2025 09:44:07 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 30FD413A96;
+ Wed,  8 Oct 2025 10:02:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2CdUDmcy5mitBQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 08 Oct 2025 09:44:07 +0000
-Date: Wed, 8 Oct 2025 11:44:57 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 60iCCqA25mgHDAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 08 Oct 2025 10:02:08 +0000
+Date: Wed, 8 Oct 2025 12:02:58 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aOYymT7OSXseISoS@yuki.lan>
+Message-ID: <aOY20kqNr9kZAPuY@yuki.lan>
 References: <20251007-xattrat-v2-0-bf458fa66358@suse.com>
- <20251007-xattrat-v2-9-bf458fa66358@suse.com>
+ <20251007-xattrat-v2-10-bf458fa66358@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20251007-xattrat-v2-9-bf458fa66358@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20251007-xattrat-v2-10-bf458fa66358@suse.com>
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[linux.it:url];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: 3E2E51F792
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 09/10] Add setxattrat01 test
+Subject: Re: [LTP] [PATCH v2 10/10] Add setxattrat02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,27 +120,110 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +/*\
-> + * [Description]
-> + *
-> + * Test if setxattrat() syscall is correctly following symlink, setting a
-> + * xattr on a file.
-> + *
-> + * [Algorithm]
-> + *
-> + * - create a file and the symlink pointing to it
-> + * - run setxattrat() on the symlink following the pointing file
-> + * - verify that file xattr has been set
-> + * - verify that symlink xattr has not been set
+> +} tcases[] = {
+> +	{
+> +		.dfd = &invalid_fd,
+> +		.args = &args,
+> +		.args_size = sizeof(struct xattr_args),
+> +		.exp_errno = EBADF,
+> +		.reason = "Invalid directory file descriptor",
+> +	},
 
-Shouldn't this be a variant of a setxattr() test?
+Maybe it would make sense to use tst_fd to hammer the syscall with all
+kinds of strange file descriptors.
 
-> + * - run setxattrat() on the symlink with AT_SYMLINK_NOFOLLOW
-> + * - verify that file xattr has not been set
-> + * - verify that symlink xattr has been set
-> + */
+> +	{
+> +		.dfd = &tmpdir_fd,
+> +		.at_flags = -1,
+> +		.args = &args,
+> +		.args_size = sizeof(struct xattr_args),
+> +		.exp_errno = EINVAL,
+> +		.reason = "Invalid AT flags",
+> +	},
+> +	{
+> +		.dfd = &tmpdir_fd,
+> +		.at_flags = AT_SYMLINK_NOFOLLOW + 1,
+> +		.args = &args,
+> +		.args_size = sizeof(struct xattr_args),
+> +		.exp_errno = EINVAL,
+> +		.reason = "Out of bound AT flags",
+> +	},
+> +	{
+> +		.dfd = &tmpdir_fd,
+> +		.args = &null_args,
+> +		.args_size = sizeof(struct xattr_args),
+> +		.exp_errno = EINVAL,
+> +		.reason = "Invalid arguments",
+> +	},
+> +	{
+> +		.dfd = &tmpdir_fd,
+> +		.args = &args,
+> +		.args_size = SIZE_MAX,
+> +		.exp_errno = E2BIG,
+> +		.reason = "Arguments size is too big",
+> +	},
+> +	{
+> +		.dfd = &tmpdir_fd,
+> +		.args = &args,
+> +		.args_size = sizeof(struct xattr_args) - 1,
+> +		.exp_errno = EINVAL,
+> +		.reason = "Invalid arguments size",
+> +	},
+> +};
+> +
+> +static void run(unsigned int i)
+> +{
+> +	struct tcase *tc = &tcases[i];
+> +
+> +	args->flags = XATTR_CREATE;
+> +	args->value = (uint64_t)XATTR_TEST_VALUE;
+> +	args->size = XATTR_TEST_VALUE_SIZE;
+> +
+> +	TST_EXP_FAIL(tst_syscall(__NR_setxattrat,
+> +		tc->dfd, FNAME, tc->at_flags, XATTR_TEST_KEY,
+> +		tc->args, tc->args_size),
+> +		tc->exp_errno, "%s", tc->reason);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	char *tmpdir;
+> +
+> +	tmpdir = tst_tmpdir_path();
+> +	tmpdir_fd = SAFE_OPEN(tmpdir, O_DIRECTORY);
 
-And this a variant of lsetxattr() test?
+Here as well, just use AT_FDCWD.
+
+> +	SAFE_TOUCH(FNAME, 0777, NULL);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (tmpdir_fd != -1)
+> +		SAFE_CLOSE(tmpdir_fd);
+> +
+> +	SAFE_UNLINK(FNAME);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +	.bufs = (struct tst_buffers []) {
+> +		{&args, .size = sizeof(struct xattr_args)},
+> +		{},
+> +	}
+> +};
+> 
+> -- 
+> 2.51.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
