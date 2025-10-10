@@ -4,94 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62CE1CCD185
-	for <ltp@archiver.kernel.org>; Fri, 10 Oct 2025 11:06:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1760094373; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=j7zRizZc4G0WIhOelPiOsw6m5t5+a1nqngZellpG6Yo=;
- b=BN5xTgsFsBH30zvrR559e8EUw59C2rvXe5Q9sd/VTKf4jwTtD9VJO1vQNCYldJsqLR6zS
- uhw1cK1fy9iFWn/wO8MPJhD7QmJdKOvee9vFT2n7QLamUd/C50+e14qG5s5vcxvIj9X0DE+
- pdJ7e02yQDVFeiMSGTVaQfweJsXfeaE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4F6ECCA476
+	for <ltp@archiver.kernel.org>; Fri, 10 Oct 2025 11:30:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D19F33CE9C5
-	for <ltp@archiver.kernel.org>; Fri, 10 Oct 2025 13:06:13 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 0C7383CEA04
+	for <ltp@archiver.kernel.org>; Fri, 10 Oct 2025 13:30:36 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 96A663CE966
- for <ltp@lists.linux.it>; Fri, 10 Oct 2025 13:05:52 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0AD273CE9C7
+ for <ltp@lists.linux.it>; Fri, 10 Oct 2025 13:30:20 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id ED1F6100053A
- for <ltp@lists.linux.it>; Fri, 10 Oct 2025 13:05:51 +0200 (CEST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-46e491a5b96so10577925e9.2
- for <ltp@lists.linux.it>; Fri, 10 Oct 2025 04:05:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1760094351; x=1760699151; darn=lists.linux.it;
- h=in-reply-to:references:from:subject:cc:to:message-id:date
- :content-transfer-encoding:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=MWIAiEZWHmqwWARRE++RSuUIjxmjjnRgIPBXq/RI+lM=;
- b=fFdytSmsKbmVAu7iKKwKkObbtgpZ39WPBEG9Qvf5cZRrc2dbVuxsXV2Va8PTxG1iDz
- N/NsMXJJpZh8H/+mkxyPGVxXWAYN9rjJnHjfd+eS6BAGyo8VDU0AFLphSWnRuySbRezy
- rIDtHlrlzwrVFodX+GTJim4zLqS5mTmXm428x4XPNbz658TYyn0oH5YvzeqL5ky/NU7u
- GhZh+vs8IiRvSy6TnlhmKf03VoI6jqMGsV4OpzSy0AZonSZOEKb2o7KGsxaQogLjq3N4
- YkV9bhtrzc0zjyIZRKCbig2nSssEhy1i31rVnYEwjcVAxeYwuv5QfnVeHt2F+wFEpljs
- jotA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1760094351; x=1760699151;
- h=in-reply-to:references:from:subject:cc:to:message-id:date
- :content-transfer-encoding:mime-version:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to;
- bh=MWIAiEZWHmqwWARRE++RSuUIjxmjjnRgIPBXq/RI+lM=;
- b=kS7nv5S8xA/fcAQI9c+2EG5htoIe1/qHxRW+Rt+7eKjm8VHAbTp9/JdSLLM5KoBnVo
- 3qEqMwTJQSICft0MYgVxwU26Dug1Jc65S/nPQkughL3nsS71onxkgewmXDBezxJOXkAJ
- Y8djXm1n53nffKrJfQ8vcL/Uev4pQ9GTD7GPT74cThFvMoiNp8iyokJN85qTK2cYp+9t
- OwC+Nn6V0G0npiqiIFqj+7+nLZTkG691jTAjncwEnv2V1oC3xOZuNMzU1zLI9kRgbJVb
- zZ6cqS8Cf3gE0QphD+BGzVq07w0ODUdE1+qyFpYuBT485z7PUM9nMP8ekHfjhmZVATgr
- vIzQ==
-X-Gm-Message-State: AOJu0YxUKbqqNkwDboJymC9Eo7ow225BYflmaUamsWW6YM6IE2/mkQ5Q
- fk8N82i9j04TQHwFN1Akgrry9f3UZGAmcLrYFooxCJ5zr1qNTiV1AihDi4yXKaastPk=
-X-Gm-Gg: ASbGncsM7oJhhtxMl72PQmuMi4ukXjcWivIhe9Nc1ZO9MnQvF5G+xQlnPmOuPPkdf26
- 9sPMJTPwl3tCyqImR/n/dl3+rRpNm0ncsf1BWz4Lwf6fussIGoWbFTMyhjwm81vRbMBzXkqcfcd
- IN/sLaYmcqk3vv2lGMfCxI9FAkob54BQB2lzOfqZlcbWqwbNU011HAcsMrUHK2rJC5lRjTIhc6s
- 9lglqautYBtJFNScdqhO4yWGEErE8aNEjLKl3vqDCO2gnFZUg73ndrUOdUkh4PtnDxC/voUop+n
- HAot5zbszj/aMHXpBDh6Yp41H5hhg2axT+akiDkZNWbJkooOeHQC38KAl8KfPbVHIV4FSrr+RZ1
- BgTCgver5xFZ86JzFLCXL2J96RertGVIwJd36kT01H8Uga9WzQFPq61/YpKA0B9XRc6CNUICb+P
- oy7oxdDVwe1KqrlYH9Afq+w8MkiNkNHsjqMbKCZpSHZRUJ3w==
-X-Google-Smtp-Source: AGHT+IHRfnjHGaiAtYbB3LhJ6oRvYFr2bhl/bI/Ldu43eMY4/vO+3SWKvS2kL2aXSGcKl9kXFcl5Ng==
-X-Received: by 2002:a05:600c:3548:b0:45b:4a98:91cf with SMTP id
- 5b1f17b1804b1-46fa9aa24b3mr78111835e9.15.1760094351247; 
- Fri, 10 Oct 2025 04:05:51 -0700 (PDT)
-Received: from localhost
- (p200300ef2f176d00961bd2614569b9c8.dip0.t-ipconnect.de.
- [2003:ef:2f17:6d00:961b:d261:4569:b9c8])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-46fb49c4027sm39311555e9.17.2025.10.10.04.05.50
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 10 Oct 2025 04:05:50 -0700 (PDT)
-Mime-Version: 1.0
-Date: Fri, 10 Oct 2025 13:05:50 +0200
-Message-Id: <DDELDHZA33UZ.1OOCM2J6AC6I7@suse.com>
-To: "Cyril Hrubis" <chrubis@suse.cz>, "Andrea Cervesato"
- <andrea.cervesato@suse.de>
-X-Mailer: aerc 0.21.0
-References: <20251007-xattrat-v2-0-bf458fa66358@suse.com>
- <20251007-xattrat-v2-10-bf458fa66358@suse.com> <aOY20kqNr9kZAPuY@yuki.lan>
-In-Reply-To: <aOY20kqNr9kZAPuY@yuki.lan>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 860781400254
+ for <ltp@lists.linux.it>; Fri, 10 Oct 2025 13:30:19 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 92CBC21BB9;
+ Fri, 10 Oct 2025 11:30:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1760095818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=18wDRMPkqXjKS9SzBXXv9in6sXsNqorwz3/somZnndo=;
+ b=tU4o8ZrWKIH/rFMpmMveTZUx8aA7um8dhnrp8EdhRdZa2Dpo9U/6cHt1/lUgnf5IMvJu5e
+ P78xl8doNbjcZZ2NWuXf5mZ9p4bL5NCNN5iRNCQL/t6ncVoa3lKSoX8MoflXE9/26R5/fE
+ yoX9w1KgdIP4KGbsKL9YbH9Hoj/WXmI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1760095818;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=18wDRMPkqXjKS9SzBXXv9in6sXsNqorwz3/somZnndo=;
+ b=2jOlEFiYi6ymaUQw5GqB3S3xRnItQ2JvI2DnkgaE3gLuq0jTEEEqJeMYeA28jOP/DQG9Pc
+ iAYyPZRTw7Z4CNDw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=tU4o8ZrW;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2jOlEFiY
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1760095818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=18wDRMPkqXjKS9SzBXXv9in6sXsNqorwz3/somZnndo=;
+ b=tU4o8ZrWKIH/rFMpmMveTZUx8aA7um8dhnrp8EdhRdZa2Dpo9U/6cHt1/lUgnf5IMvJu5e
+ P78xl8doNbjcZZ2NWuXf5mZ9p4bL5NCNN5iRNCQL/t6ncVoa3lKSoX8MoflXE9/26R5/fE
+ yoX9w1KgdIP4KGbsKL9YbH9Hoj/WXmI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1760095818;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=18wDRMPkqXjKS9SzBXXv9in6sXsNqorwz3/somZnndo=;
+ b=2jOlEFiYi6ymaUQw5GqB3S3xRnItQ2JvI2DnkgaE3gLuq0jTEEEqJeMYeA28jOP/DQG9Pc
+ iAYyPZRTw7Z4CNDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C1871375D;
+ Fri, 10 Oct 2025 11:30:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id EF3ECEru6GhPaQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 10 Oct 2025 11:30:18 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Fri, 10 Oct 2025 13:30:14 +0200
+Message-ID: <20251010113014.309433-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.51.0
+MIME-Version: 1.0
+X-Rspamd-Queue-Id: 92CBC21BB9
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_THREE(0.00)[4];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:mid, suse.cz:dkim,
+ imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 10/10] Add setxattrat02 test
+Subject: [LTP] [PATCH] tst_cmd.h: Convert the rest of comments to kerneldoc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,137 +111,114 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Move docs from the private function implementations (functions with
+trailing underscore) to functions used into functions used in the new
+API.
 
-On Wed Oct 8, 2025 at 12:02 PM CEST, Cyril Hrubis wrote:
-> Hi!
->> +} tcases[] = {
->> +	{
->> +		.dfd = &invalid_fd,
->> +		.args = &args,
->> +		.args_size = sizeof(struct xattr_args),
->> +		.exp_errno = EBADF,
->> +		.reason = "Invalid directory file descriptor",
->> +	},
->
-> Maybe it would make sense to use tst_fd to hammer the syscall with all
-> kinds of strange file descriptors.
->
+This avoids to document private functions.
 
-This makes sense for a new test, in this test it's better to keep this
-approach.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+FYI I dared to merge the obvious part of the conversion:
 
->> +	{
->> +		.dfd = &tmpdir_fd,
->> +		.at_flags = -1,
->> +		.args = &args,
->> +		.args_size = sizeof(struct xattr_args),
->> +		.exp_errno = EINVAL,
->> +		.reason = "Invalid AT flags",
->> +	},
->> +	{
->> +		.dfd = &tmpdir_fd,
->> +		.at_flags = AT_SYMLINK_NOFOLLOW + 1,
->> +		.args = &args,
->> +		.args_size = sizeof(struct xattr_args),
->> +		.exp_errno = EINVAL,
->> +		.reason = "Out of bound AT flags",
->> +	},
->> +	{
->> +		.dfd = &tmpdir_fd,
->> +		.args = &null_args,
->> +		.args_size = sizeof(struct xattr_args),
->> +		.exp_errno = EINVAL,
->> +		.reason = "Invalid arguments",
->> +	},
->> +	{
->> +		.dfd = &tmpdir_fd,
->> +		.args = &args,
->> +		.args_size = SIZE_MAX,
->> +		.exp_errno = E2BIG,
->> +		.reason = "Arguments size is too big",
->> +	},
->> +	{
->> +		.dfd = &tmpdir_fd,
->> +		.args = &args,
->> +		.args_size = sizeof(struct xattr_args) - 1,
->> +		.exp_errno = EINVAL,
->> +		.reason = "Invalid arguments size",
->> +	},
->> +};
->> +
->> +static void run(unsigned int i)
->> +{
->> +	struct tcase *tc = &tcases[i];
->> +
->> +	args->flags = XATTR_CREATE;
->> +	args->value = (uint64_t)XATTR_TEST_VALUE;
->> +	args->size = XATTR_TEST_VALUE_SIZE;
->> +
->> +	TST_EXP_FAIL(tst_syscall(__NR_setxattrat,
->> +		tc->dfd, FNAME, tc->at_flags, XATTR_TEST_KEY,
->> +		tc->args, tc->args_size),
->> +		tc->exp_errno, "%s", tc->reason);
->> +}
->> +
->> +static void setup(void)
->> +{
->> +	char *tmpdir;
->> +
->> +	tmpdir = tst_tmpdir_path();
->> +	tmpdir_fd = SAFE_OPEN(tmpdir, O_DIRECTORY);
->
-> Here as well, just use AT_FDCWD.
->
+https://github.com/linux-test-project/ltp/commit/58708049bb24000af947e00fa611501aa284999a
 
-Ok.
+Kind regards,
+Petr
 
->> +	SAFE_TOUCH(FNAME, 0777, NULL);
->> +}
->> +
->> +static void cleanup(void)
->> +{
->> +	if (tmpdir_fd != -1)
->> +		SAFE_CLOSE(tmpdir_fd);
->> +
->> +	SAFE_UNLINK(FNAME);
->> +}
->> +
->> +static struct tst_test test = {
->> +	.test = run,
->> +	.setup = setup,
->> +	.cleanup = cleanup,
->> +	.tcnt = ARRAY_SIZE(tcases),
->> +	.needs_root = 1,
->> +	.needs_tmpdir = 1,
->> +	.bufs = (struct tst_buffers []) {
->> +		{&args, .size = sizeof(struct xattr_args)},
->> +		{},
->> +	}
->> +};
->> 
->> -- 
->> 2.51.0
->> 
->> 
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+ include/tst_cmd.h | 52 +++++++++++++++++++++++------------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
 
-
-
-
+diff --git a/include/tst_cmd.h b/include/tst_cmd.h
+index cf63829550..8397510ed6 100644
+--- a/include/tst_cmd.h
++++ b/include/tst_cmd.h
+@@ -19,38 +19,12 @@ enum tst_cmd_flags {
+ 	TST_CMD_TCONF_ON_MISSING = 2,
+ };
+ 
+-/*
+- * vfork() + execvp() specified program.
+- *
+- * @param argv A list of two (at least program name + NULL) or more pointers that
+- * represent the argument list to the new program. The array of pointers
+- * must be terminated by a NULL pointer.
+- * @param stdout_fd File descriptor where to redirect stdout. Set -1 if
+- * redirection is not needed.
+- * @param stderr_fd File descriptor where to redirect stderr. Set -1 if
+- * redirection is not needed.
+- * @param flags enum tst_cmd_flags.
+- * @return The exit status of the program.
+- */
+ int tst_cmd_fds_(void (cleanup_fn)(void),
+ 			const char *const argv[],
+ 			int stdout_fd,
+ 			int stderr_fd,
+ 			enum tst_cmd_flags flags);
+ 
+-/*
+- * Executes tst_cmd_fds() and redirects its output to a file.
+- *
+- * @param argv A list of two (at least program name + NULL) or more pointers that
+- * represent the argument list to the new program. The array of pointers
+- * must be terminated by a NULL pointer.
+- * @param stdout_path Path where to redirect stdout. Set NULL if redirection is
+- * not needed.
+- * @param stderr_path Path where to redirect stderr. Set NULL if redirection is
+- * not needed.
+- * @param flags enum tst_cmd_flags.
+- * @return The exit status of the program.
+- */
+ int tst_cmd_(void (cleanup_fn)(void),
+ 		const char *const argv[],
+ 		const char *stdout_path,
+@@ -58,6 +32,20 @@ int tst_cmd_(void (cleanup_fn)(void),
+ 		enum tst_cmd_flags flags);
+ 
+ #ifdef TST_TEST_H__
++/**
++ * tst_cmd_fds() - :man2:`vfork` + :man2:`execvp` specified program.
++ *
++ * @argv: A list of two (at least program name + NULL) or more pointers that
++ * represent the argument list to the new program. The array of pointers
++ * must be terminated by a NULL pointer.
++ * @stdout_fd: File descriptor where to redirect stdout. Set -1 if
++ * redirection is not needed.
++ * @stderr_fd: File descriptor where to redirect stderr. Set -1 if
++ * redirection is not needed.
++ * @flags: enum tst_cmd_flags.
++ *
++ * Return: The exit status of the program.
++ */
+ static inline int tst_cmd_fds(const char *const argv[],
+ 				  int stdout_fd,
+ 				  int stderr_fd,
+@@ -67,6 +55,18 @@ static inline int tst_cmd_fds(const char *const argv[],
+ 	                        stdout_fd, stderr_fd, flags);
+ }
+ 
++/**
++ * tst_cmd() - Executes tst_cmd_fds() and redirects its output to a file.
++ *
++ * @argv: A list of two (at least program name + NULL) or more pointers that
++ * @stdout_path: Path where to redirect stdout. Set NULL if redirection is
++ * not needed.
++ * @stderr_path: Path where to redirect stderr. Set NULL if redirection is
++ * not needed.
++ * @flags: enum tst_cmd_flags.
++ *
++ * Return: The exit status of the program.
++ */
+ static inline int tst_cmd(const char *const argv[],
+ 			      const char *stdout_path,
+ 			      const char *stderr_path,
 -- 
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+2.51.0
 
 
 -- 
