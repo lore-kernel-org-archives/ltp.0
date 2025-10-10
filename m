@@ -4,78 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 024CDCCA476
-	for <ltp@archiver.kernel.org>; Fri, 10 Oct 2025 09:05:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEEEDCAC5BB
+	for <ltp@archiver.kernel.org>; Fri, 10 Oct 2025 09:13:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A84C3CE991
-	for <ltp@archiver.kernel.org>; Fri, 10 Oct 2025 11:05:43 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 6C8283CE97A
+	for <ltp@archiver.kernel.org>; Fri, 10 Oct 2025 11:13:24 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 728EF3C0F15
- for <ltp@lists.linux.it>; Fri, 10 Oct 2025 11:05:26 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A250D3CD776
+ for <ltp@lists.linux.it>; Fri, 10 Oct 2025 11:13:08 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8911F1A00E11
- for <ltp@lists.linux.it>; Fri, 10 Oct 2025 11:05:25 +0200 (CEST)
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-46e6c8bc46eso10759675e9.3
- for <ltp@lists.linux.it>; Fri, 10 Oct 2025 02:05:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1760087125; x=1760691925; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=COYHfHkhGLYZFN06OB2xqecwn8KB5RXwctoYC22olVw=;
- b=wxhodONyhlSgP6KypVUr8kHSnx7WhbJKtWHABGDXPN4y3wq2vFWYNnMtsNT04yaYLT
- kTSY03r9Z99HDMHTtRdn7/ThDKxiqlUaQHoIo/aIByw2B96nJGs0bexYhvcJMBZU3ogM
- jTsG/QSzx2YkpqYeuU0Oq/OeawEuvoZUEiY31W8W7XZi/QqV9eEGVVRddeXDD3PqJ0Ow
- dkgujBnTP8M8BPqvjpH6vs7DOaPs3ahZJddef2jGUKWSniig02iKt7FScwZwDxu1jbI2
- NtWZtbD9TKbWimI8KxUf4OLumh9iuK/3QVqulfvS2MOoPgDKERK4DQf0Y5SXAXf+Hg0r
- LPtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1760087125; x=1760691925;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=COYHfHkhGLYZFN06OB2xqecwn8KB5RXwctoYC22olVw=;
- b=hfUhBZW7ZTAfj7nVYwjdYnBCFmI68gJCgBVIyPQHVrSJuP/stuoxXnsNVgcf0hifPM
- RXuG5Pf8FkMh6VepNpKcHzH1TVHguErozpObKHPq9l/2VqIFgA/l0rS/FvMn62PeIL/R
- YzlW1ciPP3PJuIyJIqDlSF0SkqZivZAMdjpzw684pHVLEwXskJgBwudnfZf22pQyObkf
- +XdrEpWP5jY/Y1FsGUR+KBSQHHOCmYnXWfNy0xb3my6u1MFAgoAqK1HOftM4Lw+SKxoR
- hDuBhVo3RORWZsmYnW4HORpdi74uU0wf8WMkrcapM6DufFg3ATBAPIEV4GebB1Q2t3Qt
- tquw==
-X-Gm-Message-State: AOJu0YzXvElmL+ApXVllmTl8xexsS7bxsQMzyc3Mfz4wN8bJzIBo4WXX
- xgc/JUqaaNQdjc/B4/RpupAAkTHUAheFvq6aFlZzde1d9Vh7QLU0+Uz4IPfuT7hcXmhPh39IaAf
- WwDY=
-X-Gm-Gg: ASbGncsoAGMswnVsiVCFDEqAxaFpzUfZ5jnWdmlRM5dln309VOj0yJkRkWUKNlxvzjo
- VPMnCXKos+ovnBi0nD05yNMujUULTl/H2ja45gK2tfMYQ0/ywePO4fKOYL+l6pTJ4BDaVOsj/4R
- zyx8iU04cVG0Of6v1saFVo7QAn/6Z8u+JDW17hEyj16irdv3ypMA/z+dHgIp+m5/k5JTYRtOpku
- rtYWEH3mOmLBmFzuaRPUiTFHty2XmmiRp1Gzmxx4wZ/0CHgYLR/EVCQ1QJxnI2lH/9eyKYnDKO7
- KJV2/U80vrKvdp1feutQdbEIUJbe2+2F0ysQPA8W6i6nG6r6XJxfKXL1GhgH3p0E43uD5hkPX4Q
- ZFYNkc6qVjtJzryC1jZukovmKIfWzbX6HCBHivhoCkShYm3/hqQJIyGaSRCzr9TsvKtUpDmcX
-X-Google-Smtp-Source: AGHT+IFcrExRqrxC+8qLw+7KNK/axJJCfglCXbU7n7j702Qsu4qXGRtfWytkmqVKBu5FPfAWsEERTA==
-X-Received: by 2002:a05:600c:4584:b0:46f:b42e:e367 with SMTP id
- 5b1f17b1804b1-46fb42ee40cmr24219375e9.41.1760087124582; 
- Fri, 10 Oct 2025 02:05:24 -0700 (PDT)
-Received: from pickles.copeland.me.uk ([149.40.2.133])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-46fab3d2d65sm54585825e9.2.2025.10.10.02.05.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 10 Oct 2025 02:05:24 -0700 (PDT)
-From: Ben Copeland <ben.copeland@linaro.org>
-To: ltp@lists.linux.it
-Date: Fri, 10 Oct 2025 10:04:26 +0100
-Message-ID: <20251010090426.2243464-1-ben.copeland@linaro.org>
-X-Mailer: git-send-email 2.51.0
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9338A6002EA
+ for <ltp@lists.linux.it>; Fri, 10 Oct 2025 11:13:07 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EFF611F393;
+ Fri, 10 Oct 2025 09:13:06 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3ABB13A40;
+ Fri, 10 Oct 2025 09:13:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 3OWoMiLO6GiVYwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 10 Oct 2025 09:13:06 +0000
+Date: Fri, 10 Oct 2025 11:13:05 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20251010091305.GB4281@pevik>
+References: <20250928232708.24007-2-wegao@suse.com>
+ <20251010064745.31361-1-wegao@suse.com>
+ <20251010064745.31361-2-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20251010064745.31361-2-wegao@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: EFF611F393
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] overcommit_memory: Fix integer overflow and 32-bit
- limits
+Subject: Re: [LTP] [PATCH v3 1/4] lib: Add support option for .needs_cmds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,74 +73,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: arnd@arndb.de, lkft-triage@lists.linaro.org, dan.carpenter@linaro.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The overcommit test uses sum_total, the sum (memory and swap) to test
-the overcommit settings.
-
-This fixes two problems on 32-bit systems. The first is seen with a
-integer overflow can occur when calculating sum_total * 2, if the
-sum_total is larger than 2GB. The second is limited virtual address
-space (2-3GB) means the test can fail from address space exhaustion
-before overcommit has been tested.
-
-Now the test runs correctly on low-memory 32-bit systems while avoiding
-both the overflow bug and virtual address space issues.
-
-Signed-off-by: Ben Copeland <ben.copeland@linaro.org>
----
- .../kernel/mem/tunable/overcommit_memory.c    | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
-index 9b2cb479d..f9f60ebc3 100644
---- a/testcases/kernel/mem/tunable/overcommit_memory.c
-+++ b/testcases/kernel/mem/tunable/overcommit_memory.c
-@@ -68,6 +68,7 @@
- #define DEFAULT_OVER_RATIO	50L
- #define EXPECT_PASS		0
- #define EXPECT_FAIL		1
-+#define ONE_GB			(1024 * 1024 * TST_KB)
- 
- #define OVERCOMMIT_MEMORY "/proc/sys/vm/overcommit_memory"
- #define OVERCOMMIT_RATIO "/proc/sys/vm/overcommit_ratio"
-@@ -141,14 +142,26 @@ static void overcommit_memory_test(void)
- 
- 	update_mem();
- 	alloc_and_check(free_total / 2, EXPECT_PASS);
--	alloc_and_check(sum_total * 2, EXPECT_FAIL);
-+	/* Skip if sum_total * 2 would exceed address space.
-+	 * On 32-bit, skip when sum_total > ULONG_MAX/4 (~1GB).
-+	 * Most 32-bit systems with <=1GB RAM can map 2x that in 3GB vaddr space.
-+	 * Systems with 2GB+ RAM likely cannot fit allocations in vaddr space. */
-+	if (tst_kernel_bits() == 64 || (unsigned long)sum_total <= ONE_GB) {
-+		alloc_and_check(sum_total * 2, EXPECT_FAIL);
-+	} else {
-+		tst_res(TCONF, "Skipping large allocation test due to address space limits");
-+	}
- 
- 	/* start to test overcommit_memory=1 */
- 	TST_SYS_CONF_LONG_SET(OVERCOMMIT_MEMORY, 1, 1);
- 
- 	alloc_and_check(sum_total / 2, EXPECT_PASS);
--	alloc_and_check(sum_total, EXPECT_PASS);
--	alloc_and_check(sum_total * 2, EXPECT_PASS);
-+	if (tst_kernel_bits() == 64 || (unsigned long)sum_total <= ONE_GB) {
-+		alloc_and_check(sum_total, EXPECT_PASS);
-+		alloc_and_check(sum_total * 2, EXPECT_PASS);
-+	} else {
-+		tst_res(TCONF, "Skipping large allocation tests due to address space limits");
-+	}
- 
- }
- 
--- 
-2.51.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgV2VpLAoKPiAtLS0KPiAgaW5jbHVkZS90c3RfY21kLmggIHwgMTMgKysrKysrKysrKysrKwo+
+ICBpbmNsdWRlL3RzdF90ZXN0LmggfCAxNSArKysrKysrKysrKysrLS0KPiAgbGliL3RzdF9jbWQu
+YyAgICAgIHwgIDcgKysrKysrLQo+ICBsaWIvdHN0X3Rlc3QuYyAgICAgfCAyMiArKysrKysrKysr
+KysrKysrKystLS0tCj4gIDQgZmlsZXMgY2hhbmdlZCwgNTAgaW5zZXJ0aW9ucygrKSwgNyBkZWxl
+dGlvbnMoLSkKCnRzdF9uZWVkc19jbWRzMDEuYzoxNToyMzogZXJyb3I6IGluaXRpYWxpemF0aW9u
+IG9mIOKAmHN0cnVjdCB0c3RfY21kICrigJkgZnJvbSBpbmNvbXBhdGlibGUgcG9pbnRlciB0eXBl
+IOKAmGNvbnN0IGNoYXIgKirigJkgWy1XaW5jb21wYXRpYmxlLXBvaW50ZXItdHlwZXNdCiAgIDE1
+IHwgICAgICAgICAubmVlZHNfY21kcyA9IChjb25zdCBjaGFyICpbXSkgewogICAgICB8ICAgICAg
+ICAgICAgICAgICAgICAgICBeCnRzdF9uZWVkc19jbWRzMDEuYzoxNToyMzogbm90ZTogKG5lYXIg
+aW5pdGlhbGl6YXRpb24gZm9yIOKAmHRlc3QubmVlZHNfY21kc+KAmSkKbWFrZVsxXTogKioqIFsu
+Li8uLi9pbmNsdWRlL21rL3J1bGVzLm1rOjQ4OiB0c3RfbmVlZHNfY21kczAxXSBFcnJvciAxCgpJ
+IGFza2VkIG9uIHYyIG5vdCB0byBicmVhayBidWlsZCBbMV0sIGJ1dCB5b3UgZGlkbid0IHJlZmxl
+Y3RlZCB0aGF0LiBUaGUgcmVhc29uCmZvciB0aGlzIHJlcXVpcmVtZW50IGlzIHRoYXQgYWxsIGNv
+bW1pdHMgbmVlZCB0byBidWlsdCBkdWUgYWJpbGl0eSB0byBiaXNlY3QKKHF1aXRlIG9idmlvdXMg
+cmVxdWlyZW1lbnQpLiAgVGhpcyBtZWFuIHlvdSBuZWVkIGluIHRoaXMgY29tbWl0IGFsc28gbW9k
+aWZ5IGFsbAp0aGUgdGVzdHMgd2hpY2ggdXNlIC5uZWVkc19jbWRzLCBpLmUuIDNyZCBjb21taXQg
+IlVwZGF0ZSB0ZXN0IGNhc2VzIHVzZSBuZXcKbmVlZHNfY21kcyIgbmVlZHMgdG8gYmUKc3F1YXNo
+ZWQgaW50byB0aGlzIDFzdCBjb21taXQuCgpbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbHRw
+LzIwMjUwOTMwMTMzNjIzLkdCMjM4MDY1QHBldmlrLwoKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS90
+c3RfY21kLmggYi9pbmNsdWRlL3RzdF9jbWQuaAo+IGluZGV4IDkzOTgyNTY0Ni4uNzAzNTg5MDE5
+IDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvdHN0X2NtZC5oCj4gKysrIGIvaW5jbHVkZS90c3RfY21k
+LmgKPiBAQCAtMTYsNiArMTYsMTkgQEAgZW51bSB0c3RfY21kX2ZsYWdzIHsKPiAgCVRTVF9DTURf
+VENPTkZfT05fTUlTU0lORyA9IDIsCj4gIH07Cgo+ICsvKioKPiArICogc3RydWN0IHRzdF9jbWQg
+LSBUaGlzIHN0cnVjdHVyZSBwcm92aWRlcyBkZXRhaWxzIGFib3V0IGEgY29tbWFuZCBuZWVkZWQg
+YnkgTFRQIHRlc3QKCkkgd291bGQgcGVyc29uYWxseSBhdm9pZCAiVGhpcyBzdHJ1Y3R1cmUiIC8g
+IlRoaXMgZnVuY3Rpb24iLgpNaXNzaW5nIGRvdCBhdCB0aGUgZW5kLgoKPiArICogQGNtZDogVGhl
+IG5hbWUgb2YgdGhlIGNvbW1hbmQuCj4gKyAqIEBvcHRpb25hbDogQSBmbGFnIGluZGljYXRpbmcg
+aWYgdGhlIGNvbW1hbmQgaXMgb3B0aW9uYWwuCj4gKyAqIEBwcmVzZW50OiBBIGZsYWcgaW5kaWNh
+dGluZyBpZiB0aGUgY29tbWFuZCB3YXMgZm91bmQgYXQgcnVudGltZSwgdGhpcyBpcyBhbiBvdXRw
+dXQKTWF5YmUgdXNlIDIgc2VudGVuY2VzOgogICAgKiBAcHJlc2VudDogQSBmbGFnIGluZGljYXRp
+bmcgaWYgdGhlIGNvbW1hbmQgd2FzIGZvdW5kIGF0IHJ1bnRpbWUuIFRoaXMgaXMgYW4gb3V0cHV0
+Cgo+ICsgKiBwYXJhbWV0ZXIsIHNldCBieSB0aGUgTFRQIGxpYnJhcnkgZHVyaW5nIHRoZSB0ZXN0
+IHNldHVwLgo+ICsgKi8KPiArc3RydWN0IHRzdF9jbWQgewo+ICsJY29uc3QgY2hhciAqY21kOwo+
+ICsJdW5zaWduZWQgaW50IG9wdGlvbmFsOjE7Cj4gKwl1bnNpZ25lZCBpbnQgcHJlc2VudDoxOwpI
+b3BlZnVsbHkgbm9ib2R5IG1pc3VzZXMgdGhpcyB0byBzZXQgaXQgaW4gdGhlIHRlc3QuCgo+ICt9
+Owo+ICsKPiAgLyoKPiAgICogdmZvcmsoKSArIGV4ZWN2cCgpIHNwZWNpZmllZCBwcm9ncmFtLgo+
+ICAgKgo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3RzdF90ZXN0LmggYi9pbmNsdWRlL3RzdF90ZXN0
+LmgKPiBpbmRleCA5YzIxYzE3MjguLjI3MzBkMjJjMSAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL3Rz
+dF90ZXN0LmgKPiArKysgYi9pbmNsdWRlL3RzdF90ZXN0LmgKPiBAQCAtNTI0LDcgKzUyNCw3IEBA
+IHN0cnVjdCB0c3RfZnMgewo+ICAgKgo+ICAgKiBAdGFnczogQSB7fSB0ZXJtaW5hdGVkIGFycmF5
+IG9mIHRlc3QgdGFncy4gU2VlIHN0cnVjdCB0c3RfdGFnIGZvciBkZXRhaWxzLgo+ICAgKgo+IC0g
+KiBAbmVlZHNfY21kczogQSBOVUxMIHRlcm1pbmF0ZWQgYXJyYXkgb2YgY29tbWFuZHMgcmVxdWly
+ZWQgZm9yIHRoZSB0ZXN0IHRvIHJ1bi4KPiArICogQG5lZWRzX2NtZHM6IEEgTlVMTCB0ZXJtaW5h
+dGVkIGFycmF5IG9mIHN0cnVjdCB0c3RfY21kIHJlcXVpcmVkIGZvciB0aGUgdGVzdCB0byBydW4u
+Cj4gICAqCj4gICAqIEBuZWVkc19jZ3JvdXBfdmVyOiBJZiBzZXQgdGhlIHRlc3Qgd2lsbCBydW4g
+b25seSBpZiB0aGUgc3BlY2lmaWVkIGNncm91cAo+ICAgKiAgICAgICAgICAgICAgICAgICAgdmVy
+c2lvbiBpcyBwcmVzZW50IG9uIHRoZSBzeXN0ZW0uCj4gQEAgLTYxNyw3ICs2MTcsNyBAQCBzdHJ1
+Y3QgdHN0X2ZzIHsKCj4gIAljb25zdCBzdHJ1Y3QgdHN0X3RhZyAqdGFnczsKCj4gLQljb25zdCBj
+aGFyICpjb25zdCAqbmVlZHNfY21kczsKPiArCXN0cnVjdCB0c3RfY21kICpuZWVkc19jbWRzOwoK
+PiAgCWNvbnN0IGVudW0gdHN0X2NnX3ZlciBuZWVkc19jZ3JvdXBfdmVyOwoKPiBAQCAtNzIxLDYg
+KzcyMSwxNyBAQCBpbnQgdHN0X2NyZWF0X3VubGlua2VkKGNvbnN0IGNoYXIgKnBhdGgsIGludCBm
+bGFncywgbW9kZV90IG1vZGUpOwo+ICAgKi8KPiAgY29uc3QgY2hhciAqdHN0X2dldF90bXBkaXJf
+cm9vdCh2b2lkKTsKCj4gKy8qKgo+ICsgKiB0c3RfY21kX3ByZXNlbnQoKSAtIENoZWNrIGlmIGEg
+Y29tbWFuZCBpcyBwcmVzZW50Cj4gKyAqIEBjbWQ6IFRoZSBuYW1lIG9mIHRoZSBjb21tYW5kIHRv
+IGNoZWNrIGZvci4KPiArICoKPiArICogVGhpcyBmdW5jdGlvbiBpdGVyYXRlcyB0aHJvdWdoIHRo
+ZSAnbmVlZHNfY21kcycgYXJyYXkuIEl0IGNvbXBhcmVzIHRoZSBnaXZlbiBjb21tYW5kIG5hbWUK
+UGxlYXNlIHVzZSAmdHN0X3Rlc3QtPm5lZWRzX2NtZHM6CgogKiBUaGlzIGZ1bmN0aW9uIGl0ZXJh
+dGVzIHRocm91Z2ggdGhlICZ0c3RfdGVzdC0+bmVlZHNfY21kcyBhcnJheS4gSXQgY29tcGFyZXMK
+ICogdGhlIGdpdmVuIGNvbW1hbmQgbmFtZSB3aXRoIGVhY2ggZW50cnkgaW4gdGhlIGFycmF5IGFu
+ZCByZXR1cm5zIHRoZSAncHJlc2VudCcKICogZmxhZyBmb3IgdGhlIG1hdGNoaW5nIGNvbW1hbmQu
+CgpUaGF0IGhlbHBzIHN0cnVjdCB0byBiZSBsaW5rYWJsZS4KCj4gKyAqIHdpdGggZWFjaCBlbnRy
+eSBpbiB0aGUgYXJyYXkgYW5kIHJldHVybnMgdGhlICdwcmVzZW50JyBmbGFnIGZvciB0aGUgbWF0
+Y2hpbmcgY29tbWFuZC4KPiArICoKPiArICogUmV0dXJuOiBgdHJ1ZWAgaWYgdGhlIGNvbW1hbmQg
+aXMgcHJlc2VudCwgYGZhbHNlYCBvdGhlcndpc2UuClRoaXMgbmVlZHMgdG8gYmUgUmV0dXJuczog
+KG1pc3NpbmcgcykKaHR0cHM6Ly9kb2NzLmtlcm5lbC5vcmcvZG9jLWd1aWRlL2tlcm5lbC1kb2Mu
+aHRtbAoKS2luZCByZWdhcmRzLApQZXRyCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8v
+bGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
