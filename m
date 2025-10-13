@@ -4,62 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07068CCD18D
-	for <ltp@archiver.kernel.org>; Mon, 13 Oct 2025 15:39:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FA9BCCD18E
+	for <ltp@archiver.kernel.org>; Mon, 13 Oct 2025 15:58:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 745F23CEC2E
-	for <ltp@archiver.kernel.org>; Mon, 13 Oct 2025 17:38:59 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 6B02C3CEC33
+	for <ltp@archiver.kernel.org>; Mon, 13 Oct 2025 17:58:33 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C1EC13CE678
- for <ltp@lists.linux.it>; Mon, 13 Oct 2025 17:38:41 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 25E783CEBA0
+ for <ltp@lists.linux.it>; Mon, 13 Oct 2025 17:58:15 +0200 (CEST)
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com
+ [IPv6:2607:f8b0:4864:20::f36])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1FEFE600066
- for <ltp@lists.linux.it>; Mon, 13 Oct 2025 17:38:40 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7A506219FF;
- Mon, 13 Oct 2025 15:38:40 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E1F481374A;
- Mon, 13 Oct 2025 15:38:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id QkKjNP8c7WjKXgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 13 Oct 2025 15:38:39 +0000
-Date: Mon, 13 Oct 2025 17:38:38 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20251013153838.GA111830@pevik>
-References: <20251013-remove_todo-v3-1-533e47439a94@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 311851400C6C
+ for <ltp@lists.linux.it>; Mon, 13 Oct 2025 17:58:15 +0200 (CEST)
+Received: by mail-qv1-xf36.google.com with SMTP id
+ 6a1803df08f44-7ea50f94045so64699636d6.1
+ for <ltp@lists.linux.it>; Mon, 13 Oct 2025 08:58:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1760371094; x=1760975894; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=rMx4lPicK4cgxKHj4LyIlHUt2URcYLJNzOUDge1Q51M=;
+ b=C98X1s6XzwWMrgqelhdpJMhxuUIVCrTEYkElQRjKv30pWgjPy7A9rwYzMdCHhGnGhg
+ QcScCnVhTx2wZ/wto0icGHXgdMZJjalTpN79TCYN0QG8cLTSb2V/rulmZ4RJ+mInQJaL
+ Ei0THgK12GKOT8gigOy2UlGG1qD7kPUEagCQ/VNWIIWgKCoQayY0vw2YXUu7NOl5U0zm
+ PCorwwdwQICAxoSefFm0N2MAGxJdxBjDkajtvF9n16oHrieDQlwJmniTUZ9c9m4yJgcZ
+ QId3fTt6cfAsGwW1MsCKa/6NyGBh0Zonc6d9XvLJ6tk8Jlc0dZJb81pBOIxW4RozgWhJ
+ N8XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1760371094; x=1760975894;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=rMx4lPicK4cgxKHj4LyIlHUt2URcYLJNzOUDge1Q51M=;
+ b=SLTBZ/+diHIFbro8Iq/bYx/qdq4SUM5MZ+2DslEZnXJ01fxlzkgDTa2mSH4G4/F5ua
+ 3cdu29eyYBiyVRoWOQiRc0Bg+flIc7Ludc5egNxujvG3PUVsQ5HLlBPg0f4TjCU7A+0a
+ 84DppxFApwLXJOI1xoiE50UpO+8oD3nJRQOZBj84xb7Fz5XYDlTW0z6Y+soeHR2tOmd/
+ bhNnfMBMmPivptNtNt/PFjViXsg9opm0mk/ZgpI1mrQEOwAg+ZuoTQyB/35kw8+e+h+V
+ Ow834962BmgF3ESEPwFtGGdJQ2VvG1Uie5qVyII05jXb6iG9DGvAOcpirflT5B5I6Tu8
+ Lbaw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCW3K5ZWaU7jpkz5809ZziiaSQduot2gjYnTODj/IbH51UpXZpPWNwxoE92J9/uIHy0sUaQ=@lists.linux.it
+X-Gm-Message-State: AOJu0Ywr2GnkGtU8rS8GignG5HUuheiRw0gTmFhPvIBFF7O5aKkuieqO
+ HwEB8DybvsrtpAt8GXAOLJdyxOtARf1PxoEF8FyjPjsumbV5DrcHXDjQlPuvQg2fwD2dT2C7SjF
+ e0oKddRFmMjoEWUTciPwiuXETRzyCMUvlQYbpSE1x
+X-Gm-Gg: ASbGncvSVvO/l3OBar1cx5NV2m/9Kr5YZEXgDlq/DB+WVEqcZ4B6wKfWrzoh2QljzeY
+ TCakhMyG39gdSYjxv/Mh9tWZmoabsYJBye38De53tetyXbBA96Yqw7pcYkI/fIfv9hGpS6HEPTB
+ xpZReFAU3RqzYOMHvzReUI/Rs8fk4/jxworJ2BIM10TSr/kBNbj3eTnoZRuOudG8/nUDggos/+4
+ bKGyvYmgStN5tcl6XYRuIL5+hzbrZ2+H6Cx3YCHz2hC1TVj
+X-Google-Smtp-Source: AGHT+IGvKYcXwQlVkbYD6zkrVQkq/d69PycVR5/t2MSKDewoWUGTpUHdU6ncTsujHzE0ot6FOyK9gw9dRSy76UzsZCk=
+X-Received: by 2002:ac8:5f0e:0:b0:4cf:1eba:f30d with SMTP id
+ d75a77b69052e-4e6de86ab3dmr340940961cf.23.1760371093718; Mon, 13 Oct 2025
+ 08:58:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20251013-remove_todo-v3-1-533e47439a94@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 7A506219FF
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+References: <20251010090426.2243464-1-ben.copeland@linaro.org>
+ <081171be-d613-473a-9e72-6ff603d96dc4@app.fastmail.com>
+ <20251013150052.GB97127@pevik>
+In-Reply-To: <20251013150052.GB97127@pevik>
+From: Ben Copeland <ben.copeland@linaro.org>
+Date: Mon, 13 Oct 2025 16:58:02 +0100
+X-Gm-Features: AS18NWCTVy8ZZhuIIjpTg5sMqE9rWLfPE7aWEqQBqGcqoXR4bb_4NqrVoX2U9IU
+Message-ID: <CAL0q8a7Uo6H+GL-oPyEhiX5uRTzywrBmrpHfn+z7_wVZ5WGZWw@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Remove TODO
+Subject: Re: [LTP] [PATCH v1] overcommit_memory: Fix integer overflow and
+ 32-bit limits
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,175 +87,129 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Arnd Bergmann <arnd@arndb.de>, lkft-triage@lists.linaro.org,
+ LTP List <ltp@lists.linux.it>, Dan Carpenter <dan.carpenter@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hello Petr,
 
-once more, now Cc the list. I'm sorry for the noise.
+On Mon, 13 Oct 2025 at 16:00, Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi all,
+>
+> > On Fri, Oct 10, 2025, at 11:04, Ben Copeland wrote:
+> > > The overcommit test uses sum_total, the sum (memory and swap) to test
+> > > the overcommit settings.
+>
+> > > This fixes two problems on 32-bit systems. The first is seen with a
+> > > integer overflow can occur when calculating sum_total * 2, if the
+> > > sum_total is larger than 2GB. The second is limited virtual address
+> > > space (2-3GB) means the test can fail from address space exhaustion
+> > > before overcommit has been tested.
+>
+> > > Now the test runs correctly on low-memory 32-bit systems while avoiding
+> > > both the overflow bug and virtual address space issues.
+>
+> Thanks for looking into the issue.
+>
+> > > Signed-off-by: Ben Copeland <ben.copeland@linaro.org>
+>
+> > The logic makes sense to me.
+>
+> > Acked-by: Arnd Bergmann <arnd@arndb.de>
+>
+> > >     update_mem();
+> > >     alloc_and_check(free_total / 2, EXPECT_PASS);
+> > > -   alloc_and_check(sum_total * 2, EXPECT_FAIL);
+> > > +   /* Skip if sum_total * 2 would exceed address space.
+> > > +    * On 32-bit, skip when sum_total > ULONG_MAX/4 (~1GB).
+> > > +    * Most 32-bit systems with <=1GB RAM can map 2x that in 3GB vaddr space.
+> > > +    * Systems with 2GB+ RAM likely cannot fit allocations in vaddr space. */
+> > > +   if (tst_kernel_bits() == 64 || (unsigned long)sum_total <= ONE_GB) {
+>
+> Why not use TST_GB instead of creating new constant ONE_GB?
 
-Generally LGTM, notes below.
+This makes sense, I will do that.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+> > >  #define ONE_GB                 (1024 * 1024 * TST_KB)
+>
+> Maybe even use static variable holding the condition and set it in setup()?
+>
+> Otherwise LGTM.
+>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+> > > +           alloc_and_check(sum_total * 2, EXPECT_FAIL);
+> > > +   } else {
+> > > +           tst_res(TCONF, "Skipping large allocation test due to address space limits");
+> > > +   }
+>
+> > It would be nice if it was possible to express this in terms of
+> > the kernel's TASK_SIZE constant and not have to check for
+> > 64-bit kernels.
+>
+> > Unfortunately I have not been able find TASK_SIZE from userspace
+> > directly other than maybe probing MAP_FIXED mmap() calls which
+> > would be overly complicated. Your approach is probably as
+> > good as it gets.
+>
+> Thanks for your time!
+>
+> BTW in our case (openSUSE Tumbleweed 32 bit) it fails on commit_left,
+> which is slightly smaller:
+> commit_left: 2221904
+> sum_total: 2884328
 
-> TODO file is not updated and it talks about goals we already reached via
-> new LTP documentation. In general, it contains generic and random topics
-> which none is updating anymore, so it's better to remove it in order to
-> create less confusion for new comers.
+Ah, good spot. This is failing further up the code; this fix was for
+overcommit_memory=1. It's hitting the same integer overflow issue. I
+will apply the same fix to overcommit_memory=2 and spin up a v2 patch.
 
-nit: s/new comers/newcomers/
+Thanks for the feedback!
 
-> Instead, we create a todo list in the new documentation, providing a
-> more clear intention of what are the current LTP goals.
+Regards,
 
-> Acked-by: Petr Vorel <pvorel@suse.cz>
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
-> Changes in v3:
-> - fix typo
-> - update command to generate test with old API
-> - add kirk link in TODO
-> - shell loader reference
-> - Link to v2: https://lore.kernel.org/r/20251013-remove_todo-v2-1-d0a46ad14e34@suse.com
+Ben
 
-> Changes in v2:
-> - add doc/users/todo.rst section
-> - Link to v1: https://lore.kernel.org/r/20251006-remove_todo-v1-1-5bab5f6f77f5@suse.com
-> ---
->  TODO               | 39 ----------------------------
->  doc/index.rst      |  4 +++
->  doc/users/todo.rst | 74 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 78 insertions(+), 39 deletions(-)
-
-...
-> diff --git a/doc/users/todo.rst b/doc/users/todo.rst
-> new file mode 100644
-> index 000000000..2484eaf32
-> --- /dev/null
-> +++ b/doc/users/todo.rst
-
-IMHO this TODO page is for new LTP developers to see ideas what to work on,
-right?  Thinking about it twice, IMHO this should be in doc/developers/.
-At least normal LTP users (testers) don't bother what we want to develop.
-
-> @@ -0,0 +1,74 @@
-> +.. SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +List of ongoing tasks
-> +=====================
-> +
-> +This is a comprehensive list of tasks where LTP maintainers are currently
-> +working on. Priorities might change over time, but these are the most important
-> +points which are currently being achieved.
-> +
-> +Fade out old tests runner
-> +-------------------------
-> +
-> +``runltp`` script is old and unmaintaned. We are slowly shifting to
-> +`kirk <https://github.com/linux-test-project/kirk>`_, that will be our official
-> +tests runner in the next future.
-> +
-> +kirk provides support for remote testing via Qemu, SSH, LTX, parallel
-> +execution and much more.
-
-IMHO this TODO page is for new LTP developers to see ideas what to work on,
-right? Wouldn't be more useful to put it to the page which people using LTP will
-be reading? Maybe one of these:
-
-https://linux-test-project.readthedocs.io/en/latest/users/quick_start.html
-https://linux-test-project.readthedocs.io/en/latest/users/setup_tests.html
-
-> +
-> +Test new syscalls
-> +-----------------
-> +
-> +Syscalls and new syscalls flags are added to Linux kernel each development
-> +cycle and LTP still falls behind. Unfortunately there is no single place that
-> +would store comprehensive list of syscalls, but there are a few places to look
-> +at:
-> +
-> +- `man-pages repository <http://git.kernel.org/cgit/docs/man-pages/man-pages.git>`_
-> +  or the ``man2`` directory, where it's possible to find newly documented
-> +  functionalities.
-> +- `LWN <http://lwn.net>`_ weekly editions.
-> +- `linux-api mailing list <https://lore.kernel.org/linux-api/>`_ where
-> +  changes in kernel userspace API are discussed.
-> +- `LTP Github issues <https://github.com/linux-test-project/ltp/issues>`_
-> +
-> +Rewrite old API tests
-> +---------------------
-> +
-> +LTP has a long story and, at certain point of its development, new API were
-> +introduced to make kernel testing easier and more efficient. This happened when
-> +lots of tests were still using old, messy API.
-> +
-> +Some of these tests have been converted to the new API, but this process is
-> +still ongoing for many others. To have an overview of the tests using old API,
-> +please run the following command inside the LTP root folder:
-> +
-> +.. code-block:: bash
-> +
-> +        git --no-pager grep 'include "test\.h"' testcases/ | cut -d: -f1
-
-I quite like your first version which showed number of lines. But if you want to
-just list of the old API tests, why not use git grep -l ?
-
-git --no-pager grep -l 'include "test\.h"' testcases/
-
-> +
-> +Fade out shell scripts
-> +----------------------
-> +
-> +LTP was initially thought as a generic framework for running tests with both
-> +shell and plain-C languages. Even if writing tests in shell script might seem
-> +easy, the reality is that debugging and maintaining certain test cases is
-> +difficult and slow down the whole validation process. This is particularly
-> +visible for cgroup tests, since shell doesn't add enough control over race
-> +conditions.
-
-That reminds me Cyril's saying "it's easy to write portable shell *interpreter*
-than portable shell *scripts*. :).
-
-> +
-> +LTP maintainers are working on converting shell scripts to plain-C tests, in
-> +order to reduce the impact that shell scripts might have on the overall kernel
-> +testing.
-> +
-> +For a complete list of shell tests, please run the following command inside the
-> +LTP root folder:
-> +
-> +.. code-block:: bash
-> +
-> +        git --no-pager grep -l -e '^\. .*_lib\.sh' -e '^\. .*test.sh'
-> +
-> +LTP also provides a shell loader implementation for plain-C tests using
-> +``tst_run_script`` features. Please take a look at the
-
-That's tst_run_shell. Could you please use link to the source?
-
-:master:`testcases/lib/tst_run_shell.c`
-
-> +:doc:`LTP API <../developers/api_c_tests>`.
-For shell loader are useful only struct tst_test tags in JSON comments.
-Maybe point directly to struct tst_test?
-
-Maybe the most descriptive are tests in testcases/lib/tests/.
-
-:master:`testcases/lib/tst_run_shell.c` features. Please take a look at the
-:ref:`struct tst_test` and examples in :master:`testcases/lib/tests/`.
-
-(NOTE: besides testcases/lib/tst_run_shell.c there is also
-testcases/lib/tst_run.sh and testcases/lib/tst_env.sh but we can ignore it in
-this short info.  If we really convert most of the shell tests to shell runner,
-we should write doc in a separate page. In that case we could leave
-doc/old/Shell-Test-API.asciidoc unconverted).
-
-Kind regards,
-Petr
+>
+> tst_kernel.c:90: TINFO: uname.machine=i686 kernel is 32bit
+> tst_test.c:2021: TINFO: LTP version: 20251010.79b7f212
+> tst_test.c:2024: TINFO: Tested kernel: 6.17.1-1-default #1 SMP PREEMPT_DYNAMIC Tue Oct  7 04:26:30 UTC 2025 (1bf5c2e) i686
+> tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+> tst_kconfig.c:676: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
+> tst_test.c:1842: TINFO: Overall timeout per run is 0h 02m 00s
+> overcommit_memory.c:103: TINFO: MemTotal is 2050380 kB
+> overcommit_memory.c:105: TINFO: SwapTotal is 2098152 kB
+> overcommit_memory.c:109: TINFO: CommitLimit is 3121292 kB
+> overcommit_memory.c:122: TINFO: Setting /proc/sys/vm/overcommit_ratio to 50
+> overcommit_memory.c:125: TINFO: TotalBatchSize is 8008 kB
+> overcommit_memory.c:131: TINFO: Setting /proc/sys/vm/overcommit_memory to 2
+> overcommit_memory.c:161: TINFO: malloc 5738112 kB successfully
+> overcommit_memory.c:188: TFAIL: alloc passed, expected to fail
+> overcommit_memory.c:165: TINFO: malloc 3129300 kB failed
+> overcommit_memory.c:186: TPASS: alloc failed as expected
+> overcommit_memory.c:161: TINFO: malloc 1434528 kB successfully
+> overcommit_memory.c:180: TPASS: alloc passed as expected
+> overcommit_memory.c:140: TINFO: Setting /proc/sys/vm/overcommit_memory to 0
+> overcommit_memory.c:161: TINFO: malloc 1804260 kB successfully
+> overcommit_memory.c:180: TPASS: alloc passed as expected
+> overcommit_memory.c:165: TINFO: malloc 8297064 kB failed
+> overcommit_memory.c:186: TPASS: alloc failed as expected
+> overcommit_memory.c:147: TINFO: Setting /proc/sys/vm/overcommit_memory to 1
+> overcommit_memory.c:161: TINFO: malloc 2074266 kB successfully
+> overcommit_memory.c:180: TPASS: alloc passed as expected
+> overcommit_memory.c:165: TINFO: malloc 4148532 kB failed
+> overcommit_memory.c:182: TFAIL: alloc failed, expected to pass
+> overcommit_memory.c:165: TINFO: malloc 8297064 kB failed
+> overcommit_memory.c:182: TFAIL: alloc failed, expected to pass
+>
+> Kind regards,
+> Petr
+>
+> >       Arnd
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
