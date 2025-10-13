@@ -4,62 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EF49CCD183
-	for <ltp@archiver.kernel.org>; Mon, 13 Oct 2025 11:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1760353670; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=/xI2nKWPvQJIXXpeGO3VmfIFC8LZk1t6QaUHiSolIVw=;
- b=qSfdG1xy8LHAtrjJpHN4+veb+8aPWQSDimjMvlNjeWMFfrVnaNrOA6U5487cZtoV2Oeq0
- hSG8YkS5Tbzy+Rjewg0BFq6ScgTh6pLIk22u2GTF4iODpy2ucHyqo+Hly4Ia7xKGy5jQUq9
- eUKtGvmdQI4sOjiZI20912yIfFYnwRk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF276CCA476
+	for <ltp@archiver.kernel.org>; Mon, 13 Oct 2025 11:30:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0194E3CEB8C
-	for <ltp@archiver.kernel.org>; Mon, 13 Oct 2025 13:07:50 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 2A20F3CEB86
+	for <ltp@archiver.kernel.org>; Mon, 13 Oct 2025 13:30:11 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BF4E23CE321
- for <ltp@lists.linux.it>; Thu,  9 Oct 2025 05:34:37 +0200 (CEST)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+ by picard.linux.it (Postfix) with ESMTPS id C2B563CB3AF
+ for <ltp@lists.linux.it>; Mon, 13 Oct 2025 13:29:52 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2552D600479
- for <ltp@lists.linux.it>; Thu,  9 Oct 2025 05:34:36 +0200 (CEST)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by tor.source.kernel.org (Postfix) with ESMTP id 2413C611E9;
- Thu,  9 Oct 2025 03:34:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0ECBC4CEE7;
- Thu,  9 Oct 2025 03:34:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1759980874;
- bh=zQySicJyzHQVgMUqKbwHP7OwMs25Xmyd6FMcON63clo=;
- h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
- b=RH6h/V4LzvAFQvOGHVQ2ReUSAztcIIgNnTZI6HgBtL0oY+CicvyhuIYatvy14xFwk
- P8GGaviitDQx6U9ns/eFTL9bVRAO/XRdBj8Zy5mk78UQO+37ZJAiH5f6Rd8gsWNxVI
- JhyUe/KdUPA1EoitSXFo1DWJGzJ7tPdVk5Mo3lKgzS3U7FZ6kYHCRxaK8cD0DgkJOe
- Q72WWEZuGiS3QzAmDQgxX8/9Y5MXwPvNppIckVU8/pCIyTozmyF5IbD2gDwj4MLfFa
- rusQJx87owxAw7+zASR5N84tZG/hgmInIH75Yv3bHxIGsKAVw+YrMEAft510JQM1H5
- 65UG6A9ZmxYdg==
-Message-ID: <e6feb193-0d3d-4cbc-857b-7576db25e929@kernel.org>
-Date: Thu, 9 Oct 2025 11:34:31 +0800
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 19C2060081A
+ for <ltp@lists.linux.it>; Mon, 13 Oct 2025 13:29:50 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AEC1B21A07;
+ Mon, 13 Oct 2025 11:29:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1760354989;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=olOHkVxk8NPFFXnJanu3Ms3V//hGH5Gen0juoWUyRsc=;
+ b=tltCtQ0bidl0xH18mZrUBVp8cGUCbxuXHsQIpF4FEbFH83tu+IlpKgky09KqUaZhBPRV05
+ jSWMantQFEcsNczoCgb0NfZTUqEX53vHC3LZd4YFMoDiqB9jehq1DCxu8lJTTA9JlUlCQA
+ zX7LDnsHNA1/vTZe4/iIZYq02P7zdkw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1760354989;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=olOHkVxk8NPFFXnJanu3Ms3V//hGH5Gen0juoWUyRsc=;
+ b=rHpDsifp3rlitGcJ4qFppHql2ocK1wTBE0CySDoSgJNdebxH/e2XTVWpUGUE/rzWFGOLl0
+ BuXE+o93SJ+EL9Dw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1760354988;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=olOHkVxk8NPFFXnJanu3Ms3V//hGH5Gen0juoWUyRsc=;
+ b=o64WoLkctm4fnEa5AWkCjV1GCDCNRabBYFvP2EWoUmIscPZrcdxX7DUTjxBWnL0mE0N9Pk
+ 7Wkmh4rj39nCi3mjzWaOUL1jULYUH7qF2E5tbkRrT5jWHRuYsP9z/QuTJfXBHffuSCtuhd
+ a1OomnAkFBhWs8BOn/XeMoK51nlFkLk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1760354988;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=olOHkVxk8NPFFXnJanu3Ms3V//hGH5Gen0juoWUyRsc=;
+ b=p8bMP7hEsPJ/7pRHsuD6P4J2TJWwP9uWAkSfaF+G4jKFBMtgbW1K/k8Z51iKoUkH28qlL4
+ mguauoMxMfeh8lDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 98E0F1374A;
+ Mon, 13 Oct 2025 11:29:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id extlJKzi7Gi2ZAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 13 Oct 2025 11:29:48 +0000
+Date: Mon, 13 Oct 2025 13:29:47 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20251013112947.GA78221@pevik>
+References: <aOODn-CZ7F1A777o@yuki.lan> <20251007143207.27848-1-akumar@suse.de>
+ <6213145.lOV4Wx5bFT@thinkpad> <20251007213713.GB160168@pevik>
+ <DDH3SBAZQOWD.PPCDX4YW7KBZ@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Mateusz Guzik <mjguzik@gmail.com>, brauner@kernel.org
-References: <202509301450.138b448f-lkp@intel.com>
- <20250930232957.14361-1-mjguzik@gmail.com>
-Content-Language: en-US
-In-Reply-To: <20250930232957.14361-1-mjguzik@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <DDH3SBAZQOWD.PPCDX4YW7KBZ@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 13 Oct 2025 13:07:28 +0200
-Subject: Re: [LTP] [f2fs-dev] [PATCH] f2fs: don't call iput() from
- f2fs_drop_inode()
+Subject: Re: [LTP] [PATCH v2] openposix: update invalid clock id to
+ accomodate new auxiliary clock ids
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,33 +112,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Chao Yu via ltp <ltp@lists.linux.it>
-Reply-To: Chao Yu <chao@kernel.org>
-Cc: chao@kernel.org, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- oliver.sang@intel.com, oe-lkp@lists.linux.dev, josef@toxicpanda.com,
- ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 10/1/2025 7:29 AM, Mateusz Guzik wrote:
-> iput() calls the problematic routine, which does a ->i_count inc/dec
-> cycle. Undoing it with iput() recurses into the problem.
-> 
-> Note f2fs should not be playing games with the refcount to begin with,
-> but that will be handled later. Right now solve the immediate
-> regression.
-> 
-> Fixes: bc986b1d756482a ("fs: stop accessing ->i_count directly in f2fs and gfs2")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202509301450.138b448f-lkp@intel.com
-> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+Hi 
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+...
+> Maybe we should merge this patch, WDYT?
 
-Thanks,
+> Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
+
+FYI I'm waiting for Cyril's ack (he did the review of v1, all the changes are
+based on his comment). I suppose he will do it today.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
