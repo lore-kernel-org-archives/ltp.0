@@ -4,105 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C2C8CCD18F
-	for <ltp@archiver.kernel.org>; Tue, 14 Oct 2025 07:22:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CF53CCD184
+	for <ltp@archiver.kernel.org>; Tue, 14 Oct 2025 07:56:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1760428559; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=CX5SLSZPe2gARmVcsx3I41SK76G2NSgyR1BWwxnIDlQ=;
+ b=q4DGv9P0tSZwcLLEXz/Wa34fKn8eVsuGKfaIKNfMkU3qoa+RiediSfOnM7m8Kc8L7h8rV
+ UwMDv9DGsJ+5P6HBLtAGh5GahicjGd33CB/M6DIGZJrvB64nUwmgRS+zq8o2v0pWXhSMAlo
+ QXHQnwR8j524V4I714/kRvHVtkz4bVU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0E37C3CEC45
-	for <ltp@archiver.kernel.org>; Tue, 14 Oct 2025 09:22:25 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 6C29B3CEC40
+	for <ltp@archiver.kernel.org>; Tue, 14 Oct 2025 09:55:59 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9E6913CEC2B
- for <ltp@lists.linux.it>; Tue, 14 Oct 2025 09:22:07 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 598403C2B90
+ for <ltp@lists.linux.it>; Tue, 14 Oct 2025 09:55:38 +0200 (CEST)
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
+ [IPv6:2a00:1450:4864:20::633])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 320A71400DEF
- for <ltp@lists.linux.it>; Tue, 14 Oct 2025 09:22:05 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 329A721CEC;
- Tue, 14 Oct 2025 07:22:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1760426525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=fe26/xOazryWB7sJMIupifcpWRrEdUtgGyJbibUlDPI=;
- b=sI7Fo4I4luJBP4IelfNB8l+dXmEPVAojgcKkNr1uPlZCyT9H8KeqpvLLMI/yCK/nFfXCxH
- +zdmukm5v6TDVylDueXLZ0ppPBll/j65NG/AoZvCvgzjJNWeGotXK7X6V6ASctyQNHX4h5
- pN+uHJSc2+qD+g4JtyUiNfEF582oBBk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1760426525;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=fe26/xOazryWB7sJMIupifcpWRrEdUtgGyJbibUlDPI=;
- b=n8wX/0td3ybbemIlDkptlgSy1kOqpD2MtebclDCRSSockA/TZN6GC/0W8eIicD6d+PyWDI
- piLL0vmKQjM0qNBg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1760426525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=fe26/xOazryWB7sJMIupifcpWRrEdUtgGyJbibUlDPI=;
- b=sI7Fo4I4luJBP4IelfNB8l+dXmEPVAojgcKkNr1uPlZCyT9H8KeqpvLLMI/yCK/nFfXCxH
- +zdmukm5v6TDVylDueXLZ0ppPBll/j65NG/AoZvCvgzjJNWeGotXK7X6V6ASctyQNHX4h5
- pN+uHJSc2+qD+g4JtyUiNfEF582oBBk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1760426525;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=fe26/xOazryWB7sJMIupifcpWRrEdUtgGyJbibUlDPI=;
- b=n8wX/0td3ybbemIlDkptlgSy1kOqpD2MtebclDCRSSockA/TZN6GC/0W8eIicD6d+PyWDI
- piLL0vmKQjM0qNBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1179C139B0;
- Tue, 14 Oct 2025 07:22:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id GRFjAh367WhnUAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 14 Oct 2025 07:22:05 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 14 Oct 2025 09:22:04 +0200
-MIME-Version: 1.0
-Message-Id: <20251014-remove_todo-v4-1-168fcfa74221@suse.com>
-X-B4-Tracking: v=1; b=H4sIABv67WgC/33NywrCMBCF4VcpszaSay+ufA8RSZuJzaJGkhqU0
- nc37aqKuDwD3z8TRAwOIxyKCQImF52/5SF3BXS9vl2ROJM3cMoVo7QkAQef8DJ640nHG61qhXV
- LGWRxD2jdc62dznn3Lo4+vNZ4Ysv1dycxwohqdatsaavKqmN8RNx3foAlk/iGMvFJeaaGallqw
- yQK+UXFHyqWr0KgrKRodLOl8zy/AbQTgmMbAQAA
-X-Change-ID: 20251006-remove_todo-c29a585e8b01
-To: ltp@lists.linux.it
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1760426525; l=6577;
- i=andrea.cervesato@suse.com; s=20250922; h=from:subject:message-id;
- bh=JretVhRPmNydVBAV0aOAjz464RU7qWADpSa7T/rQ9IA=;
- b=c1LixYemrYezJLPZA32iEwk3D5m4E2AhHOFGCYOYhp2tF8nvwZJzHFKY/+P9uZE2neSklnv56
- jMIjvbrE1bjCSwYidfP4Kj7ddlnfjCwRtfXEdjy5v/dK/dkQVK4c7IT
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=+8M3XgViLdcdNBM+Jdd90m3pV4jCw2tNsGCy5Rd+qHk=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.995]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4E0A61A006E9
+ for <ltp@lists.linux.it>; Tue, 14 Oct 2025 09:55:37 +0200 (CEST)
+Received: by mail-ej1-x633.google.com with SMTP id
+ a640c23a62f3a-b07d4d24d09so316368366b.2
+ for <ltp@lists.linux.it>; Tue, 14 Oct 2025 00:55:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1760428537; x=1761033337; darn=lists.linux.it;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=urmUYe+IYp1QxTv6F0tLw1zIWAGxs9qTyXYh4xcGIo8=;
+ b=BgxFIOEy6/RoXbEx7CA0ycLNRv07hW7P30OLYB6o62Zje6dV2iH2DIthE7RvYVCTM8
+ 0jPm2Gqu1wB6gJfrNRZ1LSJURT8Kylx0EgSERUdTixI4pQ9xa2skEW6rkqaFxWYkbPcw
+ OZhAkxFNzpOg3Ag65AqM/9ebjFxwGS17+C74vO1oNFTiBJEfL4+mYEpPzANz8sdnZtrS
+ t3iSK8+TSDQYNzvdMRMB+nyUSIiCohk1l7Y6yxkS3O+IGtb75MzUYhpu9Ln4ktsDvr5p
+ qbHC7yxGnWzKNfsXrBUv1VF42B7qhp+e8OMpBIrYpluAahkVuj0Yx14nIu9MoAD8iCIh
+ yLog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1760428537; x=1761033337;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=urmUYe+IYp1QxTv6F0tLw1zIWAGxs9qTyXYh4xcGIo8=;
+ b=ZloO8lvyP4nySY5ivtZ2QklQ50DephTFfx/LoalnbO4DfIrTX+SOhbimttjtqhh8SJ
+ XQAj0nG0hMJuWSb0QlnBrbdL9Vhz85tVk2tdaZlKDKQgkwR7/bSke33F7ZZR4xbyTsmO
+ UUj1AT9ZJz0tbkqiI6l9N8sV0DCaIuhnSDSDKxk/HisgyiCWyc8f2PP0RqiBoPh7PLxW
+ 4uyaSQjMxjicDEPyYgCGvvDFuwOri6zHvGHQ2X5bpex97YiCwrvgE7+dKExk3qjHNxb4
+ wyZ948Sl1kyxzpFlwD0/oq00j5vNe0BJVpn1kNWK7h5p//97FGgkWedp9c54j1NeaEN1
+ jCoA==
+X-Gm-Message-State: AOJu0YwGZEvKq4/xPvPbpqMOFuyhWw7fEm0GBbksNF/dCMlb1cwpRGdP
+ BwDkKzLUKnCd0k2rbMiispaIbceqm6cpM0v8A4Xhl8yi5zQIF5smuac+t2fPSG8sq1Y=
+X-Gm-Gg: ASbGncsdNbBB88SNtYSfokp6znKQxfHgFVPCRFfzS332GaTkvhp0O1+CjiC71cirVD9
+ BNTGITSMo0KPzun07YnoypqEB+GTP9lvnrua82uDfaCE93Lu4i3x6ZxTpd5wiuyvmPQFsGRBgI8
+ lh/V1pnIGN5wWdIxH3VfB55bYs4Zwy2VZWo429lJ54qJAE0jEENavqJ7JVxJdaIajOlefY3DfEd
+ 6Yicv84qnIw62seViYoWuQlFel6ecWTZNUq9dCAdEOEfsqjnYVtlnGQp/x3l4sMEk0zh72z1nOi
+ j0Laq5dR4dMbAbjHczGpsdi1kBs2+2U0ARBcKIdJgdygd4bTM6mq3i68vRC8ThkG/cEnHzH083V
+ RM/Y2GnZ5JxLZOVlQzM5yRGStotNzMbpDjmrS2YmEWNr7KbIx1PrBUzALMW1LAcflFSfZxPeHgO
+ bAYIzw36+Z+ORArrbKV00lHHWiCB2Y+geGa7NinLXHhl3E
+X-Google-Smtp-Source: AGHT+IGSzjWnaM95ftrtZEppzRUBVjTKM3O/VbmZcxY7VuqADklsEFv/chIVzq7kz7xJFM6XnYVVng==
+X-Received: by 2002:a17:907:94c6:b0:b45:913d:f523 with SMTP id
+ a640c23a62f3a-b50aa99edc9mr2576981066b.18.1760428536592; 
+ Tue, 14 Oct 2025 00:55:36 -0700 (PDT)
+Received: from localhost
+ (p200300ef2f1c890086c8658517a2433a.dip0.t-ipconnect.de.
+ [2003:ef:2f1c:8900:86c8:6585:17a2:433a])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-b55d8c12ce1sm1090153466b.57.2025.10.14.00.55.36
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 14 Oct 2025 00:55:36 -0700 (PDT)
+Mime-Version: 1.0
+Date: Tue, 14 Oct 2025 09:55:35 +0200
+Message-Id: <DDHVU0PEAOVX.1M1RA5HB531B8@suse.com>
+To: "Cyril Hrubis" <chrubis@suse.cz>, "Andrea Cervesato"
+ <andrea.cervesato@suse.de>
+X-Mailer: aerc 0.21.0
+References: <20251010-file_attr_eopnotsupp-v1-1-a93df1980ac7@suse.com>
+ <aO0QiVqDqgxhU6rE@yuki.lan>
+In-Reply-To: <aO0QiVqDqgxhU6rE@yuki.lan>
+X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] Remove TODO
+Subject: Re: [LTP] [PATCH] syscalls: add file_attr05 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,201 +103,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+>
+> Isn't this wrong?
+>
+> See:
+>
+> commit f4af1fb44161d719695c3ce1bcad61d6f3638ba8
+> Author: Martin Doucha <mdoucha@suse.cz>
+> Date:   Tue Sep 23 17:32:24 2025 +0200
+>
+>     file_attr02: Enable reflinks and fix blocksize detection
 
-TODO file is not updated and it talks about goals we already reached via
-new LTP documentation. In general, it contains generic and random topics
-which none is updating anymore, so it's better to remove it in order to
-create less confusion for newcomers.
+Yes, im gonna send v2
 
-Instead, we create a todo list in the new documentation, providing a
-more clear intention of what are the current LTP goals.
 
-Acked-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-Changes in v4:
-- fix commit message
-- point to tst_run_shell.c
-- moved to developers
-- fix git grep command
-- Link to v3: https://lore.kernel.org/r/20251013-remove_todo-v3-1-533e47439a94@suse.com
-
-Changes in v3:
-- fix typo
-- update command to generate test with old API
-- add kirk link in TODO
-- shell loader reference
-- Link to v2: https://lore.kernel.org/r/20251013-remove_todo-v2-1-d0a46ad14e34@suse.com
-
-Changes in v2:
-- add doc/users/todo.rst section
-- Link to v1: https://lore.kernel.org/r/20251006-remove_todo-v1-1-5bab5f6f77f5@suse.com
----
- TODO                    | 39 --------------------------
- doc/developers/todo.rst | 73 +++++++++++++++++++++++++++++++++++++++++++++++++
- doc/index.rst           |  4 +++
- 3 files changed, 77 insertions(+), 39 deletions(-)
-
-diff --git a/TODO b/TODO
-deleted file mode 100644
-index fe0a3ab9b..000000000
---- a/TODO
-+++ /dev/null
-@@ -1,39 +0,0 @@
--LTP TODO
----------
--
--
--Write more syscall tests
--~~~~~~~~~~~~~~~~~~~~~~~~
--
--Syscalls and new syscall flags are added to Linux kernel each development cycle
--and LTP still falls behind. Unfortunately there is no single place that would
--store comprehensive list of syscalls, but there are a few places to look at:
--
--One of the options would be looking at changes in man-pages git[1] in man2/
--directory to find out newly documented functionality.
--
--Another good source of information are kernel pages in LWN[2] weekly
--editions.
--
--Then there is linux-api mailing list[3] where changes in kernel userspace API
--should be discussed.
--
--[1] http://git.kernel.org/cgit/docs/man-pages/man-pages.git
--[2] http://lwn.net
--[3] http://dir.gmane.org/gmane.linux.kernel.api
--
--
--Rewrite old and add new controller testcases
--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--
--We already started working on this with rewriting cgroup_fj testcases and
--newly added pids testcases. Have a look at testcases/kernel/controllers/.
--
--
--Shell tests cleanups
--~~~~~~~~~~~~~~~~~~~~
--
--There are numerous testcases written in shell that does not follow single style
--and use the broken-by-design binaries from tools/apicmds. These should be
--cleaned up and fixed to use the test.sh test library. These include most of
--tests in testcases/commands/ for example.
-diff --git a/doc/developers/todo.rst b/doc/developers/todo.rst
-new file mode 100644
-index 000000000..f0adeec27
---- /dev/null
-+++ b/doc/developers/todo.rst
-@@ -0,0 +1,73 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+List of ongoing tasks
-+=====================
-+
-+This is a comprehensive list of tasks where LTP maintainers are currently
-+working on. Priorities might change over time, but these are the most important
-+points which are currently being achieved.
-+
-+Fade out old tests runner
-+-------------------------
-+
-+``runltp`` script is old and unmaintaned. We are slowly shifting to
-+`kirk <https://github.com/linux-test-project/kirk>`_, that will be our official
-+tests runner in the next future.
-+
-+kirk provides support for remote testing via Qemu, SSH, LTX, parallel
-+execution and much more.
-+
-+Test new syscalls
-+-----------------
-+
-+Syscalls and new syscalls flags are added to Linux kernel each development
-+cycle and LTP still falls behind. Unfortunately there is no single place that
-+would store comprehensive list of syscalls, but there are a few places to look
-+at:
-+
-+- `man-pages repository <http://git.kernel.org/cgit/docs/man-pages/man-pages.git>`_
-+  or the ``man2`` directory, where it's possible to find newly documented
-+  functionalities.
-+- `LWN <http://lwn.net>`_ weekly editions.
-+- `linux-api mailing list <https://lore.kernel.org/linux-api/>`_ where
-+  changes in kernel userspace API are discussed.
-+- `LTP Github issues <https://github.com/linux-test-project/ltp/issues>`_
-+
-+Rewrite old API tests
-+---------------------
-+
-+LTP has a long story and, at certain point of its development, new API were
-+introduced to make kernel testing easier and more efficient. This happened when
-+lots of tests were still using old, messy API.
-+
-+Some of these tests have been converted to the new API, but this process is
-+still ongoing for many others. To have an overview of the tests using old API,
-+please run the following command inside the LTP root folder:
-+
-+.. code-block:: bash
-+
-+        git --no-pager grep -l 'include "test\.h"' testcases/
-+
-+Fade out shell scripts
-+----------------------
-+
-+LTP was initially thought as a generic framework for running tests with both
-+shell and plain-C languages. Even if writing tests in shell script might seem
-+easy, the reality is that debugging and maintaining certain test cases is
-+difficult and slow down the whole validation process. This is particularly
-+visible for cgroup tests, since shell doesn't add enough control over race
-+conditions.
-+
-+LTP maintainers are working on converting shell scripts to plain-C tests, in
-+order to reduce the impact that shell scripts might have on the overall kernel
-+testing.
-+
-+For a complete list of shell tests, please run the following command inside the
-+LTP root folder:
-+
-+.. code-block:: bash
-+
-+        git --no-pager grep -l -e '^\. .*_lib\.sh' -e '^\. .*test.sh'
-+
-+LTP also provides a shell loader implementation for plain-C tests using
-+:master:`testcases/lib/tst_run_shell.c`.
-diff --git a/doc/index.rst b/doc/index.rst
-index acd16cdbf..06b75616f 100644
---- a/doc/index.rst
-+++ b/doc/index.rst
-@@ -30,6 +30,7 @@
-    developers/build_system
-    developers/debugging
-    developers/documentation
-+   developers/todo
- 
- .. toctree::
-    :maxdepth: 3
-@@ -97,6 +98,9 @@ For developers
- :doc:`developers/documentation`
-    How to use and develop LTP documentation
- 
-+:doc:`developers/todo`
-+   List of tasks maintainers are working on
-+
- For maintainers
- ---------------
- 
-
----
-base-commit: 79b7f212b3e56f1a4c33af3f61f66502b574cf1e
-change-id: 20251006-remove_todo-c29a585e8b01
-
-Best regards,
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 
 -- 
