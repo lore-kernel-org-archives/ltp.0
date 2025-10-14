@@ -4,91 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A3B1CCD18E
-	for <ltp@archiver.kernel.org>; Tue, 14 Oct 2025 09:13:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1760433187; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=y4u4kizOxUe93FLDJCnh5zQzoEhkyzW8ge9NU2LgoLM=;
- b=E4SYScW1ftz6Hk5iAxUmVoE1gZDyQbzIlEJ6YI7hIX+SHDaKqfwdoUJ23RQt6/ScnaZwv
- XFvfK1Um4WHl7qQbM+XfdfOCvJYfsqGEVSyA9E41KhaiKlQWfi7sGWvrrrcwVLAeMXvOGdj
- ZzXT0IYc+5H+EdqTKSo3jzUwSwe/oN8=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA54BCCD18E
+	for <ltp@archiver.kernel.org>; Tue, 14 Oct 2025 09:22:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 701563CEC39
-	for <ltp@archiver.kernel.org>; Tue, 14 Oct 2025 11:13:07 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 7B46C3CEC39
+	for <ltp@archiver.kernel.org>; Tue, 14 Oct 2025 11:22:20 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7009F3C4C27
- for <ltp@lists.linux.it>; Tue, 14 Oct 2025 11:12:46 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id A7BA43CE4E2
+ for <ltp@lists.linux.it>; Tue, 14 Oct 2025 11:22:04 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CF1301A00A40
- for <ltp@lists.linux.it>; Tue, 14 Oct 2025 11:12:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1760433162;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=jNmQ2M40e6vwDqDIxcU//7lFueBUTcI7GDz2b/LZFp4=;
- b=RDQD75dA1y2aTZGpCF2ufplFHXydzhPhWKhFBhoZwxtlyhWUCuCsu5TYo0P1XCEIZETvVs
- +c3T7a/GXemRhohNVKMGXib1c2xuQxcb+tDkwQP66jGbZplCs0+m+p6AKVhT2DFGXA8o3c
- 7GZlZ7rle9qljhv3CtAQckUcalqZICw=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-59-Hy3Gf3bYMEap-kum5v3Mfw-1; Tue, 14 Oct 2025 05:12:40 -0400
-X-MC-Unique: Hy3Gf3bYMEap-kum5v3Mfw-1
-X-Mimecast-MFC-AGG-ID: Hy3Gf3bYMEap-kum5v3Mfw_1760433160
-Received: by mail-pl1-f200.google.com with SMTP id
- d9443c01a7336-269af520712so97462455ad.2
- for <ltp@lists.linux.it>; Tue, 14 Oct 2025 02:12:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1760433160; x=1761037960;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=jNmQ2M40e6vwDqDIxcU//7lFueBUTcI7GDz2b/LZFp4=;
- b=GAwvd0pvHmIPa5VZKd/9kYK+36cOK1rU01wUOF+HnUs+juQmq78iJnXhcMG1JmCJEm
- HtmiIMWcpRfMhBhxb+2JLL1iHvNNoBCkkk490myFqbl5CrU7LmHg4sVJ7EDPKmxi5wVZ
- j+PoRAdFlLbeW/lQDE7MfnsWsWIOuprTe8E+C6qggkEoy8GJetYQp/bGVZ4CPtL/ger5
- c9USPZrkJ8y4uvZXEsd0gXmrnDwnpudZfj0HIatQAd0Zn/sU4jTCU/tGuYouZLZUdcN7
- gD5e6Pge8TX9Jj1HKS1dspOMgAn6wzMj8t4OrFE8YN4HaukB0yEdZgbqPDsnsnjXWaC/
- zdeQ==
-X-Gm-Message-State: AOJu0Yx3vYKQQNUOylBiq+xZ+Bgo0QBsOoyPTES43UgABfk1A/9soeTH
- Ia6YyhVK/VETEf7I+9RNSYllp/Qq1/0vZV8UK7RCT+aEGYXo0l4fpMx6qn9H7BVGetAeZLbTeUM
- wkAIczom7HOsi4f9fp/holKlEftPB/SvspHmbkHEPQ8V7opGzIRoCln0HEm6tcChds2hmZDLYbr
- EBRVHKvTT6vB8+1WiYFgAsYS3FoAM=
-X-Gm-Gg: ASbGncuO6sr/JMgx/XUSbVCPduK/X+Ho63ADMIta9SG6wcrDqqux61ZmcziWxgfONDO
- Y62Q7pNx8zJIZbJ3jO9v1WD+yRXa1Yv5fv8xnPCVuR+pRcGQ/HH/x+MtG2mPlcjZtIR1et5SjnT
- rTTZ6D7BB71ZME9eRhFt28Ww==
-X-Received: by 2002:a17:902:f70b:b0:250:1c22:e78 with SMTP id
- d9443c01a7336-29027356cdbmr316133785ad.1.1760433159488; 
- Tue, 14 Oct 2025 02:12:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE16Wqylk69p4+JbotHGtxKmvpYfvqjumZq/1dhpyZ9JTafEUlh19vAlkjXI9di76v1Eq4l/EGFRQTE3t+CpgY=
-X-Received: by 2002:a17:902:f70b:b0:250:1c22:e78 with SMTP id
- d9443c01a7336-29027356cdbmr316133115ad.1.1760433158457; Tue, 14 Oct 2025
- 02:12:38 -0700 (PDT)
-MIME-Version: 1.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6DA651A00A49
+ for <ltp@lists.linux.it>; Tue, 14 Oct 2025 11:22:02 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8659A21D7E;
+ Tue, 14 Oct 2025 09:22:02 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 76F2F139B0;
+ Tue, 14 Oct 2025 09:22:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id cc3vGzoW7mhDSAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 14 Oct 2025 09:22:02 +0000
+Date: Tue, 14 Oct 2025 11:22:50 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <aO4WanlsicVtKsSw@yuki.lan>
 References: <20251014-remove_todo-v5-1-2793dffdec2d@suse.com>
+MIME-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <20251014-remove_todo-v5-1-2793dffdec2d@suse.com>
-Date: Tue, 14 Oct 2025 17:12:26 +0800
-X-Gm-Features: AS18NWDSjhprdsTQpXIWbtk0vSGxezOH7V3hqpbF3U_U3HwRlRI15nT3ayj-nzU
-Message-ID: <CAEemH2d1t81PZKi_7w9Yg3MUTT9ZigWH-QVTn9hOT_SPS_uWgg@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.de>, Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: yk6fcJ4Sy9D9VFb8XojXCCr8nxyHduPPiYlfkUMGkcA_1760433160
-X-Mimecast-Originator: redhat.com
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 8659A21D7E
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
 X-Virus-Scanned: clamav-milter 1.0.7 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 Subject: Re: [LTP] [PATCH v5] Remove TODO
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -101,149 +70,114 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQW5kcmVhIGFuZCBQZXRyLAoKT24gVHVlLCBPY3QgMTQsIDIwMjUgYXQgNDo1NuKAr1BNIEFu
-ZHJlYSBDZXJ2ZXNhdG8gPGFuZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5kZT4Kd3JvdGU6Cgo+IEZyb206
-IEFuZHJlYSBDZXJ2ZXNhdG8gPGFuZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5jb20+Cj4KPiBUT0RPIGZp
-bGUgaXMgbm90IHVwZGF0ZWQgYW5kIGl0IHRhbGtzIGFib3V0IGdvYWxzIHdlIGFscmVhZHkgcmVh
-Y2hlZCB2aWEKPiBuZXcgTFRQIGRvY3VtZW50YXRpb24uIEluIGdlbmVyYWwsIGl0IGNvbnRhaW5z
-IGdlbmVyaWMgYW5kIHJhbmRvbSB0b3BpY3MKPiB3aGljaCBub25lIGlzIHVwZGF0aW5nIGFueW1v
-cmUsIHNvIGl0J3MgYmV0dGVyIHRvIHJlbW92ZSBpdCBpbiBvcmRlciB0bwo+IGNyZWF0ZSBsZXNz
-IGNvbmZ1c2lvbiBmb3IgbmV3Y29tZXJzLgo+Cj4gSW5zdGVhZCwgd2UgY3JlYXRlIGEgdG9kbyBs
-aXN0IGluIHRoZSBuZXcgZG9jdW1lbnRhdGlvbiwgcHJvdmlkaW5nIGEKPiBtb3JlIGNsZWFyIGlu
-dGVudGlvbiBvZiB3aGF0IGFyZSB0aGUgY3VycmVudCBMVFAgZ29hbHMuCj4KPiBBY2tlZC1ieTog
-UGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4gU2lnbmVkLW9mZi1ieTogQW5kcmVhIENlcnZl
-c2F0byA8YW5kcmVhLmNlcnZlc2F0b0BzdXNlLmNvbT4KPiAtLS0KPiBDaGFuZ2VzIGluIHY1Ogo+
-IC0gcmVmIHRvIHRzdF90ZXN0Cj4gLSByZWYgdG8gcnVubHRwCj4gLSBiZXR0ZXIgZXhwbGFuYXRp
-b24gb2Ygc2hlbGwgbG9hZGVyCj4gLSBMaW5rIHRvIHY0Ogo+IGh0dHBzOi8vbG9yZS5rZXJuZWwu
-b3JnL3IvMjAyNTEwMTQtcmVtb3ZlX3RvZG8tdjQtMS0xNjhmY2ZhNzQyMjFAc3VzZS5jb20KCgoK
-VG8gbWUsIHY1IGxvb2tzIHByZXR0eSBnb29kLCBhbmQgaG9uZXN0bHksIEkgcmFyZWx5IHNlZSBh
-bnlvbmUgdGFrZQp0by1kbyBsaXN0IHNvIHNlcmlvdXNseSA6LSkuCgpCZWNhdXNlIEkgdXN1YWxs
-eSB0aGluayB0aGUgZmluYWwgYWNoaWV2ZW1lbnQgbWF5IGJlIGEgYmlnIGRpZmZlcmVuY2UgZnJv
-bQp0aGUgYmVnaW5uaW5nIGlkZWEgZHVlIHRvIG1hbnkgY29kZSBpdGVyYXRpb25zLCBzbyBhIHJv
-dWdoIFRPRE8gdG8gZGVzY3JpYmUKc2ltcGxlIHBpY3R1cmUgc2hvdWxkIGJlIGdvb2QgZW5vdWdo
-LgoKUGxlYXNlIGFjY2VwdCBteSByZXNwZWN0IGZvciB0aGUgd3JpdGluZzoKUmV2aWV3ZWQtYnk6
-IExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPgoKCgo+Cj4KPiBDaGFuZ2VzIGluIHY0Ogo+IC0g
-Zml4IGNvbW1pdCBtZXNzYWdlCj4gLSBwb2ludCB0byB0c3RfcnVuX3NoZWxsLmMKPiAtIG1vdmVk
-IHRvIGRldmVsb3BlcnMKPiAtIGZpeCBnaXQgZ3JlcCBjb21tYW5kCj4gLSBMaW5rIHRvIHYzOgo+
-IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyNTEwMTMtcmVtb3ZlX3RvZG8tdjMtMS01MzNl
-NDc0MzlhOTRAc3VzZS5jb20KPgo+IENoYW5nZXMgaW4gdjM6Cj4gLSBmaXggdHlwbwo+IC0gdXBk
-YXRlIGNvbW1hbmQgdG8gZ2VuZXJhdGUgdGVzdCB3aXRoIG9sZCBBUEkKPiAtIGFkZCBraXJrIGxp
-bmsgaW4gVE9ETwo+IC0gc2hlbGwgbG9hZGVyIHJlZmVyZW5jZQo+IC0gTGluayB0byB2MjoKPiBo
-dHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjUxMDEzLXJlbW92ZV90b2RvLXYyLTEtZDBhNDZh
-ZDE0ZTM0QHN1c2UuY29tCj4KPiBDaGFuZ2VzIGluIHYyOgo+IC0gYWRkIGRvYy91c2Vycy90b2Rv
-LnJzdCBzZWN0aW9uCj4gLSBMaW5rIHRvIHYxOgo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3Iv
-MjAyNTEwMDYtcmVtb3ZlX3RvZG8tdjEtMS01YmFiNWY2Zjc3ZjVAc3VzZS5jb20KPiAtLS0KPiAg
-VE9ETyAgICAgICAgICAgICAgICAgICAgfCAzOSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4g
-IGRvYy9kZXZlbG9wZXJzL3RvZG8ucnN0IHwgNzUKPiArKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrCj4gIGRvYy9pbmRleC5yc3QgICAgICAgICAgIHwgIDQg
-KysrCj4gIDMgZmlsZXMgY2hhbmdlZCwgNzkgaW5zZXJ0aW9ucygrKSwgMzkgZGVsZXRpb25zKC0p
-Cj4KPiBkaWZmIC0tZ2l0IGEvVE9ETyBiL1RPRE8KPiBkZWxldGVkIGZpbGUgbW9kZSAxMDA2NDQK
-PiBpbmRleCBmZTBhM2FiOWIuLjAwMDAwMDAwMAo+IC0tLSBhL1RPRE8KPiArKysgL2Rldi9udWxs
-Cj4gQEAgLTEsMzkgKzAsMCBAQAo+IC1MVFAgVE9ETwo+IC0tLS0tLS0tLQo+IC0KPiAtCj4gLVdy
-aXRlIG1vcmUgc3lzY2FsbCB0ZXN0cwo+IC1+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4KPiAtCj4g
-LVN5c2NhbGxzIGFuZCBuZXcgc3lzY2FsbCBmbGFncyBhcmUgYWRkZWQgdG8gTGludXgga2VybmVs
-IGVhY2ggZGV2ZWxvcG1lbnQKPiBjeWNsZQo+IC1hbmQgTFRQIHN0aWxsIGZhbGxzIGJlaGluZC4g
-VW5mb3J0dW5hdGVseSB0aGVyZSBpcyBubyBzaW5nbGUgcGxhY2UgdGhhdAo+IHdvdWxkCj4gLXN0
-b3JlIGNvbXByZWhlbnNpdmUgbGlzdCBvZiBzeXNjYWxscywgYnV0IHRoZXJlIGFyZSBhIGZldyBw
-bGFjZXMgdG8gbG9vawo+IGF0Ogo+IC0KPiAtT25lIG9mIHRoZSBvcHRpb25zIHdvdWxkIGJlIGxv
-b2tpbmcgYXQgY2hhbmdlcyBpbiBtYW4tcGFnZXMgZ2l0WzFdIGluCj4gbWFuMi8KPiAtZGlyZWN0
-b3J5IHRvIGZpbmQgb3V0IG5ld2x5IGRvY3VtZW50ZWQgZnVuY3Rpb25hbGl0eS4KPiAtCj4gLUFu
-b3RoZXIgZ29vZCBzb3VyY2Ugb2YgaW5mb3JtYXRpb24gYXJlIGtlcm5lbCBwYWdlcyBpbiBMV05b
-Ml0gd2Vla2x5Cj4gLWVkaXRpb25zLgo+IC0KPiAtVGhlbiB0aGVyZSBpcyBsaW51eC1hcGkgbWFp
-bGluZyBsaXN0WzNdIHdoZXJlIGNoYW5nZXMgaW4ga2VybmVsIHVzZXJzcGFjZQo+IEFQSQo+IC1z
-aG91bGQgYmUgZGlzY3Vzc2VkLgo+IC0KPiAtWzFdIGh0dHA6Ly9naXQua2VybmVsLm9yZy9jZ2l0
-L2RvY3MvbWFuLXBhZ2VzL21hbi1wYWdlcy5naXQKPiAtWzJdIGh0dHA6Ly9sd24ubmV0Cj4gLVsz
-XSBodHRwOi8vZGlyLmdtYW5lLm9yZy9nbWFuZS5saW51eC5rZXJuZWwuYXBpCj4gLQo+IC0KPiAt
-UmV3cml0ZSBvbGQgYW5kIGFkZCBuZXcgY29udHJvbGxlciB0ZXN0Y2FzZXMKPiAtfn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4KPiAtCj4gLVdlIGFscmVhZHkgc3Rh
-cnRlZCB3b3JraW5nIG9uIHRoaXMgd2l0aCByZXdyaXRpbmcgY2dyb3VwX2ZqIHRlc3RjYXNlcyBh
-bmQKPiAtbmV3bHkgYWRkZWQgcGlkcyB0ZXN0Y2FzZXMuIEhhdmUgYSBsb29rIGF0IHRlc3RjYXNl
-cy9rZXJuZWwvY29udHJvbGxlcnMvLgo+IC0KPiAtCj4gLVNoZWxsIHRlc3RzIGNsZWFudXBzCj4g
-LX5+fn5+fn5+fn5+fn5+fn5+fn5+Cj4gLQo+IC1UaGVyZSBhcmUgbnVtZXJvdXMgdGVzdGNhc2Vz
-IHdyaXR0ZW4gaW4gc2hlbGwgdGhhdCBkb2VzIG5vdCBmb2xsb3cgc2luZ2xlCj4gc3R5bGUKPiAt
-YW5kIHVzZSB0aGUgYnJva2VuLWJ5LWRlc2lnbiBiaW5hcmllcyBmcm9tIHRvb2xzL2FwaWNtZHMu
-IFRoZXNlIHNob3VsZCBiZQo+IC1jbGVhbmVkIHVwIGFuZCBmaXhlZCB0byB1c2UgdGhlIHRlc3Qu
-c2ggdGVzdCBsaWJyYXJ5LiBUaGVzZSBpbmNsdWRlIG1vc3QKPiBvZgo+IC10ZXN0cyBpbiB0ZXN0
-Y2FzZXMvY29tbWFuZHMvIGZvciBleGFtcGxlLgo+IGRpZmYgLS1naXQgYS9kb2MvZGV2ZWxvcGVy
-cy90b2RvLnJzdCBiL2RvYy9kZXZlbG9wZXJzL3RvZG8ucnN0Cj4gbmV3IGZpbGUgbW9kZSAxMDA2
-NDQKPiBpbmRleCAwMDAwMDAwMDAuLjdkYWFjNzMyMgo+IC0tLSAvZGV2L251bGwKPiArKysgYi9k
-b2MvZGV2ZWxvcGVycy90b2RvLnJzdAo+IEBAIC0wLDAgKzEsNzUgQEAKPiArLi4gU1BEWC1MaWNl
-bnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIKPiArCj4gK0xpc3Qgb2Ygb25nb2luZyB0
-YXNrcwo+ICs9PT09PT09PT09PT09PT09PT09PT0KPiArCj4gK1RoaXMgaXMgYSBjb21wcmVoZW5z
-aXZlIGxpc3Qgb2YgdGFza3Mgd2hlcmUgTFRQIG1haW50YWluZXJzIGFyZSBjdXJyZW50bHkKPiAr
-d29ya2luZyBvbi4gUHJpb3JpdGllcyBtaWdodCBjaGFuZ2Ugb3ZlciB0aW1lLCBidXQgdGhlc2Ug
-YXJlIHRoZSBtb3N0Cj4gaW1wb3J0YW50Cj4gK3BvaW50cyB3aGljaCBhcmUgY3VycmVudGx5IGJl
-aW5nIGFjaGlldmVkLgo+ICsKPiArRmFkZSBvdXQgb2xkIHRlc3RzIHJ1bm5lcgo+ICstLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tCj4gKwo+ICs6bWFzdGVyOmBydW5sdHBgIHNjcmlwdCBpcyBvbGQg
-YW5kIHVubWFpbnRhbmVkLiBXZSBhcmUgc2xvd2x5IHNoaWZ0aW5nIHRvCj4gK2BraXJrIDxodHRw
-czovL2dpdGh1Yi5jb20vbGludXgtdGVzdC1wcm9qZWN0L2tpcms+YF8sIHRoYXQgd2lsbCBiZSBv
-dXIKPiBvZmZpY2lhbAo+ICt0ZXN0cyBydW5uZXIgaW4gdGhlIG5leHQgZnV0dXJlLgo+ICsKPiAr
-a2lyayBwcm92aWRlcyBzdXBwb3J0IGZvciByZW1vdGUgdGVzdGluZyB2aWEgUWVtdSwgU1NILCBM
-VFgsIHBhcmFsbGVsCj4gK2V4ZWN1dGlvbiBhbmQgbXVjaCBtb3JlLgo+ICsKPiArVGVzdCBuZXcg
-c3lzY2FsbHMKPiArLS0tLS0tLS0tLS0tLS0tLS0KPiArCj4gK1N5c2NhbGxzIGFuZCBuZXcgc3lz
-Y2FsbHMgZmxhZ3MgYXJlIGFkZGVkIHRvIExpbnV4IGtlcm5lbCBlYWNoIGRldmVsb3BtZW50Cj4g
-K2N5Y2xlIGFuZCBMVFAgc3RpbGwgZmFsbHMgYmVoaW5kLiBVbmZvcnR1bmF0ZWx5IHRoZXJlIGlz
-IG5vIHNpbmdsZSBwbGFjZQo+IHRoYXQKPiArd291bGQgc3RvcmUgY29tcHJlaGVuc2l2ZSBsaXN0
-IG9mIHN5c2NhbGxzLCBidXQgdGhlcmUgYXJlIGEgZmV3IHBsYWNlcyB0bwo+IGxvb2sKPiArYXQ6
-Cj4gKwo+ICstIGBtYW4tcGFnZXMgcmVwb3NpdG9yeSA8Cj4gaHR0cDovL2dpdC5rZXJuZWwub3Jn
-L2NnaXQvZG9jcy9tYW4tcGFnZXMvbWFuLXBhZ2VzLmdpdD5gXwo+ICsgIG9yIHRoZSBgYG1hbjJg
-YCBkaXJlY3RvcnksIHdoZXJlIGl0J3MgcG9zc2libGUgdG8gZmluZCBuZXdseSBkb2N1bWVudGVk
-Cj4gKyAgZnVuY3Rpb25hbGl0aWVzLgo+ICstIGBMV04gPGh0dHA6Ly9sd24ubmV0PmBfIHdlZWts
-eSBlZGl0aW9ucy4KPiArLSBgbGludXgtYXBpIG1haWxpbmcgbGlzdCA8aHR0cHM6Ly9sb3JlLmtl
-cm5lbC5vcmcvbGludXgtYXBpLz5gXyB3aGVyZQo+ICsgIGNoYW5nZXMgaW4ga2VybmVsIHVzZXJz
-cGFjZSBBUEkgYXJlIGRpc2N1c3NlZC4KPiArLSBgTFRQIEdpdGh1YiBpc3N1ZXMgPGh0dHBzOi8v
-Z2l0aHViLmNvbS9saW51eC10ZXN0LXByb2plY3QvbHRwL2lzc3Vlcz5gXwo+ICsKPiArUmV3cml0
-ZSBvbGQgQVBJIHRlc3RzCj4gKy0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICsKPiArTFRQIGhhcyBh
-IGxvbmcgc3RvcnkgYW5kLCBhdCBjZXJ0YWluIHBvaW50IG9mIGl0cyBkZXZlbG9wbWVudCwgbmV3
-IEFQSQo+IHdlcmUKPiAraW50cm9kdWNlZCB0byBtYWtlIGtlcm5lbCB0ZXN0aW5nIGVhc2llciBh
-bmQgbW9yZSBlZmZpY2llbnQuIFRoaXMKPiBoYXBwZW5lZCB3aGVuCj4gK2xvdHMgb2YgdGVzdHMg
-d2VyZSBzdGlsbCB1c2luZyBvbGQsIG1lc3N5IEFQSS4KPiArCj4gK1NvbWUgb2YgdGhlc2UgdGVz
-dHMgaGF2ZSBiZWVuIGNvbnZlcnRlZCB0byB0aGUgbmV3IEFQSSwgYnV0IHRoaXMgcHJvY2Vzcwo+
-IGlzCj4gK3N0aWxsIG9uZ29pbmcgZm9yIG1hbnkgb3RoZXJzLiBUbyBoYXZlIGFuIG92ZXJ2aWV3
-IG9mIHRoZSB0ZXN0cyB1c2luZyBvbGQKPiBBUEksCj4gK3BsZWFzZSBydW4gdGhlIGZvbGxvd2lu
-ZyBjb21tYW5kIGluc2lkZSB0aGUgTFRQIHJvb3QgZm9sZGVyOgo+ICsKPiArLi4gY29kZS1ibG9j
-azo6IGJhc2gKPiArCj4gKyAgICAgICAgZ2l0IC0tbm8tcGFnZXIgZ3JlcCAtbCAnaW5jbHVkZSAi
-dGVzdFwuaCInIHRlc3RjYXNlcy8KPiArCj4gK0ZhZGUgb3V0IHNoZWxsIHNjcmlwdHMKPiArLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLQo+ICsKPiArTFRQIHdhcyBpbml0aWFsbHkgdGhvdWdodCBhcyBh
-IGdlbmVyaWMgZnJhbWV3b3JrIGZvciBydW5uaW5nIHRlc3RzIHdpdGgKPiBib3RoCj4gK3NoZWxs
-IGFuZCBwbGFpbi1DIGxhbmd1YWdlcy4gRXZlbiBpZiB3cml0aW5nIHRlc3RzIGluIHNoZWxsIHNj
-cmlwdCBtaWdodAo+IHNlZW0KPiArZWFzeSwgdGhlIHJlYWxpdHkgaXMgdGhhdCBkZWJ1Z2dpbmcg
-YW5kIG1haW50YWluaW5nIGNlcnRhaW4gdGVzdCBjYXNlcyBpcwo+ICtkaWZmaWN1bHQgYW5kIHNs
-b3cgZG93biB0aGUgd2hvbGUgdmFsaWRhdGlvbiBwcm9jZXNzLiBUaGlzIGlzIHBhcnRpY3VsYXJs
-eQo+ICt2aXNpYmxlIGZvciBjZ3JvdXAgdGVzdHMsIHNpbmNlIHNoZWxsIGRvZXNuJ3QgYWRkIGVu
-b3VnaCBjb250cm9sIG92ZXIgcmFjZQo+ICtjb25kaXRpb25zLgo+ICsKPiArTFRQIG1haW50YWlu
-ZXJzIGFyZSB3b3JraW5nIG9uIGNvbnZlcnRpbmcgc2hlbGwgc2NyaXB0cyB0byBwbGFpbi1DIHRl
-c3RzLAo+IGluCj4gK29yZGVyIHRvIHJlZHVjZSB0aGUgaW1wYWN0IHRoYXQgc2hlbGwgc2NyaXB0
-cyBtaWdodCBoYXZlIG9uIHRoZSBvdmVyYWxsCj4ga2VybmVsCj4gK3Rlc3RpbmcuCj4gKwo+ICtG
-b3IgYSBjb21wbGV0ZSBsaXN0IG9mIHNoZWxsIHRlc3RzLCBwbGVhc2UgcnVuIHRoZSBmb2xsb3dp
-bmcgY29tbWFuZAo+IGluc2lkZSB0aGUKPiArTFRQIHJvb3QgZm9sZGVyOgo+ICsKPiArLi4gY29k
-ZS1ibG9jazo6IGJhc2gKPiArCj4gKyAgICAgICAgZ2l0IC0tbm8tcGFnZXIgZ3JlcCAtbCAtZSAn
-XlwuIC4qX2xpYlwuc2gnIC1lICdeXC4gLip0ZXN0LnNoJwo+ICsKPiArTFRQIGFsc28gcHJvdmlk
-ZXMgYSBzaGVsbCBsb2FkZXIgaW1wbGVtZW50YXRpb24gZm9yIHBsYWluLUMgdGVzdHMgaW5zaWRl
-Cj4gKzptYXN0ZXI6YHRlc3RjYXNlcy9saWIvdHN0X3J1bl9zaGVsbC5jYCBhbmQgaXQgcGVybWl0
-cyB0byBydW4gc2hlbGwgdGVzdHMKPiAraW50byBwbGFpbi1DIExUUCBBUEksIGZlYXR1cmluZyA6
-cmVmOmBzdHJ1Y3QgdHN0X3Rlc3RgIGluaXRpYWxpemF0aW9ucwo+IGFuZCBhCj4gK2RpcmVjdCBh
-Y2Nlc3MgdG8ga2VybmVsIHN5c2NhbGxzLgo+IGRpZmYgLS1naXQgYS9kb2MvaW5kZXgucnN0IGIv
-ZG9jL2luZGV4LnJzdAo+IGluZGV4IGFjZDE2Y2RiZi4uMDZiNzU2MTZmIDEwMDY0NAo+IC0tLSBh
-L2RvYy9pbmRleC5yc3QKPiArKysgYi9kb2MvaW5kZXgucnN0Cj4gQEAgLTMwLDYgKzMwLDcgQEAK
-PiAgICAgZGV2ZWxvcGVycy9idWlsZF9zeXN0ZW0KPiAgICAgZGV2ZWxvcGVycy9kZWJ1Z2dpbmcK
-PiAgICAgZGV2ZWxvcGVycy9kb2N1bWVudGF0aW9uCj4gKyAgIGRldmVsb3BlcnMvdG9kbwo+Cj4g
-IC4uIHRvY3RyZWU6Ogo+ICAgICA6bWF4ZGVwdGg6IDMKPiBAQCAtOTcsNiArOTgsOSBAQCBGb3Ig
-ZGV2ZWxvcGVycwo+ICA6ZG9jOmBkZXZlbG9wZXJzL2RvY3VtZW50YXRpb25gCj4gICAgIEhvdyB0
-byB1c2UgYW5kIGRldmVsb3AgTFRQIGRvY3VtZW50YXRpb24KPgo+ICs6ZG9jOmBkZXZlbG9wZXJz
-L3RvZG9gCj4gKyAgIExpc3Qgb2YgdGFza3MgbWFpbnRhaW5lcnMgYXJlIHdvcmtpbmcgb24KPiAr
-Cj4gIEZvciBtYWludGFpbmVycwo+ICAtLS0tLS0tLS0tLS0tLS0KPgo+Cj4gLS0tCj4gYmFzZS1j
-b21taXQ6IGNjNDIwODY1YzI5MWMwNGM5MDI5NTdhNmYzMzc1YzgwMTcyMzllNTIKPiBjaGFuZ2Ut
-aWQ6IDIwMjUxMDA2LXJlbW92ZV90b2RvLWMyOWE1ODVlOGIwMQo+Cj4gQmVzdCByZWdhcmRzLAo+
-IC0tCj4gQW5kcmVhIENlcnZlc2F0byA8YW5kcmVhLmNlcnZlc2F0b0BzdXNlLmNvbT4KPgo+Cj4g
-LS0KPiBNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9s
-dHAKPgo+CgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRw
-czovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi!
+> diff --git a/doc/developers/todo.rst b/doc/developers/todo.rst
+> new file mode 100644
+> index 000000000..7daac7322
+> --- /dev/null
+> +++ b/doc/developers/todo.rst
+> @@ -0,0 +1,75 @@
+> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +List of ongoing tasks
+> +=====================
+> +
+> +This is a comprehensive list of tasks where LTP maintainers are currently
+> +working on. Priorities might change over time, but these are the most important
+> +points which are currently being achieved.
+> +
+> +Fade out old tests runner
+> +-------------------------
+> +
+> +:master:`runltp` script is old and unmaintaned. We are slowly shifting to
+> +`kirk <https://github.com/linux-test-project/kirk>`_, that will be our official
+> +tests runner in the next future.
+                       ^
+		  Just: "in the future."
+
+"next future" sounds like we are moving to a parallel reality or some
+kind of scifi stuff.
+
+> +kirk provides support for remote testing via Qemu, SSH, LTX, parallel
+   ^
+   Kirk
+> +execution and much more.
+> +
+> +Test new syscalls
+> +-----------------
+> +
+> +Syscalls and new syscalls flags are added to Linux kernel each development
+> +cycle and LTP still falls behind. Unfortunately there is no single place that
+> +would store comprehensive list of syscalls, but there are a few places to look
+> +at:
+> +
+> +- `man-pages repository <http://git.kernel.org/cgit/docs/man-pages/man-pages.git>`_
+> +  or the ``man2`` directory, where it's possible to find newly documented
+> +  functionalities.
+> +- `LWN <http://lwn.net>`_ weekly editions.
+> +- `linux-api mailing list <https://lore.kernel.org/linux-api/>`_ where
+> +  changes in kernel userspace API are discussed.
+> +- `LTP Github issues <https://github.com/linux-test-project/ltp/issues>`_
+> +
+> +Rewrite old API tests
+> +---------------------
+> +
+> +LTP has a long story and, at certain point of its development, new API were
+> +introduced to make kernel testing easier and more efficient. This happened when
+> +lots of tests were still using old, messy API.
+> +
+> +Some of these tests have been converted to the new API, but this process is
+> +still ongoing for many others. To have an overview of the tests using old API,
+> +please run the following command inside the LTP root folder:
+> +
+> +.. code-block:: bash
+> +
+> +        git --no-pager grep -l 'include "test\.h"' testcases/
+> +
+> +Fade out shell scripts
+> +----------------------
+> +
+> +LTP was initially thought as a generic framework for running tests with both
+> +shell and plain-C languages. Even if writing tests in shell script might seem
+> +easy, the reality is that debugging and maintaining certain test cases is
+> +difficult and slow down the whole validation process. This is particularly
+> +visible for cgroup tests, since shell doesn't add enough control over race
+> +conditions.
+> +
+> +LTP maintainers are working on converting shell scripts to plain-C tests, in
+> +order to reduce the impact that shell scripts might have on the overall kernel
+> +testing.
+> +
+> +For a complete list of shell tests, please run the following command inside the
+> +LTP root folder:
+> +
+> +.. code-block:: bash
+> +
+> +        git --no-pager grep -l -e '^\. .*_lib\.sh' -e '^\. .*test.sh'
+> +
+> +LTP also provides a shell loader implementation for plain-C tests inside
+> +:master:`testcases/lib/tst_run_shell.c` and it permits to run shell tests
+> +into plain-C LTP API, featuring :ref:`struct tst_test` initializations and a
+> +direct access to kernel syscalls.
+
+Maybe we should link the (now empty) shell API page here:
+
+https://linux-test-project.readthedocs.io/en/latest/developers/api_shell_tests.html
+
+I plan to add the shell loader documentation there one day.
+
+
+Otherwise it looks good to me, thanks for writing this.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
