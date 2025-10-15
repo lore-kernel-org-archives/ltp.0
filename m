@@ -4,80 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13F7CCCD194
-	for <ltp@archiver.kernel.org>; Wed, 15 Oct 2025 15:00:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04B4ACCD194
+	for <ltp@archiver.kernel.org>; Wed, 15 Oct 2025 16:02:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8BBBE3CED66
-	for <ltp@archiver.kernel.org>; Wed, 15 Oct 2025 17:00:32 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 348553CED79
+	for <ltp@archiver.kernel.org>; Wed, 15 Oct 2025 18:02:44 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 53FAB3CED26
- for <ltp@lists.linux.it>; Wed, 15 Oct 2025 17:00:16 +0200 (CEST)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 52C233CEC04
+ for <ltp@lists.linux.it>; Wed, 15 Oct 2025 18:02:28 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EB6C5600BB9
- for <ltp@lists.linux.it>; Wed, 15 Oct 2025 17:00:15 +0200 (CEST)
-Received: by mail-wm1-x334.google.com with SMTP id
- 5b1f17b1804b1-46e384dfde0so68153755e9.2
- for <ltp@lists.linux.it>; Wed, 15 Oct 2025 08:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1760540415; x=1761145215; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=Fj/YJs79C9A7+BXS5gs9kbo/SiSelT/8YXKJWpgoQSI=;
- b=SQszpZQzC5mIS8lQTgwWcR4Hu9B6PfVxiHeUHK4/nqW7HRGO5QyxMxz169JBOon3Qc
- FVroKhm1kFa6pNUTscKMmWDh5LVz5OcD9TTVuFZBePMLmDRtkrnvI8+wzEzEo1LOSLUW
- dPYcN4Utuqk8FOsYM0mcaiQpvnUSIaYmsVTEWf1WZ1wxsmX5UFX4T2Co3KwHaIXTXXwo
- q+M3R5e00JNzElMcAlKYFA9kVZQQ2EoDRyGS3Fz6vk7fCJSMEdpmEqvsk6+M2p/GpYWh
- hI6OHk0V08iC9oPOPUV127HqVgTVv1iGiDY76mZReEcyc+sgQFp0aBHLFi0J4DxOttvL
- TJig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1760540415; x=1761145215;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=Fj/YJs79C9A7+BXS5gs9kbo/SiSelT/8YXKJWpgoQSI=;
- b=baVNXl6mtYsGCaCXE8lxU+b+m36we/LcUBi4CHdwnSvI0wIbkxqGkfDjXStYOFTSei
- VOwng/KvRQzWHRvMqevTsYHdikPQKypQYpyHDKFcjvoFu7Hz6IBc2bgX77PMbbRKAkqd
- GSOBl/q4NQZEdehddV54HG+cUsNWxXYSrqb/QMpk4MJ8/qZsqIJjHjrRoeospBacdTE0
- NfY86ELJpNIkWXIcaU01zuC4yZspZ1XjS9+qkbMJsRFR1oKiprgzz0ql1veEB1H+6ohk
- M8dGlNacqteB/8CPV2zSVG8wskD1o4IWVyu/6ixvLBreSwPtjhHmRJeTOrIL4vBw3tuA
- 6MzA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVOu4SZWhwuOzKa91QGcThY7vJd3qdqJrF+qMZxmxJj6jxYCcnGOSZGKgUl3F3rinxDzy0=@lists.linux.it
-X-Gm-Message-State: AOJu0YxzlPuun+Myz1AFSsx1b4lv/01o5gpx+e1AnKPXUfPAxGsiN+xJ
- PywjU4yLiUGpnd2gAR1X23OcX/ufYFLR4wMINxqUuqXunYSjyfH2m3wnLTd/AWd36ZA=
-X-Gm-Gg: ASbGncvWFob/TRkMYwwIhRdyIqwg6vQY84q3KiBMjhtr3kfgn8s6c4pPMGDXiS4Vo3z
- Px0A8iZO0TieJgJ9IZ6NRnX8fWv08X+LXK7NRpNL+/8fVYzZhwTFZWYg1OMQlkK9ZA1/N5jAhwm
- d2HntYFEBzUnBd7RxYxa+eq8/NvJ/zQ6baWcXU54oGeFpAsZmkjYMB3YOH10fnVbefswkGVNbiw
- nocWLkW6eBo2Q4MqAKQb2G9EyptxaOvVPWLigXzd0/V5TAs7sfQrvjc1jHsDaUSKY589CFW70Z+
- ZB/EO86txDISYt+udKYJWWG5kUlHOR6k01TGK6dY1n8QED1WIcNE9ubzKkufoqgPa0pGUFGwhZO
- a4Xh+KLf661dxx521C2xXofSVUtlWIkjKJzBKfeKYVTJQFfSxTvc=
-X-Google-Smtp-Source: AGHT+IFTHHmY0rckqJAZ0d0heU4feWXmYlfjR1/4XvkDqgncexcPomkT3HCwt/QeGuSpP8nr2FQf6g==
-X-Received: by 2002:a05:600c:3f08:b0:46e:4b42:1dbe with SMTP id
- 5b1f17b1804b1-46fa9b075f3mr235127655e9.32.1760540415247; 
- Wed, 15 Oct 2025 08:00:15 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
- by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-426ce589a21sm30296201f8f.23.2025.10.15.08.00.14
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 15 Oct 2025 08:00:14 -0700 (PDT)
-Date: Wed, 15 Oct 2025 18:00:10 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <aO-2-tN418z9wDKm@stanley.mountain>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4E619140098D
+ for <ltp@lists.linux.it>; Wed, 15 Oct 2025 18:02:26 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id ECF89338C7;
+ Wed, 15 Oct 2025 16:02:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1760544146;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2Nye0KzyI5SNlcC7Vr1OWu9D5ApOemMR+iawfb3PsoQ=;
+ b=mkJnl4sgqSZOIDZcJjKUxRwYjB6eKpn9hpPu6lcr4XX94v5JTC09pxy2l9C6Q35KPb+3Of
+ 6JASebCb0BRBvveBNt7fcZDMUqK2LsjAVfOV2OSIILdHafBCvvSJ3SDmbpu5034aTzdySK
+ A83HjPVwpCe49dMLS6VBHE4dU78EIRA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1760544146;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2Nye0KzyI5SNlcC7Vr1OWu9D5ApOemMR+iawfb3PsoQ=;
+ b=gyea+jrk2bmnRUimAdwdSg8KwCKvP6q0gyAqbGedW35LC8ls2A7MltizJ42fIyS5ovoTom
+ pw/IcF88yRrf0bDA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="i/q9ukEp";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+cYVjfIg
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1760544145;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2Nye0KzyI5SNlcC7Vr1OWu9D5ApOemMR+iawfb3PsoQ=;
+ b=i/q9ukEpDkHI/VAZHkUSRneX2uWQd8RMHO7PYGbHMX6VI9dhs/RsR0QFbd8qfheUMMcsQz
+ IOwW0LLctP7R+3fvrvW4g+GtL2jrXy8THRhIUDxJM/vABtLZfg3AxRmQUYkgCJ8JELawg2
+ X0p+/5x3XQun2UeBvc6dRCB7x8ZN0bQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1760544145;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2Nye0KzyI5SNlcC7Vr1OWu9D5ApOemMR+iawfb3PsoQ=;
+ b=+cYVjfIg94gCCmgnXeZ5+X464PHhnTofxUrft1bM5zSYRLFgC1QezJ7GrYvVKnuUKan3Zd
+ WVYIhnMug7WRRSCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9FDBF13A42;
+ Wed, 15 Oct 2025 16:02:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id uHLdJZHF72jeYwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 15 Oct 2025 16:02:25 +0000
+Date: Wed, 15 Oct 2025 18:02:24 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Message-ID: <20251015160224.GC220875@pevik>
 References: <20251015101533.30220-1-ben.copeland@linaro.org>
- <20251015144247.GB220875@pevik>
+ <20251015144247.GB220875@pevik> <aO-2-tN418z9wDKm@stanley.mountain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20251015144247.GB220875@pevik>
-X-Virus-Scanned: clamav-milter 1.0.7 at in-5.smtp.seeweb.it
+In-Reply-To: <aO-2-tN418z9wDKm@stanley.mountain>
+X-Rspamd-Queue-Id: ECF89338C7
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[linaro.org:email];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_SEVEN(0.00)[8];
+ MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.7 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] overcommit_memory: Fix integer overflow and
  32-bit limits
@@ -92,60 +116,102 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: arnd@arndb.de, lkft-triage@lists.linaro.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Oct 15, 2025 at 04:42:47PM +0200, Petr Vorel wrote:
-> > The overcommit test uses sum_total, the sum (memory and swap) to test
-> > the overcommit settings.
-> 
-> > This fixes two problems on 32-bit systems. The first is seen with a
-> > integer overflow can occur when calculating sum_total * 2, if the
-> > sum_total is larger than 2GB. The second is limited virtual address
-> 
-> You still mention GB ...
-> 
+> On Wed, Oct 15, 2025 at 04:42:47PM +0200, Petr Vorel wrote:
+> > > The overcommit test uses sum_total, the sum (memory and swap) to test
+> > > the overcommit settings.
 
-Yep.  It is GB.
+> > > This fixes two problems on 32-bit systems. The first is seen with a
+> > > integer overflow can occur when calculating sum_total * 2, if the
+> > > sum_total is larger than 2GB. The second is limited virtual address
 
-> > space (2-3GB) means the test can fail from address space exhaustion
-> > before overcommit has been tested.
-> 
-> > Now the test runs correctly on low-memory 32-bit systems while avoiding
-> > both the overflow bug and virtual address space issues.
-> 
-> > Signed-off-by: Ben Copeland <ben.copeland@linaro.org>
-> > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> >  .../kernel/mem/tunable/overcommit_memory.c    | 33 +++++++++++++++----
-> >  1 file changed, 27 insertions(+), 6 deletions(-)
-> 
-> > diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
-> > index 9b2cb479d..7ff5a98d0 100644
-> > --- a/testcases/kernel/mem/tunable/overcommit_memory.c
-> > +++ b/testcases/kernel/mem/tunable/overcommit_memory.c
-> > @@ -131,24 +131,45 @@ static void overcommit_memory_test(void)
-> >  	TST_SYS_CONF_LONG_SET(OVERCOMMIT_MEMORY, 2, 1);
-> 
-> >  	update_mem_commit();
-> > -	alloc_and_check(commit_left * 2, EXPECT_FAIL);
-> > -	alloc_and_check(commit_limit + total_batch_size, EXPECT_FAIL);
-> > +	/* Skip tests that would overflow or exceed 32-bit address space */
-> > +	if (tst_kernel_bits() == 64 || (unsigned long)commit_left <= TST_GB / TST_KB) {
-> 
-> ... but TST_GB / TST_KB is actually MB (you could use TST_MB).
-> 
+> > You still mention GB ...
 
-The sizes in this test are measured in KB, so it's 1GB but measured in
-terms of KB not bytes.  Using TST_MB would work mathematically but it's
-misleading.
 
-regards,
-dan carpenter
+> Yep.  It is GB.
+
+> > > space (2-3GB) means the test can fail from address space exhaustion
+> > > before overcommit has been tested.
+
+> > > Now the test runs correctly on low-memory 32-bit systems while avoiding
+> > > both the overflow bug and virtual address space issues.
+
+> > > Signed-off-by: Ben Copeland <ben.copeland@linaro.org>
+> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> > > ---
+> > >  .../kernel/mem/tunable/overcommit_memory.c    | 33 +++++++++++++++----
+> > >  1 file changed, 27 insertions(+), 6 deletions(-)
+
+> > > diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
+> > > index 9b2cb479d..7ff5a98d0 100644
+> > > --- a/testcases/kernel/mem/tunable/overcommit_memory.c
+> > > +++ b/testcases/kernel/mem/tunable/overcommit_memory.c
+> > > @@ -131,24 +131,45 @@ static void overcommit_memory_test(void)
+> > >  	TST_SYS_CONF_LONG_SET(OVERCOMMIT_MEMORY, 2, 1);
+
+> > >  	update_mem_commit();
+> > > -	alloc_and_check(commit_left * 2, EXPECT_FAIL);
+> > > -	alloc_and_check(commit_limit + total_batch_size, EXPECT_FAIL);
+> > > +	/* Skip tests that would overflow or exceed 32-bit address space */
+> > > +	if (tst_kernel_bits() == 64 || (unsigned long)commit_left <= TST_GB / TST_KB) {
+
+> > ... but TST_GB / TST_KB is actually MB (you could use TST_MB).
+
+
+> The sizes in this test are measured in KB, so it's 1GB but measured in
+> terms of KB not bytes.  Using TST_MB would work mathematically but it's
+> misleading.
+
+Ah, I'm sorry to overlook an obvious point.
+
+Implementation details: thinking about the code twice, shouldn't be the check
+for overflow in alloc_and_check() instead of outside (to keep the condition on
+single place)?
+
+Also, if kept outside the 1st and 2nd if could be joined:
+
+	/* Skip tests that would overflow or exceed 32-bit address space */
+	if (tst_kernel_bits() == 64 || (unsigned long)commit_left <= TST_GB / TST_KB) {
+		alloc_and_check(commit_left * 2, EXPECT_FAIL);
+		alloc_and_check(commit_limit + total_batch_size, EXPECT_FAIL);
+		update_mem_commit();
+		alloc_and_check(commit_left / 2, EXPECT_PASS);
+	} else {
+		tst_res(TCONF, "Skipping large allocation tests due to address space limits");
+	}
+
+instead of your proposal:
+
+	update_mem_commit();
+	/* Skip tests that would overflow or exceed 32-bit address space */
+	if (tst_kernel_bits() == 64 || (unsigned long)commit_left <= TST_GB / TST_KB) {
+		alloc_and_check(commit_left * 2, EXPECT_FAIL);
+		alloc_and_check(commit_limit + total_batch_size, EXPECT_FAIL);
+	} else {
+		tst_res(TCONF, "Skipping large allocation tests due to address space limits");
+	}
+	update_mem_commit();
+	if (tst_kernel_bits() == 64 || (unsigned long)commit_left <= TST_GB / TST_KB) {
+		alloc_and_check(commit_left / 2, EXPECT_PASS);
+	} else {
+		tst_res(TCONF, "Skipping commit_left/2 allocation test due to address space limits");
+	}
+
+because update_mem_commit() IMHO just evaluates /proc/meminfo values, but
+when alloc_and_check() is skipped nothing has changed.
+
+Kind regards,
+Petr
+
+> regards,
+> dan carpenter
 
 
 -- 
