@@ -4,78 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99E28CCD193
-	for <ltp@archiver.kernel.org>; Wed, 15 Oct 2025 10:15:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94D3BCCD18E
+	for <ltp@archiver.kernel.org>; Wed, 15 Oct 2025 10:55:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 571573CECFA
-	for <ltp@archiver.kernel.org>; Wed, 15 Oct 2025 12:15:53 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 03C0A3CECFD
+	for <ltp@archiver.kernel.org>; Wed, 15 Oct 2025 12:55:12 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D52B63CE95C
- for <ltp@lists.linux.it>; Wed, 15 Oct 2025 12:15:37 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8C4B93CDDDE
+ for <ltp@lists.linux.it>; Wed, 15 Oct 2025 12:54:54 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 10ECE100093B
- for <ltp@lists.linux.it>; Wed, 15 Oct 2025 12:15:37 +0200 (CEST)
-Received: by mail-wr1-x434.google.com with SMTP id
- ffacd0b85a97d-426f1574a14so846158f8f.3
- for <ltp@lists.linux.it>; Wed, 15 Oct 2025 03:15:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1760523336; x=1761128136; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=G92yyFKKLMqMe0FDbUx86gfMGVeygutugXOd20Apfe8=;
- b=C7ltTURyw7zG9J/tcNB3DvNeY40yNtpm42L5oy5vi76cP2aQOH7J/tadzrbs6W1Q+d
- Erq667SvkNDdBj39UtLLA+QdYcAyM4xVoJv+sD66JOgl2A1kQm4mBMARehCV1oI/3FKV
- dll935VmnBms3HxC7vBSMuIueHElKNVMF8YMiueJiFpcLg1Ir5KMBM/mhGMdHV0kMAH1
- LYcwiKW7mARm13y4Ct17rvsQCwfiHWwuRQwqUDu8yeegBgQK+bTW81If7l+ptX3miPkV
- rYNhJFvspxO1w5ZD1y13DiVWpOIbluus2sYuZuyFGrUuZUHxbapSFLt5K2IGMdOJB4J7
- Ts2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1760523336; x=1761128136;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=G92yyFKKLMqMe0FDbUx86gfMGVeygutugXOd20Apfe8=;
- b=dkYDxbxrSjVQjBSUwj1Gz6wSsxdLKghp7EfsUNiYsp78f7HSbzWLkIEd50NCg9OlJM
- VDiLgWdapmNp+WfRdkCnan2PsvaWuDQ620uYpswXVcC27vHEqCV6DIS/rp6Ay/bqME5u
- NtzaZ9dc6mJPz43y2l/6nc1LXIHuejmlIECXosR6EgVW+D/i0oKAskoD+lIHitSbpT3e
- NJS1ESS4tgr0i0xyRb/4whxGOFbu9dpErMs9F2QwFuQ+TBkr497jR9Q8KBhtFs7iOqYn
- pf31yxtBZo2vC3VrZqse6py7xNl0cR7HiM85DtO3t1bUUwPTdz+yfihBzmFVpxEFb5L2
- 34lg==
-X-Gm-Message-State: AOJu0YxMAlrsVRWdnWfKHq6c1XjQBM6nNv12V8+YLHX4OasVNnm2EU1T
- MrZ+bLHLVfJdCQwAl2b7Rjf/YRZEUJr5Ly1vMRIpuJHa1ABfV4FxccS3U5/MmPhoffAo2B9nyhP
- SdLvkzw==
-X-Gm-Gg: ASbGnctS6+y/rtYQo0IGAG8mHlLgzrXW6U5dAktmMopR23F6LDKfCIfUVBQOnMFKeLB
- QUGix36Svy4hwfpM+FUDMpqQ7KkdHn8W3lYBdxQXH77PNFsu++sfmyAyLML1DNkR+pQC8IBgQWQ
- atSBCCJxmoICO8Lk802lyH4ZsiDnNb/7MolUZmbKsCIr3mgoKHDABWEpcOvhPkdyxXl5PVYtoK5
- GumpEIrmbg14iqFLilXQ3RwjRXSxHn28LWeoZ8FY1ELRxel7mMspanpNTzwjRY+X5MGaOlGRDa3
- 8hjIJKH2l1Y/ubIdWrbKSG4EAOpiFTmHsDt4GKOEQAccc1zL3F8KbsmdXPbTp4cXJHocuF8U51k
- TX2EZ1KEDdijG3SLcyZWJBHom8/rhTkP0rI9zQijkqPa3EA9uLLdtimhV3AWbgQ==
-X-Google-Smtp-Source: AGHT+IGmU7f1YhZiXeJwOT59+24j0NZUYBF8+0rL3Zc4TPLj+JrzW21RqlwQh8E9JHY3r4gcS/dKpg==
-X-Received: by 2002:a05:6000:41d1:b0:403:6f7d:ac5d with SMTP id
- ffacd0b85a97d-4266e7dfaf4mr16627300f8f.34.1760523336154; 
- Wed, 15 Oct 2025 03:15:36 -0700 (PDT)
-Received: from pickles.copeland.me.uk ([149.40.2.133])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-426ce5d0061sm28316910f8f.30.2025.10.15.03.15.35
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 15 Oct 2025 03:15:35 -0700 (PDT)
-From: Ben Copeland <ben.copeland@linaro.org>
-To: ltp@lists.linux.it
-Date: Wed, 15 Oct 2025 11:15:33 +0100
-Message-ID: <20251015101533.30220-1-ben.copeland@linaro.org>
-X-Mailer: git-send-email 2.51.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DE01920021C
+ for <ltp@lists.linux.it>; Wed, 15 Oct 2025 12:54:53 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8EBFE1FB88;
+ Wed, 15 Oct 2025 10:54:52 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 809A113A29;
+ Wed, 15 Oct 2025 10:54:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 5r1bHnx972i/MAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 15 Oct 2025 10:54:52 +0000
+Date: Wed, 15 Oct 2025 12:55:45 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aO99sW4_5_ntsHNr@yuki.lan>
+References: <20251014145020.178840-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.7 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20251014145020.178840-1-pvorel@suse.cz>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 8EBFE1FB88
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Virus-Scanned: clamav-milter 1.0.7 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] overcommit_memory: Fix integer overflow and 32-bit
- limits
+Subject: Re: [LTP] [PATCH 1/2] doc: Convert tst_kvercmp.h to RST
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,90 +72,222 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: arnd@arndb.de, lkft-triage@lists.linaro.org, dan.carpenter@linaro.org
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The overcommit test uses sum_total, the sum (memory and swap) to test
-the overcommit settings.
+Hi!
+> Could you please check my English.
+> @Cyril you're the author of the functions, please check my description.
 
-This fixes two problems on 32-bit systems. The first is seen with a
-integer overflow can occur when calculating sum_total * 2, if the
-sum_total is larger than 2GB. The second is limited virtual address
-space (2-3GB) means the test can fail from address space exhaustion
-before overcommit has been tested.
+Will do, btw some of the functions there are actually older than my
+involvement in LTP...
 
-Now the test runs correctly on low-memory 32-bit systems while avoiding
-both the overflow bug and virtual address space issues.
+>  doc/developers/api_c_tests.rst |  1 +
+>  include/tst_kvercmp.h          | 78 +++++++++++++++++++++++++++++-----
+>  2 files changed, 69 insertions(+), 10 deletions(-)
+> 
+> diff --git a/doc/developers/api_c_tests.rst b/doc/developers/api_c_tests.rst
+> index ad384a1bbd..5ab945fe51 100644
+> --- a/doc/developers/api_c_tests.rst
+> +++ b/doc/developers/api_c_tests.rst
+> @@ -41,6 +41,7 @@ Guarded buffers
+>  Kernel
+>  ------
+>  .. kernel-doc:: ../../include/tst_kernel.h
+> +.. kernel-doc:: ../../include/tst_kvercmp.h
+>  
+>  NUMA
+>  ----
+> diff --git a/include/tst_kvercmp.h b/include/tst_kvercmp.h
+> index fbefa0f793..bfe943a304 100644
+> --- a/include/tst_kvercmp.h
+> +++ b/include/tst_kvercmp.h
+> @@ -6,39 +6,97 @@
+>  #ifndef TST_KVERCMP_H__
+>  #define TST_KVERCMP_H__
+>  
+> -/*
+> +/**
+> + * tst_kvcmp() - Compare given kernel version with kernel in string.
+> + *
+> + * @cur_kver: Kernel version in string (struct utsname.release).
+                                 ^
+				drop the 'in', i.e. just "Kernel version string"
 
-Signed-off-by: Ben Copeland <ben.copeland@linaro.org>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
----
- .../kernel/mem/tunable/overcommit_memory.c    | 33 +++++++++++++++----
- 1 file changed, 27 insertions(+), 6 deletions(-)
+And maybe add:
 
-diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
-index 9b2cb479d..7ff5a98d0 100644
---- a/testcases/kernel/mem/tunable/overcommit_memory.c
-+++ b/testcases/kernel/mem/tunable/overcommit_memory.c
-@@ -131,24 +131,45 @@ static void overcommit_memory_test(void)
- 	TST_SYS_CONF_LONG_SET(OVERCOMMIT_MEMORY, 2, 1);
- 
- 	update_mem_commit();
--	alloc_and_check(commit_left * 2, EXPECT_FAIL);
--	alloc_and_check(commit_limit + total_batch_size, EXPECT_FAIL);
-+	/* Skip tests that would overflow or exceed 32-bit address space */
-+	if (tst_kernel_bits() == 64 || (unsigned long)commit_left <= TST_GB / TST_KB) {
-+		alloc_and_check(commit_left * 2, EXPECT_FAIL);
-+		alloc_and_check(commit_limit + total_batch_size, EXPECT_FAIL);
-+	} else {
-+		tst_res(TCONF, "Skipping large allocation tests due to address space limits");
-+	}
- 	update_mem_commit();
--	alloc_and_check(commit_left / 2, EXPECT_PASS);
-+	if (tst_kernel_bits() == 64 || (unsigned long)commit_left <= TST_GB / TST_KB) {
-+		alloc_and_check(commit_left / 2, EXPECT_PASS);
-+	} else {
-+		tst_res(TCONF, "Skipping commit_left/2 allocation test due to address space limits");
-+	}
- 
- 	/* start to test overcommit_memory=0 */
- 	TST_SYS_CONF_LONG_SET(OVERCOMMIT_MEMORY, 0, 1);
- 
- 	update_mem();
- 	alloc_and_check(free_total / 2, EXPECT_PASS);
--	alloc_and_check(sum_total * 2, EXPECT_FAIL);
-+	/* Skip if sum_total * 2 would exceed address space.
-+	 * On 32-bit, skip when sum_total > ULONG_MAX/4 (~1GB).
-+	 * Most 32-bit systems with <=1GB RAM can map 2x that in 3GB vaddr space.
-+	 * Systems with 2GB+ RAM likely cannot fit allocations in vaddr space. */
-+	if (tst_kernel_bits() == 64 || (unsigned long)sum_total <= TST_GB / TST_KB) {
-+		alloc_and_check(sum_total * 2, EXPECT_FAIL);
-+	} else {
-+		tst_res(TCONF, "Skipping large allocation test due to address space limits");
-+	}
- 
- 	/* start to test overcommit_memory=1 */
- 	TST_SYS_CONF_LONG_SET(OVERCOMMIT_MEMORY, 1, 1);
- 
- 	alloc_and_check(sum_total / 2, EXPECT_PASS);
--	alloc_and_check(sum_total, EXPECT_PASS);
--	alloc_and_check(sum_total * 2, EXPECT_PASS);
-+	if (tst_kernel_bits() == 64 || (unsigned long)sum_total <= TST_GB / TST_KB) {
-+		alloc_and_check(sum_total, EXPECT_PASS);
-+		alloc_and_check(sum_total * 2, EXPECT_PASS);
-+	} else {
-+		tst_res(TCONF, "Skipping large allocation tests due to address space limits");
-+	}
- 
- }
- 
+"Everything after first three version numbers till the end of the string is ignored".
+
+> + * @r1: Required major kernel version.
+> + * @r2: Required minor kernel version.
+> + * @r3: Required kernel patch level.
+
+Requied is probably not the right word, since we just compare two kernel
+versions. At this point we have no idea about the purpose of the
+comparsion.
+
+Maybe just:
+
+@r1: Major kernel version.
+...
+
+>   * The same as tst_kvercmp() but running kernel version is passed as parameter
+>   * instead of utilizing uname().
+> + *
+> + * Return: Negative if older, 0 if the same and positive if newer.
+>   */
+>  int tst_kvcmp(const char *cur_kver, int r1, int r2, int r3);
+>  
+> -/*
+> - * Parsers string into three integer version.
+> +/**
+> + * tst_parse_kver() - Parsers string into three integer version.
+                             ^
+			     Parses
+
+Also the words in the sentence should be reordered as:
+
+Parses a version string into three integers.
+
+> + *
+> + * @str_kver: Kernel version in string (struct utsname.release).
+                                ^
+				Here as well.
+
+And we should probably add the sentence that everything after the three
+numbers is ignored.
+
+> + * @v1: Major kernel version.
+> + * @v2: Minor kernel version.
+> + * @v3: Kernel patch level.
+> + *
+> + * Return: 0 on success, 1 on error.
+>   */
+>  int tst_parse_kver(const char *str_kver, int *v1, int *v2, int *v3);
+>  
+> -/*
+> - * Returns distribution name parsed from kernel version string or NULL.
+> +/**
+> + * tst_kvcmp_distname() - Get the distribution name from kernel version string.
+> + *
+> + * @cur_kver: Kernel version in string (struct utsname.release).
+                                 ^
+				 Here as well.
+
+> + * Return: The distribution name parsed from kernel version string or NULL.
+>   */
+>  const char *tst_kvcmp_distname(const char *cur_kver);
+>  
+> -/*
+> - * Compares versions up to five version numbers long.
+> +/**
+> + * tst_kvexcmp() - Compares versions up to five version numbers long.
+
+
+> + * @tst_exv: The tested kernel version in string (struct utsname.release).
+> + * @cur_kver: The current version in string (struct utsname.release).
+
+Drop the 'in' here as well.
+
+> + * The return value is similar to the 'strcmp()' function, i.e. zero means
+> + * equal, negative value means that the kernel is older than the expected value
+> + * and positive means that it's newer.
+               ^
+	       This should probably be in the tst_kvercmp() description
+	       as well.
+
+
+> + * Return: negative if older, 0 if the same and positive if newer.
+              ^
+	      N (since we end the sentence with dot)
+>   */
+>  int tst_kvexcmp(const char *tst_exv, const char *cur_kver);
+>  
+> -/*
+> - * Compare given kernel version with currently running kernel.
+> +/**
+> + * tst_kvercmp() - Compare given kernel version with the currently running kernel.
+
+"Compare a kernel version against currently running kernel."
+
+> - * Returns negative if older, 0 if the same and positive if newer.
+> + * @r1: Required major kernel version.
+> + * @r2: Required minor kernel version.
+> + * @r3: Required kernel patch level.
+
+Here as well, drop the Required.
+
+> + * Parse the output from 'uname()' and compare it to the passed values.
+> + *
+> + * The return value is similar to the 'strcmp()' function, i.e. zero means
+> + * equal, negative value means that the kernel is older than the expected value
+> + * and positive means that it's newer.
+
+Maybe it would be shorter and more to the point to explain here that
+this is the same as calling tst_kvcmp() with `uname -r` as str_kver.
+
+E.g.:
+
+Parse the output from 'uname()' and compare it to the passed values.
+This is shortcut for calling tst_kvcmp() with `uname -r` as str_kver.
+
+
+> + * Return: negative if older, 0 if the same and positive if newer.
+              ^
+	      N
+>   */
+>  int tst_kvercmp(int r1, int r2, int r3);
+>  
+> +/**
+> + * struct tst_kern_exv - describe vendor kernel.
+> + *
+> + * @dist_name: A distribution name, e.g. "SLES", "RHEL9", "UBUNTU"
+> + * @extra_ver: A vendor kernel version to check, e.g. "5.14.0-441".
+> + */
+>  struct tst_kern_exv {
+>  	char *dist_name;
+>  	char *extra_ver;
+>  };
+>  
+> +/**
+> + * tst_kvercmp2() - Compare given *distro* kernel version with the currently running kernel.
+> + *
+> + * @r1: Major kernel version.
+> + * @r2: Minor kernel version.
+> + * @r3: Kernel patch level.
+> + * @vers: struct tst_kern_exv.
+                                  ^
+The array has to be NULL dist_name terminated.
+
+> + * The return value is similar to the 'strcmp()' function, i.e. zero means
+> + * equal, negative value means that the kernel is older than the expected value
+> + * and positive means that it's newer.
+
+Here we completely miss the purpose of the function, something as:
+
+Attempts to look up a distro specific kernel version from the
+tst_kern_exv table first and if no match is found falls back to the
+version passed in r1, r2, r3. The distribution name is detected either
+from the kernel release string e.g. el9 is mapped to RHEL9 or as a
+capitalized value of the "ID=" variable from /etc/os-release.
+
+> + * Return: negative if older, 0 if the same and positive if newer.
+              ^
+	      N
+> + */
+>  int tst_kvercmp2(int r1, int r2, int r3, struct tst_kern_exv *vers);
+>  
+>  #endif	/* TST_KVERCMP_H__ */
+> -- 
+> 2.51.0
+> 
+
 -- 
-2.51.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
