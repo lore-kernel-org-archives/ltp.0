@@ -4,92 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E5F1CCD195
-	for <ltp@archiver.kernel.org>; Fri, 17 Oct 2025 07:51:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1760687492; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=ZG4M4kHtGxaFHhfyZv0g0HImaoZRJvwo7aw+Jg/E87E=;
- b=hsoixCxPokOYm70roTGH6bM7wEO5/Vj0RJceIxyY1CWPPpdiTE2uDZLJPedu4IP4RvY/c
- Xg0DALGA/IUFKhxSi1JlhgT4YZX0D6uVdI9kGYsH2PwOjHy1uxXcYbkuUH+7Nly2H1Q0/cW
- cJJ2BCWJuMW7ADZITID9SUpoNeya+S4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EF5BCCD195
+	for <ltp@archiver.kernel.org>; Fri, 17 Oct 2025 09:21:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 586793CEE40
-	for <ltp@archiver.kernel.org>; Fri, 17 Oct 2025 09:51:32 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 5A0D33CEE60
+	for <ltp@archiver.kernel.org>; Fri, 17 Oct 2025 11:21:01 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 593D23C20D2
- for <ltp@lists.linux.it>; Fri, 17 Oct 2025 09:51:11 +0200 (CEST)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
+ by picard.linux.it (Postfix) with ESMTPS id DE7023C52D5
+ for <ltp@lists.linux.it>; Fri, 17 Oct 2025 11:20:45 +0200 (CEST)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com
+ [IPv6:2607:f8b0:4864:20::430])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 90BBA600B14
- for <ltp@lists.linux.it>; Fri, 17 Oct 2025 09:51:10 +0200 (CEST)
-Received: by mail-wm1-x32e.google.com with SMTP id
- 5b1f17b1804b1-47109187c32so8131325e9.2
- for <ltp@lists.linux.it>; Fri, 17 Oct 2025 00:51:10 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E154E600625
+ for <ltp@lists.linux.it>; Fri, 17 Oct 2025 11:20:44 +0200 (CEST)
+Received: by mail-pf1-x430.google.com with SMTP id
+ d2e1a72fcca58-7811fa91774so1579872b3a.0
+ for <ltp@lists.linux.it>; Fri, 17 Oct 2025 02:20:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1760687470; x=1761292270; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=BNNeRuLEZGysqJDJnXmtWM8mrQbND8IBX9vIRpD1v0A=;
- b=DU7difto2siBnIO0JpDPXzhGhPqcWFGB3AaZQGpvoiwGU1ClfzLityUaXUf07/pT+6
- xoMg7wGATttilQupR4xjjAWTsQwb0VnQoYK6A0ni+JgBWK/my0DY7kuRnwyYxpEklSGY
- Lsqa+DekVM11ffxYGFv4cL6MyVhSPpdqLp1xEuSqjpIRbQK71wopUiwsRjvf/biDC7DB
- 3Bxz/xPkzwWOLJyV/wyOs8T6Tprn9xHwBcRoY5TmJDHSxblfwazElGyk7b0O1AQrKbrc
- U6Fi9ylarOQkvSVi2qkxJrdUTMApRtz52fx+tCOXlxol6eFGMI8Ka2kG+08ubZiai13P
- emnA==
+ d=linaro.org; s=google; t=1760692843; x=1761297643; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=LhknjiEqyUugoHigEu5rPV98JBjQEuOdpnABFTzWfmA=;
+ b=l2EDawqfuR0AVC0D+D/BDmc7MNiZHfAnts8nR5CGaeAhke8e3ZXV6lcfh8s+4Gr5U0
+ I7eHOcAgIu0z1QD/PVh+UJJRLnk1D77T3xA6te1d5JrLasMHiemDT1kl0HRf++4dOqWI
+ akNQJWqUHgfRqGSecNiWYkxrTBP/E0rryaP5Rm5k+G41FmG5tnxjn32jNpghOrNKfkFl
+ UUhGBwwRG3kjGDWOCMg2KTz2quXJU8GqgjxIsxchZua8dj6EBIZhdKdrs4DY6xpc6FZ/
+ 8VSqM4qdSwLlL7axV/vl1iWz4xEmQ31YqOgIBXkBVuO8W/J+O4UUXaDjvpf4WxOSJssf
+ pwHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1760687470; x=1761292270;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=BNNeRuLEZGysqJDJnXmtWM8mrQbND8IBX9vIRpD1v0A=;
- b=Tjmpiyve4N0oXksHfT8X8plx/ywQyjWiidoq8fooczyPSVS0h0GVeaQfHukRvuvQjS
- QzalLljHs7KprwMoQdqu3DDzUO7UXSFjpZJaCXzpa0py7oduEHD/4nHYAinTM0XXhS5p
- 7QGMW8m7jXNt+X3LJKFg+fHIq3Nfj252DgxEGyVZqrNS7yVRi7ShJaxntHCgAJmzhbcF
- KF2VHqG7dTrM1GURdNC35NYibb1AMO2Eb7cw1o5iSqydxJiee+iaRK7UWYkeCUrY3m8w
- U+jrerSJ/W5vo39rzQDi8Gden6IMzBuNbmIY1qRHEZAimuCk3bFiWNL+0JhJwSIWsccV
- B5yw==
-X-Gm-Message-State: AOJu0YwU+kkM0tAa8/WSEbzYT1eMMfP+1Km91ifp2kuWNjNzVzjh9xma
- qHADaoUVjZqhtZpiD9j/WJITHhNPgsC95s8t7NBX+PDcTt3qcXhtoD7ClWsAM5m8BpJe2sXL7oE
- ucjY=
-X-Gm-Gg: ASbGncv801zR29KlqmVqKfM+NVVgmWijtxK9/guG9Ta0t3QvTXHWGfRm2XKMF1wJTKk
- cWx0dp7ttcmXVBuWHxFIw3u9guYh42DSbc0LZqPjfXMTi0Z9AlF3WM7lN5qGERXbCRB7wgo1qRd
- OsZ2M3dYM/SwKeIhgYTFUErwu0pkyu5k6X2gzImWIB6l0BhwTgw/8JZhLUXb/vvcNhoU3x1eipu
- Ps4Zlf6cm5WlZR952BspZhZrXZxB5ju32aRFO2scSoPwtLtJQ1dMxKnVk777UKILFK+UuWHc/mY
- ohl5YomoLEgGv16PM8kp5i33h0Xt0PhBAY35LwC1Uijh5NCJ1J7OMoz1Fd93N5uIwOlDf6t7DzC
- cUyecP3RC96OTTxj7XLZtcFZV3iSrcNSS3r5HQXxZuFHtOPIDwiTKT59/mHnIMZrA+Gp2OV1vpz
- g=
-X-Google-Smtp-Source: AGHT+IH3AeveMZzr9+MCjdqtXII3Xe2I98QcUcymIztI1xhuzvJYMepfY2xW68TM6vCG8XzeQgM/EA==
-X-Received: by 2002:a05:600c:5299:b0:46e:3dc2:ebac with SMTP id
- 5b1f17b1804b1-4711791747dmr19089505e9.27.1760687469869; 
- Fri, 17 Oct 2025 00:51:09 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4711443ec3asm65898985e9.11.2025.10.17.00.51.09
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Oct 2025 00:51:09 -0700 (PDT)
-Date: Fri, 17 Oct 2025 07:51:07 +0000
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <aPH1a43lTn_CKnH1@localhost>
-References: <20250827230301.32614-1-wegao@suse.com>
- <20251015031540.2120-1-wegao@suse.com>
- <20251016133203.GA284465@pevik>
+ d=1e100.net; s=20230601; t=1760692843; x=1761297643;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=LhknjiEqyUugoHigEu5rPV98JBjQEuOdpnABFTzWfmA=;
+ b=bWhi6UTdpESUmEbww9sFxy7dSefJaEEUTZAnWuTsWlEbsf8TG8R400M2lLE92srmWF
+ a2YH0uf9dW4FPas9Q8CEs5ZbCKo4/gz/TjmW9ae1PcVPH0sf3akV83KWfBiLMb2Q/ORJ
+ ocvy2Gth7DXcBbHzxxEHFgJ4pizk+vtWzdHiGokAisztzOnM376KvVu+YkJtQCp8jULv
+ 3gTJhpmgVtrrJqF3o+X/mSkCwGHFxGH82RtdgyJt2WXsbu59ToUEB4gKXuVh2E38////
+ WKBGYOqotnRQ9HwtOYMwDSdgYGz/ybo4XcjE3Xvi5y+Qx4Ijr6TPIz+4xqCZejDZR7YA
+ 9b9A==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUuncZudgZS3d1p5T0r6B42MwEMG/6Bc2nHGtPbKCgIDie958qI5lgr3NliciMxqAF1RT0=@lists.linux.it
+X-Gm-Message-State: AOJu0YznuuiEGxAF2H8+OMx7qxKHzjxaIyQ6TgTWkAsCJ4PsGOMgxKom
+ uxd/lx/rqs5YQ02aU9e29AeIdOR1Y9XvIdTmekS9Epr/nhkLA/zAlDCnGi7I+w/EzPf1UrAJayU
+ p0kQND21uzixfX7C3dV7kN9TTn9Qm2tgwKl6nSO05sg==
+X-Gm-Gg: ASbGncuaY1QXaau7IUzoNR1knaGNl5H0vrnsAzWHq9q0l21eOzo19TMQoy/HtUTANB0
+ XWMfKfdlegfhg35XEVH8AU8RJ5nabecwf/tORMhGFn8YJ6jXvSDZoIDDsAfV22xndpuqmMEE8PI
+ 25FklJ/Ql8E+fid9OUapt5/1UZAI+rraT9rW9mgLjf0ayuOtYL86b2Dcp8GEzhcUaeBTEb6I4tD
+ ZAi9CuXp1rRMah1FhQYx+83AKmFkwnFb08KW1ytyiXtUdgqSJKKZCPg2sEQXWIdOnmC370iKAnY
+ UFISkAYLkf6x93Hmou1n4PyMbRSqKsY5JTYyUfjT99DSrWAzsw==
+X-Google-Smtp-Source: AGHT+IH8McWMlP4j6h/In61PzhIcYXxJLdaulFUt4hQVbIPHKC+IElEF8O1paYDYvmL7uBRRfha5zKIJziU3JZlwoqY=
+X-Received: by 2002:a17:903:b0e:b0:25c:d4b6:f111 with SMTP id
+ d9443c01a7336-290cb65b633mr37181575ad.47.1760692843202; Fri, 17 Oct 2025
+ 02:20:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20251016133203.GA284465@pevik>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+References: <CA+G9fYuF44WkxhDj9ZQ1+PwdsU_rHGcYoVqMDr3AL=AvweiCxg@mail.gmail.com>
+In-Reply-To: <CA+G9fYuF44WkxhDj9ZQ1+PwdsU_rHGcYoVqMDr3AL=AvweiCxg@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 17 Oct 2025 14:50:31 +0530
+X-Gm-Features: AS18NWDlNGurivO1eFZTkxH5OkdGuvePuO7Z9_9bbaV5WCId2Ea8RDnwy82C9Ic
+Message-ID: <CA+G9fYtUp3Bk-5biynickO5U98CKKN1nkE7ooxJHp7dT1g3rxw@mail.gmail.com>
+To: open list <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org, 
+ lkft-triage@lists.linaro.org,
+ Linux Regressions <regressions@lists.linux.dev>, 
+ LTP List <ltp@lists.linux.it>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] mremap07.c: New case check mremap with
- MREMAP_DONTUNMAP
+Subject: Re: [LTP] 6.18.0-rc1: LTP syscalls ioctl_pidfd05: TFAIL:
+ ioctl(pidfd, PIDFD_GET_INFO_SHORT,
+ info_invalid) expected EINVAL: ENOTTY (25)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,51 +89,99 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
+Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Ben Copeland <benjamin.copeland@linaro.org>,
+ Andrey Albershteyn <aalbersh@kernel.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Oct 16, 2025 at 03:32:03PM +0200, Petr Vorel wrote:
-> Hi Wei,
-> 
-> ...
-> > +static void run(void)
-> > +{
-> > +	pthread_t handler_thread;
-> > +
-> > +	SAFE_PTHREAD_CREATE(&handler_thread, NULL,
-> > +		(void * (*)(void *))fault_handler_thread, NULL);
-> > +
-> > +#if HAVE_DECL_MREMAP_DONTUNMAP
-> This is a compile check, whole test should be wrapped with #ifdef and fallback
-> using TST_TEST_TCONF() macro.
-> 
-> #include "config.h"
-> #include "tst_test.h"
-> ...
-> #ifdef HAVE_DECL_MREMAP_DONTUNMAP
-> // other includes
-> 
-> #else
-> TST_TEST_TCONF("Missing MREMAP_DONTUNMAP in <linux/mman.h>");
-> #endif
-> 
-> This quits tests early.
-Good.
-> And please use #ifdef.
-When MREMAP_DONTUNMAP can not be found config.h will contain:
-#define HAVE_DECL_MREMAP_DONTUNMAP 0
-So i suppose we should use #if instead of #ifdef otherwise compile issue
-will happen on old platform.
-If you agree then i will prepare new patch.
-Thanks.
-> 
-> Kind regards,
-> Petr
++ LTP mailing list,
+
+On Fri, 17 Oct 2025 at 14:21, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> The LTP syscalls ioctl_pidfd05 test failed due to following error on
+> the Linux mainline
+> kernel v6.18-rc1-104-g7ea30958b305 on the arm64, arm and x86_64.
+>
+> The Test case is expecting to fail with EINVAL but found ENOTTY.
+
+[Not a kernel regression]
+
+From the recent LTP upgrade we have newly added test cases,
+ioctl_pidfd()
+
+The test case is meant to test,
+
+Add ioctl_pidfd05 test
+Verify that ioctl() raises an EINVAL error when PIDFD_GET_INFO
+ is used.
+ This happens when:
+   - info parameter is NULL
+   - info parameter is providing the wrong size
+
+However, we need to investigate the reason for failure.
+
+Test case: https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/ioctl/ioctl_pidfd05.c
+
+>
+> Please investigate this reported regression.
+>
+> First seen on v6.18-rc1-104-g7ea30958b305
+> Good: 6.18.0-rc1
+> Bad: 7ea30958b3054f5e488fa0b33c352723f7ab3a2a
+>
+> Regression Analysis:
+> - New regression? yes
+> - Reproducibility? yes
+>
+> Test regressions: 6.18.0-rc1: LTP syscalls ioctl_pidfd05: TFAIL:
+> ioctl(pidfd, PIDFD_GET_INFO_SHORT, info_invalid) expected EINVAL:
+> ENOTTY (25)
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> ## Test error log
+> tst_buffers.c:57: TINFO: Test is using guarded buffers
+> tst_test.c:2021: TINFO: LTP version: 20250930
+> tst_test.c:2024: TINFO: Tested kernel: 6.18.0-rc1 #1 SMP PREEMPT
+> @1760657272 aarch64
+> tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+> tst_kconfig.c:676: TINFO: CONFIG_TRACE_IRQFLAGS kernel option detected
+> which might slow the execution
+> tst_test.c:1842: TINFO: Overall timeout per run is 0h 21m 36s
+> ioctl_pidfd05.c:45: TPASS: ioctl(pidfd, PIDFD_GET_INFO, NULL) : EINVAL (22)
+> ioctl_pidfd05.c:46: TFAIL: ioctl(pidfd, PIDFD_GET_INFO_SHORT,
+> info_invalid) expected EINVAL: ENOTTY (25)
+> Summary:
+> passed   1
+> failed   1
+>
+> ## Source
+> * Kernel version: 6.18.0-rc1
+> * Git tree: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> * Git describe: v6.18-rc1-104-g98ac9cc4b445
+> * Git commit: 98ac9cc4b4452ed7e714eddc8c90ac4ae5da1a09
+> * Architectures: arm64, x86_64
+> * Toolchains: gcc-13 clang
+> * Kconfigs: defconfig+lkftconfig
+>
+> ## Build
+> * Test log: https://lkft.validation.linaro.org/scheduler/job/8495154#L15590
+> * Test details:
+> https://regressions.linaro.org/lkft/linux-mainline-master/v6.18-rc1-104-g98ac9cc4b445/ltp-syscalls/ioctl_pidfd05/
+> * Build plan: https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/34AVGrBMrEy9qh7gqsguINdUFFt
+> * Build link: https://storage.tuxsuite.com/public/linaro/lkft/builds/34AVFcbKDpJQfCdAQupg3lZzwFY/
+> * Kernel config:
+> https://storage.tuxsuite.com/public/linaro/lkft/builds/34AVFcbKDpJQfCdAQupg3lZzwFY/config
+>
+> --
+> Linaro LKFT
+
+- Naresh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
