@@ -4,102 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6879CCCD1A5
-	for <ltp@archiver.kernel.org>; Tue, 21 Oct 2025 11:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6E04CCD1A7
+	for <ltp@archiver.kernel.org>; Tue, 21 Oct 2025 13:21:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1761052898; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=W6/UzqMi1+JP54wSdZT2bAOox4lgsAyspkm7Ub/1edI=;
+ b=kQ88xMub0dh5aOXGX4Rvk9r5r6QMCLT2GWcHbLUG4EUVgUFpf7GiWYQYlz/f2EriztEt6
+ 1xe8gXsOVhI9En56ZSxjhZ1mswpaC8gwwbXhPW8XbHJUNUhRkI+3AfkovIs3fqQ0PgXIX9S
+ DP/gVIINerkbIhcewQyZZlb9btm3Wv0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CFDBD3CF02E
-	for <ltp@archiver.kernel.org>; Tue, 21 Oct 2025 13:24:21 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 536FA3CF054
+	for <ltp@archiver.kernel.org>; Tue, 21 Oct 2025 15:21:38 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C5E4A3C8535
- for <ltp@lists.linux.it>; Tue, 21 Oct 2025 13:24:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 998C23CEFAE
+ for <ltp@lists.linux.it>; Tue, 21 Oct 2025 15:21:18 +0200 (CEST)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4017E2000A3
- for <ltp@lists.linux.it>; Tue, 21 Oct 2025 13:24:03 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 802962116F;
- Tue, 21 Oct 2025 11:23:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1761045838;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6tdiNHS3uTcxTHFKesm1sIdOP+e0li8OP8DZrgbA7EE=;
- b=pKlyTfC8iCi3PfXSyDtkearwPR2RIroCHO3p8uzHGq/sLhz8fz6zJtbtgGlueqZ1F6shDt
- S/fvhLzxCslthAl4a38BrH4ZmWVphdRI1Ze86JI3dfmgGQpEqEzZH9HL2p9aQPbYNTd1pv
- s2jPidiXqTFR2YjbIFCacExrhH0cntA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1761045838;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6tdiNHS3uTcxTHFKesm1sIdOP+e0li8OP8DZrgbA7EE=;
- b=+my+oC7BMFAySCnYZraOuORxzNGdiTeKx8cKsuQ9GGotL1Ku+UhCtf66JcvzaIZeqyqrlu
- tfjKZGSQJk68gXDA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1761045834;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6tdiNHS3uTcxTHFKesm1sIdOP+e0li8OP8DZrgbA7EE=;
- b=GC2JIQ6bwKNy1ZcAhVDA3kwTmLcVWBsIf3z6Izq8t4JgSgDcdN0s4PKOFdm/cjVqETgsOp
- oQorMKGAJyedhwwOP6eMdrcZzHSRAdKJt24Ob7bbjH9097oMfMtWgxVu7TvYB/CcywL0pk
- 1k4crAkDfFSA7o982dIlsiJr19LI88A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1761045834;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6tdiNHS3uTcxTHFKesm1sIdOP+e0li8OP8DZrgbA7EE=;
- b=fylZ09aZwWNpCpM/E6Hd0zf310QJnNVDBXr5OeSWrSMOgp/7YPA0bh82S8uAFRuzGT9eWC
- rXOs8i8uI/qRrNDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F5B1139D2;
- Tue, 21 Oct 2025 11:23:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id cfBIFkpt92i/OgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 21 Oct 2025 11:23:54 +0000
-Date: Tue, 21 Oct 2025 13:23:49 +0200
-From: Petr Vorel <pvorel@suse.cz>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AA6FC20096C
+ for <ltp@lists.linux.it>; Tue, 21 Oct 2025 15:21:17 +0200 (CEST)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+ by sea.source.kernel.org (Postfix) with ESMTP id A480C48B6D;
+ Tue, 21 Oct 2025 13:21:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2FD8C4CEF1;
+ Tue, 21 Oct 2025 13:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1761052874;
+ bh=lvcRb/61yamx9Ux8qcx+0p2Z2oz7rIaAXsUA3+G6uXU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=qRZ9V5QZIibDOsO9wccPJdCMBqXt9+lUebH4uqUNlwIGaqGNPHXtxgk83a1Rg6KX0
+ On7CO7L3CH3u8UM6MvMznOHukWIxAJmmtkHpKXyhyZyJqLiWZ1FKnz29oi4S51rxfY
+ U8OpG0vUpUy3PCNi3RE7Ig91WHeNU40tA6FKiN2OLmobeH0i8fNPxGHWx6HrBm5H3C
+ NP7kIxANp5Xch80kwvtZUuiP512KcySpiGdz00wgSDZfP/6zuEXUITgFZxPWFwM0YC
+ d505f4KOmvU7NF1GiN3FKzl3LXlMZqpVyiF5mt7NvobjAQYvJVbvuOW4JgdbR4MhIt
+ i3QIg217Yj6ZA==
+Date: Tue, 21 Oct 2025 15:21:08 +0200
 To: Jan Kara <jack@suse.cz>
-Message-ID: <20251021112349.GB429244@pevik>
-References: <20251021095828.28779-1-jack@suse.cz>
+Message-ID: <20251021-wollust-biografie-c4d97486c587@brauner>
+References: <CA+G9fYuF44WkxhDj9ZQ1+PwdsU_rHGcYoVqMDr3AL=AvweiCxg@mail.gmail.com>
+ <CA+G9fYtUp3Bk-5biynickO5U98CKKN1nkE7ooxJHp7dT1g3rxw@mail.gmail.com>
+ <aPIPGeWo8gtxVxQX@yuki.lan>
+ <qveta77u5ruaq4byjn32y3vj2s2nz6qvsgixg5w5ensxqsyjkj@nx4mgl7x7o6o>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20251021095828.28779-1-jack@suse.cz>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_SOME(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCPT_COUNT_THREE(0.00)[3];
- FROM_HAS_DN(0.00)[];
- FREEMAIL_CC(0.00)[lists.linux.it,gmail.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+In-Reply-To: <qveta77u5ruaq4byjn32y3vj2s2nz6qvsgixg5w5ensxqsyjkj@nx4mgl7x7o6o>
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] name_to_handle_at: Add test cases for
- AT_HANDLE_FID
+Subject: Re: [LTP] 6.18.0-rc1: LTP syscalls ioctl_pidfd05: TFAIL:
+ ioctl(pidfd, PIDFD_GET_INFO_SHORT,
+ info_invalid) expected EINVAL: ENOTTY (25)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,33 +72,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Christian Brauner via ltp <ltp@lists.linux.it>
+Reply-To: Christian Brauner <brauner@kernel.org>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+ Andrey Albershteyn <aalbersh@kernel.org>,
+ Linux Regressions <regressions@lists.linux.dev>, Arnd Bergmann <arnd@arndb.de>,
+ open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Ben Copeland <benjamin.copeland@linaro.org>, linux-fsdevel@vger.kernel.org,
+ LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan, Amir,
+On Fri, Oct 17, 2025 at 02:43:14PM +0200, Jan Kara wrote:
+> On Fri 17-10-25 11:40:41, Cyril Hrubis wrote:
+> > Hi!
+> > > > ## Test error log
+> > > > tst_buffers.c:57: TINFO: Test is using guarded buffers
+> > > > tst_test.c:2021: TINFO: LTP version: 20250930
+> > > > tst_test.c:2024: TINFO: Tested kernel: 6.18.0-rc1 #1 SMP PREEMPT
+> > > > @1760657272 aarch64
+> > > > tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+> > > > tst_kconfig.c:676: TINFO: CONFIG_TRACE_IRQFLAGS kernel option detected
+> > > > which might slow the execution
+> > > > tst_test.c:1842: TINFO: Overall timeout per run is 0h 21m 36s
+> > > > ioctl_pidfd05.c:45: TPASS: ioctl(pidfd, PIDFD_GET_INFO, NULL) : EINVAL (22)
+> > > > ioctl_pidfd05.c:46: TFAIL: ioctl(pidfd, PIDFD_GET_INFO_SHORT,
+> > > > info_invalid) expected EINVAL: ENOTTY (25)
+> > 
+> > Looking closely this is a different problem.
+> > 
+> > What we do in the test is that we pass PIDFD_IOCTL_INFO whith invalid
+> > size with:
+> > 
+> > struct pidfd_info_invalid {
+> >         uint32_t dummy;
+> > };
+> > 
+> > #define PIDFD_GET_INFO_SHORT _IOWR(PIDFS_IOCTL_MAGIC, 11, struct pidfd_info_invalid)
+> > 
+> > 
+> > And we expect to hit:
+> > 
+> >         if (usize < PIDFD_INFO_SIZE_VER0)
+> >                 return -EINVAL; /* First version, no smaller struct possible */
+> > 
+> > in fs/pidfs.c
+> > 
+> > 
+> > And apparently the return value was changed in:
+> > 
+> > commit 3c17001b21b9f168c957ced9384abe969019b609
+> > Author: Christian Brauner <brauner@kernel.org>
+> > Date:   Fri Sep 12 13:52:24 2025 +0200
+> > 
+> >     pidfs: validate extensible ioctls
+> >     
+> >     Validate extensible ioctls stricter than we do now.
+> >     
+> >     Reviewed-by: Aleksa Sarai <cyphar@cyphar.com>
+> >     Reviewed-by: Jan Kara <jack@suse.cz>
+> >     Signed-off-by: Christian Brauner <brauner@kernel.org>
+> > 
+> > diff --git a/fs/pidfs.c b/fs/pidfs.c
+> > index edc35522d75c..0a5083b9cce5 100644
+> > --- a/fs/pidfs.c
+> > +++ b/fs/pidfs.c
+> > @@ -440,7 +440,7 @@ static bool pidfs_ioctl_valid(unsigned int cmd)
+> >                  * erronously mistook the file descriptor for a pidfd.
+> >                  * This is not perfect but will catch most cases.
+> >                  */
+> > -               return (_IOC_TYPE(cmd) == _IOC_TYPE(PIDFD_GET_INFO));
+> > +               return extensible_ioctl_valid(cmd, PIDFD_GET_INFO, PIDFD_INFO_SIZE_VER0);
+> >         }
+> >  
+> >         return false;
+> > 
+> > 
+> > So kernel has changed error it returns, if this is a regression or not
+> > is for kernel developers to decide.
+> 
+> Yes, it's mostly a question to Christian whether if passed size for
+> extensible ioctl is smaller than minimal, we should be returning
+> ENOIOCTLCMD or EINVAL. I think EINVAL would make more sense but Christian
+> is our "extensible ioctl expert" :).
 
-> Add a few testcases verifying AT_HANDLE_FID flag.
+You're asking difficult questions actually. :D
+I think it would be completely fine to return EINVAL in this case.
+But traditionally ENOTTY has been taken to mean that this is not a
+supported ioctl. This translation is done by the VFS layer itself iirc.
 
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  include/lapi/fcntl.h                          |  4 +
->  .../name_to_handle_at/name_to_handle_at03.c   | 88 +++++++++++++++++++
->  2 files changed, 92 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at03.c
-
-> Changes since v1:
-> * Added kernel commit fixing the issue
-> * Fixed up test description
-
-Thanks! Merged with added entry to runtest/syscalls and .gitignore.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
