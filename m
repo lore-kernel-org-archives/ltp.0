@@ -4,91 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFB1CCCD1A5
-	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 02:05:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1761098734; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=oY4rqLkPcc+n7kh6mGmeXsQi6nwFscqWEP7aTIK68RM=;
- b=HgUgy7pQ9CxQODoi2111BMJfTGEK+QK3LR7jICeZZ/ADCoOOW/l3xBXmXQCOe2nie6m5j
- 7RqDvsa7a1QH1iMNKwMSFNS0wAaFOcCLS99KkVB+amuc3eMlqJknSPTe3jDD7SjZPm6DdGx
- bsvXYS1xYi8zzoigTWpj0W3m3SwdRgg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 535A8CCD1AB
+	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 07:52:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CC8773CF08C
-	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 04:05:34 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id B16633CF0B2
+	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 09:52:03 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9B7F63C2E27
- for <ltp@lists.linux.it>; Wed, 22 Oct 2025 04:05:14 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8FD893C0BB4
+ for <ltp@lists.linux.it>; Wed, 22 Oct 2025 09:51:47 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6B802140005F
- for <ltp@lists.linux.it>; Wed, 22 Oct 2025 04:05:13 +0200 (CEST)
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-471bde1e8f8so15143195e9.0
- for <ltp@lists.linux.it>; Tue, 21 Oct 2025 19:05:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1761098712; x=1761703512; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=HwkQHMLegT6f0xlNEk4b1H5VprQ0rG45BMERy1JtUgQ=;
- b=Xd5VIavTFGSxX1rlfiPB4mADWBm4RQvaIaLq4j6YqAa8slwth2yvShMzARRbM/aQq/
- Xa4AomLEeNwHS2kgTPBTKB/OtJWEyMUoZdqMkXYZh2OR6irdl85lkWLZvmslMEUdwnLl
- MTGF4pBUoX0wJVdRczQzgvikauMaeYqkXdhpyeeAATLJsjsTdk6qr3I+9Z55+9sOZ01M
- igFehB7nb96semeRX131h+2EEC3YatfQFZgeYrV4pmMx4x6aoHM2EsRSuyGgpti0aAMK
- ngz+TB3vRMfiOtN2s447UJ5RF/05E6Q+OQLjZyb8k5YHMVsv3+Dmg7XKMCJqqk70Qz4b
- Mrjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1761098712; x=1761703512;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=HwkQHMLegT6f0xlNEk4b1H5VprQ0rG45BMERy1JtUgQ=;
- b=wA35H5euBnj3+LWHleGF+kHl2K5eDSA+2omW0rWp1SM4fg5ZemEhDQhZnAvGTDFGdy
- n+tSifxROutxgMh++v4uhJDN3eOhi8vNmSVBLYyvFm75lXbYgxu4nG0e31A7EasQnzhj
- VnwIKgnKWOpeGoim4cmIWbF0d0/1GowX5jguzN6t5PjMvhxrRn4tELlNyhbSWfRd42t1
- ryuxb8aXtQRQG31yTOVrmgwZtKfJv4/rwxXzIq+8dDaD6r8ZmjLFI69oMFb236nxP05u
- MY0v+8HkzcvWcO1fCk6SH0ZYLjHR7Xff2J8YTw+iZxPWRXGmIxhFL1tII+AJOswoCTkp
- eqWQ==
-X-Gm-Message-State: AOJu0Yx0pv3dl3XIrqULyiclTBXHvLOlAne0LSfthtKdeBrOiHRb463N
- iuvipDV11R3Yz/16FrPS4TO+isG81xuNlEtRXptid+FzlT2lFzMjubfC+6mo2oB1qbyLBZJl0Ig
- ZLXs=
-X-Gm-Gg: ASbGncu1uCQn9IcdzspHcLSGWxbPlnGRcEjgqzCwK3cD9pdkAjPQIVFiTqa9d4/XsQJ
- q1pakNQ0YFJSg3Iwql4Paykp3OP9DyX5nEsDgmpl9nKFtchz90FDTTJT8IdolBNbanXfpyJhKmY
- 0LpYgDcwS5yCQikcidqgjAt5KNXySco7B5FEoPbWwy1JvuJETPXxY2YZptzW9CM1oF54NBszSXQ
- ED2HStmG3xzOVrVuTTguPrlwTwO/bzNvyfoi6br61WmJ660AcgVKToYtojS445bXzPnwbuB4WOr
- jtsO7/kq8bNrtquUNighy2GFhcF9qJr2VqZyPKv/CDVWLC5CDh9dy1TwG5dkUD7ej57Yu3K/Kxr
- goGk4zTGkzOOj3nCTaHq/vfCyXKYxujf5DqAIzTDB3jfrIYPkAo6FenxAqtXgSbGLc+cRoB0COa
- ORBttC1K4WHw==
-X-Google-Smtp-Source: AGHT+IGzWlJhupkBVrRu4O/ESvofRm5GPYK/65HZ5gN5tOf1bImlBo12pZGfh0lxakD4v/b9kNhpnA==
-X-Received: by 2002:a05:600d:41cc:b0:46f:d897:516f with SMTP id
- 5b1f17b1804b1-4711791c880mr162118965e9.34.1761098712423; 
- Tue, 21 Oct 2025 19:05:12 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- 5b1f17b1804b1-475c42d9524sm18608655e9.18.2025.10.21.19.05.11
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Oct 2025 19:05:12 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Wed, 22 Oct 2025 02:05:01 +0000
-Message-ID: <20251022020509.6945-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231029012755.19969-1-wegao@suse.com>
-References: <20231029012755.19969-1-wegao@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9099F600B3E
+ for <ltp@lists.linux.it>; Wed, 22 Oct 2025 09:51:46 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 697FE1F391;
+ Wed, 22 Oct 2025 07:51:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1761119501;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5G+GN8XQO5NVhzF4+79I45VeDXm2lq0alql08lbGTcE=;
+ b=WLXa50SGfYw7rx7r4BN+nhQyq++ghDHg1ILi/T4sza3/QJ+Who//4+jrQgwYV1akk7mj1e
+ 9Wth5U2AbZuywjMz8SsZzGeVFhkYoNIprJLooi5yCtd63A+P/FfKtMyDb68RF30DJR7NMz
+ DtRUuqFSo7684kNY44GPwwAkH2lVOx0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1761119501;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5G+GN8XQO5NVhzF4+79I45VeDXm2lq0alql08lbGTcE=;
+ b=Gp2gnW1d6NINLIIhBR2OqeKJ2ILh4BD4+Ntp3mI0DgeiMeQPjZppVQiozFYkz1maTSiKUy
+ JPHthh/9+rROq4DA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1761119497;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5G+GN8XQO5NVhzF4+79I45VeDXm2lq0alql08lbGTcE=;
+ b=EpE1Gh4kUFU/o+1PmPuBcPQ6azU+Q4iPrQLtzPMrEIQX+rcbdk4IDS2sWtGyp3FsmSmdOn
+ INwmNqPtKfDLGOO+IV2FofeD94ZxKaYTh9tL1vGSiUz3oC5nf9ro4jR/SYd4zVikQscUqQ
+ 1eDWVg/r1IkQDOKbF2EmlR46J0u5BPU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1761119497;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5G+GN8XQO5NVhzF4+79I45VeDXm2lq0alql08lbGTcE=;
+ b=S4V6uw3JuJ1C9DB14S9HN2lPzawgxazhh8V4t99V+qeTHqzukUimBNO5VmcFCeaGETjmth
+ pwex/ShDkTVcsFAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B76D11339F;
+ Wed, 22 Oct 2025 07:51:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id qGcUKgiN+Gj4KAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 22 Oct 2025 07:51:36 +0000
+Date: Wed, 22 Oct 2025 09:51:34 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Jan Kara <jack@suse.cz>
+Message-ID: <20251022075134.GA463176@pevik>
+References: <CA+G9fYuF44WkxhDj9ZQ1+PwdsU_rHGcYoVqMDr3AL=AvweiCxg@mail.gmail.com>
+ <CA+G9fYtUp3Bk-5biynickO5U98CKKN1nkE7ooxJHp7dT1g3rxw@mail.gmail.com>
+ <aPIPGeWo8gtxVxQX@yuki.lan>
+ <qveta77u5ruaq4byjn32y3vj2s2nz6qvsgixg5w5ensxqsyjkj@nx4mgl7x7o6o>
+ <20251021-wollust-biografie-c4d97486c587@brauner>
+ <lguqncbotw2cu2nfaf6hwgip6wtrmeg2azvyeht7l56itlomy5@uccupuql3let>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <lguqncbotw2cu2nfaf6hwgip6wtrmeg2azvyeht7l56itlomy5@uccupuql3let>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ RCPT_COUNT_TWELVE(0.00)[16]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:replyto];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] io_submit04: Add test case for RWF_NOWAIT flag
+Subject: Re: [LTP] 6.18.0-rc1: LTP syscalls ioctl_pidfd05: TFAIL:
+ ioctl(pidfd, PIDFD_GET_INFO_SHORT,
+ info_invalid) expected EINVAL: ENOTTY (25)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,139 +115,115 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+ Christian Brauner <brauner@kernel.org>,
+ Andrey Albershteyn <aalbersh@kernel.org>,
+ Linux Regressions <regressions@lists.linux.dev>, Arnd Bergmann <arnd@arndb.de>,
+ open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Ben Copeland <benjamin.copeland@linaro.org>, linux-fsdevel@vger.kernel.org,
+ LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fixes: #467
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/io_submit/.gitignore      |  1 +
- .../kernel/syscalls/io_submit/io_submit04.c   | 87 +++++++++++++++++++
- 3 files changed, 89 insertions(+)
- create mode 100644 testcases/kernel/syscalls/io_submit/io_submit04.c
+> On Tue 21-10-25 15:21:08, Christian Brauner wrote:
+> > On Fri, Oct 17, 2025 at 02:43:14PM +0200, Jan Kara wrote:
+> > > On Fri 17-10-25 11:40:41, Cyril Hrubis wrote:
+> > > > Hi!
+> > > > > > ## Test error log
+> > > > > > tst_buffers.c:57: TINFO: Test is using guarded buffers
+> > > > > > tst_test.c:2021: TINFO: LTP version: 20250930
+> > > > > > tst_test.c:2024: TINFO: Tested kernel: 6.18.0-rc1 #1 SMP PREEMPT
+> > > > > > @1760657272 aarch64
+> > > > > > tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+> > > > > > tst_kconfig.c:676: TINFO: CONFIG_TRACE_IRQFLAGS kernel option detected
+> > > > > > which might slow the execution
+> > > > > > tst_test.c:1842: TINFO: Overall timeout per run is 0h 21m 36s
+> > > > > > ioctl_pidfd05.c:45: TPASS: ioctl(pidfd, PIDFD_GET_INFO, NULL) : EINVAL (22)
+> > > > > > ioctl_pidfd05.c:46: TFAIL: ioctl(pidfd, PIDFD_GET_INFO_SHORT,
+> > > > > > info_invalid) expected EINVAL: ENOTTY (25)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 4b284f279..655a46e91 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -693,6 +693,7 @@ io_setup02 io_setup02
- io_submit01 io_submit01
- io_submit02 io_submit02
- io_submit03 io_submit03
-+io_submit04 io_submit04
- 
- keyctl01 keyctl01
- keyctl02 keyctl02
-diff --git a/testcases/kernel/syscalls/io_submit/.gitignore b/testcases/kernel/syscalls/io_submit/.gitignore
-index 60b07970a..abe962e1c 100644
---- a/testcases/kernel/syscalls/io_submit/.gitignore
-+++ b/testcases/kernel/syscalls/io_submit/.gitignore
-@@ -1,3 +1,4 @@
- /io_submit01
- /io_submit02
- /io_submit03
-+/io_submit04
-diff --git a/testcases/kernel/syscalls/io_submit/io_submit04.c b/testcases/kernel/syscalls/io_submit/io_submit04.c
-new file mode 100644
-index 000000000..5c9c4065a
---- /dev/null
-+++ b/testcases/kernel/syscalls/io_submit/io_submit04.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * Test iocb RWF_* flags support: RWF_NOWAIT
-+ *
-+ * Checks if an asynchronous read operation with RWF_NOWAIT on a blocking
-+ * resource (empty pipe) fails immediately with -EAGAIN.
-+ */
-+
-+#include <linux/aio_abi.h>
-+
-+#include "config.h"
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+
-+static int fd[2];
-+static char buf[100];
-+
-+static aio_context_t ctx;
-+static struct iocb iocb;
-+static struct iocb *iocbs[] = {&iocb};
-+
-+static inline void io_prep_option(struct iocb *cb, int fd, void *buf,
-+			size_t count, long long offset, unsigned int opcode)
-+{
-+	memset(cb, 0, sizeof(*cb));
-+	cb->aio_fildes = fd;
-+	cb->aio_lio_opcode = opcode;
-+	cb->aio_buf = (uint64_t)buf;
-+	cb->aio_offset = offset;
-+	cb->aio_nbytes = count;
-+	cb->aio_rw_flags = RWF_NOWAIT;
-+}
-+
-+static void setup(void)
-+{
-+	TST_EXP_PASS_SILENT(tst_syscall(__NR_io_setup, 1, &ctx));
-+	SAFE_PIPE(fd);
-+	io_prep_option(&iocb, fd[0], buf, sizeof(buf), 0, IOCB_CMD_PREAD);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd[0])
-+		SAFE_CLOSE(fd[0]);
-+
-+	if (fd[1])
-+		SAFE_CLOSE(fd[1]);
-+
-+	if (tst_syscall(__NR_io_destroy, ctx))
-+		tst_brk(TBROK | TERRNO, "io_destroy() failed");
-+}
-+
-+static void run(void)
-+{
-+	struct io_event evbuf;
-+	struct timespec timeout = { .tv_sec = 1 };
-+	long nr = 1;
-+
-+	TEST(tst_syscall(__NR_io_submit, ctx, nr, iocbs));
-+
-+	if (TST_RET == nr)
-+		tst_res(TPASS, "io_submit() pass");
-+	else
-+		tst_res(TFAIL | TTERRNO, "io_submit() returns %ld, expected %ld", TST_RET, nr);
-+
-+	tst_syscall(__NR_io_getevents, ctx, 1, 1, &evbuf, &timeout);
-+
-+	if (evbuf.res == -EAGAIN)
-+		tst_res(TINFO, "io_submit RWF_NOWAIT flag check pass");
-+	else
-+		tst_res(TFAIL | TTERRNO, "io_submit expect EAGAIN, but get %s", strerror(-evbuf.res));
-+
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_AIO=y",
-+		NULL
-+	},
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
--- 
-2.51.0
+> > > > Looking closely this is a different problem.
 
+> > > > What we do in the test is that we pass PIDFD_IOCTL_INFO whith invalid
+> > > > size with:
+
+> > > > struct pidfd_info_invalid {
+> > > >         uint32_t dummy;
+> > > > };
+
+> > > > #define PIDFD_GET_INFO_SHORT _IOWR(PIDFS_IOCTL_MAGIC, 11, struct pidfd_info_invalid)
+
+
+> > > > And we expect to hit:
+
+> > > >         if (usize < PIDFD_INFO_SIZE_VER0)
+> > > >                 return -EINVAL; /* First version, no smaller struct possible */
+
+> > > > in fs/pidfs.c
+
+
+> > > > And apparently the return value was changed in:
+
+> > > > commit 3c17001b21b9f168c957ced9384abe969019b609
+> > > > Author: Christian Brauner <brauner@kernel.org>
+> > > > Date:   Fri Sep 12 13:52:24 2025 +0200
+
+> > > >     pidfs: validate extensible ioctls
+
+> > > >     Validate extensible ioctls stricter than we do now.
+
+> > > >     Reviewed-by: Aleksa Sarai <cyphar@cyphar.com>
+> > > >     Reviewed-by: Jan Kara <jack@suse.cz>
+> > > >     Signed-off-by: Christian Brauner <brauner@kernel.org>
+
+> > > > diff --git a/fs/pidfs.c b/fs/pidfs.c
+> > > > index edc35522d75c..0a5083b9cce5 100644
+> > > > --- a/fs/pidfs.c
+> > > > +++ b/fs/pidfs.c
+> > > > @@ -440,7 +440,7 @@ static bool pidfs_ioctl_valid(unsigned int cmd)
+> > > >                  * erronously mistook the file descriptor for a pidfd.
+> > > >                  * This is not perfect but will catch most cases.
+> > > >                  */
+> > > > -               return (_IOC_TYPE(cmd) == _IOC_TYPE(PIDFD_GET_INFO));
+> > > > +               return extensible_ioctl_valid(cmd, PIDFD_GET_INFO, PIDFD_INFO_SIZE_VER0);
+> > > >         }
+
+> > > >         return false;
+
+
+> > > > So kernel has changed error it returns, if this is a regression or not
+> > > > is for kernel developers to decide.
+
+> > > Yes, it's mostly a question to Christian whether if passed size for
+> > > extensible ioctl is smaller than minimal, we should be returning
+> > > ENOIOCTLCMD or EINVAL. I think EINVAL would make more sense but Christian
+> > > is our "extensible ioctl expert" :).
+
+> > You're asking difficult questions actually. :D
+> > I think it would be completely fine to return EINVAL in this case.
+> > But traditionally ENOTTY has been taken to mean that this is not a
+> > supported ioctl. This translation is done by the VFS layer itself iirc.
+
+> Now the translation is done by VFS, I agree. But in the past (when the LTP
+> test was written) extensible ioctl with too small structure passed the
+> initial checks, only later we found out the data is too short and returned
+> EINVAL for that case. I *think* we are fine with just adjusting the test to
+> accept the new world order but wanted your opinion what are the chances of
+> some real userspace finding the old behavior useful or otherwise depending
+> on it.
+
++1, thanks! Is it ok just expect any of these two regardless kernel version?
+
+@Naresh Kamboju will you send a patch to LTP ML?
+
+Kind regards,
+Petr
+
+> 								Honza
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
