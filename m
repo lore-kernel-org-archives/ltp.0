@@ -4,94 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70E13CCD1AB
-	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 09:15:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B66E0CCD195
+	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 09:23:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1761124539; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1761125036; h=mime-version :
  references : in-reply-to : date : message-id : to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=BMzNsxG2m3d3u/e0cnV/Y3QAZlxZ4iyL4Y0No9UHe90=;
- b=ZwpZvkMyOznUdyvZrnzraKQeN1hU8suO4nVYR5/I3tec6+MH/MR18Bla4ii8vrFX6dC9B
- FBgALq26ZnI7r0gT/Qx/435Da5JqQpnsYbhD/UhMn2urCVPfn5wIV0ieDD1f9DgSuXzJmve
- aFNlub70+S63lJ94T/FUyoVin8cnhRg=
+ bh=Q1xp6pBefkHXXXML5hUCWV8c2RVSbbgTzo0rCpX/ucw=;
+ b=TCKvIaRjVNyvIraxbn/iD+ey7HPyh89P85EOK+48IRQ+j8nxtHpRw8+uBmX0hsiS1Scah
+ S9rdpFvkksihRZjIkxivyXZc3lPG5saOYK6+NHPKxfILV33dd8ocTV9kLQNH45YuKvIZTMS
+ y17KV0Lv/LJ6CkihPYKOfwmB7Xyle3M=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 790433CF0A3
-	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 11:15:39 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 4D62F3CF09D
+	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 11:23:56 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0CED13CEDEE
- for <ltp@lists.linux.it>; Wed, 22 Oct 2025 11:15:17 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 0ED453CA1FA
+ for <ltp@lists.linux.it>; Wed, 22 Oct 2025 11:23:35 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 38C25200A1B
- for <ltp@lists.linux.it>; Wed, 22 Oct 2025 11:15:16 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 42E15600B48
+ for <ltp@lists.linux.it>; Wed, 22 Oct 2025 11:23:33 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1761124515;
+ s=mimecast20190719; t=1761125012;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yoyoZjbRPVu74aK/UbADh63lJXLZrJHFneyyj3DOsWA=;
- b=CImtEOv7ZDDEXAorK2F8S8A6zpD0Pfc+3gaxX8il6QRu2ha1fQGE4j1Fmsojg3ciq28L/2
- UkqTr8NuWxrIkp+OkPIpSsPCrsEK3VOqx2a0/Men7/zghC/wzen5MsBOsxwVwiJ2za/lcH
- rMcH0jhaBrob0sbgzzp5wNIIZMvvtm4=
+ bh=HnVneZd0V1sK7KzMNM6TJZEjMkq0TwJF9puRPjV8+6Y=;
+ b=O0tA+eWA9yumwAeTMnHLgl+6H02WfUCXsjIYLoMysc6OYa7kAq3eS3V24QK17ybC6I/La6
+ bP0FScMFiHH50/t97NR2aZmYREFka+oZCxqKhsUv8GWKHMLsy7quYcBxY45SQE+58saNdy
+ DtehYzkGvxL/JgbRYVC6SaVcyaFO218=
 Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
  [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-13-flXI09lCOlea5Xl-c1g9Ew-1; Wed, 22 Oct 2025 05:15:13 -0400
-X-MC-Unique: flXI09lCOlea5Xl-c1g9Ew-1
-X-Mimecast-MFC-AGG-ID: flXI09lCOlea5Xl-c1g9Ew_1761124512
+ us-mta-146-YJ-_BMM9O-ORk5F9hxGI_g-1; Wed, 22 Oct 2025 05:23:30 -0400
+X-MC-Unique: YJ-_BMM9O-ORk5F9hxGI_g-1
+X-Mimecast-MFC-AGG-ID: YJ-_BMM9O-ORk5F9hxGI_g_1761125009
 Received: by mail-pl1-f197.google.com with SMTP id
- d9443c01a7336-290e4fade70so51563355ad.2
- for <ltp@lists.linux.it>; Wed, 22 Oct 2025 02:15:13 -0700 (PDT)
+ d9443c01a7336-2930e6e2c03so3579335ad.3
+ for <ltp@lists.linux.it>; Wed, 22 Oct 2025 02:23:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1761124512; x=1761729312;
+ d=1e100.net; s=20230601; t=1761125009; x=1761729809;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=yoyoZjbRPVu74aK/UbADh63lJXLZrJHFneyyj3DOsWA=;
- b=XExT+ZwfSDk7Y95tgnFFh/VdrWHCCwXoyBGsvAC8uD858yZ0sEoWQWniOl9Lh4VBeI
- iiXOU3yfP4MWnqS72OUDvXL7t1W/B6GsoEfF/qIYlReVNLKBMNEbSd5Hl6uRg/4KuMoX
- FMAd0Ord7CH4aq/WGqcjhhz1I8KcO2Biqp4oKTvwJQGaDfUGwsJz34hX3Cl8TP1ZFPRU
- /By7CZlk8XD5MvGs/YeJYSeoQmX5LCROqMWtSkbbMP4tuqCIDOqOrhhHIrqhrLN5ANb5
- +owv28229YESFF7OE9JKwZkI3jf8vVNmmOwwPPT4bF0yTJaak4jRE92O9OPYKuyZUPEC
- zi6A==
-X-Gm-Message-State: AOJu0YxMVVdnSzaHqq7JCRl3FwZxf3TRjjGfW9ioQ2XQdASJAli1YPwJ
- VcKghEjGRVd8i85Hw3xZxTJMvnnMFBRCHBHrc5PeYyKdKxO7NUBn1iyMJrxB2Lood9D0/qPeOdq
- x9kYZ2ffnK16Yvrbdib+pb9fpQEPswWBAAGdTwsSSl7ELUCiwsRH02AK6NnakAZv0QUDnDWa9Vm
- KSnvp6Bq1oNvQ+7U4VFcAc6H5ySgw=
-X-Gm-Gg: ASbGnctNbke6UoyukNHic1e3aw8PESYaapF7xQEBnTx0HixPG4qOLcmGvyQ3GpplK+A
- 6xDpBRUZ5HislYn3STPP7WIStPyR+Kv0T8yG5ctnHe/Peao11VVJXhWTZ8f/KwLqfwJfolwToUV
- tx5jD/4e6HTpesezEa4vB4BxrGhVr2HFHO3vXUOyt/4TMhZCA7FgJ9+dyw
-X-Received: by 2002:a17:903:b8b:b0:26d:e984:8157 with SMTP id
- d9443c01a7336-290c9c89ca7mr208678095ad.8.1761124512280; 
- Wed, 22 Oct 2025 02:15:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IENOj2s5cEF8wDwyST35U8y8i/x+2pFrI2x5A4riczNIm+HXUUxvJa/SuHd66txaAdYvi0kviYf4D6obGOQcRM=
-X-Received: by 2002:a17:903:b8b:b0:26d:e984:8157 with SMTP id
- d9443c01a7336-290c9c89ca7mr208677765ad.8.1761124511776; Wed, 22 Oct 2025
- 02:15:11 -0700 (PDT)
+ bh=HnVneZd0V1sK7KzMNM6TJZEjMkq0TwJF9puRPjV8+6Y=;
+ b=ac1LIlS3owuJj8HqXWenrmYPKjaY2VixtfpOL/LgYcFGydD0ZDYD1bUroyQzIxacnN
+ JlQZrrEmQwDKyBUMXzOlTIbbPZ4uAE1NtBz0KZO/iyFrUdOLTY4wt/SgzLnb4lc3VdqT
+ juyrL8k35e4FJ+Lyo7NDXzO+/jvISYTeYJnaxfU0yo2BdYLGgvucW9o5uXgSTD/raDX3
+ rV8N0ifq9tMd/scIhq20PqMoqI5o/VlkXmK7Rs2TP/CJEwvNps6LMOZPw2KpD4ycOIj5
+ bmxgqNb0XNJ6h1J33m7gvrs+/yNNx3TnFWfke9/l4bJOPH+kNq3mDz5WUeSacRdSwY7i
+ 6YvA==
+X-Gm-Message-State: AOJu0Yyc0F/XbuDkwxT87TRdrAqASVtxKmlNjweJb81Ecp+TodI3dvlK
+ 4nOJHqqRAIl0bGKBDHTBG21OPu/Sgyt7Xm5so1qD/9oG9MW0Up2pgZVTmiKC2gC3AGMFHyxaQ3N
+ Qwq2Q4AIW39vwe8GUTSiWFDI8cubxMaQc+6sNfwaTHCLiMpx8m3ziSeEOSZ/8OAJhn32tmYawka
+ jv8n7g1izx7bnoASKduVeguZlXLjY=
+X-Gm-Gg: ASbGncv/OuQIROKMMe6/eBNibsMN27p5Dhn9bEGGSYHmPhO/X9xjf1VQW9MyHCM3fMN
+ di8L6ofjtMtlSnI9AvLBNRFblYDYYPLSEpWNN+a2QqLRKMoNP2SnZGSmAgMooMiGJyavDNcQY2k
+ Jke6hbOTsSqmLXGTP2GbOOuG+4tYjSdq4BMAt6tHc/vrB07aGQvOyljx/F
+X-Received: by 2002:a17:903:94e:b0:290:533b:25c9 with SMTP id
+ d9443c01a7336-290c9c8ae4dmr228485915ad.2.1761125009483; 
+ Wed, 22 Oct 2025 02:23:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHTiqgqc4PStgHt5H0lYKGcSecPOJ4d54MvwBR3CLxu+XPJnqIywBe2SklEv/FN78b/JiFy/eENyCUkeB4+c0Q=
+X-Received: by 2002:a17:903:94e:b0:290:533b:25c9 with SMTP id
+ d9443c01a7336-290c9c8ae4dmr228485795ad.2.1761125009096; Wed, 22 Oct 2025
+ 02:23:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20251020142813.415231-1-pvorel@suse.cz>
-In-Reply-To: <20251020142813.415231-1-pvorel@suse.cz>
-Date: Wed, 22 Oct 2025 17:14:59 +0800
-X-Gm-Features: AS18NWA6dS-p3Q8hOvy8O0YAL384LErL8pUU1fU6OkmFnZWDq6bBulGSH90Hw9U
-Message-ID: <CAEemH2esCEGcA-cXXGyxHZHM49mhq0PJAcG7DCbgLF8=J_=QDQ@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
+References: <20251010064745.31361-1-wegao@suse.com>
+ <20251017101011.3811-1-wegao@suse.com>
+ <20251017101011.3811-2-wegao@suse.com> <20251017143524.GA339521@pevik>
+ <aPWO0j120Kr0z6Pn@localhost> <20251020132140.GA398576@pevik>
+In-Reply-To: <20251020132140.GA398576@pevik>
+Date: Wed, 22 Oct 2025 17:23:16 +0800
+X-Gm-Features: AS18NWBo8hQUoA6Oh88VNZMPK_cLdrzV_6gFqjtg7FK1foxUHeBESDgU1Oovqj8
+Message-ID: <CAEemH2crJNO+azGzhdjzQ0zh_=m5iO=snZCqqqCiTebKuWVHaA@mail.gmail.com>
+To: Wei Gao <wegao@suse.com>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: JPJnlCUAv6wPeiWyvWBdoSPmi_c4p9WPwdfmvJ4kNsc_1761124512
+X-Mimecast-MFC-PROC-ID: v_z7BDAKPN3wjzMzScpwR1HkiJsoWy_jVZoBW1T0msQ_1761125009
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 1/1] tst_cmd: Change tst_check_cmd() return type
- to int
+Subject: Re: [LTP] [PATCH v4 1/3] lib: Add support option for .needs_cmds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,52 +107,103 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
 From: Li Wang via ltp <ltp@lists.linux.it>
 Reply-To: Li Wang <liwang@redhat.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBPY3QgMjAsIDIwMjUgYXQgMTA6MjjigK9QTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3Vz
-ZS5jej4gd3JvdGU6Cgo+IEZ1bmN0aW9uIHVzZSBqdXN0IGJvb2wgdmFsdWUsIG5vIG5lZWQgZm9y
-IGludCAocmVhZGFiaWxpdHkpLgo+Cj4gU2lnbmVkLW9mZi1ieTogUGV0ciBWb3JlbCA8cHZvcmVs
-QHN1c2UuY3o+Cj4KClJldmlld2VkLWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KCi0t
-LQo+ICBpbmNsdWRlL3RzdF9wcml2YXRlLmggfCAyICstCj4gIGxpYi90c3RfY21kLmMgICAgICAg
-ICB8IDkgKysrKystLS0tCj4gIDIgZmlsZXMgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCA1IGRl
-bGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvdHN0X3ByaXZhdGUuaCBiL2luY2x1
-ZGUvdHN0X3ByaXZhdGUuaAo+IGluZGV4IDI5MmY3ZTkzNjYuLjg3ZWM4ODI5YTEgMTAwNjQ0Cj4g
-LS0tIGEvaW5jbHVkZS90c3RfcHJpdmF0ZS5oCj4gKysrIGIvaW5jbHVkZS90c3RfcHJpdmF0ZS5o
-Cj4gQEAgLTQ1LDcgKzQ1LDcgQEAgY2hhciB0c3Rfa2NvbmZpZ19nZXQoY29uc3QgY2hhciAqY29u
-Zm5hbWUpOwo+ICAgKiBmdW5jdGlvbiBjaGVja3MgY29tbWFuZCB2ZXJzaW9uIHdoZXRoZXIgbWVl
-dHMgdGhpcyByZXF1aXJlbWVudC4KPiAgICogSWYgbm90LCBjYXNlIGJyZWFrcyBpZiBicmtfbm9z
-dXBwIGlzIGRlZmluZWQuCj4gICAqLwo+IC1pbnQgdHN0X2NoZWNrX2NtZChjb25zdCBjaGFyICpj
-bWQsIGNvbnN0IGludCBicmtfbm9zdXBwKTsKPiArYm9vbCB0c3RfY2hlY2tfY21kKGNvbnN0IGNo
-YXIgKmNtZCwgY29uc3QgaW50IGJya19ub3N1cHApOwo+Cj4gIC8qCj4gICAqIFJldHVybnMgTlVM
-TC10ZXJtaW5hdGVkIGFycmF5IG9mIGtlcm5lbC1zdXBwb3J0ZWQgZmlsZXN5c3RlbXMuCj4gZGlm
-ZiAtLWdpdCBhL2xpYi90c3RfY21kLmMgYi9saWIvdHN0X2NtZC5jCj4gaW5kZXggODJkNjA0OTdh
-OC4uMmZhZjdjNzQzMCAxMDA2NDQKPiAtLS0gYS9saWIvdHN0X2NtZC5jCj4gKysrIGIvbGliL3Rz
-dF9jbWQuYwo+IEBAIC0yNyw2ICsyNyw3IEBACj4gICNpbmNsdWRlIDxmY250bC5oPgo+ICAjaW5j
-bHVkZSA8dW5pc3RkLmg+Cj4gICNpbmNsdWRlIDxzaWduYWwuaD4KPiArI2luY2x1ZGUgPHN0ZGJv
-b2wuaD4KPiAgI2luY2x1ZGUgInRlc3QuaCIKPiAgI2luY2x1ZGUgInRzdF9jbWQuaCIKPiAgI2lu
-Y2x1ZGUgInRzdF9wcml2YXRlLmgiCj4gQEAgLTI0OSw3ICsyNTAsNyBAQCBzdGF0aWMgc3RydWN0
-IHZlcnNpb25fcGFyc2VyIHsKPiAgICAgICAgIHt9LAo+ICB9Owo+Cj4gLWludCB0c3RfY2hlY2tf
-Y21kKGNvbnN0IGNoYXIgKmNtZCwgY29uc3QgaW50IGJya19ub3N1cHApCj4gK2Jvb2wgdHN0X2No
-ZWNrX2NtZChjb25zdCBjaGFyICpjbWQsIGNvbnN0IGludCBicmtfbm9zdXBwKQo+ICB7Cj4gICAg
-ICAgICBzdHJ1Y3QgdmVyc2lvbl9wYXJzZXIgKnA7Cj4gICAgICAgICBjaGFyICpjbWRfdG9rZW4s
-ICpvcF90b2tlbiwgKnZlcnNpb25fdG9rZW4sICpuZXh0LCAqc3RyOwo+IEBAIC0yNjgsNyArMjY5
-LDcgQEAgaW50IHRzdF9jaGVja19jbWQoY29uc3QgY2hhciAqY21kLCBjb25zdCBpbnQKPiBicmtf
-bm9zdXBwKQo+ICAgICAgICAgICAgICAgICB0c3RfYnJrbShUQ09ORiwgTlVMTCwgIkNvdWxkbid0
-IGZpbmQgJyVzJyBpbiAkUEFUSCIsCj4gY21kX3Rva2VuKTsKPgo+ICAgICAgICAgaWYgKCFvcF90
-b2tlbikKPiAtICAgICAgICAgICAgICAgcmV0dXJuIDA7Cj4gKyAgICAgICAgICAgICAgIHJldHVy
-biB0cnVlOwo+Cj4gICAgICAgICBpZiAoIXZlcnNpb25fdG9rZW4gfHwgc3RyKSB7Cj4gICAgICAg
-ICAgICAgICAgIHRzdF9icmttKFRDT05GLCBOVUxMLAo+IEBAIC0zMTgsNyArMzE5LDcgQEAgaW50
-IHRzdF9jaGVja19jbWQoY29uc3QgY2hhciAqY21kLCBjb25zdCBpbnQKPiBicmtfbm9zdXBwKQo+
-ICAgICAgICAgICAgICAgICB0c3RfYnJrbShUQ09ORiwgTlVMTCwgIkludmFsaWQgb3AoJXMpIiwg
-b3BfdG9rZW4pOwo+ICAgICAgICAgfQo+Cj4gLSAgICAgICByZXR1cm4gMDsKPiArICAgICAgIHJl
-dHVybiB0cnVlOwo+ICBlcnJvcjoKPiAgICAgICAgIGlmIChicmtfbm9zdXBwKSB7Cj4gICAgICAg
-ICAgICAgICAgIHRzdF9icmttKFRDT05GLCBOVUxMLCAiJXMgcmVxdWlyZXMgJXMgJWQsIGJ1dCBn
-b3QgJWQiLAo+IEBAIC0zMjgsNSArMzI5LDUgQEAgZXJyb3I6Cj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgY21kLCBvcF90b2tlbiwgdmVyX2dldCwgdmVyX3BhcnNlcik7Cj4gICAgICAgICB9Cj4K
-PiAtICAgICAgIHJldHVybiAxOwo+ICsgICAgICAgcmV0dXJuIGZhbHNlOwo+ICB9Cj4gLS0KPiAy
-LjUxLjAKPgo+Cj4gLS0KPiBNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5p
-dC9saXN0aW5mby9sdHAKPgo+CgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlz
-dCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi  Wei,
+
+Petr Vorel <pvorel@suse.cz> wrote:
+
+
+>
+> > need every commits can pass compile phase then i have to combine all
+> > commits into a single big one, is that your request?
+>
+> No, that's other extreme :). There is something in between, right?
+> You did not get me correct, therefore in v4 you not only kept broken
+> functionality, but you also joined the part which could be separated.  At
+> least
+> "ioctl_loop01.c: Update to new .needs_cmds struct" from v3 could have been
+> added
+> as a separate commit (after the main change, not before). Or am I missing
+> something?
+>
+> Unfortunately "lib: Add support option for .needs_cmds" and "Update test
+> cases use
+> new needs_cmds" and "tst_run_shell.c: Add new function handle new
+> needs_cmds" needs to be in a single commit, but maybe you could add
+> functions
+> which implement it in a separate commits (e.g. preparation for a new
+> change) and
+> do the change (when it's actually used) in the last commit).  I'm not sure
+> if
+> it's worth of a separation, maybe not (hopefully we get a feedback from
+> others).
+> If yes:
+>
+
+Yes.
+
+
+> 1) commit (lib preparation) would have: struct tst_cmd, bool
+> tst_cmd_present(const char *cmd)
+>
+> 2) commit (shell loader preparation) would have: enum cmd_ids, static
+> ujson_obj_attr cmd_attrs[], static ujson_obj cmd_obj, static struct tst_cmd
+> *parse_cmds(ujson_reader *reader, ujson_val *val).
+>
+> 3) commit (use new functionality) would have: from "lib: Add support
+> option for
+> .needs_cmds":
+>
+> -       const char *const *needs_cmds;
+> +       struct tst_cmd *needs_cmds;
+>
+> and use of tst_check_cmd()
+>
+> from "tst_run_shell.c: Add new function handle new needs_cmds"
+> -                       test.needs_cmds = parse_strarr(&reader, &val);
+> +                       test.needs_cmds = parse_cmds(&reader, &val);
+>
+> all code changes in "Update test cases use new needs_cmds"
+>
+> 4) "ioctl_loop01.c: Update to new .needs_cmds struct" from v3 can be
+> separate,
+> it just have to be after library function changed.
+>
+> 5) commit: modify some test to actually use some of new functionality.
+>
+
+Obviously, this is a good suggestion.
+
+Wei, if you take a look at the git-history of LTP feature change,
+most patchset organizations follow this principle.
+
+We must keep a clean code and compile pass at the same time,
+I have roughly gone through your patches, and they are seems
+not so hard to rebase.
+
+
+
+>
+> If we are ok to do too many separate commits, then:
+>
+> 1) commit: everything from this v4 in a single commit, but separate at
+> least
+> "ioctl_loop01.c: Update to new .needs_cmds struct" from v3.
+>
+> 2) "ioctl_loop01.c: Update to new .needs_cmds struct" from v3.
+>
+> 3) commit: modify some test to actually use some of new functionality.
+>
+
+Yes, this is also acceptable to me.
+
+-- 
+Regards,
+Li Wang
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
