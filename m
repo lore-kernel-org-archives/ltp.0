@@ -4,95 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B66E0CCD195
-	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 09:23:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1761125036; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=Q1xp6pBefkHXXXML5hUCWV8c2RVSbbgTzo0rCpX/ucw=;
- b=TCKvIaRjVNyvIraxbn/iD+ey7HPyh89P85EOK+48IRQ+j8nxtHpRw8+uBmX0hsiS1Scah
- S9rdpFvkksihRZjIkxivyXZc3lPG5saOYK6+NHPKxfILV33dd8ocTV9kLQNH45YuKvIZTMS
- y17KV0Lv/LJ6CkihPYKOfwmB7Xyle3M=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C896CCD1BB
+	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 09:58:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4D62F3CF09D
-	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 11:23:56 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 7582D3CF0C9
+	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 11:58:22 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0ED453CA1FA
- for <ltp@lists.linux.it>; Wed, 22 Oct 2025 11:23:35 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 237C43C0296
+ for <ltp@lists.linux.it>; Wed, 22 Oct 2025 11:58:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 42E15600B48
- for <ltp@lists.linux.it>; Wed, 22 Oct 2025 11:23:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1761125012;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HnVneZd0V1sK7KzMNM6TJZEjMkq0TwJF9puRPjV8+6Y=;
- b=O0tA+eWA9yumwAeTMnHLgl+6H02WfUCXsjIYLoMysc6OYa7kAq3eS3V24QK17ybC6I/La6
- bP0FScMFiHH50/t97NR2aZmYREFka+oZCxqKhsUv8GWKHMLsy7quYcBxY45SQE+58saNdy
- DtehYzkGvxL/JgbRYVC6SaVcyaFO218=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-146-YJ-_BMM9O-ORk5F9hxGI_g-1; Wed, 22 Oct 2025 05:23:30 -0400
-X-MC-Unique: YJ-_BMM9O-ORk5F9hxGI_g-1
-X-Mimecast-MFC-AGG-ID: YJ-_BMM9O-ORk5F9hxGI_g_1761125009
-Received: by mail-pl1-f197.google.com with SMTP id
- d9443c01a7336-2930e6e2c03so3579335ad.3
- for <ltp@lists.linux.it>; Wed, 22 Oct 2025 02:23:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1761125009; x=1761729809;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=HnVneZd0V1sK7KzMNM6TJZEjMkq0TwJF9puRPjV8+6Y=;
- b=ac1LIlS3owuJj8HqXWenrmYPKjaY2VixtfpOL/LgYcFGydD0ZDYD1bUroyQzIxacnN
- JlQZrrEmQwDKyBUMXzOlTIbbPZ4uAE1NtBz0KZO/iyFrUdOLTY4wt/SgzLnb4lc3VdqT
- juyrL8k35e4FJ+Lyo7NDXzO+/jvISYTeYJnaxfU0yo2BdYLGgvucW9o5uXgSTD/raDX3
- rV8N0ifq9tMd/scIhq20PqMoqI5o/VlkXmK7Rs2TP/CJEwvNps6LMOZPw2KpD4ycOIj5
- bmxgqNb0XNJ6h1J33m7gvrs+/yNNx3TnFWfke9/l4bJOPH+kNq3mDz5WUeSacRdSwY7i
- 6YvA==
-X-Gm-Message-State: AOJu0Yyc0F/XbuDkwxT87TRdrAqASVtxKmlNjweJb81Ecp+TodI3dvlK
- 4nOJHqqRAIl0bGKBDHTBG21OPu/Sgyt7Xm5so1qD/9oG9MW0Up2pgZVTmiKC2gC3AGMFHyxaQ3N
- Qwq2Q4AIW39vwe8GUTSiWFDI8cubxMaQc+6sNfwaTHCLiMpx8m3ziSeEOSZ/8OAJhn32tmYawka
- jv8n7g1izx7bnoASKduVeguZlXLjY=
-X-Gm-Gg: ASbGncv/OuQIROKMMe6/eBNibsMN27p5Dhn9bEGGSYHmPhO/X9xjf1VQW9MyHCM3fMN
- di8L6ofjtMtlSnI9AvLBNRFblYDYYPLSEpWNN+a2QqLRKMoNP2SnZGSmAgMooMiGJyavDNcQY2k
- Jke6hbOTsSqmLXGTP2GbOOuG+4tYjSdq4BMAt6tHc/vrB07aGQvOyljx/F
-X-Received: by 2002:a17:903:94e:b0:290:533b:25c9 with SMTP id
- d9443c01a7336-290c9c8ae4dmr228485915ad.2.1761125009483; 
- Wed, 22 Oct 2025 02:23:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHTiqgqc4PStgHt5H0lYKGcSecPOJ4d54MvwBR3CLxu+XPJnqIywBe2SklEv/FN78b/JiFy/eENyCUkeB4+c0Q=
-X-Received: by 2002:a17:903:94e:b0:290:533b:25c9 with SMTP id
- d9443c01a7336-290c9c8ae4dmr228485795ad.2.1761125009096; Wed, 22 Oct 2025
- 02:23:29 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8197760073A
+ for <ltp@lists.linux.it>; Wed, 22 Oct 2025 11:58:07 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B7F0A211FA
+ for <ltp@lists.linux.it>; Wed, 22 Oct 2025 09:57:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1761127081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vTrrp1ioUqz5V+8bDwBi/FeOlVq9FA2ppMFxQbIi734=;
+ b=VA0GtAnNmk+Sewjp6FhZsp3AJuwUoGVhw/SSkutx+idid48e2Eu1hTxESlJ7upwrHeURm6
+ 2jYV30fPfInvHwq6dYQFrZD4z7YhJOJLzv5m1SnlvhUErxLadhK0QOx/Lc+Edr+GUmvpQ6
+ QC5O28fp1hA8eXIsFPRmtCJrFfqwXu0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1761127081;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vTrrp1ioUqz5V+8bDwBi/FeOlVq9FA2ppMFxQbIi734=;
+ b=lZhh12XOaUSvPTwjdeT1HRAPyUTybdKurm4enQIrcXJ8XG4+NolqWrVFYOdk/pJXjp/40T
+ J13mIzPCZll+UWDA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vq5IVWSX;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9q1kWuPb
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1761127077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vTrrp1ioUqz5V+8bDwBi/FeOlVq9FA2ppMFxQbIi734=;
+ b=vq5IVWSXvPMfyPe6vn4LFP3MM+zySRD6iIGTQqnlIRE8dpg4BIJhpk1BrrvQdc6cXJ1PO6
+ bDKuQJukqbCOIjQEMFxT721gGN7VfsA4aRZb9aqhMTzhTw/6mdm9QftODsQBR/ngiPgh9a
+ KoffZ1s5zK4CyBHeKR0doPAivESyLD0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1761127077;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vTrrp1ioUqz5V+8bDwBi/FeOlVq9FA2ppMFxQbIi734=;
+ b=9q1kWuPbbln1ARKwlBtciqqyZgo8hnGZt8VOSaV3IKBLIQd6g0PxNTde+OwReUE0KGg06R
+ QocOGC/wETMHjPBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB30513A29
+ for <ltp@lists.linux.it>; Wed, 22 Oct 2025 09:57:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id D/6XKaWq+GjDIgAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Wed, 22 Oct 2025 09:57:57 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Wed, 22 Oct 2025 11:57:37 +0200
+Message-ID: <20251022095740.8747-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-References: <20251010064745.31361-1-wegao@suse.com>
- <20251017101011.3811-1-wegao@suse.com>
- <20251017101011.3811-2-wegao@suse.com> <20251017143524.GA339521@pevik>
- <aPWO0j120Kr0z6Pn@localhost> <20251020132140.GA398576@pevik>
-In-Reply-To: <20251020132140.GA398576@pevik>
-Date: Wed, 22 Oct 2025 17:23:16 +0800
-X-Gm-Features: AS18NWBo8hQUoA6Oh88VNZMPK_cLdrzV_6gFqjtg7FK1foxUHeBESDgU1Oovqj8
-Message-ID: <CAEemH2crJNO+azGzhdjzQ0zh_=m5iO=snZCqqqCiTebKuWVHaA@mail.gmail.com>
-To: Wei Gao <wegao@suse.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: v_z7BDAKPN3wjzMzScpwR1HkiJsoWy_jVZoBW1T0msQ_1761125009
-X-Mimecast-Originator: redhat.com
+X-Rspamd-Queue-Id: B7F0A211FA
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:mid,suse.cz:dkim];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_NONE(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v4 1/3] lib: Add support option for .needs_cmds
+Subject: [LTP] [PATCH 1/2] ioctl_sg01: Skip USB devices
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,106 +113,124 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi  Wei,
+Some USB devices write hardware info and flags to the ioctl(SG_IO)
+response buffer which results in test failure. But the info is constant
+and doesn't represent any security risk. Skip USB devices to prevent
+false positives.
 
-Petr Vorel <pvorel@suse.cz> wrote:
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
+I've tested this patch on kernels v4.4 through v6.16. Non-USB generic SCSI
+block devices get correctly found and used, USB block device get skipped.
 
->
-> > need every commits can pass compile phase then i have to combine all
-> > commits into a single big one, is that your request?
->
-> No, that's other extreme :). There is something in between, right?
-> You did not get me correct, therefore in v4 you not only kept broken
-> functionality, but you also joined the part which could be separated.  At
-> least
-> "ioctl_loop01.c: Update to new .needs_cmds struct" from v3 could have been
-> added
-> as a separate commit (after the main change, not before). Or am I missing
-> something?
->
-> Unfortunately "lib: Add support option for .needs_cmds" and "Update test
-> cases use
-> new needs_cmds" and "tst_run_shell.c: Add new function handle new
-> needs_cmds" needs to be in a single commit, but maybe you could add
-> functions
-> which implement it in a separate commits (e.g. preparation for a new
-> change) and
-> do the change (when it's actually used) in the last commit).  I'm not sure
-> if
-> it's worth of a separation, maybe not (hopefully we get a feedback from
-> others).
-> If yes:
->
+ testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 55 +++++++++++++++-----
+ 1 file changed, 42 insertions(+), 13 deletions(-)
 
-Yes.
-
-
-> 1) commit (lib preparation) would have: struct tst_cmd, bool
-> tst_cmd_present(const char *cmd)
->
-> 2) commit (shell loader preparation) would have: enum cmd_ids, static
-> ujson_obj_attr cmd_attrs[], static ujson_obj cmd_obj, static struct tst_cmd
-> *parse_cmds(ujson_reader *reader, ujson_val *val).
->
-> 3) commit (use new functionality) would have: from "lib: Add support
-> option for
-> .needs_cmds":
->
-> -       const char *const *needs_cmds;
-> +       struct tst_cmd *needs_cmds;
->
-> and use of tst_check_cmd()
->
-> from "tst_run_shell.c: Add new function handle new needs_cmds"
-> -                       test.needs_cmds = parse_strarr(&reader, &val);
-> +                       test.needs_cmds = parse_cmds(&reader, &val);
->
-> all code changes in "Update test cases use new needs_cmds"
->
-> 4) "ioctl_loop01.c: Update to new .needs_cmds struct" from v3 can be
-> separate,
-> it just have to be after library function changed.
->
-> 5) commit: modify some test to actually use some of new functionality.
->
-
-Obviously, this is a good suggestion.
-
-Wei, if you take a look at the git-history of LTP feature change,
-most patchset organizations follow this principle.
-
-We must keep a clean code and compile pass at the same time,
-I have roughly gone through your patches, and they are seems
-not so hard to rebase.
-
-
-
->
-> If we are ok to do too many separate commits, then:
->
-> 1) commit: everything from this v4 in a single commit, but separate at
-> least
-> "ioctl_loop01.c: Update to new .needs_cmds struct" from v3.
->
-> 2) "ioctl_loop01.c: Update to new .needs_cmds struct" from v3.
->
-> 3) commit: modify some test to actually use some of new functionality.
->
-
-Yes, this is also acceptable to me.
-
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+index fba3816c3..66ff980ce 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+@@ -29,6 +29,9 @@
+ #include "tst_test.h"
+ #include "tst_memutils.h"
+ 
++#define SYSDIR "/sys/block"
++#define BLOCKDIR "/sys/block/%s/device"
++
+ #define BUF_SIZE (128 * 4096)
+ #define CMD_SIZE 6
+ 
+@@ -38,42 +41,68 @@ static unsigned char command[CMD_SIZE];
+ static struct sg_io_hdr query;
+ 
+ /* TODO: split this off to a separate SCSI library? */
+-static const char *find_generic_scsi_device(int access_flags)
++static const char *find_generic_scsi_device(int access_flags, int skip_usb)
+ {
+-	DIR *devdir;
++	DIR *sysdir;
+ 	struct dirent *ent;
+ 	int tmpfd;
+-	static char devpath[PATH_MAX];
++	ssize_t length;
++	char *filename;
++	static char devpath[PATH_MAX], syspath[PATH_MAX];
+ 
+-	errno = 0;
+-	devdir = opendir("/dev");
++	sysdir = opendir(SYSDIR);
+ 
+-	if (!devdir)
++	if (!sysdir)
+ 		return NULL;
+ 
+-	while ((ent = SAFE_READDIR(devdir))) {
+-		/* The bug is most likely reproducible only on /dev/sg* */
+-		if (strncmp(ent->d_name, "sg", 2) || !isdigit(ent->d_name[2]))
++	/* Scan block devices */
++	while ((ent = SAFE_READDIR(sysdir))) {
++		if (ent->d_name[0] == '.')
++			continue;
++
++		snprintf(syspath, PATH_MAX, BLOCKDIR, ent->d_name);
++		syspath[PATH_MAX - 1] = '\0';
++
++		/* Real device path matches the physical HW bus path */
++		if (!realpath(syspath, devpath))
++			continue;
++
++		strncat(devpath, "/generic", PATH_MAX - strlen(devpath) - 1);
++		devpath[PATH_MAX - 1] = '\0';
++		length = readlink(devpath, syspath, PATH_MAX - 1);
++
++		if (length < 0)
++			continue;
++
++		syspath[length] = '\0';
++		filename = basename(syspath);
++
++		/* USB devices often return HW info in SG_IO response buffer */
++		if (skip_usb && strstr(devpath, "/usb")) {
++			tst_res(TINFO, "Skipping USB device %s", filename);
+ 			continue;
++		}
+ 
+-		snprintf(devpath, PATH_MAX, "/dev/%s", ent->d_name);
++		snprintf(devpath, PATH_MAX, "/dev/%s", filename);
+ 		/* access() makes incorrect assumptions about block devices */
+ 		tmpfd = open(devpath, access_flags);
+ 
+ 		if (tmpfd >= 0) {
+ 			SAFE_CLOSE(tmpfd);
+-			SAFE_CLOSEDIR(devdir);
++			SAFE_CLOSEDIR(sysdir);
+ 			return devpath;
+ 		}
++
++		tst_res(TINFO | TERRNO, "Cannot open device %s", devpath);
+ 	}
+ 
+-	SAFE_CLOSEDIR(devdir);
++	SAFE_CLOSEDIR(sysdir);
+ 	return NULL;
+ }
+ 
+ static void setup(void)
+ {
+-	const char *devpath = find_generic_scsi_device(O_RDONLY);
++	const char *devpath = find_generic_scsi_device(O_RDONLY, 1);
+ 
+ 	if (!devpath)
+ 		tst_brk(TCONF, "Could not find any usable SCSI device");
 -- 
-Regards,
-Li Wang
+2.51.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
