@@ -4,104 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C896CCD1BB
-	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 09:58:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23391CCD195
+	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 09:58:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7582D3CF0C9
-	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 11:58:22 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 90A673CF0CA
+	for <ltp@archiver.kernel.org>; Wed, 22 Oct 2025 11:58:38 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 237C43C0296
+ by picard.linux.it (Postfix) with ESMTPS id D8B923CF0A8
  for <ltp@lists.linux.it>; Wed, 22 Oct 2025 11:58:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8197760073A
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4804E1400E07
  for <ltp@lists.linux.it>; Wed, 22 Oct 2025 11:58:07 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B7F0A211FA
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C7CB91F461
  for <ltp@lists.linux.it>; Wed, 22 Oct 2025 09:57:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1761127081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vTrrp1ioUqz5V+8bDwBi/FeOlVq9FA2ppMFxQbIi734=;
- b=VA0GtAnNmk+Sewjp6FhZsp3AJuwUoGVhw/SSkutx+idid48e2Eu1hTxESlJ7upwrHeURm6
- 2jYV30fPfInvHwq6dYQFrZD4z7YhJOJLzv5m1SnlvhUErxLadhK0QOx/Lc+Edr+GUmvpQ6
- QC5O28fp1hA8eXIsFPRmtCJrFfqwXu0=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IdR79QtlxlSKeE83YnlNYiMweCpEt+zw/UV2GGRlJIM=;
+ b=K/GftoFEECnD3rCCHUcawZaB7SgXUyPuc+eJKTGd2LjsFpgzuYKJ1sVluXKtl7Jqcgh5Hq
+ CFnhXrlPHUtn1oF9lw1LJihzlMgNmbk3jHI/S0sibTM+2DwB82mI463WuvxYG4ctKx8th+
+ b6ORHvp6K9CfmGrutvhv84SIym1fW7s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1761127081;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vTrrp1ioUqz5V+8bDwBi/FeOlVq9FA2ppMFxQbIi734=;
- b=lZhh12XOaUSvPTwjdeT1HRAPyUTybdKurm4enQIrcXJ8XG4+NolqWrVFYOdk/pJXjp/40T
- J13mIzPCZll+UWDA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vq5IVWSX;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9q1kWuPb
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IdR79QtlxlSKeE83YnlNYiMweCpEt+zw/UV2GGRlJIM=;
+ b=Vuu8PZjgqz1Cziys08oCRM2zGjZVAyP5rssQs1TWxwCF/Oti5HZyiVOxRAM+QHxBuyeH1I
+ 7z7fHV5lbUmOP0AQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=TYhxroxc;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=3lSWeMF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1761127077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vTrrp1ioUqz5V+8bDwBi/FeOlVq9FA2ppMFxQbIi734=;
- b=vq5IVWSXvPMfyPe6vn4LFP3MM+zySRD6iIGTQqnlIRE8dpg4BIJhpk1BrrvQdc6cXJ1PO6
- bDKuQJukqbCOIjQEMFxT721gGN7VfsA4aRZb9aqhMTzhTw/6mdm9QftODsQBR/ngiPgh9a
- KoffZ1s5zK4CyBHeKR0doPAivESyLD0=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IdR79QtlxlSKeE83YnlNYiMweCpEt+zw/UV2GGRlJIM=;
+ b=TYhxroxc8lOsGQGw8UTThB/As4745H4WnSM+oiLSmVrk8YptCkFkU5CDdjyObhJAIb/QWm
+ DGxCRq/oYeZ9RkuPVGXucqXToPj+vR9ECEDvB3960h1HzTz5WcGhmPStf9kOo88Nj3OBgm
+ B0o5N391ESFCRFoTAG2/QISY3+hz1TY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1761127077;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=vTrrp1ioUqz5V+8bDwBi/FeOlVq9FA2ppMFxQbIi734=;
- b=9q1kWuPbbln1ARKwlBtciqqyZgo8hnGZt8VOSaV3IKBLIQd6g0PxNTde+OwReUE0KGg06R
- QocOGC/wETMHjPBg==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IdR79QtlxlSKeE83YnlNYiMweCpEt+zw/UV2GGRlJIM=;
+ b=3lSWeMF62Ui9KinURail2Ym/ovgrxVF0bZ7UaGme5GqRqlZxnfSjKu7NQ4RBlZ8CwyAly1
+ IZGHdTk5AajfIkCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB30513A29
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B26E813AAD
  for <ltp@lists.linux.it>; Wed, 22 Oct 2025 09:57:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id D/6XKaWq+GjDIgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +DdeK6Wq+GjDIgAAD6G6ig
  (envelope-from <mdoucha@suse.cz>)
  for <ltp@lists.linux.it>; Wed, 22 Oct 2025 09:57:57 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 22 Oct 2025 11:57:37 +0200
-Message-ID: <20251022095740.8747-1-mdoucha@suse.cz>
+Date: Wed, 22 Oct 2025 11:57:38 +0200
+Message-ID: <20251022095740.8747-2-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251022095740.8747-1-mdoucha@suse.cz>
+References: <20251022095740.8747-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: B7F0A211FA
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: C7CB91F461
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
  R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:mid,suse.cz:dkim];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
  RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_NONE(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FROM_EQ_ENVFROM(0.00)[];
  RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] ioctl_sg01: Skip USB devices
+Subject: [LTP] [PATCH 2/2] ioctl_sg01: Print buffer contents on failure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,116 +127,70 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Some USB devices write hardware info and flags to the ioctl(SG_IO)
-response buffer which results in test failure. But the info is constant
-and doesn't represent any security risk. Skip USB devices to prevent
-false positives.
-
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
-I've tested this patch on kernels v4.4 through v6.16. Non-USB generic SCSI
-block devices get correctly found and used, USB block device get skipped.
+This patch is a convenience feature. Feel free to reject it.
 
- testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 55 +++++++++++++++-----
- 1 file changed, 42 insertions(+), 13 deletions(-)
+ testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 24 +++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
 diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-index fba3816c3..66ff980ce 100644
+index 66ff980ce..dada174e0 100644
 --- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
 +++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-@@ -29,6 +29,9 @@
- #include "tst_test.h"
- #include "tst_memutils.h"
- 
-+#define SYSDIR "/sys/block"
-+#define BLOCKDIR "/sys/block/%s/device"
-+
- #define BUF_SIZE (128 * 4096)
+@@ -36,7 +36,7 @@
  #define CMD_SIZE 6
  
-@@ -38,42 +41,68 @@ static unsigned char command[CMD_SIZE];
+ static int devfd = -1;
+-static char buffer[BUF_SIZE];
++static char buffer[BUF_SIZE + 1];
+ static unsigned char command[CMD_SIZE];
  static struct sg_io_hdr query;
  
- /* TODO: split this off to a separate SCSI library? */
--static const char *find_generic_scsi_device(int access_flags)
-+static const char *find_generic_scsi_device(int access_flags, int skip_usb)
- {
--	DIR *devdir;
-+	DIR *sysdir;
- 	struct dirent *ent;
- 	int tmpfd;
--	static char devpath[PATH_MAX];
-+	ssize_t length;
-+	char *filename;
-+	static char devpath[PATH_MAX], syspath[PATH_MAX];
- 
--	errno = 0;
--	devdir = opendir("/dev");
-+	sysdir = opendir(SYSDIR);
- 
--	if (!devdir)
-+	if (!sysdir)
- 		return NULL;
- 
--	while ((ent = SAFE_READDIR(devdir))) {
--		/* The bug is most likely reproducible only on /dev/sg* */
--		if (strncmp(ent->d_name, "sg", 2) || !isdigit(ent->d_name[2]))
-+	/* Scan block devices */
-+	while ((ent = SAFE_READDIR(sysdir))) {
-+		if (ent->d_name[0] == '.')
-+			continue;
-+
-+		snprintf(syspath, PATH_MAX, BLOCKDIR, ent->d_name);
-+		syspath[PATH_MAX - 1] = '\0';
-+
-+		/* Real device path matches the physical HW bus path */
-+		if (!realpath(syspath, devpath))
-+			continue;
-+
-+		strncat(devpath, "/generic", PATH_MAX - strlen(devpath) - 1);
-+		devpath[PATH_MAX - 1] = '\0';
-+		length = readlink(devpath, syspath, PATH_MAX - 1);
-+
-+		if (length < 0)
-+			continue;
-+
-+		syspath[length] = '\0';
-+		filename = basename(syspath);
-+
-+		/* USB devices often return HW info in SG_IO response buffer */
-+		if (skip_usb && strstr(devpath, "/usb")) {
-+			tst_res(TINFO, "Skipping USB device %s", filename);
- 			continue;
-+		}
- 
--		snprintf(devpath, PATH_MAX, "/dev/%s", ent->d_name);
-+		snprintf(devpath, PATH_MAX, "/dev/%s", filename);
- 		/* access() makes incorrect assumptions about block devices */
- 		tmpfd = open(devpath, access_flags);
- 
- 		if (tmpfd >= 0) {
- 			SAFE_CLOSE(tmpfd);
--			SAFE_CLOSEDIR(devdir);
-+			SAFE_CLOSEDIR(sysdir);
- 			return devpath;
- 		}
-+
-+		tst_res(TINFO | TERRNO, "Cannot open device %s", devpath);
- 	}
- 
--	SAFE_CLOSEDIR(devdir);
-+	SAFE_CLOSEDIR(sysdir);
+@@ -100,6 +100,25 @@ static const char *find_generic_scsi_device(int access_flags, int skip_usb)
  	return NULL;
  }
  
++static void dump_hex(const char *str, size_t size)
++{
++	size_t i;
++
++	for (; size && !str[size - 1]; size--)
++		;
++
++	for (i = 0; i < size; i++) {
++		if (i && (i % 32) == 0)
++			printf("\n");
++		else if (i && (i % 4) == 0)
++			printf(" ");
++
++		printf("%02x", (unsigned int)str[i]);
++	}
++
++	printf("\n");
++}
++
  static void setup(void)
  {
--	const char *devpath = find_generic_scsi_device(O_RDONLY);
-+	const char *devpath = find_generic_scsi_device(O_RDONLY, 1);
+ 	const char *devpath = find_generic_scsi_device(O_RDONLY, 1);
+@@ -135,6 +154,7 @@ static void run(void)
  
- 	if (!devpath)
- 		tst_brk(TCONF, "Could not find any usable SCSI device");
+ 	for (i = 0; i < 100; i++) {
+ 		TEST(ioctl(devfd, SG_IO, &query));
++		buffer[BUF_SIZE] = '\0';
+ 
+ 		if (TST_RET != 0 && TST_RET != -1)
+ 			tst_brk(TBROK|TTERRNO, "Invalid ioctl() return value");
+@@ -143,6 +163,8 @@ static void run(void)
+ 		for (j = 0; j < BUF_SIZE; j++) {
+ 			if (buffer[j]) {
+ 				tst_res(TFAIL, "Kernel memory leaked");
++				tst_res(TINFO, "Buffer contents: %s", buffer);
++				dump_hex(buffer, BUF_SIZE);
+ 				return;
+ 			}
+ 		}
 -- 
 2.51.0
 
