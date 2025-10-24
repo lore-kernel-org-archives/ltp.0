@@ -4,99 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20EF2CCF9E0
-	for <ltp@archiver.kernel.org>; Fri, 24 Oct 2025 17:04:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62CFDCCF9E0
+	for <ltp@archiver.kernel.org>; Fri, 24 Oct 2025 17:26:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5046B3CF315
-	for <ltp@archiver.kernel.org>; Fri, 24 Oct 2025 19:04:05 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 308333CF2FB
+	for <ltp@archiver.kernel.org>; Fri, 24 Oct 2025 19:26:02 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 874C03CF122
- for <ltp@lists.linux.it>; Fri, 24 Oct 2025 19:03:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B88763CF122
+ for <ltp@lists.linux.it>; Fri, 24 Oct 2025 19:25:47 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 316402003B8
- for <ltp@lists.linux.it>; Fri, 24 Oct 2025 19:03:45 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4F84C1F456;
- Fri, 24 Oct 2025 17:03:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1761325424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=bT/u/s2WzIK0gsvAlZVPPRNwD/KklBMJ7unEXy2mjSw=;
- b=UpglEzIAstFP2sz0UFRm9e7M322wvvuIy4Tvz0MxXiPot/69ZQ2j7oU2u3BrGk1WtF3vEz
- WjFcwf5PN5csC/0tFCHhO5APz2t3uKMws1Y3OZF8QEIdW3SnCz+Xx/PLm4rMjf9Y7fbdUL
- LQOeffDzO/nQFutHFz1kY/f20bZPKg4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1761325424;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=bT/u/s2WzIK0gsvAlZVPPRNwD/KklBMJ7unEXy2mjSw=;
- b=SniU0pJLp/er/QixnefFQewIleAkWAfcRUMQg2kFR5CZJNJCC1YjM/3mz0JOn8ssCaGlhd
- oFx374BfM0+m7rBA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b="XE2a/q4S";
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=TXQkz3+U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1761325423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=bT/u/s2WzIK0gsvAlZVPPRNwD/KklBMJ7unEXy2mjSw=;
- b=XE2a/q4S5DnUNUU3NhBIguz2qCuD4PxqmkXDt/AktD4lrlIYPc1j0INDbkQx15OWxDma28
- mxVmDN0BbxpQg0uh8Z8a6eTIFwXgfoYk2NABHsYsK6dfBW8CgY5qjvCqnSJFLg3GhHOQFK
- mZ/93mHLOmgqkPSJs6d4NYotJbxq2zg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1761325423;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=bT/u/s2WzIK0gsvAlZVPPRNwD/KklBMJ7unEXy2mjSw=;
- b=TXQkz3+U2mgVeKt3Hw3yZmmy1Ov25tyXZFrDypRChUUhDw8pgvO8GAucP3F9v91ZMwZrb1
- tPIhfYBfbdNgqCBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 42CA613693;
- Fri, 24 Oct 2025 17:03:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id n7dZD2+x+2iMWAAAD6G6ig
- (envelope-from <akumar@suse.de>); Fri, 24 Oct 2025 17:03:43 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Fri, 24 Oct 2025 19:03:41 +0200
-Message-ID: <20251024170342.21084-1-akumar@suse.de>
-X-Mailer: git-send-email 2.51.0
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 04EA0600BB5
+ for <ltp@lists.linux.it>; Fri, 24 Oct 2025 19:25:46 +0200 (CEST)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-474975af41dso15896405e9.2
+ for <ltp@lists.linux.it>; Fri, 24 Oct 2025 10:25:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1761326746; x=1761931546; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=3KOk60fO7kYEDb7UTDWUXqd0We7oAZbnVmVvclksnW4=;
+ b=BEozuujPFeLEPvGyqnIw3BRkUyJhVnhtme2I9291J3wsGhKCKsBT+z91j+UeWSgzIy
+ KCW4p6wMoabesxlSw6ZAoyrn0rdrlx8nxpN3O66f373oZqwzxKuKmViEFixT0lB6ptGQ
+ iWfU8Dj7mitrcx8N0wxe7+k3yJV5OwqPlKSXjLVX7qxu5Mdyt/G+8vfb/Kt9XI55u5NA
+ tJ7kNPdo/MiOq9zifhy0Weh8BhfjkbCwI9l6qS6Jkz8xMmEFrWNcG72/CKchzzM3G5lt
+ 26+FxTjYF82zahTiP0ViHYFxAIg+yGDZxnqZgCS/7R1+WIoCua5JLT8x+fAFMrNsdyOv
+ rTZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1761326746; x=1761931546;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=3KOk60fO7kYEDb7UTDWUXqd0We7oAZbnVmVvclksnW4=;
+ b=cntxUw3oStIflD8mBK2E+ZkMDY4z4x4cJqgS7sFtcy4aHFlyMF3+nKDFSVvsuxSwQq
+ qvw9xoCAd1T0r181w+BnbHIpWM2vtJ6NlkbFGe8ZuP6x4WDv/DmWPHTNEIO9AOKjCSAU
+ OCSR04c7gdQYTgE67AbQ2ksOXEibzMInV8l/HcSeMlYj4FbSP+NJ1wehx4ftz8JNDbk0
+ iukC31VRpUru+2kR7uYyVrX2/+Sh2ERmnHQFF+b+hnR4/0ehu94zyv9dk/qIbHsqV+MY
+ 30T7zxGLTwF/pYXCnpeWHMDsZxvjwLNcHsKrK5ZZ7mVKGTpDPJr2HOfa4kheuU1FkGOC
+ 7twg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCViaqURSqBQpa61B+Qu95YNAq1z+cfPTWoCxS9currOI5iFjhGyd/t8GgYbefu9+N394HQ=@lists.linux.it
+X-Gm-Message-State: AOJu0YzecjvBqPfnjjWiKSa0PVCI26zG7KRQIY041keVJ+3OHczLY6Le
+ NOx6ncR/m8gKPNVIarGHcq6aWXs4Sv53LLdaLs3OcGvjlinbI9jog3EgpfgmMWZF84Y6ip7jTXb
+ 3tjRR
+X-Gm-Gg: ASbGnctryHc08c/4Ff1oZGEzcMHqbrs4vPrBxWT4nItNB8eufgR2NJRcmd0JuCGy2Mr
+ /GiY6+mC0XpnkQcoB6k+XwMZt/k0Yw3plMAI0v8801+oGUOXQ0EAaggCRWdaK/0Uc/IdZbo7lu4
+ P9IVHxfFprCinDMinRmrcXsKyGnb77oSyt71ZZ8eI8DlCjWGqTaB37MA/CptSI9QcFgOgw/jTz3
+ We4Ozhsu28BxBm7G1u6UpPR67wqOkuCiD53M1+14tPBWWyw3GeHqC49t3MfrVG/LNeKv63PeKnS
+ e5CoTLkbgckFDBmK8X92UoYMAMa5hE1H4l4u+IFHaZnmpfEwjkhDypglI5ONj8Lxf439mi6BCFe
+ ccjyz0w0obmXt3xcZhHaUwr2H+XSb0+686qa9l4RqJv4McBg5S5ldaChqg+9agyY0Pc2+5TE7wj
+ GSDkvhIA==
+X-Google-Smtp-Source: AGHT+IFWRNbuqVrA9m8noewk81LKAmeSYVsEL4TI81EMk8k4Xp7qk1TxxVegJdk4PG+Bm8Wj1F09Qg==
+X-Received: by 2002:a05:600c:3b0c:b0:471:669:ec1f with SMTP id
+ 5b1f17b1804b1-471178785e1mr230400405e9.8.1761326746140; 
+ Fri, 24 Oct 2025 10:25:46 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-475da7d24cbsm10737655e9.5.2025.10.24.10.25.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 24 Oct 2025 10:25:45 -0700 (PDT)
+Date: Fri, 24 Oct 2025 20:25:42 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aPu2lqXN8G7h4e7D@stanley.mountain>
+References: <20251024125613.2340799-1-anders.roxell@linaro.org>
+ <20251024133035.GA590258@pevik>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 4F84C1F456
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,suse.de:mid,suse.de:email];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; RCVD_TLS_ALL(0.00)[];
- TO_DN_NONE(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20251024133035.GA590258@pevik>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] nfs: use nfs version 4.0, including the minorversion
+Subject: Re: [LTP] [PATCH] file_attr02: Add XFS kernel config requirement
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,199 +92,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-nfs@vger.kernel.org, ailiopoulos@suse.com, steved@redhat.com
+Cc: benjamin.copeland@linaro.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-If no specific minorversion is specified, it autonegotiates to highest available
-version and test end up executing on v4.2 [1]
+On Fri, Oct 24, 2025 at 03:30:35PM +0200, Petr Vorel wrote:
+> > The file_attr02 test requires XFS filesystem support to properly
+> > test the FS_IOC_FSSETXATTR ioctl with project quotas. Add the
+> > XFS kernel configuration requirement to ensure the test can run
+> > on systems with XFS support either built-in or as a module.
+> 
+> So you have problem on the kernel with CONFIG_XFS_FS=y?
 
-$ nfslock01.sh -v 4 -t tcp
-results in
+No, on systems with CONFIG_XFS_FS=n.  We do have the utilities
+installed and FUSE_FS enabled, but the test says XFS is not
+supported.
 
-/dev/loop2 /tmp/LTP_nfslock01.8VNHIljpxG/mntpoint ext4 rw,seclabel,relatime 0 0
-10.0.0.2:/tmp/LTP_nfslock01.8VNHIljpxG/mntpoint/4/tcp /tmp/LTP_nfslock01.8VNHIljpxG/4/0 nfs4 rw,relatime,vers=4.2,rsize=262144,wsize=262144,namlen=255,hard,fatal_neterrors=ENETDOWN:ENETUNREACH,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=10.0.0.1,local_lock=none,addr=10.0.0.2 0 0
+tst_supported_fs_types.c:129: TINFO: Filesystem xfs is not supported
 
-[1] https://git.linux-nfs.org/?p=steved/nfs-utils.git;a=blob;f=utils/mount/stropts.c;h=23f0a8c0e6f277440bae51f9c7b62900d9bdc76c;hb=HEAD#l127
+The log file is here:
+https://storage.tuxsuite.com/public/linaro/lkft/tests/340jmxk7fPGUn5zJbqsn4Chrs88/logs.txt
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- runtest/net.nfs | 50 ++++++++++++++++++++++++-------------------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+Both file_attr02 and file_attr03 fail.
 
-diff --git a/runtest/net.nfs b/runtest/net.nfs
-index fef993da8..5d6adaa70 100644
---- a/runtest/net.nfs
-+++ b/runtest/net.nfs
-@@ -4,126 +4,126 @@
- #
- nfs01_v30_ip4u nfs01.sh -v 3 -t udp
- nfs01_v30_ip4t nfs01.sh -v 3 -t tcp
--nfs01_v40_ip4t nfs01.sh -v 4 -t tcp
-+nfs01_v40_ip4t nfs01.sh -v 4.0 -t tcp
- nfs01_v41_ip4t nfs01.sh -v 4.1 -t tcp
- nfs01_v42_ip4t nfs01.sh -v 4.2 -t tcp
- nfs01_v30_ip6u nfs01.sh -6 -v 3 -t udp
- nfs01_v30_ip6t nfs01.sh -6 -v 3 -t tcp
--nfs01_v40_ip6t nfs01.sh -6 -v 4 -t tcp
-+nfs01_v40_ip6t nfs01.sh -6 -v 4.0 -t tcp
- nfs01_v41_ip6t nfs01.sh -6 -v 4.1 -t tcp
- nfs01_v42_ip6t nfs01.sh -6 -v 4.2 -t tcp
- 
- nfs02_v30_ip4u nfs02.sh -v 3 -t udp
- nfs02_v30_ip4t nfs02.sh -v 3 -t tcp
--nfs02_v40_ip4t nfs02.sh -v 4 -t tcp
-+nfs02_v40_ip4t nfs02.sh -v 4.0 -t tcp
- nfs02_v41_ip4t nfs02.sh -v 4.1 -t tcp
- nfs02_v42_ip4t nfs02.sh -v 4.2 -t tcp
- nfs02_v30_ip6u nfs02.sh -6 -v 3 -t udp
- nfs02_v30_ip6t nfs02.sh -6 -v 3 -t tcp
--nfs02_v40_ip6t nfs02.sh -6 -v 4 -t tcp
-+nfs02_v40_ip6t nfs02.sh -6 -v 4.0 -t tcp
- nfs02_v41_ip6t nfs02.sh -6 -v 4.1 -t tcp
- nfs02_v42_ip6t nfs02.sh -6 -v 4.2 -t tcp
- 
- nfs03_v30_ip4u nfs03.sh -v 3 -t udp
- nfs03_v30_ip4t nfs03.sh -v 3 -t tcp
--nfs03_v40_ip4t nfs03.sh -v 4 -t tcp
-+nfs03_v40_ip4t nfs03.sh -v 4.0 -t tcp
- nfs03_v41_ip4t nfs03.sh -v 4.1 -t tcp
- nfs03_v42_ip4t nfs03.sh -v 4.2 -t tcp
- nfs03_v30_ip6u nfs03.sh -6 -v 3 -t udp
- nfs03_v30_ip6t nfs03.sh -6 -v 3 -t tcp
--nfs03_v40_ip6t nfs03.sh -6 -v 4 -t tcp
-+nfs03_v40_ip6t nfs03.sh -6 -v 4.0 -t tcp
- nfs03_v41_ip6t nfs03.sh -6 -v 4.1 -t tcp
- nfs03_v42_ip6t nfs03.sh -6 -v 4.2 -t tcp
- 
- nfs04_v30_ip4u nfs04.sh -v 3 -t udp
- nfs04_v30_ip4t nfs04.sh -v 3 -t tcp
--nfs04_v40_ip4t nfs04.sh -v 4 -t tcp
-+nfs04_v40_ip4t nfs04.sh -v 4.0 -t tcp
- nfs04_v41_ip4t nfs04.sh -v 4.1 -t tcp
- nfs04_v42_ip4t nfs04.sh -v 4.2 -t tcp
- nfs04_v30_ip6u nfs04.sh -6 -v 3 -t udp
- nfs04_v30_ip6t nfs04.sh -6 -v 3 -t tcp
--nfs04_v40_ip6t nfs04.sh -6 -v 4 -t tcp
-+nfs04_v40_ip6t nfs04.sh -6 -v 4.0 -t tcp
- nfs04_v41_ip6t nfs04.sh -6 -v 4.1 -t tcp
- nfs04_v42_ip6t nfs04.sh -6 -v 4.2 -t tcp
- 
- nfs05_v30_ip4u nfs05.sh -v 3 -t udp
- nfs05_v30_ip4t nfs05.sh -v 3 -t tcp
--nfs05_v40_ip4t nfs05.sh -v 4 -t tcp
-+nfs05_v40_ip4t nfs05.sh -v 4.0 -t tcp
- nfs05_v41_ip4t nfs05.sh -v 4.1 -t tcp
- nfs05_v42_ip4t nfs05.sh -v 4.2 -t tcp
- nfs05_v30_ip6u nfs05.sh -6 -v 3 -t udp
- nfs05_v30_ip6t nfs05.sh -6 -v 3 -t tcp
--nfs05_v40_ip6t nfs05.sh -6 -v 4 -t tcp
-+nfs05_v40_ip6t nfs05.sh -6 -v 4.0 -t tcp
- nfs05_v41_ip6t nfs05.sh -6 -v 4.1 -t tcp
- nfs05_v42_ip6t nfs05.sh -6 -v 4.2 -t tcp
- 
--nfs06_v30_v40_ip4  nfs06.sh -v "3,3,3,4,4,4" -t "udp,udp,tcp,tcp,tcp,tcp"
-+nfs06_v30_v40_ip4  nfs06.sh -v "3,3,3,4.0,4.0,4.0" -t "udp,udp,tcp,tcp,tcp,tcp"
- nfs06_vall_ip4t nfs06.sh -v "3,4,4.1,4.2,4.2,4.2" -t "tcp,tcp,tcp,tcp,tcp,tcp"
- nfs06_v4x_ip6t nfs06.sh -6 -v "4,4.1,4.1,4.2,4.2,4.2" -t "tcp,tcp,tcp,tcp,tcp,tcp"
- 
- nfs07_v30_ip4u nfs07.sh -v 3 -t udp
- nfs07_v30_ip4t nfs07.sh -v 3 -t tcp
--nfs07_v40_ip4t nfs07.sh -v 4 -t tcp
-+nfs07_v40_ip4t nfs07.sh -v 4.0 -t tcp
- nfs07_v41_ip4t nfs07.sh -v 4.1 -t tcp
- nfs07_v42_ip4t nfs07.sh -v 4.2 -t tcp
- nfs07_v30_ip6u nfs07.sh -6 -v 3 -t udp
- nfs07_v30_ip6t nfs07.sh -6 -v 3 -t tcp
--nfs07_v40_ip6t nfs07.sh -6 -v 4 -t tcp
-+nfs07_v40_ip6t nfs07.sh -6 -v 4.0 -t tcp
- nfs07_v41_ip6t nfs07.sh -6 -v 4.1 -t tcp
- nfs07_v42_ip6t nfs07.sh -6 -v 4.2 -t tcp
- 
- nfs08_v30_ip4u nfs08.sh -v 3 -t udp
- nfs08_v30_ip4t nfs08.sh -v 3 -t tcp
--nfs08_v40_ip4t nfs08.sh -v 4 -t tcp
-+nfs08_v40_ip4t nfs08.sh -v 4.0 -t tcp
- nfs08_v41_ip4t nfs08.sh -v 4.1 -t tcp
- nfs08_v42_ip4t nfs08.sh -v 4.2 -t tcp
- nfs08_v30_ip6u nfs08.sh -6 -v 3 -t udp
- nfs08_v30_ip6t nfs08.sh -6 -v 3 -t tcp
--nfs08_v40_ip6t nfs08.sh -6 -v 4 -t tcp
-+nfs08_v40_ip6t nfs08.sh -6 -v 4.0 -t tcp
- nfs08_v41_ip6t nfs08.sh -6 -v 4.1 -t tcp
- nfs08_v42_ip6t nfs08.sh -6 -v 4.2 -t tcp
- 
- nfs09_v30_ip4u nfs09.sh -v 3 -t udp
- nfs09_v30_ip4t nfs09.sh -v 3 -t tcp
--nfs09_v40_ip4t nfs09.sh -v 4 -t tcp
-+nfs09_v40_ip4t nfs09.sh -v 4.0 -t tcp
- nfs09_v41_ip4t nfs09.sh -v 4.1 -t tcp
- nfs09_v42_ip4t nfs09.sh -v 4.2 -t tcp
- nfs09_v30_ip6u nfs09.sh -6 -v 3 -t udp
- nfs09_v30_ip6t nfs09.sh -6 -v 3 -t tcp
--nfs09_v40_ip6t nfs09.sh -6 -v 4 -t tcp
-+nfs09_v40_ip6t nfs09.sh -6 -v 4.0 -t tcp
- nfs09_v41_ip6t nfs09.sh -6 -v 4.1 -t tcp
- nfs09_v42_ip6t nfs09.sh -6 -v 4.2 -t tcp
- 
- nfs10_v30_ip4u nfs10.sh -v 3 -t udp
- nfs10_v30_ip4t nfs10.sh -v 3 -t tcp
--nfs10_v40_ip4t nfs10.sh -v 4 -t tcp
-+nfs10_v40_ip4t nfs10.sh -v 4.0 -t tcp
- nfs10_v41_ip4t nfs10.sh -v 4.1 -t tcp
- nfs10_v42_ip4t nfs10.sh -v 4.2 -t tcp
- nfs10_v30_ip6u nfs10.sh -6 -v 3 -t udp
- nfs10_v30_ip6t nfs10.sh -6 -v 3 -t tcp
--nfs10_v40_ip6t nfs10.sh -6 -v 4 -t tcp
-+nfs10_v40_ip6t nfs10.sh -6 -v 4.0 -t tcp
- nfs10_v41_ip6t nfs10.sh -6 -v 4.1 -t tcp
- nfs10_v42_ip6t nfs10.sh -6 -v 4.2 -t tcp
- 
- nfslock01_v30_ip4u nfslock01.sh -v 3 -t udp
- nfslock01_v30_ip4t nfslock01.sh -v 3 -t tcp
--nfslock01_v40_ip4t nfslock01.sh -v 4 -t tcp
-+nfslock01_v40_ip4t nfslock01.sh -v 4.0 -t tcp
- nfslock01_v41_ip4t nfslock01.sh -v 4.1 -t tcp
- nfslock01_v42_ip4t nfslock01.sh -v 4.2 -t tcp
- nfslock01_v30_ip6u nfslock01.sh -6 -v 3 -t udp
- nfslock01_v30_ip6t nfslock01.sh -6 -v 3 -t tcp
--nfslock01_v40_ip6t nfslock01.sh -6 -v 4 -t tcp
-+nfslock01_v40_ip6t nfslock01.sh -6 -v 4.0 -t tcp
- nfslock01_v41_ip6t nfslock01.sh -6 -v 4.1 -t tcp
- nfslock01_v42_ip6t nfslock01.sh -6 -v 4.2 -t tcp
- 
- nfsstat01_v30_ip4u nfsstat01.sh -v 3 -t udp
- nfsstat01_v30_ip4t nfsstat01.sh -v 3 -t tcp
--nfsstat01_v40_ip4t nfsstat01.sh -v 4 -t tcp
-+nfsstat01_v40_ip4t nfsstat01.sh -v 4.0 -t tcp
- nfsstat01_v41_ip4t nfsstat01.sh -v 4.1 -t tcp
- nfsstat01_v42_ip4t nfsstat01.sh -v 4.2 -t tcp
- nfsstat01_v30_ip6u nfsstat01.sh -6 -v 3 -t udp
- nfsstat01_v30_ip6t nfsstat01.sh -6 -v 3 -t tcp
--nfsstat01_v40_ip6t nfsstat01.sh -6 -v 4 -t tcp
-+nfsstat01_v40_ip6t nfsstat01.sh -6 -v 4.0 -t tcp
- nfsstat01_v41_ip6t nfsstat01.sh -6 -v 4.1 -t tcp
- nfsstat01_v42_ip6t nfsstat01.sh -6 -v 4.2 -t tcp
- 
-@@ -131,11 +131,11 @@ nfsstat02 nfsstat02.sh
- 
- fsx_v30_ip4u fsx.sh -v 3 -t udp
- fsx_v30_ip4t fsx.sh -v 3 -t tcp
--fsx_v40_ip4t fsx.sh -v 4 -t tcp
-+fsx_v40_ip4t fsx.sh -v 4.0 -t tcp
- fsx_v41_ip4t fsx.sh -v 4.1 -t tcp
- fsx_v42_ip4t fsx.sh -v 4.2 -t tcp
- fsx_v30_ip6u fsx.sh -6 -v 3 -t udp
- fsx_v30_ip6t fsx.sh -6 -v 3 -t tcp
--fsx_v40_ip6t fsx.sh -6 -v 4 -t tcp
-+fsx_v40_ip6t fsx.sh -6 -v 4.0 -t tcp
- fsx_v41_ip6t fsx.sh -6 -v 4.1 -t tcp
- fsx_v42_ip6t fsx.sh -6 -v 4.2 -t tcp
--- 
-2.51.0
+> I wonder why tst_get_supported_fs_types() from lib/tst_supported_fs_types.c did
+> not detect it. Could you please post whole output?
+> 
+> Because if code in struct tst_test.filesystems does not work, many tests would
+> be affected with this setup. I'm probably missing something, but I'd prefer to
+> fix the detection in the library than force config (we don't have any CONFIG_.*_FS
+> in testcases/).
+> 
 
+That's a fair point.  I'm not really very familiar with how LTP works.
+
+On the other hand, even if we fixed the LTP framework to not run tests
+on unsupported filesystems, we might want to still fix it in case someone
+just ran it with kirk
+
+./tools/kirk/kirk/kirk -c ./testcases/kernel/syscalls/file_attr/file_attr02
+
+or even just directly `./file_attr02`
+
+regards,
+dan carpenter
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
