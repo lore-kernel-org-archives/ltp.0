@@ -4,96 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E293CCF9EA
-	for <ltp@archiver.kernel.org>; Mon, 27 Oct 2025 09:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53740CCF9E5
+	for <ltp@archiver.kernel.org>; Mon, 27 Oct 2025 14:23:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9418C3CF4F4
-	for <ltp@archiver.kernel.org>; Mon, 27 Oct 2025 10:22:28 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 5865D3C65DA
+	for <ltp@archiver.kernel.org>; Mon, 27 Oct 2025 15:23:13 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DEDF43CBB88
- for <ltp@lists.linux.it>; Mon, 27 Oct 2025 10:22:10 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E97123C1008
+ for <ltp@lists.linux.it>; Mon, 27 Oct 2025 15:22:57 +0100 (CET)
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com
+ [IPv6:2607:f8b0:4864:20::f2e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 400931A00667
- for <ltp@lists.linux.it>; Mon, 27 Oct 2025 10:22:09 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2FAE421A64;
- Mon, 27 Oct 2025 09:22:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1761556929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=m6aX5BhAQLtYw6kC/E43QeUwnojFYCESwL09Zqj3yi8=;
- b=Y311SU1HXawTVx1dvWJ4pF3DN3i5V0nhvYC0P704GNhtCteSr4DYFXEbMwG9NCU2V5EVhY
- uadhpHbQBSCCU0HbwviLlJBieQn+aoz/YfELW6FwxzCALQh3K4dKPStYSNwZql/XChMdtB
- cM+nX6yq0odSmD1a7PgeLV/fMK+AfuU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1761556929;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=m6aX5BhAQLtYw6kC/E43QeUwnojFYCESwL09Zqj3yi8=;
- b=hUOS995cFLTLS5Fk561FlM9zyrI77tYVysCrzT+1OWKnQEYELipcJcMzh4elrfw8cSfCLU
- mR6OPs+CIsmLGvBQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1761556929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=m6aX5BhAQLtYw6kC/E43QeUwnojFYCESwL09Zqj3yi8=;
- b=Y311SU1HXawTVx1dvWJ4pF3DN3i5V0nhvYC0P704GNhtCteSr4DYFXEbMwG9NCU2V5EVhY
- uadhpHbQBSCCU0HbwviLlJBieQn+aoz/YfELW6FwxzCALQh3K4dKPStYSNwZql/XChMdtB
- cM+nX6yq0odSmD1a7PgeLV/fMK+AfuU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1761556929;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=m6aX5BhAQLtYw6kC/E43QeUwnojFYCESwL09Zqj3yi8=;
- b=hUOS995cFLTLS5Fk561FlM9zyrI77tYVysCrzT+1OWKnQEYELipcJcMzh4elrfw8cSfCLU
- mR6OPs+CIsmLGvBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1B83F136CF;
- Mon, 27 Oct 2025 09:22:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id oWpSBcE5/2jrVQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 27 Oct 2025 09:22:09 +0000
-Date: Mon, 27 Oct 2025 10:21:18 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Message-ID: <aP85jhbSvlYxeOiQ@rei>
-References: <20251024125613.2340799-1-anders.roxell@linaro.org>
- <20251024133035.GA590258@pevik> <aPu2lqXN8G7h4e7D@stanley.mountain>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 737EF20074B
+ for <ltp@lists.linux.it>; Mon, 27 Oct 2025 15:22:57 +0100 (CET)
+Received: by mail-qv1-xf2e.google.com with SMTP id
+ 6a1803df08f44-87c43c19947so791206d6.2
+ for <ltp@lists.linux.it>; Mon, 27 Oct 2025 07:22:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1761574976; x=1762179776; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=KvQYFgona4Lh6HM59QwMF6haTCcRbTN7dae+voz5cDA=;
+ b=TRO3jjZ/M4Nafj5q/8Fn6E1hlUrcTSXhqqdHL3qdm3xiFniFOlwck41ad6KfjQXYMY
+ brqmiukz2rFXP6Gfi0ceXmEskWcfM62TfnbRFEWY/MhdxaKjU0Jwi/7M9RCH37sAJ4kt
+ DXWkgBE1HB3gNeE3nlHDvqVMio9ITU0tq5yfmQFaLGVgL4ENnYNA1bPiDKpskjI6mGEI
+ aj1lrwkoXhVnSyWAK8meLwhFS6wzAse/YGqG10l/SOhRxcE93LUEjn3K4CYR9wRSxYP3
+ Ciu2FyWRnwgMnZpIKLEiUiDzU00847sLSdS9CaOETHk4hlHC1tfdheqB8lzdRysqU4I2
+ xX4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1761574976; x=1762179776;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=KvQYFgona4Lh6HM59QwMF6haTCcRbTN7dae+voz5cDA=;
+ b=i7OPAlE4Ofw6LyMAeQcsxsVTiwv0AMDV5FQJrDf3Jdxf43LyJIQiFIMv9GnWQ1vMTf
+ 4Ne+NjRP4SjQ2jSEAQNz+XnvgD22M6EMmBYFSYt9XAE4UFjpFmkhBjoKxcsOs6XI4ggB
+ jfjX+l4ZJxQN5nbqYoSQAFvY/jc/kGcd895KeGBeRWeMhUOULbc+HqDmhClYoG1uTHv9
+ wb7OY+i1joy5MoeDxLzb94Z1XUB3EKolcd/m7Uq55PtMF0a890SeOOfGVBmnJLTAWMtl
+ uKsxWF6Q2Z5m/TVJdL3eptwdNfiNuHd3R6iBn1yOY681NlSdXY/GStVnohTebm01TPCF
+ 7W8g==
+X-Gm-Message-State: AOJu0YziyRxctVb6XrtnhdlFl9RdIufz5a1/ft4p9Fit83a4qbCA52W8
+ BHmS8SFJR8iolcA+PiCP2GFgtk35cCo4VlkjhzdIpy1JD/S6NNvZ2ZGRn9gRoPR6q/kouGSFJKz
+ 3rF5xoJaVOxgJtfxlJoxbhV5Mx1/dy/ERBJFgA7b+CYt85Er8yT/0
+X-Gm-Gg: ASbGnctU+cTPp0sJqu0XT45aNDZOVm//Vx8lStVLcYwk11oZi/xSvO6+pZaRVzfYeYE
+ 2jDaExJ4wZMjszSdTh99ubKRJYCeWka3lzDycrvszi+U3EG9+52UJ3qAuyf8HVboFMSMWNUgk48
+ o9yGxRySZywPYjOxWCZmycmz0kE56tmDJowVFU582nXgcitUST8Ub9URTb1npMHAlqEdJBg3gbN
+ f76e2fUeo/N6rqsQjnAuARo2BLMAoa0rhgq/Mxo2LDOtILaLwTxTRzG/ABDVtTCgyEzhP/Z+Ubm
+ D3L3
+X-Google-Smtp-Source: AGHT+IHxxNfZ2qE/cZ7G/cpWmIAlEfIAarUMF74D4hne0Qrl+NWqosz+u5hK5bfAgshWPQ5C1l9gw7VxxehePdLiwJw=
+X-Received: by 2002:a05:6214:d04:b0:87d:ad10:215b with SMTP id
+ 6a1803df08f44-87de70b4540mr185970126d6.1.1761574975862; Mon, 27 Oct 2025
+ 07:22:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <aPu2lqXN8G7h4e7D@stanley.mountain>
-X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_FIVE(0.00)[6]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+References: <20251024125649.2343520-1-anders.roxell@linaro.org>
+ <aP81KaVnfcm1sj8j@rei>
+In-Reply-To: <aP81KaVnfcm1sj8j@rei>
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Mon, 27 Oct 2025 15:22:44 +0100
+X-Gm-Features: AWmQ_bmP47erE6KiyHlpnx1T56wiJWqYE1KdBN0nW3bHh10KRUXVOoiQWvlm_MA
+Message-ID: <CADYN=9Lfr6cN_dz18AXrSepe+f8-wb3=tYC9rG_A5e=G3-+zKA@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] file_attr02: Add XFS kernel config requirement
+Subject: Re: [LTP] [PATCH] isofs: Add ISO9660 kernel config requirement
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,51 +84,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, benjamin.copeland@linaro.org
+Cc: dan.carpenter@linaro.org, ltp@lists.linux.it, benjamin.copeland@linaro.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > I wonder why tst_get_supported_fs_types() from lib/tst_supported_fs_types.c did
-> > not detect it. Could you please post whole output?
-> > 
-> > Because if code in struct tst_test.filesystems does not work, many tests would
-> > be affected with this setup. I'm probably missing something, but I'd prefer to
-> > fix the detection in the library than force config (we don't have any CONFIG_.*_FS
-> > in testcases/).
+On Mon, 27 Oct 2025 at 10:03, Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> >  TST_NEEDS_CMDS="mount umount"
+> >  TST_NEEDS_TMPDIR=1
+> > +TST_NEEDS_KCONFIGS="CONFIG_ISO9660_FS=y | CONFIG_ISO9660_FS=m"
+>
+> If you add just TST_NEEDS_KCONFIGS="CONFIG_ISO9660_FS" it will match both
+> =y and =m I've added this shortcut to the library so that we do not need
+> to write it as you did above.
 
-I think that we have a but in the test library, it looks like we do not
-check for the kernel support if we have only one filesystem defined in
-the tst_test.filesystems.
+Oh great, I didn't know. I'll send a v2 shortly.
 
-The problem is that we are trying to avoid formatting and mounting the
-filesystem for each test iteration (if -i 10 is passed) but that means
-that we skip the filesystem kernel support. We only check for mkfs in
-the setup and prepare the device.
-
-This should fix it:
-
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index b8894f782..d49f34623 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1530,6 +1530,10 @@ static void do_setup(int argc, char *argv[])
-                tdev.fs_type = default_fs_type();
-
-                if (!tst_test->all_filesystems && count_fs_descs() <= 1) {
-+
-+                       if (!tst_fs_is_supported(tdev.fs_type))
-+                               tst_brk(TCONF, "The %s filesystem is not supported", tdev.fs_type);
-+
-                        if (tst_test->filesystems && tst_test->filesystems->mkfs_ver)
-                                tst_check_cmd(tst_test->filesystems->mkfs_ver, 1);
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Cheers,
+Anders
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
