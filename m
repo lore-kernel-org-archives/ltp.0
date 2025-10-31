@@ -4,96 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85A04CCF9FF
-	for <ltp@archiver.kernel.org>; Fri, 31 Oct 2025 08:45:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1761900334; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=53tuteeWgFDiaoVXIaV/aUuni7yWd4SgMPKFLjmUGNo=;
- b=Oksnt+3KH+CJx4sByJd4bdxNzz6KqjYDsKPFbTGqRKc0UXQEK6ogIiav/04WYMHi07Et9
- GUjEnWPetzilrOcL3napwgBDLOi34SH9PFX/qadIeihP75Z6y8CDUL2Ov4tyd/gcaFrG/ow
- GTxCmZ7nBOGi57GHFI3CbZUC0gZ0Ieg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FF90CCF9FF
+	for <ltp@archiver.kernel.org>; Fri, 31 Oct 2025 09:14:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 397EB3CCA24
-	for <ltp@archiver.kernel.org>; Fri, 31 Oct 2025 09:45:34 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id C4FDC3CC8F1
+	for <ltp@archiver.kernel.org>; Fri, 31 Oct 2025 10:14:19 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E94FD3CC834
- for <ltp@lists.linux.it>; Fri, 31 Oct 2025 09:45:13 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 39FA83CA9AF
+ for <ltp@lists.linux.it>; Fri, 31 Oct 2025 10:14:02 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4DD301A00357
- for <ltp@lists.linux.it>; Fri, 31 Oct 2025 09:45:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1761900311;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eZRbBvjYXpGUtyg+eVlMr0iTxXEE5DXeBiaMI9wfZQY=;
- b=CcIBlmoIcZRozp30qJihOUG4qEJlXdaKqA7UD1bBXqiJUDZmnC3r9s37TNelXbRHrIDzoq
- 1KRtXfKwkz3ItiZAlNYaEdsO0f0sQ2jNYUgafLYXJ4oS5oSGpbdp/+ilfQbveCyKV+oqZH
- u9UPkfjE3Xe0t+UGnM9GRNhzS4QVjeE=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-400-RHUWZCLCMnuTIzvZvFy2mQ-1; Fri, 31 Oct 2025 04:45:07 -0400
-X-MC-Unique: RHUWZCLCMnuTIzvZvFy2mQ-1
-X-Mimecast-MFC-AGG-ID: RHUWZCLCMnuTIzvZvFy2mQ_1761900307
-Received: by mail-pl1-f197.google.com with SMTP id
- d9443c01a7336-2904e9e0ef9so44122985ad.3
- for <ltp@lists.linux.it>; Fri, 31 Oct 2025 01:45:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1761900307; x=1762505107;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=eZRbBvjYXpGUtyg+eVlMr0iTxXEE5DXeBiaMI9wfZQY=;
- b=ehoU4mQwGJ1lwyK2RyFdja151BjVc8dJ+TzJoYeJCUg4snGWFIJKU10/MpsZ0+6eTU
- Cc4ukBXTdBlTd4fbWsy8Vi1bd9h/qIrvkAPNrny6qpgFyYMIe34/UpwCz7zNxslw8/WQ
- XXBEgpjRmGQ9oKLEzqYee0RKgTCLuGRfvah0EDUnk3rubI7js/NkSSfLeZ7gfmcjE4vS
- rhwWylF66mBBYlS5V/LqzsZOEpPFQTeWMoYIj3nWjgpkqOQLww8lQt/36/HL7U45gND1
- WMvw/QJa11Ml4jrkWu4pe1zCvgJXka+IllfHhJIcVSjcqoLfzKhiNSMtEv4ESgYQTQvw
- udGQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXfOTUWpeC3TKTdQnEkjvOKQXMkxczU5BBuJ7QIFhE8UA7EoV4ZXiMpZKfMaUWCYX9ndsI=@lists.linux.it
-X-Gm-Message-State: AOJu0Yy7lf10GYdgd7p7QxydHG2AHqjAhrwUodn9uvYRvGHsMHzvb85r
- +1Ovch7L52ZCklm8Ttri68Xh+6v+nNipoTuC3uUs/hKPrOWHL3xeqXqobDYqYgvCEbw5wfvtorp
- N81EEB4xjfV1V+UMwcS7ZtxbjuRNCNjubvU/leiYaMUOHodg+9RjpPapsm2paNIR7fjCtkrtWL4
- SK3COGAqUUYHnO+q8LC2S04iDPluU=
-X-Gm-Gg: ASbGncsIsBles5CN+2+cAtdsmP05Q4uzj7hxyzz6SjdUTvJTvgaRZtTJB7MRnDIrwSe
- 4RYtBiKBp9xOmK0ni7e1Z12FV8slMb/KCMxfxPLvOtfETbUgCBLmt7l+gHUP2OEQl9HyaoeD3Z4
- 3KPY6iNUqhBr5jnjXHjohGzPDafaEgN558BrtqEl7LpnOsyItp2iKJ5v/O
-X-Received: by 2002:a17:902:e5d2:b0:295:2276:6704 with SMTP id
- d9443c01a7336-29522766adbmr26864965ad.51.1761900306838; 
- Fri, 31 Oct 2025 01:45:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFRXrbuUvptlW0tpNVE5OZPq/uwmPQQh36AowaJoO6lkGpi4Yc9CrKwkabGD7WET/YluiuYoJ9EiilPZbQEgtk=
-X-Received: by 2002:a17:902:e5d2:b0:295:2276:6704 with SMTP id
- d9443c01a7336-29522766adbmr26864695ad.51.1761900306492; Fri, 31 Oct 2025
- 01:45:06 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8C448600D52
+ for <ltp@lists.linux.it>; Fri, 31 Oct 2025 10:14:01 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4389A227ED;
+ Fri, 31 Oct 2025 09:14:00 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D56713393;
+ Fri, 31 Oct 2025 09:14:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id fokICth9BGmoTAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 31 Oct 2025 09:14:00 +0000
+Date: Fri, 31 Oct 2025 10:13:58 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20251031091358.GA804220@pevik>
+References: <20250529105156.2564268-1-wegao@suse.com>
+ <20250924084223.20597-1-wegao@suse.com>
+ <20251030201734.GC753947@pevik>
+ <aQRYS25XIjU6TfNY@autotest-wegao.qe.prg2.suse.org>
 MIME-Version: 1.0
-References: <20251031004445.25185-1-akumar@suse.de>
- <20251031081346.GA800577@pevik>
-In-Reply-To: <20251031081346.GA800577@pevik>
-Date: Fri, 31 Oct 2025 16:44:54 +0800
-X-Gm-Features: AWmQ_bnOfExm7PAN3NV07rN6k4Y-fEesBrgiwkFjU1BBFy2IEN0WnYOAVfd9uv4
-Message-ID: <CAEemH2e5RpG829uHWSdLepDFSkmu4tO5NX4Sv6-38H7G467xWw@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 4l2qaGzOxPiAZ6AxVQTE4u7oAGa8o3qm0ssEgRYyIN0_1761900307
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <aQRYS25XIjU6TfNY@autotest-wegao.qe.prg2.suse.org>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 4389A227ED
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] swapon03: Correct the test swapfile name for
- swapoff() to work
+Subject: Re: [LTP] [PATCH v2] tst_filesystems01.c: Add test for .filesystems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,21 +75,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBPY3QgMzEsIDIwMjUgYXQgNDoxNOKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKCj4gSGkgQXZpbmVzaCwKPgo+ID4gRml4IGFuIG9idmlvdXMgbWlzdGFrZSBp
-biB0aGUgdGVzdC4gSXQgcmVtYWluZWQgaGlkZGVuIGFzIHRlc3QgdXNlZAo+ID4gdG8gcnVuIHN1
-Y2Nlc3NmdWxseSBhbmQgd2FzIG5ldmVyIGV4ZWN1dGluZyBpdC4KPiA+IE9uIGZhaWx1cmUsIGl0
-IGNhdXNlcyB1bW91bnQgdG8gZmFpbCBhcyB3ZSBkbyBub3Qgc3dhcG9mZigpIGZvciB0aGUKPiA+
-IGVkZ2UgY2FzZSBzd2FwZmlsZSwgYW5kIGFsc28gY2F1c2VzIGJyZWFrYWdlIGluIHN1YnNlcXVl
-bnQgZmlsZXN5c3RlbXMKPiA+IGFzIHdlIHVzZSB0aGUgc2FtZSBsb29wIGRldmljZS4KPgo+IEdv
-b2QgY2F0Y2gsIHRoYW5rIHlvdSEKPgoKQWJzb2x1dGVseSwgcGF0Y2ggbWVyZ2VkLgoKCi0tIApS
-ZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGlu
-dXguaXQvbGlzdGluZm8vbHRwCg==
+...
+> > Alpine: e2fsprogs-extra
+> > Debian, openSUSE, Fedora (hopefully): e2fsprogs
+> when i add following diff another CI error triggered on alpine, it
+> seems /dev/not mounted.
+> further check.
+
+> diff --git a/ci/alpine.sh b/ci/alpine.sh
+> index f3a1bf528..254f4aaec 100755
+> --- a/ci/alpine.sh
+> +++ b/ci/alpine.sh
+> @@ -25,7 +25,6 @@ apk add \
+>         musl-dev \
+>         numactl-dev \
+>         openssl-dev \
+> -       e2fsprogs-extra \
+>         pkgconfig
+
+> https://github.com/coolgw/ltp/actions/runs/18960845023/job/54148138737
+
+> 2025-10-31T02:50:14.5257746Z runtest TINFO: * shell/tst_format_device.sh
+> 2025-10-31T02:50:14.5260052Z tst_format_device 1 TINFO: Running: tst_format_device.sh
+> 2025-10-31T02:50:14.5268691Z tst_format_device 1 TINFO: Tested kernel: Linux 0ba9f024d6b7 6.11.0-1018-azure #18~24.04.1-Ubuntu SMP Sat Jun 28 04:46:03 UTC 2025 x86_64 Linux
+> 2025-10-31T02:50:14.5329045Z tst_format_device 1 TINFO: Using /tmp/LTP_tst_format_device.XXXXOajpgN as tmpdir (UNKNOWN filesystem)
+> 2025-10-31T02:50:14.5352954Z tst_device.c:98: TINFO: Found free device 0 '/dev/loop0'
+> 2025-10-31T02:50:14.5491591Z tst_format_device 1 TINFO: Formatting ext2 with opts='-b 1024 /dev/loop0 5m'
+> 2025-10-31T02:50:14.5555250Z tst_format_device 1 TINFO: timeout per run is 0h 5m 0s
+> 2025-10-31T02:50:14.5571366Z tst_format_device 1 TPASS: device formatted
+> 2025-10-31T02:50:14.5594507Z df: /dev/loop0: can't find mount point  <<
+> 2025-10-31T02:50:14.5598211Z tst_format_device 2 TFAIL: df /dev/loop0 | grep -q /dev failed unexpectedly
+> 2025-10-31T02:50:14.6127085Z tst_format_device 3 TINFO: AppArmor enabled, this may affect test results
+> 2025-10-31T02:50:14.6128036Z tst_format_device 3 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
+> 2025-10-31T02:50:14.6128824Z tst_format_device 3 TINFO: loaded AppArmor profiles: none
+
+Strange, because previous shell/tst_mount_device.sh works:
+runtest TINFO: * shell/tst_mount_device.sh
+tst_mount_device 1 TINFO: Running: tst_mount_device.sh
+tst_mount_device 1 TINFO: Tested kernel: Linux 0ba9f024d6b7 6.11.0-1018-azure #18~24.04.1-Ubuntu SMP Sat Jun 28 04:46:03 UTC 2025 x86_64 Linux
+tst_mount_device 1 TINFO: Using /tmp/LTP_tst_mount_device.XXXXmbKhac as tmpdir (UNKNOWN filesystem)
+tst_device.c:98: TINFO: Found free device 0 '/dev/loop0'
+tst_mount_device 1 TINFO: Formatting ext4 with opts='/dev/loop0'
+tst_mount_device 1 TINFO: Mounting device: mount -t ext4 /dev/loop0 /tmp/LTP_tst_mount_device.XXXXmbKhac/mntpoint
+tst_mount_device 1 TINFO: timeout per run is 0h 5m 0s
+tst_mount_device 1 TPASS: cd /tmp/LTP_tst_mount_device.XXXXmbKhac/mntpoint passed as expected
+
+Kind regards,
+Petr
+
+> > Kind regards,
+> > Petr
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
