@@ -4,98 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65D40CCF9E3
-	for <ltp@archiver.kernel.org>; Fri, 31 Oct 2025 00:45:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A45E2CCF9F0
+	for <ltp@archiver.kernel.org>; Fri, 31 Oct 2025 02:27:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1761877671; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=ay4wRmeIMs/HiOPi2Sj/apKN/IiNZtlWdDuq82GQJ7U=;
+ b=AVcn9QdmV60ThRRRCAawlqcdrEA6s8PC18CLaapJU0lDm74Sw1JBLgGoOxQ7wmi4IZHpK
+ 7ZxhBT0VdIMSttVcdoDIRffCMSMBLoXscSvRSsJCVOMrd6rsLwSxgtewDDqiXA/fpd9/MUm
+ GkitD6Avmz8dOXk2pj2kAfrgjHXWKpM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 961F43CC68A
-	for <ltp@archiver.kernel.org>; Fri, 31 Oct 2025 01:45:04 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 867BE3CC20B
+	for <ltp@archiver.kernel.org>; Fri, 31 Oct 2025 03:27:51 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 70F943C592D
- for <ltp@lists.linux.it>; Fri, 31 Oct 2025 01:44:47 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id C73793C0372
+ for <ltp@lists.linux.it>; Fri, 31 Oct 2025 03:27:30 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DCEFA2009BB
- for <ltp@lists.linux.it>; Fri, 31 Oct 2025 01:44:46 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D444D1F6E6;
- Fri, 31 Oct 2025 00:44:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1761871486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=mBRS84K62xeUQbfSXDj5xQrXlnlZ6XrjQdq/n9cT2ik=;
- b=uqYhU/3FVA2fUJX9wRZZc4DeMNCYH3XxthAXIGdkMHX8BOY3QNgDRsdicClK00LtutSt5h
- GhsZnOmRHwmIxjI8ZGHAF2WioJV5Fzx0/GITvTjuKkNuJfja1VlRpwhiZWOP+lpi+iYOuz
- FyRqo8ojsUGwbQzskmWbs8zEVzaXUCc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1761871486;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=mBRS84K62xeUQbfSXDj5xQrXlnlZ6XrjQdq/n9cT2ik=;
- b=IUactIbedUfXAl06mSitI2q/64XsQuzAw4AUYoL6NvbpE/VahDIBms9Sbr7kG18Q+4DV9V
- Iy51b0h2bPLmhJDw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b="wlUct/hi";
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="T1eECV/c"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1761871485; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=mBRS84K62xeUQbfSXDj5xQrXlnlZ6XrjQdq/n9cT2ik=;
- b=wlUct/hikvvFTYqov9JbkEfDNXuGRdnDosupZ1Ur7PuKWAs00Q3B3eMvOVXIUkBEKFm2tU
- rKLzIUvilIgqpPKnFIvX1c2BXZv/O233pn56NRnJoSK3AR39WJnZBeEpRC0AN989nKf5MI
- TuwgRY4v6+K/qeU8gwdxIS0bBL9WzxY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1761871485;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=mBRS84K62xeUQbfSXDj5xQrXlnlZ6XrjQdq/n9cT2ik=;
- b=T1eECV/c+Gy+7qar8S4hdj2wgMkafCveVgwYM2qYubiYGKXoEnIR03g7GxEGtIDLrb42G5
- OJbCVM/3ZBUL4iBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C6D5713393;
- Fri, 31 Oct 2025 00:44:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id SEcEMH0GBGn2bgAAD6G6ig
- (envelope-from <akumar@suse.de>); Fri, 31 Oct 2025 00:44:45 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Fri, 31 Oct 2025 01:44:44 +0100
-Message-ID: <20251031004445.25185-1-akumar@suse.de>
-X-Mailer: git-send-email 2.51.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1069420091A
+ for <ltp@lists.linux.it>; Fri, 31 Oct 2025 03:27:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1761877648;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=avn9tEjyJeb2xkM43RE4UYPaJaz5ADBnFOQvyrvvTHI=;
+ b=VOhdK6fDe+1G/BQERW0nsr19hK8sMVKH7okhOSrQB1TAgiESpoe6mwfNJDyNm+FwFO7Ygh
+ PqOxMxDA0KBHRStUVLQCai3F31OvrZFwtTCesf8vn3f+uUf/IMA75cx/Gtyn+o8ky5Huxt
+ 3Q0OiauZEEZRCssFALqts22jhxC+w1A=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-389-6ibIlAGDMeKWojLZk5mEeA-1; Thu, 30 Oct 2025 22:27:26 -0400
+X-MC-Unique: 6ibIlAGDMeKWojLZk5mEeA-1
+X-Mimecast-MFC-AGG-ID: 6ibIlAGDMeKWojLZk5mEeA_1761877645
+Received: by mail-pl1-f198.google.com with SMTP id
+ d9443c01a7336-290c9724deeso17065625ad.2
+ for <ltp@lists.linux.it>; Thu, 30 Oct 2025 19:27:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1761877645; x=1762482445;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=avn9tEjyJeb2xkM43RE4UYPaJaz5ADBnFOQvyrvvTHI=;
+ b=wo8z5EiHgvQsmi5tg3Sz0fpqxQzrQezdhEbDbtO0XDxMK/68R2+3vb2B+P2Ek2lD7m
+ MXdG0f7JYbnEPux4tLqiVyjh/V7VbqJ2RuByDiwJLch5ASDNqgF6wRFG4J81UG3gqYsA
+ dWRaVpNc9fKd1lPBhTehiZQQ1mtqrGgxvg0qgjDgXOB0x7n5B0IIv5vzsPyBV0bW3cN3
+ EOHlqrtICdNbsGnwq7km6VU49CDTK+ftUOIc/4bFqtRrXiNlHE616QN1vuTiv8EOynOf
+ eTj8ZiOSpILzEusMqU5GCLxdvV3IBtVEp+HtJ/36LaITN0Ak4UCLBXIVsL1iIC0f30Bu
+ NTPQ==
+X-Gm-Message-State: AOJu0YwoNGmR14anTjLEQPZMj8DLsgzQdyjIubPMSBiv9Yx9FIwGKP5M
+ TEYeeeoVGlPR0zpVUI6tzDewDUhjqrKaeeHs2H3yH691iss170PUC2x3Fut5/x9QpoQfPEj9aCi
+ sKQsvUWVtc2lf90ImJWkHNRBCmYMFHAkz6Tyk33UE6mLwr7+28xKyTfy7EZX0xkEG+HrYcu5+Gr
+ TBziv+YKsGSkI8BNdavXsYiooTEj8=
+X-Gm-Gg: ASbGncuJmYRv8Qjm0r/R2v1jz2VDTn6furhM2a+SEBnbjgOsOLSL1avrm0j/5qlbZ20
+ N9kh8TKw9vECVpaGRHNf9h7u3JoPAZE+89k0vTVqdChHVXfgxTqGPgwOb0SS5CHHE8ErV7pP68E
+ ajiI4OgSMIpjVnKO1QuRX96+HtRYsUwP7QEF59TpC0zpirKV+1TumahGx+
+X-Received: by 2002:a17:902:778a:b0:264:a34c:c6d with SMTP id
+ d9443c01a7336-2951a459ba5mr17693475ad.37.1761877645039; 
+ Thu, 30 Oct 2025 19:27:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG3mrQVOdMbrie8MFxTAX0UtwcAc/GBHdD9kKranGUrv1yjlKlA3VBF/KpsOdEKKEp82paD5yjl1j5WlbqpFCc=
+X-Received: by 2002:a17:902:778a:b0:264:a34c:c6d with SMTP id
+ d9443c01a7336-2951a459ba5mr17693285ad.37.1761877644529; Thu, 30 Oct 2025
+ 19:27:24 -0700 (PDT)
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: D444D1F6E6
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid,suse.de:email];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- DKIM_TRACE(0.00)[suse.de:+]
+References: <20251030113534.67798-1-liwang@redhat.com>
+ <20251030202935.GE753947@pevik>
+In-Reply-To: <20251030202935.GE753947@pevik>
+Date: Fri, 31 Oct 2025 10:27:08 +0800
+X-Gm-Features: AWmQ_bkp5nk0uMRUfWgxyts1-pFv9gg3amQUuTAAjncZ-111xkI9CSZYUjS8fVY
+Message-ID: <CAEemH2eVKTbukjE9kUZOJSrQcfC+9+tj7eOjQqvPbwAS=gWkpQ@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: yVEPlBlz5Jjj_xepdpvjckdQh4wLC7wRKewMjg5jdkQ_1761877645
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] swapon03: Correct the test swapfile name for
- swapoff() to work
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] hugeshmctl02: set 2 huge pages as an enforced
+ requirement
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,66 +103,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Cc: ltp@lists.linux.it, Luiz Capitulino <luizcap@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fix an obvious mistake in the test. It remained hidden as test used
-to run successfully and was never executing it.
-On failure, it causes umount to fail as we do not swapoff() for the
-edge case swapfile, and also causes breakage in subsequent filesystems
-as we use the same loop device.
-
-swapon03.c:63: TINFO: Successfully created 22 swap files
-swapon03.c:64: TINFO: create a swapfile size of 1 megabytes (MB)
-swapon03.c:105: TFAIL: swapon(mntpoint/testswap, 0) succeeded
-tst_device.c:417: TINFO: umount('mntpoint') failed with EBUSY, try  1...
-tst_device.c:421: TINFO: Likely gvfsd-trash is probing newly mounted fs, kill it to speed up tests.
-tst_device.c:417: TINFO: umount('mntpoint') failed with EBUSY, try  2...
-tst_device.c:417: TINFO: umount('mntpoint') failed with EBUSY, try  3...
-...
-...
-tst_device.c:417: TINFO: umount('mntpoint') failed with EBUSY, try 49...
-tst_device.c:417: TINFO: umount('mntpoint') failed with EBUSY, try 50...
-tst_device.c:428: TWARN: Failed to umount('mntpoint') after 50 retries
-tst_test.c:1956: TINFO: === Testing on ext3 ===
-tst_test.c:1280: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
-mke2fs 1.47.0 (5-Feb-2023)
-/dev/loop0 is mounted; will not make a filesystem here!
-tst_test.c:1280: TWARN: mkfs may have failed because the device is busy (e.g., udisks2 probing). Consider disabling background probing services.
-tst_test.c:1280: TBROK: mkfs.ext3 failed with exit code 1
-Summary:
-passed   0
-failed   1
-broken   1
-skipped  0
-warnings 2
-tst_device.c:270: TWARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO for too long
-tst_tmpdir.c:347: TWARN: tst_rmdir: rmobj(/var/tmp/LTP_swa5hk5Lk) failed: unlink(/var/tmp/LTP_swa5hk5Lk/mntpoint) failed; errno=21: EISDIR
-
-Fixes: 8fd941649a ("syscalls/swapon03: Simply this case")
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/swapon/swapon03.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
-index 0068560fe..d6445d5fc 100644
---- a/testcases/kernel/syscalls/swapon/swapon03.c
-+++ b/testcases/kernel/syscalls/swapon/swapon03.c
-@@ -97,7 +97,7 @@ static void clean_swap(void)
- 		check_and_swapoff(filename);
- 	}
- 
--	check_and_swapoff("testfile");
-+	check_and_swapoff(TEST_FILE);
- }
- 
- static void verify_swapon(void)
--- 
-2.51.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gRnJpLCBPY3QgMzEsIDIwMjUgYXQgNDoyOeKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKCj4gSGkgTGksCj4KPiA+IFNldCBodWdlc2htY3RsMDIgdG8gcmVxdWlyZSBl
+eGFjdGx5IDIgSHVnZVRMQiBwYWdlcyBhbmQgYmFpbCBvdXQKPiA+IGNsZWFubHkgaWYgdW5hdmFp
+bGFibGUuIFRvIHByZXZlbnQgc2htZ2V0IEVJTlZBTCBmYWlsdXJlcyBzZWVuIHdoZW4KPiA+IHRo
+ZSBlbnZpcm9ubWVudCBjYW5ub3QgcHJvdmlkZSBlbm91Z2ggaHVnZXBhZ2VzLgo+Cj4gSSBzZWUg
+IlRDT05GOiBObyBlbm91Z2ggaHVnZXBhZ2VzIGZvciB0ZXN0aW5nLiIgb24gcHBjNjRsZSBvbiBU
+dW1ibGV3ZWVkLAo+IGhvcGVmdWxseSBpdCB3aWxsIGhhdmUgMiA6KS4KPgo+IFJldmlld2VkLWJ5
+OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPgoKUGF0Y2ggbWVyZ2VkLCB0aGFua3MhCgot
+LSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
+LmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
