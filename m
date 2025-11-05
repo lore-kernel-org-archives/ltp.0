@@ -4,108 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8345DCCF9F8
-	for <ltp@archiver.kernel.org>; Wed,  5 Nov 2025 15:47:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FEF8CCF9F8
+	for <ltp@archiver.kernel.org>; Wed,  5 Nov 2025 15:48:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C4A3B3CE4C3
-	for <ltp@archiver.kernel.org>; Wed,  5 Nov 2025 16:47:54 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id C7C723CE4C5
+	for <ltp@archiver.kernel.org>; Wed,  5 Nov 2025 16:48:10 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2507B3CE456
- for <ltp@lists.linux.it>; Wed,  5 Nov 2025 16:47:21 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 9EC3F3CE4CB
+ for <ltp@lists.linux.it>; Wed,  5 Nov 2025 16:47:25 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6C85E1A006F7
- for <ltp@lists.linux.it>; Wed,  5 Nov 2025 16:47:21 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0732B6009FD
+ for <ltp@lists.linux.it>; Wed,  5 Nov 2025 16:47:24 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 636DC211A5;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8FDBB1F456;
  Wed,  5 Nov 2025 15:47:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1762357640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Un1V/mXDFrbm4+h5DyM+m9yuvKFmrYjpkpG3r0jMaf8=;
- b=hgsxVWgOjKT771XcqzpPRnHqXknRC9Sh+9A2eFNHYIpiLfHzAFdfTGlTz6YPgXOaLsGYPb
- Rpu7bJizZlWoyNA1g913UXlmpaUIC6KI27dRbXk6aghlYDbJg9Ak7Z+iYDfe9YvFtf8nef
- j8OKLs1Ul9Ojc5hq1xxHidM7rM1h8k4=
+ bh=BXUVe8lc+iuaXtaWSTx4WSXltt2rIWFZJsaPRs7gIXI=;
+ b=hMJi1eZCqQgaNDRBVOSMXVmhfdym/U5dlYlVPdhUeyViUyYrPaGmrBpMst0ftLmBNndgXu
+ FU2jRhgVqlH1CVb+kxNGRmAhWtaNW3t/6NawONdLQWMHk22eUjIEael/LnrDJQSeh3NuKg
+ h7lTaKF6y6jtnn4UeoTb0w+otyoODMM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1762357640;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Un1V/mXDFrbm4+h5DyM+m9yuvKFmrYjpkpG3r0jMaf8=;
- b=8OCrXQT8e2a2XAkIc0nhHDbTz2/bALY3FVW4MqbEDG3lJkQLpn85uMGceJamAq4vmX15Vm
- 7DLnuX1Zzg5TO2Cw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hgsxVWgO;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=8OCrXQT8
+ bh=BXUVe8lc+iuaXtaWSTx4WSXltt2rIWFZJsaPRs7gIXI=;
+ b=hP9IvNez5jxlcPZjf6ppFXUF3A3XtlCt4P+EDUhm962KAHwJJLJKq93rIbZqsYpkviabMf
+ GIpAvRlJ1YqEoPBQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hMJi1eZC;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hP9IvNez
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1762357640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Un1V/mXDFrbm4+h5DyM+m9yuvKFmrYjpkpG3r0jMaf8=;
- b=hgsxVWgOjKT771XcqzpPRnHqXknRC9Sh+9A2eFNHYIpiLfHzAFdfTGlTz6YPgXOaLsGYPb
- Rpu7bJizZlWoyNA1g913UXlmpaUIC6KI27dRbXk6aghlYDbJg9Ak7Z+iYDfe9YvFtf8nef
- j8OKLs1Ul9Ojc5hq1xxHidM7rM1h8k4=
+ bh=BXUVe8lc+iuaXtaWSTx4WSXltt2rIWFZJsaPRs7gIXI=;
+ b=hMJi1eZCqQgaNDRBVOSMXVmhfdym/U5dlYlVPdhUeyViUyYrPaGmrBpMst0ftLmBNndgXu
+ FU2jRhgVqlH1CVb+kxNGRmAhWtaNW3t/6NawONdLQWMHk22eUjIEael/LnrDJQSeh3NuKg
+ h7lTaKF6y6jtnn4UeoTb0w+otyoODMM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1762357640;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Un1V/mXDFrbm4+h5DyM+m9yuvKFmrYjpkpG3r0jMaf8=;
- b=8OCrXQT8e2a2XAkIc0nhHDbTz2/bALY3FVW4MqbEDG3lJkQLpn85uMGceJamAq4vmX15Vm
- 7DLnuX1Zzg5TO2Cw==
+ bh=BXUVe8lc+iuaXtaWSTx4WSXltt2rIWFZJsaPRs7gIXI=;
+ b=hP9IvNez5jxlcPZjf6ppFXUF3A3XtlCt4P+EDUhm962KAHwJJLJKq93rIbZqsYpkviabMf
+ GIpAvRlJ1YqEoPBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 428FB13A88;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6840713A91;
  Wed,  5 Nov 2025 15:47:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ILX9DohxC2n7HQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2M6VGIhxC2n7HQAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Wed, 05 Nov 2025 15:47:20 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed,  5 Nov 2025 16:47:14 +0100
-Message-ID: <20251105154716.995786-2-pvorel@suse.cz>
+Date: Wed,  5 Nov 2025 16:47:15 +0100
+Message-ID: <20251105154716.995786-3-pvorel@suse.cz>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251105154716.995786-1-pvorel@suse.cz>
 References: <20251105154716.995786-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 636DC211A5
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 8FDBB1F456
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
  R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; ARC_NA(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:mid,suse.cz:email];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- RCPT_COUNT_THREE(0.00)[4];
+ MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ RCPT_COUNT_FIVE(0.00)[5]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] swapon03: Cleanup
+Subject: [LTP] [PATCH 2/3] swapon03: Try to swapon() as many files until it
+ fails
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,88 +117,155 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Michal Hocko <mhocko@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-- Remove unused return code in check_and_swapoff() and setup_swap(). The
-  purpose was to run cleanup() in the end of the setup() if creating
-  swap fails, but return code is always 0. Also cleanup() should be run
-  when test exits with tst_brk() anyway.
-- Change return code from TFAIL to TBROK.
-- Add missing brackets.
+Previously tst_max_swapfiles() had fine tuning for a specific kernel
+version which was fragile due various backports in enterprise kernels.
 
+Let's try to create and use as many swap files until swapon() fails.
+Then check for expected EPERM.
+
+Suggested-by: Michal Hocko <mhocko@suse.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/swapon/swapon03.c | 23 +++++++--------------
- 1 file changed, 7 insertions(+), 16 deletions(-)
+ testcases/kernel/syscalls/swapon/swapon03.c | 63 +++++++++++++--------
+ 1 file changed, 40 insertions(+), 23 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
-index d6445d5fc4..b89d853188 100644
+index b89d853188..0027f874be 100644
 --- a/testcases/kernel/syscalls/swapon/swapon03.c
 +++ b/testcases/kernel/syscalls/swapon/swapon03.c
-@@ -25,7 +25,7 @@
+@@ -1,14 +1,18 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
++ * Copyright (c) Linux Test Project, 2009-2025
+  * Copyright (c) International Business Machines Corp., 2007
+  * Created by <rsalveti@linux.vnet.ibm.com>
+- *
+  */
  
- static int swapfiles;
+ /*\
+- * This test case checks whether swapon(2) system call returns:
++ * Test checks whether :man2:`swapon` system call returns EPERM when the maximum
++ * number of swap files are already in use.
+  *
+- *  - EPERM when there are more than MAX_SWAPFILES already in use.
++ * NOTE: test does not try to calculate MAX_SWAPFILES from the internal
++ * kernel implementation (which is currently <23, 29> depending on kernel
++ * configuration). Instead test exptect that at least 15 swap files minus
++ * currently used swap can be created.
+  */
  
--static int setup_swap(void)
-+static void setup_swap(void)
+ #include <stdio.h>
+@@ -20,49 +24,54 @@
+ #include "lapi/syscalls.h"
+ #include "libswap.h"
+ 
++#define NUM_SWAP_FILES 15
+ #define MNTPOINT	"mntpoint"
+ #define TEST_FILE	MNTPOINT"/testswap"
+ 
+-static int swapfiles;
++static int *swapfiles;
+ 
+ static void setup_swap(void)
  {
  	pid_t pid;
- 	int status;
-@@ -54,34 +54,28 @@ static int setup_swap(void)
- 			TST_EXP_PASS_SILENT(swapon(filename, 0));
- 		}
- 		exit(0);
--	} else
-+	} else {
- 		waitpid(pid, &status, 0);
+-	int status;
+-	int j, max_swapfiles, used_swapfiles;
++	int status, used_swapfiles, expected_swapfiles;
+ 	char filename[FILENAME_MAX];
+ 
+ 	SAFE_SETEUID(0);
+ 
+-	/* Determine how many more files are to be created */
+-	max_swapfiles = tst_max_swapfiles();
+ 	used_swapfiles = tst_count_swaps();
+-	swapfiles = max_swapfiles - used_swapfiles;
+-	if (swapfiles > max_swapfiles)
+-		swapfiles = max_swapfiles;
++	expected_swapfiles = NUM_SWAP_FILES - used_swapfiles;
++
++	if (expected_swapfiles < 0) {
++		tst_brk(TCONF, "Warning: too many used swap files (%d)",
++			expected_swapfiles);
 +	}
  
- 	if (WEXITSTATUS(status))
--		tst_brk(TFAIL, "Failed to setup swap files");
-+		tst_brk(TBROK, "Failed to setup swap files");
- 
- 	tst_res(TINFO, "Successfully created %d swap files", swapfiles);
- 	MAKE_SMALL_SWAPFILE(TEST_FILE);
+ 	pid = SAFE_FORK();
+ 	if (pid == 0) {
+-		/*create and turn on remaining swapfiles */
+-		for (j = 0; j < swapfiles; j++) {
 -
--	return 0;
++		while (true) {
+ 			/* Create the swapfile */
+-			snprintf(filename, sizeof(filename), "%s%02d", TEST_FILE, j + 2);
++			snprintf(filename, sizeof(filename), "%s%02d", TEST_FILE, *swapfiles);
+ 			MAKE_SMALL_SWAPFILE(filename);
+ 
+-			/* turn on the swap file */
+-			TST_EXP_PASS_SILENT(swapon(filename, 0));
++			/* Quit on a first swap file over max */
++			if (swapon(filename, 0) == -1)
++				break;
++			(*swapfiles)++;
+ 		}
+ 		exit(0);
+ 	} else {
+ 		waitpid(pid, &status, 0);
+ 	}
+ 
+-	if (WEXITSTATUS(status))
++	if (WEXITSTATUS(status) || *swapfiles == 0)
+ 		tst_brk(TBROK, "Failed to setup swap files");
+ 
+-	tst_res(TINFO, "Successfully created %d swap files", swapfiles);
+-	MAKE_SMALL_SWAPFILE(TEST_FILE);
++	if (*swapfiles < expected_swapfiles) {
++		tst_res(TWARN, "Successfully created only %d swap files (>= %d expected)",
++			*swapfiles, expected_swapfiles);
++	} else {
++		tst_res(TINFO, "Successfully created %d swap files", *swapfiles);
++	}
  }
  
  /*
-  * Check if the file is at /proc/swaps and remove it giving swapoff
-  */
--static int check_and_swapoff(const char *filename)
-+static void check_and_swapoff(const char *filename)
- {
- 	char cmd_buffer[256];
--	int rc = -1;
+@@ -86,8 +95,8 @@ static void clean_swap(void)
+ 	int j;
+ 	char filename[FILENAME_MAX];
  
- 	snprintf(cmd_buffer, sizeof(cmd_buffer), "grep -q '%s.*file' /proc/swaps", filename);
+-	for (j = 0; j < swapfiles; j++) {
+-		snprintf(filename, sizeof(filename), "%s%02d", TEST_FILE, j + 2);
++	for (j = 0; j < *swapfiles; j++) {
++		snprintf(filename, sizeof(filename), "%s%02d", TEST_FILE, j);
+ 		check_and_swapoff(filename);
+ 	}
  
--	if (system(cmd_buffer) == 0 && swapoff(filename) != 0) {
-+	if (system(cmd_buffer) == 0 && swapoff(filename) != 0)
- 		tst_res(TWARN, "Failed to swapoff %s", filename);
--		rc = -1;
--	}
--
--	return rc;
- }
- 
- /*
-@@ -111,10 +105,7 @@ static void setup(void)
+@@ -105,12 +114,20 @@ static void setup(void)
  		tst_brk(TCONF, "swap not supported by kernel");
  
  	is_swap_supported(TEST_FILE);
--	if (setup_swap() < 0) {
--		clean_swap();
--		tst_brk(TBROK, "Setup failed, quitting the test");
--	}
-+	setup_swap();
++
++	swapfiles = SAFE_MMAP(NULL, sizeof(*swapfiles), PROT_READ | PROT_WRITE,
++			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
++	*swapfiles = 0;
++
+ 	setup_swap();
  }
  
  static void cleanup(void)
+ {
+-	clean_swap();
++	if (swapfiles) {
++		clean_swap();
++		SAFE_MUNMAP(swapfiles, sizeof(*swapfiles));
++	}
+ }
+ 
+ static struct tst_test test = {
 -- 
 2.51.0
 
