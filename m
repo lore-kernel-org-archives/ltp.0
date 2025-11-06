@@ -4,95 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49148CCFA0D
-	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 03:47:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1762400836; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=JKsk+UbKuMW/za07SJNvJyZPmnzYWnAh0V+/0nQZiSQ=;
- b=dUpZhwn22HY8uBVw0Omc3S5S6s0sMaun0FlDoA6qdscHY3KudW1MW8FSJOO4b2No6QBEs
- lU5gi/DAz7q63i4VbltkgR5TSDm4j14fLk0thFjWAjoGld5Dsc+lQ5SFMD2aBpOH72Z9dCm
- tCgR1FPSdO1yWPmDM41krLf0gQmCQ6Y=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11D61CCFA03
+	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 08:16:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9057A3CEB21
-	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 04:47:16 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 012C03CD1F2
+	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 09:16:26 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 14BDA3CDF20
- for <ltp@lists.linux.it>; Thu,  6 Nov 2025 04:46:54 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id C66433C5E8B
+ for <ltp@lists.linux.it>; Thu,  6 Nov 2025 09:16:09 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 236A8600BA2
- for <ltp@lists.linux.it>; Thu,  6 Nov 2025 04:46:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1762400812;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5y3DkrAW/arr/oPR4v87yxpIh0zhzh+mNlqZLRioYmE=;
- b=iNN0XpWBKmkn+SWsu2dVVdPho0P7mZE0hWe9h/vqWeiRGTjpB5KuWsGQni91vMTHcFtRJB
- BQZXUGxYPVijDZYMCwHcfo8o16TNiuP1U4WlNRGxzimJOhHg12B3u1Box7wgizdip0qPlk
- RfbD1cCli0CZSdPohhG3bEuJW2IgJBE=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-475-AfpM_fmyME27qSz-tpYzoQ-1; Wed, 05 Nov 2025 22:46:50 -0500
-X-MC-Unique: AfpM_fmyME27qSz-tpYzoQ-1
-X-Mimecast-MFC-AGG-ID: AfpM_fmyME27qSz-tpYzoQ_1762400809
-Received: by mail-pg1-f197.google.com with SMTP id
- 41be03b00d2f7-b95d06db747so1390080a12.1
- for <ltp@lists.linux.it>; Wed, 05 Nov 2025 19:46:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1762400809; x=1763005609;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=5y3DkrAW/arr/oPR4v87yxpIh0zhzh+mNlqZLRioYmE=;
- b=TuFI0pDvoi6TZryJbAmRY9dbvFK4tss1nsEcX4m+cuJraZD0fPbYhRTBN5HuStZU+r
- PXdPRf7X1C/ODqCRXB8ddDH44k9ysY6eWjsZ75pqHjaIKOw/XRUIZEZndYIcwewy4s4r
- VnwSrQCPKYEVlExPjGlLaIiK2LLa+MyRecPdE9LoPg5wyxUqKNABnvxRq77EEFV13/5R
- 0mO7ooH3ySSB2y8kok0nzLIezvBYBar91kJygf13e31nkb9r0jh0Ec3kMVavW9cXiPVR
- tK/HTQ+CMrymbyBRrco+CMjffD11ZmA/mGat1iK1pqjRGnUf/r4t1oYX5jRne7IGdUV6
- dVbQ==
-X-Gm-Message-State: AOJu0YyM/aIpfVBfx1UxJuWwL93pU3YQmG5Tf6iVdWi7X7ymcCgBbD27
- GQ2fhfRoB7wWeSfLADY4OD/uA207XLYEwTgKGzVRq5tj/VnLRJmBdp7bV8bMGBXlIr8dMPq36ni
- awN8WdbXdow0Bs5hvq0Kou1knUoxftmP5gawxdY1Oux7IkMLc85NXb1Yxlr2tvEkreLPLSobC+O
- r5TIEfxm6AjsplnVonES/varSj28o=
-X-Gm-Gg: ASbGncsZyJVdIly3pfOk3zzKpopLr4NyGNMTQZnDT3he4FOiJPsuXe6ooX0YWz0sUFJ
- Vxuopjv0u/2jBUrTRa9M7mAZK8I2M0EfRDwJGiohn2Q5aVH6n66OLmgRp/J8aLEevs6uYAa1W7M
- 0zBYo2HL4KY4tlXPrKF+wCVJBDw4MNYeuSZBucI6juKGPHjbx7gYjoFh8h
-X-Received: by 2002:a05:6a21:6d9d:b0:32d:b741:a201 with SMTP id
- adf61e73a8af0-350debe9fdfmr2087313637.20.1762400809121; 
- Wed, 05 Nov 2025 19:46:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGQOhWE8SoYJrHO0Vxo4DeuwNDoUrUGjduJ0HCxKvZeX0SbCvAEz1Dg+gomqZMDGveqQ0kAkiC3cNbKY29Fkog=
-X-Received: by 2002:a05:6a21:6d9d:b0:32d:b741:a201 with SMTP id
- adf61e73a8af0-350debe9fdfmr2087286637.20.1762400808762; Wed, 05 Nov 2025
- 19:46:48 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D78D7600BE5
+ for <ltp@lists.linux.it>; Thu,  6 Nov 2025 09:16:08 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 59B2F211C9;
+ Thu,  6 Nov 2025 08:16:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1762416967; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=NX3B1Zpt37rA/3B+S5TmT5aqBTFyb883oXHU1S1pVCU=;
+ b=ZGsKkVVIOcPy9qbcL0kVwV2foLDX2QKnx9fg2KE2GyeCE8wktZp62hQInReoCAISnkLEgJ
+ P2OMebdViB3zxDFtIQPkSQC0OqiHgsdqygBDAS1nKLmTb6hbro/2hWQh2HufhahdFq/4h6
+ S07j8e28pQeDhHt+w6+5/0tvg4NVrgM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1762416967;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=NX3B1Zpt37rA/3B+S5TmT5aqBTFyb883oXHU1S1pVCU=;
+ b=6iadsyLhW7CZNF8ZrM3vgMIkIrQhj9jCi5qLlg+cjWcduwvwt250yF3HOs04fl9jn1CT4f
+ ZqZt4ygDD76uuAAQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1762416967; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=NX3B1Zpt37rA/3B+S5TmT5aqBTFyb883oXHU1S1pVCU=;
+ b=ZGsKkVVIOcPy9qbcL0kVwV2foLDX2QKnx9fg2KE2GyeCE8wktZp62hQInReoCAISnkLEgJ
+ P2OMebdViB3zxDFtIQPkSQC0OqiHgsdqygBDAS1nKLmTb6hbro/2hWQh2HufhahdFq/4h6
+ S07j8e28pQeDhHt+w6+5/0tvg4NVrgM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1762416967;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=NX3B1Zpt37rA/3B+S5TmT5aqBTFyb883oXHU1S1pVCU=;
+ b=6iadsyLhW7CZNF8ZrM3vgMIkIrQhj9jCi5qLlg+cjWcduwvwt250yF3HOs04fl9jn1CT4f
+ ZqZt4ygDD76uuAAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 38A2E13A31;
+ Thu,  6 Nov 2025 08:16:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ELXYC0dZDGk9SwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 06 Nov 2025 08:16:07 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 06 Nov 2025 09:16:06 +0100
 MIME-Version: 1.0
-References: <20251105154716.995786-1-pvorel@suse.cz>
- <20251105154716.995786-3-pvorel@suse.cz>
-In-Reply-To: <20251105154716.995786-3-pvorel@suse.cz>
-Date: Thu, 6 Nov 2025 11:46:35 +0800
-X-Gm-Features: AWmQ_bmvrdLlWKZnWI5cLAAIBMwAVrAMU7w9JRUKtgTVqZZrqezncu__tvF4UTg
-Message-ID: <CAEemH2fogMWAawF4eqWrLhJphMMq=V8GrO2DFuGxMKEp+zqZ_A@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: hnZV1hs0ng0nVAj5BptIxk86jxriT_cBCI1lYNlzmvc_1762400809
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+Message-Id: <20251106-b4-memcg_stress_rewrite-v2-1-a82b0f3f09ac@suse.com>
+X-B4-Tracking: v=1; b=H4sIAEVZDGkC/4WNQQ6CMBBFr0JmbQ1taURX3sMQgu0AswDMDFYN6
+ d2tXMDle8l/fwNBJhS4FBswRhJa5gzmUIAfu3lARSEzmNI4rUun7pWacPJDKyujSMv4YlpR1Z2
+ 21tR1fwol5PWDsaf3Xr41mUeSdeHPfhT1z/5vRq20cmhdFYKr7Lm/ylPw6JcJmpTSFys9XOy9A
+ AAA
+X-Change-ID: 20251105-b4-memcg_stress_rewrite-8a133288f7d0
+To: ltp@lists.linux.it
+X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1762416967; l=11592;
+ i=andrea.cervesato@suse.com; s=20250922; h=from:subject:message-id;
+ bh=gnPazHdLqt4wmQ3ri97oVotrNDzh1T10Shf7hCitR9o=;
+ b=6cwalc7EGGY4MFsP0ixKhcjWcgx5vsYkmoyGSYuwp3gHih2ip4Qs6uuEKoVSllmPx7smMC324
+ ch+6wtoTERUDe3DTdqXVOiyYf9mCTvja/YlS9EcdP33V7IHiUqcGAzg
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=+8M3XgViLdcdNBM+Jdd90m3pV4jCw2tNsGCy5Rd+qHk=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 2/3] swapon03: Try to swapon() as many files until
- it fails
+Subject: [LTP] [PATCH v2] memory: rewrite memcg_stress_test into C API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,46 +114,425 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: Michal Hocko <mhocko@suse.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gV2VkLCBOb3YgNSwgMjAyNSBhdCAxMTo0OOKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKCj4gUHJldmlvdXNseSB0c3RfbWF4X3N3YXBmaWxlcygpIGhhZCBmaW5lIHR1
-bmluZyBmb3IgYSBzcGVjaWZpYyBrZXJuZWwKPiB2ZXJzaW9uIHdoaWNoIHdhcyBmcmFnaWxlIGR1
-ZSB2YXJpb3VzIGJhY2twb3J0cyBpbiBlbnRlcnByaXNlIGtlcm5lbHMuCj4KPiBMZXQncyB0cnkg
-dG8gY3JlYXRlIGFuZCB1c2UgYXMgbWFueSBzd2FwIGZpbGVzIHVudGlsIHN3YXBvbigpIGZhaWxz
-Lgo+IFRoZW4gY2hlY2sgZm9yIGV4cGVjdGVkIEVQRVJNLgo+Cj4gU3VnZ2VzdGVkLWJ5OiBNaWNo
-YWwgSG9ja28gPG1ob2Nrb0BzdXNlLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBQZXRyIFZvcmVsIDxw
-dm9yZWxAc3VzZS5jej4KPiAtLS0KPiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zd2Fwb24v
-c3dhcG9uMDMuYyB8IDYzICsrKysrKysrKysrKystLS0tLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwg
-NDAgaW5zZXJ0aW9ucygrKSwgMjMgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvdGVzdGNh
-c2VzL2tlcm5lbC9zeXNjYWxscy9zd2Fwb24vc3dhcG9uMDMuYwo+IGIvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9zd2Fwb24vc3dhcG9uMDMuYwo+IGluZGV4IGI4OWQ4NTMxODguLjAwMjdmODc0
-YmUgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zd2Fwb24vc3dhcG9u
-MDMuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3dhcG9uL3N3YXBvbjAzLmMK
-PiBAQCAtMSwxNCArMSwxOCBAQAo+ICAvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIu
-MC1vci1sYXRlcgo+ICAvKgo+ICsgKiBDb3B5cmlnaHQgKGMpIExpbnV4IFRlc3QgUHJvamVjdCwg
-MjAwOS0yMDI1Cj4gICAqIENvcHlyaWdodCAoYykgSW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNo
-aW5lcyBDb3JwLiwgMjAwNwo+ICAgKiBDcmVhdGVkIGJ5IDxyc2FsdmV0aUBsaW51eC52bmV0Lmli
-bS5jb20+Cj4gLSAqCj4gICAqLwo+Cj4gIC8qXAo+IC0gKiBUaGlzIHRlc3QgY2FzZSBjaGVja3Mg
-d2hldGhlciBzd2Fwb24oMikgc3lzdGVtIGNhbGwgcmV0dXJuczoKPiArICogVGVzdCBjaGVja3Mg
-d2hldGhlciA6bWFuMjpgc3dhcG9uYCBzeXN0ZW0gY2FsbCByZXR1cm5zIEVQRVJNIHdoZW4gdGhl
-Cj4gbWF4aW11bQo+ICsgKiBudW1iZXIgb2Ygc3dhcCBmaWxlcyBhcmUgYWxyZWFkeSBpbiB1c2Uu
-Cj4gICAqCj4gLSAqICAtIEVQRVJNIHdoZW4gdGhlcmUgYXJlIG1vcmUgdGhhbiBNQVhfU1dBUEZJ
-TEVTIGFscmVhZHkgaW4gdXNlLgo+ICsgKiBOT1RFOiB0ZXN0IGRvZXMgbm90IHRyeSB0byBjYWxj
-dWxhdGUgTUFYX1NXQVBGSUxFUyBmcm9tIHRoZSBpbnRlcm5hbAo+ICsgKiBrZXJuZWwgaW1wbGVt
-ZW50YXRpb24gKHdoaWNoIGlzIGN1cnJlbnRseSA8MjMsIDI5PiBkZXBlbmRpbmcgb24ga2VybmVs
-Cj4gKyAqIGNvbmZpZ3VyYXRpb24pLiBJbnN0ZWFkIHRlc3QgZXhwdGVjdCB0aGF0IGF0IGxlYXN0
-IDE1IHN3YXAgZmlsZXMgbWludXMKPiArICogY3VycmVudGx5IHVzZWQgc3dhcCBjYW4gYmUgY3Jl
-YXRlZC4KPiAgICovCj4KPiAgI2luY2x1ZGUgPHN0ZGlvLmg+Cj4gQEAgLTIwLDQ5ICsyNCw1NCBA
-QAo+ICAjaW5jbHVkZSAibGFwaS9zeXNjYWxscy5oIgo+ICAjaW5jbHVkZSAibGlic3dhcC5oIgo+
-Cj4gKyNkZWZpbmUgTlVNX1NXQVBfRklMRVMgMTUKPgoKRG9lcyB0aGUgbnVtYmVyIDE1IGhhdmUg
-YSBzcGVjaWZpYyBtZWFuaW5nPwoKQW55d2F5LCB0aGUgd2hvbGUgcGF0Y2ggc2V0IGxvb2tzIGdv
-b2QgdG8gbWU6ClJldmlld2VkLWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KCgotLSAK
-UmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxp
-bnV4Lml0L2xpc3RpbmZvL2x0cAo=
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+This test will stress the cgroup implementation by allocating the whole
+free system memory inside multiple containers, one page at time.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+The previous test was buggy and up to failures. This new implementation
+deletes shell script code and the C utility used by it, merging the code
+into C API libray.
+---
+Changes in v2:
+- runtime 30 minutes to make sure we can finish the test inside systems
+  with lots of RAM
+- use mem_avail only
+- remove sleep() after cgroup creation
+- fix controllers runtime
+- better doc
+- Link to v1: https://lore.kernel.org/r/20251105-b4-memcg_stress_rewrite-v1-1-5e354dd5439f@suse.com
+---
+ runtest/controllers                                |   3 +-
+ .../kernel/controllers/memcg/stress/.gitignore     |   1 +
+ testcases/kernel/controllers/memcg/stress/Makefile |   6 +-
+ .../memcg/stress/memcg_process_stress.c            |  96 -----------------
+ .../controllers/memcg/stress/memcg_stress01.c      | 118 +++++++++++++++++++++
+ .../controllers/memcg/stress/memcg_stress_test.sh  | 108 -------------------
+ 6 files changed, 122 insertions(+), 210 deletions(-)
+
+diff --git a/runtest/controllers b/runtest/controllers
+index 93c52c439..0526ac683 100644
+--- a/runtest/controllers
++++ b/runtest/controllers
+@@ -16,7 +16,8 @@ memcg_memsw_limit_in_bytes	memcg_memsw_limit_in_bytes_test.sh
+ memcg_stat	memcg_stat_test.sh
+ memcg_use_hierarchy	memcg_use_hierarchy_test.sh
+ memcg_usage_in_bytes	memcg_usage_in_bytes_test.sh
+-memcg_stress		memcg_stress_test.sh
++memcg_stress01_1	memcg_stress01 -n 1
++memcg_stress01_2	memcg_stress01 -n 150
+ memcg_control		memcg_control_test.sh
+ 
+ # kselftest ports
+diff --git a/testcases/kernel/controllers/memcg/stress/.gitignore b/testcases/kernel/controllers/memcg/stress/.gitignore
+new file mode 100644
+index 000000000..17df954ed
+--- /dev/null
++++ b/testcases/kernel/controllers/memcg/stress/.gitignore
+@@ -0,0 +1 @@
++memcg_stress01
+diff --git a/testcases/kernel/controllers/memcg/stress/Makefile b/testcases/kernel/controllers/memcg/stress/Makefile
+index a9678bf3b..8413e98f9 100644
+--- a/testcases/kernel/controllers/memcg/stress/Makefile
++++ b/testcases/kernel/controllers/memcg/stress/Makefile
+@@ -6,10 +6,6 @@ top_srcdir		?= ../../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-CPPFLAGS		+= -I$(abs_srcdir)/../../libcontrollers
+-
+-INSTALL_TARGETS		:= *.sh
+-
+ LDLIBS			+= -lm
+ 
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_process_stress.c b/testcases/kernel/controllers/memcg/stress/memcg_process_stress.c
+deleted file mode 100644
+index 422deaeee..000000000
+--- a/testcases/kernel/controllers/memcg/stress/memcg_process_stress.c
++++ /dev/null
+@@ -1,96 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * Copyright (c) 2009 FUJITSU LIMITED
+- * Author: Li Zefan <lizf@cn.fujitsu.com>
+- */
+-
+-#include <sys/mman.h>
+-#include <err.h>
+-#include <math.h>
+-#include <signal.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
+-
+-int flag_exit;
+-int flag_ready;
+-
+-int interval;
+-unsigned long memsize;
+-
+-char **pages;
+-int nr_page;
+-
+-void touch_memory(void)
+-{
+-	int i;
+-
+-	for (i = 0; i < nr_page; i++)
+-		pages[i][0] = 0xef;
+-}
+-
+-void sigusr_handler(int __attribute__ ((unused)) signo)
+-{
+-	int i;
+-	int pagesize;
+-
+-	pagesize = getpagesize();
+-
+-	nr_page = ceil((double)memsize / pagesize);
+-
+-	pages = calloc(nr_page, sizeof(char *));
+-	if (pages == NULL)
+-		errx(1, "calloc failed");
+-
+-	for (i = 0; i < nr_page; i++) {
+-		pages[i] = mmap(NULL, pagesize, PROT_WRITE | PROT_READ,
+-				MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+-		if (pages[i] == MAP_FAILED)
+-			err(1, "map failed\n");
+-	}
+-
+-	flag_ready = 1;
+-}
+-
+-void sigint_handler(int __attribute__ ((unused)) signo)
+-{
+-	flag_exit = 1;
+-}
+-
+-int main(int argc, char *argv[])
+-{
+-	char *end;
+-	struct sigaction sigint_action;
+-	struct sigaction sigusr_action;
+-
+-	if (argc != 3)
+-		errx(1, "wrong argument num");
+-
+-	memsize = strtoul(argv[1], &end, 10);
+-	if (*end != '\0')
+-		errx(1, "wrong memsize");
+-	memsize = memsize * 1024 * 1024;
+-
+-	interval = atoi(argv[2]);
+-	if (interval <= 0)
+-		interval = 1;
+-
+-	memset(&sigint_action, 0, sizeof(sigint_action));
+-	sigint_action.sa_handler = &sigint_handler;
+-	if (sigaction(SIGINT, &sigint_action, NULL))
+-		err(1, "sigaction(%s) failed", "SIGINT");
+-
+-	memset(&sigusr_action, 0, sizeof(sigusr_action));
+-	sigusr_action.sa_handler = &sigusr_handler;
+-	if (sigaction(SIGUSR1, &sigusr_action, NULL))
+-		err(1, "sigaction(%s) failed", "SIGUSR1");
+-
+-	while (!flag_exit) {
+-		sleep(interval);
+-
+-		if (flag_ready)
+-			touch_memory();
+-	}
+-
+-	return 0;
+-}
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress01.c b/testcases/kernel/controllers/memcg/stress/memcg_stress01.c
+new file mode 100644
+index 000000000..e6f9be1a7
+--- /dev/null
++++ b/testcases/kernel/controllers/memcg/stress/memcg_stress01.c
+@@ -0,0 +1,118 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2025 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * This test will stress the cgroup implementation by allocating the whole
++ * free system memory inside multiple containers, one page at time.
++ * Containers are allocating memory in serial.
++ */
++
++#include <math.h>
++#include "tst_test.h"
++#include "tst_cgroup.h"
++
++#define MAX_CGROUPS 1000
++#define RUNTIME (30 * 60)
++
++static char *str_cgroups_num;
++static int cgroups_num = 1;
++static long pages_num;
++
++static void run_child(struct tst_cg_group *cg_child)
++{
++	char **pages;
++	int page_size;
++
++	SAFE_CG_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
++
++	page_size = getpagesize();
++	pages = SAFE_CALLOC(pages_num, sizeof(char *));
++
++	for (int i = 0; i < pages_num; i++) {
++		pages[i] = (char *)SAFE_MMAP(NULL, page_size,
++				   PROT_WRITE | PROT_READ,
++				   MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
++	}
++
++	for (int i = 0; i < pages_num; i++)
++		*(pages[i]) = 0xef;
++}
++
++static void run(void)
++{
++	struct tst_cg_group *cg_child[cgroups_num];
++	pid_t child_pid;
++
++	for (int i = 0; i < cgroups_num; i++) {
++		cg_child[i] = tst_cg_group_mk(tst_cg, "ltp_memcg_stress_%d", i);
++
++		child_pid = SAFE_FORK();
++		if (!child_pid) {
++			run_child(cg_child[i]);
++			exit(0);
++		}
++
++		SAFE_WAITPID(child_pid, NULL, 0);
++
++		if (!tst_remaining_runtime()) {
++			tst_res(TINFO, "Reached maximum runtime");
++			break;
++		}
++	}
++
++	tst_reap_children();
++
++	for (int i = 0; i < cgroups_num; i++)
++		cg_child[i] = tst_cg_group_rm(cg_child[i]);
++
++	tst_res(TPASS, "Stress test has passed");
++}
++
++static void setup(void)
++{
++	unsigned long reserved_mem, mem_avail, swap_free, mem_min;
++	unsigned long mem_per_proc;
++	int page_size;
++
++	if (tst_parse_int(str_cgroups_num, &cgroups_num, 1, MAX_CGROUPS))
++		tst_brk(TCONF, "Invalid number of cgroups: %s", str_cgroups_num);
++
++	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
++
++	mem_avail = SAFE_READ_MEMINFO("MemAvailable:");
++	swap_free = SAFE_READ_MEMINFO("SwapFree:");
++
++	SAFE_FILE_SCANF("/proc/sys/vm/min_free_kbytes", "%zi", &mem_min);
++
++	mem_min = mem_min + mem_min / 10;
++	reserved_mem = swap_free > mem_min ? 0 : mem_min;
++
++	mem_per_proc = mem_avail - reserved_mem;
++	mem_per_proc /= cgroups_num;
++	mem_per_proc *= TST_KB;
++
++	if (!mem_per_proc)
++		tst_brk(TCONF, "System memory has not enough available memory");
++
++	page_size = getpagesize();
++	pages_num = ceil((double)mem_per_proc / page_size);
++
++	tst_res(TINFO, "Testing %d cgroups, using %ld MB",
++		cgroups_num, mem_per_proc / TST_MB);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test_all = run,
++	.needs_root = 1,
++	.forks_child = 1,
++	.runtime = RUNTIME,
++	.needs_cgroup_ver = TST_CG_V2,
++	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
++	.options = (struct tst_option []) {
++		{"n:", &str_cgroups_num, "Number of cgroups (default: 1)"},
++		{}
++	},
++};
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+deleted file mode 100755
+index 47cac9af8..000000000
+--- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ /dev/null
+@@ -1,108 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0-or-later
+-# Copyright (c) 2009 FUJITSU LIMITED
+-# Copyright (c) 2018-2019 ARM Ltd. All Rights Reserved.
+-# Copyright (c) 2019-2022 Petr Vorel <pvorel@suse.cz>
+-#
+-# Author: Li Zefan <lizf@cn.fujitsu.com>
+-# Restructure for LTP: Shi Weihua <shiwh@cn.fujitsu.com>
+-# Added memcg enable/disable functionality: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+-
+-TST_TESTFUNC=test
+-TST_SETUP=setup
+-TST_CLEANUP=cleanup
+-TST_CNT=2
+-TST_NEEDS_ROOT=1
+-TST_NEEDS_CMDS="mount umount cat kill mkdir rmdir grep awk cut"
+-
+-# Each test case runs for 900 secs when everything fine
+-# therefore the default 5 mins timeout is not enough.
+-TST_TIMEOUT=2100
+-
+-setup()
+-{
+-	cgroup_require "memory"
+-	cgroup_version=$(cgroup_get_version "memory")
+-	test_path=$(cgroup_get_test_path "memory")
+-	task_list=$(cgroup_get_task_list "memory")
+-	if [ "$cgroup_version" = "2" ]; then
+-		ROD echo "+memory" \> "$test_path/cgroup.subtree_control"
+-	fi
+-
+-	tst_res TINFO "test starts with cgroup version $cgroup_version"
+-
+-	echo 3 > /proc/sys/vm/drop_caches
+-	sleep 2
+-	local mem_free=$(awk '/MemFree/ {print $2}' /proc/meminfo)
+-	local mem_available=$(awk '/MemAvailable/ {print $2}' /proc/meminfo)
+-	local swap_free=$(awk '/SwapFree/ {print $2}' /proc/meminfo)
+-	local mem_min=$(cat /proc/sys/vm/min_free_kbytes)
+-
+-	mem_min=$(( $mem_min + $mem_min/10 ))
+-	[ $swap_free -gt $mem_min ] && RESERVED_MEM=0 || RESERVED_MEM=$mem_min
+-	[ $mem_free -lt $mem_available ] && MEM=$mem_free || MEM=$mem_available
+-	MEM=$(( $MEM - $RESERVED_MEM ))
+-	MEM=$(( $MEM / 1024 ))
+-	RUN_TIME=$(( 15 * 60 ))
+-
+-	tst_res TINFO "Calculated available memory $MEM MB"
+-}
+-
+-cleanup()
+-{
+-	cgroup_cleanup
+-}
+-
+-# $1 Number of cgroups
+-# $2 Allocated MB memory in one process
+-# $3 The interval to touch memory in a process
+-# $4 Test duration (sec)
+-run_stress()
+-{
+-	local cgroups="$1"
+-	local mem_size="$2"
+-	local interval="$3"
+-	local timeout="$4"
+-	local i pid pids
+-
+-	tst_res TINFO "Testing $cgroups cgroups, using $mem_size MB, interval $interval"
+-
+-	tst_res TINFO "Starting cgroups"
+-	for i in $(seq 0 $(($cgroups-1))); do
+-		ROD mkdir "$test_path/$i"
+-		memcg_process_stress $mem_size $interval &
+-		ROD echo $! \> "$test_path/$i/$task_list"
+-		pids="$pids $!"
+-	done
+-
+-	for pid in $pids; do
+-		kill -USR1 $pid 2> /dev/null
+-	done
+-
+-	tst_res TINFO "Testing cgroups for ${timeout}s"
+-	sleep $timeout
+-
+-	tst_res TINFO "Killing groups"
+-	i=0
+-	for pid in $pids; do
+-		kill -KILL $pid 2> /dev/null
+-		wait $pid 2> /dev/null
+-		ROD rmdir "$test_path/$i"
+-		i=$((i+1))
+-	done
+-
+-	tst_res TPASS "Test passed"
+-}
+-
+-test1()
+-{
+-	run_stress 150 $(( $MEM  / 150 )) 5 $RUN_TIME
+-}
+-
+-test2()
+-{
+-	run_stress 1 $MEM 5 $RUN_TIME
+-}
+-
+-. cgroup_lib.sh
+-tst_run
+
+---
+base-commit: 19083415169a3c5f0e07a74bea07f3690e0d041c
+change-id: 20251105-b4-memcg_stress_rewrite-8a133288f7d0
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
