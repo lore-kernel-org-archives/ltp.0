@@ -4,109 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90C19CCFA03
-	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 10:29:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B72BCCFA03
+	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 12:04:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AB2783CE9BB
-	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 11:29:43 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 94B593CEA7A
+	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 13:04:25 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EB49A3C3264
- for <ltp@lists.linux.it>; Thu,  6 Nov 2025 11:29:27 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 6CBFE3C5705
+ for <ltp@lists.linux.it>; Thu,  6 Nov 2025 13:04:08 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A17CE20074A
- for <ltp@lists.linux.it>; Thu,  6 Nov 2025 11:29:26 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EB9A91A00A25
+ for <ltp@lists.linux.it>; Thu,  6 Nov 2025 13:04:07 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1AB5A2117C;
- Thu,  6 Nov 2025 10:29:25 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 15862211E5;
+ Thu,  6 Nov 2025 12:04:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1762424965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1762430647;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=K1IX3R1uVRpC7q/X0MWN7Hprc9eLoK00sXSS2/Vm/SI=;
- b=uWBEt7hc4euPzY1npI2CHm9f3sYnnw767/hY0KF+LPrIfW2gGVRxydemW4Va7uUxenUhAW
- NpBgFnkFFqL4PHUV7F32/8VE/tT2x16+uRjySsZ2U78zZrwvWQ2PhoJwFqH8VYPBMjtAfN
- MGY6W0v2VDnvt7fapvmWTOir5+Vrizw=
+ bh=f2lzY/sNz2ly7NLS7FaNO/emiZl34mjPgn9fmXsfhpQ=;
+ b=18O8g5jAdvdSAwqhfeJl1hewJm3B9yEBwqmgLOfiFQZeEhRupgAah/qPuiCXwjQF0JLrhO
+ soNDXuf6gvA/jY34EfE6ppU2BR35yCjyGYAqdIrgXtJyVsudC98EvnGBKN+uxX8lp5JeTS
+ y8C9/88R8ViXE2/9POnWJTiMqG9ALbI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1762424965;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1762430647;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=K1IX3R1uVRpC7q/X0MWN7Hprc9eLoK00sXSS2/Vm/SI=;
- b=8MfXlxSY8Azo2d69wD+oECbLL7pk2SOhglMezeJ84gFnxvPwjdcbNKvd/5x6STwZCWZTlo
- UPH+/sTNNK9hEuDg==
+ bh=f2lzY/sNz2ly7NLS7FaNO/emiZl34mjPgn9fmXsfhpQ=;
+ b=VxMVjPipuP5DUOGYyr1VOlPdyeJ1se9ilNcE2MiLq0y8xzNpiJGCdlzqYh49rTaTfCA7lO
+ JX+l0CMly2faNBAg==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=uWBEt7hc;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=8MfXlxSY
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1762424965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1762430647;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=K1IX3R1uVRpC7q/X0MWN7Hprc9eLoK00sXSS2/Vm/SI=;
- b=uWBEt7hc4euPzY1npI2CHm9f3sYnnw767/hY0KF+LPrIfW2gGVRxydemW4Va7uUxenUhAW
- NpBgFnkFFqL4PHUV7F32/8VE/tT2x16+uRjySsZ2U78zZrwvWQ2PhoJwFqH8VYPBMjtAfN
- MGY6W0v2VDnvt7fapvmWTOir5+Vrizw=
+ bh=f2lzY/sNz2ly7NLS7FaNO/emiZl34mjPgn9fmXsfhpQ=;
+ b=18O8g5jAdvdSAwqhfeJl1hewJm3B9yEBwqmgLOfiFQZeEhRupgAah/qPuiCXwjQF0JLrhO
+ soNDXuf6gvA/jY34EfE6ppU2BR35yCjyGYAqdIrgXtJyVsudC98EvnGBKN+uxX8lp5JeTS
+ y8C9/88R8ViXE2/9POnWJTiMqG9ALbI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1762424965;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1762430647;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=K1IX3R1uVRpC7q/X0MWN7Hprc9eLoK00sXSS2/Vm/SI=;
- b=8MfXlxSY8Azo2d69wD+oECbLL7pk2SOhglMezeJ84gFnxvPwjdcbNKvd/5x6STwZCWZTlo
- UPH+/sTNNK9hEuDg==
+ bh=f2lzY/sNz2ly7NLS7FaNO/emiZl34mjPgn9fmXsfhpQ=;
+ b=VxMVjPipuP5DUOGYyr1VOlPdyeJ1se9ilNcE2MiLq0y8xzNpiJGCdlzqYh49rTaTfCA7lO
+ JX+l0CMly2faNBAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 00F4713A31;
- Thu,  6 Nov 2025 10:29:24 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CF2AF13A31;
+ Thu,  6 Nov 2025 12:04:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id L9yhOoR4DGnHUgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 06 Nov 2025 10:29:24 +0000
-Date: Thu, 6 Nov 2025 11:30:11 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aQx4s5FFN7HG1KzE@yuki.lan>
-References: <20251031-kirk_move_submodule-v1-0-3cad4270a0b5@suse.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id R+1dMbaODGluMwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 06 Nov 2025 12:04:06 +0000
+Date: Thu, 6 Nov 2025 13:03:57 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Avinesh Kumar <akumar@suse.de>
+Message-ID: <20251106120357.GA1013980@pevik>
+References: <20251105154716.995786-1-pvorel@suse.cz>
+ <20251105154716.995786-3-pvorel@suse.cz>
+ <2396783.ElGaqSPkdT@thinkpad>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20251031-kirk_move_submodule-v1-0-3cad4270a0b5@suse.com>
-X-Rspamd-Queue-Id: 1AB5A2117C
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+In-Reply-To: <2396783.ElGaqSPkdT@thinkpad>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; TO_DN_SOME(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:dkim,
- imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/2] Move kirk sources from tools/kirk to
- tools/kirk/kirk-src
+Subject: Re: [LTP] [PATCH 2/3] swapon03: Try to swapon() as many files until
+ it fails
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,18 +111,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Michal Hocko <mhocko@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Acked-by: Cyril Hrubis <chrubis@suse.cz>
+> Hi Petr,
+> some comments inline
++1
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+...
+> > -	/* Determine how many more files are to be created */
+> > -	max_swapfiles = tst_max_swapfiles();
+> >  	used_swapfiles = tst_count_swaps();
+> > -	swapfiles = max_swapfiles - used_swapfiles;
+> > -	if (swapfiles > max_swapfiles)
+> > -		swapfiles = max_swapfiles;
+> > +	expected_swapfiles = NUM_SWAP_FILES - used_swapfiles;
+> > +
+> > +	if (expected_swapfiles < 0) {
+> do we want to proceed when expected_swapfiles is 0 here?
+
+Yes, because NUM_SWAP_FILES is 15, which is safe for the changes.
+I.e. on my Tumbleweed VM it can be 23 swaps. One is used as filesystem
+partition, therefore it would work on even 22.
+
+> > +		tst_brk(TCONF, "Warning: too many used swap files (%d)",
+> > +			expected_swapfiles);
+> I think this should be used_swapfiles ?
+
++1.
+
+Also I should remove "Warning: " (left over from previous not-yet-sent
+version which used tst_res(TWARN)).
+
+I'd also prefer either to improve grep or replace it with C based search
+(better as it does not require grep).
+
+> > +	}
+
+> >  	pid = SAFE_FORK();
+> >  	if (pid == 0) {
+> > -		/*create and turn on remaining swapfiles */
+> > -		for (j = 0; j < swapfiles; j++) {
+> > -
+> > +		while (true) {
+> >  			/* Create the swapfile */
+> > -			snprintf(filename, sizeof(filename), "%s%02d", TEST_FILE, j + 2);
+> > +			snprintf(filename, sizeof(filename), "%s%02d", TEST_FILE, *swapfiles);
+> >  			MAKE_SMALL_SWAPFILE(filename);
+
+> > -			/* turn on the swap file */
+> > -			TST_EXP_PASS_SILENT(swapon(filename, 0));
+> > +			/* Quit on a first swap file over max */
+> > +			if (swapon(filename, 0) == -1)
+> so now first swapon() fail is here and then we check for errno==EPERM by
+> making another swapon() call in verify_swapon function.
+> Is it possible to combine setup_swap() and verify_swapon() and check for
+> EPERM on first swapon() fail itself?
+
+I was thinking about it as well. To support -i, we still need to have setup run
+only once. Moving code from setup to test function would require to run "setup"
+part only once (guard with static variable).
+
+Other option would be to keep setup, but test errno also here (i.e. test it twice).
+I'm not sure which one is less awkward.
+
+Kind regards,
+Petr
+
+> > +				break;
+> > +			(*swapfiles)++;
+> >  		}
+> >  		exit(0);
+> >  	} else {
+> >  		waitpid(pid, &status, 0);
+> >  	}
+
+> > -	if (WEXITSTATUS(status))
+> > +	if (WEXITSTATUS(status) || *swapfiles == 0)
+> >  		tst_brk(TBROK, "Failed to setup swap files");
+...
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
