@@ -4,58 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53E04CCFA03
-	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 12:23:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B774CCFA05
+	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 12:45:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C5B153CEA1E
-	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 13:23:01 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 1DBAD3CEB77
+	for <ltp@archiver.kernel.org>; Thu,  6 Nov 2025 13:45:56 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 19EB13C088D
- for <ltp@lists.linux.it>; Thu,  6 Nov 2025 12:43:47 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id B61D93C5705
+ for <ltp@lists.linux.it>; Thu,  6 Nov 2025 13:45:38 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1068D100094C
- for <ltp@lists.linux.it>; Thu,  6 Nov 2025 12:43:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1762429426; x=1793965426;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=LpeNdQW8tO3C8P81yX5fBbq/aO9J2DHp/JsZMOa70R4=;
- b=WIBjbiDSQ79cPZBVdUfEPypmffEd7pcWCgiYQRher/eepTh5fmg+pUUP
- 5Lkbg5nJ5n2Im3KYdg3XcNfOJAzLjFKSn1F3Kag6Flsrnw4u/ryJuRTsH
- NSW2hb6QFg4+le4MZcIEJabOveZsps6V8Jm67XRHolboJoid3KpuVctTK
- PyCFoFmN//h6uON+UgwFyxpS8Voyt7I9yzRGcAmcMAOf3GDpYAWsVBTQ2
- kauOe1S5ANUJgMXzXm7iuUojc+DUxv/2fe2tFYwfWnPetbyQIAIHcLus/
- TMrQ60qf4UY1z2XYUK+jTaTzF9yY82y3U4mn4UcB7kXfwjciOd6sxJGWx A==;
-X-CSE-ConnectionGUID: 6g6lZrzXQWWIoGN9cHnvMg==
-X-CSE-MsgGUID: rMdxVnO0RWGXsCakSUEBwA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11604"; a="87192539"
-X-IronPort-AV: E=Sophos;i="6.19,284,1754982000"; d="scan'208";a="87192539"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
- by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Nov 2025 03:43:42 -0800
-X-CSE-ConnectionGUID: B9mtfQfyRgKhxLeOsXpGqQ==
-X-CSE-MsgGUID: alfRV2CYTtSk1T0irwt/aA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,284,1754982000"; d="scan'208";a="211199684"
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
- by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Nov 2025 03:43:41 -0800
-From: Piotr Kubaj <piotr.kubaj@intel.com>
-To: ltp@lists.linux.it
-Date: Thu,  6 Nov 2025 12:43:35 +0100
-Message-ID: <20251106114337.550054-1-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DB3A7200AD5
+ for <ltp@lists.linux.it>; Thu,  6 Nov 2025 13:45:37 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 408DB1F78C;
+ Thu,  6 Nov 2025 12:45:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1762433136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=1vEhq40+a3VNwGayUf7ULXG2EZwmixMfH3DV85B8JkM=;
+ b=cxN1RIdgHV2A0oZ7Rfym5CAkBiZoo7/meylATk+zOJEHBcEsydOZol7+OH5Ul9Z6qiuzQf
+ C3TLvNAN98bf8extrPcjCeykakwAj8qHcDQczLpChe7Z4FKsrxM2Bep6LZJuyvCzG5lWmL
+ pKrYjqBHiBMG3c3K4hLT0D+YLijFktI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1762433136;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=1vEhq40+a3VNwGayUf7ULXG2EZwmixMfH3DV85B8JkM=;
+ b=5bNovIX8F2fOx/0TIj8htK52gfkxhrIfhEb67FoMwiBGd/sz9ikkpGBkUVLMRrt99xOzJk
+ /AtLrHFAFQEY7MCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1762433135; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=1vEhq40+a3VNwGayUf7ULXG2EZwmixMfH3DV85B8JkM=;
+ b=cLblr/8nDdxMp7m/7S+LBjp6C2X1ovIsASW/ZGkacNJjM4u01Oj1wZj8vGnK1QE5dSsT46
+ DuTv65B9bUpXRdv7srSqv5Pgp+ohfKP9VR6/rcHPR7dMeUnpytzrUnWwmAkE75WiEu+g5S
+ gs2nzGuUZGHEaz+LAtJEv+zQBl0bGiI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1762433135;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=1vEhq40+a3VNwGayUf7ULXG2EZwmixMfH3DV85B8JkM=;
+ b=YvImmQS3+Rs24SQ0ETNscaxsCa5u9QzpJ+QF7bsL1NXHFMLTuxJA9cGZacbVVmGcYUVgjV
+ 6i+BLefY/WiAaCBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 28FB313A31;
+ Thu,  6 Nov 2025 12:45:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 4msMCG+YDGlrXAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 06 Nov 2025 12:45:35 +0000
+Date: Thu, 6 Nov 2025 13:46:21 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Piotr Kubaj <piotr.kubaj@intel.com>
+Message-ID: <aQyYnbgewc4AptZJ@yuki.lan>
+References: <20251106114337.550054-1-piotr.kubaj@intel.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20251106114337.550054-1-piotr.kubaj@intel.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Thu, 06 Nov 2025 13:22:45 +0100
-Subject: [LTP] [PATCH] thermal: add new test group
+Subject: Re: [LTP] [PATCH] thermal: add new test group
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,130 +109,177 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com,
- Piotr Kubaj <piotr.kubaj@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
+ helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-VGhpcyBpcyBhIG5ldyB0ZXN0IGZvciBjaGVja2luZyB0aGVybWFsIGludGVycnVwdCBldmVudHMu
-CgpTaWduZWQtb2ZmLWJ5OiBQaW90ciBLdWJhaiA8cGlvdHIua3ViYWpAaW50ZWwuY29tPgotLS0K
-IHJ1bnRlc3QvdGhlcm1hbCAgICAgICAgICAgICAgICAgICAgICAgfCAgMiArCiBzY2VuYXJpb19n
-cm91cHMvZGVmYXVsdCAgICAgICAgICAgICAgIHwgIDEgKwogdGVzdGNhc2VzL2tlcm5lbC9NYWtl
-ZmlsZSAgICAgICAgICAgICB8ICAxICsKIHRlc3RjYXNlcy9rZXJuZWwvdGhlcm1hbC9NYWtlZmls
-ZSAgICAgfCAxMSArKysrCiB0ZXN0Y2FzZXMva2VybmVsL3RoZXJtYWwvdGhlcm1hbDAxLnNoIHwg
-OTIgKysrKysrKysrKysrKysrKysrKysrKysrKysrCiA1IGZpbGVzIGNoYW5nZWQsIDEwNyBpbnNl
-cnRpb25zKCspCiBjcmVhdGUgbW9kZSAxMDA2NDQgcnVudGVzdC90aGVybWFsCiBjcmVhdGUgbW9k
-ZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC90aGVybWFsL01ha2VmaWxlCiBjcmVhdGUgbW9kZSAx
-MDA3NTUgdGVzdGNhc2VzL2tlcm5lbC90aGVybWFsL3RoZXJtYWwwMS5zaAoKZGlmZiAtLWdpdCBh
-L3J1bnRlc3QvdGhlcm1hbCBiL3J1bnRlc3QvdGhlcm1hbApuZXcgZmlsZSBtb2RlIDEwMDY0NApp
-bmRleCAwMDAwMDAwMDAuLjgwNGVmN2Q3OQotLS0gL2Rldi9udWxsCisrKyBiL3J1bnRlc3QvdGhl
-cm1hbApAQCAtMCwwICsxLDIgQEAKKyNUSEVSTUFMCit0aGVybWFsX2ludGVycnVwdF9ldmVudHMg
-dGhlcm1hbDAxLnNoCmRpZmYgLS1naXQgYS9zY2VuYXJpb19ncm91cHMvZGVmYXVsdCBiL3NjZW5h
-cmlvX2dyb3Vwcy9kZWZhdWx0CmluZGV4IDBlNzZiMmJlZS4uZmZkZDdmZjI1IDEwMDY0NAotLS0g
-YS9zY2VuYXJpb19ncm91cHMvZGVmYXVsdAorKysgYi9zY2VuYXJpb19ncm91cHMvZGVmYXVsdApA
-QCAtMjYsMyArMjYsNCBAQCBjcnlwdG8KIGtlcm5lbF9taXNjCiB1ZXZlbnQKIHdhdGNocXVldWUK
-K3RoZXJtYWwKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvTWFrZWZpbGUgYi90ZXN0Y2Fz
-ZXMva2VybmVsL01ha2VmaWxlCmluZGV4IDk4ZmQ0NWE5ZC4uYWM4MTZlNGU4IDEwMDY0NAotLS0g
-YS90ZXN0Y2FzZXMva2VybmVsL01ha2VmaWxlCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvTWFrZWZp
-bGUKQEAgLTM2LDYgKzM2LDcgQEAgU1VCRElSUwkJCSs9IGNvbm5lY3RvcnMgXAogCQkJICAgc2No
-ZWQgXAogCQkJICAgc2VjdXJpdHkgXAogCQkJICAgc291bmQgXAorCQkJICAgdGhlcm1hbCBcCiAJ
-CQkgICB0cmFjaW5nIFwKIAkJCSAgIHVldmVudHMgXAogCQkJICAgd2F0Y2hxdWV1ZSBcCmRpZmYg
-LS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3RoZXJtYWwvTWFrZWZpbGUgYi90ZXN0Y2FzZXMva2Vy
-bmVsL3RoZXJtYWwvTWFrZWZpbGUKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMDAw
-Li43ODlkYjQzMGQKLS0tIC9kZXYvbnVsbAorKysgYi90ZXN0Y2FzZXMva2VybmVsL3RoZXJtYWwv
-TWFrZWZpbGUKQEAgLTAsMCArMSwxMSBAQAorIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BM
-LTIuMC1vci1sYXRlcgorIyBDb3B5cmlnaHQgKGMpIDIwMjUsIEludGVsIENvcnBvcmF0aW9uLiBB
-bGwgcmlnaHRzIHJlc2VydmVkLgorIyBBdXRob3I6UGlvdHIgS3ViYWogPHBpb3RyLmt1YmFqQGlu
-dGVsLmNvbT4KKwordG9wX3NyY2RpciAgICAgICAgICAgICA/PSAuLi8uLi8uLgorCitpbmNsdWRl
-ICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay9lbnZfcHJlLm1rCisKK0lOU1RBTExfVEFSR0VUUyAg
-ICAgICAgICAgICAgICA6PSB0aGVybWFsMDEuc2gKKworaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2lu
-Y2x1ZGUvbWsvZ2VuZXJpY19sZWFmX3RhcmdldC5tawpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tl
-cm5lbC90aGVybWFsL3RoZXJtYWwwMS5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwvdGhlcm1hbC90aGVy
-bWFsMDEuc2gKbmV3IGZpbGUgbW9kZSAxMDA3NTUKaW5kZXggMDAwMDAwMDAwLi43MjM1OTFkOTQK
-LS0tIC9kZXYvbnVsbAorKysgYi90ZXN0Y2FzZXMva2VybmVsL3RoZXJtYWwvdGhlcm1hbDAxLnNo
-CkBAIC0wLDAgKzEsOTIgQEAKKyMhL3Vzci9iaW4vZW52IGJhc2gKKyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMKKyMgQ29weXJpZ2h0IChDKSAyMDI1IEludGVsIC0gaHR0cDovL3d3dy5pbnRlbC5jb20v
-CisjCisjIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCisjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjCisjIENvbnRyaWJ1dG9yczoKKyMgICBQaW90ciBLdWJhaiA8cGlv
-dHIua3ViYWpAaW50ZWwuY29tPiAoSW50ZWwpCisjICAgICAtSW5pdGlhbCBkcmFmdC4KKyMgQ2hl
-Y2sgdGhlIENQVSBwYWNrYWdlIHRoZXJtYWwgc2Vuc29yIGludGVyZmFjZSBmb3IgSW50ZWwgcGxh
-dGZvcm1zLgorIyBJdCB3b3JrcyBieSBjaGVja2luZyB0aGUgaW5pdGlhbCBjb3VudCBvZiB0aGVy
-bWFsIGludGVycnVwdHMuIFRoZW4gaXQKKyMgZGVjcmVhc2VzIHRoZSB0aHJlc2hvbGQgZm9yIHNl
-bmRpbmcgYSB0aGVybWFsIGludGVycnVwdCB0byBqdXN0IGFib3ZlCisjIHRoZSBjdXJyZW50IHRl
-bXBlcmF0dXJlIGFuZCBydW5zIGEgd29ya2xvYWQgb24gdGhlIENQVS4gRmluYWxseSwgaXQgcmVz
-dG9yZXMKKyMgdGhlIG9yaWdpbmFsIHRoZXJtYWwgdGhyZXNob2xkIGFuZCBjaGVja3Mgd2hldGhl
-ciB0aGUgbnVtYmVyIG9mIHRoZXJtYWwKKyMgaW50ZXJydXB0cyBpbmNyZWFzZWQuCisjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjCisKK2V4cG9ydCBUU1RfVEVTVEZVTkM9dGVzdF9pbnRlcnJ1cHRfZXZl
-bnRzCitleHBvcnQgVENJRD0idGhlcm1hbF9pbnRlcnJ1cHRfZXZlbnRzIgorCitwa2dfdGhlcm1h
-bD0iIgordGhlcm1hbF96b25lX251bWJlcnM9IiIKK3RlbXA9IiIKK3RlbXBfaGlnaD0iIgorCit0
-ZXN0X2ludGVycnVwdF9ldmVudHMoKSB7CisJbGluZT0kKGdyZXAgIlRoZXJtYWwgZXZlbnQgaW50
-ZXJydXB0cyIgL3Byb2MvaW50ZXJydXB0cykKKwlpZiBbICQ/IC1lcSAwIF07IHRoZW4KKwkJaW50
-ZXJydXB0X2FycmF5X2luaXQ9JChlY2hvICIkbGluZSIgfCB0ciAtZCAiYS16QS1aOiIgfCBhd2sg
-J3skMT0kMTtwcmludH0nKQorCQllY2hvICJJbml0aWFsIHZhbHVlcyBvZiB0aGVybWFsIGludGVy
-cnVwdCBjb3VudGVyczogJGludGVycnVwdF9hcnJheV9pbml0IgorCQludW09JChucHJvYykKKwkJ
-ZWNobyAiTnVtYmVyIG9mIGxvZ2ljYWwgY29yZXM6ICRudW0iCisJZWxzZQorCQl0c3RfYnJrIFRC
-Uk9LICJUaGVybWFsIGV2ZW50IGludGVycnVwdHMgaXMgbm90IGZvdW5kLiIKKwlmaQorCisJIyBC
-ZWxvdyB3ZSBjaGVjayBmb3IgdGhlIHRoZXJtYWxfem9uZSB3aGljaCB1c2VzIHg4Nl9wa2dfdGVt
-cCBkcml2ZXIKKwl0aGVybWFsX3pvbmVfbnVtYmVycz0kKGdyZXAgLWwgeDg2X3BrZ190ZW1wIC9z
-eXMvY2xhc3MvdGhlcm1hbC90aGVybWFsX3pvbmUqL3R5cGUgfCBzZWQgJ3MvW14wLTldLy9nJyB8
-IHRyIC10ICdcbicgJyAnKQorCWVjaG8gIng4Nl9wa2dfdGVtcCB0aGVybWFsIHpvbmVzOiAkdGhl
-cm1hbF96b25lX251bWJlcnMiCisKKwlpZiBbIC16ICR0aGVybWFsX3pvbmVfbnVtYmVycyBdOyB0
-aGVuCisJCXRzdF9yZXMgVEZBSUwgIk5vIHg4Nl9wa2dfdGVtcCB0aGVybWFsIHpvbmVzIGZvdW5k
-IgorCWZpCisJZm9yIGkgaW4gJHRoZXJtYWxfem9uZV9udW1iZXJzOyBkbworCQllY2hvICJDdXJy
-ZW50bHkgdGVzdGluZyB4ODZfcGtnX3RlbXAgdGhlcm1hbF96b25lJGkiCisJCVRFTVA9L3N5cy9j
-bGFzcy90aGVybWFsL3RoZXJtYWxfem9uZSRpL3RlbXAKKwkJdGVtcD0kKGNhdCAiJFRFTVAiKQor
-CQllY2hvICJ0aGVybWFsX3pvbmUkaSBjdXJyZW50IHRlbXBlcmF0dXJlIGlzICR0ZW1wIgorCQlp
-ZiBbICIkKGVjaG8gIiR0ZW1wIDw9IDAiIHwgYmMpIiAtZXEgMSBdOyB0aGVuCisJCQl0c3RfYnJr
-IFRCUk9LICJVbmV4cGVjdGVkIHpvbmUgdGVtcGVyYXR1cmUgdmFsdWUgJHRlbXAiCisJCWZpCisJ
-CXRyaXA9JChjYXQgL3N5cy9jbGFzcy90aGVybWFsL3RoZXJtYWxfem9uZSRpL3RyaXBfcG9pbnRf
-MV90ZW1wKQorCQkjIFNldHRpbmcgdHJpcF9wb2ludF8xX3RlbXAgZm9yIHRlcm1hbF96b25lJGkg
-dG8gJHRlbXAgKyAxMCAoMC4wMDHCsEMpCisJCXRlbXBfaGlnaD0kKCggdGVtcCArIDEwICkpCisJ
-CWVjaG8gJHRlbXBfaGlnaCA+IC9zeXMvY2xhc3MvdGhlcm1hbC90aGVybWFsX3pvbmUkaS90cmlw
-X3BvaW50XzFfdGVtcAorCQlydW5fdGltZT0zMAorCQlzbGVlcF90aW1lPTEwCisJCXdoaWxlIFsg
-JHNsZWVwX3RpbWUgLWd0IDAgXTsgZG8KKwkJCXdoaWNoIC1zIHN0cmVzcy1uZworCQkJWyAkPyAt
-ZXEgMCBdIHx8ICB0c3RfYnJrIFRCUk9LICJzdHJlc3MtbmcgaXMgbWlzc2luZyIKKwkJCXN0cmVz
-cy1uZyAtLW1hdHJpeCAwIC10ICRydW5fdGltZQorCQkJdGVtcF9jdXI9JChjYXQgIiRURU1QIikK
-KwkJCWVjaG8gInRlbXBfY3VyOiAkdGVtcF9jdXIiCisJCQlbICR0ZW1wX2N1ciAtZ3QgJHRlbXBf
-aGlnaCBdICYmIGJyZWFrCisJCQlzbGVlcCAkc2xlZXBfdGltZQorCQkJcnVuX3RpbWU9JCgoIHJ1
-bl90aW1lIC0gMyApKQorCQkJc2xlZXBfdGltZT0kKCggc2xlZXBfdGltZSAtIDEgKSkKKwkJZG9u
-ZQorCQlbICR0ZW1wX2N1ciAtZ3QgJHRlbXBfaGlnaCBdIHx8IHRzdF9yZXMgVEZBSUwgIlpvbmUg
-dGVtcGVyYXR1cmUgaXMgbm90IHJpc2luZyBhcyBleHBlY3RlZCIKKworCQkjIFJlc3RvcmUgdGhl
-IG9yaWdpbmFsIHRyaXBfcG9pbnRfMV90ZW1wIHZhbHVlCisJCWVjaG8gJHRyaXAgPiAvc3lzL2Ns
-YXNzL3RoZXJtYWwvdGhlcm1hbF96b25lJGkvdHJpcF9wb2ludF8xX3RlbXAKKworCQkjIENoZWNr
-IHdoZXRoZXIgdGhlcm1hbCBpbnRlcnJ1cHRzIGNvdW50IGFjdHVhbGx5IGluY3JlYXNlZAorCQlp
-bnRlcnJ1cHRfYXJyYXlfbGF0ZXI9JChncmVwICJUaGVybWFsIGV2ZW50IGludGVycnVwdHMiIC9w
-cm9jL2ludGVycnVwdHMgfCBcCisJCQl0ciAtZCAiYS16QS1aOiIgfCBhd2sgJ3skMT0kMTtwcmlu
-dH0nKQorCQllY2hvICJDdXJyZW50IHZhbHVlcyBvZiB0aGVybWFsIGludGVycnVwdCBjb3VudGVy
-czogJGludGVycnVwdF9hcnJheV9sYXRlciIKKwkJZm9yIGogaW4gJChzZXEgMSAiJG51bSIpOyBk
-bworCQkJaW50ZXJydXB0X2xhdGVyPSQoZWNobyAiJGludGVycnVwdF9hcnJheV9sYXRlciIgfCBj
-dXQgLWQgIiAiIC1mICAiJGoiKQorCQkJaW50ZXJydXB0X2luaXQ9JChlY2hvICIkaW50ZXJydXB0
-X2FycmF5X2luaXQiIHwgY3V0IC1kICIgIiAtZiAgIiRqIikKKwkJCWlmIFsgJGludGVycnVwdF9s
-YXRlciAtbGUgJGludGVycnVwdF9pbml0IF07IHRoZW4KKwkJCQl0c3RfcmVzIFRGQUlMICJ4ODYg
-cGFja2FnZSB0aGVybWFsIGludGVycnVwdCBkaWQgbm90IHRyaWdnZXIiCisJCQllbHNlCisJCQkJ
-YnJlYWsKKwkJCWZpCisJCWRvbmUKKwlkb25lCisJdHN0X3JlcyBUUEFTUyAieDg2IHBhY2thZ2Ug
-dGhlcm1hbCBpbnRlcnJ1cHQgdHJpZ2dlcmVkIgorfQorCisuIHRzdF90ZXN0LnNoCit0c3RfcnVu
-Ci0tIAoyLjQ3LjMKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpJbnRlbCBUZWNobm9sb2d5IFBvbGFuZCBzcC4geiBv
-Lm8uCnVsLiBTbG93YWNraWVnbyAxNzMgfCA4MC0yOTggR2RhbnNrIHwgU2FkIFJlam9ub3d5IEdk
-YW5zayBQb2xub2MgfCBWSUkgV3lkemlhbCBHb3Nwb2RhcmN6eSBLcmFqb3dlZ28gUmVqZXN0cnUg
-U2Fkb3dlZ28gLSBLUlMgMTAxODgyIHwgTklQIDk1Ny0wNy01Mi0zMTYgfCBLYXBpdGFsIHpha2xh
-ZG93eSAyMDAuMDAwIFBMTi4KU3BvbGthIG9zd2lhZGN6YSwgemUgcG9zaWFkYSBzdGF0dXMgZHV6
-ZWdvIHByemVkc2llYmlvcmN5IHcgcm96dW1pZW5pdSB1c3Rhd3kgeiBkbmlhIDggbWFyY2EgMjAx
-MyByLiBvIHByemVjaXdkemlhbGFuaXUgbmFkbWllcm55bSBvcG96bmllbmlvbSB3IHRyYW5zYWtj
-amFjaCBoYW5kbG93eWNoLgoKVGEgd2lhZG9tb3NjIHdyYXogeiB6YWxhY3puaWthbWkgamVzdCBw
-cnplem5hY3pvbmEgZGxhIG9rcmVzbG9uZWdvIGFkcmVzYXRhIGkgbW96ZSB6YXdpZXJhYyBpbmZv
-cm1hY2plIHBvdWZuZS4gVyByYXppZSBwcnp5cGFka293ZWdvIG90cnp5bWFuaWEgdGVqIHdpYWRv
-bW9zY2ksIHByb3NpbXkgbyBwb3dpYWRvbWllbmllIG5hZGF3Y3kgb3JheiB0cndhbGUgamVqIHVz
-dW5pZWNpZTsgamFraWVrb2x3aWVrIHByemVnbGFkYW5pZSBsdWIgcm96cG93c3plY2huaWFuaWUg
-amVzdCB6YWJyb25pb25lLgpUaGlzIGUtbWFpbCBhbmQgYW55IGF0dGFjaG1lbnRzIG1heSBjb250
-YWluIGNvbmZpZGVudGlhbCBtYXRlcmlhbCBmb3IgdGhlIHNvbGUgdXNlIG9mIHRoZSBpbnRlbmRl
-ZCByZWNpcGllbnQocykuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHBs
-ZWFzZSBjb250YWN0IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSBhbGwgY29waWVzOyBhbnkgcmV2aWV3
-IG9yIGRpc3RyaWJ1dGlvbiBieSBvdGhlcnMgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4KCi0tIApN
-YWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi!
+First of all, the tst_test.sh test library is in maitenance mode and new
+shell tests should use the tst_loader.sh instead. Have a look at the
+testcases/kernel/mem/vma/vma05.sh test on how does it look like.
+
+> diff --git a/testcases/kernel/thermal/thermal01.sh b/testcases/kernel/the=
+rmal/thermal01.sh
+> new file mode 100755
+> index 000000000..723591d94
+> --- /dev/null
+> +++ b/testcases/kernel/thermal/thermal01.sh
+> @@ -0,0 +1,92 @@
+> +#!/usr/bin/env bash
+> +########################################################################=
+#######
+> +# Copyright (C) 2025 Intel - http://www.intel.com/
+> +#
+> +# GNU General Public License for more details.
+> +########################################################################=
+#######
+> +# Contributors:
+> +#   Piotr Kubaj <piotr.kubaj@intel.com> (Intel)
+> +#     -Initial draft.
+> +# Check the CPU package thermal sensor interface for Intel platforms.
+> +# It works by checking the initial count of thermal interrupts. Then it
+> +# decreases the threshold for sending a thermal interrupt to just above
+> +# the current temperature and runs a workload on the CPU. Finally, it re=
+stores
+> +# the original thermal threshold and checks whether the number of thermal
+> +# interrupts increased.
+
+This should be a doc comment instead, the doc comments are parsed and
+exported into the LTP documentation:
+
+# ---
+# doc
+# Tests the CPU package thermal sensor interface for Intel platforms.
+#
+# It works by checking the initial count of thermal interrupts. Then it
+# decreases the threshold for sending a thermal interrupt to just above
+# the current temperature and runs a workload on the CPU. Finally, it resto=
+res
+# the original thermal threshold and checks whether the number of thermal
+# interrupts increased.
+# ---
+
+Also the tst_loader.sh supports for various metadata, since this test is
+supported only on x86 platforms and I guess needs root we can specify
+that in the environment as:
+
+# ---
+# env
+# {
+#  "needs_root": true,
+#  "supported_archs": ["x86", "x86_64"]
+# }
+# ---
+
+> +########################################################################=
+#######
+> +
+> +export TST_TESTFUNC=3Dtest_interrupt_events
+> +export TCID=3D"thermal_interrupt_events"
+> +
+> +pkg_thermal=3D""
+> +thermal_zone_numbers=3D""
+> +temp=3D""
+> +temp_high=3D""
+> +
+> +test_interrupt_events() {
+> +	line=3D$(grep "Thermal event interrupts" /proc/interrupts)
+> +	if [ $? -eq 0 ]; then
+> +		interrupt_array_init=3D$(echo "$line" | tr -d "a-zA-Z:" | awk '{$1=3D$=
+1;print}')
+> +		echo "Initial values of thermal interrupt counters: $interrupt_array_i=
+nit"
+> +		num=3D$(nproc)
+> +		echo "Number of logical cores: $num"
+> +	else
+> +		tst_brk TBROK "Thermal event interrupts is not found."
+
+This should be TCONF which means "test cannot run on this machine"
+rather than TBROK which means "test is broken".
+
+> +	fi
+> +
+> +	# Below we check for the thermal_zone which uses x86_pkg_temp driver
+> +	thermal_zone_numbers=3D$(grep -l x86_pkg_temp /sys/class/thermal/therma=
+l_zone*/type | sed 's/[^0-9]//g' | tr -t '\n' ' ')
+> +	echo "x86_pkg_temp thermal zones: $thermal_zone_numbers"
+> +
+> +	if [ -z $thermal_zone_numbers ]; then
+> +		tst_res TFAIL "No x86_pkg_temp thermal zones found"
+> +	fi
+
+This should possibly be TCONF as well. Also this should be tst_brk
+instead, since we will otherwise print the TPASS at the end of the
+script.
+
+> +	for i in $thermal_zone_numbers; do
+> +		echo "Currently testing x86_pkg_temp thermal_zone$i"
+> +		TEMP=3D/sys/class/thermal/thermal_zone$i/temp
+> +		temp=3D$(cat "$TEMP")
+> +		echo "thermal_zone$i current temperature is $temp"
+> +		if [ "$(echo "$temp <=3D 0" | bc)" -eq 1 ]; then
+> +			tst_brk TBROK "Unexpected zone temperature value $temp"
+> +		fi
+> +		trip=3D$(cat /sys/class/thermal/thermal_zone$i/trip_point_1_temp)
+> +		# Setting trip_point_1_temp for termal_zone$i to $temp + 10 (0.001=B0C)
+> +		temp_high=3D$(( temp + 10 ))
+> +		echo $temp_high > /sys/class/thermal/thermal_zone$i/trip_point_1_temp
+> +		run_time=3D30
+> +		sleep_time=3D10
+> +		while [ $sleep_time -gt 0 ]; do
+> +			which -s stress-ng
+> +			[ $? -eq 0 ] ||  tst_brk TBROK "stress-ng is missing"
+> +			stress-ng --matrix 0 -t $run_time
+
+We try to avoid dependencies on tools that are not installed by default
+if possible. Looking around we do have genload tool in LTP already:
+
+			genload --cpu $(getconf _NPROCESSORS_ONLN) -t $run_time
+
+> +			temp_cur=3D$(cat "$TEMP")
+> +			echo "temp_cur: $temp_cur"
+> +			[ $temp_cur -gt $temp_high ] && break
+> +			sleep $sleep_time
+> +			run_time=3D$(( run_time - 3 ))
+> +			sleep_time=3D$(( sleep_time - 1 ))
+> +		done
+> +		[ $temp_cur -gt $temp_high ] || tst_res TFAIL "Zone temperature is not=
+ rising as expected"
+> +
+> +		# Restore the original trip_point_1_temp value
+> +		echo $trip > /sys/class/thermal/thermal_zone$i/trip_point_1_temp
+> +
+> +		# Check whether thermal interrupts count actually increased
+> +		interrupt_array_later=3D$(grep "Thermal event interrupts" /proc/interr=
+upts | \
+> +			tr -d "a-zA-Z:" | awk '{$1=3D$1;print}')
+> +		echo "Current values of thermal interrupt counters: $interrupt_array_l=
+ater"
+> +		for j in $(seq 1 "$num"); do
+> +			interrupt_later=3D$(echo "$interrupt_array_later" | cut -d " " -f  "$=
+j")
+> +			interrupt_init=3D$(echo "$interrupt_array_init" | cut -d " " -f  "$j")
+> +			if [ $interrupt_later -le $interrupt_init ]; then
+> +				tst_res TFAIL "x86 package thermal interrupt did not trigger"
+> +			else
+> +				break
+> +			fi
+> +		done
+> +	done
+> +	tst_res TPASS "x86 package thermal interrupt triggered"
+> +}
+> +
+> +. tst_test.sh
+> +tst_run
+
+-- =
+
+Cyril Hrubis
+chrubis@suse.cz
+
+-- =
+
+Mailing list info: https://lists.linux.it/listinfo/ltp
