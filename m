@@ -4,90 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF2FECCF9E3
-	for <ltp@archiver.kernel.org>; Mon, 10 Nov 2025 16:35:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD23FCCFA13
+	for <ltp@archiver.kernel.org>; Mon, 10 Nov 2025 22:48:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1762792534; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=UOzJZAhN1zvf3JC0FtOCz5tNyyQB/gmc0wI2ERFbnkE=;
- b=R84K9D9jPykglytYyiGJDNvvNLIZ2UwsySt/CFZQJ2j4naWyjZENU2+H/7CpMQXaZXkvg
- aYSzO02owrAAZ9frX4XAnEeRnxMU7pBGFlsNq/3ekdPSAi3i1owsw0A3lXVcM5EaUbTeD8I
- M6hq4Bk+hO2g4faKVf4imxgO7U4BYD8=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1762814928; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=T670AaPnjjrffzmKtXfqi8o6kNeB4jq+ClOaDr7czhI=;
+ b=D6nXR2JIiJYCbewztefAQpzoJvj3uI9WGQzQqhtxUXNbqVgVVJhIqzX6ZEH60M7R1019o
+ HL71LSLPpjTklCLshc/fl3r7rFC9Kc/HyF0xmkFzWAO6X4fT7Lf+8qvT43Vm+9bNPBF4M1V
+ fqX+ZqPAt6i1CzSFy1lomol0yrAdWBo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 161D03CF5DE
-	for <ltp@archiver.kernel.org>; Mon, 10 Nov 2025 17:35:34 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id E3CF73CF62A
+	for <ltp@archiver.kernel.org>; Mon, 10 Nov 2025 23:48:48 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3B25B3CE1F3
- for <ltp@lists.linux.it>; Mon, 10 Nov 2025 17:35:15 +0100 (CET)
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
- [IPv6:2a00:1450:4864:20::435])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id BEEE53CF5EF
+ for <ltp@lists.linux.it>; Mon, 10 Nov 2025 23:48:28 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7C7B320098F
- for <ltp@lists.linux.it>; Mon, 10 Nov 2025 17:35:14 +0100 (CET)
-Received: by mail-wr1-x435.google.com with SMTP id
- ffacd0b85a97d-42b3c965df5so576338f8f.1
- for <ltp@lists.linux.it>; Mon, 10 Nov 2025 08:35:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1762792514; x=1763397314; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=2wZMXJCVj4VuM0qZGo5UQROtVH0xtfOQwRsI/4o2HhA=;
- b=IaiN5iFyYlyRELpswB3x68daUgQV8cA+YGF6v7qunFO3fSyW+9neiQ1GFnkApBMAJm
- 8x5FyoBJX63Yco2/unGqNV4N4yfh7JG9c3OKWAldFcuR/M2f5P4ynrZMpJ6okUzr2SHk
- eazGWpwzEqlHxu207W1nLTN+biGj/VK930khUjbOUtOcU02pgbeZSXhWVFoOXEeJqOCJ
- mVaNHjDH669OG+soNmfN9KJTNRfXdHBX7hUesIXXjyDbRiLGysLy25eDNeMguqXhUfy8
- cYxRYsHGVT/aD05zorKED8fpV6EiTZRKGBccXWRDjM4i3Hx3BAuwCBuWNTueEb8XK0Nj
- HzDg==
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C170A600858
+ for <ltp@lists.linux.it>; Mon, 10 Nov 2025 23:48:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1762814905;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=yQ21i+agxGT1Pz5HRB6u4SIRvE+NoLxTYk9lUs+wFMc=;
+ b=EgLSukEh3ri9jPGWVCSvpANWdMoKFcLFRQs3Q3GWLvfDa6U+/7vaGXrzvMdTDFGVVP3JiV
+ UUkUlIHF6tmt3BwlEKiOGm8baVsMrlhNwSgjPE8bjDBdbii+o2XhNcZFTgNoQXpWk/uuss
+ vveV8J57gqn2FrliD11beDojc/lbLEY=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-634-R1C2fbHKMKusWsUQF20lGQ-1; Mon, 10 Nov 2025 17:48:24 -0500
+X-MC-Unique: R1C2fbHKMKusWsUQF20lGQ-1
+X-Mimecast-MFC-AGG-ID: R1C2fbHKMKusWsUQF20lGQ_1762814904
+Received: by mail-qk1-f199.google.com with SMTP id
+ af79cd13be357-8b259f0da04so249663585a.0
+ for <ltp@lists.linux.it>; Mon, 10 Nov 2025 14:48:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1762792514; x=1763397314;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=2wZMXJCVj4VuM0qZGo5UQROtVH0xtfOQwRsI/4o2HhA=;
- b=Ag627GfO6xr1YItBj5jNI8ViIn+m4EfrRy1AU/jKbfl4pAwlXtdDOasX4SMAN64goX
- gjSCVOiGLrzQqbceA4RC6rYtWfjybkMOfXvzbJ+gD650BeKnyqr3cbeSwLY8ofJ/2GGk
- fWV5M9KkP3GI+s96RRyqRM+5QiiP8COkZ5ycC3Nubhgxoa5NL24sS+Sjz0qZDR9RyhdC
- rOub6pbzs7pNhQ9HNI2rasyYhg62XzBnokt1o1TVwbIyqqwl9AHynLo/5tydAlZQOUy2
- 7ObbHf+Ou2Qpsm0nVnmfZkYBSO1AEIv3/aD/Weiln7wtj9X0WZYqub/eeVku/zQGW8Cs
- MSSg==
-X-Gm-Message-State: AOJu0Ywi6hjxONhyV2ejz5B/JtEYajkceb/i/O8X9718Mnexi+i9ePNE
- KTRTFVFiHgPv6GC3/2z4fu9qJAQqCgRaNe3Yx5McrPezK1HkAJJfS/LVeykVnKrUw20=
-X-Gm-Gg: ASbGncv0H3/uMSnlqQd9yU4GZKxFTl5VhYUgEfufI1UYM38JobHoGzj8X9FEH0I8OZ9
- KWM3Uwqpycbvv8AAezVe1jrKRdba0Y69TTM2p+tVuqBw6bKw8SwwMceKrsVkR1DG/w6nWira47T
- KVFRWQFgpJw0+bCu7XAa0X64ui9zC+uWpxS/wQ5NKikagBDl8x9NGeP0Rl9MsY7OPd7VoMYSN+E
- CYyI0pfnGPgIn6kuvG8D6NMChhjVoMK/2X9/oyvcsOyQFh+EwfRxvzjS5/0j7ay+I8s1waqiEIu
- RlLwzJzSvUpU5oIiC4vpTLSVgz8PFkDzbnWTzPk10AOaOGGDFQA3e7cXCmRLDTe74qeLsvz+u05
- CMefODioly73uVSZRUhQJ49Dzw1jqme+3NB5DWt7cCb/wiGpuSNGlqavkbn3xwalkoGCDG7fA34
- /ueV/XkWQL6keQwKY7jHuoutvxk4bhv6T4Ah3lAFoERg==
-X-Google-Smtp-Source: AGHT+IGfEjT7IFeN0T/htZRDj41wwjJ0tyWBSy5Y4g2oE//JhGrT+ilvqL+yHUAoavijLCaHEHdF7g==
-X-Received: by 2002:a5d:5847:0:b0:401:5ad1:682 with SMTP id
- ffacd0b85a97d-42b2dbefaa6mr7848100f8f.14.1762792513866; 
- Mon, 10 Nov 2025 08:35:13 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+ d=1e100.net; s=20230601; t=1762814904; x=1763419704;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=yQ21i+agxGT1Pz5HRB6u4SIRvE+NoLxTYk9lUs+wFMc=;
+ b=W3CaP6gwmHrvlp1kbL1i0v94DhD1IooRGy5w5aq+zHpJhkTTf6UrtgEc6Fu5VVLfXD
+ 5znuEp4+08i7BTCplEGKKbR37UO02QSGAKQ4LxWdTqoCNi8iWuJ3oLrs5/rfZGpjGa+3
+ 1VSDiQM6h0HHFa4HVOsYkCwliJFhc/+1ovS5xxgnBZxng9zG1KtEKR31nEOBIa+2fr1B
+ zRhOlIy+AecXYcUnfaRlUNmJ/shjjNXULTAkV+uYKQatKD8zv38tfVT4A0Po3HJ7H3b4
+ 9Es3PtRqOxpkGrdWgu8Fkpz2qdgTDYN/8QI5AQaBh2cPqy6Pl6B98kjkKOq/BPawfCji
+ Wb4Q==
+X-Gm-Message-State: AOJu0YxTKRHy9XIb78SJzM1+ihpebqHsSIwFxGzUKemv5uHF70DkH610
+ U4vwCcu3YgTrnjC/ohK0zX9qVbLG1ejwECz2R951Frolnjp6zt51iX9zm7bukBJhLkjNrt59F8i
+ 7x04IPnoAGrPn3hum2VqCNI3O1l2i6WJcFm/YI52bsXTEb7jkYmTNiuYZ+80DCtaK36JV2Xnsht
+ 1s5Mg7HR97zEn7E1nKmrzjCKn5gS29ax4mGN4R
+X-Gm-Gg: ASbGnct6S003x+NjfQNmmkhTZkJhvrk4TubhI0qC42cwn2oGNLB2dgDqarB8K2ia/bF
+ +M8wN5e0QOrIMMDz54zXnf9BbcsxiJkwQao8ZG1t/q/DQcUc7MwFW9B6xqIQEgZb0FG6nHGI83b
+ 8ZciteFocjtoNoN9ZafyZWKH+3sx87xlUPdR7E5WjDPalL5eSNfUEC477NSswqizzpx5rCC8QmQ
+ CrMviJQUxFcwzDp/ciPw0ZuQjCsDBp0o/YuqvGdRxdQ8uSo0xPAhAd4oFKlQKyeu44MtZydHoH7
+ 8Vg2p/a5MoiNlx//fAtFlEiMlDGGkXL8BAVDOwDKVUzWqiD7GIse/l9azgBVcaDPL6ejeMRFhVJ
+ ljXSvlOEWWTDLTKAqEuQH+dMUIRg=
+X-Received: by 2002:a05:620a:407:b0:8ab:5cb2:1f68 with SMTP id
+ af79cd13be357-8b257f6d6ccmr848615385a.69.1762814903776; 
+ Mon, 10 Nov 2025 14:48:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGmlwg48YIwHMcBRAuzcfjTP4mobwF84Ww/D+ejtt9ktnRLZls5Z9PCthUCwyyGUT5Gtxelbg==
+X-Received: by 2002:a05:620a:407:b0:8ab:5cb2:1f68 with SMTP id
+ af79cd13be357-8b257f6d6ccmr848612485a.69.1762814903098; 
+ Mon, 10 Nov 2025 14:48:23 -0800 (PST)
+Received: from sbertram-thinkpadp1gen5.bos.com ([172.56.199.92])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-42ac679e06csm22847094f8f.47.2025.11.10.08.35.13
+ af79cd13be357-8b2732b0b3fsm384033985a.0.2025.11.10.14.48.22
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 10 Nov 2025 08:35:13 -0800 (PST)
-Date: Mon, 10 Nov 2025 17:35:12 +0100
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <ozezqkwm5inhawvjsllnyazxubfbgar2lnysrcxybneia2hf46@ykg77emlmdj4>
-References: <20251106-b4-memcg_stress_rewrite-v2-1-a82b0f3f09ac@suse.com>
- <53jc7u4l3tu3jzwa7bg2cyulj5k4sgnwybf4jjxgsf3s57jnis@zwdhay22gefm>
- <DE2G3PP72PJX.2MJ6J2Y375ATP@suse.com>
+ Mon, 10 Nov 2025 14:48:22 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Mon, 10 Nov 2025 17:48:11 -0500
+Message-ID: <20251110224813.431590-1-sbertram@redhat.com>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <DE2G3PP72PJX.2MJ6J2Y375ATP@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: Uga_Ca23uUwku6i0VU0cPmI08VICw9DnW5f95dZGkS4_1762814904
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] memory: rewrite memcg_stress_test into C API
+Subject: [LTP] [PATCH v1] Confirming EPERM is returned when CAP_SYS_ADMIN is
+ removed from clone3. Signed-off-by: Stephen Bertram <sbertram@redhat.com>
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,47 +106,121 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?q?Michal_Koutn=C3=BD_via_ltp?= <ltp@lists.linux.it>
-Reply-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: ltp@lists.linux.it
+From: Stephen Bertram via ltp <ltp@lists.linux.it>
+Reply-To: Stephen Bertram <sbertram@redhat.com>
+Cc: Stephen Bertram <sbertram@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-(Adding LTP ML back to Cc:)
+---
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/clone3/.gitignore |  1 +
+ testcases/kernel/syscalls/clone3/clone304.c | 70 +++++++++++++++++++++
+ 3 files changed, 72 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/clone3/clone304.c
 
-(We're now in the realm of further possible patches on top of the
-rewrite.)
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 54d94c0ca..b2c4f338e 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -128,6 +128,7 @@ clone10 clone10
+ clone301 clone301
+ clone302 clone302
+ clone303 clone303
+++clone304 clone304
+ 
+ close01 close01
+ close02 close02
+diff --git a/testcases/kernel/syscalls/clone3/.gitignore b/testcases/kernel/syscalls/clone3/.gitignore
+index 10369954b..e9b5312f4 100644
+--- a/testcases/kernel/syscalls/clone3/.gitignore
++++ b/testcases/kernel/syscalls/clone3/.gitignore
+@@ -1,3 +1,4 @@
+ clone301
+ clone302
+ clone303
++clone304
+diff --git a/testcases/kernel/syscalls/clone3/clone304.c b/testcases/kernel/syscalls/clone3/clone304.c
+new file mode 100644
+index 000000000..8968b0144
+--- /dev/null
++++ b/testcases/kernel/syscalls/clone3/clone304.c
+@@ -0,0 +1,70 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Stephen Bertram <sbertram@redhat.com>
++ */
++
++/*
++ * Test for clone3() EPERM error when set_tid_size > 0 without CAP_SYS_ADMIN
++ *
++ * This test verifies that clone3() returns EPERM when:
++ * - set_tid_size is greater than zero
++ * - The caller lacks the CAP_SYS_ADMIN capability in one or more of the
++ *   user namespaces that own the corresponding PID namespaces.
++ *
++ */
++
++#define _GNU_SOURCE
++#include "tst_test.h"
++#include "lapi/sched.h"
++
++static struct tcase {
++	uint64_t flags;
++	char *sflags;
++} tcases[] = {
++	{CLONE_NEWPID, "CLONE_NEWPID"},
++	{CLONE_NEWCGROUP, "CLONE_NEWCGROUP"},
++	{CLONE_NEWIPC, "CLONE_NEWIPC"},
++	{CLONE_NEWNET, "CLONE_NEWNET"},
++	{CLONE_NEWNS, "CLONE_NEWNS"},
++	{CLONE_NEWUTS, "CLONE_NEWUTS"},
++};
++
++static void run(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++	struct clone_args args = {0};
++	pid_t tid_array[4] = {0, 0, 0, 0};
++	pid_t pid;
++
++	args.flags = tc->flags;
++	args.pidfd = 0;
++	args.child_tid = 0;
++	args.parent_tid = 0;
++	args.exit_signal = 0;
++	args.stack = 0;
++	args.stack_size = 0;
++	args.tls = 0;
++	args.set_tid = (uint64_t)(uintptr_t)tid_array;
++	args.set_tid_size = 4;  // Greater than zero - requires CAP_SYS_ADMIN
++
++	errno = 0;
++	TEST(pid = clone3(&args, sizeof(args)));
++
++	if (pid > 0)
++		tst_res(TFAIL | TTERRNO, "clone3(%s) worked and it shouldn't", tc->sflags);
++	else
++		if (errno != EPERM)
++			tst_res(TFAIL | TTERRNO, "clone3(%s) expected EPERM.", tc->sflags);
++		else
++			tst_res(TPASS | TTERRNO, "clone3(%s) failed as expected", tc->sflags);
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = run,
++	.needs_root = 1,
++	.caps = (struct tst_cap []) {
++				TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
++				{}
++	},
++};
+-- 
+2.49.0
 
-On Fri, Nov 07, 2025 at 01:01:56PM +0100, Andrea Cervesato <andrea.cervesato@suse.com> wrote:
-> > a) starting lots of containers in parallel (and observing latencies)
-> 
-> How do you observe latencies in this case?
-
-Starting point would be before mkdir and process migration,
-end point after the finished migration (or after the forked child
-signals readiness back to parent).
-
-> 
-> > b) running short-lived jobs repeatedly (and checking that it can run
-> >    indefinitely/sufficiently long w/out accumulation of any residuals)
-> 
-> I guess you mean to repeat the parallel allocation multiple times for a
-> certain amount of seconds/minutes, right?
-
-I meant something like:
-
-	job-A-1,job-A-2,...,job-A-n
-	job-B-1,job-B-2,...,job-B-n
-	...
-	job-M-1,job-M-2,...,job-M-n
-
-(one row is sequential, but different rows are parallel, n might be same
-for each row)
-
-Thanks,
-Michal
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
