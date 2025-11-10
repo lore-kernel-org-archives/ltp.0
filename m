@@ -4,93 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 833F4CCFA18
-	for <ltp@archiver.kernel.org>; Sat,  8 Nov 2025 12:58:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D564DCCFA1A
+	for <ltp@archiver.kernel.org>; Mon, 10 Nov 2025 02:48:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1762606718; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1762742912; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=fYp913Rt3QX8dLPpyEhpL3dbo/uPa2pQC6eHhGdW8KQ=;
- b=ihtSnqOM68gRekaiHvsOVI1ksyVizXkeR9yADRc7a1vIbHj+MoZQJMERT1rNKKRPTfhVV
- Tw0DMVLnXEbWRbX9Tb8zc2lBAkku6nZKX3adWGvkofoEKTZ9b5sOw6Ikmaujlw7SHQrfhNq
- gyNPFzLXNkRB/MYjrXs2mzMvRE4Y3HY=
+ bh=WxxgWGt8FmL0SUHwm2a6JMxNmb39LOK8WREBkcD653A=;
+ b=hPHnIqP6tAyMBSaoKgYXB3Jc1fEuZ/YeK2vWtP/I5mkqZQjBTSwM8r77WFM49NAhDcCiF
+ MIbQB+8JbcmkY1KkKkc7+R/6o6DE6fM83yStFpdH/qozquXLkxf//nLpCX7LQELsxhVA9dL
+ upg3SvFoLxfQDoi7i3vJl76C+GwVCkw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C75D33CF294
-	for <ltp@archiver.kernel.org>; Sat,  8 Nov 2025 13:58:38 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 2E1693CF54C
+	for <ltp@archiver.kernel.org>; Mon, 10 Nov 2025 03:48:32 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E6F653CE6A1
- for <ltp@lists.linux.it>; Sat,  8 Nov 2025 13:58:18 +0100 (CET)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com
- [IPv6:2a00:1450:4864:20::535])
+ by picard.linux.it (Postfix) with ESMTPS id 342A63C9ACB
+ for <ltp@lists.linux.it>; Mon, 10 Nov 2025 03:48:11 +0100 (CET)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
+ [IPv6:2a00:1450:4864:20::52b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1E3A3600789
- for <ltp@lists.linux.it>; Sat,  8 Nov 2025 13:58:18 +0100 (CET)
-Received: by mail-ed1-x535.google.com with SMTP id
- 4fb4d7f45d1cf-64166a57f3bso343976a12.1
- for <ltp@lists.linux.it>; Sat, 08 Nov 2025 04:58:18 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 28C4E1A003D3
+ for <ltp@lists.linux.it>; Mon, 10 Nov 2025 03:48:10 +0100 (CET)
+Received: by mail-ed1-x52b.google.com with SMTP id
+ 4fb4d7f45d1cf-6407e617ad4so4302632a12.0
+ for <ltp@lists.linux.it>; Sun, 09 Nov 2025 18:48:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1762606697; x=1763211497; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=zPkGEl9nl8N1gAAuU0Ahi35Uf7rLll+NhMDm2H65dh0=;
- b=Kkkj0nNmVdlQ/ahPMm4ROpGzmtoum6YcR+Xh0H/0NBu69ScDXHeQHJDk8mTDyHG2kV
- fjq/6K39MidksOT6K5+7IIAuR+R5XkQ2xEL9wNf9l6IH0ORrLJmRV4PHKsU68Dk1x+IE
- HYrEEBZiieUvykUzpUM0tvBpsOSN6uYVKQnV5Bdv3kC0LkSA1KlxpK6sPaOs3SFuIW/h
- 1aKNEdhqnYkB0/COx2Td5JU78S6J+qXi276W4ZiDJEr7OBNHPajj+gsYF2EdN74aX8+E
- GRBnUgujTs3/T1zxot+695d89ix0b5M5hNdIFdUcZxl2MAnLjUIhMQUWX7On6k7/G2Zl
- yy2Q==
+ d=suse.com; s=google; t=1762742889; x=1763347689; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=N93VqJBF0U4Yl2+Ej3IRAvcK1rSppbRW3/SHoCfPTtg=;
+ b=NHcs5c6QSbZ5wS5/2DxThZyA2z+dTRk/pbpUjEsxhQmhdv7sQeJZWyYB9mtt1cT8bu
+ ANjagDATfaktOZucv0GljjgEGMYO7uLBhUuIJcVyBLLF0C1KSVoY++f3U2zAUo5Cx0t4
+ Z8td5yrY42669ziRDxdSTAdL+CY7/q294z/g4/3eUuXNe6BAwaLMqOSaLSDwdQksqieg
+ 7ihUojcgmdMgVnhYYw/bE0IlWkFi3TTHUEfiP+zNCfNnr2gzWUnKUvyReFrKXvQhB4yo
+ DsspZpkKM8aM6+eAPkiuGKLb5P1WXUpcTxeATlhS974F4rZ63mURNsE013D6nSrLAGMW
+ wo3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1762606697; x=1763211497;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=zPkGEl9nl8N1gAAuU0Ahi35Uf7rLll+NhMDm2H65dh0=;
- b=GWf4pRwbU+xyY8bQQ7AR/jeGtWrH/puXt1YtP+aZAtqkgBPZsD+csUMZcSP9y3N0ay
- 8hvfwdfy1uAcPVZcj95dbdcMmKfqC/LX4DfJ1QYRnV8XFPcfi33WCXV6RAwNgKWxQ8ek
- ynBJdfg5E23NzVNaYbelUD+5VjiOWn4PLgn4l578fyO1lzKvRCMAkYaCo1kNREp+7jF4
- 8Vzkm1RzbgjHgW4Gmpsvh/M8tSHSJxTLhQCiHK57nwhcW0p2xbTAGyFhi5kTolLO5Ok1
- j/QFx7hcQq4Sr7QrnIvCoLFtGMQZksEHGJ+U369WUsFVtLYKUPmlLtIuVDK0Xk1sFzmg
- 66Fg==
-X-Gm-Message-State: AOJu0YzY56NHDQJ8pZZGZ7cYXFL22mGa/v7O01TUYsG983YYZDguZqX3
- WhfykmLtM/MuUkA4TVDvtNmce0n81L5p7XyhAqP0neqogz8a7GSfV/39lSOHxvy+GyffhO6VwW+
- 4jKc=
-X-Gm-Gg: ASbGnct8pvwy79u6CEtYMrcYJm023iGYd0xiJjwArjeYLdBaBGXBtR5ZHKLShxQjY79
- zR2zhGESadII5IvwpbNtqZn9cD8R//rYnRh4BeiOsbwKqDaXRb4Oj7BX8VdhBICdrgxo+rHT62+
- pjE1uq6D2+wllEL00eWw33haJLkD43I4SA7i/L9ZTzaTWE+GZXcNqeTFeJF7zbVvg5SRIY04/HE
- vvnbEl2nj8/TNKxVLRatCqCX8piVkvux2Q3BNko6RBDrbQNg0vyQhRfPQ1gbkeiSCCF+POReu/z
- hmL0FGXWjstagl45eFQ/rpHUIKBOwq5oauPU4KcBFkoC8y/yel3s0gZQlelpDQpyiKjCSphiY7q
- 2G+wu+BQlaGSc8L5QV11vcJA26l/k9tfWyOFU6HNYGGQkdS8PPw/g+q9lYQt/0wPEVXzqNjTbGQ
- jJnVmyCg6yNWIV6KRlcMR8Nw89KlnI
-X-Google-Smtp-Source: AGHT+IFRstyzF2ZpVmU5urtSmkQCDnLOpbwK51zWVMeQf9PA/aVubtehO6IDiGJh68OjS7R7SVdTEA==
-X-Received: by 2002:a17:907:84d:b0:b72:c261:3ad4 with SMTP id
- a640c23a62f3a-b72e0410a5dmr242686966b.34.1762606697404; 
- Sat, 08 Nov 2025 04:58:17 -0800 (PST)
-Received: from autotest-wegao.qe.prg2.suse.org
- ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-b72bdbca75bsm542109066b.14.2025.11.08.04.58.16
+ d=1e100.net; s=20230601; t=1762742889; x=1763347689;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=N93VqJBF0U4Yl2+Ej3IRAvcK1rSppbRW3/SHoCfPTtg=;
+ b=LpaVamNBFRv/oljv1biF2aiBrgs4omcQa/H/xohVAzluP5+gr+GH8kb87qco5BFI/J
+ uS42KaWJfk76yMcWYqhb2RkiAPVR5cqXeinsIyVLepbk38SjBAq0P5x2htidwgScYNhy
+ SE70ETlZw1p0qzJmQh5L9gVbXNueyb9Kg80B4aWkvvOlm0fuyWAx0Aw6gBCPUk0qNxii
+ ctw+3ujeBdFmfsqcPE0X1Zg6DnAYSUS9UPDD/kilQEOe60Z6m9Od6K28HqWeuHqcaFql
+ +nW6XNBw52iH7945EvNXKCYCURx9xNzAmn8jqylmphUbb+G8oFr1DNv9sVGDC2bsDeV0
+ P7mw==
+X-Gm-Message-State: AOJu0YxWOLxBzDAeDPq4zPluxdfZeREwTPRo4/xGLv1yGTxGIqgI7L+4
+ V9xHZQFMwzONo2ESVL3MBi+5QadR8bzhDgx4UdbKHgImoa8CFNTEYqGAoYLMCMR/3nc9eVQTqER
+ J9Os=
+X-Gm-Gg: ASbGncuToSCm8lxZoBIbN4boYZE3OED/3vXmyi2BkvJzssw2jV2RSL0SFth5n72R5qh
+ m/q8sv/W88hVir1wt28UWj3ud2rQ8iUNS15vg+DtPgKtZv+I7HTbrWDp0QJhhOMAc2HJgR0F2NC
+ g82eos9GtZNSs2VOTPEwPjV9k732y+jA8Z3GYODdaaAuOhUrScnWvaw4Xku9KTxLnHrOk3ScUmU
+ JXh27dKxbqOBUa2EV6ERvdFoJuzDBA63TJVSVNMvZ0WEHzvX+NC7/xVjvhEea879GmiZOWKFKQk
+ vWlw+T5zPqyjmVg++Mu/N5CTYNO9OM1Ii4HDzPC6CsRFQk9L3NaE/Mb9Zja0NUy5IWSw3PdfTUb
+ 81NX3DXbZkH10I7LVajnQxNnH7Y4Cqu/4tcC6m2bcbFewC/k8alw5mTrlX7sI3sw0Ar8KZbtapb
+ g=
+X-Google-Smtp-Source: AGHT+IFlm0lZRJRKhviIGACB/9kQlulRLE2ttkojOh1H+HBPdAty081qbVMGjL5xhFOWc6YYrgeBqA==
+X-Received: by 2002:a05:6402:1475:b0:640:cf58:47f9 with SMTP id
+ 4fb4d7f45d1cf-6415a077e9amr5631433a12.9.1762742889218; 
+ Sun, 09 Nov 2025 18:48:09 -0800 (PST)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 4fb4d7f45d1cf-6411f862ca8sm10202041a12.28.2025.11.09.18.48.08
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 08 Nov 2025 04:58:17 -0800 (PST)
-Date: Sat, 8 Nov 2025 12:58:15 +0000
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <aQ8-Z59Agmsl5wwI@autotest-wegao.qe.prg2.suse.org>
-References: <20251010064745.31361-1-wegao@suse.com>
- <20251107003041.28929-1-wegao@suse.com>
- <20251107003041.28929-4-wegao@suse.com>
- <20251107110421.GA1116063@pevik>
+ Sun, 09 Nov 2025 18:48:08 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Mon, 10 Nov 2025 02:47:52 +0000
+Message-ID: <20251110024805.31070-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20251107003041.28929-1-wegao@suse.com>
+References: <20251107003041.28929-1-wegao@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20251107110421.GA1116063@pevik>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/4] ioctl_loop01.c: Add new support .needs_cmds
+Subject: [LTP] [PATCH v5 0/3] new cmd support option for needs_cmds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,50 +102,59 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Wei Gao via ltp <ltp@lists.linux.it>
 Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Nov 07, 2025 at 12:04:21PM +0100, Petr Vorel wrote:
-> Hi Wei,
-> 
-> ...
-> > +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-> > @@ -78,21 +78,7 @@ static void check_loop_value(int set_flag, int get_flag, int autoclear_field)
-> 
-> >  static void verify_ioctl_loop(void)
-> >  {
-> > -	int ret;
-> > -	const char *const cmd_parted[] = {"parted", "-s", dev_path, "mklabel", "msdos", "mkpart",
-> > -					"primary", "ext4", "1M", "10M", NULL};
-> > -
-> ...
-> >  static void setup(void)
-> >  {
-> > +	parted_sup = tst_cmd_present("parted");
-> > +
-> > +	const char *const cmd_parted[] = {"parted", "-s", "test.img", "mklabel", "msdos", "mkpart",
-> > +	                                  "primary", "ext4", "1M", "10M", NULL};
-> > +
-> 
-> dev_path => "test.img". With this you're effectively reverting your own fix from
-> ba605cc955 ("ioctl_loop01.c: Use proper device for partitioning"). Why?
-> 
-Sorry, my mistake.
-The root cause is that patchv2 was created before the date associated with commit ba605cc955,
-so change base patchv2 without rebase trigger this update.
-patchv2: https://patchwork.ozlabs.org/project/ltp/patch/20250928232708.24007-3-wegao@suse.com/
+v4->v5:
+1.Remove https://patchwork.ozlabs.org/project/ltp/patch/20251107003041.28929-2-wegao@suse.com/
+  since already rewritten by Petr's another patch.
+2.Fix ioctl_loop01.c rebase issue.
+3.Add expression check such as "mkfs.ext4 >= 1.0.0" into test case.
 
-> 'parted' with dev_path immediately fails (haven't found why). But with your
-> patch applied I'm able to trigger again the problem "TBROK: mkfs.vfat failed
-> with exit code 1".
-Because missing tst_attach_device for /loop/devX before execute "parted", i will fix that in next version.
-tst_attach_device(dev_path, "test.img");
-> 
-> Kind regards,
-> Petr
+
+Wei Gao (3):
+  lib: Add support option for .needs_cmds
+  ioctl_loop01.c: Add new support .needs_cmds
+  shell_loader_cmd.sh: New test case check needs_cmds
+
+ include/tst_cmd.h                             | 13 ++++
+ include/tst_test.h                            | 16 ++++-
+ lib/newlib_tests/tst_needs_cmds01.c           | 16 ++---
+ lib/newlib_tests/tst_needs_cmds02.c           |  6 +-
+ lib/newlib_tests/tst_needs_cmds03.c           |  6 +-
+ lib/newlib_tests/tst_needs_cmds04.c           |  6 +-
+ lib/newlib_tests/tst_needs_cmds05.c           |  6 +-
+ lib/newlib_tests/tst_needs_cmds06.c           |  6 +-
+ lib/newlib_tests/tst_needs_cmds07.c           |  6 +-
+ lib/newlib_tests/tst_needs_cmds08.c           |  8 +--
+ lib/tst_test.c                                | 22 +++++--
+ testcases/kernel/device-drivers/zram/zram03.c |  8 +--
+ testcases/kernel/fs/squashfs/squashfs01.c     |  6 +-
+ testcases/kernel/security/aslr/aslr01.c       |  6 +-
+ testcases/kernel/syscalls/add_key/add_key05.c | 10 +--
+ .../kernel/syscalls/fanotify/fanotify22.c     |  6 +-
+ testcases/kernel/syscalls/ioctl/ioctl09.c     |  6 +-
+ .../kernel/syscalls/ioctl/ioctl_loop01.c      | 34 +++++------
+ testcases/kernel/syscalls/madvise/madvise11.c |  8 +--
+ .../kernel/syscalls/quotactl/quotactl01.c     |  6 +-
+ .../kernel/syscalls/quotactl/quotactl04.c     |  6 +-
+ .../kernel/syscalls/quotactl/quotactl06.c     |  6 +-
+ .../kernel/syscalls/quotactl/quotactl08.c     |  6 +-
+ .../kernel/syscalls/quotactl/quotactl09.c     |  6 +-
+ testcases/kernel/syscalls/statx/statx05.c     |  8 +--
+ testcases/kernel/syscalls/statx/statx07.c     |  6 +-
+ testcases/kernel/syscalls/statx/statx09.c     |  6 +-
+ testcases/lib/run_tests.sh                    |  1 +
+ testcases/lib/tests/shell_loader_cmd.sh       | 28 +++++++++
+ testcases/lib/tst_run_shell.c                 | 61 ++++++++++++++++++-
+ 30 files changed, 231 insertions(+), 104 deletions(-)
+ create mode 100755 testcases/lib/tests/shell_loader_cmd.sh
+
+-- 
+2.51.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
