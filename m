@@ -4,86 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACF53CCFA1A
-	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 10:41:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1762857700; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=tpCDFosFHxQ81pTI+63S5TFqpjzSRF7zVTTraJcazBk=;
- b=FRLy+9qRMQZyjj3GoauepiOBipkH5lJu1ZJd5EO04nsj6Z1b6irKOF/e1h5ySfIGWyXRI
- vyhYk7E1041KuMK+dxHdzEo0VmSiT+bMA0j9rSop//excTrj6O7I/oiJ2aqOFXttOIef6Pw
- DE9Hxs3mbd62PpJzHvKLcqZKIk1UwTw=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5A49CCFA1A
+	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 11:06:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0156E3CF656
-	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 11:41:40 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 436C93CF66B
+	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 12:06:42 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6D5AB3CF2D8
- for <ltp@lists.linux.it>; Tue, 11 Nov 2025 11:41:19 +0100 (CET)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 427B03CD14C
+ for <ltp@lists.linux.it>; Tue, 11 Nov 2025 12:06:25 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C3075200757
- for <ltp@lists.linux.it>; Tue, 11 Nov 2025 11:41:18 +0100 (CET)
-Received: by mail-ej1-x633.google.com with SMTP id
- a640c23a62f3a-b72dad1b713so500254966b.2
- for <ltp@lists.linux.it>; Tue, 11 Nov 2025 02:41:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1762857678; x=1763462478; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=QnOQfys73b6NbFJWGt9JdzN2eMc+Cz3o+C4fabgRW+Y=;
- b=bI19TzMK92xmyAId5dm823IS2h0Prr/0eLy20ebBLYhgaP7mmegcWKT+RJhbnzpO/n
- cznm3VIKwVeC4DGWZcB0tiO+WasT+9EnmFo383X9rlRNjonWYsMExe1tlcDGJOsO/HXT
- OJxSq/gReyjmfUgHDjJNQvL9aR/6cG9Y8w3yBDrQ3qEDIQbnF44BPVD0hCxKlUPBNuho
- steZDVLHEX37nU+jCaRKK3poQjH8vdYo9D3AG3aRP/U3m/6VJgSz3y3+bkSXLWBGx8FI
- kYv5z/iF+WPCn4jCoQOwfMzOGfy/Vx7CsVf3pc2gebvHVeUro+ZQBCAkYOLL821yGQ+a
- 7zng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1762857678; x=1763462478;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=QnOQfys73b6NbFJWGt9JdzN2eMc+Cz3o+C4fabgRW+Y=;
- b=BbrUrCPg7wPut3QTU3FguOCLV9UXg1a71vNRrKyXFtf4VdVddDmIuTEJA/77/dohdP
- OCLKHYqb4hNJpsS+p44L1qs23+On9tDDPpFVgrnTLa0tfU1gaOo04lVkf9xJM+38H/B8
- jUE7Wgt/j0RFgsPjc6zeCm5V6o6c2LqHPZd5Gnzb+XJQOoRjqBBaw9++RL45U9TCM69e
- OsJxzmg1CONb0OzDI7ECpUEYqeo6Dx82GZbDG2mgvE03AKTO3DiV080Sd96HsrBMW569
- BRy6WcV9le4wQSN+gxDy880365XRTCxHiDzslc2XzvFYOh2KHUTcwZiqmeZU48snxlBj
- mQvw==
-X-Gm-Message-State: AOJu0YzQUPwRe4LpUokjzccDrwq0PcaoHJz1qOnOBIs+LQTfzjDV2M06
- //X1lkzsZIeX55d0edGM3BORoqfFC1TsG243uFHZvZ44/bVUPOL97chK+or6nQQrmGiKTS2W3CJ
- yueeg4Kuf61og81DSTgLsoYik//ZwmocHLjIKz+GmDfig9bT+adqfCg==
-X-Gm-Gg: ASbGncsd7Cx/oZnI8aPp7rf+Ju8GTIAVeY8ONAdtlrROhJqZauIuE8dJcjLbj9XjFGp
- mGDVFAsDJgL48zsZMUuLY2DmYAEGaYNR/YW941g84SekVm9B7uujUmEtL/HKM72BK3fZO1jPPlL
- 1xDBjKWVb/EWVhWQZGA5EenmSK9PfkOlCcO7gbeXkE2wVMdNnZIpMvkuDiEq9UvwNysMHe8pnPj
- PTYvBzLaJaQZOnttgpqMSG/vlF2QQWEUZGP94O1tlwwR5OQeVqDG9dtrijES9OgV5EWuQE=
-X-Google-Smtp-Source: AGHT+IGV1DaXcpmXrSdJhrkPQJ8k4YFkjm8n3VdWgQw+Fp3pNs0JKJqRp/mk6XUq/Ugl8zCr0S0E0ZT6soDn837tNAA=
-X-Received: by 2002:a17:907:3f9b:b0:b72:a5bd:c585 with SMTP id
- a640c23a62f3a-b72e05e5a10mr1084899766b.46.1762857677882; Tue, 11 Nov 2025
- 02:41:17 -0800 (PST)
-MIME-Version: 1.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C6A131A00919
+ for <ltp@lists.linux.it>; Tue, 11 Nov 2025 12:06:24 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9151E1F78F;
+ Tue, 11 Nov 2025 11:06:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1762859183;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yGS+8dzWoCUGeDFWhf6nfHzON0/0mCSSqo7ofMwNLII=;
+ b=j2FmDkfMUIB0CqjXxz3+CgGWWKD1gdo7SEqUvEGwSYl8/OikYTEo3BMHDFAGI/6jGsTumR
+ W4/gX2aQ4iDmbPrKTd25hqV5kYrs1dVzwfqbm8JPmxm8EwXYQQ2BTxD+3haLuO2ggzAuc9
+ TxZamjkrcr9LkkWkmfSH3L6WfjMBuKk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1762859183;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yGS+8dzWoCUGeDFWhf6nfHzON0/0mCSSqo7ofMwNLII=;
+ b=28KmqJhDv0k3TtHbxiaKdXoasVUIyu60PIHJlABQqfArC+bELpFSUd2XqI4MFrs4aL7sAo
+ j/1OyS9e1KqtrEBw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=j2FmDkfM;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=28KmqJhD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1762859183;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yGS+8dzWoCUGeDFWhf6nfHzON0/0mCSSqo7ofMwNLII=;
+ b=j2FmDkfMUIB0CqjXxz3+CgGWWKD1gdo7SEqUvEGwSYl8/OikYTEo3BMHDFAGI/6jGsTumR
+ W4/gX2aQ4iDmbPrKTd25hqV5kYrs1dVzwfqbm8JPmxm8EwXYQQ2BTxD+3haLuO2ggzAuc9
+ TxZamjkrcr9LkkWkmfSH3L6WfjMBuKk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1762859183;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yGS+8dzWoCUGeDFWhf6nfHzON0/0mCSSqo7ofMwNLII=;
+ b=28KmqJhDv0k3TtHbxiaKdXoasVUIyu60PIHJlABQqfArC+bELpFSUd2XqI4MFrs4aL7sAo
+ j/1OyS9e1KqtrEBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 775391490A;
+ Tue, 11 Nov 2025 11:06:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +9RMHK8YE2nCUQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 11 Nov 2025 11:06:23 +0000
+Date: Tue, 11 Nov 2025 12:06:18 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20251111110618.GA42156@pevik>
 References: <20251107003041.28929-1-wegao@suse.com>
  <20251110024805.31070-1-wegao@suse.com>
- <20251110024805.31070-4-wegao@suse.com>
-In-Reply-To: <20251110024805.31070-4-wegao@suse.com>
-Date: Tue, 11 Nov 2025 18:41:03 +0800
-X-Gm-Features: AWmQ_bm9CROfzI_asaO9fMN1RTmov9qW-5H1V_RAMpA3BIg-I-bwJ55ENkge7oQ
-Message-ID: <CAJs-1pVyryF18L1QLjGGJSf2ERm04pppvS2Jcd3UakBRtiFH8g@mail.gmail.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ <20251110024805.31070-2-wegao@suse.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20251110024805.31070-2-wegao@suse.com>
+X-Rspamd-Queue-Id: 9151E1F78F
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:replyto,suse.cz:dkim];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_THREE(0.00)[3]; MISSING_XM_UA(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v5 3/3] shell_loader_cmd.sh: New test case check
- needs_cmds
+Subject: Re: [LTP] [PATCH v5 1/3] lib: Add support option for .needs_cmds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,40 +123,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-U29ycnksIEl0IHNlZW1zIHNvbWUgc3RyYW5nZSBDSSBmYWlsdXJlIHRyaWdnZXJlZCBieSAiY21k
-IjogIm1rZnMuZXh0NCA+PQoxLjAuMCIsIGkgbmVlZCBmdXJ0aGVyIGNoZWNrIGFuZCB3aWxsIHVw
-ZGF0ZSBpdC4KCk9uIE1vbiwgTm92IDEwLCAyMDI1IGF0IDEwOjQ44oCvQU0gV2VpIEdhbyA8d2Vn
-YW9Ac3VzZS5jb20+IHdyb3RlOgoKPiBTdWdnZXN0ZWQtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBz
-dXNlLmN6Pgo+IFNpZ25lZC1vZmYtYnk6IFdlaSBHYW8gPHdlZ2FvQHN1c2UuY29tPgo+IC0tLQo+
-ICB0ZXN0Y2FzZXMvbGliL3J1bl90ZXN0cy5zaCAgICAgICAgICAgICAgfCAgMSArCj4gIHRlc3Rj
-YXNlcy9saWIvdGVzdHMvc2hlbGxfbG9hZGVyX2NtZC5zaCB8IDI4ICsrKysrKysrKysrKysrKysr
-KysrKysrKysKPiAgMiBmaWxlcyBjaGFuZ2VkLCAyOSBpbnNlcnRpb25zKCspCj4gIGNyZWF0ZSBt
-b2RlIDEwMDc1NSB0ZXN0Y2FzZXMvbGliL3Rlc3RzL3NoZWxsX2xvYWRlcl9jbWQuc2gKPgo+IGRp
-ZmYgLS1naXQgYS90ZXN0Y2FzZXMvbGliL3J1bl90ZXN0cy5zaCBiL3Rlc3RjYXNlcy9saWIvcnVu
-X3Rlc3RzLnNoCj4gaW5kZXggNWMzMDliYmViLi4yNGFjODFhNDQgMTAwNzU1Cj4gLS0tIGEvdGVz
-dGNhc2VzL2xpYi9ydW5fdGVzdHMuc2gKPiArKysgYi90ZXN0Y2FzZXMvbGliL3J1bl90ZXN0cy5z
-aAo+IEBAIC02LDYgKzYsNyBAQCBzaGVsbF9sb2FkZXIuc2gKPiAgc2hlbGxfbG9hZGVyX2FsbF9m
-aWxlc3lzdGVtcy5zaAo+ICBzaGVsbF9sb2FkZXJfY19jaGlsZC5zaAo+ICBzaGVsbF9sb2FkZXJf
-ZmlsZXN5c3RlbXMuc2gKPiArc2hlbGxfbG9hZGVyX2NtZC5zaAo+ICBzaGVsbF9sb2FkZXJfa2Nv
-bmZpZ3Muc2gKPiAgc2hlbGxfbG9hZGVyX3N1cHBvcnRlZF9hcmNocy5zaAo+ICBzaGVsbF9sb2Fk
-ZXJfdGNudC5zaAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMvbGliL3Rlc3RzL3NoZWxsX2xvYWRl
-cl9jbWQuc2gKPiBiL3Rlc3RjYXNlcy9saWIvdGVzdHMvc2hlbGxfbG9hZGVyX2NtZC5zaAo+IG5l
-dyBmaWxlIG1vZGUgMTAwNzU1Cj4gaW5kZXggMDAwMDAwMDAwLi40ZThlNjFlYjYKPiAtLS0gL2Rl
-di9udWxsCj4gKysrIGIvdGVzdGNhc2VzL2xpYi90ZXN0cy9zaGVsbF9sb2FkZXJfY21kLnNoCj4g
-QEAgLTAsMCArMSwyOCBAQAo+ICsjIS9iaW4vc2gKPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
-cjogR1BMLTIuMC1vci1sYXRlcgo+ICsjIENvcHlyaWdodCAoYykgMjAyNSBXZWkgR2FvIDx3ZWdh
-b0BzdXNlLmN6Pgo+ICsjCj4gKyMgLS0tCj4gKyMgZW52Cj4gKyMgewo+ICsjICAibmVlZHNfY21k
-cyI6IFsKPiArIyAgIHsKPiArIyAgICAiY21kIjogImxzIiwKPiArIyAgICAib3B0aW9uYWwiOiAx
-Cj4gKyMgICB9LAo+ICsjICAgewo+ICsjICAgICJjbWQiOiAibWtmcy5leHQ0ID49IDEuMC4wIiwK
-PiArIyAgICAib3B0aW9uYWwiOiAxCj4gKyMgICB9Cj4gKyMgIF0KPiArIyB9Cj4gKyMgLS0tCj4g
-Kwo+ICsuIHRzdF9sb2FkZXIuc2gKPiArCj4gK3RzdF90ZXN0KCkKPiArewo+ICsgICAgICAgdHN0
-X3JlcyBUUEFTUyAiV2UgYXJlIHJ1bm5pbmcgd2l0aCBuZWVkc19jbWRzIgo+ICt9Cj4gKwo+ICsu
-IHRzdF9ydW4uc2gKPiAtLQo+IDIuNTEuMAo+Cj4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0
-cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi Wei,
+
+...
+>  /*
+>   * vfork() + execvp() specified program.
+>   *
+> diff --git a/include/tst_test.h b/include/tst_test.h
+> index 9c21c1728..9305cf39d 100644
+> --- a/include/tst_test.h
+> +++ b/include/tst_test.h
+> @@ -524,7 +524,7 @@ struct tst_fs {
+>   *
+>   * @tags: A {} terminated array of test tags. See struct tst_tag for details.
+>   *
+> - * @needs_cmds: A NULL terminated array of commands required for the test to run.
+> + * @needs_cmds: A NULL terminated array of struct tst_cmd required for the test to run.
+
+Please use :ref:`...` formatting to make struct clickable.
+
+ * @needs_cmds: A NULL terminated array of :ref:`struct tst_cmd` required for
+ *              the test to run.
+
+>   *
+>   * @needs_cgroup_ver: If set the test will run only if the specified cgroup
+>   *                    version is present on the system.
+> @@ -617,7 +617,7 @@ struct tst_fs {
+
+>  	const struct tst_tag *tags;
+
+> -	const char *const *needs_cmds;
+> +	struct tst_cmd *needs_cmds;
+
+>  	const enum tst_cg_ver needs_cgroup_ver;
+
+> @@ -721,6 +721,18 @@ int tst_creat_unlinked(const char *path, int flags, mode_t mode);
+>   */
+>  const char *tst_get_tmpdir_root(void);
+
+> +/**
+> + * tst_cmd_present() - Check if a command is present
+> + * @cmd: The name of the command to check for.
+> + *
+> + * This function iterates through the &tst_test->needs_cmds array. It compares
+> + * the given command name with each entry in the array and returns the 'present'
+
+And here please again make it clickable tst_cmd->present. It really helps people
+to click and see what you mean by 'present'.
+
+ * the given command name with each entry in the array and returns the
+ * &tst_cmd->present flag for the matching command.
+
+If this is the only part to change, it can be done before merge.
+
+> + * flag for the matching command.
+> + *
+> + * Return: `true` if the command is present, `false` otherwise.
+> + */
+> +bool tst_cmd_present(const char *cmd);
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
