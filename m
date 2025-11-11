@@ -4,98 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AFABCCFA18
-	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 15:35:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1762875324; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=9ZS1fJul6vpjd4vf07RdwCjOmWAcNGD5sSJZ9MhcDwo=;
- b=eCxwwBTXvMfQH50NoY6T6S6onlUcdZO5orcxLpCtsSxZBel274LYgHuxxOqcb/db1V/XI
- Al1orsQ/GDQ4Z4eIkOwC0a7bY37OYi3UnD9vMoqB+3I6gHj5h+daI1nPvlk0qFqR387dWbY
- y070pIO3Pi09MGedv424DaDZdp7mIew=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2A00CCFA1A
+	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 15:48:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D8EB03CF681
-	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 16:35:24 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 13D6E3CF67D
+	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 16:48:10 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8C82B3CF647
- for <ltp@lists.linux.it>; Tue, 11 Nov 2025 16:35:03 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 5C30A3C9ACB
+ for <ltp@lists.linux.it>; Tue, 11 Nov 2025 16:47:53 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DCC536009A4
- for <ltp@lists.linux.it>; Tue, 11 Nov 2025 16:35:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1762875301;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=JAJtOE6lsKy4qYt/BieN7VhwgoYLcw9upIHcFrFzB5o=;
- b=ZeqSAkwVIoZOYE/eYWIueTf5NiRjCiBTqnOC4Qd6xB3jIlFKprSmxqx7jNXGy4BlhKEMFn
- YElCieKPeMTtTPoSyyhIs8DTlV2ClCJV5x4sD2VPaR4mvUwzNrQaM5LRoC8VJlrgzWNbRb
- I8qnUOZy8nEI7QP2zXmPFGpaDkZMDDw=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-484-Q4ECZf0QNMiMwuRso3IW6A-1; Tue, 11 Nov 2025 10:34:59 -0500
-X-MC-Unique: Q4ECZf0QNMiMwuRso3IW6A-1
-X-Mimecast-MFC-AGG-ID: Q4ECZf0QNMiMwuRso3IW6A_1762875299
-Received: by mail-qt1-f199.google.com with SMTP id
- d75a77b69052e-4edb31eed49so61415631cf.2
- for <ltp@lists.linux.it>; Tue, 11 Nov 2025 07:34:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1762875299; x=1763480099;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=JAJtOE6lsKy4qYt/BieN7VhwgoYLcw9upIHcFrFzB5o=;
- b=Cj+iqgefFyTv45PBGSw66LYu+sIWHegbgkBmZnES1Zpo9y+aH/rtdP05kS7OFOFLA1
- LbS10nM2F6i/hWinac3vkg/SCiwtPsFPSTJyNyAmpqZERxIqnDi8f7jvHz3vwQIf2jGT
- yf2hTNe0c/0F22sJGxX9XxrlwLeG5+p95UN5Uey+xMu0PL7S2t7ipVCcseYkGxVdtF+9
- uaR5lxjTxRwxTP/AMYJKE1ssk7ICtm99gAYgkJAfzKoM/PIJNwKvMvM03Oq74IIwEd0C
- lHUm+e6XOIScw1iIxpUGQIKEsfqRv4tX4ezHXpdmcbqQze2VG+wt9e9VOIaABrTGFBVl
- b8/A==
-X-Gm-Message-State: AOJu0Yy/oEr5LyxQcV7EXTgx4yNPiGxpuYbjW3lmXqcra1Kp/1pcIfPh
- uk12Iv8ajUjGfpaywlMykYQyeqJyGymXAAGoERV2I4wo/5kKul3bZYJcRs0gqPlt4U0Xvc1FoNe
- 4SL+bVkAx9eiwhX8fBgRJTLPPx73jmZ010aJtArZcsqTgZOUtHCVMvq54icBdr4WeQ4rjSr27gR
- FYQTrDADr23iTcXaig5TxDvHb9FgcB/HJ0ZjH7
-X-Gm-Gg: ASbGncuIVslxqLf87DJMGnxx1kfBFjepr9n+xGGzlKorJAcFwio467/0yCNaEQi7Gyi
- SKKlOrc4Z//PSIj5gMWEjE9IpRQsKeCHt8smLjJMTEa4hWNkx7TfFGw8z/jefY2BiWH06z9tuwU
- s1S1xAF97ge/gkfS82lAZkS7eJ0WOyFNgLUpDF2YkVDcnd8sjxM+7ZB907vmpE7qaQOwTXuXshN
- UfJSfYVXq1s+HhZzTapyd14vg79ZFRUDiTCALo6iwizj2tk/tE5gAuDXOCCXRwQ92fPvgk2YvdS
- 2PvZDQjKjtDsiHnvolNA2ZPTHhahPQQXpgwJLK6LjgyT0ngb8uVGtRtUyLkH8MvKtag/rfjnnJC
- KdpO8bxsH1jmwKz3bR+DyGrmy
-X-Received: by 2002:a05:622a:1390:b0:4ed:6169:c335 with SMTP id
- d75a77b69052e-4eda4f7f0damr164447921cf.40.1762875299018; 
- Tue, 11 Nov 2025 07:34:59 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFxhBb9K+YAUU91sZ8rhx7fvt7rfU/ulTT54DG9/O68IaLg1JzXJBXj0EJMj0F92ek8ExtlTQ==
-X-Received: by 2002:a05:622a:1390:b0:4ed:6169:c335 with SMTP id
- d75a77b69052e-4eda4f7f0damr164447501cf.40.1762875298594; 
- Tue, 11 Nov 2025 07:34:58 -0800 (PST)
-Received: from sbertram-thinkpadp1gen5.bos.com ([144.121.52.162])
- by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-88238b742f0sm72777236d6.43.2025.11.11.07.34.58
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 11 Nov 2025 07:34:58 -0800 (PST)
-To: ltp@lists.linux.it
-Date: Tue, 11 Nov 2025 10:34:51 -0500
-Message-ID: <20251111153453.547195-1-sbertram@redhat.com>
-X-Mailer: git-send-email 2.49.0
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D113D60062C
+ for <ltp@lists.linux.it>; Tue, 11 Nov 2025 16:47:52 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5AFB121BB9;
+ Tue, 11 Nov 2025 15:47:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1762876071;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Exf0Vm7t0dJCmI011IrdRnYlqb/JmXeTv4I7mB7MXEY=;
+ b=VlnilNFm9L99/ozEkkjt3KAjKaBzgul6ZSUJ1FB3s+1SowNJ6L4SeROAm4yTsQ491u8dpK
+ 8w0KyhnpBpIALkDa3iNyj6JYnN2A1CbiUcjOd5eBmAQFcO6UPIZ5BJHVHrVn7Ullq9nthu
+ KkoZ+W9WOmOhL2OSlztjoBc7fp0cZbQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1762876071;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Exf0Vm7t0dJCmI011IrdRnYlqb/JmXeTv4I7mB7MXEY=;
+ b=kM4j9J6PZTptWfISAEgEMMIyAAl8bQZg/AUJZoQO1EGmruby6f4uwgnbMuurB+K0DinMQL
+ zSWecHgLs137EaAw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1762876071;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Exf0Vm7t0dJCmI011IrdRnYlqb/JmXeTv4I7mB7MXEY=;
+ b=VlnilNFm9L99/ozEkkjt3KAjKaBzgul6ZSUJ1FB3s+1SowNJ6L4SeROAm4yTsQ491u8dpK
+ 8w0KyhnpBpIALkDa3iNyj6JYnN2A1CbiUcjOd5eBmAQFcO6UPIZ5BJHVHrVn7Ullq9nthu
+ KkoZ+W9WOmOhL2OSlztjoBc7fp0cZbQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1762876071;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Exf0Vm7t0dJCmI011IrdRnYlqb/JmXeTv4I7mB7MXEY=;
+ b=kM4j9J6PZTptWfISAEgEMMIyAAl8bQZg/AUJZoQO1EGmruby6f4uwgnbMuurB+K0DinMQL
+ zSWecHgLs137EaAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 39F1514A27;
+ Tue, 11 Nov 2025 15:47:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1x1LDadaE2nSawAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 11 Nov 2025 15:47:51 +0000
+Date: Tue, 11 Nov 2025 16:47:49 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20251111154749.GB61698@pevik>
+References: <20251106163500.1063704-1-pvorel@suse.cz>
+ <20251106163500.1063704-3-pvorel@suse.cz>
+ <aRM0Z-IlZSLdB5ho@yuki.lan>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: L-gy-XzJj862J8Da7_lE1Y_vmEpoAAOiRAyWpum5eRs_1762875299
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <aRM0Z-IlZSLdB5ho@yuki.lan>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Confirming EPERM is returned when CAP_SYS_ADMIN is
- removed from clone3. Signed-off-by: Stephen Bertram <sbertram@redhat.com>
+Subject: Re: [LTP] [PATCH v2 2/5] swapon03: Cleanup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,114 +111,121 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Stephen Bertram via ltp <ltp@lists.linux.it>
-Reply-To: Stephen Bertram <sbertram@redhat.com>
-Cc: Stephen Bertram <sbertram@redhat.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
----
- runtest/syscalls                            |  1 +
- testcases/kernel/syscalls/clone3/.gitignore |  1 +
- testcases/kernel/syscalls/clone3/clone304.c | 63 +++++++++++++++++++++
- 3 files changed, 65 insertions(+)
- create mode 100644 testcases/kernel/syscalls/clone3/clone304.c
+> Hi!
+> > - Remove unused return code in check_and_swapoff() and setup_swap(). The
+> >   purpose was to run cleanup() in the end of the setup() if creating
+> >   swap fails, but return code is always 0. Also cleanup() should be run
+> >   when test exits with tst_brk() anyway.
+> > - Change return code from TFAIL to TBROK.
+> > - Add missing brackets.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 54d94c0ca..b2c4f338e 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -128,6 +128,7 @@ clone10 clone10
- clone301 clone301
- clone302 clone302
- clone303 clone303
-++clone304 clone304
- 
- close01 close01
- close02 close02
-diff --git a/testcases/kernel/syscalls/clone3/.gitignore b/testcases/kernel/syscalls/clone3/.gitignore
-index 10369954b..e9b5312f4 100644
---- a/testcases/kernel/syscalls/clone3/.gitignore
-+++ b/testcases/kernel/syscalls/clone3/.gitignore
-@@ -1,3 +1,4 @@
- clone301
- clone302
- clone303
-+clone304
-diff --git a/testcases/kernel/syscalls/clone3/clone304.c b/testcases/kernel/syscalls/clone3/clone304.c
-new file mode 100644
-index 000000000..8d0d85bd4
---- /dev/null
-+++ b/testcases/kernel/syscalls/clone3/clone304.c
-@@ -0,0 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 Stephen Bertram <sbertram@redhat.com>
-+ */
-+
-+/*\
-+ * This test verifies that clone3() fals with EPERM when CAP_SYS_ADMIN
-+ * has been dropped and ``clone_args.set_tid_size`` is greater than zero.
-+ */
-+
-+#define _GNU_SOURCE
-+#include "tst_test.h"
-+#include "lapi/sched.h"
-+
-+struct clone_args args = {0};
-+
-+static struct tcase {
-+	uint64_t flags;
-+	char *sflags;
-+} tcases[] = {
-+	{CLONE_NEWPID, "CLONE_NEWPID"},
-+	{CLONE_NEWCGROUP, "CLONE_NEWCGROUP"},
-+	{CLONE_NEWIPC, "CLONE_NEWIPC"},
-+	{CLONE_NEWNET, "CLONE_NEWNET"},
-+	{CLONE_NEWNS, "CLONE_NEWNS"},
-+	{CLONE_NEWUTS, "CLONE_NEWUTS"},
-+};
-+
-+static void run(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	pid_t tid_array[4] = {0, 0, 0, 0};
-+
-+	args.flags = tc->flags;
-+	args.set_tid = (uint64_t)(uintptr_t)tid_array;
-+
-+	TST_EXP_FAIL(clone3(&args, sizeof(args)), EPERM, "clone3(%s) should fail with EPERM",tc->sflags);
-+}
-+
-+static void setup(void)
-+{
-+	clone3_supported_by_kernel();
-+
-+	args.pidfd = 0;
-+	args.child_tid = 0;
-+	args.parent_tid = 0;
-+	args.exit_signal = 0;
-+	args.stack = 0;
-+	args.stack_size = 0;
-+	args.tls = 0;
-+	args.set_tid_size = 4;  // Greater than zero - requires CAP_SYS_ADMIN
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.test = run,
-+	.needs_root = 1,
-+	.caps = (struct tst_cap []) {
-+				TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
-+				{}
-+	},
-+};
--- 
-2.49.0
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> > The same as in v1.
+> > I can split this if you like.
 
+> >  testcases/kernel/syscalls/swapon/swapon03.c | 23 +++++++--------------
+> >  1 file changed, 7 insertions(+), 16 deletions(-)
+
+> > diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
+> > index 01a3b6d8ac..d9822c01ef 100644
+> > --- a/testcases/kernel/syscalls/swapon/swapon03.c
+> > +++ b/testcases/kernel/syscalls/swapon/swapon03.c
+> > @@ -25,7 +25,7 @@
+
+> >  static int swapfiles;
+
+> > -static int setup_swap(void)
+> > +static void setup_swap(void)
+> >  {
+> >  	pid_t pid;
+> >  	int status;
+> > @@ -54,33 +54,27 @@ static int setup_swap(void)
+> >  			TST_EXP_PASS_SILENT(swapon(filename, 0));
+> >  		}
+> >  		exit(0);
+> > -	} else
+> > +	} else {
+> >  		waitpid(pid, &status, 0);
+> > +	}
+
+> >  	if (WEXITSTATUS(status))
+> > -		tst_brk(TFAIL, "Failed to setup swap files");
+> > +		tst_brk(TBROK, "Failed to setup swap files");
+
+> I wonder why do we run this code in a child process to begin with? This
+
+Yes, although this is a general recommendation I was thinking about removing it
+as well as.  and first intended to remove it. But then I thought it was easier
+to handle 'mkswap' binary failure (run in make_swapfile() which is called via
+MAKE_SMALL_SWAPFILE()).
+
+Other reason was that I did already quite a lot of cleanup, thus extending it
+even more means more iterations. But sure, I can fix it (and postpone fix in the
+first commit to later).
+
+> is probably some leftover from the conversion to the new library. Among
+> other things this masks proper results propagation from the
+> MAKE_SMALL_SWAPFILE() because there is at least one tst_brk(TCONF, "")
+> in there that will be converted to TBROK here.
+
+Ah, You mean:
+tst_brk_(file, lineno, TCONF, "Insufficient disk space to create swap file");
+Indeed, I overlooked that one. It's always useful to look into the tests we
+already converted some time ago :).
+
+> I guess that we want to remove the fork() here and we want SAFE_SWAPON()
+> instead of the TST_EXP_PASS_SILENT() so that we do tst_brk() if we fail
+
+FYI we don't have SAFE_SWAPON() but this part of is_swap_supported() could be
+factored out as SAFE_SWAPON():
+
+	TEST(tst_syscall(__NR_swapon, filename, 0));
+	if (TST_RET == -1) {
+		if (errno == EPERM) {
+			tst_brk(TCONF, "Permission denied for swapon()");
+		} else if (errno == EINVAL && fi_contiguous == 0 && sw_support == 0) {
+			tst_brk(TCONF, "Swapfile on %s not implemented", fstype);
+		} else {
+			tst_res(TFAIL | TTERRNO, "swapon() on %s failed", fstype);
+			return false;
+		}
+	}
+
+Also we could use SAFE_MAKE_SMALL_SWAPFILE() instead of MAKE_SMALL_SWAPFILE(),
+to catch few errors properly (this is what I did in 3rd commit).
+
+> to setup the swapfile too. The TST_EXP_PASS_SILENT() does not end the
+> test on a failure, which is what we want here instead.
+
+Yes, that's the problem now. It could be fixed by calling tst_brk()
+instead of TST_EXP_PASS_SILENT() or really create SAFE_SWAPON().
+But FYI I'm not sure if there would be use for SAFE_SWAPON(), because I changed
+this part in the 3rd commit (this is the main change which expects swapon() to
+fail):
+
+-			/* turn on the swap file */
+-			TST_EXP_PASS_SILENT(swapon(filename, 0));
++			/* Quit on a first swap file over max, check for EPERM */
++			if (swapon(filename, 0) == -1) {
++				if (errno != EPERM)
++					tst_res(TFAIL | TERRNO, "swapon(%s, 0)", filename);
++				break;
++			}
++			(*swapfiles)++;
+
+and swapon0[12].c swapoff*.c don't need it (they call *MAKE_SWAPFILE*()
+functions.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
