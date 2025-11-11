@@ -4,114 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5A49CCFA1A
-	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 11:06:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEFF5CCFA1A
+	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 11:15:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 436C93CF66B
-	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 12:06:42 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id B85343CF653
+	for <ltp@archiver.kernel.org>; Tue, 11 Nov 2025 12:15:06 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 427B03CD14C
- for <ltp@lists.linux.it>; Tue, 11 Nov 2025 12:06:25 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 7BC773CD14C
+ for <ltp@lists.linux.it>; Tue, 11 Nov 2025 12:14:50 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C6A131A00919
- for <ltp@lists.linux.it>; Tue, 11 Nov 2025 12:06:24 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EF8AC600934
+ for <ltp@lists.linux.it>; Tue, 11 Nov 2025 12:14:49 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9151E1F78F;
- Tue, 11 Nov 2025 11:06:23 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EAB0721D36;
+ Tue, 11 Nov 2025 11:14:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1762859183;
+ t=1762859689;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yGS+8dzWoCUGeDFWhf6nfHzON0/0mCSSqo7ofMwNLII=;
- b=j2FmDkfMUIB0CqjXxz3+CgGWWKD1gdo7SEqUvEGwSYl8/OikYTEo3BMHDFAGI/6jGsTumR
- W4/gX2aQ4iDmbPrKTd25hqV5kYrs1dVzwfqbm8JPmxm8EwXYQQ2BTxD+3haLuO2ggzAuc9
- TxZamjkrcr9LkkWkmfSH3L6WfjMBuKk=
+ bh=G7l35EcfsPDprTxIr3Ss+dc63w+QZV8QJF+N5OjLCB4=;
+ b=dGWL2lx/fR8xcNOSo7n7pEdp9Dqd2Gq9gXayaBlNJYmjafVbh4jhjQTzzVGKTs8IDG/Whu
+ UdNJeVSXIIrZd3jXCp/pgBpZompGUeY4AJGquVYu1Mf7QhYw7HrOzZBu4Kd7QnLi8Llg3b
+ P/9glgoYwRGuOXVXGUbyJw7UbbKCGB0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1762859183;
+ s=susede2_ed25519; t=1762859689;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yGS+8dzWoCUGeDFWhf6nfHzON0/0mCSSqo7ofMwNLII=;
- b=28KmqJhDv0k3TtHbxiaKdXoasVUIyu60PIHJlABQqfArC+bELpFSUd2XqI4MFrs4aL7sAo
- j/1OyS9e1KqtrEBw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=j2FmDkfM;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=28KmqJhD
+ bh=G7l35EcfsPDprTxIr3Ss+dc63w+QZV8QJF+N5OjLCB4=;
+ b=RgjFZdfF+IhYX2Iirrck0QvxHuoKyOMv91zE7a4hgPAJxhw/qNExHmVTUnCDaBYuwerHCx
+ LkrQXhlI/kXdCNCw==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1762859183;
+ t=1762859687;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yGS+8dzWoCUGeDFWhf6nfHzON0/0mCSSqo7ofMwNLII=;
- b=j2FmDkfMUIB0CqjXxz3+CgGWWKD1gdo7SEqUvEGwSYl8/OikYTEo3BMHDFAGI/6jGsTumR
- W4/gX2aQ4iDmbPrKTd25hqV5kYrs1dVzwfqbm8JPmxm8EwXYQQ2BTxD+3haLuO2ggzAuc9
- TxZamjkrcr9LkkWkmfSH3L6WfjMBuKk=
+ bh=G7l35EcfsPDprTxIr3Ss+dc63w+QZV8QJF+N5OjLCB4=;
+ b=Rqt6V5jb/E2ZWI9hgqfKQyxHOzQcJ1DMTriFJ8xj+/r8FjyNQWIil4qok9nE/08pIJPZdr
+ tLmtdZgdl9+QUi+AAjhVnAC+nyjxNYly2ID60kxfUvAG+h2rnsy+3dYurJQesw6G0/Em7Y
+ 3uITT14N1uFL9tm2dtxtmNvqaflwkNI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1762859183;
+ s=susede2_ed25519; t=1762859687;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yGS+8dzWoCUGeDFWhf6nfHzON0/0mCSSqo7ofMwNLII=;
- b=28KmqJhDv0k3TtHbxiaKdXoasVUIyu60PIHJlABQqfArC+bELpFSUd2XqI4MFrs4aL7sAo
- j/1OyS9e1KqtrEBw==
+ bh=G7l35EcfsPDprTxIr3Ss+dc63w+QZV8QJF+N5OjLCB4=;
+ b=pr6MoG5H0Pvz6YwvjKxjaC0dmQc40k4zJAbb+ZI2ZicDlWBwxti5d9PaTyAMXJGCQx79yA
+ pBfFV7ruIXxXuEAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 775391490A;
- Tue, 11 Nov 2025 11:06:23 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5E4F814916;
+ Tue, 11 Nov 2025 11:14:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +9RMHK8YE2nCUQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 11 Nov 2025 11:06:23 +0000
-Date: Tue, 11 Nov 2025 12:06:18 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id lfbeEKcaE2lMWgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 11 Nov 2025 11:14:47 +0000
+Date: Tue, 11 Nov 2025 12:14:37 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Wei Gao <wegao@suse.com>
-Message-ID: <20251111110618.GA42156@pevik>
+Message-ID: <20251111111437.GB42156@pevik>
 References: <20251107003041.28929-1-wegao@suse.com>
  <20251110024805.31070-1-wegao@suse.com>
- <20251110024805.31070-2-wegao@suse.com>
+ <20251110024805.31070-3-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20251110024805.31070-2-wegao@suse.com>
-X-Rspamd-Queue-Id: 9151E1F78F
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20251110024805.31070-3-wegao@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
+ ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:replyto,suse.cz:dkim];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCPT_COUNT_THREE(0.00)[3]; MISSING_XM_UA(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
  REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 1/3] lib: Add support option for .needs_cmds
+Subject: Re: [LTP] [PATCH v5 2/3] ioctl_loop01.c: Add new support .needs_cmds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,7 +111,7 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Martin Doucha <martin.doucha@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -132,67 +119,97 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Wei,
 
-...
->  /*
->   * vfork() + execvp() specified program.
->   *
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index 9c21c1728..9305cf39d 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -524,7 +524,7 @@ struct tst_fs {
->   *
->   * @tags: A {} terminated array of test tags. See struct tst_tag for details.
->   *
-> - * @needs_cmds: A NULL terminated array of commands required for the test to run.
-> + * @needs_cmds: A NULL terminated array of struct tst_cmd required for the test to run.
-
-Please use :ref:`...` formatting to make struct clickable.
-
- * @needs_cmds: A NULL terminated array of :ref:`struct tst_cmd` required for
- *              the test to run.
-
->   *
->   * @needs_cgroup_ver: If set the test will run only if the specified cgroup
->   *                    version is present on the system.
-> @@ -617,7 +617,7 @@ struct tst_fs {
-
->  	const struct tst_tag *tags;
-
-> -	const char *const *needs_cmds;
-> +	struct tst_cmd *needs_cmds;
-
->  	const enum tst_cg_ver needs_cgroup_ver;
-
-> @@ -721,6 +721,18 @@ int tst_creat_unlinked(const char *path, int flags, mode_t mode);
->   */
->  const char *tst_get_tmpdir_root(void);
-
-> +/**
-> + * tst_cmd_present() - Check if a command is present
-> + * @cmd: The name of the command to check for.
-> + *
-> + * This function iterates through the &tst_test->needs_cmds array. It compares
-> + * the given command name with each entry in the array and returns the 'present'
-
-And here please again make it clickable tst_cmd->present. It really helps people
-to click and see what you mean by 'present'.
-
- * the given command name with each entry in the array and returns the
- * &tst_cmd->present flag for the matching command.
-
-If this is the only part to change, it can be done before merge.
-
-> + * flag for the matching command.
-> + *
-> + * Return: `true` if the command is present, `false` otherwise.
-> + */
-> +bool tst_cmd_present(const char *cmd);
-
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+> @@ -78,23 +78,6 @@ static void check_loop_value(int set_flag, int get_flag, int autoclear_field)
+
+>  static void verify_ioctl_loop(void)
+>  {
+> -	int ret;
+> -	const char *const cmd_parted[] = {"parted", "-s", dev_path, "mklabel", "msdos", "mkpart",
+> -					"primary", "ext4", "1M", "10M", NULL};
+> -
+> -	tst_fill_file("test.img", 0, 1024 * 1024, 10);
+> -	tst_attach_device(dev_path, "test.img");
+> -
+> -	ret = tst_cmd(cmd_parted, NULL, NULL, TST_CMD_PASS_RETVAL);
+> -	if (!ret)
+> -		parted_sup = 1;
+> -	else if (ret == 255)
+> -		tst_res(TCONF, "parted binary not installed or failed");
+> -	else
+> -		tst_res(TCONF, "parted exited with %i", ret);
+> -
+> -	attach_flag = 1;
+> -
+>  	TST_ASSERT_INT(partscan_path, 0);
+>  	TST_ASSERT_INT(autoclear_path, 0);
+>  	TST_ASSERT_STR(backing_path, backing_file_path);
+> @@ -113,10 +96,23 @@ static void verify_ioctl_loop(void)
+
+>  static void setup(void)
+>  {
+> +	parted_sup = tst_cmd_present("parted");
+> +
+> +	const char *const cmd_parted[] = {"parted", "-s", dev_path, "mklabel", "msdos", "mkpart",
+> +	                                  "primary", "ext4", "1M", "10M", NULL};
+
+FYI unfortunately I'm still able to trigger loop failure on SLES 5.14 based kernel
+when looping ioctl_loop01 and ioctl_ficlone02 for a while on both current master
+and with this patch (which does not handle the problem).
+
+dmesg:
+[ 1101.501003] ioctl_loop01
+[ 1101.519346] loop0: detected capacity change from 0 to 20480
+[ 1101.664879] loop_reread_partitions: partition scan of loop0 () failed (rc=-16)
+[ 1101.705931] blk_update_request: I/O error, dev loop0, sector 20352 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+[ 1101.710398] blk_update_request: I/O error, dev loop0, sector 20352 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[ 1101.710423] __loop_clr_fd: partition scan of loop0 failed (rc=-16)
+[ 1101.713612] Buffer I/O error on dev loop0p1, logical block 2288, async page read
+[ 1101.774843] blk_update_request: I/O error, dev loop0, sector 20352 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+[ 1101.783014] blk_update_request: I/O error, dev loop0, sector 20352 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[ 1101.787585] Buffer I/O error on dev loop0p1, logical block 2288, async page read
+[ 1101.824974] ioctl_ficlone02
+[ 1101.827315] loop0: detected capacity change from 0 to 614400
+[ 1101.861851] /dev/zero: Can't open blockdev
+[ 1101.968916] EXT4-fs (loop0): mounting ext2 file system using the ext4 subsystem
+[ 1101.975954] EXT4-fs (loop0): mounted filesystem without journal. Opts: (null). Quota mode: none.
+[ 1102.156957] EXT4-fs (loop0): mounting ext3 file system using the ext4 subsystem
+[ 1102.163452] EXT4-fs (loop0): mounted filesystem with ordered data mode. Opts: (null). Quota mode: none.
+[ 1102.268502] EXT4-fs (loop0): mounted filesystem with ordered data mode. Opts: (null). Quota mode: none.
+
+Fortunately Martin is working on a patch for LTP library that'll check for
+leftover partitions after loop device release and clear them, with appropriate
+TWARN message.
 
 Kind regards,
 Petr
+
+> +
+>  	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
+>  	if (dev_num < 0)
+>  		tst_brk(TBROK, "Failed to find free loop device");
+
+> +	tst_fill_file("test.img", 0, 1024 * 1024, 10);
+> +
+> +	tst_attach_device(dev_path, "test.img");
+> +	attach_flag = 1;
+> +
+> +	if (parted_sup)
+> +		SAFE_CMD(cmd_parted, NULL, NULL);
+> +
+>  	sprintf(partscan_path, "/sys/block/loop%d/loop/partscan", dev_num);
+>  	sprintf(autoclear_path, "/sys/block/loop%d/loop/autoclear", dev_num);
+>  	sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", dev_num);
+> @@ -148,5 +144,9 @@ static struct tst_test test = {
+>  		{"linux-git", "6ac92fb5cdff"},
+>  		{}
+>  	},
+> +	.needs_cmds = (struct tst_cmd[]) {
+> +		{.cmd = "parted", .optional = 1},
+> +		{}
+> +	},
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
