@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F9CECD8C8F
-	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 16:06:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7092FCD8C9C
+	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 16:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1763049991; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1763050970; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=6imraih7kCQjYcJguDIA31L4BNyyPmTJNbzS1fFcIoo=;
- b=bauYPspU3KYwMMPkBv9iCimyBokRoUVrwf4mGSaMQamM7piJ6A4IP3XUPKPvsHXxxwu65
- /OQFD9HInqxpkt+f6Tq0EodFF2nzHWx/1j2Q03PS20ZK+WJB+CYcPS6IYVz/SF85dUR3pAV
- FqNTcEEaCs6TQR+dhlU1XUl1QCaCZFc=
+ bh=PXFmjoVLwRYelA5DM7YhL+lklXzwR/1ZuZI+jF4zTAk=;
+ b=gOSseasrQSyN7sQUouC1THGTyGDQDZvYWlbUhfvBnz4xpG+QyMv6b7UAors3aO8tOhCuW
+ 4SDGdebdi4XHoWonAIGGkkJsksib37DEcY1HkDgfFmyb0lWWAvDZJhTHdOPbVoBGfjNPkTd
+ +3SSpC4Sz6R9/X4OLYyrwUDTYsixFvk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A78813CF812
-	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 17:06:31 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 9AC003CF804
+	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 17:22:50 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ECF9F3CF7D8
- for <ltp@lists.linux.it>; Thu, 13 Nov 2025 17:06:10 +0100 (CET)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+ by picard.linux.it (Postfix) with ESMTPS id B3A933CF7FF
+ for <ltp@lists.linux.it>; Thu, 13 Nov 2025 17:22:30 +0100 (CET)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CEF79600805
- for <ltp@lists.linux.it>; Thu, 13 Nov 2025 17:06:09 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CE3DE1401106
+ for <ltp@lists.linux.it>; Thu, 13 Nov 2025 17:22:29 +0100 (CET)
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by tor.source.kernel.org (Postfix) with ESMTP id 4674E60216
- for <ltp@lists.linux.it>; Thu, 13 Nov 2025 16:06:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68985C4CEFB
- for <ltp@lists.linux.it>; Thu, 13 Nov 2025 16:06:06 +0000 (UTC)
+ by sea.source.kernel.org (Postfix) with ESMTP id C290E402E5
+ for <ltp@lists.linux.it>; Thu, 13 Nov 2025 16:22:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11E04C4CEF5
+ for <ltp@lists.linux.it>; Thu, 13 Nov 2025 16:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1763049967;
- bh=SOkBzE7Bnr/tJ7lVe+X60NHj3kcsrUBlRXSmdMRBktM=;
+ s=k20201202; t=1763050945;
+ bh=P9GFooM6XEt5FZB3whjILro4u6qgOGuoj+ns38itepY=;
  h=From:To:Subject:Date:From;
- b=oCtbqVOjt+1w0lkVGPjUgRY+8O+33h7VArV/ILGW2buVAH5PKjEYTuWQVLPHFop8v
- aV7xm6RsZgHA8FTTTISCoEJbHWX4+a+qhvlTo4t61+j+JGTePl6k6RKZrPw0tCxEtT
- WpTiotndJGB1Um3oc0u1syAzQhn+S24AIrAZ4DiwL4LC9Qx1ORqaPVCsdbmvF+5dJ8
- LVg0MnVh801ubco0F8bgomy2oEAANoQM1kwQz4+BFzJnsE4W2C3GvI295EOrNBrxZP
- 53dckVDDaDtK8cVImPtKZT1nAAJ/7xZR927F8Hdb+r0H2AMSoOdT4ZNwoNGdwKHYyu
- Fty2mXhwkBk1A==
+ b=qIycZSji16Aao7JXT0SlbzyiH+d+krlCD1Qns2CEmj8CCI5Im6RYKwAicaI7xUq5c
+ ZKcfHguZYFgcTR3FttdvjTSymCU9bQ8wuwR9GhlOZ+cFnerGECd4VL8OB/4XsqQnin
+ AdkJsYq6cF6rgzlArhTclfrfO32fOF2m3DxWOtTGvIDcoA/ff8ps1UU7g3Fkqrqzp6
+ NQf3lB9W+OBgnuUogofgI4aPorpsH8k41Ni6B6v6XSBnm0u8K51kkXqG7oxz1dspTb
+ bbC6BoD5UcQ9rzwJs9WNkPUDvyv967EvIR1D4aBaIrYA+k+hEWpk5T9Di2nVqtLI6K
+ ECLXyoto7luHQ==
 To: ltp@lists.linux.it
-Date: Fri, 14 Nov 2025 00:06:04 +0800
-Message-ID: <20251113160604.1074018-1-zlang@kernel.org>
+Date: Fri, 14 Nov 2025 00:22:17 +0800
+Message-ID: <20251113162217.1077332-1-zlang@kernel.org>
 X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/stat04&lstat03: remove fs block size related
- code
+Subject: [LTP] [PATCH v2] syscalls/stat04&lstat03: remove fs block size
+ related code
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,12 +109,12 @@ a different st_blksize from that.
 Thanks,
 Zorro
 
- testcases/kernel/syscalls/lstat/lstat03.c |  9 +--------
+ testcases/kernel/syscalls/lstat/lstat03.c | 12 +-----------
  testcases/kernel/syscalls/stat/stat04.c   | 11 +----------
- 2 files changed, 2 insertions(+), 18 deletions(-)
+ 2 files changed, 2 insertions(+), 21 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/lstat/lstat03.c b/testcases/kernel/syscalls/lstat/lstat03.c
-index 9438e2920..77be2221a 100644
+index 9438e2920..7d9d01ad1 100644
 --- a/testcases/kernel/syscalls/lstat/lstat03.c
 +++ b/testcases/kernel/syscalls/lstat/lstat03.c
 @@ -34,7 +34,6 @@ static void run(void)
@@ -125,7 +125,7 @@ index 9438e2920..77be2221a 100644
  	TST_EXP_EXPR(file_stat->st_atime != symb_stat->st_atime);
  	TST_EXP_EXPR(file_stat->st_mtime != symb_stat->st_mtime);
  	TST_EXP_EXPR(file_stat->st_ctime != symb_stat->st_ctime);
-@@ -42,18 +41,12 @@ static void run(void)
+@@ -42,18 +41,9 @@ static void run(void)
  
  static void setup(void)
  {
@@ -135,10 +135,10 @@ index 9438e2920..77be2221a 100644
 -	int pagesize;
  	int fd;
  
- 	/* change st_blksize / st_dev */
- 	SAFE_STAT(".", &sb);
+-	/* change st_blksize / st_dev */
+-	SAFE_STAT(".", &sb);
 -	pagesize = sb.st_blksize == 4096 ? 1024 : 4096;
- 
+-
 -	snprintf(opt_bsize, sizeof(opt_bsize), "-b %i", pagesize);
 -	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
 +	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);
