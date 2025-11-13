@@ -4,90 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C6DBCD4F37
-	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 01:53:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09D42CD4F37
+	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 01:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1762998835; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1762998857; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=Nsz20qCpZQjmmyr6wfF3ejNBG8+gOfvQeHNfTtqrxRE=;
- b=ejs8dCk56rMmkdeur23Z/3KDdvcf7cWJ0kioD/+V9kJOXNQlZwG5EV7R/jghoZljxUORM
- rgg8WLEOlCvFNQNA1v/5+NPjVaMyG+5/4aJ6mb46W5C5LZVfffV0MPKM1EWpDNRHkbOfmkG
- Rns6JDHuOyrcfLZzDaX6Db6lvfAeHC4=
+ bh=iO2imNpDkGUkjkMnBtADjI2PxyJ4y3LOP9uyQVFQub0=;
+ b=MHI7Ys4bsc88uv796Vuk5VtmFBVvv/nZ0YBMbE5wYAbO2luN8rtTGiyhOotHZNtRCLYRY
+ Po/bLuT4IPmL1lqjQ8Rh2B1telQLEw2ZHD6Ga230vNiDDU5brcyQIxosnwqLrZ3Zzx81+tU
+ g6ZJolcaQRKk3wpDJTfxZtuXrZ+SXUI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 094963CF7BB
-	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 02:53:55 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 95E1F3CF7D2
+	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 02:54:17 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E6B343CF7A0
- for <ltp@lists.linux.it>; Thu, 13 Nov 2025 02:52:52 +0100 (CET)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
+ by picard.linux.it (Postfix) with ESMTPS id ED22B3CF7B7
+ for <ltp@lists.linux.it>; Thu, 13 Nov 2025 02:52:53 +0100 (CET)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
+ [IPv6:2a00:1450:4864:20::629])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 47B28600964
- for <ltp@lists.linux.it>; Thu, 13 Nov 2025 02:52:52 +0100 (CET)
-Received: by mail-ej1-x635.google.com with SMTP id
- a640c23a62f3a-b727f452fffso219203366b.1
- for <ltp@lists.linux.it>; Wed, 12 Nov 2025 17:52:52 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8171D20009B
+ for <ltp@lists.linux.it>; Thu, 13 Nov 2025 02:52:53 +0100 (CET)
+Received: by mail-ej1-x629.google.com with SMTP id
+ a640c23a62f3a-b734fcbf1e3so35390066b.3
+ for <ltp@lists.linux.it>; Wed, 12 Nov 2025 17:52:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1762998771; x=1763603571; darn=lists.linux.it;
+ d=suse.com; s=google; t=1762998773; x=1763603573; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=ml5Y5VOet49S41aSk2N+8oSGIIBpATsoelk1nFmg0Dw=;
- b=BfsMQF/3OYcT6d/dAhNeLb9qp+QVKu+wem2WNTRTBtb9fyNLrzF3rhyl2tNTqConXl
- 63vqJ7IfzCvhz4iayRlUW1lqFD5XRESvQY1qr4tBfA3Nw9GhiwsO2wplmePtBOLCrHvK
- Gxo7p+ig76a/oB6G/U4ho45agU5ihSrVuaXhpDf+bQvZal2xEFJ8irIkJo4j3sqdzbU3
- HAbWlyhv/g07KnW28RSvefLAMuafr4tzoubJqj52xGQnaJZa2+txFbT/RVcjuDAjnZwt
- UbHIK217P77IgzbvFmod8DAoomllzoYEEDY6udqrn0eePmK7TgT/2sWZ2zIoOqCluSJt
- NilQ==
+ bh=EEL0NQTfTkCmE8lWnRqiw2jKKU0sjZ7ShasqoDCgQDk=;
+ b=PVfsHir0k/5jD3KPBI1VCWYylBDgE8SgyKJb9ZcFn3i2CgdIEvYTw3oLy0Aom+17ng
+ +3vBMqZsu42vh633iwJhL9/POimDgoBr+qpterkTUmIi5H6GD+aaefa8XjnZCVrduxQ1
+ I2mWtRuXOBt05c8QEGeqGglWql1d6IcP8UaTaYRWflQmh3RkuCiRYiRNuPWAAwhNd0sQ
+ ZeleMPXBSdGDhoNNvLpKPd5sFYl4smDojScM82rH2/knQLe+3yTi+2Rk63Igz+0uc92b
+ Gw0+GLKNn/moD3yHRz0QbT+1pOC1/swdMFqEoyjbhzAgjBrtcYLMyyh48UYrmL+Ws/GF
+ 52hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1762998771; x=1763603571;
+ d=1e100.net; s=20230601; t=1762998773; x=1763603573;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=ml5Y5VOet49S41aSk2N+8oSGIIBpATsoelk1nFmg0Dw=;
- b=tnaPtufjK6Ao5DcsK7PW6tZnnx5l77KAcrUx5uVX2n73jQL2xyGG0SfsneEZVNHwFv
- KNrAn3TRC0Rbq6FrsusWNQcisrVkW/BtGs7cjXEFXGJ0HExXt+hbQsfig0IEzjOJP1lg
- q/eBG5cOUVEMGKm7ouxdwnQjK22b+kiW4dGP5XEERXteiy8UKNTqf5N47DbT8D7sEbOa
- hK9kVmfGJxfW/YcFjvXbXuMsuwoSBUYQ+8oWiqropF8guIK8CfcB6dGF/hRFOQbZhsQ/
- z8ooSHnEGli36YwmtxMt6dX6Ko2YjqCku6O/b7Th4daJmTwgTY09//8vZNBOtdYylvCO
- TREA==
-X-Gm-Message-State: AOJu0YzD58cdK/t+xBGUooQU9xjghUbCtkiHNsz85++L5p/fVlfVKsRx
- bgOM53dEOff0aUqa3OAEAF5XKZ45YPJP5lhjC89Rot0kliYpa9j4EOimBKRyfn1jc6RNpav0TCX
- tvhc=
-X-Gm-Gg: ASbGnctV48ogmDDbcGSLUwW/DdIlXfNySPoJqy5hpjbPngnUybH4khk1qYEcH2nRmG0
- V4yOe6WtBhkwZZd9i91yDX5abhJZ48B2Pxo+Z2t+x32dg0+OHkiAHaSQZLaeHrBZSLkug8Ze/uG
- N90qvQvb8Ow4YBfJ4PS7gs8NiGv+4oEQwcjHh6i45raCIAqikdcUtG1g31AAE6c7OMEwPTm09k+
- bMhmJ/UK1LZVlQj6oFDy5mSqbKF/EfrnLeYGDHmGvim2KgtCVdVUvAEX5MFJNiGHSK5V3Tym7T2
- +uZ4VnKBr5kJRgluriRS4TlYnufys3QgKfaB7Hmz+vy5+HfoN6GCMPO5WG12rom5fhNkrN7cFJ2
- FWXzCiL9ITIai5lJV8396XQwDEsAGlIvJfFQZSTulbmkCwWlvIT/4ounTLml4b9WW
-X-Google-Smtp-Source: AGHT+IGhHTkq9gNw2CWc/sivY18AcbtuOvtnTrzHtnOuRcqDfULhblei9iI3FGzMndfXIjIt4JTcTg==
-X-Received: by 2002:a17:907:9445:b0:b6d:5dbb:a1e1 with SMTP id
- a640c23a62f3a-b7348056643mr156203666b.5.1762998771474; 
- Wed, 12 Nov 2025 17:52:51 -0800 (PST)
+ bh=EEL0NQTfTkCmE8lWnRqiw2jKKU0sjZ7ShasqoDCgQDk=;
+ b=DyGI/wMxGp3Bn1F06V86ctiRmUVjE/vRyeb1JRU/P/3vUrBPD/MVtjWhKGbZDrGhVr
+ FAuJqcoNKIDQza14ILPArAfds0bbdv50n9EYkV+Qi7E7W/k6V79NVBbHKVqAoeat7Rro
+ N7wOLIRDKDLpBy+bTgSnHp7EOOf6B9H7xSyhKGuxHVlaNSPX1h3GQ0tF4oJfM9RDacyi
+ ebsc/0WHi0FedB2Tu9nD6PRwLa1xQ7lfqmBDCLwJippxV9zeUr2RN5kDhxL8b4iOQaxZ
+ zd6wYGyhrFFGVOcaBelY3HxCbMuzCMg7P1mmXJJIuDFjGEh3bXYUVsB5PxMVgehXTocJ
+ uo7w==
+X-Gm-Message-State: AOJu0Yw76tdbnSJwZpy+r+cxXke5wv8x5bwSw4AfVy83OqEEbcBbyMc5
+ ZPaSfcRfJFruFnQ/5Uufg7ksh62q8xjud0ejsp5L+U+FLUMGKuzu69zcJYl3GT9RAD92KzvqZ1B
+ 0fdw=
+X-Gm-Gg: ASbGncuL2h8C2ecWS/yB5MXk0sn+4lykRTSH8h41KymKJTFujebPxf2DXyJqGCt4M7B
+ oBmk+9rh/z2fC0aU1xJLwZvpDRJ7U7G6VtHGxNpNAg2W8BZe7Zfehds+ga382sPBSRqykap/jnX
+ sVbND5IL4IqtZR7JGfvb5xG+uZLw0wTA7J+ebOMvywDfn5rt1iTiObGHFMfCaTna57xTmGt7+fI
+ q8Ct3KDwURceHnBF/CszRtQkNPy85RG8I4ZUQWUn7/M8no8VQvwbNzE/kt4ih9h7fCKRuVbR3Ls
+ lkEq+4/s8mlaWdQDlcIvzRp/Gkne0yyYXufaFpJ139PeHy++ukPnaS5E80Q4hJdPvE3P2ey6MXv
+ 9he+fsIFAMRrds5vLYE53gEqXpHEWBvGEZHbjSnaGS17lQriymGb9+a+WS6jifRa2
+X-Google-Smtp-Source: AGHT+IFJAH2Rj4ho0lR5K27JzNL3XFM2OkCnOQmrJwrCpv3pKdzmJkhHNllvprsrv5p+8DzEhCOp0Q==
+X-Received: by 2002:a17:906:3c0c:b0:b73:403d:613d with SMTP id
+ a640c23a62f3a-b73403d7aa4mr214182766b.41.1762998772747; 
+ Wed, 12 Nov 2025 17:52:52 -0800 (PST)
 Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
  by smtp.gmail.com with UTF8SMTPSA id
- a640c23a62f3a-b734fad41e5sm52199966b.19.2025.11.12.17.52.51
+ a640c23a62f3a-b734fad48dcsm52080766b.25.2025.11.12.17.52.52
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 12 Nov 2025 17:52:51 -0800 (PST)
+ Wed, 12 Nov 2025 17:52:52 -0800 (PST)
 To: ltp@lists.linux.it
-Date: Thu, 13 Nov 2025 01:52:31 +0000
-Message-ID: <20251113015242.799-3-wegao@suse.com>
+Date: Thu, 13 Nov 2025 01:52:32 +0000
+Message-ID: <20251113015242.799-4-wegao@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20251113015242.799-1-wegao@suse.com>
 References: <20251101012320.24972-1-wegao@suse.com>
  <20251113015242.799-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 2/3] ci: Add mount operation for busybox
+Subject: [LTP] [PATCH v4 3/3] ci: Add e2fsprogs package for CI test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,41 +107,68 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Busybox df implementation require mounting (unlike coreutils
-implementation). Following error can be found during alpine ci:
+We should add e2fsprogs to ci env otherwise test cases
+which need tune2fs/dumpe2fs in ci will be skipped.
 
-runtest TINFO: * shell/tst_format_device.sh
-tst_format_device 1 TINFO: Running: tst_format_device.sh
-tst_format_device 1 TINFO: Tested kernel: Linux 0ba9f024d6b7 6.11.0-1018-azure #18~24.04.1-Ubuntu SMP Sat Jun 28 04:46:03 UTC 2025 x86_64 Linux
-tst_format_device 1 TINFO: Using /tmp/LTP_tst_format_device.XXXXOajpgN as tmpdir (UNKNOWN filesystem)
-tst_device.c:98: TINFO: Found free device 0 '/dev/loop0'
-tst_format_device 1 TINFO: Formatting ext2 with opts='-b 1024 /dev/loop0 5m'
-tst_format_device 1 TINFO: timeout per run is 0h 5m 0s
-tst_format_device 1 TPASS: device formatted
-df: /dev/loop0: can't find mount point
-tst_format_device 2 TFAIL: df /dev/loop0 | grep -q /dev failed unexpectedly
-tst_format_device 3 TINFO: AppArmor enabled, this may affect test results
-tst_format_device 3 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
-tst_format_device 3 TINFO: loaded AppArmor profiles: none
+For example following message:
+2025-09-24T09:00:56.9304198Z tst_cmd.c:268: TCONF: Couldn't find 'tune2fs' in $PATH
 
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- lib/newlib_tests/shell/tst_format_device.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ ci/alpine.sh     | 1 +
+ ci/debian.sh     | 1 +
+ ci/fedora.sh     | 1 +
+ ci/tumbleweed.sh | 1 +
+ 4 files changed, 4 insertions(+)
 
-diff --git a/lib/newlib_tests/shell/tst_format_device.sh b/lib/newlib_tests/shell/tst_format_device.sh
-index dbe4ea9e7..b7366517e 100755
---- a/lib/newlib_tests/shell/tst_format_device.sh
-+++ b/lib/newlib_tests/shell/tst_format_device.sh
-@@ -2,7 +2,7 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
+diff --git a/ci/alpine.sh b/ci/alpine.sh
+index 254f4aaec..f3a1bf528 100755
+--- a/ci/alpine.sh
++++ b/ci/alpine.sh
+@@ -25,6 +25,7 @@ apk add \
+ 	musl-dev \
+ 	numactl-dev \
+ 	openssl-dev \
++	e2fsprogs-extra \
+ 	pkgconfig
  
--TST_FORMAT_DEVICE=1
-+TST_MOUNT_DEVICE=1
- TST_NEEDS_ROOT=1
- TST_TESTFUNC=test
- TST_CNT=2
+ cat /etc/os-release
+diff --git a/ci/debian.sh b/ci/debian.sh
+index 0445c92ec..767c9b985 100755
+--- a/ci/debian.sh
++++ b/ci/debian.sh
+@@ -33,6 +33,7 @@ pkg_minimal="
+ 	linux-libc-dev
+ 	lsb-release
+ 	pkg-config
++	e2fsprogs
+ "
+ 
+ pkg_nonessential="
+diff --git a/ci/fedora.sh b/ci/fedora.sh
+index f57806ebf..f4482a1da 100755
+--- a/ci/fedora.sh
++++ b/ci/fedora.sh
+@@ -26,6 +26,7 @@ $yum \
+ 	libtirpc \
+ 	libtirpc-devel \
+ 	pkg-config \
++	e2fsprogs \
+ 	redhat-lsb-core
+ 
+ # CentOS 8 fixes
+diff --git a/ci/tumbleweed.sh b/ci/tumbleweed.sh
+index 8a30b02c2..8f23229df 100755
+--- a/ci/tumbleweed.sh
++++ b/ci/tumbleweed.sh
+@@ -30,6 +30,7 @@ while [ $i != 0 ]; do
+ 		libtirpc-devel \
+ 		linux-glibc-devel \
+ 		lsb-release \
++		e2fsprogs \
+ 		pkg-config
+ 
+ 	ret=$?
 -- 
 2.51.0
 
