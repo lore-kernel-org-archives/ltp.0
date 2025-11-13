@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78966CD8CBD
-	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 18:36:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A34CCD98CE
+	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 18:42:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CF1113CF810
-	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 19:36:37 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 8D2AA3CF803
+	for <ltp@archiver.kernel.org>; Thu, 13 Nov 2025 19:42:35 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 06DE33CF7C2
- for <ltp@lists.linux.it>; Thu, 13 Nov 2025 19:36:20 +0100 (CET)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+ by picard.linux.it (Postfix) with ESMTPS id 882FD3CF7C2
+ for <ltp@lists.linux.it>; Thu, 13 Nov 2025 19:42:20 +0100 (CET)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 71B046008C7
- for <ltp@lists.linux.it>; Thu, 13 Nov 2025 19:36:20 +0100 (CET)
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-47778b23f64so9203155e9.0
- for <ltp@lists.linux.it>; Thu, 13 Nov 2025 10:36:20 -0800 (PST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 28CF264784F
+ for <ltp@lists.linux.it>; Thu, 13 Nov 2025 19:42:20 +0100 (CET)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-477775d3728so11838145e9.2
+ for <ltp@lists.linux.it>; Thu, 13 Nov 2025 10:42:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1763058980; x=1763663780; darn=lists.linux.it;
+ d=gmail.com; s=20230601; t=1763059339; x=1763664139; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=opCuYTG+TdNAt2qdTwtqdKwBllORdPq9RnK+oDl4GGw=;
- b=GW20rXMu60vUqsmWjQdNeNYovFU41yccyx1GPuOlqHl5p7uCQL4JRw3D+hd0CXjrwx
- 46l/EWhDB9asIOigvtfv53yWyIXPWpMg/BqXjAqnuFzrIOAHL7NuESfS0sXMV9SDt9xQ
- ka89jVCJ+KD2bDUtYBS69PeHUBCH2AQuJ6F3oQGBjf7aLzGGHBtNJ/sysiVpO4TKFj08
- 2iELLysnQQ2xEgK4Bbyqz57XcFtuVRfU3esNpBd8DzdMQmLGd54OFGVfLrhllnMXlszY
- CObBHjrgGtyVoOUQ62/F12K/lCW/wWxa2Bix+QJFF0GpOipWPzuBhKnaK7FZHRPfS2Vf
- cQag==
+ bh=Ukvk2NPRx8F83SHRRKT1OLYei+SHA/U3nL/4gYO9ADI=;
+ b=GA/OZC1MqEKPyoaVkHPxN3YxJiEpoiMhdSxFFaqWgRl3f8/fulNDBbK9uEcevNeIGj
+ OtiBNApgFM8g/Kfz+J/qKvaUDcxq6X9BKshIzyGX/us5wQcbOaWAmglsLfuUNIFH9Z6Q
+ u7FFVqWLKfTSoJjrA15C9BiNiRMtVTeKjsvBjTz+Npl1kVAx913RS1z5jpA3/6hISiA5
+ XAhfhjoRc7oHg2x40FvpZc0GzRFQCwM17DlWUlbdt6v/efO4D+PQUReSlIWv29NRXIwr
+ LqpOi7lAd2p1ViyKr696PB99FGahPNyDtimWYgTQMU8qDo99nJVPmhNH3EPtkdpaMjxa
+ 6Drg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1763058980; x=1763663780;
+ d=1e100.net; s=20230601; t=1763059339; x=1763664139;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=opCuYTG+TdNAt2qdTwtqdKwBllORdPq9RnK+oDl4GGw=;
- b=c/xPJEE2RJUoSV5CX4ziMGBmIwPj8auPHKlHzokXWmzwUlrbBYSPrTtaE6heTMY5l+
- c/UYW46Xe0+v5aEDJYOPu1Q+jpoUN0nOfF660B2oF4u4QDktlohnhEihpkDB0maRI6rY
- 4QBhlyZollasKl4G/WgagmUOkXomitOuxnRgNNfhL7/KXemCZ4eqVGDiHRxY2+Yfetkh
- 5LgKz/Octrh9InpTRIGHHrGP+IPYg2yvkWnhMFXwsb75VK4I0LpxXlGFj+f0d6WKHLhp
- CSWwzDjkZBlXIuOIM7AzDrr5trdw0H+BM7jJCs/pPO2EgVp6iinLhxA7/mtj3yCfJOPp
- EsUw==
-X-Gm-Message-State: AOJu0Yx3nnKGzc36QFiCy0/vSom4xFmnZQKfR8fHDN3nsfjAcEEWGVK9
- VepSmR8DvfXac24GtlCU1KgcgbULSYBjVC5Vf177ZQrHaKKtSTWpw7Zm2ZN6Fw==
-X-Gm-Gg: ASbGncvty4uNWL5FToIY0BiB0MW/wvNcyAfdQWedKm/6mkBj5IpTcXVd6PWFwgdq7BA
- hIVH/6zlDMRAYWz+wwP9XICBg36UX01YfLwMtOqrXR08KWvteowIOghneliMPxWLsTY/TGDXpdw
- 4QrQ7JyapH7L4HuwC0bAzMXEXO4GqAhJiVDKZZqTBVrRCXYUPCuaalagmXOPqmZ2g0ZB8jXHFVF
- 1N8cVliAniI+j74fhOSnTWXDwdNcFgbHrBMylqLpMj80Nmd1goD/WBFJUT+X8IjMWaIetUHrC76
- P1w4V9eOxX2nm1v3hhR1fzZuP/DC4wfW51u/gMba2kfa0MVfqadCAvdzi/rJ9j7gzbDe+PvFw4X
- 8jSiX8CuZETMLsygXkkhYO44PzkSQA19J6077JSx/jV5nWMgKTAw0HV60VN+iQqus5SkwFu7J3s
- xTDMo4DCwYc0/iSf4vdfvRChfvhnEb0FCfO9E63cvFb85F9T4M7A==
-X-Google-Smtp-Source: AGHT+IH26iVl5WayCWLp8VBWH7KgkTBesAvn66s7v/OsFtFuh65WDiwxFAvRTknLOMWG7bHfgB5QpQ==
-X-Received: by 2002:a05:600c:1d19:b0:477:582e:7a81 with SMTP id
- 5b1f17b1804b1-4778fe50bb3mr4957715e9.4.1763058979581; 
- Thu, 13 Nov 2025 10:36:19 -0800 (PST)
+ bh=Ukvk2NPRx8F83SHRRKT1OLYei+SHA/U3nL/4gYO9ADI=;
+ b=S3S3YKKNuv/71TPnW/F2wbDP6CaAppDUY9HCg6aTbksaiREXgK4AfIPA6kWW+YcLHC
+ /6qbwzaRZROLxHhXj3VlRiM3JbAEH4c+bS68704xqgcQCGvf1pDwq193PXK/L9TxEbSy
+ nA8uOCj3DY5/uJEp19uC3HpaRi5BosBP1B+Jji2oCE9hDW4FWZYE290EaWIPz9zWzywr
+ Tpdl3o+Nds0q/aGpBoL8FaGb48gAtaclX5OsoBo5DEMw4L9IYm3meSZB49bsayH9Aefc
+ 8Wkp0zWFIDDi8GFO0zOj/qyoBmMjGE+jX/hYZ0ef/3DWjK5JPLykoBvqKoOAVDTzuMYz
+ 7KGw==
+X-Gm-Message-State: AOJu0YwxKePvNVKxqj+cqNtbHeFPnLRByMxNiRg65pH3uT+BV+1/CyCT
+ ZKUbk3w0G+pD8cVCQC3JPDy/hn2Okzqdfh5UmWA1xsUEbUKCRlvg7lBrjLmFfw==
+X-Gm-Gg: ASbGncuz5Iy6gNGrK3GjIo0ZUK/HDfvQj5r3Cjco6JNrwk2bZq8ku94KIXymH85KgOu
+ r/HwZ3UnTFudcqZ3lxGp7klQNYigfickjen0Qglu/fKfgOP3YnYaagldEPkVKfscoQcFVY68nYn
+ 312xyMiJslg7qJNQWkAlZIEagyZbXY5/ih+iWS8blQrTPkFn2ubYUcofEaRHLEGw3jOf7FQyztn
+ 6ctwsWcX6CknEUgcJjohed0E9LKyMQKtr8Yuaj+77aEOJVI7RtgVeEv2HAKq3h7Wz+bSahG64oV
+ UQeTsmy1Envl9ci3YOK7XVhemdh5N4fkjYC08cyPo8YxPtMEgZUhoVCUK/eAYqxWOVW7PO43L/U
+ XC5Ga9NqseNtj2doaQ5iT34It9yivUm5RcaxVpLDeWNyR4cdM8IgWSRXZA76Q4Gq9n+zgstUV/I
+ 9RXLxD3oPsiNMoZ/KtYGB4b6mCvkFJ4tkHa7IwMZo7OOHCtChpiQ==
+X-Google-Smtp-Source: AGHT+IFCA7/qUrj0BeW0FKoTWMk1tNXNL0cU2Oi9q7m0sml9DcMCFiVp+gs+qkiLFTosQFWxk4qIPA==
+X-Received: by 2002:a05:600c:4503:b0:45b:80ff:58f7 with SMTP id
+ 5b1f17b1804b1-4778feb23dfmr4869785e9.36.1763059339256; 
+ Thu, 13 Nov 2025 10:42:19 -0800 (PST)
 Received: from localhost.suse.cz (apn-78-30-81-95.dynamic.gprs.plus.pl.
  [78.30.81.95]) by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4778f247821sm22307575e9.5.2025.11.13.10.36.19
+ ffacd0b85a97d-42b53e7ae16sm5474561f8f.3.2025.11.13.10.42.18
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 13 Nov 2025 10:36:19 -0800 (PST)
+ Thu, 13 Nov 2025 10:42:18 -0800 (PST)
 From: Sebastian Chlad <sebastianchlad@gmail.com>
 X-Google-Original-From: Sebastian Chlad <sebastian.chlad@suse.com>
 To: ltp@lists.linux.it
-Date: Thu, 13 Nov 2025 19:36:16 +0100
-Message-ID: <20251113183616.3679-1-sebastian.chlad@suse.com>
+Date: Thu, 13 Nov 2025 19:42:16 +0100
+Message-ID: <20251113184216.7768-1-sebastian.chlad@suse.com>
 X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] controllers: Remove obsolete testplan.txt
+Subject: [LTP] [PATCH v2] controllers: Remove obsolete testplan.txt
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,10 +102,32 @@ Removing this file avoids confusion and reduces maintenance overhead.
 
 Signed-off-by: Sebastian Chlad <sebastian.chlad@suse.com>
 ---
+ testcases/kernel/controllers/README       |  5 -----
  testcases/kernel/controllers/testplan.txt | 15 ---------------
- 1 file changed, 15 deletions(-)
+ 2 files changed, 20 deletions(-)
  delete mode 100644 testcases/kernel/controllers/testplan.txt
 
+diff --git a/testcases/kernel/controllers/README b/testcases/kernel/controllers/README
+index b1b00eb6a..2c9650773 100644
+--- a/testcases/kernel/controllers/README
++++ b/testcases/kernel/controllers/README
+@@ -1,5 +1,4 @@
+ The complete dir tree is for testcases for resource management testing of linux kernel.
+-For the test plan please refer to the file testplan.txt
+ 
+ --------------
+ ***WARNING:***
+@@ -14,10 +13,6 @@ similar work as above.
+ 
+ FILES DESCRIPTION:
+ 
+-testplan.txt
+-------------
+-A brief description of the plan for resource management testing.
+-
+ test_controllers.sh
+ -------------------
+ This is the main script file that starts the test. It first checks if the
 diff --git a/testcases/kernel/controllers/testplan.txt b/testcases/kernel/controllers/testplan.txt
 deleted file mode 100644
 index 7fbca2a05..000000000
