@@ -4,111 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 908A5CDE03C
-	for <ltp@archiver.kernel.org>; Fri, 14 Nov 2025 08:54:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03B06CE7A8C
+	for <ltp@archiver.kernel.org>; Fri, 14 Nov 2025 08:55:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C6D6E3CF811
-	for <ltp@archiver.kernel.org>; Fri, 14 Nov 2025 09:54:02 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 556E53CF812
+	for <ltp@archiver.kernel.org>; Fri, 14 Nov 2025 09:55:42 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A6AFD3CF384
- for <ltp@lists.linux.it>; Fri, 14 Nov 2025 09:53:46 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 4287A3CF384
+ for <ltp@lists.linux.it>; Fri, 14 Nov 2025 09:55:25 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0D9E81400DF4
- for <ltp@lists.linux.it>; Fri, 14 Nov 2025 09:53:45 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9C19E600D43
+ for <ltp@lists.linux.it>; Fri, 14 Nov 2025 09:55:24 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8159D1F391;
- Fri, 14 Nov 2025 08:53:42 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 437E71F391;
+ Fri, 14 Nov 2025 08:55:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1763110422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1763110523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NjBKKxYBctAljdaVbrw+OXDg1VEY355CeTddKCsB5nA=;
- b=nB+tecVpMSKqOaU9zxdmPQipN2V0LWrCtVcpxTbER2eB95h5X/ITwvsLXKgo5XsWj5cGUW
- q2NxRSciMzPiTEub7DzcrWOdGcYfjFdnoxVf15JIpKdWgkN75Aufi5n7LD0UqPbgNY3zb9
- 6QwIH/HdeiBIrSt0dU0/BTZ5BZ+6RnA=
+ bh=yI2VQN9jW+4vgEn95t5JFKrivKyqkeZZjZIqxmuBl9g=;
+ b=VoYY0OsbhOvWh8mCqU0nc4YmJBtBe8fp8tlsSzAXOxNDUfr21q+wpXyRMjcyYu73tpXWfP
+ PC5mk6KZWYnXV2n+kzwXq8yk4zwGiYEGtXR14LJS9waXHM5x039ABN6jUXZdHbgZJYW6aw
+ aOMjDvPPw/govhpi0tfwg1W4qGm/E5I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1763110422;
+ s=susede2_ed25519; t=1763110523;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NjBKKxYBctAljdaVbrw+OXDg1VEY355CeTddKCsB5nA=;
- b=Mjldn1Q0nD+4MoHsKMkzLgJ0HeamVCYtgOeBwdxGYx3jXsXDTN67UcpJDRGa/TcEXDS6Sh
- 3nFPJZfYqgPWw1DA==
+ bh=yI2VQN9jW+4vgEn95t5JFKrivKyqkeZZjZIqxmuBl9g=;
+ b=iurS2uGUhDmojdE86fJ9jooLVTjYVnwJa85/on/MpAYzsSlhsRpMQCpCiSCDTv8mUyMcx3
+ IM96G4k6RVTSWLDA==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=nB+tecVp;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Mjldn1Q0
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1763110422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1763110523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NjBKKxYBctAljdaVbrw+OXDg1VEY355CeTddKCsB5nA=;
- b=nB+tecVpMSKqOaU9zxdmPQipN2V0LWrCtVcpxTbER2eB95h5X/ITwvsLXKgo5XsWj5cGUW
- q2NxRSciMzPiTEub7DzcrWOdGcYfjFdnoxVf15JIpKdWgkN75Aufi5n7LD0UqPbgNY3zb9
- 6QwIH/HdeiBIrSt0dU0/BTZ5BZ+6RnA=
+ bh=yI2VQN9jW+4vgEn95t5JFKrivKyqkeZZjZIqxmuBl9g=;
+ b=VoYY0OsbhOvWh8mCqU0nc4YmJBtBe8fp8tlsSzAXOxNDUfr21q+wpXyRMjcyYu73tpXWfP
+ PC5mk6KZWYnXV2n+kzwXq8yk4zwGiYEGtXR14LJS9waXHM5x039ABN6jUXZdHbgZJYW6aw
+ aOMjDvPPw/govhpi0tfwg1W4qGm/E5I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1763110422;
+ s=susede2_ed25519; t=1763110523;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NjBKKxYBctAljdaVbrw+OXDg1VEY355CeTddKCsB5nA=;
- b=Mjldn1Q0nD+4MoHsKMkzLgJ0HeamVCYtgOeBwdxGYx3jXsXDTN67UcpJDRGa/TcEXDS6Sh
- 3nFPJZfYqgPWw1DA==
+ bh=yI2VQN9jW+4vgEn95t5JFKrivKyqkeZZjZIqxmuBl9g=;
+ b=iurS2uGUhDmojdE86fJ9jooLVTjYVnwJa85/on/MpAYzsSlhsRpMQCpCiSCDTv8mUyMcx3
+ IM96G4k6RVTSWLDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7768B3EA61;
- Fri, 14 Nov 2025 08:53:42 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 363363EA61;
+ Fri, 14 Nov 2025 08:55:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Hb2zHBbuFmlwMAAAD6G6ig
- (envelope-from <akumar@suse.de>); Fri, 14 Nov 2025 08:53:42 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id dLKqDHvuFmnpMQAAD6G6ig
+ (envelope-from <akumar@suse.de>); Fri, 14 Nov 2025 08:55:23 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 14 Nov 2025 09:53:42 +0100
-Message-ID: <1937268.tdWV9SEqCh@thinkpad>
-In-Reply-To: <20251107102939.1111074-4-pvorel@suse.cz>
+Date: Fri, 14 Nov 2025 09:55:22 +0100
+Message-ID: <13884671.uLZWGnKmhe@thinkpad>
+In-Reply-To: <20251107102939.1111074-9-pvorel@suse.cz>
 References: <20251107102939.1111074-1-pvorel@suse.cz>
- <20251107102939.1111074-4-pvorel@suse.cz>
+ <20251107102939.1111074-9-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 8159D1F391
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-3.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; CTE_CASE(0.50)[];
  MID_RHS_NOT_FQDN(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ MIME_GOOD(-0.10)[text/plain]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
  FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.de:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,
- imap1.dmz-prg2.suse.org:helo, suse.cz:email, suse.de:dkim]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email, suse.cz:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/8] tst_test.c: Change check_kver() return type
- to bool
+Subject: Re: [LTP] [PATCH 8/8] tst_test.c: Change fork_testrun() return type
+ to void
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,61 +117,68 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Friday, November 7, 2025 11:29:34 AM CET Petr Vorel wrote:
-> Also change the value (0 becomes true), add docs (don't use kerneldoc as
-> this is a internal function which does not need to be in LTP online doc).
-nit: 
-s/a internal/an internal
-(also applies in Patch 4)
+Hi Petr,
 
+On Friday, November 7, 2025 11:29:39 AM CET Petr Vorel wrote:
+> Return code is not used any more.
+very nit:
+s/any more/anymore
+(also applies in patch 6 and 7)
+
+Reviewed-by: Avinesh Kumar <akumar@suse.de>
+for all patches in the series.
+
+Regards,
+Avinesh
 > 
-> While at it, add missing static.
-> 
+> Fixes: a1f82704c2 ("lib/tst_test.c: Fix tst_brk() handling")
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  lib/tst_test.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
+>  lib/tst_test.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
 > 
 > diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index bda66c4672..1725844b54 100644
+> index 8098b3a010..e115ce689d 100644
 > --- a/lib/tst_test.c
 > +++ b/lib/tst_test.c
-> @@ -1056,7 +1056,12 @@ static void do_exit(int ret)
->  	exit(ret);
+> @@ -1880,7 +1880,7 @@ void tst_set_runtime(int runtime)
+>  	heartbeat();
 >  }
 >  
-> -int check_kver(const char *min_kver, const int brk_nosupp)
-> +/*
-> + * Check for the required kernel version.
-> + *
-> + * return: true if the kernel version is high enough, false otherwise.
-> + */
-> +static bool check_kver(const char *min_kver, const int brk_nosupp)
+> -static int fork_testrun(void)
+> +static void fork_testrun(void)
 >  {
->  	char *msg;
->  	int v1, v2, v3;
-> @@ -1075,10 +1080,10 @@ int check_kver(const char *min_kver, const int brk_nosupp)
->  		else
->  			tst_res(TCONF, msg, min_kver);
+>  	int status;
 >  
-> -		return 1;
-> +		return false;
+> @@ -1911,8 +1911,8 @@ static int fork_testrun(void)
+>  	SAFE_SIGNAL(SIGINT, SIG_DFL);
+>  
+>  	if (tst_test->taint_check && tst_taint_check()) {
+> -		tst_res(TFAIL, "Kernel is now tainted.");
+> -		return TFAIL;
+> +		tst_res(TFAIL, "Kernel is now tainted");
+> +		return;
 >  	}
 >  
+>  	if (tst_test->forks_child && kill(-test_pid, SIGKILL) == 0)
+> @@ -1922,7 +1922,7 @@ static int fork_testrun(void)
+>  		tst_brk(TBROK, "Child returned with %i", WEXITSTATUS(status));
+>  
+>  	if (context->abort_flag)
+> -		return 0;
+> +		return;
+>  
+>  	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL) {
+>  		tst_res(TINFO, "If you are running on slow machine, "
+> @@ -1932,8 +1932,6 @@ static int fork_testrun(void)
+>  
+>  	if (WIFSIGNALED(status))
+>  		tst_brk(TBROK, "Test killed by %s!", tst_strsig(WTERMSIG(status)));
+> -
 > -	return 0;
-> +	return true;
 >  }
 >  
->  static int results_equal(struct results *a, struct results *b)
-> @@ -1963,7 +1968,7 @@ static int run_tcase_on_fs(struct tst_fs *fs, const char *fs_type)
->  	if (fs->mkfs_ver && !tst_check_cmd(fs->mkfs_ver, 0))
->  		return TCONF;
->  
-> -	if (fs->min_kver && check_kver(fs->min_kver, 0))
-> +	if (fs->min_kver && !check_kver(fs->min_kver, 0))
->  		return TCONF;
->  
->  	prepare_device(fs);
+>  static struct tst_fs *lookup_fs_desc(const char *fs_type, int all_filesystems)
 > 
 
 
