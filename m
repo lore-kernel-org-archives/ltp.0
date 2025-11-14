@@ -4,63 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C684CE7AF9
-	for <ltp@archiver.kernel.org>; Fri, 14 Nov 2025 12:09:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3770BCE7AEF
+	for <ltp@archiver.kernel.org>; Fri, 14 Nov 2025 14:37:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0ABBC3CF84E
-	for <ltp@archiver.kernel.org>; Fri, 14 Nov 2025 13:09:57 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 62A543CF838
+	for <ltp@archiver.kernel.org>; Fri, 14 Nov 2025 15:37:31 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2EFBE3CDF71
- for <ltp@lists.linux.it>; Fri, 14 Nov 2025 13:09:40 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 0E5853CF838
+ for <ltp@lists.linux.it>; Fri, 14 Nov 2025 15:37:14 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7EF101000482
- for <ltp@lists.linux.it>; Fri, 14 Nov 2025 13:09:40 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 759D36002EC
+ for <ltp@lists.linux.it>; Fri, 14 Nov 2025 15:37:14 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4C790211D2;
- Fri, 14 Nov 2025 12:09:39 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5C4C91F7DE;
+ Fri, 14 Nov 2025 14:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1763131033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hF0K2a8YRfNV2X5DZzXRBeCbPDCHlaQmYpHjZ597fj4=;
+ b=xxjwvgADYnhBo6OxhBKKFPh64krYIQfc0TX5myA/HZC+TtFrnl3c7PxdCfcTxYJq0jA+bd
+ q8rOFbOctieageDpObZO+3RMmhgWIc5YkEn0yYtgKhbLxmUzepHQ1DARZ1GYSaFCo6Qhbi
+ aSuFQYy/9KoI/oBANYOJCkiqAUphxGs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1763131033;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hF0K2a8YRfNV2X5DZzXRBeCbPDCHlaQmYpHjZ597fj4=;
+ b=6N5Jx3h+AtiR1fBuw/OBNRkxhKpweZJDu16Rsfdn+wmGLJY3YpLffTBE4RwQmqNwqUHa2t
+ ygx9sSiDmmKijgAQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xxjwvgAD;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=6N5Jx3h+
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1763131033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hF0K2a8YRfNV2X5DZzXRBeCbPDCHlaQmYpHjZ597fj4=;
+ b=xxjwvgADYnhBo6OxhBKKFPh64krYIQfc0TX5myA/HZC+TtFrnl3c7PxdCfcTxYJq0jA+bd
+ q8rOFbOctieageDpObZO+3RMmhgWIc5YkEn0yYtgKhbLxmUzepHQ1DARZ1GYSaFCo6Qhbi
+ aSuFQYy/9KoI/oBANYOJCkiqAUphxGs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1763131033;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hF0K2a8YRfNV2X5DZzXRBeCbPDCHlaQmYpHjZ597fj4=;
+ b=6N5Jx3h+AtiR1fBuw/OBNRkxhKpweZJDu16Rsfdn+wmGLJY3YpLffTBE4RwQmqNwqUHa2t
+ ygx9sSiDmmKijgAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1A9433EA61;
- Fri, 14 Nov 2025 12:09:39 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 493773EA61;
+ Fri, 14 Nov 2025 14:37:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id FGQmBQMcF2n6bwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 14 Nov 2025 12:09:39 +0000
-Date: Fri, 14 Nov 2025 13:09:37 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20251114120937.GD43654@pevik>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id t3fTEJk+F2ldAwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 14 Nov 2025 14:37:13 +0000
+Date: Fri, 14 Nov 2025 15:38:03 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aRc-y_W0StnungVp@yuki.lan>
 References: <20251106163500.1063704-1-pvorel@suse.cz>
  <20251106163500.1063704-6-pvorel@suse.cz>
  <12777454.O9o76ZdvQC@thinkpad> <20251114102457.GC52218@pevik>
- <aRcEIpgvi9C8NKLd@yuki.lan>
+ <aRcEIpgvi9C8NKLd@yuki.lan> <20251114120937.GD43654@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <aRcEIpgvi9C8NKLd@yuki.lan>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Queue-Id: 4C790211D2
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
+In-Reply-To: <20251114120937.GD43654@pevik>
+X-Rspamd-Queue-Id: 5C4C91F7DE
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ MISSING_XM_UA(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[6]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 5/5] swapon03: Remove grep dependency
 X-BeenThere: ltp@lists.linux.it
@@ -74,59 +118,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > This change requires to normalize TMPDIR via realpath() otherwise grep will
-> > fail. Either in the test or in the library [1] (I'll submit it separately, no
-> > need to be part of Wei's cleanup).
+Hi!
+> Do you mean to use full swap file path from /proc/mounts, i.e.
+> /tmp/LTP_swaNzeMJr/mntpoint/testswap, /tmp/LTP_swamEVVAc/mntpoint/testswap03,
+> ... (example from run which created /tmp/LTP_swamEVVAc with all swap files,
+> cleanup interrupted by ctrl+C and following one which created /tmp/LTP_swaNzeMJr
+> single swap file only):
 
-> I was wondering if we can avoid matching the full path. Maybe we can
-> just do strstr() on the line from the /proc/mounts matching the filename
-> before we attempt to do the scanf().
+If we make the swapfile names unique enough we can match just that
+instead. I think one of the patches did just that by including the test
+name in the swap filenames. If we want to be extra sure we can take last
+directory component of the test temporary directory as well. What I'm
+trying to point out is that the $TMPDIR part of the test temporary
+directory is not adding anything unique to the path since that is prefix
+that is used by all LTP tests.
 
-Do you mean to use full swap file path from /proc/mounts, i.e.
-/tmp/LTP_swaNzeMJr/mntpoint/testswap, /tmp/LTP_swamEVVAc/mntpoint/testswap03,
-... (example from run which created /tmp/LTP_swamEVVAc with all swap files,
-cleanup interrupted by ctrl+C and following one which created /tmp/LTP_swaNzeMJr
-single swap file only):
-
-# cat /proc/swaps
-Filename				Type		Size		Used		Priority
-/dev/vda3                               partition	2098152		0		-2
-/tmp/LTP_swaNzeMJr/mntpoint/testswap    file		1004		0		-25
-/tmp/LTP_swamEVVAc/mntpoint/testswap03  file		1000		0		-3
-/tmp/LTP_swamEVVAc/mntpoint/testswap04  file		1000		0		-4
-/tmp/LTP_swamEVVAc/mntpoint/testswap05  file		1000		0		-5
-/tmp/LTP_swamEVVAc/mntpoint/testswap06  file		1000		0		-6
-/tmp/LTP_swamEVVAc/mntpoint/testswap07  file		996		0		-7
-/tmp/LTP_swamEVVAc/mntpoint/testswap08  file		996		0		-8
-/tmp/LTP_swamEVVAc/mntpoint/testswap09  file		996		0		-9
-/tmp/LTP_swamEVVAc/mntpoint/testswap10  file		1000		0		-10
-/tmp/LTP_swamEVVAc/mntpoint/testswap11  file		1000		0		-11
-/tmp/LTP_swamEVVAc/mntpoint/testswap12  file		1000		0		-12
-/tmp/LTP_swamEVVAc/mntpoint/testswap13  file		1000		0		-13
-/tmp/LTP_swamEVVAc/mntpoint/testswap14  file		1000		0		-14
-/tmp/LTP_swamEVVAc/mntpoint/testswap15  file		1000		0		-15
-/tmp/LTP_swamEVVAc/mntpoint/testswap16  file		996		0		-16
-/tmp/LTP_swamEVVAc/mntpoint/testswap17  file		996		0		-17
-/tmp/LTP_swamEVVAc/mntpoint/testswap18  file		996		0		-18
-/tmp/LTP_swamEVVAc/mntpoint/testswap19  file		1000		0		-19
-/tmp/LTP_swamEVVAc/mntpoint/testswap20  file		1000		0		-20
-/tmp/LTP_swamEVVAc/mntpoint/testswap21  file		1000		0		-21
-/tmp/LTP_swamEVVAc/mntpoint/testswap22  file		1000		0		-22
-/tmp/LTP_swamEVVAc/mntpoint/testswap23  file		1000		0		-23
-/tmp/LTP_swamEVVAc/mntpoint/testswap    file		1000		0		-24
-
-This way would swapoff all LTP swaps including possible previous ones.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
