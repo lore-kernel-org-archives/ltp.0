@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36A9ACEE348
-	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 17:57:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44928CEE347
+	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 17:57:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1763488634; h=mime-version :
- date : message-id : to : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=0PBoUdZtMlaDOMd8jXO4i5fS6u5bMXM1lg3ciVwTFDc=;
- b=gD4TrNLQXAcPs3jio4VeP/ccY9+CNHvRMqFQnWBcBq7/6MOOFUlhxGnqoRrm40mOCA+e8
- qMTFBiuHCF2QL4nlHBUOYMBSA0g35AGKTSRl3cZhowcEjE+ftEI5R6vC1B3hfPFufvex2Ow
- cB/IT36oCRYVLD8YmF8QdzEHPeOSNak=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1763488657; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=p63TiTz4/+Ai+Oyhbk1qnKNcqINnxayhhbflOGGP6FQ=;
+ b=QvvGL0wGi3uSdQC5jTF5f19dqe41WC0V8qIPbJUPRl7BEH7OtgX48lJF2qbqcBb+vGVeR
+ bNL9jIaAMjfKBXlFb16Irf61+6hvyJ7P1ZDHSR9//9lW3KJ43ZqAl1BN3ScTxyqzHcFT6qf
+ lz2/qZDRS7buoKYp/utst8LTYYMzjUQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4C90B3CF707
-	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 18:57:14 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 96C643CF735
+	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 18:57:37 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EA7CA3CE184
- for <ltp@lists.linux.it>; Fri, 14 Nov 2025 20:52:42 +0100 (CET)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
- [IPv6:2a00:1450:4864:20::529])
+ by picard.linux.it (Postfix) with ESMTPS id E8B4A3CDF19
+ for <ltp@lists.linux.it>; Mon, 17 Nov 2025 04:40:31 +0100 (CET)
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com
+ [IPv6:2607:f8b0:4864:20::64a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 63A421000743
- for <ltp@lists.linux.it>; Fri, 14 Nov 2025 20:52:42 +0100 (CET)
-Received: by mail-ed1-x529.google.com with SMTP id
- 4fb4d7f45d1cf-640aaa89697so3287246a12.3
- for <ltp@lists.linux.it>; Fri, 14 Nov 2025 11:52:42 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5409F200089
+ for <ltp@lists.linux.it>; Mon, 17 Nov 2025 04:40:31 +0100 (CET)
+Received: by mail-pl1-x64a.google.com with SMTP id
+ d9443c01a7336-295592eb5dbso4200055ad.0
+ for <ltp@lists.linux.it>; Sun, 16 Nov 2025 19:40:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1763149961; x=1763754761; darn=lists.linux.it;
- h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+ d=google.com; s=20230601; t=1763350830; x=1763955630; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
  :date:message-id:reply-to;
- bh=+DFe9vbca4ZhV/DfLtfDFStqrJX8pRs5Fq1/ftulvro=;
- b=fQFxzcD0mtWUT3MZs0lERFYmaPkXJBvZlmvbS3vshhYypt2HSiqWTc2Ldrz5y0Vyff
- pVA1pNrEo5Hx96uJmAnKrAQpiOlvllTgJdJ6fpyp7IqJz24vSO6spoEyut0BDfmU8n1I
- r3TXaEroqVSvKqgd/Rde30dmasUjOTS++OIynv8ue7SqWDaZQ6Tx23N6PIQjS9gE7q7k
- 7PkSZgrObsmaF31ojmf+fLJf8dnQbXbv1hCOGUqlsvctuupX24C8t6u4zgJ25BapZLFE
- lm0EMoXMlWZtYj4nkP+iVgNPQw8vK8G8PwZ3sy81eOgat7Kb5mqcBsPdL968CyWz3+EM
- 9E3A==
+ bh=pkL6q9iOuTZhT66k91w3h6fjmbki3J6c/DZyo7EbGvw=;
+ b=YBL1meZccrm1XoKb/6FLore5/HVhCM8E1zGI+gfKXeRanEIkPPgEzs/2mMCMvI0rC+
+ 9L3nA1h79zIi8B2DfAPtQhKPMkns3YMgipu3RxdtCXaP8WWjSABdISmq3xyiXejQBWts
+ lvrUL+w9F3+/UaFb4dbkXuxXJ9jk9/zjAotS+p+9tL85TiRLqVfbvRGOkbejRG156GMf
+ +XE4AkKUPNWayFAffVvzw9sPe3yrRBX6taN0D6NH5lroVVFaVnUpeucKl3au+NcQjCB5
+ yHtXK7LSwM90zWZBACH2zE4BFGSE7OVw4hN4rZ0kt70snq4cI1oz+krCkNhMtGusT/pg
+ IayA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1763149961; x=1763754761;
- h=to:subject:message-id:date:from:mime-version:x-gm-gg
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=+DFe9vbca4ZhV/DfLtfDFStqrJX8pRs5Fq1/ftulvro=;
- b=VDd+l4HO7CUCtvZo8eBgRvjb1Yd9DGQMMeFgHuIiiJwd2fWk9N0F+W6TJheux+aCCv
- biUJr1Dx5+3SW5aQsatv/XofxnI20+FFMeaJ/m0JkBjjJ9/AovqBmvbujar62AcvFqlP
- TFQFxV4cvP1fleTOwwKOZys9FXZXACAU+e8Kzy/fwSnNc63k7aWGImCrQwFOc7C+B6jG
- 9YeSyEa8YxDRNu5aVm8yKM+oE9sD6WVPSqxiW9aKlHyXTlJjUUqyFs/I2CskmsVYMurM
- 82q3/m1r5+D9GaTnsL6N/g0bj7fDUwEepJQiEwnzJ4WxlcA1Pm8gDbbgAGz/f5CEEkyX
- N1/A==
-X-Gm-Message-State: AOJu0YwZ5I/4t9jSLjQp63Ln4kHGqedWtcV8rfVSHkKbL77XLPLdM+jJ
- fPaxKmxWXsXbPqmnn7h9auwLVRdS+h4WeMV0QaXGNtE7SnI/oQ8HT9ZdfyvOSzF22/62OHVnvlo
- rLJBz4Dduk/IibSrRC6fQ5B67gcPr/TN09XleF6QjWksxHtDfxrPdpBk/hGE=
-X-Gm-Gg: ASbGncu7PjTHaTDC4O7by/7XFxQJBvmhDTmpaI/SmUKcMGPcOASZk7gdR5TyhyVZdiW
- Q3yhU08soHVGJ3qcEqnTPnAIFJraMdayPT7LYWzokh35tZkfJ7tfkhtYWie2Cy84GPS6raUY8c6
- yg39ENCvx23KeaWiRA08I3h/KdpGcpB563AmqHXuOdAQQFPBIPB4e86uFleyDpZJnOV1SOdDhcn
- PX/CrI2UnTE6x8mfJtefLlij5OUrd+kc3AaVTQtomf5fyHHYPMhoS+yEIhOk1qqMZG1VC2ZLOeg
- kH3k4GMgu/KnU78ZVtJx2v/RgyaKq7YzzkrsePSEFiVgGdw=
-X-Google-Smtp-Source: AGHT+IFdiScDPAaeHWXDf287JgtVSDR4LDph+owTnDAudiMujsC86zLwSShttOCGJk1IEX2M0+2i0/ryfYMGI5xVxPA=
-X-Received: by 2002:a17:907:2d8d:b0:b73:70db:49ab with SMTP id
- a640c23a62f3a-b7370db75a0mr242393066b.35.1763149961226; Fri, 14 Nov 2025
- 11:52:41 -0800 (PST)
-MIME-Version: 1.0
-Date: Fri, 14 Nov 2025 11:52:30 -0800
-X-Gm-Features: AWmQ_bl9rkGFUFVpnHuSI71dljjYq-vvTzDKmBVgcXCR7JrQSj-bCLThgXvR16Y
-Message-ID: <CAKfqHepUCKimv1xXxsAWw3bZRg=6VWBh7yyWOi=zuNaM5d9Eww@mail.gmail.com>
+ d=1e100.net; s=20230601; t=1763350830; x=1763955630;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=pkL6q9iOuTZhT66k91w3h6fjmbki3J6c/DZyo7EbGvw=;
+ b=aqt6g9sZVaWnTsaYxZB6NSk8U5K2uhJTekeBtg2ohLFJnGH7V5IWbtUAsEtVSF77tW
+ NA3ThawROONRmCfU3IjkghW+bOLOXN9hisV/nwc6LI4pIUb0paNSBbrnXMeDJEZbWE3u
+ 2xzYVXeTpBBB31nLPbeezf6niMFraCuZ+fcgVaO+Ne23aCFrkvsy3zBGgB71S/MaETQZ
+ xyc5aBGzknwzrXxXNaNTyi2Ll2yp4SWyVGKWrg77XO0GARes+BRRZNyuCHh0VKMOO2Cn
+ JTDeuL3swyyDlRRv3NT6yqkRN2+W8DdA3tKJ04jHWSpQmmFEtuGFCso1yyRsHdTnRcRK
+ pGtw==
+X-Gm-Message-State: AOJu0Yxa1GbkPsIAeI4RxbA8epi1TIoziUKTuyNurTukET1IX3nDA5Fh
+ ASJJFSF3RsdGu1yEcK4ODrGnA8VzFbf6vgLvJzjhvQ30MoQz2YS8jgk2af4WhRAzs10pOJ4yhOh
+ Bn7foB9T0fimaegggwBPWq6MJImC7wboORiWc3M7LXL7Vcojv8fCbONw3ZEA6TyyfXyBXKlgben
+ RKwYtiGyyYMcCEIIKSVhIhZc/ugA==
+X-Google-Smtp-Source: AGHT+IHEP+Na+apSQ3Jzg1PjVM0Tdqk9iG3/7lioQWcw1gODPZUYhoaAyaZEYJSV0jyskLBhGKiZUFO84w==
+X-Received: from plpg11.prod.google.com ([2002:a17:902:934b:b0:298:1181:af51])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:903:2f0e:b0:24c:965a:f94d
+ with SMTP id d9443c01a7336-2986a741b6cmr117855755ad.46.1763350829376; Sun, 16
+ Nov 2025 19:40:29 -0800 (PST)
+Date: Mon, 17 Nov 2025 11:40:23 +0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
+Message-ID: <20251117034023.415246-1-wakel@google.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Tue, 18 Nov 2025 18:56:53 +0100
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: [LTP] [PATCH] Update clone3 wrapper signature
+Subject: [LTP] [PATCH] Ignore cve-2022-2590_64bit CVE for Kernel versions
+ below 5.16+
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,72 +88,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Chris Wailes via ltp <ltp@lists.linux.it>
-Reply-To: Chris Wailes <chriswailes@google.com>
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: Wake Liu <wakel@google.com>,
+ Kodanda Rami Reddy V <quic_kreddyv@quicinc.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From a932e9d3ee093933a5bd58edecec42a61df2b6c0 Mon Sep 17 00:00:00 2001
-From: Chris Wailes <chriswailes@google.com>
-Date: Fri, 14 Nov 2025 10:42:21 -0800
-Subject: [PATCH] Update clone3 wrapper signature
+From: Kodanda Rami Reddy V <quic_kreddyv@quicinc.com>
 
-This CL updates the clone3 wrapper and tests to match the function
-signatures used by glibc (internally) and BIONIC (publicly).
+CVE 2022-2590_64bit is applicable only for kernel versions 5.16 onwards.
+Add kernel version check to skip/Ignore the test case.
+Test Module: vts_ltp_test_arm_64
+Test Case: cve.cve-2022-2590_64bit#cve.cve-2022-2590_64bit
+GBUG: 418679607
 
-Signed-off-by: Chris Wailes <chriswailes@google.com>
+Change-Id: Ibbb18a168b727725faab2beb6841640e034fc468
 ---
- include/lapi/sched.h                        | 2 +-
- testcases/kernel/syscalls/clone3/clone301.c | 2 +-
- testcases/kernel/syscalls/clone3/clone302.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/include/lapi/sched.h b/include/lapi/sched.h
-index 36f1ecad9..2fec8e397 100644
---- a/include/lapi/sched.h
-+++ b/include/lapi/sched.h
-@@ -75,7 +75,7 @@ struct clone_args_minimal {
-  uint64_t __attribute__((aligned(8))) tls;
- };
-
--static inline int clone3(struct clone_args *args, size_t size)
-+static inline int clone3(struct clone_args *args, size_t size, int
-(*)(void*), void*)
+diff --git a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
+index 2c7ad00f2..0651ae122 100644
+--- a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
++++ b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
+@@ -19,6 +19,7 @@
+ #include <stdbool.h>
+ #include <pwd.h>
+ 
++#include "tst_kvercmp.h"
+ #include "tst_test.h"
+ 
+ #define TMP_DIR "tmp_dirtyc0w_shmem"
+@@ -41,6 +42,9 @@ static void sighandler(int sig)
+ 
+ static void setup(void)
  {
-  return tst_syscall(__NR_clone3, args, size);
++	if (tst_kvercmp(5, 16, 0) < 0) {
++		tst_brk(TCONF, "Test requires kernel 5.16.0 or newer for CVE-2022-2590 fix");
++	}
+ 	struct passwd *pw;
+ 
+ 	umask(0);
+@@ -99,7 +103,9 @@ static void dirtyc0w_shmem_test(void)
+ 
+ static void cleanup(void)
+ {
+-	SAFE_UMOUNT(TMP_DIR);
++	if (tst_kvercmp(5, 16, 0) >= 0) {
++		SAFE_UMOUNT(TMP_DIR);
++	}
  }
-diff --git a/testcases/kernel/syscalls/clone3/clone301.c
-b/testcases/kernel/syscalls/clone3/clone301.c
-index deed30b9f..ecd791389 100644
---- a/testcases/kernel/syscalls/clone3/clone301.c
-+++ b/testcases/kernel/syscalls/clone3/clone301.c
-@@ -123,7 +123,7 @@ static void run(unsigned int n)
-  parent_received_signal = 0;
-  SAFE_SIGACTION(tc->exit_signal, &psig_action, NULL);
-
-- TEST(pid = clone3(args, sizeof(*args)));
-+ TEST(pid = clone3(args, sizeof(*args), NULL, NULL));
-  if (pid < 0) {
-  tst_res(TFAIL | TTERRNO, "clone3() failed (%d)", n);
-  return;
-diff --git a/testcases/kernel/syscalls/clone3/clone302.c
-b/testcases/kernel/syscalls/clone3/clone302.c
-index 9e98f1954..e241be7cd 100644
---- a/testcases/kernel/syscalls/clone3/clone302.c
-+++ b/testcases/kernel/syscalls/clone3/clone302.c
-@@ -83,7 +83,7 @@ static void run(unsigned int n)
-  args->tls = tc->tls;
-  }
-
-- TEST(clone3(args, tc->size));
-+ TEST(clone3(args, tc->size, NULL, NULL));
-
-  if (!TST_RET)
-  exit(EXIT_SUCCESS);
+ 
+ static struct tst_test test = {
 -- 
 2.52.0.rc1.455.g30608eb744-goog
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
