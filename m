@@ -4,79 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44928CEE347
-	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 17:57:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1763488657; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=p63TiTz4/+Ai+Oyhbk1qnKNcqINnxayhhbflOGGP6FQ=;
- b=QvvGL0wGi3uSdQC5jTF5f19dqe41WC0V8qIPbJUPRl7BEH7OtgX48lJF2qbqcBb+vGVeR
- bNL9jIaAMjfKBXlFb16Irf61+6hvyJ7P1ZDHSR9//9lW3KJ43ZqAl1BN3ScTxyqzHcFT6qf
- lz2/qZDRS7buoKYp/utst8LTYYMzjUQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4ED2CEE347
+	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 18:03:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 96C643CF735
-	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 18:57:37 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 6BF623CF7C9
+	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 19:03:07 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E8B4A3CDF19
- for <ltp@lists.linux.it>; Mon, 17 Nov 2025 04:40:31 +0100 (CET)
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com
- [IPv6:2607:f8b0:4864:20::64a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 61C293C01E6
+ for <ltp@lists.linux.it>; Tue, 18 Nov 2025 19:02:51 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5409F200089
- for <ltp@lists.linux.it>; Mon, 17 Nov 2025 04:40:31 +0100 (CET)
-Received: by mail-pl1-x64a.google.com with SMTP id
- d9443c01a7336-295592eb5dbso4200055ad.0
- for <ltp@lists.linux.it>; Sun, 16 Nov 2025 19:40:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1763350830; x=1763955630; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=pkL6q9iOuTZhT66k91w3h6fjmbki3J6c/DZyo7EbGvw=;
- b=YBL1meZccrm1XoKb/6FLore5/HVhCM8E1zGI+gfKXeRanEIkPPgEzs/2mMCMvI0rC+
- 9L3nA1h79zIi8B2DfAPtQhKPMkns3YMgipu3RxdtCXaP8WWjSABdISmq3xyiXejQBWts
- lvrUL+w9F3+/UaFb4dbkXuxXJ9jk9/zjAotS+p+9tL85TiRLqVfbvRGOkbejRG156GMf
- +XE4AkKUPNWayFAffVvzw9sPe3yrRBX6taN0D6NH5lroVVFaVnUpeucKl3au+NcQjCB5
- yHtXK7LSwM90zWZBACH2zE4BFGSE7OVw4hN4rZ0kt70snq4cI1oz+krCkNhMtGusT/pg
- IayA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1763350830; x=1763955630;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=pkL6q9iOuTZhT66k91w3h6fjmbki3J6c/DZyo7EbGvw=;
- b=aqt6g9sZVaWnTsaYxZB6NSk8U5K2uhJTekeBtg2ohLFJnGH7V5IWbtUAsEtVSF77tW
- NA3ThawROONRmCfU3IjkghW+bOLOXN9hisV/nwc6LI4pIUb0paNSBbrnXMeDJEZbWE3u
- 2xzYVXeTpBBB31nLPbeezf6niMFraCuZ+fcgVaO+Ne23aCFrkvsy3zBGgB71S/MaETQZ
- xyc5aBGzknwzrXxXNaNTyi2Ll2yp4SWyVGKWrg77XO0GARes+BRRZNyuCHh0VKMOO2Cn
- JTDeuL3swyyDlRRv3NT6yqkRN2+W8DdA3tKJ04jHWSpQmmFEtuGFCso1yyRsHdTnRcRK
- pGtw==
-X-Gm-Message-State: AOJu0Yxa1GbkPsIAeI4RxbA8epi1TIoziUKTuyNurTukET1IX3nDA5Fh
- ASJJFSF3RsdGu1yEcK4ODrGnA8VzFbf6vgLvJzjhvQ30MoQz2YS8jgk2af4WhRAzs10pOJ4yhOh
- Bn7foB9T0fimaegggwBPWq6MJImC7wboORiWc3M7LXL7Vcojv8fCbONw3ZEA6TyyfXyBXKlgben
- RKwYtiGyyYMcCEIIKSVhIhZc/ugA==
-X-Google-Smtp-Source: AGHT+IHEP+Na+apSQ3Jzg1PjVM0Tdqk9iG3/7lioQWcw1gODPZUYhoaAyaZEYJSV0jyskLBhGKiZUFO84w==
-X-Received: from plpg11.prod.google.com ([2002:a17:902:934b:b0:298:1181:af51])
- (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:903:2f0e:b0:24c:965a:f94d
- with SMTP id d9443c01a7336-2986a741b6cmr117855755ad.46.1763350829376; Sun, 16
- Nov 2025 19:40:29 -0800 (PST)
-Date: Mon, 17 Nov 2025 11:40:23 +0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
-Message-ID: <20251117034023.415246-1-wakel@google.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C24FD1000984
+ for <ltp@lists.linux.it>; Tue, 18 Nov 2025 19:02:50 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C51B8216EA;
+ Tue, 18 Nov 2025 18:02:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1763488969; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9AvQnDSlNy9/QXp4uE5siAenOyw61dmaaT44dzgIU9Y=;
+ b=0E9hbxIXzm6j1Q5/RwetA7bM5iwW+AIuzAtwh8aqATztQYZTbnpLzGXqrND3yoYXWPmA4X
+ amQHUDAzsFJqsSOhahRrPZz8+3udZueK8i89nhYp57L2rw8Q8JjX4odJI9A5TJFw+A1e6/
+ PAcUXFe8Pj8eo2o82dgpn4h2j5G4Gv4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1763488969;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9AvQnDSlNy9/QXp4uE5siAenOyw61dmaaT44dzgIU9Y=;
+ b=UzrE/HfbIMv1slA4M+fak1qTBi3ic5ltybqOpcZhocOjWpXehQXhVWEpdWNqLHDzKf9yxv
+ ul9kq2Z+xaWAaOCA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1763488968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9AvQnDSlNy9/QXp4uE5siAenOyw61dmaaT44dzgIU9Y=;
+ b=NuOKp1yy8aOv8PUvfuXTtBGkbBZIStJZ+bOKzywvKIX1GYIutnftBuQTayiezNws+Z5G8Y
+ Y71m3LchAlELk4AFRvg7bU1klhbj4P6a2D6ZCnnj5QB87iSwDxalz3Gb/7RY5VAfR40rRu
+ f8wB8NCY0z2Cq8cq+R1WLTVlz7HOn3c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1763488968;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9AvQnDSlNy9/QXp4uE5siAenOyw61dmaaT44dzgIU9Y=;
+ b=yW+0EqQJZ6BgPV5lKuG7rxQW60WTS4YayxGBnowIVTImjIp6KFEtXkaJaw7j9w71CHxGzr
+ kBneW5x25MDnNyDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B1AB43EA61;
+ Tue, 18 Nov 2025 18:02:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MkAkKsi0HGnUUAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 18 Nov 2025 18:02:48 +0000
+Date: Tue, 18 Nov 2025 19:03:39 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Wake Liu <wakel@google.com>
+Message-ID: <aRy0-9KIPlRBvnNk@yuki.lan>
+References: <20251117034023.415246-1-wakel@google.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20251117034023.415246-1-wakel@google.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 18 Nov 2025 18:56:53 +0100
-Subject: [LTP] [PATCH] Ignore cve-2022-2590_64bit CVE for Kernel versions
- below 5.16+
+Subject: Re: [LTP] [PATCH] Ignore cve-2022-2590_64bit CVE for Kernel
+ versions below 5.16+
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,64 +105,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Cc: Wake Liu <wakel@google.com>,
- Kodanda Rami Reddy V <quic_kreddyv@quicinc.com>
+Cc: Kodanda Rami Reddy V <quic_kreddyv@quicinc.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Kodanda Rami Reddy V <quic_kreddyv@quicinc.com>
+Hi!
+> CVE 2022-2590_64bit is applicable only for kernel versions 5.16 onwards.
 
-CVE 2022-2590_64bit is applicable only for kernel versions 5.16 onwards.
-Add kernel version check to skip/Ignore the test case.
-Test Module: vts_ltp_test_arm_64
-Test Case: cve.cve-2022-2590_64bit#cve.cve-2022-2590_64bit
-GBUG: 418679607
+Why? What happens if you run the test on an older kernel? This
+information should be written here.
 
-Change-Id: Ibbb18a168b727725faab2beb6841640e034fc468
----
- testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> Add kernel version check to skip/Ignore the test case.
+> Test Module: vts_ltp_test_arm_64
+> Test Case: cve.cve-2022-2590_64bit#cve.cve-2022-2590_64bit
+> GBUG: 418679607
+> 
+> Change-Id: Ibbb18a168b727725faab2beb6841640e034fc468
+> ---
+>  testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
+> index 2c7ad00f2..0651ae122 100644
+> --- a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
+> +++ b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
+> @@ -19,6 +19,7 @@
+>  #include <stdbool.h>
+>  #include <pwd.h>
+>  
+> +#include "tst_kvercmp.h"
+>  #include "tst_test.h"
+>  
+>  #define TMP_DIR "tmp_dirtyc0w_shmem"
+> @@ -41,6 +42,9 @@ static void sighandler(int sig)
+>  
+>  static void setup(void)
+>  {
+> +	if (tst_kvercmp(5, 16, 0) < 0) {
+> +		tst_brk(TCONF, "Test requires kernel 5.16.0 or newer for CVE-2022-2590 fix");
+> +	}
 
-diff --git a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
-index 2c7ad00f2..0651ae122 100644
---- a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
-+++ b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c
-@@ -19,6 +19,7 @@
- #include <stdbool.h>
- #include <pwd.h>
- 
-+#include "tst_kvercmp.h"
- #include "tst_test.h"
- 
- #define TMP_DIR "tmp_dirtyc0w_shmem"
-@@ -41,6 +42,9 @@ static void sighandler(int sig)
- 
- static void setup(void)
- {
-+	if (tst_kvercmp(5, 16, 0) < 0) {
-+		tst_brk(TCONF, "Test requires kernel 5.16.0 or newer for CVE-2022-2590 fix");
-+	}
- 	struct passwd *pw;
- 
- 	umask(0);
-@@ -99,7 +103,9 @@ static void dirtyc0w_shmem_test(void)
- 
- static void cleanup(void)
- {
--	SAFE_UMOUNT(TMP_DIR);
-+	if (tst_kvercmp(5, 16, 0) >= 0) {
-+		SAFE_UMOUNT(TMP_DIR);
-+	}
- }
- 
- static struct tst_test test = {
+You should use the .min_kver field in the tst_test structure instead.
+
 -- 
-2.52.0.rc1.455.g30608eb744-goog
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
