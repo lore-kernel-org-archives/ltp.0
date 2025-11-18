@@ -4,101 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 016D6CEE343
-	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 18:17:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52975CF2560
+	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 22:29:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1763504984; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=h5QK+SAziVkR0RrmoNccKeyVXq4islTtj+bXab2274Y=;
+ b=PoXd6C5hkPkpEbd0gg8UJfTGZ5ADS6kFxfUilWXtekcDx5pRLOBnLlej86x1OuEIXQcxt
+ 48eYY1/uDtuiTnL8gRn8ZvsAd+kz6l5uoJtP7FtIAZLnQ7uyyD5Ddcp6YtkriRxH35XCIua
+ nNus6Z0Pk73VYsLp37woGmYf5Ury3RY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 784E23CF735
-	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 19:17:48 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 242503CF822
+	for <ltp@archiver.kernel.org>; Tue, 18 Nov 2025 23:29:44 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3C7E43CF597
- for <ltp@lists.linux.it>; Tue, 18 Nov 2025 19:17:31 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id CDCCE3CF6E1
+ for <ltp@lists.linux.it>; Tue, 18 Nov 2025 23:29:22 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E44122009AB
- for <ltp@lists.linux.it>; Tue, 18 Nov 2025 19:17:29 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2A4BC2000B;
- Tue, 18 Nov 2025 18:17:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1763489848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=yFmwXsnZa5TX9VwbmeS0to14ndNeinsdPyWbpHwP9hc=;
- b=KqO40xnubMihSL38pNpi7mOpeqJUYy3fG71Qjr4dYi+CGoOnSv6dB4AGpnl9xtR4k8rAWU
- wRkXACL8eFEfPn3FVKFj7OdkT+Tv6cuRo7wMIqiTlGD06gCvK3MUvtJIAyu75sx+4FGBYj
- PxLc/SXrN3VSFlEhkgt3rf3xByqHazs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1763489848;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=yFmwXsnZa5TX9VwbmeS0to14ndNeinsdPyWbpHwP9hc=;
- b=tIDalpxYPco1Yo7/l5zwaQHCiugeW66kKZ9Hx2SnQ51Of/74tQV9/iVuRoqujNfZP0FcYR
- eaDJFotHU3K2cnCQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1763489848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=yFmwXsnZa5TX9VwbmeS0to14ndNeinsdPyWbpHwP9hc=;
- b=KqO40xnubMihSL38pNpi7mOpeqJUYy3fG71Qjr4dYi+CGoOnSv6dB4AGpnl9xtR4k8rAWU
- wRkXACL8eFEfPn3FVKFj7OdkT+Tv6cuRo7wMIqiTlGD06gCvK3MUvtJIAyu75sx+4FGBYj
- PxLc/SXrN3VSFlEhkgt3rf3xByqHazs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1763489848;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=yFmwXsnZa5TX9VwbmeS0to14ndNeinsdPyWbpHwP9hc=;
- b=tIDalpxYPco1Yo7/l5zwaQHCiugeW66kKZ9Hx2SnQ51Of/74tQV9/iVuRoqujNfZP0FcYR
- eaDJFotHU3K2cnCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0ABAB3EA61;
- Tue, 18 Nov 2025 18:17:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id T4lJADi4HGk/XgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 18 Nov 2025 18:17:28 +0000
-Date: Tue, 18 Nov 2025 19:18:14 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Piotr Kubaj <piotr.kubaj@intel.com>
-Message-ID: <aRy4Zhle9JJANzuW@yuki.lan>
-References: <20251114180157.1207278-1-piotr.kubaj@intel.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0A9011000499
+ for <ltp@lists.linux.it>; Tue, 18 Nov 2025 23:29:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1763504960;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=HounzLXzpJS/gCA2ZEhxuhmJg1MHAlkgtbh1voGKzWk=;
+ b=PQ50Xg+Sn7yDaZbFSi7o0KbgH/MaX9r0VI8OOChs9etC98nLfcP36MIL5fF3EHnPeWBQtZ
+ /lhX1pica3RAK8lLqESi9bQ+5KWOn0q6S6UmLKxGp5X0ct+I3+jnA3fU7klbwZYzclMH+i
+ oBEcLDPfPk/PGJ5PUseAszraFZNcuro=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-146-pGxvVky_MOWFc1Z1ST6BRQ-1; Tue, 18 Nov 2025 17:29:18 -0500
+X-MC-Unique: pGxvVky_MOWFc1Z1ST6BRQ-1
+X-Mimecast-MFC-AGG-ID: pGxvVky_MOWFc1Z1ST6BRQ_1763504958
+Received: by mail-qv1-f72.google.com with SMTP id
+ 6a1803df08f44-8824b00ee8bso92842466d6.0
+ for <ltp@lists.linux.it>; Tue, 18 Nov 2025 14:29:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1763504958; x=1764109758;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=HounzLXzpJS/gCA2ZEhxuhmJg1MHAlkgtbh1voGKzWk=;
+ b=VdYwilCLBy0uzFb3JTjLtiV0BzIYC4+b2DkFYuGN2jy3WTGKJUyKx//rouMmL4bc8P
+ 1YPwdI6SwUb//ssg0aQGY2hCEjOKE1XiMq1XI6c/unMRDyNmyPnYOkaWZttpsoIwo7na
+ pgSOQtmgf/HglxBNrAraCTVjhIEKzSEpDD9QuHkd1+QG0/Vm+tAFe+Z1wpYkDUN9KQPD
+ ILQO4FJ+Q6vapjiUePqJU+Jh2MHm1i8hG4emaiWYVS44uRd0QowjSBzoXWgXE5s/g1pv
+ SH24mr6cn/cxJpy8Z7Q8pMqfJJA+LrVkK05Gn4c5E35Fia4xZbK+HI+RUnlCsLCJJtHq
+ +uXQ==
+X-Gm-Message-State: AOJu0YwKZaI28jvTtaqHoH3l4ogefNq669vZpD3fE8svZ+axjWCx1hxc
+ IiPbAxYe8fOC7qp1DDyL+uJvebZbrUfU5Q7TjJBnCgZdrCmOcmeGwktDMga5NAJfhlgCpvfYQ7Q
+ ucsc9P5Mup/8F+d7fJdGkl1ZuoCuDyUDg4MA7jbfwJiRgvrUnVHybyMgHX1ypOsYYoIVKdM5eGB
+ BgHfyvJoUfBSASD3R7jV9WKbcQjmVLjhfgS3GF
+X-Gm-Gg: ASbGncvzFr4BwrVL03b21Lq1TDWLgCTZCBFSdGq5Xz6NU56nI8E9jmxI7UZ4TZW82Zo
+ MDvRVdoHjXrEJTOskufsz2rjdZug3I4E+AoZ0zrslyyXzHIH827HFtThi/FYcy7rOdphT5qyt0R
+ N344P6eogYudvgR7NUZuu4HdG0wMkaY1DdqkEdA4xQNwbN66AwUeelAWnDBNIW3TLfwYQYq/scS
+ eSdCtxYbXdWVF9fgAxe2azYsAc9JRrIsneORfNNpWKMjVPfJr2pr9BUvYy9k1E829I+kBQrX/Em
+ DxOkeI3anCmiVvU/U8sFFRK051nTOv9/XuhOK+PlMbJTuh3prrU8cOcjlls3Q6RbGQM6Ku2pIQa
+ NHwsLT9S3bzsZPquPREXNraCcnI5rIXduV264Uw==
+X-Received: by 2002:a05:6214:c49:b0:880:54eb:f66d with SMTP id
+ 6a1803df08f44-88292601607mr274250316d6.30.1763504958129; 
+ Tue, 18 Nov 2025 14:29:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFK8TlWkskC/VW+DnGy+cxJ1SRtZhO0f4i/5TUoq5kVJyV4zVDsdr5KCycyJUuZNrpS2GEVPg==
+X-Received: by 2002:a05:6214:c49:b0:880:54eb:f66d with SMTP id
+ 6a1803df08f44-88292601607mr274249376d6.30.1763504957327; 
+ Tue, 18 Nov 2025 14:29:17 -0800 (PST)
+Received: from sbertram-thinkpadp1gen5.bos.com ([172.56.196.44])
+ by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-882862ce5e6sm122465646d6.10.2025.11.18.14.29.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 18 Nov 2025 14:29:16 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Tue, 18 Nov 2025 17:28:51 -0500
+Message-ID: <20251118222904.15554-1-sbertram@redhat.com>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20251114180157.1207278-1-piotr.kubaj@intel.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+];
- URIBL_BLOCKED(0.00)[thermal01.sh:url,imap1.dmz-prg2.suse.org:helo,intel.com:email,intel.com:url,linux.it:url,tst_run.sh:url,suse.cz:email,yuki.lan:mid,tst_loader.sh:url];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
- RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,intel.com:url,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: NGJ10FWz2tt9iFFwJK-SDSQU5l9oIWN6aj5jJPA3SF0_1763504958
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] thermal: add new test group
+Subject: [LTP] [PATCH v6] Add EPERM test for clone and clone3
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,246 +106,245 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
- helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+From: Stephen Bertram via ltp <ltp@lists.linux.it>
+Reply-To: Stephen Bertram <sbertram@redhat.com>
+Cc: Stephen Bertram <sbertram@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
-> ---
->  runtest/thermal                       |   2 +
->  scenario_groups/default               |   1 +
->  testcases/kernel/Makefile             |   1 +
->  testcases/kernel/thermal/Makefile     |  11 +++
->  testcases/kernel/thermal/thermal01.sh | 101 ++++++++++++++++++++++++++
->  5 files changed, 116 insertions(+)
->  create mode 100644 runtest/thermal
->  create mode 100644 testcases/kernel/thermal/Makefile
->  create mode 100755 testcases/kernel/thermal/thermal01.sh
-> =
+Confirming EPERM is returned when CAP_SYS_ADMIN is
+removed from clone and clone3.
+And for clone3 the set_tid_size is greater than 0.
 
-> diff --git a/runtest/thermal b/runtest/thermal
-> new file mode 100644
-> index 000000000..804ef7d79
-> --- /dev/null
-> +++ b/runtest/thermal
-> @@ -0,0 +1,2 @@
-> +#THERMAL
-> +thermal_interrupt_events thermal01.sh
-> diff --git a/scenario_groups/default b/scenario_groups/default
-> index 0e76b2bee..ffdd7ff25 100644
-> --- a/scenario_groups/default
-> +++ b/scenario_groups/default
-> @@ -26,3 +26,4 @@ crypto
->  kernel_misc
->  uevent
->  watchqueue
-> +thermal
-> diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-> index 98fd45a9d..ac816e4e8 100644
-> --- a/testcases/kernel/Makefile
-> +++ b/testcases/kernel/Makefile
-> @@ -36,6 +36,7 @@ SUBDIRS			+=3D connectors \
->  			   sched \
->  			   security \
->  			   sound \
-> +			   thermal \
->  			   tracing \
->  			   uevents \
->  			   watchqueue \
-> diff --git a/testcases/kernel/thermal/Makefile b/testcases/kernel/thermal=
-/Makefile
-> new file mode 100644
-> index 000000000..789db430d
-> --- /dev/null
-> +++ b/testcases/kernel/thermal/Makefile
-> @@ -0,0 +1,11 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2025, Intel Corporation. All rights reserved.
-> +# Author:Piotr Kubaj <piotr.kubaj@intel.com>
-> +
-> +top_srcdir             ?=3D ../../..
-> +
-> +include $(top_srcdir)/include/mk/env_pre.mk
-> +
-> +INSTALL_TARGETS                :=3D thermal01.sh
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/thermal/thermal01.sh b/testcases/kernel/the=
-rmal/thermal01.sh
-> new file mode 100755
-> index 000000000..138c30ee7
-> --- /dev/null
-> +++ b/testcases/kernel/thermal/thermal01.sh
-> @@ -0,0 +1,101 @@
-> +#!/usr/bin/env bash
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (C) 2025 Intel - http://www.intel.com/
-> +#
-> +# ---
-> +# doc
-> +# Tests the CPU package thermal sensor interface for Intel platforms.
-> +#
-> +# It works by checking the initial count of thermal interrupts. Then it
-> +# decreases the threshold for sending a thermal interrupt to just above
-> +# the current temperature and runs a workload on the CPU. Finally, it re=
-stores
-> +# the original thermal threshold and checks whether the number of thermal
-> +# interrupts increased.
-> +# ---
-> +#
-> +# ---
-> +# env
-> +# {
-> +#  "needs_root": true,
-> +#  "supported_archs": ["x86", "x86_64"],
-> +#  "needs_cmds": ["stress-ng"]
-> +# }
-> +# ---
-> +
-> +export LTP_TIMEOUT_MUL=3D6
+Signed-off-by: Stephen Bertram <sbertram@redhat.com>
+---
+ runtest/syscalls                            |  2 +
+ testcases/kernel/syscalls/clone/.gitignore  |  1 +
+ testcases/kernel/syscalls/clone/clone11.c   | 74 +++++++++++++++++
+ testcases/kernel/syscalls/clone3/.gitignore |  1 +
+ testcases/kernel/syscalls/clone3/clone304.c | 92 +++++++++++++++++++++
+ 5 files changed, 170 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/clone/clone11.c
+ create mode 100644 testcases/kernel/syscalls/clone3/clone304.c
 
-Instead of this the test needs to set up runtime in the environment
-properly. I will send a patch for the tst_run_shell.c that adds support
-for runtime to the JSON env tomorrow.
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 54d94c0ca..a1ef7548b 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -124,10 +124,12 @@ clone07 clone07
+ clone08 clone08
+ clone09 clone09
+ clone10 clone10
++clone11 clone11
+ 
+ clone301 clone301
+ clone302 clone302
+ clone303 clone303
++clone304 clone304
+ 
+ close01 close01
+ close02 close02
+diff --git a/testcases/kernel/syscalls/clone/.gitignore b/testcases/kernel/syscalls/clone/.gitignore
+index adfb8257d..0edcfef5d 100644
+--- a/testcases/kernel/syscalls/clone/.gitignore
++++ b/testcases/kernel/syscalls/clone/.gitignore
+@@ -8,3 +8,4 @@
+ /clone08
+ /clone09
+ /clone10
++/clone11
+diff --git a/testcases/kernel/syscalls/clone/clone11.c b/testcases/kernel/syscalls/clone/clone11.c
+new file mode 100644
+index 000000000..e0ae9db62
+--- /dev/null
++++ b/testcases/kernel/syscalls/clone/clone11.c
+@@ -0,0 +1,74 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Stephen Bertram <sbertram@redhat.com>
++ */
++
++/*\
++ * This test verifies that :man2:`clone` fails with EPERM when CAP_SYS_ADMIN
++ * has been dropped.
++ */
++
++#define _GNU_SOURCE
++#define DESC(x) .flags = x, .sflags = #x
++
++#include "tst_test.h"
++#include "clone_platform.h"
++#include "lapi/sched.h"
++
++static void *child_stack;
++static int *child_pid;
++
++static struct tcase {
++	uint64_t flags;
++	const char *sflags;
++} tcases[] = {
++	{ DESC(CLONE_NEWPID) },
++	{ DESC(CLONE_NEWCGROUP) },
++	{ DESC(CLONE_NEWIPC) },
++	{ DESC(CLONE_NEWNET) },
++	{ DESC(CLONE_NEWNS) },
++	{ DESC(CLONE_NEWUTS) },
++};
++
++static int child_fn(void *arg LTP_ATTRIBUTE_UNUSED)
++{
++	*child_pid = getpid();
++	_exit(0);
++}
++
++static void run(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++
++	TST_EXP_FAIL(ltp_clone(tc->flags, child_fn, NULL, CHILD_STACK_SIZE,
++		child_stack), EPERM, "clone(%s) should fail with EPERM",
++		tc->sflags);
++}
++
++static void setup(void)
++{
++	child_pid = SAFE_MMAP(NULL, sizeof(*child_pid), PROT_READ | PROT_WRITE,
++		MAP_SHARED | MAP_ANONYMOUS, -1, 0);
++}
++
++static void cleanup(void)
++{
++	if (child_pid)
++		SAFE_MUNMAP(child_pid, sizeof(*child_pid));
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.test = run,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.caps = (struct tst_cap []) {
++		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
++		{},
++	},
++	.bufs = (struct tst_buffers []) {
++		{&child_stack, .size = CHILD_STACK_SIZE},
++		{},
++	},
++};
+diff --git a/testcases/kernel/syscalls/clone3/.gitignore b/testcases/kernel/syscalls/clone3/.gitignore
+index 10369954b..e9b5312f4 100644
+--- a/testcases/kernel/syscalls/clone3/.gitignore
++++ b/testcases/kernel/syscalls/clone3/.gitignore
+@@ -1,3 +1,4 @@
+ clone301
+ clone302
+ clone303
++clone304
+diff --git a/testcases/kernel/syscalls/clone3/clone304.c b/testcases/kernel/syscalls/clone3/clone304.c
+new file mode 100644
+index 000000000..34ce0cf7b
+--- /dev/null
++++ b/testcases/kernel/syscalls/clone3/clone304.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Stephen Bertram <sbertram@redhat.com>
++ */
++
++/*\
++ * This test verifies that :man2:`clone3` fails with EPERM when CAP_SYS_ADMIN
++ * has been dropped and ``clone_args.set_tid_size`` is greater than zero.
++ */
++
++#define _GNU_SOURCE
++#define DESC(x) .flags = x, .sflags = #x
++
++#include "tst_test.h"
++#include "lapi/sched.h"
++
++enum case_type {
++	K_SET_TID,	/* flags = 0 || CLONE_NEW*, set_tid_size > 0 => EPERM */
++	K_NAMESPACE_ONLY,  /* flags = CLONE_NEW*, set_tid_size = 0 => EPERM */
++};
++
++static struct clone_args args = {0};
++static pid_t tid_array[1] = {1};
++
++static struct tcase {
++	uint64_t flags;
++	const char *sflags;
++	enum case_type type;
++} tcases[] = {
++	{ DESC(CLONE_NEWPID), K_NAMESPACE_ONLY },
++	{ DESC(CLONE_NEWCGROUP), K_NAMESPACE_ONLY },
++	{ DESC(CLONE_NEWIPC), K_NAMESPACE_ONLY },
++	{ DESC(CLONE_NEWNET), K_NAMESPACE_ONLY },
++	{ DESC(CLONE_NEWNS), K_NAMESPACE_ONLY },
++	{ DESC(CLONE_NEWUTS), K_NAMESPACE_ONLY },
++
++	{ DESC(CLONE_NEWPID), K_SET_TID },
++	{ DESC(CLONE_NEWCGROUP), K_SET_TID },
++	{ DESC(CLONE_NEWIPC), K_SET_TID },
++	{ DESC(CLONE_NEWNET), K_SET_TID },
++	{ DESC(CLONE_NEWNS), K_SET_TID },
++	{ DESC(CLONE_NEWUTS), K_SET_TID },
++
++	{ DESC(0), K_SET_TID },
++};
++
++static void run(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++
++	args.flags = tc->flags;
++
++	if (tc->type == K_NAMESPACE_ONLY) {
++		args.set_tid = 0;
++		args.set_tid_size = 0;
++	} else {
++		args.set_tid = (uint64_t)(uintptr_t)tid_array;
++		args.set_tid_size = 1;
++	}
++
++	if (tc->flags == 0)
++		TST_EXP_FAIL(clone3(&args, sizeof(args)), EPERM,
++			"clone3(%s)\t\t\t set_tid_size=%ld",
++			tc->sflags, args.set_tid_size);
++	else
++		TST_EXP_FAIL(clone3(&args, sizeof(args)), EPERM,
++			"clone3(%s)\t set_tid_size=%ld",
++			tc->sflags, args.set_tid_size);
++}
++
++static void setup(void)
++{
++	clone3_supported_by_kernel();
++
++	memset(&args, 0, sizeof(args));
++	SAFE_UNSHARE(CLONE_NEWUSER | CLONE_NEWNS);
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.test = run,
++	.needs_root = 1,
++	.caps = (struct tst_cap []) {
++		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
++		{},
++	},
++	.bufs = (struct tst_buffers []) {
++		{&args, .size = sizeof(struct clone_args)},
++		{},
++	},
++};
+-- 
+2.49.0
 
-> +. tst_loader.sh
-> +
-> +thermal_zone_numbers=3D""
-> +temp=3D""
-> +temp_high=3D""
-> +status=3D0
-> +
-> +tst_test()
-> +{
-> +	line=3D$(grep "Thermal event interrupts" /proc/interrupts)
-> +	if [ $? -eq 0 ]; then
-> +		interrupt_array_init=3D$(echo "$line" | tr -d "a-zA-Z:" | awk '{$1=3D$=
-1;print}')
-> +		echo "Initial values of thermal interrupt counters: $interrupt_array_i=
-nit"
 
-All these echo should be tst_res TINFO "..." or tst_res TDEBUG "..."
-(not shown by default) messages instead, so that the test verbosity can
-be properly controlled.
-
-> +		num=3D$(nproc)
-> +		echo "Number of logical cores: $num"
-> +
-> +	else
-> +		tst_brk TCONF "Thermal event interrupts is not found."
-> +	fi
-> +
-> +	# Below we check for the thermal_zone which uses x86_pkg_temp driver
-> +	thermal_zone_numbers=3D$(grep -l x86_pkg_temp /sys/class/thermal/therma=
-l_zone*/type | sed 's/[^0-9]//g' | tr -t '\n' ' ')
-> +	echo "x86_pkg_temp thermal zones: $thermal_zone_numbers"
-> +
-> +	if [ -z $thermal_zone_numbers ]; then
-> +		tst_brk TCONF "No x86_pkg_temp thermal zones found"
-> +	fi
-> +	for i in $thermal_zone_numbers; do
-> +		echo "Currently testing x86_pkg_temp thermal_zone$i"
-> +		TEMP=3D/sys/class/thermal/thermal_zone$i/temp
-> +		temp=3D$(cat "$TEMP")
-> +		echo "thermal_zone$i current temperature is $temp"
-> +		if [ "$(echo "$temp <=3D 0" | bc)" -eq 1 ]; then
-
-bc package is not installed by default on certain systems, so we either
-need to request it explicitly or not use it.
-
-What about:
-
-		case "$TEMP" in
-		[0-9]*) ;;
-		*)
-			tst_brk TBROK "Unexpected zone temperature value $temp";;
-		esac
-
-> +			tst_brk TBROK "Unexpected zone temperature value $temp"
-> +		fi
-> +		trip=3D$(cat /sys/class/thermal/thermal_zone$i/trip_point_1_temp)
-> +		# Setting trip_point_1_temp for termal_zone$i to $temp + 10 (0.001=B0C)
-> +		temp_high=3D$(( temp + 10 ))
-> +		echo $temp_high > /sys/class/thermal/thermal_zone$i/trip_point_1_temp
-> +		run_time=3D30
-> +		sleep_time=3D10
-> +		while [ $sleep_time -gt 0 ]; do
-> +			stress-ng --matrix 0 --timeout $run_time
-> +			temp_cur=3D$(cat "$TEMP")
-> +			echo "temp_cur: $temp_cur"
-> +			[ $temp_cur -gt $temp_high ] && break
-> +			sleep $sleep_time
-> +			run_time=3D$(( run_time - 3 ))
-> +			sleep_time=3D$(( sleep_time - 1 ))
-> +		done
-> +		[ $temp_cur -gt $temp_high ] || tst_res TFAIL "Zone temperature is not=
- rising as expected"
-> +
-> +		# Restore the original trip_point_1_temp value
-> +		echo $trip > /sys/class/thermal/thermal_zone$i/trip_point_1_temp
-> +
-> +		# Check whether thermal interrupts count actually increased
-> +		interrupt_array_later=3D$(grep "Thermal event interrupts" /proc/interr=
-upts | \
-> +			tr -d "a-zA-Z:" | awk '{$1=3D$1;print}')
-> +		echo "Current values of thermal interrupt counters: $interrupt_array_l=
-ater"
-> +		for j in $(seq 1 "$num"); do
-> +			interrupt_later=3D$(echo "$interrupt_array_later" | cut -d " " -f  "$=
-j")
-> +			interrupt_init=3D$(echo "$interrupt_array_init" | cut -d " " -f  "$j")
-> +			if [ $interrupt_later -le $interrupt_init ]; then
-> +				status=3D1
-> +			fi
-> +		done
-> +	done
-> +
-> +	if [ $status -eq 0 ]; then
-> +		tst_res TPASS "x86 package thermal interrupt triggered"
-> +	else
-> +		tst_res TFAIL "x86 package thermal interrupt did not trigger"
-> +	fi
-> +}
-> +
-> +. tst_run.sh
-> -- =
-
-> 2.47.3
-> =
-
-> ---------------------------------------------------------------------
-> Intel Technology Poland sp. z o.o.
-> ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wy=
-dzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-=
-316 | Kapital zakladowy 200.000 PLN.
-> Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu us=
-tawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w tra=
-nsakcjach handlowych.
-> =
-
-> Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresa=
-ta i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej =
-wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jaki=
-ekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-> This e-mail and any attachments may contain confidential material for the=
- sole use of the intended recipient(s). If you are not the intended recipie=
-nt, please contact the sender and delete all copies; any review or distribu=
-tion by others is strictly prohibited.
-> =
-
-> -- =
-
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- =
-
-Cyril Hrubis
-chrubis@suse.cz
-
--- =
-
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
