@@ -4,107 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7287CFC267
-	for <ltp@archiver.kernel.org>; Fri, 21 Nov 2025 11:48:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 414E6CFC283
+	for <ltp@archiver.kernel.org>; Fri, 21 Nov 2025 15:21:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 21D8C3CEF2D
-	for <ltp@archiver.kernel.org>; Fri, 21 Nov 2025 12:48:06 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 1FEEF3D013B
+	for <ltp@archiver.kernel.org>; Fri, 21 Nov 2025 16:21:33 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D86B23C9B22
- for <ltp@lists.linux.it>; Fri, 21 Nov 2025 12:47:49 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 5D2BF3CEF2D
+ for <ltp@lists.linux.it>; Fri, 21 Nov 2025 16:21:16 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 48C72200A10
- for <ltp@lists.linux.it>; Fri, 21 Nov 2025 12:47:49 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C1FA0600806
+ for <ltp@lists.linux.it>; Fri, 21 Nov 2025 16:21:15 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CD2BB21274;
- Fri, 21 Nov 2025 11:47:47 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B4D6021954;
+ Fri, 21 Nov 2025 15:21:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1763725668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1763738475; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=0tX60fRzQi65/nLya9fKfDMLT2A0MBrr+n0pRZbiQi4=;
- b=nuGhHOwv7mglqGavtWyPcKQtzSMNSgC+6IcCQwdiGnQsTiCRHa7qjbupLlzx96Jc3oF9O1
- YWcRPHgKd83k+aVFBE6PKTI9sh1r2mUgXsMFJ1CQaJwrRDzLey/W/jXiDgqWamS/RFYwG5
- NaDIiTnLSqVzwq7Hse0UU50lEmphVuU=
+ bh=RWhagkJmZt4hC55bT3smd1pK/KtDYkFqTvc8uSpwJns=;
+ b=zsP+yX3qQRgmKnBVPxjGefHn/16BaMXchy8sXn8WisMkUEPK5JxveMdxv724lATeSnq6bo
+ pzIOq4ItZbnqckUz8AcBH7LAccDT+Q0Tl6dgCt/cZkI4zSXslP4barzfB2EzgnRHnyWrOp
+ V2+Q7UiR38rqPAgfKxj+BEjmDfqsRFE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1763725668;
+ s=susede2_ed25519; t=1763738475;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=0tX60fRzQi65/nLya9fKfDMLT2A0MBrr+n0pRZbiQi4=;
- b=gqKNuyIhZHswAuWoPTMTvPcozotow6aHFw5nWzx+r4jNcDR0r3Mv8NBn5QIwjvWV/7tXrr
- ysw0XboBwJmxMWBw==
+ bh=RWhagkJmZt4hC55bT3smd1pK/KtDYkFqTvc8uSpwJns=;
+ b=4/NdiQNeNPhgSwzKFPZj46Qfqugp9atSMhilr1O1gDY1JPk+cKN+Q0vkAkNLvEnwaZWcJA
+ 1icBtzzrAK1asdCA==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=wYskQk4I;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=3DTh03HV
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FfDHjEsu;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZMPRnis0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1763725667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1763738474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=0tX60fRzQi65/nLya9fKfDMLT2A0MBrr+n0pRZbiQi4=;
- b=wYskQk4IkWGNEmcsxVLr69Yc4XwQWb7KGvdrMeSHTTxBF/3xoKC/mvUOu8kxOogpplR7zi
- rV5cmI8qXjKkke45etSO7nED8MCgsayuCauiACx3HKEu1wUiAhr3qY7Y865vU3YE905tML
- 8zl7Z5x1wMqhsVViYvSOG3udqJ9y3pc=
+ bh=RWhagkJmZt4hC55bT3smd1pK/KtDYkFqTvc8uSpwJns=;
+ b=FfDHjEsuYDMopS/uaUlXJnIcPZ7Cc2S+HHmosRuy/PSpCehMSruu+i5cdI6bwfi1ZS/nuP
+ I3SGp4KtvAs0tfGvV9B2Ih6o1ef6MnBG+TH8UxX/5pxRXb+jBYvVSSbCkl5MuzbsZ5zdm4
+ YPuY+pKx3UlqxCwhUJ39Ylm4XjhsOIo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1763725667;
+ s=susede2_ed25519; t=1763738474;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=0tX60fRzQi65/nLya9fKfDMLT2A0MBrr+n0pRZbiQi4=;
- b=3DTh03HV+M4Y2gjB0zyp2rdTkjVbrOg6EZnSD4MCXRMy4pl0vIw2CCKwgA2pncxwbE/ke9
- 4x00HaCJdnYqVoAw==
+ bh=RWhagkJmZt4hC55bT3smd1pK/KtDYkFqTvc8uSpwJns=;
+ b=ZMPRnis0ncZ67TSxCUP/TpHHfwQVuZ4YJsYlaXYqY/Hvt2yooMsZrQna4KSgraDJ+tlwrF
+ JPVmvhP2HGfjXZCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD9663EA61;
- Fri, 21 Nov 2025 11:47:47 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 780C53EA62;
+ Fri, 21 Nov 2025 15:21:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id zYJXLWNRIGm2dwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 21 Nov 2025 11:47:47 +0000
-Date: Fri, 21 Nov 2025 12:48:31 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <aSBRj8vrMh4TJKbq@yuki.lan>
-References: <20251120163550.333241-1-pvorel@suse.cz>
- <aSBBzVaq4gJ6JfrK@yuki.lan> <20251121104506.GA25561@pevik>
- <aSBQDg8PRXFK8GxB@yuki.lan>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id aEUTHGqDIGndSQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 21 Nov 2025 15:21:14 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Fri, 21 Nov 2025 16:21:08 +0100
+Message-ID: <20251121152111.10419-2-pvorel@suse.cz>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251121152111.10419-1-pvorel@suse.cz>
+References: <20251121152111.10419-1-pvorel@suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <aSBQDg8PRXFK8GxB@yuki.lan>
-X-Rspamd-Queue-Id: CD2BB21274
+X-Rspamd-Queue-Id: B4D6021954
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- URIBL_BLOCKED(0.00)[suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,yuki.lan:mid];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ TO_DN_SOME(0.00)[]; FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_SEVEN(0.00)[8]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:mid,suse.cz:dkim];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim]
+ DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] readahead02: Sleep 1.5 msec to fix problem on
- bare metal
+Subject: [LTP] [PATCH v2 1/4] shell: Add tst_sudo.c helper
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,71 +118,124 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: selinux@vger.kernel.org, linux-integrity@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-> index f007db187..a2118c5ab 100644
-> --- a/testcases/kernel/syscalls/readahead/readahead02.c
-> +++ b/testcases/kernel/syscalls/readahead/readahead02.c
-> @@ -39,6 +39,7 @@ static char testfile[PATH_MAX] = "testfile";
->  #define MEMINFO_FNAME "/proc/meminfo"
->  #define PROC_IO_FNAME "/proc/self/io"
->  #define DEFAULT_FILESIZE (64 * 1024 * 1024)
-> +#define SHORT_SLEEP_US 5000
- 
->  static size_t testfile_size = DEFAULT_FILESIZE;
->  static char *opt_fsizestr;
-> @@ -173,6 +174,38 @@ static int read_testfile(struct tcase *tc, int do_readahead,
-> 
->                         i++;
->                         offset += readahead_length;
-> +
-> +                       /*
-> +                        * We assume that the worst case I/O speed is around
-> +                        * 5MB/s which is roughly 5 bytes per 1 us, which gives
-> +                        * us upper bound for retries that is readahead_size/(5
-> +                        * SHORT_SLEEP_US).
-> +                        *
-> +                        * We also monitor the cache size increases before and
-> +                        * after the sleep. With the same assumption about the
-> +                        * speed we are supposed to read at least 5 * SHORT_SLEEP_US
-> +                        * during that time. That amound is genreally quite close
-> +                        * a page size so that we just assume
-                                                               ^
-			    that we sould continue as long as the cache
-			    increases.
-> +                        *
-> +                        * Of course all of this is inprecise on multitasking
-> +                        * OS however even on a system where there are several
-> +                        * processes figthing for I/O this loop will wait as
-> +                        * long a cache is increasing which will gives us high
-> +                        * chance of waiting for the readahead to happen.
-> +                        */
-> +                       int retries = readahead_size / (5 * SHORT_SLEEP_US);
-> +                       unsigned long cached_prev, cached_cur = get_cached_size();
-> +
-> +                       do {
-> +                               usleep(SHORT_SLEEP_US);
-> +
-> +                               cached_prev = cached_cur;
-> +                               cached_cur = get_cached_size();
-> +
-> +                               if (cached_cur <= cached_prev)
-> +                                       break;
-> +                       } while (retries-- > 0);
-> +
->                 } while ((size_t)offset < fsize);
->                 tst_res(TINFO, "readahead calls made: %zu", i);
->                 *cached = get_cached_size();
+It will be used in LTP IMA tests. Not only it removes external
+dependency, but also fixes problem when 'nobody' user is not possible to
+use due using /usr/sbin/nologin shell.
 
+Suggested-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+New in v2, suggested by Jan Stancek.
+https://lore.kernel.org/ltp/CAASaF6yjdrLLVnehESx1TjsrB_z48nmN_2i585GPfkG3Vvg15Q@mail.gmail.com/
+
+ doc/users/setup_tests.rst |  4 ++++
+ testcases/lib/.gitignore  |  1 +
+ testcases/lib/Makefile    |  2 +-
+ testcases/lib/tst_sudo.c  | 50 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 56 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/lib/tst_sudo.c
+
+diff --git a/doc/users/setup_tests.rst b/doc/users/setup_tests.rst
+index 38976f3b0a..9c49852830 100644
+--- a/doc/users/setup_tests.rst
++++ b/doc/users/setup_tests.rst
+@@ -71,6 +71,10 @@ users.
+    * - LTP_IMA_LOAD_POLICY
+      - Load IMA example policy, see :master:`testcases/kernel/security/integrity/ima/README.md`.
+ 
++   * - LTP_USR_UID, LTP_USR_GID
++     - Set UID and GID of ``nobody`` user for :doc:`../developers/api_shell_tests`,
++       see :master:`testcases/lib/tst_sudo.c`.
++
+    * - LTP_VIRT_OVERRIDE
+      - Overrides virtual machine detection in the test library. Setting it to
+        empty string, tells the library that system is not a virtual machine.
+diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
+index 385f3c3ca6..602abdee1f 100644
+--- a/testcases/lib/.gitignore
++++ b/testcases/lib/.gitignore
+@@ -25,3 +25,4 @@
+ /tst_timeout_kill
+ /tst_res_
+ /tst_run_shell
++/tst_sudo
+diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
+index b3a9181c11..9973090cfc 100644
+--- a/testcases/lib/Makefile
++++ b/testcases/lib/Makefile
+@@ -17,6 +17,6 @@ MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
+ 			   tst_get_median tst_hexdump tst_get_free_pids tst_timeout_kill\
+ 			   tst_check_kconfigs tst_cgctl tst_fsfreeze tst_ns_create tst_ns_exec\
+ 			   tst_ns_ifmove tst_lockdown_enabled tst_secureboot_enabled tst_res_\
+-			   tst_run_shell
++			   tst_run_shell tst_sudo
+ 
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/lib/tst_sudo.c b/testcases/lib/tst_sudo.c
+new file mode 100644
+index 0000000000..e8d5d8dd9d
+--- /dev/null
++++ b/testcases/lib/tst_sudo.c
+@@ -0,0 +1,50 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Petr Vorel <pvorel@suse.cz>
++ */
++
++#define LTP_USR_UID 65534
++#define LTP_USR_GID 65534
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++
++static void print_help(void)
++{
++	fprintf(stderr, "Usage: %s cmd [args] ...\n", __FILE__);
++	fprintf(stderr, "Usage: %s cmd [-h] print help\n\n", __FILE__);
++
++	fprintf(stderr, "Environment Variables\n");
++	fprintf(stderr, "LTP_USR_UID: UID of 'nobody' user, defaults %d\n",
++			LTP_USR_UID);
++	fprintf(stderr, "LTP_USR_GID: GID of 'nobody' user, defaults %d\n",
++			LTP_USR_GID);
++}
++
++int main(int argc, char *argv[])
++{
++	if (argc < 2 || !strcmp(argv[1], "-h")) {
++		print_help();
++		return 1;
++	}
++
++	unsigned uid = LTP_USR_UID, gid = LTP_USR_GID;
++
++	char *uid_env = getenv(TST_TO_STR_(LTP_USR_UID));
++	char *gid_env = getenv(TST_TO_STR_(LTP_USR_GID));
++
++	if (uid_env)
++		uid = SAFE_STRTOL(uid_env, 1, INT_MAX);
++
++	if (gid_env)
++		gid = SAFE_STRTOL(gid_env, 1, INT_MAX);
++
++	tst_res(TINFO, "UID: %d, GID: %d", uid, gid);
++	SAFE_SETGROUPS(0, NULL);
++	SAFE_SETRESGID(gid, gid, gid);
++	SAFE_SETRESUID(uid, uid, uid);
++
++	SAFE_CMD((const char * const *)&argv[1], NULL, NULL);
++
++	return 0;
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.51.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
