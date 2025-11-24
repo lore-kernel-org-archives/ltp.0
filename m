@@ -4,99 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A331DCFA466
-	for <ltp@archiver.kernel.org>; Mon, 24 Nov 2025 13:21:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1763990486; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=pRTRvZ/rWsVDJz4645/76Ei3C+qJLQ9vGpGdc8KssjQ=;
- b=mSSG9p/iiFga0puSTfPl/Iyac+zlhZvW3AuGIXYMFSHqBRn3fYjO1lhu/+3ZDjzZWKiUg
- HED6rD7jIDGTUSUuYH6b/K0TlTOYVk/mAsSPwiPu9K8KezMkDbAlDSQYYhavoFXVrbZnAH+
- DghD4Lg4qkfk9qXMOyjXsObI2INmqhI=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3E79CFD313
+	for <ltp@archiver.kernel.org>; Mon, 24 Nov 2025 16:42:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3185A3C890B
-	for <ltp@archiver.kernel.org>; Mon, 24 Nov 2025 14:21:26 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 8B92D3C85A7
+	for <ltp@archiver.kernel.org>; Mon, 24 Nov 2025 17:42:31 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2DB463C0125
- for <ltp@lists.linux.it>; Mon, 24 Nov 2025 14:21:05 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id C31403C8483
+ for <ltp@lists.linux.it>; Mon, 24 Nov 2025 17:42:15 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 94EEE600799
- for <ltp@lists.linux.it>; Mon, 24 Nov 2025 14:21:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1763990463;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=CHdQ9ix+cnbBQC/SJJBfcdMdqhW2tQSnH5wdUnKOyas=;
- b=Lr2ht9ExgvM6DQgsBTE9A5MFhbf4WUL47vIqK4pgYSWmkK5pfMc7dHaYDGnt4HQ0U5fTQY
- 4dhBeJ0HS1LJVpAS9B1TAnUkWe3DLXd20bjPeWjocEgMR6lz4Hy62cKa9aT8Y5tf1QQ7F4
- FrcLNXxTzFIK/ZZ69soRA1J78aOJZiM=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-336-9UJi7JDSNNKMHdu15LQSdQ-1; Mon, 24 Nov 2025 08:21:01 -0500
-X-MC-Unique: 9UJi7JDSNNKMHdu15LQSdQ-1
-X-Mimecast-MFC-AGG-ID: 9UJi7JDSNNKMHdu15LQSdQ_1763990461
-Received: by mail-pg1-f197.google.com with SMTP id
- 41be03b00d2f7-b9ceccbd7e8so1393388a12.0
- for <ltp@lists.linux.it>; Mon, 24 Nov 2025 05:21:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1763990461; x=1764595261;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=CHdQ9ix+cnbBQC/SJJBfcdMdqhW2tQSnH5wdUnKOyas=;
- b=ROKwh1ytedHrQwmRK8+zKsyFeFhHtnyOd6LynLTx2jVXj7MK9NK4IN5bXi5jd1ndo0
- mjLp4PBazJTl8FrC5ZD8Mxkqq7EdushxnUG34jPmVpQQ4vGRQcfURKO6lCyGUsjiNZdf
- EqFxpIOFLrX8Ut+AIAhMpOHoqk5WXQ4o8J6bfR4oUcYb3MspawIkZ919xBVBmMfPL0jK
- 9hSMCCCQJobtcDDr/Te+/2t3FfF8iNuoYQqUyuJtpsRCBccB8lGmmwcYpFyJhhP4HGkZ
- gEDGGY7I2iTLuQQIPeveMkS96hmWu2GK2hVkPMizTR37uSfpdXqC9I1e7R5UhBVvHMgV
- 74ug==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUJYZZsKx8ClQTMOTCwc2tbx7PbW6qhxjBubooU3r7bUmrGukRxeUeepoo1bxnRJqa8j5k=@lists.linux.it
-X-Gm-Message-State: AOJu0Yz+Xb6xoVUvpoyComljddT6vaPLXTuxjYKE48jeE9b91jmL6twU
- Nu1xgaMNpSkOi7gZVrCUJ0i4UeVohrssO+pc9Ct63bjMizWbwfBZu22HZUi1ZPJXi/tSkMJrGK/
- l4ih9L5t79/9+RXenPyToisgWLW10umgB6eCuqDriUb25R2h1ycEMHM+d6khbAdlsKtxGNnk5qm
- y4+2G/qzFsWB4Hfo+fLRHHYWmgbuE=
-X-Gm-Gg: ASbGnctjMM1HPo3ExTOldpO1QNLDVh8lA+/qkpRQheq1Hi6tiL3B5IUIGEvtfLs6UzP
- OlGl3Jx2K5ztvGU0Gy6Ja83CKsRE8kYLysOLoqHs1d5jTNFKpwGO5hphcQ0+irZB+JgsB8/KA53
- yW6h8NAVnvrX5sRzZflBqtMW5DK0g7guOGbuEE/8GesEVPqArNzgRlrLR/xvQs3HC+LLw=
-X-Received: by 2002:a05:7301:dc3:b0:2a4:3593:9696 with SMTP id
- 5a478bee46e88-2a71927a2cdmr5268349eec.19.1763990460659; 
- Mon, 24 Nov 2025 05:21:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGaBGH6GVt73d1SqwZ58USvU7Pof9LgkLqrY7FpTH8gx8UlkUMb72ShLKLfqL1udfvdVS5SFPmhw1QKRGZQpcQ=
-X-Received: by 2002:a05:7301:dc3:b0:2a4:3593:9696 with SMTP id
- 5a478bee46e88-2a71927a2cdmr5268333eec.19.1763990460222; Mon, 24 Nov 2025
- 05:21:00 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A046D10008FE
+ for <ltp@lists.linux.it>; Mon, 24 Nov 2025 17:42:14 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9B7B15BCE7;
+ Mon, 24 Nov 2025 16:42:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1764002533; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=NQfMSpDXgr1dH5/ZmHxnh4+BOWpp5/qgfAHlSDiS+AI=;
+ b=ekpiA2bHAqqckhjM3Pil8cCm9VbVEX3c9Hs2Ws/ti/O1XDucjRvsEfwhU7mRzOeUmWfpj8
+ 2wCYZMc3ank+aVx9Knjp/Mm6lA48mPIkE1/0v2k4TmuTqruH2YHvFnXrDtEFO9vAwzpDdg
+ 0BidVBYeifQjTnsbI0KLnKsUMu71dGE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1764002533;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=NQfMSpDXgr1dH5/ZmHxnh4+BOWpp5/qgfAHlSDiS+AI=;
+ b=zod/gG92Qxt6qJ/yx51X6XbL+fekMmXeA/PR6N8TCsSH+IoeP1svSfBRX/t4dOSYFPNA9i
+ 498d+Y1y4cEporBA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ekpiA2bH;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="zod/gG92"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1764002533; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=NQfMSpDXgr1dH5/ZmHxnh4+BOWpp5/qgfAHlSDiS+AI=;
+ b=ekpiA2bHAqqckhjM3Pil8cCm9VbVEX3c9Hs2Ws/ti/O1XDucjRvsEfwhU7mRzOeUmWfpj8
+ 2wCYZMc3ank+aVx9Knjp/Mm6lA48mPIkE1/0v2k4TmuTqruH2YHvFnXrDtEFO9vAwzpDdg
+ 0BidVBYeifQjTnsbI0KLnKsUMu71dGE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1764002533;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=NQfMSpDXgr1dH5/ZmHxnh4+BOWpp5/qgfAHlSDiS+AI=;
+ b=zod/gG92Qxt6qJ/yx51X6XbL+fekMmXeA/PR6N8TCsSH+IoeP1svSfBRX/t4dOSYFPNA9i
+ 498d+Y1y4cEporBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B2923EA63;
+ Mon, 24 Nov 2025 16:42:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id hMMOIeWKJGkYEgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 24 Nov 2025 16:42:13 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 24 Nov 2025 17:43:07 +0100
+Message-ID: <20251124164307.20516-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.51.2
 MIME-Version: 1.0
-References: <20251120163550.333241-1-pvorel@suse.cz>
- <aSBBzVaq4gJ6JfrK@yuki.lan>
- <20251121104506.GA25561@pevik> <aSBQDg8PRXFK8GxB@yuki.lan>
- <CAEemH2fN=byf4dKvCk82KKuA9fRk0M6uh1GmMfiY2EPOk=X_Zg@mail.gmail.com>
- <aSRbG5o-lTPtG7wB@yuki.lan>
-In-Reply-To: <aSRbG5o-lTPtG7wB@yuki.lan>
-Date: Mon, 24 Nov 2025 21:20:46 +0800
-X-Gm-Features: AWmQ_bkYBlnX5siIRbZF_iPGFYmFiuQX2BUqR1fg11mJoZV4QMq457y7d0vme_Q
-Message-ID: <CAEemH2ec-o1+yPD-huYCwfroLHt3wDzSpag2Kyndvbp1ywZiMA@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: TgkBY00PjmVx5EVumb0YB8n2JgRUqt1uvkKvdcJu_qo_1763990461
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Rspamd-Queue-Id: 9B7B15BCE7
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
+ MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:email];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 1/1] readahead02: Sleep 1.5 msec to fix problem on
- bare metal
+Subject: [LTP] [PATCH v2] doc: Add basic shell test description
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,24 +110,138 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBOb3YgMjQsIDIwMjUgYXQgOToxN+KAr1BNIEN5cmlsIEhydWJpcyA8Y2hydWJpc0Bz
-dXNlLmN6PiB3cm90ZToKCj4gSGkhCj4gPiBUaGlzIGlzIGEgbmljZSBpbXByb3ZlbWVudCwgYnV0
-IG9uZSB0aGluZyBjb21lcyB0byBteSBtaW5kIHRoYXQKPiA+IGdldF9jYWNoZWRfc2l6ZSgpIHJl
-YWRzIHRoZSBzeXN0ZW0gd2lkZSDigJxDYWNoZWTigJ0gc2l6ZSBmcm9tCj4gPiAnL3Byb2MvbWVt
-aW5mbycgbWlnaHQgbm90IGJlIHJlbGlhYmxlIGluIHRoZSB0ZXN0IChwcm9iYmFseSBpbXBhY3QK
-PiA+IGZyb20gb3RoZXIgcHJvZ3Jlc3MpLgo+ID4KPiA+IFNvLCBob3cgYWJvdXQgdXNpbmcgbWlu
-Y29yZSgpIHdvcmtzIG9uIHRoZSBjdXJyZW50bHkgbWFwcGVkIHBhZ2VzCj4gPiB0byBjb3VudCB0
-aGUgcmVzaWRlbnQgYnl0ZXMgaW4gbWVtb3J5Pwo+Cj4gSSBndWVzcyB0aGF0IHdlIGNhbiBkbyB0
-aGF0IGluIGEgc3Vic2VxdWVudCBwYXRjaC4gSSd2ZSBqdXN0IHNlbnQKPiBzbGlnaHRseSBtb2Rp
-ZmllZCB2ZXJzaW9uIG9mIHRoaXMgcGF0Y2guCj4KCk5vIHByb2JsZW0sIEkgd2lsbCB0cnkgdGhl
-IG1pbmNvcmUoKSBtZXRob2Qgc2VwYXJhdGVseSAoYmFzZWQgb24geW91ciBWMgpjaGFuZ2UpLgoK
-LS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Reviewed-by: Avinesh Kumar <akumar@suse.de>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+---
+ doc/conf.py                        |  1 +
+ doc/developers/api_shell_tests.rst | 91 ++++++++++++++++++++++++++++++
+ 2 files changed, 92 insertions(+)
+
+Changes in v2:
+
+- fixed typos
+- added links as requested by Petr
+
+diff --git a/doc/conf.py b/doc/conf.py
+index 86f6fe2b7..e8488bff7 100644
+--- a/doc/conf.py
++++ b/doc/conf.py
+@@ -34,6 +34,7 @@ exclude_patterns = ["html*", '_static*', '.venv*']
+ extlinks = {
+     'repo': (f'{ltp_repo}/%s', '%s'),
+     'master': (f'{ltp_repo}/blob/master/%s', '%s'),
++    'shell_lib': (f'{ltp_repo}/blob/master/testcases/lib/%s', '%s'),
+     'git_man': ('https://git-scm.com/docs/git-%s', 'git %s'),
+     'man2': ('https://man7.org/linux/man-pages/man2/%s.2.html', '%s(2)'),
+     'man3': ('https://man7.org/linux/man-pages/man3/%s.3.html', '%s(3)'),
+diff --git a/doc/developers/api_shell_tests.rst b/doc/developers/api_shell_tests.rst
+index b6e8560d9..ccfc0e071 100644
+--- a/doc/developers/api_shell_tests.rst
++++ b/doc/developers/api_shell_tests.rst
+@@ -2,3 +2,94 @@
+ 
+ LTP shell API
+ =============
++
++Shell API overview
++------------------
++
++First lines of the shell test should be a shebang, a license, and copyrights.
++
++.. code-block:: shell
++
++   #!/bin/sh
++   # SPDX-License-Identifier: GPL-2.0-or-later
++   # Copyright 2099 Foo Bar <foo.bar@example.org>
++
++A documentation comment block formatted in ReStructuredText should follow right
++after these lines. This comment is parsed and exported into the LTP
++documentation at https://linux-test-project.readthedocs.io/en/latest/users/test_catalog.html
++
++.. code-block:: shell
++
++   # ---
++   # doc
++   # Test for a foo bar.
++   #
++   # This test is testing foo by checking that bar is doing xyz.
++   # ---
++
++The shell loader test library uses the :doc:`../developers/api_c_tests`
++internally by parsing a special JSON formatted comment and
++initializing it accordingly. The JSON format is nearly 1:1 serialization of the
++:ref:`struct tst_test` into a JSON. The environment must be always preset even
++when it's empty.
++
++.. code-block:: shell
++
++   # ---
++   # env
++   # {
++   #  "needs_root": true,
++   #  "needs_tmpdir": true,
++   #  "needs_kconfigs": ["CONFIG_NUMA=y"],
++   #  "tags": {
++   #   ["linux-git", "432fd03240fa"]
++   #  }
++   # }
++
++After the documentation and environment has been laid out we finally import the
++:shell_lib:`tst_loader.sh`. This will, among other things, start the
++:shell_lib:`tst_run_shell.c` binary, that will parse the shell test environment
++comment and initialize the C test library accordingly.
++
++.. code-block:: shell
++
++   . tst_loader.sh
++
++At this point everything has been set up and we can finally write the test
++function. The test results are reported by the usual functions :ref:`tst_res` and
++:ref:`tst_brk`. As in the C API these functions store results into a piece of shared
++memory as soon as they return so there is no need to propagate results event
++from child processes.
++
++.. code-block:: shell
++
++   tst_test()
++   {
++        tst_res TPASS "Bar enabled Foo"
++   }
++
++In order for the test to be actually executed the very last line of the script
++must source the :shell_lib:`tst_run.sh` script.
++
++.. code-block:: shell
++
++   . tst_run.sh
++
++In order to run a test from a LTP tree a few directories has to be added to the
++`$PATH`. Note that the number of `../` may depend on the depth of the current
++directory relative to the LTP root.
++
++.. code-block:: shell
++
++   $ PATH=$PATH:$PWD:$PWD/../../lib/ ./foo01.sh
++
++Test setup and cleanup
++----------------------
++
++The test setup and cleanup functions are optional and passed via variables.
++Similarily to the C API the setup is executed exactly once at the start of the
++test and the test cleanup is executed at the test end or when test was
++interrupted by ref:`tst_brk`.
++
++   .. literalinclude:: ../../testcases/lib/tests/shell_loader_setup_cleanup.sh
++   :language: shell
+-- 
+2.51.2
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
