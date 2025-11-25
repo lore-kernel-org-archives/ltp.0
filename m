@@ -4,62 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF3B1CFD341
-	for <ltp@archiver.kernel.org>; Mon, 24 Nov 2025 18:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F45ACFD364
+	for <ltp@archiver.kernel.org>; Tue, 25 Nov 2025 04:36:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1764045413; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=K3kD0757vNwbtC+gplV0cc8xvFgi9EarxZaADxqVXc4=;
+ b=HGu6kPu7mlgxyM1BdVZNKPwFkaJ7n1tA06vuQE1QJX9xO2HIa71KexOdIHvnfNUvIZScK
+ FknJJCbICVLEGKUWQ7AqV/5Qj1LiTWzKTsmPElJWbRGhdMXHy5WjBoMlESAldtefeBHtz2E
+ 8N65EK6I7QfavUT1X4KkikLO6V1uG38=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C8D903C9ED8
-	for <ltp@archiver.kernel.org>; Mon, 24 Nov 2025 19:00:13 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 3211D3CAEFD
+	for <ltp@archiver.kernel.org>; Tue, 25 Nov 2025 05:36:53 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E22A73C8307
- for <ltp@lists.linux.it>; Mon, 24 Nov 2025 18:59:57 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 629DA3C56DC
+ for <ltp@lists.linux.it>; Tue, 25 Nov 2025 05:36:31 +0100 (CET)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6A3D56007B6
- for <ltp@lists.linux.it>; Mon, 24 Nov 2025 18:59:57 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C48AF5BCD9;
- Mon, 24 Nov 2025 17:59:56 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 931753EA63;
- Mon, 24 Nov 2025 17:59:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Kw6sIhydJGmFXAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 24 Nov 2025 17:59:56 +0000
-Date: Mon, 24 Nov 2025 18:59:51 +0100
-From: Petr Vorel <pvorel@suse.cz>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9732E100094B
+ for <ltp@lists.linux.it>; Tue, 25 Nov 2025 05:36:25 +0100 (CET)
+Received: by mail-wr1-x42a.google.com with SMTP id
+ ffacd0b85a97d-42b47f662a0so2627923f8f.0
+ for <ltp@lists.linux.it>; Mon, 24 Nov 2025 20:36:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1764045385; x=1764650185; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=+2qkTV+nNm9roSvshhtqcm5teMU+BJUa4bRa9rM7kK0=;
+ b=cCZOTUhqXz8MPfVJHZHPHxbLU1CN2/A0PursIMELFiZ8A/qbIzN4aqsLkTgA3hnjEN
+ Wc4F5Uh4zfdaYzKrMbmzMtCwSQlxs9AeUEaEgOmTe7szrJyPUWnXac07SIeL+MQDi7Dl
+ VWZg11RgkeErl0Nbc42kwlUBWFjJy7I9wqvNdV9XjRr4z/PiIO1N2YritRLhggMBGp9c
+ LIbs5T3lAttFMEms7JMTYNKBxXwZj2XaQPXFMGf7DUxbFAoZkgpP2o3vLk4hn+csOlDy
+ yW3nPFwUoqzRELk+8b4Vq4vfV3EYGyEzP/pK7NUKjch5GhYW44igFDo5zJT8Y4iNj2FC
+ 7QfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1764045385; x=1764650185;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=+2qkTV+nNm9roSvshhtqcm5teMU+BJUa4bRa9rM7kK0=;
+ b=J4AkllKe9OfAT7o3FT30xwk4soHLNJRw0QiBx29sDKVfkfxdHQIPhlsOVm+52ToEIs
+ p9Ipxed3QF6w7mkhdokkZwhfqk4EDqO9FNrlapEIMZtpx1BzGTgQSC2hGr4nsXFn2Wm0
+ PkwPr5rmjTf99rRdKFwBP7D94Wcd28LEW8WIBrR2A3sPNSwVruYJgJlY4zEyJN0N7R/x
+ qlKoAYDFFnGxHvLBz/FFmwND4gZnDLkIL8RBVHc5LvPqYvA/BuQhXmYMSsm2X/QSUSFT
+ rFdyX+Eq4/g3Zt86TUzxUMgX65h2H1+bHXwkzgyy23bz/pnU9MHwq+FFavzEDeQrnSqv
+ QUfQ==
+X-Gm-Message-State: AOJu0YzC0MXIcYZp7R9yI3WBnsXEzoicjx/oj4BvQM3F6GHeb1fxFunn
+ qYyycZDgqyVPMYM4edrSQX+zMrT3hLhChFnu6g7mrZjJZAWRph/u/MkxvW5mRqf8Sw==
+X-Gm-Gg: ASbGnct192SDTo2HgFQnEcqXra3VpIZ9DklaTU2wmHAMEtuIimOaapRIX8liFvIA7lY
+ +6bnMWx3AYV3ZrRb4MUySDyIHzf5O/UaeDIHawx8l50ebBCUHC/6XRz6egvJR0fqpt4dYvl3uQg
+ tqBuxcy+DJquv1BCsNRkj1oRtkuUfDHvbeGPQWZu6PqjbhSOs4+9sOA0tzupv0noacw2wXsFweI
+ 8jhBjwjkn0wqPAPrtytYUopKF6Trx2Ol3xVxAYFsg+yjMXJJbB5p78YC2z0LgkeaNE4O/5VenWm
+ DBJMp3Lsfvgu7J1AYVwEmX0IQHkHBIH8i4WWmaH8OxrCHG9jsmPNQ3CL0By0hWBRs7OJ+hJeaii
+ D4OwVrVEiytFhlG7Fo+zgu8fcW/jQZ37prhzPQZtrtnjCVQJ/Wd1Dz8VsEWusam+JwG54qe0HPC
+ 4kJOhNOY+N/EYUDKBS9D+33KHx3rdP
+X-Google-Smtp-Source: AGHT+IGDLAM8UHSinJslQc65mXsIFdygw5U6xar4bRvLj+axs1KVW2Ha7ja7soZCPAkSBnDPaerE3Q==
+X-Received: by 2002:a5d:584b:0:b0:429:ca7f:8d6f with SMTP id
+ ffacd0b85a97d-42cc135bc3dmr15849840f8f.15.1764045384988; 
+ Mon, 24 Nov 2025 20:36:24 -0800 (PST)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-42cb7fd8d97sm31371413f8f.42.2025.11.24.20.36.24
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 24 Nov 2025 20:36:24 -0800 (PST)
+Date: Tue, 25 Nov 2025 04:36:22 +0000
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20251124175951.GA127343@pevik>
-References: <20251124164307.20516-1-chrubis@suse.cz>
+Message-ID: <aSUyRl7ck5MyjqhY@autotest-wegao.qe.prg2.suse.org>
+References: <20250521141655.3202240-1-wegao@suse.com>
+ <20250523210950.1019560-1-wegao@suse.com>
+ <aRXtUIlkNP3aDReN@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20251124164307.20516-1-chrubis@suse.cz>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Queue-Id: C48AF5BCD9
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+In-Reply-To: <aRXtUIlkNP3aDReN@yuki.lan>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] doc: Add basic shell test description
+Subject: Re: [LTP] [PATCH v2] tst_tmpdir: Fix buffer overflow in tst_tmpdir.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,61 +101,65 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+On Thu, Nov 13, 2025 at 03:38:08PM +0100, Cyril Hrubis wrote:
+> Hi!
+> > Using sprintf without length checking in tst_tmpdir may lead to buffer overflow.
+> > So in this patch use openat() instead of open().
+> > 
+> > Fixes: https://github.com/linux-test-project/ltp/issues/1241
+> > Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> > Signed-off-by: Wei Gao <wegao@suse.com>
+> 
+> >  	} else {
+> > -		if (unlink(obj) < 0) {
+> > +		if (unlinkat(dir_fd, obj, 0) < 0) {
+> >  			if (errmsg != NULL) {
+> > -				sprintf(err_msg,
+> > -					"unlink(%s) failed; errno=%d: %s", obj,
+> > +				snprintf(err_msg, sizeof(err_msg),
+> > +					"unlinkat(%s) failed; errno=%d: %s", obj,
+> >  					errno, tst_strerrno(errno));
+> >  				*errmsg = err_msg;
+> >  			}
+> > @@ -305,7 +339,7 @@ void tst_tmpdir(void)
+> >  		tst_resm(TERRNO, "%s: chdir(%s) failed", __func__, TESTDIR);
+> >  
+> >  		/* Try to remove the directory */
+> > -		if (rmobj(TESTDIR, &errmsg) == -1) {
+> > +		if (rmobjat(0, TESTDIR, &errmsg) == -1) {
+> >  			tst_resm(TWARN, "%s: rmobj(%s) failed: %s",
+> >  				 __func__, TESTDIR, errmsg);
+> >  		}
+> > @@ -343,7 +377,7 @@ void tst_rmdir(void)
+> >  	/*
+> >  	 * Attempt to remove the "TESTDIR" directory, using rmobj().
+> >  	 */
+> > -	if (rmobj(TESTDIR, &errmsg) == -1) {
+> > +	if (rmobjat(0, TESTDIR, &errmsg) == -1) {
+> >  		tst_resm(TWARN, "%s: rmobj(%s) failed: %s",
+> >  			 __func__, TESTDIR, errmsg);
+> >  	}
+> 
+> We should pass AT_FDCWD to the two rmobjat() here since it's possible to
+> pass relative path in the TMPDIR environment variable. Otherwise the
+> code will not work with e.g. TMPDIR="." ./test_foo
+> 
 
-TL;DR You already add my RBT (thanks), please amend your patch with the diff below.
+My test show we never support TMPDIR=".", following error will show:
+tst_tmpdir.c:135: TBROK: You must specify an absolute pathname for environment variable TMPDIR
+I guess we need another patch enable this.
 
-...
-> +    'shell_lib': (f'{ltp_repo}/blob/master/testcases/lib/%s', '%s'),
-+1. I was thinking about it previously for C helpers, then I preferred to show
-full path. I guess I'll later use 'shell_lib' prefix for these. I suppose we can
-keep lib/*.c path, but sure, we could also (later) add 'lib' and 'include'.
-
-I wish extlinks module allow to pass more params than just one.
-
-...
-> +The test setup and cleanup functions are optional and passed via variables.
-> +Similarily to the C API the setup is executed exactly once at the start of the
-
-Similarily => Similarly
-
-> +test and the test cleanup is executed at the test end or when test was
-> +interrupted by ref:`tst_brk`.
-=> missing leading ':' causes text "by ref:tst_brk."
-
-interrupted by :ref:`tst_brk`.
-
-> +
-> +   .. literalinclude:: ../../testcases/lib/tests/shell_loader_setup_cleanup.sh
-> +   :language: shell
-
-+1, nice feature.  "language : shell" require another level of indentation,
-otherwise it just shows as a test below code.
-
-Kind regards,
-Petr
-
-+++ doc/developers/api_shell_tests.rst
-@@ -87,9 +87,9 @@ Test setup and cleanup
- ----------------------
- 
- The test setup and cleanup functions are optional and passed via variables.
--Similarily to the C API the setup is executed exactly once at the start of the
-+Similarly to the C API the setup is executed exactly once at the start of the
- test and the test cleanup is executed at the test end or when test was
--interrupted by ref:`tst_brk`.
-+interrupted by :ref:`tst_brk`.
- 
-    .. literalinclude:: ../../testcases/lib/tests/shell_loader_setup_cleanup.sh
--   :language: shell
-+      :language: shell
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
