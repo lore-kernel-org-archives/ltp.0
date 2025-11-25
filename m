@@ -4,96 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1784CFD37F
-	for <ltp@archiver.kernel.org>; Tue, 25 Nov 2025 10:45:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59A18D0E6C4
+	for <ltp@archiver.kernel.org>; Tue, 25 Nov 2025 12:21:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 540253CDE81
-	for <ltp@archiver.kernel.org>; Tue, 25 Nov 2025 11:45:04 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id A393C3CE01D
+	for <ltp@archiver.kernel.org>; Tue, 25 Nov 2025 13:21:45 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7E88A3CAAA4
- for <ltp@lists.linux.it>; Tue, 25 Nov 2025 11:44:49 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id B4ED73CC401
+ for <ltp@lists.linux.it>; Tue, 25 Nov 2025 13:21:28 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1D2E1200978
- for <ltp@lists.linux.it>; Tue, 25 Nov 2025 11:44:47 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C41061400187
+ for <ltp@lists.linux.it>; Tue, 25 Nov 2025 13:21:26 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 0AAFC5BD10;
- Tue, 25 Nov 2025 10:44:46 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1A6705BD82
+ for <ltp@lists.linux.it>; Tue, 25 Nov 2025 12:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1764067487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BCSr+rKQt2HY14bBE5k+NCq9U1d5jtHfS+5Jg/w5XpE=;
- b=1MYRb2Q8vuxX7BofH4S1MAf1v0Rg4jKB2db0utipczFDHPn9q1T9HiMSS+4RwaAFB0hG2J
- B/7oirTyJ8dQGHbuw6gYJYxzI9w6HGbKxJ7cMIYzy0pu+Bvx7Se2tynbpl/J6XFtYWFzwQ
- Z/pFex7XG8F/RDy0e6AP5tylzbVqm9Q=
+ t=1764073285; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hIiDFB4lXLCSNaXgSvu9a4tiQUccvW4Fa4L/NPFI88k=;
+ b=nlL8k2yDzYOwejq08015355jmSav/Wd0csC/MsVZnH9xoZVp+gWXOiRHyA3XK4UJg7wuuB
+ 4jiHFGHXjhwmsmyshm0zGE7RWaBIkqK5oWTV7GivfjkYKc0zc7et8TnnWi58w5XBM7lJtA
+ 4TPkR21AxxcQFo94M+5FvffSvcGOsnw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1764067487;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BCSr+rKQt2HY14bBE5k+NCq9U1d5jtHfS+5Jg/w5XpE=;
- b=zo+Nxijzra4tATm4UVWr/GN7/xUjNXwgjxJKfQV66lCsC4I3rv0rwTwPRCktgVSUdK/5hT
- UBzzDD7VSTgceRDA==
+ s=susede2_ed25519; t=1764073285;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hIiDFB4lXLCSNaXgSvu9a4tiQUccvW4Fa4L/NPFI88k=;
+ b=RAFZ+j9BhwRkGBRFFpySmDsMohRAZ5cXIHcGqyERxNDRZLJecYq4wp2UdZOzbDtTgOP/I7
+ wrx09Pp+9P6pUqCw==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nlL8k2yD;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=RAFZ+j9B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1764067486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BCSr+rKQt2HY14bBE5k+NCq9U1d5jtHfS+5Jg/w5XpE=;
- b=n4VAP5knA2p75ItQxzsZ7UjgFEMxgqEovAcZsi8S6B5OfIxIRS2jSZYENBzLbXXgSlGNzN
- miDLv17BsrKmmI1kZbInAOZFCN+y1cyD84D904lhBf0hYAdLVR/jG4SDnOG2/StqSYuhwe
- cGp5EbQ0+HS2xPToR3/GnlNfeqANmjc=
+ t=1764073285; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hIiDFB4lXLCSNaXgSvu9a4tiQUccvW4Fa4L/NPFI88k=;
+ b=nlL8k2yDzYOwejq08015355jmSav/Wd0csC/MsVZnH9xoZVp+gWXOiRHyA3XK4UJg7wuuB
+ 4jiHFGHXjhwmsmyshm0zGE7RWaBIkqK5oWTV7GivfjkYKc0zc7et8TnnWi58w5XBM7lJtA
+ 4TPkR21AxxcQFo94M+5FvffSvcGOsnw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1764067486;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BCSr+rKQt2HY14bBE5k+NCq9U1d5jtHfS+5Jg/w5XpE=;
- b=mgIxgk3hIeRsmgwlI7laXuAa6CgRRRwV09/5Nd/5o4riPeX1ycdsX/hoNa5wdJmkMvZXjk
- ZwWUvpC1fcK9F/Dg==
+ s=susede2_ed25519; t=1764073285;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hIiDFB4lXLCSNaXgSvu9a4tiQUccvW4Fa4L/NPFI88k=;
+ b=RAFZ+j9BhwRkGBRFFpySmDsMohRAZ5cXIHcGqyERxNDRZLJecYq4wp2UdZOzbDtTgOP/I7
+ wrx09Pp+9P6pUqCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED4F33EA65;
- Tue, 25 Nov 2025 10:44:45 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 058FE3EA63
+ for <ltp@lists.linux.it>; Tue, 25 Nov 2025 12:21:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Xq6COZ2IJWmHCwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 25 Nov 2025 10:44:45 +0000
-Date: Tue, 25 Nov 2025 11:45:39 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id NwZ7O0SfJWlIZwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Tue, 25 Nov 2025 12:21:24 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
-To: kernel test robot <oliver.sang@intel.com>
-Message-ID: <aSWI07xSK9zGsivq@yuki.lan>
-References: <202511251654.9c415e9b-lkp@intel.com>
+To: ltp@lists.linux.it
+Date: Tue, 25 Nov 2025 13:22:10 +0100
+Message-ID: <20251125122210.11316-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.51.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <202511251654.9c415e9b-lkp@intel.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
+X-Rspamd-Queue-Id: 1A6705BD82
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_SEVEN(0.00)[7];
- RCVD_TLS_ALL(0.00)[];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_ONE(0.00)[1];
+ MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:mid,suse.cz:email];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
  RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, yuki.lan:mid,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [linux-next:master] [sysctl] 50b496351d: ltp.proc01.fail
+Subject: [LTP] [PATCH] CI: do not checkout submodules
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,27 +110,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkp@intel.com, linux-kernel@vger.kernel.org,
- Joel Granados <joel.granados@kernel.org>, oe-lkp@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> PATH=/lkp/benchmarks/ltp:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/lkp/lkp/src/bin
-> 2025-11-25 05:37:33 cd /lkp/benchmarks/ltp
-> 2025-11-25 05:37:33 export LTP_RUNTIME_MUL=2
-> 2025-11-25 05:37:33 export LTPROOT=/lkp/benchmarks/ltp
-> 2025-11-25 05:37:33 kirk -U ltp -f fs-00
+This was originally added so that kirk installation is tested. The
+problem is that this brings random failures when git.kernel.org timeouts
+when we are checking out submodules that are not needed for the build
+and neither for the installation.
 
-Oliver can you please record the test logs with '-o results.json' and
-include that file in the download directory?
+Unfortunatelly there is no support for selective submodule installation
+in github checkout action. There is an issue and pull request hanging:
 
+https://github.com/actions/checkout/pull/1866
+https://github.com/actions/checkout/issues/1969
+
+It looks like if we wanted to checkout only kirk submodule we would have
+to install git and run all the commands ourselves in the CI, which I
+would like to avoid. Hence this commit removes the submodules checkout
+from the CI, with that we sacrifice kirk installation testing but avoid
+random failures.
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ .github/workflows/ci-docker-build.yml | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/.github/workflows/ci-docker-build.yml b/.github/workflows/ci-docker-build.yml
+index f7c779f63..09eb8bb6d 100644
+--- a/.github/workflows/ci-docker-build.yml
++++ b/.github/workflows/ci-docker-build.yml
+@@ -125,8 +125,6 @@ jobs:
+ 
+     - name: Git checkout
+       uses: actions/checkout@v1
+-      with:
+-        submodules: 'true'
+ 
+     - name: Install additional packages
+       run: |
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.51.2
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
