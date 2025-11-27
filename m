@@ -4,94 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC3E7D10375
-	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 07:23:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28362CFD2F6
+	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 07:23:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 245113CB39B
-	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 08:23:02 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id AA9103CB235
+	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 08:23:18 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EF0B23C79A8
- for <ltp@lists.linux.it>; Thu, 27 Nov 2025 08:22:44 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 13FDC3CBD4C
+ for <ltp@lists.linux.it>; Thu, 27 Nov 2025 08:22:51 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E2116140075B
- for <ltp@lists.linux.it>; Thu, 27 Nov 2025 08:22:43 +0100 (CET)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AR28CKP010953;
- Thu, 27 Nov 2025 07:22:41 GMT
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 92367140075B
+ for <ltp@lists.linux.it>; Thu, 27 Nov 2025 08:22:49 +0100 (CET)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AR28Eob004883;
+ Thu, 27 Nov 2025 07:22:47 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=pjBxIUpgf5/6ANyAnwYF/Rnc2y0BBXOdj/jdEDESt
- Ok=; b=mNXjBF9vr3jhkF7CLrjpNod24SgZgrRKrxF9sGQQT2yBEhKIYIYbF+QUk
- QbMo8IDHMC/zUP/sHMKz3iLyxJK39APNF6sflGp6HCPE9G7tYPXX5B7xJX7QdZQQ
- WFThlj4PH6YhG5RLkpg9kgHgACYDn/zmcESLispjcToW8c3Y9egMlEjFh3lHr+Us
- aaUas4SbsscU+IYSbzKN3v/oNOuBt2vi75Vu0HOKXfmRbifYyqwtsL+km2mXSejX
- LKm2/TQllOMw6Q8zAwPaZCMT9oRBRv4RiZKihiwe5f7q42LM63Lhor8vwHMSbfAC
- WqdcCJs+JrP3Ga+tKIFd/1DQZfN9w==
-Received: from ppma12.dal12v.mail.ibm.com
- (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ak4w9raky-1
+ :content-transfer-encoding:date:from:in-reply-to:message-id
+ :mime-version:references:subject:to; s=pp1; bh=WrITWaLw+sIuxR6jz
+ MMyb9PgjaxZhuZBE0q8K9up7pQ=; b=lWEmnCmJeKiTNSkAgVufR/pEf+pg3lIuo
+ 3V9VnRm9alcT9kjB/sHFHHnis6PsiE4cwe0rjvLxOmIOdUr/KB12UKVU7gIZSo+T
+ WHi+jnB9s3MOAMxkjFhdXA0RTcYLWe0KqamHWwx6MSqL9SPK8EDH1Qe+rT2nOFHB
+ pKey9kOvKyYPt5qYbqvjkhNHxrxY9jIhCw8XfAiBpVb6vYonpcsMO+EB+SZZetKy
+ i/WDooVAf0woOho+lZosxEXA41KBvW6xL0df8ySJEe95RWSNwwG5cP0WS8DlUpl2
+ kYKHp/Wsxs864LQTmsvY48dX1gyNuRLrhEC5IU2YqejSro26tKmPQ==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ak4u26yyw-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 27 Nov 2025 07:22:41 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
- by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AR5fXvJ030755;
- Thu, 27 Nov 2025 07:22:40 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4akqgspxxj-1
+ Thu, 27 Nov 2025 07:22:47 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AR64D43013916;
+ Thu, 27 Nov 2025 07:22:46 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4akrgnetx7-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 27 Nov 2025 07:22:40 +0000
+ Thu, 27 Nov 2025 07:22:46 +0000
 Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
  [10.20.54.106])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 5AR7Ma4U29557384
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 5AR7Mg6v60358920
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 27 Nov 2025 07:22:36 GMT
+ Thu, 27 Nov 2025 07:22:42 GMT
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 43FD320043;
- Thu, 27 Nov 2025 07:22:36 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 8434620043;
+ Thu, 27 Nov 2025 07:22:42 +0000 (GMT)
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 7253320040;
- Thu, 27 Nov 2025 07:22:35 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id A882320040;
+ Thu, 27 Nov 2025 07:22:41 +0000 (GMT)
 Received: from li-6442e9cc-24ed-11b2-a85c-915a5b5fa426.ibm.com.com (unknown
  [9.124.217.43]) by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Thu, 27 Nov 2025 07:22:35 +0000 (GMT)
+ Thu, 27 Nov 2025 07:22:41 +0000 (GMT)
 From: Pavithra <pavrampu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Thu, 27 Nov 2025 12:52:29 +0530
-Message-ID: <20251127072231.2104445-1-pavrampu@linux.ibm.com>
+Date: Thu, 27 Nov 2025 12:52:30 +0530
+Message-ID: <20251127072231.2104445-2-pavrampu@linux.ibm.com>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <20251127072231.2104445-1-pavrampu@linux.ibm.com>
+References: <20251127072231.2104445-1-pavrampu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTIyMDAyMSBTYWx0ZWRfX74IfQ8AOD9Fv
- BkozMM98n9JxDHjceYDnBrko9nAw+ftiAnZRbrkhmh7u0jvySuCQ0sAhOqB8yeHYbin0IZYL6TA
- lZeNaYtIHlG7aCYQPpfPjJkYzJVm6U5puMfVTt6lsE3EE9KCmeDNbnhuxUSI/L0+EfxELZ8olVj
- wCQW9Pc7ojW/Odxnv4iTX/7pgP66H9ScyyykWMRmdHzKCSBupl0ze1CiY8ptjdIukrjN5KF3NvU
- IvIiXWVDYBA9HnGONRNc2GebUXDE7XEzi4K+kUhQS4hffjW9fYu9aYaEdwtqgA2B43CcJLCxwy8
- EVYKDqseFL9Jq1edE6LDuFy9UvuTQ7GADwjyHVhpSFPTacnT4BTlyjmPGjmq7eyZSXRJZQqPk/w
- pgb0I8Fvlc25XyDRP5LKZDM3+kRbXw==
-X-Proofpoint-ORIG-GUID: nhQLo2ECXzcywzpxNvSqzBRDqbYEztP_
-X-Proofpoint-GUID: nhQLo2ECXzcywzpxNvSqzBRDqbYEztP_
-X-Authority-Analysis: v=2.4 cv=TMJIilla c=1 sm=1 tr=0 ts=6927fc41 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTIyMDAyMSBTYWx0ZWRfX2KoL9BMQb7vZ
+ 3E5LyLVHUemm4LLJ7HMxUfFemmVyP/6atoP29wDI6z7WsC/bFxLVK1as9vHekX86CfyWgw+Dt/0
+ 39oJ6zy+Jd6CI2gvd5doUMxoS1GGoayQToNQF//+dDEqrbtCV+GyISyvE5X62htad9AhxqZjaqT
+ Kbo29ijblUwaE3c7Z66K8T+HVgkR8BTDVBCUZwW4918upt5HrtmHAb/zNHf6eDAOH45ynezYrMa
+ yCDN7HkGQ07JZ9iFfbm/F3hnMZp+qivxnlRHr7lbWNtum5zSD9tRGKMQOyEWOBra9qmk7+wadhF
+ RLwWCaC+TLPPEw++fzlywu9tJGN23KUqoNhyoUHcxxFWQNEH6q9Tia2D0vnZWaq1m3S2tQW65+8
+ Bqjdnd1+0ZDoTz+yfU42D2QJRZm4mQ==
+X-Authority-Analysis: v=2.4 cv=SuidKfO0 c=1 sm=1 tr=0 ts=6927fc47 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
  a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=VnNF1IyMAAAA:8
- a=S46gSKlbKtiWyy_DmL8A:9
+ a=13Y0w-MyWRrMoNZ8uN8A:9
+X-Proofpoint-ORIG-GUID: y45bhB9A9_c1fcqgqejxK4GsGaTdIwXh
+X-Proofpoint-GUID: y45bhB9A9_c1fcqgqejxK4GsGaTdIwXh
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
  definitions=2025-11-25_02,2025-11-26_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 spamscore=0 phishscore=0 impostorscore=0 clxscore=1011
- adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511220021
+ priorityscore=1501 lowpriorityscore=0 clxscore=1015 impostorscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 phishscore=0 adultscore=0
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
+ definitions=main-2511220021
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] Adding new function read_maps required for
- hugemmap40.
+Subject: [LTP] [PATCH 2/3] Adding magic definition required for hugemmap40.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,76 +111,25 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Function to read and parse the '/proc/self/maps' file to debug memory-related issues.
+Defining HUGETLBFS_MAGIC.
 
 Signed-off-by: Pavithra <pavrampu@linux.ibm.com>
 ---
- testcases/kernel/mem/hugetlb/lib/hugetlb.c | 42 ++++++++++++++++++++++
- testcases/kernel/mem/hugetlb/lib/hugetlb.h |  1 +
- 2 files changed, 43 insertions(+)
+ include/tst_fs.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.c b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
-index 6a2976a53..fdd745eda 100644
---- a/testcases/kernel/mem/hugetlb/lib/hugetlb.c
-+++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
-@@ -141,3 +141,45 @@ void update_shm_size(size_t * shm_size)
- 		*shm_size = shmmax;
- 	}
- }
-+
-+#define MAPS_BUF_SZ 4096
-+int read_maps(unsigned long addr, char *buf)
-+{
-+        FILE *f;
-+        char line[MAPS_BUF_SZ];
-+        char *tmp;
-+
-+        f = fopen("/proc/self/maps", "r");
-+        if (!f) {
-+                tst_res(TFAIL, "Failed to open /proc/self/maps: %s\n", strerror(errno));
-+                return -1;
-+        }
-+
-+        while (1) {
-+                unsigned long start, end, off, ino;
-+                int ret;
-+
-+                tmp = fgets(line, MAPS_BUF_SZ, f);
-+                if (!tmp)
-+                        break;
-+
-+                buf[0] = '\0';
-+                ret = sscanf(line, "%lx-%lx %*s %lx %*s %ld %255s",
-+                             &start, &end, &off, &ino,
-+                             buf);
-+                if ((ret < 4) || (ret > 5)) {
-+                        tst_res(TFAIL, "Couldn't parse /proc/self/maps line: %s\n",
-+                                        line);
-+                        fclose(f);
-+                        return -1;
-+                }
-+
-+                if ((start <= addr) && (addr < end)) {
-+                        fclose(f);
-+                        return 1;
-+                }
-+        }
-+
-+        fclose(f);
-+        return 0;
-+}
-diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-index 22975c99a..a59382ab9 100644
---- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-+++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-@@ -57,6 +57,7 @@ int getipckey(void);
- int getuserid(char *user);
- void rm_shm(int shm_id);
- int do_readback(void *p, size_t size, char *desc);
-+int read_maps(unsigned long addr, char *buf);
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index ceae78e7e..c829170fb 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -33,6 +33,7 @@
+ #define TST_FUSE_MAGIC     0x65735546
+ #define TST_VFAT_MAGIC     0x4d44 /* AKA MSDOS */
+ #define TST_EXFAT_MAGIC    0x2011BAB0UL
++#define HUGETLBFS_MAGIC	   0x958458f6
  
- void update_shm_size(size_t *shm_size);
- 
+ /* fs/bcachefs/bcachefs_format.h */
+ #define TST_BCACHE_MAGIC		0xca451a4e
 -- 
 2.43.5
 
