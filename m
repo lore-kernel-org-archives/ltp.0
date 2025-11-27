@@ -4,169 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6572D111A8
-	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 04:51:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC3E7D10375
+	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 07:23:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9CC9E3CB812
-	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 05:51:25 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 245113CB39B
+	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 08:23:02 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1F2203C7F71
- for <ltp@lists.linux.it>; Thu, 27 Nov 2025 05:51:08 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+ by picard.linux.it (Postfix) with ESMTPS id EF0B23C79A8
+ for <ltp@lists.linux.it>; Thu, 27 Nov 2025 08:22:44 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3BA68600825
- for <ltp@lists.linux.it>; Thu, 27 Nov 2025 05:51:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1764219067; x=1795755067;
- h=date:from:to:cc:subject:message-id:references:
- in-reply-to:mime-version;
- bh=6H+r5gbQsb/vZ2AkSpgbNrBOz9DVi+es/F8DXN5VybI=;
- b=BoXoK7v1eAu9D2J1Wc9ZXE0qapd6nRVFl9vGL44JdGL6T8sd7akz0XFi
- Dyl5jdYxRMpfVt9ue99kCVXxg+86aznNSttvd3ZgDvbrtCFuXiXsN+HUd
- W2s1N2YS9ZSWjjpwplibpeoFbI0BlkgpY5wuTFRXDGJSEhexUmNqAFwS7
- ZtLoi006ciC6hfUDr5U2V9futuyHoYqJbYCMzJq/ng8BgLLkTNSs2xWTM
- vhbClt7yjI2GqBL9kwOe/d+R8tqxgxshHnG1/S8EMq0a5tckmP0OMZvuQ
- a51pXCuVB4EP6OUE9RzCFyaRppBjk9MfhiFYaZmWfQ4bOZCMfqClJubEJ w==;
-X-CSE-ConnectionGUID: SyYtuaVMR+GyiTgGIhcUHw==
-X-CSE-MsgGUID: 57pYxkZsRNyj3Wtbi91viA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11625"; a="65268347"
-X-IronPort-AV: E=Sophos;i="6.20,230,1758610800"; d="scan'208";a="65268347"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
- by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Nov 2025 20:51:04 -0800
-X-CSE-ConnectionGUID: jTqcBZRnSxqLzmbDpQfwAw==
-X-CSE-MsgGUID: oUF1LaSuQaiPDYSLPW/ABg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.20,230,1758610800"; d="scan'208";a="193354434"
-Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
- by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Nov 2025 20:51:04 -0800
-Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
- ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.29; Wed, 26 Nov 2025 20:51:03 -0800
-Received: from ORSEDG903.ED.cps.intel.com (10.7.248.13) by
- ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.29 via Frontend Transport; Wed, 26 Nov 2025 20:51:03 -0800
-Received: from PH8PR06CU001.outbound.protection.outlook.com (40.107.209.48) by
- edgegateway.intel.com (134.134.137.113) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.29; Wed, 26 Nov 2025 20:51:03 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=paDK32hBkOW38UACWREguePuh5vyKDgQmKnGtwROXBouoRy5VEHf2KeQKMbb1oTRKKWb5mPxuvwWfMhKbfgP7YlpcMCyUl4j+Wi8UuXnM90UzPu6y2ZWQRtp+TgfYFmw9fyoRqAWHKrShiieS58NKBzYOF+V0FGmwi42r7Rg90ej8PQC4oCbp+0RAUj1WYa5ZqGzDhTTyItWzwyPOI1YvrCtikAnV9swvhdvvmCc+OUqVbVqV0UfG+Coj7Mqt7nr+ZpJ/tI2le/FInX9iL4kDQXzEhw8IaJtLvuUBl3jX6XhSroJEah31AffNIb/JztoOsax/Gtck5efbCLItZjxyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VQFxTSxZif8D6kU15b5VkJww5b8is3IuB6bIbfAR8bA=;
- b=Cr2rmZGtCDSiD3YFT5rH9tHKGnvEc0gpInRj7wzqv1cKCOKggEPi4qXXI+QwhBfjk4WPgzTeIAq8hkGipKciQEsNNib3ayz5302CqCxWqj4dUzzn1e5l27CLjLqLdL7xASFZT5jg5LZvkMi/f8XSrFlov/MbAGVL9W3MTOL5N6jwPtGJSDj8wnDACyDEtcA0LTn2BqveICxSEhouRkZwO3d4okqls/cHQ/ZhElnMQczxE3nQAKBS+tuC3G30DfdbZXs8hxLq9XXbMpUP4mSE7Ra10zLjV7cXIsvnVat1oqNhC1RSAoVW+TOnbsGNrdX1NSiz9Qz1wvv44UYI3baY3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by MW4PR11MB5934.namprd11.prod.outlook.com (2603:10b6:303:189::7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9366.12; Thu, 27 Nov
- 2025 04:50:54 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c%5]) with mapi id 15.20.9366.012; Thu, 27 Nov 2025
- 04:50:54 +0000
-Date: Thu, 27 Nov 2025 12:50:44 +0800
-From: Oliver Sang <oliver.sang@intel.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <aSfYpFIc4dpYMLGj@xsang-OptiPlex-9020>
-References: <202511251654.9c415e9b-lkp@intel.com> <aSWI07xSK9zGsivq@yuki.lan>
- <aSZnS2a4hcHWB6V7@xsang-OptiPlex-9020> <aSbCY9flDrZGC5NC@yuki.lan>
-Content-Disposition: inline
-In-Reply-To: <aSbCY9flDrZGC5NC@yuki.lan>
-X-ClientProxiedBy: SG2P153CA0029.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::16)
- To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E2116140075B
+ for <ltp@lists.linux.it>; Thu, 27 Nov 2025 08:22:43 +0100 (CET)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AR28CKP010953;
+ Thu, 27 Nov 2025 07:22:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=pjBxIUpgf5/6ANyAnwYF/Rnc2y0BBXOdj/jdEDESt
+ Ok=; b=mNXjBF9vr3jhkF7CLrjpNod24SgZgrRKrxF9sGQQT2yBEhKIYIYbF+QUk
+ QbMo8IDHMC/zUP/sHMKz3iLyxJK39APNF6sflGp6HCPE9G7tYPXX5B7xJX7QdZQQ
+ WFThlj4PH6YhG5RLkpg9kgHgACYDn/zmcESLispjcToW8c3Y9egMlEjFh3lHr+Us
+ aaUas4SbsscU+IYSbzKN3v/oNOuBt2vi75Vu0HOKXfmRbifYyqwtsL+km2mXSejX
+ LKm2/TQllOMw6Q8zAwPaZCMT9oRBRv4RiZKihiwe5f7q42LM63Lhor8vwHMSbfAC
+ WqdcCJs+JrP3Ga+tKIFd/1DQZfN9w==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ak4w9raky-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 27 Nov 2025 07:22:41 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AR5fXvJ030755;
+ Thu, 27 Nov 2025 07:22:40 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4akqgspxxj-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 27 Nov 2025 07:22:40 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
+ [10.20.54.106])
+ by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 5AR7Ma4U29557384
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 27 Nov 2025 07:22:36 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 43FD320043;
+ Thu, 27 Nov 2025 07:22:36 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 7253320040;
+ Thu, 27 Nov 2025 07:22:35 +0000 (GMT)
+Received: from li-6442e9cc-24ed-11b2-a85c-915a5b5fa426.ibm.com.com (unknown
+ [9.124.217.43]) by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Thu, 27 Nov 2025 07:22:35 +0000 (GMT)
+From: Pavithra <pavrampu@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Thu, 27 Nov 2025 12:52:29 +0530
+Message-ID: <20251127072231.2104445-1-pavrampu@linux.ibm.com>
+X-Mailer: git-send-email 2.43.5
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|MW4PR11MB5934:EE_
-X-MS-Office365-Filtering-Correlation-Id: d0affd2a-3e13-47e6-fe78-08de2d708c11
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7053199007;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?U02qYYr26d34Y5JLAUT82iL6I4q/1CYDf+hYrtGuAdG+g6YwUAlFBOGzkvVE?=
- =?us-ascii?Q?flgZblwah/P5cuaxC/M61Dq/x8cPfhZJ+l+nJtLIPwv6dPG0O2Lo0j4UVhmE?=
- =?us-ascii?Q?I0o5biKUqfgrvtW0oYfXljseEwiz/qLS+LZPrFru4wFKMnaRx0r7eWOiJNp5?=
- =?us-ascii?Q?Lxjiz1T4oDTpQUS25Y13jfJJUsl4EOpgdLnyiWBVEdhK7TNmKitX1oh1RJJb?=
- =?us-ascii?Q?iYcc8selk63ZEFga47Eg5GRahm+WOFml8xxbsrpnFKZrA2PGQ3UEX7QS2Fpc?=
- =?us-ascii?Q?qWqoxdio5uYko1czVsJy7m+G4bcGPFjk2ohlyEXn6aS9m8ofDd6Op010OEna?=
- =?us-ascii?Q?QCZFYULDZOESPsBI0siXAQFHv6MLCE0DvyJsqx4o1ZXLqHN6CBrZG01Y0hlg?=
- =?us-ascii?Q?i3ZNI2yWQIiaxSMxIVxsPWwKNmDjgI7pBKyX8G/Y1UHSno4F6NCm+elNoyLx?=
- =?us-ascii?Q?HPlmDObzz1LUb92YtBERAmkSxVxt8YlJsczXB6in0xyhsfZW0oY9T5NKt3Dq?=
- =?us-ascii?Q?CAwCtHpO8EgajF+xfIb5vuoTcqINQRstvkP4MYMaPO2iQwCglsMFhyiWOyPM?=
- =?us-ascii?Q?345J8mjlcFFG+W3dal0V7mGyWXWuUlrt69UbuXhVeGTVNtKHuCV0MCw4Wpaj?=
- =?us-ascii?Q?HAYIKPQHV5XqO2NotT+wAiGRtk6UNJbOq3Uh9+dK/xSNgtM0pX3B2mfJEjbr?=
- =?us-ascii?Q?xQQxfi4aUgu6FfJTbF1yteDnmU43S78W9ZHjhJNFd8/ssIQtH6YLRCGVzacE?=
- =?us-ascii?Q?NgYOnHzLpZStPmszEPrjv8jeNeb5VOvH2+H6hE9fHThI6D61FH22+ZQ+9KWO?=
- =?us-ascii?Q?9YMaoFpm1fF3vSbY8AbCm34jmJr/91MZ1fQK9Rk1nqAGbpCiB8lUhROEJQsK?=
- =?us-ascii?Q?0L5cuU5F9gRAvJvHh8Jc8zBrPWQg8g/pOTiOhMQCThcXS39hx4IKoIpyRKN9?=
- =?us-ascii?Q?jK7fuaEgh0b/1aK8kYg6oR0Tqb+UnlHPIMj1GXoExd5gc16EkSDhZokGgEQH?=
- =?us-ascii?Q?q4CYsFaHMBBn1Z8UMShgMd47bebF2aGkPT7sBz3MOskWvk4A3xkrwUq6ZKFX?=
- =?us-ascii?Q?EKURH3Tq7/5SZUHtjfzEpuCvF3yXN6BbNqnm1wUSVNjQ5Ud5xo189AIfLncc?=
- =?us-ascii?Q?q9H9MHmVbG9lB3AXo9/XmNouqrHwv0lE6Fs/fjda3b7+zSwa1eMC9rkb7VRG?=
- =?us-ascii?Q?vT3EiHuJGu1URqTfnmI3rzmzkKqRzKtoRRYGmqqnlEtgF86fsmNtmQAKHLsE?=
- =?us-ascii?Q?AlGc6ryriKx81UHB3/W13a7sy6kftJ/ZNLbNUf5+/MVLNU+PxU4X4fJGqiZF?=
- =?us-ascii?Q?0Jqc6FrDnwN72Jmr6+u4sWRSaVAg929gq3wrG3TNNXf0sGeLDv5aFJgcpaB7?=
- =?us-ascii?Q?B9Dy1gHSsjQzlVcqeiuESfw02Uh4+Eq1Rdh3O9gxokdlThVMD8Jci3HFVTb0?=
- =?us-ascii?Q?PiC8Bk++ugoH9IUmFJ6/mUox6hx7tzM6?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:LV3PR11MB8603.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230040)(1800799024)(366016)(376014)(7053199007); DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vbNJMASwtqS62nm2pvXWPOKksBKlFjABWWkF77cOSjTP4nD4elBk9ntKmE/L?=
- =?us-ascii?Q?XwH6O2pUMdOGv6H0RseEwzVjDBAIASWN0Hp64pTXQbWoQu3OhygN7Fgs4nDk?=
- =?us-ascii?Q?AQfKOviR1/edkmdju95l0pGDdeb53XPcBvKy37ARDEGbrFNZdu8FnPJB8THR?=
- =?us-ascii?Q?rRZMPo37lOm014g0nmeYpd/2mjYzqaqzewbYnLsHhKYeVEbh1CIkaNwHJGXW?=
- =?us-ascii?Q?4SiRcZKMRYCYa7XwSEgjWuvmBM7GBdM7hcm1twMUIO5x8Vvyf7It9jNhmOKX?=
- =?us-ascii?Q?sTftGXwjZJ0m0Qr1uIUzXvgVvX97jE2nGs7vGxbkg6PxmVQVH0oRKXVFJm7S?=
- =?us-ascii?Q?pIXVJo+PCCoRGQetSZ+GbQt6GEMZXzD/ZyRJVDxzyJ5IczvSB3jipCJAhi0s?=
- =?us-ascii?Q?07j5b1JZjTzDgzw2fJk+ZxC9I7ADPLbD2ksXSctfNkhMziaesA7YLKdQnBiF?=
- =?us-ascii?Q?Sn6NggPCkyDFOqF4pBK3NHwCrK8/ySEgv+LNGgeFZ1+TcG3qVvjVl95irXmJ?=
- =?us-ascii?Q?A+3DDjl5veErOUGOIk6kFu5j74EAvO2X6kDi/wCpec9oMTITLbfD50DdWhpH?=
- =?us-ascii?Q?y6GknZYWsmMJKZplwKadefg/B0rQ5yn6RGSxoE6Jbl26Uv7OvWms4uGLfKLD?=
- =?us-ascii?Q?dfWfidVGPS32PjmHEQ28NGhJRfka74ouxynQg1RPO+aIuoAY3dSuGCA+AtBQ?=
- =?us-ascii?Q?xMzDB48VF6TTQP24mPNjHspWhVbWFMqNccxrDVRBogSwBIjk6EDJk+bdGJ02?=
- =?us-ascii?Q?4LKPnzvEpT4k/OeQlLfTHaXc2jRjcP/tGrCCsFh9YZSVZwhrJdkVZVmhp05N?=
- =?us-ascii?Q?9qna/EyijTnmBIsPmrHVbuOB2N07HAeBww1hPlibqKSIKbLPsK2hQA6RIaZJ?=
- =?us-ascii?Q?KeLR1RQ4N+LNwZt/Sr/4qm0tdVSJNWy63WLAxOILM3r7HWPJ7Sktz+HhGh5U?=
- =?us-ascii?Q?0DvJM1302MFlcMK6msdT22VsnuIDLB4rHafKJ0sP4151aG7w8sppKdPDC3IM?=
- =?us-ascii?Q?0+wy25g8l5zP2ekTj8CwJEMmdA7NtQ2WME+qbqPT0szVG2A2JzqAXESVt1sj?=
- =?us-ascii?Q?h0VYwzRfoSle3yMmibwb4wI+0Kt8yL2jWD2pN9Xz/Iu/ongbTtPfcCXy9igR?=
- =?us-ascii?Q?f7jD6ZEp2e2YI8Plw4FqZ97fGATBukMwO52QYY/zkLiYLwXs2dPx7SC7AKwI?=
- =?us-ascii?Q?VFfIc8hYwsgmoUfx85rXeZzomFvLQ+y1EPX4seTXJYy1YgSg1Xnmbkr7gCpc?=
- =?us-ascii?Q?Ug4SmJGRGKjraEeBhHw8fNm2urssXV5jVANePt2RM0JPoMih8F3UxmH6T0AA?=
- =?us-ascii?Q?L7+P6pEGjS+5ic+7FJBr4NoDHUspw/6l/VUQqxwOKr+hDPFVlKHTJfIz8dM/?=
- =?us-ascii?Q?qE8rwW3s6eG6EFO5FKtF6ue94lPRxGLBc4Q8jVkMlGLOTmCfxONvb0stg1cM?=
- =?us-ascii?Q?fwVoWjHEfS7LeMAnr6pvUfx1AD4DWKz8u5RnVWzDt4P81lxlZ00FVZqij2VF?=
- =?us-ascii?Q?kyti1RW2PieSzwmQVSO/bHRakfAuZe2qLkcufrMOM+UwyUhYNCsFWf5323V0?=
- =?us-ascii?Q?oQmXIotteLFYKqmodTrEsrnDtNBZgAnbmwPqIuStGad3Pg5fL+EJxYAbc2Rr?=
- =?us-ascii?Q?ig=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d0affd2a-3e13-47e6-fe78-08de2d708c11
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2025 04:50:54.3833 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Bmherm3OAm0M+mA6urp4dclumigxw5lSnPCV3AtyL+DH/MitRsjSRK1M0UXyrx/vORBzVVduIXgbzicL9MrEMg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB5934
-X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTIyMDAyMSBTYWx0ZWRfX74IfQ8AOD9Fv
+ BkozMM98n9JxDHjceYDnBrko9nAw+ftiAnZRbrkhmh7u0jvySuCQ0sAhOqB8yeHYbin0IZYL6TA
+ lZeNaYtIHlG7aCYQPpfPjJkYzJVm6U5puMfVTt6lsE3EE9KCmeDNbnhuxUSI/L0+EfxELZ8olVj
+ wCQW9Pc7ojW/Odxnv4iTX/7pgP66H9ScyyykWMRmdHzKCSBupl0ze1CiY8ptjdIukrjN5KF3NvU
+ IvIiXWVDYBA9HnGONRNc2GebUXDE7XEzi4K+kUhQS4hffjW9fYu9aYaEdwtqgA2B43CcJLCxwy8
+ EVYKDqseFL9Jq1edE6LDuFy9UvuTQ7GADwjyHVhpSFPTacnT4BTlyjmPGjmq7eyZSXRJZQqPk/w
+ pgb0I8Fvlc25XyDRP5LKZDM3+kRbXw==
+X-Proofpoint-ORIG-GUID: nhQLo2ECXzcywzpxNvSqzBRDqbYEztP_
+X-Proofpoint-GUID: nhQLo2ECXzcywzpxNvSqzBRDqbYEztP_
+X-Authority-Analysis: v=2.4 cv=TMJIilla c=1 sm=1 tr=0 ts=6927fc41 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=VnNF1IyMAAAA:8
+ a=S46gSKlbKtiWyy_DmL8A:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-25_02,2025-11-26_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 spamscore=0 phishscore=0 impostorscore=0 clxscore=1011
+ adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511220021
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [linux-next:master] [sysctl] 50b496351d: ltp.proc01.fail
+Subject: [LTP] [PATCH 1/3] Adding new function read_maps required for
+ hugemmap40.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -178,39 +103,85 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkp@intel.com, linux-kernel@vger.kernel.org,
- Joel Granados <joel.granados@kernel.org>, oe-lkp@lists.linux.dev,
- oliver.sang@intel.com, linux-fsdevel@vger.kernel.org, ltp@lists.linux.it
+Cc: pavrampu@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-hi, Cyril Hrubis,
+Function to read and parse the '/proc/self/maps' file to debug memory-related issues.
 
-On Wed, Nov 26, 2025 at 10:03:31AM +0100, Cyril Hrubis wrote:
-> Hi!
-> > I attached one results.json FYI.
-> 
-> Looks like the test is getting unexpected EINVAL when reading from files
-> from /proc/sys/net/ipv4/neigh/default/ and
-> /proc/sys/net/ipv6/neigh/default/ directories.
+Signed-off-by: Pavithra <pavrampu@linux.ibm.com>
+---
+ testcases/kernel/mem/hugetlb/lib/hugetlb.c | 42 ++++++++++++++++++++++
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h |  1 +
+ 2 files changed, 43 insertions(+)
 
-not sure if you need further information?
+diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.c b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+index 6a2976a53..fdd745eda 100644
+--- a/testcases/kernel/mem/hugetlb/lib/hugetlb.c
++++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+@@ -141,3 +141,45 @@ void update_shm_size(size_t * shm_size)
+ 		*shm_size = shmmax;
+ 	}
+ }
++
++#define MAPS_BUF_SZ 4096
++int read_maps(unsigned long addr, char *buf)
++{
++        FILE *f;
++        char line[MAPS_BUF_SZ];
++        char *tmp;
++
++        f = fopen("/proc/self/maps", "r");
++        if (!f) {
++                tst_res(TFAIL, "Failed to open /proc/self/maps: %s\n", strerror(errno));
++                return -1;
++        }
++
++        while (1) {
++                unsigned long start, end, off, ino;
++                int ret;
++
++                tmp = fgets(line, MAPS_BUF_SZ, f);
++                if (!tmp)
++                        break;
++
++                buf[0] = '\0';
++                ret = sscanf(line, "%lx-%lx %*s %lx %*s %ld %255s",
++                             &start, &end, &off, &ino,
++                             buf);
++                if ((ret < 4) || (ret > 5)) {
++                        tst_res(TFAIL, "Couldn't parse /proc/self/maps line: %s\n",
++                                        line);
++                        fclose(f);
++                        return -1;
++                }
++
++                if ((start <= addr) && (addr < end)) {
++                        fclose(f);
++                        return 1;
++                }
++        }
++
++        fclose(f);
++        return 0;
++}
+diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+index 22975c99a..a59382ab9 100644
+--- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
++++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+@@ -57,6 +57,7 @@ int getipckey(void);
+ int getuserid(char *user);
+ void rm_shm(int shm_id);
+ int do_readback(void *p, size_t size, char *desc);
++int read_maps(unsigned long addr, char *buf);
+ 
+ void update_shm_size(size_t *shm_size);
+ 
+-- 
+2.43.5
 
-> 
-> > it need some code change to upload it to download directory, we will consider
-> > to implement it in the future. thanks
-> 
-> Please do so, without the logs it's much harder to debug the problems.
-
-got it. we've implement the feature. will directly upload results.json to
-download directory for future ltp reports. thanks!
-
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
