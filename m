@@ -4,99 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A9E9D11183
-	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 08:27:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6FE8D11183
+	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 08:27:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DB98A3CC047
-	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 09:27:03 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 2157E3CBCFD
+	for <ltp@archiver.kernel.org>; Thu, 27 Nov 2025 09:27:20 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 843523CA9B3
+ by picard.linux.it (Postfix) with ESMTPS id 80E7F3CB099
  for <ltp@lists.linux.it>; Thu, 27 Nov 2025 09:26:47 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A752D200253
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A71866008A0
  for <ltp@lists.linux.it>; Thu, 27 Nov 2025 09:26:46 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B2C385BCC5;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 65A1433696;
  Thu, 27 Nov 2025 08:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1764232005; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=YPI/vRKnY36TXn431urPA64MCcqfVj+KOIo8WnfXEM0=;
- b=N9oSLnTduNSZp4fFAWZAMtBqL1i15BTL1cubHqOd2vuzOTsmr/Eo8w9MFGYTqXaRc9XGSH
- qqAp8qywbhhdki9oNp8t5erKS9xWNqZbYIHcZ4EKml9SlcouSRlCdeEBvzUShAKktElikV
- 9amxA3+c3NcEox+NIUkh85mDCpMKO7g=
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=MRh597Uvyolcc0CW0Pb2hTRUtRPoMsb7Tfu6bhz2sTI=;
+ b=UBnDinFFoYpVtYBgFpjzZB8guv496xZeByWyiI9xpZjzhpaarayDmqkdxlA/Hd/NnoV+lf
+ vcSeUAfQg/HnPogHu5C/ZRFp1W9hKitijGiFj/S3wBvfeo7mxPrncuT6e2TCyLWrzK5tBQ
+ rTn8Jy2V2xZffVDTK/t7jOgecQwN8lw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1764232005;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=YPI/vRKnY36TXn431urPA64MCcqfVj+KOIo8WnfXEM0=;
- b=k19UZz+lMYkX4HSkQ1S3ppQFV/Jlf1NARJ6pgeXCCBh1fS2jphMCVRT3c19BBEuOi0rCF7
- 8kp0Ua6CrgAGQNBg==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=MRh597Uvyolcc0CW0Pb2hTRUtRPoMsb7Tfu6bhz2sTI=;
+ b=YwyXzHWGkBVosxl/ArJSWiyoL3gLZgOYwjQyjN/xPkK7X6pKm512y3T0bWLsyGKC9Vv2LB
+ S5gY8LBMTsPuc7Bg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=t7DlTfMe;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=my395Ul5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1764232004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=YPI/vRKnY36TXn431urPA64MCcqfVj+KOIo8WnfXEM0=;
- b=3XzWAi4AOcc0aXlx7V1df2441N00NMU/sUwmlgb64XzxUIPnV2SgF7lHpiJ5ss6rAkj8Q4
- cTcBB8BTY0nYj8pgmXCXgBYetNRurJSIWmIWoNQoRWwhEmInTphnxPzwWMwn0whbUiOMIF
- rzDtpG9vasLi0QIMuWBum5FZeCkiNjU=
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=MRh597Uvyolcc0CW0Pb2hTRUtRPoMsb7Tfu6bhz2sTI=;
+ b=t7DlTfMeDnMJZkiROV8Z4PdvRosUSxJ06QUhFt5Uv1Gdxx5D092koY56G7UElAzl7cNv+9
+ 5B2eiGu0F2rxEqb3uwZYNbWIKYS4OyCxrpI1ByMYmIVPxe/5rtyi9moTLp2HqUSj/HTU0y
+ VaVl7IBaq5tFe6z508fZhSEqKWl4TIo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1764232004;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=YPI/vRKnY36TXn431urPA64MCcqfVj+KOIo8WnfXEM0=;
- b=+3H7PW/Mo17Io+xso2pfdYCDkDOQDd8du0K4yTQcl38KGfLqDCRteJVIw2saMcGzgV7gfG
- OACcmRv0hwT+LiCw==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=MRh597Uvyolcc0CW0Pb2hTRUtRPoMsb7Tfu6bhz2sTI=;
+ b=my395Ul5BgZ5csAL3Ibctavzazk5TOMTCY1IJ6aGmFGPrk0zWmgswYx60pQ1eK6SSXLxLS
+ LodR1J4bhKIqY5Ag==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6E3F23EA65;
- Thu, 27 Nov 2025 08:26:44 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D32BA3EA63;
+ Thu, 27 Nov 2025 08:26:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id gKRTGUQLKGmNJgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 27 Nov 2025 08:26:44 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id UiO/MkMLKGmNJgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 27 Nov 2025 08:26:43 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 27 Nov 2025 09:26:35 +0100
-Message-ID: <20251127082638.224110-2-pvorel@suse.cz>
+Date: Thu, 27 Nov 2025 09:26:34 +0100
+Message-ID: <20251127082638.224110-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251127082638.224110-1-pvorel@suse.cz>
-References: <20251127082638.224110-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_SEVEN(0.00)[8];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+X-Spamd-Result: default: False [-1.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ SUSPICIOUS_RECIPS(1.50)[]; MID_CONTAINS_FROM(1.00)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_SOME(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ FREEMAIL_CC(0.00)[gmail.com,linux.ibm.com,vger.kernel.org,suse.cz,redhat.com]; 
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:dkim];
+ TAGGED_RCPT(0.00)[]; RCPT_COUNT_SEVEN(0.00)[8];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 65A1433696
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/4] shell: Add tst_sudo.c helper
+Subject: [LTP] [PATCH v3 0/4] tst_sudo.c, ima_{conditionals,
+ measurements}.sh enhancements
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,112 +118,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-It will be used in LTP IMA tests. Not only it removes external
-dependency, but also fixes problem when 'nobody' user is not possible to
-use due using /usr/sbin/nologin shell.
+From: Petr Vorel <petr.vorel@gmail.com>
 
-Suggested-by: Jan Stancek <jstancek@redhat.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- doc/users/setup_tests.rst |  4 ++++
- testcases/lib/.gitignore  |  1 +
- testcases/lib/Makefile    |  2 +-
- testcases/lib/tst_sudo.c  | 50 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 56 insertions(+), 1 deletion(-)
+Changes v2->v3:
+Rebased due conflict when 69b28f1f78 ("shell: Add support for runtime")
+was merged.
+
+Links to v2:
+https://lore.kernel.org/ltp/20251121152111.10419-1-pvorel@suse.cz/
+https://patchwork.ozlabs.org/project/ltp/list/?series=483104&state=*
+
+Changes v1->v2:
+Main change is implementing LTP binary tst_sudo.c as suggested by Jan
+Stancek [1] instead of creating new user.
+
+Links to v1:
+https://lore.kernel.org/ltp/20251002083701.315334-1-pvorel@suse.cz/
+https://patchwork.ozlabs.org/project/ltp/list/?series=476004&state=*
+
+[1] https://lore.kernel.org/ltp/CAASaF6yjdrLLVnehESx1TjsrB_z48nmN_2i585GPfkG3Vvg15Q@mail.gmail.com/
+
+Petr Vorel (4):
+  shell: Add tst_sudo.c helper
+  tst_test.sh: Add TST_USR_{G,U}ID variables
+  ima_{conditionals,measurements}.sh: Use tst_sudo
+  ima_conditionals.sh: Split test by request
+
+ doc/users/setup_tests.rst                     |  4 +
+ runtest/ima                                   |  5 +-
+ .../integrity/ima/tests/ima_conditionals.sh   | 78 +++++++++++--------
+ .../integrity/ima/tests/ima_measurements.sh   | 11 +--
+ testcases/lib/.gitignore                      |  1 +
+ testcases/lib/Makefile                        |  2 +-
+ testcases/lib/tst_sudo.c                      | 51 ++++++++++++
+ testcases/lib/tst_test.sh                     |  6 +-
+ 8 files changed, 115 insertions(+), 43 deletions(-)
  create mode 100644 testcases/lib/tst_sudo.c
 
-diff --git a/doc/users/setup_tests.rst b/doc/users/setup_tests.rst
-index 38976f3b0a..9c49852830 100644
---- a/doc/users/setup_tests.rst
-+++ b/doc/users/setup_tests.rst
-@@ -71,6 +71,10 @@ users.
-    * - LTP_IMA_LOAD_POLICY
-      - Load IMA example policy, see :master:`testcases/kernel/security/integrity/ima/README.md`.
- 
-+   * - LTP_USR_UID, LTP_USR_GID
-+     - Set UID and GID of ``nobody`` user for :doc:`../developers/api_shell_tests`,
-+       see :master:`testcases/lib/tst_sudo.c`.
-+
-    * - LTP_VIRT_OVERRIDE
-      - Overrides virtual machine detection in the test library. Setting it to
-        empty string, tells the library that system is not a virtual machine.
-diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
-index 19d7c67bbe..785d638cba 100644
---- a/testcases/lib/.gitignore
-+++ b/testcases/lib/.gitignore
-@@ -26,3 +26,4 @@
- /tst_res_
- /tst_run_shell
- /tst_remaining_runtime
-+/tst_sudo
-diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
-index 2309a42a3d..9be9946057 100644
---- a/testcases/lib/Makefile
-+++ b/testcases/lib/Makefile
-@@ -17,6 +17,6 @@ MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
- 			   tst_get_median tst_hexdump tst_get_free_pids tst_timeout_kill\
- 			   tst_check_kconfigs tst_cgctl tst_fsfreeze tst_ns_create tst_ns_exec\
- 			   tst_ns_ifmove tst_lockdown_enabled tst_secureboot_enabled tst_res_\
--			   tst_run_shell tst_remaining_runtime
-+			   tst_run_shell tst_remaining_runtime tst_sudo
- 
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/lib/tst_sudo.c b/testcases/lib/tst_sudo.c
-new file mode 100644
-index 0000000000..e8d5d8dd9d
---- /dev/null
-+++ b/testcases/lib/tst_sudo.c
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 Petr Vorel <pvorel@suse.cz>
-+ */
-+
-+#define LTP_USR_UID 65534
-+#define LTP_USR_GID 65534
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+
-+static void print_help(void)
-+{
-+	fprintf(stderr, "Usage: %s cmd [args] ...\n", __FILE__);
-+	fprintf(stderr, "Usage: %s cmd [-h] print help\n\n", __FILE__);
-+
-+	fprintf(stderr, "Environment Variables\n");
-+	fprintf(stderr, "LTP_USR_UID: UID of 'nobody' user, defaults %d\n",
-+			LTP_USR_UID);
-+	fprintf(stderr, "LTP_USR_GID: GID of 'nobody' user, defaults %d\n",
-+			LTP_USR_GID);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	if (argc < 2 || !strcmp(argv[1], "-h")) {
-+		print_help();
-+		return 1;
-+	}
-+
-+	unsigned uid = LTP_USR_UID, gid = LTP_USR_GID;
-+
-+	char *uid_env = getenv(TST_TO_STR_(LTP_USR_UID));
-+	char *gid_env = getenv(TST_TO_STR_(LTP_USR_GID));
-+
-+	if (uid_env)
-+		uid = SAFE_STRTOL(uid_env, 1, INT_MAX);
-+
-+	if (gid_env)
-+		gid = SAFE_STRTOL(gid_env, 1, INT_MAX);
-+
-+	tst_res(TINFO, "UID: %d, GID: %d", uid, gid);
-+	SAFE_SETGROUPS(0, NULL);
-+	SAFE_SETRESGID(gid, gid, gid);
-+	SAFE_SETRESUID(uid, uid, uid);
-+
-+	SAFE_CMD((const char * const *)&argv[1], NULL, NULL);
-+
-+	return 0;
-+}
 -- 
 2.51.0
 
