@@ -4,106 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 632E6CFD376
-	for <ltp@archiver.kernel.org>; Fri, 28 Nov 2025 11:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 856C0CFD376
+	for <ltp@archiver.kernel.org>; Fri, 28 Nov 2025 15:09:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A9BF23CE1F9
-	for <ltp@archiver.kernel.org>; Fri, 28 Nov 2025 12:02:43 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id D15703CE456
+	for <ltp@archiver.kernel.org>; Fri, 28 Nov 2025 16:08:59 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 83F783C8232
- for <ltp@lists.linux.it>; Fri, 28 Nov 2025 12:02:25 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 3FC1B3C06EC
+ for <ltp@lists.linux.it>; Fri, 28 Nov 2025 16:08:40 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 97F541000DAA
- for <ltp@lists.linux.it>; Fri, 28 Nov 2025 12:02:24 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B2F21336FD;
- Fri, 28 Nov 2025 11:02:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1764327738;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WTqTBVqBNc9ww0sWUCKp08oxD6KFrgBMnyA7FeNw2sE=;
- b=HU7t5AofTktEbI7z82f0/dRAskfN/ZGKc1byeSILdPmLIpZe+djdoltgvyEk5+KkGaXbJc
- ENbJ0r71vjshAyQzVow0qPker5HLtqOdXduasTxhWYXEouHbJBwxaXYww/Y0Uz/ufbkv6P
- 0toFScLiQZge+5uzx9ed5lwtUcGlE9U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1764327738;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WTqTBVqBNc9ww0sWUCKp08oxD6KFrgBMnyA7FeNw2sE=;
- b=xMQ//5xZUNIQS+uZwfH1zNK/oJETKxAjKm9ow9VjcwTTE15LBC4lf152huua7XApgyEJha
- SOvnhsrLELOPLBDg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1764327733;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WTqTBVqBNc9ww0sWUCKp08oxD6KFrgBMnyA7FeNw2sE=;
- b=kZvfMSzGRDjMn3b5RPZXiUDfqaQWiI35MOEvwupom69rdX+U9PNxe0zvX/oxN+lTries1y
- NuwnDvy5rc0hkvEvihNg1GWvxnXF9ZnYXKbL3wuedob9b0qObxNGoq9QP1hxoNBwzKlfxy
- zdo2o+CRtzbd9RpysyTIDZGVJzdiZrQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1764327733;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WTqTBVqBNc9ww0sWUCKp08oxD6KFrgBMnyA7FeNw2sE=;
- b=MZhFttbKyzr9L3PT7z0zJoxR2n3RdvhYM+lCPG4qvLQz+WNwQbkqySAPuwomMsRtEWIe8g
- a7LrgXU9OOA4PwDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 800393EA63;
- Fri, 28 Nov 2025 11:02:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id mC1bHjWBKWnsGAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 28 Nov 2025 11:02:13 +0000
-Date: Fri, 28 Nov 2025 12:02:12 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Piotr Kubaj <piotr.kubaj@intel.com>
-Message-ID: <20251128110212.GA261918@pevik>
-References: <20251124105123.151772-1-piotr.kubaj@intel.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CFE1C1000DBD
+ for <ltp@lists.linux.it>; Fri, 28 Nov 2025 16:08:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1764342518; x=1795878518;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=gg5d/TpPjBKCKEpXIJZGxocYbRn1TNdRRXzGkzWkZ4g=;
+ b=iQBFBt7PpbPTOO20UZH2xGp9TfDkww/k+AqYWiG3oAfDnqGLBETGCaNU
+ 5XLhgwWV3oafNygexDpnkAWWwqYJBv7lCDuKJJO+INWUKe8rvz4w6pRM5
+ 4CW2N0SopBEBB6U6EkjZjj6ibDSZvCfyHQV9FNA1r03VjSrVrWmcRW3fz
+ vyi5KP62GXGzJt4AxNdzNZ8llNC+KTcko8GSpKUL1grKjT7vu8KCbXa3C
+ 4H8XXLxt1Oy+cd3vWUIbeUcxhjVtaiPCAT7g19gPbA+7J1TEAZqv/GBPP
+ ndc7ePdWGgt85zIdBf30eAleuyHSOZfVam2vcp4LoiC4BIQmpa71A1SNt g==;
+X-CSE-ConnectionGUID: KfTdlgsWSzeVCpBwKYu29g==
+X-CSE-MsgGUID: mSb7w4lhTg2oa6Iwjdd06Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11626"; a="77736053"
+X-IronPort-AV: E=Sophos;i="6.20,234,1758610800"; d="scan'208";a="77736053"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+ by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Nov 2025 07:08:29 -0800
+X-CSE-ConnectionGUID: MwghQ7c5RxuKD7GvJ3cW6g==
+X-CSE-MsgGUID: L6JS5dI8SDuqfiy57k/gbw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,234,1758610800"; d="scan'208";a="192598394"
+Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
+ by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Nov 2025 07:08:28 -0800
+From: Piotr Kubaj <piotr.kubaj@intel.com>
+To: ltp@lists.linux.it
+Date: Fri, 28 Nov 2025 16:08:13 +0100
+Message-ID: <20251128150815.294092-1-piotr.kubaj@intel.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20251124105123.151772-1-piotr.kubaj@intel.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[];
- RSPAMD_URIBL_FAIL(0.00)[thermal01.sh:query timed
- out,thermal_interrupt_events.sh:query timed out]; 
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo,tst_run.sh:url,thermal_interrupt_events.sh:url,tst_loader.sh:url];
- REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] thermal: add new test group
+Subject: [LTP] [PATCH v5] thermal: add new test group
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,182 +67,129 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
- helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
+ rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Piotr,
-
-> This is a new test for checking thermal interrupt events.
-> stress-ng is used because genload doesn't seem to generate enough load.
-
-> In particular, this version replaces use of tr and cut where awk is
-> already used.
-
-> --- /dev/null
-> +++ b/runtest/thermal
-> @@ -0,0 +1,3 @@
-> +# Thermal driver API
-> +# https://docs.kernel.org/driver-api/thermal/
-> +thermal_interrupt_events thermal01.sh
-
-I would not mind if the test itself was named thermal_interrupt_events.sh (=
-more
-descriptive), but that's a minor detail (which can be ignored or changed be=
-fore
-merge).
-
-...
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/thermal/thermal01.sh b/testcases/kernel/the=
-rmal/thermal01.sh
-> new file mode 100755
-> index 000000000..95adaf04b
-> --- /dev/null
-> +++ b/testcases/kernel/thermal/thermal01.sh
-> @@ -0,0 +1,100 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (C) 2025 Intel - http://www.intel.com/
-> +#
-> +# ---
-> +# doc
-> +# Tests the CPU package thermal sensor interface for Intel platforms.
-> +#
-> +# It works by checking the initial count of thermal interrupts. Then it
-> +# decreases the threshold for sending a thermal interrupt to just above
-> +# the current temperature and runs a workload on the CPU. Finally, it re=
-stores
-> +# the original thermal threshold and checks whether the number of thermal
-> +# interrupts increased.
-> +# ---
-> +#
-> +# ---
-> +# env
-> +# {
-> +#  "needs_root": true,
-> +#  "supported_archs": ["x86", "x86_64"],
-> +#  "needs_cmds": ["stress-ng"],
-> +#  "min_runtime": 180
-> +# }
-> +# ---
-> +
-> +. tst_loader.sh
-> +
-> +tst_test()
-> +{
-> +	local thermal_zone_numbers=3D""
-> +	local temp
-> +	local temp_high=3D""
-
-This could be just:
-local thermal_zone_numbers temp temp_high
-
-(empty shell variable is the same as =3D"").
-
-> +	local status=3D0
-> +
-> +	local interrupt_array_init=3D$(awk -F'[^0-9]*' '/Thermal event interrup=
-ts/ {$1=3D$1;print}' /proc/interrupts)
-> +	if [ $? -eq 0 ]; then
-> +		tst_res TDEBUG "Initial values of thermal interrupt counters: $interru=
-pt_array_init"
-> +		local num=3D$(tst_getconf _NPROCESSORS_ONLN)
-> +		tst_res TDEBUG "Number of logical cores: $num"
-> +	else
-> +		tst_brk TCONF "Thermal event interrupts is not found"
-> +	fi
-> +
-> +	# Below we check for the thermal_zone which uses x86_pkg_temp driver
-> +	local thermal_zone_numbers=3D$(grep -l x86_pkg_temp /sys/class/thermal/=
-thermal_zone*/type | xargs dirname)
-> +	tst_res TINFO "x86_pkg_temp thermal zones: $thermal_zone_numbers"
-> +
-> +	if [ -z $thermal_zone_numbers ]; then
-> +		tst_brk TCONF "No x86_pkg_temp thermal zones found"
-> +	fi
-> +	for i in $thermal_zone_numbers; do
-> +		tst_res TINFO "Currently testing x86_pkg_temp $i"
-> +		local TEMP=3D"$i/temp"
-> +		local temp=3D$(cat "$TEMP")
-> +		tst_res TDEBUG "$i's current temperature is $temp"
-> +		case $temp in
-> +		[0-9]*) ;;
-> +		*)
-> +			tst_brk TBROK "Unexpected zone temperature value $temp";;
-> +		esac
-> +		local trip=3D$(cat $i/trip_point_1_temp)
-> +		# Setting trip_point_1_temp for $i to $temp + 10 (0.001=B0C)
-> +		local temp_high=3D$(( temp + 10 ))
-> +		echo "$temp_high" > $i/trip_point_1_temp
-> +		local run_time=3D30
-> +		local sleep_time=3D10
-> +		while [ $sleep_time -gt 0 ]; do
-> +			ROD stress-ng --matrix 0 --timeout $run_time --quiet
-> +			local temp_cur=3D$(cat "$TEMP")
-> +			tst_res TDEBUG "temp_cur: $temp_cur"
-> +			[ $temp_cur -gt $temp_high ] && break
-> +			tst_sleep $sleep_time
-> +			run_time=3D$(( run_time - 3 ))
-> +			sleep_time=3D$(( sleep_time - 1 ))
-> +		done
-> +		[ $temp_cur -gt $temp_high ] || tst_res TFAIL "Zone temperature is not=
- rising as expected"
-> +
-> +		# Restore the original trip_point_1_temp value
-> +		echo "$trip" > $i/trip_point_1_temp
-
-FYI this is in /sys, otherwise for creating temporary file we would need in=
- the
-env.
-
-#  "needs_tmpdir": true,
-
-Thanks for your patch. I'm still not happy we introduce shell tests (sooner=
- or
-later somebody will invest his or his company time to rewrite that into C),=
- but
-I don't want to block this.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-NOTE: this needs to wait till my patch which adds ROD() is merged.
-
-https://lore.kernel.org/ltp/20251120161957.331580-1-pvorel@suse.cz/
-
-Kind regards,
-Petr
-
-> +
-> +		# Check whether thermal interrupts count actually increased
-> +		local interrupt_array_later=3D$(awk -F'[^0-9]*' '/Thermal event interr=
-upts/ {$1=3D$1;print}' /proc/interrupts)
-> +		tst_res TDEBUG "Current values of thermal interrupt counters: $interru=
-pt_array_later"
-> +		for j in $(seq 1 "$num"); do
-> +			local interrupt_later=3D$(echo "$interrupt_array_later" | awk -v j=3D=
-$j '{print $j}')
-> +			local interrupt_init=3D$(echo "$interrupt_array_init" | awk -v j=3D$j=
- '{print $j}')
-> +			if [ $interrupt_later -le $interrupt_init ]; then
-> +				status=3D1
-> +			fi
-> +		done
-> +	done
-> +
-> +	if [ $status -eq 0 ]; then
-> +		tst_res TPASS "x86 package thermal interrupt triggered"
-> +	else
-> +		tst_res TFAIL "x86 package thermal interrupt did not trigger"
-> +	fi
-> +}
-> +
-> +. tst_run.sh
-
--- =
-
-Mailing list info: https://lists.linux.it/listinfo/ltp
+VGhpcyBpcyBhIG5ldyB0ZXN0IGZvciBjaGVja2luZyB0aGVybWFsIGludGVycnVwdCBldmVudHMu
+CnN0cmVzcy1uZyBpcyB1c2VkIGJlY2F1c2UgZ2VubG9hZCBkb2Vzbid0IHNlZW0gdG8gZ2VuZXJh
+dGUgZW5vdWdoIGxvYWQuCgpUaGlzIHZlcnNpb24gY29ycmVjdHMgdGhlIG1pbm9yIG5pdHMgcG9p
+bnRlZCBvdXQgYnkgUGV0ciBWb3JlbC4KClNpZ25lZC1vZmYtYnk6IFBpb3RyIEt1YmFqIDxwaW90
+ci5rdWJhakBpbnRlbC5jb20+Ci0tLQogcnVudGVzdC90aGVybWFsICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHwgIDMgKwogc2NlbmFyaW9fZ3JvdXBzL2RlZmF1bHQgICAgICAgICAgICAg
+ICAgICAgICAgIHwgIDEgKwogdGVzdGNhc2VzL2tlcm5lbC9NYWtlZmlsZSAgICAgICAgICAgICAg
+ICAgICAgIHwgIDEgKwogdGVzdGNhc2VzL2tlcm5lbC90aGVybWFsL01ha2VmaWxlICAgICAgICAg
+ICAgIHwgMTEgKysrCiAuLi4vdGhlcm1hbC90aGVybWFsX2ludGVycnVwdF9ldmVudHMuc2ggICAg
+ICAgfCA5OCArKysrKysrKysrKysrKysrKysrCiA1IGZpbGVzIGNoYW5nZWQsIDExNCBpbnNlcnRp
+b25zKCspCiBjcmVhdGUgbW9kZSAxMDA2NDQgcnVudGVzdC90aGVybWFsCiBjcmVhdGUgbW9kZSAx
+MDA2NDQgdGVzdGNhc2VzL2tlcm5lbC90aGVybWFsL01ha2VmaWxlCiBjcmVhdGUgbW9kZSAxMDA3
+NTUgdGVzdGNhc2VzL2tlcm5lbC90aGVybWFsL3RoZXJtYWxfaW50ZXJydXB0X2V2ZW50cy5zaAoK
+ZGlmZiAtLWdpdCBhL3J1bnRlc3QvdGhlcm1hbCBiL3J1bnRlc3QvdGhlcm1hbApuZXcgZmlsZSBt
+b2RlIDEwMDY0NAppbmRleCAwMDAwMDAwMDAuLmI4NTIzN2Y5NQotLS0gL2Rldi9udWxsCisrKyBi
+L3J1bnRlc3QvdGhlcm1hbApAQCAtMCwwICsxLDMgQEAKKyMgVGhlcm1hbCBkcml2ZXIgQVBJCisj
+IGh0dHBzOi8vZG9jcy5rZXJuZWwub3JnL2RyaXZlci1hcGkvdGhlcm1hbC8KK3RoZXJtYWxfaW50
+ZXJydXB0X2V2ZW50cyB0aGVybWFsX2ludGVycnVwdF9ldmVudHMuc2gKZGlmZiAtLWdpdCBhL3Nj
+ZW5hcmlvX2dyb3Vwcy9kZWZhdWx0IGIvc2NlbmFyaW9fZ3JvdXBzL2RlZmF1bHQKaW5kZXggMGU3
+NmIyYmVlLi5mZmRkN2ZmMjUgMTAwNjQ0Ci0tLSBhL3NjZW5hcmlvX2dyb3Vwcy9kZWZhdWx0Cisr
+KyBiL3NjZW5hcmlvX2dyb3Vwcy9kZWZhdWx0CkBAIC0yNiwzICsyNiw0IEBAIGNyeXB0bwoga2Vy
+bmVsX21pc2MKIHVldmVudAogd2F0Y2hxdWV1ZQordGhlcm1hbApkaWZmIC0tZ2l0IGEvdGVzdGNh
+c2VzL2tlcm5lbC9NYWtlZmlsZSBiL3Rlc3RjYXNlcy9rZXJuZWwvTWFrZWZpbGUKaW5kZXggOThm
+ZDQ1YTlkLi5hYzgxNmU0ZTggMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvTWFrZWZpbGUK
+KysrIGIvdGVzdGNhc2VzL2tlcm5lbC9NYWtlZmlsZQpAQCAtMzYsNiArMzYsNyBAQCBTVUJESVJT
+CQkJKz0gY29ubmVjdG9ycyBcCiAJCQkgICBzY2hlZCBcCiAJCQkgICBzZWN1cml0eSBcCiAJCQkg
+ICBzb3VuZCBcCisJCQkgICB0aGVybWFsIFwKIAkJCSAgIHRyYWNpbmcgXAogCQkJICAgdWV2ZW50
+cyBcCiAJCQkgICB3YXRjaHF1ZXVlIFwKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvdGhl
+cm1hbC9NYWtlZmlsZSBiL3Rlc3RjYXNlcy9rZXJuZWwvdGhlcm1hbC9NYWtlZmlsZQpuZXcgZmls
+ZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwMDAuLmVkZDMzODYwNQotLS0gL2Rldi9udWxsCisr
+KyBiL3Rlc3RjYXNlcy9rZXJuZWwvdGhlcm1hbC9NYWtlZmlsZQpAQCAtMCwwICsxLDExIEBACisj
+IFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyCisjIENvcHlyaWdodCAo
+YykgMjAyNSwgSW50ZWwgQ29ycG9yYXRpb24uIEFsbCByaWdodHMgcmVzZXJ2ZWQuCisjIEF1dGhv
+cjpQaW90ciBLdWJhaiA8cGlvdHIua3ViYWpAaW50ZWwuY29tPgorCit0b3Bfc3JjZGlyICAgICAg
+ICAgICAgID89IC4uLy4uLy4uCisKK2luY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL2Vu
+dl9wcmUubWsKKworSU5TVEFMTF9UQVJHRVRTICAgICAgICAgICAgICAgIDo9ICouc2gKKworaW5j
+bHVkZSAkKHRvcF9zcmNkaXIpL2luY2x1ZGUvbWsvZ2VuZXJpY19sZWFmX3RhcmdldC5tawpkaWZm
+IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC90aGVybWFsL3RoZXJtYWxfaW50ZXJydXB0X2V2ZW50
+cy5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwvdGhlcm1hbC90aGVybWFsX2ludGVycnVwdF9ldmVudHMu
+c2gKbmV3IGZpbGUgbW9kZSAxMDA3NTUKaW5kZXggMDAwMDAwMDAwLi4zOWUzODhmYzEKLS0tIC9k
+ZXYvbnVsbAorKysgYi90ZXN0Y2FzZXMva2VybmVsL3RoZXJtYWwvdGhlcm1hbF9pbnRlcnJ1cHRf
+ZXZlbnRzLnNoCkBAIC0wLDAgKzEsOTggQEAKKyMhL2Jpbi9zaAorIyBTUERYLUxpY2Vuc2UtSWRl
+bnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgorIyBDb3B5cmlnaHQgKEMpIDIwMjUgSW50ZWwgLSBo
+dHRwOi8vd3d3LmludGVsLmNvbS8KKyMKKyMgLS0tCisjIGRvYworIyBUZXN0cyB0aGUgQ1BVIHBh
+Y2thZ2UgdGhlcm1hbCBzZW5zb3IgaW50ZXJmYWNlIGZvciBJbnRlbCBwbGF0Zm9ybXMuCisjCisj
+IEl0IHdvcmtzIGJ5IGNoZWNraW5nIHRoZSBpbml0aWFsIGNvdW50IG9mIHRoZXJtYWwgaW50ZXJy
+dXB0cy4gVGhlbiBpdAorIyBkZWNyZWFzZXMgdGhlIHRocmVzaG9sZCBmb3Igc2VuZGluZyBhIHRo
+ZXJtYWwgaW50ZXJydXB0IHRvIGp1c3QgYWJvdmUKKyMgdGhlIGN1cnJlbnQgdGVtcGVyYXR1cmUg
+YW5kIHJ1bnMgYSB3b3JrbG9hZCBvbiB0aGUgQ1BVLiBGaW5hbGx5LCBpdCByZXN0b3JlcworIyB0
+aGUgb3JpZ2luYWwgdGhlcm1hbCB0aHJlc2hvbGQgYW5kIGNoZWNrcyB3aGV0aGVyIHRoZSBudW1i
+ZXIgb2YgdGhlcm1hbAorIyBpbnRlcnJ1cHRzIGluY3JlYXNlZC4KKyMgLS0tCisjCisjIC0tLQor
+IyBlbnYKKyMgeworIyAgIm5lZWRzX3Jvb3QiOiB0cnVlLAorIyAgInN1cHBvcnRlZF9hcmNocyI6
+IFsieDg2IiwgIng4Nl82NCJdLAorIyAgIm5lZWRzX2NtZHMiOiBbInN0cmVzcy1uZyJdLAorIyAg
+Im1pbl9ydW50aW1lIjogMTgwCisjIH0KKyMgLS0tCisKKy4gdHN0X2xvYWRlci5zaAorCit0c3Rf
+dGVzdCgpCit7CisJbG9jYWwgdGhlcm1hbF96b25lX251bWJlcnMgdGVtcCB0ZW1wX2hpZ2gKKwls
+b2NhbCBzdGF0dXM9MAorCisJbG9jYWwgaW50ZXJydXB0X2FycmF5X2luaXQ9JChhd2sgLUYnW14w
+LTldKicgJy9UaGVybWFsIGV2ZW50IGludGVycnVwdHMvIHskMT0kMTtwcmludH0nIC9wcm9jL2lu
+dGVycnVwdHMpCisJaWYgWyAkPyAtZXEgMCBdOyB0aGVuCisJCXRzdF9yZXMgVERFQlVHICJJbml0
+aWFsIHZhbHVlcyBvZiB0aGVybWFsIGludGVycnVwdCBjb3VudGVyczogJGludGVycnVwdF9hcnJh
+eV9pbml0IgorCQlsb2NhbCBudW09JCh0c3RfZ2V0Y29uZiBfTlBST0NFU1NPUlNfT05MTikKKwkJ
+dHN0X3JlcyBUREVCVUcgIk51bWJlciBvZiBsb2dpY2FsIGNvcmVzOiAkbnVtIgorCWVsc2UKKwkJ
+dHN0X2JyayBUQ09ORiAiVGhlcm1hbCBldmVudCBpbnRlcnJ1cHRzIGlzIG5vdCBmb3VuZCIKKwlm
+aQorCisJIyBCZWxvdyB3ZSBjaGVjayBmb3IgdGhlIHRoZXJtYWxfem9uZSB3aGljaCB1c2VzIHg4
+Nl9wa2dfdGVtcCBkcml2ZXIKKwlsb2NhbCB0aGVybWFsX3pvbmVfbnVtYmVycz0kKGdyZXAgLWwg
+eDg2X3BrZ190ZW1wIC9zeXMvY2xhc3MvdGhlcm1hbC90aGVybWFsX3pvbmUqL3R5cGUgfCB4YXJn
+cyBkaXJuYW1lKQorCXRzdF9yZXMgVElORk8gIng4Nl9wa2dfdGVtcCB0aGVybWFsIHpvbmVzOiAk
+dGhlcm1hbF96b25lX251bWJlcnMiCisKKwlpZiBbIC16ICR0aGVybWFsX3pvbmVfbnVtYmVycyBd
+OyB0aGVuCisJCXRzdF9icmsgVENPTkYgIk5vIHg4Nl9wa2dfdGVtcCB0aGVybWFsIHpvbmVzIGZv
+dW5kIgorCWZpCisJZm9yIGkgaW4gJHRoZXJtYWxfem9uZV9udW1iZXJzOyBkbworCQl0c3RfcmVz
+IFRJTkZPICJDdXJyZW50bHkgdGVzdGluZyB4ODZfcGtnX3RlbXAgJGkiCisJCWxvY2FsIFRFTVA9
+IiRpL3RlbXAiCisJCWxvY2FsIHRlbXA9JChjYXQgIiRURU1QIikKKwkJdHN0X3JlcyBUREVCVUcg
+IiRpJ3MgY3VycmVudCB0ZW1wZXJhdHVyZSBpcyAkdGVtcCIKKwkJY2FzZSAkdGVtcCBpbgorCQlb
+MC05XSopIDs7CisJCSopCisJCQl0c3RfYnJrIFRCUk9LICJVbmV4cGVjdGVkIHpvbmUgdGVtcGVy
+YXR1cmUgdmFsdWUgJHRlbXAiOzsKKwkJZXNhYworCQlsb2NhbCB0cmlwPSQoY2F0ICRpL3RyaXBf
+cG9pbnRfMV90ZW1wKQorCQkjIFNldHRpbmcgdHJpcF9wb2ludF8xX3RlbXAgZm9yICRpIHRvICR0
+ZW1wICsgMTAgKDAuMDAxwrBDKQorCQlsb2NhbCB0ZW1wX2hpZ2g9JCgoIHRlbXAgKyAxMCApKQor
+CQllY2hvICIkdGVtcF9oaWdoIiA+ICRpL3RyaXBfcG9pbnRfMV90ZW1wCisJCWxvY2FsIHJ1bl90
+aW1lPTMwCisJCWxvY2FsIHNsZWVwX3RpbWU9MTAKKwkJd2hpbGUgWyAkc2xlZXBfdGltZSAtZ3Qg
+MCBdOyBkbworCQkJUk9EIHN0cmVzcy1uZyAtLW1hdHJpeCAwIC0tdGltZW91dCAkcnVuX3RpbWUg
+LS1xdWlldAorCQkJbG9jYWwgdGVtcF9jdXI9JChjYXQgIiRURU1QIikKKwkJCXRzdF9yZXMgVERF
+QlVHICJ0ZW1wX2N1cjogJHRlbXBfY3VyIgorCQkJWyAkdGVtcF9jdXIgLWd0ICR0ZW1wX2hpZ2gg
+XSAmJiBicmVhaworCQkJdHN0X3NsZWVwICRzbGVlcF90aW1lCisJCQlydW5fdGltZT0kKCggcnVu
+X3RpbWUgLSAzICkpCisJCQlzbGVlcF90aW1lPSQoKCBzbGVlcF90aW1lIC0gMSApKQorCQlkb25l
+CisJCVsgJHRlbXBfY3VyIC1ndCAkdGVtcF9oaWdoIF0gfHwgdHN0X3JlcyBURkFJTCAiWm9uZSB0
+ZW1wZXJhdHVyZSBpcyBub3QgcmlzaW5nIGFzIGV4cGVjdGVkIgorCisJCSMgUmVzdG9yZSB0aGUg
+b3JpZ2luYWwgdHJpcF9wb2ludF8xX3RlbXAgdmFsdWUKKwkJZWNobyAiJHRyaXAiID4gJGkvdHJp
+cF9wb2ludF8xX3RlbXAKKworCQkjIENoZWNrIHdoZXRoZXIgdGhlcm1hbCBpbnRlcnJ1cHRzIGNv
+dW50IGFjdHVhbGx5IGluY3JlYXNlZAorCQlsb2NhbCBpbnRlcnJ1cHRfYXJyYXlfbGF0ZXI9JChh
+d2sgLUYnW14wLTldKicgJy9UaGVybWFsIGV2ZW50IGludGVycnVwdHMvIHskMT0kMTtwcmludH0n
+IC9wcm9jL2ludGVycnVwdHMpCisJCXRzdF9yZXMgVERFQlVHICJDdXJyZW50IHZhbHVlcyBvZiB0
+aGVybWFsIGludGVycnVwdCBjb3VudGVyczogJGludGVycnVwdF9hcnJheV9sYXRlciIKKwkJZm9y
+IGogaW4gJChzZXEgMSAiJG51bSIpOyBkbworCQkJbG9jYWwgaW50ZXJydXB0X2xhdGVyPSQoZWNo
+byAiJGludGVycnVwdF9hcnJheV9sYXRlciIgfCBhd2sgLXYgaj0kaiAne3ByaW50ICRqfScpCisJ
+CQlsb2NhbCBpbnRlcnJ1cHRfaW5pdD0kKGVjaG8gIiRpbnRlcnJ1cHRfYXJyYXlfaW5pdCIgfCBh
+d2sgLXYgaj0kaiAne3ByaW50ICRqfScpCisJCQlpZiBbICRpbnRlcnJ1cHRfbGF0ZXIgLWxlICRp
+bnRlcnJ1cHRfaW5pdCBdOyB0aGVuCisJCQkJc3RhdHVzPTEKKwkJCWZpCisJCWRvbmUKKwlkb25l
+CisKKwlpZiBbICRzdGF0dXMgLWVxIDAgXTsgdGhlbgorCQl0c3RfcmVzIFRQQVNTICJ4ODYgcGFj
+a2FnZSB0aGVybWFsIGludGVycnVwdCB0cmlnZ2VyZWQiCisJZWxzZQorCQl0c3RfcmVzIFRGQUlM
+ICJ4ODYgcGFja2FnZSB0aGVybWFsIGludGVycnVwdCBkaWQgbm90IHRyaWdnZXIiCisJZmkKK30K
+KworLiB0c3RfcnVuLnNoCi0tIAoyLjQ3LjMKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpJbnRlbCBUZWNobm9sb2d5
+IFBvbGFuZCBzcC4geiBvLm8uCnVsLiBTbG93YWNraWVnbyAxNzMgfCA4MC0yOTggR2RhbnNrIHwg
+U2FkIFJlam9ub3d5IEdkYW5zayBQb2xub2MgfCBWSUkgV3lkemlhbCBHb3Nwb2RhcmN6eSBLcmFq
+b3dlZ28gUmVqZXN0cnUgU2Fkb3dlZ28gLSBLUlMgMTAxODgyIHwgTklQIDk1Ny0wNy01Mi0zMTYg
+fCBLYXBpdGFsIHpha2xhZG93eSAyMDAuMDAwIFBMTi4KU3BvbGthIG9zd2lhZGN6YSwgemUgcG9z
+aWFkYSBzdGF0dXMgZHV6ZWdvIHByemVkc2llYmlvcmN5IHcgcm96dW1pZW5pdSB1c3Rhd3kgeiBk
+bmlhIDggbWFyY2EgMjAxMyByLiBvIHByemVjaXdkemlhbGFuaXUgbmFkbWllcm55bSBvcG96bmll
+bmlvbSB3IHRyYW5zYWtjamFjaCBoYW5kbG93eWNoLgoKVGEgd2lhZG9tb3NjIHdyYXogeiB6YWxh
+Y3puaWthbWkgamVzdCBwcnplem5hY3pvbmEgZGxhIG9rcmVzbG9uZWdvIGFkcmVzYXRhIGkgbW96
+ZSB6YXdpZXJhYyBpbmZvcm1hY2plIHBvdWZuZS4gVyByYXppZSBwcnp5cGFka293ZWdvIG90cnp5
+bWFuaWEgdGVqIHdpYWRvbW9zY2ksIHByb3NpbXkgbyBwb3dpYWRvbWllbmllIG5hZGF3Y3kgb3Jh
+eiB0cndhbGUgamVqIHVzdW5pZWNpZTsgamFraWVrb2x3aWVrIHByemVnbGFkYW5pZSBsdWIgcm96
+cG93c3plY2huaWFuaWUgamVzdCB6YWJyb25pb25lLgpUaGlzIGUtbWFpbCBhbmQgYW55IGF0dGFj
+aG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBtYXRlcmlhbCBmb3IgdGhlIHNvbGUgdXNl
+IG9mIHRoZSBpbnRlbmRlZCByZWNpcGllbnQocykuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRl
+ZCByZWNpcGllbnQsIHBsZWFzZSBjb250YWN0IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSBhbGwgY29w
+aWVzOyBhbnkgcmV2aWV3IG9yIGRpc3RyaWJ1dGlvbiBieSBvdGhlcnMgaXMgc3RyaWN0bHkgcHJv
+aGliaXRlZC4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9s
+aXN0aW5mby9sdHAK
