@@ -4,95 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2E19D111A8
-	for <ltp@archiver.kernel.org>; Sun, 30 Nov 2025 05:14:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40722D116F3
+	for <ltp@archiver.kernel.org>; Wed,  3 Dec 2025 08:13:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1764749598; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=amv8Dh/OMjiXQNOEOTbFvDQFPT/WGPjy63hJdCeSSN8=;
+ b=SEZZqtUNBLQX+UleI7YuR3vMPDPq2bbkVqklOMDN2ruyQcdNypD+3OuRiwMZVUqvJQ88T
+ eW8vLC1dCqIxnKaC5ScgVlX5u1uinMaZYUYavoluxWzCAdVMA7tZL56Q4N6AXVzywREx/Lb
+ bsMRgzWy69Bm52BfwNxqzb1zW80r9O8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D099F3C827B
-	for <ltp@archiver.kernel.org>; Sun, 30 Nov 2025 06:14:02 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id F24FF3CEB95
+	for <ltp@archiver.kernel.org>; Wed,  3 Dec 2025 09:13:17 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0C3FE3C1455
- for <ltp@lists.linux.it>; Sun, 30 Nov 2025 06:13:44 +0100 (CET)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 8707B3C00CF
+ for <ltp@lists.linux.it>; Wed,  3 Dec 2025 09:12:57 +0100 (CET)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4325A140042A
- for <ltp@lists.linux.it>; Sun, 30 Nov 2025 06:13:43 +0100 (CET)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AU3PnaZ020351;
- Sun, 30 Nov 2025 05:13:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=tDJJgrI1ye1xoj59b9tXaDxiMphbWykzIvGZPKkSl
- aU=; b=kRbFv1tfBIrrjIjKnxgl9SkSFkJNHcJTSRA6wxo6AgAWsi8ghCf8SM3g2
- 0fA6l/nHaXe2aog2+oZnIWQUfInxOfbXwsrdIG0geX/vXD6aqQAHV7H/lvs6dRlI
- VKcc34RlbcvTgWL6OXvcoCBBQkGeoyE6yIEmPAUSPatqZDfT8XBD6CrV8ANry9rH
- 7uh19LyhSvTU9Td02LP6B0jv9tCaQj3nlOYabtnIXb5+HTH8JnqaHy+Y1NyTf3Fb
- 0D4dFjfO/ESfmNSUMk355eDcRRQyDQEIGqdiQG/8PLkOt1ykVFphCyyGsfrO/1J2
- 3m0ic/2qtI053GwzRq9C0fZM1SZJg==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aqrg52a5g-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 30 Nov 2025 05:13:41 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AU2gLqP003834;
- Sun, 30 Nov 2025 05:13:40 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4ardcj8ame-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 30 Nov 2025 05:13:40 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
- [10.20.54.106])
- by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 5AU5DaI926607960
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sun, 30 Nov 2025 05:13:36 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id B09BE20043;
- Sun, 30 Nov 2025 05:13:36 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id DC48020040;
- Sun, 30 Nov 2025 05:13:35 +0000 (GMT)
-Received: from li-6442e9cc-24ed-11b2-a85c-915a5b5fa426.ibm.com.com (unknown
- [9.39.29.79]) by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Sun, 30 Nov 2025 05:13:35 +0000 (GMT)
-From: Pavithra <pavrampu@linux.ibm.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 018E21400E0C
+ for <ltp@lists.linux.it>; Wed,  3 Dec 2025 09:12:56 +0100 (CET)
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id CFA873F857
+ for <ltp@lists.linux.it>; Wed,  3 Dec 2025 08:12:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20251003; t=1764749574;
+ bh=LEO3Kwl9EOqsIYhtMdkGwnfeH6DMVojvueM2ZcxPgoQ=;
+ h=From:To:Subject:Date:Message-ID:MIME-Version;
+ b=Q7HNaU1UozYVmvGzEoNI3k77Vxsrs1O7jBwp4oO0T3L0vYl/v8iJ8zPSEddBif17K
+ 3UiSoa/3x4VN6i1ZeaIb4VTLRPFwMacp//vVergcrx83a+CvxAoa7GyP1HlQdVsIV0
+ jWsWwGWlWq9RRBZvswEEMwCk4IxipavjwSgjY/k/rEZwiVBfU7RvlsMh/Ot1OcQ0Fc
+ KL/OoVKaTCBE7ofVv/Ybmp7ec5uTPOdy59nZNwukBlmqdyoobXb5rWFgngt6YbL5oq
+ wdIVnChszsEzZSFW9CElhydKFWVF8QpJg7YRsqlRe/hzkXZZjOjEReonjzgHtiUo+v
+ q+cR73a1U+njeIAyBw0Qce5eWnQuf7Vfvx1vwwR7Qg1PedUpuZImWiag1U/ABEEkQB
+ wMuS8ykXr46n5AUZis8SBlq4HPGnFZT0CGw4qZrFZVmZVO9CUPZwWQetIKqG4vS9dQ
+ 1ZFgU0mF9pu3RDvf7sUkdB5hetX1cFDSgQStfLFVbQi97FyueHL3JTePpz9uEfh0qO
+ bSlKetJIJ0oiJ6bn3rwCi6qOP8HEauG87sY68FQBL82Qu2BmIGTVy0coPwnidy8+Uo
+ U7ImdxCnu+BFuw44svekNrkH6qaIrOH7bd/QwDc2QGrdxnuLgaR/bkIjRURqdRNRB1
+ VUPOud250ByapCNzYZJX2HW8=
+Received: by mail-pl1-f198.google.com with SMTP id
+ d9443c01a7336-29806c42760so199935995ad.2
+ for <ltp@lists.linux.it>; Wed, 03 Dec 2025 00:12:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1764749573; x=1765354373;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=LEO3Kwl9EOqsIYhtMdkGwnfeH6DMVojvueM2ZcxPgoQ=;
+ b=tKx0c3RPf0SIKzbnowvJL0sZCMrw/YOFZ1JHcxi4E//PuEn1jRXK1Xa/YmSnqUtJso
+ 4mplw1KjquOTn9bHYwi0FF4wbBjowJYFo+HTiJS8wy20N991vLaw2KuzBPsS2DECiYVy
+ WE9N5tulCGtGlIxKnKkirzfjOHGjn9m/bLfel0x5MW6ahhJOkjhPa0+ZrAr1XzD6vq8o
+ uUDbeVW5EaD94zVjVzvrE/AQ7+mmdq19dGvXXKs5VnzJtxQf1Djns1fPyBKtng32QehN
+ Ll9OMojyruQgUmoaiWZR7wjWwcLAQLkcpe9dFomQZBU6zLYnjWSiOx9Np7hwDV2IQBFO
+ r6tA==
+X-Gm-Message-State: AOJu0YxXJJGME4WD812gTBDEAM8bKA8NbtzeabT1iiJoScxKc5u6JBxW
+ 5UNxDTcroRiMqui1IxeOqWj0ISc0KRvyhRrnMe6uTpVZC1+LFGdvgH1wzw45Fj6mr13CFpkmy2K
+ HTYCWgNO462T4IAAg/ctlA/prdPUEaYosKmpPsR9Th8fk2rWwo3fJn7KbCuf5yIT+R07nSTaaPd
+ 4a
+X-Gm-Gg: ASbGnct4lOmBsnVzDA4G7VK0/x8MytnS5RcFFPJv+Q2NbJ8uWZlaLJSPKN0Am5kdWo3
+ ByKDjs0iASDzaN+S6K+o4gmc790Jyy5FR1VZ//E4TXDQ04nfk3AfSGMJlYvIU9tPlqkZZIkcN+7
+ Zbs/HN63dceazs8P7NSK1V21WfUfg/0R+bBSNLeCi3nYaZloAncgcF4WeGzeoxcF9UjC0k/IUzd
+ 10B7+Gy9OSi2NguJnOfVRiMiW1MLTabnJUEIOLLzoYW2ygd/rHCClp4xc5G/plxe+0oUHqtl466
+ zv3y8lV/83RICiLXkb/8V+iuqTDJq2xCQW+DrFsz1KvuwqubOTuG00mb9uOhFS0T7Ng0Pswjg5Q
+ I96c=
+X-Received: by 2002:a17:903:1ace:b0:298:8ec:9991 with SMTP id
+ d9443c01a7336-29d684010d3mr18809715ad.37.1764749572859; 
+ Wed, 03 Dec 2025 00:12:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFI0zdMm0ek7r7BCOLNOH1JGeMKn4uhy4Wuv4WTLAmQNg6Ac2/hTTbLTyF3NNpoDO1723+O+g==
+X-Received: by 2002:a17:903:1ace:b0:298:8ec:9991 with SMTP id
+ d9443c01a7336-29d684010d3mr18809375ad.37.1764749572234; 
+ Wed, 03 Dec 2025 00:12:52 -0800 (PST)
+Received: from zoe.. ([2001:f74:8f00:c00:6aff::1002])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-29bce40ab76sm175977585ad.6.2025.12.03.00.12.51
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 03 Dec 2025 00:12:51 -0800 (PST)
 To: ltp@lists.linux.it
-Date: Sun, 30 Nov 2025 10:43:31 +0530
-Message-ID: <20251130051331.26149-1-pavrampu@linux.ibm.com>
-X-Mailer: git-send-email 2.43.5
+Date: Wed,  3 Dec 2025 17:12:26 +0900
+Message-ID: <20251203081226.1148236-1-masahiro.yamada@canonical.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: OKn7ykK11QcwRjnCNzdr8eI6jnHxkLEe
-X-Authority-Analysis: v=2.4 cv=Ir0Tsb/g c=1 sm=1 tr=0 ts=692bd285 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=VnNF1IyMAAAA:8 a=npRE8wLiAAAA:8
- a=BJIFxfXHzFHq2DS7swsA:9 a=RAb4T5FLMvhYbp7Aw4eJ:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTI5MDAyMCBTYWx0ZWRfX/mH4XS41l/e3
- xMSHwR071BAboMZOTGnE1nVLpdHuQ9I9j1vVwW1wAvE+9KHVPYqUsphyXuy6lp9981QndLgFZdE
- n4qE/VRBKjk/+dperbl5GntfbbJ82L0FRGzlt3h16m26irihO/MLpE3PSX7VMleGnYjOnWmA5Sf
- W0Dxx3wJSBJ5J6rqi3ByDsyfuT2Vcqh49x7YMqj86HF/4JIdoumsfgFDadFBrlTfwSdb6hfuNh6
- AKD1bIPaMM057LWx9BZrJRZpmt9sVq/ioJEFCq96lvL7lN0yxBN2Hpu+iXwALHlAm0SyrZkRkME
- HfZxYZgXs/vufG2EXmUUAO11qI9dLzhgR2JZ1mUj7N55W92jtGzjiwtaPyHfYvHXWeQXO46P4MZ
- eBGartg6R7MddhlBUcMp4pi/ah+3ew==
-X-Proofpoint-GUID: OKn7ykK11QcwRjnCNzdr8eI6jnHxkLEe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-28_08,2025-11-27_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 adultscore=0 impostorscore=0 clxscore=1015 priorityscore=1501
- bulkscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511290020
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] [PATCH 3/3] [PATCH] Migrating the
- libhugetlbfs/testcases/straddle_4GB.c v3
+Subject: [LTP] [PATCH] listmount04: require kernel version 6.11
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,226 +110,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: pavrampu@linux.ibm.com
+From: Masahiro Yamada via ltp <ltp@lists.linux.it>
+Reply-To: Masahiro Yamada <masahiro.yamada@canonical.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Changes in v3:
-- Removed [Description] line
-- Replaced mmap(2) with :man2:`mmap`
-- Used TST_GB inplace of FOURGB
-- Added tst_brk incase of statfs64 failure
-- Replaced munmap with SAFE_MUNMAP
-- Modified print messages based on review comments
-- Added check for hpage_size
+On Linux kernel 6.8, the listmount04 test fails as follows:
 
-Signed-off-by: Pavithra <pavrampu@linux.ibm.com>
+  Running tests.......
+  tst_buffers.c:57: TINFO: Test is using guarded buffers
+  tst_test.c:2025: TINFO: LTP version: 20250930
+  tst_test.c:2028: TINFO: Tested kernel: 6.8.0 #71 SMP PREEMPT_DYNAMIC Wed Dec  3 16:00:27 JST 2025 x86_64
+  tst_kconfig.c:88: TINFO: Parsing kernel config '/proc/config.gz'
+  tst_kconfig.c:676: TINFO: CONFIG_TRACE_IRQFLAGS kernel option detected which might slow the execution
+  tst_test.c:1846: TINFO: Overall timeout per run is 0h 02m 00s
+  listmount04.c:128: TPASS: request points to unaccessible memory : EFAULT (14)
+  listmount04.c:128: TPASS: mnt_ids points to unaccessible memory : EFAULT (14)
+  listmount04.c:128: TPASS: invalid flags : EINVAL (22)
+  listmount04.c:128: TPASS: insufficient mnt_id_req.size : EINVAL (22)
+  listmount04.c:128: TPASS: invalid mnt_id_req.spare : EINVAL (22)
+  listmount04.c:128: TFAIL: invalid mnt_id_req.param invalid retval 20: SUCCESS (0)
+  listmount04.c:128: TFAIL: invalid mnt_id_req.mnt_id expected EINVAL: ENOENT (2)
+  listmount04.c:128: TPASS: non-existant mnt_id : ENOENT (2)
+
+  Summary:
+  passed   6
+  failed   2
+  broken   0
+  skipped  0
+  warnings 0
+  INFO: ltp-pan reported some tests FAIL
+  LTP Version: 20250930
+  INFO: Test end time: Wed Dec  3 07:01:33 UTC 2025
+
+This test passes only after kernel commit 4bed843b1000 ("fs: reject
+invalid last mount id early"), i.e. kernel version 6.11.
+
+Signed-off-by: Masahiro Yamada <masahiro.yamada@canonical.com>
 ---
- runtest/hugetlb                               |   1 +
- testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/Makefile      |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap40.c  | 155 ++++++++++++++++++
- 4 files changed, 158 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap40.c
+ testcases/kernel/syscalls/listmount/listmount04.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 0896d3c94..8124ba3e5 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -36,6 +36,7 @@ hugemmap30 hugemmap30
- hugemmap31 hugemmap31
- hugemmap32 hugemmap32
- hugemmap34 hugemmap34
-+hugemmap40 hugemmap40
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
- hugemmap05_3 hugemmap05 -s -m
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index b4455de51..314396274 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -36,6 +36,7 @@
- /hugetlb/hugemmap/hugemmap31
- /hugetlb/hugemmap/hugemmap32
- /hugetlb/hugemmap/hugemmap34
-+/hugetlb/hugemmap/hugemmap40
- /hugetlb/hugeshmat/hugeshmat01
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-index 6e72e7009..a1711f978 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-@@ -12,3 +12,4 @@ CFLAGS_no_stack_prot := $(filter-out -fstack-clash-protection, $(CFLAGS))
- 
- hugemmap06: CFLAGS+=-pthread
- hugemmap34: CFLAGS=$(CFLAGS_no_stack_prot)
-+hugemmap40: CFLAGS += -D_LARGEFILE64_SOURCE
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap40.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap40.c
-new file mode 100644
-index 000000000..01ba0c316
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap40.c
-@@ -0,0 +1,155 @@
-+// SPDX-License-Identifier: LGPL-2.1-or-later
-+/*
-+ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
-+ * Copyright (C) 2006 Hugh Dickins <hugh@veritas.com>
-+ */
-+
-+/*\
-+ *
-+ * Test tries to allocate hugepages to cover a memory range that straddles the
-+ * 4GB boundary, using :man2:`mmap` with and without MAP_FIXED.
-+ */
-+
-+#define MAPS_BUF_SZ 4096
-+#define MNTPOINT "hugetlbfs/"
-+
-+#include "hugetlb.h"
-+
-+static long hpage_size;
-+static int fd = -1;
-+static unsigned long straddle_addr;
-+
-+static int test_addr_huge(void *p)
-+{
-+	char name[256];
-+	char *dirend;
-+	int ret;
-+	struct statfs64 sb;
-+
-+	ret = read_maps((unsigned long)p, name);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ret == 0) {
-+		tst_res(TINFO, "Couldn't find address %p in /proc/self/maps", p);
-+		return -1;
-+	}
-+
-+	/* looks like a filename? */
-+	if (name[0] != '/')
-+		return 0;
-+
-+	/* Truncate the filename portion */
-+	dirend = strrchr(name, '/');
-+	if (dirend && dirend > name)
-+		*dirend = '\0';
-+
-+	ret = statfs64(name, &sb);
-+	if (ret)
-+		tst_brk(TBROK | TERRNO, "statfs check on filesystem failed");
-+
-+	return (sb.f_type == HUGETLBFS_MAGIC);
-+}
-+
-+static void run_test(void)
-+{
-+	void *p;
-+
-+	/* We first try to get the mapping without MAP_FIXED */
-+	tst_res(TINFO, "Mapping without MAP_FIXED at %lx...", straddle_addr);
-+	p = mmap((void *)straddle_addr, 2*hpage_size, PROT_READ|PROT_WRITE,
-+			MAP_SHARED, fd, 0);
-+	if (p == (void *)straddle_addr) {
-+		/* These tests irrelevant if we didn't get the straddle address*/
-+		if (test_addr_huge(p) != 1) {
-+			tst_res(TFAIL, "1st Mapped address is not hugepage");
-+			goto windup;
-+		}
-+		if (test_addr_huge(p + hpage_size) != 1) {
-+			tst_res(TFAIL, "2nd Mapped address is not hugepage");
-+			goto windup;
-+		}
-+		memset(p, 0, hpage_size);
-+		memset(p + hpage_size, 0, hpage_size);
-+		tst_res(TPASS, "Mapping without MAP_FIXED at %lx... completed", straddle_addr);
-+	} else {
-+		tst_res(TINFO, "Got %p instead, never mind, let's move to mapping with MAP_FIXED", p);
-+		SAFE_MUNMAP(p, 2*hpage_size);
-+	}
-+
-+	tst_res(TINFO, "Mapping with MAP_FIXED at %lx...", straddle_addr);
-+	p = mmap((void *)straddle_addr, 2*hpage_size, PROT_READ|PROT_WRITE,
-+				MAP_SHARED|MAP_FIXED, fd, 0);
-+
-+	if (p == MAP_FAILED) {
-+		/* this area crosses last low slice and first high slice */
-+		unsigned long below_start = 4.0*TST_GB - 256L*1024*1024;
-+		unsigned long above_end = 1024L*1024*1024*1024;
-+
-+		if (tst_mapping_in_range(below_start, above_end) == 1) {
-+			tst_res(TFAIL | TERRNO, "region (4G-256M)-1T is not free");
-+			goto windup;
-+		} else {
-+			tst_res(TFAIL, "mmap() with MAP_FIXED failed: %s", strerror(errno));
-+			goto windup;
-+		}
-+	}
-+
-+	if (p != (void *)straddle_addr) {
-+		tst_res(TINFO, "got %p instead", p);
-+		tst_res(TFAIL, "Wrong address with MAP_FIXED");
-+		goto windup;
-+	}
-+
-+	if (test_addr_huge(p) != 1) {
-+		tst_res(TFAIL, "1st Mapped address is not hugepage");
-+		goto windup;
-+	}
-+
-+	if (test_addr_huge(p + hpage_size) != 1) {
-+		tst_res(TFAIL, "2nd Mapped address is not hugepage");
-+		goto windup;
-+	}
-+
-+	memset(p, 0, hpage_size);
-+	memset(p + hpage_size, 0, hpage_size);
-+	tst_res(TPASS, "Mapping with MAP_FIXED at %lx... completed", straddle_addr);
-+
-+windup:
-+	SAFE_MUNMAP(p, 2*hpage_size);
-+}
-+
-+static void setup(void)
-+{
-+	hpage_size = tst_get_hugepage_size();
-+
-+	if (hpage_size < 0) {
-+		if (errno == ENOSYS)
-+			tst_res(TINFO, "No hugepage kernel support");
-+		else if (errno == EOVERFLOW)
-+			tst_res(TINFO, "Hugepage size too large");
-+		else
-+			tst_res(TINFO, "Hugepage size (%s)", strerror(errno));
-+	}
-+
-+	straddle_addr = 4.0*TST_GB - hpage_size;
-+	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
-+	if (hpage_size > 4.0*TST_GB)
-+		tst_brk(TCONF, "Huge page size is too large!");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd >= 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.hugepages = {2, TST_NEEDS},
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+};
+diff --git a/testcases/kernel/syscalls/listmount/listmount04.c b/testcases/kernel/syscalls/listmount/listmount04.c
+index a52bad064c0e..a6921a24975d 100644
+--- a/testcases/kernel/syscalls/listmount/listmount04.c
++++ b/testcases/kernel/syscalls/listmount/listmount04.c
+@@ -133,7 +133,7 @@ static void run(unsigned int n)
+ static struct tst_test test = {
+ 	.test = run,
+ 	.tcnt = ARRAY_SIZE(tcases),
+-	.min_kver = "6.8",
++	.min_kver = "6.11",
+ 	.bufs = (struct tst_buffers []) {
+ 		{ &request, .size = MNT_ID_REQ_SIZE_VER0 },
+ 		{},
 -- 
-2.43.5
+2.43.0
 
 
 -- 
