@@ -4,64 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F65CD3B7F8
-	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 15:57:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FE44D3B7EA
+	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 16:01:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8B2183D02E7
-	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 16:57:54 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 22B713D02FC
+	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 17:01:42 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4D1183CF72E
- for <ltp@lists.linux.it>; Tue,  9 Dec 2025 16:57:37 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id C9E343CE710
+ for <ltp@lists.linux.it>; Fri,  5 Dec 2025 04:00:26 +0100 (CET)
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B5B16200ADB
- for <ltp@lists.linux.it>; Tue,  9 Dec 2025 16:57:36 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8F3BD3373D;
- Tue,  9 Dec 2025 15:57:35 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C8A73EA63;
- Tue,  9 Dec 2025 15:57:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id gIsGHe9GOGnpJgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 09 Dec 2025 15:57:35 +0000
-Date: Tue, 9 Dec 2025 16:58:34 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <aThHKguxntl-ZJBb@yuki.lan>
-References: <20251209120246.18435-1-chrubis@suse.cz>
- <CAASaF6yCjh6i9bm5WU4p7TmW4xNSD9+QkB=BfMWSbm_4Hvgptw@mail.gmail.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3B5C610005D5
+ for <ltp@lists.linux.it>; Fri,  5 Dec 2025 04:00:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+ s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=8c
+ odGuIDJ5vWiVLXHzSD6+LW3mT47hbLiiyQdgB+6LE=; b=iLUzG3H4eVcPcNlcYW
+ MW++7OAQFZ6whwCcFDjv96boh6hnhweKBeyqYmfLQEda3d8Z/IUz3Eb6WmNimP79
+ 7kN0ABWWqr61wBzUOHoVYooP14+5LEdZzLOoQmtVCX3Ct/mbLRjG7W9ZjEoRhQjj
+ Zppzb/n/r5JSmvA7yWQvlw12s=
+Received: from localhost (unknown [])
+ by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id
+ _____wDn9+zFSjJpI2BDFA--.1905S2; 
+ Fri, 05 Dec 2025 11:00:22 +0800 (CST)
+From: simplemessager@163.com
+To: ltp@lists.linux.it
+Date: Fri,  5 Dec 2025 11:00:21 +0800
+Message-ID: <20251205030021.48813-1-simplemessager@163.com>
+X-Mailer: git-send-email 2.47.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAASaF6yCjh6i9bm5WU4p7TmW4xNSD9+QkB=BfMWSbm_4Hvgptw@mail.gmail.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 8F3BD3373D
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-CM-TRANSID: _____wDn9+zFSjJpI2BDFA--.1905S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Zr13Jw4fKFyfAF47GF47XFb_yoW8Ar45pw
+ 1xJr45Zw48trsYv347Jw1kWr95uas5GFW7KwsIkF1kurZFq345JrWvqr9rWryruFZ8Xa90
+ 9a18JF4xCw4DJrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jDL05UUUUU=
+X-Originating-IP: [36.111.64.84]
+X-CM-SenderInfo: hvlp1z5hph22hdjh2qqrwthudrp/xtbCzgaqQmkySsaqzAAA3R
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] doc: Add ground rules page
+X-Mailman-Approved-At: Tue, 09 Dec 2025 17:01:25 +0100
+Subject: [LTP] [PATCH 1/1] Skip wqueue testcases when KEY_NOTIFICATIONS not
+ enabled.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,36 +60,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> I don't recall if we have it mentioned already, but we also used to say that
-> changes introduced in early kernel -rc  builds were low priority for acceptance
-> and we favored behavior that is in a released kernel (or at least in last -rcs).
+From: Mingyu Li <limy83@chinatelecom.cn>
 
-Sounds good.
+Skip wqueue testcases when KEY_NOTIFICATIONS not enabled.
 
-Also we probably need something along the lines:
+wqueue testcases relys on both CONFIG_WATCH_QUEUE
+and CONFIG_KEY_NOTIFICATIONS. keyctl will return EOPNOTSUPP
+when CONFIG_KEY_NOTIFICATIONS is not enabled and the wqueue
+testcases will failed when timeout. So we should skip
+testcases when we got EOPNOTSUPP from keyctl.
 
-Use runtime checks for kernel features
-======================================
+Reported-by: Meng Yang <yangm50@chinatelecom.cn>
+Signed-off-by: Mingyu Li <limy83@chinatelecom.cn>
+---
+ testcases/kernel/watchqueue/common.h | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-What is and what isn't supported by kernel is determined by the version
-and configuration of the kernel the systems is currently running on.
-That especially means that any checks done during the compilation cannot
-be used to assume features supported by the kernel the tests end up
-running on. The compile time checks, done by configure script, are only
-useful for enabling fallback kernel API definitions when missing, as we
-do in lapi/ directory.
-
-
+diff --git a/testcases/kernel/watchqueue/common.h b/testcases/kernel/watchqueue/common.h
+index 92e8f079c..e9100ab52 100644
+--- a/testcases/kernel/watchqueue/common.h
++++ b/testcases/kernel/watchqueue/common.h
+@@ -85,8 +85,26 @@ static inline key_serial_t wqueue_add_key(int fd)
+ 	if (key == -1)
+ 		tst_brk(TBROK, "add_key error: %s", tst_strerrno(errno));
+ 
+-	keyctl(KEYCTL_WATCH_KEY, key, fd, 0x01);
+-	keyctl(KEYCTL_WATCH_KEY, KEY_SPEC_SESSION_KEYRING, fd, 0x02);
++	TEST(keyctl(KEYCTL_WATCH_KEY, key, fd, 0x01));
++	if (TST_RET) {
++		switch (TST_ERR) {
++		case EOPNOTSUPP:
++			tst_brk(TCONF | TTERRNO, "CONFIG_KEY_NOTIFICATION is not set!");
++			break;
++		default:
++			tst_res(TINFO, "CONFIG_KEY_NOTIFICATION is set.");
++		}
++	}
++	TEST(keyctl(KEYCTL_WATCH_KEY, KEY_SPEC_SESSION_KEYRING, fd, 0x02));
++	if (TST_RET) {
++		switch (TST_ERR) {
++		case EOPNOTSUPP:
++			tst_brk(TCONF | TTERRNO, "CONFIG_KEY_NOTIFICATION is not set!");
++			break;
++		default:
++			tst_res(TINFO, "CONFIG_KEY_NOTIFICATION is set.");
++		}
++	}
+ 
+ 	return key;
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.47.2
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
