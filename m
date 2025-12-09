@@ -4,105 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13201D3B7EA
-	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 16:02:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1765296123; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=0ildQcgiT5DkOsWDN0jOAy381APWb6yGpV9KFYwsnPg=;
- b=LcEfENAjAHiBpyLSZ/nKC4lhLvDwz801tV3E49BDWSVBBKWFtZ0AWuIXL6dNoEYgmX85d
- dkLw4ZK2Hgbh/BO93dESmc3tGw2fhQj6Q2YBehsSCwqQKSbA92KiEKodLIWElKAKzPFY5Mg
- EgItm6c6Q1cSfTQ5i01LumLYu3sXl94=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31F52D3B985
+	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 17:49:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A56163D030C
-	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 17:02:03 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 83A163D0319
+	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 18:49:28 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8C1573CF72E
- for <ltp@lists.linux.it>; Tue,  9 Dec 2025 16:57:35 +0100 (CET)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
+ by picard.linux.it (Postfix) with ESMTPS id 543AC3CBFDA
+ for <ltp@lists.linux.it>; Tue,  9 Dec 2025 18:49:11 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E343B600448
- for <ltp@lists.linux.it>; Tue,  9 Dec 2025 16:57:34 +0100 (CET)
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CFFDA1000937
+ for <ltp@lists.linux.it>; Tue,  9 Dec 2025 18:49:10 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 06F773F2BE
- for <ltp@lists.linux.it>; Tue,  9 Dec 2025 15:57:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20251003; t=1765295853;
- bh=/DAR/fwsFub/c1NabREmktbJ12NBxv+ZrbQ9IcfgWyo=;
- h=From:To:Subject:Date:Message-ID:MIME-Version;
- b=QoBWto3wjVnBaDrlNZ6jNNxkMyDkodKktRSj1HcSmQbFRjOMogVklucgtedadIZiL
- lHemUGjHNGno54EZWtSPSLjOYjn9aeMRrxaTObg6ySJkVl0WPwIWEAUHbG2V886s0B
- +8yFm+u8pzlc7qQrqq+X7EQ38eX14oB3KeQDA+BUaqR7sNuOxhrlMJiJr3tzy1/TPN
- FcC/phgxURORdoDmDieSOus0sTuimwDJGj8vJM15zkZowDfYf+bLSJCoucyekT5orK
- 9AQlT7fDEnTrhyAPxBVeVjygySHI+OxQMDb8fHN0bUakShkrqKBCBh7RaVqFhp1TJy
- s+rg0CIjnVUpeGCwyJk2H9isORV7SNpciVAWoUJTPROy4DMz64ia+2oci7FsFXBbwQ
- h7CFV0wl0kiVI5R1919gV20zhMtO9IdagbLZs2rbQUWi6k92W+5D/F81DMi+sF44GS
- HYzvccxUZmvxTg/pQrKb0AaeFrLDKuL57tPl+upWHbqY4Xq4cKf+PN5K8XaXTl2MNI
- UmzIprPcC5QSPlLlafPUfc/dH2jcP5frIXmckAm2BlYgdWZrC+xruWBiQAoiigC1pB
- dFzlUaMBvHxrZVUVJx16Vc3St8ep0QEGBm+uGFjDYHBl9nor6H8LQY6AYOwEarX6L7
- G1vpc0G6/9BIiv2OudbYjybY=
-Received: by mail-ej1-f71.google.com with SMTP id
- a640c23a62f3a-b79f8f988faso564352266b.2
- for <ltp@lists.linux.it>; Tue, 09 Dec 2025 07:57:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1765295852; x=1765900652;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=/DAR/fwsFub/c1NabREmktbJ12NBxv+ZrbQ9IcfgWyo=;
- b=ZJpZld1642vEaROqJfBOY5IXJUJM9g2O6UXdlMpbA5lfQ5Mqat7HyDAmApHZuZW0Q9
- FnrRUfzC7kgtYM2SlOb824aCZBahMurRSOVqZz+sI2Zk7Wh3Y94hhbeju83yP2wm2wdB
- VeSsmCYHpPiow6Olz2q6uLNaHAuA528RL61X+2mhJwDDoTll/G1NbLjRmmcnGvmQWo75
- K8W8o9IwFGmBq3+a+/Janj6iI4Yi6j0di7viTkscX/hRg1zVB78iIZFd/415sVsHNamJ
- aL/wzqGH39ua4b4lAlgoeDu3MsWM5b1uvcp+Uucc4hEezMMyF1XkW/kMfXK60cy372xE
- rAOw==
-X-Gm-Message-State: AOJu0YyjnoUqhQ6C6uqP593emmS8NH8JfQrG6OsqSR79Zc0GUyjaRQ6V
- yqlzhztLmZI/rJeH44pRZErakq6xdIjBLhqrn6clsDMq+PItdoO9AB/hzTpJs6SwHFHk7i4TgUI
- 6FJPLnlgDiz4da7jJ6oPHN9vX/+ifsEXAftIVAavzD1z/ANOF0bktuPsJTsmcP8hjO+HxRmKtjJ
- Yv
-X-Gm-Gg: ASbGncsXyLqMNVvUUgO0B2z4R9TZzrUmPCNGuVpYH01arTvUXlKcdM82FkHxJV6hugh
- WE77rjxr4oQdiz4NIYTyCOQGkyarNJRGYFAqmed082b2Ha2hDgTXDdxQxR7VAUJ+dnFwrJIIz2X
- nbCfpRMY1MR8fzBFQnDnmZhL93c6KR9So/1U0+VwaepptzETwidm6wUPIz0T/Q5PYGuc2kJTryf
- 2ljspe24BnJ0AIfbXqIERp9HnqHxXneLZeW7uY/Qs5CTE+qPICpdYw/qSWYbIMC1YjQgU9r3LlC
- XLhIkZoe/09TrXsYkUXZfb8xF4dlFOXgLt7jEcrFVvjv1TIw5kt0xyKo2iJKfee0do04KO5hIVz
- T3ddwdilXQvonrOkoGaWuu/fZZ5E+cJJA6byywFBdIKX4IuIOUTU07hcAmVXAWm956OpwpbgGBQ
- G2hAbppF1wck4=
-X-Received: by 2002:a17:907:3d8e:b0:b3d:200a:bd6e with SMTP id
- a640c23a62f3a-b7a2451e911mr1121361366b.47.1765295851868; 
- Tue, 09 Dec 2025 07:57:31 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFEoBcom38icUPX0SznczDAlGsAhOE1ORC5dfkdDQwS4J3GgMGt7JktS+Gxp1ODl8j5Q3fFlg==
-X-Received: by 2002:a17:907:3d8e:b0:b3d:200a:bd6e with SMTP id
- a640c23a62f3a-b7a2451e911mr1121359166b.47.1765295851451; 
- Tue, 09 Dec 2025 07:57:31 -0800 (PST)
-Received: from localhost (151-243-191-194.pool.dsl-net.ch. [194.191.243.151])
- by smtp.gmail.com with UTF8SMTPSA id
- 4fb4d7f45d1cf-647b412dd8csm14257880a12.33.2025.12.09.07.57.31
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 09 Dec 2025 07:57:31 -0800 (PST)
-To: ltp@lists.linux.it
-Date: Tue,  9 Dec 2025 16:57:23 +0100
-Message-ID: <20251209155726.519179-1-juerg.haefliger@canonical.com>
-X-Mailer: git-send-email 2.51.0
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5BBAC337E8;
+ Tue,  9 Dec 2025 17:49:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1765302549;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6aB1rt+VpW+uhD7mfJ+QdI/CPPpCBXx0h+npxvGxdm4=;
+ b=qs7kjXxIIkBcP4Z29TPYPzRu15diY4NXzoNwARNy7+pryifTtWLevF/dq1dOV+w8wOlZK9
+ h/xQdf4r6QuZqc1IKeg3AcLuVU6gRrC+EqwWA6wokpC8JyeJHPJRjS+4D+Dav0hoORKn4j
+ o99O5IR3vzF45yNAUnmk2Bn5W4/hZic=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1765302549;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6aB1rt+VpW+uhD7mfJ+QdI/CPPpCBXx0h+npxvGxdm4=;
+ b=IBSZPnBobVoFyn4bTFdlpjJVj+qKrlyj2i5sw53CWmSqno0ZR93EJw2+4HjEA9rYM971tn
+ yKauSMOleO9lIYBQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1765302549;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6aB1rt+VpW+uhD7mfJ+QdI/CPPpCBXx0h+npxvGxdm4=;
+ b=qs7kjXxIIkBcP4Z29TPYPzRu15diY4NXzoNwARNy7+pryifTtWLevF/dq1dOV+w8wOlZK9
+ h/xQdf4r6QuZqc1IKeg3AcLuVU6gRrC+EqwWA6wokpC8JyeJHPJRjS+4D+Dav0hoORKn4j
+ o99O5IR3vzF45yNAUnmk2Bn5W4/hZic=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1765302549;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6aB1rt+VpW+uhD7mfJ+QdI/CPPpCBXx0h+npxvGxdm4=;
+ b=IBSZPnBobVoFyn4bTFdlpjJVj+qKrlyj2i5sw53CWmSqno0ZR93EJw2+4HjEA9rYM971tn
+ yKauSMOleO9lIYBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 307233EA63;
+ Tue,  9 Dec 2025 17:49:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id bGbOCRVhOGmJDQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 09 Dec 2025 17:49:09 +0000
+Date: Tue, 9 Dec 2025 18:49:07 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20251209174907.GA9500@pevik>
+References: <20251127143959.9416-1-wegao@suse.com>
+ <20251209004242.31774-1-wegao@suse.com>
+ <20251209111725.GA756311@pevik> <aThF5PMjWqsLZsnp@yuki.lan>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <aThF5PMjWqsLZsnp@yuki.lan>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.992]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 09 Dec 2025 17:01:25 +0100
-Subject: [LTP] [PATCH] mkdir_tests.sh: Handle error message from mkdir from
- rust coreutils
+Subject: Re: [LTP] [PATCH v2] listmount04.c: Update case support
+ mnt_id_req.mnt_ns_fd
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,38 +111,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Juerg Haefliger via ltp <ltp@lists.linux.it>
-Reply-To: Juerg Haefliger <juerg.haefliger@canonical.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-mkdir from rust coreutils doesn't print the directory path. Account for
-that.
+> Hi!
+> > > +	uint32_t mnt_ns_fd;
+> > > +#else
+> > >  	uint32_t spare;
+> > > +#endif
+> > >  	uint64_t mnt_id;
+> > >  	uint64_t param;
+> > >  	uint64_t *mnt_ids;
+> > > @@ -73,12 +77,21 @@ static struct tcase {
+> > >  	{
+> > >  		.req_usage = 1,
+> > >  		.size = MNT_ID_REQ_SIZE_VER0,
+> > > +#ifdef HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD
+> > > +		.mnt_ns_fd = -1,
+> > > +#else
+> > >  		.spare = -1,
+> > > +#endif
+> > >  		.mnt_id = LSMT_ROOT,
+> > >  		.mnt_ids = mnt_ids,
+> > >  		.nr_mnt_ids = MNT_SIZE,
+> > > +#ifdef HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD
+> > > +		.exp_errno = EBADF,
+> > > +		.msg = "invalid mnt_id_req.mnt_ns_fd bad file descriptor",
+> > > +#else
+> > >  		.exp_errno = EINVAL,
+> > >  		.msg = "invalid mnt_id_req.spare",
+> > > +#endif
 
-Signed-off-by: Juerg Haefliger <juerg.haefliger@canonical.com>
----
- testcases/commands/mkdir/mkdir_tests.sh | 3 +++
- 1 file changed, 3 insertions(+)
+> This is never going to work, how kernel interprets the value depends on
+> solely on the running kernel verision not on headers that were present
+> during the compilation.
 
-diff --git a/testcases/commands/mkdir/mkdir_tests.sh b/testcases/commands/mkdir/mkdir_tests.sh
-index c0a570e5c0e6..3bafbfdda7ba 100755
---- a/testcases/commands/mkdir/mkdir_tests.sh
-+++ b/testcases/commands/mkdir/mkdir_tests.sh
-@@ -34,6 +34,9 @@ test2()
- 
- 	if grep -q "$LONG_PATH.*No such file or directory" mkdir.out; then
- 		tst_res TPASS "Got correct error message"
-+	elif grep -q "mkdir: No such file or directory" mkdir.out; then
-+		# mkdir from rust coreutils doesn't print the directory path
-+		tst_res TPASS "Got correct error message"
- 	else
- 		tst_res TFAIL "Got wrong error message"
- 		cat mkdir.out
--- 
-2.51.0
++1, I realized that myself as well.
 
+> What we need to do is to differentiate the expected errno based on
+> running kernel version.
+
+Other option would be just accept both errnos (as kernel developers seem to be
+not forcing us to be pedantic on kernel internals - recent swapon03.c rewrite
+requirement). But lets use tst_kvercmp() to not delay the fix with more
+discussion.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
