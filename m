@@ -4,109 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D650D3B98C
-	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 18:57:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B2DCD3B98A
+	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 19:31:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B82673D0324
-	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 19:57:31 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id D22D93CA19A
+	for <ltp@archiver.kernel.org>; Tue,  9 Dec 2025 20:31:35 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A9A443D0326
- for <ltp@lists.linux.it>; Tue,  9 Dec 2025 19:56:12 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id ECDE43C9A08
+ for <ltp@lists.linux.it>; Tue,  9 Dec 2025 20:31:18 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 19E901000609
- for <ltp@lists.linux.it>; Tue,  9 Dec 2025 19:56:11 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2822C1000488
+ for <ltp@lists.linux.it>; Tue,  9 Dec 2025 20:31:17 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6144C5BE03;
- Tue,  9 Dec 2025 18:56:02 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 780DF5BE04;
+ Tue,  9 Dec 2025 19:31:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1765306563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1765308676;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/P8UQAkwsKDxj/7A3oMQW2mFBFDU2oZ5ypQ0Oe/SU58=;
- b=Swt/T1njlihtZMbxZp02dLl1U2lhsEvIA7f24rQxFtbUi2VElKPPIorH37ca0NP1c5CHoh
- 70PjXJTke43CKvAUUMU3XbEBLW2xMr7BSfM5NiuZRr7QKSoDPLmZlCxRU5I0JX1fkl9307
- qVzxs2f75FGnqrkg7fqhFmWy2uLaDmA=
+ bh=qJ9AiRj9woUKFstDFchVooFElvNdAUQ4MBqnAmEjcqA=;
+ b=Mqfo0fNp18mfg6/VB0gQHm1kgrxH5/f3n0pL75Gd35TnzAbSuwJONZruXAbiQBGKoF2n6h
+ Mt/xzEaUebxy/T5kt3RGbvppJqEMHd5n5POI4REjV0Q/dGpACtb+VJnijRThIIeoVOIVLa
+ YGdvDboTvInQR09hdMdWAFBOTIu996Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1765306563;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1765308676;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/P8UQAkwsKDxj/7A3oMQW2mFBFDU2oZ5ypQ0Oe/SU58=;
- b=3gBGTqqDkXnnG4gu25ddiUEQohtcIPX/Ga1+2LAe54WQD8MietTJe5m1ESxhBH3tNzFRNQ
- 7+cV25PiuXStrdCQ==
+ bh=qJ9AiRj9woUKFstDFchVooFElvNdAUQ4MBqnAmEjcqA=;
+ b=16h4aD9QY5pk6p0qrFondA2R/X9TOghS3+rfqmb5lkadLlzu2NTk9POsA9VvKo19/vtk4E
+ SBQ3Fa6DOcX7jcCQ==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=S55Mu65I;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=6zvKynHL
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=E13kLgVC;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=HnpFSOLW
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1765306562; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1765308675;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/P8UQAkwsKDxj/7A3oMQW2mFBFDU2oZ5ypQ0Oe/SU58=;
- b=S55Mu65IQnigi90WcQVUMEJS03lJIA9Kt61gXQJSEHpALPxoUAFGKaoPEHDMKF25E20SMr
- OOQ9Yy3qHd4r47cCEFuFRMDe+JuLwmxk6UMEFkhqG6s+INM8p0K9Nwy8C936bkCZ8n6150
- wFAOOS4r85slL/mIO8O+wt6nf7tbfnQ=
+ bh=qJ9AiRj9woUKFstDFchVooFElvNdAUQ4MBqnAmEjcqA=;
+ b=E13kLgVCKgkqYtUjIOFamW+uYmTM0iuXZ/TD9rB0cUQxBE0EkfUNc/b87Wz85OlDpUIVIx
+ eIIjxZtrtRtbcDL9tITScwvsFeNc7WOfhKcOjdJnTPg/RQtWTMgTLQOVhks6NGh6syJmBc
+ Yk/DFUT6MhNvhgGHpQ8bTv7nBq/s4hI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1765306562;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1765308675;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/P8UQAkwsKDxj/7A3oMQW2mFBFDU2oZ5ypQ0Oe/SU58=;
- b=6zvKynHLj9ng0eOnEdCk86UnorvZNqbeTLW91qBUumnaxCvfIja3qxN935ki3oyyOcqp74
- tRtc8U82fPQXcfDA==
+ bh=qJ9AiRj9woUKFstDFchVooFElvNdAUQ4MBqnAmEjcqA=;
+ b=HnpFSOLWRKqt4P+5hwQSIP4F5Ssn/p1veadXMX7Mo+19//sj++N3VEAyYM1Q6r0BBf9+TU
+ W+/5ueaaF8A0+uBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1A1BE3EA65;
- Tue,  9 Dec 2025 18:56:02 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2DA273EA63;
+ Tue,  9 Dec 2025 19:31:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KJN2BcJwOGnSSAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 09 Dec 2025 18:56:02 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id qWFpCQN5OGlMaAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 09 Dec 2025 19:31:15 +0000
+Date: Tue, 9 Dec 2025 20:31:05 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue,  9 Dec 2025 19:55:56 +0100
-Message-ID: <20251209185557.20598-4-pvorel@suse.cz>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251209185557.20598-1-pvorel@suse.cz>
-References: <20251209185557.20598-1-pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20251209193105.GA20883@pevik>
+References: <20251209120246.18435-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 6144C5BE03
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
+Content-Disposition: inline
+In-Reply-To: <20251209120246.18435-1-chrubis@suse.cz>
+X-Rspamd-Queue-Id: 780DF5BE04
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:dkim,suse.cz:email];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_SEVEN(0.00)[8];
+ MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
+ ARC_NA(0.00)[];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DKIM_TRACE(0.00)[suse.cz:+]
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:dkim,suse.cz:email];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 3/4] ima_{conditionals,
- measurements}.sh: Use tst_runas
+Subject: Re: [LTP] [PATCH] doc: Add ground rules page
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,112 +116,156 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: selinux@vger.kernel.org, linux-integrity@vger.kernel.org
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Replace 'sudo' and 'sg' with 'tst_runas'.
+> This is a continued effort to write down the unwritten rules we have in
+> the project. Feel free to suggest more topics for the page.
 
-This not only removes 'sudo' external dependency, but it s required
-because new releases of many distros (e.g. Debian, openSUSE Tumbleweed,
-SLES, ...) switched shell for 'nobody' user from /bin/bash (or /bin/sh)
-to /usr/sbin/nologin. That effectively disables using 'sudo', 'su', 'sg':
+Nice work, thanks for doing this!
+Few spell checker issues and style below.
+I'd slightly prefer avoiding "I" (first-person) style, i.e. use impersonal
+language / passive (it's not a blog post but official document), but it's up to
+you.
 
-    ima_conditionals 1 TINFO: verify measuring user files when requested via uid
-    sudo: Account expired or PAM config lacks an "account" section for sudo, contact your system administrator
-    sudo: a password is required
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- .../integrity/ima/tests/ima_conditionals.sh         | 13 ++++++-------
- .../integrity/ima/tests/ima_measurements.sh         | 11 ++---------
- 2 files changed, 8 insertions(+), 16 deletions(-)
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  doc/developers/ground_rules.rst | 68 +++++++++++++++++++++++++++++++++
+>  doc/index.rst                   |  1 +
+>  2 files changed, 69 insertions(+)
+>  create mode 100644 doc/developers/ground_rules.rst
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh b/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
-index ba19176039..ae947db1e9 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
-@@ -9,7 +9,7 @@
- # gid and fgroup options test kernel commit 40224c41661b ("ima: add gid
- # support") from v5.16.
- 
--TST_NEEDS_CMDS="cat chgrp chown id sg sudo"
-+TST_NEEDS_CMDS="cat chgrp chown"
- TST_SETUP="setup"
- TST_CNT=1
- 
-@@ -27,8 +27,8 @@ verify_measurement()
- 	local test_file="$PWD/test.txt"
- 	local cmd="cat $test_file > /dev/null"
- 
--	local value="$(id -u $user)"
--	[ "$request" = 'gid' -o "$request" = 'fgroup' ] && value="$(id -g $user)"
-+	local value="$TST_USR_UID"
-+	[ "$request" = 'gid' -o "$request" = 'fgroup' ] && value="$TST_USR_GID"
- 
- 	# needs to be checked each run (not in setup)
- 	require_policy_writable
-@@ -41,15 +41,14 @@ verify_measurement()
- 
- 	case "$request" in
- 	fgroup)
--		chgrp $user $test_file
-+		chgrp $TST_USR_GID $test_file
- 		sh -c "$cmd"
- 		;;
- 	fowner)
--		chown $user $test_file
-+		chown $TST_USR_UID $test_file
- 		sh -c "$cmd"
- 		;;
--	gid) sg $user "sh -c '$cmd'";;
--	uid) sudo -n -u $user sh -c "$cmd";;
-+	gid|uid) tst_runas sh -c "$cmd";;
- 	*) tst_brk TBROK "Invalid res type '$1'";;
- 	esac
- 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
-index 60350f3926..cf35e131ed 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
-@@ -68,30 +68,23 @@ test2()
- 
- test3()
- {
--	local user="nobody"
- 	local dir="$PWD/user"
- 	local file="$dir/test.txt"
- 	local cmd="grep $file $ASCII_MEASUREMENTS"
- 
- 	# Default policy does not measure user files
- 	tst_res TINFO "verify not measuring user files"
--	tst_check_cmds sudo || return
- 
- 	if [ "$IMA_MISSING_POLICY_CONTENT" = 1 ]; then
- 		tst_res TCONF "test requires specific policy, try load it with LTP_IMA_LOAD_POLICY=1"
- 		return
- 	fi
- 
--	if ! id $user >/dev/null 2>/dev/null; then
--		tst_res TCONF "missing system user $user (wrong installation)"
--		return
--	fi
--
- 	[ -d "$dir" ] || mkdir -m 0700 $dir
--	chown $user $dir
-+	chown $TST_USR_UID $dir
- 	cd $dir
- 	# need to read file to get updated $ASCII_MEASUREMENTS
--	sudo -n -u $user sh -c "echo $(cat /proc/uptime) user file > $file; cat $file > /dev/null"
-+	tst_runas sh -c "echo $(cat /proc/uptime) user file > $file; cat $file > /dev/null"
- 	cd ..
- 
- 	if ! tst_rod "$cmd" 2> /dev/null; then
--- 
-2.51.0
+> diff --git a/doc/developers/ground_rules.rst b/doc/developers/ground_rules.rst
+> new file mode 100644
+> index 000000000..701dcd09a
+> --- /dev/null
+> +++ b/doc/developers/ground_rules.rst
+> @@ -0,0 +1,68 @@
+> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +Ground Rules
+> +============
+> +
+> +Do not work around kernel bugs
+> +------------------------------
+> +
+> +We have decided what we will not work around bugs in upstream LTP sources. If a
+> +test fails on your system for a good reason, e.g. patch wasn't backported and
+> +the bug is present, work around for this will not be accepted upstream. The
+> +main reason for this decision is that this masks the failure for everyone else.
+> +
+> +
+> +Do not synchronize by sleep
+> +---------------------------
+> +
+> +Why is sleep in tests bad then?
+> +```````````````````````````````
+> +
+> +The first problem is that it may and will introduce very rare test failures,
+"that it may and will introduce" => "that it will introduce" or "that it will
+likely introduce"
 
+> +that means somebody has to spend time looking into these, which is a wasted
+> +effort. Also I'm pretty sure that nobody likes tests that will fail rarely for
+nit: first-person style, maybe:
+
+effort. Nobody likes tests that ...
+
+> +no good reason. Even more so you cannot run such tests with a background load
+> +to ensure that everything works correctly on a bussy system, because that will
+bussy => busy
+
+> +increase the likehood of a failure.
+> +
+> +The second problem is that this wastes resources and slowns down a test run. If
+slowns down => slows down
+
+> +you think that adding a sleep to a test is not a big deal, let me put things
+> +into a perspective. There is about 1600 syscall tests in Linux Test Project
+Also here is first-person style...
+> +(LTP), if 7.5% of them would sleep just for one second, we would end up with
+> +two minutes of wasted time per testrun. In practice most of the test I've seen
+test => tests
+> +waited for much longer just to be sure that things will works even on slower
+
+and here: In practice most of the tests wait ...
+
+> +hardware. With sleeps between 2 and 5 seconds that puts us somewhere between 4
+> +and 10 minutes which is between 13% and 33% of the syscall runtime on my dated
+
+and here: the syscall runtime on outdated Thinkpad.
+
+> +thinkpad, where the run finishes in a bit less than half an hour. It's even
+> +worse on newer hardware, because this slowdown will not change no matter how
+> +fast your machine is, which is maybe the reason why this was acceptable twenty
+> +years ago but it's not now.
+> +
+> +
+> +What to do instead?
+> +```````````````````
+> +
+> +Use proper synchronization.
+> +
+> +There are different problems and different solutions.
+> +
+> +Most often tests needs to synchronize between child and parent proces.
+Maybe join this sentence to the previous one?
+
+> +
+> +The easiest case is that parent needs to wait for a child to finish, that can
+> +be fixed just be adding a waitpid() in the parent which ensures that child is
+very nit: if you use :man2:`waitpid`, it will link the text to man page.
+
+> +finished before parent runs.
+> +
+> +Commonly child has to execute certain piece of code before parent can continue.
+> +For that LTP library implements checkpoints with simple wait and wake functions
+> +based on futexes on a piece of shared memory set up by the test library.
+
+Maybe mention some functions, e.g. TST_CHECKPOINT_WAIT()? You could link the
+macro with:
+
+:c:func:`TST_CHECKPOINT_WAIT()`
+
+> +
+> +Another common case is where child must sleep in a syscall before parent can
+> +continue, for which we have a helper that polls /proc/$PID/stat.
+> +
+> +Less often tests needs to wait for an action that is done asynchronously, or a
+
+tests needs => tests need
+
+> +kernel resource deallocation is deffered to a later time. In such cases the
+deffered => deferred
+
+> +best we can do is to poll. In LTP we ended up with a macro that polls by
+Again, please mention the function. Unfortunately include/tst_fuzzy_sync.h have
+not been converted to kerneldoc, therefore it can't be referenced yet.
+
+> +calling a piece of code in a loop with exponentially increasing sleeps between
+> +retries until it succeeeds. Which means that instead of sleeping for a maximal
+succeeeds => succeeds
+
+> +time event can possibly take the sleep is capped by twice of the optimal
+> +sleeping time while we avoid polling too aggressively.
+> diff --git a/doc/index.rst b/doc/index.rst
+> index 06b75616f..659549cc3 100644
+> --- a/doc/index.rst
+> +++ b/doc/index.rst
+> @@ -19,6 +19,7 @@
+>     :hidden:
+>     :caption: For developers
+
+> +   developers/ground_rules
+>     developers/setup_mailinglist
+>     developers/writing_tests
+>     developers/test_case_tutorial
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
