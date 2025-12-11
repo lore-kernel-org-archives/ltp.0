@@ -4,101 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB29ED3E792
-	for <ltp@archiver.kernel.org>; Thu, 11 Dec 2025 11:51:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCA2BD41C27
+	for <ltp@archiver.kernel.org>; Thu, 11 Dec 2025 11:55:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 317703CF5CF
-	for <ltp@archiver.kernel.org>; Thu, 11 Dec 2025 12:51:34 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 4807D3CF54B
+	for <ltp@archiver.kernel.org>; Thu, 11 Dec 2025 12:55:46 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B96F33CF296
- for <ltp@lists.linux.it>; Thu, 11 Dec 2025 12:51:16 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 67EBA3CF296
+ for <ltp@lists.linux.it>; Thu, 11 Dec 2025 12:55:29 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2CBAA600697
- for <ltp@lists.linux.it>; Thu, 11 Dec 2025 12:51:15 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C7F0B1000977
+ for <ltp@lists.linux.it>; Thu, 11 Dec 2025 12:55:26 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id ACFD85BDE5;
- Thu, 11 Dec 2025 11:51:13 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 73BCB5BE2D;
+ Thu, 11 Dec 2025 11:55:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1765453874;
+ t=1765454123;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EFddUhBGcXN9JA0q1wGTn5XlH81Ay9Hq5qFgYVtz16g=;
- b=KYOPmVHua8Fuw8lCzO928INZ6ajFvaBb395R+0TSe0ZkVY0OShfUwHbP/DHSXp1Btu/l40
- nGC1oHhiWBOT4Xido4U6vwSgXhLrEu7qxtRb5Vg3IR3XyKbwF1u5zrEDDwtKqcfbzDGUGz
- YR6rGMoDpADO8JyspVkXrJobbqguVVc=
+ bh=xnban8dIcJFNH6SeM1D1d49HH8Hl1MFChq8Pey8lgZo=;
+ b=KHoeYZlSdhoJvVPXeL1rZghPyCqvhgVxXZttmdFFaUAtbwlBlyuIK6oqx4fibeHyXBfbdh
+ OywdmkAaiCs/uo2XPFnYRxIkaI7sM5CxSsRDtdjeQejwry0hZ4HySBYy+4h6zKGZ72poHp
+ B86BrUYx5H5pav7T5Kf3DtB5XVvjfL0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1765453874;
+ s=susede2_ed25519; t=1765454123;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EFddUhBGcXN9JA0q1wGTn5XlH81Ay9Hq5qFgYVtz16g=;
- b=kPSIHiS54Rft7qvlscdt1ERYj8HV7Ep6UkTrtdVHokwIjbH/+bz2w78W67Du2trXiTosF5
- AO9pABrh9+mJoNDw==
+ bh=xnban8dIcJFNH6SeM1D1d49HH8Hl1MFChq8Pey8lgZo=;
+ b=ZN9CAcBLIYyuXJm5T2W7kVNASdJpWG10ubOPM8eq3UTQ+iI2w2pzFPSx3vUsZ/cFhsVcNL
+ sqjom4RWS7BCKcBg==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KHoeYZlS;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZN9CAcBL
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1765453873;
+ t=1765454123;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EFddUhBGcXN9JA0q1wGTn5XlH81Ay9Hq5qFgYVtz16g=;
- b=NHGyBhabnSVGYRiHx30880kwSaNxLfUjjArCsO3KXCEtwmHdYOi2ipCz7n8tf3cNRXnxuH
- qR38DN8UikzJJ78HGhsvsnEvV9pefbCZCnPuAvWW1op72+NlGII/9Ixb5HHHILLaddhoF1
- DYJ/wzl9F5EVCB/yjjMznyrSm/4Xj44=
+ bh=xnban8dIcJFNH6SeM1D1d49HH8Hl1MFChq8Pey8lgZo=;
+ b=KHoeYZlSdhoJvVPXeL1rZghPyCqvhgVxXZttmdFFaUAtbwlBlyuIK6oqx4fibeHyXBfbdh
+ OywdmkAaiCs/uo2XPFnYRxIkaI7sM5CxSsRDtdjeQejwry0hZ4HySBYy+4h6zKGZ72poHp
+ B86BrUYx5H5pav7T5Kf3DtB5XVvjfL0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1765453873;
+ s=susede2_ed25519; t=1765454123;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EFddUhBGcXN9JA0q1wGTn5XlH81Ay9Hq5qFgYVtz16g=;
- b=8+O2ZwAOGjGfa/z2zgHW8CNz2Xa6iVa+i4UGUkOem8Gx+zdSqxecMUz1HqFKZbIL2f391q
- bjmuyewX8eEpJcBQ==
+ bh=xnban8dIcJFNH6SeM1D1d49HH8Hl1MFChq8Pey8lgZo=;
+ b=ZN9CAcBLIYyuXJm5T2W7kVNASdJpWG10ubOPM8eq3UTQ+iI2w2pzFPSx3vUsZ/cFhsVcNL
+ sqjom4RWS7BCKcBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 093463EA63;
- Thu, 11 Dec 2025 11:51:12 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 158E43EA63;
+ Thu, 11 Dec 2025 11:55:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id QWEDNzCwOmlffQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 11 Dec 2025 11:51:12 +0000
-Date: Thu, 11 Dec 2025 12:51:11 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id adFEASuxOmm0AgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 11 Dec 2025 11:55:23 +0000
+Date: Thu, 11 Dec 2025 12:55:21 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20251211115111.GA63924@pevik>
-References: <20251210061957.32631-1-wegao@suse.com>
- <20251211015915.1086-1-wegao@suse.com> <aTqN9fjQhDe4WU45@yuki.lan>
+Message-ID: <20251211115521.GB63924@pevik>
+References: <20251118143607.45308-1-pvorel@suse.cz>
+ <20251118143607.45308-2-pvorel@suse.cz> <aTqaw6SOs9zdX8mp@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <aTqN9fjQhDe4WU45@yuki.lan>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.992]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+In-Reply-To: <aTqaw6SOs9zdX8mp@yuki.lan>
+X-Rspamd-Queue-Id: 73BCB5BE2D
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] listmount04.c: Update case support
- mnt_id_req.mnt_ns_fd
+Subject: Re: [LTP] [PATCH v3 1/2] swapon03: Remove fork in setup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,91 +126,9 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-...
-> > @@ -122,7 +136,17 @@ static void run(unsigned int n)
-> >  		req->mnt_id = tc->mnt_id;
-> >  		req->param = tc->param;
-> >  		req->size = tc->size;
-> > -		req->spare = tc->spare;
-> > +#ifdef HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD
-> > +		if ((tst_kvercmp(6, 18, 0)) >= 0)
-> > +			req->mnt_ns_fd = tc->mnt_ns_fd;
-> > +		else
-> > +			tst_brk(TCONF, "Skipping test, kernel version should be >= 6.18");
-> > +#else
-> > +		if ((tst_kvercmp(6, 18, 0)) >= 0)
-> > +			tst_brk(TCONF, "Skipping test, kernel version should be < 6.18");
-> > +		else
-> > +			req->spare = tc->spare;
-> > +#endif
+Hi all,
 
-> I do not like this solution. Here we disable the test on newer kernel if
-> it was compiled on older headers and vice versa.
-
-Thanks for catching this up. I had a feeling something is wrong but was not sure
-what.
-
-> There are actually two problems to be solved and they are independent of
-> each other and we shouldn't mix these two.
-
-> First problem is that the mnt_ns_fd is not defined on older headers.
-> That should be fixed by a fallback defintion in lapi/. The spare in
-> lapi/mount.h in struct mnt_id_req should be renamed to mnt_ns_fd. And we
-> should use that structure if mnt_id_req is not defined in system
-> headers. I guess that we can use typedef for that and do something as:
-
-OK, I did not realize that struct size is actually the same, only struct member
-has changed so that we can happily pass that to any kernel version.
-
-> struct mnt_id_req_fallback {
-> 	uint32_t size;
-> 	...
-> };
-
-> #if !defined(HAVE_STRUCT_MNT_ID_REQ) || !HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD
-> typedef struct mnt_id_req_fallback mnt_id_req
-> #else
-> typedef struct mnd_id_req mnt_id_req
-> #endif
-
-> And then use mnt_id_req in test with the guarantee that the mnt_ns_fd is
-> always there.
-
-> The second problem is the expected errno. That should be just set once
-> based on the kernel version in the test setup().
-
-+1. I was also thinking about moving this to setup to prevent repeated detecting
-but was not sure how to do it in elegant way as errno is in the struct. I guess
-you mean just to store result of tst_kvercmp(6, 18, 0), but even that is not
-enough. The cleanest way looks to me to add another struct member int exp_errno_old:
-
-static bool old_kernel = true;
-
-static struct tcase {
-	...
-	int exp_errno;
-	int exp_errno_old;
-}
-
-static void setup()
-{
-	if ((tst_kvercmp(6, 18, 0)) < 0)
-		old_kernel = false;
-}
-
-static void run(unsigned int n)
-{
-	...
-	int exp_errno = (tc->exp_errno_old && old_kernel ? tc->exp_errno_old : tc->exp_errno);
-
-	TST_EXP_FAIL(tst_syscall(__NR_listmount, req, tc->mnt_ids,
-		tc->nr_mnt_ids, tc->flags), exp_errno,
-		"%s", tc->msg);
-	}
-
-
-Also when looking in the code I'd personally factor out tc->req_usage to make it
-obvious	it's not called by first tcases member.
+thanks for your review, I merged this first patch.
 
 Kind regards,
 Petr
