@@ -4,111 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63DA5D49230
-	for <ltp@archiver.kernel.org>; Fri, 12 Dec 2025 14:21:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DA26D4922D
+	for <ltp@archiver.kernel.org>; Fri, 12 Dec 2025 14:39:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7D6693CD3FA
-	for <ltp@archiver.kernel.org>; Fri, 12 Dec 2025 15:21:09 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id A4C3B3C8515
+	for <ltp@archiver.kernel.org>; Fri, 12 Dec 2025 15:39:25 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B9FD93C7F80
- for <ltp@lists.linux.it>; Fri, 12 Dec 2025 15:20:49 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 3B2393C7F80
+ for <ltp@lists.linux.it>; Fri, 12 Dec 2025 15:39:07 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 619D0200DA7
- for <ltp@lists.linux.it>; Fri, 12 Dec 2025 15:20:49 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BD6C51000947
+ for <ltp@lists.linux.it>; Fri, 12 Dec 2025 15:39:06 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4EEB7338F0;
- Fri, 12 Dec 2025 14:20:47 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 326AA33728;
+ Fri, 12 Dec 2025 14:39:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1765549248;
+ t=1765550346;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qs5Voq1ulp6OodfAF4ITwVTdhftqPVZuDIoJBdj/5D0=;
- b=T3UJ6B7pJTZOtK3KV7nM+T64jf/rLER0VN77zS+Y9SFAzUTbzxHAumKuB+flrweG5Dz225
- Cry3ST3ELZ/f01tK5LbPlPy/B5KWhRdGu1FepDqGu3PqL/Bar3xXCBKYqJzx5EeTJyUvc+
- /ZANaylKR6BaCWXzKu3WmlbIxVbgADY=
+ bh=yWduPNwVVIxoGjYnX4Fw53EX6Y7hHVt/mL9fwHTMO5M=;
+ b=n2degPokzgaKWSkJeNfrxPj2pad7Jls6rVyhGMgtMRBbGZnhM6JWMekORoDYZ+xp7uYGAg
+ 361tozdkxqP936RCBVPSBvKjG371YJSUP9+xvvYg87mcr8O/Vo1NyCMPnk/UsvJG+JW87n
+ GMuTGzU/KsDcv8rutNuSiImYN/CjzT0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1765549248;
+ s=susede2_ed25519; t=1765550346;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qs5Voq1ulp6OodfAF4ITwVTdhftqPVZuDIoJBdj/5D0=;
- b=+oqSJD38/XqSrSJz8tsyzrBz+pBu+3J0i2Es16Cjgb/L+O6HxhQNE+2piJIbakKyXh/6bN
- QQaDyYdbnoBmQmCg==
+ bh=yWduPNwVVIxoGjYnX4Fw53EX6Y7hHVt/mL9fwHTMO5M=;
+ b=el3OOG1VDLFD49UtsdSKsaMXodkvx0iV/0ksRDTHy/9IGxURMPhxxq07ahlvrAglgxky4q
+ fg7nsYxG4F+zd/Cg==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eiuULfcO;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="/elAeXdW"
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1765549247;
+ t=1765550346;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qs5Voq1ulp6OodfAF4ITwVTdhftqPVZuDIoJBdj/5D0=;
- b=eiuULfcOzLNRuObXvSwQiVLp6Nuyi+sB7cU2CMmwzlbM1GQZ7tvEBpiGLqbDBvCt2XQk3L
- m5G7FtNeyBMeqG8P8CrXpdziHHgq76UNbJs5bKQAnrQ/tU9sNDP3tj17GNQS88BEc+jjBc
- uV6l0tO9v9nB3U2/t/vLjCre22OFjXY=
+ bh=yWduPNwVVIxoGjYnX4Fw53EX6Y7hHVt/mL9fwHTMO5M=;
+ b=n2degPokzgaKWSkJeNfrxPj2pad7Jls6rVyhGMgtMRBbGZnhM6JWMekORoDYZ+xp7uYGAg
+ 361tozdkxqP936RCBVPSBvKjG371YJSUP9+xvvYg87mcr8O/Vo1NyCMPnk/UsvJG+JW87n
+ GMuTGzU/KsDcv8rutNuSiImYN/CjzT0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1765549247;
+ s=susede2_ed25519; t=1765550346;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qs5Voq1ulp6OodfAF4ITwVTdhftqPVZuDIoJBdj/5D0=;
- b=/elAeXdWmIj1cej9z1ZhuPq0ethinsxt/S7v3XFvRurQ9z3Rsi3FCk3Xz/2cR+LYghknp7
- +h+Tgx3PTTTamrAg==
+ bh=yWduPNwVVIxoGjYnX4Fw53EX6Y7hHVt/mL9fwHTMO5M=;
+ b=el3OOG1VDLFD49UtsdSKsaMXodkvx0iV/0ksRDTHy/9IGxURMPhxxq07ahlvrAglgxky4q
+ fg7nsYxG4F+zd/Cg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1FA3A3EA63;
- Fri, 12 Dec 2025 14:20:47 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 17FEE3EA63;
+ Fri, 12 Dec 2025 14:39:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Qt4LBr8kPGn+OwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 12 Dec 2025 14:20:47 +0000
-Date: Fri, 12 Dec 2025 15:20:45 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Za9cBAopPGlwTAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 12 Dec 2025 14:39:06 +0000
+Date: Fri, 12 Dec 2025 15:39:04 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20251212142045.GD125889@pevik>
-References: <20251211015915.1086-1-wegao@suse.com>
- <20251212115244.2027-1-wegao@suse.com>
- <20251212122827.GC125889@pevik> <aTwREz2-YroAAyl_@yuki.lan>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20251212143904.GE125889@pevik>
+References: <20251212104025.15924-1-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <aTwREz2-YroAAyl_@yuki.lan>
-X-Rspamd-Queue-Id: 4EEB7338F0
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; REPLYTO_EQ_FROM(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
+In-Reply-To: <20251212104025.15924-1-mdoucha@suse.cz>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.985]; MIME_GOOD(-0.10)[text/plain];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:replyto];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] listmount04.c: Update case support
- mnt_id_req.mnt_ns_fd
+Subject: Re: [LTP] [PATCH] tst_detach_device: Clear leftover partitions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,178 +114,25 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > > -#ifndef HAVE_STRUCT_MNT_ID_REQ
-> > > -struct mnt_id_req {
-> > > +struct mnt_id_req_fallback {
-> > >  	uint32_t size;
-> > > -	uint32_t spare;
-> > > +	uint32_t mnt_ns_fd;
-> > >  	uint64_t mnt_id;
-> > >  	uint64_t param;
-> > >  	uint64_t mnt_ns_id;
-> > >  };
-> > > +
-> > > +#if !defined(HAVE_STRUCT_MNT_ID_REQ) || !HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD
-> > Shouldn't be !HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD
-> > !defined(HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD) ?
+Hi Martin,
 
-> > Also, this patchset introduces compilation error on old systems:
+> Some kernels have a race condition during loop device release
+> which results in partitions being left over on unattached device.
+> The partitions then cause mkfs.vfat failures in later tests.
 
-> > In file included from listmount03.c:13:0:
-> > listmount.h:20:4: error: 'struct mnt_id_req' has no member named 'mnt_id'
-> >    .mnt_id = mnt_id,
+> Check for loop device partitions after detaching it and clear them
+> if necessary.
 
-> > Obviously some definition is wrong.
+Nice work, thanks!
 
-> That looks like we need configure check for mnt_id too however that
-> happens in a different test.
+Looping ioctl_loop01.c and ioctl_ficlone02.c I reproduce the problem after 171
+iterations:
 
-Yes:
-
-
-Do we still need the check for the struct mnt_id_req now? I'd say no:
-
--AC_CHECK_TYPES([struct mnt_id_req],,,[#include <sys/mount.h>])
-+AC_CHECK_MEMBERS([struct mnt_id_req.mnt_ns_fd, struct mnt_id_req.mnt_id],,,[#include <sys/mount.h>])
-
--#if !defined(HAVE_STRUCT_MNT_ID_REQ) || !HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD
-+#if !defined(HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD) || !defined(HAVE_STRUCT_MNT_ID_REQ_MNT_ID)
-
-But we also need to change listmount.h to use the struct fallback. Full diff is
-at the end.
-
-> > https://github.com/pevik/ltp/actions/runs/20166087670/job/57889711762
-
-> > (CI does not work, therefore I pushed you patchset.)
-
-> > > +typedef struct mnt_id_req_fallback mnt_id_req;
-> > > +#else
-> > > +typedef struct mnt_id_req mnt_id_req;
-> > >  #endif
-
-> > ...
-> > > +static void setup(void)
-> > > +{
-> > > +	if (tst_kvercmp(6, 18, 0) >= 0) {
-> > > +		tcases[4].exp_errno = EBADF;
-> > > +		tcases[4].msg = "invalid mnt_id_req.mnt_ns_fd (EBADF)";
-
-> > Hardcoding array index is asking for problems in the future.
-
-> > That's why I suggested more complicated code in previous version.
-> > https://lore.kernel.org/ltp/20251211115111.GA63924@pevik/
-
-> Another solution would be to define testcases for both for EINVAL and
-> EBADF and add a flag which should be enabled on newer kernel:
-
-> #define BEFORE_6_18 1
-> #define AFTER_6_18 2
-
-> ...
-> 	{
->                 .req_usage = 1,
->                 .size = MNT_ID_REQ_SIZE_VER0,
->                 .spare = -1,
->                 .mnt_id = LSMT_ROOT,
->                 .mnt_ids = mnt_ids,
->                 .nr_mnt_ids = MNT_SIZE,
->                 .exp_errno = EINVAL,
->                 .msg = "invalid mnt_id_req.spare",
-> 		.kver = BEFORE_6_18,
->         },
-> 	{
->                 .req_usage = 1,
->                 .size = MNT_ID_REQ_SIZE_VER0,
->                 .spare = -1,
->                 .mnt_id = LSMT_ROOT,
->                 .mnt_ids = mnt_ids,
->                 .nr_mnt_ids = MNT_SIZE,
->                 .exp_errno = EBADF,
->                 .msg = "invalid mnt_id_req.mnt_nf_fd",
-> 		.kver = AFTER_6_18,
->         },
-> ...
-
-> static void run(...)
-> {
-> 	...
-
-> 	if (tc->kver && tc->kver != kver)
-> 		return;
-
-Yeah that would work as well, but I suppose TCONF will be needed
-due check for results.
-
-> 	...
-> }
-
-> static void setup(void)
-> {
-> 	if (tst_kvercmp(6, 18, 0) >= 0)
-> 		kver = AFTER_6_18;
-> 	else
-> 		kver = BEFORE_6_18;
-> }
+ioctl_loop01.c:75: TPASS: access /sys/block/loop0/loop0p1 succeeds
+tst_device.c:321: TWARN: Detached device /dev/loop0 has leftover partitions
 
 Kind regards,
 Petr
-
-Diff without kernel version change.
-
-+++ configure.ac
-@@ -262,8 +262,8 @@ AC_CHECK_TYPES([struct cachestat_range],,,[#include <sys/mman.h>])
- AC_CHECK_TYPES([struct cachestat],,,[#include <sys/mman.h>])
- 
- # Defined in <linux/mount.h>, but include/lapi/mount.h includes <sys/mount.h> */
--AC_CHECK_TYPES([struct mnt_id_req],,,[#include <sys/mount.h>])
--AC_CHECK_MEMBERS([struct mnt_id_req.mnt_ns_fd],,,[#include <sys/mount.h>])
-+#AC_CHECK_TYPES([struct mnt_id_req],,,[#include <sys/mount.h>])
-+AC_CHECK_MEMBERS([struct mnt_id_req.mnt_ns_fd, struct mnt_id_req.mnt_id],,,[#include <sys/mount.h>])
- AC_CHECK_TYPES([struct statmount],,,[#include <sys/mount.h>])
- AC_CHECK_MEMBERS([struct statmount.mnt_ns_id],,,[#include <unistd.h>
- #include <linux/mount.h>])
-diff --git include/lapi/mount.h include/lapi/mount.h
-index 7b1c4ca0fe..8bde0e563a 100644
---- include/lapi/mount.h
-+++ include/lapi/mount.h
-@@ -53,7 +53,7 @@ struct mnt_id_req_fallback {
- 	uint64_t mnt_ns_id;
- };
- 
--#if !defined(HAVE_STRUCT_MNT_ID_REQ) || !HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD
-+#if !defined(HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD) || !defined(HAVE_STRUCT_MNT_ID_REQ_MNT_NS_ID)
- typedef struct mnt_id_req_fallback mnt_id_req;
- #else
- typedef struct mnt_id_req mnt_id_req;
-diff --git testcases/kernel/syscalls/listmount/listmount.h testcases/kernel/syscalls/listmount/listmount.h
-index aad927f714..74f334c74e 100644
---- testcases/kernel/syscalls/listmount/listmount.h
-+++ testcases/kernel/syscalls/listmount/listmount.h
-@@ -8,6 +8,7 @@
- 
- #define _GNU_SOURCE
- 
-+#include "config.h"
- #include "tst_test.h"
- #include "lapi/mount.h"
- #include "lapi/syscalls.h"
-@@ -15,11 +16,10 @@
- static inline ssize_t listmount(uint64_t mnt_id, uint64_t last_mnt_id,
- 			 uint64_t list[], size_t num, unsigned int flags)
- {
--	struct mnt_id_req req = {
--		.size = MNT_ID_REQ_SIZE_VER0,
--		.mnt_id = mnt_id,
--		.param = last_mnt_id,
--	};
-+	mnt_id_req *req = NULL;
-+	req->size = MNT_ID_REQ_SIZE_VER0;
-+	req->mnt_id = mnt_id;
-+	req->param = last_mnt_id;
- 
- 	return tst_syscall(__NR_listmount, &req, list, num, flags);
- }
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
