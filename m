@@ -4,91 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98DD3D59D66
-	for <ltp@archiver.kernel.org>; Fri, 12 Dec 2025 15:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A2CED5B160
+	for <ltp@archiver.kernel.org>; Sun, 14 Dec 2025 01:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1765553488; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1765677268; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=KQ4bmX9OCZeVofVYOioAeACjY9RFrL1jMPZZ5IxODLI=;
- b=pr2sojiVKZmqsWFPxbRvWMDr+VKaP9YV6zgQz05IRN97ONcuXdn4tm12u8I2LurplfO+H
- ONZKTZXvKmD/ADvxNIcVt/pAFgcU44CbTaiwm5T1ITNFwqHyUFmxe/LBTM7FpDlqZi3mHlS
- F+4OyFNoGCVHMA8UQ9W4DBk+j2ZKS7k=
+ bh=XKmaM5/tTE+WU333wOtFdg3nGQa2qC0/hq03pPgyUA0=;
+ b=RTaEESPqBJwBAQ9GNZXmm/SmhZNw82p94XGygE+53jN6/5YkL/+hrng6i+mGUxlqf5An3
+ A74+qsafMVVmQRH8uxmOac5IaB0uEDWkbOR4gix6BIIjBGgSfyHH9HpnGwMuiDGzqoGWdrk
+ 8iDdYUjjBSjb/Vf8xXakytiInedZnq8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1DD5A3CA790
-	for <ltp@archiver.kernel.org>; Fri, 12 Dec 2025 16:31:28 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 58E033CF231
+	for <ltp@archiver.kernel.org>; Sun, 14 Dec 2025 02:54:28 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8D4A43C8435
- for <ltp@lists.linux.it>; Fri, 12 Dec 2025 16:31:04 +0100 (CET)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
- [IPv6:2a00:1450:4864:20::433])
+ by picard.linux.it (Postfix) with ESMTPS id 8A5213CA807
+ for <ltp@lists.linux.it>; Sun, 14 Dec 2025 02:54:06 +0100 (CET)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DFD86600F08
- for <ltp@lists.linux.it>; Fri, 12 Dec 2025 16:31:03 +0100 (CET)
-Received: by mail-wr1-x433.google.com with SMTP id
- ffacd0b85a97d-42b3d7c1321so813142f8f.3
- for <ltp@lists.linux.it>; Fri, 12 Dec 2025 07:31:03 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 14C521A00346
+ for <ltp@lists.linux.it>; Sun, 14 Dec 2025 02:54:04 +0100 (CET)
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-477b5e0323bso9988845e9.0
+ for <ltp@lists.linux.it>; Sat, 13 Dec 2025 17:54:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1765553463; x=1766158263; darn=lists.linux.it;
- h=in-reply-to:references:to:from:subject:message-id:date
- :content-transfer-encoding:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=cw9NyqOxH+vup97s7J/GuPEkDtmMRYktwiK/xn4ds8M=;
- b=gkR+8DFYRBg5qNAtTdyBSYFdibgd/PEuvMsVVB3JRRsnvXoCjt1iWfAKKYtWz/QRm3
- LF8tLK05N8KHuxGURwCaJhTVr45ZOTiWQACzeVprm2aAA0D0A+SQu7OflypZOS2SX+w8
- hnC1ruSmOIAfJ8CjQOULP0bn6FBt6k+PstW0RI1fENvk87poHZ6qWKWzxm0ssEQggdAn
- w+bw+IXKIUta5x6POASiB04OC1nBuVrdarxpy2BpBcJ9EXmRDUKxrekbmN9Uw+PzSmZx
- G5z65JGkXzSzc7uGHNJ0vQDaa4dRszv6BIMyKIxPNKCbpAUgpQojurCZbLYwAecc28HA
- rrbg==
+ d=suse.com; s=google; t=1765677244; x=1766282044; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=2I/dnyE8Ok5d8GMkUjX/DzVPZO1qOJQDQvxIunQTjh4=;
+ b=ghNPTxMYpyEs5wM60YkPrz4xoDcK4swcRiNnOxcCL88F4ibSwRdZ2EeDWxUSId3Eyj
+ vgurQzwXbZ9RjNHZd6WXLsID8tSOpLy5rtslVfisAelDGeyvbT426JU9wZLHfewtOCgN
+ lW5FiN/j5/IG8ItFw3GsNKy9A0knpYCylqmfXxAexJFVWh6MQMUh3T3GNQ3BpCxDndAP
+ hncoybxKZDZ1DwGIAu9HN/mjAMIyHmEqzfR5f3+Vw1ZOAxcHrP2CKEgGIwBYlMn0joOe
+ 2HNoxIfIlDaYjbjwW/i7jW7KG7avikWIvIWcHar7YpM/ZZSouiwwHU7x8rOJwXNWb6re
+ U+qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1765553463; x=1766158263;
- h=in-reply-to:references:to:from:subject:message-id:date
- :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=cw9NyqOxH+vup97s7J/GuPEkDtmMRYktwiK/xn4ds8M=;
- b=W1NAqO64jPSlATqJGr67cCcxxEIa7+lpBM1g84gHhC1czvcDTAabXu80uwsMpzaAR/
- IZWOJzHROTTavGxfrKo8x4XjZzQ61Seh1zg1WJiJ9mq77CfCFAhukRKJCROeqwzuYdhr
- nBcFdxqxfyftsPMm/8pu/ogD5FaEtI+u6ANXL7cKcjEK0oz4Pt5u3VAJThCbEREjS1FB
- XMJNZzJB8aRy1zWeiGJvZnKe9hKlJbKIanJZNFL29N6IEw8zu19u9Uwn5BAIjPk25myn
- 2RcQU/nfZsXvOd9xkR9vXBjB/HGLrR5LUIZBNAAUwToqzkPVpWycDUmHDlJe+f1VmLoP
- sT3g==
+ d=1e100.net; s=20230601; t=1765677244; x=1766282044;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=2I/dnyE8Ok5d8GMkUjX/DzVPZO1qOJQDQvxIunQTjh4=;
+ b=KPCMd1Hc9mSkBB0SnHKNbqTlXj25ToUbY+5t/5sXh4NC1+kGa7NsUKeiz7Pf5IT6+F
+ zXmQfw1k1uTjy5ElbK+iu+2MntKAV6jmyDxZKs868FQJ2Crs1BeoCgWWdVJ2tcO32m9H
+ 9bJGqheZ7pIx6EVBqlLKxw/zT7C2c/ou3xq+YhVPdZVvafky/mnyGqgtnYvks41tEaM/
+ AqypbH4qZ4Zd/oSi9gk9/9Ork2GVY0ijyK6HYWw3GScnfalQ0Q0L3lKuG532xhqNKEwk
+ bUI8E/lmbQTav3BuK2Iq2hJPbjGDQHjg9guTnOCKNyHauuStiF+Vl2OeOYUvdZPxabYt
+ LOkA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWipoBoRyItvWzXXW0wusovR+Qj7IniMKyNZ/xtDDnZZizwCBQL59WxW6HzBegp0lrvBjE=@lists.linux.it
-X-Gm-Message-State: AOJu0YxUAAfZpBG8qPJ+XMpHWBMKAojFjXvNgIOINu1oV7oqkHsUaac0
- fTkIfpz+HWreJaRNwv7Kw4PiT33y5Jnhu3ZM1NPljwNdW5fpQAs76Dgi+yd17TXEhTQ=
-X-Gm-Gg: AY/fxX4YdEYdBcqR7xdQu5NWAAt7nHxU5lxhSA/44kDHJMeR3UaRaQL3vHtCT5BTWr+
- +AWDg7AmoYNBqgg6uqbGlTfw+JW72KiFXeg7sF03I8913zQqCWxl5oqjjmilW+PZMFT+UpMkkLP
- H0MK3BMJsXzq+MgbKr5woN9QUqLHFYFw+iU1PkQIdiMY6TCQhF7Mak+cos0JfvFRP1WFlMd/o5o
- 4NGSJIfyoJLDOG7YGsdnIMyvIOpvgCZ254SQ2M/Q/EmYEu/Nfz6kspeT3x6PlYOyFNCrlytUy7v
- e1B5/x9ZR8Jh6SWedDqha3o/oU7GrRy0lsvgV3GJexXHZTg0NfwbvXBJ25+K/mH03T/cOwM1SBy
- 5ksjjK6nh8PfVWhR3PY93xj6ny4IvoZW0NWpXjks/wPiyRoQ53oSv21jht/9EAknzopj9MKT08Z
- ViYSO7HOIjjz62UTk=
-X-Google-Smtp-Source: AGHT+IERkh1wFCOgFuvTdf4WvdRpZZQAKbrpIa7finfyVH/4m7Y7uOdpaLiobU71/4rrOc1q5S2N5Q==
-X-Received: by 2002:a05:6000:2489:b0:42f:9fc7:f944 with SMTP id
- ffacd0b85a97d-42fb48ed901mr2804329f8f.62.1765553463099; 
- Fri, 12 Dec 2025 07:31:03 -0800 (PST)
-Received: from localhost ([153.19.102.214]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-42fa8a66b97sm12665134f8f.7.2025.12.12.07.31.02
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 12 Dec 2025 07:31:02 -0800 (PST)
-Mime-Version: 1.0
-Date: Fri, 12 Dec 2025 16:31:01 +0100
-Message-Id: <DEWCGV9PNMKJ.1PIME8TAQ3WDB@suse.com>
-To: "Andrea Cervesato" <andrea.cervesato@suse.de>, "Linux Test Project"
- <ltp@lists.linux.it>
-X-Mailer: aerc 0.18.2
-References: <20251210-kirk_v3-1-v1-1-d610538666f9@suse.com>
-In-Reply-To: <20251210-kirk_v3-1-v1-1-d610538666f9@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ AJvYcCWE4DkVczzloxJX/6uewK4L72eaxegNDzQ/fIbETQFv+AayoLlQeh5Utdewyp68YZ9Yy/8=@lists.linux.it
+X-Gm-Message-State: AOJu0YyuhgNsTTAANk1k//NnA82JzVoaKOa4uIcQCguQfB2csF8CaLMN
+ BriyHVnKOjQb+WNrXTksZBPsrRqsaUscvbh8FR6sa5PjpzDGaE1xtkjdC+sDrdEqpg==
+X-Gm-Gg: AY/fxX6FQgu3KadZvBh3T8JIg7o4vu9+YwvfNaUvEAF37cp3/eZZ5lzLeUIVmZhmIwI
+ 84oAjS6EHMZU80FzdvV3VHP+fHIOKKzcCyhWhTIJGte3WKMaxmbl3k3C+RtASiUDP8i66Dc6I4a
+ /qHT5n9UWkD1Tt9AwD6smlUpcV4HaQGi5SEnf3pwiC0owpPadpJy5DpRH6J5OKG2IsRRwExIxYB
+ b+izcxzx8gBOIcQ/wLDqrpxGjrXe3m253dac3dAr/NS8m3HlmHBRbpGeUbsgG8tMrz+ygxNjvyH
+ 69KPo4S0qYsMdLEioKgLpcpXz4ErTgV1zCzg1ne56PzGg0uBGmtuNE9TXkeHhAa3VYI8K7NUD6G
+ AkbWDNpNO2KDZjZyLF9mwlXSLvFhuQ09BwhRXVTvTRmFkiKTQh7IFOIC6/Kqa3CjFTTU7Jkl6it
+ 0bh6JZOQd2+F1oohg1rQ2fo4Aim8Ou
+X-Google-Smtp-Source: AGHT+IEVr7dPEfOiB97Jk7lqS6Q8jeCYTNk6dfvcm6r6RXX5QgCkcljlODUCjU4fCBVg5I9Kq6VEGg==
+X-Received: by 2002:a05:6000:2dc5:b0:430:f2ee:b21f with SMTP id
+ ffacd0b85a97d-430f2eeb6c5mr3189282f8f.22.1765677244259; 
+ Sat, 13 Dec 2025 17:54:04 -0800 (PST)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-430f42a3290sm4907115f8f.17.2025.12.13.17.54.03
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 13 Dec 2025 17:54:03 -0800 (PST)
+Date: Sun, 14 Dec 2025 01:54:02 +0000
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aT4Yus2DHhcH4nCZ@autotest-wegao.qe.prg2.suse.org>
+References: <20251211015915.1086-1-wegao@suse.com>
+ <20251212115244.2027-1-wegao@suse.com>
+ <20251212122827.GC125889@pevik> <aTwREz2-YroAAyl_@yuki.lan>
+ <20251212142045.GD125889@pevik> <20251212151156.GF125889@pevik>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20251212151156.GF125889@pevik>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] kirk: version 3.1
+Subject: Re: [LTP] [PATCH v5] listmount04.c: Update case support
+ mnt_id_req.mnt_ns_fd
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,20 +104,121 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Merged!
-
--- 
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
-
+On Fri, Dec 12, 2025 at 04:11:56PM +0100, Petr Vorel wrote:
+> > > Hi!
+> > > > > -#ifndef HAVE_STRUCT_MNT_ID_REQ
+> > > > > -struct mnt_id_req {
+> > > > > +struct mnt_id_req_fallback {
+> > > > >  	uint32_t size;
+> > > > > -	uint32_t spare;
+> > > > > +	uint32_t mnt_ns_fd;
+> > > > >  	uint64_t mnt_id;
+> > > > >  	uint64_t param;
+> > > > >  	uint64_t mnt_ns_id;
+> > > > >  };
+> > > > > +
+> > > > > +#if !defined(HAVE_STRUCT_MNT_ID_REQ) || !HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD
+> > > > Shouldn't be !HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD
+> > > > !defined(HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD) ?
+> 
+> > > > Also, this patchset introduces compilation error on old systems:
+> 
+> > > > In file included from listmount03.c:13:0:
+> > > > listmount.h:20:4: error: 'struct mnt_id_req' has no member named 'mnt_id'
+> > > >    .mnt_id = mnt_id,
+> 
+> > > > Obviously some definition is wrong.
+> 
+> > > That looks like we need configure check for mnt_id too however that
+> > > happens in a different test.
+> 
+> > Yes:
+> 
+> Actually no, the problem was that typedef expects using pointer.
+> And we now need to use it in all tests, therefore listmount.h needs to be
+> updated.
+> 
+> Below is diff (without handling different errno).
+> 
+> Kind regards,
+> Petr
+> 
+> diff --git configure.ac configure.ac
+> index fcff907991..2866ee981d 100644
+> --- configure.ac
+> +++ configure.ac
+> @@ -172,6 +172,9 @@ AC_CHECK_FUNCS_ONCE([ \
+>  ])
+>  AC_CHECK_FUNCS(mkdtemp,[],AC_MSG_ERROR(mkdtemp() not found!))
+>  
+> +# Defined in <linux/mount.h>, but include/lapi/mount.h includes <sys/mount.h> */
+> +AC_CHECK_MEMBERS([struct mnt_id_req.mnt_ns_fd],,,[#include <sys/mount.h>])
+> +
+>  AC_CHECK_MEMBERS([struct fanotify_event_info_fid.fsid.__val],,,[#include <sys/fanotify.h>])
+>  AC_CHECK_MEMBERS([struct perf_event_mmap_page.aux_head],,,[#include <linux/perf_event.h>])
+>  AC_CHECK_MEMBERS([struct sigaction.sa_sigaction],[],[],[#include <signal.h>])
+> @@ -261,9 +264,6 @@ AC_CHECK_TYPES([struct mount_attr],,,[
+>  AC_CHECK_TYPES([struct cachestat_range],,,[#include <sys/mman.h>])
+>  AC_CHECK_TYPES([struct cachestat],,,[#include <sys/mman.h>])
+>  
+> -# Defined in <linux/mount.h>, but include/lapi/mount.h includes <sys/mount.h> */
+> -AC_CHECK_TYPES([struct mnt_id_req],,,[#include <sys/mount.h>])
+> -AC_CHECK_MEMBERS([struct mnt_id_req.mnt_ns_fd],,,[#include <sys/mount.h>])
+>  AC_CHECK_TYPES([struct statmount],,,[#include <sys/mount.h>])
+>  AC_CHECK_MEMBERS([struct statmount.mnt_ns_id],,,[#include <unistd.h>
+>  #include <linux/mount.h>])
+> diff --git include/lapi/mount.h include/lapi/mount.h
+> index 7b1c4ca0fe..5d9ccde28d 100644
+> --- include/lapi/mount.h
+> +++ include/lapi/mount.h
+> @@ -53,7 +53,7 @@ struct mnt_id_req_fallback {
+>  	uint64_t mnt_ns_id;
+>  };
+>  
+> -#if !defined(HAVE_STRUCT_MNT_ID_REQ) || !HAVE_STRUCT_MNT_ID_REQ_MNT_NS_FD
+> +#ifndef HAVE_STRUCT_MNT_ID_REQ_MNT_NS_ID
+>  typedef struct mnt_id_req_fallback mnt_id_req;
+>  #else
+>  typedef struct mnt_id_req mnt_id_req;
+> diff --git testcases/kernel/syscalls/listmount/listmount.h testcases/kernel/syscalls/listmount/listmount.h
+> index aad927f714..74f334c74e 100644
+> --- testcases/kernel/syscalls/listmount/listmount.h
+> +++ testcases/kernel/syscalls/listmount/listmount.h
+> @@ -8,6 +8,7 @@
+>  
+>  #define _GNU_SOURCE
+>  
+> +#include "config.h"
+>  #include "tst_test.h"
+>  #include "lapi/mount.h"
+>  #include "lapi/syscalls.h"
+> @@ -15,11 +16,10 @@
+>  static inline ssize_t listmount(uint64_t mnt_id, uint64_t last_mnt_id,
+>  			 uint64_t list[], size_t num, unsigned int flags)
+>  {
+> -	struct mnt_id_req req = {
+> -		.size = MNT_ID_REQ_SIZE_VER0,
+> -		.mnt_id = mnt_id,
+> -		.param = last_mnt_id,
+> -	};
+> +	mnt_id_req *req = NULL;
+> +	req->size = MNT_ID_REQ_SIZE_VER0;
+> +	req->mnt_id = mnt_id;
+> +	req->param = last_mnt_id;
+>  
+>  	return tst_syscall(__NR_listmount, &req, list, num, flags);
+Thanks for such detail feedback, will sent next patch.
+I guess we need s/&req/req/,
+or i think simple s/struct mnt_id_req/mnt_id_req/ more better.
+>  }
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
