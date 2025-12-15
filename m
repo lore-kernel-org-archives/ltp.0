@@ -4,100 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFCDDD41D74
-	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 08:00:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F69CD41D74
+	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 09:37:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F0B2D3CF82C
-	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 09:00:07 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 7F0903CF932
+	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 10:37:10 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 519343C1817
- for <ltp@lists.linux.it>; Mon, 15 Dec 2025 08:59:48 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 59B4A3CF55B
+ for <ltp@lists.linux.it>; Mon, 15 Dec 2025 10:36:51 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EF61B1400252
- for <ltp@lists.linux.it>; Mon, 15 Dec 2025 08:59:46 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id ADC8E1A004CE
+ for <ltp@lists.linux.it>; Mon, 15 Dec 2025 10:36:50 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 0D7FE5BD19;
- Mon, 15 Dec 2025 07:59:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1765785580;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8iRfQt29fevf3kpfG2cCu8y4N2TnKWn7JngacsRbbRk=;
- b=NuOuYurNb9rBIpeVtpXolAoETOt7t4NZ/hFpSA6GrmvhvcJeWSsx3yd7WJ1yEWqKN1g+By
- 9Ol/mV4W6zt5Vy6iaBlkuhoPc1IbLmw9m2wozPvUbZDYtD2ao8lNjFZhdamJtFbYyjoCjc
- 6HTfB8P7estsKkuNM/GJ75x+YSYrK4E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1765785580;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8iRfQt29fevf3kpfG2cCu8y4N2TnKWn7JngacsRbbRk=;
- b=prICrtsZyy0I0V7b416B63/8z/obq6SNTxFsdmYbN9s7hK492UaT8rT7drvGB9R4xBOk04
- MqsjN12Mq42V8bBQ==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4DD9C5BD16;
+ Mon, 15 Dec 2025 09:36:49 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1765785579;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8iRfQt29fevf3kpfG2cCu8y4N2TnKWn7JngacsRbbRk=;
- b=RJ+iOenRDOl2s03hy1soj88SUkzbPEe+oLPbo1WuJ/Aa+xaHdQwYX1kDXYBNdEtejQVbV1
- sUrkE5o0ki0/xDjri0rBhKn5CjdYgAn7aa/APLDZ6KoLnDbHnACtalWyGbQXSvIQaU+kAA
- /WDSBzwogcywYRpew/UhcLpf1YqwZOw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1765785579;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8iRfQt29fevf3kpfG2cCu8y4N2TnKWn7JngacsRbbRk=;
- b=ZH6RAz6ncY7V95Lj4n70H1/VI6Nyi3raYd0fJBYyr4CI9N7m7aMLtxkKiLli8/Smw/OMW2
- cff8MvdmLp7xrhBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E60503EA63;
- Mon, 15 Dec 2025 07:59:38 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2132E3EA63;
+ Mon, 15 Dec 2025 09:36:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id p/3MNuq/P2lbPQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 15 Dec 2025 07:59:38 +0000
-Date: Mon, 15 Dec 2025 08:59:22 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 3+HhBrHWP2kOFgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 15 Dec 2025 09:36:49 +0000
+Date: Mon, 15 Dec 2025 10:36:39 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Changwei Zou <changwei.zou@canonical.com>
-Message-ID: <20251215075922.GA233529@pevik>
-References: <20251214060640.41555-1-changwei.zou@canonical.com>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20251215093639.GA236929@pevik>
+References: <20251107003041.28929-1-wegao@suse.com>
+ <20251110024805.31070-1-wegao@suse.com>
+ <20251110024805.31070-2-wegao@suse.com> <aTvu4GJBC_G5kSNi@yuki.lan>
+ <20251212111618.GA125889@pevik>
+ <aT-5tkQkM_g2VZ35@autotest-wegao.qe.prg2.suse.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20251214060640.41555-1-changwei.zou@canonical.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.994]; MIME_GOOD(-0.10)[text/plain];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,canonical.com:email,suse.cz:replyto];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+In-Reply-To: <aT-5tkQkM_g2VZ35@autotest-wegao.qe.prg2.suse.org>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 4DD9C5BD16
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] splice07: require kernel version 5.10
+Subject: Re: [LTP] [PATCH v5 1/3] lib: Add support option for .needs_cmds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,73 +83,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Changwei,
+Hi Wei,
 
-> On Linux kernel 5.9, the splice07 test fails as follows:
+...
+> > Also, strictly speaking tst_cmd_present() is only defined, not used. The commit
+> > is about changing .needs_cmds from char array (string) to struct tst_cmd.
+> > Therefore it could be in a separate commit. We don't have to be too strict, but
+> > given how many tests needed to be adapted adding tst_cmd_present() is somehow
+> > buried with other changes.
 
->   Running tests.......
->   tst_fd.c:260: TCONF: Skipping memfd secret: ENOSYS (38)
->   splice07.c:64: TINFO: directory -> ...
->   splice07.c:56: TPASS: splice() on directory -> file : EINVAL (22)
->   splice07.c:56: TPASS: splice() on directory -> O_PATH file : EBADF (9)
->   splice07.c:56: TPASS: splice() on directory -> directory : EBADF (9)
->   splice07.c:56: TPASS: splice() on directory -> /dev/zero : EBADF (9)
->   splice07.c:56: TPASS: splice() on directory -> /proc/self/maps : EBADF (9)
->   splice07.c:56: TPASS: splice() on directory -> pipe read end : EBADF (9)
->   splice07.c:56: TFAIL: splice() on directory -> pipe write end expected EBADF, EINVAL: EISDIR (21)
->   ...
->   splice07.c:64: TINFO: pipe read end -> ...
->   splice07.c:56: TPASS: splice() on pipe read end -> O_PATH file : EBADF (9)
->   splice07.c:56: TPASS: splice() on pipe read end -> directory : EBADF (9)
->   splice07.c:56: TPASS: splice() on pipe read end -> /dev/zero : EBADF (9)
->   splice07.c:56: TPASS: splice() on pipe read end -> /proc/self/maps : EBADF (9)
->   splice07.c:56: TPASS: splice() on pipe read end -> pipe read end : EBADF (9)
->   Test timeouted, sending SIGKILL!
->   tst_test.c:1918: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
->   tst_test.c:1920: TBROK: Test killed! (timeout?)
+> Thanks all for detail feedback. Let's me give some explaination why skip
+> tst_brk in above function:
+> tst_cmd_present will be used in latest ioctl_loop01.c and it should not
+> use tst_brk otherwise we will brk out of test in setup() too early.
+> The new support needs_cmds.optional in current patch is used for support 
+> tst_cmd_present scenario in ioctl_loop01.c.
+> Correct me if any mistake.
 
->   Summary:
->   passed   121
->   failed   1
->   broken   1
->   skipped  5
->   warnings 0
->   INFO: ltp-pan reported some tests FAIL
->   LTP Version: 20250930-60-gb446dd4ed
+Sure, I noticed tst_cmd_present() usage in a later commit :).
 
-> This test passes on kernel versions 5.10 and later.
+My point was (while this patchset is also about ideal feature change split into
+commits) that if you touch many files with struct tst_cmd change, adding
+unrelated change (tst_cmd_present()) will hide this change. I would personally
+move adding tst_cmd_present() to a separate commit. It's not that important,
+just to make review easier.
 
-IMHO this is wrong. Older kernels are broken, and this would hide they are
-buggy. That's the reason why the related issue was closed [1].
-The correct way in ideal world would be to fix the kernel (but that would
-require nontrivial backports).
+The rules (which I've tried to explain on this patchset) are
+* each commit must compile (even temporarily break build is not acceptable)
+* split changes into small logical parts
 
-FYI we have rule "Do not work around kernel bugs" (the doc is not yet
-merged [2], but will be soon to be visible in docs [3]) and this would violate
-it.
+People talk about atomic changes: "As small as possible, but complete" so that
+they don't break CI.
+https://dev.to/samuelfaure/how-atomic-git-commits-dramatically-increased-my-productivity-and-will-increase-yours-too-4a84
 
 Kind regards,
 Petr
 
-[1] https://github.com/linux-test-project/ltp/issues/1156
-[2] https://lore.kernel.org/ltp/20251209120246.18435-1-chrubis@suse.cz/
-[3] https://linux-test-project.readthedocs.io/
+> ioctl_loop01.c code:
+> static void setup(void)
+> {
+>         parted_sup = tst_cmd_present("parted");  <=====
 
-> Signed-off-by: Changwei Zou <changwei.zou@canonical.com>
-> ---
->  testcases/kernel/syscalls/splice/splice07.c | 1 +
->  1 file changed, 1 insertion(+)
+> .....
+>         if (parted_sup)
+>                 SAFE_CMD(cmd_parted, NULL, NULL);  <===
 
-> diff --git a/testcases/kernel/syscalls/splice/splice07.c b/testcases/kernel/syscalls/splice/splice07.c
-> index c750a14bf..10206514f 100644
-> --- a/testcases/kernel/syscalls/splice/splice07.c
-> +++ b/testcases/kernel/syscalls/splice/splice07.c
-> @@ -69,4 +69,5 @@ static void verify_splice(void)
+>         sprintf(partscan_path, "/sys/block/loop%d/loop/partscan", dev_num);
+> }
 
->  static struct tst_test test = {
->  	.test_all = verify_splice,
-> +	.min_kver = "5.10",
->  };
+> > Kind regards,
+> > Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
