@@ -4,91 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 800A0D5B84D
-	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 16:24:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1765815865; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=gsya64glb9WYKS0wJTB58fwknKp46GZ208dhSoFyz28=;
- b=qmqNf90vZByvPbFPHBy/+7d/gylGNZtHvRSCb3XnwxnPYgasDZjzjHFCIsCc3Z6Am+n0j
- +pwHlz1JEpRr1KPOj9trTkzXXhkmHs1bJidMcG6vurC0D2HRCQ7nN6zCTIFn2pIF/bTNpTK
- QKzScm1F8sTm0eFwq9qr/lSCQswZjGs=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75A6AD5B84D
+	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 16:53:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 165893C8AAE
-	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 17:24:25 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 0ADFC3D0124
+	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 17:53:20 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2F0173C8AAE
- for <ltp@lists.linux.it>; Mon, 15 Dec 2025 17:24:00 +0100 (CET)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E82C53C8AC5
+ for <ltp@lists.linux.it>; Mon, 15 Dec 2025 17:53:00 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DF2B2200058
- for <ltp@lists.linux.it>; Mon, 15 Dec 2025 17:23:56 +0100 (CET)
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-477aa218f20so24162875e9.0
- for <ltp@lists.linux.it>; Mon, 15 Dec 2025 08:23:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1765815836; x=1766420636; darn=lists.linux.it;
- h=in-reply-to:references:to:from:subject:cc:message-id:date
- :content-transfer-encoding:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=tUkTkTrmP1Mm8VLxLTnRS/EFlpDsNfPVkmIVaA4MISw=;
- b=Gm+XEdS/uI03ok59s9nt+/eta5OlN2UwW+4WiZKXHH+beSj8t05jvQtE+EtTPMshIZ
- pOdVkGhZSXbrpshyu8qp+ipXQaLr3Tdruwetay1aSDuksldYcw0GOo5Q2DcERyB+F2QL
- tj5gRt05fsScQdCSCYhbqPcVLyTnLIxRw7nRPPlKqbZWP9dr5bMQz2gm6NjrP4H6oZ98
- HiyoWTeF8e1EvuJamM/lu/1TmWg5zaAPrG736chrDewo5ygqMxxJS8XJdderIlX/Gx37
- qH4tBEu9y+bFBjG7sGLg46Xgt+86DrKirJUXFOdTA0NFXreZh+n7Hf8RSCKTVwMwDE9W
- 0pGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1765815836; x=1766420636;
- h=in-reply-to:references:to:from:subject:cc:message-id:date
- :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=tUkTkTrmP1Mm8VLxLTnRS/EFlpDsNfPVkmIVaA4MISw=;
- b=ZIJyvUOpGcBUXMPr66l/vNH3AWMWRy2lIY/vAGmaPAx3CO7j0w5981GSbOmhn0YAIr
- 5UF4SQAhHzV4ULsIPVTM6ntxVWzXgbrzuOgJfQSB/czb7Ul3IYfRyusMoqDX6E63XyQf
- nrUntloYvQdGKpjNzyyuNMzjsxJX99h9exaFaW+I2c2uxy0P25lvYHR2+iu1EmJzsmYL
- HxiTxJf9DKgM0O75TV+PAsCKOeTikwThy8BCjtCel9UwXJgjudsaTdpIqt2afaKDl+ut
- oQoh56GWZLlCjvhjz8QkFTD7vx1YAUzi5ExSABCXqOwhsrUJZC7YKcqjrlf/lfK9uVSj
- 3XEw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUWeT6LP8GpIq1xMT1LIDlROFDu5VT2k/533+Zo0iK8yjHasZNIDGqj8BF09TEdxl8NUuM=@lists.linux.it
-X-Gm-Message-State: AOJu0YxMYGHHCsEc5vzmV8NfhP6cDHBJmk/rwT5+E50L1G9twXJPJo6Y
- pqQbfuW2WGdu8+nMUVob39JEka0gRQYpDRtOQ3WlfiMDNQV4ofdHluvubEV4eS4ILdU=
-X-Gm-Gg: AY/fxX71ZVHDPpR4y22rrDf2EpvLzKCMhUQIxmLD0AjQbiA0hnnMfoqdLlppQTXnzQQ
- LiRvFaiTF0A/BjfaldL8IRZ+Z7OAsjoEHVDyknRI908xec8d4YeGTBoAqwzqPruYiLHQKZDSZRR
- FllTX7FrTmyXDzX+OccP59J4iGTxb7qhqbTCIZ5J5IsYQkdmlcmyl01woG+HQZ2DKogGthFWikr
- 0bEfqfpvAT7ku7tDVGzXuPqoAiIp5oEAXeKCl/CnK6mUdTPIgDhRasrev/EK6Ng0pYt693LRXYj
- mZzbJumRx9c/1JtImY/v+undaBccOXfhzTb4aGn9XGrP2g/7Hka/x10NBgabJk6P2O5bDR8s+bu
- o7LXO/sQvo9ybyfWt9owILQLCuxoxyg3S+Tcde2gBPXwCNlhdHxEhpd15ktTwldsMZnyfUc1bLq
- rptp6z2sg2yt74S98rlXE=
-X-Google-Smtp-Source: AGHT+IGwucs2CgxCoC+De1Xmk7MHCsG5mCugzyvhwMM+oCFjvn4922zVVAZXiSFjXEInC9uY986aAQ==
-X-Received: by 2002:a05:600c:46cb:b0:477:7a78:3016 with SMTP id
- 5b1f17b1804b1-47a8f8a7f0fmr121647305e9.8.1765815836253; 
- Mon, 15 Dec 2025 08:23:56 -0800 (PST)
-Received: from localhost ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-430fa5f6ab7sm10292264f8f.25.2025.12.15.08.23.55
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 15 Dec 2025 08:23:55 -0800 (PST)
-Mime-Version: 1.0
-Date: Mon, 15 Dec 2025 17:23:55 +0100
-Message-Id: <DEYXGZU8IXPQ.2N0IS65HUZ0LI@suse.com>
-To: "Petr Vorel" <pvorel@suse.cz>
-X-Mailer: aerc 0.18.2
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A437E600136
+ for <ltp@lists.linux.it>; Mon, 15 Dec 2025 17:52:56 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B735133779;
+ Mon, 15 Dec 2025 16:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1765817576;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0RA0TO5FnN1Z3NKawt4MMDyLaRyDuElZp/aO7UYPC6I=;
+ b=1vqzQwA+uWGfYXkI2iIYan8pNSvRy0rSKJ/ldlfHHklEstyZ2hH/XQoFXcEdGWYfmaav33
+ MdRctbCB66WKnAqbCVk9paCKPblHOTCjIKYtg+wrcBjFjatpI7K4liCZg3r4Z5T+hi3D6/
+ GLopz0NLpSywANH22p/0RwrCxBs145g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1765817576;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0RA0TO5FnN1Z3NKawt4MMDyLaRyDuElZp/aO7UYPC6I=;
+ b=LW4GdLDe4GJcSTL7RgvQCwOy90vn9r8TzLsv3O272Yhvj/x4Snk7LDZRLiaec9ABL56wKU
+ gPfDeuEk+iTv5yBg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1765817574;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0RA0TO5FnN1Z3NKawt4MMDyLaRyDuElZp/aO7UYPC6I=;
+ b=zycZfyO9BMOvJKjguCukriQAXQnTA5guQlgCTSb/AkKDdQqk6yKcFMVB5IfxKusczgDi2N
+ hmHv+QsAmNqfCpO9lJSQ2BxIZ58ENRCOk3YM1yZlf3B2SN9sXCe0AWN/f2PKUsdcM3Xqdb
+ E3YXPNxLO+TPSrtvTW8iAM5ri+nF9m0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1765817574;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0RA0TO5FnN1Z3NKawt4MMDyLaRyDuElZp/aO7UYPC6I=;
+ b=XtLMBcOUp8olSbmT6CA3rd76KofUzJg+7qBM2wAJf4Q8djsCHxIaR9nBQOyyBPO/TQPzzq
+ JigiTlzuWIIPbBBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BCF6F3EA63;
+ Mon, 15 Dec 2025 16:52:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id CV7wKeU8QGlNJAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 15 Dec 2025 16:52:53 +0000
+Date: Mon, 15 Dec 2025 17:52:47 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20251215165247.GC282302@pevik>
 References: <20251209211629.95436-1-terry.tritton@linaro.org>
- <20251215155330.GC272695@pevik> <DEYWYH3VLMDA.R2SSTA8T80LU@suse.com>
+ <20251215155330.GC272695@pevik>
+ <DEYWYH3VLMDA.R2SSTA8T80LU@suse.com>
  <20251215161353.GA282302@pevik>
-In-Reply-To: <20251215161353.GA282302@pevik>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ <DEYXGZU8IXPQ.2N0IS65HUZ0LI@suse.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <DEYXGZU8IXPQ.2N0IS65HUZ0LI@suse.com>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.995]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[ozlabs.org:url,man7.org:url,suse.cz:replyto,linux-test-project.readthedocs.io:url,imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] ioctl_pidfd02-06: Add CONFIG_USER_NS and
  CONFIG_PID_NS to needs_kconfigs
@@ -103,43 +113,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it, Terry Tritton <terry.tritton@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> And https://www.man7.org/linux/man-pages/man7/user_namespaces.7.html.
->
-> Yeah, I understand that. The dependency of CLONE_NEWUSER/CLONE_NEWPID is also
-> visible in kernel sources (e.g. fs/nsfs.c). But my question was different:
-> Do we now prefer everything kind of document with .needs_kconfigs, even it's
-> possible to detect it otherwise? (speed of parsing kconfig, kind of hard request
-> for kconfig being available even we can figure the support otherwise).
+> > And https://www.man7.org/linux/man-pages/man7/user_namespaces.7.html.
 
-I believe we shouldn't see this as black/white but use this feature when
-it's really needed. This is the case.
+> > Yeah, I understand that. The dependency of CLONE_NEWUSER/CLONE_NEWPID is also
+> > visible in kernel sources (e.g. fs/nsfs.c). But my question was different:
+> > Do we now prefer everything kind of document with .needs_kconfigs, even it's
+> > possible to detect it otherwise? (speed of parsing kconfig, kind of hard request
+> > for kconfig being available even we can figure the support otherwise).
 
->
-> And if we decide for forcing kconfig, we should update ioctl_ns06.c, which does
-> /proc based detection (i.e. to use the same approach).
+> I believe we shouldn't see this as black/white but use this feature when
+> it's really needed. This is the case.
 
-I didn't check this, but I'm pretty sure we should go all around and
-verify many other tests with the same issue. We should do it in this
-patch-set or on a searate one.
+Sure, .needs_kconfigs is used when test request some functionality based on
+kconfig.  But many tests use /proc or /sys based detection (e.g. ioctl_ns06.c)
+or based on certain errno, see include/lapi/syscalls.h or
+testcases/kernel/syscalls/fanotify/fanotify.h) because these were
+added before LTP supported kconfig. Later, when kconfig was added it was
+considering as a last resort (when there was no way to detect dependency
+otherwise).
 
->
-> Kind regards,
-> Petr
+Have we decide to move everything into kconfig?
+
+I'm not sure myself.  needs_kconfigs is simpler and obvious, but it requires
+kernel config.  I suppose the speed of parsing config is not an issue.
+
+It'd be nice to mention the resolution (preferred vs. only if no other way to
+detect the support) into
+https://linux-test-project.readthedocs.io/en/latest/developers/writing_tests.html
+
+or into upcommig doc/developers/ground_rules.rst
+https://patchwork.ozlabs.org/project/ltp/patch/20251215124404.16395-2-chrubis@suse.cz/
+
+Kind regards,
+Petr
+
+> > And if we decide for forcing kconfig, we should update ioctl_ns06.c, which does
+> > /proc based detection (i.e. to use the same approach).
+
+> I didn't check this, but I'm pretty sure we should go all around and
+> verify many other tests with the same issue. We should do it in this
+> patch-set or on a searate one.
 
 
--- 
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
-
+> > Kind regards,
+> > Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
