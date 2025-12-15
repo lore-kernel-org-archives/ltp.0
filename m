@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 976DDD59D99
-	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 06:58:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12153D41D74
+	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 07:34:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1765781888; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1765784039; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=EN2VWsiGfUXdtH07eLrJ8h+5uGfR7vfzVU60bKUktq8=;
- b=alf13an6B3myKjFVTH5g1FAj8kWqXoctmrOEflycykrZJvyaNcrq6fST44cofxhuhB0jG
- 6iYI0JS03JtuXqwWf6zB4OhaqUOfKTrv/P34onqM/O7qsxYQeyRmKcKlhpCa6SLUe1d6TDP
- ZCFFzPwYqz1EhRyK48eMc38Yk5wVy/U=
+ bh=8Uz8p9/vcEibs3KxTK7tEXjrciLRfm8jdTebuacN1sQ=;
+ b=Ob1jjxoYQg0aUhYZfBx5SuBNcryWYAsid1lIyNG9V1fgqFb7eS4Qqi6+JscOYb9qge64I
+ qFf1oIm0bowjKRgKDrNLtx9hCbIbCmqcjycpYws7CY1vAKJMmAwbEHo948xyiQdcgDwq/xR
+ XCbzDKeplRFiN7DF6rM4jXxXAxN130o=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CFC553C0322
-	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 07:58:08 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 718973CF773
+	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 08:33:59 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 96BA43CA1BC
- for <ltp@lists.linux.it>; Mon, 15 Dec 2025 07:57:44 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9D0703C02B4
+ for <ltp@lists.linux.it>; Mon, 15 Dec 2025 08:33:36 +0100 (CET)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E6D861A00268
- for <ltp@lists.linux.it>; Mon, 15 Dec 2025 07:57:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1765781861;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=NKQmuAYM0VmYs8GRiBr6CL6RqnM8FUoVv4nRQaxGdLk=;
- b=BB0OSzI5g18C0gctMtYuoCM6YxaAQxselUSrm8HUg36YZzwJ2FkDeJWlUVu2nHsaNsnzPQ
- mEbQztoufogWDoUaRInJaiF3z2LXPeihHhI7DvZ68GPcU16Y2ootcUdqT9+YPFpBgpOGEK
- zmQDNVKKffFjeI12nm+RKZ7p0LWP/y4=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-194-xrQ7vf2CMcC-JAPu_2bl5Q-1; Mon, 15 Dec 2025 01:57:39 -0500
-X-MC-Unique: xrQ7vf2CMcC-JAPu_2bl5Q-1
-X-Mimecast-MFC-AGG-ID: xrQ7vf2CMcC-JAPu_2bl5Q_1765781858
-Received: by mail-pg1-f197.google.com with SMTP id
- 41be03b00d2f7-bddf9ce4931so5544722a12.0
- for <ltp@lists.linux.it>; Sun, 14 Dec 2025 22:57:38 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D50F61400075
+ for <ltp@lists.linux.it>; Mon, 15 Dec 2025 08:33:34 +0100 (CET)
+Received: by mail-wr1-x42e.google.com with SMTP id
+ ffacd0b85a97d-42fed090e5fso796810f8f.1
+ for <ltp@lists.linux.it>; Sun, 14 Dec 2025 23:33:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1765784014; x=1766388814; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=modCWqVcj4nbJ2GZhndfgXBAgIBum57JVFl3OKZw/RY=;
+ b=clhAs19DHEZlEAiBzxfSnnO9ec2AEC7uOMzOJsoVSFXJ+krxVt4X6xyQd9avKIjIH+
+ pYQdOoHu2KNdSFqBuvlbfvLL8COGb/+iQTxjmUrqANkOL7yMCKcSiMV27CWoZSA8g5pH
+ 2HMg0z06zfmZksu+6UZzI78QeD/4JodsAAybPHHGmMhd7ZlUgIyi6IGlyMF8JAhfrUma
+ ndj189sklcaZjGNzyTefO2KAqzBLZAyBM1DJxRPHZokhCQAzIQwvkD8KbccvoAOMVIcE
+ 6KxXyKRYA+pdP7JiuyPX6GjlSaXJyZ92u2rq1tZxVJyjHgnBxgL02P+tNVAiuR4kvrfm
+ 6VTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1765781858; x=1766386658;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=NKQmuAYM0VmYs8GRiBr6CL6RqnM8FUoVv4nRQaxGdLk=;
- b=W9Nh9/pqvIqN4wQCuVAznKTJqjFBZ4k5e2+qFUc0lluAhXpwg2LmQS8i8IRtnfxytW
- GHqpUjM5124S7ZCfglI0vEnvMhq4a5gD89VXzvJUxmjdgXcfvsRsqusp+c2tg1g5SYa3
- VY61rr+H1GeyyrKBtPBABXUIigImvWR25rE+L75fQnmy4qwsfDMTZ3bcpPo/RTf+V9sD
- Fk6UpwQOdzeSSY3wyDitXsBxHJDa6qNTxp9FOiHNmc1aUP2VGd+ZV6X0Saqn3qvMILcm
- ILmbA95owUvZlPeSRrEmgOfeOzVvrv3aEUA1Z03OHr7V0fIWyGEDg+Bv9hylsMknqahh
- HVzA==
-X-Gm-Message-State: AOJu0YxJdNnbEbcXhWI2ShPzH/OOcc7xYekLkAIFVP6SPziCYzQKrTxm
- NcBVvqUb6P+oFJAfCSiJCjk551iZU0LYOHLgVSzC35ONzkovpehYrNVZ4kmC09pA8mHLhcSQwAT
- vZsp8pEDShsbpblJfO4fMpuOeEA42JNzqfLhOUqmyo33fE6Bsy+oMV4dNClxaF7TkdyoikKenCd
- yTmOadC8HN0Q7iZHHjvFmh7pOoK7w=
-X-Gm-Gg: AY/fxX7k3isrUrTTeyvoZ4OUuh4fb3cTKplAQiBNqIGuTUimQw3W6xJGURTByH272aA
- SAvQu3GEAcQgRh9TNATNHHtBvx4plydnOnyPrLIoaq0/oxcnl11IfJZyPT5DyouLoK3M2IAjNWv
- AMyoQD2saNjj54ffnYzP8kjI6UHkZws6HuNAvPM4+5WYZ73GyvxO8qbBcx/bGbJCWhhiI=
-X-Received: by 2002:a05:7300:828d:b0:2ac:2c19:2a59 with SMTP id
- 5a478bee46e88-2ac3012d690mr4894519eec.33.1765781857987; 
- Sun, 14 Dec 2025 22:57:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHX2cUFEcXJXY1+DLaxPSLZOA/r17XkfBPmPO+D6vKZl1vefnuo/JEeyGl9Rhoozt4O7QvG6dZeGgW6l+Xp/vU=
-X-Received: by 2002:a05:7300:828d:b0:2ac:2c19:2a59 with SMTP id
- 5a478bee46e88-2ac3012d690mr4894514eec.33.1765781857533; Sun, 14 Dec 2025
- 22:57:37 -0800 (PST)
-MIME-Version: 1.0
-References: <20251209185557.20598-1-pvorel@suse.cz>
- <20251209185557.20598-2-pvorel@suse.cz>
-In-Reply-To: <20251209185557.20598-2-pvorel@suse.cz>
-Date: Mon, 15 Dec 2025 14:57:25 +0800
-X-Gm-Features: AQt7F2pMXn2t2ejAftWAaM_ztd4Xa8AhnQ6et_bqJbaCD0ULw2kHhLWBykrjG10
-Message-ID: <CAEemH2ej8-e_S4LgcKKkt08dUhyF0TreWp-QvXzQ1QGQYbywJg@mail.gmail.com>
+ d=1e100.net; s=20230601; t=1765784014; x=1766388814;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=modCWqVcj4nbJ2GZhndfgXBAgIBum57JVFl3OKZw/RY=;
+ b=tglNYyS4riyJLt6xJ0dKezfrL8Tfos3iEx/b9WT5khxdJpvGG0zcCkrI86dRM250Tn
+ colNzhsE0o9Y++vZWb21cD3RpbuqgGVfr+OHASqiPD8rnKFvl7NepOvXlNkOPq0s0kQQ
+ CzIxpZ6wOEiWaY1HAUbQFbwiRoIdccOKUEQx5DNM4nDr3X5EA+cev2mN4keZrCut4LmH
+ ZgkBNvqlHkrQI3Ciiu8aFTXCSvYoi2a3yrCYbRGy8bSwqvditMlJofiX12Dm3zaGNnTT
+ +sZcsTg39s2dDzTylDa1QOMHhPHSu1xzzQUn16kNCEq7wb6c0KBPEcIH9HAOM3kMDjZP
+ v/LA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVieZ/0G5CmetXXKO/GgnIp87CnDSDaxtznRZNZvmgyDByD0NVrCFsGQbOstemDrjuycIY=@lists.linux.it
+X-Gm-Message-State: AOJu0YwO1oXhQBUQniqvHYT/laTF96viU8TFAcC+vQkHIoWy+0vw31Qe
+ TzbGt+yVg0F4hfOWhUotqk0E0lLJG+PcO/oxZhn4tnDEQJG6wextodOgc1eq5Q8LdA==
+X-Gm-Gg: AY/fxX7Iy+73FlqWWOcbuli9SDobhf1Ku5FJKMX4roA+/1af07dQHkL8BAqDsQc+02C
+ IFlofvIU5qOlykkaIC/myzienhcfknC4DPEC508ydinLVqw+Ra92HM3SPL4Unz/4WTc3vI+iTiA
+ 8PqN9MHCuGUfobkDpmwu0uq3JwWqqoatz1YTVzDUiZDcBw2PoWF5pSkyC6ohQD1318WiMbD6v9s
+ bBRkSjaSxShUBUpTBvnlU0thNHy2DtwSkfyqnp3jmP64pznlmb+4eAUgm+p3yIkcFtc8vtNRyDO
+ CN32KbcJklSC9uYHM6YgPhExvKUGZQ9DWbAAH37fk6H1KnQSa7SIxX3jcAqH75El3PSdQBjKwK6
+ RqCbN1/ljTEZq5VBZfPLxkrAMDJBK0CKKSIBt+HcVl7FmYn0+pc56xH2tUrhPCmaaUMGxsZdOD7
+ r7WaCz2YzSNZ0JIqIwQrQkKX4NfHyy
+X-Google-Smtp-Source: AGHT+IFbigBsN3Hwt8Dr94UMVaQWw9M+Kf+Un1H0sb4zusUGbb76UYihGOVGq/75brqCbCVcCTi0cQ==
+X-Received: by 2002:a5d:584c:0:b0:431:a0:7de0 with SMTP id
+ ffacd0b85a97d-43100a07f2cmr589239f8f.35.1765784014040; 
+ Sun, 14 Dec 2025 23:33:34 -0800 (PST)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-430f280cf30sm13169003f8f.3.2025.12.14.23.33.33
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 14 Dec 2025 23:33:33 -0800 (PST)
+Date: Mon, 15 Dec 2025 07:33:32 +0000
 To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: V4SIwP-WYSTshqvujf72Afb-Gd_u5XLL-a1LO1fm_-o_1765781858
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+Message-ID: <aT-5tkQkM_g2VZ35@autotest-wegao.qe.prg2.suse.org>
+References: <20251107003041.28929-1-wegao@suse.com>
+ <20251110024805.31070-1-wegao@suse.com>
+ <20251110024805.31070-2-wegao@suse.com> <aTvu4GJBC_G5kSNi@yuki.lan>
+ <20251212111618.GA125889@pevik>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20251212111618.GA125889@pevik>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v4 1/4] shell: Add tst_runas.c helper
+Subject: Re: [LTP] [PATCH v5 1/3] lib: Add support option for .needs_cmds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,43 +103,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
- ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwKClBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6PiB3cm90ZToKCgo+ICsrKyBiL3Rl
-c3RjYXNlcy9saWIvdHN0X3J1bmFzLmMKPiBAQCAtMCwwICsxLDUwIEBACj4gKy8vIFNQRFgtTGlj
-ZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyCj4gKy8qCj4gKyAqIENvcHlyaWdodCAo
-YykgMjAyNSBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPiArICovCj4gKwo+ICsjZGVmaW5l
-IExUUF9VU1JfVUlEIDY1NTM0Cj4gKyNkZWZpbmUgTFRQX1VTUl9HSUQgNjU1MzQKPiArCj4gKyNk
-ZWZpbmUgVFNUX05PX0RFRkFVTFRfTUFJTgo+ICsjaW5jbHVkZSAidHN0X3Rlc3QuaCIKPiArCj4g
-K3N0YXRpYyB2b2lkIHByaW50X2hlbHAodm9pZCkKPiArewo+ICsgICAgICAgZnByaW50ZihzdGRl
-cnIsICJVc2FnZTogJXMgY21kIFthcmdzXSAuLi5cbiIsIF9fRklMRV9fKTsKPiArICAgICAgIGZw
-cmludGYoc3RkZXJyLCAiVXNhZ2U6ICVzIGNtZCBbLWhdIHByaW50IGhlbHBcblxuIiwgX19GSUxF
-X18pOwo+ICsKPiArICAgICAgIGZwcmludGYoc3RkZXJyLCAiRW52aXJvbm1lbnQgVmFyaWFibGVz
-XG4iKTsKPiArICAgICAgIGZwcmludGYoc3RkZXJyLCAiTFRQX1VTUl9VSUQ6IFVJRCBvZiAnbm9i
-b2R5JyB1c2VyLCBkZWZhdWx0cyAlZFxuIiwKPiArICAgICAgICAgICAgICAgICAgICAgICBMVFBf
-VVNSX1VJRCk7Cj4gKyAgICAgICBmcHJpbnRmKHN0ZGVyciwgIkxUUF9VU1JfR0lEOiBHSUQgb2Yg
-J25vYm9keScgdXNlciwgZGVmYXVsdHMgJWRcbiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-TFRQX1VTUl9HSUQpOwo+ICt9Cj4gKwo+ICtpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltd
-KQo+ICt7Cj4gKyAgICAgICBpZiAoYXJnYyA8IDIgfHwgIXN0cmNtcChhcmd2WzFdLCAiLWgiKSkg
-ewo+ICsgICAgICAgICAgICAgICBwcmludF9oZWxwKCk7Cj4gKyAgICAgICAgICAgICAgIHJldHVy
-biAxOwo+ICsgICAgICAgfQo+ICsKPiArICAgICAgIHVuc2lnbmVkIHVpZCA9IExUUF9VU1JfVUlE
-LCBnaWQgPSBMVFBfVVNSX0dJRDsKPiArCj4KCgoKPiArICAgICAgIGNoYXIgKnVpZF9lbnYgPSBn
-ZXRlbnYoVFNUX1RPX1NUUl8oTFRQX1VTUl9VSUQpKTsKPiArICAgICAgIGNoYXIgKmdpZF9lbnYg
-PSBnZXRlbnYoVFNUX1RPX1NUUl8oTFRQX1VTUl9HSUQpKTsKPgoKClNvIGZhciB0aGlzIGZvcm1h
-dCBpcyBjb3JyZWN0LgoKQnV0IGFzIEkgcG9pbnRlZCBpbiB0aGUgbGFzdCB0aHJlYWQsIGhlcmUg
-dXNpbmcgVFNUX1RPX1NUUl8gbWlnaHQgYmUgYQpwb3RlbnRpYWwKaXNzdWUgaWYgc29tZWRheSB3
-ZSBtYWtlIGNoYW5nZXMgb24gdGhhdCB0byBiZWNvbWUgdHdvLWxldmVsIG1hY3JvLgpJdCBsaWtl
-bHkgdG8gaW50ZXJwcmV0ZWQgYXMgIGdldGVudigiNjU1MzQiKTsKClNvIG9uIHRoZSBzYWZlIHNp
-ZGUsIEnigJlkIHN0aWxsIHJlY29tbWVuZCB3cml0aW5nIGl0IGV4cGxpY2l0bHk6CgogICAgY2hh
-ciAqdWlkX2VudiA9IGdldGVudigiTFRQX1VTUl9VSUQiKTsKICAgIGNoYXIgKmdpZF9lbnYgPSBn
-ZXRlbnYoIkxUUF9VU1JfR0lEIik7CgoKVGhlIHJlc3Qgd2hvbGUgcGF0Y2ggc2V0IGxvb2tzIGdv
-b2Q6CgpSZXZpZXdlZC1ieTogTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+CgoKLS0gClJlZ2Fy
-ZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5p
-dC9saXN0aW5mby9sdHAK
+On Fri, Dec 12, 2025 at 12:16:18PM +0100, Petr Vorel wrote:
+> > Hi!
+> > > diff --git a/lib/tst_test.c b/lib/tst_test.c
+> > > index da5314c50..67553f65d 100644
+> > > --- a/lib/tst_test.c
+> > > +++ b/lib/tst_test.c
+> > > @@ -1365,6 +1365,19 @@ static const char *default_fs_type(void)
+> > >  	return tst_dev_fs_type();
+> > >  }
+> 
+> > > +bool tst_cmd_present(const char *cmd)
+> > > +{
+> > > +	struct tst_cmd *pcmd = tst_test->needs_cmds;
+> > > +
+> > > +	while (pcmd->cmd) {
+> > > +		if (!strcmp(pcmd->cmd, cmd))
+> > > +			return pcmd->present;
+> > > +
+> > > +		pcmd++;
+> > > +	}
+> > > +	return false;
+> 
+> > Once again, we should tst_brk(TBROK, "Unexpected command '%s'", cmd) here since we asked for
+> > something that we haven't checked for!
+> 
+> Good point. I'm sorry to overlook this in my review.
+> 
+> Also, strictly speaking tst_cmd_present() is only defined, not used. The commit
+> is about changing .needs_cmds from char array (string) to struct tst_cmd.
+> Therefore it could be in a separate commit. We don't have to be too strict, but
+> given how many tests needed to be adapted adding tst_cmd_present() is somehow
+> buried with other changes.
+
+Thanks all for detail feedback. Let's me give some explaination why skip
+tst_brk in above function:
+tst_cmd_present will be used in latest ioctl_loop01.c and it should not
+use tst_brk otherwise we will brk out of test in setup() too early.
+The new support needs_cmds.optional in current patch is used for support 
+tst_cmd_present scenario in ioctl_loop01.c.
+Correct me if any mistake.
+
+ioctl_loop01.c code:
+static void setup(void)
+{
+        parted_sup = tst_cmd_present("parted");  <=====
+
+.....
+        if (parted_sup)
+                SAFE_CMD(cmd_parted, NULL, NULL);  <===
+
+        sprintf(partscan_path, "/sys/block/loop%d/loop/partscan", dev_num);
+}
+
+> 
+> Kind regards,
+> Petr
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
