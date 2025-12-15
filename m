@@ -4,94 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17D16D5B16E
-	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 14:04:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1765807463; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=2+o6AksVhoAz97IrAoYhR8vch48clMahC7g3RUN+UKI=;
- b=Rxgpx5vA9A1r2cUh64MIoY74gD92IbHYtsJ9jhHWhIoz4tHmd6R9DvO3Qbzuo51tSPaQ7
- 9ee0jwYB1XU8U9kXjwXDBYc9Nxq3hyr76aVpDxowN0xat5c5pFrXW+K84+yqS0pZA28aAfb
- 7nu4jH3tyeXgjTxKsfr6ncKqLmzFRsQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81C56D5B16C
+	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 14:22:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6E0863D01F9
-	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 15:04:23 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 0CC293D01EA
+	for <ltp@archiver.kernel.org>; Mon, 15 Dec 2025 15:22:53 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 853BD3D0061
- for <ltp@lists.linux.it>; Mon, 15 Dec 2025 15:03:59 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id DAA3A3C1817
+ for <ltp@lists.linux.it>; Mon, 15 Dec 2025 15:22:34 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E69E620075B
- for <ltp@lists.linux.it>; Mon, 15 Dec 2025 15:03:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1765807437;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=P1JqJNL/mA54aqaan5dqdICptmI3vehn3iZ5aYD2LNY=;
- b=UGAnCaabD6TeNv/ZyM6q0vid4yNI0047ReZ7OJAo/qcwownLWQfhK5dxC51G+kIRFUaotD
- ra5hxryEVhusLLl8z7gJfChLj15SzXu4wRdaU3FgcQqdOqoXJmu1SfzBNSPiRwzqU8oJgi
- UyumziL7rwNvyPkWIJbAo+VS05k9sH0=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-440-Mhp80o4FOxeFfPtePbVJ1Q-1; Mon, 15 Dec 2025 09:03:55 -0500
-X-MC-Unique: Mhp80o4FOxeFfPtePbVJ1Q-1
-X-Mimecast-MFC-AGG-ID: Mhp80o4FOxeFfPtePbVJ1Q_1765807434
-Received: by mail-pg1-f200.google.com with SMTP id
- 41be03b00d2f7-b5edecdf94eso6406135a12.2
- for <ltp@lists.linux.it>; Mon, 15 Dec 2025 06:03:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1765807434; x=1766412234;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=P1JqJNL/mA54aqaan5dqdICptmI3vehn3iZ5aYD2LNY=;
- b=EpUnwCLZEMpTeR6Pp/fWkH4HSkVMGuGsBfCBdeaS00qIp+walVGz32SkSHdODRXTUs
- 4amWks/dAv6h9ujvyiLE339YvzINc8Lw3hyWj9EaetohTglKbY7+S1lYlli7tUapq9e+
- YwE3TcxKdb71HfOvQ27VTG9EbwBqTW4yWmriBVBuri7RvqONPvVnziWSNzFcEp4qPznc
- ffew6bSMazOrEk73Pauk4DdaUF8HkX1g+dAVCebxndiUqNjfqwTIYEe/rK+yXK/CI9yQ
- qX4KlsnVmRP4g+W7aMdpLnoG+vsut5pHg+05JsoKgHHq/osk6lLMSODp17s2jKMvhE8V
- PDjQ==
-X-Gm-Message-State: AOJu0Yy+s3bH4RCk14hUm+PXRCRvijiiX8Mphr1T+sxR+L+QAVHzSa53
- QUz6UdhaUwZBM+aTT6Dbec6RWIHYZT5WYT4L9jksrWuw4uzTIaUJN3CzAJbadUFlsicKODLlIkI
- ZWdf+5aFx/TZx1mTecQkCmDgpY3LZR3HjAM2L7/VyqYYjKcLCa0CTkGi9fwkO+ChOMeGkPcMnEw
- u2yOAztFReRrgBM4hskbUzh374QOoeOrs1eFGUxoic
-X-Gm-Gg: AY/fxX7clc+bphgtHWg9OU6c9bOZ/AtYh/SOSBrVuqghrDO9+dlVL2CzcDzgRaUTsQE
- 8B3U9zEF6pksa4V8lgV07saKttsTUsGwuaBNa3mmsWWuzlt3AZN922x5tQ1uhzVLK5dejOWzM/N
- oegOANk/uxEdS2ab4XB3j+gkkZZRCrqi35CkxkLT0l36tFzXNpDFAkX5OXQtkkgRGSZlk=
-X-Received: by 2002:a05:693c:40d1:b0:2ac:2dd2:2f8 with SMTP id
- 5a478bee46e88-2ac2f8a665dmr7156704eec.17.1765807433344; 
- Mon, 15 Dec 2025 06:03:53 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFQkoCw8jZQrASEvn4oO61vcD5DT8WWtGTRFLt15J7vo7646UfKPz3Vj1r2LXoclSfVdX+F3Sc7yuEY5HF89tU=
-X-Received: by 2002:a05:693c:40d1:b0:2ac:2dd2:2f8 with SMTP id
- 5a478bee46e88-2ac2f8a665dmr7156618eec.17.1765807431413; Mon, 15 Dec 2025
- 06:03:51 -0800 (PST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A9AF764784B
+ for <ltp@lists.linux.it>; Mon, 15 Dec 2025 15:22:30 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 81E0C5BD29;
+ Mon, 15 Dec 2025 14:22:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1765808548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Cytt8MrysE13XgN60+kN7Sl5sGdCxWKfzm1WvKB8bcQ=;
+ b=YQFqjkIlKA6h7e7GzBqOebwOQ1Q8mXk2IyU41I8hmDY2qYYahjBvzDEmJNjU3tofRCq3CW
+ Czs0zZUvKQAQ/tT9P5Vnt8YXrs1rjZo09mh3WAOm8yQfie59wqG7+cGTq3FIwzi56zpole
+ xb/nPJHPoORXi2wKKjul7tfoOnRImIs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1765808548;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Cytt8MrysE13XgN60+kN7Sl5sGdCxWKfzm1WvKB8bcQ=;
+ b=S81sv1+O8km3syyl4ENF4AUWhBuDWyRWhLp71IGpf5/slDpG0I7eBQvjmjRp7EF4AbckTf
+ jR7J+VkuHRYHcIDw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=YQFqjkIl;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=S81sv1+O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1765808548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Cytt8MrysE13XgN60+kN7Sl5sGdCxWKfzm1WvKB8bcQ=;
+ b=YQFqjkIlKA6h7e7GzBqOebwOQ1Q8mXk2IyU41I8hmDY2qYYahjBvzDEmJNjU3tofRCq3CW
+ Czs0zZUvKQAQ/tT9P5Vnt8YXrs1rjZo09mh3WAOm8yQfie59wqG7+cGTq3FIwzi56zpole
+ xb/nPJHPoORXi2wKKjul7tfoOnRImIs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1765808548;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Cytt8MrysE13XgN60+kN7Sl5sGdCxWKfzm1WvKB8bcQ=;
+ b=S81sv1+O8km3syyl4ENF4AUWhBuDWyRWhLp71IGpf5/slDpG0I7eBQvjmjRp7EF4AbckTf
+ jR7J+VkuHRYHcIDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 584403EA63;
+ Mon, 15 Dec 2025 14:22:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id F/2vEqQZQGkZGwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 15 Dec 2025 14:22:28 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Mon, 15 Dec 2025 15:22:27 +0100
 MIME-Version: 1.0
-References: <20251215124404.16395-1-chrubis@suse.cz>
- <20251215124404.16395-2-chrubis@suse.cz>
- <CAEemH2eDJf1OAF1q6WEegF4ZpSVjerYa2O7hp8hfd+7q=75gQQ@mail.gmail.com>
-In-Reply-To: <CAEemH2eDJf1OAF1q6WEegF4ZpSVjerYa2O7hp8hfd+7q=75gQQ@mail.gmail.com>
-Date: Mon, 15 Dec 2025 22:03:39 +0800
-X-Gm-Features: AQt7F2oCEDQO-TBy70osSjIVGz0ed9T1f0k_eS31HjOLeOt-R62wezHPbYFpEqg
-Message-ID: <CAEemH2eoJ9v88TE63ScjZB2xw73_hgZF90BPDQq72_HX4OobLw@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: m4-31Wivk_niYUxYWqUEP8lCBFRnl4cVTfGJD_bxeLM_1765807434
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Message-Id: <20251215-fix_ci-v1-1-792d418fc240@suse.com>
+X-B4-Tracking: v=1; b=H4sIAKIZQGkC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI1NDI0NT3bTMivjkTF2zFMPUlBQjM0NLixQloOKColSgDNig6NjaWgAxVHx
+ 6WAAAAA==
+X-Change-ID: 20251215-fix_ci-6d1edd26198d
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1765808548; l=1444;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=mao58lkd0zQsVgrjGK/9+11EGau5GWLKKFcNIhEAq7M=;
+ b=FwjZF1ONni6z59zj6O56X2BhWWkNkD4OAvR8rFHEmlo/zxW4fj1efby9n6U1M3wyyQ40k6MDo
+ XBIm67EBdlEAIVURgcQiXXtHAiOOEo9r2MRy5Q+aI17bciixOzbIc/u
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,safe.directory:url,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 81E0C5BD29
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2 2/2] doc: Add ground rules page
+Subject: [LTP] [PATCH] ci: fix patch download when using curl
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,40 +121,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Another *important* rule concerns artificial intelligence. I've noticed
-some beginners submitting LTP patches directly generated by AI tools.
-This puts a significant burden on patch review, as AI can sometimes
-introduce a weird/unreliable perspective into the code.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Be careful when using AI tools
-========================
-AI tools can be useful for executing, summarizing, or suggesting approaches,
-but they can also be confidently wrong and give an illusion of correctness.
-Treat AI output as untrusted: verify claims against the code, documentation,
-and actual behavior on a reproducer.
+curl started to fail on CI after bots have been introduced to verify
+that a human is interacting with patchwork. This creates an issue when
+we need to download patches, since at the very first redirection we will
+miss the server hosting our patches. By using `--location-trusted`, we
+trust the bots redirection and we make sure that it's possible to
+download the patch which is going to be applied via `git am`.
 
-Do not send AI-generated changes as raw patches. AI-generated diffs often
-contain
-irrelevant churn, incorrect assumptions, inconsistent style, or subtle
-bugs, which
-creates additional burden for maintainers to review and fix.
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ .github/workflows/ci-docker-build.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best practice is to write your own patches and have them reviewed by AI
-before
-submitting them, which helps add beneficial improvements to your work.
+diff --git a/.github/workflows/ci-docker-build.yml b/.github/workflows/ci-docker-build.yml
+index 09eb8bb6d446b3e7100f43844942a5dd3976badb..408eb9a69f5cbebf725751633db46169be288bb8 100644
+--- a/.github/workflows/ci-docker-build.yml
++++ b/.github/workflows/ci-docker-build.yml
+@@ -155,7 +155,7 @@ jobs:
+         git config --global --add safe.directory "$GITHUB_WORKSPACE"
+ 
+         git checkout -b review_patch_series_"${{ inputs.SERIES_ID }}"
+-        curl -k "${{ inputs.SERIES_MBOX }}" | git am
++        curl -k -L --max-redirs 1 --location-trusted "${{ inputs.SERIES_MBOX }}" | git am
+ 
+         ./ci/tools/patchwork.sh state "${{ inputs.SERIES_ID }}" "needs-review-ack"
+ 
 
+---
+base-commit: d0e0426529619868195ff1dc8decd88c8259090c
+change-id: 20251215-fix_ci-6d1edd26198d
 
+Best regards,
 -- 
-Regards,
-Li Wang
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
