@@ -4,61 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AA2AD5E128
-	for <ltp@archiver.kernel.org>; Tue, 16 Dec 2025 10:54:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C398D5E125
+	for <ltp@archiver.kernel.org>; Tue, 16 Dec 2025 11:02:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1DF483D034E
-	for <ltp@archiver.kernel.org>; Tue, 16 Dec 2025 11:54:51 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 88B3C3D035C
+	for <ltp@archiver.kernel.org>; Tue, 16 Dec 2025 12:02:17 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0CBAB3C1817
- for <ltp@lists.linux.it>; Tue, 16 Dec 2025 11:54:31 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 688B73D034D
+ for <ltp@lists.linux.it>; Tue, 16 Dec 2025 12:01:58 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7286D600486
- for <ltp@lists.linux.it>; Tue, 16 Dec 2025 11:54:25 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7D02F6001AC
+ for <ltp@lists.linux.it>; Tue, 16 Dec 2025 12:01:54 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A5A365BCC3;
- Tue, 16 Dec 2025 10:54:24 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A080C5BCC3;
+ Tue, 16 Dec 2025 11:01:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1765882913;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XzNHV/U+SOcHeYpXTzXp8H1qJ7vBAJipvUkNC2BnOUo=;
+ b=h+vHch+jyRN5kTcdWDQz4gv5DH/CSHnpxsdEhuHcyZvJkpKlshd3OPtMcNgu3kBsA7nAQT
+ /Dug4Gbj57H5lnNv01R9pthBf1QMCbO0wgWYBQN6FKUrIvFuvVc62vhYoG5PNPuJAjpo1t
+ qpIpGXDv6tp5v8kBjsgTTmxWHRunZZE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1765882913;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XzNHV/U+SOcHeYpXTzXp8H1qJ7vBAJipvUkNC2BnOUo=;
+ b=5QFCC77rfv5mL5NooVbgWmJLJcXVHKfKY1llyF/K/FxFXJ1p5Cayw2V0b/L4PJQkd/rGrf
+ cteWyK0IW2s1A2Bw==
 Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1765882912;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XzNHV/U+SOcHeYpXTzXp8H1qJ7vBAJipvUkNC2BnOUo=;
+ b=srGkRLbGGCA9MYieT/KOrfPRNMmFikPNu8SJlAyt693KIoeclnwYS4Usjn8W8AYCGibRIm
+ Bkr61EtFki2L8ZNcNFWs6EJjPnsTNxmTnP/ui+fCkH9GnzZb5M4NrcCArAayJm+VrcA7Vv
+ VqrYJH8lN9JNATdS5/qk3SqnmQYXUpg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1765882912;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XzNHV/U+SOcHeYpXTzXp8H1qJ7vBAJipvUkNC2BnOUo=;
+ b=USwyKjUEmYPHyHr+48jKxAaM4lAk8oxM8U7EinMzW4EGVuMItTTCzKbPhhN89KFHs+7CZf
+ 0ZsPAF4yIzC8wdAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9099B3EA63;
- Tue, 16 Dec 2025 10:54:24 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 800C63EA63;
+ Tue, 16 Dec 2025 11:01:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2NxUImA6QWlOBwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 16 Dec 2025 10:54:24 +0000
-Date: Tue, 16 Dec 2025 11:54:23 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id UYtvHSA8QWmCDgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 16 Dec 2025 11:01:52 +0000
+Date: Tue, 16 Dec 2025 12:01:51 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20251216105423.GA307257@pevik>
+Message-ID: <20251216110151.GB307257@pevik>
 References: <20251215124404.16395-1-chrubis@suse.cz>
  <20251215124404.16395-2-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20251215124404.16395-2-chrubis@suse.cz>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: A5A365BCC3
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.989]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 2/2] doc: Add ground rules page
 X-BeenThere: ltp@lists.linux.it
@@ -81,115 +119,44 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
-Thanks, very nice doc!
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Few more style/typo/grammar notes below. Found by chatgpt, I picked just few of
-them which looked to me significant (obviously AI would improve the style, but
-lets ignore that).  Feel free to ignore, otherwise just amend before merge.
-Labels "typo:" or "grammar:" should probably be fixed.
-
-AI also suggests to use often articles, e.g. for "parent" and "child" (mostly "the",
-sometimes "a"), but let's ignore that.
-
-> +We have decided what we will not work around bugs in upstream LTP sources. If a
-decided what => decided that
-
+Few more notes.
 ...
-> +Why is sleep in tests bad then?
-Missing "using", also maybe more formal (it's not a blog post but official doc):
-Why is using sleep in tests bad?
-> +```````````````````````````````
-
-...
-> +The second problem is that this wastes resources and slows down a test run. If
-> +you think that adding a sleep to a test is not a big deal, lets have a look at
-> +the bigger perspective. There is about 1600 syscall tests in Linux Test
-
-grammar (plural): There is about 1600 => There are about 1600
-(You have it wrong also in your blog post.)
-
-> +Project, if 7.5% of them would sleep just for one second, we would end up with
-> +two minutes of wasted time per testrun. In practice most of the test, that
-> +historically misused sleep for synchronization, waited for much longer just to
-> +be sure that things will works even on slower hardware. With sleeps between 2
-> +and 5 seconds that puts us somewhere between 4 and 10 minutes which is between
-And here "sleeps" is plural, maybe: puts => put.
-Or maybe just use "sleep"?
-
-> +13% and 33% of the syscall runtime on an outdated thinkpad, where the run
-> +finishes in a bit less than half an hour. It's even worse on newer hardware,
-> +because this slowdown will not change no matter how fast your machine is, which
-> +is maybe the reason why this was acceptable twenty years ago but it's not now.
-> +
-> +
-> +What to do instead?
-> +```````````````````
-> +
-> +Use proper synchronization.
-> +
-> +There are different problems and different solutions. Most often test needs to
-> +synchronize between child and parent proces.
-
-typo: proces => process
-
-> +
-> +The easiest case is that parent needs to wait for a child to finish, that can
-
-that parent => when parent
-
-> +be fixed just be adding a :man2:`waitpid` in the parent which ensures that child is
-> +finished before parent runs.
-"child is finished" => "child finished" (or "child has finished")
-
-> +
-> +Commonly child has to execute certain piece of code before parent can continue.
-> +For that LTP library implements checkpoints with simple
-> +:c:func:`TST_CHECKPOINT_WAIT()` and :c:func:`TST_CHECKPOINT_WAKE()` functions based
-> +on futexes on a piece of shared memory set up by the test library.
-> +
-> +Another common case is where child must sleep in a syscall before parent can
-"where child" => "when child"
-
-> +continue, for which we have a :c:func:`TST_PROCESS_STATE_WAIT()` helper that
-> +polls `/proc/$PID/stat`.
-> +
-> +Less often test needs to wait for an action that is done asynchronously, or a
-> +kernel resource deallocation is deferred to a later time. In such cases the
-
-"a kernel resource deallocation is deferred to a later time"
-Maybe:
-"for kernel resource deallocation that is deferred to a later time"
-
-> +best we can do is to poll. In LTP we ended up with a macro that polls by
-> +calling a piece of code in a loop with exponentially increasing sleeps between
-> +retries until it succeeds. Which means that instead of sleeping for a maximal
-> +time event can possibly take the sleep is capped by twice of the optimal
-> +sleeping time while we avoid polling too aggressively.
-> +
-> +
 > +Use runtime checks for kernel features
 > +======================================
 > +
 > +What is and what isn't supported by kernel is determined by the version
 > +and configuration of the kernel the systems is currently running on.
-grammar (singular): "systems is ... running on." => "system is ... running."
-
 > +That especially means that any checks done during the compilation cannot
 > +be used to assume features supported by the kernel the tests end up
 > +running on. The compile time checks, done by configure script, are only
+
+Also please use link to the script:
+
+-running on. The compile time checks, done by configure script, are only
++running on. The compile time checks, done by :master:`configure.ac`, are only
+
 > +useful for enabling fallback kernel API definitions when missing, as we
 > +do in lapi/ directory.
-> +
-> +
+
+And to the lapi directory:
+
+-do in lapi/ directory.
++do in headers in :master:`include/lapi/`.
+
+(I'm not sure whether you just overlooked it or you don't see it useful.)
+
 > +Kernel features and RCs
 > +=======================
 > +
 > +LTP tests or fixes for kernel changes that were not released yet can be posted
-grammar (present perfect): "were not released yet can" => "have not yet been released may"
-
 > +to the LTP list for a review but will not be be accepted until respective
-"review but will" => "review but they will"
+> +kernel changes are released. Review of such changes is also considered to be
+> +lower priority than rest of the changes. This is because kernel changes
+> +especially in the early RC phase are volatile and could be changed or reverted.
+
+I would personally mention staging runtest file, but maybe I overlook your
+
+:master:`runtest/staging`
 
 Kind regards,
 Petr
