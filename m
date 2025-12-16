@@ -4,94 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5953D5CC9D
-	for <ltp@archiver.kernel.org>; Tue, 16 Dec 2025 10:00:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1765879202; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=/57fgEx3o0RdAo4sNR/sJfiX1NJTUTK4taQAzM7Ul+Q=;
- b=FVMdSvvh28OXkgldDQ3KX2hJ7Tk56lPhrPEmMQF7CUUec13MXBAE6bSP7Hyxzue8zGvlY
- M4zqD9uoHwQXPyTrq1i9VeWNMpEJLHIEnzPnrTVS2fqwskfXxE0cvjBZb0YivGi0cPMYBE+
- H70mykDBfFxmhE8M0UwrslTg9CfzW14=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A95ED5CCBB
+	for <ltp@archiver.kernel.org>; Tue, 16 Dec 2025 10:11:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 224373D0343
-	for <ltp@archiver.kernel.org>; Tue, 16 Dec 2025 11:00:02 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 341183D033D
+	for <ltp@archiver.kernel.org>; Tue, 16 Dec 2025 11:11:44 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A69993D0323
- for <ltp@lists.linux.it>; Tue, 16 Dec 2025 10:59:38 +0100 (CET)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
- [IPv6:2a00:1450:4864:20::42f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D3E453D032C
+ for <ltp@lists.linux.it>; Tue, 16 Dec 2025 11:11:25 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A4FB12005E7
- for <ltp@lists.linux.it>; Tue, 16 Dec 2025 10:59:34 +0100 (CET)
-Received: by mail-wr1-x42f.google.com with SMTP id
- ffacd0b85a97d-42e2d52c24dso2253177f8f.1
- for <ltp@lists.linux.it>; Tue, 16 Dec 2025 01:59:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1765879174; x=1766483974; darn=lists.linux.it;
- h=in-reply-to:references:to:from:subject:message-id:date
- :content-transfer-encoding:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=JVTiC9V+0XS4BJddMQn9sQ12iY5evaxqoZP2z8gej94=;
- b=ATCHCN24o5KFDIt/Cg9y6xur86hlQ7xlwF+L5Y5fJqLJHEeUSxeejB4I82UgPgt6Zu
- CRvDRDjIcc2kgRoMjS2y8gMpzlqCMYQet19m8doibUJBhNHeI3bBqFiJ52XwsexZ5qlH
- T2U3O3IVBXuBf2ZvnOCs1NbLCB9ra6EgPFtZ0ebsE5utCUds9JPd8BVPQ+GAoA7sQLPk
- VQuQgQliPFqkCpFdE5vDD65r8sZ1m/5yQvAjIrPehxWXZsdjOLS/6rGHKQh9KxH/rG6b
- ufRPunUk+4ZbCuPN7q5bDZjSRUaCyJiBkdfxsk1bFbGR7DRpfArHtSqwR1A0aCsujE8q
- un3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1765879174; x=1766483974;
- h=in-reply-to:references:to:from:subject:message-id:date
- :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=JVTiC9V+0XS4BJddMQn9sQ12iY5evaxqoZP2z8gej94=;
- b=DuzCcKZB379PYbQqGARFTHETTJthgM3bvzt0IapsA9LvpHsy2B5BcGMOBhEmk3qaM5
- k52oOpD64DSLQof6lSwGrtSB1YQPneI4ibG2xOq52VHyTcHMH0zc4ho09O+FRzF2L1SU
- prxoVolz/37FagJhHyTKxX+cqy2jrjCWGOXvYE+y/RWCTuLJRBL0A70NlYNpflmt2Nsv
- 9tWNUi9A48uSwgygmBKeoXsriHnQj3qduAS/6hNXsxE4TUZ0bro7KQ1LGOAXCN30gblQ
- XTALkVcJP7cfJAdJYgnWj0iGn24tT3Fqr/RaIl/pT3VtmvYhSlaoHZbS47DLMAGkm89r
- UBIQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCX+Y7C7KjIe/8P53THcdFwsBBuNxS9yX4B/MxF3g8Fkyuh/Bhn7E556yXdgvmpwJWxnKwU=@lists.linux.it
-X-Gm-Message-State: AOJu0YxDNbloQt/gJE4QCoLS8XXnEInlAHmrZ4Eu8pd0QDDkIbdWLQh8
- hIkAL5VK3OGuCvnobnsbhU5B3WwBDLKuaQ7Pa8zc+iL0tdnUOs7TaTd5zawE6jtfG0MLoZO5wE8
- S+L/RF/M=
-X-Gm-Gg: AY/fxX6fGvDncDOGtCmSx4/6Bjif7Zc4qgdnN1iqrAXGphp18p7DZK0Mt/RB97d+cT5
- PCSTqWmG7tSjAISAyoWaYq1XHUVNkkK4BR/7wUAuUI59eJSUsusewQgeptdcjirJNkoB7HGUUDc
- p/qqEfye4cucSumAiddhiWEtc1BzzHqA+F0NFTAn0lgHTkBreicBwa11LhxVl6fAHcYOiBylznj
- 6cfJkAdss+DsWgUZzkdJ8pEX4goJybwxAEJ5cSG2t9r2krSDea+ZyjGseptvJW3aw/7ZUrbQdtU
- 342OOQ71csf/PfgSZgHLo+pjZh3IpKrlB6Jws6r9arAJef1vrlK0RQjIMgaHqvf1y4OLIhNN8jH
- kw3dQS/0qK5qIcFujBS9SyNI/rKsUYmN+fn7knslr1V9oDQnE9NfsaE4450h58cpP1Tk5j6NdAN
- jhJfB2EKVtx5K7XBDxZAJ6+vNGE6Ffdg==
-X-Google-Smtp-Source: AGHT+IFqCt9cH5JCPycL2XGL8QHvcTlH1EwTqpBMYQ13dXLpF6CN7SnVerPc+qPgo55ic3h/9rryvA==
-X-Received: by 2002:a5d:5d09:0:b0:42b:2a09:2e59 with SMTP id
- ffacd0b85a97d-42fb42d8644mr14440040f8f.0.1765879173977; 
- Tue, 16 Dec 2025 01:59:33 -0800 (PST)
-Received: from localhost ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-42fa8a66614sm33989556f8f.5.2025.12.16.01.59.33
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 16 Dec 2025 01:59:33 -0800 (PST)
-Mime-Version: 1.0
-Date: Tue, 16 Dec 2025 10:59:33 +0100
-Message-Id: <DEZJX8WHVPQ2.F6D51LEPR1HK@suse.com>
-To: "Pavithra" <pavrampu@linux.ibm.com>, <ltp@lists.linux.it>
-X-Mailer: aerc 0.18.2
-References: <20251128044728.417921-1-pavrampu@linux.ibm.com>
-In-Reply-To: <20251128044728.417921-1-pavrampu@linux.ibm.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DE08D2005E7
+ for <ltp@lists.linux.it>; Tue, 16 Dec 2025 11:11:21 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C74A85BCC3;
+ Tue, 16 Dec 2025 10:11:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1765879881;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hnH1sINh0xSUoXLLZUV1EGwDSlSB2xCsDorWDQZCcPw=;
+ b=VIsD5HqI0p5tWYrbQELuBoLJqwBi9AgSF1EKM9K8CZ59VcAfsRHbhIsHLMadtwPsCPAlog
+ reOJRFU02fil/qj2dmiugp5vt2bDVexpOqZVKYwRiZPhSbo9gxd5J8lt3rlKSxm2M3Q3cg
+ xze2HkwdzHBdvFDFL7cdATNi9vjYfls=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1765879881;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hnH1sINh0xSUoXLLZUV1EGwDSlSB2xCsDorWDQZCcPw=;
+ b=6lOP9Z2bYAPswkBdwyBtCWiKrqH3XkbvPZyOEVd6J/PpxWxw7VgIKredL6HtOQqkr8+Bve
+ HbmJMmEY08wTRjDQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1765879879;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hnH1sINh0xSUoXLLZUV1EGwDSlSB2xCsDorWDQZCcPw=;
+ b=HtZ5KfSEE4K2HU5gs40tgW4YaQnGfYK/1rxGc/ET+/+W96+wPWCkNyrSlNRCXanpQd0vwd
+ 9diYrb+OhH6Y1UWLsi0ZHuHIsXqkp06cE/XD3fXrokiiwZhaEVaG8LFQcBnXMqgFln1PzU
+ B8yvMcqWWbmWYVqqJ100TpjaNGGIycQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1765879879;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hnH1sINh0xSUoXLLZUV1EGwDSlSB2xCsDorWDQZCcPw=;
+ b=5jyIBa2gRwYWCQyVu6j+J/i5xcM/PTmWIk2F32hV3JBrJMin7hu4yNK7xpLbr+rE0A/gkT
+ H5JO8N854O/XaYDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 843183EA63;
+ Tue, 16 Dec 2025 10:11:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 5RiaHEcwQWliXwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 16 Dec 2025 10:11:19 +0000
+Date: Tue, 16 Dec 2025 11:11:17 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20251216101117.GA295306@pevik>
+References: <20251215124404.16395-1-chrubis@suse.cz>
+ <20251215124404.16395-2-chrubis@suse.cz>
+ <CAEemH2eDJf1OAF1q6WEegF4ZpSVjerYa2O7hp8hfd+7q=75gQQ@mail.gmail.com>
+ <CAEemH2eoJ9v88TE63ScjZB2xw73_hgZF90BPDQq72_HX4OobLw@mail.gmail.com>
+ <20251215143048.GA267467@pevik>
+ <CAEemH2cmuxr7jKBA32eXQHOwQLvq4tPMDsmcen_9C7di=eSpDQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAEemH2cmuxr7jKBA32eXQHOwQLvq4tPMDsmcen_9C7di=eSpDQ@mail.gmail.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[qemu.org:url,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
+ REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] [PATCH] Migrating the
- libhugetlbfs/testcases/ptrace-write-hugepage.c
+Subject: Re: [LTP] [PATCH v2 2/2] doc: Add ground rules page
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,25 +112,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+...
+> > [1]
+> > https://lore.kernel.org/all/1bd04ce1-87c0-4e23-b155-84f7235f6072@redhat.com/
 
-the test is not using new API, so we can't approve it.
-Please, rewrite it using new API:
 
-https://linux-test-project.readthedocs.io/en/latest/developers/writing_tests.html
+> What a coincidence! I just spoke face-to-face with David Hildenbrand
+> at LPC last Friday. He expressed concerns about the increasing amount
+> of AI-generated code being sent to the LKML, pointing out that it does
+> indeed place a considerable review burden on maintainers. Moreover,
+> he himself rarely uses AI.
 
--- 
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+Nice :).
 
+"DoS kernel maintainers with AI slop" is a real danger.
+
+> Furthermore, some experts at Huawei told me that they only allow patch
+> senders to review patches before sending them, but do not permit the
+> use of AI-generated code.
+
++1. Is that due "AI slop" or legal issues?
+
+While I also share the fear of "AI slop", I was surprised that QEMU really
+strictly bans AI generated code due legal issues. I wonder if kernel endup the
+same as well.
+
+https://www.qemu.org/docs/master/devel/code-provenance.html#use-of-ai-generated-content
+
+> And, of course, clearly flagging content as AI-generated code in the patch
+> might help.
+
++1.
+
+IMHO using AI for help with manual work, e.g. converting docs from asciidoc
+to RST format is ok. For me the question is whether it can be used for
+generating a test code (new tests from scratch, rewrite into into new API which
+is often clearer write from scratch).
+
+Anyway, because we already had some AI generated patches it'd be good to have an
+AI policy.  But I would like not to block this patchset it (it'd be nice to get
+the patchset merged before Christmas and solve AI policy afterwards).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
