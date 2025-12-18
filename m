@@ -4,93 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C6A5D6ACFB
-	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 12:44:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C74A6D6ACF5
+	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 13:12:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1766061851; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1766063534; h=mime-version :
  date : message-id : to : references : in-reply-to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=aCNfDZzZljmj8dJdhbmeBsVrgdEbTOUw4fOOBKO1ORI=;
- b=qig2OhJ8XpwL0xdsIz34ioeSsE2NzHXAaEi/l7sBk/dBKEaIMhsA5hl4SM4Op9mnmhBig
- PsRutaou+GKbg2ktKfXb/G6mqA1dh05W/tf4g7AF7hPK2GflowAwMzrAvtYQp9cb9Mlw9RE
- 7mzqoLyOl6SnIS/JpsgCx1nPpSSTibo=
+ bh=Ant4c1SKbv4jyXX5I2R25n/51dinmrF0io8ZZ6+e4Tw=;
+ b=nq/LwLDtaBHBjreDyo1UKiXW6XtFCyKmovlFMf0KNiL0xDVTNWYlS7hB2LxOfMLxJ4Y1a
+ 24CuKniVd/FXFocAYFNfmwlR2x36V/r1LEJuduCJ3vnGAcyZUKdXEJTzZgGqm7Y+AKt4pBz
+ ySJV4vcg6m8Eq7zxjAfZL6Wu9CwY4QA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A1B93D04B1
-	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 13:44:11 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 4009D3C2B90
+	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 14:12:14 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2BD583CBEC7
- for <ltp@lists.linux.it>; Thu, 18 Dec 2025 13:43:47 +0100 (CET)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
- [IPv6:2a00:1450:4864:20::52a])
+ by picard.linux.it (Postfix) with ESMTPS id A8AA13C2B90
+ for <ltp@lists.linux.it>; Thu, 18 Dec 2025 14:11:51 +0100 (CET)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
+ [IPv6:2a00:1450:4864:20::631])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 797016005D1
- for <ltp@lists.linux.it>; Thu, 18 Dec 2025 13:43:43 +0100 (CET)
-Received: by mail-ed1-x52a.google.com with SMTP id
- 4fb4d7f45d1cf-6419b7b4b80so871488a12.2
- for <ltp@lists.linux.it>; Thu, 18 Dec 2025 04:43:43 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 05F311A00CBC
+ for <ltp@lists.linux.it>; Thu, 18 Dec 2025 14:11:49 +0100 (CET)
+Received: by mail-ej1-x631.google.com with SMTP id
+ a640c23a62f3a-b7a02592efaso86619466b.1
+ for <ltp@lists.linux.it>; Thu, 18 Dec 2025 05:11:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1766061823; x=1766666623; darn=lists.linux.it;
+ d=suse.com; s=google; t=1766063509; x=1766668309; darn=lists.linux.it;
  h=in-reply-to:references:to:from:subject:message-id:date
  :content-transfer-encoding:mime-version:from:to:cc:subject:date
  :message-id:reply-to;
- bh=T5bnlHXPkxHNYsCk495HEdm/TYQNFBSCxUdYhmOeNj0=;
- b=a6x2IwRHjxjHgXiwra3uQpjkbuo9Xr55Fr8pR6tBepG1O9jFL9DNb+9Mo1j+DkIsml
- tg8bnH6eckVnfPTseBbVuASE6le/Ek5KpImgSQ1sfcnBtj9/NS8Ed5KIBE7mqtvgudL4
- M1HfOXTPGc8Q9j9x4xyE1jJ/qhyIdi8NHTZEGktSBrQjoQCPhaA5uXDHMrSLe0K1F+09
- iA5ZYM38LxFutrxhW0d0zEy6Uc85IbNEgh435Re3VcO44ZQDr95klIZUYqC69K98Jw/n
- 7+wVW1OUkr/cpQYfzHuGqtNSwYifMaajI4KOraxLNSoV6qR6xRhQPeGwKrs22wfLzFe5
- k83w==
+ bh=eJaoFpUNPT7IBaZM6XCAmkC4xlx4aZKkr0oiBZmQIhc=;
+ b=DCIXsJuRCdy2V3TRWuegbh3F4ukfU0AR8IyLhiRNavN0eEYFXsf5sgZhI8q/k4czdd
+ pp2TFUQzg0thNyFMMkAcOIpiaB3nWmBmOGjDq4lzeECSe5JsOuOJSU76h7fAQUZcXWHV
+ BQHSGj+YVcEH1RCGv8/MRoFJiDYA0ucOkpCZM6ila1q/eB17wiUl5GFnUxIMEZFggAGW
+ +PJwA8Me2mtPfHHY/7GpQLFNAYImJ3B3dqet1uCUybOQ7cwYp28H1sWETXO7j7ENNHkA
+ kNi2PeX92ZP53i38zHsRscUZ4CveEnzPmpA48QcSLQTq+eclPbK7SRXFPc/CgDRkEW8p
+ Txsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1766061823; x=1766666623;
+ d=1e100.net; s=20230601; t=1766063509; x=1766668309;
  h=in-reply-to:references:to:from:subject:message-id:date
  :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
  :from:to:cc:subject:date:message-id:reply-to;
- bh=T5bnlHXPkxHNYsCk495HEdm/TYQNFBSCxUdYhmOeNj0=;
- b=xNPZ7N0s4pJ604hI03bSGC0IHkB4s5HJ7yPi9TS8IHVAoLvTGP8gyVyR7cLkYJikyZ
- 29rZ0WQEgSEtUGlCRHevV+n9xpuMRmJ+FumxnGC3c46M24r6fVFlMruat15LazTunAq5
- 3tY5vDCDExcUQHQdy6kkRqxK4UDTUlqB7Hm1WvaxcslBceBBZ1EztGuP66JXmFQhejel
- T3pZZ3kC3auFbpLRhxLyoNYz1548cyfjNspm9V45PwyzQVpWhMmCMZQVfEQNjaqIXG6V
- r4OvUdA7uEM9YyfFQN3PRjFJq7m8EyRvGbIhE0IVMkeivqqSGA5sBg0VBX2jAKT7E4Md
- QOrA==
+ bh=eJaoFpUNPT7IBaZM6XCAmkC4xlx4aZKkr0oiBZmQIhc=;
+ b=R32q4s9UyRidh85Meul5dy0b1uZUhlbjRQSGMmXxqhYHIOPVmw0bXDLuhnH7G95Zvw
+ LN+HKonTP3SBAKvKRfhnSgcx5/CjwBuBn/1hvqgUFefyAMsg5dBLJka60Xy+02JzB/cn
+ thcIwL1WzoXS6f/JF/AFB/9c3/aDOu02iEc5hFJcyK6nN2l3ezVaZ031TEhbXrnGcIIV
+ 41CkTGZHgNEjt26/gLReYJUI/b0O+cWjBJXyRuZ9I9cA9MxkThRottBTIJWvuG0LD1FW
+ F5qRbTaqRGGTkKJK0ewaeGW4ZwNfufz2HMmp7TxAXIW42iRXwZ7H5PxpMnRVdHyUwnL3
+ 8yng==
 X-Forwarded-Encrypted: i=1;
- AJvYcCW58IeoQuMlysEngrIA+qfCUhdVF4R5YsAQkdL6vZKyUyzjuDRdgDB5BrD3Hdbb6idP6q4=@lists.linux.it
-X-Gm-Message-State: AOJu0Yx6j7LoB0ZicAKepFsla57UwOxIwXJJ0isvjM8VOtcaqjNxTFz/
- gDVD3ylvp4XaC3hhbMZsJzZq/S8BLK+DCdiUo3qfwCSgDcVmnE/rdppZezNYO+I3VGvVVMPm6WQ
- yClX4qww=
-X-Gm-Gg: AY/fxX6OIcR2oH2ZaDey357koXheKqKHPMivkOrvgi/6xa69cof6AxLlh2LUmHVJ/8R
- L11YkfUZZpXzilh3suQFxVdUH24V5yHBmhiJpRaOJRsuQLlBkKs57O3puESOPHrYbAehC6LUr6f
- 2mowXDUvo5yy0sfVz97MhkmqL/IsH/Q7bPGqy/+WALi5jSPYA/IJJ2MiHnKIAs/Eno/skFVM6dS
- 8vt67Xg8MfSuevcLQBBfukTR60TTW0dAj4n0gd5x/OQK4f1HsRgGmbtJ54xbPSCqxOUwrNB8x0y
- G3gmgptAn1r+1618FDH0mWi6wIyni2N6VZgVGct8h9IWkJX1c7+qVPyqRVXCmvmYRAIB+B0GuKI
- +Rs8TTbidEgu8UpEIZXPhANtaNWb7iTReD2CbRZ/1oWGM7XQZiRmO6D/rlktExKlPtrsYox3yia
- RoYxhrp3G1DAQpakY=
-X-Google-Smtp-Source: AGHT+IHELsdQs5PJ4/Tvy9Xs3VXpJn/Xf8x+hFgZUVQj/YbA5kgwqVzhcHoPsZnpjd0AZHBk4Smvrg==
-X-Received: by 2002:a17:906:ee81:b0:b6d:67b0:ca0b with SMTP id
- a640c23a62f3a-b7d23a7b1ffmr2210460766b.61.1766061822689; 
- Thu, 18 Dec 2025 04:43:42 -0800 (PST)
+ AJvYcCV7oi+XbJ8QxTuwMoNUlEw1Uti6J9bP42wvZ9Z9/kvQ8KemmI7Nu9i04UHU7vHh0ErH5B8=@lists.linux.it
+X-Gm-Message-State: AOJu0YxSPblNGR9RPOrzx60yvS0vQI2u5gLm0L5hZLFNucFZd4GO7Ej+
+ enkzivNRkpEECC5QUg5TIPdQAHmvujrSwebO0GKuTE52eLnNJR5l51EZAQlyldlTsAn8PnjOyOj
+ Jz9warQA=
+X-Gm-Gg: AY/fxX4Luu//wc2/x4xiVuR9VlMFJ8uAZyiUddW0o6Ufx56FUShrv4k/U+/qyp5VWZu
+ p+3BVlssBUNmqH+SetYIfq+GNKT5yjkBd9StBwEkjpywCay9xKGBex1Tzpt4hYTVbq+J2ZypQRQ
+ +qqI8NhiQ2oL3TX8h+wObqZZJfEOcMCjOVvOiH92fQAki+5Aoit30FUBeDtZCZyIkYbmpKGGvbH
+ OPMfu3bziHi9fDWynUXD8WrGiqbO1pMidWwseejfLv1Im8eHdCGNhpk9+lZna1B0cTecgG0RZta
+ lXbimm1ty8IM3fJ5ZCWInvfNA+nS7e3ligwF9oUC/iZiVdV8RSkw3EP/pAe4LvP89LCQ4Oy2VZD
+ WbGIHNZa7XHXyiXQIselp7sGc6DlkR24M992rPtsYQv5z55KAImGQdfsoRtbVTmtFntjs3/FGsa
+ bVluaqin5jzdLIMS8=
+X-Google-Smtp-Source: AGHT+IHLPPgHAGj7oAFNeKvt+NkfzQZysqdmaLjeD14UN7YygIHaDsqbvl/bbz13knhAhDRhZfGIpw==
+X-Received: by 2002:a17:907:7296:b0:b73:6d3c:e0f2 with SMTP id
+ a640c23a62f3a-b7d238c40afmr1984654466b.37.1766063509234; 
+ Thu, 18 Dec 2025 05:11:49 -0800 (PST)
 Received: from localhost ([153.19.102.214]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-b8022f9531asm222213766b.14.2025.12.18.04.43.42
+ a640c23a62f3a-b802294928csm235246266b.0.2025.12.18.05.11.48
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 18 Dec 2025 04:43:42 -0800 (PST)
+ Thu, 18 Dec 2025 05:11:48 -0800 (PST)
 Mime-Version: 1.0
-Date: Thu, 18 Dec 2025 13:43:41 +0100
-Message-Id: <DF1CO0LSLWLZ.36NGISAN8GB9T@suse.com>
-To: "Petr Vorel" <pvorel@suse.cz>, <ltp@lists.linux.it>
+Date: Thu, 18 Dec 2025 14:11:48 +0100
+Message-Id: <DF1D9J8IUP1P.1MRZOA57C7C2G@suse.com>
+To: "Martin Doucha" <mdoucha@suse.cz>, <ltp@lists.linux.it>
 X-Mailer: aerc 0.18.2
-References: <20250211205734.1932275-1-pvorel@suse.cz>
- <20250211205734.1932275-2-pvorel@suse.cz>
-In-Reply-To: <20250211205734.1932275-2-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+References: <20251212104025.15924-1-mdoucha@suse.cz>
+In-Reply-To: <20251212104025.15924-1-mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/2] tst_test.sh: Convert only TBROK/TCONF to
- TWARN in cleanup
+Subject: Re: [LTP] [PATCH] tst_detach_device: Clear leftover partitions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,51 +109,7 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
 
-On Tue Feb 11, 2025 at 9:57 PM CET, Petr Vorel wrote:
-> Second attempt to convert only TBROK/TCONF to TWARN in cleanup().
->
-> Also print original message to help find function call with wrong
-> parameter.
->
-> Fixes: 55bfa08e17 ("tst_test.sh/tst_brk(): Convert only TBROK to TWARN in cleanup")
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> New in v2.
->
->  testcases/lib/tst_test.sh | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
->
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 5a6e34473f..0747f7aaf4 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -126,11 +126,17 @@ tst_brk()
->  	local res=$1
->  	shift
->  
-> -	if [ "$res" != TBROK -a "$res" != TCONF ]; then
-> -		tst_res TBROK "tst_brk can be called only with TBROK or TCONF ($res)"
-> -	elif [ "$TST_TBROK_TO_TWARN" = 1 ]; then
-> -		tst_res TWARN "$@"
-> +	if [ "$TST_TBROK_TO_TWARN" = 1 ]; then
-> +		if [ "$res" != TBROK -a "$res" != TCONF ]; then
-> +			tst_res TWARN "tst_brk can be called only with TBROK or TCONF ($res, msg: '$@')"
-> +		else
-> +			tst_res TWARN "$@"
-> +		fi
->  		return
-> +	fi
-> +
-> +	if [ "$res" != TBROK -a "$res" != TCONF ]; then
-> +		tst_res TBROK "tst_brk can be called only with TBROK or TCONF ($res, msg: '$@')"
->  	else
->  		tst_res "$res" "$@"
->  	fi
-
-Here there's a bit of code duplication. For instance, we can save the
-message inside a variable, as well as the T-flag, the use it accordingly
-to TST_TBROK_TO_TWARN.
-
+Merged, Thanks.
 
 -- 
 Andrea Cervesato
