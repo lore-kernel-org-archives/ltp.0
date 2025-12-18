@@ -4,96 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9572ED68BE8
-	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 08:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1766045952; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=mPxMzDPA8lTDloATHLFdPO3HbrIMna4cROh6jhuvJVQ=;
- b=gCnLYdGhNdDxHAByV7qyR5k5fNclvqsyqmdINWDHiM0cnxeB/3rZOfJGKzhti4ir381+c
- qgRJJcq45grMH92Fjc/I2WuyJys0nd7NC6wRfwl9eeCv4Erpsvxy7XrZH2L4WGoRPDCjpSX
- 0d/MyZ+Tm5pZTXQgpdTZ50FMyIZ+Vow=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02AF6D6ACDC
+	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 10:30:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1B7023D0489
-	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 09:19:12 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 547E93D04BB
+	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 11:30:32 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6497F3CECF2
- for <ltp@lists.linux.it>; Thu, 18 Dec 2025 09:18:47 +0100 (CET)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
- [IPv6:2a00:1450:4864:20::536])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 80F713CB780
+ for <ltp@lists.linux.it>; Thu, 18 Dec 2025 11:30:14 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9CE4E1A0064C
- for <ltp@lists.linux.it>; Thu, 18 Dec 2025 09:18:45 +0100 (CET)
-Received: by mail-ed1-x536.google.com with SMTP id
- 4fb4d7f45d1cf-640ca678745so564060a12.2
- for <ltp@lists.linux.it>; Thu, 18 Dec 2025 00:18:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1766045925; x=1766650725; darn=lists.linux.it;
- h=in-reply-to:references:from:subject:cc:to:message-id:date
- :content-transfer-encoding:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=xxNxObTUrGKK1q5CCvfnjU46ODV4Jzm/14dXJ5ktYko=;
- b=JDm/ol7g18dA90n5R1i0tjjLCfOUgoT89IqooNs4K67WuQe5HSYNEePd+jrUEgvZTJ
- TfB5LPh/OO2zQleixSGErmM7lkGI+mKboI5LYI2yzOshtdzWqDn5aYLGVSTtdYgynKM2
- +B5EtQ4vBh8MuieI2dCpIk7ebgvqrJTCYm7+V4Mk6ddfvbtNTY9bTcqRKegR3t9v7rLr
- jvRHsE4Wggkfxjtmf5TdCvfGPyKburlMOEhjNdySX8sitA1XFN9cVFsJwCrSh+w93RSi
- nnCfluZYyNH5jvx3raCUUDHosxZIsbeIoZo+bGe/55biMJEVd35OO18TIU+KvwmJRdni
- FUPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1766045925; x=1766650725;
- h=in-reply-to:references:from:subject:cc:to:message-id:date
- :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=xxNxObTUrGKK1q5CCvfnjU46ODV4Jzm/14dXJ5ktYko=;
- b=Han7EdChtr5ie8Rq/zdBPanCUonUZ6OYGADBZPyh7JzsTrqreCo643LPDkrDRLNJqz
- L+2nMtq1UDa+6KGXBzVLzUldoYtSdt7OIlP/XjXmwc7nI5CCoeotLrlsaJSRssGBIFru
- Zp29XffF5JS3GXxAjS5aPAS5wfh7wbgFTw17UBT3ArXsuUbq9goapmzKFETTFvmL9KvR
- CBdH01gkCW6lvyTtEdCp4vRWYDVYuTNCxZEit2p+fOHA0LEPZv2AgXUgUfY5N9aC2Y1y
- f8UnVZR5UTkjy4UZ5td2OcWTACK0RbxgZ7B8Wwx/oKsS6wVKqiX5+VbY7XyVc3ZU7RAc
- u9aA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXjLHba6P59XthX8WIBYmH7gkhGZmMiT3TzcUcic72Wxit4f+Fgp9ppbKgL7Qiu73Zw3Js=@lists.linux.it
-X-Gm-Message-State: AOJu0Yxy+bAVLb4wwLEbWF4EiGRupQj2TxBQY/j+y1pAbwbQ5R5eepfX
- AftKxpoY/wIEMiYTRVaBSb9S2R9wCyq9fopFR3MN4LCj1GH4rZWV4ZCxLaIUbze5vQQ=
-X-Gm-Gg: AY/fxX5IaI6TKerMU0BuukxkGvDKqgXqsmd9Alt9A8SZLmRjjwrgBOX81afyILenchL
- Yhbacx4dEmUroT4C2DQLRNr+sihDZ3jV8rBr/16Ies0L7WD6G8lH1Af443W2DqFTRi1ssukytu8
- qpKEyeEjv5le2mEet67HqzwyCo6D541SaiNUN+W/9f4914IKHEt5UsCT+gPcPVgYA+9V9Jo7TyM
- 5PZfjrf6eJdWJmW4c1Aw5UX8OlcnEg//PI+lMu3M58dD4I/pasjT0iUPcBg3TNwttq7d1TJZQj8
- lWPdquQSsZVYunQBHq3wQ4fePs6LWgt24TeEt28bYzb5zaBBz1/YQN2SGKXJOET0bwF8BXNTxiN
- TQ6Cbp9HCxppr7bjA5+9qfz73YjiXpqpPTvKOIZwdN6jAlQ4ZY6WdHIOxzY1Fmp4z09GdDHu6cf
- KLaaxnCS1XQrgH5KJbXtmnWF+q0rlicQ==
-X-Google-Smtp-Source: AGHT+IESJn8OlnKryU+P4r6NXmPZsqzFNd8UwKAntjX1Hpa35C1IILRcPWQQtPmHh9gaHJZOf2Dxng==
-X-Received: by 2002:a05:6402:510e:b0:64b:345f:13a3 with SMTP id
- 4fb4d7f45d1cf-64b345f14bdmr6857897a12.26.1766045924976; 
- Thu, 18 Dec 2025 00:18:44 -0800 (PST)
-Received: from localhost ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
- by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-64b585d4a85sm1764500a12.12.2025.12.18.00.18.44
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 18 Dec 2025 00:18:44 -0800 (PST)
-Mime-Version: 1.0
-Date: Thu, 18 Dec 2025 09:18:43 +0100
-Message-Id: <DF171554SNRA.2CKR0Q3FLG2TU@suse.com>
-To: "Petr Vorel" <pvorel@suse.cz>
-X-Mailer: aerc 0.18.2
-References: <20251209211629.95436-1-terry.tritton@linaro.org>
- <20251215155330.GC272695@pevik> <DEYWYH3VLMDA.R2SSTA8T80LU@suse.com>
- <20251215161353.GA282302@pevik> <DEYXGZU8IXPQ.2N0IS65HUZ0LI@suse.com>
- <20251215165247.GC282302@pevik>
-In-Reply-To: <20251215165247.GC282302@pevik>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DF01C1A00A44
+ for <ltp@lists.linux.it>; Thu, 18 Dec 2025 11:30:11 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5F4915BCFD;
+ Thu, 18 Dec 2025 10:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1766053808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=cCbgeHDa3fDPyVYcK7NhSzOF5AI8HaGkPMhoMEknIJY=;
+ b=rCN/i4jEV9r2Lce22im2pFUfrNsuqdZ8gWGecYIUn1tWJWokIXp4hs402RycsCTTCxbtq0
+ iHkvVEwaBGT9r71ZYKnUR2ls/wVmzoSOmmvjrN0kwnBU/NHK8gG36MWXpxlI4iXubx8Pit
+ 94K/EMhCHzfW0A05SdXZ/mk0wIsa7Rg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1766053808;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=cCbgeHDa3fDPyVYcK7NhSzOF5AI8HaGkPMhoMEknIJY=;
+ b=/2L+ROA2eOutGZqzycbAcY/5ajV0D6PcNlIuC65uUqRVO2uAdWesTX9DNV8ts2ckxdyLuv
+ VOvshTYRMwMgibAA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b="rCN/i4jE";
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="/2L+ROA2"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1766053808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=cCbgeHDa3fDPyVYcK7NhSzOF5AI8HaGkPMhoMEknIJY=;
+ b=rCN/i4jEV9r2Lce22im2pFUfrNsuqdZ8gWGecYIUn1tWJWokIXp4hs402RycsCTTCxbtq0
+ iHkvVEwaBGT9r71ZYKnUR2ls/wVmzoSOmmvjrN0kwnBU/NHK8gG36MWXpxlI4iXubx8Pit
+ 94K/EMhCHzfW0A05SdXZ/mk0wIsa7Rg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1766053808;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=cCbgeHDa3fDPyVYcK7NhSzOF5AI8HaGkPMhoMEknIJY=;
+ b=/2L+ROA2eOutGZqzycbAcY/5ajV0D6PcNlIuC65uUqRVO2uAdWesTX9DNV8ts2ckxdyLuv
+ VOvshTYRMwMgibAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2A3EC3EA63;
+ Thu, 18 Dec 2025 10:30:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id DyxWB7DXQ2nLWAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 18 Dec 2025 10:30:08 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 18 Dec 2025 11:30:07 +0100
+MIME-Version: 1.0
+Message-Id: <20251218-ci_enable_sphinx_doc-v3-1-9923a2de1b4e@suse.com>
+X-B4-Tracking: v=1; b=H4sIAK7XQ2kC/x3MTQqAIBBA4avErBP8IbOuEiGpUw2EhUIE4d2Tl
+ t/ivRcyJsIMY/NCwpsynbFCtQ34fYkbMgrVILnshBSGebIYF3egzddO8bHh9ExojYPpAzdOQU2
+ vhCs9/3aaS/kA97L2HmYAAAA=
+X-Change-ID: 20251218-ci_enable_sphinx_doc-166e987d08b3
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1766053808; l=4473;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=1FvpCjtwRMNziRWgcaQJbJvz3nMpfvm9FBPz+Lr8q74=;
+ b=We/9ioyNG0eglRdyxIPJnC9fj61Jayxny5j6f0x0gAWJvfMIETpO21hrbWv37Hy0ThrDI73K+
+ if7rOGq+M1MCU8DABMBx149eZWsqbQJQRglipm1di9ZFVFAov6JR5MI
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[user.email:url,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,user.name:url,suse.com:mid,suse.com:email,suse.de:dkim,safe.directory:url];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 5F4915BCFD
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] ioctl_pidfd02-06: Add CONFIG_USER_NS and
- CONFIG_PID_NS to needs_kconfigs
+Subject: [LTP] [PATCH v3] ci: enable doc testing for new patchwork patches
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,73 +122,135 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it, Terry Tritton <terry.tritton@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-On Mon Dec 15, 2025 at 5:52 PM CET, Petr Vorel wrote:
-> > > And https://www.man7.org/linux/man-pages/man7/user_namespaces.7.html.
->
-> > > Yeah, I understand that. The dependency of CLONE_NEWUSER/CLONE_NEWPID is also
-> > > visible in kernel sources (e.g. fs/nsfs.c). But my question was different:
-> > > Do we now prefer everything kind of document with .needs_kconfigs, even it's
-> > > possible to detect it otherwise? (speed of parsing kconfig, kind of hard request
-> > > for kconfig being available even we can figure the support otherwise).
->
-> > I believe we shouldn't see this as black/white but use this feature when
-> > it's really needed. This is the case.
->
-> Sure, .needs_kconfigs is used when test request some functionality based on
-> kconfig.  But many tests use /proc or /sys based detection (e.g. ioctl_ns06.c)
-> or based on certain errno, see include/lapi/syscalls.h or
-> testcases/kernel/syscalls/fanotify/fanotify.h) because these were
-> added before LTP supported kconfig. Later, when kconfig was added it was
-> considering as a last resort (when there was no way to detect dependency
-> otherwise).
->
-> Have we decide to move everything into kconfig?
->
-> I'm not sure myself.  needs_kconfigs is simpler and obvious, but it requires
-> kernel config.  I suppose the speed of parsing config is not an issue.
->
-> It'd be nice to mention the resolution (preferred vs. only if no other way to
-> detect the support) into
-> https://linux-test-project.readthedocs.io/en/latest/developers/writing_tests.html
+Run documentation build in the ci-patchwork-trigger GitHub
+workflow when new patchwork patches arrive in the ML.
 
-Feel free to add this comment, but for me it's obvious that if a
-feature can't be present in the kernel due to kconfigs we should check
-kconfig :-)
+Acked-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ .github/workflows/ci-patchwork-trigger.yml | 29 +++++++++++++++----------
+ .github/workflows/ci-sphinx-doc.yml        | 35 ++++++++++++++++++++++++++++++
+ 2 files changed, 53 insertions(+), 11 deletions(-)
 
->
-> or into upcommig doc/developers/ground_rules.rst
-> https://patchwork.ozlabs.org/project/ltp/patch/20251215124404.16395-2-chrubis@suse.cz/
->
-> Kind regards,
-> Petr
->
-> > > And if we decide for forcing kconfig, we should update ioctl_ns06.c, which does
-> > > /proc based detection (i.e. to use the same approach).
->
-> > I didn't check this, but I'm pretty sure we should go all around and
-> > verify many other tests with the same issue. We should do it in this
-> > patch-set or on a searate one.
->
->
-> > > Kind regards,
-> > > Petr
+diff --git a/.github/workflows/ci-patchwork-trigger.yml b/.github/workflows/ci-patchwork-trigger.yml
+index 0938aed5ad0df8af8e2e575283b56475ff219ff3..240bc9edc137dbc6eb3b4b0474dc7779809e7bb4 100644
+--- a/.github/workflows/ci-patchwork-trigger.yml
++++ b/.github/workflows/ci-patchwork-trigger.yml
+@@ -43,6 +43,11 @@ jobs:
+               return;
+             }
+ 
++            const workflows = [
++              'ci-docker-build.yml',
++              'ci-sphinx-doc.yml'
++            ];
++
+             for (const data of lines) {
+               const [series_id, series_mbox] = data.split('|');
+               if (series_id.length === 0 || series_mbox.length === 0) {
+@@ -50,16 +55,18 @@ jobs:
+                 continue;
+               }
+ 
+-              const response = await github.rest.actions.createWorkflowDispatch({
+-                owner: context.repo.owner,
+-                repo: context.repo.repo,
+-                ref: context.ref,
+-                workflow_id: 'ci-docker-build.yml',
+-                inputs: {
+-                  SERIES_ID: series_id,
+-                  SERIES_MBOX: series_mbox,
+-                }
+-              });
++              for (const workflow in workflows) {
++                const response = await github.rest.actions.createWorkflowDispatch({
++                  owner: context.repo.owner,
++                  repo: context.repo.repo,
++                  ref: context.ref,
++                  workflow_id: workflow,
++                  inputs: {
++                    SERIES_ID: series_id,
++                    SERIES_MBOX: series_mbox,
++                  }
++                });
+ 
+-              console.log(response);
++                console.log(response);
++              };
+             }
+diff --git a/.github/workflows/ci-sphinx-doc.yml b/.github/workflows/ci-sphinx-doc.yml
+index 457aa5a2355d1d93db243090ca31b1c634338b25..b225d32a6ba448fef2fb103cf7f891557be27a05 100644
+--- a/.github/workflows/ci-sphinx-doc.yml
++++ b/.github/workflows/ci-sphinx-doc.yml
+@@ -9,6 +9,16 @@ on:
+     - master
+   pull_request:
+     paths: ['doc/**']
++  workflow_dispatch:
++    inputs:
++      SERIES_ID:
++        description: LTP patch series ID
++        required: false
++        default: ''
++      SERIES_MBOX:
++        description: LTP patch series URL
++        required: false
++        default: ''
+ 
+ permissions: {}
+ 
+@@ -26,11 +36,36 @@ jobs:
+           sudo apt update
+           sudo apt install autoconf make python3-virtualenv
+ 
++      - name: Apply Patchwork series
++        if: inputs.SERIES_ID != '' && inputs.SERIES_MBOX != ''
++        env:
++          PATCHWORK_TOKEN: ${{ secrets.PATCHWORK_TOKEN }}
++        run: |
++          git config --global user.name 'GitHub CI'
++          git config --global user.email 'github@example.com'
++          git config --global --add safe.directory "$GITHUB_WORKSPACE"
++
++          git checkout -b review_patch_series_"${{ inputs.SERIES_ID }}"
++          curl -k "${{ inputs.SERIES_MBOX }}" | git am
++
++          ./ci/tools/patchwork.sh state "${{ inputs.SERIES_ID }}" "needs-review-ack"
++
+       - name: Run configure
+         run: |
+           cd "$GITHUB_WORKSPACE/ltp/"
+           make autotools && ./configure
+ 
++      - name: Send results to Patchwork
++        if: always() && inputs.SERIES_ID != '' && inputs.SERIES_MBOX != ''
++        env:
++          PATCHWORK_TOKEN: ${{ secrets.PATCHWORK_TOKEN }}
++        run: |
++          ./ci/tools/patchwork.sh check \
++            "${{ inputs.SERIES_ID }}" \
++            "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
++            "${{ matrix.container }}" \
++            "${{ job.status }}"
++
+       - name: Install sphinx dependencies
+         run: |
+           cd "$GITHUB_WORKSPACE/ltp/doc/"
 
-So what we do with the patch? Should we merge it?
+---
+base-commit: 89d95c6aec39356317338931652a857660873158
+change-id: 20251218-ci_enable_sphinx_doc-166e987d08b3
 
+Best regards,
 -- 
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
