@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B301D68BE4
-	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 13:37:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB7DED6D229
+	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 13:50:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1766065033; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1766065799; h=mime-version :
  date : message-id : to : references : in-reply-to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=/iEhlJ3OtYe3Q2FkRAdZSqJ3rZwYCaOr8CN6H4pPMXU=;
- b=Ju0KozV0JZf3rwB7Hw2Fic7aVmEBlSwzM+QKt38zV7/aF/nHn5Y+aldWFVKDpDMYcwVxb
- cqFW9+QoKuy0mBPATo7yhvHie+b3muF3/NW/5pN9zMNvrkwwNlJ002d1zgnJgNPSUjARgfo
- l1be98orwsUSGWTw9ws+JlRBZepa1OM=
+ bh=pzo6tGjz7VBpUqinvLre/g6/Bh3ySWgIaFWaSWlR8L0=;
+ b=O7B44fAOwYarEVsAKlKuL6iOkn4a4uEWJ4VoSA9UQcuBPY1xkOpPcpytjMZzskvpKjM5A
+ 3VepiBC59oY0qwgEx4ESpWevTMk+S0sk7a7IfB9HP8Ax6wCHe9ZtHA3d3idJBJbwFCSHs7z
+ eI/FudykQcyRNMNLOcvjxEwaM6tLAs8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B117F3CFAF9
-	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 14:37:13 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 299B93D0481
+	for <ltp@archiver.kernel.org>; Thu, 18 Dec 2025 14:49:59 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9487A3CB780
- for <ltp@lists.linux.it>; Thu, 18 Dec 2025 14:36:49 +0100 (CET)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
+ by picard.linux.it (Postfix) with ESMTPS id 74B193CBEC7
+ for <ltp@lists.linux.it>; Thu, 18 Dec 2025 14:49:35 +0100 (CET)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4D2831A00CBB
- for <ltp@lists.linux.it>; Thu, 18 Dec 2025 14:36:48 +0100 (CET)
-Received: by mail-ej1-x633.google.com with SMTP id
- a640c23a62f3a-b7a02592efaso90224466b.1
- for <ltp@lists.linux.it>; Thu, 18 Dec 2025 05:36:48 -0800 (PST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D47E6600A0B
+ for <ltp@lists.linux.it>; Thu, 18 Dec 2025 14:49:30 +0100 (CET)
+Received: by mail-wr1-x429.google.com with SMTP id
+ ffacd0b85a97d-42fb0fc5aa4so551009f8f.1
+ for <ltp@lists.linux.it>; Thu, 18 Dec 2025 05:49:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1766065007; x=1766669807; darn=lists.linux.it;
+ d=suse.com; s=google; t=1766065770; x=1766670570; darn=lists.linux.it;
  h=in-reply-to:references:to:from:subject:message-id:date
  :content-transfer-encoding:mime-version:from:to:cc:subject:date
  :message-id:reply-to;
- bh=wLmo8l2BCBpPiwjS/CCkN7a6JVDKw4nDqff42eqPfQU=;
- b=O+RO79UKnwtt1lEf9FEZw7MGvjD/gayh35fpJe+U4PQfgMbfyP/j7FNwMNt0q+lqlT
- IV1IkUvG+eGz0LXVB0mqlMG41tITIz9WEqgPMX4xVRODoFDLCe8FZIb2X9K9bvpap51L
- /fkv8nGFxYzErVuU3NacpOHCYeLml4UdQBCeBYjVIOKll3lhXasbuzFj/HGHNb+1fkIC
- EVLROQa+/c+VURKPC+tG27eRS/40CHBQVs6exHsckIqyiHUw+NExtznUC4MzeNqT7PuQ
- DLXNnYlNMB1WH7Gwf3sjZIm5NBzOeRP+fheqtB5sKYedY0PeXCBpBnsI7WvgXvd8uM1C
- 7r+Q==
+ bh=DEi32Z7sk0URKnwY7rarWcaSH2hzC7klZABd4mOj1Ic=;
+ b=eDperBWEovEH8EJ6vu9BvAWQ8wm1DX+limf3T08IQfhEhncztws6aA+qR/zkChpI7S
+ bd3KYUjHcDzHNRpQZL3NxeqFGtcR9HqShOgoBmfW9TC1dpUzxS2MOpOorgVXdvS/iRCu
+ NsDTdcmAvXZ2kT4TnUhUtJIHrUY3h0JKuCwC6WsZHnCb6Q+mfGT1+v51HnsrY5COqiRx
+ hiJ32xEoCMvD3DSNFjl6/CBxMQ639HYY2jmROdPEmqLgYAQYtCJxqH4T32BZU0S/yt2v
+ aoqTmD0SwmrB88WSnpKH32oj6mgnQ4l9mwfyWwe8yqHSU5pX6aOfaXG1V+xdIrCSaZQ0
+ HwuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1766065007; x=1766669807;
+ d=1e100.net; s=20230601; t=1766065770; x=1766670570;
  h=in-reply-to:references:to:from:subject:message-id:date
  :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
  :from:to:cc:subject:date:message-id:reply-to;
- bh=wLmo8l2BCBpPiwjS/CCkN7a6JVDKw4nDqff42eqPfQU=;
- b=rmKfQAAGpqx71WX40fC99ZK7Qs2+8f1Qy5hTFrrL6N/qsRZwQ5K58S//y/svCHI6lS
- CnyXv8AXUeMI1urHUja139oClaY1ClpialBgJorB4uW5a+2FPjjOhw+oQ21D377XbKdB
- 4Cq+eqlDM3Blw2fQAOAE1qQ9yadiF3wt2vE2ZQyfkUki8x4fhznHJkWAYoNT8OoDSahD
- uRO+effXz2n7Runk+KHTh2BL/QcpkeIWGAKkqw6k41dr83GyB7vIzz1XZDWYVT3+sezt
- GQwIM764tDkTSl3cT460YOQEoKBsogSlMETmMp0PquQ7Qz0R3ribMOMLBz9Fu9EQwTrM
- omcA==
+ bh=DEi32Z7sk0URKnwY7rarWcaSH2hzC7klZABd4mOj1Ic=;
+ b=Hp9IxNe617icDnhv7mMbpXSr6ku9wp1QFugPTYm8k1aVlGSuSoAOl6WqcGUCBqS0nZ
+ IOGeaN/hXpJ8BpZkp8mbWyHnjPw46E14iTCDmoRAqGUvFMPPeXQAMjJrltZE2Xkda7fp
+ zKk81zH10nc3kaRYjgScDKfbsUhz6B8FXQH7UvUFyknGhmaTSzgpUBIVtFd19h/en07E
+ KLBE245pxRNUxrgWZsNHP3h116gZta0FdcaFalIH5y1DsMorPWJMygIk1hbzoOUOsPuI
+ 64/vzPQ3oDBmuGF9yzzzt2hBDtYsOGX2X0fy38nDNE2fGvF35mr0af7RGVhJeF7WVOpW
+ cNgw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVa8zdVM3yzAVikdGVdfWrmA1w0mLkQN/70Z4aAY5wUS7uauEbHW6iKKHMGzv7bqmMsWF0=@lists.linux.it
-X-Gm-Message-State: AOJu0Yxk1b58Qlt7x2CBiiV5Ct36MarPp/BKjoyTKKZjXbIolew1/RJD
- EocuBlaxi4UrRQGOV2wYzz2zGBfB2nMAguwurvjZsVC6w9JKU8MUjavtGYMAvmxezQaPJme7nFQ
- rEPCkrPI=
-X-Gm-Gg: AY/fxX4yIJ/airfcUVDv1nUyfxH3/h4Nvz9CwG1etab+sN1EezMnuOjUTXbFkyEtIJi
- qLDWnO63FwLvqZ+M29diBk5a1bcVwZ0JSLnryQ7kyR4BjDFCnYQHSk/ltfxWGJfIIc+iNO9tCkC
- cvRBFyPZF3LP+CaplY/XmXt1xkBEBpeRwDDKrKFQIpsbbEFrQYWYLIXXXxxtvAtB8A+tb/4ocBT
- n9t/M4Ee2fSvyppG5Dq/YdSvKgZfAhONHI6df1kGnD5UeaFhd+UfUN5omwhqnEjGcHLwq1E6rYv
- os0s6lE9aO4yQVGjbdZ/ORrmBDF7nE4RwMJL+qeFdGSulmn7YXmXCkDBUJa6jGUbcakKlezs+D0
- Zo1PeKqUYmQ314IrVogfaU+dpEqZUbAUbOgXUnMU2KGxiKnZwzhuPzxVvk6ZpP3xFzm+SV8a5th
- QEHCBOtCYJb1ELFaw=
-X-Google-Smtp-Source: AGHT+IFSrYb9kqLv/KV9VgSx3RTtYwnuJe6uUJAYeqXyOR5AgiybZhX44tb+KWUcFRzEf9CphsMgig==
-X-Received: by 2002:a17:907:3d8d:b0:b7a:2ba7:198c with SMTP id
- a640c23a62f3a-b7d23aa4092mr2492488366b.59.1766065007518; 
- Thu, 18 Dec 2025 05:36:47 -0800 (PST)
+ AJvYcCUQgNxDWxoPixVYc1uevBDKwVdfEKg4nwjsAa2NTPTYFQTHC2q9oAx7LDeI7ewJD5hsU10=@lists.linux.it
+X-Gm-Message-State: AOJu0YwbV9NufhL2R3kEgnO9KHpKwJX6OBZGXh/+mLuCg5CUwrz2EW+t
+ un5lsBzmnabBDthLqpB9nUHFpJopLK1lgVY5NPzStKCgJKic0ywPgn4sen0T4XcTgivc1JhfIir
+ KzoFb+Sc=
+X-Gm-Gg: AY/fxX6Yna9a9V4fDVm2upRMqcl04y9pfP5f3PHEkTck3cSaRINov/V4WJgoG8gDipn
+ 8bq0nHcY+u4hGDpbItDhBqTnZJ7+cd9y5svigWsif9LtEd1vqTcSTFzQ02I+Hnoqx0vJTI90jTW
+ Vd/R/WyjJG9AfswRIQm1/sLeBKaxVFrLV6OacwZI1YKXsiDVc4pxsvbmLnBd2UocwQySjq9SDJv
+ fxtmwjC1ebieEnuAYy1LqvSfXDsJEN7YbOEPwbZaQ0B/8T53I5d2wwywQJqVq1/Iov1EMW0Z/PR
+ 2DZHzyZ1rXgivHyI/2hCPPjnQF6md3T4twXL5ip5aQRwvi7vnckZBhdLXZ5bTgkuJdDJ7EDmyi/
+ qlLwXiG4tCVDJ2SY9y1+cCRkov0jXaJYwlN3besINFXqzj1EMRdAdnf6bzFYH3O97zY4LsQVCu1
+ xp0fme8i2gNH+hL9Y=
+X-Google-Smtp-Source: AGHT+IGnsk91X9kla61DwqVk3fJRA1mzw1vLHzqiEP9A/hcGBM3hiLz7jA0Rr0vHUatOz86ReBjb2w==
+X-Received: by 2002:a05:6000:2c0c:b0:430:f65d:c0df with SMTP id
+ ffacd0b85a97d-430f65dc4f6mr19582445f8f.56.1766065770202; 
+ Thu, 18 Dec 2025 05:49:30 -0800 (PST)
 Received: from localhost ([153.19.102.214]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-b8023466073sm227712866b.38.2025.12.18.05.36.46
+ ffacd0b85a97d-4324498f910sm5025254f8f.23.2025.12.18.05.49.29
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 18 Dec 2025 05:36:47 -0800 (PST)
+ Thu, 18 Dec 2025 05:49:29 -0800 (PST)
 Mime-Version: 1.0
-Date: Thu, 18 Dec 2025 14:36:46 +0100
-Message-Id: <DF1DSNN2O3LK.2NIRU59O5LLY6@suse.com>
-To: "Zorro Lang" <zlang@kernel.org>, <ltp@lists.linux.it>
+Date: Thu, 18 Dec 2025 14:49:29 +0100
+Message-Id: <DF1E2E0JRGSY.3LQ2W7TCBWDLU@suse.com>
+To: "Wei Gao" <wegao@suse.com>, <ltp@lists.linux.it>
 X-Mailer: aerc 0.18.2
-References: <20251113162217.1077332-1-zlang@kernel.org>
-In-Reply-To: <20251113162217.1077332-1-zlang@kernel.org>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+References: <20251101012320.24972-1-wegao@suse.com>
+ <20251113015242.799-1-wegao@suse.com> <20251113015242.799-4-wegao@suse.com>
+In-Reply-To: <20251113015242.799-4-wegao@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/stat04&lstat03: remove fs block size
- related code
+Subject: Re: [LTP] [PATCH v4 3/3] ci: Add e2fsprogs package for CI test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,52 +110,10 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
 
-Sorry for the delay to this review.
+The commit message talks about tune2fs/dumpe2fs, but I couldn't find
+tests using them.
 
-On Thu Nov 13, 2025 at 5:22 PM CET, Zorro Lang via ltp wrote:
-> The st_blksize isn't equivalent to the filesystem block size. The
-> stat(3) manual describe st_blksize as:
->
->   "This field gives the "preferred" block size for efficient filesystem I/O."
->
-> So the st_blksize is the "preferred" block size for "efficient" fs
-> I/O, extN might think the "preferred" block size is fs block size.
-> But not all filesystems think same with extN. For example, xfs thinks
-> the "preferred" block size is:
->
->   max_t(uint32_t, PAGE_SIZE, mp->m_sb.sb_blocksize)
->
-> So you might get st_blksize=4096, no matter on 1k blocksize xfs or 4k
-> blocksize xfs. We shouldn't expect to use a different blocksize mkfs
-> option to get a different st_blksize. This part of code is useless,
-> except causing unexpected test failures on other filesystems (e.g.
-> xfs, btrfs and so on).
->
-> Signed-off-by: Zorro Lang <zlang@kernel.org>
-> ---
->
-> Hi,
->
-> I tried to fix the mkfs problem last year:
->   https://lists.linux.it/pipermail/ltp/2024-December/041038.html
->
-> Now I got a chance to look back this test failure, I think it's not a mkfs
-> option problem, but the test case misunderstood the st_blksize.
->
-> Except we limit this test only run on extN, or we don't need to make
-> fs with a different block size, especially shouldn't expect to get
-> a different st_blksize from that.
-
-If testing `st_blksize` is an issue only under certain filesystems, we
-should probably test it only when the right ones are in use.
-For instance, this can be done as following :
-
-	if (!strcmp(tst_device->fs_type, "ext2")) {
-		/* test `st_blocks` attribute */
-	}
-
-In this way we avoid to disable `st_blksize` testing for all existing
-filesystems.
+Am I missing something?
 
 -- 
 Andrea Cervesato
