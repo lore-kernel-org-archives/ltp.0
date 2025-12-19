@@ -4,110 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAB03D78783
-	for <ltp@archiver.kernel.org>; Fri, 19 Dec 2025 14:41:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B0BEE66892
+	for <ltp@archiver.kernel.org>; Fri, 19 Dec 2025 21:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1766179110; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=oAC+WEXVTDvnqQsQuT8USOTiVmhZzyEQ/1U98IxsSfE=;
+ b=VT8iRf+0cJ7CSkUVz0tAhOJBn70GX/+qdercErBRRM+e9r8dSRD8ULrMhEiDq0aov7vsB
+ 3bn8jwze1e4QodokdBAfeNQkZT+8S0OjIC2rfg3L72i+3b36uj1kE5PAeNa/bM11gOlwIur
+ 6X5E8oZAlVZJlu7tLRGLJ7Qui1iwY0g=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4D7E33D0547
-	for <ltp@archiver.kernel.org>; Fri, 19 Dec 2025 15:41:36 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 078033D053F
+	for <ltp@archiver.kernel.org>; Fri, 19 Dec 2025 22:18:30 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 02DBC3CF2F9
- for <ltp@lists.linux.it>; Fri, 19 Dec 2025 15:41:17 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 337183D0514
+ for <ltp@lists.linux.it>; Fri, 19 Dec 2025 16:39:31 +0100 (CET)
+Received: from relay.virtuozzo.com (relay.virtuozzo.com [130.117.225.111])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CF0A4200BA9
- for <ltp@lists.linux.it>; Fri, 19 Dec 2025 15:41:12 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id ACB46336DB;
- Fri, 19 Dec 2025 14:41:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1766155270;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=yKC4eZNRI3G5PlZJyxDOMdataXSa9ohs9dv+UyNnx80=;
- b=dGyYkg8DdBXsLTLE6o10WceHsju4AOciL7v/FuEUBO/o8QbdvXg8j6tnykLgsYZDhqVK+P
- AKYh+14IAA9jdbw6sCc05pCfoJsk0gNs17ZUsQIbX7oi+WXU2i5lHq09SR4c602KKTyjBI
- iON8W+pOrju1J0uzBOkXoJM1DIzD8Yg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1766155270;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=yKC4eZNRI3G5PlZJyxDOMdataXSa9ohs9dv+UyNnx80=;
- b=NTs2zRWnfIxteLV7QdSPEhbRjahasUYZExrCYUXm5gJ12en/XY95ucCvzeNKTAarluDKM5
- d9JK9LgTCekAf6BA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=uZ+siXFU;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=7CQv3sNY
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1766155269;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=yKC4eZNRI3G5PlZJyxDOMdataXSa9ohs9dv+UyNnx80=;
- b=uZ+siXFUUgWqWOWSTv+9hLoD2LYrnswfPOYO2nalzZQo9QJIw0FVjnVeOt2GLiT4uc5YGu
- J9oy9W9tE+/Cxr0awTEyU3bKn4OvlCrQOiEY4xI7uUsQfUzjCohxKOYSroP7HHQuCZbf6V
- vKTYZPLMPAqZ59cNC6YK5yWP68TqXp4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1766155269;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=yKC4eZNRI3G5PlZJyxDOMdataXSa9ohs9dv+UyNnx80=;
- b=7CQv3sNYYssaMIOS7fYYWB4ZAP325K7iRx5Jz6nWyis2H/zrPKhclZoGuiiWE0zyzj3SlC
- qvRa+cRc39lgPrCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 81B4B3EA63;
- Fri, 19 Dec 2025 14:41:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id /gMFHQVkRWnkPAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 19 Dec 2025 14:41:09 +0000
-Date: Fri, 19 Dec 2025 15:41:02 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it,
- Li Wang <liwang@redhat.com>
-Message-ID: <20251219144102.GA325483@pevik>
-References: <20251219094219.151887-1-pvorel@suse.cz>
- <aUUteQjVmMx1R_X9@yuki.lan> <20251219140216.GA247368@pevik>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E47C6601AD7
+ for <ltp@lists.linux.it>; Fri, 19 Dec 2025 16:39:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=virtuozzo.com; s=relay; h=MIME-Version:Message-ID:Date:Subject:From:
+ Content-Type; bh=+xMUU4WuZi4JCAcK1X8nopc7petzGSZc6AMnJDC/d4c=; b=N0eCKqFK/Xaf
+ /TDopwin5vQwzSC2hwvmxzlk2lQqwaec7qV5V7VJhZKVYAtw0KZgL8LdCz+hXuzGtzFIZgdYWaiuQ
+ UtEzwpqe3T6UqcW6yAh/VpGvTZE5ssjEeBVYxGrh7GdI0BHy/oxFZEq/GRZTJyWR5qfinl8DS8nWW
+ LpsWhIQXHrEg/zCaMY+99gGxCSdirEFLmS6iE2dMZ1jx5fPZ4auz1HkWyTJpUzyGrZfKpqN4eSNqx
+ ivenZNtgYJzTzJL/uy9ZEk0XuUWPmvsgmMCyEbzCw6KElpDzpih58Herut/4Y60Sy4PmErthYiCvb
+ FsNWyPDzxuEnGsiwl27tDg==;
+Received: from [130.117.225.5] (helo=dev010.aci.vzint.dev)
+ by relay.virtuozzo.com with esmtp (Exim 4.96)
+ (envelope-from <vasileios.almpanis@virtuozzo.com>)
+ id 1vWcZe-004qdO-0H; Fri, 19 Dec 2025 16:39:22 +0100
+To: ltp@lists.linux.it
+Date: Fri, 19 Dec 2025 15:37:31 +0000
+Message-ID: <20251219153923.45803-1-vasileios.almpanis@virtuozzo.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20251219140216.GA247368@pevik>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; MISSING_XM_UA(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: ACB46336DB
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 1/1] swapon03: Try to swapon() as many files
- until it fails
+X-Mailman-Approved-At: Fri, 19 Dec 2025 22:18:06 +0100
+Subject: [LTP] [PATCH] ssh-stress: disable resource penalties
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,46 +63,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Vasileios Almpanis via ltp <ltp@lists.linux.it>
+Reply-To: Vasileios Almpanis <vasileios.almpanis@virtuozzo.com>
+Cc: joerg.vehlow@aox.de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> [ Removing Michal to not bother him with LTP internals ]
+Our tests create a number of ssh sessions in the
+background which are immediately killed. Some of
+them haven't finished the authentication stage yet
+and they close the connection incurring penalties from
+the ssh daemon.
 
-> > Hi!
-> > >  	tst_res(TINFO, "Successfully created %d swap files", swapfiles);
-> > > -	MAKE_SMALL_SWAPFILE(TEST_FILE);
+debug1: srclimit_penalise: active penalty for ipv4 10.0.0.1/32
+already exists, 16 seconds remaining
 
-> > This should stay here, right? I suppose that the test works even when we
-> > pass non-existing file in the verify_swapon() but we shouldn't bet on
-> > that.
+Then when we try to reconnect to the daemon we are bounced
+because of the active penalty which leads to a failed test.
 
-> FYI swap file is created by is_swap_supported(TEST_FILE). But sure, I can
-> also keep MAKE_SMALL_SWAPFILE(TEST_FILE) to make sure file is also created.
-> We talked about related cleanup, which I wanted to postpone, but should I
-> refactor is_swap_supported() to not include swapon() call. Because when there
-> are too many swap files already mounted, tests is skipped with:
+ssh-stress 1 TINFO: Killing all ssh sessions
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by fd00:1:1:1::2 port 58373
+ssh-stress 1 TFAIL: SSH not reachable
 
-> libswap.c:224: TCONF: Permission denied for swapon()
-> due EPERM, which is actually subject of testing for swapon03.c
+From the sshd logs we can see
 
-And, as I posted in v3 [1], we can avoid this work, if we require at least
-single swap created by the test. Or, allow a corner case all swaps are used,
-but just verify that by counting swap in /proc/swaps.
+debug1: srclimit_penalise: active penalty for ipv4 10.0.0.1/32
+already exists, 16 seconds remaining
 
-Kind regards,
-Petr
+This feature was added to OpenSSH 9.8 in the 2024 release in the
+81c1099d2 commit. Lets disable penalties for the versions that
+support them.
 
-[1] https://lore.kernel.org/ltp/20251219142512.GC247368@pevik/
+Signed-off-by: Vasileios Almpanis <vasileios.almpanis@virtuozzo.com>
+---
+ testcases/network/stress/ssh/ssh-stress.sh | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-> I'm not sure about naming. Maybe have is_swap_supported() without swapon() call
-> (for swapon03.c) and create new function is_swapon_supported(), which would call
-> is_swap_supported() + swapon() and swapoff() (for all other tests).
+diff --git a/testcases/network/stress/ssh/ssh-stress.sh b/testcases/network/stress/ssh/ssh-stress.sh
+index c27c27a28..cb6659ed5 100755
+--- a/testcases/network/stress/ssh/ssh-stress.sh
++++ b/testcases/network/stress/ssh/ssh-stress.sh
+@@ -39,8 +39,12 @@ cleanup()
+ 
+ setup()
+ {
+-	local port rc
++	local port rc version major minor
+ 
++	version=$(sshd -V 2>&1 | sed -nE 's/^.*OpenSSH_([0-9]+)\.([0-9]+).*$/\1 \2/p' | head -n1)
++	set -- $version
++	major=$1
++	minor=$2
+ 
+ 	port=$(tst_rhost_run -c "tst_get_unused_port ipv${TST_IPVER} stream")
+ 
+@@ -60,6 +64,13 @@ HostKey $TST_TMPDIR/ssh_host_ecdsa_key
+ HostKey $TST_TMPDIR/ssh_host_ed25519_key
+ EOF
+ 
++	if ([ -n "$major" ] && [ -n "$minor" ]); then
++		if ([ "$major" -gt 9 ] || ([ "$major" -eq 9 ] && [ "$minor" -ge 8 ])); then
++			cat << EOF >> sshd_config
++PerSourcePenalties no
++EOF
++		fi
++	fi
+ 	ssh-keygen -q -N "" -t rsa -b 4096 -f $TST_TMPDIR/ssh_host_rsa_key
+ 	ssh-keygen -q -N "" -t ecdsa -f $TST_TMPDIR/ssh_host_ecdsa_key
+ 	ssh-keygen -q -N "" -t ed25519 -f $TST_TMPDIR/ssh_host_ed25519_key
+-- 
+2.43.0
 
-> Kind regards,
-> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
