@@ -4,96 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FD3CD7877D
-	for <ltp@archiver.kernel.org>; Fri, 19 Dec 2025 14:04:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E26ED78777
+	for <ltp@archiver.kernel.org>; Fri, 19 Dec 2025 14:04:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E5EAB3D0536
-	for <ltp@archiver.kernel.org>; Fri, 19 Dec 2025 15:04:07 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 332A63D0533
+	for <ltp@archiver.kernel.org>; Fri, 19 Dec 2025 15:04:27 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DC4563C5624
- for <ltp@lists.linux.it>; Fri, 19 Dec 2025 15:03:51 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 5DDA93C5624
+ for <ltp@lists.linux.it>; Fri, 19 Dec 2025 15:04:11 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BB56B1A000A4
- for <ltp@lists.linux.it>; Fri, 19 Dec 2025 15:03:50 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4FFB0200D00
+ for <ltp@lists.linux.it>; Fri, 19 Dec 2025 15:04:03 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C68B05BD33;
- Fri, 19 Dec 2025 14:03:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1766153030; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EM/TvU5XK0VFJTLhC24RaKOIlQ8o/zEaCz0BPo54OxM=;
- b=FDZc1CyA79Mrm8NpHRjOblkWI+crFL2ubcNehYOMR6STZRcQrPLnP/uWAEi1GUKP0DFufd
- KDQTb8hiGFBY7wmGJ6u6QQbhE7pjc9XNBknPxX/zriEkXlX/CDTGV1piP5rur3lQTrr7Tf
- W6Nyoa/EJ+kOl/jwjN8/hpQGw76f4q4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1766153030;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EM/TvU5XK0VFJTLhC24RaKOIlQ8o/zEaCz0BPo54OxM=;
- b=L4p2NqXAMhp+q9B7MI78wGtQLym5dzEV8vCiPtRyV+IhLa27IC6t9c3aBL+MUTA2rqvT/g
- zAJoQ3uAjW5+3dCw==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A068C5BD33;
+ Fri, 19 Dec 2025 14:04:02 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1766153028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EM/TvU5XK0VFJTLhC24RaKOIlQ8o/zEaCz0BPo54OxM=;
- b=F6u6Rhyz8hK/NLXZLkdbtsLteMCjf97JmxRSRwjWj8372ovWHhTTHtVyxmX7bwcwY8lN7T
- J8b7/Nv378zkC9xU37ELpKlvwyX5CBexSw+9XcAV+bEtW7OAILrpr3UrEcqCSJbFuYW60q
- pqa3L+oVrMR4oCP+v1m7ExIYInxz844=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1766153028;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EM/TvU5XK0VFJTLhC24RaKOIlQ8o/zEaCz0BPo54OxM=;
- b=3RTZWWUw9h4yl7sF+LLR1QeAxlHYh7uNMaT5fhlEELWzC/iTNKR2/rTsrv147y7gkntd4M
- qaBo/sBx3EqJzxCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B443F3EA63;
- Fri, 19 Dec 2025 14:03:48 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 033653EA63;
+ Fri, 19 Dec 2025 14:04:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Bi3GKkRbRWmeNQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 19 Dec 2025 14:03:48 +0000
-Date: Fri, 19 Dec 2025 15:04:52 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 5UPkOVFbRWmrNQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 19 Dec 2025 14:04:01 +0000
+Date: Fri, 19 Dec 2025 15:03:56 +0100
+From: Petr Vorel <pvorel@suse.cz>
 To: Li Wang <liwang@redhat.com>
-Message-ID: <aUVbhBY-SorareOp@yuki.lan>
+Message-ID: <20251219140356.GA187465@pevik>
 References: <20251219094219.151887-1-pvorel@suse.cz>
  <aUUteQjVmMx1R_X9@yuki.lan>
  <CAEemH2dwp0KUHpo+gVzBUNdDPJMo2xiZ59apHBWx=M_mmC7Y6g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <CAEemH2dwp0KUHpo+gVzBUNdDPJMo2xiZ59apHBWx=M_mmC7Y6g@mail.gmail.com>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.992]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: A068C5BD33
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v4 1/1] swapon03: Try to swapon() as many files
  until it fails
@@ -108,35 +73,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Michal Hocko <mhocko@suse.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > >       tst_res(TINFO, "Successfully created %d swap files", swapfiles);
-> > > -     MAKE_SMALL_SWAPFILE(TEST_FILE);
-> >
-> > This should stay here, right? I suppose that the test works even when we
-> > pass non-existing file in the verify_swapon() but we shouldn't bet on
-> > that.
-> >
-> 
-> Not exactly,  I guess here deleted it because is_swap_supported(TEST_FILE)
-> had already created the file but didn't clean it up in setup, so it still
-> exists.
-> 
-> Or, we need to do is improve is_swap_supported(), remove the any test file,
-> and then add it back separately.
-
-Ah, now I remmeber, I proposed not to create the swapfile in the
-is_swap_supported() and instead a pass a path to a swapfile to the
-function last time I got confused by the code.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+PiBPbiBGcmksIERlYyAxOSwgMjAyNSBhdCA2OjQ34oCvUE0gQ3lyaWwgSHJ1YmlzIDxjaHJ1Ymlz
+QHN1c2UuY3o+IHdyb3RlOgoKPiA+IEhpIQo+ID4gPiAgICAgICB0c3RfcmVzKFRJTkZPLCAiU3Vj
+Y2Vzc2Z1bGx5IGNyZWF0ZWQgJWQgc3dhcCBmaWxlcyIsIHN3YXBmaWxlcyk7Cj4gPiA+IC0gICAg
+IE1BS0VfU01BTExfU1dBUEZJTEUoVEVTVF9GSUxFKTsKCj4gPiBUaGlzIHNob3VsZCBzdGF5IGhl
+cmUsIHJpZ2h0PyBJIHN1cHBvc2UgdGhhdCB0aGUgdGVzdCB3b3JrcyBldmVuIHdoZW4gd2UKPiA+
+IHBhc3Mgbm9uLWV4aXN0aW5nIGZpbGUgaW4gdGhlIHZlcmlmeV9zd2Fwb24oKSBidXQgd2Ugc2hv
+dWxkbid0IGJldCBvbgo+ID4gdGhhdC4KCgo+IE5vdCBleGFjdGx5LCAgSSBndWVzcyBoZXJlIGRl
+bGV0ZWQgaXQgYmVjYXVzZSBpc19zd2FwX3N1cHBvcnRlZChURVNUX0ZJTEUpCj4gaGFkIGFscmVh
+ZHkgY3JlYXRlZCB0aGUgZmlsZSBidXQgZGlkbid0IGNsZWFuIGl0IHVwIGluIHNldHVwLCBzbyBp
+dCBzdGlsbAo+IGV4aXN0cy4KClllcy4KCj4gT3IsIHdlIG5lZWQgdG8gZG8gaXMgaW1wcm92ZSBp
+c19zd2FwX3N1cHBvcnRlZCgpLCByZW1vdmUgdGhlIGFueSB0ZXN0IGZpbGUsCj4gYW5kIHRoZW4g
+YWRkIGl0IGJhY2sgc2VwYXJhdGVseS4KCk15IHByZXZpb3VzIHJlcGx5OgpodHRwczovL2xvcmUu
+a2VybmVsLm9yZy9sdHAvMjAyNTEyMTkxNDAyMTYuR0EyNDczNjhAcGV2aWsvCgpLaW5kIHJlZ2Fy
+ZHMsClBldHIKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9s
+aXN0aW5mby9sdHAK
