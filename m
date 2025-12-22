@@ -4,92 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F105AE674AA
-	for <ltp@archiver.kernel.org>; Mon, 22 Dec 2025 12:58:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7B93E674B5
+	for <ltp@archiver.kernel.org>; Mon, 22 Dec 2025 14:14:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1766408328; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1766412841; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=B0xkG7D3PITqplcFDMEdRWvu/jqPZtgpjyXl6ggGLmE=;
- b=BLyCzdaX1hJ+99Wmd2mbPuK/M+SfuH/0zC0MuSXQeskQRv83jyqLrc1fE8GkxLGVtB6Zl
- VZ5TF31X0Db/J4LOuMAL+dD8GyJpRYa+9PRSxkMgrAXwYkTIyJUyE8iahenyfR2x20yB9LF
- VVrn+tRO9/kafSkzK/jzCuBlhWmNGLc=
+ bh=zsG7UyzWif2HNCshQkXZMIfbD9V6EKaKE4zMhRCzysI=;
+ b=AaeBPV3w74yLYY2k+vTxaygTZqCHKwS5UAEdXe+FQYjNXUDea4QgpOKOOtopE8KoUvrgr
+ P1+1Z3yL1xRq4kxBhcyXqxA1BIy1Xgvf1SD9hsDTOJhXb+m6HplxWqbvxP/DBU1xY1RzruL
+ P9AqSGxl8SJ9RuINyYLZA6C99Cic5SU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6293B3D06EB
-	for <ltp@archiver.kernel.org>; Mon, 22 Dec 2025 13:58:48 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 6E5243D0713
+	for <ltp@archiver.kernel.org>; Mon, 22 Dec 2025 15:14:01 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 109C73CF6C2
- for <ltp@lists.linux.it>; Mon, 22 Dec 2025 13:58:26 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 2CB543D066B
+ for <ltp@lists.linux.it>; Mon, 22 Dec 2025 15:13:37 +0100 (CET)
+Received: from relay.virtuozzo.com (relay.virtuozzo.com [130.117.225.111])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5BCBA600713
- for <ltp@lists.linux.it>; Mon, 22 Dec 2025 13:58:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1766408303;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=iRgRMZQmTwKufpT2a+k58zoz2At60jBudm7LrNl4d/Q=;
- b=RlRBiUvHSKMmmMOAd50Z5+RbCp0ADW95OuRXxnZ063FUWPMZrbFp8+7BRuMxY21gTGaGAe
- jGkNRqOSVs9Gpl2N5rMWJDq/TKVxMKbKNfLPikbbPlQd9ecgSrLYioQM8VF1ikLQfaSsT9
- ZVSeaaPTUKANkZ2kmTyrDK4kx+jjbPA=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-633-_yBXmWyaOzen_Kaz1lkROg-1; Mon, 22 Dec 2025 07:58:21 -0500
-X-MC-Unique: _yBXmWyaOzen_Kaz1lkROg-1
-X-Mimecast-MFC-AGG-ID: _yBXmWyaOzen_Kaz1lkROg_1766408301
-Received: by mail-pg1-f200.google.com with SMTP id
- 41be03b00d2f7-bf06c3426b7so7836006a12.3
- for <ltp@lists.linux.it>; Mon, 22 Dec 2025 04:58:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1766408301; x=1767013101;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=iRgRMZQmTwKufpT2a+k58zoz2At60jBudm7LrNl4d/Q=;
- b=eUte2S9PIHxiixc/8mvfnLZ573aI16j69dybLRdliQtoWXgrNDfUtUNGRoGIBKMgUK
- Ja6gDqQq6ZoyJ83Xc9j+gdj7trrjBm0KGW76wQomMrcsPg2X4LLPuajVJJU/qYEkwNXT
- jbSAec2aZt1po0yYJ25slcW/FRCzJuatvYZSzzIQvq7aBSoDf2JtKuuPPKrDL5U1n54G
- NtpdluHUaH4MABhMutdDrtKyF0HTKEIK3wjg65uFs7diiIShkEITW5hvtbRiO+IUGqFB
- T60uufz2nf0qxzt1wjpxd47WRPqU4bHWpioyGcF35Nab1cYuxjWSpJHiD6qMNmtvSQf2
- RJsw==
-X-Gm-Message-State: AOJu0YxNfqn6WZgiGtefXT6DHebsdbORMVm66F5g9kNensozMHKRTBo6
- sKyES9uUUMBSQEFFGtEwN22D+WPOoIy72GqVQ8dGPR6+F6f+TmzsKBSNffhi/PWfU0Hd1K+Fs5r
- 0N7H9JpEUdZHfqoAcuWqGoRbGG6Yy/tHu/NrJUzmEf+ZOp0XdMlA19VJ1JSLfcsLgQZkjmE0h+k
- LTAxJCynPhHT9ZAGGVuZu9aIfADqM=
-X-Gm-Gg: AY/fxX6xSQgzq9JJbd9soCiXGIFgRHYNEFIAmqTZk34AIZASKIY0Y5mF/iZ4dH88CYu
- qdxPTrjMUgtBDPIA/96IEwQbSWzDq9kQio7O/6UAchdJiZwmp8gW15Nd6+M6rr8Pbruoo262Xo/
- MiaahB7ugr8et7+DF8tIGBAHjZDBSlWyN4Wi34Mmycn1XOZu+H/siy0T3FqFGnOYoujxM=
-X-Received: by 2002:a05:7301:805:b0:2b0:4c8f:947e with SMTP id
- 5a478bee46e88-2b05ea0b5dcmr9465210eec.0.1766408300842; 
- Mon, 22 Dec 2025 04:58:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFju4YH82k6szBwwtxvLO9BVa2lJ8j7dPmnrXpZ0QYLKEHw0uYskHiPEs8fsTPHWR8AWEzGAzH78r/VuwFvPNs=
-X-Received: by 2002:a05:7301:805:b0:2b0:4c8f:947e with SMTP id
- 5a478bee46e88-2b05ea0b5dcmr9465195eec.0.1766408300426; Mon, 22 Dec 2025
- 04:58:20 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B4057200925
+ for <ltp@lists.linux.it>; Mon, 22 Dec 2025 15:13:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=virtuozzo.com; s=relay; h=MIME-Version:Message-ID:Date:Subject:From:
+ Content-Type; bh=OgKe4TRfpImQDEM2lnlFCHdIEMRNgoMn6lklpsZlZhk=; b=Yoo6zAWyEU+T
+ PlEjkxLiNua4PwYh5xLK1fAoLaKyQWXQ7i9yY7N4GHM4ApvM6wO/40X74sNQsyOMkcxrJWbfGGzDE
+ gfcizV1jvjKujeE5P+AZLTjw/fPQNj4tL4vgMJIfFgLUT4OsjT20NajTTqM7uoVfMh7095JKTO2kV
+ 1VZiYgSmvM4pDMxY/vh8dfFziXF0pn7VTIxY7r00D3VMOI4NOu1odybtht5H6l9W0jRF+t8hByBQr
+ 8ZrjltmJKl9dshFMNO9MOoBFSW3HoxHUDLUi/n/9A1GwssBm7cA4gSaZfkmYoilZrqQwJteIaf5tV
+ euQx7TUdYPcJgBrMDstgVA==;
+Received: from [130.117.225.5] (helo=dev010.aci.vzint.dev)
+ by relay.virtuozzo.com with esmtp (Exim 4.96)
+ (envelope-from <vasileios.almpanis@virtuozzo.com>)
+ id 1vXgf6-005Eae-2y; Mon, 22 Dec 2025 15:13:24 +0100
+To: ltp@lists.linux.it
+Date: Mon, 22 Dec 2025 14:13:26 +0000
+Message-ID: <20251222141331.121827-1-vasileios.almpanis@virtuozzo.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20251219212717.GA15539@pevik>
+References: <20251219212717.GA15539@pevik>
 MIME-Version: 1.0
-References: <20251222094428.87910-1-pvorel@suse.cz>
-In-Reply-To: <20251222094428.87910-1-pvorel@suse.cz>
-Date: Mon, 22 Dec 2025 20:58:07 +0800
-X-Gm-Features: AQt7F2pjkHl7qUAYWrQMdARka-Fg0u96AhdK6rw6tUdC0jX-_-105kspNv3pER8
-Message-ID: <CAEemH2dNPVh1pONN6GLY__YPnTiuj4-V60thZNJzEic2jL7YsQ@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 6VCGz5XC7TFnSRLmMGKx2zo2cz6T9OvXgVy0ELUrblc_1766408301
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] swapon03: Try to swapon() as many files until
- it fails
+Subject: [LTP] [PATCH v2 1/1] ssh-stress: disable resource penalties
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,19 +64,81 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
+From: Vasileios Almpanis via ltp <ltp@lists.linux.it>
+Reply-To: Vasileios Almpanis <vasileios.almpanis@virtuozzo.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+Our tests create a number of ssh sessions in the
+background which are immediately killed. Some of
+them haven't finished the authentication stage yet
+and they close the connection incurring penalties from
+the ssh daemon.
 
+debug1: srclimit_penalise: active penalty for ipv4 10.0.0.1/32
+already exists, 16 seconds remaining
+
+Then when we try to reconnect to the daemon we are bounced
+because of the active penalty which leads to a failed test.
+
+ssh-stress 1 TINFO: Killing all ssh sessions
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by fd00:1:1:1::2 port 58373
+ssh-stress 1 TFAIL: SSH not reachable
+
+From the sshd logs we can see
+
+debug1: srclimit_penalise: active penalty for ipv4 10.0.0.1/32
+already exists, 16 seconds remaining
+
+This feature was added to OpenSSH 9.8 in the 2024 release in the
+81c1099d2 commit. Lets disable penalties for the versions that
+support them.
+
+Signed-off-by: Vasileios Almpanis <vasileios.almpanis@virtuozzo.com>
+---
+Changes in v2:
+- Removed unnecessary parenthesis around if statements.
+---
+ testcases/network/stress/ssh/ssh-stress.sh | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/network/stress/ssh/ssh-stress.sh b/testcases/network/stress/ssh/ssh-stress.sh
+index c27c27a28..d5db24835 100755
+--- a/testcases/network/stress/ssh/ssh-stress.sh
++++ b/testcases/network/stress/ssh/ssh-stress.sh
+@@ -39,8 +39,12 @@ cleanup()
+ 
+ setup()
+ {
+-	local port rc
++	local port rc version major minor
+ 
++	version=$(sshd -V 2>&1 | sed -nE 's/^.*OpenSSH_([0-9]+)\.([0-9]+).*$/\1 \2/p' | head -n1)
++	set -- $version
++	major=$1
++	minor=$2
+ 
+ 	port=$(tst_rhost_run -c "tst_get_unused_port ipv${TST_IPVER} stream")
+ 
+@@ -60,6 +64,13 @@ HostKey $TST_TMPDIR/ssh_host_ecdsa_key
+ HostKey $TST_TMPDIR/ssh_host_ed25519_key
+ EOF
+ 
++	if [ -n "$major" ] && [ -n "$minor" ]; then
++		if [ "$major" -gt 9 ] || [ "$major" -eq 9 ] && [ "$minor" -ge 8 ]; then
++			cat << EOF >> sshd_config
++PerSourcePenalties no
++EOF
++		fi
++	fi
+ 	ssh-keygen -q -N "" -t rsa -b 4096 -f $TST_TMPDIR/ssh_host_rsa_key
+ 	ssh-keygen -q -N "" -t ecdsa -f $TST_TMPDIR/ssh_host_ecdsa_key
+ 	ssh-keygen -q -N "" -t ed25519 -f $TST_TMPDIR/ssh_host_ed25519_key
 -- 
-Regards,
-Li Wang
+2.43.0
 
 
 -- 
