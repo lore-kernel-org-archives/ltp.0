@@ -4,119 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 163F0E77361
-	for <ltp@archiver.kernel.org>; Wed, 24 Dec 2025 15:06:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 779EDFA3735
+	for <ltp@archiver.kernel.org>; Fri,  2 Jan 2026 11:54:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1767354871; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=1sD6IPIzmvAhnynQzPJZCBvpYu/IdXugjXAYuWNGVw0=;
+ b=WPKCcKf5Pjafnoq+yQeXu2bMnfUOcYOZClJ/I2OOotSsiarx0mv9wjbHabp3iLqr+2QnI
+ BbKXrh8I+PR6KK69K4Q3nV28PZF0JGKuofKcfyGh+4tgkWTd/18cNgyOtYv2ak+esw5OThD
+ QXB9Bqs4xr4ENOsQbdE5DwYutj4KbuQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2FB793D0F2C
-	for <ltp@archiver.kernel.org>; Wed, 24 Dec 2025 16:06:51 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id C63F23D03CA
+	for <ltp@archiver.kernel.org>; Fri,  2 Jan 2026 12:54:31 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0DFF63CF41A
- for <ltp@lists.linux.it>; Wed, 24 Dec 2025 16:06:30 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 32B023CF780
+ for <ltp@lists.linux.it>; Fri,  2 Jan 2026 12:54:08 +0100 (CET)
+Received: from smtp-relay-canonical-0.canonical.com
+ (smtp-relay-canonical-0.canonical.com [185.125.188.120])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 739C510006CF
- for <ltp@lists.linux.it>; Wed, 24 Dec 2025 16:06:30 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2876660027D
+ for <ltp@lists.linux.it>; Fri,  2 Jan 2026 12:54:07 +0100 (CET)
+Received: from localhost.localdomain (2.general.phlin.uk.vpn [10.172.194.39])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7B7CE336E0;
- Wed, 24 Dec 2025 15:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1766588788;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=iW6yRdOxSxzmWXjZ9mz48WrH1KdrPZc4iJsfaVJyCYo=;
- b=FCBFDUhKydQGUKo7Q8jqcEuZdY32scnGjqUw3CN6lt5tAsB5Tvw5QyzAtLFn1rmmb9NqQD
- QkODXJERdm+WVd7IweHB9p9XEHR5YPYqdZ9PN8CDkta8REViteSfVHyh0yBpL0YlY4waVU
- aKgFrbH1TOcfrMkzJr76RdNozxkMB08=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1766588788;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=iW6yRdOxSxzmWXjZ9mz48WrH1KdrPZc4iJsfaVJyCYo=;
- b=bJqqLR4tp0jV9o0LT2hpXpxzAwX8e/Kigq0IqjkjGL/h87hVOxlCwkoHWbLHH+M6ghzqV+
- PYaN3iGof7Eun4DQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FCBFDUhK;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=bJqqLR4t
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1766588788;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=iW6yRdOxSxzmWXjZ9mz48WrH1KdrPZc4iJsfaVJyCYo=;
- b=FCBFDUhKydQGUKo7Q8jqcEuZdY32scnGjqUw3CN6lt5tAsB5Tvw5QyzAtLFn1rmmb9NqQD
- QkODXJERdm+WVd7IweHB9p9XEHR5YPYqdZ9PN8CDkta8REViteSfVHyh0yBpL0YlY4waVU
- aKgFrbH1TOcfrMkzJr76RdNozxkMB08=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1766588788;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=iW6yRdOxSxzmWXjZ9mz48WrH1KdrPZc4iJsfaVJyCYo=;
- b=bJqqLR4tp0jV9o0LT2hpXpxzAwX8e/Kigq0IqjkjGL/h87hVOxlCwkoHWbLHH+M6ghzqV+
- PYaN3iGof7Eun4DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 289E23EA63;
- Wed, 24 Dec 2025 15:06:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id z0e2BHQBTGmwdwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 24 Dec 2025 15:06:28 +0000
-Date: Wed, 24 Dec 2025 16:06:22 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Vasileios Almpanis <vasileios.ampanis@virtuozzo.com>
-Message-ID: <20251224150622.GA400176@pevik>
-References: <20251219212717.GA15539@pevik>
- <20251222141331.121827-1-vasileios.almpanis@virtuozzo.com>
- <20251223205823.GB141917@pevik>
- <3824feca-cd19-453f-8c06-7223375051f6@virtuozzo.com>
+ by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 639983FF71; 
+ Fri,  2 Jan 2026 11:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20251003; t=1767354846;
+ bh=4IZYxM4MHxJjDm/xQBS5S+qPgzlAqkB7kT7u1f7rkVQ=;
+ h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
+ b=AXrBJe18uMg2f9JmxBjK+G8doYVGUpDJJelP5smDAJDmrsXR1GSPbQX1ARX29NHvL
+ KSZ3dNl7kcQLy65PKmlQ3U7B+CDyFmO3D+e7IDG6aGrrEtwakj7ZDFDquCnfuWFy9A
+ VYG7PnAylSdiTArGg2ZlcLpXDNxZiHsllIOndCFFV5EAb3eJHSDiWLNyqVOG/b1bCy
+ X8XY+m1UQ4OSuL6w9lOqlXwl49Bsyd9usWxlQRE2ASxK67SWB/I0ijZzso1gw9R4Gb
+ 5tF4FKNGFD/KpqfMpedAUSssC/UQImKbrV3w0tYe5fIUGgcg5KV7Y1/12rZF7JK2v/
+ 1TnZrLHCiQgf+G3cCGv6tNz0Alf4rt43K4RF4SgH8lh/wd8RObgIE27HQ3srUV4Of/
+ XRFnJP1f2++t/yw/C9inSlBIw7/xyPDQ+d0AFWGP6hc47Ftm/S/QoGDOrEdJ1BCoiR
+ 7i7uBd06kB6uumfzpe+WB9PzvyrS3DRqu+ImnIkOjI8HeBWDOkc/RmC0Rm65Fa3bir
+ XHu0BdON+hNqdlQmmYEkm0F3frCX/gq+jWoSe03/oAAxZabhSaZkpO0TaLCfffrLlz
+ TrcJ9Co24aAri9xrFeuwVHFghHDKxq2zDgjv9VrURtupm5P9bfqcWlXxh6ApTRFKC3
+ V31904phKIerG65yG8G4xuug=
+To: ltp@lists.linux.it
+Date: Fri,  2 Jan 2026 19:51:47 +0800
+Message-ID: <20260102115147.2256900-1-po-hsu.lin@canonical.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <3824feca-cd19-453f-8c06-7223375051f6@virtuozzo.com>
-X-Rspamd-Queue-Id: 7B7CE336E0
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:replyto];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] ssh-stress: disable resource penalties
+Subject: [LTP] [PATCH] listmount04.c: update struct mnt_id_req support to
+ kernel >= 6.17
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -128,18 +72,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Po-Hsu Lin via ltp <ltp@lists.linux.it>
+Reply-To: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Cc: po-hsu.lin@canonical.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PiBIaSBQZXRyLAoKPiBBZ3JlZWQsIHRoYW5rcyBmb3IgdGhlIGRldGFpbGVkIGV4cGxhbmF0aW9u
-Lgo+IFlvdeKAmXJlIGFic29sdXRlbHkgcmlnaHQgYWJvdXQgJiYgLyB8fCBwcmVjZWRlbmNlIGlu
-IFBPU0lYIHNoZWxscywgYW5kIHRoZQo+IDEwLnggY2FzZSBpcyBpbmRlZWQgYnJva2VuIGluIG15
-IHYyLgo+IFRoZSBwcm9wb3NlZCB2ZXJzaW9uIGxvb2tzIGNvcnJlY3QgYW5kIGNsZWFuZXIgdG8g
-bWUuIFBsZWFzZSBnbyBhaGVhZCBhbmQKPiBtZXJnZSBpdC4KClRoYW5rcyBmb3IgeW91ciBhY2ss
-IG1lcmdlZCB3aXRoIGZpeGVzIQoKS2luZCByZWdhcmRzLApQZXRyCgo+IEtpbmQgcmVnYXJkLAo+
-IFZhc2lsZWlvcyBBbG1wYW5pcwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
-LmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+The kernel change 78f0e33cd6c93 ("fs/namespace: correctly handle errors
+returned by grab_requested_mnt_ns") from 6.18 has been ported to upstream
+6.17.9 [1][2].
+
+Therefore change the expectation from >= 6.18 to >= 6.17 accodingly.
+
+[1] https://lwn.net/Articles/1047684/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v6.17.9&id=8ff97ade
+
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ testcases/kernel/syscalls/listmount/listmount04.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/listmount/listmount04.c b/testcases/kernel/syscalls/listmount/listmount04.c
+index 2b8b49101..34789353b 100644
+--- a/testcases/kernel/syscalls/listmount/listmount04.c
++++ b/testcases/kernel/syscalls/listmount/listmount04.c
+@@ -20,8 +20,8 @@
+ #include "lapi/syscalls.h"
+ 
+ #define MNT_SIZE 32
+-#define BEFORE_6_18 1
+-#define AFTER_6_18 2
++#define BEFORE_6_17 1
++#define AFTER_6_17 2
+ 
+ static mnt_id_req *request;
+ static uint64_t mnt_ids[MNT_SIZE];
+@@ -84,7 +84,7 @@ static struct tcase {
+ 		.nr_mnt_ids = MNT_SIZE,
+ 		.exp_errno = EINVAL,
+ 		.msg = "invalid mnt_id_req.spare",
+-		.kver = BEFORE_6_18,
++		.kver = BEFORE_6_17,
+ 	},
+ 	{
+ 		.req_usage = 1,
+@@ -95,7 +95,7 @@ static struct tcase {
+ 		.nr_mnt_ids = MNT_SIZE,
+ 		.exp_errno = EBADF,
+ 		.msg = "invalid mnt_id_req.mnt_ns_fd",
+-		.kver = AFTER_6_18,
++		.kver = AFTER_6_17,
+ 	},
+ 	{
+ 		.req_usage = 1,
+@@ -154,10 +154,10 @@ static void run(unsigned int n)
+ 
+ static void setup(void)
+ {
+-	if (tst_kvercmp(6, 18, 0) >= 0)
+-		kver = AFTER_6_18;
++	if (tst_kvercmp(6, 17, 0) >= 0)
++		kver = AFTER_6_17;
+ 	else
+-		kver = BEFORE_6_18;
++		kver = BEFORE_6_17;
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.43.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
