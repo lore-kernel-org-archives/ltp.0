@@ -4,64 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34824C47BF4
-	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 13:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4CF1C47BF5
+	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 14:29:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B2F523C29E9
-	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 14:57:07 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 76BE83C2465
+	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 15:29:25 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 18E1B3C0F42
- for <ltp@lists.linux.it>; Tue,  6 Jan 2026 14:56:49 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id C52A83C0756
+ for <ltp@lists.linux.it>; Tue,  6 Jan 2026 15:29:07 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6E75D600132
- for <ltp@lists.linux.it>; Tue,  6 Jan 2026 14:56:49 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E8CCB1A00163
+ for <ltp@lists.linux.it>; Tue,  6 Jan 2026 15:29:06 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 529BC339F3;
- Tue,  6 Jan 2026 13:56:48 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AF7F25BCD0;
+ Tue,  6 Jan 2026 14:29:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1767709745;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/Ib/Q/rC+TIgWKPbOuoG344x+mi8KFq7onoZFeUumRo=;
+ b=CeztIrMkisozw4vpv89jWHR1Y8La6nw6lt8TWwbhGNjRMM38knxMcXFJ2LpgxwluDKz1E1
+ Fc1ft7GO8ko4ClOd1U18vJwIBy7kvEoYJa0jG0+sm39m2AHlPViryiiYb7VLvrXJ89f0lU
+ 91w+Xbung7wirGEW57v8Ltf5dTCLXJE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1767709745;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/Ib/Q/rC+TIgWKPbOuoG344x+mi8KFq7onoZFeUumRo=;
+ b=pGgKfbYKwNQx8afqf5Vg08YVRrifZH9POpKhppA/vI4kkTt7Bqi9s3Btd8jWKsT49XTMIl
+ W3wLRmluW2WJ/OAw==
+Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1767709745;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/Ib/Q/rC+TIgWKPbOuoG344x+mi8KFq7onoZFeUumRo=;
+ b=CeztIrMkisozw4vpv89jWHR1Y8La6nw6lt8TWwbhGNjRMM38knxMcXFJ2LpgxwluDKz1E1
+ Fc1ft7GO8ko4ClOd1U18vJwIBy7kvEoYJa0jG0+sm39m2AHlPViryiiYb7VLvrXJ89f0lU
+ 91w+Xbung7wirGEW57v8Ltf5dTCLXJE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1767709745;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/Ib/Q/rC+TIgWKPbOuoG344x+mi8KFq7onoZFeUumRo=;
+ b=pGgKfbYKwNQx8afqf5Vg08YVRrifZH9POpKhppA/vI4kkTt7Bqi9s3Btd8jWKsT49XTMIl
+ W3wLRmluW2WJ/OAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3DA5E3EA63;
- Tue,  6 Jan 2026 13:56:48 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F4373EA63;
+ Tue,  6 Jan 2026 14:29:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UZoHDqAUXWkbVwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 06 Jan 2026 13:56:48 +0000
-Date: Tue, 6 Jan 2026 14:56:42 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 4ToMGjEcXWmBcwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 06 Jan 2026 14:29:05 +0000
+Date: Tue, 6 Jan 2026 15:28:55 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260106135642.GA714081@pevik>
-References: <20251215124404.16395-1-chrubis@suse.cz>
- <20251216112709.GC307257@pevik> <aV0EcJ7TjsgULZKl@yuki.lan>
- <aV0MQv3D3hjGZK2I@yuki.lan>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20260106142855.GB714081@pevik>
+References: <20260105130359.647879-1-pvorel@suse.cz>
+ <20260105130359.647879-2-pvorel@suse.cz>
+ <DFHG5E7ZNVQB.1R4YPIZ6X5603@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <aV0MQv3D3hjGZK2I@yuki.lan>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 529BC339F3
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+In-Reply-To: <DFHG5E7ZNVQB.1R4YPIZ6X5603@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.989]; MIME_GOOD(-0.10)[text/plain];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,suse.com:email];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] doc: Document process_state
+Subject: Re: [LTP] [PATCH 2/2] checkpatch.pl: spelling.txt: Update to
+ next-20260105
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,51 +119,17 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 > Hi!
-> > > > - * R - process is running
-> > > > - * S - process is sleeping
-> > > > - * D - process sleeping uninterruptibly
-> > > > - * Z - zombie process
-> > > > - * T - process is traced
-> > > > + * Possible process states:
-> > > Maybe: use link to https://man7.org/linux/man-pages/man1/ps.1.html ?
 
-> > > -* Possible process states:
-> > > +* Possible process states (see :man1:`ps`):
+> Hard to review :-D I guess it's a copy/paste, isn't it?
 
-> > 1. We do not have man1 defined in exlinks in conf.py
+Yes, copy pasted + cherry-picked and squashed these 2 our commits:
 
-> > 2. Even if added there exlinks does not seem work from documentation
-> >    generated from headers
+27a08ddba1 ("scripts/checkpatch.pl: Replace kstrto with tst_parse_")
+76d0c09aa1 ("scripts/checkpatch.pl: Ignore TST_* in constant checks")
 
-> This actually works, once I fixed typo in the conf.py change.
+> Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-+1
-
-...
-
-> > > * Z
-
-> > Zombie process is described in the list.
-
-> > > Also, do we want specify the process states in both TST_PROCESS_STATE_WAIT() and
-> > > TST_THREAD_STATE_WAIT(), or just specify it in one and mention in the other that
-> > > they specify it? (via :ref: or c:func:).
-
-> > Again, none of the :ref: or c:func: is working in docs generate from
-> > headers.
-
-Maybe c:func: really works only in the headers. I have in my notes
-:c:func:`tst_kvercmp()`. We already use in doc/* some :ref: e.g.
-:ref:`struct tst_device` or :ref:`tst_brk`.
-
-> And this one needs to be just TST_PROCESS_STATE_WAIT() to be processed
-> as a link in headers.
-
-Interesting. For me works only :c:func:`TST_PROCESS_STATE_WAIT()` or
-:c:func:`tst_brk()` when adding it into random file (e.g.
-doc/maintainers/patch_review.rst). 
-
-Anyway, thanks for taking care to link it.
+Thanks!
 
 Kind regards,
 Petr
