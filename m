@@ -4,100 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA2A2CDC174
-	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 12:05:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C876CDC18E
+	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 12:25:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1767702326; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=7hIvMJ8zyHo4GMQLooNqrQ/Qs/2HOcAkt8SB9PUjeKA=;
+ b=LGtc3ZB3WXBXW+t6caBOBFj5k9HQkkx2DinMiFYcS8FUO/p0QfP7r0b9qe5jtKhaHnHQJ
+ BepQfygkc9toWbYlibVaHYtWC6yA9bk1l2lzr1xEePUmUfw3aqxhustCtLezHxWVgjwdqa1
+ DasyQXUUKaaa+duZKDH6If411q/Q668=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9B90F3C235D
-	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 13:05:10 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id D82C73C27C6
+	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 13:25:26 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 61DBA3C1B25
- for <ltp@lists.linux.it>; Tue,  6 Jan 2026 13:04:52 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 5A4B93C0224
+ for <ltp@lists.linux.it>; Tue,  6 Jan 2026 12:41:46 +0100 (CET)
+Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com
+ [113.46.200.225])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3E5D11400432
- for <ltp@lists.linux.it>; Tue,  6 Jan 2026 13:04:50 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9E60B339E6;
- Tue,  6 Jan 2026 12:04:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1767701089;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uwRksh/8aVGixJ4Q7r8s4Ogl0L4ZgCRShAoKxKo54TI=;
- b=hfvNSy8iUq2RXEOIkTjPYy/gunftr9KEgpqUkhXbQI/qNr+uXFGse89UrCC7Pg1lotQhI3
- 22nNocvq69Dbd8XD/KWrcCzJH6Te8WxPTjbA0L/EGaMUC44yJLpPeFfjiVdYvROxsygBcZ
- vDm2+fGAp+Ae6UBA0x1ugPtKyzvnRS4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1767701089;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uwRksh/8aVGixJ4Q7r8s4Ogl0L4ZgCRShAoKxKo54TI=;
- b=cjXja2ttmilxSVRTZoSUaBy2NTKaeQdvVI2lYOUPwHST3NcsIs1fIfFM0G/kqIsTSFf1kj
- 03bKRYtWoJGyQpAQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1767701089;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uwRksh/8aVGixJ4Q7r8s4Ogl0L4ZgCRShAoKxKo54TI=;
- b=hfvNSy8iUq2RXEOIkTjPYy/gunftr9KEgpqUkhXbQI/qNr+uXFGse89UrCC7Pg1lotQhI3
- 22nNocvq69Dbd8XD/KWrcCzJH6Te8WxPTjbA0L/EGaMUC44yJLpPeFfjiVdYvROxsygBcZ
- vDm2+fGAp+Ae6UBA0x1ugPtKyzvnRS4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1767701089;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uwRksh/8aVGixJ4Q7r8s4Ogl0L4ZgCRShAoKxKo54TI=;
- b=cjXja2ttmilxSVRTZoSUaBy2NTKaeQdvVI2lYOUPwHST3NcsIs1fIfFM0G/kqIsTSFf1kj
- 03bKRYtWoJGyQpAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 824B63EA63;
- Tue,  6 Jan 2026 12:04:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 18c/HWH6XGnPcgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 06 Jan 2026 12:04:49 +0000
-Date: Tue, 6 Jan 2026 13:04:47 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Message-ID: <20260106120447.GB712536@pevik>
-References: <20260102115147.2256900-1-po-hsu.lin@canonical.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7D7CD60062F
+ for <ltp@lists.linux.it>; Tue,  6 Jan 2026 12:41:45 +0100 (CET)
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+ c=relaxed/relaxed; q=dns/txt; h=From;
+ bh=Eeg9Z9CD19NtRw/JvcgQt2Vu9xv0zj7cnGLti9huQJc=;
+ b=ODiQyCd6/b4mRe3QdUybjPLSLrI/G9nXy76MRTxboT4rSzv1aPOmQLGclaI8Cr4ROD39svLIE
+ HRawfKSo6E052NLo/0ExzFlk9cBzTFD+thv1Re60vcWDsF0fE600fyhfsg0KDM/oLZ/J7o3Ld0O
+ 0F2lQrCsQdGo0nD1ssrzV14=
+Received: from mail.maildlp.com (unknown [172.19.163.15])
+ by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4dlq1G5Mxcz1K98y
+ for <ltp@lists.linux.it>; Tue,  6 Jan 2026 19:38:26 +0800 (CST)
+Received: from dggpemf500015.china.huawei.com (unknown [7.185.36.143])
+ by mail.maildlp.com (Postfix) with ESMTPS id 8E72A40539
+ for <ltp@lists.linux.it>; Tue,  6 Jan 2026 19:41:39 +0800 (CST)
+Received: from huawei.com (10.50.85.128) by dggpemf500015.china.huawei.com
+ (7.185.36.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 6 Jan
+ 2026 19:41:39 +0800
+To: <ltp@lists.linux.it>
+Date: Tue, 6 Jan 2026 20:05:45 +0800
+Message-ID: <20260106120545.3142001-1-liujian56@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260102115147.2256900-1-po-hsu.lin@canonical.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.992]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCPT_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Originating-IP: [10.50.85.128]
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ dggpemf500015.china.huawei.com (7.185.36.143)
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] listmount04.c: update struct mnt_id_req support
- to kernel >= 6.17
+X-Mailman-Approved-At: Tue, 06 Jan 2026 13:25:03 +0100
+Subject: [LTP] [PATCH] rpc: create valid fd to pass libtirpc validation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,36 +70,202 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Liu Jian via ltp <ltp@lists.linux.it>
+Reply-To: Liu Jian <liujian56@huawei.com>
+Cc: liujian56@huawei.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> The kernel change 78f0e33cd6c93 ("fs/namespace: correctly handle errors
-> returned by grab_requested_mnt_ns") from 6.18 has been ported to upstream
-> 6.17.9 [1][2].
+The testcase(rpc_svc_destroy, rpc_svcfd_create, rpc_xprt_register,
+rpc_xprt_unregister) was failing due to an invalid fd, which
+caused libtirpc's internal validation to reject the operation.
+This change ensures a valid socket fd is created and can pass the
+validation checks in libtirpc.
 
-Good catch.
+Signed-off-by: Liu Jian <liujian56@huawei.com>
+---
+ .../rpc_svc_destroy.c                         | 26 +++++++++++++++++++
+ .../rpc_svcfd_create.c                        | 25 ++++++++++++++++++
+ .../rpc_xprt_register.c                       | 24 +++++++++++++++++
+ .../rpc_xprt_unregister.c                     | 24 +++++++++++++++++
+ 4 files changed, 99 insertions(+)
 
-> Therefore change the expectation from >= 6.18 to >= 6.17 accodingly.
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c
+index 22e560843..8d86276c8 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c
+@@ -30,6 +30,11 @@
+ #include <time.h>
+ #include <rpc/rpc.h>
+ 
++#include <unistd.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <arpa/inet.h>
++
+ //Standard define
+ #define PROCNUM 1
+ #define VERSNUM 1
+@@ -43,6 +48,27 @@ int main(void)
+ 	int test_status = 1;	//Default test result set to FAILED
+ 	int fd = 0;
+ 	SVCXPRT *svcr = NULL;
++	struct sockaddr_in server_addr;
++
++	fd = socket(AF_INET, SOCK_DGRAM, 0);
++	if (fd < 0) {
++		printf("socket creation failed");
++		return test_status;
++	}
++
++	memset(&server_addr, 0, sizeof(server_addr));
++	server_addr.sin_family = AF_INET;
++	server_addr.sin_port = htons(9001);
++	if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0) {
++		printf("inet_pton failed");
++		close(fd);
++		return test_status;
++	}
++	if (connect(fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
++		printf("connect failed");
++		close(fd);
++		return test_status;
++	}
+ 
+ 	//First of all, create a server
+ 	svcr = svcfd_create(fd, 0, 0);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svcfd_create/rpc_svcfd_create.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svcfd_create/rpc_svcfd_create.c
+index f0d89ba48..d409ed536 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svcfd_create/rpc_svcfd_create.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svcfd_create/rpc_svcfd_create.c
+@@ -29,6 +29,10 @@
+ #include <stdlib.h>
+ #include <time.h>
+ #include <rpc/rpc.h>
++#include <unistd.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <arpa/inet.h>
+ 
+ //Standard define
+ #define PROCNUM 1
+@@ -43,6 +47,27 @@ int main(void)
+ 	int test_status = 1;	//Default test result set to FAILED
+ 	int fd = 0;
+ 	SVCXPRT *svcr = NULL;
++	struct sockaddr_in server_addr;
++
++	fd = socket(AF_INET, SOCK_DGRAM, 0);
++	if (fd < 0) {
++		printf("socket creation failed");
++		return test_status;
++	}
++
++	memset(&server_addr, 0, sizeof(server_addr));
++	server_addr.sin_family = AF_INET;
++	server_addr.sin_port = htons(9001);
++	if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0) {
++		printf("inet_pton failed");
++		close(fd);
++		return test_status;
++	}
++	if (connect(fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
++		printf("connect failed");
++		close(fd);
++		return test_status;
++	}
+ 
+ 	//create a server
+ 	svcr = svcfd_create(fd, 0, 0);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c
+index b10a1ce5e..10a78af34 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c
+@@ -31,6 +31,9 @@
+ #include <rpc/rpc.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
++#include <unistd.h>
++#include <netinet/in.h>
++#include <arpa/inet.h>
+ 
+ //Standard define
+ #define PROCNUM 1
+@@ -45,6 +48,27 @@ int main(void)
+ 	int test_status = 1;	//Default test result set to FAILED
+ 	SVCXPRT *svcr = NULL;
+ 	int fd = 0;
++	struct sockaddr_in server_addr;
++
++	fd = socket(AF_INET, SOCK_DGRAM, 0);
++	if (fd < 0) {
++		printf("socket creation failed");
++		return test_status;
++	}
++
++	memset(&server_addr, 0, sizeof(server_addr));
++	server_addr.sin_family = AF_INET;
++	server_addr.sin_port = htons(9001);
++	if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0) {
++		printf("inet_pton failed");
++		close(fd);
++		return test_status;
++	}
++	if (connect(fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
++		printf("connect failed");
++		close(fd);
++		return test_status;
++	}
+ 
+ 	//create a server
+ 	svcr = svcfd_create(fd, 1024, 1024);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c
+index 3b6130eaa..8f3fa9b13 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c
+@@ -31,6 +31,9 @@
+ #include <rpc/rpc.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
++#include <unistd.h>
++#include <netinet/in.h>
++#include <arpa/inet.h>
+ 
+ //Standard define
+ #define PROCNUM 1
+@@ -49,6 +52,27 @@ int main(int argn, char *argc[])
+ 	int test_status = 1;	//Default test result set to FAILED
+ 	SVCXPRT *svcr = NULL;
+ 	int fd = 0;
++	struct sockaddr_in server_addr;
++
++	fd = socket(AF_INET, SOCK_DGRAM, 0);
++	if (fd < 0) {
++		printf("socket creation failed");
++		return test_status;
++	}
++
++	memset(&server_addr, 0, sizeof(server_addr));
++	server_addr.sin_family = AF_INET;
++	server_addr.sin_port = htons(9001);
++	if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0) {
++		printf("inet_pton failed");
++		close(fd);
++		return test_status;
++	}
++	if (connect(fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
++		printf("connect failed");
++		close(fd);
++		return test_status;
++	}
+ 
+ 	//create a server
+ 	svcr = svcfd_create(fd, 1024, 1024);
+-- 
+2.34.1
 
-> [1] https://lwn.net/Articles/1047684/
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v6.17.9&id=8ff97ade
-
-...
->  static void setup(void)
->  {
-> -	if (tst_kvercmp(6, 18, 0) >= 0)
-> -		kver = AFTER_6_18;
-> +	if (tst_kvercmp(6, 17, 0) >= 0)
-
-Shouldn't we match 6.17.9 then?
-It's not about the fix but about a kernel change.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
