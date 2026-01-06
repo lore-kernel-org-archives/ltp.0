@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8913C47BDE
-	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 10:00:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1AA8C47BDE
+	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 10:01:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C05AC3C029D
-	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 11:00:14 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 4B19E3C0E0A
+	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 11:01:42 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4DD003C0224
- for <ltp@lists.linux.it>; Tue,  6 Jan 2026 10:59:54 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 5A25C3C0224
+ for <ltp@lists.linux.it>; Tue,  6 Jan 2026 11:01:25 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7765760068F
- for <ltp@lists.linux.it>; Tue,  6 Jan 2026 10:59:54 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C5E231400063
+ for <ltp@lists.linux.it>; Tue,  6 Jan 2026 11:01:24 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1C536339D3;
- Tue,  6 Jan 2026 09:59:53 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C99AA339D5;
+ Tue,  6 Jan 2026 10:01:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1767693593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1767693677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+f8eK2LsbpZeasmPl6iheoP4hEsxJlO1a3tn7EkU0JM=;
- b=GGAK9NvfCoNIjTle5M6lkQFP2o3Xk1UGCboNo+6bPcpJqmQubMsZOT+c1EP39psGCr+Ukv
- zAO/jN3FVHbsKZKwCEpXgumU8YH3o+6IpkUKTkfVgZAnDrU67S4iSjMr1XwbQD6zRYD4Rx
- 27Kp1qFSQUIk5y+ax72+Prqv0QFdzi0=
+ bh=kDf+D17Xb6BmK6S1KqI6iLTR8C/uHzIQjF5qaerUzK0=;
+ b=AcSrwIpyyQ4m57S8nwwSXmc/XoMjxLoC7tLooxiuHT21MKD0NwTGGuhoEYAhuNe22jkhwV
+ BgfLGxpJu1l4vuS+CqCkddQXbv4rbw1zdLGlAMq+jmLcrby11p6VyxCyPE+5KiU627c5EK
+ x+SPmO99yLidl+irm5a54vIfvxIKJPo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1767693593;
+ s=susede2_ed25519; t=1767693677;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+f8eK2LsbpZeasmPl6iheoP4hEsxJlO1a3tn7EkU0JM=;
- b=hdNo6490Q9m9NtrR/CmW/14RJckAgt7MZUq7M3bOF1QdB0ykef6e+unaP45k1d7Pupqno5
- erysaL4l2fISFeAw==
+ bh=kDf+D17Xb6BmK6S1KqI6iLTR8C/uHzIQjF5qaerUzK0=;
+ b=GenLqcg3aLNBwwDNWo6xIletgoAcnLN64BalOBNbhUDU2KapGTt1hCOpbeo0q7aMMkvuSK
+ 506dSsUCiceNJmAw==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1767693593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1767693677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+f8eK2LsbpZeasmPl6iheoP4hEsxJlO1a3tn7EkU0JM=;
- b=GGAK9NvfCoNIjTle5M6lkQFP2o3Xk1UGCboNo+6bPcpJqmQubMsZOT+c1EP39psGCr+Ukv
- zAO/jN3FVHbsKZKwCEpXgumU8YH3o+6IpkUKTkfVgZAnDrU67S4iSjMr1XwbQD6zRYD4Rx
- 27Kp1qFSQUIk5y+ax72+Prqv0QFdzi0=
+ bh=kDf+D17Xb6BmK6S1KqI6iLTR8C/uHzIQjF5qaerUzK0=;
+ b=AcSrwIpyyQ4m57S8nwwSXmc/XoMjxLoC7tLooxiuHT21MKD0NwTGGuhoEYAhuNe22jkhwV
+ BgfLGxpJu1l4vuS+CqCkddQXbv4rbw1zdLGlAMq+jmLcrby11p6VyxCyPE+5KiU627c5EK
+ x+SPmO99yLidl+irm5a54vIfvxIKJPo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1767693593;
+ s=susede2_ed25519; t=1767693677;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+f8eK2LsbpZeasmPl6iheoP4hEsxJlO1a3tn7EkU0JM=;
- b=hdNo6490Q9m9NtrR/CmW/14RJckAgt7MZUq7M3bOF1QdB0ykef6e+unaP45k1d7Pupqno5
- erysaL4l2fISFeAw==
+ bh=kDf+D17Xb6BmK6S1KqI6iLTR8C/uHzIQjF5qaerUzK0=;
+ b=GenLqcg3aLNBwwDNWo6xIletgoAcnLN64BalOBNbhUDU2KapGTt1hCOpbeo0q7aMMkvuSK
+ 506dSsUCiceNJmAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0986F3EA63;
- Tue,  6 Jan 2026 09:59:53 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AEB8A3EA63;
+ Tue,  6 Jan 2026 10:01:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id z2ojARndXGn+BQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 06 Jan 2026 09:59:53 +0000
-Date: Tue, 6 Jan 2026 11:01:03 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id dvZaKW3dXGlmBwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 06 Jan 2026 10:01:17 +0000
+Date: Tue, 6 Jan 2026 11:02:20 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Wei Gao <wegao@suse.com>
-Message-ID: <aVzdX6MEYO0GSk_k@yuki.lan>
+Message-ID: <aVzdrAgv9qdxZSt_@yuki.lan>
 References: <20251110024805.31070-1-wegao@suse.com>
  <20251223020836.9439-1-wegao@suse.com>
- <20251223020836.9439-2-wegao@suse.com>
+ <20251223020836.9439-3-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20251223020836.9439-2-wegao@suse.com>
+In-Reply-To: <20251223020836.9439-3-wegao@suse.com>
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.989]; MIME_GOOD(-0.10)[text/plain];
+ NEURAL_HAM_SHORT(-0.20)[-0.991]; MIME_GOOD(-0.10)[text/plain];
  RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
  TO_DN_SOME(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
@@ -93,10 +93,11 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
  FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 1/4] lib: Add support option for .needs_cmds
+Subject: Re: [LTP] [PATCH v6 2/4] tst_test.c: Add tst_cmd_present check if a
+ command is present
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,27 +116,40 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +enum cmd_ids {
-> +	CMD,
-> +	OPTIONAL,
-> +	PRESENT,
-> +};
+>  /*
+>   * Validates exit status of child processes
+>   */
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 42a54621e..67553f65d 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -1365,6 +1365,19 @@ static const char *default_fs_type(void)
+>  	return tst_dev_fs_type();
+>  }
+>  
+> +bool tst_cmd_present(const char *cmd)
+> +{
+> +	struct tst_cmd *pcmd = tst_test->needs_cmds;
 > +
-> +static ujson_obj_attr cmd_attrs[] = {
-> +	UJSON_OBJ_ATTR_IDX(CMD, "cmd", UJSON_STR),
-> +	UJSON_OBJ_ATTR_IDX(OPTIONAL, "optional", UJSON_INT),
-> +	UJSON_OBJ_ATTR_IDX(PRESENT, "present", UJSON_INT),
+> +	while (pcmd->cmd) {
+> +		if (!strcmp(pcmd->cmd, cmd))
+> +			return pcmd->present;
+> +
+> +		pcmd++;
+> +	}
+> +	return false;
 
-I do not think that we should add the present attribute to the shell
-parser, that attribute should never be set by the test and is set by the
-shell library.
+For a third time, when we get here we asked for something that haven't
+been tested for so we should tst_brk() here!
 
-
-The rest looks good.
-
-With the "present" attribute removed from the json parser:
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> +}
+> +
+>  static void do_setup(int argc, char *argv[])
+>  {
+>  	char *tdebug_env = getenv("LTP_ENABLE_DEBUG");
+> -- 
+> 2.52.0
+> 
 
 -- 
 Cyril Hrubis
