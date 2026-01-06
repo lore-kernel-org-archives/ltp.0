@@ -4,61 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C876CDC18E
-	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 12:25:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1767702326; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=7hIvMJ8zyHo4GMQLooNqrQ/Qs/2HOcAkt8SB9PUjeKA=;
- b=LGtc3ZB3WXBXW+t6caBOBFj5k9HQkkx2DinMiFYcS8FUO/p0QfP7r0b9qe5jtKhaHnHQJ
- BepQfygkc9toWbYlibVaHYtWC6yA9bk1l2lzr1xEePUmUfw3aqxhustCtLezHxWVgjwdqa1
- DasyQXUUKaaa+duZKDH6If411q/Q668=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8037CDC18E
+	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 12:46:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D82C73C27C6
-	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 13:25:26 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 5AD7E3C2204
+	for <ltp@archiver.kernel.org>; Tue,  6 Jan 2026 13:46:54 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5A4B93C0224
- for <ltp@lists.linux.it>; Tue,  6 Jan 2026 12:41:46 +0100 (CET)
-Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com
- [113.46.200.225])
+ by picard.linux.it (Postfix) with ESMTPS id 355363C1DC8
+ for <ltp@lists.linux.it>; Tue,  6 Jan 2026 13:46:34 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7D7CD60062F
- for <ltp@lists.linux.it>; Tue,  6 Jan 2026 12:41:45 +0100 (CET)
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
- c=relaxed/relaxed; q=dns/txt; h=From;
- bh=Eeg9Z9CD19NtRw/JvcgQt2Vu9xv0zj7cnGLti9huQJc=;
- b=ODiQyCd6/b4mRe3QdUybjPLSLrI/G9nXy76MRTxboT4rSzv1aPOmQLGclaI8Cr4ROD39svLIE
- HRawfKSo6E052NLo/0ExzFlk9cBzTFD+thv1Re60vcWDsF0fE600fyhfsg0KDM/oLZ/J7o3Ld0O
- 0F2lQrCsQdGo0nD1ssrzV14=
-Received: from mail.maildlp.com (unknown [172.19.163.15])
- by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4dlq1G5Mxcz1K98y
- for <ltp@lists.linux.it>; Tue,  6 Jan 2026 19:38:26 +0800 (CST)
-Received: from dggpemf500015.china.huawei.com (unknown [7.185.36.143])
- by mail.maildlp.com (Postfix) with ESMTPS id 8E72A40539
- for <ltp@lists.linux.it>; Tue,  6 Jan 2026 19:41:39 +0800 (CST)
-Received: from huawei.com (10.50.85.128) by dggpemf500015.china.huawei.com
- (7.185.36.143) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 6 Jan
- 2026 19:41:39 +0800
-To: <ltp@lists.linux.it>
-Date: Tue, 6 Jan 2026 20:05:45 +0800
-Message-ID: <20260106120545.3142001-1-liujian56@huawei.com>
-X-Mailer: git-send-email 2.34.1
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6A4676005C9
+ for <ltp@lists.linux.it>; Tue,  6 Jan 2026 13:46:34 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 93A795BCCE;
+ Tue,  6 Jan 2026 12:46:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1767703593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=vFEdHur6G8BznzH4H2reLI+cQhBIEZydhXGF39WSv4E=;
+ b=UTMPpA5bwSMj6zK34e/w6LUHTYrXhcOsvI/13FUECX2iC4Bc52Q2p0C0qmumCcLxcuZP8W
+ OENwsp4vhj6ma0WjmsNJ/WpO1wQyU0rvXJS5BzgLqt2STSDVFGeEk+dEKLu1cRotzlO7i/
+ gVLlAWYJRK0CnxdX5aIRAlGqmH6pUls=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1767703593;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=vFEdHur6G8BznzH4H2reLI+cQhBIEZydhXGF39WSv4E=;
+ b=NJT+YAOM2lNdbONIxdeGHHOC+NCxHHMb++3Dumk0LgL2s2vTXpt6l/xn2jdhS6UisDkKaw
+ 910NmLpVuOC/cSAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1767703593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=vFEdHur6G8BznzH4H2reLI+cQhBIEZydhXGF39WSv4E=;
+ b=UTMPpA5bwSMj6zK34e/w6LUHTYrXhcOsvI/13FUECX2iC4Bc52Q2p0C0qmumCcLxcuZP8W
+ OENwsp4vhj6ma0WjmsNJ/WpO1wQyU0rvXJS5BzgLqt2STSDVFGeEk+dEKLu1cRotzlO7i/
+ gVLlAWYJRK0CnxdX5aIRAlGqmH6pUls=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1767703593;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=vFEdHur6G8BznzH4H2reLI+cQhBIEZydhXGF39WSv4E=;
+ b=NJT+YAOM2lNdbONIxdeGHHOC+NCxHHMb++3Dumk0LgL2s2vTXpt6l/xn2jdhS6UisDkKaw
+ 910NmLpVuOC/cSAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7A40C3EA63;
+ Tue,  6 Jan 2026 12:46:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id i/kBHSkEXWmXGAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 06 Jan 2026 12:46:33 +0000
+Date: Tue, 6 Jan 2026 13:47:44 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aV0EcJ7TjsgULZKl@yuki.lan>
+References: <20251215124404.16395-1-chrubis@suse.cz>
+ <20251216112709.GC307257@pevik>
 MIME-Version: 1.0
-X-Originating-IP: [10.50.85.128]
-X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
- dggpemf500015.china.huawei.com (7.185.36.143)
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20251216112709.GC307257@pevik>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, yuki.lan:mid,
+ suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 06 Jan 2026 13:25:03 +0100
-Subject: [LTP] [PATCH] rpc: create valid fd to pass libtirpc validation
+Subject: Re: [LTP] [PATCH v2 1/2] doc: Document process_state
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,202 +110,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Liu Jian via ltp <ltp@lists.linux.it>
-Reply-To: Liu Jian <liujian56@huawei.com>
-Cc: liujian56@huawei.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The testcase(rpc_svc_destroy, rpc_svcfd_create, rpc_xprt_register,
-rpc_xprt_unregister) was failing due to an invalid fd, which
-caused libtirpc's internal validation to reject the operation.
-This change ensures a valid socket fd is created and can pass the
-validation checks in libtirpc.
-
-Signed-off-by: Liu Jian <liujian56@huawei.com>
----
- .../rpc_svc_destroy.c                         | 26 +++++++++++++++++++
- .../rpc_svcfd_create.c                        | 25 ++++++++++++++++++
- .../rpc_xprt_register.c                       | 24 +++++++++++++++++
- .../rpc_xprt_unregister.c                     | 24 +++++++++++++++++
- 4 files changed, 99 insertions(+)
-
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c
-index 22e560843..8d86276c8 100644
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c
-+++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svc_destroy/rpc_svc_destroy.c
-@@ -30,6 +30,11 @@
- #include <time.h>
- #include <rpc/rpc.h>
- 
-+#include <unistd.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
-+#include <arpa/inet.h>
-+
- //Standard define
- #define PROCNUM 1
- #define VERSNUM 1
-@@ -43,6 +48,27 @@ int main(void)
- 	int test_status = 1;	//Default test result set to FAILED
- 	int fd = 0;
- 	SVCXPRT *svcr = NULL;
-+	struct sockaddr_in server_addr;
-+
-+	fd = socket(AF_INET, SOCK_DGRAM, 0);
-+	if (fd < 0) {
-+		printf("socket creation failed");
-+		return test_status;
-+	}
-+
-+	memset(&server_addr, 0, sizeof(server_addr));
-+	server_addr.sin_family = AF_INET;
-+	server_addr.sin_port = htons(9001);
-+	if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0) {
-+		printf("inet_pton failed");
-+		close(fd);
-+		return test_status;
-+	}
-+	if (connect(fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-+		printf("connect failed");
-+		close(fd);
-+		return test_status;
-+	}
- 
- 	//First of all, create a server
- 	svcr = svcfd_create(fd, 0, 0);
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svcfd_create/rpc_svcfd_create.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svcfd_create/rpc_svcfd_create.c
-index f0d89ba48..d409ed536 100644
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svcfd_create/rpc_svcfd_create.c
-+++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_createdestroy_svcfd_create/rpc_svcfd_create.c
-@@ -29,6 +29,10 @@
- #include <stdlib.h>
- #include <time.h>
- #include <rpc/rpc.h>
-+#include <unistd.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
-+#include <arpa/inet.h>
- 
- //Standard define
- #define PROCNUM 1
-@@ -43,6 +47,27 @@ int main(void)
- 	int test_status = 1;	//Default test result set to FAILED
- 	int fd = 0;
- 	SVCXPRT *svcr = NULL;
-+	struct sockaddr_in server_addr;
-+
-+	fd = socket(AF_INET, SOCK_DGRAM, 0);
-+	if (fd < 0) {
-+		printf("socket creation failed");
-+		return test_status;
-+	}
-+
-+	memset(&server_addr, 0, sizeof(server_addr));
-+	server_addr.sin_family = AF_INET;
-+	server_addr.sin_port = htons(9001);
-+	if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0) {
-+		printf("inet_pton failed");
-+		close(fd);
-+		return test_status;
-+	}
-+	if (connect(fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-+		printf("connect failed");
-+		close(fd);
-+		return test_status;
-+	}
- 
- 	//create a server
- 	svcr = svcfd_create(fd, 0, 0);
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c
-index b10a1ce5e..10a78af34 100644
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c
-+++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_register/rpc_xprt_register.c
-@@ -31,6 +31,9 @@
- #include <rpc/rpc.h>
- #include <sys/types.h>
- #include <sys/socket.h>
-+#include <unistd.h>
-+#include <netinet/in.h>
-+#include <arpa/inet.h>
- 
- //Standard define
- #define PROCNUM 1
-@@ -45,6 +48,27 @@ int main(void)
- 	int test_status = 1;	//Default test result set to FAILED
- 	SVCXPRT *svcr = NULL;
- 	int fd = 0;
-+	struct sockaddr_in server_addr;
-+
-+	fd = socket(AF_INET, SOCK_DGRAM, 0);
-+	if (fd < 0) {
-+		printf("socket creation failed");
-+		return test_status;
-+	}
-+
-+	memset(&server_addr, 0, sizeof(server_addr));
-+	server_addr.sin_family = AF_INET;
-+	server_addr.sin_port = htons(9001);
-+	if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0) {
-+		printf("inet_pton failed");
-+		close(fd);
-+		return test_status;
-+	}
-+	if (connect(fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-+		printf("connect failed");
-+		close(fd);
-+		return test_status;
-+	}
- 
- 	//create a server
- 	svcr = svcfd_create(fd, 1024, 1024);
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c
-index 3b6130eaa..8f3fa9b13 100644
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c
-+++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_xprt_unregister/rpc_xprt_unregister.c
-@@ -31,6 +31,9 @@
- #include <rpc/rpc.h>
- #include <sys/types.h>
- #include <sys/socket.h>
-+#include <unistd.h>
-+#include <netinet/in.h>
-+#include <arpa/inet.h>
- 
- //Standard define
- #define PROCNUM 1
-@@ -49,6 +52,27 @@ int main(int argn, char *argc[])
- 	int test_status = 1;	//Default test result set to FAILED
- 	SVCXPRT *svcr = NULL;
- 	int fd = 0;
-+	struct sockaddr_in server_addr;
-+
-+	fd = socket(AF_INET, SOCK_DGRAM, 0);
-+	if (fd < 0) {
-+		printf("socket creation failed");
-+		return test_status;
-+	}
-+
-+	memset(&server_addr, 0, sizeof(server_addr));
-+	server_addr.sin_family = AF_INET;
-+	server_addr.sin_port = htons(9001);
-+	if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0) {
-+		printf("inet_pton failed");
-+		close(fd);
-+		return test_status;
-+	}
-+	if (connect(fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-+		printf("connect failed");
-+		close(fd);
-+		return test_status;
-+	}
- 
- 	//create a server
- 	svcr = svcfd_create(fd, 1024, 1024);
--- 
-2.34.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkhCj4gPiBTaWduZWQtb2ZmLWJ5OiBDeXJpbCBIcnViaXMgPGNocnViaXNAc3VzZS5jej4KPiA+
+IC0tLQo+ID4gIGRvYy9kZXZlbG9wZXJzL2FwaV9jX3Rlc3RzLnJzdCB8ICA1ICsrKysKPiA+ICBp
+bmNsdWRlL3RzdF9wcm9jZXNzX3N0YXRlLmggICAgfCA1NSArKysrKysrKysrKysrKysrKysrKyst
+LS0tLS0tLS0tLS0tCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCA0MCBpbnNlcnRpb25zKCspLCAyMCBk
+ZWxldGlvbnMoLSkKPiAKPiA+IE5ldyBpbiB2Mi4KPiAKPiA+IGRpZmYgLS1naXQgYS9kb2MvZGV2
+ZWxvcGVycy9hcGlfY190ZXN0cy5yc3QgYi9kb2MvZGV2ZWxvcGVycy9hcGlfY190ZXN0cy5yc3QK
+PiA+IGluZGV4IDJjYTBmMDQ2NC4uMTNmYzg2NTFiIDEwMDY0NAo+ID4gLS0tIGEvZG9jL2RldmVs
+b3BlcnMvYXBpX2NfdGVzdHMucnN0Cj4gPiArKysgYi9kb2MvZGV2ZWxvcGVycy9hcGlfY190ZXN0
+cy5yc3QKPiA+IEBAIC00Myw2ICs0MywxMSBAQCBLZXJuZWwKPiA+ICAuLiBrZXJuZWwtZG9jOjog
+Li4vLi4vaW5jbHVkZS90c3Rfa2VybmVsLmgKPiA+ICAuLiBrZXJuZWwtZG9jOjogLi4vLi4vaW5j
+bHVkZS90c3Rfa3ZlcmNtcC5oCj4gCj4gPiArUHJvY2VzcyBzdGF0ZQo+ID4gKy0tLS0tLS0tLS0t
+LS0KPiA+ICsKPiA+ICsuLiBrZXJuZWwtZG9jOjogLi4vLi4vaW5jbHVkZS90c3RfcHJvY2Vzc19z
+dGF0ZS5oCj4gPiArCj4gPiAgTlVNQQo+ID4gIC0tLS0KPiA+ICAuLiBrZXJuZWwtZG9jOjogLi4v
+Li4vaW5jbHVkZS90c3RfbnVtYS5oCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS90c3RfcHJvY2Vz
+c19zdGF0ZS5oIGIvaW5jbHVkZS90c3RfcHJvY2Vzc19zdGF0ZS5oCj4gPiBpbmRleCBiMWQ4M2Ux
+MDkuLjM2OTFiYmE3YSAxMDA2NDQKPiA+IC0tLSBhL2luY2x1ZGUvdHN0X3Byb2Nlc3Nfc3RhdGUu
+aAo+ID4gKysrIGIvaW5jbHVkZS90c3RfcHJvY2Vzc19zdGF0ZS5oCj4gPiBAQCAtMTUsMzkgKzE1
+LDU0IEBACj4gCj4gPiAgI2lmZGVmIFRTVF9URVNUX0hfXwo+IAo+ID4gLS8qCj4gPiAtICogV2Fp
+dHMgZm9yIHByb2Nlc3Mgc3RhdGUgY2hhbmdlLgo+ID4gKy8qKgo+ID4gKyAqIFRTVF9QUk9DRVNT
+X1NUQVRFX1dBSVQoKSAtIFdhaXRzIGZvciBhIHByb2Nlc3Mgc3RhdGUgY2hhbmdlLgo+ID4gKyAq
+Cj4gPiArICogUG9sbHMgYC9wcm9jLyRQSUQvc3RhdGVgIGZvciBhIHByb2Nlc3Mgc3RhdGUgY2hh
+bmdlcy4KPiA+ICAgKgo+ID4gLSAqIFRoZSBzdGF0ZSBpcyBvbmUgb2YgdGhlIGZvbGxvd2luZzoK
+PiA+ICsgKiBAcGlkOiBBIHByb2Nlc3MgcGlkLgo+ID4gKyAqIEBzdGF0ZTogQSBzdGF0ZSB0byB3
+YWl0IGZvci4KPiA+ICsgKiBAbXNlY190aW1lb3V0OiBBIHRpbWVvdXQgZm9yIHRoZSB3YWl0Lgo+
+ID4gICAqCj4gPiAtICogUiAtIHByb2Nlc3MgaXMgcnVubmluZwo+ID4gLSAqIFMgLSBwcm9jZXNz
+IGlzIHNsZWVwaW5nCj4gPiAtICogRCAtIHByb2Nlc3Mgc2xlZXBpbmcgdW5pbnRlcnJ1cHRpYmx5
+Cj4gPiAtICogWiAtIHpvbWJpZSBwcm9jZXNzCj4gPiAtICogVCAtIHByb2Nlc3MgaXMgdHJhY2Vk
+Cj4gPiArICogUG9zc2libGUgcHJvY2VzcyBzdGF0ZXM6Cj4gTWF5YmU6IHVzZSBsaW5rIHRvIGh0
+dHBzOi8vbWFuNy5vcmcvbGludXgvbWFuLXBhZ2VzL21hbjEvcHMuMS5odG1sID8KPiAKPiAtKiBQ
+b3NzaWJsZSBwcm9jZXNzIHN0YXRlczoKPiArKiBQb3NzaWJsZSBwcm9jZXNzIHN0YXRlcyAoc2Vl
+IDptYW4xOmBwc2ApOgoKMS4gV2UgZG8gbm90IGhhdmUgbWFuMSBkZWZpbmVkIGluIGV4bGlua3Mg
+aW4gY29uZi5weQoKMi4gRXZlbiBpZiBhZGRlZCB0aGVyZSBleGxpbmtzIGRvZXMgbm90IHNlZW0g
+d29yayBmcm9tIGRvY3VtZW50YXRpb24KICAgZ2VuZXJhdGVkIGZyb20gaGVhZGVycwoKPiA+ICsg
+Kgo+ID4gKyAqIC0gKipSKiogUHJvY2VzcyBpcyBydW5uaW5nLgo+ID4gKyAqIC0gKipTKiogUHJv
+Y2VzcyBpcyBzbGVlcGluZy4KPiA+ICsgKiAtICoqRCoqIFByb2Nlc3Mgc2xlZXBpbmcgdW5pbnRl
+cnJ1cHRpYmx5Lgo+ID4gKyAqIC0gKipaKiogWm9tYmllIHByb2Nlc3MuCj4gPiArICogLSAqKlQq
+KiBQcm9jZXNzIGlzIHRyYWNlZC4KPiA+ICsgKiAtICoqdCoqIFRyYWNpbmcgc3RvcHBlZC4KPiA+
+ICsgKiAtICoqWCoqIFByb2Nlc3MgaWQgZGVhZC4KPiAKPiBQcm9jZXNzIHN0YXRlIGlzIG91dGRh
+dGVkLCBtYW4gcHMoMSkgbGlzdHM6Cj4gCj4gICAgICAgICAgICAgICAgRCAgICB1bmludGVycnVw
+dGlibGUgc2xlZXAgKHVzdWFsbHkgSS9PKQo+ICAgICAgICAgICAgICAgIEkgICAgaWRsZSBrZXJu
+ZWwgdGhyZWFkCj4gICAgICAgICAgICAgICAgUiAgICBydW5uaW5nIG9yIHJ1bm5hYmxlIChvbiBy
+dW4gcXVldWUpCj4gICAgICAgICAgICAgICAgUyAgICBpbnRlcnJ1cHRpYmxlIHNsZWVwICh3YWl0
+aW5nIGZvciBhbgo+ICAgICAgICAgICAgICAgICAgICAgZXZlbnQgdG8gY29tcGxldGUpCj4gICAg
+ICAgICAgICAgICAgVCAgICBzdG9wcGVkIGJ5IGpvYiBjb250cm9sIHNpZ25hbAo+ICAgICAgICAg
+ICAgICAgIHQgICAgc3RvcHBlZCBieSBkZWJ1Z2dlciBkdXJpbmcgdGhlIHRyYWNpbmcKPiAgICAg
+ICAgICAgICAgICBXICAgIHBhZ2luZyAobm90IHZhbGlkIHNpbmNlIExpbnV4IDIuNikKPiAgICAg
+ICAgICAgICAgICBYICAgIGRlYWQgKHNob3VsZCBuZXZlciBiZSBzZWVuKQo+ICAgICAgICAgICAg
+ICAgIFogICAgZGVmdW5jdCAo4oCcem9tYmll4oCdKSBwcm9jZXNzLCB0ZXJtaW5hdGVkCj4gICAg
+ICAgICAgICAgICAgICAgICBidXQgbm90IHJlYXBlZCBieSBpdHMgcGFyZW50Cj4gCj4gV2UgbWlz
+czoKPiAqIEkgKGZyb20ga2VybmVsIDQuMiwgbWF5YmUgbm90IHJlbGV2YW50IHdoZW4gd2UgdXNl
+IGl0IGZvciBhIGNoaWxkIHdoaWNoCj4gaXMgdXNlcnNwYWNlKQo+ICogVyAoaXJyZWxldmFudCBh
+cyBpdCBpcyBub3QgdmFsaWQpCgpJbmRlZWQgdGhlc2UgYXJlIG5vdCByZWxldmVudCBmb3IgdXMu
+Cgo+ICogWgoKWm9tYmllIHByb2Nlc3MgaXMgZGVzY3JpYmVkIGluIHRoZSBsaXN0LgoKPiBBbHNv
+LCBkbyB3ZSB3YW50IHNwZWNpZnkgdGhlIHByb2Nlc3Mgc3RhdGVzIGluIGJvdGggVFNUX1BST0NF
+U1NfU1RBVEVfV0FJVCgpIGFuZAo+IFRTVF9USFJFQURfU1RBVEVfV0FJVCgpLCBvciBqdXN0IHNw
+ZWNpZnkgaXQgaW4gb25lIGFuZCBtZW50aW9uIGluIHRoZSBvdGhlciB0aGF0Cj4gdGhleSBzcGVj
+aWZ5IGl0PyAodmlhIDpyZWY6IG9yIGM6ZnVuYzopLgoKQWdhaW4sIG5vbmUgb2YgdGhlIDpyZWY6
+IG9yIGM6ZnVuYzogaXMgd29ya2luZyBpbiBkb2NzIGdlbmVyYXRlIGZyb20KaGVhZGVycy4KCi0t
+IApDeXJpbCBIcnViaXMKY2hydWJpc0BzdXNlLmN6CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
+dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
