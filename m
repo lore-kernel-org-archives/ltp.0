@@ -4,98 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1758CD5854
-	for <ltp@archiver.kernel.org>; Wed,  7 Jan 2026 11:50:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0025BCD585E
+	for <ltp@archiver.kernel.org>; Wed,  7 Jan 2026 12:02:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1767787356; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=Hpwlsl4R0tQa8al5ShZKjtqOm3sy4aOem3i4p+Poo5E=;
+ b=EclwFvd0vEJT4qYl+Pt9lYXinmiqmQvIxNHLQgySMiCfv+iGyrym9+hOJwNrrdjytNUSD
+ ae+RalX+QAd5D30rT8JXE5+z+0i+MqFbT2bt3ihf98du8U8jQwdBamxIc/Fk56LsPFdDl0x
+ 2wLvCTv9X9Z7UUZD0UPCT01dU+hmIIA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4C6AD3C302B
-	for <ltp@archiver.kernel.org>; Wed,  7 Jan 2026 12:50:07 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 80E663C2E38
+	for <ltp@archiver.kernel.org>; Wed,  7 Jan 2026 13:02:36 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B0DB23C2A49
- for <ltp@lists.linux.it>; Wed,  7 Jan 2026 12:49:46 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0A3A93C298C
+ for <ltp@lists.linux.it>; Wed,  7 Jan 2026 13:02:12 +0100 (CET)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
+ [IPv6:2a00:1450:4864:20::32c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5014B600072
- for <ltp@lists.linux.it>; Wed,  7 Jan 2026 12:49:46 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EF8E95BF54;
- Wed,  7 Jan 2026 11:49:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1767786585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=/37jgZWktMMxwyrWuNZLCh9A/dDuz8RJyeL1+3ypZM4=;
- b=K5MQgiSrUiZL2i/a6LMFy+O/jG6R3NhahjCFueuB0txATOSr+RJiAeA1qkfVYjwWwIaAHa
- hw/bj1FxPfUjt5SfUWJ38PVbKXU2/4LHQEqHrJkENtp0/1+bTG09iE+sQKxTKSuTlVJQ9a
- wnyB9nk5N+BggfVZrQzS9Fm3hwQiVKY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1767786585;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=/37jgZWktMMxwyrWuNZLCh9A/dDuz8RJyeL1+3ypZM4=;
- b=QFZIyuoS7SBK4S64UeysH/tyuwNSYt5FDzuSoJN5pP0mzRWZz1SRPySCY5LAeszlcZNFoI
- IF+rYNe3D0xtazAw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=YoYCDtuI;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=VQfxzDXi
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1767786584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=/37jgZWktMMxwyrWuNZLCh9A/dDuz8RJyeL1+3ypZM4=;
- b=YoYCDtuIkytXgjmYvJ1vXTuQK+6hOTZGS4RJnq3MMCzKXTHCf6cZobWCKjiqmdLlVSVfEc
- e58oNMITkFrC5xCN3rnxGT2qm8WgcWrVRrChxI673J5mGwCK3/oNmkZZbsW3i3vQmsaKYb
- Llsdt5+u/Q7i4alUcoVBltYYTA7Y4DY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1767786584;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=/37jgZWktMMxwyrWuNZLCh9A/dDuz8RJyeL1+3ypZM4=;
- b=VQfxzDXiU9YjTHg05E8xxcqBEhs2htFOWtvO+WPicSWHxxvxIEmoKpPCB8CFDBzcyc819y
- vZbsjuWKJSq+u0Bw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F45E3EA63;
- Wed,  7 Jan 2026 11:49:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id BIwPFFhIXmndJwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 07 Jan 2026 11:49:44 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed,  7 Jan 2026 12:49:33 +0100
-Message-ID: <20260107114933.762846-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.51.0
-MIME-Version: 1.0
-X-Rspamd-Queue-Id: EF8E95BF54
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[4]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 260F61A0068E
+ for <ltp@lists.linux.it>; Wed,  7 Jan 2026 13:02:12 +0100 (CET)
+Received: by mail-wm1-x32c.google.com with SMTP id
+ 5b1f17b1804b1-4779a4fc95aso3524815e9.1
+ for <ltp@lists.linux.it>; Wed, 07 Jan 2026 04:02:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1767787331; x=1768392131; darn=lists.linux.it;
+ h=in-reply-to:references:to:from:subject:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=oWYXEUEifFZBMHeVmrbJAPnEJvyyfnEVusXUsSRAp9o=;
+ b=GHK6l92SzlXlGJN+5e+OvEKxhsXJXJ7/EKB8/mq8h1Tu6fMoGMSO49S7pUKpK7qONU
+ lc6Fn07bXa7yEV7WYjtaUMcONi0kVq5dRT4SKMgu+8LakaPJZX64dF/FWEaHfnaTGMJM
+ 8uTWA2iZbnVfQrk21RQTlh1vXwCmv+oz+y6hxJH5a7vSiMRO/3RcxSUf8akAfkQ78oG5
+ 2IbZSfuhdF/KcmGQooimsBYFMGEbxWdAvylc16LwFWwy2BxNZ1iGA72YokafXydRnjBH
+ ec52U4K/SY6n7HrGThEtrgWaxWAZ5yHXh0m+ezD0TWRh+UP6vG/5lQmHxkFLSAc4p5cz
+ WwGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1767787331; x=1768392131;
+ h=in-reply-to:references:to:from:subject:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=oWYXEUEifFZBMHeVmrbJAPnEJvyyfnEVusXUsSRAp9o=;
+ b=P4YBEzTGF005jOD7niQv4WHQVcMFnPik2zRQCe740dKEAKNfx390gdBkKPFmMQ4V/D
+ e99Bz5VpUFb62QF+Bo9XdLERsNajVpIgkVwi28ksAE6YNELNfEnPV1Zvh2uuctoaELoh
+ bjzpXi7Z7X1dUZF/T9CmXVPT674n4+dDaD8ksJJn/NvuL4x2N8EvIZgsF4PvoDjNSRxW
+ Zyc/KciKAYYpJGl6weJ77j715RwGzGIjJOxZVOWwAgzEiIAAMxiCzi49h45RtCV+REbb
+ w3/cPztoJhU6pwAIyzgUUU3/sAufgvZmii3u3VQ+6ThX6lKC5oB0h51+x4SnEhzAw88J
+ hGiw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUyliePFa8zTzlbmhspSfVeGy5uRBjaVYpRszUhvsOujz5Zdj4ZDjI7K4wyTv/aSKXkEd8=@lists.linux.it
+X-Gm-Message-State: AOJu0YxioZtecB98DP9V8Q7phXXQshTERizvQ5t40PwzsUteb8wLJqa4
+ +AxiTwDqZiEe/EZ5v+U2upmZBAu8PllxT2q/Cp9dkHmuiOn+aRcR5EyyCa/zF0GZWo0=
+X-Gm-Gg: AY/fxX7s490sT4gYWMit6fcXDOUnE5tfMdCD99CnAgnpVxopLkksOv5NknWolh5Oh+H
+ zthE9iIWNG+wz7DvHoQ7/MhXBibs4d2iRyEt9mgYmpin9rpaAjxja1OJ0Ak+VZztQ34ZK0Ntv75
+ nSjgG+sMsU3/eMcwarVjXwxyV0z2L6KzzW4DMiIT6Cw+kMiR1VEHUVTtyk/q0C3KdCnixwel9+x
+ k58dl4m3fnkYNIO0USIRORNRhscV3jJRICEv4cQdXmtSiJjFIjlhM5UbuUKipzyGKrx0Zr6KGlr
+ V1FZhFNVnNM5NmJjIVyG85KE5Z7bxXW3PRBlsGSqcsOCkzgTNiVcWday4OcPoSjPfKJakXIrNsA
+ 7nxE6/3GlO7OQWOn0rvnHliTHYYtXtsT0V2KCVjGru4+ahMxkHbc7yAn+etK4kFzUs9a6tJAIfh
+ Is9upnSWKP3JHAem3dhvQ5d6I=
+X-Google-Smtp-Source: AGHT+IGkU4ei4FRmAs6RPKNss6GaM+HSzZgzv4hYiXa4VZVgEPbMqpeU72wyM5iWhmVpZ5dzFtGg5A==
+X-Received: by 2002:a05:600c:c0c6:b0:47d:87ac:73ef with SMTP id
+ 5b1f17b1804b1-47d87ac77c3mr10897305e9.13.1767787331406; 
+ Wed, 07 Jan 2026 04:02:11 -0800 (PST)
+Received: from localhost ([88.128.90.33]) by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-47d7f6f0e15sm90073585e9.10.2026.01.07.04.02.10
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 07 Jan 2026 04:02:11 -0800 (PST)
+Mime-Version: 1.0
+Date: Wed, 07 Jan 2026 13:02:10 +0100
+Message-Id: <DFICB4CKKHLI.QSZDWLKBJUCZ@suse.com>
+To: "Petr Vorel" <pvorel@suse.cz>, <ltp@lists.linux.it>
+X-Mailer: aerc 0.18.2
+References: <20260107114933.762846-1-pvorel@suse.cz>
+In-Reply-To: <20260107114933.762846-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] fw_load: Skip on Lockdown/Secure Boot
+Subject: Re: [LTP] [PATCH 1/1] fw_load: Skip on Lockdown/Secure Boot
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,63 +100,22 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Similarly to delete_module0[13].c, finit_module02.c and init_module02.c
-also fw_load.c cannot load modules due Lockdown/Secure Boot.
+Hi!
 
-fw_load     0  TINFO  :  module signature enforcement: off
-insmod: ERROR: could not insert module ltp_fw_load.ko: Key was rejected by service
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-dmesg:
-[    0.000000] [      T0] secureboot: Secure boot enabled
-[    0.000000] [      T0] Kernel is locked down from EFI Secure Boot mode; see man kernel_lockdown.7
-...
-[   17.679826] [   T1591] Loading of unsigned module is rejected
 
-Reported-by: Avinesh Kumar <akumar@suse.de>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-FYI once the test is rewritten into new API, it will just use as in
-delete_module0[13].c:
-
-	/* lockdown and SecureBoot requires signed modules */
-	.skip_in_lockdown = 1,
-	.skip_in_secureboot = 1,
-
-Kind regards,
-Petr
-
- testcases/kernel/firmware/fw_load_user/fw_load.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/testcases/kernel/firmware/fw_load_user/fw_load.c b/testcases/kernel/firmware/fw_load_user/fw_load.c
-index b2ed09e6f3..f5b918a698 100644
---- a/testcases/kernel/firmware/fw_load_user/fw_load.c
-+++ b/testcases/kernel/firmware/fw_load_user/fw_load.c
-@@ -29,6 +29,7 @@
- #include <string.h>
- 
- #include "test.h"
-+#include "tst_security.h"
- #include "safe_macros.h"
- #include "old_module.h"
- 
-@@ -102,6 +103,9 @@ static void help(void)
- 
- void setup(int argc, char *argv[])
- {
-+	if (tst_lockdown_enabled() > 0 || tst_secureboot_enabled() > 0)
-+		tst_brkm(TCONF, NULL, "Cannot load unsigned modules in Lockdown/Secure Boot");
-+
- 	tst_parse_opts(argc, argv, options, help);
- 
- 	if (nflag) {
 -- 
-2.51.0
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 
 -- 
