@@ -4,63 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0573D185C2
-	for <ltp@archiver.kernel.org>; Thu,  8 Jan 2026 10:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BFEDD185CC
+	for <ltp@archiver.kernel.org>; Thu,  8 Jan 2026 11:18:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1767868620; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=r+KjvEwEouttY5446OIBRI4LxmLpx7VYSG4GCzf/6gQ=;
- b=gMQxyezAKapr6KylSZD/hNf9N1cUTOtCfKJF4FoxAvR55ZR8tJ8rduWoz1TMyiEjgyFfH
- ncseWcNwdjChPcE3Kpp6lJMrYOkE7Q61+1XdM38ZriTT0fzTNhT0USbXFpdopVYPftmJroP
- ZkCorXtxNujLTTEV+/o5B80QlLSuF5k=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1767871123; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=0PUkcZmiATp82mj863foJLlX7SOQYnDAtRWyOqyOJSc=;
+ b=JEYA69xM4/toTV58SiMqtmVNlhcsmLhxJZtMV0whwHw9VR6HJBu2ob+xEBsJW7UE59uVc
+ ZaIaSpC09DYduP0AbYIGF3u/Ja3d+SYK4M96YmmD5jobIOPQezLkEQow/2PnQ6uQiRJ2OI6
+ IuxI/oCQmOxxANOXSVuUY9to76A6z4I=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A391A3C5793
-	for <ltp@archiver.kernel.org>; Thu,  8 Jan 2026 11:37:00 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 885E63C5ACA
+	for <ltp@archiver.kernel.org>; Thu,  8 Jan 2026 12:18:43 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 50B9E3C2E57
- for <ltp@lists.linux.it>; Thu,  8 Jan 2026 11:36:37 +0100 (CET)
-Received: from smtp-relay-canonical-0.canonical.com
- (smtp-relay-canonical-0.canonical.com [185.125.188.120])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 56F3B3C2265
+ for <ltp@lists.linux.it>; Thu,  8 Jan 2026 12:18:17 +0100 (CET)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6DDD81400B73
- for <ltp@lists.linux.it>; Thu,  8 Jan 2026 11:36:35 +0100 (CET)
-Received: from localhost.localdomain (2.general.phlin.uk.vpn [10.172.194.39])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id F347D40265; 
- Thu,  8 Jan 2026 10:36:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20251003; t=1767868595;
- bh=2EoTZ/gCmMUVH5/s13r7cmXEa8dXjGDJv8RYeky/aLE=;
- h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
- b=csB8PWyhumruPHKFPeWtpCHkkDx6Judwj2GEb5jMBtd+Kgg4f4sYYfiEqfCUeN/Ky
- c3njhFJuitjO94PuRmRb4trinDSTmFavVZyxvQ/bUloYcoyFG5j2X+v7DFaclJ+fHL
- 4vSlKTMKk33yqIt0Q4BOAQCshNb36DBou2R3IJ2aSPbh9c1oNu50MQu3MKNOzuhz2b
- 6K5IkpToAUfsXRgumfNTgaCHMwmyuI1D3pj1IOlcE6SRsIRJAdd4KBoX6TfLmzDbNE
- h7xT/DGoZ4FmgVidwa6E2sWdsNa94hJUa3B7jt2dVCVnnhLP/DSFJmq8Nyxo3aSXu8
- 7zDTxDo8Gw76dGwUcFk+0jkOY5NUJdIN2JaiIg0ZESg3xLjFOYqzI0ik8wvkombnbr
- c2tJCYyemC8LNsVoZ4kweJReXwUhc+RmWF1d3AmOkskrJEbZks8t5/tUgE6TmsIVQ3
- jgsThAFJ2+cgeVT8emmKBrIkAqno/f1i7uVjAZ4cEc5QpzasuEVEYHIrALkSQFHqLh
- kyUFL9db84amQdzya6lnbR5Fr076yck+kIwToeH4Vx/6ZDhzkuGuL5hpg6QuJOUCw6
- Y1sRigGPJu8/kG6oC9TOUXpvotr7XRxwhak3f5TAys9zFAR9EzWWjM72WXWbMVe/+l
- /BM3xiSkcWtVvmp0VbRJHUmw=
-To: ltp@lists.linux.it
-Date: Thu,  8 Jan 2026 18:36:06 +0800
-Message-ID: <20260108103606.35227-1-po-hsu.lin@canonical.com>
-X-Mailer: git-send-email 2.43.0
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E010F6000F6
+ for <ltp@lists.linux.it>; Thu,  8 Jan 2026 12:18:16 +0100 (CET)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-47d6a1f08bbso12280395e9.2
+ for <ltp@lists.linux.it>; Thu, 08 Jan 2026 03:18:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1767871096; x=1768475896; darn=lists.linux.it;
+ h=in-reply-to:references:to:from:subject:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=yj1SmcJgNxrvHY8Ht7XVssrnuBrCLqJhe+LhMIBhyYk=;
+ b=dKYthfgHl+1vSuG72vFR696EvXnsp8MnwTR3YMf/9grV6DINBoMT0IWEyxs3gn0MVI
+ hOJEzaufgiqG4SBWykO03GcGancrpsPshkwkdlvzgDYydXAXoXzINOWK0GmZeQ7YKLIC
+ kmk8zsxCOx8pmuz6hM8drEnNjE5ZZ1qUGvwLnehbOVz+QLujT1L8xTCpxM/FOcS8smA9
+ KnEEtFFf3jypBtv/0FIi8flXNeqJMU7y6Ai8V405PJd8MmjoZOn+XQFBby55Tnb4uqH3
+ VYTEsk8fdHbkJPblI69pZKlx7mB7JDNcTSNGtUk8sVIWn5uMO41fQaiTzXjNqGPhRHDj
+ VLpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1767871096; x=1768475896;
+ h=in-reply-to:references:to:from:subject:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=yj1SmcJgNxrvHY8Ht7XVssrnuBrCLqJhe+LhMIBhyYk=;
+ b=TYrgmnaXY9i9SGuBT5SyFy00gUzaGeHAJxQPjlc8lvSbyXKxsA7lwVgfLFtjbz/rIu
+ 8BPu2PnnVJKHMt/BqAar/cF38ETN3BJ/fv1TF/YoXMuYyPc8/5BWn0oYlkFz9dWfzmDf
+ O/Uv3Sc5mr8PzCOW9//3ou/v5E5BiMDeEcgGL2PQRvVoxwYiAz/CHlnDQgHyQtZx5na8
+ s8dPgBe7E6VBEPO0jqfAv9/ykffHIcy4QH6Hmafe6JhJ83Ts6r9PICn68jBLHte8BQFc
+ rnhu6pEtZppRevOSouzUkEF/mSV1CNT+pQFSeVp0ePGv8o78eSlwM33tVte3wzNjhnJ4
+ et+A==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXwsuUY4ox6aRtbkPZEwojbxWdVhTA/5yzghe49GbFgM53XbafXXWLiMvxl/l2wVDzv7T4=@lists.linux.it
+X-Gm-Message-State: AOJu0YxXSXhB59Ja+DXRgcL64J93xsJM9sww2jqDxyYbqTvQXQG6uTYZ
+ RM8f2aWvLr+n+kYe/nqvPtfNycaIwH2LITdnn9ElzIKMd4tgD38HmNAZvhKHWFx56qPo8NYMg+w
+ BYn06bQM=
+X-Gm-Gg: AY/fxX4GgY9j6yRPdikWE4Q4AoGwa/E2yZUYy8bqQ3rlghBRE5CCBD2JZSLe+FOwd0k
+ hJrUI99MweMygD1CcIX/p2bBlhQp7BGrVjrjllssKW0UzOGXPiU6E4LqrWoi5UAkUQgHmP3W9V5
+ DhdEwadJf4aK9CKBfwl4/fPK8JWTwoZcHTAd/F3SxCHZDeDyF5i+ipELZLKfUk4N0nx67T0tlgf
+ 9FcWcZ1YsowUZE/osn8H7ohTbZEyt1GzBrcZ7Tt6tqAuvRiQtFv02QBRa02i9aIXE+Fm19xk7T2
+ Ob1iPgPn2x7lRB7Y860lMenXtTtZXjy49fY3pkZI1DxIMcdslXco4yFYvSwYfholTULJpaqWVDY
+ pW9bh5fvwD55H9DLRxnO/m51YEc+qaN/L/oZj/iV2LRdhEsIlW+EY7cE3ilVCdQosgStCeGlmLN
+ RMt/YseCsfLjUX
+X-Google-Smtp-Source: AGHT+IGQYUcuAp9h+A48dnKL+PBEctRfTh42gA56ipQg6zkrFWA7Kwr8VxAa9ebKepC3dVN2bSWffw==
+X-Received: by 2002:a05:600c:8b33:b0:47a:81b7:9a20 with SMTP id
+ 5b1f17b1804b1-47d84b19f5emr65343265e9.9.1767871096291; 
+ Thu, 08 Jan 2026 03:18:16 -0800 (PST)
+Received: from localhost ([88.128.90.73]) by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-47d7f68f69dsm149632225e9.1.2026.01.08.03.18.15
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 08 Jan 2026 03:18:15 -0800 (PST)
+Mime-Version: 1.0
+Date: Thu, 08 Jan 2026 12:18:15 +0100
+Message-Id: <DFJ601CMFZAR.A3TJMEMXOJTQ@suse.com>
+To: "Po-Hsu Lin" <po-hsu.lin@canonical.com>, <ltp@lists.linux.it>
+X-Mailer: aerc 0.18.2
+References: <20260108103606.35227-1-po-hsu.lin@canonical.com>
+In-Reply-To: <20260108103606.35227-1-po-hsu.lin@canonical.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCHv2] listmount04.c: update struct mnt_id_req support to
- kernel >= 6.17.9
+Subject: Re: [LTP] [PATCHv2] listmount04.c: update struct mnt_id_req support
+ to kernel >= 6.17.9
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,90 +102,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Po-Hsu Lin via ltp <ltp@lists.linux.it>
-Reply-To: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Cc: po-hsu.lin@canonical.com
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The kernel change 78f0e33cd6c93 ("fs/namespace: correctly handle errors
-returned by grab_requested_mnt_ns") from 6.18 has been ported to upstream
-6.17.9 [1][2].
+Hi!
 
-Therefore change the expectation from >= 6.18 to >= 6.17.9 accodingly.
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-[1] https://lwn.net/Articles/1047684/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v6.17.9&id=8ff97ade
-
-v2: add comments for this change into the code.
-
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- .../kernel/syscalls/listmount/listmount04.c    | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/listmount/listmount04.c b/testcases/kernel/syscalls/listmount/listmount04.c
-index 2b8b49101..59da46cfd 100644
---- a/testcases/kernel/syscalls/listmount/listmount04.c
-+++ b/testcases/kernel/syscalls/listmount/listmount04.c
-@@ -7,6 +7,10 @@
-  * Verify that listmount() raises the correct errors according with
-  * invalid data:
-  *
-+ * - EBADF: invalid mnt_ns_fd
-+ * This check was introduced for kernel commit 78f0e33cd6c9 ("fs/namespace:
-+ * correctly handle errors returned by grab_requested_mnt_ns") introduced
-+ * in v6.18-rc7 and backported to v6.17.9.
-  * - EFAULT: req or mnt_id are unaccessible memories
-  * - EINVAL: invalid flags or mnt_id request
-  * - ENOENT: non-existent mount point
-@@ -20,8 +24,8 @@
- #include "lapi/syscalls.h"
- 
- #define MNT_SIZE 32
--#define BEFORE_6_18 1
--#define AFTER_6_18 2
-+#define BEFORE_6_17_9 1
-+#define AFTER_6_17_9 2
- 
- static mnt_id_req *request;
- static uint64_t mnt_ids[MNT_SIZE];
-@@ -84,7 +88,7 @@ static struct tcase {
- 		.nr_mnt_ids = MNT_SIZE,
- 		.exp_errno = EINVAL,
- 		.msg = "invalid mnt_id_req.spare",
--		.kver = BEFORE_6_18,
-+		.kver = BEFORE_6_17_9,
- 	},
- 	{
- 		.req_usage = 1,
-@@ -95,7 +99,7 @@ static struct tcase {
- 		.nr_mnt_ids = MNT_SIZE,
- 		.exp_errno = EBADF,
- 		.msg = "invalid mnt_id_req.mnt_ns_fd",
--		.kver = AFTER_6_18,
-+		.kver = AFTER_6_17_9,
- 	},
- 	{
- 		.req_usage = 1,
-@@ -154,10 +158,10 @@ static void run(unsigned int n)
- 
- static void setup(void)
- {
--	if (tst_kvercmp(6, 18, 0) >= 0)
--		kver = AFTER_6_18;
-+	if (tst_kvercmp(6, 17, 9) >= 0)
-+		kver = AFTER_6_17_9;
- 	else
--		kver = BEFORE_6_18;
-+		kver = BEFORE_6_17_9;
- }
- 
- static struct tst_test test = {
 -- 
-2.43.0
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 
 -- 
