@@ -4,93 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 922D5D232D2
-	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 02:43:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D80BD232D2
+	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 03:08:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1767926619; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1767928097; h=mime-version :
  references : in-reply-to : date : message-id : to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=8B7+J/Jcv1O7GBn1UH5Iob+CFdo+MrXMApcFoKHny7c=;
- b=GMRpHVIQrSt4/IKHLuY86RYv+DcfmbJX/ZauLwiplMkrjh+6Lidw3x23uMSzas0p3kQxg
- /6Mm/q5NVTFJZXiCCFESr2zFAVSh5MoDkrrFT8tm+iikyzj+UTC6QOnY1v3Sg8OwcWiLvAH
- uFIDpZO7cE86ANuKC1ROjKV4V+swsxM=
+ bh=0p2hqQtuaSGnGSkHw8p4du+Y5em+z3yMp3+E8Ovc4bw=;
+ b=RsMU29QjNxBPF6aLI/UvhdaHu7AUwZGypZOq7uLrV8EZkg7e26fg21HZUpzy4I7an20ij
+ h7DaLlUe7mhoHfqh9BUENmyxOxtTGzOXOYa37+0O1RkaLDD6CUbPuP1SUCYf+Ul2iYt+8s2
+ 2wDVDA64AJsZcYxdEFgieBPBsGjvHE0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2A5ED3C6890
-	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 03:43:39 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id E02C43C699A
+	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 04:08:17 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A35803C6792
- for <ltp@lists.linux.it>; Fri,  9 Jan 2026 03:43:14 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 5667B3C54E7
+ for <ltp@lists.linux.it>; Fri,  9 Jan 2026 04:07:53 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 009EA14000EE
- for <ltp@lists.linux.it>; Fri,  9 Jan 2026 03:43:13 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BB5841400242
+ for <ltp@lists.linux.it>; Fri,  9 Jan 2026 04:07:51 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1767926592;
+ s=mimecast20190719; t=1767928070;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=azcVfh9uW7eJgVITRTHzBGgjMgJApmbPhstRgn55vvc=;
- b=ap6kQo6/xbtd3lfqIt9VGp+fubwWzEdHQ13I9N3QaPfNxkZ5ngcvVLDm8uFE3BXcAr2BP2
- D/DKbrXkUAJ6KkYdEkXmHfRAHR9QrZt4jlUenj9KcGW1ltB8PvpvPMjQlv1Riy3NrpR8/P
- J4aMdmh/N5fipYt7GRxcLhvHm3673Vw=
-Received: from mail-dy1-f200.google.com (mail-dy1-f200.google.com
- [74.125.82.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=lMFP7JTenBPUjE2sdu24Oi1TWO0KfTMDqFJ+iDDlfUk=;
+ b=AChdpv9TFyIKtWsMaZ5GattBHhVU7h/kJe89kB5h/ovN5q7Z39GuBnA5rPGzyFTNf/AWdW
+ vov4fd7/NtX0zBKkPjRcb+94gkDnDMzHD2GmpagAVWEfFmm0Ipk7V5fWc1+LbEo0DjXVWM
+ 7qdIMyxD1KmBoIzRgA5TDl6Wp9v5dLM=
+Received: from mail-dl1-f69.google.com (mail-dl1-f69.google.com
+ [74.125.82.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-265-g8ULr7_gNBSJMW0fruvHig-1; Thu, 08 Jan 2026 21:43:10 -0500
-X-MC-Unique: g8ULr7_gNBSJMW0fruvHig-1
-X-Mimecast-MFC-AGG-ID: g8ULr7_gNBSJMW0fruvHig_1767926590
-Received: by mail-dy1-f200.google.com with SMTP id
- 5a478bee46e88-2adc3990fecso1349355eec.1
- for <ltp@lists.linux.it>; Thu, 08 Jan 2026 18:43:10 -0800 (PST)
+ us-mta-194-L9KkrVT9N4-Qf2BH1GpjjA-1; Thu, 08 Jan 2026 22:07:49 -0500
+X-MC-Unique: L9KkrVT9N4-Qf2BH1GpjjA-1
+X-Mimecast-MFC-AGG-ID: L9KkrVT9N4-Qf2BH1GpjjA_1767928068
+Received: by mail-dl1-f69.google.com with SMTP id
+ a92af1059eb24-121b1cb8377so5192588c88.0
+ for <ltp@lists.linux.it>; Thu, 08 Jan 2026 19:07:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1767926589; x=1768531389;
+ d=1e100.net; s=20230601; t=1767928068; x=1768532868;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=azcVfh9uW7eJgVITRTHzBGgjMgJApmbPhstRgn55vvc=;
- b=Pt5c4S3uCunhMUtxp4ThXUttDbH3LF6RgFVOyiFUqycUlocBXIEhyaTDkdDTyl1WYV
- bJn/cxRKWcAarFyXSVMDJ/mYDTgxOb8L8ZxK9TdSX49TQs1B2AyS/0Mtid+r1li+45rQ
- e0eSB2dS+keqyVWUbxPeWFQRnlCpcBi02ixXRbqck88xb+/Cs1t8Z1WldY+OnImgy1x5
- NVKCZozsRnGFzyQKsMWfQwTShQ7eRJl+//gjj+jnODwzgzTHvKYpID+c719KfVgru4Ef
- KXnGr9QrUHRZqWXnmROSBcAexUszV0DUQNDYBRl53L5xcIwLTaBp1ofwsMoPOWnlValn
- ha3w==
-X-Gm-Message-State: AOJu0YweDYYB354/HXOV5TLdoYD+53t5tsCbNdoST2dvl048x3X34cGy
- 7QsMN231KxiYH5c3yAGIfkPIvmbcsJgtZaz2p9wj37DAb+6eqHod7MKmv7wta2+2L33IX5IMm5f
- iWrepYG4axp3jHnQUB8uIMDTEI4TY7E3yKlDlaIsF6sVcyhFb3u0ab/aWWtl3zSsS84kN/HYhUU
- JfE4va16RqV6GnZlCdAcKww3K2ZUpxYxxffvurng==
-X-Gm-Gg: AY/fxX53ZDzl0CnW1Bt6XEK1mT1RXZjwlbKn1eOahMHDisX7PSDeqdLMQmzYoAFSuDK
- bWPXPC3GEq0VTPtS0m/7tVNbtolzYmVOBeWyOXCm1vVrfGnnXrjIUXw3Ce7mjJcK8IW08YMWEpA
- yoc/tJwaR3b221vho19Hi7S++FHjVFUsqy6Yx04SAxxmXlwnMAqOMDUGRVbFmgggkd1lo=
-X-Received: by 2002:a05:7301:1e83:b0:2ae:5431:948 with SMTP id
- 5a478bee46e88-2b17c788f7cmr6837308eec.7.1767926588950; 
- Thu, 08 Jan 2026 18:43:08 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFpac55/6HM4fVT0HbwAHrKeQlpyyNf/Bl0gA9iG8xETK4bFLjIsvLTlGXhCgvrfrRpWDAOPvkaJxa5Gm6y+Ls=
-X-Received: by 2002:a05:7301:1e83:b0:2ae:5431:948 with SMTP id
- 5a478bee46e88-2b17c788f7cmr6837295eec.7.1767926588538; Thu, 08 Jan 2026
- 18:43:08 -0800 (PST)
+ bh=lMFP7JTenBPUjE2sdu24Oi1TWO0KfTMDqFJ+iDDlfUk=;
+ b=dFo6GldNHqOH9wex2wjDVeqOTtYbpa6BWggZQccIMg+aamRxn21cjPiMmIClSjmg5I
+ 90GU8pIBSJLy3lMP2n16vh+ir71qufs91XQg8doKr+NHyGGO8iivRmsbIFo1I3MIWKXW
+ /g2dV6DHkS04YrjOAXBl+Hjn1HTsI6+w0qjATi2EJ2IpYfjt7/LE91blLg9gM60e4/O3
+ hhBzfbFYyKZv9YSegv1Hk7HJmFT0Ydy62yN+bpXNDqkAcbyZEu8UYIHAT5ZiC3m/tvm7
+ M7sj0y5ni/d8wlMsZlZRf9guQJuAU/raWo/HJu2UnS7Wq9gtnLSjTG7ddpNr4M+4eaCQ
+ WPWA==
+X-Gm-Message-State: AOJu0Yx/GssL8wTLSjpET5E6C5stYzp5r6unp16Uc+S3npQN+gIEYWiD
+ SF4GbsvYJRVZqBImUch0K5zo+mPqXt/dRP59leaFpXjQQ8lXgMxKq1hLglFl0UqAT6NLXi39o2m
+ 3e+tMufgA+cds/ySjrPQPEtx/FeLGBEgfAK2rsTAScY5eBHPzBKyFOpUg9w/uV5FpTdLlvWu9HT
+ kunv9mliXHKh7zPVklnqYAEHha44M=
+X-Gm-Gg: AY/fxX51OFyjTpaBw74O1X1NCDwo44Qs1c3gwZUS/AGgnG1mvAAcRR8EJxVMOdk0zYA
+ W/X6MjkZk/h5dCXB7rUP2ET3KbBzYDNvfDqQX8qybVSfc3M0FA63WIKUDSKpPqWkBMscFSneraX
+ aWpr52gJKsOmzBsduKrpQ5g0C9ymyNgwopTUrnv2LgHc8/gBVgrS2z2bRaifsuipceMk4=
+X-Received: by 2002:a05:7022:160a:b0:119:e55a:9be6 with SMTP id
+ a92af1059eb24-121f8afe9e1mr6250246c88.2.1767928067977; 
+ Thu, 08 Jan 2026 19:07:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGXU9Yx1YtoUmbo42uyryrMdxFL1iz/BbDh/XLhcJKcPgzNIKSYb4hyZRHZC5dRa9Bd1KxkXJiwzjG8jiipnro=
+X-Received: by 2002:a05:7022:160a:b0:119:e55a:9be6 with SMTP id
+ a92af1059eb24-121f8afe9e1mr6250232c88.2.1767928067550; Thu, 08 Jan 2026
+ 19:07:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20260108224409.165481-1-pradeep.susarla@gmail.com>
- <CAEemH2e4v8OUSvnT+cbSpWSqX_naSw0bAxphSg1ZsGfQk6zSfA@mail.gmail.com>
-In-Reply-To: <CAEemH2e4v8OUSvnT+cbSpWSqX_naSw0bAxphSg1ZsGfQk6zSfA@mail.gmail.com>
-Date: Fri, 9 Jan 2026 10:42:56 +0800
-X-Gm-Features: AZwV_QhxoTefcmQd61XfFo1Ha0FEOLqK7Z1z5-feqFSMaVag5w9bNBqSiuO37pM
-Message-ID: <CAEemH2fBDwk9eNnFVh2FHiiSwWqu5U=m67fOEq9jdHZXkW1wcg@mail.gmail.com>
-To: Pradeep Susarla <pradeep.susarla@gmail.com>
+References: <20260109023914.45555-1-liwang@redhat.com>
+In-Reply-To: <20260109023914.45555-1-liwang@redhat.com>
+Date: Fri, 9 Jan 2026 11:07:35 +0800
+X-Gm-Features: AZwV_Qi7ke5p34gLBP9T7WHLLdcvgjPICQirtkfSJskW2q_dihZJvpVpSdJTJw4
+Message-ID: <CAEemH2eJ+owHCTtLEumnJqDbkgLYgJttyyjWM01rWbDn0ZBJfA@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 1lWZ05kiwppl8ZOmjwjNoLF-YJqxFInwxYlN0clIVsU_1767926590
+X-Mimecast-MFC-PROC-ID: c9gCvBKIvpPxtOfYxgx9LWro-PUnVomqXs-yqihsjic_1767928068
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] hugetlb: migrate library and numa helpers to libs/
+Subject: Re: [LTP] [PATCH] libs: adopt lib* prefix instead of tst_* for libs/
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,23 +103,23 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Li Wang via ltp <ltp@lists.linux.it>
 Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
+Cc: Pradeep Susarla <pradeep.susarla@gmail.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Pradeep,
+>  include/ujson.h                                           | 6 +++---
+>  include/ujson_common.h                                    | 6 +++---
+>  include/ujson_reader.h                                    | 6 +++---
+>  include/ujson_utf.h                                       | 6 +++---
 
-Li Wang <liwang@redhat.com> wrote:
+Btw, I intentionally did _not_ rename the ujson header file with the
+prefix lib*.
 
-> There are some other libs/tst_*.c that should be renamed to prefix lib*,
-> but yes, this is not related to your patch.
-
-To simplify your work, I just sent a patch to rename all of that libs/,
-you could rebase your patch on this one once others ACK the change.
-
-https://lists.linux.it/pipermail/ltp/2026-January/046071.html
+Unlike the other header files, ujson is a standalone library with a clear
+target (which is for tst_run_shell.c), and it is completely different to the
+tst_* test function API.
 
 -- 
 Regards,
