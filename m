@@ -4,92 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DC84D232E2
-	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 06:18:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03A27D232E2
+	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 06:18:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1767939508; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1767939535; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=WamVH7vvtfkALGxZpaN4v5wapu5DOT0UMSE4UWpT6FY=;
- b=h3DERuks3hv8+HP80oQyu7cCKaIB9pnEnl9XbsUfJhZStuG0BN180yxDp5pkm4E7Vb4Dj
- 7op0QoNC17wgN8IAKPffKD2drmueOtpq7eADJmsothOUX6hktbI3Nk2XacO82bV/mvW6X93
- 2Omt72UbuH8AfiTiDWJy5vJXrZhEYoo=
+ bh=SAu6Syx3tt5iWtDH9qq7jxYcKyuPmVFlHJzf/l/NTUs=;
+ b=VnhnOHItk4lPwr+CCmIvl+63y+i1RFJ5wseodyxNLh6A+cizX2gFGN0l90QTI1Rs7waIK
+ ZDpHc/ezxpVOHetWLxO03/ZAV1r47M/gXLkeSFNMyB0zodz7BYsbGllk8N49+0arK12/Y8a
+ dhNCYPUCrjxxBGKAcWjv7hkx1TEmUz4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 707FA3C6F6C
-	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 07:18:28 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 5CC983C6FE2
+	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 07:18:55 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0A6163C6870
- for <ltp@lists.linux.it>; Fri,  9 Jan 2026 07:17:21 +0100 (CET)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
+ by picard.linux.it (Postfix) with ESMTPS id 6B8933C54E7
+ for <ltp@lists.linux.it>; Fri,  9 Jan 2026 07:17:24 +0100 (CET)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 29D9C600691
- for <ltp@lists.linux.it>; Fri,  9 Jan 2026 07:17:21 +0100 (CET)
-Received: by mail-wr1-x429.google.com with SMTP id
- ffacd0b85a97d-42fb2314eb0so3120541f8f.2
- for <ltp@lists.linux.it>; Thu, 08 Jan 2026 22:17:21 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CF9191000954
+ for <ltp@lists.linux.it>; Fri,  9 Jan 2026 07:17:23 +0100 (CET)
+Received: by mail-wm1-x330.google.com with SMTP id
+ 5b1f17b1804b1-47774d3536dso24029135e9.0
+ for <ltp@lists.linux.it>; Thu, 08 Jan 2026 22:17:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1767939440; x=1768544240; darn=lists.linux.it;
+ d=suse.com; s=google; t=1767939443; x=1768544243; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=f1+jCuluxHsmNp/LBh73bRh5lfC5GtMxfdgYUtNdIYU=;
- b=WPEXCcVn9IiWmIuX8HiidiLr7vgka98on3nsAbTq92CKl70HjL9aI1o+NMuvMlcHHe
- jGwCtchqYFJ9FxT/E91/tVO99cjDTkRBpu3uFHICFMpdjDg5d0ViQbV8SJzIOCH0tbso
- qN+C7aa8bQA3lUTXMGaN3ry6WpP+MdYbznpeXqdE/9QO9Ezqrg17/0VeTknYlpAoZg6g
- tIQFvjMTH5MOl7G0SymNdIiX19+XcuNjgMyqkV+xyIDprpQ1DQjz95NsltDk37UT5JLC
- 6hRa0uBXrOEfDSG/ppgHm4aoEfL0/Xu/i5eUZLfe0yJ6aKjBbpAYQuevddF9k7LNSYCP
- 84kg==
+ bh=7itwjnHfOlwlr1/Ui8NFCPi3MimReLCfAD+BZibXvXw=;
+ b=T/dqodab3uC8dugGskXTcvcAUEsj3xk0TYiIQFI2A2e1m4hhyRu3YT+5ClLvDHrwDO
+ YYKRLLMj2olaDCjo7mag48hPR1j4EYzIQUXu71RQx1hjxAZuNV8l90+tgcABEsbYhNLw
+ F7Fsfwxy4wMDf4PigwcOyCWrUuVwfPcp7GBSQhWm/bX4hTwQefg2SNlF6eGypV+ca4vw
+ PfekcRElOFlzg2viuS1/zNuHj6Wl4o19i+cN2XoYZYdhapFFlThl+6ol1nGvExHf6bjb
+ /xpqzi9rQBceWWhub9xFzNG3YxrruytH/zdY+WX+KsV8U0LOLUHBXs+3IsO57vhNrhln
+ Pw9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1767939440; x=1768544240;
+ d=1e100.net; s=20230601; t=1767939443; x=1768544243;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=f1+jCuluxHsmNp/LBh73bRh5lfC5GtMxfdgYUtNdIYU=;
- b=ADVPCLoKK+MsQcKxsTtG8PAo8JIeo4R/Y11Xga5mklRVMi/0SNeft9lyacomyw5oF+
- yHjfBHkcfceYkYHnenZB3qg7qzu/h8SjyuoF0zzlAcQuxH466ZhUcqiNKTicPONp+ffz
- u27JTIrKIE4Rvn6hP5/o7IrJxor0YM2smrAlOHTW7mHJmzQf3gKETjhHQECjphZyfl0p
- 6sfH+NhnOSY5vnDt+Ug7Yy6WTBrj5ZN26olzSSdmiAOFjScgJp4NjZ3QdZqeaupVBYMd
- tcSlHDTVMIOivYfU3XjstUemX8kOqGVir8pgQ7vHWo9b5suZzLPaoq5Sqhg92GBxlCuS
- ntjg==
-X-Gm-Message-State: AOJu0YxkssgINWi2dzeKS+FtvN5jRGUxviIwM+Rj8ZJmskdsC4J8q6/Q
- KxK2UDbGGMbtqH32b/DWqVLdqkRm4a2nAd+K8riNiAM2TTUpXAeacNbTenFz2+h6iicxWPUhIf9
- Z/kY=
-X-Gm-Gg: AY/fxX4qPUXr0EGW0PKPKJWt4UrPsPtFTV5uA3W3lbPCS8A5yRwy3IR5NTzdw1Yh+7e
- R3El+ZaOohyyipqK6HQ97k905Ss77SbNmCfzM82SU25BPOQAy+03PhpT2iQpL+m/HKioSW2lDOk
- 8jVdHGAb1MMcikWKwJ8uVjJiQytEBsM9eyO8HrYEm2u9KSsMJc4RteCXHmi2GRT95/FaRUuBKM6
- EatB3rZdiuiUzX6ruoiI+S55SS5eLbnL24wCOCtml2ifCnzRkdJs3rvwMoOfKI+fL+iS8bNhgbL
- u3NLnn9uUdrqiHVyth1th7jc3+BOlatGDlb5Mf92FKscevegV2QH+9WL697Qvt/W6umTm+jv2mu
- KXIjrrlSNs4aQI0Sm854IVMRxistVNoWereA3QyjqOO8SaE+c7IF5vUbhKj6RTdKqfBmueibaIM
+ bh=7itwjnHfOlwlr1/Ui8NFCPi3MimReLCfAD+BZibXvXw=;
+ b=PfaJC/xxL7J5Jb3WQPEu8LYesCtyItGbA8dU9r0tr1YYIJV2g8OsejB6lbKiTyfSEh
+ 8ZHFg+v+AhCY4YhQdWOxOAbrSeydFOFD6bf0HnjwnP5UqWaEnSkzU1Nz+Wai4UntorTy
+ dA+nJMOqfo+u+/RoBooQtl+8X/HUHZacIeQ9pBOry7nGmkeaksVLJsDc1VOVNKfUjnOF
+ 3KNHlB0RNsl/WmCEaGeAyMdmUxZ59OMuwmQsnIzW41JGztyimgs9/58BE5GLz8PUr1Bp
+ o+BdKU2IUfPQLqv7JX2UCmH/KNVyjqD+8dd+V2Y6BL8SA170jQSd7Bw+M6PBGxLID3LH
+ nqGA==
+X-Gm-Message-State: AOJu0YwNdJwCn35q+3ZUu2g9B3lhZozeEs06oYHCJyOjp6mvfBD8l8SM
+ Oxw3TVfPVZQoy8IGJpmFjcYk7QKvvq1+SBFpk3eP4oSxVNCl/dNgg9AsfWcajtw6zoU9VMYvPQR
+ u95I=
+X-Gm-Gg: AY/fxX6lhk/zgmZGymnVIaX9L7nDBFkG014ClQwDpZmuE4AB1fcIPZdddkppgos6+0F
+ n/v52LvAoOFZJdC6JwQMX65oAJstJ4jmAOMknTcgd43EibbI3Wqd7MZp8Iu4Ky7I5cSxdvXBbEc
+ SFfi84LedICA/xLmtPY2XYnBNFB9BPKpvOIauwhj0KrYcMF76Mw4ymYlL/pNnq7qRbL0pOV69Pj
+ I/nlwhVEWi/69pGxOOjQJCfmOjiETM3U24OFK2ssw3xxZD16uUinvHT3jXjEO701dk+h6abUUsy
+ 4PQH11y8ASjS6V19ADxoaoskBEvA4Wd5YW88pJphOGmV1lzf/hjK6XV96uiOvf1YJw3SoqshcFn
+ QnZFLROEnUyqefn/+wCua/+clkLYU3AnQrErJkgW/ShHqjDqym8nqeonK/1HXqb1xLCDUQWA8e7
  U=
-X-Google-Smtp-Source: AGHT+IGTOYw45jHHiCaqRO207SWv9w9eH2LDYtxhVqHvcbIevHrWnvUvmOroi0IRv16H63dr+KXsOQ==
-X-Received: by 2002:a05:6000:240c:b0:430:f23f:4bc9 with SMTP id
- ffacd0b85a97d-432c38d231dmr11210428f8f.62.1767939440186; 
- Thu, 08 Jan 2026 22:17:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFO5Jp8C+CSLSZL70I3ybSQ5N+X64h2JtRyREtho4gAvneYXdIN4qgVyGklxRxxc8ZjVdORvw==
+X-Received: by 2002:a05:600c:5304:b0:471:5c0:94fc with SMTP id
+ 5b1f17b1804b1-47d9143a981mr11647845e9.6.1767939443048; 
+ Thu, 08 Jan 2026 22:17:23 -0800 (PST)
 Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
  by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-432bd5ede7esm20393052f8f.32.2026.01.08.22.17.19
+ 5b1f17b1804b1-47d7f695956sm195599225e9.6.2026.01.08.22.17.22
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 08 Jan 2026 22:17:19 -0800 (PST)
+ Thu, 08 Jan 2026 22:17:22 -0800 (PST)
 To: ltp@lists.linux.it
-Date: Fri,  9 Jan 2026 06:16:30 +0000
-Message-ID: <20260109061716.20258-2-wegao@suse.com>
+Date: Fri,  9 Jan 2026 06:16:32 +0000
+Message-ID: <20260109061716.20258-4-wegao@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260109061716.20258-1-wegao@suse.com>
 References: <20251223020836.9439-1-wegao@suse.com>
  <20260109061716.20258-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7 1/4] lib: Add support option for .needs_cmds
+Subject: [LTP] [PATCH v7 3/4] ioctl_loop01.c: Add new support .needs_cmds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,584 +107,74 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Wei Gao <wegao@suse.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/tst_cmd.h                             | 13 +++++
- include/tst_test.h                            |  4 +-
- lib/newlib_tests/tst_needs_cmds01.c           | 16 +++---
- lib/newlib_tests/tst_needs_cmds02.c           |  6 +-
- lib/newlib_tests/tst_needs_cmds03.c           |  6 +-
- lib/newlib_tests/tst_needs_cmds04.c           |  6 +-
- lib/newlib_tests/tst_needs_cmds05.c           |  6 +-
- lib/newlib_tests/tst_needs_cmds06.c           |  6 +-
- lib/newlib_tests/tst_needs_cmds07.c           |  6 +-
- lib/newlib_tests/tst_needs_cmds08.c           |  8 +--
- lib/tst_test.c                                |  9 +--
- testcases/kernel/device-drivers/zram/zram03.c |  8 +--
- testcases/kernel/fs/squashfs/squashfs01.c     |  6 +-
- testcases/kernel/security/aslr/aslr01.c       |  6 +-
- testcases/kernel/syscalls/add_key/add_key05.c | 10 ++--
- .../kernel/syscalls/fanotify/fanotify22.c     |  6 +-
- testcases/kernel/syscalls/ioctl/ioctl09.c     |  6 +-
- testcases/kernel/syscalls/madvise/madvise11.c |  8 +--
- .../kernel/syscalls/quotactl/quotactl01.c     |  6 +-
- .../kernel/syscalls/quotactl/quotactl04.c     |  6 +-
- .../kernel/syscalls/quotactl/quotactl06.c     |  6 +-
- .../kernel/syscalls/quotactl/quotactl08.c     |  6 +-
- .../kernel/syscalls/quotactl/quotactl09.c     |  6 +-
- testcases/kernel/syscalls/statx/statx05.c     |  8 +--
- testcases/kernel/syscalls/statx/statx07.c     |  6 +-
- testcases/kernel/syscalls/statx/statx09.c     |  6 +-
- testcases/lib/tst_run_shell.c                 | 56 ++++++++++++++++++-
- 27 files changed, 155 insertions(+), 87 deletions(-)
+ .../kernel/syscalls/ioctl/ioctl_loop01.c      | 34 +++++++++----------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/include/tst_cmd.h b/include/tst_cmd.h
-index cf6382955..2203241c5 100644
---- a/include/tst_cmd.h
-+++ b/include/tst_cmd.h
-@@ -19,6 +19,19 @@ enum tst_cmd_flags {
- 	TST_CMD_TCONF_ON_MISSING = 2,
- };
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+index 9fbdbb1f2..b8df2d633 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+@@ -79,23 +79,6 @@ static void check_loop_value(int set_flag, int get_flag, int autoclear_field)
  
-+/**
-+ * struct tst_cmd - Provides details about a command struct needed by LTP test.
-+ * @cmd: The name of the command.
-+ * @optional: A flag indicating if the command is optional.
-+ * @present: A flag indicating if the command was found at runtime. This is an output
-+ * parameter, set by the LTP library during the test setup.
-+ */
-+struct tst_cmd {
-+	const char *cmd;
-+	unsigned int optional:1;
-+	unsigned int present:1;
-+};
+ static void verify_ioctl_loop(void)
+ {
+-	int ret;
+-	const char *const cmd_parted[] = {"parted", "-s", dev_path, "mklabel", "msdos", "mkpart",
+-					"primary", "ext4", "1M", "10M", NULL};
+-
+-	tst_fill_file("test.img", 0, 1024 * 1024, 10);
+-	tst_attach_device(dev_path, "test.img");
+-
+-	ret = tst_cmd(cmd_parted, NULL, NULL, TST_CMD_PASS_RETVAL);
+-	if (!ret)
+-		parted_sup = 1;
+-	else if (ret == 255)
+-		tst_res(TCONF, "parted binary not installed or failed");
+-	else
+-		tst_res(TCONF, "parted exited with %i", ret);
+-
+-	attach_flag = 1;
+-
+ 	TST_ASSERT_INT(partscan_path, 0);
+ 	TST_ASSERT_INT(autoclear_path, 0);
+ 	TST_ASSERT_STR(backing_path, backing_file_path);
+@@ -114,10 +97,23 @@ static void verify_ioctl_loop(void)
+ 
+ static void setup(void)
+ {
++	parted_sup = tst_cmd_present("parted");
 +
- /*
-  * vfork() + execvp() specified program.
-  *
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 75bc57ab6..dc2e9a397 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -526,7 +526,7 @@ struct tst_fs {
-  *
-  * @tags: A {} terminated array of test tags. See struct tst_tag for details.
-  *
-- * @needs_cmds: A NULL terminated array of commands required for the test to run.
-+ * @needs_cmds: A NULL terminated array of :ref:`struct tst_cmd` required for the test to run.
-  *
-  * @needs_cgroup_ver: If set the test will run only if the specified cgroup
-  *                    version is present on the system.
-@@ -619,7 +619,7 @@ struct tst_fs {
++	const char *const cmd_parted[] = {"parted", "-s", dev_path, "mklabel", "msdos", "mkpart",
++	                                  "primary", "ext4", "1M", "10M", NULL};
++
+ 	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
+ 	if (dev_num < 0)
+ 		tst_brk(TBROK, "Failed to find free loop device");
  
- 	const struct tst_tag *tags;
- 
--	const char *const *needs_cmds;
-+	struct tst_cmd *needs_cmds;
- 
- 	const enum tst_cg_ver needs_cgroup_ver;
- 
-diff --git a/lib/newlib_tests/tst_needs_cmds01.c b/lib/newlib_tests/tst_needs_cmds01.c
-index 777c69505..6ab1145d1 100644
---- a/lib/newlib_tests/tst_needs_cmds01.c
-+++ b/lib/newlib_tests/tst_needs_cmds01.c
-@@ -12,13 +12,13 @@ static void do_test(void)
- 
- static struct tst_test test = {
- 	.test_all = do_test,
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext4",
--		"mkfs.ext4 >= 1.0.0",
--		"mkfs.ext4 <= 2.0.0",
--		"mkfs.ext4 != 2.0.0",
--		"mkfs.ext4 > 1.0.0",
--		"mkfs.ext4 < 2.0.0",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext4", .optional = 1},
-+		{.cmd = "mkfs.ext4 >= 1.0.0", .optional = 0},
-+		{.cmd = "mkfs.ext4 <= 2.0.0"},
-+		{.cmd = "mkfs.ext4 != 2.0.0"},
-+		{.cmd = "mkfs.ext4 > 1.0.0"},
-+		{.cmd = "mkfs.ext4 < 2.0.0"},
-+		{}
- 	}
- };
-diff --git a/lib/newlib_tests/tst_needs_cmds02.c b/lib/newlib_tests/tst_needs_cmds02.c
-index 455a275ea..f1d6105c2 100644
---- a/lib/newlib_tests/tst_needs_cmds02.c
-+++ b/lib/newlib_tests/tst_needs_cmds02.c
-@@ -16,8 +16,8 @@ static void do_test(void)
- 
- static struct tst_test test = {
- 	.test_all = do_test,
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext45 >= 1.43.0",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext45 >= 1.43.0"},
-+		{}
- 	}
- };
-diff --git a/lib/newlib_tests/tst_needs_cmds03.c b/lib/newlib_tests/tst_needs_cmds03.c
-index bdc1cdf6a..ac5f368e2 100644
---- a/lib/newlib_tests/tst_needs_cmds03.c
-+++ b/lib/newlib_tests/tst_needs_cmds03.c
-@@ -16,8 +16,8 @@ static void do_test(void)
- 
- static struct tst_test test = {
- 	.test_all = do_test,
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext4 ! 1.43.0",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext4 ! 1.43.0"},
-+		{}
- 	}
- };
-diff --git a/lib/newlib_tests/tst_needs_cmds04.c b/lib/newlib_tests/tst_needs_cmds04.c
-index de10b8f3e..2aea51772 100644
---- a/lib/newlib_tests/tst_needs_cmds04.c
-+++ b/lib/newlib_tests/tst_needs_cmds04.c
-@@ -16,8 +16,8 @@ static void do_test(void)
- 
- static struct tst_test test = {
- 	.test_all = do_test,
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext4 > 1.43",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext4 > 1.43"},
-+		{}
- 	}
- };
-diff --git a/lib/newlib_tests/tst_needs_cmds05.c b/lib/newlib_tests/tst_needs_cmds05.c
-index c3b2b3b9a..969d4e2f5 100644
---- a/lib/newlib_tests/tst_needs_cmds05.c
-+++ b/lib/newlib_tests/tst_needs_cmds05.c
-@@ -16,8 +16,8 @@ static void do_test(void)
- 
- static struct tst_test test = {
- 	.test_all = do_test,
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext4 > 1.43.0-1",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext4 > 1.43.0-1"},
-+		{}
- 	}
- };
-diff --git a/lib/newlib_tests/tst_needs_cmds06.c b/lib/newlib_tests/tst_needs_cmds06.c
-index 40b1cf09c..91470ccf9 100644
---- a/lib/newlib_tests/tst_needs_cmds06.c
-+++ b/lib/newlib_tests/tst_needs_cmds06.c
-@@ -16,8 +16,8 @@ static void do_test(void)
- 
- static struct tst_test test = {
- 	.test_all = do_test,
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext4 > 1.43.0 2",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext4 > 1.43.0 2"},
-+		{}
- 	}
- };
-diff --git a/lib/newlib_tests/tst_needs_cmds07.c b/lib/newlib_tests/tst_needs_cmds07.c
-index d0b4ce2ff..371bbdc1b 100644
---- a/lib/newlib_tests/tst_needs_cmds07.c
-+++ b/lib/newlib_tests/tst_needs_cmds07.c
-@@ -16,8 +16,8 @@ static void do_test(void)
- 
- static struct tst_test test = {
- 	.test_all = do_test,
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext45",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext45"},
-+		{}
- 	}
- };
-diff --git a/lib/newlib_tests/tst_needs_cmds08.c b/lib/newlib_tests/tst_needs_cmds08.c
-index 38df2ef6d..412f9f293 100644
---- a/lib/newlib_tests/tst_needs_cmds08.c
-+++ b/lib/newlib_tests/tst_needs_cmds08.c
-@@ -18,9 +18,9 @@ static void do_test(void)
- 
- static struct tst_test test = {
- 	.test_all = do_test,
--	.needs_cmds = (const char *[]) {
--		"mkfs.xfs",
--		"mkfs.xfs >= 4.20.0",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.xfs"},
-+		{.cmd = "mkfs.xfs >= 4.20.0"},
-+		{}
- 	}
- };
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index e115ce689..09aa7fce2 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1449,11 +1449,12 @@ static void do_setup(int argc, char *argv[])
- 		tst_brk(TCONF, "%dbit ABI is not supported", tst_test->needs_abi_bits);
- 
- 	if (tst_test->needs_cmds) {
--		const char *cmd;
--		int i;
-+		struct tst_cmd *pcmd = tst_test->needs_cmds;
- 
--		for (i = 0; (cmd = tst_test->needs_cmds[i]); ++i)
--			tst_check_cmd(cmd, 1);
-+		while (pcmd->cmd) {
-+			pcmd->present = tst_check_cmd(pcmd->cmd, !pcmd->optional) ? 1 : 0;
-+			pcmd++;
-+		}
- 	}
- 
- 	if (tst_test->needs_drivers) {
-diff --git a/testcases/kernel/device-drivers/zram/zram03.c b/testcases/kernel/device-drivers/zram/zram03.c
-index 8cf26de4c..4dcf23b4e 100644
---- a/testcases/kernel/device-drivers/zram/zram03.c
-+++ b/testcases/kernel/device-drivers/zram/zram03.c
-@@ -240,9 +240,9 @@ static struct tst_test test = {
- 		"zram",
- 		NULL
- 	},
--	.needs_cmds = (const char *[]) {
--		"modprobe",
--		"rmmod",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "modprobe"},
-+		{.cmd = "rmmod"},
-+		{}
- 	}
- };
-diff --git a/testcases/kernel/fs/squashfs/squashfs01.c b/testcases/kernel/fs/squashfs/squashfs01.c
-index fbcb76582..7a548d62c 100644
---- a/testcases/kernel/fs/squashfs/squashfs01.c
-+++ b/testcases/kernel/fs/squashfs/squashfs01.c
-@@ -102,9 +102,9 @@ static struct tst_test test = {
- 	.needs_root = 1,
- 	.needs_device = 1,
- 	.dev_min_size = 1,
--	.needs_cmds = (const char *const []) {
--		"mksquashfs",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mksquashfs"},
-+		{}
- 	},
- 	.needs_drivers = (const char *const []) {
- 		"squashfs",
-diff --git a/testcases/kernel/security/aslr/aslr01.c b/testcases/kernel/security/aslr/aslr01.c
-index 6a396e29d..e6feb2d3c 100644
---- a/testcases/kernel/security/aslr/aslr01.c
-+++ b/testcases/kernel/security/aslr/aslr01.c
-@@ -277,8 +277,8 @@ static struct tst_test test = {
- 		"CONFIG_HAVE_ARCH_MMAP_RND_BITS=y",
- 		NULL
- 	},
--	.needs_cmds = (const char *[]) {
--		"ldd",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "ldd"},
-+		{}
- 	},
- };
-diff --git a/testcases/kernel/syscalls/add_key/add_key05.c b/testcases/kernel/syscalls/add_key/add_key05.c
-index c9a2f840e..b51a84b97 100644
---- a/testcases/kernel/syscalls/add_key/add_key05.c
-+++ b/testcases/kernel/syscalls/add_key/add_key05.c
-@@ -231,11 +231,11 @@ static struct tst_test test = {
- 		{&user_buf, .size = 64},
++	tst_fill_file("test.img", 0, 1024 * 1024, 10);
++
++	tst_attach_device(dev_path, "test.img");
++	attach_flag = 1;
++
++	if (parted_sup)
++		SAFE_CMD(cmd_parted, NULL, NULL);
++
+ 	sprintf(partscan_path, "/sys/block/loop%d/loop/partscan", dev_num);
+ 	sprintf(autoclear_path, "/sys/block/loop%d/loop/autoclear", dev_num);
+ 	sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", dev_num);
+@@ -149,5 +145,9 @@ static struct tst_test test = {
+ 		{"linux-git", "6ac92fb5cdff"},
  		{}
  	},
--	.needs_cmds = (const char *const []) {
--		"useradd",
--		"userdel",
--		"groupdel",
--		NULL
 +	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "useradd"},
-+		{.cmd = "userdel"},
-+		{.cmd = "groupdel"},
++		{.cmd = "parted", .optional = 1},
 +		{}
- 	},
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "a08bf91ce28"},
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify22.c b/testcases/kernel/syscalls/fanotify/fanotify22.c
-index 357e74dbc..6578474a7 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify22.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify22.c
-@@ -327,9 +327,9 @@ static struct tst_test test = {
- 		{"linux-git", "76486b104168"},
- 		{}
- 	},
--	.needs_cmds = (const char *[]) {
--		"debugfs",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "debugfs"},
-+		{}
- 	}
- };
- 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl09.c b/testcases/kernel/syscalls/ioctl/ioctl09.c
-index c046d8959..21e16efb6 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl09.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl09.c
-@@ -108,9 +108,9 @@ static struct tst_test test = {
- 		"loop",
- 		NULL
- 	},
--	.needs_cmds = (const char *const []) {
--		"parted",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "parted"},
-+		{}
- 	},
++	},
  	.needs_tmpdir = 1,
  };
-diff --git a/testcases/kernel/syscalls/madvise/madvise11.c b/testcases/kernel/syscalls/madvise/madvise11.c
-index 422589f5b..73d2d4294 100644
---- a/testcases/kernel/syscalls/madvise/madvise11.c
-+++ b/testcases/kernel/syscalls/madvise/madvise11.c
-@@ -421,10 +421,10 @@ static struct tst_test test = {
- 		HW_MODULE,
- 		NULL
- 	},
--	.needs_cmds = (const char *[]) {
--		"modprobe",
--		"rmmod",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "modprobe"},
-+		{.cmd = "rmmod"},
-+		{}
- 	},
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_MEMORY_FAILURE=y",
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
-index 9dcf74ceb..3091ac5bf 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl01.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
-@@ -223,9 +223,9 @@ static struct tst_test test = {
- 		{}
- 	},
- 	.mntpoint = MNTPOINT,
--	.needs_cmds = (const char *const []) {
--		"quotacheck",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "quotacheck"},
-+		{}
- 	},
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
-index d2d7b3f3e..a70903330 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl04.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
-@@ -165,8 +165,8 @@ static struct tst_test test = {
- 	},
- 	.mntpoint = MNTPOINT,
- 	.test_variants = QUOTACTL_SYSCALL_VARIANTS,
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext4 >= 1.43.0",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext4 >= 1.43.0"},
-+		{}
- 	}
- };
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl06.c b/testcases/kernel/syscalls/quotactl/quotactl06.c
-index 110a3aa9b..333f5720d 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl06.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl06.c
-@@ -226,9 +226,9 @@ static struct tst_test test = {
- 	},
- 	.mntpoint = MNTPOINT,
- 	.mount_device = 1,
--	.needs_cmds = (const char *const []) {
--		"quotacheck",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "quotacheck"},
-+		{}
- 	},
- 	.needs_root = 1,
- 	.test_variants = QUOTACTL_FMT_VARIANTS,
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl08.c b/testcases/kernel/syscalls/quotactl/quotactl08.c
-index 63087345f..ce7a8b008 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl08.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl08.c
-@@ -220,8 +220,8 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_variants = QUOTACTL_SYSCALL_VARIANTS,
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext4 >= 1.43.0",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext4 >= 1.43.0"},
-+		{}
- 	}
- };
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl09.c b/testcases/kernel/syscalls/quotactl/quotactl09.c
-index 673666347..fd6629c0c 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl09.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl09.c
-@@ -185,8 +185,8 @@ static struct tst_test test = {
- 	.mount_device = 1,
- 	.needs_root = 1,
- 	.test_variants = QUOTACTL_SYSCALL_VARIANTS,
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext4 >= 1.43.0",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext4 >= 1.43.0"},
-+		{}
- 	}
- };
-diff --git a/testcases/kernel/syscalls/statx/statx05.c b/testcases/kernel/syscalls/statx/statx05.c
-index 2a4603226..07b5e7b94 100644
---- a/testcases/kernel/syscalls/statx/statx05.c
-+++ b/testcases/kernel/syscalls/statx/statx05.c
-@@ -123,9 +123,9 @@ static struct tst_test test = {
- 		{.type = "ext4"},
- 		{}
- 	},
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext4 >= 1.43.0",
--		"e4crypt",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext4 >= 1.43.0"},
-+		{.cmd = "e4crypt"},
-+		{}
- 	}
- };
-diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
-index bab64591f..755644cf9 100644
---- a/testcases/kernel/syscalls/statx/statx07.c
-+++ b/testcases/kernel/syscalls/statx/statx07.c
-@@ -171,8 +171,8 @@ static struct tst_test test = {
- 		{}
- 	},
- 	.needs_root = 1,
--	.needs_cmds = (const char *[]) {
--		"exportfs",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "exportfs"},
-+		{}
- 	}
- };
-diff --git a/testcases/kernel/syscalls/statx/statx09.c b/testcases/kernel/syscalls/statx/statx09.c
-index ee4be4250..8838d5450 100644
---- a/testcases/kernel/syscalls/statx/statx09.c
-+++ b/testcases/kernel/syscalls/statx/statx09.c
-@@ -162,8 +162,8 @@ static struct tst_test test = {
- 		"CONFIG_FS_VERITY",
- 		NULL
- 	},
--	.needs_cmds = (const char *[]) {
--		"mkfs.ext4 >= 1.45.2",
--		NULL
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "mkfs.ext4 >= 1.45.2"},
-+		{}
- 	}
- };
-diff --git a/testcases/lib/tst_run_shell.c b/testcases/lib/tst_run_shell.c
-index 91f34127d..ddcb606b2 100644
---- a/testcases/lib/tst_run_shell.c
-+++ b/testcases/lib/tst_run_shell.c
-@@ -179,6 +179,21 @@ static ujson_obj fs_obj = {
- 	.attr_cnt = UJSON_ARRAY_SIZE(fs_attrs),
- };
- 
-+enum cmd_ids {
-+	CMD,
-+	OPTIONAL,
-+};
-+
-+static ujson_obj_attr cmd_attrs[] = {
-+	UJSON_OBJ_ATTR_IDX(CMD, "cmd", UJSON_STR),
-+	UJSON_OBJ_ATTR_IDX(OPTIONAL, "optional", UJSON_INT),
-+};
-+
-+static ujson_obj cmd_obj = {
-+	.attrs = cmd_attrs,
-+	.attr_cnt = UJSON_ARRAY_SIZE(cmd_attrs),
-+};
-+
- static int parse_mnt_flags(ujson_reader *reader, ujson_val *val)
- {
- 	int ret = 0;
-@@ -256,6 +271,45 @@ static struct tst_fs *parse_filesystems(ujson_reader *reader, ujson_val *val)
- 	return ret;
- }
- 
-+static struct tst_cmd *parse_cmds(ujson_reader *reader, ujson_val *val)
-+{
-+	unsigned int i = 0, cnt = 0;
-+	struct tst_cmd *ret;
-+
-+	ujson_reader_state state = ujson_reader_state_save(reader);
-+
-+	UJSON_ARR_FOREACH(reader, val) {
-+		if (val->type != UJSON_OBJ) {
-+			ujson_err(reader, "Expected object!");
-+			return NULL;
-+		}
-+		ujson_obj_skip(reader);
-+		cnt++;
-+	}
-+
-+	ujson_reader_state_load(reader, state);
-+
-+	ret = SAFE_MALLOC(sizeof(struct tst_cmd) * (cnt + 1));
-+	memset(&ret[cnt], 0, sizeof(ret[cnt]));
-+
-+	UJSON_ARR_FOREACH(reader, val) {
-+		UJSON_OBJ_FOREACH_FILTER(reader, val, &cmd_obj, ujson_empty_obj) {
-+			switch ((enum cmd_ids)val->idx) {
-+			case CMD:
-+				ret[i].cmd = strdup(val->val_str);
-+			break;
-+			case OPTIONAL:
-+				ret[i].optional = val->val_int;
-+			break;
-+			}
-+		}
-+
-+		i++;
-+	}
-+
-+	return ret;
-+}
-+
- static struct tst_tag *parse_tags(ujson_reader *reader, ujson_val *val)
- {
- 	unsigned int i = 0, cnt = 0;
-@@ -450,7 +504,7 @@ static void parse_metadata(void)
- 				ujson_err(&reader, "ABI bits must be 32 or 64");
- 		break;
- 		case NEEDS_CMDS:
--			test.needs_cmds = parse_strarr(&reader, &val);
-+			test.needs_cmds = parse_cmds(&reader, &val);
- 		break;
- 		case NEEDS_DEVFS:
- 			test.needs_devfs = val.val_bool;
 -- 
 2.52.0
 
