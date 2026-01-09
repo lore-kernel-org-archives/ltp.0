@@ -4,93 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A375ED232E3
-	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 06:19:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55B48D232E8
+	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 07:35:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1767939557; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=VhvweKkDK5oAZVkCYM80dqPLfYMKIvqAtU37KbSMXlQ=;
- b=E7AZuN4gqNzFxwMvIGuRFF1MekwsAF0b+WeGkq9IdSM1t/AjiNDkmsvnpVczQeesbhggI
- zBFKk2y9QsYmOIAXDuYvtRSLuDy0TlMlfHnzB4nlt1obKRG/xDSsMHelk95WuCIwoOasHTc
- LhZ5WTH8H3Pwt8Z8tXgCCi5tLFSStiU=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1767944117; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=ghE0Dl3iqbm2XFfwlGsHesT1XOUSdqRWh+qmnWH6Srg=;
+ b=DnkvzvZeDvqHw5HrJmLra3SqWyV8KZgnbjPXHkLCO3HzOnQQzOes5HLleEFqsBrvo+El/
+ DVAPxUylRHk+yf2qFpOa4xUu0j2pDj7paL/mGFjLZrTF3zTahiHxzpyZ+vN1gy6yKU9nOVt
+ SRVCa2sYUIF4Vz09OTFqgZSdkNUTY5o=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2D43D3C7048
-	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 07:19:17 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id CD8443C6FC1
+	for <ltp@archiver.kernel.org>; Fri,  9 Jan 2026 08:35:17 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5CAD43C6943
- for <ltp@lists.linux.it>; Fri,  9 Jan 2026 07:17:25 +0100 (CET)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E94683C6AA3
+ for <ltp@lists.linux.it>; Fri,  9 Jan 2026 08:34:53 +0100 (CET)
+Received: from smtp-relay-canonical-0.canonical.com
+ (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3513B1A00792
- for <ltp@lists.linux.it>; Fri,  9 Jan 2026 07:17:25 +0100 (CET)
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-4779adb38d3so27046175e9.2
- for <ltp@lists.linux.it>; Thu, 08 Jan 2026 22:17:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1767939444; x=1768544244; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=z3OPFiK8YQkwsyE8I6rxRYnuLyX9FpbCXUZywaVkbVY=;
- b=XH5rP6EGQSWQ40MqRJMUvo7+SBIySkQBfzvSi4BXc9xq22mQp6AG/DGCAEtoZ9Ahdi
- Qh2PgFaxT6Pgi58lwsi6ZhBK82xhlJ4/06eiAk5njFrCr9BM/+jE5+zo7YMw7iU4vd4M
- UbO/P5tfAiNapjLRjEbxCPdI+hGzqlixEsgbGVSMpF3b0B6J67X/bhRJaSlZUdYpT236
- 46Gc36q3rUjxzNpzRukNG23gqzY4Xli/FZaZqUrSV3uIOrcMr4NFmfUjPZ7qGG7QI/RK
- 4teC6DPfzUsgYhBxW2zuXMxPx6uTpOZMeZTKbjd/3tRfLiPY0lAjVY9EUaGyXMdL2NhO
- dx3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1767939444; x=1768544244;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=z3OPFiK8YQkwsyE8I6rxRYnuLyX9FpbCXUZywaVkbVY=;
- b=sxNCvUCusqvtfeV+R731p4XMpEdrEKRW7N7DWrxHZLkpEN0czT0WnVpM8U5Xu1SD3D
- GEciwCAcL3Zn1ACSNtZYfGKKpUr98Ua4ypyr4HuBx4gm7I4c4ETwQxvh/kx+xrWowLcD
- hLY5liDR4FCFzMG7zTEyCZMHg2bq1ZM76W388SIiR+ksqfnwRvrHA8osK5OhzwFBNPKV
- YoCP2+/A0bdar1jbBblTeYmKt+hnJQZXo/W0A2pPWCkm8HK/MwfqtoTczxjQkBmbkd1k
- y8ts58CJbntYCiC0hrVlX5cYSKrtmzAYr60Pa9nBxrpCkf87ngGQOxTzT43pCW8rnwHX
- SuQA==
-X-Gm-Message-State: AOJu0YzgQaNe3aMvoeHG4dXFmQhbqTNvmIv6pmktXRMSxaU66I+V8lWP
- g8ApFSw1TjRjU0Y0eRjCi4i07IAu97Nxgkj/qYC4O+LirEt2d9688/8teiJ8675Cl7XfOPJL1jS
- bOUg=
-X-Gm-Gg: AY/fxX7a5xc6eNXueMfQM8gcmkTB/xmADkRzUkRe3K54ABYuno0QhbS4y68Ls5RucZs
- mURxXKMyQh6lqRQI84jvCNCjMxydYpJF+6GEt26UtZ+512anAdflaUOhLzzg5UWNuJcIAGppaTd
- 0PDwx50WKIDKhlExLvf5gUn5Y9do9QnC+e732V9u0VeGDse9IGM4tuDd5mQEQKAbhOYanqKRu5d
- N8d9BL/nvt9XIhUB29A/0Nnu9fXFNvqHck/G+vrL6OpZJD7y06lhT0y4UpeNKOFT4rlDQfOHfnY
- yo+wX1AUbiV/Nmw+A59Zz3A8URl4nqdKGH46A1/MbO9I+aeIYkw96D1i7Eg/xN9x/h7rP6VNkCI
- A0NHI3Ij2zkDwYKer19Zu4blIwTw6eIbfbEWPv3fq/k/bu6bOul1Z6zVUeBOnyysAdNmzTnsKz7
- U=
-X-Google-Smtp-Source: AGHT+IGIojN1VCOSiXEK7T6KHfk0FjphsZR4Vsp3lvEo1PUP36IlRQPLP1wTVBHyxB76qICTUPlGrw==
-X-Received: by 2002:a05:600c:82c3:b0:475:de68:3c30 with SMTP id
- 5b1f17b1804b1-47d84b21466mr110629045e9.16.1767939444426; 
- Thu, 08 Jan 2026 22:17:24 -0800 (PST)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- 5b1f17b1804b1-47d7f68f686sm189336995e9.3.2026.01.08.22.17.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 08 Jan 2026 22:17:24 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 665E91400BE4
+ for <ltp@lists.linux.it>; Fri,  9 Jan 2026 08:34:51 +0100 (CET)
+Received: from localhost.localdomain (2.general.phlin.uk.vpn [10.172.194.39])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id DF4AF3F77B; 
+ Fri,  9 Jan 2026 07:34:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20251003; t=1767944091;
+ bh=8wm3HzVTUVuI9KQnY6CaUaFIS5lCO/6dGygWUOPy8Mg=;
+ h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
+ b=UGjcnOBLjWcHsUBMd5yP1zUPg6Hb1C+7tumk63SjGPq1evgl1uqylwGcFEjH1HEPY
+ t/aqZcTGHeK0AyF+z5+p4mk3tyWKv1zBIcK/xJRSrVM2zUhKktdRTkpPXK3mn5dG46
+ sjdvtzZ70V34ReR2UaYAWviUb7GnLohHJkMYUMREjA1RjcSh0M0nc62OPKvNXIbpvR
+ MNYhoZsWWTZXOe5MjP+BycaMDZSKmL3akedMvmobfvUzcSQAtho1aWWYaBGbvkgV25
+ amgv2NO3p8zdHQNjx5TACegLv1VOlpmfg61yalvLve+HxBvQobLDJj1Eeam7jfg3t5
+ +kvmKPbAykqZdxhjQ+pJXeIbUR/eUzlc3BEpAlydNAhXVQjHcN1c8S9TOssuoj9GqD
+ eKNQ/Gv5PpUkvvaa03F1OPgS6MW6hCi7HwMngwLkmTF09j9EyXY69DaU8fL08rZOgD
+ CGePdNQkVlw8iWKDLTdO+Q10kMjgRCAsA4KIC5oSsdW/MVui9nc8Eq4RQ439L73sbh
+ 4n7oLbmQdue4JFPcyjsh6IUJNtF2KpKIgl5OgSBOHnM/KqRCnPa1lBhyUXHxuCSG0d
+ BOEUpLzISN6ENiIwq+SzO4hcnTRPVST3pwMf+Kl9/HnjuJuNuqaJvWlJ+KgrGC/mzH
+ er1zJUk7KI5vU7NuL6FLpg7c=
 To: ltp@lists.linux.it
-Date: Fri,  9 Jan 2026 06:16:33 +0000
-Message-ID: <20260109061716.20258-5-wegao@suse.com>
+Date: Fri,  9 Jan 2026 15:34:19 +0800
+Message-ID: <20260109073419.158752-1-po-hsu.lin@canonical.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260109061716.20258-1-wegao@suse.com>
-References: <20251223020836.9439-1-wegao@suse.com>
- <20260109061716.20258-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7 4/4] shell_loader_cmd.sh: New test case check
- needs_cmds
+Subject: [LTP] [PATCH] tpci.c: Skip on Lockdown/Secure Boot
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,70 +72,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+From: Po-Hsu Lin via ltp <ltp@lists.linux.it>
+Reply-To: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Cc: po-hsu.lin@canonical.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Suggested-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Wei Gao <wegao@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/lib/run_tests.sh              |  1 +
- testcases/lib/tests/shell_loader_cmd.sh | 28 +++++++++++++++++++++++++
- 2 files changed, 29 insertions(+)
- create mode 100755 testcases/lib/tests/shell_loader_cmd.sh
+Following the commit ca9460deef ("fw_load: Skip on Lockdown/Secure Boot")
+to take care of:
 
-diff --git a/testcases/lib/run_tests.sh b/testcases/lib/run_tests.sh
-index 5c309bbeb..24ac81a44 100755
---- a/testcases/lib/run_tests.sh
-+++ b/testcases/lib/run_tests.sh
-@@ -6,6 +6,7 @@ shell_loader.sh
- shell_loader_all_filesystems.sh
- shell_loader_c_child.sh
- shell_loader_filesystems.sh
-+shell_loader_cmd.sh
- shell_loader_kconfigs.sh
- shell_loader_supported_archs.sh
- shell_loader_tcnt.sh
-diff --git a/testcases/lib/tests/shell_loader_cmd.sh b/testcases/lib/tests/shell_loader_cmd.sh
-new file mode 100755
-index 000000000..4e8e61eb6
---- /dev/null
-+++ b/testcases/lib/tests/shell_loader_cmd.sh
-@@ -0,0 +1,28 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2025 Wei Gao <wegao@suse.cz>
-+#
-+# ---
-+# env
-+# {
-+#  "needs_cmds": [
-+#   {
-+#    "cmd": "ls",
-+#    "optional": 1
-+#   },
-+#   {
-+#    "cmd": "mkfs.ext4 >= 1.0.0",
-+#    "optional": 1
-+#   }
-+#  ]
-+# }
-+# ---
-+
-+. tst_loader.sh
-+
-+tst_test()
-+{
-+	tst_res TPASS "We are running with needs_cmds"
-+}
-+
-+. tst_run.sh
+test_pci    0  TINFO  :  module signature enforcement: off
+insmod: ERROR: could not insert module ltp_tpci.ko: Key was rejected by service
+
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ testcases/kernel/device-drivers/pci/tpci_user/tpci.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c b/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
+index 5d241fb42..a2ca62fb7 100644
+--- a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
++++ b/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
+@@ -29,6 +29,7 @@
+ #include "test.h"
+ #include "safe_macros.h"
+ #include "old_module.h"
++#include "tst_security.h"
+ 
+ #include "../tpci_kernel/tpci.h"
+ 
+@@ -52,6 +53,8 @@ void setup(void)
+ 	tst_require_root();
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	tst_requires_module_signature_disabled();
++	if (tst_lockdown_enabled() > 0 || tst_secureboot_enabled() > 0)
++		tst_brkm(TCONF, NULL, "Cannot load unsigned modules in Lockdown/Secure Boot");
+ }
+ 
+ static void run_pci_testcases(int bus, int slot)
 -- 
-2.52.0
+2.43.0
 
 
 -- 
