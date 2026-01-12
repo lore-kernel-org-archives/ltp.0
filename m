@@ -4,93 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A5F4D25030
-	for <ltp@archiver.kernel.org>; Mon, 12 Jan 2026 06:18:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12CA0D25046
+	for <ltp@archiver.kernel.org>; Mon, 12 Jan 2026 08:14:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1768198721; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=V/gVgo0LhKLWO4bqDXQl8rPBPCdWYhp0soqA47ZgJ4Y=;
- b=dcJL9y8NiPYLzDlRzHqo866Dy0q616Y2zAjC7QjYgwYvNl5I2lO/rQhKggvS5urNQwWBl
- Fkj+hnksnqRoexNcifYlcKZ2J1KS5H3b6i+Vno9oLHE7Kv+GwlXhwvXT++2pFxy5TFx7Uxe
- MkJ+JTUdHrhdMKxNPdIKRVYDwOeNsQA=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1768205641; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=4EWo0jNH8lPmDePQZUTYUDbIJm7cSpPvD8aHMGavhuA=;
+ b=bwm0eYo2hi0gDH/pP8O/97O2/v3ALe4xKedf/BDyRuj43TYLtdnqWdkD3ZLMETUniZWWo
+ UfM9VLX3ZHQrN/m/G3aK9MLsk3U63spxXLNLxtZH4jI5zbc5448KbvJmBTsbbKUSSE/mjd7
+ D4QwiSC0GsRu+e50NdyVW9Xmcj7swwk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 822643C2979
-	for <ltp@archiver.kernel.org>; Mon, 12 Jan 2026 07:18:41 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 0BF923C2C9C
+	for <ltp@archiver.kernel.org>; Mon, 12 Jan 2026 09:14:01 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6CC283C00B3
- for <ltp@lists.linux.it>; Mon, 12 Jan 2026 07:18:16 +0100 (CET)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
- [IPv6:2a00:1450:4864:20::433])
+ by picard.linux.it (Postfix) with ESMTPS id 8B4E13C2B16
+ for <ltp@lists.linux.it>; Mon, 12 Jan 2026 09:13:37 +0100 (CET)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
+ [IPv6:2a00:1450:4864:20::532])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C71356006D7
- for <ltp@lists.linux.it>; Mon, 12 Jan 2026 07:18:15 +0100 (CET)
-Received: by mail-wr1-x433.google.com with SMTP id
- ffacd0b85a97d-432d28870ddso1935890f8f.3
- for <ltp@lists.linux.it>; Sun, 11 Jan 2026 22:18:15 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9CC901A004EE
+ for <ltp@lists.linux.it>; Mon, 12 Jan 2026 09:13:36 +0100 (CET)
+Received: by mail-ed1-x532.google.com with SMTP id
+ 4fb4d7f45d1cf-64b58553449so9510934a12.1
+ for <ltp@lists.linux.it>; Mon, 12 Jan 2026 00:13:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1768198695; x=1768803495; darn=lists.linux.it;
- h=in-reply-to:from:content-language:references:to:subject:user-agent
- :mime-version:date:message-id:from:to:cc:subject:date:message-id
- :reply-to; bh=IzLRGujAsDf41HWCsquV0+7UFTZITdXiEhVn59FOG3w=;
- b=GEU+VXXO2UP2XJGrtgVhbr2MAVRvSXthZZ7n9nqBfkdi5V/rKh+PdgV3fWt4Tipc5N
- z8C+ZB629aELRhv523zQO8BG2FvFeL4YrCrUOpXC/ItNuV4A16+0OlZBSuJ/d9uM41GZ
- wnwHCliWDYUWV5LxGfQ78qt6/1Mu3Xys3ZAluaIGz9OV07x6slv/M7NcjXIxs7W2Ytkm
- bvdj6lFL8tUP/u40wTTiZFkAn8so5Ofxr7zcNJXyQOvPmqBcmLXmeed069SboFVd9NCg
- sh7Mc7lPm+ZovGIyQ9If1MsMV9BPhmguokpiYyvE0reFG3B8pRaYFeo1fhpHfGzyrcYo
- fVLQ==
+ d=suse.com; s=google; t=1768205616; x=1768810416; darn=lists.linux.it;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=+f9G1hO5T1FbjqQd2cUtHLQJ5TUVFw9BqFIXfhIICKM=;
+ b=MZ3fOCPN9484/ji9PkeT5tgXMGVgGaJukUvwSYlyD0+StU1/qFTeO70dUAYYmMrFsY
+ jzWxx7BRLMo/ZvntvyLHc9WvKUeTsL7PB7PVBcw3YyoohCACbY1l++cBd/UoPa6BH+hY
+ 1vdrLd5btWsC1FKz4+B3Truwj8n1IF/Q2ipnQidMohQYgDkB1c06Jh7F8I3nSysrDAyT
+ dBcWfiEaJDPoPl493D1DSNL75ov9L1HAZtSIUJ+ScEt736Ux5370wxL9IQ09XlfKfwZp
+ 7DjV+QON6amW0whqhfCPoKBsEhC8HbzO4wwL5iBBSlFkNuDAZUUVukonoxDgxQo711L9
+ BTBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1768198695; x=1768803495;
- h=in-reply-to:from:content-language:references:to:subject:user-agent
- :mime-version:date:message-id:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=IzLRGujAsDf41HWCsquV0+7UFTZITdXiEhVn59FOG3w=;
- b=hDkcrnr9CGN7K7O/ET2L2yxXaeqLVDIa17U4W2xoVc1xPZzIBE0p3Za22dCet6hvND
- TPfpSfidjxHu/kQObaVETpoKV4nXiU7DygHZmgYENJxPpIFjrPoL4Oge8BTQbKvSbfRx
- Q7HJ4k0XFc+zjZrNwbX/vLvfZN002Cao0to1SeuHlUM79GNILfL5ndzaGdFgv1NL4l0/
- Zfmha1kLoLlBYujAigcQ7G7GAmCoQhc5GjDDUpq36e0J4fOG3OOFZgrt5yb8j2t6DTVD
- +TgZnbrlcKloCoUEcAFbIlMhEe146uFyx1/16uVqSNv/Lg5qvzjaP0Lg9FkS4njbdUzD
- oQCA==
+ d=1e100.net; s=20230601; t=1768205616; x=1768810416;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=+f9G1hO5T1FbjqQd2cUtHLQJ5TUVFw9BqFIXfhIICKM=;
+ b=nXCcvEsj8sDrBnXdupAqg1b8Kr6F/dvbk9H3KhHESDcQD74qLuSs6kKGUX19YHriRC
+ hBLYZnARlvkjc9thV1Vfjkz+pvQ3cXX9YS3FyrVu3/tdM2J5033jCw8Kku6rrdEvjz6r
+ uC/TQPDc+LB9Mgnw4nEgEowH0o69GmKJOQdg65vXrbuzjQvOTxCxrMfNrYgspm5Jtcaz
+ IIVBX/bqMEQeiMGylPZoKAkZH60fuggkjQaRXY9uoQt/vW2ISfq1H1nio9aicA0dbTSv
+ ziJJ9eA7dxDJgVX87+irupnLVV7kHQOpmRFkI/V/poX3R4KEAOChVrAAKzdHj4FjEpoX
+ dGJw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVJt7/vk5HRr49aLSW7VSTA9UGk0FgqJmYNxT9Xee6AX5bbUn5BB6ixQoPCb5y6fbZU5aw=@lists.linux.it
-X-Gm-Message-State: AOJu0YxN2R6qhy2ct192fpDGKXqjWBqfHOqqlIBCAT+kGhYgOmgeWJqj
- /LwLPu2I7hyrUBIHc3cPUGmXZB6wg9tC3r63hQ5ECeqVvepKThxIIcsBX17Nyo4RBGA=
-X-Gm-Gg: AY/fxX4OJ5ssLEaY0sAqNIdTXurWqnQU/XqYAIp4ecvqbKXyotc2CUdzA6bmBFm5QGU
- CYo4/EQeBfQfoU2G1etODOiJSPByTsoua7EBJuDi0C8iw+waReJPzeXC9aJ9pXRVHQ2k9JiI1pQ
- aBArnWEnr3OuZu9FBD1GqRtiNRsLHWff2hK9HdWXAx+hp7bBPLidlvkO+NJTXpXNOhnscvKW8G0
- a4FUA2p3jNDkWai6Zw2Z/Wohvq+zswF1wu/V+YlB1vxC0e5vxawex/VCrrkipuwxNCZOJ+Fvo+7
- N3LzH0ISE6+0vRpyycd6WWs6e4tJQLzPNvER7IJqsj0I3tqDV77dI93miDSFY6/PbGDhq6Cg4vO
- 9IgFLIT9UcG9VLMUAA0sYMwOjd6cf1iuy02G+zwwy2VF1uHJXKnwlMo+BTfanIezk8GdqMfhRRy
- LyP8ceL1VUyDBPod13PWBX04TJ+bCs9XXph1E0w2eq6SyynvZxj9gXtRHP4R5B4SdteQMu53gVc
- ZF7
-X-Google-Smtp-Source: AGHT+IEcc8Mm3tjgaYr3wS5rQqCPo9/gJtpmbHSewm6+518ooiqlADYIbdiTyXfG8mpoUsFJIkhBxA==
-X-Received: by 2002:a5d:64e3:0:b0:42b:3dfb:644c with SMTP id
- ffacd0b85a97d-432c3628287mr19421449f8f.10.1768198695074; 
- Sun, 11 Jan 2026 22:18:15 -0800 (PST)
-Received: from ?IPV6:2401:4900:883d:d499:89b9:a21c:bf77:bc2a?
- ([2401:4900:883d:d499:89b9:a21c:bf77:bc2a])
+ AJvYcCU4IPqYyK0TV/oerCQLgFGAWIpLOZ+s4Xs9Frmrr+fUiofmVr2UnT+m/EnXDyub0vKauZA=@lists.linux.it
+X-Gm-Message-State: AOJu0Yzvdriu4g/Q1t/vnju/4m2U0qJ9LbVCUOaUaiRAm67xhx/lp6kB
+ puhC0vvNJ28rDcWRtMRIirgxrk2CxXsyoDn1CtsGFEY1ZwlF/ru5G0XZUhtAw0uUfpw=
+X-Gm-Gg: AY/fxX5Fxnbqbyc2uDgcintMjf1SGwOkXblS2Bxm91Wd+tPdgn4R1LKwL08YOtQbTCp
+ O+6RF5USQcEj/wP3aiOeap/LTPT0xu9rac9cBwkD5AQ4+TuOGDaASNgG1dDEcjBwC/JtpJYFhWz
+ pdiK7q3HRwrvNHnbBJfhEFTRn75z+Q9HH6ciqC8QpnofA23lYfC2f2HV5q4CfT0IeqF+/EfWC0o
+ ZJqM6InfMlFTmiwd7EiDUTVPKH1e7U/BOYR4jt5fji2B+wSEHu9uE761U7F5F5h5duNzkaE21l3
+ 5RdTa5QTggQT5pDAb7GXWUUvQG3a4T9TlukPZrULfXR65SYKe9XHv6fu7a4Zr82m1AcwzyDpIkI
+ uUYef1uVe2KovIs3DPRJhjDW1Ix7Ij/PUvsl4v6HjxkzhEuRRLqyWeDpqvL09X5Wqr9Ez9EEc0e
+ S2v63S1IVmY75lAY2t2A7F7vWqA9+M4SXYPNSENALl5NciIWtOPxUBJco4Fl5bqmXfZnzw20/qT
+ xaTAtep27dxEhFDjA==
+X-Google-Smtp-Source: AGHT+IEQEHP7vRZFcK4v49fjLhInJN4Plxr6t0KctyA6wRZ1AL2kCeVnYW6IUo89rpcbvS7n61lCHw==
+X-Received: by 2002:a17:907:cd07:b0:b87:24e1:1a4c with SMTP id
+ a640c23a62f3a-b8724e126cemr103393366b.35.1768205615882; 
+ Mon, 12 Jan 2026 00:13:35 -0800 (PST)
+Received: from localhost
+ (p200300ef2f19f800fd6433c69db8d45a.dip0.t-ipconnect.de.
+ [2003:ef:2f19:f800:fd64:33c6:9db8:d45a])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-432bd0dacdcsm36299754f8f.1.2026.01.11.22.18.13
+ a640c23a62f3a-b842a233fdfsm1884943966b.7.2026.01.12.00.13.35
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 11 Jan 2026 22:18:14 -0800 (PST)
-Message-ID: <0e356741-5640-4edd-8467-abab62d5a92e@suse.com>
-Date: Mon, 12 Jan 2026 07:18:09 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+ Mon, 12 Jan 2026 00:13:35 -0800 (PST)
+Mime-Version: 1.0
+Date: Mon, 12 Jan 2026 09:13:35 +0100
+Message-Id: <DFMGKTNDFOLO.20XYMS3I1KIJO@suse.com>
+To: "Petr Vorel" <pvorel@suse.cz>, <ltp@lists.linux.it>
+X-Mailer: aerc 0.18.2
 References: <20260111235751.201056-1-pvorel@suse.cz>
-Content-Language: en-US
 In-Reply-To: <20260111235751.201056-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 Subject: Re: [LTP] [PATCH 1/1] doc: Use :manpages_url: for man pages links
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -103,26 +104,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Avinesh Kumar via ltp <ltp@lists.linux.it>
-Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
-> Use sphinx internal way to link man pages tohttps://man7.org/
-> https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-manpages_url
->
-> This is much better than using extlinks sphinx extension.
->
-> Signed-off-by: Petr Vorel<pvorel@suse.cz>
+Hi!
 
-Reviewed-by: Avinesh Kumar<avinesh.kumar@suse.com>
+Good catch.
 
-Regards,
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Avinesh
+-- 
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
