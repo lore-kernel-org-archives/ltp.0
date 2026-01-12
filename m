@@ -4,107 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35B88D25051
-	for <ltp@archiver.kernel.org>; Mon, 12 Jan 2026 08:33:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF165C9EC6B
+	for <ltp@archiver.kernel.org>; Mon, 12 Jan 2026 11:05:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A96F13C2DCF
-	for <ltp@archiver.kernel.org>; Mon, 12 Jan 2026 09:33:05 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 393233C2E84
+	for <ltp@archiver.kernel.org>; Mon, 12 Jan 2026 12:05:40 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5F7983C2C23
- for <ltp@lists.linux.it>; Mon, 12 Jan 2026 09:32:47 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 43ACA3C21E4
+ for <ltp@lists.linux.it>; Mon, 12 Jan 2026 12:05:20 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B89F860005A
- for <ltp@lists.linux.it>; Mon, 12 Jan 2026 09:32:46 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9A8E71A00980
+ for <ltp@lists.linux.it>; Mon, 12 Jan 2026 12:05:18 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E8E535BD61;
- Mon, 12 Jan 2026 08:32:44 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B959633721;
+ Mon, 12 Jan 2026 11:05:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1768206765;
+ t=1768215917;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ZqxQi8KGgOgk4uasrlVhR3MPDFP/rubawQJd3YNXPJw=;
- b=oUMcjzqYenSeJpZPIe5I/UfAij1Oapodo1d50MoOG7y8Son0h5RGi8lQW5ZUfDZp5ZqTdQ
- Cf0HduSG3iBUdMjcMHAXs3k+1H44sDdGs+WcpKEJBNVfHIaH7Exa22FKudrm2+Bo1Ct4eS
- QZsrKBT5qi3IKyJND4GqczaRBRqgauc=
+ bh=iwt22LjCjySBCVGGjhebFVRy+RW9t8knOFuB0xACVQw=;
+ b=Kh1t6wSIECnYNPdX/23BoVNgf2gIEr0pYOhIoMlxtEjKqRF4nGGnDSSm6N5MC6CSqlexxe
+ fswqM57SjEhXPN/AaJePWXuwclIOSQO2AqRyALPPWtII8MVYAA/9aQltZ7kofvKPKe8JQP
+ CS7SpbthhasL79itJgFzUy8R5tKDKBw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1768206765;
+ s=susede2_ed25519; t=1768215917;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ZqxQi8KGgOgk4uasrlVhR3MPDFP/rubawQJd3YNXPJw=;
- b=x1g7R/VN9m4f1gAgnCM4ztBeg8OZVEgcDtDRYuT4Do2u8lhX3jxl33dbjxX+VLXGoGeb7d
- Q1+ttBXTUhdBxIDQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="EndZn/b9";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=zSiNSaZ1
+ bh=iwt22LjCjySBCVGGjhebFVRy+RW9t8knOFuB0xACVQw=;
+ b=HEn3lm08q2L3fQZmmT9nf2aqD4HXonPSyVB3aaF5PGYjb76ejUg+EySIkFj/Dkyf+ZthaW
+ hh3fs5cVIaQQDmAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Kh1t6wSI;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=HEn3lm08
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1768206764;
+ t=1768215917;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ZqxQi8KGgOgk4uasrlVhR3MPDFP/rubawQJd3YNXPJw=;
- b=EndZn/b9mqKXZ1sqzDQifRGjULxcrDmjWZMs5R7npgDTOY77XroMWiqrQmExLiunmS14rf
- LcyktBHflzaXYCypyLbZHQ0GbPwNWxLal3kJZvcs6GolzrrnRN9hXLa3aqmm6jb50yv3Wk
- hc95Dc8mINdgU/N0DjvlheYcyVMwgYo=
+ bh=iwt22LjCjySBCVGGjhebFVRy+RW9t8knOFuB0xACVQw=;
+ b=Kh1t6wSIECnYNPdX/23BoVNgf2gIEr0pYOhIoMlxtEjKqRF4nGGnDSSm6N5MC6CSqlexxe
+ fswqM57SjEhXPN/AaJePWXuwclIOSQO2AqRyALPPWtII8MVYAA/9aQltZ7kofvKPKe8JQP
+ CS7SpbthhasL79itJgFzUy8R5tKDKBw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1768206764;
+ s=susede2_ed25519; t=1768215917;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ZqxQi8KGgOgk4uasrlVhR3MPDFP/rubawQJd3YNXPJw=;
- b=zSiNSaZ1+M+YnsqiEhCaOEI4va0sNcIdhkO9QYeP7hry2F75j+mtlcojm8jHqfBiqTqRbu
- qP+r97jR0wkDznDQ==
+ bh=iwt22LjCjySBCVGGjhebFVRy+RW9t8knOFuB0xACVQw=;
+ b=HEn3lm08q2L3fQZmmT9nf2aqD4HXonPSyVB3aaF5PGYjb76ejUg+EySIkFj/Dkyf+ZthaW
+ hh3fs5cVIaQQDmAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D0C213EA66;
- Mon, 12 Jan 2026 08:32:44 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B3C83EA63;
+ Mon, 12 Jan 2026 11:05:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id e0gFMqyxZGnMBAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 12 Jan 2026 08:32:44 +0000
-Date: Mon, 12 Jan 2026 09:32:38 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id T/0nCG3VZGliHAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 12 Jan 2026 11:05:17 +0000
+Date: Mon, 12 Jan 2026 12:05:15 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260112083238.GB203801@pevik>
-References: <20260107111133.27041-1-chrubis@suse.cz>
- <20260107111133.27041-2-chrubis@suse.cz>
+Message-ID: <20260112110515.GA257831@pevik>
+References: <20251110024805.31070-1-wegao@suse.com>
+ <20251223020836.9439-1-wegao@suse.com>
+ <20251223020836.9439-3-wegao@suse.com> <aVzdrAgv9qdxZSt_@yuki.lan>
+ <aV36R8E-KMD_dTf8@autotest-wegao.qe.prg2.suse.org>
+ <20260107080957.GD727950@pevik> <20260107082727.GE727950@pevik>
+ <aV4ujjfb7JBB2zaQ@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260107111133.27041-2-chrubis@suse.cz>
+In-Reply-To: <aV4ujjfb7JBB2zaQ@yuki.lan>
 X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; REPLYTO_EQ_FROM(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: E8E535BD61
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Rspamd-Queue-Id: B959633721
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/2] doc: Document process_state
+Subject: Re: [LTP] [PATCH v6 2/4] tst_test.c: Add tst_cmd_present check if a
+ command is present
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,79 +131,54 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+> Hi!
+> > 1) tst_brk for not checked command at the end.
+> > 2) tst_brk for NULL otherwise we get segfault. Maybe check also for empty
+> > command before attempting to do anything else.
 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  doc/conf.py                    |  1 +
->  doc/developers/api_c_tests.rst |  5 ++++
->  include/tst_process_state.h    | 47 +++++++++++++++++++---------------
->  3 files changed, 33 insertions(+), 20 deletions(-)
+> Technically the empty command will end up in the tst_brk() at the end,
+> so I would add only the NULL check.
 
-> diff --git a/doc/conf.py b/doc/conf.py
-> index b8ec1c31c..5d7362439 100644
-> --- a/doc/conf.py
-> +++ b/doc/conf.py
-> @@ -36,6 +36,7 @@ extlinks = {
->      'master': (f'{ltp_repo}/blob/master/%s', '%s'),
->      'shell_lib': (f'{ltp_repo}/blob/master/testcases/lib/%s', '%s'),
->      'git_man': ('https://git-scm.com/docs/git-%s', 'git %s'),
-> +    'man1': ('https://man7.org/linux/man-pages/man1/%s.1.html', '%s(1)'),
+Sure, just the message will be a bit confusing:
+'' not checked.
 
-I'm sorry, due today's improvement
-https://github.com/linux-test-project/ltp/commit/de27451e837a6d17c8ebf1a55b5ade87223882f4
-could you please drop doc/conf.py change because :man1: is not needed any more.
+That's why I checked also for empty command.
+Anyway, v7 is out with cmd[0] == '\0' as well. But it can be removed during
+merge.
+https://lore.kernel.org/ltp/20260109061716.20258-3-wegao@suse.com/
 
->      'man2': ('https://man7.org/linux/man-pages/man2/%s.2.html', '%s(2)'),
->      'man3': ('https://man7.org/linux/man-pages/man3/%s.3.html', '%s(3)'),
->      # TODO: allow 2nd parameter to show page description instead of plain URL
-> diff --git a/doc/developers/api_c_tests.rst b/doc/developers/api_c_tests.rst
-> index 2ca0f0464..13fc8651b 100644
-> --- a/doc/developers/api_c_tests.rst
-> +++ b/doc/developers/api_c_tests.rst
-> @@ -43,6 +43,11 @@ Kernel
->  .. kernel-doc:: ../../include/tst_kernel.h
->  .. kernel-doc:: ../../include/tst_kvercmp.h
+> > index bf92e6cc92..cf67c2a9f0 100644
+> > --- lib/tst_test.c
+> > +++ lib/tst_test.c
+> > @@ -1379,12 +1379,16 @@ bool tst_cmd_present(const char *cmd)
+> >  {
+> >  	struct tst_cmd *pcmd = tst_test->needs_cmds;
 
-> +Process state
-> +-------------
-> +
-> +.. kernel-doc:: ../../include/tst_process_state.h
-> +
->  NUMA
->  ----
->  .. kernel-doc:: ../../include/tst_numa.h
-> diff --git a/include/tst_process_state.h b/include/tst_process_state.h
-> index b1d83e109..fd94ee207 100644
-> --- a/include/tst_process_state.h
-> +++ b/include/tst_process_state.h
-> @@ -15,39 +15,46 @@
+> > +	if (!cmd || cmd[0] == '\0')
+> > +		tst_brk(TBROK, "Invalid cmd");
+> > +
+> >  	while (pcmd->cmd) {
+> >  		if (!strcmp(pcmd->cmd, cmd))
+> >  			return pcmd->present;
 
->  #ifdef TST_TEST_H__
+> >  		pcmd++;
+> >  	}
+> > +	tst_brk(TBROK, "'%s' not checked", cmd);
+> >  	return false;
+> >  }
 
-> -/*
-> - * Waits for process state change.
-> +/**
-> + * TST_PROCESS_STATE_WAIT() - Waits for a process state change.
-> + *
-> + * Polls `/proc/$PID/state` for a process state changes.
->   *
-> - * The state is one of the following:
-> + * @pid: A process pid.
-> + * @state: A state to wait for.
-> + * @msec_timeout: A timeout for the wait.
->   *
-> - * R - process is running
-> - * S - process is sleeping
-> - * D - process sleeping uninterruptibly
-> - * Z - zombie process
-> - * T - process is traced
-> + * Possible process states (see :man1:`ps`):
 
-And this should be now :manpage:`ps(1)`.
+> > 3) Shouldn't we use tst_brk_() to point to the code in the test instead of
+> > tst_brk()? If yes, we probably want to have tst_cmd_present_() as library
+> > internal (static, with const char *file, const int lineno parameters) which
+> > calls tst_brk_() and tst_cmd_present() as public (the only with signature in
+> > header).
 
-Thank you!
+> I do not think that this is that important to have, the
+> tst_cmd_present() calls are going to be quite rare and hence easy to
+> locate in the sources.
+
+OK, that simplifies things.
 
 Kind regards,
 Petr
