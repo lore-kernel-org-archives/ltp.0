@@ -4,95 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99AB4D2D0FE
-	for <ltp@archiver.kernel.org>; Tue, 13 Jan 2026 13:30:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4ED8AD2D103
+	for <ltp@archiver.kernel.org>; Tue, 13 Jan 2026 13:42:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1768311054; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1768311726; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=TYrnyf+2ZdI/7c9i8MCONvUafpC4vR76MZgVWcErXHk=;
- b=E6G0s3gGRXHjtryUqMPA+v4APxVm+DFC5u1jUxJkcYICdvFCV2rYu56hzbdxSCF8b3wrK
- EqxBrl90o6psl03sVtQcATybFRfvtmQRCmnPINrjM+DR6TKyH6/NbSxma+EN2UWrBV8m7Zr
- R7eV4chSmB9tJLTdatBb8EOS/Y2kFE4=
+ bh=1ey7MwqWraWWVPenNssfawcIgdGD3DSzGYtI8CuJWH4=;
+ b=KuhqqWJktEebsU2/B4TFNsSQxHOowUTeN53LjVdFMZDAO60i3NoAYFpknlLvDHm1UthJn
+ vCtWqRto+gsSe2DBaZDJqAOdJ0fbaGcCX6Xyr0sleJxRI+vAU927r3nQVp5LjEZzC5KC6Y2
+ OLcSoKTwctju2i6YxLUaTI4pfvW3hT0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 12A4A3C682B
-	for <ltp@archiver.kernel.org>; Tue, 13 Jan 2026 14:30:54 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D00D63C649A
+	for <ltp@archiver.kernel.org>; Tue, 13 Jan 2026 14:42:06 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EF4CE3C59D2
- for <ltp@lists.linux.it>; Tue, 13 Jan 2026 14:30:30 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 128B53C6335
+ for <ltp@lists.linux.it>; Tue, 13 Jan 2026 14:41:42 +0100 (CET)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4F621600833
- for <ltp@lists.linux.it>; Tue, 13 Jan 2026 14:30:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1768311028;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=VEt3qXi1UcX5RpjuCTAlIti53mO1VBatcm0xmIsVJNA=;
- b=Py/h7DZHun6z3nQMewTO6ah5k2sGwkho1HsT+HFtZ0iXEZWfd1fhaTJAjR8yZUDyZTmZdB
- sbhrvHbsyWVQbE+FkwdwomA+Tfva87lmNA2jrZMYNdtF3Cteq62+vbJLVem8D3o2ODlxnE
- GeK/mSMNkzo5hVqFGwSiE+JlksxG+sI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-27-5RcuMhqGPn6MnQHk88Cobg-1; Tue, 13 Jan 2026 08:30:27 -0500
-X-MC-Unique: 5RcuMhqGPn6MnQHk88Cobg-1
-X-Mimecast-MFC-AGG-ID: 5RcuMhqGPn6MnQHk88Cobg_1768311026
-Received: by mail-wr1-f69.google.com with SMTP id
- ffacd0b85a97d-4325aa61c6bso4776998f8f.0
- for <ltp@lists.linux.it>; Tue, 13 Jan 2026 05:30:26 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 54050201DCF
+ for <ltp@lists.linux.it>; Tue, 13 Jan 2026 14:41:42 +0100 (CET)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-47d3ba3a4deso43976425e9.2
+ for <ltp@lists.linux.it>; Tue, 13 Jan 2026 05:41:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1768311702; x=1768916502; darn=lists.linux.it;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=XyPbOsC/gELdf/Y1EmD/XcM4HM6UrmAPdVLjWbW2JCw=;
+ b=XhsuEcw6t+c0xIZVjcKJzOSJmMajaC2RNXsRLNYcRTS9w1LfLSHZtGKRUP2jqAZJHB
+ 5H9axaaGb1vqmodAkwX8m8ePt1TpsiUTqnIYxYy3XpKpOktE+Nxy7+hqC8ZRlYVBDvwT
+ vhiDIkxdyHioRZD+YItOVdIWhwQi8tCcRIVS20fAvkSYBPm8ZhqbGQHroYwCRAfRFFYV
+ QZuIl8QGMF93ur8uI+kFhs1GJHZC6nyWOQevEE10I9piGiAikIPb9U+VqA2GunL7FAGS
+ CAMPA+4Xxc/buty8okdMnFfRnD9pSWD65ufeFX6zcsGfsx0Ct46276UcEjNitPNEHlc/
+ FYkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1768311026; x=1768915826;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=VEt3qXi1UcX5RpjuCTAlIti53mO1VBatcm0xmIsVJNA=;
- b=s66KWQZjjrpov7G8/JV98aTVWR3oLTD1f+5qIsDh+g69DmuGl0cixF0D/grvgFC6jY
- aAdOQXnjQ2kMcFAyCdpPj6svKUpMXDbDQWO9QaSITVgmCKKQpb2NUn1+COkCDzTpSW7f
- IVW58J0oH5m/cTb3QlKQPNuEbX8S4wgvU4FUk6RbMOuFTrj+DS7+yjJQ2FKfonXmFYnB
- VvVJSQ4U12ZD4hA7C8eGdZA0uTGvAQ5YV+dYdypIrWLwu2aGlhl/v1zO9RCvSY/KymWV
- tEHRvkDMQAI7uQzqEw5LA57kHzCb5oSDwFU7uoOsv44MF0cjmiLAEyMW7Bjh4B+Jh2C3
- 5/ZA==
+ d=1e100.net; s=20230601; t=1768311702; x=1768916502;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=XyPbOsC/gELdf/Y1EmD/XcM4HM6UrmAPdVLjWbW2JCw=;
+ b=HzFx20dSIC3n5434/JX4QqoZiQDnVFSRAwlBnMvvbdmWqiJasqF2jgnyJKe5asq7WG
+ BoNkHMoWKB7qwubtHSsU2G5PgI1Cu8gJxcul4qO15NJLl5c2Vj4v5/TBYJeHQKLDw2UO
+ 6uONRxADuIYXA5YCo3QsosKqueTCemMnmo8PkvfmekgVdNn17Xo75h3rup4zTOmiRAx1
+ AxdbnlGpIbLZGBgytsfBAHNyb+SK97DfHhECc5r+hkrrRCuGIou4fI4wMB+UmfKoWCBd
+ OfBKnedUAm0v2VOhm3YEHDcsznUK4PBnNFV7X3vRwCvKZYF7kH6PMmE2faW+xJa6hXUK
+ zn6Q==
 X-Forwarded-Encrypted: i=1;
- AJvYcCU2vfaTU7gAtwWBX62PrnBFTw1tH/Rt9VX3Zn5E7mX+afGjzYI9GkKWt1BlZhp1C7apcA8=@lists.linux.it
-X-Gm-Message-State: AOJu0Yy99ydsI+JtYXI2V88i+3JfMvwP9fLUy6jvmC+WQS03fc+7xgsw
- 0ZubW8o4a8TdwOaTe/r8tij2UT7MovNu0nWIOY7tqsKx0POKjxfBbVrrkOb71ZyXK+nRZq+/tZA
- XTWE63f2GhQGsM6RtmvTAC0BCb8a2xRWSy9wzHAuuRykC02MsUQcUlojYfeKy0v/RazrytEz98I
- HN/PxNjaN+4kAhjDVilU9VaYLXv/E=
-X-Gm-Gg: AY/fxX7aHk2g3ov0Dx9wpHiGrK7wNZlWoGTJ9qrgGdH0eBYyDO7GICD2PL0o8covPAL
- FfjP1t4IuuPBX36XGTkZcx56TaVVpK+VMyRTpqAqOSeaOSJToFrw33WUi3rOKlGUBaYNX0L9Suf
- LtR/tug4ySt803HDSZ5NmMnoymY6MUAZh2DtwRI+B6Rk4UO2ZKd04/0tfGg0nAQyjjbQ==
-X-Received: by 2002:a05:6000:188e:b0:430:f2ee:b220 with SMTP id
- ffacd0b85a97d-432c3632beemr28859894f8f.19.1768311025778; 
- Tue, 13 Jan 2026 05:30:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGN3l0kWG1FFmiMNXFFzm8hvw8d2QUd++hXa2Pq9WdDQsUZYd1WENRQx2/n5EEfJZedTQsPp/EVOpYwcfuJiXc=
-X-Received: by 2002:a05:6000:188e:b0:430:f2ee:b220 with SMTP id
- ffacd0b85a97d-432c3632beemr28859860f8f.19.1768311025386; Tue, 13 Jan 2026
- 05:30:25 -0800 (PST)
-MIME-Version: 1.0
+ AJvYcCWn6w7bCThaYuKZYFunGbMzjaD1odjUn1ATbsQL9AHcoUCIOec6lpR029JaUbDoXuOvX6k=@lists.linux.it
+X-Gm-Message-State: AOJu0YxA4aKLqgLa4sh4JLZeiYs4nMZifQqbG6iB8ghHDZ1vnKacvapO
+ PcmeLLFzKo/ADitbvWhRzdux+yLoHC9YUwrXkzgO3jLY3y+RqP0mdMsVZbX6BjiHXNQ=
+X-Gm-Gg: AY/fxX6qZTug3FcWOw4y0HuoTlCEESFvlCzMxGmlnm38gCp7DAeBBNXbPAYWc4dP4Zj
+ dW9y2LNdaMpb+VAUcxCCnY1oQ0GwGHZ+UhfEds221M0feb3Zsje1oJAaZ4yPrsdLbjUtkaYoDRK
+ zDGTMb+dSX+Blfptvj3KvPqlOOYHvaASamkEPHe+dTS3t5CToQ4swIwSJQGp5XOPGxMO6MJR3XC
+ 7BNt3MIifLBTydRT0si3JFBTYG2Xe0t8O9g0Oz5xRjX24eSmuJXQLtfAIh36F6IjAnqI1tjmt0y
+ u2ekBq8Eu0p0IhlBa23iUNeKUNizQQIDrMFA+xuqDFuCdhmL2ryX5F/tVj8PNcspfUuOicg8NGX
+ +ZW0F2XbiCOC/2Sx+IbUCKSn11tNnoQhIfcR6nLuRgcLpLRQ8MUrGLzI9P4Hm5Nf7FTcd9QMs7J
+ QwnFyevI2r3scp
+X-Google-Smtp-Source: AGHT+IHFZCl2Ilg83w39ajvFwXyrIbbhGNC5zZtB5eRz+3JRSmo8I/VmUAKSx5qRD2KxYST5KO9a7A==
+X-Received: by 2002:a05:600c:1385:b0:477:582e:7a81 with SMTP id
+ 5b1f17b1804b1-47d84b0a227mr247520475e9.4.1768311701723; 
+ Tue, 13 Jan 2026 05:41:41 -0800 (PST)
+Received: from localhost ([88.128.90.24]) by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-47d7f41eb3bsm423123465e9.7.2026.01.13.05.41.41
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 13 Jan 2026 05:41:41 -0800 (PST)
+Mime-Version: 1.0
+Date: Tue, 13 Jan 2026 14:41:40 +0100
+Message-Id: <DFNI6KO750G6.13XP4I5MYH1HQ@suse.com>
+To: "Jan Stancek" <jstancek@redhat.com>, "Petr Vorel" <pvorel@suse.cz>
+X-Mailer: aerc 0.18.2
 References: <20260109023914.45555-1-liwang@redhat.com>
  <DFMMND84JK0B.27NIM2SX4YYGR@suse.com>
  <CAEemH2c-Maht3X7Qu5Shv+amXVWJaU2NKsCYdzNE2t9jnoWbzw@mail.gmail.com>
  <20260113115148.GA314748@pevik>
-In-Reply-To: <20260113115148.GA314748@pevik>
-Date: Tue, 13 Jan 2026 14:30:08 +0100
-X-Gm-Features: AZwV_QhwMeweKa3lbZrFLEmC1ZTR59IfXTkXI1VLdHLKshUeBsbnXPf4iAry7hw
-Message-ID: <CAASaF6xrnNY5gpURDqgxQBWvQ5BqzXQN07NTkVbFae0bKB5PZg@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 4mXc2z0EbdaT09XwjN4W29Xs4nQgMUK9ULEfItLgYu0_1768311026
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ <CAASaF6xrnNY5gpURDqgxQBWvQ5BqzXQN07NTkVbFae0bKB5PZg@mail.gmail.com>
+In-Reply-To: <CAASaF6xrnNY5gpURDqgxQBWvQ5BqzXQN07NTkVbFae0bKB5PZg@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] libs: adopt lib* prefix instead of tst_* for libs/
 X-BeenThere: ltp@lists.linux.it
@@ -106,56 +104,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: Pradeep Susarla <pradeep.susarla@gmail.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBKYW4gMTMsIDIwMjYgYXQgMTI6NTHigK9QTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3Vz
-ZS5jej4gd3JvdGU6Cj4KPiA+IEhpIEFuZHJlYSwgQWxsLAo+Cj4gPiBPbiBNb24sIEphbiAxMiwg
-MjAyNiBhdCA4OjU54oCvUE0gQW5kcmVhIENlcnZlc2F0byA8YW5kcmVhLmNlcnZlc2F0b0BzdXNl
-LmNvbT4KPiA+IHdyb3RlOgo+Cj4gPiA+IEhpIQo+Cj4gPiA+IEkgZ2VuZXJhbGx5IGFncmVlIHdp
-dGggdGhpcyBhcHByb2FjaCwgYnV0IEkgaGF2ZSB0aGUgZmVlbGluZyB3ZSBhcmUKPiA+ID4gbWl4
-aW5nIG5hbWluZyBhIGJpdCBoZXJlLiBGb3IgaW5zdGFuY2UsIHdlIGhhdmUgaGVhZGVycyBsaWtl
-IGlwY21zZy5oCj4gPiA+IHRoYXQgaGFzIG5vIGZ1bmN0aW9ucyBzdGFydGluZyB3aXRoIHRzdF8q
-LCB3aGlsZSB0c3RfbnVtYS5oIGRvZXMuIEFsc28sCj4gPiA+IHRoZSB0c3RfKiBwcmVmaXggZm9y
-IGZpbGVzIGhhcyB0aGUgY2xlYXIgZ29hbCB0byBzdGF0ZSB3ZSBhcmUgaW1wb3J0aW5nCj4gPiA+
-IHNvbWUgTFRQIGZ1bmN0aW9uYWxpdGllcyBpbnNpZGUgdGhlIHRlc3RzIGNvZGUuCj4KPiA+ID4g
-U2FpZCBzbywgSSB3b3VsZCByYXRoZXIgcmVuYW1lIGFsbCBMVFAgbGlicmFyaWVzIGFzIHRzdF8q
-LmggYW5kIHRvCj4gPiA+IHJlbmFtZSBmdW5jdGlvbnMgaW5zaWRlIHRoZW0gd2l0aCB0c3RfKiBw
-cmVmaXguIEluIHRoaXMgd2F5LCB3ZSBrbm93Cj4gPiA+IGF0IHRoZSB2ZXJ5IGZpcnN0IGxvb2ss
-IHdoZW4gYSBsaWJyYXJ5IGlzIGltcG9ydGVkIGZyb20gTFRQIGFuZCBub3QKPiA+ID4gZnJvbSBv
-dGhlciBzb3VyY2VzLgo+Cj4gJ3RzdF8nIHByZWZpeCBpcyBvbmx5IGZvciAqbmV3KiBDIEFQSS4g
-VGhhdCdzIHdoeSBpcGNtc2cuaC9saWJzL2lwYy9saWJpcGMuYwo+IGRvbid0IHVzZSBpdC4gSSB3
-b3VsZCBwcmVmZXIgdG8ga2VlcCB0aGF0IHdheSAobm90IHVzZSAndHN0XycgZm9yIGxlZ2FjeSBD
-IEFQSQo+IGxpYnJhcnkgc291cmNlKS4KPgo+IFRoYXQncyB3aHkgSSBxdWl0ZSBsaWtlIExpJ3Mg
-YXBwcm9hY2ggKEknbSBvayBpZiBsaWJzLyBzb3VyY2VzJyBoZWFkZXJzIHdpbGwKPiBoYXZlICds
-aWInIHByZWZpeCBpbnN0ZWFkIG9mICd0c3RfJyksIGFsdGhvdWdoIEkgbGlrZWQgbW9yZQo+IGxp
-YnMvc2lnd2FpdC9zaWd3YWl0LmMgdGhhbiBsaWJzL3NpZ3dhaXQvbGlic2lnd2FpdC5jLgo+Cj4g
-PiBJIGluZGVlZCB0aG91Z2h0IGFib3V0IGFsbCB1c2UgdHN0XyogZm9yIHRob3NlIGdsb2JhbCBo
-ZWFkZXIgZmlsZXMuCj4gPiBCdXQgdG8gZGlzdGluZ3Vpc2ggbGliLyB3aXRoIGxpYnMvIEkgZmlu
-YWxseSBmZWVsIHRoYXQgbGlicy8gaXMgbm90IHRoZQo+ID4gY29yZSBMVFAgQVBJCj4gPiBhbmQg
-c29tZXRpbWVzIGJ1aWx0IG9ubHkgd2hlbiB0aGV5IGFyZSBuZWVkZWQsIGlmIHdlIHJlbmFtZSBh
-bGwgdGhlc2UKPiA+IGhlYWRlciBmaWxlIHdpdGggdHN0XyogdGhhdCB3aWxsIG1pc2xlYWQgcGVv
-cGxlIHRvIGZpbmQgdGhlICouYyBmaWxlIGluCj4gPiBsaWIvLCB3aGljaAo+ID4gaXMgbm90IHRo
-ZSByaWdodCBwbGFjZS4KPgo+ID4gU28gaW4gbXkgcGF0Y2gsIGtlZXAgZGVmaW5lIHRzdF8qIG9u
-bHkgZm9yIHRoZSBjb3JlIExUUCBBUEksIGFuZCBsaWIqIHByZWZpeAo+ID4gcmVzZXJ2ZSBmb3Ig
-bGlicy8gdGhhdCB3aWxsIGJlIGNsZWFyIGF0IGEgZ2xhbmNlLgo+Cj4gKzEKPgo+ID4gT3IsIGlm
-IGdvIHdpdGggdHN0XyouaCBmb3IgYWxsIChhbmQgcmVuYW1lIGZ1bmN0aW9ucyB3aXRoIHRzdF8q
-KSwgSSB0aGluawo+ID4gdGhlIGxpYnMvIHNob3VsZCBiZSBtZXJnZWQgaW50byBsaWIvLgo+Cj4g
-SSBkb24ndCB0aGluayB0aGlzIHdvdWxkIGJlIGdvb2QuIEl0IHdvdWxkIHJlcXVpcmUgYWxzbyBj
-aGFuZ2luZyBhIGJ1aWxkIHN5c3RlbSwKPiB0b3VjaCB0b28gbWFueSBmaWxlcy4gQW5kIEkgZG9u
-J3QgZXZlbiBzZWUgYSBiZW5lZml0IGZvciBhIHN1Y2ggY2hhbmdlLgoKSSdkIGtlZXAgdGhlbSBz
-ZXBhcmF0ZSBmcm9tIGNvcmUgbGlicmFyeS4gRm9yIG5vbi1jb3JlIGxpYnJhcmllcywgSSdkIGdv
-IHdpdGgKc29tZXRoaW5nIG1vcmUgZGlzdGluY3QsIGxpa2UgImx0cCIgcHJlZml4IGZvciBmaWxl
-IGFuZCBmdW5jdGlvbiBuYW1lcy4KCldoZW4gSSBsb29rIGF0ICJsaWJudW1hLmgiIEknZCBoYXZl
-IHRvIHRoaW5rIGZvciBhIGJpdCBpZiB0aGlzIGlzCmhlYWRlciBmcm9tIG51bWEtZGV2ZWwKb3Ig
-TFRQLiAibHRwbnVtYS5oIiBzZWVtcyAodG8gbWUpIG1vcmUgY2xlYXIgdGhhdCBpdCdzIG5vdCBM
-VFAgY29yZQpub3IgbnVtYS1kZXZlbC4KCm15IDIgY2VudHMsCkphbgoKPgo+IEtpbmQgcmVnYXJk
-cywKPiBQZXRyCj4KPiA+IEBDeXJpbCwgUGV0ciwgYW55IGNvbW1lbnRzPwo+Cj4gSSBhbHNvIHdv
-bmRlciBDeXJpbCdzIGFuZCBKYW4ncyBvcGluaW9uLgo+Cj4gS2luZCByZWdhcmRzLAo+IFBldHIK
-PgoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5m
-by9sdHAK
+>
+> I'd keep them separate from core library. For non-core libraries, I'd go with
+> something more distinct, like "ltp" prefix for file and function names.
+>
+> When I look at "libnuma.h" I'd have to think for a bit if this is
+> header from numa-devel
+> or LTP. "ltpnuma.h" seems (to me) more clear that it's not LTP core
+> nor numa-devel.
+>
+> my 2 cents,
+> Jan
+>
+
+That's exactly why I was suggesting to keep `tst_*`, which is more for
+code-library. The `lib*` prefix is pretty generic and we need something
+more specific for LTP.
+
+-- 
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
