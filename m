@@ -4,71 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A864D37E37
-	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 14:05:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5D12D37E37
+	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 14:05:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1768399498; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=bkI3xp8OLoDLa7QGqb8fLA+tmiywAVEisCYk87tB/eY=;
- b=FPdXVExju96vZZYjCk01g2l7xazr4ArQKbNJ1AHj3Ra4T7kos69Ux3zMKLu17g6PwaEr/
- jnWf0QJOyjtOR4hMLgilV4Pvz6tz1w9aWSV5ACFSE2VdBtKjhxIbJk9EzVDUXlRPXtFilQz
- wvg4AP9fJGj4COlh441Kheo4sFcsZcU=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1768399513; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=RTDiKq5VPwkLVNCSYA4OMw1B43Q/jjSGpZgtzDrW/iw=;
+ b=nLmiQJPTBFT3HCN2A1pivjo3ujN0QdLs++LazWDX1m5cbMTvZv9SpIqclnNfyWcA5FrM9
+ uTmmfKzDzYZA3/20jn35St3qPlwa22GdPlDSRD7lvU/Af4yl/PLiPMjWDxdHLpXr97c2YyR
+ b38CI96/0OmuQx5ujMURzIf6n5tROsY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9A1A63C9D26
-	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 15:04:58 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 77FD43C9B5F
+	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 15:05:13 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0FE463C1428
- for <ltp@lists.linux.it>; Wed, 14 Jan 2026 15:04:41 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id B882E3C1428
+ for <ltp@lists.linux.it>; Wed, 14 Jan 2026 15:04:42 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3FE161A004E5
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0CFB8600B2B
  for <ltp@lists.linux.it>; Wed, 14 Jan 2026 15:04:38 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1768399476;
+ s=mimecast20190719; t=1768399477;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=m5RcANVRLNVhBemBRfvixDtNt4uOm5/91Z+ggtxCwuA=;
- b=I4FdwrqK+M+T2KTQkeGThtySP4qs91/pTikbGbN7b946+UVwrBWDjlx6UDIkUppBV+hEH1
- iAYWmH46215Yk3bg3U8q95Kqx+rwyjm3KPhqYWJxsHL0qvZyyZ9pyDJ13HC8YXIPd/ziyH
- zAOTCw0Y17mJ+LjTUG+tgs7lTchpKIg=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Z07wlCq3eg/h8vZT2RJ5nrFWGSyKxYySjZiI8fzpucs=;
+ b=OZUOpcs+04loCd4CCzZem+yeFFiMnuGxbcf47fRbLiKsEx1xxHyB4l23z0pIVjfNsgrGMQ
+ WGr6BHpua3zlxmtHSUa4SBV5DbNRVyZqj84ii4pDjz5SQ5Tlx4fLAXMfyxMmnC8spUq3Xc
+ l5HKuXMJ8H82NBWu052JvANDNayllMA=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-272-k5JU8HHJMymFiCUosUxCDg-1; Wed,
- 14 Jan 2026 09:04:32 -0500
-X-MC-Unique: k5JU8HHJMymFiCUosUxCDg-1
-X-Mimecast-MFC-AGG-ID: k5JU8HHJMymFiCUosUxCDg_1768399472
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-593-rUjag8l2P2y6aNv0z3hWbw-1; Wed,
+ 14 Jan 2026 09:04:35 -0500
+X-MC-Unique: rUjag8l2P2y6aNv0z3hWbw-1
+X-Mimecast-MFC-AGG-ID: rUjag8l2P2y6aNv0z3hWbw_1768399474
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
  (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id CB53819560B4; Wed, 14 Jan 2026 14:04:31 +0000 (UTC)
+ by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 2686C18005B7
+ for <ltp@lists.linux.it>; Wed, 14 Jan 2026 14:04:34 +0000 (UTC)
 Received: from fedora-laptop-x1.redhat.com (unknown [10.72.116.115])
  by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id 166E218008FF; Wed, 14 Jan 2026 14:04:28 +0000 (UTC)
+ id 9029218004D8
+ for <ltp@lists.linux.it>; Wed, 14 Jan 2026 14:04:32 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Wed, 14 Jan 2026 22:04:25 +0800
-Message-ID: <20260114140426.133180-1-liwang@redhat.com>
+Date: Wed, 14 Jan 2026 22:04:26 +0800
+Message-ID: <20260114140426.133180-2-liwang@redhat.com>
+In-Reply-To: <20260114140426.133180-1-liwang@redhat.com>
+References: <20260114140426.133180-1-liwang@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 2YSpulH2k2Xu8OaoO3fzYMzwj-HDU-gIg98I0kF7SR4_1768399472
+X-Mimecast-MFC-PROC-ID: lrYf2hZVLBJLrXDwoJunPqAoot1-Th8jW8zKaN3c14c_1768399474
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] libs: adopt etst_* prefix instead of tst_* for
- libs/
+Subject: [LTP] [PATCH 2/2] include/old: rename legacy headers to otst_*
+ namespace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,3041 +88,2215 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Li Wang via ltp <ltp@lists.linux.it>
 Reply-To: Li Wang <liwang@redhat.com>
-Cc: Pradeep Susarla <pradeep.susarla@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The intention of moving these headers under include/ was to expose them as
-global interfaces, but using the tst_* prefix there is misleading. Headers
-corresponding to ltp/libs* code should follow the libs* naming to distinguish
-them from the core tst_* API.
+To clearly distinguish legacy header files from the core (tst_*) and
+extension (etst_*) LTP APIs, legacy header files have been grouped
+into the otst_* namespace.
 
-Rename the following headers/sources to use a etst_ prefix and update all
-includes accordingly:
+Some legacy header files do not begin with old_, they still belong
+to the legacy header file set. For clarity, all legacy header files
+are now uniformly grouped into the otst_* namespace.
 
- include/{ipcmsg.h => etst_ipcmsg.h}
- include/{ipcsem.h => etst_ipcsem.h}
- include/{libmsgctl.h => etst_msgctl.h}
- include/{libnewipc.h => etst_newipc.h}
- include/{tst_numa.h => etst_numa.h}
- include/{parse_vdso.h => etst_parse_vdso.h}
- include/{libsigwait.h => etst_sigwait.h}
- include/{libswap.h => etst_swap.h}
- include/{tst_uinput.h => etst_uinput.h}
- libs/ipc/{libipc.c => etst_ipc.c}
- libs/ipc/{libmsgctl.c => etst_msgctl.c}
- libs/newipc/{libnewipc.c => etst_newipc.c}
- libs/numa/{tst_numa.c => etst_numa.c}
- libs/sigwait/{sigwait.c => etst_sigwait.c}
- libs/swap/{libswap.c => etst_swap.c}
- libs/uinput/{tst_uinput.c => etst_uinput.c}
- libs/vdso/{parse_vdso.c => etst_parse_vdso.c}
-
-Also, rename tst_* to etst_* in the global non-core libs.
+ include/old/{old_checkpoint.h => otst_checkpoint.h}
+ include/old/{ltp_cpuid.h => otst_cpuid.h}
+ include/old/{old_device.h => otst_device.h}
+ include/old/{tlibio.h => otst_lio.h}
+ include/old/{old_module.h => otst_module.h}
+ include/old/{ltp_priv.h => otst_priv.h}
+ include/old/{random_range.h => otst_random_range.h}
+ include/old/{old_resource.h => otst_resource.h}
+ include/old/{old_safe_file_ops.h => otst_safe_file_ops.h}
+ include/old/{safe_macros.h => otst_safe_macros.h}
+ include/old/{old_safe_net.h => otst_safe_net.h}
+ include/old/{old_safe_stdio.h => otst_safe_stdio.h}
+ include/old/{ltp_signal.h => otst_signal.h}
+ include/old/{old_tmpdir.h => otst_tmpdir.h}
+ include/old/{usctest.h => otst_usctest.h}
 
 No functional changes intended.
 
-==== NOTE ====
-From Petr Vorel:
-
-  "Although lib/ vs libs/ is a bit strange, kept these libraries separate
-  (i.e. no move libs/*/ into lib/), because these libraries are built only when
-  they are needed. I.e. for testing random test one does not need to wait for
-  building these additional libraries (although building them does not take long,
-  building LTP main library and tests takes much longer)."
-
 Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Pradeep Susarla <pradeep.susarla@gmail.com>
 ---
- doc/developers/api_c_tests.rst                |  2 +-
- include/{ipcmsg.h => etst_ipcmsg.h}           | 27 +++------
- include/etst_ipcsem.h                         | 42 ++++++++++++++
- include/etst_msgctl.h                         | 27 +++++++++
- include/{libnewipc.h => etst_newipc.h}        | 21 ++-----
- include/{tst_numa.h => etst_numa.h}           | 52 +++++++++---------
- include/{parse_vdso.h => etst_parse_vdso.h}   |  6 +-
- include/{libsigwait.h => etst_sigwait.h}      | 28 +++++-----
- include/{libswap.h => etst_swap.h}            | 10 ++--
- include/{tst_uinput.h => etst_uinput.h}       |  6 +-
- include/ipcsem.h                              | 55 -------------------
- include/libmsgctl.h                           | 39 -------------
- include/tst_uid.h                             |  6 +-
- include/ujson.h                               |  6 +-
- include/ujson_common.h                        |  6 +-
- include/ujson_reader.h                        |  6 +-
- include/ujson_utf.h                           |  6 +-
- libs/ipc/{libipc.c => etst_ipc.c}             | 25 ++-------
- libs/ipc/{libmsgctl.c => etst_msgctl.c}       | 20 ++-----
- libs/newipc/{libnewipc.c => etst_newipc.c}    |  2 +-
- libs/numa/{tst_numa.c => etst_numa.c}         | 22 ++++----
- libs/sigwait/{sigwait.c => etst_sigwait.c}    | 24 ++++----
- libs/swap/{libswap.c => etst_swap.c}          |  6 +-
- libs/uinput/{tst_uinput.c => etst_uinput.c}   |  2 +-
- libs/vdso/{parse_vdso.c => etst_parse_vdso.c} |  2 +-
- libs/vdso/vdso_helpers.c                      |  2 +-
- testcases/kernel/input/input_common.h         |  2 +-
- testcases/kernel/mem/cpuset/cpuset02.c        |  6 +-
- testcases/kernel/mem/ksm/ksm06.c              |  6 +-
- testcases/kernel/mem/shmt/shmt02.c            |  2 +-
- testcases/kernel/mem/shmt/shmt03.c            |  2 +-
- testcases/kernel/mem/shmt/shmt04.c            |  2 +-
- testcases/kernel/mem/shmt/shmt05.c            |  2 +-
- testcases/kernel/mem/shmt/shmt07.c            |  2 +-
- testcases/kernel/mem/shmt/shmt08.c            |  2 +-
- testcases/kernel/mem/shmt/shmt09.c            |  2 +-
- testcases/kernel/mem/shmt/shmt10.c            |  2 +-
- .../syscalls/clock_gettime/clock_gettime04.c  |  2 +-
- .../syscalls/get_mempolicy/get_mempolicy01.c  |  8 +--
- .../syscalls/get_mempolicy/get_mempolicy02.c  |  8 +--
- .../kernel/syscalls/ipc/msgctl/msgctl01.c     |  2 +-
- .../kernel/syscalls/ipc/msgctl/msgctl02.c     |  2 +-
- .../kernel/syscalls/ipc/msgctl/msgctl03.c     |  2 +-
- .../kernel/syscalls/ipc/msgctl/msgctl04.c     |  2 +-
- .../kernel/syscalls/ipc/msgctl/msgctl05.c     |  2 +-
- .../kernel/syscalls/ipc/msgctl/msgctl06.c     |  2 +-
- .../kernel/syscalls/ipc/msgctl/msgctl12.c     |  2 +-
- .../kernel/syscalls/ipc/msgget/msgget01.c     |  2 +-
- .../kernel/syscalls/ipc/msgget/msgget02.c     |  2 +-
- .../kernel/syscalls/ipc/msgget/msgget03.c     |  2 +-
- .../kernel/syscalls/ipc/msgget/msgget04.c     |  2 +-
- .../kernel/syscalls/ipc/msgget/msgget05.c     |  2 +-
- .../kernel/syscalls/ipc/msgrcv/msgrcv01.c     |  2 +-
- .../kernel/syscalls/ipc/msgrcv/msgrcv02.c     |  2 +-
- .../kernel/syscalls/ipc/msgrcv/msgrcv03.c     |  2 +-
- .../kernel/syscalls/ipc/msgrcv/msgrcv05.c     |  2 +-
- .../kernel/syscalls/ipc/msgrcv/msgrcv06.c     |  2 +-
- .../kernel/syscalls/ipc/msgrcv/msgrcv07.c     |  2 +-
- .../kernel/syscalls/ipc/msgrcv/msgrcv08.c     |  2 +-
- .../kernel/syscalls/ipc/msgsnd/msgsnd01.c     |  2 +-
- .../kernel/syscalls/ipc/msgsnd/msgsnd02.c     |  2 +-
- .../kernel/syscalls/ipc/msgsnd/msgsnd05.c     |  2 +-
- .../kernel/syscalls/ipc/msgsnd/msgsnd06.c     |  2 +-
- .../kernel/syscalls/ipc/semctl/semctl01.c     |  2 +-
- .../kernel/syscalls/ipc/semctl/semctl02.c     |  2 +-
- .../kernel/syscalls/ipc/semctl/semctl03.c     |  2 +-
- .../kernel/syscalls/ipc/semctl/semctl04.c     |  2 +-
- .../kernel/syscalls/ipc/semctl/semctl05.c     |  2 +-
- .../kernel/syscalls/ipc/semctl/semctl06.c     |  2 +-
- .../kernel/syscalls/ipc/semctl/semctl07.c     |  2 +-
- .../kernel/syscalls/ipc/semctl/semctl08.c     |  2 +-
- .../kernel/syscalls/ipc/semctl/semctl09.c     |  2 +-
- .../kernel/syscalls/ipc/semget/semget01.c     |  2 +-
- .../kernel/syscalls/ipc/semget/semget02.c     |  2 +-
- .../kernel/syscalls/ipc/semget/semget05.c     |  2 +-
- testcases/kernel/syscalls/ipc/semop/semop01.c |  2 +-
- testcases/kernel/syscalls/ipc/semop/semop02.c |  2 +-
- testcases/kernel/syscalls/ipc/semop/semop03.c |  2 +-
- testcases/kernel/syscalls/ipc/shmat/shmat01.c |  2 +-
- testcases/kernel/syscalls/ipc/shmat/shmat02.c |  2 +-
- testcases/kernel/syscalls/ipc/shmat/shmat04.c |  2 +-
- .../kernel/syscalls/ipc/shmctl/shmctl01.c     |  2 +-
- .../kernel/syscalls/ipc/shmctl/shmctl02.c     |  2 +-
- .../kernel/syscalls/ipc/shmctl/shmctl03.c     |  2 +-
- .../kernel/syscalls/ipc/shmctl/shmctl04.c     |  2 +-
- .../kernel/syscalls/ipc/shmctl/shmctl06.c     |  2 +-
- .../kernel/syscalls/ipc/shmctl/shmctl07.c     |  2 +-
- .../kernel/syscalls/ipc/shmctl/shmctl08.c     |  2 +-
- testcases/kernel/syscalls/ipc/shmdt/shmdt01.c |  2 +-
- testcases/kernel/syscalls/ipc/shmdt/shmdt02.c |  2 +-
- .../kernel/syscalls/ipc/shmget/shmget02.c     |  2 +-
- .../kernel/syscalls/ipc/shmget/shmget03.c     |  2 +-
- .../kernel/syscalls/ipc/shmget/shmget04.c     |  2 +-
- .../kernel/syscalls/ipc/shmget/shmget05.c     |  2 +-
- .../kernel/syscalls/ipc/shmget/shmget06.c     |  2 +-
- testcases/kernel/syscalls/kill/kill05.c       |  2 +-
- testcases/kernel/syscalls/mbind/mbind01.c     |  8 +--
- testcases/kernel/syscalls/mbind/mbind02.c     | 26 ++++-----
- testcases/kernel/syscalls/mbind/mbind03.c     | 28 +++++-----
- testcases/kernel/syscalls/mbind/mbind04.c     | 24 ++++----
- .../rt_sigtimedwait/rt_sigtimedwait01.c       | 30 +++++-----
- .../syscalls/set_mempolicy/set_mempolicy.h    | 10 ++--
- .../syscalls/set_mempolicy/set_mempolicy01.c  | 16 +++---
- .../syscalls/set_mempolicy/set_mempolicy02.c  | 10 ++--
- .../syscalls/set_mempolicy/set_mempolicy03.c  | 14 ++---
- .../syscalls/set_mempolicy/set_mempolicy04.c  | 10 ++--
- .../syscalls/sigtimedwait/sigtimedwait01.c    | 22 ++++----
- testcases/kernel/syscalls/sigwait/sigwait01.c |  8 +--
- .../syscalls/sigwaitinfo/sigwaitinfo01.c      | 18 +++---
- testcases/kernel/syscalls/swapoff/swapoff01.c |  2 +-
- testcases/kernel/syscalls/swapoff/swapoff02.c |  2 +-
- testcases/kernel/syscalls/swapon/swapon01.c   |  2 +-
- testcases/kernel/syscalls/swapon/swapon02.c   |  2 +-
- testcases/kernel/syscalls/swapon/swapon03.c   |  4 +-
- testcases/kernel/uevents/uevent03.c           |  2 +-
- 115 files changed, 387 insertions(+), 461 deletions(-)
- rename include/{ipcmsg.h => etst_ipcmsg.h} (52%)
- create mode 100644 include/etst_ipcsem.h
- create mode 100644 include/etst_msgctl.h
- rename include/{libnewipc.h => etst_newipc.h} (62%)
- rename include/{tst_numa.h => etst_numa.h} (51%)
- rename include/{parse_vdso.h => etst_parse_vdso.h} (93%)
- rename include/{libsigwait.h => etst_sigwait.h} (57%)
- rename include/{libswap.h => etst_swap.h} (95%)
- rename include/{tst_uinput.h => etst_uinput.h} (92%)
- delete mode 100644 include/ipcsem.h
- delete mode 100644 include/libmsgctl.h
- rename libs/ipc/{libipc.c => etst_ipc.c} (82%)
- rename libs/ipc/{libmsgctl.c => etst_msgctl.c} (77%)
- rename libs/newipc/{libnewipc.c => etst_newipc.c} (98%)
- rename libs/numa/{tst_numa.c => etst_numa.c} (87%)
- rename libs/sigwait/{sigwait.c => etst_sigwait.c} (92%)
- rename libs/swap/{libswap.c => etst_swap.c} (98%)
- rename libs/uinput/{tst_uinput.c => etst_uinput.c} (99%)
- rename libs/vdso/{parse_vdso.c => etst_parse_vdso.c} (99%)
+ include/lapi/rt_sigaction.h                        |  2 +-
+ .../old/{old_checkpoint.h => otst_checkpoint.h}    |  6 +++---
+ include/old/{ltp_cpuid.h => otst_cpuid.h}          |  0
+ include/old/{old_device.h => otst_device.h}        |  6 +++---
+ include/old/{tlibio.h => otst_lio.h}               |  0
+ include/old/{old_module.h => otst_module.h}        |  0
+ include/old/{ltp_priv.h => otst_priv.h}            |  0
+ .../old/{random_range.h => otst_random_range.h}    |  0
+ include/old/{old_resource.h => otst_resource.h}    |  0
+ .../{old_safe_file_ops.h => otst_safe_file_ops.h}  |  0
+ include/old/{safe_macros.h => otst_safe_macros.h}  |  4 ++--
+ include/old/{old_safe_net.h => otst_safe_net.h}    |  6 +++---
+ .../old/{old_safe_stdio.h => otst_safe_stdio.h}    |  6 +++---
+ include/old/{ltp_signal.h => otst_signal.h}        |  0
+ include/old/{old_tmpdir.h => otst_tmpdir.h}        |  6 +++---
+ include/old/{usctest.h => otst_usctest.h}          |  0
+ include/old/test.h                                 | 14 +++++++-------
+ lib/parse_opts.c                                   |  4 ++--
+ lib/random_range.c                                 |  2 +-
+ lib/safe_macros.c                                  |  2 +-
+ lib/tests/trerrno.c                                |  2 +-
+ lib/tests/tst_dataroot01.c                         |  2 +-
+ lib/tests/tst_dataroot02.c                         |  2 +-
+ lib/tests/tst_dataroot03.c                         |  2 +-
+ lib/tests/tst_safe_macros.c                        |  2 +-
+ lib/tlibio.c                                       |  4 ++--
+ lib/tst_checkpoint.c                               |  2 +-
+ lib/tst_cpu.c                                      |  2 +-
+ lib/tst_device.c                                   |  2 +-
+ lib/tst_dir_is_empty.c                             |  2 +-
+ lib/tst_fs_link_count.c                            |  4 ++--
+ lib/tst_kernel.c                                   |  2 +-
+ lib/tst_mkfs.c                                     |  2 +-
+ lib/tst_module.c                                   |  4 ++--
+ lib/tst_parse_opts.c                               |  2 +-
+ lib/tst_pid.c                                      |  2 +-
+ lib/tst_res.c                                      |  6 +++---
+ lib/tst_resource.c                                 |  4 ++--
+ lib/tst_test.c                                     |  6 +++---
+ lib/tst_tmpdir.c                                   |  4 ++--
+ lib/tst_virt.c                                     |  2 +-
+ .../kernel/controllers/cgroup_xattr/cgroup_xattr.c |  2 +-
+ .../kernel/controllers/cpuctl/cpuctl_def_task01.c  |  2 +-
+ .../kernel/controllers/cpuctl/cpuctl_def_task02.c  |  2 +-
+ .../kernel/controllers/cpuctl/cpuctl_def_task03.c  |  2 +-
+ .../kernel/controllers/cpuctl/cpuctl_def_task04.c  |  2 +-
+ .../kernel/controllers/cpuctl/cpuctl_test01.c      |  2 +-
+ .../kernel/controllers/cpuctl/cpuctl_test02.c      |  2 +-
+ .../kernel/controllers/cpuctl/cpuctl_test03.c      |  2 +-
+ .../kernel/controllers/cpuctl/cpuctl_test04.c      |  2 +-
+ testcases/kernel/device-drivers/acpi/ltp_acpi.c    |  4 ++--
+ .../kernel/device-drivers/cpufreq/cpufreq_boost.c  |  2 +-
+ .../kernel/device-drivers/pci/tpci_user/tpci.c     |  4 ++--
+ testcases/kernel/device-drivers/rtc/rtc01.c        |  2 +-
+ .../kernel/device-drivers/tbio/tbio_user/tbio.c    |  4 ++--
+ testcases/kernel/device-drivers/uaccess/uaccess.c  |  4 ++--
+ testcases/kernel/firmware/fw_load_user/fw_load.c   |  4 ++--
+ testcases/kernel/fs/doio/doio.c                    |  2 +-
+ testcases/kernel/fs/doio/growfiles.c               |  6 +++---
+ testcases/kernel/fs/doio/iogen.c                   |  2 +-
+ testcases/kernel/fs/ftest/ftest01.c                |  2 +-
+ testcases/kernel/fs/ftest/ftest03.c                |  2 +-
+ testcases/kernel/fs/ftest/ftest04.c                |  2 +-
+ testcases/kernel/fs/ftest/ftest05.c                |  2 +-
+ testcases/kernel/fs/ftest/ftest07.c                |  2 +-
+ testcases/kernel/fs/ftest/ftest08.c                |  2 +-
+ testcases/kernel/io/direct_io/diotest1.c           |  2 +-
+ testcases/kernel/io/direct_io/diotest4.c           |  2 +-
+ testcases/kernel/io/direct_io/dma_thread_diotest.c |  2 +-
+ testcases/kernel/ipc/pipeio/pipeio.c               |  4 ++--
+ testcases/kernel/lib/numa_helper.c                 |  2 +-
+ testcases/kernel/mem/vma/vma01.c                   |  2 +-
+ testcases/kernel/mem/vma/vma02.c                   |  2 +-
+ testcases/kernel/mem/vma/vma03.c                   |  2 +-
+ testcases/kernel/mem/vma/vma04.c                   |  2 +-
+ testcases/kernel/pty/hangup01.c                    |  2 +-
+ .../sched/hyperthreading/ht_affinity/ht_utils.c    |  2 +-
+ .../sched/hyperthreading/ht_enabled/ht_utils.c     |  2 +-
+ .../kernel/security/filecaps/filecaps_common.h     |  2 +-
+ .../security/prot_hsymlinks/prot_hsymlinks.c       |  2 +-
+ testcases/kernel/syscalls/clone/clone02.c          |  2 +-
+ testcases/kernel/syscalls/connect/connect01.c      |  2 +-
+ testcases/kernel/syscalls/fallocate/fallocate01.c  |  2 +-
+ testcases/kernel/syscalls/fallocate/fallocate02.c  |  2 +-
+ testcases/kernel/syscalls/fcntl/fcntl07.c          |  2 +-
+ testcases/kernel/syscalls/fcntl/fcntl11.c          |  2 +-
+ testcases/kernel/syscalls/fcntl/fcntl16.c          |  2 +-
+ testcases/kernel/syscalls/fcntl/fcntl19.c          |  2 +-
+ testcases/kernel/syscalls/fcntl/fcntl20.c          |  2 +-
+ testcases/kernel/syscalls/fcntl/fcntl31.c          |  2 +-
+ testcases/kernel/syscalls/fcntl/fcntl32.c          |  2 +-
+ testcases/kernel/syscalls/fdatasync/fdatasync02.c  |  2 +-
+ testcases/kernel/syscalls/fork/fork09.c            |  2 +-
+ testcases/kernel/syscalls/fstatat/fstatat01.c      |  2 +-
+ testcases/kernel/syscalls/futimesat/futimesat01.c  |  2 +-
+ .../syscalls/get_robust_list/get_robust_list01.c   |  2 +-
+ testcases/kernel/syscalls/getrusage/getrusage04.c  |  2 +-
+ testcases/kernel/syscalls/linkat/linkat01.c        |  2 +-
+ testcases/kernel/syscalls/linkat/linkat02.c        |  2 +-
+ testcases/kernel/syscalls/listen/listen01.c        |  2 +-
+ .../syscalls/migrate_pages/migrate_pages01.c       |  2 +-
+ testcases/kernel/syscalls/mincore/mincore01.c      |  2 +-
+ testcases/kernel/syscalls/mkdirat/mkdirat01.c      |  2 +-
+ testcases/kernel/syscalls/mknodat/mknodat01.c      |  2 +-
+ testcases/kernel/syscalls/mknodat/mknodat02.c      |  2 +-
+ testcases/kernel/syscalls/mlockall/mlockall02.c    |  2 +-
+ testcases/kernel/syscalls/mlockall/mlockall03.c    |  2 +-
+ .../kernel/syscalls/move_pages/move_pages11.c      |  2 +-
+ testcases/kernel/syscalls/mprotect/mprotect01.c    |  2 +-
+ testcases/kernel/syscalls/mprotect/mprotect02.c    |  2 +-
+ testcases/kernel/syscalls/mprotect/mprotect03.c    |  2 +-
+ testcases/kernel/syscalls/mprotect/mprotect04.c    |  2 +-
+ testcases/kernel/syscalls/mremap/mremap01.c        |  2 +-
+ testcases/kernel/syscalls/mremap/mremap05.c        |  2 +-
+ testcases/kernel/syscalls/msync/msync03.c          |  2 +-
+ testcases/kernel/syscalls/openat/openat03.c        |  2 +-
+ .../syscalls/perf_event_open/perf_event_open01.c   |  2 +-
+ testcases/kernel/syscalls/pipe/pipe04.c            |  2 +-
+ testcases/kernel/syscalls/pipe/pipe09.c            |  2 +-
+ testcases/kernel/syscalls/ppoll/ppoll01.c          |  2 +-
+ testcases/kernel/syscalls/profil/profil01.c        |  2 +-
+ testcases/kernel/syscalls/recv/recv01.c            |  2 +-
+ testcases/kernel/syscalls/recvfrom/recvfrom01.c    |  2 +-
+ .../kernel/syscalls/removexattr/removexattr01.c    |  2 +-
+ .../kernel/syscalls/removexattr/removexattr02.c    |  2 +-
+ testcases/kernel/syscalls/rename/rename11.c        |  2 +-
+ testcases/kernel/syscalls/renameat/renameat01.c    |  2 +-
+ testcases/kernel/syscalls/renameat2/renameat201.c  |  2 +-
+ testcases/kernel/syscalls/renameat2/renameat202.c  |  2 +-
+ .../syscalls/rt_sigprocmask/rt_sigprocmask02.c     |  2 +-
+ testcases/kernel/syscalls/send/send01.c            |  2 +-
+ testcases/kernel/syscalls/sendmsg/sendmsg01.c      |  2 +-
+ testcases/kernel/syscalls/sendmsg/sendmsg02.c      |  2 +-
+ testcases/kernel/syscalls/sendto/sendto01.c        |  2 +-
+ testcases/kernel/syscalls/setfsuid/setfsuid04.c    |  2 +-
+ testcases/kernel/syscalls/setrlimit/setrlimit01.c  |  2 +-
+ testcases/kernel/syscalls/signalfd4/signalfd4_01.c |  2 +-
+ testcases/kernel/syscalls/signalfd4/signalfd4_02.c |  2 +-
+ .../kernel/syscalls/sigpending/sigpending02.c      |  2 +-
+ testcases/kernel/syscalls/sigrelse/sigrelse01.c    |  2 +-
+ testcases/kernel/syscalls/sockioctl/sockioctl01.c  |  2 +-
+ testcases/kernel/syscalls/symlink/symlink03.c      |  2 +-
+ testcases/kernel/syscalls/symlinkat/symlinkat01.c  |  2 +-
+ testcases/kernel/syscalls/umount2/umount2_01.c     |  2 +-
+ testcases/kernel/syscalls/vfork/vfork02.c          |  2 +-
+ testcases/lib/tst_device.c                         |  2 +-
+ testcases/network/lib6/asapi_01.c                  |  2 +-
+ testcases/network/lib6/asapi_03.c                  |  2 +-
+ tools/apicmds/ltpapicmd.c                          |  4 ++--
+ utils/sctp/testlib/sctputil.h                      |  2 +-
+ 150 files changed, 177 insertions(+), 177 deletions(-)
+ rename include/old/{old_checkpoint.h => otst_checkpoint.h} (95%)
+ rename include/old/{ltp_cpuid.h => otst_cpuid.h} (100%)
+ rename include/old/{old_device.h => otst_device.h} (97%)
+ rename include/old/{tlibio.h => otst_lio.h} (100%)
+ rename include/old/{old_module.h => otst_module.h} (100%)
+ rename include/old/{ltp_priv.h => otst_priv.h} (100%)
+ rename include/old/{random_range.h => otst_random_range.h} (100%)
+ rename include/old/{old_resource.h => otst_resource.h} (100%)
+ rename include/old/{old_safe_file_ops.h => otst_safe_file_ops.h} (100%)
+ rename include/old/{safe_macros.h => otst_safe_macros.h} (99%)
+ rename include/old/{old_safe_net.h => otst_safe_net.h} (95%)
+ rename include/old/{old_safe_stdio.h => otst_safe_stdio.h} (93%)
+ rename include/old/{ltp_signal.h => otst_signal.h} (100%)
+ rename include/old/{old_tmpdir.h => otst_tmpdir.h} (96%)
+ rename include/old/{usctest.h => otst_usctest.h} (100%)
 
-diff --git a/doc/developers/api_c_tests.rst b/doc/developers/api_c_tests.rst
-index be3baeaf0..73279973c 100644
---- a/doc/developers/api_c_tests.rst
-+++ b/doc/developers/api_c_tests.rst
-@@ -62,4 +62,4 @@ Temporary directory
+diff --git a/include/lapi/rt_sigaction.h b/include/lapi/rt_sigaction.h
+index a42b690d0..e78b28548 100644
+--- a/include/lapi/rt_sigaction.h
++++ b/include/lapi/rt_sigaction.h
+@@ -9,7 +9,7 @@
+ #ifndef LAPI_RT_SIGACTION_H__
+ #define LAPI_RT_SIGACTION_H__
  
- LTP libraries
- -------------
--.. kernel-doc:: ../../include/libswap.h
-+.. kernel-doc:: ../../include/etst_swap.h
-diff --git a/include/ipcmsg.h b/include/etst_ipcmsg.h
-similarity index 52%
-rename from include/ipcmsg.h
-rename to include/etst_ipcmsg.h
-index 3b3fa32c0..be8fbd366 100644
---- a/include/ipcmsg.h
-+++ b/include/etst_ipcmsg.h
-@@ -1,28 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * Copyright (c) Linux Test Project, 2026
-  */
+-#include "ltp_signal.h"
++#include "otst_signal.h"
  
- /*
-- * ipcmsg.h - common definitions for the IPC message tests.
-+ * etst_ipcmsg.h - common definitions for the IPC message tests.
-  */
+ #define INVAL_SA_PTR ((void *)-1)
  
--#ifndef __IPCMSG_H
--#define __IPCMSG_H	1
-+#ifndef ETST_IPCMSG_H__
-+#define ETST_IPCMSG_H__	1
- 
- #include <errno.h>
- #include <sys/ipc.h>
-@@ -63,4 +50,4 @@ int getuserid(char *);
- int get_max_msgqueues(void);
- int get_used_msgqueues(void);
- 
--#endif /* ipcmsg.h */
-+#endif /* etst_ipcmsg.h */
-diff --git a/include/etst_ipcsem.h b/include/etst_ipcsem.h
-new file mode 100644
-index 000000000..abc8481ee
---- /dev/null
-+++ b/include/etst_ipcsem.h
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * Copyright (c) Linux Test Project, 2026
-+ */
-+
-+/*
-+ * etst_ipcsem.h - common definitions for the IPC semaphore tests
-+ */
-+
-+#ifndef ETST_IPCSEM_H__
-+#define ETST_IPCSEM_H__
-+
-+#include <errno.h>
-+#include <sys/ipc.h>
-+#include <sys/sem.h>
-+
-+#include "test.h"
-+#include "lapi/sem.h"
-+
-+void cleanup(void);
-+void setup(void);
-+
-+#define SEM_RD	0400
-+#define SEM_ALT	0200
-+#define SEM_RA	SEM_RD | SEM_ALT
-+
-+#define PSEMS	10		/* a reasonable value for the number of */
-+				/* "primitive semaphores" per ID 	*/
-+
-+#ifdef LIBIPC
-+key_t semkey;			/* an IPC key generated by ftok() */
-+#else
-+extern key_t semkey;	 	 /* an IPC key generated by ftok() */
-+#endif
-+
-+void rm_sema(int sem_id);
-+
-+int getipckey();
-+int getuserid(char *);
-+
-+#endif /* libipcsem.h */
-diff --git a/include/etst_msgctl.h b/include/etst_msgctl.h
-new file mode 100644
-index 000000000..bb5d712b9
---- /dev/null
-+++ b/include/etst_msgctl.h
-@@ -0,0 +1,27 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) International Business Machines  Corp., 2002
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ * Copyright (c) Linux Test Project, 2026
-+ */
-+
-+#ifndef ETST_MSGCTL_H__
-+#define ETST_MSGCTL_H__
-+
-+#define FAIL	1
-+#define PASS	0
-+
-+struct mbuffer {
-+	long type;
-+	struct {
-+		char len;
-+		char pbytes[99];
-+	} data;
-+};
-+
-+int doreader(long key, int tid, long type, int child, int nreps);
-+int dowriter(long key, int tid, long type, int child, int nreps);
-+int fill_buffer(char *buf, char val, int size);
-+int verify(char *buf, char val, int size, int child);
-+
-+#endif /* ETST_MSGCTL_H__ */
-diff --git a/include/libnewipc.h b/include/etst_newipc.h
-similarity index 62%
-rename from include/libnewipc.h
-rename to include/etst_newipc.h
-index 969c93292..179df3f2a 100644
---- a/include/libnewipc.h
-+++ b/include/etst_newipc.h
-@@ -1,26 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program.
-+ * Copyright (c) Linux Test Project, 2026
-  */
- 
- /*
-  * common definitions for the IPC system calls.
-  */
- 
--#ifndef __LIBNEWIPC_H
--#define __LIBNEWIPC_H	1
-+#ifndef ETST_NEWIPC_H__
-+#define ETST_NEWIPC_H__	1
- 
- #include <time.h>
- #include <sys/types.h>
-@@ -60,4 +49,4 @@ void *probe_free_addr(const char *file, const int lineno);
- #define PROBE_FREE_ADDR() \
- 	probe_free_addr(__FILE__, __LINE__)
- 
--#endif /* newlibipc.h */
-+#endif /* etst_newipc.h */
-diff --git a/include/tst_numa.h b/include/etst_numa.h
-similarity index 51%
-rename from include/tst_numa.h
-rename to include/etst_numa.h
-index a1f961630..441aa5f49 100644
---- a/include/tst_numa.h
-+++ b/include/etst_numa.h
-@@ -2,81 +2,81 @@
-  * Copyright (c) 2018 Cyril Hrubis <chrubis@suse.cz>
-  */
- 
--#ifndef TST_NUMA_H__
--#define TST_NUMA_H__
-+#ifndef ETST_NUMA_H__
-+#define ETST_NUMA_H__
- 
- #include <string.h>
- 
- /**
-- * struct tst_nodemap - Numa nodemap.
-+ * struct etst_nodemap - Numa nodemap.
-  *
-  * @cnt: Number of nodes in map.
-  * @counters: Page allocation counters.
-  * @map: Array of numa ids.
-  */
--struct tst_nodemap {
-+struct etst_nodemap {
- 	unsigned int cnt;
- 	unsigned int *counters;
- 	unsigned int map[];
- };
- 
- /**
-- * tst_nodemap_reset_counters() - Clears numa counters. The counters are lazy-allocated on first call of this function.
-+ * etst_nodemap_reset_counters() - Clears numa counters. The counters are lazy-allocated on first call of this function.
-  *
-  * @nodes: Numa nodemap.
-  */
--void tst_nodemap_reset_counters(struct tst_nodemap *nodes);
-+void etst_nodemap_reset_counters(struct etst_nodemap *nodes);
- 
- /**
-- * tst_nodemap_print_counters() - Prints pages allocated per each node.
-+ * etst_nodemap_print_counters() - Prints pages allocated per each node.
-  *
-  * @nodes: Numa nodemap.
-  */
--void tst_nodemap_print_counters(struct tst_nodemap *nodes);
-+void etst_nodemap_print_counters(struct etst_nodemap *nodes);
- 
- /**
-- * tst_mempolicy_mode_name() - Returns a name for a mempolicy/mbind mode.
-+ * etst_mempolicy_mode_name() - Returns a name for a mempolicy/mbind mode.
-  *
-  * @mode: Numa mempolicy mode.
-  *
-  * return: a name for a mempolicy/mbind mode.
-  */
--const char *tst_mempolicy_mode_name(int mode);
-+const char *etst_mempolicy_mode_name(int mode);
- 
- /**
-- * tst_numa_map() - Maps pages into memory, if path is NULL the mapping is anonymous otherwise is backed by the file.
-+ * etst_numa_map() - Maps pages into memory, if path is NULL the mapping is anonymous otherwise is backed by the file.
-  *
-  * @path: Path to a file, if not NULL mapping is file based.
-  * @size: Mapping size.
-  *
-  * return: a pointer to a mapped file.
-  */
--void *tst_numa_map(const char *path, size_t size);
-+void *etst_numa_map(const char *path, size_t size);
- 
- /**
-- * tst_numa_fault() - Writes to memory in order to get the pages faulted.
-+ * etst_numa_fault() - Writes to memory in order to get the pages faulted.
-  *
-  * @ptr: Start of the mapping.
-  * @size: Size of the mapping.
-  */
--static inline void tst_numa_fault(void *ptr, size_t size)
-+static inline void etst_numa_fault(void *ptr, size_t size)
- {
- 	memset(ptr, 'a', size);
- }
- 
- /**
-- * tst_numa_unmap() - Frees the memory.
-+ * etst_numa_unmap() - Frees the memory.
-  *
-  * @ptr: Start of the mapping.
-  * @size: Size of the mapping.
-  */
--static inline void tst_numa_unmap(void *ptr, size_t size)
-+static inline void etst_numa_unmap(void *ptr, size_t size)
- {
- 	SAFE_MUNMAP(ptr, size);
- }
- 
- /**
-- * tst_nodemap_count_pages() - Check which numa node resides each page.
-+ * etst_nodemap_count_pages() - Check which numa node resides each page.
-  *
-  * Check on which numa node resides each page of the mapping starting at ptr
-  * and continuing pages long and increases nodemap counters accordingly.
-@@ -85,28 +85,28 @@ static inline void tst_numa_unmap(void *ptr, size_t size)
-  * @ptr:   Pointer to start of a mapping.
-  * @size:  Size of the mapping.
-  */
--void tst_nodemap_count_pages(struct tst_nodemap *nodes, void *ptr, size_t size);
-+void etst_nodemap_count_pages(struct etst_nodemap *nodes, void *ptr, size_t size);
- 
- /**
-- * tst_nodemap_free() - Frees nodemap.
-+ * etst_nodemap_free() - Frees nodemap.
-  *
-  * @nodes: Numa nodemap to be freed.
-  */
--void tst_nodemap_free(struct tst_nodemap *nodes);
-+void etst_nodemap_free(struct etst_nodemap *nodes);
- 
- /**
-- * enum tst_numa_types - Bitflags for tst_get_nodemap() function.
-+ * enum etst_numa_types - Bitflags for etst_get_nodemap() function.
-  *
-  * @TST_NUMA_ANY: general NUMA node.
-  * @TST_NUMA_MEM: NUMA memory node.
-  */
--enum tst_numa_types {
-+enum etst_numa_types {
- 	TST_NUMA_ANY = 0x00,
- 	TST_NUMA_MEM = 0x01,
- };
- 
- /**
-- * tst_get_nodemap() - Allocates and returns numa node map, which is an array of numa nodes which
-+ * etst_get_nodemap() - Allocates and returns numa node map, which is an array of numa nodes which
-  * contain desired resources e.g. memory.
-  *
-  * @type:       Bitflags of enum tst_numa_types specifying desired resources.
-@@ -114,9 +114,9 @@ enum tst_numa_types {
-  *             requested amount of free+buffers memory it's not included in
-  *             the resulting list of nodes.
-  *
-- * return: On success returns allocated and initialized struct tst_nodemap which contains
-+ * return: On success returns allocated and initialized struct etst_nodemap which contains
-  *         array of numa node ids that contains desired resources.
-  */
--struct tst_nodemap *tst_get_nodemap(int type, size_t min_mem_kb);
-+struct etst_nodemap *etst_get_nodemap(int type, size_t min_mem_kb);
- 
--#endif /* TST_NUMA_H__ */
-+#endif /* ETST_NUMA_H__ */
-diff --git a/include/parse_vdso.h b/include/etst_parse_vdso.h
-similarity index 93%
-rename from include/parse_vdso.h
-rename to include/etst_parse_vdso.h
-index 5212fc659..b62c88f50 100644
---- a/include/parse_vdso.h
-+++ b/include/etst_parse_vdso.h
-@@ -4,8 +4,8 @@
-  * Author: Viresh Kumar <viresh.kumar@linaro.org>
-  */
- 
--#ifndef PARSE_VDSO_H__
--#define PARSE_VDSO_H__
-+#ifndef ETST_PARSE_VDSO_H__
-+#define ETST_PARSE_VDSO_H__
- 
- #include <stdint.h>
- 
-@@ -38,4 +38,4 @@ extern void *vdso_sym(const char *version, const char *name);
- typedef int (*gettime_t)(clockid_t clk_id, void *ts);
- void find_clock_gettime_vdso(gettime_t *ptr_vdso_gettime,
- 			     gettime_t *ptr_vdso_gettime64);
--#endif /* PARSE_VDSO_H__ */
-+#endif /* ETST_PARSE_VDSO_H__ */
-diff --git a/include/libsigwait.h b/include/etst_sigwait.h
-similarity index 57%
-rename from include/libsigwait.h
-rename to include/etst_sigwait.h
-index 2fca578b1..5958d3844 100644
---- a/include/libsigwait.h
-+++ b/include/etst_sigwait.h
-@@ -4,8 +4,8 @@
-  * Author: Viresh Kumar <viresh.kumar@linaro.org>
-  */
- 
--#ifndef SIGWAIT_H__
--#define SIGWAIT_H__
-+#ifndef ETST_SIGWAIT_H__
-+#define ETST_SIGWAIT_H__
- 
- #include "tst_test.h"
- #include "tst_timer.h"
-@@ -21,24 +21,24 @@ struct sigwait_test_desc {
- 	int signo;
- };
- 
--void test_empty_set(swi_func sigwaitinfo, int signo,
-+void etst_empty_set(swi_func sigwaitinfo, int signo,
- 		    enum tst_ts_type type LTP_ATTRIBUTE_UNUSED);
--void test_timeout(swi_func sigwaitinfo, int signo, enum tst_ts_type type);
--void test_unmasked_matching(swi_func sigwaitinfo, int signo,
-+void etst_timeout(swi_func sigwaitinfo, int signo, enum tst_ts_type type);
-+void etst_unmasked_matching(swi_func sigwaitinfo, int signo,
- 			    enum tst_ts_type type LTP_ATTRIBUTE_UNUSED);
--void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo,
-+void etst_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo,
- 				   enum tst_ts_type type LTP_ATTRIBUTE_UNUSED);
--void test_masked_matching(swi_func sigwaitinfo, int signo,
-+void etst_masked_matching(swi_func sigwaitinfo, int signo,
- 			  enum tst_ts_type type LTP_ATTRIBUTE_UNUSED);
--void test_masked_matching_rt(swi_func sigwaitinfo, int signo,
-+void etst_masked_matching_rt(swi_func sigwaitinfo, int signo,
- 			     enum tst_ts_type type LTP_ATTRIBUTE_UNUSED);
--void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo,
-+void etst_masked_matching_noinfo(swi_func sigwaitinfo, int signo,
- 				 enum tst_ts_type type LTP_ATTRIBUTE_UNUSED);
--void test_bad_address(swi_func sigwaitinfo, int signo,
-+void etst_bad_address(swi_func sigwaitinfo, int signo,
- 		      enum tst_ts_type type LTP_ATTRIBUTE_UNUSED);
--void test_bad_address2(swi_func sigwaitinfo, int signo LTP_ATTRIBUTE_UNUSED,
-+void etst_bad_address2(swi_func sigwaitinfo, int signo LTP_ATTRIBUTE_UNUSED,
- 		       enum tst_ts_type type LTP_ATTRIBUTE_UNUSED);
--void test_bad_address3(swi_func sigwaitinfo, int signo LTP_ATTRIBUTE_UNUSED,
-+void etst_bad_address3(swi_func sigwaitinfo, int signo LTP_ATTRIBUTE_UNUSED,
- 		       enum tst_ts_type type LTP_ATTRIBUTE_UNUSED);
--void sigwait_setup(void);
--#endif /* SIGWAIT_H__ */
-+void etst_sigwait_setup(void);
-+#endif /* ETST_SIGWAIT_H__ */
-diff --git a/include/libswap.h b/include/etst_swap.h
+diff --git a/include/old/old_checkpoint.h b/include/old/otst_checkpoint.h
 similarity index 95%
-rename from include/libswap.h
-rename to include/etst_swap.h
-index b22b992ee..aa9a57ef8 100644
---- a/include/libswap.h
-+++ b/include/etst_swap.h
-@@ -11,8 +11,8 @@
-  * Contains common content for all swapon/swapoff tests.
+rename from include/old/old_checkpoint.h
+rename to include/old/otst_checkpoint.h
+index f91fef9f6..8533bcdba 100644
+--- a/include/old/old_checkpoint.h
++++ b/include/old/otst_checkpoint.h
+@@ -26,8 +26,8 @@
+ 
+   */
+ 
+-#ifndef OLD_CHECKPOINT__
+-#define OLD_CHECKPOINT__
++#ifndef OTST_CHECKPOINT__
++#define OTST_CHECKPOINT__
+ 
+ #include "test.h"
+ #include "tst_checkpoint_fn.h"
+@@ -48,4 +48,4 @@
+         tst_safe_checkpoint_wake(__FILE__, __LINE__, cleanup_fn, id, 1); \
+         tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id, 0);
+ 
+-#endif /* OLD_CHECKPOINT__ */
++#endif /* OTST_CHECKPOINT__ */
+diff --git a/include/old/ltp_cpuid.h b/include/old/otst_cpuid.h
+similarity index 100%
+rename from include/old/ltp_cpuid.h
+rename to include/old/otst_cpuid.h
+diff --git a/include/old/old_device.h b/include/old/otst_device.h
+similarity index 97%
+rename from include/old/old_device.h
+rename to include/old/otst_device.h
+index a6e9fea86..b666c0fa2 100644
+--- a/include/old/old_device.h
++++ b/include/old/otst_device.h
+@@ -15,8 +15,8 @@
+  * along with this program. If not, see <http://www.gnu.org/licenses/>.
   */
  
--#ifndef __LIBSWAP_H__
--#define __LIBSWAP_H__
-+#ifndef ETST_SWAP_H__
-+#define ETST_SWAP_H__
+-#ifndef OLD_DEVICE_H__
+-#define OLD_DEVICE_H__
++#ifndef OTST_DEVICE_H__
++#define OTST_DEVICE_H__
  
- enum swapfile_method {
-     SWAPFILE_BY_SIZE,
-@@ -110,10 +110,10 @@ int make_swapfile(const char *file, const int lineno,
- bool is_swap_supported(const char *filename);
- 
- /**
-- * tst_count_swaps() - Get the used swapfiles number.
-+ * etst_count_swaps() - Get the used swapfiles number.
-  *
-  * Return: used swapfiles number.
+ /*
+  * Returns filesystem type to be used for the testing. Unless your test is
+@@ -81,4 +81,4 @@ int tst_detach_device(const char *dev);
   */
--int tst_count_swaps(void);
-+int etst_count_swaps(void);
+ int tst_umount(const char *path);
  
--#endif /* __LIBSWAP_H__ */
-+#endif /* ETST_SWAP_H__ */
-diff --git a/include/tst_uinput.h b/include/etst_uinput.h
-similarity index 92%
-rename from include/tst_uinput.h
-rename to include/etst_uinput.h
-index cf351cdfb..5e0dd8c17 100644
---- a/include/tst_uinput.h
-+++ b/include/etst_uinput.h
-@@ -3,8 +3,8 @@
-  * Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
-  */
+-#endif	/* OLD_DEVICE_H__ */
++#endif	/* OTST_DEVICE_H__ */
+diff --git a/include/old/tlibio.h b/include/old/otst_lio.h
+similarity index 100%
+rename from include/old/tlibio.h
+rename to include/old/otst_lio.h
+diff --git a/include/old/old_module.h b/include/old/otst_module.h
+similarity index 100%
+rename from include/old/old_module.h
+rename to include/old/otst_module.h
+diff --git a/include/old/ltp_priv.h b/include/old/otst_priv.h
+similarity index 100%
+rename from include/old/ltp_priv.h
+rename to include/old/otst_priv.h
+diff --git a/include/old/random_range.h b/include/old/otst_random_range.h
+similarity index 100%
+rename from include/old/random_range.h
+rename to include/old/otst_random_range.h
+diff --git a/include/old/old_resource.h b/include/old/otst_resource.h
+similarity index 100%
+rename from include/old/old_resource.h
+rename to include/old/otst_resource.h
+diff --git a/include/old/old_safe_file_ops.h b/include/old/otst_safe_file_ops.h
+similarity index 100%
+rename from include/old/old_safe_file_ops.h
+rename to include/old/otst_safe_file_ops.h
+diff --git a/include/old/safe_macros.h b/include/old/otst_safe_macros.h
+similarity index 99%
+rename from include/old/safe_macros.h
+rename to include/old/otst_safe_macros.h
+index 307843ab0..afade960b 100644
+--- a/include/old/safe_macros.h
++++ b/include/old/otst_safe_macros.h
+@@ -17,8 +17,8 @@
+ #define __SAFE_MACROS_H__
  
--#ifndef TST_UINPUT_H__
--#define TST_UINPUT_H__
-+#ifndef ETST_UINPUT_H__
-+#define ETST_UINPUT_H__
+ #include "safe_macros_fn.h"
+-#include "old_safe_stdio.h"
+-#include "old_safe_net.h"
++#include "otst_safe_stdio.h"
++#include "otst_safe_net.h"
  
- /**
-  * Tries to open the uinput device.
-@@ -44,4 +44,4 @@ void setup_mouse_events(int fd);
-  */
- void destroy_input_device(int fd);
- 
--#endif	/* TST_UINPUT_H__ */
-+#endif	/* ETST_UINPUT_H__ */
-diff --git a/include/ipcsem.h b/include/ipcsem.h
-deleted file mode 100644
-index 09a0b3cbe..000000000
---- a/include/ipcsem.h
-+++ /dev/null
-@@ -1,55 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * ipcsem.h - common definitions for the IPC semaphore tests
-- */
--
--#ifndef __IPCSEM_H
--#define __IPCSEM_H
--
--#include <errno.h>
--#include <sys/ipc.h>
--#include <sys/sem.h>
--
--#include "test.h"
--#include "lapi/sem.h"
--
--void cleanup(void);
--void setup(void);
--
--#define SEM_RD	0400
--#define SEM_ALT	0200
--#define SEM_RA	SEM_RD | SEM_ALT
--
--#define PSEMS	10		/* a reasonable value for the number of */
--				/* "primitive semaphores" per ID 	*/
--
--#ifdef LIBIPC
--key_t semkey;			/* an IPC key generated by ftok() */
--#else
--extern key_t semkey;	 	 /* an IPC key generated by ftok() */
--#endif
--
--void rm_sema(int sem_id);
--
--int getipckey();
--int getuserid(char *);
--
--#endif /* ipcsem.h */
-diff --git a/include/libmsgctl.h b/include/libmsgctl.h
-deleted file mode 100644
-index e1afeab5f..000000000
---- a/include/libmsgctl.h
-+++ /dev/null
-@@ -1,39 +0,0 @@
--/*
-- * Copyright (c) International Business Machines  Corp., 2002
-- * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License as
-- * published by the Free Software Foundation; either version 2 of
-- * the License, or (at your option) any later version.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software Foundation,
-- * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-- */
--
--#ifndef __LIBMSGCTL_H__
--#define __LIBMSGCTL_H__
--
--#define FAIL	1
--#define PASS	0
--
--struct mbuffer {
--	long type;
--	struct {
--		char len;
--		char pbytes[99];
--	} data;
--};
--
--int doreader(long key, int tid, long type, int child, int nreps);
--int dowriter(long key, int tid, long type, int child, int nreps);
--int fill_buffer(char *buf, char val, int size);
--int verify(char *buf, char val, int size, int child);
--
--#endif /*__LIBMSGCTL_H__ */
-diff --git a/include/tst_uid.h b/include/tst_uid.h
-index e604effce..2237ddcbf 100644
---- a/include/tst_uid.h
-+++ b/include/tst_uid.h
-@@ -2,8 +2,8 @@
-  * Copyright (c) 2021 Linux Test Project
+ #define SAFE_BASENAME(cleanup_fn, path)	\
+ 	safe_basename(__FILE__, __LINE__, (cleanup_fn), (path))
+diff --git a/include/old/old_safe_net.h b/include/old/otst_safe_net.h
+similarity index 95%
+rename from include/old/old_safe_net.h
+rename to include/old/otst_safe_net.h
+index 639094a94..cb18bd763 100644
+--- a/include/old/old_safe_net.h
++++ b/include/old/otst_safe_net.h
+@@ -16,8 +16,8 @@
+  * along with this program. If not, see <http://www.gnu.org/licenses/>.
   */
  
--#ifndef TST_UID_H_
--#define TST_UID_H_
-+#ifndef TST_UID_H__
-+#define TST_UID_H__
+-#ifndef OLD_SAFE_NET_H__
+-#define OLD_SAFE_NET_H__
++#ifndef OTST_SAFE_NET_H__
++#define OTST_SAFE_NET_H__
  
  #include <sys/types.h>
+ #include <sys/socket.h>
+@@ -47,4 +47,4 @@
+ #define TST_GET_UNUSED_PORT(cleanup_fn, family, type) \
+ 	tst_get_unused_port(__FILE__, __LINE__, (cleanup_fn), family, type)
  
-@@ -37,4 +37,4 @@ int tst_check_resgid_(const char *file, const int lineno, const char *callstr,
- #define tst_check_resgid(cstr, rgid, egid, sgid) \
- 	tst_check_resgid_(__FILE__, __LINE__, (cstr), (rgid), (egid), (sgid))
- 
--#endif /* TST_UID_H_ */
-+#endif /* TST_UID_H__ */
-diff --git a/include/ujson.h b/include/ujson.h
-index 8faeb18f0..1a4bb6bd9 100644
---- a/include/ujson.h
-+++ b/include/ujson.h
-@@ -3,11 +3,11 @@
-  * Copyright (C) 2021-2024 Cyril Hrubis <metan@ucw.cz>
+-#endif /* OLD_SAFE_NET_H__ */
++#endif /* OTST_SAFE_NET_H__ */
+diff --git a/include/old/old_safe_stdio.h b/include/old/otst_safe_stdio.h
+similarity index 93%
+rename from include/old/old_safe_stdio.h
+rename to include/old/otst_safe_stdio.h
+index 3508b2479..a2c5404ef 100644
+--- a/include/old/old_safe_stdio.h
++++ b/include/old/otst_safe_stdio.h
+@@ -15,8 +15,8 @@
+  * along with this program. If not, see <http://www.gnu.org/licenses/>.
   */
  
--#ifndef UJSON_H
--#define UJSON_H
-+#ifndef UJSON_H__
-+#define UJSON_H__
- 
- #include <ujson_common.h>
- #include <ujson_reader.h>
- #include <ujson_writer.h>
- 
--#endif /* UJSON_H */
-+#endif /* UJSON_H__ */
-diff --git a/include/ujson_common.h b/include/ujson_common.h
-index ed31c090d..11382c4fb 100644
---- a/include/ujson_common.h
-+++ b/include/ujson_common.h
-@@ -8,8 +8,8 @@
-  * @brief Common JSON reader/writer definitions.
-  */
- 
--#ifndef UJSON_COMMON_H
--#define UJSON_COMMON_H
-+#ifndef UJSON_COMMON_H__
-+#define UJSON_COMMON_H__
- 
- /** @brief Maximal error message length. */
- #define UJSON_ERR_MAX 128
-@@ -66,4 +66,4 @@ typedef struct ujson_val ujson_val;
- /** @brief An array size macro. */
- #define UJSON_ARRAY_SIZE(array) (sizeof(array) / sizeof(*array))
- 
--#endif /* UJSON_COMMON_H */
-+#endif /* UJSON_COMMON_H__ */
-diff --git a/include/ujson_reader.h b/include/ujson_reader.h
-index 273fe624a..8608b6c81 100644
---- a/include/ujson_reader.h
-+++ b/include/ujson_reader.h
-@@ -14,8 +14,8 @@
-  * if error has happened at the end of the sequence.
-  */
- 
--#ifndef UJSON_READER_H
--#define UJSON_READER_H
-+#ifndef UJSON_READER_H__
-+#define UJSON_READER_H__
+-#ifndef OLD_SAFE_STDIO_H__
+-#define OLD_SAFE_STDIO_H__
++#ifndef OTST_SAFE_STDIO_H__
++#define OTST_SAFE_STDIO_H__
  
  #include <stdio.h>
- #include <ujson_common.h>
-@@ -540,4 +540,4 @@ static inline int ujson_reader_consumed(ujson_reader *self)
- 	return self->off >= self->len;
- }
  
--#endif /* UJSON_H */
-+#endif /* UJSON_H__ */
-diff --git a/include/ujson_utf.h b/include/ujson_utf.h
-index f939fbe8c..313213d8e 100644
---- a/include/ujson_utf.h
-+++ b/include/ujson_utf.h
-@@ -8,8 +8,8 @@
-  * @brief Unicode helper macros and functions.
+@@ -34,4 +34,4 @@
+ #define SAFE_POPEN(cleanup_fn, command, type) \
+ 	safe_popen(__FILE__, __LINE__, cleanup_fn, command, type)
+ 
+-#endif /* OLD_SAFE_STDIO_H__ */
++#endif /* OTST_SAFE_STDIO_H__ */
+diff --git a/include/old/ltp_signal.h b/include/old/otst_signal.h
+similarity index 100%
+rename from include/old/ltp_signal.h
+rename to include/old/otst_signal.h
+diff --git a/include/old/old_tmpdir.h b/include/old/otst_tmpdir.h
+similarity index 96%
+rename from include/old/old_tmpdir.h
+rename to include/old/otst_tmpdir.h
+index 3e33bf043..7c42f6242 100644
+--- a/include/old/old_tmpdir.h
++++ b/include/old/otst_tmpdir.h
+@@ -15,8 +15,8 @@
+  * along with this program. If not, see <http://www.gnu.org/licenses/>.
   */
  
--#ifndef UJSON_UTF_H
--#define UJSON_UTF_H
-+#ifndef UJSON_UTF_H__
-+#define UJSON_UTF_H__
- 
- #include <stdint.h>
- #include <stddef.h>
-@@ -165,4 +165,4 @@ static inline int ujson_to_utf8(uint32_t unicode, char *buf)
- 	return 4;
- }
- 
--#endif /* UJSON_UTF_H */
-+#endif /* UJSON_UTF_H__ */
-diff --git a/libs/ipc/libipc.c b/libs/ipc/etst_ipc.c
-similarity index 82%
-rename from libs/ipc/libipc.c
-rename to libs/ipc/etst_ipc.c
-index c2ecbf02d..a1dd34c2f 100644
---- a/libs/ipc/libipc.c
-+++ b/libs/ipc/etst_ipc.c
-@@ -1,25 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * Copyright (c) Linux Test Project, 2026
-  */
+-#ifndef OLD_TMPDIR_H__
+-#define OLD_TMPDIR_H__
++#ifndef OTST_TMPDIR_H__
++#define OTST_TMPDIR_H__
  
  /*
-  * NAME
-- *	libmsg.c
-+ *	etst_ipc.c
-  *
-  * DESCRIPTION
-  *	common routines for the IPC system call tests.
-@@ -35,8 +22,8 @@
-  */
+  * Create a unique temporary directory and chdir() to it. It expects the caller
+@@ -58,4 +58,4 @@ int tst_tmpdir_created(void);
+ /* declared in tst_tmpdir.c */
+ const char *tst_get_startwd(void);
  
- #define LIBIPC
--#include "ipcmsg.h"
--#include "ipcsem.h"
-+#include "etst_ipcmsg.h"
-+#include "etst_ipcsem.h"
- 
- #include <pwd.h>
- #include <sys/ipc.h>
-diff --git a/libs/ipc/libmsgctl.c b/libs/ipc/etst_msgctl.c
-similarity index 77%
-rename from libs/ipc/libmsgctl.c
-rename to libs/ipc/etst_msgctl.c
-index ae459d480..104514e17 100644
---- a/libs/ipc/libmsgctl.c
-+++ b/libs/ipc/etst_msgctl.c
-@@ -1,20 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Copyright (c) International Business Machines  Corp., 2002
-+ * Copyright (c) International Business Machines  Corp., 2001
-  * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License as
-- * published by the Free Software Foundation; either version 2 of
-- * the License, or (at your option) any later version.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software Foundation,
-- * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ * Copyright (c) Linux Test Project, 2026
-  */
- 
- #include <errno.h>
-@@ -25,7 +13,7 @@
- #include <sys/types.h>
- #include <sys/ipc.h>
- #include <sys/msg.h>
--#include "libmsgctl.h"
-+#include "etst_msgctl.h"
- 
- int doreader(long key, int tid, long type, int child, int nreps)
- {
-diff --git a/libs/newipc/libnewipc.c b/libs/newipc/etst_newipc.c
-similarity index 98%
-rename from libs/newipc/libnewipc.c
-rename to libs/newipc/etst_newipc.c
-index 331f1b1f5..2c04267dc 100644
---- a/libs/newipc/libnewipc.c
-+++ b/libs/newipc/etst_newipc.c
-@@ -20,7 +20,7 @@
- #define	TST_NO_DEFAULT_MAIN
- 
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "tst_safe_stdio.h"
- #include "tst_safe_sysv_ipc.h"
- 
-diff --git a/libs/numa/tst_numa.c b/libs/numa/etst_numa.c
-similarity index 87%
-rename from libs/numa/tst_numa.c
-rename to libs/numa/etst_numa.c
-index c3297013b..dd3989e16 100644
---- a/libs/numa/tst_numa.c
-+++ b/libs/numa/etst_numa.c
-@@ -14,10 +14,10 @@
- 
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
--#include "tst_numa.h"
-+#include "etst_numa.h"
- #include "lapi/numaif.h"
- 
--void tst_nodemap_print_counters(struct tst_nodemap *nodes)
-+void etst_nodemap_print_counters(struct etst_nodemap *nodes)
- {
- 	unsigned int i;
- 
-@@ -27,7 +27,7 @@ void tst_nodemap_print_counters(struct tst_nodemap *nodes)
- 	}
- }
- 
--void tst_nodemap_reset_counters(struct tst_nodemap *nodes)
-+void etst_nodemap_reset_counters(struct etst_nodemap *nodes)
- {
- 	size_t arr_size = sizeof(unsigned int) * nodes->cnt;
- 
-@@ -37,7 +37,7 @@ void tst_nodemap_reset_counters(struct tst_nodemap *nodes)
- 	memset(nodes->counters, 0, arr_size);
- }
- 
--void tst_nodemap_free(struct tst_nodemap *nodes)
-+void etst_nodemap_free(struct etst_nodemap *nodes)
- {
- 	free(nodes->counters);
- 	free(nodes);
-@@ -45,7 +45,7 @@ void tst_nodemap_free(struct tst_nodemap *nodes)
- 
- #ifdef HAVE_NUMA_V2
- 
--const char *tst_mempolicy_mode_name(int mode)
-+const char *etst_mempolicy_mode_name(int mode)
- {
- 	switch (mode) {
- 	case MPOL_DEFAULT:
-@@ -64,7 +64,7 @@ const char *tst_mempolicy_mode_name(int mode)
- }
- 
- 
--static void inc_counter(unsigned int node, struct tst_nodemap *nodes)
-+static void inc_counter(unsigned int node, struct etst_nodemap *nodes)
- {
- 	unsigned int i;
- 
-@@ -76,7 +76,7 @@ static void inc_counter(unsigned int node, struct tst_nodemap *nodes)
- 	}
- }
- 
--void tst_nodemap_count_pages(struct tst_nodemap *nodes,
-+void etst_nodemap_count_pages(struct etst_nodemap *nodes,
-                              void *ptr, size_t size)
- {
- 	size_t page_size = getpagesize();
-@@ -100,7 +100,7 @@ void tst_nodemap_count_pages(struct tst_nodemap *nodes,
- 	}
- }
- 
--void *tst_numa_map(const char *path, size_t size)
-+void *etst_numa_map(const char *path, size_t size)
- {
- 	char *ptr;
- 	int fd = -1;
-@@ -178,10 +178,10 @@ static int node_has_enough_memory(int node, size_t min_kb)
- 	return 1;
- }
- 
--struct tst_nodemap *tst_get_nodemap(int type, size_t min_mem_kb)
-+struct etst_nodemap *etst_get_nodemap(int type, size_t min_mem_kb)
- {
- 	struct bitmask *membind;
--	struct tst_nodemap *nodes;
-+	struct etst_nodemap *nodes;
- 	unsigned int i, cnt;
- 
- 	if (type & ~(TST_NUMA_MEM))
-@@ -199,7 +199,7 @@ struct tst_nodemap *tst_get_nodemap(int type, size_t min_mem_kb)
- 
- 	tst_res(TINFO, "Found %u NUMA memory nodes", cnt);
- 
--	nodes = SAFE_MALLOC(sizeof(struct tst_nodemap)
-+	nodes = SAFE_MALLOC(sizeof(struct etst_nodemap)
- 	                    + sizeof(unsigned int) * cnt);
- 	nodes->cnt = cnt;
- 	nodes->counters = NULL;
-diff --git a/libs/sigwait/sigwait.c b/libs/sigwait/etst_sigwait.c
-similarity index 92%
-rename from libs/sigwait/sigwait.c
-rename to libs/sigwait/etst_sigwait.c
-index a9fd62d73..801feba41 100644
---- a/libs/sigwait/sigwait.c
-+++ b/libs/sigwait/etst_sigwait.c
-@@ -5,11 +5,11 @@
- #include <errno.h>
+-#endif	/* OLD_TMPDIR_H__ */
++#endif	/* OTST_TMPDIR_H__ */
+diff --git a/include/old/usctest.h b/include/old/otst_usctest.h
+similarity index 100%
+rename from include/old/usctest.h
+rename to include/old/otst_usctest.h
+diff --git a/include/old/test.h b/include/old/test.h
+index 306868fb5..3125d19af 100644
+--- a/include/old/test.h
++++ b/include/old/test.h
+@@ -18,21 +18,21 @@
  #include <stdlib.h>
- #include <limits.h>
--#include "libsigwait.h"
-+#include "etst_sigwait.h"
- #include "tst_sig_proc.h"
- #include "lapi/syscalls.h"
+ #include <stdint.h>
  
--void test_empty_set(swi_func sigwaitinfo, int signo,
-+void etst_empty_set(swi_func sigwaitinfo, int signo,
- 		    enum tst_ts_type type LTP_ATTRIBUTE_UNUSED)
- {
- 	sigset_t sigs;
-@@ -35,7 +35,7 @@ void test_empty_set(swi_func sigwaitinfo, int signo,
- 	SAFE_WAIT(NULL);
- }
+-#include "usctest.h"
++#include "otst_usctest.h"
  
--void test_timeout(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
-+void etst_timeout(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- {
- 	sigset_t sigs;
- 	siginfo_t si;
-@@ -68,7 +68,7 @@ void test_timeout(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- /* Note: sigwait-ing for a signal that is not blocked is unspecified
-  * by POSIX; but works for non-ignored signals under Linux
-  */
--void test_unmasked_matching(swi_func sigwaitinfo, int signo,
-+void etst_unmasked_matching(swi_func sigwaitinfo, int signo,
- 			    enum tst_ts_type type LTP_ATTRIBUTE_UNUSED)
- {
- 	sigset_t sigs;
-@@ -96,7 +96,7 @@ void test_unmasked_matching(swi_func sigwaitinfo, int signo,
- 	SAFE_WAIT(NULL);
- }
- 
--void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo,
-+void etst_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo,
- 				   enum tst_ts_type type LTP_ATTRIBUTE_UNUSED)
- {
- 	sigset_t sigs;
-@@ -118,7 +118,7 @@ void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo,
- 	SAFE_WAIT(NULL);
- }
- 
--void test_masked_matching(swi_func sigwaitinfo, int signo,
-+void etst_masked_matching(swi_func sigwaitinfo, int signo,
- 			  enum tst_ts_type type LTP_ATTRIBUTE_UNUSED)
- {
- 	sigset_t sigs, oldmask;
-@@ -166,7 +166,7 @@ void test_masked_matching(swi_func sigwaitinfo, int signo,
- 	SAFE_WAIT(NULL);
- }
- 
--void test_masked_matching_rt(swi_func sigwaitinfo, int signo,
-+void etst_masked_matching_rt(swi_func sigwaitinfo, int signo,
- 			     enum tst_ts_type type LTP_ATTRIBUTE_UNUSED)
- {
- 	sigset_t sigs, oldmask;
-@@ -232,7 +232,7 @@ void test_masked_matching_rt(swi_func sigwaitinfo, int signo,
- 			 "sigwaitinfo failed to restore the original mask");
- }
- 
--void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo,
-+void etst_masked_matching_noinfo(swi_func sigwaitinfo, int signo,
- 				 enum tst_ts_type type LTP_ATTRIBUTE_UNUSED)
- {
- 	sigset_t sigs, oldmask;
-@@ -274,7 +274,7 @@ void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo,
- 	SAFE_WAIT(NULL);
- }
- 
--void test_bad_address(swi_func sigwaitinfo, int signo,
-+void etst_bad_address(swi_func sigwaitinfo, int signo,
- 		      enum tst_ts_type type LTP_ATTRIBUTE_UNUSED)
- {
- 	sigset_t sigs, oldmask;
-@@ -301,7 +301,7 @@ void test_bad_address(swi_func sigwaitinfo, int signo,
- 	SAFE_WAIT(NULL);
- }
- 
--void test_bad_address2(swi_func sigwaitinfo, int signo LTP_ATTRIBUTE_UNUSED,
-+void etst_bad_address2(swi_func sigwaitinfo, int signo LTP_ATTRIBUTE_UNUSED,
- 		       enum tst_ts_type type LTP_ATTRIBUTE_UNUSED)
- {
- 	pid_t pid;
-@@ -342,7 +342,7 @@ void test_bad_address2(swi_func sigwaitinfo, int signo LTP_ATTRIBUTE_UNUSED,
- 	}
- }
- 
--void test_bad_address3(swi_func sigwaitinfo, int signo LTP_ATTRIBUTE_UNUSED,
-+void etst_bad_address3(swi_func sigwaitinfo, int signo LTP_ATTRIBUTE_UNUSED,
- 		       enum tst_ts_type type LTP_ATTRIBUTE_UNUSED)
- {
- 	sigset_t sigs;
-@@ -373,7 +373,7 @@ static void empty_handler(int sig LTP_ATTRIBUTE_UNUSED)
- {
- }
- 
--void sigwait_setup(void)
-+void etst_sigwait_setup(void)
- {
- 	signal(SIGUSR1, empty_handler);
- 	signal(SIGALRM, empty_handler);
-diff --git a/libs/swap/libswap.c b/libs/swap/etst_swap.c
-similarity index 98%
-rename from libs/swap/libswap.c
-rename to libs/swap/etst_swap.c
-index 3eb589cdd..38c819007 100644
---- a/libs/swap/libswap.c
-+++ b/libs/swap/etst_swap.c
-@@ -17,7 +17,7 @@
- #define BUFSIZE 200
- 
- #include "tst_test.h"
--#include "libswap.h"
-+#include "etst_swap.h"
- #include "lapi/syscalls.h"
- #include "tst_kconfig.h"
+ #include "tst_common.h"
+-#include "old_safe_file_ops.h"
+-#include "old_checkpoint.h"
++#include "otst_safe_file_ops.h"
++#include "otst_checkpoint.h"
+ #include "tst_process_state.h"
+-#include "old_resource.h"
++#include "otst_resource.h"
+ #include "tst_res_flags.h"
  #include "tst_kvercmp.h"
-@@ -157,7 +157,7 @@ int make_swapfile(const char *file, const int lineno,
- 		blocks = num;
- 		tst_res_(file, lineno, TINFO, "create a swapfile with %u block numbers", blocks);
- 	} else {
--		tst_brk_(file, lineno, TBROK, "Invalid method, please see include/libswap.h");
-+		tst_brk_(file, lineno, TBROK, "Invalid method, please see include/etst_swap.h");
- 	}
+ #include "tst_fs.h"
+ #include "tst_pid.h"
+ #include "tst_cmd.h"
+ #include "tst_cpu.h"
+-#include "old_device.h"
+-#include "old_tmpdir.h"
++#include "otst_device.h"
++#include "otst_tmpdir.h"
+ #include "tst_minmax.h"
+ #include "tst_get_bad_addr.h"
+ #include "tst_path_has_mnt_flags.h"
+@@ -116,7 +116,7 @@ void tst_brkm__(const char *file, const int lineno, int ttype,
+ 	__attribute__ ((format (printf, 5, 6))) LTP_ATTRIBUTE_NORETURN;
  
- 	/* To guarantee at least one page can be swapped out */
-@@ -239,7 +239,7 @@ bool is_swap_supported(const char *filename)
- 	return true;
- }
+ #ifdef LTPLIB
+-# include "ltp_priv.h"
++# include "otst_priv.h"
+ # define tst_brkm(flags, cleanup, fmt, ...) do { \
+ 	if (tst_test) \
+ 		tst_brk_(__FILE__, __LINE__, flags, fmt, ##__VA_ARGS__); \
+diff --git a/lib/parse_opts.c b/lib/parse_opts.c
+index 03e833312..90e64df3e 100644
+--- a/lib/parse_opts.c
++++ b/lib/parse_opts.c
+@@ -43,8 +43,8 @@
+ #include <stdint.h>
  
--int tst_count_swaps(void)
-+int etst_count_swaps(void)
- {
- 	FILE *fp;
- 	int used = -1;
-diff --git a/libs/uinput/tst_uinput.c b/libs/uinput/etst_uinput.c
-similarity index 99%
-rename from libs/uinput/tst_uinput.c
-rename to libs/uinput/etst_uinput.c
-index 16e689153..5a4d3955b 100644
---- a/libs/uinput/tst_uinput.c
-+++ b/libs/uinput/etst_uinput.c
-@@ -12,7 +12,7 @@
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
+ #include "test.h"
+-#include "ltp_priv.h"
+-#include "usctest.h"
++#include "otst_priv.h"
++#include "otst_usctest.h"
+ #include "tst_clocks.h"
  
--#include "tst_uinput.h"
-+#include "etst_uinput.h"
- #include "tst_safe_stdio.h"
+ #ifndef UNIT_TEST
+diff --git a/lib/random_range.c b/lib/random_range.c
+index 4c96fd913..2cb6d0a77 100644
+--- a/lib/random_range.c
++++ b/lib/random_range.c
+@@ -33,7 +33,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <malloc.h>
+-#include "random_range.h"
++#include "otst_random_range.h"
  
- #define VIRTUAL_DEVICE "virtual-device-ltp"
-diff --git a/libs/vdso/parse_vdso.c b/libs/vdso/etst_parse_vdso.c
-similarity index 99%
-rename from libs/vdso/parse_vdso.c
-rename to libs/vdso/etst_parse_vdso.c
-index cd75a8945..b5e8a2228 100644
---- a/libs/vdso/parse_vdso.c
-+++ b/libs/vdso/etst_parse_vdso.c
-@@ -1,5 +1,5 @@
  /*
-- * parse_vdso.c: Linux reference vDSO parser
-+ * etst_parse_vdso.c: Linux reference vDSO parser
-  * Written by Andrew Lutomirski, 2011-2014.
-  *
-  * This code is meant to be linked in to various programs that run on Linux.
-diff --git a/libs/vdso/vdso_helpers.c b/libs/vdso/vdso_helpers.c
-index 208c12f65..36bf77d66 100644
---- a/libs/vdso/vdso_helpers.c
-+++ b/libs/vdso/vdso_helpers.c
-@@ -7,7 +7,7 @@
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
+  * Internal format of the range array set up by parse_range()
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index a3145b8d6..6bef3a5e3 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -23,7 +23,7 @@
+ #include <math.h>
+ #include "lapi/fcntl.h"
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
  
--#include "parse_vdso.h"
-+#include "etst_parse_vdso.h"
- #include "config.h"
+ char *safe_basename(const char *file, const int lineno,
+ 		    void (*cleanup_fn) (void), char *path)
+diff --git a/lib/tests/trerrno.c b/lib/tests/trerrno.c
+index a160874de..03b22708d 100644
+--- a/lib/tests/trerrno.c
++++ b/lib/tests/trerrno.c
+@@ -21,7 +21,7 @@
+ #include <fcntl.h>
+ #include <string.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
  
- #ifdef HAVE_GETAUXVAL
-diff --git a/testcases/kernel/input/input_common.h b/testcases/kernel/input/input_common.h
-index 5b1755771..1f8f77e0b 100644
---- a/testcases/kernel/input/input_common.h
-+++ b/testcases/kernel/input/input_common.h
+ #define OUTPUT_FNAME "output"
+ 
+diff --git a/lib/tests/tst_dataroot01.c b/lib/tests/tst_dataroot01.c
+index fab8bfea2..b57be76d1 100644
+--- a/lib/tests/tst_dataroot01.c
++++ b/lib/tests/tst_dataroot01.c
+@@ -21,7 +21,7 @@
+ #include <fcntl.h>
+ #include <string.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define OUTPUT_FNAME "output"
+ #define LTPROOT "/opt/ltp"
+diff --git a/lib/tests/tst_dataroot02.c b/lib/tests/tst_dataroot02.c
+index b936b57f4..ac369e646 100644
+--- a/lib/tests/tst_dataroot02.c
++++ b/lib/tests/tst_dataroot02.c
+@@ -21,7 +21,7 @@
+ #include <fcntl.h>
+ #include <string.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define OUTPUT_FNAME "output"
+ #define LTPROOT "/opt/ltp"
+diff --git a/lib/tests/tst_dataroot03.c b/lib/tests/tst_dataroot03.c
+index cf5a04ec6..020564d07 100644
+--- a/lib/tests/tst_dataroot03.c
++++ b/lib/tests/tst_dataroot03.c
+@@ -21,7 +21,7 @@
+ #include <fcntl.h>
+ #include <string.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define OUTPUT_FNAME "output"
+ #define LTPROOT "/opt/ltp"
+diff --git a/lib/tests/tst_safe_macros.c b/lib/tests/tst_safe_macros.c
+index 5c427ee16..9e04fc658 100644
+--- a/lib/tests/tst_safe_macros.c
++++ b/lib/tests/tst_safe_macros.c
+@@ -1,5 +1,5 @@
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "test_safe_macros";
+ int TST_TOTAL = 1;
+diff --git a/lib/tlibio.c b/lib/tlibio.c
+index 70e0c6f7d..df7f8c23b 100644
+--- a/lib/tlibio.c
++++ b/lib/tlibio.c
+@@ -93,8 +93,8 @@
+ #endif
+ #include <stdlib.h>		/* atoi, abs */
+ 
+-#include "tlibio.h"		/* defines LIO* macros */
+-#include "random_range.h"
++#include "otst_lio.h"		/* defines LIO* macros */
++#include "otst_random_range.h"
+ 
+ #ifndef PATH_MAX
+ #define PATH_MAX	MAXPATHLEN
+diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
+index 9f803e3ef..eecb768db 100644
+--- a/lib/tst_checkpoint.c
++++ b/lib/tst_checkpoint.c
 @@ -10,7 +10,7 @@
- #include <poll.h>
+ #include <sys/syscall.h>
  
- #include "tst_test.h"
--#include "tst_uinput.h"
-+#include "etst_uinput.h"
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/futex.h"
  
- static inline int open_event_device(void)
- {
-diff --git a/testcases/kernel/mem/cpuset/cpuset02.c b/testcases/kernel/mem/cpuset/cpuset02.c
-index ccfddd6a2..ec17c941e 100644
---- a/testcases/kernel/mem/cpuset/cpuset02.c
-+++ b/testcases/kernel/mem/cpuset/cpuset02.c
-@@ -18,13 +18,13 @@
- 
- #ifdef HAVE_NUMA_V2
- #include <numaif.h>
--#include "tst_numa.h"
-+#include "etst_numa.h"
- 
- #define MNTPOINT "hugetlbfs/"
- #define HUGE_PAGE_FILE MNTPOINT "hugepagefile"
- 
- static long hpage_size;
--static struct tst_nodemap *node;
-+static struct etst_nodemap *node;
- static int check_node_id;
- static struct tst_cg_group *cg_cpuset_0;
- 
-@@ -88,7 +88,7 @@ static void run_test(void)
- 
- static void setup(void)
- {
--	node = tst_get_nodemap(TST_NUMA_MEM, getpagesize() / 1024);
-+	node = etst_get_nodemap(TST_NUMA_MEM, getpagesize() / 1024);
- 	if (node->cnt <= 1)
- 		tst_brk(TCONF, "test requires at least 2 NUMA memory nodes");
- 
-diff --git a/testcases/kernel/mem/ksm/ksm06.c b/testcases/kernel/mem/ksm/ksm06.c
-index a8e73275d..f10dc27cf 100644
---- a/testcases/kernel/mem/ksm/ksm06.c
-+++ b/testcases/kernel/mem/ksm/ksm06.c
-@@ -32,7 +32,7 @@
- #include <limits.h>
- 
- #include "tst_test.h"
--#include "tst_numa.h"
-+#include "etst_numa.h"
- #include "ksm_helper.h"
- #include "ksm_test.h"
- 
-@@ -44,7 +44,7 @@ static unsigned long nr_pages = 100;
- static char *n_opt;
- 
- static size_t page_size;
--static struct tst_nodemap *nodes;
-+static struct etst_nodemap *nodes;
- 
- static void test_ksm(void)
- {
-@@ -124,7 +124,7 @@ static void setup(void)
- 
- 	page_size = getpagesize();
- 
--	nodes = tst_get_nodemap(TST_NUMA_MEM, nr_pages * page_size / 1024);
-+	nodes = etst_get_nodemap(TST_NUMA_MEM, nr_pages * page_size / 1024);
- 	if (nodes->cnt <= 1)
- 		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
- }
-diff --git a/testcases/kernel/mem/shmt/shmt02.c b/testcases/kernel/mem/shmt/shmt02.c
-index de1d0b0c3..82c2ad04c 100644
---- a/testcases/kernel/mem/shmt/shmt02.c
-+++ b/testcases/kernel/mem/shmt/shmt02.c
-@@ -15,7 +15,7 @@
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
- #include "tst_rand_data.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define SHMSIZE 16
- 
-diff --git a/testcases/kernel/mem/shmt/shmt03.c b/testcases/kernel/mem/shmt/shmt03.c
-index 63f5a7b45..a8306719b 100644
---- a/testcases/kernel/mem/shmt/shmt03.c
-+++ b/testcases/kernel/mem/shmt/shmt03.c
-@@ -16,7 +16,7 @@
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
- #include "tst_rand_data.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define SHMSIZE 16
- 
-diff --git a/testcases/kernel/mem/shmt/shmt04.c b/testcases/kernel/mem/shmt/shmt04.c
-index c07b1ef93..913103d99 100644
---- a/testcases/kernel/mem/shmt/shmt04.c
-+++ b/testcases/kernel/mem/shmt/shmt04.c
-@@ -18,7 +18,7 @@
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
- #include "tst_rand_data.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define SHMSIZE 16
- 
-diff --git a/testcases/kernel/mem/shmt/shmt05.c b/testcases/kernel/mem/shmt/shmt05.c
-index e8b5d9eb5..2d6c92a9b 100644
---- a/testcases/kernel/mem/shmt/shmt05.c
-+++ b/testcases/kernel/mem/shmt/shmt05.c
-@@ -14,7 +14,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include <sys/shm.h>
- 
- #define SHMSIZE 16
-diff --git a/testcases/kernel/mem/shmt/shmt07.c b/testcases/kernel/mem/shmt/shmt07.c
-index 962479e75..8754af413 100644
---- a/testcases/kernel/mem/shmt/shmt07.c
-+++ b/testcases/kernel/mem/shmt/shmt07.c
-@@ -16,7 +16,7 @@
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
- #include "tst_rand_data.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define SHMSIZE 16
- 
-diff --git a/testcases/kernel/mem/shmt/shmt08.c b/testcases/kernel/mem/shmt/shmt08.c
-index 9fb2f6b22..7e09b2e9c 100644
---- a/testcases/kernel/mem/shmt/shmt08.c
-+++ b/testcases/kernel/mem/shmt/shmt08.c
-@@ -14,7 +14,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define SHMSIZE 16
- 
-diff --git a/testcases/kernel/mem/shmt/shmt09.c b/testcases/kernel/mem/shmt/shmt09.c
-index fb40498e6..db1aa2ab9 100644
---- a/testcases/kernel/mem/shmt/shmt09.c
-+++ b/testcases/kernel/mem/shmt/shmt09.c
-@@ -19,7 +19,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "tst_test_macros.h"
- 
- #define SHMSIZE 16
-diff --git a/testcases/kernel/mem/shmt/shmt10.c b/testcases/kernel/mem/shmt/shmt10.c
-index 2bd48b6b5..22c6c5350 100644
---- a/testcases/kernel/mem/shmt/shmt10.c
-+++ b/testcases/kernel/mem/shmt/shmt10.c
-@@ -16,7 +16,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define SHMSIZE 0x32768
- 
-diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
-index 4f262da00..99ed0a3b3 100644
---- a/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
-+++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
-@@ -13,7 +13,7 @@
-  */
- 
- #include "config.h"
--#include "parse_vdso.h"
-+#include "etst_parse_vdso.h"
- #include "time64_variants.h"
- #include "tst_timer.h"
- #include "tst_safe_clocks.h"
-diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-index 3c854d109..9f9060b54 100644
---- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
-+++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c
+ #define DEFAULT_MSEC_TIMEOUT 10000
+diff --git a/lib/tst_cpu.c b/lib/tst_cpu.c
+index b4c7c2f81..22c9de257 100644
+--- a/lib/tst_cpu.c
++++ b/lib/tst_cpu.c
 @@ -22,7 +22,7 @@
- #include <numa.h>
- #include <numaif.h>
- #include <errno.h>
--#include "tst_numa.h"
-+#include "etst_numa.h"
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
  
- #define MEM_LENGTH	(4 * 1024 * 1024)
- #define PAGES_ALLOCATED 16u
-@@ -32,7 +32,7 @@
- #define POLICY_DESC_FLAGS(x, y) .policy = x, .flags = y, .desc = "policy: "#x", flags: "#y
- #define POLICY_DESC_FLAGS_NO_TARGET(x, y) .policy = x, .flags = y, .desc = "policy: "#x", flags: "#y", no target"
- 
--static struct tst_nodemap *node;
-+static struct etst_nodemap *node;
- static struct bitmask *nodemask, *getnodemask, *empty_nodemask;
- 
- struct test_case {
-@@ -142,7 +142,7 @@ static void setup(void)
+ long tst_ncpus(void)
  {
- 	unsigned int i;
- 
--	node = tst_get_nodemap(TST_NUMA_MEM, PAGES_ALLOCATED * getpagesize() / 1024);
-+	node = etst_get_nodemap(TST_NUMA_MEM, PAGES_ALLOCATED * getpagesize() / 1024);
- 	if (node->cnt < 1)
- 		tst_brk(TCONF, "test requires at least one NUMA memory node");
- 
-@@ -175,7 +175,7 @@ static void cleanup(void)
- 
- 	numa_free_nodemask(nodemask);
- 	numa_free_nodemask(getnodemask);
--	tst_nodemap_free(node);
-+	etst_nodemap_free(node);
- }
- 
- static void do_test(unsigned int i)
-diff --git a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy02.c b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy02.c
-index 79ff5d94f..969ad81b0 100644
---- a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy02.c
-+++ b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy02.c
-@@ -22,13 +22,13 @@
- #include <numa.h>
- #include <numaif.h>
- #include <errno.h>
--#include "tst_numa.h"
-+#include "etst_numa.h"
- 
- #define PAGES_ALLOCATED 16u
- 
- #define POLICY_DESC_TEXT(x, y) .policy = x, .desc = "policy: "#x", "y
- 
--static struct tst_nodemap *node;
-+static struct etst_nodemap *node;
- static struct bitmask *nodemask;
- 
- struct test_case {
-@@ -55,7 +55,7 @@ static struct test_case tcase[] = {
- 
- static void setup(void)
- {
--	node = tst_get_nodemap(TST_NUMA_MEM, PAGES_ALLOCATED * getpagesize() / 1024);
-+	node = etst_get_nodemap(TST_NUMA_MEM, PAGES_ALLOCATED * getpagesize() / 1024);
- 	if (node->cnt < 1)
- 		tst_brk(TCONF, "test requires at least one NUMA memory node");
- 
-@@ -65,7 +65,7 @@ static void setup(void)
- static void cleanup(void)
- {
- 	numa_free_nodemask(nodemask);
--	tst_nodemap_free(node);
-+	etst_nodemap_free(node);
- }
- 
- static void do_test(unsigned int i)
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl01.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl01.c
-index 56d1505fd..06e92d01b 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl01.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl01.c
-@@ -13,7 +13,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static int msg_id = -1;
- static time_t creat_time;
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl02.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl02.c
-index 1ace62f11..1384e6473 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl02.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl02.c
-@@ -13,7 +13,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static int msg_id = -1;
- struct msqid_ds orig_buf;
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl03.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl03.c
-index cc7abd4b9..57fa512d9 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl03.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl03.c
-@@ -12,7 +12,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static void verify_msgctl(void)
- {
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c
-index 4b62896fb..f30ccd8e0 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c
-@@ -14,7 +14,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 85f5f8cac..9c84131ff 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -21,7 +21,7 @@
+ #include <sys/statfs.h>
  #include "lapi/syscalls.h"
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "tst_device.h"
  
- static int msg_id1 = -1;
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl05.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl05.c
-index 7e059d7f0..c184b855b 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl05.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl05.c
-@@ -8,7 +8,7 @@
-  */
- #include <sys/msg.h>
- #include "lapi/msgbuf.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
+ #ifndef LOOP_CTL_GET_FREE
+diff --git a/lib/tst_dir_is_empty.c b/lib/tst_dir_is_empty.c
+index 43764eeba..4def7c54d 100644
+--- a/lib/tst_dir_is_empty.c
++++ b/lib/tst_dir_is_empty.c
+@@ -23,7 +23,7 @@
+ #include <dirent.h>
  
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c
-index 2e22f37fe..e34a83998 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c
-@@ -25,7 +25,7 @@
- #include <pwd.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/msg.h"
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
  
- static int msg_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl12.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl12.c
-index 73eead744..3cfa35f11 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl12.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl12.c
-@@ -13,7 +13,7 @@
+ int tst_dir_is_empty_(void (cleanup_fn)(void), const char *name, int verbose)
+ {
+diff --git a/lib/tst_fs_link_count.c b/lib/tst_fs_link_count.c
+index 6a6bb52b2..950e9a401 100644
+--- a/lib/tst_fs_link_count.c
++++ b/lib/tst_fs_link_count.c
+@@ -22,8 +22,8 @@
+ #include <unistd.h>
  
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
+ #include "test.h"
+-#include "usctest.h"
+-#include "safe_macros.h"
++#include "otst_usctest.h"
++#include "otst_safe_macros.h"
  
- static int msg_q = -1;
- static int index_q;
-diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget01.c b/testcases/kernel/syscalls/ipc/msgget/msgget01.c
-index dd5a5ad73..ac29f8bbe 100644
---- a/testcases/kernel/syscalls/ipc/msgget/msgget01.c
-+++ b/testcases/kernel/syscalls/ipc/msgget/msgget01.c
-@@ -16,7 +16,7 @@
+ #define MAX_SANE_HARD_LINKS	65535
  
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static int queue_id = -1;
- static key_t msgkey;
-diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget02.c b/testcases/kernel/syscalls/ipc/msgget/msgget02.c
-index ef9ab34b8..0055ba4b1 100644
---- a/testcases/kernel/syscalls/ipc/msgget/msgget02.c
-+++ b/testcases/kernel/syscalls/ipc/msgget/msgget02.c
+diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
+index 9ab02e5d3..4d7f11f89 100644
+--- a/lib/tst_kernel.c
++++ b/lib/tst_kernel.c
 @@ -24,7 +24,7 @@
  
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static key_t msgkey, msgkey1;
- static int queue_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-index bd0653973..4c6505b3a 100644
---- a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-+++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
-@@ -17,7 +17,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static int maxmsgs, queue_cnt, used_cnt;
- static int *queues;
-diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget04.c b/testcases/kernel/syscalls/ipc/msgget/msgget04.c
-index 28cbb3352..9c068e752 100644
---- a/testcases/kernel/syscalls/ipc/msgget/msgget04.c
-+++ b/testcases/kernel/syscalls/ipc/msgget/msgget04.c
-@@ -20,7 +20,7 @@
- #include <sys/msg.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define NEXT_ID_PATH "/proc/sys/kernel/msg_next_id"
- static int queue_id, pid;
-diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget05.c b/testcases/kernel/syscalls/ipc/msgget/msgget05.c
-index edcb307c6..402da31aa 100644
---- a/testcases/kernel/syscalls/ipc/msgget/msgget05.c
-+++ b/testcases/kernel/syscalls/ipc/msgget/msgget05.c
-@@ -18,7 +18,7 @@
- #include <sys/msg.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define NEXT_ID_PATH "/proc/sys/kernel/msg_next_id"
- 
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
-index 58bfd2771..11b6ae1a0 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
-@@ -10,7 +10,7 @@
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
- #include "tst_clocks.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static key_t msgkey;
- static int queue_id = -1, pid;
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-index 3e4462c03..6cd3581d9 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
-@@ -30,7 +30,7 @@
- #include <pwd.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static key_t msgkey;
- static int queue_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
-index 3e461b307..b3d3c63e7 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
-@@ -27,7 +27,7 @@
- #include <pwd.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/msg.h"
- 
- static key_t msgkey;
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv05.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv05.c
-index cc385ee6e..6b887cb1e 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv05.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv05.c
-@@ -11,7 +11,7 @@
- #include <stdlib.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static key_t msgkey;
- static int queue_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv06.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv06.c
-index f14526df9..d5f4f0e22 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv06.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv06.c
-@@ -13,7 +13,7 @@
- #include <stdlib.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static key_t msgkey;
- static int queue_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
-index d2d1a882a..8c70a02d2 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
-@@ -29,7 +29,7 @@
- #include <sys/wait.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/msg.h"
- 
- #define MSGTYPE1	1
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
-index 1ab6eba9f..82b0b3f2f 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
-@@ -27,7 +27,7 @@
- #include <sys/msg.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static long mtype = 121;
- static key_t msgkey;
-diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-index 6d92f3dec..63fd9a26a 100644
---- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-+++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-@@ -16,7 +16,7 @@
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
- #include "tst_clocks.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static key_t msgkey;
- static int queue_id = -1, pid;
-diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
-index eca660605..d8d241062 100644
---- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
-+++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
-@@ -28,7 +28,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static key_t msgkey;
- static int queue_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-index 887bfdef2..cc3b53253 100644
---- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-+++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-@@ -21,7 +21,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static key_t msgkey;
- static int queue_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
-index 8fc665e68..124e47d2d 100644
---- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
-+++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
-@@ -17,7 +17,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static key_t msgkey;
- static int queue_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl01.c b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
-index 92a36bff0..c9f65ed28 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl01.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
-@@ -11,7 +11,7 @@
- #include "tst_safe_sysv_ipc.h"
- #include "tst_test.h"
- #include "lapi/sem.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define INCVAL 2
- #define NEWMODE 066
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl02.c b/testcases/kernel/syscalls/ipc/semctl/semctl02.c
-index 6ca63472c..254214a02 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl02.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl02.c
-@@ -12,7 +12,7 @@
- #include "tst_safe_sysv_ipc.h"
- #include "tst_test.h"
- #include "lapi/sem.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static int sem_id = -1;
- 
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl03.c b/testcases/kernel/syscalls/ipc/semctl/semctl03.c
-index 11530b201..87a35ae54 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl03.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl03.c
-@@ -12,7 +12,7 @@
- #include "tst_safe_sysv_ipc.h"
- #include "tst_test.h"
- #include "lapi/sem.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/syscalls.h"
- 
- static int sem_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl04.c b/testcases/kernel/syscalls/ipc/semctl/semctl04.c
-index f6fa361b2..ca65244fe 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl04.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl04.c
-@@ -17,7 +17,7 @@
- #include "tst_safe_sysv_ipc.h"
- #include "tst_test.h"
- #include "lapi/sem.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static uid_t ltp_uid;
- static int sem_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl05.c b/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-index 5feee0082..8e6b22d5b 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-@@ -13,7 +13,7 @@
- #include "tst_safe_sysv_ipc.h"
- #include "tst_test.h"
- #include "lapi/sem.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static int sem_id = -1;
- 
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl06.c b/testcases/kernel/syscalls/ipc/semctl/semctl06.c
-index b8734c2fa..84e306dc1 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl06.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl06.c
-@@ -53,7 +53,7 @@
- #include <signal.h>
  #include "test.h"
- #include <sys/wait.h>
--#include "ipcsem.h"
-+#include "etst_ipcsem.h"
+ #include "tst_kernel.h"
+-#include "old_safe_stdio.h"
++#include "otst_safe_stdio.h"
+ #include "lapi/abisize.h"
  
- int local_flag = 1;
- 
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl07.c b/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-index 588fb2436..d78c0c68a 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-@@ -20,7 +20,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/sem.h"
- 
- static int semid = -1;
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl08.c b/testcases/kernel/syscalls/ipc/semctl/semctl08.c
-index f4549adf4..a2f5ed9c0 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl08.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl08.c
-@@ -10,7 +10,7 @@
- #include "lapi/sembuf.h"
- #include "lapi/sem.h"
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #ifdef HAVE_SEMID64_DS_TIME_HIGH
- 
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl09.c b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-index 32b411efd..4fb5dbe16 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-@@ -40,7 +40,7 @@
- #include <pwd.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/sem.h"
- #include "lapi/syscalls.h"
- 
-diff --git a/testcases/kernel/syscalls/ipc/semget/semget01.c b/testcases/kernel/syscalls/ipc/semget/semget01.c
-index 3c05517e4..a3a25f922 100644
---- a/testcases/kernel/syscalls/ipc/semget/semget01.c
-+++ b/testcases/kernel/syscalls/ipc/semget/semget01.c
-@@ -12,7 +12,7 @@
- #include <sys/ipc.h>
- #include "lapi/sem.h"
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "tst_safe_sysv_ipc.h"
- 
- static int sem_id = -1, sem_key = -1;
-diff --git a/testcases/kernel/syscalls/ipc/semget/semget02.c b/testcases/kernel/syscalls/ipc/semget/semget02.c
-index d381bbd69..9df84ddfc 100644
---- a/testcases/kernel/syscalls/ipc/semget/semget02.c
-+++ b/testcases/kernel/syscalls/ipc/semget/semget02.c
-@@ -26,7 +26,7 @@
- #include <pwd.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/sem.h"
- 
- static int sem_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/semget/semget05.c b/testcases/kernel/syscalls/ipc/semget/semget05.c
-index 0e41a1528..c10e918e9 100644
---- a/testcases/kernel/syscalls/ipc/semget/semget05.c
-+++ b/testcases/kernel/syscalls/ipc/semget/semget05.c
+ static int get_kernel_bits_from_uname(struct utsname *buf)
+diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+index 19d995df2..6eb892d11 100644
+--- a/lib/tst_mkfs.c
++++ b/lib/tst_mkfs.c
 @@ -16,7 +16,7 @@
- #include <sys/ipc.h>
- #include "lapi/sem.h"
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "tst_safe_sysv_ipc.h"
+  */
  
- static int *sem_id_arr;
-diff --git a/testcases/kernel/syscalls/ipc/semop/semop01.c b/testcases/kernel/syscalls/ipc/semop/semop01.c
-index 207263539..433da970f 100644
---- a/testcases/kernel/syscalls/ipc/semop/semop01.c
-+++ b/testcases/kernel/syscalls/ipc/semop/semop01.c
-@@ -9,7 +9,7 @@
+ #include "test.h"
+-#include "ltp_priv.h"
++#include "otst_priv.h"
+ #include "tst_mkfs.h"
+ #include "tst_device.h"
  
- #include <stdlib.h>
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/sem.h"
- #include "semop.h"
+diff --git a/lib/tst_module.c b/lib/tst_module.c
+index 42d63ede6..b0db79cff 100644
+--- a/lib/tst_module.c
++++ b/lib/tst_module.c
+@@ -28,8 +28,8 @@
  
-diff --git a/testcases/kernel/syscalls/ipc/semop/semop02.c b/testcases/kernel/syscalls/ipc/semop/semop02.c
-index d8181db17..acfaac352 100644
---- a/testcases/kernel/syscalls/ipc/semop/semop02.c
-+++ b/testcases/kernel/syscalls/ipc/semop/semop02.c
-@@ -23,7 +23,7 @@
- #include <pwd.h>
- #include <sys/ipc.h>
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/sem.h"
- #include "semop.h"
- 
-diff --git a/testcases/kernel/syscalls/ipc/semop/semop03.c b/testcases/kernel/syscalls/ipc/semop/semop03.c
-index 636b71531..487def0ec 100644
---- a/testcases/kernel/syscalls/ipc/semop/semop03.c
-+++ b/testcases/kernel/syscalls/ipc/semop/semop03.c
-@@ -12,7 +12,7 @@
- #include <sys/types.h>
- #include <sys/wait.h>
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/sem.h"
- #include "semop.h"
- 
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-index 606bdd154..b7b3ebe16 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-@@ -26,7 +26,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define ALIGN_DOWN(in_addr) ((void *)(((uintptr_t)in_addr / SHMLBA) * SHMLBA))
- 
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat02.c b/testcases/kernel/syscalls/ipc/shmat/shmat02.c
-index 3ad1fd08e..505ed1e80 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat02.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat02.c
-@@ -22,7 +22,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static int shm_id1 = -1;
- static int shm_id2 = -1;
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat04.c b/testcases/kernel/syscalls/ipc/shmat/shmat04.c
-index 7b7b802cb..7dac266f0 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat04.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat04.c
-@@ -21,7 +21,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static int segment_id = -1;
- static int key_id;
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-index e86cd7103..f38709644 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-@@ -20,7 +20,7 @@
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
- #include "tst_clocks.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define NCHILD 20
- 
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-index 0b12944ce..45950c423 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-@@ -29,7 +29,7 @@
- 
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/syscalls.h"
- 
- #define SHM_SIZE 2048
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-index a3291c37f..8bf74000a 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-@@ -11,7 +11,7 @@
- #define _GNU_SOURCE
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static void verify_ipcinfo(void)
- {
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
-index da73863dd..43521b830 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
-@@ -23,7 +23,7 @@
- #include <pwd.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/shm.h"
- 
- #define SHM_SIZE 2048
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl06.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl06.c
-index 63e7f843d..50b76a0c1 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl06.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl06.c
-@@ -9,7 +9,7 @@
- 
- #include <sys/shm.h>
- #include "lapi/shmbuf.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
- 
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl07.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl07.c
-index 1cc07ead2..f9e62c4fe 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl07.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl07.c
-@@ -11,7 +11,7 @@
- #include <stdio.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define SHM_SIZE 2048
- 
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl08.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl08.c
-index f72f9f9e5..98f8fb4d2 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl08.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl08.c
-@@ -14,7 +14,7 @@
- #include <stdio.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define SHM_SIZE 2048
- 
-diff --git a/testcases/kernel/syscalls/ipc/shmdt/shmdt01.c b/testcases/kernel/syscalls/ipc/shmdt/shmdt01.c
-index 0a6d4096c..fdd4b4fc5 100644
---- a/testcases/kernel/syscalls/ipc/shmdt/shmdt01.c
-+++ b/testcases/kernel/syscalls/ipc/shmdt/shmdt01.c
-@@ -13,7 +13,7 @@
- #include <sys/shm.h>
- #include <setjmp.h>
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "tst_safe_sysv_ipc.h"
- 
- static int shm_id = -1, shm_key, pass;
-diff --git a/testcases/kernel/syscalls/ipc/shmdt/shmdt02.c b/testcases/kernel/syscalls/ipc/shmdt/shmdt02.c
-index 4bdc6eb21..ebf3f3e60 100644
---- a/testcases/kernel/syscalls/ipc/shmdt/shmdt02.c
-+++ b/testcases/kernel/syscalls/ipc/shmdt/shmdt02.c
-@@ -13,7 +13,7 @@
- #include <sys/types.h>
- #include <sys/shm.h>
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- static void *non_attched_addr;
- static void *unaligned_addr;
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-index 8a0961b04..f3274c490 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-@@ -32,7 +32,7 @@
- #include "tst_safe_sysv_ipc.h"
+ #include "test.h"
  #include "tst_kconfig.h"
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/shm.h"
+-#include "ltp_priv.h"
+-#include "old_module.h"
++#include "otst_priv.h"
++#include "otst_module.h"
  
- static int shm_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget03.c b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-index 092f2170e..81860a6c6 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
-@@ -17,7 +17,7 @@
- #include <sys/shm.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
+ void tst_module_exists_(void (cleanup_fn)(void),
+ 	const char *mod_name, char **mod_path)
+diff --git a/lib/tst_parse_opts.c b/lib/tst_parse_opts.c
+index 94970e1a8..ae2d2c1eb 100644
+--- a/lib/tst_parse_opts.c
++++ b/lib/tst_parse_opts.c
+@@ -22,7 +22,7 @@
+  */
  
- static int *queues;
- static int maxshms, queue_cnt, used_cnt;
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget04.c b/testcases/kernel/syscalls/ipc/shmget/shmget04.c
-index 2a6a676cd..33d29fbe9 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget04.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget04.c
-@@ -19,7 +19,7 @@
- #include <sys/shm.h>
- #include "tst_safe_sysv_ipc.h"
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "lapi/shm.h"
+ #include "test.h"
+-#include "ltp_priv.h"
++#include "otst_priv.h"
  
- static int shm_id = -1;
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget05.c b/testcases/kernel/syscalls/ipc/shmget/shmget05.c
-index d96a98546..c31a59e85 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget05.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget05.c
-@@ -21,7 +21,7 @@
- #include <sys/shm.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define NEXT_ID_PATH "/proc/sys/kernel/shm_next_id"
- static int shm_id, pid;
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget06.c b/testcases/kernel/syscalls/ipc/shmget/shmget06.c
-index f4bd61bca..2b1023baa 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget06.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget06.c
-@@ -19,7 +19,7 @@
- #include <sys/shm.h>
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- 
- #define NEXT_ID_PATH "/proc/sys/kernel/shm_next_id"
- 
-diff --git a/testcases/kernel/syscalls/kill/kill05.c b/testcases/kernel/syscalls/kill/kill05.c
-index 3c317e2fc..66c452f01 100644
---- a/testcases/kernel/syscalls/kill/kill05.c
-+++ b/testcases/kernel/syscalls/kill/kill05.c
-@@ -20,7 +20,7 @@
- #include <pwd.h>
- #include <stdlib.h>
- #include "tst_test.h"
--#include "libnewipc.h"
-+#include "etst_newipc.h"
- #include "tst_safe_sysv_ipc.h"
+ void tst_parse_opts(int argc, char *argv[], const option_t *user_optarg,
+                     void (*user_help)(void))
+diff --git a/lib/tst_pid.c b/lib/tst_pid.c
+index 4e9dc7a52..e4ed4b680 100644
+--- a/lib/tst_pid.c
++++ b/lib/tst_pid.c
+@@ -28,7 +28,7 @@
+ #include <unistd.h>
+ #include "test.h"
+ #include "tst_pid.h"
+-#include "old_safe_file_ops.h"
++#include "otst_safe_file_ops.h"
  #include "tst_safe_macros.h"
- #include "tst_uid.h"
-diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
-index 4b8d168cd..3429a1702 100644
---- a/testcases/kernel/syscalls/mbind/mbind01.c
-+++ b/testcases/kernel/syscalls/mbind/mbind01.c
-@@ -17,7 +17,7 @@
- #include "config.h"
- #include "numa_helper.h"
- #include "tst_test.h"
--#include "tst_numa.h"
-+#include "etst_numa.h"
- #include "lapi/numaif.h"
- 
- #ifdef HAVE_NUMA_V2
-@@ -141,7 +141,7 @@ static void check_policy_pref_or_local(int policy)
- 	if (policy != MPOL_PREFERRED && policy != MPOL_LOCAL) {
- 		tst_res(TFAIL, "Wrong policy: %s(%d), "
- 			"expected MPOL_PREFERRED or MPOL_LOCAL",
--			tst_mempolicy_mode_name(policy), policy);
-+			etst_mempolicy_mode_name(policy), policy);
- 	}
- }
- 
-@@ -221,8 +221,8 @@ static void do_test(unsigned int i)
- 			tc->check_policy(policy);
- 		else if (tc->policy != policy) {
- 			tst_res(TFAIL, "Wrong policy: %s(%d), expected: %s(%d)",
--				tst_mempolicy_mode_name(policy), policy,
--				tst_mempolicy_mode_name(tc->policy), tc->policy);
-+				etst_mempolicy_mode_name(policy), policy,
-+				etst_mempolicy_mode_name(tc->policy), tc->policy);
- 			fail = 1;
- 		}
- 		if (tc->exp_nodemask) {
-diff --git a/testcases/kernel/syscalls/mbind/mbind02.c b/testcases/kernel/syscalls/mbind/mbind02.c
-index cd6a03226..e13854c66 100644
---- a/testcases/kernel/syscalls/mbind/mbind02.c
-+++ b/testcases/kernel/syscalls/mbind/mbind02.c
-@@ -21,25 +21,25 @@
- # include <numaif.h>
- #endif
- #include "tst_test.h"
--#include "tst_numa.h"
-+#include "etst_numa.h"
- 
- #ifdef HAVE_NUMA_V2
- 
- static size_t page_size;
--static struct tst_nodemap *nodes;
-+static struct etst_nodemap *nodes;
- 
- static void setup(void)
- {
- 	page_size = getpagesize();
- 
--	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * page_size / 1024);
-+	nodes = etst_get_nodemap(TST_NUMA_MEM, 2 * page_size / 1024);
- 	if (nodes->cnt <= 1)
- 		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
- }
- 
- static void cleanup(void)
- {
--	tst_nodemap_free(nodes);
-+	etst_nodemap_free(nodes);
- }
- 
- static void verify_policy(int mode)
-@@ -50,11 +50,11 @@ static void verify_policy(int mode)
- 	unsigned long size = page_size;
- 	int node = 0;
- 
--	ptr = tst_numa_map(NULL, size);
--	tst_nodemap_reset_counters(nodes);
--	tst_numa_fault(ptr, size);
--	tst_nodemap_count_pages(nodes, ptr, size);
--	tst_nodemap_print_counters(nodes);
-+	ptr = etst_numa_map(NULL, size);
-+	etst_nodemap_reset_counters(nodes);
-+	etst_numa_fault(ptr, size);
-+	etst_nodemap_count_pages(nodes, ptr, size);
-+	etst_nodemap_print_counters(nodes);
- 
- 	for (i = 0; i < nodes->cnt; i++) {
- 		if (!nodes->counters[i]) {
-@@ -67,24 +67,24 @@ static void verify_policy(int mode)
- 
- 	TEST(mbind(ptr, size, mode, bm->maskp, bm->size + 1, MPOL_MF_STRICT));
- 
--	tst_numa_unmap(ptr, size);
-+	etst_numa_unmap(ptr, size);
- 	numa_free_nodemask(bm);
- 
- 	if (TST_RET != -1) {
- 		tst_res(TFAIL,
- 		        "mbind(%s, MPOL_MF_STRICT) node %u returned %li, expected -1",
--		        tst_mempolicy_mode_name(mode), node, TST_RET);
-+		        etst_mempolicy_mode_name(mode), node, TST_RET);
- 		return;
- 	}
- 
- 	if (TST_ERR == EIO) {
- 		tst_res(TPASS | TTERRNO,
- 		        "mbind(%s, MPOL_MF_STRICT) node %u",
--		        tst_mempolicy_mode_name(mode), node);
-+		        etst_mempolicy_mode_name(mode), node);
- 	} else {
- 		tst_res(TFAIL | TTERRNO,
- 			"mbind(%s, MPOL_MF_STRICT) node %u expected EIO",
--		        tst_mempolicy_mode_name(mode), node);
-+		        etst_mempolicy_mode_name(mode), node);
- 	}
- }
- 
-diff --git a/testcases/kernel/syscalls/mbind/mbind03.c b/testcases/kernel/syscalls/mbind/mbind03.c
-index 3d477c9cb..10e64af8b 100644
---- a/testcases/kernel/syscalls/mbind/mbind03.c
-+++ b/testcases/kernel/syscalls/mbind/mbind03.c
-@@ -18,25 +18,25 @@
- # include "mbind.h"
- #endif
- #include "tst_test.h"
--#include "tst_numa.h"
-+#include "etst_numa.h"
- 
- #ifdef HAVE_NUMA_V2
- 
- static size_t page_size;
--static struct tst_nodemap *nodes;
-+static struct etst_nodemap *nodes;
- 
- static void setup(void)
- {
- 	page_size = getpagesize();
- 
--	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * page_size / 1024);
-+	nodes = etst_get_nodemap(TST_NUMA_MEM, 2 * page_size / 1024);
- 	if (nodes->cnt <= 1)
- 		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
- }
- 
- static void cleanup(void)
- {
--	tst_nodemap_free(nodes);
-+	etst_nodemap_free(nodes);
- }
- 
- static void verify_policy(int mode, unsigned flag)
-@@ -47,11 +47,11 @@ static void verify_policy(int mode, unsigned flag)
- 	unsigned long size = page_size;
- 	unsigned int node = 0;
- 
--	ptr = tst_numa_map(NULL, size);
--	tst_nodemap_reset_counters(nodes);
--	tst_numa_fault(ptr, size);
--	tst_nodemap_count_pages(nodes, ptr, size);
--	tst_nodemap_print_counters(nodes);
-+	ptr = etst_numa_map(NULL, size);
-+	etst_nodemap_reset_counters(nodes);
-+	etst_numa_fault(ptr, size);
-+	etst_nodemap_count_pages(nodes, ptr, size);
-+	etst_nodemap_print_counters(nodes);
- 
- 	for (i = 0; i < nodes->cnt; i++) {
- 		if (!nodes->counters[i]) {
-@@ -67,15 +67,15 @@ static void verify_policy(int mode, unsigned flag)
- 	if (TST_RET) {
- 		tst_res(TFAIL | TTERRNO,
- 		        "mbind(%s, %s) node %u",
--		        tst_mempolicy_mode_name(mode), mbind_flag_name(flag), node);
-+		        etst_mempolicy_mode_name(mode), mbind_flag_name(flag), node);
- 		goto exit;
- 	} else {
- 		tst_res(TPASS, "mbind(%s, %s) node %u succeded",
--		        tst_mempolicy_mode_name(mode), mbind_flag_name(flag), node);
-+		        etst_mempolicy_mode_name(mode), mbind_flag_name(flag), node);
- 	}
- 
--	tst_nodemap_reset_counters(nodes);
--	tst_nodemap_count_pages(nodes, ptr, size);
-+	etst_nodemap_reset_counters(nodes);
-+	etst_nodemap_count_pages(nodes, ptr, size);
- 
- 	for (i = 0; i < nodes->cnt; i++) {
- 		if (nodes->map[i] == node) {
-@@ -95,7 +95,7 @@ static void verify_policy(int mode, unsigned flag)
- 	}
- 
- exit:
--	tst_numa_unmap(ptr, size);
-+	etst_numa_unmap(ptr, size);
- 	numa_free_nodemask(bm);
- }
- 
-diff --git a/testcases/kernel/syscalls/mbind/mbind04.c b/testcases/kernel/syscalls/mbind/mbind04.c
-index 50028835f..f7f4c3176 100644
---- a/testcases/kernel/syscalls/mbind/mbind04.c
-+++ b/testcases/kernel/syscalls/mbind/mbind04.c
-@@ -18,12 +18,12 @@
- # include "mbind.h"
- #endif
- #include "tst_test.h"
--#include "tst_numa.h"
-+#include "etst_numa.h"
- 
- #ifdef HAVE_NUMA_V2
- 
- static size_t page_size;
--static struct tst_nodemap *nodes;
-+static struct etst_nodemap *nodes;
- 
- #define PAGES_ALLOCATED 16u
- 
-@@ -31,14 +31,14 @@ static void setup(void)
- {
- 	page_size = getpagesize();
- 
--	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024);
-+	nodes = etst_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024);
- 	if (nodes->cnt <= 1)
- 		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
- }
- 
- static void cleanup(void)
- {
--	tst_nodemap_free(nodes);
-+	etst_nodemap_free(nodes);
- }
- 
- static void verify_policy(unsigned int node, int mode, unsigned flag)
-@@ -51,7 +51,7 @@ static void verify_policy(unsigned int node, int mode, unsigned flag)
- 
- 	numa_bitmask_setbit(bm, node);
- 
--	ptr = tst_numa_map(NULL, size);
-+	ptr = etst_numa_map(NULL, size);
- 
- 	TEST(mbind(ptr, size, mode, bm->maskp, bm->size + 1, flag));
- 
-@@ -60,12 +60,12 @@ static void verify_policy(unsigned int node, int mode, unsigned flag)
- 	if (TST_RET) {
- 		tst_res(TFAIL | TTERRNO,
- 		        "mbind(%s, %s) node %u",
--		        tst_mempolicy_mode_name(mode), mbind_flag_name(flag), node);
-+		        etst_mempolicy_mode_name(mode), mbind_flag_name(flag), node);
- 		return;
- 	}
- 
- 	tst_res(TPASS, "mbind(%s, %s) node %u",
--	        tst_mempolicy_mode_name(mode), mbind_flag_name(flag), node);
-+	        etst_mempolicy_mode_name(mode), mbind_flag_name(flag), node);
- 
- 	const char *prefix = "child: ";
- 
-@@ -75,10 +75,10 @@ static void verify_policy(unsigned int node, int mode, unsigned flag)
- 		tst_reap_children();
- 	}
- 
--	tst_nodemap_reset_counters(nodes);
--	tst_numa_fault(ptr, size);
--	tst_nodemap_count_pages(nodes, ptr, size);
--	tst_numa_unmap(ptr, size);
-+	etst_nodemap_reset_counters(nodes);
-+	etst_numa_fault(ptr, size);
-+	etst_nodemap_count_pages(nodes, ptr, size);
-+	etst_numa_unmap(ptr, size);
- 
- 	int fail = 0;
- 
-@@ -104,7 +104,7 @@ static void verify_policy(unsigned int node, int mode, unsigned flag)
- 	}
- 
- 	if (fail)
--		tst_nodemap_print_counters(nodes);
-+		etst_nodemap_print_counters(nodes);
- 
- 	if (!pid)
- 		exit(0);
-diff --git a/testcases/kernel/syscalls/rt_sigtimedwait/rt_sigtimedwait01.c b/testcases/kernel/syscalls/rt_sigtimedwait/rt_sigtimedwait01.c
-index 813f75b9e..eb94beead 100644
---- a/testcases/kernel/syscalls/rt_sigtimedwait/rt_sigtimedwait01.c
-+++ b/testcases/kernel/syscalls/rt_sigtimedwait/rt_sigtimedwait01.c
-@@ -2,7 +2,7 @@
- /* Copyright (c) Jiri Palecek<jpalecek@web.de>, 2009 */
- 
- #include "time64_variants.h"
--#include "libsigwait.h"
-+#include "etst_sigwait.h"
- 
- static int my_rt_sigtimedwait(const sigset_t * set, siginfo_t * info,
- 			      void *timeout)
-@@ -21,24 +21,24 @@ static int my_rt_sigtimedwait_time64(const sigset_t * set, siginfo_t * info,
- #endif
- 
- struct sigwait_test_desc tests[] = {
--	{ test_empty_set, SIGUSR1},
--	{ test_unmasked_matching, SIGUSR1},
--	{ test_masked_matching, SIGUSR1},
--	{ test_unmasked_matching_noinfo, SIGUSR1},
--	{ test_masked_matching_noinfo, SIGUSR1},
--	{ test_bad_address, SIGUSR1},
--	{ test_bad_address2, SIGUSR1},
--	{ test_bad_address3, SIGUSR1},
--	{ test_timeout, 0},
-+	{ etst_empty_set, SIGUSR1},
-+	{ etst_unmasked_matching, SIGUSR1},
-+	{ etst_masked_matching, SIGUSR1},
-+	{ etst_unmasked_matching_noinfo, SIGUSR1},
-+	{ etst_masked_matching_noinfo, SIGUSR1},
-+	{ etst_bad_address, SIGUSR1},
-+	{ etst_bad_address2, SIGUSR1},
-+	{ etst_bad_address3, SIGUSR1},
-+	{ etst_timeout, 0},
- 	/* Special cases */
- 	/* 1: sigwaitinfo does respond to ignored signal */
--	{ test_masked_matching, SIGUSR2},
-+	{ etst_masked_matching, SIGUSR2},
- 	/* 2: An ignored signal doesn't cause sigwaitinfo to return EINTR */
--	{ test_timeout, SIGUSR2},
-+	{ etst_timeout, SIGUSR2},
- 	/* 3: The handler is not called when the signal is waited for by sigwaitinfo */
--	{ test_masked_matching, SIGTERM},
-+	{ etst_masked_matching, SIGTERM},
- 	/* 4: Simultaneous realtime signals are delivered in the order of increasing signal number */
--	{ test_masked_matching_rt, -1},
-+	{ etst_masked_matching_rt, -1},
- };
- 
- static struct time64_variants variants[] = {
-@@ -62,7 +62,7 @@ static void run(unsigned int i)
- static void setup(void)
- {
- 	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
--	sigwait_setup();
-+	etst_sigwait_setup();
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy.h b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy.h
-index da6419e18..78b6ff9d9 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy.h
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy.h
-@@ -7,15 +7,15 @@
- #ifndef SET_MEMPOLICY_H__
- #define SET_MEMPOLICY_H__
- 
--static inline void alloc_fault_count(struct tst_nodemap *nodes,
-+static inline void alloc_fault_count(struct etst_nodemap *nodes,
-                                      const char *file, size_t size)
- {
- 	void *ptr;
- 
--	ptr = tst_numa_map(file, size);
--	tst_numa_fault(ptr, size);
--	tst_nodemap_count_pages(nodes, ptr, size);
--	tst_numa_unmap(ptr, size);
-+	ptr = etst_numa_map(file, size);
-+	etst_numa_fault(ptr, size);
-+	etst_nodemap_count_pages(nodes, ptr, size);
-+	etst_numa_unmap(ptr, size);
- }
- 
- #endif /* SET_MEMPOLICY_H__ */
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
-index 39e7156d0..ec1ee43c7 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
-@@ -17,14 +17,14 @@
- # include <numaif.h>
- #endif
- #include "tst_test.h"
--#include "tst_numa.h"
-+#include "etst_numa.h"
- 
- #ifdef HAVE_NUMA_V2
- 
- #include "set_mempolicy.h"
- 
- static size_t page_size;
--static struct tst_nodemap *nodes;
-+static struct etst_nodemap *nodes;
- 
- #define PAGES_ALLOCATED 16u
- 
-@@ -32,7 +32,7 @@ static void setup(void)
- {
- 	page_size = getpagesize();
- 
--	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024);
-+	nodes = etst_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024);
- 	if (nodes->cnt <= 1)
- 		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
- 
-@@ -48,7 +48,7 @@ static void setup(void)
- 
- static void cleanup(void)
- {
--	tst_nodemap_free(nodes);
-+	etst_nodemap_free(nodes);
- }
- 
- static void verify_mempolicy(unsigned int node, int mode)
-@@ -63,12 +63,12 @@ static void verify_mempolicy(unsigned int node, int mode)
- 	if (TST_RET) {
- 		tst_res(TFAIL | TTERRNO,
- 		        "set_mempolicy(%s) node %u",
--		        tst_mempolicy_mode_name(mode), node);
-+		        etst_mempolicy_mode_name(mode), node);
- 		return;
- 	}
- 
- 	tst_res(TPASS, "set_mempolicy(%s) node %u",
--	        tst_mempolicy_mode_name(mode), node);
-+	        etst_mempolicy_mode_name(mode), node);
- 
- 	numa_free_nodemask(bm);
- 
-@@ -79,9 +79,9 @@ static void verify_mempolicy(unsigned int node, int mode)
- 		tst_reap_children();
- 	}
- 
--	tst_nodemap_reset_counters(nodes);
-+	etst_nodemap_reset_counters(nodes);
- 	alloc_fault_count(nodes, NULL, PAGES_ALLOCATED * page_size);
--	tst_nodemap_print_counters(nodes);
-+	etst_nodemap_print_counters(nodes);
- 
- 	for (i = 0; i < nodes->cnt; i++) {
- 		if (nodes->map[i] == node) {
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
-index 3db9c2009..090250bf8 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
-@@ -18,7 +18,7 @@
- # include <numaif.h>
- #endif
- #include "tst_test.h"
--#include "tst_numa.h"
-+#include "etst_numa.h"
- 
- #ifdef HAVE_NUMA_V2
- 
-@@ -27,20 +27,20 @@
- #define ALLOC_ON_NODE 8
- 
- static size_t page_size;
--static struct tst_nodemap *nodes;
-+static struct etst_nodemap *nodes;
- 
- static void setup(void)
- {
- 	page_size = getpagesize();
- 
--	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * ALLOC_ON_NODE * page_size / 1024);
-+	nodes = etst_get_nodemap(TST_NUMA_MEM, 2 * ALLOC_ON_NODE * page_size / 1024);
- 	if (nodes->cnt <= 1)
- 		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
- }
- 
- static void cleanup(void)
- {
--	tst_nodemap_free(nodes);
-+	etst_nodemap_free(nodes);
- }
- 
- static void alloc_and_check(size_t size, unsigned int *exp_alloc)
-@@ -53,7 +53,7 @@ static void alloc_and_check(size_t size, unsigned int *exp_alloc)
- 		tst_reap_children();
- 	}
- 
--	tst_nodemap_reset_counters(nodes);
-+	etst_nodemap_reset_counters(nodes);
- 	alloc_fault_count(nodes, NULL, size * page_size);
- 
- 	for (i = 0; i < nodes->cnt; i++) {
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-index 5cfcda6d8..416a33a44 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-@@ -15,7 +15,7 @@
- # include <numa.h>
- #endif
- #include "tst_test.h"
--#include "tst_numa.h"
-+#include "etst_numa.h"
- 
- #define MNTPOINT "mntpoint"
- #define PAGES_ALLOCATED 16u
-@@ -25,20 +25,20 @@
- #include "set_mempolicy.h"
- 
- static size_t page_size;
--static struct tst_nodemap *nodes;
-+static struct etst_nodemap *nodes;
- 
- static void setup(void)
- {
- 	page_size = getpagesize();
- 
--	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024);
-+	nodes = etst_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024);
- 	if (nodes->cnt <= 1)
- 		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
- }
- 
- static void cleanup(void)
- {
--	tst_nodemap_free(nodes);
-+	etst_nodemap_free(nodes);
- }
- 
- static void verify_mempolicy(unsigned int node, int mode)
-@@ -53,16 +53,16 @@ static void verify_mempolicy(unsigned int node, int mode)
- 	if (TST_RET) {
- 		tst_res(TFAIL | TTERRNO,
- 		        "set_mempolicy(%s) node %u",
--		        tst_mempolicy_mode_name(mode), node);
-+		        etst_mempolicy_mode_name(mode), node);
- 		return;
- 	}
- 
- 	tst_res(TPASS, "set_mempolicy(%s) node %u",
--	        tst_mempolicy_mode_name(mode), node);
-+	        etst_mempolicy_mode_name(mode), node);
- 
- 	numa_free_nodemask(bm);
- 
--	tst_nodemap_reset_counters(nodes);
-+	etst_nodemap_reset_counters(nodes);
- 	alloc_fault_count(nodes, MNTPOINT "/numa-test-file", PAGES_ALLOCATED * page_size);
- 
- 	for (i = 0; i < nodes->cnt; i++) {
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
-index 2a1d2e1b9..b298554c4 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
-@@ -26,7 +26,7 @@
- # include <numaif.h>
- #endif
- #include "tst_test.h"
--#include "tst_numa.h"
-+#include "etst_numa.h"
- 
- #define MNTPOINT "mntpoint"
- #define FILES 10
-@@ -36,7 +36,7 @@
- #include "set_mempolicy.h"
- 
- static size_t page_size;
--static struct tst_nodemap *nodes;
-+static struct etst_nodemap *nodes;
- 
- static void setup(void)
- {
-@@ -44,14 +44,14 @@ static void setup(void)
- 
- 	page_size = getpagesize();
- 
--	nodes = tst_get_nodemap(TST_NUMA_MEM, node_min_pages * page_size / 1024);
-+	nodes = etst_get_nodemap(TST_NUMA_MEM, node_min_pages * page_size / 1024);
- 	if (nodes->cnt <= 1)
- 		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
- }
- 
- static void cleanup(void)
- {
--	tst_nodemap_free(nodes);
-+	etst_nodemap_free(nodes);
- }
- 
- static void alloc_and_check(void)
-@@ -61,7 +61,7 @@ static void alloc_and_check(void)
- 	unsigned int total_pages = 0;
- 	unsigned int sum_pages = 0;
- 
--	tst_nodemap_reset_counters(nodes);
-+	etst_nodemap_reset_counters(nodes);
- 
- 	/*
- 	 * The inner loop loops node->cnt times to ensure the sum could
-diff --git a/testcases/kernel/syscalls/sigtimedwait/sigtimedwait01.c b/testcases/kernel/syscalls/sigtimedwait/sigtimedwait01.c
-index fa36c455f..08700efca 100644
---- a/testcases/kernel/syscalls/sigtimedwait/sigtimedwait01.c
-+++ b/testcases/kernel/syscalls/sigtimedwait/sigtimedwait01.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /* Copyright (c) Jiri Palecek<jpalecek@web.de>, 2009 */
- 
--#include "libsigwait.h"
-+#include "etst_sigwait.h"
- 
- static int my_sigtimedwait(const sigset_t * set, siginfo_t * info,
- 			   void *timeout)
-@@ -10,15 +10,15 @@ static int my_sigtimedwait(const sigset_t * set, siginfo_t * info,
- }
- 
- struct sigwait_test_desc tests[] = {
--	{ test_empty_set, SIGUSR1},
--	{ test_unmasked_matching, SIGUSR1},
--	{ test_masked_matching, SIGUSR1},
--	{ test_unmasked_matching_noinfo, SIGUSR1},
--	{ test_masked_matching_noinfo, SIGUSR1},
--	{ test_bad_address, SIGUSR1},
--	{ test_bad_address2, SIGUSR1},
--	{ test_bad_address3, SIGUSR1},
--	{ test_timeout, 0},
-+	{ etst_empty_set, SIGUSR1},
-+	{ etst_unmasked_matching, SIGUSR1},
-+	{ etst_masked_matching, SIGUSR1},
-+	{ etst_unmasked_matching_noinfo, SIGUSR1},
-+	{ etst_masked_matching_noinfo, SIGUSR1},
-+	{ etst_bad_address, SIGUSR1},
-+	{ etst_bad_address2, SIGUSR1},
-+	{ etst_bad_address3, SIGUSR1},
-+	{ etst_timeout, 0},
- };
- 
- static void run(unsigned int i)
-@@ -31,6 +31,6 @@ static void run(unsigned int i)
- static struct tst_test test = {
- 	.test= run,
- 	.tcnt = ARRAY_SIZE(tests),
--	.setup = sigwait_setup,
-+	.setup = etst_sigwait_setup,
- 	.forks_child = 1,
- };
-diff --git a/testcases/kernel/syscalls/sigwait/sigwait01.c b/testcases/kernel/syscalls/sigwait/sigwait01.c
-index 92544c141..f63614eae 100644
---- a/testcases/kernel/syscalls/sigwait/sigwait01.c
-+++ b/testcases/kernel/syscalls/sigwait/sigwait01.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /* Copyright (c) Jiri Palecek<jpalecek@web.de>, 2009 */
- 
--#include "libsigwait.h"
-+#include "etst_sigwait.h"
- 
- static int my_sigwait(const sigset_t * set,
- 		      siginfo_t * info LTP_ATTRIBUTE_UNUSED,
-@@ -17,8 +17,8 @@ static int my_sigwait(const sigset_t * set,
- }
- 
- struct sigwait_test_desc tests[] = {
--	{ test_unmasked_matching_noinfo, SIGUSR1},
--	{ test_masked_matching_noinfo, SIGUSR1},
-+	{ etst_unmasked_matching_noinfo, SIGUSR1},
-+	{ etst_masked_matching_noinfo, SIGUSR1},
- };
- 
- static void run(unsigned int i)
-@@ -31,6 +31,6 @@ static void run(unsigned int i)
- static struct tst_test test = {
- 	.test= run,
- 	.tcnt = ARRAY_SIZE(tests),
--	.setup = sigwait_setup,
-+	.setup = etst_sigwait_setup,
- 	.forks_child = 1,
- };
-diff --git a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-index f7d90047f..e9f411460 100644
---- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-+++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /* Copyright (c) Jiri Palecek<jpalecek@web.de>, 2009 */
- 
--#include "libsigwait.h"
-+#include "etst_sigwait.h"
- 
- static int my_sigwaitinfo(const sigset_t * set, siginfo_t * info,
- 			  void *timeout LTP_ATTRIBUTE_UNUSED)
-@@ -10,13 +10,13 @@ static int my_sigwaitinfo(const sigset_t * set, siginfo_t * info,
- }
- 
- struct sigwait_test_desc tests[] = {
--	{ test_empty_set, SIGUSR1},
--	{ test_unmasked_matching, SIGUSR1},
--	{ test_masked_matching, SIGUSR1},
--	{ test_unmasked_matching_noinfo, SIGUSR1},
--	{ test_masked_matching_noinfo, SIGUSR1},
--	{ test_bad_address, SIGUSR1},
--	{ test_bad_address2, SIGUSR1},
-+	{ etst_empty_set, SIGUSR1},
-+	{ etst_unmasked_matching, SIGUSR1},
-+	{ etst_masked_matching, SIGUSR1},
-+	{ etst_unmasked_matching_noinfo, SIGUSR1},
-+	{ etst_masked_matching_noinfo, SIGUSR1},
-+	{ etst_bad_address, SIGUSR1},
-+	{ etst_bad_address2, SIGUSR1},
- };
- 
- static void run(unsigned int i)
-@@ -29,6 +29,6 @@ static void run(unsigned int i)
- static struct tst_test test = {
- 	.test= run,
- 	.tcnt = ARRAY_SIZE(tests),
--	.setup = sigwait_setup,
-+	.setup = etst_sigwait_setup,
- 	.forks_child = 1,
- };
-diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c b/testcases/kernel/syscalls/swapoff/swapoff01.c
-index bf097ac1a..20d503c05 100644
---- a/testcases/kernel/syscalls/swapoff/swapoff01.c
-+++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
-@@ -13,7 +13,7 @@
- 
- #include "tst_test.h"
  #include "lapi/syscalls.h"
--#include "libswap.h"
-+#include "etst_swap.h"
  
- #define MNTPOINT	"mntpoint"
- #define TEST_FILE	MNTPOINT"/testswap"
-diff --git a/testcases/kernel/syscalls/swapoff/swapoff02.c b/testcases/kernel/syscalls/swapoff/swapoff02.c
-index b6c428989..f63eb6f17 100644
---- a/testcases/kernel/syscalls/swapoff/swapoff02.c
-+++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
-@@ -14,7 +14,7 @@
- #include <pwd.h>
- #include "tst_test.h"
- #include "lapi/syscalls.h"
--#include "libswap.h"
-+#include "etst_swap.h"
+diff --git a/lib/tst_res.c b/lib/tst_res.c
+index f50c07271..5ec4ebfae 100644
+--- a/lib/tst_res.c
++++ b/lib/tst_res.c
+@@ -48,9 +48,9 @@
+ #include <sys/wait.h>
  
- #define MNTPOINT	"mntpoint"
- #define TEST_FILE	MNTPOINT"/testswap"
-diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
-index a214bc9db..78b6bbb1e 100644
---- a/testcases/kernel/syscalls/swapon/swapon01.c
-+++ b/testcases/kernel/syscalls/swapon/swapon01.c
-@@ -14,7 +14,7 @@
- #include <stdlib.h>
- #include "tst_test.h"
- #include "lapi/syscalls.h"
--#include "libswap.h"
-+#include "etst_swap.h"
+ #include "test.h"
+-#include "safe_macros.h"
+-#include "usctest.h"
+-#include "ltp_priv.h"
++#include "otst_safe_macros.h"
++#include "otst_usctest.h"
++#include "otst_priv.h"
+ #include "tst_ansi_color.h"
  
- #define MNTPOINT	"mntpoint"
- #define SWAP_FILE	MNTPOINT"/swapfile01"
-diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
-index 625d463f7..f1c437902 100644
---- a/testcases/kernel/syscalls/swapon/swapon02.c
-+++ b/testcases/kernel/syscalls/swapon/swapon02.c
-@@ -17,7 +17,7 @@
+ long TEST_RETURN;
+diff --git a/lib/tst_resource.c b/lib/tst_resource.c
+index c35d05a25..4df6d3f49 100644
+--- a/lib/tst_resource.c
++++ b/lib/tst_resource.c
+@@ -23,8 +23,8 @@
  
- #include "tst_test.h"
- #include "lapi/syscalls.h"
--#include "libswap.h"
-+#include "etst_swap.h"
+ #include <pthread.h>
+ #include "test.h"
+-#include "old_resource.h"
+-#include "ltp_priv.h"
++#include "otst_resource.h"
++#include "otst_priv.h"
  
- #define MNTPOINT	"mntpoint"
- #define TEST_FILE	MNTPOINT"/testswap"
-diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
-index 53c5750de..c051e387f 100644
---- a/testcases/kernel/syscalls/swapon/swapon03.c
-+++ b/testcases/kernel/syscalls/swapon/swapon03.c
-@@ -21,7 +21,7 @@
- #include <sys/swap.h>
- #include "tst_test.h"
- #include "lapi/syscalls.h"
--#include "libswap.h"
-+#include "etst_swap.h"
+ #ifndef PATH_MAX
+ #ifdef MAXPATHLEN
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index e115ce689..d2bf3ac70 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -34,9 +34,9 @@
+ #include "tst_sys_conf.h"
+ #include "tst_kconfig.h"
+ #include "tst_private.h"
+-#include "old_resource.h"
+-#include "old_device.h"
+-#include "old_tmpdir.h"
++#include "otst_resource.h"
++#include "otst_device.h"
++#include "otst_tmpdir.h"
+ #include "ltp-version.h"
+ #include "tst_hugepage.h"
+ 
+diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
+index 6ed2367b9..768297f1c 100644
+--- a/lib/tst_tmpdir.c
++++ b/lib/tst_tmpdir.c
+@@ -72,9 +72,9 @@
+ 
+ #include "test.h"
+ #include "tst_buffers.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "tst_tmpdir.h"
+-#include "ltp_priv.h"
++#include "otst_priv.h"
+ #include "lapi/futex.h"
  
  /*
-  * MAX_SWAPFILES from the internal kernel implementation is currently <23, 29>,
-@@ -40,7 +40,7 @@ static int setup_swap(void)
- 	int used_swapfiles, min_swapfiles;
- 	char filename[FILENAME_MAX];
+diff --git a/lib/tst_virt.c b/lib/tst_virt.c
+index 0fda20a17..a37db9d84 100644
+--- a/lib/tst_virt.c
++++ b/lib/tst_virt.c
+@@ -24,7 +24,7 @@
  
--	used_swapfiles = tst_count_swaps();
-+	used_swapfiles = etst_count_swaps();
- 	min_swapfiles = MIN_SWAP_FILES - used_swapfiles;
+ #include <unistd.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
  
- 	while (true) {
-diff --git a/testcases/kernel/uevents/uevent03.c b/testcases/kernel/uevents/uevent03.c
-index 126c924f1..edbf8c17b 100644
---- a/testcases/kernel/uevents/uevent03.c
-+++ b/testcases/kernel/uevents/uevent03.c
-@@ -18,7 +18,7 @@
- #include <sys/sysmacros.h>
- #include <linux/uinput.h>
+ static int is_kvm(void)
+ {
+diff --git a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
+index 2c080933e..911843037 100644
+--- a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
++++ b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
+@@ -36,7 +36,7 @@
+ #include <errno.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "cgroup_xattr";
+ 
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
+index 4856f3372..f961d6eb9 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
+@@ -57,7 +57,7 @@
+ 
+ #include "../libcontrollers/libcontrollers.h"
+ #include "test.h"		/* LTP harness APIs */
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #ifdef DEBUG
+ #define dbg(x...)	printf(x);
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
+index 3c19a7719..4790ee20d 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
+@@ -60,7 +60,7 @@
+ 
+ #include "../libcontrollers/libcontrollers.h"
+ #include "test.h"		/* LTP harness APIs */
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define TIME_INTERVAL	30	/* Time interval in seconds */
+ #define NUM_INTERVALS	3	/* How many iterations of TIME_INTERVAL */
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
+index 63aec0d2a..51e796450 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
+@@ -61,7 +61,7 @@
+ 
+ #include "../libcontrollers/libcontrollers.h"
+ #include "test.h"		/* LTP harness APIs */
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define TIME_INTERVAL	30	/* Time interval in seconds */
+ #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
+index 9a56d7b49..bf161cc72 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
+@@ -61,7 +61,7 @@
+ 
+ #include "../libcontrollers/libcontrollers.h"
+ #include "test.h"		/* LTP harness APIs */
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define TIME_INTERVAL	100	/* Time interval in seconds */
+ #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
+index 9370f7eb8..62ec59504 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
+@@ -62,7 +62,7 @@
+ 
+ #include "../libcontrollers/libcontrollers.h"
+ #include "test.h"		/* LTP harness APIs */
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define TIME_INTERVAL	30	/* Time interval in seconds */
+ #define NUM_INTERVALS	3	/* How many iterations of TIME_INTERVAL */
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
+index a9b90d6b6..2332ca6a5 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
+@@ -61,7 +61,7 @@
+ 
+ #include "../libcontrollers/libcontrollers.h"
+ #include "test.h"		/* LTP harness APIs */
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define TIME_INTERVAL	30	/* Time interval in seconds */
+ #define NUM_INTERVALS	3	/* How many iterations of TIME_INTERVAL */
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
+index a81370085..38290d805 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
+@@ -61,7 +61,7 @@
+ 
+ #include "../libcontrollers/libcontrollers.h"
+ #include "test.h"		/* LTP harness APIs */
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define TIME_INTERVAL	30	/* Time interval in seconds */
+ #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+index d166aa4d3..719413300 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+@@ -61,7 +61,7 @@
+ 
+ #include "../libcontrollers/libcontrollers.h"
+ #include "test.h"		/* LTP harness APIs */
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define TIME_INTERVAL	100	/* Time interval in seconds */
+ #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
+diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi.c b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
+index 2c0cc562b..fa7b2c9f3 100644
+--- a/testcases/kernel/device-drivers/acpi/ltp_acpi.c
++++ b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
+@@ -22,8 +22,8 @@
+ #include <stdlib.h>
+ 
+ #include "test.h"
+-#include "old_module.h"
+-#include "safe_macros.h"
++#include "otst_module.h"
++#include "otst_safe_macros.h"
+ 
+ #include "ltp_acpi.h"
+ 
+diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+index 645c4326a..50ce18721 100644
+--- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
++++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+@@ -34,7 +34,7 @@
+ 
+ #include "test.h"
+ #include "lapi/posix_clocks.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "cpufreq_boost";
+ 
+diff --git a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c b/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
+index 5d241fb42..e82ee4c8d 100644
+--- a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
++++ b/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
+@@ -27,8 +27,8 @@
+ #include <errno.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
+-#include "old_module.h"
++#include "otst_safe_macros.h"
++#include "otst_module.h"
+ 
+ #include "../tpci_kernel/tpci.h"
+ 
+diff --git a/testcases/kernel/device-drivers/rtc/rtc01.c b/testcases/kernel/device-drivers/rtc/rtc01.c
+index 8a1f62ead..ba675493f 100644
+--- a/testcases/kernel/device-drivers/rtc/rtc01.c
++++ b/testcases/kernel/device-drivers/rtc/rtc01.c
+@@ -33,7 +33,7 @@
+ #include <time.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ int rtc_fd = -1;
+ char *TCID = "rtc01";
+diff --git a/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c b/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
+index e882dc768..8488417ed 100644
+--- a/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
++++ b/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
+@@ -53,8 +53,8 @@
+ #include <string.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
+-#include "old_module.h"
++#include "otst_safe_macros.h"
++#include "otst_module.h"
+ 
+ #include "../tbio_kernel/tbio.h"
+ 
+diff --git a/testcases/kernel/device-drivers/uaccess/uaccess.c b/testcases/kernel/device-drivers/uaccess/uaccess.c
+index f337aba64..2f0afe903 100644
+--- a/testcases/kernel/device-drivers/uaccess/uaccess.c
++++ b/testcases/kernel/device-drivers/uaccess/uaccess.c
+@@ -27,8 +27,8 @@
+ #include <unistd.h>
+ 
+ #include "test.h"
+-#include "old_module.h"
+-#include "safe_macros.h"
++#include "otst_module.h"
++#include "otst_safe_macros.h"
+ #include "tst_security.h"
+ 
+ #include "ltp_uaccess.h"
+diff --git a/testcases/kernel/firmware/fw_load_user/fw_load.c b/testcases/kernel/firmware/fw_load_user/fw_load.c
+index f5b918a69..67683e388 100644
+--- a/testcases/kernel/firmware/fw_load_user/fw_load.c
++++ b/testcases/kernel/firmware/fw_load_user/fw_load.c
+@@ -30,8 +30,8 @@
+ 
+ #include "test.h"
+ #include "tst_security.h"
+-#include "safe_macros.h"
+-#include "old_module.h"
++#include "otst_safe_macros.h"
++#include "otst_module.h"
+ 
+ /* number of test firmware files */
+ #define FW_FILES	5
+diff --git a/testcases/kernel/fs/doio/doio.c b/testcases/kernel/fs/doio/doio.c
+index b170f6670..26ae1340f 100644
+--- a/testcases/kernel/fs/doio/doio.c
++++ b/testcases/kernel/fs/doio/doio.c
+@@ -84,7 +84,7 @@
+ 
+ #include "doio.h"
+ #include "write_log.h"
+-#include "random_range.h"
++#include "otst_random_range.h"
+ #include "string_to_tokens.h"
+ #include "pattern.h"
+ 
+diff --git a/testcases/kernel/fs/doio/growfiles.c b/testcases/kernel/fs/doio/growfiles.c
+index 7bf51fb9c..2e0e7ba0b 100644
+--- a/testcases/kernel/fs/doio/growfiles.c
++++ b/testcases/kernel/fs/doio/growfiles.c
+@@ -85,7 +85,7 @@
+ #include <string.h>
+ #include <inttypes.h>
+ #include "dataascii.h"
+-#include "random_range.h"
++#include "otst_random_range.h"
+ #include "databin.h"
+ #include "open_flags.h"
+ #include "forker.h"
+@@ -145,7 +145,7 @@ void myexit(int x)
+ 			/* Once it is proven tlibio.c functions work properly, */
+ 			/* only tlibio.c functions will be used */
+ #else
+-#include "tlibio.h"
++#include "otst_lio.h"
+ #endif
+ 
+ #ifndef PATH_MAX
+@@ -589,7 +589,7 @@ int main(int argc, char **argv)
+ 					Progname, TagName);
+ 				exit(1);
+ 			}
+-			if (io_type == 99)	/* hold-over until tlibio.h */
++			if (io_type == 99)	/* hold-over until otst_lio.h */
+ 				using_random++;
+ #endif
+ 			break;
+diff --git a/testcases/kernel/fs/doio/iogen.c b/testcases/kernel/fs/doio/iogen.c
+index 765cfdae5..763703498 100644
+--- a/testcases/kernel/fs/doio/iogen.c
++++ b/testcases/kernel/fs/doio/iogen.c
+@@ -64,7 +64,7 @@
+ #include "bytes_by_prefix.h"
+ #include "string_to_tokens.h"
+ #include "open_flags.h"
+-#include "random_range.h"
++#include "otst_random_range.h"
+ 
+ #ifndef PATH_MAX
+ #define	PATH_MAX 512		/* ??? */
+diff --git a/testcases/kernel/fs/ftest/ftest01.c b/testcases/kernel/fs/ftest/ftest01.c
+index 31203d689..c5a24f767 100644
+--- a/testcases/kernel/fs/ftest/ftest01.c
++++ b/testcases/kernel/fs/ftest/ftest01.c
+@@ -59,7 +59,7 @@
+ #include <unistd.h>
+ #include <inttypes.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "libftest.h"
+ 
+ char *TCID = "ftest01";
+diff --git a/testcases/kernel/fs/ftest/ftest03.c b/testcases/kernel/fs/ftest/ftest03.c
+index ed69e5736..f9f225755 100644
+--- a/testcases/kernel/fs/ftest/ftest03.c
++++ b/testcases/kernel/fs/ftest/ftest03.c
+@@ -64,7 +64,7 @@
+ #include <stdio.h>
+ #include <inttypes.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "libftest.h"
+ 
+ char *TCID = "ftest03";
+diff --git a/testcases/kernel/fs/ftest/ftest04.c b/testcases/kernel/fs/ftest/ftest04.c
+index 8eed84c74..fb3d9f210 100644
+--- a/testcases/kernel/fs/ftest/ftest04.c
++++ b/testcases/kernel/fs/ftest/ftest04.c
+@@ -48,7 +48,7 @@
+ #include <errno.h>
+ #include <signal.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "libftest.h"
+ 
+ char *TCID = "ftest04";
+diff --git a/testcases/kernel/fs/ftest/ftest05.c b/testcases/kernel/fs/ftest/ftest05.c
+index 8d8e6d497..93b256562 100644
+--- a/testcases/kernel/fs/ftest/ftest05.c
++++ b/testcases/kernel/fs/ftest/ftest05.c
+@@ -63,7 +63,7 @@
+ #include <inttypes.h>
+ #include <sys/param.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "libftest.h"
+ 
+ char *TCID = "ftest05";
+diff --git a/testcases/kernel/fs/ftest/ftest07.c b/testcases/kernel/fs/ftest/ftest07.c
+index 3b5b2a419..851670a7a 100644
+--- a/testcases/kernel/fs/ftest/ftest07.c
++++ b/testcases/kernel/fs/ftest/ftest07.c
+@@ -70,7 +70,7 @@
+ #include <unistd.h>
+ #include <inttypes.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "libftest.h"
+ 
+ char *TCID = "ftest07";
+diff --git a/testcases/kernel/fs/ftest/ftest08.c b/testcases/kernel/fs/ftest/ftest08.c
+index e7fb56fe4..b5602cdab 100644
+--- a/testcases/kernel/fs/ftest/ftest08.c
++++ b/testcases/kernel/fs/ftest/ftest08.c
+@@ -55,7 +55,7 @@
+ #include <unistd.h>
+ #include <inttypes.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "libftest.h"
+ 
+ char *TCID = "ftest08";
+diff --git a/testcases/kernel/io/direct_io/diotest1.c b/testcases/kernel/io/direct_io/diotest1.c
+index 03a054b4c..8f0f889a5 100644
+--- a/testcases/kernel/io/direct_io/diotest1.c
++++ b/testcases/kernel/io/direct_io/diotest1.c
+@@ -40,7 +40,7 @@
+ #include "diotest_routines.h"
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "diotest01";	/* Test program identifier.    */
+ int TST_TOTAL = 1;		/* Total number of test conditions */
+diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
+index ad00fa3e0..077a321f9 100644
+--- a/testcases/kernel/io/direct_io/diotest4.c
++++ b/testcases/kernel/io/direct_io/diotest4.c
+@@ -68,7 +68,7 @@
+ #include "diotest_routines.h"
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/mmap.h"
+ 
+ char *TCID = "diotest4";	/* Test program identifier.    */
+diff --git a/testcases/kernel/io/direct_io/dma_thread_diotest.c b/testcases/kernel/io/direct_io/dma_thread_diotest.c
+index c317eba8e..5568c0657 100644
+--- a/testcases/kernel/io/direct_io/dma_thread_diotest.c
++++ b/testcases/kernel/io/direct_io/dma_thread_diotest.c
+@@ -103,7 +103,7 @@
+ #include <sys/mount.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define FILESIZE	(12*1024*1024)
+ #define READSIZE	(1024*1024)
+diff --git a/testcases/kernel/ipc/pipeio/pipeio.c b/testcases/kernel/ipc/pipeio/pipeio.c
+index ab5c2cf06..8a08c3599 100644
+--- a/testcases/kernel/ipc/pipeio/pipeio.c
++++ b/testcases/kernel/ipc/pipeio/pipeio.c
+@@ -48,10 +48,10 @@
+ #include <signal.h>
+ #include <sys/stat.h>
+ 
+-#include "tlibio.h"
++#include "otst_lio.h"
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/sem.h"
+ 
+ char *TCID = "pipeio";
+diff --git a/testcases/kernel/lib/numa_helper.c b/testcases/kernel/lib/numa_helper.c
+index 2eee8d35d..26b6e166f 100644
+--- a/testcases/kernel/lib/numa_helper.c
++++ b/testcases/kernel/lib/numa_helper.c
+@@ -32,7 +32,7 @@
+ #include <errno.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "numa_helper.h"
+ #include "lapi/syscalls.h"
+ 
+diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
+index d220b636c..624778d4e 100644
+--- a/testcases/kernel/mem/vma/vma01.c
++++ b/testcases/kernel/mem/vma/vma01.c
+@@ -51,7 +51,7 @@
+ #include <string.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define MAPS_FILE "/proc/self/maps"
+ 
+diff --git a/testcases/kernel/mem/vma/vma02.c b/testcases/kernel/mem/vma/vma02.c
+index 2b99f8dec..d770cba91 100644
+--- a/testcases/kernel/mem/vma/vma02.c
++++ b/testcases/kernel/mem/vma/vma02.c
+@@ -43,7 +43,7 @@
+ #include <unistd.h>
+ #include <limits.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "numa_helper.h"
+ 
+ char *TCID = "vma02";
+diff --git a/testcases/kernel/mem/vma/vma03.c b/testcases/kernel/mem/vma/vma03.c
+index 65884d9d9..af36edb2f 100644
+--- a/testcases/kernel/mem/vma/vma03.c
++++ b/testcases/kernel/mem/vma/vma03.c
+@@ -49,7 +49,7 @@
+ #include <unistd.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "tst_kernel.h"
+ #include "lapi/abisize.h"
+ 
+diff --git a/testcases/kernel/mem/vma/vma04.c b/testcases/kernel/mem/vma/vma04.c
+index 24ccd9d6b..952a3f8a7 100644
+--- a/testcases/kernel/mem/vma/vma04.c
++++ b/testcases/kernel/mem/vma/vma04.c
+@@ -47,7 +47,7 @@
+ #include <unistd.h>
+ #include <limits.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "numa_helper.h"
+ 
+ char *TCID = "vma04";
+diff --git a/testcases/kernel/pty/hangup01.c b/testcases/kernel/pty/hangup01.c
+index a71b4b44b..754120164 100644
+--- a/testcases/kernel/pty/hangup01.c
++++ b/testcases/kernel/pty/hangup01.c
+@@ -32,7 +32,7 @@
+ 
+ /** LTP Port **/
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "hangup01";	/* Test program identifier.    */
+ int TST_TOTAL = 5;		/* Total number of test cases. */
+diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
+index 18f0862cb..0e6279e34 100644
+--- a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
++++ b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
+@@ -6,7 +6,7 @@
+ #include <alloca.h>
+ #include <string.h>
+ #include <linux/unistd.h>
+-#include "ltp_cpuid.h"
++#include "otst_cpuid.h"
+ 
+ #define PROC_PATH	"/proc"
+ #define BUFF_SIZE	8192
+diff --git a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c
+index 7644e352c..824c4c5f5 100644
+--- a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c
++++ b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c
+@@ -6,7 +6,7 @@
+ #include <alloca.h>
+ #include <string.h>
+ #include <linux/unistd.h>
+-#include "ltp_cpuid.h"
++#include "otst_cpuid.h"
+ 
+ #define PROC_PATH	"/proc"
+ #define BUFF_SIZE	8192
+diff --git a/testcases/kernel/security/filecaps/filecaps_common.h b/testcases/kernel/security/filecaps/filecaps_common.h
+index 0f011868e..94a279c38 100644
+--- a/testcases/kernel/security/filecaps/filecaps_common.h
++++ b/testcases/kernel/security/filecaps/filecaps_common.h
+@@ -1,6 +1,6 @@
+ #include <limits.h>
+ #include <stdlib.h>
+-#include <old_tmpdir.h>
++#include <otst_tmpdir.h>
+ 
+ static char *fifofile;
+ 
+diff --git a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
+index 20f33527c..3f18aed5a 100644
+--- a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
++++ b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
+@@ -43,7 +43,7 @@
+ #include <signal.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "prot_hsymlinks";
+ int TST_TOTAL = 396;
+diff --git a/testcases/kernel/syscalls/clone/clone02.c b/testcases/kernel/syscalls/clone/clone02.c
+index fd3ee1aed..883951a68 100644
+--- a/testcases/kernel/syscalls/clone/clone02.c
++++ b/testcases/kernel/syscalls/clone/clone02.c
+@@ -58,7 +58,7 @@
+ #include <sys/syscall.h>
+ #include <sched.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "tst_clone.h"
+ 
+ #define FLAG_ALL (CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|SIGCHLD)
+diff --git a/testcases/kernel/syscalls/connect/connect01.c b/testcases/kernel/syscalls/connect/connect01.c
+index 660c4f7a9..e8b4a34c7 100644
+--- a/testcases/kernel/syscalls/connect/connect01.c
++++ b/testcases/kernel/syscalls/connect/connect01.c
+@@ -53,7 +53,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "connect01";
+ int testno;
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate01.c b/testcases/kernel/syscalls/fallocate/fallocate01.c
+index 383796c90..8e9207e2d 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate01.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate01.c
+@@ -99,7 +99,7 @@
+ #include <sys/utsname.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/fallocate.h"
+ #include "lapi/fcntl.h"
+ 
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
+index bb719d78f..d62a39f4b 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate02.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
+@@ -39,7 +39,7 @@
+ #include <limits.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/fallocate.h"
+ #include "lapi/abisize.h"
+ 
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl07.c b/testcases/kernel/syscalls/fcntl/fcntl07.c
+index 10d1186fc..bc9eee901 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl07.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl07.c
+@@ -51,7 +51,7 @@
+ #include <limits.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ static void setup(void);
+ static void cleanup(void);
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl11.c b/testcases/kernel/syscalls/fcntl/fcntl11.c
+index 4fd9fcca9..f0a00d27e 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl11.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl11.c
+@@ -45,7 +45,7 @@
+ #include <sys/wait.h>
+ #include <inttypes.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define STRINGSIZE	27
+ #define STRING		"abcdefghijklmnopqrstuvwxyz\n"
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c b/testcases/kernel/syscalls/fcntl/fcntl16.c
+index 4ae9e6e7a..3c9602c41 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl16.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
+@@ -46,7 +46,7 @@
+ #include <signal.h>
+ #include <errno.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl19.c b/testcases/kernel/syscalls/fcntl/fcntl19.c
+index a58e921c3..4a4df507c 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl19.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl19.c
+@@ -49,7 +49,7 @@
+ #include <inttypes.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define STRINGSIZE	27
+ #define STRING		"abcdefghijklmnopqrstuvwxyz\n"
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl20.c b/testcases/kernel/syscalls/fcntl/fcntl20.c
+index f271eeb2d..241e9843f 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl20.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl20.c
+@@ -45,7 +45,7 @@
+ #include <sys/wait.h>
+ #include <inttypes.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define STRINGSIZE	27
+ #define STRING		"abcdefghijklmnopqrstuvwxyz\n"
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl31.c b/testcases/kernel/syscalls/fcntl/fcntl31.c
+index f5c4f8398..3a1e45795 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl31.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl31.c
+@@ -35,7 +35,7 @@
+ #include "test.h"
+ #include "config.h"
+ #include "lapi/syscalls.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/fcntl.h"
+ 
+ static void setup(void);
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl32.c b/testcases/kernel/syscalls/fcntl/fcntl32.c
+index f567acc70..cc6c2a9a6 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl32.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl32.c
+@@ -24,7 +24,7 @@
+ #include <errno.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ static void setup(void);
+ static void verify_fcntl(int);
+diff --git a/testcases/kernel/syscalls/fdatasync/fdatasync02.c b/testcases/kernel/syscalls/fdatasync/fdatasync02.c
+index 9ce4fc7bb..996e72dbc 100644
+--- a/testcases/kernel/syscalls/fdatasync/fdatasync02.c
++++ b/testcases/kernel/syscalls/fdatasync/fdatasync02.c
+@@ -76,7 +76,7 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define EXP_RET_VAL	-1
+ #define SPL_FILE	"/dev/null"
+diff --git a/testcases/kernel/syscalls/fork/fork09.c b/testcases/kernel/syscalls/fork/fork09.c
+index 32bad89b3..4a36a7713 100644
+--- a/testcases/kernel/syscalls/fork/fork09.c
++++ b/testcases/kernel/syscalls/fork/fork09.c
+@@ -47,7 +47,7 @@
+ #include <errno.h>
+ #include <unistd.h>		/* for _SC_OPEN_MAX */
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "fork09";
+ int TST_TOTAL = 1;
+diff --git a/testcases/kernel/syscalls/fstatat/fstatat01.c b/testcases/kernel/syscalls/fstatat/fstatat01.c
+index c18ffacf2..c7556d248 100644
+--- a/testcases/kernel/syscalls/fstatat/fstatat01.c
++++ b/testcases/kernel/syscalls/fstatat/fstatat01.c
+@@ -34,7 +34,7 @@
+ #include <signal.h>
+ #include "config.h"
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/syscalls.h"
+ 
+ #define TEST_CASES 6
+diff --git a/testcases/kernel/syscalls/futimesat/futimesat01.c b/testcases/kernel/syscalls/futimesat/futimesat01.c
+index 46bd57c48..d2c9272bb 100644
+--- a/testcases/kernel/syscalls/futimesat/futimesat01.c
++++ b/testcases/kernel/syscalls/futimesat/futimesat01.c
+@@ -33,7 +33,7 @@
+ #include <string.h>
+ #include <signal.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/syscalls.h"
+ 
+ #define TEST_CASES 5
+diff --git a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
+index 1ff37bc9b..c59ea556c 100644
+--- a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
++++ b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
+@@ -51,7 +51,7 @@
+ #include <stdlib.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/syscalls.h"
+ 
+ char *TCID = "get_robust_list01";
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
+index f18343c2c..24c704e66 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage04.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
+@@ -50,7 +50,7 @@
+ #include <time.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/posix_clocks.h"
+ 
+ char *TCID = "getrusage04";
+diff --git a/testcases/kernel/syscalls/linkat/linkat01.c b/testcases/kernel/syscalls/linkat/linkat01.c
+index 57cfbcfc6..8b1ef2532 100644
+--- a/testcases/kernel/syscalls/linkat/linkat01.c
++++ b/testcases/kernel/syscalls/linkat/linkat01.c
+@@ -57,7 +57,7 @@
+ #include <limits.h>
+ #include "test.h"
+ #include "lapi/syscalls.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #ifndef AT_FDCWD
+ #define AT_FDCWD -100
+diff --git a/testcases/kernel/syscalls/linkat/linkat02.c b/testcases/kernel/syscalls/linkat/linkat02.c
+index 47383acec..8a7486d02 100644
+--- a/testcases/kernel/syscalls/linkat/linkat02.c
++++ b/testcases/kernel/syscalls/linkat/linkat02.c
+@@ -31,7 +31,7 @@
+ 
+ #include "test.h"
+ #include "lapi/syscalls.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/fcntl.h"
+ 
+ #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
+diff --git a/testcases/kernel/syscalls/listen/listen01.c b/testcases/kernel/syscalls/listen/listen01.c
+index d33f209c3..3f5986b2e 100644
+--- a/testcases/kernel/syscalls/listen/listen01.c
++++ b/testcases/kernel/syscalls/listen/listen01.c
+@@ -53,7 +53,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "listen01";
+ int testno;
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+index 198ba3813..fc0723400 100644
+--- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+@@ -37,7 +37,7 @@
+ #include <pwd.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/syscalls.h"
+ #include "numa_helper.h"
+ #include "migrate_pages_common.h"
+diff --git a/testcases/kernel/syscalls/mincore/mincore01.c b/testcases/kernel/syscalls/mincore/mincore01.c
+index 03ec3b4e6..f0ece8776 100644
+--- a/testcases/kernel/syscalls/mincore/mincore01.c
++++ b/testcases/kernel/syscalls/mincore/mincore01.c
+@@ -43,7 +43,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ static int pagesize;
+ static rlim_t STACK_LIMIT = 10485760;
+diff --git a/testcases/kernel/syscalls/mkdirat/mkdirat01.c b/testcases/kernel/syscalls/mkdirat/mkdirat01.c
+index ca536bdab..3158b9cb1 100644
+--- a/testcases/kernel/syscalls/mkdirat/mkdirat01.c
++++ b/testcases/kernel/syscalls/mkdirat/mkdirat01.c
+@@ -35,7 +35,7 @@
+ #include <string.h>
+ #include <signal.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ static void setup(void);
+ static void cleanup(void);
+diff --git a/testcases/kernel/syscalls/mknodat/mknodat01.c b/testcases/kernel/syscalls/mknodat/mknodat01.c
+index 3be0a4f87..0b0b3a5d9 100644
+--- a/testcases/kernel/syscalls/mknodat/mknodat01.c
++++ b/testcases/kernel/syscalls/mknodat/mknodat01.c
+@@ -33,7 +33,7 @@
+ #include <string.h>
+ #include <signal.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/fcntl.h"
+ 
+ #define PATHNAME "mknodattestdir"
+diff --git a/testcases/kernel/syscalls/mknodat/mknodat02.c b/testcases/kernel/syscalls/mknodat/mknodat02.c
+index fdac5db15..f0e200b3c 100644
+--- a/testcases/kernel/syscalls/mknodat/mknodat02.c
++++ b/testcases/kernel/syscalls/mknodat/mknodat02.c
+@@ -35,7 +35,7 @@
+ #include <sys/mount.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/fcntl.h"
+ #include "lapi/syscalls.h"
+ 
+diff --git a/testcases/kernel/syscalls/mlockall/mlockall02.c b/testcases/kernel/syscalls/mlockall/mlockall02.c
+index 6524cb4a8..01807af17 100644
+--- a/testcases/kernel/syscalls/mlockall/mlockall02.c
++++ b/testcases/kernel/syscalls/mlockall/mlockall02.c
+@@ -77,7 +77,7 @@
+ #include <pwd.h>
+ #include <sys/mman.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include <sys/resource.h>
+ 
+ void setup();
+diff --git a/testcases/kernel/syscalls/mlockall/mlockall03.c b/testcases/kernel/syscalls/mlockall/mlockall03.c
+index a505891fc..bebfcf313 100644
+--- a/testcases/kernel/syscalls/mlockall/mlockall03.c
++++ b/testcases/kernel/syscalls/mlockall/mlockall03.c
+@@ -79,7 +79,7 @@
+ #include <ctype.h>
+ #include <sys/mman.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include <sys/resource.h>
+ #include <sys/utsname.h>
+ 
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages11.c b/testcases/kernel/syscalls/move_pages/move_pages11.c
+index dec930b0e..edfc43e0d 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages11.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages11.c
+@@ -59,7 +59,7 @@
+ #include <errno.h>
+ #include <pwd.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "move_pages_support.h"
+ 
+ #define TEST_PAGES 2
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect01.c b/testcases/kernel/syscalls/mprotect/mprotect01.c
+index aa4685258..82c6880ea 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect01.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect01.c
+@@ -44,7 +44,7 @@
+ #include <unistd.h>
+ #include "test.h"
+ #include "lapi/syscalls.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "mprotect01";
+ int TST_TOTAL = 3;
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect02.c b/testcases/kernel/syscalls/mprotect/mprotect02.c
+index de894868f..34a12a795 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect02.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect02.c
+@@ -41,7 +41,7 @@
+ #include <stdlib.h>
+ #include "test.h"
+ 
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ static void sighandler(int sig);
+ static void cleanup(void);
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect03.c b/testcases/kernel/syscalls/mprotect/mprotect03.c
+index 8ef64f212..f17f38786 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect03.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect03.c
+@@ -46,7 +46,7 @@
+ #include <sys/wait.h>
+ #include "test.h"
+ 
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #ifndef PAGESIZE
+ #define PAGESIZE 4096
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c b/testcases/kernel/syscalls/mprotect/mprotect04.c
+index 6c7f6bd01..af13f1aa4 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect04.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
+@@ -37,7 +37,7 @@
+ #include <stdlib.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ static void sighandler(int sig);
+ 
+diff --git a/testcases/kernel/syscalls/mremap/mremap01.c b/testcases/kernel/syscalls/mremap/mremap01.c
+index 4c795fee5..1d40fa76f 100644
+--- a/testcases/kernel/syscalls/mremap/mremap01.c
++++ b/testcases/kernel/syscalls/mremap/mremap01.c
+@@ -82,7 +82,7 @@
+ #include <fcntl.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define TEMPFILE	"mremapfile"
+ 
+diff --git a/testcases/kernel/syscalls/mremap/mremap05.c b/testcases/kernel/syscalls/mremap/mremap05.c
+index d85ebb068..6b1164346 100644
+--- a/testcases/kernel/syscalls/mremap/mremap05.c
++++ b/testcases/kernel/syscalls/mremap/mremap05.c
+@@ -41,7 +41,7 @@
+ #include <errno.h>
+ #include <unistd.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "mremap05";
+ 
+diff --git a/testcases/kernel/syscalls/msync/msync03.c b/testcases/kernel/syscalls/msync/msync03.c
+index f79458b9b..fd0786e11 100644
+--- a/testcases/kernel/syscalls/msync/msync03.c
++++ b/testcases/kernel/syscalls/msync/msync03.c
+@@ -44,7 +44,7 @@
+ #include <sys/resource.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define INV_SYNC	-1
+ #define TEMPFILE	"msync_file"
+diff --git a/testcases/kernel/syscalls/openat/openat03.c b/testcases/kernel/syscalls/openat/openat03.c
+index 90bcff5d7..29baaabf6 100644
+--- a/testcases/kernel/syscalls/openat/openat03.c
++++ b/testcases/kernel/syscalls/openat/openat03.c
+@@ -25,7 +25,7 @@
+ #include <errno.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/fcntl.h"
+ #include "openat.h"
+ 
+diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
+index 86a134b51..39b63d2f9 100644
+--- a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
++++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
+@@ -43,7 +43,7 @@
+ 
+ #include "test.h"
+ #include "lapi/syscalls.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "perf_event_open01";
+ 
+diff --git a/testcases/kernel/syscalls/pipe/pipe04.c b/testcases/kernel/syscalls/pipe/pipe04.c
+index 219daecd8..624a45930 100644
+--- a/testcases/kernel/syscalls/pipe/pipe04.c
++++ b/testcases/kernel/syscalls/pipe/pipe04.c
+@@ -49,7 +49,7 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "pipe04";
+ int TST_TOTAL = 1;
+diff --git a/testcases/kernel/syscalls/pipe/pipe09.c b/testcases/kernel/syscalls/pipe/pipe09.c
+index 86282de49..ff3e077e8 100644
+--- a/testcases/kernel/syscalls/pipe/pipe09.c
++++ b/testcases/kernel/syscalls/pipe/pipe09.c
+@@ -51,7 +51,7 @@
+ #include <sys/wait.h>
+ #include <errno.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define	PIPEWRTCNT	100	/* must be an even number */
+ 
+diff --git a/testcases/kernel/syscalls/ppoll/ppoll01.c b/testcases/kernel/syscalls/ppoll/ppoll01.c
+index 606018af4..024ad6d66 100644
+--- a/testcases/kernel/syscalls/ppoll/ppoll01.c
++++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
+@@ -17,7 +17,7 @@
+ #include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+-#include "ltp_signal.h"
++#include "otst_signal.h"
+ #include "time64_variants.h"
+ #include "tst_sig_proc.h"
  #include "tst_test.h"
--#include "tst_uinput.h"
-+#include "etst_uinput.h"
- #include "uevent.h"
+diff --git a/testcases/kernel/syscalls/profil/profil01.c b/testcases/kernel/syscalls/profil/profil01.c
+index a8254cb00..f60687e9a 100644
+--- a/testcases/kernel/syscalls/profil/profil01.c
++++ b/testcases/kernel/syscalls/profil/profil01.c
+@@ -26,7 +26,7 @@
+ #include <errno.h>
+ #include <sys/types.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/abisize.h"
+ #include "config.h"
  
- static int mouse_fd;
+diff --git a/testcases/kernel/syscalls/recv/recv01.c b/testcases/kernel/syscalls/recv/recv01.c
+index bb2578355..d807b61d4 100644
+--- a/testcases/kernel/syscalls/recv/recv01.c
++++ b/testcases/kernel/syscalls/recv/recv01.c
+@@ -53,7 +53,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "recv01";
+ int testno;
+diff --git a/testcases/kernel/syscalls/recvfrom/recvfrom01.c b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+index 6ce9f1bde..1ff2435c9 100644
+--- a/testcases/kernel/syscalls/recvfrom/recvfrom01.c
++++ b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+@@ -53,7 +53,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "recvfrom01";
+ int testno;
+diff --git a/testcases/kernel/syscalls/removexattr/removexattr01.c b/testcases/kernel/syscalls/removexattr/removexattr01.c
+index ddbcba698..097340306 100644
+--- a/testcases/kernel/syscalls/removexattr/removexattr01.c
++++ b/testcases/kernel/syscalls/removexattr/removexattr01.c
+@@ -32,7 +32,7 @@
+ #endif
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "removexattr01";
+ 
+diff --git a/testcases/kernel/syscalls/removexattr/removexattr02.c b/testcases/kernel/syscalls/removexattr/removexattr02.c
+index 399055ca7..90675f99b 100644
+--- a/testcases/kernel/syscalls/removexattr/removexattr02.c
++++ b/testcases/kernel/syscalls/removexattr/removexattr02.c
+@@ -37,7 +37,7 @@
+ #endif
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "removexattr02";
+ 
+diff --git a/testcases/kernel/syscalls/rename/rename11.c b/testcases/kernel/syscalls/rename/rename11.c
+index 17cf04c85..5cec568b8 100644
+--- a/testcases/kernel/syscalls/rename/rename11.c
++++ b/testcases/kernel/syscalls/rename/rename11.c
+@@ -37,7 +37,7 @@
+ #include <sys/mount.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "rename11";
+ 
+diff --git a/testcases/kernel/syscalls/renameat/renameat01.c b/testcases/kernel/syscalls/renameat/renameat01.c
+index c318a7971..056f82576 100644
+--- a/testcases/kernel/syscalls/renameat/renameat01.c
++++ b/testcases/kernel/syscalls/renameat/renameat01.c
+@@ -48,7 +48,7 @@
+ #include <sys/mount.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/fcntl.h"
+ 
+ #define MNTPOINT "mntpoint"
+diff --git a/testcases/kernel/syscalls/renameat2/renameat201.c b/testcases/kernel/syscalls/renameat2/renameat201.c
+index 23ed5758a..2091608b4 100644
+--- a/testcases/kernel/syscalls/renameat2/renameat201.c
++++ b/testcases/kernel/syscalls/renameat2/renameat201.c
+@@ -35,7 +35,7 @@
+ #define _GNU_SOURCE
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/fcntl.h"
+ #include "renameat2.h"
+ 
+diff --git a/testcases/kernel/syscalls/renameat2/renameat202.c b/testcases/kernel/syscalls/renameat2/renameat202.c
+index 88db04762..67493012d 100644
+--- a/testcases/kernel/syscalls/renameat2/renameat202.c
++++ b/testcases/kernel/syscalls/renameat2/renameat202.c
+@@ -24,7 +24,7 @@
+ #define _GNU_SOURCE
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/fcntl.h"
+ #include "renameat2.h"
+ 
+diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
+index 8c4724eb4..e24ed0cc5 100644
+--- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
++++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
+@@ -57,7 +57,7 @@
+ 
+ #include "test.h"
+ #include "lapi/syscalls.h"
+-#include "ltp_signal.h"
++#include "otst_signal.h"
+ 
+ char *TCID = "rt_sigprocmask02";
+ int TST_TOTAL = 2;
+diff --git a/testcases/kernel/syscalls/send/send01.c b/testcases/kernel/syscalls/send/send01.c
+index 41859ff6f..52dc07e85 100644
+--- a/testcases/kernel/syscalls/send/send01.c
++++ b/testcases/kernel/syscalls/send/send01.c
+@@ -42,7 +42,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "send01";
+ int testno;
+diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg01.c b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
+index 38cd7182c..93e36173a 100644
+--- a/testcases/kernel/syscalls/sendmsg/sendmsg01.c
++++ b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
+@@ -48,7 +48,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "sendmsg01";
+ int testno;
+diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg02.c b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
+index f72e9db22..a54b87f45 100644
+--- a/testcases/kernel/syscalls/sendmsg/sendmsg02.c
++++ b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
+@@ -43,7 +43,7 @@
+ #include <limits.h>
+ #include "config.h"
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/sem.h"
+ 
+ char *TCID = "sendmsg02";
+diff --git a/testcases/kernel/syscalls/sendto/sendto01.c b/testcases/kernel/syscalls/sendto/sendto01.c
+index b3b7b6efd..92c1bc3c7 100644
+--- a/testcases/kernel/syscalls/sendto/sendto01.c
++++ b/testcases/kernel/syscalls/sendto/sendto01.c
+@@ -41,7 +41,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "sendto01";
+ int testno;
+diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid04.c b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
+index e1525a731..db146a512 100644
+--- a/testcases/kernel/syscalls/setfsuid/setfsuid04.c
++++ b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
+@@ -38,7 +38,7 @@
+ #include <unistd.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "compat_16.h"
+ 
+ TCID_DEFINE(setfsuid04);
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+index d00153533..6a55bf27f 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+@@ -37,7 +37,7 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "setrlimit01";
+ int TST_TOTAL = 1;
+diff --git a/testcases/kernel/syscalls/signalfd4/signalfd4_01.c b/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
+index 76f3be27f..8e283a849 100644
+--- a/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
++++ b/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
+@@ -63,7 +63,7 @@
+ #include "test.h"
+ #include "lapi/fcntl.h"
+ #include "lapi/syscalls.h"
+-#include "ltp_signal.h"
++#include "otst_signal.h"
+ 
+ #define SFD_CLOEXEC O_CLOEXEC
+ 
+diff --git a/testcases/kernel/syscalls/signalfd4/signalfd4_02.c b/testcases/kernel/syscalls/signalfd4/signalfd4_02.c
+index 18f86b4a7..ecde48d73 100644
+--- a/testcases/kernel/syscalls/signalfd4/signalfd4_02.c
++++ b/testcases/kernel/syscalls/signalfd4/signalfd4_02.c
+@@ -59,7 +59,7 @@
+ 
+ #include "test.h"
+ #include "lapi/syscalls.h"
+-#include "ltp_signal.h"
++#include "otst_signal.h"
+ 
+ #define SFD_NONBLOCK O_NONBLOCK
+ 
+diff --git a/testcases/kernel/syscalls/sigpending/sigpending02.c b/testcases/kernel/syscalls/sigpending/sigpending02.c
+index d901540ca..0a59c422e 100644
+--- a/testcases/kernel/syscalls/sigpending/sigpending02.c
++++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
+@@ -15,7 +15,7 @@
+ 
+ #include "config.h"
+ #include "tst_test.h"
+-#include "ltp_signal.h"
++#include "otst_signal.h"
+ #include "lapi/syscalls.h"
+ 
+ static void sigpending_info(void)
+diff --git a/testcases/kernel/syscalls/sigrelse/sigrelse01.c b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
+index 23c675826..8ef890044 100644
+--- a/testcases/kernel/syscalls/sigrelse/sigrelse01.c
++++ b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
+@@ -108,7 +108,7 @@
+ #include <time.h>
+ #include <unistd.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #ifdef __linux__
+ /* glibc2.2 definition needs -D_XOPEN_SOURCE, which breaks other things. */
+diff --git a/testcases/kernel/syscalls/sockioctl/sockioctl01.c b/testcases/kernel/syscalls/sockioctl/sockioctl01.c
+index e81ec20a5..4f3a230cf 100644
+--- a/testcases/kernel/syscalls/sockioctl/sockioctl01.c
++++ b/testcases/kernel/syscalls/sockioctl/sockioctl01.c
+@@ -40,7 +40,7 @@
+ #include <net/if.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "sockioctl01";
+ int testno;
+diff --git a/testcases/kernel/syscalls/symlink/symlink03.c b/testcases/kernel/syscalls/symlink/symlink03.c
+index c89fe5d6d..381a6be2f 100644
+--- a/testcases/kernel/syscalls/symlink/symlink03.c
++++ b/testcases/kernel/syscalls/symlink/symlink03.c
+@@ -87,7 +87,7 @@
+ #include <pwd.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ #define MODE_RWX        S_IRWXU | S_IRWXG | S_IRWXO
+ #define FILE_MODE       S_IRUSR | S_IRGRP | S_IROTH
+diff --git a/testcases/kernel/syscalls/symlinkat/symlinkat01.c b/testcases/kernel/syscalls/symlinkat/symlinkat01.c
+index d510872f0..068dc256f 100644
+--- a/testcases/kernel/syscalls/symlinkat/symlinkat01.c
++++ b/testcases/kernel/syscalls/symlinkat/symlinkat01.c
+@@ -42,7 +42,7 @@
+ #include <string.h>
+ #include <signal.h>
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/syscalls.h"
+ 
+ #define MYRETCODE -999
+diff --git a/testcases/kernel/syscalls/umount2/umount2_01.c b/testcases/kernel/syscalls/umount2/umount2_01.c
+index 5696270d6..75e56c746 100644
+--- a/testcases/kernel/syscalls/umount2/umount2_01.c
++++ b/testcases/kernel/syscalls/umount2/umount2_01.c
+@@ -25,7 +25,7 @@
+ #include <errno.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ #include "lapi/mount.h"
+ 
+ static void setup(void);
+diff --git a/testcases/kernel/syscalls/vfork/vfork02.c b/testcases/kernel/syscalls/vfork/vfork02.c
+index efa70d0be..a8201410e 100644
+--- a/testcases/kernel/syscalls/vfork/vfork02.c
++++ b/testcases/kernel/syscalls/vfork/vfork02.c
+@@ -78,7 +78,7 @@
+ #include <sys/wait.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "vfork02";
+ int TST_TOTAL = 1;
+diff --git a/testcases/lib/tst_device.c b/testcases/lib/tst_device.c
+index 45f77a38b..c44fc6082 100644
+--- a/testcases/lib/tst_device.c
++++ b/testcases/lib/tst_device.c
+@@ -9,7 +9,7 @@
+ #include <stdlib.h>
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
+-#include "old/old_device.h"
++#include "old/otst_device.h"
+ 
+ extern struct tst_test *tst_test;
+ 
+diff --git a/testcases/network/lib6/asapi_01.c b/testcases/network/lib6/asapi_01.c
+index ac1de5418..1976be825 100644
+--- a/testcases/network/lib6/asapi_01.c
++++ b/testcases/network/lib6/asapi_01.c
+@@ -31,7 +31,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "asapi_01";
+ 
+diff --git a/testcases/network/lib6/asapi_03.c b/testcases/network/lib6/asapi_03.c
+index 87d050add..e46b1d44d 100644
+--- a/testcases/network/lib6/asapi_03.c
++++ b/testcases/network/lib6/asapi_03.c
+@@ -41,7 +41,7 @@
+ #include <arpa/inet.h>
+ 
+ #include "test.h"
+-#include "safe_macros.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID = "asapi_03";
+ 
+diff --git a/tools/apicmds/ltpapicmd.c b/tools/apicmds/ltpapicmd.c
+index ac58c90cc..2c92ecf10 100644
+--- a/tools/apicmds/ltpapicmd.c
++++ b/tools/apicmds/ltpapicmd.c
+@@ -63,8 +63,8 @@
+ #include <stdlib.h>
+ #include <stdint.h>
+ #include "test.h"
+-#include "usctest.h"
+-#include "safe_macros.h"
++#include "otst_usctest.h"
++#include "otst_safe_macros.h"
+ 
+ char *TCID;			/* Name of the testcase */
+ int TST_TOTAL;			/* Total number of testcases */
+diff --git a/utils/sctp/testlib/sctputil.h b/utils/sctp/testlib/sctputil.h
+index 176d623f0..91485c133 100644
+--- a/utils/sctp/testlib/sctputil.h
++++ b/utils/sctp/testlib/sctputil.h
+@@ -50,7 +50,7 @@
+ 
+ #ifdef LTP
+ #include <test.h>
+-#include <usctest.h>
++#include <otst_usctest.h>
+ #endif
+ 
+ #include <string.h>
 -- 
 2.52.0
 
