@@ -4,93 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20840D37E3A
-	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 14:38:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1768401510; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=nKrV8dKoaPa89XW/HwTyzIEvaQtgLz2lcSd+2fzwqE4=;
- b=jrd1YwGPh0ez2glJhIxeRVZilqSBn1fq/usAYvUiM95VND5vdJQp0uHsQ/WgUuG1elaca
- L4OSgBxMTvY5YRiDlo3zYzuKdVavnvkR2WrzSM+m+AZxidaMOmOUBOQ7YWsALHEo0BSVxXy
- YNhRa+YnL+qnXzNbdKVMn7zG7PVLNQg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96B4AD37E3F
+	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 15:12:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 34EB73C9CB6
-	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 15:38:30 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id A95243C9CCA
+	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 16:12:22 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BD1353C60CB
- for <ltp@lists.linux.it>; Wed, 14 Jan 2026 15:38:07 +0100 (CET)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id B763A3C9AA9
+ for <ltp@lists.linux.it>; Wed, 14 Jan 2026 16:12:02 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 483066008C8
- for <ltp@lists.linux.it>; Wed, 14 Jan 2026 15:38:07 +0100 (CET)
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-47bdbc90dcaso59675065e9.1
- for <ltp@lists.linux.it>; Wed, 14 Jan 2026 06:38:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1768401487; x=1769006287; darn=lists.linux.it;
- h=in-reply-to:references:to:from:subject:cc:message-id:date
- :content-transfer-encoding:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=xXuxpCB+C200gDac6NFfMYpeaCyypHjDHET7hpKl7Hg=;
- b=T/77y9TkW6uNV48lDk4QDE7KSImI8uHFrrEaWeZg+AqJvF0yOM1wImGQ5QBjALUMLu
- c5+9eWrL0vamCLQWnyIxWrxJWZSXx89E3aSo1qdUxngvEUdBpzjtQr9ghW8MvsHkxGth
- Og9MVBOq6xXSSwplh7EmXCgyt7z+ehSER2hK3uQ8NP9Dij4RjJtziz3iOwMsT49MYkA7
- Y/bljwUX+dVyPx8qOpjq1Ig/J3jtVkFbG5TG/x9dAxz642/RUbiwV7q5RPBoq0iisqYC
- 9GYqwvV921EBrq8q4ONQFLUGR/UcqIuc14MIyUrIPDVzsfLEM/hD9BDDpSzLiAQHf2sq
- jrDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1768401487; x=1769006287;
- h=in-reply-to:references:to:from:subject:cc:message-id:date
- :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=xXuxpCB+C200gDac6NFfMYpeaCyypHjDHET7hpKl7Hg=;
- b=BGjdFRyL39bK2efovtkvW5Ah0z+xNFlwcC78McffjVDTHnHWpIKHJmUK9WdKEVB7Wb
- ZC+TTxKN4tJzuGxP7SNGdgduTIngBHvUmWFs46VuDSnVdzeUitPH9PxmQyUlQ1rJZrl8
- cHb78mt74ZGuVqvrav6CcFcSieSlpF88t6q0bVXAZvjGZ4SIjGK4jKIHhEiAHQb1rmUJ
- n+KTiIWEVEOihKUrHGKwOiYzK5cpB70pFn+XtUTjpE4qxOevEBwUxqI1SODKl8EtmSa4
- PfAVXQ1F0movWZowoTNRE6TjhuHl/NCa1k911ZRYoid4rkTqLw7Cd5gzA1LwJwfdsN70
- mYXw==
-X-Gm-Message-State: AOJu0Yw/eZO7BYIzRQEKdkq73fsfDk4a2+CxEWV4XFj+RvBam8UwVGuk
- TDmPfK+gY776NdWFS+ZoQcUmo94iwdKAdovJ4CtFqvKkV4xWkxunp8oj6Mb7ETNp2i8=
-X-Gm-Gg: AY/fxX7RBQZtTp/erhWF72ttL7ZQK778btecaWJnOWBVgFH/YyMLl0yhn3IS3ZKIx1H
- qHV/m9cqSCikuDnOCoI/G+iV+tT+Aw2dEGlDjf5NNr7ExRkiQO1WBqg/2IDTbUaYLcbwA3BFSg5
- xHsubJ1YiCCraOPf12L7o0UztxvEH04rXyNsbiZzd+/77ODHw94WU/A5DSb6onFMlSp+GjoXL/Y
- WISyQvuF8Ht5HsT4CWQnTTjpWbHsf/CPq9HPS6jcw4izBbibEDAhrrszDhGrx0TWCZOdCdWLkCv
- zvwdRXcGRiNuiYts6peLnYaxEsUfq/6EA/O3XLWSdko5u7qqImD73x5KkzqYrBwOIgi+zVmSGIE
- mQWYfhK8HsjUjlRlMEVrRLB2tY/GnnCzs8g/ajpk4oWItccZbzzw6kffthnXwDumXH4sBP5Yoxt
- XY8JgXoz1bbmgRYp8+nn6xHrnIEd1TjpdkW0m09EY2NDmPndPExBK7q80dMsW4YzNQkmplYQsO4
- VKe
-X-Received: by 2002:a05:600d:17:b0:47e:e8de:7420 with SMTP id
- 5b1f17b1804b1-47ee8de7443mr9820425e9.22.1768401486562; 
- Wed, 14 Jan 2026 06:38:06 -0800 (PST)
-Received: from localhost
- (p200300ff0f0b7b017e458f16f8082810.dip0.t-ipconnect.de.
- [2003:ff:f0b:7b01:7e45:8f16:f808:2810])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-47ee2a5e48asm20271865e9.20.2026.01.14.06.38.06
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 14 Jan 2026 06:38:06 -0800 (PST)
-Mime-Version: 1.0
-Date: Wed, 14 Jan 2026 15:38:05 +0100
-Message-Id: <DFOE0BC22OI4.1TO4CKB63W9M0@suse.com>
-To: "Al Viro" <viro@zeniv.linux.org.uk>
-X-Mailer: aerc 0.18.2
-References: <20260113194936.GQ3634291@ZenIV>
- <DFO6AXBPYYE4.2BD108FK6ACXE@suse.com> <20260114143021.GU3634291@ZenIV>
-In-Reply-To: <20260114143021.GU3634291@ZenIV>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B4F9360010D
+ for <ltp@lists.linux.it>; Wed, 14 Jan 2026 16:12:01 +0100 (CET)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60EE1ctU013363;
+ Wed, 14 Jan 2026 15:12:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=VQS6zr
+ w/Rv+8VRfrDR4ZQiwYSwb0FJjDA0oTmHAH6WU=; b=OAreXrHYnls+XNzOn+iule
+ +0V9UeBMb1zz1ADs4xLBBrFl/gNH0g5KvHAcxHUtqtV2MCg0LHs2ucGx6wtIIKxO
+ LFZZWPjVBpbRy1IMAb5mJy1s6a52OtlA4wYpPXoqp6i6cQt1y47bEIGgqRprV1Q5
+ NQqh3O58RKdZ1aFUbd2SLh0phK/LV24KP1A2mxhpPyO/gnj7SyV5VSB4Kw7ydxmE
+ XV6u1ZqCo2bgLGCsLgZ86gTZZFiv01lFMdbxFkfCzy97D82RxINHW7mdXPk9nW0Y
+ mHppkXH5uwGuQmx/v7ffi1/MyegJp1HORKV1LQQ61iDm2lgcYxzbrn59Z0W2Cm5Q
+ ==
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkedt1kjg-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 14 Jan 2026 15:11:59 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60EEVVNV025848;
+ Wed, 14 Jan 2026 15:11:59 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4bm2kkjqgc-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 14 Jan 2026 15:11:59 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com
+ [10.241.53.103])
+ by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 60EFBexh27591190
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 14 Jan 2026 15:11:41 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id B51985805E;
+ Wed, 14 Jan 2026 15:11:58 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 61A5E58066;
+ Wed, 14 Jan 2026 15:11:58 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
+ [9.61.13.234]) by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+ Wed, 14 Jan 2026 15:11:58 +0000 (GMT)
+Message-ID: <41d432e3b9c16d712080295235ca000a6cb6e07c.camel@linux.ibm.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+In-Reply-To: <20260107155737.791588-2-pvorel@suse.cz>
+References: <20260107155737.791588-1-pvorel@suse.cz>
+ <20260107155737.791588-2-pvorel@suse.cz>
+Date: Wed, 14 Jan 2026 10:11:58 -0500
+MIME-Version: 1.0
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE0MDEyMyBTYWx0ZWRfX2Jr+Uv04Tgmz
+ minhAVAqdl2On7tAwIyWTeS1Fcp06zgspCZGevN3omzM7+Ty/Y12tINMwGfGHXpdYhZCi3DaQ7P
+ DATIa7WV64wNY1/TEATbbcnQ7X91pv6s3jYfx13b1y0E5eMMXGyvSTV4Paid1buZVBC9rTwwpOz
+ BDI9xrwbWIB2gTBj6xEXlReGa0uHW7pPoi43NqkSElLFb0VK50Dkyzg0mwuiOChYaOxptsIOVqo
+ XRfu51sUdr28QIxAcc0vu8VqdLp9KsFOllxa5bxukglmGGcnSxt2fIZBnFHcXZ1nT2d2DI/Ij5X
+ jYnuy7v8Ru3AooyaUE3mjYZB8Mp3SaDIsRUNjiaRFmSoRKBXDW5g8v2wKXTW3KcD5Eyhmsl4CiC
+ lgXbfr3lhhinDrVS2slsGqdf3Uiu+vPzcPtGA6XftiKH54EzuW/j/46HmhTiXsrq2J6Mnv9AFWx
+ kUcvrTajafKNz1RyclA==
+X-Proofpoint-GUID: GRGK8s7iYE32UZHOb2wVKvattaoOMkFt
+X-Authority-Analysis: v=2.4 cv=WLJyn3sR c=1 sm=1 tr=0 ts=6967b240 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=wlRH1G3uh7w6tWQy2i0A:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: GRGK8s7iYE32UZHOb2wVKvattaoOMkFt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-14_04,2026-01-14_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 adultscore=0 malwarescore=0 phishscore=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 impostorscore=0
+ lowpriorityscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2512120000
+ definitions=main-2601140123
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lack of ENAMETOOLONG testcases for pathnames
- longer than PATH_MAX
+Subject: Re: [LTP] [PATCH 2/2] ima_kexec.sh: Document kernel config
+ dependencies
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,41 +110,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: linux-fsdevel@vger.kernel.org, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-integrity@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
->
-> Er...  Intent was to verify two things: that anything longer than PATH_MAX triggers
-> ENAMETOOLONG, but anything up to PATH_MAX does not.  Having a pathname of exactly
-> 4095 '/' (or interleaved . and / in the same amount, etc.) be rejected with ENAMETOOLONG
-> is just as much of a failure as not triggering ENAMETOOLONG on anything longer...
-
-In this case we need a new test verifying that PATH_MAX is actually
-handled well, as Cyril suggested. But in this test we should only
-verifying errors.
-
->
-> FWIW, I considered something like
-> 	mkdir("subdirectory", 0700);
-> concatenating enough copies of "subdirectory/../" to get just under PATH_MAX and appending
-> "././././././././" to the end, so that truncation to PATH_MAX and to PATH_MAX-1 would
-> both be otherwise valid paths; decided that it's better to keep it simpler - a pile of
-> slashes is easier to produce and would resolve to a valid directory if not for the
-> total length restrictions.
-
-It's up to you how you create the string that will trigger the error.
-Also, you probably need to take a look at tst_test.needs_tmpdir.
-
--- 
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gV2VkLCAyMDI2LTAxLTA3IGF0IDE2OjU3ICswMTAwLCBQZXRyIFZvcmVsIHdyb3RlOgo+IENP
+TkZJR19IQVZFX0lNQV9LRVhFQz15IGlzIGVub3VnaCBmb3IgdGVzdCwgaWUuIHRlc3QgaXMgd29y
+a2luZyB3aXRoOgo+IAo+ICAgICAjIENPTkZJR19JTUFfS0VYRUMgaXMgbm90IHNldAo+ICAgICBD
+T05GSUdfSEFWRV9JTUFfS0VYRUM9eQo+IAo+IFByb2JhYmx5IG9idmlvdXMgYXMgQ09ORklHX0hB
+VkVfSU1BX0tFWEVDIGlzIGFyY2ggc3BlY2lmaWMgYW5kCj4gQ09ORklHX0lNQV9LRVhFQyBpcyAi
+VFBNIFBDUnMgYXJlIG9ubHkgcmVzZXQgb24gYSBoYXJkIHJlYm9vdC4iCj4gYW5kIGltYV9rZXhl
+Yy5jIHJlcXVpcmVzIENPTkZJR19IQVZFX0lNQV9LRVhFQyAob25seSBwYXJ0cyBhcmUgc2tpcHBl
+ZAo+IHdoZW4gQ09ORklHX0lNQV9LRVhFQyBub3Qgc2V0KSBidXQgYmV0dGVyIHRvIGNsYXJpZnkg
+Zm9yIHVzZXJzLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6
+Pgo+IC0tLQo+ICB0ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L2ludGVncml0eS9pbWEvdGVzdHMv
+aW1hX2tleGVjLnNoIHwgMyArKysKPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQo+
+IAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L2ludGVncml0eS9pbWEv
+dGVzdHMvaW1hX2tleGVjLnNoIGIvdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9pbnRlZ3JpdHkv
+aW1hL3Rlc3RzL2ltYV9rZXhlYy5zaAo+IGluZGV4IDc2ODg2OTBhZjIuLmRlNTk1ZmNkZDcgMTAw
+NzU1Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9pbnRlZ3JpdHkvaW1hL3Rlc3Rz
+L2ltYV9rZXhlYy5zaAo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvaW50ZWdyaXR5
+L2ltYS90ZXN0cy9pbWFfa2V4ZWMuc2gKPiBAQCAtNiw4ICs2LDExIEBACj4gICMKPiAgIyBWZXJp
+ZnkgdGhhdCBrZXhlYyBjbWRsaW5lIGlzIG1lYXN1cmVkIGNvcnJlY3RseS4KPiAgIyBUZXN0IGF0
+dGVtcHRzIHRvIGtleGVjIHRoZSBleGlzdGluZyBydW5uaW5nIGtlcm5lbCBpbWFnZS4KPiArIwo+
+ICAjIFRvIGtleGVjIGEgZGlmZmVyZW50IGtlcm5lbCBpbWFnZSBleHBvcnQgSU1BX0tFWEVDX0lN
+QUdFPTxwYXRobmFtZT4uCj4gICMgVGVzdCByZXF1aXJlcyBleGFtcGxlIElNQSBwb2xpY3kgbG9h
+ZGFibGUgd2l0aCBMVFBfSU1BX0xPQURfUE9MSUNZPTEuCj4gKyMKPiArIyBUZXN0IHJlcXVpcmVz
+IENPTkZJR19IQVZFX0lNQV9LRVhFQz15IChDT05GSUdfSU1BX0tFWEVDIGlzIG5vdCBtYW5kYXRv
+cnkpLgoKQ29ycmVjdC7CoCBUaGUgdGVzdCB2ZXJpZmllcyB0aGF0IHRoZSBrZXJuZWwgaW1hZ2Ug
+aXMgbWVhc3VyZWQuICBJdCBkb2VzIG5vdApleGVjdXRlIHRoZSBrZXhlYywgc28gdGhlcmUgaXMg
+bm8gbmVlZCBmb3IgY2FycnlpbmcgdGhlIElNQSBtZWFzdXJlbWVudCBsaXN0CmFjcm9zcyBrZXhl
+YyAoQ09ORklHX0lNQV9LRVhFQykuCgo+ICAKPiAgVFNUX05FRURTX0NNRFM9ImdyZXAga2V4ZWMg
+c2VkIgo+ICBUU1RfQ05UPTMKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5s
+aW51eC5pdC9saXN0aW5mby9sdHAK
