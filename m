@@ -4,79 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73BC8D38FEB
-	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 16:44:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17063D38FEB
+	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 16:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1768409064; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1768409118; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=JpaZ4fuTwHsijOiKqfZl0zPR4mM8Ml2zwGkvqRcAMAE=;
- b=CUOncZmBTZSot86T6KZGBjiv1deZYYOmiuAAyjdSp7ugW2mw6yTLRYOvd68UFxQELADw8
- zi+mMDbt5z9xvBuJuqwzheny3PydLirDyRly9u0uAfD29fgltRUx6KhcirHPm6CPs3bjM0t
- EY2hBShl+/aMlxG++oIg/N5aaYNXPcE=
+ from; bh=QKtjXzVOr31f89rgqN8pURyTNTX7+GHvbNaNe7J0guM=;
+ b=dGGKu1uxY20TlR9zRsyfJQeiDxBzx7QI/URonwXT+8UXI1FtESu4+9y3kd/G5VXJOVtr2
+ qLESdHtIqfy/3h4y6cvkAg5SIDfGEEWKl/VtYP0e1gswLuD9SzDqu83kULTQVELr2I7F6ZW
+ KxrEEMdokN3LyZnwnhLyE6/XA5Rb71A=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 122203C9F5E
-	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 17:44:24 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id B168F3C9FB7
+	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 17:45:18 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 662423C29FC
- for <ltp@lists.linux.it>; Tue, 13 Jan 2026 04:23:02 +0100 (CET)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 13CA73C3103
+ for <ltp@lists.linux.it>; Wed, 14 Jan 2026 11:18:43 +0100 (CET)
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com
+ [IPv6:2607:f8b0:4864:20::62f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 51BEE1A00269
- for <ltp@lists.linux.it>; Tue, 13 Jan 2026 04:23:00 +0100 (CET)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by tor.source.kernel.org (Postfix) with ESMTP id AFBB66000A;
- Tue, 13 Jan 2026 03:22:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6324CC116D0;
- Tue, 13 Jan 2026 03:22:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1768274578;
- bh=qBpGhliMx0mgkoSIcLVrnkmna3UupRTRq4CYtRgHij4=;
- h=From:Date:Subject:To:Cc:Reply-To:From;
- b=uZmzN8am7TsNtjl1J8Tbisho/1vcJZo0S6VCCtTl6DjCIPsn2NZOYTQBUxc2JHgWg
- t990mLwwkR8k5nzcBM+oUW7sFOBiRvQiAYtu1k6qZ6yFTylSm1vH3gkYjjD2Oct6Nj
- WlVr4+e1oo6P2ORGSxAFUkQr49oMOIa70Ij4eHt0JD2dagek0Ue+XKD4BsG33ozVkQ
- LeE96XU+ezVv+9k9w52uaDx56Ca3SwiQY1evybkPFfx5Xzo9ubhxY0K1Y15JXSdjoW
- qGEN61Nwx15Tz30zmDOT8S5oHiEB/awMLRwOaxI269xqNG7z9ofidele9DK0+IYoLX
- YLNUCNTHwZ1qw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org
- (localhost.localdomain [127.0.0.1])
- by smtp.lore.kernel.org (Postfix) with ESMTP id 4D96ED29DC7;
- Tue, 13 Jan 2026 03:22:58 +0000 (UTC)
-Date: Tue, 13 Jan 2026 11:22:52 +0800
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8D9181A00145
+ for <ltp@lists.linux.it>; Wed, 14 Jan 2026 11:18:42 +0100 (CET)
+Received: by mail-pl1-x62f.google.com with SMTP id
+ d9443c01a7336-2a0d6f647e2so84255495ad.1
+ for <ltp@lists.linux.it>; Wed, 14 Jan 2026 02:18:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sifive.com; s=google; t=1768385920; x=1768990720; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=ub2eha8WULHLEg2XheB/4u69pl3NeqD7MuulH6bhRis=;
+ b=E14sg+MBdJV6+Qxd3TVD0YNN+qF54gbZZoCrPYoYC0EVO6rMc+jn2LTTuj9EIjHCp1
+ XqMVMfArtYVe2R8S1G6h1WvlrQVIfMRZhImVnN1XuszVyGfI3sDcmWxLYj3ZLY4uMr9b
+ joptqWpBC6xiVIHfiKpKa99kbt/oq4RyUN9uX/mQzpmoWhr4mNmPq+lkEMIrDlsvYS2O
+ agw7OuCjr/xY67o+tlg4AxRpBVFJaUypzGy5NCl2gebkbutVmx9g4uz9TCYG8nfWt1x7
+ NDY0OVgFEoGfDCsP0zP/URDxONsZiv4vLWE/CXkl+ka7MvcEpUPDUMQN4RTc38QLofVI
+ D87w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1768385920; x=1768990720;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=ub2eha8WULHLEg2XheB/4u69pl3NeqD7MuulH6bhRis=;
+ b=lQLb4pOsApOHNTo0eqwHj90ndLjGYofCT91QywGdWCLdgXXZJ/YfSjKGpSezT+Q9V+
+ 6y4ABLwWc8W9i6CirsTJUOWzvFyjbqpNj+2pcJ7sx4tBxYRbPZdktignHdbCVmCNpynT
+ IXlDSBBtJrBsBQa+ereTRoBHbbf3TkAGrzPuDT15sVhmJfH+yYfLJb45lYllNfw/kfs9
+ woqwYXrQnX9tZe1NX5OqtNHoHLdw0X3GTOeSY1vMhxcx7oq6FJZoQzUeyW6XdMl5zLyA
+ iVnbzdx1FXE6eEV3VzQ0ESllwZHcJhf8WOC4JZdZET2BMo3Vakr40HQs/nPexJ3CXMkp
+ bRCQ==
+X-Gm-Message-State: AOJu0YyC7wowMppFPViQgGHgiHkIemRVUbI8d7RfTQVRbeNPX3bFsIAN
+ UelTdCQjN5waphsqPRbngeuSG5wF4Nzkmjj54bO1zIUgt8l0gy3UZiSvUIofNPj5yv9jp1LNvOa
+ h4yaztpd2Z6uVAeGLYjFCTX8qiiOII01t9hnKfWzMzsuKPgN5OxG6b+6dpKODNccFRv2KL6A29v
+ SvgWoqcbKJ8dbL4UxYh1r4TUuD2PPxRXJeh2HrT9D/
+X-Gm-Gg: AY/fxX7/7rLj3DlxtOR6OOLr2DDsnB0RfSHe+QUQoN5Hvh5LEM21glJNf3rleIAdpvj
+ druvdJ2bAKMgZ8X9kE1dAnyDpexcU7PFnefjxft3MNkt5bi4VrWHlgBAV2uhHtJ5nStdK24qQNC
+ zQx18Ac4VkoG4/Mj+d7lKssqnF7uuw8CpWbLMVdsZHNG+pqvMo/JxZrtbmGEaSzzqZKdRI8LtQi
+ eF7g/5o58q5VJT+eGtx76q4rvGaFeeaRcdtXZxNWWzazHte1dsnKsylrMecnUeA0HnywkzfG8pc
+ 1PhQXTod9EaHkkkP6OFneDQjiNafFWL+XPLLnhh7XagbE0AqrLhVxsE625mC1BrWwQAcBIJcudi
+ w9AFJ81WazpbKqX3T8sy/RjskghkLGmA2SMbKe7sAjj4WKxc7tx4b5khcekmgdNUnxGa6/z8HiP
+ txOZUj8TRwnpLAz/6ykQx7dAVtWezKyBLPavd9ZU4o4KKqwvOcSGfKcyuhkZEPSd9bzg==
+X-Received: by 2002:a17:902:ec90:b0:298:2637:800b with SMTP id
+ d9443c01a7336-2a599e34891mr20397025ad.31.1768385920227; 
+ Wed, 14 Jan 2026 02:18:40 -0800 (PST)
+Received: from Vincent-X1Extreme-TW.internal.sifive.com ([136.226.240.177])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-2a3e3cd495dsm226859885ad.96.2026.01.14.02.18.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 14 Jan 2026 02:18:39 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Wed, 14 Jan 2026 18:18:34 +0800
+Message-Id: <20260114101834.3397158-1-vincent.chen@sifive.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Message-Id: <20260113-checkpatch-v2-1-5dfe8b9f4d90@uniontech.com>
-X-B4-Tracking: v=1; b=H4sIAIu6ZWkC/3WOPQ+CMBiE/4rpbE0/sKVODrI66GgYSvvWNkYgg
- ERD+O8WRpHx7vLc3YBaaAK06LAZUAN9aENVRsG2G2S8Lu+Ag40aMcL2RFGFjQfzqHVnPCZMCpl
- KKFwBKAJ1Ay6857IbumTX7HxCefR9aLuq+cwbPZ3Tf3U9xRTbNFVKcsWZ08dXGd90YPzOVM9pY
- cIoIUus0I6AoEmhxCrG+AJzTnKwMZJWrGCUkuVJqUHZRGguf7F8HMcvDt71blUBAAA=
-X-Change-ID: 20250919-checkpatch-0276787ebfbe
-To: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, 
- Dwaipayan Ray <dwaipayanray1@gmail.com>, 
- Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1768274577; l=1809;
- i=cryolitia@uniontech.com; s=20250730; h=from:subject:message-id;
- bh=VE6TM5bOD2xrus3PUyCCcDFeowc5jbcfaHJXtjNJP6E=;
- b=H/KmEQriZzSu52B7ZrKMnqG2miNglsyHC9jPS9DFPtDDyHeRknjMSTjUw8oeg5JAuFoPIVG8m
- kMABb8g9rLOCjvhDqFxcPKtvNRnyqmmB3yJsoNFtH9tMhlOJovsCtNo
-X-Developer-Key: i=cryolitia@uniontech.com; a=ed25519;
- pk=tZ+U+kQkT45GRGewbMSB4VPmvpD+KkHC/Wv3rMOn/PU=
-X-Endpoint-Received: by B4 Relay for cryolitia@uniontech.com/20250730 with
- auth_id=474
-X-Original-From: Cryolitia PukNgae <cryolitia@uniontech.com>
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Wed, 14 Jan 2026 17:43:59 +0100
-Subject: [LTP] [PATCH RESEND v2] checkpatch: Suppress warnings when
- Reported-by: is followed by Link:
+X-Mailman-Approved-At: Wed, 14 Jan 2026 17:44:54 +0100
+Subject: [LTP] [PATCH] locking/lock_torture: accept optional "[debug]" in
+ result string
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,62 +98,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Cryolitia PukNgae via B4 Relay via ltp <ltp@lists.linux.it>
-Reply-To: cryolitia@uniontech.com
-Cc: Cryolitia PukNgae via B4 Relay
- <devnull+cryolitia.uniontech.com@kernel.org>, linux-doc@vger.kernel.org,
- Cryolitia PukNgae <cryolitia@uniontech.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, workflows@vger.kernel.org, niecheng1@uniontech.com,
- ltp@lists.linux.it, zhanjun@uniontech.com
+From: Vincent Chen via ltp <ltp@lists.linux.it>
+Reply-To: Vincent Chen <vincent.chen@sifive.com>
+Cc: vincent.chen@sifive.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Cryolitia PukNgae <cryolitia@uniontech.com>
+lock_torture.sh parses the lock_torture result from dmesg by
+matching the "End of test: <RESULT>:" line.
 
-> The tag should be followed by a Closes: tag pointing to the report,
-> unless the report is not available on the web. The Link: tag can be
-> used instead of Closes: if the patch fixes a part of the issue(s)
-> being reported.
+When the kernel is built with lock debugging enabled (e.g.
+CONFIG_DEBUG_MUTEXES, CONFIG_DEBUG_RT_MUTEXES, CONFIG_DEBUG_SPINLOCK),
+lock_torture may print "End of test: SUCCESS [debug]: ...".
+The current regexp expects "SUCCESS:" and fails to match, causing the
+test to be reported as failure.
 
-Accroding to Documentation/process/submitting-patches.rst , Link: is
-also acceptable to followed a Reported-by:
+Allow an optional " [debug]" token between the result string and the
+colon so the test can correctly detect SUCCESS on debug kernels.
 
-Signed-off-by: Cryolitia PukNgae <cryolitia@uniontech.com>
+Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
 ---
-Link to previous: https://lore.kernel.org/r/20251023-checkpatch-v1-1-ff73ed1027d6@uniontech.com
----
- scripts/checkpatch.pl | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ testcases/kernel/device-drivers/locking/lock_torture.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index c0250244cf7a..dac9d98133c6 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3209,10 +3209,10 @@ sub process {
- 			if ($sign_off =~ /^reported(?:|-and-tested)-by:$/i) {
- 				if (!defined $lines[$linenr]) {
- 					WARN("BAD_REPORTED_BY_LINK",
--					     "Reported-by: should be immediately followed by Closes: with a URL to the report\n" . $herecurr . "\n");
--				} elsif ($rawlines[$linenr] !~ /^closes:\s*/i) {
-+					     "Reported-by: should be immediately followed by Closes: or Link: with a URL to the report\n" . $herecurr . "\n");
-+				} elsif ($rawlines[$linenr] !~ /^(closes|link):\s*/i) {
- 					WARN("BAD_REPORTED_BY_LINK",
--					     "Reported-by: should be immediately followed by Closes: with a URL to the report\n" . $herecurr . $rawlines[$linenr] . "\n");
-+					     "Reported-by: should be immediately followed by Closes: or Link: with a URL to the report\n" . $herecurr . $rawlines[$linenr] . "\n");
- 				}
- 			}
- 		}
-
----
-base-commit: 9448598b22c50c8a5bb77a9103e2d49f134c9578
-change-id: 20250919-checkpatch-0276787ebfbe
-
-Best regards,
+diff --git a/testcases/kernel/device-drivers/locking/lock_torture.sh b/testcases/kernel/device-drivers/locking/lock_torture.sh
+index dfa57373f..d9bd95da2 100755
+--- a/testcases/kernel/device-drivers/locking/lock_torture.sh
++++ b/testcases/kernel/device-drivers/locking/lock_torture.sh
+@@ -83,7 +83,7 @@ for type in $lock_type; do
+ 		tst_brkm TBROK "failed to unload module"
+ 
+ 	# check module status in dmesg
+-	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
++	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+)([[:space:]]+\[debug\])?:.*/\1/p'`
+ 	if [ "$result_str" = "SUCCESS" ]; then
+ 		tst_resm TPASS "$type: completed"
+ 	else
 -- 
-Cryolitia PukNgae <cryolitia@uniontech.com>
-
+2.34.1
 
 
 -- 
