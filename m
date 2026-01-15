@@ -4,109 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAAFCD38FEC
-	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 16:55:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A78DD3CCB7
+	for <ltp@archiver.kernel.org>; Thu, 15 Jan 2026 07:23:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 307853C9FD1
-	for <ltp@archiver.kernel.org>; Wed, 14 Jan 2026 17:55:25 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 86A2D3C9B86
+	for <ltp@archiver.kernel.org>; Thu, 15 Jan 2026 08:23:08 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1A9BE3C9F78
- for <ltp@lists.linux.it>; Wed, 14 Jan 2026 17:55:06 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id D2C143C0EB3
+ for <ltp@lists.linux.it>; Thu, 15 Jan 2026 08:22:49 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6BAAC10001B3
- for <ltp@lists.linux.it>; Wed, 14 Jan 2026 17:55:06 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8E7111400DD3
+ for <ltp@lists.linux.it>; Thu, 15 Jan 2026 08:22:48 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AF7235CE80;
- Wed, 14 Jan 2026 16:55:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D20F333694;
+ Thu, 15 Jan 2026 07:22:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1768409705;
+ t=1768461762;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=i+oKHdvfYj+ft1jbrQZBk0MFtiAA59hmPvW9Exn7ZpE=;
- b=ZOwrla6izy1e+uqPj7saR97+TTI7ruH7eFC1v5zJ+vDn6SxbOIEKje+trDqA95ulblHjsI
- ba/pVzfN28b2b4zEvJrdJOdM1+CJG3dn8n+00R4Om5RP/Q4Gv42hRsiOubmuFGNm96ofgR
- f8yLlCrRSkNRtTW/jL6kZOhsWnL+iFc=
+ bh=AlpvlU9RUc1F4iCVSO3rQkbgCwaKD8hJUxYfFKTEWPM=;
+ b=XudOJ7mXjnIlMu3K7TB0kagbLb1j6nnRvRPD/IEC0DEoJZdAWPKWq6viZgqjpf2X5VNEap
+ Cx6R4BrUaFXl+LF7szzxyk8SdYFXL4M/pMa7opi98bXMR//mtYJUpUBuLrzuwYVLVLhNNB
+ FuEkbP/vrzh1iC9/wFPY/VixADrHNso=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1768409705;
+ s=susede2_ed25519; t=1768461762;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=i+oKHdvfYj+ft1jbrQZBk0MFtiAA59hmPvW9Exn7ZpE=;
- b=RFGzXW63Q2nacnet4itocu+aj9qtB28QVN3jv40oCizBqhimHlwL97t6uIf1OXGcZ41YK0
- Thr3rwgI9VmqH0Bw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ZOwrla6i;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=RFGzXW63
+ bh=AlpvlU9RUc1F4iCVSO3rQkbgCwaKD8hJUxYfFKTEWPM=;
+ b=laRMAzTMuY0e1xM1KJ0OlxKvtxtI3igNm1eI91cdWd7eQ9S5M3wV8LhKp8vZQkVLlPMwVa
+ 8WJzcpBCjMt/ZbDA==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1768409705;
+ t=1768461760;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=i+oKHdvfYj+ft1jbrQZBk0MFtiAA59hmPvW9Exn7ZpE=;
- b=ZOwrla6izy1e+uqPj7saR97+TTI7ruH7eFC1v5zJ+vDn6SxbOIEKje+trDqA95ulblHjsI
- ba/pVzfN28b2b4zEvJrdJOdM1+CJG3dn8n+00R4Om5RP/Q4Gv42hRsiOubmuFGNm96ofgR
- f8yLlCrRSkNRtTW/jL6kZOhsWnL+iFc=
+ bh=AlpvlU9RUc1F4iCVSO3rQkbgCwaKD8hJUxYfFKTEWPM=;
+ b=EHOK3G7LUt5NFSkL63tRI1gVs6DgtgfLeW9tSWAhPSyJqR8Dpu9TteYq98YSkVWxb2dPfl
+ Cv5glKbITvpaCnUMw5WPyBYgW/f3xosTrbA43TNKzE8Jz4Rb1Wl24fBQGSVvLc9CCHS1k/
+ CrBgnU+hNvH4jTulh75LGJnARVM4ciU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1768409705;
+ s=susede2_ed25519; t=1768461760;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=i+oKHdvfYj+ft1jbrQZBk0MFtiAA59hmPvW9Exn7ZpE=;
- b=RFGzXW63Q2nacnet4itocu+aj9qtB28QVN3jv40oCizBqhimHlwL97t6uIf1OXGcZ41YK0
- Thr3rwgI9VmqH0Bw==
+ bh=AlpvlU9RUc1F4iCVSO3rQkbgCwaKD8hJUxYfFKTEWPM=;
+ b=hnIFZBUbDdTh8Jjf23yzSwZRQKE4wan9Aarv1CEz22nKP5qYRqNhnXLw+iH2vLihSYeB0T
+ Da0DgR1RIODq1JCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 96FA63EA63;
- Wed, 14 Jan 2026 16:55:05 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B03F3EA63;
+ Thu, 15 Jan 2026 07:22:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id SsSWI2nKZ2kPZAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 14 Jan 2026 16:55:05 +0000
-Date: Wed, 14 Jan 2026 17:55:00 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id oXj3IMCVaGmrRwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 15 Jan 2026 07:22:40 +0000
+Date: Thu, 15 Jan 2026 08:22:31 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Vincent Chen <vincent.chen@sifive.com>
-Message-ID: <20260114165500.GA427531@pevik>
-References: <20260114101834.3397158-1-vincent.chen@sifive.com>
+To: cryolitia@uniontech.com
+Message-ID: <20260115072231.GA438294@pevik>
+References: <20260113-checkpatch-v2-1-5dfe8b9f4d90@uniontech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260114101834.3397158-1-vincent.chen@sifive.com>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20260113-checkpatch-v2-1-5dfe8b9f4d90@uniontech.com>
+X-Spamd-Result: default: False [-6.00 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; SUSPICIOUS_RECIPS(1.50)[];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:url,suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: AF7235CE80
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCPT_COUNT_TWELVE(0.00)[13]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FREEMAIL_CC(0.00)[canonical.com,perches.com,gmail.com,kernel.org,vger.kernel.org,kvack.org,uniontech.com,lists.linux.it];
+ MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ TAGGED_RCPT(0.00)[cryolitia.uniontech.com];
+ REPLYTO_EQ_FROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[uniontech.com:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] locking/lock_torture: accept optional "[debug]"
- in result string
+Subject: Re: [LTP] [PATCH RESEND v2] checkpatch: Suppress warnings when
+ Reported-by: is followed by Link:
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,57 +115,67 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Cryolitia PukNgae via B4 Relay
+ <devnull+cryolitia.uniontech.com@kernel.org>, linux-doc@vger.kernel.org,
+ Dwaipayan Ray <dwaipayanray1@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, Joe Perches <joe@perches.com>, workflows@vger.kernel.org,
+ Andy Whitcroft <apw@canonical.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ niecheng1@uniontech.com, ltp@lists.linux.it, zhanjun@uniontech.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Vincent,
+Hi Cryolitia,
 
-> lock_torture.sh parses the lock_torture result from dmesg by
-> matching the "End of test: <RESULT>:" line.
+> From: Cryolitia PukNgae <cryolitia@uniontech.com>
 
-> When the kernel is built with lock debugging enabled (e.g.
-> CONFIG_DEBUG_MUTEXES, CONFIG_DEBUG_RT_MUTEXES, CONFIG_DEBUG_SPINLOCK),
-> lock_torture may print "End of test: SUCCESS [debug]: ...".
-> The current regexp expects "SUCCESS:" and fails to match, causing the
-> test to be reported as failure.
+> > The tag should be followed by a Closes: tag pointing to the report,
+> > unless the report is not available on the web. The Link: tag can be
+> > used instead of Closes: if the patch fixes a part of the issue(s)
+> > being reported.
 
-> Allow an optional " [debug]" token between the result string and the
-> colon so the test can correctly detect SUCCESS on debug kernels.
+Indeed, this is true, although there is a prerequisite:
 
-Indeed:
+	The Link: tag can be used instead of Closes: if the patch fixes a part of
+	the issue(s) being reported.
 
-torture_type, tag, cxt.debug_lock ? " [debug]": "", [1]
-based on config you mentioned [2].
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Thanks, merged!
+I also see you Cc LTP ML. FYI we vendored scripts/checkpatch.pl (with occasional
+updates).
 
 Kind regards,
 Petr
 
-[1] https://elixir.bootlin.com/linux/v6.19-rc5/source/kernel/locking/locktorture.c#L1103
-[2] https://elixir.bootlin.com/linux/v6.19-rc5/source/kernel/locking/locktorture.c#L1279
+> Accroding to Documentation/process/submitting-patches.rst , Link: is
+> also acceptable to followed a Reported-by:
 
-> Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
+> Signed-off-by: Cryolitia PukNgae <cryolitia@uniontech.com>
 > ---
->  testcases/kernel/device-drivers/locking/lock_torture.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Link to previous: https://lore.kernel.org/r/20251023-checkpatch-v1-1-ff73ed1027d6@uniontech.com
+> ---
+>  scripts/checkpatch.pl | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-> diff --git a/testcases/kernel/device-drivers/locking/lock_torture.sh b/testcases/kernel/device-drivers/locking/lock_torture.sh
-> index dfa57373f..d9bd95da2 100755
-> --- a/testcases/kernel/device-drivers/locking/lock_torture.sh
-> +++ b/testcases/kernel/device-drivers/locking/lock_torture.sh
-> @@ -83,7 +83,7 @@ for type in $lock_type; do
->  		tst_brkm TBROK "failed to unload module"
-
->  	# check module status in dmesg
-> -	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
-> +	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+)([[:space:]]+\[debug\])?:.*/\1/p'`
->  	if [ "$result_str" = "SUCCESS" ]; then
->  		tst_resm TPASS "$type: completed"
->  	else
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index c0250244cf7a..dac9d98133c6 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3209,10 +3209,10 @@ sub process {
+>  			if ($sign_off =~ /^reported(?:|-and-tested)-by:$/i) {
+>  				if (!defined $lines[$linenr]) {
+>  					WARN("BAD_REPORTED_BY_LINK",
+> -					     "Reported-by: should be immediately followed by Closes: with a URL to the report\n" . $herecurr . "\n");
+> -				} elsif ($rawlines[$linenr] !~ /^closes:\s*/i) {
+> +					     "Reported-by: should be immediately followed by Closes: or Link: with a URL to the report\n" . $herecurr . "\n");
+> +				} elsif ($rawlines[$linenr] !~ /^(closes|link):\s*/i) {
+>  					WARN("BAD_REPORTED_BY_LINK",
+> -					     "Reported-by: should be immediately followed by Closes: with a URL to the report\n" . $herecurr . $rawlines[$linenr] . "\n");
+> +					     "Reported-by: should be immediately followed by Closes: or Link: with a URL to the report\n" . $herecurr . $rawlines[$linenr] . "\n");
+>  				}
+>  			}
+>  		}
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
