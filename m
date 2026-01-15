@@ -4,96 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E72BFD4115D
-	for <ltp@archiver.kernel.org>; Thu, 15 Jan 2026 10:35:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37002D41169
+	for <ltp@archiver.kernel.org>; Thu, 15 Jan 2026 10:44:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1768473340; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1768473839; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=ADmZ4B+Ux0hTRPu7qx6qpqTJo3t1TU9m5oUZ0JTkBHk=;
- b=nZEthNRMQYIvR8Oce6bShj0bxI57Quj5/yOvmiAdhiHsVLJpawAcpRa27yXS5L7NMyOXH
- cTEvdH395G6/u32yuDacfVQiSW0ZKWdTTGz8of54tZVvPbuR3u/4V4v7ZCiJijUlByT4dJH
- nTBrVTeVgYjYB6BbgnxxiV0soblVVnI=
+ bh=r4xkg9fVA2jC6mIF0yHmo1diJYcYfoqvs3iy9pCYdno=;
+ b=JZKX7m5208iuUnvPyG7ibTj2/tjhw+WD2JJkj31f83MNimLOe9LJT4gloJZAPmBnkXH09
+ /ybDdROHTkfN8ESzZqlvNCH85rFM7P9oV4d0ZExAY7N0Zy6XeMHsytQaaVxiFaC+mtLRIbK
+ dRVk7FjAfX7GHYy44viCgx5GAfkxWqs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 73C833C9EC5
-	for <ltp@archiver.kernel.org>; Thu, 15 Jan 2026 11:35:40 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id BD6993C9EC5
+	for <ltp@archiver.kernel.org>; Thu, 15 Jan 2026 11:43:59 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EC49C3C5F64
- for <ltp@lists.linux.it>; Thu, 15 Jan 2026 11:35:17 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 36B473C0874
+ for <ltp@lists.linux.it>; Thu, 15 Jan 2026 11:43:37 +0100 (CET)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id ED6E81400E13
- for <ltp@lists.linux.it>; Thu, 15 Jan 2026 11:35:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1768473314;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b+U9wPk67QUn7p5sMps/mtOjpj3e+4k5Ckb+ku+RRrA=;
- b=U8EI25FIE3Lq6arJZG5WuKui8tAVDAF8AnvdTK6C8t5Xyp4Qm1DMCeDEzVp6av/0lXyvkH
- BFEjwgouMSVMXbT5DYvQO57vsO8nKlr3egaC9U631Re60HeyxwJ3K3W7WKTHwQ+M7PQJQB
- uwv45mNvVS7azdcqZQXjLfPrWD9i4bY=
-Received: from mail-dy1-f200.google.com (mail-dy1-f200.google.com
- [74.125.82.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-262-rHKvlUHxMuWBiLbk4Gdh6Q-1; Thu, 15 Jan 2026 05:35:12 -0500
-X-MC-Unique: rHKvlUHxMuWBiLbk4Gdh6Q-1
-X-Mimecast-MFC-AGG-ID: rHKvlUHxMuWBiLbk4Gdh6Q_1768473311
-Received: by mail-dy1-f200.google.com with SMTP id
- 5a478bee46e88-2b048fc1656so2754772eec.1
- for <ltp@lists.linux.it>; Thu, 15 Jan 2026 02:35:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1768473310; x=1769078110;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B0247600942
+ for <ltp@lists.linux.it>; Thu, 15 Jan 2026 11:43:36 +0100 (CET)
+Received: by mail-wr1-x42e.google.com with SMTP id
+ ffacd0b85a97d-432d256c2a9so738278f8f.3
+ for <ltp@lists.linux.it>; Thu, 15 Jan 2026 02:43:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1768473816; x=1769078616; darn=lists.linux.it;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
  :message-id:reply-to;
- bh=b+U9wPk67QUn7p5sMps/mtOjpj3e+4k5Ckb+ku+RRrA=;
- b=c75kVoNoaeZYQ/gQWLWtbMuiZEF1CuF/IdAfEFIuFdDzR6zJ+2Cat+06hfpYoNb6dD
- Zp6lW2diHG8Xg5E4yhveAvtebdEnIb4O+peIszdwBsuH6hhvZcJIdToTVyP3Vq/kMjyk
- 9UkuLVhIfd0ypPXvmOLScGKUY6q/gDRs0jwh0XOhqtTJYLgHKYRVAms+ADYm04yAJc4L
- +SBlO1Fi1KX/6RaU8TqG2a1ZzlFsGhaDUDKDW/QXm18823p6wCLQkxQrSLwQkBccPS2r
- yVmlX5230cGwz1bZFndiBOF8043HD/tCcI5Gd4634f9VbwJ+TDlPeI92WgfsxbXPYUYO
- M2Pw==
+ bh=+7xxZlawYwoPmaZ9of72mygS60ogBoAL7eY8Txj1v3A=;
+ b=F9cvUfDSltd88/aZXuvrZzH/rNZim33VivgetcQTGOH2gU/UgCIQq6Z4t2dCDGTOE1
+ XNlxQbFxRQWICphU3LiGMf84dlPGKWO7deuVEnIJUE3inxScuNXzkG+N1lq6hfPwcBD6
+ 1FXeOOzqhjM3es6LRFYJ5jdkyBDdnD1OKrtkmHcWtCjmhEtCLtdwQn/1nCd3X8oeZAA1
+ Juh48eSP0EQzkgQAQCcj0kCixYG+0IofQ5qEwGKKdzGqsq/JE6hcXkMU9RmO1CdOWJW+
+ bxM16StZG4w7NGg/3ACI74huoga0ha8BbuMtNiQFjhYd339yJyAIdsewHI2wUHKeNUBI
+ g9Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1768473816; x=1769078616;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=+7xxZlawYwoPmaZ9of72mygS60ogBoAL7eY8Txj1v3A=;
+ b=STWAB606s59n0bZ+X5luOL0OfcFIqodGieV0kKfUTHLM47FzQpCmoisJQh0a6NXHyq
+ fZ4+L1xmH3QQFldoqppDsd5fcuL48oIpSjsL5SgqkNnbF3k0l7Eze99X0dJOompi5UKr
+ P6G1fdQPHlbI8d7h6Nxb3TczH+SyRxGcVMCyavAAbXVds1l6d5/8ONTHxCETR4gCeblc
+ jdxlJC9k4hdnVDHAwUfaJ+xqUVbSnLTEP1WyBjN35tEnA10S412aevtOSElGPrhy16h0
+ 3q758N0Pv3C5oumvIc3Z9VEXg5OFEIZt+SBl5vO4x2JZoPj2/96zVRqF1jtBZmhrmmG0
+ k8SA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXW5so3cc+E/TKzoFd3oRuOQ6XVMDZrRo6ZJDDqsU8SlN04LTPtMs+gjnHSqg/+yf3opJg=@lists.linux.it
-X-Gm-Message-State: AOJu0YynJFW/RjxHrMrDyk049N9n6gOH9dyTRBHihkaVoAeWltIj5NUc
- 1oiZyh+1AWnxAMLplSLJrVnl2NrIcIN2v6LK/m6oHR68tbAe9RgHYf1KufeHfFXcUQX523Wc1uv
- yVRChMPDKw2tzswHkM9d3B7WUqjH8mk4f3pG+efE37Qai84+5HRDyCwGIaIH8XyAure/8kaD/qc
- muwkczRpsa8qQtq5/n1Cy4/YIzl/0bg7jB11/hmg==
-X-Gm-Gg: AY/fxX7ZB6YHTqy+mlk0dSsw15H6tDXzjZlfGC8r2T3Mf9fEbuRC29GSD7OzLV/+YjH
- mbyoog+YIVFsWaFU4Y3W14j76yx+zufbWkugq5QyR1jPD0CpW07zw+DN2IqZDbmziVZiCkIuc4S
- JkSyM/77Ey59N7hjfQ7lki0lxVW+tDV/dnV2QaCwKc/phqjeVPj6jyqivJkfqEpAuV9mg=
-X-Received: by 2002:a05:7301:1e4c:b0:2b0:6a03:f13a with SMTP id
- 5a478bee46e88-2b486ca93acmr8059694eec.19.1768473310517; 
- Thu, 15 Jan 2026 02:35:10 -0800 (PST)
-X-Received: by 2002:a05:7301:1e4c:b0:2b0:6a03:f13a with SMTP id
- 5a478bee46e88-2b486ca93acmr8059673eec.19.1768473310115; Thu, 15 Jan 2026
- 02:35:10 -0800 (PST)
-MIME-Version: 1.0
+ AJvYcCXCkl87yHv/1cBldAXpBL9up1WM+wF3VXy36BabBwxY6et76+pvsTvPQXUiKuPTd8I2Gf0=@lists.linux.it
+X-Gm-Message-State: AOJu0YzWqLlxxX187GMUaox9pcqkmpfwUaYqjpHOASsdCDV+1xoQCsxH
+ IJXhxkweTHM+9Zg/wvojPf44SKHSPtOdAoq571lqaVKufIjIPoOlX76h3k26bkbhmktgJi0b1MC
+ Z61iJ
+X-Gm-Gg: AY/fxX7b7fybVZ8kdG6RNoQFnvQMKhRGER392rQ1XqmCPYPWqWdKtrRUkQ4vMYFShNK
+ znnzME3Q71qHVYaycUW8rKOJSOu/frapChnhWsqX09pGtlSNqjKcHp6gP6jSsgXIXx8KjCXVf4t
+ 0LMqFhYHl5zf1nvjiPURxm0HvSHhjN1Phal2NoxfQFH68c/HYc7lkIOgov+3WfDCvV7OwIcid+X
+ g0JxpvdMvl/hE3lOWcIRmNQ7teO/s4ZX99LDLStXXKXb2umcIbLdrFvHewOhyfnjkhrdCXb7OzC
+ QG/AUKpWQzUtQSRqaXftm727L8yS4oGhf8FyR4fOoSI96tXQcMJkFR6haDPL106j18sI4C7rgP3
+ VsirsVjf9vzTV5/lcJY+YoDTpofuqsMtJQ59xVHGNB29LOp+6uhmGUBhg1NUCeyztpUTaM2hCJ+
+ iDHxcKT8O/CWXzajvNc9Cw4TuCmPJkTQWSkurCCxHZyLg2Dhr4fSCGFfulFt7KAxxgiz7fMC6Nh
+ wuL
+X-Received: by 2002:a05:6000:4301:b0:431:6ba:38ac with SMTP id
+ ffacd0b85a97d-4342c3f0fcemr7173102f8f.4.1768473816104; 
+ Thu, 15 Jan 2026 02:43:36 -0800 (PST)
+Received: from localhost
+ (p200300ff0f0b7b017e458f16f8082810.dip0.t-ipconnect.de.
+ [2003:ff:f0b:7b01:7e45:8f16:f808:2810])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-434af6535c7sm5449665f8f.16.2026.01.15.02.43.35
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 15 Jan 2026 02:43:35 -0800 (PST)
+Mime-Version: 1.0
+Date: Thu, 15 Jan 2026 11:43:34 +0100
+Message-Id: <DFP3NAUVIKJ1.N9KSMR5ZUDOJ@suse.com>
+To: "Li Wang" <liwang@redhat.com>
+X-Mailer: aerc 0.18.2
 References: <20260114133548.411077-1-pvorel@suse.cz>
  <DFOCQI9JL96T.HVZEHA37O52I@suse.com>
  <CAEemH2fxiAufSaRm9XOJNDh+FG-4ufVEPrjoYi58-ZdJ8oB8iw@mail.gmail.com>
  <DFP293X2K7JS.5UW00YLFRX4R@suse.com>
  <CAEemH2dyAQfuBwg9T1DJL9j_xYKLCC9TNQRobM1063smkdJpgQ@mail.gmail.com>
  <DFP30EO5EZ9M.1UTS5YNH9SX7J@suse.com>
-In-Reply-To: <DFP30EO5EZ9M.1UTS5YNH9SX7J@suse.com>
-Date: Thu, 15 Jan 2026 18:34:58 +0800
-X-Gm-Features: AZwV_QhqAQGZi7t8zuQUIMkJZ5Etf3hvXYWLz3IeFivcPUPOFxryEl1Jl6NJ9e0
-Message-ID: <CAEemH2c0CpvpTNgoSn9WPGU1MQkgPWjiZ4fOmFpaxgziEZjnUg@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: wzVExP5o5NMQ3VlrT-skZgu0DFAaB2x9yAKHV1xGj80_1768473311
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ <CAEemH2c0CpvpTNgoSn9WPGU1MQkgPWjiZ4fOmFpaxgziEZjnUg@mail.gmail.com>
+In-Reply-To: <CAEemH2c0CpvpTNgoSn9WPGU1MQkgPWjiZ4fOmFpaxgziEZjnUg@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/1] kirk: Update to v3.2
 X-BeenThere: ltp@lists.linux.it
@@ -107,103 +110,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Andrea Cervesato <andrea.cervesato@suse.com> wrote:
+>
+> This change worked for me, and I saw in kirk/issues/72 that someone
+> still wants support for both methods.
+>
+> So, maybe keeping it can be helpful to set env for remote SUT
+> execution? Since exporting locally may not affect the remote side
+> unless Kirk forwards env.
+>
+> I am not quite familar to Kirk code, so just raise my questions to you
+> to evaluation.
 
-> > After playing with the ltp.py for a while and assisted by GPT5,
-> > I drafted a simple patch like below, it works from my test, can
-> > Do you think it's worth opening a PR to Kirk?
->
-> Thanks for checking, see considerations below.
->
-> >
-> > --- a/libkirk/ltp.py
-> > +++ b/libkirk/ltp.py
-> > @@ -50,7 +50,7 @@ class LTPFramework(Framework):
-> >          self,
-> >          max_runtime: float = 0.0,
-> >          timeout: float = 30.0,
-> > -        env: dict = {},
-> > +        env: Optional[dict] = None,
->
-> No need for this, if default it's {} already. That None adds one more
-> layer of complexity, because then we need to make sure env is not None.
->
-> >      ) -> None:
-> >          """
-> >          :param max_runtime: filter out all tests above this time value
-> > @@ -63,7 +63,8 @@ class LTPFramework(Framework):
-> >          self._logger = logging.getLogger("libkirk.ltp")
-> >          self._cmd_matcher = re.compile(r'(?:"[^"]*"|\'[^\']*\'|\S+)')
-> >          self._max_runtime = max_runtime
-> > -        self._root = os.environ.get("LTPROOT", "/opt/ltp")
-> > +        env = env or {}
->
-> See above.
->
-> > +        self._root = env.get("LTPROOT") or os.environ.get("LTPROOT")
-> > or "/opt/ltp"
->
-> This makes sense, but that "or /opt/ltp" is not needed. See below.
->
-> >          self._tc_folder = os.path.join(self._root, "testcases", "bin")
-> >
-> >          self._env = {
-> > @@ -79,8 +80,7 @@ class LTPFramework(Framework):
-> >              if timeout:
-> >                  self._env["LTP_TIMEOUT_MUL"] = str((timeout * 0.9) / 300.0)
-> >
-> > -        if env:
-> > -            self._env.update(env)
-> > +        self._env.update(env)
-> >
-> >      async def _read_path(self, channel: ComChannel) -> Dict[str, str]:
-> >          """
->
-> diff --git a/libkirk/ltp.py b/libkirk/ltp.py
-> index 2c0f6d2..153bc7b 100644
-> --- a/libkirk/ltp.py
-> +++ b/libkirk/ltp.py
-> @@ -63,7 +63,7 @@ class LTPFramework(Framework):
->          self._logger = logging.getLogger("libkirk.ltp")
->          self._cmd_matcher = re.compile(r'(?:"[^"]*"|\'[^\']*\'|\S+)')
->          self._max_runtime = max_runtime
-> -        self._root = os.environ.get("LTPROOT", "/opt/ltp")
-> +        self._root = env.get("LTPROOT") or os.environ.get("LTPROOT", "/opt/ltp")
->          self._tc_folder = os.path.join(self._root, "testcases", "bin")
->
->          self._env = {
-> @@ -94,8 +94,7 @@ class LTPFramework(Framework):
->              if not ret or ret["returncode"] != 0:
->                  raise FrameworkError("Can't read PATH variable")
->
-> -            tcases = os.path.join(self._root, "testcases", "bin")
-> -            env["PATH"] = ret["stdout"].strip() + f":{tcases}"
-> +            env["PATH"] = ret["stdout"].strip() + f":{self._tc_folder}"
->
->          self._logger.debug("PATH=%s", env["PATH"])
+The problem to keep both is the reason why these bugs are happening, so I
+would just drop --env. An alternative is to drop variables completely
+and to use the same method of runltp, where -d and -r are used to set
+TMPDIR and LTPROOT.
 
-
-This change worked for me, and I saw in kirk/issues/72 that someone
-still wants support for both methods.
-
-So, maybe keeping it can be helpful to set env for remote SUT
-execution? Since exporting locally may not affect the remote side
-unless Kirk forwards env.
-
-I am not quite familar to Kirk code, so just raise my questions to you
-to evaluation.
+The reason why --env was added is that we might wanted to have multiple
+frameworks, but now that we support LTP only there's no this issue
+anymore.
 
 -- 
-Regards,
-Li Wang
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 
 -- 
