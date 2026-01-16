@@ -4,78 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50F04D4A5E4
-	for <ltp@archiver.kernel.org>; Fri, 16 Jan 2026 02:25:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A664D4A5E2
+	for <ltp@archiver.kernel.org>; Fri, 16 Jan 2026 02:26:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1768530340; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=gj/fZ0F7YKl6vKmno7QMYHH64wYSmaJETjCWSOm9kxM=;
- b=DBUw+Hh1T8M+TbD5nvqQ3uP20Q9UAMJx3SfFd6CQMKNnEwFBNYRsAfJVN7dBsdC26XM6S
- 6nT0GjUWsdvSie7HZD78+C5Frr9mDl4IgZWCgD77QwGB4PJV84b6jJbEQGi+HPgYaBCp3ph
- LvgxSt8aBiDCcj06mQKQVFWBtwIN+kE=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1768530361; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=DzvsZXUqNP9sCxIP5ok+SftMqdmR8fKLbQqtOWrZ6gw=;
+ b=Su4UyHPepbKC6sieFLAS46gerUiBwPju7Cre499lhu35SH5vcuO+zwxkJpBYO9l6Hys3B
+ hQHoztvfe14x5N7QuG7+CBNW1a89HvDSJeqNth12TWYpIp9gHnU28amFEd6aThu2yFaU8b9
+ t21dFTikBKIzzM6xlG+QnT4zn2eXk3Y=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CEB703CA528
-	for <ltp@archiver.kernel.org>; Fri, 16 Jan 2026 03:25:40 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 1966A3CA4FB
+	for <ltp@archiver.kernel.org>; Fri, 16 Jan 2026 03:26:01 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ECE793CA458
- for <ltp@lists.linux.it>; Fri, 16 Jan 2026 03:25:22 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 9815E3CA458
+ for <ltp@lists.linux.it>; Fri, 16 Jan 2026 03:25:23 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BE635600BC1
- for <ltp@lists.linux.it>; Fri, 16 Jan 2026 03:25:20 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 234561A009B7
+ for <ltp@lists.linux.it>; Fri, 16 Jan 2026 03:25:18 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1768530319;
+ s=mimecast20190719; t=1768530317;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=k/r7fpSf/moF8wGv8uWQH8I+UbeFMKsqYphIfMvcC9U=;
- b=PmfStw2PbJuf9m5HZtLgipRxyaED6zja0nVDeP7PlkrSqPbeAfh2YxmzFAseee2fHPHG0f
- kRy1E0OzjsloZeyLjIM2w8PxU9o9J1K2/IuFzB4WiuVjIO+Ot65c3fCsZGjWiIWdgwts/4
- ldAfoKtS7PZb/7PCm3KYMQOF24+w2aM=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=+z8fsl+M+g1EM3ztkJXkEF56vE5cWRISw43s2Oc7uRw=;
+ b=MbMypqmXy7yYaEvPoKMYcRpfPs+yXvMBhOrhFnNcnuF+X7togA/6yiWA2XvfPeWbTr5fhj
+ 1xYvCtOHXzKvKAunYvyeV/fdcPIwNbUsVNguChsfJOgIDv+ORA9SzQdKfuXCCeY3rIZz9w
+ hXdDccpjikfzJWaqJlhlgm1KsPf4ZG4=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-457-S-cWwGUTPX26Sxc5JiERzQ-1; Thu,
- 15 Jan 2026 21:25:15 -0500
-X-MC-Unique: S-cWwGUTPX26Sxc5JiERzQ-1
-X-Mimecast-MFC-AGG-ID: S-cWwGUTPX26Sxc5JiERzQ_1768530315
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-164-hVhi4rgjMOScb5w0-ZVlPQ-1; Thu,
+ 15 Jan 2026 21:25:13 -0500
+X-MC-Unique: hVhi4rgjMOScb5w0-ZVlPQ-1
+X-Mimecast-MFC-AGG-ID: hVhi4rgjMOScb5w0-ZVlPQ_1768530312
 Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com
  (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id B66031800447
- for <ltp@lists.linux.it>; Fri, 16 Jan 2026 02:25:14 +0000 (UTC)
+ by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 5D179195608A; Fri, 16 Jan 2026 02:25:12 +0000 (UTC)
 Received: from fedora-laptop-x1.redhat.com (unknown [10.72.116.137])
  by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id 40D303001DB9
- for <ltp@lists.linux.it>; Fri, 16 Jan 2026 02:25:12 +0000 (UTC)
+ id C542130002D6; Fri, 16 Jan 2026 02:25:09 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Fri, 16 Jan 2026 10:25:07 +0800
-Message-ID: <20260116022507.204549-2-liwang@redhat.com>
-In-Reply-To: <20260116022507.204549-1-liwang@redhat.com>
-References: <20260116022507.204549-1-liwang@redhat.com>
+Date: Fri, 16 Jan 2026 10:25:06 +0800
+Message-ID: <20260116022507.204549-1-liwang@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 4WTxWE3N3E2KdhctdB8NFbGy5z3n57VNZPsmKKA2kHg_1768530315
+X-Mimecast-MFC-PROC-ID: hnJUdDuAVjY44HBkHh5VJ9Ehs62JDn1DhTgKCCkr70k_1768530312
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] include/old: rename legacy headers to tso_*
- namespace
+Subject: [LTP] [PATCH v2 1/2] libs: adopt tse_ prefix for extended
+ (non-core) library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,2888 +83,1758 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Li Wang via ltp <ltp@lists.linux.it>
 Reply-To: Li Wang <liwang@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Pradeep Susarla <pradeep.susarla@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-To clearly distinguish legacy header files from the core (tst_*) and
-extension (tse_*) LTP APIs, legacy header files have been grouped
-into the otst_* namespace.
-
-Some legacy header files do not begin with old_, they still belong
-to the legacy header file set. For clarity, all legacy header files
-are now uniformly grouped into the tso_* namespace.
-
- include/old/{old_checkpoint.h => tso_checkpoint.h}
- include/old/{ltp_cpuid.h => tso_cpuid.h}
- include/old/{old_device.h => tso_device.h}
- include/old/{tlibio.h => tso_lio.h}
- include/old/{old_module.h => tso_module.h}
- include/old/{ltp_priv.h => tso_priv.h}
- include/old/{random_range.h => tso_random_range.h}
- include/old/{old_resource.h => tso_resource.h}
- include/old/{old_safe_file_ops.h => tso_safe_file_ops.h}
- include/old/{safe_macros.h => tso_safe_macros.h}
- include/old/{old_safe_net.h => tso_safe_net.h}
- include/old/{old_safe_stdio.h => tso_safe_stdio.h}
- include/old/{ltp_signal.h => tso_signal.h}
- include/old/{old_tmpdir.h => tso_tmpdir.h}
- include/old/{usctest.h => tso_usctest.h}
-
-No functional changes intended.
-
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- include/lapi/rt_sigaction.h                   |  2 +-
- include/old/ltp_signal.h                      | 56 -------------------
- include/old/old_checkpoint.h                  | 51 -----------------
- include/old/old_resource.h                    | 55 ------------------
- include/old/old_safe_stdio.h                  | 37 ------------
- include/old/random_range.h                    | 45 ---------------
- include/old/test.h                            | 14 ++---
- include/old/tso_checkpoint.h                  | 38 +++++++++++++
- include/old/{ltp_cpuid.h => tso_cpuid.h}      |  0
- include/old/{old_device.h => tso_device.h}    | 21 ++-----
- include/old/{tlibio.h => tso_lio.h}           | 30 +---------
- include/old/{old_module.h => tso_module.h}    | 32 +----------
- include/old/{ltp_priv.h => tso_priv.h}        | 19 +------
- include/old/tso_random_range.h                | 20 +++++++
- include/old/tso_resource.h                    | 34 +++++++++++
- ...ld_safe_file_ops.h => tso_safe_file_ops.h} | 17 +-----
- .../old/{safe_macros.h => tso_safe_macros.h}  | 10 +++-
- .../old/{old_safe_net.h => tso_safe_net.h}    | 21 ++-----
- include/old/tso_safe_stdio.h                  | 26 +++++++++
- include/old/tso_signal.h                      | 38 +++++++++++++
- include/old/{old_tmpdir.h => tso_tmpdir.h}    | 21 ++-----
- include/old/{usctest.h => tso_usctest.h}      | 36 ++----------
- lib/parse_opts.c                              |  4 +-
- lib/random_range.c                            |  2 +-
- lib/safe_macros.c                             |  2 +-
- lib/tests/trerrno.c                           |  2 +-
- lib/tests/tst_dataroot01.c                    |  2 +-
- lib/tests/tst_dataroot02.c                    |  2 +-
- lib/tests/tst_dataroot03.c                    |  2 +-
- lib/tests/tst_safe_macros.c                   |  2 +-
- lib/tlibio.c                                  |  4 +-
- lib/tst_checkpoint.c                          |  2 +-
- lib/tst_cpu.c                                 |  2 +-
- lib/tst_device.c                              |  2 +-
- lib/tst_dir_is_empty.c                        |  2 +-
- lib/tst_fs_link_count.c                       |  4 +-
- lib/tst_kernel.c                              |  2 +-
- lib/tst_mkfs.c                                |  2 +-
- lib/tst_module.c                              |  4 +-
- lib/tst_parse_opts.c                          |  2 +-
- lib/tst_pid.c                                 |  2 +-
- lib/tst_res.c                                 |  6 +-
- lib/tst_resource.c                            |  4 +-
- lib/tst_test.c                                |  6 +-
- lib/tst_tmpdir.c                              |  4 +-
- lib/tst_virt.c                                |  2 +-
- .../controllers/cgroup_xattr/cgroup_xattr.c   |  2 +-
- .../controllers/cpuctl/cpuctl_def_task01.c    |  2 +-
- .../controllers/cpuctl/cpuctl_def_task02.c    |  2 +-
- .../controllers/cpuctl/cpuctl_def_task03.c    |  2 +-
- .../controllers/cpuctl/cpuctl_def_task04.c    |  2 +-
- .../kernel/controllers/cpuctl/cpuctl_test01.c |  2 +-
- .../kernel/controllers/cpuctl/cpuctl_test02.c |  2 +-
- .../kernel/controllers/cpuctl/cpuctl_test03.c |  2 +-
- .../kernel/controllers/cpuctl/cpuctl_test04.c |  2 +-
- .../kernel/device-drivers/acpi/ltp_acpi.c     |  4 +-
- .../device-drivers/cpufreq/cpufreq_boost.c    |  2 +-
- .../device-drivers/pci/tpci_user/tpci.c       |  4 +-
- testcases/kernel/device-drivers/rtc/rtc01.c   |  2 +-
- .../device-drivers/tbio/tbio_user/tbio.c      |  4 +-
- .../kernel/device-drivers/uaccess/uaccess.c   |  4 +-
- .../kernel/firmware/fw_load_user/fw_load.c    |  4 +-
- testcases/kernel/fs/doio/doio.c               |  2 +-
- testcases/kernel/fs/doio/growfiles.c          |  6 +-
- testcases/kernel/fs/doio/iogen.c              |  2 +-
- testcases/kernel/fs/ftest/ftest01.c           |  2 +-
- testcases/kernel/fs/ftest/ftest03.c           |  2 +-
- testcases/kernel/fs/ftest/ftest04.c           |  2 +-
- testcases/kernel/fs/ftest/ftest05.c           |  2 +-
- testcases/kernel/fs/ftest/ftest07.c           |  2 +-
- testcases/kernel/fs/ftest/ftest08.c           |  2 +-
- testcases/kernel/io/direct_io/diotest1.c      |  2 +-
- testcases/kernel/io/direct_io/diotest4.c      |  2 +-
- .../kernel/io/direct_io/dma_thread_diotest.c  |  2 +-
- testcases/kernel/ipc/pipeio/pipeio.c          |  4 +-
- testcases/kernel/lib/numa_helper.c            |  2 +-
- testcases/kernel/mem/vma/vma01.c              |  2 +-
- testcases/kernel/mem/vma/vma02.c              |  2 +-
- testcases/kernel/mem/vma/vma03.c              |  2 +-
- testcases/kernel/mem/vma/vma04.c              |  2 +-
- testcases/kernel/pty/hangup01.c               |  2 +-
- .../hyperthreading/ht_affinity/ht_utils.c     |  2 +-
- .../hyperthreading/ht_enabled/ht_utils.c      |  2 +-
- .../security/filecaps/filecaps_common.h       |  2 +-
- .../security/prot_hsymlinks/prot_hsymlinks.c  |  2 +-
- testcases/kernel/syscalls/clone/clone02.c     |  2 +-
- testcases/kernel/syscalls/connect/connect01.c |  2 +-
- .../kernel/syscalls/fallocate/fallocate01.c   |  2 +-
- .../kernel/syscalls/fallocate/fallocate02.c   |  2 +-
- testcases/kernel/syscalls/fcntl/fcntl07.c     |  2 +-
- testcases/kernel/syscalls/fcntl/fcntl11.c     |  2 +-
- testcases/kernel/syscalls/fcntl/fcntl16.c     |  2 +-
- testcases/kernel/syscalls/fcntl/fcntl19.c     |  2 +-
- testcases/kernel/syscalls/fcntl/fcntl20.c     |  2 +-
- testcases/kernel/syscalls/fcntl/fcntl31.c     |  2 +-
- testcases/kernel/syscalls/fcntl/fcntl32.c     |  2 +-
- .../kernel/syscalls/fdatasync/fdatasync02.c   |  2 +-
- testcases/kernel/syscalls/fork/fork09.c       |  2 +-
- testcases/kernel/syscalls/fstatat/fstatat01.c |  2 +-
- .../kernel/syscalls/futimesat/futimesat01.c   |  2 +-
- .../get_robust_list/get_robust_list01.c       |  2 +-
- .../kernel/syscalls/getrusage/getrusage04.c   |  2 +-
- testcases/kernel/syscalls/linkat/linkat01.c   |  2 +-
- testcases/kernel/syscalls/linkat/linkat02.c   |  2 +-
- testcases/kernel/syscalls/listen/listen01.c   |  2 +-
- .../syscalls/migrate_pages/migrate_pages01.c  |  2 +-
- testcases/kernel/syscalls/mincore/mincore01.c |  2 +-
- testcases/kernel/syscalls/mkdirat/mkdirat01.c |  2 +-
- testcases/kernel/syscalls/mknodat/mknodat01.c |  2 +-
- testcases/kernel/syscalls/mknodat/mknodat02.c |  2 +-
- .../kernel/syscalls/mlockall/mlockall02.c     |  2 +-
- .../kernel/syscalls/mlockall/mlockall03.c     |  2 +-
- .../kernel/syscalls/move_pages/move_pages11.c |  2 +-
- .../kernel/syscalls/mprotect/mprotect01.c     |  2 +-
- .../kernel/syscalls/mprotect/mprotect02.c     |  2 +-
- .../kernel/syscalls/mprotect/mprotect03.c     |  2 +-
- .../kernel/syscalls/mprotect/mprotect04.c     |  2 +-
- testcases/kernel/syscalls/mremap/mremap01.c   |  2 +-
- testcases/kernel/syscalls/mremap/mremap05.c   |  2 +-
- testcases/kernel/syscalls/msync/msync03.c     |  2 +-
- testcases/kernel/syscalls/openat/openat03.c   |  2 +-
- .../perf_event_open/perf_event_open01.c       |  2 +-
- testcases/kernel/syscalls/pipe/pipe04.c       |  2 +-
- testcases/kernel/syscalls/pipe/pipe09.c       |  2 +-
- testcases/kernel/syscalls/ppoll/ppoll01.c     |  2 +-
- testcases/kernel/syscalls/profil/profil01.c   |  2 +-
- testcases/kernel/syscalls/recv/recv01.c       |  2 +-
- .../kernel/syscalls/recvfrom/recvfrom01.c     |  2 +-
- .../syscalls/removexattr/removexattr01.c      |  2 +-
- .../syscalls/removexattr/removexattr02.c      |  2 +-
- testcases/kernel/syscalls/rename/rename11.c   |  2 +-
- .../kernel/syscalls/renameat/renameat01.c     |  2 +-
- .../kernel/syscalls/renameat2/renameat201.c   |  2 +-
- .../kernel/syscalls/renameat2/renameat202.c   |  2 +-
- .../rt_sigprocmask/rt_sigprocmask02.c         |  2 +-
- testcases/kernel/syscalls/send/send01.c       |  2 +-
- testcases/kernel/syscalls/sendmsg/sendmsg01.c |  2 +-
- testcases/kernel/syscalls/sendmsg/sendmsg02.c |  2 +-
- testcases/kernel/syscalls/sendto/sendto01.c   |  2 +-
- .../kernel/syscalls/setfsuid/setfsuid04.c     |  2 +-
- .../kernel/syscalls/setrlimit/setrlimit01.c   |  2 +-
- .../kernel/syscalls/signalfd4/signalfd4_01.c  |  2 +-
- .../kernel/syscalls/signalfd4/signalfd4_02.c  |  2 +-
- .../kernel/syscalls/sigpending/sigpending02.c |  2 +-
- .../kernel/syscalls/sigrelse/sigrelse01.c     |  2 +-
- .../kernel/syscalls/sockioctl/sockioctl01.c   |  2 +-
- testcases/kernel/syscalls/symlink/symlink03.c |  2 +-
- .../kernel/syscalls/symlinkat/symlinkat01.c   |  2 +-
- .../kernel/syscalls/umount2/umount2_01.c      |  2 +-
- testcases/kernel/syscalls/vfork/vfork02.c     |  2 +-
- testcases/lib/tst_device.c                    |  2 +-
- testcases/network/lib6/asapi_01.c             |  2 +-
- testcases/network/lib6/asapi_03.c             |  2 +-
- tools/apicmds/ltpapicmd.c                     |  4 +-
- utils/sctp/testlib/sctputil.h                 |  2 +-
- 155 files changed, 351 insertions(+), 576 deletions(-)
- delete mode 100644 include/old/ltp_signal.h
- delete mode 100644 include/old/old_checkpoint.h
- delete mode 100644 include/old/old_resource.h
- delete mode 100644 include/old/old_safe_stdio.h
- delete mode 100644 include/old/random_range.h
- create mode 100644 include/old/tso_checkpoint.h
- rename include/old/{ltp_cpuid.h => tso_cpuid.h} (100%)
- rename include/old/{old_device.h => tso_device.h} (74%)
- rename include/old/{tlibio.h => tso_lio.h} (79%)
- rename include/old/{old_module.h => tso_module.h} (68%)
- rename include/old/{ltp_priv.h => tso_priv.h} (62%)
- create mode 100644 include/old/tso_random_range.h
- create mode 100644 include/old/tso_resource.h
- rename include/old/{old_safe_file_ops.h => tso_safe_file_ops.h} (70%)
- rename include/old/{safe_macros.h => tso_safe_macros.h} (98%)
- rename include/old/{old_safe_net.h => tso_safe_net.h} (58%)
- create mode 100644 include/old/tso_safe_stdio.h
- create mode 100644 include/old/tso_signal.h
- rename include/old/{old_tmpdir.h => tso_tmpdir.h} (62%)
- rename include/old/{usctest.h => tso_usctest.h} (54%)
-
-diff --git a/include/lapi/rt_sigaction.h b/include/lapi/rt_sigaction.h
-index a42b690d0..1e5911dd9 100644
---- a/include/lapi/rt_sigaction.h
-+++ b/include/lapi/rt_sigaction.h
-@@ -9,7 +9,7 @@
- #ifndef LAPI_RT_SIGACTION_H__
- #define LAPI_RT_SIGACTION_H__
- 
--#include "ltp_signal.h"
-+#include "tso_signal.h"
- 
- #define INVAL_SA_PTR ((void *)-1)
- 
-diff --git a/include/old/ltp_signal.h b/include/old/ltp_signal.h
-deleted file mode 100644
-index 02ee8349a..000000000
---- a/include/old/ltp_signal.h
-+++ /dev/null
-@@ -1,56 +0,0 @@
--/*
-- * Copyright (c) 2009 Cisco Systems, Inc.  All Rights Reserved.
-- * Copyright (c) 2009 FUJITSU LIMITED.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Author: Liu Bo <liubo2009@cn.fujitsu.com>
-- * Author: Ngie Cooper <yaneurabeya@gmail.com>
-- *
-- */
--
--#ifndef __LTP_SIGNAL_H
--#define __LTP_SIGNAL_H
--
--#include <errno.h>
--#include <signal.h>
--#include <stdio.h>
--#include "config.h"
--
--/*
-- * For all but __mips__:
-- *
-- * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 2.
-- *
-- * For __mips__:
-- *
-- * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 4.
-- *
-- * See asm/compat.h under the kernel source for more details.
-- *
-- * Multiply that by a fudge factor of 4 and you have your SIGSETSIZE.
-- */
--#if defined __mips__
--#define SIGSETSIZE 16
--#else
--#define SIGSETSIZE (_NSIG / 8)
--#endif
--
--#endif
-diff --git a/include/old/old_checkpoint.h b/include/old/old_checkpoint.h
-deleted file mode 100644
-index f91fef9f6..000000000
---- a/include/old/old_checkpoint.h
-+++ /dev/null
-@@ -1,51 +0,0 @@
--/*
-- * Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software: you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation, either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program. If not, see <http://www.gnu.org/licenses/>.
-- */
--
-- /*
--
--   Checkpoint - easy to use parent-child synchronization.
--
--   Checkpoint is based on futexes (man futex). The library allocates a page of
--   shared memory for futexes and the id is an offset to it which gives the user
--   up to page_size/sizeof(uint32_t) checkpoint pairs. Up to INT_MAX processes
--   can sleep on single id and can be woken up by single wake.
--
--  */
--
--#ifndef OLD_CHECKPOINT__
--#define OLD_CHECKPOINT__
--
--#include "test.h"
--#include "tst_checkpoint_fn.h"
--
--#define TST_SAFE_CHECKPOINT_WAIT(cleanup_fn, id) \
--        tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id, 0);
--
--#define TST_SAFE_CHECKPOINT_WAIT2(cleanup_fn, id, msec_timeout) \
--        tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id, msec_timeout);
--
--#define TST_SAFE_CHECKPOINT_WAKE(cleanup_fn, id) \
--        tst_safe_checkpoint_wake(__FILE__, __LINE__, cleanup_fn, id, 1);
--
--#define TST_SAFE_CHECKPOINT_WAKE2(cleanup_fn, id, nr_wake) \
--        tst_safe_checkpoint_wake(__FILE__, __LINE__, cleanup_fn, id, nr_wake);
--
--#define TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(cleanup_fn, id) \
--        tst_safe_checkpoint_wake(__FILE__, __LINE__, cleanup_fn, id, 1); \
--        tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id, 0);
--
--#endif /* OLD_CHECKPOINT__ */
-diff --git a/include/old/old_resource.h b/include/old/old_resource.h
-deleted file mode 100644
-index 46767f35c..000000000
---- a/include/old/old_resource.h
-+++ /dev/null
-@@ -1,55 +0,0 @@
--/*
-- * Copyright (C) 2012 Cyril Hrubis chrubis@suse.cz
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- */
--
-- /*
--
--   Small helper for preparing files the test needs to copy before the testing.
--
--   We need to support two scenarios.
--
--   1. Test is executed in local directory and this is also the place
--      we should look for files
--
--
--   2. Test is executed after LTP has been installed, in this case we
--      look for env LTPROOT (usually /opt/ltp/)
--
--  */
--
--#ifndef TST_RESOURCE
--#define TST_RESOURCE
--
--const char *tst_dataroot(void);
--
--/*
-- * Copy a file to the CWD. The destination is apended to CWD.
-- */
--#define TST_RESOURCE_COPY(cleanup_fn, filename, dest) \
--	tst_resource_copy(__FILE__, __LINE__, (cleanup_fn), \
--	                  (filename), (dest))
--
--void tst_resource_copy(const char *file, const int lineno,
--                       void (*cleanup_fn)(void),
--		       const char *filename, const char *dest);
--
--#endif /* TST_RESOURCE */
-diff --git a/include/old/old_safe_stdio.h b/include/old/old_safe_stdio.h
-deleted file mode 100644
-index 3508b2479..000000000
---- a/include/old/old_safe_stdio.h
-+++ /dev/null
-@@ -1,37 +0,0 @@
--/*
-- * Copyright (c) 2013-2016 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software: you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation, either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program. If not, see <http://www.gnu.org/licenses/>.
-- */
--
--#ifndef OLD_SAFE_STDIO_H__
--#define OLD_SAFE_STDIO_H__
--
--#include <stdio.h>
--
--#include "safe_stdio_fn.h"
--
--#define SAFE_FOPEN(cleanup_fn, path, mode) \
--	safe_fopen(__FILE__, __LINE__, cleanup_fn, path, mode)
--
--#define SAFE_FCLOSE(cleanup_fn, f) \
--	safe_fclose(__FILE__, __LINE__, cleanup_fn, f)
--
--#define SAFE_ASPRINTF(cleanup_fn, strp, fmt, ...) \
--	safe_asprintf(__FILE__, __LINE__, cleanup_fn, strp, fmt, __VA_ARGS__)
--
--#define SAFE_POPEN(cleanup_fn, command, type) \
--	safe_popen(__FILE__, __LINE__, cleanup_fn, command, type)
--
--#endif /* OLD_SAFE_STDIO_H__ */
-diff --git a/include/old/random_range.h b/include/old/random_range.h
-deleted file mode 100644
-index 22b3f9323..000000000
---- a/include/old/random_range.h
-+++ /dev/null
-@@ -1,45 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- */
--#ifndef _RANDOM_RANGE_H_
--#define _RANDOM_RANGE_H_
--
--int       parse_ranges     ( char *, int, int, int, int (*)(), char **, char ** );
--int       range_min        ( char *, int );
--int       range_max        ( char *, int );
--int       range_mult       ( char *, int );
--long      random_range     ( int, int, int, char ** );
--long      random_rangel    ( long, long, long, char ** );
--long long random_rangell   ( long long, long long, long long, char ** );
--void      random_range_seed( long );
--long      random_bit       ( long );
--
--#endif
-diff --git a/include/old/test.h b/include/old/test.h
-index 306868fb5..9b0fa0162 100644
---- a/include/old/test.h
-+++ b/include/old/test.h
-@@ -18,21 +18,21 @@
- #include <stdlib.h>
- #include <stdint.h>
- 
--#include "usctest.h"
-+#include "tso_usctest.h"
- 
- #include "tst_common.h"
--#include "old_safe_file_ops.h"
--#include "old_checkpoint.h"
-+#include "tso_safe_file_ops.h"
-+#include "tso_checkpoint.h"
- #include "tst_process_state.h"
--#include "old_resource.h"
-+#include "tso_resource.h"
- #include "tst_res_flags.h"
- #include "tst_kvercmp.h"
- #include "tst_fs.h"
- #include "tst_pid.h"
- #include "tst_cmd.h"
- #include "tst_cpu.h"
--#include "old_device.h"
--#include "old_tmpdir.h"
-+#include "tso_device.h"
-+#include "tso_tmpdir.h"
- #include "tst_minmax.h"
- #include "tst_get_bad_addr.h"
- #include "tst_path_has_mnt_flags.h"
-@@ -116,7 +116,7 @@ void tst_brkm__(const char *file, const int lineno, int ttype,
- 	__attribute__ ((format (printf, 5, 6))) LTP_ATTRIBUTE_NORETURN;
- 
- #ifdef LTPLIB
--# include "ltp_priv.h"
-+# include "tso_priv.h"
- # define tst_brkm(flags, cleanup, fmt, ...) do { \
- 	if (tst_test) \
- 		tst_brk_(__FILE__, __LINE__, flags, fmt, ##__VA_ARGS__); \
-diff --git a/include/old/tso_checkpoint.h b/include/old/tso_checkpoint.h
-new file mode 100644
-index 000000000..7b44e6afb
---- /dev/null
-+++ b/include/old/tso_checkpoint.h
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (c) Linux Test Project, 2026
-+ */
-+
-+/*
-+ * Checkpoint - easy to use parent-child synchronization.
-+ *
-+ * Checkpoint is based on futexes (man futex). The library allocates a page of
-+ * shared memory for futexes and the id is an offset to it which gives the user
-+ * up to page_size/sizeof(uint32_t) checkpoint pairs. Up to INT_MAX processes
-+ * can sleep on single id and can be woken up by single wake.
-+ */
-+
-+#ifndef TSO_CHECKPOINT__
-+#define TSO_CHECKPOINT__
-+
-+#include "test.h"
-+#include "tst_checkpoint_fn.h"
-+
-+#define TST_SAFE_CHECKPOINT_WAIT(cleanup_fn, id) \
-+        tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id, 0);
-+
-+#define TST_SAFE_CHECKPOINT_WAIT2(cleanup_fn, id, msec_timeout) \
-+        tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id, msec_timeout);
-+
-+#define TST_SAFE_CHECKPOINT_WAKE(cleanup_fn, id) \
-+        tst_safe_checkpoint_wake(__FILE__, __LINE__, cleanup_fn, id, 1);
-+
-+#define TST_SAFE_CHECKPOINT_WAKE2(cleanup_fn, id, nr_wake) \
-+        tst_safe_checkpoint_wake(__FILE__, __LINE__, cleanup_fn, id, nr_wake);
-+
-+#define TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(cleanup_fn, id) \
-+        tst_safe_checkpoint_wake(__FILE__, __LINE__, cleanup_fn, id, 1); \
-+        tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id, 0);
-+
-+#endif /* TSO_CHECKPOINT__ */
-diff --git a/include/old/ltp_cpuid.h b/include/old/tso_cpuid.h
-similarity index 100%
-rename from include/old/ltp_cpuid.h
-rename to include/old/tso_cpuid.h
-diff --git a/include/old/old_device.h b/include/old/tso_device.h
-similarity index 74%
-rename from include/old/old_device.h
-rename to include/old/tso_device.h
-index a6e9fea86..7081c554e 100644
---- a/include/old/old_device.h
-+++ b/include/old/tso_device.h
-@@ -1,22 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2014-2016 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software: you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation, either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ * Copyright (c) Linux Test Project, 2026
-  */
- 
--#ifndef OLD_DEVICE_H__
--#define OLD_DEVICE_H__
-+#ifndef TSO_DEVICE_H__
-+#define TSO_DEVICE_H__
- 
- /*
-  * Returns filesystem type to be used for the testing. Unless your test is
-@@ -81,4 +70,4 @@ int tst_detach_device(const char *dev);
-  */
- int tst_umount(const char *path);
- 
--#endif	/* OLD_DEVICE_H__ */
-+#endif	/* TSO_DEVICE_H__ */
-diff --git a/include/old/tlibio.h b/include/old/tso_lio.h
-similarity index 79%
-rename from include/old/tlibio.h
-rename to include/old/tso_lio.h
-index 0fe9ce9de..14a01dfde 100644
---- a/include/old/tlibio.h
-+++ b/include/old/tso_lio.h
-@@ -1,33 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-+ * Copyright (c) Linux Test Project, 2026
-  */
- 
- #define LIO_IO_SYNC             00001   /* read/write */
-diff --git a/include/old/old_module.h b/include/old/tso_module.h
-similarity index 68%
-rename from include/old/old_module.h
-rename to include/old/tso_module.h
-index f49c9937e..9072acc0a 100644
---- a/include/old/old_module.h
-+++ b/include/old/tso_module.h
-@@ -1,35 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-- * Copyright (c) Linux Test Project, 2016-2024
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License as
-- * published by the Free Software Foundation; either version 2 of
-- * the License, or (at your option) any later version.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software Foundation,
-- * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-- *
-- * Author:
-- * Alexey Kodanev <alexey.kodanev@oracle.com>
-- *
-- * These functions help to load and unload kernel modules in the tests.
-- *
-- * tst_module_load function already includes tst_module_exists function,
-- * which is checking the following possible module's locations:
-- *
-- * 1. Current working directory
-- *
-- * 2. LTP installation path (using env LTPROOT, which is usually /opt/ltp)
-- *
-- * 3. If tmp directory created, it'll look at the test start working directory
-- *
-+ * Copyright (c) Linux Test Project, 2026
-  */
- 
- #ifndef TST_MODULE
-diff --git a/include/old/ltp_priv.h b/include/old/tso_priv.h
-similarity index 62%
-rename from include/old/ltp_priv.h
-rename to include/old/tso_priv.h
-index 0a0ef70f3..ed09fdbc6 100644
---- a/include/old/ltp_priv.h
-+++ b/include/old/tso_priv.h
-@@ -1,22 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2013 Cyril Hrubis chrubis@suse.cz
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * as published by the Free Software Foundation; either version 2
-- * of the License, or (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-+ * Copyright (c) Linux Test Project, 2026
-  */
- 
- #ifndef __LTP_PRIV_H__
-diff --git a/include/old/tso_random_range.h b/include/old/tso_random_range.h
-new file mode 100644
-index 000000000..90064f9ba
---- /dev/null
-+++ b/include/old/tso_random_range.h
-@@ -0,0 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-+ * Copyright (c) Linux Test Project, 2026
-+ */
-+
-+#ifndef _RANDOM_RANGE_H_
-+#define _RANDOM_RANGE_H_
-+
-+int       parse_ranges     ( char *, int, int, int, int (*)(), char **, char ** );
-+int       range_min        ( char *, int );
-+int       range_max        ( char *, int );
-+int       range_mult       ( char *, int );
-+long      random_range     ( int, int, int, char ** );
-+long      random_rangel    ( long, long, long, char ** );
-+long long random_rangell   ( long long, long long, long long, char ** );
-+void      random_range_seed( long );
-+long      random_bit       ( long );
-+
-+#endif
-diff --git a/include/old/tso_resource.h b/include/old/tso_resource.h
-new file mode 100644
-index 000000000..b5291477f
---- /dev/null
-+++ b/include/old/tso_resource.h
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2012 Cyril Hrubis chrubis@suse.cz
-+ * Copyright (c) Linux Test Project, 2026
-+ */
-+
-+ /*
-+  * Small helper for preparing files the test needs to copy before the testing.
-+  * We need to support two scenarios.
-+  *
-+  * 1. Test is executed in local directory and this is also the place
-+  *     we should look for files
-+  *
-+  * 2. Test is executed after LTP has been installed, in this case we
-+  *     look for env LTPROOT (usually /opt/ltp/)
-+  */
-+
-+#ifndef TST_RESOURCE
-+#define TST_RESOURCE
-+
-+const char *tst_dataroot(void);
-+
-+/*
-+ * Copy a file to the CWD. The destination is apended to CWD.
-+ */
-+#define TST_RESOURCE_COPY(cleanup_fn, filename, dest) \
-+	tst_resource_copy(__FILE__, __LINE__, (cleanup_fn), \
-+	                  (filename), (dest))
-+
-+void tst_resource_copy(const char *file, const int lineno,
-+                       void (*cleanup_fn)(void),
-+		       const char *filename, const char *dest);
-+
-+#endif /* TST_RESOURCE */
-diff --git a/include/old/old_safe_file_ops.h b/include/old/tso_safe_file_ops.h
-similarity index 70%
-rename from include/old/old_safe_file_ops.h
-rename to include/old/tso_safe_file_ops.h
-index d6e2d29a9..1ddfad966 100644
---- a/include/old/old_safe_file_ops.h
-+++ b/include/old/tso_safe_file_ops.h
-@@ -1,28 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2012-2016 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software: you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation, either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ * Copyright (c) Linux Test Project, 2026
-  */
- 
-  /*
--
-    This code helps with file reading/writing files providing scanf/printf like
-    interface that opens and closes the file automatically.
- 
-    This kind of interface is especially useful for reading/writing values
-    from/to pseudo filesystems like procfs or sysfs.
--
-   */
- 
- #ifndef SAFE_FILE_OPS
-diff --git a/include/old/safe_macros.h b/include/old/tso_safe_macros.h
-similarity index 98%
-rename from include/old/safe_macros.h
-rename to include/old/tso_safe_macros.h
-index 307843ab0..f3965cc68 100644
---- a/include/old/safe_macros.h
-+++ b/include/old/tso_safe_macros.h
-@@ -1,3 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Linux Test Project, 2026
-+ */
-+
- /*
-  * Safe macros for commonly used syscalls to reduce code duplication in LTP
-  * testcases, and to ensure all errors are caught in said testcases as
-@@ -6,7 +11,6 @@
-  * Also satiates some versions of gcc/glibc when the warn_unused_result
-  * attribute is applied to the function call.
-  *
-- * Licensed under the GPLv2.
-  */
- 
- #ifndef __TEST_H__
-@@ -17,8 +21,8 @@
- #define __SAFE_MACROS_H__
- 
- #include "safe_macros_fn.h"
--#include "old_safe_stdio.h"
--#include "old_safe_net.h"
-+#include "tso_safe_stdio.h"
-+#include "tso_safe_net.h"
- 
- #define SAFE_BASENAME(cleanup_fn, path)	\
- 	safe_basename(__FILE__, __LINE__, (cleanup_fn), (path))
-diff --git a/include/old/old_safe_net.h b/include/old/tso_safe_net.h
-similarity index 58%
-rename from include/old/old_safe_net.h
-rename to include/old/tso_safe_net.h
-index 639094a94..2513dc39e 100644
---- a/include/old/old_safe_net.h
-+++ b/include/old/tso_safe_net.h
-@@ -1,23 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2015 Fujitsu Ltd.
-  * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software: you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation, either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ * Copyright (c) Linux Test Project, 2026
-  */
- 
--#ifndef OLD_SAFE_NET_H__
--#define OLD_SAFE_NET_H__
-+#ifndef TSO_SAFE_NET_H__
-+#define TSO_SAFE_NET_H__
- 
- #include <sys/types.h>
- #include <sys/socket.h>
-@@ -47,4 +36,4 @@
- #define TST_GET_UNUSED_PORT(cleanup_fn, family, type) \
- 	tst_get_unused_port(__FILE__, __LINE__, (cleanup_fn), family, type)
- 
--#endif /* OLD_SAFE_NET_H__ */
-+#endif /* TSO_SAFE_NET_H__ */
-diff --git a/include/old/tso_safe_stdio.h b/include/old/tso_safe_stdio.h
-new file mode 100644
-index 000000000..efda431ab
---- /dev/null
-+++ b/include/old/tso_safe_stdio.h
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2013-2016 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (c) Linux Test Project, 2026
-+ */
-+
-+#ifndef TSO_SAFE_STDIO_H__
-+#define TSO_SAFE_STDIO_H__
-+
-+#include <stdio.h>
-+
-+#include "safe_stdio_fn.h"
-+
-+#define SAFE_FOPEN(cleanup_fn, path, mode) \
-+	safe_fopen(__FILE__, __LINE__, cleanup_fn, path, mode)
-+
-+#define SAFE_FCLOSE(cleanup_fn, f) \
-+	safe_fclose(__FILE__, __LINE__, cleanup_fn, f)
-+
-+#define SAFE_ASPRINTF(cleanup_fn, strp, fmt, ...) \
-+	safe_asprintf(__FILE__, __LINE__, cleanup_fn, strp, fmt, __VA_ARGS__)
-+
-+#define SAFE_POPEN(cleanup_fn, command, type) \
-+	safe_popen(__FILE__, __LINE__, cleanup_fn, command, type)
-+
-+#endif /* TSO_SAFE_STDIO_H__ */
-diff --git a/include/old/tso_signal.h b/include/old/tso_signal.h
-new file mode 100644
-index 000000000..d29cb790a
---- /dev/null
-+++ b/include/old/tso_signal.h
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2009 Cisco Systems, Inc.  All Rights Reserved.
-+ * Copyright (c) 2009 FUJITSU LIMITED.  All Rights Reserved.
-+ * Copyright (c) Linux Test Project, 2026
-+ *
-+ * Author: Liu Bo <liubo2009@cn.fujitsu.com>
-+ * Author: Ngie Cooper <yaneurabeya@gmail.com>
-+ */
-+
-+#ifndef __LTP_SIGNAL_H
-+#define __LTP_SIGNAL_H
-+
-+#include <errno.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include "config.h"
-+
-+/*
-+ * For all but __mips__:
-+ *
-+ * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 2.
-+ *
-+ * For __mips__:
-+ *
-+ * _COMPAT_NSIG / _COMPAT_NSIG_BPW == 4.
-+ *
-+ * See asm/compat.h under the kernel source for more details.
-+ *
-+ * Multiply that by a fudge factor of 4 and you have your SIGSETSIZE.
-+ */
-+#if defined __mips__
-+#define SIGSETSIZE 16
-+#else
-+#define SIGSETSIZE (_NSIG / 8)
-+#endif
-+
-+#endif
-diff --git a/include/old/old_tmpdir.h b/include/old/tso_tmpdir.h
-similarity index 62%
-rename from include/old/old_tmpdir.h
-rename to include/old/tso_tmpdir.h
-index 3e33bf043..3187d4309 100644
---- a/include/old/old_tmpdir.h
-+++ b/include/old/tso_tmpdir.h
-@@ -1,22 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software: you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation, either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ * Copyright (c) Linux Test Project, 2026
-  */
- 
--#ifndef OLD_TMPDIR_H__
--#define OLD_TMPDIR_H__
-+#ifndef TSO_TMPDIR_H__
-+#define TSO_TMPDIR_H__
- 
- /*
-  * Create a unique temporary directory and chdir() to it. It expects the caller
-@@ -58,4 +47,4 @@ int tst_tmpdir_created(void);
- /* declared in tst_tmpdir.c */
- const char *tst_get_startwd(void);
- 
--#endif	/* OLD_TMPDIR_H__ */
-+#endif	/* TSO_TMPDIR_H__ */
-diff --git a/include/old/usctest.h b/include/old/tso_usctest.h
-similarity index 54%
-rename from include/old/usctest.h
-rename to include/old/tso_usctest.h
-index b984c343f..342c03d5f 100644
---- a/include/old/usctest.h
-+++ b/include/old/tso_usctest.h
-@@ -1,38 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-  *               Author: William Roske
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-+ * Copyright (c) Linux Test Project, 2026
-  */
- 
--#ifndef __USCTEST_H__
--#define __USCTEST_H__
-+#ifndef TSO_USCTEST_H__
-+#define TSO_USCTEST_H__
- 
- /* For PATH_MAX */
- #include <linux/limits.h>
-@@ -80,4 +54,4 @@ int usc_global_setup_hook();
- #define TEST_LOOPING usc_test_looping
- int usc_test_looping(int counter);
- 
--#endif /* __USCTEST_H__ */
-+#endif /* TSO_USCTEST_H__ */
-diff --git a/lib/parse_opts.c b/lib/parse_opts.c
-index 03e833312..565af4421 100644
---- a/lib/parse_opts.c
-+++ b/lib/parse_opts.c
-@@ -43,8 +43,8 @@
- #include <stdint.h>
- 
- #include "test.h"
--#include "ltp_priv.h"
--#include "usctest.h"
-+#include "tso_priv.h"
-+#include "tso_usctest.h"
- #include "tst_clocks.h"
- 
- #ifndef UNIT_TEST
-diff --git a/lib/random_range.c b/lib/random_range.c
-index 4c96fd913..0978c6fa3 100644
---- a/lib/random_range.c
-+++ b/lib/random_range.c
-@@ -33,7 +33,7 @@
- #include <stdlib.h>
- #include <string.h>
- #include <malloc.h>
--#include "random_range.h"
-+#include "tso_random_range.h"
- 
- /*
-  * Internal format of the range array set up by parse_range()
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index a3145b8d6..68b8747b4 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -23,7 +23,7 @@
- #include <math.h>
- #include "lapi/fcntl.h"
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *safe_basename(const char *file, const int lineno,
- 		    void (*cleanup_fn) (void), char *path)
-diff --git a/lib/tests/trerrno.c b/lib/tests/trerrno.c
-index a160874de..c830aed2a 100644
---- a/lib/tests/trerrno.c
-+++ b/lib/tests/trerrno.c
-@@ -21,7 +21,7 @@
- #include <fcntl.h>
- #include <string.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define OUTPUT_FNAME "output"
- 
-diff --git a/lib/tests/tst_dataroot01.c b/lib/tests/tst_dataroot01.c
-index fab8bfea2..d0a03ff77 100644
---- a/lib/tests/tst_dataroot01.c
-+++ b/lib/tests/tst_dataroot01.c
-@@ -21,7 +21,7 @@
- #include <fcntl.h>
- #include <string.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define OUTPUT_FNAME "output"
- #define LTPROOT "/opt/ltp"
-diff --git a/lib/tests/tst_dataroot02.c b/lib/tests/tst_dataroot02.c
-index b936b57f4..2be9db2a2 100644
---- a/lib/tests/tst_dataroot02.c
-+++ b/lib/tests/tst_dataroot02.c
-@@ -21,7 +21,7 @@
- #include <fcntl.h>
- #include <string.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define OUTPUT_FNAME "output"
- #define LTPROOT "/opt/ltp"
-diff --git a/lib/tests/tst_dataroot03.c b/lib/tests/tst_dataroot03.c
-index cf5a04ec6..88ea9e076 100644
---- a/lib/tests/tst_dataroot03.c
-+++ b/lib/tests/tst_dataroot03.c
-@@ -21,7 +21,7 @@
- #include <fcntl.h>
- #include <string.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define OUTPUT_FNAME "output"
- #define LTPROOT "/opt/ltp"
-diff --git a/lib/tests/tst_safe_macros.c b/lib/tests/tst_safe_macros.c
-index 5c427ee16..59b9b49bb 100644
---- a/lib/tests/tst_safe_macros.c
-+++ b/lib/tests/tst_safe_macros.c
-@@ -1,5 +1,5 @@
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "test_safe_macros";
- int TST_TOTAL = 1;
-diff --git a/lib/tlibio.c b/lib/tlibio.c
-index 70e0c6f7d..cf62bdc61 100644
---- a/lib/tlibio.c
-+++ b/lib/tlibio.c
-@@ -93,8 +93,8 @@
- #endif
- #include <stdlib.h>		/* atoi, abs */
- 
--#include "tlibio.h"		/* defines LIO* macros */
--#include "random_range.h"
-+#include "tso_lio.h"		/* defines LIO* macros */
-+#include "tso_random_range.h"
- 
- #ifndef PATH_MAX
- #define PATH_MAX	MAXPATHLEN
-diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
-index 9f803e3ef..f2faf6563 100644
---- a/lib/tst_checkpoint.c
-+++ b/lib/tst_checkpoint.c
-@@ -10,7 +10,7 @@
- #include <sys/syscall.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/futex.h"
- 
- #define DEFAULT_MSEC_TIMEOUT 10000
-diff --git a/lib/tst_cpu.c b/lib/tst_cpu.c
-index b4c7c2f81..faffcba91 100644
---- a/lib/tst_cpu.c
-+++ b/lib/tst_cpu.c
-@@ -22,7 +22,7 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- long tst_ncpus(void)
- {
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 85f5f8cac..d3c53a1a1 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -21,7 +21,7 @@
- #include <sys/statfs.h>
- #include "lapi/syscalls.h"
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "tst_device.h"
- 
- #ifndef LOOP_CTL_GET_FREE
-diff --git a/lib/tst_dir_is_empty.c b/lib/tst_dir_is_empty.c
-index 43764eeba..b266630d8 100644
---- a/lib/tst_dir_is_empty.c
-+++ b/lib/tst_dir_is_empty.c
-@@ -23,7 +23,7 @@
- #include <dirent.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- int tst_dir_is_empty_(void (cleanup_fn)(void), const char *name, int verbose)
- {
-diff --git a/lib/tst_fs_link_count.c b/lib/tst_fs_link_count.c
-index 6a6bb52b2..e0fbb3351 100644
---- a/lib/tst_fs_link_count.c
-+++ b/lib/tst_fs_link_count.c
-@@ -22,8 +22,8 @@
- #include <unistd.h>
- 
- #include "test.h"
--#include "usctest.h"
--#include "safe_macros.h"
-+#include "tso_usctest.h"
-+#include "tso_safe_macros.h"
- 
- #define MAX_SANE_HARD_LINKS	65535
- 
-diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
-index 9ab02e5d3..8bb7e080a 100644
---- a/lib/tst_kernel.c
-+++ b/lib/tst_kernel.c
-@@ -24,7 +24,7 @@
- 
- #include "test.h"
- #include "tst_kernel.h"
--#include "old_safe_stdio.h"
-+#include "tso_safe_stdio.h"
- #include "lapi/abisize.h"
- 
- static int get_kernel_bits_from_uname(struct utsname *buf)
-diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-index 19d995df2..c619a373d 100644
---- a/lib/tst_mkfs.c
-+++ b/lib/tst_mkfs.c
-@@ -16,7 +16,7 @@
-  */
- 
- #include "test.h"
--#include "ltp_priv.h"
-+#include "tso_priv.h"
- #include "tst_mkfs.h"
- #include "tst_device.h"
- 
-diff --git a/lib/tst_module.c b/lib/tst_module.c
-index 42d63ede6..cbd2415d5 100644
---- a/lib/tst_module.c
-+++ b/lib/tst_module.c
-@@ -28,8 +28,8 @@
- 
- #include "test.h"
- #include "tst_kconfig.h"
--#include "ltp_priv.h"
--#include "old_module.h"
-+#include "tso_priv.h"
-+#include "tso_module.h"
- 
- void tst_module_exists_(void (cleanup_fn)(void),
- 	const char *mod_name, char **mod_path)
-diff --git a/lib/tst_parse_opts.c b/lib/tst_parse_opts.c
-index 94970e1a8..148454019 100644
---- a/lib/tst_parse_opts.c
-+++ b/lib/tst_parse_opts.c
-@@ -22,7 +22,7 @@
-  */
- 
- #include "test.h"
--#include "ltp_priv.h"
-+#include "tso_priv.h"
- 
- void tst_parse_opts(int argc, char *argv[], const option_t *user_optarg,
-                     void (*user_help)(void))
-diff --git a/lib/tst_pid.c b/lib/tst_pid.c
-index 4e9dc7a52..4346a826b 100644
---- a/lib/tst_pid.c
-+++ b/lib/tst_pid.c
-@@ -28,7 +28,7 @@
- #include <unistd.h>
- #include "test.h"
- #include "tst_pid.h"
--#include "old_safe_file_ops.h"
-+#include "tso_safe_file_ops.h"
- #include "tst_safe_macros.h"
- #include "lapi/syscalls.h"
- 
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index f50c07271..9278ad9f1 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -48,9 +48,9 @@
- #include <sys/wait.h>
- 
- #include "test.h"
--#include "safe_macros.h"
--#include "usctest.h"
--#include "ltp_priv.h"
-+#include "tso_safe_macros.h"
-+#include "tso_usctest.h"
-+#include "tso_priv.h"
- #include "tst_ansi_color.h"
- 
- long TEST_RETURN;
-diff --git a/lib/tst_resource.c b/lib/tst_resource.c
-index c35d05a25..ea2783dce 100644
---- a/lib/tst_resource.c
-+++ b/lib/tst_resource.c
-@@ -23,8 +23,8 @@
- 
- #include <pthread.h>
- #include "test.h"
--#include "old_resource.h"
--#include "ltp_priv.h"
-+#include "tso_resource.h"
-+#include "tso_priv.h"
- 
- #ifndef PATH_MAX
- #ifdef MAXPATHLEN
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index e115ce689..9235fc2fb 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -34,9 +34,9 @@
- #include "tst_sys_conf.h"
- #include "tst_kconfig.h"
- #include "tst_private.h"
--#include "old_resource.h"
--#include "old_device.h"
--#include "old_tmpdir.h"
-+#include "tso_resource.h"
-+#include "tso_device.h"
-+#include "tso_tmpdir.h"
- #include "ltp-version.h"
- #include "tst_hugepage.h"
- 
-diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-index 6ed2367b9..b9924d85d 100644
---- a/lib/tst_tmpdir.c
-+++ b/lib/tst_tmpdir.c
-@@ -72,9 +72,9 @@
- 
- #include "test.h"
- #include "tst_buffers.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "tst_tmpdir.h"
--#include "ltp_priv.h"
-+#include "tso_priv.h"
- #include "lapi/futex.h"
- 
- /*
-diff --git a/lib/tst_virt.c b/lib/tst_virt.c
-index 0fda20a17..109d7a853 100644
---- a/lib/tst_virt.c
-+++ b/lib/tst_virt.c
-@@ -24,7 +24,7 @@
- 
- #include <unistd.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- static int is_kvm(void)
- {
-diff --git a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
-index 2c080933e..242e988be 100644
---- a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
-+++ b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
-@@ -36,7 +36,7 @@
- #include <errno.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "cgroup_xattr";
- 
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-index 4856f3372..ad0e4fbd9 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-@@ -57,7 +57,7 @@
- 
- #include "../libcontrollers/libcontrollers.h"
- #include "test.h"		/* LTP harness APIs */
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #ifdef DEBUG
- #define dbg(x...)	printf(x);
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-index 3c19a7719..937ee934a 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-@@ -60,7 +60,7 @@
- 
- #include "../libcontrollers/libcontrollers.h"
- #include "test.h"		/* LTP harness APIs */
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define TIME_INTERVAL	30	/* Time interval in seconds */
- #define NUM_INTERVALS	3	/* How many iterations of TIME_INTERVAL */
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-index 63aec0d2a..6b974ec74 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-@@ -61,7 +61,7 @@
- 
- #include "../libcontrollers/libcontrollers.h"
- #include "test.h"		/* LTP harness APIs */
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define TIME_INTERVAL	30	/* Time interval in seconds */
- #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-index 9a56d7b49..95515e72a 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-@@ -61,7 +61,7 @@
- 
- #include "../libcontrollers/libcontrollers.h"
- #include "test.h"		/* LTP harness APIs */
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define TIME_INTERVAL	100	/* Time interval in seconds */
- #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
-index 9370f7eb8..b37e77a34 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
-@@ -62,7 +62,7 @@
- 
- #include "../libcontrollers/libcontrollers.h"
- #include "test.h"		/* LTP harness APIs */
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define TIME_INTERVAL	30	/* Time interval in seconds */
- #define NUM_INTERVALS	3	/* How many iterations of TIME_INTERVAL */
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-index a9b90d6b6..ea5510bd5 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-@@ -61,7 +61,7 @@
- 
- #include "../libcontrollers/libcontrollers.h"
- #include "test.h"		/* LTP harness APIs */
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define TIME_INTERVAL	30	/* Time interval in seconds */
- #define NUM_INTERVALS	3	/* How many iterations of TIME_INTERVAL */
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-index a81370085..7c5eaf878 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-@@ -61,7 +61,7 @@
- 
- #include "../libcontrollers/libcontrollers.h"
- #include "test.h"		/* LTP harness APIs */
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define TIME_INTERVAL	30	/* Time interval in seconds */
- #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-index d166aa4d3..1aad41d78 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-@@ -61,7 +61,7 @@
- 
- #include "../libcontrollers/libcontrollers.h"
- #include "test.h"		/* LTP harness APIs */
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define TIME_INTERVAL	100	/* Time interval in seconds */
- #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi.c b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
-index 2c0cc562b..9512270fc 100644
---- a/testcases/kernel/device-drivers/acpi/ltp_acpi.c
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
-@@ -22,8 +22,8 @@
- #include <stdlib.h>
- 
- #include "test.h"
--#include "old_module.h"
--#include "safe_macros.h"
-+#include "tso_module.h"
-+#include "tso_safe_macros.h"
- 
- #include "ltp_acpi.h"
- 
-diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-index 645c4326a..940c56090 100644
---- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-+++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-@@ -34,7 +34,7 @@
- 
- #include "test.h"
- #include "lapi/posix_clocks.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "cpufreq_boost";
- 
-diff --git a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c b/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
-index 5d241fb42..704fb15a5 100644
---- a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
-+++ b/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
-@@ -27,8 +27,8 @@
- #include <errno.h>
- 
- #include "test.h"
--#include "safe_macros.h"
--#include "old_module.h"
-+#include "tso_safe_macros.h"
-+#include "tso_module.h"
- 
- #include "../tpci_kernel/tpci.h"
- 
-diff --git a/testcases/kernel/device-drivers/rtc/rtc01.c b/testcases/kernel/device-drivers/rtc/rtc01.c
-index 8a1f62ead..a02633d5f 100644
---- a/testcases/kernel/device-drivers/rtc/rtc01.c
-+++ b/testcases/kernel/device-drivers/rtc/rtc01.c
-@@ -33,7 +33,7 @@
- #include <time.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- int rtc_fd = -1;
- char *TCID = "rtc01";
-diff --git a/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c b/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
-index e882dc768..f7888b63d 100644
---- a/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
-+++ b/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
-@@ -53,8 +53,8 @@
- #include <string.h>
- 
- #include "test.h"
--#include "safe_macros.h"
--#include "old_module.h"
-+#include "tso_safe_macros.h"
-+#include "tso_module.h"
- 
- #include "../tbio_kernel/tbio.h"
- 
-diff --git a/testcases/kernel/device-drivers/uaccess/uaccess.c b/testcases/kernel/device-drivers/uaccess/uaccess.c
-index f337aba64..fbd4ff81a 100644
---- a/testcases/kernel/device-drivers/uaccess/uaccess.c
-+++ b/testcases/kernel/device-drivers/uaccess/uaccess.c
-@@ -27,8 +27,8 @@
- #include <unistd.h>
- 
- #include "test.h"
--#include "old_module.h"
--#include "safe_macros.h"
-+#include "tso_module.h"
-+#include "tso_safe_macros.h"
- #include "tst_security.h"
- 
- #include "ltp_uaccess.h"
-diff --git a/testcases/kernel/firmware/fw_load_user/fw_load.c b/testcases/kernel/firmware/fw_load_user/fw_load.c
-index f5b918a69..1f68f2ad6 100644
---- a/testcases/kernel/firmware/fw_load_user/fw_load.c
-+++ b/testcases/kernel/firmware/fw_load_user/fw_load.c
-@@ -30,8 +30,8 @@
- 
- #include "test.h"
- #include "tst_security.h"
--#include "safe_macros.h"
--#include "old_module.h"
-+#include "tso_safe_macros.h"
-+#include "tso_module.h"
- 
- /* number of test firmware files */
- #define FW_FILES	5
-diff --git a/testcases/kernel/fs/doio/doio.c b/testcases/kernel/fs/doio/doio.c
-index b170f6670..1a62ac16a 100644
---- a/testcases/kernel/fs/doio/doio.c
-+++ b/testcases/kernel/fs/doio/doio.c
-@@ -84,7 +84,7 @@
- 
- #include "doio.h"
- #include "write_log.h"
--#include "random_range.h"
-+#include "tso_random_range.h"
- #include "string_to_tokens.h"
- #include "pattern.h"
- 
-diff --git a/testcases/kernel/fs/doio/growfiles.c b/testcases/kernel/fs/doio/growfiles.c
-index 7bf51fb9c..21960f82a 100644
---- a/testcases/kernel/fs/doio/growfiles.c
-+++ b/testcases/kernel/fs/doio/growfiles.c
-@@ -85,7 +85,7 @@
- #include <string.h>
- #include <inttypes.h>
- #include "dataascii.h"
--#include "random_range.h"
-+#include "tso_random_range.h"
- #include "databin.h"
- #include "open_flags.h"
- #include "forker.h"
-@@ -145,7 +145,7 @@ void myexit(int x)
- 			/* Once it is proven tlibio.c functions work properly, */
- 			/* only tlibio.c functions will be used */
- #else
--#include "tlibio.h"
-+#include "tso_lio.h"
- #endif
- 
- #ifndef PATH_MAX
-@@ -589,7 +589,7 @@ int main(int argc, char **argv)
- 					Progname, TagName);
- 				exit(1);
- 			}
--			if (io_type == 99)	/* hold-over until tlibio.h */
-+			if (io_type == 99)	/* hold-over until tso_lio.h */
- 				using_random++;
- #endif
- 			break;
-diff --git a/testcases/kernel/fs/doio/iogen.c b/testcases/kernel/fs/doio/iogen.c
-index 765cfdae5..76ce2259a 100644
---- a/testcases/kernel/fs/doio/iogen.c
-+++ b/testcases/kernel/fs/doio/iogen.c
-@@ -64,7 +64,7 @@
- #include "bytes_by_prefix.h"
- #include "string_to_tokens.h"
- #include "open_flags.h"
--#include "random_range.h"
-+#include "tso_random_range.h"
- 
- #ifndef PATH_MAX
- #define	PATH_MAX 512		/* ??? */
-diff --git a/testcases/kernel/fs/ftest/ftest01.c b/testcases/kernel/fs/ftest/ftest01.c
-index 31203d689..86f986acc 100644
---- a/testcases/kernel/fs/ftest/ftest01.c
-+++ b/testcases/kernel/fs/ftest/ftest01.c
-@@ -59,7 +59,7 @@
- #include <unistd.h>
- #include <inttypes.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "libftest.h"
- 
- char *TCID = "ftest01";
-diff --git a/testcases/kernel/fs/ftest/ftest03.c b/testcases/kernel/fs/ftest/ftest03.c
-index ed69e5736..507101d00 100644
---- a/testcases/kernel/fs/ftest/ftest03.c
-+++ b/testcases/kernel/fs/ftest/ftest03.c
-@@ -64,7 +64,7 @@
- #include <stdio.h>
- #include <inttypes.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "libftest.h"
- 
- char *TCID = "ftest03";
-diff --git a/testcases/kernel/fs/ftest/ftest04.c b/testcases/kernel/fs/ftest/ftest04.c
-index 8eed84c74..3bc4d2a1e 100644
---- a/testcases/kernel/fs/ftest/ftest04.c
-+++ b/testcases/kernel/fs/ftest/ftest04.c
-@@ -48,7 +48,7 @@
- #include <errno.h>
- #include <signal.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "libftest.h"
- 
- char *TCID = "ftest04";
-diff --git a/testcases/kernel/fs/ftest/ftest05.c b/testcases/kernel/fs/ftest/ftest05.c
-index 8d8e6d497..2bbdd3238 100644
---- a/testcases/kernel/fs/ftest/ftest05.c
-+++ b/testcases/kernel/fs/ftest/ftest05.c
-@@ -63,7 +63,7 @@
- #include <inttypes.h>
- #include <sys/param.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "libftest.h"
- 
- char *TCID = "ftest05";
-diff --git a/testcases/kernel/fs/ftest/ftest07.c b/testcases/kernel/fs/ftest/ftest07.c
-index 3b5b2a419..1e63159b3 100644
---- a/testcases/kernel/fs/ftest/ftest07.c
-+++ b/testcases/kernel/fs/ftest/ftest07.c
-@@ -70,7 +70,7 @@
- #include <unistd.h>
- #include <inttypes.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "libftest.h"
- 
- char *TCID = "ftest07";
-diff --git a/testcases/kernel/fs/ftest/ftest08.c b/testcases/kernel/fs/ftest/ftest08.c
-index e7fb56fe4..356a031b8 100644
---- a/testcases/kernel/fs/ftest/ftest08.c
-+++ b/testcases/kernel/fs/ftest/ftest08.c
-@@ -55,7 +55,7 @@
- #include <unistd.h>
- #include <inttypes.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "libftest.h"
- 
- char *TCID = "ftest08";
-diff --git a/testcases/kernel/io/direct_io/diotest1.c b/testcases/kernel/io/direct_io/diotest1.c
-index 03a054b4c..c6c50ff4e 100644
---- a/testcases/kernel/io/direct_io/diotest1.c
-+++ b/testcases/kernel/io/direct_io/diotest1.c
-@@ -40,7 +40,7 @@
- #include "diotest_routines.h"
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "diotest01";	/* Test program identifier.    */
- int TST_TOTAL = 1;		/* Total number of test conditions */
-diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
-index ad00fa3e0..3f37a8a4f 100644
---- a/testcases/kernel/io/direct_io/diotest4.c
-+++ b/testcases/kernel/io/direct_io/diotest4.c
-@@ -68,7 +68,7 @@
- #include "diotest_routines.h"
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/mmap.h"
- 
- char *TCID = "diotest4";	/* Test program identifier.    */
-diff --git a/testcases/kernel/io/direct_io/dma_thread_diotest.c b/testcases/kernel/io/direct_io/dma_thread_diotest.c
-index c317eba8e..b757ba0e2 100644
---- a/testcases/kernel/io/direct_io/dma_thread_diotest.c
-+++ b/testcases/kernel/io/direct_io/dma_thread_diotest.c
-@@ -103,7 +103,7 @@
- #include <sys/mount.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define FILESIZE	(12*1024*1024)
- #define READSIZE	(1024*1024)
-diff --git a/testcases/kernel/ipc/pipeio/pipeio.c b/testcases/kernel/ipc/pipeio/pipeio.c
-index ab5c2cf06..9a7d3c61f 100644
---- a/testcases/kernel/ipc/pipeio/pipeio.c
-+++ b/testcases/kernel/ipc/pipeio/pipeio.c
-@@ -48,10 +48,10 @@
- #include <signal.h>
- #include <sys/stat.h>
- 
--#include "tlibio.h"
-+#include "tso_lio.h"
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/sem.h"
- 
- char *TCID = "pipeio";
-diff --git a/testcases/kernel/lib/numa_helper.c b/testcases/kernel/lib/numa_helper.c
-index 2eee8d35d..129e75f40 100644
---- a/testcases/kernel/lib/numa_helper.c
-+++ b/testcases/kernel/lib/numa_helper.c
-@@ -32,7 +32,7 @@
- #include <errno.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "numa_helper.h"
- #include "lapi/syscalls.h"
- 
-diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
-index d220b636c..7d784da62 100644
---- a/testcases/kernel/mem/vma/vma01.c
-+++ b/testcases/kernel/mem/vma/vma01.c
-@@ -51,7 +51,7 @@
- #include <string.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define MAPS_FILE "/proc/self/maps"
- 
-diff --git a/testcases/kernel/mem/vma/vma02.c b/testcases/kernel/mem/vma/vma02.c
-index 2b99f8dec..c961a1a43 100644
---- a/testcases/kernel/mem/vma/vma02.c
-+++ b/testcases/kernel/mem/vma/vma02.c
-@@ -43,7 +43,7 @@
- #include <unistd.h>
- #include <limits.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "numa_helper.h"
- 
- char *TCID = "vma02";
-diff --git a/testcases/kernel/mem/vma/vma03.c b/testcases/kernel/mem/vma/vma03.c
-index 65884d9d9..da1f5be99 100644
---- a/testcases/kernel/mem/vma/vma03.c
-+++ b/testcases/kernel/mem/vma/vma03.c
-@@ -49,7 +49,7 @@
- #include <unistd.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "tst_kernel.h"
- #include "lapi/abisize.h"
- 
-diff --git a/testcases/kernel/mem/vma/vma04.c b/testcases/kernel/mem/vma/vma04.c
-index 24ccd9d6b..06a316667 100644
---- a/testcases/kernel/mem/vma/vma04.c
-+++ b/testcases/kernel/mem/vma/vma04.c
-@@ -47,7 +47,7 @@
- #include <unistd.h>
- #include <limits.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "numa_helper.h"
- 
- char *TCID = "vma04";
-diff --git a/testcases/kernel/pty/hangup01.c b/testcases/kernel/pty/hangup01.c
-index a71b4b44b..fca61e8ac 100644
---- a/testcases/kernel/pty/hangup01.c
-+++ b/testcases/kernel/pty/hangup01.c
-@@ -32,7 +32,7 @@
- 
- /** LTP Port **/
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "hangup01";	/* Test program identifier.    */
- int TST_TOTAL = 5;		/* Total number of test cases. */
-diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
-index 18f0862cb..38c1ba77e 100644
---- a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
-+++ b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
-@@ -6,7 +6,7 @@
- #include <alloca.h>
- #include <string.h>
- #include <linux/unistd.h>
--#include "ltp_cpuid.h"
-+#include "tso_cpuid.h"
- 
- #define PROC_PATH	"/proc"
- #define BUFF_SIZE	8192
-diff --git a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c
-index 7644e352c..772cb3c93 100644
---- a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c
-+++ b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c
-@@ -6,7 +6,7 @@
- #include <alloca.h>
- #include <string.h>
- #include <linux/unistd.h>
--#include "ltp_cpuid.h"
-+#include "tso_cpuid.h"
- 
- #define PROC_PATH	"/proc"
- #define BUFF_SIZE	8192
-diff --git a/testcases/kernel/security/filecaps/filecaps_common.h b/testcases/kernel/security/filecaps/filecaps_common.h
-index 0f011868e..1c19f99cd 100644
---- a/testcases/kernel/security/filecaps/filecaps_common.h
-+++ b/testcases/kernel/security/filecaps/filecaps_common.h
-@@ -1,6 +1,6 @@
- #include <limits.h>
- #include <stdlib.h>
--#include <old_tmpdir.h>
-+#include <tso_tmpdir.h>
- 
- static char *fifofile;
- 
-diff --git a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-index 20f33527c..0d3e6a61e 100644
---- a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-+++ b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
-@@ -43,7 +43,7 @@
- #include <signal.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "prot_hsymlinks";
- int TST_TOTAL = 396;
-diff --git a/testcases/kernel/syscalls/clone/clone02.c b/testcases/kernel/syscalls/clone/clone02.c
-index fd3ee1aed..972db5205 100644
---- a/testcases/kernel/syscalls/clone/clone02.c
-+++ b/testcases/kernel/syscalls/clone/clone02.c
-@@ -58,7 +58,7 @@
- #include <sys/syscall.h>
- #include <sched.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "tst_clone.h"
- 
- #define FLAG_ALL (CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|SIGCHLD)
-diff --git a/testcases/kernel/syscalls/connect/connect01.c b/testcases/kernel/syscalls/connect/connect01.c
-index 660c4f7a9..6cb8adab3 100644
---- a/testcases/kernel/syscalls/connect/connect01.c
-+++ b/testcases/kernel/syscalls/connect/connect01.c
-@@ -53,7 +53,7 @@
- #include <netinet/in.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "connect01";
- int testno;
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate01.c b/testcases/kernel/syscalls/fallocate/fallocate01.c
-index 383796c90..d21936eba 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate01.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate01.c
-@@ -99,7 +99,7 @@
- #include <sys/utsname.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/fallocate.h"
- #include "lapi/fcntl.h"
- 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
-index bb719d78f..4469f02f2 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate02.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
-@@ -39,7 +39,7 @@
- #include <limits.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/fallocate.h"
- #include "lapi/abisize.h"
- 
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl07.c b/testcases/kernel/syscalls/fcntl/fcntl07.c
-index 10d1186fc..cc0607e18 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl07.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl07.c
-@@ -51,7 +51,7 @@
- #include <limits.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- static void setup(void);
- static void cleanup(void);
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl11.c b/testcases/kernel/syscalls/fcntl/fcntl11.c
-index 4fd9fcca9..9012d3588 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl11.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl11.c
-@@ -45,7 +45,7 @@
- #include <sys/wait.h>
- #include <inttypes.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define STRINGSIZE	27
- #define STRING		"abcdefghijklmnopqrstuvwxyz\n"
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c b/testcases/kernel/syscalls/fcntl/fcntl16.c
-index 4ae9e6e7a..cdbb82b8b 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl16.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
-@@ -46,7 +46,7 @@
- #include <signal.h>
- #include <errno.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include <sys/stat.h>
- #include <sys/types.h>
- #include <sys/wait.h>
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl19.c b/testcases/kernel/syscalls/fcntl/fcntl19.c
-index a58e921c3..4792bf6c1 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl19.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl19.c
-@@ -49,7 +49,7 @@
- #include <inttypes.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define STRINGSIZE	27
- #define STRING		"abcdefghijklmnopqrstuvwxyz\n"
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl20.c b/testcases/kernel/syscalls/fcntl/fcntl20.c
-index f271eeb2d..c7c554b20 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl20.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl20.c
-@@ -45,7 +45,7 @@
- #include <sys/wait.h>
- #include <inttypes.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define STRINGSIZE	27
- #define STRING		"abcdefghijklmnopqrstuvwxyz\n"
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl31.c b/testcases/kernel/syscalls/fcntl/fcntl31.c
-index f5c4f8398..2aab4a91c 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl31.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl31.c
-@@ -35,7 +35,7 @@
- #include "test.h"
- #include "config.h"
- #include "lapi/syscalls.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/fcntl.h"
- 
- static void setup(void);
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl32.c b/testcases/kernel/syscalls/fcntl/fcntl32.c
-index f567acc70..912d05662 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl32.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl32.c
-@@ -24,7 +24,7 @@
- #include <errno.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- static void setup(void);
- static void verify_fcntl(int);
-diff --git a/testcases/kernel/syscalls/fdatasync/fdatasync02.c b/testcases/kernel/syscalls/fdatasync/fdatasync02.c
-index 9ce4fc7bb..6181dab8c 100644
---- a/testcases/kernel/syscalls/fdatasync/fdatasync02.c
-+++ b/testcases/kernel/syscalls/fdatasync/fdatasync02.c
-@@ -76,7 +76,7 @@
- #include <fcntl.h>
- #include <unistd.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define EXP_RET_VAL	-1
- #define SPL_FILE	"/dev/null"
-diff --git a/testcases/kernel/syscalls/fork/fork09.c b/testcases/kernel/syscalls/fork/fork09.c
-index 32bad89b3..c3b9cf45b 100644
---- a/testcases/kernel/syscalls/fork/fork09.c
-+++ b/testcases/kernel/syscalls/fork/fork09.c
-@@ -47,7 +47,7 @@
- #include <errno.h>
- #include <unistd.h>		/* for _SC_OPEN_MAX */
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "fork09";
- int TST_TOTAL = 1;
-diff --git a/testcases/kernel/syscalls/fstatat/fstatat01.c b/testcases/kernel/syscalls/fstatat/fstatat01.c
-index c18ffacf2..f3dc5a23d 100644
---- a/testcases/kernel/syscalls/fstatat/fstatat01.c
-+++ b/testcases/kernel/syscalls/fstatat/fstatat01.c
-@@ -34,7 +34,7 @@
- #include <signal.h>
- #include "config.h"
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/syscalls.h"
- 
- #define TEST_CASES 6
-diff --git a/testcases/kernel/syscalls/futimesat/futimesat01.c b/testcases/kernel/syscalls/futimesat/futimesat01.c
-index 46bd57c48..c53d9079f 100644
---- a/testcases/kernel/syscalls/futimesat/futimesat01.c
-+++ b/testcases/kernel/syscalls/futimesat/futimesat01.c
-@@ -33,7 +33,7 @@
- #include <string.h>
- #include <signal.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/syscalls.h"
- 
- #define TEST_CASES 5
-diff --git a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-index 1ff37bc9b..28db417d9 100644
---- a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-+++ b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-@@ -51,7 +51,7 @@
- #include <stdlib.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/syscalls.h"
- 
- char *TCID = "get_robust_list01";
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
-index f18343c2c..f939f2a1a 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage04.c
-+++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
-@@ -50,7 +50,7 @@
- #include <time.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/posix_clocks.h"
- 
- char *TCID = "getrusage04";
-diff --git a/testcases/kernel/syscalls/linkat/linkat01.c b/testcases/kernel/syscalls/linkat/linkat01.c
-index 57cfbcfc6..fa2065bbb 100644
---- a/testcases/kernel/syscalls/linkat/linkat01.c
-+++ b/testcases/kernel/syscalls/linkat/linkat01.c
-@@ -57,7 +57,7 @@
- #include <limits.h>
- #include "test.h"
- #include "lapi/syscalls.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #ifndef AT_FDCWD
- #define AT_FDCWD -100
-diff --git a/testcases/kernel/syscalls/linkat/linkat02.c b/testcases/kernel/syscalls/linkat/linkat02.c
-index 47383acec..273587271 100644
---- a/testcases/kernel/syscalls/linkat/linkat02.c
-+++ b/testcases/kernel/syscalls/linkat/linkat02.c
-@@ -31,7 +31,7 @@
- 
- #include "test.h"
- #include "lapi/syscalls.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/fcntl.h"
- 
- #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
-diff --git a/testcases/kernel/syscalls/listen/listen01.c b/testcases/kernel/syscalls/listen/listen01.c
-index d33f209c3..109711b17 100644
---- a/testcases/kernel/syscalls/listen/listen01.c
-+++ b/testcases/kernel/syscalls/listen/listen01.c
-@@ -53,7 +53,7 @@
- #include <netinet/in.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "listen01";
- int testno;
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-index 198ba3813..428ca9a4c 100644
---- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-@@ -37,7 +37,7 @@
- #include <pwd.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/syscalls.h"
- #include "numa_helper.h"
- #include "migrate_pages_common.h"
-diff --git a/testcases/kernel/syscalls/mincore/mincore01.c b/testcases/kernel/syscalls/mincore/mincore01.c
-index 03ec3b4e6..ed2f9e3bc 100644
---- a/testcases/kernel/syscalls/mincore/mincore01.c
-+++ b/testcases/kernel/syscalls/mincore/mincore01.c
-@@ -43,7 +43,7 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- static int pagesize;
- static rlim_t STACK_LIMIT = 10485760;
-diff --git a/testcases/kernel/syscalls/mkdirat/mkdirat01.c b/testcases/kernel/syscalls/mkdirat/mkdirat01.c
-index ca536bdab..f1ad19bfb 100644
---- a/testcases/kernel/syscalls/mkdirat/mkdirat01.c
-+++ b/testcases/kernel/syscalls/mkdirat/mkdirat01.c
-@@ -35,7 +35,7 @@
- #include <string.h>
- #include <signal.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- static void setup(void);
- static void cleanup(void);
-diff --git a/testcases/kernel/syscalls/mknodat/mknodat01.c b/testcases/kernel/syscalls/mknodat/mknodat01.c
-index 3be0a4f87..d7f4cca1e 100644
---- a/testcases/kernel/syscalls/mknodat/mknodat01.c
-+++ b/testcases/kernel/syscalls/mknodat/mknodat01.c
-@@ -33,7 +33,7 @@
- #include <string.h>
- #include <signal.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/fcntl.h"
- 
- #define PATHNAME "mknodattestdir"
-diff --git a/testcases/kernel/syscalls/mknodat/mknodat02.c b/testcases/kernel/syscalls/mknodat/mknodat02.c
-index fdac5db15..2f7c56f00 100644
---- a/testcases/kernel/syscalls/mknodat/mknodat02.c
-+++ b/testcases/kernel/syscalls/mknodat/mknodat02.c
-@@ -35,7 +35,7 @@
- #include <sys/mount.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/fcntl.h"
- #include "lapi/syscalls.h"
- 
-diff --git a/testcases/kernel/syscalls/mlockall/mlockall02.c b/testcases/kernel/syscalls/mlockall/mlockall02.c
-index 6524cb4a8..2eddf4c08 100644
---- a/testcases/kernel/syscalls/mlockall/mlockall02.c
-+++ b/testcases/kernel/syscalls/mlockall/mlockall02.c
-@@ -77,7 +77,7 @@
- #include <pwd.h>
- #include <sys/mman.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include <sys/resource.h>
- 
- void setup();
-diff --git a/testcases/kernel/syscalls/mlockall/mlockall03.c b/testcases/kernel/syscalls/mlockall/mlockall03.c
-index a505891fc..0b3957377 100644
---- a/testcases/kernel/syscalls/mlockall/mlockall03.c
-+++ b/testcases/kernel/syscalls/mlockall/mlockall03.c
-@@ -79,7 +79,7 @@
- #include <ctype.h>
- #include <sys/mman.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include <sys/resource.h>
- #include <sys/utsname.h>
- 
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages11.c b/testcases/kernel/syscalls/move_pages/move_pages11.c
-index dec930b0e..1af38e403 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages11.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages11.c
-@@ -59,7 +59,7 @@
- #include <errno.h>
- #include <pwd.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "move_pages_support.h"
- 
- #define TEST_PAGES 2
-diff --git a/testcases/kernel/syscalls/mprotect/mprotect01.c b/testcases/kernel/syscalls/mprotect/mprotect01.c
-index aa4685258..0786159aa 100644
---- a/testcases/kernel/syscalls/mprotect/mprotect01.c
-+++ b/testcases/kernel/syscalls/mprotect/mprotect01.c
-@@ -44,7 +44,7 @@
- #include <unistd.h>
- #include "test.h"
- #include "lapi/syscalls.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "mprotect01";
- int TST_TOTAL = 3;
-diff --git a/testcases/kernel/syscalls/mprotect/mprotect02.c b/testcases/kernel/syscalls/mprotect/mprotect02.c
-index de894868f..21e05e71e 100644
---- a/testcases/kernel/syscalls/mprotect/mprotect02.c
-+++ b/testcases/kernel/syscalls/mprotect/mprotect02.c
-@@ -41,7 +41,7 @@
- #include <stdlib.h>
- #include "test.h"
- 
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- static void sighandler(int sig);
- static void cleanup(void);
-diff --git a/testcases/kernel/syscalls/mprotect/mprotect03.c b/testcases/kernel/syscalls/mprotect/mprotect03.c
-index 8ef64f212..01e958e65 100644
---- a/testcases/kernel/syscalls/mprotect/mprotect03.c
-+++ b/testcases/kernel/syscalls/mprotect/mprotect03.c
-@@ -46,7 +46,7 @@
- #include <sys/wait.h>
- #include "test.h"
- 
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #ifndef PAGESIZE
- #define PAGESIZE 4096
-diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c b/testcases/kernel/syscalls/mprotect/mprotect04.c
-index 6c7f6bd01..b63654daa 100644
---- a/testcases/kernel/syscalls/mprotect/mprotect04.c
-+++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
-@@ -37,7 +37,7 @@
- #include <stdlib.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- static void sighandler(int sig);
- 
-diff --git a/testcases/kernel/syscalls/mremap/mremap01.c b/testcases/kernel/syscalls/mremap/mremap01.c
-index 4c795fee5..8c241d45c 100644
---- a/testcases/kernel/syscalls/mremap/mremap01.c
-+++ b/testcases/kernel/syscalls/mremap/mremap01.c
-@@ -82,7 +82,7 @@
- #include <fcntl.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define TEMPFILE	"mremapfile"
- 
-diff --git a/testcases/kernel/syscalls/mremap/mremap05.c b/testcases/kernel/syscalls/mremap/mremap05.c
-index d85ebb068..971cc8e5e 100644
---- a/testcases/kernel/syscalls/mremap/mremap05.c
-+++ b/testcases/kernel/syscalls/mremap/mremap05.c
-@@ -41,7 +41,7 @@
- #include <errno.h>
- #include <unistd.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "mremap05";
- 
-diff --git a/testcases/kernel/syscalls/msync/msync03.c b/testcases/kernel/syscalls/msync/msync03.c
-index f79458b9b..faa1457de 100644
---- a/testcases/kernel/syscalls/msync/msync03.c
-+++ b/testcases/kernel/syscalls/msync/msync03.c
-@@ -44,7 +44,7 @@
- #include <sys/resource.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define INV_SYNC	-1
- #define TEMPFILE	"msync_file"
-diff --git a/testcases/kernel/syscalls/openat/openat03.c b/testcases/kernel/syscalls/openat/openat03.c
-index 90bcff5d7..712e85745 100644
---- a/testcases/kernel/syscalls/openat/openat03.c
-+++ b/testcases/kernel/syscalls/openat/openat03.c
-@@ -25,7 +25,7 @@
- #include <errno.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/fcntl.h"
- #include "openat.h"
- 
-diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-index 86a134b51..df54dc08c 100644
---- a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-+++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-@@ -43,7 +43,7 @@
- 
- #include "test.h"
- #include "lapi/syscalls.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "perf_event_open01";
- 
-diff --git a/testcases/kernel/syscalls/pipe/pipe04.c b/testcases/kernel/syscalls/pipe/pipe04.c
-index 219daecd8..c73d15298 100644
---- a/testcases/kernel/syscalls/pipe/pipe04.c
-+++ b/testcases/kernel/syscalls/pipe/pipe04.c
-@@ -49,7 +49,7 @@
- #include <sys/types.h>
- #include <sys/wait.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "pipe04";
- int TST_TOTAL = 1;
-diff --git a/testcases/kernel/syscalls/pipe/pipe09.c b/testcases/kernel/syscalls/pipe/pipe09.c
-index 86282de49..45742dd5e 100644
---- a/testcases/kernel/syscalls/pipe/pipe09.c
-+++ b/testcases/kernel/syscalls/pipe/pipe09.c
-@@ -51,7 +51,7 @@
- #include <sys/wait.h>
- #include <errno.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define	PIPEWRTCNT	100	/* must be an even number */
- 
-diff --git a/testcases/kernel/syscalls/ppoll/ppoll01.c b/testcases/kernel/syscalls/ppoll/ppoll01.c
-index 606018af4..6578280ee 100644
---- a/testcases/kernel/syscalls/ppoll/ppoll01.c
-+++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
-@@ -17,7 +17,7 @@
- #include <stdlib.h>
- #include <sys/types.h>
- #include <sys/wait.h>
--#include "ltp_signal.h"
-+#include "tso_signal.h"
- #include "time64_variants.h"
- #include "tst_sig_proc.h"
- #include "tst_test.h"
-diff --git a/testcases/kernel/syscalls/profil/profil01.c b/testcases/kernel/syscalls/profil/profil01.c
-index a8254cb00..d6812fab6 100644
---- a/testcases/kernel/syscalls/profil/profil01.c
-+++ b/testcases/kernel/syscalls/profil/profil01.c
-@@ -26,7 +26,7 @@
- #include <errno.h>
- #include <sys/types.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/abisize.h"
- #include "config.h"
- 
-diff --git a/testcases/kernel/syscalls/recv/recv01.c b/testcases/kernel/syscalls/recv/recv01.c
-index bb2578355..68904e9f1 100644
---- a/testcases/kernel/syscalls/recv/recv01.c
-+++ b/testcases/kernel/syscalls/recv/recv01.c
-@@ -53,7 +53,7 @@
- #include <netinet/in.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "recv01";
- int testno;
-diff --git a/testcases/kernel/syscalls/recvfrom/recvfrom01.c b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-index 6ce9f1bde..35cc03755 100644
---- a/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-+++ b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-@@ -53,7 +53,7 @@
- #include <netinet/in.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "recvfrom01";
- int testno;
-diff --git a/testcases/kernel/syscalls/removexattr/removexattr01.c b/testcases/kernel/syscalls/removexattr/removexattr01.c
-index ddbcba698..f861b67f6 100644
---- a/testcases/kernel/syscalls/removexattr/removexattr01.c
-+++ b/testcases/kernel/syscalls/removexattr/removexattr01.c
-@@ -32,7 +32,7 @@
- #endif
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "removexattr01";
- 
-diff --git a/testcases/kernel/syscalls/removexattr/removexattr02.c b/testcases/kernel/syscalls/removexattr/removexattr02.c
-index 399055ca7..d610d5720 100644
---- a/testcases/kernel/syscalls/removexattr/removexattr02.c
-+++ b/testcases/kernel/syscalls/removexattr/removexattr02.c
-@@ -37,7 +37,7 @@
- #endif
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "removexattr02";
- 
-diff --git a/testcases/kernel/syscalls/rename/rename11.c b/testcases/kernel/syscalls/rename/rename11.c
-index 17cf04c85..8ff9f7d38 100644
---- a/testcases/kernel/syscalls/rename/rename11.c
-+++ b/testcases/kernel/syscalls/rename/rename11.c
-@@ -37,7 +37,7 @@
- #include <sys/mount.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "rename11";
- 
-diff --git a/testcases/kernel/syscalls/renameat/renameat01.c b/testcases/kernel/syscalls/renameat/renameat01.c
-index c318a7971..72e72b481 100644
---- a/testcases/kernel/syscalls/renameat/renameat01.c
-+++ b/testcases/kernel/syscalls/renameat/renameat01.c
-@@ -48,7 +48,7 @@
- #include <sys/mount.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/fcntl.h"
- 
- #define MNTPOINT "mntpoint"
-diff --git a/testcases/kernel/syscalls/renameat2/renameat201.c b/testcases/kernel/syscalls/renameat2/renameat201.c
-index 23ed5758a..01e34d653 100644
---- a/testcases/kernel/syscalls/renameat2/renameat201.c
-+++ b/testcases/kernel/syscalls/renameat2/renameat201.c
-@@ -35,7 +35,7 @@
- #define _GNU_SOURCE
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/fcntl.h"
- #include "renameat2.h"
- 
-diff --git a/testcases/kernel/syscalls/renameat2/renameat202.c b/testcases/kernel/syscalls/renameat2/renameat202.c
-index 88db04762..a635206f7 100644
---- a/testcases/kernel/syscalls/renameat2/renameat202.c
-+++ b/testcases/kernel/syscalls/renameat2/renameat202.c
-@@ -24,7 +24,7 @@
- #define _GNU_SOURCE
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/fcntl.h"
- #include "renameat2.h"
- 
-diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
-index 8c4724eb4..85f59c4e2 100644
---- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
-+++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
-@@ -57,7 +57,7 @@
- 
- #include "test.h"
- #include "lapi/syscalls.h"
--#include "ltp_signal.h"
-+#include "tso_signal.h"
- 
- char *TCID = "rt_sigprocmask02";
- int TST_TOTAL = 2;
-diff --git a/testcases/kernel/syscalls/send/send01.c b/testcases/kernel/syscalls/send/send01.c
-index 41859ff6f..b58b4189c 100644
---- a/testcases/kernel/syscalls/send/send01.c
-+++ b/testcases/kernel/syscalls/send/send01.c
-@@ -42,7 +42,7 @@
- #include <netinet/in.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "send01";
- int testno;
-diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg01.c b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
-index 38cd7182c..25c5dc1b3 100644
---- a/testcases/kernel/syscalls/sendmsg/sendmsg01.c
-+++ b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
-@@ -48,7 +48,7 @@
- #include <netinet/in.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "sendmsg01";
- int testno;
-diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg02.c b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
-index f72e9db22..99ba0d413 100644
---- a/testcases/kernel/syscalls/sendmsg/sendmsg02.c
-+++ b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
-@@ -43,7 +43,7 @@
- #include <limits.h>
- #include "config.h"
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/sem.h"
- 
- char *TCID = "sendmsg02";
-diff --git a/testcases/kernel/syscalls/sendto/sendto01.c b/testcases/kernel/syscalls/sendto/sendto01.c
-index b3b7b6efd..4a8145bf1 100644
---- a/testcases/kernel/syscalls/sendto/sendto01.c
-+++ b/testcases/kernel/syscalls/sendto/sendto01.c
-@@ -41,7 +41,7 @@
- #include <netinet/in.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "sendto01";
- int testno;
-diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid04.c b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-index e1525a731..b88683738 100644
---- a/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-+++ b/testcases/kernel/syscalls/setfsuid/setfsuid04.c
-@@ -38,7 +38,7 @@
- #include <unistd.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "compat_16.h"
- 
- TCID_DEFINE(setfsuid04);
-diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-index d00153533..97572c2bf 100644
---- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-+++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-@@ -37,7 +37,7 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "setrlimit01";
- int TST_TOTAL = 1;
-diff --git a/testcases/kernel/syscalls/signalfd4/signalfd4_01.c b/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
-index 76f3be27f..56221511e 100644
---- a/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
-+++ b/testcases/kernel/syscalls/signalfd4/signalfd4_01.c
-@@ -63,7 +63,7 @@
- #include "test.h"
- #include "lapi/fcntl.h"
- #include "lapi/syscalls.h"
--#include "ltp_signal.h"
-+#include "tso_signal.h"
- 
- #define SFD_CLOEXEC O_CLOEXEC
- 
-diff --git a/testcases/kernel/syscalls/signalfd4/signalfd4_02.c b/testcases/kernel/syscalls/signalfd4/signalfd4_02.c
-index 18f86b4a7..fd31eff88 100644
---- a/testcases/kernel/syscalls/signalfd4/signalfd4_02.c
-+++ b/testcases/kernel/syscalls/signalfd4/signalfd4_02.c
-@@ -59,7 +59,7 @@
- 
- #include "test.h"
- #include "lapi/syscalls.h"
--#include "ltp_signal.h"
-+#include "tso_signal.h"
- 
- #define SFD_NONBLOCK O_NONBLOCK
- 
-diff --git a/testcases/kernel/syscalls/sigpending/sigpending02.c b/testcases/kernel/syscalls/sigpending/sigpending02.c
-index d901540ca..1ab71e8e9 100644
---- a/testcases/kernel/syscalls/sigpending/sigpending02.c
-+++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
-@@ -15,7 +15,7 @@
- 
- #include "config.h"
- #include "tst_test.h"
--#include "ltp_signal.h"
-+#include "tso_signal.h"
- #include "lapi/syscalls.h"
- 
- static void sigpending_info(void)
-diff --git a/testcases/kernel/syscalls/sigrelse/sigrelse01.c b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
-index 23c675826..dba39cfed 100644
---- a/testcases/kernel/syscalls/sigrelse/sigrelse01.c
-+++ b/testcases/kernel/syscalls/sigrelse/sigrelse01.c
-@@ -108,7 +108,7 @@
- #include <time.h>
- #include <unistd.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #ifdef __linux__
- /* glibc2.2 definition needs -D_XOPEN_SOURCE, which breaks other things. */
-diff --git a/testcases/kernel/syscalls/sockioctl/sockioctl01.c b/testcases/kernel/syscalls/sockioctl/sockioctl01.c
-index e81ec20a5..6555e9212 100644
---- a/testcases/kernel/syscalls/sockioctl/sockioctl01.c
-+++ b/testcases/kernel/syscalls/sockioctl/sockioctl01.c
-@@ -40,7 +40,7 @@
- #include <net/if.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "sockioctl01";
- int testno;
-diff --git a/testcases/kernel/syscalls/symlink/symlink03.c b/testcases/kernel/syscalls/symlink/symlink03.c
-index c89fe5d6d..c73875dc7 100644
---- a/testcases/kernel/syscalls/symlink/symlink03.c
-+++ b/testcases/kernel/syscalls/symlink/symlink03.c
-@@ -87,7 +87,7 @@
- #include <pwd.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- #define MODE_RWX        S_IRWXU | S_IRWXG | S_IRWXO
- #define FILE_MODE       S_IRUSR | S_IRGRP | S_IROTH
-diff --git a/testcases/kernel/syscalls/symlinkat/symlinkat01.c b/testcases/kernel/syscalls/symlinkat/symlinkat01.c
-index d510872f0..565e4d923 100644
---- a/testcases/kernel/syscalls/symlinkat/symlinkat01.c
-+++ b/testcases/kernel/syscalls/symlinkat/symlinkat01.c
-@@ -42,7 +42,7 @@
- #include <string.h>
- #include <signal.h>
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/syscalls.h"
- 
- #define MYRETCODE -999
-diff --git a/testcases/kernel/syscalls/umount2/umount2_01.c b/testcases/kernel/syscalls/umount2/umount2_01.c
-index 5696270d6..274409ef3 100644
---- a/testcases/kernel/syscalls/umount2/umount2_01.c
-+++ b/testcases/kernel/syscalls/umount2/umount2_01.c
-@@ -25,7 +25,7 @@
- #include <errno.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- #include "lapi/mount.h"
- 
- static void setup(void);
-diff --git a/testcases/kernel/syscalls/vfork/vfork02.c b/testcases/kernel/syscalls/vfork/vfork02.c
-index efa70d0be..f630c9572 100644
---- a/testcases/kernel/syscalls/vfork/vfork02.c
-+++ b/testcases/kernel/syscalls/vfork/vfork02.c
-@@ -78,7 +78,7 @@
- #include <sys/wait.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "vfork02";
- int TST_TOTAL = 1;
-diff --git a/testcases/lib/tst_device.c b/testcases/lib/tst_device.c
-index 45f77a38b..c90ecd3fd 100644
---- a/testcases/lib/tst_device.c
-+++ b/testcases/lib/tst_device.c
-@@ -9,7 +9,7 @@
- #include <stdlib.h>
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
--#include "old/old_device.h"
-+#include "old/tso_device.h"
- 
- extern struct tst_test *tst_test;
- 
-diff --git a/testcases/network/lib6/asapi_01.c b/testcases/network/lib6/asapi_01.c
-index ac1de5418..05f3ed41d 100644
---- a/testcases/network/lib6/asapi_01.c
-+++ b/testcases/network/lib6/asapi_01.c
-@@ -31,7 +31,7 @@
- #include <netinet/in.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "asapi_01";
- 
-diff --git a/testcases/network/lib6/asapi_03.c b/testcases/network/lib6/asapi_03.c
-index 87d050add..e0985148d 100644
---- a/testcases/network/lib6/asapi_03.c
-+++ b/testcases/network/lib6/asapi_03.c
-@@ -41,7 +41,7 @@
- #include <arpa/inet.h>
- 
- #include "test.h"
--#include "safe_macros.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID = "asapi_03";
- 
-diff --git a/tools/apicmds/ltpapicmd.c b/tools/apicmds/ltpapicmd.c
-index ac58c90cc..40018b3ed 100644
---- a/tools/apicmds/ltpapicmd.c
-+++ b/tools/apicmds/ltpapicmd.c
-@@ -63,8 +63,8 @@
- #include <stdlib.h>
- #include <stdint.h>
- #include "test.h"
--#include "usctest.h"
--#include "safe_macros.h"
-+#include "tso_usctest.h"
-+#include "tso_safe_macros.h"
- 
- char *TCID;			/* Name of the testcase */
- int TST_TOTAL;			/* Total number of testcases */
-diff --git a/utils/sctp/testlib/sctputil.h b/utils/sctp/testlib/sctputil.h
-index 176d623f0..c14d7a86e 100644
---- a/utils/sctp/testlib/sctputil.h
-+++ b/utils/sctp/testlib/sctputil.h
-@@ -50,7 +50,7 @@
- 
- #ifdef LTP
- #include <test.h>
--#include <usctest.h>
-+#include <tso_usctest.h>
- #endif
- 
- #include <string.h>
--- 
-2.52.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+VGhlIGludGVudGlvbiBvZiBtb3ZpbmcgZXh0ZW5kZWQgaGVhZGVycyB1bmRlciBpbmNsdWRlLyB3
+YXMgdG8gZXhwb3NlIHRoZW0gYXMKZ2xvYmFsIGludGVyZmFjZXMsIGJ1dCB1c2luZyB0aGUgdHN0
+XyogcHJlZml4IHRoZXJlIGlzIG1pc2xlYWRpbmcuIEhlYWRlcnMKY29ycmVzcG9uZGluZyB0byBs
+dHAvbGlicyogY29kZSBzaG91bGQgZm9sbG93IHRoZSBsaWJzKiBuYW1pbmcgdG8gZGlzdGluZ3Vp
+c2gKdGhlbSBmcm9tIHRoZSBjb3JlIHRzdF8qIEFQSS4KCk5vdywgZGVmaW5lIGFuZCBlbmZvcmNl
+IHRoZSBmb2xsb3dpbmcgbmFtZXNwYWNlIHNwbGl0OgoKIHRzdF86IGNvcmUgTFRQIGxpYnJhcnkg
+QVBJIChsaWIvKQogdHNlXzogbm9u4oCRY29yZSBleHRlbmRlZCBsaWJyYXJ5IChsaWJzLykKIHRz
+b186IGxlZ2FjeS9vbGQgbGlicmFyeSAobm8gbmV3IGZlYXR1cmVzKQoKUmVuYW1lIHRoZSBmb2xs
+b3dpbmcgaGVhZGVycy9zb3VyY2VzIHRvIHVzZSBhIHRzZV8gcHJlZml4IGFuZCB1cGRhdGUgYWxs
+CmluY2x1ZGVzIGFjY29yZGluZ2x5OgoKIGluY2x1ZGUve2lwY21zZy5oID0+IHRzZV9pcGNtc2cu
+aH0KIGluY2x1ZGUve2lwY3NlbS5oID0+IHRzZV9pcGNzZW0uaH0KIGluY2x1ZGUve2xpYm1zZ2N0
+bC5oID0+IHRzZV9tc2djdGwuaH0KIGluY2x1ZGUve2xpYm5ld2lwYy5oID0+IHRzZV9uZXdpcGMu
+aH0KIGluY2x1ZGUve3RzdF9udW1hLmggPT4gdHNlX251bWEuaH0KIGluY2x1ZGUve3BhcnNlX3Zk
+c28uaCA9PiB0c2VfcGFyc2VfdmRzby5ofQogaW5jbHVkZS97bGlic2lnd2FpdC5oID0+IHRzZV9z
+aWd3YWl0Lmh9CiBpbmNsdWRlL3tsaWJzd2FwLmggPT4gdHNlX3N3YXAuaH0KIGluY2x1ZGUve3Rz
+dF91aW5wdXQuaCA9PiB0c2VfdWlucHV0Lmh9CiBsaWJzL2lwYy97bGliaXBjLmMgPT4gdHNlX2lw
+Yy5jfQogbGlicy9pcGMve2xpYm1zZ2N0bC5jID0+IHRzZV9tc2djdGwuY30KIGxpYnMvbmV3aXBj
+L3tsaWJuZXdpcGMuYyA9PiB0c2VfbmV3aXBjLmN9CiBsaWJzL251bWEve3RzdF9udW1hLmMgPT4g
+dHNlX251bWEuY30KIGxpYnMvc2lnd2FpdC97c2lnd2FpdC5jID0+IHRzZV9zaWd3YWl0LmN9CiBs
+aWJzL3N3YXAve2xpYnN3YXAuYyA9PiB0c2Vfc3dhcC5jfQogbGlicy91aW5wdXQve3RzdF91aW5w
+dXQuYyA9PiB0c2VfdWlucHV0LmN9CiBsaWJzL3Zkc28ve3BhcnNlX3Zkc28uYyA9PiB0c2VfcGFy
+c2VfdmRzby5jfQoKQWxzbywgcmVuYW1lIHRzdF8qIHRvIHRzZV8qIGluIHRoZSBnbG9iYWwgbm9u
+LWNvcmUgbGlicy4KCk5vIGZ1bmN0aW9uYWwgY2hhbmdlcyBpbnRlbmRlZC4KCj09PT0gTk9URSA9
+PT09CkZyb20gUGV0ciBWb3JlbDoKCiAgIkFsdGhvdWdoIGxpYi8gdnMgbGlicy8gaXMgYSBiaXQg
+c3RyYW5nZSwga2VwdCB0aGVzZSBsaWJyYXJpZXMgc2VwYXJhdGUKICAoaS5lLiBubyBtb3ZlIGxp
+YnMvKi8gaW50byBsaWIvKSwgYmVjYXVzZSB0aGVzZSBsaWJyYXJpZXMgYXJlIGJ1aWx0IG9ubHkg
+d2hlbgogIHRoZXkgYXJlIG5lZWRlZC4gSS5lLiBmb3IgdGVzdGluZyByYW5kb20gdGVzdCBvbmUg
+ZG9lcyBub3QgbmVlZCB0byB3YWl0IGZvcgogIGJ1aWxkaW5nIHRoZXNlIGFkZGl0aW9uYWwgbGli
+cmFyaWVzIChhbHRob3VnaCBidWlsZGluZyB0aGVtIGRvZXMgbm90IHRha2UgbG9uZywKICBidWls
+ZGluZyBMVFAgbWFpbiBsaWJyYXJ5IGFuZCB0ZXN0cyB0YWtlcyBtdWNoIGxvbmdlcikuIgoKU2ln
+bmVkLW9mZi1ieTogTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+CkNjOiBQcmFkZWVwIFN1c2Fy
+bGEgPHByYWRlZXAuc3VzYXJsYUBnbWFpbC5jb20+Ci0tLQogZG9jL2RldmVsb3BlcnMvYXBpX2Nf
+dGVzdHMucnN0ICAgICAgICAgICAgICAgIHwgIDIgKy0KIGluY2x1ZGUvaXBjc2VtLmggICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8IDU1IC0tLS0tLS0tLS0tLS0tLS0tLS0KIGluY2x1ZGUv
+bGlibXNnY3RsLmggICAgICAgICAgICAgICAgICAgICAgICAgICB8IDM5IC0tLS0tLS0tLS0tLS0K
+IGluY2x1ZGUve2lwY21zZy5oID0+IHRzZV9pcGNtc2cuaH0gICAgICAgICAgICB8IDI3ICsrKy0t
+LS0tLQogaW5jbHVkZS90c2VfaXBjc2VtLmggICAgICAgICAgICAgICAgICAgICAgICAgIHwgNDIg
+KysrKysrKysrKysrKysKIGluY2x1ZGUvdHNlX21zZ2N0bC5oICAgICAgICAgICAgICAgICAgICAg
+ICAgICB8IDI3ICsrKysrKysrKwogaW5jbHVkZS97bGlibmV3aXBjLmggPT4gdHNlX25ld2lwYy5o
+fSAgICAgICAgIHwgMjEgKystLS0tLQogaW5jbHVkZS97dHN0X251bWEuaCA9PiB0c2VfbnVtYS5o
+fSAgICAgICAgICAgIHwgNTIgKysrKysrKysrLS0tLS0tLS0tCiBpbmNsdWRlL3twYXJzZV92ZHNv
+LmggPT4gdHNlX3BhcnNlX3Zkc28uaH0gICAgfCAgNiArLQogaW5jbHVkZS97bGlic2lnd2FpdC5o
+ID0+IHRzZV9zaWd3YWl0Lmh9ICAgICAgIHwgMjggKysrKystLS0tLQogaW5jbHVkZS97bGlic3dh
+cC5oID0+IHRzZV9zd2FwLmh9ICAgICAgICAgICAgIHwgMTAgKystLQogaW5jbHVkZS97dHN0X3Vp
+bnB1dC5oID0+IHRzZV91aW5wdXQuaH0gICAgICAgIHwgIDYgKy0KIGluY2x1ZGUvdHN0X3VpZC5o
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA2ICstCiBpbmNsdWRlL3Vqc29uLmggICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNiArLQogaW5jbHVkZS91anNvbl9jb21tb24u
+aCAgICAgICAgICAgICAgICAgICAgICAgIHwgIDYgKy0KIGluY2x1ZGUvdWpzb25fcmVhZGVyLmgg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICA2ICstCiBpbmNsdWRlL3Vqc29uX3V0Zi5oICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgfCAgNiArLQogbGlicy9pcGMve2xpYmlwYy5jID0+IHRzZV9p
+cGMuY30gICAgICAgICAgICAgIHwgMjUgKystLS0tLS0tCiBsaWJzL2lwYy97bGlibXNnY3RsLmMg
+PT4gdHNlX21zZ2N0bC5jfSAgICAgICAgfCAyMCArKy0tLS0tCiBsaWJzL25ld2lwYy97bGlibmV3
+aXBjLmMgPT4gdHNlX25ld2lwYy5jfSAgICAgfCAgMiArLQogbGlicy9udW1hL3t0c3RfbnVtYS5j
+ID0+IHRzZV9udW1hLmN9ICAgICAgICAgIHwgMjIgKysrKy0tLS0KIGxpYnMvc2lnd2FpdC97c2ln
+d2FpdC5jID0+IHRzZV9zaWd3YWl0LmN9ICAgICB8IDI0ICsrKystLS0tCiBsaWJzL3N3YXAve2xp
+YnN3YXAuYyA9PiB0c2Vfc3dhcC5jfSAgICAgICAgICAgfCAgNiArLQogbGlicy91aW5wdXQve3Rz
+dF91aW5wdXQuYyA9PiB0c2VfdWlucHV0LmN9ICAgIHwgIDIgKy0KIGxpYnMvdmRzby97cGFyc2Vf
+dmRzby5jID0+IHRzZV9wYXJzZV92ZHNvLmN9ICB8ICAyICstCiBsaWJzL3Zkc28vdmRzb19oZWxw
+ZXJzLmMgICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogdGVzdGNhc2VzL2tlcm5lbC9pbnB1
+dC9pbnB1dF9jb21tb24uaCAgICAgICAgIHwgIDIgKy0KIHRlc3RjYXNlcy9rZXJuZWwvbWVtL2Nw
+dXNldC9jcHVzZXQwMi5jICAgICAgICB8ICA2ICstCiB0ZXN0Y2FzZXMva2VybmVsL21lbS9rc20v
+a3NtMDYuYyAgICAgICAgICAgICAgfCAgNiArLQogdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2htdC9z
+aG10MDIuYyAgICAgICAgICAgIHwgIDIgKy0KIHRlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2ht
+dDAzLmMgICAgICAgICAgICB8ICAyICstCiB0ZXN0Y2FzZXMva2VybmVsL21lbS9zaG10L3NobXQw
+NC5jICAgICAgICAgICAgfCAgMiArLQogdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2htdC9zaG10MDUu
+YyAgICAgICAgICAgIHwgIDIgKy0KIHRlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2htdDA3LmMg
+ICAgICAgICAgICB8ICAyICstCiB0ZXN0Y2FzZXMva2VybmVsL21lbS9zaG10L3NobXQwOC5jICAg
+ICAgICAgICAgfCAgMiArLQogdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2htdC9zaG10MDkuYyAgICAg
+ICAgICAgIHwgIDIgKy0KIHRlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2htdDEwLmMgICAgICAg
+ICAgICB8ICAyICstCiAuLi4vc3lzY2FsbHMvY2xvY2tfZ2V0dGltZS9jbG9ja19nZXR0aW1lMDQu
+YyAgfCAgMiArLQogLi4uL3N5c2NhbGxzL2dldF9tZW1wb2xpY3kvZ2V0X21lbXBvbGljeTAxLmMg
+IHwgIDggKy0tCiAuLi4vc3lzY2FsbHMvZ2V0X21lbXBvbGljeS9nZXRfbWVtcG9saWN5MDIuYyAg
+fCAgOCArLS0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2N0bC9tc2djdGwwMS5jICAgICB8
+ICAyICstCiAuLi4va2VybmVsL3N5c2NhbGxzL2lwYy9tc2djdGwvbXNnY3RsMDIuYyAgICAgfCAg
+MiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnY3RsL21zZ2N0bDAzLmMgICAgIHwgIDIg
+Ky0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2N0bC9tc2djdGwwNC5jICAgICB8ICAyICst
+CiAuLi4va2VybmVsL3N5c2NhbGxzL2lwYy9tc2djdGwvbXNnY3RsMDUuYyAgICAgfCAgMiArLQog
+Li4uL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnY3RsL21zZ2N0bDA2LmMgICAgIHwgIDIgKy0KIC4u
+Li9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2N0bC9tc2djdGwxMi5jICAgICB8ICAyICstCiAuLi4v
+a2VybmVsL3N5c2NhbGxzL2lwYy9tc2dnZXQvbXNnZ2V0MDEuYyAgICAgfCAgMiArLQogLi4uL2tl
+cm5lbC9zeXNjYWxscy9pcGMvbXNnZ2V0L21zZ2dldDAyLmMgICAgIHwgIDIgKy0KIC4uLi9rZXJu
+ZWwvc3lzY2FsbHMvaXBjL21zZ2dldC9tc2dnZXQwMy5jICAgICB8ICAyICstCiAuLi4va2VybmVs
+L3N5c2NhbGxzL2lwYy9tc2dnZXQvbXNnZ2V0MDQuYyAgICAgfCAgMiArLQogLi4uL2tlcm5lbC9z
+eXNjYWxscy9pcGMvbXNnZ2V0L21zZ2dldDA1LmMgICAgIHwgIDIgKy0KIC4uLi9rZXJuZWwvc3lz
+Y2FsbHMvaXBjL21zZ3Jjdi9tc2dyY3YwMS5jICAgICB8ICAyICstCiAuLi4va2VybmVsL3N5c2Nh
+bGxzL2lwYy9tc2dyY3YvbXNncmN2MDIuYyAgICAgfCAgMiArLQogLi4uL2tlcm5lbC9zeXNjYWxs
+cy9pcGMvbXNncmN2L21zZ3JjdjAzLmMgICAgIHwgIDIgKy0KIC4uLi9rZXJuZWwvc3lzY2FsbHMv
+aXBjL21zZ3Jjdi9tc2dyY3YwNS5jICAgICB8ICAyICstCiAuLi4va2VybmVsL3N5c2NhbGxzL2lw
+Yy9tc2dyY3YvbXNncmN2MDYuYyAgICAgfCAgMiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9pcGMv
+bXNncmN2L21zZ3JjdjA3LmMgICAgIHwgIDIgKy0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL21z
+Z3Jjdi9tc2dyY3YwOC5jICAgICB8ICAyICstCiAuLi4va2VybmVsL3N5c2NhbGxzL2lwYy9tc2dz
+bmQvbXNnc25kMDEuYyAgICAgfCAgMiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnc25k
+L21zZ3NuZDAyLmMgICAgIHwgIDIgKy0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3NuZC9t
+c2dzbmQwNS5jICAgICB8ICAyICstCiAuLi4va2VybmVsL3N5c2NhbGxzL2lwYy9tc2dzbmQvbXNn
+c25kMDYuYyAgICAgfCAgMiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0
+bDAxLmMgICAgIHwgIDIgKy0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1jdGww
+Mi5jICAgICB8ICAyICstCiAuLi4va2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDMu
+YyAgICAgfCAgMiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDA0LmMg
+ICAgIHwgIDIgKy0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwNS5jICAg
+ICB8ICAyICstCiAuLi4va2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDYuYyAgICAg
+fCAgMiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDA3LmMgICAgIHwg
+IDIgKy0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwOC5jICAgICB8ICAy
+ICstCiAuLi4va2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDkuYyAgICAgfCAgMiAr
+LQogLi4uL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtZ2V0L3NlbWdldDAxLmMgICAgIHwgIDIgKy0K
+IC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWdldC9zZW1nZXQwMi5jICAgICB8ICAyICstCiAu
+Li4va2VybmVsL3N5c2NhbGxzL2lwYy9zZW1nZXQvc2VtZ2V0MDUuYyAgICAgfCAgMiArLQogdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2Vtb3Avc2Vtb3AwMS5jIHwgIDIgKy0KIHRlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbW9wL3NlbW9wMDIuYyB8ICAyICstCiB0ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1vcC9zZW1vcDAzLmMgfCAgMiArLQogdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9pcGMvc2htYXQvc2htYXQwMS5jIHwgIDIgKy0KIHRlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvaXBjL3NobWF0L3NobWF0MDIuYyB8ICAyICstCiB0ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL2lwYy9zaG1hdC9zaG1hdDA0LmMgfCAgMiArLQogLi4uL2tlcm5lbC9zeXNj
+YWxscy9pcGMvc2htY3RsL3NobWN0bDAxLmMgICAgIHwgIDIgKy0KIC4uLi9rZXJuZWwvc3lzY2Fs
+bHMvaXBjL3NobWN0bC9zaG1jdGwwMi5jICAgICB8ICAyICstCiAuLi4va2VybmVsL3N5c2NhbGxz
+L2lwYy9zaG1jdGwvc2htY3RsMDMuYyAgICAgfCAgMiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9p
+cGMvc2htY3RsL3NobWN0bDA0LmMgICAgIHwgIDIgKy0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBj
+L3NobWN0bC9zaG1jdGwwNi5jICAgICB8ICAyICstCiAuLi4va2VybmVsL3N5c2NhbGxzL2lwYy9z
+aG1jdGwvc2htY3RsMDcuYyAgICAgfCAgMiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9pcGMvc2ht
+Y3RsL3NobWN0bDA4LmMgICAgIHwgIDIgKy0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBj
+L3NobWR0L3NobWR0MDEuYyB8ICAyICstCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9z
+aG1kdC9zaG1kdDAyLmMgfCAgMiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htZ2V0L3No
+bWdldDAyLmMgICAgIHwgIDIgKy0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWdldC9zaG1n
+ZXQwMy5jICAgICB8ICAyICstCiAuLi4va2VybmVsL3N5c2NhbGxzL2lwYy9zaG1nZXQvc2htZ2V0
+MDQuYyAgICAgfCAgMiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htZ2V0L3NobWdldDA1
+LmMgICAgIHwgIDIgKy0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWdldC9zaG1nZXQwNi5j
+ICAgICB8ICAyICstCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2tpbGwva2lsbDA1LmMgICAg
+ICAgfCAgMiArLQogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tYmluZC9tYmluZDAxLmMgICAg
+IHwgIDggKy0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21iaW5kL21iaW5kMDIuYyAgICAg
+fCAyNiArKysrLS0tLS0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWJpbmQvbWJpbmQwMy5j
+ICAgICB8IDI4ICsrKysrLS0tLS0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWJpbmQvbWJp
+bmQwNC5jICAgICB8IDI0ICsrKystLS0tCiAuLi4vcnRfc2lndGltZWR3YWl0L3J0X3NpZ3RpbWVk
+d2FpdDAxLmMgICAgICAgfCAzMCArKysrKy0tLS0tCiAuLi4vc3lzY2FsbHMvc2V0X21lbXBvbGlj
+eS9zZXRfbWVtcG9saWN5LmggICAgfCAxMCArKy0tCiAuLi4vc3lzY2FsbHMvc2V0X21lbXBvbGlj
+eS9zZXRfbWVtcG9saWN5MDEuYyAgfCAxNiArKystLS0KIC4uLi9zeXNjYWxscy9zZXRfbWVtcG9s
+aWN5L3NldF9tZW1wb2xpY3kwMi5jICB8IDEwICsrLS0KIC4uLi9zeXNjYWxscy9zZXRfbWVtcG9s
+aWN5L3NldF9tZW1wb2xpY3kwMy5jICB8IDE0ICsrLS0tCiAuLi4vc3lzY2FsbHMvc2V0X21lbXBv
+bGljeS9zZXRfbWVtcG9saWN5MDQuYyAgfCAxMCArKy0tCiAuLi4vc3lzY2FsbHMvc2lndGltZWR3
+YWl0L3NpZ3RpbWVkd2FpdDAxLmMgICAgfCAyMiArKysrLS0tLQogdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9zaWd3YWl0L3NpZ3dhaXQwMS5jIHwgIDggKy0tCiAuLi4vc3lzY2FsbHMvc2lnd2Fp
+dGluZm8vc2lnd2FpdGluZm8wMS5jICAgICAgfCAxOCArKystLS0KIHRlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvc3dhcG9mZi9zd2Fwb2ZmMDEuYyB8ICAyICstCiB0ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL3N3YXBvZmYvc3dhcG9mZjAyLmMgfCAgMiArLQogdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9zd2Fwb24vc3dhcG9uMDEuYyAgIHwgIDIgKy0KIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvc3dhcG9uL3N3YXBvbjAyLmMgICB8ICAyICstCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3N3YXBvbi9zd2Fwb24wMy5jICAgfCAgNCArLQogdGVzdGNhc2VzL2tlcm5lbC91ZXZlbnRzL3Vl
+dmVudDAzLmMgICAgICAgICAgIHwgIDIgKy0KIDExNSBmaWxlcyBjaGFuZ2VkLCAzODcgaW5zZXJ0
+aW9ucygrKSwgNDYxIGRlbGV0aW9ucygtKQogZGVsZXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvaXBj
+c2VtLmgKIGRlbGV0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpYm1zZ2N0bC5oCiByZW5hbWUgaW5j
+bHVkZS97aXBjbXNnLmggPT4gdHNlX2lwY21zZy5ofSAoNTIlKQogY3JlYXRlIG1vZGUgMTAwNjQ0
+IGluY2x1ZGUvdHNlX2lwY3NlbS5oCiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS90c2VfbXNn
+Y3RsLmgKIHJlbmFtZSBpbmNsdWRlL3tsaWJuZXdpcGMuaCA9PiB0c2VfbmV3aXBjLmh9ICg2MiUp
+CiByZW5hbWUgaW5jbHVkZS97dHN0X251bWEuaCA9PiB0c2VfbnVtYS5ofSAoNjAlKQogcmVuYW1l
+IGluY2x1ZGUve3BhcnNlX3Zkc28uaCA9PiB0c2VfcGFyc2VfdmRzby5ofSAoOTMlKQogcmVuYW1l
+IGluY2x1ZGUve2xpYnNpZ3dhaXQuaCA9PiB0c2Vfc2lnd2FpdC5ofSAoNTUlKQogcmVuYW1lIGlu
+Y2x1ZGUve2xpYnN3YXAuaCA9PiB0c2Vfc3dhcC5ofSAoOTUlKQogcmVuYW1lIGluY2x1ZGUve3Rz
+dF91aW5wdXQuaCA9PiB0c2VfdWlucHV0Lmh9ICg5MyUpCiByZW5hbWUgbGlicy9pcGMve2xpYmlw
+Yy5jID0+IHRzZV9pcGMuY30gKDgyJSkKIHJlbmFtZSBsaWJzL2lwYy97bGlibXNnY3RsLmMgPT4g
+dHNlX21zZ2N0bC5jfSAoNzclKQogcmVuYW1lIGxpYnMvbmV3aXBjL3tsaWJuZXdpcGMuYyA9PiB0
+c2VfbmV3aXBjLmN9ICg5OCUpCiByZW5hbWUgbGlicy9udW1hL3t0c3RfbnVtYS5jID0+IHRzZV9u
+dW1hLmN9ICg4NyUpCiByZW5hbWUgbGlicy9zaWd3YWl0L3tzaWd3YWl0LmMgPT4gdHNlX3NpZ3dh
+aXQuY30gKDkyJSkKIHJlbmFtZSBsaWJzL3N3YXAve2xpYnN3YXAuYyA9PiB0c2Vfc3dhcC5jfSAo
+OTklKQogcmVuYW1lIGxpYnMvdWlucHV0L3t0c3RfdWlucHV0LmMgPT4gdHNlX3VpbnB1dC5jfSAo
+OTklKQogcmVuYW1lIGxpYnMvdmRzby97cGFyc2VfdmRzby5jID0+IHRzZV9wYXJzZV92ZHNvLmN9
+ICg5OSUpCgpkaWZmIC0tZ2l0IGEvZG9jL2RldmVsb3BlcnMvYXBpX2NfdGVzdHMucnN0IGIvZG9j
+L2RldmVsb3BlcnMvYXBpX2NfdGVzdHMucnN0CmluZGV4IGJlM2JhZWFmMC4uODM4Njc5OGNkIDEw
+MDY0NAotLS0gYS9kb2MvZGV2ZWxvcGVycy9hcGlfY190ZXN0cy5yc3QKKysrIGIvZG9jL2RldmVs
+b3BlcnMvYXBpX2NfdGVzdHMucnN0CkBAIC02Miw0ICs2Miw0IEBAIFRlbXBvcmFyeSBkaXJlY3Rv
+cnkKIAogTFRQIGxpYnJhcmllcwogLS0tLS0tLS0tLS0tLQotLi4ga2VybmVsLWRvYzo6IC4uLy4u
+L2luY2x1ZGUvbGlic3dhcC5oCisuLiBrZXJuZWwtZG9jOjogLi4vLi4vaW5jbHVkZS90c2Vfc3dh
+cC5oCmRpZmYgLS1naXQgYS9pbmNsdWRlL2lwY3NlbS5oIGIvaW5jbHVkZS9pcGNzZW0uaApkZWxl
+dGVkIGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDlhMGIzY2JlLi4wMDAwMDAwMDAKLS0tIGEvaW5j
+bHVkZS9pcGNzZW0uaAorKysgL2Rldi9udWxsCkBAIC0xLDU1ICswLDAgQEAKLS8qCi0gKgotICog
+ICBDb3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENvcnAuLCAy
+MDAxCi0gKgotICogICBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgIHlvdSBjYW4gcmVk
+aXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKLSAqICAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRo
+ZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKLSAqICAgdGhlIEZy
+ZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwg
+b3IKLSAqICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KLSAqCi0gKiAgIFRo
+aXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNl
+ZnVsLAotICogICBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7ICB3aXRob3V0IGV2ZW4gdGhlIGlt
+cGxpZWQgd2FycmFudHkgb2YKLSAqICAgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEg
+UEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlCi0gKiAgIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGlj
+ZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgotICoKLSAqICAgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVk
+IGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKLSAqICAgYWxvbmcgd2l0
+aCB0aGlzIHByb2dyYW07ICBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCi0gKiAg
+IEZvdW5kYXRpb24sIEluYy4sIDUxIEZyYW5rbGluIFN0cmVldCwgRmlmdGggRmxvb3IsIEJvc3Rv
+biwgTUEgMDIxMTAtMTMwMSBVU0EKLSAqLwotCi0vKgotICogaXBjc2VtLmggLSBjb21tb24gZGVm
+aW5pdGlvbnMgZm9yIHRoZSBJUEMgc2VtYXBob3JlIHRlc3RzCi0gKi8KLQotI2lmbmRlZiBfX0lQ
+Q1NFTV9ICi0jZGVmaW5lIF9fSVBDU0VNX0gKLQotI2luY2x1ZGUgPGVycm5vLmg+Ci0jaW5jbHVk
+ZSA8c3lzL2lwYy5oPgotI2luY2x1ZGUgPHN5cy9zZW0uaD4KLQotI2luY2x1ZGUgInRlc3QuaCIK
+LSNpbmNsdWRlICJsYXBpL3NlbS5oIgotCi12b2lkIGNsZWFudXAodm9pZCk7Ci12b2lkIHNldHVw
+KHZvaWQpOwotCi0jZGVmaW5lIFNFTV9SRAkwNDAwCi0jZGVmaW5lIFNFTV9BTFQJMDIwMAotI2Rl
+ZmluZSBTRU1fUkEJU0VNX1JEIHwgU0VNX0FMVAotCi0jZGVmaW5lIFBTRU1TCTEwCQkvKiBhIHJl
+YXNvbmFibGUgdmFsdWUgZm9yIHRoZSBudW1iZXIgb2YgKi8KLQkJCQkvKiAicHJpbWl0aXZlIHNl
+bWFwaG9yZXMiIHBlciBJRCAJKi8KLQotI2lmZGVmIExJQklQQwota2V5X3Qgc2Vta2V5OwkJCS8q
+IGFuIElQQyBrZXkgZ2VuZXJhdGVkIGJ5IGZ0b2soKSAqLwotI2Vsc2UKLWV4dGVybiBrZXlfdCBz
+ZW1rZXk7CSAJIC8qIGFuIElQQyBrZXkgZ2VuZXJhdGVkIGJ5IGZ0b2soKSAqLwotI2VuZGlmCi0K
+LXZvaWQgcm1fc2VtYShpbnQgc2VtX2lkKTsKLQotaW50IGdldGlwY2tleSgpOwotaW50IGdldHVz
+ZXJpZChjaGFyICopOwotCi0jZW5kaWYgLyogaXBjc2VtLmggKi8KZGlmZiAtLWdpdCBhL2luY2x1
+ZGUvbGlibXNnY3RsLmggYi9pbmNsdWRlL2xpYm1zZ2N0bC5oCmRlbGV0ZWQgZmlsZSBtb2RlIDEw
+MDY0NAppbmRleCBlMWFmZWFiNWYuLjAwMDAwMDAwMAotLS0gYS9pbmNsdWRlL2xpYm1zZ2N0bC5o
+CisrKyAvZGV2L251bGwKQEAgLTEsMzkgKzAsMCBAQAotLyoKLSAqIENvcHlyaWdodCAoYykgSW50
+ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyAgQ29ycC4sIDIwMDIKLSAqIENvcHlyaWdodCAo
+YykgMjAxMyBPcmFjbGUgYW5kL29yIGl0cyBhZmZpbGlhdGVzLiBBbGwgUmlnaHRzIFJlc2VydmVk
+LgotICoKLSAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJp
+YnV0ZSBpdCBhbmQvb3IKLSAqIG1vZGlmeSBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBH
+ZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzCi0gKiBwdWJsaXNoZWQgYnkgdGhlIEZyZWUgU29mdHdh
+cmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZgotICogdGhlIExpY2Vuc2UsIG9yIChh
+dCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCi0gKgotICogVGhpcyBwcm9ncmFtIGlz
+IGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd291bGQgYmUgdXNlZnVsLAotICogYnV0
+IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkg
+b2YKLSAqIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9T
+RS4gIFNlZSB0aGUKLSAqIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFp
+bHMuCi0gKgotICogWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdl
+bmVyYWwgUHVibGljIExpY2Vuc2UKLSAqIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3Qs
+IHdyaXRlIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sCi0gKiBJbmMuLCAgNTEgRnJhbmts
+aW4gU3QsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BICAwMjExMC0xMzAxICBVU0EKLSAqLwotCi0j
+aWZuZGVmIF9fTElCTVNHQ1RMX0hfXwotI2RlZmluZSBfX0xJQk1TR0NUTF9IX18KLQotI2RlZmlu
+ZSBGQUlMCTEKLSNkZWZpbmUgUEFTUwkwCi0KLXN0cnVjdCBtYnVmZmVyIHsKLQlsb25nIHR5cGU7
+Ci0Jc3RydWN0IHsKLQkJY2hhciBsZW47Ci0JCWNoYXIgcGJ5dGVzWzk5XTsKLQl9IGRhdGE7Ci19
+OwotCi1pbnQgZG9yZWFkZXIobG9uZyBrZXksIGludCB0aWQsIGxvbmcgdHlwZSwgaW50IGNoaWxk
+LCBpbnQgbnJlcHMpOwotaW50IGRvd3JpdGVyKGxvbmcga2V5LCBpbnQgdGlkLCBsb25nIHR5cGUs
+IGludCBjaGlsZCwgaW50IG5yZXBzKTsKLWludCBmaWxsX2J1ZmZlcihjaGFyICpidWYsIGNoYXIg
+dmFsLCBpbnQgc2l6ZSk7Ci1pbnQgdmVyaWZ5KGNoYXIgKmJ1ZiwgY2hhciB2YWwsIGludCBzaXpl
+LCBpbnQgY2hpbGQpOwotCi0jZW5kaWYgLypfX0xJQk1TR0NUTF9IX18gKi8KZGlmZiAtLWdpdCBh
+L2luY2x1ZGUvaXBjbXNnLmggYi9pbmNsdWRlL3RzZV9pcGNtc2cuaApzaW1pbGFyaXR5IGluZGV4
+IDUyJQpyZW5hbWUgZnJvbSBpbmNsdWRlL2lwY21zZy5oCnJlbmFtZSB0byBpbmNsdWRlL3RzZV9p
+cGNtc2cuaAppbmRleCAzYjNmYTMyYzAuLmZmNTI4NjQ0NSAxMDA2NDQKLS0tIGEvaW5jbHVkZS9p
+cGNtc2cuaAorKysgYi9pbmNsdWRlL3RzZV9pcGNtc2cuaApAQCAtMSwyOCArMSwxNSBAQAorLy8g
+U1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIKIC8qCi0gKgotICogICBD
+b3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENvcnAuLCAyMDAx
+Ci0gKgotICogICBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgIHlvdSBjYW4gcmVkaXN0
+cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKLSAqICAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBH
+TlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKLSAqICAgdGhlIEZyZWUg
+U29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwgb3IK
+LSAqICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KLSAqCi0gKiAgIFRoaXMg
+cHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVs
+LAotICogICBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7ICB3aXRob3V0IGV2ZW4gdGhlIGltcGxp
+ZWQgd2FycmFudHkgb2YKLSAqICAgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFS
+VElDVUxBUiBQVVJQT1NFLiAgU2VlCi0gKiAgIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5z
+ZSBmb3IgbW9yZSBkZXRhaWxzLgotICoKLSAqICAgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEg
+Y29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKLSAqICAgYWxvbmcgd2l0aCB0
+aGlzIHByb2dyYW07ICBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCi0gKiAgIEZv
+dW5kYXRpb24sIEluYy4sIDUxIEZyYW5rbGluIFN0cmVldCwgRmlmdGggRmxvb3IsIEJvc3Rvbiwg
+TUEgMDIxMTAtMTMwMSBVU0EKKyAqIENvcHlyaWdodCAoYykgSW50ZXJuYXRpb25hbCBCdXNpbmVz
+cyBNYWNoaW5lcyAgQ29ycC4sIDIwMDEKKyAqIENvcHlyaWdodCAoYykgTGludXggVGVzdCBQcm9q
+ZWN0LCAyMDI2CiAgKi8KIAogLyoKLSAqIGlwY21zZy5oIC0gY29tbW9uIGRlZmluaXRpb25zIGZv
+ciB0aGUgSVBDIG1lc3NhZ2UgdGVzdHMuCisgKiB0c2VfaXBjbXNnLmggLSBjb21tb24gZGVmaW5p
+dGlvbnMgZm9yIHRoZSBJUEMgbWVzc2FnZSB0ZXN0cy4KICAqLwogCi0jaWZuZGVmIF9fSVBDTVNH
+X0gKLSNkZWZpbmUgX19JUENNU0dfSAkxCisjaWZuZGVmIFRTRV9JUENNU0dfSF9fCisjZGVmaW5l
+IFRTRV9JUENNU0dfSF9fCTEKIAogI2luY2x1ZGUgPGVycm5vLmg+CiAjaW5jbHVkZSA8c3lzL2lw
+Yy5oPgpAQCAtNjMsNCArNTAsNCBAQCBpbnQgZ2V0dXNlcmlkKGNoYXIgKik7CiBpbnQgZ2V0X21h
+eF9tc2dxdWV1ZXModm9pZCk7CiBpbnQgZ2V0X3VzZWRfbXNncXVldWVzKHZvaWQpOwogCi0jZW5k
+aWYgLyogaXBjbXNnLmggKi8KKyNlbmRpZiAvKiB0c2VfaXBjbXNnLmggKi8KZGlmZiAtLWdpdCBh
+L2luY2x1ZGUvdHNlX2lwY3NlbS5oIGIvaW5jbHVkZS90c2VfaXBjc2VtLmgKbmV3IGZpbGUgbW9k
+ZSAxMDA2NDQKaW5kZXggMDAwMDAwMDAwLi40N2UzNTRlY2UKLS0tIC9kZXYvbnVsbAorKysgYi9p
+bmNsdWRlL3RzZV9pcGNzZW0uaApAQCAtMCwwICsxLDQyIEBACisvLyBTUERYLUxpY2Vuc2UtSWRl
+bnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgorLyoKKyAqIENvcHlyaWdodCAoYykgSW50ZXJuYXRp
+b25hbCBCdXNpbmVzcyBNYWNoaW5lcyAgQ29ycC4sIDIwMDEKKyAqIENvcHlyaWdodCAoYykgTGlu
+dXggVGVzdCBQcm9qZWN0LCAyMDI2CisgKi8KKworLyoKKyAqIHRzZV9pcGNzZW0uaCAtIGNvbW1v
+biBkZWZpbml0aW9ucyBmb3IgdGhlIElQQyBzZW1hcGhvcmUgdGVzdHMKKyAqLworCisjaWZuZGVm
+IFRTRV9JUENTRU1fSF9fCisjZGVmaW5lIFRTRV9JUENTRU1fSF9fCisKKyNpbmNsdWRlIDxlcnJu
+by5oPgorI2luY2x1ZGUgPHN5cy9pcGMuaD4KKyNpbmNsdWRlIDxzeXMvc2VtLmg+CisKKyNpbmNs
+dWRlICJ0ZXN0LmgiCisjaW5jbHVkZSAibGFwaS9zZW0uaCIKKwordm9pZCBjbGVhbnVwKHZvaWQp
+Owordm9pZCBzZXR1cCh2b2lkKTsKKworI2RlZmluZSBTRU1fUkQJMDQwMAorI2RlZmluZSBTRU1f
+QUxUCTAyMDAKKyNkZWZpbmUgU0VNX1JBCVNFTV9SRCB8IFNFTV9BTFQKKworI2RlZmluZSBQU0VN
+UwkxMAkJLyogYSByZWFzb25hYmxlIHZhbHVlIGZvciB0aGUgbnVtYmVyIG9mICovCisJCQkJLyog
+InByaW1pdGl2ZSBzZW1hcGhvcmVzIiBwZXIgSUQgCSovCisKKyNpZmRlZiBMSUJJUEMKK2tleV90
+IHNlbWtleTsJCQkvKiBhbiBJUEMga2V5IGdlbmVyYXRlZCBieSBmdG9rKCkgKi8KKyNlbHNlCitl
+eHRlcm4ga2V5X3Qgc2Vta2V5OwkgCSAvKiBhbiBJUEMga2V5IGdlbmVyYXRlZCBieSBmdG9rKCkg
+Ki8KKyNlbmRpZgorCit2b2lkIHJtX3NlbWEoaW50IHNlbV9pZCk7CisKK2ludCBnZXRpcGNrZXko
+KTsKK2ludCBnZXR1c2VyaWQoY2hhciAqKTsKKworI2VuZGlmIC8qIGxpYmlwY3NlbS5oICovCmRp
+ZmYgLS1naXQgYS9pbmNsdWRlL3RzZV9tc2djdGwuaCBiL2luY2x1ZGUvdHNlX21zZ2N0bC5oCm5l
+dyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAwMC4uZTM0MTdmNTA5Ci0tLSAvZGV2L251
+bGwKKysrIGIvaW5jbHVkZS90c2VfbXNnY3RsLmgKQEAgLTAsMCArMSwyNyBAQAorLy8gU1BEWC1M
+aWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIKKy8qCisgKiBDb3B5cmlnaHQgKGMp
+IEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENvcnAuLCAyMDAyCisgKiBDb3B5cmln
+aHQgKGMpIDIwMTMgT3JhY2xlIGFuZC9vciBpdHMgYWZmaWxpYXRlcy4gQWxsIFJpZ2h0cyBSZXNl
+cnZlZC4KKyAqIENvcHlyaWdodCAoYykgTGludXggVGVzdCBQcm9qZWN0LCAyMDI2CisgKi8KKwor
+I2lmbmRlZiBUU0VfTVNHQ1RMX0hfXworI2RlZmluZSBUU0VfTVNHQ1RMX0hfXworCisjZGVmaW5l
+IEZBSUwJMQorI2RlZmluZSBQQVNTCTAKKworc3RydWN0IG1idWZmZXIgeworCWxvbmcgdHlwZTsK
+KwlzdHJ1Y3QgeworCQljaGFyIGxlbjsKKwkJY2hhciBwYnl0ZXNbOTldOworCX0gZGF0YTsKK307
+CisKK2ludCBkb3JlYWRlcihsb25nIGtleSwgaW50IHRpZCwgbG9uZyB0eXBlLCBpbnQgY2hpbGQs
+IGludCBucmVwcyk7CitpbnQgZG93cml0ZXIobG9uZyBrZXksIGludCB0aWQsIGxvbmcgdHlwZSwg
+aW50IGNoaWxkLCBpbnQgbnJlcHMpOworaW50IGZpbGxfYnVmZmVyKGNoYXIgKmJ1ZiwgY2hhciB2
+YWwsIGludCBzaXplKTsKK2ludCB2ZXJpZnkoY2hhciAqYnVmLCBjaGFyIHZhbCwgaW50IHNpemUs
+IGludCBjaGlsZCk7CisKKyNlbmRpZiAvKiBUU0VfTVNHQ1RMX0hfXyAqLwpkaWZmIC0tZ2l0IGEv
+aW5jbHVkZS9saWJuZXdpcGMuaCBiL2luY2x1ZGUvdHNlX25ld2lwYy5oCnNpbWlsYXJpdHkgaW5k
+ZXggNjIlCnJlbmFtZSBmcm9tIGluY2x1ZGUvbGlibmV3aXBjLmgKcmVuYW1lIHRvIGluY2x1ZGUv
+dHNlX25ld2lwYy5oCmluZGV4IDk2OWM5MzI5Mi4uMWQzYmJkMTI5IDEwMDY0NAotLS0gYS9pbmNs
+dWRlL2xpYm5ld2lwYy5oCisrKyBiL2luY2x1ZGUvdHNlX25ld2lwYy5oCkBAIC0xLDI2ICsxLDE1
+IEBACisvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgogLyoKICAq
+IENvcHlyaWdodCAoYykgMjAxNiBYaWFvIFlhbmcgPHlhbmd4Lmp5QGNuLmZ1aml0c3UuY29tPgot
+ICoKLSAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyAgeW91IGNhbiByZWRpc3RyaWJ1
+dGUgaXQgYW5kL29yIG1vZGlmeQotICogaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2Vu
+ZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKLSAqIHRoZSBGcmVlIFNvZnR3YXJl
+IEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yCi0gKiAoYXQg
+eW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLgotICoKLSAqIFRoaXMgcHJvZ3JhbSBpcyBk
+aXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAotICogYnV0IFdJ
+VEhPVVQgQU5ZIFdBUlJBTlRZOyAgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9m
+Ci0gKiBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0Uu
+ICBTZWUKLSAqIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxz
+LgotICoKLSAqIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5l
+cmFsIFB1YmxpYyBMaWNlbnNlCi0gKiBhbG9uZyB3aXRoIHRoaXMgcHJvZ3JhbS4KKyAqIENvcHly
+aWdodCAoYykgTGludXggVGVzdCBQcm9qZWN0LCAyMDI2CiAgKi8KIAogLyoKICAqIGNvbW1vbiBk
+ZWZpbml0aW9ucyBmb3IgdGhlIElQQyBzeXN0ZW0gY2FsbHMuCiAgKi8KIAotI2lmbmRlZiBfX0xJ
+Qk5FV0lQQ19ICi0jZGVmaW5lIF9fTElCTkVXSVBDX0gJMQorI2lmbmRlZiBUU0VfTkVXSVBDX0hf
+XworI2RlZmluZSBUU0VfTkVXSVBDX0hfXwkxCiAKICNpbmNsdWRlIDx0aW1lLmg+CiAjaW5jbHVk
+ZSA8c3lzL3R5cGVzLmg+CkBAIC02MCw0ICs0OSw0IEBAIHZvaWQgKnByb2JlX2ZyZWVfYWRkcihj
+b25zdCBjaGFyICpmaWxlLCBjb25zdCBpbnQgbGluZW5vKTsKICNkZWZpbmUgUFJPQkVfRlJFRV9B
+RERSKCkgXAogCXByb2JlX2ZyZWVfYWRkcihfX0ZJTEVfXywgX19MSU5FX18pCiAKLSNlbmRpZiAv
+KiBuZXdsaWJpcGMuaCAqLworI2VuZGlmIC8qIHRzZV9uZXdpcGMuaCAqLwpkaWZmIC0tZ2l0IGEv
+aW5jbHVkZS90c3RfbnVtYS5oIGIvaW5jbHVkZS90c2VfbnVtYS5oCnNpbWlsYXJpdHkgaW5kZXgg
+NjAlCnJlbmFtZSBmcm9tIGluY2x1ZGUvdHN0X251bWEuaApyZW5hbWUgdG8gaW5jbHVkZS90c2Vf
+bnVtYS5oCmluZGV4IGExZjk2MTYzMC4uODM5NTEyYjJhIDEwMDY0NAotLS0gYS9pbmNsdWRlL3Rz
+dF9udW1hLmgKKysrIGIvaW5jbHVkZS90c2VfbnVtYS5oCkBAIC0yLDgxICsyLDgxIEBACiAgKiBD
+b3B5cmlnaHQgKGMpIDIwMTggQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1c2UuY3o+CiAgKi8KIAot
+I2lmbmRlZiBUU1RfTlVNQV9IX18KLSNkZWZpbmUgVFNUX05VTUFfSF9fCisjaWZuZGVmIFRTRV9O
+VU1BX0hfXworI2RlZmluZSBUU0VfTlVNQV9IX18KIAogI2luY2x1ZGUgPHN0cmluZy5oPgogCiAv
+KioKLSAqIHN0cnVjdCB0c3Rfbm9kZW1hcCAtIE51bWEgbm9kZW1hcC4KKyAqIHN0cnVjdCB0c2Vf
+bm9kZW1hcCAtIE51bWEgbm9kZW1hcC4KICAqCiAgKiBAY250OiBOdW1iZXIgb2Ygbm9kZXMgaW4g
+bWFwLgogICogQGNvdW50ZXJzOiBQYWdlIGFsbG9jYXRpb24gY291bnRlcnMuCiAgKiBAbWFwOiBB
+cnJheSBvZiBudW1hIGlkcy4KICAqLwotc3RydWN0IHRzdF9ub2RlbWFwIHsKK3N0cnVjdCB0c2Vf
+bm9kZW1hcCB7CiAJdW5zaWduZWQgaW50IGNudDsKIAl1bnNpZ25lZCBpbnQgKmNvdW50ZXJzOwog
+CXVuc2lnbmVkIGludCBtYXBbXTsKIH07CiAKIC8qKgotICogdHN0X25vZGVtYXBfcmVzZXRfY291
+bnRlcnMoKSAtIENsZWFycyBudW1hIGNvdW50ZXJzLiBUaGUgY291bnRlcnMgYXJlIGxhenktYWxs
+b2NhdGVkIG9uIGZpcnN0IGNhbGwgb2YgdGhpcyBmdW5jdGlvbi4KKyAqIHRzZV9ub2RlbWFwX3Jl
+c2V0X2NvdW50ZXJzKCkgLSBDbGVhcnMgbnVtYSBjb3VudGVycy4gVGhlIGNvdW50ZXJzIGFyZSBs
+YXp5LWFsbG9jYXRlZCBvbiBmaXJzdCBjYWxsIG9mIHRoaXMgZnVuY3Rpb24uCiAgKgogICogQG5v
+ZGVzOiBOdW1hIG5vZGVtYXAuCiAgKi8KLXZvaWQgdHN0X25vZGVtYXBfcmVzZXRfY291bnRlcnMo
+c3RydWN0IHRzdF9ub2RlbWFwICpub2Rlcyk7Cit2b2lkIHRzZV9ub2RlbWFwX3Jlc2V0X2NvdW50
+ZXJzKHN0cnVjdCB0c2Vfbm9kZW1hcCAqbm9kZXMpOwogCiAvKioKLSAqIHRzdF9ub2RlbWFwX3By
+aW50X2NvdW50ZXJzKCkgLSBQcmludHMgcGFnZXMgYWxsb2NhdGVkIHBlciBlYWNoIG5vZGUuCisg
+KiB0c2Vfbm9kZW1hcF9wcmludF9jb3VudGVycygpIC0gUHJpbnRzIHBhZ2VzIGFsbG9jYXRlZCBw
+ZXIgZWFjaCBub2RlLgogICoKICAqIEBub2RlczogTnVtYSBub2RlbWFwLgogICovCi12b2lkIHRz
+dF9ub2RlbWFwX3ByaW50X2NvdW50ZXJzKHN0cnVjdCB0c3Rfbm9kZW1hcCAqbm9kZXMpOwordm9p
+ZCB0c2Vfbm9kZW1hcF9wcmludF9jb3VudGVycyhzdHJ1Y3QgdHNlX25vZGVtYXAgKm5vZGVzKTsK
+IAogLyoqCi0gKiB0c3RfbWVtcG9saWN5X21vZGVfbmFtZSgpIC0gUmV0dXJucyBhIG5hbWUgZm9y
+IGEgbWVtcG9saWN5L21iaW5kIG1vZGUuCisgKiB0c2VfbWVtcG9saWN5X21vZGVfbmFtZSgpIC0g
+UmV0dXJucyBhIG5hbWUgZm9yIGEgbWVtcG9saWN5L21iaW5kIG1vZGUuCiAgKgogICogQG1vZGU6
+IE51bWEgbWVtcG9saWN5IG1vZGUuCiAgKgogICogcmV0dXJuOiBhIG5hbWUgZm9yIGEgbWVtcG9s
+aWN5L21iaW5kIG1vZGUuCiAgKi8KLWNvbnN0IGNoYXIgKnRzdF9tZW1wb2xpY3lfbW9kZV9uYW1l
+KGludCBtb2RlKTsKK2NvbnN0IGNoYXIgKnRzZV9tZW1wb2xpY3lfbW9kZV9uYW1lKGludCBtb2Rl
+KTsKIAogLyoqCi0gKiB0c3RfbnVtYV9tYXAoKSAtIE1hcHMgcGFnZXMgaW50byBtZW1vcnksIGlm
+IHBhdGggaXMgTlVMTCB0aGUgbWFwcGluZyBpcyBhbm9ueW1vdXMgb3RoZXJ3aXNlIGlzIGJhY2tl
+ZCBieSB0aGUgZmlsZS4KKyAqIHRzZV9udW1hX21hcCgpIC0gTWFwcyBwYWdlcyBpbnRvIG1lbW9y
+eSwgaWYgcGF0aCBpcyBOVUxMIHRoZSBtYXBwaW5nIGlzIGFub255bW91cyBvdGhlcndpc2UgaXMg
+YmFja2VkIGJ5IHRoZSBmaWxlLgogICoKICAqIEBwYXRoOiBQYXRoIHRvIGEgZmlsZSwgaWYgbm90
+IE5VTEwgbWFwcGluZyBpcyBmaWxlIGJhc2VkLgogICogQHNpemU6IE1hcHBpbmcgc2l6ZS4KICAq
+CiAgKiByZXR1cm46IGEgcG9pbnRlciB0byBhIG1hcHBlZCBmaWxlLgogICovCi12b2lkICp0c3Rf
+bnVtYV9tYXAoY29uc3QgY2hhciAqcGF0aCwgc2l6ZV90IHNpemUpOwordm9pZCAqdHNlX251bWFf
+bWFwKGNvbnN0IGNoYXIgKnBhdGgsIHNpemVfdCBzaXplKTsKIAogLyoqCi0gKiB0c3RfbnVtYV9m
+YXVsdCgpIC0gV3JpdGVzIHRvIG1lbW9yeSBpbiBvcmRlciB0byBnZXQgdGhlIHBhZ2VzIGZhdWx0
+ZWQuCisgKiB0c2VfbnVtYV9mYXVsdCgpIC0gV3JpdGVzIHRvIG1lbW9yeSBpbiBvcmRlciB0byBn
+ZXQgdGhlIHBhZ2VzIGZhdWx0ZWQuCiAgKgogICogQHB0cjogU3RhcnQgb2YgdGhlIG1hcHBpbmcu
+CiAgKiBAc2l6ZTogU2l6ZSBvZiB0aGUgbWFwcGluZy4KICAqLwotc3RhdGljIGlubGluZSB2b2lk
+IHRzdF9udW1hX2ZhdWx0KHZvaWQgKnB0ciwgc2l6ZV90IHNpemUpCitzdGF0aWMgaW5saW5lIHZv
+aWQgdHNlX251bWFfZmF1bHQodm9pZCAqcHRyLCBzaXplX3Qgc2l6ZSkKIHsKIAltZW1zZXQocHRy
+LCAnYScsIHNpemUpOwogfQogCiAvKioKLSAqIHRzdF9udW1hX3VubWFwKCkgLSBGcmVlcyB0aGUg
+bWVtb3J5LgorICogdHNlX251bWFfdW5tYXAoKSAtIEZyZWVzIHRoZSBtZW1vcnkuCiAgKgogICog
+QHB0cjogU3RhcnQgb2YgdGhlIG1hcHBpbmcuCiAgKiBAc2l6ZTogU2l6ZSBvZiB0aGUgbWFwcGlu
+Zy4KICAqLwotc3RhdGljIGlubGluZSB2b2lkIHRzdF9udW1hX3VubWFwKHZvaWQgKnB0ciwgc2l6
+ZV90IHNpemUpCitzdGF0aWMgaW5saW5lIHZvaWQgdHNlX251bWFfdW5tYXAodm9pZCAqcHRyLCBz
+aXplX3Qgc2l6ZSkKIHsKIAlTQUZFX01VTk1BUChwdHIsIHNpemUpOwogfQogCiAvKioKLSAqIHRz
+dF9ub2RlbWFwX2NvdW50X3BhZ2VzKCkgLSBDaGVjayB3aGljaCBudW1hIG5vZGUgcmVzaWRlcyBl
+YWNoIHBhZ2UuCisgKiB0c2Vfbm9kZW1hcF9jb3VudF9wYWdlcygpIC0gQ2hlY2sgd2hpY2ggbnVt
+YSBub2RlIHJlc2lkZXMgZWFjaCBwYWdlLgogICoKICAqIENoZWNrIG9uIHdoaWNoIG51bWEgbm9k
+ZSByZXNpZGVzIGVhY2ggcGFnZSBvZiB0aGUgbWFwcGluZyBzdGFydGluZyBhdCBwdHIKICAqIGFu
+ZCBjb250aW51aW5nIHBhZ2VzIGxvbmcgYW5kIGluY3JlYXNlcyBub2RlbWFwIGNvdW50ZXJzIGFj
+Y29yZGluZ2x5LgpAQCAtODUsMjggKzg1LDI4IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCB0c3RfbnVt
+YV91bm1hcCh2b2lkICpwdHIsIHNpemVfdCBzaXplKQogICogQHB0cjogICBQb2ludGVyIHRvIHN0
+YXJ0IG9mIGEgbWFwcGluZy4KICAqIEBzaXplOiAgU2l6ZSBvZiB0aGUgbWFwcGluZy4KICAqLwot
+dm9pZCB0c3Rfbm9kZW1hcF9jb3VudF9wYWdlcyhzdHJ1Y3QgdHN0X25vZGVtYXAgKm5vZGVzLCB2
+b2lkICpwdHIsIHNpemVfdCBzaXplKTsKK3ZvaWQgdHNlX25vZGVtYXBfY291bnRfcGFnZXMoc3Ry
+dWN0IHRzZV9ub2RlbWFwICpub2Rlcywgdm9pZCAqcHRyLCBzaXplX3Qgc2l6ZSk7CiAKIC8qKgot
+ICogdHN0X25vZGVtYXBfZnJlZSgpIC0gRnJlZXMgbm9kZW1hcC4KKyAqIHRzZV9ub2RlbWFwX2Zy
+ZWUoKSAtIEZyZWVzIG5vZGVtYXAuCiAgKgogICogQG5vZGVzOiBOdW1hIG5vZGVtYXAgdG8gYmUg
+ZnJlZWQuCiAgKi8KLXZvaWQgdHN0X25vZGVtYXBfZnJlZShzdHJ1Y3QgdHN0X25vZGVtYXAgKm5v
+ZGVzKTsKK3ZvaWQgdHNlX25vZGVtYXBfZnJlZShzdHJ1Y3QgdHNlX25vZGVtYXAgKm5vZGVzKTsK
+IAogLyoqCi0gKiBlbnVtIHRzdF9udW1hX3R5cGVzIC0gQml0ZmxhZ3MgZm9yIHRzdF9nZXRfbm9k
+ZW1hcCgpIGZ1bmN0aW9uLgorICogZW51bSB0c2VfbnVtYV90eXBlcyAtIEJpdGZsYWdzIGZvciB0
+c2VfZ2V0X25vZGVtYXAoKSBmdW5jdGlvbi4KICAqCiAgKiBAVFNUX05VTUFfQU5ZOiBnZW5lcmFs
+IE5VTUEgbm9kZS4KICAqIEBUU1RfTlVNQV9NRU06IE5VTUEgbWVtb3J5IG5vZGUuCiAgKi8KLWVu
+dW0gdHN0X251bWFfdHlwZXMgeworZW51bSB0c2VfbnVtYV90eXBlcyB7CiAJVFNUX05VTUFfQU5Z
+ID0gMHgwMCwKIAlUU1RfTlVNQV9NRU0gPSAweDAxLAogfTsKIAogLyoqCi0gKiB0c3RfZ2V0X25v
+ZGVtYXAoKSAtIEFsbG9jYXRlcyBhbmQgcmV0dXJucyBudW1hIG5vZGUgbWFwLCB3aGljaCBpcyBh
+biBhcnJheSBvZiBudW1hIG5vZGVzIHdoaWNoCisgKiB0c2VfZ2V0X25vZGVtYXAoKSAtIEFsbG9j
+YXRlcyBhbmQgcmV0dXJucyBudW1hIG5vZGUgbWFwLCB3aGljaCBpcyBhbiBhcnJheSBvZiBudW1h
+IG5vZGVzIHdoaWNoCiAgKiBjb250YWluIGRlc2lyZWQgcmVzb3VyY2VzIGUuZy4gbWVtb3J5Lgog
+ICoKICAqIEB0eXBlOiAgICAgICBCaXRmbGFncyBvZiBlbnVtIHRzdF9udW1hX3R5cGVzIHNwZWNp
+ZnlpbmcgZGVzaXJlZCByZXNvdXJjZXMuCkBAIC0xMTQsOSArMTE0LDkgQEAgZW51bSB0c3RfbnVt
+YV90eXBlcyB7CiAgKiAgICAgICAgICAgICByZXF1ZXN0ZWQgYW1vdW50IG9mIGZyZWUrYnVmZmVy
+cyBtZW1vcnkgaXQncyBub3QgaW5jbHVkZWQgaW4KICAqICAgICAgICAgICAgIHRoZSByZXN1bHRp
+bmcgbGlzdCBvZiBub2Rlcy4KICAqCi0gKiByZXR1cm46IE9uIHN1Y2Nlc3MgcmV0dXJucyBhbGxv
+Y2F0ZWQgYW5kIGluaXRpYWxpemVkIHN0cnVjdCB0c3Rfbm9kZW1hcCB3aGljaCBjb250YWlucwor
+ICogcmV0dXJuOiBPbiBzdWNjZXNzIHJldHVybnMgYWxsb2NhdGVkIGFuZCBpbml0aWFsaXplZCBz
+dHJ1Y3QgdHNlX25vZGVtYXAgd2hpY2ggY29udGFpbnMKICAqICAgICAgICAgYXJyYXkgb2YgbnVt
+YSBub2RlIGlkcyB0aGF0IGNvbnRhaW5zIGRlc2lyZWQgcmVzb3VyY2VzLgogICovCi1zdHJ1Y3Qg
+dHN0X25vZGVtYXAgKnRzdF9nZXRfbm9kZW1hcChpbnQgdHlwZSwgc2l6ZV90IG1pbl9tZW1fa2Ip
+Oworc3RydWN0IHRzZV9ub2RlbWFwICp0c2VfZ2V0X25vZGVtYXAoaW50IHR5cGUsIHNpemVfdCBt
+aW5fbWVtX2tiKTsKIAotI2VuZGlmIC8qIFRTVF9OVU1BX0hfXyAqLworI2VuZGlmIC8qIFRTRV9O
+VU1BX0hfXyAqLwpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9wYXJzZV92ZHNvLmggYi9pbmNsdWRlL3Rz
+ZV9wYXJzZV92ZHNvLmgKc2ltaWxhcml0eSBpbmRleCA5MyUKcmVuYW1lIGZyb20gaW5jbHVkZS9w
+YXJzZV92ZHNvLmgKcmVuYW1lIHRvIGluY2x1ZGUvdHNlX3BhcnNlX3Zkc28uaAppbmRleCA1MjEy
+ZmM2NTkuLmUyZDkwNjc1NyAxMDA2NDQKLS0tIGEvaW5jbHVkZS9wYXJzZV92ZHNvLmgKKysrIGIv
+aW5jbHVkZS90c2VfcGFyc2VfdmRzby5oCkBAIC00LDggKzQsOCBAQAogICogQXV0aG9yOiBWaXJl
+c2ggS3VtYXIgPHZpcmVzaC5rdW1hckBsaW5hcm8ub3JnPgogICovCiAKLSNpZm5kZWYgUEFSU0Vf
+VkRTT19IX18KLSNkZWZpbmUgUEFSU0VfVkRTT19IX18KKyNpZm5kZWYgVFNFX1BBUlNFX1ZEU09f
+SF9fCisjZGVmaW5lIFRTRV9QQVJTRV9WRFNPX0hfXwogCiAjaW5jbHVkZSA8c3RkaW50Lmg+CiAK
+QEAgLTM4LDQgKzM4LDQgQEAgZXh0ZXJuIHZvaWQgKnZkc29fc3ltKGNvbnN0IGNoYXIgKnZlcnNp
+b24sIGNvbnN0IGNoYXIgKm5hbWUpOwogdHlwZWRlZiBpbnQgKCpnZXR0aW1lX3QpKGNsb2NraWRf
+dCBjbGtfaWQsIHZvaWQgKnRzKTsKIHZvaWQgZmluZF9jbG9ja19nZXR0aW1lX3Zkc28oZ2V0dGlt
+ZV90ICpwdHJfdmRzb19nZXR0aW1lLAogCQkJICAgICBnZXR0aW1lX3QgKnB0cl92ZHNvX2dldHRp
+bWU2NCk7Ci0jZW5kaWYgLyogUEFSU0VfVkRTT19IX18gKi8KKyNlbmRpZiAvKiBUU0VfUEFSU0Vf
+VkRTT19IX18gKi8KZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGlic2lnd2FpdC5oIGIvaW5jbHVkZS90
+c2Vfc2lnd2FpdC5oCnNpbWlsYXJpdHkgaW5kZXggNTUlCnJlbmFtZSBmcm9tIGluY2x1ZGUvbGli
+c2lnd2FpdC5oCnJlbmFtZSB0byBpbmNsdWRlL3RzZV9zaWd3YWl0LmgKaW5kZXggMmZjYTU3OGIx
+Li42ZWE4NWM4YmIgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGlic2lnd2FpdC5oCisrKyBiL2luY2x1
+ZGUvdHNlX3NpZ3dhaXQuaApAQCAtNCw4ICs0LDggQEAKICAqIEF1dGhvcjogVmlyZXNoIEt1bWFy
+IDx2aXJlc2gua3VtYXJAbGluYXJvLm9yZz4KICAqLwogCi0jaWZuZGVmIFNJR1dBSVRfSF9fCi0j
+ZGVmaW5lIFNJR1dBSVRfSF9fCisjaWZuZGVmIFRTRV9TSUdXQUlUX0hfXworI2RlZmluZSBUU0Vf
+U0lHV0FJVF9IX18KIAogI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAjaW5jbHVkZSAidHN0X3RpbWVy
+LmgiCkBAIC0yMSwyNCArMjEsMjQgQEAgc3RydWN0IHNpZ3dhaXRfdGVzdF9kZXNjIHsKIAlpbnQg
+c2lnbm87CiB9OwogCi12b2lkIHRlc3RfZW1wdHlfc2V0KHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBp
+bnQgc2lnbm8sCit2b2lkIHRzZV9lbXB0eV9zZXQoc3dpX2Z1bmMgc2lnd2FpdGluZm8sIGludCBz
+aWdubywKIAkJICAgIGVudW0gdHN0X3RzX3R5cGUgdHlwZSBMVFBfQVRUUklCVVRFX1VOVVNFRCk7
+Ci12b2lkIHRlc3RfdGltZW91dChzd2lfZnVuYyBzaWd3YWl0aW5mbywgaW50IHNpZ25vLCBlbnVt
+IHRzdF90c190eXBlIHR5cGUpOwotdm9pZCB0ZXN0X3VubWFza2VkX21hdGNoaW5nKHN3aV9mdW5j
+IHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8sCit2b2lkIHRzZV90aW1lb3V0KHN3aV9mdW5jIHNpZ3dh
+aXRpbmZvLCBpbnQgc2lnbm8sIGVudW0gdHN0X3RzX3R5cGUgdHlwZSk7Cit2b2lkIHRzZV91bm1h
+c2tlZF9tYXRjaGluZyhzd2lfZnVuYyBzaWd3YWl0aW5mbywgaW50IHNpZ25vLAogCQkJICAgIGVu
+dW0gdHN0X3RzX3R5cGUgdHlwZSBMVFBfQVRUUklCVVRFX1VOVVNFRCk7Ci12b2lkIHRlc3RfdW5t
+YXNrZWRfbWF0Y2hpbmdfbm9pbmZvKHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8sCit2
+b2lkIHRzZV91bm1hc2tlZF9tYXRjaGluZ19ub2luZm8oc3dpX2Z1bmMgc2lnd2FpdGluZm8sIGlu
+dCBzaWdubywKIAkJCQkgICBlbnVtIHRzdF90c190eXBlIHR5cGUgTFRQX0FUVFJJQlVURV9VTlVT
+RUQpOwotdm9pZCB0ZXN0X21hc2tlZF9tYXRjaGluZyhzd2lfZnVuYyBzaWd3YWl0aW5mbywgaW50
+IHNpZ25vLAordm9pZCB0c2VfbWFza2VkX21hdGNoaW5nKHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBp
+bnQgc2lnbm8sCiAJCQkgIGVudW0gdHN0X3RzX3R5cGUgdHlwZSBMVFBfQVRUUklCVVRFX1VOVVNF
+RCk7Ci12b2lkIHRlc3RfbWFza2VkX21hdGNoaW5nX3J0KHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBp
+bnQgc2lnbm8sCit2b2lkIHRzZV9tYXNrZWRfbWF0Y2hpbmdfcnQoc3dpX2Z1bmMgc2lnd2FpdGlu
+Zm8sIGludCBzaWdubywKIAkJCSAgICAgZW51bSB0c3RfdHNfdHlwZSB0eXBlIExUUF9BVFRSSUJV
+VEVfVU5VU0VEKTsKLXZvaWQgdGVzdF9tYXNrZWRfbWF0Y2hpbmdfbm9pbmZvKHN3aV9mdW5jIHNp
+Z3dhaXRpbmZvLCBpbnQgc2lnbm8sCit2b2lkIHRzZV9tYXNrZWRfbWF0Y2hpbmdfbm9pbmZvKHN3
+aV9mdW5jIHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8sCiAJCQkJIGVudW0gdHN0X3RzX3R5cGUgdHlw
+ZSBMVFBfQVRUUklCVVRFX1VOVVNFRCk7Ci12b2lkIHRlc3RfYmFkX2FkZHJlc3Moc3dpX2Z1bmMg
+c2lnd2FpdGluZm8sIGludCBzaWdubywKK3ZvaWQgdHNlX2JhZF9hZGRyZXNzKHN3aV9mdW5jIHNp
+Z3dhaXRpbmZvLCBpbnQgc2lnbm8sCiAJCSAgICAgIGVudW0gdHN0X3RzX3R5cGUgdHlwZSBMVFBf
+QVRUUklCVVRFX1VOVVNFRCk7Ci12b2lkIHRlc3RfYmFkX2FkZHJlc3MyKHN3aV9mdW5jIHNpZ3dh
+aXRpbmZvLCBpbnQgc2lnbm8gTFRQX0FUVFJJQlVURV9VTlVTRUQsCit2b2lkIHRzZV9iYWRfYWRk
+cmVzczIoc3dpX2Z1bmMgc2lnd2FpdGluZm8sIGludCBzaWdubyBMVFBfQVRUUklCVVRFX1VOVVNF
+RCwKIAkJICAgICAgIGVudW0gdHN0X3RzX3R5cGUgdHlwZSBMVFBfQVRUUklCVVRFX1VOVVNFRCk7
+Ci12b2lkIHRlc3RfYmFkX2FkZHJlc3MzKHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8g
+TFRQX0FUVFJJQlVURV9VTlVTRUQsCit2b2lkIHRzZV9iYWRfYWRkcmVzczMoc3dpX2Z1bmMgc2ln
+d2FpdGluZm8sIGludCBzaWdubyBMVFBfQVRUUklCVVRFX1VOVVNFRCwKIAkJICAgICAgIGVudW0g
+dHN0X3RzX3R5cGUgdHlwZSBMVFBfQVRUUklCVVRFX1VOVVNFRCk7Ci12b2lkIHNpZ3dhaXRfc2V0
+dXAodm9pZCk7Ci0jZW5kaWYgLyogU0lHV0FJVF9IX18gKi8KK3ZvaWQgdHNlX3NpZ3dhaXRfc2V0
+dXAodm9pZCk7CisjZW5kaWYgLyogVFNFX1NJR1dBSVRfSF9fICovCmRpZmYgLS1naXQgYS9pbmNs
+dWRlL2xpYnN3YXAuaCBiL2luY2x1ZGUvdHNlX3N3YXAuaApzaW1pbGFyaXR5IGluZGV4IDk1JQpy
+ZW5hbWUgZnJvbSBpbmNsdWRlL2xpYnN3YXAuaApyZW5hbWUgdG8gaW5jbHVkZS90c2Vfc3dhcC5o
+CmluZGV4IGIyMmI5OTJlZS4uYzQ5NzliM2U1IDEwMDY0NAotLS0gYS9pbmNsdWRlL2xpYnN3YXAu
+aAorKysgYi9pbmNsdWRlL3RzZV9zd2FwLmgKQEAgLTExLDggKzExLDggQEAKICAqIENvbnRhaW5z
+IGNvbW1vbiBjb250ZW50IGZvciBhbGwgc3dhcG9uL3N3YXBvZmYgdGVzdHMuCiAgKi8KIAotI2lm
+bmRlZiBfX0xJQlNXQVBfSF9fCi0jZGVmaW5lIF9fTElCU1dBUF9IX18KKyNpZm5kZWYgVFNFX1NX
+QVBfSF9fCisjZGVmaW5lIFRTRV9TV0FQX0hfXwogCiBlbnVtIHN3YXBmaWxlX21ldGhvZCB7CiAg
+ICAgU1dBUEZJTEVfQllfU0laRSwKQEAgLTExMCwxMCArMTEwLDEwIEBAIGludCBtYWtlX3N3YXBm
+aWxlKGNvbnN0IGNoYXIgKmZpbGUsIGNvbnN0IGludCBsaW5lbm8sCiBib29sIGlzX3N3YXBfc3Vw
+cG9ydGVkKGNvbnN0IGNoYXIgKmZpbGVuYW1lKTsKIAogLyoqCi0gKiB0c3RfY291bnRfc3dhcHMo
+KSAtIEdldCB0aGUgdXNlZCBzd2FwZmlsZXMgbnVtYmVyLgorICogdHNlX2NvdW50X3N3YXBzKCkg
+LSBHZXQgdGhlIHVzZWQgc3dhcGZpbGVzIG51bWJlci4KICAqCiAgKiBSZXR1cm46IHVzZWQgc3dh
+cGZpbGVzIG51bWJlci4KICAqLwotaW50IHRzdF9jb3VudF9zd2Fwcyh2b2lkKTsKK2ludCB0c2Vf
+Y291bnRfc3dhcHModm9pZCk7CiAKLSNlbmRpZiAvKiBfX0xJQlNXQVBfSF9fICovCisjZW5kaWYg
+LyogVFNFX1NXQVBfSF9fICovCmRpZmYgLS1naXQgYS9pbmNsdWRlL3RzdF91aW5wdXQuaCBiL2lu
+Y2x1ZGUvdHNlX3VpbnB1dC5oCnNpbWlsYXJpdHkgaW5kZXggOTMlCnJlbmFtZSBmcm9tIGluY2x1
+ZGUvdHN0X3VpbnB1dC5oCnJlbmFtZSB0byBpbmNsdWRlL3RzZV91aW5wdXQuaAppbmRleCBjZjM1
+MWNkZmIuLmUzMzZkZTc4MCAxMDA2NDQKLS0tIGEvaW5jbHVkZS90c3RfdWlucHV0LmgKKysrIGIv
+aW5jbHVkZS90c2VfdWlucHV0LmgKQEAgLTMsOCArMyw4IEBACiAgKiBDb3B5cmlnaHQgKGMpIDIw
+MTkgQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1c2UuY3o+CiAgKi8KIAotI2lmbmRlZiBUU1RfVUlO
+UFVUX0hfXwotI2RlZmluZSBUU1RfVUlOUFVUX0hfXworI2lmbmRlZiBUU0VfVUlOUFVUX0hfXwor
+I2RlZmluZSBUU0VfVUlOUFVUX0hfXwogCiAvKioKICAqIFRyaWVzIHRvIG9wZW4gdGhlIHVpbnB1
+dCBkZXZpY2UuCkBAIC00NCw0ICs0NCw0IEBAIHZvaWQgc2V0dXBfbW91c2VfZXZlbnRzKGludCBm
+ZCk7CiAgKi8KIHZvaWQgZGVzdHJveV9pbnB1dF9kZXZpY2UoaW50IGZkKTsKIAotI2VuZGlmCS8q
+IFRTVF9VSU5QVVRfSF9fICovCisjZW5kaWYJLyogVFNFX1VJTlBVVF9IX18gKi8KZGlmZiAtLWdp
+dCBhL2luY2x1ZGUvdHN0X3VpZC5oIGIvaW5jbHVkZS90c3RfdWlkLmgKaW5kZXggZTYwNGVmZmNl
+Li4yMjM3ZGRjYmYgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvdHN0X3VpZC5oCisrKyBiL2luY2x1ZGUv
+dHN0X3VpZC5oCkBAIC0yLDggKzIsOCBAQAogICogQ29weXJpZ2h0IChjKSAyMDIxIExpbnV4IFRl
+c3QgUHJvamVjdAogICovCiAKLSNpZm5kZWYgVFNUX1VJRF9IXwotI2RlZmluZSBUU1RfVUlEX0hf
+CisjaWZuZGVmIFRTVF9VSURfSF9fCisjZGVmaW5lIFRTVF9VSURfSF9fCiAKICNpbmNsdWRlIDxz
+eXMvdHlwZXMuaD4KIApAQCAtMzcsNCArMzcsNCBAQCBpbnQgdHN0X2NoZWNrX3Jlc2dpZF8oY29u
+c3QgY2hhciAqZmlsZSwgY29uc3QgaW50IGxpbmVubywgY29uc3QgY2hhciAqY2FsbHN0ciwKICNk
+ZWZpbmUgdHN0X2NoZWNrX3Jlc2dpZChjc3RyLCByZ2lkLCBlZ2lkLCBzZ2lkKSBcCiAJdHN0X2No
+ZWNrX3Jlc2dpZF8oX19GSUxFX18sIF9fTElORV9fLCAoY3N0ciksIChyZ2lkKSwgKGVnaWQpLCAo
+c2dpZCkpCiAKLSNlbmRpZiAvKiBUU1RfVUlEX0hfICovCisjZW5kaWYgLyogVFNUX1VJRF9IX18g
+Ki8KZGlmZiAtLWdpdCBhL2luY2x1ZGUvdWpzb24uaCBiL2luY2x1ZGUvdWpzb24uaAppbmRleCA4
+ZmFlYjE4ZjAuLjFhNGJiNmJkOSAxMDA2NDQKLS0tIGEvaW5jbHVkZS91anNvbi5oCisrKyBiL2lu
+Y2x1ZGUvdWpzb24uaApAQCAtMywxMSArMywxMSBAQAogICogQ29weXJpZ2h0IChDKSAyMDIxLTIw
+MjQgQ3lyaWwgSHJ1YmlzIDxtZXRhbkB1Y3cuY3o+CiAgKi8KIAotI2lmbmRlZiBVSlNPTl9ICi0j
+ZGVmaW5lIFVKU09OX0gKKyNpZm5kZWYgVUpTT05fSF9fCisjZGVmaW5lIFVKU09OX0hfXwogCiAj
+aW5jbHVkZSA8dWpzb25fY29tbW9uLmg+CiAjaW5jbHVkZSA8dWpzb25fcmVhZGVyLmg+CiAjaW5j
+bHVkZSA8dWpzb25fd3JpdGVyLmg+CiAKLSNlbmRpZiAvKiBVSlNPTl9IICovCisjZW5kaWYgLyog
+VUpTT05fSF9fICovCmRpZmYgLS1naXQgYS9pbmNsdWRlL3Vqc29uX2NvbW1vbi5oIGIvaW5jbHVk
+ZS91anNvbl9jb21tb24uaAppbmRleCBlZDMxYzA5MGQuLjExMzgyYzRmYiAxMDA2NDQKLS0tIGEv
+aW5jbHVkZS91anNvbl9jb21tb24uaAorKysgYi9pbmNsdWRlL3Vqc29uX2NvbW1vbi5oCkBAIC04
+LDggKzgsOCBAQAogICogQGJyaWVmIENvbW1vbiBKU09OIHJlYWRlci93cml0ZXIgZGVmaW5pdGlv
+bnMuCiAgKi8KIAotI2lmbmRlZiBVSlNPTl9DT01NT05fSAotI2RlZmluZSBVSlNPTl9DT01NT05f
+SAorI2lmbmRlZiBVSlNPTl9DT01NT05fSF9fCisjZGVmaW5lIFVKU09OX0NPTU1PTl9IX18KIAog
+LyoqIEBicmllZiBNYXhpbWFsIGVycm9yIG1lc3NhZ2UgbGVuZ3RoLiAqLwogI2RlZmluZSBVSlNP
+Tl9FUlJfTUFYIDEyOApAQCAtNjYsNCArNjYsNCBAQCB0eXBlZGVmIHN0cnVjdCB1anNvbl92YWwg
+dWpzb25fdmFsOwogLyoqIEBicmllZiBBbiBhcnJheSBzaXplIG1hY3JvLiAqLwogI2RlZmluZSBV
+SlNPTl9BUlJBWV9TSVpFKGFycmF5KSAoc2l6ZW9mKGFycmF5KSAvIHNpemVvZigqYXJyYXkpKQog
+Ci0jZW5kaWYgLyogVUpTT05fQ09NTU9OX0ggKi8KKyNlbmRpZiAvKiBVSlNPTl9DT01NT05fSF9f
+ICovCmRpZmYgLS1naXQgYS9pbmNsdWRlL3Vqc29uX3JlYWRlci5oIGIvaW5jbHVkZS91anNvbl9y
+ZWFkZXIuaAppbmRleCAyNzNmZTYyNGEuLjg2MDhiNmM4MSAxMDA2NDQKLS0tIGEvaW5jbHVkZS91
+anNvbl9yZWFkZXIuaAorKysgYi9pbmNsdWRlL3Vqc29uX3JlYWRlci5oCkBAIC0xNCw4ICsxNCw4
+IEBACiAgKiBpZiBlcnJvciBoYXMgaGFwcGVuZWQgYXQgdGhlIGVuZCBvZiB0aGUgc2VxdWVuY2Uu
+CiAgKi8KIAotI2lmbmRlZiBVSlNPTl9SRUFERVJfSAotI2RlZmluZSBVSlNPTl9SRUFERVJfSAor
+I2lmbmRlZiBVSlNPTl9SRUFERVJfSF9fCisjZGVmaW5lIFVKU09OX1JFQURFUl9IX18KIAogI2lu
+Y2x1ZGUgPHN0ZGlvLmg+CiAjaW5jbHVkZSA8dWpzb25fY29tbW9uLmg+CkBAIC01NDAsNCArNTQw
+LDQgQEAgc3RhdGljIGlubGluZSBpbnQgdWpzb25fcmVhZGVyX2NvbnN1bWVkKHVqc29uX3JlYWRl
+ciAqc2VsZikKIAlyZXR1cm4gc2VsZi0+b2ZmID49IHNlbGYtPmxlbjsKIH0KIAotI2VuZGlmIC8q
+IFVKU09OX0ggKi8KKyNlbmRpZiAvKiBVSlNPTl9IX18gKi8KZGlmZiAtLWdpdCBhL2luY2x1ZGUv
+dWpzb25fdXRmLmggYi9pbmNsdWRlL3Vqc29uX3V0Zi5oCmluZGV4IGY5MzlmYmU4Yy4uMzEzMjEz
+ZDhlIDEwMDY0NAotLS0gYS9pbmNsdWRlL3Vqc29uX3V0Zi5oCisrKyBiL2luY2x1ZGUvdWpzb25f
+dXRmLmgKQEAgLTgsOCArOCw4IEBACiAgKiBAYnJpZWYgVW5pY29kZSBoZWxwZXIgbWFjcm9zIGFu
+ZCBmdW5jdGlvbnMuCiAgKi8KIAotI2lmbmRlZiBVSlNPTl9VVEZfSAotI2RlZmluZSBVSlNPTl9V
+VEZfSAorI2lmbmRlZiBVSlNPTl9VVEZfSF9fCisjZGVmaW5lIFVKU09OX1VURl9IX18KIAogI2lu
+Y2x1ZGUgPHN0ZGludC5oPgogI2luY2x1ZGUgPHN0ZGRlZi5oPgpAQCAtMTY1LDQgKzE2NSw0IEBA
+IHN0YXRpYyBpbmxpbmUgaW50IHVqc29uX3RvX3V0ZjgodWludDMyX3QgdW5pY29kZSwgY2hhciAq
+YnVmKQogCXJldHVybiA0OwogfQogCi0jZW5kaWYgLyogVUpTT05fVVRGX0ggKi8KKyNlbmRpZiAv
+KiBVSlNPTl9VVEZfSF9fICovCmRpZmYgLS1naXQgYS9saWJzL2lwYy9saWJpcGMuYyBiL2xpYnMv
+aXBjL3RzZV9pcGMuYwpzaW1pbGFyaXR5IGluZGV4IDgyJQpyZW5hbWUgZnJvbSBsaWJzL2lwYy9s
+aWJpcGMuYwpyZW5hbWUgdG8gbGlicy9pcGMvdHNlX2lwYy5jCmluZGV4IGMyZWNiZjAyZC4uNGZl
+NDg0M2QyIDEwMDY0NAotLS0gYS9saWJzL2lwYy9saWJpcGMuYworKysgYi9saWJzL2lwYy90c2Vf
+aXBjLmMKQEAgLTEsMjUgKzEsMTIgQEAKKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwt
+Mi4wLW9yLWxhdGVyCiAvKgotICoKLSAqICAgQ29weXJpZ2h0IChjKSBJbnRlcm5hdGlvbmFsIEJ1
+c2luZXNzIE1hY2hpbmVzICBDb3JwLiwgMjAwMQotICoKLSAqICAgVGhpcyBwcm9ncmFtIGlzIGZy
+ZWUgc29mdHdhcmU7ICB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5Ci0gKiAg
+IGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMg
+cHVibGlzaGVkIGJ5Ci0gKiAgIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2
+ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yCi0gKiAgIChhdCB5b3VyIG9wdGlvbikgYW55IGxh
+dGVyIHZlcnNpb24uCi0gKgotICogICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhl
+IGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwKLSAqICAgYnV0IFdJVEhPVVQgQU5ZIFdBUlJB
+TlRZOyAgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCi0gKiAgIE1FUkNIQU5U
+QUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZQotICogICB0
+aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KLSAqCi0gKiAg
+IFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1Ymxp
+YyBMaWNlbnNlCi0gKiAgIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyAgaWYgbm90LCB3cml0ZSB0
+byB0aGUgRnJlZSBTb2Z0d2FyZQotICogICBGb3VuZGF0aW9uLCBJbmMuLCA1MSBGcmFua2xpbiBT
+dHJlZXQsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BIDAyMTEwLTEzMDEgVVNBCisgKiBDb3B5cmln
+aHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENvcnAuLCAyMDAxCisgKiBD
+b3B5cmlnaHQgKGMpIExpbnV4IFRlc3QgUHJvamVjdCwgMjAyNgogICovCiAKIC8qCiAgKiBOQU1F
+Ci0gKglsaWJtc2cuYworICoJdHNlX2lwYy5jCiAgKgogICogREVTQ1JJUFRJT04KICAqCWNvbW1v
+biByb3V0aW5lcyBmb3IgdGhlIElQQyBzeXN0ZW0gY2FsbCB0ZXN0cy4KQEAgLTM1LDggKzIyLDgg
+QEAKICAqLwogCiAjZGVmaW5lIExJQklQQwotI2luY2x1ZGUgImlwY21zZy5oIgotI2luY2x1ZGUg
+ImlwY3NlbS5oIgorI2luY2x1ZGUgInRzZV9pcGNtc2cuaCIKKyNpbmNsdWRlICJ0c2VfaXBjc2Vt
+LmgiCiAKICNpbmNsdWRlIDxwd2QuaD4KICNpbmNsdWRlIDxzeXMvaXBjLmg+CmRpZmYgLS1naXQg
+YS9saWJzL2lwYy9saWJtc2djdGwuYyBiL2xpYnMvaXBjL3RzZV9tc2djdGwuYwpzaW1pbGFyaXR5
+IGluZGV4IDc3JQpyZW5hbWUgZnJvbSBsaWJzL2lwYy9saWJtc2djdGwuYwpyZW5hbWUgdG8gbGli
+cy9pcGMvdHNlX21zZ2N0bC5jCmluZGV4IGFlNDU5ZDQ4MC4uZGJmMTBkZDZiIDEwMDY0NAotLS0g
+YS9saWJzL2lwYy9saWJtc2djdGwuYworKysgYi9saWJzL2lwYy90c2VfbXNnY3RsLmMKQEAgLTEs
+MjAgKzEsOCBAQAorLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIK
+IC8qCi0gKiBDb3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENv
+cnAuLCAyMDAyCisgKiBDb3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGlu
+ZXMgIENvcnAuLCAyMDAxCiAgKiBDb3B5cmlnaHQgKGMpIDIwMTMgT3JhY2xlIGFuZC9vciBpdHMg
+YWZmaWxpYXRlcy4gQWxsIFJpZ2h0cyBSZXNlcnZlZC4KLSAqCi0gKiBUaGlzIHByb2dyYW0gaXMg
+ZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yCi0gKiBtb2RpZnkg
+aXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcwot
+ICogcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJz
+aW9uIDIgb2YKLSAqIHRoZSBMaWNlbnNlLCBvciAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2
+ZXJzaW9uLgotICoKLSAqIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0
+aGF0IGl0IHdvdWxkIGJlIHVzZWZ1bCwKLSAqIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0
+aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCi0gKiBNRVJDSEFOVEFCSUxJVFkgb3Ig
+RklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlCi0gKiBHTlUgR2VuZXJh
+bCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgotICoKLSAqIFlvdSBzaG91bGQgaGF2
+ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlCi0gKiBh
+bG9uZyB3aXRoIHRoaXMgcHJvZ3JhbTsgaWYgbm90LCB3cml0ZSB0aGUgRnJlZSBTb2Z0d2FyZSBG
+b3VuZGF0aW9uLAotICogSW5jLiwgIDUxIEZyYW5rbGluIFN0LCBGaWZ0aCBGbG9vciwgQm9zdG9u
+LCBNQSAgMDIxMTAtMTMwMSAgVVNBCisgKiBDb3B5cmlnaHQgKGMpIExpbnV4IFRlc3QgUHJvamVj
+dCwgMjAyNgogICovCiAKICNpbmNsdWRlIDxlcnJuby5oPgpAQCAtMjUsNyArMTMsNyBAQAogI2lu
+Y2x1ZGUgPHN5cy90eXBlcy5oPgogI2luY2x1ZGUgPHN5cy9pcGMuaD4KICNpbmNsdWRlIDxzeXMv
+bXNnLmg+Ci0jaW5jbHVkZSAibGlibXNnY3RsLmgiCisjaW5jbHVkZSAidHNlX21zZ2N0bC5oIgog
+CiBpbnQgZG9yZWFkZXIobG9uZyBrZXksIGludCB0aWQsIGxvbmcgdHlwZSwgaW50IGNoaWxkLCBp
+bnQgbnJlcHMpCiB7CmRpZmYgLS1naXQgYS9saWJzL25ld2lwYy9saWJuZXdpcGMuYyBiL2xpYnMv
+bmV3aXBjL3RzZV9uZXdpcGMuYwpzaW1pbGFyaXR5IGluZGV4IDk4JQpyZW5hbWUgZnJvbSBsaWJz
+L25ld2lwYy9saWJuZXdpcGMuYwpyZW5hbWUgdG8gbGlicy9uZXdpcGMvdHNlX25ld2lwYy5jCmlu
+ZGV4IDMzMWYxYjFmNS4uZjdlZGRhNmI1IDEwMDY0NAotLS0gYS9saWJzL25ld2lwYy9saWJuZXdp
+cGMuYworKysgYi9saWJzL25ld2lwYy90c2VfbmV3aXBjLmMKQEAgLTIwLDcgKzIwLDcgQEAKICNk
+ZWZpbmUJVFNUX05PX0RFRkFVTFRfTUFJTgogCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKLSNpbmNs
+dWRlICJsaWJuZXdpcGMuaCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAjaW5jbHVkZSAidHN0
+X3NhZmVfc3RkaW8uaCIKICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgogCmRpZmYgLS1n
+aXQgYS9saWJzL251bWEvdHN0X251bWEuYyBiL2xpYnMvbnVtYS90c2VfbnVtYS5jCnNpbWlsYXJp
+dHkgaW5kZXggODclCnJlbmFtZSBmcm9tIGxpYnMvbnVtYS90c3RfbnVtYS5jCnJlbmFtZSB0byBs
+aWJzL251bWEvdHNlX251bWEuYwppbmRleCBjMzI5NzAxM2IuLjgzNWI0NTg4MyAxMDA2NDQKLS0t
+IGEvbGlicy9udW1hL3RzdF9udW1hLmMKKysrIGIvbGlicy9udW1hL3RzZV9udW1hLmMKQEAgLTE0
+LDEwICsxNCwxMCBAQAogCiAjZGVmaW5lIFRTVF9OT19ERUZBVUxUX01BSU4KICNpbmNsdWRlICJ0
+c3RfdGVzdC5oIgotI2luY2x1ZGUgInRzdF9udW1hLmgiCisjaW5jbHVkZSAidHNlX251bWEuaCIK
+ICNpbmNsdWRlICJsYXBpL251bWFpZi5oIgogCi12b2lkIHRzdF9ub2RlbWFwX3ByaW50X2NvdW50
+ZXJzKHN0cnVjdCB0c3Rfbm9kZW1hcCAqbm9kZXMpCit2b2lkIHRzZV9ub2RlbWFwX3ByaW50X2Nv
+dW50ZXJzKHN0cnVjdCB0c2Vfbm9kZW1hcCAqbm9kZXMpCiB7CiAJdW5zaWduZWQgaW50IGk7CiAK
+QEAgLTI3LDcgKzI3LDcgQEAgdm9pZCB0c3Rfbm9kZW1hcF9wcmludF9jb3VudGVycyhzdHJ1Y3Qg
+dHN0X25vZGVtYXAgKm5vZGVzKQogCX0KIH0KIAotdm9pZCB0c3Rfbm9kZW1hcF9yZXNldF9jb3Vu
+dGVycyhzdHJ1Y3QgdHN0X25vZGVtYXAgKm5vZGVzKQordm9pZCB0c2Vfbm9kZW1hcF9yZXNldF9j
+b3VudGVycyhzdHJ1Y3QgdHNlX25vZGVtYXAgKm5vZGVzKQogewogCXNpemVfdCBhcnJfc2l6ZSA9
+IHNpemVvZih1bnNpZ25lZCBpbnQpICogbm9kZXMtPmNudDsKIApAQCAtMzcsNyArMzcsNyBAQCB2
+b2lkIHRzdF9ub2RlbWFwX3Jlc2V0X2NvdW50ZXJzKHN0cnVjdCB0c3Rfbm9kZW1hcCAqbm9kZXMp
+CiAJbWVtc2V0KG5vZGVzLT5jb3VudGVycywgMCwgYXJyX3NpemUpOwogfQogCi12b2lkIHRzdF9u
+b2RlbWFwX2ZyZWUoc3RydWN0IHRzdF9ub2RlbWFwICpub2RlcykKK3ZvaWQgdHNlX25vZGVtYXBf
+ZnJlZShzdHJ1Y3QgdHNlX25vZGVtYXAgKm5vZGVzKQogewogCWZyZWUobm9kZXMtPmNvdW50ZXJz
+KTsKIAlmcmVlKG5vZGVzKTsKQEAgLTQ1LDcgKzQ1LDcgQEAgdm9pZCB0c3Rfbm9kZW1hcF9mcmVl
+KHN0cnVjdCB0c3Rfbm9kZW1hcCAqbm9kZXMpCiAKICNpZmRlZiBIQVZFX05VTUFfVjIKIAotY29u
+c3QgY2hhciAqdHN0X21lbXBvbGljeV9tb2RlX25hbWUoaW50IG1vZGUpCitjb25zdCBjaGFyICp0
+c2VfbWVtcG9saWN5X21vZGVfbmFtZShpbnQgbW9kZSkKIHsKIAlzd2l0Y2ggKG1vZGUpIHsKIAlj
+YXNlIE1QT0xfREVGQVVMVDoKQEAgLTY0LDcgKzY0LDcgQEAgY29uc3QgY2hhciAqdHN0X21lbXBv
+bGljeV9tb2RlX25hbWUoaW50IG1vZGUpCiB9CiAKIAotc3RhdGljIHZvaWQgaW5jX2NvdW50ZXIo
+dW5zaWduZWQgaW50IG5vZGUsIHN0cnVjdCB0c3Rfbm9kZW1hcCAqbm9kZXMpCitzdGF0aWMgdm9p
+ZCBpbmNfY291bnRlcih1bnNpZ25lZCBpbnQgbm9kZSwgc3RydWN0IHRzZV9ub2RlbWFwICpub2Rl
+cykKIHsKIAl1bnNpZ25lZCBpbnQgaTsKIApAQCAtNzYsNyArNzYsNyBAQCBzdGF0aWMgdm9pZCBp
+bmNfY291bnRlcih1bnNpZ25lZCBpbnQgbm9kZSwgc3RydWN0IHRzdF9ub2RlbWFwICpub2RlcykK
+IAl9CiB9CiAKLXZvaWQgdHN0X25vZGVtYXBfY291bnRfcGFnZXMoc3RydWN0IHRzdF9ub2RlbWFw
+ICpub2RlcywKK3ZvaWQgdHNlX25vZGVtYXBfY291bnRfcGFnZXMoc3RydWN0IHRzZV9ub2RlbWFw
+ICpub2RlcywKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdm9pZCAqcHRyLCBzaXplX3Qg
+c2l6ZSkKIHsKIAlzaXplX3QgcGFnZV9zaXplID0gZ2V0cGFnZXNpemUoKTsKQEAgLTEwMCw3ICsx
+MDAsNyBAQCB2b2lkIHRzdF9ub2RlbWFwX2NvdW50X3BhZ2VzKHN0cnVjdCB0c3Rfbm9kZW1hcCAq
+bm9kZXMsCiAJfQogfQogCi12b2lkICp0c3RfbnVtYV9tYXAoY29uc3QgY2hhciAqcGF0aCwgc2l6
+ZV90IHNpemUpCit2b2lkICp0c2VfbnVtYV9tYXAoY29uc3QgY2hhciAqcGF0aCwgc2l6ZV90IHNp
+emUpCiB7CiAJY2hhciAqcHRyOwogCWludCBmZCA9IC0xOwpAQCAtMTc4LDEwICsxNzgsMTAgQEAg
+c3RhdGljIGludCBub2RlX2hhc19lbm91Z2hfbWVtb3J5KGludCBub2RlLCBzaXplX3QgbWluX2ti
+KQogCXJldHVybiAxOwogfQogCi1zdHJ1Y3QgdHN0X25vZGVtYXAgKnRzdF9nZXRfbm9kZW1hcChp
+bnQgdHlwZSwgc2l6ZV90IG1pbl9tZW1fa2IpCitzdHJ1Y3QgdHNlX25vZGVtYXAgKnRzZV9nZXRf
+bm9kZW1hcChpbnQgdHlwZSwgc2l6ZV90IG1pbl9tZW1fa2IpCiB7CiAJc3RydWN0IGJpdG1hc2sg
+Km1lbWJpbmQ7Ci0Jc3RydWN0IHRzdF9ub2RlbWFwICpub2RlczsKKwlzdHJ1Y3QgdHNlX25vZGVt
+YXAgKm5vZGVzOwogCXVuc2lnbmVkIGludCBpLCBjbnQ7CiAKIAlpZiAodHlwZSAmIH4oVFNUX05V
+TUFfTUVNKSkKQEAgLTE5OSw3ICsxOTksNyBAQCBzdHJ1Y3QgdHN0X25vZGVtYXAgKnRzdF9nZXRf
+bm9kZW1hcChpbnQgdHlwZSwgc2l6ZV90IG1pbl9tZW1fa2IpCiAKIAl0c3RfcmVzKFRJTkZPLCAi
+Rm91bmQgJXUgTlVNQSBtZW1vcnkgbm9kZXMiLCBjbnQpOwogCi0Jbm9kZXMgPSBTQUZFX01BTExP
+QyhzaXplb2Yoc3RydWN0IHRzdF9ub2RlbWFwKQorCW5vZGVzID0gU0FGRV9NQUxMT0Moc2l6ZW9m
+KHN0cnVjdCB0c2Vfbm9kZW1hcCkKIAkgICAgICAgICAgICAgICAgICAgICsgc2l6ZW9mKHVuc2ln
+bmVkIGludCkgKiBjbnQpOwogCW5vZGVzLT5jbnQgPSBjbnQ7CiAJbm9kZXMtPmNvdW50ZXJzID0g
+TlVMTDsKZGlmZiAtLWdpdCBhL2xpYnMvc2lnd2FpdC9zaWd3YWl0LmMgYi9saWJzL3NpZ3dhaXQv
+dHNlX3NpZ3dhaXQuYwpzaW1pbGFyaXR5IGluZGV4IDkyJQpyZW5hbWUgZnJvbSBsaWJzL3NpZ3dh
+aXQvc2lnd2FpdC5jCnJlbmFtZSB0byBsaWJzL3NpZ3dhaXQvdHNlX3NpZ3dhaXQuYwppbmRleCBh
+OWZkNjJkNzMuLmY2Njg5ZDFhNyAxMDA2NDQKLS0tIGEvbGlicy9zaWd3YWl0L3NpZ3dhaXQuYwor
+KysgYi9saWJzL3NpZ3dhaXQvdHNlX3NpZ3dhaXQuYwpAQCAtNSwxMSArNSwxMSBAQAogI2luY2x1
+ZGUgPGVycm5vLmg+CiAjaW5jbHVkZSA8c3RkbGliLmg+CiAjaW5jbHVkZSA8bGltaXRzLmg+Ci0j
+aW5jbHVkZSAibGlic2lnd2FpdC5oIgorI2luY2x1ZGUgInRzZV9zaWd3YWl0LmgiCiAjaW5jbHVk
+ZSAidHN0X3NpZ19wcm9jLmgiCiAjaW5jbHVkZSAibGFwaS9zeXNjYWxscy5oIgogCi12b2lkIHRl
+c3RfZW1wdHlfc2V0KHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8sCit2b2lkIHRzZV9l
+bXB0eV9zZXQoc3dpX2Z1bmMgc2lnd2FpdGluZm8sIGludCBzaWdubywKIAkJICAgIGVudW0gdHN0
+X3RzX3R5cGUgdHlwZSBMVFBfQVRUUklCVVRFX1VOVVNFRCkKIHsKIAlzaWdzZXRfdCBzaWdzOwpA
+QCAtMzUsNyArMzUsNyBAQCB2b2lkIHRlc3RfZW1wdHlfc2V0KHN3aV9mdW5jIHNpZ3dhaXRpbmZv
+LCBpbnQgc2lnbm8sCiAJU0FGRV9XQUlUKE5VTEwpOwogfQogCi12b2lkIHRlc3RfdGltZW91dChz
+d2lfZnVuYyBzaWd3YWl0aW5mbywgaW50IHNpZ25vLCBlbnVtIHRzdF90c190eXBlIHR5cGUpCit2
+b2lkIHRzZV90aW1lb3V0KHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8sIGVudW0gdHN0
+X3RzX3R5cGUgdHlwZSkKIHsKIAlzaWdzZXRfdCBzaWdzOwogCXNpZ2luZm9fdCBzaTsKQEAgLTY4
+LDcgKzY4LDcgQEAgdm9pZCB0ZXN0X3RpbWVvdXQoc3dpX2Z1bmMgc2lnd2FpdGluZm8sIGludCBz
+aWdubywgZW51bSB0c3RfdHNfdHlwZSB0eXBlKQogLyogTm90ZTogc2lnd2FpdC1pbmcgZm9yIGEg
+c2lnbmFsIHRoYXQgaXMgbm90IGJsb2NrZWQgaXMgdW5zcGVjaWZpZWQKICAqIGJ5IFBPU0lYOyBi
+dXQgd29ya3MgZm9yIG5vbi1pZ25vcmVkIHNpZ25hbHMgdW5kZXIgTGludXgKICAqLwotdm9pZCB0
+ZXN0X3VubWFza2VkX21hdGNoaW5nKHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8sCit2
+b2lkIHRzZV91bm1hc2tlZF9tYXRjaGluZyhzd2lfZnVuYyBzaWd3YWl0aW5mbywgaW50IHNpZ25v
+LAogCQkJICAgIGVudW0gdHN0X3RzX3R5cGUgdHlwZSBMVFBfQVRUUklCVVRFX1VOVVNFRCkKIHsK
+IAlzaWdzZXRfdCBzaWdzOwpAQCAtOTYsNyArOTYsNyBAQCB2b2lkIHRlc3RfdW5tYXNrZWRfbWF0
+Y2hpbmcoc3dpX2Z1bmMgc2lnd2FpdGluZm8sIGludCBzaWdubywKIAlTQUZFX1dBSVQoTlVMTCk7
+CiB9CiAKLXZvaWQgdGVzdF91bm1hc2tlZF9tYXRjaGluZ19ub2luZm8oc3dpX2Z1bmMgc2lnd2Fp
+dGluZm8sIGludCBzaWdubywKK3ZvaWQgdHNlX3VubWFza2VkX21hdGNoaW5nX25vaW5mbyhzd2lf
+ZnVuYyBzaWd3YWl0aW5mbywgaW50IHNpZ25vLAogCQkJCSAgIGVudW0gdHN0X3RzX3R5cGUgdHlw
+ZSBMVFBfQVRUUklCVVRFX1VOVVNFRCkKIHsKIAlzaWdzZXRfdCBzaWdzOwpAQCAtMTE4LDcgKzEx
+OCw3IEBAIHZvaWQgdGVzdF91bm1hc2tlZF9tYXRjaGluZ19ub2luZm8oc3dpX2Z1bmMgc2lnd2Fp
+dGluZm8sIGludCBzaWdubywKIAlTQUZFX1dBSVQoTlVMTCk7CiB9CiAKLXZvaWQgdGVzdF9tYXNr
+ZWRfbWF0Y2hpbmcoc3dpX2Z1bmMgc2lnd2FpdGluZm8sIGludCBzaWdubywKK3ZvaWQgdHNlX21h
+c2tlZF9tYXRjaGluZyhzd2lfZnVuYyBzaWd3YWl0aW5mbywgaW50IHNpZ25vLAogCQkJICBlbnVt
+IHRzdF90c190eXBlIHR5cGUgTFRQX0FUVFJJQlVURV9VTlVTRUQpCiB7CiAJc2lnc2V0X3Qgc2ln
+cywgb2xkbWFzazsKQEAgLTE2Niw3ICsxNjYsNyBAQCB2b2lkIHRlc3RfbWFza2VkX21hdGNoaW5n
+KHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8sCiAJU0FGRV9XQUlUKE5VTEwpOwogfQog
+Ci12b2lkIHRlc3RfbWFza2VkX21hdGNoaW5nX3J0KHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBpbnQg
+c2lnbm8sCit2b2lkIHRzZV9tYXNrZWRfbWF0Y2hpbmdfcnQoc3dpX2Z1bmMgc2lnd2FpdGluZm8s
+IGludCBzaWdubywKIAkJCSAgICAgZW51bSB0c3RfdHNfdHlwZSB0eXBlIExUUF9BVFRSSUJVVEVf
+VU5VU0VEKQogewogCXNpZ3NldF90IHNpZ3MsIG9sZG1hc2s7CkBAIC0yMzIsNyArMjMyLDcgQEAg
+dm9pZCB0ZXN0X21hc2tlZF9tYXRjaGluZ19ydChzd2lfZnVuYyBzaWd3YWl0aW5mbywgaW50IHNp
+Z25vLAogCQkJICJzaWd3YWl0aW5mbyBmYWlsZWQgdG8gcmVzdG9yZSB0aGUgb3JpZ2luYWwgbWFz
+ayIpOwogfQogCi12b2lkIHRlc3RfbWFza2VkX21hdGNoaW5nX25vaW5mbyhzd2lfZnVuYyBzaWd3
+YWl0aW5mbywgaW50IHNpZ25vLAordm9pZCB0c2VfbWFza2VkX21hdGNoaW5nX25vaW5mbyhzd2lf
+ZnVuYyBzaWd3YWl0aW5mbywgaW50IHNpZ25vLAogCQkJCSBlbnVtIHRzdF90c190eXBlIHR5cGUg
+TFRQX0FUVFJJQlVURV9VTlVTRUQpCiB7CiAJc2lnc2V0X3Qgc2lncywgb2xkbWFzazsKQEAgLTI3
+NCw3ICsyNzQsNyBAQCB2b2lkIHRlc3RfbWFza2VkX21hdGNoaW5nX25vaW5mbyhzd2lfZnVuYyBz
+aWd3YWl0aW5mbywgaW50IHNpZ25vLAogCVNBRkVfV0FJVChOVUxMKTsKIH0KIAotdm9pZCB0ZXN0
+X2JhZF9hZGRyZXNzKHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8sCit2b2lkIHRzZV9i
+YWRfYWRkcmVzcyhzd2lfZnVuYyBzaWd3YWl0aW5mbywgaW50IHNpZ25vLAogCQkgICAgICBlbnVt
+IHRzdF90c190eXBlIHR5cGUgTFRQX0FUVFJJQlVURV9VTlVTRUQpCiB7CiAJc2lnc2V0X3Qgc2ln
+cywgb2xkbWFzazsKQEAgLTMwMSw3ICszMDEsNyBAQCB2b2lkIHRlc3RfYmFkX2FkZHJlc3Moc3dp
+X2Z1bmMgc2lnd2FpdGluZm8sIGludCBzaWdubywKIAlTQUZFX1dBSVQoTlVMTCk7CiB9CiAKLXZv
+aWQgdGVzdF9iYWRfYWRkcmVzczIoc3dpX2Z1bmMgc2lnd2FpdGluZm8sIGludCBzaWdubyBMVFBf
+QVRUUklCVVRFX1VOVVNFRCwKK3ZvaWQgdHNlX2JhZF9hZGRyZXNzMihzd2lfZnVuYyBzaWd3YWl0
+aW5mbywgaW50IHNpZ25vIExUUF9BVFRSSUJVVEVfVU5VU0VELAogCQkgICAgICAgZW51bSB0c3Rf
+dHNfdHlwZSB0eXBlIExUUF9BVFRSSUJVVEVfVU5VU0VEKQogewogCXBpZF90IHBpZDsKQEAgLTM0
+Miw3ICszNDIsNyBAQCB2b2lkIHRlc3RfYmFkX2FkZHJlc3MyKHN3aV9mdW5jIHNpZ3dhaXRpbmZv
+LCBpbnQgc2lnbm8gTFRQX0FUVFJJQlVURV9VTlVTRUQsCiAJfQogfQogCi12b2lkIHRlc3RfYmFk
+X2FkZHJlc3MzKHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8gTFRQX0FUVFJJQlVURV9V
+TlVTRUQsCit2b2lkIHRzZV9iYWRfYWRkcmVzczMoc3dpX2Z1bmMgc2lnd2FpdGluZm8sIGludCBz
+aWdubyBMVFBfQVRUUklCVVRFX1VOVVNFRCwKIAkJICAgICAgIGVudW0gdHN0X3RzX3R5cGUgdHlw
+ZSBMVFBfQVRUUklCVVRFX1VOVVNFRCkKIHsKIAlzaWdzZXRfdCBzaWdzOwpAQCAtMzczLDcgKzM3
+Myw3IEBAIHN0YXRpYyB2b2lkIGVtcHR5X2hhbmRsZXIoaW50IHNpZyBMVFBfQVRUUklCVVRFX1VO
+VVNFRCkKIHsKIH0KIAotdm9pZCBzaWd3YWl0X3NldHVwKHZvaWQpCit2b2lkIHRzZV9zaWd3YWl0
+X3NldHVwKHZvaWQpCiB7CiAJc2lnbmFsKFNJR1VTUjEsIGVtcHR5X2hhbmRsZXIpOwogCXNpZ25h
+bChTSUdBTFJNLCBlbXB0eV9oYW5kbGVyKTsKZGlmZiAtLWdpdCBhL2xpYnMvc3dhcC9saWJzd2Fw
+LmMgYi9saWJzL3N3YXAvdHNlX3N3YXAuYwpzaW1pbGFyaXR5IGluZGV4IDk5JQpyZW5hbWUgZnJv
+bSBsaWJzL3N3YXAvbGlic3dhcC5jCnJlbmFtZSB0byBsaWJzL3N3YXAvdHNlX3N3YXAuYwppbmRl
+eCAzZWI1ODljZGQuLmFlM2MxOTMxMyAxMDA2NDQKLS0tIGEvbGlicy9zd2FwL2xpYnN3YXAuYwor
+KysgYi9saWJzL3N3YXAvdHNlX3N3YXAuYwpAQCAtMTcsNyArMTcsNyBAQAogI2RlZmluZSBCVUZT
+SVpFIDIwMAogCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKLSNpbmNsdWRlICJsaWJzd2FwLmgiCisj
+aW5jbHVkZSAidHNlX3N3YXAuaCIKICNpbmNsdWRlICJsYXBpL3N5c2NhbGxzLmgiCiAjaW5jbHVk
+ZSAidHN0X2tjb25maWcuaCIKICNpbmNsdWRlICJ0c3Rfa3ZlcmNtcC5oIgpAQCAtMTU3LDcgKzE1
+Nyw3IEBAIGludCBtYWtlX3N3YXBmaWxlKGNvbnN0IGNoYXIgKmZpbGUsIGNvbnN0IGludCBsaW5l
+bm8sCiAJCWJsb2NrcyA9IG51bTsKIAkJdHN0X3Jlc18oZmlsZSwgbGluZW5vLCBUSU5GTywgImNy
+ZWF0ZSBhIHN3YXBmaWxlIHdpdGggJXUgYmxvY2sgbnVtYmVycyIsIGJsb2Nrcyk7CiAJfSBlbHNl
+IHsKLQkJdHN0X2Jya18oZmlsZSwgbGluZW5vLCBUQlJPSywgIkludmFsaWQgbWV0aG9kLCBwbGVh
+c2Ugc2VlIGluY2x1ZGUvbGlic3dhcC5oIik7CisJCXRzdF9icmtfKGZpbGUsIGxpbmVubywgVEJS
+T0ssICJJbnZhbGlkIG1ldGhvZCwgcGxlYXNlIHNlZSBpbmNsdWRlL3RzZV9zd2FwLmgiKTsKIAl9
+CiAKIAkvKiBUbyBndWFyYW50ZWUgYXQgbGVhc3Qgb25lIHBhZ2UgY2FuIGJlIHN3YXBwZWQgb3V0
+ICovCkBAIC0yMzksNyArMjM5LDcgQEAgYm9vbCBpc19zd2FwX3N1cHBvcnRlZChjb25zdCBjaGFy
+ICpmaWxlbmFtZSkKIAlyZXR1cm4gdHJ1ZTsKIH0KIAotaW50IHRzdF9jb3VudF9zd2Fwcyh2b2lk
+KQoraW50IHRzZV9jb3VudF9zd2Fwcyh2b2lkKQogewogCUZJTEUgKmZwOwogCWludCB1c2VkID0g
+LTE7CmRpZmYgLS1naXQgYS9saWJzL3VpbnB1dC90c3RfdWlucHV0LmMgYi9saWJzL3VpbnB1dC90
+c2VfdWlucHV0LmMKc2ltaWxhcml0eSBpbmRleCA5OSUKcmVuYW1lIGZyb20gbGlicy91aW5wdXQv
+dHN0X3VpbnB1dC5jCnJlbmFtZSB0byBsaWJzL3VpbnB1dC90c2VfdWlucHV0LmMKaW5kZXggMTZl
+Njg5MTUzLi45YmY3ZjE0MzQgMTAwNjQ0Ci0tLSBhL2xpYnMvdWlucHV0L3RzdF91aW5wdXQuYwor
+KysgYi9saWJzL3VpbnB1dC90c2VfdWlucHV0LmMKQEAgLTEyLDcgKzEyLDcgQEAKICNkZWZpbmUg
+VFNUX05PX0RFRkFVTFRfTUFJTgogI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAKLSNpbmNsdWRlICJ0
+c3RfdWlucHV0LmgiCisjaW5jbHVkZSAidHNlX3VpbnB1dC5oIgogI2luY2x1ZGUgInRzdF9zYWZl
+X3N0ZGlvLmgiCiAKICNkZWZpbmUgVklSVFVBTF9ERVZJQ0UgInZpcnR1YWwtZGV2aWNlLWx0cCIK
+ZGlmZiAtLWdpdCBhL2xpYnMvdmRzby9wYXJzZV92ZHNvLmMgYi9saWJzL3Zkc28vdHNlX3BhcnNl
+X3Zkc28uYwpzaW1pbGFyaXR5IGluZGV4IDk5JQpyZW5hbWUgZnJvbSBsaWJzL3Zkc28vcGFyc2Vf
+dmRzby5jCnJlbmFtZSB0byBsaWJzL3Zkc28vdHNlX3BhcnNlX3Zkc28uYwppbmRleCBjZDc1YTg5
+NDUuLjdmNWI2NjNlNSAxMDA2NDQKLS0tIGEvbGlicy92ZHNvL3BhcnNlX3Zkc28uYworKysgYi9s
+aWJzL3Zkc28vdHNlX3BhcnNlX3Zkc28uYwpAQCAtMSw1ICsxLDUgQEAKIC8qCi0gKiBwYXJzZV92
+ZHNvLmM6IExpbnV4IHJlZmVyZW5jZSB2RFNPIHBhcnNlcgorICogdHNlX3BhcnNlX3Zkc28uYzog
+TGludXggcmVmZXJlbmNlIHZEU08gcGFyc2VyCiAgKiBXcml0dGVuIGJ5IEFuZHJldyBMdXRvbWly
+c2tpLCAyMDExLTIwMTQuCiAgKgogICogVGhpcyBjb2RlIGlzIG1lYW50IHRvIGJlIGxpbmtlZCBp
+biB0byB2YXJpb3VzIHByb2dyYW1zIHRoYXQgcnVuIG9uIExpbnV4LgpkaWZmIC0tZ2l0IGEvbGli
+cy92ZHNvL3Zkc29faGVscGVycy5jIGIvbGlicy92ZHNvL3Zkc29faGVscGVycy5jCmluZGV4IDIw
+OGMxMmY2NS4uYzlhNjBlZjc1IDEwMDY0NAotLS0gYS9saWJzL3Zkc28vdmRzb19oZWxwZXJzLmMK
+KysrIGIvbGlicy92ZHNvL3Zkc29faGVscGVycy5jCkBAIC03LDcgKzcsNyBAQAogI2RlZmluZSBU
+U1RfTk9fREVGQVVMVF9NQUlOCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKIAotI2luY2x1ZGUgInBh
+cnNlX3Zkc28uaCIKKyNpbmNsdWRlICJ0c2VfcGFyc2VfdmRzby5oIgogI2luY2x1ZGUgImNvbmZp
+Zy5oIgogCiAjaWZkZWYgSEFWRV9HRVRBVVhWQUwKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvaW5wdXQvaW5wdXRfY29tbW9uLmggYi90ZXN0Y2FzZXMva2VybmVsL2lucHV0L2lucHV0X2Nv
+bW1vbi5oCmluZGV4IDViMTc1NTc3MS4uOWFjZGI4NmJlIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMv
+a2VybmVsL2lucHV0L2lucHV0X2NvbW1vbi5oCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvaW5wdXQv
+aW5wdXRfY29tbW9uLmgKQEAgLTEwLDcgKzEwLDcgQEAKICNpbmNsdWRlIDxwb2xsLmg+CiAKICNp
+bmNsdWRlICJ0c3RfdGVzdC5oIgotI2luY2x1ZGUgInRzdF91aW5wdXQuaCIKKyNpbmNsdWRlICJ0
+c2VfdWlucHV0LmgiCiAKIHN0YXRpYyBpbmxpbmUgaW50IG9wZW5fZXZlbnRfZGV2aWNlKHZvaWQp
+CiB7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL21lbS9jcHVzZXQvY3B1c2V0MDIuYyBi
+L3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2NwdXNldC9jcHVzZXQwMi5jCmluZGV4IGNjZmRkZDZhMi4u
+ZDY3ZGNiZjZmIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL21lbS9jcHVzZXQvY3B1c2V0
+MDIuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9jcHVzZXQvY3B1c2V0MDIuYwpAQCAtMTgs
+MTMgKzE4LDEzIEBACiAKICNpZmRlZiBIQVZFX05VTUFfVjIKICNpbmNsdWRlIDxudW1haWYuaD4K
+LSNpbmNsdWRlICJ0c3RfbnVtYS5oIgorI2luY2x1ZGUgInRzZV9udW1hLmgiCiAKICNkZWZpbmUg
+TU5UUE9JTlQgImh1Z2V0bGJmcy8iCiAjZGVmaW5lIEhVR0VfUEFHRV9GSUxFIE1OVFBPSU5UICJo
+dWdlcGFnZWZpbGUiCiAKIHN0YXRpYyBsb25nIGhwYWdlX3NpemU7Ci1zdGF0aWMgc3RydWN0IHRz
+dF9ub2RlbWFwICpub2RlOworc3RhdGljIHN0cnVjdCB0c2Vfbm9kZW1hcCAqbm9kZTsKIHN0YXRp
+YyBpbnQgY2hlY2tfbm9kZV9pZDsKIHN0YXRpYyBzdHJ1Y3QgdHN0X2NnX2dyb3VwICpjZ19jcHVz
+ZXRfMDsKIApAQCAtODgsNyArODgsNyBAQCBzdGF0aWMgdm9pZCBydW5fdGVzdCh2b2lkKQogCiBz
+dGF0aWMgdm9pZCBzZXR1cCh2b2lkKQogewotCW5vZGUgPSB0c3RfZ2V0X25vZGVtYXAoVFNUX05V
+TUFfTUVNLCBnZXRwYWdlc2l6ZSgpIC8gMTAyNCk7CisJbm9kZSA9IHRzZV9nZXRfbm9kZW1hcChU
+U1RfTlVNQV9NRU0sIGdldHBhZ2VzaXplKCkgLyAxMDI0KTsKIAlpZiAobm9kZS0+Y250IDw9IDEp
+CiAJCXRzdF9icmsoVENPTkYsICJ0ZXN0IHJlcXVpcmVzIGF0IGxlYXN0IDIgTlVNQSBtZW1vcnkg
+bm9kZXMiKTsKIApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0va3NtL2tzbTA2LmMg
+Yi90ZXN0Y2FzZXMva2VybmVsL21lbS9rc20va3NtMDYuYwppbmRleCBhOGU3MzI3NWQuLjc1ODcy
+NDY5ZCAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0va3NtL2tzbTA2LmMKKysrIGIv
+dGVzdGNhc2VzL2tlcm5lbC9tZW0va3NtL2tzbTA2LmMKQEAgLTMyLDcgKzMyLDcgQEAKICNpbmNs
+dWRlIDxsaW1pdHMuaD4KIAogI2luY2x1ZGUgInRzdF90ZXN0LmgiCi0jaW5jbHVkZSAidHN0X251
+bWEuaCIKKyNpbmNsdWRlICJ0c2VfbnVtYS5oIgogI2luY2x1ZGUgImtzbV9oZWxwZXIuaCIKICNp
+bmNsdWRlICJrc21fdGVzdC5oIgogCkBAIC00NCw3ICs0NCw3IEBAIHN0YXRpYyB1bnNpZ25lZCBs
+b25nIG5yX3BhZ2VzID0gMTAwOwogc3RhdGljIGNoYXIgKm5fb3B0OwogCiBzdGF0aWMgc2l6ZV90
+IHBhZ2Vfc2l6ZTsKLXN0YXRpYyBzdHJ1Y3QgdHN0X25vZGVtYXAgKm5vZGVzOworc3RhdGljIHN0
+cnVjdCB0c2Vfbm9kZW1hcCAqbm9kZXM7CiAKIHN0YXRpYyB2b2lkIHRlc3Rfa3NtKHZvaWQpCiB7
+CkBAIC0xMjQsNyArMTI0LDcgQEAgc3RhdGljIHZvaWQgc2V0dXAodm9pZCkKIAogCXBhZ2Vfc2l6
+ZSA9IGdldHBhZ2VzaXplKCk7CiAKLQlub2RlcyA9IHRzdF9nZXRfbm9kZW1hcChUU1RfTlVNQV9N
+RU0sIG5yX3BhZ2VzICogcGFnZV9zaXplIC8gMTAyNCk7CisJbm9kZXMgPSB0c2VfZ2V0X25vZGVt
+YXAoVFNUX05VTUFfTUVNLCBucl9wYWdlcyAqIHBhZ2Vfc2l6ZSAvIDEwMjQpOwogCWlmIChub2Rl
+cy0+Y250IDw9IDEpCiAJCXRzdF9icmsoVENPTkYsICJUZXN0IHJlcXVpcmVzIGF0IGxlYXN0IHR3
+byBOVU1BIG1lbW9yeSBub2RlcyIpOwogfQpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9t
+ZW0vc2htdC9zaG10MDIuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2htdDAyLmMKaW5k
+ZXggZGUxZDBiMGMzLi5mNmMyOWI2ZDggMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVt
+L3NobXQvc2htdDAyLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2htdC9zaG10MDIuYwpA
+QCAtMTUsNyArMTUsNyBAQAogI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAjaW5jbHVkZSAidHN0X3Nh
+ZmVfc3lzdl9pcGMuaCIKICNpbmNsdWRlICJ0c3RfcmFuZF9kYXRhLmgiCi0jaW5jbHVkZSAibGli
+bmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogCiAjZGVmaW5lIFNITVNJWkUgMTYK
+IApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2htdC9zaG10MDMuYyBiL3Rlc3Rj
+YXNlcy9rZXJuZWwvbWVtL3NobXQvc2htdDAzLmMKaW5kZXggNjNmNWE3YjQ1Li5mZTZiYWNiOGUg
+MTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2htdDAzLmMKKysrIGIvdGVz
+dGNhc2VzL2tlcm5lbC9tZW0vc2htdC9zaG10MDMuYwpAQCAtMTYsNyArMTYsNyBAQAogI2luY2x1
+ZGUgInRzdF90ZXN0LmgiCiAjaW5jbHVkZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIKICNpbmNsdWRl
+ICJ0c3RfcmFuZF9kYXRhLmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNl
+X25ld2lwYy5oIgogCiAjZGVmaW5lIFNITVNJWkUgMTYKIApkaWZmIC0tZ2l0IGEvdGVzdGNhc2Vz
+L2tlcm5lbC9tZW0vc2htdC9zaG10MDQuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2ht
+dDA0LmMKaW5kZXggYzA3YjFlZjkzLi4yYTIwZDk1NjUgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9r
+ZXJuZWwvbWVtL3NobXQvc2htdDA0LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2htdC9z
+aG10MDQuYwpAQCAtMTgsNyArMTgsNyBAQAogI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAjaW5jbHVk
+ZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIKICNpbmNsdWRlICJ0c3RfcmFuZF9kYXRhLmgiCi0jaW5j
+bHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogCiAjZGVmaW5lIFNI
+TVNJWkUgMTYKIApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2htdC9zaG10MDUu
+YyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2htdDA1LmMKaW5kZXggZThiNWQ5ZWI1Li5h
+MzgxMjA4MDkgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2htdDA1LmMK
+KysrIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2htdC9zaG10MDUuYwpAQCAtMTQsNyArMTQsNyBA
+QAogCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5o
+IgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdpcGMuaCIKICNpbmNs
+dWRlIDxzeXMvc2htLmg+CiAKICNkZWZpbmUgU0hNU0laRSAxNgpkaWZmIC0tZ2l0IGEvdGVzdGNh
+c2VzL2tlcm5lbC9tZW0vc2htdC9zaG10MDcuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQv
+c2htdDA3LmMKaW5kZXggOTYyNDc5ZTc1Li5hNzI5Y2YyMWMgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNl
+cy9rZXJuZWwvbWVtL3NobXQvc2htdDA3LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2ht
+dC9zaG10MDcuYwpAQCAtMTYsNyArMTYsNyBAQAogI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAjaW5j
+bHVkZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIKICNpbmNsdWRlICJ0c3RfcmFuZF9kYXRhLmgiCi0j
+aW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogCiAjZGVmaW5l
+IFNITVNJWkUgMTYKIApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2htdC9zaG10
+MDguYyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2htdDA4LmMKaW5kZXggOWZiMmY2YjIy
+Li4zYTdhNTBkNzMgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2htdDA4
+LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2htdC9zaG10MDguYwpAQCAtMTQsNyArMTQs
+NyBAQAogCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lw
+Yy5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdpcGMuaCIKIAog
+I2RlZmluZSBTSE1TSVpFIDE2CiAKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL3No
+bXQvc2htdDA5LmMgYi90ZXN0Y2FzZXMva2VybmVsL21lbS9zaG10L3NobXQwOS5jCmluZGV4IGZi
+NDA0OThlNi4uNzAwMzA3NzExIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL21lbS9zaG10
+L3NobXQwOS5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2htdDA5LmMKQEAgLTE5
+LDcgKzE5LDcgQEAKIAogI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAjaW5jbHVkZSAidHN0X3NhZmVf
+c3lzdl9pcGMuaCIKLSNpbmNsdWRlICJsaWJuZXdpcGMuaCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBj
+LmgiCiAjaW5jbHVkZSAidHN0X3Rlc3RfbWFjcm9zLmgiCiAKICNkZWZpbmUgU0hNU0laRSAxNgpk
+aWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9tZW0vc2htdC9zaG10MTAuYyBiL3Rlc3RjYXNl
+cy9rZXJuZWwvbWVtL3NobXQvc2htdDEwLmMKaW5kZXggMmJkNDhiNmI1Li41ODc2ZTZiZjAgMTAw
+NjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL3NobXQvc2htdDEwLmMKKysrIGIvdGVzdGNh
+c2VzL2tlcm5lbC9tZW0vc2htdC9zaG10MTAuYwpAQCAtMTYsNyArMTYsNyBAQAogCiAjaW5jbHVk
+ZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgotI2luY2x1ZGUg
+ImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdpcGMuaCIKIAogI2RlZmluZSBTSE1TSVpF
+IDB4MzI3NjgKIApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9ja19n
+ZXR0aW1lL2Nsb2NrX2dldHRpbWUwNC5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9j
+a19nZXR0aW1lL2Nsb2NrX2dldHRpbWUwNC5jCmluZGV4IDRmMjYyZGEwMC4uYTMwNWYwMzdhIDEw
+MDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb2NrX2dldHRpbWUvY2xvY2tf
+Z2V0dGltZTA0LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9ja19nZXR0aW1l
+L2Nsb2NrX2dldHRpbWUwNC5jCkBAIC0xMyw3ICsxMyw3IEBACiAgKi8KIAogI2luY2x1ZGUgImNv
+bmZpZy5oIgotI2luY2x1ZGUgInBhcnNlX3Zkc28uaCIKKyNpbmNsdWRlICJ0c2VfcGFyc2VfdmRz
+by5oIgogI2luY2x1ZGUgInRpbWU2NF92YXJpYW50cy5oIgogI2luY2x1ZGUgInRzdF90aW1lci5o
+IgogI2luY2x1ZGUgInRzdF9zYWZlX2Nsb2Nrcy5oIgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9nZXRfbWVtcG9saWN5L2dldF9tZW1wb2xpY3kwMS5jIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9nZXRfbWVtcG9saWN5L2dldF9tZW1wb2xpY3kwMS5jCmluZGV4IDNj
+ODU0ZDEwOS4uYzE1MGQ0MGE1IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L2dldF9tZW1wb2xpY3kvZ2V0X21lbXBvbGljeTAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9nZXRfbWVtcG9saWN5L2dldF9tZW1wb2xpY3kwMS5jCkBAIC0yMiw3ICsyMiw3IEBA
+CiAjaW5jbHVkZSA8bnVtYS5oPgogI2luY2x1ZGUgPG51bWFpZi5oPgogI2luY2x1ZGUgPGVycm5v
+Lmg+Ci0jaW5jbHVkZSAidHN0X251bWEuaCIKKyNpbmNsdWRlICJ0c2VfbnVtYS5oIgogCiAjZGVm
+aW5lIE1FTV9MRU5HVEgJKDQgKiAxMDI0ICogMTAyNCkKICNkZWZpbmUgUEFHRVNfQUxMT0NBVEVE
+IDE2dQpAQCAtMzIsNyArMzIsNyBAQAogI2RlZmluZSBQT0xJQ1lfREVTQ19GTEFHUyh4LCB5KSAu
+cG9saWN5ID0geCwgLmZsYWdzID0geSwgLmRlc2MgPSAicG9saWN5OiAiI3giLCBmbGFnczogIiN5
+CiAjZGVmaW5lIFBPTElDWV9ERVNDX0ZMQUdTX05PX1RBUkdFVCh4LCB5KSAucG9saWN5ID0geCwg
+LmZsYWdzID0geSwgLmRlc2MgPSAicG9saWN5OiAiI3giLCBmbGFnczogIiN5Iiwgbm8gdGFyZ2V0
+IgogCi1zdGF0aWMgc3RydWN0IHRzdF9ub2RlbWFwICpub2RlOworc3RhdGljIHN0cnVjdCB0c2Vf
+bm9kZW1hcCAqbm9kZTsKIHN0YXRpYyBzdHJ1Y3QgYml0bWFzayAqbm9kZW1hc2ssICpnZXRub2Rl
+bWFzaywgKmVtcHR5X25vZGVtYXNrOwogCiBzdHJ1Y3QgdGVzdF9jYXNlIHsKQEAgLTE0Miw3ICsx
+NDIsNyBAQCBzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQogewogCXVuc2lnbmVkIGludCBpOwogCi0J
+bm9kZSA9IHRzdF9nZXRfbm9kZW1hcChUU1RfTlVNQV9NRU0sIFBBR0VTX0FMTE9DQVRFRCAqIGdl
+dHBhZ2VzaXplKCkgLyAxMDI0KTsKKwlub2RlID0gdHNlX2dldF9ub2RlbWFwKFRTVF9OVU1BX01F
+TSwgUEFHRVNfQUxMT0NBVEVEICogZ2V0cGFnZXNpemUoKSAvIDEwMjQpOwogCWlmIChub2RlLT5j
+bnQgPCAxKQogCQl0c3RfYnJrKFRDT05GLCAidGVzdCByZXF1aXJlcyBhdCBsZWFzdCBvbmUgTlVN
+QSBtZW1vcnkgbm9kZSIpOwogCkBAIC0xNzUsNyArMTc1LDcgQEAgc3RhdGljIHZvaWQgY2xlYW51
+cCh2b2lkKQogCiAJbnVtYV9mcmVlX25vZGVtYXNrKG5vZGVtYXNrKTsKIAludW1hX2ZyZWVfbm9k
+ZW1hc2soZ2V0bm9kZW1hc2spOwotCXRzdF9ub2RlbWFwX2ZyZWUobm9kZSk7CisJdHNlX25vZGVt
+YXBfZnJlZShub2RlKTsKIH0KIAogc3RhdGljIHZvaWQgZG9fdGVzdCh1bnNpZ25lZCBpbnQgaSkK
+ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0X21lbXBvbGljeS9nZXRf
+bWVtcG9saWN5MDIuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0X21lbXBvbGljeS9n
+ZXRfbWVtcG9saWN5MDIuYwppbmRleCA3OWZmNWQ5NGYuLmY5MjNhZmFjOCAxMDA2NDQKLS0tIGEv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRfbWVtcG9saWN5L2dldF9tZW1wb2xpY3kwMi5j
+CisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0X21lbXBvbGljeS9nZXRfbWVtcG9s
+aWN5MDIuYwpAQCAtMjIsMTMgKzIyLDEzIEBACiAjaW5jbHVkZSA8bnVtYS5oPgogI2luY2x1ZGUg
+PG51bWFpZi5oPgogI2luY2x1ZGUgPGVycm5vLmg+Ci0jaW5jbHVkZSAidHN0X251bWEuaCIKKyNp
+bmNsdWRlICJ0c2VfbnVtYS5oIgogCiAjZGVmaW5lIFBBR0VTX0FMTE9DQVRFRCAxNnUKIAogI2Rl
+ZmluZSBQT0xJQ1lfREVTQ19URVhUKHgsIHkpIC5wb2xpY3kgPSB4LCAuZGVzYyA9ICJwb2xpY3k6
+ICIjeCIsICJ5CiAKLXN0YXRpYyBzdHJ1Y3QgdHN0X25vZGVtYXAgKm5vZGU7CitzdGF0aWMgc3Ry
+dWN0IHRzZV9ub2RlbWFwICpub2RlOwogc3RhdGljIHN0cnVjdCBiaXRtYXNrICpub2RlbWFzazsK
+IAogc3RydWN0IHRlc3RfY2FzZSB7CkBAIC01NSw3ICs1NSw3IEBAIHN0YXRpYyBzdHJ1Y3QgdGVz
+dF9jYXNlIHRjYXNlW10gPSB7CiAKIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCiB7Ci0Jbm9kZSA9
+IHRzdF9nZXRfbm9kZW1hcChUU1RfTlVNQV9NRU0sIFBBR0VTX0FMTE9DQVRFRCAqIGdldHBhZ2Vz
+aXplKCkgLyAxMDI0KTsKKwlub2RlID0gdHNlX2dldF9ub2RlbWFwKFRTVF9OVU1BX01FTSwgUEFH
+RVNfQUxMT0NBVEVEICogZ2V0cGFnZXNpemUoKSAvIDEwMjQpOwogCWlmIChub2RlLT5jbnQgPCAx
+KQogCQl0c3RfYnJrKFRDT05GLCAidGVzdCByZXF1aXJlcyBhdCBsZWFzdCBvbmUgTlVNQSBtZW1v
+cnkgbm9kZSIpOwogCkBAIC02NSw3ICs2NSw3IEBAIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCiBz
+dGF0aWMgdm9pZCBjbGVhbnVwKHZvaWQpCiB7CiAJbnVtYV9mcmVlX25vZGVtYXNrKG5vZGVtYXNr
+KTsKLQl0c3Rfbm9kZW1hcF9mcmVlKG5vZGUpOworCXRzZV9ub2RlbWFwX2ZyZWUobm9kZSk7CiB9
+CiAKIHN0YXRpYyB2b2lkIGRvX3Rlc3QodW5zaWduZWQgaW50IGkpCmRpZmYgLS1naXQgYS90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2djdGwvbXNnY3RsMDEuYyBiL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2N0bC9tc2djdGwwMS5jCmluZGV4IDU2ZDE1MDVmZC4uOTUz
+MTlmYTI5IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2djdGwv
+bXNnY3RsMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2djdGwvbXNn
+Y3RsMDEuYwpAQCAtMTMsNyArMTMsNyBAQAogCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNs
+dWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1
+ZGUgInRzZV9uZXdpcGMuaCIKIAogc3RhdGljIGludCBtc2dfaWQgPSAtMTsKIHN0YXRpYyB0aW1l
+X3QgY3JlYXRfdGltZTsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBj
+L21zZ2N0bC9tc2djdGwwMi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnY3Rs
+L21zZ2N0bDAyLmMKaW5kZXggMWFjZTYyZjExLi41OTRmMGViZWIgMTAwNjQ0Ci0tLSBhL3Rlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2N0bC9tc2djdGwwMi5jCisrKyBiL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2N0bC9tc2djdGwwMi5jCkBAIC0xMyw3ICsxMyw3IEBA
+CiAKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgi
+Ci0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogCiBzdGF0
+aWMgaW50IG1zZ19pZCA9IC0xOwogc3RydWN0IG1zcWlkX2RzIG9yaWdfYnVmOwpkaWZmIC0tZ2l0
+IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnY3RsL21zZ2N0bDAzLmMgYi90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2djdGwvbXNnY3RsMDMuYwppbmRleCBjYzdhYmQ0
+YjkuLmEyMzFkMDczOSAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMv
+bXNnY3RsL21zZ2N0bDAzLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNn
+Y3RsL21zZ2N0bDAzLmMKQEAgLTEyLDcgKzEyLDcgQEAKIAogI2luY2x1ZGUgInRzdF90ZXN0Lmgi
+CiAjaW5jbHVkZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIKLSNpbmNsdWRlICJsaWJuZXdpcGMuaCIK
+KyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAKIHN0YXRpYyB2b2lkIHZlcmlmeV9tc2djdGwodm9p
+ZCkKIHsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2N0bC9t
+c2djdGwwNC5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnY3RsL21zZ2N0bDA0
+LmMKaW5kZXggNGI2Mjg5NmZiLi4zN2Y1NDk4OWIgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvaXBjL21zZ2N0bC9tc2djdGwwNC5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvaXBjL21zZ2N0bC9tc2djdGwwNC5jCkBAIC0xNCw3ICsxNCw3IEBACiAKICNpbmNs
+dWRlICJ0c3RfdGVzdC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCi0jaW5jbHVk
+ZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogI2luY2x1ZGUgImxhcGkv
+c3lzY2FsbHMuaCIKIAogc3RhdGljIGludCBtc2dfaWQxID0gLTE7CmRpZmYgLS1naXQgYS90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2djdGwvbXNnY3RsMDUuYyBiL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2N0bC9tc2djdGwwNS5jCmluZGV4IDdlMDU5ZDdmMC4uOTc3
+MzUyNzFiIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2djdGwv
+bXNnY3RsMDUuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2djdGwvbXNn
+Y3RsMDUuYwpAQCAtOCw3ICs4LDcgQEAKICAqLwogI2luY2x1ZGUgPHN5cy9tc2cuaD4KICNpbmNs
+dWRlICJsYXBpL21zZ2J1Zi5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRz
+ZV9uZXdpcGMuaCIKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5
+c3ZfaXBjLmgiCiAKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21z
+Z2N0bC9tc2djdGwwNi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnY3RsL21z
+Z2N0bDA2LmMKaW5kZXggMmUyMmYzN2ZlLi43OGM0ZjdiZTIgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2N0bC9tc2djdGwwNi5jCisrKyBiL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2N0bC9tc2djdGwwNi5jCkBAIC0yNSw3ICsyNSw3IEBACiAj
+aW5jbHVkZSA8cHdkLmg+CiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJ0c3Rfc2Fm
+ZV9zeXN2X2lwYy5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdp
+cGMuaCIKICNpbmNsdWRlICJsYXBpL21zZy5oIgogCiBzdGF0aWMgaW50IG1zZ19pZCA9IC0xOwpk
+aWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnY3RsL21zZ2N0bDEy
+LmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2djdGwvbXNnY3RsMTIuYwppbmRl
+eCA3M2VlYWQ3NDQuLjE4MTdiZTJhOCAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9pcGMvbXNnY3RsL21zZ2N0bDEyLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9pcGMvbXNnY3RsL21zZ2N0bDEyLmMKQEAgLTEzLDcgKzEzLDcgQEAKIAogI2luY2x1ZGUgInRz
+dF90ZXN0LmgiCiAjaW5jbHVkZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIKLSNpbmNsdWRlICJsaWJu
+ZXdpcGMuaCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAKIHN0YXRpYyBpbnQgbXNnX3EgPSAt
+MTsKIHN0YXRpYyBpbnQgaW5kZXhfcTsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvaXBjL21zZ2dldC9tc2dnZXQwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9p
+cGMvbXNnZ2V0L21zZ2dldDAxLmMKaW5kZXggZGQ1YTVhZDczLi43MjZlMDljYzUgMTAwNjQ0Ci0t
+LSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2dldC9tc2dnZXQwMS5jCisrKyBi
+L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2dldC9tc2dnZXQwMS5jCkBAIC0xNiw3
+ICsxNiw3IEBACiAKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5
+c3ZfaXBjLmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5o
+IgogCiBzdGF0aWMgaW50IHF1ZXVlX2lkID0gLTE7CiBzdGF0aWMga2V5X3QgbXNna2V5OwpkaWZm
+IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnZ2V0L21zZ2dldDAyLmMg
+Yi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dnZXQvbXNnZ2V0MDIuYwppbmRleCBl
+ZjlhYjM0YjguLjhjZjU3ZmQ1MyAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9pcGMvbXNnZ2V0L21zZ2dldDAyLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9p
+cGMvbXNnZ2V0L21zZ2dldDAyLmMKQEAgLTI0LDcgKzI0LDcgQEAKIAogI2luY2x1ZGUgInRzdF90
+ZXN0LmgiCiAjaW5jbHVkZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIKLSNpbmNsdWRlICJsaWJuZXdp
+cGMuaCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAKIHN0YXRpYyBrZXlfdCBtc2drZXksIG1z
+Z2tleTE7CiBzdGF0aWMgaW50IHF1ZXVlX2lkID0gLTE7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL2lwYy9tc2dnZXQvbXNnZ2V0MDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvaXBjL21zZ2dldC9tc2dnZXQwMy5jCmluZGV4IGJkMDY1Mzk3My4uZjNkNzU3OWEz
+IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dnZXQvbXNnZ2V0
+MDMuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dnZXQvbXNnZ2V0MDMu
+YwpAQCAtMTcsNyArMTcsNyBAQAogCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJ0
+c3Rfc2FmZV9zeXN2X2lwYy5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRz
+ZV9uZXdpcGMuaCIKIAogc3RhdGljIGludCBtYXhtc2dzLCBxdWV1ZV9jbnQsIHVzZWRfY250Owog
+c3RhdGljIGludCAqcXVldWVzOwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9pcGMvbXNnZ2V0L21zZ2dldDA0LmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9t
+c2dnZXQvbXNnZ2V0MDQuYwppbmRleCAyOGNiYjMzNTIuLjdmOGYyZWQ5ZSAxMDA2NDQKLS0tIGEv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnZ2V0L21zZ2dldDA0LmMKKysrIGIvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnZ2V0L21zZ2dldDA0LmMKQEAgLTIwLDcgKzIw
+LDcgQEAKICNpbmNsdWRlIDxzeXMvbXNnLmg+CiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNs
+dWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1
+ZGUgInRzZV9uZXdpcGMuaCIKIAogI2RlZmluZSBORVhUX0lEX1BBVEggIi9wcm9jL3N5cy9rZXJu
+ZWwvbXNnX25leHRfaWQiCiBzdGF0aWMgaW50IHF1ZXVlX2lkLCBwaWQ7CmRpZmYgLS1naXQgYS90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dnZXQvbXNnZ2V0MDUuYyBiL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2dldC9tc2dnZXQwNS5jCmluZGV4IGVkY2IzMDdjNi4u
+YzY4MzE0MmY1IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dn
+ZXQvbXNnZ2V0MDUuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dnZXQv
+bXNnZ2V0MDUuYwpAQCAtMTgsNyArMTgsNyBAQAogI2luY2x1ZGUgPHN5cy9tc2cuaD4KICNpbmNs
+dWRlICJ0c3RfdGVzdC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCi0jaW5jbHVk
+ZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogCiAjZGVmaW5lIE5FWFRf
+SURfUEFUSCAiL3Byb2Mvc3lzL2tlcm5lbC9tc2dfbmV4dF9pZCIKIApkaWZmIC0tZ2l0IGEvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNncmN2L21zZ3JjdjAxLmMgYi90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL2lwYy9tc2dyY3YvbXNncmN2MDEuYwppbmRleCA1OGJmZDI3NzEuLjJi
+MDc1ZGExMyAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNncmN2
+L21zZ3JjdjAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNncmN2L21z
+Z3JjdjAxLmMKQEAgLTEwLDcgKzEwLDcgQEAKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1
+ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCiAjaW5jbHVkZSAidHN0X2Nsb2Nrcy5oIgotI2luY2x1
+ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdpcGMuaCIKIAogc3RhdGljIGtleV90
+IG1zZ2tleTsKIHN0YXRpYyBpbnQgcXVldWVfaWQgPSAtMSwgcGlkOwpkaWZmIC0tZ2l0IGEvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNncmN2L21zZ3JjdjAyLmMgYi90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL2lwYy9tc2dyY3YvbXNncmN2MDIuYwppbmRleCAzZTQ0NjJjMDMuLjAx
+YzE1NzIzNCAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNncmN2
+L21zZ3JjdjAyLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNncmN2L21z
+Z3JjdjAyLmMKQEAgLTMwLDcgKzMwLDcgQEAKICNpbmNsdWRlIDxwd2QuaD4KICNpbmNsdWRlICJ0
+c3RfdGVzdC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCi0jaW5jbHVkZSAibGli
+bmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogCiBzdGF0aWMga2V5X3QgbXNna2V5
+Owogc3RhdGljIGludCBxdWV1ZV9pZCA9IC0xOwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy9pcGMvbXNncmN2L21zZ3JjdjAzLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL2lwYy9tc2dyY3YvbXNncmN2MDMuYwppbmRleCAzZTQ2MWIzMDcuLmMxNzlmNzVlNSAxMDA2
+NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNncmN2L21zZ3JjdjAzLmMK
+KysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNncmN2L21zZ3JjdjAzLmMKQEAg
+LTI3LDcgKzI3LDcgQEAKICNpbmNsdWRlIDxwd2QuaD4KICNpbmNsdWRlICJ0c3RfdGVzdC5oIgog
+I2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisj
+aW5jbHVkZSAidHNlX25ld2lwYy5oIgogI2luY2x1ZGUgImxhcGkvbXNnLmgiCiAKIHN0YXRpYyBr
+ZXlfdCBtc2drZXk7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9t
+c2dyY3YvbXNncmN2MDUuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3Jjdi9t
+c2dyY3YwNS5jCmluZGV4IGNjMzg1ZWU2ZS4uNTlkMTY3MzI0IDEwMDY0NAotLS0gYS90ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dyY3YvbXNncmN2MDUuYworKysgYi90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL2lwYy9tc2dyY3YvbXNncmN2MDUuYwpAQCAtMTEsNyArMTEsNyBAQAog
+I2luY2x1ZGUgPHN0ZGxpYi5oPgogI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAjaW5jbHVkZSAidHN0
+X3NhZmVfc3lzdl9pcGMuaCIKLSNpbmNsdWRlICJsaWJuZXdpcGMuaCIKKyNpbmNsdWRlICJ0c2Vf
+bmV3aXBjLmgiCiAKIHN0YXRpYyBrZXlfdCBtc2drZXk7CiBzdGF0aWMgaW50IHF1ZXVlX2lkID0g
+LTE7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dyY3YvbXNn
+cmN2MDYuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3Jjdi9tc2dyY3YwNi5j
+CmluZGV4IGYxNDUyNmRmOS4uMmFlZTAxZmY2IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2lwYy9tc2dyY3YvbXNncmN2MDYuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2lwYy9tc2dyY3YvbXNncmN2MDYuYwpAQCAtMTMsNyArMTMsNyBAQAogI2luY2x1ZGUg
+PHN0ZGxpYi5oPgogI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAjaW5jbHVkZSAidHN0X3NhZmVfc3lz
+dl9pcGMuaCIKLSNpbmNsdWRlICJsaWJuZXdpcGMuaCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgi
+CiAKIHN0YXRpYyBrZXlfdCBtc2drZXk7CiBzdGF0aWMgaW50IHF1ZXVlX2lkID0gLTE7CmRpZmYg
+LS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dyY3YvbXNncmN2MDcuYyBi
+L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3Jjdi9tc2dyY3YwNy5jCmluZGV4IGQy
+ZDFhODgyYS4uMjE4NDE0MmY5IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L2lwYy9tc2dyY3YvbXNncmN2MDcuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lw
+Yy9tc2dyY3YvbXNncmN2MDcuYwpAQCAtMjksNyArMjksNyBAQAogI2luY2x1ZGUgPHN5cy93YWl0
+Lmg+CiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5o
+IgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdpcGMuaCIKICNpbmNs
+dWRlICJsYXBpL21zZy5oIgogCiAjZGVmaW5lIE1TR1RZUEUxCTEKZGlmZiAtLWdpdCBhL3Rlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3Jjdi9tc2dyY3YwOC5jIGIvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9pcGMvbXNncmN2L21zZ3JjdjA4LmMKaW5kZXggMWFiNmViYTlmLi5lNTVk
+OGM5NjAgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3Jjdi9t
+c2dyY3YwOC5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3Jjdi9tc2dy
+Y3YwOC5jCkBAIC0yNyw3ICsyNyw3IEBACiAjaW5jbHVkZSA8c3lzL21zZy5oPgogI2luY2x1ZGUg
+InRzdF90ZXN0LmgiCiAjaW5jbHVkZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIKLSNpbmNsdWRlICJs
+aWJuZXdpcGMuaCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAKIHN0YXRpYyBsb25nIG10eXBl
+ID0gMTIxOwogc3RhdGljIGtleV90IG1zZ2tleTsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvaXBjL21zZ3NuZC9tc2dzbmQwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9pcGMvbXNnc25kL21zZ3NuZDAxLmMKaW5kZXggNmQ5MmYzZGVjLi5mYjU1ZDI5ZWMgMTAw
+NjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3NuZC9tc2dzbmQwMS5j
+CisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3NuZC9tc2dzbmQwMS5jCkBA
+IC0xNiw3ICsxNiw3IEBACiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJ0c3Rfc2Fm
+ZV9zeXN2X2lwYy5oIgogI2luY2x1ZGUgInRzdF9jbG9ja3MuaCIKLSNpbmNsdWRlICJsaWJuZXdp
+cGMuaCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAKIHN0YXRpYyBrZXlfdCBtc2drZXk7CiBz
+dGF0aWMgaW50IHF1ZXVlX2lkID0gLTEsIHBpZDsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvaXBjL21zZ3NuZC9tc2dzbmQwMi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9pcGMvbXNnc25kL21zZ3NuZDAyLmMKaW5kZXggZWNhNjYwNjA1Li5iMWUxZTM4ODkgMTAw
+NjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3NuZC9tc2dzbmQwMi5j
+CisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ3NuZC9tc2dzbmQwMi5jCkBA
+IC0yOCw3ICsyOCw3IEBACiAKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1ZGUgInRzdF9z
+YWZlX3N5c3ZfaXBjLmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25l
+d2lwYy5oIgogCiBzdGF0aWMga2V5X3QgbXNna2V5Owogc3RhdGljIGludCBxdWV1ZV9pZCA9IC0x
+OwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvbXNnc25kL21zZ3Nu
+ZDA1LmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dzbmQvbXNnc25kMDUuYwpp
+bmRleCA4ODdiZmRlZjIuLjJjZTMzNGZkNCAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9pcGMvbXNnc25kL21zZ3NuZDA1LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9pcGMvbXNnc25kL21zZ3NuZDA1LmMKQEAgLTIxLDcgKzIxLDcgQEAKIAogI2luY2x1ZGUg
+InRzdF90ZXN0LmgiCiAjaW5jbHVkZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIKLSNpbmNsdWRlICJs
+aWJuZXdpcGMuaCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAKIHN0YXRpYyBrZXlfdCBtc2dr
+ZXk7CiBzdGF0aWMgaW50IHF1ZXVlX2lkID0gLTE7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL2lwYy9tc2dzbmQvbXNnc25kMDYuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvaXBjL21zZ3NuZC9tc2dzbmQwNi5jCmluZGV4IDhmYzY2NWU2OC4uNzc4Y2VmODk5IDEw
+MDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dzbmQvbXNnc25kMDYu
+YworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9tc2dzbmQvbXNnc25kMDYuYwpA
+QCAtMTcsNyArMTcsNyBAQAogCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJ0c3Rf
+c2FmZV9zeXN2X2lwYy5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9u
+ZXdpcGMuaCIKIAogc3RhdGljIGtleV90IG1zZ2tleTsKIHN0YXRpYyBpbnQgcXVldWVfaWQgPSAt
+MTsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1j
+dGwwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDAxLmMK
+aW5kZXggOTJhMzZiZmYwLi41YmQ2NzVhYjYgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwMS5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwMS5jCkBAIC0xMSw3ICsxMSw3IEBACiAjaW5jbHVkZSAi
+dHN0X3NhZmVfc3lzdl9pcGMuaCIKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1ZGUgImxh
+cGkvc2VtLmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5o
+IgogCiAjZGVmaW5lIElOQ1ZBTCAyCiAjZGVmaW5lIE5FV01PREUgMDY2CmRpZmYgLS1naXQgYS90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDIuYyBiL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwMi5jCmluZGV4IDZjYTYzNDcyYy4u
+YThmZWQ0ZmQ4IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1j
+dGwvc2VtY3RsMDIuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwv
+c2VtY3RsMDIuYwpAQCAtMTIsNyArMTIsNyBAQAogI2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBj
+LmgiCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJsYXBpL3NlbS5oIgotI2luY2x1
+ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdpcGMuaCIKIAogc3RhdGljIGludCBz
+ZW1faWQgPSAtMTsKIApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMv
+c2VtY3RsL3NlbWN0bDAzLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwv
+c2VtY3RsMDMuYwppbmRleCAxMTUzMGIyMDEuLjVhMTFiOTVlZiAxMDA2NDQKLS0tIGEvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDAzLmMKKysrIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDAzLmMKQEAgLTEyLDcgKzEyLDcgQEAK
+ICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgogI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAj
+aW5jbHVkZSAibGFwaS9zZW0uaCIKLSNpbmNsdWRlICJsaWJuZXdpcGMuaCIKKyNpbmNsdWRlICJ0
+c2VfbmV3aXBjLmgiCiAjaW5jbHVkZSAibGFwaS9zeXNjYWxscy5oIgogCiBzdGF0aWMgaW50IHNl
+bV9pZCA9IC0xOwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2Vt
+Y3RsL3NlbWN0bDA0LmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2Vt
+Y3RsMDQuYwppbmRleCBmNmZhMzYxYjIuLmQwMWJiM2RiNCAxMDA2NDQKLS0tIGEvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDA0LmMKKysrIGIvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDA0LmMKQEAgLTE3LDcgKzE3LDcgQEAKICNp
+bmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgogI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAjaW5j
+bHVkZSAibGFwaS9zZW0uaCIKLSNpbmNsdWRlICJsaWJuZXdpcGMuaCIKKyNpbmNsdWRlICJ0c2Vf
+bmV3aXBjLmgiCiAKIHN0YXRpYyB1aWRfdCBsdHBfdWlkOwogc3RhdGljIGludCBzZW1faWQgPSAt
+MTsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1j
+dGwwNS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDA1LmMK
+aW5kZXggNWZlZWUwMDgyLi45ODVjMWYwMzkgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwNS5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwNS5jCkBAIC0xMyw3ICsxMyw3IEBACiAjaW5jbHVkZSAi
+dHN0X3NhZmVfc3lzdl9pcGMuaCIKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1ZGUgImxh
+cGkvc2VtLmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5o
+IgogCiBzdGF0aWMgaW50IHNlbV9pZCA9IC0xOwogCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDYuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwNi5jCmluZGV4IGI4NzM0YzJmYS4uZTA2ZDE3ZDhkIDEw
+MDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDYu
+YworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDYuYwpA
+QCAtNTMsNyArNTMsNyBAQAogI2luY2x1ZGUgPHNpZ25hbC5oPgogI2luY2x1ZGUgInRlc3QuaCIK
+ICNpbmNsdWRlIDxzeXMvd2FpdC5oPgotI2luY2x1ZGUgImlwY3NlbS5oIgorI2luY2x1ZGUgInRz
+ZV9pcGNzZW0uaCIKIAogaW50IGxvY2FsX2ZsYWcgPSAxOwogCmRpZmYgLS1naXQgYS90ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDcuYyBiL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1jdGwwNy5jCmluZGV4IDU4OGZiMjQzNi4uMWIwM2Yw
+YWIyIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2Vt
+Y3RsMDcuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3Rs
+MDcuYwpAQCAtMjAsNyArMjAsNyBAQAogCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRl
+ICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUg
+InRzZV9uZXdpcGMuaCIKICNpbmNsdWRlICJsYXBpL3NlbS5oIgogCiBzdGF0aWMgaW50IHNlbWlk
+ID0gLTE7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwv
+c2VtY3RsMDguYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWN0bC9zZW1jdGww
+OC5jCmluZGV4IGY0NTQ5YWRmNC4uMDgzMTc5YzkyIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDguYworKysgYi90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDguYwpAQCAtMTAsNyArMTAsNyBAQAogI2luY2x1
+ZGUgImxhcGkvc2VtYnVmLmgiCiAjaW5jbHVkZSAibGFwaS9zZW0uaCIKICNpbmNsdWRlICJ0c3Rf
+dGVzdC5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdpcGMuaCIK
+IAogI2lmZGVmIEhBVkVfU0VNSUQ2NF9EU19USU1FX0hJR0gKIApkaWZmIC0tZ2l0IGEvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0bDA5LmMgYi90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL2lwYy9zZW1jdGwvc2VtY3RsMDkuYwppbmRleCAzMmI0MTFlZmQuLmYzMTU0
+ODRjMSAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3Nl
+bWN0bDA5LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtY3RsL3NlbWN0
+bDA5LmMKQEAgLTQwLDcgKzQwLDcgQEAKICNpbmNsdWRlIDxwd2QuaD4KICNpbmNsdWRlICJ0c3Rf
+dGVzdC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCi0jaW5jbHVkZSAibGlibmV3
+aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogI2luY2x1ZGUgImxhcGkvc2VtLmgiCiAj
+aW5jbHVkZSAibGFwaS9zeXNjYWxscy5oIgogCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2lwYy9zZW1nZXQvc2VtZ2V0MDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvaXBjL3NlbWdldC9zZW1nZXQwMS5jCmluZGV4IDNjMDU1MTdlNC4uNTBhMDVkNzQ1IDEwMDY0
+NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1nZXQvc2VtZ2V0MDEuYwor
+KysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1nZXQvc2VtZ2V0MDEuYwpAQCAt
+MTIsNyArMTIsNyBAQAogI2luY2x1ZGUgPHN5cy9pcGMuaD4KICNpbmNsdWRlICJsYXBpL3NlbS5o
+IgogI2luY2x1ZGUgInRzdF90ZXN0LmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVk
+ZSAidHNlX25ld2lwYy5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCiAKIHN0YXRp
+YyBpbnQgc2VtX2lkID0gLTEsIHNlbV9rZXkgPSAtMTsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWdldC9zZW1nZXQwMi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9pcGMvc2VtZ2V0L3NlbWdldDAyLmMKaW5kZXggZDM4MWJiZDY5Li40ZjI5MjQ2NWUg
+MTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWdldC9zZW1nZXQw
+Mi5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbWdldC9zZW1nZXQwMi5j
+CkBAIC0yNiw3ICsyNiw3IEBACiAjaW5jbHVkZSA8cHdkLmg+CiAjaW5jbHVkZSAidHN0X3Rlc3Qu
+aCIKICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5o
+IgorI2luY2x1ZGUgInRzZV9uZXdpcGMuaCIKICNpbmNsdWRlICJsYXBpL3NlbS5oIgogCiBzdGF0
+aWMgaW50IHNlbV9pZCA9IC0xOwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9pcGMvc2VtZ2V0L3NlbWdldDA1LmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9z
+ZW1nZXQvc2VtZ2V0MDUuYwppbmRleCAwZTQxYTE1MjguLjU3YTY1ZGJkZCAxMDA2NDQKLS0tIGEv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtZ2V0L3NlbWdldDA1LmMKKysrIGIvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2VtZ2V0L3NlbWdldDA1LmMKQEAgLTE2LDcgKzE2
+LDcgQEAKICNpbmNsdWRlIDxzeXMvaXBjLmg+CiAjaW5jbHVkZSAibGFwaS9zZW0uaCIKICNpbmNs
+dWRlICJ0c3RfdGVzdC5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9u
+ZXdpcGMuaCIKICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgogCiBzdGF0aWMgaW50ICpz
+ZW1faWRfYXJyOwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2Vt
+b3Avc2Vtb3AwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2Vtb3Avc2Vtb3Aw
+MS5jCmluZGV4IDIwNzI2MzUzOS4uZjU4NjFhMGE5IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL2lwYy9zZW1vcC9zZW1vcDAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9pcGMvc2Vtb3Avc2Vtb3AwMS5jCkBAIC05LDcgKzksNyBAQAogCiAjaW5jbHVkZSA8
+c3RkbGliLmg+CiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKLSNpbmNsdWRlICJsaWJuZXdpcGMuaCIK
+KyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAjaW5jbHVkZSAibGFwaS9zZW0uaCIKICNpbmNsdWRl
+ICJzZW1vcC5oIgogCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9z
+ZW1vcC9zZW1vcDAyLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1vcC9zZW1v
+cDAyLmMKaW5kZXggZDgxODFkYjE3Li5mODJlZGY5ZmEgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvaXBjL3NlbW9wL3NlbW9wMDIuYworKysgYi90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2lwYy9zZW1vcC9zZW1vcDAyLmMKQEAgLTIzLDcgKzIzLDcgQEAKICNpbmNsdWRl
+IDxwd2QuaD4KICNpbmNsdWRlIDxzeXMvaXBjLmg+CiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKLSNp
+bmNsdWRlICJsaWJuZXdpcGMuaCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAjaW5jbHVkZSAi
+bGFwaS9zZW0uaCIKICNpbmNsdWRlICJzZW1vcC5oIgogCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL2lwYy9zZW1vcC9zZW1vcDAzLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2lwYy9zZW1vcC9zZW1vcDAzLmMKaW5kZXggNjM2YjcxNTMxLi40ODEwMTUxNDcgMTAw
+NjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NlbW9wL3NlbW9wMDMuYwor
+KysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zZW1vcC9zZW1vcDAzLmMKQEAgLTEy
+LDcgKzEyLDcgQEAKICNpbmNsdWRlIDxzeXMvdHlwZXMuaD4KICNpbmNsdWRlIDxzeXMvd2FpdC5o
+PgogI2luY2x1ZGUgInRzdF90ZXN0LmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVk
+ZSAidHNlX25ld2lwYy5oIgogI2luY2x1ZGUgImxhcGkvc2VtLmgiCiAjaW5jbHVkZSAic2Vtb3Au
+aCIKIApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htYXQvc2ht
+YXQwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htYXQvc2htYXQwMS5jCmlu
+ZGV4IDYwNmJkZDE1NC4uZTA3ZTVhNGZkIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2lwYy9zaG1hdC9zaG1hdDAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9pcGMvc2htYXQvc2htYXQwMS5jCkBAIC0yNiw3ICsyNiw3IEBACiAKICNpbmNsdWRlICJ0c3Rf
+dGVzdC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCi0jaW5jbHVkZSAibGlibmV3
+aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogCiAjZGVmaW5lIEFMSUdOX0RPV04oaW5f
+YWRkcikgKCh2b2lkICopKCgodWludHB0cl90KWluX2FkZHIgLyBTSE1MQkEpICogU0hNTEJBKSkK
+IApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htYXQvc2htYXQw
+Mi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htYXQvc2htYXQwMi5jCmluZGV4
+IDNhZDFmZDA4ZS4uZGM4ZWEzM2NkIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL2lwYy9zaG1hdC9zaG1hdDAyLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9p
+cGMvc2htYXQvc2htYXQwMi5jCkBAIC0yMiw3ICsyMiw3IEBACiAKICNpbmNsdWRlICJ0c3RfdGVz
+dC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCi0jaW5jbHVkZSAibGlibmV3aXBj
+LmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogCiBzdGF0aWMgaW50IHNobV9pZDEgPSAtMTsK
+IHN0YXRpYyBpbnQgc2htX2lkMiA9IC0xOwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9pcGMvc2htYXQvc2htYXQwNC5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9p
+cGMvc2htYXQvc2htYXQwNC5jCmluZGV4IDdiN2I4MDJjYi4uMjY2OWQ4YWQ0IDEwMDY0NAotLS0g
+YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1hdC9zaG1hdDA0LmMKKysrIGIvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htYXQvc2htYXQwNC5jCkBAIC0yMSw3ICsyMSw3
+IEBACiAKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBj
+LmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogCiBz
+dGF0aWMgaW50IHNlZ21lbnRfaWQgPSAtMTsKIHN0YXRpYyBpbnQga2V5X2lkOwpkaWZmIC0tZ2l0
+IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0bDAxLmMgYi90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1jdGwvc2htY3RsMDEuYwppbmRleCBlODZjZDcx
+MDMuLjA1YWVhNThjYyAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMv
+c2htY3RsL3NobWN0bDAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2ht
+Y3RsL3NobWN0bDAxLmMKQEAgLTIwLDcgKzIwLDcgQEAKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgog
+I2luY2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCiAjaW5jbHVkZSAidHN0X2Nsb2Nrcy5oIgot
+I2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdpcGMuaCIKIAogI2RlZmlu
+ZSBOQ0hJTEQgMjAKIApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMv
+c2htY3RsL3NobWN0bDAyLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1jdGwv
+c2htY3RsMDIuYwppbmRleCAwYjEyOTQ0Y2UuLjY0OTYyNTI3ZCAxMDA2NDQKLS0tIGEvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0bDAyLmMKKysrIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0bDAyLmMKQEAgLTI5LDcgKzI5LDcgQEAK
+IAogI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAjaW5jbHVkZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIK
+LSNpbmNsdWRlICJsaWJuZXdpcGMuaCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAjaW5jbHVk
+ZSAibGFwaS9zeXNjYWxscy5oIgogCiAjZGVmaW5lIFNITV9TSVpFIDIwNDgKZGlmZiAtLWdpdCBh
+L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWN0bC9zaG1jdGwwMy5jIGIvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0bDAzLmMKaW5kZXggYTMyOTFjMzdm
+Li5hMWY1M2U3YzEgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3No
+bWN0bC9zaG1jdGwwMy5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWN0
+bC9zaG1jdGwwMy5jCkBAIC0xMSw3ICsxMSw3IEBACiAjZGVmaW5lIF9HTlVfU09VUkNFCiAjaW5j
+bHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgotI2luY2x1
+ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdpcGMuaCIKIAogc3RhdGljIHZvaWQg
+dmVyaWZ5X2lwY2luZm8odm9pZCkKIHsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvaXBjL3NobWN0bC9zaG1jdGwwNC5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9p
+cGMvc2htY3RsL3NobWN0bDA0LmMKaW5kZXggZGE3Mzg2M2RkLi4zYmEwNWY5YjUgMTAwNjQ0Ci0t
+LSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWN0bC9zaG1jdGwwNC5jCisrKyBi
+L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWN0bC9zaG1jdGwwNC5jCkBAIC0yMyw3
+ICsyMyw3IEBACiAjaW5jbHVkZSA8cHdkLmg+CiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNs
+dWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1
+ZGUgInRzZV9uZXdpcGMuaCIKICNpbmNsdWRlICJsYXBpL3NobS5oIgogCiAjZGVmaW5lIFNITV9T
+SVpFIDIwNDgKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWN0
+bC9zaG1jdGwwNi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0
+bDA2LmMKaW5kZXggNjNlN2Y4NDNkLi4wODQ3NzYxYzcgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvaXBjL3NobWN0bC9zaG1jdGwwNi5jCisrKyBiL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvaXBjL3NobWN0bC9zaG1jdGwwNi5jCkBAIC05LDcgKzksNyBAQAogCiAjaW5j
+bHVkZSA8c3lzL3NobS5oPgogI2luY2x1ZGUgImxhcGkvc2htYnVmLmgiCi0jaW5jbHVkZSAibGli
+bmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgogI2luY2x1ZGUgInRzdF90ZXN0Lmgi
+CiAjaW5jbHVkZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIKIApkaWZmIC0tZ2l0IGEvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0bDA3LmMgYi90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2lwYy9zaG1jdGwvc2htY3RsMDcuYwppbmRleCAxY2MwN2VhZDIuLjM1OGI5NjUw
+OCAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0
+bDA3LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0bDA3
+LmMKQEAgLTExLDcgKzExLDcgQEAKICNpbmNsdWRlIDxzdGRpby5oPgogI2luY2x1ZGUgInRzdF90
+ZXN0LmgiCiAjaW5jbHVkZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIKLSNpbmNsdWRlICJsaWJuZXdp
+cGMuaCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAKICNkZWZpbmUgU0hNX1NJWkUgMjA0OAog
+CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1jdGwvc2htY3Rs
+MDguYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWN0bC9zaG1jdGwwOC5jCmlu
+ZGV4IGY3MmY5ZjllNS4uZDY0NDY1YWZlIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2lwYy9zaG1jdGwvc2htY3RsMDguYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL2lwYy9zaG1jdGwvc2htY3RsMDguYwpAQCAtMTQsNyArMTQsNyBAQAogI2luY2x1ZGUgPHN0
+ZGlvLmg+CiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lw
+Yy5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdpcGMuaCIKIAog
+I2RlZmluZSBTSE1fU0laRSAyMDQ4CiAKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvaXBjL3NobWR0L3NobWR0MDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBj
+L3NobWR0L3NobWR0MDEuYwppbmRleCAwYTZkNDA5NmMuLmUyMWU5YWEyYyAxMDA2NDQKLS0tIGEv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htZHQvc2htZHQwMS5jCisrKyBiL3Rlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWR0L3NobWR0MDEuYwpAQCAtMTMsNyArMTMsNyBA
+QAogI2luY2x1ZGUgPHN5cy9zaG0uaD4KICNpbmNsdWRlIDxzZXRqbXAuaD4KICNpbmNsdWRlICJ0
+c3RfdGVzdC5oIgotI2luY2x1ZGUgImxpYm5ld2lwYy5oIgorI2luY2x1ZGUgInRzZV9uZXdpcGMu
+aCIKICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgogCiBzdGF0aWMgaW50IHNobV9pZCA9
+IC0xLCBzaG1fa2V5LCBwYXNzOwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9pcGMvc2htZHQvc2htZHQwMi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2ht
+ZHQvc2htZHQwMi5jCmluZGV4IDRiZGM2ZWIyMS4uMWY3MTZjYjZmIDEwMDY0NAotLS0gYS90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1kdC9zaG1kdDAyLmMKKysrIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9pcGMvc2htZHQvc2htZHQwMi5jCkBAIC0xMyw3ICsxMyw3IEBACiAj
+aW5jbHVkZSA8c3lzL3R5cGVzLmg+CiAjaW5jbHVkZSA8c3lzL3NobS5oPgogI2luY2x1ZGUgInRz
+dF90ZXN0LmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5o
+IgogCiBzdGF0aWMgdm9pZCAqbm9uX2F0dGNoZWRfYWRkcjsKIHN0YXRpYyB2b2lkICp1bmFsaWdu
+ZWRfYWRkcjsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWdl
+dC9zaG1nZXQwMi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htZ2V0L3NobWdl
+dDAyLmMKaW5kZXggOGEwOTYxYjA0Li41Yzc3ZDQ3ZDggMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvaXBjL3NobWdldC9zaG1nZXQwMi5jCisrKyBiL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvaXBjL3NobWdldC9zaG1nZXQwMi5jCkBAIC0zMiw3ICszMiw3IEBACiAjaW5j
+bHVkZSAidHN0X3NhZmVfc3lzdl9pcGMuaCIKICNpbmNsdWRlICJ0c3Rfa2NvbmZpZy5oIgogI2lu
+Y2x1ZGUgInRzdF90ZXN0LmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNl
+X25ld2lwYy5oIgogI2luY2x1ZGUgImxhcGkvc2htLmgiCiAKIHN0YXRpYyBpbnQgc2htX2lkID0g
+LTE7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1nZXQvc2ht
+Z2V0MDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWdldC9zaG1nZXQwMy5j
+CmluZGV4IDA5MmYyMTcwZS4uYTU0NTQwZDU4IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2lwYy9zaG1nZXQvc2htZ2V0MDMuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2lwYy9zaG1nZXQvc2htZ2V0MDMuYwpAQCAtMTcsNyArMTcsNyBAQAogI2luY2x1ZGUg
+PHN5cy9zaG0uaD4KICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5
+c3ZfaXBjLmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5o
+IgogCiBzdGF0aWMgaW50ICpxdWV1ZXM7CiBzdGF0aWMgaW50IG1heHNobXMsIHF1ZXVlX2NudCwg
+dXNlZF9jbnQ7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1n
+ZXQvc2htZ2V0MDQuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWdldC9zaG1n
+ZXQwNC5jCmluZGV4IDJhNmE2NzZjZC4uMGY3M2IyYjc0IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL2lwYy9zaG1nZXQvc2htZ2V0MDQuYworKysgYi90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL2lwYy9zaG1nZXQvc2htZ2V0MDQuYwpAQCAtMTksNyArMTksNyBAQAogI2lu
+Y2x1ZGUgPHN5cy9zaG0uaD4KICNpbmNsdWRlICJ0c3Rfc2FmZV9zeXN2X2lwYy5oIgogI2luY2x1
+ZGUgInRzdF90ZXN0LmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25l
+d2lwYy5oIgogI2luY2x1ZGUgImxhcGkvc2htLmgiCiAKIHN0YXRpYyBpbnQgc2htX2lkID0gLTE7
+CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1nZXQvc2htZ2V0
+MDUuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBjL3NobWdldC9zaG1nZXQwNS5jCmlu
+ZGV4IGQ5NmE5ODU0Ni4uMjQ2Njc0OTM4IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2lwYy9zaG1nZXQvc2htZ2V0MDUuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL2lwYy9zaG1nZXQvc2htZ2V0MDUuYwpAQCAtMjEsNyArMjEsNyBAQAogI2luY2x1ZGUgPHN5
+cy9zaG0uaD4KICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1ZGUgInRzdF9zYWZlX3N5c3Zf
+aXBjLmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5jbHVkZSAidHNlX25ld2lwYy5oIgog
+CiAjZGVmaW5lIE5FWFRfSURfUEFUSCAiL3Byb2Mvc3lzL2tlcm5lbC9zaG1fbmV4dF9pZCIKIHN0
+YXRpYyBpbnQgc2htX2lkLCBwaWQ7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL2lwYy9zaG1nZXQvc2htZ2V0MDYuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaXBj
+L3NobWdldC9zaG1nZXQwNi5jCmluZGV4IGY0YmQ2MWJjYS4uNDIwODQ0ZjBhIDEwMDY0NAotLS0g
+YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1nZXQvc2htZ2V0MDYuYworKysgYi90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lwYy9zaG1nZXQvc2htZ2V0MDYuYwpAQCAtMTksNyAr
+MTksNyBAQAogI2luY2x1ZGUgPHN5cy9zaG0uaD4KICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2lu
+Y2x1ZGUgInRzdF9zYWZlX3N5c3ZfaXBjLmgiCi0jaW5jbHVkZSAibGlibmV3aXBjLmgiCisjaW5j
+bHVkZSAidHNlX25ld2lwYy5oIgogCiAjZGVmaW5lIE5FWFRfSURfUEFUSCAiL3Byb2Mvc3lzL2tl
+cm5lbC9zaG1fbmV4dF9pZCIKIApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9raWxsL2tpbGwwNS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9raWxsL2tpbGwwNS5j
+CmluZGV4IDNjMzE3ZTJmYy4uZDQ0OTk1NjY2IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2tpbGwva2lsbDA1LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9r
+aWxsL2tpbGwwNS5jCkBAIC0yMCw3ICsyMCw3IEBACiAjaW5jbHVkZSA8cHdkLmg+CiAjaW5jbHVk
+ZSA8c3RkbGliLmg+CiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKLSNpbmNsdWRlICJsaWJuZXdpcGMu
+aCIKKyNpbmNsdWRlICJ0c2VfbmV3aXBjLmgiCiAjaW5jbHVkZSAidHN0X3NhZmVfc3lzdl9pcGMu
+aCIKICNpbmNsdWRlICJ0c3Rfc2FmZV9tYWNyb3MuaCIKICNpbmNsdWRlICJ0c3RfdWlkLmgiCmRp
+ZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21iaW5kL21iaW5kMDEuYyBiL3Rl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWJpbmQvbWJpbmQwMS5jCmluZGV4IDRiOGQxNjhjZC4u
+YWNlMTA3YWY1IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21iaW5kL21i
+aW5kMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21iaW5kL21iaW5kMDEuYwpA
+QCAtMTcsNyArMTcsNyBAQAogI2luY2x1ZGUgImNvbmZpZy5oIgogI2luY2x1ZGUgIm51bWFfaGVs
+cGVyLmgiCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKLSNpbmNsdWRlICJ0c3RfbnVtYS5oIgorI2lu
+Y2x1ZGUgInRzZV9udW1hLmgiCiAjaW5jbHVkZSAibGFwaS9udW1haWYuaCIKIAogI2lmZGVmIEhB
+VkVfTlVNQV9WMgpAQCAtMTQxLDcgKzE0MSw3IEBAIHN0YXRpYyB2b2lkIGNoZWNrX3BvbGljeV9w
+cmVmX29yX2xvY2FsKGludCBwb2xpY3kpCiAJaWYgKHBvbGljeSAhPSBNUE9MX1BSRUZFUlJFRCAm
+JiBwb2xpY3kgIT0gTVBPTF9MT0NBTCkgewogCQl0c3RfcmVzKFRGQUlMLCAiV3JvbmcgcG9saWN5
+OiAlcyglZCksICIKIAkJCSJleHBlY3RlZCBNUE9MX1BSRUZFUlJFRCBvciBNUE9MX0xPQ0FMIiwK
+LQkJCXRzdF9tZW1wb2xpY3lfbW9kZV9uYW1lKHBvbGljeSksIHBvbGljeSk7CisJCQl0c2VfbWVt
+cG9saWN5X21vZGVfbmFtZShwb2xpY3kpLCBwb2xpY3kpOwogCX0KIH0KIApAQCAtMjIxLDggKzIy
+MSw4IEBAIHN0YXRpYyB2b2lkIGRvX3Rlc3QodW5zaWduZWQgaW50IGkpCiAJCQl0Yy0+Y2hlY2tf
+cG9saWN5KHBvbGljeSk7CiAJCWVsc2UgaWYgKHRjLT5wb2xpY3kgIT0gcG9saWN5KSB7CiAJCQl0
+c3RfcmVzKFRGQUlMLCAiV3JvbmcgcG9saWN5OiAlcyglZCksIGV4cGVjdGVkOiAlcyglZCkiLAot
+CQkJCXRzdF9tZW1wb2xpY3lfbW9kZV9uYW1lKHBvbGljeSksIHBvbGljeSwKLQkJCQl0c3RfbWVt
+cG9saWN5X21vZGVfbmFtZSh0Yy0+cG9saWN5KSwgdGMtPnBvbGljeSk7CisJCQkJdHNlX21lbXBv
+bGljeV9tb2RlX25hbWUocG9saWN5KSwgcG9saWN5LAorCQkJCXRzZV9tZW1wb2xpY3lfbW9kZV9u
+YW1lKHRjLT5wb2xpY3kpLCB0Yy0+cG9saWN5KTsKIAkJCWZhaWwgPSAxOwogCQl9CiAJCWlmICh0
+Yy0+ZXhwX25vZGVtYXNrKSB7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L21iaW5kL21iaW5kMDIuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWJpbmQvbWJpbmQw
+Mi5jCmluZGV4IGNkNmEwMzIyNi4uMDBmYjE1NTM2IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL21iaW5kL21iaW5kMDIuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL21iaW5kL21iaW5kMDIuYwpAQCAtMjEsMjUgKzIxLDI1IEBACiAjIGluY2x1ZGUgPG51bWFp
+Zi5oPgogI2VuZGlmCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKLSNpbmNsdWRlICJ0c3RfbnVtYS5o
+IgorI2luY2x1ZGUgInRzZV9udW1hLmgiCiAKICNpZmRlZiBIQVZFX05VTUFfVjIKIAogc3RhdGlj
+IHNpemVfdCBwYWdlX3NpemU7Ci1zdGF0aWMgc3RydWN0IHRzdF9ub2RlbWFwICpub2RlczsKK3N0
+YXRpYyBzdHJ1Y3QgdHNlX25vZGVtYXAgKm5vZGVzOwogCiBzdGF0aWMgdm9pZCBzZXR1cCh2b2lk
+KQogewogCXBhZ2Vfc2l6ZSA9IGdldHBhZ2VzaXplKCk7CiAKLQlub2RlcyA9IHRzdF9nZXRfbm9k
+ZW1hcChUU1RfTlVNQV9NRU0sIDIgKiBwYWdlX3NpemUgLyAxMDI0KTsKKwlub2RlcyA9IHRzZV9n
+ZXRfbm9kZW1hcChUU1RfTlVNQV9NRU0sIDIgKiBwYWdlX3NpemUgLyAxMDI0KTsKIAlpZiAobm9k
+ZXMtPmNudCA8PSAxKQogCQl0c3RfYnJrKFRDT05GLCAiVGVzdCByZXF1aXJlcyBhdCBsZWFzdCB0
+d28gTlVNQSBtZW1vcnkgbm9kZXMiKTsKIH0KIAogc3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKQog
+ewotCXRzdF9ub2RlbWFwX2ZyZWUobm9kZXMpOworCXRzZV9ub2RlbWFwX2ZyZWUobm9kZXMpOwog
+fQogCiBzdGF0aWMgdm9pZCB2ZXJpZnlfcG9saWN5KGludCBtb2RlKQpAQCAtNTAsMTEgKzUwLDEx
+IEBAIHN0YXRpYyB2b2lkIHZlcmlmeV9wb2xpY3koaW50IG1vZGUpCiAJdW5zaWduZWQgbG9uZyBz
+aXplID0gcGFnZV9zaXplOwogCWludCBub2RlID0gMDsKIAotCXB0ciA9IHRzdF9udW1hX21hcChO
+VUxMLCBzaXplKTsKLQl0c3Rfbm9kZW1hcF9yZXNldF9jb3VudGVycyhub2Rlcyk7Ci0JdHN0X251
+bWFfZmF1bHQocHRyLCBzaXplKTsKLQl0c3Rfbm9kZW1hcF9jb3VudF9wYWdlcyhub2RlcywgcHRy
+LCBzaXplKTsKLQl0c3Rfbm9kZW1hcF9wcmludF9jb3VudGVycyhub2Rlcyk7CisJcHRyID0gdHNl
+X251bWFfbWFwKE5VTEwsIHNpemUpOworCXRzZV9ub2RlbWFwX3Jlc2V0X2NvdW50ZXJzKG5vZGVz
+KTsKKwl0c2VfbnVtYV9mYXVsdChwdHIsIHNpemUpOworCXRzZV9ub2RlbWFwX2NvdW50X3BhZ2Vz
+KG5vZGVzLCBwdHIsIHNpemUpOworCXRzZV9ub2RlbWFwX3ByaW50X2NvdW50ZXJzKG5vZGVzKTsK
+IAogCWZvciAoaSA9IDA7IGkgPCBub2Rlcy0+Y250OyBpKyspIHsKIAkJaWYgKCFub2Rlcy0+Y291
+bnRlcnNbaV0pIHsKQEAgLTY3LDI0ICs2NywyNCBAQCBzdGF0aWMgdm9pZCB2ZXJpZnlfcG9saWN5
+KGludCBtb2RlKQogCiAJVEVTVChtYmluZChwdHIsIHNpemUsIG1vZGUsIGJtLT5tYXNrcCwgYm0t
+PnNpemUgKyAxLCBNUE9MX01GX1NUUklDVCkpOwogCi0JdHN0X251bWFfdW5tYXAocHRyLCBzaXpl
+KTsKKwl0c2VfbnVtYV91bm1hcChwdHIsIHNpemUpOwogCW51bWFfZnJlZV9ub2RlbWFzayhibSk7
+CiAKIAlpZiAoVFNUX1JFVCAhPSAtMSkgewogCQl0c3RfcmVzKFRGQUlMLAogCQkgICAgICAgICJt
+YmluZCglcywgTVBPTF9NRl9TVFJJQ1QpIG5vZGUgJXUgcmV0dXJuZWQgJWxpLCBleHBlY3RlZCAt
+MSIsCi0JCSAgICAgICAgdHN0X21lbXBvbGljeV9tb2RlX25hbWUobW9kZSksIG5vZGUsIFRTVF9S
+RVQpOworCQkgICAgICAgIHRzZV9tZW1wb2xpY3lfbW9kZV9uYW1lKG1vZGUpLCBub2RlLCBUU1Rf
+UkVUKTsKIAkJcmV0dXJuOwogCX0KIAogCWlmIChUU1RfRVJSID09IEVJTykgewogCQl0c3RfcmVz
+KFRQQVNTIHwgVFRFUlJOTywKIAkJICAgICAgICAibWJpbmQoJXMsIE1QT0xfTUZfU1RSSUNUKSBu
+b2RlICV1IiwKLQkJICAgICAgICB0c3RfbWVtcG9saWN5X21vZGVfbmFtZShtb2RlKSwgbm9kZSk7
+CisJCSAgICAgICAgdHNlX21lbXBvbGljeV9tb2RlX25hbWUobW9kZSksIG5vZGUpOwogCX0gZWxz
+ZSB7CiAJCXRzdF9yZXMoVEZBSUwgfCBUVEVSUk5PLAogCQkJIm1iaW5kKCVzLCBNUE9MX01GX1NU
+UklDVCkgbm9kZSAldSBleHBlY3RlZCBFSU8iLAotCQkgICAgICAgIHRzdF9tZW1wb2xpY3lfbW9k
+ZV9uYW1lKG1vZGUpLCBub2RlKTsKKwkJICAgICAgICB0c2VfbWVtcG9saWN5X21vZGVfbmFtZSht
+b2RlKSwgbm9kZSk7CiAJfQogfQogCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL21iaW5kL21iaW5kMDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWJpbmQvbWJp
+bmQwMy5jCmluZGV4IDNkNDc3YzljYi4uNmEwMjZjNmFlIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL21iaW5kL21iaW5kMDMuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL21iaW5kL21iaW5kMDMuYwpAQCAtMTgsMjUgKzE4LDI1IEBACiAjIGluY2x1ZGUgIm1i
+aW5kLmgiCiAjZW5kaWYKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgotI2luY2x1ZGUgInRzdF9udW1h
+LmgiCisjaW5jbHVkZSAidHNlX251bWEuaCIKIAogI2lmZGVmIEhBVkVfTlVNQV9WMgogCiBzdGF0
+aWMgc2l6ZV90IHBhZ2Vfc2l6ZTsKLXN0YXRpYyBzdHJ1Y3QgdHN0X25vZGVtYXAgKm5vZGVzOwor
+c3RhdGljIHN0cnVjdCB0c2Vfbm9kZW1hcCAqbm9kZXM7CiAKIHN0YXRpYyB2b2lkIHNldHVwKHZv
+aWQpCiB7CiAJcGFnZV9zaXplID0gZ2V0cGFnZXNpemUoKTsKIAotCW5vZGVzID0gdHN0X2dldF9u
+b2RlbWFwKFRTVF9OVU1BX01FTSwgMiAqIHBhZ2Vfc2l6ZSAvIDEwMjQpOworCW5vZGVzID0gdHNl
+X2dldF9ub2RlbWFwKFRTVF9OVU1BX01FTSwgMiAqIHBhZ2Vfc2l6ZSAvIDEwMjQpOwogCWlmIChu
+b2Rlcy0+Y250IDw9IDEpCiAJCXRzdF9icmsoVENPTkYsICJUZXN0IHJlcXVpcmVzIGF0IGxlYXN0
+IHR3byBOVU1BIG1lbW9yeSBub2RlcyIpOwogfQogCiBzdGF0aWMgdm9pZCBjbGVhbnVwKHZvaWQp
+CiB7Ci0JdHN0X25vZGVtYXBfZnJlZShub2Rlcyk7CisJdHNlX25vZGVtYXBfZnJlZShub2Rlcyk7
+CiB9CiAKIHN0YXRpYyB2b2lkIHZlcmlmeV9wb2xpY3koaW50IG1vZGUsIHVuc2lnbmVkIGZsYWcp
+CkBAIC00NywxMSArNDcsMTEgQEAgc3RhdGljIHZvaWQgdmVyaWZ5X3BvbGljeShpbnQgbW9kZSwg
+dW5zaWduZWQgZmxhZykKIAl1bnNpZ25lZCBsb25nIHNpemUgPSBwYWdlX3NpemU7CiAJdW5zaWdu
+ZWQgaW50IG5vZGUgPSAwOwogCi0JcHRyID0gdHN0X251bWFfbWFwKE5VTEwsIHNpemUpOwotCXRz
+dF9ub2RlbWFwX3Jlc2V0X2NvdW50ZXJzKG5vZGVzKTsKLQl0c3RfbnVtYV9mYXVsdChwdHIsIHNp
+emUpOwotCXRzdF9ub2RlbWFwX2NvdW50X3BhZ2VzKG5vZGVzLCBwdHIsIHNpemUpOwotCXRzdF9u
+b2RlbWFwX3ByaW50X2NvdW50ZXJzKG5vZGVzKTsKKwlwdHIgPSB0c2VfbnVtYV9tYXAoTlVMTCwg
+c2l6ZSk7CisJdHNlX25vZGVtYXBfcmVzZXRfY291bnRlcnMobm9kZXMpOworCXRzZV9udW1hX2Zh
+dWx0KHB0ciwgc2l6ZSk7CisJdHNlX25vZGVtYXBfY291bnRfcGFnZXMobm9kZXMsIHB0ciwgc2l6
+ZSk7CisJdHNlX25vZGVtYXBfcHJpbnRfY291bnRlcnMobm9kZXMpOwogCiAJZm9yIChpID0gMDsg
+aSA8IG5vZGVzLT5jbnQ7IGkrKykgewogCQlpZiAoIW5vZGVzLT5jb3VudGVyc1tpXSkgewpAQCAt
+NjcsMTUgKzY3LDE1IEBAIHN0YXRpYyB2b2lkIHZlcmlmeV9wb2xpY3koaW50IG1vZGUsIHVuc2ln
+bmVkIGZsYWcpCiAJaWYgKFRTVF9SRVQpIHsKIAkJdHN0X3JlcyhURkFJTCB8IFRURVJSTk8sCiAJ
+CSAgICAgICAgIm1iaW5kKCVzLCAlcykgbm9kZSAldSIsCi0JCSAgICAgICAgdHN0X21lbXBvbGlj
+eV9tb2RlX25hbWUobW9kZSksIG1iaW5kX2ZsYWdfbmFtZShmbGFnKSwgbm9kZSk7CisJCSAgICAg
+ICAgdHNlX21lbXBvbGljeV9tb2RlX25hbWUobW9kZSksIG1iaW5kX2ZsYWdfbmFtZShmbGFnKSwg
+bm9kZSk7CiAJCWdvdG8gZXhpdDsKIAl9IGVsc2UgewogCQl0c3RfcmVzKFRQQVNTLCAibWJpbmQo
+JXMsICVzKSBub2RlICV1IHN1Y2NlZGVkIiwKLQkJICAgICAgICB0c3RfbWVtcG9saWN5X21vZGVf
+bmFtZShtb2RlKSwgbWJpbmRfZmxhZ19uYW1lKGZsYWcpLCBub2RlKTsKKwkJICAgICAgICB0c2Vf
+bWVtcG9saWN5X21vZGVfbmFtZShtb2RlKSwgbWJpbmRfZmxhZ19uYW1lKGZsYWcpLCBub2RlKTsK
+IAl9CiAKLQl0c3Rfbm9kZW1hcF9yZXNldF9jb3VudGVycyhub2Rlcyk7Ci0JdHN0X25vZGVtYXBf
+Y291bnRfcGFnZXMobm9kZXMsIHB0ciwgc2l6ZSk7CisJdHNlX25vZGVtYXBfcmVzZXRfY291bnRl
+cnMobm9kZXMpOworCXRzZV9ub2RlbWFwX2NvdW50X3BhZ2VzKG5vZGVzLCBwdHIsIHNpemUpOwog
+CiAJZm9yIChpID0gMDsgaSA8IG5vZGVzLT5jbnQ7IGkrKykgewogCQlpZiAobm9kZXMtPm1hcFtp
+XSA9PSBub2RlKSB7CkBAIC05NSw3ICs5NSw3IEBAIHN0YXRpYyB2b2lkIHZlcmlmeV9wb2xpY3ko
+aW50IG1vZGUsIHVuc2lnbmVkIGZsYWcpCiAJfQogCiBleGl0OgotCXRzdF9udW1hX3VubWFwKHB0
+ciwgc2l6ZSk7CisJdHNlX251bWFfdW5tYXAocHRyLCBzaXplKTsKIAludW1hX2ZyZWVfbm9kZW1h
+c2soYm0pOwogfQogCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21iaW5k
+L21iaW5kMDQuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWJpbmQvbWJpbmQwNC5jCmlu
+ZGV4IDUwMDI4ODM1Zi4uMmNhYjdhYWNiIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL21iaW5kL21iaW5kMDQuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21i
+aW5kL21iaW5kMDQuYwpAQCAtMTgsMTIgKzE4LDEyIEBACiAjIGluY2x1ZGUgIm1iaW5kLmgiCiAj
+ZW5kaWYKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgotI2luY2x1ZGUgInRzdF9udW1hLmgiCisjaW5j
+bHVkZSAidHNlX251bWEuaCIKIAogI2lmZGVmIEhBVkVfTlVNQV9WMgogCiBzdGF0aWMgc2l6ZV90
+IHBhZ2Vfc2l6ZTsKLXN0YXRpYyBzdHJ1Y3QgdHN0X25vZGVtYXAgKm5vZGVzOworc3RhdGljIHN0
+cnVjdCB0c2Vfbm9kZW1hcCAqbm9kZXM7CiAKICNkZWZpbmUgUEFHRVNfQUxMT0NBVEVEIDE2dQog
+CkBAIC0zMSwxNCArMzEsMTQgQEAgc3RhdGljIHZvaWQgc2V0dXAodm9pZCkKIHsKIAlwYWdlX3Np
+emUgPSBnZXRwYWdlc2l6ZSgpOwogCi0Jbm9kZXMgPSB0c3RfZ2V0X25vZGVtYXAoVFNUX05VTUFf
+TUVNLCAyICogUEFHRVNfQUxMT0NBVEVEICogcGFnZV9zaXplIC8gMTAyNCk7CisJbm9kZXMgPSB0
+c2VfZ2V0X25vZGVtYXAoVFNUX05VTUFfTUVNLCAyICogUEFHRVNfQUxMT0NBVEVEICogcGFnZV9z
+aXplIC8gMTAyNCk7CiAJaWYgKG5vZGVzLT5jbnQgPD0gMSkKIAkJdHN0X2JyayhUQ09ORiwgIlRl
+c3QgcmVxdWlyZXMgYXQgbGVhc3QgdHdvIE5VTUEgbWVtb3J5IG5vZGVzIik7CiB9CiAKIHN0YXRp
+YyB2b2lkIGNsZWFudXAodm9pZCkKIHsKLQl0c3Rfbm9kZW1hcF9mcmVlKG5vZGVzKTsKKwl0c2Vf
+bm9kZW1hcF9mcmVlKG5vZGVzKTsKIH0KIAogc3RhdGljIHZvaWQgdmVyaWZ5X3BvbGljeSh1bnNp
+Z25lZCBpbnQgbm9kZSwgaW50IG1vZGUsIHVuc2lnbmVkIGZsYWcpCkBAIC01MSw3ICs1MSw3IEBA
+IHN0YXRpYyB2b2lkIHZlcmlmeV9wb2xpY3kodW5zaWduZWQgaW50IG5vZGUsIGludCBtb2RlLCB1
+bnNpZ25lZCBmbGFnKQogCiAJbnVtYV9iaXRtYXNrX3NldGJpdChibSwgbm9kZSk7CiAKLQlwdHIg
+PSB0c3RfbnVtYV9tYXAoTlVMTCwgc2l6ZSk7CisJcHRyID0gdHNlX251bWFfbWFwKE5VTEwsIHNp
+emUpOwogCiAJVEVTVChtYmluZChwdHIsIHNpemUsIG1vZGUsIGJtLT5tYXNrcCwgYm0tPnNpemUg
+KyAxLCBmbGFnKSk7CiAKQEAgLTYwLDEyICs2MCwxMiBAQCBzdGF0aWMgdm9pZCB2ZXJpZnlfcG9s
+aWN5KHVuc2lnbmVkIGludCBub2RlLCBpbnQgbW9kZSwgdW5zaWduZWQgZmxhZykKIAlpZiAoVFNU
+X1JFVCkgewogCQl0c3RfcmVzKFRGQUlMIHwgVFRFUlJOTywKIAkJICAgICAgICAibWJpbmQoJXMs
+ICVzKSBub2RlICV1IiwKLQkJICAgICAgICB0c3RfbWVtcG9saWN5X21vZGVfbmFtZShtb2RlKSwg
+bWJpbmRfZmxhZ19uYW1lKGZsYWcpLCBub2RlKTsKKwkJICAgICAgICB0c2VfbWVtcG9saWN5X21v
+ZGVfbmFtZShtb2RlKSwgbWJpbmRfZmxhZ19uYW1lKGZsYWcpLCBub2RlKTsKIAkJcmV0dXJuOwog
+CX0KIAogCXRzdF9yZXMoVFBBU1MsICJtYmluZCglcywgJXMpIG5vZGUgJXUiLAotCSAgICAgICAg
+dHN0X21lbXBvbGljeV9tb2RlX25hbWUobW9kZSksIG1iaW5kX2ZsYWdfbmFtZShmbGFnKSwgbm9k
+ZSk7CisJICAgICAgICB0c2VfbWVtcG9saWN5X21vZGVfbmFtZShtb2RlKSwgbWJpbmRfZmxhZ19u
+YW1lKGZsYWcpLCBub2RlKTsKIAogCWNvbnN0IGNoYXIgKnByZWZpeCA9ICJjaGlsZDogIjsKIApA
+QCAtNzUsMTAgKzc1LDEwIEBAIHN0YXRpYyB2b2lkIHZlcmlmeV9wb2xpY3kodW5zaWduZWQgaW50
+IG5vZGUsIGludCBtb2RlLCB1bnNpZ25lZCBmbGFnKQogCQl0c3RfcmVhcF9jaGlsZHJlbigpOwog
+CX0KIAotCXRzdF9ub2RlbWFwX3Jlc2V0X2NvdW50ZXJzKG5vZGVzKTsKLQl0c3RfbnVtYV9mYXVs
+dChwdHIsIHNpemUpOwotCXRzdF9ub2RlbWFwX2NvdW50X3BhZ2VzKG5vZGVzLCBwdHIsIHNpemUp
+OwotCXRzdF9udW1hX3VubWFwKHB0ciwgc2l6ZSk7CisJdHNlX25vZGVtYXBfcmVzZXRfY291bnRl
+cnMobm9kZXMpOworCXRzZV9udW1hX2ZhdWx0KHB0ciwgc2l6ZSk7CisJdHNlX25vZGVtYXBfY291
+bnRfcGFnZXMobm9kZXMsIHB0ciwgc2l6ZSk7CisJdHNlX251bWFfdW5tYXAocHRyLCBzaXplKTsK
+IAogCWludCBmYWlsID0gMDsKIApAQCAtMTA0LDcgKzEwNCw3IEBAIHN0YXRpYyB2b2lkIHZlcmlm
+eV9wb2xpY3kodW5zaWduZWQgaW50IG5vZGUsIGludCBtb2RlLCB1bnNpZ25lZCBmbGFnKQogCX0K
+IAogCWlmIChmYWlsKQotCQl0c3Rfbm9kZW1hcF9wcmludF9jb3VudGVycyhub2Rlcyk7CisJCXRz
+ZV9ub2RlbWFwX3ByaW50X2NvdW50ZXJzKG5vZGVzKTsKIAogCWlmICghcGlkKQogCQlleGl0KDAp
+OwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ydF9zaWd0aW1lZHdhaXQv
+cnRfc2lndGltZWR3YWl0MDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcnRfc2lndGlt
+ZWR3YWl0L3J0X3NpZ3RpbWVkd2FpdDAxLmMKaW5kZXggODEzZjc1YjllLi44NDIzNDk5NWMgMTAw
+NjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcnRfc2lndGltZWR3YWl0L3J0X3Np
+Z3RpbWVkd2FpdDAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ydF9zaWd0aW1l
+ZHdhaXQvcnRfc2lndGltZWR3YWl0MDEuYwpAQCAtMiw3ICsyLDcgQEAKIC8qIENvcHlyaWdodCAo
+YykgSmlyaSBQYWxlY2VrPGpwYWxlY2VrQHdlYi5kZT4sIDIwMDkgKi8KIAogI2luY2x1ZGUgInRp
+bWU2NF92YXJpYW50cy5oIgotI2luY2x1ZGUgImxpYnNpZ3dhaXQuaCIKKyNpbmNsdWRlICJ0c2Vf
+c2lnd2FpdC5oIgogCiBzdGF0aWMgaW50IG15X3J0X3NpZ3RpbWVkd2FpdChjb25zdCBzaWdzZXRf
+dCAqIHNldCwgc2lnaW5mb190ICogaW5mbywKIAkJCSAgICAgIHZvaWQgKnRpbWVvdXQpCkBAIC0y
+MSwyNCArMjEsMjQgQEAgc3RhdGljIGludCBteV9ydF9zaWd0aW1lZHdhaXRfdGltZTY0KGNvbnN0
+IHNpZ3NldF90ICogc2V0LCBzaWdpbmZvX3QgKiBpbmZvLAogI2VuZGlmCiAKIHN0cnVjdCBzaWd3
+YWl0X3Rlc3RfZGVzYyB0ZXN0c1tdID0gewotCXsgdGVzdF9lbXB0eV9zZXQsIFNJR1VTUjF9LAot
+CXsgdGVzdF91bm1hc2tlZF9tYXRjaGluZywgU0lHVVNSMX0sCi0JeyB0ZXN0X21hc2tlZF9tYXRj
+aGluZywgU0lHVVNSMX0sCi0JeyB0ZXN0X3VubWFza2VkX21hdGNoaW5nX25vaW5mbywgU0lHVVNS
+MX0sCi0JeyB0ZXN0X21hc2tlZF9tYXRjaGluZ19ub2luZm8sIFNJR1VTUjF9LAotCXsgdGVzdF9i
+YWRfYWRkcmVzcywgU0lHVVNSMX0sCi0JeyB0ZXN0X2JhZF9hZGRyZXNzMiwgU0lHVVNSMX0sCi0J
+eyB0ZXN0X2JhZF9hZGRyZXNzMywgU0lHVVNSMX0sCi0JeyB0ZXN0X3RpbWVvdXQsIDB9LAorCXsg
+dHNlX2VtcHR5X3NldCwgU0lHVVNSMX0sCisJeyB0c2VfdW5tYXNrZWRfbWF0Y2hpbmcsIFNJR1VT
+UjF9LAorCXsgdHNlX21hc2tlZF9tYXRjaGluZywgU0lHVVNSMX0sCisJeyB0c2VfdW5tYXNrZWRf
+bWF0Y2hpbmdfbm9pbmZvLCBTSUdVU1IxfSwKKwl7IHRzZV9tYXNrZWRfbWF0Y2hpbmdfbm9pbmZv
+LCBTSUdVU1IxfSwKKwl7IHRzZV9iYWRfYWRkcmVzcywgU0lHVVNSMX0sCisJeyB0c2VfYmFkX2Fk
+ZHJlc3MyLCBTSUdVU1IxfSwKKwl7IHRzZV9iYWRfYWRkcmVzczMsIFNJR1VTUjF9LAorCXsgdHNl
+X3RpbWVvdXQsIDB9LAogCS8qIFNwZWNpYWwgY2FzZXMgKi8KIAkvKiAxOiBzaWd3YWl0aW5mbyBk
+b2VzIHJlc3BvbmQgdG8gaWdub3JlZCBzaWduYWwgKi8KLQl7IHRlc3RfbWFza2VkX21hdGNoaW5n
+LCBTSUdVU1IyfSwKKwl7IHRzZV9tYXNrZWRfbWF0Y2hpbmcsIFNJR1VTUjJ9LAogCS8qIDI6IEFu
+IGlnbm9yZWQgc2lnbmFsIGRvZXNuJ3QgY2F1c2Ugc2lnd2FpdGluZm8gdG8gcmV0dXJuIEVJTlRS
+ICovCi0JeyB0ZXN0X3RpbWVvdXQsIFNJR1VTUjJ9LAorCXsgdHNlX3RpbWVvdXQsIFNJR1VTUjJ9
+LAogCS8qIDM6IFRoZSBoYW5kbGVyIGlzIG5vdCBjYWxsZWQgd2hlbiB0aGUgc2lnbmFsIGlzIHdh
+aXRlZCBmb3IgYnkgc2lnd2FpdGluZm8gKi8KLQl7IHRlc3RfbWFza2VkX21hdGNoaW5nLCBTSUdU
+RVJNfSwKKwl7IHRzZV9tYXNrZWRfbWF0Y2hpbmcsIFNJR1RFUk19LAogCS8qIDQ6IFNpbXVsdGFu
+ZW91cyByZWFsdGltZSBzaWduYWxzIGFyZSBkZWxpdmVyZWQgaW4gdGhlIG9yZGVyIG9mIGluY3Jl
+YXNpbmcgc2lnbmFsIG51bWJlciAqLwotCXsgdGVzdF9tYXNrZWRfbWF0Y2hpbmdfcnQsIC0xfSwK
+Kwl7IHRzZV9tYXNrZWRfbWF0Y2hpbmdfcnQsIC0xfSwKIH07CiAKIHN0YXRpYyBzdHJ1Y3QgdGlt
+ZTY0X3ZhcmlhbnRzIHZhcmlhbnRzW10gPSB7CkBAIC02Miw3ICs2Miw3IEBAIHN0YXRpYyB2b2lk
+IHJ1bih1bnNpZ25lZCBpbnQgaSkKIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCiB7CiAJdHN0X3Jl
+cyhUSU5GTywgIlRlc3RpbmcgdmFyaWFudDogJXMiLCB2YXJpYW50c1t0c3RfdmFyaWFudF0uZGVz
+Yyk7Ci0Jc2lnd2FpdF9zZXR1cCgpOworCXRzZV9zaWd3YWl0X3NldHVwKCk7CiB9CiAKIHN0YXRp
+YyBzdHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvc2V0X21lbXBvbGljeS9zZXRfbWVtcG9saWN5LmggYi90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL3NldF9tZW1wb2xpY3kvc2V0X21lbXBvbGljeS5oCmluZGV4IGRhNjQxOWUxOC4u
+ZDBkOWY4NThlIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldF9tZW1w
+b2xpY3kvc2V0X21lbXBvbGljeS5oCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0
+X21lbXBvbGljeS9zZXRfbWVtcG9saWN5LmgKQEAgLTcsMTUgKzcsMTUgQEAKICNpZm5kZWYgU0VU
+X01FTVBPTElDWV9IX18KICNkZWZpbmUgU0VUX01FTVBPTElDWV9IX18KIAotc3RhdGljIGlubGlu
+ZSB2b2lkIGFsbG9jX2ZhdWx0X2NvdW50KHN0cnVjdCB0c3Rfbm9kZW1hcCAqbm9kZXMsCitzdGF0
+aWMgaW5saW5lIHZvaWQgYWxsb2NfZmF1bHRfY291bnQoc3RydWN0IHRzZV9ub2RlbWFwICpub2Rl
+cywKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBjaGFyICpmaWxl
+LCBzaXplX3Qgc2l6ZSkKIHsKIAl2b2lkICpwdHI7CiAKLQlwdHIgPSB0c3RfbnVtYV9tYXAoZmls
+ZSwgc2l6ZSk7Ci0JdHN0X251bWFfZmF1bHQocHRyLCBzaXplKTsKLQl0c3Rfbm9kZW1hcF9jb3Vu
+dF9wYWdlcyhub2RlcywgcHRyLCBzaXplKTsKLQl0c3RfbnVtYV91bm1hcChwdHIsIHNpemUpOwor
+CXB0ciA9IHRzZV9udW1hX21hcChmaWxlLCBzaXplKTsKKwl0c2VfbnVtYV9mYXVsdChwdHIsIHNp
+emUpOworCXRzZV9ub2RlbWFwX2NvdW50X3BhZ2VzKG5vZGVzLCBwdHIsIHNpemUpOworCXRzZV9u
+dW1hX3VubWFwKHB0ciwgc2l6ZSk7CiB9CiAKICNlbmRpZiAvKiBTRVRfTUVNUE9MSUNZX0hfXyAq
+LwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfbWVtcG9saWN5L3Nl
+dF9tZW1wb2xpY3kwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfbWVtcG9saWN5
+L3NldF9tZW1wb2xpY3kwMS5jCmluZGV4IDM5ZTcxNTZkMC4uYTg1YTU2MzMyIDEwMDY0NAotLS0g
+YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldF9tZW1wb2xpY3kvc2V0X21lbXBvbGljeTAx
+LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfbWVtcG9saWN5L3NldF9tZW1w
+b2xpY3kwMS5jCkBAIC0xNywxNCArMTcsMTQgQEAKICMgaW5jbHVkZSA8bnVtYWlmLmg+CiAjZW5k
+aWYKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgotI2luY2x1ZGUgInRzdF9udW1hLmgiCisjaW5jbHVk
+ZSAidHNlX251bWEuaCIKIAogI2lmZGVmIEhBVkVfTlVNQV9WMgogCiAjaW5jbHVkZSAic2V0X21l
+bXBvbGljeS5oIgogCiBzdGF0aWMgc2l6ZV90IHBhZ2Vfc2l6ZTsKLXN0YXRpYyBzdHJ1Y3QgdHN0
+X25vZGVtYXAgKm5vZGVzOworc3RhdGljIHN0cnVjdCB0c2Vfbm9kZW1hcCAqbm9kZXM7CiAKICNk
+ZWZpbmUgUEFHRVNfQUxMT0NBVEVEIDE2dQogCkBAIC0zMiw3ICszMiw3IEBAIHN0YXRpYyB2b2lk
+IHNldHVwKHZvaWQpCiB7CiAJcGFnZV9zaXplID0gZ2V0cGFnZXNpemUoKTsKIAotCW5vZGVzID0g
+dHN0X2dldF9ub2RlbWFwKFRTVF9OVU1BX01FTSwgMiAqIFBBR0VTX0FMTE9DQVRFRCAqIHBhZ2Vf
+c2l6ZSAvIDEwMjQpOworCW5vZGVzID0gdHNlX2dldF9ub2RlbWFwKFRTVF9OVU1BX01FTSwgMiAq
+IFBBR0VTX0FMTE9DQVRFRCAqIHBhZ2Vfc2l6ZSAvIDEwMjQpOwogCWlmIChub2Rlcy0+Y250IDw9
+IDEpCiAJCXRzdF9icmsoVENPTkYsICJUZXN0IHJlcXVpcmVzIGF0IGxlYXN0IHR3byBOVU1BIG1l
+bW9yeSBub2RlcyIpOwogCkBAIC00OCw3ICs0OCw3IEBAIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQp
+CiAKIHN0YXRpYyB2b2lkIGNsZWFudXAodm9pZCkKIHsKLQl0c3Rfbm9kZW1hcF9mcmVlKG5vZGVz
+KTsKKwl0c2Vfbm9kZW1hcF9mcmVlKG5vZGVzKTsKIH0KIAogc3RhdGljIHZvaWQgdmVyaWZ5X21l
+bXBvbGljeSh1bnNpZ25lZCBpbnQgbm9kZSwgaW50IG1vZGUpCkBAIC02MywxMiArNjMsMTIgQEAg
+c3RhdGljIHZvaWQgdmVyaWZ5X21lbXBvbGljeSh1bnNpZ25lZCBpbnQgbm9kZSwgaW50IG1vZGUp
+CiAJaWYgKFRTVF9SRVQpIHsKIAkJdHN0X3JlcyhURkFJTCB8IFRURVJSTk8sCiAJCSAgICAgICAg
+InNldF9tZW1wb2xpY3koJXMpIG5vZGUgJXUiLAotCQkgICAgICAgIHRzdF9tZW1wb2xpY3lfbW9k
+ZV9uYW1lKG1vZGUpLCBub2RlKTsKKwkJICAgICAgICB0c2VfbWVtcG9saWN5X21vZGVfbmFtZSht
+b2RlKSwgbm9kZSk7CiAJCXJldHVybjsKIAl9CiAKIAl0c3RfcmVzKFRQQVNTLCAic2V0X21lbXBv
+bGljeSglcykgbm9kZSAldSIsCi0JICAgICAgICB0c3RfbWVtcG9saWN5X21vZGVfbmFtZShtb2Rl
+KSwgbm9kZSk7CisJICAgICAgICB0c2VfbWVtcG9saWN5X21vZGVfbmFtZShtb2RlKSwgbm9kZSk7
+CiAKIAludW1hX2ZyZWVfbm9kZW1hc2soYm0pOwogCkBAIC03OSw5ICs3OSw5IEBAIHN0YXRpYyB2
+b2lkIHZlcmlmeV9tZW1wb2xpY3kodW5zaWduZWQgaW50IG5vZGUsIGludCBtb2RlKQogCQl0c3Rf
+cmVhcF9jaGlsZHJlbigpOwogCX0KIAotCXRzdF9ub2RlbWFwX3Jlc2V0X2NvdW50ZXJzKG5vZGVz
+KTsKKwl0c2Vfbm9kZW1hcF9yZXNldF9jb3VudGVycyhub2Rlcyk7CiAJYWxsb2NfZmF1bHRfY291
+bnQobm9kZXMsIE5VTEwsIFBBR0VTX0FMTE9DQVRFRCAqIHBhZ2Vfc2l6ZSk7Ci0JdHN0X25vZGVt
+YXBfcHJpbnRfY291bnRlcnMobm9kZXMpOworCXRzZV9ub2RlbWFwX3ByaW50X2NvdW50ZXJzKG5v
+ZGVzKTsKIAogCWZvciAoaSA9IDA7IGkgPCBub2Rlcy0+Y250OyBpKyspIHsKIAkJaWYgKG5vZGVz
+LT5tYXBbaV0gPT0gbm9kZSkgewpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9zZXRfbWVtcG9saWN5L3NldF9tZW1wb2xpY3kwMi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9zZXRfbWVtcG9saWN5L3NldF9tZW1wb2xpY3kwMi5jCmluZGV4IDNkYjljMjAwOS4uOTRk
+OGFhMzM2IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldF9tZW1wb2xp
+Y3kvc2V0X21lbXBvbGljeTAyLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRf
+bWVtcG9saWN5L3NldF9tZW1wb2xpY3kwMi5jCkBAIC0xOCw3ICsxOCw3IEBACiAjIGluY2x1ZGUg
+PG51bWFpZi5oPgogI2VuZGlmCiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKLSNpbmNsdWRlICJ0c3Rf
+bnVtYS5oIgorI2luY2x1ZGUgInRzZV9udW1hLmgiCiAKICNpZmRlZiBIQVZFX05VTUFfVjIKIApA
+QCAtMjcsMjAgKzI3LDIwIEBACiAjZGVmaW5lIEFMTE9DX09OX05PREUgOAogCiBzdGF0aWMgc2l6
+ZV90IHBhZ2Vfc2l6ZTsKLXN0YXRpYyBzdHJ1Y3QgdHN0X25vZGVtYXAgKm5vZGVzOworc3RhdGlj
+IHN0cnVjdCB0c2Vfbm9kZW1hcCAqbm9kZXM7CiAKIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpCiB7
+CiAJcGFnZV9zaXplID0gZ2V0cGFnZXNpemUoKTsKIAotCW5vZGVzID0gdHN0X2dldF9ub2RlbWFw
+KFRTVF9OVU1BX01FTSwgMiAqIEFMTE9DX09OX05PREUgKiBwYWdlX3NpemUgLyAxMDI0KTsKKwlu
+b2RlcyA9IHRzZV9nZXRfbm9kZW1hcChUU1RfTlVNQV9NRU0sIDIgKiBBTExPQ19PTl9OT0RFICog
+cGFnZV9zaXplIC8gMTAyNCk7CiAJaWYgKG5vZGVzLT5jbnQgPD0gMSkKIAkJdHN0X2JyayhUQ09O
+RiwgIlRlc3QgcmVxdWlyZXMgYXQgbGVhc3QgdHdvIE5VTUEgbWVtb3J5IG5vZGVzIik7CiB9CiAK
+IHN0YXRpYyB2b2lkIGNsZWFudXAodm9pZCkKIHsKLQl0c3Rfbm9kZW1hcF9mcmVlKG5vZGVzKTsK
+Kwl0c2Vfbm9kZW1hcF9mcmVlKG5vZGVzKTsKIH0KIAogc3RhdGljIHZvaWQgYWxsb2NfYW5kX2No
+ZWNrKHNpemVfdCBzaXplLCB1bnNpZ25lZCBpbnQgKmV4cF9hbGxvYykKQEAgLTUzLDcgKzUzLDcg
+QEAgc3RhdGljIHZvaWQgYWxsb2NfYW5kX2NoZWNrKHNpemVfdCBzaXplLCB1bnNpZ25lZCBpbnQg
+KmV4cF9hbGxvYykKIAkJdHN0X3JlYXBfY2hpbGRyZW4oKTsKIAl9CiAKLQl0c3Rfbm9kZW1hcF9y
+ZXNldF9jb3VudGVycyhub2Rlcyk7CisJdHNlX25vZGVtYXBfcmVzZXRfY291bnRlcnMobm9kZXMp
+OwogCWFsbG9jX2ZhdWx0X2NvdW50KG5vZGVzLCBOVUxMLCBzaXplICogcGFnZV9zaXplKTsKIAog
+CWZvciAoaSA9IDA7IGkgPCBub2Rlcy0+Y250OyBpKyspIHsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvc2V0X21lbXBvbGljeS9zZXRfbWVtcG9saWN5MDMuYyBiL3Rlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X21lbXBvbGljeS9zZXRfbWVtcG9saWN5MDMuYwppbmRl
+eCA1Y2ZjZGE2ZDguLmJjNWUwMzIxNyAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9zZXRfbWVtcG9saWN5L3NldF9tZW1wb2xpY3kwMy5jCisrKyBiL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvc2V0X21lbXBvbGljeS9zZXRfbWVtcG9saWN5MDMuYwpAQCAtMTUsNyArMTUs
+NyBAQAogIyBpbmNsdWRlIDxudW1hLmg+CiAjZW5kaWYKICNpbmNsdWRlICJ0c3RfdGVzdC5oIgot
+I2luY2x1ZGUgInRzdF9udW1hLmgiCisjaW5jbHVkZSAidHNlX251bWEuaCIKIAogI2RlZmluZSBN
+TlRQT0lOVCAibW50cG9pbnQiCiAjZGVmaW5lIFBBR0VTX0FMTE9DQVRFRCAxNnUKQEAgLTI1LDIw
+ICsyNSwyMCBAQAogI2luY2x1ZGUgInNldF9tZW1wb2xpY3kuaCIKIAogc3RhdGljIHNpemVfdCBw
+YWdlX3NpemU7Ci1zdGF0aWMgc3RydWN0IHRzdF9ub2RlbWFwICpub2RlczsKK3N0YXRpYyBzdHJ1
+Y3QgdHNlX25vZGVtYXAgKm5vZGVzOwogCiBzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQogewogCXBh
+Z2Vfc2l6ZSA9IGdldHBhZ2VzaXplKCk7CiAKLQlub2RlcyA9IHRzdF9nZXRfbm9kZW1hcChUU1Rf
+TlVNQV9NRU0sIDIgKiBQQUdFU19BTExPQ0FURUQgKiBwYWdlX3NpemUgLyAxMDI0KTsKKwlub2Rl
+cyA9IHRzZV9nZXRfbm9kZW1hcChUU1RfTlVNQV9NRU0sIDIgKiBQQUdFU19BTExPQ0FURUQgKiBw
+YWdlX3NpemUgLyAxMDI0KTsKIAlpZiAobm9kZXMtPmNudCA8PSAxKQogCQl0c3RfYnJrKFRDT05G
+LCAiVGVzdCByZXF1aXJlcyBhdCBsZWFzdCB0d28gTlVNQSBtZW1vcnkgbm9kZXMiKTsKIH0KIAog
+c3RhdGljIHZvaWQgY2xlYW51cCh2b2lkKQogewotCXRzdF9ub2RlbWFwX2ZyZWUobm9kZXMpOwor
+CXRzZV9ub2RlbWFwX2ZyZWUobm9kZXMpOwogfQogCiBzdGF0aWMgdm9pZCB2ZXJpZnlfbWVtcG9s
+aWN5KHVuc2lnbmVkIGludCBub2RlLCBpbnQgbW9kZSkKQEAgLTUzLDE2ICs1MywxNiBAQCBzdGF0
+aWMgdm9pZCB2ZXJpZnlfbWVtcG9saWN5KHVuc2lnbmVkIGludCBub2RlLCBpbnQgbW9kZSkKIAlp
+ZiAoVFNUX1JFVCkgewogCQl0c3RfcmVzKFRGQUlMIHwgVFRFUlJOTywKIAkJICAgICAgICAic2V0
+X21lbXBvbGljeSglcykgbm9kZSAldSIsCi0JCSAgICAgICAgdHN0X21lbXBvbGljeV9tb2RlX25h
+bWUobW9kZSksIG5vZGUpOworCQkgICAgICAgIHRzZV9tZW1wb2xpY3lfbW9kZV9uYW1lKG1vZGUp
+LCBub2RlKTsKIAkJcmV0dXJuOwogCX0KIAogCXRzdF9yZXMoVFBBU1MsICJzZXRfbWVtcG9saWN5
+KCVzKSBub2RlICV1IiwKLQkgICAgICAgIHRzdF9tZW1wb2xpY3lfbW9kZV9uYW1lKG1vZGUpLCBu
+b2RlKTsKKwkgICAgICAgIHRzZV9tZW1wb2xpY3lfbW9kZV9uYW1lKG1vZGUpLCBub2RlKTsKIAog
+CW51bWFfZnJlZV9ub2RlbWFzayhibSk7CiAKLQl0c3Rfbm9kZW1hcF9yZXNldF9jb3VudGVycyhu
+b2Rlcyk7CisJdHNlX25vZGVtYXBfcmVzZXRfY291bnRlcnMobm9kZXMpOwogCWFsbG9jX2ZhdWx0
+X2NvdW50KG5vZGVzLCBNTlRQT0lOVCAiL251bWEtdGVzdC1maWxlIiwgUEFHRVNfQUxMT0NBVEVE
+ICogcGFnZV9zaXplKTsKIAogCWZvciAoaSA9IDA7IGkgPCBub2Rlcy0+Y250OyBpKyspIHsKZGlm
+ZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X21lbXBvbGljeS9zZXRfbWVt
+cG9saWN5MDQuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X21lbXBvbGljeS9zZXRf
+bWVtcG9saWN5MDQuYwppbmRleCAyYTFkMmUxYjkuLjY3MjIzMmM4NCAxMDA2NDQKLS0tIGEvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfbWVtcG9saWN5L3NldF9tZW1wb2xpY3kwNC5jCisr
+KyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X21lbXBvbGljeS9zZXRfbWVtcG9saWN5
+MDQuYwpAQCAtMjYsNyArMjYsNyBAQAogIyBpbmNsdWRlIDxudW1haWYuaD4KICNlbmRpZgogI2lu
+Y2x1ZGUgInRzdF90ZXN0LmgiCi0jaW5jbHVkZSAidHN0X251bWEuaCIKKyNpbmNsdWRlICJ0c2Vf
+bnVtYS5oIgogCiAjZGVmaW5lIE1OVFBPSU5UICJtbnRwb2ludCIKICNkZWZpbmUgRklMRVMgMTAK
+QEAgLTM2LDcgKzM2LDcgQEAKICNpbmNsdWRlICJzZXRfbWVtcG9saWN5LmgiCiAKIHN0YXRpYyBz
+aXplX3QgcGFnZV9zaXplOwotc3RhdGljIHN0cnVjdCB0c3Rfbm9kZW1hcCAqbm9kZXM7CitzdGF0
+aWMgc3RydWN0IHRzZV9ub2RlbWFwICpub2RlczsKIAogc3RhdGljIHZvaWQgc2V0dXAodm9pZCkK
+IHsKQEAgLTQ0LDE0ICs0NCwxNCBAQCBzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQogCiAJcGFnZV9z
+aXplID0gZ2V0cGFnZXNpemUoKTsKIAotCW5vZGVzID0gdHN0X2dldF9ub2RlbWFwKFRTVF9OVU1B
+X01FTSwgbm9kZV9taW5fcGFnZXMgKiBwYWdlX3NpemUgLyAxMDI0KTsKKwlub2RlcyA9IHRzZV9n
+ZXRfbm9kZW1hcChUU1RfTlVNQV9NRU0sIG5vZGVfbWluX3BhZ2VzICogcGFnZV9zaXplIC8gMTAy
+NCk7CiAJaWYgKG5vZGVzLT5jbnQgPD0gMSkKIAkJdHN0X2JyayhUQ09ORiwgIlRlc3QgcmVxdWly
+ZXMgYXQgbGVhc3QgdHdvIE5VTUEgbWVtb3J5IG5vZGVzIik7CiB9CiAKIHN0YXRpYyB2b2lkIGNs
+ZWFudXAodm9pZCkKIHsKLQl0c3Rfbm9kZW1hcF9mcmVlKG5vZGVzKTsKKwl0c2Vfbm9kZW1hcF9m
+cmVlKG5vZGVzKTsKIH0KIAogc3RhdGljIHZvaWQgYWxsb2NfYW5kX2NoZWNrKHZvaWQpCkBAIC02
+MSw3ICs2MSw3IEBAIHN0YXRpYyB2b2lkIGFsbG9jX2FuZF9jaGVjayh2b2lkKQogCXVuc2lnbmVk
+IGludCB0b3RhbF9wYWdlcyA9IDA7CiAJdW5zaWduZWQgaW50IHN1bV9wYWdlcyA9IDA7CiAKLQl0
+c3Rfbm9kZW1hcF9yZXNldF9jb3VudGVycyhub2Rlcyk7CisJdHNlX25vZGVtYXBfcmVzZXRfY291
+bnRlcnMobm9kZXMpOwogCiAJLyoKIAkgKiBUaGUgaW5uZXIgbG9vcCBsb29wcyBub2RlLT5jbnQg
+dGltZXMgdG8gZW5zdXJlIHRoZSBzdW0gY291bGQKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvc2lndGltZWR3YWl0L3NpZ3RpbWVkd2FpdDAxLmMgYi90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL3NpZ3RpbWVkd2FpdC9zaWd0aW1lZHdhaXQwMS5jCmluZGV4IGZhMzZjNDU1
+Zi4uZTFlYjhjMjZhIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NpZ3Rp
+bWVkd2FpdC9zaWd0aW1lZHdhaXQwMS5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+c2lndGltZWR3YWl0L3NpZ3RpbWVkd2FpdDAxLmMKQEAgLTEsNyArMSw3IEBACiAvLyBTUERYLUxp
+Y2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgogLyogQ29weXJpZ2h0IChjKSBKaXJp
+IFBhbGVjZWs8anBhbGVjZWtAd2ViLmRlPiwgMjAwOSAqLwogCi0jaW5jbHVkZSAibGlic2lnd2Fp
+dC5oIgorI2luY2x1ZGUgInRzZV9zaWd3YWl0LmgiCiAKIHN0YXRpYyBpbnQgbXlfc2lndGltZWR3
+YWl0KGNvbnN0IHNpZ3NldF90ICogc2V0LCBzaWdpbmZvX3QgKiBpbmZvLAogCQkJICAgdm9pZCAq
+dGltZW91dCkKQEAgLTEwLDE1ICsxMCwxNSBAQCBzdGF0aWMgaW50IG15X3NpZ3RpbWVkd2FpdChj
+b25zdCBzaWdzZXRfdCAqIHNldCwgc2lnaW5mb190ICogaW5mbywKIH0KIAogc3RydWN0IHNpZ3dh
+aXRfdGVzdF9kZXNjIHRlc3RzW10gPSB7Ci0JeyB0ZXN0X2VtcHR5X3NldCwgU0lHVVNSMX0sCi0J
+eyB0ZXN0X3VubWFza2VkX21hdGNoaW5nLCBTSUdVU1IxfSwKLQl7IHRlc3RfbWFza2VkX21hdGNo
+aW5nLCBTSUdVU1IxfSwKLQl7IHRlc3RfdW5tYXNrZWRfbWF0Y2hpbmdfbm9pbmZvLCBTSUdVU1Ix
+fSwKLQl7IHRlc3RfbWFza2VkX21hdGNoaW5nX25vaW5mbywgU0lHVVNSMX0sCi0JeyB0ZXN0X2Jh
+ZF9hZGRyZXNzLCBTSUdVU1IxfSwKLQl7IHRlc3RfYmFkX2FkZHJlc3MyLCBTSUdVU1IxfSwKLQl7
+IHRlc3RfYmFkX2FkZHJlc3MzLCBTSUdVU1IxfSwKLQl7IHRlc3RfdGltZW91dCwgMH0sCisJeyB0
+c2VfZW1wdHlfc2V0LCBTSUdVU1IxfSwKKwl7IHRzZV91bm1hc2tlZF9tYXRjaGluZywgU0lHVVNS
+MX0sCisJeyB0c2VfbWFza2VkX21hdGNoaW5nLCBTSUdVU1IxfSwKKwl7IHRzZV91bm1hc2tlZF9t
+YXRjaGluZ19ub2luZm8sIFNJR1VTUjF9LAorCXsgdHNlX21hc2tlZF9tYXRjaGluZ19ub2luZm8s
+IFNJR1VTUjF9LAorCXsgdHNlX2JhZF9hZGRyZXNzLCBTSUdVU1IxfSwKKwl7IHRzZV9iYWRfYWRk
+cmVzczIsIFNJR1VTUjF9LAorCXsgdHNlX2JhZF9hZGRyZXNzMywgU0lHVVNSMX0sCisJeyB0c2Vf
+dGltZW91dCwgMH0sCiB9OwogCiBzdGF0aWMgdm9pZCBydW4odW5zaWduZWQgaW50IGkpCkBAIC0z
+MSw2ICszMSw2IEBAIHN0YXRpYyB2b2lkIHJ1bih1bnNpZ25lZCBpbnQgaSkKIHN0YXRpYyBzdHJ1
+Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKIAkudGVzdD0gcnVuLAogCS50Y250ID0gQVJSQVlfU0laRSh0
+ZXN0cyksCi0JLnNldHVwID0gc2lnd2FpdF9zZXR1cCwKKwkuc2V0dXAgPSB0c2Vfc2lnd2FpdF9z
+ZXR1cCwKIAkuZm9ya3NfY2hpbGQgPSAxLAogfTsKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvc2lnd2FpdC9zaWd3YWl0MDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvc2lnd2FpdC9zaWd3YWl0MDEuYwppbmRleCA5MjU0NGMxNDEuLjE4OWQ1ZGZkZCAxMDA2NDQK
+LS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zaWd3YWl0L3NpZ3dhaXQwMS5jCisrKyBi
+L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2lnd2FpdC9zaWd3YWl0MDEuYwpAQCAtMSw3ICsx
+LDcgQEAKIC8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyCiAvKiBD
+b3B5cmlnaHQgKGMpIEppcmkgUGFsZWNlazxqcGFsZWNla0B3ZWIuZGU+LCAyMDA5ICovCiAKLSNp
+bmNsdWRlICJsaWJzaWd3YWl0LmgiCisjaW5jbHVkZSAidHNlX3NpZ3dhaXQuaCIKIAogc3RhdGlj
+IGludCBteV9zaWd3YWl0KGNvbnN0IHNpZ3NldF90ICogc2V0LAogCQkgICAgICBzaWdpbmZvX3Qg
+KiBpbmZvIExUUF9BVFRSSUJVVEVfVU5VU0VELApAQCAtMTcsOCArMTcsOCBAQCBzdGF0aWMgaW50
+IG15X3NpZ3dhaXQoY29uc3Qgc2lnc2V0X3QgKiBzZXQsCiB9CiAKIHN0cnVjdCBzaWd3YWl0X3Rl
+c3RfZGVzYyB0ZXN0c1tdID0gewotCXsgdGVzdF91bm1hc2tlZF9tYXRjaGluZ19ub2luZm8sIFNJ
+R1VTUjF9LAotCXsgdGVzdF9tYXNrZWRfbWF0Y2hpbmdfbm9pbmZvLCBTSUdVU1IxfSwKKwl7IHRz
+ZV91bm1hc2tlZF9tYXRjaGluZ19ub2luZm8sIFNJR1VTUjF9LAorCXsgdHNlX21hc2tlZF9tYXRj
+aGluZ19ub2luZm8sIFNJR1VTUjF9LAogfTsKIAogc3RhdGljIHZvaWQgcnVuKHVuc2lnbmVkIGlu
+dCBpKQpAQCAtMzEsNiArMzEsNiBAQCBzdGF0aWMgdm9pZCBydW4odW5zaWduZWQgaW50IGkpCiBz
+dGF0aWMgc3RydWN0IHRzdF90ZXN0IHRlc3QgPSB7CiAJLnRlc3Q9IHJ1biwKIAkudGNudCA9IEFS
+UkFZX1NJWkUodGVzdHMpLAotCS5zZXR1cCA9IHNpZ3dhaXRfc2V0dXAsCisJLnNldHVwID0gdHNl
+X3NpZ3dhaXRfc2V0dXAsCiAJLmZvcmtzX2NoaWxkID0gMSwKIH07CmRpZmYgLS1naXQgYS90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NpZ3dhaXRpbmZvL3NpZ3dhaXRpbmZvMDEuYyBiL3Rlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvc2lnd2FpdGluZm8vc2lnd2FpdGluZm8wMS5jCmluZGV4IGY3
+ZDkwMDQ3Zi4uYzE3ZWE5YzI0IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3NpZ3dhaXRpbmZvL3NpZ3dhaXRpbmZvMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL3NpZ3dhaXRpbmZvL3NpZ3dhaXRpbmZvMDEuYwpAQCAtMSw3ICsxLDcgQEAKIC8vIFNQRFgt
+TGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyCiAvKiBDb3B5cmlnaHQgKGMpIEpp
+cmkgUGFsZWNlazxqcGFsZWNla0B3ZWIuZGU+LCAyMDA5ICovCiAKLSNpbmNsdWRlICJsaWJzaWd3
+YWl0LmgiCisjaW5jbHVkZSAidHNlX3NpZ3dhaXQuaCIKIAogc3RhdGljIGludCBteV9zaWd3YWl0
+aW5mbyhjb25zdCBzaWdzZXRfdCAqIHNldCwgc2lnaW5mb190ICogaW5mbywKIAkJCSAgdm9pZCAq
+dGltZW91dCBMVFBfQVRUUklCVVRFX1VOVVNFRCkKQEAgLTEwLDEzICsxMCwxMyBAQCBzdGF0aWMg
+aW50IG15X3NpZ3dhaXRpbmZvKGNvbnN0IHNpZ3NldF90ICogc2V0LCBzaWdpbmZvX3QgKiBpbmZv
+LAogfQogCiBzdHJ1Y3Qgc2lnd2FpdF90ZXN0X2Rlc2MgdGVzdHNbXSA9IHsKLQl7IHRlc3RfZW1w
+dHlfc2V0LCBTSUdVU1IxfSwKLQl7IHRlc3RfdW5tYXNrZWRfbWF0Y2hpbmcsIFNJR1VTUjF9LAot
+CXsgdGVzdF9tYXNrZWRfbWF0Y2hpbmcsIFNJR1VTUjF9LAotCXsgdGVzdF91bm1hc2tlZF9tYXRj
+aGluZ19ub2luZm8sIFNJR1VTUjF9LAotCXsgdGVzdF9tYXNrZWRfbWF0Y2hpbmdfbm9pbmZvLCBT
+SUdVU1IxfSwKLQl7IHRlc3RfYmFkX2FkZHJlc3MsIFNJR1VTUjF9LAotCXsgdGVzdF9iYWRfYWRk
+cmVzczIsIFNJR1VTUjF9LAorCXsgdHNlX2VtcHR5X3NldCwgU0lHVVNSMX0sCisJeyB0c2VfdW5t
+YXNrZWRfbWF0Y2hpbmcsIFNJR1VTUjF9LAorCXsgdHNlX21hc2tlZF9tYXRjaGluZywgU0lHVVNS
+MX0sCisJeyB0c2VfdW5tYXNrZWRfbWF0Y2hpbmdfbm9pbmZvLCBTSUdVU1IxfSwKKwl7IHRzZV9t
+YXNrZWRfbWF0Y2hpbmdfbm9pbmZvLCBTSUdVU1IxfSwKKwl7IHRzZV9iYWRfYWRkcmVzcywgU0lH
+VVNSMX0sCisJeyB0c2VfYmFkX2FkZHJlc3MyLCBTSUdVU1IxfSwKIH07CiAKIHN0YXRpYyB2b2lk
+IHJ1bih1bnNpZ25lZCBpbnQgaSkKQEAgLTI5LDYgKzI5LDYgQEAgc3RhdGljIHZvaWQgcnVuKHVu
+c2lnbmVkIGludCBpKQogc3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0ZXN0ID0gewogCS50ZXN0PSBy
+dW4sCiAJLnRjbnQgPSBBUlJBWV9TSVpFKHRlc3RzKSwKLQkuc2V0dXAgPSBzaWd3YWl0X3NldHVw
+LAorCS5zZXR1cCA9IHRzZV9zaWd3YWl0X3NldHVwLAogCS5mb3Jrc19jaGlsZCA9IDEsCiB9Owpk
+aWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zd2Fwb2ZmL3N3YXBvZmYwMS5j
+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zd2Fwb2ZmL3N3YXBvZmYwMS5jCmluZGV4IGJm
+MDk3YWMxYS4uMDY1YjVlZGJjIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3N3YXBvZmYvc3dhcG9mZjAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zd2Fw
+b2ZmL3N3YXBvZmYwMS5jCkBAIC0xMyw3ICsxMyw3IEBACiAKICNpbmNsdWRlICJ0c3RfdGVzdC5o
+IgogI2luY2x1ZGUgImxhcGkvc3lzY2FsbHMuaCIKLSNpbmNsdWRlICJsaWJzd2FwLmgiCisjaW5j
+bHVkZSAidHNlX3N3YXAuaCIKIAogI2RlZmluZSBNTlRQT0lOVAkibW50cG9pbnQiCiAjZGVmaW5l
+IFRFU1RfRklMRQlNTlRQT0lOVCIvdGVzdHN3YXAiCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL3N3YXBvZmYvc3dhcG9mZjAyLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL3N3YXBvZmYvc3dhcG9mZjAyLmMKaW5kZXggYjZjNDI4OTg5Li5kN2I4NzI1NjQgMTAwNjQ0
+Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3dhcG9mZi9zd2Fwb2ZmMDIuYworKysg
+Yi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N3YXBvZmYvc3dhcG9mZjAyLmMKQEAgLTE0LDcg
+KzE0LDcgQEAKICNpbmNsdWRlIDxwd2QuaD4KICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1
+ZGUgImxhcGkvc3lzY2FsbHMuaCIKLSNpbmNsdWRlICJsaWJzd2FwLmgiCisjaW5jbHVkZSAidHNl
+X3N3YXAuaCIKIAogI2RlZmluZSBNTlRQT0lOVAkibW50cG9pbnQiCiAjZGVmaW5lIFRFU1RfRklM
+RQlNTlRQT0lOVCIvdGVzdHN3YXAiCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL3N3YXBvbi9zd2Fwb24wMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zd2Fwb24v
+c3dhcG9uMDEuYwppbmRleCBhMjE0YmM5ZGIuLjM4Njk5YzAzNyAxMDA2NDQKLS0tIGEvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9zd2Fwb24vc3dhcG9uMDEuYworKysgYi90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL3N3YXBvbi9zd2Fwb24wMS5jCkBAIC0xNCw3ICsxNCw3IEBACiAjaW5jbHVk
+ZSA8c3RkbGliLmg+CiAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKICNpbmNsdWRlICJsYXBpL3N5c2Nh
+bGxzLmgiCi0jaW5jbHVkZSAibGlic3dhcC5oIgorI2luY2x1ZGUgInRzZV9zd2FwLmgiCiAKICNk
+ZWZpbmUgTU5UUE9JTlQJIm1udHBvaW50IgogI2RlZmluZSBTV0FQX0ZJTEUJTU5UUE9JTlQiL3N3
+YXBmaWxlMDEiCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N3YXBvbi9z
+d2Fwb24wMi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zd2Fwb24vc3dhcG9uMDIuYwpp
+bmRleCA2MjVkNDYzZjcuLmQzZTUyOGM5NCAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9zd2Fwb24vc3dhcG9uMDIuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3N3YXBvbi9zd2Fwb24wMi5jCkBAIC0xNyw3ICsxNyw3IEBACiAKICNpbmNsdWRlICJ0c3RfdGVz
+dC5oIgogI2luY2x1ZGUgImxhcGkvc3lzY2FsbHMuaCIKLSNpbmNsdWRlICJsaWJzd2FwLmgiCisj
+aW5jbHVkZSAidHNlX3N3YXAuaCIKIAogI2RlZmluZSBNTlRQT0lOVAkibW50cG9pbnQiCiAjZGVm
+aW5lIFRFU1RfRklMRQlNTlRQT0lOVCIvdGVzdHN3YXAiCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL3N3YXBvbi9zd2Fwb24wMy5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9zd2Fwb24vc3dhcG9uMDMuYwppbmRleCA1M2M1NzUwZGUuLmZiNGRhZjQyMyAxMDA2NDQK
+LS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zd2Fwb24vc3dhcG9uMDMuYworKysgYi90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N3YXBvbi9zd2Fwb24wMy5jCkBAIC0yMSw3ICsyMSw3
+IEBACiAjaW5jbHVkZSA8c3lzL3N3YXAuaD4KICNpbmNsdWRlICJ0c3RfdGVzdC5oIgogI2luY2x1
+ZGUgImxhcGkvc3lzY2FsbHMuaCIKLSNpbmNsdWRlICJsaWJzd2FwLmgiCisjaW5jbHVkZSAidHNl
+X3N3YXAuaCIKIAogLyoKICAqIE1BWF9TV0FQRklMRVMgZnJvbSB0aGUgaW50ZXJuYWwga2VybmVs
+IGltcGxlbWVudGF0aW9uIGlzIGN1cnJlbnRseSA8MjMsIDI5PiwKQEAgLTQwLDcgKzQwLDcgQEAg
+c3RhdGljIGludCBzZXR1cF9zd2FwKHZvaWQpCiAJaW50IHVzZWRfc3dhcGZpbGVzLCBtaW5fc3dh
+cGZpbGVzOwogCWNoYXIgZmlsZW5hbWVbRklMRU5BTUVfTUFYXTsKIAotCXVzZWRfc3dhcGZpbGVz
+ID0gdHN0X2NvdW50X3N3YXBzKCk7CisJdXNlZF9zd2FwZmlsZXMgPSB0c2VfY291bnRfc3dhcHMo
+KTsKIAltaW5fc3dhcGZpbGVzID0gTUlOX1NXQVBfRklMRVMgLSB1c2VkX3N3YXBmaWxlczsKIAog
+CXdoaWxlICh0cnVlKSB7CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3VldmVudHMvdWV2
+ZW50MDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvdWV2ZW50cy91ZXZlbnQwMy5jCmluZGV4IDEyNmM5
+MjRmMS4uMjM4NjY0NjBiIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3VldmVudHMvdWV2
+ZW50MDMuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3VldmVudHMvdWV2ZW50MDMuYwpAQCAtMTgs
+NyArMTgsNyBAQAogI2luY2x1ZGUgPHN5cy9zeXNtYWNyb3MuaD4KICNpbmNsdWRlIDxsaW51eC91
+aW5wdXQuaD4KICNpbmNsdWRlICJ0c3RfdGVzdC5oIgotI2luY2x1ZGUgInRzdF91aW5wdXQuaCIK
+KyNpbmNsdWRlICJ0c2VfdWlucHV0LmgiCiAjaW5jbHVkZSAidWV2ZW50LmgiCiAKIHN0YXRpYyBp
+bnQgbW91c2VfZmQ7Ci0tIAoyLjUyLjAKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8v
+bGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
