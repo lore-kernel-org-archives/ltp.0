@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18C1FD2ECE9
-	for <ltp@archiver.kernel.org>; Tue, 20 Jan 2026 13:14:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9516BD2ECF7
+	for <ltp@archiver.kernel.org>; Tue, 20 Jan 2026 13:23:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1768914850; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1768915387; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=fK+YhSclyixKjiHVSwmor/5vaBpmmZPlFW692ms80Lg=;
- b=O1rvA8/gDC4cqXHphmt3AywCr+FTTKVGvjHznG12v3mQpnKW9H4XrPyaXSYZJCUcwKryF
- zuhTRl/IbQbHme9iNpZCOfqNrt25D2s6R9LFuG46ywwwQ9xSF2d1nYTcD4PmfbVQQ6a3RAN
- P4gmqjBJJDY2J5KYAHGRCdqMSValhV0=
+ bh=BPM9iAo0JlBo8egztE9m6KcrP83ZqBCruN3lym6YQog=;
+ b=Bu2V546vqpRocBU3/utokf8wHWectd8G0iyN9jM7PSS5K6bzeDBQlfqSYQYDDCXTa5ity
+ KHC3qrycOlg3SgyomZkwNp6gX9XUaMWxWIN32gaSHCDLJXFgFfpzINwRSm+j5Q97pHo+MOC
+ s8jq1DVS4oxQAU0mD9IcdbhP+z/iUSk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9087D3C5A8C
-	for <ltp@archiver.kernel.org>; Tue, 20 Jan 2026 14:14:10 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 255243CAF08
+	for <ltp@archiver.kernel.org>; Tue, 20 Jan 2026 14:23:07 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BF39A3C5A8C
- for <ltp@lists.linux.it>; Tue, 20 Jan 2026 14:13:45 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E64653CAF01
+ for <ltp@lists.linux.it>; Tue, 20 Jan 2026 14:22:43 +0100 (CET)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 540601A00A3B
- for <ltp@lists.linux.it>; Tue, 20 Jan 2026 14:13:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1768914822;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RR65A5i6PlTI+Ve5+yNwdE+GhAm6h812sdSoxAj8CJ0=;
- b=Im8IUKZ+yyym7skjbihBplg4gmi0EEToVG3v9XuZJ2kZbUmKjFOHFiYrT9dVB3kqTYvyru
- 3wWurJlDpEhSGJ7/a7Zhws0lui7ZdP0aV8m0QnkCiL2386XxMtaR+A5SuEe1z9tL/mWP2u
- bfwreJUix5qAkZjlL8KsHLFj9uh7OTs=
-Received: from mail-dy1-f200.google.com (mail-dy1-f200.google.com
- [74.125.82.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-578-GBmnsiPFPQWM2Pk2bvb07Q-1; Tue, 20 Jan 2026 08:13:39 -0500
-X-MC-Unique: GBmnsiPFPQWM2Pk2bvb07Q-1
-X-Mimecast-MFC-AGG-ID: GBmnsiPFPQWM2Pk2bvb07Q_1768914818
-Received: by mail-dy1-f200.google.com with SMTP id
- 5a478bee46e88-2ac363a9465so6032316eec.0
- for <ltp@lists.linux.it>; Tue, 20 Jan 2026 05:13:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1768914818; x=1769519618;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0B22D140042E
+ for <ltp@lists.linux.it>; Tue, 20 Jan 2026 14:22:42 +0100 (CET)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-4801c1ad878so42411815e9.1
+ for <ltp@lists.linux.it>; Tue, 20 Jan 2026 05:22:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1768915362; x=1769520162; darn=lists.linux.it;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
  :message-id:reply-to;
- bh=RR65A5i6PlTI+Ve5+yNwdE+GhAm6h812sdSoxAj8CJ0=;
- b=blhEGU9aHOI49nDhl4ITNo3s9ufpC0UZHtxBARVWUflG/gjdbCWNAGL7KR28OslDiG
- hsYFAAg4it+UjEKzxXuEeS+5IBTfuxWB9nPGVw9pMVhS9EhvqEH+ZKm4P1iOXD2MtOWy
- Bfoc1MrWh4/6163TBgBPYqVnVSpTLRvHK+fVQhp05xvxojhllZutI2wpp0K0mMwGjTcH
- Lsbm9jG7jCGeD/h+XUF0z1t6mTFFcBz5HpWGl1fRX8Fdfg+DcjRHcdHlPGblu7D+wrDM
- 3pCj8imlRncvSlI/Zx0DNpF92xidJnibiTG614EgsYFnrTMUFY979nVvcHHZlq84xeBL
- UbRw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVOHXtcCfS3QmsaZ1s3RD/G4uPacRYeJOwyvAUL5A/OemH21hBIbQ5kzTWrrIWfDp9li5k=@lists.linux.it
-X-Gm-Message-State: AOJu0YzCe4tKrg7ctGbqdrikLXDbgyQJ1+XQFck4Y+JdhQgshQkdQjCz
- hrZy6ikJlT052gcVVEkDzaufKLww+NP03T59zrT2PAV1H4+inwikyigDDf55RbqfQ8PWjKM5HgZ
- HYTwEi6jOz82B9aM17nxNdlUEAUGOaQ/pxywiVf/GL87BPW5DhLdyyO1gMzFOXL4lzG1DB7hNMM
- lPpcQPDughXHeaZ204zwyz2L9FPyI=
-X-Gm-Gg: AZuq6aJ1ulm0ia5m51aHKVCmcYV++lSi1VXG2v7FnWI5ZwTzDu/Shwcz34k5IRKpExb
- uVKlGruZUo7DNX8wlSHqRrHhYgvP537vS3RY0YWZRUM84bBKdUDy2F+mWH1N1DP3ADpcgOyCfih
- KJzyutn7UheJecJNKNY2A195OgM0GA2nQQjEL2qYzoPGni/IR8HNIWi0Na8/3+MxNJK90=
-X-Received: by 2002:a05:7301:678f:b0:2b0:4fe2:6a2e with SMTP id
- 5a478bee46e88-2b6b3f05fd8mr12587705eec.9.1768914818110; 
- Tue, 20 Jan 2026 05:13:38 -0800 (PST)
-X-Received: by 2002:a05:7301:678f:b0:2b0:4fe2:6a2e with SMTP id
- 5a478bee46e88-2b6b3f05fd8mr12587688eec.9.1768914817720; Tue, 20 Jan 2026
- 05:13:37 -0800 (PST)
-MIME-Version: 1.0
-References: <aWmqFAzdtsR0t5aJ@autotest-wegao.qe.prg2.suse.org>
- <20260116070708.GA556902@pevik>
-In-Reply-To: <20260116070708.GA556902@pevik>
-Date: Tue, 20 Jan 2026 21:13:25 +0800
-X-Gm-Features: AZwV_QhsstRgNBm9GjJUAaDHOH24_FdhUeVbtIg4rcg1Gtv6Clf8Fu6AXxjGxL8
-Message-ID: <CAEemH2foRNfQZt2mFRdR364=xB8db_qjd36pM_ce+EKpJOAhkg@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: jQbHeKH_l1v_GzDBREXjqOZvzJ8ZB4zM88-wlaKNO-g_1768914818
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ bh=cxmMXDbz3zNYIZtXBVOt4ztB3aQWVm3vWqJWlfTNRkM=;
+ b=Z+ml6aXxmLBJtuKsA5/trWbcq8GI/kfD3i0eIXBC7INdYXoqOfmdwtHwVDB/I9xHtf
+ IPy9ulOaJDWZC6Lbkp/ypbMGm21Slv+K3pvk/7znVVjnMwV+sMedO/Y6DhkpqUIyCPi4
+ jX4IOqen9fXbF9JvIw9tPgG57v1b7kcg5ccmOMGwbnCYaxC5+yAWD3A+wq8wY4ZCeis1
+ tOTDgEClzGEyZjPLVWe4SpJn66ncNVwWVp4pZcH1whcC7KtSrA+msBnks+IqZMLijZqn
+ wx2VEqZJor0KrgLmsgTVh8Wb4RTaO45+IVDvmZMkc092w+tekLm4AgtkiOMR+5Vefx9e
+ beTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1768915362; x=1769520162;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=cxmMXDbz3zNYIZtXBVOt4ztB3aQWVm3vWqJWlfTNRkM=;
+ b=WzwxoHr54x7C/08NghHheAxwTW9MByi8Neuo8fWb2FF+h/gpoRk7xWXhHjWnaWCaLu
+ mnOAq+l72KgwbwCVP56DPQviH4XtpLLeW20WQUu/80BY2eat/JUy4j3Gi0+FzuKsjlnU
+ ipsvjN74eArdkJ3J3pXhV41lNTtGcdohKZAwl04q4XBhJ4VlBW3X0JRnYRmmywSK+uHM
+ S8rGLyeFPkJc8nTJ/06pqriYV8QUXVeAHsnw2TjLUO3aTRaXYvMn/TabqLY8Lu4bTJS5
+ 6bQUXh11mPMPGK9g8Q2bgB7CiAwQexq7bevrCgaWWQLiCgEoWlOggvgWtSasBiHvM2Z0
+ Qbaw==
+X-Gm-Message-State: AOJu0Yx29xXQolIXPM9sc/U9kTnif0/D4r2cC14ajDEcFg+128p/1dDC
+ aAqtsSGlv8dkK4FSavHGxeiBREEiEgyIY7MezHCx+vGghpjMmXB7+r4MsvwBY397Dnw=
+X-Gm-Gg: AY/fxX5oVClTBesKah17KdDEvQ6trEPdTG0LZI9DwlDtz3NUONLFq7wrNWAKB/ELx11
+ q2sY5YIemB9k9zn4gzEJn/mVa5i8GddNeCehifFpNTw1gOOzZ3nlxzLq2ns8y1x29ohegzGVxAI
+ mYF6GHvnzQ0nKcuWaKeGhn7yhSgg74IRkaNsWInxSixXfjRqHbsGpOz5/QsUcDEyu0YR3IJqlyq
+ 9vvZ9cwRZjSnljOnimmDd+jvB2IYFRZ8HMeIW0SAag3IsWH3A0oVtqF73ZZzq03LnDKGkU8U6Df
+ XLfIBGxQ8EKpNp9dP0WRfr8MezdSb4ih+TgLlcpxdJEqtG4ZRSR0KJLDE1xalrGbj5WneJnw59m
+ law+HTq8XFC8ovromZTKWraCa+gp9p4zVYaxe8IBrq1QkNsLy80tV1jqIpo2EKQuwSZdT0twQv3
+ Ro1hnAdfpW/lRREfwFrAUOhSQJRs/WoewgMLR6G6LJip4rh8/siknbnMfs/o9M3Z8DuofYDg5JJ
+ Jno1vlLdW25VGY=
+X-Received: by 2002:a05:600c:608b:b0:479:1b0f:dfff with SMTP id
+ 5b1f17b1804b1-4803e7a2cc0mr27080095e9.10.1768915362130; 
+ Tue, 20 Jan 2026 05:22:42 -0800 (PST)
+Received: from localhost
+ (p200300ff0f0b7b017e458f16f8082810.dip0.t-ipconnect.de.
+ [2003:ff:f0b:7b01:7e45:8f16:f808:2810])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4801fe3b01csm109468465e9.5.2026.01.20.05.22.41
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 20 Jan 2026 05:22:41 -0800 (PST)
+Mime-Version: 1.0
+Date: Tue, 20 Jan 2026 14:22:41 +0100
+Message-Id: <DFTG5UGY0U63.3DAYYGFYK110X@suse.com>
+To: "Petr Vorel" <pvorel@suse.cz>, "Andrea Cervesato"
+ <andrea.cervesato@suse.de>
+X-Mailer: aerc 0.18.2
+References: <20260120-file_attr05-v3-1-c3fd9fc0fcce@suse.com>
+ <20260120124323.GA39038@pevik>
+In-Reply-To: <20260120124323.GA39038@pevik>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] clone10.c failed on 32bit compilation
+Subject: Re: [LTP] [PATCH v3] syscalls: add file_attr05 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,51 +102,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Petr Vorel <pvorel@suse.cz> wrote:
-
-> FYI the patch is invalid. It should have been:
+On Tue Jan 20, 2026 at 1:43 PM CET, Petr Vorel wrote:
+> Hi Andrea,
 >
-> diff --git include/lapi/tls.h include/lapi/tls.h
-> index a067872e0f..eee77899e8 100644
-> --- include/lapi/tls.h
-> +++ include/lapi/tls.h
-> @@ -64,7 +64,7 @@ static inline void init_tls(void)
->         tls_ptr = allocate_tls_area();
->         tls_desc = SAFE_MALLOC(sizeof(*tls_desc));
->         memset(tls_desc, 0, sizeof(*tls_desc));
-> -       tls_desc->entry_number = -1;
-> +       tls_desc->entry_number = 13;
->         tls_desc->base_addr = (unsigned long)tls_ptr;
->         tls_desc->limit = TLS_SIZE;
->         tls_desc->seg_32bit = 1;
-> @@ -72,7 +72,7 @@ static inline void init_tls(void)
->         tls_desc->read_exec_only = 0;
->         tls_desc->limit_in_pages = 0;
->         tls_desc->seg_not_present = 0;
-> -       tls_desc->useable = 1;
-> +       tls_ptr = tls_desc;
+> > From: Andrea Cervesato <andrea.cervesato@suse.com>
+>
+> > Verify that `file_setattr` is correctly raising EOPNOTSUPP when
+> > filesystem doesn't support FSX operations.
+>
+> > Regression test for "474b155adf39 - fs: make vfs_fileattr_[get|set]
+> > return -EOPNOTSUPP".
+>
+> Reason for changing approach in v3:
+> https://lore.kernel.org/ltp/DFTCS1EEBMDD.21X779ISM0MTF@suse.com/
+>
+> > +++ b/testcases/kernel/syscalls/file_attr/file_attr05.c
+> > @@ -0,0 +1,63 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (C) 2025 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> > + */
+> > +
+> > +/*\
+> > + * Verify that `file_setattr` is correctly raising EOPNOTSUPP when filesystem
+> > + * doesn't support FSX operations.
+> > + *
+> > + * Regression test for "474b155adf39 - fs: make vfs_fileattr_[get|set] return
+> > + * -EOPNOTSUPP".
+> Why not added into .tags?
+> nit: Also the usual way of referring commits is:
+> 474b155adf392 ("fs: make vfs_fileattr_[get|set] return -EOPNOTSUPP")
+>
+> > + */
+> > +
+> > +#include "tst_test.h"
+> > +#include "lapi/fs.h"
+> > +
+> > +#define MNTPOINT "mntpoint"
+> > +#define FILEPATH (MNTPOINT "/ltp_file")
+> > +#define BLOCKS 128
+> > +#define PROJID 16
+> > +
+> > +static struct file_attr *attr_set;
+> > +
+> > +static void run(void)
+> > +{
+> > +	TST_EXP_FAIL(file_setattr(AT_FDCWD, FILEPATH,
+> > +			   attr_set, FILE_ATTR_SIZE_LATEST, 0), EOPNOTSUPP);
+> > +}
+> > +
+> > +static void setup(void)
+> > +{
+> > +	struct stat statbuf;
+> > +
+> > +	SAFE_TOUCH(FILEPATH, 0777, NULL);
+> > +
+> > +	SAFE_STAT(MNTPOINT, &statbuf);
+> > +
+> > +	attr_set->fa_xflags |= FS_XFLAG_EXTSIZE;
+> > +	attr_set->fa_xflags |= FS_XFLAG_COWEXTSIZE;
+> > +	attr_set->fa_extsize = BLOCKS * statbuf.st_blksize;
+> > +	attr_set->fa_cowextsize = BLOCKS * statbuf.st_blksize;
+> > +	attr_set->fa_projid = PROJID;
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +	.test_all = run,
+> > +	.setup = setup,
+> > +	.mntpoint = MNTPOINT,
+> > +	.needs_root = 1,
+> > +	.mount_device = 1,
+> > +	.all_filesystems = 1,
+> > +	.format_device = 1,
+> > +	.skip_filesystems = (const char *const []) {
+> > +		"xfs",
+> > +		"fuse", /* EINVAL is raised before EOPNOTSUPP */
+> > +		"vfat", /* vfat is not implementing file_[set|get]attr */
+>
+> Hm, funny, vfat not implementing also raises EOPNOTSUPP. I wonder if we should
+> keep it as well.
 
-@Wei, @Petr, did you get it to work after trying the above diff?
-Which kernel did you use?
+It makes sense from the point of view of the results, but it doesn't
+make sense from the point of view of the test's meaning. EOPNOTSUPP in
+case of vfat is raised for other reasons.
 
-Unfortunately, neither of these methods (including Wei's method) works
-properly on my kernel-6.19.0-rc2 platform.
+>
+> > +		NULL,
+> > +	},
+> > +	.bufs = (struct tst_buffers []) {
+> > +		{&attr_set, .size = sizeof(struct file_attr)},
+> Again, I'd put 474b155adf392 into tags. It's IMHO enough (no need for mentioning
+> it in the docs.
 
-And no matter what method I try, the child process still cannot switch
-to the new TLS. More details see I posted in the pre-thread.
+Sorry I forgot, I'm going to send a v4.
 
 
 -- 
-Regards,
-Li Wang
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 
 -- 
