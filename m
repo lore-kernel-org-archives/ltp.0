@@ -4,105 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00674D2ECF7
-	for <ltp@archiver.kernel.org>; Tue, 20 Jan 2026 10:52:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC0D8D2ECF7
+	for <ltp@archiver.kernel.org>; Tue, 20 Jan 2026 10:55:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1768906553; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=puaUwGUs5dzavj52Fbf/Z17vuP6CMBm1vc0Z4vc0cng=;
+ b=HUaCwaB4APnrX9+6hrNrQjlD2Eqw1pXvG0MPY/U4ZG4BMSpt12sPa/RbzM2Yho46DtGWs
+ tMdjIormVVcf7GG0McV+urJC+P1D1r37A+oFghpmbbxlIYySLWzxnWI0fSxwjaue1OAyo/V
+ GoDdjUfxGxu2V82DqdL3lXiUObmlRik=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E84CA3CAE1B
-	for <ltp@archiver.kernel.org>; Tue, 20 Jan 2026 11:52:25 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 56F0B3CAE3F
+	for <ltp@archiver.kernel.org>; Tue, 20 Jan 2026 11:55:53 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 99AB73CA689
- for <ltp@lists.linux.it>; Tue, 20 Jan 2026 11:52:07 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 613713C4F45
+ for <ltp@lists.linux.it>; Tue, 20 Jan 2026 11:55:18 +0100 (CET)
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
+ [IPv6:2a00:1450:4864:20::62f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 134181400BF8
- for <ltp@lists.linux.it>; Tue, 20 Jan 2026 11:52:06 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 73EA15BCE4;
- Tue, 20 Jan 2026 10:52:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1768906320; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=g891cwK8EdIIvdX9tf5K+XhW0t0O/lngsC/lzkwgC4I=;
- b=miEH84uehkFNM1ANudRGPiyMqUbM7s38Zmxr5GLenuONo6n3VD56qX1wOlezaXhpRjTd0T
- PCa+KDMxKkGw20wDupmmdbap0bsrrKOTa6hjwzYba9DR1yuLvPIlcFQswhfdGIfcb5qU0P
- 8/P4tAM0MvFNhIK4BefGZjhjHPoOBnI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1768906320;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=g891cwK8EdIIvdX9tf5K+XhW0t0O/lngsC/lzkwgC4I=;
- b=abbIls7csZgu2sUHTH+S4L5vtMJKzIWN1esaUGkrEKZYeO1Iyg9XW0lOm8PAQBaauuP4kn
- 3z9Yrj38CDbJcOAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1768906320; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=g891cwK8EdIIvdX9tf5K+XhW0t0O/lngsC/lzkwgC4I=;
- b=miEH84uehkFNM1ANudRGPiyMqUbM7s38Zmxr5GLenuONo6n3VD56qX1wOlezaXhpRjTd0T
- PCa+KDMxKkGw20wDupmmdbap0bsrrKOTa6hjwzYba9DR1yuLvPIlcFQswhfdGIfcb5qU0P
- 8/P4tAM0MvFNhIK4BefGZjhjHPoOBnI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1768906320;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=g891cwK8EdIIvdX9tf5K+XhW0t0O/lngsC/lzkwgC4I=;
- b=abbIls7csZgu2sUHTH+S4L5vtMJKzIWN1esaUGkrEKZYeO1Iyg9XW0lOm8PAQBaauuP4kn
- 3z9Yrj38CDbJcOAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 59E523EA63;
- Tue, 20 Jan 2026 10:52:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Rd1KFFBeb2nTBQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 20 Jan 2026 10:52:00 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 20 Jan 2026 11:51:57 +0100
-MIME-Version: 1.0
-Message-Id: <20260120-file_attr05-v3-1-c3fd9fc0fcce@suse.com>
-X-B4-Tracking: v=1; b=H4sIAExeb2kC/0XMTQqDMBBA4avIrDslk/oTu+o9ShGNYw3UJCRRC
- uLdGwqly2/x3g6Rg+EI12KHwJuJxtmMy6kAPff2yWjGbJBC1oKoxcm8uOtTCqJC5kFrRUM7ljX
- kwgeezPt7uz+yp+AWTHPg/veoSFD5f3TsvHUprt7jJpFQt0o2Wo2KZHOLa+Szdgscxwf6zyrwq
- AAAAA==
-X-Change-ID: 20260119-file_attr05-eebcc81b9d46
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1768906320; l=3415;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=1qHuSFHR4Y+rAhNKFveeNw1awYfXqHLL7Ymfkn6wtQE=;
- b=Hzi8/5RKvzeDXvvRBMAuhtRxDPHqKdgSDSE3RXZZSAgdNyL75buECTk64e399l9fLzIs7PrQO
- SE46/fcxJjSB20oSI/czL4bsHsIfbBtOthGvAIMDWL/hzIU9C8MZ0fK
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CBD3A200AE0
+ for <ltp@lists.linux.it>; Tue, 20 Jan 2026 11:55:17 +0100 (CET)
+Received: by mail-ej1-x62f.google.com with SMTP id
+ a640c23a62f3a-b870732cce2so795965066b.3
+ for <ltp@lists.linux.it>; Tue, 20 Jan 2026 02:55:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1768906517; x=1769511317; darn=lists.linux.it;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=JOsjtUlGGfAUpObFZiCPBc6TjB47TGsF8gJkslSxnL4=;
+ b=IyoyiHEqFYDu5CP3C6QVDPMPvVbBo9eYu+WhAgnUEXiBEnjzlkWW+NgkdyeAlV/lnO
+ ayULSP5CIzmJEl/YZeTOtIv+P6uKeMG2U+aqdLZgT7DTiMNMVjieReI6QR5HPbpZ3p2M
+ M+OHLlQsSzOi7QEEcr68Dh0Iyv6IFP/WiWlw7gUOIr6T758HcYiXYkdLesiNlvZly5pj
+ 3XPxVqrAzutY7D/qLsXPOlMbmGw6re6cQhy9hgo1aUWKXT24B5EEBrAwDHPduCKFrXB9
+ ISnDwx+vUkVFc/MlmeqFo0OsoN8BXknPiAscmgYZDDzlkCVywMXCqTUQotwj4NxwXp6j
+ 4LYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1768906517; x=1769511317;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=JOsjtUlGGfAUpObFZiCPBc6TjB47TGsF8gJkslSxnL4=;
+ b=waUL1bAgjT0aIrK1BkcTKOIRKuZfGUYGSEUFqAFbv86b3sDppCF/7S2j0rAivMi8fe
+ fKOSYycdme+N/iG3F8b9Ai5T9FABOd4z4Q2u9rQOWZp3QdFcy7qbybjvbRIUrKhz6Tn4
+ SzKyLXEq00N6t1AKCahbfnYNqSsXSZVXPbYIABjSYU8M1sVbkYBPZQXwcCybM6B3HbUY
+ r9Uopp1QYB2goyy9uO4RHxdLYd75WYvt5BhOGpWsHw7jIXLHvov9iJKnaoZcWfjoHbtc
+ V1mS6oWMG9pEALoLEs3eB/Pgl+eIgJI+TSx1sKPc8DVss+8YHotTgSWw8CEGh1/eFj0W
+ zGKQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWWGsku1ZKJdzR4+kUJ0iHn56U9XXa8Xd+TRYDeCW583pTTum8wv9f0x1jY0QDNDh9PsqI=@lists.linux.it
+X-Gm-Message-State: AOJu0YxwBUxaXnHqJwpOqtze6d3bVp05uBs6pr4rWEksxHK8DwEnvAVE
+ 1RQ7LlcTGLNu4UONzpEs3cVDmNA/RtpIc4FxNNKJw4Ri4dufnsIRdeJPBhn8qQms1I4=
+X-Gm-Gg: AZuq6aL+NHR1J5dsRMCCsiWM5MiD41xXDSnM4trtBWztrNUOPSCyRyDyoPAmmRXwrSi
+ 7Bwm58KWOwhgnrCzL9TD3yj/CywfOJwVVwq4LD4AvjhrMjWDY833aMm8bdNKj/2kFiNwCU3Ng8m
+ Ntb2mszcM9m5Y854lbmtu3oupUmrvtgxFAi3r3MjYPkRllUgEtecKmaNfj+smFlUzqMXkCPI4CX
+ gEykNvUcoE+nM5sgvgkP+/CLKCi8bQkmgJ1oTbDPSAZs3Acoi/v+KtCgR0bR2FeKjXK4ohkOZEQ
+ 5ara4C8IIFC9LHzLI8kceSK5R54rGS+MwY7MygAtzXlE5XhHKUUjiKiYqNWqOA3vtoxbHYGOySk
+ gdgrMerRl8E32nvuQ6091SJA3a2eD1J2cvBjR7Es1tQUWFhznY64mpRWPlp0qtZS7VaouKo8sNJ
+ b9DAgSb2gDZkBL62R+cudEE0ToRSxetJdBzIejsB1Vk+R+VhMh8nBjRqfqLNQhFD7/aW4I3RvK3
+ uZw
+X-Received: by 2002:a17:907:c19:b0:b87:1741:a494 with SMTP id
+ a640c23a62f3a-b87968f5a60mr1060310466b.17.1768906517137; 
+ Tue, 20 Jan 2026 02:55:17 -0800 (PST)
+Received: from localhost
+ (p200300ff0f0b7b017e458f16f8082810.dip0.t-ipconnect.de.
+ [2003:ff:f0b:7b01:7e45:8f16:f808:2810])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-b87959fa4f3sm1346554966b.50.2026.01.20.02.55.16
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 20 Jan 2026 02:55:16 -0800 (PST)
+Mime-Version: 1.0
+Date: Tue, 20 Jan 2026 11:55:16 +0100
+Message-Id: <DFTD0Z8ASCRC.ZENSGYXPZ4DA@suse.com>
+To: "Andrea Cervesato" <andrea.cervesato@suse.com>, "Petr Vorel"
+ <pvorel@suse.cz>
+X-Mailer: aerc 0.18.2
+References: <20251014-file_attr_eopnotsupp-v2-1-c9827c8d8127@suse.com>
+ <aW4mDAH6pVh_VyC2@yuki.lan> <DFSMEBM9PYDT.3TJXEU3C8W31R@suse.com>
+ <20260120095945.GA27808@pevik> <DFTCS1EEBMDD.21X779ISM0MTF@suse.com>
+In-Reply-To: <DFTCS1EEBMDD.21X779ISM0MTF@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] syscalls: add file_attr05 test
+Subject: Re: [LTP] [PATCH v2] syscalls: add file_attr05 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,124 +105,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+> I think my approach is wrong, because the test is not really
+> verifying if FSX features are tested or not, but verifying that vfat is
+> not implementing file_setattr/file_getattr. Hence I will change this
+> test, verifying file_setattr() syscall only, including all filesystems
+> and checking that XFS features are triggering EOPNOTSUPP, except for
 
-Verify that `file_setattr` is correctly raising EOPNOTSUPP when
-filesystem doesn't support FSX operations.
+Typo: here I meant "checking that FSX features are triggering EOPNOTSUPP".
 
-Regression test for "474b155adf39 - fs: make vfs_fileattr_[get|set]
-return -EOPNOTSUPP".
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- runtest/syscalls                                  |  1 +
- testcases/kernel/syscalls/file_attr/.gitignore    |  1 +
- testcases/kernel/syscalls/file_attr/file_attr05.c | 63 +++++++++++++++++++++++
- 3 files changed, 65 insertions(+)
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index a1ef7548b58a1a8d51d8eec347d5772edbf0a953..12b4f3949c794b8747ccc827a1a66b6332e44673 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -253,6 +253,7 @@ file_attr01 file_attr01
- file_attr02 file_attr02
- file_attr03 file_attr03
- file_attr04 file_attr04
-+file_attr05 file_attr05
- 
- #posix_fadvise test cases
- posix_fadvise01                      posix_fadvise01
-diff --git a/testcases/kernel/syscalls/file_attr/.gitignore b/testcases/kernel/syscalls/file_attr/.gitignore
-index 3fcb9004dd301ef4ee8cc1067c6a3763acb8d299..42f830a7e477cf42a967f5b14b7e4b6902c4f0e3 100644
---- a/testcases/kernel/syscalls/file_attr/.gitignore
-+++ b/testcases/kernel/syscalls/file_attr/.gitignore
-@@ -2,3 +2,4 @@ file_attr01
- file_attr02
- file_attr03
- file_attr04
-+file_attr05
-diff --git a/testcases/kernel/syscalls/file_attr/file_attr05.c b/testcases/kernel/syscalls/file_attr/file_attr05.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..44d803ed8731a339ceeda18d1fffcfd775061c05
---- /dev/null
-+++ b/testcases/kernel/syscalls/file_attr/file_attr05.c
-@@ -0,0 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2025 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Verify that `file_setattr` is correctly raising EOPNOTSUPP when filesystem
-+ * doesn't support FSX operations.
-+ *
-+ * Regression test for "474b155adf39 - fs: make vfs_fileattr_[get|set] return
-+ * -EOPNOTSUPP".
-+ */
-+
-+#include "tst_test.h"
-+#include "lapi/fs.h"
-+
-+#define MNTPOINT "mntpoint"
-+#define FILEPATH (MNTPOINT "/ltp_file")
-+#define BLOCKS 128
-+#define PROJID 16
-+
-+static struct file_attr *attr_set;
-+
-+static void run(void)
-+{
-+	TST_EXP_FAIL(file_setattr(AT_FDCWD, FILEPATH,
-+			   attr_set, FILE_ATTR_SIZE_LATEST, 0), EOPNOTSUPP);
-+}
-+
-+static void setup(void)
-+{
-+	struct stat statbuf;
-+
-+	SAFE_TOUCH(FILEPATH, 0777, NULL);
-+
-+	SAFE_STAT(MNTPOINT, &statbuf);
-+
-+	attr_set->fa_xflags |= FS_XFLAG_EXTSIZE;
-+	attr_set->fa_xflags |= FS_XFLAG_COWEXTSIZE;
-+	attr_set->fa_extsize = BLOCKS * statbuf.st_blksize;
-+	attr_set->fa_cowextsize = BLOCKS * statbuf.st_blksize;
-+	attr_set->fa_projid = PROJID;
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.mntpoint = MNTPOINT,
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.all_filesystems = 1,
-+	.format_device = 1,
-+	.skip_filesystems = (const char *const []) {
-+		"xfs",
-+		"fuse", /* EINVAL is raised before EOPNOTSUPP */
-+		"vfat", /* vfat is not implementing file_[set|get]attr */
-+		NULL,
-+	},
-+	.bufs = (struct tst_buffers []) {
-+		{&attr_set, .size = sizeof(struct file_attr)},
-+		{}
-+	}
-+};
-
----
-base-commit: 36b915cef08adaa833af79301780cdd45a38f0e2
-change-id: 20260119-file_attr05-eebcc81b9d46
-
-Best regards,
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 
 -- 
