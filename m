@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 750F6D262B2
-	for <ltp@archiver.kernel.org>; Wed, 21 Jan 2026 07:29:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C696CD262B0
+	for <ltp@archiver.kernel.org>; Wed, 21 Jan 2026 08:12:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1768980539; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1768983106; h=mime-version :
  references : in-reply-to : date : message-id : to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=cPB0vaVAeXLzeaeNuIZb9Ltcz278D3bfN2z/J9PRv5o=;
- b=fRg0uvSi2IOk8z2P3frZLRvlZXOsoYc2Zjnl7JGMfDaIeLlv8XrElrPU0exmWm59r8sam
- /urTeCCsy61Ngx7y326Nbcu0ERpPudrbba6YL4t17UjYg8UPU2bxSYB6DNkPRylnrfmgwDm
- oERDSPxOWeWd0rqADiJGgvZxZfsezeg=
+ bh=RFnmAFvgAtM8+b2xILSWg8cOw8top0/4Kqin9dKQsKU=;
+ b=oAaWy50W+lCv9udHS3K5vwR/OuQQy7QC8ozHmmYOtjoym2SnMuMEmpbK2Uy08R2PUUlJk
+ ECgP6QbukpI6f9W9iTwEslsfrQaqCv40duq36A2cG5QyGqJ3qg7Ijy/3sJHdsDzZv/sTEt+
+ V4T8QQVuQ7L1u/aR98e1zo3r4p0cjYY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DD3673CB25F
-	for <ltp@archiver.kernel.org>; Wed, 21 Jan 2026 08:28:59 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 045FD3CA458
+	for <ltp@archiver.kernel.org>; Wed, 21 Jan 2026 09:11:46 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2ED7A3C0FE4
- for <ltp@lists.linux.it>; Wed, 21 Jan 2026 08:28:34 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 8C80D3C4E26
+ for <ltp@lists.linux.it>; Wed, 21 Jan 2026 09:11:23 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3EF8360065A
- for <ltp@lists.linux.it>; Wed, 21 Jan 2026 08:28:33 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DD07B2005F1
+ for <ltp@lists.linux.it>; Wed, 21 Jan 2026 09:11:22 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1768980512;
+ s=mimecast20190719; t=1768983081;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BN1HwmY0UyrKuepg1OSkzGd5zXU4KMTr+3QwStWjlWU=;
- b=M+m4zet4cOnr+o9C6xoRBD6O2ri0Gzk0ocvvFuUgeCcUXoeK4/l0MENuF1IwIlQDyjFuF+
- BS2oJ6C+6VN4yPgescGY392oKH4HbzjM8axEDliWXzA9X2dYmGzQPA3TDuLhSwACFPBSXY
- TE3KEvZMS5XLlVZ/D7H1YVZODOE1aqs=
-Received: from mail-dy1-f198.google.com (mail-dy1-f198.google.com
- [74.125.82.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=lR+ZsMvTcy676j2gVaj1t1NYc9D7Tn4URB67zLsA/Y4=;
+ b=jEpM+QTbjPET55H7xCqtWMnV/xsZiLwNbqvxkEFYn+e+bgd3rkCp+Msj2+GhuIgWK1uinC
+ AyLn6gGhpo/T82GfeGgcWZzuzzIR0BKGNqbkXZVaFFNA4X52Tvi/f1PYeZm2yHgdz7LxcY
+ 1KsBQXjWttNCileSk3nJncTvkkUBsK0=
+Received: from mail-dl1-f70.google.com (mail-dl1-f70.google.com
+ [74.125.82.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-117-nXg5-XTaOZuy-mCiiKUNSg-1; Wed, 21 Jan 2026 02:28:30 -0500
-X-MC-Unique: nXg5-XTaOZuy-mCiiKUNSg-1
-X-Mimecast-MFC-AGG-ID: nXg5-XTaOZuy-mCiiKUNSg_1768980510
-Received: by mail-dy1-f198.google.com with SMTP id
- 5a478bee46e88-2b7155ca88cso161778eec.1
- for <ltp@lists.linux.it>; Tue, 20 Jan 2026 23:28:30 -0800 (PST)
+ us-mta-393-_cUSnehNOE29rlCzyPI0XQ-1; Wed, 21 Jan 2026 03:11:19 -0500
+X-MC-Unique: _cUSnehNOE29rlCzyPI0XQ-1
+X-Mimecast-MFC-AGG-ID: _cUSnehNOE29rlCzyPI0XQ_1768983079
+Received: by mail-dl1-f70.google.com with SMTP id
+ a92af1059eb24-123377038f9so2283600c88.0
+ for <ltp@lists.linux.it>; Wed, 21 Jan 2026 00:11:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1768980508; x=1769585308;
+ d=1e100.net; s=20230601; t=1768983079; x=1769587879;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=BN1HwmY0UyrKuepg1OSkzGd5zXU4KMTr+3QwStWjlWU=;
- b=xSpj4zYW79nNU/ogRS6OogimtQ0vZZA08wZ6qIA534nOcSdBKG3ywDX3iKRnTzYERd
- JAbAGYrzmIVNOBf136aDQ6dLPeoYNpajBwVGt5G9VZb9WMfE213KVhlSTpLSKdGHKQKS
- AcC+nWdytDlLTib11HZt2INLD+XeSKL3Ak+I5nFnDqu4SX02ec/SwkXt55wkSSy8jlqf
- //7SMuPC0mUor3hOC0UVSkvAIL+dOprOaAER6bTQihbEsqnsL051Oddaz/dXq4gHizyV
- MTGlMUuFc4vZZZJG8uj6xPONecLmalhIkgfFmpryw3VQxc4q0ZMohiuzf+Av6ZSUC2mj
- LulA==
+ bh=lR+ZsMvTcy676j2gVaj1t1NYc9D7Tn4URB67zLsA/Y4=;
+ b=n6Il9h54RB5GrFk9JjGuqvE2Vy7vsbSvSg68G5Doemdd03wQbx0hM0xIEPuFaMf1v1
+ OVhlLFwqhn5UxLPPdhlVYCTQ9SqHMPcueHL2fDlU9gE9Xfd30nayYqvo354STfrl0HBU
+ 1+J5GKDbGPAZqHbt2tTeukv1VA1hxsdE+CHYDtVQUrAzqRdcN+USbe5dt8QnxBNhPfRQ
+ w7iL5fadtKthreeOxApReXc7TRIwXFnrjDmpzd3NUmhncmFg8OM1aq+wu4Q2wkS3EFM2
+ JfHxLjo/wTTnJ4H/MAGKHnmG/CU/fCUVKoBqRP06kALxiE4ykdLS6Epoe6e/j7eJca/Y
+ ZNmg==
 X-Forwarded-Encrypted: i=1;
- AJvYcCW+MTfLVeRJKV3Lrx/6LTEAOQUR1JVhVQOUkSMBxydL2zrYxuiJaISK7hBVOdbQS+9UFRo=@lists.linux.it
-X-Gm-Message-State: AOJu0YzbG/ZWoE4+tqEAbzLSBWwzhGUrp/4ByFc8UqF+ypujE/2V0p6L
- CH4DQn+4PvUZPl1h+JkyME6JGygWe2/UGk1vqR+1gTgJliqQvC38PALjaxpSFltPOgakuQqG9fc
- WghqHULwd3RqZW1/VwPUD1p9ZPK5smx+oKaUWMjDnA0EXV8/Ry2XQinaxWimvLPiDFGB6p1WtoC
- q0NrYW+HMX0Fv2AqBNRYeWg/16O1BJulNEec436A==
-X-Gm-Gg: AZuq6aKoLEEYX5ACzKy28sE7X8fto2v+zhtpdM16HZtDJUZDRrJo8W8nnHwG6T98pB/
- eX6pDq6rusZf2OCYu+lsUmbZ909EgbfDpznB3fIEq/C8kKIuHtSv5YR49FvMxA38ksyNHLYlySE
- iI/7KlLHWFMsdPXcKwWuTGQoU32fmTU1l3pA45uyvrVOOP3llxaz0WmlVM+9ZdbsvU0ow=
-X-Received: by 2002:a05:7300:6422:b0:2ae:55f2:ad57 with SMTP id
- 5a478bee46e88-2b6fd7acdb6mr2786529eec.29.1768980507745; 
- Tue, 20 Jan 2026 23:28:27 -0800 (PST)
-X-Received: by 2002:a05:7300:6422:b0:2ae:55f2:ad57 with SMTP id
- 5a478bee46e88-2b6fd7acdb6mr2786520eec.29.1768980507235; Tue, 20 Jan 2026
- 23:28:27 -0800 (PST)
+ AJvYcCVx8wRE+W7e5lqQG2EME1AadmgYc9dUVE6vkoWwqM8YT+MnOMn3jUKOMDNYHXAspPu/2G8=@lists.linux.it
+X-Gm-Message-State: AOJu0YypoHe35u9nQVV6aSOa7HGj7t7I6N1QbB2nNw/aHOTjRIIl8DzT
+ mMIm+jymhpfppCkV3lVh1H5jutzv0DLK6JXYaC/qeWfdJG9BK3oZeK4C/CVQONWF+q8dUmnnKib
+ B+qKy6qGsu1VnyyJpgjdL0Sn2ery0xNIDI9kI8I11zRRNGUZo9/57B56qLsCZGx2XSmcuMavurm
+ VmWIr7FL8nX4W8zv3v7IcTbnX/jcM=
+X-Gm-Gg: AZuq6aLKVwXC/KRlAgZGAroC2fK6uWs+S48jjs37wl+IQ5ga5CQi8dD7jsmoEcQy6nD
+ NnmoPHCP7eBNrS+lcw4jqHp7tV4PcswjnecWQJx8embcyHFS8MydNgWRwLZxmiyFORsDWRT4CzT
+ 4P4jJZW5lEpUKNVkxGG8o3qGDfKl3PtelMJCzAe7LLWlBrZGcx8izGzb9jYDde1ZnTpmA=
+X-Received: by 2002:a05:7022:48e:b0:119:e56b:c762 with SMTP id
+ a92af1059eb24-1246aadce8cmr3001741c88.39.1768983078656; 
+ Wed, 21 Jan 2026 00:11:18 -0800 (PST)
+X-Received: by 2002:a05:7022:48e:b0:119:e56b:c762 with SMTP id
+ a92af1059eb24-1246aadce8cmr3001735c88.39.1768983078289; Wed, 21 Jan 2026
+ 00:11:18 -0800 (PST)
 MIME-Version: 1.0
 References: <aWmqFAzdtsR0t5aJ@autotest-wegao.qe.prg2.suse.org>
  <20260116070708.GA556902@pevik>
  <CAEemH2foRNfQZt2mFRdR364=xB8db_qjd36pM_ce+EKpJOAhkg@mail.gmail.com>
  <aXBSqvZ8OVP39wd9@autotest-wegao.qe.prg2.suse.org>
-In-Reply-To: <aXBSqvZ8OVP39wd9@autotest-wegao.qe.prg2.suse.org>
-Date: Wed, 21 Jan 2026 15:28:15 +0800
-X-Gm-Features: AZwV_QhqM6rPnAOIYoVuxB-s2FQobEgCkknFON0kXnEieeAwryI7hj2glJPRuEM
-Message-ID: <CAEemH2f=YMZOmHJAzDUSxekzZ1Um9tJzFQ_d3crMZ51L5aKJ2g@mail.gmail.com>
+ <CAEemH2f=YMZOmHJAzDUSxekzZ1Um9tJzFQ_d3crMZ51L5aKJ2g@mail.gmail.com>
+In-Reply-To: <CAEemH2f=YMZOmHJAzDUSxekzZ1Um9tJzFQ_d3crMZ51L5aKJ2g@mail.gmail.com>
+Date: Wed, 21 Jan 2026 16:11:05 +0800
+X-Gm-Features: AZwV_QgT7sO9eMJaXOePW3PUhLOUbuezDP6V9TJIGyowUkEPuhf81vFai31v6OM
+Message-ID: <CAEemH2c5H=w2odXJc8=a=ynNubMV85QTLvSweWTSz0gjfvCduw@mail.gmail.com>
 To: Wei Gao <wegao@suse.com>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: d8pXYSlmyM5-XwVElGrTg8uCmvA1WbNWCgv21fd8Isw_1768980510
+X-Mimecast-MFC-PROC-ID: VddY_Inv_IC78G2a1Cl5tyop3a7DnUBEAopD5QuJmMM_1768983079
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] clone10.c failed on 32bit compilation
 X-BeenThere: ltp@lists.linux.it
@@ -113,51 +113,20 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Wei Gao <wegao@suse.com> wrote:
+> > Yes, i guess we are still blocking on i386 scenario. But we can rewrite
+> > parent TLS's base_addr instead of switch new TLS, this way is correct
+> > base current kernel's logic but still need further implementation.
 
-> > > diff --git include/lapi/tls.h include/lapi/tls.h
-> > > index a067872e0f..eee77899e8 100644
-> > > --- include/lapi/tls.h
-> > > +++ include/lapi/tls.h
-> > > @@ -64,7 +64,7 @@ static inline void init_tls(void)
-> > >         tls_ptr = allocate_tls_area();
-> > >         tls_desc = SAFE_MALLOC(sizeof(*tls_desc));
-> > >         memset(tls_desc, 0, sizeof(*tls_desc));
-> > > -       tls_desc->entry_number = -1;
-> > > +       tls_desc->entry_number = 13;
-> > >         tls_desc->base_addr = (unsigned long)tls_ptr;
-> > >         tls_desc->limit = TLS_SIZE;
-> > >         tls_desc->seg_32bit = 1;
-> > > @@ -72,7 +72,7 @@ static inline void init_tls(void)
-> > >         tls_desc->read_exec_only = 0;
-> > >         tls_desc->limit_in_pages = 0;
-> > >         tls_desc->seg_not_present = 0;
-> > > -       tls_desc->useable = 1;
-> > > +       tls_ptr = tls_desc;
+Oh, sorry. You mean only rewrite parent TLS base_addr.
 
-> > @Wei, @Petr, did you get it to work after trying the above diff?
-> > Which kernel did you use?
+I guess it can work only if the new base_addr points to a valid TLS
+block that matches the runtime's expected layout. And, we need to
+construct a real TCB+TLS image for the new location.
 
-> 6.19.0-rc5-gb71e635feefc , above diff can not work, just some try.
-
-> > Unfortunately, neither of these methods (including Wei's method) works
-> > properly on my kernel-6.19.0-rc2 platform.
-> >
-> > And no matter what method I try, the child process still cannot switch
-> > to the new TLS. More details see I posted in the pre-thread.
-
-> Yes, i guess we are still blocking on i386 scenario. But we can rewrite
-> parent TLS's base_addr instead of switch new TLS, this way is correct
-> base current kernel's logic but still need further implementation.
-
-Hmm, but it deviates from the topic of our test.
-
-To rewrite the tls_desc->base_addr and manually switch the %gs selector
-to validate TLS state, that is not necessary IMHO.
+However, it is also over the goal of the CLONE_SETTLS test for clone10.
 
 
-
---
+-- 
 Regards,
 Li Wang
 
