@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AB4ED3EE64
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 13:20:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 682D6D3EE64
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 13:20:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CE2543CB680
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 14:20:05 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 0CFE63CB5C4
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 14:20:24 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 892463CB5A3
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 14:19:47 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 157FC3CB5A3
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 14:19:52 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AC74C1400E0E
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 14:19:45 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8D0831000655
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 14:19:51 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 100125BCCC
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:19:43 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A3B5C5BCCA
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:19:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1769087983; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=AKjcd+CPTWC4L5UtNl+d/69tvxSI578cCiHWQaIpDTU=;
- b=M34WLd09EdM7VQdJ9Zgl756mBHqzTTF0ZaIeVg4bdWtgksezZz0Z/OODd459FhzblkeXD8
- oye+0ebESF1Kwoh+CnjcDfOu36sx8AuurL5C9FdhqFpoolgFqvaUdzT9t4CmyOIgHaIvWA
- AIzGmEsaHsICJ7n3XC0/yDa4nbdcdkY=
+ bh=Jd6J248I8osBPF7R6VjUEIQXQbm5r+/jE/93m5DI6ZU=;
+ b=0vSnEiEmiXIQbDl0qcBSZAM5sQeDQzlK9i2ZYohmMMoQoPBIXTIHt38F8xhoL4E3qMIiWi
+ P8OEpNE3Wn4MDtjpRzsvv9gu2SUF0TnjPjqAGHpziKStWxG2AgF7SNwB0P4v/wPSIZS72W
+ zAEvDqW17hWLCZK7tpXAebsxfuvDGs0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1769087983;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=AKjcd+CPTWC4L5UtNl+d/69tvxSI578cCiHWQaIpDTU=;
- b=B9J4B8iT6rh57lbjP0EgYXYUkEiBMqF18S60w/8O+Gq7GicdkVy/D1MoZTmDToi1SICEEl
- xCZIECxVpipi7WBQ==
+ bh=Jd6J248I8osBPF7R6VjUEIQXQbm5r+/jE/93m5DI6ZU=;
+ b=ee1BSF3DS/7hAStWvbe6S0jR0iXAUU0ETvm6gzhIh5qNDVDbXY1sLyuK4DsC63E7q1eU9w
+ OMYZEAuEUzZUH6Aw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769087983; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1769087982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=AKjcd+CPTWC4L5UtNl+d/69tvxSI578cCiHWQaIpDTU=;
- b=M34WLd09EdM7VQdJ9Zgl756mBHqzTTF0ZaIeVg4bdWtgksezZz0Z/OODd459FhzblkeXD8
- oye+0ebESF1Kwoh+CnjcDfOu36sx8AuurL5C9FdhqFpoolgFqvaUdzT9t4CmyOIgHaIvWA
- AIzGmEsaHsICJ7n3XC0/yDa4nbdcdkY=
+ bh=Jd6J248I8osBPF7R6VjUEIQXQbm5r+/jE/93m5DI6ZU=;
+ b=ivl2MDOMLXNbkhLkiArK/IiwB4iBEC2mPRSYzDZHUT9mUBBkIgc4BlSwtyC8SaqUy1dYwb
+ FZmH1kcULFTusNYiscE1+HbpDSMQXhfWUStKUyr3BYrig9Tq+sbv/7ISI7Xra66Ov85B1W
+ B5Glo+MXRWtJ6ebBG9ikOYdWAqOL4v4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769087983;
+ s=susede2_ed25519; t=1769087982;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=AKjcd+CPTWC4L5UtNl+d/69tvxSI578cCiHWQaIpDTU=;
- b=B9J4B8iT6rh57lbjP0EgYXYUkEiBMqF18S60w/8O+Gq7GicdkVy/D1MoZTmDToi1SICEEl
- xCZIECxVpipi7WBQ==
+ bh=Jd6J248I8osBPF7R6VjUEIQXQbm5r+/jE/93m5DI6ZU=;
+ b=V9TPL7zuePGk1BDaccqjm5dDHbFbD4YVz5oO2zdqD86ZytfRTrx7MSbAzjCxLqcuY41Mvh
+ UzZg7iO6NyxyK5DA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E662113987
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8AF1B1395E
  for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:19:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id W3JYN+4jcmkNOgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id seEFIe4jcmmbOQAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
  for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:19:42 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 22 Jan 2026 14:20:58 +0100
-Message-ID: <20260122132059.24503-3-chrubis@suse.cz>
+Date: Thu, 22 Jan 2026 14:20:57 +0100
+Message-ID: <20260122132059.24503-2-chrubis@suse.cz>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260122132059.24503-1-chrubis@suse.cz>
 References: <20260122132059.24503-1-chrubis@suse.cz>
@@ -98,9 +98,9 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/3] metadata: metaparse: Add bool mappings to typemap
+Subject: [LTP] [PATCH 1/3] metaparse: data_storage: Add bool type
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,154 +117,102 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-- add all boolean flags in tst_test to the typemap
-
-- make typemap recursive (adds child pointer to the typemap struct)
-
-- add typemap mappings for the need_cmds optional key
-
-- change the implied tags to bool
-
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- metadata/metaparse.c | 85 ++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 78 insertions(+), 7 deletions(-)
+ metadata/data_storage.h | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/metadata/metaparse.c b/metadata/metaparse.c
-index 36736ac06..3bca70879 100644
---- a/metadata/metaparse.c
-+++ b/metadata/metaparse.c
-@@ -968,11 +968,40 @@ static struct data_node *parse_file(const char *fname)
- 	return res;
- }
- 
--static struct typemap {
-+struct typemap {
- 	const char *id;
- 	enum data_type type;
--} tst_test_typemap[] = {
-+	struct typemap *child;
-+};
-+
-+static struct typemap needs_cmds_typemap[] = {
-+	{.id = "optional", .type = DATA_BOOL},
-+	{}
-+};
-+
-+static struct typemap tst_test_typemap[] = {
- 	{.id = "test_variants", .type = DATA_INT},
-+	/* All bitflags in tst_test struct */
-+	{.id = "needs_tmpdir", .type = DATA_BOOL},
-+	{.id = "needs_root", .type = DATA_BOOL},
-+	{.id = "forks_child", .type = DATA_BOOL},
-+	{.id = "needs_device", .type = DATA_BOOL},
-+	{.id = "needs_checkpoints", .type = DATA_BOOL},
-+	{.id = "needs_overlay", .type = DATA_BOOL},
-+	{.id = "format_device", .type = DATA_BOOL},
-+	{.id = "mount_device", .type = DATA_BOOL},
-+	{.id = "needs_rofs", .type = DATA_BOOL},
-+	{.id = "child_needs_reinit", .type = DATA_BOOL},
-+	{.id = "runs_script", .type = DATA_BOOL},
-+	{.id = "needs_devfs", .type = DATA_BOOL},
-+	{.id = "restore_wallclock", .type = DATA_BOOL},
-+	{.id = "all_filesystems", .type = DATA_BOOL},
-+	{.id = "skip_in_lockdown", .type = DATA_BOOL},
-+	{.id = "skip_in_secureboot", .type = DATA_BOOL},
-+	{.id = "skip_in_compat", .type = DATA_BOOL},
-+	{.id = "needs_hugetlbfs", .type = DATA_BOOL},
-+	{.id = "needs_cgroup_nsdelegate", .type = DATA_BOOL},
-+	{.id = "needs_cmds", .child = needs_cmds_typemap},
- 	{}
+diff --git a/metadata/data_storage.h b/metadata/data_storage.h
+index 6ca5d7d90..77073f37d 100644
+--- a/metadata/data_storage.h
++++ b/metadata/data_storage.h
+@@ -17,6 +17,7 @@ enum data_type {
+ 	DATA_HASH,
+ 	DATA_STRING,
+ 	DATA_INT,
++	DATA_BOOL,
+ 	DATA_NULL,
  };
  
-@@ -996,18 +1025,55 @@ static void convert_str2int(struct data_node *res, const char *id, const char *s
- 	data_node_hash_add(res, id, data_node_int(val));
+@@ -49,6 +50,11 @@ struct data_node_int {
+ 	long val;
+ };
+ 
++struct data_node_bool {
++	enum data_type type;
++	bool val;
++};
++
+ struct data_node {
+ 	union {
+ 		enum data_type type;
+@@ -56,6 +62,7 @@ struct data_node {
+ 		struct data_node_array array;
+ 		struct data_node_string string;
+ 		struct data_node_int i;
++		struct data_node_bool b;
+ 	};
+ };
+ 
+@@ -70,6 +77,8 @@ static inline const char* data_type_name(enum data_type type)
+ 		return "string";
+ 	case DATA_INT:
+ 		return "int";
++	case DATA_BOOL:
++		return "bool";
+ 	case DATA_NULL:
+ 		return "null";
+ 	default:
+@@ -104,6 +113,19 @@ static inline struct data_node *data_node_int(long i)
+ 	return node;
  }
  
--static void check_normalize_types(struct data_node *res)
-+static void convert_str2bool(struct data_node *res, const char *id, const char *str_val)
++static inline struct data_node *data_node_bool(bool b)
 +{
-+	long val;
-+	char *endptr;
++	struct data_node *node = malloc(sizeof(struct data_node_int));
 +
-+	errno = 0;
-+	val = strtol(str_val, &endptr, 10);
++	if (!node)
++		return NULL;
 +
-+	if (errno || *endptr) {
-+		fprintf(stderr,	"Cannot convert %s value %s to bool!\n", id, str_val);
-+		exit(1);
-+	}
++	node->type = DATA_BOOL;
++	node->b.val = b;
 +
-+	if (verbose)
-+		fprintf(stderr, "NORMALIZING %s TO BOOL %li\n", id, val);
-+
-+	data_node_hash_del(res, id);
-+	data_node_hash_add(res, id, data_node_bool(val));
++	return node;
 +}
 +
-+static void check_normalize_types(struct data_node *res, const char *id, struct typemap *typemaps)
+ static inline struct data_node *data_node_null(void)
  {
- 	unsigned int i;
- 
--	for (i = 0; tst_test_typemap[i].id; i++) {
-+	if (res->type == DATA_ARRAY) {
-+		for (i = 0; i < res->array.array_used; i++)
-+			check_normalize_types(res->array.array[i], id, typemaps);
-+
-+		return;
-+	}
-+
-+	if (res->type != DATA_HASH) {
-+		fprintf(stderr, "Typemap '%s' type %s has no children!\n", id, data_type_name(res->type));
-+		exit(1);
-+	}
-+
-+	for (i = 0; typemaps[i].id; i++) {
- 		struct data_node *n;
--		struct typemap *typemap = &tst_test_typemap[i];
-+		struct typemap *typemap = &typemaps[i];
- 
- 		n = data_node_hash_get(res, typemap->id);
- 		if (!n)
- 			continue;
- 
-+		if (typemap->child) {
-+			check_normalize_types(n, typemap->id, typemap->child);
-+			continue;
-+		}
-+
- 		if (n->type == typemap->type)
- 			continue;
- 
-@@ -1016,6 +1082,11 @@ static void check_normalize_types(struct data_node *res)
- 			continue;
- 		}
- 
-+		if (n->type == DATA_STRING && typemap->type == DATA_BOOL) {
-+			convert_str2bool(res, typemap->id, n->string.val);
-+			continue;
-+		}
-+
- 		fprintf(stderr, "Cannot convert %s from %s to %s!\n",
- 			typemap->id, data_type_name(n->type),
- 			data_type_name(typemap->type));
-@@ -1125,14 +1196,14 @@ int main(int argc, char *argv[])
- 	}
- 
- 	/* Normalize types */
--	check_normalize_types(res);
-+	check_normalize_types(res, "",  tst_test_typemap);
- 
- 	for (i = 0; implies[i].flag; i++) {
- 		if (data_node_hash_get(res, implies[i].flag)) {
- 			for (j = 0; implies[i].implies[j]; j++) {
- 				if (!data_node_hash_get(res, implies[i].implies[j]))
- 					data_node_hash_add(res, implies[i].implies[j],
--							   data_node_string("1"));
-+							   data_node_bool(true));
- 			}
- 		}
- 	}
+ 	struct data_node *node = malloc(sizeof(struct data_node));
+@@ -175,6 +197,7 @@ static inline void data_node_free(struct data_node *self)
+ 	switch (self->type) {
+ 	case DATA_STRING:
+ 	case DATA_INT:
++	case DATA_BOOL:
+ 	case DATA_NULL:
+ 	break;
+ 	case DATA_HASH:
+@@ -314,6 +337,10 @@ static inline void data_node_print_(struct data_node *self, unsigned int padd)
+ 		data_print_padd(padd);
+ 		printf("%li\n", self->i.val);
+ 	break;
++	case DATA_BOOL:
++		data_print_padd(padd);
++		printf("%s\n", self->b.val ? "true" : "false");
++	break;
+ 	case DATA_STRING:
+ 		data_print_padd(padd);
+ 		printf("'%s'\n", self->string.val);
+@@ -407,6 +434,10 @@ static inline void data_to_json_(struct data_node *self, FILE *f, unsigned int p
+ 		padd = do_padd ? padd : 0;
+ 		data_fprintf(f, padd, "%li", self->i.val);
+ 	break;
++	case DATA_BOOL:
++		padd = do_padd ? padd : 0;
++		data_fprintf(f, padd, "%s", self->b.val ? "true" : "false");
++	break;
+ 	case DATA_STRING:
+ 		padd = do_padd ? padd : 0;
+ 		data_fprintf_esc(f, padd, self->string.val);
 -- 
 2.52.0
 
