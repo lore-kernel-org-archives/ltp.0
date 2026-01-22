@@ -4,78 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAC0DD3EE74
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 15:09:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4CB5D3EE97
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 17:13:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 066413CB970
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 16:09:32 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 262D03CB9FE
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 18:13:10 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BCF3C3CB803
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 16:07:17 +0100 (CET)
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com
- [IPv6:2607:f8b0:4864:20::636])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C70A33CB041
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 18:12:51 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 398F66001B1
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 16:07:17 +0100 (CET)
-Received: by mail-pl1-x636.google.com with SMTP id
- d9443c01a7336-2a0834769f0so8055855ad.2
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 07:07:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1769094435; x=1769699235; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=WuERdrGTvdWeuXdx7mrq/RbXNtnigAExMPcd8qecl00=;
- b=dRvEnwCQBDsWHaK3/wMl6hOQWULZkaV2+1FIvpkMldopbcYxv2bkbE2lvn+EsFqtG4
- giiArYjTfiXxiYdQxBj+4mx5ZuT7l3VFL5uOeyqrzbJe5tE4liYltk3A6v16a9K9JdRc
- Xy4u9lHwaE0w5wZMc0Mp2hfR5CtFwV1Z19/iF/CCpIwi/KTvFKx4d8nxsEuQjak11Mxl
- aIcb0VCjFW9fxbnPd4yQNBGjXkpBrTLrOOYXdGKnNSJMBkpQQQxqfPioSjCPM2ai3rxo
- kIeSasQ9ZhIfHZWubBavRorUwockKDLKtyMg2Vqs6Oc5NMBmxfatZXCmRsBqOyZnXLGv
- Xe4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1769094435; x=1769699235;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=WuERdrGTvdWeuXdx7mrq/RbXNtnigAExMPcd8qecl00=;
- b=ObR4n1zsCQGD0Z9mK/w36Z2W+rGG62FKpki4wY0q6iAecBW0aCfn9yqhZoVPBZb25t
- 7eZP2R7nWRYLCafzl5Gb4KE39Mn/0KxUeC0e00jNWrdq1Dq50OPbWslniY677zhmKQWB
- U6S0c80qeEAibd4T4RosHCFjKgQGRENM3kCL99jKDwUrBX2XKKG9m//ZODq8FY37gwnh
- eB4l5uI5PuzPV1XtS80tNASMc0k7YB2cjbf0PkNKlOSHixfKlatuYy+FwMgqKaXBCtvK
- Iv9Lmk1yoFy9N0hOFIBeNQKmYLOjoVBHA7j93KGCFl3J6k3DHzKhDigy9Wi9CI8C9cL1
- xdyg==
-X-Gm-Message-State: AOJu0YzZElS4zdJZweyVt/Q1QWy8J+cTQiUogwD0X8l0RDviXAIK8w9e
- zkb81NdBTr4kNEgy7c0HLdoK7MqF8nONcmxWUtbqI7PRjHNvV5FC3oppipGwnzQb
-X-Gm-Gg: AZuq6aJyUpowbj09xDljImHWXkiKNAjKNNAwRfweB9ph0Fw2Oc5qn8LhtMSqszVqzTH
- glfmi/cLDjw0QXZfI/UTe9wLLJ+JwoyJjIBGhKuEvVh7rtbtvJchF5XLsP3TjUeKQIdV/pJl9JD
- r3DcbVPw9hTF7RWPmcwMkNK4s9CWxh0ffcnVmMhK10cynkcqLjLEx0n0wdzie+puA4ggWi/1ayD
- Rvzw8HRmtVtEDhVIbU6vYrEpUP8MZA/S921dJKpJQoTPwVcm6GTTGL73GvolmYWDo2gsEn37p/2
- +sUbVcxqczyvwLMZ9NaA81GZtwAse38saaTax746DqqZ1Om+m7ElOSUXaOC52Zs8IcBosBF8GhV
- 79ZyEoshLZDQhyk6+q0q0HwLJUCjhZf/w6kq20FUXvlg0Hp5Th/MdvdwVE6AGvU0b3yDv5zg6HM
- ZGay58oAJcUCVv
-X-Received: by 2002:a17:902:da90:b0:297:d6c2:d06 with SMTP id
- d9443c01a7336-2a7188898a9mr175275355ad.20.1769094434971; 
- Thu, 22 Jan 2026 07:07:14 -0800 (PST)
-Received: from bng-30.. ([49.207.234.222]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2a71941c56bsm188487085ad.92.2026.01.22.07.07.13
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 22 Jan 2026 07:07:14 -0800 (PST)
-From: Kushal Chand K <kushalkataria5@gmail.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4D4291000658
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 18:12:51 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8C3BD3368B
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 17:12:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1769101970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=6YXZb590lemvgTElR1Y0zIC5IidUa5mMehhJl8HXoLA=;
+ b=HjtxpCNj5S5KOF13JO7ZD6CW2CTzVetHOmvQnqMn86v7t/+nBLkcHN0tZd1fNmtYLrW+3a
+ BClNzwyQmN02/1w3UrF8jfNifwWJa0fSPYIdYbjd8qLlM1vjloGP8H2Nrtjcp3shTUG3hr
+ 2iLFc3TXD2RPaCLgB7IX9UzKiCpeAFQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1769101970;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=6YXZb590lemvgTElR1Y0zIC5IidUa5mMehhJl8HXoLA=;
+ b=jSasbU7AHon212REojFsG9hZ2AB6IUMwCieqDApJLJq4Qi5ut9b1VkcU1zcPQrtoXPHHsT
+ XdDzleVX7MpYxNDA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=HjtxpCNj;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jSasbU7A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1769101970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=6YXZb590lemvgTElR1Y0zIC5IidUa5mMehhJl8HXoLA=;
+ b=HjtxpCNj5S5KOF13JO7ZD6CW2CTzVetHOmvQnqMn86v7t/+nBLkcHN0tZd1fNmtYLrW+3a
+ BClNzwyQmN02/1w3UrF8jfNifwWJa0fSPYIdYbjd8qLlM1vjloGP8H2Nrtjcp3shTUG3hr
+ 2iLFc3TXD2RPaCLgB7IX9UzKiCpeAFQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1769101970;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=6YXZb590lemvgTElR1Y0zIC5IidUa5mMehhJl8HXoLA=;
+ b=jSasbU7AHon212REojFsG9hZ2AB6IUMwCieqDApJLJq4Qi5ut9b1VkcU1zcPQrtoXPHHsT
+ XdDzleVX7MpYxNDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 75C4B1395E
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 17:12:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 8DyLHJJacmnWRgAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 17:12:50 +0000
+From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 22 Jan 2026 20:36:51 +0530
-Message-ID: <20260122150652.227342-1-kushalkataria5@gmail.com>
-X-Mailer: git-send-email 2.43.0
+Date: Thu, 22 Jan 2026 18:12:32 +0100
+Message-ID: <20260122171249.31590-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.52.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_NONE(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns, suse.cz:mid, suse.cz:dkim, suse.cz:email]
+X-Rspamd-Queue-Id: 8C3BD3368B
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Thu, 22 Jan 2026 16:09:14 +0100
-Subject: [LTP] [PATCH v1] kvm: Add needs_driver support to check for kvm
- driver
+Subject: [LTP] [PATCH 1/2] ioctl_sg01: Allow using USB device again
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,132 +112,97 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Kushal Chand K <kushalkataria5@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This patch adds needs_driver field in kvm testcases to check for kvm driver
+The failures when the ioctl_sg01 test tried to query a USB device
+turned out to be another data leak. Allow using USB devices again
+but keep the improved device lookup algorithm.
 
-Signed-off-by: Kushal Chand K <kushalkataria5@gmail.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/kvm/kvm_pagefault01.c | 4 ++++
- testcases/kernel/kvm/kvm_svm01.c       | 4 ++++
- testcases/kernel/kvm/kvm_svm02.c       | 4 ++++
- testcases/kernel/kvm/kvm_svm03.c       | 4 ++++
- testcases/kernel/kvm/kvm_svm04.c       | 4 ++++
- testcases/kernel/kvm/kvm_vmx01.c       | 4 ++++
- testcases/kernel/kvm/kvm_vmx02.c       | 4 ++++
- 7 files changed, 28 insertions(+)
 
-diff --git a/testcases/kernel/kvm/kvm_pagefault01.c b/testcases/kernel/kvm/kvm_pagefault01.c
-index db526cb7e..2b477f7af 100644
---- a/testcases/kernel/kvm/kvm_pagefault01.c
-+++ b/testcases/kernel/kvm/kvm_pagefault01.c
-@@ -165,6 +165,10 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = tst_kvm_cleanup,
- 	.needs_root = 1,
-+	.needs_drivers = (const char *const []) {
-+		"kvm",
-+		NULL
-+	},
- 	.supported_archs = (const char *const []) {
- 		"x86_64",
- 		NULL
-diff --git a/testcases/kernel/kvm/kvm_svm01.c b/testcases/kernel/kvm/kvm_svm01.c
-index 32d15526b..f81602567 100644
---- a/testcases/kernel/kvm/kvm_svm01.c
-+++ b/testcases/kernel/kvm/kvm_svm01.c
-@@ -108,6 +108,10 @@ static struct tst_test test = {
- 	.test_all = tst_kvm_run,
- 	.setup = tst_kvm_setup,
- 	.cleanup = tst_kvm_cleanup,
-+	.needs_drivers = (const char *const []) {
-+		"kvm",
-+		NULL
-+	},
- 	.supported_archs = (const char *const []) {
- 		"x86_64",
- 		"x86",
-diff --git a/testcases/kernel/kvm/kvm_svm02.c b/testcases/kernel/kvm/kvm_svm02.c
-index 6914fdcba..701f2731d 100644
---- a/testcases/kernel/kvm/kvm_svm02.c
-+++ b/testcases/kernel/kvm/kvm_svm02.c
-@@ -129,6 +129,10 @@ static struct tst_test test = {
- 	.test_all = tst_kvm_run,
- 	.setup = tst_kvm_setup,
- 	.cleanup = tst_kvm_cleanup,
-+	.needs_drivers = (const char *const []) {
-+		"kvm",
-+		NULL
-+	},
- 	.supported_archs = (const char *const []) {
- 		"x86_64",
- 		"x86",
-diff --git a/testcases/kernel/kvm/kvm_svm03.c b/testcases/kernel/kvm/kvm_svm03.c
-index 87164d013..faafaf7cf 100644
---- a/testcases/kernel/kvm/kvm_svm03.c
-+++ b/testcases/kernel/kvm/kvm_svm03.c
-@@ -154,6 +154,10 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-+	.needs_drivers = (const char *const []) {
-+		"kvm",
-+		NULL
-+	},
- 	.min_cpus = 2,
- 	.supported_archs = (const char *const []) {
- 		"x86_64",
-diff --git a/testcases/kernel/kvm/kvm_svm04.c b/testcases/kernel/kvm/kvm_svm04.c
-index 75fcbfdcf..af3c8b1c6 100644
---- a/testcases/kernel/kvm/kvm_svm04.c
-+++ b/testcases/kernel/kvm/kvm_svm04.c
-@@ -295,6 +295,10 @@ static struct tst_test test = {
- 	.test_all = tst_kvm_run,
- 	.setup = tst_kvm_setup,
- 	.cleanup = tst_kvm_cleanup,
-+	.needs_drivers = (const char *const []) {
-+		"kvm",
-+		NULL
-+	},
- 	.supported_archs = (const char *const []) {
- 		"x86_64",
- 		"x86",
-diff --git a/testcases/kernel/kvm/kvm_vmx01.c b/testcases/kernel/kvm/kvm_vmx01.c
-index 5bffbe946..d0c4913c9 100644
---- a/testcases/kernel/kvm/kvm_vmx01.c
-+++ b/testcases/kernel/kvm/kvm_vmx01.c
-@@ -269,6 +269,10 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = tst_kvm_cleanup,
- 	.needs_root = 1,
-+	.needs_drivers = (const char *const []) {
-+		"kvm",
-+		NULL
-+	},
- 	.supported_archs = (const char *const []) {
- 		"x86_64",
- 		"x86",
-diff --git a/testcases/kernel/kvm/kvm_vmx02.c b/testcases/kernel/kvm/kvm_vmx02.c
-index 3fcfebb3b..4ce225e56 100644
---- a/testcases/kernel/kvm/kvm_vmx02.c
-+++ b/testcases/kernel/kvm/kvm_vmx02.c
-@@ -183,6 +183,10 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = tst_kvm_cleanup,
- 	.needs_root = 1,
-+	.needs_drivers = (const char *const []) {
-+		"kvm",
-+		NULL
-+	},
- 	.supported_archs = (const char *const []) {
- 		"x86_64",
- 		"x86",
---
-2.43.0
+Tested on kernels v4.4 and v6.12.
+
+ testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 29 ++++++--------------
+ 1 file changed, 8 insertions(+), 21 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+index dada174e0..9862d7324 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+@@ -30,7 +30,7 @@
+ #include "tst_memutils.h"
+ 
+ #define SYSDIR "/sys/block"
+-#define BLOCKDIR "/sys/block/%s/device"
++#define BLOCKDIR "/sys/block/%s/device/generic"
+ 
+ #define BUF_SIZE (128 * 4096)
+ #define CMD_SIZE 6
+@@ -41,14 +41,14 @@ static unsigned char command[CMD_SIZE];
+ static struct sg_io_hdr query;
+ 
+ /* TODO: split this off to a separate SCSI library? */
+-static const char *find_generic_scsi_device(int access_flags, int skip_usb)
++static const char *find_generic_scsi_device(int access_flags)
+ {
+ 	DIR *sysdir;
+ 	struct dirent *ent;
+ 	int tmpfd;
+ 	ssize_t length;
+ 	char *filename;
+-	static char devpath[PATH_MAX], syspath[PATH_MAX];
++	static char devpath[PATH_MAX], genpath[PATH_MAX];
+ 
+ 	sysdir = opendir(SYSDIR);
+ 
+@@ -60,28 +60,15 @@ static const char *find_generic_scsi_device(int access_flags, int skip_usb)
+ 		if (ent->d_name[0] == '.')
+ 			continue;
+ 
+-		snprintf(syspath, PATH_MAX, BLOCKDIR, ent->d_name);
+-		syspath[PATH_MAX - 1] = '\0';
+-
+-		/* Real device path matches the physical HW bus path */
+-		if (!realpath(syspath, devpath))
+-			continue;
+-
+-		strncat(devpath, "/generic", PATH_MAX - strlen(devpath) - 1);
++		snprintf(devpath, PATH_MAX, BLOCKDIR, ent->d_name);
+ 		devpath[PATH_MAX - 1] = '\0';
+-		length = readlink(devpath, syspath, PATH_MAX - 1);
++		length = readlink(devpath, genpath, PATH_MAX - 1);
+ 
+ 		if (length < 0)
+ 			continue;
+ 
+-		syspath[length] = '\0';
+-		filename = basename(syspath);
+-
+-		/* USB devices often return HW info in SG_IO response buffer */
+-		if (skip_usb && strstr(devpath, "/usb")) {
+-			tst_res(TINFO, "Skipping USB device %s", filename);
+-			continue;
+-		}
++		genpath[length] = '\0';
++		filename = basename(genpath);
+ 
+ 		snprintf(devpath, PATH_MAX, "/dev/%s", filename);
+ 		/* access() makes incorrect assumptions about block devices */
+@@ -121,7 +108,7 @@ static void dump_hex(const char *str, size_t size)
+ 
+ static void setup(void)
+ {
+-	const char *devpath = find_generic_scsi_device(O_RDONLY, 1);
++	const char *devpath = find_generic_scsi_device(O_RDONLY);
+ 
+ 	if (!devpath)
+ 		tst_brk(TCONF, "Could not find any usable SCSI device");
+-- 
+2.52.0
 
 
 -- 
