@@ -4,101 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EDC0C44536
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 12:06:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB2C1C44500
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 12:18:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 258ED3CAFA6
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 13:06:26 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id F27363CB407
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 13:18:32 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DDDEA3C05FA
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:06:07 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id B68223C2F34
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:18:13 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4B466600BC7
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:06:07 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D5E986008CD
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:18:08 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B47A8336A3;
- Thu, 22 Jan 2026 12:06:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 99372336A6;
+ Thu, 22 Jan 2026 12:18:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769083566;
+ t=1769084287;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W7mdNQTI3ZIGwYZKcBjno79otgOm3KZTmsdMALicMVw=;
- b=E86prplC/3cxnZwB5VgUPWkvyhYlWN9FewCrvk5+6UVCGjA6stAwtOgefJ7sZmaJmR+YTf
- i/5ITGPnKy3Y7aqMWhI7gcch1q0r+fhkEZF9ELG/oaPpseTBzYfUAygm84eCe8bZisFz90
- 5QU5IcRjmdtfxiPqeiaTqmrgkVFxCyY=
+ bh=LbHPLPvadeYaSxivlmHnkzGoL06a/04G3/RFGBIxpsA=;
+ b=eFsXnI2DOcWhZX9Q8wlvtGOPo7GTHrdwBmNe3BYgNI74agETmBXUn/MqoVwTvw6B9SfOQb
+ bngAdiZc2nNfR0iZxy0mPCAabfltaRkR6A5T7x+Evh25+Gmzl5HNaffUyiMbw9iCZ4ehJN
+ PDv1zxaHkI9pXHSCAhDutZ80mUtC6Ro=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769083566;
+ s=susede2_ed25519; t=1769084287;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W7mdNQTI3ZIGwYZKcBjno79otgOm3KZTmsdMALicMVw=;
- b=s/UDqJ2Y/MiWf1G7E7pEbYUqcq5C3q/r0SkRN41LAF6A5OmWQ1ebXCXSLqUwsM/Ts7+3Yt
- DZ3F+rZAtKhVSPDQ==
+ bh=LbHPLPvadeYaSxivlmHnkzGoL06a/04G3/RFGBIxpsA=;
+ b=3lIhVywi/VBuw2GEjFiFxKyodTkqarnEuE6o7oZboROsseDZ2CfUO3v5f9ZFlyRry8BJBL
+ Bu7sPsxrP3qPftAg==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769083565;
+ t=1769084287;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W7mdNQTI3ZIGwYZKcBjno79otgOm3KZTmsdMALicMVw=;
- b=eN49PScte+2Wc5yaHoKx8JJBY+bOUfHmuI/PaZqeoX9HNDmRFXpa+1eJpS2ltmf4+Ip1s0
- /RMdNZLfJBkKjmyBCCJwFlibmYH7GrilrhQd28VNh6ZNris+CE58ziCods7H8BaD6/5IhO
- mnaa3A6O6Z1H0oFBIkdMgxda5Jq8D0E=
+ bh=LbHPLPvadeYaSxivlmHnkzGoL06a/04G3/RFGBIxpsA=;
+ b=eFsXnI2DOcWhZX9Q8wlvtGOPo7GTHrdwBmNe3BYgNI74agETmBXUn/MqoVwTvw6B9SfOQb
+ bngAdiZc2nNfR0iZxy0mPCAabfltaRkR6A5T7x+Evh25+Gmzl5HNaffUyiMbw9iCZ4ehJN
+ PDv1zxaHkI9pXHSCAhDutZ80mUtC6Ro=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769083565;
+ s=susede2_ed25519; t=1769084287;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W7mdNQTI3ZIGwYZKcBjno79otgOm3KZTmsdMALicMVw=;
- b=inVF55okF8fY2Q4Yth9LbKPD5cmzKQYR5C95k9aurHzFEiBvv3cfUA9CEXyOyktulfsFpx
- igDhf2ewaCDQSZBA==
+ bh=LbHPLPvadeYaSxivlmHnkzGoL06a/04G3/RFGBIxpsA=;
+ b=3lIhVywi/VBuw2GEjFiFxKyodTkqarnEuE6o7oZboROsseDZ2CfUO3v5f9ZFlyRry8BJBL
+ Bu7sPsxrP3qPftAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8EEC013533;
- Thu, 22 Jan 2026 12:06:05 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6974B13533;
+ Thu, 22 Jan 2026 12:18:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ZBn+Ia0ScmkYcAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 22 Jan 2026 12:06:05 +0000
-Date: Thu, 22 Jan 2026 13:06:04 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id KZfiGH8VcmmLewAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 22 Jan 2026 12:18:07 +0000
+Date: Thu, 22 Jan 2026 13:17:56 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Li Wang <liwang@redhat.com>
-Message-ID: <20260122120604.GA64562@pevik>
-References: <20260122111810.91411-1-liwang@redhat.com>
+Message-ID: <20260122121756.GB64562@pevik>
+References: <20260122102210.87453-1-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260122111810.91411-1-liwang@redhat.com>
+In-Reply-To: <20260122102210.87453-1-liwang@redhat.com>
 X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
  BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
  MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
  FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] vma05: fix the needs_cmds format
+Subject: Re: [LTP] [PATCH] userfaultfd05: allow TCONF when UFFD-WP is
+ unsupported
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,7 +110,8 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Christian Amann <camann@suse.com>, Ricardo Branco <rbranco@suse.com>,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -119,40 +119,54 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Li,
 
-> Fixes: 39a28444272 ("lib: Add support option for .needs_cmds")
+> On system without enable CONFIG_HAVE_ARCH_USERFAULTFD_WP kernel option,
+> test will fail like below:
+
+>   userfaultfd05.c:95: TBROK: ioctl(3,((((2U|1U) << (((0+8)+8)+14)) |
+>     (((0xAA)) << (0+8)) | ((((0x3F))) << 0) |
+>     ((((sizeof(struct uffdio_api)))) << ((0+8)+8)))),...)
+>    	 failed: EINVAL (22)
+
+> The original test uses SAFE_IOCTL macro, which prematurely triggers
+> TBROK and prevents the test from verifying UFFD_FEATURE_PAGEFAULT_FLAG_WP.
+
+Good catch. I don't have any kernel without UFFD_FEATURE_PAGEFAULT_FLAG_WP,
+therefore I didn't notice.
+
+Fixes: efd8e51008 ("userfaultfd: Add test using UFFDIO_WRITEPROTECT")
+
 > Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Wei Gao <wegao@suse.com>
+> Cc: Christian Amann <camann@suse.com>
+> Cc: Ricardo Branco <rbranco@suse.com>
 > ---
->  testcases/kernel/mem/vma/vma05.sh | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+>  testcases/kernel/syscalls/userfaultfd/userfaultfd05.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-> diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
-> index 34a82162c..b9654e80c 100755
-> --- a/testcases/kernel/mem/vma/vma05.sh
-> +++ b/testcases/kernel/mem/vma/vma05.sh
-> @@ -26,7 +26,14 @@
->  # {
->  #  "needs_root": true,
->  #  "needs_tmpdir": true,
-> -#  "needs_cmds": ["gdb", "uname"],
-> +#  "needs_cmds": [
-> +#     {
-> +#       "cmd": "gdb"
-> +#     },
-> +#     {
-> +#       "cmd": "uname"
-> +#     }
-> +#   ],
+> diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c
+> index c4edc2529..9cb0bb08f 100644
+> --- a/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c
+> +++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c
+> @@ -92,11 +92,11 @@ static void run(void)
 
-Good catch, thanks!
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>  	uffdio_api.api = UFFD_API;
+>  	uffdio_api.features = UFFD_FEATURE_PAGEFAULT_FLAG_WP;
+> -	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
+> +	if (ioctl(uffd, UFFDIO_API, &uffdio_api) < 0) {
+> +		if (!(uffdio_api.features & UFFD_FEATURE_PAGEFAULT_FLAG_WP))
+> +			tst_brk(TCONF, "UFFD write-protect unsupported");
+
+> -	if (!(uffdio_api.features & UFFD_FEATURE_PAGEFAULT_FLAG_WP)) {
+> -		tst_brk(TCONF, "UFFD write-protect unsupported");
+> -		return;
+> +		tst_brk(TBROK | TERRNO, "ioctl_userfaultfd failed");
+very nit: I would write "ioctl() on userfaultfd failed"?  I was thinking what
+ioctl_userfaultfd is, but ok, there is man ioctl_userfaultfd(2).
 
 Kind regards,
 Petr
+>  	}
 
->  #  "save_restore": [
->  #   ["/proc/sys/kernel/core_pattern", "core", "TBROK"],
->  #   ["/proc/sys/kernel/core_uses_pid", "0", "TBROK"]
+>  	uffdio_register.range.start = (unsigned long) page;
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
