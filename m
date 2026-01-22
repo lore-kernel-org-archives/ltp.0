@@ -4,93 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59ED9CA5FB6
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 12:39:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FBD5D6261F
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 12:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1769085558; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1769086096; h=mime-version :
  references : in-reply-to : date : message-id : to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=DYS115eWyKSVOnDhkE+3g7RPffHmmn1Y0xMQMZtAFgU=;
- b=qCeP8khgVeYK8272A4u/BsnuvY4exvTy1KY3K841n5RMzk7E/Ypl+84pRpHVTa4s9cXX+
- WcetWk/StbhXXZABtig669AiOP5pO+8WOStY+G0QD2S12T5Uiz8qKbe0aZJRVk3TEDN4UVc
- OMAZRvPHCxPcw2J6NBYFvsruZjxK3ko=
+ bh=NK8nKIohhjzU9xtiu5pvNi2WjDMV6m2oP5POxme6cSM=;
+ b=BM3i9g4OK0IOYojrAyag4XRwK8CEAUGnXtmuRv9nF/0+eWTYCTNkzhouyAG8Pcq8hFUvF
+ KZHO6TA1a95ck2tRJvpgn66b8yjJu0zk9bRt/J2ENZsDGOXlB0e+GX8uiK1uiGzZ84QWnJ9
+ ERxgSgSHZko5SlHeUkJEEG+o+BLIXvE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E9F493CB52C
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 13:39:17 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id E86B53CB555
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 13:48:15 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EDE243CB452
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:38:53 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 6E7303CB49F
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:47:50 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 543A36009FF
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:38:52 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F345D600A3F
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 13:47:49 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1769085531;
+ s=mimecast20190719; t=1769086068;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=anu0XxLMk3BwirJWWcrjicQiXQhlB7qrfYEHcLIuN0Y=;
- b=QuRsALztaBZ2S/Rk8NUyq27D4B4vUN4ZKbDI1SYKxUo+5VHBE/5Mh+5iiZqN+HRaTMD01+
- 2JOyRvhglZU5g3QKRYME7/5L8gA5CfjdmXVm3Dw/s5XovVRSwG79Dnk4h75WeO1CBtZcOh
- hMLUDcX5z8ipeJ9u/3dmvwKoJlnV+bs=
-Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com
- [74.125.82.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=kImMk1pKXqsU47IVXKYxGOVrg8PHkXQj64Fq8jZGSgM=;
+ b=a6cxTYaqp3XlzHeKtMG3xnj66st5HFM3y/ncXbsbmgcPtataZFg5nCXPo8j3j7n2/171tB
+ IMirQ4FLSEteWI3r4zOlMketL9/8QmNheSTlYq/86tDmKDI+sTuDZi9l3y9jcVmAyRA6cY
+ H/4qCfYnU3ZpJSneArnJgU5JHfz5eyE=
+Received: from mail-dy1-f198.google.com (mail-dy1-f198.google.com
+ [74.125.82.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-117-FeF8yR_kOdCWaDb75-m8SA-1; Thu, 22 Jan 2026 07:38:50 -0500
-X-MC-Unique: FeF8yR_kOdCWaDb75-m8SA-1
-X-Mimecast-MFC-AGG-ID: FeF8yR_kOdCWaDb75-m8SA_1769085529
-Received: by mail-dy1-f197.google.com with SMTP id
- 5a478bee46e88-2b722bc1be1so4402452eec.0
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 04:38:49 -0800 (PST)
+ us-mta-695-NOBjlAmoPLCtbrW4Xc4-Dw-1; Thu, 22 Jan 2026 07:47:47 -0500
+X-MC-Unique: NOBjlAmoPLCtbrW4Xc4-Dw-1
+X-Mimecast-MFC-AGG-ID: NOBjlAmoPLCtbrW4Xc4-Dw_1769086066
+Received: by mail-dy1-f198.google.com with SMTP id
+ 5a478bee46e88-2b6b9c1249fso1669914eec.1
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 04:47:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1769085529; x=1769690329;
+ d=1e100.net; s=20230601; t=1769086066; x=1769690866;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=anu0XxLMk3BwirJWWcrjicQiXQhlB7qrfYEHcLIuN0Y=;
- b=uNkD6o9eZfZw3z2R3ODCK+kyW8kp6Tl7dJCH2laVKAgfykUebepXa4qAD3eZeVFBY4
- KdFto239n56oRRJu5Ds/9rlssnWYWPomlPjEQKq9ulGWm7K2zmQfCBnhEH+Ub9tt05Vr
- EOcxGG0Nf8RNAS6Ry8sdc9xc7wNx+ajEeNj82Z3pkH6dlq/SfpNmXh5O1WQdXvP2+4Ss
- mC2ayytP/yECEAGx9qhqKZYK3z2hcSxHgJS+MbcKGrxQ6t2XoQiCGo9hDtwSQ1Hj787e
- IT0LK2wTj4i/xlyUr3ElJnNVLEpzbHS5S6CIME38jfsVwnsTmxkUGu63xNa6HELBZs8p
- +qZQ==
-X-Gm-Message-State: AOJu0YwCezfJggTo1CntYp3Kn7hhcSKaOqQKbmEQ/otL0uWILjTFew2r
- 7nDCyiG/OfgRO90hkcz5yGgsEN2sNZie+7dBN6MYu041qQYTANmw0C6XRanHObKjdmSa+MTLzen
- uRJLz4vQl0M/H77psA0l9oJMfKRK8y0hC7IXHOpLQIKRKFeryJs3WWI/2VXHm3e4ghr4mvzsbQS
- VJHjKuA1Bsxp8hw6Rs5DnPB3Tb92o=
-X-Gm-Gg: AZuq6aLOkZB92WOFslc9TuEmBl1jsE/JZengXgWU+MBTQsitoAy8ocW06WbcfjLxZhf
- 4ZkZ+os/xZR0srDy/hPTvjFlCjzECrNgNbAIZzgxNrquv4XgN007SkMYFd3usnN9YeGWzIJNe8m
- A9Hlo1P3ax/TzTJTsb0jOF4+Lx8JvjcAkfiMzs/TBA0r2Jw5Sc/y9tA119cHNvHVk7zDA=
-X-Received: by 2002:a05:7300:7495:b0:2b7:2ce1:3e9e with SMTP id
- 5a478bee46e88-2b72ce13fa3mr724049eec.39.1769085528986; 
- Thu, 22 Jan 2026 04:38:48 -0800 (PST)
-X-Received: by 2002:a05:7300:7495:b0:2b7:2ce1:3e9e with SMTP id
- 5a478bee46e88-2b72ce13fa3mr724035eec.39.1769085528527; Thu, 22 Jan 2026
- 04:38:48 -0800 (PST)
+ bh=kImMk1pKXqsU47IVXKYxGOVrg8PHkXQj64Fq8jZGSgM=;
+ b=V+U5T/YcrvQNb5AZPRX/a5NhJ1oX/MQqB3z0L3UbM9W71UF5AQ2+CHzdiguk3H4Dhl
+ /ZCSZY6/L/MAYXzTzueNcTclOoF26uSAOW1R623vg9/l/LbZhzuBe2WToBO3gN/RvIAr
+ zC/iiPeqtzo2VU1QBBdbvy6QXAm4YM/W5j7+ZRDYNafI78E5R6I0A2omDz6MeaQSN1ky
+ xmtMzOSZPJqMAkHSIWJp5KhmQUQckmJ70fq0hp+FTBV3zRsyTKm7dXINAeWhxrVZ+8Nb
+ yELRygpDe8hY8d+zSCAHqQYpfDq1PV1EHl7vSl/Y2/mKAcOKbbR2BfBtbD66AZR/8Thd
+ ZkRQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCV7yM079kp/0EVJFiz2D8jEOnPR9puLWzzoCV7WI7pSWtAgirBu5Ci4OX8S+idUMvFMI8Q=@lists.linux.it
+X-Gm-Message-State: AOJu0YwJbffVIC6BaZVqa0eWi1Wn5NmRdnzf9OugjAoLo5S58tqx1d8R
+ JUN5bfT1s78FcIgwvG08mbOsTOPlarf99i7U4X7+N/T8qnNF8AavAg7CujMpaKBmN7an3NBfsTZ
+ /yPa7UJYc2sr6dp5UpPjuxcZPfDVEQbacRLlmV3SdRIuGahs6Ke6bfztml8oFteKFnx5tcuTygV
+ L+IwaeCsiXIFGrcx8EKDmsamnBuejFcI28ThqvNg==
+X-Gm-Gg: AZuq6aJw9nkpupMZhvVepNZCZjI4En0ZHeWtlqbWR3Rjl5ReUwv0sdBjl+OoUYbX3Xl
+ MbDAqHus63eJ9wc0GAs+dMjtk7Ql+5OiIyWg4+fAv05Y9l0+9gxp+dy5PX4nThiJaifBvvfwD4A
+ j5zJpzgyl15DnsUfm3frCirPBu0aFUHtdPXMe1wG/9+SdE7UJlBH5DnBHp33ziicJV5yo=
+X-Received: by 2002:a05:7301:e06:b0:2ae:5dc2:3b11 with SMTP id
+ 5a478bee46e88-2b6b46d3163mr16816773eec.2.1769086065848; 
+ Thu, 22 Jan 2026 04:47:45 -0800 (PST)
+X-Received: by 2002:a05:7301:e06:b0:2ae:5dc2:3b11 with SMTP id
+ 5a478bee46e88-2b6b46d3163mr16816764eec.2.1769086065456; Thu, 22 Jan 2026
+ 04:47:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20260122102210.87453-1-liwang@redhat.com>
- <20260122121756.GB64562@pevik>
-In-Reply-To: <20260122121756.GB64562@pevik>
-Date: Thu, 22 Jan 2026 20:38:36 +0800
-X-Gm-Features: AZwV_Qh_1GBZV9wm8-nXXypC5le8Fl00U9RFqyn8wFfVIKZI9GfQCTYCw1uy0SQ
-Message-ID: <CAEemH2d31EzDxcMJK2u7LrEP0aRO5B6hV2HfWt9+xBHmACeVig@mail.gmail.com>
+References: <20260122102606.87754-1-liwang@redhat.com>
+ <CAASaF6w3S2STiyS9LvOsK_uVEvRoO6uq=XNMG-cMNheC0k1RHg@mail.gmail.com>
+ <20260122123154.GC64562@pevik>
+In-Reply-To: <20260122123154.GC64562@pevik>
+Date: Thu, 22 Jan 2026 20:47:33 +0800
+X-Gm-Features: AZwV_QhMS-36UkGmCgVFIMfD3VKw-argbudOY8xa3o115NTrxLfHEwU1Qz5GD60
+Message-ID: <CAEemH2c8+X85Ac-oPtsOND=OW=YHvx1R_TNctTThfskKhgOP9Q@mail.gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: T3m3u1MvhiZBj-3WlOHThTHpltjBjDzjceIn4OfSqFs_1769085529
+X-Mimecast-MFC-PROC-ID: rxEmcwI84JJd3EGSbYOJzYuUP65HnZQkXDqHSLjDPqU_1769086066
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] userfaultfd05: allow TCONF when UFFD-WP is
- unsupported
+Subject: Re: [LTP] [PATCH] clone10: add support archs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,33 +106,39 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Li Wang via ltp <ltp@lists.linux.it>
 Reply-To: Li Wang <liwang@redhat.com>
-Cc: Christian Amann <camann@suse.com>, Ricardo Branco <rbranco@suse.com>,
- ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> > --- a/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c
-> > +++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c
-> > @@ -92,11 +92,11 @@ static void run(void)
->
-> >       uffdio_api.api = UFFD_API;
-> >       uffdio_api.features = UFFD_FEATURE_PAGEFAULT_FLAG_WP;
-> > -     SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
-> > +     if (ioctl(uffd, UFFDIO_API, &uffdio_api) < 0) {
-> > +             if (!(uffdio_api.features & UFFD_FEATURE_PAGEFAULT_FLAG_WP))
-> > +                     tst_brk(TCONF, "UFFD write-protect unsupported");
->
-> > -     if (!(uffdio_api.features & UFFD_FEATURE_PAGEFAULT_FLAG_WP)) {
-> > -             tst_brk(TCONF, "UFFD write-protect unsupported");
-> > -             return;
-> > +             tst_brk(TBROK | TERRNO, "ioctl_userfaultfd failed");
+Petr Vorel <pvorel@suse.cz> wrote:
 
-> very nit: I would write "ioctl() on userfaultfd failed"?  I was thinking what
-> ioctl_userfaultfd is, but ok, there is man ioctl_userfaultfd(2).
+> > Acked-by: Jan Stancek <jstancek@redhat.com>
+>
+> LGTM. Indeed only these 3 archs don't TCONF.
+> Acked-by: Petr Vorel <pvorel@suse.cz>
+>
+> Out of curiosity, where is the support defined in kernel?
+> "if (clone_flags & CLONE_SETTLS)" is in many archs:
 
-Sure, patch megerd as you suggested, thanks!
+Not based on this, the clone10.c test was written and gets tested
+only on the known archs (x86_64, s390x, aarch64) by now.
+
+And in case that other archs (not tested) have different behavior like i386,
+so we are limited to the know/tested archs.
+
+If we can get another arch to verified we can add it to the
+.supported_archs as well.
+
+$ cat -n ltp/include/lapi/tls.h
+    ...
+    53 static inline void init_tls(void)
+    54 {
+    55     #if defined(__x86_64__) || defined(__aarch64__) || defined(__s390x__)
+    56     tls_ptr = allocate_tls_area();
+    57 #else
+    ...
 
 
 -- 
