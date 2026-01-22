@@ -4,109 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D97F1D3EE66
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 14:07:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DB64D3EE6A
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 14:17:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1769091449; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=OylHnuVolPJ5NJniiFfk/eClCMbZlMYXhzuqnRUjD5A=;
+ b=UYsuZZYWtiZWIpnLG58O22BLQ7hQ+qt9+VecIZj6Sl1L5i4FCxOS1eCQhTKtzzLBisUeY
+ JjaRfis/NymG7dzSASDC0EDW+V3bcanh/VT+NC+Jzx0obFsuzN1NkRfFbo8x05Q6XgbnQ78
+ CPb7vJm8U8QtGjGAsTFIq3y31LkH+ro=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6BC323CB6BD
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 15:07:28 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id D7B453CB730
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 15:17:29 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A6FE83C0EB3
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 15:07:09 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 6CD833CB680
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 15:17:04 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 24E0F200B73
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 15:07:08 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 083CC5BCDD;
- Thu, 22 Jan 2026 14:07:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769090828;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AABE8200B76
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 15:17:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1769091421;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=HS1co48tSM1MMoPtt+LH/ryQkeIhrfeSZH+b1d2JWXk=;
- b=245vdLY4moWMyUfTJl5RYHhea5N9CqRq5EUPZDBo8hTU2CcxYBZA/ssp+hfj2vTTP2uS1P
- 0Y3kWVaZsg0FKvUn2ShxfKjkdpmLxKGGGHS1PnuAEbJRCto4lRiYkUgM4ZO+s57xZegBJF
- YhMzbCcrf0BWK6yEgsz+KZ93oI9d89w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769090828;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HS1co48tSM1MMoPtt+LH/ryQkeIhrfeSZH+b1d2JWXk=;
- b=IcpfsQlEDu/U/XoAhYpzsNybqCk208DL4SnWAorFhvFYuX4fDf65u35xNvtVYO+4vuhvT1
- 9/woPKkbnddQKUAg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=245vdLY4;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IcpfsQlE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769090828;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HS1co48tSM1MMoPtt+LH/ryQkeIhrfeSZH+b1d2JWXk=;
- b=245vdLY4moWMyUfTJl5RYHhea5N9CqRq5EUPZDBo8hTU2CcxYBZA/ssp+hfj2vTTP2uS1P
- 0Y3kWVaZsg0FKvUn2ShxfKjkdpmLxKGGGHS1PnuAEbJRCto4lRiYkUgM4ZO+s57xZegBJF
- YhMzbCcrf0BWK6yEgsz+KZ93oI9d89w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769090828;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HS1co48tSM1MMoPtt+LH/ryQkeIhrfeSZH+b1d2JWXk=;
- b=IcpfsQlEDu/U/XoAhYpzsNybqCk208DL4SnWAorFhvFYuX4fDf65u35xNvtVYO+4vuhvT1
- 9/woPKkbnddQKUAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B141A1395E;
- Thu, 22 Jan 2026 14:07:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id AQ6nKAsvcmmAEgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 22 Jan 2026 14:07:07 +0000
-Date: Thu, 22 Jan 2026 15:07:06 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Piotr Kubaj <piotr.kubaj@intel.com>
-Message-ID: <20260122140706.GA72518@pevik>
-References: <20260121134146.259161-2-piotr.kubaj@intel.com>
+ bh=T8AdAeN0crPuBNrHh/W275EDLpk7gHJkKc5w0iv0SBY=;
+ b=DsaXEjVw3bP+SsPJ97VmBIXIOsOchCYiHb8AIm0lIyNtQYVsJJZKFCR/5gOCjwiQAw58DP
+ MxvHILCTNBnIuVdwVCShwDN0+W1GuochyY5Tr+sQb7XFx5XzhMbc4KSo32XXqO7qHa4t4g
+ 3MaSTXOLhgm+jONOKX2gAhDBR5ceRVU=
+Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com
+ [74.125.82.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-264-jcLSptPzPUu7WmeIwfKKlw-1; Thu, 22 Jan 2026 09:17:00 -0500
+X-MC-Unique: jcLSptPzPUu7WmeIwfKKlw-1
+X-Mimecast-MFC-AGG-ID: jcLSptPzPUu7WmeIwfKKlw_1769091419
+Received: by mail-dy1-f197.google.com with SMTP id
+ 5a478bee46e88-2b70d8095daso915321eec.1
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 06:17:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1769091419; x=1769696219;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=T8AdAeN0crPuBNrHh/W275EDLpk7gHJkKc5w0iv0SBY=;
+ b=djnfFuZrGaZlRv6pFkwtBvOWtCAUS27FqHktDqDO+S+0UAsUrzv3s+hXMcsT8Xs/I8
+ RaHu2uphpmb1Wzs54bTS1vHPYn1T6JyKcy8i1I4+bemahy48yH5yyYXtpTJoxEL9pUuj
+ AoNEqwRx0tKOUxxj6pVMuMJiULcaJ8Cd5ABIACyW00jJgMloheJEhJnf/vyoL/dro4ML
+ d+1mtc3nayoxXbol83M5OJIgwpncsloFK1sucZJ8TqsqdDi2+6cJ37fDY2eB6AVQDgH6
+ ejiI8bQWrdwrUwzQHXAYlwIwLIh3PAbHEk6a95USwIniYpCJBkqE5uUgZLDc64f2QQg7
+ /tng==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVs7WkaDLwKKtxK3iFAy7ze/EOuNwYe7ZUgb317pSpk44VjUyGPAWguGwK4FGyRsbSBnUk=@lists.linux.it
+X-Gm-Message-State: AOJu0YxY2kjyhIMUaU9Sw/UVudcIRgIlGwC3YB1n/t444mbSftX/bFqx
+ QDBhwdWufcTH2L18ZnmSt222Mfpa29YYF7lasKvuCBqwhYA7qpTHdTxAkKypjYv4GNXl5H+4Rru
+ VI+xMRAvziRhDJqn+cguL4ofHvWN4w3Dc2GKWymaP8W0JmaYvIOwxvk1nakWasK+paVvP9iK5AI
+ ejBzYOYKrPcv+b7NUBG0KwirpBXiQ=
+X-Gm-Gg: AZuq6aIZAin5kIs9hRRTz6Q7KT0MFFBKtA17nO1U4Mvsoh1P1PxZCWKK1PJcbHG408j
+ JpJMciIZZ+HslGM3IipuDCAtm0mZQwSpEV7RSM4h3nXei3OsIAaR/l0FaNI0VFVbW6pF+s9Yn0r
+ 5T8s/UpBiGY1qMt0y8+P5Dp2DZFMQmbNEfYdcZdXUd9+8AWlgL6fPWRD3hHtIn0C3Iqmw=
+X-Received: by 2002:a05:7300:d518:b0:2b7:24ad:5c54 with SMTP id
+ 5a478bee46e88-2b724ad6420mr2016165eec.9.1769091418978; 
+ Thu, 22 Jan 2026 06:16:58 -0800 (PST)
+X-Received: by 2002:a05:7300:d518:b0:2b7:24ad:5c54 with SMTP id
+ 5a478bee46e88-2b724ad6420mr2016150eec.9.1769091418525; Thu, 22 Jan 2026
+ 06:16:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260121134146.259161-2-piotr.kubaj@intel.com>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:replyto];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCPT_COUNT_FIVE(0.00)[6]; RCVD_VIA_SMTP_AUTH(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 083CC5BCDD
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+References: <20260122102606.87754-1-liwang@redhat.com>
+ <CAASaF6w3S2STiyS9LvOsK_uVEvRoO6uq=XNMG-cMNheC0k1RHg@mail.gmail.com>
+ <20260122123154.GC64562@pevik>
+ <CAEemH2c8+X85Ac-oPtsOND=OW=YHvx1R_TNctTThfskKhgOP9Q@mail.gmail.com>
+ <20260122130634.GA71214@pevik>
+In-Reply-To: <20260122130634.GA71214@pevik>
+Date: Thu, 22 Jan 2026 22:16:46 +0800
+X-Gm-Features: AZwV_QhtzOaINHt7m6PJuoGsae2tDDPX8AvhxwZZcLjPZIoiAKM3qDL4pEP-EqY
+Message-ID: <CAEemH2dLV-XpBo_t+=894dxOWEdZ0CX6KeU7Fz1xE2AdfKDsKA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: gXxdd-Oz4ipymi9E2-YT-SBJeuKw-uAyHJBY5irluRc_1769091419
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] thermal: add new test group
+Subject: Re: [LTP] [PATCH] clone10: add support archs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,247 +107,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
- helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Piotr,
-
-not a complete review, just few thoughts.
-
-> diff --git a/testcases/kernel/thermal/thermal_interrupt_events.c b/testcases/kernel/thermal/thermal_interrupt_events.c
-...
-> +/*\
-> + * Tests the CPU package thermal sensor interface for Intel platforms.
-> +
-> + * Works by checking the initial count of thermal interrupts.
-IMHO this part should be in setup function.
-
-> Then it
-> + * decreases the threshold for sending a thermal interrupt to just above
-> + * the current temperature and runs a workload on the CPU.
-
-First, why test needs to run for 30 sec and then sleep for 10 sec?
-Is it possible to check the expected value from sysfs and quit testing before?
-Also we have TST_RETRY_FUNC() and TST_RETRY_FN_EXP_BACKOFF() which could be used
-for the loop (you create a function which does the check to quit before the
-timeout.
-
-> Finally, it restores
-> + * the original thermal threshold and checks whether the number of thermal
-> + * interrupts increased.
-NOTE: the restore will not work if test exits before for some reason
-(i.e. any of SAFE_*() macros fail). Therefore restore should be in a cleanup
-function.
-
-> + */
-> +
-> +#include "tst_safe_stdio.h"
-> +#include "tst_test.h"
-> +#include <ctype.h>
-> +#include <pthread.h>
-> +#define	PATH_LEN	69
-> +#define	STRING_LEN	23
-> +
-> +static void *cpu_workload(void *arg)
-> +{
-> +	time_t start_time = time(NULL);
-> +	int num = 2;
-> +
-> +	while (difftime(time(NULL), start_time) < *(double *)arg) {
-
-difftime() is sufficient, but FYI we have include/tst_timer.h for
-measuring time difference (which uses more precise struct timeval).
-
-> +		for (int i = 2; i * i <= num; i++) {
-> +			if (num % i == 0)
-> +				break;
-> +		}
-> +		num++;
-This is supposed to do some real workload on CPU? Is that really enough?
-> +	}
-> +	return NULL;
-> +}
-...
-> +static void run(void)
-> +{
-> +	bool status = 1;
-> +	char line[8192];
-> +	int nproc = tst_ncpus();
-> +	uint64_t interrupt_init[nproc], interrupt_later[nproc];
-> +
-> +	tst_res(TDEBUG, "Number of logical cores: %d", nproc);
-> +	read_interrupts(interrupt_init, nproc);
-> +
-> +	DIR *dir = SAFE_OPENDIR("/sys/class/thermal/");
-> +	struct dirent *entry;
-> +	uint8_t tz_counter = 0;
-I'm not sure if AI advices you to use it, but really we don't optimize that much
-that we could not afford just to use plain int. Using exact-width types is
-usually used only when needed, e.g. when mapping some struct from kernel.
-
-> +	while ((entry = SAFE_READDIR(dir))) {
-> +		if ((strncmp(entry->d_name, "thermal_zone", sizeof("thermal_zone"))) > 0)
-> +			tz_counter++;
-> +	}
-> +	SAFE_CLOSEDIR(dir);
-> +	tst_res(TDEBUG, "Found %d thermal zone(s)", tz_counter);
-
-I still think this part can be done in setup and needed values stored in static
-variables (outside function), i.e. static int tz_counter, nproc; Why? Because some
-people can run test 1000x via "-i 1000", therefore we cache various preparation
-results.
-> +
-> +	bool x86_pkg_temp_tz[tz_counter], x86_pkg_temp_tz_found = 0;
-> +
-> +	memset(x86_pkg_temp_tz, 0, sizeof(x86_pkg_temp_tz));
-> +
-> +	for (uint8_t i = 0; i < tz_counter; i++) {
-> +		char path[PATH_LEN];
-> +
-> +		snprintf(path, PATH_LEN, "/sys/class/thermal/thermal_zone%d/type", i);
-> +		tst_res(TDEBUG, "Checking whether %s is x86_pkg_temp", path);
-> +
-> +		SAFE_FILE_SCANF(path, "%s", line);
-> +		if (strstr(line, "x86_pkg_temp")) {
-> +			tst_res(TDEBUG, "Thermal zone %d uses x86_pkg_temp", i);
-> +			x86_pkg_temp_tz[i] = 1;
-> +			x86_pkg_temp_tz_found = 1;
-> +		}
-> +	}
-> +	if (!x86_pkg_temp_tz_found) {
-> +		tst_res(TINFO, "No thermal zone uses x86_pkg_temp");
-> +		status = 0;
-> +	}
-> +
-> +	for (uint8_t i = 0; i < tz_counter; i++) {
-Again, please just use int.
-
-> +		if (x86_pkg_temp_tz[i]) {
-> +			char path[PATH_LEN], temp_path[PATH_LEN], trip_path[PATH_LEN], temp_high[12], trip[12];
-
-You read and write integer values. Using char array is overcomplicated:
-int trip, temp_high = temp + 10;
-
-(But maybe have 10 defined as a constant with meaningful name. That is kind of
-documentation (instead reader having to read the code to understand the meaning
-of the number).
-
-#define TEMP_INCREMENT 10
-
-> +			double run_time = 30;
-#define RUNTIME 30
-
-> +			uint8_t sleep_time = 10;
-#define SLEEP 10
-
-> +			int temp;
-> +
-> +			snprintf(path, PATH_LEN, "/sys/class/thermal/thermal_zone%d/", i);
-> +			strncpy(temp_path, path, PATH_LEN);
-> +			strncat(temp_path, "temp", 4);
-> +			tst_res(TDEBUG, "Testing %s", temp_path);
-nit: I'd put this as TINFO to get at least some debug info without -D.
-
-> +			SAFE_FILE_SCANF(temp_path, "%d", &temp);
-All SAFE_*() macros quit testing, therefore the following check is not needed.
-
-> +			if (temp < 0) {
-> +				tst_brk(TBROK, "Unexpected zone temperature value %d", temp);
-> +				status = 0;
-> +			}
-> +			tst_res(TDEBUG, "Current temperature for %s: %d", path, temp);
-> +
-This would not be needed:
-> +			snprintf(temp_high, sizeof(temp_high), "%d", temp + 10);
-> +
-> +			strncpy(trip_path, path, PATH_LEN);
-> +			strncat(trip_path, "trip_point_1_temp", 17);
-> +
-> +			tst_res(TDEBUG, "Setting new trip_point_1_temp value: %s", temp_high);
-> +			SAFE_FILE_SCANF(trip_path, "%s", trip);
-SAFE_FILE_SCANF(trip_path, "%d", &trip);
-
-> +			SAFE_FILE_PRINTF(trip_path, "%s", temp_high);
-SAFE_FILE_PRINTF(trip_path, "%d", temp_high);
-> +
-> +			while (sleep_time > 0) {
-
-> +				tst_res(TDEBUG, "Running for %f seconds, then sleeping for %d seconds", run_time, sleep_time);
-> +				pthread_t threads[nproc];
-> +
-> +				for (uint16_t j = 0; j < nproc; j++)
-> +					pthread_create(&threads[j], NULL, cpu_workload, &run_time);
-IMHO using pthread (and therefore -lpthread) is overkill.
-Could you please use simple fork()?
-
-testcases/cve/cve-2017-2618.c
-
-	for (i = 0; i < nproc; i++) {
-		if (!SAFE_FORK()) {
-			cpu_workload();
-			exit(0);
-		}
-
-		tst_reap_children();
-	}
-
-> +				for (uint16_t j = 0; j < nproc; j++)
-> +					pthread_join(threads[j], NULL);
-> +
-> +				SAFE_FILE_SCANF(temp_path, "%d", &temp);
-> +				tst_res(TDEBUG, "Temperature for %s after a test: %d", path, temp);
-> +
-> +				if (temp > atol(temp_high))
-> +					break;
-> +				sleep(sleep_time--);
-> +				run_time -= 3;
-> +			}
-> +			if (temp <= atol(temp_high)) {
-> +				tst_res(TINFO, "Zone temperature is not rising as expected");
-> +				status = 0;
-> +			}
-
-> +
-> +			tst_res(TDEBUG, "Restoring original trip_point_1_temp value: %s", trip);
-> +			SAFE_FILE_PRINTF(trip_path, "%s", trip);
-> +		}
-> +	}
-> +	read_interrupts(interrupt_later, nproc);
-> +
-> +	for (uint16_t i = 0; i < nproc; i++) {
-> +		if (interrupt_later[i] < interrupt_init[i]) {
-> +			tst_res(TINFO, "For CPU %d interrupt counter is currently %ld, while it was %ld before the test", i, interrupt_later[i], interrupt_init[i]);
-> +			status = 0;
-> +		}
-> +	}
-> +
-> +	if (status)
-> +		tst_res(TPASS, "x86 package thermal interrupt triggered");
-> +	else
-> +		tst_res(TFAIL, "x86 package thermal interrupt did not trigger");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.min_runtime = 180,
-
-> +	.needs_root = true,
-nit: We always set it as 1.
-
-Kind regards,
-Petr
-
-> +	.supported_archs = (const char *const []) {
-> +		"x86",
-> +		"x86_64",
-> +		NULL
-> +	},
-> +	.test_all = run
-> +};
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVGh1LCBKYW4gMjIsIDIwMjYgYXQgOTowNuKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKPgo+ID4gUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+IHdyb3RlOgo+Cj4g
+PiA+ID4gQWNrZWQtYnk6IEphbiBTdGFuY2VrIDxqc3RhbmNla0ByZWRoYXQuY29tPgo+Cj4gPiA+
+IExHVE0uIEluZGVlZCBvbmx5IHRoZXNlIDMgYXJjaHMgZG9uJ3QgVENPTkYuCj4gPiA+IEFja2Vk
+LWJ5OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPgo+ID4gPiBPdXQgb2YgY3VyaW9zaXR5
+LCB3aGVyZSBpcyB0aGUgc3VwcG9ydCBkZWZpbmVkIGluIGtlcm5lbD8KPiA+ID4gImlmIChjbG9u
+ZV9mbGFncyAmIENMT05FX1NFVFRMUykiIGlzIGluIG1hbnkgYXJjaHM6Cj4KPiA+IE5vdCBiYXNl
+ZCBvbiB0aGlzLCB0aGUgY2xvbmUxMC5jIHRlc3Qgd2FzIHdyaXR0ZW4gYW5kIGdldHMgdGVzdGVk
+Cj4gPiBvbmx5IG9uIHRoZSBrbm93biBhcmNocyAoeDg2XzY0LCBzMzkweCwgYWFyY2g2NCkgYnkg
+bm93Lgo+Cj4gPiBBbmQgaW4gY2FzZSB0aGF0IG90aGVyIGFyY2hzIChub3QgdGVzdGVkKSBoYXZl
+IGRpZmZlcmVudCBiZWhhdmlvciBsaWtlIGkzODYsCj4gPiBzbyB3ZSBhcmUgbGltaXRlZCB0byB0
+aGUga25vdy90ZXN0ZWQgYXJjaHMuCj4KPiA+IElmIHdlIGNhbiBnZXQgYW5vdGhlciBhcmNoIHRv
+IHZlcmlmaWVkIHdlIGNhbiBhZGQgaXQgdG8gdGhlCj4gPiAuc3VwcG9ydGVkX2FyY2hzIGFzIHdl
+bGwuCj4KPiA+ICQgY2F0IC1uIGx0cC9pbmNsdWRlL2xhcGkvdGxzLmgKPiA+ICAgICAuLi4KPiA+
+ICAgICA1MyBzdGF0aWMgaW5saW5lIHZvaWQgaW5pdF90bHModm9pZCkKPiA+ICAgICA1NCB7Cj4g
+PiAgICAgNTUgICAgICNpZiBkZWZpbmVkKF9feDg2XzY0X18pIHx8IGRlZmluZWQoX19hYXJjaDY0
+X18pIHx8IGRlZmluZWQoX19zMzkweF9fKQo+ID4gICAgIDU2ICAgICB0bHNfcHRyID0gYWxsb2Nh
+dGVfdGxzX2FyZWEoKTsKPiA+ICAgICA1NyAjZWxzZQo+ID4gICAgIC4uLgo+Cj4gaW5jbHVkZS9s
+YXBpL3Rscy5oCj4KPiBzdGF0aWMgaW5saW5lIHZvaWQgaW5pdF90bHModm9pZCkKPiB7Cj4gI2lm
+IGRlZmluZWQoX194ODZfNjRfXykgfHwgZGVmaW5lZChfX2FhcmNoNjRfXykgfHwgZGVmaW5lZChf
+X3MzOTB4X18pCj4gICAgICAgICB0bHNfcHRyID0gYWxsb2NhdGVfdGxzX2FyZWEoKTsKPiAjZWxz
+ZQo+ICAgICAgICAgdHN0X2JyayhUQ09ORiwgIlVuc3VwcG9ydGVkIGFyY2hpdGVjdHVyZSBmb3Ig
+VExTIik7Cj4gI2VuZGlmCj4KPiBJIHNlZS4gRmlyc3QgSU1ITyB0aGUgbWVzc2FnZSBpbiBpbmNs
+dWRlL2xhcGkvdGxzLmggaXMgcHJldHR5IG1pc2xlYWRpbmcuIEl0Cj4gZG9lcyBub3QgbG9vayB0
+byBtZSBhcyBhIHRlc3QgbGltaXRhdGlvbiwgYnV0IGFzIGEgbWlzc2luZyBhcmNoIHN1cHBvcnQg
+aW4KPiBrZXJuZWwuICBJTUhPIHRoZSBtZXNzYWdlIHNob3VsZCBoYXZlIGJlZW4gc29tZXRoaW5n
+IGxpa2U6CgorMQoKPiB0c3RfYnJrKFRDT05GLCAiVGVzdCBub3Qgc3VwcG9ydGVkIG9ubHkgYXJj
+aGl0ZWN0dXJlIik7Cj4KPiAoaS5lLiB0byBtZW50aW9uICJ0ZXN0IikKPgo+IEFsc28gaGF2aW5n
+IGFyY2ggbGlzdGVkIGluIHRoZSB0ZXN0IGFuZCBhbHNvIGluIHRscy5oIGlzIHJlZHVuZGFudC4K
+PiBJTUhPIGl0IHNob3VsZCBiZSBvbmx5IG9uIGEgc2luZ2xlIHBsYWNlLgoKQWJzb2x1dGVseSB5
+ZXMsIGFuZCBsb29rcyBsaWtlIHRoZSBpZmRlZmluZSBpbiB0bHMuaCBzaG91bGQgYmUgY2xlYW51
+cCB0b28uCkZlZWwgZnJlZSBkbyB0aGF0IGluIGEgc2VwZXJhdGUgcGF0Y2ggb3IgSSB3aWxsIGxv
+b2sgaW50byBpdCB0b21vcnJvdy4KCgotLSAKUmVnYXJkcywKTGkgV2FuZwoKCi0tIApNYWlsaW5n
+IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
