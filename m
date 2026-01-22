@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F281BC44500
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 08:54:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2EC3C44500
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 09:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1769072091; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1769074902; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=GsUhpkmpLIDiUWHJoEq7Ko7EP6+GqCIVQ7rJkThW4UU=;
- b=TZ4JUVl6k2tMpvpUpvqCrzMHOEGqVlJMrqR4bRkqnzGYg40HYz/O6feQBGif9KgcwEJPu
- 2r73/fSB+dCj36u96Tp/yWdwel3E+p1ur8CIhuPWLXSgIbu80uVXvw7vgjoK2mhL2WxSZZI
- /e3DE9zGBpAMypu2hQxXxYqoW/we4Yo=
+ bh=N38zfYfRyyrIJ154Zf7RwMNCttzz0VqeIM/hgK5zD/A=;
+ b=KGjSu4sYgbNxaiYAH8AogbXGFAunI+Ff8qNFgmXYoGdPa2JPHFeenurt/YmhVcnEm5heU
+ mY8BxlIcuRDgaDVOHlDs2POWV4Vz0FEKEa2CHYW+XCZyrx/zWJcMm1KxBjsEXr4iyW5/zU+
+ x/bXk9S94M/nKDfwVD+SzVtrHQk8lZE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 890213CB28E
-	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 09:54:51 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id ACF173CB36B
+	for <ltp@archiver.kernel.org>; Thu, 22 Jan 2026 10:41:42 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D5DA83CB237
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 09:54:28 +0100 (CET)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
+ by picard.linux.it (Postfix) with ESMTPS id D51BE3C0F41
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 10:41:19 +0100 (CET)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E7CAB1000A41
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 09:54:25 +0100 (CET)
-Received: by mail-wr1-x42d.google.com with SMTP id
- ffacd0b85a97d-432d2c96215so577994f8f.3
- for <ltp@lists.linux.it>; Thu, 22 Jan 2026 00:54:25 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CA0E31400DE2
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 10:41:18 +0100 (CET)
+Received: by mail-wr1-x430.google.com with SMTP id
+ ffacd0b85a97d-42fbc305914so646238f8f.0
+ for <ltp@lists.linux.it>; Thu, 22 Jan 2026 01:41:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1769072065; x=1769676865; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=4em9HFT8RiAVaymkWIv9NOLymMvMiJwbOm2R6tyPSjM=;
- b=PPHBOgPRiEQzp4RmzFYALrIt1xrsRwx79uqdbXT6X49b3k2Ub8ZPjLqEPagm/8mLdt
- dM0qhc/th0P3RKZyZnp9/yJ6vVaCt9OmW9Yprde4wnYw/4ejakxb7yzgT38DPfbPiQDM
- oRAMiX4rXHmz0A2HvtrOWfago0e72ndEkxHe6+5qgcdu6syq8I/JC4g2U4vYuLEyifNA
- hCIWtfcaa7vCznJPOS81AR5o6pllzWC2el6UX3Nc6qyc8o8aM7+i1qOPYe9zGQok+tRF
- rrOaaknQLMzZcBH5Wcv4wtAc7hBhcvaRMEtrWNN7DgOM0lnMBImZV5HJYNlbW4wc3PPC
- fZkA==
+ d=suse.com; s=google; t=1769074878; x=1769679678; darn=lists.linux.it;
+ h=in-reply-to:references:from:subject:to:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=Mmsewka2/5X+W189qG7OzwmBO64KZ2poD5qZCSp9kRo=;
+ b=IRT/lU0eQ0b0+yzHSsjf6CZNkLutuj7FFDWlJj1TJF9SpEtjsuRKgANXT12MGNVmfG
+ FkWxMjx4F2EQpygrp6tSwwVbGJjTZxtkHdL5wWP5LldT8z/6kt27VdWdHt70XZVS1vr+
+ W/x+AlvTlB+2h7l5ak8XHD3mKWjTY+3gvLrqH167FXvus30aPZFYCyrMvkfo03R5/7gk
+ tK3NGxThmzSRwfzrRGUrcFym16z+6AdOlKKmcNpoXcqM82KgrFYV6fsGjepsGfiVpkQD
+ OHEAfB2II9kKjzevnV5OPKrHOA8MUYQIgUEIrfTz+IXTRoQdSSdolRNuBXd2YiPYo9XZ
+ vSdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1769072065; x=1769676865;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=4em9HFT8RiAVaymkWIv9NOLymMvMiJwbOm2R6tyPSjM=;
- b=H2nMZAQy45oaCr9ORBM/KzcR66Xakq7PScVPyH0IosAAlNHjQ5Kddjz/liTiQh2LEC
- Uwk+FBogntH2tS/KTE0woNWhBUlKvN9W+3DdrS4wZI6eFjzDYL9GwSA/6zLlmj+hLG8C
- 9XLSmpuifLKIDOwlSwJer4tGbUcEnZZkcwBvDcV6tpZUI3+uD0Y4Umky15gQadgWTZV6
- zITIzAemGN+sDxtp69OLtHSKMPwFWDjDyhVAAIDnLrO2Cu9X3/7jehpdjdTKPVKKJKRg
- y/gQAi0WsW4epxeupayWWhWRNZkn5Xa1wxvzUSmqRwgcsPmX6j85U0KlzE+Qac+i7Xj4
- LDUw==
+ d=1e100.net; s=20230601; t=1769074878; x=1769679678;
+ h=in-reply-to:references:from:subject:to:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=Mmsewka2/5X+W189qG7OzwmBO64KZ2poD5qZCSp9kRo=;
+ b=asfLkOFlIXr/ypVhnKoW9KmVVa4tYAT8SEqqag9GaKMeCZLHWH26tG4btUYCCYUawT
+ 7atPy0fjZMYvxhJTp9JELjpAD6qu5X+0tFlrN/Lq0qDfvpTGjmbVeWPx4IjVQYvgOuJV
+ gSTtotRy1OlmtTci0efQNCSN2Hrak+uDLoM+VceoM3X8tAWopbFmSc8hgm66XBEb5Io7
+ fjPhMISAz7IPciIMgmDr4plB9m5DRoOlQs9wnuCfpydQ3jfdMb5PJqZS9qTgFbJQm5SE
+ GOzoIXuJWm0CSvHhemCBw7l8KHVkxZGZ0Tif4cdqdzprp5gv4Wv3f+L7/MZ64l4oR0Iu
+ 7/iQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCV4IBzKPlHDfrlHqzWqcpiSu5f179GPmyfj0OQ+4hnIUEG2BtaZH+7NzEr5Stzc4DfGod4=@lists.linux.it
-X-Gm-Message-State: AOJu0YwdZKazQfYkujGxrBqeA29i4TdfGZcj63a4wPIdVm+3VCfnEQvv
- 1UzakE7qI3LNoov/VXWvNDjDrB4jrOQ4xUVs+QqHPTutU+kxx2xbv5hemETLxGziCA==
-X-Gm-Gg: AZuq6aLXHu1h1Lj3W2ErphLl1fbGUOMpFxNck2l+ZVz8DEuwqHBIvYY5nin6YjO0PoU
- /0ehw8Bd4oHKgrU9JmLJEtCe3g//ZmP7l9ba1RGYxpnmE405yeRm85G/XoAVZPQ8GsncArXQKIt
- ssdeO5xJPgiImnG5bvbclexuSdmtzYIhNvfXgP58KdpOK0HCNUwN6WtWApldgizyeMlfkEmqp+K
- z9p4dmHjm+MAmKMN5N8p4tIb1jMgzLaNmDZ8hBdFGrEPZ/DJF0fxKGcKh/5aYbnRu0Rf7vOWRby
- pE4KSuk0b7/Suw6bqtSP8ZMMTwYPHj68NcT/Kt93XzA94CGj/DW9B4pVEI9NUBp5C+gUAH3Vv/T
- Xfck2v40+b6vDSPyBHs4Be+qiAJC7kWvpBwSznX0dl+zKK4TUflIJrVN22ZBCMQrYf/HgS8W9/Q
- bXgVR/SAWqpB9rnm3dEmKYWpJ9DTl0
-X-Received: by 2002:a05:6000:2086:b0:432:5d73:79a1 with SMTP id
- ffacd0b85a97d-43569bd6b82mr28168724f8f.55.1769072065230; 
- Thu, 22 Jan 2026 00:54:25 -0800 (PST)
-Received: from autotest-wegao.qe.prg2.suse.org
- ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ AJvYcCWNBqsZJZB9tY/dvrcAMWeASl8Cf0tmGZwOMxYnoTeawsR7Z5ng/mLXhUkbdBtG4hZV21M=@lists.linux.it
+X-Gm-Message-State: AOJu0YxU3k7m7SKHdRECa21yEBNVU+MqghfNE6QILrvZFrHHMv58MjTN
+ lhBVsJC88sbplmOWDNxfN0hB0UgGcWf6obXE8nBOkih856KgTIFFqBzcKFLFQgV+wsHCozTNqXJ
+ Ab40Q
+X-Gm-Gg: AZuq6aKGfgEhjTWVpgOQDSv4o/MiSt/rZf+bAIPPF4q+f40uIDz8ZHdoZ9Rc2NF6FT+
+ vWQ/LY93OqoqYpwerO4W2BAbhhyC4khhnqgz5FbAp6uH5od+ox84KxbO3MRKFrLd/WIWYY4qbvf
+ T5RAsmydc4WVdAR7ZK8brVv9SzkRw/l8egRkeUPbllhu8/3ERnyFWj/sY4vfuGDRuAs575yhJJ4
+ nGeNouMuwsFOtLdxWkhRG4qwZOzB8xXLVLsjLU5eFizYYW3xCsbSm4J7ya4QBZd9W4VofmTGU9T
+ tfQleMAxjALvsCS2XgY5iSwzW/XSR0If6NPH8rqE93hC2etkHC+P2VxUF9uzSqIg+L3/MVyLkWt
+ ex+lAtDpVXclZBL28UdBXTKgzAOyfLM8WObcdJyPNYyzmi+JKmRw+X/nwBGfew2RGmdX90InVnB
+ K9vrlrA9+al3xtaf/ep7qbmfvuOhKKTBKppZyhYyXNVxNc4Ar0noP0I/bddKu0eWY9iGS6CcQ2U
+ /Zjeic=
+X-Received: by 2002:a05:6000:40cc:b0:435:8d80:1b74 with SMTP id
+ ffacd0b85a97d-4358fed7e77mr14838903f8f.25.1769074877978; 
+ Thu, 22 Jan 2026 01:41:17 -0800 (PST)
+Received: from localhost
+ (p200300ef2f1649001c626999955e52c8.dip0.t-ipconnect.de.
+ [2003:ef:2f16:4900:1c62:6999:955e:52c8])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4356999810bsm43069081f8f.40.2026.01.22.00.54.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 22 Jan 2026 00:54:24 -0800 (PST)
-Date: Thu, 22 Jan 2026 08:54:23 +0000
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <aXHlvyaoa5CIIh3f@autotest-wegao.qe.prg2.suse.org>
-References: <20251101012320.24972-1-wegao@suse.com>
- <20251113015242.799-1-wegao@suse.com>
- <20251113015242.799-2-wegao@suse.com>
- <CAEemH2ckPaOroqTW5q42AqT6=PO1N=6kbpKa2kej=kP8+S36ag@mail.gmail.com>
- <20260122080204.GA47888@pevik>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260122080204.GA47888@pevik>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ ffacd0b85a97d-4356997e664sm39442719f8f.30.2026.01.22.01.41.17
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 22 Jan 2026 01:41:17 -0800 (PST)
+Mime-Version: 1.0
+Date: Thu, 22 Jan 2026 10:41:16 +0100
+Message-Id: <DFV0PEZ7A9WY.28043CZ8X8DEA@suse.com>
+To: "Petr Vorel" <pvorel@suse.cz>, <ltp@lists.linux.it>
+X-Mailer: aerc 0.18.2
+References: <20260121225258.15820-1-pvorel@suse.cz>
+In-Reply-To: <20260121225258.15820-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 1/3] tst_filesystems01.c: Add test for
- .filesystems
+Subject: Re: [LTP] [PATCH 1/1] doc/setup_mailinglist: Improve title,
+ mention b4
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,34 +104,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Jan 22, 2026 at 09:02:04AM +0100, Petr Vorel wrote:
-> Hi all,
-> 
-> > > +       .needs_cmds = (const char *[]) {
-> > > +               "tune2fs",
-> > > +               "dumpe2fs",
-> > > +               NULL
-> > > +       },
-> 
-> > We need to adjust 'char*[]' to new 'struct tst_cmd[]' since commit 39a284442.
-> 
-> Good point, Li. Wei, will you send v5?
-Thansk Li, Petr
-Will sent it.
-> 
-> Also whole patchset LGTM.
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
-> Kind regards,
-> Petr
+Hi!
+
+On Wed Jan 21, 2026 at 11:52 PM CET, Petr Vorel wrote:
+> Title was misleading (we setup git, not the mailing list).
+> While at it, mention also b4.
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  doc/developers/setup_mailinglist.rst | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/doc/developers/setup_mailinglist.rst b/doc/developers/setup_mailinglist.rst
+> index 80d5cb95a1..dd5fa27df1 100644
+> --- a/doc/developers/setup_mailinglist.rst
+> +++ b/doc/developers/setup_mailinglist.rst
+> @@ -1,7 +1,7 @@
+>  .. SPDX-License-Identifier: GPL-2.0-or-later
+>  
+> -Setting up the Mailing list
+> -===========================
+> +Setting up git for the LTP mailing list
+> +=======================================
+>  
+>  Before using :manpage:`git-send-email(1)`, you need to set up your email client
+>  to send emails from the command line. This typically involves configuring an
+> @@ -48,3 +48,7 @@ For any corner case, please take a look at the
+>      This method still works in most of the cases, but nowadays we often
+>      require to setup a two factor authentication. If this is the case, please
+>      consider setting up Git accordingly.
+> +
+> +    Instead of :manpage:`git-send-email(1)` you may want to use
+> +    `b4 tool <https://b4.docs.kernel.org/en/latest/contributor/send.html>`_.
+> +    See LTP ``b4`` configuration: :master:`.b4-config`.
+
++1 
+
+I'm thinking that we might add a section for b4 setup and usage. I used
+it for a long time now, so I can take care of it if needed.
+
+We did it for ML, it's worth to do it for b4.
+
+-- 
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
