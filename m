@@ -4,106 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7D5FD7237B
-	for <ltp@archiver.kernel.org>; Fri, 23 Jan 2026 11:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 549E4D7237D
+	for <ltp@archiver.kernel.org>; Fri, 23 Jan 2026 11:54:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1769169297; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=JQfgcp85FlDJ55MbEbKstrJzhMStMzrx5NtR7fu/Z3I=;
+ b=Qcpyz8IOHlF9JQvuXdAUeSKXQ/IOqo90Ia3/OjmWYVbY3kIlA8jHlyLkiP9TrJv3bzzf2
+ 7+t3dvCu6ShIipqvEqWaheDQPlXeHqMBE7m4ZF5JHhHTvRhHjPBHFcMxGOPT9WVLKy3iXqV
+ frY6b3AqiKBgCR2Z6Vjh1qBEJ5+ZY7E=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3BF7A3CB6F9
-	for <ltp@archiver.kernel.org>; Fri, 23 Jan 2026 12:53:40 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id E74153CB604
+	for <ltp@archiver.kernel.org>; Fri, 23 Jan 2026 12:54:57 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 40ABE3CB421
- for <ltp@lists.linux.it>; Fri, 23 Jan 2026 12:53:20 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id F423C3CB5C9
+ for <ltp@lists.linux.it>; Fri, 23 Jan 2026 12:54:33 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 87B0B2005F6
- for <ltp@lists.linux.it>; Fri, 23 Jan 2026 12:53:20 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 18AB3140051A
+ for <ltp@lists.linux.it>; Fri, 23 Jan 2026 12:54:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1769169270;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=NKJQaRCvGpJAlB0d11H6UErBMq638Dl/k20F6tfN7Vg=;
+ b=hmy7SbjNnoIxNrLQg++TrKIU5h9ObCRAGJ3FOFhG5aXFAF639Me40mX1VMpvd/fPH6/wTF
+ TaVK8wCDc5c9gSgzCxma6IE8e18uVlF1CErzzpJHV1IDD82tb9cAbPwfgmyaE1efvkYRP6
+ S2xnUWm8MArSpTkPgRfSpetmZo2rIBc=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-357-G2R2QTtROty6bXyyMSbj7g-1; Fri,
+ 23 Jan 2026 06:54:27 -0500
+X-MC-Unique: G2R2QTtROty6bXyyMSbj7g-1
+X-Mimecast-MFC-AGG-ID: G2R2QTtROty6bXyyMSbj7g_1769169266
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3A222337C4;
- Fri, 23 Jan 2026 11:53:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769169199;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FRmXP15hUc9NHg2X5SyD8XE1+KthF3QHOmtHd9NiVLQ=;
- b=2ZvFwZgzB9ZIJy3sjmwyY/Vj6qDLtNMCmrViLVU593Q/TaIOdT0aDicFkaqETDD3JiT045
- vR7tzSeJCCqZ/RenDYfe8Gew1o2KUf62eT9q0kDX0g2d9ingViriskYOThN51aox9VzS2a
- Cq2DZWcrIXKxImwNDlLPH6lcyn/kNZw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769169199;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FRmXP15hUc9NHg2X5SyD8XE1+KthF3QHOmtHd9NiVLQ=;
- b=4RiCQZg1sN03zaI+bsZAn/vo2IU0wS+GI6G399zdW1zFpBBQWRZ2zYbzhCqmbrLpf7RNID
- 9Qw8iLp8cR/7UbAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769169199;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FRmXP15hUc9NHg2X5SyD8XE1+KthF3QHOmtHd9NiVLQ=;
- b=2ZvFwZgzB9ZIJy3sjmwyY/Vj6qDLtNMCmrViLVU593Q/TaIOdT0aDicFkaqETDD3JiT045
- vR7tzSeJCCqZ/RenDYfe8Gew1o2KUf62eT9q0kDX0g2d9ingViriskYOThN51aox9VzS2a
- Cq2DZWcrIXKxImwNDlLPH6lcyn/kNZw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769169199;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FRmXP15hUc9NHg2X5SyD8XE1+KthF3QHOmtHd9NiVLQ=;
- b=4RiCQZg1sN03zaI+bsZAn/vo2IU0wS+GI6G399zdW1zFpBBQWRZ2zYbzhCqmbrLpf7RNID
- 9Qw8iLp8cR/7UbAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0F096136AA;
- Fri, 23 Jan 2026 11:53:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 3d25Ai9hc2lrCwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 23 Jan 2026 11:53:19 +0000
-Date: Fri, 23 Jan 2026 12:53:17 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20260123115317.GA117991@pevik>
-References: <20260123054056.131992-1-liwang@redhat.com>
- <20260123094538.GA113458@pevik>
- <CAEemH2c2pzwLcr+70_67oQ4aTqsTE004MnrLEPZgfvk-G1B+pg@mail.gmail.com>
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 42DA11800473; Fri, 23 Jan 2026 11:54:26 +0000 (UTC)
+Received: from fedora-laptop-x1.redhat.com (unknown [10.72.116.11])
+ by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id A168318004D8; Fri, 23 Jan 2026 11:54:24 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Fri, 23 Jan 2026 19:54:19 +0800
+Message-ID: <20260123115419.154326-1-liwang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2c2pzwLcr+70_67oQ4aTqsTE004MnrLEPZgfvk-G1B+pg@mail.gmail.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MISSING_XM_UA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- RCVD_TLS_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: ajOzCfebKLAwEkCDEDYbum3HmOI7a_CEzENI8VyDAcA_1769169266
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] userfaultfd05: handle kernels rejecting WP
- feature in UFFDIO_API
+Subject: [LTP] [PATCH v2] userfaultfd05: require
+ CONFIG_HAVE_ARCH_USERFAULTFD_WP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,47 +80,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Ricardo Branco <rbranco@suse.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Cc: Ricardo Branco <rbranco@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PiA+ID4gICAgICAgaWYgKGlvY3RsKHVmZmQsIFVGRkRJT19BUEksICZ1ZmZkaW9fYXBpKSA8IDAp
-IHsKPiA+ID4gLSAgICAgICAgICAgICBpZiAoISh1ZmZkaW9fYXBpLmZlYXR1cmVzICYgVUZGRF9G
-RUFUVVJFX1BBR0VGQVVMVF9GTEFHX1dQKSkKPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgIHRz
-dF9icmsoVENPTkYsICJVRkZEIHdyaXRlLXByb3RlY3QgdW5zdXBwb3J0ZWQiKTsKPiA+ID4gKyAg
-ICAgICAgICAgICBpbnQgZXJyID0gZXJybm87Cj4gPiA+ICsgICAgICAgICAgICAgaWYgKGVyciA9
-PSBFSU5WQUwpIHsKPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIHVmZmRpb19hcGkuYXBpID0g
-VUZGRF9BUEk7Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICB1ZmZkaW9fYXBpLmZlYXR1cmVz
-ID0gMDsKPiA+ID4gKwo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgaWYgKGlvY3RsKHVmZmQs
-IFVGRkRJT19BUEksICZ1ZmZkaW9fYXBpKSA9PSAwKQo+ID4gPiArICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB0c3RfYnJrKFRDT05GLCAiVUZGRCB3cml0ZS1wcm90ZWN0IHVuc3VwcG9ydGVk
-Iik7Cj4gPiA+ICsgICAgICAgICAgICAgfQoKPiA+IFdvdWxkbid0IGJlIGJldHRlciBpbiB0aGlz
-IGNhc2UgdG8gY2hlY2sga2NvbmZpZyBmb3IKPiA+IENPTkZJR19IQVZFX0FSQ0hfVVNFUkZBVUxU
-RkRfV1AgKHVudGVzdGVkLCBidXQgaXQgc2hvdWxkIHdvcmsKCj4gVGhhdCdzIHRydWUsIGl0IHdv
-dWxkIGJlIHNpbXBsZXIsIGxldCdzIGdvIHdpdGggdGhpcyBtZXRob2QuCgo+ID4gQmFjayB0byBv
-dXIgZGlzY3Vzc2lvbiBhYm91dCBob3cgb2Z0ZW4gdXNpbmcga2NvbmZpZyBbMV0uIFdoaWxlIEkg
-cHJlZmVyIHRvCj4gPiBhdm9pZCB1c2luZyBpdCBmb3IgdHJpc3RhdGUgKGtlcm5lbCBtaWdodCBi
-ZSBjb25maWd1cmVkIGJ1dCBtb2R1bGUgbWlzc2luZyksIGJ1dAo+ID4gaGVyZSBpcyBqdXN0IGEg
-ZmVhdHVyZS4KCj4gPiBbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbHRwL0NBQVNhRjZ3T1N2
-aSswN1BxNU82K2YxSGtycTZXV01ncENhb29KeFdyTzl1T3ZSTTNwd0BtYWlsLmdtYWlsLmNvbS8K
-Cj4gSSBkb27igJl0IHRoaW5rIHRoZXJlIGlzIGEgc2luZ2xlIOKAnHN0YW5kYXJk4oCdIGFuc3dl
-ciBmb3IgZmVhdHVyZSBkZXRlY3Rpb247Cj4gaXQgcmVhbGx5IGRlcGVuZHMgb24gdGhlIHNwZWNp
-ZmljIHNpdHVhdGlvbi4KCj4gRm9yIHRoZSBVRkZELVdQIGZlYXR1cmUgdGhlIHNpdHVhdGlvbiBp
-czogdGhlcmUgaXNu4oCZdCByZWFsbHkgYSBib290Cj4gcGFyYW1ldGVyIG9yIHJ1bnRpbWUga25v
-YiB0aGF0IGRpc2FibGVzIFVGRkQtV1AgaW5kZXBlbmRlbnRseSBvbmNlIHRoZQo+IGludGVyZmFj
-ZSBpcyBwcmVzZW50LiBHaXZlbiB0aGF0LCBhIHNpbXBsZXIgYXBwcm9hY2ggaXMgdG8gcmVseSBv
-biBLY29uZmlnCj4gY2hlY2tzLgoKPiBUaGlzIGlzIGVzcGVjaWFsbHkgcmVsZXZhbnQgaGVyZSBi
-ZWNhdXNlIGRpZmZlcmVudCBrZXJuZWxzIHJlcG9ydCDigJxXUAo+IHVuc3VwcG9ydGVk4oCdIGRp
-ZmZlcmVudGx5IChlLmcuIHJldHVybiAtMS9FSU5WQUwgdnMgcmV0dXJuIDAgd2l0aCBhCj4gZGlm
-ZmVyZW50IGZlYXR1cmUgbWFzayksIHdoaWNoIG1ha2VzIHJ1bnRpbWUtYmFzZWQgZGV0ZWN0aW9u
-IG1vcmUKPiBjb21wbGljYXRlZC4KClllcywgZm9yIHRoZSBkaXNjdXNzaW9uIHdoZW4gdG8gdXNl
-IEknZCBwcm9wb3NlIHRvICpub3QqIHVzZSBrY29uZmlnIGlmOgoqIGJvb3QgcGFyYW1ldGVyIHRv
-IGVuYWJsZS9kaXNhYmxlIGV4aXN0CiogY2hlY2sgZm9yIHRyaXN0YXRlIChmdW5jdGlvbmFsaXR5
-IHdoaWNoIGNhbiBiZSBjb21waWxlZCBhcyBtb2R1bGUpCioga2VybmVsIG5ldyBmdW5jdGlvbmFs
-aXR5IHdoaWNoIGlzIHVubGlrZWx5IHRvIGJlIGJhY2twb3J0ZWQgKHVzZSAubWluX2t2ZXIgaW5z
-dGVhZCkKClVubGVzcyBzb21lIG9iamVjdGlvbiwgSSdsbCBwb3N0IGEgcGF0Y2ggZm9yIGdyb3Vu
-ZCBydWxlcy4KCktpbmQgcmVnYXJkcywKUGV0cgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRw
-czovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Kernels built without arch UFFD-WP support (CONFIG_HAVE_ARCH_USERFAULTFD_WP)
+can report "WP unsupported" in different ways (e.g. UFFDIO_API
+returns -1/EINVAL on some newer kernels, while others succeed but do not
+advertise UFFD_FEATURE_PAGEFAULT_FLAG_WP in the returned features mask).
+
+Rather than relying on runtime probing that varies across kernels,
+require CONFIG_HAVE_ARCH_USERFAULTFD_WP=y via .needs_kconfigs and use
+SAFE_IOCTL() for UFFDIO_API again.
+
+Follow-up: 485a4cd2ba3 ("userfaultfd05: allow TCONF when UFFD-WP is unsupported")
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Ricardo Branco <rbranco@suse.com>
+---
+ testcases/kernel/syscalls/userfaultfd/userfaultfd05.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c
+index 6cae45f20..e25a227cf 100644
+--- a/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c
+@@ -92,12 +92,8 @@ static void run(void)
+ 
+ 	uffdio_api.api = UFFD_API;
+ 	uffdio_api.features = UFFD_FEATURE_PAGEFAULT_FLAG_WP;
+-	if (ioctl(uffd, UFFDIO_API, &uffdio_api) < 0) {
+-		if (!(uffdio_api.features & UFFD_FEATURE_PAGEFAULT_FLAG_WP))
+-			tst_brk(TCONF, "UFFD write-protect unsupported");
+ 
+-		tst_brk(TBROK | TERRNO, "ioctl() on userfaultfd failed");
+-	}
++	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
+ 
+ 	uffdio_register.range.start = (unsigned long) page;
+ 	uffdio_register.range.len = page_size;
+@@ -128,4 +124,8 @@ static void run(void)
+ static struct tst_test test = {
+ 	.test_all = run,
+ 	.min_kver = "5.7",
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_HAVE_ARCH_USERFAULTFD_WP=y",
++		NULL
++	}
+ };
+-- 
+2.52.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
