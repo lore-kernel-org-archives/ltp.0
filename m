@@ -4,100 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0379D77899
-	for <ltp@archiver.kernel.org>; Fri, 23 Jan 2026 17:56:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3D8BD778AF
+	for <ltp@archiver.kernel.org>; Fri, 23 Jan 2026 18:28:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EA2703CB8C5
-	for <ltp@archiver.kernel.org>; Fri, 23 Jan 2026 18:56:52 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 2B17A3CB907
+	for <ltp@archiver.kernel.org>; Fri, 23 Jan 2026 19:28:43 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 28E323C3095
- for <ltp@lists.linux.it>; Fri, 23 Jan 2026 18:56:34 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id C58623C05FA
+ for <ltp@lists.linux.it>; Fri, 23 Jan 2026 19:28:25 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 88593200919
- for <ltp@lists.linux.it>; Fri, 23 Jan 2026 18:56:33 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 21FD2200262
+ for <ltp@lists.linux.it>; Fri, 23 Jan 2026 19:28:24 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 54B633383F;
- Fri, 23 Jan 2026 17:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769190992;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BrRxse1MvhbwSLVR6a5xInyY1h2YpWfQZABKkkdkluI=;
- b=YCc3Gy8NCaaNNuEm7RJLw+wdBYQxWcOoTv97CU484KsNKtW4tn+tCdxbxP3lRQIhjwzUZe
- nRTe3v3n4iCA1A9xZOnry0rxKpMik4mRhkEmI6PI6lg1pGpinPevPDumUuo7m62xWJQnnJ
- GhuOaqSpjKt4Xs3UCugnRAPvTT82tcg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769190992;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BrRxse1MvhbwSLVR6a5xInyY1h2YpWfQZABKkkdkluI=;
- b=7tlOMs0Y9Vhm6oJkjacFCSkLJb7aSkHX3VB+/dyP7ztaPb5Dwk+bRcteDHy0brDla2ClTj
- dJLWayKwx3N/4eCA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 901A933852;
+ Fri, 23 Jan 2026 18:28:24 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769190992;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BrRxse1MvhbwSLVR6a5xInyY1h2YpWfQZABKkkdkluI=;
- b=YCc3Gy8NCaaNNuEm7RJLw+wdBYQxWcOoTv97CU484KsNKtW4tn+tCdxbxP3lRQIhjwzUZe
- nRTe3v3n4iCA1A9xZOnry0rxKpMik4mRhkEmI6PI6lg1pGpinPevPDumUuo7m62xWJQnnJ
- GhuOaqSpjKt4Xs3UCugnRAPvTT82tcg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769190992;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BrRxse1MvhbwSLVR6a5xInyY1h2YpWfQZABKkkdkluI=;
- b=7tlOMs0Y9Vhm6oJkjacFCSkLJb7aSkHX3VB+/dyP7ztaPb5Dwk+bRcteDHy0brDla2ClTj
- dJLWayKwx3N/4eCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0BE0B1395E;
- Fri, 23 Jan 2026 17:56:31 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D19F1395E;
+ Fri, 23 Jan 2026 18:28:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 4wGQOk+2c2k0dgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 23 Jan 2026 17:56:31 +0000
-Date: Fri, 23 Jan 2026 18:56:29 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id RHE9C8i9c2kTFgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 23 Jan 2026 18:28:24 +0000
+Date: Fri, 23 Jan 2026 19:28:22 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20260123175629.GA358728@pevik>
-References: <20260123-fix_dio_sparse_slow-v1-1-65bd0dc0d52f@suse.com>
+To: "Kubaj, Piotr" <piotr.kubaj@intel.com>
+Message-ID: <20260123182822.GA367190@pevik>
+References: <20260121134146.259161-2-piotr.kubaj@intel.com>
+ <20260122140706.GA72518@pevik>
+ <eefc58e780c7c80539d993b27b614c16cbae21c6.camel@intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260123-fix_dio_sparse_slow-v1-1-65bd0dc0d52f@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- TO_DN_ALL(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+In-Reply-To: <eefc58e780c7c80539d993b27b614c16cbae21c6.camel@intel.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 901A933852
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] io: fix really slow dio_sparse on certain systems
+Subject: Re: [LTP] [PATCH v3] thermal: add new test group
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,77 +73,69 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, "Ossowski,
+ Tomasz" <tomasz.ossowski@intel.com>, "Dubel,
+ Helena Anna" <helena.anna.dubel@intel.com>, "Niestepski,
+ Daniel" <daniel.niestepski@intel.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Piotr,
 
-> The reason why dio_sparse is happening to be slow on certain systems is
-> that, if data buffering is slow, we run more buffered read() for one
-> single dio write(). This slows down the whole test, because for each
-> read() we always need to move data from kernel space to user space.
+> > > Then it
+> > > + * decreases the threshold for sending a thermal interrupt to just
+> > > above
+> > > + * the current temperature and runs a workload on the CPU.
 
-> Create a READ_BUFFER_SIZE variable inside the common.h header and use
-> it to define the write buffer size.
+> > First, why test needs to run for 30 sec and then sleep for 10 sec?
+Maybe the most important of my questions / points.
 
-LGTM. IMHO good for a release.
+> Here the point is to use a decreasing timeout. The test starts with 10s
+> cooldown to make sure that even pre-production CPU's, which might have
+> their thermal protections disabled, cool down properly. Once sleep time
+> reaches 0, the conclusion is that either there was not enough workload
+> or somehow interrupts are not triggered after all.
+
+Why 30 sec and then sleep for 10 sec? Is it really needed to do it this way?
+Aren't these times depending on the tested machine? Some of them will fail due
+time not running enough, other will waste time (if they get interrupt e.g. in 10
+sec). The usual approach would be to have the timeout safe enough for any type
+of hardware but proactively check the temperature and stop testing once it's
+done.
+
+...
+> > > +			int temp;
+> > > +
+> > > +			snprintf(path, PATH_LEN,
+> > > "/sys/class/thermal/thermal_zone%d/", i);
+> > > +			strncpy(temp_path, path, PATH_LEN);
+> > > +			strncat(temp_path, "temp", 4);
+> > > +			tst_res(TDEBUG, "Testing %s", temp_path);
+> > nit: I'd put this as TINFO to get at least some debug info without -
+> > D.
+
+> > > +			SAFE_FILE_SCANF(temp_path, "%d", &temp);
+> > All SAFE_*() macros quit testing, therefore the following check is
+> > not needed.
+> It's necessary because if the temperature is below 0, there's most
+> likely some kernel or sensor issue.
+
+I'm sorry, I was wrong here. I mixed up vfscanf() return value from LTP
+function, but you check the scanned value.
 
 Kind regards,
 Petr
 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  testcases/kernel/io/ltp-aiodio/common.h     | 6 ++++--
->  testcases/kernel/io/ltp-aiodio/dio_sparse.c | 2 +-
->  2 files changed, 5 insertions(+), 3 deletions(-)
-
-> diff --git a/testcases/kernel/io/ltp-aiodio/common.h b/testcases/kernel/io/ltp-aiodio/common.h
-> index 9a2d2716661651adf40c635ac516cc70068c9393..d3f05a3c1e75cd4baa629cbce1872729a0d641c6 100644
-> --- a/testcases/kernel/io/ltp-aiodio/common.h
-> +++ b/testcases/kernel/io/ltp-aiodio/common.h
-> @@ -9,6 +9,8 @@
->  #include <stdlib.h>
->  #include "tst_test.h"
-
-> +#define READ_BUFFER_SIZE 4096
-> +
->  static inline char *check_zero(char *buf, int size)
->  {
->  	char *p;
-> @@ -57,7 +59,7 @@ static inline void io_append(const char *path, char pattern, int flags, size_t b
-
->  static inline void io_read(const char *filename, int filesize, volatile int *run_child)
->  {
-> -	char buff[4096];
-> +	char buff[READ_BUFFER_SIZE];
->  	int fd;
->  	int i;
->  	int r;
-> @@ -102,7 +104,7 @@ exit:
-
->  static inline void io_read_eof(const char *filename, volatile int *run_child)
->  {
-> -	char buff[4096];
-> +	char buff[READ_BUFFER_SIZE];
->  	int fd;
->  	int r;
-
-> diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-> index c87e5ab1aca7c8910f76ee87f86b561f548d4cdf..d858340bf9a707fb019e82c644da7f355ad0effd 100644
-> --- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-> +++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-> @@ -32,7 +32,7 @@ static char *str_filesize;
->  static char *str_offset;
-
->  static int numchildren = 16;
-> -static long long writesize = 1024;
-> +static long long writesize = READ_BUFFER_SIZE;
->  static long long filesize = 100 * 1024 * 1024;
->  static long long offset = 0;
->  static long long alignment;
+> > > +			if (temp < 0) {
+> > > +				tst_brk(TBROK, "Unexpected zone
+> > > temperature value %d", temp);
+> > > +				status = 0;
+> > > +			}
+> > > +			tst_res(TDEBUG, "Current temperature for
+> > > %s: %d", path, temp);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
