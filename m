@@ -4,84 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39D52D2F000
-	for <ltp@archiver.kernel.org>; Tue, 27 Jan 2026 12:47:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74470D2F00D
+	for <ltp@archiver.kernel.org>; Tue, 27 Jan 2026 12:49:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 297623C9A33
-	for <ltp@archiver.kernel.org>; Tue, 27 Jan 2026 13:47:40 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id CD5423C9E44
+	for <ltp@archiver.kernel.org>; Tue, 27 Jan 2026 13:49:25 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B0ADE3C93D2
- for <ltp@lists.linux.it>; Tue, 27 Jan 2026 13:47:20 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 1D6CB3C93D2
+ for <ltp@lists.linux.it>; Tue, 27 Jan 2026 13:49:06 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A4735600677
- for <ltp@lists.linux.it>; Tue, 27 Jan 2026 13:47:12 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B582A1A0091F
+ for <ltp@lists.linux.it>; Tue, 27 Jan 2026 13:49:05 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id EDFA7337B6;
- Tue, 27 Jan 2026 12:47:10 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7D8AC5BCE6;
+ Tue, 27 Jan 2026 12:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769518031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1769518144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MABju9i2qIqLkeWGW6ZoopBfLZuCQlfpzrqw70BLAMI=;
- b=lr17tDjpuapV7VC5FHOXOUErnepH7vqD2u+NJsavfvAg3zvmpMVj+Jkw9h4ha5hoPNbuCj
- h/zPtSi+PccI13dGSLILqPzCsgy0dGHt6YcaXuxpKU3v29ek5G/u8o5vCbwoAzRj4cRsRk
- K/UPuoyvye8I3bs8LmS9aRa8z4J5DYE=
+ bh=Sxiu2q/xHiLBnTVc9c2VWMOWmMi/sRpCWOzsML5mdU0=;
+ b=SNEqqRuuuKjdWPnPRu9LnJ2VZRwsqyVY+NJWFww8UwMBdzemhHYd2u2uO/7c6k7kcHMew/
+ 0PNLyELpBVWeuLG/EK4pP6NOFXk8ohicNTOvtxh9Xaid1XCIpeUmEP3wPgjVin0+vco1bo
+ SXkEq0ngDuSNlDoMiWoqUt0/bxFGbAg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769518031;
+ s=susede2_ed25519; t=1769518144;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MABju9i2qIqLkeWGW6ZoopBfLZuCQlfpzrqw70BLAMI=;
- b=ZBEIYCRbfT2bVU0I3hBCD8HFZkj+QYqgWsb9p4eDR9syW8db3nvEm30z5WnE3kBoskEPZS
- LUUN3FGLu1VVxsCA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=n7VrgF3h;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Ec2TCjup
+ bh=Sxiu2q/xHiLBnTVc9c2VWMOWmMi/sRpCWOzsML5mdU0=;
+ b=MX0hWrKw4OiZ2iiSmUqR4GyDMmulPomu0sz5SVC+yx1w1D9Cl1FyIzCH6fZzO3vduEInJN
+ G8DK9M6SsoC120Bg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=QePpovwo;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qGgH9f+y
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769518030; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1769518143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MABju9i2qIqLkeWGW6ZoopBfLZuCQlfpzrqw70BLAMI=;
- b=n7VrgF3hrcIpC3PswEP24LKDexoY9glfKcrTxVdxHYY+/4h01dqnbTJIuBy0pSyqQFV+8l
- cqXx284v2N3gKiZFAL08S+s5S7V7cl2ac73sOtre9IQ4FCgeR/AN5ktRrzx4gLL4+WxL7c
- en+zauC7/xlULOLupLbZwrORUdUUBdg=
+ bh=Sxiu2q/xHiLBnTVc9c2VWMOWmMi/sRpCWOzsML5mdU0=;
+ b=QePpovwoEnhmQ8EmFCe5Org19KXY5xAhhsCa234bA7+7vUeo5CGzlJfQWVAhapbITjQ2f9
+ x57Jdx7XSZRlHq2OZnK0c2m5C5RmtkzFYhpLO56sw8FGY9k4lMsy+vbpXdCJSkpgMdjqiz
+ BAuryMtLNbM/24/HhcuD1b47jEKEzTQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769518030;
+ s=susede2_ed25519; t=1769518143;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MABju9i2qIqLkeWGW6ZoopBfLZuCQlfpzrqw70BLAMI=;
- b=Ec2TCjupt1f/F347Aez4eSHX5FRMIE4sUH8IHpuks/J2hJZF0fhdhJJeWeyyL6ZnFImYVg
- 6JukVHnLnE/mhaDw==
+ bh=Sxiu2q/xHiLBnTVc9c2VWMOWmMi/sRpCWOzsML5mdU0=;
+ b=qGgH9f+yvZu9g539FwNgI581Dnfp6sL2zyEiyQFY/JGcndG7OLmpmqd0G2tYyflv6KXdqz
+ jMlD3dAx/Sy4p9AQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C927E3EA61;
- Tue, 27 Jan 2026 12:47:10 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 613CA3EA61;
+ Tue, 27 Jan 2026 12:49:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 3R76L86zeGmyYAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 27 Jan 2026 12:47:10 +0000
-Date: Tue, 27 Jan 2026 13:48:30 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id F4mAFj+0eGm1YgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 27 Jan 2026 12:49:03 +0000
+Date: Tue, 27 Jan 2026 13:50:22 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Li Wang <liwang@redhat.com>
-Message-ID: <aXi0Hpd73RiObYrO@yuki.lan>
-References: <20260123054056.131992-1-liwang@redhat.com>
+Message-ID: <aXi0jgsiQjJozZCF@yuki.lan>
+References: <20260123115419.154326-1-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260123054056.131992-1-liwang@redhat.com>
+In-Reply-To: <20260123115419.154326-1-liwang@redhat.com>
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
@@ -99,13 +97,13 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: EDFA7337B6
+X-Rspamd-Queue-Id: 7D8AC5BCE6
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] userfaultfd05: handle kernels rejecting WP
- feature in UFFDIO_API
+Subject: Re: [LTP] [PATCH v2] userfaultfd05: require
+ CONFIG_HAVE_ARCH_USERFAULTFD_WP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,9 +122,8 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Looks good.
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+This one works as well. Feel free to push the version you like with my
+reviewed-by.
 
 -- 
 Cyril Hrubis
