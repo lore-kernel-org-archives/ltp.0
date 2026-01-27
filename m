@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62C85D2F02A
-	for <ltp@archiver.kernel.org>; Tue, 27 Jan 2026 13:25:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB5ADD2F038
+	for <ltp@archiver.kernel.org>; Tue, 27 Jan 2026 14:31:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CED723CB2D7
-	for <ltp@archiver.kernel.org>; Tue, 27 Jan 2026 14:25:35 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 384D73CAEAC
+	for <ltp@archiver.kernel.org>; Tue, 27 Jan 2026 15:31:57 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 987433CAE83
- for <ltp@lists.linux.it>; Tue, 27 Jan 2026 14:25:18 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 741DB3CAA87
+ for <ltp@lists.linux.it>; Tue, 27 Jan 2026 15:31:39 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DB8DC600907
- for <ltp@lists.linux.it>; Tue, 27 Jan 2026 14:25:17 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EC8202009E6
+ for <ltp@lists.linux.it>; Tue, 27 Jan 2026 15:31:38 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C7CB15BCE6;
- Tue, 27 Jan 2026 13:25:16 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C2FCA5BCE6;
+ Tue, 27 Jan 2026 14:31:37 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 45FA93EA61;
- Tue, 27 Jan 2026 13:25:16 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9E42D3EA61;
+ Tue, 27 Jan 2026 14:31:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id fWYnCry8eGlbCAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 27 Jan 2026 13:25:16 +0000
-Date: Tue, 27 Jan 2026 14:25:14 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Qdf1JEnMeGnQRgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 27 Jan 2026 14:31:37 +0000
+Date: Tue, 27 Jan 2026 15:31:36 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260127132514.GB146899@pevik>
-References: <aWjZX0fsrTJMqq49@yuki.lan>
- <aXi4P0YdKx5rFZ8C@yuki.lan>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20260127143136.GA153805@pevik>
+References: <20260127-fork_refactoring-v1-0-e3e21ff1a4f7@suse.com>
+ <20260127-fork_refactoring-v1-1-e3e21ff1a4f7@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <aXi4P0YdKx5rFZ8C@yuki.lan>
+In-Reply-To: <20260127-fork_refactoring-v1-1-e3e21ff1a4f7@suse.com>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: C7CB15BCE6
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Rspamd-Queue-Id: C2FCA5BCE6
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP release preprations
+Subject: Re: [LTP] [PATCH 1/3] syscalls: refactor fork09 using new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,40 +74,73 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> Are there any other fixes that should be considered before the git is
-> tagged?
+Hi Andrea,
 
-* ioctl_pidfd02-06: Add CONFIG_USER_NS and CONFIG_PID_NS to needs_kconfigs
-https://patchwork.ozlabs.org/project/ltp/patch/20251209211629.95436-1-terry.tritton@linaro.org/
-(Or I can prepare an alternative fix to do a runtime check, I also plan to send
-a patch with formalising the rules)
+Generally LGTM.
 
-* tst_net.sh fixes would be nice to get merged:
-https://patchwork.ozlabs.org/project/ltp/list/?series=489902&state=*
-https://lore.kernel.org/ltp/20260127131427.146592-1-pvorel@suse.cz/
-https://lore.kernel.org/ltp/20260127131427.146592-2-pvorel@suse.cz/
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-https://patchwork.ozlabs.org/project/ltp/list/?series=489469&state=*
+> +	tst_res(TINFO, "Opening files from parent");
+> +
+> +	for (nfiles = 0; nfiles < file_open_max; nfiles++) {
+> +		memset(name, 0, PATH_MAX);
+> +		snprintf(name, PATH_MAX, "%s%lu", FILE_PREFIX, nfiles);
 
-It should be safe to merge these:
+> -		/* clean up things in case we are looping */
+> -		for (nf = first; nf < nfiles; nf++) {
+> -			fclose(fildeses[nf]);
+> -			sprintf(filname, "file%d.%d", nf, mypid);
+> -			unlink(filname);
+> +		f = fopen(name, "a");
+> +		if (!f) {
+nit: Although EMFILE meaning is quite obvious I found previous comment about
+OPEN_MAX useful.
 
-* v5 tst_filesystems01.c: Add test for .filesystems
-https://patchwork.ozlabs.org/project/ltp/list/?series=489469&state=*
+> +			if (errno == EMFILE)
+> +				break;
+> +
+> +			tst_brk(TBROK | TERRNO, "fopen() error");
+I suppose we are ok to not close these open files even if it fails close to
+OPEN_MAX...
 
-* checkpatch.pl enhancement to check for typos
-https://patchwork.ozlabs.org/project/ltp/list/?series=487179&state=*
-(I did not merged it as I hoped for a discussion what else to enable for
-warnings, but that could be done as a separate effort after the release).
+>  		}
+> +
+> +		open_files[nfiles] = f;
+> +	}
+> +
+> +	totfiles = nfiles;
+> +
+> +	if (!totfiles)
+> +		tst_brk(TBROK, "Parent couldn't open any file");
+> +
+> +	tst_res(TINFO, "Closing %lu files from child", totfiles);
+> +
+> +	if (!SAFE_FORK()) {
+> +		for (nfiles = nfiles - 1; nfiles >= 0; nfiles--)
+> +			SAFE_FCLOSE(open_files[nfiles]);
+> +
+> +		exit(0);
+>  	}
 
-FYI I dared to merge IMA fix:
-https://github.com/linux-test-project/ltp/commit/1ba58805ea5466df5202ff2e7b5b3d0cd5c81c37
+> +	tst_reap_children();
+> +
+> +	tst_res(TPASS, "Child closed all parent's files");
+> +
+
+... because this is not in a cleanup.
+> +	for (nfiles = 0; nfiles < totfiles; nfiles++) {
+> +		memset(name, 0, PATH_MAX);
+> +		snprintf(name, PATH_MAX, "%s%lu", FILE_PREFIX, nfiles);
+> +
+> +		SAFE_FCLOSE(open_files[nfiles]);
+> +		SAFE_UNLINK(name);
+> +	}
 
 Kind regards,
 Petr
