@@ -4,92 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A827AD25B44
-	for <ltp@archiver.kernel.org>; Wed, 28 Jan 2026 11:28:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1769599715; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=ww8zZKbv9JJOHvGgEm7vaq8KKa1nr9aMuPnCTHV/KsM=;
- b=ETbMFfEFEO8RIuZ4PptUKldkWkLlzaOKFdiyoZ6P6R5m0aXNgKh/sGk9Z1A110W3pgNJ9
- ZJX2/NOS7O5iFzhB2+nywngTgEgNbJ/euRps8V4x0pZBWNMq/PXxUA7uPhwvsZKS6iCA2f/
- K/xEs89cCiBj5Dnglkl9Z6DLbjHUSak=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC65FD25B48
+	for <ltp@archiver.kernel.org>; Wed, 28 Jan 2026 11:55:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 46FDE3CB0D3
-	for <ltp@archiver.kernel.org>; Wed, 28 Jan 2026 12:28:35 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 6339B3CB36B
+	for <ltp@archiver.kernel.org>; Wed, 28 Jan 2026 12:55:18 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 42FEC3CAF61
- for <ltp@lists.linux.it>; Wed, 28 Jan 2026 12:28:09 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 080C83C2A7A
+ for <ltp@lists.linux.it>; Wed, 28 Jan 2026 12:54:58 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D558D1000A9B
- for <ltp@lists.linux.it>; Wed, 28 Jan 2026 12:28:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1769599687;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xaZrP7BljcmnfC6mB+gSIsWNR3zDH7L9p43qopj/Tlg=;
- b=QVqEgEVsajytGS+z+M+B2tFY4OPJ8f2g8jXqztMzBqnS4n6qo7M2hSNfw9VjRCObjPAoVy
- psMoPhvIMLaYGJ8oDSudeneecFKfiIemHZc8S0OQQpXlbrNuJTQ/4mXiRMeJv3upSPX1nB
- GERaL+UjvineP1xp8VXxI/irHAxIL38=
-Received: from mail-dy1-f199.google.com (mail-dy1-f199.google.com
- [74.125.82.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-375-Cev1bg7nOlqwSggIgkcMQA-1; Wed, 28 Jan 2026 06:28:05 -0500
-X-MC-Unique: Cev1bg7nOlqwSggIgkcMQA-1
-X-Mimecast-MFC-AGG-ID: Cev1bg7nOlqwSggIgkcMQA_1769599684
-Received: by mail-dy1-f199.google.com with SMTP id
- 5a478bee46e88-2b7a28264c1so650631eec.0
- for <ltp@lists.linux.it>; Wed, 28 Jan 2026 03:28:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1769599684; x=1770204484;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=xaZrP7BljcmnfC6mB+gSIsWNR3zDH7L9p43qopj/Tlg=;
- b=JVLqpiiXpmPRVEqQc7yImemvZ038RBntFpbmvN4d8GK31Plw5avh6Inji1Hb0C6Gwl
- buU+7xC3CBo1e5LIYZu1kCc4cMOBIkZpBjAr8U+Eivd8yx1ks+D7giKl+kG9lSjYR++n
- GP2WKP0e4eCLzmVBDjWnU3/971AE91xXBXuSb9071Ho1ZZCuEWgOEfjbwkbbl0I2GlbD
- o1XFruTYfgWnRqj54oBpU2Ge338Suot7yuLK4gbeobzTDlBX2oHcsJYhFRXHra05x9gT
- ykT5N39FV4mJvp9jg5+sy0zTu1R7vHnTTQ0M98fGumWR5eqq4FkOCJ7+iyn/OObkXoxR
- c80Q==
-X-Gm-Message-State: AOJu0Yzf8S/Q0cLnZreH/gz7jdJabizH2WrArs68OZFtn8oCNqoUyIv5
- d+M4SbvJK4wao1tCY2KD8Kw20DUmtVqotOMMOKGNVOzwUrbwwXcinL/xD4onWT/6PTKghfzSCyq
- q8+Juusr/zM/ygG2SmDDLPRQn1kesBCwtayYh8f/TqBPJ7fC1pNzYewD0+X0t3WxVfWLxBQWCnT
- quEsbO/2WwfPIA5LqsW+fyl5IzmDU=
-X-Gm-Gg: AZuq6aIzuMr8d03RI91JV1iy/hALQu5ITtoXYwEu39tel6y482ZJyo7sTvIEtCj5isN
- egLWWcD9goypnK6GznrSMZK6MR/TCUxw04Z+3MEVoD4gFo9qMet6sbX4FLJP92xoLTROtxx/qy4
- 6HSLRYuQ6Knm2+2W4VVeBXFHSSgINvI/bRfcr2dwrmpjcI+rsStlRZ1aHvbt+455TPHjY=
-X-Received: by 2002:a05:7300:fd05:b0:2a4:65b5:9868 with SMTP id
- 5a478bee46e88-2b78da689c2mr3233757eec.38.1769599683301; 
- Wed, 28 Jan 2026 03:28:03 -0800 (PST)
-X-Received: by 2002:a05:7300:fd05:b0:2a4:65b5:9868 with SMTP id
- 5a478bee46e88-2b78da689c2mr3233742eec.38.1769599682523; Wed, 28 Jan 2026
- 03:28:02 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BB2D1600B07
+ for <ltp@lists.linux.it>; Wed, 28 Jan 2026 12:54:57 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 70E4F33B74;
+ Wed, 28 Jan 2026 11:54:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1769601296; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=m6EI3gngy/PrBojYBMhh98vAodpQ/QvGT3eOLNxE81M=;
+ b=ApMgXiYngiYifSrQz6aakUtbOcKQkh9iLcrGowI9DFKxo0tEAaNHFk5sCRoMh8yYnsHhFq
+ o6H3vl9Nrt7h76lsrWsyz2oXPbEGGwrmJHeyaTF/MN51doj4tAfPLVqm+4B0NBbRns8ios
+ JSapgFrN0qFTavHgERWKIf6Ut59Y828=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1769601296;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=m6EI3gngy/PrBojYBMhh98vAodpQ/QvGT3eOLNxE81M=;
+ b=SHBsPrgdw8ACvCgS6/F2VevQLJqGTcl+7U3NQGERlFNRhBs8D6eM611UNk/BfciXOWLMW6
+ 8UiHhzVrrkrzWtAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1769601296; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=m6EI3gngy/PrBojYBMhh98vAodpQ/QvGT3eOLNxE81M=;
+ b=ApMgXiYngiYifSrQz6aakUtbOcKQkh9iLcrGowI9DFKxo0tEAaNHFk5sCRoMh8yYnsHhFq
+ o6H3vl9Nrt7h76lsrWsyz2oXPbEGGwrmJHeyaTF/MN51doj4tAfPLVqm+4B0NBbRns8ios
+ JSapgFrN0qFTavHgERWKIf6Ut59Y828=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1769601296;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=m6EI3gngy/PrBojYBMhh98vAodpQ/QvGT3eOLNxE81M=;
+ b=SHBsPrgdw8ACvCgS6/F2VevQLJqGTcl+7U3NQGERlFNRhBs8D6eM611UNk/BfciXOWLMW6
+ 8UiHhzVrrkrzWtAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 423BA3EA61;
+ Wed, 28 Jan 2026 11:54:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id AgOPDhD5eWnMZAAAD6G6ig
+ (envelope-from <rbranco@suse.de>); Wed, 28 Jan 2026 11:54:56 +0000
+From: Ricardo Branco <rbranco@suse.de>
+To: ltp@lists.linux.it
+Date: Wed, 28 Jan 2026 12:54:28 +0100
+Message-ID: <20260128115432.21199-1-rbranco@suse.de>
+X-Mailer: git-send-email 2.52.0
 MIME-Version: 1.0
-References: <20260128-kirk_v3-2-1-v1-1-9364f4bf919c@suse.com>
-In-Reply-To: <20260128-kirk_v3-2-1-v1-1-9364f4bf919c@suse.com>
-Date: Wed, 28 Jan 2026 19:27:50 +0800
-X-Gm-Features: AZwV_QjUzK9x6HEfGR1HVbwhlrzsbUfaiNmF5EmvDjZZcCLkM8PSZpBTbFAmJRU
-Message-ID: <CAEemH2c7WhKRntOZpZ4jPe43wG9NiQYz65CtcB1uo+ChejapAQ@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: CA1l3Ztk_0O-Gbclikj8Jk62JEOXbWKGq5DLdvCmuDg_1769599684
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.994];
+ MIME_GOOD(-0.10)[text/plain]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,suse.de:email,imap1.dmz-prg2.suse.org:helo];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] kirk: Update to v3.2.1
+Subject: [LTP] [PATCH] userfaultfd: Do not use min_kver as gate for test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,19 +98,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gV2VkLCBKYW4gMjgsIDIwMjYgYXQgNjo0OeKAr1BNIEFuZHJlYSBDZXJ2ZXNhdG8gPGFuZHJl
-YS5jZXJ2ZXNhdG9Ac3VzZS5kZT4Kd3JvdGU6Cgo+IEZyb206IEFuZHJlYSBDZXJ2ZXNhdG8gPGFu
-ZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5jb20+Cj4KPiBodHRwczovL2dpdGh1Yi5jb20vbGludXgtdGVz
-dC1wcm9qZWN0L2tpcmsvcmVsZWFzZXMvdGFnL3YzLjIuMQo+ICogbHRwOiBjb3JyZWN0bHkgZmV0
-Y2ggTFRQUk9PVCBieSBAYWNlcnYgaW4gIzg4Cj4KPiBTaWduZWQtb2ZmLWJ5OiBBbmRyZWEgQ2Vy
-dmVzYXRvIDxhbmRyZWEuY2VydmVzYXRvQHN1c2UuY29tPgo+CgpSZXZpZXdlZC1ieTogTGkgV2Fu
-ZyA8bGl3YW5nQHJlZGhhdC5jb20+CgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5n
-IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Do not use .min_kver to decide whether the test should run and instead
+check for the presence of /dev/userfaultfd at runtime.
+
+Signed-off-by: Ricardo Branco <rbranco@suse.de>
+---
+ .../kernel/syscalls/userfaultfd/userfaultfd03.c    | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd03.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd03.c
+index ba87bf6e4..d6e1897db 100644
+--- a/testcases/kernel/syscalls/userfaultfd/userfaultfd03.c
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd03.c
+@@ -13,6 +13,7 @@
+ 
+ #include "config.h"
+ #include <poll.h>
++#include <unistd.h>
+ #include "tst_test.h"
+ #include "tst_safe_macros.h"
+ #include "tst_safe_pthread.h"
+@@ -23,6 +24,17 @@ static char *page;
+ static void *copy_page;
+ static int uffd;
+ 
++static void setup(void)
++{
++	if (access("/dev/userfaultfd", F_OK) == 0)
++		return;
++
++	if (tst_kvercmp(6, 1, 0) < 0)
++		tst_brk(TCONF, "/dev/userfaultfd is missing (kernel < 6.1)");
++
++	tst_brk(TBROK, "/dev/userfaultfd is missing (kernel >= 6.1)");
++}
++
+ static int open_userfaultfd(int flags)
+ {
+ 	int fd, fd2;
+@@ -117,6 +129,6 @@ static void run(void)
+ 
+ static struct tst_test test = {
+ 	.needs_root = 1,
++	.setup = setup,
+ 	.test_all = run,
+-	.min_kver = "5.11",
+ };
+-- 
+2.52.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
