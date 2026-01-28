@@ -4,101 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48DE8D2FED7
-	for <ltp@archiver.kernel.org>; Tue, 27 Jan 2026 18:25:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F314D2FED1
+	for <ltp@archiver.kernel.org>; Wed, 28 Jan 2026 00:28:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1769560136; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=FE3fjCINtxmb6nFGZP9FOvEnzVVaG029g6DUcuZYMKg=;
+ b=peG383AV4YdX1whkGwFv5pNx7wV8ToNQwDYUiXKdDtMsSQLsNinpWPstbEc+Y3FKgCzmt
+ zv9HT+mB+YycoXtJ9g6uJ3tRc1MKlEAAPnNVcmFQuKjnrkv5MagzsKJYzmOLUk77evVC45K
+ WR1nBxEQnMI01IsWg8BcVePrMZJdKMQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9EBC53C9CAE
-	for <ltp@archiver.kernel.org>; Tue, 27 Jan 2026 19:25:13 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 5EC933CA135
+	for <ltp@archiver.kernel.org>; Wed, 28 Jan 2026 01:28:56 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9EB4B3C1A27
- for <ltp@lists.linux.it>; Tue, 27 Jan 2026 19:24:53 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 5CC6E3C58A1
+ for <ltp@lists.linux.it>; Wed, 28 Jan 2026 01:28:33 +0100 (CET)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 33D6710009EC
- for <ltp@lists.linux.it>; Tue, 27 Jan 2026 19:24:52 +0100 (CET)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60RH0Prw021821;
- Tue, 27 Jan 2026 18:24:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=DcRKyJ
- EM5s/6sS92kS1sOSlSlxzX2/oa/N7VkfXvO5E=; b=CQ9Skn2idhFbhtxYMmU73a
- 1Uup+YksbNH4IUajf89smePsrydDMu3Tv35QJovlqg07dZxvVunjN586uwNfv9oE
- pUbmj/0feDB8rDxomBipoDGNhtJi4LKzuWjYGadwN2Wllh8KhHtpeJhBkPvEZAZC
- aCFI/HVGXD6ZrU8N59z4/f1mOwB+UKghhAEKm2h3mqIDTsrYr4avuh/0xMfHRZWs
- W/8/oK3zlvp8agfemICgERZGHyQu98dU5GQeDCDHJ47JJATbd6SdG3K9Cq+FZyo9
- UvKV3Bxy5pjkhIAcqp3shwqtyCv9QTHXOO7KMXtGEO5+duz3Mh5WStd7jUAHC7Gw
- ==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bvnrtf0qt-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 27 Jan 2026 18:24:50 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60RF0BtW018303;
- Tue, 27 Jan 2026 18:24:49 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bwb41sjcj-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 27 Jan 2026 18:24:49 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com
- [10.39.53.233])
- by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 60RIOnFA29032968
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 27 Jan 2026 18:24:49 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 1585C58056;
- Tue, 27 Jan 2026 18:24:49 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 9F2235804E;
- Tue, 27 Jan 2026 18:24:48 +0000 (GMT)
-Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
- [9.61.189.79]) by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
- Tue, 27 Jan 2026 18:24:48 +0000 (GMT)
-Message-ID: <447d5d46a8ac3ed8a8283d87bd555459a2679495.camel@linux.ibm.com>
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-In-Reply-To: <20260127131755.GA146899@pevik>
-References: <20260121083343.127613-1-pvorel@suse.cz>
- <20260127131755.GA146899@pevik>
-Date: Tue, 27 Jan 2026 13:24:48 -0500
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F0EC71A00607
+ for <ltp@lists.linux.it>; Wed, 28 Jan 2026 01:28:31 +0100 (CET)
+Received: by mail-wm1-x334.google.com with SMTP id
+ 5b1f17b1804b1-4801c2fae63so49296335e9.2
+ for <ltp@lists.linux.it>; Tue, 27 Jan 2026 16:28:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1769560111; x=1770164911; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=bDGgDaLA3kgaRPn/fgo3nqqFBTPQ3w54cFAAIfZZWiE=;
+ b=bIqWbaWRDv4TNVaGn1xilLjUfuVb+SBv/d6PK4li0XAwqvZHmgcxVsMIWjFNnVqK77
+ bHTvkQgWHAFAaOE1k1Cg4JaVHv6HyhLMSCjSibuucxXG60odQhBbP+EP2+0Xki3tQ5wD
+ KGEqs4bBWi3rgVSQdjOe+2pXpCcwL2rTf4pshzq3smlbmT4uo8VEa1GDaoVpdutxQgHl
+ cET4fxyeOeuuhYgqC2Er5t5TkyecY9nGKQfTQvv4A2ZriNjx7kufH9bc6lUmzzhXjOFm
+ VCMRbPvSxaqnciYPEQlL7lQrjsTkqsQunCEbpAbtSjhHBEIP8cgjpayTuV/ug+FOWwrj
+ eneg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1769560111; x=1770164911;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=bDGgDaLA3kgaRPn/fgo3nqqFBTPQ3w54cFAAIfZZWiE=;
+ b=TETwF48uDWbp4H8jb9X6gmUc1HX3Dh+ZKM45xx9AZCxb+ReL+YEAn4+jbBh8r4yLsP
+ rIbD1c2iz7y/XrzRugX+hWOHVtwp/MEkarln7TtxFJx8PQ3T1uok9Sm7rrITikk6nI+U
+ KiY6AyE5B1SxmRf+EZplpoDXldwEY4jLB6vw+fMatAsJck0Ekscq74FxWhRcDL3zrPCf
+ GFemP9dUeVm2wIVgVadqRVwqBJb1+2SEFClVvvj0HOwgqm3ksYQXPL+SqTMFb4/eoWxp
+ 0sK/AMKxZyTeysbgf2aE3hXVTiiixvmRJoicgw5CEKXudPlsC48v8FK7+CFcMN5N9RJy
+ C45Q==
+X-Gm-Message-State: AOJu0YypSjGO8bSvo+YY7eh1K4HmdRcMH2PXOHlZTgVrZy/JX2Fvo2Ng
+ T+3cpmgWDFCtiSZQjDMMbuIjAG6BNCTPPh6S8SB5KgjdCVfPigs6BmP0tA83dhoKsZ3sgSwaHNm
+ zld8=
+X-Gm-Gg: AZuq6aLsZFH8X8heOyRjFt3tyUwtHusS+lhsSSfc9V28t1GMoHS9fbomJwMA7egNG8X
+ oi2MQsIgL+VsqttscHN4Fz41EGtCLPTCBs4fz/eBgcu6oePf9od/+VAdL15LNz/dZ70CBIfK67W
+ ij5mIss4VnyB/C6XTJQOH8z1/7QDqOf8SGH9qGrCdEO1+YdLhGs9wuN3xHxP679cXyek75o4fJ9
+ w0mihi1pZL+pIJHnz2YYhQ+IR3sGlVvnLD6IuZa0UoouPnh/zPgsFjBpJkfJk+5YzyEsRyQ4Idy
+ 4XV3WwXM93NetwbAEAL3blTayfqCzKkk2187OXxgzdoqzCHvNJHU723GIQ3A8mZs2DxsVdkI14R
+ mt5q28IX9b7mcIibKWiOdYsdzluXfHM736jAPWw+4gZJQx5rxIfWcLNnVtfxYTDAMwU1ohX6tTn
+ g=
+X-Received: by 2002:a05:600c:a08c:b0:47e:f481:24b7 with SMTP id
+ 5b1f17b1804b1-48069c480camr44087275e9.17.1769560111054; 
+ Tue, 27 Jan 2026 16:28:31 -0800 (PST)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-4806d98c8desm16386975e9.3.2026.01.27.16.28.30
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 27 Jan 2026 16:28:30 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Wed, 28 Jan 2026 00:28:24 +0000
+Message-ID: <20260128002828.424-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: cksGe1t79QRuDBYy2o-fhV-qaI3MlbEP
-X-Authority-Analysis: v=2.4 cv=Uptu9uwB c=1 sm=1 tr=0 ts=697902f2 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VnNF1IyMAAAA:8 a=_4C9gLwq-jLjF3gInBgA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: cksGe1t79QRuDBYy2o-fhV-qaI3MlbEP
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTI3MDE0OSBTYWx0ZWRfX6mnWdqxDHPWl
- LB5YuWYr9sh5KKX0jxBywZK15f/upTW8xcDjn/yHZrLeNNLBAE0eODrTwrhR3UYIdbvnIw5gncX
- FzgzZl9rf52dPwFicqoFpL7GxTzKMF+GmjCA+dtkQUH0FH2ULYP1J0mpf8C3MojdBGxu34KC9an
- Fet1LR4cGG023gbCQMtCRAM9z08neWqa8igzxelJzmu7iSEh9V4w9XCtXzW3SmUATyvdcVdBUwS
- CL4G2k5Sgp5lP/YBpnCwYYIfI5T15Fl03qSCyoXQEipxbL5jA79JIL7hXUzKk5gzSdR1CZUtExa
- M8bbazj8DwPM4dbBZcTuht44IYUj/BSaZpl3msH54mgqZjvBuKVVFilHUKboHAfQ0YqY69Pfx54
- EfR3BM38BolsOyz1FG/QYqRcw/5jX32772EOY1k6YxsRK/2bYCV26aUnC2gLQKGnF/+WBKxY3pf
- DUqBZCM+L18vqhGL/HA==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-01-27_04,2026-01-27_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 priorityscore=1501 clxscore=1015 lowpriorityscore=0
- phishscore=0 adultscore=0 impostorscore=0 bulkscore=0 spamscore=0
- suspectscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2601150000
- definitions=main-2601270149
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] ima_setup.sh: Fix check of signed policy
- requirement
+Subject: [LTP] [PATCH v1] mseal02: Handle multiple errnos for 32-bit compat
+ mode
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,69 +95,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-integrity@vger.kernel.org
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+In 32-bit compat mode, the overflow_size (calculated using a 32-bit ULONG_MAX)
+does not cause a 64-bit integer wrap-around when added to the start address.
+Consequently, the kernel see valid range that points to unmapped space, returning
+ENOMEM instead of the expected EINVAL.
 
-On Tue, 2026-01-27 at 14:17 +0100, Petr Vorel wrote:
-> Hi Mimi, all,
-> 
-> > Kernel code in arch_get_ima_policy() depends also on
-> > CONFIG_IMA_ARCH_POLICY added in v5.0:
-> > d958083a8f640 ("x86/ima: define arch_get_ima_policy() for x86")
-> 
-> > Fixes: c38b528783 ("ima_{conditionals, policy}: Handle policy required to be signed")
-> > Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> > Hi Mimi, all,
-> 
-> > FYI I'd like to merge it this week to get it into LTP release.
-> 
-> > Kind regards,
-> > Petr
-> 
-> I dared to merge this to get it into upcoming LTP release (this/next week).
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ testcases/kernel/syscalls/mseal/mseal02.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-I'm so sorry for the delay.
+diff --git a/testcases/kernel/syscalls/mseal/mseal02.c b/testcases/kernel/syscalls/mseal/mseal02.c
+index e11d7dbf4..d941f6c40 100644
+--- a/testcases/kernel/syscalls/mseal/mseal02.c
++++ b/testcases/kernel/syscalls/mseal/mseal02.c
+@@ -21,6 +21,8 @@
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
+ 
++#define MAX_ERRNOS 5
++
+ static void *start_addr, *unaligned_start_addr, *unallocated_start_addr, *unallocated_end_addr;
+ static size_t page_size, twopages_size, fourpages_size, overflow_size;
+ 
+@@ -28,22 +30,22 @@ static struct tcase {
+ 	void **addr;
+ 	size_t *len;
+ 	unsigned long flags;
+-	int exp_err;
++	int exp_errs[MAX_ERRNOS];
+ } tcases[] = {
+-	{&start_addr, &page_size, ULONG_MAX, EINVAL},
+-	{&unaligned_start_addr, &page_size, 0, EINVAL},
+-	{&start_addr, &overflow_size, 0, EINVAL},
+-	{&unallocated_start_addr, &twopages_size, 0, ENOMEM},
+-	{&unallocated_end_addr, &twopages_size, 0, ENOMEM},
+-	{&start_addr, &fourpages_size, 0, ENOMEM},
++	{&start_addr, &page_size, ULONG_MAX, {EINVAL}},
++	{&unaligned_start_addr, &page_size, 0, {EINVAL}},
++	{&start_addr, &overflow_size, 0, {EINVAL, ENOMEM}},
++	{&unallocated_start_addr, &twopages_size, 0, {ENOMEM}},
++	{&unallocated_end_addr, &twopages_size, 0, {ENOMEM}},
++	{&start_addr, &fourpages_size, 0, {ENOMEM}},
+ };
+ 
+ static void run(unsigned int n)
+ {
+ 	struct tcase *tc = &tcases[n];
+ 
+-	TST_EXP_FAIL(tst_syscall(__NR_mseal, *tc->addr, *tc->len, tc->flags), tc->exp_err,
+-		"mseal(%p, %lu, %lu)", *tc->addr, *tc->len, tc->flags);
++	TST_EXP_FAIL2_ARR(tst_syscall(__NR_mseal, *tc->addr, *tc->len, tc->flags),
++		tc->exp_errs, MAX_ERRNOS, "mseal(%p, %lu, %lu)", *tc->addr, *tc->len, tc->flags);
+ }
+ 
+ static void setup(void)
+-- 
+2.52.0
 
-Only if CONFIG_IMA_ARCH_POLICY IS configured, should check_need_signed_policy be
-set to true and the test skipped.  However, I'm seeing:
-
-tst_kconfig.c:531: TINFO: Constraint 'CONFIG_IMA_ARCH_POLICY' not satisfied!
-tst_kconfig.c:477: TINFO: Variables:
-tst_kconfig.c:495: TINFO:  CONFIG_IMA_ARCH_POLICY=n
-ima_conditionals 1 TCONF: Aborting due to unsuitable kernel config, see above!
-
-Instead it's requiring CONFIG_IMA_ARCH_POLICY to be enabled.
-
-Mimi
-
-> 
-> >  testcases/kernel/security/integrity/ima/tests/ima_setup.sh | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> > diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> > index 1bce78d425..df0b8d1532 100644
-> > --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> > +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> > @@ -466,10 +466,11 @@ require_evmctl()
-> >  }
-> 
-> >  # 56dc986a6b20b ("ima: require signed IMA policy when UEFI secure boot is enabled") # v6.5-rc4
-> > +# d958083a8f640 ("x86/ima: define arch_get_ima_policy() for x86") # v5.0
-> >  check_need_signed_policy()
-> >  {
-> >  	tst_secureboot_enabled && tst_kvcmp -ge '6.5' && tst_require_kconfigs \
-> > -		'CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY'
-> > +		'CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY,CONFIG_IMA_ARCH_POLICY'
-> >  }
-> 
-> >  # loop device is needed to use only for tmpfs
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
