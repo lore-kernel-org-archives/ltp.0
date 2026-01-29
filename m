@@ -4,112 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CFB8D61015
-	for <ltp@archiver.kernel.org>; Thu, 29 Jan 2026 12:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86D44D61013
+	for <ltp@archiver.kernel.org>; Thu, 29 Jan 2026 13:08:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A1ACB3CC121
-	for <ltp@archiver.kernel.org>; Thu, 29 Jan 2026 13:59:04 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id E138F3CC23B
+	for <ltp@archiver.kernel.org>; Thu, 29 Jan 2026 14:08:52 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4721A3CAFF7
- for <ltp@lists.linux.it>; Thu, 29 Jan 2026 13:58:43 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 47DF53CBF09
+ for <ltp@lists.linux.it>; Thu, 29 Jan 2026 14:08:33 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 18CEC1A00A51
- for <ltp@lists.linux.it>; Thu, 29 Jan 2026 13:58:42 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 347181000601
+ for <ltp@lists.linux.it>; Thu, 29 Jan 2026 14:08:32 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B232A340F5;
- Thu, 29 Jan 2026 12:58:41 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C015A340FA;
+ Thu, 29 Jan 2026 13:08:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769691521;
+ t=1769692111;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aLb9WsA7KNPAisYzFQGPufdZ82dAk9D8Sk3XGb0UYls=;
- b=tvE9//XYglJc47tfQEnO0M/AxzWGFMTmyZ0vw2Rmg97SzD2oENYrSrAgginOrZJtKZ9uMH
- Avht8uXuDveEtF+EbjoUCj9Y2ocvfJNd+OAjR8zlF+FL0wdu8eX92ayvMl/yEKHDIoNGcx
- MCA+7m8FFkBHLM42T693T7aoaFnNTLg=
+ bh=Z5C6bVncc4+p29YtT2Nylg+KP5bOtoZF5F421uW+O4w=;
+ b=MKtp8C17ZMI7s7I+0e8jXZPMk4TIrJx3DVKCHkTw/HmLatnhazZYEHgQ/gaXwXhaHid4NE
+ LjXgshW3F81OEybq8q1ienz0otYAP844GaDLHfX3Jgt18Bwb0E7TDjqyybg6weQvY9wxvq
+ p4equpWbgqDQGkS6vroEGt7s1nIUq+Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769691521;
+ s=susede2_ed25519; t=1769692111;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aLb9WsA7KNPAisYzFQGPufdZ82dAk9D8Sk3XGb0UYls=;
- b=K4RF0uH9JHUGE1eaqHjTaTpdW6aQCyBvMLrQu405hHHvjl78YxkBKK2NthD6TJ1ROn//oe
- Hhr2NeKE9Cfyh8BA==
+ bh=Z5C6bVncc4+p29YtT2Nylg+KP5bOtoZF5F421uW+O4w=;
+ b=2PpLdNRvEyfoI7xfraG/gYHzOUC5F3f7w9m3oPVpMALNDhO1Du4Lf41n/bKvMWQkxnZwN3
+ 0MztjcH53ZqIHeBg==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="tvE9//XY";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=K4RF0uH9
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1769691521;
+ t=1769692111;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aLb9WsA7KNPAisYzFQGPufdZ82dAk9D8Sk3XGb0UYls=;
- b=tvE9//XYglJc47tfQEnO0M/AxzWGFMTmyZ0vw2Rmg97SzD2oENYrSrAgginOrZJtKZ9uMH
- Avht8uXuDveEtF+EbjoUCj9Y2ocvfJNd+OAjR8zlF+FL0wdu8eX92ayvMl/yEKHDIoNGcx
- MCA+7m8FFkBHLM42T693T7aoaFnNTLg=
+ bh=Z5C6bVncc4+p29YtT2Nylg+KP5bOtoZF5F421uW+O4w=;
+ b=MKtp8C17ZMI7s7I+0e8jXZPMk4TIrJx3DVKCHkTw/HmLatnhazZYEHgQ/gaXwXhaHid4NE
+ LjXgshW3F81OEybq8q1ienz0otYAP844GaDLHfX3Jgt18Bwb0E7TDjqyybg6weQvY9wxvq
+ p4equpWbgqDQGkS6vroEGt7s1nIUq+Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1769691521;
+ s=susede2_ed25519; t=1769692111;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aLb9WsA7KNPAisYzFQGPufdZ82dAk9D8Sk3XGb0UYls=;
- b=K4RF0uH9JHUGE1eaqHjTaTpdW6aQCyBvMLrQu405hHHvjl78YxkBKK2NthD6TJ1ROn//oe
- Hhr2NeKE9Cfyh8BA==
+ bh=Z5C6bVncc4+p29YtT2Nylg+KP5bOtoZF5F421uW+O4w=;
+ b=2PpLdNRvEyfoI7xfraG/gYHzOUC5F3f7w9m3oPVpMALNDhO1Du4Lf41n/bKvMWQkxnZwN3
+ 0MztjcH53ZqIHeBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 67A023EA61;
- Thu, 29 Jan 2026 12:58:41 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86F173EA61;
+ Thu, 29 Jan 2026 13:08:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 0HhlFoFZe2lQfwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 29 Jan 2026 12:58:41 +0000
-Date: Thu, 29 Jan 2026 13:58:40 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id znrxH89be2lNCwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 29 Jan 2026 13:08:31 +0000
+Date: Thu, 29 Jan 2026 14:08:30 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: "Kubaj, Piotr" <piotr.kubaj@intel.com>
-Message-ID: <20260129125840.GA102011@pevik>
-References: <20260123124952.338065-2-piotr.kubaj@intel.com>
- <20260123202521.GB367190@pevik>
- <c3447fef150c0ad541c4628b50fc84cf19debb23.camel@intel.com>
+To: Piotr Kubaj <piotr.kubaj@intel.com>
+Message-ID: <20260129130830.GA102238@pevik>
+References: <20260129111556.501121-2-piotr.kubaj@intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <c3447fef150c0ad541c4628b50fc84cf19debb23.camel@intel.com>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+In-Reply-To: <20260129111556.501121-2-piotr.kubaj@intel.com>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
  FUZZY_RATELIMITED(0.00)[rspamd.com];
- URIBL_BLOCKED(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- MIME_TRACE(0.00)[0:+]; TO_DN_EQ_ADDR_SOME(0.00)[];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCPT_COUNT_FIVE(0.00)[6]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: B232A340F5
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] thermal: add new test group
+Subject: Re: [LTP] [PATCH v5] thermal: add new test group
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,86 +109,152 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, "Ossowski,
- Tomasz" <tomasz.ossowski@intel.com>, "Dubel,
- Helena Anna" <helena.anna.dubel@intel.com>, "Niestepski,
- Daniel" <daniel.niestepski@intel.com>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
+ helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Piotr,
+Hi Piotr, all,
+
+thanks for your work, v5 looks better. I'd like others have look into the code.
+We have LTP release this week (hopefully, or next week if there is too much
+work), then I ping others to have a look.
+
+> This is a new test for checking thermal interrupt events.
+> All but one points from v4 were addressed. The one that is still
+> not addressed requires changing testing algorithm and is under
+> discussion with our architect.
+
+Thanks!
 
 ...
-> > > +static void run(void)
-> > > +{
-> > > +	bool status = 1;
-> > > +	char line[8192];
-> > > +	uint64_t interrupt_init[nproc], interrupt_later[nproc];
-> > > +
-> > > +	read_interrupts(interrupt_init, nproc);
-> > > +
-> > > +	DIR *dir = SAFE_OPENDIR("/sys/class/thermal/");
-> > > +	struct dirent *entry;
-> > > +	int tz_counter = 0;
-> > > +
-> > > +	while ((entry = SAFE_READDIR(dir))) {
-> > > +		if ((strncmp(entry->d_name, "thermal_zone",
-> > > sizeof("thermal_zone"))) > 0)
-> > > +			tz_counter++;
-> > > +	}
-> > > +	SAFE_CLOSEDIR(dir);
-> > > +	tst_res(TDEBUG, "Found %d thermal zone(s)", tz_counter);
-> > As I noted previously, at least this part will not change if you run
-> > test more
-> > times, does it? Why not to move it to the setup()?
+> diff --git a/testcases/kernel/thermal/thermal_interrupt_events.c b/testcases/kernel/thermal/thermal_interrupt_events.c
+> new file mode 100644
+> index 000000000..b4e457434
+> --- /dev/null
+> +++ b/testcases/kernel/thermal/thermal_interrupt_events.c
+> @@ -0,0 +1,202 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +/*
+> + * Copyright (C) 2025-2026 Intel - http://www.intel.com/
+> + */
+> +
+> +/*\
+> + * Tests the CPU package thermal sensor interface for Intel platforms.
+> +
+> + * Works by checking the initial count of thermal interrupts. Then it
+> + * decreases the threshold for sending a thermal interrupt to just above
+> + * the current temperature and runs a workload on the CPU. Finally, it restores
+> + * the original thermal threshold and checks whether the number of thermal
+> + * interrupts increased.
+> + */
+> +
+> +#include "tst_safe_stdio.h"
+> +#include "tst_test.h"
+> +
+> +#define	RUNTIME		30
+> +#define	SLEEP		10
+> +#define	TEMP_INCREMENT	10
+> +
+> +static bool x86_pkg_temp_tz_found;
+> +static bool *x86_pkg_temp_tz;
+> +static char trip_path[NAME_MAX];
+> +static int nproc, trip, tz_counter;
+> +static uint64_t *interrupt_init, *interrupt_later;
+> +
+> +static void interrupts(uint64_t *interrupt_array, const int nproc)
 
-> > Imagine running test 1000x iterations:
-> > ./thermal_interrupt_events -i 1000
+FYI in previous version I meant to rename uint64_t *interrupt_array => uint64_t
+*interrupts. Function name read_interrupts() was actually more descriptive.
+But that's a minor detail.
 
-> > Why to waste time with reading it again?
 
-> > The only exception might be reading interrupts. I would expect it's
-> > ok to have
-> > only the initial state (read in the setup() as well), but maybe (when
-> > test run
-> > with more iterations via -i x) it needs to have the updated state
-> > (from the
-> > previous iteration).
-> That part is still in consultation with our architect.
+> +static void test_zone(int i)
+> +{
+> +			char path[NAME_MAX], temp_path[NAME_MAX];
+> +			int sleep_time = SLEEP, temp_high, temp;
+> +			double run_time = RUNTIME;
+> +
+> +			snprintf(path, NAME_MAX, "/sys/class/thermal/thermal_zone%d/", i);
+> +			strncpy(temp_path, path, NAME_MAX);
+> +			strncat(temp_path, "temp", 4);
+> +			tst_res(TINFO, "Testing %s", temp_path);
+> +			SAFE_FILE_SCANF(temp_path, "%d", &temp);
+> +			if (temp < 0)
+> +				tst_brk(TINFO, "Unexpected zone temperature value %d", temp);
+I noted that in v4 that this should be tst_brk(TBROK, ...);
+This is really worth to fix.
+But please wait with next version for other reviewers, 
 
-Thank you! Of course, it's ok to keep it if it's needed.
 
-...
-> > > +	for (int i = 0; i < tz_counter; i++) {
-> > > +		if (x86_pkg_temp_tz[i]) {
+> +			tst_res(TDEBUG, "Current temperature for %s: %d", path, temp);
+> +
+> +			temp_high = temp + TEMP_INCREMENT;
+> +
+> +			strncpy(trip_path, path, NAME_MAX);
+> +			strncat(trip_path, "trip_point_1_temp", 17);
+> +
+> +			tst_res(TDEBUG, "Setting new trip_point_1_temp value: %d", temp_high);
+> +			SAFE_FILE_SCANF(trip_path, "%d", &trip);
+> +			SAFE_FILE_PRINTF(trip_path, "%d", temp_high);
+> +
+> +			while (sleep_time > 0) {
+> +				tst_res(TDEBUG, "Running for %f seconds, then sleeping for %d seconds", run_time, sleep_time);
+> +
+> +				for (int j = 0; j < nproc; j++) {
+> +					if (!SAFE_FORK()) {
+> +						cpu_workload(run_time);
+> +						exit(0);
+> +					}
+> +				}
+> +
+> +				tst_reap_children();
+> +
+> +				SAFE_FILE_SCANF(temp_path, "%d", &temp);
+> +				tst_res(TDEBUG, "Temperature for %s after a test: %d", path, temp);
+> +
+> +				if (temp > temp_high)
+> +					break;
+> +				sleep(sleep_time--);
+> +				run_time -= 3;
+> +			}
+> +
+> +			if (temp <= temp_high)
+> +				tst_brk(TCONF, "Zone temperature is not rising as expected");
 
-> > run() is quite long. Maybe move content of of this loop would help.
-> > Something like this (use whatever function name) would help the
-> > readability.
+I hope not raising Zone is not an error. Otherwise there should be
+tst_brk(TBROK), or tst_res(TFAIL) if it makes sense to verify the rest of the
+zones.
 
-> > 	for (int i = 0; i < tz_counter; i++) {
-> > 		if (x86_pkg_temp_tz[i])
-> > 			test_zone(x86_pkg_temp_tz[i]);
-> > 	}
-> > Maybe even split the while part into it's own function.
-> Changed. I wanted to avoid creating functions that were only used once.
-
-Understand, but there is also code readability which matters.
-
-...
-> > > +
-> > > +			while (sleep_time > 0) {
-> > > +				tst_res(TDEBUG, "Running for %f
-> > > seconds, then sleeping for %d seconds", run_time, sleep_time);
-> > nit: %f should be %d, right?
-> run_time is double, because difftime returns double. Switching to %d
-> causes a warning. If you prefer, I might add casting to int and then
-> %d.
-
-The output looks better but it's very minor.
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	SAFE_FILE_PRINTF(trip_path, "%d", trip);
+> +	free(interrupt_init);
+> +	free(interrupt_later);
+> +}
+> +
+> +static void run(void)
+> +{
+> +	for (int i = 0; i < tz_counter; i++) {
+> +		if (x86_pkg_temp_tz[i])
+> +			test_zone(i);
+> +	}
+> +	interrupts(interrupt_later, nproc);
+> +
+> +	for (int i = 0; i < nproc; i++) {
+> +		if (interrupt_later[i] < interrupt_init[i])
+> +			tst_res(TFAIL, "CPU %d interrupt counter: %ld (previous: %ld)",
+> +				i, interrupt_later[i], interrupt_init[i]);
+You need some bool flag to remember the failure. Otherwise even if this fails...
+> +	}
+> +
+> +	tst_res(TPASS, "x86 package thermal interrupt triggered");
+... you still print TPASS (a bit confusing).
 
 Kind regards,
 Petr
