@@ -4,89 +4,171 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06C88E8307C
-	for <ltp@archiver.kernel.org>; Wed,  4 Feb 2026 13:45:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1770212729; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=V734Av+AdrNZxbnpm1zQq3h0ylKBt02M+KUk4TOK8K4=;
- b=hpVYYsV8Py5Yd4rujfE6PCRGrjIt84p0jezZ4MrqIVDg3G2ines2xWGhIwp2JVBaqrDpC
- kBprdYOhHzZn9DNXM0I6S62Sp+g5GIv7Ju027kbBfv3pjawWxiJIBu1X3CiTg2568WeOMjR
- jOCNuUQk1ugnz1WzkRRXoPQPtinzUGs=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAC88E9D3E0
+	for <ltp@archiver.kernel.org>; Wed,  4 Feb 2026 14:10:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6454B3CCAC3
-	for <ltp@archiver.kernel.org>; Wed,  4 Feb 2026 14:45:29 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 403843CE1B7
+	for <ltp@archiver.kernel.org>; Wed,  4 Feb 2026 15:10:48 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C43E23CCAC3
- for <ltp@lists.linux.it>; Wed,  4 Feb 2026 14:45:05 +0100 (CET)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
- [IPv6:2a00:1450:4864:20::636])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id BBB843CE0A3
+ for <ltp@lists.linux.it>; Wed,  4 Feb 2026 15:10:29 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 118A01A008B7
- for <ltp@lists.linux.it>; Wed,  4 Feb 2026 14:45:05 +0100 (CET)
-Received: by mail-ej1-x636.google.com with SMTP id
- a640c23a62f3a-b8850aa5b56so1101083766b.2
- for <ltp@lists.linux.it>; Wed, 04 Feb 2026 05:45:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1770212704; x=1770817504; darn=lists.linux.it;
- h=in-reply-to:references:to:from:subject:cc:message-id:date
- :content-transfer-encoding:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=1lQDj6kREhcVJur0+Ct8uoMW7aeV+SxuHk95d51M1u4=;
- b=AyY8pOp/vqNORm2LKjNRv7t7kXptO/Fe1WoBY5LiXhZklZVZ/iH0PpIxEwBlA+DDmr
- u33fG8k4kJCQ0T37NHcECCYxe3MnJGC294NWCuueiQzbEUyJghh6fbgt0mD0ZIvUlEz7
- RK6bJX+YBXZY5SFksL+fvUYnR7QLWrrc5fqDWmP35+NcMqpQzB9bnsd9vKQUH1paAPNu
- XVhvBQ8mdcMNtwUBxOxlTVt7LEt4kpp80gDLpPTM8iOSJVDFc4+Wn6UfIWrwvRNyZ+Oy
- UqVGCNsC38KMSf5xBPSwnKHUagHl5fo9J7pMuzMXDofTqAn6YpPSLOz+fPzbHLqlEsda
- S1EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1770212704; x=1770817504;
- h=in-reply-to:references:to:from:subject:cc:message-id:date
- :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=1lQDj6kREhcVJur0+Ct8uoMW7aeV+SxuHk95d51M1u4=;
- b=Od7ENHZ5WSKQIlZUob/vLCw0cC92B7q/FyiWYFS+fiwSXQLbHvV8GZJV+BbODtDmj+
- aG3EA/5XBiy/M0Y5GUmuFisTn++02/ZXHLMGTdrv8wAOnv0Hs/UzSPFkEk1xpE4ERfF3
- PoqOe9Hn5IT5ovKr9im7DIosKDVgZpxXqqI8Z/RrnxVU/umDPfWN7csJR0tBa2VbYCax
- 2PmdOyYjaLk3rDqWJf3XaO+wV7LCsQVD970bvCiInUOHaxxbXB7z12bR6OaxYDH77bla
- /smmzTDh2G0r146ZAzxb4FNMkWZPL0V/0PChOfm8rawIZLIFbB/McE33pXTMQjuE0AvQ
- aCoQ==
-X-Gm-Message-State: AOJu0YzDT750z9VyYmZgsaV9LjzL7GwVLDYcgqWUVTsBldEIjkDN3ixC
- YH/HDwzkaf3BTb5fAugKXqK302r61OorfHZtv235mIBXVRe5BsAszUThiVeMqhAfC6U=
-X-Gm-Gg: AZuq6aIaALvNzWnoDaAYRIEpaRKEUXxOlbLKYwtuXrT0kgw8LBsd54d7+HC2dxJzoeq
- 7sH4gq3BqFzM9fByQFmVJcwHZQNEmSWI2R0mM/EvaVPD7GN9Gzp8QyQ9b6jhjo5tYw7179Rd36/
- GqfZZxpq3LLgvc0AI63d8REyObKMicdIiiH185rGVPnl+WMyZYHt1Dcr6KBX11gmRCedRWGjhN6
- epnNizshr1XSH11Ol7xKvsgWy0dnVOyQzdR1PZeUFF7iaZBvrHysW7o8mLdI+wWwylb610EhpNw
- gEi6+1Y/ItBifbWsiKi5aVJ/1f21564uRqZvB5bf1uwgZE5pYn4llp8CX00BKwAos88pvQ4V5eo
- rRBjcQG2J7KlmoMyOF0KHFs88x6AjvtF6vlbTMyO/ejoUIOBIC3e1zHOz6xsb2hjkaDli+FK/h6
- ZNA7fHxdohF54=
-X-Received: by 2002:a17:906:6a16:b0:b88:775c:bd6b with SMTP id
- a640c23a62f3a-b8e9f3f6a39mr207551966b.46.1770212704379; 
- Wed, 04 Feb 2026 05:45:04 -0800 (PST)
-Received: from localhost ([88.128.90.5]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-b8e9fcd8be3sm125348066b.10.2026.02.04.05.45.02
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 04 Feb 2026 05:45:04 -0800 (PST)
-Mime-Version: 1.0
-Date: Wed, 04 Feb 2026 14:45:02 +0100
-Message-Id: <DG6814Q4J502.2XCN7VBF3513Q@suse.com>
-To: "Petr Vorel" <pvorel@suse.cz>
-X-Mailer: aerc 0.18.2
-References: <20260204115339.224261-1-pvorel@suse.cz>
- <20260204115339.224261-5-pvorel@suse.cz>
- <DG664MTNCKXU.10ZGQ5CGF7DC9@suse.com> <20260204124640.GA244528@pevik>
-In-Reply-To: <20260204124640.GA244528@pevik>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B6F331400066
+ for <ltp@lists.linux.it>; Wed,  4 Feb 2026 15:10:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1770214228; x=1801750228;
+ h=date:from:to:cc:subject:message-id:mime-version;
+ bh=nVIA2IBH7YfcBLTuwPP/D2oUv1CTk8xN5V6ZgjeR7YY=;
+ b=JnCxDITdCauVl6yYLoPO70+B33bWDsKrgHwVYCirVsZIpy38Z6UpPFFy
+ Zox2FoocWWPs84uKu4iUg4eO3+GSvKWiMnADI6deMb9qN7ZCEx2MD+7qT
+ Yc02r0wvI0swfLJZ1MqQVR+YExyJOyhxBZRnelb0EltuV6fHh7eChbK9z
+ 1iM+YqLWlbW9BpU1amw+NGQ2JE5zWhGKlGPjm6loCFsqibNxqw0CzCCAI
+ MzVS4GLXq7t5GW1CuwJN8joK7gglHhY9zt2GT3DyQkctRlNZTiCSdBfU0
+ J1zHY81x4TFiXXd7vfe6QPAqx++bo6vvOX8oMql/KFOA7ksmvhwcKNUHI Q==;
+X-CSE-ConnectionGUID: 8UiTuU7tSLK6d+35zAEwzA==
+X-CSE-MsgGUID: HqBactgMQZqlX5EUJEu4mg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11691"; a="96853162"
+X-IronPort-AV: E=Sophos;i="6.21,272,1763452800"; d="scan'208";a="96853162"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+ by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Feb 2026 06:10:23 -0800
+X-CSE-ConnectionGUID: LxJwioCPTqWZe/UVg0qndA==
+X-CSE-MsgGUID: cU9daeeNRVaw58YrFBWALA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,272,1763452800"; d="scan'208";a="210218208"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+ by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Feb 2026 06:10:24 -0800
+Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35; Wed, 4 Feb 2026 06:10:23 -0800
+Received: from ORSEDG901.ED.cps.intel.com (10.7.248.11) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35 via Frontend Transport; Wed, 4 Feb 2026 06:10:23 -0800
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (52.101.43.58) by
+ edgegateway.intel.com (134.134.137.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35; Wed, 4 Feb 2026 06:10:22 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=H5iX3PXqECibaHnqBHr0hwvhb/GCeOsrFbCHcpOGYhsKgF20+5L/WqGcXi8VRKzNZn6YYbGyli4WUvD1HAEQdsb3mef65J8I7vYm8HBP76qhauvYNy78hKEBNE9gcee/tgCl8JgYqV9G+9NyQ9r2SCTJzEjoaWvKhpjLd6Pr9L7D1JspIGW+d+3NGHkUXsQXVdUk2VGWB+1coPYyqoB4j1EFhOdMTDvRommRrwYypm+UizKejrAbRe3fsM5KClqA8qrmunvnmTGrpFPZgBeNLJlnD3q9dFYbHopKNMbbx/tTzZLCm0eWUFHMM4J3+YWNeGusheKaaq6KaLdfuVyNRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=q2rd87UVJtewQ1S9wQmp7aIP1lK1ok209fS0L0FT5zY=;
+ b=L9SY66brBElwVwaP1/h3qX+W3jS65+Cc99bbzP/XyaSJOZFkkXVqQOLvSu6CPlStc9MoY2RapIzit6zjioJVl05EuZzdy5aZEUo70XZzim4uwDcph1a2iNu+ZtcVNp+bTGozq/h2fr8VzaY2aZ3HiWOONHw0+MXKIUHi4JaTEdl+lKntM7FLaMap204T5/nGlhIlQ2AGIBt2AbMKh3Mb6zY9LI5f/41JTeA17HNe6pjJIftwavexV54weboF6hvUzPY9ZasloQSX6POm4du8Li+3FUHblgVkQuPP1rqgJa7xnEeoXdYlqdfTanmHjuSrLo7DBEGQRHWWSdMJTkElxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by DM4PR11MB7254.namprd11.prod.outlook.com (2603:10b6:8:10e::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9587.13; Wed, 4 Feb
+ 2026 14:10:20 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::e4de:b1d:5557:7257]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::e4de:b1d:5557:7257%5]) with mapi id 15.20.9564.016; Wed, 4 Feb 2026
+ 14:10:19 +0000
+Date: Wed, 4 Feb 2026 22:10:10 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Message-ID: <202602042124.87bd00e3-lkp@intel.com>
+Content-Disposition: inline
+User-Agent: s-nail v14.9.25
+X-ClientProxiedBy: SGAP274CA0014.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::26)
+ To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|DM4PR11MB7254:EE_
+X-MS-Office365-Filtering-Correlation-Id: 729f3a4c-8f16-444a-8ae9-08de63f720b4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Re+Y9oF+t/6P6Zjh4pOEDe2sKBNBMGtZNOVXJ/ZKf6JIvvGFercrVvoLj7kt?=
+ =?us-ascii?Q?wAikOjcVrjPG9+cMAdmmpZrn155wbzujmFzQrBv+8i+S8n66hVwNbv2ddYT2?=
+ =?us-ascii?Q?G8ty95VHz3/REoMGZGUJyflm3mUl5E3bYQkxi8k6yvn+3MRd1avRGkTHU5be?=
+ =?us-ascii?Q?lVN1o7OdB0r6B9NEM591cKiH2sp3MqUk54ZEK/DZqb4YVM+4T3BlDzB0M+8X?=
+ =?us-ascii?Q?OVq4tcawfawGbuv91szTlJ0kSE949e4cU4livvQMA/3GdnxFXu37D/FwwO/9?=
+ =?us-ascii?Q?7DLxyWjko9rKCVf3vXHMT947Y9Z1pm0XgteYcbHWQkodNsa2j6MnS5A8ji2l?=
+ =?us-ascii?Q?gn3XQl6Ttd3To+wJGsGlWtjTYw8QkgC4vxKC1A3pZbvbHTrXrEcZBFC+VUpm?=
+ =?us-ascii?Q?YJMNlmTlZ+iAO3JYeKX3BmdO3WG3RT+GMwQ+9snCfz+0frzE4F0wrQKuH9PE?=
+ =?us-ascii?Q?yybJ83QDLOa+au4V6WeD/Dac4QLeaJiLqPI2+pPm+HDAR780vWfMH7xyH6bS?=
+ =?us-ascii?Q?qaK1fbZeqieX7SGKFC1vhypkV2n0rdsrX/RMFNDO2AzKuTxbc1qq7ecRg6J0?=
+ =?us-ascii?Q?U5TZwVas87MJUZ3LNrOZA+ylU28dRsx4gPXPrY9ZdsfoE0wZil2DGz3Vn3tP?=
+ =?us-ascii?Q?SP9DcF6Qqx3AanbbRpP29VLEC1dPimspcugC3368LF+tTZv56wI7CF1kr3Wc?=
+ =?us-ascii?Q?Pwbw453h7748TC2OUeZINs4EXV6HRWo7KsI0vMp7RAbKh9YOpXq8Dr8LNWpc?=
+ =?us-ascii?Q?Ud2fGkiECY65JWVsFn0VJ9yzYo62wGvrkP3Voc2j0AAm0QM+5VHNDTq+fjD2?=
+ =?us-ascii?Q?oZGMFgvMVXGS/5xEnTp8yp6HDUkoF3ZHrgoWfIuEyhqv7w9Vu6EIP336/lnp?=
+ =?us-ascii?Q?vhQoLjZxRhcWYCg527G4cpa2jj46uR3imSDLr7jQcDAoT6ascE5dYky9UAAD?=
+ =?us-ascii?Q?QzkovoxTHp1icxT4Xd+ynfnh/y1CS7/i+AfvYAz+wPl7rqkRSpNwFOp1yFMV?=
+ =?us-ascii?Q?P8/z/LEBlI6Phz9UFPR9VBH8zpEjWqkuGdbd0/kx7M7XJH3jKvjxPxj0c5oA?=
+ =?us-ascii?Q?CmB25DCHkYx1M+5h19OBlRo6DK6Eb3a81yN9SSKvNgD52Zq+Sr7AlXOB4wpP?=
+ =?us-ascii?Q?8rVVgEfqLYMSOeAdbeGWUtlbSPcfi1dkn8qemSaMgzwB0AXhGtQsJkoiQo1/?=
+ =?us-ascii?Q?95XjReadeuaJGWaJhJJC+Bels6Ns5UtMGDdbN/DyCZz2dFUgod16xMVg5KNP?=
+ =?us-ascii?Q?+b0cY8tSQkvZpGG5K1ZsWUO2f8H3bACWn96jXe/gSBU+W67sL/fAPrVbMOo8?=
+ =?us-ascii?Q?HRT4wfHXpfgR0zGzmaYQVocmOJBNtmBD/JRdSEnm4PT/UBgdb2c2VgX2xVPG?=
+ =?us-ascii?Q?mlQpF6CyUXXXNdCmjEQpVts9YxvDdUC8xsg+bPomRPfiOAvVlNKYfnSAFkvs?=
+ =?us-ascii?Q?DizwkYZ8He70hoyvwVjkH45RU94DVDaBLYV5aw21K1d2ytMUUSLMVurhBaTX?=
+ =?us-ascii?Q?ZLIA+7NplutwPgzzsDQQ2U2dSqEXmBNaGvsQZMYP0zQx+ZjggpTXwZdXPguo?=
+ =?us-ascii?Q?+Gfc6OleojyZXyGtdazoJgPZ3W/hHGuDJxoUS49o?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:LV3PR11MB8603.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(366016)(376014)(1800799024); DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QFioKacidsBPqxjwY+Lb6eK7QwXzir3TsHt1oJRLinA4O0HxyJUBX/KZbeMq?=
+ =?us-ascii?Q?3wJDnWjFVzmiewGZkNTZcWyYA1dfxbsZSWn+Kk8CbGQq4z3kW+lhPhV1pCb2?=
+ =?us-ascii?Q?ekHxWjLm1LUH1j3HxD809Nm0bb5Q8/k5DBSFRkK8dgYMivEToge1Wed6sxiM?=
+ =?us-ascii?Q?6dG8p4Xh/YHTrkUvPal8gXbQHv9x3z0yJG61g4f1fqLeRE1DjANzINoolJlR?=
+ =?us-ascii?Q?pcWeQaI5hJb+ShhS8CCYP/XZ5E+iRKZQ9ELUwWGPbFsn7EZDYO95AEy8CDxY?=
+ =?us-ascii?Q?05E1TgaxP14zH8iRbrdUx7VdN30voMYlsNLaWUD+QSw7u1SQjpFDtiE8ebzN?=
+ =?us-ascii?Q?z1o6rSCa5lj9X1WYmjfUOkNb8BR7lmhPNkjnh9K3jeSv6Efjr/wcd01hrLZF?=
+ =?us-ascii?Q?5MvkV6ngTW4NjXcIPBHPZCq32ZfG+4GskA6qhruPbboF0W6BDrhTFqlhl22r?=
+ =?us-ascii?Q?zqfBedhIgmpvy9U7dv6nyrzIEij/Jh3R0qm37h9/RpHtghGV4LgCpKgFs0Px?=
+ =?us-ascii?Q?Za2ijewGKQVZhzrY66aZCJzx7TBH87CV1scpqHONWQoPpbHjyIiVyZgKpIGs?=
+ =?us-ascii?Q?zOcqsmMJTrkDS9uP3LY5ezFaPRg6qjsYaML27EAzjOT+ZX7DrbSVlrHPlLrv?=
+ =?us-ascii?Q?Vrt2UVO7/84bhaSTdxsCHrW3+c/MiYRZRvv48hTRXKO7Y9+V8xoD3bA5cvyN?=
+ =?us-ascii?Q?wUphWn7NpNZ9y92f7+C3wVRVcW67JNC7JQWMj/s0DFGm5obT/EmHxQ/gFQs7?=
+ =?us-ascii?Q?Od8GNKYv+t3Rn/KwR1kjtZtI5lAMASxO58GaUgPhw/NEgfBNAubaWc193HOM?=
+ =?us-ascii?Q?QX3aNtISjivPRe1+JGtTVPXgf/3Ue7L7eRgjzzqRHrwfN3WXUhgqIJH2tcUi?=
+ =?us-ascii?Q?FYGSPFtFeK705dcn1UCrBr1/EExn/1Q9OCqnF0bLmTK45yZDB+6ryAi1scIz?=
+ =?us-ascii?Q?LKIFjxZpUxaynYZB/IpLIU2LbrYR6l3rLNgdtDIjhVMS+OEu/ulSfCndyTYP?=
+ =?us-ascii?Q?ISlk3fFIcLyvBFY3fxu7+ewTYpNjzxA1ahLsBAVUkVcpqa3zvDyk4s7xENPy?=
+ =?us-ascii?Q?4O7HoSQRg2G8iSaCzfN5vokn2S1lfGwzgbdm2tAh0NWlLPZkmkfmyaTgSW6B?=
+ =?us-ascii?Q?VO13z+HhqvS7Arn3204b94FaoyK4eAv2EAOjv7F5PNT4iyTAmBt8R3GBTqR0?=
+ =?us-ascii?Q?+z4eMOurkYeOhnbl69xfmiH3451ygkezSqZ1im02DafQ3BH8cLJE2HXvqapp?=
+ =?us-ascii?Q?j9u0qvyvodj5PDa6qUCXTR2XUgYYQF1bgg+C+bVTCKQRhrL8bZopOQygxwsW?=
+ =?us-ascii?Q?at8yM/FysJI12frb7+06Z8e4MeYc/33RlxTTv5G6gfnNZN79l8o7ByA9CIJy?=
+ =?us-ascii?Q?j0AlcBCvsidIQ5azLo8MboerwAnryMBGUzz7SV0sWyasIusGpOAz93P8S1rG?=
+ =?us-ascii?Q?ROLD0YFQXRkHVqdlb+WnDGM0SKnDbpJak1/6YgnMfNnXR/97UqHMGZBPf1G/?=
+ =?us-ascii?Q?sPrSCoOzUp9cDgetMIcnzVCFPGOhKdaep8vW+E1a1jcy3UUmkAT9U/mwF8n8?=
+ =?us-ascii?Q?bp3AU2yGybgU5yF/81WCjAv3kFiWeLyFFYe8jxSaVnrmlmFLoeyNu0zh6PI3?=
+ =?us-ascii?Q?214+JoIUYxsofoA9+rmpE5N2JwM9GWeUCSoWHdCqlBiUiKx9gRMAaycDZKSr?=
+ =?us-ascii?Q?1XAN1gbJ2ifJDQK61jWxd0ZrQzBpQdzbfXE8J7yThABUAw2Ug2SJt+CJX2uR?=
+ =?us-ascii?Q?jUpa2C7PfA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 729f3a4c-8f16-444a-8ae9-08de63f720b4
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2026 14:10:19.1541 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H0q/hDGnhjyyqz9jhOP/xQLP2gKO3yYYs5zKuqdasmRnveAqKo/cvdLI0dZ73QiGaO2MmJbfSr9b6kYD2CdNUw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7254
+X-OriginatorOrg: intel.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 4/4] kirk: Remove runltp-ng symlink
+Subject: [LTP] [linux-next:master] [ext4]  81d2e13a57: ltp.fanotify22.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,35 +180,147 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Vasileios Almpanis <vasileios.almpanis@virtuozzo.com>,
- Tim Bird <Tim.Bird@sony.com>, Julien Olivain <ju.o@free.fr>,
- ltp@lists.linux.it, automated-testing@lists.yoctoproject.org
+Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ lkp@intel.com, oliver.sang@intel.com, oe-lkp@lists.linux.dev,
+ linux-ext4@vger.kernel.org, Christoph Hellwig <hch@lst.de>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
->
-> Do you agree with removing 'runltp-ng' symlink?
->
 
-In general I would say yes. If we want to keep the `runtltp` script
-name, tho, we can do something like:
 
-	install -m 00775 $(abs_srcdir)/kirk-src/kirk $(BASE_DIR)/runltp
+Hello,
 
-inside the `tools/kirk/Makefile`. In this way we keep the same structure
-of the previous LTP installation, having a script name that is also more
-clear for the regular user. I'm pretty sure a lot of people won't
-understand what `kirk` is, inside the main installation folder.
+kernel test robot noticed "ltp.fanotify22.fail" on:
+
+commit: 81d2e13a57c9d73582527966fae24d4fd73826ca ("ext4: convert to new fserror helpers")
+https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+
+[test failed on linux-next/master 33a647c659ffa5bdb94abc345c8c86768ff96215]
+
+in testcase: ltp
+version: 
+with following parameters:
+
+	disk: 1HDD
+	fs: btrfs
+	test: syscalls-02/fanotify22
+
+
+config: x86_64-rhel-9.4-ltp
+compiler: gcc-14
+test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202602042124.87bd00e3-lkp@intel.com
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20260204/202602042124.87bd00e3-lkp@intel.com
+
+
+user  :notice: [  423.546026] [    T265] 	Hostname:   lkp-ivb-d04
+
+user  :notice: [  423.554417] [    T265] 	Python:     3.13.5 (main, Jun 25 2025, 18:55:22) [GCC 14.2.0]
+
+user  :notice: [  423.570800] [    T265] 	Directory:  /tmp/kirk.root/tmpefuyb6o0
+
+
+
+user  :notice: [  423.584852] [    T265] Connecting to SUT: default
+
+user  :warn  : [  423.586640] [   T5587] /lkp/benchmarks/ltp/kirk[5563]: fanotify22: start (command: fanotify22)
+
+
+user  :notice: [  423.605665] [    T265] Starting suite: temp_single_test
+
+user  :notice: [  423.613894] [    T265] ---------------------------------
+
+kern  :info  : [  423.633832] [   T5592] loop: module loaded
+kern  :info  : [  423.657047] [   T5591] loop0: detected capacity change from 0 to 614400
+kern  :err   : [  423.821741] [   T5591] /dev/zero: Can't lookup blockdev
+kern  :info  : [  424.033575] [   T5591] EXT4-fs (loop0): mounted filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9 r/w with ordered data mode. Quota mode: none.
+kern  :info  : [  424.098309] [   T5607] EXT4-fs (loop0): unmounting filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9.
+kern  :info  : [  424.345598] [   T5607] EXT4-fs (loop0): mounted filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9 r/w with ordered data mode. Quota mode: none.
+kern  :crit  : [  424.414068] [   T5607] EXT4-fs error (device loop0): __ext4_remount:6794: comm fanotify22: Abort forced by user
+kern  :err   : [  424.423984] [   T5607] Aborting journal on device loop0-8.
+kern  :crit  : [  424.463989] [   T5607] EXT4-fs (loop0): Remounting filesystem read-only
+kern  :info  : [  424.470416] [   T5607] EXT4-fs (loop0): re-mounted 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9 ro.
+kern  :info  : [  424.479591] [   T5607] EXT4-fs (loop0): unmounting filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9.
+kern  :warn  : [  424.490528] [   T5607] EXT4-fs (loop0): warning: mounting fs with errors, running e2fsck is recommended
+kern  :info  : [  424.539426] [   T5607] EXT4-fs (loop0): mounted filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9 r/w with ordered data mode. Quota mode: none.
+kern  :crit  : [  424.552662] [   T5607] EXT4-fs error (device loop0): ext4_lookup:1785: inode #32386: comm fanotify22: iget: bogus i_mode (377)
+kern  :info  : [  424.617262] [   T5607] EXT4-fs (loop0): unmounting filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9.
+kern  :warn  : [  424.703481] [   T5607] EXT4-fs (loop0): warning: mounting fs with errors, running e2fsck is recommended
+kern  :info  : [  424.752431] [   T5607] EXT4-fs (loop0): mounted filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9 r/w with ordered data mode. Quota mode: none.
+kern  :crit  : [  424.765440] [   T5607] EXT4-fs error (device loop0): ext4_lookup:1777: inode #32385: comm fanotify22: bad inode number: 1
+kern  :crit  : [  424.776331] [   T5607] EXT4-fs error (device loop0): ext4_lookup:1785: inode #32386: comm fanotify22: iget: bogus i_mode (377)
+kern  :info  : [  424.845037] [   T5607] EXT4-fs (loop0): unmounting filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9.
+kern  :warn  : [  424.928434] [   T5607] EXT4-fs (loop0): warning: mounting fs with errors, running e2fsck is recommended
+kern  :info  : [  424.985535] [   T5607] EXT4-fs (loop0): mounted filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9 r/w with ordered data mode. Quota mode: none.
+kern  :crit  : [  424.998543] [   T5607] EXT4-fs error (device loop0): ext4_lookup:1785: inode #32386: comm fanotify22: iget: bogus i_mode (377)
+kern  :crit  : [  425.115411] [   T5607] EXT4-fs error (device loop0): __ext4_remount:6794: comm fanotify22: Abort forced by user
+kern  :err   : [  425.125337] [   T5607] Aborting journal on device loop0-8.
+kern  :crit  : [  425.191808] [   T5607] EXT4-fs (loop0): Remounting filesystem read-only
+kern  :info  : [  425.198225] [   T5607] EXT4-fs (loop0): re-mounted 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9 ro.
+kern  :info  : [  425.207311] [   T5607] EXT4-fs (loop0): unmounting filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9.
+kern  :warn  : [  425.218247] [   T5607] EXT4-fs (loop0): warning: mounting fs with errors, running e2fsck is recommended
+kern  :info  : [  425.255422] [   T5607] EXT4-fs (loop0): mounted filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9 r/w with ordered data mode. Quota mode: none.
+kern  :info  : [  425.300422] [   T5591] EXT4-fs (loop0): unmounting filesystem 6b5acef8-3cdb-48f2-8af0-b27b5ee321e9.
+user  :notice: [  425.421952] [    T265] \x1b[1;37mfanotify22: \x1b[0m\x1b[1;31mfail\x1b[0m | \x1b[1;33mtainted\x1b[0m  (1.808s)
+
+user  :warn  : [  425.427743] [   T5635] /lkp/benchmarks/ltp/kirk[5563]: fanotify22: end (returncode: 1)
+user  :notice: [  425.447575] [    T265]                                                                                                                                 
+
+user  :notice: [  425.463971] [    T265] Execution time: 1.866s
+
+
+
+user  :notice: [  425.476018] [    T265] 	Suite:       temp_single_test
+
+user  :notice: [  425.483786] [    T265] 	Total runs:  1
+
+user  :notice: [  425.490690] [    T265] 	Runtime:     1.808s
+
+user  :notice: [  425.497330] [    T265] 	Passed:      3
+
+user  :notice: [  425.503518] [    T265] 	Failed:      1
+
+user  :notice: [  425.509637] [    T265] 	Skipped:     0
+
+user  :notice: [  425.515735] [    T265] 	Broken:      0
+
+user  :notice: [  425.521820] [    T265] 	Warnings:    0
+
+user  :notice: [  425.529960] [    T265] 	Kernel:      Linux 6.19.0-rc1-00006-g81d2e13a57c9 #1 SMP PREEMPT_DYNAMIC Sat Jan 31 20:49:54 CST 2026
+
+user  :notice: [  425.543805] [    T265] 	Machine:     unknown
+
+user  :notice: [  425.550576] [    T265] 	Arch:        x86_64
+
+user  :notice: [  425.557336] [    T265] 	RAM:         6899604 kB
+
+user  :notice: [  425.564451] [    T265] 	Swap:        0 kB
+
+user  :notice: [  425.571112] [    T265] 	Distro:      debian 13
+
+
+
+user  :notice: [  425.582858] [    T265] Disconnecting from SUT: default
+
+user  :notice: [  425.590377] [    T265] Session stopped
+
+
 
 -- 
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
 -- 
