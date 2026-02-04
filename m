@@ -4,66 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFB13EA7949
-	for <ltp@archiver.kernel.org>; Wed,  4 Feb 2026 22:36:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5281AEA7949
+	for <ltp@archiver.kernel.org>; Wed,  4 Feb 2026 22:38:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 243283CE20E
-	for <ltp@archiver.kernel.org>; Wed,  4 Feb 2026 23:36:32 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id C301E3CE205
+	for <ltp@archiver.kernel.org>; Wed,  4 Feb 2026 23:38:47 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B060A3CD3CA
- for <ltp@lists.linux.it>; Wed,  4 Feb 2026 23:36:15 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id C393B3CD3CA
+ for <ltp@lists.linux.it>; Wed,  4 Feb 2026 23:38:29 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3F8A1100043A
- for <ltp@lists.linux.it>; Wed,  4 Feb 2026 23:36:15 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2B4941A003EE
+ for <ltp@lists.linux.it>; Wed,  4 Feb 2026 23:38:28 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2C7835BD6B;
- Wed,  4 Feb 2026 22:36:14 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7AC413E762;
+ Wed,  4 Feb 2026 22:38:26 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 29F333EA63;
- Wed,  4 Feb 2026 22:36:12 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E380F3EA63;
+ Wed,  4 Feb 2026 22:38:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id MlVpOdzJg2mfSgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 04 Feb 2026 22:36:12 +0000
-Date: Wed, 4 Feb 2026 23:36:11 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id scAjMWDKg2mQbQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 04 Feb 2026 22:38:24 +0000
+Date: Wed, 4 Feb 2026 23:38:22 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260204223611.GA281606@pevik>
+Message-ID: <20260204223822.GB281606@pevik>
 References: <20260204115339.224261-1-pvorel@suse.cz>
- <20260204115339.224261-4-pvorel@suse.cz>
- <aYNGgCJmEhv5nXYL@redhat.com> <20260204132143.GA209672@pevik>
- <aYNJTSjudAiyk459@yuki.lan>
+ <aYNCmJTgdCn_pmf4@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <aYNJTSjudAiyk459@yuki.lan>
+In-Reply-To: <aYNCmJTgdCn_pmf4@yuki.lan>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 2C7835BD6B
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Rspamd-Queue-Id: 7AC413E762
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/4] runltp: Remove
+Subject: Re: [LTP] [PATCH 0/4] Remove runltp
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,18 +84,32 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 > Hi!
-> > We have /opt/ltp/kirk. Andrea suggested under 4th patch to symlink it to runltp, 
-> > but it'd be good to modify it to print warning it's not runltp, but kirk. See:
+> >  INSTALL                                       |   4 +-
+> >  Makefile                                      |   2 +-
+> >  doc/developers/test_case_tutorial.rst         |   6 +-
+> >  doc/developers/todo.rst                       |  10 -
+> >  metadata/README.md                            |   2 +-
+> >  runltp                                        | 959 ------------------
+> >  .../kernel/fs/fs_readonly/test_robind.sh      |   2 +-
+> >  .../kernel/io/direct_io/dma_thread_diotest.c  |   3 +-
+> >  testcases/kernel/security/smack/README        |   2 +-
+> >  testcases/network/can/filter-tests/INSTALL    |   2 +-
+> >  testcases/network/rpc/rpc-tirpc/README        |   2 +-
+> >  testscripts/Readme_ROBind                     |   4 +-
+> >  testscripts/lvmtest.sh                        |   2 +-
+> >  tools/kirk/Makefile                           |   2 -
+> >  14 files changed, 16 insertions(+), 986 deletions(-)
+> >  delete mode 100755 runltp
 
-> I would put a simple runltp script in there that would just say to
-> switch to kirk:
+> This is missing the pan/ directory and old scripts that use ltp-pan.
+> Just do git grep ltp-pan to see what should be removed as well.
 
-> $ cat runtlp
-> #/bin/sh
++1 (I was thinking about it, but in the end forgot).
 
-> echo "runltp was removed from LTP use kirk instead"
+> And also the scripts that format the output from runltp into html that's
+> toos/genhtml.pl and html_report_header.txt.
 
-+1, followed by exit 1 :).
++1.
 
 Kind regards,
 Petr
