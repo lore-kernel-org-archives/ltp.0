@@ -4,100 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AEB4EC1E98
-	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 10:34:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1770287642; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=EZPs4ir8qazm3IfDnQwlION1huexh+LUY6VkH0y89v0=;
- b=CHt+5AVhcT+X0AIlBa2kpolLQHw+0/SEzxDLDrFkzS+9kxhMMaHBLty4cucYwt0PKalL4
- LYKTk+69jZVD3Y9dcBzODwPKbTV4HdE9vIgBvCxhywY1GIjIaUE3S4qcuQPtSdlww8y9pXr
- DMCsUpr3pxfy41hT+8oN5IBMJlRGlmk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCD05EC1EA7
+	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 12:16:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E6CCF3CE37C
-	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 11:34:02 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id DF7C33CE24F
+	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 13:16:10 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AE5A13C259D
- for <ltp@lists.linux.it>; Thu,  5 Feb 2026 11:33:39 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 2E64F3CC3DF
+ for <ltp@lists.linux.it>; Thu,  5 Feb 2026 13:15:52 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A8DFD1400C43
- for <ltp@lists.linux.it>; Thu,  5 Feb 2026 11:33:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1770287616;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 39EC020024F
+ for <ltp@lists.linux.it>; Thu,  5 Feb 2026 13:15:49 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 586373E7B6;
+ Thu,  5 Feb 2026 12:15:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1770293749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=wpTEQ1hQNGdOC7AdjO/7pcL7FYgWSXx8dReLYZqEoP0=;
- b=P8Pt/n3CFQA8oa1cnv5+VqCg4f+T07XlUADqLKDroitzMe6Mdhu71AD/5aDG2n+8RoIdY1
- qg2kmzH+/E8lT6u4AFh3Aug8VPWwIpSPjyL5x9XxDg+EOAPUtJVkn24lBAEXYzlUIlAZQ5
- m5cXvl90Kwm8zp+dEYxybJZPyhogtfc=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-287-P106L0I_NReEM3dh9wZVGQ-1; Thu, 05 Feb 2026 05:33:35 -0500
-X-MC-Unique: P106L0I_NReEM3dh9wZVGQ-1
-X-Mimecast-MFC-AGG-ID: P106L0I_NReEM3dh9wZVGQ_1770287614
-Received: by mail-pg1-f197.google.com with SMTP id
- 41be03b00d2f7-c6b1b22b134so488270a12.2
- for <ltp@lists.linux.it>; Thu, 05 Feb 2026 02:33:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1770287614; x=1770892414;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=wpTEQ1hQNGdOC7AdjO/7pcL7FYgWSXx8dReLYZqEoP0=;
- b=Pdr7rexCSzTr6oJgXMZRyiv70Ox5vnoq9mXaBgM7PacUwEoazzWt4oWCW+lNznczQq
- VjkA8Dt5ByB492qjSaf/UqYTMYPuaAcwxAU/1HYEBQfFm1NPzj5eo86tuOFg5I3cE1Um
- k7BR2nWAXykbsV2Y8SAgfSKIvfYIQPxwO3xIsJlAPA4o0pV2NaO6r199b9WHU+pnICHR
- MjowSVjlHe8A/UREFTCf6FCbwqZ06dfKNDkDZW1+AxbMJhf/Jxa7MrTTdLrrwe2cdoB7
- ONPx+02MCDcZxDJKhTdIIRU5aeR1qPutRPFfmzEds9iIdYqlxs4NMmYHSvLazNMHeggU
- jCAg==
-X-Gm-Message-State: AOJu0Yw+PFnI1aimGv0FXqavoi2GB9COazgaBwUNO9N8tbEERkNwn6q0
- f0AA4NbR0f7H8f35W6z9+jtBZx6hACxtu/uS9qzZ7p0ouim8XguF91VmpC9ovZkjg2vqCJZyvm2
- YWOwg+B+fI4cmqgfhz+4IxoHZ0bd/OarVmw164BEEDJ43AOIGmtFe
-X-Gm-Gg: AZuq6aJIekiFfmzZpwmVOePIGRguzOuWg4GtXGMwxfzqi9qCI2FDmOr6IwtTKqSsq0d
- GzYVQ0cMQddl8WjyX6UB2CdHC6Lz1nL0iJgJ2KgTvvNeplhqo+YyP7U9l9/RLcHA8ctSoVx2Xty
- emkE9XWKqPl9sxr2VEFE72E0MWWiIl1ORdJsL+iKYYdeDbl1h37LFOW6k/ZIxKMgZz8W8QgEq6s
- /DtWUJoQAtxiKSxStfcfDnaUyMhQ/HELJiGGX3qyK3mulrxNdjFZgUU4e3fhV+VJ59cqL+0cp4e
- Nbyz++Ay0GInTFt4ggSerwOkFQOnXc+E8YI3qJqyg+9+Ne1hDDReCsDvwBUytQ4NQ1KO/PE0nGX
- hMY8t
-X-Received: by 2002:a05:6a21:62cc:b0:361:4fa2:9757 with SMTP id
- adf61e73a8af0-393724ac33amr5843701637.55.1770287614486; 
- Thu, 05 Feb 2026 02:33:34 -0800 (PST)
-X-Received: by 2002:a05:6a21:62cc:b0:361:4fa2:9757 with SMTP id
- adf61e73a8af0-393724ac33amr5843684637.55.1770287614096; 
- Thu, 05 Feb 2026 02:33:34 -0800 (PST)
-Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
- 41be03b00d2f7-c6c84c70da7sm4856747a12.22.2026.02.05.02.33.33
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 05 Feb 2026 02:33:33 -0800 (PST)
-Date: Thu, 5 Feb 2026 18:33:31 +0800
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <aYRx-5KWXt2EEHLe@redhat.com>
-References: <20260203024320.227453-1-liwang@redhat.com>
- <20260204122332.GC224465@pevik> <aYNVsiL4xf2P9R6A@redhat.com>
- <20260204222753.GA279256@pevik> <aYP2AxZJeXgEDMpA@redhat.com>
- <20260205100825.GB294817@pevik>
+ bh=S9jRSTx/PWOMa4tB6S6/sOOrWzaq8+RAVeiwAkO+fsI=;
+ b=oyHtdWVd/JkWvpwXSm58zEF9DCca7nvFacZu4+jp7kEFf6tQADVQiiGQkKoVWJoqi2qdTR
+ S9jVkNt6AwFkckZdDpd6uj0HoV9EvvrFX5G2ouvpxad72zT4dFbailjr2O4GcBjeDX75vj
+ MBKJYxUGdejL8CbUR4muQXZ/+Nfg27Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1770293749;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=S9jRSTx/PWOMa4tB6S6/sOOrWzaq8+RAVeiwAkO+fsI=;
+ b=XP8k/9qYzEy+jOKSs5FXF+H5FJf7wrLfLKC79Qq4b9gTQ9Xezs1p4L/4qdXzoeCL5O6EC+
+ Bm9WeCIVGHYZyvDw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1770293749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=S9jRSTx/PWOMa4tB6S6/sOOrWzaq8+RAVeiwAkO+fsI=;
+ b=oyHtdWVd/JkWvpwXSm58zEF9DCca7nvFacZu4+jp7kEFf6tQADVQiiGQkKoVWJoqi2qdTR
+ S9jVkNt6AwFkckZdDpd6uj0HoV9EvvrFX5G2ouvpxad72zT4dFbailjr2O4GcBjeDX75vj
+ MBKJYxUGdejL8CbUR4muQXZ/+Nfg27Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1770293749;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=S9jRSTx/PWOMa4tB6S6/sOOrWzaq8+RAVeiwAkO+fsI=;
+ b=XP8k/9qYzEy+jOKSs5FXF+H5FJf7wrLfLKC79Qq4b9gTQ9Xezs1p4L/4qdXzoeCL5O6EC+
+ Bm9WeCIVGHYZyvDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 15FC73EA64;
+ Thu,  5 Feb 2026 12:15:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id WIoUBPWJhGmHXwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 05 Feb 2026 12:15:49 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu,  5 Feb 2026 13:15:35 +0100
+Message-ID: <20260205121540.329921-2-pvorel@suse.cz>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20260205121540.329921-1-pvorel@suse.cz>
+References: <20260205121540.329921-1-pvorel@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20260205100825.GB294817@pevik>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: KW_ouegrb--4m0BFLKHb7UWaosy3JJadSNs391pPoj0_1770287614
-X-Mimecast-Originator: redhat.com
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_SEVEN(0.00)[8];
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
+ FROM_HAS_DN(0.00)[];
+ FREEMAIL_CC(0.00)[suse.cz,suse.com,redhat.com,lists.yoctoproject.org,gmail.com];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] openat2: define _GNU_SOURCE and include
- <fcntl.h>
+Subject: [LTP] [PATCH v2 1/6] doc: INSTALL: dma_thread_diotest.c: Remove
+ runltp from doc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,29 +113,184 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
+Cc: automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Thank you for your time. I try to send a patch to add the outcome to
-> doc/developers/ground_rules.rst and wait for ack of others to get broader
-> consensus about it.
+Remove runltp from all doc, replace it with kirk.
+Also replace the old runltp-ng with kirk.
 
-That's awesome.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ INSTALL                                            |  4 +++-
+ doc/developers/test_case_tutorial.rst              |  6 +++---
+ doc/developers/todo.rst                            | 10 ----------
+ metadata/README.md                                 |  2 +-
+ testcases/kernel/fs/fs_readonly/test_robind.sh     |  2 +-
+ testcases/kernel/io/direct_io/dma_thread_diotest.c |  3 +--
+ testcases/kernel/security/smack/README             |  2 +-
+ testcases/network/can/filter-tests/INSTALL         |  2 +-
+ testcases/network/rpc/rpc-tirpc/README             |  2 +-
+ testscripts/Readme_ROBind                          |  4 ++--
+ 10 files changed, 14 insertions(+), 23 deletions(-)
 
-Once we get the consensus, I think we need do a cleanup work for the whole project
-to drop <foo.h> from testcase which includes "lapi/foo.h".
-
-And also go through all LAPI headers, to garantee each "lapi/foo.h" includes
-the original <foo.h>.
-
+diff --git a/INSTALL b/INSTALL
+index c44bb4e660..9ef929a971 100644
+--- a/INSTALL
++++ b/INSTALL
+@@ -105,9 +105,9 @@ Quick Start
+ 	$ ./configure
+ 	$ make all
+ 	# make install
+-	$ /opt/ltp/runltp
+ 
+ *NOTE:
++- For running tests use kirk [1], individual test you can run directly.
+ - LTP assumes the existence of the nobody, bin, and daemon users and their
+ groups.  If these IDs do not exist, certain tests will fail. The respective
+ user and group IDs should be the same, i.e. if `nobody's' user ID is 99, then
+@@ -117,6 +117,8 @@ its group ID should also be 99. The names of the groups are irrelevant.
+ DESTDIR= is also honored for install and will install into $DESTDIR/$prefix,
+ if you want to install into a chroot or a rootfs for instance.
+ 
++[1] https://github.com/linux-test-project/kirk
++
+ Detailed Installation
+ ---------------------
+ 
+diff --git a/doc/developers/test_case_tutorial.rst b/doc/developers/test_case_tutorial.rst
+index 08bd1b1519..240897e36b 100644
+--- a/doc/developers/test_case_tutorial.rst
++++ b/doc/developers/test_case_tutorial.rst
+@@ -205,9 +205,9 @@ please do:
+ 
+ This should build the test and then run it. However, even though the test is
+ in :master:`testcases/kernel/syscalls` directory it won't be automatically ran
+-as part of the syscalls test group (e.g. not run via ``kirk -r math`` or
+-``./runltp -f syscalls``). For this we need to add it to the runtest file. So
+-open :master:`runtest/syscalls` and add the lines starting with a ``+``.
++as part of the syscalls test group (e.g. not run via ``kirk -r math``.  For
++this we need to add it to the runtest file. So open :master:`runtest/syscalls`
++and add the lines starting with a ``+``.
+ 
+ .. code-block::
+ 
+diff --git a/doc/developers/todo.rst b/doc/developers/todo.rst
+index fe248c819b..4ca8612db7 100644
+--- a/doc/developers/todo.rst
++++ b/doc/developers/todo.rst
+@@ -7,16 +7,6 @@ This is a comprehensive list of tasks where LTP maintainers are currently
+ working on. Priorities might change over time, but these are the most important
+ points which are currently being achieved.
+ 
+-Fade out old tests runner
+--------------------------
+-
+-:master:`runltp` script is old and unmaintaned. We are slowly shifting to
+-`kirk <https://github.com/linux-test-project/kirk>`_, that will be our official
+-tests runner in the future.
+-
+-Kirk provides support for remote testing via Qemu, SSH, LTX, parallel
+-execution and much more.
+-
+ Test new syscalls
+ -----------------
+ 
+diff --git a/metadata/README.md b/metadata/README.md
+index c71062759d..2cf978d39e 100644
+--- a/metadata/README.md
++++ b/metadata/README.md
+@@ -245,4 +245,4 @@ things and how to format them.
+ 
+ So far this proof of concept generates a metadata file. I guess that we need
+ actual consumers which will help to settle things down, I will try to look into
+-making use of this in the runltp-ng at least as a reference implementation.
++making use of this in the kirk at least as a reference implementation.
+diff --git a/testcases/kernel/fs/fs_readonly/test_robind.sh b/testcases/kernel/fs/fs_readonly/test_robind.sh
+index 2d9a87b7e0..0f5a67db2e 100755
+--- a/testcases/kernel/fs/fs_readonly/test_robind.sh
++++ b/testcases/kernel/fs/fs_readonly/test_robind.sh
+@@ -25,7 +25,7 @@
+ #   DESCRIPTION:    Performs filesystems tests for RO mount.
+ #     For filesystem, like ext2, ext3, reiserfs, jfs & xfs,
+ #     This test needs a big block device(>=500MB is ok), and you can specify
+-#     it by -z option when running runltp.
++#     it by exporting LTP_BIG_DEV environment variable.
+ #        a)  mounts on dir1,
+ #        b)  mount --bind dir2
+ #        c)  mount -o remount,ro
+diff --git a/testcases/kernel/io/direct_io/dma_thread_diotest.c b/testcases/kernel/io/direct_io/dma_thread_diotest.c
+index b757ba0e2d..82fab12d98 100644
+--- a/testcases/kernel/io/direct_io/dma_thread_diotest.c
++++ b/testcases/kernel/io/direct_io/dma_thread_diotest.c
+@@ -389,8 +389,7 @@ static void setup(void)
+ 
+ 	/*
+ 	 * verify whether the current directory has enough free space,
+-	 * if it is not satisfied, we will use the LTP_BIG_DEV, which
+-	 * will be exported by runltp with "-z" option.
++	 * if it is not satisfied, we will use the LTP_BIG_DEV.
+ 	 */
+ 	if (!directflag || !tst_fs_has_free(NULL, ".", 1300, TST_MB)) {
+ 		device = getenv("LTP_BIG_DEV");
+diff --git a/testcases/kernel/security/smack/README b/testcases/kernel/security/smack/README
+index 1b56ac6335..375a8ff595 100644
+--- a/testcases/kernel/security/smack/README
++++ b/testcases/kernel/security/smack/README
+@@ -20,7 +20,7 @@ using the default make target.
+ 	(cd testcases/kernel/security/smack; make && make install)
+ 
+ 5) Running the tests:
+-	./runltp -f smack
++	kirk -f smack
+ 
+ Each test exits with 0 on success and an error code on failure.
+ 
+diff --git a/testcases/network/can/filter-tests/INSTALL b/testcases/network/can/filter-tests/INSTALL
+index 7d62d65fe7..f07a0976e8 100644
+--- a/testcases/network/can/filter-tests/INSTALL
++++ b/testcases/network/can/filter-tests/INSTALL
+@@ -16,7 +16,7 @@ $ ./can_filter
+ $ ./can_rcv_own_msgs
+ 
+ 3) To let LTP run the tests from $LTPROOT, execute:
+-$ ./runltp -f can
++$ kirk -f can
+ 
+ 4) Clean up using:
+ $ make clean
+diff --git a/testcases/network/rpc/rpc-tirpc/README b/testcases/network/rpc/rpc-tirpc/README
+index 139162751c..51c48360c2 100644
+--- a/testcases/network/rpc/rpc-tirpc/README
++++ b/testcases/network/rpc/rpc-tirpc/README
+@@ -46,6 +46,6 @@ instead of a bunch of scripts from the above web page.
+ The basic group of test cases can be executed from
+  * runtest/net.rpc_tests - for TS-RPC testing
+  * runtest/net.tirpc_tests - for TI-RPC testing
+-using the LTP framework (ltp-pan, runltp and etc).
++using kirk.
+ 
+ Additional test cases (like stress, complex and etc) are to be integrated.
+diff --git a/testscripts/Readme_ROBind b/testscripts/Readme_ROBind
+index 2f961d43f1..02efb0f172 100644
+--- a/testscripts/Readme_ROBind
++++ b/testscripts/Readme_ROBind
+@@ -3,9 +3,9 @@ the {LTPROOT}/testcases/kernel/fs .
+ 
+ EXECUTING TESTS
+ ==================
+-The tests can be executed through runltp like:
++The tests can be executed with kirk:
+ 
+-./runltp -f fs_readonly
++kirk -f fs_readonly
+ 
+ Following tests are executed when the above is invoked:
+ 
 -- 
-Regards,
-Li Wang
+2.51.0
 
 
 -- 
