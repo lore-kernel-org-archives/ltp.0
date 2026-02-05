@@ -4,104 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABED2EC1E91
-	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 10:08:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0014BEC1E86
+	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 10:17:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1770286664; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=CBP0FvoYatenE/kSc4C2kayhJkCnzvzhLnjR8EHwoEs=;
+ b=Gz87LKxK8WD4xNdl9hwgBa6DOorCyHxxw5e0pd4u0DQVMjLOtCUveQxzoi1rXF5531C9N
+ 7MzP0vjlC3I3kMoa5Iz4O0m5e+skvj22/Rv4nKISq7hUxsAGuStYJWwOw39gxYyLXyHeNbo
+ htdxAOchVoMY/n+q/LraELgdv09t4Oo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0F68B3CE420
-	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 11:08:48 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 2B7D73CE35F
+	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 11:17:44 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1AA9C3CE20E
- for <ltp@lists.linux.it>; Thu,  5 Feb 2026 11:08:29 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 024403CE20E
+ for <ltp@lists.linux.it>; Thu,  5 Feb 2026 11:17:20 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 71C4C600068
- for <ltp@lists.linux.it>; Thu,  5 Feb 2026 11:08:28 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0B38B3E792;
- Thu,  5 Feb 2026 10:08:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1770286107;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 038A4200239
+ for <ltp@lists.linux.it>; Thu,  5 Feb 2026 11:17:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1770286637;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1oJ79PNWRDV77mLfMqwkw5xxnbWUBjyGMIkyXkvVQRo=;
- b=qpLQ4D5qUU9IFjc5HYidfGdUjZo3mgOINC7ktIkFvr+jXQwzB42aoRV8vRBHR4F77EN2Y1
- 4H8mIhXDHoskMBPDUOYK/fBtQC+fzWrPJ90Q2pG6rttvO7jthGKMKygTOwOQolqohWFBJf
- gI7lMcK6GVMTJCMPoyrFFVvG8KeHRVQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1770286107;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1oJ79PNWRDV77mLfMqwkw5xxnbWUBjyGMIkyXkvVQRo=;
- b=7tjFpfQ9maSDOcQZeK6OPez8yABIesJz/dRvKK2HLSjFDeSc//eMQvJlLgYyvAzjO/NwfB
- 7kzZ9WQO/D3nNgBg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1770286107;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1oJ79PNWRDV77mLfMqwkw5xxnbWUBjyGMIkyXkvVQRo=;
- b=qpLQ4D5qUU9IFjc5HYidfGdUjZo3mgOINC7ktIkFvr+jXQwzB42aoRV8vRBHR4F77EN2Y1
- 4H8mIhXDHoskMBPDUOYK/fBtQC+fzWrPJ90Q2pG6rttvO7jthGKMKygTOwOQolqohWFBJf
- gI7lMcK6GVMTJCMPoyrFFVvG8KeHRVQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1770286107;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1oJ79PNWRDV77mLfMqwkw5xxnbWUBjyGMIkyXkvVQRo=;
- b=7tjFpfQ9maSDOcQZeK6OPez8yABIesJz/dRvKK2HLSjFDeSc//eMQvJlLgYyvAzjO/NwfB
- 7kzZ9WQO/D3nNgBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DB7FB3EA63;
- Thu,  5 Feb 2026 10:08:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id lx9YNBpshGmfAQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 05 Feb 2026 10:08:26 +0000
-Date: Thu, 5 Feb 2026 11:08:25 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20260205100825.GB294817@pevik>
-References: <20260203024320.227453-1-liwang@redhat.com>
- <20260204122332.GC224465@pevik> <aYNVsiL4xf2P9R6A@redhat.com>
- <20260204222753.GA279256@pevik> <aYP2AxZJeXgEDMpA@redhat.com>
+ bh=PYhJz7lKnvArDC4RqjxPJWX7LyYacQxMruMysY9Vf+0=;
+ b=XOtlawqzVyqWNOL6m+jV2fxZMg1oIrdp7DVyPQ4mkcKxFa6WIQjk/rd9hGGx2/mpuCeJ/C
+ /mTksOXDcRaLRiF8XcGqgy45apnMNHq3C44i5kEjEWlWiJroEYtB2pFph8X3jVAoLzSVnG
+ EKqdMfoA0p+qWv3xnD241Ws1y6+ggn4=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-316-YHBu15FjMvy55WASMBQ-Pg-1; Thu, 05 Feb 2026 05:17:15 -0500
+X-MC-Unique: YHBu15FjMvy55WASMBQ-Pg-1
+X-Mimecast-MFC-AGG-ID: YHBu15FjMvy55WASMBQ-Pg_1770286635
+Received: by mail-pg1-f199.google.com with SMTP id
+ 41be03b00d2f7-b5edecdf94eso2026637a12.2
+ for <ltp@lists.linux.it>; Thu, 05 Feb 2026 02:17:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1770286635; x=1770891435;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=PYhJz7lKnvArDC4RqjxPJWX7LyYacQxMruMysY9Vf+0=;
+ b=ZplmXErSpA3cncikAKJb6DclVJJUK1AFyE7pIs5hHLhre1pAlzxThqU5IETS0Lz+T1
+ D1TorcQF88SGCLuICWTOdsuS5qrgkZshbDOVO06C31SnfTVVBLWnEgu9H0r0KXjJ9u7J
+ cigtOvThRB9ogqnlzRWzkzHCNVH61iAkT6jzoJaC+sLRIBz1rQKz0oBDw4V00xTkyAPa
+ aRXWIfojJmf7WqugVviEyK7xBaDhlt9QhN0GdoxS1JsHRbUwQJOhIWVKxmrG5J8hgfjW
+ CADoFQ2qQqT4wzJL5TtQTt9Wp9OufrAKaRErkpiR/T2Y7OvUE4POpLDRSmHfC/nx68Zu
+ cWUw==
+X-Gm-Message-State: AOJu0YyqvDQ9Q7URHUXyQiqzl055J610ey+ikEJtpDqrInqHvbJ578ub
+ 7MRh2YG9ZNoRW8G8xF5Al1rDCy2KcIWUx4GjNcYMGpEWYdOAVncSSdMn7Dcy9wd/u+jo5Ml8GU9
+ L8LcxhclH4uK43a44eV+rH314y6bx0EcgpS/M8bsy1Sc7lXMzb+6r
+X-Gm-Gg: AZuq6aLOMpkHZtFq/WwiTZQxHTVGbf7N43olk2Ir81CmMCrOfXKo0hHtBw5Fcg/GFQ6
+ WtFpfkVMQfDM+Y8a967D8E8uJozWDkbTIBQ/nWS6FZcMuMfcfaO9ngztgExD6fIdfhvpuiU077v
+ TvqZvug41xryXhQezf2haulOT2STileo+uoKEWfQ2p/Rw27Bk+kgk5bGgki6/0jGDzB9dw0dmS2
+ c1I7lTBKIXXm5uxqoy5NrKyyc3stRWz8pr0+Wk/VuGzkMS/I9QBEaMuDS7U+nTDw4gLLtiE0y29
+ MJLHaC2/5KcDzZ4W/9F0BDaZ5AshvD0i89+wmoHTTtI4JS7jaSCdWr6lFs2/VkLbRmlHnm+Iuzj
+ TRNop
+X-Received: by 2002:a05:6a20:7345:b0:38f:df47:87a0 with SMTP id
+ adf61e73a8af0-3937249d02emr6555709637.61.1770286634967; 
+ Thu, 05 Feb 2026 02:17:14 -0800 (PST)
+X-Received: by 2002:a05:6a20:7345:b0:38f:df47:87a0 with SMTP id
+ adf61e73a8af0-3937249d02emr6555698637.61.1770286634626; 
+ Thu, 05 Feb 2026 02:17:14 -0800 (PST)
+Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
+ 41be03b00d2f7-c6c8360c2e6sm4345769a12.16.2026.02.05.02.17.13
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 05 Feb 2026 02:17:13 -0800 (PST)
+Date: Thu, 5 Feb 2026 18:17:11 +0800
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aYRuJ9BuS_MutfOD@redhat.com>
+References: <20260204124323.244578-1-pvorel@suse.cz>
+ <aYQz6gN7WvJbSg1k@redhat.com> <20260205094458.GA294817@pevik>
 MIME-Version: 1.0
+In-Reply-To: <20260205094458.GA294817@pevik>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: eAkW5WDAQqdMv1beqXUEI_LUexwRYSDfYWbvdWCY2zo_1770286635
+X-Mimecast-Originator: redhat.com
 Content-Disposition: inline
-In-Reply-To: <aYP2AxZJeXgEDMpA@redhat.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
- URIBL_BLOCKED(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] openat2: define _GNU_SOURCE and include
- <fcntl.h>
+Subject: Re: [LTP] [PATCH] openat2: Move includes to lapi, remove _GNU_SOURCE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,91 +107,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Wed, Feb 04, 2026 at 11:27:53PM +0100, Petr Vorel wrote:
-> > Hi Li,
+On Thu, Feb 05, 2026 at 10:44:58AM +0100, Petr Vorel wrote:
+> > On Wed, Feb 04, 2026 at 01:43:23PM +0100, Petr Vorel wrote:
+> > > Improve 767b3e519e. struct open_how is also used in lapi/openat2.h,
+> > > which is used by all openat2*.c tests.  Therefore move <fcntl.h> to the
+> > > lapi header (and use lapi/fcntl.h instead).
+> 
+> > > Also remove _GNU_SOURCE which should not be needed.
+> 
+> > > While at it, move include "config.h" to the top.
+> 
+> > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > > ---
+> > > Hi Li,
+> 
+> > > my points from the original patchset why not use _GNU_SOURCE:
+> 
+> > > glibc test tst-openat2.c [1] which includes <fcntl.h>, uses struct
+> 
+> > Interesting, I haven't figure out why it can be built within glibc itself.
+> 
+> I also checked Makefile, but haven't found that. Never mind, I was wrong, it's
+> obviously needed.
 
-> > ...
-> > > > lapi/openat2.h uses struct open_how directly, shouldn't be included lapi/fcntl.h
-> > > > there?
+It's becuase of -D_GNU_SOURCE cflag in Makerules(which included in Makefile):
+https://sourceware.org/git/?p=glibc.git;a=blob;f=Makerules;h=30c3559a285e5bc0571358ab785bf9b5d5a8f449;hb=HEAD#l1182
 
-> > > From my understand lapi/* are appendix for missing stuff in header file.
+In case of you miss my last reply thread:
+https://lists.linux.it/pipermail/ltp/2026-February/046438.html
 
-> > Yes, but we agreed in the past, that it's better to include relevant libc/kernel
-> > header in the lapi header [1]:
+-- 
+Regards,
+Li Wang
 
-> > 	LAPI header should always include original header.
-
-> > [1] https://github.com/linux-test-project/ltp/blob/master/doc/old/C-Test-API.asciidoc#lapi-headers
-
-> > I thought we had a discussion about it, but now I see nobody acked the change in
-> > ML (cfbc41d775), therefore I somehow pushed this approach without consensus with
-> > others. I'm sorry for that, we can revise that. At the moment quite a few lapi
-> > headers use this approach (likely majority).
-
-> > IMHO it's better to include it than expect that all tests which use lapi header
-> > will include relevant header *before* (otherwise tests can happily always depend
-> > on fallback instead of using a real value from a system header).
-
-> Yes, I generally agree with this, and here is my understand:
-
-> 1. Testcase should include original <header.h> (but not "lapi/header.h")
->    if *only* need the original <header.h> file.
-
-... and don't need any fallback from the lapi header.
-
-> 2. LAPI-header should always include original <header.h>, it handling
->    the missing/conflicting part there.
->    Thus, we can treat "lapi/header.h" as a patched <header.h> and only
->    use it intead of the original <header.h> in testcase if needed.
-
-+1
-
-> 3. We avoid including both original <header.h> and "lapi/header.h" in
->    testase at the same time.
-
-+1
-
-> > It's a minor detail, but being consistent helps for newcomers to understand
-> > LTP code.
-
-> > And *if* we agree on it, it should be now doc/developers/ground_rules.rst.
-
-> > Also there is a different approach where should be fallbacks. We use some lapi
-> > headers (e.g. lapi/openat2.h but there are more) which don't have public
-> > equivalent in libc (/usr/include/bits/openat2.h cannot be used directly, but via
-> > <fcntl.h>). Therefore I would put content of lapi/openat2.h into lapi/fcntl.h,
-> > but that's a minor detail.
-
-> I am ok with it, the advantage merge lapi/openat2.h into lapi/fcntl.h is
-> keep things more centralized.
-
-> But also, keep lapi/openat2.h seperated is more modular, and it should
-> contains <fcntl.h> as well.
-
-Yeah, I don't have strong opinion about it, both ways would work.
-
-> > > Test cases should only include standard header files, and lapi should
-> > > only be used in case of missing or conflicting header files.
-
-> > But lapi/openat2.h also uses struct open_how. I would either include <fcntl.h>
-> > in both sources or just in lapi/openat2.h. Having it only in tests looks to me
-> > as not ideal.
-
-> Right, thanks for bring up this topic.
-
-Thank you for your time. I try to send a patch to add the outcome to
-doc/developers/ground_rules.rst and wait for ack of others to get broader
-consensus about it.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
