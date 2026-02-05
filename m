@@ -4,113 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8141EC1EAB
-	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 12:17:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10D0DEC1EAA
+	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 12:17:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1B1243CE2CA
-	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 13:17:17 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id B9DC63CDC4E
+	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 13:17:31 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3D3713CE11D
- for <ltp@lists.linux.it>; Thu,  5 Feb 2026 13:16:05 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 7BC9C3CE11D
+ for <ltp@lists.linux.it>; Thu,  5 Feb 2026 13:16:10 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 21CE01A00147
- for <ltp@lists.linux.it>; Thu,  5 Feb 2026 13:15:59 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 248B420024F
+ for <ltp@lists.linux.it>; Thu,  5 Feb 2026 13:16:08 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 99E993E7BC;
- Thu,  5 Feb 2026 12:15:50 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 047CD3E7BE;
+ Thu,  5 Feb 2026 12:15:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1770293751; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=z7fUJe9Xh7AyARPFqqVtB+OhFdSkwQUXeoLtuiOoM4M=;
- b=pocNfjm2R2+WVbPbslA1tA5GLiwyX00NLCCumsoaMKD3PX2EefoLYpF2KsFwXJE6QRyVmz
- nYj4VhBXsI0I+vw8yLXv/h2RAJooJTEJEO03TkH+LfziIHSvBHU3SWvq5skK5oFS0tROSa
- SUkfodB0nTEnocYl0PSjRl6nBaceDQo=
+ bh=mQxOq6dy48ydkn72WCOlyTr3638wj0NrGH6tUrB/lmc=;
+ b=mKWzKFbJFmT0uuLxVlWNaBEdjhyhQjpxy6jN0ihCmWXlmXtr2Bb+xITb8dzF0YAqoUVcn3
+ zGTZRq4QSu/B17voaLemqCjN/Vxwlzh13s5EpBPKEbzKCXPLWHzliqkyn1Xvn6RhRPx462
+ EtlGMQMxJ5MYzmauIlowNfD+lpNXBSQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1770293751;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=z7fUJe9Xh7AyARPFqqVtB+OhFdSkwQUXeoLtuiOoM4M=;
- b=ZG9f/BNJ+eukAe39rDsrR/OdwzSy7ecP4YyU3Zakd92uJqnNj2WvVq0cdsHuJQlZFz+UBs
- we800XXptLzv3yDA==
+ bh=mQxOq6dy48ydkn72WCOlyTr3638wj0NrGH6tUrB/lmc=;
+ b=Vabu5jyCSNXJJW5JhwpBDLQ81BJnV8IuYeHzCbVAq3/21B4jv2Vf7gAwrWotcba0q/QXJ3
+ K8xf6l4UabMLlECQ==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=c1x6foaT;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=yyg39j58
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1770293750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1770293751; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=z7fUJe9Xh7AyARPFqqVtB+OhFdSkwQUXeoLtuiOoM4M=;
- b=c1x6foaT/Rk1sKoT8Wd4qf/SZLx3uD+4+ulClGGoXnQDI7Qgt4xTEnqlXtju0uoJbJ62Y+
- WebUB0o3KSl2Zs0fzGAGN8as9SpwZtBjDDnm44UKHjSRbo2jUGbxsFAacJv6kjlKcT0pTG
- 29NaYt0c2B/qiMC+jsziawmkQJdVJC0=
+ bh=mQxOq6dy48ydkn72WCOlyTr3638wj0NrGH6tUrB/lmc=;
+ b=mKWzKFbJFmT0uuLxVlWNaBEdjhyhQjpxy6jN0ihCmWXlmXtr2Bb+xITb8dzF0YAqoUVcn3
+ zGTZRq4QSu/B17voaLemqCjN/Vxwlzh13s5EpBPKEbzKCXPLWHzliqkyn1Xvn6RhRPx462
+ EtlGMQMxJ5MYzmauIlowNfD+lpNXBSQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1770293750;
+ s=susede2_ed25519; t=1770293751;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=z7fUJe9Xh7AyARPFqqVtB+OhFdSkwQUXeoLtuiOoM4M=;
- b=yyg39j58iCcUWIJdeZPTz6Qn9WWWLVZA9GDupZwp7Vjb2Ua6U6YaXC+BI3motABEyCBTAI
- mk/OU9j6g6n4EfCQ==
+ bh=mQxOq6dy48ydkn72WCOlyTr3638wj0NrGH6tUrB/lmc=;
+ b=Vabu5jyCSNXJJW5JhwpBDLQ81BJnV8IuYeHzCbVAq3/21B4jv2Vf7gAwrWotcba0q/QXJ3
+ K8xf6l4UabMLlECQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 335EF3EA64;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9718E3EA65;
  Thu,  5 Feb 2026 12:15:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id oFptC/aJhGmHXwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id CPHJI/aJhGmHXwAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Thu, 05 Feb 2026 12:15:50 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu,  5 Feb 2026 13:15:38 +0100
-Message-ID: <20260205121540.329921-5-pvorel@suse.cz>
+Date: Thu,  5 Feb 2026 13:15:39 +0100
+Message-ID: <20260205121540.329921-6-pvorel@suse.cz>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260205121540.329921-1-pvorel@suse.cz>
 References: <20260205121540.329921-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
  R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_SEVEN(0.00)[8];
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[];
  FUZZY_RATELIMITED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- TO_DN_SOME(0.00)[];
- URIBL_BLOCKED(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_SEVEN(0.00)[8];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- FROM_EQ_ENVFROM(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ URIBL_BLOCKED(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+ FROM_HAS_DN(0.00)[];
  FREEMAIL_CC(0.00)[suse.cz,suse.com,redhat.com,lists.yoctoproject.org,gmail.com];
- RCVD_TLS_ALL(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 99E993E7BC
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 4/6] pan: Remove
+Subject: [LTP] [PATCH v2 5/6] tools: Remove tools used by runltp
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -128,58 +118,460 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-ltp-pan was required for runltp, not needed for anything else.
+restore_kernel_faults_default.sh and insert_kernel_faults.sh were used
+by create_kernel_faults_in_loops_and_probability.awk, other tools
+(create_dmesg_entries_for_each_test.awk, create_valgrind_check.awk,
+create_kernel_faults_in_loops_and_probability.awk, genhtml.pl, genload,
+html_report_header.txt) directly by runltp.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- Makefile              |    2 +-
- pan/Makefile          |   51 --
- pan/cgi/README        |   59 --
- pan/cgi/browse.cgi    |  225 -------
- pan/cgi/reconsile.cgi |  250 -------
- pan/cgi/results.cgi   |  164 -----
- pan/ltp-bump.c        |  115 ----
- pan/ltp-pan.c         | 1485 -----------------------------------------
- pan/splitstr.c        |  192 ------
- pan/splitstr.h        |   36 -
- pan/tag_report.h      |   51 --
- pan/zoolib.c          |  447 -------------
- pan/zoolib.h          |   83 ---
- 13 files changed, 1 insertion(+), 3159 deletions(-)
- delete mode 100644 pan/Makefile
- delete mode 100644 pan/cgi/README
- delete mode 100755 pan/cgi/browse.cgi
- delete mode 100755 pan/cgi/reconsile.cgi
- delete mode 100755 pan/cgi/results.cgi
- delete mode 100644 pan/ltp-bump.c
- delete mode 100644 pan/ltp-pan.c
- delete mode 100644 pan/splitstr.c
- delete mode 100644 pan/splitstr.h
- delete mode 100644 pan/tag_report.h
- delete mode 100644 pan/zoolib.c
- delete mode 100644 pan/zoolib.h
+ tools/Makefile                                |   2 +-
+ tools/create_dmesg_entries_for_each_test.awk  |  35 -
+ ...kernel_faults_in_loops_and_probability.awk |  40 -
+ tools/create_valgrind_check.awk               |  42 -
+ tools/genhtml.pl                              | 249 -----
+ tools/genload/.gitignore                      |   2 -
+ tools/genload/Makefile                        |  31 -
+ tools/genload/README                          |  72 --
+ tools/genload/genload.c                       | 898 ------------------
+ tools/genload/stress.c                        | 898 ------------------
+ tools/html_report_header.txt                  |  56 --
+ tools/insert_kernel_faults.sh                 |  53 --
+ tools/restore_kernel_faults_default.sh        |  86 --
+ 13 files changed, 1 insertion(+), 2463 deletions(-)
+ delete mode 100644 tools/create_dmesg_entries_for_each_test.awk
+ delete mode 100644 tools/create_kernel_faults_in_loops_and_probability.awk
+ delete mode 100644 tools/create_valgrind_check.awk
+ delete mode 100644 tools/genhtml.pl
+ delete mode 100644 tools/genload/.gitignore
+ delete mode 100644 tools/genload/Makefile
+ delete mode 100644 tools/genload/README
+ delete mode 100644 tools/genload/genload.c
+ delete mode 100644 tools/genload/stress.c
+ delete mode 100644 tools/html_report_header.txt
+ delete mode 100755 tools/insert_kernel_faults.sh
+ delete mode 100755 tools/restore_kernel_faults_default.sh
 
-diff --git a/Makefile b/Makefile
-index d47b2528e9..d82366489c 100644
---- a/Makefile
-+++ b/Makefile
-@@ -31,7 +31,7 @@ vpath %.mk		$(top_srcdir)/mk:$(top_srcdir)/mk/include
- # BOOTSTRAP_TARGETS:	Directories required to bootstrap out-of-build-tree
- # 			support.
+diff --git a/tools/Makefile b/tools/Makefile
+index adbf4fe70b..e31af5fcdf 100644
+--- a/tools/Makefile
++++ b/tools/Makefile
+@@ -24,7 +24,7 @@ top_srcdir		?= ..
  
--COMMON_TARGETS		:= pan utils
-+COMMON_TARGETS		:= utils
+ include $(top_srcdir)/include/mk/testcases.mk
  
- define target_to_dir_dep_mapping
- ifeq ($$(filter %-clean,$(1)),) # not *-clean
-diff --git a/pan/Makefile b/pan/Makefile
+-INSTALL_TARGETS		:= *.awk *.pl *.sh html_report_header.txt
++INSTALL_TARGETS		:= *.sh
+ 
+ INSTALL_DIR		:= bin
+ 
+diff --git a/tools/create_dmesg_entries_for_each_test.awk b/tools/create_dmesg_entries_for_each_test.awk
 deleted file mode 100644
-index e8596ec26b..0000000000
---- a/pan/Makefile
+index b21364ae06..0000000000
+--- a/tools/create_dmesg_entries_for_each_test.awk
 +++ /dev/null
-@@ -1,51 +0,0 @@
+@@ -1,35 +0,0 @@
+-#!/usr/bin/awk -f
 -#
--#    pan Makefile.
+-#    Script for adding necessary dmesg clear/capture calls before executing
+-#    commands.
+-#
+-#    Copyright (C) 2012, Linux Test Project.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Ngie Cooper, April 2012
+-#
+-
+-NF && ! /^#/ {
+-	s = $1 "__with_dmesg_entry dmesg -c 1>/dev/null 2>&1;"
+-	for (i = 2; i <= NF; i++) {
+-		s = s " " $i
+-	}
+-	sub(/[;]+$/, "", s)
+-	s = s "; EXIT_CODE=$?"
+-	s = s "; dmesg > " DMESG_DIR "/" $1 ".dmesg.log"
+-	s = s "; exit $EXIT_CODE"
+-	print s
+-}
+diff --git a/tools/create_kernel_faults_in_loops_and_probability.awk b/tools/create_kernel_faults_in_loops_and_probability.awk
+deleted file mode 100644
+index e2ec3b515d..0000000000
+--- a/tools/create_kernel_faults_in_loops_and_probability.awk
++++ /dev/null
+@@ -1,40 +0,0 @@
+-#!/usr/bin/awk -f
+-#
+-#    Script for adding necessary dmesg clear/capture calls before executing
+-#    commands.
+-#
+-#    Copyright (C) 2012, Linux Test Project.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Ngie Cooper, April 2012
+-#
+-
+-NF && ! /^#/ {
+-	print
+-	for (i = 1; i <= LOOPS; i++) {
+-		s = $1 "_loop_" i "_under_fault_kernel "
+-		if (i == 1) {
+-			s = s "$LTPROOT/bin/insert_kernel_faults.sh " PERCENTAGE "; "
+-		}
+-		for (j = 2; j <= NF; j++) {
+-			s = s " " $j
+-		}
+-		if (i == LOOPS) {
+-			s = s "; while ! $LTPROOT/bin/restore_kernel_faults_default.sh; do :; done"
+-		}
+-		print s
+-	}
+-}
+diff --git a/tools/create_valgrind_check.awk b/tools/create_valgrind_check.awk
+deleted file mode 100644
+index 05cf6fac4b..0000000000
+--- a/tools/create_valgrind_check.awk
++++ /dev/null
+@@ -1,42 +0,0 @@
+-#!/usr/bin/awk -f
+-#
+-#    Script for adding necessary valgrind calls before commands.
+-#
+-#    Copyright (C) 2012, Linux Test Project.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Ngie Cooper, April 2012
+-#
+-
+-# XXX: this script doesn't handle items that would be executed via pan with
+-# /bin/sh properly.
+-NF && ! /^#/ {
+-	print
+-	if (CHECK_LEVEL == 1 || CHECK_LEVEL == 3) {
+-		s=$1 "_valgrind_memory_leak_check  valgrind -q --leak-check=full --trace-children=yes"
+-		for (i = 2; i <= NF; i++) {
+-			s = s " " $i
+-		}
+-		print s
+-	}
+-	if (CHECK_LEVEL == 2 || CHECK_LEVEL == 3) {
+-		s=$1 "_valgrind_thread_concurrency_check  valgrind -q --tool=helgrind --trace-children=yes"
+-		for (i = 2; i <= NF; i++) {
+-			s = s " " $i
+-		}
+-		print s
+-	}
+-}
+diff --git a/tools/genhtml.pl b/tools/genhtml.pl
+deleted file mode 100644
+index 79c178d014..0000000000
+--- a/tools/genhtml.pl
++++ /dev/null
+@@ -1,249 +0,0 @@
+-#!/usr/bin/perl
+-#****************************************************************************#
+-# Copyright (c) International Business Machines  Corp., 2001                 #
+-#                                                                            #
+-# This program is free software;  you can redistribute it an#or modify       #
+-# it under the terms of the GNU General Public License as published by       #
+-# the Free Software Foundation; either version 2 of the License, or          #
+-# (at your option) any later version.                                        #
+-#                                                                            #
+-# This program is distributed in the hope that it will be useful,            #
+-# but WITHOUT ANY WARRANTY;  without even the implied warranty of            #
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  #
+-# the GNU General Public License for more details.                           #
+-#                                                                            #
+-# You should have received a copy of the GNU General Public License          #
+-# along with this program;  if not, write to the Free Software               #
+-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    #
+-#                                                                            #
+-#****************************************************************************#
+-
+-#****************************************************************************#
+-#                                                                            #
+-# File:        genhtml.pl                                                    #
+-#                                                                            #
+-# Description: This is a Parser which can parse the text output generated by #
+-#              pan and convert the same to am HTML format, with proper high- #
+-#              lighting of test result backgorund for easy identification of #
+-#              pass/fail of testcases                                        #
+-#                                                                            #
+-# Author:      Subrata Modak: subrata@linux.vnet.ibm.com                     #
+-#                                                                            #
+-#                                                                            #
+-#****************************************************************************#
+-
+-
+-my $process_line  = 0;
+-my $row_line      = "";
+-my $flag          = 0;
+-my $flag2         = 0;
+-my $flag3         = 0;
+-my $flag4         = 0;
+-my $test_counter  = 1;
+-my $failed_test_counter       = 0;
+-my $failed_test_counter_flag  = 0;
+-my $brok_test_counter       = 0;
+-my $brok_test_counter_flag  = 0;
+-my $warn_test_counter       = 0;
+-my $warn_test_counter_flag  = 0;
+-my $retr_test_counter       = 0;
+-my $retr_test_counter_flag  = 0;
+-my $conf_test_counter       = 0;
+-my $conf_test_counter_flag  = 0;
+-my $test_passed             = 0;
+-
+-my $detected_fail = 0;
+-my $detected_pass = 0;
+-my $detected_warn = 0;
+-my $detected_brok = 0;
+-my $detected_retr = 0;
+-my $detected_conf = 0;
+-my $background_colour =0;
+-
+-my $header_file   = shift (@ARGV) || syntax();
+-my $start_tag     = shift (@ARGV) || syntax();
+-my $end_tag       = shift (@ARGV) || syntax();
+-my $output_tag    = shift (@ARGV) || syntax();
+-my $execution_tag = shift (@ARGV) || syntax();
+-
+-sub syntax() {
+-	print "syntax: prtag2tag start_tag end_tag output_tag execution_tag file(s)\n";
+-	exit (1);
+-}
+-
+-sub get_background_colour_column() {
+-    if ( $detected_fail == 1 ) {
+-      return "#ff0000";
+-    } elsif ( $detected_brok == 1 ) {
+-      return Yellow;
+-    } elsif ( $detected_warn == 1 ) {
+-      return Fuchsia;
+-    } elsif ( $detected_retr == 1 ) {
+-      return "#8dc997";
+-    } elsif ( $detected_conf == 1 ) {
+-      return Aqua;
+-    } else {
+-      return "#66ff66";
+-    }
+-}
+-
+-print STDERR "-------------------------------------------------\n";
+-print STDERR "INFO: genhtml.pl script is deprecated, try kirk\n";
+-print STDERR "(new LTP runner which also generates JSON output)\n";
+-print STDERR "https://github.com/linux-test-project/kirk\n";
+-print STDERR "-------------------------------------------------\n";
+-
+-if ($start_tag eq "" || $end_tag eq "" || $output_tag eq "" || $execution_tag eq "") {
+-	syntax();
+-}
+-
+-open (FILE, "$header_file") || "Cannot open file: $header_file";
+-while ($line_2 = <FILE>) {
+-       $row_line = $row_line . $line_2;
+-}
+-$row_line =~ s/LTP\ Output\/Log/LTP\ Output\/Log\ (Report\ Generated\ on\ $ENV{TEST_START_TIME})/;
+-print $row_line;
+-close (FILE);
+-$row_line = "";
+-
+-
+-foreach my $file (@ARGV) {
+-
+-	open (FILE, $file) || die "Cannot open file: $file\n";
+-
+-	LINE: while ($line = <FILE>) {
+-		chomp $line;
+-
+-		if ($line =~ /$start_tag/) {
+-			$process_line = 1;
+-                        $flag = 1;
+-		}
+-		if ($line =~ /$end_tag/) {
+-                        print "$row_line";
+-			$process_line  = 0;
+-                        $flag  = 0;             $flag2 = 0;            $flag3 = 0;            $flag4 = 0;            $flag5 = 0;
+-                        $detected_fail = 0;     $detected_pass = 0;    $detected_warn = 0;    $detected_brok = 0;    $detected_retr = 0;    $detected_conf = 0;
+-                        $background_colour = 0; $failed_test_counter_flag = 0; $brok_test_counter_flag = 0; $warn_test_counter_flag = 0; $retr_test_counter_flag = 0; $conf_test_counter_flag = 0;  $row_line= "";
+-		}
+-
+-		if ($process_line) {
+-                        if ( $flag == 2) { #Assuming we will find "tag" and "stime" values here
+-                             @variable_value_pair = split(/\ /, $line);
+-                             @tag_value   = split(/=/,$variable_value_pair[0]);
+-                             @stime_value = split(/=/,$variable_value_pair[1]);
+-                             $row_line = $row_line . "<tr><td><p><strong>$test_counter</strong></p></td>\n" .
+-                                                     "<td><p><strong>$tag_value[1]</strong></p></td>\n"     .
+-                                                     "<td><p><pre><strong>";
+-                             $get_proper_time = localtime ($stime_value[1]);
+-                             $row_line = $row_line . "$get_proper_time" . "</strong></pre></p></td>\n";
+-                             $test_counter++;
+-                        }
+-                        if ( $flag == 3) { #Assuming we will find "cmdling" value here
+-                             @variable_value_pair = split(/=/, $line);
+-                             $row_line = $row_line . "<td><p><strong> $variable_value_pair[1] </strong></p></td>\n";
+-                        }
+-                        if ( $flag == 4) { #Assuming we will find "contact" value here
+-                             @variable_value_pair = split(/=/, $line);
+-                             $row_line = $row_line . "<td><p><strong>$variable_value_pair[1]</strong></p></td>\n";
+-                        }
+-                        if ( $flag == 5) { #Assuming we will find "analysis" value here
+-                             @variable_value_pair = split(/=/, $line);
+-                             $row_line = $row_line . "<td><p><strong>$variable_value_pair[1]</strong></p></td>\n";
+-                        }
+-                        if ( $flag3 == 1 ) {
+-                             if ( $flag4 == 1 ) {
+-				  @variable_value_pair = split(/=/, $line);
+-				  $row_line = $row_line . "<td><p><strong>$variable_value_pair[1]</strong></p></td>\n";
+-			     }
+-                             if ( $flag4 == 2 ) {
+-                                  @variable_value_pair    = split(/\ /, $line);
+-                                  @duration_value         = split(/=/, $variable_value_pair[0]);
+-                                  @termination_type_value = split(/=/, $variable_value_pair[1]);
+-                                  @termination_id_value   = split(/=/, $variable_value_pair[2]);
+-                                  @corefile_value         = split(/=/, $variable_value_pair[3]);
+-                                  $background_colour = get_background_colour_column();
+-                                  $row_line = $row_line . "<td><p><strong>$duration_value[1]</strong></p></td>\n"     .
+-                                              "<td><p><strong>$termination_type_value[1]<strong></p></td>\n" .
+-                                              "<td><p><strong>$termination_id_value[1]</strong></p></td>\n"  .
+-                                              "<td><p><strong>$corefile_value[1]</strong></p></td>\n";
+-                                  $row_line =~ s/<tr>/<tr\ bgcolor=$background_colour>/;
+-                                  $flag4++;
+-                             }
+-                             if ( $flag4 == 3 ) {
+-                                  @variable_value_pair    = split(/\ /, $line);
+-                                  @cutime_value           = split(/=/, $variable_value_pair[0]);
+-                                  @cstime_value           = split(/=/, $variable_value_pair[1]);
+-                                  $row_line = $row_line . "<td><p><strong>$cutime_value[1]</strong></p></td>\n" .
+-                                              "<td><p><strong>$cstime_value[1]</strong></p></td></tr>\n";
+-                             }
+-                        }
+-                        if ( $line =~ /$execution_tag/ ) {
+-                             $flag2 = 0;
+-                             $flag3 = 1;
+-                             $flag4 = 1;
+-                             $flag5 = 1;
+-                             $row_line = $row_line . "</strong></pre></td>";
+-                        }
+-                        if ( $flag2 == 1 ) {
+-			    $row_line = $row_line . "$line \n";
+-                        }
+-			 if ( $flag5 == 1 ) {
+-			 	 if ($line =~ "termination_id=1" ) {
+-					 $detected_fail = 1;
+-					 $failed_test_counter++;
+-					 $flag4 = 2;
+-				 } elsif ($line =~ "termination_id=2" ) {
+-					 $detected_brok = 1;
+-					 $brok_test_counter++;
+-					 $flag4 = 2;
+-				 } elsif ($line =~ "termination_id=4" ) {
+-					 $detected_warn = 1;
+-					 $warn_test_counter++;
+-					 $flag4 = 2;
+-				 } elsif ($line =~ "termination_id=32" ) {
+-					 $detected_conf = 1;
+-					 $conf_test_counter++;
+-					 $flag4 = 2;
+-				 } elsif ($line =~ "termination_id=0" ) {
+-					 $detected_pass = 1;
+-					 $test_passed++;
+-					 $flag4 = 2;
+-				 }
+-			 }
+-                        if ( $line =~ /$output_tag/ ) {
+-                             $flag2 = 1;
+-                             $row_line = $row_line . "<td><pre><strong>";
+-                        }
+-                        $flag++;
+-		}
+-	}
+-	close (FILE);
+-}
+-
+-print "</tbody></table></div> \n\n<h2 id=\"_2\">Summary Report</h2>\n\n<div>\n\n<table border=\"1\" cellspacing=\"3\"><tbody>\n<tr>\n<td ";
+-if ($ENV{LTP_EXIT_VALUE} == 1 ) {
+-    print "bgcolor=\"#ff0000\"> <strong>Test Summary</strong></p></td><td bgcolor=\"#ff0000\"><strong>Pan reported some Tests FAIL</strong></p></td></tr>\n";
+-}
+-else {
+-    print "bgcolor=\"#66ff66\"> <strong>Test Summary</strong></p></td><td bgcolor=\"#66ff66\"><strong>Pan reported all Test Pass</strong></p></td></tr>\n";
+-}
+-
+-print "<tr><td><strong>LTP Version</strong> </td><td><strong> $ENV{LTP_VERSION}     </strong></td></tr>\n";
+-print "<tr><td><strong>Start Time</strong>  </td><td><strong> $ENV{TEST_START_TIME} </strong></td></tr>\n";
+-print "<tr><td><strong>End Time</strong>    </td><td><strong> $ENV{TEST_END_TIME}   </strong></td></tr>\n";
+-print "<tr><td><strong>Log Result</strong>  </td><td><a href=\"file://$ENV{TEST_LOGS_DIRECTORY}/\">      <strong>$ENV{TEST_LOGS_DIRECTORY}</strong></a></td></tr>\n";
+-print "<tr><td><strong>Output/Failed Result</strong></td><td><a href=\"file://$ENV{TEST_OUTPUT_DIRECTORY}/\"> <strong>$ENV{TEST_OUTPUT_DIRECTORY}</strong></a></td></tr>\n";
+-print "<tr><td><strong>Total Tests</strong></td><td><strong>";
+-$test_counter--;
+-print "$test_counter                         </strong></td></tr>\n";
+-$test_passed=$test_counter-$failed_test_counter-$brok_test_counter-$warn_test_counter-$retr_test_counter-$conf_test_counter;
+-print "<tr><td><strong>Total Test TPASS:</strong></td><td><strong> $test_passed </strong></td></tr>\n";
+-print "<tr><td><strong>Total Test TFAIL:</strong></td><td><strong> $failed_test_counter </strong></td></tr>\n";
+-print "<tr><td><strong>Total Test TBROK</strong></td><td><strong> $brok_test_counter </strong></td></tr>\n";
+-print "<tr><td><strong>Total Test TWARN</strong></td><td><strong> $warn_test_counter </strong></td></tr>\n";
+-print "<tr><td><strong>Total Test TCONF</strong></td><td><strong> $conf_test_counter </strong></td></tr>\n";
+-print "<tr><td><strong>Kernel Version</strong></td><td><strong> $ENV{KERNEL_VERSION}  </strong></td></tr>\n";
+-print "<tr><td><strong>Machine Architecture</strong></td><td><strong> $ENV{MACHINE_ARCH} </strong></td></tr>\n";
+-print "<tr><td><strong>Hostname</strong>  </td> <td><strong>";
+-$hostname=system("uname -n");             chop($hostname);
+-print " $hostname </strong></td></tr></tbody></table></div></body></html>\n";
+diff --git a/tools/genload/.gitignore b/tools/genload/.gitignore
+deleted file mode 100644
+index b89b36741b..0000000000
+--- a/tools/genload/.gitignore
++++ /dev/null
+@@ -1,2 +0,0 @@
+-genload
+-stress
+diff --git a/tools/genload/Makefile b/tools/genload/Makefile
+deleted file mode 100644
+index 8bf4d27558..0000000000
+--- a/tools/genload/Makefile
++++ /dev/null
+@@ -1,31 +0,0 @@
+-#
+-#    tools/genload Makefile.
 -#
 -#    Copyright (C) 2009, Cisco Systems Inc.
 -#
@@ -200,3208 +592,2114 @@ index e8596ec26b..0000000000
 -# Ngie Cooper, July 2009
 -#
 -
--top_srcdir		?= ..
+-top_srcdir		?= ../..
 -
 -include $(top_srcdir)/include/mk/env_pre.mk
--include $(top_srcdir)/include/mk/functions.mk
 -
--# XXX (garrcoop): some versions of flex/bison generate crap code that doesn't
--# check the return code from fwrite(3).
--CPPFLAGS		+= -Wno-error
--
--CPPFLAGS		+= -I$(abs_srcdir)
+-CFLAGS			+= -DPACKAGE=\"stress\" -DVERSION=\"0.17pre11\"
 -
 -LDLIBS			+= -lm
 -
--LFLAGS			+= -l
--
--INSTALL_DIR		:= bin
--
--MAKE_TARGETS		:= ltp-bump ltp-pan
--
--ltp-bump: ltp-bump.o zoolib.o
--
--ltp-pan: ltp-pan.o zoolib.o splitstr.o
--
--# flex does some whacky junk when it generates files on the fly, so let's make
--# sure gcc doesn't get lost...
--vpath %.c $(abs_srcdir):$(abs_builddir)))
--vpath %.l $(abs_srcdir)
--
 -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/pan/cgi/README b/pan/cgi/README
+diff --git a/tools/genload/README b/tools/genload/README
 deleted file mode 100644
-index 544c5466b5..0000000000
---- a/pan/cgi/README
+index 7ea37f6634..0000000000
+--- a/tools/genload/README
 +++ /dev/null
-@@ -1,59 +0,0 @@
--Here are some CGI scripts I was using to view and compare RTS style output.
--It will probably need a little more tweaking to be useful to LTP.
+@@ -1,72 +0,0 @@
+-USAGE
 -
--Expectations:
+-See the program's usage statement by invoking with --help.
 -
--  A directory that contains all output.  It expects file names in the format
+-NOTES
 -
--  <host>.<ISO Date>.<suite>.<type>
+-This program works really well for me, but it might not have some of the
+-features that you want.  If you would like, please extend the code and send
+-me the patch[1].  Enjoy the program :-)
 -
-- 	<host>		The hostname the tests were run on
--	<ISO Date>	ISO standard format date. i.e. YYYYmmDDHHMM
--	<suite>		The name of the pan file that was used
--	<type>		One of driver, scanner, or summary
+-Please use the context diff format.  That is: save the original program
+-as stress.c.orig, then make and test your desired changes to stress.c, then
+-run 'diff -u stress.c.orig stress.c' to produce a context patch.  Thanks.
 -
--			driver - the raw output from pan with <<<test_end>>>
--			scanner - the output from scanner
--            summary - a very brief table listing how many tests passed,
--                      failed, didn't run, etc.  This wasn't released.
+-Amos Waterland <apw@rossby.metr.ou.edu>
+-Norman, Oklahoma
+-27 Nov 2001
 -
--Scripts:
+-EXAMPLES
+-[examples]
 -
--    results.cgi
+-The simple case is that you just want to bring the system load average up to
+-an arbitrary value.  The following forks 13 processes, each of which spins
+-in a tight loop calculating the sqrt() of a random number acquired with
+-rand().
 -
--        This lists out all of the results that are the results directory.  It
--        provides links to the driver output, scanned results, and summary for
--        each suite.  The sort order is host, date, suite.  On the results
--        page, which looks at the .scanner files, there are links that extract
--        the test tag output from the .driver file.
+-  % stress -c 13
 -
--    browse.cgi
+-Long options are supported, as well as is making the output less verbose.
+-The following forks 1024 processes, and only reports error messages if any.
 -
--        This is a more complex form that I started working on.  It allows you
--        to compare as many results as you want, side by side.  Also, I started
--        working on sorting the results different ways, but didn't get too far.
--        The side by side comparison is done with in reconsile.cgi
+-  % stress --quiet --hogcpu 1k
 -
--    reconsile.cgi
+-To see how your system performs when it is I/O bound, use the -i switch.
+-The following forks 4 processes, each of which spins in a tight loop calling
+-sync(), which is a system call that flushes memory buffers to disk.
 -
--        This script compares multiple scanner files and shows the differences
--        side by side in a table.  It expects to find .scanner files for the
--        results it is comparing.
+-  % stress -i 4
 -
--Notes:
+-Multiple hogs may be combined on the same command line.  The following does
+-everything the preceding examples did in one command, but also turns up the
+-verbosity level as well as showing how to cause the command to
+-self-terminate after 1 minute.
 -
--    The driver I was using with these scripts collects some system information
--    before running the tests.  I use this information to display the `uname
--    -a` output in browse.cgi and reconsile.cgi.  You will be missing this
--    information, but the scripts should still run.
+-  % stress -c 13 -i 4 --verbose --timeout 1m
 -
--    I apologize in advance for the use of Perl.  I've managed to steer clear
--    of Perl for five years until I started writing these scripts.  IMHO, the
--    people who learn programming with Perl write the ugliest code.  Luckily, I
--    learned programming mostly with Pascal.  Hopefully the code makes sense.
+-An value of 0 normally denotes infinity.  The following is how to do a fork
+-bomb (be careful with this).
 -
+-  % stress -c 0
 -
----
--Nate Straz                                              nstraz@sgi.com
--sgi, inc                                           http://www.sgi.com/
--Linux Test Project                                  http://ltp.sf.net/
-diff --git a/pan/cgi/browse.cgi b/pan/cgi/browse.cgi
-deleted file mode 100755
-index 49fda6fbd2..0000000000
---- a/pan/cgi/browse.cgi
-+++ /dev/null
-@@ -1,225 +0,0 @@
--#!/usr/bin/perl
+-For the -m and -d options, a value of 0 means to redo their operation an
+-infinite number of times.  To allocate and free 128MB in a redo loop use the
+-following command.  This can be useful for "bouncing" against the system RAM
+-ceiling.
 -
--use CGI qw(:standard);
+-  % stress -m 0 --hogvm-bytes 128M
 -
--# keep a copy of each 'uname -a' string so we don't have to search for it every time.
--%uname_cache = {};
+-For the -m and -d options, a negative value of n means to redo the operation
+-abs(n) times.  Here is now to allocate and free 5MB three times in a row.
 -
--# When something goes wrong before we start output, use this
--# function so there is still output
--sub failure {
--	print header("text/html"),start_html;
--	print "$_[0]\n";
--	print end_html;
--	exit;
--}
--# get the UNAME line for a host, date, suite
--sub get_result_uname {
--	my($inhost, $indate, $insuite, $filename);
--	my(@possible_files, $pf, $line);
--	my($host, $datestr, $suite, $type, $gz);
--	# build a filename
--	$inhost = $_[0];
--	$indate = $_[1];
--	if ($#_ >= 2) {
--		$insuite = $_[2];
--	} else {
--		$insuite = "*";
--	}
--	# check to see if we've done this already
--	if (exists($uname_cache{"$inhost.$indate"})) {
--		return $uname_cache{"$inhost.$indate"};
--	}
--	$filename = "$inhost.$indate.$insuite.*";
--	@possible_files = <${filename}>;
--	if ($#possible_files < 1) {
--		return "";
--	}
--	foreach $pf (@possible_files) {
--		($host, $datestr, $suite, $type, $gz) = split(/\./, $pf);
--		if ($type eq "summary") {
--			next;
--		} elsif ($type eq "scanner") {
--			open (UF, $pf) || next;
--			while ($line = <UF>) {
--				if ($line =~ /^UNAME/) {
--					close(UF);
--					$line =~ s/UNAME *//;
--					$line =~ s/$inhost//;
--					$uname_cache{"$inhost.$indate"} = $line;
--					return $line;
--				}
--			}
--		} elsif ($type eq "driver") {
--			if ($gz) {
--				open (UF, "gunzip -c $pf|") || next;
--			} else {
--				open (UF, "$pf") || next;
--			}
--			while ($line = <UF>) {
--				if ($line =~ /^UNAME/) {
--					close(UF);
--					$line =~ s/UNAME="(.*)"/\1/;
--					$line =~ s/$inhost//;
--					$uname_cache{"$inhost.$indate"} = $line;
--					return $line;
--				}
--			}
--		} else {
--			next;
--		}
--	}
--	return "";
--}
+-  % stress -m -3 --hogvm-bytes 5m
 -
--# Create the headers row, adding links for sorting options
--sub print_headers {
+-You can write a file of arbitrary length to disk.  The file is created with
+-mkstemp() in the current directory, the default is to unlink it, but
+-unlinking can be overridden with the --hoghdd-noclean flag.
 -
--	print "\n<tr>";
+-  % stress -d 1 --hoghdd-noclean --hoghdd-bytes 13
 -
--	for($i = 0; $i <= $#rso; $i++) {
--		print "<th><a href=\"browse.cgi?sort=";
--		for ($j = 0; $j <= $#rso; $j++) {
--			if ($j == $i) { $rsd[$j] = $rsd[$j] * -1; }
--			if ($rsd[$j] == -1) { print "-"; }
--			if ($j == $i) { $rsd[$j] = $rsd[$j] * -1; }
--			print $rso[$j];
--			if ($j < $#rso) { print ","; }
--		}
--		print "\">$rso[$i]</a>\n";
--	}
+-Large file support is enabled.
 -
--	print "</tr>\n";
--}
--
--############
--# main()   #
--############
--
--# Most of the work is done in this directory
--unless (chdir("/usr/tests/ltp/results")) {
--	failure("Could not get to the results directory\n");
--}
--
--@extra_path = split(/\//, $ENV{PATH_INFO});
--
--# rso = Result Sort Order
--# rsd = Result Sort Direction
--#@rso = (HOST,SUITE, DATE, UNAME);
--@rso = (SUITE, HOST, DATE, UNAME);
--@rsd = (1, 1, -1, 1);
--
--# allow the user to specify the sort order
--if ($sort_order = param("sort")) {
--	@so = split(/,/, $sort_order);
--	print $so;
--	@rso = ();
--	for($i = 0; $i <= $#so; $i++) {
--		# parse the field
--		if ($so[$i] =~ /host/i) { push(@rso, HOST); }
--		elsif ($so[$i] =~ /date/i) { push(@rso, DATE); }
--		elsif ($so[$i] =~ /suite/i) { push(@rso, SUITE); }
--		elsif ($so[$i] =~ /uname/i) { push(@rso, UNAME); }
--		# parse the direction
--		if ($so[$i] =~ /-/) { $rsd[$i] = -1; }
--		else { $rsd[$i] = 1; }
--	}
--}
--
--if ($#extra_path > 0) {
--
--} else {
--
--	%results = ();
--
--	# run through the files in the results directory
--	@driver_files = <*driver*>;
--	foreach $df (@driver_files) {
--
--		($host, $datestr, $suite, $type, $gz) = split(/\./, $df);
--
--		$a_rec = ();
--		$a_rec->{HOST} = $host;
--		$a_rec->{DATE} = $datestr;
--		$a_rec->{SUITE} = $suite;
--		$a_rec->{DRIVER_FILE} = $df;
--		$a_rec->{UNAME} = get_result_uname($host, $datestr);
--
--		$results{ $a_rec->{DRIVER_FILE} } = $a_rec;
--	}
--
--	# write the HTML file
--	print header("text/html"),start_html;
--	print "This is a demo page for browsing the Linux LTP results.  Select the results you want to compare and click the \"Compare\" button.", p, h2("Warning"), "The results are placed in a large table which may take a long time to render on some browsers", p;
--	@ri = values %results;
--	@ri = sort { ($a->{$rso[0]} cmp $b->{$rso[0]})*$rsd[0]
--			|| ($a->{$rso[1]} cmp $b->{$rso[1]})*$rsd[1]
--			|| ($a->{$rso[2]} cmp $b->{$rso[2]})*$rsd[2]
--			|| ($a->{$rso[3]} cmp $b->{$rso[3]})*$rsd[3] } @ri;
--
--	$last = ();
--	$last->{$rso[0]} = "";
--	$last->{$rso[1]} = "";
--	$last->{$rso[2]} = "";
--	$lasthost = "";
--	$lastdate = "";
--	$lastsuite = "";
--	#$lastindent = 0;
--	$thisindent = 0;
--	print "<form method=get action=\"reconsile.cgi\">";
--	print "<table border=1>\n";
--	#print "<tr><th>Hostname<th>Date<th>Suite</tr>\n";
--	print_headers();
--	foreach $rp ( @ri ) {
--
--		$this = ();
--		$this->{$rso[0]} = $rp->{$rso[0]};
--		$this->{$rso[1]} = $rp->{$rso[1]};
--		$this->{$rso[2]} = $rp->{$rso[2]};
--		$this->{$rso[3]} = $rp->{$rso[3]};
--
--		# figure out the first column that is different
--		for ($i = 0; $i <= $#rso; $i++) {
--			if ($last->{$rso[$i]} ne $this->{$rso[$i]}) {
--				$thisindent = $i;
--				last;
--			}
--		}
--
--		print "<tr>\n";
--		for ($i = 0; $i < $thisindent; $i++) {
--			print "<td>";
--
--		}
--		for ($i = $thisindent; $i <= $#rso; $i++) {
--			print "<td>";
--			if ($i == $#rso) {
--				print "<a href=\"results.cgi?get_df=$this->{HOST}.$this->{DATE}.$this->{SUITE}.scanner\">";
--			}
--			print "$this->{$rso[$i]}";
--			if ($i == $#rso) {
--				print "</a>";
--			}
--			if ($i == $#rso) {
--				# last column
--				print " <input type=checkbox name=results value=\"$this->{HOST}.$this->{DATE}.$this->{SUITE}\">";
--
--			}
--
--
--		}
--		print "</tr>\n";
--
--		# make sure we update the $last... variables
--		$last->{$rso[0]} = $this->{$rso[0]};
--		$last->{$rso[1]} = $this->{$rso[1]};
--		$last->{$rso[2]} = $this->{$rso[2]};
--	}
--	print "</table>\n";
--	print "<input type=submit name=compare value=\"Compare\">\n";
--	print "<input type=reset>\n";
--	print "</form>";
--	print end_html;
--
--}
--
-diff --git a/pan/cgi/reconsile.cgi b/pan/cgi/reconsile.cgi
-deleted file mode 100755
-index da131f4716..0000000000
---- a/pan/cgi/reconsile.cgi
-+++ /dev/null
-@@ -1,250 +0,0 @@
--#!/usr/bin/perl
--
--#
--# reconsile.cgi - reconsile two or more scanner files
--#
--
--use CGI qw(:standard);
--
--chdir("/usr/tests/ltp/results/");
--
--# Get the list of results to compare.
--@results = param("results");
--
--print header("text/html");
--print start_html, "<pre>\n";
--
--# Give a warning if the suites do not match
--($a, $b, $lastsuite) = split(/\./, $results[0]);
--for ($i = 1; $i <= $#results; $i++) {
--	($a, $b, $thissuite) = split(/\./, $results[$i]);
--	if ($lastsuite ne $thissuite) {
--		print "Warning: Suites do not match!\n";
--		last;
--	}
--}
--
--# check that each requested result exists.  If one does not exist,
--# print a warning and continue.  If the number of available results
--# is less than two, halt with an error
--@result_filenames = ();
--foreach $a_result (@results) {
--	if (-f "$a_result.scanner") {
--		push(@result_filenames, "$a_result.scanner");
--	} else {
--		print "Could not find a scanner file for $a_result\n";
--	}
--}
--if ($#result_filenames < 1) {
--	print "Not enough result files to compare\n";
--	die;
--}
--
--# for each result file read in and store the header information in
--# an associative array.  Take the rest of the input file and store
--# it as a list.
--@result_details = ();
--@result_testcases = ();
--$i = 0;
--foreach $result_filename (@result_filenames) {
--	unless (open(F, $result_filename)) {
--		print "failed openning $result_filename\n";
--		next;
--	}
--	# advance past the header then read in the rest
--	$result_testcases->[$i] = ();
--	$result_details->[$i] = {};
--	($host, $datestr, $suite, $ext) = split(/\./, $result_filename);
--	$result_details->[$i]->{HOST} = $host;
--	$result_details->[$i]->{DATESTR} = $datestr;
--	$result_details->[$i]->{SUITE} = $suite;
--	while ($line = <F>) {
--		# check for the end of the header
--		if ($line =~ /^-+/) {
--			# we've reached the top of the scanner output
--			# grab the rest and stop the while loop;
--			@rest = <F>;
--			close(F);
--			last;
--		}
--		# grab information from the header
--		if ($line =~ /^UNAME/) {
--			$line =~ s/UNAME *//;
--			$result_details->[$i]->{UNAME} = $line;
--			next;
--		}
--	}
--	# convert the results to records and add them to the list
--	foreach $line (@rest) {
--		($tag, $tcid, $tc, $status, $contact) = split(/\s+/, $line);
--		# fix some of the fields so they sort properly
--		$tcid = '{' if ($tcid eq '*');
--		$tcid = '}' if ($tcid eq '-');
--		$tc = '{' if ($tc eq '*');
--		$tc = '}' if ($tc eq '-');
--		$rec = ();
--		$rec->{TAG} = $tag;
--		$rec->{TCID} = $tcid;
--		$rec->{TC} = $tc;
--		$rec->{STATUS} = $status;
--		$rec->{CONTACT} = $contact;
--		push(@{$result_testcases[$i]}, $rec);
--	}
--	$i++;
--}
--
--# sort each set of results.
--# This is the most important step since walking the data depends on
--# correctly sorting the data.  Some substitutions are made to keep
--# the test cases in each test tag in the proper order.  i.e.
--# s/\*/{/
--#$i = 0;
--foreach $rtcs (@result_testcases) {
--	@$rtcs = sort { $a->{TAG} cmp $b->{TAG}
--					|| $a->{TCID} cmp $b->{TCID}
--					|| $a->{TC} <=> $b->{TC}
--					|| $a->{TC} cmp $b->{TC}
--					|| $a->{STATUS} cmp $b->{STATUS}} @$rtcs;
--	#print "sorted file $i\n";
--	#print "=" x 50 . "\n";
--	#foreach (@$rtcs) {
--	#	print "$_->{TAG}:$_->{TCID}:$_->{TC}:$_->{STATUS}\n";
--	#}
--	#print "=" x 50 . "\n";
--	#$i++;
--}
--
--# here is the loop that prints the data into a multi-column table with the test
--# tags grouped together.
--
--print "</pre>";
--print "<table border=1>\n";
--
--print "<tr><td>";
--for($i=0; $i <= $#result_testcases; $i++) {
--	print "<th colspan=3>$result_details->[$i]->{HOST}.$result_details->[$i]->{DATESTR}.$result_details->[$i]->{SUITE}";
--}
--print "</tr>\n";
--
--print "<tr><th>Test Tag";
--for($i=0; $i <= $#result_testcases; $i++) {
--	print "<th>TCID<th>Test Case<th>Status";
--}
--print "<th>Contact</tr>\n";
--
--# while the result lists still have test cases
--# 	Find the smallest record from the top of the lists
--#   remove matching records from the lists and output them
--$last_tag = "";
--while (1) {
--
--	# if there wasn't anything left, leave
--	$somethingleft = 0;
--	foreach $rtcs (@result_testcases) {
--		if ($#$rtcs > -1) {
--			$somethingleft = 1;
--			last;
--		}
--	}
--	unless ($somethingleft) { last; }
--
--	# find the Lowest Common Record
--	@tops = ();
--	foreach $rtcs (@result_testcases) {
--		if (@$rtcs[0]) {
--			push(@tops, copy_record(@$rtcs[0]));
--		}
--	}
--	@tops = sort { $a->{TAG} cmp $b->{TAG}
--				|| $a->{TCID} cmp $b->{TCID}
--				|| $a->{TC} <=> $b->{TC}
--				|| $a->{TC} cmp $b->{TC}
--				|| $a->{STATUS} cmp $b->{STATUS}} @tops;
--
--	$LCR = $tops[0];
--
--	# check to see if everyone matches
--	$matches = 0;
--	foreach $rtcs (@result_testcases) {
--		if (! @$rtcs[0]) { next; }
--		if (@$rtcs[0]->{TAG} eq $LCR->{TAG}
--			&& @$rtcs[0]->{TCID} eq $LCR->{TCID}
--			&& @$rtcs[0]->{TC} eq $LCR->{TC}
--			&& @$rtcs[0]->{STATUS} eq $LCR->{STATUS}) {
--
--			$matches++;
--		}
--	}
--	# if everyone does match (status included) shift them
--	# and move on.
--	if ($matches == ($#result_testcases+1)) {
--		foreach $rtcs (@result_testcases) { shift(@$rtcs); }
--		next;
--	}
--
--	# if we've already output stuff related to this test tag,
--	# skip that column, otherwise print the tag
--	if ($LCR->{TAG} eq $lasttag) {
--		print "<tr><td>";
--	} else {
--		print "<tr><td>$LCR->{TAG}";
--		$lasttag = $LCR->{TAG};
--	}
--
--	# walk through the lists again outputting as we match
--	$column = 0;
--	foreach $rtcs (@result_testcases) {
--		if (! @$rtcs[0]) {
--			print "<td><td><td>";
--			$column++;
--			next;
--		} elsif (@$rtcs[0]->{TAG} eq $LCR->{TAG}
--			&& @$rtcs[0]->{TCID} eq $LCR->{TCID}
--			&& @$rtcs[0]->{TC} eq $LCR->{TC}) {
--
--			$match = shift(@$rtcs);
--			$match->{TCID} = '*' if ($match->{TCID} eq '{');
--			$match->{TCID} = '-' if ($match->{TCID} eq '}');
--			$match->{TC} = '*' if ($match->{TC} eq '{');
--			$match->{TC} = '-' if ($match->{TC} eq '}');
--			print "<td>";
--			$rd = $result_details->[$column];
--			print "<a href=\"results.cgi?get_df=$rd->{HOST}.$rd->{DATESTR}.$rd->{SUITE}.driver&zoom_tag=$match->{TAG}\">";
--			print "$match->{TCID}</a>";
--			print "<td>$match->{TC}";
--			print "<td>";
--			if ($match->{STATUS} =~ /PASS/) {
--				print "<font color=green>";
--			} elsif ($match->{STATUS} =~ /FAIL/) {
--				print "<font color=red>";
--			} elsif ($match->{STATUS} =~ /CONF/) {
--				print "<font color=yello>";
--			} elsif ($match->{STATUS} =~ /BROK/) {
--				print "<font color=blue>";
--			} else {
--				print "<font color=black>";
--			}
--			print "$match->{STATUS}</font>";
--		} else {
--			print "<td><td><td>";
--		}
--		$column++;
--	}
--	print "<td>$LCR->{CONTACT}</tr>\n";
--}
--print "</table>";
--
--print end_html;
--
--
--sub copy_record {
--	my $copy, $rec = shift;
--
--	$copy->{TAG} = $rec->{TAG};
--	$copy->{TCID} = $rec->{TCID};
--	$copy->{TC} = $rec->{TC};
--	$copy->{STATUS} = $rec->{STATUS};
--	$copy->{CONTACT} = $rec->{CONTACT};
--	return $copy;
--
--}
-diff --git a/pan/cgi/results.cgi b/pan/cgi/results.cgi
-deleted file mode 100755
-index f84a92c7d1..0000000000
---- a/pan/cgi/results.cgi
-+++ /dev/null
-@@ -1,164 +0,0 @@
--#!/usr/bin/perl
--
--use CGI qw(:standard escapeHTML);
--
--# When something goes wrong before we start output, use this function
--# so there is still output
--sub failure {
--	print header("text/html"),start_html;
--	print "$_[0]\n";
--	print end_html;
--	exit;
--}
--
--# Most of the work is done in this directory
--unless (chdir("/usr/tests/ltp/results")) {
--	failure("Could not get to the results directory\n");
--}
--
--
--# grab the parameters that determine what's going on then branch
--$get_df = param("get_df");
--if ($get_df) {
--	# copy a driver file and output it.
--	$get_df = (<$get_df*>)[0];
--	($host, $datestr, $suite, $type, $gz) = split(/\./, $get_df);
--	#print start_html, "<pre>\n";
--	if ($gz) {
--		open (DF, "gunzip -c $get_df|") || print "$get_df not found\n";
--	} else {
--		open (DF, "$get_df") || print "$get_df not found";
--	}
--	if ($type eq "driver" || $type eq "summary") {
--		print header("text/plain");
--		$zoom_tag = param("zoom_tag");
--		if ($zoom_tag) {
--			while (<DF>) {
--				# find the start of a test
--				while (<DF>) {
--					if (/\<\<\<test_start\>\>\>/) {
--						$line = <DF>;
--						if ($line =~ /^tag=$zoom_tag /) {
--							print "<<<test_start>>>\n";
--							print $line;
--
--							do {
--								$line = <DF>;
--								print $line;
--							} until ($line =~ /\<\<\<test_end\>\>\>/);
--							exit;
--						}
--					}
--				}
--			}
--			print "Did not find tag $zoom_tag\n";
--		} else {
--			while (<DF>) {
--				print $_;
--			}
--		}
--	} elsif ($type eq "scanner") {
--		print header("text/html");
--		print start_html, "<pre>\n";
--		while (<DF>) {
--			print;
--			if (/^-+/) { last;}
--		}
--		@rest = <DF>;
--		# this is just to put the * at the end of the test case list
--		unless (param("raw")) {
--			foreach (@rest) { s/\*/{/; }
--			foreach (@rest) { s/(\s)-(\s)/\1}\2/; }
--			@rest = sort @rest;
--			foreach (@rest) { s/{/*/; }
--			foreach (@rest) { s/}/-/; }
--		}
--
--		foreach (@rest) {
--			s/(\S+)/<a href="results.cgi?get_df=$host.$datestr.$suite.driver&zoom_tag=\1">\1<\/a>/;
--			# colorize the status column
--			s/\bPASS\b/\<font color\=green\>PASS\<\/font\>/i;
--			s/\bFAIL\b/\<font color\=\"red\"\>FAIL\<\/font\>/i;
--			s/\bCONF\b/\<font color\=\"yellow\"\>CONF\<\/font\>/i;
--			s/\bBROK\b/\<font color\=\"blue\"\>BROK\<\/font\>/i;
--			print;
--		}
--		print "\n</pre>",end_html;
--	}
--	close(DF);
--	#print "\n</pre>\n",end_html;
--} else {
--	%results = ();
--
--	# run through the files in the results directory
--	@driver_files = <*driver*>;
--	foreach $df (sort(@driver_files)) {
--
--		($host, $datestr, $suite, $type, $gz) = split(/\./, $df);
--
--		$a_rec = ();
--		$a_rec->{HOST} = $host;
--		$a_rec->{DATE} = $datestr;
--		$a_rec->{SUITE} = $suite;
--		$a_rec->{DRIVER_FILE} = $df;
--
--		$results{ $a_rec->{DRIVER_FILE} } = $a_rec;
--	}
--
--	# write the HTML file
--	print header("text/html"),start_html;
--
--	@ri = values %results;
--	@ri = sort { $a->{HOST} cmp $b->{HOST}
--			||$b->{DATE} <=> $a->{DATE}
--			||$a->{SUITE} cmp $b->{SUITE} } @ri;
--	$lasthost = "";
--	$lastdate = "";
--	$lastsuite = "";
--	$indent = 0;
--	print "<table>\n";
--	print "<tr><th>Hostname<th>Date<th>Suite</tr>\n";
--	foreach $rp ( @ri ) {
--		$thishost = $rp->{HOST};
--		$thisdate = $rp->{DATE};
--		$thissuite = $rp->{SUITE};
--
--		# figure out where is the table we need to start
--		if ($lasthost ne $thishost) {
--			$indent = 0;
--		} elsif ($lastdate ne $thisdate) {
--			$indent = 1;
--		} elsif ($lastsuite ne $thissuite) {
--			$indent = 2;
--		}
--
--		# write the rows we need depending on the starting point
--		# host level
--		if ($indent <= 0) {
--			print "<tr><td>$thishost\n";
--		}
--		# date level
--		if ($indent <= 1) {
--			($year, $month, $day, $hour, $min) = ($thisdate =~ /(\d+)(\d{2})(\d{2})(\d{2})(\d{2})/);
--			print "<tr><td><td>$year-$month-$day $hour:$min\n";
--		}
--		# suite level
--		if ($indent <= 2) {
--			print "<tr><td><td><td>";
--			print "$thissuite";
--			print " [<a href=\"results.cgi?get_df=$rp->{DRIVER_FILE}\">driver output</a>]";
--			print " [<a href=\"results.cgi?get_df=$thishost.$thisdate.$thissuite.scanner\">results</a>]";
--			print " [<a href=\"results.cgi?get_df=$thishost.$thisdate.$thissuite.summary\">summary</a>]";
--
--			print "\n";
--		}
--
--		# make sure we update the $last... variables
--		$lasthost = $thishost;
--		$lastdate = $thisdate;
--		$lastsuite = $thissuite;
--	}
--	print "</table>\n";
--	print end_html;
--}
--
-diff --git a/pan/ltp-bump.c b/pan/ltp-bump.c
+-  % stress -d 1 --hoghdd-noclean --hoghdd-bytes 3G
+diff --git a/tools/genload/genload.c b/tools/genload/genload.c
 deleted file mode 100644
-index b6d676f423..0000000000
---- a/pan/ltp-bump.c
+index a19d519fd6..0000000000
+--- a/tools/genload/genload.c
 +++ /dev/null
-@@ -1,115 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+@@ -1,898 +0,0 @@
+-/* A program to put stress on a POSIX system (stress).
+- *
+- * Copyright (C) 2001, 2002 Amos Waterland <awaterl@yahoo.com>
 - *
 - * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
+- * under the terms of the GNU General Public License as published by the Free
+- * Software Foundation; either version 2 of the License, or (at your option)
+- * any later version.
 - *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
 - *
 - * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
+- * with this program; if not, write to the Free Software Foundation, Inc.,
 - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
 - */
--/* $Id: ltp-bump.c,v 1.1 2009/05/19 09:39:11 subrata_modak Exp $ */
--#include <stdio.h>
--#include <errno.h>
--#include <sys/signal.h>
--#include <string.h>
--#include <stdlib.h>
--#include <unistd.h>
 -
--#include "zoolib.h"
--
--pid_t read_active(FILE * fp, char *name);
--
--int main(int argc, char **argv)
--{
--	int c;
--	char *active = NULL;
--	pid_t nanny;
--	zoo_t zoo;
--	int sig = SIGINT;
--
--	while ((c = getopt(argc, argv, "a:s:12")) != -1) {
--		switch (c) {
--		case 'a':
--			active = malloc(strlen(optarg) + 1);
--			strcpy(active, optarg);
--			break;
--		case 's':
--			sig = atoi(optarg);
--			break;
--		case '1':
--			sig = SIGUSR1;
--			break;
--		case '2':
--			sig = SIGUSR2;
--			break;
--		}
--	}
--
--	if (active == NULL) {
--		active = zoo_getname();
--		if (active == NULL) {
--			fprintf(stderr,
--				"ltp-bump: Must supply -a or set ZOO env variable\n");
--			exit(1);
--		}
--	}
--
--	if (optind == argc) {
--		fprintf(stderr, "ltp-bump: Must supply names\n");
--		exit(1);
--	}
--
--	/* need r+ here because we're using write-locks */
--	if ((zoo = zoo_open(active)) == NULL) {
--		fprintf(stderr, "ltp-bump: %s\n", zoo_error);
--		exit(1);
--	}
--
--	while (optind < argc) {
--		/*printf("argv[%d] = (%s)\n", optind, argv[optind] ); */
--		nanny = zoo_getpid(zoo, argv[optind]);
--		if (nanny == -1) {
--			fprintf(stderr, "ltp-bump: Did not find tag '%s'\n",
--				argv[optind]);
--		} else {
--			if (kill(nanny, sig) == -1) {
--				if (errno == ESRCH) {
--					fprintf(stderr,
--						"ltp-bump: Tag %s (pid %d) seems to be dead already.\n",
--						argv[optind], nanny);
--					if (zoo_clear(zoo, nanny))
--						fprintf(stderr,
--							"ltp-bump: %s\n",
--							zoo_error);
--				}
--			}
--		}
--		++optind;
--	}
--	zoo_close(zoo);
--
--	exit(0);
--}
-diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
-deleted file mode 100644
-index 0bdb514771..0000000000
---- a/pan/ltp-pan.c
-+++ /dev/null
-@@ -1,1485 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- * Changelog:
-- *
-- *	Added timer options: William Jay Huie, IBM
-- *	01/27/03 - Added: Manoj Iyer, manjo@mail.utexas.edu
-- *			   - option '-p' (pretty printing)i to enabled formatted printing
-- *			     of results.
-- *
-- *	01/27/03 - Added: Manoj Iyer, manjo@mail.utexas.edu
-- *			   - added code to print system information
-- *
-- *	01/28/03 - Added: Manoj Iyer, manjo@mail.utexas.edu
-- *			   - added code to print test exit value.
-- *
-- *	01/29/03 - Added: Manoj Iyer, manjo@mail.utexas.edu
-- *			   - added code supresses test start and test end tags.
-- *
-- * 	07/22/07 - Added: Ricardo Salveti de Araujo, rsalveti@linux.vnet.ibm.com
-- *			   - added option to create a command file with all failed tests.
-- *
-- */
--/* $Id: ltp-pan.c,v 1.4 2009/10/15 18:45:55 yaberauneya Exp $ */
--
--#include <sys/param.h>
--#include <sys/stat.h>
--#include <stdarg.h>
--#include <sys/times.h>
--#include <sys/types.h>
--#include <sys/wait.h>
--#include <sys/utsname.h>
--#include <errno.h>
--#include <err.h>
--#include <limits.h>
--#include <signal.h>
--#include <stdlib.h>
--#include <string.h>
--#include <time.h>
 -#include <ctype.h>
+-#include <errno.h>
+-#include <libgen.h>
+-#include <math.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include <sys/wait.h>
 -
--#include "splitstr.h"
--#include "zoolib.h"
--#include "tst_res_flags.h"
+-/* By default, print all messages of severity info and above.  */
+-static int global_debug = 2;
 -
--/* One entry in the command line collection.  */
--struct coll_entry {
--	char *name;		/* tag name */
--	char *cmdline;		/* command line */
--	char *pcnt_f;		/* location of %f in the command line args, flag */
--	struct coll_entry *next;
--};
+-/* By default, just print warning for non-critical errors.  */
+-static int global_ignore = 1;
 -
--struct collection {
--	int cnt;
--	struct coll_entry **ary;
--};
+-/* By default, retry on non-critical errors every 50ms.  */
+-static int global_retry = 50000;
 -
--struct tag_pgrp {
--	int pgrp;
--	int stopping;
--	time_t mystime;
--	struct coll_entry *cmd;
--	char output[PATH_MAX];
--};
+-/* By default, use this as backoff coefficient for good fork throughput.  */
+-static int global_backoff = 3000;
 -
--struct orphan_pgrp {
--	int pgrp;
--	struct orphan_pgrp *next;
--};
+-/* By default, do not timeout.  */
+-static int global_timeout = 0;
 -
--static pid_t run_child(struct coll_entry *colle, struct tag_pgrp *active,
--		       int quiet_mode, int *failcnt, int fmt_print,
--		       FILE * logfile, int no_kmsg);
--static char *slurp(char *file);
--static struct collection *get_collection(char *file, int optind, int argc,
--					 char **argv);
--static void pids_running(struct tag_pgrp *running, int keep_active);
--static int check_pids(struct tag_pgrp *running, int *num_active,
--		      int keep_active, FILE * logfile, FILE * failcmdfile,
--		      FILE *tconfcmdfile, struct orphan_pgrp *orphans,
--		      int fmt_print, int *failcnt, int *tconfcnt,
--		      int quiet_mode, int no_kmsg);
--static void propagate_signal(struct tag_pgrp *running, int keep_active,
--			     struct orphan_pgrp *orphans);
--static void dump_coll(struct collection *coll);
--static char *subst_pcnt_f(struct coll_entry *colle);
--static void mark_orphan(struct orphan_pgrp *orphans, pid_t cpid);
--static void orphans_running(struct orphan_pgrp *orphans);
--static void check_orphans(struct orphan_pgrp *orphans, int sig);
+-/* Name of this program */
+-static char *global_progname = PACKAGE;
 -
--static void copy_buffered_output(struct tag_pgrp *running);
--static void write_test_start(struct tag_pgrp *running, int no_kmsg);
--static void write_test_end(struct tag_pgrp *running, const char *init_status,
--			   time_t exit_time, char *term_type, int stat_loc,
--			   int term_id, struct tms *tms1, struct tms *tms2);
+-/* By default, do not hang after allocating memory.  */
+-static int global_vmhang = 0;
 -
--//wjh
--static char PAN_STOP_FILE[] = "PAN_STOP_FILE";
+-/* Implemention of runtime-selectable severity message printing.  */
+-#define dbg if (global_debug >= 3) \
+-            fprintf (stdout, "%s: debug: (%d) ", global_progname, __LINE__), \
+-            fprintf
+-#define out if (global_debug >= 2) \
+-            fprintf (stdout, "%s: info: ", global_progname), \
+-            fprintf
+-#define wrn if (global_debug >= 1) \
+-            fprintf (stderr, "%s: warn: (%d) ", global_progname, __LINE__), \
+-            fprintf
+-#define err if (global_debug >= 0) \
+-            fprintf (stderr, "%s: error: (%d) ", global_progname, __LINE__), \
+-            fprintf
 -
--static char *panname = NULL;
--static char *test_out_dir = NULL;	/* dir to buffer output to */
--zoo_t zoofile;
--static char *reporttype = NULL;
+-/* Implementation of check for option argument correctness.  */
+-#define assert_arg(A) \
+-          if (++i == argc || ((arg = argv[i])[0] == '-' && \
+-              !isdigit ((int)arg[1]) )) \
+-            { \
+-              err (stderr, "missing argument to option '%s'\n", A); \
+-              exit (1); \
+-            }
 -
--/* Common format string for ltp-pan results */
--#define ResultFmt	"%-50s %-10.10s"
+-/* Prototypes for utility functions.  */
+-int usage(int status);
+-int version(int status);
+-long long atoll_s(const char *nptr);
+-long long atoll_b(const char *nptr);
 -
--/* zoolib */
--int rec_signal;			/* received signal */
--int send_signal;		/* signal to send */
--
--/* Debug Bits */
--int Debug = 0;
--#define Dbuffile	0x000400	/* buffer file use */
--#define	Dsetup		0x000200	/* one-time set-up */
--#define	Dshutdown	0x000100	/* killed by signal */
--#define	Dexit		0x000020	/* exit status */
--#define	Drunning	0x000010	/* current pids running */
--#define	Dstartup	0x000004	/* started command */
--#define	Dstart		0x000002	/* started command */
--#define Dwait		0x000001	/* wait interrupted */
+-/* Prototypes for the worker functions.  */
+-int hogcpu(long long forks);
+-int hogio(long long forks);
+-int hogvm(long long forks, long long chunks, long long bytes);
+-int hoghdd(long long forks, int clean, long long files, long long bytes);
 -
 -int main(int argc, char **argv)
 -{
--	extern char *optarg;
--	extern int optind;
--	char *zooname = NULL;	/* name of the zoo file to use */
--	char *filename = "/dev/null";	/* filename to read test tags from */
--	char *logfilename = NULL;
--	char *failcmdfilename = NULL;
--	char *tconfcmdfilename = NULL;
--	char *outputfilename = NULL;
--	struct collection *coll = NULL;
--	struct tag_pgrp *running;
--	struct orphan_pgrp *orphans, *orph;
--	struct utsname unamebuf;
--	FILE *logfile = NULL;
--	FILE *failcmdfile = NULL;
--	FILE *tconfcmdfile = NULL;
--	int keep_active = 1;
--	int num_active = 0;
--	int failcnt = 0;  /* count of total testcases that failed. */
--	int tconfcnt = 0; /* count of total testcases that return TCONF */
--	int err, i;
--	int starts = -1;
--	int timed = 0;
--	int run_time = -1;
--	char modifier = 'm';
--	int ret = 0;
--	int stop;
--	int go_idle;
--	int has_brakes = 0;	/* stop everything if a test case fails */
--	int sequential = 0;	/* run tests sequentially */
--	int fork_in_road = 0;
--	int exit_stat;
--	int track_exit_stats = 0;	/* exit non-zero if any test exits non-zero */
--	int fmt_print = 0;	/* enables formatted printing of logfiles. */
--	int quiet_mode = 0;	/* supresses test start and test end tags. */
--	int no_kmsg = 0;	/* don't log into /dev/kmsg */
--	int c;
--	pid_t cpid;
--	struct sigaction sa;
+-	int i, pid, children = 0, retval = 0;
+-	long starttime, stoptime, runtime;
 -
--	while ((c =
--		getopt(argc, argv, "AO:Sa:C:QT:d:ef:hl:n:o:pqr:s:t:x:y"))
--		       != -1) {
--		switch (c) {
--		case 'A':	/* all-stop flag */
--			has_brakes = 1;
--			track_exit_stats = 1;
--			break;
--		case 'O':	/* output buffering directory */
--			test_out_dir = strdup(optarg);
--			break;
--		case 'S':	/* run tests sequentially */
--			sequential = 1;
--			break;
--		case 'a':	/* name of the zoo file to use */
--			zooname = strdup(optarg);
--			break;
--		case 'C':	/* name of the file where all failed commands will be */
--			failcmdfilename = strdup(optarg);
--			break;
--		case 'Q':
--			no_kmsg = 1;
--			break;
--		case 'T':
--			/*
--			 * test cases that are not fully tested will be recorded
--			 * in this file
--			 */
--			tconfcmdfilename = strdup(optarg);
--			break;
--		case 'd':	/* debug options */
--			sscanf(optarg, "%i", &Debug);
--			break;
--		case 'e':	/* exit non-zero if any test exists non-zero */
--			track_exit_stats = 1;
--			break;
--		case 'f':	/* filename to read test tags from */
--			filename = strdup(optarg);
--			break;
--		case 'h':	/* help */
--			fprintf(stdout,
--				"Usage: pan -n name [ -SyAehpqQ ] [ -s starts ]"
--				" [-t time[s|m|h|d] [ -x nactive ] [ -l logfile ]\n\t"
--				"[ -a active-file ] [ -f command-file ] "
--				"[ -C fail-command-file ] "
--				"[ -d debug-level ]\n\t[-o output-file] "
--				"[-O output-buffer-directory] [cmd]\n");
--			exit(0);
--		case 'l':	/* log file */
--			logfilename = strdup(optarg);
--			break;
--		case 'n':	/* tag given to pan */
--			panname = strdup(optarg);
--			break;
--		case 'o':	/* send test output here */
--			outputfilename = strdup(optarg);
--			break;
--		case 'p':	/* formatted printing. */
--			fmt_print = 1;
--			break;
--		case 'q':	/* supress test start and test end messages */
--			quiet_mode = 1;
--			break;
--		case 'r':	/* reporting type: none, rts */
--			reporttype = strdup(optarg);
--			break;
--		case 's':	/* number of tags to run */
--			starts = atoi(optarg);
--			break;
--		case 't':	/* run_time to run */
--			ret = sscanf(optarg, "%d%c", &run_time, &modifier);
--			if (ret == 0) {
--				fprintf(stderr,
--					"Need proper time input: ####x where "
--					"x is one of s,m,h,d\n");
--				break;
--			} else if (ret == 1) {
--				fprintf(stderr, "Only got a time value of %d "
--					"modifiers need to come immediately after #"
--					" assuming %c\n", run_time, modifier);
--			} else {
--				switch (modifier) {
--				case 's':
--					run_time = run_time;
--					break;
--				case 'm':
--					run_time = run_time * 60;
--					break;
--				case 'h':
--					run_time = run_time * 60 * 60;
--					break;
--				case 'd':
--					run_time = run_time * 60 * 60 * 24;
--					break;
--				default:
--					fprintf(stderr,
--						"Invalid time modifier, try: s|h|m|d\n");
--					exit(-1);
--				}
--				if (!quiet_mode)
--					printf("PAN will run for %d seconds\n",
--					       run_time);
--			}
--			timed = 1;	//-t implies run as many starts as possible, by default
--			break;
--		case 'x':	/* number of tags to keep running */
--			keep_active = atoi(optarg);
--			break;
--		case 'y':	/* restart on failure or signal */
--			fork_in_road = 1;
--			break;
--		}
--	}
+-	/* Variables that indicate which options have been selected.  */
+-	int do_dryrun = 0;
+-	int do_timeout = 0;
+-	int do_cpu = 0;		/* Default to 1 fork. */
+-	long long do_cpu_forks = 1;
+-	int do_io = 0;		/* Default to 1 fork. */
+-	long long do_io_forks = 1;
+-	int do_vm = 0;		/* Default to 1 fork, 1 chunk of 256MB.  */
+-	long long do_vm_forks = 1;
+-	long long do_vm_chunks = 1;
+-	long long do_vm_bytes = 256 * 1024 * 1024;
+-	int do_hdd = 0;		/* Default to 1 fork, clean, 1 file of 1GB.  */
+-	long long do_hdd_forks = 1;
+-	int do_hdd_clean = 0;
+-	long long do_hdd_files = 1;
+-	long long do_hdd_bytes = 1024 * 1024 * 1024;
 -
--	if (panname == NULL) {
--		fprintf(stderr, "pan: Must supply -n\n");
+-	/* Record our start time.  */
+-	if ((starttime = time(NULL)) == -1) {
+-		err(stderr, "failed to acquire current time\n");
 -		exit(1);
 -	}
--	if (zooname == NULL) {
--		zooname = zoo_getname();
--		if (zooname == NULL) {
--			fprintf(stderr,
--				"pan(%s): Must supply -a or set ZOO env variable\n",
--				panname);
+-
+-	/* SuSv3 does not define any error conditions for this function.  */
+-	global_progname = basename(argv[0]);
+-
+-	/* For portability, parse command line options without getopt_long.  */
+-	for (i = 1; i < argc; i++) {
+-		char *arg = argv[i];
+-
+-		if (strcmp(arg, "--help") == 0 || strcmp(arg, "-?") == 0) {
+-			usage(0);
+-		} else if (strcmp(arg, "--version") == 0) {
+-			version(0);
+-		} else if (strcmp(arg, "--verbose") == 0
+-			   || strcmp(arg, "-v") == 0) {
+-			global_debug = 3;
+-		} else if (strcmp(arg, "--quiet") == 0
+-			   || strcmp(arg, "-q") == 0) {
+-			global_debug = 0;
+-		} else if (strcmp(arg, "--dry-run") == 0
+-			   || strcmp(arg, "-n") == 0) {
+-			do_dryrun = 1;
+-		} else if (strcmp(arg, "--no-retry") == 0) {
+-			global_ignore = 0;
+-			dbg(stdout,
+-			    "turning off ignore of non-critical errors");
+-		} else if (strcmp(arg, "--retry-delay") == 0) {
+-			assert_arg("--retry-delay");
+-			global_retry = atoll(arg);
+-			dbg(stdout, "setting retry delay to %dus\n",
+-			    global_retry);
+-		} else if (strcmp(arg, "--backoff") == 0) {
+-			assert_arg("--backoff");
+-			global_backoff = atoll(arg);
+-			if (global_backoff < 0) {
+-				err(stderr, "invalid backoff factor: %i\n",
+-				    global_backoff);
+-				exit(1);
+-			}
+-			dbg(stdout, "setting backoff coeffient to %dus\n",
+-			    global_backoff);
+-		} else if (strcmp(arg, "--timeout") == 0
+-			   || strcmp(arg, "-t") == 0) {
+-			do_timeout = 1;
+-			assert_arg("--timeout");
+-			global_timeout = atoll_s(arg);
+-			dbg(stdout, "setting timeout to %ds\n", global_timeout);
+-		} else if (strcmp(arg, "--cpu") == 0 || strcmp(arg, "-c") == 0) {
+-			do_cpu = 1;
+-			assert_arg("--cpu");
+-			do_cpu_forks = atoll_b(arg);
+-		} else if (strcmp(arg, "--io") == 0 || strcmp(arg, "-i") == 0) {
+-			do_io = 1;
+-			assert_arg("--io");
+-			do_io_forks = atoll_b(arg);
+-		} else if (strcmp(arg, "--vm") == 0 || strcmp(arg, "-m") == 0) {
+-			do_vm = 1;
+-			assert_arg("--vm");
+-			do_vm_forks = atoll_b(arg);
+-		} else if (strcmp(arg, "--vm-chunks") == 0) {
+-			assert_arg("--vm-chunks");
+-			do_vm_chunks = atoll_b(arg);
+-		} else if (strcmp(arg, "--vm-bytes") == 0) {
+-			assert_arg("--vm-bytes");
+-			do_vm_bytes = atoll_b(arg);
+-		} else if (strcmp(arg, "--vm-hang") == 0) {
+-			global_vmhang = 1;
+-		} else if (strcmp(arg, "--hdd") == 0 || strcmp(arg, "-d") == 0) {
+-			do_hdd = 1;
+-			assert_arg("--hdd");
+-			do_hdd_forks = atoll_b(arg);
+-		} else if (strcmp(arg, "--hdd-noclean") == 0) {
+-			do_hdd_clean = 2;
+-		} else if (strcmp(arg, "--hdd-files") == 0) {
+-			assert_arg("--hdd-files");
+-			do_hdd_files = atoll_b(arg);
+-		} else if (strcmp(arg, "--hdd-bytes") == 0) {
+-			assert_arg("--hdd-bytes");
+-			do_hdd_bytes = atoll_b(arg);
+-		} else {
+-			err(stderr, "unrecognized option: %s\n", arg);
 -			exit(1);
 -		}
 -	}
--	if (reporttype) {
--		/* make sure we understand the report type */
--		if (strcasecmp(reporttype, "rts")
--		    && strcasecmp(reporttype, "none")
--		    /* && strcasecmp(reporttype, "xml") */
--		    )
--			reporttype = "rts";
+-
+-	/* Hog CPU option.  */
+-	if (do_cpu) {
+-		out(stdout, "dispatching %lli hogcpu forks\n", do_cpu_forks);
+-
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			if (do_dryrun)
+-				exit(0);
+-			exit(hogcpu(do_cpu_forks));
+-		case -1:	/* error */
+-			err(stderr, "hogcpu dispatcher fork failed\n");
+-			exit(1);
+-		default:	/* parent */
+-			children++;
+-			dbg(stdout, "--> hogcpu dispatcher forked (%i)\n", pid);
+-		}
+-	}
+-
+-	/* Hog I/O option.  */
+-	if (do_io) {
+-		out(stdout, "dispatching %lli hogio forks\n", do_io_forks);
+-
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			if (do_dryrun)
+-				exit(0);
+-			exit(hogio(do_io_forks));
+-		case -1:	/* error */
+-			err(stderr, "hogio dispatcher fork failed\n");
+-			exit(1);
+-		default:	/* parent */
+-			children++;
+-			dbg(stdout, "--> hogio dispatcher forked (%i)\n", pid);
+-		}
+-	}
+-
+-	/* Hog VM option.  */
+-	if (do_vm) {
+-		out(stdout,
+-		    "dispatching %lli hogvm forks, each %lli chunks of %lli bytes\n",
+-		    do_vm_forks, do_vm_chunks, do_vm_bytes);
+-
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			if (do_dryrun)
+-				exit(0);
+-			exit(hogvm(do_vm_forks, do_vm_chunks, do_vm_bytes));
+-		case -1:	/* error */
+-			err(stderr, "hogvm dispatcher fork failed\n");
+-			exit(1);
+-		default:	/* parent */
+-			children++;
+-			dbg(stdout, "--> hogvm dispatcher forked (%i)\n", pid);
+-		}
+-	}
+-
+-	/* Hog HDD option.  */
+-	if (do_hdd) {
+-		out(stdout, "dispatching %lli hoghdd forks, each %lli files of "
+-		    "%lli bytes\n", do_hdd_forks, do_hdd_files, do_hdd_bytes);
+-
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			if (do_dryrun)
+-				exit(0);
+-			exit(hoghdd
+-			     (do_hdd_forks, do_hdd_clean, do_hdd_files,
+-			      do_hdd_bytes));
+-		case -1:	/* error */
+-			err(stderr, "hoghdd dispatcher fork failed\n");
+-			exit(1);
+-		default:	/* parent */
+-			children++;
+-			dbg(stdout, "--> hoghdd dispatcher forked (%i)\n", pid);
+-		}
+-	}
+-
+-	/* We have no work to do, so bail out.  */
+-	if (children == 0)
+-		usage(0);
+-
+-	/* Wait for our children to exit.  */
+-	while (children) {
+-		int status, ret;
+-
+-		if ((pid = wait(&status)) > 0) {
+-			if ((WIFEXITED(status)) != 0) {
+-				if ((ret = WEXITSTATUS(status)) != 0) {
+-					err(stderr,
+-					    "dispatcher %i returned error %i\n",
+-					    pid, ret);
+-					retval += ret;
+-				} else {
+-					dbg(stdout,
+-					    "<-- dispatcher return (%i)\n",
+-					    pid);
+-				}
+-			} else {
+-				err(stderr,
+-				    "dispatcher did not exit normally\n");
+-				++retval;
+-			}
+-
+-			--children;
+-		} else {
+-			dbg(stdout, "wait() returned error: %s\n",
+-			    strerror(errno));
+-			err(stderr, "detected missing dispatcher children\n");
+-			++retval;
+-			break;
+-		}
+-	}
+-
+-	/* Record our stop time.  */
+-	if ((stoptime = time(NULL)) == -1) {
+-		err(stderr, "failed to acquire current time\n");
+-		exit(1);
+-	}
+-
+-	/* Calculate our runtime.  */
+-	runtime = stoptime - starttime;
+-
+-	/* Print final status message.  */
+-	if (retval) {
+-		err(stderr, "failed run completed in %lis\n", runtime);
 -	} else {
--		/* set the default */
--		reporttype = "rts";
+-		out(stdout, "successful run completed in %lis\n", runtime);
 -	}
 -
--	if (logfilename != NULL) {
--		time_t startup;
--		char *s;
+-	exit(retval);
+-}
 -
--		if (!strcmp(logfilename, "-")) {
--			logfile = stdout;
--		} else {
--			if ((logfile = fopen(logfilename, "a+e")) == NULL) {
--				fprintf(stderr,
--					"pan(%s): Error %s (%d) opening log file '%s'\n",
--					panname, strerror(errno), errno,
--					logfilename);
--				exit(1);
--			}
--		}
+-int usage(int status)
+-{
+-	char *mesg =
+-	    "`%s' imposes certain types of compute stress on your system\n\n"
+-	    "Usage: %s [OPTION [ARG]] ...\n\n"
+-	    " -?, --help            show this help statement\n"
+-	    "     --version         show version statement\n"
+-	    " -v, --verbose         be verbose\n"
+-	    " -q, --quiet           be quiet\n"
+-	    " -n, --dry-run         show what would have been done\n"
+-	    "     --no-retry        exit rather than retry non-critical errors\n"
+-	    "     --retry-delay n   wait n us before continuing past error\n"
+-	    " -t, --timeout n       timeout after n seconds\n"
+-	    "     --backoff n       wait for factor of n us before starting work\n"
+-	    " -c, --cpu n           spawn n procs spinning on sqrt()\n"
+-	    " -i, --io n            spawn n procs spinning on sync()\n"
+-	    " -m, --vm n            spawn n procs spinning on malloc()\n"
+-	    "     --vm-chunks c     malloc c chunks (default is 1)\n"
+-	    "     --vm-bytes b      malloc chunks of b bytes (default is 256MB)\n"
+-	    "     --vm-hang         hang in a sleep loop after memory allocated\n"
+-	    " -d, --hdd n           spawn n procs spinning on write()\n"
+-	    "     --hdd-noclean     do not unlink file to which random data written\n"
+-	    "     --hdd-files f     write to f files (default is 1)\n"
+-	    "     --hdd-bytes b     write b bytes (default is 1GB)\n\n"
+-	    "Infinity is denoted with 0.  For -m, -d: n=0 means infinite redo,\n"
+-	    "n<0 means redo abs(n) times. Valid suffixes are m,h,d,y for time;\n"
+-	    "k,m,g for size.\n\n";
 -
--		time(&startup);
--		s = ctime(&startup);
--		*(s + strlen(s) - 1) = '\0';
--		if (!fmt_print)
--			fprintf(logfile, "startup='%s'\n", s);
--		else {
--			fprintf(logfile, "Test Start Time: %s\n", s);
--			fprintf(logfile,
--				"-----------------------------------------\n");
--			fprintf(logfile, ResultFmt" %-10.10s\n",
--				"Testcase", "Result", "Exit Value");
--			fprintf(logfile, ResultFmt" %-10.10s\n",
--				"--------", "------", "------------");
--		}
--		fflush(logfile);
--	}
+-	fprintf(stdout, mesg, global_progname, global_progname);
 -
--	coll = get_collection(filename, optind, argc, argv);
--	if (!coll)
--		exit(1);
--	if (coll->cnt == 0) {
--		fprintf(stderr,
--			"pan(%s): Must supply a file collection or a command\n",
--			panname);
--		exit(1);
--	}
+-	if (status <= 0)
+-		exit(-1 * status);
 -
--	if (Debug & Dsetup)
--		dump_coll(coll);
+-	return 0;
+-}
 -
--	/* a place to store the pgrps we're watching */
--	running =
--		malloc((keep_active + 1) *
--			sizeof(struct tag_pgrp));
--	if (running == NULL) {
--		fprintf(stderr, "pan(%s): Failed to allocate memory: %s\n",
--			panname, strerror(errno));
--		exit(2);
--	}
--	memset(running, 0, keep_active * sizeof(struct tag_pgrp));
--	running[keep_active].pgrp = -1;	/* end sentinel */
+-int version(int status)
+-{
+-	char *mesg = "%s %s\n";
 -
--	/* a head to the orphaned pgrp list */
--	orphans = malloc(sizeof(struct orphan_pgrp));
--	memset(orphans, 0, sizeof(struct orphan_pgrp));
+-	fprintf(stdout, mesg, global_progname, VERSION);
 -
--	srand48(time(NULL) ^ (getpid() + (getpid() << 15)));
+-	if (status <= 0)
+-		exit(-1 * status);
 -
--	/* Supply a default for starts.  If we are in sequential mode, use
--	 * the number of commands available; otherwise 1.
--	 */
--	if (timed == 1 && starts == -1) {	/* timed, infinite by default */
--		starts = -1;
--	} else if (starts == -1) {
--		if (sequential) {
--			starts = coll->cnt;
--		} else {
--			starts = 1;
--		}
--	} else if (starts == 0) {	/* if the user specified infinite, set it */
--		starts = -1;
--	} else {		/* else, make sure we are starting at least keep_active processes */
--		if (starts < keep_active)
--			starts = keep_active;
--	}
+-	return 0;
+-}
 -
--	/* if we're buffering output, but we're only running on process at a time,
--	 * then essentially "turn off buffering"
--	 */
--	if (test_out_dir && (keep_active == 1)) {
--		free(test_out_dir);
--		test_out_dir = NULL;
--	}
+-/* Convert a string representation of a number with an optional size suffix
+- * to a long long.
+- */
+-long long atoll_b(const char *nptr)
+-{
+-	int pos;
+-	char suffix;
+-	long long factor = 1;
 -
--	if (test_out_dir) {
--		struct stat sbuf;
--
--		if (stat(test_out_dir, &sbuf) < 0) {
--			fprintf(stderr,
--				"pan(%s): stat of -O arg '%s' failed.  errno: %d  %s\n",
--				panname, test_out_dir, errno, strerror(errno));
--			exit(1);
--		}
--		if (!S_ISDIR(sbuf.st_mode)) {
--			fprintf(stderr,
--				"pan(%s): -O arg '%s' must be a directory.\n",
--				panname, test_out_dir);
--			exit(1);
--		}
--		if (access(test_out_dir, W_OK | R_OK | X_OK) < 0) {
--			fprintf(stderr,
--				"pan(%s): permission denied on -O arg '%s'.  errno: %d  %s\n",
--				panname, test_out_dir, errno, strerror(errno));
--			exit(1);
--		}
--	}
--
--	if (outputfilename) {
--		if (!freopen(outputfilename, "a+", stdout)) {
--			fprintf(stderr,
--				"pan(%s): Error %s (%d) opening output file '%s'\n",
--				panname, strerror(errno), errno,
--				outputfilename);
--			exit(1);
--		}
--	}
--
--	if (failcmdfilename) {
--		if (!(failcmdfile = fopen(failcmdfilename, "a+e"))) {
--			fprintf(stderr,
--				"pan(%s): Error %s (%d) opening fail cmd file '%s'\n",
--				panname, strerror(errno), errno,
--				failcmdfilename);
--			exit(1);
--		}
--	}
--
--	if (tconfcmdfilename) {
--		tconfcmdfile = fopen(tconfcmdfilename, "a+e");
--		if (!tconfcmdfile) {
--			fprintf(stderr, "pan(%s): Error %s (%d) opening "
--				"tconf cmd file '%s'\n", panname,
--				strerror(errno), errno, tconfcmdfilename);
--			exit(1);
--		}
--	}
--
--	if ((zoofile = zoo_open(zooname)) == NULL) {
--		fprintf(stderr, "pan(%s): %s\n", panname, zoo_error);
--		exit(1);
--	}
--	if (zoo_mark_args(zoofile, getpid(), panname, argc, argv)) {
--		fprintf(stderr, "pan(%s): %s\n", panname, zoo_error);
+-	if ((pos = strlen(nptr) - 1) < 0) {
+-		err(stderr, "invalid string\n");
 -		exit(1);
 -	}
 -
--	/* Allocate N spaces for max-arg commands.
--	 * this is an "active file cleanliness" thing
--	 */
--	{
--		for (c = 0; c < keep_active; c++) {
--			if (zoo_mark_cmdline(zoofile, c, panname, "")) {
--				fprintf(stderr, "pan(%s): %s\n", panname,
--					zoo_error);
--				exit(1);
--			}
--		}
--		for (c = 0; c < keep_active; c++) {
--			if (zoo_clear(zoofile, c)) {
--				fprintf(stderr, "pan(%s): %s\n", panname,
--					zoo_error);
--				exit(1);
--			}
--		}
--	}
--
--	rec_signal = send_signal = 0;
--	if (run_time != -1) {
--		alarm(run_time);
--	}
--
--	sigemptyset(&sa.sa_mask);
--	sa.sa_flags = 0;
--	sa.sa_handler = wait_handler;
--
--	sigaction(SIGALRM, &sa, NULL);
--	sigaction(SIGINT, &sa, NULL);
--	sigaction(SIGTERM, &sa, NULL);
--	sigaction(SIGHUP, &sa, NULL);
--	sigaction(SIGUSR1, &sa, NULL);	/* ignore fork_in_road */
--	sigaction(SIGUSR2, &sa, NULL);	/* stop the scheduler */
--
--	c = 0;			/* in this loop, c is the command index */
--	stop = 0;
--	exit_stat = 0;
--	go_idle = 0;
--	while (1) {
--
--		while ((num_active < keep_active) && (starts != 0)) {
--			if (stop || rec_signal || go_idle)
--				break;
--
--			if (!sequential)
--				c = lrand48() % coll->cnt;
--
--			/* find a slot for the child */
--			for (i = 0; i < keep_active; ++i) {
--				if (running[i].pgrp == 0)
--					break;
--			}
--			if (i == keep_active) {
--				fprintf(stderr,
--					"pan(%s): Aborting: i == keep_active = %d\n",
--					panname, i);
--				wait_handler(SIGINT);
--				exit_stat++;
--				break;
--			}
--
--			cpid =
--			    run_child(coll->ary[c], running + i, quiet_mode,
--				      &failcnt, fmt_print, logfile, no_kmsg);
--			if (cpid != -1)
--				++num_active;
--			if ((cpid != -1 || sequential) && starts > 0)
--				--starts;
--
--			if (sequential)
--				if (++c >= coll->cnt)
--					c = 0;
--
--		}		/* while ((num_active < keep_active) && (starts != 0)) */
--
--		if (starts == 0) {
--			if (!quiet_mode)
--				printf("incrementing stop\n");
--			++stop;
--		} else if (starts == -1)	//wjh
--		{
--			FILE *f = (FILE *) - 1;
--			if ((f = fopen(PAN_STOP_FILE, "r")) != 0) {
--				printf("Got %s Stopping!\n", PAN_STOP_FILE);
--				fclose(f);
--				unlink(PAN_STOP_FILE);
--				stop++;
--			}
--		}
--
--		if (rec_signal) {
--			/* propagate everything except sigusr2 */
--
--			if (rec_signal == SIGUSR2) {
--				if (fork_in_road)
--					++go_idle;
--				else
--					++stop;
--				rec_signal = send_signal = 0;
--			} else {
--				if (rec_signal == SIGUSR1)
--					fork_in_road = 0;
--				propagate_signal(running, keep_active, orphans);
--				if (fork_in_road)
--					++go_idle;
--				else
--					++stop;
--			}
--		}
--
--		err = check_pids(running, &num_active, keep_active, logfile,
--				 failcmdfile, tconfcmdfile, orphans, fmt_print,
--				 &failcnt, &tconfcnt, quiet_mode, no_kmsg);
--		if (Debug & Drunning) {
--			pids_running(running, keep_active);
--			orphans_running(orphans);
--		}
--		if (err) {
--			if (fork_in_road)
--				++go_idle;
--			if (track_exit_stats)
--				exit_stat++;
--			if (has_brakes) {
--				fprintf(stderr, "pan(%s): All stop!%s\n",
--					panname, go_idle ? " (idling)" : "");
--				wait_handler(SIGINT);
--			}
--		}
--
--		if (stop && (num_active == 0))
--			break;
--
--		if (go_idle && (num_active == 0)) {
--			go_idle = 0;	/* It is idle, now resume scheduling. */
--			wait_handler(0);	/* Reset the signal ratchet. */
+-	switch (suffix = nptr[pos]) {
+-	case 'k':
+-	case 'K':
+-		factor = 1024;
+-		break;
+-	case 'm':
+-	case 'M':
+-		factor = 1024 * 1024;
+-		break;
+-	case 'g':
+-	case 'G':
+-		factor = 1024 * 1024 * 1024;
+-		break;
+-	default:
+-		if (suffix < '0' || suffix > '9') {
+-			err(stderr, "unrecognized suffix: %c\n", suffix);
+-			exit(1);
 -		}
 -	}
 -
--	/* Wait for orphaned pgrps */
--	while (1) {
--		for (orph = orphans; orph != NULL; orph = orph->next) {
--			if (orph->pgrp == 0)
+-	factor = atoll(nptr) * factor;
+-
+-	return factor;
+-}
+-
+-/* Convert a string representation of a number with an optional time suffix
+- * to a long long.
+- */
+-long long atoll_s(const char *nptr)
+-{
+-	int pos;
+-	char suffix;
+-	long long factor = 1;
+-
+-	if ((pos = strlen(nptr) - 1) < 0) {
+-		err(stderr, "invalid string\n");
+-		exit(1);
+-	}
+-
+-	switch (suffix = nptr[pos]) {
+-	case 's':
+-	case 'S':
+-		factor = 1;
+-		break;
+-	case 'm':
+-	case 'M':
+-		factor = 60;
+-		break;
+-	case 'h':
+-	case 'H':
+-		factor = 60 * 60;
+-		break;
+-	case 'd':
+-	case 'D':
+-		factor = 60 * 60 * 24;
+-		break;
+-	case 'y':
+-	case 'Y':
+-		factor = 60 * 60 * 24 * 360;
+-		break;
+-	default:
+-		if (suffix < '0' || suffix > '9') {
+-			err(stderr, "unrecognized suffix: %c\n", suffix);
+-			exit(1);
+-		}
+-	}
+-
+-	factor = atoll(nptr) * factor;
+-
+-	return factor;
+-}
+-
+-int hogcpu(long long forks)
+-{
+-	long long i;
+-	double d;
+-	int pid, retval = 0;
+-
+-	/* Make local copies of global variables.  */
+-	int ignore = global_ignore;
+-	int retry = global_retry;
+-	int timeout = global_timeout;
+-	long backoff = global_backoff * forks;
+-
+-	dbg(stdout, "using backoff sleep of %lius for hogcpu\n", backoff);
+-
+-	for (i = 0; forks == 0 || i < forks; i++) {
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			alarm(timeout);
+-
+-			/* Use a backoff sleep to ensure we get good fork throughput.  */
+-			usleep(backoff);
+-
+-			while (1)
+-				d = sqrt(rand());
+-
+-			/* This case never falls through; alarm signal can cause exit.  */
+-		case -1:	/* error */
+-			if (ignore) {
+-				++retval;
+-				wrn(stderr,
+-				    "hogcpu worker fork failed, continuing\n");
+-				usleep(retry);
 -				continue;
--			/* Yes, we have orphaned pgrps */
--			sleep(5);
--			if (!rec_signal) {
--				/* force an artificial signal, move us
--				 * through the signal ratchet.
--				 */
--				wait_handler(SIGINT);
 -			}
--			propagate_signal(running, keep_active, orphans);
--			if (Debug & Drunning)
--				orphans_running(orphans);
+-
+-			err(stderr, "hogcpu worker fork failed\n");
+-			return 1;
+-		default:	/* parent */
+-			dbg(stdout, "--> hogcpu worker forked (%i)\n", pid);
+-		}
+-	}
+-
+-	/* Wait for our children to exit.  */
+-	while (i) {
+-		int status, ret;
+-
+-		if ((pid = wait(&status)) > 0) {
+-			if ((WIFEXITED(status)) != 0) {
+-				if ((ret = WEXITSTATUS(status)) != 0) {
+-					err(stderr,
+-					    "hogcpu worker %i exited %i\n", pid,
+-					    ret);
+-					retval += ret;
+-				} else {
+-					dbg(stdout,
+-					    "<-- hogcpu worker exited (%i)\n",
+-					    pid);
+-				}
+-			} else {
+-				dbg(stdout,
+-				    "<-- hogcpu worker signalled (%i)\n", pid);
+-			}
+-
+-			--i;
+-		} else {
+-			dbg(stdout, "wait() returned error: %s\n",
+-			    strerror(errno));
+-			err(stderr,
+-			    "detected missing hogcpu worker children\n");
+-			++retval;
 -			break;
 -		}
--		if (orph == NULL)
+-	}
+-
+-	return retval;
+-}
+-
+-int hogio(long long forks)
+-{
+-	long long i;
+-	int pid, retval = 0;
+-
+-	/* Make local copies of global variables.  */
+-	int ignore = global_ignore;
+-	int retry = global_retry;
+-	int timeout = global_timeout;
+-	long backoff = global_backoff * forks;
+-
+-	dbg(stdout, "using backoff sleep of %lius for hogio\n", backoff);
+-
+-	for (i = 0; forks == 0 || i < forks; i++) {
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			alarm(timeout);
+-
+-			/* Use a backoff sleep to ensure we get good fork throughput.  */
+-			usleep(backoff);
+-
+-			while (1)
+-				sync();
+-
+-			/* This case never falls through; alarm signal can cause exit.  */
+-		case -1:	/* error */
+-			if (ignore) {
+-				++retval;
+-				wrn(stderr,
+-				    "hogio worker fork failed, continuing\n");
+-				usleep(retry);
+-				continue;
+-			}
+-
+-			err(stderr, "hogio worker fork failed\n");
+-			return 1;
+-		default:	/* parent */
+-			dbg(stdout, "--> hogio worker forked (%i)\n", pid);
+-		}
+-	}
+-
+-	/* Wait for our children to exit.  */
+-	while (i) {
+-		int status, ret;
+-
+-		if ((pid = wait(&status)) > 0) {
+-			if ((WIFEXITED(status)) != 0) {
+-				if ((ret = WEXITSTATUS(status)) != 0) {
+-					err(stderr,
+-					    "hogio worker %i exited %i\n", pid,
+-					    ret);
+-					retval += ret;
+-				} else {
+-					dbg(stdout,
+-					    "<-- hogio worker exited (%i)\n",
+-					    pid);
+-				}
+-			} else {
+-				dbg(stdout, "<-- hogio worker signalled (%i)\n",
+-				    pid);
+-			}
+-
+-			--i;
+-		} else {
+-			dbg(stdout, "wait() returned error: %s\n",
+-			    strerror(errno));
+-			err(stderr, "detected missing hogio worker children\n");
+-			++retval;
 -			break;
+-		}
 -	}
 -
--	if (zoo_clear(zoofile, getpid())) {
--		fprintf(stderr, "pan(%s): %s\n", panname, zoo_error);
--		++exit_stat;
--	}
--	fclose(zoofile);
--	if (logfile && fmt_print) {
--		if (uname(&unamebuf) == -1)
--			fprintf(stderr, "ERROR: uname(): %s\n",
--				strerror(errno));
--		fprintf(logfile,
--			"\n-----------------------------------------------\n");
--		fprintf(logfile, "Total Tests: %d\n", coll->cnt);
--		fprintf(logfile, "Total Skipped Tests: %d\n", tconfcnt);
--		fprintf(logfile, "Total Failures: %d\n", failcnt);
--		fprintf(logfile, "Kernel Version: %s\n", unamebuf.release);
--		fprintf(logfile, "Machine Architecture: %s\n",
--			unamebuf.machine);
--		fprintf(logfile, "Hostname: %s\n\n", unamebuf.nodename);
--	}
--	if (logfile && (logfile != stdout))
--		fclose(logfile);
--
--	if (failcmdfile)
--		fclose(failcmdfile);
--
--	if (tconfcmdfile)
--		fclose(tconfcmdfile);
--	exit(exit_stat);
+-	return retval;
 -}
 -
--static void
--propagate_signal(struct tag_pgrp *running, int keep_active,
--		 struct orphan_pgrp *orphans)
+-int hogvm(long long forks, long long chunks, long long bytes)
 -{
--	int i;
+-	long long i, j, k;
+-	int pid, retval = 0;
+-	char **ptr;
 -
--	if (Debug & Dshutdown)
--		fprintf(stderr, "pan was signaled with sig %d...\n",
--			rec_signal);
+-	/* Make local copies of global variables.  */
+-	int ignore = global_ignore;
+-	int retry = global_retry;
+-	int timeout = global_timeout;
+-	long backoff = global_backoff * forks;
 -
--	if (rec_signal == SIGALRM) {
--		printf("PAN stop Alarm was received\n");
--		rec_signal = SIGTERM;
+-	dbg(stdout, "using backoff sleep of %lius for hogvm\n", backoff);
+-
+-	if (bytes == 0) {
+-		/* 512MB is guess at the largest value can than be malloced at once.  */
+-		bytes = 512 * 1024 * 1024;
 -	}
 -
--	for (i = 0; i < keep_active; ++i) {
--		if (running[i].pgrp == 0)
--			continue;
+-	for (i = 0; forks == 0 || i < forks; i++) {
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			alarm(timeout);
 -
--		if (Debug & Dshutdown)
--			fprintf(stderr, "  propagating sig %d to %d\n",
--				send_signal, -running[i].pgrp);
--		if (kill(-running[i].pgrp, send_signal) != 0) {
--			fprintf(stderr,
--				"pan(%s): kill(%d,%d) failed on tag (%s).  errno:%d  %s\n",
--				panname, -running[i].pgrp, send_signal,
--				running[i].cmd->name, errno, strerror(errno));
+-			/* Use a backoff sleep to ensure we get good fork throughput.  */
+-			usleep(backoff);
+-
+-			/* If chunks is 0, ptr will allocate 0 bytes's
+-			 * memory, it will cause the process to crash
+-			 * during runtime, so adjust to 1 */
+-			if (chunks == 0)
+-				chunks = 1;
+-
+-			while (1) {
+-				ptr = (char **)malloc(chunks *
+-						sizeof(char *));
+-				for (j = 0; j < chunks; j++) {
+-					if ((ptr[j] =
+-					     (char *)malloc(bytes *
+-							    sizeof(char)))) {
+-						for (k = 0; k < bytes; k++)
+-							ptr[j][k] = 'Z';	/* Ensure that COW happens.  */
+-						dbg(stdout,
+-						    "hogvm worker malloced %lli bytes\n",
+-						    k);
+-					} else if (ignore) {
+-						++retval;
+-						wrn(stderr,
+-						    "hogvm malloc failed, continuing\n");
+-						usleep(retry);
+-						continue;
+-					} else {
+-						++retval;
+-						err(stderr,
+-						    "hogvm malloc failed\n");
+-						break;
+-					}
+-				}
+-				if (global_vmhang && retval == 0) {
+-					dbg(stdout,
+-					    "sleeping forever with allocated memory\n");
+-					while (1)
+-						sleep(1024);
+-				}
+-				if (retval == 0) {
+-					dbg(stdout,
+-					    "hogvm worker freeing memory and starting over\n");
+-					for (j = 0; j < chunks; j++)
+-						free(ptr[j]);
+-					free(ptr);
+-					continue;
+-				}
+-
+-				exit(retval);
+-			}
+-
+-			/* This case never falls through; alarm signal can cause exit.  */
+-		case -1:	/* error */
+-			if (ignore) {
+-				++retval;
+-				wrn(stderr,
+-				    "hogvm worker fork failed, continuing\n");
+-				usleep(retry);
+-				continue;
+-			}
+-
+-			err(stderr, "hogvm worker fork failed\n");
+-			return 1;
+-		default:	/* parent */
+-			dbg(stdout, "--> hogvm worker forked (%i)\n", pid);
 -		}
--		running[i].stopping = 1;
 -	}
 -
--	check_orphans(orphans, send_signal);
+-	/* Wait for our children to exit.  */
+-	while (i) {
+-		int status, ret;
 -
--	rec_signal = send_signal = 0;
+-		if ((pid = wait(&status)) > 0) {
+-			if ((WIFEXITED(status)) != 0) {
+-				if ((ret = WEXITSTATUS(status)) != 0) {
+-					err(stderr,
+-					    "hogvm worker %i exited %i\n", pid,
+-					    ret);
+-					retval += ret;
+-				} else {
+-					dbg(stdout,
+-					    "<-- hogvm worker exited (%i)\n",
+-					    pid);
+-				}
+-			} else {
+-				dbg(stdout, "<-- hogvm worker signalled (%i)\n",
+-				    pid);
+-			}
+-
+-			--i;
+-		} else {
+-			dbg(stdout, "wait() returned error: %s\n",
+-			    strerror(errno));
+-			err(stderr, "detected missing hogvm worker children\n");
+-			++retval;
+-			break;
+-		}
+-	}
+-
+-	return retval;
 -}
 -
--static int
--check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
--	   FILE *logfile, FILE *failcmdfile, FILE *tconfcmdfile,
--	   struct orphan_pgrp *orphans, int fmt_print, int *failcnt,
--	   int *tconfcnt, int quiet_mode, int no_kmsg)
+-int hoghdd(long long forks, int clean, long long files, long long bytes)
 -{
--	int w;
--	pid_t cpid;
--	int stat_loc;
--	int ret = 0;
--	int i;
--	time_t t;
--	char *status;
--	char *result_str;
--	int signaled = 0;
--	struct tms tms1, tms2;
--	clock_t tck;
+-	long long i, j;
+-	int fd, pid, retval = 0;
+-	int chunk = (1024 * 1024) - 1;	/* Minimize slow writing.  */
+-	char buff[chunk];
 -
--	check_orphans(orphans, 0);
+-	/* Make local copies of global variables.  */
+-	int ignore = global_ignore;
+-	int retry = global_retry;
+-	int timeout = global_timeout;
+-	long backoff = global_backoff * forks;
 -
--	tck = times(&tms1);
--	if (tck == -1) {
--		fprintf(stderr, "pan(%s): times(&tms1) failed.  errno:%d  %s\n",
--			panname, errno, strerror(errno));
+-	/* Initialize buffer with some random ASCII data.  */
+-	dbg(stdout, "seeding buffer with random data\n");
+-	for (i = 0; i < chunk - 1; i++) {
+-		j = rand();
+-		j = (j < 0) ? -j : j;
+-		j %= 95;
+-		j += 32;
+-		buff[i] = j;
 -	}
--	cpid = wait(&stat_loc);
--	tck = times(&tms2);
--	if (tck == -1) {
--		fprintf(stderr, "pan(%s): times(&tms2) failed.  errno:%d  %s\n",
--			panname, errno, strerror(errno));
--	}
+-	buff[i] = '\n';
 -
--	if (cpid < 0) {
--		if (errno == EINTR) {
--			if (Debug)
--				fprintf(stderr, "pan(%s): wait() interrupted\n",
--					panname);
--		} else if (errno != ECHILD) {
--			fprintf(stderr,
--				"pan(%s): wait() failed.  errno:%d  %s\n",
--				panname, errno, strerror(errno));
--		}
--	} else if (cpid > 0) {
+-	dbg(stdout, "using backoff sleep of %lius for hoghdd\n", backoff);
 -
--		if (WIFSIGNALED(stat_loc)) {
--			w = WTERMSIG(stat_loc);
--			status = "signaled";
--			if (Debug & Dexit)
--				fprintf(stderr,
--					"child %d terminated with signal %d\n",
--					cpid, w);
--			--*num_active;
--			signaled = 1;
--		} else if (WIFEXITED(stat_loc)) {
--			w = WEXITSTATUS(stat_loc);
--			status = "exited";
--			if (Debug & Dexit)
--				fprintf(stderr,
--					"child %d exited with status %d\n",
--					cpid, w);
--			--*num_active;
--			if (w != 0 && w != TCONF)
--				ret++;
--		} else if (WIFSTOPPED(stat_loc)) {	/* should never happen */
--			w = WSTOPSIG(stat_loc);
--			status = "stopped";
--			ret++;
--		} else {	/* should never happen */
--			w = 0;
--			status = "unknown";
--			ret++;
--		}
+-	for (i = 0; forks == 0 || i < forks; i++) {
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			alarm(timeout);
 -
--		for (i = 0; i < keep_active; ++i) {
--			if (running[i].pgrp == cpid) {
--				if ((w == 130) && running[i].stopping &&
--				    (strcmp(status, "exited") == 0)) {
--					/* The child received sigint, but
--					 * did not trap for it?  Compensate
--					 * for it here.
--					 */
--					w = 0;
--					ret--;	/* undo */
--					if (Debug & Drunning)
--						fprintf(stderr,
--							"pan(%s): tag=%s exited 130, known to be signaled; will give it an exit 0.\n",
--							panname,
--							running[i].cmd->name);
--				}
--				time(&t);
--				if (logfile != NULL) {
--					if (!fmt_print)
--						fprintf(logfile,
--							"tag=%s stime=%d dur=%d exit=%s stat=%d core=%s cu=%d cs=%d\n",
--							running[i].cmd->name,
--							(int)(running[i].
--							      mystime),
--							(int)(t -
--							      running[i].
--							      mystime), status,
--							w,
--							(stat_loc & 0200) ?
--							"yes" : "no",
--							(int)(tms2.tms_cutime -
--							      tms1.tms_cutime),
--							(int)(tms2.tms_cstime -
--							      tms1.tms_cstime));
--					else {
--						if (strcmp(status, "exited") ==
--						    0 && w == TCONF) {
--							++*tconfcnt;
--							result_str = "CONF";
--						} else if (w != 0) {
--							++*failcnt;
--							result_str = "FAIL";
--						} else {
--							result_str = "PASS";
--						}
+-			/* Use a backoff sleep to ensure we get good fork throughput.  */
+-			usleep(backoff);
 -
--						fprintf(logfile,
--							ResultFmt" %-5d\n",
--							running[i].cmd->name,
--							result_str,
--							w);
--					}
+-			while (1) {
+-				for (i = 0; i < files; i++) {
+-					char name[] = "./stress.XXXXXX";
 -
--					fflush(logfile);
--				}
--
--				if (w != 0) {
--					if (tconfcmdfile != NULL &&
--					    w == TCONF) {
--						fprintf(tconfcmdfile, "%s %s\n",
--						running[i].cmd->name,
--						running[i].cmd->cmdline);
--					} else if (failcmdfile != NULL) {
--						fprintf(failcmdfile, "%s %s\n",
--						running[i].cmd->name,
--						running[i].cmd->cmdline);
--					}
--				}
--
--				if (running[i].stopping)
--					status = "driver_interrupt";
--
--				if (test_out_dir) {
--					if (!quiet_mode)
--						write_test_start(running + i, no_kmsg);
--					copy_buffered_output(running + i);
--					unlink(running[i].output);
--				}
--				if (!quiet_mode)
--					write_test_end(running + i, "ok", t,
--						       status, stat_loc, w,
--						       &tms1, &tms2);
--
--				/* If signaled and we weren't expecting
--				 * this to be stopped then the proc
--				 * had a problem.
--				 */
--				if (signaled && !running[i].stopping)
--					ret++;
--
--				running[i].pgrp = 0;
--				if (zoo_clear(zoofile, cpid)) {
--					fprintf(stderr, "pan(%s): %s\n",
--						panname, zoo_error);
--					exit(1);
--				}
--
--				/* Check for orphaned pgrps */
--				if ((kill(-cpid, 0) == 0) || (errno == EPERM)) {
--					if (zoo_mark_cmdline
--					    (zoofile, cpid, "panorphan",
--					     running[i].cmd->cmdline)) {
--						fprintf(stderr, "pan(%s): %s\n",
--							panname, zoo_error);
+-					if ((fd = mkstemp(name)) < 0) {
+-						perror("mkstemp");
+-						err(stderr, "mkstemp failed\n");
 -						exit(1);
 -					}
--					mark_orphan(orphans, cpid);
--					/* status of kill doesn't matter */
--					kill(-cpid, SIGTERM);
+-
+-					if (clean == 0) {
+-						dbg(stdout, "unlinking %s\n",
+-						    name);
+-						if (unlink(name)) {
+-							err(stderr,
+-							    "unlink failed\n");
+-							exit(1);
+-						}
+-					}
+-
+-					dbg(stdout, "fast writing to %s\n",
+-					    name);
+-					for (j = 0;
+-					     bytes == 0 || j + chunk < bytes;
+-					     j += chunk) {
+-						if (write(fd, buff, chunk) !=
+-						    chunk) {
+-							err(stderr,
+-							    "write failed\n");
+-							exit(1);
+-						}
+-					}
+-
+-					dbg(stdout, "slow writing to %s\n",
+-					    name);
+-					for (; bytes == 0 || j < bytes - 1; j++) {
+-						if (write(fd, "Z", 1) != 1) {
+-							err(stderr,
+-							    "write failed\n");
+-							exit(1);
+-						}
+-					}
+-					if (write(fd, "\n", 1) != 1) {
+-						err(stderr, "write failed\n");
+-						exit(1);
+-					}
+-					++j;
+-
+-					dbg(stdout,
+-					    "closing %s after writing %lli bytes\n",
+-					    name, j);
+-					close(fd);
+-
+-					if (clean == 1) {
+-						if (unlink(name)) {
+-							err(stderr,
+-							    "unlink failed\n");
+-							exit(1);
+-						}
+-					}
+-				}
+-				if (retval == 0) {
+-					dbg(stdout,
+-					    "hoghdd worker starting over\n");
+-					continue;
 -				}
 -
--				break;
+-				exit(retval);
 -			}
--		}
--	}
--	return ret;
--}
 -
--static pid_t
--run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
--	  int *failcnt, int fmt_print, FILE * logfile, int no_kmsg)
--{
--	ssize_t errlen;
--	int cpid;
--	int c_stdout = -1;	/* child's stdout, stderr */
--	int capturing = 0;	/* output is going to a file instead of stdout */
--	char *c_cmdline;
--	static long cmdno = 0;
--	int errpipe[2];		/* way to communicate to parent that the tag  */
--	char errbuf[1024];	/* didn't actually start */
--
--	/* Try to open the file that will be stdout for the test */
--	if (test_out_dir) {
--		capturing = 1;
--		do {
--			sprintf(active->output, "%s/%s.%ld",
--				test_out_dir, colle->name, cmdno++);
--			c_stdout =
--			    open(active->output,
--				 O_CREAT | O_RDWR | O_EXCL | O_SYNC, 0666);
--		} while (c_stdout < 0 && errno == EEXIST);
--		if (c_stdout < 0) {
--			fprintf(stderr,
--				"pan(%s): open of stdout file failed (tag %s).  errno: %d  %s\n  file: %s\n",
--				panname, colle->name, errno, strerror(errno),
--				active->output);
--			return -1;
--		}
--	}
--
--	/* get the tag's command line arguments ready.  subst_pcnt_f() uses a
--	 * static counter, that's why we do it here instead of after we fork.
--	 */
--	if (colle->pcnt_f) {
--		c_cmdline = subst_pcnt_f(colle);
--	} else {
--		c_cmdline = colle->cmdline;
--	}
--
--	if (pipe(errpipe) < 0) {
--		fprintf(stderr, "pan(%s): pipe() failed. errno:%d %s\n",
--			panname, errno, strerror(errno));
--		if (capturing) {
--			close(c_stdout);
--			unlink(active->output);
--		}
--		return -1;
--	}
--
--	time(&active->mystime);
--	active->cmd = colle;
--
--	if (!test_out_dir && !quiet_mode)
--		write_test_start(active, no_kmsg);
--
--	fflush(NULL);
--
--	if ((cpid = fork()) == -1) {
--		fprintf(stderr,
--			"pan(%s): fork failed (tag %s).  errno:%d  %s\n",
--			panname, colle->name, errno, strerror(errno));
--		if (capturing) {
--			unlink(active->output);
--			close(c_stdout);
--		}
--		close(errpipe[0]);
--		close(errpipe[1]);
--		return -1;
--	} else if (cpid == 0) {
--		/* child */
--
--		fclose(zoofile);
--		close(errpipe[0]);
--		fcntl(errpipe[1], F_SETFD, 1);	/* close the pipe if we succeed */
--		setpgrp();
--
--		umask(0);
--
--#define WRITE_OR_DIE(fd, buf, buflen) do {				\
--	if (write((fd), (buf), (buflen)) != (buflen)) {			\
--		err(1, "failed to write out %zd bytes at line %d",	\
--		    buflen, __LINE__);					\
--	}								\
--} while(0)
--
--		/* if we're putting output into a buffer file, we need to do the
--		 * redirection now.  If we fail
--		 */
--		if (capturing) {
--			if (dup2(c_stdout, fileno(stdout)) == -1) {
--				errlen =
--				    sprintf(errbuf,
--					    "pan(%s): couldn't redirect stdout for tag %s.  errno:%d  %s",
--					    panname, colle->name, errno,
--					    strerror(errno));
--				WRITE_OR_DIE(errpipe[1], &errlen,
--					     sizeof(errlen));
--				WRITE_OR_DIE(errpipe[1], errbuf, errlen);
--				exit(2);
+-			/* This case never falls through; alarm signal can cause exit.  */
+-		case -1:	/* error */
+-			if (ignore) {
+-				++retval;
+-				wrn(stderr,
+-				    "hoghdd worker fork failed, continuing\n");
+-				usleep(retry);
+-				continue;
 -			}
--			if (dup2(c_stdout, fileno(stderr)) == -1) {
--				errlen =
--				    sprintf(errbuf,
--					    "pan(%s): couldn't redirect stderr for tag %s.  errno:%d  %s",
--					    panname, colle->name, errno,
--					    strerror(errno));
--				WRITE_OR_DIE(errpipe[1], &errlen,
--					     sizeof(errlen));
--				WRITE_OR_DIE(errpipe[1], errbuf, errlen);
--				exit(2);
--			}
--		} else {	/* stderr still needs to be redirected */
--			if (dup2(fileno(stdout), fileno(stderr)) == -1) {
--				errlen =
--				    sprintf(errbuf,
--					    "pan(%s): couldn't redirect stderr for tag %s.  errno:%d  %s",
--					    panname, colle->name, errno,
--					    strerror(errno));
--				WRITE_OR_DIE(errpipe[1], &errlen,
--					     sizeof(errlen));
--				WRITE_OR_DIE(errpipe[1], errbuf, errlen);
--				exit(2);
--			}
--		}
--		/* If there are any shell-type characters in the cmdline
--		 * such as '>', '<', '$', '|', etc, then we exec a shell and
--		 * run the cmd under a shell.
--		 *
--		 * Otherwise, break the cmdline at white space and exec the
--		 * cmd directly.
--		 */
--		if (strpbrk(c_cmdline, "\"';|<>$\\")) {
--			execlp("sh", "sh", "-c", c_cmdline, NULL);
--			errlen = sprintf(errbuf,
--					 "pan(%s): execlp of '%s' (tag %s) failed.  errno:%d %s",
--					 panname, c_cmdline, colle->name, errno,
--					 strerror(errno));
--		} else {
--			char **arg_v;
 -
--			arg_v = (char **)splitstr(c_cmdline, NULL, NULL);
--
--			execvp(arg_v[0], arg_v);
--			errlen = sprintf(errbuf,
--					 "pan(%s): execvp of '%s' (tag %s) failed.  errno:%d  %s",
--					 panname, arg_v[0], colle->name, errno,
--					 strerror(errno));
+-			err(stderr, "hoghdd worker fork failed\n");
+-			return 1;
+-		default:	/* parent */
+-			dbg(stdout, "--> hoghdd worker forked (%i)\n", pid);
 -		}
--		WRITE_OR_DIE(errpipe[1], &errlen, sizeof(errlen));
--		WRITE_OR_DIE(errpipe[1], errbuf, errlen);
--		exit(errno);
 -	}
 -
--	/* parent */
+-	/* Wait for our children to exit.  */
+-	while (i) {
+-		int status, ret;
 -
--	/* subst_pcnt_f() allocates the command line dynamically
--	 * free the malloc to prevent a memory leak
--	 */
--	if (colle->pcnt_f)
--		free(c_cmdline);
--
--	close(errpipe[1]);
--
--	/* if the child couldn't go through with the exec,
--	 * clean up the mess, note it, and move on
--	 */
--	if (read(errpipe[0], &errlen, sizeof(errlen))) {
--		int status;
--		time_t end_time;
--		int termid;
--		char *termtype;
--		struct tms notime = { 0, 0, 0, 0 };
--
--		if (read(errpipe[0], errbuf, errlen) < 0)
--			fprintf(stderr, "Failed to read from errpipe[0]\n");
--		close(errpipe[0]);
--		errbuf[errlen] = '\0';
--		/* fprintf(stderr, "%s", errbuf); */
--		waitpid(cpid, &status, 0);
--		if (WIFSIGNALED(status)) {
--			termid = WTERMSIG(status);
--			termtype = "signaled";
--		} else if (WIFEXITED(status)) {
--			termid = WEXITSTATUS(status);
--			termtype = "exited";
--		} else if (WIFSTOPPED(status)) {
--			termid = WSTOPSIG(status);
--			termtype = "stopped";
--		} else {
--			termid = 0;
--			termtype = "unknown";
--		}
--		time(&end_time);
--		if (logfile != NULL) {
--			if (!fmt_print) {
--				fprintf(logfile,
--					"tag=%s stime=%d dur=%d exit=%s "
--					"stat=%d core=%s cu=%d cs=%d\n",
--					colle->name, (int)(active->mystime),
--					(int)(end_time - active->mystime),
--					termtype, termid,
--					(status & 0200) ? "yes" : "no", 0, 0);
--			} else {
--				if (termid != 0)
--					++ * failcnt;
--
--				fprintf(logfile, ResultFmt" %-5d\n",
--					colle->name,
--					((termid != 0) ? "FAIL" : "PASS"),
--					termid);
--			}
--			fflush(logfile);
--		}
--
--		if (!quiet_mode) {
--			write_test_end(active, errbuf, end_time, termtype,
--				       status, termid, &notime, &notime);
--		}
--		if (capturing) {
--			close(c_stdout);
--			unlink(active->output);
--		}
--		return -1;
--	}
--
--	close(errpipe[0]);
--	if (capturing)
--		close(c_stdout);
--
--	active->pgrp = cpid;
--	active->stopping = 0;
--
--	if (zoo_mark_cmdline(zoofile, cpid, colle->name, colle->cmdline)) {
--		fprintf(stderr, "pan(%s): %s\n", panname, zoo_error);
--		exit(1);
--	}
--
--	if (Debug & Dstartup)
--		fprintf(stderr, "started %s cpid=%d at %s",
--			colle->name, cpid, ctime(&active->mystime));
--
--	if (Debug & Dstart) {
--		fprintf(stderr, "Executing test = %s as %s", colle->name,
--			colle->cmdline);
--		if (capturing)
--			fprintf(stderr, "with output file = %s\n",
--				active->output);
--		else
--			fprintf(stderr, "\n");
--	}
--
--	return cpid;
--}
--
--static char *subst_pcnt_f(struct coll_entry *colle)
--{
--	static int counter = 1;
--	char pid_and_counter[20];
--	char new_cmdline[1024];
--
--	/* if we get called falsely, do the right thing anyway */
--	if (!colle->pcnt_f)
--		return colle->cmdline;
--
--	snprintf(pid_and_counter, 20, "%d_%d", getpid(), counter++);
--	snprintf(new_cmdline, 1024, colle->cmdline, pid_and_counter);
--	return strdup(new_cmdline);
--}
--
--static struct collection *get_collection(char *file, int optind, int argc,
--					 char **argv)
--{
--	char *buf, *a, *b;
--	struct coll_entry *head, *p, *n;
--	struct collection *coll;
--	int i;
--
--	buf = slurp(file);
--	if (!buf)
--		return NULL;
--
--	coll = malloc(sizeof(struct collection));
--	coll->cnt = 0;
--
--	head = p = n = NULL;
--	a = b = buf;
--	while (a) {
--		/* set b to the start of the next line and add a NULL character
--		 * to separate the two lines */
--		if ((b = strchr(a, '\n')) != NULL)
--			*b++ = '\0';
--
--		/* If this is line isn't a comment */
--		if ((*a != '#') && (*a != '\0') && (*a != ' ')) {
--			n = malloc(sizeof(struct coll_entry));
--			if ((n->pcnt_f = strstr(a, "%f"))) {
--				n->pcnt_f[1] = 's';
--			}
--			n->name = strdup(strsep(&a, " \t"));
--			while (a != NULL && isspace(*a))
--				a++;
--			if (a == NULL || a[0] == 0) {
--				fprintf(stderr,
--					"pan(%s): Testcase '%s' requires a command to execute.\n",
--					panname, n->name);
--				return NULL;
--			}
--			n->cmdline = strdup(a);
--			n->next = NULL;
--
--			if (p) {
--				p->next = n;
--			}
--			if (head == NULL) {
--				head = n;
--			}
--			p = n;
--			coll->cnt++;
--		}
--		a = b;
--	}
--	free(buf);
--
--	/* is there something on the commandline to be counted? */
--	if (optind < argc) {
--		char workstr[1024] = "";
--		int workstr_left = 1023;
--
--		/* fill arg list */
--		for (i = 0; optind < argc; ++optind, ++i) {
--			strncat(workstr, argv[optind], workstr_left);
--			workstr_left = workstr_left - strlen(argv[optind]);
--			strncat(workstr, " ", workstr_left);
--			workstr_left--;
--		}
--
--		n = malloc(sizeof(struct coll_entry));
--		if ((n->pcnt_f = strstr(workstr, "%f"))) {
--			n->pcnt_f[1] = 's';
--		}
--		n->cmdline = strdup(workstr);
--		n->name = "cmdln";
--		n->next = NULL;
--		if (p) {
--			p->next = n;
--		}
--		if (head == NULL) {
--			head = n;
--		}
--		coll->cnt++;
--	}
--
--	/* get an array */
--	coll->ary = malloc(coll->cnt * sizeof(struct coll_entry *));
--
--	/* fill the array */
--	i = 0;
--	n = head;
--	while (n != NULL) {
--		coll->ary[i] = n;
--		n = n->next;
--		++i;
--	}
--	if (i != coll->cnt)
--		fprintf(stderr, "pan(%s): i doesn't match cnt\n", panname);
--
--	return coll;
--}
--
--static char *slurp(char *file)
--{
--	char *buf;
--	int fd;
--	struct stat sbuf;
--
--	if ((fd = open(file, O_RDONLY)) < 0) {
--		fprintf(stderr,
--			"pan(%s): open(%s,O_RDONLY) failed.  errno:%d  %s\n",
--			panname, file, errno, strerror(errno));
--		return NULL;
--	}
--
--	if (fstat(fd, &sbuf) < 0) {
--		fprintf(stderr, "pan(%s): fstat(%s) failed.  errno:%d  %s\n",
--			panname, file, errno, strerror(errno));
--		return NULL;
--	}
--
--	buf = malloc(sbuf.st_size + 1);
--	if (read(fd, buf, sbuf.st_size) != sbuf.st_size) {
--		fprintf(stderr, "pan(%s): slurp failed.  errno:%d  %s\n",
--			panname, errno, strerror(errno));
--		free(buf);
--		return NULL;
--	}
--	buf[sbuf.st_size] = '\0';
--
--	close(fd);
--	return buf;
--}
--
--static void check_orphans(struct orphan_pgrp *orphans, int sig)
--{
--	struct orphan_pgrp *orph;
--
--	for (orph = orphans; orph != NULL; orph = orph->next) {
--		if (orph->pgrp == 0)
--			continue;
--
--		if (Debug & Dshutdown)
--			fprintf(stderr,
--				"  propagating sig %d to orphaned pgrp %d\n",
--				sig, -(orph->pgrp));
--		if (kill(-(orph->pgrp), sig) != 0) {
--			if (errno == ESRCH) {
--				/* This pgrp is now empty */
--				if (zoo_clear(zoofile, orph->pgrp)) {
--					fprintf(stderr, "pan(%s): %s\n",
--						panname, zoo_error);
+-		if ((pid = wait(&status)) > 0) {
+-			if ((WIFEXITED(status)) != 0) {
+-				if ((ret = WEXITSTATUS(status)) != 0) {
+-					err(stderr,
+-					    "hoghdd worker %i exited %i\n", pid,
+-					    ret);
+-					retval += ret;
+-				} else {
+-					dbg(stdout,
+-					    "<-- hoghdd worker exited (%i)\n",
+-					    pid);
 -				}
--				orph->pgrp = 0;
 -			} else {
--				fprintf(stderr,
--					"pan(%s): kill(%d,%d) on orphaned pgrp failed.  errno:%d  %s\n",
--					panname, -(orph->pgrp), sig, errno,
--					strerror(errno));
+-				dbg(stdout,
+-				    "<-- hoghdd worker signalled (%i)\n", pid);
 -			}
--		}
--	}
--}
 -
--static void mark_orphan(struct orphan_pgrp *orphans, pid_t cpid)
--{
--	struct orphan_pgrp *orph;
--
--	for (orph = orphans; orph != NULL; orph = orph->next) {
--		if (orph->pgrp == 0)
+-			--i;
+-		} else {
+-			dbg(stdout, "wait() returned error: %s\n",
+-			    strerror(errno));
+-			err(stderr,
+-			    "detected missing hoghdd worker children\n");
+-			++retval;
 -			break;
+-		}
 -	}
--	if (orph == NULL) {
--		/* make a new struct */
--		orph = malloc(sizeof(struct orphan_pgrp));
 -
--		/* plug in the new struct just after the head */
--		orph->next = orphans->next;
--		orphans->next = orph;
--	}
--	orph->pgrp = cpid;
+-	return retval;
 -}
--
--static void copy_buffered_output(struct tag_pgrp *running)
--{
--	char *tag_output;
--
--	tag_output = slurp(running->output);
--	if (tag_output) {
--		printf("%s", tag_output);
--		/* make sure the output ends with a newline */
--		if (tag_output[strlen(tag_output) - 1] != '\n')
--			printf("\n");
--		fflush(stdout);
--		free(tag_output);
--	}
--}
--
--static void write_kmsg(const char *fmt, ...)
--{
--	FILE *kmsg;
--	va_list ap;
--
--	if ((kmsg = fopen("/dev/kmsg", "r+")) == NULL) {
--		fprintf(stderr, "Error %s: (%d) opening /dev/kmsg\n",
--				strerror(errno), errno);
--		exit(1);
--	}
--
--	va_start(ap, fmt);
--	vfprintf(kmsg, fmt, ap);
--	va_end(ap);
--	fclose(kmsg);
--}
--
--static void write_test_start(struct tag_pgrp *running, int no_kmsg)
--{
--	if (!strcmp(reporttype, "rts")) {
--
--		printf
--		    ("%s\ntag=%s stime=%lld\ncmdline=\"%s\"\ncontacts=\"%s\"\nanalysis=%s\n%s\n",
--		     "<<<test_start>>>", running->cmd->name, (long long)running->mystime,
--		     running->cmd->cmdline, "", "exit", "<<<test_output>>>");
--	}
--	fflush(stdout);
--	if (no_kmsg)
--		return;
--
--	if (strcmp(running->cmd->name, running->cmd->cmdline))
--		write_kmsg("LTP: starting %s (%s)\n", running->cmd->name,
--			   running->cmd->cmdline);
--	else
--		write_kmsg("LTP: starting %s\n", running->cmd->name);
--}
--
--static void
--write_test_end(struct tag_pgrp *running, const char *init_status,
--	       time_t exit_time, char *term_type, int stat_loc,
--	       int term_id, struct tms *tms1, struct tms *tms2)
--{
--	if (!strcmp(reporttype, "rts")) {
--		printf
--		    ("%s\ninitiation_status=\"%s\"\nduration=%ld termination_type=%s "
--		     "termination_id=%d corefile=%s\ncutime=%d cstime=%d\n%s\n",
--		     "<<<execution_status>>>", init_status,
--		     (long)(exit_time - running->mystime), term_type, term_id,
--		     (stat_loc & 0200) ? "yes" : "no",
--		     (int)(tms2->tms_cutime - tms1->tms_cutime),
--		     (int)(tms2->tms_cstime - tms1->tms_cstime),
--		     "<<<test_end>>>");
--	}
--	fflush(stdout);
--}
--
--/* The functions below are all debugging related */
--
--static void pids_running(struct tag_pgrp *running, int keep_active)
--{
--	int i;
--
--	fprintf(stderr, "pids still running: ");
--	for (i = 0; i < keep_active; ++i) {
--		if (running[i].pgrp != 0)
--			fprintf(stderr, "%d ", running[i].pgrp);
--	}
--	fprintf(stderr, "\n");
--}
--
--static void orphans_running(struct orphan_pgrp *orphans)
--{
--	struct orphan_pgrp *orph;
--
--	fprintf(stderr, "orphans still running: ");
--	for (orph = orphans; orph != NULL; orph = orph->next) {
--		if (orph->pgrp != 0)
--			fprintf(stderr, "%d ", -(orph->pgrp));
--	}
--	fprintf(stderr, "\n");
--}
--
--static void dump_coll(struct collection *coll)
--{
--	int i;
--
--	for (i = 0; i < coll->cnt; ++i) {
--		fprintf(stderr, "coll %d\n", i);
--		fprintf(stderr, "  name=%s cmdline=%s\n", coll->ary[i]->name,
--			coll->ary[i]->cmdline);
--	}
--}
--
--void wait_handler(int sig)
--{
--	static int lastsent = 0;
--
--	if (sig == 0) {
--		lastsent = 0;
--	} else {
--		rec_signal = sig;
--		if (sig == SIGUSR2)
--			return;
--		if (lastsent == 0)
--			send_signal = sig;
--		else if (lastsent == SIGUSR1)
--			send_signal = SIGINT;
--		else if (lastsent == sig)
--			send_signal = SIGTERM;
--		else if (lastsent == SIGTERM)
--			send_signal = SIGHUP;
--		else if (lastsent == SIGHUP)
--			send_signal = SIGKILL;
--		lastsent = send_signal;
--	}
--}
-diff --git a/pan/splitstr.c b/pan/splitstr.c
+diff --git a/tools/genload/stress.c b/tools/genload/stress.c
 deleted file mode 100644
-index 39b469856d..0000000000
---- a/pan/splitstr.c
+index a19d519fd6..0000000000
+--- a/tools/genload/stress.c
 +++ /dev/null
-@@ -1,192 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+@@ -1,898 +0,0 @@
+-/* A program to put stress on a POSIX system (stress).
+- *
+- * Copyright (C) 2001, 2002 Amos Waterland <awaterl@yahoo.com>
 - *
 - * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
+- * under the terms of the GNU General Public License as published by the Free
+- * Software Foundation; either version 2 of the License, or (at your option)
+- * any later version.
 - *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
 - *
 - * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
+- * with this program; if not, write to the Free Software Foundation, Inc.,
 - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
 - */
--/* $Id: splitstr.c,v 1.2 2000/09/21 20:42:31 nstraz Exp $ */
--/*
-- * Synopsis
-- *
-- * const char **splitstr(const char *str, const char *separator, int *argcount)
-- *
-- * Description
-- * This function splits a string (str) into components that are separated by
-- * one or more of the characters in the (separator) string.  An array of
-- * strings is returned, along with argcount being set to the number of strings
-- * found.  Argcount can be NULL.  There will always be a NULL element in the
-- * array after the last valid element.  If an error occurs, NULL will be
-- * returned and argcount will be set to zero.
-- *
-- * To rid yourself of the memory allocated for splitstr(), pass the return
-- * value from splitstr() unmodified to splitstr_free():
-- *
-- * void splitstr_free( const char ** return_from_splitstr );
-- *
-- */
+-
+-#include <ctype.h>
+-#include <errno.h>
+-#include <libgen.h>
+-#include <math.h>
 -#include <stdio.h>
 -#include <stdlib.h>
--#include <string.h>		/* for string functions */
--#ifdef UNIT_TEST
--#include <assert.h>
--#endif /* UNIT_TEST */
--#include "splitstr.h"
+-#include <string.h>
+-#include <signal.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include <sys/wait.h>
 -
--const char **splitstr(const char *str, const char *separator, int *argcount)
+-/* By default, print all messages of severity info and above.  */
+-static int global_debug = 2;
+-
+-/* By default, just print warning for non-critical errors.  */
+-static int global_ignore = 1;
+-
+-/* By default, retry on non-critical errors every 50ms.  */
+-static int global_retry = 50000;
+-
+-/* By default, use this as backoff coefficient for good fork throughput.  */
+-static int global_backoff = 3000;
+-
+-/* By default, do not timeout.  */
+-static int global_timeout = 0;
+-
+-/* Name of this program */
+-static char *global_progname = PACKAGE;
+-
+-/* By default, do not hang after allocating memory.  */
+-static int global_vmhang = 0;
+-
+-/* Implemention of runtime-selectable severity message printing.  */
+-#define dbg if (global_debug >= 3) \
+-            fprintf (stdout, "%s: debug: (%d) ", global_progname, __LINE__), \
+-            fprintf
+-#define out if (global_debug >= 2) \
+-            fprintf (stdout, "%s: info: ", global_progname), \
+-            fprintf
+-#define wrn if (global_debug >= 1) \
+-            fprintf (stderr, "%s: warn: (%d) ", global_progname, __LINE__), \
+-            fprintf
+-#define err if (global_debug >= 0) \
+-            fprintf (stderr, "%s: error: (%d) ", global_progname, __LINE__), \
+-            fprintf
+-
+-/* Implementation of check for option argument correctness.  */
+-#define assert_arg(A) \
+-          if (++i == argc || ((arg = argv[i])[0] == '-' && \
+-              !isdigit ((int)arg[1]) )) \
+-            { \
+-              err (stderr, "missing argument to option '%s'\n", A); \
+-              exit (1); \
+-            }
+-
+-/* Prototypes for utility functions.  */
+-int usage(int status);
+-int version(int status);
+-long long atoll_s(const char *nptr);
+-long long atoll_b(const char *nptr);
+-
+-/* Prototypes for the worker functions.  */
+-int hogcpu(long long forks);
+-int hogio(long long forks);
+-int hogvm(long long forks, long long chunks, long long bytes);
+-int hoghdd(long long forks, int clean, long long files, long long bytes);
+-
+-int main(int argc, char **argv)
 -{
--	char *arg_string = NULL, **arg_array = NULL, *cur_tok = NULL;
+-	int i, pid, children = 0, retval = 0;
+-	long starttime, stoptime, runtime;
 -
--	int num_toks = 0, max_toks = 20, i;
+-	/* Variables that indicate which options have been selected.  */
+-	int do_dryrun = 0;
+-	int do_timeout = 0;
+-	int do_cpu = 0;		/* Default to 1 fork. */
+-	long long do_cpu_forks = 1;
+-	int do_io = 0;		/* Default to 1 fork. */
+-	long long do_io_forks = 1;
+-	int do_vm = 0;		/* Default to 1 fork, 1 chunk of 256MB.  */
+-	long long do_vm_forks = 1;
+-	long long do_vm_chunks = 1;
+-	long long do_vm_bytes = 256 * 1024 * 1024;
+-	int do_hdd = 0;		/* Default to 1 fork, clean, 1 file of 1GB.  */
+-	long long do_hdd_forks = 1;
+-	int do_hdd_clean = 0;
+-	long long do_hdd_files = 1;
+-	long long do_hdd_bytes = 1024 * 1024 * 1024;
 -
--	/*
--	 * In most recoverable errors, if argcount is not NULL,
--	 * set argcount to 0. Then return NULL.
--	 */
--	if (str == NULL) {
--		if (argcount != NULL)
--			*argcount = 0;
--		return (NULL);
+-	/* Record our start time.  */
+-	if ((starttime = time(NULL)) == -1) {
+-		err(stderr, "failed to acquire current time\n");
+-		exit(1);
 -	}
 -
--	/*
--	 * set aside temporary space to work on the string.
--	 */
--	arg_string = strdup(str);
+-	/* SuSv3 does not define any error conditions for this function.  */
+-	global_progname = basename(argv[0]);
 -
--	if (arg_string == NULL) {
--		if (argcount != NULL)
--			*argcount = 0;
--		return (NULL);
--	}
+-	/* For portability, parse command line options without getopt_long.  */
+-	for (i = 1; i < argc; i++) {
+-		char *arg = argv[i];
 -
--	/*
--	 * set aside an initial char ** array for string array.
--	 */
--	arg_array = malloc(sizeof(char *) * max_toks);
--
--	if (arg_array == NULL) {
--		if (argcount != NULL)
--			*argcount = 0;
--		free(arg_string);
--		return (NULL);
--	}
--
--	if (separator == NULL)
--		separator = " \t";
--
--	/*
--	 * Use strtok() to parse 'arg_string', placing pointers to the
--	 * individual tokens into the elements of 'arg_array'.  Expand
--	 * 'arg_array' if necessary.
--	 */
--	cur_tok = strtok(arg_string, separator);
--	while (cur_tok != NULL) {
--		arg_array[num_toks++] = cur_tok;
--		cur_tok = strtok(NULL, separator);
--		if (num_toks == max_toks) {
--			max_toks += 20;
--			arg_array =
--			    (char **)realloc((void *)arg_array,
--					     sizeof(char *) * max_toks);
--			if (arg_array == NULL) {
--				fprintf(stderr, "realloc: New memory allocation failed \n");
--				free(arg_string);
+-		if (strcmp(arg, "--help") == 0 || strcmp(arg, "-?") == 0) {
+-			usage(0);
+-		} else if (strcmp(arg, "--version") == 0) {
+-			version(0);
+-		} else if (strcmp(arg, "--verbose") == 0
+-			   || strcmp(arg, "-v") == 0) {
+-			global_debug = 3;
+-		} else if (strcmp(arg, "--quiet") == 0
+-			   || strcmp(arg, "-q") == 0) {
+-			global_debug = 0;
+-		} else if (strcmp(arg, "--dry-run") == 0
+-			   || strcmp(arg, "-n") == 0) {
+-			do_dryrun = 1;
+-		} else if (strcmp(arg, "--no-retry") == 0) {
+-			global_ignore = 0;
+-			dbg(stdout,
+-			    "turning off ignore of non-critical errors");
+-		} else if (strcmp(arg, "--retry-delay") == 0) {
+-			assert_arg("--retry-delay");
+-			global_retry = atoll(arg);
+-			dbg(stdout, "setting retry delay to %dus\n",
+-			    global_retry);
+-		} else if (strcmp(arg, "--backoff") == 0) {
+-			assert_arg("--backoff");
+-			global_backoff = atoll(arg);
+-			if (global_backoff < 0) {
+-				err(stderr, "invalid backoff factor: %i\n",
+-				    global_backoff);
 -				exit(1);
 -			}
--		}
--	}
--	arg_array[num_toks] = NULL;
--
--	/*
--	 * If there are any spaces left in our array, make them NULL
--	 */
--	for (i = num_toks + 1; i < max_toks; i++)
--		arg_array[i] = NULL;
--
--	/* This seems nice, but since memory is allocated on a page basis, this
--	 * isn't really helpful:
--	 * arg_array = (char **)realloc((void *)arg_array, sizeof(char *)*num_toks+1 );*/
--
--	if (argcount != NULL)
--		*argcount = num_toks;
--
--	/*
--	 * Return the argument array.
--	 */
--	return ((const char **)arg_array);
--}
--
--/*
-- * splitster_free( const char ** )
-- *
-- * This takes the return value from splitster() and free()s memory
-- * allocated by splitster.  Assuming: ret=splitster(...), this
-- * requires that ret and *ret returned from splitster() have not
-- * been modified.
-- */
--void splitstr_free(const char **p_return)
--{
--	if (*p_return != NULL)
--		free((char *)*p_return);
--	if (p_return != NULL)
--		free((char **)p_return);
--}
--
--#ifdef UNIT_TEST
--
--int main()
--{
--	int i, y, test_size = 1000, size_ret;
--	char test_str[32768];
--	char buf[16];
--	char *test_str_array[test_size];
--	const char **ret;
--
--	for (i = 0; i < test_size; i++) {
--		snprintf(buf, 16, "arg%d", i);
--		test_str_array[i] = strdup(buf);
--	}
--
--	for (i = 0; i < test_size; i++) {
--		test_str[0] = '\0';
--		for (y = 0; y < i; y++) {
--			snprintf(buf, 16, "arg%d ", y);
--			strncat(test_str, buf, 16);
--		}
--		ret = splitstr(test_str, NULL, &size_ret);
--		assert(size_ret == i);
--		for (y = 0; y < i; y++)
--			assert(strcmp(ret[y], test_str_array[y]) == 0);
--
--		splitstr_free(ret);
--	}
--	return 0;
--}
--
--#endif
-diff --git a/pan/splitstr.h b/pan/splitstr.h
-deleted file mode 100644
-index 2ffa24f432..0000000000
---- a/pan/splitstr.h
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#ifndef _SPLITSTR_H_
--#define _SPLITSTR_H_
--/*
-- * Synopsis
-- *
-- * const char **splitstr(const char *str, const char *separator, int *argcount)
-- *
-- * Description
-- * This function splits a string (str) into components that are separated by
-- * one or more of the characters in the (separator) string.  An array of
-- * strings is returned, along with argcount being set to the number of strings
-- * found.  Argcount can be NULL.  There will always be a NULL element in the
-- * array after the last valid element.  If an error occurs, NULL will be
-- * returned and argcount will be set to zero.
-- *
-- * To rid yourself of the memory allocated for splitstr(), pass the return
-- * value from splitstr() unmodified to splitstr_free():
-- *
-- * void splitstr_free( const char ** return_from_splitstr );
-- *
-- */
--const char **
--splitstr(const char *, const char *, int *);
--
--/*
-- * splitster_free( const char ** )
-- *
-- * This takes the return value from splitster() and free()s memory
-- * allocated by splitster.  Assuming: ret=splitster(...), this
-- * requires that ret and *ret returned from splitster() have not
-- * been modified.
-- */
--void
--splitstr_free( const char ** );
--
--#endif
-diff --git a/pan/tag_report.h b/pan/tag_report.h
-deleted file mode 100644
-index df838e8c9d..0000000000
---- a/pan/tag_report.h
-+++ /dev/null
-@@ -1,51 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: tag_report.h,v 1.1 2000/09/21 21:35:06 alaffin Exp $ */
--#ifndef _TAG_REPORT_H_
--#define _TAG_REPORT_H_
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <time.h>	/* strftime */
--#include <unistd.h>	/* getopt */
--#include "symbol.h"
--#include "splitstr.h"
--
--int test_result( char *, char *, char *, char *, SYM );
--int cuts_report( SYM, SYM, char *, char * );
--int tag_report( SYM, SYM, SYM );
--int print_header( SYM );
--int cuts_testcase( SYM, SYM );
--
--#endif
-diff --git a/pan/zoolib.c b/pan/zoolib.c
-deleted file mode 100644
-index 0ac7852661..0000000000
---- a/pan/zoolib.c
-+++ /dev/null
-@@ -1,447 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: zoolib.c,v 1.8 2009/06/09 17:59:46 subrata_modak Exp $ */
--/*
-- * ZooLib
-- *
-- * A Zoo is a file used to record what test tags are running at the moment.
-- * If the system crashes, we should be able to look at the zoo file to find out
-- * what was currently running.  This is especially helpful when running multiple
-- * tests at the same time.
-- *
-- * The zoo file is meant to be a text file that fits on a standard console.
-- * You should be able to watch it with `cat zoofile`
-- *
-- * zoo file format:
-- * 	80 characters per line, ending with a \n
-- * 	available lines start with '#'
-- * 	expected line fromat: pid_t,tag,cmdline
-- *
-- */
--
--#include <signal.h>
--#include <stdlib.h>		/* for getenv */
--#include <string.h>
--#include "zoolib.h"
--
--char zoo_error[ZELEN];
--
--#ifdef __linux__
--/* glibc2.2 definition needs -D_XOPEN_SOURCE, which breaks other things. */
--extern int sighold(int __sig);
--extern int sigrelse(int __sig);
--#endif
--
--/* zoo_mark(): private function to make an entry to the zoo
-- * 	returns 0 on success, -1 on error */
--static int zoo_mark(zoo_t z, char *entry);
--static int zoo_lock(zoo_t z);
--static int zoo_unlock(zoo_t z);
--/* cat_args(): helper function to make cmdline from argc, argv */
--char *cat_args(int argc, char **argv);
--
--/* zoo_getname(): create a filename to use for the zoo */
--char *zoo_getname(void)
--{
--	char buf[1024];
--	char *zoo;
--
--	zoo = getenv("ZOO");
--	if (zoo) {
--		snprintf(buf, 1024, "%s/%s", zoo, "active");
--		return strdup(buf);
--	} else {
--		/* if there is no environment variable, we don't know where to put it */
--		return NULL;
--	}
--}
--
--/* zoo_open(): open a zoo for use */
--zoo_t zoo_open(char *zooname)
--{
--	zoo_t new_zoo;
--
--	new_zoo = (zoo_t) fopen(zooname, "r+");
--	if (!new_zoo) {
--		if (errno == ENOENT) {
--			/* file doesn't exist, try fopen(xxx, "a+") */
--			new_zoo = (zoo_t) fopen(zooname, "a+");
--			if (!new_zoo) {
--				/* total failure */
--				snprintf(zoo_error, ZELEN,
--					 "Could not open zoo as \"%s\", errno:%d %s",
--					 zooname, errno, strerror(errno));
--				return 0;
--			}
--			fclose(new_zoo);
--			new_zoo = fopen(zooname, "r+");
+-			dbg(stdout, "setting backoff coeffient to %dus\n",
+-			    global_backoff);
+-		} else if (strcmp(arg, "--timeout") == 0
+-			   || strcmp(arg, "-t") == 0) {
+-			do_timeout = 1;
+-			assert_arg("--timeout");
+-			global_timeout = atoll_s(arg);
+-			dbg(stdout, "setting timeout to %ds\n", global_timeout);
+-		} else if (strcmp(arg, "--cpu") == 0 || strcmp(arg, "-c") == 0) {
+-			do_cpu = 1;
+-			assert_arg("--cpu");
+-			do_cpu_forks = atoll_b(arg);
+-		} else if (strcmp(arg, "--io") == 0 || strcmp(arg, "-i") == 0) {
+-			do_io = 1;
+-			assert_arg("--io");
+-			do_io_forks = atoll_b(arg);
+-		} else if (strcmp(arg, "--vm") == 0 || strcmp(arg, "-m") == 0) {
+-			do_vm = 1;
+-			assert_arg("--vm");
+-			do_vm_forks = atoll_b(arg);
+-		} else if (strcmp(arg, "--vm-chunks") == 0) {
+-			assert_arg("--vm-chunks");
+-			do_vm_chunks = atoll_b(arg);
+-		} else if (strcmp(arg, "--vm-bytes") == 0) {
+-			assert_arg("--vm-bytes");
+-			do_vm_bytes = atoll_b(arg);
+-		} else if (strcmp(arg, "--vm-hang") == 0) {
+-			global_vmhang = 1;
+-		} else if (strcmp(arg, "--hdd") == 0 || strcmp(arg, "-d") == 0) {
+-			do_hdd = 1;
+-			assert_arg("--hdd");
+-			do_hdd_forks = atoll_b(arg);
+-		} else if (strcmp(arg, "--hdd-noclean") == 0) {
+-			do_hdd_clean = 2;
+-		} else if (strcmp(arg, "--hdd-files") == 0) {
+-			assert_arg("--hdd-files");
+-			do_hdd_files = atoll_b(arg);
+-		} else if (strcmp(arg, "--hdd-bytes") == 0) {
+-			assert_arg("--hdd-bytes");
+-			do_hdd_bytes = atoll_b(arg);
 -		} else {
--			snprintf(zoo_error, ZELEN,
--				 "Could not open zoo as \"%s\", errno:%d %s",
--				 zooname, errno, strerror(errno));
+-			err(stderr, "unrecognized option: %s\n", arg);
+-			exit(1);
 -		}
 -	}
--	return new_zoo;
--}
 -
--int zoo_close(zoo_t z)
--{
--	int ret;
+-	/* Hog CPU option.  */
+-	if (do_cpu) {
+-		out(stdout, "dispatching %lli hogcpu forks\n", do_cpu_forks);
 -
--	ret = fclose(z);
--	if (ret) {
--		snprintf(zoo_error, ZELEN,
--			 "closing zoo caused error, errno:%d %s",
--			 errno, strerror(errno));
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			if (do_dryrun)
+-				exit(0);
+-			exit(hogcpu(do_cpu_forks));
+-		case -1:	/* error */
+-			err(stderr, "hogcpu dispatcher fork failed\n");
+-			exit(1);
+-		default:	/* parent */
+-			children++;
+-			dbg(stdout, "--> hogcpu dispatcher forked (%i)\n", pid);
+-		}
 -	}
--	return ret;
--}
 -
--static int zoo_mark(zoo_t z, char *entry)
--{
--	FILE *fp = (FILE *) z;
--	int found = 0;
--	long pos;
--	char buf[BUFLEN];
+-	/* Hog I/O option.  */
+-	if (do_io) {
+-		out(stdout, "dispatching %lli hogio forks\n", do_io_forks);
 -
--	if (fp == NULL)
--		return -1;
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			if (do_dryrun)
+-				exit(0);
+-			exit(hogio(do_io_forks));
+-		case -1:	/* error */
+-			err(stderr, "hogio dispatcher fork failed\n");
+-			exit(1);
+-		default:	/* parent */
+-			children++;
+-			dbg(stdout, "--> hogio dispatcher forked (%i)\n", pid);
+-		}
+-	}
 -
--	if (zoo_lock(z))
--		return -1;
+-	/* Hog VM option.  */
+-	if (do_vm) {
+-		out(stdout,
+-		    "dispatching %lli hogvm forks, each %lli chunks of %lli bytes\n",
+-		    do_vm_forks, do_vm_chunks, do_vm_bytes);
 -
--	/* first fit */
--	rewind(fp);
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			if (do_dryrun)
+-				exit(0);
+-			exit(hogvm(do_vm_forks, do_vm_chunks, do_vm_bytes));
+-		case -1:	/* error */
+-			err(stderr, "hogvm dispatcher fork failed\n");
+-			exit(1);
+-		default:	/* parent */
+-			children++;
+-			dbg(stdout, "--> hogvm dispatcher forked (%i)\n", pid);
+-		}
+-	}
 -
--	do {
--		pos = ftell(fp);
+-	/* Hog HDD option.  */
+-	if (do_hdd) {
+-		out(stdout, "dispatching %lli hoghdd forks, each %lli files of "
+-		    "%lli bytes\n", do_hdd_forks, do_hdd_files, do_hdd_bytes);
 -
--		if (fgets(buf, BUFLEN, fp) == NULL)
--			break;
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			if (do_dryrun)
+-				exit(0);
+-			exit(hoghdd
+-			     (do_hdd_forks, do_hdd_clean, do_hdd_files,
+-			      do_hdd_bytes));
+-		case -1:	/* error */
+-			err(stderr, "hoghdd dispatcher fork failed\n");
+-			exit(1);
+-		default:	/* parent */
+-			children++;
+-			dbg(stdout, "--> hoghdd dispatcher forked (%i)\n", pid);
+-		}
+-	}
 -
--		if (buf[0] == '#') {
--			rewind(fp);
--			if (fseek(fp, pos, SEEK_SET)) {
--				/* error */
--				snprintf(zoo_error, ZELEN,
--					 "seek error while writing to zoo file, errno:%d %s",
--					 errno, strerror(errno));
--				return -1;
+-	/* We have no work to do, so bail out.  */
+-	if (children == 0)
+-		usage(0);
+-
+-	/* Wait for our children to exit.  */
+-	while (children) {
+-		int status, ret;
+-
+-		if ((pid = wait(&status)) > 0) {
+-			if ((WIFEXITED(status)) != 0) {
+-				if ((ret = WEXITSTATUS(status)) != 0) {
+-					err(stderr,
+-					    "dispatcher %i returned error %i\n",
+-					    pid, ret);
+-					retval += ret;
+-				} else {
+-					dbg(stdout,
+-					    "<-- dispatcher return (%i)\n",
+-					    pid);
+-				}
+-			} else {
+-				err(stderr,
+-				    "dispatcher did not exit normally\n");
+-				++retval;
 -			}
--			/* write the entry, left justified, and padded/truncated to the
--			 * same size as the previous entry */
--			fprintf(fp, "%-*.*s\n", (int)strlen(buf) - 1,
--				(int)strlen(buf) - 1, entry);
--			found = 1;
+-
+-			--children;
+-		} else {
+-			dbg(stdout, "wait() returned error: %s\n",
+-			    strerror(errno));
+-			err(stderr, "detected missing dispatcher children\n");
+-			++retval;
 -			break;
 -		}
--	} while (1);
--
--	if (!found) {
--		if (fseek(fp, 0, SEEK_END)) {
--			snprintf(zoo_error, ZELEN,
--				 "error seeking to end of zoo file, errno:%d %s",
--				 errno, strerror(errno));
--			return -1;
--		}
--		fprintf(fp, "%-*.*s\n", 79, 79, entry);
 -	}
--	fflush(fp);
 -
--	if (zoo_unlock(z))
--		return -1;
--	return 0;
+-	/* Record our stop time.  */
+-	if ((stoptime = time(NULL)) == -1) {
+-		err(stderr, "failed to acquire current time\n");
+-		exit(1);
+-	}
+-
+-	/* Calculate our runtime.  */
+-	runtime = stoptime - starttime;
+-
+-	/* Print final status message.  */
+-	if (retval) {
+-		err(stderr, "failed run completed in %lis\n", runtime);
+-	} else {
+-		out(stdout, "successful run completed in %lis\n", runtime);
+-	}
+-
+-	exit(retval);
 -}
 -
--int zoo_mark_cmdline(zoo_t z, pid_t p, char *tag, char *cmdline)
+-int usage(int status)
 -{
--	char new_entry[BUFLEN];
+-	char *mesg =
+-	    "`%s' imposes certain types of compute stress on your system\n\n"
+-	    "Usage: %s [OPTION [ARG]] ...\n\n"
+-	    " -?, --help            show this help statement\n"
+-	    "     --version         show version statement\n"
+-	    " -v, --verbose         be verbose\n"
+-	    " -q, --quiet           be quiet\n"
+-	    " -n, --dry-run         show what would have been done\n"
+-	    "     --no-retry        exit rather than retry non-critical errors\n"
+-	    "     --retry-delay n   wait n us before continuing past error\n"
+-	    " -t, --timeout n       timeout after n seconds\n"
+-	    "     --backoff n       wait for factor of n us before starting work\n"
+-	    " -c, --cpu n           spawn n procs spinning on sqrt()\n"
+-	    " -i, --io n            spawn n procs spinning on sync()\n"
+-	    " -m, --vm n            spawn n procs spinning on malloc()\n"
+-	    "     --vm-chunks c     malloc c chunks (default is 1)\n"
+-	    "     --vm-bytes b      malloc chunks of b bytes (default is 256MB)\n"
+-	    "     --vm-hang         hang in a sleep loop after memory allocated\n"
+-	    " -d, --hdd n           spawn n procs spinning on write()\n"
+-	    "     --hdd-noclean     do not unlink file to which random data written\n"
+-	    "     --hdd-files f     write to f files (default is 1)\n"
+-	    "     --hdd-bytes b     write b bytes (default is 1GB)\n\n"
+-	    "Infinity is denoted with 0.  For -m, -d: n=0 means infinite redo,\n"
+-	    "n<0 means redo abs(n) times. Valid suffixes are m,h,d,y for time;\n"
+-	    "k,m,g for size.\n\n";
 -
--	snprintf(new_entry, 80, "%d,%s,%s", p, tag, cmdline);
--	return zoo_mark(z, new_entry);
--}
+-	fprintf(stdout, mesg, global_progname, global_progname);
 -
--int zoo_mark_args(zoo_t z, pid_t p, char *tag, int ac, char **av)
--{
--	char *cmdline;
--	int ret;
--
--	cmdline = cat_args(ac, av);
--	ret = zoo_mark_cmdline(z, p, tag, cmdline);
--
--	free(cmdline);
--	return ret;
--}
--
--int zoo_clear(zoo_t z, pid_t p)
--{
--	FILE *fp = (FILE *) z;
--	long pos;
--	char buf[BUFLEN];
--	pid_t that_pid;
--	int found = 0;
--
--	if (fp == NULL)
--		return -1;
--
--	if (zoo_lock(z))
--		return -1;
--	rewind(fp);
--
--	do {
--		pos = ftell(fp);
--
--		if (fgets(buf, BUFLEN, fp) == NULL)
--			break;
--
--		if (buf[0] == '#')
--			continue;
--
--		that_pid = atoi(buf);
--		if (that_pid == p) {
--			if (fseek(fp, pos, SEEK_SET)) {
--				/* error */
--				snprintf(zoo_error, ZELEN,
--					 "seek error while writing to zoo file, errno:%d %s",
--					 errno, strerror(errno));
--				return -1;
--			}
--			if (ftell(fp) != pos) {
--				printf("fseek failed\n");
--			}
--			fputs("#", fp);
--			found = 1;
--			break;
--		}
--	} while (1);
--
--	fflush(fp);
--
--	/* FIXME: unlock zoo file */
--	if (zoo_unlock(z))
--		return -1;
--
--	if (!found) {
--		snprintf(zoo_error, ZELEN,
--			 "zoo_clear() did not find pid(%d)", p);
--		return 1;
--	}
--	return 0;
--
--}
--
--pid_t zoo_getpid(zoo_t z, char *tag)
--{
--	FILE *fp = (FILE *) z;
--	char buf[BUFLEN], *s;
--	pid_t this_pid = -1;
--
--	if (fp == NULL)
--		return -1;
--
--	if (zoo_lock(z))
--		return -1;
--
--	rewind(fp);
--	do {
--		if (fgets(buf, BUFLEN, fp) == NULL)
--			break;
--
--		if (buf[0] == '#')
--			continue;	/* recycled line */
--
--		if ((s = strchr(buf, ',')) == NULL)
--			continue;	/* line was not expected format */
--
--		if (strncmp(s + 1, tag, strlen(tag)))
--			continue;	/* tag does not match */
--
--		this_pid = atoi(buf);
--		break;
--	} while (1);
--
--	if (zoo_unlock(z))
--		return -1;
--	return this_pid;
--}
--
--int zoo_lock(zoo_t z)
--{
--	FILE *fp = (FILE *) z;
--	struct flock zlock;
--	sigset_t block_these;
--	int ret;
--
--	if (fp == NULL)
--		return -1;
--
--	zlock.l_whence = zlock.l_start = zlock.l_len = 0;
--	zlock.l_type = F_WRLCK;
--
--	sigemptyset(&block_these);
--	sigaddset(&block_these, SIGINT);
--	sigaddset(&block_these, SIGTERM);
--	sigaddset(&block_these, SIGHUP);
--	sigaddset(&block_these, SIGUSR1);
--	sigaddset(&block_these, SIGUSR2);
--	sigprocmask(SIG_BLOCK, &block_these, NULL);
--
--	do {
--		ret = fcntl(fileno(fp), F_SETLKW, &zlock);
--	} while (ret == -1 && errno == EINTR);
--
--	sigprocmask(SIG_UNBLOCK, &block_these, NULL);
--	if (ret == -1) {
--		snprintf(zoo_error, ZELEN,
--			 "failed to unlock zoo file, errno:%d %s",
--			 errno, strerror(errno));
--		return -1;
--	}
--	return 0;
--
--}
--
--int zoo_unlock(zoo_t z)
--{
--	FILE *fp = (FILE *) z;
--	struct flock zlock;
--	sigset_t block_these;
--	int ret;
--
--	if (fp == NULL)
--		return -1;
--
--	zlock.l_whence = zlock.l_start = zlock.l_len = 0;
--	zlock.l_type = F_UNLCK;
--
--	sigemptyset(&block_these);
--	sigaddset(&block_these, SIGINT);
--	sigaddset(&block_these, SIGTERM);
--	sigaddset(&block_these, SIGHUP);
--	sigaddset(&block_these, SIGUSR1);
--	sigaddset(&block_these, SIGUSR2);
--	sigprocmask(SIG_BLOCK, &block_these, NULL);
--
--	do {
--		ret = fcntl(fileno(fp), F_SETLKW, &zlock);
--	} while (ret == -1 && errno == EINTR);
--
--	sigprocmask(SIG_UNBLOCK, &block_these, NULL);
--
--	if (ret == -1) {
--		snprintf(zoo_error, ZELEN,
--			 "failed to lock zoo file, errno:%d %s",
--			 errno, strerror(errno));
--		return -1;
--	}
--	return 0;
--}
--
--char *cat_args(int argc, char **argv)
--{
--	int a, size;
--	char *cmd;
--
--	for (size = a = 0; a < argc; a++) {
--		size += strlen(argv[a]);
--		size++;
--	}
--
--	if ((cmd = malloc(size)) == NULL) {
--		snprintf(zoo_error, ZELEN,
--			 "Malloc Error, %s/%d", __FILE__, __LINE__);
--		return NULL;
--	}
--
--	*cmd = '\0';
--	for (a = 0; a < argc; a++) {
--		if (a != 0)
--			strcat(cmd, " ");
--		strcat(cmd, argv[a]);
--	}
--
--	return cmd;
--}
--
--#if defined(UNIT_TEST)
--
--void zt_add(zoo_t z, int n)
--{
--	char cmdline[200];
--	char tag[10];
--
--	snprintf(tag, 10, "%s%d", "test", n);
--	snprintf(cmdline, 200, "%s%d %s %s %s", "runtest", n, "one", "two",
--		 "three");
--
--	zoo_mark_cmdline(z, n, tag, cmdline);
--}
--
--int main(int argc, char *argv[])
--{
--
--	char *zooname;
--	zoo_t test_zoo;
--	char *test_tag = "unittest";
--	int i, j;
--
--	zooname = zoo_getname();
--
--	if (!zooname) {
--		zooname = strdup("test_zoo");
--	}
--	printf("Test zoo filename is %s\n", zooname);
--
--	if ((test_zoo = zoo_open(zooname)) == NULL) {
--		printf("Error opennning zoo\n");
--		exit(-1);
--	}
--
--	zoo_mark_args(test_zoo, getpid(), test_tag, argc, argv);
--
--	for (j = 0; j < 5; j++) {
--		for (i = 0; i < 20; i++) {
--			zt_add(test_zoo, i);
--		}
--
--		for (; i >= 0; i--) {
--			zoo_clear(test_zoo, i);
--		}
--	}
--
--	zoo_clear(test_zoo, getpid());
+-	if (status <= 0)
+-		exit(-1 * status);
 -
 -	return 0;
 -}
 -
--#endif
-diff --git a/pan/zoolib.h b/pan/zoolib.h
-deleted file mode 100644
-index 6fb01fa411..0000000000
---- a/pan/zoolib.h
-+++ /dev/null
-@@ -1,83 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
+-int version(int status)
+-{
+-	char *mesg = "%s %s\n";
+-
+-	fprintf(stdout, mesg, global_progname, VERSION);
+-
+-	if (status <= 0)
+-		exit(-1 * status);
+-
+-	return 0;
+-}
+-
+-/* Convert a string representation of a number with an optional size suffix
+- * to a long long.
 - */
--/* $Id: zoolib.h,v 1.5 2006/06/27 09:37:34 vapier Exp $ */
--#ifndef ZOOLIB_H
--#define ZOOLIB_H
+-long long atoll_b(const char *nptr)
+-{
+-	int pos;
+-	char suffix;
+-	long long factor = 1;
 -
--#include <stdio.h>
--#include <sys/types.h>
--#include <unistd.h>
--#include <errno.h>
--#include <fcntl.h>
--#include <sys/signal.h>
+-	if ((pos = strlen(nptr) - 1) < 0) {
+-		err(stderr, "invalid string\n");
+-		exit(1);
+-	}
 -
--typedef FILE *zoo_t;
--#define ZELEN 512
--extern char zoo_error[ZELEN];
--#define BUFLEN 81
+-	switch (suffix = nptr[pos]) {
+-	case 'k':
+-	case 'K':
+-		factor = 1024;
+-		break;
+-	case 'm':
+-	case 'M':
+-		factor = 1024 * 1024;
+-		break;
+-	case 'g':
+-	case 'G':
+-		factor = 1024 * 1024 * 1024;
+-		break;
+-	default:
+-		if (suffix < '0' || suffix > '9') {
+-			err(stderr, "unrecognized suffix: %c\n", suffix);
+-			exit(1);
+-		}
+-	}
 -
--int lock_file( FILE *fp, short ltype, char **errmsg );
--/* FILE *open_file( char *file, char *mode, char **errmsg ); */
+-	factor = atoll(nptr) * factor;
 -
--void wait_handler();
+-	return factor;
+-}
 -
--/*  char *zoo_active( void ); */
--/* zoo_getname(): create a filename to use for the zoo
-- * 	returns NULL on error */
--char *zoo_getname(void);
+-/* Convert a string representation of a number with an optional time suffix
+- * to a long long.
+- */
+-long long atoll_s(const char *nptr)
+-{
+-	int pos;
+-	char suffix;
+-	long long factor = 1;
 -
--/* zoo_open(): open a zoo file for use
-- * 	returns NULL on error */
--zoo_t zoo_open(char *zooname);
+-	if ((pos = strlen(nptr) - 1) < 0) {
+-		err(stderr, "invalid string\n");
+-		exit(1);
+-	}
 -
--/* zoo_close(): close an open zoo file */
--int zoo_close(zoo_t z);
+-	switch (suffix = nptr[pos]) {
+-	case 's':
+-	case 'S':
+-		factor = 1;
+-		break;
+-	case 'm':
+-	case 'M':
+-		factor = 60;
+-		break;
+-	case 'h':
+-	case 'H':
+-		factor = 60 * 60;
+-		break;
+-	case 'd':
+-	case 'D':
+-		factor = 60 * 60 * 24;
+-		break;
+-	case 'y':
+-	case 'Y':
+-		factor = 60 * 60 * 24 * 360;
+-		break;
+-	default:
+-		if (suffix < '0' || suffix > '9') {
+-			err(stderr, "unrecognized suffix: %c\n", suffix);
+-			exit(1);
+-		}
+-	}
 -
--/* zoo_mark_cmdline(): make an entry to the zoo
-- *	returns 0 on success, -1 on error */
--int zoo_mark_cmdline(zoo_t z, pid_t p, char *tag, char *cmdline);
+-	factor = atoll(nptr) * factor;
 -
--/* zoo_mark_args(): make an entry to the zoo using argc argv
-- *	returns 0 on success, -1 on error */
--int zoo_mark_args(zoo_t z, pid_t p, char *tag, int ac, char **av);
+-	return factor;
+-}
 -
--/* zoo_clear(): mark a pid as completed
-- *	returns 0 on success, -1 on error, 1 as warning */
--int zoo_clear(zoo_t z, pid_t p);
+-int hogcpu(long long forks)
+-{
+-	long long i;
+-	double d;
+-	int pid, retval = 0;
 -
--/* zoo_getpid(): get the pid for a specified tag
-- * 	returns pid_t on success and 0 on error */
--pid_t zoo_getpid(zoo_t z, char *tag);
+-	/* Make local copies of global variables.  */
+-	int ignore = global_ignore;
+-	int retry = global_retry;
+-	int timeout = global_timeout;
+-	long backoff = global_backoff * forks;
 -
+-	dbg(stdout, "using backoff sleep of %lius for hogcpu\n", backoff);
 -
--#endif /* ZOOLIB_H */
+-	for (i = 0; forks == 0 || i < forks; i++) {
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			alarm(timeout);
+-
+-			/* Use a backoff sleep to ensure we get good fork throughput.  */
+-			usleep(backoff);
+-
+-			while (1)
+-				d = sqrt(rand());
+-
+-			/* This case never falls through; alarm signal can cause exit.  */
+-		case -1:	/* error */
+-			if (ignore) {
+-				++retval;
+-				wrn(stderr,
+-				    "hogcpu worker fork failed, continuing\n");
+-				usleep(retry);
+-				continue;
+-			}
+-
+-			err(stderr, "hogcpu worker fork failed\n");
+-			return 1;
+-		default:	/* parent */
+-			dbg(stdout, "--> hogcpu worker forked (%i)\n", pid);
+-		}
+-	}
+-
+-	/* Wait for our children to exit.  */
+-	while (i) {
+-		int status, ret;
+-
+-		if ((pid = wait(&status)) > 0) {
+-			if ((WIFEXITED(status)) != 0) {
+-				if ((ret = WEXITSTATUS(status)) != 0) {
+-					err(stderr,
+-					    "hogcpu worker %i exited %i\n", pid,
+-					    ret);
+-					retval += ret;
+-				} else {
+-					dbg(stdout,
+-					    "<-- hogcpu worker exited (%i)\n",
+-					    pid);
+-				}
+-			} else {
+-				dbg(stdout,
+-				    "<-- hogcpu worker signalled (%i)\n", pid);
+-			}
+-
+-			--i;
+-		} else {
+-			dbg(stdout, "wait() returned error: %s\n",
+-			    strerror(errno));
+-			err(stderr,
+-			    "detected missing hogcpu worker children\n");
+-			++retval;
+-			break;
+-		}
+-	}
+-
+-	return retval;
+-}
+-
+-int hogio(long long forks)
+-{
+-	long long i;
+-	int pid, retval = 0;
+-
+-	/* Make local copies of global variables.  */
+-	int ignore = global_ignore;
+-	int retry = global_retry;
+-	int timeout = global_timeout;
+-	long backoff = global_backoff * forks;
+-
+-	dbg(stdout, "using backoff sleep of %lius for hogio\n", backoff);
+-
+-	for (i = 0; forks == 0 || i < forks; i++) {
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			alarm(timeout);
+-
+-			/* Use a backoff sleep to ensure we get good fork throughput.  */
+-			usleep(backoff);
+-
+-			while (1)
+-				sync();
+-
+-			/* This case never falls through; alarm signal can cause exit.  */
+-		case -1:	/* error */
+-			if (ignore) {
+-				++retval;
+-				wrn(stderr,
+-				    "hogio worker fork failed, continuing\n");
+-				usleep(retry);
+-				continue;
+-			}
+-
+-			err(stderr, "hogio worker fork failed\n");
+-			return 1;
+-		default:	/* parent */
+-			dbg(stdout, "--> hogio worker forked (%i)\n", pid);
+-		}
+-	}
+-
+-	/* Wait for our children to exit.  */
+-	while (i) {
+-		int status, ret;
+-
+-		if ((pid = wait(&status)) > 0) {
+-			if ((WIFEXITED(status)) != 0) {
+-				if ((ret = WEXITSTATUS(status)) != 0) {
+-					err(stderr,
+-					    "hogio worker %i exited %i\n", pid,
+-					    ret);
+-					retval += ret;
+-				} else {
+-					dbg(stdout,
+-					    "<-- hogio worker exited (%i)\n",
+-					    pid);
+-				}
+-			} else {
+-				dbg(stdout, "<-- hogio worker signalled (%i)\n",
+-				    pid);
+-			}
+-
+-			--i;
+-		} else {
+-			dbg(stdout, "wait() returned error: %s\n",
+-			    strerror(errno));
+-			err(stderr, "detected missing hogio worker children\n");
+-			++retval;
+-			break;
+-		}
+-	}
+-
+-	return retval;
+-}
+-
+-int hogvm(long long forks, long long chunks, long long bytes)
+-{
+-	long long i, j, k;
+-	int pid, retval = 0;
+-	char **ptr;
+-
+-	/* Make local copies of global variables.  */
+-	int ignore = global_ignore;
+-	int retry = global_retry;
+-	int timeout = global_timeout;
+-	long backoff = global_backoff * forks;
+-
+-	dbg(stdout, "using backoff sleep of %lius for hogvm\n", backoff);
+-
+-	if (bytes == 0) {
+-		/* 512MB is guess at the largest value can than be malloced at once.  */
+-		bytes = 512 * 1024 * 1024;
+-	}
+-
+-	for (i = 0; forks == 0 || i < forks; i++) {
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			alarm(timeout);
+-
+-			/* Use a backoff sleep to ensure we get good fork throughput.  */
+-			usleep(backoff);
+-
+-			/* If chunks is 0, ptr will allocate 0 bytes's
+-			 * memory, it will cause the process to crash
+-			 * during runtime, so adjust to 1 */
+-			if (chunks == 0)
+-				chunks = 1;
+-
+-			while (1) {
+-				ptr = (char **)malloc(chunks *
+-						sizeof(char *));
+-				for (j = 0; j < chunks; j++) {
+-					if ((ptr[j] =
+-					     (char *)malloc(bytes *
+-							    sizeof(char)))) {
+-						for (k = 0; k < bytes; k++)
+-							ptr[j][k] = 'Z';	/* Ensure that COW happens.  */
+-						dbg(stdout,
+-						    "hogvm worker malloced %lli bytes\n",
+-						    k);
+-					} else if (ignore) {
+-						++retval;
+-						wrn(stderr,
+-						    "hogvm malloc failed, continuing\n");
+-						usleep(retry);
+-						continue;
+-					} else {
+-						++retval;
+-						err(stderr,
+-						    "hogvm malloc failed\n");
+-						break;
+-					}
+-				}
+-				if (global_vmhang && retval == 0) {
+-					dbg(stdout,
+-					    "sleeping forever with allocated memory\n");
+-					while (1)
+-						sleep(1024);
+-				}
+-				if (retval == 0) {
+-					dbg(stdout,
+-					    "hogvm worker freeing memory and starting over\n");
+-					for (j = 0; j < chunks; j++)
+-						free(ptr[j]);
+-					free(ptr);
+-					continue;
+-				}
+-
+-				exit(retval);
+-			}
+-
+-			/* This case never falls through; alarm signal can cause exit.  */
+-		case -1:	/* error */
+-			if (ignore) {
+-				++retval;
+-				wrn(stderr,
+-				    "hogvm worker fork failed, continuing\n");
+-				usleep(retry);
+-				continue;
+-			}
+-
+-			err(stderr, "hogvm worker fork failed\n");
+-			return 1;
+-		default:	/* parent */
+-			dbg(stdout, "--> hogvm worker forked (%i)\n", pid);
+-		}
+-	}
+-
+-	/* Wait for our children to exit.  */
+-	while (i) {
+-		int status, ret;
+-
+-		if ((pid = wait(&status)) > 0) {
+-			if ((WIFEXITED(status)) != 0) {
+-				if ((ret = WEXITSTATUS(status)) != 0) {
+-					err(stderr,
+-					    "hogvm worker %i exited %i\n", pid,
+-					    ret);
+-					retval += ret;
+-				} else {
+-					dbg(stdout,
+-					    "<-- hogvm worker exited (%i)\n",
+-					    pid);
+-				}
+-			} else {
+-				dbg(stdout, "<-- hogvm worker signalled (%i)\n",
+-				    pid);
+-			}
+-
+-			--i;
+-		} else {
+-			dbg(stdout, "wait() returned error: %s\n",
+-			    strerror(errno));
+-			err(stderr, "detected missing hogvm worker children\n");
+-			++retval;
+-			break;
+-		}
+-	}
+-
+-	return retval;
+-}
+-
+-int hoghdd(long long forks, int clean, long long files, long long bytes)
+-{
+-	long long i, j;
+-	int fd, pid, retval = 0;
+-	int chunk = (1024 * 1024) - 1;	/* Minimize slow writing.  */
+-	char buff[chunk];
+-
+-	/* Make local copies of global variables.  */
+-	int ignore = global_ignore;
+-	int retry = global_retry;
+-	int timeout = global_timeout;
+-	long backoff = global_backoff * forks;
+-
+-	/* Initialize buffer with some random ASCII data.  */
+-	dbg(stdout, "seeding buffer with random data\n");
+-	for (i = 0; i < chunk - 1; i++) {
+-		j = rand();
+-		j = (j < 0) ? -j : j;
+-		j %= 95;
+-		j += 32;
+-		buff[i] = j;
+-	}
+-	buff[i] = '\n';
+-
+-	dbg(stdout, "using backoff sleep of %lius for hoghdd\n", backoff);
+-
+-	for (i = 0; forks == 0 || i < forks; i++) {
+-		switch (pid = fork()) {
+-		case 0:	/* child */
+-			alarm(timeout);
+-
+-			/* Use a backoff sleep to ensure we get good fork throughput.  */
+-			usleep(backoff);
+-
+-			while (1) {
+-				for (i = 0; i < files; i++) {
+-					char name[] = "./stress.XXXXXX";
+-
+-					if ((fd = mkstemp(name)) < 0) {
+-						perror("mkstemp");
+-						err(stderr, "mkstemp failed\n");
+-						exit(1);
+-					}
+-
+-					if (clean == 0) {
+-						dbg(stdout, "unlinking %s\n",
+-						    name);
+-						if (unlink(name)) {
+-							err(stderr,
+-							    "unlink failed\n");
+-							exit(1);
+-						}
+-					}
+-
+-					dbg(stdout, "fast writing to %s\n",
+-					    name);
+-					for (j = 0;
+-					     bytes == 0 || j + chunk < bytes;
+-					     j += chunk) {
+-						if (write(fd, buff, chunk) !=
+-						    chunk) {
+-							err(stderr,
+-							    "write failed\n");
+-							exit(1);
+-						}
+-					}
+-
+-					dbg(stdout, "slow writing to %s\n",
+-					    name);
+-					for (; bytes == 0 || j < bytes - 1; j++) {
+-						if (write(fd, "Z", 1) != 1) {
+-							err(stderr,
+-							    "write failed\n");
+-							exit(1);
+-						}
+-					}
+-					if (write(fd, "\n", 1) != 1) {
+-						err(stderr, "write failed\n");
+-						exit(1);
+-					}
+-					++j;
+-
+-					dbg(stdout,
+-					    "closing %s after writing %lli bytes\n",
+-					    name, j);
+-					close(fd);
+-
+-					if (clean == 1) {
+-						if (unlink(name)) {
+-							err(stderr,
+-							    "unlink failed\n");
+-							exit(1);
+-						}
+-					}
+-				}
+-				if (retval == 0) {
+-					dbg(stdout,
+-					    "hoghdd worker starting over\n");
+-					continue;
+-				}
+-
+-				exit(retval);
+-			}
+-
+-			/* This case never falls through; alarm signal can cause exit.  */
+-		case -1:	/* error */
+-			if (ignore) {
+-				++retval;
+-				wrn(stderr,
+-				    "hoghdd worker fork failed, continuing\n");
+-				usleep(retry);
+-				continue;
+-			}
+-
+-			err(stderr, "hoghdd worker fork failed\n");
+-			return 1;
+-		default:	/* parent */
+-			dbg(stdout, "--> hoghdd worker forked (%i)\n", pid);
+-		}
+-	}
+-
+-	/* Wait for our children to exit.  */
+-	while (i) {
+-		int status, ret;
+-
+-		if ((pid = wait(&status)) > 0) {
+-			if ((WIFEXITED(status)) != 0) {
+-				if ((ret = WEXITSTATUS(status)) != 0) {
+-					err(stderr,
+-					    "hoghdd worker %i exited %i\n", pid,
+-					    ret);
+-					retval += ret;
+-				} else {
+-					dbg(stdout,
+-					    "<-- hoghdd worker exited (%i)\n",
+-					    pid);
+-				}
+-			} else {
+-				dbg(stdout,
+-				    "<-- hoghdd worker signalled (%i)\n", pid);
+-			}
+-
+-			--i;
+-		} else {
+-			dbg(stdout, "wait() returned error: %s\n",
+-			    strerror(errno));
+-			err(stderr,
+-			    "detected missing hoghdd worker children\n");
+-			++retval;
+-			break;
+-		}
+-	}
+-
+-	return retval;
+-}
+diff --git a/tools/html_report_header.txt b/tools/html_report_header.txt
+deleted file mode 100644
+index b3da2c5441..0000000000
+--- a/tools/html_report_header.txt
++++ /dev/null
+@@ -1,56 +0,0 @@
+-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+-<head>
+-  <title>Linux Test Project - Results</title>
+-</head>
+-<body>
+-
+-<h1>LTP Output/Log </h1>
+-<table border="1" cellspacing="3">
+-  <tbody>
+-    <tr>
+-      <td bgcolor="#66ff66"><b>&nbsp;PASSED&nbsp;</b></td>
+-      <td bgcolor="#ff0000"><b>&nbsp;FAILED&nbsp;</b></td>
+-      <td bgcolor="Fuchsia"><b>&nbsp;WARNING&nbsp;</b></td>
+-      <td bgcolor="Yellow"><b>&nbsp;BROKEN&nbsp;</b></td>
+-      <td bgcolor="#8dc997"><b>&nbsp;RETIRED&nbsp;</b></td>
+-      <td bgcolor="Aqua"><b>&nbsp;CONFIG-ERROR&nbsp;</b></td>
+-    </tr>
+-  </tbody>
+-</table>
+-<br>
+-<b>Meaning of the following KEYWORDS in test results/logs:</b>
+-<hr>
+-<li><b>TPASS -</b> Indicates that the test case had the expected result and passed</li>
+-<li><b>TFAIL -</b> Indicates that the test case had an unexpected result and failed.</li>
+-<li><b>TBROK -</b> Indicates that the remaining test cases are broken and will not execute correctly, because some precondition not met, such as a resource not being available.</li>
+-<li><b>TCONF -</b> Indicates that the test case was not written to run on the current harware or software configuration such as machine type, or, kernel version.</li>
+-<li><b>TWARN -</b> Indicates that the test case experienced an unexpected or undesirable event that should not affect the test itself such as being unable to cleanup resources after the test finished.</li>
+-<li><b>TINFO -</b> Specifies useful information about the status of the test that does not affect the result and does not indicate a problem.</li>
+-<hr>
+-
+-<br>
+-<li><a href="#_1">Click Here for Detailed Report</a></li>
+-<li><a href="#_2">Click Here for Summary Report</a></li>
+-<br>
+-
+-<h2 id="_1">Detailed Report</h2>
+-<div>
+-<table border="1" cellspacing="3">
+-<tbody>
+-    <tr>
+-      <td bgcolor="Silver"><strong>No</strong></td>
+-      <td bgcolor="Silver"><strong>Test-Name</strong></td>
+-      <td bgcolor="Silver"><strong>Start-Time</strong></td>
+-      <td bgcolor="Silver"><strong>Command-Line</strong></td>
+-      <td bgcolor="Silver"><strong>Contacts</strong></td>
+-      <td bgcolor="Silver"><strong>Analysis</strong></td>
+-      <td bgcolor="Silver"><strong>Test-Output</strong></td>
+-      <td bgcolor="Silver"><strong>Initiation-Status</strong></td>
+-      <td bgcolor="Silver"><strong>Duration</strong></td>
+-      <td bgcolor="Silver"><strong>Termination-type</strong></td>
+-      <td bgcolor="Silver"><strong>Termination-id</strong></td>
+-      <td bgcolor="Silver"><strong>Core-File</strong></td>
+-      <td bgcolor="Silver"><strong>cutime</strong></td>
+-      <td bgcolor="Silver"><strong>cstime</strong></td>
+-    </tr>
+diff --git a/tools/insert_kernel_faults.sh b/tools/insert_kernel_faults.sh
+deleted file mode 100755
+index ae24ae108f..0000000000
+--- a/tools/insert_kernel_faults.sh
++++ /dev/null
+@@ -1,53 +0,0 @@
+-#!/bin/sh
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2009                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and/or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-################################################################################
+-#									      ##
+-# File :        insert_kernel_faults.sh					      ##
+-#									      ##
+-# Usage:	insert_kernel_faults.sh <fault_percentage>		      ##
+-#									      ##
+-# Description:  This is a simple script that inserts faults at various	      ##
+-#		subsystems of the kernel. Please refer to the ltp/README      ##
+-#		for the various kernel CONFIG options needed to exploit	      ##
+-#		all those features					      ##
+-#									      ##
+-# Author:	Subrata Modak <subrata@linux.vnet.ibm.com>		      ##
+-#									      ##
+-# History:      Aug 11 2009 - Created - Subrata Modak.			      ##
+-#		Aug 17 2009 - Changed the debugfs mount point - Subrata Modak.##
+-################################################################################
+-
+-if [ -z "$1" ]
+-	then
+-	#Check if Useage has been proper
+-	echo "Usage: $0 <fault_percentage>"
+-	exit 1
+-fi
+-
+-#These are the types of Subsystems where fault will be injected
+-#Make sure debugfs has been mounted
+-for FAILTYPE in fail_io_timeout fail_make_request fail_page_alloc failslab
+-do
+-	echo $1 > /sys/kernel/debug/$FAILTYPE/probability
+-	echo 100 > /sys/kernel/debug/$FAILTYPE/interval
+-	echo -1 > /sys/kernel/debug/$FAILTYPE/times
+-	echo 0 > /sys/kernel/debug/$FAILTYPE/space
+-done
+-
+diff --git a/tools/restore_kernel_faults_default.sh b/tools/restore_kernel_faults_default.sh
+deleted file mode 100755
+index c819107bfe..0000000000
+--- a/tools/restore_kernel_faults_default.sh
++++ /dev/null
+@@ -1,86 +0,0 @@
+-#!/bin/sh
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2009                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and/or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-################################################################################
+-#                                                                             ##
+-# File :        restore_kernel_faults_default.sh			      ##
+-#                                                                             ##
+-# Usage:        restore_kernel_faults_default.sh	                      ##
+-#                                                                             ##
+-# Description:  This is a simple script that will restore the /debugfs/fail*  ##
+-#		entries to their default values				      ##
+-#                                                                             ##
+-# Author:       Subrata Modak <subrata@linux.vnet.ibm.com>                    ##
+-#                                                                             ##
+-# History:      Aug 11 2009 - Created - Subrata Modak.                        ##
+-#		Aug 17 2009 - Changed debugfs mount point - Subrata Modak.    ##
+-################################################################################
+-
+-echo  0 > /sys/kernel/debug/fail_io_timeout/reject-end
+-echo  0 > /sys/kernel/debug/fail_io_timeout/reject-start
+-echo  4294967295 > /sys/kernel/debug/fail_io_timeout/require-end
+-echo  0 > /sys/kernel/debug/fail_io_timeout/require-start
+-echo  32 > /sys/kernel/debug/fail_io_timeout/stacktrace-depth
+-echo  N > /sys/kernel/debug/fail_io_timeout/task-filter
+-echo  2 > /sys/kernel/debug/fail_io_timeout/verbose
+-echo  0 > /sys/kernel/debug/fail_io_timeout/space
+-echo  1 > /sys/kernel/debug/fail_io_timeout/times
+-echo  1 > /sys/kernel/debug/fail_io_timeout/interval
+-echo  0 > /sys/kernel/debug/fail_io_timeout/probability
+-
+-echo  0 > /sys/kernel/debug/fail_make_request/reject-end
+-echo  0 > /sys/kernel/debug/fail_make_request/reject-start
+-echo  4294967295 > /sys/kernel/debug/fail_make_request/require-end
+-echo  0 > /sys/kernel/debug/fail_make_request/require-start
+-echo  32 > /sys/kernel/debug/fail_make_request/stacktrace-depth
+-echo  N > /sys/kernel/debug/fail_make_request/task-filter
+-echo  2 > /sys/kernel/debug/fail_make_request/verbose
+-echo  0 > /sys/kernel/debug/fail_make_request/space
+-echo  1 > /sys/kernel/debug/fail_make_request/times
+-echo  1 > /sys/kernel/debug/fail_make_request/interval
+-echo  0 > /sys/kernel/debug/fail_make_request/probability
+-
+-echo  1 > /sys/kernel/debug/fail_page_alloc/min-order
+-echo  Y > /sys/kernel/debug/fail_page_alloc/ignore-gfp-highmem
+-echo  Y > /sys/kernel/debug/fail_page_alloc/ignore-gfp-wait
+-echo  0 > /sys/kernel/debug/fail_page_alloc/reject-end
+-echo  0 > /sys/kernel/debug/fail_page_alloc/reject-start
+-echo  4294967295 > /sys/kernel/debug/fail_page_alloc/require-end
+-echo  0 > /sys/kernel/debug/fail_page_alloc/require-start
+-echo  32 > /sys/kernel/debug/fail_page_alloc/stacktrace-depth
+-echo  N > /sys/kernel/debug/fail_page_alloc/task-filter
+-echo  2 > /sys/kernel/debug/fail_page_alloc/verbose
+-echo  0 > /sys/kernel/debug/fail_page_alloc/space
+-echo  1 > /sys/kernel/debug/fail_page_alloc/times
+-echo  1 > /sys/kernel/debug/fail_page_alloc/interval
+-echo  0 > /sys/kernel/debug/fail_page_alloc/probability
+-
+-echo  Y > /sys/kernel/debug/failslab/ignore-gfp-wait
+-echo  0 > /sys/kernel/debug/failslab/reject-end
+-echo  0 > /sys/kernel/debug/failslab/reject-start
+-echo  4294967295 > /sys/kernel/debug/failslab/require-end
+-echo  0 > /sys/kernel/debug/failslab/require-start
+-echo  32 > /sys/kernel/debug/failslab/stacktrace-depth
+-echo  N > /sys/kernel/debug/failslab/task-filter
+-echo  2 > /sys/kernel/debug/failslab/verbose
+-echo  0 > /sys/kernel/debug/failslab/space
+-echo  1 > /sys/kernel/debug/failslab/times
+-echo  1 > /sys/kernel/debug/failslab/interval
+-echo  0 > /sys/kernel/debug/failslab/probability
+-
 -- 
 2.51.0
 
