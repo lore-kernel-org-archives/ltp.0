@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33902E91261
-	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 06:09:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43FA4EC1E84
+	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 09:42:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1770271754; h=date : to :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1770284530; h=date : to :
  message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=ANMSjOCgxGjSeCsxnblf6R3hdWDSjIh4Cm2z5LqZ9Fg=;
- b=N4djdP0tvBfkiLIKxQxMYQn0r9Ql2ip70jFCKibA5lOMuH5dSF+mnlKpS6IgOwgBV8wp1
- 56P+RPSgIdYlll1bfffQV/D89y/oVlJcXKl0OlSQEvwLk/TTCEGl3D661GbHH65pX0U2/xv
- itKvGAO+uCWhWJ0n7DeDYEdp1NY1Hqg=
+ bh=PUNWK+EgyfYQM7b1DijDS47eyn2jYKF3eDgN1uIfIwg=;
+ b=EPy5/qLhoC7KxkFcNbOx/rriG7C25Z2HXzVAWW8+YLSWD4Xm8MgC7v5BaxPLAxRaH5VRl
+ CZk6XnpK7h5xMimYq/CDxNbg57z7zaHofOLfaZ6QxD+c35MtADd3+6RERHYqAoU36JYAOMT
+ iXc6bg71zj0nBAD2aS8yKRcQ46V2BYQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A1A873CE2D9
-	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 07:09:14 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 653E93CE2E9
+	for <ltp@archiver.kernel.org>; Thu,  5 Feb 2026 10:42:10 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D9C493C246E
- for <ltp@lists.linux.it>; Thu,  5 Feb 2026 07:08:50 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 9047E3CE20E
+ for <ltp@lists.linux.it>; Thu,  5 Feb 2026 10:41:46 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3EAD52002D1
- for <ltp@lists.linux.it>; Thu,  5 Feb 2026 07:08:49 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C448010000E5
+ for <ltp@lists.linux.it>; Thu,  5 Feb 2026 10:41:45 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1770271728;
+ s=mimecast20190719; t=1770284504;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=vcdJznLOd6W54Ut+FcnciDFRewuG7ArGScBTq5fLgIk=;
- b=U47a+YIU0DjzbRR9hCwJ9opLHuU2QBoYzRjDwZrfDVeL7U9RZQY/B5jp6O701/p0BC5kvN
- reHI5KLV9J1aQkscrX7f25Vss9ISu3Nq8uhjT3Ba2VCMC7S53EvtOgMtbXW1OusndZo3HU
- GrXovKwtDT03xAHI1Z6GhNWomDAi2Z8=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=4XtD3sP7Gsqi/FDcvzTOrApdfwE8R0fdGE/Xdxcrkl4=;
+ b=BeEGHWJUNucBOFkKtmcJbLiO1U5gQxx4RW0xtySFv/9XRSjUd1XcvaUDUykl3VWPCKEir0
+ kWeywt8P28olVjTyBPO584lraCRcZP+yVxEWM7vaTbNTeiduHb/tDkvIDVRZjli7QXKN3i
+ GY9r6UdnLYcqHBmelGPjOo9IirTGa8U=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-451-fqbsuCZDOk6bOn_9jvuMhg-1; Thu, 05 Feb 2026 01:08:47 -0500
-X-MC-Unique: fqbsuCZDOk6bOn_9jvuMhg-1
-X-Mimecast-MFC-AGG-ID: fqbsuCZDOk6bOn_9jvuMhg_1770271726
-Received: by mail-pj1-f72.google.com with SMTP id
- 98e67ed59e1d1-34c48a76e75so614934a91.1
- for <ltp@lists.linux.it>; Wed, 04 Feb 2026 22:08:47 -0800 (PST)
+ us-mta-225-DN3NCs5sNdqbqNzm-OmrFQ-1; Thu, 05 Feb 2026 04:41:42 -0500
+X-MC-Unique: DN3NCs5sNdqbqNzm-OmrFQ-1
+X-Mimecast-MFC-AGG-ID: DN3NCs5sNdqbqNzm-OmrFQ_1770284502
+Received: by mail-pl1-f198.google.com with SMTP id
+ d9443c01a7336-2a8c54bbe46so18009525ad.2
+ for <ltp@lists.linux.it>; Thu, 05 Feb 2026 01:41:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1770271726; x=1770876526;
+ d=1e100.net; s=20230601; t=1770284502; x=1770889302;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=vcdJznLOd6W54Ut+FcnciDFRewuG7ArGScBTq5fLgIk=;
- b=p3x1PAXKqmuzjpOHlrWJnmYVBfhrT/189AL7RSpmNY/Dy/AxAhLBIxSFxaBVG4gs9F
- jGIQsEKQXI1lcbVRqHrEe+vUNo7ixCtjsqNXWtxGK0vbGyxROrsGs3xJHRkI2JCXm2U6
- UMd9LXZgh7Xx3k7GOweDkQJonBDNYVVmnx81UBWd4/AyVA+awBk4fN1UcFKJDxjh2zrE
- AR9UqInKtw+lVgV8t6s9V/Uss3SISLymG1LZXOLiVnu/P2Spj+bS+0kuxVwG5PJTFvW5
- fLWdRn7XhjxQgO5HB8E7BLN816bmhn6LxCsBx6M/SIKEgdlJWXAv244mq4a7IPG47t+3
- Mbjg==
-X-Gm-Message-State: AOJu0YyG9VRruscI+QmFvgGLY8Rih3kjLqzIDlielSslRT8aaLVJLfgS
- RkkVMK7k6vezsaO/3Uo2xbvoGcI2seVpA7+XMUCwzWn5aLJwcghmqTwEgpGkQ2uNeSRvcR3FBvs
- 4RVhXFlYEbRPecAwvNL5hJ5lOkHzSSRweyfhV6s7vSCpQMtMoR3o7
-X-Gm-Gg: AZuq6aIAhCcPv9V0Lrjxbz57IwjfmyYIAyUl+WbrwhHyDdw83FslmHEc3GIy4Zmv6Gg
- eki3CNx+v1mu3Zxm9qJ4eSsDk46fN6uY2WDwo6DccyWea5PCuDB6Y5k94sN1UzWkHUnU+m0nX1v
- aOmTeR7SyY48aTRMhh4gfX0lZDu7QEsuEP3Xo2zfBv5uF9GE2NizLD8OY8/EzP8Ic++h4ySgTTx
- 8n3IwTfsf5jdVzF6/wn2FlDnoIDLkJ45mx2VEfiL5Q4sJmiCpKuEBOVmzgM3jfRvk081p4W7H6r
- gshPLz2x4/tiQz42pXjc8L10iKZG6yN+bo3Db+/kNFc5j5LYuoyQJNVIsh8rlZLCGtPMnFaF00m
- DGuMB
-X-Received: by 2002:a17:90b:4c51:b0:354:9b9b:54da with SMTP id
- 98e67ed59e1d1-3549b9b5549mr1494394a91.14.1770271726148; 
- Wed, 04 Feb 2026 22:08:46 -0800 (PST)
-X-Received: by 2002:a17:90b:4c51:b0:354:9b9b:54da with SMTP id
- 98e67ed59e1d1-3549b9b5549mr1494373a91.14.1770271725745; 
- Wed, 04 Feb 2026 22:08:45 -0800 (PST)
+ bh=4XtD3sP7Gsqi/FDcvzTOrApdfwE8R0fdGE/Xdxcrkl4=;
+ b=bBbYags9kNcIaKNO2zGLvVkruHyRJcE0CTbOsLLRqA7IN/S34A4JsyiLSikHtYsW8n
+ U5RqxoJ7Ka1pfouRWVtxMes8aDoxojM8TcIjCVPYej4X6nRd9NnlAewlhsSrw1r8gKOX
+ 14bh0bLweHswpszIrc8Sa+N580mDe1wyDBhEAOwbilIdDehn6ZAzK0+PfP2bM4lhyaGn
+ m8BeQazGgNqS+a/jX+z9d9F35zBx3aPH8Fl53JGlQ/PyTHnK3exaQ0WOCEhBG9zkEM/3
+ v598fA1llCdo4q0CK6Nnq5uXzqYvlkNunvaF8H5wQP4pBmDD8hgryL9imDyoRzXVExur
+ NSCQ==
+X-Gm-Message-State: AOJu0YxczLw2CfAmTblTHrwi5rWaCF4O0ZtSlIRZF04W7qbF1hADTL/a
+ iZ+19mte2WVu25wAaCzZnjtFdNQ5MN0Xfefp7sCa1sorQpyMPxn22Wif6Vx4r6dkXjv3Vzkb0tK
+ 5ImxdEcr8kJ8zfuMXkNk8se2Lr5YW44j67fjLpG1EiEKioKEDwadu
+X-Gm-Gg: AZuq6aI0PNZkQqiEyEAWhPjj/UO5jlE4fRoIFdkkynbQFCtRb2oRSPRWfjtmLYZHLTL
+ dLV9xtPxiS8pGsnHw+YlI3hmFC7cpuxEIIzVpfkbtluHrizbds3jdrfcRnUjsWPllY12uJKA1v4
+ V2xgQfYufkS/wFJJThxAl0nUmjA8MFAlC/X6W+fp/Ie6XoeRnwonzeZym82cyG+zCEwA+zWPjGv
+ c7Bb1D+78oJVDdB5lcPvqvOWyxLgqAFtUZFTlsxrJPfQMaAH0GpMwSUYNQMFDrUi91ewzLr6lVV
+ /PoJbkea4QHdtC1ZUbNAKGs5op4K0K2x0Y7tFc1ZEXX7hlGQK2tXZLsSx29NLrFwiV82ipf1MtI
+ j0QF7
+X-Received: by 2002:a17:903:1a27:b0:2a9:3225:1e48 with SMTP id
+ d9443c01a7336-2a933fe880emr56393705ad.48.1770284501682; 
+ Thu, 05 Feb 2026 01:41:41 -0800 (PST)
+X-Received: by 2002:a17:903:1a27:b0:2a9:3225:1e48 with SMTP id
+ d9443c01a7336-2a933fe880emr56393535ad.48.1770284501336; 
+ Thu, 05 Feb 2026 01:41:41 -0800 (PST)
 Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-35489313becsm2273419a91.5.2026.02.04.22.08.44
+ d9443c01a7336-2a93397ef6fsm49994215ad.95.2026.02.05.01.41.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 04 Feb 2026 22:08:45 -0800 (PST)
-Date: Thu, 5 Feb 2026 14:08:42 +0800
+ Thu, 05 Feb 2026 01:41:40 -0800 (PST)
+Date: Thu, 5 Feb 2026 17:41:38 +0800
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <aYQz6gN7WvJbSg1k@redhat.com>
+Message-ID: <aYRl0mUYv1aYLlyC@redhat.com>
 References: <20260204124323.244578-1-pvorel@suse.cz>
+ <aYQz6gN7WvJbSg1k@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20260204124323.244578-1-pvorel@suse.cz>
+In-Reply-To: <aYQz6gN7WvJbSg1k@redhat.com>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 8ipg1p9_R8_KbU-zHU72tPnR_rjtBiFUt3-affEwNZc_1770271726
+X-Mimecast-MFC-PROC-ID: CCRYioiukNsiDG2Kc0OEjyQOz-dhkcAYaCHr9LafucA_1770284502
 X-Mimecast-Originator: redhat.com
 Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] openat2: Move includes to lapi, remove _GNU_SOURCE
 X-BeenThere: ltp@lists.linux.it
@@ -114,46 +114,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Feb 04, 2026 at 01:43:23PM +0100, Petr Vorel wrote:
-> Improve 767b3e519e. struct open_how is also used in lapi/openat2.h,
-> which is used by all openat2*.c tests.  Therefore move <fcntl.h> to the
-> lapi header (and use lapi/fcntl.h instead).
+On Thu, Feb 05, 2026 at 02:08:42PM +0800, Li Wang wrote:
+> On Wed, Feb 04, 2026 at 01:43:23PM +0100, Petr Vorel wrote:
+> > Improve 767b3e519e. struct open_how is also used in lapi/openat2.h,
+> > which is used by all openat2*.c tests.  Therefore move <fcntl.h> to the
+> > lapi header (and use lapi/fcntl.h instead).
+> > 
+> > Also remove _GNU_SOURCE which should not be needed.
+> > 
+> > While at it, move include "config.h" to the top.
+> > 
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> > Hi Li,
+> > 
+> > my points from the original patchset why not use _GNU_SOURCE:
+> > 
+> > glibc test tst-openat2.c [1] which includes <fcntl.h>, uses struct
 > 
-> Also remove _GNU_SOURCE which should not be needed.
-> 
-> While at it, move include "config.h" to the top.
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi Li,
-> 
-> my points from the original patchset why not use _GNU_SOURCE:
-> 
-> glibc test tst-openat2.c [1] which includes <fcntl.h>, uses struct
+> Interesting, I haven't figure out why it can be built within glibc itself.
 
-Interesting, I haven't figure out why it can be built within glibc itself.
+I think that becuase it uses '-D_GNU_SOURCE' cflags has already globally
+enabled the GNU extension (equivalent to '#define _GNU_SOURCE'), which is
+done uniformly by glibc's build system.
 
-> open_how and test openat2() does not define it. Neither openat2() nor
-> struct open_how [2] are guarded by #ifdef __USE_GNU.
->  
-> O_DIRECTORY is guarded by #ifdef __USE_XOPEN2K8 but this should be safe as we
-> compile with -std=gnu99.
+ glibc/Makerules: ALL_BUILD_CFLAGS = $(BUILD_CFLAGS) $(BUILD_CPPFLAGS) -D_GNU_SOURCE \
+			-DIS_IN_build -include $(common-objpfx)config.h
 
-In glibc-2.43, things have changed, only define __USE_GNU can contain the
-<bits/openat2.h> header file, that's why after applying this patch still
-fails to complie on Fedora-Rawhide.
+To verify this, when I add the '-D_GNU_SOURCE' cflgs in the LTP/openat20*.c
+compliation, it build succeed as well:
 
-<fcntl.h> -> <bits/fcntl.h> -> <bits/fcntl-linux.h> -> <bits/openat2.h>
+ # gcc -I../../../../include -I../../../../include \
+   -I../../../../include/old/ -Wformat -Werror=format-security \
+   -Werror=implicit-function-declaration -Werror=return-type -fno-common \
+   -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition \
+   -D_GNU_SOURCE \
+   -std=gnu99 -L../../../../lib openat202.c  -lltp -o openat202
 
- # cat bits/fcntl-linux.h
-
- 396 #ifdef __USE_GNU
-     ...
- 473 #include <bits/openat2.h>
-  
- 489 #endif	/* use GNU */
-
-See: https://github.com/bminor/glibc/commit/0f0a5cd338998f4b603f52f3ce2163df0db7b814#diff-a4fc1e1b56b60a2598e320a232e6f631d08e0dafcfe3dd9607dde4bc8ee31eb8R473
+So, to this patch, we need to add the _GNU_SOURCE definition.
 
 -- 
 Regards,
