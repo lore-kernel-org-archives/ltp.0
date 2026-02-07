@@ -4,89 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37E2DEE20B1
-	for <ltp@archiver.kernel.org>; Fri,  6 Feb 2026 15:53:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E047BEE0AE0
+	for <ltp@archiver.kernel.org>; Sat,  7 Feb 2026 15:00:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1770476419; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=OIFYhdipHNN1fKW1Mcc4ZCsdrzFxWmifmJdDsNxrbd8=;
+ b=SQD3+wg69f7cTztFl4Zb+URx/GZ90pfDq/GD9pqRox13zL/osngf9g9u1fWn7bdDa+SeG
+ D5LU+7o4cwgnuFvGMyXsatw+RYDIoc+ozw6IcC4Qj8X1RIPffjvD9Fq+tm0kBCsnWNpEp2g
+ zPYIdQFQ0bD5MmO4JNi7QMlqa7L4ZBI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A120F3CD508
-	for <ltp@archiver.kernel.org>; Fri,  6 Feb 2026 16:53:17 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 1BB953CED0F
+	for <ltp@archiver.kernel.org>; Sat,  7 Feb 2026 16:00:19 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4421B3CC812
- for <ltp@lists.linux.it>; Fri,  6 Feb 2026 16:52:59 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 839AD3C537C
+ for <ltp@lists.linux.it>; Sat,  7 Feb 2026 15:59:53 +0100 (CET)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 16383200DBC
- for <ltp@lists.linux.it>; Fri,  6 Feb 2026 16:52:57 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D60501A006BA
+ for <ltp@lists.linux.it>; Sat,  7 Feb 2026 15:59:52 +0100 (CET)
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C8B275BCC5;
- Fri,  6 Feb 2026 15:52:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1770393177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=fJ7pXiZfmVzJkmp19ndb2Nq9uG+33xziPXYQlxgO0Yc=;
- b=ZlxjUsa8Ja68FscyuJQmTvghM0VgsV48DycyLXOmZf8Jv8iZ4qp2uP93LkZ4uJN4s8Do9o
- qJ3prSQMzIWorfayZIlXj8JFv03VyOHdjpTrvVCGfRj/jWoQ34/eudgPvrZC6BwZswxO+8
- UxhIjTykSDxc3EgNfYI2fhhd5LCvKZE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1770393177;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=fJ7pXiZfmVzJkmp19ndb2Nq9uG+33xziPXYQlxgO0Yc=;
- b=JHkOzkF0a57MMc6ohXWTcEVFtNvcSBXSUNit1QP0VZvIGInyMw8U/QSJFOlQlvKKDTBuL8
- kvkI514WD3YQbOAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1770393176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=fJ7pXiZfmVzJkmp19ndb2Nq9uG+33xziPXYQlxgO0Yc=;
- b=IXTMxGR8AwILpFABeiWYqYxxPWSHKAD/GJF3bhHhMXICI1oe4AJZJeHhgreJ+hj3uaPLCj
- AZyt3o0qxpnZTtP4RN8HMPoQio5O2kF4ngNi5j9vwNKKJq2encmlT2Jr5ocCqIiqr2akxO
- lY8vpRTec++RIR2aEY/CuHaqD5c/IVc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1770393176;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=fJ7pXiZfmVzJkmp19ndb2Nq9uG+33xziPXYQlxgO0Yc=;
- b=rAQnTA026eUuvS3ifFkIc/gPBn0SZWoGtFo2asvwYGTipNwfRfZfPXvMvT/iwxF6e+Cd9y
- Ezo5gCez2tMkRqAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A04703EA63;
- Fri,  6 Feb 2026 15:52:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id U/KxJVgOhmmWGAAAD6G6ig
- (envelope-from <rbranco@suse.de>); Fri, 06 Feb 2026 15:52:56 +0000
-From: Ricardo Branco <rbranco@suse.de>
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B86853F78C
+ for <ltp@lists.linux.it>; Sat,  7 Feb 2026 14:59:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20251003; t=1770476391;
+ bh=S3TntVH20B5fQxuozGZZ/paf3OLh1S/0dRdEQQb73sk=;
+ h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
+ b=Yvc9/Dv5Tsq07m+QQPxf9HyPseBGG4dGLi9qG5GKNYlzAjD4xRW8fWP8BBfz7OVmK
+ 0UeEyxTMjNGzR5t7+xbPQTQX0Zz5sRlu0BZo8fM6JKxfwvgK/IDc6Ydy8dlmog9d+T
+ gMmj0QVyqByANkzgiEWwM2N5YnrHMUhCS3PGrdxwrQQ+YE5GrrIKOkTLoZ1pLUkVoC
+ G27BPOH0X78vrwltfhnAnd2DNmWetD/QcyCZHvmkP9B/55mPEYQQ0dzqbZ5uZQSnqI
+ R5MC4GpZnJZtZH5k1iDtoZtuwqb+u1mTFeG01E37vLqZsEb3/4Uvr7tq7QRhmG6i+I
+ 2wuaDQJGouiM6ZXvz9t5b/dvo4o+SlKTUi1zJTp+k/3g/0DRl+VdjT2WupPBlfEc+U
+ 0ojampGhXbQsgG3gRwyaduhHDgEO5Suh/DIcEUAOp9JkZO4t6r3sP/NYBgdUpNobln
+ D7f/bX8afs5VUpWDuzFkbVt4C2490xpmFvWQAx/SOSHtXzyulabvK71QdlMVBeBvw5
+ QhTQEqsrRazDbCpdSegTxgR/Kd+02E7CvcdEjo7dD/DV/gD4Eg07ZH/UyGNRognoWx
+ m6mMgdyorxTAteckUiFjx9r7r14BTdB65UpOZtFLAdcIxXlFybZHWrDPW5AIduiaWc
+ Kn+jkeWlk6ppH81iR/cvea7A=
+Received: by mail-pl1-f197.google.com with SMTP id
+ d9443c01a7336-2a8c54bbe46so68924475ad.2
+ for <ltp@lists.linux.it>; Sat, 07 Feb 2026 06:59:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1770476390; x=1771081190;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=S3TntVH20B5fQxuozGZZ/paf3OLh1S/0dRdEQQb73sk=;
+ b=oNf4lSU/vEuZ0RkwCa+NHq0IUhuOiJmJHOE9xkIYX85Dqregt1IfqqbuZLZBginoiP
+ +ieBkT8473rgOdtSWy0lbJsiFXaMbUsMrS/XCqQCXDVzQXuRScv2Mj36qlOM8Ke08j1d
+ GvvrI7vH7A8xwAz/nG1QKSeL3O25DV5T7xpwjwpMYBATBPIYmzExde4T4FbR+/XX0goX
+ WHrF6NgHXr0jWcVp5lENj7k3/UtYSaYTy1523J4V60jVHu3NB21poCB7XYc0LCYlmSUW
+ bEDt7D8bHyRJKO7bGU1GAclXPcyO3n1OeaUdYtCt9UT0J8evkf/1WU2XOnpu+vdFKtoH
+ tJjQ==
+X-Gm-Message-State: AOJu0YwZKAjaeATzD/fBKsbqyw3sJQ01A+ealKiRcK6V/Lyn7nBBzaMO
+ sRKMM9fDAVnuX7Xkp9ugyUv4eQYvItjLov4eh3+6aAaRCmP8xlqY0vGnNqF53YoAkp7o2VLPjT7
+ 6gehfjCAKaCTxIARq10iwEW2znyH+mZn9sIz0vGscHynxDyKaaEFMvyFuPC9ow4Weci0nVR6zp4
+ 1ezNU=
+X-Gm-Gg: AZuq6aIgtx1+bopDmEAqPn4LZhNhdgtfVAZcRg2M6gxX1pyXd8qUyokeCw7IyC4m6Ge
+ dh9GQDl0WQPAQlgWZ78rMox6BwmjvcoSWAtGBcNEZU+NqxGqQeoUgetlunzgH66aw+r1qKhiTQ8
+ fgoJzPd3SRsQVYTWJmuNoQf9gbtcy24dztMFQjIoVGDAjTv+YgDHSkW7pu8Ux8LzuLkfTjV3tuI
+ 2uc8RcdG4u0ohynctxdTx0DM3vxF5CeICdqZbE6b87OqlhMKUwndqrjC50mUJEI60xEgEgOBO5p
+ OzE44rdRtcBbQNt93djAxK1mOU3Y47yNqPtO14mAx4l+33e5irjYGfF1gBug1t5tr6CqWZOyGpB
+ ZSk39uDiOEoeJWgn52Xe1Z/dJHnCmhUE=
+X-Received: by 2002:a17:902:d58d:b0:2aa:d287:693d with SMTP id
+ d9443c01a7336-2aad2876a7emr10521715ad.20.1770476390183; 
+ Sat, 07 Feb 2026 06:59:50 -0800 (PST)
+X-Received: by 2002:a17:902:d58d:b0:2aa:d287:693d with SMTP id
+ d9443c01a7336-2aad2876a7emr10521615ad.20.1770476389740; 
+ Sat, 07 Feb 2026 06:59:49 -0800 (PST)
+Received: from localhost.localdomain ([123.208.221.96])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-2a9521ec5e8sm57655975ad.76.2026.02.07.06.59.47
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 07 Feb 2026 06:59:49 -0800 (PST)
 To: ltp@lists.linux.it
-Date: Fri,  6 Feb 2026 16:52:40 +0100
-Message-ID: <20260206155244.243291-1-rbranco@suse.de>
-X-Mailer: git-send-email 2.53.0
+Date: Sun,  8 Feb 2026 01:59:42 +1100
+Message-ID: <20260207145942.299366-1-changwei.zou@canonical.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.997];
- MIME_GOOD(-0.10)[text/plain]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.de:mid,suse.de:email];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
-X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] userfaultfd: Add test using UFFDIO_POISON
+Subject: [LTP] [PATCH] lapi/tls: reserve pre-TCB space to avoid undefined
+ behavior in clone10.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,224 +108,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Changwei Zou via ltp <ltp@lists.linux.it>
+Reply-To: Changwei Zou <changwei.zou@canonical.com>
+Cc: changwei.zou@canonical.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Ricardo Branco <rbranco@suse.de>
----
- configure.ac                                  |   1 +
- include/lapi/userfaultfd.h                    |  13 ++
- .../kernel/syscalls/userfaultfd/.gitignore    |   1 +
- .../kernel/syscalls/userfaultfd/Makefile      |   1 +
- .../syscalls/userfaultfd/userfaultfd06.c      | 141 ++++++++++++++++++
- 5 files changed, 157 insertions(+)
- create mode 100644 testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
+Allocate extra space before the TLS area to hold a struct pthread, ensuring
+THREAD_SELF->cancelhandling is initialized to 0. This prevents undefined
+behavior in __pthread_disable_asynccancel(), which is called at thread
+cancellation points such as write().
 
-diff --git a/configure.ac b/configure.ac
-index 7fa614dcb..94bcbcc98 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -278,6 +278,7 @@ AC_CHECK_TYPES([struct sockaddr_vm],,,[
- ])
+Without this, touch_tls_in_child() could get stuck in tst_res().
+
+(gdb) bt
+  0  futex_wait () at ../sysdeps/nptl/futex-internal.h:141
+  1  futex_wait_simple () at ../sysdeps/nptl/futex-internal.h:172
+  2  __libc_disable_asynccancel () at ../nptl/cancellation.c:100
+  3  __GI___libc_write () at ../sysdeps/unix/sysv/linux/write.c:26
+  4  __GI___libc_write () at ../sysdeps/unix/sysv/linux/write.c:24
+  5  print_result ()  at tst_test.c:387
+  6  tst_vres_ () at tst_test.c:401
+  7  tst_res_ () at tst_test.c:512
+  8  touch_tls_in_child (arg=<optimized out>) at clone10.c:48
+  9  thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone.S:78
+
+Signed-off-by: Changwei Zou <changwei.zou@canonical.com>
+---
+ include/lapi/tls.h | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/include/lapi/tls.h b/include/lapi/tls.h
+index 468fe3086..7f2fa18a1 100644
+--- a/include/lapi/tls.h
++++ b/include/lapi/tls.h
+@@ -22,6 +22,15 @@
+ #define TLS_SIZE 4096
+ #define TLS_ALIGN 16
  
- AC_CHECK_TYPES([struct uffdio_move],,,[#include <linux/userfaultfd.h>])
-+AC_CHECK_TYPES([struct uffdio_poison],,,[#include <linux/userfaultfd.h>])
- AC_CHECK_TYPES([struct uffdio_writeprotect],,,[#include <linux/userfaultfd.h>])
- 
- # Tools knobs
-diff --git a/include/lapi/userfaultfd.h b/include/lapi/userfaultfd.h
-index 0c9e34c84..aab3890b7 100644
---- a/include/lapi/userfaultfd.h
-+++ b/include/lapi/userfaultfd.h
-@@ -233,6 +233,19 @@ struct uffdio_writeprotect {
- };
- #endif	/* HAVE_STRUCT_UFFDIO_WRITEPROTECT */
- 
-+#ifndef HAVE_STRUCT_UFFDIO_POISON
-+#define UFFD_FEATURE_POISON			(1<<14)
-+#define _UFFDIO_POISON				(0x08)
-+#define UFFDIO_POISON		_IOWR(UFFDIO, _UFFDIO_POISON, \
-+				      struct uffdio_poison)
-+struct uffdio_poison {
-+        struct uffdio_range range;
-+#define UFFDIO_POISON_MODE_DONTWAKE		((__u64)1<<0)
-+        __u64 mode;
-+        __s64 updated;
-+};
-+#endif	/* HAVE_STRUCT_UFFDIO_POISON */
-+
- #define SAFE_USERFAULTFD(flags, retry) \
- 	safe_userfaultfd(__FILE__, __LINE__, (flags), (retry))
- 
-diff --git a/testcases/kernel/syscalls/userfaultfd/.gitignore b/testcases/kernel/syscalls/userfaultfd/.gitignore
-index fb2ae243b..bc32fdf3b 100644
---- a/testcases/kernel/syscalls/userfaultfd/.gitignore
-+++ b/testcases/kernel/syscalls/userfaultfd/.gitignore
-@@ -3,3 +3,4 @@
- /userfaultfd03
- /userfaultfd04
- /userfaultfd05
-+/userfaultfd06
-diff --git a/testcases/kernel/syscalls/userfaultfd/Makefile b/testcases/kernel/syscalls/userfaultfd/Makefile
-index 96650a65a..3252e47df 100644
---- a/testcases/kernel/syscalls/userfaultfd/Makefile
-+++ b/testcases/kernel/syscalls/userfaultfd/Makefile
-@@ -16,3 +16,4 @@ userfaultfd02: CFLAGS += -pthread
- userfaultfd03: CFLAGS += -pthread
- userfaultfd04: CFLAGS += -pthread
- userfaultfd05: CFLAGS += -pthread
-+userfaultfd06: CFLAGS += -pthread
-diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
-new file mode 100644
-index 000000000..213ba77d7
---- /dev/null
-+++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
-@@ -0,0 +1,141 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2026 SUSE LLC
-+ * Author: Ricardo Branco <rbranco@suse.com>
++ * Space allocated large enough to hold a struct pthread.
++ *
++ * Zero-initialized to ensure THREAD_SELF->cancelhandling starts at 0,
++ * avoiding undefined behavior (e.g., in clone10.c) in __pthread_disable_asynccancel(),
++ * which is called at thread cancellation points such as write().
 + */
++#define TLS_PRE_TCB_SIZE (TLS_ALIGN * 256)
 +
-+/*\
-+ * Force a pagefault event and handle it using :manpage:`userfaultfd(2)`
-+ * from a different thread testing UFFDIO_POISON.
-+ */
-+
-+#include "config.h"
-+#include <poll.h>
-+#include <setjmp.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "tst_safe_pthread.h"
-+#include "lapi/userfaultfd.h"
-+
-+static int page_size;
-+static char *page;
-+static int uffd;
-+static volatile int poison_fault_seen;
-+static volatile int sigbus_seen;
-+static sigjmp_buf jmpbuf;
-+static pthread_barrier_t barrier;
-+
-+static void sigbus_handler(int sig)
-+{
-+	if (sig == SIGBUS) {
-+		sigbus_seen = 1;
-+		siglongjmp(jmpbuf, 1);
-+	}
-+}
-+
-+static void set_pages(void)
-+{
-+	page_size = sysconf(_SC_PAGE_SIZE);
-+	page = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void reset_pages(void)
-+{
-+	if (page) {
-+		SAFE_MUNMAP(page, page_size);
-+		page = NULL;
-+	}
-+}
-+
-+static void *handle_thread(void)
-+{
-+	static struct uffd_msg msg;
-+	struct uffdio_poison uffdio_poison = {};
-+	struct pollfd pollfd;
-+	int nready;
-+
-+	SAFE_PTHREAD_BARRIER_WAIT(&barrier);
-+
-+	pollfd.fd = uffd;
-+	pollfd.events = POLLIN;
-+	nready = poll(&pollfd, 1, -1);
-+	if (nready == -1)
-+		tst_brk(TBROK | TERRNO, "Error on poll");
-+
-+	SAFE_READ(1, uffd, &msg, sizeof(msg));
-+
-+	if (msg.event != UFFD_EVENT_PAGEFAULT)
-+		tst_brk(TFAIL, "Received unexpected UFFD_EVENT %d", msg.event);
-+
-+	poison_fault_seen = 1;
-+
-+	/* Poison the page that triggered the fault */
-+	uffdio_poison.range.start = msg.arg.pagefault.address & ~(page_size - 1);
-+	uffdio_poison.range.len = page_size;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_POISON, &uffdio_poison);
-+
-+	close(uffd);
-+	return NULL;
-+}
-+
-+static void run(void)
-+{
-+	pthread_t thr;
-+	struct uffdio_api uffdio_api = {};
-+	struct uffdio_register uffdio_register;
-+	struct sigaction sa = {};
-+	volatile char dummy;
-+
-+	sa.sa_handler = sigbus_handler;
-+	sigemptyset(&sa.sa_mask);
-+	SAFE_SIGACTION(SIGBUS, &sa, NULL);
-+
-+	set_pages();
-+
-+	uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, false);
-+
-+	uffdio_api.api = UFFD_API;
-+	uffdio_api.features = UFFD_FEATURE_POISON;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
-+
-+	uffdio_register.range.start = (unsigned long) page;
-+	uffdio_register.range.len = page_size;
-+	uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
-+
-+	SAFE_PTHREAD_BARRIER_INIT(&barrier, NULL, 2);
-+	SAFE_PTHREAD_CREATE(&thr, NULL, (void *) handle_thread, NULL);
-+
-+	SAFE_PTHREAD_BARRIER_WAIT(&barrier);
-+
-+	/* Try to read from the page: should trigger fault, get poisoned, then SIGBUS */
-+	if (sigsetjmp(jmpbuf, 1) == 0) {
-+		dummy = page[0];
-+		(void)dummy;
-+	}
-+
-+	SAFE_PTHREAD_JOIN(thr, NULL);
-+	SAFE_PTHREAD_BARRIER_DESTROY(&barrier);
-+	reset_pages();
-+
-+	if (poison_fault_seen && sigbus_seen) {
-+		tst_res(TPASS, "POISON successfully triggered SIGBUS");
-+	} else if (poison_fault_seen && !sigbus_seen) {
-+		tst_res(TFAIL, "POISON fault seen but no SIGBUS received");
-+	} else if (!poison_fault_seen && sigbus_seen) {
-+		tst_res(TFAIL, "SIGBUS received but no poison fault seen");
-+	} else {
-+		tst_res(TFAIL, "No poison fault or SIGBUS observed");
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.min_kver = "6.6",
-+};
+ #if defined(__x86_64__)
+ typedef struct {
+ 	void *tcb;
+@@ -36,10 +45,11 @@ extern void *tls_ptr;
+ 
+ static inline void *allocate_tls_area(void)
+ {
+-	void *tls_area = aligned_alloc(TLS_ALIGN, TLS_SIZE);
++	char *tls_area = aligned_alloc(TLS_ALIGN, TLS_PRE_TCB_SIZE + TLS_SIZE);
+ 	if (!tls_area)
+ 		tst_brk(TBROK | TERRNO, "aligned_alloc failed");
+-	memset(tls_area, 0, TLS_SIZE);
++	memset(tls_area, 0, TLS_PRE_TCB_SIZE + TLS_SIZE);
++	tls_area += TLS_PRE_TCB_SIZE;
+ 
+ #if defined(__x86_64__)
+ 	tcb_t *tcb = (tcb_t *)tls_area;
+@@ -59,7 +69,7 @@ static inline void free_tls(void)
+ {
+ 	usleep(10000);
+ 	if (tls_ptr) {
+-		free(tls_ptr);
++		free(((char *)tls_ptr) - TLS_PRE_TCB_SIZE);
+ 		tls_ptr = NULL;
+ 	}
+ }
 -- 
-2.53.0
+2.43.0
 
 
 -- 
