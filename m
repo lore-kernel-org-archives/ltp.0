@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22C42E7E0B4
-	for <ltp@archiver.kernel.org>; Mon,  9 Feb 2026 09:43:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEABBE7E0CA
+	for <ltp@archiver.kernel.org>; Mon,  9 Feb 2026 11:20:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1770630187; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1770636044; h=message-id :
  date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-transfer-encoding :
  content-type : sender : from;
- bh=6ivn4dFpKbMRF8EMiCkMqVPKNvvdAqeqHmvMMa/Shzc=;
- b=pqKD2gtzsnuolL0ZBEFda0BJv/VnR7ug7W6oNMUvIDFcFbJd/dci43qBgUR5zQxAeG4L1
- QeNBCiiE0IctryaelIPNmSII+YDJDBGylo8Xmjt9dbxEj3HCloYdfhfqKZlL7meDO7yptiH
- VCJD+Bk+PJ4tpTonjC1V/k/AVx9YFI8=
+ bh=t9YIz51hro1Rhfd+CDWG9dIgZ51biuzp8vRTJtjkx0U=;
+ b=OGrvjfNJu5HNHXckyB3n9Qn+A5ofUZdoNv5TNmZlU7Ykj4VuGXNJOo6R9uJmfsDwdfITo
+ hYFukn4EtTQHAusN+GAxTlVCVaLjnU4zK4Cf/fJp6bW/l0jIAP+fuM1eFyhwyjGQjVQBwXk
+ pyojH+AXejBrlxmmeJpiL2iZYGSRmy8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4FB243C8C2C
-	for <ltp@archiver.kernel.org>; Mon,  9 Feb 2026 10:43:07 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 44EC33CA19B
+	for <ltp@archiver.kernel.org>; Mon,  9 Feb 2026 12:20:44 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DA8183C59D2
- for <ltp@lists.linux.it>; Mon,  9 Feb 2026 10:42:42 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id C0EB13C5E09
+ for <ltp@lists.linux.it>; Mon,  9 Feb 2026 12:20:20 +0100 (CET)
 Received: from smtp-relay-internal-1.canonical.com
  (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 01945600942
- for <ltp@lists.linux.it>; Mon,  9 Feb 2026 10:42:41 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 865F360027D
+ for <ltp@lists.linux.it>; Mon,  9 Feb 2026 12:20:18 +0100 (CET)
 Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
  [209.85.214.198])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5116B3F1CE
- for <ltp@lists.linux.it>; Mon,  9 Feb 2026 09:42:41 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id CE2493F1F0
+ for <ltp@lists.linux.it>; Mon,  9 Feb 2026 11:20:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20251003; t=1770630161;
- bh=5QFHEw9UvOb3yc2UkTfZF9dfsCGh88fCaBQs0NSpt80=;
+ s=20251003; t=1770636018;
+ bh=ShUWit5Q2UjKylFs8q1DLaFvLOcLExp2OQbcM3atgJs=;
  h=Content-Type:Message-ID:Date:MIME-Version:Subject:To:Cc:
  References:From:In-Reply-To;
- b=I7+20E2531LtZ17iSLit7Yjnj0xEYXu1Hz+aeLmVaBd/pZYU++S199QzXu7oyfRRP
- l+pReB1OH6k9LT4EmNMKBj5zoROqsddYZ3+yEmhRgqfWDypVY5xv0qqdbpYNqrOjmt
- 25jEjQdytTSAq8EmUvU2Htg33iUGWmxbZz4LTb5BuKjSJr0zeS4tDVDOm7Q2BtETb2
- poRX/mVpGxi3S/l3GZASfktIcNdv7MMDLIM9wSjAu2ujPyDHQrVKxW1G7Y0DRNiEVa
- +a3N6DrjIZ3wg67LAOPcSweZLgJRmx3meaQfXl7S5EhO6+Q9B+xe75g7BhM4TPOonc
- G3lR+WWUSaVtxLLESIQaEWlwRmgx+xOLC+WZ5TiudXY4kBaVwYdslDmRtOyGhlnwyx
- dMPyhSc66KNw4jHWWbaSChg06JsM2K2BH79YbrZYwIe9ftvKrVTa0qG4rXG0guVuyO
- ZQbjAzpYOJ8lhtwYaBBxc7t8uVnmDhTs+c/INo0DOqpCs45zGaLonIbCWjnidBl9Yb
- lm7xVzlN3MmmoKpSw9Xydh1cT0389jrg3KCqQepaSErBICLDyHnZctiQg6AJs1gwFH
- 9HU2OD9NSrO/o+rOdFluyfnk8wAUQkQdhO8c0/bh/6aqBxRF2Y3Sgd3ySlN7WEgKPA
- KpzkCOXUG0UFyiX2yoN/44N4=
+ b=TKx48UTAwQhaWsZWkMwa46rBNDxZma2xlmisju8rrRa0+EobL3TJk4yGX0Mo0SvSb
+ BIz2DnScy+eaiSLPK5eFUy5ufCCdr4tM0Y1816HiuJOamjJw7ClNv0NP8NRqJ/bR/Z
+ 2S46Dmyi41C8y+4qQ9cDtjhFNhCxqzGVJ4W4yhbhp0y3bG5fvBpanzwGGHCs97mxeh
+ gPpcaxRksCxJaGx0Dr3XJzpGsMUlnEI+6yISDm+mWZ4Ua36/ec14DrIaUvvvzhsqiK
+ bntMJCDuZbB5S+uV1tWPZj+gFk6qRLchHhxRO4hiJXeOuSOdJcCh4xDQK4wLbUw7OV
+ FuGHUmj/+hJBRwWtgKH4gB7W9nRjS9WAypUNwyW0qayDFMdlAQmlhEtqPDLm9HEfUL
+ YD6PoNA77POmBGIJcu4jyZ+XzqVJXOOIrABRTIRSdglSTpDcAl1TmzvVISgZuGybOb
+ kvhzPVycII19FlEl7ukr/toPhDo7EnZGk9Zl6ANmFQvVQdYwjB4O/j0UnTfDmf22IW
+ +iZLQLYaHvBB0yUEnGSrhEflDbolt8qp8crScKvEVsuBf9gRAt+hxy7pxrYCkLXghy
+ BNCZK/+UIl7X6BmJm1C4t0TH2wc4FeNigSOKGlsMBHMshLRYKamNBWc4d9l32lbICv
+ 0sl8Yc1EVY1BUvpZqjCWdzus=
 Received: by mail-pl1-f198.google.com with SMTP id
- d9443c01a7336-2a75ed2f89dso29257425ad.1
- for <ltp@lists.linux.it>; Mon, 09 Feb 2026 01:42:41 -0800 (PST)
+ d9443c01a7336-29f2381ea85so75053915ad.0
+ for <ltp@lists.linux.it>; Mon, 09 Feb 2026 03:20:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1770630160; x=1771234960;
+ d=1e100.net; s=20230601; t=1770636016; x=1771240816;
  h=in-reply-to:from:content-language:references:cc:to:subject
  :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
  :from:to:cc:subject:date:message-id:reply-to;
- bh=5QFHEw9UvOb3yc2UkTfZF9dfsCGh88fCaBQs0NSpt80=;
- b=lZ3nMXx8qnEPcOIEc6626QxATo84pQK00PqAGUJVEBV76Y6WsNAKxOek6ifa2Ubken
- Su3ZGILT0eueFWFxpLZDLXxTo3BRwUELLkt+T3MMpkldmSw9PrJdWzepKu9E82MtCJ8y
- sI/39R+Zr9Zz31N9gAyp+URL+i2OpVl+aDCxS2Q2DTyvGjRsxX9O+2ajYrxdso5bO8bY
- 2F5WHj7CRE4DSVlOA1rNc+yFzYX0T/Ytdl98OxoSPZ82Jvo4zHm3GuBGU3N0bH/Q0yKL
- lDc0E6woYNMhsq6DxHpfvuMRxHKDQePBYSbNFPdkURo3sx5Xt+hl/kyo7P1dKV3m/Mrl
- lqHA==
-X-Gm-Message-State: AOJu0Yw8gQIG0KT8r4UlkTqmFCKTQzvlGWRwn5cIuNbZAJqCRju46roC
- z4aQTPBiHWKD8SKVstCwozEnBSRkuTVGvr0GT6V9B0Op/XYPBl7eCIwEKJd2mU7pEsTyDRykJL1
- sVGjNcRJ7zQQsrgAr1crmrOW3K+Ahdf5SxNkr5F57jB9UNWXpu91MnLla3r4tP2mM7Gut
-X-Gm-Gg: AZuq6aIMDoTNpaxYoPJc5q6mOtARMW65Np89g/WqSp6/38exAWetc/KuhnM5omRIyC1
- OvwYzxiSgPb3jHr3qpdCR7dCUY2DEU+6Si5OXO0xl1oMrCXTnU51+Us92nrW6fpQgEcJBWrU/S6
- SMWsmdBWVkcmBMkQcA4sxcOm5G8YUkyT/NMMrUBAMngwB6wZ+AaaqjM18wZmQx9bYyakVnfz+0C
- bLVmSyHIqcVmOTWE3ifE/2VyuvE06xivPmc50ENZYMYp+MUFrJwdepick1EyA/gebm0R0ryYHCy
- TR4Qi1pOxKyb+ngPEdI8xTRuLLF03RVTTSK1Yz5lHIwE8B7+5cu7zqbi1tPqv5b6lOgJha0Vlrl
- hLkyJILT6k43LiDUVEILVLCnq8PnFuhPoo2vAZWE=
-X-Received: by 2002:a17:902:d4cc:b0:2aa:e6c1:cea9 with SMTP id
- d9443c01a7336-2aae6c1d04fmr25043845ad.50.1770630159864; 
- Mon, 09 Feb 2026 01:42:39 -0800 (PST)
-X-Received: by 2002:a17:902:d4cc:b0:2aa:e6c1:cea9 with SMTP id
- d9443c01a7336-2aae6c1d04fmr25043725ad.50.1770630159333; 
- Mon, 09 Feb 2026 01:42:39 -0800 (PST)
+ bh=ShUWit5Q2UjKylFs8q1DLaFvLOcLExp2OQbcM3atgJs=;
+ b=K8bcjC7KipBMfrWzcqDnt/jRmflGWOphXdhu/giVzXq85wOxin+fwZyZElu3S/CDSB
+ lnJpsSZ7n0WrshT3CJX0l9FCxuiczKrSf8DkS3q7bOCBWeZ6STs3TlqTUVlRwZt1qqaz
+ 8ewiy1grUQnVZUvpVYFeMMbqlvU8bfKVUZxlcFtxfYVBR3pfu2mWE6Y2bL1FKm47dFnV
+ LOOhfb3nOkWKD3s7z/70uuTQzXTPuhF3DdTrKul8m7n45MsWvgD7jGj7XvDDuEjCEzB2
+ K0XTyPs/3B43PaBpxbKRLAsndP1B189j4EZbJgwU5mG0aDLwfy2EFDEtOzZ7+QLKdTrf
+ cX6A==
+X-Gm-Message-State: AOJu0YyyAUCbbDMlINffZnojFomQnip+1y5LP5XqVYTkKG/wRx4pRzSj
+ WEwvDNJNv/qh2bgVGReBcB/48XqNHzOODJyjN+WiUPbJFZtFFUAXQiP//E0ZmmRFqEnsuyDn68r
+ XrbFL1wNWAHdMCGuIyAMzgh3OTg494uUzWWQK3eEB0NRlU26xvcyAxeiQU+w15ppvWcEqMf3m91
+ 0gOeE=
+X-Gm-Gg: AZuq6aIgUhnYMfR0eC5vSqfTsy0ywLNjnrOcxHdUQJi7cfyq77Sbm9ZoPytmqTwwCS/
+ ZPkk7XT9rRW9pPJ2cbdY8UBb7Az9m2ngYHlT8CHd4xBNREQwCCYds+wgjYawc6w4n1gnbOVT1R7
+ qCsmlFjX5ytV/gmJFUZ1xu4J+zyAsZ5EZN6wkOizTF7UM8pXOTwjU48o2FbAPmngqp9DhdXPZC7
+ S8I0z2cknZrNRkFtAcSLrx93mHLME8ZPIKvNWOcEjBf41IKNqBZY+ffID1sORvKDI3y2LHUTX+n
+ uo+CSaw7AEQnfKCD6+3EgEJulALrRhBLd/i1hodzaD4iG1NuhfaXCldBiN8U0XwJQk1USzIfzL6
+ urv3a8YQeD4PEc6ZR4w2qAcpdmoSpUy6e/0anQU4=
+X-Received: by 2002:a17:903:2983:b0:24b:24dc:91a7 with SMTP id
+ d9443c01a7336-2a95196c7d9mr110297705ad.45.1770636016050; 
+ Mon, 09 Feb 2026 03:20:16 -0800 (PST)
+X-Received: by 2002:a17:903:2983:b0:24b:24dc:91a7 with SMTP id
+ d9443c01a7336-2a95196c7d9mr110297545ad.45.1770636015664; 
+ Mon, 09 Feb 2026 03:20:15 -0800 (PST)
 Received: from ?IPV6:2001:67c:1560:8007::aac:c224?
  ([2001:67c:1560:8007::aac:c224]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2a951c9189bsm108300245ad.36.2026.02.09.01.42.34
+ d9443c01a7336-2a952222611sm100704025ad.90.2026.02.09.03.20.09
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 09 Feb 2026 01:42:38 -0800 (PST)
-Message-ID: <473f0757-a2de-4e98-a24f-3b0bf4b22000@canonical.com>
-Date: Mon, 9 Feb 2026 20:42:28 +1100
+ Mon, 09 Feb 2026 03:20:15 -0800 (PST)
+Message-ID: <46bdaf39-4d82-4b33-94c6-0ef8525ffaf1@canonical.com>
+Date: Mon, 9 Feb 2026 22:20:03 +1100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 To: Petr Vorel <pvorel@suse.cz>
@@ -125,11 +125,57 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Petr,
-Additional details can be found on the following page:
-https://bugs.launchpad.net/ubuntu-kernel-tests/+bug/2139127/comments/1
-Thank you very much.
+With the original upstream LTP,
+I ran clone10 -i 1000 on three machines (including AArch64 and AMD64), 
+and it failed on all of them.
+This suggests there may be another bug that we still need to identify.
+Thank you very much for your invaluable information.
 Kind regards,
 Changwei
+*1. On an AArch64 cloud instance*
+```sh
+azure@clone10-aarch64-kcp:~/orig/ltp$ 
+./testcases/kernel/syscalls/clone/clone10-i1000
+clone10.c:68: TPASS:Parent(PID: 106163,TID:106163): TLS value correct: 100
+clone10.c:48: TINFO:Child(PID: 106163,TID:106200): TLS value set to: 101
+tst_test.c:1953: TBROK:TestkilledbySIGBUS!
+Summary:
+passed 36
+failed 0
+broken 1
+skipped 0
+warnings 0
+```
+*2. On an AMD64 machine*
+```sh
+ubuntu@ZBook:~/orig/ltp$ ./testcases/kernel/syscalls/clone/clone10-i1000
+clone10.c:48: TINFO:Child(PID: 125560,TID:125870): TLS value set to: 101
+clone10.c:68: TPASS:Parent(PID: 125560,TID:125560): TLS value correct: 100
+double freeorcorruption(out)
+clone10.c:48: TINFO:Child(PID: 125560,TID:125871): TLS value set to: 101
+clone10.c:68: TPASS:Parent(PID: 125560,TID:125560): TLS value correct: 100
+tst_test.c:1953: TBROK:TestkilledbySIGIOT/SIGABRT!
+Summary:
+passed 311
+failed 0
+broken 1
+skipped 0
+warnings 0
+```
+*3. On an AArch64 machine*
+```sh
+ubuntu@asus-pe100a:~/orig/ltp$ 
+./testcases/kernel/syscalls/clone/clone10-i1000
+clone10.c:68: TPASS:Parent(PID: 158953,TID:158953): TLS value correct: 100
+clone10.c:48: TINFO:Child(PID: 158953,TID:159029): TLS value set to: 101
+tst_test.c:1953: TBROK:TestkilledbySIGSEGV!
+Summary:
+passed 75
+failed 0
+broken 1
+skipped 0
+warnings 0
+```
 
 
 On 2/9/26 18:51, Petr Vorel wrote:
