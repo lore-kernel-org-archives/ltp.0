@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39DC8EE3683
-	for <ltp@archiver.kernel.org>; Thu, 12 Feb 2026 13:23:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30625EE3684
+	for <ltp@archiver.kernel.org>; Thu, 12 Feb 2026 13:23:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B7CD53CF350
-	for <ltp@archiver.kernel.org>; Thu, 12 Feb 2026 14:23:05 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id D56183CF2F6
+	for <ltp@archiver.kernel.org>; Thu, 12 Feb 2026 14:23:21 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 45B373CF2AE
- for <ltp@lists.linux.it>; Thu, 12 Feb 2026 14:22:48 +0100 (CET)
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
- [IPv6:2607:f8b0:4864:20::1043])
+ by picard.linux.it (Postfix) with ESMTPS id 7307E3CF2CF
+ for <ltp@lists.linux.it>; Thu, 12 Feb 2026 14:22:49 +0100 (CET)
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com
+ [IPv6:2607:f8b0:4864:20::1042])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E426520033D
- for <ltp@lists.linux.it>; Thu, 12 Feb 2026 14:22:47 +0100 (CET)
-Received: by mail-pj1-x1043.google.com with SMTP id
- 98e67ed59e1d1-354bc7c2c46so3210860a91.0
- for <ltp@lists.linux.it>; Thu, 12 Feb 2026 05:22:47 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1AFBB600847
+ for <ltp@lists.linux.it>; Thu, 12 Feb 2026 14:22:49 +0100 (CET)
+Received: by mail-pj1-x1042.google.com with SMTP id
+ 98e67ed59e1d1-3567e2b4159so1063838a91.0
+ for <ltp@lists.linux.it>; Thu, 12 Feb 2026 05:22:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1770902566; x=1771507366; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=KuclO23CJsFpJaRHLAe4VpOpTwjOT4IpZT0HpUcJ2DE=;
- b=e08L4zWxL3NFVM2pbUB83pBMVVwadkO3Kr5JFPYRcOsHJVTs3fksGEGxx/AZfL3HWO
- Fl/NchmLLzUuutop/Vdv0cmMaF93EEqlSXYb4mAOhlvsw1ZKf7xe3lwkj2mAcgnVMlOB
- dwAAvzvtg90yvKPSN9NbP/2HkcmZow8HU8Ff1b/1NwApGgihg/Qtbyx6cqvS+GOCEvRz
- N2mZXoPifBsMbqxiVHjyZsE2PO07FMmoBW1+CtYK5yr1fc7qSXyAwHdS+pJufUAVJB0j
- tQeNL3pxijC3uVjXnDEKSGXi3KK9WmIW1QRYKT9A/CGFzM5FyDKq20Q54UyA6oN0bkyQ
- 3yaw==
+ d=gmail.com; s=20230601; t=1770902567; x=1771507367; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+ :reply-to; bh=y4Hnj8f19B6DXvKLJtRwUIqJ6oYbFODFfJclEZVc8+E=;
+ b=jmlulfG/nCKAxSiOMQwFYSQP/NlWIOU9Bq/CHmBvTRw23F6WD0gbThsrHYrEBbggp1
+ njp9loM0lNGqsLOeLUMqWayeiudA3W9FAUe+HKwyThJAaHXEUShQ/9UzIKRfEgmZFCKn
+ 32jUaBtEG2DZCTQlCgB4CxCbVB1AAoZvcP+Q8gcQtJe49Y7uIjx0/4L3CBQv/oKLuYER
+ UduP7lTNiUpytKd7NN/bfOPdo2LiCQU+8P5ev12w/pDyXW0pKo4CvuWGKUsID3lpepCJ
+ n9/KT2PL5x/8YUg2DUVD9hGY7cFNE9cmzk7gVQ7qpaSOwhRmY+gX973w/WaH8RnYOC9d
+ KffA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1770902566; x=1771507366;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=KuclO23CJsFpJaRHLAe4VpOpTwjOT4IpZT0HpUcJ2DE=;
- b=X4GkXLfbICNh/PhDAuYRvirsRet5WA4I0I2OOFPOCdyH8B6SIrqrdGhd5hVPou29zS
- YeVT4Bs0dd9r88wuoI/39O+8NR5CS+hKhrZ4rzi2VZg6eiHVGDtnkWlubc7vII/UFK2k
- iKCKbW2TXq4iN0umosc0UuYy04njpLfBRklZ5IPwpo5a/Gg8zCo9Y/mPWY5iXTy6CHqq
- lFrnq3gNiPRgs68UJaQ0xXr2CPcY7gfE90h23Gm/VjOr6g39WqNCQyBQEEo4Ed3urchm
- r40KCCS7TSlH24BCpZPw6W18sLrKNpDDkKlKhhanU9To+/dDr35MDhCUDgqp3YmLoCYu
- 804A==
-X-Gm-Message-State: AOJu0YzFlarea/FmN8tLOXNXwXl/2C4A2U3Lu9lihCZ8JbyPWC5wSd0w
- S+ciKVElR+QZkr3PGpegeR17WjFDI6PfrCOSToT2ecGRazvizM1ilMiu/JMB8J/QbQ==
-X-Gm-Gg: AZuq6aLX2SmG1Fng6Vn9T8BtfOQOWikqIRwhVri/ttpHoQfcEVUZ5TZNpYR6pELLowk
- 4VstDg53QKi9jl7nJ0zWAAlmvgRy/6rVnLhqpLHrQ694vyS4WMNt69wiGQhJKIeSIB9+gVsfRjN
- bJhtm6p82/StVZWedvo0pMbRlOVRCxzyrpyZziQ+jX3Fn25Nl3qKoZ7pLMiKnDXVbKTJCYiy7aa
- VGRc65BRJfpbPg+U5eIC+OGuso7t5IUSVS6a3JwqsLpZwhNgJdS4ZbY4FAIFMBD6ZvkuVlhGcYr
- tJF7+uh0fVw6HG1rodDErwpd6r+w9BPDOjIxDil1paIJKQSODsg+qxPfD3atNTPZQCpMSYZJXFj
- uciGKc2C+MJye1HG7YyY/DYOOvJe639klwzpSIjh5A6/Me+Pi75/G0LR04yA49wnGiHeIKnLoo5
- mIcacDOcdcZQIeGd/mRfZBQoPLA8kRXc3KtQwa917Gp6XmMb1V3f5l
-X-Received: by 2002:a17:90b:3d8a:b0:34c:a29d:992a with SMTP id
- 98e67ed59e1d1-3568f51ef20mr2314717a91.34.1770902566033; 
- Thu, 12 Feb 2026 05:22:46 -0800 (PST)
+ d=1e100.net; s=20230601; t=1770902567; x=1771507367;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:to:from:x-gm-gg:x-gm-message-state:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=y4Hnj8f19B6DXvKLJtRwUIqJ6oYbFODFfJclEZVc8+E=;
+ b=eR8Buh9h/Z4oZ4/+j1ELJp0EiKAS5It4F85mKUjxn4syLJIpp7Me4a3vZzqisynSJt
+ +BcJM0Q8vQGdbNU1LhjqUG74vQyK6PIFZNAP/btfDU/MZ/98zjZ4qjxtJpo4KaLvgOLg
+ bQo5EsJyJVj2nYkaSCN4Czw3kBXGqz6xsDk3J17KFC4HY1yCUnrJrT/dkRVRJ9fTzzL4
+ 6dtoAZiwoIeGAS+Ef9au9Ah8E+9FPwATfM+aO3Gl9drrLIxsiOiAxA1Uys55ok6EpxuD
+ elGVGLxrYxkatYeWo1NOQu6F0TveQKfQEYXhWe1q9tUFQSJ1d/x+x9unR5iBC/3v9E0h
+ 4rLQ==
+X-Gm-Message-State: AOJu0Yz2BSX6sqkDF/nhh7SmdZVIX7csShRkSX+hSCOSHVzJxsmoMvuh
+ 5cvWQIOG6Krr8EmHHc204bcr19+SgdgiJJi8Gr9/dhtY3jc9abkeeoHapo8nggMu1Q==
+X-Gm-Gg: AZuq6aIsAAwaRuelFDVIovE1OpDin8c9Cg+ldKdotXr+KNLQdsCBHm8TnV8DclCt6+Z
+ MhcIyvqtyLO6wbsXCI3MIvQQcZXBb3kLd7lyHDj7RoVBbDigoUH9GjIi1RyU9wTH48vivhjfIWe
+ K77hdZfnl+UMwrSAf1L6KFy3tplKim5j+MXXcpODj26GpZTrXIbOW4g2gT6wSCSussisZEo6fXN
+ 7JPqZqRP2tAk3Xo5+FeELY5EGPTTbSJyWa7MRPl0RwfUkWxZifwjcZwMDQHb0xv/bW2GsYYJztP
+ x3weUdqE9/z/HlhNf8otvDyAVO7eGCDEem8lKTIcOv9o91z20ZQqauoKPI+vbXiipcLkt/lRr5y
+ Kt0ZLwSybiOC7/hufOf+CliPqBbkNKqV5aoyc61PFMQXyQ2PNWqBmnfIzuOayT5+BEkS4Ek/GoT
+ rZZ5zZI/A3DoovnGZmL+yME5571+ZK5p5KzCcJBHYpHg==
+X-Received: by 2002:a17:90b:264a:b0:330:7ff5:2c58 with SMTP id
+ 98e67ed59e1d1-35693c922a6mr2022014a91.7.1770902567176; 
+ Thu, 12 Feb 2026 05:22:47 -0800 (PST)
 Received: from localhost.localdomain ([59.16.109.172])
  by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-3567e7d9537sm5403920a91.4.2026.02.12.05.22.44
+ 98e67ed59e1d1-3567e7d9537sm5403920a91.4.2026.02.12.05.22.46
  for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 12 Feb 2026 05:22:45 -0800 (PST)
+ Thu, 12 Feb 2026 05:22:46 -0800 (PST)
 From: Jinseok Kim <always.starving0@gmail.com>
 To: ltp@lists.linux.it
-Date: Thu, 12 Feb 2026 22:22:13 +0900
-Message-ID: <20260212132221.4231-1-always.starving0@gmail.com>
+Date: Thu, 12 Feb 2026 22:22:14 +0900
+Message-ID: <20260212132221.4231-2-always.starving0@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260212132221.4231-1-always.starving0@gmail.com>
+References: <20260212132221.4231-1-always.starving0@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] open: fix cleanup condition and use snprintf
+Subject: [LTP] [PATCH 2/2] open: replace getdtablesize with getrlimit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,41 +94,42 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test uses sprintf() to build temporary file names, which may
-overflow the fixed-size buffer. Replace it with snprintf() to avoid
-potential buffer overflows.
+The test currently uses getdtablesize() to determine the maximum
+number of file descriptors for the process. This interface is
+considered legacy and is not specified by POSIX.
 
-The cleanup logic also checked '!first' to decide whether to close
-file descriptors. Since file descriptor 0 is valid, this condition
-can incorrectly skip cleanup and leak file descriptors.
+Use getrlimit() instead, which provides a well-defined
+and portable way to obtain the per-process file descriptor limit.
 
 Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
 ---
- testcases/kernel/syscalls/open/open04.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/open/open04.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/testcases/kernel/syscalls/open/open04.c b/testcases/kernel/syscalls/open/open04.c
-index 3dc3486d3..ed5dd27bb 100644
+index ed5dd27bb..3d8ea2ae8 100644
 --- a/testcases/kernel/syscalls/open/open04.c
 +++ b/testcases/kernel/syscalls/open/open04.c
-@@ -30,7 +30,7 @@ static void setup(void)
- 	fds[0] = first;
+@@ -11,6 +11,7 @@
 
- 	for (i = first + 1; i < fds_limit; i++) {
--		sprintf(fname, FNAME ".%d", i);
-+		snprintf(fname, sizeof(fname), FNAME ".%d", i);
- 		fd = open(fname, O_RDWR | O_CREAT, 0777);
- 		if (fd == -1) {
- 			if (errno != EMFILE)
-@@ -50,7 +50,7 @@ static void run(void)
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <sys/resource.h>
+ #include "tst_test.h"
 
- static void cleanup(void)
+ #define FNAME "open04"
+@@ -23,7 +24,10 @@ static void setup(void)
  {
--	if (!first || !fds)
-+	if (first < 0 || !fds)
- 		return;
+ 	int fd;
 
- 	for (i = first; i < fds_limit; i++)
+-	fds_limit = getdtablesize();
++	struct rlimit rlim;
++
++	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rlim);
++	fds_limit = rlim.rlim_cur;
+ 	first = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0777);
+
+ 	fds = SAFE_MALLOC(sizeof(int) * (fds_limit - first));
 --
 2.43.0
 
