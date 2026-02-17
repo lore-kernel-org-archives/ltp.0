@@ -4,95 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1233AE68143
-	for <ltp@archiver.kernel.org>; Tue, 17 Feb 2026 08:50:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1771318235; h=mime-version :
- date : message-id : to : references : in-reply-to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=X8xtBxYIrGExhcqRXq5GelYA6lEzGkmajoiDpF7NOlI=;
- b=gDFLMv2C0W2rsyBN5RzAdw+pMKO3H4+4w33p6JSoTaPEjlolto+4ViKHkwprZkCKpDlfq
- aUuuOvA3QFchYSiDUpn4cvPwZbVoqXt3WECuXnGh/AvpAK5E2HMaHHkUGPLDogh6DSKO0Xm
- nzHlxnethM6Uuj+D2ntsvPqZbnz7XcQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC337E68152
+	for <ltp@archiver.kernel.org>; Tue, 17 Feb 2026 09:20:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9D5033D0623
-	for <ltp@archiver.kernel.org>; Tue, 17 Feb 2026 09:50:35 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 36CCD3D05D5
+	for <ltp@archiver.kernel.org>; Tue, 17 Feb 2026 10:20:08 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6230D3C7BB1
- for <ltp@lists.linux.it>; Tue, 17 Feb 2026 09:50:11 +0100 (CET)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 540E03C7BB7
+ for <ltp@lists.linux.it>; Tue, 17 Feb 2026 10:19:49 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AFBBF1400176
- for <ltp@lists.linux.it>; Tue, 17 Feb 2026 09:50:10 +0100 (CET)
-Received: by mail-wm1-x334.google.com with SMTP id
- 5b1f17b1804b1-4837907f535so26519855e9.3
- for <ltp@lists.linux.it>; Tue, 17 Feb 2026 00:50:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1771318210; x=1771923010; darn=lists.linux.it;
- h=in-reply-to:references:to:from:subject:message-id:date
- :content-transfer-encoding:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=zW2n6zAeXYqQql+Tj20241D/kzBd9mARxBVPlwALnPE=;
- b=AHBoUErR7hQ9PnvBRyGuCiSrYvbXHo2YFd4R1szkeE/hC7h/ZoBAY0qFk04C9eY0TG
- ++7Au7eYGgFUhbWk8La/PSudteQRL09gCSPVmDGG1VmBQ48amHeQsKsHCBJvg+wUpovE
- OGC37uSZsTwAAGzPIkkLGsHg+cGGnHcgR2wk3V6FWWbGRevzui+Z34IgfMi5DLFCjXVX
- rnCmdrzC99y5W+MHsYp4ciTumALI+Oi3M1IPTz3xbTh6vpVwvhKAeM+c5j0jbs6y72VI
- /8UTqOZLEzSOkx2xIwhr7ec7mGuDvw2RocAFn7o+j5n6+0ovWyyihHOR++QO66sJ0Qcd
- gLdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1771318210; x=1771923010;
- h=in-reply-to:references:to:from:subject:message-id:date
- :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=zW2n6zAeXYqQql+Tj20241D/kzBd9mARxBVPlwALnPE=;
- b=E1r7+xKiFxFeXhM8mUwAhJxQQV9h15yp74IDsfCnX94YJaXkS4tOYW/8cjxAMyNEAE
- OGWruiq7kB+ptiwsa4mhAmAMLapdOimsGoDngioFUnfjbgWSXy0C2U8oOuZ9mRqhmZZd
- p3ljngVzfcpE5qpAy1YKGIUOvURa/kzqgJQUh0FVqXaOYa503Yx8SbF95t3dG1sSkInf
- j/aUUx8jt206FMxjd1+u8CeS8C2WmFcu2ux668FFpK/4t9fXVCd9b0D71XbomTA7GrLW
- n45w2rzPTzYqGRyadDddNeRBeUYrNEZuQt8LmDntjQ0HTGU3CQ1VbRS9+tyKAnQMtT0U
- KkMQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXPoUet4u1iiXxI7FLRmVJ3u+U4ov6tRiqvumqi1kIPXHWqa4npv0gPAEXnS/yCPljsjo0=@lists.linux.it
-X-Gm-Message-State: AOJu0Yyir5AYoO9j3axsdFhB21qts7PG526L5wSyL6ujgl2CD9D5wVAD
- CJiBTI1BgyrjN/okBM3ZFhbdCfFpFGaYBNWjxgdYctbDtr2oEWWhlDLnrtnXU9Z3VCy5Qbxk9Q9
- Uo/MZOHs=
-X-Gm-Gg: AZuq6aKmu5mt/t92aeukEis55FUlu9xbmnGOIjvPx322xi/33sI+WY5M76znTuunEbF
- cnf9Th/NH15TIn333drsRn2Llzbix+3gDO7QJWwaK5qQlXGwwU8txddCUlOgfY6HfU+YH0Exv+K
- Y3e9ssBAw407/HmEuHr+xqMIP5JtuZ9THG/ZyMwFkGupaorAG43iog5zIDTAWBjs7cssgOyF+Qh
- LR26heffho3CSu2nV0zp3WgziLS2jl6BVBf/6BmtW6ovBa817iEKfeDMxRyk4Ppqp429Ewig0mC
- PlUO7W5sgptejSYSPeM07rw+1pE3LzRxv9V8xBD/M31b0gNzJ3lthzX+EpNX6CtHYiUAtVEQFgh
- w/8QIp0TfdNBmTRKrI8DY19JT8BMFZ0g9bL8WnwUfpW7u47LtniWwlMK0kmUmeIv/NrgUEj39hG
- 8NPTekYpwHOwbgg0Wmx33lJ8t0sb9Ykplb/tHKCHI8Ie/eKjkDjV1VbaJjRAQMV98IJHOWmXrEJ
- IHxFMoH7VlLNWnC3BjtEtBy2lVQSA==
-X-Received: by 2002:a05:600c:45c8:b0:480:1b65:b741 with SMTP id
- 5b1f17b1804b1-48379b9913cmr174380525e9.15.1771318209866; 
- Tue, 17 Feb 2026 00:50:09 -0800 (PST)
-Received: from localhost
- (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
- [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-48371a3647asm101376495e9.22.2026.02.17.00.50.09
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 17 Feb 2026 00:50:09 -0800 (PST)
-Mime-Version: 1.0
-Date: Tue, 17 Feb 2026 09:50:08 +0100
-Message-Id: <DGH3WFEFIBFP.33NJI688DM4ZP@suse.com>
-To: <jiaying.song.cn@windriver.com>, <ltp@lists.linux.it>
-X-Mailer: aerc 0.18.2
-References: <20250522093003.1958528-1-jiaying.song.cn@windriver.com>
-In-Reply-To: <20250522093003.1958528-1-jiaying.song.cn@windriver.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8BACC600732
+ for <ltp@lists.linux.it>; Tue, 17 Feb 2026 10:19:48 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 34E103E880;
+ Tue, 17 Feb 2026 09:19:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1771319987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ls+516EBr51iQWaPSy4osjvg9smcyvqKckdbInVlZns=;
+ b=KjzGzhig64i2PHsoK8jlle5k+obkfrGh3T1zhpajN64AOqRtgmsXM/8Y0ztaBfxpcb5xWh
+ K3iE6ApZJU2mB+ioMm+Dy0ZidDq+JANoaCo2Jh0eOKXGl3WRmS1ohhaZpwReuwQly6wUhW
+ qEtiQwlUBu+dy6QraUv/ENoiW3pMjkE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1771319987;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ls+516EBr51iQWaPSy4osjvg9smcyvqKckdbInVlZns=;
+ b=eo9Ej7RJieYfY4+ZZh6qbbBO9IF3UvllE81KGzvSsLeduMIOJ6BOHRJ7ssV/LwxR9Emjon
+ o9j/SqpVesO+BYAw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1771319987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ls+516EBr51iQWaPSy4osjvg9smcyvqKckdbInVlZns=;
+ b=KjzGzhig64i2PHsoK8jlle5k+obkfrGh3T1zhpajN64AOqRtgmsXM/8Y0ztaBfxpcb5xWh
+ K3iE6ApZJU2mB+ioMm+Dy0ZidDq+JANoaCo2Jh0eOKXGl3WRmS1ohhaZpwReuwQly6wUhW
+ qEtiQwlUBu+dy6QraUv/ENoiW3pMjkE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1771319987;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ls+516EBr51iQWaPSy4osjvg9smcyvqKckdbInVlZns=;
+ b=eo9Ej7RJieYfY4+ZZh6qbbBO9IF3UvllE81KGzvSsLeduMIOJ6BOHRJ7ssV/LwxR9Emjon
+ o9j/SqpVesO+BYAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 050A63EA65;
+ Tue, 17 Feb 2026 09:19:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id EoNwBbMylGlxEgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 17 Feb 2026 09:19:47 +0000
+Date: Tue, 17 Feb 2026 10:19:48 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aZQytH7k6pVXqdsz@yuki.lan>
+References: <20260205121540.329921-1-pvorel@suse.cz>
+ <20260205121540.329921-2-pvorel@suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260205121540.329921-2-pvorel@suse.cz>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_SEVEN(0.00)[7];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[];
+ FREEMAIL_CC(0.00)[lists.linux.it,suse.com,redhat.com,lists.yoctoproject.org,gmail.com];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ URIBL_BLOCKED(0.00)[yuki.lan:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo]; 
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/ipc: Skip msgctl05 when
- __USE_TIME64_REDIRECTS is defined
+Subject: Re: [LTP] [PATCH v2 1/6] doc: INSTALL: dma_thread_diotest.c: Remove
+ runltp from doc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,80 +110,91 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it, automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-
-On Thu May 22, 2025 at 11:30 AM CEST, Jiaying Song via ltp wrote:
-> From: Jiaying Song <jiaying.song.cn@windriver.com>
->
-> The msgctl05 test checks if the kernel clears the *_high fields in struct msqid64_ds.
->
-> However, when __USE_TIME64_REDIRECTS is defined, this structure may not
-> contain those fields due to header redirection. This patch adds a check
-> to skip the test in such cases, avoiding false failures and improving test robustness.
-
-Let's make it more clear:
-
-On systems with 64-bit time_t and glibc's time64 redirects, struct msqid64_ds
-may not expose the separate *_high fields, causing the test to fail at compile
-time or report false negatives. This can be verified by checking if
-__USE_TIME64_REDIRECTS has been defined.
-
->
-> Signed-off-by: Jiaying Song <jiaying.song.cn@windriver.com>
+> Remove runltp from all doc, replace it with kirk.
+> Also replace the old runltp-ng with kirk.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  testcases/kernel/syscalls/ipc/msgctl/msgctl05.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl05.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl05.c
-> index cd2643b..27beeb8 100644
-> --- a/testcases/kernel/syscalls/ipc/msgctl/msgctl05.c
-> +++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl05.c
-> @@ -11,7 +11,11 @@
->  #include "tst_test.h"
->  #include "tst_safe_sysv_ipc.h"
+>  INSTALL                                            |  4 +++-
+>  doc/developers/test_case_tutorial.rst              |  6 +++---
+>  doc/developers/todo.rst                            | 10 ----------
+>  metadata/README.md                                 |  2 +-
+>  testcases/kernel/fs/fs_readonly/test_robind.sh     |  2 +-
+>  testcases/kernel/io/direct_io/dma_thread_diotest.c |  3 +--
+>  testcases/kernel/security/smack/README             |  2 +-
+>  testcases/network/can/filter-tests/INSTALL         |  2 +-
+>  testcases/network/rpc/rpc-tirpc/README             |  2 +-
+>  testscripts/Readme_ROBind                          |  4 ++--
+>  10 files changed, 14 insertions(+), 23 deletions(-)
+> 
+> diff --git a/INSTALL b/INSTALL
+> index c44bb4e660..9ef929a971 100644
+> --- a/INSTALL
+> +++ b/INSTALL
+> @@ -105,9 +105,9 @@ Quick Start
+>  	$ ./configure
+>  	$ make all
+>  	# make install
+        ^
+	This should be $ (not caused by this patch but worth fixing)
+> -	$ /opt/ltp/runltp
 >  
-> -#ifdef HAVE_MSQID64_DS_TIME_HIGH
-> +#if !defined(HAVE_MSQID64_DS_TIME_HIGH)
-> +TST_TEST_TCONF("test requires struct msqid64_ds to have the time_high fields");
+>  *NOTE:
+> +- For running tests use kirk [1], individual test you can run directly.
+                                                    ^
+					 This sentece has wrong order of words.
 
-Missing space ad the beginning, as well as in the next TST_TEST_TCONF.
+And also oversimplifies things, there is no mention of setting correct
+PATH that needs to be done in order to run these tests.
 
-> +#elif defined(__USE_TIME64_REDIRECTS)
-> +TST_TEST_TCONF("test requires __USE_TIME64_REDIRECTS to be undefined");
+I would just drop that and leave only the first sentence.
 
-Here we should back it more clear:
-
-"test cannot run with __USE_TIME64_REDIRECTS defined (time_high fields not accessible)"
-
-> +#else
+>  - LTP assumes the existence of the nobody, bin, and daemon users and their
+>  groups.  If these IDs do not exist, certain tests will fail. The respective
+>  user and group IDs should be the same, i.e. if `nobody's' user ID is 99, then
+> @@ -117,6 +117,8 @@ its group ID should also be 99. The names of the groups are irrelevant.
+>  DESTDIR= is also honored for install and will install into $DESTDIR/$prefix,
+>  if you want to install into a chroot or a rootfs for instance.
 >  
->  static void run(void)
->  {
-> @@ -43,6 +47,5 @@ static struct tst_test test = {
->  	.test_all = run,
->  	.needs_tmpdir = 1,
->  };
-> -#else
-> -TST_TEST_TCONF("test requires struct msqid64_ds to have the time_high fields");
+> +[1] https://github.com/linux-test-project/kirk
 > +
->  #endif
+>  Detailed Installation
+>  ---------------------
+>  
+> diff --git a/doc/developers/test_case_tutorial.rst b/doc/developers/test_case_tutorial.rst
+> index 08bd1b1519..240897e36b 100644
+> --- a/doc/developers/test_case_tutorial.rst
+> +++ b/doc/developers/test_case_tutorial.rst
+> @@ -205,9 +205,9 @@ please do:
+>  
+>  This should build the test and then run it. However, even though the test is
+>  in :master:`testcases/kernel/syscalls` directory it won't be automatically ran
+> -as part of the syscalls test group (e.g. not run via ``kirk -r math`` or
+> -``./runltp -f syscalls``). For this we need to add it to the runtest file. So
+> -open :master:`runtest/syscalls` and add the lines starting with a ``+``.
+> +as part of the syscalls test group (e.g. not run via ``kirk -r math``.  For
+                                                                        ^
+									missing
+									closing
+									)
 
-The rest looks ok.
+Also the path to syscalls is missing after the change.
 
-Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> +this we need to add it to the runtest file. So open :master:`runtest/syscalls`
+> +and add the lines starting with a ``+``.
+>  
+>  .. code-block::
 
 -- 
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
