@@ -4,80 +4,146 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10D9AE6817B
-	for <ltp@archiver.kernel.org>; Tue, 17 Feb 2026 12:23:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51B8BE6817D
+	for <ltp@archiver.kernel.org>; Tue, 17 Feb 2026 12:45:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 993B83D057B
-	for <ltp@archiver.kernel.org>; Tue, 17 Feb 2026 13:23:32 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id DB5F73D0640
+	for <ltp@archiver.kernel.org>; Tue, 17 Feb 2026 13:45:52 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 18BDD3CFF11
- for <ltp@lists.linux.it>; Tue, 17 Feb 2026 13:23:11 +0100 (CET)
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com
- [IPv6:2607:f8b0:4864:20::443])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C22903D057B
+ for <ltp@lists.linux.it>; Tue, 17 Feb 2026 13:45:34 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 98733200763
- for <ltp@lists.linux.it>; Tue, 17 Feb 2026 13:23:11 +0100 (CET)
-Received: by mail-pf1-x443.google.com with SMTP id
- d2e1a72fcca58-8230c839409so535402b3a.3
- for <ltp@lists.linux.it>; Tue, 17 Feb 2026 04:23:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1771330990; x=1771935790; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
- :reply-to; bh=c4Xrqizvk8U4AKZLrVY18O8agZ1rJ9g7J6AlDTQ391A=;
- b=Bc7RAEovE3UYJeaYMpFff5THsueMn0gjPMKsHS+x79rjUvL8NVdrjyAK8pR51JgCdZ
- ZMKMBdRAG3AzMccDOhpuT7EEkWGo3gRIkjL+Bg2kCGA0EXaCh9iNdg8no3oB9vJvGScu
- 3ZtHQkzmOXkCjF6DaUZp/0jemCxFPCw5eM08UznzKBhYDb0QxJYHV5rFu5C6/y1GqLEz
- +1feWq7kVwdHuEnlf+ipWde+/ZCTdCQocCPYUSArtPuAwcQx+rCIiAtiX+/YKdhCecDa
- GmHYxDUc38fFkipQKCjeCFHNmO4Qdo91gUhtusrkk3wpVjnvGj3hcwKgmTCDbDaQLawe
- zbgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1771330990; x=1771935790;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:x-gm-gg:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to;
- bh=c4Xrqizvk8U4AKZLrVY18O8agZ1rJ9g7J6AlDTQ391A=;
- b=mrhOFY93OwqA1oNk+ra5LYoH7LF1UPaVi5FiMHET3A5PY+rYF83+HrhgolxMVR64mY
- jsxiboLWwpIewVb6xNiZhQWO0RllQeNAex+6Bf6J94JwiezgI1+ffXdISOzgt1hkl8il
- 7J0GYcQRVHEJoQMIHhbUQG5ei57ORUO4jaCDOKoncSkJeqHNry9+Yfcxrmh3MlfWYVe8
- QomX5zQcQgkWu6+1uCSPswJNmScxL4d2NkCeWIqC7X9CYKOJ0G7Pnj7cxOFrd/2pYjh8
- 4/R+611+QtqWY8hrP8EujORYtNQKpAiG5CjaLGg5IOEO3iKJJ5PJSs1JUJZ0u4KIYqVy
- VvzA==
-X-Gm-Message-State: AOJu0Yxs8CPXpdOfBIYEBajAWMY/9nO1dH3C7mrFShiEwrTkN/T9qoy+
- SmCGELXA91t1sDdvXtmzMQXTcJD6ElU9og/CwRui7NBykibMMqnWGdTlLP9RJcy/CA==
-X-Gm-Gg: AZuq6aIpJOWfTSxScI5sJjsR+JeVoOuP+mBAmgjKAWEYG/GJ1D9ETGB2IX/KNFt7jFv
- RBIBwZ0w4lmk5Sp4x3FHQJblsBzuAO0zuvtc4i6xgfnzE7h7nMKEltg2M60qWF/Cn1zhkcJplnQ
- P+kgU9P6VkrewnxVuketoWt7o4knc1JryJ90XpunKJvpdsAWNx/Rg38lNDbwfn5Q1l776z+x32C
- HsY0mSy/cQo5MiJ44lvGmmSJAc0lnBQiPA98FoN6iB0m5Hqbp0GVr+w93brvZcJwhidTR2SJeUN
- lKq9vjf4DM8ukGui4/KghxlvGBdrbiIfhB86LN7nF72219m5eGHTnALUE8wiTWk8Jty346g97bL
- 6vvRsgKp5Y8hw08rlu7/2ThNyvTKH1sXb/0NoyhV3OCtTErS4ySgKk41tB8S17FtSQZ8qwgfEOI
- ILGq8V9uD57hR+IVZiLv8jIbZQFzSm4PjLUodU3BdGnA==
-X-Received: by 2002:a05:6a00:b904:b0:824:374a:140d with SMTP id
- d2e1a72fcca58-824c944908emr12949195b3a.4.1771330989691; 
- Tue, 17 Feb 2026 04:23:09 -0800 (PST)
-Received: from localhost.localdomain ([59.16.109.172])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-824c6b6a3edsm13559606b3a.41.2026.02.17.04.23.08
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Feb 2026 04:23:09 -0800 (PST)
-From: Jinseok Kim <always.starving0@gmail.com>
-To: ltp@lists.linux.it,
-	andrea.cervesato@suse.com
-Date: Tue, 17 Feb 2026 21:22:36 +0900
-Message-ID: <20260217122245.5806-1-always.starving0@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <DGH7IUS12FMT.QMUF16MQGD6U@suse.com>
-References: <DGH7IUS12FMT.QMUF16MQGD6U@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1E68B1A007E9
+ for <ltp@lists.linux.it>; Tue, 17 Feb 2026 13:45:32 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EA74D5BCEC;
+ Tue, 17 Feb 2026 12:45:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1771332331; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=+NuTB73vcGuZEMGE4ecBtB9DV9eKerI3wl5YBIrc688=;
+ b=andzKOtwZTDZqRgcG7orvfR2BgHnqaefaD9plWJByfh/sAV8muHfndFy+mmrToAEehTcVz
+ DbigirCdCokJAcGWDOL388m5M+v5qvJ1vr7oe7fGaUKl3/j7potR6ypWs2nJjtxfAf99Ab
+ eFiSErcK9UxtTQXXBSnGHEDyzbVfJFo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1771332331;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=+NuTB73vcGuZEMGE4ecBtB9DV9eKerI3wl5YBIrc688=;
+ b=hcwmr3a9o38AnnL01N/eKYJXxK6VS9nhAJzZ7vdkyxqLCLYJMqerhOI6i5EFCijKTZvun/
+ 6OSKEu/D2vl/rNAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1771332330; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=+NuTB73vcGuZEMGE4ecBtB9DV9eKerI3wl5YBIrc688=;
+ b=y5jDOFOpY7qMUeT+Khchv8vnhD+Ro5QtfdQ78BMoXQdZU3tGnakMwl1ztpiwb65qgayUwk
+ kgbX5nQotuHEgTckqis7q2WURUO9ZpanHSAjKy2c8+J4CZAdfZctqwPRJ+DsWOTxmG6HaD
+ XNxnllcoG2aZpk82HKfWVlsRImJvm9A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1771332330;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=+NuTB73vcGuZEMGE4ecBtB9DV9eKerI3wl5YBIrc688=;
+ b=ffRkkDk9KUpSeYeMJvQln3CKISQZikoH2ByfCHcpcePx6VlKh2z8xT0VeJItSto9ZrXOpr
+ vztURTTCNG6UUgDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D5BF53EA65;
+ Tue, 17 Feb 2026 12:45:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Mg3JM+pilGlpDQAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Tue, 17 Feb 2026 12:45:30 +0000
+Message-ID: <c3651b6c-6cee-4cc3-ad16-cb10535364c4@suse.cz>
+Date: Tue, 17 Feb 2026 13:45:26 +0100
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>,
+ Andrea Cervesato <andrea.cervesato@suse.com>
+References: <DGC27F1BK4VU.1MC5BNP80A236@suse.com> <aZRQ11qvDI6pGg9b@yuki.lan>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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 ag==
+In-Reply-To: <aZRQ11qvDI6pGg9b@yuki.lan>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MID_RHS_MATCH_FROM(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/2] open: fix cleanup condition and use snprintf
+Subject: Re: [LTP] After release meeting
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,57 +155,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cervesato.
+On 2/17/26 12:28, Cyril Hrubis wrote:
+>> When's your first available date?
+> 
+> Ideally between 10:00 and 14:00 CET. No preference on a date.
 
-Thanks for the review!
+Hi,
+given the enthusiastic response to the initial message, I guess the best 
+date for the meeting would be sometime in early June.
 
-Changes since v1:
-- Replace remaining sprintf() with snprintf() in setup()
-
-Thanks,
-Jinseok.
-
-Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
----
- testcases/kernel/syscalls/open/open04.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/open/open04.c b/testcases/kernel/syscalls/open/open04.c
-index 3dc3486d3..5d39c1569 100644
---- a/testcases/kernel/syscalls/open/open04.c
-+++ b/testcases/kernel/syscalls/open/open04.c
-@@ -30,7 +30,7 @@ static void setup(void)
- 	fds[0] = first;
-
- 	for (i = first + 1; i < fds_limit; i++) {
--		sprintf(fname, FNAME ".%d", i);
-+		snprintf(fname, sizeof(fname), FNAME ".%d", i);
- 		fd = open(fname, O_RDWR | O_CREAT, 0777);
- 		if (fd == -1) {
- 			if (errno != EMFILE)
-@@ -44,13 +44,13 @@ static void setup(void)
-
- static void run(void)
- {
--	sprintf(fname, FNAME ".%d", fds_limit);
-+	snprintf(fname, sizeof(fname), FNAME ".%d", fds_limit);
- 	TST_EXP_FAIL2(open(fname, O_RDWR | O_CREAT, 0777), EMFILE);
- }
-
- static void cleanup(void)
- {
--	if (!first || !fds)
-+	if (first < 0 || !fds)
- 		return;
-
- 	for (i = first; i < fds_limit; i++)
---
-2.43.0
+-- 
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
