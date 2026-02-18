@@ -4,57 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 949AAE9A047
-	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 13:39:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7882E9A02C
+	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 13:42:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1771422122; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=jFviNCl3mVqHEuOb5bdJZSojk16VzJ3JZu8suEh5PV4=;
+ b=FFDwr49JwuMFwqVMhTN753COoqBXH8IJcmPUYFkm+cMTAuomClLPxWiUAjCclwVju+eQC
+ 2SKsBGgcCPiZIVAV6Hqa7zzf/bUhObv9mMPbWlAi9rkKD58CEJ837V5TNjijDC1JzVO9czr
+ kFERd+3LAaz/Z0IYBmVO7KJ58jDRFaQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 324CB3D06FA
-	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 14:39:30 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 4F81C3D0706
+	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 14:42:02 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C0023CB3F4
- for <ltp@lists.linux.it>; Wed, 18 Feb 2026 14:39:09 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 176853CB3F4
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 14:41:40 +0100 (CET)
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
+ [IPv6:2a00:1450:4864:20::344])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 549A4600642
- for <ltp@lists.linux.it>; Wed, 18 Feb 2026 14:39:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1771421947; x=1802957947;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=FQj5EwPlVHw7ioZXn0AmN/mS+8XJKuQSfTp/e5WfRuM=;
- b=OLtQ0+nZ18OrrKpoB0H0WIJ06ySKFk8Eggfp/uC0Qflwhb7jB0SRYc3X
- 5MaK6VsSl9eTZnd+dobe6aMfpzw8Ji0tapqe0dBGLY5C3pnBLMqstQHht
- ErzgL7ASGep0XVwrWofnN20e24as+FlBkMLFaTEHHWSMZPD0+5lgPxKm3
- b3S/RM5lbQyb7B27VvY2vmnsoqVdX6hvspJIs3ckbfBK2Do9uvk+1xDLv
- ISJPu1vVSIi9uiRs9aslJi+quo3jZjY0DiyfTs+QHDudP0YtzPK5nbzXg
- Vpyd3JmxEWqlPRnl16N9Ru1KzimM7E/Si9eVC8lOalmbqYPuC8ohOGhB2 g==;
-X-CSE-ConnectionGUID: u3s6nnPTTIC0ZO1mHFJcug==
-X-CSE-MsgGUID: e/+WWCe+SRyUGOqh+0/f1Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11704"; a="82821108"
-X-IronPort-AV: E=Sophos;i="6.21,298,1763452800"; d="scan'208";a="82821108"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
- by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2026 05:39:05 -0800
-X-CSE-ConnectionGUID: 2JFLsBPISYWAf+OWLop3Bg==
-X-CSE-MsgGUID: MIW2cr7hT6+QIgfg7oylqA==
-X-ExtLoop1: 1
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
- by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2026 05:39:04 -0800
-From: Piotr Kubaj <piotr.kubaj@intel.com>
-To: ltp@lists.linux.it
-Date: Wed, 18 Feb 2026 14:38:57 +0100
-Message-ID: <20260218133856.264992-2-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 54414200758
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 14:41:36 +0100 (CET)
+Received: by mail-wm1-x344.google.com with SMTP id
+ 5b1f17b1804b1-4806cc07ce7so49163185e9.1
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 05:41:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1771422096; x=1772026896; darn=lists.linux.it;
+ h=in-reply-to:references:from:subject:cc:to:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=mX0ea5RWrVePWQsJoHCAtKYwKpNswCimslCZZkfjMBc=;
+ b=J8JusVjxaBCAcPS0/HpBTetIpH6WjW2UeHbFQg6BqAmDsJ0HvYFai+UCjNwLm+Gqbq
+ UzbZt1E0bWuN65GSfLkj4xBh48LinvVXxyPu4fmr29I7x2aLeCvh6syIGUlDbBgegJQN
+ KWkx6JNMgOCxwNmCtYJQNSjFc/YlU97/yjWMPUsYl6/yGvgk7XC+xVMidLEAzdfB+l7u
+ UGp0LiVJ/FpMLAv2CqCgVhsCCFUFbrt7/X85uCW1P+0oyikeqwtlq9DwgUM35gEeLhpb
+ APCAgJMy4BbQu9YKlrnct04zONmitNsLT1paMHd4CrWKf79m6na2eGdpe2tLtsjgxvUe
+ HHew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1771422096; x=1772026896;
+ h=in-reply-to:references:from:subject:cc:to:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=mX0ea5RWrVePWQsJoHCAtKYwKpNswCimslCZZkfjMBc=;
+ b=FVx61rk46EnG85LSLx2eMyt6K9uV66q8k06zTuW+FGIWJ6/xqNqgTG5eH1JYV3E3iY
+ afpnmq8TT1HKeSLHBwc3zWQYO3n21JD8aEXtN5lK0GRGiAMCF/mt8GFWe4jkU8DMiazG
+ k0sRRj1h3C0T4zEPJMDQgjey0ENmfvmTFZtlUuTegopUy9UAt+OtQ4LyIdVR1LlgSntZ
+ +chl/fK3WIpcQ73sCjEmfcwwRh9d/x1cPIfswZEXPW1orkQNCMrdI30PlU7mwskGEqUs
+ zDdpmH2UYrpiQQ2HK63mMjIcSK1hYrc2ZTUtIWdVkiCdEYtpancjHTYZslUF69wivNiX
+ FF0A==
+X-Gm-Message-State: AOJu0Yz1LEjARcRaBvfSjtdYPEDExv1920Fp9WFO1xif5j/CUt6UT6Xr
+ EMPl/VxSgK4QdIMZEYhNaJe5oO/oHEuA7GGEViYnBRGgrJqeldA6RbcF6Er4q8fKcEM=
+X-Gm-Gg: AZuq6aLO+6u6YZr3uqefI02DsPi4pX0S/BYN7HAlKTERXIPhGzouyXF5jsEo167+8Vg
+ 2OPBAJjUAhq4t2xgiO8N4LofX/mle8wtMIFQaU5quh8ZiVhhbSC+YwGFLzzmBZrIu+okNGAkq+C
+ v8yJaFqSfk9jiYCA+STgURMIHYa+QQSbSjhsUDUIn/mxY0yKLOvJ+oOAWakYXJCVe8P4KReyllL
+ j2vdGomzH5Uk7fjdqLMmaY4FFOXPjgkpmY8BGrb/3XN0scQeHLJwgIpRLhCg/LGkgoi6sOHdZfH
+ 8t02ehCngdoPcIAEIMPB+qUi3O39HDqYcaCixRcGLUitc4RFliwQBJ48+/p15Ah5fO1Tb5WQuHa
+ dRDNesJpjFM6DKg7TQG3gWNw4Htkb/q7JDH8R2xH8DC3rcAzKokW8fmXbUD8EylF9hWX2m54lX5
+ tMN5F2ORtjl0hYT9KeR6gqgBZUub5PQuTpeJMYhf4yolPFR+XtywukfiZH/4mEDu/8cp+5b/Xdj
+ kSlSlc5zEPUWppyEWE=
+X-Received: by 2002:a05:600c:6992:b0:477:9eb8:97d2 with SMTP id
+ 5b1f17b1804b1-48398a4978cmr26125965e9.8.1771422095620; 
+ Wed, 18 Feb 2026 05:41:35 -0800 (PST)
+Received: from localhost
+ (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
+ [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-483983b7bb7sm34451965e9.4.2026.02.18.05.41.34
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 18 Feb 2026 05:41:35 -0800 (PST)
+Mime-Version: 1.0
+Date: Wed, 18 Feb 2026 14:41:34 +0100
+Message-Id: <DGI4Q3T70R5J.27XFN77L0MND8@suse.com>
+To: "Petr Vorel" <pvorel@suse.cz>, "Li Wang" <liwang@redhat.com>
+X-Mailer: aerc 0.18.2
+References: <20260202091801.68673-1-liwang@redhat.com>
+ <20260202101430.GA24157@pevik>
+In-Reply-To: <20260202101430.GA24157@pevik>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7] thermal: add new test group
+Subject: Re: [LTP] [PATCH] doc/developers: document tst_/tse_/tso_ library
+ namespaces
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,311 +103,91 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This is a new test for checking thermal interrupt events.
-Addresses Andrea's feedback and adds x86_pkg_temp_thermal to
-needs_drivers.
+Hi!
 
-Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
----
- runtest/thermal                               |   3 +
- scenario_groups/default                       |   1 +
- testcases/kernel/Makefile                     |   1 +
- testcases/kernel/thermal/.gitignore           |   1 +
- testcases/kernel/thermal/Makefile             |   9 +
- .../kernel/thermal/thermal_interrupt_events.c | 212 ++++++++++++++++++
- 6 files changed, 227 insertions(+)
- create mode 100644 runtest/thermal
- create mode 100644 testcases/kernel/thermal/.gitignore
- create mode 100644 testcases/kernel/thermal/Makefile
- create mode 100644 testcases/kernel/thermal/thermal_interrupt_events.c
+On Mon Feb 2, 2026 at 11:14 AM CET, Petr Vorel wrote:
+> Hi Li,
+>
+> > This helps contributors choose the correct layer when adding new library
+> > code and clarifies expectations around legacy components.
+>
+> > Follow-up: eef750db28 ("libs: adopt tse_ prefix for extended (non-core) library")
+> > Follow-up: 751df4fa64 ("include/old: rename legacy headers to tso_* namespace")
+> > Signed-off-by: Li Wang <liwang@redhat.com>
+> > ---
+> >  doc/developers/ltp_library.rst | 28 ++++++++++++++++++++++++++++
+> >  1 file changed, 28 insertions(+)
+>
+> > diff --git a/doc/developers/ltp_library.rst b/doc/developers/ltp_library.rst
+> > index f76cbb75e..bb2677622 100644
+> > --- a/doc/developers/ltp_library.rst
+> > +++ b/doc/developers/ltp_library.rst
+> > @@ -15,6 +15,34 @@ for :doc:`writing tests <../developers/writing_tests>`
+> >  #. Do not add new API functions to the old API. Add new functions to
+> >     ``tst_.[ch]`` files.
+>
+> > +Library naming and scope
+> > +------------------------
+> > +
+> > +To keep the library API easy to navigate and to make layering explicit, LTP
+> > +library components follow these naming rules:
+> > +
+> > +- **tst_**: Core LTP library API (located in ``lib/``).
+> nit: maybe also use :master: for lib/ to make it clickable?
+> > +
+> > +  - Stable, widely used interfaces intended for general consumption by tests.
+> > +  - New public APIs should normally live here (in ``tst_*.h`` / ``tst_*.c``).
+> > +
+> > +- **tse_**: Non-core / extended library code (located in ``libs/``).
+> nit: and here as well?
+>
+> > +
+> > +  - Optional or specialized helpers that are not part of the core API.
+> > +  - May have narrower scope or fewer stability guarantees than ``tst_``.
+> > +  - Can be promoted to ``tst_`` later if it becomes broadly useful and stable.
+> > +
+> > +- **tso_**: Legacy / old library code.
+> > +
+> > +  - Kept for backward compatibility.
+> > +  - No new features should be added; only minimal fixes are acceptable (e.g. build fixes, correctness fixes, security fixes).
+> very nit: maybe split long line?
+>
+> > +  - New code should not depend on ``tso_`` unless strictly necessary.
+> > +
+> > +**Notes:**
+>
+> nit: I'd prefer the standard note (can be changed before merge):
+>
+> .. note::
+>
+> > +
+> > +- Prefer adding new code to ``tst_`` or ``tse_``; avoid introducing new ``tso_`` components.
+> > +- When adding a new public interface, document where it belongs (``tst_`` vs ``tse_``) and why.
+>
+> LGTM, but I'd prefer more developers acked it.
+>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+> Kind regards,
+> Petr
 
-diff --git a/runtest/thermal b/runtest/thermal
-new file mode 100644
-index 000000000..57e3d29f8
---- /dev/null
-+++ b/runtest/thermal
-@@ -0,0 +1,3 @@
-+# Thermal driver API
-+# https://docs.kernel.org/driver-api/thermal/
-+thermal_interrupt_events thermal_interrupt_events
-diff --git a/scenario_groups/default b/scenario_groups/default
-index 0e76b2bee..ffdd7ff25 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -26,3 +26,4 @@ crypto
- kernel_misc
- uevent
- watchqueue
-+thermal
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index 98fd45a9d..ac816e4e8 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -36,6 +36,7 @@ SUBDIRS			+= connectors \
- 			   sched \
- 			   security \
- 			   sound \
-+			   thermal \
- 			   tracing \
- 			   uevents \
- 			   watchqueue \
-diff --git a/testcases/kernel/thermal/.gitignore b/testcases/kernel/thermal/.gitignore
-new file mode 100644
-index 000000000..1090bdad8
---- /dev/null
-+++ b/testcases/kernel/thermal/.gitignore
-@@ -0,0 +1 @@
-+thermal_interrupt_events
-diff --git a/testcases/kernel/thermal/Makefile b/testcases/kernel/thermal/Makefile
-new file mode 100644
-index 000000000..4657c3fb3
---- /dev/null
-+++ b/testcases/kernel/thermal/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2025, Intel Corporation. All rights reserved.
-+# Author:Piotr Kubaj <piotr.kubaj@intel.com>
-+
-+top_srcdir             ?= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/thermal/thermal_interrupt_events.c b/testcases/kernel/thermal/thermal_interrupt_events.c
-new file mode 100644
-index 000000000..2adcca5c3
---- /dev/null
-+++ b/testcases/kernel/thermal/thermal_interrupt_events.c
-@@ -0,0 +1,212 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/*
-+ * Copyright (C) 2026 Intel - http://www.intel.com/
-+ */
-+
-+/*\
-+ * Tests the CPU package thermal sensor interface for Intel platforms.
-+
-+ * Works by checking the initial count of thermal interrupts. Then it
-+ * decreases the threshold for sending a thermal interrupt to just above
-+ * the current temperature and runs a workload on the CPU. Finally, it restores
-+ * the original thermal threshold and checks whether the number of thermal
-+ * interrupts increased.
-+ */
-+
-+#include "tst_safe_stdio.h"
-+#include "tst_test.h"
-+
-+#define	RUNTIME		30
-+#define	SLEEP		10
-+#define	TEMP_INCREMENT	10
-+
-+static bool x86_pkg_temp_tz_found, *x86_pkg_temp_tz;
-+static char temp_path[NAME_MAX], trip_path[NAME_MAX];
-+static int nproc, temp_high, temp, trip, tz_counter;
-+static uint64_t *interrupt_init, *interrupt_later;
-+
-+static void read_interrupts(uint64_t *interrupts, const int nproc)
-+{
-+	bool interrupts_found = false;
-+	char line[8192];
-+
-+	memset(interrupts, 0, nproc * sizeof(*interrupts));
-+	FILE *fp = SAFE_FOPEN("/proc/interrupts", "r");
-+
-+	while (fgets(line, sizeof(line), fp)) {
-+		if (strstr(line, "Thermal event interrupts")) {
-+			interrupts_found = true;
-+			char *token = strtok(line, " ");
-+
-+			token = strtok(NULL, " ");
-+			int i = 0;
-+
-+			while (!!strncmp(token, "Thermal", 7)) {
-+				interrupts[i++] = atoll(token);
-+				token = strtok(NULL, " ");
-+				tst_res(TDEBUG, "interrupts[%d]: %ld", i - 1, interrupts[i - 1]);
-+			}
-+			break;
-+		}
-+	}
-+	SAFE_FCLOSE(fp);
-+	if (!interrupts_found)
-+		tst_brk(TCONF, "No Thermal event interrupts line in /proc/interrupts");
-+}
-+
-+static void setup(void)
-+{
-+	char line[8192];
-+
-+	nproc = tst_ncpus();
-+	tst_res(TDEBUG, "Number of logical cores: %d", nproc);
-+	interrupt_init = calloc(nproc, sizeof(uint64_t));
-+	interrupt_later = calloc(nproc, sizeof(uint64_t));
-+
-+	DIR *dir = SAFE_OPENDIR("/sys/class/thermal/");
-+	struct dirent *entry;
-+
-+	while ((entry = SAFE_READDIR(dir))) {
-+		if ((strncmp(entry->d_name, "thermal_zone", sizeof("thermal_zone"))) > 0)
-+			tz_counter++;
-+	}
-+	SAFE_CLOSEDIR(dir);
-+	tst_res(TDEBUG, "Found %d thermal zone(s)", tz_counter);
-+
-+	read_interrupts(interrupt_init, nproc);
-+
-+	x86_pkg_temp_tz = calloc(tz_counter, sizeof(bool));
-+
-+	for (int i = 0; i < tz_counter; i++) {
-+		char path[NAME_MAX];
-+
-+		snprintf(path, NAME_MAX, "/sys/class/thermal/thermal_zone%d/type", i);
-+		tst_res(TDEBUG, "Checking whether %s is x86_pkg_temp", path);
-+
-+		SAFE_FILE_SCANF(path, "%s", line);
-+		if (strstr(line, "x86_pkg_temp")) {
-+			tst_res(TDEBUG, "Thermal zone %d uses x86_pkg_temp", i);
-+			x86_pkg_temp_tz[i] = 1;
-+			x86_pkg_temp_tz_found = 1;
-+		}
-+	}
-+
-+	if (!x86_pkg_temp_tz_found)
-+		tst_brk(TCONF, "No thermal zone uses x86_pkg_temp");
-+}
-+
-+static void *cpu_workload(double run_time)
-+{
-+	time_t start_time = time(NULL);
-+	int num = 2;
-+
-+	while (difftime(time(NULL), start_time) < run_time) {
-+		for (int i = 2; i * i <= num; i++) {
-+			if (num % i == 0)
-+				break;
-+		}
-+		num++;
-+		SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+
-+		if (temp > temp_high)
-+			break;
-+	}
-+	return NULL;
-+}
-+
-+static void test_zone(int i)
-+{
-+			char path[NAME_MAX] = {0};
-+			int sleep_time = SLEEP;
-+			double run_time = RUNTIME;
-+
-+			snprintf(path, NAME_MAX, "/sys/class/thermal/thermal_zone%d/", i);
-+			strncpy(temp_path, path, NAME_MAX);
-+			strncat(temp_path, "temp", 4);
-+			tst_res(TINFO, "Testing %s", temp_path);
-+			SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+			if (temp < 0)
-+				tst_brk(TBROK, "Unexpected zone temperature value %d", temp);
-+
-+			tst_res(TDEBUG, "Current temperature for %s: %d", path, temp);
-+
-+			temp_high = temp + TEMP_INCREMENT;
-+
-+			strncpy(trip_path, path, NAME_MAX);
-+			strncat(trip_path, "trip_point_1_temp", 17);
-+
-+			tst_res(TDEBUG, "Setting new trip_point_1_temp value: %d", temp_high);
-+			SAFE_FILE_SCANF(trip_path, "%d", &trip);
-+			SAFE_FILE_PRINTF(trip_path, "%d", temp_high);
-+
-+			while (sleep_time > 0) {
-+				tst_res(TDEBUG, "Running for %f seconds, then sleeping for %d seconds", run_time, sleep_time);
-+
-+				for (int j = 0; j < nproc; j++) {
-+					if (!SAFE_FORK()) {
-+						cpu_workload(run_time);
-+						exit(0);
-+					}
-+				}
-+
-+				tst_reap_children();
-+
-+				SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+				tst_res(TDEBUG, "Temperature for %s after a test: %d", path, temp);
-+
-+				if (temp > temp_high)
-+					break;
-+				sleep(sleep_time--);
-+				run_time -= 3;
-+			}
-+
-+}
-+
-+static void cleanup(void)
-+{
-+	if (x86_pkg_temp_tz_found)
-+		SAFE_FILE_PRINTF(trip_path, "%d", trip);
-+
-+	free(x86_pkg_temp_tz);
-+	free(interrupt_init);
-+	free(interrupt_later);
-+}
-+
-+static void run(void)
-+{
-+	for (int i = 0; i < tz_counter; i++) {
-+		if (x86_pkg_temp_tz[i])
-+			test_zone(i);
-+	}
-+	read_interrupts(interrupt_later, nproc);
-+
-+	for (int i = 0; i < nproc; i++) {
-+		if (interrupt_later[i] < interrupt_init[i])
-+			tst_res(TFAIL, "CPU %d interrupt counter: %ld (previous: %ld)",
-+				i, interrupt_later[i], interrupt_init[i]);
-+	}
-+
-+	if (temp <= temp_high)
-+		tst_res(TFAIL, "Zone temperature is not rising as expected");
-+	else
-+		tst_res(TPASS, "x86 package thermal interrupt triggered");
-+}
-+
-+static struct tst_test test = {
-+	.cleanup = cleanup,
-+	.forks_child = 1,
-+	.needs_drivers = (const char *const []) {
-+		"x86_pkg_temp_thermal",
-+		NULL
-+	},
-+	.min_runtime = 180,
-+	.needs_root = 1,
-+	.setup = setup,
-+	.supported_archs = (const char *const []) {
-+		"x86",
-+		"x86_64",
-+		NULL
-+	},
-+	.test_all = run
-+};
+With Petr suggestions,
+
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+
+
 -- 
-2.47.3
-
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 
 -- 
