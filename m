@@ -4,95 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5010DE9A047
-	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 12:35:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA5ADE9A03B
+	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 12:52:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1771418105; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1771419154; h=mime-version :
  date : message-id : to : references : in-reply-to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=d4plD46c3k7Fd84U1obPHTRS5Ks/GGTRM6x4xb+Swtc=;
- b=gni7qj71bg/xq/rSdtsS3UCx0P79fEqicit21K9SOEyvizDCeDABdGQEXCSor9Num5INn
- O6vPUW1Wszvp86KvQ2syL3OY090RsXiPsPEsNxTkHh2Ymy3E8zpLexNMeBxMYL2+g0rHEee
- Z5ING+BXd6p369s3NBRiZHp84PwEZLo=
+ bh=QN40XM6h36gBoxot9ZcFD+k0vvA3F+H14kWtw+52agQ=;
+ b=rGTvup7VUrurjTMeJa1FFkrnAOzmK8rtNxY8tqBHwCziiyhgGF6yT6mnOYrYV5maBY/OO
+ HnYYQ4znY6/JeGa5FbOkYaQIXKPoinNX5S1euZcC/8H+ePIw4z7zFf0jSd4DQOr72TBJAgj
+ fUcEyrk3k7qbgJNh8kPCpxHqv+qh0Po=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 006CE3C65E2
-	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 13:35:05 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 8FF823CB063
+	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 13:52:34 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4C8993C58A2
- for <ltp@lists.linux.it>; Wed, 18 Feb 2026 13:34:42 +0100 (CET)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
- [IPv6:2a00:1450:4864:20::42f])
+ by picard.linux.it (Postfix) with ESMTPS id 875AA3C9EA0
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 13:52:09 +0100 (CET)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E3086200979
- for <ltp@lists.linux.it>; Wed, 18 Feb 2026 13:34:41 +0100 (CET)
-Received: by mail-wr1-x42f.google.com with SMTP id
- ffacd0b85a97d-4362c635319so5157696f8f.2
- for <ltp@lists.linux.it>; Wed, 18 Feb 2026 04:34:41 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EEBB61A00108
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 13:52:08 +0100 (CET)
+Received: by mail-wr1-x430.google.com with SMTP id
+ ffacd0b85a97d-43622089851so4826255f8f.3
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 04:52:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1771418081; x=1772022881; darn=lists.linux.it;
- h=in-reply-to:references:subject:to:from:message-id:date
+ d=suse.com; s=google; t=1771419128; x=1772023928; darn=lists.linux.it;
+ h=in-reply-to:references:to:from:subject:message-id:date
  :content-transfer-encoding:mime-version:from:to:cc:subject:date
  :message-id:reply-to;
- bh=709Q5kzcJOPL6uMDbRtn7WZxU4KLW9y9e+IMW3T2Ddo=;
- b=VLRuL2f4gruWZT0Hs6YeD3Mrt/dIXN3rhJ8rJHpNxWjONvzDYZaLaj6Hsn/iTTtOVd
- B9pnrQLz0v+gUKsPvLk6E3KCubMHRCnlEsTSbUdV00qic2Mz/4HrMaA3MPH4z60mp9TW
- uk8aPy/xA9XIxKB9bwCszMaU4Q1s89NrOd9nDkV/azSrI5DOUohTfF8TvNp+rl1iVwjI
- UDNza3PQiUnjxWvFpq7isT2e051Qy7BJznAG6zCS80Iu0JC9aBemXRR77bhvQNd3rnDc
- 2ifJZGvnMCJhYLBhIFTVB0IeZTFHsKEVWDi+jDYojp4NRjKBHb09g9b+9s36yRO/6OxA
- NPqA==
+ bh=mKF/CRQy4Vc3kHvZcvharMCmKAulKzSiStjudhRqxfM=;
+ b=FnfTxsZjO9glbDOg1Ble15KeAQVgPsZnjp1PlFQimSPg/AFysPbyCT3aUgAJZ4Etxg
+ S7Ct611wtlnBPwBSZdZuwyLxNK1BUWqTwhrdqkkhRXHD47cWg2rivu76NXv6mK9Lce49
+ xmk9Q8gr7eaYY3jyNP4tQfKiQd+hKKxqHvYaWMf3lRN/8RpK+5EKyZ/XHpv3o2nanKok
+ xi14oA/hYLphoSaeQ0JorBj7NxcVEkaaHhdwcdWZqsYobqG+CRKMW4BCFgsDKEO8yVfx
+ zrxcZpsYXgItZ8bS3pKWHBa0IUHxnlZJjnKCDsl96E/yj9zLt/01CvzqXnZvzMaHSann
+ STDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1771418081; x=1772022881;
- h=in-reply-to:references:subject:to:from:message-id:date
+ d=1e100.net; s=20230601; t=1771419128; x=1772023928;
+ h=in-reply-to:references:to:from:subject:message-id:date
  :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
  :from:to:cc:subject:date:message-id:reply-to;
- bh=709Q5kzcJOPL6uMDbRtn7WZxU4KLW9y9e+IMW3T2Ddo=;
- b=kbos0uEABCEOW+HWfxPjNEF3ew9WcP0zGwVg0im/uYJQM2Dd8gkTSKTmGkP80WK+P5
- kWLetUvw9YUvdw1fkPxbYnhG/3vanP2yfk4D6vVP/LzKLI6AANJ33GT3czVuS4++lIg5
- L5mRSU4pJSuIxreyRUJhEPkToJD4hhjnqxvZuHRYT23RoB7pe/dlon/mwp39rx3lVzyE
- 3GnV3zb8Z5L7mF5PEjrDAirkYtPnTO0cMll/qu9THk6me9IBYJqxvSueLUs7UHhyyXag
- L0i4NpMoZ780DE7UDgvjqWJhf2RgRJUffUzXY/Bj6cTTdY1r1XdQs/q7UlrICEqRdN7p
- l9oA==
+ bh=mKF/CRQy4Vc3kHvZcvharMCmKAulKzSiStjudhRqxfM=;
+ b=h2ApbYMTJYzE+n5lzxpvlEDYFanERsmu8ScTqtY5wsNMYn4AvDxAYM9btfmEeWScko
+ lrDqudaMSsuQupL7LSQVY/4EM1I8MLROfXmCR9Iqs29utLZ+XNSWSQ3fpGrc6rMyqGAx
+ yCE/XU0FXjTryuXshdfcjYV+lSX3/3huGTiRCjU+yXCIHNAlWqfZF4bqGVOhKe4kBN4c
+ TqLvjV3IJBVuSx4ne/3oU5J6fBTvDz1g2qEzYbxgyO/5gAdL2x4q7MhSclhRnftm4C48
+ ORVemUCZrtEY6LaZuKMZnMTqNFvzVbxCu0mNeGA/LCBt61egxOh3z8KZN9F47mfBfVoq
+ EYSg==
 X-Forwarded-Encrypted: i=1;
- AJvYcCU33EGdD1TuX2AO/XgEmrd0+kAsCe+OrBQRrs/EOw/nbTvebXYqX9xURkfrzfsAmUqC0Sc=@lists.linux.it
-X-Gm-Message-State: AOJu0YwcsBCSyP+Sk6K6XPFUNAZyUBKd0PjbHbnYpg1w+5DGDOrj6ZYK
- k8XXlOgaqt9m+hIJKE5Jn/yBDUrPPBzIkrXBc6n6HyX5Jw0bAKaya4IWL6/EZNDiCgA=
-X-Gm-Gg: AZuq6aKIIm/7mUhGu6um0JZO5qLkP+RXtiTyjUh7myAzm4f3D+tTo1YTnq1im52ZCf1
- tECbqgoLKESTWOrFaKxVELYeAninwJ0c6y9hKSjkiZqyCruSQC/XjXMRrikBH/+4Tks2MMOgJ6c
- Ew9a7mg96F6cZMu4JfWcZ3o3rVFhHoEID/SI5mCE0qYCC+1EBr4MgDeDA2iIdDYVy7frqIYlZ3g
- U3KwL/FGuGVkxMEsqfYKZnAsNrRPOd8hhfpwTSset+CUc3Kr7RblOFWiLnpv3alC7TXmD1ysVTr
- 6zQmaBbtcNLkOdSekZgi2YPbXnYgFDVTi4WUJhe810BZpAuxCWQ1K4ERt/BKTTSfbRJwh9EAnyU
- hnSToyZQKA/6b9zBpzC0gyJpRtP0buIlwun2azR3aWaFPsf/u2zqYfXiMOJkLaMyHiaR2uLq8Iu
- MBdAoQO0+xe8HeEWy5gy2/KcMDJTuWBbM2Wx2T1xyEEZChjR6IFZWsq0V33SQOi/BaI736RXB55
- tpOfL2T59egEDcdUO8=
-X-Received: by 2002:a05:600c:458a:b0:477:5c58:3d42 with SMTP id
- 5b1f17b1804b1-48398a7e1e2mr31072035e9.10.1771418081078; 
- Wed, 18 Feb 2026 04:34:41 -0800 (PST)
+ AJvYcCXZLIrBHRvthHIsUGSpDFINY6Jfdraliwc9/Wjz8S8hJg01pKb9llTZ+rX15P8N5xV52Ic=@lists.linux.it
+X-Gm-Message-State: AOJu0Ywxu+bR+aq4rxb0CWISpGtCAy1bUrkSIjoLbeck8zhHUxo+iZJa
+ 4dspeKjTj+zOlnrersJwWdZ0vfwPY1s3Jg61299mofdbe9TRTkAwgf0MVFFG32UDoBxD5Qd5jyD
+ sKhIml5w=
+X-Gm-Gg: AZuq6aLEnR2gobLeqpKc7RupThNR4JOG8ZhYDRb5NkzSV+3w2S1002Cmj0fD1QoRtib
+ OPPbFhtNmcD7YvHOneTOaUIz6w3tHxs+hC/SPzfR+y5CKvQQeT5e8qh+hiH5qx015HyCmJT/a1l
+ zfJQTnzmfe1+umGuEM2t9r0MiOYgiIrAMS+LEY6AIfzLIiVxmgZZqEelyx194Mv9Rqq2eLPSMqc
+ l7oVC3PwY4QPEGx+Uv9ep4hlUW80x6qYP7FqyGgmXFhHicob2DxwYFbM6P+E5Gwg/SupXFcCxSE
+ Ec0AfHS1lGWlvncIfWHU72/UUPzd3QG1dC/ofet3m/te7t/p6jxBHrPxvrPJJGLBkNVytLdVKf1
+ vZHwS0ZyYQuEHv7F8cKjtu+Bu5xeBladQEX80X0Q2/l2MWYDu5vSXwUK2+c24bBcf+IfU252Eh8
+ hIesY9i7andgu9mk0LPEHRAppMtHSdwrfMw+B7Jts1VWdjWTkWgUDDGZymbCgnQTtxpie4foXfu
+ 9wMjGESFjbFoueFo8k=
+X-Received: by 2002:a05:6000:178c:b0:437:75c1:577e with SMTP id
+ ffacd0b85a97d-43958df1610mr3177665f8f.11.1771419127907; 
+ Wed, 18 Feb 2026 04:52:07 -0800 (PST)
 Received: from localhost
  (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
  [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4835d99497asm795388005e9.6.2026.02.18.04.34.40
+ ffacd0b85a97d-43796a5acaasm37735072f8f.6.2026.02.18.04.52.07
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 18 Feb 2026 04:34:40 -0800 (PST)
+ Wed, 18 Feb 2026 04:52:07 -0800 (PST)
 Mime-Version: 1.0
-Date: Wed, 18 Feb 2026 13:34:40 +0100
-Message-Id: <DGI3AVRTDVVN.14V2UVJXCIRE0@suse.com>
-To: "Jinseok Kim" <always.starving0@gmail.com>, <ltp@lists.linux.it>
+Date: Wed, 18 Feb 2026 13:52:07 +0100
+Message-Id: <DGI3O8O64JV0.3VFNYUAEVXXFG@suse.com>
+To: "Andrea Cervesato" <andrea.cervesato@suse.de>, "Linux Test Project"
+ <ltp@lists.linux.it>
 X-Mailer: aerc 0.18.2
-References: <DGH7IUS12FMT.QMUF16MQGD6U@suse.com>
- <20260217122245.5806-1-always.starving0@gmail.com>
-In-Reply-To: <20260217122245.5806-1-always.starving0@gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+References: <20260217-agents_file-v4-1-e71ae27ea2d9@suse.com>
+In-Reply-To: <20260217-agents_file-v4-1-e71ae27ea2d9@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] open: fix cleanup condition and use
- snprintf
+Subject: Re: [LTP] [PATCH v4] agents: Add AI agent configuration for code
+ reviews
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,22 +112,61 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue Feb 17, 2026 at 1:22 PM CET, Jinseok Kim wrote:
-> Hi Cervesato.
->
-> Thanks for the review!
->
-> Changes since v1:
-> - Replace remaining sprintf() with snprintf() in setup()
->
-> Thanks,
-> Jinseok.
->
-> Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
+Hi,
 
-Are you using an automatic tool? This seems like a wrong commit message.
-Please resend the whole patch-set with a proper version and right commit
-message. I will reject this one.
+I think this configuration is working pretty well as a starting point.
+
+---
+
+The setup I'm using to test it is the following:
+
+1. install OpenCode from https://opencode.ai/ (npm is the fastest way)
+2. open OpenCode in the LTP repo folder
+3. configure OpenCode to make sure we can modify the current repo
+
+    $ cat .config/opencode/opencode.json 
+    {
+      "$schema": "https://opencode.ai/config.json",
+      "permission": {
+        "*": "ask",
+      }
+    }
+
+   In this way, we make sure that we have control on what the LLM will
+   do on our folder. The LLM will ask for permissions when it will
+   read/write files or download patches in our system.
+
+   I know it's possible to give sudo permissions, but it sounds like a
+   bad idea to me.
+
+4. setup OpenCode in Build mode (TAB), so it's possible to modify the
+  current folder. This is needed in order to apply patches in the
+  current LTP directory.
+5. CTRL+x-m to select the Model we want to use.
+6. provide to the LLM a link to patchwork/lore to start a code review on
+   a developer patch
+7. provide the commit/branch on the local repo if you want to review the
+  current work you are working on
+
+---
+
+To test this patch, it's better to apply it on a new branch and
+explicitly tells to the LLM that we want to always start a review from
+this new branch containing the agents configuration. For example,
+tells to LLM:
+
+    "ALWAYS start a review from the branch <my branch> instead of master"
+
+All reviews will create a new branch starting with "review/" prefix and
+they won't be removed lately. In this way, it's possible to review logic
+flaws in the patch after an initial LLM review.
+
+---
+
+Please take a look at it and let me know what we can improve. I would
+like to merge this patch-set pretty soon in order to start using it and
+save a lot of time to review the most common errors.
+
 
 Kind regards,
 -- 
