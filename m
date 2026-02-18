@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCE33E9A02C
-	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 13:22:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEE06E9A047
+	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 13:35:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1771420938; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1771421699; h=mime-version :
  date : message-id : to : references : in-reply-to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=2So4fr6akFRYe1mBlpOn1e/KshPKY0gScz4NGqVvd0M=;
- b=YF+hki6ZzxmaFDaUK7WXhqqpZ03n+fUecReTc13SzalwmxpU5vPqv5PmwxcCjtm8TRQsZ
- +oWHpG33trfBMD3Kmy7nC9hj0I3lEJpCd9ciM5cp+gmIzzFhP7EFTl9OwZ/kOVUThmB9NV1
- bzEPa1EXEhDA9y/Z2/MXRCvkjb3O0fw=
+ bh=AcVXQse90NYZKjhMfbjpai3C5CK5WHpujpNlAvKqDLw=;
+ b=UMfSWZrzK5Y9AqknVc4IFMr/1OTAwnjUOYEiGhi7Z0nstWDxPtVolAnT1XgE6xPwz8+VT
+ fpxp78SwY1o86TbIbCSlFmM0CKlPGwBrjcKxGzU/5iJtYHi86gR1s4WHHesBCuvSnDF4/RK
+ dW5Mh/tMLkq0aC9rV4rseoS72euimIo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 549C23D06ED
-	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 14:22:18 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 7CC9D3D0706
+	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 14:34:59 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AF0193CC7E6
- for <ltp@lists.linux.it>; Wed, 18 Feb 2026 14:21:55 +0100 (CET)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
+ by picard.linux.it (Postfix) with ESMTPS id D93F73CC7E6
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 14:34:36 +0100 (CET)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0076220097A
- for <ltp@lists.linux.it>; Wed, 18 Feb 2026 14:21:54 +0100 (CET)
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-4837584120eso35817645e9.1
- for <ltp@lists.linux.it>; Wed, 18 Feb 2026 05:21:54 -0800 (PST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7617B6009D3
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 14:34:35 +0100 (CET)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-482f454be5bso8321395e9.0
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 05:34:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1771420914; x=1772025714; darn=lists.linux.it;
- h=in-reply-to:references:to:from:subject:message-id:date
+ d=suse.com; s=google; t=1771421675; x=1772026475; darn=lists.linux.it;
+ h=in-reply-to:references:subject:to:from:message-id:date
  :content-transfer-encoding:mime-version:from:to:cc:subject:date
  :message-id:reply-to;
- bh=oA/Losg8PMZM3ExAjRHte+fqhiO2L8BUh11K+KjZdDA=;
- b=VCvurVpTkHTYUp5gdnh2Vrb4MrHth6XFS3lUv2okW+MaK627lcvqZDg3byhN/XM6b/
- jEwkAz+0oO/neP1bpFLBsJTYQdPU7QCs7+DBFF/uMqof3iwi4afTxEoUDkyF57GPJUiF
- Kbt8qYzoKkdGVMNrRczxpqynMphbttrRkGDBofQ8cYRc4TQDSHCRx+8XT0rj0Gqqw3H4
- mPAyBfiybRbw5av/CQHjxiz6pDf9VM3SWrkIJTKsgu8H9kk2jjMnwpd3tLF4dYN/BXHj
- 0Z6a9ZUATAEaZIzQqbCDtEEEljZu1MF2Q7npEhOsYn7DIRUvvGsjVxI3XzKzB8ZlMQHj
- rbyw==
+ bh=NDe7pwy+TDfX2CMDLIcpQc6GT+4HNkpUGcRKLevpa/I=;
+ b=YymQlR3l0+nJ/RzAZA87CvXsSBZYgWztm/mOplodCFhNIpMooqrf8sQBWy4LAPl1/p
+ X+3wisqUmcAylsTqgO3ZXd8lzvYbcehFSk/Fcyr4skrrGQcpwvQXjRkqK59+EzALY+Di
+ kUuwSzV8FqMYBqVbW1aFgQkXGhncG7rLraGmagjnX+8X+xjsHhcCz2cVr2yvYii4nvxy
+ lhhgYIPOJeBX2EhBlIbW5slsYDJ1bWfL/wbt5c2farmgdKJ2VqS2h6dEoI+TBJKJMiCh
+ RUAk06CLWqxGHrhJjltNmTnU86/I1A8VyQ7m8wu7zEckSjEchmhOkZarpbZr1lpaovno
+ ow5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1771420914; x=1772025714;
- h=in-reply-to:references:to:from:subject:message-id:date
+ d=1e100.net; s=20230601; t=1771421675; x=1772026475;
+ h=in-reply-to:references:subject:to:from:message-id:date
  :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
  :from:to:cc:subject:date:message-id:reply-to;
- bh=oA/Losg8PMZM3ExAjRHte+fqhiO2L8BUh11K+KjZdDA=;
- b=C+D4n+mK7jtpSnYb+6nAbmvrI/YtgW5XFUnj14TN1qqWCRbapQ/liqRvbsNz0on/rk
- 44lhR5fySG9ahy76mvK68b0h9h6Ba9nQvxep23UjR0SAbThabUUNn1sbUA5mBhZKcFN9
- PR6WdUAOoPnTohe2J2iSrs9KOmqHseZOQVR8dlobMiDw0sHuN8rRA5nj0VrEnjDmcgst
- RA5etAGEZJ/iBppwuVo+UiSGRPVJwpnt9TGLT6Lse15vDRxuemqeqkAtQd+dquFbrNhG
- UUYXVcebgMlj2TftutYSzYj+q+R+2NXtYUv9wmNQgH11+Jjkq79mIGbddFZQ/BUfwMOj
- UQYQ==
+ bh=NDe7pwy+TDfX2CMDLIcpQc6GT+4HNkpUGcRKLevpa/I=;
+ b=kKVoZ9YzOkKj5bBGwKVGo612r/MgP296dcQ7Cm4VzYKfWmCocZ7PJY5ZoBH7HJJUKE
+ jnQerr6QnW7llbXDmbS8jSS2Fl0PZXwHnWpXlA4Ww488p3UJd1urbqnfm3NSe/Vjycao
+ PcdVgAXwjB2FcPIT+h3A654jbmJ+QWJzSKn48K/KkJgRbaPHtVnqTzcubwJWPiROVT05
+ YDeZazSzb0qmthQk25qDiDAPtrGyXAaZRH+XeBiMiTtB/Gt0QULQC0jIN+lonvtGguKu
+ rpivCv4MBJyMt+RfEFkfFRZiKuLE5v12rowb3KRxWTJG23ZN5UesiWKbegii3/9eqoF6
+ t2uA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWy0hcc00VCLy3xYpQTi+lG5Pm1MedLvJyaDGGjXuMQn+EgtkteyfZWl9skR7gc1Bk5DY4=@lists.linux.it
-X-Gm-Message-State: AOJu0Ywps684FYhp85OZ1uNbPB7cFTm1s1IT4rb3uqMs1z51KYjXhLb8
- G77E9iuUmdyj7lc0WKI5EfyOWULwYfYy5Ls95fCinE+qseWd/6I5n6bwx3W7S/vgkf0=
-X-Gm-Gg: AZuq6aKcXTyn4hxe4FEGJlz64FxdzOkmu4ZpfBK13/CyVc7Jd4bnx32m9nQmUoivBrd
- EAQ8R2WncSLcbPchKq2wNG8hxSfaeF8NJZ6huJeTVWci+tSD/CHP1gfs5zPNeY4sFxDYoqXNe4m
- pzz67J60RI0528sMlzVnBtti33A01ZB6RmVgnx3PsQPuxiAPT1AfcFOENc6spxE5tyilJ0vSxNy
- wG7krkR55xnR4etT6EddGibIslW6lehKGW9DZ4YNfalkx/wAAy3cB9WptQITH99goSGP862IEgM
- 2zETFXhjfF6mYZskHbzVHfrjPl2d9a9MEHmHJhOCVh7eMtE1T0CkOWrVa04XZm3ZDcKztq7u3dK
- QQdxTR0KcpBpSIaBe4v/cLv1edEZPgPC3wM4z5NgGrv/acGk+90fp43qWyorQtdFq45UDQYXUSL
- 6RexTavuuJIvRdmU40zDMShd0oTxbXiJcmTZdrCOTL1tPMPc1OyXHr/YhCvTeEUSunNKU3+DfmQ
- e9xXfLYt9qaGR07Z+Q=
-X-Received: by 2002:a05:600c:358c:b0:480:426e:9d38 with SMTP id
- 5b1f17b1804b1-48379be6056mr236860515e9.27.1771420914300; 
- Wed, 18 Feb 2026 05:21:54 -0800 (PST)
+ AJvYcCUVpg2JInRjR9b5w+l6lsiBNe/6UTiul9s1p0N4kBwJivY7oE6TKNqAEKJ1va9lS60doSc=@lists.linux.it
+X-Gm-Message-State: AOJu0YzPs7z8c3f0uzmpRw1zDDqdThnyyCEJe8ll5YVQ98BfvXycnHKT
+ 6U9cBeH26t1sJsJzfy6sDj1IOMfcMKleLZRK6wgNaLMltbojBlqoqwYcUGGekyVqx/2ce3L622M
+ YIHc5WWA=
+X-Gm-Gg: AZuq6aKw6OiaDpgq5z1p4n0Oy8EOLSUbmf535mLSEa9S2RHr0iwVP7PE3ctqm3NASoO
+ /I5C1617dezuf24P9Q/IO9frfV+ARtDzEGDfK1p8Y1/qi/j5eR/dZz0D36kvbDCm4MBWNSPOwwb
+ TlAc2PWoX1cxxpkVER/mhFVhYWyx2TrN3Q1ftKwBdRN3w5VDdmxOPqh1I6f23wRKs+kCPaGpk1m
+ i7Ui6CV/vxAo7eTOJ8lki/PKB73qzPjQKq151r4ejBSl+rfHi/NIUuRPRYuZNQl4wxhW5roB7iY
+ R1t0ZTu5NHVdqk+3+hEmoz2/7h/Ud3I3th64WDlRgngoA4WAC+nlPD/2Dx+aApl0J8GnToxQiGK
+ vui4Q/+F1TKXnMvX6tGnoMtbzFfMD2Npe7nKNYgmhqhdAetjyehaD6w52cNNIr6JVF+g3CxDTpd
+ mKa588niQZD1GPX8mTAT0yt+Bfc/rl/pGpD4FOQE08j8YIsXiKP7ImjJySMVxGy2SjomzSgtIi1
+ qMK/X4MmjfTAzWp0qM=
+X-Received: by 2002:a05:600c:34c3:b0:47d:403a:277 with SMTP id
+ 5b1f17b1804b1-48398c59da5mr35336795e9.4.1771421674709; 
+ Wed, 18 Feb 2026 05:34:34 -0800 (PST)
 Received: from localhost
  (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
  [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4835dcfafcdsm902756385e9.9.2026.02.18.05.21.53
+ 5b1f17b1804b1-4839731e101sm24274395e9.6.2026.02.18.05.34.34
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 18 Feb 2026 05:21:53 -0800 (PST)
+ Wed, 18 Feb 2026 05:34:34 -0800 (PST)
 Mime-Version: 1.0
-Date: Wed, 18 Feb 2026 14:21:53 +0100
-Message-Id: <DGI4B1B5F1L9.16IITENATKJVZ@suse.com>
+Date: Wed, 18 Feb 2026 14:34:33 +0100
+Message-Id: <DGI4KQCXESV5.5PGMWF4DXPA3@suse.com>
 To: "Wei Gao" <wegao@suse.com>, <ltp@lists.linux.it>
 X-Mailer: aerc 0.18.2
-References: <20250319142310.30036-1-wegao@suse.com>
- <20250723154610.3860563-1-wegao@suse.com>
-In-Reply-To: <20250723154610.3860563-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+References: <20260128002828.424-1-wegao@suse.com>
+In-Reply-To: <20260128002828.424-1-wegao@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] open16: allow restricted O_CREAT of FIFOs and
- regular files
+Subject: Re: [LTP] [PATCH v1] mseal02: Handle multiple errnos for 32-bit
+ compat mode
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,184 +113,65 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
 
-On Wed Jul 23, 2025 at 5:46 PM CEST, Wei Gao via ltp wrote:
-> This commit adds test cases to verify the security restrictions for opening
-> FIFOs and regular files in world-writable sticky directories.
+On Wed Jan 28, 2026 at 1:28 AM CET, Wei Gao via ltp wrote:
+> In 32-bit compat mode, the overflow_size (calculated using a 32-bit ULONG_MAX)
+> does not cause a 64-bit integer wrap-around when added to the start address.
+> Consequently, the kernel see valid range that points to unmapped space, returning
+> ENOMEM instead of the expected EINVAL.
 >
 > Signed-off-by: Wei Gao <wegao@suse.com>
 > ---
->  runtest/syscalls                          |   1 +
->  testcases/kernel/syscalls/open/.gitignore |   1 +
->  testcases/kernel/syscalls/open/open16.c   | 124 ++++++++++++++++++++++
->  3 files changed, 126 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/open/open16.c
+>  testcases/kernel/syscalls/mseal/mseal02.c | 20 +++++++++++---------
+>  1 file changed, 11 insertions(+), 9 deletions(-)
 >
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 3531c2a3c..0de9bfaef 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -984,6 +984,7 @@ open12 open12
->  open13 open13
->  open14 open14
->  open15 open15
-> +open16 open16
+> diff --git a/testcases/kernel/syscalls/mseal/mseal02.c b/testcases/kernel/syscalls/mseal/mseal02.c
+> index e11d7dbf4..d941f6c40 100644
+> --- a/testcases/kernel/syscalls/mseal/mseal02.c
+> +++ b/testcases/kernel/syscalls/mseal/mseal02.c
+> @@ -21,6 +21,8 @@
+>  #include "tst_test.h"
+>  #include "lapi/syscalls.h"
 >  
->  openat01 openat01
->  openat02 openat02
-> diff --git a/testcases/kernel/syscalls/open/.gitignore b/testcases/kernel/syscalls/open/.gitignore
-> index af5997572..d2cacc02e 100644
-> --- a/testcases/kernel/syscalls/open/.gitignore
-> +++ b/testcases/kernel/syscalls/open/.gitignore
-> @@ -13,3 +13,4 @@
->  /open13
->  /open14
->  /open15
-> +/open16
-> diff --git a/testcases/kernel/syscalls/open/open16.c b/testcases/kernel/syscalls/open/open16.c
-> new file mode 100644
-> index 000000000..6e01dde26
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/open/open16.c
-> @@ -0,0 +1,124 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-> + */
+> +#define MAX_ERRNOS 5
 > +
-> +/*\
-> + * Verify disallows open of FIFOs or regular files not owned by the user in world
-> + * writable sticky directories
-> + */
-> +
-> +#include <pwd.h>
-> +#include <stdlib.h>
-> +#include "tst_test.h"
-> +#include "tst_safe_file_at.h"
-> +
-> +#define FILENAME  "setuid04_testfile"
+>  static void *start_addr, *unaligned_start_addr, *unallocated_start_addr, *unallocated_end_addr;
+>  static size_t page_size, twopages_size, fourpages_size, overflow_size;
+>  
+> @@ -28,22 +30,22 @@ static struct tcase {
+>  	void **addr;
+>  	size_t *len;
+>  	unsigned long flags;
+> -	int exp_err;
+> +	int exp_errs[MAX_ERRNOS];
+>  } tcases[] = {
+> -	{&start_addr, &page_size, ULONG_MAX, EINVAL},
+> -	{&unaligned_start_addr, &page_size, 0, EINVAL},
+> -	{&start_addr, &overflow_size, 0, EINVAL},
+> -	{&unallocated_start_addr, &twopages_size, 0, ENOMEM},
+> -	{&unallocated_end_addr, &twopages_size, 0, ENOMEM},
+> -	{&start_addr, &fourpages_size, 0, ENOMEM},
+> +	{&start_addr, &page_size, ULONG_MAX, {EINVAL}},
+> +	{&unaligned_start_addr, &page_size, 0, {EINVAL}},
+> +	{&start_addr, &overflow_size, 0, {EINVAL, ENOMEM}},
+> +	{&unallocated_start_addr, &twopages_size, 0, {ENOMEM}},
+> +	{&unallocated_end_addr, &twopages_size, 0, {ENOMEM}},
+> +	{&start_addr, &fourpages_size, 0, {ENOMEM}},
+>  };
+>  
+>  static void run(unsigned int n)
+>  {
+>  	struct tcase *tc = &tcases[n];
+>  
+> -	TST_EXP_FAIL(tst_syscall(__NR_mseal, *tc->addr, *tc->len, tc->flags), tc->exp_err,
+> -		"mseal(%p, %lu, %lu)", *tc->addr, *tc->len, tc->flags);
+> +	TST_EXP_FAIL2_ARR(tst_syscall(__NR_mseal, *tc->addr, *tc->len, tc->flags),
+> +		tc->exp_errs, MAX_ERRNOS, "mseal(%p, %lu, %lu)", *tc->addr, *tc->len, tc->flags);
+>  }
+>  
+>  static void setup(void)
 
-Never used.
-
-> +#define DIR "ltp_tmp_check1"
-> +#define TEST_FILE "test_file_1"
-> +#define TEST_FIFO "test_fifo_1"
-> +#define LTP_USR_UID1 1000
-> +#define LTP_USR_UID2 1001
-
-If target is to have a UID that doesn't belong to the current user,
-we can just have:
-
-  pw = SAFE_GETPWNAM("nobody");
-
-and use the provided UID.
-
-> +#define PROTECTED_REGULAR "/proc/sys/fs/protected_regular"
-> +#define PROTECTED_FIFOS "/proc/sys/fs/protected_fifos"
-> +#define TEST_FIFO_PATH DIR "/" TEST_FIFO
-> +
-> +static int dir_fd;
-
-Not initialized to -1.
-
-> +
-> +static void run(void)
-> +{
-> +	SAFE_CHMOD(DIR, 0777 | S_ISVTX);
-> +	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "0");
-> +	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "0");
-> +
-> +	if (!SAFE_FORK()) {
-> +		SAFE_SETUID(LTP_USR_UID1);
-> +
-> +		int fd = SAFE_OPENAT(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777);
-> +
-> +		SAFE_CLOSE(fd);
-> +
-> +		SAFE_MKFIFO(TEST_FIFO_PATH, 0777);
-> +
-> +		exit(0);
-> +	}
-> +
-> +	tst_reap_children();
-> +
-> +	if (!SAFE_FORK()) {
-> +		SAFE_SETUID(LTP_USR_UID2);
-> +
-> +		int fd = TST_EXP_FD(openat(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777));
-> +
-> +		if (TST_PASS)
-> +			SAFE_CLOSE(fd);
-> +
-> +		fd = TST_EXP_FD(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777));
-> +
-> +		if (TST_PASS)
-> +			SAFE_CLOSE(fd);
-> +
-> +		exit(0);
-> +	}
-> +
-> +	tst_reap_children();
-> +
-> +	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "1");
-> +	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "1");
-> +
-> +	if (!SAFE_FORK()) {
-> +		SAFE_SETUID(LTP_USR_UID2);
-> +		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
-> +		TST_EXP_FAIL(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777), EACCES);
-> +
-> +		exit(0);
-> +	}
-> +
-> +	tst_reap_children();
-> +
-> +	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "2");
-> +	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "2");
-> +	SAFE_CHMOD(DIR, 0020 | S_ISVTX);
-> +
-> +	if (!SAFE_FORK()) {
-> +		SAFE_SETUID(LTP_USR_UID2);
-> +		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
-> +		TST_EXP_FAIL(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777), EACCES);
-> +
-> +		exit(0);
-> +	}
-> +
-> +	tst_reap_children();
-> +	SAFE_UNLINK(TEST_FIFO_PATH);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	umask(0);
-> +	SAFE_MKDIR(DIR, 0777 | S_ISVTX);
-> +	dir_fd = SAFE_OPEN(DIR, O_DIRECTORY);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (dir_fd != -1)
-> +		SAFE_CLOSE(dir_fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +	.test_all = run,
-> +	.needs_tmpdir = 1,
-> +	.forks_child = 1,
-> +	.save_restore = (const struct tst_path_val[]) {
-> +		{PROTECTED_REGULAR, NULL, TST_SR_TCONF},
-> +		{PROTECTED_FIFOS, NULL, TST_SR_TCONF},
-> +		{}
-> +	},
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "30aba6656f61"},
-> +		{}
-> +	}
-> +};
-
+Instead of checking multiple errno, you should pass the right type
+according to the architecture.
 
 -- 
 Andrea Cervesato
