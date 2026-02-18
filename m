@@ -4,78 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5D4CE9A02C
-	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 14:48:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 096AEE9A02C
+	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 17:42:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5D5223C60F2
-	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 15:48:54 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 885023D0714
+	for <ltp@archiver.kernel.org>; Wed, 18 Feb 2026 18:42:04 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A2BF73C60F2
- for <ltp@lists.linux.it>; Wed, 18 Feb 2026 15:48:18 +0100 (CET)
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
- [IPv6:2607:f8b0:4864:20::642])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E6A3F3D06F9
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 18:41:45 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8EC306009EA
- for <ltp@lists.linux.it>; Wed, 18 Feb 2026 15:48:17 +0100 (CET)
-Received: by mail-pl1-x642.google.com with SMTP id
- d9443c01a7336-2a9296b3926so37252655ad.1
- for <ltp@lists.linux.it>; Wed, 18 Feb 2026 06:48:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1771426096; x=1772030896; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=a3mf7qw2je1qP7dVrI9xYHmoYwlB/FmMaT0gqyHrIaY=;
- b=fBv96an9OxWx0Q0F/o1N7WrYi9hI4xDP7i2o6CaJxwV8NbXirUPNXlVtGAYF6/UOb/
- zu0FnI7LrKSLHjs4T3EbCN8N89C3iXPBEBJfQmiYgP36Trt0BNLEXP9hwVvoEY5mhBqO
- 0TKPd0aiiz3N2/sMNfXyJQTXBlEbEGoGTmDs7jjruXO5pu0IkGPQMBTDIj0vVQ9CwGZi
- /Gbgq8i2G+3UfCEVulksqKOSCQdVdt7N9Cbz9uFl8nZSpTloc+sS6L6WWoUlMQjLyWeq
- 1a1soeVfuJWTjQcW++qcXF0kjEbP58AJKnh4BCtX4LNoREQPTbT8PjPEe5cxidt6adyf
- DHHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1771426096; x=1772030896;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=a3mf7qw2je1qP7dVrI9xYHmoYwlB/FmMaT0gqyHrIaY=;
- b=MnxSj4iDLL1FsF5HJ+MqvnXG6lsuMCUTi24MXd92QlRzb+pLQDrd9ln3BCf/IWCXNz
- 4WYBswVreQDMC/WRcUgG0Lvf5AbgQDuhoYDWOGbirZssBpz/cHDyziqvLMewnN0w2J8t
- /VS3gJlUKGJi3AscTTr0CZuV7dA+Zu7kaAJ/w3B7loFaqSfVCMKQUeyY8NJWPhkyUva3
- eiAgQRTvt4CSYnCNcRXr4BJutn8ahFT1xf+ptR4uWc2SUd8ZRYKdZVOXhTVunED2Hdae
- gIvp850gru64gOShJl3xDGRgpFaCQN1vxsmADPgO8ouUAVwYCxDOPANWX5MJOuM68zGr
- 2y3Q==
-X-Gm-Message-State: AOJu0YwY1wIYRT3czpyqWDJYenrh+CwF3KZVAQNsZpNwQ2t79I5w0oqv
- azSBmSXjjs942NvEJhdHQLrr5/HX0ZxaGblhcVYKIWK4lLnh4IL/Lh3vPSikk74PpA==
-X-Gm-Gg: AZuq6aIR3kjQ0NAidkG4Ig5B3efdgrqJQvDjOVD4YlkajzHrDPePsuIdWxAewrTI+ZG
- i3pIR83eb0Ydo9KBZu+KQJRVmWgKiMZV9LBvVmY3HUzzbY0rTbi84rV7CqRmpKNF3Tx2D6dMi2Z
- ezcahzhCj0NhW8wSXpQugL9rqFA52+SlfUgLK8q+2p646ULFB6bPSit2Jl1Wr4dRoU3Q4M0g83M
- Gvh5mKHukvha7uDL0fmx2NOhml5oVeYeQT+oGBJPcqcHW/IujUiyKON2nLVJTKvmoK+6vuvhz7+
- CcLfqcLhmqJy9Rau5eDpuOPQHooqd4Aaodql/QEJ5UerAuQ4n94eZDXsB1hFYVLs2x0Mzdgdlo7
- fK9GV6KNINwkzEv/XLv0+0j7o+OWZRB3vcnl1wtdNnc89iKfcr5UZA3YlvUzTXqdYtkxYoRe49M
- HCiK2Nuh/oO+bR/KFkONmGdhJaCDPcHPjCA4UMrKvSUQ==
-X-Received: by 2002:a17:903:2445:b0:2aa:cfee:a47c with SMTP id
- d9443c01a7336-2ad50fbfccamr19180535ad.52.1771426095623; 
- Wed, 18 Feb 2026 06:48:15 -0800 (PST)
-Received: from localhost.localdomain ([59.16.109.172])
- by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2ad1a7145cbsm188539455ad.30.2026.02.18.06.48.14
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 Feb 2026 06:48:15 -0800 (PST)
-From: Jinseok Kim <always.starving0@gmail.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3C5ED6009F9
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 18:41:44 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3E5B35BCF5
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 17:41:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1771436504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=31+rt4gMIghcJzbkrCOBJ7HONIrsG+TXo7kZiEzVxo0=;
+ b=P4/UwDt+W7VWYdsIUlUl/D+mjZBmldcDZz3WG0CyB6QnUKdzX1DLO/yta6SbblbJSAyW5B
+ 738NF9DiAvXfzlir9jOPT0Md3ddtCJ0E9uQhEQvCWd0ZknPEt8EJZXyIoVLXZH1VR7MoZf
+ YFsReeOw+h+BNLE8Bvcapb5X8P3U6Jg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1771436504;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=31+rt4gMIghcJzbkrCOBJ7HONIrsG+TXo7kZiEzVxo0=;
+ b=BgLW0LtIenCrvvO/cUWCjYRI+YowekMMDCMb1rObDYX0UFbRH8prLLF6mWS5RkR8xbTpup
+ CB1gmfW4AyInsuDg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="P4/UwDt+";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BgLW0LtI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1771436504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=31+rt4gMIghcJzbkrCOBJ7HONIrsG+TXo7kZiEzVxo0=;
+ b=P4/UwDt+W7VWYdsIUlUl/D+mjZBmldcDZz3WG0CyB6QnUKdzX1DLO/yta6SbblbJSAyW5B
+ 738NF9DiAvXfzlir9jOPT0Md3ddtCJ0E9uQhEQvCWd0ZknPEt8EJZXyIoVLXZH1VR7MoZf
+ YFsReeOw+h+BNLE8Bvcapb5X8P3U6Jg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1771436504;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=31+rt4gMIghcJzbkrCOBJ7HONIrsG+TXo7kZiEzVxo0=;
+ b=BgLW0LtIenCrvvO/cUWCjYRI+YowekMMDCMb1rObDYX0UFbRH8prLLF6mWS5RkR8xbTpup
+ CB1gmfW4AyInsuDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2E51E3EA66
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 17:41:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id DbcVC9j5lWmvbAAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Wed, 18 Feb 2026 17:41:44 +0000
+From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 18 Feb 2026 23:47:26 +0900
-Message-ID: <20260218144747.2771-1-always.starving0@gmail.com>
-X-Mailer: git-send-email 2.43.0
+Date: Wed, 18 Feb 2026 18:41:38 +0100
+Message-ID: <20260218174139.94454-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.52.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_ONE(0.00)[1];
+ MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim,suse.cz:email];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 3E5B35BCF5
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/2] open: fix cleanup condition and use snprintf
+Subject: [LTP] [PATCH v2] readahead02: Always allow at least 100ms for cache
+ to fill
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,46 +115,114 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Replace remaining sprintf() with snprintf() in setup()
+The current wait algorithm for filling the cache after readahead()
+will never retry if the cache doesn't start filling within 15ms.
+Rewrite the wait loop to always allow at least 100ms for the cache
+to fill and exit early only if cache increased by at least half
+of the expected amount. This fixes random test failures if the interval
+between cache increases is longer than 5ms.
 
-Thanks for the review.
-
-Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/syscalls/open/open04.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/open/open04.c b/testcases/kernel/syscalls/open/open04.c
-index 3dc3486d3..5d39c1569 100644
---- a/testcases/kernel/syscalls/open/open04.c
-+++ b/testcases/kernel/syscalls/open/open04.c
-@@ -30,7 +30,7 @@ static void setup(void)
- 	fds[0] = first;
+Changes since v1:
+- Renamed MIN_SLEEP_LIMIT to MIN_RETRY_LIMIT
+- Fixed printf format for cached_prev
+- Fixed type issue in cache_diff calculation by casting to ssize_t
 
- 	for (i = first + 1; i < fds_limit; i++) {
--		sprintf(fname, FNAME ".%d", i);
-+		snprintf(fname, sizeof(fname), FNAME ".%d", i);
- 		fd = open(fname, O_RDWR | O_CREAT, 0777);
- 		if (fd == -1) {
- 			if (errno != EMFILE)
-@@ -44,13 +44,13 @@ static void setup(void)
+ .../kernel/syscalls/readahead/readahead02.c   | 45 +++++++++----------
+ 1 file changed, 20 insertions(+), 25 deletions(-)
 
- static void run(void)
- {
--	sprintf(fname, FNAME ".%d", fds_limit);
-+	snprintf(fname, sizeof(fname), FNAME ".%d", fds_limit);
- 	TST_EXP_FAIL2(open(fname, O_RDWR | O_CREAT, 0777), EMFILE);
- }
+diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
+index 8dbcec2e7..aac412695 100644
+--- a/testcases/kernel/syscalls/readahead/readahead02.c
++++ b/testcases/kernel/syscalls/readahead/readahead02.c
+@@ -38,8 +38,8 @@ static char testfile[PATH_MAX] = "testfile";
+ #define DROP_CACHES_FNAME "/proc/sys/vm/drop_caches"
+ #define PROC_IO_FNAME "/proc/self/io"
+ #define DEFAULT_FILESIZE (64 * 1024 * 1024)
+-#define INITIAL_SHORT_SLEEP_US 10000
+ #define SHORT_SLEEP_US 5000
++#define MIN_RETRY_LIMIT 20
+ 
+ static size_t testfile_size = DEFAULT_FILESIZE;
+ static char *opt_fsizestr;
+@@ -193,12 +193,20 @@ static int read_testfile(struct tcase *tc, int do_readahead,
+ 	long read_bytes_start;
+ 	unsigned char *p, tmp;
+ 	off_t offset = 0;
+-	unsigned long cached_prev = 0, cached_cur = 0;
++	size_t cached_prev;
++	ssize_t cache_diff;
+ 
+ 	fd = SAFE_OPEN(fname, O_RDONLY);
+ 
+ 	if (do_readahead) {
+ 		do {
++			cached_prev = get_file_cached_bytes(fname, fsize);
++			tst_res(TDEBUG, "Per-file cached: %zu kB",
++				cached_prev / 1024);
++
++			if (cached_prev >= fsize)
++				break;
++
+ 			TEST(tc->readahead(fd, offset, fsize - offset));
+ 			if (TST_RET != 0) {
+ 				SAFE_CLOSE(fd);
+@@ -207,40 +215,27 @@ static int read_testfile(struct tcase *tc, int do_readahead,
+ 
+ 			i++;
+ 			offset += readahead_length;
+-			/* Wait a bit so that the readahead() has chance to start. */
+-			usleep(INITIAL_SHORT_SLEEP_US);
+ 			/*
+ 			 * We assume that the worst case I/O speed is around
+-			 * 5MB/s which is roughly 5 bytes per 1 us, which gives
++			 * 5MB/s which is roughly 5 bytes per 1 us and we
++			 * allow additional 25ms for seeks, which gives
+ 			 * us upper bound for retries that is
+-			 * readahead_size/(5 * SHORT_SLEEP_US).
++			 * 5 + readahead_size/(5 * SHORT_SLEEP_US).
+ 			 *
+-			 * We also monitor the cache size increases before and
+-			 * after the sleep. With the same assumption about the
+-			 * speed we are supposed to read at least 5 *
+-			 * SHORT_SLEEP_US bytes during that time. That amound
+-			 * is genreally quite close a page size so that we just
+-			 * assume that we sould continue as long as the cache
+-			 * increases.
+-			 *
+-			 * Of course all of this is inprecise on multitasking
+-			 * OS however even on a system where there are several
+-			 * processes figthing for I/O this loop will wait as
+-			 * long a cache is increasing which will gives us high
+-			 * chance of waiting for the readahead to happen.
++			 * We also monitor the cache size and exit the wait
++			 * loop early if it increases by at least 50%
++			 * of the read ahead size.
+ 			 */
+-			cached_cur = get_file_cached_bytes(fname, fsize);
+ 			int retries = readahead_length / (5 * SHORT_SLEEP_US);
+ 
+-			tst_res(TDEBUG, "Per-file cached: %lu kB", cached_cur / 1024);
++			retries = MAX(retries + 5, MIN_RETRY_LIMIT);
+ 
+ 			do {
+ 				usleep(SHORT_SLEEP_US);
++				cache_diff = get_file_cached_bytes(fname,
++					fsize) - (ssize_t)cached_prev;
+ 
+-				cached_prev = cached_cur;
+-				cached_cur = get_file_cached_bytes(fname, fsize);
+-
+-				if (cached_cur <= cached_prev)
++				if (cache_diff >= readahead_length / 2)
+ 					break;
+ 			} while (retries-- > 0);
+ 
+-- 
+2.52.0
 
- static void cleanup(void)
- {
--	if (!first || !fds)
-+	if (first < 0 || !fds)
- 		return;
-
- 	for (i = first; i < fds_limit; i++)
---
-2.43.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
