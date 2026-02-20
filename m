@@ -4,104 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4CC9C56201
-	for <ltp@archiver.kernel.org>; Fri, 20 Feb 2026 15:06:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94DE7C56206
+	for <ltp@archiver.kernel.org>; Fri, 20 Feb 2026 15:32:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1771601563; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=RBF61Mddxnfr0Isn/EDlCJlRo+gdg4DXd70r/s2v0DQ=;
+ b=fzPwWr9Z7XlMt1zMAfaRpc4Ty8AJir8EN+t4cm1bJMIyKX4dwUSFxM3f0uS5zRgQIJpPl
+ x501c2HpFCz5pukJ8eJtCIc93+GLP97Tv4sJ+KMa1EDVCO3gSHFsgqh/A3hV78dxQHfdmN4
+ Jvcfiv82CT0tuKHvo4zH2MO8mBIAnJ8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 20B343D03DC
-	for <ltp@archiver.kernel.org>; Fri, 20 Feb 2026 16:06:28 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 318FF3D0842
+	for <ltp@archiver.kernel.org>; Fri, 20 Feb 2026 16:32:43 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C653F3D0892
- for <ltp@lists.linux.it>; Fri, 20 Feb 2026 16:05:56 +0100 (CET)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3B2163D03DC
+ for <ltp@lists.linux.it>; Fri, 20 Feb 2026 16:32:19 +0100 (CET)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D1FA1600AD1
- for <ltp@lists.linux.it>; Fri, 20 Feb 2026 16:05:55 +0100 (CET)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 61KEYtWN1294756; Fri, 20 Feb 2026 15:05:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=G86iiQ
- WJwC1muUNEQbyHlndJQ50fHWGx5srk28JhLaA=; b=RsUVIWtxq071EU1Bgwx5xf
- tO2cAmGQwaIXG5gmH1LexVKG3MzeKtgRegEktAPYO21/X6Mk6og5YXW4p1psyrL6
- gizXvcLfE96wwlFsYmSqc59oIWUIV/AhQoY9myc6rF7vxOJZE8O/BiLU6gRpd/ec
- txyXXWKv+t7GM7/InA/Gb3GbSORZmXI2C8lJLJCJRgh8zlPy+xMoGsjOJb6UEA3y
- XGTrdwXVJl/mu2KkEsSUJ+vps5dBpd6if3MOrnREzoKsFPP/lJ/MUao4jVLQF80o
- 5g+0gVoNWVFCaAPJBS76GHGm5MHy2WhfXyR54CePKe0la2xmv4UHtpurWYpQp3GA
- ==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4caj64j3ud-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 20 Feb 2026 15:05:53 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 61KEXkh9030217;
- Fri, 20 Feb 2026 15:05:52 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4ccb45gu2k-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 20 Feb 2026 15:05:52 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
- [10.20.54.105])
- by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 61KF5pOJ31064494
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 20 Feb 2026 15:05:51 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 1D1FC20049;
- Fri, 20 Feb 2026 15:05:51 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id D9F612004E;
- Fri, 20 Feb 2026 15:05:50 +0000 (GMT)
-Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com (unknown
- [9.111.48.185])
- by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Fri, 20 Feb 2026 15:05:50 +0000 (GMT)
-Date: Fri, 20 Feb 2026 16:05:49 +0100
-From: Jan Polensky <japo@linux.ibm.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <aZh4TbAp6_mCMkbP@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
-References: <20260219163030.69022-1-japo@linux.ibm.com>
- <aZg8FeATSABAhBfw@yuki.lan>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <aZg8FeATSABAhBfw@yuki.lan>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qPtQz_KQz8W2P0z_5NBRUymdEjdBMLlM
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjIwMDEyOCBTYWx0ZWRfX0irwFFG06HP4
- pBmZ1UARNi6N28Gclgq38L0JuKE7cdcsU7qdH3OX1PVkkmc52DKhilRc6UkQsnyfMzOd8B3ruAE
- U4vMhTM50QbRtzlNXbqRBpzjXVzT3zWplOVkzBbLmODsFZ+Uydkalepig66bcgLYfVwApHYEEc8
- c0508W46b7hxYT5mSkpfMtCO1grgO+YO3OXT5FiXLDCkFSBOexIxu/aSjKeQdV3W5woObevnPbG
- ++dneP+YUNyJOs6xmL+YLc9swsKcnCBU9XF/6XNqM4YC7S+l6edJVlj0ypZrH9bAma1WVKSV7ou
- w8M0GVQrDPvL0gwuOGprCzqAV0L24eHFkaizmhGGIFBhZiWFGV/Xb59rg2b2YgmKZQIPfEHdGlW
- gqC+tkfQe2ln2o2JqJHU5iCZB7V5ydUF9pT0NUI/UF1jpolzmPo2BVplVrf4oTUs+BgprKCl/KV
- PTP0OAzM4J3QbN9NaAA==
-X-Proofpoint-GUID: qPtQz_KQz8W2P0z_5NBRUymdEjdBMLlM
-X-Authority-Analysis: v=2.4 cv=U+mfzOru c=1 sm=1 tr=0 ts=69987851 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22
- a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=4RvkmL-UwT3zVJuuy60A:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-02-20_01,2026-02-20_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 bulkscore=0 impostorscore=0 malwarescore=0 spamscore=0
- adultscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
- suspectscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2601150000
- definitions=main-2602200128
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0367F1A00A43
+ for <ltp@lists.linux.it>; Fri, 20 Feb 2026 16:32:18 +0100 (CET)
+Received: by mail-wr1-x430.google.com with SMTP id
+ ffacd0b85a97d-4376de3f128so1501537f8f.0
+ for <ltp@lists.linux.it>; Fri, 20 Feb 2026 07:32:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1771601538; x=1772206338; darn=lists.linux.it;
+ h=in-reply-to:references:to:from:subject:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=+vyGNXwABoV32kbI6AT4tGwlRXKs4P0wxbfK/aVlh0I=;
+ b=ISF1g8CsIONvZM252qUhcAGHKw1IS+AZFn12JdFEVXVHYVnuCg+sWwEFrRvv6CbNtU
+ GvEFu0s2ugXiEIgD6FAtLiWMRJU+/lL9ky/6UAW/90EpqhKLFYw9jpfcF7KHOrXMlnnG
+ 0e/E7afulYnjs1MLpme/zFh+Nfj3fZVYLfHNTmW29EfFs9X2sJt7cTVYXEVLlIVkYzk/
+ LRJxf5mQ/8jPdtPfXFcytR0ZTua2e+OPtXw6Gmz604KlvGBOGHfkFH4zLorUYlg+IXJ7
+ K4qo+qDQrV/uxZsbNMtwmhqj90bU2ozgiU6WMIjYKxep2F6a3UvwteNEYn7B4ZNb/SGj
+ HgPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1771601538; x=1772206338;
+ h=in-reply-to:references:to:from:subject:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=+vyGNXwABoV32kbI6AT4tGwlRXKs4P0wxbfK/aVlh0I=;
+ b=jTBomg9AUyh935S/8Y4WwudRxzzLy2hbWOUh0mJpRdCbNhkaxONQ4o5JTnnxlyUWLt
+ fth8DKh+nQqQek3UyGTYPHX6Ema79WpkasvKVo240ZTrVR7+wnafzKo2E3lTWqw5FpOe
+ eLC9NCxURgtlmgw40K8KPtYTo/3FJ7gcclt5Qm95jkmtExRNOFcwnxzKGZ/rfiB63yap
+ RiGqN5UwTSbYGPWsL0xttlOr8X/Cw2yAP9V2/tfGJYG/xkYsQQfCGuELKIltSe9qY9Ht
+ lE3YaAMhRSTooAOlc8VS5bgJyZ/e6wg8gZadtsNuSrLvGAG86reBLJFoQqnty9X/pvsf
+ 5xfQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUMYwv1XPmBt4vo/cBwp70QFRK0W/mF0kyFYnsGyAWPUk4wL3AssuQJH5KFY6UXSUUdLxs=@lists.linux.it
+X-Gm-Message-State: AOJu0YzSAlgeUBY/Kr3rEsv4JGbQ9zJN9M2lRmlO9uHrHpZydqwYXsSp
+ R+y95GdTtOvcL0v6SrpFWYeljj0/4GidPxhPPpgnLFoUcKSkBloWZJyHYN6HEfxY+CA=
+X-Gm-Gg: AZuq6aJIDoMWfHyKW6VF+Yu7t1WPNqA/L7yaLSxRaSUwydlLb9umhMwKOIxfYDJkEuW
+ YLCv9ogCBCr1Npd3uJpkcTOTiUJZ4GkQ9V0AsqoydJENZrBs7ngyTYtLPHFywAPSwENPEryy6p9
+ Zh5WcUInRuYQ+57rTXtlXRrkrU08zaYypUJOHe/YVET8+qA7io+8bU7J8TlMYoIZfhKVhKy4yzR
+ dJJgShLKlwHbsQd3CMdeFNxFCNd8z6SL01wnn8+Ru8wmP1d6np4zKsfMPaWra1Xg2lMLTbXrCa9
+ rsEthqecChJ5nxNbl5jx5+e52tr5qXpuaoH7seOe8lJS+OAA1N31XLKyfX6QFUaES9yeOAJ3/5b
+ GOVJ/8ipDfmbaG1MI7fSygj4QGLGM2tmNp/sNBiPeiFKoGV+oKwzCHrGCOKyoUmj9AcLIIqnWbR
+ r5zVtGBHnTqOEn1G8ADbYOIUyK
+X-Received: by 2002:a5d:5e01:0:b0:437:68d5:f165 with SMTP id
+ ffacd0b85a97d-4396f18f81fmr542508f8f.55.1771601538237; 
+ Fri, 20 Feb 2026 07:32:18 -0800 (PST)
+Received: from localhost ([88.128.90.39]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-439567aad3csm23310294f8f.36.2026.02.20.07.32.17
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 20 Feb 2026 07:32:17 -0800 (PST)
+Mime-Version: 1.0
+Date: Fri, 20 Feb 2026 16:32:17 +0100
+Message-Id: <DGJWBYPFA8X4.O6DWVQQLRNGT@suse.com>
+To: "Ricardo Branco" <rbranco@suse.de>, <ltp@lists.linux.it>
+X-Mailer: aerc 0.18.2
+References: <20260219225007.218697-1-rbranco@suse.de>
+In-Reply-To: <20260219225007.218697-1-rbranco@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] [STAGING] ioctl_pidfd06: accept
- EREMOTE/ESRCH for PIDFD_GET_INFO across pidns
+Subject: Re: [LTP] [PATCH v4] userfaultfd: Add test using UFFDIO_POISON
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,25 +98,244 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBGZWIgMjAsIDIwMjYgYXQgMTE6NDg6NTNBTSArMDEwMCwgQ3lyaWwgSHJ1YmlzIHdy
-b3RlOgo+IEhpIQo+ID4gUElERkRfR0VUX0lORk8gc2VtYW50aWNzIGNoYW5nZWQgZm9yIHBpZGZk
-cyByZWZlcnJpbmcgdG8gdGFza3Mgd2l0aG91dCBhIFBJRApbc25pcF0KPiA+Cj4KPiBJIHdvdWxk
-IGJlIHN0cmljdGVyIGZvciBuZXcga2VybmVscywgd2UgZG8gbm90IHdhbnQgdGhlIG5ldyB2YWx1
-ZQo+IHJldmVydGVkIGJhY2sgYnkgYW4gYWNjaWRlbnQuIFNvIHdoYXQgYWJvdXQ6Cj4KPiBzdGF0
-aWMgaW50IGVycl9uciA9IEFSUkFZX1NJWkUoZXhwX2Vycm5vcyk7Cj4KPiBzdGF0aWMgdm9pZCBz
-ZXR1cCh2b2lkKQo+IHsKPiAJLi4uCj4gCWlmICh0c3Rfa3ZlcmNtcCg5LCAxOSwgMCkgPj0gMCkK
-PiAJCWVycl9uciA9IDE7Cj4gCS4uLgo+IH0KPgo+ID4gIAlpZiAoIVNBRkVfQ0xPTkUoYXJncykp
-IHsKPiA+IC0JCVRTVF9FWFBfRkFJTChpb2N0bChwaWRmZCwgUElERkRfR0VUX0lORk8sIGluZm8p
-LCBFU1JDSCk7Cj4gPiArCQlUU1RfRVhQX0ZBSUxfQVJSKGlvY3RsKHBpZGZkLCBQSURGRF9HRVRf
-SU5GTywgaW5mbyksIGV4cF9lcnJub3MsCj4gPiArCQkJCUFSUkFZX1NJWkUoZXhwX2Vycm5vcykp
-Owo+IAkJCQleCj4gCQkJCWVycl9ucgpIaSBDeXJpbCwKCnRoYW5rcyBmb3IgdGhlIHN1Z2dlc3Rp
-b24uIEkgYWdyZWUgd2l0aCB5b3UuCkkgdGVzdGVkIHRoZSBjaGFuZ2Ugb24gdjYuMTguNSBhbmQg
-djYuMTkuMC4KCknigJlsbCBzZW5kIHYzIHdpdGggdGhlIGVycl9uciB1cGRhdGUgYXMgcHJvcG9z
-ZWQuCgpUaGFua3MsCkphbgoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5s
-aW51eC5pdC9saXN0aW5mby9sdHAK
+Hi!
+
+
+On Thu Feb 19, 2026 at 11:50 PM CET, Ricardo Branco wrote:
+> Signed-off-by: Ricardo Branco <rbranco@suse.de>
+> ---
+>  configure.ac                                  |   1 +
+>  include/lapi/userfaultfd.h                    |  13 ++
+>  .../kernel/syscalls/userfaultfd/.gitignore    |   1 +
+>  .../kernel/syscalls/userfaultfd/Makefile      |   1 +
+>  .../syscalls/userfaultfd/userfaultfd06.c      | 137 ++++++++++++++++++
+>  5 files changed, 153 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
+>
+> diff --git a/configure.ac b/configure.ac
+> index 7fa614dcb..94bcbcc98 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -278,6 +278,7 @@ AC_CHECK_TYPES([struct sockaddr_vm],,,[
+>  ])
+>  
+>  AC_CHECK_TYPES([struct uffdio_move],,,[#include <linux/userfaultfd.h>])
+> +AC_CHECK_TYPES([struct uffdio_poison],,,[#include <linux/userfaultfd.h>])
+>  AC_CHECK_TYPES([struct uffdio_writeprotect],,,[#include <linux/userfaultfd.h>])
+>  
+>  # Tools knobs
+> diff --git a/include/lapi/userfaultfd.h b/include/lapi/userfaultfd.h
+> index 0c9e34c84..aab3890b7 100644
+> --- a/include/lapi/userfaultfd.h
+> +++ b/include/lapi/userfaultfd.h
+> @@ -233,6 +233,19 @@ struct uffdio_writeprotect {
+>  };
+>  #endif	/* HAVE_STRUCT_UFFDIO_WRITEPROTECT */
+>  
+> +#ifndef HAVE_STRUCT_UFFDIO_POISON
+> +#define UFFD_FEATURE_POISON			(1<<14)
+> +#define _UFFDIO_POISON				(0x08)
+> +#define UFFDIO_POISON		_IOWR(UFFDIO, _UFFDIO_POISON, \
+> +				      struct uffdio_poison)
+> +struct uffdio_poison {
+> +        struct uffdio_range range;
+> +#define UFFDIO_POISON_MODE_DONTWAKE		((__u64)1<<0)
+> +        __u64 mode;
+> +        __s64 updated;
+> +};
+> +#endif	/* HAVE_STRUCT_UFFDIO_POISON */
+> +
+>  #define SAFE_USERFAULTFD(flags, retry) \
+>  	safe_userfaultfd(__FILE__, __LINE__, (flags), (retry))
+>  
+> diff --git a/testcases/kernel/syscalls/userfaultfd/.gitignore b/testcases/kernel/syscalls/userfaultfd/.gitignore
+> index fb2ae243b..bc32fdf3b 100644
+> --- a/testcases/kernel/syscalls/userfaultfd/.gitignore
+> +++ b/testcases/kernel/syscalls/userfaultfd/.gitignore
+> @@ -3,3 +3,4 @@
+>  /userfaultfd03
+>  /userfaultfd04
+>  /userfaultfd05
+> +/userfaultfd06
+> diff --git a/testcases/kernel/syscalls/userfaultfd/Makefile b/testcases/kernel/syscalls/userfaultfd/Makefile
+> index 96650a65a..3252e47df 100644
+> --- a/testcases/kernel/syscalls/userfaultfd/Makefile
+> +++ b/testcases/kernel/syscalls/userfaultfd/Makefile
+> @@ -16,3 +16,4 @@ userfaultfd02: CFLAGS += -pthread
+>  userfaultfd03: CFLAGS += -pthread
+>  userfaultfd04: CFLAGS += -pthread
+>  userfaultfd05: CFLAGS += -pthread
+> +userfaultfd06: CFLAGS += -pthread
+> diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
+> new file mode 100644
+> index 000000000..1f132d4d5
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
+> @@ -0,0 +1,137 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2026 SUSE LLC
+> + * Author: Ricardo Branco <rbranco@suse.com>
+> + */
+> +
+> +/*\
+> + * Force a pagefault event and handle it using :manpage:`userfaultfd(2)`
+> + * from a different thread testing UFFDIO_POISON.
+> + */
+> +
+> +#include "config.h"
+> +#include <poll.h>
+> +#include <setjmp.h>
+> +#include <signal.h>
+> +#include <unistd.h>
+> +#include "tst_test.h"
+> +#include "tst_safe_macros.h"
+> +#include "tst_safe_pthread.h"
+> +#include "lapi/userfaultfd.h"
+> +
+> +static int page_size;
+> +static char *page;
+> +static int uffd;
+> +static int poison_fault_seen;
+> +static volatile int sigbus_seen;
+> +static sigjmp_buf jmpbuf;
+> +
+> +static void sigbus_handler(int sig)
+> +{
+> +	if (sig == SIGBUS) {
+> +		sigbus_seen = 1;
+> +		siglongjmp(jmpbuf, 1);
+> +	}
+> +}
+> +
+> +static void set_pages(void)
+> +{
+> +	page_size = sysconf(_SC_PAGE_SIZE);
+> +	page = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE,
+> +			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (page) {
+> +		SAFE_MUNMAP(page, page_size);
+> +		page = NULL;
+> +	}
+> +}
+> +
+> +static void *handle_thread(void)
+> +{
+> +	static struct uffd_msg msg;
+> +	struct uffdio_poison uffdio_poison = {};
+> +	struct pollfd pollfd;
+> +	int nready;
+> +
+> +	pollfd.fd = uffd;
+> +	pollfd.events = POLLIN;
+> +	nready = poll(&pollfd, 1, -1);
+> +	if (nready == -1)
+> +		tst_brk(TBROK | TERRNO, "Error on poll");
+> +
+> +	SAFE_READ(1, uffd, &msg, sizeof(msg));
+> +
+> +	if (msg.event != UFFD_EVENT_PAGEFAULT)
+> +		tst_brk(TFAIL, "Received unexpected UFFD_EVENT %d", msg.event);
+> +
+> +	tst_atomic_store(1, &poison_fault_seen);
+> +
+> +	/* Poison the page that triggered the fault */
+> +	uffdio_poison.range.start = msg.arg.pagefault.address & ~(page_size - 1);
+> +	uffdio_poison.range.len = page_size;
+> +
+> +	SAFE_IOCTL(uffd, UFFDIO_POISON, &uffdio_poison);
+> +
+> +	close(uffd);
+> +	return NULL;
+> +}
+> +
+> +static void run(void)
+> +{
+> +	pthread_t thr;
+> +	struct uffdio_api uffdio_api = {};
+> +	struct uffdio_register uffdio_register;
+> +	struct sigaction sa = {};
+> +	volatile char dummy;
+
+Here you need to reset the variables for -i > 1
+
+> +
+> +	sa.sa_handler = sigbus_handler;
+> +	sigemptyset(&sa.sa_mask);
+> +	SAFE_SIGACTION(SIGBUS, &sa, NULL);
+> +
+> +	set_pages();
+
+This is done every cycle of -i > 1, but memory is never released and
+done once in cleanup().
+
+> +
+> +	uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, false);
+
+Maybe this one should be closed inside run(), or even remove it from
+static variables and passed to the thread, so we keep it inside run().
+
+> +
+> +	uffdio_api.api = UFFD_API;
+> +	uffdio_api.features = UFFD_FEATURE_POISON;
+> +
+> +	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
+> +
+> +	if (!(uffdio_api.features & UFFD_FEATURE_POISON))
+> +		tst_brk(TCONF, "UFFD_FEATURE_POISON not supported");
+> +
+> +	uffdio_register.range.start = (unsigned long) page;
+> +	uffdio_register.range.len = page_size;
+> +	uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
+> +
+> +	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
+> +
+> +	SAFE_PTHREAD_CREATE(&thr, NULL, (void *) handle_thread, NULL);
+> +
+> +	/* Try to read from the page: should trigger fault, get poisoned, then SIGBUS */
+> +	if (sigsetjmp(jmpbuf, 1) == 0) {
+> +		dummy = page[0];
+> +		(void)dummy;
+> +	}
+> +
+> +	SAFE_PTHREAD_JOIN(thr, NULL);
+> +
+> +	int poisoned = tst_atomic_load(&poison_fault_seen);
+> +
+> +	if (poisoned && sigbus_seen)
+> +		tst_res(TPASS, "POISON successfully triggered SIGBUS");
+> +	else if (poison_fault_seen && !sigbus_seen)
+> +		tst_res(TFAIL, "POISON fault seen but no SIGBUS received");
+> +	else if (!poison_fault_seen && sigbus_seen)
+> +		tst_res(TFAIL, "SIGBUS received but no poison fault seen");
+> +	else
+> +		tst_res(TFAIL, "No poison fault or SIGBUS observed");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.cleanup = cleanup,
+> +};
+
+You ar missing the runtest entry.
+
+
+-- 
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
