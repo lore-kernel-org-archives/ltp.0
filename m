@@ -4,65 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB966C5ACD9
-	for <ltp@archiver.kernel.org>; Fri, 20 Feb 2026 16:36:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6285C5ACC1
+	for <ltp@archiver.kernel.org>; Fri, 20 Feb 2026 16:46:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4E8E63D0875
-	for <ltp@archiver.kernel.org>; Fri, 20 Feb 2026 17:36:16 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 5708D3D0B61
+	for <ltp@archiver.kernel.org>; Fri, 20 Feb 2026 17:46:01 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B0B273D083C
- for <ltp@lists.linux.it>; Fri, 20 Feb 2026 17:35:57 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 91EE43CCDDD
+ for <ltp@lists.linux.it>; Fri, 20 Feb 2026 17:45:41 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 52B8810005CF
- for <ltp@lists.linux.it>; Fri, 20 Feb 2026 17:35:56 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 52233200AEF
+ for <ltp@lists.linux.it>; Fri, 20 Feb 2026 17:45:41 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 968803E6CC;
- Fri, 20 Feb 2026 16:35:56 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 953035C09E;
+ Fri, 20 Feb 2026 16:45:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1771605940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=n5jgmDWvBgb0yVxcAMKWFzAqaQFfD7FchS7++yA3kQg=;
+ b=y9yNpJkVKInPVFgkDMTnUapvgsjaQVgLRVgVYK9s/VfCEYGr/rrvlhaTHD0Gfxcnjtmby7
+ wjsetf2W0CQVuCeNuS0+J7QvTOOsW6Q5WOKjnvQF9P0SFlQ0UGOEGdZ+7FJw0+fxspsDOV
+ YIAYgE7sIrbBBtGGZfVmoEjur2F/TPg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1771605940;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=n5jgmDWvBgb0yVxcAMKWFzAqaQFfD7FchS7++yA3kQg=;
+ b=FIJbXZtt8Gc+EiWDakT9HhNMmjG+kSyYxyNCii46P8OIB0LKc8YyBweX7u1hI1/w+4EJmB
+ P/1tlGExXepeWoDQ==
+Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1771605940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=n5jgmDWvBgb0yVxcAMKWFzAqaQFfD7FchS7++yA3kQg=;
+ b=y9yNpJkVKInPVFgkDMTnUapvgsjaQVgLRVgVYK9s/VfCEYGr/rrvlhaTHD0Gfxcnjtmby7
+ wjsetf2W0CQVuCeNuS0+J7QvTOOsW6Q5WOKjnvQF9P0SFlQ0UGOEGdZ+7FJw0+fxspsDOV
+ YIAYgE7sIrbBBtGGZfVmoEjur2F/TPg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1771605940;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=n5jgmDWvBgb0yVxcAMKWFzAqaQFfD7FchS7++yA3kQg=;
+ b=FIJbXZtt8Gc+EiWDakT9HhNMmjG+kSyYxyNCii46P8OIB0LKc8YyBweX7u1hI1/w+4EJmB
+ P/1tlGExXepeWoDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C0053EA65;
- Fri, 20 Feb 2026 16:35:56 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3AD883EA65;
+ Fri, 20 Feb 2026 16:45:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 8OIDHWyNmGnhKQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 20 Feb 2026 16:35:56 +0000
-Date: Fri, 20 Feb 2026 17:35:58 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <aZiNbmssVOrwSsiV@yuki.lan>
-References: <20260205121540.329921-1-pvorel@suse.cz>
- <20260205121540.329921-2-pvorel@suse.cz>
- <aZQytH7k6pVXqdsz@yuki.lan> <20260219202051.GB341772@pevik>
- <aZhJ7h0toQVUzHnf@yuki.lan> <20260220153410.GA392516@pevik>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id tvOODLSPmGk2NAAAD6G6ig
+ (envelope-from <rbranco@suse.de>); Fri, 20 Feb 2026 16:45:40 +0000
+Message-ID: <15f20553-fdae-42e1-acb8-b65dfc4c2cfb@suse.de>
+Date: Fri, 20 Feb 2026 17:45:39 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260220153410.GA392516@pevik>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Queue-Id: 968803E6CC
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Andrea Cervesato <andrea.cervesato@suse.com>, ltp@lists.linux.it
+References: <20260219225007.218697-1-rbranco@suse.de>
+ <DGJWBYPFA8X4.O6DWVQQLRNGT@suse.com>
+ <1a05954d-e6b9-4e43-85f2-90ea94e8b68a@suse.de>
+ <DGJWNLRE9HZO.18VNRTVC0N7LM@suse.com>
+From: Ricardo Branco <rbranco@suse.de>
+In-Reply-To: <DGJWNLRE9HZO.18VNRTVC0N7LM@suse.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MID_RHS_MATCH_FROM(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/6] doc: INSTALL: dma_thread_diotest.c: Remove
- runltp from doc
+Subject: Re: [LTP] [PATCH v4] userfaultfd: Add test using UFFDIO_POISON
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,39 +113,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, automated-testing@lists.yoctoproject.org
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > > > > @@ -105,9 +105,9 @@ Quick Start
-> > > > >  	$ ./configure
-> > > > >  	$ make all
-> > > > >  	# make install
-> > > >         ^
-> > > > 	This should be $ (not caused by this patch but worth fixing)
-> 
-> > > I can change it, but IMHO for creating /opt/ltp is needed to run it as root
-> > > for a first time. Or one must chmod/chown /opt/ltp under root.
-> 
-> > Huh? The make install should just work fine. I'm just pointing out the
-> > typo # vs $. Or did I miss something?
-> 
-> Yeah, I understand it and plan to change # => $. I talked about /opt (our
-> default prefix) usually not being writable by regular users (installing any
-> software using standard system prefix will have this problem). Root is needed
-> only for creating /opt/ltp. That was the reason for the original user to use '#'.
-> But as I wrote, I'm ok to change the prompt.
 
-Ah, that's a bit confusing then because in shell script # is a comment.
-I usually prefix commands that needs root with sudo instead. So what
-about "$ sudo make install" ?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On 2/20/26 4:47 PM, Andrea Cervesato wrote:
+> On Fri Feb 20, 2026 at 4:43 PM CET, Ricardo Branco wrote:
+>>
+>> On 2/20/26 4:32 PM, Andrea Cervesato wrote:
+>>>> +
+>>>> +	sa.sa_handler = sigbus_handler;
+>>>> +	sigemptyset(&sa.sa_mask);
+>>>> +	SAFE_SIGACTION(SIGBUS, &sa, NULL);
+>>>> +
+>>>> +	set_pages();
+>>> This is done every cycle of -i > 1, but memory is never released and
+>>> done once in cleanup().
+>> I'm moving sigaction to setup but set_pages() is called in run() on the
+>> rest of the tests.
+> But all other tests also have a reset_pages() at the end of run()
+
+Because I renamed reset_pages() to cleanup().
+
+Will follow the template of the other tests in the next v5.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
