@@ -4,57 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 734FBEA4FA0
-	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 10:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC9E2EA4FA1
+	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 10:59:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1771844364; h=message-id :
- mime-version : references : in-reply-to : date : to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1771844386; h=date :
+ message-id : in-reply-to : references : to : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=rthsznYsvLhyGreapEiS/n49Oci4uCZcLou+E0dBxh8=;
- b=jt4rvRYtfQsD8eqC/swGqwqVfOApjoxVrl48myMfSgYC1Sv9NBQYpO9MHcl+UOYBNPRcw
- kHlRHtiQJXOjC7wKHe54sNLaAp0tI8l/Q4A5VXZGrKTJxXC/CatcxJz77HiUjNUw/6xBS3y
- rM8ITcFILSUgo+UuqtIUKdUf+QNy/K0=
+ bh=040yvxdya2/AOF5ezyqFiuzd3/eQw8M1hPKYZwG64Eg=;
+ b=TUYmV+vQ5errpjt6BDdxZCFM45mD+0kUFuGF381SQQ8XxGRXt42c8kcMGujuJ4VUt+XL1
+ cr36N1JMRSizVb6tPn8OBw4GVYBQIDj0x0CMv4o4ODJrGgNx9TURgv2CsMJpt+PgLpm6WWY
+ /Iw06q83vtfFWAZkufLmIxEILpq9XBE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D7F8B3C00AF
-	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 11:59:24 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 8F92D3C2746
+	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 11:59:46 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2E7B83CBBE1
- for <ltp@lists.linux.it>; Mon, 23 Feb 2026 04:18:41 +0100 (CET)
-Received: from lf-1-129.ptr.blmpb.com (lf-1-129.ptr.blmpb.com
- [103.149.242.129])
+ by picard.linux.it (Postfix) with ESMTPS id 4E7C23D066D
+ for <ltp@lists.linux.it>; Mon, 23 Feb 2026 04:18:45 +0100 (CET)
+Received: from lf-1-128.ptr.blmpb.com (lf-1-128.ptr.blmpb.com
+ [103.149.242.128])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 60EAF2000D2
- for <ltp@lists.linux.it>; Mon, 23 Feb 2026 04:18:33 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 76B4C2000D2
+ for <ltp@lists.linux.it>; Mon, 23 Feb 2026 04:18:43 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=2212171451; d=bytedance.com; t=1771816707; h=from:subject:
+ s=2212171451; d=bytedance.com; t=1771816717; h=from:subject:
  mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
  mime-version:in-reply-to:message-id;
- bh=rRbhea4LMmEAHRhOUn5PiESHZVazMDVQ3GSgP27y2is=;
- b=eT+ORxOFi/I0H+MjCIp2bNg8x2XqZ3QYt1ngPfQlCis7DD2nQUui0CKhw4Jhn9wkNUHuX6
- M1Dl5Msjc7faxo7AAigLBdKRAPuueSfBLU1T7B0B9NtM4LjlSLjk8N53tccEkk3GP+gDnc
- ZmF8Hu1OpacbTN3YP9GZQmMrbTNgS2vzruVaPMGFISo4Ezfa/sWlEqh2cs2M6X/WFaIpDX
- 2ynfLlXpHptzvhsSnmgVnVf/w75ydl+a1/ZLDEd6Kl9HJuqqIV90+YjWamwTLc3zYxp0mp
- PGbRIgXzHCA62s74E+RtgS8DfMiCTZyggSUCzjj3bgVR2p702TY1znQq493UMg==
-Message-Id: <20260223031903.4037526-3-weiguixiong@bytedance.com>
-Mime-Version: 1.0
+ bh=t0pdGuUkXJpizz+Yw8QvTNxJ19e8DkTjaYaZByI20FU=;
+ b=oh8P27+aV/d3KZgRzVpZAIgOFhxRcqoLB40Y8lZgLrpUoLBddAJ60/0O1W2F5Ug3v6XS5D
+ +66RJsQK1+o6Gbbv30m8rWWdjZTJydJ3ERE9hymBqgyjwb49s7gqDBlShuindN3PBXdHxk
+ 4L3nc15SBzrMYlEbc6bu932HIgczLma5BFiQDNBuaD5WZB5aqCJZQcoSBpsq21wVMzFUyr
+ 2BTpMftp7748oPWKN9IHDYOFABqPEQ2hlDkK8Tb/xI5htszX+oTlp+NZrZolPexcbFujL/
+ 2Rhhgdgh/FUyVEhED2j9dgdSsQ/+2hmOqnUCaKdbH+sSAxrcnnlY2hGt3TWOZg==
+Date: Mon, 23 Feb 2026 11:19:03 +0800
+Message-Id: <20260223031903.4037526-5-weiguixiong@bytedance.com>
+In-Reply-To: <20260223031903.4037526-1-weiguixiong@bytedance.com>
+X-Lms-Return-Path: <lba+2699bc70b+7b3caa+lists.linux.it+weiguixiong@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 X-Original-From: Guixiong Wei <weiguixiong@bytedance.com>
 References: <20260223031903.4037526-1-weiguixiong@bytedance.com>
-In-Reply-To: <20260223031903.4037526-1-weiguixiong@bytedance.com>
-Date: Mon, 23 Feb 2026 11:19:01 +0800
-X-Lms-Return-Path: <lba+2699bc701+7d2b0a+lists.linux.it+weiguixiong@bytedance.com>
 To: <ltp@lists.linux.it>
-X-Mailer: git-send-email 2.20.1
+Mime-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Mon, 23 Feb 2026 11:57:56 +0100
-Subject: [LTP] [PATCH 2/4] syscalls/ipc: shmctl04: Require full fscanf match
+Subject: [LTP] [PATCH 4/4] syscalls/ipc: shmctl04: Fix shm_info print formats
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,27 +75,49 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Stop parsing /proc/sysvipc/shm when fscanf() does not match all
-expected fields, to avoid using stale values from previous iterations.
+Use %lu when printing unsigned long counters parsed from /proc and
+cast shm_info fields to match the format specifiers.
 
 Signed-off-by: Guixiong Wei <weiguixiong@bytedance.com>
 ---
- testcases/kernel/syscalls/ipc/shmctl/shmctl04.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/kernel/syscalls/ipc/shmctl/shmctl04.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
-index 908cd2926..967e5d4b2 100644
+index 97e84efb6..f436e763d 100644
 --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
 +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
-@@ -68,7 +68,7 @@ static void parse_proc_sysvipc(struct shm_info *info)
- 	 * size.
- 	 */
- 	while (fscanf(f, "%*i %i %*i %lu %*i %*i %*i %*i %*i %*i %*i %*i %*i %*i %i %i",
--			&shmid, &size, &rss, &swap) > 0) {
-+			&shmid, &size, &rss, &swap) == 4) {
- 		used_ids++;
- 		shm_rss += rss/page_size;
- 		shm_swp += swap/page_size;
+@@ -86,24 +86,24 @@ static void parse_proc_sysvipc(struct shm_info *info)
+ 	}
+ 
+ 	if (info->shm_rss != shm_rss) {
+-		tst_res(TFAIL, "shm_rss = %li, expected %li",
++		tst_res(TFAIL, "shm_rss = %lu, expected %lu",
+ 			info->shm_rss, shm_rss);
+ 	} else {
+-		tst_res(TPASS, "shm_rss = %li", shm_rss);
++		tst_res(TPASS, "shm_rss = %lu", shm_rss);
+ 	}
+ 
+ 	if (info->shm_swp != shm_swp) {
+-		tst_res(TFAIL, "shm_swp = %li, expected %li",
++		tst_res(TFAIL, "shm_swp = %lu, expected %lu",
+ 			info->shm_swp, shm_swp);
+ 	} else {
+-		tst_res(TPASS, "shm_swp = %li", shm_swp);
++		tst_res(TPASS, "shm_swp = %lu", shm_swp);
+ 	}
+ 
+ 	if (info->shm_tot != shm_tot) {
+-		tst_res(TFAIL, "shm_tot = %li, expected %li",
++		tst_res(TFAIL, "shm_tot = %lu, expected %lu",
+ 			info->shm_tot, shm_tot);
+ 	} else {
+-		tst_res(TPASS, "shm_tot = %li", shm_tot);
++		tst_res(TPASS, "shm_tot = %lu", shm_tot);
+ 	}
+ 
+ 	SAFE_FCLOSE(f);
 -- 
 2.20.1
 
