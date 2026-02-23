@@ -4,111 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE015EA4FB2
-	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 12:03:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B56E7EA4FBB
+	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 13:16:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7E3C03D0EF4
-	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 13:03:08 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 5E4E83D0F36
+	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 14:16:20 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D8C1C3CE00D
- for <ltp@lists.linux.it>; Mon, 23 Feb 2026 13:02:47 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 138B83C2C22
+ for <ltp@lists.linux.it>; Mon, 23 Feb 2026 14:15:59 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 42300600728
- for <ltp@lists.linux.it>; Mon, 23 Feb 2026 13:02:47 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E832F6006DF
+ for <ltp@lists.linux.it>; Mon, 23 Feb 2026 14:15:58 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DCFD55BD0C;
- Mon, 23 Feb 2026 12:02:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1771848166;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=z8B/uuTVWRjthmfxSyYnRXKgwxDt6JB700M/60OnDdo=;
- b=SDe88uEiBRIeFSzVdGp791EnlTBIB/wMHr8Zlqin8cYAFuVGxgGIYEggMfMxye63MToJQT
- zZwbLDv5+AnL5jF0e82CM5ypy1JhDDuzBs2v4IWDSYR1hikyTFRtuGiU7xMx3hibh7aD4U
- mDLD4SxfKzdpiWV5udt4KIkBxgGd2do=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1771848166;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=z8B/uuTVWRjthmfxSyYnRXKgwxDt6JB700M/60OnDdo=;
- b=jU6bC1QvSdHS+k0AOwKTOGxGEtM2Tw54Qp9n6d3Aip7u+4fB8iziDDgI86/g70IPoMHVA0
- CwT6KdqH342nWnBQ==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B6CE55BD1A;
+ Mon, 23 Feb 2026 13:15:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1771852557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=56Dv2yabLwVBgfv8+ylPmRsaN5VxP5Vd6IzKmSOikTc=;
+ b=fcsxMMMZP5jjfajywPdkhb3L/u+nSyYSoFQgGx9ZXDYL9zxSQR0l4WbcwpV95Sde1dFgWn
+ e5NafRDZrrLE9kuTyWoD5BMurG5iP0rm2tmi0aCVimnjPo5lNkkJj0zkIFDWaoaXyDpYRe
+ V9hO6+Kg5LiW+cTgOgJ5K0b9ZKv5+Go=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1771852557;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=56Dv2yabLwVBgfv8+ylPmRsaN5VxP5Vd6IzKmSOikTc=;
+ b=Po+pUz2ekOAcHnNgNgh0ENIf+O2MKym1eiFPIN61+0vJIS/PBn5a46KEx4evTJWP4FK1lL
+ 2bYE0UvnlYeQ9ZAA==
 Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1771848165;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=z8B/uuTVWRjthmfxSyYnRXKgwxDt6JB700M/60OnDdo=;
- b=PpBcnNrnqGqNA+Fn2FoEr9o3YJD6o/m6uqOi1j5mkmsIEz2UpCxKfkrk/b7IPEH5zKJ7cn
- eG22QLyuwe4Imr1nzrlsgWFY8LDOKXX4jEROiRMJRXaUQdYJ3xqUp9+GdZf3TYDy8I/yyq
- YbcStUfkNZ54bs6X2lY1/BRWqmuhrHI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1771848165;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=z8B/uuTVWRjthmfxSyYnRXKgwxDt6JB700M/60OnDdo=;
- b=uqDxB1wKZIE3w8+cx4WtLyv0XM11QeLreTiqSPQG4F1jl0UoryZzLQau1mekSFF/nXYiQm
- aF+8Bs7k3z0yGaDg==
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=iqArErho;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=cq4Ju6kp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1771852556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=56Dv2yabLwVBgfv8+ylPmRsaN5VxP5Vd6IzKmSOikTc=;
+ b=iqArErho4ZTs/rKMuJIuJX4XrxYRmbm5C1y7XZ6eYrLvToeAFdxpBo1Wt7yg1nY6Oi1rk4
+ eWyyvsKIvwfNWSVg3IcL5FSq+HgzKLHE6ZLwzMfULOFwcXKJbGSc9viwctOYiVNPU5wn1W
+ dZkhakNHuRYFxVpn9SesBuQcvkcOOws=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1771852556;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=56Dv2yabLwVBgfv8+ylPmRsaN5VxP5Vd6IzKmSOikTc=;
+ b=cq4Ju6kp1gqiwv+dMeE/FqPB6dOg4OGBBOn2aU7TRbM36hmfsyzGX3RFDAqFBCBBav/SYC
+ kzknz0lDDcBtrTCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 31F2C3EA68;
- Mon, 23 Feb 2026 12:02:45 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 881973EA68;
+ Mon, 23 Feb 2026 13:15:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id CGiKCuVBnGlDTAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 23 Feb 2026 12:02:45 +0000
-Date: Mon, 23 Feb 2026 13:02:39 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: "Enji Cooper (yaneurabeya)" <yaneurabeya@gmail.com>
-Message-ID: <20260223120239.GB462451@pevik>
-References: <20260205121540.329921-1-pvorel@suse.cz>
- <20260205121540.329921-2-pvorel@suse.cz>
- <aZQytH7k6pVXqdsz@yuki.lan> <20260219202051.GB341772@pevik>
- <aZhJ7h0toQVUzHnf@yuki.lan> <20260220153410.GA392516@pevik>
- <aZiNbmssVOrwSsiV@yuki.lan> <20260222202158.GA417048@pevik>
- <C2672F75-E168-4039-B13C-4E9456E96FFD@gmail.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 51U4HwxTnGnRHAAAD6G6ig
+ (envelope-from <rbranco@suse.de>); Mon, 23 Feb 2026 13:15:56 +0000
+From: Ricardo Branco <rbranco@suse.de>
+To: ltp@lists.linux.it
+Date: Mon, 23 Feb 2026 14:15:32 +0100
+Message-ID: <20260223131546.448607-1-rbranco@suse.de>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <C2672F75-E168-4039-B13C-4E9456E96FFD@gmail.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCPT_COUNT_SEVEN(0.00)[7];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- FREEMAIL_TO(0.00)[gmail.com]; RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,suse.de:dkim,suse.de:email,suse.com:email];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: B6CE55BD1A
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/6] doc: INSTALL: dma_thread_diotest.c: Remove
- runltp from doc
+Subject: [LTP] [PATCH v6] userfaultfd: Add test using UFFDIO_POISON
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,42 +110,238 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, automated-testing@lists.yoctoproject.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Cj4gPiBPbiBGZWIgMjIsIDIwMjYsIGF0IDEyOjIx4oCvUE0sIFBldHIgVm9yZWwgPHB2b3JlbEBz
-dXNlLmN6PiB3cm90ZToKCj4gPj4gSGkhCj4gPj4+Pj4+PiBAQCAtMTA1LDkgKzEwNSw5IEBAIFF1
-aWNrIFN0YXJ0Cj4gPj4+Pj4+PiAJJCAuL2NvbmZpZ3VyZQo+ID4+Pj4+Pj4gCSQgbWFrZSBhbGwK
-PiA+Pj4+Pj4+IAkjIG1ha2UgaW5zdGFsbAo+ID4+Pj4+PiAgICAgICAgXgo+ID4+Pj4+PiAJVGhp
-cyBzaG91bGQgYmUgJCAobm90IGNhdXNlZCBieSB0aGlzIHBhdGNoIGJ1dCB3b3J0aCBmaXhpbmcp
-Cgo+ID4+Pj4+IEkgY2FuIGNoYW5nZSBpdCwgYnV0IElNSE8gZm9yIGNyZWF0aW5nIC9vcHQvbHRw
-IGlzIG5lZWRlZCB0byBydW4gaXQgYXMgcm9vdAo+ID4+Pj4+IGZvciBhIGZpcnN0IHRpbWUuIE9y
-IG9uZSBtdXN0IGNobW9kL2Nob3duIC9vcHQvbHRwIHVuZGVyIHJvb3QuCgo+ID4+Pj4gSHVoPyBU
-aGUgbWFrZSBpbnN0YWxsIHNob3VsZCBqdXN0IHdvcmsgZmluZS4gSSdtIGp1c3QgcG9pbnRpbmcg
-b3V0IHRoZQo+ID4+Pj4gdHlwbyAjIHZzICQuIE9yIGRpZCBJIG1pc3Mgc29tZXRoaW5nPwoKPiA+
-Pj4gWWVhaCwgSSB1bmRlcnN0YW5kIGl0IGFuZCBwbGFuIHRvIGNoYW5nZSAjID0+ICQuIEkgdGFs
-a2VkIGFib3V0IC9vcHQgKG91cgo+ID4+PiBkZWZhdWx0IHByZWZpeCkgdXN1YWxseSBub3QgYmVp
-bmcgd3JpdGFibGUgYnkgcmVndWxhciB1c2VycyAoaW5zdGFsbGluZyBhbnkKPiA+Pj4gc29mdHdh
-cmUgdXNpbmcgc3RhbmRhcmQgc3lzdGVtIHByZWZpeCB3aWxsIGhhdmUgdGhpcyBwcm9ibGVtKS4g
-Um9vdCBpcyBuZWVkZWQKPiA+Pj4gb25seSBmb3IgY3JlYXRpbmcgL29wdC9sdHAuIFRoYXQgd2Fz
-IHRoZSByZWFzb24gZm9yIHRoZSBvcmlnaW5hbCB1c2VyIHRvIHVzZSAnIycuCj4gPj4+IEJ1dCBh
-cyBJIHdyb3RlLCBJJ20gb2sgdG8gY2hhbmdlIHRoZSBwcm9tcHQuCgo+ID4+IEFoLCB0aGF0J3Mg
-YSBiaXQgY29uZnVzaW5nIHRoZW4gYmVjYXVzZSBpbiBzaGVsbCBzY3JpcHQgIyBpcyBhIGNvbW1l
-bnQuCj4gPj4gSSB1c3VhbGx5IHByZWZpeCBjb21tYW5kcyB0aGF0IG5lZWRzIHJvb3Qgd2l0aCBz
-dWRvIGluc3RlYWQuIFNvIHdoYXQKPiA+PiBhYm91dCAiJCBzdWRvIG1ha2UgaW5zdGFsbCIgPwoK
-PiA+ICsxLCBnb29kIHBvaW50Lgo+ID4gSSdsbCBtZXJnZSB3aG9sZSBwYXRjaHNldCB3aXRoIHRo
-aXMgY2hhbmdlIHRvbW9ycm93LgoKPiBVc2luZyBtYXJrZG93biBhbmQgc3VkbyB3b3VsZCBtYWtl
-IGl0IHVuYW1iaWd1b3VzLiBJ4oCZbSBub3Qgc3VyZSBpZiBtYXJrZG93biBtYWtlcyBzZW5zZSBo
-ZXJlLCBidXQgYXQgdGhlIHZlcnkgbGVhc3QgSSB3b3VsZCByZWZlcmVuY2Ugc3VkbyBvciBtYWRl
-IHRoZSBkaXJlY3Rpb25zIGV4cGxpY2l0bHkgc3RhdGUgdGhhdCB0aGUgY29tbWFuZCBtdXN0IGJl
-IHJ1biBhcyByb290LgoKPiBKdXN0IG15IDIgY2VudHMuLi4KPiAtRW5qaQoKPiBFeGFtcGxlOgoK
-PiBgYGBiYXNoCj4gJCAuL2NvbmZpZ3VyZQo+ICQgbWFrZSBhbGwKPiAkIHN1ZG8gbWFrZSBpbnN0
-YWxsCj4gYGBgCgpJIHdvdWxkIHByZWZlciB0byBkcml2ZSBhd2F5IGZyb20gR2l0SHViIE1hcmtk
-b3duLCB3aGVuIHdlIGhhdmUgcmVhZHRoZWRvY3MKCmh0dHBzOi8vbGludXgtdGVzdC1wcm9qZWN0
-LnJlYWR0aGVkb2NzLmlvL2VuL2xhdGVzdC9pbmRleC5odG1sCgpLaW5kIHJlZ2FyZHMsClBldHIK
-Ci0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9s
-dHAK
+Signed-off-by: Ricardo Branco <rbranco@suse.de>
+---
+ configure.ac                                  |   1 +
+ include/lapi/userfaultfd.h                    |  13 ++
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/userfaultfd/.gitignore    |   1 +
+ .../kernel/syscalls/userfaultfd/Makefile      |   1 +
+ .../syscalls/userfaultfd/userfaultfd06.c      | 141 ++++++++++++++++++
+ 6 files changed, 158 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
+
+diff --git a/configure.ac b/configure.ac
+index 7fa614dcb..94bcbcc98 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -278,6 +278,7 @@ AC_CHECK_TYPES([struct sockaddr_vm],,,[
+ ])
+ 
+ AC_CHECK_TYPES([struct uffdio_move],,,[#include <linux/userfaultfd.h>])
++AC_CHECK_TYPES([struct uffdio_poison],,,[#include <linux/userfaultfd.h>])
+ AC_CHECK_TYPES([struct uffdio_writeprotect],,,[#include <linux/userfaultfd.h>])
+ 
+ # Tools knobs
+diff --git a/include/lapi/userfaultfd.h b/include/lapi/userfaultfd.h
+index 0c9e34c84..aab3890b7 100644
+--- a/include/lapi/userfaultfd.h
++++ b/include/lapi/userfaultfd.h
+@@ -233,6 +233,19 @@ struct uffdio_writeprotect {
+ };
+ #endif	/* HAVE_STRUCT_UFFDIO_WRITEPROTECT */
+ 
++#ifndef HAVE_STRUCT_UFFDIO_POISON
++#define UFFD_FEATURE_POISON			(1<<14)
++#define _UFFDIO_POISON				(0x08)
++#define UFFDIO_POISON		_IOWR(UFFDIO, _UFFDIO_POISON, \
++				      struct uffdio_poison)
++struct uffdio_poison {
++        struct uffdio_range range;
++#define UFFDIO_POISON_MODE_DONTWAKE		((__u64)1<<0)
++        __u64 mode;
++        __s64 updated;
++};
++#endif	/* HAVE_STRUCT_UFFDIO_POISON */
++
+ #define SAFE_USERFAULTFD(flags, retry) \
+ 	safe_userfaultfd(__FILE__, __LINE__, (flags), (retry))
+ 
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 05bb3ceb1..2ad8f8b1e 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1775,6 +1775,7 @@ userfaultfd02 userfaultfd02
+ userfaultfd03 userfaultfd03
+ userfaultfd04 userfaultfd04
+ userfaultfd05 userfaultfd05
++userfaultfd06 userfaultfd05
+ 
+ ustat01 ustat01
+ ustat02 ustat02
+diff --git a/testcases/kernel/syscalls/userfaultfd/.gitignore b/testcases/kernel/syscalls/userfaultfd/.gitignore
+index fb2ae243b..bc32fdf3b 100644
+--- a/testcases/kernel/syscalls/userfaultfd/.gitignore
++++ b/testcases/kernel/syscalls/userfaultfd/.gitignore
+@@ -3,3 +3,4 @@
+ /userfaultfd03
+ /userfaultfd04
+ /userfaultfd05
++/userfaultfd06
+diff --git a/testcases/kernel/syscalls/userfaultfd/Makefile b/testcases/kernel/syscalls/userfaultfd/Makefile
+index 96650a65a..3252e47df 100644
+--- a/testcases/kernel/syscalls/userfaultfd/Makefile
++++ b/testcases/kernel/syscalls/userfaultfd/Makefile
+@@ -16,3 +16,4 @@ userfaultfd02: CFLAGS += -pthread
+ userfaultfd03: CFLAGS += -pthread
+ userfaultfd04: CFLAGS += -pthread
+ userfaultfd05: CFLAGS += -pthread
++userfaultfd06: CFLAGS += -pthread
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
+new file mode 100644
+index 000000000..8fc61efa3
+--- /dev/null
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
+@@ -0,0 +1,141 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 SUSE LLC
++ * Author: Ricardo Branco <rbranco@suse.com>
++ */
++
++/*\
++ * Force a pagefault event and handle it using :manpage:`userfaultfd(2)`
++ * from a different thread testing UFFDIO_POISON.
++ */
++
++#include "config.h"
++#include <poll.h>
++#include <setjmp.h>
++#include <signal.h>
++#include <unistd.h>
++#include "tst_test.h"
++#include "tst_safe_macros.h"
++#include "tst_safe_pthread.h"
++#include "lapi/userfaultfd.h"
++
++static int page_size;
++static char *page;
++static int uffd;
++static int poison_fault_seen;
++static volatile int sigbus_seen;
++static sigjmp_buf jmpbuf;
++
++static void sigbus_handler(int sig)
++{
++	if (sig == SIGBUS) {
++		sigbus_seen = 1;
++		siglongjmp(jmpbuf, 1);
++	}
++}
++
++static void setup(void)
++{
++	struct sigaction sa = {};
++
++	sa.sa_handler = sigbus_handler;
++	sigemptyset(&sa.sa_mask);
++	SAFE_SIGACTION(SIGBUS, &sa, NULL);
++}
++
++static void set_pages(void)
++{
++	page_size = sysconf(_SC_PAGE_SIZE);
++	page = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE,
++			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++}
++
++static void reset_pages(void)
++{
++	if (page) {
++		SAFE_MUNMAP(page, page_size);
++		page = NULL;
++	}
++}
++
++static void *handle_thread(void)
++{
++	static struct uffd_msg msg;
++	struct uffdio_poison uffdio_poison = {};
++	struct pollfd pollfd;
++	int nready;
++
++	pollfd.fd = uffd;
++	pollfd.events = POLLIN;
++	nready = poll(&pollfd, 1, -1);
++	if (nready == -1)
++		tst_brk(TBROK | TERRNO, "Error on poll");
++
++	SAFE_READ(1, uffd, &msg, sizeof(msg));
++
++	if (msg.event != UFFD_EVENT_PAGEFAULT)
++		tst_brk(TFAIL, "Received unexpected UFFD_EVENT %d", msg.event);
++
++	tst_atomic_store(1, &poison_fault_seen);
++
++	/* Poison the page that triggered the fault */
++	uffdio_poison.range.start = msg.arg.pagefault.address & ~(page_size - 1);
++	uffdio_poison.range.len = page_size;
++
++	SAFE_IOCTL(uffd, UFFDIO_POISON, &uffdio_poison);
++
++	close(uffd);
++	return NULL;
++}
++
++static void run(void)
++{
++	pthread_t thr;
++	struct uffdio_api uffdio_api = {};
++	struct uffdio_register uffdio_register;
++	char dummy;
++
++	set_pages();
++
++	uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, false);
++
++	uffdio_api.api = UFFD_API;
++	uffdio_api.features = UFFD_FEATURE_POISON;
++
++	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
++
++	if (!(uffdio_api.features & UFFD_FEATURE_POISON))
++		tst_brk(TCONF, "UFFD_FEATURE_POISON not supported");
++
++	uffdio_register.range.start = (unsigned long) page;
++	uffdio_register.range.len = page_size;
++	uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
++
++	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
++
++	SAFE_PTHREAD_CREATE(&thr, NULL, (void *) handle_thread, NULL);
++
++	/* Try to read from the page: should trigger fault, get poisoned, then SIGBUS */
++	if (sigsetjmp(jmpbuf, 1) == 0) {
++		LTP_VAR_USED(dummy) = page[0];
++	}
++
++	SAFE_PTHREAD_JOIN(thr, NULL);
++	reset_pages();
++
++	int poisoned = tst_atomic_load(&poison_fault_seen);
++
++	if (poisoned && sigbus_seen)
++		tst_res(TPASS, "POISON successfully triggered SIGBUS");
++	else if (poison_fault_seen && !sigbus_seen)
++		tst_res(TFAIL, "POISON fault seen but no SIGBUS received");
++	else if (!poison_fault_seen && sigbus_seen)
++		tst_res(TFAIL, "SIGBUS received but no poison fault seen");
++	else
++		tst_res(TFAIL, "No poison fault or SIGBUS observed");
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++};
+-- 
+2.53.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
