@@ -4,58 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FF23E98E0F
-	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 10:02:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76E08E63C8B
+	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 10:42:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CF01F3D0EB3
-	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 11:02:11 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id A15A33D0EEC
+	for <ltp@archiver.kernel.org>; Mon, 23 Feb 2026 11:42:03 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3BC2D3D0E9C
- for <ltp@lists.linux.it>; Mon, 23 Feb 2026 11:01:51 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 11FFB3CE781
+ for <ltp@lists.linux.it>; Mon, 23 Feb 2026 11:41:44 +0100 (CET)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 781EA1A00649
- for <ltp@lists.linux.it>; Mon, 23 Feb 2026 11:01:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1771840909; x=1803376909;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=tME6ZBD2Q1piq11ZcAv7GCYA5O0aVMgZj9JOrFJdhMs=;
- b=HWyZfOLfa1lWBj5S2fLUUH5cPM8aC01vBoDN6yO4mAaJCyIX5tp2Bv71
- J2evGRyRCZb2NkE4VgC1UYdtmqZIU189nu51w9QBQZ/6doARDNQM1ClS3
- Z18pvs2vvVwSw8IWwMk8EDenC9+bbRgTzQEWzcln9tNnXQRpAP0vh5AHe
- AmTXKpDXxIt6kv55th+V+HHe5S7YqS328wopcvNBls4K1suRdlT1LhZdX
- Vnclg7povemcPqvhCwi3wCzsvcATGKOmz2QctmVpRqgD847Sra4oyntrW
- nySAUo6hbfaTR6LHuFJVMVz30LpfGZfpa+hWl2X0qCypvX/VsHER0oOs/ A==;
-X-CSE-ConnectionGUID: uq+qxpgGQRSBPah0YU24XA==
-X-CSE-MsgGUID: x6i7TBSvSsKa7PkJvqLtBQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11709"; a="76662469"
-X-IronPort-AV: E=Sophos;i="6.21,306,1763452800"; d="scan'208";a="76662469"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
- by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Feb 2026 02:01:42 -0800
-X-CSE-ConnectionGUID: et9JgmXwRz6sg95n6xdoKQ==
-X-CSE-MsgGUID: 7Ip0HEPJSCGW2sseNNcxXQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,306,1763452800"; d="scan'208";a="215534735"
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
- by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Feb 2026 02:01:41 -0800
-From: Piotr Kubaj <piotr.kubaj@intel.com>
-To: ltp@lists.linux.it
-Date: Mon, 23 Feb 2026 11:00:16 +0100
-Message-ID: <20260223100015.14834-2-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 51E2B2001DB
+ for <ltp@lists.linux.it>; Mon, 23 Feb 2026 11:41:44 +0100 (CET)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-4837f27cf2dso35339765e9.2
+ for <ltp@lists.linux.it>; Mon, 23 Feb 2026 02:41:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771843304; cv=none;
+ d=google.com; s=arc-20240605;
+ b=NO4xhRcyq36sfpjDWsD+XovkZklr0iKgK5sy1UJROcWbDPD4+ElV518coY+biFKhFd
+ 6mExdjzZYMalmryctfwJ4f/N4JczwnD+x9Iwa7nkAriYlzd+M/WzxzBbdROTJe7moeB6
+ BL08ei5+/DdUFTkncHMrpa/ZL8/3L2kSL5AP70zbTURUb9aBxXXxDoVkWVQbufTglzg6
+ 3jvM/S2/GP3BCZ1DzXRSRHF/PYoGn50k97z8OggCOH2p3z8cBC+RgOmsj11iPZoF/HMn
+ IK9L/kcEjpnbKvVe7UDrPV/D/IHBeH0JD7L07fgNx2ftrWLjLQXgejxrdXJJfSFTr96N
+ NHfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:dkim-signature;
+ bh=168+WTZVJoh3kxdp/XLVQdeC8TGmd/Hb9qr8+rvA76Y=;
+ fh=W81DXYHq/rxAQZGDGvCsiY/k804rHe5Ve3wad1JAgC8=;
+ b=ktzsKJ+DrZ7SgQycDwaZUKEPr9iU2p7DxuFD6199Tpdl94MifpxOA8AmX4DOJeRyKG
+ B+brrlCGt6Hu3YSJgsGgCjrxOjN+TGZw2bPGanakAMMQSPuoES/X1AP1oFHYNafOBJD9
+ sIe4cpPvGogVZ324CRuWaycCB4wNusSA89OuO6voZkQsKWoV8SptR5nGIr0fG2kRWer1
+ r5DKBPacUTmnUEZ7k+ltO2slKlKv44AralpWGi1wTu+IgoSE0fHNpoMM4c5O5XCVKvm3
+ Ib4rwiT09uKotKHwK/ON01nzbgHjKVl8Dj6Jj5W/7uO49u7NFEppjSNdP5VMXe+sTaL2
+ 5LBg==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1771843304; x=1772448104; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=168+WTZVJoh3kxdp/XLVQdeC8TGmd/Hb9qr8+rvA76Y=;
+ b=bKiqFzUD9ZaJ1zyiVNRk53wuMhdcIaVo4+itz2iy2yvrpg/R3FyItZfJJLp0yo34MJ
+ qxFJtAG1/zfJ8maXp7xs8VUVFOcdfy4FoBY9O4/OEikbiSJZm82wuSYJ+d05QXjhmbN4
+ 6GGPBE3tVd7iuLiFnC/uw0Sufv16kuF4fAX73KInDDU9fA/3sOKP65+TQEWSP4YgqrSw
+ Viu42gf5XOaYn48Xixfq1JqvQTyvsTM2O1EWd1TraVSQHiojRRjOQn7DcYIsca6GhgvT
+ IYrkIZKzdhBrsSZ6oNi12BF6+x7A77h13qGCV4pIlmEbJJ5RjE07pUMlB7V+nn26jl70
+ cZpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1771843304; x=1772448104;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=168+WTZVJoh3kxdp/XLVQdeC8TGmd/Hb9qr8+rvA76Y=;
+ b=QGWAH6T6o0QnfwrDK3ZT2noymsnQDPxXq3aBotqtEedGGKfgaRUoyBgGZplNZXIEgC
+ vECReJh8MIF3wDgqf1GjX8TR0vu7Sz6Ng3p4o3Nwf+Qjkda3mSS3a214ILA56EsFaWBL
+ 4WzHtpdi94wGC0Lz7Ywfo18wbduTz0TgnmmIhHYDrK1uzkXTYQsIdlACs0iGckQ5BucE
+ T7+qrSG1moDCWGaK/mgIbSqVZ6naxtrPKvmH4JIHRxCyBUF9PhHc9GWxShFixCeYDZWp
+ gL34tx9ZwZzP2afakFHRAE2yIheTQygM/HLBTdPdIOMbMhVESXyI8tqf8Ayt2RNdaqJ/
+ tEfw==
+X-Gm-Message-State: AOJu0YwR5iM9raQFftAjxW/nux9BPnCSgjyVYl9pUqFSym4f+QpIz92m
+ PuUVeItWWT2w6sFsK6i31ZbZfrvb61XtVWTEsAdXCcOxdM284EO3cf8tCq3p6dIgWXp9uewnfGq
+ XftMRqu6FvAT25ZGYpDUi7g3f/jWJ5iM=
+X-Gm-Gg: AZuq6aKlH8GxlvFQPTUSrNMz/T3opCD4yd1LQc+Ura5Vyz1s1c2bvZEY07iDiFfct06
+ xuZ07+tftXuE3Y5rUsVKMhi72+KvAm+VMFHBUKPyxA0E0ZUun6oBlCbWcdSEgko4kY3oBEPtEZd
+ IQKY0FAuP7nM5jdzl2Q3lGX5tyIjNuWfyY8Y2OSgAQjW3Jrlms2m21evDl7+GBVFXrIHGZlQQsb
+ p97xN/luuagO6uzAw/lurlFOX5f+BkDvWb6OmPWzCer9G6QdoESRRiaphMtXlobfd0F9uOTuaq/
+ SaAbGW606ZsWrcO2Ia+53jcBdAxpSFGE2X7qtdaWsm1BRYOw
+X-Received: by 2002:a05:600d:6409:20b0:483:78c5:d743 with SMTP id
+ 5b1f17b1804b1-483a9637a19mr90391985e9.28.1771843303549; Mon, 23 Feb 2026
+ 02:41:43 -0800 (PST)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+References: <20260221135338.26236-2-sebastian.chlad@suse.com>
+ <20260222203442.GB417048@pevik>
+In-Reply-To: <20260222203442.GB417048@pevik>
+From: Sebastian Chlad <sebastianchlad@gmail.com>
+Date: Mon, 23 Feb 2026 11:41:32 +0100
+X-Gm-Features: AaiRm50NUPnft_iEjrbXHMboEJMhzou7VN_E0FfMFFbMPr8smP__iNxKw6gGqfo
+Message-ID: <CAJCsO8eTiS5Z1Upon-gUj6R9f=TW3BJaRqmDwdxEwSMyvnwB1A@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v8] thermal: add new test group
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] nfs: Adapt the lib to allow to test in 2-host mode
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,317 +105,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
+Cc: Sebastian Chlad <sebastian.chlad@suse.com>,
+ Martin Doucha <martin.doucha@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Currently consists of only one test for the CPU package thermal sensor
-interface for Intel platforms.
-It works by checking the initial count of thermal interrupts. Then it
-decreases the threshold for sending a thermal interrupt to just above
-the current temperature and runs a workload on the CPU. Finally, it
-restores the original thermal threshold and checks whether the number
-of thermal interrupts increased.
+On Sun, 22 Feb 2026 at 21:34, Petr Vorel <pvorel@suse.cz> wrote:
 
-Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
----
-Patch version 8
- runtest/thermal                               |   3 +
- scenario_groups/default                       |   1 +
- testcases/kernel/Makefile                     |   1 +
- testcases/kernel/thermal/.gitignore           |   1 +
- testcases/kernel/thermal/Makefile             |   9 +
- .../kernel/thermal/thermal_interrupt_events.c | 212 ++++++++++++++++++
- 6 files changed, 227 insertions(+)
- create mode 100644 runtest/thermal
- create mode 100644 testcases/kernel/thermal/.gitignore
- create mode 100644 testcases/kernel/thermal/Makefile
- create mode 100644 testcases/kernel/thermal/thermal_interrupt_events.c
+> Hi Sebastian,
+>
+> [ Cc Martin and Cyril ]
+>
+> > nfs_lib.sh checked key server_side prerequisites on the system under
+> test.
+> > In 2_host setup this incorrectly required server_side tools on lhost.
+> > This patch keep netns behavior unchanged, but in true 2-host mode run
+> > server-side checks on rhost via tst_rhost_run().
+>
+> First, thank you for fixing 2 host side setup.
+>
+> > Signed-off-by: Sebastian Chlad <sebastian.chlad@suse.com>
+> > ---
+> >  testcases/network/nfs/nfs_stress/nfs_lib.sh | 22 +++++++++++++++++----
+> >  1 file changed, 18 insertions(+), 4 deletions(-)
+>
+> > diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> > index 1ac8bd657..e52f96a5a 100644
+> > --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> > +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> > @@ -45,7 +45,7 @@
+> TST_SKIP_FILESYSTEMS="exfat,ext2,ext3,fuse,ntfs,vfat,tmpfs"
+> >  TST_MOUNT_DEVICE=1
+> >  TST_FORMAT_DEVICE=1
+> >  TST_NEEDS_ROOT=1
+> > -TST_NEEDS_CMDS="$TST_NEEDS_CMDS mount exportfs mount.nfs"
+> > +TST_NEEDS_CMDS="$TST_NEEDS_CMDS mount mount.nfs"
+>
+> >  TST_SETUP="${TST_SETUP:-nfs_setup}"
+> >  TST_CLEANUP="${TST_CLEANUP:-nfs_cleanup}"
+> >  TST_NEEDS_DRIVERS="nfsd"
+> > @@ -186,10 +186,24 @@ nfs_setup()
+> >               tst_brk TCONF "Cannot run nfs-stress test on mounted NFS"
+> >       fi
+>
+> > +     if tst_net_use_netns; then
+> > +             tst_cmd_available exportfs || tst_brk TCONF "'exportfs'
+> not found"
+> You would here use tst_require_cmds exportfs, but ...
+>
+> > +     else
+> > +             tst_rhost_run -c "command -v exportfs >/dev/null" ||
+> tst_brk TCONF "'exportfs' not found on rhost"
+> > +     fi
+>
+> ... if you remove exportfs from TST_NEEDS_CMDS you can use the same code
+> for
+> both netns and 2 based setup (tst_rhost_run should work well on netns).
+>
 
-diff --git a/runtest/thermal b/runtest/thermal
-new file mode 100644
-index 000000000..57e3d29f8
---- /dev/null
-+++ b/runtest/thermal
-@@ -0,0 +1,3 @@
-+# Thermal driver API
-+# https://docs.kernel.org/driver-api/thermal/
-+thermal_interrupt_events thermal_interrupt_events
-diff --git a/scenario_groups/default b/scenario_groups/default
-index 0e76b2bee..ffdd7ff25 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -26,3 +26,4 @@ crypto
- kernel_misc
- uevent
- watchqueue
-+thermal
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index 98fd45a9d..ac816e4e8 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -36,6 +36,7 @@ SUBDIRS			+= connectors \
- 			   sched \
- 			   security \
- 			   sound \
-+			   thermal \
- 			   tracing \
- 			   uevents \
- 			   watchqueue \
-diff --git a/testcases/kernel/thermal/.gitignore b/testcases/kernel/thermal/.gitignore
-new file mode 100644
-index 000000000..1090bdad8
---- /dev/null
-+++ b/testcases/kernel/thermal/.gitignore
-@@ -0,0 +1 @@
-+thermal_interrupt_events
-diff --git a/testcases/kernel/thermal/Makefile b/testcases/kernel/thermal/Makefile
-new file mode 100644
-index 000000000..4657c3fb3
---- /dev/null
-+++ b/testcases/kernel/thermal/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2025, Intel Corporation. All rights reserved.
-+# Author:Piotr Kubaj <piotr.kubaj@intel.com>
-+
-+top_srcdir             ?= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/thermal/thermal_interrupt_events.c b/testcases/kernel/thermal/thermal_interrupt_events.c
-new file mode 100644
-index 000000000..7a241cb51
---- /dev/null
-+++ b/testcases/kernel/thermal/thermal_interrupt_events.c
-@@ -0,0 +1,212 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/*
-+ * Copyright (C) 2026 Intel - http://www.intel.com/
-+ */
-+
-+/*\
-+ * Tests the CPU package thermal sensor interface for Intel platforms.
-+
-+ * Works by checking the initial count of thermal interrupts. Then it
-+ * decreases the threshold for sending a thermal interrupt to just above
-+ * the current temperature and runs a workload on the CPU. Finally, it restores
-+ * the original thermal threshold and checks whether the number of thermal
-+ * interrupts increased.
-+ */
-+
-+#include "tst_safe_stdio.h"
-+#include "tst_test.h"
-+
-+#define	RUNTIME		30
-+#define	SLEEP		10
-+#define	TEMP_INCREMENT	10
-+
-+static bool x86_pkg_temp_tz_found, *x86_pkg_temp_tz;
-+static char temp_path[NAME_MAX], trip_path[NAME_MAX];
-+static int nproc, temp_high, temp, trip, tz_counter;
-+static uint64_t *interrupt_init, *interrupt_later;
-+
-+static void read_interrupts(uint64_t *interrupts, const int nproc)
-+{
-+	bool interrupts_found = false;
-+	char line[8192];
-+
-+	memset(interrupts, 0, nproc * sizeof(*interrupts));
-+	FILE *fp = SAFE_FOPEN("/proc/interrupts", "r");
-+
-+	while (fgets(line, sizeof(line), fp)) {
-+		if (strstr(line, "Thermal event interrupts")) {
-+			interrupts_found = true;
-+			char *token = strtok(line, " ");
-+
-+			token = strtok(NULL, " ");
-+			int i = 0;
-+
-+			while (!!strncmp(token, "Thermal", 7)) {
-+				interrupts[i++] = atoll(token);
-+				token = strtok(NULL, " ");
-+				tst_res(TDEBUG, "interrupts[%d]: %ld", i - 1, interrupts[i - 1]);
-+			}
-+			break;
-+		}
-+	}
-+	SAFE_FCLOSE(fp);
-+	if (!interrupts_found)
-+		tst_brk(TCONF, "No Thermal event interrupts line in /proc/interrupts");
-+}
-+
-+static void setup(void)
-+{
-+	char line[8192];
-+
-+	nproc = tst_ncpus();
-+	tst_res(TDEBUG, "Number of logical cores: %d", nproc);
-+	interrupt_init = calloc(nproc, sizeof(uint64_t));
-+	interrupt_later = calloc(nproc, sizeof(uint64_t));
-+
-+	DIR *dir = SAFE_OPENDIR("/sys/class/thermal/");
-+	struct dirent *entry;
-+
-+	while ((entry = SAFE_READDIR(dir))) {
-+		if ((strncmp(entry->d_name, "thermal_zone", sizeof("thermal_zone"))) > 0)
-+			tz_counter++;
-+	}
-+	SAFE_CLOSEDIR(dir);
-+	tst_res(TDEBUG, "Found %d thermal zone(s)", tz_counter);
-+
-+	read_interrupts(interrupt_init, nproc);
-+
-+	x86_pkg_temp_tz = calloc(tz_counter, sizeof(bool));
-+
-+	for (int i = 0; i < tz_counter; i++) {
-+		char path[NAME_MAX];
-+
-+		snprintf(path, NAME_MAX, "/sys/class/thermal/thermal_zone%d/type", i);
-+		tst_res(TDEBUG, "Checking whether %s is x86_pkg_temp", path);
-+
-+		SAFE_FILE_SCANF(path, "%s", line);
-+		if (strstr(line, "x86_pkg_temp")) {
-+			tst_res(TDEBUG, "Thermal zone %d uses x86_pkg_temp", i);
-+			x86_pkg_temp_tz[i] = 1;
-+			x86_pkg_temp_tz_found = 1;
-+		}
-+	}
-+
-+	if (!x86_pkg_temp_tz_found)
-+		tst_brk(TCONF, "No thermal zone uses x86_pkg_temp");
-+}
-+
-+static void *cpu_workload(double run_time)
-+{
-+	time_t start_time = time(NULL);
-+	int num = 2;
-+
-+	while (difftime(time(NULL), start_time) < run_time) {
-+		for (int i = 2; i * i <= num; i++) {
-+			if (num % i == 0)
-+				break;
-+		}
-+		num++;
-+		SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+
-+		if (temp > temp_high)
-+			break;
-+	}
-+	return NULL;
-+}
-+
-+static void test_zone(int i)
-+{
-+	char path[NAME_MAX] = {0};
-+	int sleep_time = SLEEP;
-+	double run_time = RUNTIME;
-+
-+	snprintf(path, NAME_MAX, "/sys/class/thermal/thermal_zone%d/", i);
-+	strncpy(temp_path, path, NAME_MAX);
-+	strncat(temp_path, "temp", 4);
-+	tst_res(TINFO, "Testing %s", temp_path);
-+	SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+	if (temp < 0)
-+		tst_brk(TBROK, "Unexpected zone temperature value %d", temp);
-+
-+	tst_res(TDEBUG, "Current temperature for %s: %d", path, temp);
-+
-+	temp_high = temp + TEMP_INCREMENT;
-+
-+	strncpy(trip_path, path, NAME_MAX);
-+	strncat(trip_path, "trip_point_1_temp", 17);
-+
-+	tst_res(TDEBUG, "Setting new trip_point_1_temp value: %d", temp_high);
-+	SAFE_FILE_SCANF(trip_path, "%d", &trip);
-+	SAFE_FILE_PRINTF(trip_path, "%d", temp_high);
-+
-+	while (sleep_time > 0) {
-+		tst_res(TDEBUG, "Running for %f seconds, then sleeping for %d seconds", run_time, sleep_time);
-+
-+		for (int j = 0; j < nproc; j++) {
-+			if (!SAFE_FORK()) {
-+				cpu_workload(run_time);
-+				exit(0);
-+			}
-+		}
-+
-+		tst_reap_children();
-+
-+		SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+		tst_res(TDEBUG, "Temperature for %s after a test: %d", path, temp);
-+
-+		if (temp > temp_high)
-+			break;
-+		sleep(sleep_time--);
-+		run_time -= 3;
-+	}
-+
-+}
-+
-+static void cleanup(void)
-+{
-+	if (x86_pkg_temp_tz_found)
-+		SAFE_FILE_PRINTF(trip_path, "%d", trip);
-+
-+	free(x86_pkg_temp_tz);
-+	free(interrupt_init);
-+	free(interrupt_later);
-+}
-+
-+static void run(void)
-+{
-+	for (int i = 0; i < tz_counter; i++) {
-+		if (x86_pkg_temp_tz[i])
-+			test_zone(i);
-+	}
-+	read_interrupts(interrupt_later, nproc);
-+
-+	for (int i = 0; i < nproc; i++) {
-+		if (interrupt_later[i] < interrupt_init[i])
-+			tst_res(TFAIL, "CPU %d interrupt counter: %ld (previous: %ld)",
-+				i, interrupt_later[i], interrupt_init[i]);
-+	}
-+
-+	if (temp <= temp_high)
-+		tst_res(TFAIL, "Zone temperature is not rising as expected");
-+	else
-+		tst_res(TPASS, "x86 package thermal interrupt triggered");
-+}
-+
-+static struct tst_test test = {
-+	.cleanup = cleanup,
-+	.forks_child = 1,
-+	.needs_drivers = (const char *const []) {
-+		"x86_pkg_temp_thermal",
-+		NULL
-+	},
-+	.min_runtime = 180,
-+	.needs_root = 1,
-+	.setup = setup,
-+	.supported_archs = (const char *const []) {
-+		"x86",
-+		"x86_64",
-+		NULL
-+	},
-+	.test_all = run
-+};
--- 
-2.47.3
+good point. I have tested v2 which I will send shortly.
 
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
 
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
 
+>
+> I was thinking about having a special variable for checking rhost only, but
+> given that tst_test.sh is now also deprecated, we will have to solve this
+> in
+> shell loader.
+>
+
+I was also thinking about it but in the end I think it could be just yet
+another variable to control the test flow, so one more thing
+to worry about... and as far as I see relying on the presence of already
+defined variables seems good enough.
+
+
+
+>
+> > +
+> >       if tst_cmd_available pgrep; then
+> > -             for i in rpc.mountd rpc.statd; do
+> > -                     pgrep $i > /dev/null || tst_brk TCONF "$i not
+> running"
+> > -             done
+> > +             if tst_net_use_netns; then
+> > +                     tst_res TINFO "checking rpc.mountd/rpc.statd on
+> lhost (netns mode)"
+> > +                     for i in rpc.mountd rpc.statd; do
+> > +                             pgrep $i > /dev/null || tst_brk TCONF "$i
+> not running"
+> > +                     done
+> > +             else
+> > +                     tst_res TINFO "checking rpc.mountd/rpc.statd on
+> rhost (2-host mode)"
+> > +                     for i in rpc.mountd rpc.statd; do
+> > +                             tst_rhost_run -c "pgrep $i > /dev/null" ||
+> tst_brk TCONF "$i not running on rhost"
+> > +                     done
+> > +             fi
+>
+> And here of course as well use tst_rhost_run for both.
+>
+> Kind regards,
+> Petr
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
