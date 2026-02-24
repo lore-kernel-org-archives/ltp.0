@@ -4,147 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E86DE9B269
-	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 14:06:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 508BDE9B269
+	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 14:18:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1771942678; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=A4F2mZhVVhcnk0KHu4mTpllFawbhRhA3ArPSs5beMTE=;
+ b=I/8TTBIQIBrGOgEYSqIGL9sUrax8I8krS/0iNKcs6z0TavO2yINsIAGI2Fv0MYyvYASZf
+ 4vlvlKSsNGyPoSpODd5bAVsKklWDy4Kgolka4aHcbRi021u6KrLF4VtMUyHnHeaeR5ka+Bk
+ Wfpljb+QTePPYb7dBfy6X8d7IpVmDgE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C0C273D0F9E
-	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 15:06:40 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id A8AFF3D0FA4
+	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 15:17:58 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 292513C5AB1
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 15:06:20 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 326643D0F7E
+ for <ltp@lists.linux.it>; Tue, 24 Feb 2026 15:17:37 +0100 (CET)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 211512009E4
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 15:06:17 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DE1A35BCE0;
- Tue, 24 Feb 2026 14:06:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1771941977; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=hmfxdnczDC4NHXBRqbl4MlAEPVLFJKIkhW20W+KVO58=;
- b=G9KdZ4TfePt/1NXfAj8UmBfUgSLvC6uKBqbM4+UNBvkQuNQ8nARsFeFiiMGLq4OcQTpOPt
- MrIfI75uauCNW8KQNQcJU0e/tnOIX5CmuJRCpVOUWPMyz9Kqeqf0AogvkEnTdRTfUwk+zE
- MsOGzNztAYfeVXWySLITp1TJj8zIro8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1771941977;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=hmfxdnczDC4NHXBRqbl4MlAEPVLFJKIkhW20W+KVO58=;
- b=F5RolwGyilCrR7acYxNz49NFdtGlY0SPL0etQuf1CAUEyOnyiMxGkeQQa/mgxAxNm7aAW+
- qbwko88ejev4qSAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1771941976; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=hmfxdnczDC4NHXBRqbl4MlAEPVLFJKIkhW20W+KVO58=;
- b=GfiYyPZzZRBfVIq4QrHcXXnxweumACPmmPe3U9Nnuw8FSlLRXX2cc7yktl6z9/vftNxW8a
- 23Xs+eO4vFtSxMiZ9xf3gSNhn96qF3ndF7fncu+pZY8DGRgP+KwZkPNvoPyJrXKa8qpbgs
- 2xePhJpViAUhCgrf8n1FrKVkYeGY3KE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1771941976;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=hmfxdnczDC4NHXBRqbl4MlAEPVLFJKIkhW20W+KVO58=;
- b=Of4rMV8FwJO12q7vMJIzz87GuQ4TsjH0+6R9bO57+K/a1e0OuwEPu0BfgNuVa1rmNW2V+f
- 2mdLWnRhSIxY6KDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C692B3EA68;
- Tue, 24 Feb 2026 14:06:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +s0/MFiwnWmKMgAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Tue, 24 Feb 2026 14:06:16 +0000
-Message-ID: <784652f2-788f-4108-a6da-18f4f1b613e5@suse.cz>
-Date: Tue, 24 Feb 2026 15:06:16 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>
-References: <20260220154742.54150-1-mdoucha@suse.cz>
- <20260220154742.54150-3-mdoucha@suse.cz> <20260224134023.GB59724@pevik>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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 ag==
-In-Reply-To: <20260224134023.GB59724@pevik>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MID_RHS_MATCH_FROM(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EC51910009B8
+ for <ltp@lists.linux.it>; Tue, 24 Feb 2026 15:17:35 +0100 (CET)
+Received: by mail-wm1-x32b.google.com with SMTP id
+ 5b1f17b1804b1-48371119eacso65832725e9.2
+ for <ltp@lists.linux.it>; Tue, 24 Feb 2026 06:17:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1771942655; x=1772547455; darn=lists.linux.it;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=EmF89mX4VNSEwlgPwm3Lg5ko9OjE5j/4MZNOQpZWkt8=;
+ b=FGoaVMHuHQK37/LCaBukcMbcpKoeUYZk6eA8K1tnC4NuPaRKj6r1QrKDGP5NdxYWvn
+ Z7YEB0A1PG00FgkNNlkVAlO7lg/HZg9ZCrq5I71172Le+UCTmoQQBMTn8Q3zUJAsRXTR
+ LhjjOjpECP8f3wAEsrR6j+A6QN6Hjhu3pLVdtMTb3/DJdVfamac1OitDbtb//lD+OLJF
+ 9EipJBB2TWbKOpQkSbS8oRYIe0sFhk8Umn7rUUqxw/P6e09YBGGInp/z5LqbPi5I+/PH
+ SMbQPAJsOYUvdqsNZqjGwxwzdiqiEyq9Cte30xGxdoeVzq73c0YTrJSX0UTk3JE1moFg
+ 0J7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1771942655; x=1772547455;
+ h=in-reply-to:references:to:from:subject:cc:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=EmF89mX4VNSEwlgPwm3Lg5ko9OjE5j/4MZNOQpZWkt8=;
+ b=SroyR42HSW1E/2YY8FVlm13Sx0LDiPSQ2fQCaUh0ssNHlBV8VNOdsDuncu1R3SWckE
+ M+4hjj4g5g0Qgjf9ArhblCEB6mI7Gn/TLJCRQQ5n/olbRtDEjoazf75L2v+mg0OxLuyV
+ qhchel5ZU6J+uIk0+bk7HMbCpIFMOQeN9zB6kjRAV3J1+MDXFukZ+7UYS5HVmEjxB13W
+ KcfTNpM/KHYngHTHp8/xurJkF+GqKrXn8Hnz7yL1IDeqDnC6AS1cQ/7sznwwTiUtau6q
+ V9cof6lg5R0P0iVw7XAy2nwNnXYilSJ+xVIf9j6jImD2hHV+luWX206VSCrueqHSznvQ
+ Yhrw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWKiIaZ/+WNm9POB0JXLrrM6HQTnoLt+sbrxJO5/Xr/I1CRlT427wdRyYhfzj4xhvDWxFE=@lists.linux.it
+X-Gm-Message-State: AOJu0YwTFwte2B1l3eCwuBix+lD4207juaWpteVN/xhatHEPZ0KamWcr
+ PNLzOyVvO31azgo59AIJmUpd90WNAwp0yOLes+gx3ZpVwhqIimnRSxSYhw78IP3WdKgLAD2RngR
+ B6q2bAwM=
+X-Gm-Gg: AZuq6aKac+m2SU+AiCGshqsZ1WAkx8pipCbhnDJbBUhfxrR/Y3XcLnuv5LOWvJ72MB8
+ +vNtcTryf3phHUQpA5kL035iiHneZl4D1SXROAV7F7Co+tqaYUfsIaGxSsprUT4OqP0QRQVWGSB
+ o//II4YCwB5ob/ygq0snbDo/3XEJxLGklKCMtJfinc/Dl1YfU0tAwrerFwDJPkWCFu52RFy5D6G
+ 2fojH7Yfmcny82U7jEq/Ahj2CwO4fe6HRm2orWjFSJxGM2MYsWrC2PoL21CuUOplw6cH+GIQ9ky
+ gm8iDXenKYoAjkUGrEu/nQgASwPj4pMJgb6/AfTN+Avfju9ff9GlkG6Ezd1Iq1K5q//yPehIPLo
+ NmLeo7TP49HyEL3FIl6vE71+4sG5ckebC0op8cVaHkuF21jKtnIkvePL5bWq5T7IlR+9/tPgxYT
+ nwjyp4BINHPGJlW2dr8zMkWHkd
+X-Received: by 2002:a05:600c:3553:b0:47e:e87b:af8 with SMTP id
+ 5b1f17b1804b1-483a962e491mr205370195e9.21.1771942655222; 
+ Tue, 24 Feb 2026 06:17:35 -0800 (PST)
+Received: from localhost ([88.128.90.16]) by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-483bd702e7bsm2267695e9.5.2026.02.24.06.17.34
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 24 Feb 2026 06:17:34 -0800 (PST)
+Mime-Version: 1.0
+Date: Tue, 24 Feb 2026 15:17:34 +0100
+Message-Id: <DGN98XP7WAZD.310XXFFOA9X2R@suse.com>
+To: "Jinseok Kim" <always.starving0@gmail.com>, <ltp@lists.linux.it>
+X-Mailer: aerc 0.18.2
+References: <DGN1LFH0ULK0.3D30H8MFVV9GM@suse.com>
+ <20260224100723.42877-1-always.starving0@gmail.com>
+ <20260224100723.42877-2-always.starving0@gmail.com>
+In-Reply-To: <20260224100723.42877-2-always.starving0@gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] Add test for fanotify monitoring of tracing
- filesystem
+Subject: Re: [LTP] [PATCH v2 2/2] fstat: add test for multiple file types
+ using fstat
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -156,49 +102,174 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ppavlu@suse.cz, ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
 
-On 2/24/26 14:40, Petr Vorel wrote:
->> +static void setup(void)
->> +{
->> +	if (tst_fs_type(MNTPOINT) != TST_TRACEFS_MAGIC) {
->> +		SAFE_MOUNT("tracefs", MNTPOINT, "tracefs",
->> +			MS_NODEV | MS_NOEXEC | MS_NOSUID, NULL);
-> 
-> I see possible mounting is the reason...
-> 
->> +		unmount_needed = 1;
->> +	}
->> +
->> +	if (access(EVENTS_SYSFILE, F_OK))
->> +		tst_brk(TCONF, "Kprobe events not supported by kernel");
-> 
-> ... why we cannot check /sys/kernel/tracing/kprobe_events presence via
-> .save_restore.
+Let's fix the following issues first.
 
-Well, yes, tracefs may need to be mounted during test setup. But 
-.save_restore also assumes that sysfiles contain only one line while 
-kprobe_events may hold arbitrarily long kprobe list. Also note that the 
-restore function opens the sysfile with O_TRUNC, which might wipe all 
-existing kprobes before creating them again. Therefore I've decided to 
-check the file availability in setup() and send a targeted kprobe delete 
-command instead of saving and restoring the whole sysfile.
+On Tue Feb 24, 2026 at 11:07 AM CET, Jinseok Kim wrote:
+> Following review feedback, create a dedicated fstat test that verifies
+> S_ISREG(), S_ISDIR(), S_ISFIFO(), S_ISLNK(), S_ISCHR(), S_ISBLK()
+> on different file types.
+>
+> Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
+> ---
+>  testcases/kernel/syscalls/fstat/fstat04.c | 103 ++++++++++++++++++++++
+>  1 file changed, 103 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/fstat/fstat04.c
+>
+> diff --git a/testcases/kernel/syscalls/fstat/fstat04.c b/testcases/kernel/syscalls/fstat/fstat04.c
+> new file mode 100644
+> index 000000000..6aa9a8e79
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fstat/fstat04.c
+> @@ -0,0 +1,103 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2026 Jinseok Kim <always.starving0@gmail.com>
+> + */
+> +/*\
+> + * Verify that fstat correctly identifies various file types
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <sys/sysmacros.h>
+> +#include <fcntl.h>
+> +#include <unistd.h>
+> +#include <errno.h>
 
+More likely these imports are not stricly needed. Please take a look at
+it. Also _GNU_SOURCE is not needed.
+
+> +#include "tst_test.h"
+> +
+> +#define REG_FILE    "regfile"
+> +#define DIR_FILE    "dirfile"
+> +#define FIFO_FILE   "fifofile"
+> +#define SYMLINK     "symlink"
+> +#define CHR_DEV     "chrdev"
+> +#define BLK_DEV     "blkdev"
+> +
+> +static int fd = -1;
+> +
+> +static struct tcase {
+> +    const char *desc;
+> +    const char *path;
+> +    const char *macro_name;
+> +    mode_t exp_type;
+> +} tcases[] = {
+> +    { "regular file",   REG_FILE,  "S_IFREG", S_IFREG },
+> +    { "directory",      DIR_FILE,  "S_IFDIR", S_IFDIR },
+> +    { "FIFO (pipe)",    FIFO_FILE, "S_IFIFO", S_IFIFO },
+> +    { "symbolic link",  SYMLINK,   "S_IFLNK", S_IFLNK },
+> +    { "character dev",  CHR_DEV,   "S_IFCHR", S_IFCHR },
+> +    { "block dev",      BLK_DEV,   "S_IFBLK", S_IFBLK },
+> +};
+> +
+> +static void verify_fstat(unsigned int i)
+> +{
+> +    struct tcase *tc = &tcases[i];
+> +    struct stat buf;
+> +
+> +    int flags = O_RDONLY | O_NONBLOCK;
+> +
+> +    if (tc->exp_type == S_IFDIR)
+> +        flags |= O_DIRECTORY;
+> +
+> +    fd = SAFE_OPEN(tc->path, flags);
+> +
+> +    SAFE_FSTAT(fd, &buf);
+> +    SAFE_CLOSE(fd);
+> +
+> +    int is_correct = 0;
+> +    switch (tc->exp_type) {
+> +    case S_IFREG: is_correct = S_ISREG(buf.st_mode); break;
+> +    case S_IFDIR: is_correct = S_ISDIR(buf.st_mode); break;
+> +    case S_IFIFO: is_correct = S_ISFIFO(buf.st_mode); break;
+> +    case S_IFLNK: is_correct = S_ISLNK(buf.st_mode); break;
+> +    case S_IFCHR: is_correct = S_ISCHR(buf.st_mode); break;
+> +    case S_IFBLK: is_correct = S_ISBLK(buf.st_mode); break;
+> +    }
+> +
+> +    if (is_correct)
+> +        tst_res(TPASS, "%s: %s() macro matches", tc->desc, tc->macro_name);
+> +    else
+> +        tst_res(TFAIL, "%s: %s() macro does NOT match", tc->desc, tc->macro_name);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +    fd = SAFE_OPEN(REG_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+> +    SAFE_CLOSE(fd);
+> +
+> +    SAFE_MKDIR(DIR_FILE, 0755);
+> +    SAFE_SYMLINK(REG_FILE, SYMLINK);
+> +
+> +    SAFE_MKNOD(FIFO_FILE, S_IFIFO | 0777, 0);
+> +    SAFE_MKNOD(CHR_DEV, S_IFCHR | 0777, makedev(1, 3));
+> +    SAFE_MKNOD(BLK_DEV, S_IFBLK | 0777, makedev(7, 3));
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +    SAFE_UNLINK(SYMLINK);
+> +    SAFE_UNLINK(REG_FILE);
+> +    SAFE_RMDIR(DIR_FILE);
+> +
+> +    SAFE_UNLINK(FIFO_FILE);
+> +    SAFE_UNLINK(CHR_DEV);
+> +    SAFE_UNLINK(BLK_DEV);
+
+What if all these files/directories don't exist at cleanup?
+
+> +}
+> +
+> +static struct tst_test test = {
+> +    .tcnt = ARRAY_SIZE(tcases),
+> +    .setup = setup,
+> +    .cleanup = cleanup,
+> +    .test = verify_fstat,
+> +    .needs_tmpdir = 1,
+> +    .needs_root = 1,
+> +};
+> --
+> 2.43.0
+
+I also get:
+
+fstat04.c:61: TPASS: regular file: S_IFREG() macro matches
+fstat04.c:61: TPASS: directory: S_IFDIR() macro matches
+fstat04.c:61: TPASS: FIFO (pipe): S_IFIFO() macro matches
+fstat04.c:63: TFAIL: symbolic link: S_IFLNK() macro does NOT match
+fstat04.c:45: TBROK: open(chrdev,2048,0000) failed: EACCES (13)
+
+Please, also fix the following:
+
+open01.c has 1 checkpatch error:
+   - Line 43: Code indent should use tabs where possible
+
+fstat04.c has 9 checkpatch errors and 53 warnings:
+   - Lines 28-93: Uses spaces instead of tabs for indentation throughout
+   - Lines 58-63: Trailing statements should be on next line in switch cases
+   - Line 57: Missing blank line after declarations
+   - Line 49: Code indent should use tabs
+
+- Add fstat04 to .gitignore
+- Add fstat04 fstat04 to runtest/syscalls
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
