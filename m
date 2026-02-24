@@ -4,82 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01EEFE9B24A
-	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 10:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4534AE9B24E
+	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 10:21:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1771928459; h=mime-version :
+ date : message-id : to : references : in-reply-to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=jJ3VxQ1AeZmlbhkBy6oq4K8HmQkCFppKAM2ezlDx0fA=;
+ b=ScG+Pq8q756wiIlgWCXwrKq4J6IiFTsUnbl/XxJ3Y+hMOVrgMwUeOT9cLHEhggxwKgKcG
+ BK/miD1GpTCGtYx3wm0F8JMAyIV1vgGlcCTLvEWXogKteHy0wwl8RwxBzxXlk99X165+yfW
+ A6oWQJhopnrdfg8Zubgdm41l3yxssKI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 99AF63D0F84
-	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 11:08:31 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D36AA3D0F80
+	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 11:20:59 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 784473CA177
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 11:07:53 +0100 (CET)
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com
- [IPv6:2607:f8b0:4864:20::443])
+ by picard.linux.it (Postfix) with ESMTPS id F17423CA177
+ for <ltp@lists.linux.it>; Tue, 24 Feb 2026 11:20:37 +0100 (CET)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0F2261A00812
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 11:07:53 +0100 (CET)
-Received: by mail-pf1-x443.google.com with SMTP id
- d2e1a72fcca58-824c9da9928so2673935b3a.3
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 02:07:52 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2C1A1140013B
+ for <ltp@lists.linux.it>; Tue, 24 Feb 2026 11:20:37 +0100 (CET)
+Received: by mail-wr1-x429.google.com with SMTP id
+ ffacd0b85a97d-4398913af88so252900f8f.2
+ for <ltp@lists.linux.it>; Tue, 24 Feb 2026 02:20:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1771927671; x=1772532471; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ d=suse.com; s=google; t=1771928436; x=1772533236; darn=lists.linux.it;
+ h=in-reply-to:references:cc:to:from:subject:message-id:date
+ :content-transfer-encoding:mime-version:from:to:cc:subject:date
  :message-id:reply-to;
- bh=6dNzs1p4CGJu9OvEAlyp8FGjoCIMXUHgFDm3d0fVmHA=;
- b=bYUyiJWia/SFbnOdfl4YHqg+m5IlthnTuRL0MYDOjmRJAXuGzYkRq2JfXxVTdzSDd6
- qBZThMBhVMPI5NFWBkvoYQooFRB1CNtey4TGNX80ZpcmHwnVxrBc9Gxh/1ARq7VgPzJV
- gX8rwmioyuUtar97NamTC3y2XEfG0cexcX8yfb6doLtpZgt0NrS28SAIxc1qwIWR/tzu
- BNFbkzuczDCj9E+ifpFqOcrvhurpvlnvDd6MRI4U2jrZb/8hz0UwE+XeqedWkJL/TlFB
- 0RFDw6+hZ2nt//Vqu5BrH2Ub+lQuO9Eyo7nRW0AeQN6l5yv/oJ2k6iZx29ptBg7T1aQV
- /Eyg==
+ bh=Ai/6MEhpB9JUWZO0Vhxy9twP1TfXygro/bBf/6Lsq2o=;
+ b=P1dxlo/HQwvapnk3VHeJ8dHI2EEJiAVEJZv/vLKVEuFbODrYIl5Ua+OjJC6xqNZNcE
+ +nJvEbi0cdql9GSxeJ0gfLCIahNDyROVXgCRPhLw/ziDrtLhFVJnB6nHvCMlx//mrVK4
+ AW5No9adpxekAdviQx1VTF37silF/SgP6cWP5L+c+qq7HByxJ+0/eYztR3/m+xkc3Np+
+ fFPlXkjf89efbFMEbwBLwdkswKQMF/NUUzoSetVMkCSNj8FMjYvjnp87kGEjdXyvcTGW
+ TIES/FRTYy+toSFnnZa5AbrctkmidqTg8ArjmirFYbB5NiDOfKv1JcrgOTAlXH4OelsK
+ cAmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1771927671; x=1772532471;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=6dNzs1p4CGJu9OvEAlyp8FGjoCIMXUHgFDm3d0fVmHA=;
- b=JLUPelp+Pye5bf2bIf/Q8mnhbEtwSKQXrRUj8AKt8CF4SXjAQbTM/TyufUpuskSO9D
- jOb1noFcPcRaggPx6H3ygCnixDRMoLKl4TrwLmhig8ESK53LKTREixa0nYvEgyVZCrxm
- 7Ua7Rl+l+DBRrkWcMzIsBhNLw8z/Q0vBejakAzGGsDsUAQmKcBrbi1WQiiZ8pC/Ccqz4
- WvxuWvKbEJbCjSalYA2Rl0BtM8NQmDF9mIGoMgo78/lhcly1+snpHicqjlaOhRVlh+Pb
- qVfXDQ5oh0eTAtS5tJnJVI5PzfPfeGEPJCrnauEhOGakX5O3xpBkzt/ts8tHmFfAb60a
- 8tew==
-X-Gm-Message-State: AOJu0Yx9hKE98oxf+V0XfM1ehaiTAIgGD9A0YHaTmtrhEqhQU80jgBv2
- kz3E1nWZgb9RLCY15Iaores/cggIdHxOnSL05F4DR9QRSkcJgDQdKf30vRQgYuKimQ==
-X-Gm-Gg: AZuq6aJ9xNfeof2Nay+YByDU4+xzF1wr5G1wdx40iZ9iYpkR57k+PQOEHp4/l84CYQt
- RLl7NfFj2AbILt6SzgR8uIqMEjCQTODiUa+AqWmcF+5loJxC37aW32+FQG9qjlqxkbVgVSGohiO
- oUYh8cxDyML1gzaFjMN5M3YrhtitPRFe618DiZa8myCF9bwVh7rqJdBMVDaNszLJWyDngIVOp0P
- /ZzMdle7EcIGiCLlMVCzC/pwYhUb1PFKX0ZTpJYB+kS8FbT7+JHGNEhQ14sUPmEYiSDb3oZB/xO
- P7x2izvm7pnsRlsL6v9aZJnEV3nhyot9xWE5ob8NSN5rMImEIeefsSFeEDmTd00+XLz3N0Yn1SC
- umxz6b3XM8TDtn/e0/wSEx7tr2fwrZyMY1RIrWra6Aj0qQhxNVTfh2r3NuUAPZn50jD2DmpAko9
- mYD+/vg3Omam9Z53DfAdEDd0H79sgcHp7bLJXCAdjOMw==
-X-Received: by 2002:a05:6a00:22c4:b0:820:f4fb:e914 with SMTP id
- d2e1a72fcca58-826daa0cd68mr9100189b3a.42.1771927671118; 
- Tue, 24 Feb 2026 02:07:51 -0800 (PST)
-Received: from localhost.localdomain ([59.16.109.172])
+ d=1e100.net; s=20230601; t=1771928436; x=1772533236;
+ h=in-reply-to:references:cc:to:from:subject:message-id:date
+ :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=Ai/6MEhpB9JUWZO0Vhxy9twP1TfXygro/bBf/6Lsq2o=;
+ b=aOGROjJpQHF1Eh07G4Ul8VidQuzG5cp43dRvVEi3/bOOJcM4CDPoGGear0FFF/6Idz
+ xH4tMnVc7NZFJ06+zJCxnzI/HFGkCKpYLnttfsMzdBeQwrMSNzyQ7cFdqPAICu7BB36r
+ MsY4/QxPLySIP4U/TtA1dfSnzcSysO7hjoem6hFCfz5I26x3A2a9VfDMavymSxSh+NED
+ mRycJwpczRfvQDSuJ/n7EOMCSKkuQSZRbbMrFk1zYWVr6Qvc+mj2DJAbh45Xj3re/urh
+ rSALwvxiwyKxahIFmhyLvh5NwikWX8zUhrn6Mqhd5FBl+uEKJ/OyYJsmG1Xbwmf+ZdkV
+ aHcg==
+X-Gm-Message-State: AOJu0YyeY0QJcIgK/ODGkJztm14UPY/I/++oDMWCtz53OaUkPDsOacf9
+ RNMYNq3rN3KBNNlnKmE1wNP+su/HGTNtjp7CfBkRLS1sjfx/1bzK+yEL1OvdCf1yKAkLhxsfppQ
+ 7b8qI82Q=
+X-Gm-Gg: ATEYQzychAzRKb4XY8B4l7S1IsqLkbMFZ+Dk0dvF4ixOv+e0Dw74U1baOA1R/ukF1KU
+ tNu0IYfO6qQdT8jXLNHUXGrv+fxU/OVgyGP0gfBCKlOCskiZdSkfItFRHUgTAt5mu1mOsfgRZ5o
+ 91Xo0gVpWhFBANsSyJiKhZ6MFrxFkJHkIkmUiFRR1xzKz8nrv3sw3CIabXZC/lP17ANgFicPwUv
+ QNVamf3pnxMsSmijUrxPxDNVBsUV0KcljgMTim5DKJ/weq/Y5pZ2WXbwsB+4DTNs/Cs0n/0bAXg
+ OfOq1F+qPlWXUGkPEVQ6aA9JqFtBQjCZF3oEg/3KOWmvFs+rrgJi5j78C6ZX493I09CHqm7QVUw
+ T/46ti3IWnR/6mUcbUpFhDo/IzB5nVV0XSNQK056DN4wQtv1UkvF3g7ISf9iBU2roPFrsyJCAcf
+ E1hJezEsyqUeDv8KOpkVglLNs+Ag26dRRrVjwWc45o5+v4m0MaSOVIAJBjNjgaD0wMUWTCVn+gz
+ 1xXEeDewhHB0R11fkU=
+X-Received: by 2002:a05:6000:420c:b0:437:6963:a115 with SMTP id
+ ffacd0b85a97d-4396f18534emr19464528f8f.42.1771928436460; 
+ Tue, 24 Feb 2026 02:20:36 -0800 (PST)
+Received: from localhost
+ (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
+ [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
  by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-826dd8bc6e8sm9922472b3a.49.2026.02.24.02.07.49
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Feb 2026 02:07:50 -0800 (PST)
-From: Jinseok Kim <always.starving0@gmail.com>
-To: ltp@lists.linux.it
-Date: Tue, 24 Feb 2026 19:07:18 +0900
-Message-ID: <20260224100723.42877-2-always.starving0@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260224100723.42877-1-always.starving0@gmail.com>
-References: <DGN1LFH0ULK0.3D30H8MFVV9GM@suse.com>
- <20260224100723.42877-1-always.starving0@gmail.com>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ ffacd0b85a97d-43970d4c626sm28610185f8f.28.2026.02.24.02.20.35
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 24 Feb 2026 02:20:36 -0800 (PST)
+Mime-Version: 1.0
+Date: Tue, 24 Feb 2026 11:20:35 +0100
+Message-Id: <DGN47HRFMU73.6AKMTBA60R3K@suse.com>
+To: "Jan Polensky" <japo@linux.ibm.com>, <chrubis@suse.cz>, <pvorel@suse.cz>
+X-Mailer: aerc 0.18.2
+References: <20260220173928.57467-1-japo@linux.ibm.com>
+In-Reply-To: <20260220173928.57467-1-japo@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] fstat: add test for multiple file types using
- fstat
+Subject: Re: [LTP] [PATCH v3 1/1] [STAGING] ioctl_pidfd06: Select expected
+ errno for PIDFD_GET_INFO across pidns
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,132 +102,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Following review feedback, create a dedicated fstat test that verifies
-S_ISREG(), S_ISDIR(), S_ISFIFO(), S_ISLNK(), S_ISCHR(), S_ISBLK()
-on different file types.
+LGTM
 
-Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
----
- testcases/kernel/syscalls/fstat/fstat04.c | 103 ++++++++++++++++++++++
- 1 file changed, 103 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fstat/fstat04.c
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-diff --git a/testcases/kernel/syscalls/fstat/fstat04.c b/testcases/kernel/syscalls/fstat/fstat04.c
-new file mode 100644
-index 000000000..6aa9a8e79
---- /dev/null
-+++ b/testcases/kernel/syscalls/fstat/fstat04.c
-@@ -0,0 +1,103 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Jinseok Kim <always.starving0@gmail.com>
-+ */
-+/*\
-+ * Verify that fstat correctly identifies various file types
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/sysmacros.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include "tst_test.h"
-+
-+#define REG_FILE    "regfile"
-+#define DIR_FILE    "dirfile"
-+#define FIFO_FILE   "fifofile"
-+#define SYMLINK     "symlink"
-+#define CHR_DEV     "chrdev"
-+#define BLK_DEV     "blkdev"
-+
-+static int fd = -1;
-+
-+static struct tcase {
-+    const char *desc;
-+    const char *path;
-+    const char *macro_name;
-+    mode_t exp_type;
-+} tcases[] = {
-+    { "regular file",   REG_FILE,  "S_IFREG", S_IFREG },
-+    { "directory",      DIR_FILE,  "S_IFDIR", S_IFDIR },
-+    { "FIFO (pipe)",    FIFO_FILE, "S_IFIFO", S_IFIFO },
-+    { "symbolic link",  SYMLINK,   "S_IFLNK", S_IFLNK },
-+    { "character dev",  CHR_DEV,   "S_IFCHR", S_IFCHR },
-+    { "block dev",      BLK_DEV,   "S_IFBLK", S_IFBLK },
-+};
-+
-+static void verify_fstat(unsigned int i)
-+{
-+    struct tcase *tc = &tcases[i];
-+    struct stat buf;
-+
-+    int flags = O_RDONLY | O_NONBLOCK;
-+
-+    if (tc->exp_type == S_IFDIR)
-+        flags |= O_DIRECTORY;
-+
-+    fd = SAFE_OPEN(tc->path, flags);
-+
-+    SAFE_FSTAT(fd, &buf);
-+    SAFE_CLOSE(fd);
-+
-+    int is_correct = 0;
-+    switch (tc->exp_type) {
-+    case S_IFREG: is_correct = S_ISREG(buf.st_mode); break;
-+    case S_IFDIR: is_correct = S_ISDIR(buf.st_mode); break;
-+    case S_IFIFO: is_correct = S_ISFIFO(buf.st_mode); break;
-+    case S_IFLNK: is_correct = S_ISLNK(buf.st_mode); break;
-+    case S_IFCHR: is_correct = S_ISCHR(buf.st_mode); break;
-+    case S_IFBLK: is_correct = S_ISBLK(buf.st_mode); break;
-+    }
-+
-+    if (is_correct)
-+        tst_res(TPASS, "%s: %s() macro matches", tc->desc, tc->macro_name);
-+    else
-+        tst_res(TFAIL, "%s: %s() macro does NOT match", tc->desc, tc->macro_name);
-+}
-+
-+static void setup(void)
-+{
-+    fd = SAFE_OPEN(REG_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-+    SAFE_CLOSE(fd);
-+
-+    SAFE_MKDIR(DIR_FILE, 0755);
-+    SAFE_SYMLINK(REG_FILE, SYMLINK);
-+
-+    SAFE_MKNOD(FIFO_FILE, S_IFIFO | 0777, 0);
-+    SAFE_MKNOD(CHR_DEV, S_IFCHR | 0777, makedev(1, 3));
-+    SAFE_MKNOD(BLK_DEV, S_IFBLK | 0777, makedev(7, 3));
-+}
-+
-+static void cleanup(void)
-+{
-+    SAFE_UNLINK(SYMLINK);
-+    SAFE_UNLINK(REG_FILE);
-+    SAFE_RMDIR(DIR_FILE);
-+
-+    SAFE_UNLINK(FIFO_FILE);
-+    SAFE_UNLINK(CHR_DEV);
-+    SAFE_UNLINK(BLK_DEV);
-+}
-+
-+static struct tst_test test = {
-+    .tcnt = ARRAY_SIZE(tcases),
-+    .setup = setup,
-+    .cleanup = cleanup,
-+    .test = verify_fstat,
-+    .needs_tmpdir = 1,
-+    .needs_root = 1,
-+};
---
-2.43.0
+
+-- 
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
