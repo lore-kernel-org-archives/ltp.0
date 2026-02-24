@@ -4,99 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CD1BF3C99B
-	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 15:31:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01413F3C99B
+	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 15:36:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 09B953E8B9C
-	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 16:31:51 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 502BC3E8BA3
+	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 16:36:52 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 83AC13E8B85
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 16:31:33 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 32A483E1710
+ for <ltp@lists.linux.it>; Tue, 24 Feb 2026 16:36:35 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0724A6006D7
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 16:31:32 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CE9BF600BB9
+ for <ltp@lists.linux.it>; Tue, 24 Feb 2026 16:36:33 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A80FA5BCE9;
- Tue, 24 Feb 2026 15:31:31 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D41235BCE9;
+ Tue, 24 Feb 2026 15:36:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1771947091; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1771947393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2OwXvoRqyBwdj8gx9Lm5b9slwfr/A9dg9Vfv2VlVOMo=;
- b=VeRG62QB6b1pu9c9tZMk5eYaMW81I6+5fyn9jIUEn4WfLJstNknip5us6bjvnrbu2vGi+V
- +wET6g8bkuNz0aev6909FUtbG5aQQiYHEDTAg2mkic2HU67+EVRItZxT9YuC8ebFufA8CN
- HkEmtOttcPnGVk7uy+ZiX5bttvFz/A4=
+ bh=B0m+lPBoRIFB9JDNG5U6ZWUPeKqT2T3laWkyc5lusAM=;
+ b=SdJircVFj2DqJbF2Diguxk7Q50fEUJsrLCQaQbaYuC03sqgIaa+u0SYiLAiUsqxo/LBaSI
+ 0y5t5L7MqXuw53WNLvblOC47rHSvhvdOaT6dcfm6ykxe0s8OUu0qUvKW7jeSkr8lEAofi5
+ CXYqsYrB77rs/0yjmf0fH0CdJkUPgO4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1771947091;
+ s=susede2_ed25519; t=1771947393;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2OwXvoRqyBwdj8gx9Lm5b9slwfr/A9dg9Vfv2VlVOMo=;
- b=KnwTZ5vQLfde6WKA9L0TTn9n8Sor5LDvTk81CcZ4mzOgTiI6U9/Tr84lN290/BC3TUDWaz
- v3+13waTQJYJm3Ag==
+ bh=B0m+lPBoRIFB9JDNG5U6ZWUPeKqT2T3laWkyc5lusAM=;
+ b=ZFgvuVMgZn9k14H/Hgj0PNS3gA8vOu4LVZtzuxR90oGWCtKU9iH+GB0ian+K+HIPU6+TmY
+ kBi56lq/CDxH7QBA==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XmQzJOau;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=A++CzXcI
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1771947091; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1771947392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2OwXvoRqyBwdj8gx9Lm5b9slwfr/A9dg9Vfv2VlVOMo=;
- b=VeRG62QB6b1pu9c9tZMk5eYaMW81I6+5fyn9jIUEn4WfLJstNknip5us6bjvnrbu2vGi+V
- +wET6g8bkuNz0aev6909FUtbG5aQQiYHEDTAg2mkic2HU67+EVRItZxT9YuC8ebFufA8CN
- HkEmtOttcPnGVk7uy+ZiX5bttvFz/A4=
+ bh=B0m+lPBoRIFB9JDNG5U6ZWUPeKqT2T3laWkyc5lusAM=;
+ b=XmQzJOauKKKbMscGGzOculpC6tQM36Y1MpVuRs292L/2kYBny+Ab7+4aS5FreeVgw9KNf7
+ UkvP/ff/VI2awvzAjcb9xH11kqWkjKVLSVJFaMhIo5HELTQZaT3V0FOp4Tn9ezsTyKAyFR
+ MEy+aVYtlCYgH9GgOUbeNM0XbUKBs64=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1771947091;
+ s=susede2_ed25519; t=1771947392;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2OwXvoRqyBwdj8gx9Lm5b9slwfr/A9dg9Vfv2VlVOMo=;
- b=KnwTZ5vQLfde6WKA9L0TTn9n8Sor5LDvTk81CcZ4mzOgTiI6U9/Tr84lN290/BC3TUDWaz
- v3+13waTQJYJm3Ag==
+ bh=B0m+lPBoRIFB9JDNG5U6ZWUPeKqT2T3laWkyc5lusAM=;
+ b=A++CzXcIKKLpuPWOO8WRBLfSx5PAZfI7dibeiOsRl+1sWvPSnWynfIKqyr++fuQtkd00Af
+ ZTCPx586YkZSCUDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8D7C63EA68;
- Tue, 24 Feb 2026 15:31:31 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B7FCE3EA68;
+ Tue, 24 Feb 2026 15:36:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id RlrQIVPEnWmFEAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 24 Feb 2026 15:31:31 +0000
-Date: Tue, 24 Feb 2026 16:31:38 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id GcIdLIDFnWmqFQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 24 Feb 2026 15:36:32 +0000
+Date: Tue, 24 Feb 2026 16:36:40 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Jinseok Kim <always.starving0@gmail.com>
-Message-ID: <aZ3EWrWQCy7LeSTa@yuki.lan>
+Message-ID: <aZ3FiPwPd-eskHCZ@yuki.lan>
 References: <aZgx0rp0MRHn4mMT@yuki.lan>
  <20260221134014.37652-1-always.starving0@gmail.com>
+ <20260221134014.37652-2-always.starving0@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260221134014.37652-1-always.starving0@gmail.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20260221134014.37652-2-always.starving0@gmail.com>
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; TAGGED_RCPT(0.00)[];
- MISSING_XM_UA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- FREEMAIL_TO(0.00)[gmail.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ MX_GOOD(-0.01)[];
+ URIBL_BLOCKED(0.00)[yuki.lan:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,yuki.lan:mid]; 
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
+ RCPT_COUNT_TWO(0.00)[2]; FREEMAIL_TO(0.00)[gmail.com];
+ ARC_NA(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCVD_TLS_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; TAGGED_RCPT(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: D41235BCE9
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] poll: add basic POLLHUP semantics test
+Subject: Re: [LTP] [PATCH v2 2/2] poll: add test for POLLNVAL on invalid fd
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,74 +128,8 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Add a basic poll() test to verify that POLLHUP is reported when the
-> peer end of a pipe is closed.
-> 
-> The test creates a pipe, closes the write end, and polls the read end
-> for POLLIN events. poll() is expected to return successfully and set
-> POLLHUP in revents.
-> 
-> This covers basic poll() lifecycle semantics that were not previously
-> tested.
-> 
-> Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
-> ---
->  testcases/kernel/syscalls/poll/poll03.c | 62 +++++++++++++++++++++++++
-
-This is missing runtest entry in runtest/syscalls file.
-
-> +void verify_pollhup(void)
-> +{
-> +	struct pollfd pfd = {
-> +		.fd = fds[0], .events = POLLIN,
-> +	};
-> +
-> +	SAFE_CLOSE(fds[1]);
-
-Doesn't this fail the test on a second iteration? Have you tried to run
-the test with -i 2?
-
-The fd should be closed only once in the setup.
-
-> +	TEST(poll(&pfd, 1, -1));
-> +
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "poll() failed");
-> +		return;
-> +	}
-> +
-> +	if (TST_RET != 1) {
-> +		tst_res(TFAIL, "Unexpected poll() return value %ld", TST_RET);
-> +		return;
-> +	}
-> +
-> +	TST_EXP_EXPR(pfd.revents & POLLHUP);
-> +	TST_EXP_EXPR((pfd.revents & ~POLLHUP) == 0);
-> +
-> +	tst_res(TPASS, "poll() reported POLLHUP");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	SAFE_PIPE(fds);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fds[0] > 0)
-> +		SAFE_CLOSE(fds[0]);
-> +
-> +	if (fds[1] > 0)
-> +		SAFE_CLOSE(fds[1]);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = verify_pollhup,
-> +};
-> --
-> 2.43.0
+This is missing the runtest entry in runtest/syscalls but otherwise it's
+fine.
 
 -- 
 Cyril Hrubis
