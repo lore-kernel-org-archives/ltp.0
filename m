@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86069EFB810
-	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 07:38:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9005EFB810
+	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 07:38:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 92DFB3D0F6E
-	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 08:38:25 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 227DC3D0F86
+	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 08:38:47 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4234E3CA177
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 08:38:08 +0100 (CET)
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
- [IPv6:2607:f8b0:4864:20::642])
+ by picard.linux.it (Postfix) with ESMTPS id 427573D0F71
+ for <ltp@lists.linux.it>; Tue, 24 Feb 2026 08:38:09 +0100 (CET)
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
+ [IPv6:2607:f8b0:4864:20::643])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9856E1A007F6
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 08:38:07 +0100 (CET)
-Received: by mail-pl1-x642.google.com with SMTP id
- d9443c01a7336-2aaf5d53eaaso34436575ad.0
- for <ltp@lists.linux.it>; Mon, 23 Feb 2026 23:38:07 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CC71D1400141
+ for <ltp@lists.linux.it>; Tue, 24 Feb 2026 08:38:08 +0100 (CET)
+Received: by mail-pl1-x643.google.com with SMTP id
+ d9443c01a7336-2aaf9191da3so33671475ad.2
+ for <ltp@lists.linux.it>; Mon, 23 Feb 2026 23:38:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1771918686; x=1772523486; darn=lists.linux.it;
+ d=gmail.com; s=20230601; t=1771918687; x=1772523487; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
- :reply-to; bh=0Ft7Om50wtuK+2n7xj5bdyDeQYLwL2kRN/v76HI8QnA=;
- b=LYguUC66XN98fxXtWij12ByfMxQnnbaEffy9mghj0yXoDrL3PG7sG/aSDKqohnegYA
- 9BN1yp0Wcq/yqMvBzw1Sv7lxkcAx0v136dtgARIiQOptMUTNoL2SUps+lq4DzrsmzEa9
- fn5Ae/oG8m4nl+TIqAz2nT2qI9vWZLkCu2vFKRvfCjQAV4F1v00Yz4zUw9W/p4yosqW2
- VhShlOW7LNRfUZ+/inaH+chu36ZI5SX75H6kMp9J2RQaQmPoLdmRH0bw28Mgn9sih3+F
- SYU36rfSRegTfPfZiR+YEH+9TmguulkIu0Hiq3oGWoNGt/uygLRO7zUD85gHo8kgl3md
- ZLFQ==
+ :reply-to; bh=6dNzs1p4CGJu9OvEAlyp8FGjoCIMXUHgFDm3d0fVmHA=;
+ b=lTl3AHzubMwk6GKJX6UaHVArx4dnD53afoEPG0/IqXpnoTh5a9Lp3Lw6BNwJJOXisE
+ YgYrppncsxH69jMvvngA6E+bnqtjMv9gBiKSAT/NNgLJB+dtLKqUlyX2+JcRho4wOWA3
+ bLp5tX8inWxNI7Zgam1sFYl/3bK8BQZYLHseXmOEypLEfHEEfs27kWgqoDWTSZHhmeH1
+ r/AadlF5woxClPkBbHU3SdyIdJ7aZ59ldKQkRo2q0hGL6CZxKiUa+yMHrNrv2WywCBZn
+ l6Q+hTfcJ3y6xSihNxFPfeBQ9k/3WGjheuT6TiIKYZ3pqzYPN+Ddg9a61803i6koP+NH
+ SsZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1771918686; x=1772523486;
+ d=1e100.net; s=20230601; t=1771918687; x=1772523487;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:to:from:x-gm-gg:x-gm-message-state:from:to
  :cc:subject:date:message-id:reply-to;
- bh=0Ft7Om50wtuK+2n7xj5bdyDeQYLwL2kRN/v76HI8QnA=;
- b=cH3jNLu0zEIrKqT3F3BLUE0C6FRzM1B/NDY012hvEeOaANkesa/fjYZABFvdpLfT+N
- 1dbp2M7VAysjWwITGJXrcODdWYgNI3rSRL4/sR/hTPdS9rlypmNepYVhF6mlQI1s/1V9
- aVK8hUnWamW4Mxcc0NRgM2R83e3PvPvQ8ddFP0pbVk+OMQkb9taMRxcLspFylsyoWgrz
- 6wUWaAoYNQPH5wNhKivIxJUtPnkJcySIAPNehZuHGQXSpfpGcYEK1KKgYURBWRL0S5xa
- EWBvly2tXtGsBdVSSIK004yMfNH5ijNYJM6oyxWFFTg8CCGyhOTDAMj+rle5rVlp1QLk
- ch7A==
+ bh=6dNzs1p4CGJu9OvEAlyp8FGjoCIMXUHgFDm3d0fVmHA=;
+ b=CdN6uW0agJmyskCYh2kxEJReya2hcomrREZKTxzb1IhJ4Ixf+/gPLki5urR5fznaZM
+ sdwfD1SY3NdWJAwlm5YXz83RLUD2TAkgVV1CNUbFM8Um0AGTOH6DUgos1samYGRFORUW
+ OSd19tSJS54pzoOAr8fs8zigVgVPr3Wl24u6tVIgPNuygoZDRLQNP7uS2PydHw8sD5S7
+ 5AVOkoa1MDNUw/jdC2miJpPR3N+xCrCIPiMgrbb8z4TdHr0frinN6XcODTXrFyZgJoHP
+ qUgO5BwWcFBx9xyNY2WDuJF1VeXC/Zcz60OY/5exxn4dLEhWwLcUhfSBU9kYi0IUEWPo
+ TIaw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUZ/FA3y5+S0gLaeFMxo+5emiLUFSKnpGV4vsLdXkSzDsJmqBp7mHh8l71JrvARKwv3vTA=@lists.linux.it
-X-Gm-Message-State: AOJu0Yym9TtVAAcGfa8qc3u9YLFI27lZLz+Kk4v6qZfEW+9zsPXnBvPt
- 4/O1JTGq9Q/7ZY7VSa8AabS/o3ru+2lYgr2LKHHRvD/T/Z646z4kuIY=
-X-Gm-Gg: ATEYQzyNK45v6bixqtC2CE/l5b3BYXuaACKZvyycJH4cG/uRbiWKgHC7Hw8FeF/gr28
- FIOIf1LlFJPfhi3JmY9PvWJqbXY9wovHcH6dy/RF3dhsbV5Tfs139S4us3fG9hBrPFCPqYzC2Hx
- YtlbjQiNHBUpV8NaxEO5oDI+qtW08U4/dl/nQ+wl7JSqOwfmE9QQ2+EaHjd7LnfQHTdHsV5ghhc
- nX3xgRMz7Fa92EScztnZ7Vq22r/2hs2cDUWLt3LXBiIsD6SactjnuQNkg0T0n5LhhqqZ7SReNsW
- nTn0E8it1FFBhRpzIJjyuM/BhhMUsi74sm8uXuD9Jog+uXFVG+8T0tPoH2WpkRbyoXwnHSaCilI
- qdvOv2nSTZw8kEw+6KHFE75bGqGtLb9ISLavwPmjx5kil2kNWwwc8NpR85RQo4uNDAepv4y4Udn
- eDGG95cDZMNpnCgkTI+eFyiG+fdjP5eiRTexsmtmE9Bg==
-X-Received: by 2002:a17:902:ce81:b0:29e:c2dd:85ea with SMTP id
- d9443c01a7336-2ad74455891mr111281705ad.11.1771918685882; 
- Mon, 23 Feb 2026 23:38:05 -0800 (PST)
+ AJvYcCVp3siG76Qp6XoDKv4BDVdwXWY4xCZeEKCSajJaiYECkae5AW+hDVrwvn++KHw0COYiVaY=@lists.linux.it
+X-Gm-Message-State: AOJu0YzuZVbjDj8t+B+FQ8PwiH31IcrYMhgwtvGqE5VP84EycDS//e6e
+ /V/wXSwaiDIh07W0WWNWYzzbfwaZhJ3duWhkZl2j7/gGwJS+yAoWhhmfevN99aC7OQ==
+X-Gm-Gg: ATEYQzxKAoOp2sjusQM7gGXIw3WxOj6eCQ9nGASi0+UVqTIckPtmu6m4v9QQdMZBLY8
+ LEMBUvPDWs74VbMgndctXRZRk1pcikkVlW8ME3MIe7kdRbAG+DJ0+OpzoIxOudfOmuZqVS57i3r
+ wEV5oS5oNLgLRFGU0ioD0OU5fTAgcIKZtxadOBH1MeAwtrP1jl2AWtnn35zHXvFYZPJdJRAyBDK
+ WmYAA8C+u3TUOS6MRuft/dmp+OlxKgBW9dpPSiuOBL/cAWRhksZhQU0Gxf6XWtWjyxp7TG+KiOc
+ EcfKcyvpBTcOSctiKVD77Cu2i7MvkUQVda5nxU19hkphwxC1yoZ7heRe/seavmMsJEcTiT3lX3F
+ QesEzM7104+PQuekSZ1D8RMLWhfwmeoI5JkZug+u45kxTK+ETZqO0BxJlf14PEOz9qupZUec8ZJ
+ ovJDyo6FRDUwWg6ay7kPZfKjcZABPUYgpds8rE8oXcRA==
+X-Received: by 2002:a17:902:dacf:b0:2a9:322e:1964 with SMTP id
+ d9443c01a7336-2ad744e0adfmr115572725ad.31.1771918687126; 
+ Mon, 23 Feb 2026 23:38:07 -0800 (PST)
 Received: from localhost.localdomain ([112.172.52.51])
  by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2ad75054aa3sm97967655ad.89.2026.02.23.23.38.04
+ d9443c01a7336-2ad75054aa3sm97967655ad.89.2026.02.23.23.38.06
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 23 Feb 2026 23:38:05 -0800 (PST)
+ Mon, 23 Feb 2026 23:38:06 -0800 (PST)
 From: Jinseok Kim <always.starving0@gmail.com>
 To: chrubis@suse.cz,
 	ltp@lists.linux.it
-Date: Tue, 24 Feb 2026 16:37:24 +0900
-Message-ID: <20260224073734.34802-1-always.starving0@gmail.com>
+Date: Tue, 24 Feb 2026 16:37:25 +0900
+Message-ID: <20260224073734.34802-2-always.starving0@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <aZg8NDoUFezK-WTE@yuki.lan>
+In-Reply-To: <20260224073734.34802-1-always.starving0@gmail.com>
 References: <aZg8NDoUFezK-WTE@yuki.lan>
+ <20260224073734.34802-1-always.starving0@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] open: remove O_DIRECTORY case (move to fstat test)
+Subject: [LTP] [PATCH 2/2] Add test for multiple file types using fstat
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,55 +97,125 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The O_DIRECTORY test case was mostly verifying fstat() behavior on an
-existing directory rather than testing any specific open() behavior.
-
-Following review suggestion, remove it from open01.c. A separate fstat
-test will be added in a follow-up patch to cover file type checks
-(S_ISDIR, etc.) more comprehensively.
+Following review feedback, create a dedicated fstat test that verifies
+S_ISREG(), S_ISDIR(), S_ISFIFO(), S_ISLNK(), S_ISCHR(), S_ISBLK()
+on different file types.
 
 Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
 ---
- testcases/kernel/syscalls/open/open01.c | 6 ------
- 1 file changed, 6 deletions(-)
+ testcases/kernel/syscalls/fstat/fstat04.c | 103 ++++++++++++++++++++++
+ 1 file changed, 103 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fstat/fstat04.c
 
-diff --git a/testcases/kernel/syscalls/open/open01.c b/testcases/kernel/syscalls/open/open01.c
-index baf73ab11..801859e68 100644
---- a/testcases/kernel/syscalls/open/open01.c
-+++ b/testcases/kernel/syscalls/open/open01.c
-@@ -8,16 +8,12 @@
- /*
-  * DESCRIPTION
-  *	Open a file with oflag = O_CREAT set, does it set the sticky bit off?
-- *	Open a dir with O_DIRECTORY, does it set the S_IFDIR bit on?
-  *
-  * ALGORITHM
-  *	1. open a new file with O_CREAT, fstat.st_mode should not have the
-  *	   01000 bit on. In Linux, the save text bit is *NOT* cleared.
-- *	2. open a new dir with O_DIRECTORY, fstat.st_mode should have the
-- *	   040000 bit on.
-  */
-
--#define _GNU_SOURCE		/* for O_DIRECTORY */
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-@@ -25,7 +21,6 @@
- #include "tst_test.h"
-
- #define TEST_FILE	"testfile"
--#define TEST_DIR	"testdir"
-
- static int fd;
-
-@@ -37,7 +32,6 @@ static struct tcase {
- 	char *desc;
- } tcases[] = {
- 	{TEST_FILE, O_RDWR | O_CREAT, 01444, S_ISVTX, "sticky bit"},
--	{TEST_DIR, O_DIRECTORY, 0, S_IFDIR, "sirectory bit"}
- };
-
- static void verify_open(unsigned int n)
+diff --git a/testcases/kernel/syscalls/fstat/fstat04.c b/testcases/kernel/syscalls/fstat/fstat04.c
+new file mode 100644
+index 000000000..6aa9a8e79
+--- /dev/null
++++ b/testcases/kernel/syscalls/fstat/fstat04.c
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 Jinseok Kim <always.starving0@gmail.com>
++ */
++/*\
++ * Verify that fstat correctly identifies various file types
++ */
++
++#define _GNU_SOURCE
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/sysmacros.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <errno.h>
++#include "tst_test.h"
++
++#define REG_FILE    "regfile"
++#define DIR_FILE    "dirfile"
++#define FIFO_FILE   "fifofile"
++#define SYMLINK     "symlink"
++#define CHR_DEV     "chrdev"
++#define BLK_DEV     "blkdev"
++
++static int fd = -1;
++
++static struct tcase {
++    const char *desc;
++    const char *path;
++    const char *macro_name;
++    mode_t exp_type;
++} tcases[] = {
++    { "regular file",   REG_FILE,  "S_IFREG", S_IFREG },
++    { "directory",      DIR_FILE,  "S_IFDIR", S_IFDIR },
++    { "FIFO (pipe)",    FIFO_FILE, "S_IFIFO", S_IFIFO },
++    { "symbolic link",  SYMLINK,   "S_IFLNK", S_IFLNK },
++    { "character dev",  CHR_DEV,   "S_IFCHR", S_IFCHR },
++    { "block dev",      BLK_DEV,   "S_IFBLK", S_IFBLK },
++};
++
++static void verify_fstat(unsigned int i)
++{
++    struct tcase *tc = &tcases[i];
++    struct stat buf;
++
++    int flags = O_RDONLY | O_NONBLOCK;
++
++    if (tc->exp_type == S_IFDIR)
++        flags |= O_DIRECTORY;
++
++    fd = SAFE_OPEN(tc->path, flags);
++
++    SAFE_FSTAT(fd, &buf);
++    SAFE_CLOSE(fd);
++
++    int is_correct = 0;
++    switch (tc->exp_type) {
++    case S_IFREG: is_correct = S_ISREG(buf.st_mode); break;
++    case S_IFDIR: is_correct = S_ISDIR(buf.st_mode); break;
++    case S_IFIFO: is_correct = S_ISFIFO(buf.st_mode); break;
++    case S_IFLNK: is_correct = S_ISLNK(buf.st_mode); break;
++    case S_IFCHR: is_correct = S_ISCHR(buf.st_mode); break;
++    case S_IFBLK: is_correct = S_ISBLK(buf.st_mode); break;
++    }
++
++    if (is_correct)
++        tst_res(TPASS, "%s: %s() macro matches", tc->desc, tc->macro_name);
++    else
++        tst_res(TFAIL, "%s: %s() macro does NOT match", tc->desc, tc->macro_name);
++}
++
++static void setup(void)
++{
++    fd = SAFE_OPEN(REG_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
++    SAFE_CLOSE(fd);
++
++    SAFE_MKDIR(DIR_FILE, 0755);
++    SAFE_SYMLINK(REG_FILE, SYMLINK);
++
++    SAFE_MKNOD(FIFO_FILE, S_IFIFO | 0777, 0);
++    SAFE_MKNOD(CHR_DEV, S_IFCHR | 0777, makedev(1, 3));
++    SAFE_MKNOD(BLK_DEV, S_IFBLK | 0777, makedev(7, 3));
++}
++
++static void cleanup(void)
++{
++    SAFE_UNLINK(SYMLINK);
++    SAFE_UNLINK(REG_FILE);
++    SAFE_RMDIR(DIR_FILE);
++
++    SAFE_UNLINK(FIFO_FILE);
++    SAFE_UNLINK(CHR_DEV);
++    SAFE_UNLINK(BLK_DEV);
++}
++
++static struct tst_test test = {
++    .tcnt = ARRAY_SIZE(tcases),
++    .setup = setup,
++    .cleanup = cleanup,
++    .test = verify_fstat,
++    .needs_tmpdir = 1,
++    .needs_root = 1,
++};
 --
 2.43.0
 
