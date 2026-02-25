@@ -4,106 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD928F4BB89
-	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 21:03:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08DCDF55438
+	for <ltp@archiver.kernel.org>; Wed, 25 Feb 2026 01:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1771967034; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1771984295; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=V/Lxn1AagJHPGGlAusu8Ts30IW5WskrSj5o+4G1qJYI=;
- b=QeK4lIEEn+3miE+WLydkyLXiZTRHHNKtnQDOUzDF8DnTYKqGNe9KndHk2w9kqvxHAfIwO
- b896XxaUnJ6MN14FglJUrFRg/JyC4AyhcSV3nKC38IqOAM1y7snjYFV0QnFHDm93DxUVynN
- e36Gtz9d598d/3zXImbYg7Oj2DSUuBs=
+ bh=/6Jik/cgDYRmlxAyBghQ1ZdFENm7JYR9LZoNp22ms70=;
+ b=OzG7e18FbrsRfHQDX4OxeTg3vyBpb+JbiABgnAmLraoNvyKwveE5KcbKMS74KSSNGBzUp
+ 5MtMQMXdDHRCB7BNl1gP4pZ0rhYdD6Gsh5ORCDR1hr4MFIklkQ25vIxTEamVK32CArcBeBd
+ mMTGSLXi7avYKjSOE3gtAY2bKHQmOIE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 360003CD81F
-	for <ltp@archiver.kernel.org>; Tue, 24 Feb 2026 22:03:54 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 6897A3C53B4
+	for <ltp@archiver.kernel.org>; Wed, 25 Feb 2026 02:51:35 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4A3BC3C54C1
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 22:03:30 +0100 (CET)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
- [IPv6:2a00:1450:4864:20::634])
+ by picard.linux.it (Postfix) with ESMTPS id 24D003C2F5B
+ for <ltp@lists.linux.it>; Wed, 25 Feb 2026 02:51:11 +0100 (CET)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A82CE200B63
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 22:03:29 +0100 (CET)
-Received: by mail-ej1-x634.google.com with SMTP id
- a640c23a62f3a-b8871718b00so1002904266b.3
- for <ltp@lists.linux.it>; Tue, 24 Feb 2026 13:03:29 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771967009; cv=none;
- d=google.com; s=arc-20240605;
- b=aDIhlZeTyFdLQcaiq5becWGqxkpmZqSbOdQgNzYpgHW2sn7AOWX9uBh75QoPUNWux7
- YLe5j8TLC+O3EohrdazpOsdfZKJtnSQ5IEBq6AaT/agkISMoMpoMok1qI9q2aCmsy5u+
- S4nUub1altM41h0YlNNNtuLkL5jX672jN19t6skbChQw+DeiX4KXTOsFImv269XygPoY
- 18F+XcN+rNB00Jy4uJ1JPpyiplSqyzLd9AGKbtse2/FHipe0ICcwQ3JGwg02xYXbl9ck
- hJW7zqXd9pG8A7aaQNHkHpQnSCGeVMpEci4gmvkPjj/NhHsPdafj1xm6uWAirktbt4X2
- ttAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20240605; 
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:dkim-signature;
- bh=IRpdZDe35Co4SZu86g9jBR9OWToftqc9EqOGHyCaEb0=;
- fh=bpgMwdhj2V5dFHhBya/LAx01zapCp12LRM5OHjvBEmU=;
- b=Cw8QBaPzEiPgfkBGn5sRWuiDZdr23kw72YJN6pIgGKF9QXZytPpUGKpeQRFSlm3+eq
- +eHFh4nmQVwDBI9n2JJ89qUWM1EnX+oLpf1QyLDZ3Gr/iWbAlzXKk0pY8yOs3SI5YTBr
- gmHyKxuQgKOHIeF0msM03YkcQ3wWfO6EPHeMBgDB6uMoy/lg35zuIsxSbBQ9jMd+9/Gk
- WXRcmIkSXTKoAyhP4cWzHQYOJ7Onvs4FRioYH/gPYnycFynGQvKJAbId4GJSIQZAjiUt
- d+Wz2EHMj0Tx4mdBLIUHcf6YM3EDMUVC+BmQPsWjaPXwPWUghmUJPJIbh8DBK7sZHoRa
- 4XQg==; darn=lists.linux.it
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3B703200B6D
+ for <ltp@lists.linux.it>; Wed, 25 Feb 2026 02:51:11 +0100 (CET)
+Received: by mail-wm1-x32f.google.com with SMTP id
+ 5b1f17b1804b1-4833115090dso59714935e9.3
+ for <ltp@lists.linux.it>; Tue, 24 Feb 2026 17:51:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1771967009; x=1772571809; darn=lists.linux.it;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
+ d=suse.com; s=google; t=1771984270; x=1772589070; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=IRpdZDe35Co4SZu86g9jBR9OWToftqc9EqOGHyCaEb0=;
- b=GVx4Q8Iqg3f+Dn3E55tIyi40/hXdwtS2WuR9q51d2kcoi7V2avB/UJUlNJrEB5Erm+
- tDXWSkEZVJqMbjBLMfPUVri9ww6LHWq1k7iZxyopNpuaKf5UzpJRDlZYsanmmBJ++vpk
- 6P0myU4fTiffBGwSkqMnTivG69lzNCnHTifhXYURMJTaPIVUW2CZhTKKP4qgZDR4f80M
- ybhYwrj6f+vlS0UJnR+EmptG6AouQbJNXUk6o8lAU9xKcSqhbxqHdF9IUS0u6gNEHC1A
- AMg5BvSz6MGVqGDpeUIIUwvnMIsCG58vUqLQePgzvnmV6J+TudJAM4jR2BFuTqk8O6MQ
- q4Ww==
+ bh=pugJPp4YqWcO1dG0z6wiJ4Z4jzrWC+BW2MRm0uu9ofU=;
+ b=IZ3/AZkmh0C9IcrH4wZ5TpHYM4ivXmvsCV4hBPWLePjzHV1fWExXup6mb45LEAjudY
+ cVB7qDrGQ/+oAVOhpRYE7DH0RXjHSs5Nl+0HxaCgmdFvg+uSUzGRtiQSwtBxACiauBqc
+ bQPsz+tLshzCPhn0P2RbowgDJWK3M4llwET069L8nEFCNJL5gPImyHHPGoztFKGccRl0
+ X+eqHc5QsvpTYGfDZNUc5mcLx/XoeH8ck0sT9HPnN582acx3+fsHAkxtisdH6o/VWZPW
+ IWn3S2eUoMgpE45nBoYRVBjbZofQqAGIKApQKk9zXofE7Gc7N6YpMRYSr7FPpxUxo1da
+ 2IrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1771967009; x=1772571809;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+ d=1e100.net; s=20230601; t=1771984270; x=1772589070;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=IRpdZDe35Co4SZu86g9jBR9OWToftqc9EqOGHyCaEb0=;
- b=KVFD45xKqZ6blshvZGbIdt1Q+b05hAGXgvfQAuDfDsZtuWD3DzyMu9DgU9opu/j7Zz
- /hBdHT6DMi+T6m0QzT2syNQdoK6eW6ephBYtDpxvR4MqezI1pIp8USxXjEF7vgm/fnBx
- ALO9oE/7h4beLMLiKwBNvHs/8HaWrC89ih4bAwB9E1SsEYNBsNaXJmrV3I1VgPSgZzE5
- JPR1ZsrFH9u+MrjFTABSLbG/dolgb9vSadqELJKJulckgpAOnWkR2wdHheHEQIdh+sTm
- ZEHYSpiHuMSjeQgrKy9p3TWdq1GPCFE6X9LCvlD8Ryz1XEdGPllmXtTE+SEjmC7pbqLs
- RWZQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCU4JY6I/+MaFs/rdmpU/dWW7IIhhGdw3JYJzuJ482kZLlzWeuMzkWptV4dm6BKUoSibE+Y=@lists.linux.it
-X-Gm-Message-State: AOJu0YybIShjO3AvRkb4OVztbOj1A4ZF0V4LJIoOKCAZKzO2mtt8VBg3
- tBTsgJkmzh5jfHEBFjrXSvoOU1lnBMh2/u2ItHMM+Et/6aoWLMYU8+TAA+SXgle5uqcen+cBB2Q
- 4zRpn0n4x3MvO0MUatoVzYc2Dq3ct2Ry6n++VMIk=
-X-Gm-Gg: ATEYQzw1wWTMQF9tMBLwcoY8Laf6S1+zKTBCnsU2zx0PaKdErYkn472kYfjDmKju6bt
- fkFWycLaHD3PFe581fGT8aNPt6WnkxIH0yfEw8WP9AxUQFY8UQqIOSEjfKX73uheo0AuSSxNiX2
- nRWkeSakKgkkTBVNTgQYVYJVS4SZ+LDCPazLihJE242ONMcMmAyJaurBUoocOK76obzBpMVn3TS
- b/RN7c8gB4MeSf0sz/+aY5V2FXpUUjSqCtSGKw/YhDramx5Tvq1yWQDGpHB3MZnPFYarFrmAFVl
- h99vsCjPeslSpswyLq8/IRnG2zkGqaM9HTsA
-X-Received: by 2002:a17:907:84b:b0:b87:701d:341a with SMTP id
- a640c23a62f3a-b9341bcd089mr3614466b.25.1771967008639; Tue, 24 Feb 2026
- 13:03:28 -0800 (PST)
+ bh=pugJPp4YqWcO1dG0z6wiJ4Z4jzrWC+BW2MRm0uu9ofU=;
+ b=VKcQSOnEjYJ8HDQ9DUZIBoPYBA16ztlhurPXR45rmt3UYyk5qOEEwQVBxIeU7s72gx
+ LN9gplMTo6McUHC63A1BOK7owfZ2gwyzA5iAyIKALEUaYgJZRpUAiIsvaYEROOfwtHfx
+ 7WmGjJ/nkoHpmAqfnD6KWecNH/XaZzWepWfHVltU6/OY7PxHFBwecABM34on+rk1kebO
+ tR8RLraKB+C1XpyCEGDQHs4ExI4J7BSfwi5GhCVjTfrsqB05mM025X6dH26bkYo/cAt6
+ IMWaZLO28ypz/n3MX1+0DoK0DTfK6m2bFpyU8y0C3zuRP7h0K3uteSSQq4+mfNI92Zwi
+ pNIw==
+X-Gm-Message-State: AOJu0YwkVnGOJ2cQcHJOn0wVt/U1rmqHhrngEsWVfCAl5pTRCKqB37n0
+ FiM6aXyoIxUhUAMcn7iY86FaImDsp72D4obyI37t+rl8kwB+mVq7PBWqDx9H9EGK8PE5h6F+mr3
+ uYTg=
+X-Gm-Gg: ATEYQzzgDYDQO+GvBlm6kd/eyeKIKiUMkUOG2LHB1VQYY6+8wpC/SpwO66pZIuusFxz
+ t/fkprbF9cPmhs1cUI/RPsAl+aIPX16XMEKwBkS26A7WJIT9VM4nAZa5W7fPHUjKrPgPQQ2OQh5
+ VWEg6SzkzpvdFjBtheXsJwM9t/53gwxFK4ngl145GJC9emSPrJD26N2XvJsiIK05IatsQWS7itR
+ dBfOh77i0JOm6MqwidLmODZRIAcz5f+KHVbLspLnthPBmmts0VzxfCyw328A9b9jz8pOb2EPCgj
+ 0chkMZMN74VpPAwkqB/WSAjL7NWhsml5PhUi/eVzi0krhS7u2nalwJgZrAiGFegj+4EOI/35Ulw
+ lqrKEcBQ/Nw7Stj5QAE1l309M5rSEI8WBLxqKcdFluoDYJhaAshCRGRSq+bNQpME419UBw1QcaQ
+ hP4BATL41lb1Y=
+X-Received: by 2002:a05:600c:314a:b0:483:6bb1:117 with SMTP id
+ 5b1f17b1804b1-483a9603cd2mr206147755e9.32.1771984270257; 
+ Tue, 24 Feb 2026 17:51:10 -0800 (PST)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-483bedcf177sm5486495e9.15.2026.02.24.17.51.09
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 24 Feb 2026 17:51:09 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Wed, 25 Feb 2026 01:50:29 +0000
+Message-ID: <20260225015044.19233-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20251125044057.20922-1-wegao@suse.com>
+References: <20251125044057.20922-1-wegao@suse.com>
 MIME-Version: 1.0
-References: <20260224104544.101292-1-japo@linux.ibm.com>
-In-Reply-To: <20260224104544.101292-1-japo@linux.ibm.com>
-Date: Tue, 24 Feb 2026 13:03:16 -0800
-X-Gm-Features: AaiRm509ORQkGVsU3If4PPB-dIpfByRWpB4Vg43k6I7vpcXQiSztqHCnMd_5BVA
-Message-ID: <CANDhNCrrZY=5bvRQGGJsigjwRNmDz8shbtM-Vtn5UkdRDGU_uA@mail.gmail.com>
-To: Jan Polensky <japo@linux.ibm.com>
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/1] sched_football: harden kickoff
- synchronization on high-CPU systems
+Subject: [LTP] [PATCH v4] tst_tmpdir: Fix buffer overflow in tst_tmpdir.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,32 +98,209 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: John Stultz via ltp <ltp@lists.linux.it>
-Reply-To: John Stultz <jstultz@google.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
- Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBGZWIgMjQsIDIwMjYgYXQgMjo0NeKAr0FNIEphbiBQb2xlbnNreSA8amFwb0BsaW51
-eC5pYm0uY29tPiB3cm90ZToKPgo+IFRoZSBzY2hlZF9mb290YmFsbCB0ZXN0IGhhcyBiZWVuIGlu
-dGVybWl0dGVudGx5IGZhaWxpbmcsIG1vc3Qgbm90aWNlYWJseQo+IG9uIHN5c3RlbXMgd2l0aCBt
-YW55IENQVXMgYW5kL29yIHVuZGVyIGxvYWQsIGR1ZSB0byBhIHN0YXJ0dXAgb3JkZXJpbmcKPiBo
-b2xlIGFyb3VuZCBraWNrb2ZmLgo+CgpJJ3ZlIG5vdCBoYWQgdGltZSB0byBjbG9zZWx5IHJldmll
-dyB5b3VyIHN1Z2dlc3Rpb24gaGVyZSwgYnV0IGl0CnNvdW5kcyByZWFzb25hYmxlLgoKVGhhdCBz
-YWlkLCBJIHdhbnQgdG8gd2FybiB5b3UgYW5kIGVuc3VyZSB5b3UgYXJlIGF3YXJlOiB0aGUKUlRf
-UFVTSF9JUEkgZmVhdHVyZSBpbiB0aGUgc2NoZWR1bGVyIGJyZWFrcyB0aGUgUlQgaW52YXJpYW50
-CnNjaGVkX2Zvb3RiYWxsIGlzIHRlc3RpbmcuCgpJIHNlZSB0aGlzIGFzIGEgYnVnIHdpdGggdGhh
-dCBmZWF0dXJlLCBidXQgdGhlIHNjYWxhYmlsaXR5IFJUX1BVU0hfSVBJCmFsbG93cyBmb3Igc2Vl
-bXMgbW9yZSBpbXBvcnRhbnQgdG8gZm9sa3Mgd2hvIGFyZSBkb2luZyBSVCB3b3JrIHRoZW4KdGhl
-IG1pcy1iZWhhdmlvci4gIFN0ZXZlbiBhbmQgSSB0YWxrZWQgYXdoaWxlIGJhY2sgYWJvdXQgc29t
-ZSBpZGVhcyBvbgpob3cgd2UgbWlnaHQgYmUgYWJsZSB0byBkbyB0aGUgcHVsbCBpbiBhIG1vcmUg
-ZWZmaWNpZW50IHdheSB3aGlsZQpzdGlsbCBob2xkaW5nIHRoZSBpbnZhcmlhbnQgdHJ1ZSwgYW5k
-IEkgaGF2ZSBhIGJ1ZyB0byB0cmFjayBpdCwgYnV0Cml0cyBub3QgYmVlbiBoaWdoIGVub3VnaCBw
-cmlvcml0eSB0byBnZXQgYmFuZHdpZHRoIHlldC4KClNvIHlvdSBtaWdodCB3YW50IHRvIG1ha2Ug
-c3VyZSB5b3UgZGlzYWJsZSB0aGF0IGZlYXR1cmUgYmVmb3JlIHRlc3RpbmcgdmlhOgojIGVjaG8g
-Tk9fUlRfUFVTSF9JUEkgPiAvc3lzL2tlcm5lbC9kZWJ1Zy9zY2hlZC9mZWF0dXJlcwoKdGhhbmtz
-Ci1qb2huCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlz
-dGluZm8vbHRwCg==
+Using sprintf without length checking in tst_tmpdir may lead to buffer overflow.
+So in this patch use openat() instead of open().
+
+Fixes: https://github.com/linux-test-project/ltp/issues/1241
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ lib/tst_tmpdir.c | 88 ++++++++++++++++++++++--------------------------
+ 1 file changed, 40 insertions(+), 48 deletions(-)
+
+diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
+index b9924d85d..9b024a74e 100644
+--- a/lib/tst_tmpdir.c
++++ b/lib/tst_tmpdir.c
+@@ -101,7 +101,7 @@ static char test_start_work_dir[PATH_MAX];
+ /* lib/tst_checkpoint.c */
+ extern futex_t *tst_futexes;
+ 
+-static int rmobj(const char *obj, char **errmsg);
++static int rmobjat(int dir_fd, const char *obj, char **errmsg);
+ 
+ int tst_tmpdir_created(void)
+ {
+@@ -144,34 +144,37 @@ const char *tst_get_startwd(void)
+ 	return test_start_work_dir;
+ }
+ 
+-static int purge_dir(const char *path, char **errptr)
++static int purge_dirat(int dir_fd, const char *path, char **errptr)
+ {
+ 	int ret_val = 0;
+ 	DIR *dir;
+ 	struct dirent *dir_ent;
+-	char dirobj[PATH_MAX];
+ 	static char err_msg[PATH_MAX + 1280];
++	int subdir_fd;
+ 
+-	/* Do NOT perform the request if the directory is "/" */
+-	if (!strcmp(path, "/")) {
++	errno = 0;
++
++	/* Open the subdirectory using openat */
++	subdir_fd = openat(dir_fd, path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW);
++	if (subdir_fd < 0) {
+ 		if (errptr) {
+-			strcpy(err_msg, "Cannot purge system root directory");
++			snprintf(err_msg, sizeof(err_msg),
++				 "Cannot open subdirectory %s (via fd %d); errno=%d: %s",
++				 path, dir_fd, errno, tst_strerrno(errno));
+ 			*errptr = err_msg;
+ 		}
+-
+ 		return -1;
+ 	}
+ 
+-	errno = 0;
+-
+-	/* Open the directory to get access to what is in it */
+-	if (!(dir = opendir(path))) {
++	dir = fdopendir(subdir_fd);
++	if (!dir) {
+ 		if (errptr) {
+-			sprintf(err_msg,
+-				"Cannot open directory %s; errno=%d: %s",
+-				path, errno, tst_strerrno(errno));
++			snprintf(err_msg, sizeof(err_msg),
++				 "Cannot open directory stream for %s (via fd %d); errno=%d: %s",
++				 path, dir_fd, errno, tst_strerrno(errno));
+ 			*errptr = err_msg;
+ 		}
++		close(subdir_fd);
+ 		return -1;
+ 	}
+ 
+@@ -183,8 +186,7 @@ static int purge_dir(const char *path, char **errptr)
+ 			continue;
+ 
+ 		/* Recursively remove the current entry */
+-		sprintf(dirobj, "%s/%s", path, dir_ent->d_name);
+-		if (rmobj(dirobj, errptr) != 0)
++		if (rmobjat(subdir_fd, dir_ent->d_name, errptr) != 0)
+ 			ret_val = -1;
+ 	}
+ 
+@@ -192,63 +194,53 @@ static int purge_dir(const char *path, char **errptr)
+ 	return ret_val;
+ }
+ 
+-static int rmobj(const char *obj, char **errmsg)
++static int rmobjat(int dir_fd, const char *obj, char **errmsg)
+ {
+ 	int ret_val = 0;
+ 	struct stat statbuf;
+ 	static char err_msg[PATH_MAX + 1280];
+ 	int fd;
+ 
+-	fd = open(obj, O_DIRECTORY | O_NOFOLLOW);
++	fd = openat(dir_fd, obj, O_DIRECTORY | O_NOFOLLOW);
+ 	if (fd >= 0) {
+ 		close(fd);
+-		ret_val = purge_dir(obj, errmsg);
++		ret_val = purge_dirat(dir_fd, obj, errmsg);
+ 
+ 		/* If there were problems removing an entry, don't attempt to
+ 		   remove the directory itself */
+ 		if (ret_val == -1)
+ 			return -1;
+ 
++		int flags = AT_REMOVEDIR;
++
+ 		/* Get the link count, now that all the entries have been removed */
+-		if (lstat(obj, &statbuf) < 0) {
++		if (fstatat(dir_fd, obj, &statbuf, AT_SYMLINK_NOFOLLOW) < 0) {
+ 			if (errmsg != NULL) {
+-				sprintf(err_msg,
+-					"lstat(%s) failed; errno=%d: %s", obj,
++				snprintf(err_msg, sizeof(err_msg),
++					"fstatat(%s) failed; errno=%d: %s", obj,
+ 					errno, tst_strerrno(errno));
+ 				*errmsg = err_msg;
+ 			}
+ 			return -1;
+ 		}
+ 
+-		/* Remove the directory itself */
+-		if (statbuf.st_nlink >= 3) {
+-			/* The directory is linked; unlink() must be used */
+-			if (unlink(obj) < 0) {
+-				if (errmsg != NULL) {
+-					sprintf(err_msg,
+-						"unlink(%s) failed; errno=%d: %s",
+-						obj, errno, tst_strerrno(errno));
+-					*errmsg = err_msg;
+-				}
+-				return -1;
+-			}
+-		} else {
+-			/* The directory is not linked; remove() can be used */
+-			if (remove(obj) < 0) {
+-				if (errmsg != NULL) {
+-					sprintf(err_msg,
++		if (statbuf.st_nlink >= 3)
++			flags = 0;
++
++		if (unlinkat(dir_fd, obj, flags) < 0) {
++			if (errmsg != NULL) {
++				snprintf(err_msg, sizeof(err_msg),
+ 						"remove(%s) failed; errno=%d: %s",
+ 						obj, errno, tst_strerrno(errno));
+-					*errmsg = err_msg;
+-				}
+-				return -1;
++				*errmsg = err_msg;
+ 			}
++			return -1;
+ 		}
+ 	} else {
+-		if (unlink(obj) < 0) {
++		if (unlinkat(dir_fd, obj, 0) < 0) {
+ 			if (errmsg != NULL) {
+-				sprintf(err_msg,
+-					"unlink(%s) failed; errno=%d: %s", obj,
++				snprintf(err_msg, sizeof(err_msg),
++					"unlinkat(%s) failed; errno=%d: %s", obj,
+ 					errno, tst_strerrno(errno));
+ 				*errmsg = err_msg;
+ 			}
+@@ -305,7 +297,7 @@ void tst_tmpdir(void)
+ 		tst_resm(TERRNO, "%s: chdir(%s) failed", __func__, TESTDIR);
+ 
+ 		/* Try to remove the directory */
+-		if (rmobj(TESTDIR, &errmsg) == -1) {
++		if (rmobjat(AT_FDCWD, TESTDIR, &errmsg) == -1) {
+ 			tst_resm(TWARN, "%s: rmobj(%s) failed: %s",
+ 				 __func__, TESTDIR, errmsg);
+ 		}
+@@ -343,7 +335,7 @@ void tst_rmdir(void)
+ 	/*
+ 	 * Attempt to remove the "TESTDIR" directory, using rmobj().
+ 	 */
+-	if (rmobj(TESTDIR, &errmsg) == -1) {
++	if (rmobjat(AT_FDCWD, TESTDIR, &errmsg) == -1) {
+ 		tst_resm(TWARN, "%s: rmobj(%s) failed: %s",
+ 			 __func__, TESTDIR, errmsg);
+ 	}
+@@ -353,7 +345,7 @@ void tst_purge_dir(const char *path)
+ {
+ 	char *err;
+ 
+-	if (purge_dir(path, &err))
++	if (purge_dirat(AT_FDCWD, path, &err))
+ 		tst_brkm(TBROK, NULL, "%s: %s", __func__, err);
+ }
+ 
+-- 
+2.52.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
