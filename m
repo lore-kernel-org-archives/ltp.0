@@ -4,89 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20B79FC5938
-	for <ltp@archiver.kernel.org>; Thu, 26 Feb 2026 11:54:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 045BDFC592F
+	for <ltp@archiver.kernel.org>; Thu, 26 Feb 2026 12:00:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1772107236; h=to :
+ in-reply-to : references : message-id : date : mime-version : subject
+ : list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=QTndfAISdcqxzXB6o37sssUK8eOp4gkWfMC9IOEgX7k=;
+ b=WosfJfotMwibNF5txvlcgSYbYF5bCrLpMVmUn4hABdxsIl68H/EfGLxEgYDN1v21hh7Z8
+ cnraa1Y0wJwSDUy1cA0QZcCxtGNfTVXe63Wp0T5cIG+sS1+8t6YOo9Gfqhqih7P9zKV1Vtq
+ 7ZrBZUmNppcXPOb3PobXTprYl1Y5RYM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9EC6A3CBD9A
-	for <ltp@archiver.kernel.org>; Thu, 26 Feb 2026 12:54:55 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 4700F3CB820
+	for <ltp@archiver.kernel.org>; Thu, 26 Feb 2026 13:00:36 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D59473C536F
- for <ltp@lists.linux.it>; Thu, 26 Feb 2026 12:54:36 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id AA0AE3C7BA1
+ for <ltp@lists.linux.it>; Thu, 26 Feb 2026 13:00:13 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7FAE21A007AE
- for <ltp@lists.linux.it>; Thu, 26 Feb 2026 12:54:34 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 21B1E1A0091F
+ for <ltp@lists.linux.it>; Thu, 26 Feb 2026 13:00:11 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 57F951FA8A;
- Thu, 26 Feb 2026 11:54:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1772106872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=STSEcAK3HR85s+7F8+BFoyVvLfiXFsJYlOT7BHY3zJE=;
- b=IeNw9mH8WdkstTAIoHWOQZWdzdlkC8vT5nGiYoq13//0q7KoWW/429qHzN0i4Vi3ZueZcM
- 9Jp4XJkx6d8a+wHBnPB3KrtQh8BnSrY0N6iDRE9Qf60X7U6mQ4cgnWeIhw23WzkhWH0o9U
- fg9n0pcAOXSz88ieLSWS/5J+nD+UhS0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1772106872;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=STSEcAK3HR85s+7F8+BFoyVvLfiXFsJYlOT7BHY3zJE=;
- b=TRoFk+5CXuZazIbEhm/0Pm6Dt9M1KOpJI1enGCWi8OjC6CGw3SJIolFeCKZx5RbsSY8p6C
- Jj7wfuWfpqOuv/BA==
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C2116402E8;
+ Thu, 26 Feb 2026 12:00:10 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1772106872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=STSEcAK3HR85s+7F8+BFoyVvLfiXFsJYlOT7BHY3zJE=;
- b=IeNw9mH8WdkstTAIoHWOQZWdzdlkC8vT5nGiYoq13//0q7KoWW/429qHzN0i4Vi3ZueZcM
- 9Jp4XJkx6d8a+wHBnPB3KrtQh8BnSrY0N6iDRE9Qf60X7U6mQ4cgnWeIhw23WzkhWH0o9U
- fg9n0pcAOXSz88ieLSWS/5J+nD+UhS0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1772106872;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=STSEcAK3HR85s+7F8+BFoyVvLfiXFsJYlOT7BHY3zJE=;
- b=TRoFk+5CXuZazIbEhm/0Pm6Dt9M1KOpJI1enGCWi8OjC6CGw3SJIolFeCKZx5RbsSY8p6C
- Jj7wfuWfpqOuv/BA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 372A93EA62;
- Thu, 26 Feb 2026 11:54:32 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 94B993EA62;
+ Thu, 26 Feb 2026 12:00:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Mcy9C3g0oGnDcwAAD6G6ig
- (envelope-from <rbranco@suse.de>); Thu, 26 Feb 2026 11:54:32 +0000
-From: Ricardo Branco <rbranco@suse.de>
-To: ltp@lists.linux.it
-Date: Thu, 26 Feb 2026 12:54:25 +0100
-Message-ID: <20260226115427.58459-1-rbranco@suse.de>
-X-Mailer: git-send-email 2.53.0
+ by imap1.dmz-prg2.suse.org with ESMTPSA id HJ80Iso1oGn1eQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 26 Feb 2026 12:00:10 +0000
+To: ppavlu@suse.cz, ltp@lists.linux.it, Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20260220154742.54150-1-mdoucha@suse.cz>
+References: <20260220154742.54150-1-mdoucha@suse.cz>
+Message-Id: <177210721055.697091.9289775077554114667.b4-ty@suse.com>
+Date: Thu, 26 Feb 2026 13:00:10 +0100
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:mid,suse.de:email,imap1.dmz-prg2.suse.org:helo];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[]
+X-Mailer: b4 0.14.2
+X-Spamd-Result: default: False [-3.90 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ FORGED_SENDER(0.30)[andrea.cervesato@suse.com,andrea.cervesato@suse.de];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ FROM_NEQ_ENVFROM(0.10)[andrea.cervesato@suse.com,andrea.cervesato@suse.de];
+ RCVD_TLS_ALL(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MID_RHS_MATCH_FROM(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_HAS_DN(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
+ suse.com:email]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7] userfaultfd: Add test using UFFDIO_POISON
+Subject: Re: [LTP] [PATCH 0/2] Add test for fanotify monitoring of tracefs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,238 +82,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Ricardo Branco <rbranco@suse.de>
----
- configure.ac                                  |   1 +
- include/lapi/userfaultfd.h                    |  13 ++
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/userfaultfd/.gitignore    |   1 +
- .../kernel/syscalls/userfaultfd/Makefile      |   1 +
- .../syscalls/userfaultfd/userfaultfd06.c      | 142 ++++++++++++++++++
- 6 files changed, 159 insertions(+)
- create mode 100644 testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
 
-diff --git a/configure.ac b/configure.ac
-index 7fa614dcb..94bcbcc98 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -278,6 +278,7 @@ AC_CHECK_TYPES([struct sockaddr_vm],,,[
- ])
- 
- AC_CHECK_TYPES([struct uffdio_move],,,[#include <linux/userfaultfd.h>])
-+AC_CHECK_TYPES([struct uffdio_poison],,,[#include <linux/userfaultfd.h>])
- AC_CHECK_TYPES([struct uffdio_writeprotect],,,[#include <linux/userfaultfd.h>])
- 
- # Tools knobs
-diff --git a/include/lapi/userfaultfd.h b/include/lapi/userfaultfd.h
-index 0c9e34c84..aab3890b7 100644
---- a/include/lapi/userfaultfd.h
-+++ b/include/lapi/userfaultfd.h
-@@ -233,6 +233,19 @@ struct uffdio_writeprotect {
- };
- #endif	/* HAVE_STRUCT_UFFDIO_WRITEPROTECT */
- 
-+#ifndef HAVE_STRUCT_UFFDIO_POISON
-+#define UFFD_FEATURE_POISON			(1<<14)
-+#define _UFFDIO_POISON				(0x08)
-+#define UFFDIO_POISON		_IOWR(UFFDIO, _UFFDIO_POISON, \
-+				      struct uffdio_poison)
-+struct uffdio_poison {
-+        struct uffdio_range range;
-+#define UFFDIO_POISON_MODE_DONTWAKE		((__u64)1<<0)
-+        __u64 mode;
-+        __s64 updated;
-+};
-+#endif	/* HAVE_STRUCT_UFFDIO_POISON */
-+
- #define SAFE_USERFAULTFD(flags, retry) \
- 	safe_userfaultfd(__FILE__, __LINE__, (flags), (retry))
- 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 05bb3ceb1..b76c3890f 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1775,6 +1775,7 @@ userfaultfd02 userfaultfd02
- userfaultfd03 userfaultfd03
- userfaultfd04 userfaultfd04
- userfaultfd05 userfaultfd05
-+userfaultfd06 userfaultfd06
- 
- ustat01 ustat01
- ustat02 ustat02
-diff --git a/testcases/kernel/syscalls/userfaultfd/.gitignore b/testcases/kernel/syscalls/userfaultfd/.gitignore
-index fb2ae243b..bc32fdf3b 100644
---- a/testcases/kernel/syscalls/userfaultfd/.gitignore
-+++ b/testcases/kernel/syscalls/userfaultfd/.gitignore
-@@ -3,3 +3,4 @@
- /userfaultfd03
- /userfaultfd04
- /userfaultfd05
-+/userfaultfd06
-diff --git a/testcases/kernel/syscalls/userfaultfd/Makefile b/testcases/kernel/syscalls/userfaultfd/Makefile
-index 96650a65a..3252e47df 100644
---- a/testcases/kernel/syscalls/userfaultfd/Makefile
-+++ b/testcases/kernel/syscalls/userfaultfd/Makefile
-@@ -16,3 +16,4 @@ userfaultfd02: CFLAGS += -pthread
- userfaultfd03: CFLAGS += -pthread
- userfaultfd04: CFLAGS += -pthread
- userfaultfd05: CFLAGS += -pthread
-+userfaultfd06: CFLAGS += -pthread
-diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
-new file mode 100644
-index 000000000..4803fa3d9
---- /dev/null
-+++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 SUSE LLC
-+ * Author: Ricardo Branco <rbranco@suse.com>
-+ */
-+
-+/*\
-+ * Force a pagefault event and handle it using :manpage:`userfaultfd(2)`
-+ * from a different thread testing UFFDIO_POISON.
-+ */
-+
-+#include "config.h"
-+#include <poll.h>
-+#include <setjmp.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "tst_safe_pthread.h"
-+#include "lapi/userfaultfd.h"
-+
-+static int page_size;
-+static char *page;
-+static int uffd;
-+static int poison_fault_seen;
-+static volatile int sigbus_seen;
-+static sigjmp_buf jmpbuf;
-+
-+static void sigbus_handler(int sig)
-+{
-+	if (sig == SIGBUS) {
-+		sigbus_seen = 1;
-+		siglongjmp(jmpbuf, 1);
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	struct sigaction sa = {};
-+
-+	sa.sa_handler = sigbus_handler;
-+	sigemptyset(&sa.sa_mask);
-+	SAFE_SIGACTION(SIGBUS, &sa, NULL);
-+}
-+
-+static void set_pages(void)
-+{
-+	page_size = sysconf(_SC_PAGE_SIZE);
-+	page = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void reset_pages(void)
-+{
-+	if (page) {
-+		SAFE_MUNMAP(page, page_size);
-+		page = NULL;
-+	}
-+}
-+
-+static void *handle_thread(void)
-+{
-+	static struct uffd_msg msg;
-+	struct uffdio_poison uffdio_poison = {};
-+	struct pollfd pollfd;
-+	int nready;
-+
-+	pollfd.fd = uffd;
-+	pollfd.events = POLLIN;
-+	nready = poll(&pollfd, 1, -1);
-+	if (nready == -1)
-+		tst_brk(TBROK | TERRNO, "Error on poll");
-+
-+	SAFE_READ(1, uffd, &msg, sizeof(msg));
-+
-+	if (msg.event != UFFD_EVENT_PAGEFAULT)
-+		tst_brk(TFAIL, "Received unexpected UFFD_EVENT %d", msg.event);
-+
-+	tst_atomic_store(1, &poison_fault_seen);
-+
-+	/* Poison the page that triggered the fault */
-+	uffdio_poison.range.start = msg.arg.pagefault.address & ~(page_size - 1);
-+	uffdio_poison.range.len = page_size;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_POISON, &uffdio_poison);
-+
-+	close(uffd);
-+	return NULL;
-+}
-+
-+static void run(void)
-+{
-+	pthread_t thr;
-+	struct uffdio_api uffdio_api = {};
-+	struct uffdio_register uffdio_register;
-+	char dummy;
-+
-+	set_pages();
-+
-+	uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, false);
-+
-+	uffdio_api.api = UFFD_API;
-+	uffdio_api.features = UFFD_FEATURE_POISON;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
-+
-+	if (!(uffdio_api.features & UFFD_FEATURE_POISON))
-+		tst_brk(TCONF, "UFFD_FEATURE_POISON not supported");
-+
-+	uffdio_register.range.start = (unsigned long) page;
-+	uffdio_register.range.len = page_size;
-+	uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
-+
-+	SAFE_PTHREAD_CREATE(&thr, NULL, (void *) handle_thread, NULL);
-+
-+	/* Try to read from the page: should trigger fault, get poisoned, then SIGBUS */
-+	if (sigsetjmp(jmpbuf, 1) == 0) {
-+		LTP_VAR_USED(dummy) = page[0];
-+	}
-+
-+	SAFE_PTHREAD_JOIN(thr, NULL);
-+	reset_pages();
-+
-+	int poisoned = tst_atomic_load(&poison_fault_seen);
-+
-+	if (poisoned && sigbus_seen)
-+		tst_res(TPASS, "POISON successfully triggered SIGBUS");
-+	else if (poison_fault_seen && !sigbus_seen)
-+		tst_res(TFAIL, "POISON fault seen but no SIGBUS received");
-+	else if (!poison_fault_seen && sigbus_seen)
-+		tst_res(TFAIL, "SIGBUS received but no poison fault seen");
-+	else
-+		tst_res(TFAIL, "No poison fault or SIGBUS observed");
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = reset_pages,
-+};
+On Fri, 20 Feb 2026 16:47:07 +0100, Martin Doucha wrote:
+> Add test for reading basic fanotify events from a tracefs mount.
+> The test will activate monitoring of FAN_MODIFY events from the
+> whole mountpoint, create a new kprobe, activate it, deactivate it
+> and remove it again. This should generate exactly 4 FAN_MODIFY events.
+> 
+> On some kernels with badly backported tracefs fixes, this may trigger
+> NULL pointer dereference. The testcase is intentionally simple but
+> sufficient to trigger this kind of bug. More complex tracing subtests
+> can be added later.
+> 
+> [...]
+
+Applied, thanks!
+
+[1/2] tst_fs.h: Add TST_TRACEFS_MAGIC constant
+      commit: a510fbdd2e85eb0d736a1fe498e03340d4af21fe
+[2/2] Add test for fanotify monitoring of tracing filesystem
+      commit: 6d941650ab4b629b3c27423edbda08597106db5f
+
+Best regards,
 -- 
-2.53.0
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
