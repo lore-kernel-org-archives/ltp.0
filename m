@@ -4,77 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 088E8FD8FC3
-	for <ltp@archiver.kernel.org>; Thu, 26 Feb 2026 16:00:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3891EFD9E30
+	for <ltp@archiver.kernel.org>; Fri, 27 Feb 2026 03:10:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1772161799; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=19Swd9zvC75ruO7IJMWHBYVttmRIBMStSNllZ5qeqkw=;
+ b=LJUQKR/VlfUJUhsCHZvp3x/PmUzF6w/5dJ3iq5DKwO3pzAAFi2lOWB+U/tldI9LFjtrRi
+ Odyy5liQCt2Zt5VI1N7q6Oxdh9/GwTtlHOkTgp8mchCuIpw0GX+PxJQDlPhPd7gQGlG5NEY
+ 5tiVdQoo0t3WXE2een+ShyZtL6On5M8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9D8103CB98B
-	for <ltp@archiver.kernel.org>; Thu, 26 Feb 2026 17:00:15 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 766293CBD5D
+	for <ltp@archiver.kernel.org>; Fri, 27 Feb 2026 04:09:59 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6E5763CB962
- for <ltp@lists.linux.it>; Thu, 26 Feb 2026 16:59:56 +0100 (CET)
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
- [IPv6:2607:f8b0:4864:20::542])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3878C3C1844
+ for <ltp@lists.linux.it>; Fri, 27 Feb 2026 04:09:35 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 98D1D1400C74
- for <ltp@lists.linux.it>; Thu, 26 Feb 2026 16:59:55 +0100 (CET)
-Received: by mail-pg1-x542.google.com with SMTP id
- 41be03b00d2f7-c70bfef17a4so575740a12.2
- for <ltp@lists.linux.it>; Thu, 26 Feb 2026 07:59:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1772121594; x=1772726394; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=GPM0vIXpGnqLN0wcOhRaapuyrMeVwp3dDNiGfGq+0Uk=;
- b=HhvFWTBHQ/6gpPqPsOGg/Pk8r2JCx9nNzpzBJg1YhBxtIDTCWPlUTJvEWueH0l+hRw
- IJsiSbatp8PejODkgmZXJqRaj2BhfnJm2gsEgoywr9ojPVn6wMsqhR/w5q/qASuvZAN6
- G8f5zGJvKj08RYJaJJnkGRsyDOe3Nx2mQKbuVai1vqlXu9F7+f/+r1c7yd9yU4qhV02C
- M3hkFPzzAZsQEXbGq8GXN10pu3O5iYNxQU8dmNmZJsjYIgRviilEfNUctgYcdXo6dO61
- uqHu2JyOLgHTNYWYtdxoba0BY8l4Ol4z8FQhfyLWXnwwhF9iRAN2ZFYmE06fLMIBfUTS
- rQDw==
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 619D5600132
+ for <ltp@lists.linux.it>; Fri, 27 Feb 2026 04:09:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1772161773;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=JCEk9raIysVJTe5ZNy5MqPIzcO0Tx6ILf6ituIEagE8=;
+ b=Jrmnkfq8nioV/sfcV0D5ZfPojEtIpCat9xpICxD8k1eNEb6k/ZqiXzGfn2RNUJh7fDgNsE
+ w5mwFWoItxtPZN24udVBc6I9NCz6N2Abt82eWQGI9e1FDjZzQrRG253IJnukhyxOk0jn+6
+ 4rIKlx320QgW59jC3CUgnNTGRd59uso=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-288-jtoc_w_DPF-j_4Hv0voLgA-1; Thu, 26 Feb 2026 22:09:31 -0500
+X-MC-Unique: jtoc_w_DPF-j_4Hv0voLgA-1
+X-Mimecast-MFC-AGG-ID: jtoc_w_DPF-j_4Hv0voLgA_1772161770
+Received: by mail-pf1-f199.google.com with SMTP id
+ d2e1a72fcca58-82739e0f53fso5037066b3a.1
+ for <ltp@lists.linux.it>; Thu, 26 Feb 2026 19:09:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1772121594; x=1772726394;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=GPM0vIXpGnqLN0wcOhRaapuyrMeVwp3dDNiGfGq+0Uk=;
- b=oa16rPt+MIDjdht2gihbf9QwbD/CalnbzG5YnEQP3Y42Xl0Ks7UB1QrmvQjhxyOJAg
- eBJBmldFo1pBAZEW41eJ99SX3jfBrIzOA1joXJTiLpqVF5Tz2PTQoj6MTWIctrbRJcub
- 31kXiHfhPEqxH9XJYgDlBrgjFaYTMIUITe0yEs0AbEqnIcLeu1PZQLvy/Ia0Rd0PR+4D
- zMGUsilCJNBQnuObHIXj7gb/cIhg5DD5lSWnUwUGZ4t2BeyKjXCufU2HKmgswVAQVG8E
- mJsS+v3wd3qH4Oq53j6xHynOmvwKnTmysWSNybHMgqw0b24iZbUQtqL2g7y+JcI8RJNW
- GXVg==
-X-Gm-Message-State: AOJu0YyLmTEurtFmu0ffvBVL+H9k/a02OpJIOpdUgalB+WtUc2m5UEGm
- Y8ERAGkagvoQUiRHz/UY7HH2aLC5cIPcYDEvvgRyJ2YJG3t/L/taK4Br3nTUdMeViw==
-X-Gm-Gg: ATEYQzzlrHX/cCOJgF8qfC6W376karLDF5tv7arZSTaqNY/8R0Ga8vwMRgLqV7Hd0KI
- NivOMXs8AqOgu6ckbLqcUa3L9EQJjAQ8vtAkVoxLHkajWMthZENWqiVe0TgsEw5qiIMGDMP4sT9
- Iq6uNl9djbHGARfFq222Z6kGuKSi/y7x5vDQld7JUylXGzPnBwm8aVZY0h43ybAuu6msYPp/YKx
- w/aRdh5bNUfKLknTf5cLJQHbEPrMGrWMlkk/noD6RS0p+8eo9pEOhxsdO4jEwPGQTwksa8iPl7f
- xBL4uPcXN6oFutCTnlm6LaSTof+FfMVPukozQYtQ3lSMCcrh5Y0AWr/H+xcIBwZ3I1kI4E0V/40
- 56qhoLZVrqkiCs2RvQzug6DI/nYKaIWispMD/aY1nnsGL38Hoi1rNDDV/3izxp1bdsQ3WhT9J3r
- e1fBh9bEreLxXJG2ryDwjBzQAr2vl+JqLeHtWsox/Qug==
-X-Received: by 2002:a17:90b:288a:b0:335:2eef:4ca8 with SMTP id
- 98e67ed59e1d1-35928c34f6bmr4487201a91.33.1772121593589; 
- Thu, 26 Feb 2026 07:59:53 -0800 (PST)
-Received: from localhost.localdomain ([59.16.109.172])
- by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-35912ff8a92sm2607430a91.6.2026.02.26.07.59.52
- for <ltp@lists.linux.it>
+ d=1e100.net; s=20230601; t=1772161770; x=1772766570;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=JCEk9raIysVJTe5ZNy5MqPIzcO0Tx6ILf6ituIEagE8=;
+ b=Lh+JkiI4wWUJ8SbWiCKefL8F/2XKEfxlJib/bGFxGlxYjDevlu+CL0tcwG9VsjebCB
+ KkPoP8+l8W83Gb9Wx08UVMKiCA8StBd21g8M5ye4hv3K7E7cgf+zzDhyYEbeWEAP//Pk
+ dNuTBbV0azb4SvvN84rSBkUcQigsjYfVqgq8uPIWTfI946yyxpLk0GJRWCBEc2E8RBfV
+ d5Ypn/UdhMtXWA61NyX7YOyDMRVcoyAeGAy5akprHmwxDj2Qh91uDwBPpFRql7xLUm7I
+ S0nxpjGaEjnXhA90elsp0rWbjPc/Gsb/CboWEi8FbVLYeLoVxLESETahppfGk6bdokJN
+ WSBQ==
+X-Gm-Message-State: AOJu0YxrFxwfxzoyXihF/uy9aDYq8O023MYRK0QIOo3dKkeVxL29sPMk
+ VS7qEuF1CKv8tH6STcjfqquZbWn7qRNs/jhetySmCp+VdIgW4UkAGZR1TvN5Ssb0ABvEj8lXSGk
+ XgDYE9PatBUxsw4l0hlQZJuSboGb9WD4s6FeKsX0ek28gu6R9mnOxHWNiP85/
+X-Gm-Gg: ATEYQzxxqUs5bD+IDOslml4jNB+sY5iqpwA4kywHprFO4nipaoQc45WdJ5WSZ1CZirc
+ 5GDbgPymyV7d6dIgvu0T30WnjLwC601tseZ1fDutKj6iSpe/eHT6xR2etimD2cCX+ip/JMfrmDZ
+ RMMsz5fNHcWe1Es6BA2K6tygAeb4lUonGmIGKDokP04hm55zgIXHpvpHIcwXxTUY460Q92FksuQ
+ U4FL8cLAHK30HRtOx0XGqCqCGXPjswu4VmguM2ocpO3azZHLcUcEssh9Me1tdPOdIhZhfhGkyDU
+ ceXwfrPr/ALYvUWxDa821mRavo7lFJCwwbhUwrL6LT3S0V0nIDJW5dNEqybUFz07RiUcRrZagEM
+ qfp0m6caP17klnbpR
+X-Received: by 2002:a05:6a00:1825:b0:823:108c:5bae with SMTP id
+ d2e1a72fcca58-8274d908242mr1403431b3a.8.1772161769882; 
+ Thu, 26 Feb 2026 19:09:29 -0800 (PST)
+X-Received: by 2002:a05:6a00:1825:b0:823:108c:5bae with SMTP id
+ d2e1a72fcca58-8274d908242mr1403407b3a.8.1772161769524; 
+ Thu, 26 Feb 2026 19:09:29 -0800 (PST)
+Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-8273a059e89sm3630384b3a.60.2026.02.26.19.09.28
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 26 Feb 2026 07:59:53 -0800 (PST)
-From: Jinseok Kim <always.starving0@gmail.com>
-To: ltp@lists.linux.it
-Date: Fri, 27 Feb 2026 00:59:27 +0900
-Message-ID: <20260226155929.3500-1-always.starving0@gmail.com>
-X-Mailer: git-send-email 2.43.0
+ Thu, 26 Feb 2026 19:09:28 -0800 (PST)
+Date: Fri, 27 Feb 2026 11:09:26 +0800
+To: Jinseok Kim <always.starving0@gmail.com>
+Message-ID: <aaEK5hCnkPGedhQV@redhat.com>
+References: <20260226155929.3500-1-always.starving0@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+In-Reply-To: <20260226155929.3500-1-always.starving0@gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: n5bj5yjAShOxfkiqy48pEsHGkBeGNkZh9cI2nU3OFmg_1772161770
+X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] open: clean up make check findings
+Subject: Re: [LTP] [PATCH] open: clean up make check findings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,123 +106,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fix various issues reported by `make check` in open syscall tests:
 
-- Replace space indentation with tabs
-- Remove extra blank lines
-- Mark setup/cleanup helpers as static
-- Add missing SPDX-License-Identifier
-- Fix typo in error message
-- Fix documentation comments
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
----
- testcases/kernel/syscalls/open/open01.c       | 2 +-
- testcases/kernel/syscalls/open/open02.c       | 6 +++---
- testcases/kernel/syscalls/open/open03.c       | 2 --
- testcases/kernel/syscalls/open/open11.c       | 4 ++--
- testcases/kernel/syscalls/open/open12_child.c | 1 +
- testcases/kernel/syscalls/open/open14.c       | 2 +-
- 6 files changed, 8 insertions(+), 9 deletions(-)
+-- 
+Regards,
+Li Wang
 
-diff --git a/testcases/kernel/syscalls/open/open01.c b/testcases/kernel/syscalls/open/open01.c
-index 3ae1b269b..e5e598e56 100644
---- a/testcases/kernel/syscalls/open/open01.c
-+++ b/testcases/kernel/syscalls/open/open01.c
-@@ -5,7 +5,7 @@
-  *    06/2017 Modified by Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-  */
-
--/*
-+/*\
-  * DESCRIPTION
-  *	Open a file with oflag = O_CREAT set, does it set the sticky bit off?
-  *
-diff --git a/testcases/kernel/syscalls/open/open02.c b/testcases/kernel/syscalls/open/open02.c
-index e1c5cc5dc..30b129019 100644
---- a/testcases/kernel/syscalls/open/open02.c
-+++ b/testcases/kernel/syscalls/open/open02.c
-@@ -29,7 +29,7 @@ static struct tcase {
- 	{TEST_FILE2, O_RDONLY | O_NOATIME, EPERM, "unprivileged O_RDONLY | O_NOATIME"},
- };
-
--void setup(void)
-+static void setup(void)
- {
- 	struct passwd *ltpuser;
-
-@@ -45,10 +45,10 @@ static void verify_open(unsigned int n)
- 	struct tcase *tc = &tcases[n];
-
- 	TST_EXP_FAIL2(open(tc->filename, tc->flag, 0444),
--	             tc->exp_errno, "open() %s", tc->desc);
-+			tc->exp_errno, "open() %s", tc->desc);
- }
-
--void cleanup(void)
-+static void cleanup(void)
- {
- 	SAFE_SETEUID(0);
- }
-diff --git a/testcases/kernel/syscalls/open/open03.c b/testcases/kernel/syscalls/open/open03.c
-index 275ca84f0..53baf1028 100644
---- a/testcases/kernel/syscalls/open/open03.c
-+++ b/testcases/kernel/syscalls/open/open03.c
-@@ -19,8 +19,6 @@ static void verify_open(void)
- 	SAFE_UNLINK(TEST_FILE);
- }
-
--
--
- static struct tst_test test = {
- 	.needs_tmpdir = 1,
- 	.test_all = verify_open,
-diff --git a/testcases/kernel/syscalls/open/open11.c b/testcases/kernel/syscalls/open/open11.c
-index 6f89d558d..2d4b4e821 100644
---- a/testcases/kernel/syscalls/open/open11.c
-+++ b/testcases/kernel/syscalls/open/open11.c
-@@ -269,10 +269,10 @@ static void verify_open(unsigned int n)
- {
- 	if (tc[n].err > 0) {
- 		TST_EXP_FAIL2(open(tc[n].path, tc[n].flags, tc[n].mode),
--		             tc[n].err, "%s", tc[n].desc);
-+				tc[n].err, "%s", tc[n].desc);
- 	} else if (tc[n].err == 0) {
- 		TST_EXP_FD(open(tc[n].path, tc[n].flags, tc[n].mode),
--		           "%s", tc[n].desc);
-+				"%s", tc[n].desc);
- 	} else {
- 		TEST(open(tc[n].path, tc[n].flags, tc[n].mode));
- 		tst_res(TPASS, "%s", tc[n].desc);
-diff --git a/testcases/kernel/syscalls/open/open12_child.c b/testcases/kernel/syscalls/open/open12_child.c
-index a6dabd5d2..2c3411426 100644
---- a/testcases/kernel/syscalls/open/open12_child.c
-+++ b/testcases/kernel/syscalls/open/open12_child.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2014 Fujitsu Ltd.
-  * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-diff --git a/testcases/kernel/syscalls/open/open14.c b/testcases/kernel/syscalls/open/open14.c
-index a3c7d38a2..7f3babda3 100644
---- a/testcases/kernel/syscalls/open/open14.c
-+++ b/testcases/kernel/syscalls/open/open14.c
-@@ -108,7 +108,7 @@ static int read_file(int fd)
- 		SAFE_READ(0, fd, tmp, size);
-
- 		if (memcmp(buf, tmp, size)) {
--			tst_res(TFAIL, "got unexepected data");
-+			tst_res(TFAIL, "got unexpected data");
- 			return 1;
- 		}
- 	}
---
-2.43.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
