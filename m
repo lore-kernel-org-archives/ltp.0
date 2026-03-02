@@ -4,108 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93C12D58E7E
-	for <ltp@archiver.kernel.org>; Mon,  2 Mar 2026 08:57:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3BD0E9B34D
+	for <ltp@archiver.kernel.org>; Mon,  2 Mar 2026 10:00:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF94B3D71F5
-	for <ltp@archiver.kernel.org>; Mon,  2 Mar 2026 09:57:02 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 776C03D7BD2
+	for <ltp@archiver.kernel.org>; Mon,  2 Mar 2026 11:00:06 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 95D033D71F3
- for <ltp@lists.linux.it>; Mon,  2 Mar 2026 09:56:44 +0100 (CET)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id 607273C4C64
+ for <ltp@lists.linux.it>; Mon,  2 Mar 2026 10:59:47 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 78E976008A2
- for <ltp@lists.linux.it>; Mon,  2 Mar 2026 09:56:38 +0100 (CET)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 621Bt2j8856129; Mon, 2 Mar 2026 08:56:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=1El27Q
- CKTtfrHlGmBTm8EHBCChxJ6hQ9B/8CjPwSF0s=; b=EBGhOGCJoQgnSzhNGgRT9n
- Kz8PVIJsSke3ZkafIYjm9to9nZzTEeXsvNwYhuL9d9MM7EeXvdADJnGSufWBGc4o
- piIukgu7uDVPfM4Hb8hRnrjNEujDmQAzQF52MBsllNHoPjBMxuOK+OM4HVVOdVAH
- 7bgI5f+dMWKttKJbm3dxhe41c4lYnkDPrc95trIsozHdRYJ8akaLVMBzWtqlx5a6
- PQvQkLKj6TE2VkEIdIoN1++VOUNVgAxVNx+PoGGRfy96VN4RPh6AQpiZO2b+C917
- 5eyyzk4TnxGIlaYBzIe3P3kmFQaA/rYjtWwvG9bHqxosdnd+oCX62HNltU1IjGcA
- ==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ckskbnecr-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 02 Mar 2026 08:56:35 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 6224rQ5E003275;
- Mon, 2 Mar 2026 08:56:35 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cmb2xw6v7-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 02 Mar 2026 08:56:35 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
- [10.20.54.105])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 6228uXhT16449954
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 2 Mar 2026 08:56:33 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 28E34200EE;
- Mon,  2 Mar 2026 08:56:33 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C897B200ED;
- Mon,  2 Mar 2026 08:56:32 +0000 (GMT)
-Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com (unknown
- [9.111.13.140])
- by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Mon,  2 Mar 2026 08:56:32 +0000 (GMT)
-Date: Mon, 2 Mar 2026 09:56:31 +0100
-From: Jan Polensky <japo@linux.ibm.com>
-To: John Stultz <jstultz@google.com>,
- Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <aaVQv4A_KLXj929M@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
-References: <20260224104544.101292-1-japo@linux.ibm.com>
- <CANDhNCrrZY=5bvRQGGJsigjwRNmDz8shbtM-Vtn5UkdRDGU_uA@mail.gmail.com>
- <DGNXMJ74NVTB.2DY53W36K3GET@suse.com>
- <CANDhNCqASmDD99T_viiAnRz55otuNWAzvx-JL8Td8Q_=Qjwgyg@mail.gmail.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B07DA1000946
+ for <ltp@lists.linux.it>; Mon,  2 Mar 2026 10:59:46 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B2AC43F823;
+ Mon,  2 Mar 2026 09:59:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1772445585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gqBSyV5PL7jQFZWoJYdR4TC1110JfVTvhmobTe4LuM4=;
+ b=BI7Sl+kT34Zyu2gW+116c5eVJRsin7b/Htt+wVTEZ2wYp6PG7ux5mrYfOlSbaqGdW9VvJF
+ t53Pjde1EOdza2qCVpKEg9LqR3T/nXOowALxTRfi/oc//ZGBP4DBHWMr3vcA3m9zBXxYkh
+ tKE/olARxy+OWm4+eWctOeRKGROyCNg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1772445585;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gqBSyV5PL7jQFZWoJYdR4TC1110JfVTvhmobTe4LuM4=;
+ b=pmWk9kyinj/EYZUgnQ3w4WASkKNSQ+cRsMi+xV5w7veDBPgnH4NLwiedY+P6qbT4LYDaFE
+ pEb6i5VoWRoee9BQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=BI7Sl+kT;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=pmWk9kyi
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1772445585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gqBSyV5PL7jQFZWoJYdR4TC1110JfVTvhmobTe4LuM4=;
+ b=BI7Sl+kT34Zyu2gW+116c5eVJRsin7b/Htt+wVTEZ2wYp6PG7ux5mrYfOlSbaqGdW9VvJF
+ t53Pjde1EOdza2qCVpKEg9LqR3T/nXOowALxTRfi/oc//ZGBP4DBHWMr3vcA3m9zBXxYkh
+ tKE/olARxy+OWm4+eWctOeRKGROyCNg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1772445585;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gqBSyV5PL7jQFZWoJYdR4TC1110JfVTvhmobTe4LuM4=;
+ b=pmWk9kyinj/EYZUgnQ3w4WASkKNSQ+cRsMi+xV5w7veDBPgnH4NLwiedY+P6qbT4LYDaFE
+ pEb6i5VoWRoee9BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A0BCD3EA69;
+ Mon,  2 Mar 2026 09:59:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id atMSJpFfpWk+EgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 02 Mar 2026 09:59:45 +0000
+Date: Mon, 2 Mar 2026 10:59:54 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <aaVfmr0jWE-_4SYG@yuki.lan>
+References: <20260301012808.15588-1-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CANDhNCqASmDD99T_viiAnRz55otuNWAzvx-JL8Td8Q_=Qjwgyg@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-ORIG-GUID: xamNaVsHoMviv3JJzB36u9-do-FrjjYc
-X-Authority-Analysis: v=2.4 cv=b66/I9Gx c=1 sm=1 tr=0 ts=69a550c4 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=V8glGbnc2Ofi9Qvn3v5h:22 a=iox4zFpeAAAA:8
- a=VnNF1IyMAAAA:8 a=JtI1l0JFozdEsTxVanMA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=WzC6qhA0u3u7Ye7llzcV:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzAyMDA3NiBTYWx0ZWRfX3DLLzzgVaule
- b+nKZX83QTX+5zM9AyD0QbSq++ShkKvZS7JYyr+oyyHb7iTniCcf45VLRR6Bn1ufscYa4bVIw5V
- rwkXNv7ZJkKmSxOtpc1v9VViFFpdLe8FCqKwvPQpsKFKYssTH7AkW6IYpMrvlqE3EgqVjLSLyfw
- 5t6rW493YY7d4Tc9LdU4CHPrbci/dAKD8tnGhKR8exY9envSuMKzW+NxsamjCqrg4seX3/Ujdbo
- fOAauQ1tJVqP9Y3BELb554EX7dltIGZVxE00qnAk0UQnrNs6qGNslI2T8rfCFlG9LEbZFLyvQC5
- To/tYSRrH9eOEbvkpc92lovgdwEpWr/MJB2aQA/7r6LyUK5MhNt4EJFju6UrE3tR7L4ZMR3KFUn
- rBmiXrnzYnLxX1xyDi353eujy0By630vp36SvxXCmT7Xc6QlFvZ/p16/J5iNsy2K+bMT4hrFPjb
- HSrnCojczAI/UT2fpBw==
-X-Proofpoint-GUID: QYPJ95pNxZ5udxl9nq0I2fsDNwRPVPbc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-03-02_02,2026-02-27_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 lowpriorityscore=0 phishscore=0 clxscore=1011 adultscore=0
- bulkscore=0 impostorscore=0 malwarescore=0 spamscore=0 priorityscore=1501
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2603020076
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+In-Reply-To: <20260301012808.15588-1-liwang@redhat.com>
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-0.991]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email,yuki.lan:mid];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim, suse.cz:email,
+ imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Queue-Id: B2AC43F823
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/1] sched_football: harden kickoff
- synchronization on high-CPU systems
+Subject: Re: [LTP] [PATCH] lib: Extend -D flag to support multiple debug
+ levels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,62 +117,75 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>,
- Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gV2VkLCBGZWIgMjUsIDIwMjYgYXQgMTE6MTE6NTNBTSAtMDgwMCwgSm9obiBTdHVsdHogd3Jv
-dGU6Cj4gT24gV2VkLCBGZWIgMjUsIDIwMjYgYXQgMToyM+KAr0FNIEFuZHJlYSBDZXJ2ZXNhdG8K
-PiA8YW5kcmVhLmNlcnZlc2F0b0BzdXNlLmNvbT4gd3JvdGU6Cj4gPiBPbiBUdWUgRmViIDI0LCAy
-MDI2IGF0IDEwOjAzIFBNIENFVCwgSm9obiBTdHVsdHogdmlhIGx0cCB3cm90ZToKPiA+ID4gT24g
-VHVlLCBGZWIgMjQsIDIwMjYgYXQgMjo0NeKAr0FNIEphbiBQb2xlbnNreSA8amFwb0BsaW51eC5p
-Ym0uY29tPiB3cm90ZToKPiA+ID4gPgo+ID4gPiA+IFRoZSBzY2hlZF9mb290YmFsbCB0ZXN0IGhh
-cyBiZWVuIGludGVybWl0dGVudGx5IGZhaWxpbmcsIG1vc3Qgbm90aWNlYWJseQo+ID4gPiA+IG9u
-IHN5c3RlbXMgd2l0aCBtYW55IENQVXMgYW5kL29yIHVuZGVyIGxvYWQsIGR1ZSB0byBhIHN0YXJ0
-dXAgb3JkZXJpbmcKPiA+ID4gPiBob2xlIGFyb3VuZCBraWNrb2ZmLgo+ID4gPiA+Cj4gPiA+Cj4g
-PiA+IEkndmUgbm90IGhhZCB0aW1lIHRvIGNsb3NlbHkgcmV2aWV3IHlvdXIgc3VnZ2VzdGlvbiBo
-ZXJlLCBidXQgaXQKPiA+ID4gc291bmRzIHJlYXNvbmFibGUuCj4gPiA+Cj4gPiA+IFRoYXQgc2Fp
-ZCwgSSB3YW50IHRvIHdhcm4geW91IGFuZCBlbnN1cmUgeW91IGFyZSBhd2FyZTogdGhlCj4gPiA+
-IFJUX1BVU0hfSVBJIGZlYXR1cmUgaW4gdGhlIHNjaGVkdWxlciBicmVha3MgdGhlIFJUIGludmFy
-aWFudAo+ID4gPiBzY2hlZF9mb290YmFsbCBpcyB0ZXN0aW5nLgo+ID4gPgo+ID4gPiBJIHNlZSB0
-aGlzIGFzIGEgYnVnIHdpdGggdGhhdCBmZWF0dXJlLCBidXQgdGhlIHNjYWxhYmlsaXR5IFJUX1BV
-U0hfSVBJCj4gPiA+IGFsbG93cyBmb3Igc2VlbXMgbW9yZSBpbXBvcnRhbnQgdG8gZm9sa3Mgd2hv
-IGFyZSBkb2luZyBSVCB3b3JrIHRoZW4KPiA+ID4gdGhlIG1pcy1iZWhhdmlvci4gIFN0ZXZlbiBh
-bmQgSSB0YWxrZWQgYXdoaWxlIGJhY2sgYWJvdXQgc29tZSBpZGVhcyBvbgo+ID4gPiBob3cgd2Ug
-bWlnaHQgYmUgYWJsZSB0byBkbyB0aGUgcHVsbCBpbiBhIG1vcmUgZWZmaWNpZW50IHdheSB3aGls
-ZQo+ID4gPiBzdGlsbCBob2xkaW5nIHRoZSBpbnZhcmlhbnQgdHJ1ZSwgYW5kIEkgaGF2ZSBhIGJ1
-ZyB0byB0cmFjayBpdCwgYnV0Cj4gPiA+IGl0cyBub3QgYmVlbiBoaWdoIGVub3VnaCBwcmlvcml0
-eSB0byBnZXQgYmFuZHdpZHRoIHlldC4KPiA+ID4KPiA+ID4gU28geW91IG1pZ2h0IHdhbnQgdG8g
-bWFrZSBzdXJlIHlvdSBkaXNhYmxlIHRoYXQgZmVhdHVyZSBiZWZvcmUgdGVzdGluZyB2aWE6Cj4g
-PiA+ICMgZWNobyBOT19SVF9QVVNIX0lQSSA+IC9zeXMva2VybmVsL2RlYnVnL3NjaGVkL2ZlYXR1
-cmVzCj4gPiA+Cj4gPiA+IHRoYW5rcwo+ID4gPiAtam9obgo+ID4KPiA+IFRoYW5rcyBmb3IgeW91
-ciBkZWVwIGFuYWx5c2lzIG9uIHRoZSBwb3NzaWJsZSBpc3N1ZS4gSSdtIG5vdCBhbiBSVCBleHBl
-cnQsCj4gPiBidXQgSSB0cnVzdCB5b3VyIGV4cGVydGlzZSBpbiBoZXJlIDotKSBXaWxsIGxlYXZl
-IHRoaXMgcGF0Y2ggcmV2aWV3IHRvCj4gPiBzb21lb25lIHdobydzIG1vcmUgc2tpbGxlZCB0aGFu
-IG1lIGluIHRoaXMgdG9waWMuCj4gPgo+ID4gSSBoYXZlIGEgc3VnZ2VzdGlvbiB0aG8uCj4gPgo+
-ID4gQWJvdXQgdGhlIE5PX1JUX1BVU0hfSVBJLCB3ZSBhcmUgbHVja3k6IExUUCBwcm92aWRlcyBh
-IHNhZmUgbWVjaGFuaXNtIHRvCj4gPiBzZXQgdGhlIHN5cyBjb25maWd1cmF0aW9ucyBhbmQgdG8g
-cmVzdG9yZSBpdCB0byBkZWZhdWx0IHZhbHVlIGFmdGVyCj4gPiB0ZXN0LiBZb3UgY2FuIGZpbmQg
-dGhpcyBpbiB0aGUgYHN0cnVjdCB0c3RfdGVzdGAgYW5kIGl0J3MgY2FsbGVkCj4gPiBgLnNhdmVf
-cmVzdG9yZWAgWzFdCj4gPgo+ID4gSSB0aGluayBpdCdzIHdvcnRoIHRvIGZvcmNlIHRoaXMgb3B0
-aW9uIGFjY29yZGluZyB0byB0aGUgdW5kZXJseWluZwo+ID4gdmFyaWFudCAoYW5kIHByb3Blcmx5
-IGRvY3VtZW50IHRoaXMgaW4gdGhlIGNvZGUgd2l0aCBhIGNvbW1lbnQpLgo+ID4KPiA+IFdEWVQ/
-Cj4KPiBUaGF0IHNlZW1zIHJlYXNvbmFibGUsIGFzIGxvbmcgYXMgaXQncyBjbGVhcmx5IGxhYmVs
-ZWQgYXMgYSB3b3JrYXJvdW5kCj4gYW5kIGhvcGVmdWxseSBjYW4gYmUgZHJvcHBlZCAob3Iga2Vy
-bmVsIHZlcnNpb24gbGltaXRlZCkgd2hlbiB0aGUKPiBpc3N1ZSBpcyBmaW5hbGx5IGFkZHJlc3Nl
-ZC4KPgo+IHRoYW5rcwo+IC1qb2huCkhpIEFuZHJlYSwgaGkgSm9obiwKCnRoYW5rIHlvdSBmb3Ig
-dGhlIHRob3JvdWdoIHJldmlldyBhbmQgdGhlIGhlbHBmdWwgcmVtYXJrcy4KQWZ0ZXIgZ29pbmcg
-dGhyb3VnaCB0aGUgZmVlZGJhY2ssIEkgdGhpbmsgaXQgbWFrZXMgc2Vuc2UgdG8gc3RlcCBiYWNr
-IGFuZApyZXdvcmsgdGhlIHBhdGNoLiBUaGUgbWFpbiBvYmplY3RpdmUgaXMgdG8gZHJpdmUgdGhl
-IGZhaWx1cmUgcmF0ZSBkb3duIGFzCm11Y2ggYXMgcG9zc2libGUsIGFuZCB0aGUgY3VycmVudCB2
-ZXJzaW9uIHN0aWxsIHNob3dzIHdlYWtuZXNzZXMsCmVzcGVjaWFsbHkgd2l0aCByZXNwZWN0IHRv
-IHN0ZWFsIHRpbWUuIE9uIGhlYXZpbHkgbG9hZGVkIHN5c3RlbXMgSSBhbHNvCnN0aWxsIG9ic2Vy
-dmUgZnJlcXVlbnQgVEJST0sgcmVzdWx0cywgc28gdGhlIHRpbWluZyBjbGVhcmx5IG5lZWRzIGZ1
-cnRoZXIKdHVuaW5nLgpJIHdpbGwgdGFrZSBzb21lIHRpbWUgdG8gcmV2aXNpdCB0aGUgZGVzaWdu
-IGFuZCBpbmNvcnBvcmF0ZSB0aGVzZSBhc3BlY3RzCmJlZm9yZSBwb3N0aW5nIGEgcmV2aXNlZCB2
-ZXJzaW9uLgpUaGFua3MgYWdhaW4gZm9yIHlvdXIgY29tbWVudHMgYW5kIHN1Z2dlc3Rpb25zLgoK
-VGhhbmtzICYgR3JlZXRpbmdzCkphbgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xp
-c3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi!
+> This patch extends the LTP debugging framework by introducing multiple
+> levels of verbosity for the '-D' command line option. Instead of a simple
+> on/off toggle, it now allows developers to specify whether they want debug
+> output exclusively from the test process, or from both the test and library
+> processes.
+> 
+> The supported debug levels are:
+>   -D0     : Disable all debug logs (default behavior)
+>   -D1 (-D): Enable debug logs for the test process only
+>   -D2     : Enable verbose debug logs for both the test and library processes
+> 
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  doc/developers/debugging.rst |  6 ++++++
+>  lib/tst_test.c               | 25 +++++++++++++++----------
+>  2 files changed, 21 insertions(+), 10 deletions(-)
+> 
+> diff --git a/doc/developers/debugging.rst b/doc/developers/debugging.rst
+> index 181e5b096..8b5550b73 100644
+> --- a/doc/developers/debugging.rst
+> +++ b/doc/developers/debugging.rst
+> @@ -12,6 +12,12 @@ The LTP framework supports ``TDEBUG`` flag test debug messages. These
+>  messages can be enabled using the ``-D`` parameter or setting ``LTP_ENABLE_DEBUG=1``
+>  environment variable (see :doc:`../users/setup_tests`).
+>  
+> +The ``-D`` parameter also supports the following verbosity levels:
+> +
+> +  ``-D0``: Disable all debug logs (default behavior).
+> +  ``-D1`` (or ``-D``): Enable debug logs for the test process only.
+> +  ``-D2``: Enable verbose debug logs for both the test and library processes.
+> +
+>  Tracing and debugging syscalls
+>  ------------------------------
+>  
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 239494b6f..f7907223e 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -83,7 +83,7 @@ struct context {
+>  	tst_atomic_t abort_flag;
+>  	uint32_t mntpoint_mounted:1;
+>  	uint32_t ovl_mounted:1;
+> -	uint32_t tdebug:1;
+> +	uint32_t tdebug;
+>  };
+>  
+>  struct results {
+> @@ -217,7 +217,7 @@ void tst_reinit(void)
+>  	tst_max_futexes = (size - offsetof(struct ipc_region, futexes)) / sizeof(futex_t);
+>  
+>  	if (context->tdebug)
+> -		tst_res(TINFO, "Restored metadata for PID %d", getpid());
+> +		tst_res(TDEBUG, "Restored metadata for PID %d", getpid());
+
+I suppose that we do not need the if (context->tdebug) now.
+
+
+Otherwise it looks good.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
