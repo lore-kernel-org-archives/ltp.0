@@ -4,109 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A8E5EDA682
-	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 15:11:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCE4FEDA68E
+	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 15:46:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1772552817; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : mime-version : content-type : content-transfer-encoding :
+ sender : from; bh=s4Cd9H2McK4EQBI8mRNUQiIn96nxLednuoJjSsJDfZM=;
+ b=Ldsig9Q4ICDixaTVg5Em5PD4Agc+sSeSx63YpzDqHfF3B2rtMxTdZ/Jtco/WFucf7iMY4
+ AMy0IcQIHM/gsQb0x4mGaKbKhV/rw//PyqFBV0OPLchvC++PBlLUAGUoRnHMqFLlZFJl0EF
+ kjgiPn0A80R8LlSu+J5pwqy0ha0w9as=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7E42A3DAC8A
-	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 16:11:09 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 4D8593DAE58
+	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 16:46:57 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DCCA93CD7CC
- for <ltp@lists.linux.it>; Tue,  3 Mar 2026 16:10:51 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3FA6F3DAC03
+ for <ltp@lists.linux.it>; Tue,  3 Mar 2026 16:46:26 +0100 (CET)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4DF6B140033A
- for <ltp@lists.linux.it>; Tue,  3 Mar 2026 16:10:50 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 024E13F785;
- Tue,  3 Mar 2026 15:10:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1772550648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xSbW0B/UfO9Com5Ghj7khrZ/P9vX3+Clwy6KZuADbQ4=;
- b=WZ3JnMP+EPJhzYDkJPCEbOqs0JdK/L6kDrao9cX67f8XZrr3dZqOl5C12RozxA+KRc31QL
- T2KCtBY+q962/kC48iNNJ9N336v8TTCu3y1W2wW/WSmUPRQ9f66+gxEEgzskGeWb70mc1G
- rpS0ucFFQQHJUsslO7jPm+Z/8ajYMjM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1772550648;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xSbW0B/UfO9Com5Ghj7khrZ/P9vX3+Clwy6KZuADbQ4=;
- b=kH2Dx2CB3xPi4oTtzWidm4WglVtfHsiRNrx9cFoBKpdTXQ4np8/mX2VaaKl3hLY+1Gd5cE
- sesh07JheqLY/zAA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=WZ3JnMP+;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kH2Dx2CB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1772550648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xSbW0B/UfO9Com5Ghj7khrZ/P9vX3+Clwy6KZuADbQ4=;
- b=WZ3JnMP+EPJhzYDkJPCEbOqs0JdK/L6kDrao9cX67f8XZrr3dZqOl5C12RozxA+KRc31QL
- T2KCtBY+q962/kC48iNNJ9N336v8TTCu3y1W2wW/WSmUPRQ9f66+gxEEgzskGeWb70mc1G
- rpS0ucFFQQHJUsslO7jPm+Z/8ajYMjM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1772550648;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xSbW0B/UfO9Com5Ghj7khrZ/P9vX3+Clwy6KZuADbQ4=;
- b=kH2Dx2CB3xPi4oTtzWidm4WglVtfHsiRNrx9cFoBKpdTXQ4np8/mX2VaaKl3hLY+1Gd5cE
- sesh07JheqLY/zAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E52AF3EA69;
- Tue,  3 Mar 2026 15:10:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id IApwNvf5pmkuPAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 03 Mar 2026 15:10:47 +0000
-Date: Tue, 3 Mar 2026 16:10:57 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Pavithra <pavrampu@linux.ibm.com>
-Message-ID: <aab6ARSEiksAxyJ-@yuki.lan>
-References: <20250925061314.1015138-1-pavrampu@linux.ibm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250925061314.1015138-1-pavrampu@linux.ibm.com>
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCPT_COUNT_THREE(0.00)[3];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 024E13F785
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9D25B2009A5
+ for <ltp@lists.linux.it>; Tue,  3 Mar 2026 16:46:25 +0100 (CET)
+Received: by mail-wm1-x335.google.com with SMTP id
+ 5b1f17b1804b1-4837584120eso42628005e9.1
+ for <ltp@lists.linux.it>; Tue, 03 Mar 2026 07:46:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1772552785; x=1773157585; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=JlNMjAz/v9hE9+E6wP8WUf+noUs9P2BtkOSC9k34nEk=;
+ b=C5qWssWSq9TqEO6BHLnJoHl7fBVxoEqAOO0Qyc1b4QReJb8nnxZG0GPGNr+0Nl/od8
+ nU/bdmX5/7yKYt32m2MG84cFCs7tMbZWcMdewjRccKYN9M4wqxB+B+Yer/EooZn0GmQB
+ PMewzZYlfS4xiq60MlebZXDSt1dAmQwTrU3d/3wxIIippuCeJsRqayvwKmRt4t4WBEXf
+ ZaIYYrvcvY3dAI4r4G6KEVm1vYVN48lgd956CpJazB20V/ZsipnenanPPzITcm071tcj
+ 4uY4L6sQsqCaa7Pk6vcYSqCIaStsWu4fxByDdgQFba4M2q/0l+oSIJut5+ileNhUAICu
+ 1EUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1772552785; x=1773157585;
+ h=date:content-transfer-encoding:subject:in-reply-to:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=JlNMjAz/v9hE9+E6wP8WUf+noUs9P2BtkOSC9k34nEk=;
+ b=XLwSIcClHQa2xIu8fgC/5HvsWgMQ7m1WJfv4wpD31IPAWVzZYm8OlZZX9BO4LxxWqy
+ D5j5cycKIqw7KscWNrIXgPE2eaJMCf6qV2TmZ1B8YRvbrcxIF9co8MdjHReJ2YYh83Lq
+ G25SG+AziF8P0YJod3fWE0/mfrL2dRAhnlyoQelpQxKgxZrFzfFQvWqODL/RQrKh8CVT
+ zB+cwf/OKHD43aDpY/hyd6FMtmPaHSAPiqYYX9JJH+Ra2cQifeCJx3hSk5t3M9cf6CMI
+ 2G5H5VMxrOzeIG4+ecggkwLOkclIFhIt5dgmjJLPw2fo9lKMKxCbWJek8K7VEROtBE/m
+ Og7g==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUaXgno2dCi01/cioUieUVVnTd7ZtaO3pcjJUn6JjKOR23cHXgZhMZBV2re1aeyaD5d5Ms=@lists.linux.it
+X-Gm-Message-State: AOJu0YyhFxN+4/eEuU/YAD1SP7unpLjJm/kf6c5W//ekH4SRZGfeMZjq
+ 8Gt+5wasYuCq+XEL16tT2eceuB/eTBz8F1imj8s/PW6MEamjY5oD5aC2fSMl7KRAk4T2E0YZguz
+ jZrRhVjE=
+X-Gm-Gg: ATEYQzwyrWRkZXUGtwacdkIFtNH+qrD3qaLRRZaUnsLev5CyAciUxipsLRbp1G7aG+f
+ mVSmzQ1hYqC3GERzk9W2SbDw2tZp+AXkDpOHKD6Z4yPMTmxkes9JkrrOXTnKGHmvz7zIPuxITkr
+ OZhPixiieaaZSWCx6bYIQWKfown2ABDoxXQqX+np+4kucKVK+owIY9c+YkDLv4oLOGTmqPNnHdZ
+ 1EAdEy/s3XPszu5Ylth9yCHEHvbLsbFblsjJUVwep1q6D3RZiEhJuMkb04kP9kQTFZO+esWyufR
+ etPZIhfazLDgGpQ2+eYrtX2hQhJlzWUa2aqPvB0yIpExYSGo664CBVD9vShrQ6fAmq7z5V7yZ8M
+ SNe0RBAqisew+4Fhwsjw2GtuZfsxylnxA/O3nNAIAcRhRTNMBCOEDaXoEgOVGJnX9a3bs/NaEuR
+ LcrxvXzGd8OsSmy5zA5oImiizbfRLzS5JY4049o96X
+X-Received: by 2002:a05:600c:3b99:b0:483:71f7:2796 with SMTP id
+ 5b1f17b1804b1-483c9b9d99cmr299255415e9.10.1772552784782; 
+ Tue, 03 Mar 2026 07:46:24 -0800 (PST)
+Received: from localhost.localdomain ([88.128.90.78])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-48516f74a1dsm13200875e9.2.2026.03.03.07.46.24
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 03 Mar 2026 07:46:24 -0800 (PST)
+Message-ID: <69a70250.050a0220.3bc433.165d@mx.google.com>
+To: "Jinseok Kim" <always.starving0@gmail.com>, ltp@lists.linux.it
+In-Reply-To: <20260301165726.4984-1-always.starving0@gmail.com>
+Date: Tue, 03 Mar 2026 15:46:23 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH]  [PATCH] Add hugemmap37,
- migrated task-size-overrun.c from libhugetlbfs v2
+Subject: Re: [LTP] [PATCH] inotify: clean up build and make check findings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,170 +95,166 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, Pavithra <pavrampu@linux.vnet.ibm.com>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +/*\
-> + *[Descripiton]
-> + *
-> + * Origin: https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/task-size-overrun.c
-> + *
-> + * This test verifies the behavior of mmap across the TASK_SIZE boundary.
-> + * It checks whether mmap with and without MAP_FIXED correctly handles
-> + * mappings that straddle the TASK_SIZE boundary.
-> + *
-> + */
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include <sys/mman.h>
-> +#include <errno.h>
-> +#include <assert.h>
-> +
-> +#include "hugetlb.h"
-> +#include "tst_test.h"
-> +#include "tst_safe_stdio.h"
-> +#include "tst_safe_macros.h"
-> +
-> +#define MAPS_BUF_SZ 4096
-> +#define _LARGEFILE64_SOURCE
-> +#define MNTPOINT "hugetlbfs/"
-> +#define ALIGN(x, a) (((x) + (a) - 1) & ~((a) - 1))
 
-We have LTP_ALIGN() macro in the test library.
-
-> +static long hpage_size;
-> +static int fd;
-> +
-> +static unsigned long find_last_mapped(void)
-> +{
-> +	char line[MAPS_BUF_SZ];
-> +	char *tmp;
-> +	unsigned long start, end, off, ino;
-> +	FILE *f;
-> +
-> +	f = SAFE_FOPEN("/proc/self/maps", "r");
-> +	do {
-> +		tmp = fgets(line, MAPS_BUF_SZ, f);
-> +	} while (tmp);
-> +	SAFE_FCLOSE(f);
-> +
-> +	tst_res(TINFO, "Last map: %s", line);
-> +	SAFE_SSCANF(line, "%lx-%lx %*s %lx %*s %ld %*s", &start, &end, &off, &ino);
-> +	tst_res(TINFO, "Last map: at 0x%lx-0x%lx\n", start, end);
-> +	return end;
-> +}
-> +
-> +static unsigned long find_task_size(void)
-> +{
-> +	unsigned long low, high; /* PFNs */
-> +	void *p;
-> +
-> +	low = find_last_mapped();
-> +	if (!low || ((low % getpagesize()) != 0))
-> +		tst_brk(TBROK, "Bogus stack end address, 0x%lx!?", low);
-
-The last mapping in /proc/self/maps on my systems is [vsyscall] which is
-mapped at the end of the address space. I guess that we need to take
-last line from the file that is not [vsyscall] (and perhaps there are
-other special cases on some architectures but that can be fixed later).
-
-> +	low = low / getpagesize();
-> +
-> +	/* This sum should get us (2^(wordsize) - 2 pages) */
-> +	high = (unsigned long)(-2 * getpagesize()) / tst_get_hugepage_size();
-
-I do not get this at all. We are trying to figure out TASK_SIZE how
-exactly do we figure out the upper bound from hugepage size?
-
-> +	tst_res(TINFO, "Binary searching for task size PFNs 0x%lx..0x%lx\n", low, high);
-> +
-> +	while (high > low + 1) {
-> +		unsigned long pfn = (low + high) / 2;
-> +		unsigned long addr = pfn * getpagesize();
-> +
-> +		assert((pfn >= low) && (pfn <= high));
-
-As long as I can tell this assert is never triggered.
-
-> +		p = mmap((void *)addr, getpagesize(), PROT_READ,
-> +			   MAP_PRIVATE|MAP_ANONYMOUS|MAP_FIXED, -1, 0);
-> +		if (p == MAP_FAILED) {
-> +			tst_res(TINFO | TERRNO, "Map failed at 0x%lx", addr);
-> +			high = pfn;
-> +		} else {
-> +			tst_res(TINFO, "Map succeeded at 0x%lx\n", addr);
-> +			SAFE_MUNMAP(p, getpagesize());
-> +			low = pfn;
-> +		}
-> +	}
-> +
-> +	return low * getpagesize();
-> +}
-> +
-> +static void run_test(void)
-> +{
-> +	void *p;
-> +	unsigned long task_size;
-> +	unsigned long straddle_addr;
-> +
-> +	task_size = find_task_size();
-> +	tst_res(TINFO, "TASK_SIZE = 0x%lx\n", task_size);
-> +
-> +	straddle_addr = task_size - hpage_size;
-> +	straddle_addr = ALIGN(straddle_addr, hpage_size);
-> +
-> +	tst_res(TINFO, "Mapping without MAP_FIXED at %lx...", straddle_addr);
-> +	errno = 0;
-> +	p = mmap((void *)straddle_addr, 2*hpage_size, PROT_READ|PROT_WRITE,
-> +		 MAP_SHARED, fd, 0);
-> +	if (p == (void *)straddle_addr)
-> +		tst_res(TFAIL, "Apparently suceeded in mapping across TASK_SIZE boundary");
-> +
-> +	tst_res(TINFO, "Mapping with MAP_FIXED at %lx...", straddle_addr);
-> +	errno = 0;
-> +	p = mmap((void *)straddle_addr, 2*hpage_size, PROT_READ|PROT_WRITE,
-> +		 MAP_SHARED|MAP_FIXED, fd, 0);
-> +	if (p != MAP_FAILED)
-> +		tst_res(TFAIL, "Apparently suceeded in mapping across TASK_SIZE boundary");
-> +
-> +	tst_res(TPASS, "Test passed!");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	hpage_size = getpagesize();
-> +	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.needs_hugetlbfs = 1,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run_test,
-> +	.hugepages = {3, TST_NEEDS},
-> +};
-> -- 
-> 2.43.5
+> Fix various issues reported by `make` and `make check`:
 > 
+> - Drop ENOSYS-based logic and rely on TERRNO reporting
+> - Silence known format-truncation warnings locally
+> - Clean up string handling and permissions
+> - Fix minor style and prototype issues
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+This is a lot of stuff for a single commit :-) we might need to separate
+these changes into multiple commits.
+
+> 
+> Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
+> ---
+>  testcases/kernel/syscalls/inotify/Makefile    |  1 +
+>  testcases/kernel/syscalls/inotify/inotify.h   | 13 +++-------
+>  testcases/kernel/syscalls/inotify/inotify01.c |  4 ++-
+>  testcases/kernel/syscalls/inotify/inotify02.c | 26 ++++++++++---------
+>  testcases/kernel/syscalls/inotify/inotify03.c |  5 ++--
+>  testcases/kernel/syscalls/inotify/inotify04.c | 23 ++++++++--------
+>  testcases/kernel/syscalls/inotify/inotify05.c |  2 +-
+>  testcases/kernel/syscalls/inotify/inotify07.c | 16 ++++++------
+>  testcases/kernel/syscalls/inotify/inotify08.c |  5 ++--
+>  testcases/kernel/syscalls/inotify/inotify10.c | 18 +++++++------
+>  10 files changed, 58 insertions(+), 55 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/inotify/Makefile b/testcases/kernel/syscalls/inotify/Makefile
+> index 16d430864..57124c739 100644
+> --- a/testcases/kernel/syscalls/inotify/Makefile
+> +++ b/testcases/kernel/syscalls/inotify/Makefile
+> @@ -4,6 +4,7 @@
+>  top_srcdir		?= ../../../..
+> 
+>  include $(top_srcdir)/include/mk/testcases.mk
+> +inotify02: CFLAGS+=-Wno-format-truncation
+
+uhm? Is it really needed?
+
+>  inotify09: CFLAGS+=-pthread
+>  inotify09: LDLIBS+=-lrt
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/inotify/inotify.h b/testcases/kernel/syscalls/inotify/inotify.h
+> index dbf814902..1bc36defa 100644
+> --- a/testcases/kernel/syscalls/inotify/inotify.h
+> +++ b/testcases/kernel/syscalls/inotify/inotify.h
+> @@ -1,4 +1,4 @@
+> -// SPDX-License-Identifier: GPL-2.0-or-later
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+>  /*
+>   * inotify testcase common definitions.
+>   *
+> @@ -33,14 +33,8 @@
+>  static inline int safe_myinotify_init(const char *file, const int lineno, int fd)
+>  {
+>  	if (fd < 0) {
+> -		if (errno == ENOSYS) {
+> -			tst_brk(TCONF,
+> -				"%s:%d: inotify is not configured in this kernel",
+
+Here we are suppressing a TCONF and threating everything as TERRNO. This
+needs to be reverted.
+
+> +		tst_brk(TBROK | TERRNO, "%s:%d: inotify_init failed",
+>  				file, lineno);
+> -		} else {
+> -			tst_brk(TBROK | TERRNO, "%s:%d: inotify_init failed",
+> -				file, lineno);
+> -		}
+>  	}
+>  	return fd;
+>  }
+> @@ -51,7 +45,8 @@ static inline int safe_myinotify_init(const char *file, const int lineno, int fd
+>  #define SAFE_MYINOTIFY_INIT1(flags) \
+>  	safe_myinotify_init(__FILE__, __LINE__, myinotify_init1(flags))
+> 
+> -static inline int safe_myinotify_watch(const char *file, const int lineno, int wd, int fd, const char* fname, const char* mask)
+> +static inline int safe_myinotify_watch(const char *file, const int lineno, int wd,
+> +				       int fd, const char *fname, const char *mask)
+>  {
+>  	if (wd < 0) {
+>  		tst_brk(TBROK | TERRNO,
+> diff --git a/testcases/kernel/syscalls/inotify/inotify01.c b/testcases/kernel/syscalls/inotify/inotify01.c
+> index 972b1025e..12aadf862 100644
+> --- a/testcases/kernel/syscalls/inotify/inotify01.c
+> +++ b/testcases/kernel/syscalls/inotify/inotify01.c
+> @@ -40,7 +40,7 @@ static unsigned int event_set[EVENT_MAX];
+> 
+>  static char event_buf[EVENT_BUF_LEN];
+> 
+> -void verify_inotify(void)
+> +static void verify_inotify(void)
+>  {
+>  	int test_cnt = 0;
+> 
+> @@ -79,6 +79,7 @@ void verify_inotify(void)
+>  	 * get list of events
+>  	 */
+>  	int len, i = 0, test_num = 0;
+> +
+>  	len = SAFE_READ(0, fd_notify, event_buf, EVENT_BUF_LEN);
+> 
+>  	/*
+> @@ -86,6 +87,7 @@ void verify_inotify(void)
+>  	 */
+>  	while (i < len) {
+>  		struct inotify_event *event;
+> +
+>  		event = (struct inotify_event *)&event_buf[i];
+>  		if (test_num >= test_cnt) {
+>  			tst_res(TFAIL,
+> diff --git a/testcases/kernel/syscalls/inotify/inotify02.c b/testcases/kernel/syscalls/inotify/inotify02.c
+> index 314c1bd49..5f288b270 100644
+> --- a/testcases/kernel/syscalls/inotify/inotify02.c
+> +++ b/testcases/kernel/syscalls/inotify/inotify02.c
+> @@ -43,6 +43,7 @@ struct event_t {
+>  	char name[BUF_SIZE];
+>  	unsigned int mask;
+>  };
+> +
+>  #define FILE_NAME1 "test_file1"
+>  #define FILE_NAME2 "test_file2"
+> 
+> @@ -50,7 +51,7 @@ static struct event_t event_set[EVENT_MAX];
+> 
+>  static char event_buf[EVENT_BUF_LEN];
+> 
+> -void verify_inotify(void)
+> +static void verify_inotify(void)
+>  {
+>  	unsigned int stored_cookie = UINT_MAX;
+> 
+> @@ -61,40 +62,40 @@ void verify_inotify(void)
+>  	 */
+>  	SAFE_CHMOD(".", 0755);
+>  	event_set[test_cnt].mask = IN_ISDIR | IN_ATTRIB;
+> -	strcpy(event_set[test_cnt].name, "");
+> +	snprintf(event_set[test_cnt].name, sizeof(event_set[test_cnt].name), "%s", "");
+
+This is quite an overkill. To reset a string in C you just need
+
+  buff[0] = '\0';
+
+And the same for the others.. also make sure that boundaries are
+correct, because I have the feeling we might easily overbound memories
+when using snprintf() here.
+
+Kind regards,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
