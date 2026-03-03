@@ -4,76 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63C90EB365B
-	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 03:24:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1772508250; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=IWjSnvrSaEc4DKlDqp/F3h7EdW4gx9hRGz5AyXUe9hg=;
- b=SI6w7PjmeSV5ostDEuYvWnjxiIqAvsmlkaTDo61nOH+WKNXxKJo8NUrcWmvHgdZMtHlkU
- 9PKkLMTEQUlK/Kdr/imiXTgvsHpTR7tClsUN1aGbjhpBggiAL1ReE4tKd4ayydsIS0ZsHCO
- SZmUnUv/Xvv5kSa3OaZu2Lgsf5GCgh0=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2676D58E49
+	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 08:53:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 179273D8485
-	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 04:24:10 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 0FE803DA362
+	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 09:53:13 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CC05B3D8487
- for <ltp@lists.linux.it>; Tue,  3 Mar 2026 04:23:25 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id DCA213D9251
+ for <ltp@lists.linux.it>; Tue,  3 Mar 2026 09:52:51 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4025510006AF
- for <ltp@lists.linux.it>; Tue,  3 Mar 2026 04:23:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1772508203;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6D7A8600952
+ for <ltp@lists.linux.it>; Tue,  3 Mar 2026 09:52:51 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F3EC75BDFA;
+ Tue,  3 Mar 2026 08:52:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1772527970;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Nn7TxjSghwFVVn1FbKnUsYZ+BHQkTuhmIMvK0rFDIwA=;
- b=PwJLjqXD6NM8DLBEINaeN5UEWopore0HsNk4ZckAX2CnKrQPKyx1IFUxPHwrQZX16Iw4CZ
- /B9/L/zO4uBkaaHgqgvuiNxTwXny176N7GK+O0Ka5d0o0TSb7gjkuMyTGvBFUamOwfVd3K
- j1UzBkt20lrUq0+lpoGWl09ogn15c4c=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-596-nDWNyOFiMee_OPLQxRWyHQ-1; Mon,
- 02 Mar 2026 22:23:22 -0500
-X-MC-Unique: nDWNyOFiMee_OPLQxRWyHQ-1
-X-Mimecast-MFC-AGG-ID: nDWNyOFiMee_OPLQxRWyHQ_1772508201
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+ bh=uwV/rk47DLHN/fPCuBfFzhTDMRhO+V/iRqbRZXIYSvA=;
+ b=MJqTWKmNTfdq5GtFb5fsn4+TdW0lbiIyTiEgATWM3liv3Y7zOQvZB4l9oGxms+Gm8bdKhS
+ OxdPLjIQufoODqQSckACbNiSDfdDywxp4GrMshWroUNvcZnaZZ9/N++iZXe3FIpVUTkzXW
+ XzQ+XrYDTPYfVSCdJo2EpTDTiDZhaVM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1772527970;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=uwV/rk47DLHN/fPCuBfFzhTDMRhO+V/iRqbRZXIYSvA=;
+ b=4dtFK4As/YCHt96WUO5zS/nGytG5wMEhdQ7KQsvwCPqzWsM+7JJ4yWirrStN9LlY9epZBH
+ cisVjtSTyfS1iXAg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1772527970;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=uwV/rk47DLHN/fPCuBfFzhTDMRhO+V/iRqbRZXIYSvA=;
+ b=MJqTWKmNTfdq5GtFb5fsn4+TdW0lbiIyTiEgATWM3liv3Y7zOQvZB4l9oGxms+Gm8bdKhS
+ OxdPLjIQufoODqQSckACbNiSDfdDywxp4GrMshWroUNvcZnaZZ9/N++iZXe3FIpVUTkzXW
+ XzQ+XrYDTPYfVSCdJo2EpTDTiDZhaVM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1772527970;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=uwV/rk47DLHN/fPCuBfFzhTDMRhO+V/iRqbRZXIYSvA=;
+ b=4dtFK4As/YCHt96WUO5zS/nGytG5wMEhdQ7KQsvwCPqzWsM+7JJ4yWirrStN9LlY9epZBH
+ cisVjtSTyfS1iXAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 3DEA01956094; Tue,  3 Mar 2026 03:23:21 +0000 (UTC)
-Received: from fedora-laptop-x1.redhat.com (unknown [10.72.116.25])
- by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 4644A1800576; Tue,  3 Mar 2026 03:23:18 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue,  3 Mar 2026 11:23:11 +0800
-Message-ID: <20260303032311.38988-2-liwang@redhat.com>
-In-Reply-To: <20260303032311.38988-1-liwang@redhat.com>
-References: <20260303032311.38988-1-liwang@redhat.com>
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D10C53EA69;
+ Tue,  3 Mar 2026 08:52:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id nZopMmGhpmmrIwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 03 Mar 2026 08:52:49 +0000
+Date: Tue, 3 Mar 2026 09:52:48 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Message-ID: <20260303085248.GA301671@pevik>
+References: <20260302144446.1291724-1-amir73il@gmail.com>
+ <aaWvOIlfyIDH7J8A@yuki.lan>
+ <CAOQ4uxhpcC76cpj21Dv-279FnVgHLSjCXmYKxu526jV-Uo7G_w@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: IJ60y0LB7PXfvLXEHcxZii0906DwzOq_k9bUCXoYHPY_1772508201
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxhpcC76cpj21Dv-279FnVgHLSjCXmYKxu526jV-Uo7G_w@mail.gmail.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MISSING_XM_UA(0.00)[]; FREEMAIL_TO(0.00)[gmail.com];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ RCPT_COUNT_FIVE(0.00)[6]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] lib: Extend LTP_ENABLE_DEBUG to support
- verbosity levels
+Subject: Re: [LTP] [PATCH] fanotify25: fix test failure on kernel with
+ CONFIG_MODULES=n
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,91 +118,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Following the introduction of verbosity levels for the `-D` command line
-flag, this patch extends the `LTP_ENABLE_DEBUG` environment variable to
-support the same levels (0, 1, and 2).
-
-Previously, `LTP_ENABLE_DEBUG` acted as a simple boolean toggle. It now
-mirrors the behavior of `-D`, allowing developers to specify the exact
-level of debug verbosity required from the environment.
-
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- doc/developers/debugging.rst     |  2 +-
- lib/newlib_tests/tst_res_flags.c |  2 +-
- lib/tst_test.c                   | 16 ++++++++++++----
- 3 files changed, 14 insertions(+), 6 deletions(-)
-
-diff --git a/doc/developers/debugging.rst b/doc/developers/debugging.rst
-index 8b5550b73..741924f0b 100644
---- a/doc/developers/debugging.rst
-+++ b/doc/developers/debugging.rst
-@@ -9,7 +9,7 @@ Debug messages
- --------------
- 
- The LTP framework supports ``TDEBUG`` flag test debug messages. These
--messages can be enabled using the ``-D`` parameter or setting ``LTP_ENABLE_DEBUG=1``
-+messages can be enabled using the ``-D[0-2]`` parameter or setting ``LTP_ENABLE_DEBUG=0,1,2``
- environment variable (see :doc:`../users/setup_tests`).
- 
- The ``-D`` parameter also supports the following verbosity levels:
-diff --git a/lib/newlib_tests/tst_res_flags.c b/lib/newlib_tests/tst_res_flags.c
-index a14f0df2c..83477fc98 100644
---- a/lib/newlib_tests/tst_res_flags.c
-+++ b/lib/newlib_tests/tst_res_flags.c
-@@ -21,7 +21,7 @@ static struct tcase {
- 	{FLAG(TCONF)},
- 	{FLAG(TWARN)},
- 	{FLAG(TINFO)},
--	{FLAG(TDEBUG), " (printed only with -D or LTP_ENABLE_DEBUG=1)"},
-+	{FLAG(TDEBUG), " (printed only with -D[0-2] or LTP_ENABLE_DEBUG=0,1,2)"},
- };
- 
- static void do_cleanup(void)
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 3b21a8639..2dc3704c4 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -675,7 +675,7 @@ static void print_help(void)
- 	fprintf(stderr, "LTP_COLORIZE_OUTPUT      Force colorized output behaviour (y/1 always, n/0: never)\n");
- 	fprintf(stderr, "LTP_DEV                  Path to the block device to be used (for .needs_device)\n");
- 	fprintf(stderr, "LTP_DEV_FS_TYPE          Filesystem used for testing (default: %s)\n", DEFAULT_FS_TYPE);
--	fprintf(stderr, "LTP_ENABLE_DEBUG         Print debug messages (set 1 or y)\n");
-+	fprintf(stderr, "LTP_ENABLE_DEBUG         Print debug messages (set 0, 1 (y) or 2)\n");
- 	fprintf(stderr, "LTP_REPRODUCIBLE_OUTPUT  Values 1 or y discard the actual content of the messages printed by the test\n");
- 	fprintf(stderr, "LTP_QUIET                Values 1 or y will suppress printing TCONF, TWARN, TINFO, and TDEBUG messages\n");
- 	fprintf(stderr, "LTP_SINGLE_FS_TYPE       Specifies filesystem instead all supported (for .all_filesystems)\n");
-@@ -1444,9 +1444,17 @@ static void do_setup(int argc, char *argv[])
- 
- 	parse_opts(argc, argv);
- 
--	if (tdebug_env && (!strcmp(tdebug_env, "1") || !strcmp(tdebug_env, "y"))) {
--		tst_res(TINFO, "Enabling debug info");
--		context->tdebug = 1;
-+	if (tdebug_env) {
-+		if (!strcmp(tdebug_env, "0"))
-+			context->tdebug = 0;
-+		else if (!strcmp(tdebug_env, "2"))
-+			context->tdebug = 2;
-+		else if (!strcmp(tdebug_env, "1") || !strcmp(tdebug_env, "y"))
-+			context->tdebug = 1;
-+		else
-+			tst_res(TWARN, "Invalid LTP_ENABLE_DEBUG value: %s", tdebug_env);
-+
-+		tst_res(TINFO, "Enabling debug info (level %d)", context->tdebug);
- 	}
- 
- 	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
--- 
-2.53.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+PiBPbiBNb24sIE1hciAyLCAyMDI2IGF0IDQ6MznigK9QTSBDeXJpbCBIcnViaXMgPGNocnViaXNA
+c3VzZS5jej4gd3JvdGU6Cgo+ID4gSGkhCj4gPiA+IFNpZ25lZC1vZmYtYnk6IEFtaXIgR29sZHN0
+ZWluIDxhbWlyNzNpbEBnbWFpbC5jb20+Cj4gPiA+IC0tLQo+ID4gPiAgdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeTI1LmMgfCA4ICsrKystLS0tCj4gPiA+ICAxIGZp
+bGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKPiA+ID4gZGlmZiAt
+LWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZmFub3RpZnkvZmFub3RpZnkyNS5jIGIv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeTI1LmMKPiA+ID4gaW5k
+ZXggYzk4MmYzMjI1Li45YjAzZmQ5YWIgMTAwNjQ0Cj4gPiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvZmFub3RpZnkvZmFub3RpZnkyNS5jCj4gPiA+ICsrKyBiL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvZmFub3RpZnkvZmFub3RpZnkyNS5jCj4gPiA+IEBAIC0yNCwxMCArMjQs
+MTAgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCB0cmFjZWNvbmZpZyB7Cj4gPiA+ICAgICAgIGNvbnN0
+IGNoYXIgKmZpbGVuYW1lOwo+ID4gPiAgICAgICBjb25zdCBjaGFyICp3ZGF0YTsKPiA+ID4gIH0g
+dHJhY2VfY21kc1tdID0gewo+ID4gPiAtICAgICB7RVZFTlRTX1NZU0ZJTEUsICJwOmx0cF9sb2Fk
+X21vZHVsZV8wIGxvYWRfbW9kdWxlIn0sCj4gPiA+IC0gICAgIHtNTlRQT0lOVCAiL2V2ZW50cy9r
+cHJvYmVzL2x0cF9sb2FkX21vZHVsZV8wL2VuYWJsZSIsICIxIn0sCj4gPiA+IC0gICAgIHtNTlRQ
+T0lOVCAiL2V2ZW50cy9rcHJvYmVzL2x0cF9sb2FkX21vZHVsZV8wL2VuYWJsZSIsICIwIn0sCj4g
+PiA+IC0gICAgIHtFVkVOVFNfU1lTRklMRSwgIi06bHRwX2xvYWRfbW9kdWxlXzAifSwKPiA+ID4g
+KyAgICAge0VWRU5UU19TWVNGSUxFLCAicDpsdHBfbG9hZF9zY3JpcHRfMCBsb2FkX3NjcmlwdCJ9
+LAo+ID4gPiArICAgICB7TU5UUE9JTlQgIi9ldmVudHMva3Byb2Jlcy9sdHBfbG9hZF9zY3JpcHRf
+MC9lbmFibGUiLCAiMSJ9LAo+ID4gPiArICAgICB7TU5UUE9JTlQgIi9ldmVudHMva3Byb2Jlcy9s
+dHBfbG9hZF9zY3JpcHRfMC9lbmFibGUiLCAiMCJ9LAo+ID4gPiArICAgICB7RVZFTlRTX1NZU0ZJ
+TEUsICItOmx0cF9sb2FkX3NjcmlwdF8wIn0sCgo+ID4gRG9lc24ndCB0aGlzIGRlcGVuZCBvbiBD
+T05GSUdfQklORk1UX1NDUklQVD8gSG93IGxpa2VseSBpcyB0aGF0IHRoaXMgaXMKPiA+IHR1cm5l
+ZCBvZmY/Cgo+IENPTkZJR19NT0RVTEVTPW4gaXMgYSBjb21tb24gY29uZmlnIGZvciB0ZXN0aW5n
+Cj4gSSBkb24ndCB0aGluayB0aGlzIGlzIHRoZSBjYXNlIGZvciBDT05GSUdfQklORk1UX1NDUklQ
+VAoKWWVzLCBpdCdzIGRlZmF1bHQgeSBhbmQganVzdCBicmllZmx5IGNoZWNraW5nIGl0J3MgaW4g
+VHVtYmxld2VlZCBhbmQgRGViaWFuCnRlc3RpbmcgPT4gTEdUTS4KClJldmlld2VkLWJ5OiBQZXRy
+IFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KCktpbmQgcmVnYXJkcywKUGV0cgoKPiA+IElmIHBvc3Np
+YmxlIEkgd291bGQgbGlrZSB0byBhdm9pZCB3aGFjay1hLW1vbGUgZ2FtZSB0cnlpbmcgdG8gZmlu
+ZAo+ID4gc29tZXRoaW5nIHRoYXQgaXMgY29tbW9ubHkgZW5hYmxlZC4KCj4gRmVlbCBmcmVlIHRv
+IGNob29zZSBhbnkgb3RoZXIgc3ltYm9sLgoKPiBUaGFua3MsCj4gQW1pci4KCi0tIApNYWlsaW5n
+IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
