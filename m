@@ -4,80 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 981B0EC1447
-	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 13:33:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 205C2EC144C
+	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 14:03:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1772546606; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=V8WWpiRDAnkgmILImeOVYFmFJnUkbvm4Y0DnXTVJ5go=;
+ b=YLXNd9NjA3kM9qcg+6qcqkbyuA3mFQgQQSCZ5DVSDBti8eiKPl4KEQ8IIb0UejFg49Adj
+ FO7US48WXjJ5nsRWHkYMYU/DML9b05van54keiksZoyEoPC0aM3FT3vAz2Vx7Ne1rMLBbK5
+ IXBDk7pPzhNFNC+frF8nts5CmqBAZnI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 471153DA1BD
-	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 14:33:29 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id AC2D43DAC04
+	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 15:03:26 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1D00E3DA363
- for <ltp@lists.linux.it>; Tue,  3 Mar 2026 14:32:54 +0100 (CET)
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
- [IPv6:2607:f8b0:4864:20::642])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B7F003D900A
+ for <ltp@lists.linux.it>; Tue,  3 Mar 2026 15:03:04 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 830A5600902
- for <ltp@lists.linux.it>; Tue,  3 Mar 2026 14:32:54 +0100 (CET)
-Received: by mail-pl1-x642.google.com with SMTP id
- d9443c01a7336-2ab077e3f32so24860435ad.3
- for <ltp@lists.linux.it>; Tue, 03 Mar 2026 05:32:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1772544773; x=1773149573; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
- :reply-to; bh=GR4NLaeKTTO3kA+1PyEuftDX9rO8loLhABPurzHOECo=;
- b=ZcLqj/raaUHRQ39j5mHhLKfV29AgO2XZ+0AgZe9ZRrSa2320b1i8vOvQzQoK0YZNAg
- SCkSYnig5LYz3m8ZqWYwU4UDg8nKdCiTVTVUWHXee0koJn5fu8+CbqIQIW5zui6UVOjN
- vO6LfIo2dF3LYEKJry6PIrOjfuqlZ1JTjF+M0wvvoMCKGH9VclIKxQtrlspXzPHrG4c5
- zhefP7DqOMS94tEH+m0crb6xGrk8Ip4C4fqCEUH2nELAiaDg75MSbO7lMk58h/wQKDS4
- rHJ8VeBFzNw6ABny/ZChWA/gzrkEhx+itfEKGeNzfLA90PZU/cPgbRsG7r46qqVQnJoY
- tbQw==
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F2007600843
+ for <ltp@lists.linux.it>; Tue,  3 Mar 2026 15:03:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1772546582;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=vjh49QQVB1kHyKZ9qEPY/y0AMqpK20W9kFpFNNmbIQI=;
+ b=NLPyjLSsKzj9hs3hhPncRiYoOFonTpQhDGVWsHbXPnS9Wa8OVX2r7DyyhzQnCxNJB4g1w1
+ N3ASnRbHq8Y5TzeFBGO/jRP2EE9DAI7NjkFt+hw5Vgm+K+LtB5jeFHtWpmfmL7m63qFKlT
+ T9Bs1WbyZhWYFRziN97kvFLMskiVsIk=
+Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com
+ [74.125.82.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-216-7XCabFM_PdODvk2YgX1uHw-1; Tue, 03 Mar 2026 09:03:00 -0500
+X-MC-Unique: 7XCabFM_PdODvk2YgX1uHw-1
+X-Mimecast-MFC-AGG-ID: 7XCabFM_PdODvk2YgX1uHw_1772546580
+Received: by mail-dy1-f197.google.com with SMTP id
+ 5a478bee46e88-2be21146933so1295286eec.1
+ for <ltp@lists.linux.it>; Tue, 03 Mar 2026 06:03:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1772544773; x=1773149573;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:x-gm-gg:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to;
- bh=GR4NLaeKTTO3kA+1PyEuftDX9rO8loLhABPurzHOECo=;
- b=cp+1MEDj3/iK1vjhD6Lq/YWNPn6VG4Z7psfbWqvQlhhJStYzQj+cUVySgm68SGWhG6
- RdNE5r6kVV22bo++0OjQl8DktbZSl7WRx59kyNdLhyQok12PjeEBNZdjweKeJGAVGS7y
- uJTNEy3qW69+XtjI+JPebHaoqQbc2HXC3LD/1x+DAfyCRoIVXSjsUe9T6QnTDcDEZpY5
- Qa+Qo8fBx+fuSNyg71iHfSN7OjdzY3taCW6vJXFP8HM99MlKkAQCswBHP2atR2t/FJI9
- OS7n8NPGpIgyhKXb3jJW0GBSyl0E4G7yAgo5jlbvZCQFNiPF3GOAMmOQa7J9TfWo9s8z
- IO6Q==
-X-Gm-Message-State: AOJu0YwJiytFAuUz6z3m4O4Lh5J3b7CKl5ixqda+EOAkpocEdQIpd9d+
- nWoq9/iHmDCRVAn3x2doBEOkMnfFn+W/8BFO/hCF82wSddEHmkHUeZzfUSfciVs=
-X-Gm-Gg: ATEYQzymBLmNxhT03Pm6Ecwt40yVvBOigYEWRHuuPtIp3WZLAgBCJMfKDy9CLdWbQz+
- e9RsoxsDntvKaAfzeN2uuozvDcNT+alX3M2RQNe4XKGc2cTBY7LKv7rzqcmisNjsyCmhos4BV+r
- qVGV1DuCOMtc61RKo75NqkvLDrs2qrxbC1maIGLBf2dHqKDlqWLKfM9z7VYvMFOtLm6BMAw+1Y9
- crkQlxX570oTS20xDuCRg471ap1vKHCTDxcYfhyGi2e2Pztao8VvpYbihqLhLsrhyGXadvlV911
- DNN7CZIt0P6H1NLkGPpyDdeltzu0ps0yj/GjRNJioIftfoQVLoqzTxR3mG4CPBRgAcCXpDKJgBr
- BULNJ1IMMTOFxve66dc2Z1oeA1dsZV0xFU4RbeAxZ0FSz1ItcHq/+PDcwBzOqEt+hGYEznKkTKP
- AS6OPm8Ddu2DuIgMjUvA==
-X-Received: by 2002:a17:903:1a4d:b0:2ae:5e23:1fa6 with SMTP id
- d9443c01a7336-2ae5e2320dcmr32480805ad.27.1772544772634; 
- Tue, 03 Mar 2026 05:32:52 -0800 (PST)
-Received: from JS.lan ([171.3.84.26]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2adfb69f9c2sm174400575ad.51.2026.03.03.05.32.51
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 03 Mar 2026 05:32:52 -0800 (PST)
-From: Jinseok Kim <always.starving0@gmail.com>
-To: ltp@lists.linux.it,
-	andrea.cervesato@suse.com
-Date: Tue,  3 Mar 2026 22:32:37 +0900
-Message-ID: <20260303133243.66845-2-always.starving0@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260303133243.66845-1-always.starving0@gmail.com>
-References: <DGP0CG3J3QK9.1M9KCELAS054F@suse.com>
- <20260303133243.66845-1-always.starving0@gmail.com>
+ d=1e100.net; s=20230601; t=1772546579; x=1773151379;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=vjh49QQVB1kHyKZ9qEPY/y0AMqpK20W9kFpFNNmbIQI=;
+ b=taPwtkjOCQi17u4oAGiR9EsV2wnyJ5sNPm3hl/c5gOqSsDVUHAuXFMhTu9rNFE2/ih
+ hsHNU+VniqgdE9qU8ILi7IERAIR6xVCyLZTGozkwD1lUW7uN/Iif/s3f3P7e/W5VLxGU
+ jWJiGQ63tRTFgfu+O0nonmfSM5CRAGYlxH0xEXaowUYnhdWLxtmLr4wmtZrRXaqc7H4r
+ 6SsVNGAvh3fDklnaENwSr4D8LycEXiJ2xscLHGTy94Vgg1u6qUcjvmqfbyMpgt/b4wVY
+ j283gv95K9e5bXFC82GXWurkeIzH3m4U5XlUK8LQTAbvoozlQcMIohFSb4rvd7lqddkn
+ nkXg==
+X-Gm-Message-State: AOJu0YwfR83tqIKI2dUA83G4ocU1WssyD2hynTrGvzR4nxcGswq/iJpI
+ ViTL4wyxl1KA/BGpNNo4y/mPgIz8TO3QjgseZ5nZH4jjvX2AEAnVcdvbU6Zhaxt+Gn8pAZvF8az
+ l2fnizF2BRsfa3zStqUtOLkUhh1Fxa8cV/a/AVMYdamgqK206laTZ8VE/jDw3Cr+49WbktSk075
+ sNZel/s0bIBqWbgUsY+Ly9N3DR7hY=
+X-Gm-Gg: ATEYQzwMiLW65OZ2Xn+jZ4zVzU5K4k4mOTj8GTDd5N/0/QuN1fhqOJLFv+qPEuxX5Ca
+ hX9egdDz/VF/kaYUXw3E3JjsRrPx+ZBy81zoJp6TnOMCL+b8bR/DjEBBbbGKOvDWMzBN4iokLML
+ KWzdEU1IJXOL7LZmtN/lcyQMQZwNc+yS0CpZnaWh6MvIPOvAST6QuRgf6ZVxOIpaHGcdjj3g2Pq
+ SK9ais=
+X-Received: by 2002:a05:7022:618c:b0:11b:9386:8256 with SMTP id
+ a92af1059eb24-1278fc584dcmr5203965c88.43.1772546579422; 
+ Tue, 03 Mar 2026 06:02:59 -0800 (PST)
+X-Received: by 2002:a05:7022:618c:b0:11b:9386:8256 with SMTP id
+ a92af1059eb24-1278fc584dcmr5203948c88.43.1772546578830; Tue, 03 Mar 2026
+ 06:02:58 -0800 (PST)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+References: <20260303032311.38988-2-liwang@redhat.com>
+ <69a6b7c9.df0a0220.2ea96.efef@mx.google.com>
+In-Reply-To: <69a6b7c9.df0a0220.2ea96.efef@mx.google.com>
+Date: Tue, 3 Mar 2026 22:02:46 +0800
+X-Gm-Features: AaiRm52Tvk3PcfBzgqcqoPHag8j6lmhUkQAfYdqHPDq8XThgTwxWVHyxvafoOXo
+Message-ID: <CAEemH2dHAxyxhcEGk55R7nynZb020yDMc8mSkdwf9zVHVtdnvQ@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: yAj8_sOIJ3vazMOylArbr9kcTHbCIx_wTKP1qqTfBT4_1772546580
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 2/2] fstat: add test for multiple file types using
- fstat
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v2 2/2] lib: Extend LTP_ENABLE_DEBUG to support
+ verbosity levels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,173 +104,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Following review feedback, create a dedicated fstat test that verifies
-S_ISREG(), S_ISDIR(), S_ISFIFO(), S_ISLNK(), S_ISCHR(), S_ISBLK()
-on different file types.
-
-Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
----
- runtest/syscalls                           |   2 +
- testcases/kernel/syscalls/fstat/.gitignore |   2 +
- testcases/kernel/syscalls/fstat/fstat04.c  | 119 +++++++++++++++++++++
- 3 files changed, 123 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fstat/fstat04.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 05bb3ceb1..5b34e6bdc 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -435,6 +435,8 @@ fstat02 fstat02
- fstat02_64 fstat02_64
- fstat03 fstat03
- fstat03_64 fstat03_64
-+fstat04 fstat04
-+fstat04_64 fstat04_64
-
- #fstatat64/newfstatat test cases
- fstatat01 fstatat01
-diff --git a/testcases/kernel/syscalls/fstat/.gitignore b/testcases/kernel/syscalls/fstat/.gitignore
-index 9b1089438..a1f538f7e 100644
---- a/testcases/kernel/syscalls/fstat/.gitignore
-+++ b/testcases/kernel/syscalls/fstat/.gitignore
-@@ -2,3 +2,5 @@
- /fstat02_64
- /fstat03
- /fstat03_64
-+/fstat04
-+/fstat04_64
-diff --git a/testcases/kernel/syscalls/fstat/fstat04.c b/testcases/kernel/syscalls/fstat/fstat04.c
-new file mode 100644
-index 000000000..a7f2302f6
---- /dev/null
-+++ b/testcases/kernel/syscalls/fstat/fstat04.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Jinseok Kim <always.starving0@gmail.com>
-+ */
-+/*\
-+ * Verify that fstat correctly identifies various file types
-+ */
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/sysmacros.h>
-+#include "tst_test.h"
-+
-+#define REG_FILE    "regfile"
-+#define DIR_FILE    "dirfile"
-+#define FIFO_FILE   "fifofile"
-+#define SYMLINK     "symlink"
-+#define CHR_DEV     "chrdev"
-+#define BLK_DEV     "blkdev"
-+
-+static struct tcase {
-+	const char *desc;
-+	const char *path;
-+	mode_t exp_type;
-+} tcases[] = {
-+	{ "S_IFREG",	REG_FILE,	S_IFREG },
-+	{ "S_IFDIR",	DIR_FILE,	S_IFDIR },
-+	{ "S_IFIFO",	FIFO_FILE,	S_IFIFO },
-+	{ "S_IFLNK",	SYMLINK,	S_IFLNK },
-+	{ "S_IFCHR",	CHR_DEV,	S_IFCHR },
-+	{ "S_IFBLK",	BLK_DEV,	S_IFBLK },
-+};
-+
-+static void verify_fstat(unsigned int i)
-+{
-+	struct tcase *tc = &tcases[i];
-+	struct stat buf;
-+
-+	int flags = O_RDONLY | O_NONBLOCK;
-+
-+	if (tc->exp_type == S_IFDIR)
-+		flags |= O_DIRECTORY;
-+
-+	int fd = open(tc->path, flags);
-+
-+	if (fd < 0) {
-+		tst_res(TCONF | TERRNO, "cannot open %s, skipping", tc->desc);
-+		return;
-+	}
-+
-+	SAFE_FSTAT(fd, &buf);
-+	SAFE_CLOSE(fd);
-+
-+	switch (tc->exp_type) {
-+	case S_IFREG:
-+		TST_EXP_EXPR(S_ISREG(buf.st_mode), "%s macro matches", tc->desc);
-+		break;
-+	case S_IFDIR:
-+		TST_EXP_EXPR(S_ISDIR(buf.st_mode), "%s macro matches", tc->desc);
-+		break;
-+	case S_IFIFO:
-+		TST_EXP_EXPR(S_ISFIFO(buf.st_mode), "%s macro matches", tc->desc);
-+		break;
-+	case S_IFLNK:
-+		tst_res(TCONF, "Symbolic Link not available in this environment");
-+		break;
-+	case S_IFCHR:
-+		TST_EXP_EXPR(S_ISCHR(buf.st_mode), "%s macro matches", tc->desc);
-+		break;
-+	case S_IFBLK:
-+		if (S_ISBLK(buf.st_mode))
-+			tst_res(TPASS, "%s macro matches", tc->desc);
-+		else
-+			tst_res(TCONF, "Block device not available in this environment");
-+		break;
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_TOUCH(REG_FILE, 0644, NULL);
-+
-+	SAFE_MKDIR(DIR_FILE, 0755);
-+	SAFE_SYMLINK(REG_FILE, SYMLINK);
-+
-+	SAFE_MKNOD(FIFO_FILE, S_IFIFO | 0777, 0);
-+	SAFE_MKNOD(CHR_DEV, S_IFCHR | 0777, makedev(1, 3));
-+	SAFE_MKNOD(BLK_DEV, S_IFBLK | 0777, makedev(7, 3));
-+}
-+
-+static void cleanup(void)
-+{
-+	if (!access(SYMLINK, F_OK))
-+		SAFE_UNLINK(SYMLINK);
-+
-+	if (!access(REG_FILE, F_OK))
-+		SAFE_UNLINK(REG_FILE);
-+
-+	if (!access(DIR_FILE,  F_OK))
-+		SAFE_RMDIR(DIR_FILE);
-+
-+	if (!access(FIFO_FILE, F_OK))
-+		SAFE_UNLINK(FIFO_FILE);
-+
-+	if (!access(CHR_DEV, F_OK))
-+		SAFE_UNLINK(CHR_DEV);
-+
-+	if (!access(BLK_DEV, F_OK))
-+		SAFE_UNLINK(BLK_DEV);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_fstat,
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+};
-+
---
-2.43.0
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgQW5kcmVhLAoKVGhlIHR3byBwb2ludHMgbWFrZSBzZW5zZSwgd2lsbCBmaXggaW4gVjMuIFRo
+YW5rcyBmb3IgdGhlIGZlZWRiYWNrIQoKT24gVHVlLCBNYXIgMywgMjAyNiBhdCA2OjI44oCvUE0g
+QW5kcmVhIENlcnZlc2F0byA8YW5kcmVhLmNlcnZlc2F0b0BzdXNlLmNvbT4Kd3JvdGU6Cgo+IEhp
+IExpLAo+Cj4gSSByYW4gYSByZXZpZXcgd2l0aCBteSBMTE0gY29uZmlnIGFuZCBvYnRhaW5lZCB0
+aGUgZm9sbG93aW5nIHJlcG9ydC4KPiBJIHRob3VnaHQgaXQgd2FzIGludGVyZXN0aW5nIHRvIHNo
+YXJlIGhvdyB0aGUgTFRQIHJldmlldyBhZ2VudCBJJ20KPiBkZXZlbG9waW5nIGlzIGdyb3dpbmcu
+IFRlc3RlZCB3aXRoIENsYXVkZSBTb25uZXQgNC42Cj4KPiAgSXNzdWVzIEZvdW5kCj4KPiAgIDEu
+ICJFbmFibGluZyBkZWJ1ZyBpbmZvIiBwcmludGVkIGZvciBsZXZlbCAwIOKAlCBtaXNsZWFkaW5n
+IG1lc3NhZ2UKPiAgICAgIChzdGlsbCB1bmFkZHJlc3NlZCBmcm9tIHYxKQo+Cj4gICBCb3RoIC1E
+MCBhbmQgTFRQX0VOQUJMRV9ERUJVRz0wIHByaW50ICJFbmFibGluZyBkZWJ1ZyBpbmZvIChsZXZl
+bCAwKSIsCj4gICB3aGljaCBpcyB0aGUgb3Bwb3NpdGUgb2Ygd2hhdCBpcyBoYXBwZW5pbmcuIExl
+dmVsIDAgbWVhbnMgZGlzYWJsZSBhbGwKPiAgIGRlYnVnIG91dHB1dC4gVGhpcyB3YXMgcmFpc2Vk
+IGluIHRoZSB2MSByZXZpZXcgYW5kIHJlbWFpbnMgdW5maXhlZC4KPgo+ICAgJCAuL2dldHBpZDAx
+IC1EMAo+ICAgdHN0X3Rlc3QuYzo4MzM6IFRJTkZPOiBFbmFibGluZyBkZWJ1ZyBpbmZvIChsZXZl
+bCAwKQo+Cj4gICBBZGRpdGlvbmFsbHksIExUUF9FTkFCTEVfREVCVUc9MCBpcyBhIGJlaGF2aW9y
+IHJlZ3Jlc3Npb246IHByZXZpb3VzbHkKPiAgIGl0IHdhcyBzaWxlbnRseSBpZ25vcmVkIChubyBv
+dXRwdXQpLCBub3cgaXQgcHJpbnRzIGEgbWlzbGVhZGluZwo+ICJFbmFibGluZyIKPiAgIG1lc3Nh
+Z2UuIFRoZSBmaXggZm9yIHRoZSAtRCBwYXRoIGlzIHRvIGd1YXJkIHRoZSBtZXNzYWdlOgo+Cj4g
+ICBpZiAoY29udGV4dC0+dGRlYnVnKQo+ICAgICAgIHRzdF9yZXMoVElORk8sICJFbmFibGluZyBk
+ZWJ1ZyBpbmZvIChsZXZlbCAlZCkiLCBjb250ZXh0LT50ZGVidWcpOwo+Cj4gICBTYW1lIGZpeCBu
+ZWVkZWQgaW4gdGhlIGVudiB2YXIgcGF0aC4KPgo+ICAgMi4gTFRQX0VOQUJMRV9ERUJVRyBzdGls
+bCBzaWxlbnRseSBvdmVycmlkZXMgYSBtb3JlIHNwZWNpZmljIC1EIGZsYWcKPiAgICAgIOKAlCBj
+b3JlIG9yZGVyaW5nIGlzc3VlIHVuZml4ZWQgZnJvbSB2MQo+Cj4gICBUaGUgZW52IHZhciBjaGVj
+ayBydW5zIGFmdGVyIHBhcnNlX29wdHMoKSwgc28gTFRQX0VOQUJMRV9ERUJVRyBhbHdheXMKPiAg
+IHdpbnMgb3ZlciB0aGUgY29tbWFuZC1saW5lIC1EIGZsYWc6Cj4KPiAgICQgTFRQX0VOQUJMRV9E
+RUJVRz0xIC4vZ2V0cGlkMDEgLUQyCj4gICB0c3RfdGVzdC5jOjgzMzogVElORk86IEVuYWJsaW5n
+IGRlYnVnIGluZm8gKGxldmVsIDIpICAg4oaQIGZyb20gLUQyCj4gICB0c3RfdGVzdC5jOjE0NTc6
+IFRJTkZPOiBFbmFibGluZyBkZWJ1ZyBpbmZvIChsZXZlbCAxKSAg4oaQIGVudiB2YXIKPiBvdmVy
+cmlkZXMhCj4KPiAgIEFuZCBldmVuIGRpc2FibGluZyB2aWEgdGhlIGVudiB2YXIgb3ZlcnJpZGVz
+IGFuIGV4cGxpY2l0IGNvbW1hbmQtbGluZQo+IGVuYWJsZToKPiAgICQgTFRQX0VOQUJMRV9ERUJV
+Rz0wIC4vZ2V0cGlkMDEgLUQyCj4gICB0c3RfdGVzdC5jOjgzMzogVElORk86IEVuYWJsaW5nIGRl
+YnVnIGluZm8gKGxldmVsIDIpICAg4oaQIGZyb20gLUQyCj4gICB0c3RfdGVzdC5jOjE0NTc6IFRJ
+TkZPOiBFbmFibGluZyBkZWJ1ZyBpbmZvIChsZXZlbCAwKSAg4oaQIGVudiB2YXIga2lsbHMgaXQK
+Pgo+ICAgQ29tbWFuZC1saW5lIHNob3VsZCB0YWtlIHByZWNlZGVuY2Ugb3ZlciBlbnZpcm9ubWVu
+dCB2YXJpYWJsZXMuIFRoZQo+ICAgZml4IGlzIHRvIHNraXAgdGhlIGVudiB2YXIgYXNzaWdubWVu
+dCB3aGVuIC1EIHdhcyBhbHJlYWR5IHVzZWQ6Cj4KPiAgIGlmICh0ZGVidWdfZW52ICYmICFjb250
+ZXh0LT50ZGVidWcpIHsgICAvKiBvbmx5IGlmIC1EIHdhc24ndCBwYXNzZWQgKi8KPiAgICAgICAu
+Li4KPiAgIH0KPgo+ICAgT3IsIG1vcmUgcm9idXN0bHksIGNoZWNrIHRoZSBlbnYgdmFyIGJlZm9y
+ZSBwYXJzZV9vcHRzKCkgc28gdGhlCj4gICBjb21tYW5kLWxpbmUgbmF0dXJhbGx5IHdpbnMuCj4K
+Pgo+IFBvaW50IDEuIGlzIGNsZWFybHkgdHJ1ZSwgdGhlIFBvaW50IDIuIG1pZ2h0IGJlIGEgZGVz
+aWduIGNob2ljZS4gSSBkb24ndAo+IG1pbmQgdGhlIHByaW9yaXR5IG9mIGNvbW1hbmQgbGluZSBv
+ciBlbnYgdmFyaWFibGUsIGJ1dCBpdCdzIGFjdHVhbGx5Cj4gY29ycmVjdCB0byBhc3N1bWUgdGhh
+dCBlbnYgc2hvdWxkIGJlIHNraXBwZWQgaWYgLUQgaXMgZGVmaW5lZC4KPgo+Cj4gS2luZCByZWdh
+cmRzLAo+IC0tCj4gQW5kcmVhIENlcnZlc2F0bwo+IFNVU0UgUUUgQXV0b21hdGlvbiBFbmdpbmVl
+ciBMaW51eAo+IGFuZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5jb20KPgo+CgotLSAKUmVnYXJkcywKTGkg
+V2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
+bmZvL2x0cAo=
