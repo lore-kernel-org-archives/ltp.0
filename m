@@ -4,95 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 205C2EC144C
-	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 14:03:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1772546606; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=V8WWpiRDAnkgmILImeOVYFmFJnUkbvm4Y0DnXTVJ5go=;
- b=YLXNd9NjA3kM9qcg+6qcqkbyuA3mFQgQQSCZ5DVSDBti8eiKPl4KEQ8IIb0UejFg49Adj
- FO7US48WXjJ5nsRWHkYMYU/DML9b05van54keiksZoyEoPC0aM3FT3vAz2Vx7Ne1rMLBbK5
- IXBDk7pPzhNFNC+frF8nts5CmqBAZnI=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A8E5EDA682
+	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 15:11:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AC2D43DAC04
-	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 15:03:26 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 7E42A3DAC8A
+	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 16:11:09 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B7F003D900A
- for <ltp@lists.linux.it>; Tue,  3 Mar 2026 15:03:04 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id DCCA93CD7CC
+ for <ltp@lists.linux.it>; Tue,  3 Mar 2026 16:10:51 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F2007600843
- for <ltp@lists.linux.it>; Tue,  3 Mar 2026 15:03:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1772546582;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4DF6B140033A
+ for <ltp@lists.linux.it>; Tue,  3 Mar 2026 16:10:50 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 024E13F785;
+ Tue,  3 Mar 2026 15:10:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1772550648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=vjh49QQVB1kHyKZ9qEPY/y0AMqpK20W9kFpFNNmbIQI=;
- b=NLPyjLSsKzj9hs3hhPncRiYoOFonTpQhDGVWsHbXPnS9Wa8OVX2r7DyyhzQnCxNJB4g1w1
- N3ASnRbHq8Y5TzeFBGO/jRP2EE9DAI7NjkFt+hw5Vgm+K+LtB5jeFHtWpmfmL7m63qFKlT
- T9Bs1WbyZhWYFRziN97kvFLMskiVsIk=
-Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com
- [74.125.82.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-216-7XCabFM_PdODvk2YgX1uHw-1; Tue, 03 Mar 2026 09:03:00 -0500
-X-MC-Unique: 7XCabFM_PdODvk2YgX1uHw-1
-X-Mimecast-MFC-AGG-ID: 7XCabFM_PdODvk2YgX1uHw_1772546580
-Received: by mail-dy1-f197.google.com with SMTP id
- 5a478bee46e88-2be21146933so1295286eec.1
- for <ltp@lists.linux.it>; Tue, 03 Mar 2026 06:03:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1772546579; x=1773151379;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=vjh49QQVB1kHyKZ9qEPY/y0AMqpK20W9kFpFNNmbIQI=;
- b=taPwtkjOCQi17u4oAGiR9EsV2wnyJ5sNPm3hl/c5gOqSsDVUHAuXFMhTu9rNFE2/ih
- hsHNU+VniqgdE9qU8ILi7IERAIR6xVCyLZTGozkwD1lUW7uN/Iif/s3f3P7e/W5VLxGU
- jWJiGQ63tRTFgfu+O0nonmfSM5CRAGYlxH0xEXaowUYnhdWLxtmLr4wmtZrRXaqc7H4r
- 6SsVNGAvh3fDklnaENwSr4D8LycEXiJ2xscLHGTy94Vgg1u6qUcjvmqfbyMpgt/b4wVY
- j283gv95K9e5bXFC82GXWurkeIzH3m4U5XlUK8LQTAbvoozlQcMIohFSb4rvd7lqddkn
- nkXg==
-X-Gm-Message-State: AOJu0YwfR83tqIKI2dUA83G4ocU1WssyD2hynTrGvzR4nxcGswq/iJpI
- ViTL4wyxl1KA/BGpNNo4y/mPgIz8TO3QjgseZ5nZH4jjvX2AEAnVcdvbU6Zhaxt+Gn8pAZvF8az
- l2fnizF2BRsfa3zStqUtOLkUhh1Fxa8cV/a/AVMYdamgqK206laTZ8VE/jDw3Cr+49WbktSk075
- sNZel/s0bIBqWbgUsY+Ly9N3DR7hY=
-X-Gm-Gg: ATEYQzwMiLW65OZ2Xn+jZ4zVzU5K4k4mOTj8GTDd5N/0/QuN1fhqOJLFv+qPEuxX5Ca
- hX9egdDz/VF/kaYUXw3E3JjsRrPx+ZBy81zoJp6TnOMCL+b8bR/DjEBBbbGKOvDWMzBN4iokLML
- KWzdEU1IJXOL7LZmtN/lcyQMQZwNc+yS0CpZnaWh6MvIPOvAST6QuRgf6ZVxOIpaHGcdjj3g2Pq
- SK9ais=
-X-Received: by 2002:a05:7022:618c:b0:11b:9386:8256 with SMTP id
- a92af1059eb24-1278fc584dcmr5203965c88.43.1772546579422; 
- Tue, 03 Mar 2026 06:02:59 -0800 (PST)
-X-Received: by 2002:a05:7022:618c:b0:11b:9386:8256 with SMTP id
- a92af1059eb24-1278fc584dcmr5203948c88.43.1772546578830; Tue, 03 Mar 2026
- 06:02:58 -0800 (PST)
+ bh=xSbW0B/UfO9Com5Ghj7khrZ/P9vX3+Clwy6KZuADbQ4=;
+ b=WZ3JnMP+EPJhzYDkJPCEbOqs0JdK/L6kDrao9cX67f8XZrr3dZqOl5C12RozxA+KRc31QL
+ T2KCtBY+q962/kC48iNNJ9N336v8TTCu3y1W2wW/WSmUPRQ9f66+gxEEgzskGeWb70mc1G
+ rpS0ucFFQQHJUsslO7jPm+Z/8ajYMjM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1772550648;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xSbW0B/UfO9Com5Ghj7khrZ/P9vX3+Clwy6KZuADbQ4=;
+ b=kH2Dx2CB3xPi4oTtzWidm4WglVtfHsiRNrx9cFoBKpdTXQ4np8/mX2VaaKl3hLY+1Gd5cE
+ sesh07JheqLY/zAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=WZ3JnMP+;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kH2Dx2CB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1772550648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xSbW0B/UfO9Com5Ghj7khrZ/P9vX3+Clwy6KZuADbQ4=;
+ b=WZ3JnMP+EPJhzYDkJPCEbOqs0JdK/L6kDrao9cX67f8XZrr3dZqOl5C12RozxA+KRc31QL
+ T2KCtBY+q962/kC48iNNJ9N336v8TTCu3y1W2wW/WSmUPRQ9f66+gxEEgzskGeWb70mc1G
+ rpS0ucFFQQHJUsslO7jPm+Z/8ajYMjM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1772550648;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xSbW0B/UfO9Com5Ghj7khrZ/P9vX3+Clwy6KZuADbQ4=;
+ b=kH2Dx2CB3xPi4oTtzWidm4WglVtfHsiRNrx9cFoBKpdTXQ4np8/mX2VaaKl3hLY+1Gd5cE
+ sesh07JheqLY/zAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E52AF3EA69;
+ Tue,  3 Mar 2026 15:10:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id IApwNvf5pmkuPAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 03 Mar 2026 15:10:47 +0000
+Date: Tue, 3 Mar 2026 16:10:57 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Pavithra <pavrampu@linux.ibm.com>
+Message-ID: <aab6ARSEiksAxyJ-@yuki.lan>
+References: <20250925061314.1015138-1-pavrampu@linux.ibm.com>
 MIME-Version: 1.0
-References: <20260303032311.38988-2-liwang@redhat.com>
- <69a6b7c9.df0a0220.2ea96.efef@mx.google.com>
-In-Reply-To: <69a6b7c9.df0a0220.2ea96.efef@mx.google.com>
-Date: Tue, 3 Mar 2026 22:02:46 +0800
-X-Gm-Features: AaiRm52Tvk3PcfBzgqcqoPHag8j6lmhUkQAfYdqHPDq8XThgTwxWVHyxvafoOXo
-Message-ID: <CAEemH2dHAxyxhcEGk55R7nynZb020yDMc8mSkdwf9zVHVtdnvQ@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: yAj8_sOIJ3vazMOylArbr9kcTHbCIx_wTKP1qqTfBT4_1772546580
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20250925061314.1015138-1-pavrampu@linux.ibm.com>
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 024E13F785
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2 2/2] lib: Extend LTP_ENABLE_DEBUG to support
- verbosity levels
+Subject: Re: [LTP] [PATCH]  [PATCH] Add hugemmap37,
+ migrated task-size-overrun.c from libhugetlbfs v2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,58 +118,170 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it, Pavithra <pavrampu@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQW5kcmVhLAoKVGhlIHR3byBwb2ludHMgbWFrZSBzZW5zZSwgd2lsbCBmaXggaW4gVjMuIFRo
-YW5rcyBmb3IgdGhlIGZlZWRiYWNrIQoKT24gVHVlLCBNYXIgMywgMjAyNiBhdCA2OjI44oCvUE0g
-QW5kcmVhIENlcnZlc2F0byA8YW5kcmVhLmNlcnZlc2F0b0BzdXNlLmNvbT4Kd3JvdGU6Cgo+IEhp
-IExpLAo+Cj4gSSByYW4gYSByZXZpZXcgd2l0aCBteSBMTE0gY29uZmlnIGFuZCBvYnRhaW5lZCB0
-aGUgZm9sbG93aW5nIHJlcG9ydC4KPiBJIHRob3VnaHQgaXQgd2FzIGludGVyZXN0aW5nIHRvIHNo
-YXJlIGhvdyB0aGUgTFRQIHJldmlldyBhZ2VudCBJJ20KPiBkZXZlbG9waW5nIGlzIGdyb3dpbmcu
-IFRlc3RlZCB3aXRoIENsYXVkZSBTb25uZXQgNC42Cj4KPiAgSXNzdWVzIEZvdW5kCj4KPiAgIDEu
-ICJFbmFibGluZyBkZWJ1ZyBpbmZvIiBwcmludGVkIGZvciBsZXZlbCAwIOKAlCBtaXNsZWFkaW5n
-IG1lc3NhZ2UKPiAgICAgIChzdGlsbCB1bmFkZHJlc3NlZCBmcm9tIHYxKQo+Cj4gICBCb3RoIC1E
-MCBhbmQgTFRQX0VOQUJMRV9ERUJVRz0wIHByaW50ICJFbmFibGluZyBkZWJ1ZyBpbmZvIChsZXZl
-bCAwKSIsCj4gICB3aGljaCBpcyB0aGUgb3Bwb3NpdGUgb2Ygd2hhdCBpcyBoYXBwZW5pbmcuIExl
-dmVsIDAgbWVhbnMgZGlzYWJsZSBhbGwKPiAgIGRlYnVnIG91dHB1dC4gVGhpcyB3YXMgcmFpc2Vk
-IGluIHRoZSB2MSByZXZpZXcgYW5kIHJlbWFpbnMgdW5maXhlZC4KPgo+ICAgJCAuL2dldHBpZDAx
-IC1EMAo+ICAgdHN0X3Rlc3QuYzo4MzM6IFRJTkZPOiBFbmFibGluZyBkZWJ1ZyBpbmZvIChsZXZl
-bCAwKQo+Cj4gICBBZGRpdGlvbmFsbHksIExUUF9FTkFCTEVfREVCVUc9MCBpcyBhIGJlaGF2aW9y
-IHJlZ3Jlc3Npb246IHByZXZpb3VzbHkKPiAgIGl0IHdhcyBzaWxlbnRseSBpZ25vcmVkIChubyBv
-dXRwdXQpLCBub3cgaXQgcHJpbnRzIGEgbWlzbGVhZGluZwo+ICJFbmFibGluZyIKPiAgIG1lc3Nh
-Z2UuIFRoZSBmaXggZm9yIHRoZSAtRCBwYXRoIGlzIHRvIGd1YXJkIHRoZSBtZXNzYWdlOgo+Cj4g
-ICBpZiAoY29udGV4dC0+dGRlYnVnKQo+ICAgICAgIHRzdF9yZXMoVElORk8sICJFbmFibGluZyBk
-ZWJ1ZyBpbmZvIChsZXZlbCAlZCkiLCBjb250ZXh0LT50ZGVidWcpOwo+Cj4gICBTYW1lIGZpeCBu
-ZWVkZWQgaW4gdGhlIGVudiB2YXIgcGF0aC4KPgo+ICAgMi4gTFRQX0VOQUJMRV9ERUJVRyBzdGls
-bCBzaWxlbnRseSBvdmVycmlkZXMgYSBtb3JlIHNwZWNpZmljIC1EIGZsYWcKPiAgICAgIOKAlCBj
-b3JlIG9yZGVyaW5nIGlzc3VlIHVuZml4ZWQgZnJvbSB2MQo+Cj4gICBUaGUgZW52IHZhciBjaGVj
-ayBydW5zIGFmdGVyIHBhcnNlX29wdHMoKSwgc28gTFRQX0VOQUJMRV9ERUJVRyBhbHdheXMKPiAg
-IHdpbnMgb3ZlciB0aGUgY29tbWFuZC1saW5lIC1EIGZsYWc6Cj4KPiAgICQgTFRQX0VOQUJMRV9E
-RUJVRz0xIC4vZ2V0cGlkMDEgLUQyCj4gICB0c3RfdGVzdC5jOjgzMzogVElORk86IEVuYWJsaW5n
-IGRlYnVnIGluZm8gKGxldmVsIDIpICAg4oaQIGZyb20gLUQyCj4gICB0c3RfdGVzdC5jOjE0NTc6
-IFRJTkZPOiBFbmFibGluZyBkZWJ1ZyBpbmZvIChsZXZlbCAxKSAg4oaQIGVudiB2YXIKPiBvdmVy
-cmlkZXMhCj4KPiAgIEFuZCBldmVuIGRpc2FibGluZyB2aWEgdGhlIGVudiB2YXIgb3ZlcnJpZGVz
-IGFuIGV4cGxpY2l0IGNvbW1hbmQtbGluZQo+IGVuYWJsZToKPiAgICQgTFRQX0VOQUJMRV9ERUJV
-Rz0wIC4vZ2V0cGlkMDEgLUQyCj4gICB0c3RfdGVzdC5jOjgzMzogVElORk86IEVuYWJsaW5nIGRl
-YnVnIGluZm8gKGxldmVsIDIpICAg4oaQIGZyb20gLUQyCj4gICB0c3RfdGVzdC5jOjE0NTc6IFRJ
-TkZPOiBFbmFibGluZyBkZWJ1ZyBpbmZvIChsZXZlbCAwKSAg4oaQIGVudiB2YXIga2lsbHMgaXQK
-Pgo+ICAgQ29tbWFuZC1saW5lIHNob3VsZCB0YWtlIHByZWNlZGVuY2Ugb3ZlciBlbnZpcm9ubWVu
-dCB2YXJpYWJsZXMuIFRoZQo+ICAgZml4IGlzIHRvIHNraXAgdGhlIGVudiB2YXIgYXNzaWdubWVu
-dCB3aGVuIC1EIHdhcyBhbHJlYWR5IHVzZWQ6Cj4KPiAgIGlmICh0ZGVidWdfZW52ICYmICFjb250
-ZXh0LT50ZGVidWcpIHsgICAvKiBvbmx5IGlmIC1EIHdhc24ndCBwYXNzZWQgKi8KPiAgICAgICAu
-Li4KPiAgIH0KPgo+ICAgT3IsIG1vcmUgcm9idXN0bHksIGNoZWNrIHRoZSBlbnYgdmFyIGJlZm9y
-ZSBwYXJzZV9vcHRzKCkgc28gdGhlCj4gICBjb21tYW5kLWxpbmUgbmF0dXJhbGx5IHdpbnMuCj4K
-Pgo+IFBvaW50IDEuIGlzIGNsZWFybHkgdHJ1ZSwgdGhlIFBvaW50IDIuIG1pZ2h0IGJlIGEgZGVz
-aWduIGNob2ljZS4gSSBkb24ndAo+IG1pbmQgdGhlIHByaW9yaXR5IG9mIGNvbW1hbmQgbGluZSBv
-ciBlbnYgdmFyaWFibGUsIGJ1dCBpdCdzIGFjdHVhbGx5Cj4gY29ycmVjdCB0byBhc3N1bWUgdGhh
-dCBlbnYgc2hvdWxkIGJlIHNraXBwZWQgaWYgLUQgaXMgZGVmaW5lZC4KPgo+Cj4gS2luZCByZWdh
-cmRzLAo+IC0tCj4gQW5kcmVhIENlcnZlc2F0bwo+IFNVU0UgUUUgQXV0b21hdGlvbiBFbmdpbmVl
-ciBMaW51eAo+IGFuZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5jb20KPgo+CgotLSAKUmVnYXJkcywKTGkg
-V2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
-bmZvL2x0cAo=
+Hi!
+> +/*\
+> + *[Descripiton]
+> + *
+> + * Origin: https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/task-size-overrun.c
+> + *
+> + * This test verifies the behavior of mmap across the TASK_SIZE boundary.
+> + * It checks whether mmap with and without MAP_FIXED correctly handles
+> + * mappings that straddle the TASK_SIZE boundary.
+> + *
+> + */
+> +
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <unistd.h>
+> +#include <sys/mman.h>
+> +#include <errno.h>
+> +#include <assert.h>
+> +
+> +#include "hugetlb.h"
+> +#include "tst_test.h"
+> +#include "tst_safe_stdio.h"
+> +#include "tst_safe_macros.h"
+> +
+> +#define MAPS_BUF_SZ 4096
+> +#define _LARGEFILE64_SOURCE
+> +#define MNTPOINT "hugetlbfs/"
+> +#define ALIGN(x, a) (((x) + (a) - 1) & ~((a) - 1))
+
+We have LTP_ALIGN() macro in the test library.
+
+> +static long hpage_size;
+> +static int fd;
+> +
+> +static unsigned long find_last_mapped(void)
+> +{
+> +	char line[MAPS_BUF_SZ];
+> +	char *tmp;
+> +	unsigned long start, end, off, ino;
+> +	FILE *f;
+> +
+> +	f = SAFE_FOPEN("/proc/self/maps", "r");
+> +	do {
+> +		tmp = fgets(line, MAPS_BUF_SZ, f);
+> +	} while (tmp);
+> +	SAFE_FCLOSE(f);
+> +
+> +	tst_res(TINFO, "Last map: %s", line);
+> +	SAFE_SSCANF(line, "%lx-%lx %*s %lx %*s %ld %*s", &start, &end, &off, &ino);
+> +	tst_res(TINFO, "Last map: at 0x%lx-0x%lx\n", start, end);
+> +	return end;
+> +}
+> +
+> +static unsigned long find_task_size(void)
+> +{
+> +	unsigned long low, high; /* PFNs */
+> +	void *p;
+> +
+> +	low = find_last_mapped();
+> +	if (!low || ((low % getpagesize()) != 0))
+> +		tst_brk(TBROK, "Bogus stack end address, 0x%lx!?", low);
+
+The last mapping in /proc/self/maps on my systems is [vsyscall] which is
+mapped at the end of the address space. I guess that we need to take
+last line from the file that is not [vsyscall] (and perhaps there are
+other special cases on some architectures but that can be fixed later).
+
+> +	low = low / getpagesize();
+> +
+> +	/* This sum should get us (2^(wordsize) - 2 pages) */
+> +	high = (unsigned long)(-2 * getpagesize()) / tst_get_hugepage_size();
+
+I do not get this at all. We are trying to figure out TASK_SIZE how
+exactly do we figure out the upper bound from hugepage size?
+
+> +	tst_res(TINFO, "Binary searching for task size PFNs 0x%lx..0x%lx\n", low, high);
+> +
+> +	while (high > low + 1) {
+> +		unsigned long pfn = (low + high) / 2;
+> +		unsigned long addr = pfn * getpagesize();
+> +
+> +		assert((pfn >= low) && (pfn <= high));
+
+As long as I can tell this assert is never triggered.
+
+> +		p = mmap((void *)addr, getpagesize(), PROT_READ,
+> +			   MAP_PRIVATE|MAP_ANONYMOUS|MAP_FIXED, -1, 0);
+> +		if (p == MAP_FAILED) {
+> +			tst_res(TINFO | TERRNO, "Map failed at 0x%lx", addr);
+> +			high = pfn;
+> +		} else {
+> +			tst_res(TINFO, "Map succeeded at 0x%lx\n", addr);
+> +			SAFE_MUNMAP(p, getpagesize());
+> +			low = pfn;
+> +		}
+> +	}
+> +
+> +	return low * getpagesize();
+> +}
+> +
+> +static void run_test(void)
+> +{
+> +	void *p;
+> +	unsigned long task_size;
+> +	unsigned long straddle_addr;
+> +
+> +	task_size = find_task_size();
+> +	tst_res(TINFO, "TASK_SIZE = 0x%lx\n", task_size);
+> +
+> +	straddle_addr = task_size - hpage_size;
+> +	straddle_addr = ALIGN(straddle_addr, hpage_size);
+> +
+> +	tst_res(TINFO, "Mapping without MAP_FIXED at %lx...", straddle_addr);
+> +	errno = 0;
+> +	p = mmap((void *)straddle_addr, 2*hpage_size, PROT_READ|PROT_WRITE,
+> +		 MAP_SHARED, fd, 0);
+> +	if (p == (void *)straddle_addr)
+> +		tst_res(TFAIL, "Apparently suceeded in mapping across TASK_SIZE boundary");
+> +
+> +	tst_res(TINFO, "Mapping with MAP_FIXED at %lx...", straddle_addr);
+> +	errno = 0;
+> +	p = mmap((void *)straddle_addr, 2*hpage_size, PROT_READ|PROT_WRITE,
+> +		 MAP_SHARED|MAP_FIXED, fd, 0);
+> +	if (p != MAP_FAILED)
+> +		tst_res(TFAIL, "Apparently suceeded in mapping across TASK_SIZE boundary");
+> +
+> +	tst_res(TPASS, "Test passed!");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	hpage_size = getpagesize();
+> +	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd > 0)
+> +		SAFE_CLOSE(fd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.needs_hugetlbfs = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run_test,
+> +	.hugepages = {3, TST_NEEDS},
+> +};
+> -- 
+> 2.43.5
+> 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
