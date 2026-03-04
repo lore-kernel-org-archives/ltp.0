@@ -4,88 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 187CEEB7EB2
-	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 09:50:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1772617811; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=Fm8hznIo2bkf6dvVFX+s5c6g0zQ5M5KmQFLkpJI3gbQ=;
- b=qGMP4QMQ70g6t0q7cS3qBM1ktP53VUAkfSjocGOZ8yuX81AgkfaDVgBGrSCncj+kxk34H
- 4I7CJQgnB0OZhOa2qRpTdMWx/mTy2tLd936MhLiUPzBOk17wTRclOBihp4paVAiM1f5bfhQ
- lAU/45TC68rdi422551gfQG5GDoQ8Xk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AE2CEB7EAC
+	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 10:00:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0BF833DAC03
-	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 10:50:11 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 75F433DAEFA
+	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 11:00:26 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5DDEC3C5398
- for <ltp@lists.linux.it>; Wed,  4 Mar 2026 10:49:46 +0100 (CET)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3B81B3CA8E9
+ for <ltp@lists.linux.it>; Wed,  4 Mar 2026 11:00:06 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 026B21000150
- for <ltp@lists.linux.it>; Wed,  4 Mar 2026 10:49:45 +0100 (CET)
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-48375f1defeso49773175e9.0
- for <ltp@lists.linux.it>; Wed, 04 Mar 2026 01:49:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1772617785; x=1773222585; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=aVGZHEP86WE2gKvm2ngRLqeHDph87+Ru/NK4hIsbWNM=;
- b=NYY0vl1aJnTg5noZY3i0tMFc+g4F6HOmOr4EonuufhDvJv0rJ4//7V1hIsK4notF6A
- 0Zob2VrzW4pA7gVNDNAYWE+UR0IYd+54Azd3Jd7eRzTthPAVApOEdzdRURAWNR/NO0wL
- 8AkmGARrI5hAbloFoZEdZzCIfb5wJuu+QYmsIWQ7ytCt/n25P9e/0IQioc44eKLQD5q/
- mfuyjWWWGCxRLlbnnoPJx7BeUbj67XIOsS8wxa2pjGCmuyspOBtLHJOU4SCQyIHouQKb
- 2ltJXba7CYjbFy9Kbq3MAdb3EbbwGuy9yQHn9DfEA9axdoskgHUeE6CUKwJozrw3BY/I
- vBEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1772617785; x=1773222585;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=aVGZHEP86WE2gKvm2ngRLqeHDph87+Ru/NK4hIsbWNM=;
- b=eegoBl8GtSJr2Ixbyalc7TqYmBc+WjiFiD8enl0Zk53rljdqaiiPjNpPU8l11TTuj1
- MjrUjsHvYM2d1mvQoty07GavzRui59A0rbUMLnPCEPLmk/dFqd0u2t0mohsNH4TaWdkH
- EAQIFirsCQxOwbHrpik40Y68U9R19sxOqsQFBZq8Gw8NVGUthbbJV3ImI4s/3+fL2CMZ
- IM/TzDwdFD8rCqhqvdzvFrod+BiAVnUvfROMq3CMB8zN+72sIXAv1m1pRC2uqZqvGxgi
- KWZmxOOOM4GL0AVi/VTDXGcXA+eoTVhCsRqGKB8RUNa+lq5P57Rffvevtte8/IE3JrlW
- ZwIw==
-X-Gm-Message-State: AOJu0Yx6VZBQ4mDfmF+NVjlo5PX7FEppOktT+Zkgj81KedHfAHZHS+2S
- UJVjm7CrweEnYkP89vD8u3u9SqOMI8NR46DBppRhAveVOFWx8hSVzoaijQVUjqc/wyA=
-X-Gm-Gg: ATEYQzylrCGBk4sRpn2/CNyX0SowFwAOLD08tf1u6NYjmHL0eYfJ7XVQlbd38FQbGDn
- 9DQRqnohkifrsN8Ys059SzCdiKBkLxxegaob9ClyvkGiTeHEwm2L6bNILazh1EScdyAWtzcpz1g
- HJoo/wnWUmU7hpRwRGbPhJxiZgbk9SpytsRenW3GDfMiGSJ9AgHdZihPThqeaPvh9inrI/M3roI
- UlAUHbAvDuzfOORKrKxd+1yOoCdfgaJ5h8auagiC1FmEB1gt6Ir9w0OwJrXMjD6WTYuC6tK9EgF
- vAggl2VwGSoEzdiGaxjj4dd9/yMj3mviCFHz5I3eeC3sPiBxgM49YPzAUcNMCAlriJvK7e63Uzb
- /ixqb/jsaEXroiGwf8QWdkXaXYlPDX/h1HysnBBruvzlygKB1QIQx0aR7motyct3EDKqdeexDpB
- TRl9ILvMKK7JBjOX3Adyp9sIPqWyim3RReTNqtbc4Wwz9+krC43sjLOLveeno5bQ6OmSAmh/pWe
- 5KqPsreIdCUsJ6QFgzYFjCnzMbCVnLwrkA=
-X-Received: by 2002:a05:600c:8105:b0:477:7bca:8b34 with SMTP id
- 5b1f17b1804b1-4851983bf08mr20111605e9.6.1772617785336; 
- Wed, 04 Mar 2026 01:49:45 -0800 (PST)
-Received: from localhost.localdomain
- (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
- [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4851884224fsm38677685e9.4.2026.03.04.01.49.44
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 04 Mar 2026 01:49:44 -0800 (PST)
-Message-ID: <69a80038.050a0220.3816e.9f0f@mx.google.com>
-To: "Cyril Hrubis" <chrubis@suse.cz>,
- "Andrea Cervesato" <andrea.cervesato@suse.de>
-In-Reply-To: <aZcCrH2i_KFhonAG@yuki.lan>
-Date: Wed, 04 Mar 2026 09:49:44 +0000
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 50B571000953
+ for <ltp@lists.linux.it>; Wed,  4 Mar 2026 11:00:06 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id F0F843F8D3;
+ Wed,  4 Mar 2026 10:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1772618405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lFVSR1yVRIzhKAlnQN8FWw7Ejg8a+0CBZUAZTwbvv5k=;
+ b=fos5i7vWl9mlM+6Tu5nnJRldrVjSi6rugphmCpaj2b+TPQSdRzowtN0VXZKKk3/zzO8N2y
+ uAeskM6UzxXpaUTZi0tSgUVK1+raGQblloVgz0syVYRiuW5uD3RxIXGWV/sArwfsCrzdWQ
+ o6U0LSOvS8Hxhz/5D7AZLhNLqfWlJe4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1772618405;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lFVSR1yVRIzhKAlnQN8FWw7Ejg8a+0CBZUAZTwbvv5k=;
+ b=rMwjH28WBVV9nwMAWojP876SOix8oJWSy43De6J910odoIvM/TP+iaGOEKspWKK/cSkTlg
+ hwBUV0vzwBvatNAQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1772618404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lFVSR1yVRIzhKAlnQN8FWw7Ejg8a+0CBZUAZTwbvv5k=;
+ b=1DMoMp7k2Zy1sWGydakCfAXNazPhtWPJPvOVmoq3ns1F0bAXCm3E+pBMiyc/MCV3SIiwun
+ HSXM7hKe7ffrERUnx3YbwurnMd9cnjTEeYntxUcR15kpAUweQu6XqVxsms5mO4/PPYQEFB
+ 0LEJRAWXDnLJBlki/wKH/S9r6VaHhT8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1772618404;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lFVSR1yVRIzhKAlnQN8FWw7Ejg8a+0CBZUAZTwbvv5k=;
+ b=GaytLb4J9BkvHmds+fSKYpRGxkB7/q2Hfrbn2OlbGGGJ77sq+BvuDmCHFJzSbtffOAUInx
+ YYN8n9LSqKtNs0DA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DED783EA69;
+ Wed,  4 Mar 2026 10:00:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id cGBhNqQCqGlkbQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 04 Mar 2026 10:00:04 +0000
+Date: Wed, 4 Mar 2026 11:00:10 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Pavithra <pavrampu@linux.ibm.com>
+Message-ID: <aagCqno56xMCixO-@yuki.lan>
+References: <20250925060730.1010196-1-pavrampu@linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20250925060730.1010196-1-pavrampu@linux.ibm.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/6] Add safe macros for stream testing suite
+Subject: Re: [LTP] [PATCH] [PATCH v3] Migrating the
+ libhugetlbfs/testcases/truncate_above_4GB.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,33 +106,255 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-MIME-Version: 1.0
+Cc: ltp@lists.linux.it, Pavithra <pavrampu@linux.vnet.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-
+> Signed-off-by: Pavithra <pavrampu@linux.vnet.ibm.com>
+> ---
+> Changes in v3:
+> - Fixed Warnings
+> ---
+>  runtest/hugetlb                               |   1 +
+>  testcases/kernel/mem/.gitignore               |   1 +
+>  .../kernel/mem/hugetlb/hugemmap/hugemmap36.c  | 170 ++++++++++++++++++
+>  3 files changed, 172 insertions(+)
+>  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
 > 
-> Newly added safe macros shouldn't add the cleanup_fn parameter, that is
-> kept only in the legacy macros that are stil used in the old library
-> tests.
+> diff --git a/runtest/hugetlb b/runtest/hugetlb
+> index 0896d3c94..bd40a7a30 100644
+> --- a/runtest/hugetlb
+> +++ b/runtest/hugetlb
+> @@ -36,6 +36,7 @@ hugemmap30 hugemmap30
+>  hugemmap31 hugemmap31
+>  hugemmap32 hugemmap32
+>  hugemmap34 hugemmap34
+> +hugemmap36 hugemmap36
+>  hugemmap05_1 hugemmap05 -m
+>  hugemmap05_2 hugemmap05 -s
+>  hugemmap05_3 hugemmap05 -s -m
+> diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+> index b4455de51..2ddef6bf1 100644
+> --- a/testcases/kernel/mem/.gitignore
+> +++ b/testcases/kernel/mem/.gitignore
+> @@ -36,6 +36,7 @@
+>  /hugetlb/hugemmap/hugemmap31
+>  /hugetlb/hugemmap/hugemmap32
+>  /hugetlb/hugemmap/hugemmap34
+> +/hugetlb/hugemmap/hugemmap36
+>  /hugetlb/hugeshmat/hugeshmat01
+>  /hugetlb/hugeshmat/hugeshmat02
+>  /hugetlb/hugeshmat/hugeshmat03
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+> new file mode 100644
+> index 000000000..a575d601e
+> --- /dev/null
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+> @@ -0,0 +1,170 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
+> + * Copyright (C) 2006 Hugh Dickins <hugh@veritas.com>
+> + */
+> +
+> +/*\
+> + *[Descripiton]
+> + *
+> + * At one stage, a misconversion of hugetlb_vmtruncate_list to a
+> + * prio_tree meant that on 32-bit machines, truncates at or above 4GB
+> + * could truncate lower pages, resulting in BUG_ON()s.
+> + *
+> + * WARNING: The offsets and addresses used within are specifically
+> + * calculated to trigger the bug as it existed.  Don't mess with them
+> + * unless you *really* know what you're doing.
+> + *
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#define _LARGEFILE64_SOURCE
+> +#define FOURGIG ((off64_t)0x100000000ULL)
+> +#define MNTPOINT "hugetlbfs/"
+> +
+> +#include <signal.h>
+> +#include <setjmp.h>
+> +#include "hugetlb.h"
+> +
+> +static int page_size;
+> +static long hpage_size;
+> +static int fd = -1;
+> +static volatile int test_pass;
+> +static int err;
+> +static int sigbus_count;
+> +static sigjmp_buf sig_escape;
+> +
+> +static void sigbus_handler_fail(void)
+> +{
+> +	siglongjmp(sig_escape, 17);
+> +}
+> +
+> +static void sigbus_handler_pass(void)
+> +{
+> +	test_pass = 1;
+> +	siglongjmp(sig_escape, 17);
+> +}
+> +
+> +static void run_test(void)
+> +{
+> +	static long long buggy_offset, truncate_point;
+> +	void *p, *q;
+> +	volatile unsigned int *pi, *qi;
+> +
+> +	struct sigaction sa_pass = {
+> +		.sa_sigaction = sigbus_handler_pass,
+> +		.sa_flags = SA_SIGINFO,
+> +	};
+> +
+> +	struct sigaction sa_fail = {
+> +    		.sa_sigaction = sigbus_handler_fail,
+> +    		.sa_flags = SA_SIGINFO,
+> +	};
 
-The problem is that I don't know how to approach it, since the header is
-correct, but we also have tso_safe_stdio.h and there's a mix of old
-implementations/new implementations mixing together into tst_kernel.c.
+There are wrong whitespaces here. Have you done 'make check' in the test
+directory to find common problems?
 
-I'm a bit puzzled. The point would be to move evrything in the new API,
-including the core library.
+> +	sigbus_count = 0;
+> +	test_pass = 0;
+> +
+> +	buggy_offset = truncate_point / (hpage_size / page_size);
+> +	buggy_offset = (long long)PALIGN(buggy_offset, hpage_size);
+> +
+> +	/* First get arena of three hpages size, at file offset 4GB */
+> +	q = mmap64(NULL, 3*hpage_size, PROT_READ|PROT_WRITE,
+> +		 MAP_PRIVATE, fd, truncate_point);
+> +	if (q == MAP_FAILED)
+> +		tst_brk(TBROK, "mmap() offset 4GB: %s", strerror(errno));
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+You shouldn't call mmap64() directly. WIth LFS enabled the 64bit variant
+is choosen automatically and this can be SAFE_MMAP().
+
+> +	qi = q;
+> +	/* Touch the high page */
+> +	*qi = 0;
+> +
+> +	/* This part of the test makes the problem more obvious, but
+> +	 * is not essential.  It can't be done on segmented powerpc, where
+> +	 * segment restrictions prohibit us from performing such a
+> +	 * mapping, so skip it there. Similarly, ia64's address space
+> +	 * restrictions prevent this.
+> +	 */
+> +#if (defined(__powerpc__) && defined(PPC_NO_SEGMENTS)) \
+> +	|| !defined(__powerpc__) && !defined(__powerpc64__) \
+> +	&& !defined(__ia64__)
+> +	/* Replace middle hpage by tinypage mapping to trigger
+> +	 * nr_ptes BUG
+> +	 */
+> +	p = mmap64(q + hpage_size, hpage_size, PROT_READ|PROT_WRITE,
+> +		   MAP_FIXED|MAP_PRIVATE|MAP_ANON, -1, 0);
+> +	if (p != q + hpage_size)
+> +		tst_brk(TBROK, "mmap() offset 4GB: %s", strerror(errno));
+
+Here as well.
+
+> +	pi = p;
+> +	/* Touch one page to allocate its page table */
+> +	*pi = 0;
+> +#endif
+> +
+> +	/* Replace top hpage by hpage mapping at confusing file offset */
+> +	p = mmap64(q + 2*hpage_size, hpage_size, PROT_READ|PROT_WRITE,
+> +		 MAP_FIXED|MAP_PRIVATE, fd, buggy_offset);
+> +	if (p != q + 2*hpage_size)
+> +		tst_brk(TBROK, "mmap() buggy offset 0x%llx", buggy_offset);
+
+Here as well.
+
+> +	pi = p;
+> +	/* Touch the low page with something non-zero */
+> +	*pi = 1;
+> +
+> +	err = ftruncate64(fd, truncate_point);
+> +	if (err) {
+> +		tst_res(TFAIL, "ftruncate failed");
+> +		goto cleanup;
+> +	}
+
+And here as well.
+
+> +	SAFE_SIGACTION(SIGBUS, &sa_fail, NULL);
+> +	if (sigsetjmp(sig_escape, 1) == 0)
+> +		if (*pi != 1) {
+> +			tst_res(TFAIL, "Data 1 has changed!");
+> +			goto cleanup;
+> +		}
+> +
+> +	SAFE_SIGACTION(SIGBUS, &sa_pass, NULL);
+> +	if (sigsetjmp(sig_escape, 1) == 0)
+> +		*qi;
+> +	else
+> +		sigbus_count++;
+> +	if (sigbus_count != 1)
+> +		/* Should have SIGBUSed above */
+> +		tst_res(TFAIL, "Didn't SIGBUS on truncated page.");
+> +	if (test_pass == 1)
+> +		tst_res(TPASS, "Expected SIGBUS");
+
+Why do we have both test_pass and sigbus count here?
+
+Shouldn't be a single flag set from the signal handler enough?
+
+> +cleanup:
+> +	SAFE_MUNMAP(q, 3*hpage_size);
+> +	SAFE_MUNMAP(p, hpage_size);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	long long truncate_point;
+> +
+> +	page_size = getpagesize();
+> +	hpage_size = tst_get_hugepage_size();
+> +	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
+> +	truncate_point = FOURGIG;
+> +	if (hpage_size > truncate_point)
+> +		tst_brk(TCONF, "Huge page size is too large!");
+> +	if (truncate_point % hpage_size > 0)
+> +		tst_brk(TCONF, "Truncation point is not aligned to huge page size!");
+
+Hmm, I find this unlinkely to ever happen. As far as I can tell all
+currently supported hugepage sizes are multiples of two and as such they
+by definition divide 4GB without reminder.
+
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd >= 0)
+> +		SAFE_CLOSE(fd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tags = (struct tst_tag[]) {
+> +		{"linux-git", "856fc2950555"},
+> +		{}
+> +	},
+> +	.needs_root = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.needs_hugetlbfs = 1,
+> +	.hugepages = {4, TST_NEEDS},
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run_test,
+> +};
+> -- 
+> 2.43.5
+> 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
