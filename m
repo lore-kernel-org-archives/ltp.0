@@ -4,97 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE447EDA6A2
-	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 16:53:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00B3CEDEC04
+	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 03:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1772595669; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=gp09zXfffnA7xH3YjVfwIVkVeopOvO9Hh6xQECm6B/Q=;
+ b=JA32XO8Q0vPdE1DKCZ/OOy2O86X2HXV8IH741xHAia22PvdA398zDHi2WO75pXHBGQ20q
+ j2TLkJK7HK4aq+s0GP4kGF0nRLd41jdjYtWs1ufJJON+hGZ0gnqJtOO2YMG+tfLyRPLXQkq
+ V2kco9weZ9HvKaHexeA3fAa7UimUKSA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E11023DADA3
-	for <ltp@archiver.kernel.org>; Tue,  3 Mar 2026 17:53:01 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0B2CF3D6F74
+	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 04:41:09 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3E1B03CC57C
- for <ltp@lists.linux.it>; Tue,  3 Mar 2026 17:52:41 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 6D2783CAF08
+ for <ltp@lists.linux.it>; Wed,  4 Mar 2026 04:40:46 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4A63510009E2
- for <ltp@lists.linux.it>; Tue,  3 Mar 2026 17:52:41 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 966C61000453
+ for <ltp@lists.linux.it>; Wed,  4 Mar 2026 04:40:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1772595643;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=mriX03uU5llSYenKrB7o/uRDty95r+ySWZQycywc7TA=;
+ b=Jlq3g0qEpUlpYzdRlDu1uDNCf1Kax2OZ3WRD2VIrdYLoROAeXWPFQgyaUPJs2dymB9VhGb
+ e/gufkLTCvvK8YqJZgchq10qjjbArO15Hy4mnuEC6QSAOY4ndVdLkAn7m6woYbYY9n5nKm
+ PIgv8u+blPZgL2XGwT/xohR7MLcEU7g=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-660-qHCaKzriM_i1QpBBwAbTIA-1; Tue,
+ 03 Mar 2026 22:40:41 -0500
+X-MC-Unique: qHCaKzriM_i1QpBBwAbTIA-1
+X-Mimecast-MFC-AGG-ID: qHCaKzriM_i1QpBBwAbTIA_1772595640
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 083313F926;
- Tue,  3 Mar 2026 16:52:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1772556760; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HhcpFEP79OM9WNu2tUdLc0cwtom5M0IF5tP5AzuFRgs=;
- b=VtzBSdxHEf+FSjY/79Yj3wKABPJeY2yFhVSrMkQs+MF13HyRQVwwDCnnQkUe77DxsBx/yt
- h7V/Owd77cu8/KB21Sqq0RcP4u/N2/uqIp48rGPzKYGCgxAeD351MLuWMEXDnNMWhbU838
- omjdjfMmwUEn5juGQwx4//+2C9HD2f4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1772556760;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HhcpFEP79OM9WNu2tUdLc0cwtom5M0IF5tP5AzuFRgs=;
- b=CRxGn/Ws1oKULuMvKZeXj+ick1jneeUYsMqh4CF6VVVEpMtD4L9WNfIZ2qbPZapUuZM5n/
- UJ8rPFQ5ALzFdrAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1772556760; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HhcpFEP79OM9WNu2tUdLc0cwtom5M0IF5tP5AzuFRgs=;
- b=VtzBSdxHEf+FSjY/79Yj3wKABPJeY2yFhVSrMkQs+MF13HyRQVwwDCnnQkUe77DxsBx/yt
- h7V/Owd77cu8/KB21Sqq0RcP4u/N2/uqIp48rGPzKYGCgxAeD351MLuWMEXDnNMWhbU838
- omjdjfMmwUEn5juGQwx4//+2C9HD2f4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1772556760;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HhcpFEP79OM9WNu2tUdLc0cwtom5M0IF5tP5AzuFRgs=;
- b=CRxGn/Ws1oKULuMvKZeXj+ick1jneeUYsMqh4CF6VVVEpMtD4L9WNfIZ2qbPZapUuZM5n/
- UJ8rPFQ5ALzFdrAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E06FB3EA69;
- Tue,  3 Mar 2026 16:52:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id XnDWNdcRp2kvKAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 03 Mar 2026 16:52:39 +0000
-Date: Tue, 3 Mar 2026 17:52:49 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Pavithra <pavrampu@linux.ibm.com>
-Message-ID: <aacR4TZCFT_UeMaB@yuki.lan>
-References: <20250925060514.1009709-1-pavrampu@linux.ibm.com>
+ by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 94D141800365
+ for <ltp@lists.linux.it>; Wed,  4 Mar 2026 03:40:40 +0000 (UTC)
+Received: from fedora-laptop-x1.redhat.com (unknown [10.72.116.173])
+ by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 68AE8195608E
+ for <ltp@lists.linux.it>; Wed,  4 Mar 2026 03:40:38 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Wed,  4 Mar 2026 11:40:33 +0800
+Message-ID: <20260304034034.59303-1-liwang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250925060514.1009709-1-pavrampu@linux.ibm.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: BdgGd3jtIZ7LjG3k1hxwP00WAoTVFJRa3_I4vDgUPJo_1772595640
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] [PATCH v4] Hugetlb: Migrating libhugetlbfs test
- truncate_reserve_wraparound.c
+Subject: [LTP] [PATCH v3 1/2] lib: Extend -D flag to support multiple debug
+ levels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,161 +83,132 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, Pavithra <pavrampu@linux.vnet.ibm.com>
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +/*\
-> + *[Descripiton]
-> + *
-> + * Origin: https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/truncate_reserve_wraparound.c
-> + *
-> + * At one stage, improper handling of tests against i_size could mess
-> + * up accounting of reserved hugepages on certain truncate
-> + * operations.
-> + *
-> + */
-> +
-> +#include <signal.h>
-> +#include <setjmp.h>
-> +#include "hugetlb.h"
-> +
-> +#define MNTPOINT "hugetlbfs/"
-> +
-> +static long hpage_size;
-> +static int fd = -1;
-> +
-> +static sigjmp_buf sig_escape;
-> +
-> +static void sigbus_handler(int signum LTP_ATTRIBUTE_UNUSED, siginfo_t *si LTP_ATTRIBUTE_UNUSED, void *uc LTP_ATTRIBUTE_UNUSED)
+This patch extends the LTP debugging framework by introducing multiple
+levels of verbosity for the '-D' command line option. Instead of a simple
+on/off toggle, it now allows developers to specify whether they want debug
+output exclusively from the test process, or from both the test and library
+processes.
 
-Why do we bother with passing SA_SIGINFO to the sigaction() when we
-ingnore the parameters later?
+The supported debug levels are:
+  -D1 (-D): Enable debug logs for the test process only
+  -D2     : Enable verbose debug logs for both the test and library processes
 
-> +{
-> +	siglongjmp(sig_escape, 17);
-> +}
-> +
-> +static void run_test(void)
-> +{
-> +
-> +	static int sigbus_count;
-> +	unsigned long initial_rsvd, after_map_rsvd, after_touch_rsvd;
-> +	unsigned long after_trunc_rsvd, after_unmap_rsvd, after_sigbus_rsvd;
-> +	volatile unsigned int *q;
-> +	void *p;
-> +
-> +	sigbus_count = 0;
-> +
-> +	initial_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +	tst_res(TINFO, "Reserve count before map: %lu", initial_rsvd);
-> +
-> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-> +			fd, 0);
-> +	q = p;
-> +
-> +	after_map_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +	tst_res(TINFO, "Reserve count after map: %lu", after_map_rsvd);
+Suppress all debug logs if no '-D' flag passed (by default behavoir).
 
-Shouldn't we check that after_mmap_rsvd == initial_rsvd + 1 ?
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
 
-Also we do have nice macros for assertions so we can do:
+Notes:
+    v2 --> v3:
+    	* do not print "Enabling debug info" for -D0
+    	* drop the -D0 support becase it's the default behavor.
 
-        TST_EXP_EQ_LU(initial_rsvd + 1, after_mmap_rsvd);
-	if (!TST_PASS)
-		goto windup;
+ doc/developers/debugging.rst |  7 +++++++
+ lib/tst_test.c               | 27 ++++++++++++++++-----------
+ 2 files changed, 23 insertions(+), 11 deletions(-)
 
-And we can use these macros in the rest of the comparsions as well. And
-with that we do not need to print the useless
-tst_res(TPASS, "Test passed"); message
-
-> +	*q = 0;
-> +	after_touch_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +	tst_res(TINFO, "Reserve count after touch: %lu", after_touch_rsvd);
-> +
-> +	if (after_touch_rsvd != initial_rsvd) {
-> +		tst_res(TFAIL, "Reserved after touch %lu instead of %lu", after_touch_rsvd, initial_rsvd);
-> +		goto windup;
-> +	}
-> +
-> +	SAFE_FTRUNCATE(fd, 0);
-> +	after_trunc_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +	tst_res(TINFO, "Reserve count after truncate: %lu", after_trunc_rsvd);
-> +
-> +	if (after_trunc_rsvd != initial_rsvd) {
-> +		tst_res(TFAIL, "Reserved after truncate %lu instead of %lu", after_trunc_rsvd, initial_rsvd);
-> +		goto windup;
-> +	}
-> +
-> +	if (sigsetjmp(sig_escape, 1) == 0)
-> +		*q; /* Fault, triggering a SIGBUS */
-> +	else
-> +		sigbus_count++;
-> +
-> +	if (sigbus_count != 1) {
-> +		tst_res(TFAIL, "Didn't SIGBUS after truncate");
-> +		goto windup;
-> +	}
-> +
-> +	after_sigbus_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +	tst_res(TINFO, "Reserve count after sigbus: %lu", after_sigbus_rsvd);
-> +
-> +	if (after_sigbus_rsvd != initial_rsvd) {
-> +		tst_res(TFAIL, "Reserved after SIGBUS %lu instead of %lu", after_sigbus_rsvd, initial_rsvd);
-> +		goto windup;
-> +	}
-> +
-> +	tst_res(TPASS, "Test passed!");
-> +
-> +windup:
-> +	SAFE_MUNMAP(p, hpage_size);
-> +	after_unmap_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +	tst_res(TINFO, "Reserve count after munmap: %lu", after_unmap_rsvd);
-> +
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	hpage_size = tst_get_hugepage_size();
-> +	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
-> +
-> +	struct sigaction sa = {
-> +		.sa_sigaction = sigbus_handler,
-> +		.sa_flags = SA_SIGINFO,
-> +	};
-> +
-> +	SAFE_SIGACTION(SIGBUS, &sa, NULL);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd >= 0)
-> +		SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tags = (struct tst_tag[]) {
-> +		{"linux-git", "ebed4bfc8da8"},
-> +		{}
-> +	},
-> +	.needs_root = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.needs_hugetlbfs = 1,
-> +	.hugepages = {4, TST_NEEDS},
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run_test,
-> +};
-> -- 
-> 2.43.5
-> 
-
+diff --git a/doc/developers/debugging.rst b/doc/developers/debugging.rst
+index 181e5b096..dcb287bb6 100644
+--- a/doc/developers/debugging.rst
++++ b/doc/developers/debugging.rst
+@@ -12,6 +12,13 @@ The LTP framework supports ``TDEBUG`` flag test debug messages. These
+ messages can be enabled using the ``-D`` parameter or setting ``LTP_ENABLE_DEBUG=1``
+ environment variable (see :doc:`../users/setup_tests`).
+ 
++The ``-D`` parameter also supports the following verbosity levels:
++
++  ``-D1`` (or ``-D``): Enable debug logs for the test process only.
++  ``-D2``: Enable verbose debug logs for both the test and library processes.
++
++Suppress all debug logs if no '-D' flag passed (by default behavoir).
++
+ Tracing and debugging syscalls
+ ------------------------------
+ 
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 239494b6f..e01c14638 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -83,7 +83,7 @@ struct context {
+ 	tst_atomic_t abort_flag;
+ 	uint32_t mntpoint_mounted:1;
+ 	uint32_t ovl_mounted:1;
+-	uint32_t tdebug:1;
++	uint32_t tdebug;
+ };
+ 
+ struct results {
+@@ -216,8 +216,7 @@ void tst_reinit(void)
+ 	tst_futexes = ipc->futexes;
+ 	tst_max_futexes = (size - offsetof(struct ipc_region, futexes)) / sizeof(futex_t);
+ 
+-	if (context->tdebug)
+-		tst_res(TINFO, "Restored metadata for PID %d", getpid());
++	tst_res(TDEBUG, "Restored metadata for PID %d", getpid());
+ }
+ 
+ extern char **environ;
+@@ -490,19 +489,20 @@ void tst_res_(const char *file, const int lineno, int ttype,
+ 	va_list va;
+ 
+ 	/*
+-	 * Suppress TDEBUG output in these cases:
++	 * Control TDEBUG output in these cases:
+ 	 * 1. No context available (e.g., called before IPC initialization)
+-	 * 2. Called from the library process, unless explicitly enabled
+-	 * 3. Debug output is not enabled (context->tdebug == 0)
++	 * 2. Debug output is completely disabled (default: context->tdebug == 0).
++	 * 3. Debug output is only for test process (context->tdebug == 1).
++	 * 4. Debug output is enabled for both test and lib processes (context->tdebug == 2).
+ 	 */
+ 	if (ttype == TDEBUG) {
+ 		if (!context)
+ 			return;
+ 
+-		if (context->lib_pid == getpid())
++		if (context->tdebug == 0)
+ 			return;
+ 
+-		if (!context->tdebug)
++		if (context->tdebug == 1 && context->lib_pid == getpid())
+ 			return;
+ 	}
+ 
+@@ -657,7 +657,7 @@ static struct option {
+ 	{"h",  "-h       Prints this help"},
+ 	{"i:", "-i n     Execute test n times"},
+ 	{"I:", "-I x     Execute test for n seconds"},
+-	{"D",  "-D       Prints debug information"},
++	{"D::", "-D[1,2]  Prints debug information"},
+ 	{"V",  "-V       Prints LTP version"},
+ };
+ 
+@@ -825,8 +825,13 @@ static void parse_opts(int argc, char *argv[])
+ 			tst_brk(TBROK, "Invalid option");
+ 		break;
+ 		case 'D':
+-			tst_res(TINFO, "Enabling debug info");
+-			context->tdebug = 1;
++			if (optarg)
++				context->tdebug = SAFE_STRTOL(optarg, 1, 2);
++			else
++				context->tdebug = 1;
++
++			if (context->tdebug)
++				tst_res(TINFO, "Enabling debug info (level %d)", context->tdebug);
+ 		break;
+ 		case 'h':
+ 			print_help();
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.53.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
