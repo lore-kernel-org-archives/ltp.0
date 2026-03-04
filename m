@@ -4,113 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DB9AEF8FE1
-	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 13:26:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E7CDEF8FE1
+	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 13:26:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 49C813DB2CD
-	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 14:26:17 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B63F73DB1F5
+	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 14:26:35 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AED2B3C61C5
+ by picard.linux.it (Postfix) with ESMTPS id E48C23C61C5
  for <ltp@lists.linux.it>; Wed,  4 Mar 2026 14:25:55 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0E5671000A0B
- for <ltp@lists.linux.it>; Wed,  4 Mar 2026 14:25:54 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3DAF16002DE
+ for <ltp@lists.linux.it>; Wed,  4 Mar 2026 14:25:55 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 505E25BDF8;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BC2D73F842;
  Wed,  4 Mar 2026 13:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1772630754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=ivDTVPejXN3q0dzLBe/9H6e6BXhyxDnXRhYfXV2nMgk=;
- b=mb83tk6dqc6clR12MiJLPQ/1as6nmET0El+pJuequ7oBZnvdHg76uMtShaFTiKjIdl4low
- VXSWK4gdCVvomtUYQe6hLInSJhZZo0JBDJ5OJMI9d4tBg446NWhfmkWHS1wpvQkWywOGQ9
- CDPog5C5EG46Nb/ra6VIydI1kZSASF8=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=d8JegXby7tmYUCh+cLALfIZpeYLSuZXB/50zIw8zxbU=;
+ b=oI3wogzuhwwo+BEhgIg2/uh5nlEW9DTL/q/tqsGkZCWeMRNJKQJ+WM9FRfjMtLthqee9q7
+ ukyyrqb8z9xfzT9yYR9qIwNHgbgBw5vMrEbZ5qjTtClF5dJGu8ZjLW0wO0OwTkT6nVcg6F
+ ONXFefz6jcGj5ivsswNzL/N/aJnu+54=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1772630754;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=ivDTVPejXN3q0dzLBe/9H6e6BXhyxDnXRhYfXV2nMgk=;
- b=sw34ZHkCJRoIjtTE3//jQtxdsSMWibz2gol/xRfzuS8KqwaMIvU6cSMfvTjW94jxRXmERp
- +qeZHqc1VfKLwJAQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=mb83tk6d;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=sw34ZHkC
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=d8JegXby7tmYUCh+cLALfIZpeYLSuZXB/50zIw8zxbU=;
+ b=I0Ve8iYDzT8lmPSqVOTkuPGYMW9ywBDRrcTtW3Bz1kJmiPTSkwKrUtsOgjsqPx+iyervhi
+ 7jFbfp/yz4ioIYCA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=oI3wogzu;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=I0Ve8iYD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1772630754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=ivDTVPejXN3q0dzLBe/9H6e6BXhyxDnXRhYfXV2nMgk=;
- b=mb83tk6dqc6clR12MiJLPQ/1as6nmET0El+pJuequ7oBZnvdHg76uMtShaFTiKjIdl4low
- VXSWK4gdCVvomtUYQe6hLInSJhZZo0JBDJ5OJMI9d4tBg446NWhfmkWHS1wpvQkWywOGQ9
- CDPog5C5EG46Nb/ra6VIydI1kZSASF8=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=d8JegXby7tmYUCh+cLALfIZpeYLSuZXB/50zIw8zxbU=;
+ b=oI3wogzuhwwo+BEhgIg2/uh5nlEW9DTL/q/tqsGkZCWeMRNJKQJ+WM9FRfjMtLthqee9q7
+ ukyyrqb8z9xfzT9yYR9qIwNHgbgBw5vMrEbZ5qjTtClF5dJGu8ZjLW0wO0OwTkT6nVcg6F
+ ONXFefz6jcGj5ivsswNzL/N/aJnu+54=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1772630754;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=ivDTVPejXN3q0dzLBe/9H6e6BXhyxDnXRhYfXV2nMgk=;
- b=sw34ZHkCJRoIjtTE3//jQtxdsSMWibz2gol/xRfzuS8KqwaMIvU6cSMfvTjW94jxRXmERp
- +qeZHqc1VfKLwJAQ==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=d8JegXby7tmYUCh+cLALfIZpeYLSuZXB/50zIw8zxbU=;
+ b=I0Ve8iYDzT8lmPSqVOTkuPGYMW9ywBDRrcTtW3Bz1kJmiPTSkwKrUtsOgjsqPx+iyervhi
+ 7jFbfp/yz4ioIYCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 271A43EA69;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A3883EA69;
  Wed,  4 Mar 2026 13:25:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KEh1B+IyqGlBTgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id IM17I+IyqGlBTgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Wed, 04 Mar 2026 13:25:54 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 04 Mar 2026 14:25:38 +0100
-Message-Id: <20260304-stream_refactoring-v2-0-3e48ada8ff1a@suse.com>
+Date: Wed, 04 Mar 2026 14:25:40 +0100
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIANIyqGkC/22NQQ7CIBBFr9LMWgygxerKe5jGUJi2sygYphJN0
- 7uLTdy5fH/+f7MAYyJkuFQLJMzEFEMBvavAjTYMKMgXBi21kUpLwXNCO90T9tbNMVEYxLGrrcG
- zl9afoAwf5UivTXprC4/EpfnefmT1TX+6wz9dVkIK3aiuqXtjO6mv/GTcuzhBu67rB/EI1JmzA
- AAA
-X-Change-ID: 20260120-stream_refactoring-4b5a6e9d0ad7
+Message-Id: <20260304-stream_refactoring-v2-2-3e48ada8ff1a@suse.com>
+References: <20260304-stream_refactoring-v2-0-3e48ada8ff1a@suse.com>
+In-Reply-To: <20260304-stream_refactoring-v2-0-3e48ada8ff1a@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1772630754; l=1779;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1772630754; l=6123;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=OZYo5YdFVywImlmRJfrs8cgLn+G8AVyapjxcf8/r/p0=;
- b=6M+E+oQVzL6I5p1zf0t3NUoDnuMN1iHJ4QblCO6/SagZBzeWmazBC7v2L4lWySrg0BX3vxKDu
- 5i6qSPWp6XgApBXRLYkcwmvOlgBmKDD9qtRHJmhQDlfezpyyj5+pCjQ
+ bh=WwsxWQ4jN6MN8N8Dp6fZwIkR0Txr2+Yw0sY1szRI3Dw=;
+ b=jtQyBDnMiwShqUD3e832YzSlkhtEQ7KjfxplFQ9Q9XCa12yfEaxsm7etwHNuaH/Di4IZYXzJg
+ v3EY0ZHEa9jB9UhcKoj7yYAPvYtNJasgyStWcuiAUApr5Cr8g0IEHDr
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
- RCVD_TLS_ALL(0.00)[];
+ MX_GOOD(-0.01)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: 505E25BDF8
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Queue-Id: BC2D73F842
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/6] Rewrite fs stream testing suite
+Subject: [LTP] [PATCH v2 2/6] fs: rewrite stream01 test using new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,47 +129,197 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-All tests are now using the new LTP API. The stream05 has been deleted
-because I think it was a bit messy and it didn't have a proper testing
-focus. I replaced it with a new test that is just verifying that fd
-returned by `fileno()` can be used for basic operations on fd.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v2:
-- add SAFE_FFLUSH() macro
-- remove cleanup_fn from SAFE_* macros
-- stream01: use a double buffer to write data inside file
-- stream02: check if stream is NULL after fopen()
-- stream05: use SAFE_FFLUSH()
-- stream05: don't overengineer SAFE_FILENO() with TST_EXP_FD()
-- Link to v1: https://lore.kernel.org/r/20260123-stream_refactoring-v1-0-281b85f6ab02@suse.com
+ testcases/kernel/fs/stream/stream01.c | 155 +++++++++++-----------------------
+ 1 file changed, 49 insertions(+), 106 deletions(-)
 
----
-Andrea Cervesato (6):
-      Add safe macros for stream testing suite
-      fs: rewrite stream01 test using new API
-      fs: rewrite stream02 test using new API
-      fs: rewrite stream03 test using new API
-      fs: rewrite stream04 test using new API
-      fs: rewrite stream05 test using new API
+diff --git a/testcases/kernel/fs/stream/stream01.c b/testcases/kernel/fs/stream/stream01.c
+index af56bca3b916c080328c3356681efbd869b961d2..d666e67491e53b1c45dabef5bb6118dbbdc8ad38 100644
+--- a/testcases/kernel/fs/stream/stream01.c
++++ b/testcases/kernel/fs/stream/stream01.c
+@@ -1,127 +1,70 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
++ * Copyright (c) International Business Machines  Corp., 2002
++ *	ported from SPIE section2/filesuite/stream1.c, by Airong Zhang
+  *
+- *   Copyright (c) International Business Machines  Corp., 2002
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * Verify that `freopen()` substitutes the named file in place of stream.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
++ * [Algorithm]
+  *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * - fopen() a stream
++ * - fwrite() something inside it
++ * - perform freopen() creating a new stream pointing to the first one
++ * - fwrite() data inside the new stream
++ * - check that second write to stream went to the file specified by freopen()
+  */
+ 
+-/* ported from SPIE section2/filesuite/stream1.c, by Airong Zhang */
++#include "tst_test.h"
++#include "tst_safe_stdio.h"
+ 
+-/*======================================================================
+-	=================== TESTPLAN SEGMENT ===================
+->KEYS:  < freopen()
+->WHAT:  < 1) check that freopen substitutes the named file in place of stream.
+->HOW:   < 1) open a stream, write something to it, perform freopen and
+-	<    write some more. Check that second write to stream went to
+-	<    the file specified by freopen.
+->BUGS:  <
+-======================================================================*/
++#define FILENAME1 "ltp_file1.txt"
++#define FILENAME2 "ltp_file2.txt"
+ 
+-#include <stdio.h>
+-#include <errno.h>
+-#include "test.h"
++static char *buff_file1 = "abc";
++static char *buff_file2 = "def";
+ 
+-char *TCID = "stream01";
+-int TST_TOTAL = 1;
+-int local_flag;
++static void read_file(const char *file, const char *str, size_t n)
++{
++	char buf[n];
++	FILE *stream;
++	size_t len;
+ 
+-#define PASSED 1
+-#define FAILED 0
++	memset(buf, 0, sizeof(buf));
+ 
+-/* XXX: add setup and cleanup. */
++	stream = SAFE_FOPEN(file, "r");
++	len = SAFE_FREAD(buf, n, n, stream);
++	SAFE_FCLOSE(stream);
+ 
+-char progname[] = "stream01()";
+-char tempfile1[40] = "";
+-char tempfile2[40] = "";
++	TST_EXP_EXPR(len == n, "Read the entire %s file buffer", file);
++	TST_EXP_EQ_STRN(buf, str, len);
++}
+ 
+-/*--------------------------------------------------------------------*/
+-int main(int ac, char *av[])
++static void run(void)
+ {
+ 	FILE *stream;
+-	char buf[10];
+-	int i;
+-	int lc;
+-
+-	/*
+-	 * parse standard options
+-	 */
+-	tst_parse_opts(ac, av, NULL, NULL);
+ 
+-	local_flag = PASSED;
+-	tst_tmpdir();
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
++	tst_res(TINFO, "Write %s file", FILENAME1);
++	stream = SAFE_FOPEN(FILENAME1, "a+");
++	SAFE_FWRITE(buff_file1, strlen(buff_file1), 3, stream);
+ 
+-		sprintf(tempfile1, "stream011.%d", getpid());
+-		sprintf(tempfile2, "stream012.%d", getpid());
+-	/*--------------------------------------------------------------------*/
+-		//block0:
+-		if ((stream = fopen(tempfile1, "a+")) == NULL) {
+-			tst_brkm(TFAIL, NULL, "fopen(%s) a+ failed: %s",
+-				 tempfile1,
+-				 strerror(errno));
+-		}
+-		fwrite("a", 1, 1, stream);
+-		if ((stream = freopen(tempfile2, "a+", stream)) == NULL) {
+-			tst_brkm(TFAIL | TERRNO, NULL, "freopen(%s) a+ failed",
+-				 tempfile2);
+-		}
+-		fwrite("a", 1, 1, stream);
+-		fclose(stream);
++	tst_res(TINFO, "Write %s file streaming into %s file", FILENAME2, FILENAME1);
++	stream = SAFE_FREOPEN(FILENAME2, "a+", stream);
++	SAFE_FWRITE(buff_file2, strlen(buff_file2), 3, stream);
+ 
+-		/* now check that a single "a" is in each file */
+-		if ((stream = fopen(tempfile1, "r")) == NULL) {
+-			tst_brkm(TFAIL | TERRNO, NULL, "fopen(%s) r failed",
+-				 tempfile1);
+-		} else {
+-			for (i = 0; i < 10; i++)
+-				buf[i] = 0;
+-			fread(buf, 1, 1, stream);
+-			if ((buf[0] != 'a') || (buf[1] != 0)) {
+-				tst_resm(TFAIL, "bad contents in %s",
+-					 tempfile1);
+-				local_flag = FAILED;
+-			}
+-			fclose(stream);
+-		}
+-		if ((stream = fopen(tempfile2, "r")) == NULL) {
+-			tst_brkm(TFAIL | TERRNO, NULL, "fopen(%s) r failed",
+-				 tempfile2);
+-		} else {
+-			for (i = 0; i < 10; i++)
+-				buf[i] = 0;
+-			fread(buf, 1, 1, stream);
+-			if ((buf[0] != 'a') || (buf[1] != 0)) {
+-				tst_resm(TFAIL, "bad contents in %s",
+-					 tempfile2);
+-				local_flag = FAILED;
+-			}
+-			fclose(stream);
+-		}
+-		if (local_flag == PASSED) {
+-			tst_resm(TPASS, "Test passed.");
+-		} else {
+-			tst_resm(TFAIL, "Test failed.");
+-		}
++	SAFE_FCLOSE(stream);
+ 
+-		local_flag = PASSED;
++	read_file(FILENAME1, buff_file1, 3);
++	read_file(FILENAME2, buff_file2, 3);
+ 
+-	/*--------------------------------------------------------------------*/
+-		unlink(tempfile1);
+-		unlink(tempfile2);
+-
+-	}			/* end for */
+-	tst_rmdir();
+-	tst_exit();
++	SAFE_UNLINK(FILENAME1);
++	SAFE_UNLINK(FILENAME2);
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.needs_tmpdir = 1,
++};
 
- include/safe_stdio_fn.h               |  21 +++
- include/tst_safe_stdio.h              |  21 +++
- lib/safe_stdio.c                      | 101 +++++++++++
- testcases/kernel/fs/stream/stream01.c | 155 +++++-----------
- testcases/kernel/fs/stream/stream02.c | 136 ++++----------
- testcases/kernel/fs/stream/stream03.c | 326 ++++++----------------------------
- testcases/kernel/fs/stream/stream04.c | 147 +++++----------
- testcases/kernel/fs/stream/stream05.c | 258 +++++----------------------
- 8 files changed, 362 insertions(+), 803 deletions(-)
----
-base-commit: 23ea0f0f8064f68bbf4d5c5f4f037ef18a5848d8
-change-id: 20260120-stream_refactoring-4b5a6e9d0ad7
-
-Best regards,
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.51.0
 
 
 -- 
