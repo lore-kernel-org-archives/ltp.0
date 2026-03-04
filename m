@@ -4,106 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 350D1EF8FF0
-	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 14:44:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E761BEF8FF3
+	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 15:02:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D2E9C3DC870
-	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 15:44:40 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 8149B3DC8BB
+	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 16:02:49 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0E9A73C5DB1
- for <ltp@lists.linux.it>; Wed,  4 Mar 2026 15:44:21 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id CDB433DAD37
+ for <ltp@lists.linux.it>; Wed,  4 Mar 2026 16:02:29 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 70996600AFC
- for <ltp@lists.linux.it>; Wed,  4 Mar 2026 15:44:17 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2482560013D
+ for <ltp@lists.linux.it>; Wed,  4 Mar 2026 16:02:28 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CDB695BE26
- for <ltp@lists.linux.it>; Wed,  4 Mar 2026 14:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1772635456; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=DJ8iQkpYQjRUKvh6FaESbhBvmBa5oJnsPN0eJ6CQPmc=;
- b=dq9HOQ4OcOU41OTdEAzeWwnovVbtmxtrbkTVFcwpH34n/ougcKwTsiKvBmsq4MzK7Ov+56
- JE1u0JRODeNgLIy0XSeKXZ0BDPvsENqAJooW2HWCX3l03psYSZpKRwjxPJ6lR3K3O1vwoG
- tNuMwCGatMHs0+BM/77c142BdbjuwD4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1772635456;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=DJ8iQkpYQjRUKvh6FaESbhBvmBa5oJnsPN0eJ6CQPmc=;
- b=SMvXr2aDflADUijjeKsYDIHdW6x5TgLMQwYIWTEeOiIMZxzetLIaLH0Zb1awR/Bgv76vfy
- aRR2y0+qOM7qrXBw==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EEBD65BE7A;
+ Wed,  4 Mar 2026 15:02:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1772636548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=E5/bmXnXaZDoPyhIMRFbGHCN73DPZ6wvcW9q9VTIDjg=;
+ b=Zta5sBO6ba97vEgNN7nPgsT9zLZPKH/KfvnwdxPzUsNCU3OtaixQimvZJQhdIX6ZWSMuDe
+ YE9v2eCnp54T6ATnh/LdvPsuwlBtGS1VBpDHN6RXoU0JwaiG43S/ipcR26xpn66CmFqdvn
+ TgxCQFYYxdoHq11wueR2uaVNDtaU7fI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1772636548;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=E5/bmXnXaZDoPyhIMRFbGHCN73DPZ6wvcW9q9VTIDjg=;
+ b=18eosFpxqVHyXk0POYm8sBDgMI0TBdw8Xj9MLNE7iijpnjh0T2XPt8B9MtZunXi6Serwa2
+ wxe2cIQZ7D8zAsDg==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PrgiMQqC;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=KWKWql34
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1772635454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=DJ8iQkpYQjRUKvh6FaESbhBvmBa5oJnsPN0eJ6CQPmc=;
- b=PrgiMQqCPFkUfQMpet5u1cjyyaTVNOag9VTNSkv7DmGvRJ7duS77p1y93BaAGU5AbKLCf/
- hv+OggQO+Yi6MYFbImDvHEBAf8t5vdQBpXy5Eav9DtNXD2H/BHuQ2bwLOIf8bqkpK26E39
- CogQDDlqGjCar6/qqtq5Ndp3+pAEqQ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1772635454;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=DJ8iQkpYQjRUKvh6FaESbhBvmBa5oJnsPN0eJ6CQPmc=;
- b=KWKWql34Nli2ON4ZsYyA0tif+oefrBwcimawMSnDCaBUtiAljixty6pEwPBQ11O51jSndX
- +cV46umlLPPis2Cg==
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1772636547; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=E5/bmXnXaZDoPyhIMRFbGHCN73DPZ6wvcW9q9VTIDjg=;
+ b=ksAKseS/uZ8JtAX/qcBoI7vHwWygUTGJfI/5j4q2ivBgmDvpksoScev6j4R3FImAZWkDkI
+ rc2xiJxgpIWedrMuOirIfZ6Y2TuQkJ9Et9RdFMaXRtmclzfaWz/zZBA7Bp6XtYwI5Dnlib
+ 7QJygo6Kv5A/u6XjoSyC0S+UZeXZ8Zk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1772636547;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=E5/bmXnXaZDoPyhIMRFbGHCN73DPZ6wvcW9q9VTIDjg=;
+ b=uAJlF1xlH746GFY2LMdsrnaPnpVaGqG4soYBFLY2DJ7w5JxxN+NmEbpeXRnT1woMIk4q0Z
+ PWxJzT/K1+rE0QDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD96C3EA69
- for <ltp@lists.linux.it>; Wed,  4 Mar 2026 14:44:14 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C529D3EA6E;
+ Wed,  4 Mar 2026 15:02:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id JBj6LD5FqGkQIwAAD6G6ig
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 04 Mar 2026 14:44:14 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed,  4 Mar 2026 15:44:24 +0100
-Message-ID: <20260304144424.10101-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.52.0
+ by imap1.dmz-prg2.suse.org with ESMTPSA id OAEHLoNJqGkJNgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 04 Mar 2026 15:02:27 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 04 Mar 2026 16:02:28 +0100
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_NONE(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Queue-Id: CDB695BE26
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Message-Id: <20260304-fork_refactoring-v2-3-016c47c90bc1@suse.com>
+References: <20260304-fork_refactoring-v2-0-016c47c90bc1@suse.com>
+In-Reply-To: <20260304-fork_refactoring-v2-0-016c47c90bc1@suse.com>
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1772636547; l=8567;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=J4Rp11hb/VK3Upbo4CjAfsXgyYwOWCiinI6cXbrx81A=;
+ b=0bNcx9tKkS8k1rqFOM/hf5LpIk/KN/UMRW517BG3H7IIUyg21JF13t4Inn09Dv2wpEmuA4KLm
+ l0wdsBF8aOHBs2oL95tnP48aNx8H5Jr1F8XGBGWCwbprRNpAGtUvarQ
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid, suse.com:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls: ulimit01; Convert to the new library
+Subject: [LTP] [PATCH v2 3/3] syscalls: refactor vfork02 using new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,314 +120,301 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Linux does not implement UL_GMEMLIM, UL_GDESLIM and UL_GSHMEMLIM so we
-keep only the UL_GETFSIZE and UL_SETFSIZE.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Replace the deprecated sigrelse/sighold usage and replace them with
+sigprocmask/sigaction.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/syscalls/ulimit/README     |   4 -
- testcases/kernel/syscalls/ulimit/ulimit01.c | 267 ++------------------
- 2 files changed, 21 insertions(+), 250 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/ulimit/README
+ testcases/kernel/syscalls/vfork/vfork02.c | 248 ++++++------------------------
+ 1 file changed, 48 insertions(+), 200 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ulimit/README b/testcases/kernel/syscalls/ulimit/README
-deleted file mode 100644
-index 87fa0d234..000000000
---- a/testcases/kernel/syscalls/ulimit/README
-+++ /dev/null
-@@ -1,4 +0,0 @@
--Warning:  This routine is obsolete. The include file is no
--        longer provided by glibc.  Use getrlimit(2),  setrlimit(2)
--        and sysconf(3) instead.  For the shell command ulimit, see
--        bash(1).
-diff --git a/testcases/kernel/syscalls/ulimit/ulimit01.c b/testcases/kernel/syscalls/ulimit/ulimit01.c
-index 74dea91cd..31c89b4c2 100644
---- a/testcases/kernel/syscalls/ulimit/ulimit01.c
-+++ b/testcases/kernel/syscalls/ulimit/ulimit01.c
-@@ -1,260 +1,35 @@
+diff --git a/testcases/kernel/syscalls/vfork/vfork02.c b/testcases/kernel/syscalls/vfork/vfork02.c
+index f630c9572b609d2af18e8852c1e5a0dcb16172ff..26d5f1bb9c897afe1121cfe3ed4d5a70456d17b8 100644
+--- a/testcases/kernel/syscalls/vfork/vfork02.c
++++ b/testcases/kernel/syscalls/vfork/vfork02.c
+@@ -1,229 +1,77 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
 - *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
+- *   Copyright (c) International Business Machines  Corp., 2001
 - *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
 - *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
 - *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-+ * Copyright (c) Linux Test Project, 2024
-+ * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
   */
--/* $Id: ulimit01.c,v 1.6 2009/11/02 13:57:19 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: ulimit01
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for ulimit(2)
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 6
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: William Roske
-- *
-- *    CO-PILOT		: Dave Fenner
-- *
-- *    DATE STARTED	: 03/30/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- * 	1.) ulimit(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    OUTPUT SPECIFICATIONS
-- *$
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- * 	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- * 	The libcuts.a and libsys.a libraries must be included in
-- *	the compilation of this test.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- * 	None
-- *
-- *    INTERCASE DEPENDENCIES
-- * 	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the ulimit(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	ulimit(2).
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
  
--#include <ulimit.h>
+-/*
+- * Test Name: vfork02
+- *
+- * Test Description:
++/*\
+  *  Fork a process using vfork() and verify that, the pending signals in
+  *  the parent are not pending in the child process.
+- * $
+- * Expected Result:
+- *  The signal which is pending in the parent should not be pending in the
+- *  child process.
+- *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *   	Log the errno and Issue a FAIL message.
+- *   Otherwise,
+- *   	Verify the Functionality of system call
+- *      if successful,
+- *      	Issue Functionality-Pass message.
+- *      Otherwise,
+- *		Issue Functionality-Fail message.
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *
+- * Usage:  <for command-line>
+- *  vfork02 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * History
+- *	07/2001 John George
+- *		-Ported
+- *
+- * Restrictions:
+- *  None.
+- *
+  */
+-#define _GNU_SOURCE 1
+ 
+-#include <stdio.h>
+-#include <sys/types.h>
 -#include <errno.h>
+-#include <unistd.h>
+-#include <fcntl.h>
 -#include <string.h>
 -#include <signal.h>
--#include "test.h"
--
--void setup();
--void cleanup();
--
--char *TCID = "ulimit01";
--int TST_TOTAL = 6;
--
--int cmd;
--long limit;			/* saved limit */
--
--struct limits_t {
--	int cmd;
--	long newlimit;
--	int nlim_flag;		/* special flag for UL_SETFSIZE records  */
--	int exp_fail;
--} Scenarios[] = {
-+/*\
-+ * Tests the basic functionality of ulimit() with UL_GETFSIZE and UL_SETFSIZE.
-+ */
- 
--	{
--	UL_GETFSIZE, -1, 0, 0}, {
--	UL_SETFSIZE, -2, 1, 0},	/* case case: must be after UL_GETFSIZE */
--	{
--	UL_SETFSIZE, -2, 2, 0},	/* case case: must be after UL_GETFSIZE */
--#if UL_GMEMLIM
--	{
--	UL_GMEMLIM, -1, 0, 0},
--#endif
--#if UL_GDESLIM
--	{
--	UL_GDESLIM, -1, 0, 0},
--#endif
--#if UL_GSHMEMLIM
--	{
--	UL_GSHMEMLIM, -1, 0, 0},
--#endif
--};
-+#include <ulimit.h>
+-#include <sys/stat.h>
+-#include <sys/wait.h>
 +#include "tst_test.h"
  
--int main(int ac, char **av)
+-#include "test.h"
+-#include "tso_safe_macros.h"
++static sigset_t mask;
+ 
+-char *TCID = "vfork02";
+-int TST_TOTAL = 1;
 +static void run(void)
- {
++{
++	if (!vfork()) {
++		sigset_t signal;
+ 
+-void setup();			/* Main setup function of test */
+-void cleanup();			/* cleanup function for the test */
+-void sig_handler();		/* signal catching function */
++		tst_res(TINFO, "child: verify if SIGUSR1 signal is not on hold");
+ 
+-int main(int ac, char **av)
+-{
 -	int lc;
--	int i;
--	int tmp;
+-	pid_t cpid;		/* process id of the child process */
+-	int exit_status;	/* exit status of child process */
+-	sigset_t PendSig;	/* variable to hold pending signal */
 -
--	TST_TOTAL = sizeof(Scenarios) / sizeof(struct limits_t);
--
--    /***************************************************************
--     * parse standard options
--     ***************************************************************/
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
--    /***************************************************************
--     * perform global setup for test
--     ***************************************************************/
 -	setup();
 -
--    /***************************************************************
--     * check looping state if -c option given
--     ***************************************************************/
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
-+	long current_fsize;
- 
--		for (i = 0; i < TST_TOTAL; i++) {
-+	TST_EXP_POSITIVE(ulimit(UL_GETFSIZE, -1));
- 
--			cmd = Scenarios[i].cmd;
--			limit = Scenarios[i].newlimit;
-+	if (!TST_PASS)
-+		return;
- 
--			/*
--			 * Call ulimit(2)
--			 */
--			TEST(ulimit(cmd, limit));
-+	current_fsize = TST_RET;
- 
--			/* check return code */
--			if (TEST_RETURN == -1) {
--				if (Scenarios[i].exp_fail) {
--					tst_resm(TPASS | TTERRNO,
--						 "ulimit(%d, %ld) Failed expectedly",
--						 cmd, limit);
--				} else {
--					tst_resm(TFAIL | TTERRNO,
--						 "ulimit(%d, %ld) Failed",
--						 cmd, limit);
--				}
--			} else {
--				if (Scenarios[i].exp_fail) {
--					tst_resm(TFAIL,
--						 "ulimit(%d, %ld) returned %ld, succeeded unexpectedly",
--						 cmd, limit, TEST_RETURN);
--				} else {
--					tst_resm(TPASS,
--						 "ulimit(%d, %ld) returned %ld",
--						 cmd, limit, TEST_RETURN);
--				}
 -
--				/*
--				 * Save the UL_GETFSIZE return value in the newlimit field
--				 * for UL_SETFSIZE test cases.
--				 */
--				if (cmd == UL_GETFSIZE) {
--					for (tmp = i + 1; tmp < TST_TOTAL;
--					     tmp++) {
--						if (Scenarios[tmp].nlim_flag ==
--						    1) {
--							Scenarios[tmp].newlimit
--							    = TEST_RETURN;
--						}
--						if (Scenarios[tmp].nlim_flag ==
--						    2) {
--							Scenarios[tmp].newlimit
--							    = TEST_RETURN - 1;
--						}
--					}
--				}
+-		/*
+-		 * Call vfork(2) to create a child process without
+-		 * fully copying the address space of parent.
+-		 */
+-		TEST(vfork());
+-
+-		if ((cpid = TEST_RETURN) == -1) {
+-			tst_resm(TFAIL, "vfork() Failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else if (cpid == 0) {	/* Child process */
+-			/*
+-			 * Check whether the pending signal SIGUSR1
+-			 * in the parent is also pending in the child
+-			 * process by storing it in a variable.
+-			 */
+-			if (sigpending(&PendSig) == -1) {
+-				tst_resm(TFAIL, "sigpending function "
+-					 "failed in child");
+-				_exit(1);
+-			}
+-
+-			/* Check if SIGUSR1 is pending in child */
+-			if (sigismember(&PendSig, SIGUSR1) != 0) {
+-				tst_resm(TFAIL, "SIGUSR1 also pending "
+-					 "in child process");
+-				_exit(1);
+-			}
+-
+-			/*
+-			 * Exit with normal exit code if everything
+-			 * fine
+-			 */
+-			_exit(0);
+-		} else {	/* parent process */
+-			/*
+-			 * Let the parent process wait till child completes
+-			 * its execution.
+-			 */
+-			wait(&exit_status);
+-
+-			/* Check for the exit status of child process */
+-			if (WEXITSTATUS(exit_status) == 0) {
+-				tst_resm(TPASS, "Call to vfork() "
+-					 "successful");
+-			} else if (WEXITSTATUS(exit_status) == 1) {
+-				tst_resm(TFAIL,
+-					 "Child process exited abnormally");
 -			}
 -		}
+-		tst_count++;	/* incr. TEST_LOOP counter */
 -	}
--
--    /***************************************************************
--     * cleanup and exit
--     ***************************************************************/
--	cleanup();
--
--	tst_exit();
--}
--
--/***************************************************************
-- * setup() - performs all ONE TIME setup for this test.
-- ***************************************************************/
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	TST_EXP_POSITIVE(ulimit(UL_SETFSIZE, current_fsize),
-+			 "ulimit(UL_SETFSIZE, %ld) (same value)", current_fsize);
++		if (sigpending(&signal) == -1)
++			tst_brk(TBROK | TERRNO, "sigpending() error");
  
-+	TST_EXP_POSITIVE(ulimit(UL_SETFSIZE, current_fsize - 1),
-+			 "ulimit(UL_SETFSIZE, %ld) (value - 1)", current_fsize - 1);
+-	cleanup();
+-	tst_exit();
++		TST_EXP_EQ_LI(sigismember(&signal, SIGUSR1), 0);
+ 
++		_exit(0);
++	}
  }
  
--/***************************************************************
+-/*
+- * void
+- * setup() - performs all ONE TIME setup for this test.
+- *   This function installs signal handler for SIGUSR1, puts signal SIGUSR1
+- *   on hold and then sends the signal SIGUSR1 to itself so that it is in
+- *   pending state.
+- */
+-void setup(void)
++static void sig_handler(LTP_ATTRIBUTE_UNUSED int signo)
+ {
+-	sigset_t PendSig;	/* variable to hold pending signal */
++}
+ 
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
++static void setup(void)
++{
++	struct sigaction action;
++	sigset_t signal;
+ 
+-	TEST_PAUSE;
++	tst_res(TINFO, "parent: hold SIGUSR1 signal");
+ 
+-	/* Install the signal handler */
+-	if (signal(SIGUSR1, sig_handler) == SIG_ERR) {
+-		tst_brkm(TBROK, cleanup, "Fails to catch the signal SIGUSR1");
+-	}
++	memset(&action, 0, sizeof(action));
++	action.sa_handler = sig_handler;
++	SAFE_SIGACTION(SIGUSR1, &action, NULL);
+ 
+-	/* Hold the signal SIGUSR1 */
+-	if (sighold(SIGUSR1) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "sighold failed to hold the signal SIGUSR1");
+-	}
++	SAFE_SIGEMPTYSET(&mask);
++	SAFE_SIGADDSET(&mask, SIGUSR1);
++	SAFE_SIGPROCMASK(SIG_BLOCK, &mask, NULL);
+ 
+-	/* Send the signal SIGUSR1 to itself so that SIGUSR1 is pending */
+-	SAFE_KILL(cleanup, getpid(), SIGUSR1);
++	SAFE_KILL(getpid(), SIGUSR1);
+ 
+-	/* If SIGUSR1 is not pending in the parent, fail */
+-	if (sigpending(&PendSig) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "sigpending function failed in parent");
+-	}
++	if (sigpending(&signal) == -1)
++		tst_brk(TBROK | TERRNO, "sigpending() error");
++
++	TEST(sigismember(&signal, SIGUSR1));
++	if (TST_RET != 1) {
++		if (TST_RET == -1)
++			tst_brk(TBROK | TERRNO, "sigismember() error");
+ 
+-	/* Check if SIGUSR1 is pending in parent */
+-	if (sigismember(&PendSig, SIGUSR1) != 1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "SIGUSR1 signal is not pending in parent");
++		tst_brk(TBROK, "SIGUSR1 is not on hold");
+ 	}
+ }
+ 
+-/*
+- * void
+- * sig_handler() - signal catching function for 'SIGUSR1' signal.
+- *		 $
+- *   This is a null function and used only to catch the above signal
+- *   generated in parent process.
+- */
+-void sig_handler(void)
++static void cleanup(void)
+ {
++	SAFE_SIGEMPTYSET(&mask);
++	SAFE_SIGADDSET(&mask, SIGUSR1);
++	SAFE_SIGPROCMASK(SIG_UNBLOCK, &mask, NULL);
+ }
+ 
+-/*
+- * void
 - * cleanup() - performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- ***************************************************************/
+- *             completion or premature exit.
+- *  Release the signal 'SIGUSR1'  if still in pending state.
+- */
 -void cleanup(void)
 -{
+-
+-	/* Release the signal 'SIGUSR1' if in pending state */
+-	if (sigrelse(SIGUSR1) == -1) {
+-		tst_brkm(TBROK, NULL, "Failed to release 'SIGUSR1' in cleanup");
+-	}
 -
 -}
 +static struct tst_test test = {
 +	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.forks_child = 1,
 +};
+
 -- 
-2.52.0
+2.51.0
 
 
 -- 
