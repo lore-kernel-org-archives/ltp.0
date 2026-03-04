@@ -4,103 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CF95EF9001
-	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 16:14:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 041C5EFCE49
+	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 21:34:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1772660047; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=qAs9hCGo0q9eKPBfuc6Eqk/w4DnaNOBoRQxQzh9S0Dk=;
+ b=i5IsW3eGnyX3bacNHdRV8qgzwvW8hB/h2oDUTZHGheEVICh6mj8FFktCqyp5Kd6brdoRB
+ IgJCAIX5S/1qOpMkyqGOCCU3oWma2du32/HZSODZnje+gFHqC/QsCDxN/I2e2vIWQXbV0of
+ 4EWGB7efk3IOQpJSIc2oWfUC8NxD+kQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D8643DCE2A
-	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 17:14:35 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id D22523C9D72
+	for <ltp@archiver.kernel.org>; Wed,  4 Mar 2026 22:34:07 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 85D973C1BA2
- for <ltp@lists.linux.it>; Wed,  4 Mar 2026 17:14:16 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0605A3C7BB1
+ for <ltp@lists.linux.it>; Wed,  4 Mar 2026 22:33:44 +0100 (CET)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
+ [IPv6:2a00:1450:4864:20::12c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E8C85600ABE
- for <ltp@lists.linux.it>; Wed,  4 Mar 2026 17:14:15 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2F9AF3F943
- for <ltp@lists.linux.it>; Wed,  4 Mar 2026 16:14:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1772640855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=RvsEPWQmnwRxp2uxrhUD36NcS07AioMrVyxeGQDYZJs=;
- b=QOvnBiAcwAV0VumyAIQOPkJqKesS58VIAw/BVaZBm17VDrbd4v7hOjhMkoDj/qv13Ozm5E
- b6FY3S3SueX0/wuGZTE6PEt0p2MJVoHzQdnHA1xXWrpQbTT6sqa4akalayfBquzUd61AAf
- NMscVSctZtGJiRf6bBU2CZWwHb33P+M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1772640855;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=RvsEPWQmnwRxp2uxrhUD36NcS07AioMrVyxeGQDYZJs=;
- b=o3nGLikqL7SSTrlfs7yRfgijZtHtwiR9pE+vSQzbTB+KYctvCvyjnu/GyDILMourWE6R30
- 1eHOQ6QlU4t+3NBg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=QOvnBiAc;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=o3nGLikq
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1772640855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=RvsEPWQmnwRxp2uxrhUD36NcS07AioMrVyxeGQDYZJs=;
- b=QOvnBiAcwAV0VumyAIQOPkJqKesS58VIAw/BVaZBm17VDrbd4v7hOjhMkoDj/qv13Ozm5E
- b6FY3S3SueX0/wuGZTE6PEt0p2MJVoHzQdnHA1xXWrpQbTT6sqa4akalayfBquzUd61AAf
- NMscVSctZtGJiRf6bBU2CZWwHb33P+M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1772640855;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=RvsEPWQmnwRxp2uxrhUD36NcS07AioMrVyxeGQDYZJs=;
- b=o3nGLikqL7SSTrlfs7yRfgijZtHtwiR9pE+vSQzbTB+KYctvCvyjnu/GyDILMourWE6R30
- 1eHOQ6QlU4t+3NBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 211443EA6D
- for <ltp@lists.linux.it>; Wed,  4 Mar 2026 16:14:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jNNNB1daqGkiBQAAD6G6ig
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 04 Mar 2026 16:14:15 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed,  4 Mar 2026 17:14:25 +0100
-Message-ID: <20260304161425.12461-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.52.0
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 65AA3600B6C
+ for <ltp@lists.linux.it>; Wed,  4 Mar 2026 22:33:43 +0100 (CET)
+Received: by mail-lf1-x12c.google.com with SMTP id
+ 2adb3069b0e04-59e4989dacdso1812825e87.1
+ for <ltp@lists.linux.it>; Wed, 04 Mar 2026 13:33:43 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772660023; cv=none;
+ d=google.com; s=arc-20240605;
+ b=Jpwz/A6M+rME8KcV9/XfSr4bmbxDXQaLM73X2pYAx+nXydxwOerEVGn+pEnQ148khV
+ aFddOL8fvHpjoCvwE++yQGc9t5RVdQnxWfyOvkGSnvVqnxgXCxBnoCPm3vXaAVwVogNQ
+ oycgJv+q4/eNs5CoglFub0vgBRW2ph2UHmGkBvsIwkYfJicmiyie00w6J6YSUycHVMba
+ VChrMJ+uh/RDfDRErr3kZLOVbaB+j5mDqt8laYJPmrmMKm0r1ySSuTUCjpywYcdBniMm
+ Ad2M7+E0wdjsdmqIOwZjhWxtw7RipEaXF7HWZB3FFj2griuyJYc8qs7IHOnubeiCjCv7
+ M3VQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:dkim-signature;
+ bh=jT5XVpoWIh0vC3XhzvvfVixQXGXOeJY+dTwomxcZ5Ng=;
+ fh=UPBen+2ICLGwKlZYvlMAi21Z2NUIE8+9lxkeMj2k5Eg=;
+ b=D1xXb/YcsRz3xqg0N4ZnXrUemjJsqxab+Ng50flxNbZo9T6xvCXeTuHQeODB6QQCAh
+ 1uZwNWS1si2U0sTAVPXvmoXLOFATj2LcILEJMo7gf3D17YbboJbxm2Slsl2nx1couTdI
+ GB5/+60YgoZgS41p4oht0K88Tkhk3fgP4ThttRVJTmUyl+hPCjH8VeKHuyVHoxDb2Z61
+ M9XtsJ8218ViI4KWrsO8xMFDshH5KSNxZNOHA05EvSaI7QzqP/eOvQ05xAkvedIvN4SB
+ YYUlwatbBKpHhRSFFXwUS3LGo4aj6ABh/2s+RXh4JOvxZ81r/6jH3go1ROcp4sHe+veC
+ qNVA==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20230601; t=1772660023; x=1773264823; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=jT5XVpoWIh0vC3XhzvvfVixQXGXOeJY+dTwomxcZ5Ng=;
+ b=UlqWXhb7vjhVTy9kHaknlUu9Xbpl5aUyYXTD5XNjhZLSHyz6XLPez0dXdHaf4Hc/yt
+ kTMC+nR0oRadN6ay/onrbuFVqMITNwJ51YxbRXOF8K5XKXL5z4WdPb/FvqH0Kv2yjnGr
+ UmQdH1icAdS7e2mpCptA7ccGYYcQu9zJ1IBlYZt4qX4nyQnGW1O81X7OPWfoWy2mfRWq
+ 7URejg/xK2AGiuwvhMfwMkmrD+jEIsVX0d8dnAa8OtIxwGEwgf1i7DpCCKurnW23YVlE
+ gbwzn6yFMicZozy9Z2k6KAKcvJizHrOL3DVyfb3MiTwwSYBdzYAt0uBknJ1L/ircXy1r
+ g1+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1772660023; x=1773264823;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=jT5XVpoWIh0vC3XhzvvfVixQXGXOeJY+dTwomxcZ5Ng=;
+ b=T9wVh8NL7lX5ZzsX5vr7usk4bF7Y8cMdH0E5EvJzMz1X5Oeig0xhuKaRkEYDmIbCAw
+ /0f1BhmhlrhzzQW0h0OcNz3KF5bVdnymzm0tCNAI7kgT9UAlvYe5/LYvIeSZU39I2pTP
+ MVqeXKSxvdMw0FcMn8J6fbk0r6dBuSkaeF7217NNazqYLtKX9omIaNnE9E/QgGHYkqyn
+ cBAUZM0yqM9ZdDYYocAsw0llyaBiBXoHrrvHixS2waV7hZ5Oa+f7PAmIN0upy/f1QTjf
+ 234WYNFS4oGb1U1bcQVhdhem7Vu4/B4FardngKLwaeNgQdiGvrTa44OchT8ifygbGOoJ
+ 2hqg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXC6assJ/leVwh0YuSSRsLd7lIeh8NC8HsofGU0+8I9GQAsfqdmxQLfd11RBkPiSYeOdAk=@lists.linux.it
+X-Gm-Message-State: AOJu0YzB8OYe8WHMkj/1OWsgDUELhhvPFkbm8j7y++KBMveY1R49mL5A
+ GrvV0PYfUtfTdaVY92Znt/LMMCOk1yDYTqWjYlBokm0RfQqs+vhZ8rHAhhGAveS5AjMcpII8Bol
+ eiKTZenBYEC0JOveJzNAvGazMMIirV+potu5eQsaT
+X-Gm-Gg: ATEYQzyvyEQwiMTI0zl84NPsuFSEWPDM935Sl3dCfTB/QNA7G5GpEkJNj+1GD+PllwK
+ M3PmbsmQyHenOQ1ghFrQi7wXyGO6dDGHtk2X+WhF1GbXwSQeHY4tuDrIrNmUg6Bb0KdMv+/krE7
+ ffQncBcZd1tkDG3wR9VMnw9s/3SNsVLXrygKgpFGdpaAiLgnnt8wYv7ms7m7Pllql8QelUiOWdW
+ KuT1gHg6CRl+y1NueWpPDoQMlVfjIeM7Er8dWjfWz+KASlQdTKSANtGLJ5Lc8Xy+b3pbljOvlg9
+ 2He91HEzoxwPn65AiJluJslYHwgpm140hi3S5w==
+X-Received: by 2002:a05:6512:6189:b0:5a1:18d4:2d1c with SMTP id
+ 2adb3069b0e04-5a12c2b7064mr30190e87.44.1772660021974; Wed, 04 Mar 2026
+ 13:33:41 -0800 (PST)
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_NONE(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim,suse.cz:email]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 2F9AF3F943
+References: <CAKfqHepUCKimv1xXxsAWw3bZRg=6VWBh7yyWOi=zuNaM5d9Eww@mail.gmail.com>
+ <DEZNCTGEXSY9.1RY75URI3UEQW@suse.com>
+ <CAKfqHeptLHymCgRyyUZ64UXoexoPEFsNHxSLa=aME9=U+dBywA@mail.gmail.com>
+ <7d12c14f-4654-4248-b478-f57d721aba9a@suse.com>
+ <CAEemH2fxanCLLMaMZRporvMXxdg0LKjO07_4suHgcFYxGQGCPQ@mail.gmail.com>
+In-Reply-To: <CAEemH2fxanCLLMaMZRporvMXxdg0LKjO07_4suHgcFYxGQGCPQ@mail.gmail.com>
+Date: Wed, 4 Mar 2026 13:33:30 -0800
+X-Gm-Features: AaiRm51L1J0K-1ycP7wDeqzRFyoWyVZ5bQSVpOiDTg8YUGZh2Z6vnBQQwDmSjQ0
+Message-ID: <CAKfqHert2XNHQ12ai3r7joZYwTcV2DkbW7jFu7HqB07ZncQr+w@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls: newuname01: Convert to the new library.
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] Update clone3 wrapper signature
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,224 +118,107 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Chris Wailes via ltp <ltp@lists.linux.it>
+Reply-To: Chris Wailes <chriswailes@google.com>
+Cc: chrubis@suse.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- .../kernel/syscalls/newuname/newuname01.c     | 186 ++++--------------
- 1 file changed, 39 insertions(+), 147 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/newuname/newuname01.c b/testcases/kernel/syscalls/newuname/newuname01.c
-index 2b9349e35..6a4f1a50c 100644
---- a/testcases/kernel/syscalls/newuname/newuname01.c
-+++ b/testcases/kernel/syscalls/newuname/newuname01.c
-@@ -1,161 +1,53 @@
--/******************************************************************************/
--/* Copyright (c) Crackerjack Project., 2007                                   */
--/*                                                                            */
--/* This program is free software;  you can redistribute it and/or modify      */
--/* it under the terms of the GNU General Public License as published by       */
--/* the Free Software Foundation; either version 2 of the License, or          */
--/* (at your option) any later version.                                        */
--/*                                                                            */
--/* This program is distributed in the hope that it will be useful,            */
--/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
--/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
--/* the GNU General Public License for more details.                           */
--/*                                                                            */
--/* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software               */
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
--/*                                                                            */
--/******************************************************************************/
--/******************************************************************************/
--/*                                                                            */
--/* File:        newuname01.c                                           */
--/*                                                                            */
--/* Description: This tests the newuname() syscall                      */
--/*                                                                            */
--/* Usage:  <for command-line>                                                 */
--/* newuname01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
--/*      where,  -c n : Run n copies concurrently.                             */
--/*              -e   : Turn on errno logging.                                 */
--/*              -i n : Execute test n times.                                  */
--/*              -I x : Execute test for x seconds.                            */
--/*              -P x : Pause for x seconds between iterations.                */
--/*              -t   : Turn on syscall timing.                                */
--/*                                                                            */
--/* Total Tests: 1                                                             */
--/*                                                                            */
--/* Test Name:   newuname01                                             */
--/* History:     Porting from Crackerjack to LTP is done by                    */
--/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
--/******************************************************************************/
--#include <unistd.h>
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Crackerjack Project., 2007
-+ * Copyright (c) Linux Test Project, 2024
-+ * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+ */
-+
-+/*\
-+ * Verify that uname() succeeds and correctly identifies the system as Linux.
-+ * The rest of the values, when possible, are matched againts the strings from
-+ * /proc/sys/kernel/. The only value we cannot easily assert is the machine
-+ * field which is the architecture the kernel was compiled for, which would
-+ * require special handling per each architecture.
-+ */
-+
-+#define _GNU_SOURCE
- #include <sys/utsname.h>
--#include <errno.h>
--#include <stdio.h>
--#include <sys/stat.h>
--#include <stdlib.h>
--
--#include "test.h"
-+#include "tst_test.h"
- #include "lapi/syscalls.h"
- 
--char *TCID = "newuname01";
--int testno;
--int TST_TOTAL = 1;
-+static struct utsname *name;
- 
--/* Extern Global Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    cleanup                                                       */
--/*                                                                            */
--/* Description: Performs all one time clean up for this test on successful    */
--/*              completion,  premature exit or  failure. Closes all temporary */
--/*              files, removes all temporary directories exits the test with  */
--/*              appropriate return code by calling tst_exit() function.       */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
--/*              On success - Exits calling tst_exit(). With '0' return code.  */
--/*                                                                            */
--/******************************************************************************/
--void cleanup(void)
-+static void run(void)
- {
-+	char proc_val[1024] = {};
- 
--	tst_rmdir();
-+	TST_EXP_PASS(tst_syscall(__NR_uname, name), "uname(name)");
- 
--	tst_exit();
--}
-+	if (!TST_PASS)
-+		return;
- 
--/* Local  Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    setup                                                         */
--/*                                                                            */
--/* Description: Performs all one time setup for this test. This function is   */
--/*              typically used to capture signals, create temporary dirs      */
--/*              and temporary files that may be used in the course of this    */
--/*              test.                                                         */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits by calling cleanup().                      */
--/*              On success - returns 0.                                       */
--/*                                                                            */
--/******************************************************************************/
--void setup(void)
--{
--	/* Capture signals if any */
--	/* Create temporary directories */
--	TEST_PAUSE;
--	tst_tmpdir();
--}
-+	TST_EXP_EQ_STR(name->sysname, "Linux");
- 
--int main(int ac, char **av)
--{
--	struct utsname name;
--	int lc;
-+	SAFE_FILE_SCANF("/proc/sys/kernel/hostname", "%1023[^\n]", proc_val);
-+	TST_EXP_EQ_STR(name->nodename, proc_val);
- 
--	tst_parse_opts(ac, av, NULL, NULL);
-+	SAFE_FILE_SCANF("/proc/sys/kernel/osrelease", "%1023[^\n]", proc_val);
-+	TST_EXP_EQ_STR(name->release, proc_val);
- 
--	setup();
-+	SAFE_FILE_SCANF("/proc/sys/kernel/version", "%1023[^\n]", proc_val);
-+	TST_EXP_EQ_STR(name->version, proc_val);
- 
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		tst_count = 0;
--		for (testno = 0; testno < TST_TOTAL; ++testno) {
--			TEST(tst_syscall(__NR_uname, &name));
--			if (TEST_RETURN == -1) {
--				tst_brkm(TFAIL, cleanup, "%s failed - errno = %d : %s",
--					 TCID, TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TPASS,
--					 "newuname call succeed: return value = %ld ",
--					 TEST_RETURN);
--				TEST(strcmp(name.sysname, "Linux"));	//Linux ?
--				if (TEST_RETURN == 0) {
--					tst_resm(TINFO, "This system is %s",
--						 name.sysname);
--					tst_resm(TINFO,
--						 "The system infomation is :");
--					tst_resm(TINFO,
--						 "System is %s on %s hardware",
--						 name.sysname, name.machine);
--
--					tst_resm(TINFO, "Nodename is %s",
--						 name.nodename);
--					tst_resm(TINFO, "Version is %s, %s",
--						 name.release, name.version);
--					tst_resm(TINFO, "Domainname is %s ",
--						 *(&name.machine + 1));
--					cleanup();
--					tst_exit();
--				} else {
--					tst_resm(TFAIL,
--						 "%s failed - errno = %d : %s",
--						 TCID, TEST_ERRNO,
--						 strerror(TEST_ERRNO));
--					tst_resm(TINFO,
--						 "This system is not Linux");
--					cleanup();
--					tst_exit();
--				}
--
--			}
-+	SAFE_FILE_SCANF("/proc/sys/kernel/domainname", "%1023[^\n]", proc_val);
-+	TST_EXP_EQ_STR(name->domainname, proc_val);
-+}
- 
--		}
-+static struct tst_test test = {
-+	.test_all = run,
-+	.bufs = (struct tst_buffers []) {
-+		{&name, .size = sizeof(*name)},
-+		{}
- 	}
--	tst_exit();
--}
-+};
--- 
-2.52.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+QXBvbG9naWVzIGZvciB0aGUgZGVsYXllZCByZXNwb25zZS4gIFBsZWFzZSBmaW5kIG15IHVwZGF0
+ZWQgcGF0Y2ggYmVsb3cuCgotLS0KCkZyb20gNTA1NjQ1NTdhNzJkZjEyZDUwMDk5N2RkMTQ1Y2M1
+Mzc2ZWRkODA2MyBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEKRnJvbTogQ2hyaXMgV2FpbGVzIDxj
+aHJpc3dhaWxlc0Bnb29nbGUuY29tPgpEYXRlOiBGcmksIDE0IE5vdiAyMDI1IDEzOjU2OjM5IC0w
+ODAwClN1YmplY3Q6IFtQQVRDSF0gVXBkYXRlIGNsb25lMyB3cmFwcGVyIHNpZ25hdHVyZQoKVGhp
+cyBDTCBhZGRzIHRoZSBgbHRwX2Nsb25lM19yYXdgIHdyYXBwZXIgZm9yIGRpcmVjdCB0ZXN0aW5n
+IG9mIHRoZQpzeXNjYWxsLCBjb25kaXRpb25hbGx5IGRlZmluZXMgYGNsb25lX2FyZ3NfbWluaW1h
+bGAsIGFuZCBhZGRzIGEKYGx0cF9jbG9uZTNgIHdyYXBwZXIgZm9yIGxpYmMgaW1wbGVtZW50YXRp
+b25zIHRoYXQgcHJvdmlkZSBgY2xvbmUzYC4KClNpZ25lZC1vZmYtYnk6IENocmlzIFdhaWxlcyA8
+Y2hyaXN3YWlsZXNAZ29vZ2xlLmNvbT4KLS0tCiBpbmNsdWRlL2xhcGkvc2NoZWQuaCAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgMzIgKysrKysrKysrKysrKysrLS0tLS0tCiB0ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL2Nsb25lMy9jbG9uZTMwMS5jIHwgIDIgKy0KIHRlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvY2xvbmUzL2Nsb25lMzAyLmMgfCAgMiArLQogMyBmaWxlcyBjaGFuZ2VkLCAyNSBp
+bnNlcnRpb25zKCspLCAxMSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xhcGkv
+c2NoZWQuaCBiL2luY2x1ZGUvbGFwaS9zY2hlZC5oCmluZGV4IDBmZmU0NDY0MS4uYzBmYThkZDQ3
+IDEwMDY0NAotLS0gYS9pbmNsdWRlL2xhcGkvc2NoZWQuaAorKysgYi9pbmNsdWRlL2xhcGkvc2No
+ZWQuaApAQCAtNDksOSArNDksMTMgQEAgc3RhdGljIGlubGluZSBpbnQgc2NoZWRfZ2V0YXR0cihw
+aWRfdCBwaWQsIHN0cnVjdApzY2hlZF9hdHRyICphdHRyLAogIyBkZWZpbmUgU0NIRURfQVRUUl9T
+SVpFX1ZFUjAgNDggLyogc2l6ZW9mIGZpcnN0IHB1Ymxpc2hlZCBzdHJ1Y3QgKi8KICNlbmRpZgoK
+LSNpZm5kZWYgSEFWRV9DTE9ORTMKLSNpZm5kZWYgSEFWRV9TVFJVQ1RfQ0xPTkVfQVJHUwotc3Ry
+dWN0IGNsb25lX2FyZ3Mgeworc3RhdGljIGlubGluZSBpbnQgbHRwX2Nsb25lM19yYXcoc3RydWN0
+IGNsb25lX2FyZ3MgKmFyZ3MsIHNpemVfdCBzaXplKQoreworIHJldHVybiB0c3Rfc3lzY2FsbChf
+X05SX2Nsb25lMywgYXJncywgc2l6ZSk7Cit9CisKKyNpZm5kZWYgSEFWRV9TVFJVQ1RfQ0xPTkVf
+QVJHU19NSU5JTUFMCitzdHJ1Y3QgY2xvbmVfYXJnc19taW5pbWFsIHsKICB1aW50NjRfdCBfX2F0
+dHJpYnV0ZV9fKChhbGlnbmVkKDgpKSkgZmxhZ3M7CiAgdWludDY0X3QgX19hdHRyaWJ1dGVfXygo
+YWxpZ25lZCg4KSkpIHBpZGZkOwogIHVpbnQ2NF90IF9fYXR0cmlidXRlX18oKGFsaWduZWQoOCkp
+KSBjaGlsZF90aWQ7CkBAIC02MCwxMyArNjQsMTIgQEAgc3RydWN0IGNsb25lX2FyZ3MgewogIHVp
+bnQ2NF90IF9fYXR0cmlidXRlX18oKGFsaWduZWQoOCkpKSBzdGFjazsKICB1aW50NjRfdCBfX2F0
+dHJpYnV0ZV9fKChhbGlnbmVkKDgpKSkgc3RhY2tfc2l6ZTsKICB1aW50NjRfdCBfX2F0dHJpYnV0
+ZV9fKChhbGlnbmVkKDgpKSkgdGxzOwotIHVpbnQ2NF90IF9fYXR0cmlidXRlX18oKGFsaWduZWQo
+OCkpKSBzZXRfdGlkOwotIHVpbnQ2NF90IF9fYXR0cmlidXRlX18oKGFsaWduZWQoOCkpKSBzZXRf
+dGlkX3NpemU7Ci0gdWludDY0X3QgX19hdHRyaWJ1dGVfXygoYWxpZ25lZCg4KSkpIGNncm91cDsK
+IH07CiAjZW5kaWYKCi1zdHJ1Y3QgY2xvbmVfYXJnc19taW5pbWFsIHsKKyNpZm5kZWYgSEFWRV9D
+TE9ORTMKKyNpZm5kZWYgSEFWRV9TVFJVQ1RfQ0xPTkVfQVJHUworc3RydWN0IGNsb25lX2FyZ3Mg
+ewogIHVpbnQ2NF90IF9fYXR0cmlidXRlX18oKGFsaWduZWQoOCkpKSBmbGFnczsKICB1aW50NjRf
+dCBfX2F0dHJpYnV0ZV9fKChhbGlnbmVkKDgpKSkgcGlkZmQ7CiAgdWludDY0X3QgX19hdHRyaWJ1
+dGVfXygoYWxpZ25lZCg4KSkpIGNoaWxkX3RpZDsKQEAgLTc1LDExICs3OCwyMiBAQCBzdHJ1Y3Qg
+Y2xvbmVfYXJnc19taW5pbWFsIHsKICB1aW50NjRfdCBfX2F0dHJpYnV0ZV9fKChhbGlnbmVkKDgp
+KSkgc3RhY2s7CiAgdWludDY0X3QgX19hdHRyaWJ1dGVfXygoYWxpZ25lZCg4KSkpIHN0YWNrX3Np
+emU7CiAgdWludDY0X3QgX19hdHRyaWJ1dGVfXygoYWxpZ25lZCg4KSkpIHRsczsKKyB1aW50NjRf
+dCBfX2F0dHJpYnV0ZV9fKChhbGlnbmVkKDgpKSkgc2V0X3RpZDsKKyB1aW50NjRfdCBfX2F0dHJp
+YnV0ZV9fKChhbGlnbmVkKDgpKSkgc2V0X3RpZF9zaXplOworIHVpbnQ2NF90IF9fYXR0cmlidXRl
+X18oKGFsaWduZWQoOCkpKSBjZ3JvdXA7CiB9OworI2VuZGlmCgotc3RhdGljIGlubGluZSBpbnQg
+Y2xvbmUzKHN0cnVjdCBjbG9uZV9hcmdzICphcmdzLCBzaXplX3Qgc2l6ZSkKK2ludCBsdHBfY2xv
+bmUzKHN0cnVjdCBjbG9uZV9hcmdzICpjbF9hcmdzLCBzaXplX3Qgc2l6ZSwKKyAgICAgICAgICAg
+ICAgIGludCAoKmZuKSh2b2lkICopLCB2b2lkICphcmcpIHsKKyByZXR1cm4gY2xvbmUzKGNsX2Fy
+Z3MsIHNpemUsIGZuLCBhcmcpOworfQorI2Vsc2UKKworc3RhdGljIGlubGluZSBpbnQgbHRwX2Ns
+b25lMyhzdHJ1Y3QgY2xvbmVfYXJncyAqY2xfYXJncywgc2l6ZV90IHNpemUsCisgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIGludCAoKmZuKSh2b2lkICopLCB2b2lkICphcmcpCiB7Ci0gcmV0
+dXJuIHRzdF9zeXNjYWxsKF9fTlJfY2xvbmUzLCBhcmdzLCBzaXplKTsKKyByZXR1cm4gLTE7CiB9
+CiAjZW5kaWYKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lMy9j
+bG9uZTMwMS5jCmIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZTMvY2xvbmUzMDEuYwpp
+bmRleCBkZWVkMzBiOWYuLjU4ZmMxNzAyZSAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9jbG9uZTMvY2xvbmUzMDEuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L2Nsb25lMy9jbG9uZTMwMS5jCkBAIC0xMjMsNyArMTIzLDcgQEAgc3RhdGljIHZvaWQgcnVuKHVu
+c2lnbmVkIGludCBuKQogIHBhcmVudF9yZWNlaXZlZF9zaWduYWwgPSAwOwogIFNBRkVfU0lHQUNU
+SU9OKHRjLT5leGl0X3NpZ25hbCwgJnBzaWdfYWN0aW9uLCBOVUxMKTsKCi0gVEVTVChwaWQgPSBj
+bG9uZTMoYXJncywgc2l6ZW9mKCphcmdzKSkpOworIFRFU1QocGlkID0gbHRwX2Nsb25lM19yYXco
+YXJncywgc2l6ZW9mKCphcmdzKSkpOwogIGlmIChwaWQgPCAwKSB7CiAgdHN0X3JlcyhURkFJTCB8
+IFRURVJSTk8sICJjbG9uZTMoKSBmYWlsZWQgKCVkKSIsIG4pOwogIHJldHVybjsKZGlmZiAtLWdp
+dCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUzL2Nsb25lMzAyLmMKYi90ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lMy9jbG9uZTMwMi5jCmluZGV4IDllOThmMTk1NC4uODgz
+MTEyMTgzIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lMy9jbG9u
+ZTMwMi5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUzL2Nsb25lMzAyLmMK
+QEAgLTgzLDcgKzgzLDcgQEAgc3RhdGljIHZvaWQgcnVuKHVuc2lnbmVkIGludCBuKQogIGFyZ3Mt
+PnRscyA9IHRjLT50bHM7CiAgfQoKLSBURVNUKGNsb25lMyhhcmdzLCB0Yy0+c2l6ZSkpOworIFRF
+U1QobHRwX2Nsb25lM19yYXcoYXJncywgdGMtPnNpemUpKTsKCiAgaWYgKCFUU1RfUkVUKQogIGV4
+aXQoRVhJVF9TVUNDRVNTKTsKLS0KMi41My4wLjQ3My5nNGE3OTU4Y2ExNC1nb29nCgpPbiBXZWQs
+IERlYyAxNywgMjAyNSBhdCAxOjQz4oCvQU0gTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+IHdy
+b3RlOgoKPgo+Cj4gT24gV2VkLCBEZWMgMTcsIDIwMjUgYXQgMzo1OOKAr1BNIEFucmVhIENlcnZl
+c2F0byB2aWEgbHRwIDwKPiBsdHBAbGlzdHMubGludXguaXQ+IHdyb3RlOgo+Cj4+IEhpIENocmlz
+LAo+Pgo+PiBPbiAxMi8xNi8yNSA2OjUwIFBNLCBDaHJpcyBXYWlsZXMgd3JvdGU6Cj4+ID4gQW5k
+cmVhLAo+PiA+Cj4+ID4gVGhhbmtzIGZvciByZXZpZXdpbmcgdGhlIGNoYW5nZS4gIFdlJ3JlIGN1
+cnJlbnRseSBhZGRpbmcgYSBgY2xvbmUzYAo+PiA+IHdyYXBwZXIgdG8gQW5kcm9pZCdzIEJJT05J
+QyBsaWJjIGltcGxlbWVudGF0aW9uLiBBZGRpdGlvbmFsbHksIHRoaXMgaXMKPj4gPiB0aGUgc2ln
+bmF0dXJlIHVzZWQgZm9yIGBnbGliY2AncyBgX19jbG9uZTNgCj4+ID4gPAo+PiBodHRwczovL2dp
+dGh1Yi5jb20vYm1pbm9yL2dsaWJjL2Jsb2IvZGVkOWMxZTUyNWYyZDY5YTgxZTYxYzM0YzI5MDc3
+ZmVkN2RmNjU4Yy9pbmNsdWRlL2Nsb25lX2ludGVybmFsLmgKPj4gPi4KPj4gPgo+PiA+IC0gQ2hy
+aXMKPj4KPj4gQXQgdGhpcyBwb2ludCwgSSB0aGluayB3ZSBzaG91bGQganVzdCBhZG9wdCB0c3Rf
+Y2xvbmUoKSBpbnN0ZWFkIG9mCj4+IGNsb25lMygpIGZhbGxiYWNrLgo+Pgo+Cj4gUGVyaGFwcyBh
+IHNpbXBsZSBhcHByb2FjaCBpcyB0byBkZWZpbmUgYSByYXcgc3lzdGVtIGNhbGwgZm9yIGNsb25l
+Mwo+IGFuZCB1c2UgaXQgaW4gYWxsIGV4aXN0aW5nIHRlc3RzLCBhbmQgdGhlbiBhZGQgbmV3IHRl
+c3RzIGlmIHdlIHBsYW4gdG8KPiB0ZXN0IHRoZSBsaWJjLWxpa2UgY2xvbmUzIHdyYXBwZXIgKHdp
+dGggZm91ciBhcmdzKS4KPgo+IE90aGVyd2lzZSB0aGUgbmV3IGFkZGVkICdOVUxMLCBOVUxMJyBh
+cmd1bWVudHMgZm9yIGN1cnJlbnQgaGFja2VkCj4gY2xvbmUzIG1ha2VzIG5vIHNlbnNlLgo+Cj4g
+c3RhdGljIGlubGluZSBpbnQgbHRwX2Nsb25lM19yYXcoc3RydWN0IGNsb25lX2FyZ3MgKmFyZ3Ms
+IHNpemVfdCBzaXplKQo+IHsKPiAgICAgcmV0dXJuIHRzdF9zeXNjYWxsKF9fTlJfY2xvbmUzLCBh
+cmdzLCBzaXplKTsKPiB9Cj4KPiAjaWZkZWYgSEFWRV9DTE9ORTNfV1JBUFBFUgo+IGludCBsdHBf
+Y2xvbmUzKHN0cnVjdCBjbG9uZV9hcmdzICpjbF9hcmdzLCBzaXplX3Qgc2l6ZSwKPiAgICAgICAg
+ICAgICAgICBpbnQgKCpmbikodm9pZCAqKSwgdm9pZCAqYXJnKTsKPiAjZWxzZQo+IHN0YXRpYyBp
+bmxpbmUgaW50IGx0cF9jbG9uZTMoc3RydWN0IGNsb25lX2FyZ3MgKmNsX2FyZ3MsIHNpemVfdCBz
+aXplLAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnQgKCpmbikodm9pZCAqKSwgdm9p
+ZCAqYXJnKQo+IHsKPiAgICAgcmV0dXJuIC0xOwo+IH0KPiAjZW5kaWYKPgo+IEJ0dywgdGhlIGFi
+b3ZlIGNoYW5nZXMgc2hvdWxkIGJlIHB1dCBpbiBsYXBpL3NjaGVkLmggaWYgd2UgZGVjaWRlIGdv
+IHRoaXMuCj4KPgo+IC0tCj4gUmVnYXJkcywKPiBMaSBXYW5nCj4KCi0tIApNYWlsaW5nIGxpc3Qg
+aW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
