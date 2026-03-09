@@ -4,110 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14A8AF417E3
-	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 14:43:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BD9EF417EE
+	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 14:49:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 89EC63DD944
-	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 15:43:04 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id D98943DD984
+	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 15:49:25 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 413803C198F
- for <ltp@lists.linux.it>; Mon,  9 Mar 2026 15:42:46 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 5DE543C198F
+ for <ltp@lists.linux.it>; Mon,  9 Mar 2026 15:49:07 +0100 (CET)
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com
+ [IPv6:2607:f8b0:4864:20::644])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6E9B3600143
- for <ltp@lists.linux.it>; Mon,  9 Mar 2026 15:42:45 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 455E24D230;
- Mon,  9 Mar 2026 14:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773067364;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=58R1vN6LAocKBWEJa6wUCPqAAPOpAjwJEPGpUgu3YXE=;
- b=Biwu9W3nd4qX0/EpyOqakvF8h0RIl+YfpDjnCoHQElkvlLFgKOKjbS2EQ4bMOfO3gX72Gw
- Z8ukP0KK3WS4wTtLrdtYySdThUZCz40mnovJihrnRtCigs2xmR6vS4BIWGMQ78L8QQOKHx
- vkhlBWngzUTN/cJ8gGbgSo6Lk7t5g/w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773067364;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=58R1vN6LAocKBWEJa6wUCPqAAPOpAjwJEPGpUgu3YXE=;
- b=v7/YN3333Vl/2rYwJQJJJDxVRBv6pZkyqzS4yGnTB925C7aI4HCSutUmpcxuo0z4q6H9Pr
- YiYky6InOYGcbbCA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MQxNVNm0;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=xNH+4i+s
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773067363;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=58R1vN6LAocKBWEJa6wUCPqAAPOpAjwJEPGpUgu3YXE=;
- b=MQxNVNm0YsD5vzEQz4KciWGJNBsMsycQvjMqKy6KZCMkCi7VTX199oa6GVCSa4e6Uuh1Sk
- z0MF7kbf7yOophNqnoklMYAnc+u4IAAMsOOeVfVvW0MAWWbHJf8QQ6DHvXG6eiYorjqmtH
- uUilaNlZRkt/tlJ8S31/wrpSucIA05Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773067363;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=58R1vN6LAocKBWEJa6wUCPqAAPOpAjwJEPGpUgu3YXE=;
- b=xNH+4i+sd0PPidQiJyGeLXJmXXfBLYOgNIb+vao1OoLqpQlgXOBV6QsJB+4o9fcycDDT0o
- 3+L/xciQvXfixuDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C2AF23EF54;
- Mon,  9 Mar 2026 14:42:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id iqrlLWLcrmlfVwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 09 Mar 2026 14:42:42 +0000
-Date: Mon, 9 Mar 2026 15:42:36 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20260309144236.GA28075@pevik>
-References: <20260224-agents_file-v6-1-db15c490d048@suse.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 11BCB200912
+ for <ltp@lists.linux.it>; Mon,  9 Mar 2026 15:49:07 +0100 (CET)
+Received: by mail-pl1-x644.google.com with SMTP id
+ d9443c01a7336-2ae4e538abdso79539525ad.3
+ for <ltp@lists.linux.it>; Mon, 09 Mar 2026 07:49:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1773067745; x=1773672545; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=HHPBYp5AZpX/0AWfNq6WCaf9VPvtx1yxgsyKF0xcQ8Q=;
+ b=EYnxypZEKsm+E7LUTlZmYUGPhM56Bn3jGk4fcAbJPGK732jDdAP0YFlqF6/BS5cYsJ
+ BvRv4x5tpGTE/piD6ABSVNwEVjdslQnSbhnpjbeTueOse8TtSEWeVHA+ZLxGDEsygeDk
+ x+l3+Xd2Tx7NQ4QR5fuwEzm8mNoKHMAPe1HdjoQnVvGgg6p3wDme6KjOy6oyPyWEXCXV
+ bnVxdYkIZ5cUErxu1XiOOufHZNfb/rUjgG+ITJNHBApw6n6KUb9bKjyF9ReVBajp52EL
+ 5ppr+6DbtwKY8foAJ0Nd0t80XgBrWSM/48Z22Xj2GNAsDl3oIAaowl6Vc/1vDCDnyih9
+ T3Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1773067745; x=1773672545;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=HHPBYp5AZpX/0AWfNq6WCaf9VPvtx1yxgsyKF0xcQ8Q=;
+ b=hbXxo2SD4GfX665z3OeXE3Ol1PZBBVfTPuhrT4bEDIogI66bDrUcYkXw/4wdTQlXV3
+ vjEUAz6s1YAqhjeOZqTRjk30eU+UnCCwxk/7LoHUZMa24efBdWE5WKpzSTBtDCMz5Pgb
+ URH8xoynPF4w2QCzd56vVJLFJCWArJZVgYERl0NTjyUvZHp52v9xp/O9MyHyusKFU8jY
+ tnMQSipcZlhEMH9FxV1eiBG8wsR85MILrCijjTX8C6BJ/I1gM/Hf4TzGXMTQ7A9PwfZB
+ acGo7zlnJty715ZoJ4NquRRbu3JcmPLvWbkp8THZSTgsQ4cOWWGreezJY9KxjLAo1Ufa
+ k73Q==
+X-Gm-Message-State: AOJu0YwpE4UmkicO9BwOZmJY/2ryClzr5sa5y1/gbpakut3Ef3MIOq2F
+ 5NGo7o1EpVFgRaQbqV4bIMER8wftrdOqJ31etofynVn38aBdAvMxlzW6ZsKmNj0=
+X-Gm-Gg: ATEYQzwhkIuORqrzAUklkmU9vfbb3hmj1I4x+UMzZAgMxI1kC5SFxxy7xuzZI1VYpSx
+ JrTsWZgbrRJOK/oHH6hzq9HNltuSvYeePY8CjLpA3so7pe4iyduSN1uELIJlhSTqthzp10PBbfn
+ qb7pF6D4eXhz8WIcvzIt+a9jdWiV7DLEOxUQrlnPblQn/2C1+EFMxphNwm+QAOIscwPS5MPuJjN
+ v2om2r8xdeUr7/hi4x6/powRB7icm0EO9m9jx2RhG90xKnWYlPdnbT917e371NHBitav3PJH8gO
+ r4uIFr0uAAn2Tmy8vpn7QxS/EFoCuQBf/GyCWRGb4irgmK9Kp8rmRj+Qa8RHXykccZSSFnBjLgr
+ EoGyG45TR6/Ndla0E+TECpRx8FAP5TPc6/xqAoJvXXUlb0oSiNYBEEdHTPxyvJUOHLA+PBCwNxN
+ MGdiUjANiXNTe2qVGG4A==
+X-Received: by 2002:a17:903:2283:b0:2ae:5223:59ac with SMTP id
+ d9443c01a7336-2ae823849famr109551595ad.13.1773067745430; 
+ Mon, 09 Mar 2026 07:49:05 -0700 (PDT)
+Received: from JS.lan ([171.3.84.26]) by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-2ae83e57b1fsm157941465ad.12.2026.03.09.07.49.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 09 Mar 2026 07:49:05 -0700 (PDT)
+From: Jinseok Kim <always.starving0@gmail.com>
+To: chrubis@suse.cz
+Date: Mon,  9 Mar 2026 23:48:44 +0900
+Message-ID: <20260309144858.717-1-always.starving0@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <aaq6eVykSC-dSZHg@yuki.lan>
+References: <aaq6eVykSC-dSZHg@yuki.lan>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260224-agents_file-v6-1-db15c490d048@suse.com>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 455E24D230
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6] agents: Add AI agent configuration for code
- reviews
+Subject: [LTP] [PATCH] inotify: clean up build and make check findings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,70 +87,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi,
 
-thanks for your work. On a first look LGTM.
+That makes sense. I'll update the arrays as suggested.
 
-Acked-by: Petr Vorel <pvorel@suse.cz>
-
-I wonder if we can somehow avoid duplicity with our Ground Rules
-https://linux-test-project.readthedocs.io/en/latest/developers/ground_rules.html
-Ideally text would be just in a single document.
-
-...
-> +### 6. Safe Macros
-> +
-> +- MUST use `SAFE_*` macros for system calls that must not fail
-> +- Safe macros are defined in `include/` directory
-Actually the signatures are defined there, the code mostly not, but that's minor
-detail.
-
-> +
-> +### 7. Kernel Version Handling
-> +
-> +- MUST use `.min_kver` for kernel version gating
-> +- MUST prefer runtime checks over compile-time checks
-...
-
-I guess I should send v2 for my patch and that could be updated here
-https://patchwork.ozlabs.org/project/ltp/patch/20260128080121.18878-1-pvorel@suse.cz/
-https://lore.kernel.org/ltp/20260128080121.18878-1-pvorel@suse.cz/
-
-> +
-> +### 13. Deprecated Features
-> +
-> +- MUST NOT define `[Description]` in the test description section
-
-When we handle details like this, we may want to add rule to avoid unnecessary
-tags e.g. .mount_device:
-
-metadata/metaparse.c
-
-static struct implies {
-	const char *flag;
-	const char **implies;
-} implies[] = {
-	{"mount_device", (const char *[]) {"format_device", "needs_device",
-		"needs_tmpdir", NULL}},
-	{"format_device", (const char *[]) {"needs_device", "needs_tmpdir",
-		NULL}},
-	{"all_filesystems", (const char *[]) {"needs_device", "needs_tmpdir",
-		NULL}},
-	{"needs_device", (const char *[]) {"needs_tmpdir", NULL}},
-	{"needs_checkpoints", (const char *[]) {"needs_tmpdir", NULL}},
-	{"resource_files", (const char *[]) {"needs_tmpdir", NULL}},
-	{NULL, (const char *[]) {NULL}}
-};
-
-Kind regards,
-Petr
+Thanks,
+Jinseok.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
