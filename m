@@ -4,93 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 355B4EFCD96
-	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 10:46:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75789EFCD93
+	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 10:46:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A2EDD3DD6B8
-	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 11:46:10 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 327683DD6B7
+	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 11:46:27 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 19B533DD984
+ by picard.linux.it (Postfix) with ESMTPS id 257713DD9C5
  for <ltp@lists.linux.it>; Mon,  9 Mar 2026 11:45:19 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 837381A006AB
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B0E851400960
  for <ltp@lists.linux.it>; Mon,  9 Mar 2026 11:45:18 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 759975BE53;
- Mon,  9 Mar 2026 10:45:12 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EFAB04D228;
+ Mon,  9 Mar 2026 10:45:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1773053112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=K9C7OEFV4m12EDSiZPWPdL2c3axvzNWkn+tF2dNW088=;
- b=pO2tAhXXwgQ6miczBKJChUp3WuskMXyhr2gyOwLtXpKxiUhZ68clow8bwgTQ+XyWtXlI7W
- e3dBD2hFFvzmfZPFUbjrHdw9V6NzTUCYr5svOyP6t2eQBSEZOPteYlVe0vVe+STRn7kBTg
- mbcj0n2EHBAMiztXlVGT9DU7R7YxYtE=
+ bh=nEEy8AgaqQVESYnK5+Ve640RQJgDGtiP3ziuLXIAZAc=;
+ b=KBsVn4lMLUVHq2vde144/BXRkEpcsXoAW5IscSJxSabyUT0hUis2UXzKpc9vwLWvTLqpcb
+ f1bI8gDtqG5Qb+iiQpr2N8KFp1Fke6XD7P1NqHXAPuhG7ShJtojfOOGeftt3Pe5bt5UO8x
+ L0cPIWTCWFbYhuda+rabSPmRlvaIt3c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1773053112;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=K9C7OEFV4m12EDSiZPWPdL2c3axvzNWkn+tF2dNW088=;
- b=ohirSZ8BbNd5tpxCJ+H+5Aiyfzb4ZswsRL0xsFIyJCgIERGBNOnmyoQoM/A4Fi2zabEK3w
- uWUbNJsyIzFj/ODw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=pO2tAhXX;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ohirSZ8B
+ bh=nEEy8AgaqQVESYnK5+Ve640RQJgDGtiP3ziuLXIAZAc=;
+ b=lrbNJ8HNcmRqXfs5HxDOWetMXzaixcF+PDaHH5byIJwzKCDaTSEv0TwIMBkYZ77mlh1MS7
+ hd18A3TY37CrGICg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=nBd4uFtB;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=wKrWz16H
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1773053112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1773053111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=K9C7OEFV4m12EDSiZPWPdL2c3axvzNWkn+tF2dNW088=;
- b=pO2tAhXXwgQ6miczBKJChUp3WuskMXyhr2gyOwLtXpKxiUhZ68clow8bwgTQ+XyWtXlI7W
- e3dBD2hFFvzmfZPFUbjrHdw9V6NzTUCYr5svOyP6t2eQBSEZOPteYlVe0vVe+STRn7kBTg
- mbcj0n2EHBAMiztXlVGT9DU7R7YxYtE=
+ bh=nEEy8AgaqQVESYnK5+Ve640RQJgDGtiP3ziuLXIAZAc=;
+ b=nBd4uFtBzBruLMaOtcuL2fF10uc6E5mB1wmNIIBgX3dzlCHM+IP7lgjmjDWktxKS2Ybv4i
+ 9RFr8KiScN7HGVuHUEAk6U6ki7xqW6Bcj2mkEUnWwRuuTdK93BfGx7uJ9qR8MPmO628KBV
+ H03PyA1kTm+6zwhcV9Q2OGei6XXdZTE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1773053112;
+ s=susede2_ed25519; t=1773053111;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=K9C7OEFV4m12EDSiZPWPdL2c3axvzNWkn+tF2dNW088=;
- b=ohirSZ8BbNd5tpxCJ+H+5Aiyfzb4ZswsRL0xsFIyJCgIERGBNOnmyoQoM/A4Fi2zabEK3w
- uWUbNJsyIzFj/ODw==
+ bh=nEEy8AgaqQVESYnK5+Ve640RQJgDGtiP3ziuLXIAZAc=;
+ b=wKrWz16Hd/motGawcjlYiXe0wFRWHth91DoCQP4cxSaoGxMyjwNn1aO4PsnNL/WU0oKgPg
+ KUMd4kveKdWmTjAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D3FB3EE67;
- Mon,  9 Mar 2026 10:45:12 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB0C03EE67;
+ Mon,  9 Mar 2026 10:45:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UOw9DbikrmlcTQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 09 Mar 2026 10:45:12 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id OHyoL7ekrmlcTQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 09 Mar 2026 10:45:11 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 09 Mar 2026 11:45:12 +0100
+Date: Mon, 09 Mar 2026 11:45:10 +0100
 MIME-Version: 1.0
-Message-Id: <20260309-fork_refactoring-v3-3-8a645d7e00db@suse.com>
+Message-Id: <20260309-fork_refactoring-v3-1-8a645d7e00db@suse.com>
 References: <20260309-fork_refactoring-v3-0-8a645d7e00db@suse.com>
 In-Reply-To: <20260309-fork_refactoring-v3-0-8a645d7e00db@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1773053111; l=8612;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1773053111; l=6964;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=MILJmitePlocVlfDEvIrRTSABDO2YrEOwqMBKDdbm8o=;
- b=lJnilh6SDa4r5mUiUXfATTaFXMy913SxovZ54LtMqfw5jXzIKN+WVA5ShDX0qu2QEM0f9jnXp
- JM6gF8/hY+EB9pEAgjsK2k2+G/rQnPjRawghQnoE6GslwHoGyltAyGI
+ bh=fu1Y57zUWVDjqLbR5xGoedf5XGeHXMYyQwkvwGhXhYA=;
+ b=jaAl8K/4zO/cIQTU3r+KRdzo91ReEUElhMMg5cDo0jT8KKXz7Bgms0XMOSoF3qx7Mv3H3y4lp
+ wRbE/X8dZ2IBhyUOKDmtgS6rbMyuCNHfgybmUYfKZOe2H27KNNdSiqV
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -110,10 +109,10 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 759975BE53
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Rspamd-Queue-Id: EFAB04D228
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 3/3] syscalls: refactor vfork02 using new API
+Subject: [LTP] [PATCH v3 1/3] syscalls: refactor fork09 using new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -132,23 +131,19 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Replace the deprecated sigrelse/sighold usage and replace them with
-sigprocmask/sigaction.
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/syscalls/vfork/vfork02.c | 248 ++++++------------------------
- 1 file changed, 48 insertions(+), 200 deletions(-)
+ testcases/kernel/syscalls/fork/fork09.c | 221 +++++++++++---------------------
+ 1 file changed, 74 insertions(+), 147 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/vfork/vfork02.c b/testcases/kernel/syscalls/vfork/vfork02.c
-index f630c9572b609d2af18e8852c1e5a0dcb16172ff..26d5f1bb9c897afe1121cfe3ed4d5a70456d17b8 100644
---- a/testcases/kernel/syscalls/vfork/vfork02.c
-+++ b/testcases/kernel/syscalls/vfork/vfork02.c
-@@ -1,229 +1,77 @@
+diff --git a/testcases/kernel/syscalls/fork/fork09.c b/testcases/kernel/syscalls/fork/fork09.c
+index c3b9cf45bf947604fed3217dbdda9b3c1657add9..d5c5e116dfcf61065a23de3207740da0e22c66ba 100644
+--- a/testcases/kernel/syscalls/fork/fork09.c
++++ b/testcases/kernel/syscalls/fork/fork09.c
+@@ -1,172 +1,99 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-- *
 - *   Copyright (c) International Business Machines  Corp., 2001
 - *
 - *   This program is free software;  you can redistribute it and/or modify
@@ -164,264 +159,234 @@ index f630c9572b609d2af18e8852c1e5a0dcb16172ff..26d5f1bb9c897afe1121cfe3ed4d5a70
 - *   You should have received a copy of the GNU General Public License
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- *
+- * NAME
+- *	fork09.c
+- *
+- * DESCRIPTION
+- *	Check that child has access to a full set of files.
+- *
+- * ALGORITHM
+- *	Parent opens a maximum number of files
+- *	Child closes one and attempts to open another, it should be
+- *	available
+- *
+- * USAGE
+- *	fork09
+- *
+- * HISTORY
 + * Copyright (c) International Business Machines  Corp., 2001
+  *	07/2001 Ported by Wayne Boyer
+- *
+  *	10/2008 Suzuki K P <suzuki@in.ibm.com>
+- *		Fix maximum number of files open logic.
+  *
+- * RESTRICTIONS
+- *	None
 + * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
   */
  
--/*
-- * Test Name: vfork02
-- *
-- * Test Description:
-+/*\
-  *  Fork a process using vfork() and verify that, the pending signals in
-  *  the parent are not pending in the child process.
-- * $
-- * Expected Result:
-- *  The signal which is pending in the parent should not be pending in the
-- *  child process.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *   	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *   	Verify the Functionality of system call
-- *      if successful,
-- *      	Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *
-- * Usage:  <for command-line>
-- *  vfork02 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * History
-- *	07/2001 John George
-- *		-Ported
-- *
-- * Restrictions:
-- *  None.
-- *
-  */
--#define _GNU_SOURCE 1
- 
--#include <stdio.h>
 -#include <sys/types.h>
--#include <errno.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <string.h>
--#include <signal.h>
--#include <sys/stat.h>
 -#include <sys/wait.h>
-+#include "tst_test.h"
- 
+-#include <sys/stat.h>
+-#include <fcntl.h>
+-#include <stdio.h>
+-#include <errno.h>
+-#include <unistd.h>		/* for _SC_OPEN_MAX */
 -#include "test.h"
 -#include "tso_safe_macros.h"
-+static sigset_t mask;
- 
--char *TCID = "vfork02";
+-
+-char *TCID = "fork09";
 -int TST_TOTAL = 1;
-+static void run(void)
-+{
-+	if (!vfork()) {
-+		sigset_t signal;
++/*\
++ * Verify that a forked child can close all the files which have been open by
++ * the parent process, after opening and closing one of them.
++ */
  
--void setup();			/* Main setup function of test */
--void cleanup();			/* cleanup function for the test */
--void sig_handler();		/* signal catching function */
-+		tst_res(TINFO, "child: verify if SIGUSR1 signal is not on hold");
+-static void setup(void);
+-static void cleanup(void);
++#include "tst_test.h"
++#include "tst_safe_stdio.h"
+ 
+-static char filname[40], childfile[40];
+-static int first;
+-static FILE **fildeses;		/* file streams */
+-static int mypid, nfiles;
++#define FILE_PREFIX "ltp_file"
+ 
+-#define OPEN_MAX (sysconf(_SC_OPEN_MAX))
++static FILE **open_files;
++static long file_open_max;
  
 -int main(int ac, char **av)
--{
++static void run(void)
+ {
+-	int pid, status, nf;
+-
 -	int lc;
--	pid_t cpid;		/* process id of the child process */
--	int exit_status;	/* exit status of child process */
--	sigset_t PendSig;	/* variable to hold pending signal */
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-	fildeses = malloc((OPEN_MAX + 10) * sizeof(FILE *));
+-	if (fildeses == NULL)
+-		tst_brkm(TBROK, cleanup, "malloc failed");
 -
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
+-		mypid = getpid();
+-
+-		tst_resm(TINFO, "OPEN_MAX is %ld", OPEN_MAX);
+-
+-		/* establish first free file */
+-		sprintf(filname, "fork09.%d", mypid);
+-		first = SAFE_CREAT(cleanup, filname, 0660);
+-		close(first);
+-
+-		tst_resm(TINFO, "first file descriptor is %d ", first);
+-
+-		SAFE_UNLINK(cleanup, filname);
 -
 -		/*
--		 * Call vfork(2) to create a child process without
--		 * fully copying the address space of parent.
+-		 * now open all the files for the test
 -		 */
--		TEST(vfork());
--
--		if ((cpid = TEST_RETURN) == -1) {
--			tst_resm(TFAIL, "vfork() Failed, errno=%d : %s",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--		} else if (cpid == 0) {	/* Child process */
--			/*
--			 * Check whether the pending signal SIGUSR1
--			 * in the parent is also pending in the child
--			 * process by storing it in a variable.
--			 */
--			if (sigpending(&PendSig) == -1) {
--				tst_resm(TFAIL, "sigpending function "
--					 "failed in child");
--				_exit(1);
+-		for (nfiles = first; nfiles < OPEN_MAX; nfiles++) {
+-			sprintf(filname, "file%d.%d", nfiles, mypid);
+-			fildeses[nfiles] = fopen(filname, "a");
+-			if (fildeses[nfiles] == NULL) {
+-				/* Did we already reach OPEN_MAX ? */
+-				if (errno == EMFILE)
+-					break;
+-				tst_brkm(TBROK, cleanup, "Parent: cannot open "
+-					 "file %d %s errno = %d", nfiles,
+-					 filname, errno);
 -			}
--
--			/* Check if SIGUSR1 is pending in child */
--			if (sigismember(&PendSig, SIGUSR1) != 0) {
--				tst_resm(TFAIL, "SIGUSR1 also pending "
--					 "in child process");
--				_exit(1);
--			}
--
--			/*
--			 * Exit with normal exit code if everything
--			 * fine
--			 */
--			_exit(0);
--		} else {	/* parent process */
--			/*
--			 * Let the parent process wait till child completes
--			 * its execution.
--			 */
--			wait(&exit_status);
--
--			/* Check for the exit status of child process */
--			if (WEXITSTATUS(exit_status) == 0) {
--				tst_resm(TPASS, "Call to vfork() "
--					 "successful");
--			} else if (WEXITSTATUS(exit_status) == 1) {
--				tst_resm(TFAIL,
--					 "Child process exited abnormally");
--			}
+-#ifdef DEBUG
+-			tst_resm(TINFO, "filname: %s", filname);
+-#endif
 -		}
--		tst_count++;	/* incr. TEST_LOOP counter */
--	}
-+		if (sigpending(&signal) == -1)
-+			tst_brk(TBROK | TERRNO, "sigpending() error");
++	FILE *f;
++	long nfiles;
++	long totfiles;
++	int name_len;
++	char name[PATH_MAX];
++	char reopen[PATH_MAX];
+ 
+-		tst_resm(TINFO, "Parent reporting %d files open", nfiles - 1);
+-
+-		pid = fork();
+-		if (pid == -1)
+-			tst_brkm(TBROK, cleanup, "Fork failed");
+-
+-		if (pid == 0) {	/* child */
+-			nfiles--;
+-			if (fclose(fildeses[nfiles]) == -1) {
+-				tst_resm(TINFO, "Child could not close file "
+-					 "#%d, errno = %d", nfiles, errno);
+-				exit(1);
+-			} else {
+-				sprintf(childfile, "cfile.%d", getpid());
+-				fildeses[nfiles] = fopen(childfile, "a");
+-				if (fildeses[nfiles] == NULL) {
+-					tst_resm(TINFO, "Child could not open "
+-						 "file %s, errno = %d",
+-						 childfile, errno);
+-					exit(1);
+-				} else {
+-					tst_resm(TINFO, "Child opened new "
+-						 "file #%d", nfiles);
+-					unlink(childfile);
+-					exit(0);
+-				}
+-			}
+-		} else {	/* parent */
+-			wait(&status);
+-			if (status >> 8 != 0)
+-				tst_resm(TFAIL, "test 1 FAILED");
+-			else
+-				tst_resm(TPASS, "test 1 PASSED");
+-		}
++	memset(reopen, 0, PATH_MAX);
++
++	tst_res(TINFO, "Opening files from parent");
++
++	for (nfiles = 0; nfiles < file_open_max; nfiles++) {
++		name_len = snprintf(name, PATH_MAX, "%s%lu", FILE_PREFIX, nfiles);
++		if (!nfiles)
++			memcpy(reopen, name, name_len);
+ 
+-		/* clean up things in case we are looping */
+-		for (nf = first; nf < nfiles; nf++) {
+-			fclose(fildeses[nf]);
+-			sprintf(filname, "file%d.%d", nf, mypid);
+-			unlink(filname);
++		f = fopen(name, "a");
++		if (!f) {
++			/* raised if we reached OPEN_MAX */
++			if (errno == EMFILE)
++				break;
++
++			tst_brk(TBROK | TERRNO, "fopen() error");
+ 		}
++
++		open_files[nfiles] = f;
+ 	}
  
 -	cleanup();
 -	tst_exit();
-+		TST_EXP_EQ_LI(sigismember(&signal, SIGUSR1), 0);
- 
++	totfiles = nfiles;
++
++	if (!totfiles)
++		tst_brk(TBROK, "Parent couldn't open any file");
++
++	tst_res(TINFO, "Closing %lu files from child", totfiles);
++
++	if (!SAFE_FORK()) {
++		SAFE_FCLOSE(open_files[0]);
++		open_files[0] = SAFE_FOPEN(reopen, "a");
++
++		for (nfiles = nfiles - 1; nfiles >= 0; nfiles--)
++			SAFE_FCLOSE(open_files[nfiles]);
++
 +		_exit(0);
++	}
++
++	tst_reap_children();
++
++	tst_res(TPASS, "Child closed all parent's files");
++
++	for (nfiles = 0; nfiles < totfiles; nfiles++) {
++		snprintf(name, PATH_MAX, "%s%lu", FILE_PREFIX, nfiles);
++
++		SAFE_FCLOSE(open_files[nfiles]);
++		SAFE_UNLINK(name);
 +	}
  }
  
--/*
-- * void
-- * setup() - performs all ONE TIME setup for this test.
-- *   This function installs signal handler for SIGUSR1, puts signal SIGUSR1
-- *   on hold and then sends the signal SIGUSR1 to itself so that it is in
-- *   pending state.
-- */
--void setup(void)
-+static void sig_handler(LTP_ATTRIBUTE_UNUSED int signo)
+ static void setup(void)
  {
--	sigset_t PendSig;	/* variable to hold pending signal */
-+}
- 
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
-+static void setup(void)
-+{
-+	struct sigaction action;
-+	sigset_t signal;
- 
+-	umask(0);
+-
 -	TEST_PAUSE;
-+	tst_res(TINFO, "parent: hold SIGUSR1 signal");
- 
--	/* Install the signal handler */
--	if (signal(SIGUSR1, sig_handler) == SIG_ERR) {
--		tst_brkm(TBROK, cleanup, "Fails to catch the signal SIGUSR1");
--	}
-+	memset(&action, 0, sizeof(action));
-+	action.sa_handler = sig_handler;
-+	SAFE_SIGACTION(SIGUSR1, &action, NULL);
- 
--	/* Hold the signal SIGUSR1 */
--	if (sighold(SIGUSR1) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "sighold failed to hold the signal SIGUSR1");
--	}
-+	SAFE_SIGEMPTYSET(&mask);
-+	SAFE_SIGADDSET(&mask, SIGUSR1);
-+	SAFE_SIGPROCMASK(SIG_BLOCK, &mask, NULL);
- 
--	/* Send the signal SIGUSR1 to itself so that SIGUSR1 is pending */
--	SAFE_KILL(cleanup, getpid(), SIGUSR1);
-+	SAFE_KILL(getpid(), SIGUSR1);
- 
--	/* If SIGUSR1 is not pending in the parent, fail */
--	if (sigpending(&PendSig) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "sigpending function failed in parent");
--	}
-+	if (sigpending(&signal) == -1)
-+		tst_brk(TBROK | TERRNO, "sigpending() error");
-+
-+	TEST(sigismember(&signal, SIGUSR1));
-+	if (TST_RET != 1) {
-+		if (TST_RET == -1)
-+			tst_brk(TBROK | TERRNO, "sigismember() error");
- 
--	/* Check if SIGUSR1 is pending in parent */
--	if (sigismember(&PendSig, SIGUSR1) != 1) {
--		tst_brkm(TBROK, cleanup,
--			 "SIGUSR1 signal is not pending in parent");
-+		tst_brk(TBROK, "SIGUSR1 is not on hold");
- 	}
+-	tst_tmpdir();
++	file_open_max = sysconf(_SC_OPEN_MAX);
++	open_files = SAFE_MALLOC(sizeof(FILE *) * file_open_max);
  }
  
--/*
-- * void
-- * sig_handler() - signal catching function for 'SIGUSR1' signal.
-- *		 $
-- *   This is a null function and used only to catch the above signal
-- *   generated in parent process.
-- */
--void sig_handler(void)
-+static void cleanup(void)
+ static void cleanup(void)
  {
-+	SAFE_SIGEMPTYSET(&mask);
-+	SAFE_SIGADDSET(&mask, SIGUSR1);
-+	SAFE_SIGPROCMASK(SIG_UNBLOCK, &mask, NULL);
+-	tst_rmdir();
++	free(open_files);
  }
- 
--/*
-- * void
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- *  Release the signal 'SIGUSR1'  if still in pending state.
-- */
--void cleanup(void)
--{
--
--	/* Release the signal 'SIGUSR1' if in pending state */
--	if (sigrelse(SIGUSR1) == -1) {
--		tst_brkm(TBROK, NULL, "Failed to release 'SIGUSR1' in cleanup");
--	}
--
--}
++
 +static struct tst_test test = {
 +	.test_all = run,
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.forks_child = 1,
++	.needs_tmpdir = 1,
 +};
 
 -- 
