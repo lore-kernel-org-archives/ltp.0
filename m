@@ -4,86 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15339F417EE
-	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 14:56:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1773068194; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=XVBSgjkJt0Wsg9Rdmtyh13/NXW4H/Wre9BKk5FWU39o=;
- b=Wdwjn0SC2RTwPO1HIJRCuMJLuXmA7sj7sFjLxznyxsm5sP+oVPmgvxYyq4soesh4rSdkm
- CZ/23IFIf8sWInj4SUO5QSlx3zqXg9/RduSKIro9DPGoyOYuCLc7XR4oHQyPENimthoybXa
- 4iOl6sswdDnRrv3emINr4sC9UdcAkWg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 747C2EF3717
+	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 17:22:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B55C93DD9D3
-	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 15:56:34 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id C4BDA3DED72
+	for <ltp@archiver.kernel.org>; Mon,  9 Mar 2026 18:22:02 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DBCBF3C198F
- for <ltp@lists.linux.it>; Mon,  9 Mar 2026 15:56:12 +0100 (CET)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 22A553DD46B
+ for <ltp@lists.linux.it>; Mon,  9 Mar 2026 18:21:43 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 26DC4140098B
- for <ltp@lists.linux.it>; Mon,  9 Mar 2026 15:56:12 +0100 (CET)
-Received: by mail-wm1-x32e.google.com with SMTP id
- 5b1f17b1804b1-4806cc07ce7so135977275e9.1
- for <ltp@lists.linux.it>; Mon, 09 Mar 2026 07:56:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1773068171; x=1773672971; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=kkph32YiMJot4Sd5+G49IG5tlwM2PCB/awE3+bxMeug=;
- b=MqmYmw0Wvr6+tv/lscKF6gw3ltYtx+r0bP/JFwbNiNR7ZD+kA1FEDngLawhDzD+OYr
- NdJnAM9QhvwDLYCInMD2JFGzrNUztT3r5Cvf01nY01+wB3zJTu2nQqFfY0ncYEbidqmD
- xTtCyyQHdFX3oXE6vqbGvxBwUyUd8e1pmblkxzdT9CbYl+rJLyg2d+p4CVwUl0A0/t7N
- uhrBfgRtRLvhIO/0Y7ovixWipdzP8GXMcaA9hBNKLIJ2Qzm6xmCmwSdqqqPGbcrMN8bB
- YPpbwV+VYhVgRzy7wXiMu5uDt1ycWvuRMAq60vttx9TaSWe1R5oJQxz7Vw2hjr4aubMs
- shdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1773068171; x=1773672971;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=kkph32YiMJot4Sd5+G49IG5tlwM2PCB/awE3+bxMeug=;
- b=DNViuippvnB9juGp2Xq1mEhCWT7qnU6l/uqBpSiMSHyvQsQNVkqeez9/n/1CGkSErd
- a4VmpcW9xbWtlEuy2OsAHNIJt3YS0YLgzYaWxpkInVgPZdyIvEBb6Vw+HWi0NjPYZUzY
- x50yuv1+8iCVRgLCX5gce2iSjMP0AxoXej0a5xKjkwIgq4sQbZQMp7cpxnctNUTGBPT1
- OKmlgUmX7oWQf5p9K8O1a00PCUIQjq9ZBrTatYAZavuzRr5vgO9Xcu9PFGq+GBAUOopU
- Dqw84nfCBvHaMSSzWuGSa5Z9YFb4XZVqUIv7NsHiC873nRPTJ+6xWEZQu585vP2Eo0aK
- EWgw==
-X-Gm-Message-State: AOJu0Yyl9o2LLnPXt6t73+OpT4EQGnMW0ARZ5GwMzrUQun6zhWO5QXDX
- QrevWgEGwDQrQxaBF3CffdoIzsZN7n3mZMqx1tgx9OSCiOCRddg6JlUOycTolsyqA4U=
-X-Gm-Gg: ATEYQzynJNRSJiBvUfZQKkbV55A254XJCCAbyeD9wkUr5oTaXlzYNnUrXUxbxs2dSVe
- NtaZIQUwZPhVf0qSqcVwd5SKr5Sl/NMqwKfw3pt1rTXfcBUd6ih1CkPyO8BOu5frG505OtPbzUq
- xst4A6owzXmpRf4wEMIcLvYerM8LS1C7g8SOc+DCq/ubNubBjUNbZnVmI6n04h3sArEW00WA0OU
- OZ5m41XNjGoOi8MdzboIMo50hiLd3bLm5dfw7ctD46UR54bs3RgWYqvVf0lgeiKbGL7PIaxj4Rh
- HVo4jR/7cFYJf2XvXhxXzh04MpS82qto+Mgc/pOALDxSI/eqOSgmQHpUohFZjkB2xbemjHfUltT
- MyavJC1DX0hVGU05Qs18kHWn8Rif9BewWas8KG1Gu8pGnibtltTYt87rRhVuiWOA+BPrqrUeYVQ
- yq0PnIiY1w36t7lx//UJNSPP4waBi+okJPALWmYhBuajW9Vi1VbxQ=
-X-Received: by 2002:a05:600c:a013:b0:485:17a7:b9cc with SMTP id
- 5b1f17b1804b1-48526958835mr182389435e9.18.1773068171458; 
- Mon, 09 Mar 2026 07:56:11 -0700 (PDT)
-Received: from localhost.localdomain ([88.128.90.16])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4852e38c013sm381431455e9.8.2026.03.09.07.56.10
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 09 Mar 2026 07:56:11 -0700 (PDT)
-Message-ID: <69aedf8b.050a0220.24143c.7ce1@mx.google.com>
-To: "Petr Vorel" <pvorel@suse.cz>,
- "Andrea Cervesato" <andrea.cervesato@suse.de>
-In-Reply-To: <20260309144236.GA28075@pevik>
-Date: Mon, 09 Mar 2026 14:56:10 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5D5636003C4
+ for <ltp@lists.linux.it>; Mon,  9 Mar 2026 18:21:42 +0100 (CET)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 629FsbRo1602460; Mon, 9 Mar 2026 17:21:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=z094CI5AjDlfQpJbG90v3QymERtN6Isa+pyJx9LB9
+ 38=; b=fTEBctiwhaHck4E3XMCgbEchhHwl1UjisQ/SAE9ZPf/lIfH8EaHypyo4T
+ S1w4/jc6jfxqjSemVArcI/3stMs4m6f99eN9jGhf098hZso+4rybsZAuGoTP85qH
+ ngSCZbDPyweHXEYoORlBYQfRSJZZR1RxMRrzZQBQNJzeYUvcYSncBxiJXfdL5GkS
+ ctmd/SuBRFMZl5OfKNU1yQEas2lS9otl6jV+dvf+eeX9ksjHoHVsAhZUe8Cn81Lt
+ 3oDXC2gCYsyOV/ORNGEYR5nQf8ZVjRVqI1a4Oop3raiEZaNHdalSprRBn44gTC5a
+ eVMFrr+dj80HPHQxeCuIBDqlPHzYg==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4crcvr7f1s-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 09 Mar 2026 17:21:40 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 629ESoFL015652;
+ Mon, 9 Mar 2026 17:21:39 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4crybn5w2t-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 09 Mar 2026 17:21:39 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com
+ [10.20.54.100])
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 629HLbSh51052934
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 9 Mar 2026 17:21:38 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id CF22020043;
+ Mon,  9 Mar 2026 17:21:37 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 7781820040;
+ Mon,  9 Mar 2026 17:21:37 +0000 (GMT)
+Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com.com (unknown
+ [9.87.155.142]) by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Mon,  9 Mar 2026 17:21:37 +0000 (GMT)
+From: Jan Polensky <japo@linux.ibm.com>
+To: chrubis@suse.cz, pvorel@suse.cz
+Date: Mon,  9 Mar 2026 18:20:54 +0100
+Message-ID: <20260309172057.272946-1-japo@linux.ibm.com>
+X-Mailer: git-send-email 2.53.0
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzA5MDE1MyBTYWx0ZWRfXzNuAO14hOfXR
+ YNlJDF9O7vwypHJ+gUpCfVHCL3T133DZjkb0j74a/IpyWdk3+xddARiiXfN8d+B9CWnSQNwZIxO
+ 3Da4/GAtGnGVOh8N64tJhnrWA/CW+oXAZH7ucjlUw0q+J9M7iLZ9a+a+C9dt445iGFlWDvxaYza
+ e0s3P4g1xJ/IR8sg2Nd9AB30wnnDGt/10rSBjGsP2VaGpsG9cu06bnF5IMuM9E/fUMWyEht+aqN
+ oIMl4Dh24TjwC/ZPP/+3mEhx4WyhlkzsgFGlNxpJxpSXQQeWSULZ2OPbTF8DFk1N/noTb7b7nZ4
+ ijImCcWIjTSbqk1+hSwUNtTMLmqXfP9vrXG1/ZVNcsR0TwmXO0T3Qt1N24XkoBfRu2kE4frawwX
+ HWUXDhrPZETo1BQcPolq4ss/UYxLE2b15RNwaUi3BMi3j8eEU/mqqmjEbQdKeyxz/gUYeGLEVOE
+ KDTVhuwmEYlj7lGkt4Q==
+X-Proofpoint-GUID: PL_XM1AoK9oO-fXRgOKcH7gkaPcm3ZRx
+X-Proofpoint-ORIG-GUID: PL_XM1AoK9oO-fXRgOKcH7gkaPcm3ZRx
+X-Authority-Analysis: v=2.4 cv=QoFTHFyd c=1 sm=1 tr=0 ts=69af01a4 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=RzCfie-kr_QcCd8fBx8p:22 a=-UZbGPPa-7BhyAQF3zgA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-09_04,2026-03-09_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 spamscore=0 priorityscore=1501 phishscore=0
+ lowpriorityscore=0 adultscore=0 clxscore=1015 malwarescore=0 suspectscore=0
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2602130000
+ definitions=main-2603090153
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6] agents: Add AI agent configuration for code
- reviews
+Subject: [LTP] [PATCH v1 0/3] LTP: adjust socket xattr tests for kernel 7.0+;
+ add .editorconfig
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,28 +107,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: Linux Test Project <ltp@lists.linux.it>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Linux 7.0 allows user.* xattrs on sockets (dc0876b9846d). Update
+fsetxattr02/setxattr02 to expect success on 7.0+ (instead of -EPERM).
 
-> https://linux-test-project.readthedocs.io/en/latest/developers/ground_rules.html
-> Ideally text would be just in a single document.
+Add .editorconfig for consistent formatting.
 
-I was thinking the same, but at the moment I don't know how to combine
-these two things. One is a documentation oriented format, the other is a
-list of rules for the agent.
+Jan Polensky (3):
+  fsetxattr02: Adapt test for kernel 7.0+ socket xattr support
+  setxattr02: Adapt test for kernel 7.0+ socket xattr support
+  editorconfig: add consistent formatting rules for LTP
+
+ .editorconfig                                 | 36 +++++++++++++++++++
+ .../kernel/syscalls/fsetxattr/fsetxattr02.c   |  4 +++
+ .../kernel/syscalls/setxattr/setxattr02.c     |  4 +++
+ 3 files changed, 44 insertions(+)
+ create mode 100644 .editorconfig
 
 --
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+2.53.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
