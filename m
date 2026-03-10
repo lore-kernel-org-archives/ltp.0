@@ -4,147 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47337FCC9D4
-	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 07:24:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A87DEFCD9F
+	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 09:50:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 541053DFFC9
-	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 08:24:44 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 9A53E3E52E8
+	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 10:50:36 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1068D3C2B27
- for <ltp@lists.linux.it>; Tue, 10 Mar 2026 08:24:24 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 8805B3DE7E0
+ for <ltp@lists.linux.it>; Tue, 10 Mar 2026 10:50:18 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BEE4A600A09
- for <ltp@lists.linux.it>; Tue, 10 Mar 2026 08:24:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1773127461; x=1804663461;
- h=date:from:to:cc:subject:message-id:in-reply-to: mime-version;
- bh=Q6gdGzBjkEr28FaFLHfyKH7rBfhdW+v63vzPu81yPXY=;
- b=HgyOu85hQSoA1T2sEqrjz7SbmjY7Z8dnN4DHJhaaUzR/W/SVqcnaCO+q
- hCG4XoI2z3/ROxAyE6sHPqs6/RSvwD4KdjoHSkL/HGi5HNXEMnCQFel7L
- aHTg/E3B6mbEqL3sE/fab0e1NzIjoLdsPhr7Pfl9O6k3RoFckZCxl1+Hl
- uAnKIZuIEZUNkyZzibQOifrX5aTMloqP+uAtqFnLqJzQRAxGBc34gr8NP
- rd/j7dQjF9Z/FBHPwzpxGP5t6uejd0XH99RzygLIiyCUoLIfNIm4sv8EL
- +hMmQ1jOEcxfFIDiMYc7pgnUs9cdsroVBBuAg8NfHaxjcYkwX+dW6RSvh g==;
-X-CSE-ConnectionGUID: 3KIfp6efRDSeIf2ErWeocw==
-X-CSE-MsgGUID: rQrPOSr4S86mgRCkiuqwHw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11724"; a="74042007"
-X-IronPort-AV: E=Sophos;i="6.23,111,1770624000"; d="scan'208";a="74042007"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
- by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2026 00:24:17 -0700
-X-CSE-ConnectionGUID: l4d7Z50lQVyzcJmCOD1/9A==
-X-CSE-MsgGUID: 2U84qiPiT2itrDl7s9eLmQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,111,1770624000"; d="scan'208";a="218015735"
-Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
- by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2026 00:24:15 -0700
-Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Tue, 10 Mar 2026 00:24:14 -0700
-Received: from ORSEDG903.ED.cps.intel.com (10.7.248.13) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37 via Frontend Transport; Tue, 10 Mar 2026 00:24:14 -0700
-Received: from SN4PR2101CU001.outbound.protection.outlook.com (40.93.195.32)
- by edgegateway.intel.com (134.134.137.113) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Tue, 10 Mar 2026 00:24:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=HpKQHUl3jRnx0KcMNqPaFu4P+lyiYvaG65/O5MIhQcFozhaT5iJhTBrQ+j+alol5fFMLmttlcImUytShxfrvT7VSvalB5mrbFxUSPTRt05ISzsHMSKo7+oUpFPP7VCqVy2m6IqRjdNBuBiu2QyyoM9UyyaLEfNMWWlGeu+6b7TpmG2Z/1ZvmhH2a8HcblJT9VeQMuqnDlmVjOBjrALFiRxjojPe4JGZSu9MkK3+qk8tCshvD+NaZ0bA7gmPIsHXZdji8QY4F0hh/TkCperMhKzy+jMluHUHSeN6GpoGfEl4pWYCYRlr0bGMaOEr71WbhmSlXFY2/AK6BN6oDctMWBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KpXmOQhJ3sL1UpmJly60whFZCDkostnJo92E4Hsv4QE=;
- b=jM6huFPll0yGt6hgPcH1ERlHCK49f5cDMal0/FaL8AiSxcEO+HmJPL6prHSvSK+Iru57aK5WnlBRjPf+rBPvj5iVtUxEmOXp4v4/+4b8ImtQBu7Rm65/d0BibeocTgoI67oKkn9CISV3UfFTDGGBH2DyjBwLBbx+pO2e10w0aJFk1LFsDz9WwPD1o+PThppdqs/6NZUeZ1TsEaK+lB2SGOjgWN34ymimBRZYwdJhtwrwilG4F+MulwOdo0kMLBim3tDW46Jro+tAOoJROCXGwS6iouj6v56q6B+TF2JPAnNiqsyfpsR6Db9iJuuN+iL/Yw2+SAJF2dDplyo+zSDRtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BN6PR11MB4033.namprd11.prod.outlook.com (2603:10b6:405:78::25)
- by SN7PR11MB7592.namprd11.prod.outlook.com (2603:10b6:806:343::16)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9700.11; Tue, 10 Mar
- 2026 07:24:11 +0000
-Received: from BN6PR11MB4033.namprd11.prod.outlook.com
- ([fe80::2c28:2983:2947:24b1]) by BN6PR11MB4033.namprd11.prod.outlook.com
- ([fe80::2c28:2983:2947:24b1%6]) with mapi id 15.20.9700.010; Tue, 10 Mar 2026
- 07:24:11 +0000
-Date: Tue, 10 Mar 2026 15:24:00 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: Jan Kara <jack@suse.cz>
-Message-ID: <202603101532.fecbeae3-lkp@intel.com>
-Content-Disposition: inline
-In-Reply-To: <20260303103406.4355-44-jack@suse.cz>
-X-ClientProxiedBy: TPYP295CA0055.TWNP295.PROD.OUTLOOK.COM
- (2603:1096:7d0:8::15) To BN6PR11MB4033.namprd11.prod.outlook.com
- (2603:10b6:405:78::25)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5CAE51A00928
+ for <ltp@lists.linux.it>; Tue, 10 Mar 2026 10:50:16 +0100 (CET)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 62A9l15t1491572; Tue, 10 Mar 2026 09:50:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=bVH/UJUKpuIpHnynp8PW0hPF+J+Ba8xQrHddBBmDQ
+ as=; b=U/myZ9lH1s9eg1LIXtCb2+RCVqfkzKC6wkR/fNocUSb93kTBqpqDCfOU+
+ wwU6i/DQ6WLGLzd6Q2wINC8/DxCzc36iso3bEzmzBbmdZnF039siFsESPAeDc6kM
+ j34J97/aCxGlvOR3Y8kNgrxxaErI+z8R5MpH/ZFEFuCiXVlATDdhfS+PcEJPD7+Q
+ wPj8Ko0xaXW/xsQtt6aalphJxN2peGvPoNjMWehshalaE2HXY31eqCRY8AUoii4k
+ As0g70P37VQmWwVBlhGfgs7D9JL/BP4N+Gk23RkdnqY89F3jrV7IuFDEduNPqM3f
+ edvQaNklgicavInVOhUXGv2Cp/asA==
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4crcuya9b9-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 10 Mar 2026 09:50:14 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62A5cFeu029850;
+ Tue, 10 Mar 2026 09:50:13 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4csp6un5qw-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 10 Mar 2026 09:50:12 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
+ [10.20.54.106])
+ by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 62A9o8Il16712046
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 10 Mar 2026 09:50:09 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id D488D2004B;
+ Tue, 10 Mar 2026 09:50:08 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 2E64320043;
+ Tue, 10 Mar 2026 09:50:06 +0000 (GMT)
+Received: from li-49acbccc-2994-11b2-a85c-d51b89e344f1.ibm.com.com (unknown
+ [9.39.23.32]) by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Tue, 10 Mar 2026 09:50:05 +0000 (GMT)
+From: Pavithra <pavrampu@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Tue, 10 Mar 2026 15:19:58 +0530
+Message-ID: <20260310094958.95381-1-pavrampu@linux.ibm.com>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN6PR11MB4033:EE_|SN7PR11MB7592:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2102a4ff-4d67-4d66-509f-08de7e760685
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
- ARA:13230040|1800799024|366016|7416014|376014|7053199007; 
-X-Microsoft-Antispam-Message-Info: pmSeKy3XcbYFaItN5JCigQb7zp6pOwKzMnc6OjQKUR9S8/XqyHCgzp8PkpoDvW6GoSJnZ4VOxwcb3y/G0YJrVAcNqT43fTr39Re7o+A10GC4XTAeONWbenGo+/A/JQXRUYwadKVU9f6d1FeeqC5D43u8TUx68Y3e+xLIkpsr4VAxn43iTaMY5ajTlw6t5BsaBpQ5GM3xlTIlImwbiWnjXe9L1tBr4PIRhF/X83jXeR2/yPZyDJJt0B1S+y2omSKPiRSXuQO7kKNWehmtigJh9k7r2NhteGkKVDKFBoVWnJF8ejCmkbPSrXvEIkUZI+AxHfs/ep3egudYJvjOIYiiAhyWra9bo0GJHh/ogJGRAVjwfBmEKsl0LVkHElcGsR5iYxm6yt/GhFD3RiTW8M2gV0xOaB3qNeiVTX8J2+ndzQ9Q6I1XUGVKioQ41zWOGvDp/cC7y0TLaadCuJ3GAS8DqWgUB62zLA3VZVIqaGeu37u3t7RVX0AnWURgXsk20UOIEPwfp0ehuiI9BBUQ2BrlaSPkRAQqdyvFOcyh0Q8ZAyHRlnTSP0gF+qwzKKCFIw1TdOVOkOPt6CpJgnLUzVOPbXSjm7WTNmK7gJ6vPCM1qUyqDT90ejFhUpH6hTK+q9qo2PpvX1Xb0zadpGa66NWe13ln3THXJeDjudaNCm5iAR7NXpt58Tw5PR+scf7d1CU/
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BN6PR11MB4033.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230040)(1800799024)(366016)(7416014)(376014)(7053199007); DIR:OUT;
- SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Dj/lLYIDkg7cjqoGCMJmmujXBKv7+MvHnV/6pWJdxNJlv8KnNNHPNHlKD167?=
- =?us-ascii?Q?7TRpeWb+XQV3nMZB+MK/OcYR7KV7Z0SE0iW2YWQ4hH6aubAh6nV/ZeEeN2dM?=
- =?us-ascii?Q?ixiqSEhFHI8D3jbW79vzxwA7NJaCH41uaUtI2k1B5DCRhAXPZTQH/uGYALdH?=
- =?us-ascii?Q?7HFoUUb9/cW1lzFSpgI0YkytUL8xsHkndZ8JMlZ2jrmI1qlgunISbkD7DR7/?=
- =?us-ascii?Q?5sAC7I5ADXA71h6bAuxq3Xb6IIkuR4b16qqnKl0ZImigWQby2Sxbg3ultCAl?=
- =?us-ascii?Q?wmYbD+RW2dSMUsJj9TCPtk9Mk+W6aSZzyiIe7LLkq6KqQK/VHeR9b81A6B2+?=
- =?us-ascii?Q?Gruwpv4Z5WySNn2EGxzkLd4vmuY+rxy+r8KyO3qY33YBLssjIlir+VDE1v9w?=
- =?us-ascii?Q?VTbP3HZO0AZMHxKR5snXU4dUbctxJ6UjJeLxsDlozgta/EMz79G1RanmZSaR?=
- =?us-ascii?Q?9zR6o5npH+F3L7LBEHi6pmmm6cnTyGdPNnGOKZFK9sEfglYmphQHgAJWGFob?=
- =?us-ascii?Q?RDYPPLqKibkHRyX/3HjicGCy2j5zhoT4uvvdQATmNsrVmwFVTSK7RCvwNola?=
- =?us-ascii?Q?i/jIh2D8gKqVMWL78Dzad6LBjc15xW8Co/2vQ59i9fgDe9pxuXVeNrBVGRrX?=
- =?us-ascii?Q?8gDotLaaiM3BloSNzRyvkHi4apXIqSXDMzhf2H82n1XiMrQeoXvwKL6KCJSB?=
- =?us-ascii?Q?ErGH3oAl7uNSmcoLlxOVZT0bUWHQu3UgsHND/6tHRXB1IIUkSneoynI/3cp+?=
- =?us-ascii?Q?nUoJqS9LRSu9q1VZULeyjXh/EqDml2nHHOO13y7HBeuzqGv0A6R+571DmpIm?=
- =?us-ascii?Q?MIgTUzMKpW4oyzOY1kMHgMLTemXPqC7szAZZlHeMf+FaclS6ZkrPDqq7BCr/?=
- =?us-ascii?Q?33xkI6vyZ4PT0w8DmWRdj+O3YeKzE9MwYyb142GtiMXi+Cr2iPbswO3eUu1P?=
- =?us-ascii?Q?MXa5U58mHwXyKn+MPfgS+VhBRptwQxRHr7Mbw7nmEE78IJCm2AbBWTA9sR71?=
- =?us-ascii?Q?WZiNkuou4iztPBlT3DpQy4qSq7zOB8k7p1dbC1AGTDjTqiTB3ldmAB4XnNAM?=
- =?us-ascii?Q?yMzV6Dkvz9UKdAtn6BJgLcJuE7+5JXPinMM2RytqM4kKTuC8wicM4D2a7ZTs?=
- =?us-ascii?Q?U14XmkxEZeXl959JMFsEO77NpaTDs1/AqVKrcRNDFXfacxcB3MJv4E8TPQI0?=
- =?us-ascii?Q?SydlooHl2012uX84cYluB16hg1rSj72o49t1SwgurqryrnZNxE6A0TmB+X7l?=
- =?us-ascii?Q?KIUyKMs6Tlpz7SqN5ozGpZMd+JkXiH48l2yJr473sQzNYGSoqK7PcTXvAdsT?=
- =?us-ascii?Q?E8kyUB31RYOrStOC5nAwyP1klnpEBkQwqE49cCW6XGbpJmNqZVf1n9XlEexM?=
- =?us-ascii?Q?gHA8pxdj5jtUKVAOuuP6PmYZ6ZxmIzXlCJj/codXU4txLNkimroPImzjPTn2?=
- =?us-ascii?Q?GMLabPUCTMBfUSgCXOyKF3I2ug+atb4xsR6n+QXDLBtdf7TMMFYLIV9fygmN?=
- =?us-ascii?Q?b3mdtzADX4dT0gQlZlHdPiCTxHvkuExzKviiMKtJjF60kl2N3cysvtw8VIGM?=
- =?us-ascii?Q?c8nbHFmdF9Cq60ymcfzq9NVAxhqYLx1MAJ7yvG0xjaeXDgX4+Dy8WJ3VaxqQ?=
- =?us-ascii?Q?bLU1HeIn3BT2A9rLNPeu/bpucVfQbuPOCLyHSxJ8a78pyDJ5e4vagsEjnX3n?=
- =?us-ascii?Q?7+YWiwUatf3Qy6BgPOsLJm/tPNVAYAM4MFqJs5e19ZAyRbII2DN3EFPZQFKO?=
- =?us-ascii?Q?wFDMfsRcIA=3D=3D?=
-X-Exchange-RoutingPolicyChecked: rgieXA0dh7hiJvuHsJhf7dn6ii1cWymrxTrYcqyUBEI/gxZdcQ3o2sbPnTTJoIjDy6DnGKVdPqNrfbEK6gz6zAyMHCfPMM8LTEEqSVr/0izK5NS5N7qPRwkrVOqi7aisw2giyjbpjgQJvCTWiB96/PsenNOBcgB98DKEWjvxw+/fZiHEDtVfbLILYykTguKPctaX3Oo/m2JYGas3yCyuFyjHe0RpbX7SSk9RqrJQKQoYkou/jIoQIkDkYdJ+a9pWeGNPlcZN3QLZPNHvqbWSOlW2zR+mA2oRhGY+kLSDUrQI4gSvyjH/zaDOkR3qoRm8wD9vFoMuV44Y1ueH9GfaYg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2102a4ff-4d67-4d66-509f-08de7e760685
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR11MB4033.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2026 07:24:11.4909 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QOKwgk5PhpmWKPjZkj3XlI4NqzbYk5NlRjeFQRgSoTy4EP4iee/v2nBe0CZ0Gpwj23ty9dui7IHWCArM4Kg2XQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7592
-X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=EK4LElZC c=1 sm=1 tr=0 ts=69afe956 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=uAbxVGIbfxUO_5tXvNgY:22 a=VnNF1IyMAAAA:8 a=npRE8wLiAAAA:8
+ a=V7HiF2tqQ_5XaP8Lp5YA:9 a=RAb4T5FLMvhYbp7Aw4eJ:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzEwMDA4MSBTYWx0ZWRfXyZ3uEShMlzpf
+ cUDaTMcbXYrKmXl4Z6QG7aRDa2U/WMkM9OarR2K9kHjSlQD2ZzVnTj6/GcZNb2EIgNTV2MTWXz6
+ sbtMuIxW63ppP5NL8c9J+CXwsxByQslYb2pnWsUFE0VLlq68z4dsxm34eV0qhlbkiiqocLnHkIO
+ 9xxgBeAf7HDt4idk+rJbnefYl/tV8UBG62vIuGkim9OJH0k/tpC+N1PoON49vrmnpOWF7StNtyD
+ PzajRasyx0u30tXUVjR/8RKQUgqUR9R9fb+X8LUFtgcRUks3Jm0aH9sUSgGydSQXbRvlf9/ixcY
+ 3rH3XVpvFzJwOIS06rXiz1LiqSpYeY2g96z3jA8CN8aK8ROaU4Tvc62pABzPgNufKScEj58rlu4
+ dyvwp3I/8PtmqloLhC5Xti+SrxejBiBTj7yKeZQ1ULzC3YBqvTvPBMM2z90zcDszSQEqVhv5CpR
+ MgaDZeLcnyb4j2oeRBQ==
+X-Proofpoint-GUID: jy4mYfDsxd87IaaqO1qV1CX90qknzBUp
+X-Proofpoint-ORIG-GUID: jy4mYfDsxd87IaaqO1qV1CX90qknzBUp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-10_01,2026-03-09_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 lowpriorityscore=0 spamscore=0 suspectscore=0 clxscore=1011
+ bulkscore=0 impostorscore=0 priorityscore=1501 malwarescore=0 adultscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2603100081
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 12/32] hugetlbfs: Stop using i_private_data
+Subject: [LTP] [PATCH] [PATCH] [PATCH v4] Migrating the
+ libhugetlbfs/testcases/truncate_above_4GB.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -156,210 +107,212 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, linux-aio@kvack.org,
- Christian Brauner <brauner@kernel.org>, Ted Tso <tytso@mit.edu>, lkp@intel.com,
- oliver.sang@intel.com, Jan Kara <jack@suse.cz>,
- Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
- Benjamin LaHaise <bcrl@kvack.org>, David Sterba <dsterba@suse.com>,
- Al Viro <viro@zeniv.linux.org.uk>,
- "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
- David Hildenbrand <david@kernel.org>, oe-lkp@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, ltp@lists.linux.it,
- Oscar Salvador <osalvador@suse.de>
+Cc: pavrampu@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Changes in v4:
+- Fixed make check errors
+- Used SAFE_MMAP instead on mmap64
+- Used SAFE_FTRUNCATE instaed of ftruncate64
+- Used only test_pass flag
+- Removed check "truncate_point % hpage_size > 0"
 
+Signed-off-by: Pavithra <pavrampu@linux.ibm.com>
+---
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap36.c  | 153 ++++++++++++++++++
+ 3 files changed, 155 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
 
-Hello,
-
-kernel test robot noticed "BUG:KASAN:wild-memory-access_in_raw_spin_lock" on:
-
-commit: 75576f3c4ced72ab572ee9275b464cd79763fd85 ("[PATCH 12/32] hugetlbfs: Stop using i_private_data")
-url: https://github.com/intel-lab-lkp/linux/commits/Jan-Kara/fat-Sync-and-invalidate-metadata-buffers-from-fat_evict_inode/20260303-183910
-base: https://git.kernel.org/cgit/linux/kernel/git/vfs/vfs.git vfs.all
-patch link: https://lore.kernel.org/all/20260303103406.4355-44-jack@suse.cz/
-patch subject: [PATCH 12/32] hugetlbfs: Stop using i_private_data
-
-in testcase: ltp
-version: 
-with following parameters:
-
-	test: hugetlb
-
-
-
-config: x86_64-rhel-9.4-ltp
-compiler: gcc-14
-test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz (Kaby Lake) with 32G memory
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202603101532.fecbeae3-lkp@intel.com
-
-
-
-[  270.445802][ T4529] BUG: KASAN: wild-memory-access in _raw_spin_lock (include/linux/instrumented.h:55 include/linux/atomic/atomic-instrumented.h:1301 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:159 kernel/locking/spinlock.c:154)
-[  270.453010][ T4529] Write of size 4 at addr ccccccccccccccd0 by task hugefallocate01/4529
-[  270.461165][ T4529]
-[  270.463347][ T4529] CPU: 2 UID: 0 PID: 4529 Comm: hugefallocate01 Tainted: G S        I         7.0.0-rc1-00214-g75576f3c4ced #1 PREEMPT(lazy)
-[  270.463352][ T4529] Tainted: [S]=CPU_OUT_OF_SPEC, [I]=FIRMWARE_WORKAROUND
-[  270.463353][ T4529] Hardware name: Dell Inc. OptiPlex 7050/062KRH, BIOS 1.2.0 12/22/2016
-[  270.463355][ T4529] Call Trace:
-[  270.463356][ T4529]  <TASK>
-[  270.463358][ T4529]  dump_stack_lvl (lib/dump_stack.c:122)
-[  270.463362][ T4529]  ? _raw_spin_lock (include/linux/instrumented.h:55 include/linux/atomic/atomic-instrumented.h:1301 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:159 kernel/locking/spinlock.c:154)
-[  270.463365][ T4529]  kasan_report (mm/kasan/report.c:597)
-[  270.463369][ T4529]  ? _raw_spin_lock (include/linux/instrumented.h:55 include/linux/atomic/atomic-instrumented.h:1301 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:159 kernel/locking/spinlock.c:154)
-[  270.463372][ T4529]  kasan_check_range (mm/kasan/generic.c:186 (discriminator 1) mm/kasan/generic.c:200 (discriminator 1))
-[  270.463374][ T4529]  _raw_spin_lock (include/linux/instrumented.h:55 include/linux/atomic/atomic-instrumented.h:1301 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:159 kernel/locking/spinlock.c:154)
-[  270.463377][ T4529]  ? __pfx__raw_spin_lock (kernel/locking/spinlock.c:153)
-[  270.463380][ T4529]  ? filemap_get_folios_tag (include/linux/pagevec.h:56 mm/filemap.c:2359)
-[  270.463384][ T4529]  region_del (mm/hugetlb.c:864)
-[  270.463387][ T4529]  hugetlb_unreserve_pages (mm/hugetlb.c:6757)
-[  270.463390][ T4529]  remove_inode_hugepages (fs/hugetlbfs/inode.c:616)
-[  270.463394][ T4529]  ? __pfx_remove_inode_hugepages (fs/hugetlbfs/inode.c:579)
-[  270.463398][ T4529]  ? stack_trace_save (kernel/stacktrace.c:123)
-[  270.463403][ T4529]  ? __pfx_stack_trace_save (kernel/stacktrace.c:114)
-[  270.463407][ T4529]  ? stack_depot_save_flags (lib/stackdepot.c:667)
-[  270.463411][ T4529]  ? kasan_save_stack (mm/kasan/common.c:59)
-[  270.463413][ T4529]  ? kasan_save_stack (mm/kasan/common.c:58)
-[  270.463415][ T4529]  ? kasan_record_aux_stack (mm/kasan/generic.c:556 (discriminator 1))
-[  270.463417][ T4529]  ? __call_rcu_common+0xc9/0x970
-[  270.463421][ T4529]  ? deactivate_locked_super (fs/super.c:476)
-[  270.463426][ T4529]  ? cleanup_mnt (fs/namespace.c:227 fs/namespace.c:1313)
-[  270.463430][ T4529]  ? inode_wait_for_writeback (arch/x86/include/asm/atomic.h:23 include/linux/atomic/atomic-arch-fallback.h:457 include/linux/atomic/atomic-instrumented.h:33 include/asm-generic/qspinlock.h:57 fs/fs-writeback.c:1598)
-[  270.463433][ T4529]  ? __pfx_inode_wait_for_writeback (fs/fs-writeback.c:1594)
-[  270.463455][ T4529]  ? __call_rcu_common+0xc9/0x970
-[  270.463458][ T4529]  ? task_work_run (kernel/task_work.c:235)
-[  270.463460][ T4529]  ? exit_to_user_mode_loop (include/linux/memcontrol.h:915 (discriminator 2) include/linux/resume_user_mode.h:59 (discriminator 2) kernel/entry/common.c:67 (discriminator 2) kernel/entry/common.c:98 (discriminator 2))
-[  270.463463][ T4529]  ? do_syscall_64 (include/linux/irq-entry-common.h:226 include/linux/irq-entry-common.h:256 include/linux/entry-common.h:325 arch/x86/entry/syscall_64.c:100)
-[  270.463465][ T4529]  ? entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:130)
-[  270.463468][ T4529]  ? _raw_spin_lock (arch/x86/include/asm/atomic.h:107 (discriminator 4) include/linux/atomic/atomic-arch-fallback.h:2170 (discriminator 4) include/linux/atomic/atomic-instrumented.h:1302 (discriminator 4) include/asm-generic/qspinlock.h:111 (discriminator 4) include/linux/spinlock.h:187 (discriminator 4) include/linux/spinlock_api_smp.h:159 (discriminator 4) kernel/locking/spinlock.c:154 (discriminator 4))
-[  270.463483][ T4529]  ? __pfx__raw_spin_lock (kernel/locking/spinlock.c:153)
-[  270.463486][ T4529]  hugetlbfs_evict_inode (fs/hugetlbfs/inode.c:625 (discriminator 1))
-[  270.463489][ T4529]  evict (fs/inode.c:849)
-[  270.463507][ T4529]  ? __pfx_evict (fs/inode.c:822)
-[  270.463511][ T4529]  ? __pfx__raw_spin_lock (kernel/locking/spinlock.c:153)
-[  270.463514][ T4529]  ? _raw_spin_trylock (arch/x86/include/asm/atomic.h:107 (discriminator 4) include/linux/atomic/atomic-arch-fallback.h:2170 (discriminator 4) include/linux/atomic/atomic-instrumented.h:1302 (discriminator 4) include/asm-generic/qspinlock.h:97 (discriminator 4) include/linux/spinlock.h:193 (discriminator 4) include/linux/spinlock_api_smp.h:90 (discriminator 4) kernel/locking/spinlock.c:138 (discriminator 4))
-[  270.463517][ T4529]  ? iput (fs/inode.c:1963 fs/inode.c:2012 fs/inode.c:1975)
-[  270.463519][ T4529]  __dentry_kill (fs/dcache.c:673 (discriminator 51))
-[  270.463522][ T4529]  finish_dput (fs/dcache.c:879)
-[  270.463525][ T4529]  shrink_dcache_for_umount (fs/dcache.c:920 fs/dcache.c:1657 fs/dcache.c:1671)
-[  270.463528][ T4529]  ? __pfx___call_rcu_common+0x10/0x10
-[  270.463531][ T4529]  generic_shutdown_super (fs/super.c:625)
-[  270.463534][ T4529]  kill_anon_super (fs/super.c:437 fs/super.c:1293)
-[  270.463536][ T4529]  deactivate_locked_super (fs/super.c:437 fs/super.c:478)
-[  270.463538][ T4529]  cleanup_mnt (fs/namespace.c:227 fs/namespace.c:1313)
-[  270.463540][ T4529]  task_work_run (kernel/task_work.c:235)
-[  270.463543][ T4529]  ? __pfx_task_work_run (kernel/task_work.c:201)
-[  270.463545][ T4529]  ? __x64_sys_umount (fs/namespace.c:2065 fs/namespace.c:2070 fs/namespace.c:2068 fs/namespace.c:2068)
-[  270.463547][ T4529]  exit_to_user_mode_loop (include/linux/memcontrol.h:915 (discriminator 2) include/linux/resume_user_mode.h:59 (discriminator 2) kernel/entry/common.c:67 (discriminator 2) kernel/entry/common.c:98 (discriminator 2))
-[  270.463550][ T4529]  do_syscall_64 (include/linux/irq-entry-common.h:226 include/linux/irq-entry-common.h:256 include/linux/entry-common.h:325 arch/x86/entry/syscall_64.c:100)
-[  270.463552][ T4529]  ? __pfx_vfs_write (fs/read_write.c:669)
-[  270.463555][ T4529]  ? fdget_pos (include/linux/atomic/atomic-arch-fallback.h:479 (discriminator 2) include/linux/atomic/atomic-instrumented.h:50 (discriminator 2) fs/file.c:1196 (discriminator 2) fs/file.c:1210 (discriminator 2) fs/file.c:1256 (discriminator 2))
-[  270.463558][ T4529]  ? fdget_pos (include/linux/atomic/atomic-arch-fallback.h:479 (discriminator 2) include/linux/atomic/atomic-instrumented.h:50 (discriminator 2) fs/file.c:1196 (discriminator 2) fs/file.c:1210 (discriminator 2) fs/file.c:1256 (discriminator 2))
-[  270.463560][ T4529]  ? ksys_write (fs/read_write.c:740)
-[  270.463563][ T4529]  ? ksys_write (fs/read_write.c:740)
-[  270.463566][ T4529]  ? __pfx_ksys_write (fs/read_write.c:730)
-[  270.463571][ T4529]  ? do_syscall_64 (arch/x86/include/asm/atomic64_64.h:15 include/linux/atomic/atomic-arch-fallback.h:2583 include/linux/atomic/atomic-long.h:38 include/linux/atomic/atomic-instrumented.h:3189 include/linux/unwind_deferred.h:37 include/linux/irq-entry-common.h:296 include/linux/entry-common.h:327 arch/x86/entry/syscall_64.c:100)
-[  270.463574][ T4529]  ? do_syscall_64 (arch/x86/include/asm/atomic64_64.h:15 include/linux/atomic/atomic-arch-fallback.h:2583 include/linux/atomic/atomic-long.h:38 include/linux/atomic/atomic-instrumented.h:3189 include/linux/unwind_deferred.h:37 include/linux/irq-entry-common.h:296 include/linux/entry-common.h:327 arch/x86/entry/syscall_64.c:100)
-[  270.463578][ T4529]  ? irqentry_exit (arch/x86/include/asm/atomic64_64.h:15 include/linux/atomic/atomic-arch-fallback.h:2583 include/linux/atomic/atomic-long.h:38 include/linux/atomic/atomic-instrumented.h:3189 include/linux/unwind_deferred.h:37 include/linux/irq-entry-common.h:296 include/linux/irq-entry-common.h:341 kernel/entry/common.c:219)
-[  270.463581][ T4529]  entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:130)
-[  270.463583][ T4529] RIP: 0033:0x7fc1ffd84217
-[  270.463586][ T4529] Code: 0d 00 f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 c9 4b 0d 00 f7 d8 64 89 02 b8
-All code
-========
-   0:	0d 00 f7 d8 64       	or     $0x64d8f700,%eax
-   5:	89 02                	mov    %eax,(%rdx)
-   7:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
-   c:	c3                   	ret
-   d:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
-  13:	31 f6                	xor    %esi,%esi
-  15:	e9 09 00 00 00       	jmp    0x23
-  1a:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
-  21:	00 00 
-  23:	b8 a6 00 00 00       	mov    $0xa6,%eax
-  28:	0f 05                	syscall
-  2a:*	48 3d 00 f0 ff ff    	cmp    $0xfffffffffffff000,%rax		<-- trapping instruction
-  30:	77 01                	ja     0x33
-  32:	c3                   	ret
-  33:	48 8b 15 c9 4b 0d 00 	mov    0xd4bc9(%rip),%rdx        # 0xd4c03
-  3a:	f7 d8                	neg    %eax
-  3c:	64 89 02             	mov    %eax,%fs:(%rdx)
-  3f:	b8                   	.byte 0xb8
-
-Code starting with the faulting instruction
-===========================================
-   0:	48 3d 00 f0 ff ff    	cmp    $0xfffffffffffff000,%rax
-   6:	77 01                	ja     0x9
-   8:	c3                   	ret
-   9:	48 8b 15 c9 4b 0d 00 	mov    0xd4bc9(%rip),%rdx        # 0xd4bd9
-  10:	f7 d8                	neg    %eax
-  12:	64 89 02             	mov    %eax,%fs:(%rdx)
-  15:	b8                   	.byte 0xb8
-[  270.463588][ T4529] RSP: 002b:00007ffc300541e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-[  270.463592][ T4529] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fc1ffd84217
-[  270.463593][ T4529] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000056024b59b06a
-[  270.463595][ T4529] RBP: 00007ffc30054470 R08: 0000000000000000 R09: 0000000000000000
-[  270.463596][ T4529] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
-[  270.463598][ T4529] R13: 000056024b59b06a R14: 000056024b59b7d0 R15: 000056024b59f8b0
-[  270.463600][ T4529]  </TASK>
-[  270.463601][ T4529] ==================================================================
-[  270.864814][ T4529] Disabling lock debugging due to kernel taint
-[  270.870833][ T4529] Oops: general protection fault, probably for non-canonical address 0xccccccccccccccd0: 0000 [#1] SMP KASAN PTI
-[  270.882549][ T4529] CPU: 2 UID: 0 PID: 4529 Comm: hugefallocate01 Tainted: G S  B     I         7.0.0-rc1-00214-g75576f3c4ced #1 PREEMPT(lazy)
-[  270.895404][ T4529] Tainted: [S]=CPU_OUT_OF_SPEC, [B]=BAD_PAGE, [I]=FIRMWARE_WORKAROUND
-[  270.903398][ T4529] Hardware name: Dell Inc. OptiPlex 7050/062KRH, BIOS 1.2.0 12/22/2016
-[  270.911474][ T4529] RIP: 0010:_raw_spin_lock (arch/x86/include/asm/atomic.h:107 (discriminator 4) include/linux/atomic/atomic-arch-fallback.h:2170 (discriminator 4) include/linux/atomic/atomic-instrumented.h:1302 (discriminator 4) include/asm-generic/qspinlock.h:111 (discriminator 4) include/linux/spinlock.h:187 (discriminator 4) include/linux/spinlock_api_smp.h:159 (discriminator 4) kernel/locking/spinlock.c:154 (discriminator 4))
-[  270.916599][ T4529] Code: be 04 00 00 00 c7 44 24 20 00 00 00 00 e8 8f 19 e5 fd be 04 00 00 00 48 8d 7c 24 20 e8 80 19 e5 fd ba 01 00 00 00 8b 44 24 20 <f0> 0f b1 13 75 2d 48 b8 00 00 00 00 00 fc ff df 48 c7 44 05 00 00
-All code
-========
-   0:	be 04 00 00 00       	mov    $0x4,%esi
-   5:	c7 44 24 20 00 00 00 	movl   $0x0,0x20(%rsp)
-   c:	00 
-   d:	e8 8f 19 e5 fd       	call   0xfffffffffde519a1
-  12:	be 04 00 00 00       	mov    $0x4,%esi
-  17:	48 8d 7c 24 20       	lea    0x20(%rsp),%rdi
-  1c:	e8 80 19 e5 fd       	call   0xfffffffffde519a1
-  21:	ba 01 00 00 00       	mov    $0x1,%edx
-  26:	8b 44 24 20          	mov    0x20(%rsp),%eax
-  2a:*	f0 0f b1 13          	lock cmpxchg %edx,(%rbx)		<-- trapping instruction
-  2e:	75 2d                	jne    0x5d
-  30:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  37:	fc ff df 
-  3a:	48                   	rex.W
-  3b:	c7                   	.byte 0xc7
-  3c:	44                   	rex.R
-  3d:	05                   	.byte 0x5
-	...
-
-Code starting with the faulting instruction
-===========================================
-   0:	f0 0f b1 13          	lock cmpxchg %edx,(%rbx)
-   4:	75 2d                	jne    0x33
-   6:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-   d:	fc ff df 
-  10:	48                   	rex.W
-  11:	c7                   	.byte 0xc7
-  12:	44                   	rex.R
-  13:	05                   	.byte 0x5
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20260310/202603101532.fecbeae3-lkp@intel.com
-
-
-
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 0896d3c94..bd40a7a30 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -36,6 +36,7 @@ hugemmap30 hugemmap30
+ hugemmap31 hugemmap31
+ hugemmap32 hugemmap32
+ hugemmap34 hugemmap34
++hugemmap36 hugemmap36
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+ hugemmap05_3 hugemmap05 -s -m
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index b4455de51..2ddef6bf1 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -36,6 +36,7 @@
+ /hugetlb/hugemmap/hugemmap31
+ /hugetlb/hugemmap/hugemmap32
+ /hugetlb/hugemmap/hugemmap34
++/hugetlb/hugemmap/hugemmap36
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+new file mode 100644
+index 000000000..848d5c128
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+@@ -0,0 +1,153 @@
++// SPDX-License-Identifier: LGPL-2.1-or-later
++/*
++ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
++ * Copyright (C) 2006 Hugh Dickins <hugh@veritas.com>
++ */
++
++/*\
++ *[Descripiton]
++ *
++ * At one stage, a misconversion of hugetlb_vmtruncate_list to a
++ * prio_tree meant that on 32-bit machines, truncates at or above 4GB
++ * could truncate lower pages, resulting in BUG_ON()s.
++ *
++ * WARNING: The offsets and addresses used within are specifically
++ * calculated to trigger the bug as it existed.  Don't mess with them
++ * unless you *really* know what you're doing.
++ *
++ */
++
++#define _GNU_SOURCE
++#define _LARGEFILE64_SOURCE
++#define FOURGIG ((off64_t)0x100000000ULL)
++#define MNTPOINT "hugetlbfs/"
++
++#include <signal.h>
++#include <setjmp.h>
++#include "hugetlb.h"
++
++static int page_size;
++static long hpage_size;
++static int fd = -1;
++static volatile int test_pass;
++static sigjmp_buf sig_escape;
++
++static void sigbus_handler_fail(int signum, siginfo_t *si, void *uc)
++{
++	siglongjmp(sig_escape, 17);
++}
++
++static void sigbus_handler_pass(int signum, siginfo_t *si, void *uc)
++{
++	test_pass = 1;
++	siglongjmp(sig_escape, 17);
++}
++
++static void run_test(void)
++{
++	static long long buggy_offset, truncate_point;
++	void *p, *q;
++	volatile unsigned int *pi, *qi;
++
++	struct sigaction sa_pass = {
++		.sa_sigaction = sigbus_handler_pass,
++		.sa_flags = SA_SIGINFO,
++	};
++
++	struct sigaction sa_fail = {
++		.sa_sigaction = sigbus_handler_fail,
++		.sa_flags = SA_SIGINFO,
++	};
++
++	test_pass = 0;
++
++	buggy_offset = truncate_point / (hpage_size / page_size);
++	buggy_offset = (long long)PALIGN(buggy_offset, hpage_size);
++
++	/* First get arena of three hpages size, at file offset 4GB */
++	q = SAFE_MMAP(NULL, 3*hpage_size, PROT_READ|PROT_WRITE,
++		      MAP_PRIVATE, fd, truncate_point);
++	qi = q;
++	/* Touch the high page */
++	*qi = 0;
++
++	/* This part of the test makes the problem more obvious, but
++	 * is not essential.  It can't be done on segmented powerpc, where
++	 * segment restrictions prohibit us from performing such a
++	 * mapping, so skip it there. Similarly, ia64's address space
++	 * restrictions prevent this.
++	 */
++#if (defined(__powerpc__) && defined(PPC_NO_SEGMENTS)) || \
++	!defined(__powerpc__) && !defined(__powerpc64__) && \
++	!defined(__ia64__)
++	/* Replace middle hpage by tinypage mapping to trigger
++	 * nr_ptes BUG
++	 */
++	p = SAFE_MMAP(q + hpage_size, hpage_size, PROT_READ|PROT_WRITE,
++		      MAP_FIXED|MAP_PRIVATE|MAP_ANON, -1, 0);
++	pi = p;
++	/* Touch one page to allocate its page table */
++	*pi = 0;
++#endif
++
++	/* Replace top hpage by hpage mapping at confusing file offset */
++	p = SAFE_MMAP(q + 2*hpage_size, hpage_size, PROT_READ|PROT_WRITE,
++		      MAP_FIXED|MAP_PRIVATE, fd, buggy_offset);
++	pi = p;
++	/* Touch the low page with something non-zero */
++	*pi = 1;
++
++	SAFE_FTRUNCATE(fd, truncate_point);
++
++	SAFE_SIGACTION(SIGBUS, &sa_fail, NULL);
++	if (sigsetjmp(sig_escape, 1) == 0)
++		if (*pi != 1) {
++			tst_res(TFAIL, "Data 1 has changed!");
++			goto cleanup;
++		}
++
++	SAFE_SIGACTION(SIGBUS, &sa_pass, NULL);
++	if (sigsetjmp(sig_escape, 1) == 0) {
++		*qi;
++		tst_res(TFAIL, "Didn't SIGBUS on truncated page.");
++	}
++
++	if (test_pass)
++		tst_res(TPASS, "Expected SIGBUS");
++
++cleanup:
++	SAFE_MUNMAP(q, 3*hpage_size);
++	SAFE_MUNMAP(p, hpage_size);
++}
++
++static void setup(void)
++{
++	long long truncate_point;
++
++	page_size = getpagesize();
++	hpage_size = tst_get_hugepage_size();
++	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
++	truncate_point = FOURGIG;
++	if (hpage_size > truncate_point)
++		tst_brk(TCONF, "Huge page size is too large!");
++}
++
++static void cleanup(void)
++{
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.tags = (struct tst_tag[]) {
++		{"linux-git", "856fc2950555"},
++		{}
++	},
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.hugepages = {4, TST_NEEDS},
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++};
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.53.0
 
 
 -- 
