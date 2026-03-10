@@ -4,111 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB91EEB104C
-	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 11:05:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FE05EB104A
+	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 11:21:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 471F93CA670
-	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 12:05:52 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id DA8D63E57EB
+	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 12:21:04 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3E4ED3C23AC
- for <ltp@lists.linux.it>; Tue, 10 Mar 2026 12:05:33 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 74A523CD52A
+ for <ltp@lists.linux.it>; Tue, 10 Mar 2026 12:20:46 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id ED880200322
- for <ltp@lists.linux.it>; Tue, 10 Mar 2026 12:05:32 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 998BE60094C
+ for <ltp@lists.linux.it>; Tue, 10 Mar 2026 12:20:45 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 368405BCDE;
- Tue, 10 Mar 2026 11:05:32 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D2E184D1FD;
+ Tue, 10 Mar 2026 11:20:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773140732;
+ t=1773141645;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HOjzBaBAYpsOmYNXWVDW2MqFNrP5+VEPXjobPYnIHvM=;
- b=EV1+2lhgCOV6SooDo0YzJkZNjuy7fJ8qlq29pWcmjOqEBsW1WfqRuul3E7lJ2NM3pEcecO
- lH5FuLsQySGPF2gLEbP6QcNd9QnIoX4WyX2+pMXHsACoAyQag+yOSTnI/4tLSNySmcLo5L
- VNQwV6tRalKCMPLLs1OH+SkCzAnls3o=
+ bh=aGz8LjXkfLrmD1J0Vz44esjI2rZqkWmm3u0CWkArEp4=;
+ b=ldF8hL7uMi71FB9kwCfHmOaT0xTiJDIJWLGQw5e2FgnuajoZzVGYmI6/sRUv+JKuda/V+k
+ U+27ek+3w5QpNq3Dx64bHQnGAPXSSEYsJiwcqCsnI8oC2Kn2LExkBEKFeSkLs8POkM1Dra
+ SRULEdbwGe8KX6vy8qPSRBba0vgDdXM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773140732;
+ s=susede2_ed25519; t=1773141645;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HOjzBaBAYpsOmYNXWVDW2MqFNrP5+VEPXjobPYnIHvM=;
- b=8ilR6dGBf8uigjDX8SZpBFd/fEBPGVtSc/wP92eQy8sr4UtGtnyuv1YlDvf8F2Uksb6Ouy
- ntp0iARPSa6+IUAQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=EV1+2lhg;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=8ilR6dGB
+ bh=aGz8LjXkfLrmD1J0Vz44esjI2rZqkWmm3u0CWkArEp4=;
+ b=dbmWvE+5v3vI+LjDY95ocHB5znUU+w1QbWh+v6+MyTpQF3z7yGCjjme4gCm8DEniPv1jfv
+ xZdZ79tvg2u+CNBg==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773140732;
+ t=1773141644;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HOjzBaBAYpsOmYNXWVDW2MqFNrP5+VEPXjobPYnIHvM=;
- b=EV1+2lhgCOV6SooDo0YzJkZNjuy7fJ8qlq29pWcmjOqEBsW1WfqRuul3E7lJ2NM3pEcecO
- lH5FuLsQySGPF2gLEbP6QcNd9QnIoX4WyX2+pMXHsACoAyQag+yOSTnI/4tLSNySmcLo5L
- VNQwV6tRalKCMPLLs1OH+SkCzAnls3o=
+ bh=aGz8LjXkfLrmD1J0Vz44esjI2rZqkWmm3u0CWkArEp4=;
+ b=r+a+4cWH8W/kUT/J+3uyVjPopsja+uaE4nCFiFFtnPhe6fQZPr4Eo9yGpoC/hTZwzhJ1W0
+ VDqXHozbSkMvc/Zg+Et8IAhNFuJ8i3YH1gcExlWdKdkFQ5hnkXSF8BQ9+xmUSA89JQs5aF
+ zTGrvffxjcwJrNvfPwuAjoQ6h38zJ10=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773140732;
+ s=susede2_ed25519; t=1773141644;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HOjzBaBAYpsOmYNXWVDW2MqFNrP5+VEPXjobPYnIHvM=;
- b=8ilR6dGBf8uigjDX8SZpBFd/fEBPGVtSc/wP92eQy8sr4UtGtnyuv1YlDvf8F2Uksb6Ouy
- ntp0iARPSa6+IUAQ==
+ bh=aGz8LjXkfLrmD1J0Vz44esjI2rZqkWmm3u0CWkArEp4=;
+ b=MNUPjtfLxHnxUfRdHdmoLsDDe0W20umGcZZYFNwSWX4Wiu5QHvjM+dn0Jqxd8KIyVKt2OZ
+ Yjm6TE1l8/oos6Bg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EEECD3F409;
- Tue, 10 Mar 2026 11:05:31 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8D563F419;
+ Tue, 10 Mar 2026 11:20:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id r49fOfv6r2nOOAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 10 Mar 2026 11:05:31 +0000
-Date: Tue, 10 Mar 2026 12:05:30 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id RpNbK4z+r2mZSQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 10 Mar 2026 11:20:44 +0000
+Date: Tue, 10 Mar 2026 12:20:39 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260310110530.GB39882@pevik>
-References: <20260304130658.262532-2-piotr.kubaj@intel.com>
- <20260306134705.GB528953@pevik> <aa_0YkA4UKwhOjpi@yuki.lan>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20260310112039.GA44580@pevik>
+References: <20260309144236.GA28075@pevik>
+ <69aedf8b.050a0220.24143c.7ce1@mx.google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <aa_0YkA4UKwhOjpi@yuki.lan>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <69aedf8b.050a0220.24143c.7ce1@mx.google.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_SEVEN(0.00)[7];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 368405BCDE
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
+ TO_DN_ALL(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v11] thermal: add new test group
+Subject: Re: [LTP] [PATCH v6] agents: Add AI agent configuration for code
+ reviews
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,158 +110,31 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, ltp@lists.linux.it, daniel.niestepski@intel.com
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Andrea,
 
-TL;DR: no more concerns from my side.
+> > https://linux-test-project.readthedocs.io/en/latest/developers/ground_rules.html
+> > Ideally text would be just in a single document.
 
-> Hi!
-> > > +static void read_interrupts(uint64_t *interrupts, const int nproc)
-> > > +{
-> > > +	bool interrupts_found = false;
-> > > +	char line[8192];
-> > > +
-> > > +	memset(interrupts, 0, nproc * sizeof(*interrupts));
-> > > +	FILE *fp = SAFE_FOPEN("/proc/interrupts", "r");
-> > > +
-> > > +	while (fgets(line, sizeof(line), fp)) {
-> > > +		if (strstr(line, "Thermal event interrupts")) {
-> > > +			interrupts_found = true;
-> > > +			char *ptr = strchr(line, ':');
-> > > +
-> > > +			for (int i = 0; i < nproc; i++) {
-> > > +				char *endptr;
-> > > +
-> > > +				while (*ptr && !isdigit(*ptr))
-> > > +					ptr++;
-> > > +
-> > > +				errno = 0;
-> > > +
-> > > +				interrupts[i] = strtoull(ptr, &endptr, 10);
-> > > +
-> > > +				if (ptr == endptr)
-> > > +					tst_brk(TBROK, "interrupt not found");
-> > > +
-> > > +				if (errno == ERANGE)
-> > > +					tst_brk(TCONF, "interrupt out of range");
+> I was thinking the same, but at the moment I don't know how to combine
+> these two things. One is a documentation oriented format, the other is a
+> list of rules for the agent.
 
-> > I wonder if this is expected to happen. Can be value really over LLONG_MAX?
-
-> That's just to make sure that kernel generated sane result. In tests we
-> shouldn't blindly trust anything.
-
-Makes sense.
-
-> > Because arch/x86/include/asm/hardirq.h has
-
-> > unsigned int irq_thermal_count
-
-> > => if it's over the range, I'd quit with tst_brk(TBROK).
-
-> It should be TBROK indeed.
-
-> > Also we don't have safe_strtoull() in lib/safe_macros.c
-> > (it would be trivial to add) otherwise I would just use it.
-
-> > (Otherwise IMHO Cyril's request from v8 was done
-> > https://lore.kernel.org/ltp/aZ72j9KvkhsDF7Yf@yuki.lan/)
-
-> > > +
-> > > +				ptr = endptr;
-> > > +				tst_res(TDEBUG, "interrupts[%d]: %ld", i, interrupts[i]);
-> > > +			}
-> > > +			break;
-> > > +		}
-> > > +	}
-> > > +	SAFE_FCLOSE(fp);
-> > > +	if (!interrupts_found)
-> > > +		tst_brk(TCONF, "No Thermal event interrupts line in /proc/interrupts");
-> > > +}
-
-> > ...
-> > > +static void cleanup(void)
-> > > +{
-> > > +	if (x86_pkg_temp_tz_found)
-> > > +		SAFE_FILE_PRINTF(trip_path, "%d", trip);
-> > > +
-> > > +	free(x86_pkg_temp_tz);
-> > > +	free(interrupt_init);
-> > > +	free(interrupt_later);
-> > > +}
-> > > +
-> > > +static void run(void)
-> > > +{
-> > > +	for (int i = 0; i < tz_counter; i++) {
-> > > +		if (x86_pkg_temp_tz[i])
-> > > +			test_zone(i);
-> > > +	}
-> > > +	read_interrupts(interrupt_later, nproc);
-> > > +
-> > > +	for (int i = 0; i < nproc; i++) {
-> > > +		if (interrupt_later[i] < interrupt_init[i])
-> > > +			tst_res(TFAIL, "CPU %d interrupt counter: %ld (previous: %ld)",
-> > > +				i, interrupt_later[i], interrupt_init[i]);
-> > > +	}
-> > > +
-> > > +	if (temp <= temp_high)
-> > > +		tst_res(TFAIL, "Zone temperature is not rising as expected");
-> > > +	else
-> > > +		tst_res(TPASS, "x86 package thermal interrupt triggered");
-> > > +}
-> > > +
-> > > +static struct tst_test test = {
-> > > +	.cleanup = cleanup,
-> > > +	.forks_child = 1,
-> > > +	.needs_drivers = (const char *const []) {
-> > > +		"x86_pkg_temp_thermal",
-> > > +		NULL
-> > > +	},
-> > nit: Alternatively instead of needs drivers we could check via .needs_kconfigs
-> > for CONFIG_X86_THERMAL_VECTOR (functionality wrapped in kernel, defined in
-> > drivers/thermal/intel/Kconfig). Cyril WDYT?
-
-> We would need to apply the kconfig patch I've send and then add hook for
-> the CONFIG_X86_THERMAL_VECTOR. I wouldn't wait for that with this patch,
-> we can fix it once our infrastructure is ready.
-
-Ah, I haven't noticed x86_pkg_temp_thermal driver can be disabled in the runtime
-(otherwise there is always /sys/class/thermal/ when compiled with
-CONFIG_X86_THERMAL_VECTOR). But sure, let's keep it this way, I also don't want
-to block this effort.
-
-> > IMHO we slowly convert from modules.{dep,builtin} based search in
-> > lib/tst_kernel.c to kconfig related checks (functionality which come to LTP
-> > later).
-
-> > > +	.min_runtime = 180,
-
-> > Test is mostly super quick. I suppose we can lower down this to e.g. 5
-> > because it depends on number of the zones.
-> > But could we define it to 5 here and set in the setup correct value via
-> > tst_set_runtime().
-
-> > > +	.needs_root = 1,
-> > > +	.setup = setup,
-> > > +	.supported_archs = (const char *const []) {
-> > > +		"x86",
-> > > +		"x86_64",
-> > > +		NULL
-> > > +	},
-> > This is somehow redundant to .needs_drivers/.needs_kconfigs. OTOH it nicely
-> > defines which arch is targeted.
-
-> That's why I requested it to be added.
-
-I'm sorry, I overlooked you asked for it.
+No problem, thanks for considering it. I was also thinking about mentioning the
+rules in the Patch review [1] in the Maintainers section. Probably the rules for
+AI review might be different from review doing by humans, but at least mention
+that we have some rules for AI might be useful for the maintainers who read the
+Patch review page.
 
 Kind regards,
 Petr
+
+[1] https://linux-test-project.readthedocs.io/en/latest/maintainers/patch_review.html
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
