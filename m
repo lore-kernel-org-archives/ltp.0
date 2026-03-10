@@ -4,102 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0DF1FD2D79
-	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 13:22:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5FB2FD2D79
+	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 13:25:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3D6473E57EF
-	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 14:22:47 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 43F483E57F5
+	for <ltp@archiver.kernel.org>; Tue, 10 Mar 2026 14:25:45 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D45EE3E1420
- for <ltp@lists.linux.it>; Tue, 10 Mar 2026 14:22:29 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 2008E3CA670
+ for <ltp@lists.linux.it>; Tue, 10 Mar 2026 14:25:26 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5B4536006FA
- for <ltp@lists.linux.it>; Tue, 10 Mar 2026 14:22:29 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 774752000CE
+ for <ltp@lists.linux.it>; Tue, 10 Mar 2026 14:25:25 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B69455BCD5;
- Tue, 10 Mar 2026 13:22:28 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C851C5BCD5;
+ Tue, 10 Mar 2026 13:25:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773148948;
+ t=1773149124;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+YDJtZGkzWumaxSA72AZSTq/6aMwiWwZQbbcAFHSvgc=;
- b=BrXqknQ3ZzrhG4yot9JWGyaOjyR+1mP9gMgapOSiOaV1eHGfk2S8uxZVMeQzxod7T4PKdN
- kbPQKOhKW7ODWs/8Q5HxurnYgYtnnJW/qQMZy3CFBScUgSHISnGImxofYW/dQwgLOhvOZM
- mFgRMYZlP9dap9UuFvuIO7UAbLS8sOk=
+ bh=ZXnnkc5/+l2YfMJpv9lKwNBJMeRbM4dqy2leecld5hw=;
+ b=oXAsp9K5aQdopURq5PHymkqJPSs5lN/ZCkVZYLFcWhUd0Gu7EzhUB1aOpXbiFpFMsYA3rQ
+ 5G+A8K4qAQbmH3k68/ffkQxTF7YyPI7GPepdCfNjvmpokrs84VbVKLQIf/3vE61FgKLGdh
+ Eg7tBOT9H7J6C9WNszjvh77jqV0uMms=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773148948;
+ s=susede2_ed25519; t=1773149124;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+YDJtZGkzWumaxSA72AZSTq/6aMwiWwZQbbcAFHSvgc=;
- b=KatcO/cBHESkW8tim3PMCJxH0D8QUfFpw+WXkE0UJyVCL+WK0cW9SOOUTb10VLgRjXIehV
- 0hlf3iG7slVj4xBA==
+ bh=ZXnnkc5/+l2YfMJpv9lKwNBJMeRbM4dqy2leecld5hw=;
+ b=4KPnaylmEfaEvy74tmgkKw3hYbAlJOXXqxGX+j2EgbCE6pxjg6jXbqa4s+wA+ZpM2z+flc
+ PhjCBwmGpmCdGsDQ==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=m+EKvm+I;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hKdHJCyG
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773148948;
+ t=1773149123;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+YDJtZGkzWumaxSA72AZSTq/6aMwiWwZQbbcAFHSvgc=;
- b=BrXqknQ3ZzrhG4yot9JWGyaOjyR+1mP9gMgapOSiOaV1eHGfk2S8uxZVMeQzxod7T4PKdN
- kbPQKOhKW7ODWs/8Q5HxurnYgYtnnJW/qQMZy3CFBScUgSHISnGImxofYW/dQwgLOhvOZM
- mFgRMYZlP9dap9UuFvuIO7UAbLS8sOk=
+ bh=ZXnnkc5/+l2YfMJpv9lKwNBJMeRbM4dqy2leecld5hw=;
+ b=m+EKvm+IrYfLCRSqnzNougreWMraTNCAokLQGtAVo+reKSHg6/7J/hMbf34sNubOp+VWbY
+ lh+sr103CdjtGPIHRlWCYDY1tBJoTsGqE28rR1ULKnlEiskG0kuIQL2LWyBEPmIZngOGc/
+ 44nbnXavkJloPW2fxCdDjXSCjrJy3TE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773148948;
+ s=susede2_ed25519; t=1773149123;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+YDJtZGkzWumaxSA72AZSTq/6aMwiWwZQbbcAFHSvgc=;
- b=KatcO/cBHESkW8tim3PMCJxH0D8QUfFpw+WXkE0UJyVCL+WK0cW9SOOUTb10VLgRjXIehV
- 0hlf3iG7slVj4xBA==
+ bh=ZXnnkc5/+l2YfMJpv9lKwNBJMeRbM4dqy2leecld5hw=;
+ b=hKdHJCyGtXeS97Z4BIb94mfQBswh0YTZIwcuHIVRwEIbUekZrvkwf6jmxqsoe1l4jXw6pK
+ cLyF6prXD6Rb4EAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 908FF3F490;
- Tue, 10 Mar 2026 13:22:28 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AA3B43F495;
+ Tue, 10 Mar 2026 13:25:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id p5c7IhQbsGkgTgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 10 Mar 2026 13:22:28 +0000
-Date: Tue, 10 Mar 2026 14:22:27 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id RxoJKMMbsGkyUQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 10 Mar 2026 13:25:23 +0000
+Date: Tue, 10 Mar 2026 14:25:22 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Jan Polensky <japo@linux.ibm.com>
-Message-ID: <20260310132227.GC39882@pevik>
+Message-ID: <20260310132522.GD39882@pevik>
 References: <20260309172057.272946-1-japo@linux.ibm.com>
- <20260309172057.272946-4-japo@linux.ibm.com>
+ <20260309172057.272946-2-japo@linux.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260309172057.272946-4-japo@linux.ibm.com>
-X-Spamd-Result: default: False [-6.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- URI_HIDDEN_PATH(1.00)[https://github.com/buildroot/buildroot/blob/master/.editorconfig];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <20260309172057.272946-2-japo@linux.ibm.com>
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
+ MX_GOOD(-0.01)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
  FUZZY_RATELIMITED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[3];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: C851C5BCD5
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 3/3] editorconfig: add consistent formatting
- rules for LTP
+Subject: Re: [LTP] [PATCH v1 1/3] fsetxattr02: Adapt test for kernel 7.0+
+ socket xattr support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,91 +130,42 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Jan,
 
-> Introduce .editorconfig to keep indentation and whitespace consistent across
-> editors, preventing accidental reformatting and noisy diffs.
+> Starting with kernel 7.0.0, sockets support extended attributes in the
+> user.* namespace. This behavior was enabled by dc0876b9846d ("xattr: support
+> extended attributes on sockets"), which permits user.* xattrs on S_IFSOCK
+> inodes (previously rejected with -EPERM).
 
-+1, I was thinking about adding it looking on kernel [1] and Buildroot [2]
-config some time ago.
+Good catch, thanks!
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/.editorconfig
-[2] https://github.com/buildroot/buildroot/blob/master/.editorconfig
-
-Generally LGTM.
-
-BTW I would separate this from the actual code change (not relevant).
+> Adapts the test to expect success (exp_err = 0) instead of EPERM when
+> testing fsetxattr(2) on sockets with kernel 7.0+.
 
 > Signed-off-by: Jan Polensky <japo@linux.ibm.com>
 > ---
->  .editorconfig | 36 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 36 insertions(+)
->  create mode 100644 .editorconfig
+>  testcases/kernel/syscalls/fsetxattr/fsetxattr02.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-> diff --git a/.editorconfig b/.editorconfig
-> new file mode 100644
-> index 000000000000..ee9f49516e53
-> --- /dev/null
-> +++ b/.editorconfig
-> @@ -0,0 +1,36 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
+> diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+> index 18490a865871..ede86b218ee6 100644
+> --- a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+> +++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+> @@ -158,6 +158,10 @@ static void verify_fsetxattr(unsigned int i)
+>  	if (TST_RET == -1 && TST_ERR == EOPNOTSUPP)
+>  		tst_brk(TCONF, "fsetxattr(2) not supported");
 
-Any particular reason for GPL v2 only? The default LTP license is
-GPL-2.0-or-later.
-
-> +
-> +# EditorConfig configuration for LTP
-> +# https://editorconfig.org/
-> +
-> +root = true
-> +
-> +[*]
-> +charset = utf-8
-> +end_of_line = lf
-> +insert_final_newline = true
-> +trim_trailing_whitespace = true
-> +
-> +# C/Assembly source files, headers, and Makefiles use tabs
-> +[*.{c,h,mk,S,sh,awk}]
-FYI we have only single awk file which IMHO nobody uses (it may be deleted):
-testcases/open_posix_testsuite/scripts/print-pass-fail-summary.awk
-> +indent_style = tab
-> +indent_size = 8
-When we use tab anyway (i.e. it's about how is the tab displayed), could it be
-indent_size = 4 ?
-> +
-> +[{Makefile,Makefile.*}]
-nit: we should probably add here *.mk.in
-
-> +indent_style = tab
-> +indent_size = 8
-> +
-> +# Python and Perl scripts use spaces
-> +[*.{py,pl}]
-> +indent_style = space
-> +indent_size = 4
-Most of our python based tests contain tabs, see testcases/network/nfsv4/acl/
-and testcases/realtime/func/pi-tests/.
-OTOH doc/conf.py would have to be converted to tabs.
-
-Also on perl it's hard to even decide, because vendored scripts/checkpatch.pl
-uses tabs (and we modify it), but vendored scripts/checkbashisms.pl uses spaces.
-
-> +
-> +# Documentation files
-> +[*.{rst,md}]
-> +indent_style = space
-> +indent_size = 3
-If this setup is used for e.g. code block, than I would say we should have
-indent_size = 4 to match the actual doc (doc/developers/test_case_tutorial.rst).
-
-> +
-> +# JSON files
-> +[*.json]
-> +indent_style = space
-> +indent_size = 4
-I'm ok with it, but our JSON files (tests added by Cyril) might be reformatted.
+> +	/* consider newer kernels */
+very nit: The commit is obvious. If anything to add, I would add the git hash itself.
 
 Kind regards,
 Petr
+
+> +	if ((tst_kvercmp(7, 0, 0) >= 0) && (strncmp(tc[i].fname, SOCK, strlen(SOCK)) == 0))
+> +		tc[i].exp_err = 0;
+> +
+>  	/* success */
+
+>  	if (!tc[i].exp_err) {
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
