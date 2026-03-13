@@ -4,58 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 335A4105F7A6
-	for <ltp@archiver.kernel.org>; Fri, 13 Mar 2026 12:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B86D105F7AD
+	for <ltp@archiver.kernel.org>; Fri, 13 Mar 2026 13:23:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1C9523E48FF
-	for <ltp@archiver.kernel.org>; Fri, 13 Mar 2026 13:54:46 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9C23E3E492A
+	for <ltp@archiver.kernel.org>; Fri, 13 Mar 2026 14:23:31 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 085573CA98F
- for <ltp@lists.linux.it>; Fri, 13 Mar 2026 13:54:24 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 714933CB05E
+ for <ltp@lists.linux.it>; Fri, 13 Mar 2026 14:23:12 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E1B511000A09
- for <ltp@lists.linux.it>; Fri, 13 Mar 2026 13:54:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1773406464; x=1804942464;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=a0i8Thka+oK8p7ua/3BMj2Qxs0Eb90V5uSzl0cZeiWs=;
- b=VSKsPEWYFufpAZmW1zvpibL/xKb8bjVaF3DB+d6/12wj1aRY+j4Ldu8a
- i8BoLxeUT36sZgHiHqqY/GyVlxVH94q3pPiXQPTn+tbqbr8qDlfIfV861
- nVySh3UtlUE1kgZylA/GRJHBC7Rv5Om29zm5DKY+0KYEmHXpfX2peOy/B
- 0NdkKWo5zT9gAZncWBTcu6Zl/tAnC3ZdYeHsqFyDgHqZzQdnusnwZ9N92
- raVGP1Ul8mz6TgWFmyswPJHkFopUIrrhnDII4icVeGAGS/AMec5/RFd5Y
- jz+xN9owdFxAehhLIyUx2XkTDcsLV4y4kCo8um3jt6aUwF42HIZHPmU38 Q==;
-X-CSE-ConnectionGUID: HCuy0Hr0TJ2OUrXaqI4dHQ==
-X-CSE-MsgGUID: zTbSmYvqRuqlAx7GyILezQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11727"; a="74549061"
-X-IronPort-AV: E=Sophos;i="6.23,118,1770624000"; d="scan'208";a="74549061"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
- by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2026 05:54:21 -0700
-X-CSE-ConnectionGUID: imdGzWlwSX+wj8UI/irGDA==
-X-CSE-MsgGUID: j+T6MmtkRticXCtV6ixKEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,118,1770624000"; d="scan'208";a="259049821"
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
- by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2026 05:54:19 -0700
-From: Piotr Kubaj <piotr.kubaj@intel.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0EBF91401279
+ for <ltp@lists.linux.it>; Fri, 13 Mar 2026 14:23:11 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 22D7F4D315
+ for <ltp@lists.linux.it>; Fri, 13 Mar 2026 13:23:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1773408190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vpV4kuKbrq9MkF8M+oxsmQ2Ea0TsbW7+WDvsB4B0ra0=;
+ b=fb9H1ttHHoBA/MYtIHQ/gwMEFaOIYePTd1WVZXvNUHa0YWY/XS6+gO6/ixhRFMe9wiXA8d
+ jqFjGlT1ZpOE0hXCBkBNQZG8iHORXvY1hEnT+u9yOg9fT0JxB3wFsNv6TdakDfbk8EzRXr
+ bmX2Duh07l+qryUdv73KXH5olacnzgg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1773408190;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vpV4kuKbrq9MkF8M+oxsmQ2Ea0TsbW7+WDvsB4B0ra0=;
+ b=jXrAiolC3S+j4uVTQm8cR94PQmKJid0JZB1/8RWpeKcN47lptbqOW2oSeM7E9t1hQoJPvJ
+ EcYRkDjvCJ2kT1AA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1773408190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vpV4kuKbrq9MkF8M+oxsmQ2Ea0TsbW7+WDvsB4B0ra0=;
+ b=fb9H1ttHHoBA/MYtIHQ/gwMEFaOIYePTd1WVZXvNUHa0YWY/XS6+gO6/ixhRFMe9wiXA8d
+ jqFjGlT1ZpOE0hXCBkBNQZG8iHORXvY1hEnT+u9yOg9fT0JxB3wFsNv6TdakDfbk8EzRXr
+ bmX2Duh07l+qryUdv73KXH5olacnzgg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1773408190;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vpV4kuKbrq9MkF8M+oxsmQ2Ea0TsbW7+WDvsB4B0ra0=;
+ b=jXrAiolC3S+j4uVTQm8cR94PQmKJid0JZB1/8RWpeKcN47lptbqOW2oSeM7E9t1hQoJPvJ
+ EcYRkDjvCJ2kT1AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1B68640545
+ for <ltp@lists.linux.it>; Fri, 13 Mar 2026 13:23:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id LJqKBr4PtGkEfgAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Fri, 13 Mar 2026 13:23:10 +0000
+From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 13 Mar 2026 13:54:09 +0100
-Message-ID: <20260313125408.480770-2-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
+Date: Fri, 13 Mar 2026 14:23:01 +0100
+Message-ID: <20260313132305.16232-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.52.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; TO_DN_NONE(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid, suse.cz:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] high_freq_hwp_cap_cppc.c: new test
+Subject: [LTP] [PATCH] aio_cancel_4-1: Rewrite test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,101 +101,212 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Verify for all online logical CPUs that their highest performance value are
-the same for HWP Capability MSR 0x771 and CPPC sysfs file.
+The test schedules multiple async writes into a file and then hopes that
+at least one will block long enough that it can be canceled
+before completion. Use a socket pair instead of a file to force async
+writes to block indefinitely and make sure at least one can be canceled.
+Then cancel all requests on the input socket and check that request errors
+and return values have been set correctly for the canceled requests.
+This fixes a race condition where aio_cancel() could be delayed until
+after all writes have already completed, making the test unreliable.
+
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/power_management/.gitignore  |  1 +
- .../power_management/high_freq_hwp_cap_cppc.c | 57 +++++++++++++++++++
- 2 files changed, 58 insertions(+)
- create mode 100644 testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
 
-diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
-index 0c2a3ed4b..c13bca1c4 100644
---- a/testcases/kernel/power_management/.gitignore
-+++ b/testcases/kernel/power_management/.gitignore
-@@ -1 +1,2 @@
-+high_freq_hwp_cap_cppc
- pm_get_sched_values
-diff --git a/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-new file mode 100644
-index 000000000..4cbb81f0b
---- /dev/null
-+++ b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+Tested on kernels v4.4 and v6.12 as usual.
+
+ .../conformance/interfaces/aio_cancel/4-1.c   | 136 +++++++-----------
+ 1 file changed, 49 insertions(+), 87 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c
+index ef615ae64..ac19d8b1a 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/4-1.c
+@@ -1,5 +1,6 @@
+ /*
+  * Copyright (c) 2004, Bull SA. All rights reserved.
++ * Copyright (c) 2026 SUSE LLC
+  * Created by:  Laurent.Vivier@bull.net
+  * This file is licensed under the GPL license.  For the full content
+  * of this license, see the COPYING file at the top level of this
+@@ -14,122 +15,83 @@
+  *
+  * method:
+  *
+- *	we queue a lot of aio_write() operation to a file descriptor
+- *	then we try to cancel all aio operation of this file descriptor
+- *	we check with aio_error() state of each operation
+- *	if aio_error() is ECANCELED and aio_return() is -1
+- *	test is passed
+- *	if aio_error() is ECANCELED and aio_return() is NOT -1
+- *	test fails
+- *	otherwise
+- *	test is unresolved
++ *	open a pair of sockets and queue writes to them with aio_write()
++ *	execute aio_cancel() on the socket
++ *	check aio_error() and aio_return() results for writes which should
++ *	have been canceled
++ *	if any aio_error() is not ECANCELED or aio_return() is not -1,
++ *	the test fails
++ *	otherwise the test passes
+  *
+  */
+ 
+-#include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <stdlib.h>
+-#include <aio.h>
+ 
+ #include "posixtest.h"
+-#include "tempfile.h"
++#include "aio_test.h"
+ 
+ #define TNAME "aio_cancel/4-1.c"
+ 
+-#define BUF_NB		128
+-#define BUF_SIZE	(1024*1024)
++#define WRITE_COUNT	8
++#define MAX_COMPLETE	3
 +
-+/*
-+ * Copyright (C) 2025-2026 Intel - http://www.intel.com/
-+ */
++static int fds[2];
++static struct aiocb aiocb[WRITE_COUNT];
+ 
+ int main(void)
+ {
+-	char tmpfname[PATH_MAX];
+-	int fd;
+-	struct aiocb *aiocb[BUF_NB];
+ 	int i;
+-	int in_progress;
+ 
+ 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+ 		return PTS_UNSUPPORTED;
+ 
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_cancel_4_1");
+-	unlink(tmpfname);
+-	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+-	if (fd == -1) {
+-		printf(TNAME " Error at open(): %s\n", strerror(errno));
++	if (setup_aio(TNAME, fds, aiocb, WRITE_COUNT))
+ 		return PTS_UNRESOLVED;
+-	}
+-
+-	unlink(tmpfname);
+-
+-	/* create AIO req */
+-
+-	for (i = 0; i < BUF_NB; i++) {
+-		aiocb[i] = malloc(sizeof(struct aiocb));
+-		if (aiocb[i] == NULL) {
+-			printf(TNAME " Error at malloc(): %s\n",
+-			       strerror(errno));
+-			return PTS_UNRESOLVED;
+-		}
+-		memset(aiocb[i], 0, sizeof(struct aiocb));
+-		aiocb[i]->aio_fildes = fd;
+-		aiocb[i]->aio_buf = malloc(BUF_SIZE);
+-		if (aiocb[i]->aio_buf == NULL) {
+-			printf(TNAME " Error at malloc(): %s\n",
+-			       strerror(errno));
+-			return PTS_UNRESOLVED;
+-		}
+-		aiocb[i]->aio_nbytes = BUF_SIZE;
+-		aiocb[i]->aio_offset = 0;
+-		aiocb[i]->aio_sigevent.sigev_notify = SIGEV_NONE;
+-	}
+ 
+-	for (i = 0; i < BUF_NB; i++) {
+-		if (aio_write(aiocb[i]) == -1) {
++	/* submit AIO req */
++	for (i = 0; i < WRITE_COUNT; i++) {
++		if (aio_write(&aiocb[i]) == -1) {
+ 			printf(TNAME " loop %d: Error at aio_write(): %s\n",
+-			       i, strerror(errno));
++				i, strerror(errno));
++			cleanup_aio(fds, aiocb, WRITE_COUNT);
+ 			return PTS_FAIL;
+ 		}
+ 	}
+ 
+-	/* try to cancel all
+-	 * we hope to have enough time to cancel at least one
+-	 */
+-
+-	if (aio_cancel(fd, NULL) == -1) {
++	/* cancel all */
++	if (aio_cancel(fds[0], NULL) == -1) {
+ 		printf(TNAME " Error at aio_cancel(): %s\n", strerror(errno));
++		cleanup_aio(fds, aiocb, WRITE_COUNT);
+ 		return PTS_FAIL;
+ 	}
+ 
+-	close(fd);
+-
+-	do {
+-		in_progress = 0;
+-		for (i = 0; i < BUF_NB; i++) {
+-			int ret;
+-
+-			ret = (aio_error(aiocb[i]));
+-
+-			if (ret == -1) {
+-				printf(TNAME " Error at aio_error(): %s\n",
+-				       strerror(errno));
+-				return PTS_FAIL;
+-			} else if (ret == EINPROGRESS)
+-				in_progress = 1;
+-			else if (ret == ECANCELED) {
+-				if (aio_return(aiocb[i]) == -1) {
+-					printf("Test PASSED\n");
+-					return PTS_PASS;
+-				}
+-
+-				printf(TNAME " aio_return is not -1\n");
+-				return PTS_FAIL;
+-			}
++	/* check results of requests that should have been canceled */
++	for (i = MAX_COMPLETE; i < WRITE_COUNT; i++) {
++		int ret = aio_error(&aiocb[i]);
 +
-+/*\
-+ * Verify for all online logical CPUs  that their highest performance value are
-+ * the same for HWP Capability MSR 0x771 and CPPC sysfs file.
-+ */
-+
-+#include "tst_test.h"
-+
-+static int nproc;
-+
-+static void setup(void)
-+{
-+	nproc = tst_ncpus();
-+}
-+
-+static void run(void)
-+{
-+	for (int i = 0; i < nproc; i++) {
-+		char path[PATH_MAX];
-+		unsigned long long msr_highest_perf = 0, sysfs_highest_perf = 0;
-+
-+		snprintf(path, PATH_MAX, "/sys/devices/system/cpu/cpu%d/acpi_cppc/highest_perf", i);
-+		SAFE_FILE_SCANF(path, "%llu", &sysfs_highest_perf);
-+		tst_res(TDEBUG, "%s: %llu", path, sysfs_highest_perf);
-+
-+		snprintf(path, PATH_MAX, "/dev/cpu/%d/msr", i);
-+		int fd = SAFE_OPEN(path, O_RDONLY);
-+
-+		if (pread(fd, &msr_highest_perf, sizeof(msr_highest_perf), 0x771) < 0) {
-+			SAFE_CLOSE(fd);
-+			tst_brk(TBROK | TERRNO, "MSR read error");
++		if (ret == -1) {
++			printf(TNAME " Error at aio_error(): %s\n",
++			       strerror(errno));
++			cleanup_aio(fds, aiocb, WRITE_COUNT);
++			return PTS_FAIL;
++		} else if (ret != ECANCELED) {
++			printf(TNAME " Bad task #%d result: %s "
++				"(expected ECANCELED)\n", i, strerror(ret));
++			cleanup_aio(fds, aiocb, WRITE_COUNT);
++			return PTS_FAIL;
 +		}
-+		SAFE_CLOSE(fd);
-+		msr_highest_perf &= (1ULL << 8) - 1;
-+		tst_res(TDEBUG, "%s: %llu", path, msr_highest_perf);
 +
-+		if (msr_highest_perf != sysfs_highest_perf)
-+			tst_brk(TFAIL, "CPU %d: highest performance values differ between sysfs and MSR", i);
++		ret = aio_return(&aiocb[i]);
++
++		if (ret != -1) {
++			printf(TNAME " aio_return(): %d (expected -1)\n", ret);
++			cleanup_aio(fds, aiocb, WRITE_COUNT);
++			return PTS_FAIL;
+ 		}
+-	} while (in_progress);
 +	}
-+
-+	tst_res(TPASS, "Test pass");
-+}
-+
-+static struct tst_test test = {
-+	.needs_kconfigs = (const char *const []) {
-+		"CONFIG_X86_MSR",
-+		NULL
-+	},
-+	.needs_root = 1,
-+	.setup = setup,
-+	.test_all = run
-+};
+ 
+-	return PTS_UNRESOLVED;
++	cleanup_aio(fds, aiocb, WRITE_COUNT);
++	printf("Test PASSED\n");
++	return PTS_PASS;
+ }
 -- 
-2.47.3
-
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
+2.52.0
 
 
 -- 
