@@ -4,117 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F312105F79A
-	for <ltp@archiver.kernel.org>; Fri, 13 Mar 2026 11:09:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB674105F799
+	for <ltp@archiver.kernel.org>; Fri, 13 Mar 2026 11:21:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1773400880; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : mime-version : content-type : content-transfer-encoding :
+ sender : from; bh=/yM7+QH4Iw2B2I9t6QFdBDwd6AAaDxnQNzuJp4Cy568=;
+ b=JmKPHMXs8/HtzL391fxelVAsLHViZ321xmUE/0SMg4OmT0gEkL//tfXwl5IUWCZfJUXAZ
+ 2RWwlMz7GRlIyTveLnVJn/54bizvbT0CV7KIavticoMuT6VV04JZUaxxFJ+t/ic+mgRvw9Q
+ v+MkkLTvKijXC+Pk3P/LL1V90OtO7fc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F16D43E2386
-	for <ltp@archiver.kernel.org>; Fri, 13 Mar 2026 12:09:21 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 736263E52A5
+	for <ltp@archiver.kernel.org>; Fri, 13 Mar 2026 12:21:20 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7FE853E52AD
- for <ltp@lists.linux.it>; Fri, 13 Mar 2026 12:07:58 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id F3DE43CBDE8
+ for <ltp@lists.linux.it>; Fri, 13 Mar 2026 12:20:56 +0100 (CET)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 40B1C1400125
- for <ltp@lists.linux.it>; Fri, 13 Mar 2026 12:07:57 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 24E225BD7B;
- Fri, 13 Mar 2026 11:07:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1773400050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=zzwO54kt+9ZyJcvh+l9eXAAvVtnDSgYeDrLL06fGqho=;
- b=0OM1W3WNCGRsOHXjqBLDYy6tQscX72y3raUL7uLz8iilvceiHdNgmSTW3kiA5k2KkGIIwm
- o+fJ3yCKAlRiEaELbMoNPAdQBpcD8lQFuXMcoPq4Ou3vyA07y+I6S58hqQcM97JEfUPl1S
- oQxmGUwJ5cUZFrJ8kTlWdLSrqJ7NRiw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1773400050;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=zzwO54kt+9ZyJcvh+l9eXAAvVtnDSgYeDrLL06fGqho=;
- b=9DlIueKx/W7uw1+pIy0w3XusbePJPp4LtxVhmn+D70CwkfT1illfDCVeHv7J/A2c/1SR0T
- 3WoZu8RAFc/rZkBg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=0OM1W3WN;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=9DlIueKx
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1773400050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=zzwO54kt+9ZyJcvh+l9eXAAvVtnDSgYeDrLL06fGqho=;
- b=0OM1W3WNCGRsOHXjqBLDYy6tQscX72y3raUL7uLz8iilvceiHdNgmSTW3kiA5k2KkGIIwm
- o+fJ3yCKAlRiEaELbMoNPAdQBpcD8lQFuXMcoPq4Ou3vyA07y+I6S58hqQcM97JEfUPl1S
- oQxmGUwJ5cUZFrJ8kTlWdLSrqJ7NRiw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1773400050;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=zzwO54kt+9ZyJcvh+l9eXAAvVtnDSgYeDrLL06fGqho=;
- b=9DlIueKx/W7uw1+pIy0w3XusbePJPp4LtxVhmn+D70CwkfT1illfDCVeHv7J/A2c/1SR0T
- 3WoZu8RAFc/rZkBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0794C404BF;
- Fri, 13 Mar 2026 11:07:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id cEYNAPLvs2ndbAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 13 Mar 2026 11:07:29 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 13 Mar 2026 12:07:30 +0100
-MIME-Version: 1.0
-Message-Id: <20260313-listns-v1-4-04ef0081a377@suse.com>
-References: <20260313-listns-v1-0-04ef0081a377@suse.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 71FBA1000A22
+ for <ltp@lists.linux.it>; Fri, 13 Mar 2026 12:20:56 +0100 (CET)
+Received: by mail-wr1-x430.google.com with SMTP id
+ ffacd0b85a97d-439cd6b09f8so1717295f8f.3
+ for <ltp@lists.linux.it>; Fri, 13 Mar 2026 04:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1773400856; x=1774005656; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=raviDmFtBNowqkTXQepekCJxyqJazHZ6aqSFH1Z0QVM=;
+ b=c3hMg9czBloEbB5f4KUxi3bRj4QiOyqzfTKyXSXMdjXLNuZ+Xq7AkjktrWypcUATZR
+ 8Q40/1P1XPCEDzKuOWrqpJ8wPMug1ST6U7aGsTXo6SR3eSSS6Q5N+bZf4riitRdefu6w
+ ITAhAfUHHn92vptpf66jYtAaL+G9WppjbUXHWc7AfFejxxkFH4OzuKbpSzPZnbqTftvq
+ z5KFAgzfKxdLTYsrrKQDq6DlUWEAJLxA2Qc/iVHHS9bdNtVJaHos63cw7CNB7DBA1NH6
+ l62lN3cprkU3ePJW1rkcOTzjIlN6fR/qnFXXrhjTnNPskMjWs29mHxvGmEQdMGL0PUJZ
+ 1c4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1773400856; x=1774005656;
+ h=date:content-transfer-encoding:subject:in-reply-to:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=raviDmFtBNowqkTXQepekCJxyqJazHZ6aqSFH1Z0QVM=;
+ b=TRwJi4az0dQagZ6HDY26OfbP16ASUjszFF0EHXDWKwI6FzIPpA8W279W69yPDzUl8h
+ u3NfXZV6Y8MzLP8O/kT41VFtfjx4PVda+tPmDE/2FUlbjpBK8wqagX2NFOkKeQIinmVP
+ wmx+w+1Gny2YdGE+7j9RhyYCg3Y+qnCrppgzVTEst2IUS5OxPtRAKcnHybsHtNHKL6+C
+ sN9k4sSwibj8nklXCKfhP2H0t5oG0eVlvf3i29ItELBLwRXS4s5Ze2xZyItuZKqC15/r
+ fh6tz1EPn8USzvFfMhuk/IXHXNeKCBxOndpauXqU5+00ZxLaRGz2UbXB2w7slXvej0yU
+ q2jA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCX+LTQwMWsbTgnp2rLVtt9vNNubjL5PwGQH/kKE2eah0hkRYmiT20macmyTZzBhzYGl1AM=@lists.linux.it
+X-Gm-Message-State: AOJu0YwTjRiwBqIDcx5zTyzO8tG2Q167Pi8JIaak1a41DmusN+aoOeSh
+ BlhWN+Y9P9lQWxRUFWN70xoR9mWPBu2FksmP6RXhIwUK9cmiiemLaahvsjvER4hstwPJEx8ezw3
+ 4pwQyZeo=
+X-Gm-Gg: ATEYQzxLmHK88Wevi6Df40RmmG4LwNRNt5RQtdgDNaRPPyNvDnNP4VXUs+n2zsYZANh
+ 3XV7Uov7C900ZX3/fsT5z/9b3GwhVIaJd5wj9jmyt6u/GAqioin62CCM21j8LwG49hpKjMhwCYS
+ E+0w6tqUbi/fN/pVbie2esof5vYJIzbIOUh/aZgkhE9P9tpWw05Lrrxr5VctoX8LwbEAcsYciqE
+ 8QRXj+msZ0UGijNLDKJSoOptSDeZ+KOlOLwSM3AclmbpIGMrgUV7bxGQ6v3PJkdbx4EbJz4KtfN
+ Nr5EQPrrXIoPOZNILI3QGUyWoGxj3KIn5pKEqD/Te+9qa4UN26cvFUKKnw3da/yI8MxY/GR0yZ3
+ rGEp00Wi3SUKB8z1qn9jvQc2NFBTtf5x7/YNdgFz5E9CB8Oe7hStV5YZSx09COFMWRosQfDC9C9
+ SFIAWaNGZHXEzoec04EQ1XIs8ZWeNj+degzYD4cIpAWrPkBn2MZlgRiJpgHsnEHQH9exFmMLHqk
+ 8QQUFMqGrKdi2S86FZ2y+1xKG4rvrN9VPlL/edUFv0Yo6OVDLjDFUSoA70Cg1m+Ys9VyUVYztAv
+ 3w==
+X-Received: by 2002:a05:6000:609:b0:439:b0ed:2af6 with SMTP id
+ ffacd0b85a97d-43a04d8b6c4mr5634641f8f.26.1773400855715; 
+ Fri, 13 Mar 2026 04:20:55 -0700 (PDT)
+Received: from p200300ef2f4fc90013ded37855cdb3ca.dip0.t-ipconnect.de
+ (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
+ [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-439fe23afc5sm18682524f8f.39.2026.03.13.04.20.55
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 13 Mar 2026 04:20:55 -0700 (PDT)
+Message-ID: <69b3f317.5d0a0220.a5656.a17b@mx.google.com>
+To: "Andrea Cervesato" <andrea.cervesato@suse.de>, ltp@lists.linux.it
 In-Reply-To: <20260313-listns-v1-0-04ef0081a377@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1773400049; l=2885;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=fP6lMuEX2+1RN05R6MHYRpFPLKbIO0pgx8FVfuan76w=;
- b=u5HQAJnmqXlg76mW8Uwf097cBO2dpKWa6viKKirq9+0XoklOMJENkUFO50/LFXtt1nkPSJsSo
- ZVupJZitKBYCpoPd3JGBJijDC9NKWpu3dEIFDDCVpQVqLej1nj1xq70
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: 24E225BD7B
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+Date: Fri, 13 Mar 2026 11:20:54 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 4/5] syscalls: add listns01 test for EFAULT on invalid
- address
+Subject: Re: [LTP] [PATCH 0/5] listns() testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,109 +99,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi,
 
-Verify that listns() returns EFAULT when given a completely invalid
-address or a NULL pointer as the output buffer.
+one thing for reviewers: listns tests are not linked into the runtest files.
+That's the only thing which is currently missing.
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- testcases/kernel/syscalls/listns/.gitignore |  1 +
- testcases/kernel/syscalls/listns/Makefile   |  7 ++++
- testcases/kernel/syscalls/listns/listns01.c | 56 +++++++++++++++++++++++++++++
- 3 files changed, 64 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/listns/.gitignore b/testcases/kernel/syscalls/listns/.gitignore
-new file mode 100644
-index 0000000000000000000000000000000000000000..396d6b6fbfb3e34f17c79bfa3d5cc60f76477584
---- /dev/null
-+++ b/testcases/kernel/syscalls/listns/.gitignore
-@@ -0,0 +1 @@
-+listns01
-diff --git a/testcases/kernel/syscalls/listns/Makefile b/testcases/kernel/syscalls/listns/Makefile
-new file mode 100644
-index 0000000000000000000000000000000000000000..13755014997afbdc389e1a8fb1b0f0df36c81f21
---- /dev/null
-+++ b/testcases/kernel/syscalls/listns/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/listns/listns01.c b/testcases/kernel/syscalls/listns/listns01.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..e9211e0ef9baf68698fbd9f3500d0ec00cd13590
---- /dev/null
-+++ b/testcases/kernel/syscalls/listns/listns01.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Test listns() EFAULT error handling with invalid buffer pointers.
-+ *
-+ * Verify that listns() returns EFAULT when given a completely invalid
-+ * address or a NULL pointer as the output buffer.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+#include "lapi/listns.h"
-+
-+static struct tcase {
-+	const char *desc;
-+	uintptr_t bad_ptr_val;
-+	size_t nr_ids;
-+} tcases[] = {
-+	{
-+		.desc = "completely invalid pointer",
-+		.bad_ptr_val = 0xdeadbeef,
-+		.nr_ids = 10,
-+	},
-+	{
-+		.desc = "NULL buffer",
-+		.bad_ptr_val = 0,
-+		.nr_ids = 10,
-+	},
-+};
-+
-+static void verify_listns(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	struct listns_req req = { .size = NS_ID_REQ_SIZE_VER0 };
-+
-+	TST_EXP_FAIL2(listns(&req, (uint64_t *)tc->bad_ptr_val, tc->nr_ids, 0),
-+		      EFAULT, "listns() %s", tc->desc);
-+}
-+
-+static void setup(void)
-+{
-+	struct listns_req req = { .size = NS_ID_REQ_SIZE_VER0 };
-+
-+	tst_syscall(__NR_listns, &req, NULL, 0, 0);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_listns,
-+	.setup = setup,
-+};
-
--- 
-2.51.0
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
