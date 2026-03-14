@@ -4,99 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66CD510706E0
-	for <ltp@archiver.kernel.org>; Sat, 14 Mar 2026 15:13:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B0BF10706DE
+	for <ltp@archiver.kernel.org>; Sat, 14 Mar 2026 15:13:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7BC883E2764
-	for <ltp@archiver.kernel.org>; Sat, 14 Mar 2026 16:13:38 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 311EC3E2379
+	for <ltp@archiver.kernel.org>; Sat, 14 Mar 2026 16:13:55 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B16BF3CE841
- for <ltp@lists.linux.it>; Sat, 14 Mar 2026 16:13:18 +0100 (CET)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id AFC033CE841
+ for <ltp@lists.linux.it>; Sat, 14 Mar 2026 16:13:19 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0974E200260
- for <ltp@lists.linux.it>; Sat, 14 Mar 2026 16:13:17 +0100 (CET)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D22F514000FF
+ for <ltp@lists.linux.it>; Sat, 14 Mar 2026 16:13:18 +0100 (CET)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 62E5j2ah476267; Sat, 14 Mar 2026 15:13:15 GMT
+ 62E5r5jW567583; Sat, 14 Mar 2026 15:13:16 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=pJ28EBdmnLnFDZsRC
- nPGQImU54XNYk0M77jvEJJfR68=; b=JkcO4NR0HPcWzxS/VcvPQO1azL0nLRhHb
- vjHbS+GGqaOUTktiuCoTTW+JdBb5gwZ9Gnpqmx6HAkVmR7HD5qGoWtLuc/A0KtV3
- AvwbR3YKInXhF1tKkrvhNOzV+PwnCKXaalOyZqCvC+6RRDlM9GfTYx2+6sozA9YC
- feqppObapmXf7tHt+r4sVVfn1eTcGL1wepKn1BDrsO9MMXcYvy5P/dmcxfUdhVWI
- 0W9Ct8XRyhzDmZZaIBrBjlhCHs5ZvffJ5jIB+YtDjAOUUZvNyuFaElfCsK0b3Jgj
- DskDE2Jpu86u9EfcdopIbpwo1LvKRS6nqhZjttuUr8Nb0y5LhVHMg==
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=srdS+PNnPVYFaeaLrnriUOmXtM+PQWuFCmzMGUthL
+ rU=; b=VWqOBHXF5IXO67QmoXt0I0OrHTS3HSPWvw236UaTCSbPpK+Ik4pmMVke5
+ kMdFYuZRXQXE3K3WrrhHhyjSfUFu8chT1OH2Mk6xkN1SF543mUOd+w3kT6BnekpI
+ AVoEjzxTlDAV5lEWvEoxLSuETe7Z2zNyfww9hX/73dpOUaM8jTFKRYQtMob3ILHB
+ pnxL0a7gvn9PtdHWwvoItgXdUUAE6kQkq7FGL4FqxBZ+ekewPmHAtjqUkABMsdv5
+ BI0U0S71AXh0jIYKcGYxLP6GyKXdGLk97I+/OON4kMoaOixoaGvqGdSSVpTEJgR3
+ dKZtoruKyMUAcJLVlD6zGMIXPUcYg==
 Received: from ppma22.wdc07v.mail.ibm.com
  (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cvx3chhq3-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cvybrsfyn-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Sat, 14 Mar 2026 15:13:15 +0000 (GMT)
 Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62EEhmau014667;
- Sat, 14 Mar 2026 15:13:15 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cuha8jmp1-1
+ by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62EF8HBl014698;
+ Sat, 14 Mar 2026 15:13:14 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cuha8jmp0-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sat, 14 Mar 2026 15:13:15 +0000
+ Sat, 14 Mar 2026 15:13:14 +0000
 Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
  [10.20.54.106])
- by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 62EFDD7r44106176
+ by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 62EFDCuP15532364
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sat, 14 Mar 2026 15:13:13 GMT
+ Sat, 14 Mar 2026 15:13:12 GMT
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 24B8420043;
- Sat, 14 Mar 2026 15:13:13 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id A46DE20043;
+ Sat, 14 Mar 2026 15:13:12 +0000 (GMT)
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id BF6D020040;
+ by IMSVA (Postfix) with ESMTP id 400A120040;
  Sat, 14 Mar 2026 15:13:12 +0000 (GMT)
 Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com.com (unknown
  [9.111.80.172]) by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
  Sat, 14 Mar 2026 15:13:12 +0000 (GMT)
 From: Jan Polensky <japo@linux.ibm.com>
 To: chrubis@suse.cz, pvorel@suse.cz
-Date: Sat, 14 Mar 2026 16:13:03 +0100
-Message-ID: <20260314151304.82136-2-japo@linux.ibm.com>
+Date: Sat, 14 Mar 2026 16:13:02 +0100
+Message-ID: <20260314151304.82136-1-japo@linux.ibm.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260314151304.82136-1-japo@linux.ibm.com>
-References: <20260314151304.82136-1-japo@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=arO/yCZV c=1 sm=1 tr=0 ts=69b57b0b cx=c_pps
+X-Authority-Analysis: v=2.4 cv=MMttWcZl c=1 sm=1 tr=0 ts=69b57b0b cx=c_pps
  a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
  a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=V8glGbnc2Ofi9Qvn3v5h:22 a=VnNF1IyMAAAA:8 a=D8qa3E3ZBTQVZeoaTDYA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzE0MDExOSBTYWx0ZWRfXxi3f2G9rfXuL
- 3PdbWZGfe+i6T95EdOzkaTnmqB1QiTqwc7dSoiAszHUFiln8n0HYCpLb/W9pLlgjJ2RTDR2xib6
- hDnW+DByE71aMT5gnxsKJC63/JtDoBO0f+YI/RS/Qp5JCAOaDui+IG+cq//YfDI7tHBYG+Ez3j3
- Z0AXflIWtGP6PWWuSTHyaslSS1ieTpYX0I1CH/oY56BiCnrpp+rjRxOzHxLi9sDIXiOg3M6LV88
- mmnrGwumN+Py//eH7x6ko8RBosP0qZUzAG29oetqn/cdc2VEqVxlSXvxWgqHB/OyHnegIEZlEQ/
- +EJXgnCbD7Z+TuooETpAYXINmTJ6nLVYgT1LTEmwCXZN5RXh+Gve4bWLXP9M8khdd1xF8JppT7K
- fg808wOl7TXTGOdfi6Ul/f5GMj6uv/enKTuSG4zprxKWz1y4Yd+Vi2QHR8lg2LC5h6bckPColOW
- 9Nn4289vnlOnBa0TO6g==
-X-Proofpoint-GUID: RYc_9ppRSp3SyQIpC-0AXzq3gp0upE_R
-X-Proofpoint-ORIG-GUID: RYc_9ppRSp3SyQIpC-0AXzq3gp0upE_R
+ a=uAbxVGIbfxUO_5tXvNgY:22 a=NDk7QEINfGb4XWn2y_sA:9
+X-Proofpoint-ORIG-GUID: oImPX7PGjIHbshSHNxBr1TrKcFo68FNV
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzE0MDExOSBTYWx0ZWRfX9/GZT7a8nYQ8
+ kLJ3TYIjTNvWTsFcflFllQMu7CSCfK7ffBbrqj4zpd3ZSVZP0RVVUI1hFngAijE5+N6jEbpSuy6
+ O8mBbCgY3tLEQ2LwAg6g/5zJ3XQvOir+KaWCj0XkYgv8O4UbR8o3XZD+wfEaP36UOqtjzv/MmO9
+ m6ZkT3n++VgIz1la7GdfxbuJLjzr/BK3FRoQThFjmWTvkoC37tG7Bmw/6od6Y2FXYDWMsfrTgPU
+ 0VV46jiNUZuIrEFNdDg/7yQHJ7Uzbjad6LxJLjJ0MaNTb+LznFlOSSsSRuefWQodG4f3CTvieqg
+ hEoDgUZqLupj/l0/LL1ibjQKFr+5Oe1SGUnP4vK9oimeoADdn1biM2ogPKUCuPhKVmuJbgCMV4c
+ AfnvRW3DvcDCExYjUo3KQMt7RRNHDdgQ4ZnM/IADwcUEObYwtJnNwA2hC0dT27eL5kDML3f6qrQ
+ +eZFDek1tR+dmxrStOw==
+X-Proofpoint-GUID: oImPX7PGjIHbshSHNxBr1TrKcFo68FNV
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-03-14_04,2026-03-13_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 spamscore=0 lowpriorityscore=0 impostorscore=0
- adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0 clxscore=1015
- phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2603050001
+ suspectscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 phishscore=0 clxscore=1015
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2603050001
  definitions=main-2603140119
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/2] fsetxattr02: Adapt test for kernel 7.1.0+
- socket xattr support
+Subject: [LTP] [PATCH v2 0/2] LTP: adjust socket xattr tests for kernel
+ 7.1.0+
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,44 +113,17 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Starting with kernel 7.1.0, sockets support extended attributes in the
-user.* namespace. This behavior was enabled by dc0876b9846d ("xattr: support
-extended attributes on sockets"), which permits user.* xattrs on S_IFSOCK
-inodes (previously rejected with -EPERM).
+Linux 7.1.0 allows user.* xattrs on sockets (dc0876b9846d). Update
+fsetxattr02/setxattr02 to expect success on 7.1.0+ (instead of -EPERM).
 
-Adapts the test to expect success (exp_err = 0) instead of EPERM when
-testing fsetxattr(2) on sockets with kernel 7.1.0+.
+Jan Polensky (2):
+  fsetxattr02: Adapt test for kernel 7.1.0+ socket xattr support
+  setxattr02: Adapt test for kernel 7.1.0+ socket xattr support
 
-Signed-off-by: Jan Polensky <japo@linux.ibm.com>
----
  testcases/kernel/syscalls/fsetxattr/fsetxattr02.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/setxattr/setxattr02.c   | 6 +++++-
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-index 18490a865871..335a8868ac73 100644
---- a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-+++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-@@ -19,7 +19,8 @@
-  * - Set attribute to a block special file, fsetxattr(2) should
-  *   return -1 and set errno to EPERM.
-  * - Set attribute to a UNIX domain socket, fsetxattr(2) should
-- *   return -1 and set errno to EPERM.
-+ *   return -1 and set errno to EPERM. Will SUCCEED on kernel
-+ *   with commit dc0876b9846d.
-  */
- 
- /*
-@@ -158,6 +159,10 @@ static void verify_fsetxattr(unsigned int i)
- 	if (TST_RET == -1 && TST_ERR == EOPNOTSUPP)
- 		tst_brk(TCONF, "fsetxattr(2) not supported");
- 
-+	/* consider kernels with commit dc0876b9846d */
-+	if ((tst_kvercmp(7, 1, 0) >= 0) && (strncmp(tc[i].fname, SOCK, strlen(SOCK)) == 0))
-+		tc[i].exp_err = 0;
-+
- 	/* success */
- 
- 	if (!tc[i].exp_err) {
 -- 
 2.53.0
 
