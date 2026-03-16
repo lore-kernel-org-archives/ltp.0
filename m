@@ -4,89 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0BDAF506C4
-	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 12:55:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1773665737; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=/3fXwyOhyABolHocr+34+j0R0BOAPrHuW1xPRGmY3LY=;
- b=DZgccUVlz3t4ZoYAw4piFubfbZ0n1Rc4c/EbTezQFWaYsbuBockjui5CFY/Gy0TMRQVzU
- 7yKxK/fmtAwSVg3IYUY/nDRAx5i0tkBXHLeBIT0h7/v2QeGn88x652BzgXo+g8F3W8ZKwJ5
- UM6p5ujn4SiVYADBC3sl/nBiyRFgjMc=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A45DF506CA
+	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 13:03:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5416F3E5664
-	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 13:55:37 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D7A943E5680
+	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 14:03:47 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 624123E4B8B
- for <ltp@lists.linux.it>; Mon, 16 Mar 2026 13:55:15 +0100 (CET)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7FD3C3E1CCE
+ for <ltp@lists.linux.it>; Mon, 16 Mar 2026 14:03:30 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A132E6008E5
- for <ltp@lists.linux.it>; Mon, 16 Mar 2026 13:55:14 +0100 (CET)
-Received: by mail-wm1-x32e.google.com with SMTP id
- 5b1f17b1804b1-4853aec185aso37540315e9.1
- for <ltp@lists.linux.it>; Mon, 16 Mar 2026 05:55:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1773665714; x=1774270514; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=nsAHmGLdGJv2/5eHnxmgKRaz1X3JEPDecDwHuElv5/U=;
- b=FH0AbBRK+giS362+ShbVd7IyD5UBkxYgFOxy/WdoCOeYpZn9HaEek4tXmFntKxRu3b
- AutChJNxHDlgKcPJLd0DO/bxyOTD25uca6uaPB/WFh457Scc2I5Rx4P2IWPvbwxQp2Oh
- SRDqYblzYhf4mxNGSQoMkmJVgm5vyVWCpBjJ9fm8ga2IbzTZd5DKIqV+YwsYSCgeQW7c
- oJxR/12SKmzML/zzb4lxmO2uMjhkh0/3pBWsKUtKRRyG4l3h29MOeiYDHQ1NsTGFTxSd
- jyJM9OmxHxY5HHDZciR2dk2hR+BR07m9SpJCI1F5oHTYScJZOCDGSDr1pZw5CpJ76YOu
- BxLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1773665714; x=1774270514;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=nsAHmGLdGJv2/5eHnxmgKRaz1X3JEPDecDwHuElv5/U=;
- b=J3SVegGy4xcHYMzqbWWhCMzi0vvPkIYUTbSfwk/Mq6xCiPImQmr99TU9Gw/iyra4ky
- rSYHPUw8xkBYmuFx0kC++ZMJU9TrGGQJynr51+MPDCHpUIhzefntR/gBB1GY5CuV2LnV
- PdGqRVH+ehJtU2/ZZfesiNFEteoRFYrXuMIjVABDtm5xJGsdY/O2GqECTpBNbY/uRc4W
- yNCCuDVi8ZcJlcMcuGFboiYK0vyP81NrbngNdkqe6YnkaP8USLu1O3XFnybLjzCENEhS
- kX1wZGhtcW9TgcQW8BEP8bB2iGJWVtmYtZmXzfyrmm+yHbLz+40DtlTwwwU7BaHBc+NF
- fZlQ==
-X-Gm-Message-State: AOJu0Yxss+vMWmj/bB74rch+4FTjBnfOZQj1LwVvCZolJSwlUTF4teW5
- VnOYHRJs1WxttbcVgpvkQekgpbSM6UZAc0Vg8zl2GD/qz8Ej+iUrpwG/i2uz1U1U1tc=
-X-Gm-Gg: ATEYQzzZiT8qwv45+53NMWFPvCFOq5GQbDL8QUEFJ1R30JAhVca+4TB6FqK07rAwr9k
- a4REvyXlZVowThdDiHPTM/au//jwHpjIiosBA68gjEDKDjF+TFReTzzlKgMKAIzbh+1e4K9cs8w
- MtHK/LxCy3jA+9cycR0jL5Vy1+mbUn9c0DaQ2/dAnw1wNd0OVuS5FDTvRTGv6LAjG4cSelPlmMe
- 3PtvYyiJZvuwlElrKDoi6mGhpvCxmNxPS8DASMhJbMPr6rk8tN//8ZKlJTxANVtYPPFn4/LDiFI
- s7hgMJDahey8dVLDlStj/mUDAj+U3MbpSa5uUaXUAvHJjg6wU2Mur4EdDmbZ5rcvZaz3Tiun5Av
- 63Ol9tmTYBZ/OkVj5eaCuerjYbyURuctix6n/u0kwxZ5VY7AWoI6Tz5g6/2q8VSg2gEdFb/iVTv
- 5fA80ZOwSgrc7q2hB8kEL+f+vbaJm3ybYEAqoEDsIZV9nYX7LleZ+wmIufd31cSFcH5TZi0yd8f
- 9ZaQO8d1a6eNmDURAysX4dmrVapRqoL1o/R10BjCe9/HfOpnagZDT/ikK4Kop5vKU0g8iZtYv2l
- Gg==
-X-Received: by 2002:a05:600c:c8f:b0:485:4bd1:4c64 with SMTP id
- 5b1f17b1804b1-485567102dbmr204622935e9.31.1773665713845; 
- Mon, 16 Mar 2026 05:55:13 -0700 (PDT)
-Received: from p200300ef2f4fc90053e282780f88a5bb.dip0.t-ipconnect.de
- (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
- [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4854b65fd3dsm403533295e9.10.2026.03.16.05.55.13
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Mar 2026 05:55:13 -0700 (PDT)
-Message-ID: <69b7fdb1.050a0220.48979.cc0e@mx.google.com>
-To: "Piotr Kubaj" <piotr.kubaj@intel.com>
-In-Reply-To: <20260313125408.480770-2-piotr.kubaj@intel.com>
-Date: Mon, 16 Mar 2026 12:55:12 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D7A37200908
+ for <ltp@lists.linux.it>; Mon, 16 Mar 2026 14:03:29 +0100 (CET)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 62G93Vwe3176840; Mon, 16 Mar 2026 13:03:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=QYBKWU0eM1Ee2X8bi/DHIxSyGivohG0F/LcAPX0BW
+ nY=; b=RZE0ADYJ9JsprsE2HfddYSwS2YdLjGpU9kQLTilo9d5XjHSEajQ2M5rjH
+ 6ER313KVFYp9kNSZgDzZwpf00pS4zGtT3TSuvU23rvxkEALPAq9W5zflFVLefBuo
+ KBpGcMIJmsEKIC533+5YiZgDj4k1yPsW8xVo6NKobdOZjcShomVZi3siOfxT1V8F
+ +kEIhY2rP4iI39OAxYsMyZQbRHbe+JNPSeS4Su/bPo8R4kmxkdXj/TY/sG+rcdIN
+ 8WvzC8Zj9LjmswUWpd1VDqGPusroH/dzfTbFSG3RtoZd7f44K10hsSrijywuKYfX
+ wzMmP4AMFT88vE/HU4+A3/104TohA==
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cvx3cqmyf-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 16 Mar 2026 13:03:27 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62GBIJ9a028459;
+ Mon, 16 Mar 2026 13:03:27 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4cwmq14nf5-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 16 Mar 2026 13:03:26 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
+ [10.20.54.101])
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 62GD3P7f53608924
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 16 Mar 2026 13:03:25 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 52C9420043;
+ Mon, 16 Mar 2026 13:03:25 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 0B39120040;
+ Mon, 16 Mar 2026 13:03:25 +0000 (GMT)
+Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com.com (unknown
+ [9.111.83.233]) by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Mon, 16 Mar 2026 13:03:24 +0000 (GMT)
+From: Jan Polensky <japo@linux.ibm.com>
+To: chrubis@suse.cz, pvorel@suse.cz
+Date: Mon, 16 Mar 2026 14:03:20 +0100
+Message-ID: <20260316130320.138328-1-japo@linux.ibm.com>
+X-Mailer: git-send-email 2.53.0
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=arO/yCZV c=1 sm=1 tr=0 ts=69b7ff9f cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=V8glGbnc2Ofi9Qvn3v5h:22 a=VnNF1IyMAAAA:8 a=g7BrdTIJrStfstmviRwA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzE2MDA5NyBTYWx0ZWRfX3VQFd5gFyNmi
+ jDGZRmuo4goWJE2AkcHA1R+GrN0Yg3hbLa4b/U309JYHpu1ldg7Vt9PIIgJkIPU9r9ib3OQjgiB
+ 5CAC6/H0cH6WDZhyqO9om9SAYgn3JPB2VRaWDKlBtOJss3UhPXD98W+Bp9WnMKrsQroaY9GYa0k
+ vvXgyevXpCOOeyMlNTOZVoQjqwvNZv5gBn/ZFWFRUYaVmEihLsuj3LX1D3bImn5WcR8qx7dveGm
+ hYlZTqMWn3NnISOxcrZzhvsB0g9UKtOrWlOG2NdUqGU0pXt6DambP/J66kCPD988eTxenljLdM6
+ 1Aqx0glIkC5pcKUUsFVTF7nDuTiWa0g+12MWWhAdnfaKFwHJC57CPGFrrvtrx+rW+rGWODh+5jw
+ w8edfT8FUypvCrFNQtCLW5pK92Zj4JYIxxtJvNPO/1BYTn7qhq6Xwsw2xaowVD+mrm0aWrKM+qs
+ Xyw0nZSN+8x626/MapQ==
+X-Proofpoint-GUID: LYu54bOr40fpZ84q-h5SUjCEuxnmr5lU
+X-Proofpoint-ORIG-GUID: LYu54bOr40fpZ84q-h5SUjCEuxnmr5lU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-16_04,2026-03-16_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0 clxscore=1015
+ phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2603050001
+ definitions=main-2603160097
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] high_freq_hwp_cap_cppc.c: new test
+Subject: [LTP] [PATCH v2 1/1] editorconfig: add consistent formatting rules
+ for LTP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,136 +106,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
- helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
-MIME-Version: 1.0
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+Introduce .editorconfig to keep indentation and whitespace consistent across
+editors, preventing accidental reformatting and noisy diffs.
 
-> Verify for all online logical CPUs that their highest performance value are
-> the same for HWP Capability MSR 0x771 and CPPC sysfs file.
-> ---
->  testcases/kernel/power_management/.gitignore  |  1 +
->  .../power_management/high_freq_hwp_cap_cppc.c | 57 +++++++++++++++++++
->  2 files changed, 58 insertions(+)
->  create mode 100644 testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-> 
-> diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
-> index 0c2a3ed4b..c13bca1c4 100644
-> --- a/testcases/kernel/power_management/.gitignore
-> +++ b/testcases/kernel/power_management/.gitignore
-> @@ -1 +1,2 @@
-> +high_freq_hwp_cap_cppc
->  pm_get_sched_values
-> diff --git a/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-> new file mode 100644
-> index 000000000..4cbb81f0b
-> --- /dev/null
-> +++ b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-> @@ -0,0 +1,57 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +/*
-> + * Copyright (C) 2025-2026 Intel - http://www.intel.com/
-> + */
+Signed-off-by: Jan Polensky <japo@linux.ibm.com>
+---
 
-Remove space
-> +
-> +/*\
-> + * Verify for all online logical CPUs  that their highest performance value are
+Changes since v1 (thanks Petr):
+- License identifier: GPL-2.0 -> GPL-2.0-or-later
+- Drop awk
+- Treat Python/Perl special files
+- indent_size=4 for *.{c,h,S,sh} and ver_linux
+- Fix indent_size for .rst/.md to 4
 
-Double space before "that"
+ .editorconfig | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 .editorconfig
 
-> + * the same for HWP Capability MSR 0x771 and CPPC sysfs file.
-> + */
-> +
-> +#include "tst_test.h"
-> +
-> +static int nproc;
-> +
-> +static void setup(void)
-> +{
-> +	nproc = tst_ncpus();
-> +}
-> +
-> +static void run(void)
-> +{
-> +	for (int i = 0; i < nproc; i++) {
-> +		char path[PATH_MAX];
-> +		unsigned long long msr_highest_perf = 0, sysfs_highest_perf = 0;
-> +
-> +		snprintf(path, PATH_MAX, "/sys/devices/system/cpu/cpu%d/acpi_cppc/highest_perf", i);
-
-snprintf(path, sizeof(path), ..) is better.
-
-> +		SAFE_FILE_SCANF(path, "%llu", &sysfs_highest_perf);
-> +		tst_res(TDEBUG, "%s: %llu", path, sysfs_highest_perf);
-> +
-> +		snprintf(path, PATH_MAX, "/dev/cpu/%d/msr", i);
-> +		int fd = SAFE_OPEN(path, O_RDONLY);
-> +
-> +		if (pread(fd, &msr_highest_perf, sizeof(msr_highest_perf), 0x771) < 0) {
-> +			SAFE_CLOSE(fd);
-> +			tst_brk(TBROK | TERRNO, "MSR read error");
-> +		}
-
-Simply use SAFE_PREAD(). fd will be closed when test ends.
-
-> +		SAFE_CLOSE(fd);
-> +		msr_highest_perf &= (1ULL << 8) - 1;
-> +		tst_res(TDEBUG, "%s: %llu", path, msr_highest_perf);
-> +
-> +		if (msr_highest_perf != sysfs_highest_perf)
-> +			tst_brk(TFAIL, "CPU %d: highest performance values differ between sysfs and MSR", i);
-
-Why tst_brk() ? It's supposed to be tst_res(TFAIL, ..).
-
-> +	}
-> +
-> +	tst_res(TPASS, "Test pass");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_kconfigs = (const char *const []) {
-> +		"CONFIG_X86_MSR",
-
-The CPPC sysfs interface also requires CONFIG_ACPI_CPPC_LIB to be built.
-
-> +		NULL
-> +	},
-> +	.needs_root = 1,
-> +	.setup = setup,
-> +	.test_all = run
-> +};
-> -- 
-> 2.47.3
-> 
-> ---------------------------------------------------------------------
-> Intel Technology Poland sp. z o.o.
-> ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-> Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-> 
-> Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-> This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
-There's also no runtest entry for this test, so it can't be run in the testing
-suites by kirk.
-
-Kind regards,
+diff --git a/.editorconfig b/.editorconfig
+new file mode 100644
+index 000000000000..ee67666d49c4
+--- /dev/null
++++ b/.editorconfig
+@@ -0,0 +1,39 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++root = true
++
++# Default for all files
++[*]
++charset = utf-8
++end_of_line = lf
++insert_final_newline = true
++trim_trailing_whitespace = true
++
++# C/Assembly source files, headers, and shell files use tabs
++[{*.{c,h,S,sh},ver_linux}]
++indent_style = tab
++indent_size = 4
++
++[{Makefile,Makefile.*,*.{mk.in,mk}}]
++indent_style = tab
++indent_size = 8
++
++# Python and Perl: default to tabs (most test files use tabs, checkpatch.pl which we modify)
++[*.{py,pl}]
++indent_style = tab
++indent_size = 8
++
++# Exceptions use spaces: Python (Sphinx, scripts), Perl (checkbashisms.pl vendored)
++[{doc/conf.py,scripts/*.py,scripts/checkbashisms.pl}]
++indent_style = space
++indent_size = 4
++
++# Documentation files
++[*.{rst,md}]
++indent_style = space
++indent_size = 4
++
++# JSON files
++[*.json]
++indent_style = space
++indent_size = 4
 --
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+2.53.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
