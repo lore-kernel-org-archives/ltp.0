@@ -4,100 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8F52F506C1
-	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 12:40:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0BDAF506C4
+	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 12:55:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1773665737; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=/3fXwyOhyABolHocr+34+j0R0BOAPrHuW1xPRGmY3LY=;
+ b=DZgccUVlz3t4ZoYAw4piFubfbZ0n1Rc4c/EbTezQFWaYsbuBockjui5CFY/Gy0TMRQVzU
+ 7yKxK/fmtAwSVg3IYUY/nDRAx5i0tkBXHLeBIT0h7/v2QeGn88x652BzgXo+g8F3W8ZKwJ5
+ UM6p5ujn4SiVYADBC3sl/nBiyRFgjMc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 260443E5682
-	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 13:40:55 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5416F3E5664
+	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 13:55:37 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 540A93E4B8B
- for <ltp@lists.linux.it>; Mon, 16 Mar 2026 13:40:38 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 624123E4B8B
+ for <ltp@lists.linux.it>; Mon, 16 Mar 2026 13:55:15 +0100 (CET)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A1E8720007F
- for <ltp@lists.linux.it>; Mon, 16 Mar 2026 13:40:30 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3FEB25BD2A;
- Mon, 16 Mar 2026 12:40:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773664829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=eeJte4yJ8qfgCkXOCd+RXLx5yGbEFYJwG7F9azyCpVo=;
- b=grh340N9/5tmriwwaZr+Rdx7ydAJ619dNmWuGIL6Rxt6T0jkXqKWP38w/lR2qNIbMYkVBt
- lRD+e/uIjsdn6mswW3xDkB6PUtiX0RlumvGC16xcVve3i4O74uNgMK0fuhHNP4Q1X08bvu
- DhTZm/3y6ZSHEMcm0yQuSH4Ay3rJ9wo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773664829;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=eeJte4yJ8qfgCkXOCd+RXLx5yGbEFYJwG7F9azyCpVo=;
- b=hdN2RiflkbmOzKNgV3wke2EOvp3Qko1mSOA6s7p6UJjsZaKvqLjTbQ/QQ2cjq3h10ySG90
- EYgvd86QK6QgGBAg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=grh340N9;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hdN2Rifl
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773664829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=eeJte4yJ8qfgCkXOCd+RXLx5yGbEFYJwG7F9azyCpVo=;
- b=grh340N9/5tmriwwaZr+Rdx7ydAJ619dNmWuGIL6Rxt6T0jkXqKWP38w/lR2qNIbMYkVBt
- lRD+e/uIjsdn6mswW3xDkB6PUtiX0RlumvGC16xcVve3i4O74uNgMK0fuhHNP4Q1X08bvu
- DhTZm/3y6ZSHEMcm0yQuSH4Ay3rJ9wo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773664829;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=eeJte4yJ8qfgCkXOCd+RXLx5yGbEFYJwG7F9azyCpVo=;
- b=hdN2RiflkbmOzKNgV3wke2EOvp3Qko1mSOA6s7p6UJjsZaKvqLjTbQ/QQ2cjq3h10ySG90
- EYgvd86QK6QgGBAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DFDEF4273B;
- Mon, 16 Mar 2026 12:40:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id VZcNNTz6t2l8agAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 16 Mar 2026 12:40:28 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Mon, 16 Mar 2026 13:40:21 +0100
-Message-ID: <20260316124022.316230-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.51.0
-MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- ASN(0.00)[asn:32098, ipnet:2800::/6, country:US];
- MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_FIVE(0.00)[6]; RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: 3FEB25BD2A
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A132E6008E5
+ for <ltp@lists.linux.it>; Mon, 16 Mar 2026 13:55:14 +0100 (CET)
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-4853aec185aso37540315e9.1
+ for <ltp@lists.linux.it>; Mon, 16 Mar 2026 05:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1773665714; x=1774270514; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=nsAHmGLdGJv2/5eHnxmgKRaz1X3JEPDecDwHuElv5/U=;
+ b=FH0AbBRK+giS362+ShbVd7IyD5UBkxYgFOxy/WdoCOeYpZn9HaEek4tXmFntKxRu3b
+ AutChJNxHDlgKcPJLd0DO/bxyOTD25uca6uaPB/WFh457Scc2I5Rx4P2IWPvbwxQp2Oh
+ SRDqYblzYhf4mxNGSQoMkmJVgm5vyVWCpBjJ9fm8ga2IbzTZd5DKIqV+YwsYSCgeQW7c
+ oJxR/12SKmzML/zzb4lxmO2uMjhkh0/3pBWsKUtKRRyG4l3h29MOeiYDHQ1NsTGFTxSd
+ jyJM9OmxHxY5HHDZciR2dk2hR+BR07m9SpJCI1F5oHTYScJZOCDGSDr1pZw5CpJ76YOu
+ BxLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1773665714; x=1774270514;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=nsAHmGLdGJv2/5eHnxmgKRaz1X3JEPDecDwHuElv5/U=;
+ b=J3SVegGy4xcHYMzqbWWhCMzi0vvPkIYUTbSfwk/Mq6xCiPImQmr99TU9Gw/iyra4ky
+ rSYHPUw8xkBYmuFx0kC++ZMJU9TrGGQJynr51+MPDCHpUIhzefntR/gBB1GY5CuV2LnV
+ PdGqRVH+ehJtU2/ZZfesiNFEteoRFYrXuMIjVABDtm5xJGsdY/O2GqECTpBNbY/uRc4W
+ yNCCuDVi8ZcJlcMcuGFboiYK0vyP81NrbngNdkqe6YnkaP8USLu1O3XFnybLjzCENEhS
+ kX1wZGhtcW9TgcQW8BEP8bB2iGJWVtmYtZmXzfyrmm+yHbLz+40DtlTwwwU7BaHBc+NF
+ fZlQ==
+X-Gm-Message-State: AOJu0Yxss+vMWmj/bB74rch+4FTjBnfOZQj1LwVvCZolJSwlUTF4teW5
+ VnOYHRJs1WxttbcVgpvkQekgpbSM6UZAc0Vg8zl2GD/qz8Ej+iUrpwG/i2uz1U1U1tc=
+X-Gm-Gg: ATEYQzzZiT8qwv45+53NMWFPvCFOq5GQbDL8QUEFJ1R30JAhVca+4TB6FqK07rAwr9k
+ a4REvyXlZVowThdDiHPTM/au//jwHpjIiosBA68gjEDKDjF+TFReTzzlKgMKAIzbh+1e4K9cs8w
+ MtHK/LxCy3jA+9cycR0jL5Vy1+mbUn9c0DaQ2/dAnw1wNd0OVuS5FDTvRTGv6LAjG4cSelPlmMe
+ 3PtvYyiJZvuwlElrKDoi6mGhpvCxmNxPS8DASMhJbMPr6rk8tN//8ZKlJTxANVtYPPFn4/LDiFI
+ s7hgMJDahey8dVLDlStj/mUDAj+U3MbpSa5uUaXUAvHJjg6wU2Mur4EdDmbZ5rcvZaz3Tiun5Av
+ 63Ol9tmTYBZ/OkVj5eaCuerjYbyURuctix6n/u0kwxZ5VY7AWoI6Tz5g6/2q8VSg2gEdFb/iVTv
+ 5fA80ZOwSgrc7q2hB8kEL+f+vbaJm3ybYEAqoEDsIZV9nYX7LleZ+wmIufd31cSFcH5TZi0yd8f
+ 9ZaQO8d1a6eNmDURAysX4dmrVapRqoL1o/R10BjCe9/HfOpnagZDT/ikK4Kop5vKU0g8iZtYv2l
+ Gg==
+X-Received: by 2002:a05:600c:c8f:b0:485:4bd1:4c64 with SMTP id
+ 5b1f17b1804b1-485567102dbmr204622935e9.31.1773665713845; 
+ Mon, 16 Mar 2026 05:55:13 -0700 (PDT)
+Received: from p200300ef2f4fc90053e282780f88a5bb.dip0.t-ipconnect.de
+ (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
+ [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4854b65fd3dsm403533295e9.10.2026.03.16.05.55.13
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 16 Mar 2026 05:55:13 -0700 (PDT)
+Message-ID: <69b7fdb1.050a0220.48979.cc0e@mx.google.com>
+To: "Piotr Kubaj" <piotr.kubaj@intel.com>
+In-Reply-To: <20260313125408.480770-2-piotr.kubaj@intel.com>
+Date: Mon, 16 Mar 2026 12:55:12 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] tst_kconfig: Don't consider CONFIG_FAULT_INJECTION
- slow
+Subject: Re: [LTP] [PATCH] high_freq_hwp_cap_cppc.c: new test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,40 +98,136 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
+ helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Tumbleweed has only CONFIG_FAULT_INJECTION. All tests run ok before
-(without 4x longer expected runtime), let's don't blindly increase it.
+Hi!
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-IMHO the only effect of the detection on Tumbleweed would be if test
-gets stuck will block testing for 2 min instead of just 30 sec.
+> Verify for all online logical CPUs that their highest performance value are
+> the same for HWP Capability MSR 0x771 and CPPC sysfs file.
+> ---
+>  testcases/kernel/power_management/.gitignore  |  1 +
+>  .../power_management/high_freq_hwp_cap_cppc.c | 57 +++++++++++++++++++
+>  2 files changed, 58 insertions(+)
+>  create mode 100644 testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
+> 
+> diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
+> index 0c2a3ed4b..c13bca1c4 100644
+> --- a/testcases/kernel/power_management/.gitignore
+> +++ b/testcases/kernel/power_management/.gitignore
+> @@ -1 +1,2 @@
+> +high_freq_hwp_cap_cppc
+>  pm_get_sched_values
+> diff --git a/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
+> new file mode 100644
+> index 000000000..4cbb81f0b
+> --- /dev/null
+> +++ b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
+> @@ -0,0 +1,57 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +/*
+> + * Copyright (C) 2025-2026 Intel - http://www.intel.com/
+> + */
+
+Remove space
+> +
+> +/*\
+> + * Verify for all online logical CPUs  that their highest performance value are
+
+Double space before "that"
+
+> + * the same for HWP Capability MSR 0x771 and CPPC sysfs file.
+> + */
+> +
+> +#include "tst_test.h"
+> +
+> +static int nproc;
+> +
+> +static void setup(void)
+> +{
+> +	nproc = tst_ncpus();
+> +}
+> +
+> +static void run(void)
+> +{
+> +	for (int i = 0; i < nproc; i++) {
+> +		char path[PATH_MAX];
+> +		unsigned long long msr_highest_perf = 0, sysfs_highest_perf = 0;
+> +
+> +		snprintf(path, PATH_MAX, "/sys/devices/system/cpu/cpu%d/acpi_cppc/highest_perf", i);
+
+snprintf(path, sizeof(path), ..) is better.
+
+> +		SAFE_FILE_SCANF(path, "%llu", &sysfs_highest_perf);
+> +		tst_res(TDEBUG, "%s: %llu", path, sysfs_highest_perf);
+> +
+> +		snprintf(path, PATH_MAX, "/dev/cpu/%d/msr", i);
+> +		int fd = SAFE_OPEN(path, O_RDONLY);
+> +
+> +		if (pread(fd, &msr_highest_perf, sizeof(msr_highest_perf), 0x771) < 0) {
+> +			SAFE_CLOSE(fd);
+> +			tst_brk(TBROK | TERRNO, "MSR read error");
+> +		}
+
+Simply use SAFE_PREAD(). fd will be closed when test ends.
+
+> +		SAFE_CLOSE(fd);
+> +		msr_highest_perf &= (1ULL << 8) - 1;
+> +		tst_res(TDEBUG, "%s: %llu", path, msr_highest_perf);
+> +
+> +		if (msr_highest_perf != sysfs_highest_perf)
+> +			tst_brk(TFAIL, "CPU %d: highest performance values differ between sysfs and MSR", i);
+
+Why tst_brk() ? It's supposed to be tst_res(TFAIL, ..).
+
+> +	}
+> +
+> +	tst_res(TPASS, "Test pass");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.needs_kconfigs = (const char *const []) {
+> +		"CONFIG_X86_MSR",
+
+The CPPC sysfs interface also requires CONFIG_ACPI_CPPC_LIB to be built.
+
+> +		NULL
+> +	},
+> +	.needs_root = 1,
+> +	.setup = setup,
+> +	.test_all = run
+> +};
+> -- 
+> 2.47.3
+> 
+> ---------------------------------------------------------------------
+> Intel Technology Poland sp. z o.o.
+> ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
+> Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
+> 
+> Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
+> This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+There's also no runtest entry for this test, so it can't be run in the testing
+suites by kirk.
 
 Kind regards,
-Petr
-
- lib/tst_kconfig.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-index adc56503e2..5f778d2adc 100644
---- a/lib/tst_kconfig.c
-+++ b/lib/tst_kconfig.c
-@@ -647,7 +647,6 @@ static struct tst_kconfig_var slow_kconfigs[] = {
- 	TST_KCONFIG_INIT("CONFIG_DEBUG_NET"),
- 	TST_KCONFIG_INIT("CONFIG_EXT4_DEBUG"),
- 	TST_KCONFIG_INIT("CONFIG_QUOTA_DEBUG"),
--	TST_KCONFIG_INIT("CONFIG_FAULT_INJECTION"),
- 	TST_KCONFIG_INIT("CONFIG_DEBUG_OBJECTS")
- };
- 
--- 
-2.51.0
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
