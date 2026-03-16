@@ -4,99 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51578D58B07
-	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 12:28:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2BDAF4645C
+	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 12:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1773664245; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=ITBGb9qBuG2p0mhm4bLXogfuT2ker6Z+ts8SeosppeU=;
+ b=CnPwJKIloE/VtwAerolo/p3/sKj39KhBwb3tqW1bCx8WIsTvkHgmUXUJgj3tjc0DKhotc
+ yl5r6sLUysiyf76OAnDuYSy4+q5IoG2nP4peuiOS3f7ej9zShxTxataQXHaqxR7UR1emQG/
+ 883TXwa/hpOc28lk3zDsLi24z1Fnvoc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F21D73E4B88
-	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 13:28:27 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 6C0C53E4B90
+	for <ltp@archiver.kernel.org>; Mon, 16 Mar 2026 13:30:45 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 795C53E48A5
- for <ltp@lists.linux.it>; Mon, 16 Mar 2026 13:27:36 +0100 (CET)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8BB733E4B84
+ for <ltp@lists.linux.it>; Mon, 16 Mar 2026 13:30:21 +0100 (CET)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 93F87600774
- for <ltp@lists.linux.it>; Mon, 16 Mar 2026 13:27:32 +0100 (CET)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 62G93Vtc3176840; Mon, 16 Mar 2026 12:27:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=ngHH0jr92zTpKgKko
- 8jvvbmpEu4q2uHb/wnCMsG3yMk=; b=kZFo2A7+kg9ubKrDPp8pZGS5EBDLRXo5V
- /tVpMxyMVtQJigHKH9I23eNffoGWUJQrWleOPVppmiZIE5kRlQZU9VlT0tvTf6uy
- AetvUaRt+cru9lKnd+NoN5VJsig4ckLR/W1kTSs7sIPwpoa+ThklyOGEoZYVlYk8
- e/tfqLb20WN1F7dfvrbmBrBqpgFCMnaLsl2MnphcHTy909nd4CAqufj3wlDrd7I5
- lZ7fjvD5GgBeTtIZ+rj2Hg/ZQS9uWfn/5hQkWGQhuOVctjQS6YmJ5CGhrNAoAWWL
- blsfnZrQHBFgBNMt8a1Wp6v9ox8jm7QJOm8lhwRHjdEy8C1G9YMdQ==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cvx3cqgb2-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 16 Mar 2026 12:27:31 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62GA73DT013996;
- Mon, 16 Mar 2026 12:27:30 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cwjcxvufe-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 16 Mar 2026 12:27:30 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
- [10.20.54.103])
- by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 62GCRSGZ44302622
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 16 Mar 2026 12:27:28 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 76D8C2004B;
- Mon, 16 Mar 2026 12:27:28 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 2AC3820043;
- Mon, 16 Mar 2026 12:27:28 +0000 (GMT)
-Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com.com (unknown
- [9.111.83.233]) by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Mon, 16 Mar 2026 12:27:28 +0000 (GMT)
-From: Jan Polensky <japo@linux.ibm.com>
-To: chrubis@suse.cz, pvorel@suse.cz
-Date: Mon, 16 Mar 2026 13:27:25 +0100
-Message-ID: <20260316122725.122719-3-japo@linux.ibm.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260316122725.122719-1-japo@linux.ibm.com>
-References: <20260316122725.122719-1-japo@linux.ibm.com>
-MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=arO/yCZV c=1 sm=1 tr=0 ts=69b7f733 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=V8glGbnc2Ofi9Qvn3v5h:22 a=VnNF1IyMAAAA:8 a=7TtIAGwwYx7YTiSAdyoA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzE2MDA5MyBTYWx0ZWRfX53sX97i/nHg/
- 9/kXu1Qoo91b7jhGp7IlYv9QLRu7SOKYdIlWcRRxLQnARiF9T8qOKdHBPjTB//wKjrcHQa5qMcD
- gAK3n7lEpPzP37xGlO3wfGH95dnV2F8NE3AN93+4cu9EBPQUQec+bALhxcPKzBZnPmDLS9GvvnC
- MaMAniC10VB36XhQR+GXDz10aZeivNWw+LrqZclGlf4VRJ3zxOWnHKFwD3QmVR3kf67meXyfShX
- mhngWUgpEBM32+ljXIXmjzERdK69vqILYBaBEZiERiwMWKwniM70lV8CrOX33wZyJy/KHjXwd0y
- 5J9of9FwBODVTe4kZZjkLj8j2OUqFMyanjLfXLLTxDS78PvKoaoSbCP6wJDxjovZPElHjQ9ZRnM
- ZaA+eknRbfHsUuEZH/2y6Ivo9soOinzgrJCN010AsftB1ZIMWSw2Uq8AexqexSFIjaB9MBsq4ZQ
- hCcYSfQsDpjzEKn76GQ==
-X-Proofpoint-GUID: 9OiTrS-BWtRBEldVZHM0svUy5vJBZdWk
-X-Proofpoint-ORIG-GUID: 9OiTrS-BWtRBEldVZHM0svUy5vJBZdWk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-03-16_04,2026-03-16_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 spamscore=0 lowpriorityscore=0 impostorscore=0
- adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0 clxscore=1015
- phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2603050001
- definitions=main-2603160093
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 02DDB600832
+ for <ltp@lists.linux.it>; Mon, 16 Mar 2026 13:30:20 +0100 (CET)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-48540d21f7dso53385255e9.0
+ for <ltp@lists.linux.it>; Mon, 16 Mar 2026 05:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1773664220; x=1774269020; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=zRqWfP6Pfm1zMzKCZJ8kJXvs1rS0un4ZrCWiZ08pqF4=;
+ b=giLzi2ipze3NYMBQKm9pvPAa5BJ9Vl3q0Ar1f1MZTE+QcVp2BeIM2xTohZfft5n8Vo
+ fUUIn7C2DDoMV96i4dY6b0f0TPHaHMcF389XOSIIaBPjkHbmzUWJGWpgK7q3i65/d3bm
+ fps/UaTfEacxrvD1x1DY66iWK32cljqF+hvp5BFzZCnCzlaMezZA02GORGz+woiivJNI
+ ratUdTFsIPbwUz6tnp2XztE9zaTRHGkRX8vDIkPMHkn5g//IgtLUPWwwJVGSQE8PcSXB
+ 2GTsujfyDge7mCpJue7wUlT54j/bTdsAc0u6kt1u93lU4KQHm/S8gDa7RhkacyFilG2h
+ UYRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1773664220; x=1774269020;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=zRqWfP6Pfm1zMzKCZJ8kJXvs1rS0un4ZrCWiZ08pqF4=;
+ b=Leh/HlTi9keGOW1ApNszTZuT9arhWNi+5xxpqnEVi+pswUlDkdExxHKnrVVv5CvzXL
+ 8hg53Rc2xKUHfM6MAdFaBiciaq/YKePSqkYMPislbyxzwdVcCluJJMQDXYyEHvBErD+H
+ xnxUeqfYL4MHkdxJyTFiLtZ21l2ebpxKvG5bKXh1jty3N7AcEfAgsnkbzKwdn/8vyg4s
+ OBheponxXBscTrGhSNgFGVe3hGpxexLEDGML8IxLl5i/5xpKLgu1hnnoLWpr+zSoCzqB
+ CllizL0aK2eKEWvb5g6kh8wcOyt7BqQgcMIj3JJmsWJHEPoVtqh5MIBdWzEz9fd8yfRJ
+ tRhg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCV5ogmZjDSMBd9ehY1yX8n01Y5/zzK6LAJxR2DAyEzXw+tyqJx4C1slJz1mmncQzexw+pk=@lists.linux.it
+X-Gm-Message-State: AOJu0YwOENVZMNw9TcaRPWyOfRVrbDL5siURAApT25N+duqJLdrkqcu3
+ OYXXPyGb0u2M9raQNL/NqJtsbBSYuqzNp0eOXY7KTz2Snj7FnzkQPVWs9CXlr6TIz2s=
+X-Gm-Gg: ATEYQzzX7j7SJpVjs+VfkL77laLwEI2A0NPDm1uWGwMqZRjcywxiH49RLcFLUJn1Doa
+ RdiOgRpeYpEL9oeIsDKHNpNBvCj48gy5O7SJ27QinoQdiTtpOpkwGQPMepuFHEzNNPQ5U6CuR0g
+ xwyveIQ946H62B4sP6QqzF6ABDu203KkJbnlPR6U1eQm8lO7KU106JsufqoIbFzHkd8AaaaUNqO
+ CAX/RTtU93h80aWzjWmSgAoMf/vUA8IWjpkIMcYlLphySCh4xpq+Lhit4gRNQI5GelBMNaArA0c
+ rCST90udXxIVqbv19n+zN/w4X17NmP+0gZ7ZFVldqxBkOZ8KYBcbs61fXgufsmagXLzC+hdgYF3
+ KeFFcXmccUGR5l6pI+Sxckjye3N3U6C+M/x3+qjxhLGH4WVQ+mlfLX4FL5ICr5UNZb6mh0tLtQS
+ WwhwGQ4vdMFEMHTDChjRX6Nup5Ey5M7CGEhtAwtfwqXM2uVRhCkU0oP5C74wy+l+h7IN8mVUbJ5
+ jVOJhQqltl8ZwBa42Udz/hVx/m6B3BGg3OxNYrsSkcUMTdbU7VzitPrmC2XgeyX8+khCD2l01al
+ Pg==
+X-Received: by 2002:a05:600c:a09:b0:485:3f72:324d with SMTP id
+ 5b1f17b1804b1-485566ddac0mr232421245e9.14.1773664220242; 
+ Mon, 16 Mar 2026 05:30:20 -0700 (PDT)
+Received: from p200300ef2f4fc90053e282780f88a5bb.dip0.t-ipconnect.de
+ (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
+ [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4854b5f6bb4sm411213375e9.4.2026.03.16.05.30.19
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 16 Mar 2026 05:30:19 -0700 (PDT)
+Message-ID: <69b7f7db.050a0220.14698e.828a@mx.google.com>
+To: "Jinseok Kim" <always.starving0@gmail.com>
+In-Reply-To: <20260313160520.39745-1-always.starving0@gmail.com>
+Date: Mon, 16 Mar 2026 12:30:19 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/2] setxattr02: Adapt test for kernel 7.1.0+
- socket xattr support
+Subject: Re: [LTP] [PATCH v2 1/2] inotify: replace strcpy() with snprintf()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,99 +99,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Starting with kernel 7.1.0, sockets support extended attributes in the
-user.* namespace. This behavior was enabled by dc0876b9846d ("xattr:
-support extended attributes on sockets"), which permits user.* xattrs on
-S_IFSOCK inodes (previously rejected with -EPERM).
+Hi!
 
-Adapts the test to expect success (exp_err = 0) instead of EPERM when
-testing setxattr(2) on sockets with kernel 7.1.0+.
+>  #define BUF_SIZE 256
+> -static char fname1[BUF_SIZE], fname2[BUF_SIZE], fname3[BUF_SIZE];
+> +static char fname1[BUF_SIZE], fname2[BUF_SIZE+32], fname3[BUF_SIZE+32];
 
-Behavior:
-- Kernel < 7.1.0: setxattr() on socket returns -EPERM (original behavior)
-- Kernel >= 7.1.0: setxattr() on socket returns 0 (success, new behavior)
+This is a hack around the actual PATH_MAX feature. We need to use that one
+instead of defining a new BUF_SIZE that might overflow.
 
-Signed-off-by: Jan Polensky <japo@linux.ibm.com>
----
- .../kernel/syscalls/setxattr/setxattr02.c     | 20 ++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/setxattr/setxattr02.c b/testcases/kernel/syscalls/setxattr/setxattr02.c
-index 9f5f998da9ba..c1996fb60d73 100644
---- a/testcases/kernel/syscalls/setxattr/setxattr02.c
-+++ b/testcases/kernel/syscalls/setxattr/setxattr02.c
-@@ -15,7 +15,8 @@
-  * - EPERM - set attribute to a FIFO
-  * - EPERM - set attribute to a char special file
-  * - EPERM - set attribute to a block special file
-- * - EPERM - set attribute to a UNIX domain socket
-+ * - EPERM/SUCCEED - set attribute to a UNIX domain socket (dc0876b9846d 
-+ *   "xattr: support extended attributes on sockets")
-  */
- 
- #include "config.h"
-@@ -49,6 +50,8 @@
- #define BLK      "setxattr02blk"
- #define SOCK     "setxattr02sock"
- 
-+static bool socket_xattr_supported;
-+
- struct test_case {
- 	char *fname;
- 	char *key;
-@@ -57,7 +60,16 @@ struct test_case {
- 	int flags;
- 	int exp_err;
- 	int needskeyset;
-+	void (*fix_errno)(struct test_case *tc);
- };
-+
-+static void fix_sock(struct test_case *tc)
-+{
-+	/* dc0876b9846d ("xattr: support extended attributes on sockets") */
-+	if (socket_xattr_supported)
-+		tc->exp_err = 0;
-+}
-+
- static struct test_case tc[] = {
- 	{			/* case 00, set attr to reg */
- 	 .fname = FILENAME,
-@@ -115,6 +127,7 @@ static struct test_case tc[] = {
- 	 .size = XATTR_TEST_VALUE_SIZE,
- 	 .flags = XATTR_CREATE,
- 	 .exp_err = EPERM,
-+	 .fix_errno = fix_sock,
- 	 },
- };
- 
-@@ -126,6 +139,9 @@ static void verify_setxattr(unsigned int i)
- 				XATTR_CREATE);
- 	}
- 
-+	if (tc[i].fix_errno)
-+		tc[i].fix_errno(&tc[i]);
-+
- 	TEST(setxattr(tc[i].fname, tc[i].key, tc[i].value, tc[i].size,
- 			tc[i].flags));
- 
-@@ -185,6 +201,8 @@ static void setup(void)
- 	SAFE_MKNOD(CHR, S_IFCHR | 0777, dev);
- 	SAFE_MKNOD(BLK, S_IFBLK | 0777, 0);
- 	SAFE_MKNOD(SOCK, S_IFSOCK | 0777, 0);
-+
-+	socket_xattr_supported = (tst_kvercmp(7, 1, 0) >= 0);
- }
- 
- static struct tst_test test = {
--- 
-2.53.0
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
