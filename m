@@ -4,98 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B97DF33832
-	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 09:59:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B3D5FD7068
+	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 10:13:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1773741590; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1773742417; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=sf21SXSvX2oBWr1kTFPaUzIcVkugF2te1ZupumrsjbI=;
- b=IyovZKseZ42o6czw8y4mRxkTlqpQ3qx659FTu8dIh7i36mTVdby1Z2FP6Ot61bq0hO3js
- ZQfimkDzbfkpnx5NzKf4j5J91qN6siKCM+flucOnN6cXeliN9eKlR26RDgky4wl4KEYz90w
- vjHjXQW7wYPqbh5pFYIqo48tUuv7ooM=
+ bh=3bxHluxyPfpvB7K/zqEmQosJM+Ml80ZaYgHexRtakEU=;
+ b=HNVt7BmweucPL1fe9qHGyms+jPOTzenJLyqwE95I68iLLnNDEl6A/x39cKUq85eLQl1Qk
+ gDbhyelBoQtZgHrI28DBuOB7XrNtyoy9p+I8iwA/CtbByFWWlB9sGB1HRvSNYAwLE7MY8Ts
+ MdiGM65Y3av3Xhpl479OUokHuIrLzHI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C5ADB3E2B6D
-	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 10:59:50 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id E296D3E4850
+	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 11:13:37 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1AE073C1E06
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 10:59:27 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6B8BA3D0343
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 11:13:16 +0100 (CET)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 432011A00889
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 10:59:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1773741565;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YAcoO1MJ2ZlisqYaokHFfhsSz/Phntz2f0GzOpjADeo=;
- b=U2zrUYevnpwVrSCePSH3ZAlWgAZ3jlfIEg5YbHKKiI9PI/kotipHr+SbGjf2m1oMgWNMyU
- tC7oWtxp+WWXWUQX0b611rFXEFnKHb4mwaUFOG/TvWl+9aaiMtc0i2tqgyKPbnH161mRdg
- h33kT97n2Wzu6oOuyQSTz8etxpgMR6w=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-587--flWKrn_NrCLmKpdcNjjdQ-1; Tue, 17 Mar 2026 05:59:23 -0400
-X-MC-Unique: -flWKrn_NrCLmKpdcNjjdQ-1
-X-Mimecast-MFC-AGG-ID: -flWKrn_NrCLmKpdcNjjdQ_1773741562
-Received: by mail-pl1-f199.google.com with SMTP id
- d9443c01a7336-2b06395b8deso11606595ad.1
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 02:59:23 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AD0A6600274
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 11:13:15 +0100 (CET)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-43b40fb7f95so2074299f8f.3
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 03:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1773742395; x=1774347195; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=8KMZhXTzYCsfK3x8NUS4MiKm7gfRAYeg+2KI236z4Xg=;
+ b=Gmn4xMAQ+M6rnHdNFz7J4hwxBHMBpR8a2Ra3ktzrLMPi7stRUrbepEKIKOBv6lDsN9
+ LJg2G/TTJT8lD2kb/kc4b6QMnYTr0o57v0C/59IqZ82nXFlf8/BRDX37h6IBJ30HVIiR
+ BVkiy1+q+EerQx9hJcR++fsMUWQ9Res8kDnb6lNk8bKleRF5zFZ4UB50osggxJyHqaPm
+ AGaFbXlHWnNOx26/eRdUCy9PWmF6IFE3nvStlUdn3ggZmfU3+55z+ZVCKkkpGCLDaJ+D
+ 72gWCF6af2SxJ2x0EROkMkE6SrG7nkP5kPuMLvqIl2F5IzVoZARXYGEs4VgZJzbdCtWm
+ pyYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1773741562; x=1774346362;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=YAcoO1MJ2ZlisqYaokHFfhsSz/Phntz2f0GzOpjADeo=;
- b=jnHy+4vrDsISwlxzM8iKzOzBgtD7k6FuKEyi7FcDK0AWfIPaxBWMm64agBzbtkbHxB
- mtNxMCL1+ehysXeEY2xUZ/eHxYFr3u9awOLSv+k00nuqWIjpnLE/8aGs/CM8D6Ee48Uo
- CPxzmgW24n75D2Rxlma3XgXQ1DFUoLiiv2oKHWXD2TKMUramOu5HqJ+H1CsTMAYmPHom
- nhcNeVDFUndwy8WnARDAK55tuVfTxT0Rw6Pzn7bGU6qgoKZ/ruV4FqDjkMhPC6SeQH7M
- TABWiMY7MKgZq2y943Dj1MmvMLo3M8yEUZmvgXIR53XQBoEcDu1Xy+wYuwBOxVL8c7WX
- ktyQ==
-X-Gm-Message-State: AOJu0YzjhgU+Sj87m8TDk2qhOXRGf6S7yK7Tj6+3D8AD3nWNlS92OuTH
- xN4W5x9QBT1MO+09ucp9bsil1SRD3RS2dzsW7HczrzV3Q6RCcoI+h/VZy2P7EwJzR9jsWChagYS
- vsk899J0FA9QJeDIkyC5SdNkw7RJdWEs5znsYy62hCR9nRjrdKZdbTmM62cTS
-X-Gm-Gg: ATEYQzzb0P/Ug4hkGmCKtf/b4oGXHcHzMN4a/Pz7eiP3CB5wZ9yIgSdgqQF/s9DTFtO
- 5SVMdLQzQkkGCTx7VpP+UKYBxHMUEV7FRRcN2tiSfPIhtww32CWjKYEK8Rp7SBQITuzXxfiawVB
- ZU/Y1wA1uy46QAC1nauiNj1npAsRAp8ajujik95rH2fn/ncHXdXkF7nkvXbq0SzSl5S9DlcZyk3
- 3JB7zl6dR96V87/BUygTe7dQjXobOk2YEE+m5jVbh8IaPPOO+WGjQgsYvo527fynFyclCGg2qj0
- cgqCfC0oAXXGEcwyefm/aJQIeIccrudFSPITu/ke/L+lksLm2OR+28oj9iWIOnPGIby8i49fRbk
- dCYIQ2t+xFG2I3L7c5w==
-X-Received: by 2002:a17:903:2b03:b0:2b0:5371:c23f with SMTP id
- d9443c01a7336-2b05371c7a8mr76854105ad.51.1773741561838; 
- Tue, 17 Mar 2026 02:59:21 -0700 (PDT)
-X-Received: by 2002:a17:903:2b03:b0:2b0:5371:c23f with SMTP id
- d9443c01a7336-2b05371c7a8mr76853945ad.51.1773741561465; 
- Tue, 17 Mar 2026 02:59:21 -0700 (PDT)
-Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2b05d95796asm50740605ad.52.2026.03.17.02.59.20
+ d=1e100.net; s=20251104; t=1773742395; x=1774347195;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=8KMZhXTzYCsfK3x8NUS4MiKm7gfRAYeg+2KI236z4Xg=;
+ b=DNqEInyAJdqix/xYWJc1q2c1xbgmdadgo1sIZiqOrZNZLRUb5C9WDcxi4Zjf7r3g26
+ pabKKvumoGENHHztW+qcEkTkKIGUDy4xytAMbN02J8l047a8QTyHydlFURXab6VjiW93
+ s3ZS67YKCBJ9nHP0pKhZB359/Ngkz8VbrGNbtRjV70uhpc9IXFZPPQa9JeLxBhAHx3Ws
+ 6YGYNSW4cibpKTufVeYQrU4Mj6rGHzycWWlB/PyJW65itV0xOmOi3jmMsslZzoeD/uVU
+ bYV+lUrjO1zXqyBJ3rQyTH0uMfc79MXxoNy4xa+lWBh5H3CgarVP0D7WvuSRgp7vgvBT
+ f6eA==
+X-Gm-Message-State: AOJu0YyrLPS/ApN/l2ng4LQdP0McQQfk/LeHI0uK0ib+MLU+w4sVVmSw
+ MzsLl6sJAX5j6T+o/tzqnd5luZtrsP4Qk9qcuKdYJP9ekcaTHzPb+hdVwzW9uS9p9dsSgitgd5I
+ MSJxFK1E=
+X-Gm-Gg: ATEYQzyA82pfTvHDL7d101PfU0uWpPLkOHC/NHiiv510bbaH8EQ2b6iNKh78MD/+B0Q
+ hmLNeK3fB/nZvMe+p+6M9ZVuo6kvXAaAV0m6CXyHj8xJtGALrX4OBaEbFxvNVMhwSTycTBLvv7M
+ sv/DTU/hlLguN4cQ4mdjO+rGbUN0uy3H61fOSeDBzVr5PblzI/HBxAN00qic8ondqcYuthU+VLM
+ Z/spGTBcV5sopAIZxWy/sX+iMiO/4UD4LWWFu7AsCdmZKm7m5+ZBBusGh/E223P49qYfUWcYKDo
+ juCQG+8dbExiOeBExvLmyUz5DggMv6WNyjqWPcUxp1LES0Myq8jFejcrIZPbSDyhGsLIZBC+7L0
+ PermsE5p4y9Thptnq97CLp5F0uBhqgcBM0OvUhheY206Rztwmh3lsm+64dKlJ1m9nDrt8+uqN75
+ XdJmxw93zNzn2Y7qAFRl1gZEhKvOD0Q/vbbx2r2++5Hv0w3omzjyRiYz6jKwbk/ED5SyZ7y1nyU
+ Pk7yYH+BY7xWC5FJPAiQ5rhIhcTpJY7NCw1padLslv46R+anmF9FeBl35XuhjVBP54xYkf5q/14
+ mQ==
+X-Received: by 2002:a05:6000:22c9:b0:43b:493c:8767 with SMTP id
+ ffacd0b85a97d-43b493c879cmr6423754f8f.27.1773742394941; 
+ Tue, 17 Mar 2026 03:13:14 -0700 (PDT)
+Received: from p200300ef2f4fc9002549698ebd81b8fb.dip0.t-ipconnect.de
+ (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
+ [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-43b46b41e93sm12448077f8f.2.2026.03.17.03.13.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Mar 2026 02:59:20 -0700 (PDT)
-Date: Tue, 17 Mar 2026 17:59:18 +0800
+ Tue, 17 Mar 2026 03:13:14 -0700 (PDT)
+Message-ID: <69b9293a.5d0a0220.1d5216.d0f0@mx.google.com>
 To: Samir <samir@linux.ibm.com>
-Message-ID: <abkl9sUAP6H0W86Y@redhat.com>
-References: <20260317084203.2956-1-samir@linux.ibm.com>
-MIME-Version: 1.0
-In-Reply-To: <20260317084203.2956-1-samir@linux.ibm.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: TWtnHrCprsy0IGAT9o--CwYFcqUz9p54eVeUgwwc2lc_1773741562
-X-Mimecast-Originator: redhat.com
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+In-Reply-To: <20260317095559.5766-1-samir@linux.ibm.com>
+Date: Tue, 17 Mar 2026 10:13:13 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] [LTP v2] controllers/cgroup: Skip regression test
- on cgroup v2 systems
+Subject: Re: [LTP] [PATCH v4] Migrating the
+ libhugetlbfs/testcases/alloc-instantiate-race.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,64 +99,26 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Samir <samir@linux.ibm.com>, ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Mar 17, 2026 at 09:42:03AM +0100, Samir wrote:
-> The cgroup_regression_test.sh test2 attempts to mount a cgroup
-> filesystem and expects a cgroup v1 hierarchy. On systems using
-> cgroup v2 (unified hierarchy), the test fails with:
-> 
->   TFAIL: Failed to mount cgroup filesystem
-> 
-> because the legacy cgroup v1 mount layout is not available.
-> Use the cgroup_lib.sh helpers to detect the cgroup version:
-> 
->   cgroup_require "memory"
->   cgroup_version=$(cgroup_get_version "memory")
-> 
-> If the memory controller is on a cgroup v2 hierarchy, mark the
-> test as TCONF since it is only applicable to cgroup v1.
-> 
-> This avoids false failures when running the controllers suite
-> on systems where cgroup v2 is enabled.
-> 
-> Changelog:
-> V2 -> V2
-> 1. Use cgroup_lib.sh helpers to detect the cgroup version instead of relying on the /sys/fs/cgroup/cgroup.controllers file check.
-> Older Patch link: https://lore.kernel.org/ltp/20260316115800.GA311158@pevik/T/#mc4b1bb1d0f73d0267a74f3de9764fa8fb398eecc
-> 
-> Signed-off-by: Samir <samir@linux.ibm.com>
-> ---
->  .../controllers/cgroup/cgroup_regression_test.sh      | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> index 276231fe8..cc8fa1f99 100755
-> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> @@ -117,6 +117,17 @@ test2()
->  {
->  	local val1
->  	local val2
-> +	local cgroup_version
-> +	
-> +	# This test is specific to cgroup v1
-> +	# Use cgroup_lib.sh standard way for version check
+Not compiling
+https://github.com/linux-test-project/ltp/actions/runs/23188879299/job/67379374583#step:11:10432
 
-The tst_res printing is clear enough, so we do not need code comments here.
-I modified a bit and merged this patch, thanks!
+Please always push your patches into a github fork to verify that CI is actually
+passing.
 
-
--- 
 Regards,
-Li Wang
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
