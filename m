@@ -4,98 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FD1EF3380C
-	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 07:37:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7049F3380C
+	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 07:44:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1773733052; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1773733449; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=1UTZYhf6MJCZ/4jBiXrovEDQzaEfip98p8HPytwed2U=;
- b=Sq/gtqz494U7Lt/+i2ErVIk7uDLQv6U+tdD45vPEVgLOIsZqHymG3nH8YUlYgqtS5CJGA
- 2PT6yK4wom5hQm4SKKu3MDXOy5M3GICes/vTN7vKf4mgLcrAeUTnnMWCsQ3ywDQbpKypzgL
- +obo4kQnUD52yZriHwisojCsXMjwdW8=
+ bh=gT/goCgTAzyxkrE5jD5dusI85JMCjuG4NjPFHZsRmhI=;
+ b=fq1lhX4d7pOwm35/kD8859gMDpO3NnuEQj/zyrqoiZE6dTqDGbjU1yCWqgakLaRtKZHlc
+ WsgAC1amuPOegCGJDWNQaN1bPpoW3p7HKyPfIocmbqAbZqBHgZ0uuSkgbxFafEqDuMYqEGF
+ HUBWNhRKHvkGhihMlzPlKO4abh//3LY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 326753D0320
-	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 08:37:32 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 3D3D23CB041
+	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 08:44:09 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 74E8D3CA05C
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 08:37:08 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CDFB43CA05C
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 08:43:43 +0100 (CET)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BE80760150E
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 08:37:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1773733024;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pKgi1iaN6G5Sf6kT5dkcCteF+d/uIwOuNubJhm1+osk=;
- b=NHLoPPyonKyAtQOfJqbpptoLkG0MBzxgkm2UxYyNWfx5z7ztk3Wms12g2QT442Pjcli1zb
- ZdQBW53+bh+NEoqtJpvjdZLxcYHYCYoaPQhPboGCfTsVt5zduDMjGKyOFJErlTghQhFwiO
- ffmzL8fZ3sMF0z9OVturWBkKo0f2n/A=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-195-aZw_oVVTPB2CqMCX8u7nXg-1; Tue, 17 Mar 2026 03:37:02 -0400
-X-MC-Unique: aZw_oVVTPB2CqMCX8u7nXg-1
-X-Mimecast-MFC-AGG-ID: aZw_oVVTPB2CqMCX8u7nXg_1773733022
-Received: by mail-pl1-f198.google.com with SMTP id
- d9443c01a7336-2b051befbb8so28428265ad.2
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 00:37:02 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 064811A009A2
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 08:43:42 +0100 (CET)
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-485409ab264so2659705e9.1
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 00:43:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1773733422; x=1774338222; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=1q8GOZS4qE3pkgWbNZRknoNKhJxPd2Y8iWR4aSK9064=;
+ b=WVIlvcK+KZLlXSEf3pPDvRX7I2T+Vf8Jj728dLk42gjR2MIToH4t8d1eYPW12WuVxO
+ Md2ufJC/wt+ikf9VOidi8s1ww1Gl2rm4LgT0xUwXO6U4nlAzvRd36YAIr1mFoqZyM1FV
+ xZIVXY21Sa3MzRvy/ayK1FBGdcc5dbzVxQ0uttQbUPeBl+zd28R7Yw811fL1KY5yubUp
+ 8ng/wwukXeSA2gt1RgIARVc1C67vmEk7YgCq/ZP+sHVsGj3LEcAltULf/U07d1ECW/EP
+ 8j2fqDsFvQOHtB4CWR7mAZmjPWAyw6CCLfXOJ+qC4MuclqU84Luv6leTsPNfelD5D0d6
+ bPdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1773733021; x=1774337821;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=pKgi1iaN6G5Sf6kT5dkcCteF+d/uIwOuNubJhm1+osk=;
- b=oMKYN0/XaLF89aHiY7+xH4pcTXskkDSfsjQBjYuYuacWU6Xn4fjhf4B7J4qMnCiGFJ
- c5Dqp7F/YU2UnVQ8U8vdWNV1fu+M7xcvcVC/PNp4rRxV/O8X7tCEBfSlkKL7TeQY98tA
- kbqxwNsyVj1mP7p8v1JizapwZR1Iy0w/OZgtq7M1biIkGg5UCpOkBdL0gPVkAmjUCo6W
- YR8DTDXqXxKMSZY0Uo2RD2ishvOffrfOznR/m26jTvYnkzlq469Rrp0+T/CTjgjaKM4w
- OJVW1d+AbAQOIhfxSXKKRCIO+vCQkf54WhgctUYJVywhvmSou0OPsIm5oTW5v/OdzMwu
- 6P2g==
-X-Gm-Message-State: AOJu0YyKuO6HJoyA8tz+Ii4zokLKHVFgBQhM1LZJWzpnqhpE2M0TqT2r
- /xI7onDKoEf4cGArmWUUzKYbkgGtyupLWQx8aUuKY7b5dt4ErS/r+v4Er6uu4fNxPLoIa9z7NtI
- ISJ9Q40yaWSc3cVghB9cWRdC6l02LrWxB2dLkN2YJal/f8yM1Wjwk
-X-Gm-Gg: ATEYQzzKMNVSr+dFsTKd2Tf4LkUPu0DmuuKRgnHG+ZJexfecd2K1g9z5nHbf12NrOuU
- rFNx+Pq+ewefNhza3uEJ0vLpdoXid/4aUKQPRn9ecKahOLj/B6Y2PBd1pKbXBT/bKvrsWqGEjUv
- W/aChS91zeFKKQUxNjTqjARepsigoSpboP/SOczVsf5RSl1jlBHTNdHm5XYx2YDj3+VZsPNlE0Y
- mefco68RjveV3Ie6/g3ODHy6IZyxMwce6ck6HM86XGJrujqsYL9toyYx0cYoR7ncXXSpW9cfE9M
- La9ZjdiWHH07eLukaMwoQh1djRnYvfPIk+UHSALVIKd1lh3DVrwQTsLRu2JVUP9ol6guuleVGDy
- MT2hdVQzV+KRkmBJF3w==
-X-Received: by 2002:a17:902:cec2:b0:2ae:4a6b:68ea with SMTP id
- d9443c01a7336-2aecaaa88damr171849335ad.43.1773733020844; 
- Tue, 17 Mar 2026 00:37:00 -0700 (PDT)
-X-Received: by 2002:a17:902:cec2:b0:2ae:4a6b:68ea with SMTP id
- d9443c01a7336-2aecaaa88damr171849185ad.43.1773733020418; 
- Tue, 17 Mar 2026 00:37:00 -0700 (PDT)
-Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2aece8233e1sm129902135ad.71.2026.03.17.00.36.59
+ d=1e100.net; s=20251104; t=1773733422; x=1774338222;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=1q8GOZS4qE3pkgWbNZRknoNKhJxPd2Y8iWR4aSK9064=;
+ b=GNTrrjLtZVvjG/0wa8/I6jKDMwd0mns8W+KxoqSwLHdIFG94PZrFwHc5yU2hAMWiOd
+ xY8JNAQifk+FoWZM+MIB05zXARiZ1BmW7w7/VR3PUp3xBuP+Q/sqd2KNtrhxOI6lXNkW
+ SoiSILpFTOkBQUrf2sZVDxHm2TzyZNUZ9Fe1BqQlYIsbpPXHeV/d7TT1LalhmPgOaIWu
+ E7wl7NdHgFSngiSxPRUpyM8bBtxWjnu7fk1mFxqG4dg0kz7KtPTLycAFQGO26jZbS5YR
+ 792I7XZdqU7zFBxR//2SmXq2unCRpzyvFJ+QgSnUjQdjPrwTQ5JEOszdGlYjCudh6hy/
+ P1tw==
+X-Gm-Message-State: AOJu0YxAcUrPczPP6Dtcd9CoZI69wuvpf1S9KHYXv7J1fYY37dHt4c+7
+ d0uKG7kSh4ZOb2kjiMlFU+BdL/Pqod/6dapFJFAMH18bavdh6RCmbT60BJ5yg74rogER6mMHjgJ
+ xKVE=
+X-Gm-Gg: ATEYQzzeWenabGyonoB5QIglAmRZAd14S7JPGLornrCWnu74j7Q+3AxkT8eCVDsRxz6
+ D+wPZyJChrE0kZzdfXUhMiepcwYkEu+AqFA3CTru63Z6EA6kr3A/Esduguh99y1PG7UGOgqyEN6
+ pPScS+dS5lYO2QEwH8FiysRxSQlzGjVpYT3OtVvQFZ1mqTCzNdJcxq7UmIY91D9UD4LYH0zPwlA
+ rRpMgZDlkgeMTVXmz1GoV3ofZXa2cnTqrJMkrLWdsVWQ/rBDjkoKsGREmG6OdDxVJhM5tVCoUej
+ cXGXz1x5sVHJtdPxvatokMBphLMn520ld6YxPJI7rBAitb+RfwwWcvjkXJGTo/TVs7qbyR3w2fX
+ lBf0rLV/cUraxhV5fL05+cP7iCVy8yq3EtpsybiXDYATyiKtY/2cGuVFJKXIaU9BPMdSCdjpwrE
+ LW6qj22DWLyHU=
+X-Received: by 2002:a05:600c:1442:b0:485:50ac:b8cf with SMTP id
+ 5b1f17b1804b1-4856e874b20mr20300125e9.0.1773733422078; 
+ Tue, 17 Mar 2026 00:43:42 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-4856ea96828sm87281805e9.5.2026.03.17.00.43.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Mar 2026 00:36:59 -0700 (PDT)
-Date: Tue, 17 Mar 2026 15:36:57 +0800
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <abkEmdVQycn3wySL@redhat.com>
-References: <20260313142600.243939-1-pvorel@suse.cz>
- <20260313142600.243939-2-pvorel@suse.cz>
+ Tue, 17 Mar 2026 00:43:41 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Tue, 17 Mar 2026 07:43:30 +0000
+Message-ID: <20260317074340.589-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260107061008.18971-1-wegao@suse.com>
+References: <20260107061008.18971-1-wegao@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20260313142600.243939-2-pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: Z6byY8SZz8WT6e1hAdFPCxqYkQyRBDrDDreLybGa6zQ_1773733022
-X-Mimecast-Originator: redhat.com
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/6] tst_run.sh: Fix passing arguments
+Subject: [LTP] [PATCH v5] io_submit04: Add test case for RWF_NOWAIT flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,37 +99,221 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: Sebastian Chlad <sebastian.chlad@suse.com>, ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Mar 13, 2026 at 03:25:55PM +0100, Petr Vorel wrote:
-> tst_run_script() in C API correctly sets environment, but it have to be
-> also passed to the shell functions.
-> 
-> Before:
-> 
-> $ ./shell_loader_tcnt.sh
-> ...
-> shell_loader_tcnt.sh:-1: TPASS: Iteration
-> shell_loader_tcnt.sh:-1: TPASS: Iteration
-> 
-> After:
-> shell_loader_tcnt.sh:-1: TPASS: Iteration 0
-> shell_loader_tcnt.sh:-1: TPASS: Iteration 1
-> 
-> Fixes: 8202494493 ("shell lib: Add basic support for test setup")
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+v4->v5:
+- Initialize fd to -1
+- Replaces silent macros with explicit error checks
+- Verifies that io_getevents actually returns the expected event
+- Remove duplicate TTERRNO
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+Fixes: #467
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ configure.ac                                  |  1 +
+ include/lapi/aio_abi.h                        | 44 +++++++++
+ runtest/syscalls                              |  1 +
+ .../kernel/syscalls/io_submit/.gitignore      |  1 +
+ .../kernel/syscalls/io_submit/io_submit04.c   | 99 +++++++++++++++++++
+ 5 files changed, 146 insertions(+)
+ create mode 100644 include/lapi/aio_abi.h
+ create mode 100644 testcases/kernel/syscalls/io_submit/io_submit04.c
 
+diff --git a/configure.ac b/configure.ac
+index 7fa614dcb..61462d192 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -172,6 +172,7 @@ AC_CHECK_FUNCS_ONCE([ \
+ ])
+ AC_CHECK_FUNCS(mkdtemp,[],AC_MSG_ERROR(mkdtemp() not found!))
+ 
++AC_CHECK_MEMBERS([struct iocb.aio_rw_flags],,,[#include <linux/aio_abi.h>])
+ AC_CHECK_MEMBERS([struct fanotify_event_info_fid.fsid.__val],,,[#include <sys/fanotify.h>])
+ AC_CHECK_MEMBERS([struct perf_event_mmap_page.aux_head],,,[#include <linux/perf_event.h>])
+ AC_CHECK_MEMBERS([struct sigaction.sa_sigaction],[],[],[#include <signal.h>])
+diff --git a/include/lapi/aio_abi.h b/include/lapi/aio_abi.h
+new file mode 100644
+index 000000000..bd8c2965b
+--- /dev/null
++++ b/include/lapi/aio_abi.h
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Wei Gao <wegao@suse.com>
++ */
++
++#ifndef LAPI_AIO_ABI_H__
++#define LAPI_AIO_ABI_H__
++
++#include <endian.h>
++#include <linux/aio_abi.h>
++
++#ifndef RWF_NOWAIT
++# define RWF_NOWAIT 0x00000008
++#endif
++
++struct iocb_fallback {
++        uint64_t aio_data;
++#if __BYTE_ORDER == __LITTLE_ENDIAN
++        uint32_t   aio_key;
++        uint32_t aio_rw_flags;
++#elif __BYTE_ORDER == __BIG_ENDIAN
++        uint32_t aio_rw_flags;
++        uint32_t   aio_key;
++#else
++#error edit for your odd byteorder.
++#endif
++        uint16_t   aio_lio_opcode;
++        int16_t   aio_reqprio;
++        uint32_t   aio_fildes;
++        uint64_t   aio_buf;
++        uint64_t   aio_nbytes;
++        int64_t   aio_offset;
++        uint64_t   aio_reserved2;
++        uint32_t   aio_flags;
++        uint32_t   aio_resfd;
++};
++
++#ifndef HAVE_STRUCT_IOCB_AIO_RW_FLAGS
++typedef struct iocb_fallback iocb;
++#else
++typedef struct iocb iocb;
++#endif
++
++#endif /* LAPI_AIO_ABI_H__ */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 2179e007c..9812b1bfe 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -699,6 +699,7 @@ io_setup02 io_setup02
+ io_submit01 io_submit01
+ io_submit02 io_submit02
+ io_submit03 io_submit03
++io_submit04 io_submit04
+ 
+ keyctl01 keyctl01
+ keyctl02 keyctl02
+diff --git a/testcases/kernel/syscalls/io_submit/.gitignore b/testcases/kernel/syscalls/io_submit/.gitignore
+index 60b07970a..abe962e1c 100644
+--- a/testcases/kernel/syscalls/io_submit/.gitignore
++++ b/testcases/kernel/syscalls/io_submit/.gitignore
+@@ -1,3 +1,4 @@
+ /io_submit01
+ /io_submit02
+ /io_submit03
++/io_submit04
+diff --git a/testcases/kernel/syscalls/io_submit/io_submit04.c b/testcases/kernel/syscalls/io_submit/io_submit04.c
+new file mode 100644
+index 000000000..9b7b52995
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_submit/io_submit04.c
+@@ -0,0 +1,99 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * Test RWF_NOWAIT support in io_submit(), verifying that an
++ * asynchronous read operation on a blocking resource (empty pipe)
++ * will cause -EAGAIN. This is done by checking that io_getevents()
++ * syscall returns immediately and io_event.res is equal to -EAGAIN.
++ */
++
++#include "config.h"
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/aio_abi.h"
++
++#define BUF_SIZE 100
++
++static int fd[2] = {-1, -1};
++static aio_context_t ctx;
++static char *buf;
++static iocb *cb;
++static iocb **iocbs;
++
++static void setup(void)
++{
++	if (tst_syscall(__NR_io_setup, 1, &ctx))
++		tst_brk(TBROK | TERRNO, "io_setup failed");
++
++	SAFE_PIPE(fd);
++
++	cb->aio_fildes = fd[0];
++	cb->aio_lio_opcode = IOCB_CMD_PREAD;
++	cb->aio_buf = (uint64_t)buf;
++	cb->aio_offset = 0;
++	cb->aio_nbytes = BUF_SIZE;
++	cb->aio_rw_flags = RWF_NOWAIT;
++
++	iocbs[0] = cb;
++}
++
++static void cleanup(void)
++{
++	if (fd[0])
++		SAFE_CLOSE(fd[0]);
++
++	if (fd[1])
++		SAFE_CLOSE(fd[1]);
++
++	if (ctx)
++		if (tst_syscall(__NR_io_destroy, ctx))
++			tst_brk(TBROK | TERRNO, "io_destroy() failed");
++}
++
++static void run(void)
++{
++	struct io_event evbuf;
++	struct timespec timeout = { .tv_sec = 1 };
++	long nr = 1;
++
++	TEST(tst_syscall(__NR_io_submit, ctx, nr, iocbs));
++
++	if (TST_RET == -1 && errno == EOPNOTSUPP) {
++		tst_brk(TCONF, "RWF_NOWAIT not supported by kernel");
++	} else if (TST_RET != nr) {
++		tst_brk(TBROK | TTERRNO, "io_submit() returns %ld, expected %ld",
++				TST_RET, nr);
++	}
++
++	TEST(tst_syscall(__NR_io_getevents, ctx, 1, 1, &evbuf, &timeout));
++
++	if (TST_RET != 1) {
++		tst_res(TFAIL | TTERRNO, "io_getevents() failed to get 1 event");
++		return;
++	}
++
++	if (evbuf.res == -EAGAIN)
++		tst_res(TPASS, "io_getevents() returned EAGAIN on read event");
++	else
++		tst_res(TFAIL, "io_getevents() returned with %s instead of EAGAIN",
++			strerror(-evbuf.res));
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_AIO=y",
++		NULL
++	},
++	.bufs = (struct tst_buffers []) {
++		{&buf, .size = BUF_SIZE},
++		{&cb, .size = sizeof(iocb)},
++		{&iocbs, .size = sizeof(iocb *)},
++		{},
++	}
++};
 -- 
-Regards,
-Li Wang
+2.52.0
 
 
 -- 
