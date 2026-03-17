@@ -4,98 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16715FD8741
-	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 11:58:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13734FD8752
+	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 12:15:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1773749699; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=KOLjrncCxmMAnOd05PRDagJjo8x9794Rj2yBubuRrkw=;
+ b=mWlDMLFJgsMghcwHkEeFXiuUlTiParMtKVCiBpGbBikrFQg3wjh2c7ZKrcSxqYvVvNwm4
+ Kc5qqUAnZ0EX2cjwaVB6YjMyClndp4Mv6iEWIeUNu9EMGQNtQsdCPzETUd3p7ztLfCxPYDj
+ NXgd4RTi3XJ/TsMwU/kevYe53X2qkS4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B59AB3E486B
-	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 12:58:52 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id A0EB33E1C8B
+	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 13:14:59 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8BEC93C7A18
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 12:58:34 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0E89B3CC8C5
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 13:14:36 +0100 (CET)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D7527140007D
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 12:58:33 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5F6E24D327;
- Tue, 17 Mar 2026 11:58:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773748710;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IbkyigRsH6ruqCSqN2ngRErzek7xDijFRtXqq5+zTyY=;
- b=Cqxx8Zc9WczK91LhiJHc0m8jWQY3+6s/hx6NsuIcg9Pi4QxqeRUy7qQj3IDr67nF83jX+c
- IVjncSBNs1JnHbbCHd4OPU0aJH/bRSUFZHAfi0MG9ai9dPPTkD4yfKn333zjETT28lHwuB
- jCe5/EuEVmWMzO8EOIDVM+sJ2nZjqDg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773748710;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IbkyigRsH6ruqCSqN2ngRErzek7xDijFRtXqq5+zTyY=;
- b=T2LO1r4RRdEVyyfZCIF83Tl7YdSYNhW91G4Owt+ozW8L8w7m2jTNer+iyhY+plwYeNi+o+
- ankFkjuO07r7w8Aw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773748710;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IbkyigRsH6ruqCSqN2ngRErzek7xDijFRtXqq5+zTyY=;
- b=Cqxx8Zc9WczK91LhiJHc0m8jWQY3+6s/hx6NsuIcg9Pi4QxqeRUy7qQj3IDr67nF83jX+c
- IVjncSBNs1JnHbbCHd4OPU0aJH/bRSUFZHAfi0MG9ai9dPPTkD4yfKn333zjETT28lHwuB
- jCe5/EuEVmWMzO8EOIDVM+sJ2nZjqDg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773748710;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IbkyigRsH6ruqCSqN2ngRErzek7xDijFRtXqq5+zTyY=;
- b=T2LO1r4RRdEVyyfZCIF83Tl7YdSYNhW91G4Owt+ozW8L8w7m2jTNer+iyhY+plwYeNi+o+
- ankFkjuO07r7w8Aw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C9DAC4273B;
- Tue, 17 Mar 2026 11:58:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2WF6LeVBuWmvYAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 17 Mar 2026 11:58:29 +0000
-Date: Tue, 17 Mar 2026 12:58:28 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20260317115828.GA365182@pevik>
-References: <69b93029.050a0220.2e2929.5885@mx.google.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <69b93029.050a0220.2e2929.5885@mx.google.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCPT_COUNT_SEVEN(0.00)[8]; RCVD_COUNT_TWO(0.00)[2];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8C8F9200085
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 13:14:36 +0100 (CET)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-48334ee0aeaso50158205e9.1
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 05:14:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1773749676; x=1774354476; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=fULIX8/zxvB1/BjKZz9g4yD4YFy3vQBj7a+W3NN4uuY=;
+ b=C6civoYM8Wzaq1iVdBToSJLGlxdfpRdzlNK3sPrWrfRlnbYSw7LlwfLFGXelnUHW6K
+ 6f1q94UcN0Luu7mZJae54VUvewk7izclVTUFntZvnqwf8KKN8d2p+ikmQqj1o+LGvEpF
+ iMc5vc6YguqdvJnN+82tZ0JwDqaKAkUOgX/QkdPbbU8rKjSsVncjtakA42jSz1cdmoI4
+ scOH3xFeXNSWhxXNc/AZwsCrQo/9/JFbBccHeYxqw9UgLqU73d2ahd5v95wil7OB3Uim
+ bAF8NV086yE2bp82AqWnpWDj7F0IFlNqtBzzUHwcXc6//o0kzaAn985pftxRz1n6FK0g
+ Li5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1773749676; x=1774354476;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=fULIX8/zxvB1/BjKZz9g4yD4YFy3vQBj7a+W3NN4uuY=;
+ b=knIRaDXYufuRuflqJWcBZuPDjDp4vCNx2yHd+VE2BY+cVdp0FfAgTeDSP9SIW6Fstm
+ NKsIG/u4D7wu3fyMxYmcs94ga4sdwF1o8eLXhyAj3yN8fvasFUFP2uAnB+p8oSQ0MMoC
+ 0OTE/HZvRYajkdIwGQ1LqVFGLl9Tv9wllKRAkfuuzIESkvMqb+JxCQbVYU6QLcDRZAPV
+ h4ltO/R1LHzd+Q4GmnJ92qntXVm4plmhLo5J/ZPhInU+4OjHb3cIYD+ZkF0hgT6l8mp8
+ XLd3saax7xKC/QX8Pu+HL2ConVhLrZ5Hsgd0vMFC2wxaSKjcyaMmrOZpRWYLdMtNSYKN
+ RWbA==
+X-Gm-Message-State: AOJu0YyualnEYvaZTU5IvKcEsZn9hZWo21Fqd6W4o43E3k+nNj8Rh7G1
+ bC7fPxm5cdgUdh6p4TM4R/c6nxucNsrwNNq1dR+LkPNYUrRUcq5cl+8tvMuSETs4GpU=
+X-Gm-Gg: ATEYQzzIq/AdJXMBwBg1YR95YdlQGhmuJ8jCQJu50i8WPPybyITQnsKXxop4AMyHt64
+ vVh9Rkub2f6aVcRL039PrVLTmU3uQY67FHdC1D49HlZeIlvgjeMWLNPHBDZoly7uDSJF07S698/
+ j0dGPhQJ3gwFtugpQO5OIVreqSBjde4+5sDSVfHNKHjxNvENQGbpadj6ft6m/PeWP5xOGjIK53D
+ qiRioARYc58KcKT2qS5EGZtYKsBX0v/Wr+4Fgn3WaamMIM4iu9E7m92kM6T0a97KFsvGp6MwX9Z
+ ZwKwkb9qCN6LEm/f+P+RwsTiDdc+m0bznNlOBP4C3O9o/ssnVq0yDhqrT0kv5saYuP4DV2pbHNm
+ a9Ql3RrpYz3UggOnU+ileFiLMdmKccqxKrohAoAko4//pz6B4zbgPhgIGeGbZ+e0WFvPvLfPess
+ lm2+XIyYtKia/IbGvE9RJ7fA462xM92Qercfbsxf8=
+X-Received: by 2002:a05:600c:8b82:b0:483:709e:f239 with SMTP id
+ 5b1f17b1804b1-4855a8d6c53mr261349365e9.22.1773749675929; 
+ Tue, 17 Mar 2026 05:14:35 -0700 (PDT)
+Received: from localhost.localdomain ([88.128.90.4])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4856eabb6edsm57473555e9.15.2026.03.17.05.14.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 17 Mar 2026 05:14:35 -0700 (PDT)
+Message-ID: <69b945ab.050a0220.1eaaec.d93b@mx.google.com>
+To: "Petr Vorel" <pvorel@suse.cz>
+In-Reply-To: <20260317115828.GA365182@pevik>
+Date: Tue, 17 Mar 2026 12:14:34 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] LTP old API conversion
 X-BeenThere: ltp@lists.linux.it
@@ -109,74 +93,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: Sebastian Chlad <schlad@suse.de>, ltp@lists.linux.it,
  Martin Doucha <martin.doucha@suse.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Petr,
 
-[ Cc others who were on LTP meeting + Sebastian who might be interested ]
+> I'd vote for limiting patchsets to max tests in a single directory.
+> Why? Smaller patchset is easier to review. And if just some of the commits are
+> accepted then fewer commits need to be rebased.
 
-> Hi all,
+Do you mean one patch-set for multiple (unrelated) tests (for instance syscalls
+folder) [1], or one patch-set per testing suite [2] ?
 
-> so we still have ~200 patches to refactor and to move from old LTP API into
-> the new LTP API. That would be really useful for tests maintenance and long
-> term supports, such as the `runtest` removal and replacement with a smarter
-> tests filtering/grouping.
+[1] would be 20 random tests from testcases/kerne/syscalls
+[2] i.e. all tests to refactor in `testcases/kernel/mem/mmapstress`
 
-> This is a tedious task that requires a huge amount of work and in the past
-> years we managed to convert hundreds of tests by hand, each one requiring
-> multiple reviews iterations.
+I would follow the first approach if we want to send a big amount of patches,
+or the second if we want to be more specific.
 
-> It was overwhelming not only for developers, but also for reviewers who
-> were stucked by reviewing new patches + tests rewriting.
-
-> In 2026 we have the chance to accelerate this transition from old API to
-> new API using LLMs and, as we discussed in the yesterday LTP after release
-> meeting, we might be in the right way to start doing it (at least for
-> smaller tests).
-
-> I created a set of configurations and skills in my personal repo which can
-> be used to start this process: https://github.com/acerv/agents-config.
-> It's maily tested using Claude Code, since it's the model which perform
-> the best (at the moment), but any other model can be used.
-
-> I experimented with a list of tests that can be obtained with the following
-> command:
-
-> wc -l $(grep -R '"test\.h"' --include="*.c" testcases/kernel/ | cut -d: -f1) | sort -g
-
-wc -l $(grep -R '"test\.h"' --include="*.c" testcases/ | cut -d: -f1) | sort -g
-
-Otherwise you miss 12 old API tests.
-
-> .. and tests conversion for tests which are smaller than 200 lines of code
-> requires minimal (if no) edit. I will continue to adapt the ltp-convert skill
-> in order to tweak and to improve this process for bigger tests.
-
-> ~~ Said so..
-
-> .. since this process seems to be quite straight forward, and with the usage
-> of LLM we could easily generate hundreds of patches per month, we don't really
-> want to flood the ML with garbage and to overwhelm who's involved into
-> maintenance review.
-
-> How we should organize this job?
-> Should we set a maximum amount of tests refactoring per month?
-> How do we organize these patches? (i.e. with blocks of patches)
-
-I'd vote for limiting patchsets to max tests in a single directory.
-Why? Smaller patchset is easier to review. And if just some of the commits are
-accepted then fewer commits need to be rebased.
-
-Kind regards,
-Petr
-
-> Kind regards,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
