@@ -4,90 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FEC9F3382A
-	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 09:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79C3FF3382D
+	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 09:42:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1773740423; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1773740568; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=RVAyLhT+lA87bMkYoWA3lIb4uozNWweSStqxnm3S02w=;
- b=O6q1BakCyU0mBD9B6lfgEK6e6cimLZa6Fz/BBnRQBD/67XVVMpbdhFWwqrRD0Uzcs5xuX
- 7wtHXoYehm1oq8dq5QOumw6qHnL2m7GeHv6YwvH0EVwUBEaxCAGmV4Yo7Hr08+8uSH6Z55L
- WvZwC35Lz0hdxpFVn0sOVNnz8APkFyo=
+ bh=lQG73MYABBaSikJ1EfbLDUvGaQopB8iAN6c9zqW3LAU=;
+ b=fkSImM5aKRtToZpwSJUe27qMkVAfcL0YSBPEMYK5xJVnN9rJZLQAvKTJP04XJKWCy4y0R
+ 9N8ki+d8r3u8tjwKfjy29pB9Aw9Mub5lcKIlgj0NLivnDW7/VC7gF42ikJWL0kiRSCDEMPp
+ ob8eYgYwQKJ+qCO7B96B5U7CT68EM6Q=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 301793CE084
-	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 10:40:23 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 233D73E2B6C
+	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 10:42:48 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 695133CDD00
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 10:40:00 +0100 (CET)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DE2613CDD00
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 10:42:22 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E12DC600121
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 10:39:59 +0100 (CET)
-Received: by mail-wr1-x430.google.com with SMTP id
- ffacd0b85a97d-439bc14dcf4so384494f8f.1
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 02:39:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1773740399; x=1774345199; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=6qLNppA1I4WVp6wkPMqLwJWo01okm2qT8wkrHnJSoPo=;
- b=VEXHzlZSDugWu41mI5XGFJ3FHii++eYdYhDR4CnoFfZcawmCB7ZkXZeudMt7bT/mdr
- fJLugMPOUQsBUH++BlCCdRZUIYvGqeQWKqKA/6/9TIWlXCrfuKa9oRbqj9I3ogqRkPwH
- qjREQJTn+VVQ/6H4snkcPrXTv+5NZuQp9l9TP3GUMRlMq4Z2ZeO6eJU0aHMVRZrhKWvr
- 7h6RhXCF9A2MMWDuIKsE4vAJH/B88EJB/l3PBXmMBxBEbOVTMQI+C+yMagneBlau8SqN
- GJu4+lTOGjJJT2W5Trh8+w2PAIOCRaawO8N6ZfxNi8fqjodAXl80X6n0AuLh5KFfQmw3
- mvCg==
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 364B91000D41
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 10:42:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1773740540;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cCJXQ6fo2eN9G62CX/Wxcpyyq9S7p6dEqzNdicl8gxA=;
+ b=KEwE848bynPcjI4Rjxk+/OxlrJKG2PTtA9jPQRu6dARRf/gzMsglfdq/+vdg5DSCAGFPjQ
+ ccwO72PTW9nTdf+MKwShx2RWhKRd73vIqgI2pGFr4PfZuYuzx8N/PBgm7YcNJlTWAuZnKK
+ jfFdjTMzH2casrpeLnKq+I93BUivBQc=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-592-zwMPzVx4N7qbQ-xazjnjtA-1; Tue, 17 Mar 2026 05:42:19 -0400
+X-MC-Unique: zwMPzVx4N7qbQ-xazjnjtA-1
+X-Mimecast-MFC-AGG-ID: zwMPzVx4N7qbQ-xazjnjtA_1773740538
+Received: by mail-pl1-f197.google.com with SMTP id
+ d9443c01a7336-2b06b68783dso692655ad.3
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 02:42:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1773740399; x=1774345199;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=6qLNppA1I4WVp6wkPMqLwJWo01okm2qT8wkrHnJSoPo=;
- b=dHhr+5PclDwQfoceh0uKVJgVUOikxIAoULiKlm6I/pJ6SSvzA/aa19ZZv9vDpWrF3g
- q3ZwqM2cKT7Vx2klUBsQU+aGLpcTnVIO74MLSLtA7RsOwlMNspTBQFO6gwPWUugtJc0e
- ii3yChBuMQJ+5YOTDA2kDvgRhGYtdnpR6ZR3xWnR9J8zr4Kxquqj8oUfDcL44J2XqOHx
- iF7UOzU1DyqkdRSInZ5VjDVm4SCJtVVBX5cAKB3zRHLwPAFXrKL1341YyNAC7tySSmWL
- 6Ulj15GqRgiom3LWkyKjymo+LFdOo9zU9K0zyjoXk+hs0jo+bAbmNDjBI9a6eIBkFoBA
- BWAQ==
-X-Gm-Message-State: AOJu0Yw3CNeaTP2wJ7JeDfH+XjCEDbLw1vfVw1F2mH6QH+sYeP9LJcbn
- wv/kK+F86pwzeQq7eJovmrBkIhfxhr44fQX/CLeX6TofsLxuojgGAvtCJDKgf0M4HzhfIi1eF/Z
- RDqxMJto=
-X-Gm-Gg: ATEYQzz/GWgHlntpRc2j/zjd33g9O9UBPNSBbc6mqg0i5GNCuTcq0cIRsBbt0/3pBvl
- lDjl0MrUfRhcZsykqKNHnLBCy664TTvjNyRxOUJcPUHMQgJY8bWrsL7N8KcT/NRyxpcCA4pIx9Y
- Ur9bDriH3jRgmMpJZtknDJVOBcC2JoSF89s5j01bJeaxB0MHoNZW/beIBUPkm5b+bu/wBnrNeGw
- Q81aFJVRxqKviWKxV2EY7cCkiLnhdwF5uH5Fi0Q5840xnL6nwwC3AAVNmTrv5W4hV7DzFFek8cn
- EkMu9aIGy7Fa4kBF/E9/Bl7tHJtH1NpQ9C1G4WUTozoffIzrlAmGojKlPYxefsJdvoAeqNGqnHs
- 6yVs5a9Ck435+3zsB3r1GwXOfiycA5r/vRn1WPIlla0QPQpHZ0smO35a0bA4uJlFxLPSl17+AB8
- BxwQeT+OBR00ijWotnqtBE/k9NNlFamD9iX8KzT5QL0AWjDMF1rTOVVvtQ/y03JwgGDbgtA2HqK
- qesGnZ2XGXLxOCeO7zQrGf6bGN4GJVCJkduG66HVj/JOaNxS+t+jLDeTUcwE2obyT+6uJWTzZ5Y
- gQ==
-X-Received: by 2002:a5d:64c9:0:b0:439:ceca:421a with SMTP id
- ffacd0b85a97d-43b4981cff6mr4805169f8f.9.1773740399199; 
- Tue, 17 Mar 2026 02:39:59 -0700 (PDT)
-Received: from p200300ef2f4fc9002549698ebd81b8fb.dip0.t-ipconnect.de
- (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
- [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-439fe2186e3sm55379617f8f.26.2026.03.17.02.39.58
+ d=1e100.net; s=20251104; t=1773740536; x=1774345336;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=cCJXQ6fo2eN9G62CX/Wxcpyyq9S7p6dEqzNdicl8gxA=;
+ b=geurtcNhn+W/OSb74lNbHkZgKVJbnvhzywb4HiMAqBoWQhRXmNmZc7WxndwcUIsnUN
+ nuxJiwd1uKBMI7LA+PYUd5ntdrx60G0eo9b8m+8h3qWA6p/ChP9M7m6O66ADflXR7xX/
+ DxilwtUipeEmow83uFgVOQiYHCGlXwspky9vyR6lUojJOCOfylJ9mgE5NOVKQpiakKQw
+ B02Lk6dPQSRfk7K7vQ9XX6pZFisx+h6sMpzqX2GpyiVWqifo+fKgGT9ZaZWCWgnLLGMO
+ tuiZe3zoHsfj1MePgxXjR7gsFa0O4rzr62nGChea/g4CMpJBpAxFm8bKZNCQN+uHlr1U
+ Jfug==
+X-Gm-Message-State: AOJu0YwEJlb1N3lAnTdyIK5ig1p/2rMm+OY9PjPL5XznrlsMtlrwxaQu
+ KI1ZonwMggweImbOGPhuDrUB5SF9pa1Pi3HsIAgv8xG67VZyPd0U1upEUzvha8hGrpBOGLdhRps
+ +KEF/iYBSqLCr1jkNMM5r2dvEG+ZRmUsau4RWJWFVg7XWZi0wtiX4V0kd6x1D
+X-Gm-Gg: ATEYQzy40NqDBqDe8rE2d8WZFxHxdPqNivoyC3rDo0r8wz5+QQILap5qCeTAldN5kD5
+ +tCdYPNR4ryDT7rRkKF/tEKvntAYhoN4kch+5HTp0uitMOOEKRFZtDQ2Gjj5HNa9qv1TlwL5+Yr
+ 2mUm4Gh4R4RccHMci00ueb1d5pr6eRJkYYitRjDGWLPOARQBiVqF2FTa/71ElCZWxtJSI3mHbNe
+ jIUoUt51d4Wx8ph790RVrVpbp+FgkPSO0KtSL0R/iGDOlD4k2oZM9gm0lt3ADOTQXB/8G4wJpqe
+ df45fGnj0DtwQ0jPNnOC/FSk7R9mVTZYy4xroZ9Cy28Y8MvmVLl5iuMIp8j+7UapgWaifR84x0z
+ qFqK2DIj3alkfG+A2KA==
+X-Received: by 2002:a17:902:da8e:b0:2b0:5661:e10c with SMTP id
+ d9443c01a7336-2b05661eacdmr76588615ad.37.1773740536272; 
+ Tue, 17 Mar 2026 02:42:16 -0700 (PDT)
+X-Received: by 2002:a17:902:da8e:b0:2b0:5661:e10c with SMTP id
+ d9443c01a7336-2b05661eacdmr76588485ad.37.1773740535914; 
+ Tue, 17 Mar 2026 02:42:15 -0700 (PDT)
+Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-2aece81dc18sm137688045ad.69.2026.03.17.02.42.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Mar 2026 02:39:58 -0700 (PDT)
-Message-ID: <69b9216e.df0a0220.302919.f339@mx.google.com>
-To: "Jinseok Kim" <always.starving0@gmail.com>
-In-Reply-To: <20260316154457.117543-1-always.starving0@gmail.com>
-Date: Tue, 17 Mar 2026 09:39:58 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ Tue, 17 Mar 2026 02:42:15 -0700 (PDT)
+Date: Tue, 17 Mar 2026 17:42:13 +0800
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <abkh9aPkKAewapRr@redhat.com>
+References: <20260313142600.243939-1-pvorel@suse.cz>
+ <20260313142600.243939-6-pvorel@suse.cz>
+MIME-Version: 1.0
+In-Reply-To: <20260313142600.243939-6-pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 4qiIdICsvb1cJ-el-PkFVgI52qQhWSqrQleyfZf6uec_1773740538
+X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] inotify: replace strcpy() with snprintf()
+Subject: Re: [LTP] [PATCH 5/6] [WIP,RFC] tst_run.sh: Run setup() only once
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,28 +107,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Cc: Sebastian Chlad <sebastian.chlad@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-
+On Fri, Mar 13, 2026 at 03:25:59PM +0100, Petr Vorel wrote:
+> Both C API and tst_test.sh shell API run test only once.
+> Fix shell loader API also to run setup only once.
+> This reuses functionality added in the previous commit.
 > 
->  #define BUF_SIZE 256
-> -static char fname1[BUF_SIZE], fname2[BUF_SIZE], fname3[BUF_SIZE];
-> +static char fname1[BUF_SIZE], fname2[PATH_MAX], fname3[PATH_MAX];
+> Fixes: 8202494493 ("shell lib: Add basic support for test setup")
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> NOTE: this is still not working on iterations (-i2), because
+> static int iterations is from tst_test.c is not propagated to
+> tst_run_shell.c. I wonder if I should set the value as environment
+> variable or add it into struct context.
 
-Still using BUF_SIZE.....
+Passing the current iteration as env variable is feasible.
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+Since LTP export an similar variable 'TST_ITERATIONS' in tst_test.sh,
+maybe define another env var for current loop, e.g. TST_ITERATION
+(or TST_CURRENT_LOOP), pass to tst_run.sh?
+
+Something like:
+
+1. Create tst_get_cur_iteration(void) function in LTP core API
+
+2. Export current loop in tst_run_shell.c before running run_shell_tcnt()
+
+  static void run_shell_tcnt(unsigned int n)
+  {
+    ...
+    char iter_buf[32];
+    
+    snprintf(iter_buf, sizeof(iter_buf), "%u", tst_get_cur_iteration());
+    
+    if (setenv("TST_ITERATION", iter_buf, 1))
+    	tst_brk(TBROK | TERRNO, "setenv(TST_ITERATION) failed");
+    
+    tst_run_script(shell_filename, params);
+  }
+
+3. Reuse it in tst_run.sh to run setup once globally
+
+  [ "$1" == "1" ] && [ "${TST_ITERATION:-1}" == "1" ] && $TST_SETUP
+
+
+-- 
+Regards,
+Li Wang
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
