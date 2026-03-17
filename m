@@ -4,88 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 772E6F3382F
-	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 09:54:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1773741297; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=+E3VIeTHW8McJCAIS2+0qZtyEHNog1O2O0dLoiAhZWo=;
- b=iFXQNtX4bID2AxrTE0riZI+vg7M5zaY0GbgozCkKr77I2ZAqcbv5+sVOMJGtBF9ZokclV
- tcOco1DiBR82BzxI4i4yn9BC1BKtHUINyJxUADgrlsEZaltc3TCv0+nfEndfIjFuZ+dh/px
- j4t1Cj3zn0y3fFRNlfV6qud/cAva5Wc=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71DFAF33832
+	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 09:58:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2ED433E484D
-	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 10:54:57 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 1778F3E4853
+	for <ltp@archiver.kernel.org>; Tue, 17 Mar 2026 10:58:47 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1D2113CDD00
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 10:54:32 +0100 (CET)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 07A8E3CDD00
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 10:58:27 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7D1AB1000901
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 10:54:32 +0100 (CET)
-Received: by mail-wm1-x32a.google.com with SMTP id
- 5b1f17b1804b1-48540355459so52946285e9.3
- for <ltp@lists.linux.it>; Tue, 17 Mar 2026 02:54:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1773741272; x=1774346072; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=GHgCzO8qOCPrRO81ZACiNPjQ56SM6RwwT4Jy3XGSmUk=;
- b=cVzlVsxgHQ8nAfUj9cME1Cv+DX1W3Oar3LeujgpCM3uPB+segV6Si/iSbxchVATzH8
- HfSapAFfK/Z6L4aEnoY2N63GYWFM+eyblV0iAgEXg+hvodKTjHP/3EGbM5OISsw/uEfu
- sfaj2I2vykK9AJnJOiFIPT1p3Vw4ap2bd8co47uoPjzjIZe4fyo98XBRqAPfiyDKxmnW
- 3jkyk2IhsoENpTRH/6hM4YFtDMwqViujwlD1l5ZhJAJF4ooMNSeT4Od/krmo6/yqxiaz
- wfTJdbka9qjFRiYwQv767vwWDFB6OzD2oo949hw7ZGJvZ9VJw1nvyBF2I6+rvLEkcmc7
- rMOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1773741272; x=1774346072;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=GHgCzO8qOCPrRO81ZACiNPjQ56SM6RwwT4Jy3XGSmUk=;
- b=nmWVbEI51u2Cl1XvAtCHFhxVuPJePOgPxKZ4XwghtrbWWXDxUIlRFnTKFx2cec1sBA
- 7rbwTJmpRvlL+5kVoSbcVArfBlJAaT0TLU3XZtxJrHJMPXgUzLZQlj9/hHkZqJQZQflC
- AWvNHAKfit5jU4bFWAirIbUeqGEpL1nxlWM+6D8efH9FN20s7l4uWpMewGE2uTWCLpC6
- 0aO/qdkxlnT8wlPRKihWndLScJonuyHEwH41RoQ+Xy5ZwGanF9cHIrBC99a+Lc6tmaGE
- JaDysL/w2ILy7knu51wzt8snCChWtp+EQnS/gd/unmKa15vblDdd8ODKvEvNI69MHcyH
- CKjA==
-X-Gm-Message-State: AOJu0Yyrs40wmMQoBRLKBMvANMQoKfVusGtSdGsjrvZDJcbv+y1OPQvF
- B7v6vnwZZghMUiyQvtGcFmopYD/9hbUQp/hHBU75szAh05A1AfrYhYCrBXsSoqah/yE=
-X-Gm-Gg: ATEYQzwUVc4DnAIEK8F3ytL0pjviVMWeXdSsBJ6foccL+ezxsRx1PvAJyxqcWdQ6kDs
- elUCL/nYHfQJtTSS/Im/eSyLtNOGguGaqYNq/aHDWSszoiQ3KOYmB2qVU5ifT9kfwZeQwyAjPFc
- p3M4Xk+PydlO0YvJ5VbbQmdNOuZLjQCqSzrl4HEM0PJPCM1/9L9p8nTt8E8PUgVQRWPzbJL5eSf
- R3owThgMXrDueII5Y/Qd+0dSH01vcBHy22jDPPJy5kKuYmVH1BaT34zN1pVpFFOfauhTTnb0H0l
- pY+EMfMyhelIl6hZmTq03YppiUfVQxFpj9ocN3KupD2tIowL2P/UtgwOBtRsJyZmDjxSRGNMhFI
- TMH/AFTMjx/NJJMOoo4RqNbekV0yzyn9wBt465FKLvHnHTD+AkJtnD2MZf4rkwLmOJCXUvlLxxg
- Qa6XYdzKfO99ksaIy/sWuRsyDZ41DPZvmWOSto05IpGyYkY5PrrvzrVm2NWBRoMw3uNvTuYIatX
- hTy8TJfwhRYoSv8EjWQoY+gzpUUR+OEBSmdgAnOtCmHKLtLpPFj5uWRIIKBI4YgnRI01IPMGC1g
- IBiC9Is/Q2Bt
-X-Received: by 2002:a05:600d:6444:20b0:485:4388:3492 with SMTP id
- 5b1f17b1804b1-485566d8d8fmr196291915e9.11.1773741271788; 
- Tue, 17 Mar 2026 02:54:31 -0700 (PDT)
-Received: from p200300ef2f4fc9002549698ebd81b8fb.dip0.t-ipconnect.de
- (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
- [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4856eaffbbdsm55376885e9.15.2026.03.17.02.54.30
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Mar 2026 02:54:31 -0700 (PDT)
-Message-ID: <69b924d7.050a0220.3d315b.23bd@mx.google.com>
-To: "Wei Gao" <wegao@suse.com>
-In-Reply-To: <20260317074340.589-1-wegao@suse.com>
-Date: Tue, 17 Mar 2026 09:54:30 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 496081400971
+ for <ltp@lists.linux.it>; Tue, 17 Mar 2026 10:58:25 +0100 (CET)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 62H7FPmM437268; Tue, 17 Mar 2026 09:58:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=DPZEjrA9FvNholPBVWTtu2j1kk8viDTDfct4BrT8J
+ p8=; b=H0qprfVEMNHNWRCA7ZoKzMEpaeOjx84//bJDAYy1eACkHVYLxUnR5P67L
+ EIGUPKvOPJHwPULuSezhMa7axncK8p1hoQFNaAz+7PAkBCDlAuZ6XEKGCCEOO4e6
+ ppH8TCoNy/86xqhkpJcVcEAp7GhZIe5E5n/Ne3GNR1xw/bpJrgq6avRTHspQaJY6
+ TT4zEO0j1TuS7RhFgzH4Z/3V2IxaEXkZW/+1eM6votPNi5wF4DUK99BiJaJL2kpD
+ RmE4STFD79bDj82bSy2fR1JCZBnRjpJIi1Sx01/4q1C2yy7lWcp2hGYXQFq+TGmq
+ epXfyNHhGK6mmUG4xTaNL8ce6V7Vw==
+Received: from ppma13.dal12v.mail.ibm.com
+ (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cvx3cumr0-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 17 Mar 2026 09:58:23 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62H7TFt7032327;
+ Tue, 17 Mar 2026 09:58:23 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4cwm7jrd7k-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 17 Mar 2026 09:58:22 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com
+ [10.20.54.100])
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 62H9wJcS30409012
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 17 Mar 2026 09:58:19 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 1DF0F2004D;
+ Tue, 17 Mar 2026 09:58:19 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 4B08F20040;
+ Tue, 17 Mar 2026 09:58:18 +0000 (GMT)
+Received: from ltcden9-lp6.ltc.tadn.ibm.com (unknown [9.5.7.39])
+ by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Tue, 17 Mar 2026 09:58:18 +0000 (GMT)
+From: Samir <samir@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Tue, 17 Mar 2026 10:55:59 +0100
+Message-ID: <20260317095559.5766-1-samir@linux.ibm.com>
+X-Mailer: git-send-email 2.51.0
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=arO/yCZV c=1 sm=1 tr=0 ts=69b925bf cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=V8glGbnc2Ofi9Qvn3v5h:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=Racjj8Z5teZeQa23H_EA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzE3MDA4NSBTYWx0ZWRfX2ktZj21l4KXv
+ ukYFVBnOZBpsDM5NyhAiCzXLPLlFthpSx5VpyEmU8Hy/o/VCgp8PSu94+H/AOQ+QDsvjArhMu4t
+ OsgSMaOWUMVWA4jZAvHtUlq2VlehLdo9VVX3Ha6BcUWkV/yfqzkLmpwOr3VNrK1dlfXg46+oDHW
+ bmhx7drSruqT0gBgn3vPDTkWe7FLzOyoP05CAdgzpAlrryaSjyJvBqPaU5mtJ0RWfm6dRZjV2Hk
+ IfHzBOEpClwdAC1UnvIBBS/ePTkHr/Xf2swq7KtXbKuudz75Hkr9U6viC2KBlqiuRBCMdNWq35C
+ 3fVMEu3Wwcn851a90swtbUqU7s28h1Xg2rLq2dt64MoqZRsHEWpoKbF72BhmJmZIWsvwAeuX0pF
+ Xy8FYqlMTw5F8P43MDYe3PXOzF+rmqsN9ndPkjd1LnlnL48m7gj7L70xMfKqIuePF5FQD7HFZiD
+ IgZ8RRsTFwApu04Tjcw==
+X-Proofpoint-GUID: COlKDuys1RMUOfqB6Pp-y9owKn-ZzFkw
+X-Proofpoint-ORIG-GUID: COlKDuys1RMUOfqB6Pp-y9owKn-ZzFkw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-17_01,2026-03-16_06,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0 clxscore=1011
+ phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2603050001
+ definitions=main-2603170085
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] io_submit04: Add test case for RWF_NOWAIT flag
+Subject: [LTP] [PATCH v4] Migrating the
+ libhugetlbfs/testcases/alloc-instantiate-race.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,63 +107,361 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
+Cc: Samir <samir@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+This test is designed to detect a kernel allocation race introduced
+with hugepage demand-faulting.  The problem is that no lock is held
+between allocating a hugepage and instantiating it in the
+pagetables or page cache index.  In between the two, the (huge)
+page is cleared, so there's substantial time.  Thus two processes
+can race instantiating the (same) last available hugepage - one
+will fail on the allocation, and thus cause an OOM fault even
+though the page it actually wants is being instantiated by the
+other racing process.
 
-Thanks for the patch. I have a few issues to address before this can
-be merged.
+Signed-off-by: Samir <samir@linux.ibm.com>
+v3: https://lore.kernel.org/all/20250928030721.3537869-1-samir@linux.ibm.com/
+---
+v4:
+Addressed review comments:
+- Removed unnecessary [Description] tag from comment block
+- Added static keyword to global variables (child1, child2, race_type, fd_sync)
+- Moved totpages and hpage_size to local scope in run_test()
+- Replaced busy loop with TST_CHECKPOINT_WAIT/WAKE mechanism
+- Fixed indentation in thread_racer() function
+- Made check_online_cpus() function static
+- Declared loop variable 'i' inside for loops using C99 style
+- Removed unnecessary 'available' variable, use CPU_COUNT() directly
+- Fixed indentation for tst_res() call
+- Removed q_sync global variable to avoid uninitialized access
+- Removed unused SYSFS_CPU_ONLINE_FMT macro
+- Optimized variable scope throughout the code
+- Implemented proper checkpoint synchronization pattern
+- Added cleanup() function for resource cleanup
+- Updated Makefile, runtest/hugetlb, and .gitignore
+---
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap36.c  | 279 ++++++++++++++++++
+ 3 files changed, 281 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
 
-> diff --git a/include/lapi/aio_abi.h b/include/lapi/aio_abi.h
-> +struct iocb_fallback {
-> +        uint64_t aio_data;
-> +#if __BYTE_ORDER == __LITTLE_ENDIAN
-> +        uint32_t   aio_key;
-> +        uint32_t aio_rw_flags;
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 0896d3c94..bd40a7a30 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -36,6 +36,7 @@ hugemmap30 hugemmap30
+ hugemmap31 hugemmap31
+ hugemmap32 hugemmap32
+ hugemmap34 hugemmap34
++hugemmap36 hugemmap36
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+ hugemmap05_3 hugemmap05 -s -m
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index b4455de51..2ddef6bf1 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -36,6 +36,7 @@
+ /hugetlb/hugemmap/hugemmap31
+ /hugetlb/hugemmap/hugemmap32
+ /hugetlb/hugemmap/hugemmap34
++/hugetlb/hugemmap/hugemmap36
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+new file mode 100644
+index 000000000..6549a7b68
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+@@ -0,0 +1,279 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2005-2006 IBM Corporation
++ * Author: David Gibson & Adam Litke
++ */
++
++/*
++ * This test is designed to detect a kernel allocation race introduced
++ * with hugepage demand-faulting.  The problem is that no lock is held
++ * between allocating a hugepage and instantiating it in the
++ * pagetables or page cache index.  In between the two, the (huge)
++ * page is cleared, so there's substantial time.  Thus two processes
++ * can race instantiating the (same) last available hugepage - one
++ * will fail on the allocation, and thus cause an OOM fault even
++ * though the page it actually wants is being instantiated by the
++ * other racing process.
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <pthread.h>
++#include "tst_safe_pthread.h"
++#include "hugetlb.h"
++
++#define MNTPOINT "hugetlbfs/"
++
++static char *str_op;
++static int child1, child2, race_type, fd_sync;
++
++struct racer_info {
++	void *p;
++	int cpu;
++	int status;
++};
++
++static int one_racer(void *p, int cpu)
++{
++	volatile int *pi = p;
++	cpu_set_t *cpuset;
++	size_t mask_size;
++	int err;
++
++	cpuset = CPU_ALLOC(cpu + 1);
++	if (!cpuset)
++		tst_brk(TBROK | TERRNO, "CPU_ALLOC() failed");
++
++	mask_size = CPU_ALLOC_SIZE(cpu + 1);
++
++	/* Split onto different CPUs to encourage the race */
++	CPU_ZERO_S(mask_size, cpuset);
++	CPU_SET_S(cpu, mask_size, cpuset);
++
++	err = sched_setaffinity(getpid(), mask_size, cpuset);
++	if (err == -1)
++		tst_brk(TBROK | TERRNO, "sched_setaffinity() failed");
++
++	/* Wait for parent to signal both racers to start */
++	TST_CHECKPOINT_WAIT(0);
++
++	/* Set the shared value */
++	*pi = 1;
++
++	CPU_FREE(cpuset);
++	return 0;
++}
++
++static void proc_racer(void *p, int cpu)
++{
++	exit(one_racer(p, cpu));
++}
++
++static void *thread_racer(void *info)
++{
++	struct racer_info *ri = info;
++
++	ri->status = one_racer(ri->p, ri->cpu);
++	return ri;
++}
++
++static void check_online_cpus(int online_cpus[], int nr_cpus_needed)
++{
++	cpu_set_t cpuset;
++	int total_cpus, cpu_idx;
++
++	CPU_ZERO(&cpuset);
++
++	for (int i = 0; i < CPU_SETSIZE; i++)
++		CPU_SET(i, &cpuset);
++
++	if (sched_setaffinity(0, sizeof(cpuset), &cpuset) == -1)
++		tst_brk(TBROK | TERRNO, "sched_setaffinity() reset failed");
++
++	total_cpus = get_nprocs_conf();
++
++	if (sched_getaffinity(0, sizeof(cpu_set_t), &cpuset) == -1)
++		tst_brk(TBROK | TERRNO, "sched_getaffinity() failed");
++
++	tst_res(TINFO, "Online CPUs needed: %d, available: %d",
++		nr_cpus_needed, CPU_COUNT(&cpuset));
++
++	if (CPU_COUNT(&cpuset) < nr_cpus_needed)
++		tst_brk(TCONF, "At least %d online CPUs are required", nr_cpus_needed);
++
++	cpu_idx = 0;
++	for (int i = 0; i < total_cpus && cpu_idx < nr_cpus_needed; i++) {
++		if (CPU_ISSET(i, &cpuset))
++			online_cpus[cpu_idx++] = i;
++	}
++
++	if (cpu_idx < nr_cpus_needed)
++		tst_brk(TBROK, "Unable to find enough online CPUs");
++}
++
++static void run_race(int race_type)
++{
++	int fd = -1;
++	void *p = MAP_FAILED;
++	void *tret1, *tret2;
++	int status1 = 0, status2 = 0;
++	int online_cpus[2];
++	long hpage_size;
++	pthread_t thread1, thread2;
++
++	check_online_cpus(online_cpus, 2);
++
++	hpage_size = tst_get_hugepage_size();
++
++	/* Get a new file for the final page */
++	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
++	tst_res(TINFO, "Mapping final page..");
++
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, race_type, fd, 0);
++
++	if (race_type == MAP_SHARED) {
++		child1 = SAFE_FORK();
++		if (child1 == 0)
++			proc_racer(p, online_cpus[0]);
++
++		child2 = SAFE_FORK();
++		if (child2 == 0)
++			proc_racer(p, online_cpus[1]);
++
++		/* Wake both children to start the race simultaneously */
++		TST_CHECKPOINT_WAKE2(0, 2);
++
++		SAFE_WAITPID(child1, &status1, 0);
++		tst_res(TINFO, "Child 1 status: %x", status1);
++
++		SAFE_WAITPID(child2, &status2, 0);
++		tst_res(TINFO, "Child 2 status: %x", status2);
++
++		if (WIFSIGNALED(status1))
++			tst_res(TFAIL, "Child 1 killed by signal %s",
++				strsignal(WTERMSIG(status1)));
++		if (WIFSIGNALED(status2))
++			tst_res(TFAIL, "Child 2 killed by signal %s",
++				strsignal(WTERMSIG(status2)));
++	} else {
++		struct racer_info ri1 = {
++			.p = p,
++			.cpu = online_cpus[0],
++			.status = -1,
++		};
++		struct racer_info ri2 = {
++			.p = p,
++			.cpu = online_cpus[1],
++			.status = -1,
++		};
++
++		SAFE_PTHREAD_CREATE(&thread1, NULL, thread_racer, &ri1);
++		SAFE_PTHREAD_CREATE(&thread2, NULL, thread_racer, &ri2);
++
++		/* Wake both threads to start the race simultaneously */
++		TST_CHECKPOINT_WAKE2(0, 2);
++
++		SAFE_PTHREAD_JOIN(thread1, &tret1);
++		if (tret1 != &ri1)
++			tst_res(TFAIL, "Thread 1 returned %p not %p, killed?",
++				tret1, &ri1);
++
++		SAFE_PTHREAD_JOIN(thread2, &tret2);
++		if (tret2 != &ri2)
++			tst_res(TFAIL, "Thread 2 returned %p not %p, killed?",
++				tret2, &ri2);
++
++		status1 = ri1.status;
++		status2 = ri2.status;
++	}
++
++	if (status1 != 0)
++		tst_res(TFAIL, "Racer 1 terminated with code %d", status1);
++
++	if (status2 != 0)
++		tst_res(TFAIL, "Racer 2 terminated with code %d", status2);
++
++	if (status1 == 0 && status2 == 0)
++		tst_res(TPASS, "Test completed successfully");
++
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++
++	if (p != MAP_FAILED)
++		SAFE_MUNMAP(p, hpage_size);
++}
++
++static void run_test(void)
++{
++	unsigned long totpages;
++	long hpage_size;
++	void *p_sync = MAP_FAILED;
++
++	totpages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	hpage_size = tst_get_hugepage_size();
++
++	tst_res(TINFO, "Instantiating..");
++
++	fd_sync = tst_creat_unlinked(MNTPOINT, 0, 0600);
++
++	tst_res(TINFO, "Mapping %ld/%ld pages..", totpages - 1, totpages);
++	p_sync = SAFE_MMAP(NULL, (totpages - 1) * hpage_size, PROT_READ|PROT_WRITE,
++			   MAP_SHARED, fd_sync, 0);
++
++	run_race(race_type);
++
++	if (fd_sync >= 0)
++		SAFE_CLOSE(fd_sync);
++
++	if (p_sync != MAP_FAILED)
++		SAFE_MUNMAP(p_sync, (totpages - 1) * hpage_size);
++}
++
++static void setup(void)
++{
++	if (str_op) {
++		if (strcmp(str_op, "shared") == 0)
++			race_type = MAP_SHARED;
++		else if (strcmp(str_op, "private") == 0)
++			race_type = MAP_PRIVATE;
++		else
++			tst_brk(TBROK, "Invalid parameter: use -m <private|shared>");
++	} else {
++		/* Default to shared if no option is passed */
++		race_type = MAP_SHARED;
++	}
++}
++
++static void cleanup(void)
++{
++	if (fd_sync >= 0)
++		SAFE_CLOSE(fd_sync);
++
++	if (child1 > 0) {
++		if (kill(child1, 0) == 0)
++			SAFE_KILL(child1, SIGKILL);
++	}
++
++	if (child2 > 0) {
++		if (kill(child2, 0) == 0)
++			SAFE_KILL(child2, SIGKILL);
++	}
++}
++
++static struct tst_test test = {
++	.options = (struct tst_option[]) {
++		{"m:", &str_op, "Type of mmap() mapping <private|shared>"},
++		{}
++	},
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.hugepages = {2, TST_NEEDS},
++	.forks_child = 1,
++	.needs_checkpoints = 1,
++	.min_cpus = 2
++};
+-- 
+2.51.0
 
-The struct body uses spaces for indentation instead of tabs. Please
-convert to tabs to match the kernel coding style used in other lapi
-headers.
-
-> +static void cleanup(void)
-> +{
-> +   if (fd[0])
-> +           SAFE_CLOSE(fd[0]);
-> +
-> +   if (fd[1])
-> +           SAFE_CLOSE(fd[1]);
-
-fd is initialised to {-1, -1}. The check `if (fd[0])` is truthy for
--1, so if setup() aborts before SAFE_PIPE() (e.g. io_setup fails),
-cleanup will call SAFE_CLOSE(-1) which fails with EBADF and triggers
-a spurious TBROK. Use the standard LTP pattern:
-
-    if (fd[0] != -1)
-        SAFE_CLOSE(fd[0]);
-
-    if (fd[1] != -1)
-        SAFE_CLOSE(fd[1]);
-
-> +   TEST(tst_syscall(__NR_io_submit, ctx, nr, iocbs));
-> +
-> +   if (TST_RET == -1 && errno == EOPNOTSUPP) {
-
-After the TEST() macro, use TST_ERR instead of bare errno:
-
-    if (TST_RET == -1 && TST_ERR == EOPNOTSUPP) {
-
-Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
