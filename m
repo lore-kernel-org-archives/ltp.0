@@ -4,57 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E236FCD0C4
-	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 13:03:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F0A5103E174
+	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 13:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1773839074; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=8oCAsoDXbLaPQDS5l7IlFRxQQB9a/6lH9iAuqYg4n7M=;
+ b=Dy0MJuvYw+yMFRjbwfbZuFKYXD1eEMAOv7jXRCWf6kgTxZM8zB1tBvwMDHXtFXwTP3qSA
+ DQ68X8WRuHHwNeKmndgRZ3H/WixIu2pVzljJQEdfvIPeGchR/xZCkiUk/7zuX0p66jb2pZt
+ 7pjsGkCdS5DdrEhS6+Hy7MWnJAzvILo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 088ED3E6091
-	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 14:03:50 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B174F3E608C
+	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 14:04:34 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 415453CD52A
- for <ltp@lists.linux.it>; Wed, 18 Mar 2026 14:03:31 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 26D103CD52A
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 14:04:11 +0100 (CET)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
+ [IPv6:2a00:1450:4864:20::32c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1CB351000619
- for <ltp@lists.linux.it>; Wed, 18 Mar 2026 14:03:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1773839010; x=1805375010;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=a5JCGRUHyzd64YjxNABPO8B2DvCS8ntEJd4s1GdmbwE=;
- b=Zvq/Rbz2dN5V9pG6GViasUtd0IaL4Oc62azSxiDmGpTfNbGMiCWiOzuB
- konKmZCphNHiRjgSi0/qRbnrReJGW2uYjB8BRVDg/65Mak9cQnTNxzlfQ
- NBz6KMzrkdP1xTlDMn9Q/CIEslBUZPpOwy2HjuNg256r0sJ176vB0/WrZ
- fpVh8xLHyYiVGgDfr7rDpBsBxA0h6fVMpTWzay37CY9fxcoAmkUXZ+wBE
- okAb0xGpU8B7ApsWKlZ/fPj1sSCABmCzp5nPruL+ConNQQb5/VY6KxNj9
- 56E8pP/u0rABXC7MU7R7wN/w94d9W29anI+6jjaDR9qlQ9phxs/Btvg/3 A==;
-X-CSE-ConnectionGUID: lmr7nY7cTVCkR4zj6IKCow==
-X-CSE-MsgGUID: euhQ+nupR26qgLyvPSkT5Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11733"; a="74070323"
-X-IronPort-AV: E=Sophos;i="6.23,127,1770624000"; d="scan'208";a="74070323"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
- by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Mar 2026 06:03:27 -0700
-X-CSE-ConnectionGUID: 3iAKAxvTRp+pqBSPdQT8RA==
-X-CSE-MsgGUID: QVENEaTzT0aDmS4/Ex2I1Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,127,1770624000"; d="scan'208";a="216813012"
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
- by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Mar 2026 06:03:25 -0700
-From: Piotr Kubaj <piotr.kubaj@intel.com>
-To: ltp@lists.linux.it
-Date: Wed, 18 Mar 2026 14:02:51 +0100
-Message-ID: <20260318130250.68495-2-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8E11A600D3B
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 14:04:10 +0100 (CET)
+Received: by mail-wm1-x32c.google.com with SMTP id
+ 5b1f17b1804b1-4852c9b4158so60859445e9.0
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 06:04:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1773839050; x=1774443850; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=creFJZ6QlFXaHMN3W6tnqi98r87LVQ5Imwu3O+ay5wg=;
+ b=P762PoD1z/XTaHop8vqNiI/MVjhb2BxNfz5WZpU2vHL1sqsAq6WYIhvB3NBBuhrFru
+ vxp11pA/S85dfao7UvCyyVhwR4BI9OsMDmqL2nIcX+4ZRtP636yKjbZK7dr3/XU5HJGD
+ tQgPS0SvoNWjVeXqFJkaCb+UxcC8u9N9gYenNDc2tLSNQA6J19TtyxSDn9w0+wZOUNbi
+ E8CSogXLgmldpiPCO4Ub/x892ge014bEXp9izwrT6sbpjWYO5jvo39xVlXSpXL3DmSOW
+ yMb1QIF2/+yz9gHLnP2sKiDWUVOQZaG5IlyYQbwTHZFgwdhNloIi858e9pmvjU4Z6u5W
+ zzyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1773839050; x=1774443850;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=creFJZ6QlFXaHMN3W6tnqi98r87LVQ5Imwu3O+ay5wg=;
+ b=qMulCc9YRPbE3gcOFp3clLm0eaVJt9ApU4fgqIq2Vn8aWWwZZHLUQ7gwPp9Au5KieC
+ wHrmyAWLS7Yd7PjL4rWYFO4q2VdBX7m/XDlvPMFuBQ4VhaqzdqZkfjFX0LDkpfpIxY+l
+ zyHqif8FbbNJ5Zjp+ex/eu9xFNdIJuuRyd0Sthz9dSfVL5iRaIgGmKx78qc5k/e5PrU3
+ TJ9cjl51CNT32BNjkaqztjviBnI0kG1tDcMq57BIf9A6XToNQ+yN6qaHg0hPw0Rwptzx
+ 3/iZL87Oxcr3rLh5PRx1jiAZSoxawphYskub8iv1nUZiHVjPU/ghS7RwUSokqECwHh4t
+ SmZQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVEV/+WNzj/5yVGTjjodcGgSYk4BCwY05KC3sqXaMSFIa11/J+YOFSEw1ETg3K0Z9WTmUc=@lists.linux.it
+X-Gm-Message-State: AOJu0YwoTxjYsLmAPNozusnMXbQSOWLZNfBuaDR0F1VWx8bG5B5hjcvN
+ 2C83yG3eMDP7yuQEukCSUYkSaS7tJ3pPc/WVfv/SPWNCkQ/Ff6RZhxn1FKPusMPpHJw=
+X-Gm-Gg: ATEYQzx0qqAgRhS80F2XVY95m4f4xlfuDY6h2ml5Rof8a+zIgXx5XDFckoen6UuRd9R
+ uGfL6x6XMggKj/ohc/2cfHYa+sXzSeXOPzwSmkC/kJQnSHeCk6SVL1oqy6GZprYTvzURa64j/mm
+ t/v4QRsJ31rqFZreCe8zRKHtCFFxZub6hvNUSV0SMS+esC4C5frg6BbrznrucYYmh8Ex8sw5Jfs
+ Cpb19XSYBXUxD7CDnm74G5NXJ/IaTQCNxCKnCUJEncClMSw1gpOOfg4+8JGZhCoDab/e0QakVYN
+ FPge2fWuNbj3JFIvR6ox1otEv0KhYcY9kTpZRNC+Ye4sj+3X71t+JAJqKxNzGZfdJrAVCOCqi/p
+ 5kTPVIUbPFqVQioy+RRTZ+Zyl1re4pJ6JNomKKl58Zv+cDzUwJFVVv1pMn071SR9NAgxnup6tr4
+ GTHUOwfApuSCf8cnS+BX/e7Tdqb3AMRZWkDLnHDYnK
+X-Received: by 2002:a05:600c:c491:b0:486:d76c:fa57 with SMTP id
+ 5b1f17b1804b1-486f4469363mr54127425e9.17.1773839049744; 
+ Wed, 18 Mar 2026 06:04:09 -0700 (PDT)
+Received: from localhost.localdomain ([88.128.90.12])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-486f4e48ad5sm80014355e9.1.2026.03.18.06.04.08
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 18 Mar 2026 06:04:08 -0700 (PDT)
+Message-ID: <69baa2c8.050a0220.3719be.4e9a@mx.google.com>
+To: "Andrea Cervesato" <andrea.cervesato@suse.com>
+In-Reply-To: <69b97807.050a0220.26befa.70b8@mx.google.com>
+Date: Wed, 18 Mar 2026 13:04:07 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] high_freq_hwp_cap_cppc.c: new test
+Subject: Re: [LTP] LTP old API conversion
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,113 +95,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Verify for all online logical CPUs that their highest performance value are
-the same for HWP Capability MSR 0x771 and CPPC sysfs file.
+> An another thing is how we want to push these patches in the repository. At the
+> moment kernel is using some special tags to identify if patches have been
+> generated by LLMs or by humans. This is something we should think about,
+> because we already have a few examples recently (i.e. your ulimit01, newuname01
+> tests and my listns() testing suite) where LLMs where doing most of the job.
+> Also, we are receiving more and more patches which seem to be written by AI.
 
-Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
----
- testcases/kernel/power_management/.gitignore  |  1 +
- .../power_management/high_freq_hwp_cap_cppc.c | 66 +++++++++++++++++++
- 2 files changed, 67 insertions(+)
- create mode 100644 testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
+What about this ?
 
-diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
-index 0c2a3ed4b..c13bca1c4 100644
---- a/testcases/kernel/power_management/.gitignore
-+++ b/testcases/kernel/power_management/.gitignore
-@@ -1 +1,2 @@
-+high_freq_hwp_cap_cppc
- pm_get_sched_values
-diff --git a/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-new file mode 100644
-index 000000000..e3008d38a
---- /dev/null
-+++ b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-@@ -0,0 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/*
-+ * Copyright (C) 2026 Intel - http://www.intel.com/
-+ */
-+
-+/*\
-+ * Verify for all online logical CPUs that their highest performance value are
-+ * the same for HWP Capability MSR 0x771 and CPPC sysfs file.
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_safe_prw.h"
-+
-+static int nproc;
-+
-+static void setup(void)
-+{
-+	nproc = tst_ncpus();
-+}
-+
-+static void run(void)
-+{
-+	bool status = true;
-+
-+	for (int i = 0; i < nproc; i++) {
-+		char path[PATH_MAX];
-+		unsigned long long msr_highest_perf = 0, sysfs_highest_perf = 0;
-+
-+		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/acpi_cppc/highest_perf", i);
-+		SAFE_FILE_SCANF(path, "%llu", &sysfs_highest_perf);
-+		tst_res(TDEBUG, "%s: %llu", path, sysfs_highest_perf);
-+
-+		snprintf(path, sizeof(path), "/dev/cpu/%d/msr", i);
-+		int fd = SAFE_OPEN(path, O_RDONLY);
-+
-+		if (SAFE_PREAD(1, fd, &msr_highest_perf, sizeof(msr_highest_perf), 0x771) == -1)
-+			tst_brk(TBROK | TERRNO, "MSR read error");
-+		msr_highest_perf &= (1ULL << 8) - 1;
-+		tst_res(TDEBUG, "%s: %llu", path, msr_highest_perf);
-+
-+		if (msr_highest_perf != sysfs_highest_perf)
-+			status = false;
-+	}
-+
-+	if (status)
-+		tst_res(TPASS, "Sysfs and MSR values are equal");
-+	else
-+		tst_res(TFAIL, "Highest performance values differ between sysfs and MSR");
-+}
-+
-+static struct tst_test test = {
-+	.needs_kconfigs = (const char *const []) {
-+		"CONFIG_ACPI_CPPC_LIB",
-+		"CONFIG_X86_MSR",
-+		NULL
-+	},
-+	.needs_root = 1,
-+	.setup = setup,
-+	.supported_archs = (const char *const []) {
-+		"x86",
-+		"x86_64",
-+		NULL
-+	},
-+	.test_all = run
-+};
--- 
-2.47.3
-
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
