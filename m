@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5846103E179
-	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 13:45:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7BC8103E17D
+	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 13:53:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5CF153E5CAA
-	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 14:45:15 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 889393E6096
+	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 14:53:06 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C86B93E1107
- for <ltp@lists.linux.it>; Wed, 18 Mar 2026 14:44:56 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 754AE3C9F77
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 14:52:47 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 52531100034E
- for <ltp@lists.linux.it>; Wed, 18 Mar 2026 14:44:56 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D353F140097F
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 14:52:46 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0E1674D3AF;
- Wed, 18 Mar 2026 13:44:55 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 440865BD46;
+ Wed, 18 Mar 2026 13:52:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773841495;
+ t=1773841960;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0KmQFVRyk1OQPyFmvk3D9TlS3ixQCgz14zXd/FkGc9k=;
- b=JmBPLtf76CAOfHGST1VcEAXwU9EcL4dTdBZIxSgdlkWSacwKhRXeKdsM8pb+/uzbXp0yBV
- WLjze3R3xt7EHwnEIeI8ijGHfzd1yc8TC61KIUr5kOCuPjT77oWQZyMV0CKQUfNHGG+U9r
- A/WqYE+9js93oiemNREw9s3mBp21FaY=
+ bh=Qn243bDVVOCFYAwGapzhy+kVR0/prbe1wQ9iket0wmE=;
+ b=1RgEg4wmRk/DNzRRfGBhiK/HD8iqq/UzPF9muB6T6NvlVp9u1AX7+JXsK9BzZ6Yj4fBfbE
+ l2igXxjCqX6KH0kWkfNope2uOtZbIba32iHF8GIrif9wVT3/ly1+61r9zKJ6C9J3HJwRG1
+ +0RWmmdNQPL1tNSIhMnW5mgtk0q9yBM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773841495;
+ s=susede2_ed25519; t=1773841960;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0KmQFVRyk1OQPyFmvk3D9TlS3ixQCgz14zXd/FkGc9k=;
- b=FhgjnYbm/5IzvdsrUtVC9pl46vi0fsIF4EdXZaOrCETEGc6qReyEkGWkuA/hOQ9VM25QGF
- QaOK9jhmO8mZ9sCg==
-Authentication-Results: smtp-out1.suse.de;
+ bh=Qn243bDVVOCFYAwGapzhy+kVR0/prbe1wQ9iket0wmE=;
+ b=ahAX6uQFdKYmmQzfSEFX6AaruKfgaUQ6R/t70gqFsPMN/fPgkWUGJMzqmo0kbpJEXLsAWx
+ X6anLfJsID8kEYAQ==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773841495;
+ t=1773841960;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0KmQFVRyk1OQPyFmvk3D9TlS3ixQCgz14zXd/FkGc9k=;
- b=JmBPLtf76CAOfHGST1VcEAXwU9EcL4dTdBZIxSgdlkWSacwKhRXeKdsM8pb+/uzbXp0yBV
- WLjze3R3xt7EHwnEIeI8ijGHfzd1yc8TC61KIUr5kOCuPjT77oWQZyMV0CKQUfNHGG+U9r
- A/WqYE+9js93oiemNREw9s3mBp21FaY=
+ bh=Qn243bDVVOCFYAwGapzhy+kVR0/prbe1wQ9iket0wmE=;
+ b=1RgEg4wmRk/DNzRRfGBhiK/HD8iqq/UzPF9muB6T6NvlVp9u1AX7+JXsK9BzZ6Yj4fBfbE
+ l2igXxjCqX6KH0kWkfNope2uOtZbIba32iHF8GIrif9wVT3/ly1+61r9zKJ6C9J3HJwRG1
+ +0RWmmdNQPL1tNSIhMnW5mgtk0q9yBM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773841495;
+ s=susede2_ed25519; t=1773841960;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0KmQFVRyk1OQPyFmvk3D9TlS3ixQCgz14zXd/FkGc9k=;
- b=FhgjnYbm/5IzvdsrUtVC9pl46vi0fsIF4EdXZaOrCETEGc6qReyEkGWkuA/hOQ9VM25QGF
- QaOK9jhmO8mZ9sCg==
+ bh=Qn243bDVVOCFYAwGapzhy+kVR0/prbe1wQ9iket0wmE=;
+ b=ahAX6uQFdKYmmQzfSEFX6AaruKfgaUQ6R/t70gqFsPMN/fPgkWUGJMzqmo0kbpJEXLsAWx
+ X6anLfJsID8kEYAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA0814273B;
- Wed, 18 Mar 2026 13:44:54 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1E4084273B;
+ Wed, 18 Mar 2026 13:52:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id lBNANFasumlrMgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 18 Mar 2026 13:44:54 +0000
-Date: Wed, 18 Mar 2026 14:44:53 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id b3eoBiiuumlcOgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 18 Mar 2026 13:52:40 +0000
+Date: Wed, 18 Mar 2026 14:52:30 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <20260318134453.GA19771@pevik>
-References: <20260318132639.18818-1-pvorel@suse.cz>
+To: Piotr Kubaj <piotr.kubaj@intel.com>
+Message-ID: <20260318135230.GB18914@pevik>
+References: <20260318130250.68495-2-piotr.kubaj@intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260318132639.18818-1-pvorel@suse.cz>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20260318130250.68495-2-piotr.kubaj@intel.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
@@ -93,11 +93,11 @@ X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,intel.com:email];
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/2] power_management: cleanup
+Subject: Re: [LTP] [PATCH v2] high_freq_hwp_cap_cppc.c: new test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,39 +110,79 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: automated-testing@lists.yoctoproject.org
+Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
+ helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+> Verify for all online logical CPUs that their highest performance value are
+> the same for HWP Capability MSR 0x771 and CPPC sysfs file.
 
-> Hi,
+> Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+> ---
+>  testcases/kernel/power_management/.gitignore  |  1 +
+>  .../power_management/high_freq_hwp_cap_cppc.c | 66 +++++++++++++++++++
 
-> I wanted to delete whole old testsuite (README mentions ancient kernel
-> 2.6.29.4 etc) but because Intel folks contributed power management test
-> [1] and CPUFREQ/CPUIDLE sysfs tests are probably valid and should be
-> rewritten.
+As I wrote in v1, any tests needs to be added into runtest file,
+runtest/power_management_tests in this case.
 
-Other problem is that all x86_64 machines I debug have all
-/sys/devices/system/cpu/cpu*/topology/physical_package_id
-files only 0, therefore all runpwtests_exclusive0*.sh are skipped.
+>  2 files changed, 67 insertions(+)
+>  create mode 100644 testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
 
-> Of course README itself is also outdated (some scripts has been removed
-> and code put into the servers).
+...
+> +static void run(void)
+> +{
+> +	bool status = true;
+> +
+> +	for (int i = 0; i < nproc; i++) {
+> +		char path[PATH_MAX];
+> +		unsigned long long msr_highest_perf = 0, sysfs_highest_perf = 0;
+> +
+> +		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/acpi_cppc/highest_perf", i);
+> +		SAFE_FILE_SCANF(path, "%llu", &sysfs_highest_perf);
+> +		tst_res(TDEBUG, "%s: %llu", path, sysfs_highest_perf);
+> +
+> +		snprintf(path, sizeof(path), "/dev/cpu/%d/msr", i);
+> +		int fd = SAFE_OPEN(path, O_RDONLY);
+> +
+> +		if (SAFE_PREAD(1, fd, &msr_highest_perf, sizeof(msr_highest_perf), 0x771) == -1)
+> +			tst_brk(TBROK | TERRNO, "MSR read error");
 
-> [1] https://lore.kernel.org/ltp/20260318130250.68495-2-piotr.kubaj@intel.com/
+SAFE_*() functions contain error check, tst_brk() is redundant.
 
+> +		msr_highest_perf &= (1ULL << 8) - 1;
+> +		tst_res(TDEBUG, "%s: %llu", path, msr_highest_perf);
+> +
+> +		if (msr_highest_perf != sysfs_highest_perf)
+> +			status = false;
+> +	}
+> +
+> +	if (status)
+> +		tst_res(TPASS, "Sysfs and MSR values are equal");
+> +	else
+> +		tst_res(TFAIL, "Highest performance values differ between sysfs and MSR");
+I would print TFAIL in the for loop with CPU ID and both values.
+And here print only final TPASS.
 
-> Petr Vorel (2):
->   runpwtests03.sh: Replace modprobe -l to lsmod
->   power_management: Remove runpwtests0[125].sh
+> +}
+> +
+> +static struct tst_test test = {
+> +	.needs_kconfigs = (const char *const []) {
+> +		"CONFIG_ACPI_CPPC_LIB",
+> +		"CONFIG_X86_MSR",
 
->  runtest/power_management_tests                |  3 -
-Given how old tests are is completely useless "_tests" suffix on the runtest
-file. I know renaming runtest files is not practical (at least Cyril was against
-in the past), but in this case I'd be for renaming it.
+Also even on this version I have:
+high_freq_hwp_cap_cppc.c:31: TBROK: Failed to open FILE '/sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf' for reading: ENOENT (2)
+
+on 6.18 kernel even I run modprobe msr
+
+$ grep -e CONFIG_X86_MSR -e CONFIG_ACPI_CPPC_LIB /boot/config-6.18.*
+CONFIG_X86_MSR=m
+CONFIG_ACPI_CPPC_LIB=y
+
+OTOH on 7.0.0-rc2 with the same config values autoloading worked.
 
 Kind regards,
 Petr
