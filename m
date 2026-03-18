@@ -4,67 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D615410775FE
-	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 18:18:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F88E1077603
+	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 18:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1773858604; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=q+lCzmiT3f8qwJZky0z3nMW/sSJ5n+QRfPuVbheNBOo=;
+ b=OsetQIKAs1eOwqJrLVlqIDimpqpl63VDYe20sVpRBz0eHLSnPcOyK/aMpupf/8ogKZE5O
+ xcRb8eZtNaCf6vJqEgxtRETbD4/vffdW3brvPia42jl5iP5EdPcPq+gf8Te5TA7L90AbEVn
+ Kk5WUfH7mAFKgXGIkouClTGRjvlXHB0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D66BD3E6E81
-	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 19:18:55 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id CFE733E6E81
+	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 19:30:04 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0C69B3CD52A
- for <ltp@lists.linux.it>; Wed, 18 Mar 2026 19:18:35 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id BB7763CD52A
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 19:29:40 +0100 (CET)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
+ [IPv6:2a00:1450:4864:20::135])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D795E1000F35
- for <ltp@lists.linux.it>; Wed, 18 Mar 2026 19:18:33 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D92FA4D1C3;
- Wed, 18 Mar 2026 18:18:32 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BCCD54273B;
- Wed, 18 Mar 2026 18:18:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id /ziNLXjsumkqVgAAD6G6ig
- (envelope-from <jack@suse.cz>); Wed, 18 Mar 2026 18:18:32 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
- id 7A047A0AFF; Wed, 18 Mar 2026 19:18:24 +0100 (CET)
-Date: Wed, 18 Mar 2026 19:18:24 +0100
-From: Jan Kara <jack@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <iz2u33ozsddzr7e342ezabxxdkcnisizmzd2uvinf5jvjarrjr@knd2lznliulu>
-References: <20260309075946.28119-1-wegao@suse.com>
- <20260318064630.1604-1-wegao@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 144091A0106D
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 19:29:40 +0100 (CET)
+Received: by mail-lf1-x135.google.com with SMTP id
+ 2adb3069b0e04-5a1443780c4so1153501e87.0
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 11:29:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1773858579; cv=none;
+ d=google.com; s=arc-20240605;
+ b=dDJVqKR4iRPCJTtAW2HQHMOSIh6NIRYk5mvhIA12fxWD6f7VMu05Gz5WFVq74UWe7h
+ BZ8qR+jfQAxGL4SdFFc3dtbkWcqCxA+WlG+CNeZgsR0knV6PI4FFjkYAM1Rth6S6V6DB
+ w66rxfMNxWree9H/uL7mUlv+vJ+5M2lqB6Tie8nF4ijp27yg9K2loPDS7LxbKjxDLyoY
+ 9++yIG/W+NZe8G0ZkzKHu64wWClsSbZwwAKEkldkV1VdTJ+t/HBhFCwqUldOSmW60aCV
+ AwYaQY/hLdWEAftwDly6YVP26PAgwQDVlY3giH5/drtwSlB/M7HWkad89SXuXOghXSGk
+ LcEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:dkim-signature;
+ bh=xJjA3U37FQRXRUsrZ2wCVSFvxzVkwkNQAcNQmctYvoM=;
+ fh=hXQjddy6xg/1GgYhwfX+5/0uRBgJGLPwzWpEVIHPg9s=;
+ b=cr6a5TLPRk9k3zVSWstw1hsFtwbXTJcXXieDcuJYv6BiujvUoPfbaADFe6zHNXdsR4
+ xMJ8ynp1BB3zV8BmipDN9qliLnyaT6FyAqInegvl7f6oKrKs5qQqr2K+w9bi1I8dgbpM
+ Hpu5Qh2k9fnT3beB08NrdtWQjMptDSZoFVMNIvlzE1vb0jhwSaonTKfWG9xRUDttZy23
+ Qv/fD7Fncgb+RQoOQD1cUU8n/YlbI4tk6DrPNGkcq1JF69KdW2ABeO12OYwK0aGiWUTS
+ 6Fenal8PDhSXM+1FZQ4YSl0FZ4l+ruoGEFbTGb0zoqyZghdlBIHJAZvsenHZsPeXxhjw
+ P4lw==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20251104; t=1773858579; x=1774463379; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=xJjA3U37FQRXRUsrZ2wCVSFvxzVkwkNQAcNQmctYvoM=;
+ b=vcsmizyX3VylG7cNPgCQWfQQPVzvQO65C1iZXdEju2+l5un/fIQB7IIC8wzZjNkWgt
+ T2cwIHo4Np+LUpONSJg5zAhBiNfDP1TDgs0Dz/Yvd7fGftjOaZ5Im71SwUWrFkEPUFvM
+ Yd7xCoXjtOXKUv6YuB5LvHXCFpHnm4kxmZMHtsYj5LRrECFmM1hsdAcO8e+yRA+zcuXc
+ lW8yG2Sm2slfY7tG1znrqHJ6Vzmw4/9uf8AkCI/cc7XV6TMaM5KdXPA2xyIbQ/IwpOFe
+ 8Dw+f6waEriOmdvVMYqqyyIlrm0Q12SGe57mk0T5zqfyetVymjKtQJr5IDgpDulPMrup
+ NCTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1773858579; x=1774463379;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=xJjA3U37FQRXRUsrZ2wCVSFvxzVkwkNQAcNQmctYvoM=;
+ b=czMKiUljSfNEWKOXlSbzR9L3ZmasypQvRBtrBsPODPllIH4XpRP8pm3DJjIT7UbCaV
+ Q7HTcOfGG55ZeX7Q81+3ibsPM13RrPa6UmmdLYUchoYmxZ33vCRpAAqIYJ5H0R4wBlrr
+ bHoOt1i5VJMDFbPVS0+C2ghcZO99KG/dmFm4QEUBytGsxlWDrHfXPJou2PEl53xlKnfA
+ ukSWHLXBDhjzdSJmOrZn6vvsm4BCeYX+GUis4meGERu4ijXVepgnpU9VK4roiErxkNQF
+ F5IzUSu85C8KPgf/5/yQOjgbJeWvFceXEzu9YDn1xLvhn/0yC81IfCDwuohL4Q1qAAwh
+ M2Lg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCW1topNMOXSKTFMtmlucuxAWgVxUUoMKyfrNiDwPOBDdJjWw0sFHxDf2ZcL0E34J1+c+v0=@lists.linux.it
+X-Gm-Message-State: AOJu0Yy/L5/kPnNyEtJagdWqfJbKwy+CoJ58IdDIsD0FieHjvO2Mo3q6
+ YnuZu0W4rLCzL3Gub86sBgmd3xf4po9CmDW618nJNFUWa1t8Om3bhzHEIQ1EllWUPL5Oi+lhzRo
+ xlOsfyRpP8b+gsxVlc4UVnXotl7ua8/KhALSEcFLS
+X-Gm-Gg: ATEYQzy0Tk2VJCj8ZcoI1RkG2cliF8VBHwiyHVNIt9BX2LYoCv4Eixdy38TMr3BFksq
+ anWu3Ne18ewCh4Ud4APvwsQ0xmO7h2GF4vpRAm+xxsmNOHI731qaTkgloSlTLNeRzjw0/8cMh9F
+ qObT7zFQU0VoukDysvSt6ufmkfQ6soLcT4LqbNwNGBVBvrkRwys1RFgeP6GtDiKvPuvd0m/EW82
+ zfe9aVtu6ZzRBrbW15Bd7B3Ntl7u37jft7mQ6qvu06Rn5anJkkNAQqMRHv/PYrxgPsW+cY/WS2u
+ DDD7AuZ6B+S4axvBGWUFQ7vsUsB5shAIMSvTBBwKo7lj8lKZ
+X-Received: by 2002:a05:6512:689:b0:5a0:4ca4:4872 with SMTP id
+ 2adb3069b0e04-5a27dddd293mr143135e87.5.1773858578572; Wed, 18 Mar 2026
+ 11:29:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260318064630.1604-1-wegao@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Queue-Id: D92FA4D1C3
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+References: <CAKfqHepUCKimv1xXxsAWw3bZRg=6VWBh7yyWOi=zuNaM5d9Eww@mail.gmail.com>
+ <DEZNCTGEXSY9.1RY75URI3UEQW@suse.com>
+ <CAKfqHeptLHymCgRyyUZ64UXoexoPEFsNHxSLa=aME9=U+dBywA@mail.gmail.com>
+ <7d12c14f-4654-4248-b478-f57d721aba9a@suse.com>
+ <CAEemH2fxanCLLMaMZRporvMXxdg0LKjO07_4suHgcFYxGQGCPQ@mail.gmail.com>
+ <CAKfqHert2XNHQ12ai3r7joZYwTcV2DkbW7jFu7HqB07ZncQr+w@mail.gmail.com>
+In-Reply-To: <CAKfqHert2XNHQ12ai3r7joZYwTcV2DkbW7jFu7HqB07ZncQr+w@mail.gmail.com>
+Date: Wed, 18 Mar 2026 11:29:26 -0700
+X-Gm-Features: AaiRm53_Dq6yauDUGOf4Ik6ncK7kFxEy898mQJv7r95qgowOCN5U_3IoisU8p2s
+Message-ID: <CAKfqHeonbt5n6d4GoWbmcqfAXpBdCsUNH0wbdzd1N65_+KHWiw@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] fanotify22.c: handle multiple asynchronous
- error events
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] Update clone3 wrapper signature
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,194 +119,115 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, kernel test robot <oliver.sang@intel.com>,
- ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Chris Wailes via ltp <ltp@lists.linux.it>
+Reply-To: Chris Wailes <chriswailes@google.com>
+Cc: chrubis@suse.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed 18-03-26 06:46:19, Wei Gao wrote:
-> Since the introduction of the asynchronous fserror reporting framework
-> (kernel commit 81d2e13a57c9), fanotify22 has encountered sporadic failures
-> due to the non-deterministic nature of event delivery and merging:
-> 
-> 1) tcase3 failure: A race condition occurs when the test reads the
->    notification fd between two events. uses a poll() and read() loop to wait
->    until the expected.
-> 
-> 2) tcase4 failure: The kernel may deliver errors as independent events
->    instead of a single merged event, since different worker kthread can
->    end up generating each event so they won't be merged. As suggested by
->    Jan Kara, this patch introduces a consolidate_events() helper. It iterates
->    through the event buffer, accumulates the error_count from all independent
->    events, and updates the first event's count in-place.
-> 
-> v2->v3:
-> - Replaced usleep() with poll() loop
-> - Added secondary error check support (error2)
-> 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202602042124.87bd00e3-lkp@intel.com
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Wei Gao <wegao@suse.com>
-
-Thanks. The patch looks good to me. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  .../kernel/syscalls/fanotify/fanotify22.c     | 87 ++++++++++++++++++-
->  1 file changed, 83 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify22.c b/testcases/kernel/syscalls/fanotify/fanotify22.c
-> index e8002b160..c921cf2c0 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify22.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify22.c
-> @@ -28,6 +28,7 @@
->  #include "tst_test.h"
->  #include <sys/fanotify.h>
->  #include <sys/types.h>
-> +#include <poll.h>
->  
->  #ifdef HAVE_SYS_FANOTIFY_H
->  #include "fanotify.h"
-> @@ -88,7 +89,6 @@ static void trigger_bad_link_lookup(void)
->  			ret, BAD_LINK, errno, EUCLEAN);
->  }
->  
-> -
->  static void tcase3_trigger(void)
->  {
->  	trigger_bad_link_lookup();
-> @@ -104,6 +104,7 @@ static void tcase4_trigger(void)
->  static struct test_case {
->  	char *name;
->  	int error;
-> +	int error2;
->  	unsigned int error_count;
->  	struct fanotify_fid_t *fid;
->  	void (*trigger_error)(void);
-> @@ -134,10 +135,54 @@ static struct test_case {
->  		.trigger_error = &tcase4_trigger,
->  		.error_count = 2,
->  		.error = EFSCORRUPTED,
-> +		.error2 = ESHUTDOWN,
->  		.fid = &bad_file_fid,
->  	}
->  };
->  
-> +static size_t consolidate_events(char *buf, size_t len, const struct test_case *ex)
-> +{
-> +	struct fanotify_event_metadata *metadata, *first = NULL;
-> +	struct fanotify_event_info_error *first_info = NULL;
-> +	unsigned int total_count = 0;
-> +	int event_num = 0;
-> +
-> +	for (metadata = (struct fanotify_event_metadata *)buf;
-> +			FAN_EVENT_OK(metadata, len);
-> +			metadata = FAN_EVENT_NEXT(metadata, len)) {
-> +
-> +		event_num++;
-> +		struct fanotify_event_info_error *info = get_event_info_error(metadata);
-> +
-> +		if (!info) {
-> +			tst_res(TFAIL, "%s: Event [%d] missing error info",
-> +					ex->name, event_num);
-> +			continue;
-> +		}
-> +
-> +		if (info->error != ex->error && (ex->error2 == 0 || info->error != ex->error2)) {
-> +			tst_res(TFAIL, "%s: Event [%d] unexpected errno (%d)",
-> +					ex->name, event_num, info->error);
-> +		}
-> +
-> +		if (info) {
-> +			if (!first) {
-> +				first = metadata;
-> +				first_info = info;
-> +			}
-> +			total_count += info->error_count;
-> +
-> +			tst_res(TINFO, "Event [%d]: errno=%d, error_count=%d",
-> +					event_num, info->error, info->error_count);
-> +		}
-> +	}
-> +
-> +	if (first_info)
-> +		first_info->error_count = total_count;
-> +
-> +	return (first) ? first->event_len : 0;
-> +}
-> +
->  static int check_error_event_info_fid(struct fanotify_event_info_fid *fid,
->  				 const struct test_case *ex)
->  {
-> @@ -248,19 +293,53 @@ static void check_event(char *buf, size_t len, const struct test_case *ex)
->  static void do_test(unsigned int i)
->  {
->  	const struct test_case *tcase = &testcases[i];
-> -	size_t read_len;
-> +	size_t read_len = 0;
-> +	struct pollfd pfd;
-> +	unsigned int accumulated_count = 0;
->  
->  	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD|FAN_MARK_FILESYSTEM,
->  			   FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
->  
->  	tcase->trigger_error();
->  
-> -	read_len = SAFE_READ(0, fd_notify, event_buf, BUF_SIZE);
-> +	pfd.fd = fd_notify;
-> +	pfd.events = POLLIN;
-> +
-> +	while (accumulated_count < tcase->error_count) {
-> +		if (poll(&pfd, 1, 5000) <= 0) {
-> +			tst_res(TFAIL, "%s: Timeout waiting for events", tcase->name);
-> +			goto out;
-> +		}
-> +
-> +		char *current_pos = event_buf + read_len;
-> +		int ret = read(fd_notify, current_pos, BUF_SIZE - read_len);
-> +
-> +		if (ret < 0) {
-> +			tst_res(TFAIL, "%s: read failed: %s", tcase->name, strerror(errno));
-> +			goto out;
-> +		}
-> +
-> +		struct fanotify_event_metadata *m =
-> +			(struct fanotify_event_metadata *)current_pos;
-> +		while (FAN_EVENT_OK(m, ret)) {
-> +			read_len += ret;
-> +			struct fanotify_event_info_error *e = get_event_info_error(m);
-> +
-> +			if (e)
-> +				accumulated_count += e->error_count;
-> +			m = FAN_EVENT_NEXT(m, ret);
-> +		}
-> +	}
-> +
-> +	read_len = consolidate_events(event_buf, read_len, tcase);
-> +
-> +	check_event(event_buf, read_len, tcase);
-> +
-> +out:
->  
->  	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE|FAN_MARK_FILESYSTEM,
->  			   FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
->  
-> -	check_event(event_buf, read_len, tcase);
->  	/* Unmount and mount the filesystem to get it out of the error state */
->  	SAFE_UMOUNT(MOUNT_PATH);
->  	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
-> -- 
-> 2.52.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+V291bGQgaXQgYmUgYmV0dGVyL2Vhc2llciBmb3IgbWUgdG8gc3VibWl0IHRoaXMgdGhyb3VnaCBH
+aXRIdWI/CgotIENocmlzCgpPbiBXZWQsIE1hciA0LCAyMDI2IGF0IDE6MzPigK9QTSBDaHJpcyBX
+YWlsZXMgPGNocmlzd2FpbGVzQGdvb2dsZS5jb20+IHdyb3RlOgoKPiBBcG9sb2dpZXMgZm9yIHRo
+ZSBkZWxheWVkIHJlc3BvbnNlLiAgUGxlYXNlIGZpbmQgbXkgdXBkYXRlZCBwYXRjaCBiZWxvdy4K
+Pgo+IC0tLQo+Cj4gRnJvbSA1MDU2NDU1N2E3MmRmMTJkNTAwOTk3ZGQxNDVjYzUzNzZlZGQ4MDYz
+IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQo+IEZyb206IENocmlzIFdhaWxlcyA8Y2hyaXN3YWls
+ZXNAZ29vZ2xlLmNvbT4KPiBEYXRlOiBGcmksIDE0IE5vdiAyMDI1IDEzOjU2OjM5IC0wODAwCj4g
+U3ViamVjdDogW1BBVENIXSBVcGRhdGUgY2xvbmUzIHdyYXBwZXIgc2lnbmF0dXJlCj4KPiBUaGlz
+IENMIGFkZHMgdGhlIGBsdHBfY2xvbmUzX3Jhd2Agd3JhcHBlciBmb3IgZGlyZWN0IHRlc3Rpbmcg
+b2YgdGhlCj4gc3lzY2FsbCwgY29uZGl0aW9uYWxseSBkZWZpbmVzIGBjbG9uZV9hcmdzX21pbmlt
+YWxgLCBhbmQgYWRkcyBhCj4gYGx0cF9jbG9uZTNgIHdyYXBwZXIgZm9yIGxpYmMgaW1wbGVtZW50
+YXRpb25zIHRoYXQgcHJvdmlkZSBgY2xvbmUzYC4KPgo+IFNpZ25lZC1vZmYtYnk6IENocmlzIFdh
+aWxlcyA8Y2hyaXN3YWlsZXNAZ29vZ2xlLmNvbT4KPiAtLS0KPiAgaW5jbHVkZS9sYXBpL3NjaGVk
+LmggICAgICAgICAgICAgICAgICAgICAgICB8IDMyICsrKysrKysrKysrKysrKy0tLS0tLQo+ICB0
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lMy9jbG9uZTMwMS5jIHwgIDIgKy0KPiAgdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZTMvY2xvbmUzMDIuYyB8ICAyICstCj4gIDMgZmls
+ZXMgY2hhbmdlZCwgMjUgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0t
+Z2l0IGEvaW5jbHVkZS9sYXBpL3NjaGVkLmggYi9pbmNsdWRlL2xhcGkvc2NoZWQuaAo+IGluZGV4
+IDBmZmU0NDY0MS4uYzBmYThkZDQ3IDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGFwaS9zY2hlZC5o
+Cj4gKysrIGIvaW5jbHVkZS9sYXBpL3NjaGVkLmgKPiBAQCAtNDksOSArNDksMTMgQEAgc3RhdGlj
+IGlubGluZSBpbnQgc2NoZWRfZ2V0YXR0cihwaWRfdCBwaWQsIHN0cnVjdAo+IHNjaGVkX2F0dHIg
+KmF0dHIsCj4gICMgZGVmaW5lIFNDSEVEX0FUVFJfU0laRV9WRVIwIDQ4IC8qIHNpemVvZiBmaXJz
+dCBwdWJsaXNoZWQgc3RydWN0ICovCj4gICNlbmRpZgo+Cj4gLSNpZm5kZWYgSEFWRV9DTE9ORTMK
+PiAtI2lmbmRlZiBIQVZFX1NUUlVDVF9DTE9ORV9BUkdTCj4gLXN0cnVjdCBjbG9uZV9hcmdzIHsK
+PiArc3RhdGljIGlubGluZSBpbnQgbHRwX2Nsb25lM19yYXcoc3RydWN0IGNsb25lX2FyZ3MgKmFy
+Z3MsIHNpemVfdCBzaXplKQo+ICt7Cj4gKyByZXR1cm4gdHN0X3N5c2NhbGwoX19OUl9jbG9uZTMs
+IGFyZ3MsIHNpemUpOwo+ICt9Cj4gKwo+ICsjaWZuZGVmIEhBVkVfU1RSVUNUX0NMT05FX0FSR1Nf
+TUlOSU1BTAo+ICtzdHJ1Y3QgY2xvbmVfYXJnc19taW5pbWFsIHsKPiAgIHVpbnQ2NF90IF9fYXR0
+cmlidXRlX18oKGFsaWduZWQoOCkpKSBmbGFnczsKPiAgIHVpbnQ2NF90IF9fYXR0cmlidXRlX18o
+KGFsaWduZWQoOCkpKSBwaWRmZDsKPiAgIHVpbnQ2NF90IF9fYXR0cmlidXRlX18oKGFsaWduZWQo
+OCkpKSBjaGlsZF90aWQ7Cj4gQEAgLTYwLDEzICs2NCwxMiBAQCBzdHJ1Y3QgY2xvbmVfYXJncyB7
+Cj4gICB1aW50NjRfdCBfX2F0dHJpYnV0ZV9fKChhbGlnbmVkKDgpKSkgc3RhY2s7Cj4gICB1aW50
+NjRfdCBfX2F0dHJpYnV0ZV9fKChhbGlnbmVkKDgpKSkgc3RhY2tfc2l6ZTsKPiAgIHVpbnQ2NF90
+IF9fYXR0cmlidXRlX18oKGFsaWduZWQoOCkpKSB0bHM7Cj4gLSB1aW50NjRfdCBfX2F0dHJpYnV0
+ZV9fKChhbGlnbmVkKDgpKSkgc2V0X3RpZDsKPiAtIHVpbnQ2NF90IF9fYXR0cmlidXRlX18oKGFs
+aWduZWQoOCkpKSBzZXRfdGlkX3NpemU7Cj4gLSB1aW50NjRfdCBfX2F0dHJpYnV0ZV9fKChhbGln
+bmVkKDgpKSkgY2dyb3VwOwo+ICB9Owo+ICAjZW5kaWYKPgo+IC1zdHJ1Y3QgY2xvbmVfYXJnc19t
+aW5pbWFsIHsKPiArI2lmbmRlZiBIQVZFX0NMT05FMwo+ICsjaWZuZGVmIEhBVkVfU1RSVUNUX0NM
+T05FX0FSR1MKPiArc3RydWN0IGNsb25lX2FyZ3Mgewo+ICAgdWludDY0X3QgX19hdHRyaWJ1dGVf
+XygoYWxpZ25lZCg4KSkpIGZsYWdzOwo+ICAgdWludDY0X3QgX19hdHRyaWJ1dGVfXygoYWxpZ25l
+ZCg4KSkpIHBpZGZkOwo+ICAgdWludDY0X3QgX19hdHRyaWJ1dGVfXygoYWxpZ25lZCg4KSkpIGNo
+aWxkX3RpZDsKPiBAQCAtNzUsMTEgKzc4LDIyIEBAIHN0cnVjdCBjbG9uZV9hcmdzX21pbmltYWwg
+ewo+ICAgdWludDY0X3QgX19hdHRyaWJ1dGVfXygoYWxpZ25lZCg4KSkpIHN0YWNrOwo+ICAgdWlu
+dDY0X3QgX19hdHRyaWJ1dGVfXygoYWxpZ25lZCg4KSkpIHN0YWNrX3NpemU7Cj4gICB1aW50NjRf
+dCBfX2F0dHJpYnV0ZV9fKChhbGlnbmVkKDgpKSkgdGxzOwo+ICsgdWludDY0X3QgX19hdHRyaWJ1
+dGVfXygoYWxpZ25lZCg4KSkpIHNldF90aWQ7Cj4gKyB1aW50NjRfdCBfX2F0dHJpYnV0ZV9fKChh
+bGlnbmVkKDgpKSkgc2V0X3RpZF9zaXplOwo+ICsgdWludDY0X3QgX19hdHRyaWJ1dGVfXygoYWxp
+Z25lZCg4KSkpIGNncm91cDsKPiAgfTsKPiArI2VuZGlmCj4KPiAtc3RhdGljIGlubGluZSBpbnQg
+Y2xvbmUzKHN0cnVjdCBjbG9uZV9hcmdzICphcmdzLCBzaXplX3Qgc2l6ZSkKPiAraW50IGx0cF9j
+bG9uZTMoc3RydWN0IGNsb25lX2FyZ3MgKmNsX2FyZ3MsIHNpemVfdCBzaXplLAo+ICsgICAgICAg
+ICAgICAgICBpbnQgKCpmbikodm9pZCAqKSwgdm9pZCAqYXJnKSB7Cj4gKyByZXR1cm4gY2xvbmUz
+KGNsX2FyZ3MsIHNpemUsIGZuLCBhcmcpOwo+ICt9Cj4gKyNlbHNlCj4gKwo+ICtzdGF0aWMgaW5s
+aW5lIGludCBsdHBfY2xvbmUzKHN0cnVjdCBjbG9uZV9hcmdzICpjbF9hcmdzLCBzaXplX3Qgc2l6
+ZSwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnQgKCpmbikodm9pZCAqKSwgdm9p
+ZCAqYXJnKQo+ICB7Cj4gLSByZXR1cm4gdHN0X3N5c2NhbGwoX19OUl9jbG9uZTMsIGFyZ3MsIHNp
+emUpOwo+ICsgcmV0dXJuIC0xOwo+ICB9Cj4gICNlbmRpZgo+Cj4gZGlmZiAtLWdpdCBhL3Rlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUzL2Nsb25lMzAxLmMKPiBiL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvY2xvbmUzL2Nsb25lMzAxLmMKPiBpbmRleCBkZWVkMzBiOWYuLjU4ZmMxNzAy
+ZSAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lMy9jbG9uZTMw
+MS5jCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZTMvY2xvbmUzMDEuYwo+
+IEBAIC0xMjMsNyArMTIzLDcgQEAgc3RhdGljIHZvaWQgcnVuKHVuc2lnbmVkIGludCBuKQo+ICAg
+cGFyZW50X3JlY2VpdmVkX3NpZ25hbCA9IDA7Cj4gICBTQUZFX1NJR0FDVElPTih0Yy0+ZXhpdF9z
+aWduYWwsICZwc2lnX2FjdGlvbiwgTlVMTCk7Cj4KPiAtIFRFU1QocGlkID0gY2xvbmUzKGFyZ3Ms
+IHNpemVvZigqYXJncykpKTsKPiArIFRFU1QocGlkID0gbHRwX2Nsb25lM19yYXcoYXJncywgc2l6
+ZW9mKCphcmdzKSkpOwo+ICAgaWYgKHBpZCA8IDApIHsKPiAgIHRzdF9yZXMoVEZBSUwgfCBUVEVS
+Uk5PLCAiY2xvbmUzKCkgZmFpbGVkICglZCkiLCBuKTsKPiAgIHJldHVybjsKPiBkaWZmIC0tZ2l0
+IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZTMvY2xvbmUzMDIuYwo+IGIvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZTMvY2xvbmUzMDIuYwo+IGluZGV4IDllOThmMTk1NC4u
+ODgzMTEyMTgzIDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvY2xvbmUz
+L2Nsb25lMzAyLmMKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lMy9jbG9u
+ZTMwMi5jCj4gQEAgLTgzLDcgKzgzLDcgQEAgc3RhdGljIHZvaWQgcnVuKHVuc2lnbmVkIGludCBu
+KQo+ICAgYXJncy0+dGxzID0gdGMtPnRsczsKPiAgIH0KPgo+IC0gVEVTVChjbG9uZTMoYXJncywg
+dGMtPnNpemUpKTsKPiArIFRFU1QobHRwX2Nsb25lM19yYXcoYXJncywgdGMtPnNpemUpKTsKPgo+
+ICAgaWYgKCFUU1RfUkVUKQo+ICAgZXhpdChFWElUX1NVQ0NFU1MpOwo+IC0tCj4gMi41My4wLjQ3
+My5nNGE3OTU4Y2ExNC1nb29nCj4KPiBPbiBXZWQsIERlYyAxNywgMjAyNSBhdCAxOjQz4oCvQU0g
+TGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+IHdyb3RlOgo+Cj4+Cj4+Cj4+IE9uIFdlZCwgRGVj
+IDE3LCAyMDI1IGF0IDM6NTjigK9QTSBBbnJlYSBDZXJ2ZXNhdG8gdmlhIGx0cCA8Cj4+IGx0cEBs
+aXN0cy5saW51eC5pdD4gd3JvdGU6Cj4+Cj4+PiBIaSBDaHJpcywKPj4+Cj4+PiBPbiAxMi8xNi8y
+NSA2OjUwIFBNLCBDaHJpcyBXYWlsZXMgd3JvdGU6Cj4+PiA+IEFuZHJlYSwKPj4+ID4KPj4+ID4g
+VGhhbmtzIGZvciByZXZpZXdpbmcgdGhlIGNoYW5nZS4gIFdlJ3JlIGN1cnJlbnRseSBhZGRpbmcg
+YSBgY2xvbmUzYAo+Pj4gPiB3cmFwcGVyIHRvIEFuZHJvaWQncyBCSU9OSUMgbGliYyBpbXBsZW1l
+bnRhdGlvbi4gQWRkaXRpb25hbGx5LCB0aGlzIGlzCj4+PiA+IHRoZSBzaWduYXR1cmUgdXNlZCBm
+b3IgYGdsaWJjYCdzIGBfX2Nsb25lM2AKPj4+ID4gPAo+Pj4gaHR0cHM6Ly9naXRodWIuY29tL2Jt
+aW5vci9nbGliYy9ibG9iL2RlZDljMWU1MjVmMmQ2OWE4MWU2MWMzNGMyOTA3N2ZlZDdkZjY1OGMv
+aW5jbHVkZS9jbG9uZV9pbnRlcm5hbC5oCj4+PiA+Lgo+Pj4gPgo+Pj4gPiAtIENocmlzCj4+Pgo+
+Pj4gQXQgdGhpcyBwb2ludCwgSSB0aGluayB3ZSBzaG91bGQganVzdCBhZG9wdCB0c3RfY2xvbmUo
+KSBpbnN0ZWFkIG9mCj4+PiBjbG9uZTMoKSBmYWxsYmFjay4KPj4+Cj4+Cj4+IFBlcmhhcHMgYSBz
+aW1wbGUgYXBwcm9hY2ggaXMgdG8gZGVmaW5lIGEgcmF3IHN5c3RlbSBjYWxsIGZvciBjbG9uZTMK
+Pj4gYW5kIHVzZSBpdCBpbiBhbGwgZXhpc3RpbmcgdGVzdHMsIGFuZCB0aGVuIGFkZCBuZXcgdGVz
+dHMgaWYgd2UgcGxhbiB0bwo+PiB0ZXN0IHRoZSBsaWJjLWxpa2UgY2xvbmUzIHdyYXBwZXIgKHdp
+dGggZm91ciBhcmdzKS4KPj4KPj4gT3RoZXJ3aXNlIHRoZSBuZXcgYWRkZWQgJ05VTEwsIE5VTEwn
+IGFyZ3VtZW50cyBmb3IgY3VycmVudCBoYWNrZWQKPj4gY2xvbmUzIG1ha2VzIG5vIHNlbnNlLgo+
+Pgo+PiBzdGF0aWMgaW5saW5lIGludCBsdHBfY2xvbmUzX3JhdyhzdHJ1Y3QgY2xvbmVfYXJncyAq
+YXJncywgc2l6ZV90IHNpemUpCj4+IHsKPj4gICAgIHJldHVybiB0c3Rfc3lzY2FsbChfX05SX2Ns
+b25lMywgYXJncywgc2l6ZSk7Cj4+IH0KPj4KPj4gI2lmZGVmIEhBVkVfQ0xPTkUzX1dSQVBQRVIK
+Pj4gaW50IGx0cF9jbG9uZTMoc3RydWN0IGNsb25lX2FyZ3MgKmNsX2FyZ3MsIHNpemVfdCBzaXpl
+LAo+PiAgICAgICAgICAgICAgICBpbnQgKCpmbikodm9pZCAqKSwgdm9pZCAqYXJnKTsKPj4gI2Vs
+c2UKPj4gc3RhdGljIGlubGluZSBpbnQgbHRwX2Nsb25lMyhzdHJ1Y3QgY2xvbmVfYXJncyAqY2xf
+YXJncywgc2l6ZV90IHNpemUsCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnQgKCpm
+bikodm9pZCAqKSwgdm9pZCAqYXJnKQo+PiB7Cj4+ICAgICByZXR1cm4gLTE7Cj4+IH0KPj4gI2Vu
+ZGlmCj4+Cj4+IEJ0dywgdGhlIGFib3ZlIGNoYW5nZXMgc2hvdWxkIGJlIHB1dCBpbiBsYXBpL3Nj
+aGVkLmggaWYgd2UgZGVjaWRlIGdvIHRoaXMuCj4+Cj4+Cj4+IC0tCj4+IFJlZ2FyZHMsCj4+IExp
+IFdhbmcKPj4KPgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0
+L2xpc3RpbmZvL2x0cAo=
