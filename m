@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7792C103E198
-	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 15:40:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D615410775FE
+	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 18:18:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1EA153E61CA
-	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 16:40:42 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id D66BD3E6E81
+	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 19:18:55 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 46FB93CB061
- for <ltp@lists.linux.it>; Wed, 18 Mar 2026 16:40:22 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 0C69B3CD52A
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 19:18:35 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7F4AF1000DB5
- for <ltp@lists.linux.it>; Wed, 18 Mar 2026 16:40:22 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D795E1000F35
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 19:18:33 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4575F4D3F8;
- Wed, 18 Mar 2026 15:40:21 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D92FA4D1C3;
+ Wed, 18 Mar 2026 18:18:32 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1EA054273B;
- Wed, 18 Mar 2026 15:40:21 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BCCD54273B;
+ Wed, 18 Mar 2026 18:18:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id BEa7BWXHumlbLwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 18 Mar 2026 15:40:21 +0000
-Date: Wed, 18 Mar 2026 16:40:19 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260318154019.GE31214@pevik>
-References: <20260313142600.243939-1-pvorel@suse.cz>
- <20260313142600.243939-6-pvorel@suse.cz>
- <abkh9aPkKAewapRr@redhat.com> <abqLM0iQY7nwPaDm@yuki.lan>
- <abqZ3h1iVo5DaQ_4@yuki.lan>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /ziNLXjsumkqVgAAD6G6ig
+ (envelope-from <jack@suse.cz>); Wed, 18 Mar 2026 18:18:32 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id 7A047A0AFF; Wed, 18 Mar 2026 19:18:24 +0100 (CET)
+Date: Wed, 18 Mar 2026 19:18:24 +0100
+From: Jan Kara <jack@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <iz2u33ozsddzr7e342ezabxxdkcnisizmzd2uvinf5jvjarrjr@knd2lznliulu>
+References: <20260309075946.28119-1-wegao@suse.com>
+ <20260318064630.1604-1-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <abqZ3h1iVo5DaQ_4@yuki.lan>
+In-Reply-To: <20260318064630.1604-1-wegao@suse.com>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
-X-Rspamd-Queue-Id: 4575F4D3F8
+X-Rspamd-Queue-Id: D92FA4D1C3
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
 X-Rspamd-Action: no action
@@ -63,7 +63,8 @@ X-Spamd-Result: default: False [-4.00 / 50.00];
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/6] [WIP,RFC] tst_run.sh: Run setup() only once
+Subject: Re: [LTP] [PATCH v3] fanotify22.c: handle multiple asynchronous
+ error events
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,69 +76,194 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Sebastian Chlad <sebastian.chlad@suse.com>, ltp@lists.linux.it
+Cc: Jan Kara <jack@suse.cz>, kernel test robot <oliver.sang@intel.com>,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+On Wed 18-03-26 06:46:19, Wei Gao wrote:
+> Since the introduction of the asynchronous fserror reporting framework
+> (kernel commit 81d2e13a57c9), fanotify22 has encountered sporadic failures
+> due to the non-deterministic nature of event delivery and merging:
+> 
+> 1) tcase3 failure: A race condition occurs when the test reads the
+>    notification fd between two events. uses a poll() and read() loop to wait
+>    until the expected.
+> 
+> 2) tcase4 failure: The kernel may deliver errors as independent events
+>    instead of a single merged event, since different worker kthread can
+>    end up generating each event so they won't be merged. As suggested by
+>    Jan Kara, this patch introduces a consolidate_events() helper. It iterates
+>    through the event buffer, accumulates the error_count from all independent
+>    events, and updates the first event's count in-place.
+> 
+> v2->v3:
+> - Replaced usleep() with poll() loop
+> - Added secondary error check support (error2)
+> 
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202602042124.87bd00e3-lkp@intel.com
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Wei Gao <wegao@suse.com>
 
-> Hi!
-> > It's a bit more complicated we do not have only iterations but also
-> > duration and timeout per iteration. So we would need a function that
-> > would return if the script should continue or not and also call the
-> > heartbeat() function. Something as:
+Thanks. The patch looks good to me. Feel free to add:
 
-> > int tst_next_shell_iteration(void)
-> > {
-> > 	int cont = 0;
-> > 	static int iteration = 0;
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-> > 	if (iteration < iterations)
-> > 		cont = 1;
+								Honza
 
-> > 	if (stop_time && get_time_ms() < stop_time())
-> > 		cont = 1;
-
-> > 	if (!cont)
-> > 		return 0;
-
-> > 	heartbeat();
-> > 	return ++iteration;
-> > }
-
-> > The shell helper would call this and we would use it in tst_run.sh and
-> > loop the tst_test() until we are said to stop.
-
-Wait, tst_run_shell.c calls shell script via tst_run_script(). This can be
-called only once, before starting the script...
-
-> Note also that this solution would move the iteration into the shell
-
-... but from the code it's obvious that you want to call it more times.
-How do you want to reach C library code from shell test?
-
-> script, since if we do not iterate in the shell, we will end up with a
-> different environment in the second and subsequent iterations. That
-> means that any variables exported in setup() would be lost in subsequent
-> iterations, the pid of the shell would be different, etc.
-
-Yes, I noticed that during du01.sh rewrite. I was surprised but thought that you
-wanted to have most of the library code be in C API (having shell part of the
-shell loader really thin).
-
-Before sending the patchset I was thinking if some shell variables should be
-shared and exported into new shell run. But it'd be unpractical and as you write
-PID of the shell would be always different.
-
-I have to admit sometimes I think whether rewriting everything into C wouldn't
-be a better time investment than implementing shell loader, given we are going
-to redesign network API. Anyway, any new test should really be using C API.
-
-Kind regards,
-Petr
+> ---
+>  .../kernel/syscalls/fanotify/fanotify22.c     | 87 ++++++++++++++++++-
+>  1 file changed, 83 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify22.c b/testcases/kernel/syscalls/fanotify/fanotify22.c
+> index e8002b160..c921cf2c0 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify22.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify22.c
+> @@ -28,6 +28,7 @@
+>  #include "tst_test.h"
+>  #include <sys/fanotify.h>
+>  #include <sys/types.h>
+> +#include <poll.h>
+>  
+>  #ifdef HAVE_SYS_FANOTIFY_H
+>  #include "fanotify.h"
+> @@ -88,7 +89,6 @@ static void trigger_bad_link_lookup(void)
+>  			ret, BAD_LINK, errno, EUCLEAN);
+>  }
+>  
+> -
+>  static void tcase3_trigger(void)
+>  {
+>  	trigger_bad_link_lookup();
+> @@ -104,6 +104,7 @@ static void tcase4_trigger(void)
+>  static struct test_case {
+>  	char *name;
+>  	int error;
+> +	int error2;
+>  	unsigned int error_count;
+>  	struct fanotify_fid_t *fid;
+>  	void (*trigger_error)(void);
+> @@ -134,10 +135,54 @@ static struct test_case {
+>  		.trigger_error = &tcase4_trigger,
+>  		.error_count = 2,
+>  		.error = EFSCORRUPTED,
+> +		.error2 = ESHUTDOWN,
+>  		.fid = &bad_file_fid,
+>  	}
+>  };
+>  
+> +static size_t consolidate_events(char *buf, size_t len, const struct test_case *ex)
+> +{
+> +	struct fanotify_event_metadata *metadata, *first = NULL;
+> +	struct fanotify_event_info_error *first_info = NULL;
+> +	unsigned int total_count = 0;
+> +	int event_num = 0;
+> +
+> +	for (metadata = (struct fanotify_event_metadata *)buf;
+> +			FAN_EVENT_OK(metadata, len);
+> +			metadata = FAN_EVENT_NEXT(metadata, len)) {
+> +
+> +		event_num++;
+> +		struct fanotify_event_info_error *info = get_event_info_error(metadata);
+> +
+> +		if (!info) {
+> +			tst_res(TFAIL, "%s: Event [%d] missing error info",
+> +					ex->name, event_num);
+> +			continue;
+> +		}
+> +
+> +		if (info->error != ex->error && (ex->error2 == 0 || info->error != ex->error2)) {
+> +			tst_res(TFAIL, "%s: Event [%d] unexpected errno (%d)",
+> +					ex->name, event_num, info->error);
+> +		}
+> +
+> +		if (info) {
+> +			if (!first) {
+> +				first = metadata;
+> +				first_info = info;
+> +			}
+> +			total_count += info->error_count;
+> +
+> +			tst_res(TINFO, "Event [%d]: errno=%d, error_count=%d",
+> +					event_num, info->error, info->error_count);
+> +		}
+> +	}
+> +
+> +	if (first_info)
+> +		first_info->error_count = total_count;
+> +
+> +	return (first) ? first->event_len : 0;
+> +}
+> +
+>  static int check_error_event_info_fid(struct fanotify_event_info_fid *fid,
+>  				 const struct test_case *ex)
+>  {
+> @@ -248,19 +293,53 @@ static void check_event(char *buf, size_t len, const struct test_case *ex)
+>  static void do_test(unsigned int i)
+>  {
+>  	const struct test_case *tcase = &testcases[i];
+> -	size_t read_len;
+> +	size_t read_len = 0;
+> +	struct pollfd pfd;
+> +	unsigned int accumulated_count = 0;
+>  
+>  	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD|FAN_MARK_FILESYSTEM,
+>  			   FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
+>  
+>  	tcase->trigger_error();
+>  
+> -	read_len = SAFE_READ(0, fd_notify, event_buf, BUF_SIZE);
+> +	pfd.fd = fd_notify;
+> +	pfd.events = POLLIN;
+> +
+> +	while (accumulated_count < tcase->error_count) {
+> +		if (poll(&pfd, 1, 5000) <= 0) {
+> +			tst_res(TFAIL, "%s: Timeout waiting for events", tcase->name);
+> +			goto out;
+> +		}
+> +
+> +		char *current_pos = event_buf + read_len;
+> +		int ret = read(fd_notify, current_pos, BUF_SIZE - read_len);
+> +
+> +		if (ret < 0) {
+> +			tst_res(TFAIL, "%s: read failed: %s", tcase->name, strerror(errno));
+> +			goto out;
+> +		}
+> +
+> +		struct fanotify_event_metadata *m =
+> +			(struct fanotify_event_metadata *)current_pos;
+> +		while (FAN_EVENT_OK(m, ret)) {
+> +			read_len += ret;
+> +			struct fanotify_event_info_error *e = get_event_info_error(m);
+> +
+> +			if (e)
+> +				accumulated_count += e->error_count;
+> +			m = FAN_EVENT_NEXT(m, ret);
+> +		}
+> +	}
+> +
+> +	read_len = consolidate_events(event_buf, read_len, tcase);
+> +
+> +	check_event(event_buf, read_len, tcase);
+> +
+> +out:
+>  
+>  	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE|FAN_MARK_FILESYSTEM,
+>  			   FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
+>  
+> -	check_event(event_buf, read_len, tcase);
+>  	/* Unmount and mount the filesystem to get it out of the error state */
+>  	SAFE_UMOUNT(MOUNT_PATH);
+>  	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
+> -- 
+> 2.52.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
