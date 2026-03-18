@@ -4,89 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EB01103E18F
-	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 14:41:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17F18103E199
+	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 15:03:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3D72C3E613B
-	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 15:41:42 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id A62793E6130
+	for <ltp@archiver.kernel.org>; Wed, 18 Mar 2026 16:03:18 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2BF4B3D0E54
- for <ltp@lists.linux.it>; Wed, 18 Mar 2026 15:41:24 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 1DA213C7A18
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 16:03:00 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A4083140097F
- for <ltp@lists.linux.it>; Wed, 18 Mar 2026 15:41:23 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 395EB1400BE7
+ for <ltp@lists.linux.it>; Wed, 18 Mar 2026 16:02:59 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 791F85BD6B;
- Wed, 18 Mar 2026 14:41:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773844882; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=g7/5MuiDEUYuNY/DdaY9RYk2PIRPp2+jTTfJPqTGRXg=;
- b=aCPeVGXi4L7622gvCmJqs22gh7x1Qo3wXwH5cvt7+nK0te8lfRoskA2v7yTDK51kwdsxVt
- fq/vdhDL+4usprx3CwO0SV0rGz5A90l1xQdGp42sv1J8CG9fQ3RcXkDVSNvE1FyFG00Plt
- 1Iy5EwsgEBByEiB+P4H29Mwjhrr7iWo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773844882;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=g7/5MuiDEUYuNY/DdaY9RYk2PIRPp2+jTTfJPqTGRXg=;
- b=LW5WmquqhNF50M+HxIvTy2xGbZzOFRkhiYh7WjZTka+XXBzb/PedAlmnoG34IM2bktQPOx
- r1im0m5h988wSDBQ==
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 907E24D442;
+ Wed, 18 Mar 2026 15:02:58 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1773844881; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=g7/5MuiDEUYuNY/DdaY9RYk2PIRPp2+jTTfJPqTGRXg=;
- b=yu7GKdRAfM9wVgaSsGN4gze7x5gIqGEt4Sdb0aclhjX2T4hZaEA23A9ZErVcrB6ABr0gcX
- CWsjbwiHlFKUcabCULtIMWNuzW0Q1v/C/W8RRZ95Qj/gjiPqDxtChYMZaga07qWXssuOfV
- j0IrrN3Hte1ekSdvqFgjOgGGKXAoz90=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1773844881;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=g7/5MuiDEUYuNY/DdaY9RYk2PIRPp2+jTTfJPqTGRXg=;
- b=R0+vq416/TpXRs7lWQev2pRdJNB2wG9XR62DMK1d0gPG7MH1g7kq8jZ90XjkaO+EMCYYX3
- dGrn0bDC7VxH92Bw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C28C24273B;
- Wed, 18 Mar 2026 14:41:20 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 685F14273B;
+ Wed, 18 Mar 2026 15:02:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id snD3I5C5umkUcAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 18 Mar 2026 14:41:20 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id o0SjGKK+uml2CAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 18 Mar 2026 15:02:58 +0000
+Date: Wed, 18 Mar 2026 16:02:52 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed, 18 Mar 2026 15:41:13 +0100
-Message-ID: <20260318144113.30981-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.51.0
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20260318150252.GA31214@pevik>
+References: <20260313142600.243939-1-pvorel@suse.cz>
+ <20260313142600.243939-3-pvorel@suse.cz>
+ <abq1-BcXR1nfLGcU@yuki.lan>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_DN_SOME(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
- DBL_BLOCKED_OPENRESOLVER(0.00)[tst_test.sh:url, imap1.dmz-prg2.suse.org:helo,
- suse.cz:mid, suse.cz:email]
+Content-Disposition: inline
+In-Reply-To: <abq1-BcXR1nfLGcU@yuki.lan>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 907E24D442
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [RFC PATCH 1/1] lib: Print tcnt in tst_{brk,res}()
+Subject: Re: [LTP] [PATCH 2/6] tst_env.sh: Backport common functions from
+ tst_test.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,97 +74,110 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Sebastian Chlad <sebastian.chlad@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This helps readability on tests with high tcnt.
+> Hi!
+...
 
-Inspired by tst_test.sh (shell API) which prints $TST_COUNT in tst_res
-and tst_brk.
+> > +ROD_SILENT()
+> > +{
+> > +	local tst_out
+> > +
+> > +	tst_out=$(tst_rod "$@" 2>&1)
+> > +	if [ $? -ne 0 ]; then
+> > +		echo "$tst_out"
+> > +		tst_brk TBROK "$@ failed"
+> > +	fi
+> > +}
+> > +
+> > +ROD()
+> > +{
+> > +	tst_rod "$@"
+> > +	if [ $? -ne 0 ]; then
+> > +		tst_brk TBROK "$@ failed"
+> > +	fi
+> > +}
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-NOTE: testing on open01.c which has tcnt = 2.
-Before:
-tst_tmpdir.c:308: TINFO: Using /tmp/LTP_opebwazQS as tmpdir (tmpfs filesystem)
-tst_test.c:2059: TINFO: LTP version: 20260130-78-g68660b12c8
-tst_test.c:1887: TINFO: Overall timeout per run is 0h 00m 30s
-open01.c:56: TPASS: sticky bit is set as expected
-open01.c:56: TPASS: directory bit is set as expected
+> Since we are starting from a scratch I wonder if we should call this
+> SAFE instead so that the name is closer to the SAFE_XXX macros in C.
 
-With the patch:
+Makes sense. I was even thinking on SAFE_CMD, but we use tst_rod.c, not
+tst_cmd.c. OTOH it was obvious that ROD uses tst_rod.c, should it be also
+renamed? What ROD means anyway? run or dye?
 
-tst_tmpdir.c:308: 1 TINFO: Using /tmp/LTP_opezEOyj2 as tmpdir (tmpfs filesystem)
-tst_test.c:2059: 1 TINFO: LTP version: 20260130-79-g8d8379aa73
-tst_test.c:1887: 1 TINFO: Overall timeout per run is 0h 00m 30s
-open01.c:56: 1 TPASS: sticky bit is set as expected
-open01.c:56: 2 TPASS: directory bit is set as expected
+> > +_tst_expect_pass()
+> > +{
+> > +	local fnc="$1"
+> > +	shift
+> > +
+> > +	tst_rod "$@"
 
-Setup has "1", cleanup has tcnt + 1. We could even print "0" for setup
-or even for cleanup as well.
+> If I remmeber correctly the whole reason why we introduced tst_rod.c was
+> that passing the $@ like this causes the $@ to be evaluated twice and
+> produces unexpected results.
+
+FYI code is copy pasted from tst_test.sh. What do you want me to change?
+
+> > +	if [ $? -eq 0 ]; then
+> > +		tst_res TPASS "$@ passed as expected"
+> > +		return 0
+> > +	else
+> > +		$fnc TFAIL "$@ failed unexpectedly"
+> > +		return 1
+> > +	fi
+> > +}
+> > +
+> > +_tst_expect_fail()
+> > +{
+> > +	local fnc="$1"
+> > +	shift
+> > +
+> > +	# redirect stderr since we expect the command to fail
+> > +	tst_rod "$@" 2> /dev/null
+> > +	if [ $? -ne 0 ]; then
+> > +		tst_res TPASS "$@ failed as expected"
+> > +		return 0
+> > +	else
+> > +		$fnc TFAIL "$@ passed unexpectedly"
+> > +		return 1
+> > +	fi
+> > +}
+> > +
+> > +EXPECT_PASS()
+> > +{
+> > +	_tst_expect_pass tst_res "$@"
+> > +}
+> > +
+> > +EXPECT_PASS_BRK()
+> > +{
+> > +	_tst_expect_pass tst_brk "$@"
+> > +}
+
+> I'm not sure that adding the PASS_BRK and FAIL_BRK is a good idea. I
+> would stick to simple EXPECT_PASS and EXPECT_FAIL. And maybe we can
+> export TST_PASS variable as we do in C to match the API. I think that
+> the closer the C and shell API are the better.
+
+C API usually returns on if (!TST_PASS). I don't like it either, but it cannot
+be shortened much as we don't use functions but macros.
+
+But changing the code in the shell API does not look to me an improvement:
+
+-EXPECT_PASS_BRK ping$TST_IPV6 -c1 -I $lhost $rhost \>/dev/null
++EXPECT_PASS_BRK ping$TST_IPV6 -c1 -I $lhost $rhost \>/dev/null
++[ "$TST_PASS" = 1 ] || tst_brk "Quit due the above error"
+
+But OTOH maybe route-change-*.sh tests even don't need to quit.
+And it's a question if isofs.sh does (and whether we should even keep isofs.sh).
+=> I'm ok with it.
 
 Kind regards,
 Petr
-
- lib/tst_test.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 2d62ab164d..b9593b743a 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -69,6 +69,7 @@ static float duration = -1;
- static float timeout_mul = -1;
- static int reproducible_output;
- static int quiet_output;
-+static unsigned int tcnt;
- 
- struct context {
- 	int32_t lib_pid;
-@@ -344,7 +345,7 @@ static void print_result(const char *file, const int lineno, int ttype,
- 		str_errno = tst_strerrno(int_errno);
- 	}
- 
--	ret = snprintf(str, size, "%s:%i: ", file, lineno);
-+	ret = snprintf(str, size, "%s:%i: %u ", file, lineno, tcnt+1);
- 	str += ret;
- 	size -= ret;
- 
-@@ -1705,7 +1706,6 @@ static void heartbeat(void)
- 
- static void run_tests(void)
- {
--	unsigned int i;
- 	struct results saved_results;
- 
- 	if (!tst_test->test) {
-@@ -1724,10 +1724,10 @@ static void run_tests(void)
- 		return;
- 	}
- 
--	for (i = 0; i < tst_test->tcnt; i++) {
-+	for (tcnt = 0; tcnt < tst_test->tcnt; tcnt++) {
- 		saved_results = *results;
- 		heartbeat();
--		tst_test->test(i);
-+		tst_test->test(tcnt);
- 
- 		if (tst_getpid() != context->main_pid)
- 			exit(0);
-@@ -1735,7 +1735,7 @@ static void run_tests(void)
- 		tst_reap_children();
- 
- 		if (results_equal(&saved_results, results))
--			tst_brk(TBROK, "Test %i haven't reported results!", i);
-+			tst_brk(TBROK, "Test %i haven't reported results!", tcnt);
- 	}
- }
- 
--- 
-2.51.0
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
