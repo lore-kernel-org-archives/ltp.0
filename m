@@ -4,105 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D41D1088E72
-	for <ltp@archiver.kernel.org>; Thu, 19 Mar 2026 03:55:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1773892504; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=GRdkPvkrdkKoaxA7//fbJQSgT7TPdTyMZjFP3XhlTGQ=;
- b=nODR8tqezLrs5Mj422qBNS99uAyHPk6b1BngWh16xaJ8rpJpwzIS4Fh7dCYIN+v8f+ioL
- ec1dHNeZ7adF6E2mEcRFazLFNcMJfU4EK0PjQzO6NbnQdTvR02vgA+IG+UE3IJW7Tt+8xv/
- /Rt8BgQtMeqfdmFNq80gpZbIVuYdYsU=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39609107526D
+	for <ltp@archiver.kernel.org>; Thu, 19 Mar 2026 07:33:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 436613CAFD3
-	for <ltp@archiver.kernel.org>; Thu, 19 Mar 2026 04:55:04 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 69CF13E2343
+	for <ltp@archiver.kernel.org>; Thu, 19 Mar 2026 08:33:29 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 229EE3CAFD3
- for <ltp@lists.linux.it>; Thu, 19 Mar 2026 04:54:41 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id D85E63CAFD3
+ for <ltp@lists.linux.it>; Thu, 19 Mar 2026 08:33:08 +0100 (CET)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BA53B1400DA9
- for <ltp@lists.linux.it>; Thu, 19 Mar 2026 04:54:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1773892478;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=wrtwcwgALKKM4jvOqC0QV88p9JiiRCnTmuX5r+xqSfk=;
- b=Cnl3vAjK4M2mNV5rjqdiD1gf40eVzuSoSgucTmRy90yfDVJPhd9foO7mDk6zPl8lzQfZQo
- N77j3loB1nwLjwwpe2HGLPMlw4MOFSLD2P5PLt5eGZuEREbrBgrAnCm7gtap+CX/z2yFmF
- aEhMWxKT+kyN5NwGeWyfj37ZzdfgKv4=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-321-8tP17xyxP8-3FQdY3i7www-1; Wed, 18 Mar 2026 23:54:36 -0400
-X-MC-Unique: 8tP17xyxP8-3FQdY3i7www-1
-X-Mimecast-MFC-AGG-ID: 8tP17xyxP8-3FQdY3i7www_1773892476
-Received: by mail-pf1-f198.google.com with SMTP id
- d2e1a72fcca58-8297d261a67so328086b3a.0
- for <ltp@lists.linux.it>; Wed, 18 Mar 2026 20:54:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1773892476; x=1774497276;
- h=in-reply-to:content-transfer-encoding:content-disposition
- :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=wrtwcwgALKKM4jvOqC0QV88p9JiiRCnTmuX5r+xqSfk=;
- b=fnJbBF88/lhRkYOg83Baor7J7KOtuN2j00Yw906r6NRdUdUuTYaEBSv7eMXB0wbbaz
- /pyNHypfnDvgppBmB2UPjbu/TzGYuOgROiPuQOAhJuMt0aWsxx/MPouPQQ39HEmHF2Rz
- NGLBNIJWdjKa8GpN/etPUUzztU9vqrbXgTyEUBGw3C+ppQJ8BuiUAurzeYdrcSHtksg1
- YRaxh39Hake3N44r1LFRXp7owf+kCJ/QU/hizDmjE/LgrxusWgK40PN9hJ2oW8ZwiBLF
- /Hgyalr3zq9ZK926fKbb0gFTlYndaMFZ8CDGqOYqngxDcuxRzsLBD2hxVq8aX64XXyiL
- tHkA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXtXPM3tHxW6E1VbD9beX1X8GpSARruTn87GWbrxp4h2trCY2DUUKP7bFxIBk9ihhFlyXQ=@lists.linux.it
-X-Gm-Message-State: AOJu0YyribmzeBr0Q7TwX7gD10N45FuecvQfKoHw11k6T5q1HlhWRbHu
- ocj6DExHpnU5wF1/cMyjE+ljGcZluctAOOAawd3svlAcMESEhAN6wJGGm8rI52F3Lbn17Gj+ZT1
- bg2bMSqW6Z1OY7unfzsAu1gtyKUloXLelbSnQtZyJOnRd0vJm+aGk
-X-Gm-Gg: ATEYQzzFKH6p+q2DqVh1tQhfJ+LLFyWze4/G/L/h+pD02QwHhzx7sK2EFSlBkgDf7vV
- 4ZdiAzDxpYMAZGaGzIfb1e3YyHRSWHCROV6KPRMj9n82XRUV5PS8vRmdvJHQkxYpnaDwZWJ+Z+B
- hKeDKzWEEiBUUNYuHOU4BvNq5dUtLRn/V+xHEzbzuZytKmay9fdtSPOyFtFkyo/CGMX3IHCqJB/
- 3wXHWgj5yTCFm9z4cweCJjFzsAPlTe8UWBsEDFO01jWv6sHd0yxu6gg+oSpm4le/FC/iDqq8zuK
- HD8jgfJ9AeIA3/VgfjMi0fyfjLMcbD7iuXiGxZU6D9K4ec1qhDWmUKBZAa6J4Ln4eflHkzmL7zF
- yPutP+f3mmdcyj8wnWA==
-X-Received: by 2002:a05:6a00:811:b0:829:9f46:280d with SMTP id
- d2e1a72fcca58-82a6ac11434mr5429781b3a.1.1773892475766; 
- Wed, 18 Mar 2026 20:54:35 -0700 (PDT)
-X-Received: by 2002:a05:6a00:811:b0:829:9f46:280d with SMTP id
- d2e1a72fcca58-82a6ac11434mr5429760b3a.1.1773892475217; 
- Wed, 18 Mar 2026 20:54:35 -0700 (PDT)
-Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-82a6b541cafsm4476836b3a.12.2026.03.18.20.54.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 Mar 2026 20:54:34 -0700 (PDT)
-Date: Thu, 19 Mar 2026 11:54:32 +0800
-To: Chris Wailes <chriswailes@google.com>
-Message-ID: <abtzeEghSKbrVf38@redhat.com>
-References: <CAKfqHepUCKimv1xXxsAWw3bZRg=6VWBh7yyWOi=zuNaM5d9Eww@mail.gmail.com>
- <DEZNCTGEXSY9.1RY75URI3UEQW@suse.com>
- <CAKfqHeptLHymCgRyyUZ64UXoexoPEFsNHxSLa=aME9=U+dBywA@mail.gmail.com>
- <7d12c14f-4654-4248-b478-f57d721aba9a@suse.com>
- <CAEemH2fxanCLLMaMZRporvMXxdg0LKjO07_4suHgcFYxGQGCPQ@mail.gmail.com>
- <CAKfqHert2XNHQ12ai3r7joZYwTcV2DkbW7jFu7HqB07ZncQr+w@mail.gmail.com>
- <CAKfqHeonbt5n6d4GoWbmcqfAXpBdCsUNH0wbdzd1N65_+KHWiw@mail.gmail.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 30A0E6008FE
+ for <ltp@lists.linux.it>; Thu, 19 Mar 2026 08:33:04 +0100 (CET)
+X-UUID: d6dc9450236511f1a21c59e7364eecb8-20260319
+X-CTIC-Tags: HR_CC_AS_FROM, HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME,
+ HR_CTE_8B
+ HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+ HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+ HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+ HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
+ SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
+ DMARC_NOPASS, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
+ GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.11, REQID:043d984c-e4f5-4609-b195-0a3aca79022c, IP:10,
+ URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+ N:release,TS:5
+X-CID-INFO: VERSION:1.3.11, REQID:043d984c-e4f5-4609-b195-0a3aca79022c, IP:10,
+ UR
+ L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+ release,TS:5
+X-CID-META: VersionHash:89c9d04, CLOUDID:db6e5117d0a6c2a913b3ea1236a9703e,
+ BulkI
+ D:260319153254TLBEYGEK,BulkQuantity:0,Recheck:0,SF:17|19|66|78|102|127|898
+ ,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil
+ ,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: d6dc9450236511f1a21c59e7364eecb8-20260319
+X-User: gaoxiang@kylinos.cn
+Received: from fedora [(183.242.174.20)] by mailgw.kylinos.cn
+ (envelope-from <gaoxiang@kylinos.cn>)
+ (Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+ with ESMTP id 2078204946; Thu, 19 Mar 2026 15:32:52 +0800
+From: Gao Xiang <gaoxiang@kylinos.cn>
+To: ltp@lists.linux.it
+Date: Thu, 19 Mar 2026 15:32:48 +0800
+Message-ID: <20260319073248.4681-1-gaoxiang@kylinos.cn>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-In-Reply-To: <CAKfqHeonbt5n6d4GoWbmcqfAXpBdCsUNH0wbdzd1N65_+KHWiw@mail.gmail.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: z0KIi59xhVzziySclKuDJQXSFLPLMbh0WIiFeTIgJy8_1773892476
-X-Mimecast-Originator: redhat.com
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Update clone3 wrapper signature
+Subject: [LTP] [PATCH] madvise09: support cgroup v2 via LTP cgroup API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,19 +75,208 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: chrubis@suse.com, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PiBXb3VsZCBpdCBiZSBiZXR0ZXIvZWFzaWVyIGZvciBtZSB0byBzdWJtaXQgdGhpcyB0aHJvdWdo
-IEdpdEh1Yj8KClRoZSBwYXRjaCBnZW5lcmFsbHkgbG9va3MgZ29vZC4KCldlIHByZWZlciB0byBy
-ZXZpZXcgcGF0Y2ggaW4gbWFpbGluZyBsaXN0LiBDb3VsZCB5b3UgdHJ5IHRvIHJlc2VuZAppdCB2
-aWEgdGhlIGZvbGxvd2luZyBjb21tYW5kcz8KCsKgIyBzdWRvIGRuZiBpbnN0YWxsIGdpdC1lbWFp
-bAoKIC4uLiBkbyBzb21lIGxvY2FsIGNvbmZpZ3VyZSAuLi4KCsKgIyBnaXQgZm9ybWF0LXBhdGNo
-IC0xCsKgIyBnaXQgc2VuZC1lbWFpbCAwMDAxLXh4IC0tdG8gbHRwQGxpc3RzLmxpbnV4Lml0Cgot
-LSAKUmVnYXJkcywKTGkgV2FuZwoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Replace hard-coded cgroup v1 memory controller handling in madvise09
+with the LTP cgroup framework and cgroup v2 interfaces.
+
+Rename the related limit variable to reflect the new interface instead
+of the old memsw naming since memsw.limit_in_bytes and memory.swap.max
+are different between cgroup v1 and v2.
+
+Also fix the munmap length argument to unmap the whole mapped area.
+
+Tested by running:
+madvise09 -i 10
+make check-madvise09
+
+Signed-off-by: Gao Xiang <gaoxiang@kylinos.cn>
+---
+ testcases/kernel/syscalls/madvise/madvise09.c | 81 +++++--------------
+ 1 file changed, 21 insertions(+), 60 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
+index 1a5cc9dcf..0d063bd26 100644
+--- a/testcases/kernel/syscalls/madvise/madvise09.c
++++ b/testcases/kernel/syscalls/madvise/madvise09.c
+@@ -18,7 +18,7 @@
+  *
+  * o Set memory limits
+  *   - limit_in_bytes = 8MB
+- *   - memsw.limit_in_bytes = 16MB
++ *   - swap.limit_in_bytes = 16MB
+  *
+  *   The reason for doubling the limit_in_bytes is to have safe margin
+  *   for forking the memory hungy child etc. And the reason to setting
+@@ -45,13 +45,6 @@
+ #include "tst_test.h"
+ #include "lapi/mmap.h"
+ 
+-#define MEMCG_PATH "/sys/fs/cgroup/memory/"
+-
+-static char cgroup_path[PATH_MAX];
+-static char tasks_path[PATH_MAX];
+-static char limit_in_bytes_path[PATH_MAX];
+-static char memsw_limit_in_bytes_path[PATH_MAX];
+-
+ static size_t page_size;
+ static int sleep_between_faults;
+ 
+@@ -61,6 +54,9 @@ static int swap_accounting_enabled;
+ #define TOUCHED_PAGE1 0
+ #define TOUCHED_PAGE2 10
+ 
++#define MEM_LIMIT (8 * 1024 * 1024)
++#define SWAP_LIMIT (2 * MEM_LIMIT)
++
+ static void memory_pressure_child(void)
+ {
+ 	size_t i, page_size = getpagesize();
+@@ -90,17 +86,6 @@ static void memory_pressure_child(void)
+ 	abort();
+ }
+ 
+-static void setup_cgroup_paths(int pid)
+-{
+-	snprintf(cgroup_path, sizeof(cgroup_path),
+-		 MEMCG_PATH "ltp_madvise09_%i/", pid);
+-	snprintf(tasks_path, sizeof(tasks_path), "%s/tasks", cgroup_path);
+-	snprintf(limit_in_bytes_path, sizeof(limit_in_bytes_path),
+-		 "%s/memory.limit_in_bytes", cgroup_path);
+-	snprintf(memsw_limit_in_bytes_path, sizeof(memsw_limit_in_bytes_path),
+-		 "%s/memory.memsw.limit_in_bytes", cgroup_path);
+-}
+-
+ static int count_freed(char *ptr)
+ {
+ 	int i, ret = 0;
+@@ -157,14 +142,12 @@ static void child(void)
+ {
+ 	size_t i;
+ 	char *ptr;
+-	unsigned int usage, old_limit, old_memsw_limit;
+ 	int status, pid, retries = 0;
+ 
+-	SAFE_MKDIR(cgroup_path, 0777);
+-	SAFE_FILE_PRINTF(tasks_path, "%i", getpid());
++	SAFE_CG_PRINTF(tst_cg, "cgroup.procs", "%d", getpid());
+ 
+ 	ptr = SAFE_MMAP(NULL, PAGES * page_size, PROT_READ | PROT_WRITE,
+-	                 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+ 
+ 	for (i = 0; i < PAGES * page_size; i++)
+ 		ptr[i] = 'a';
+@@ -184,18 +167,15 @@ static void child(void)
+ 	ptr[TOUCHED_PAGE1 * page_size] = 'b';
+ 	ptr[TOUCHED_PAGE2 * page_size] = 'b';
+ 
+-	usage = 8 * 1024 * 1024;
+-	tst_res(TINFO, "Setting memory limits to %u %u", usage, 2 * usage);
+-
+-	SAFE_FILE_SCANF(limit_in_bytes_path, "%u", &old_limit);
+-
+-	if (swap_accounting_enabled)
+-		SAFE_FILE_SCANF(memsw_limit_in_bytes_path, "%u", &old_memsw_limit);
+-
+-	SAFE_FILE_PRINTF(limit_in_bytes_path, "%u", usage);
++	SAFE_CG_PRINTF(tst_cg, "memory.max", "%d", MEM_LIMIT);
++	tst_res(TINFO, "Setting memory.max to %d bytes", MEM_LIMIT);
+ 
+-	if (swap_accounting_enabled)
+-		SAFE_FILE_PRINTF(memsw_limit_in_bytes_path, "%u", 2 * usage);
++	if (swap_accounting_enabled) {
++		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%d", SWAP_LIMIT);
++		tst_res(TINFO, "Setting memory.swap.max to %d bytes", SWAP_LIMIT);
++	} else {
++		tst_res(TINFO, "memory.swap.max is unavailable, running without SWAP_LIMIT");
++	}
+ 
+ 	do {
+ 		sleep_between_faults++;
+@@ -204,7 +184,7 @@ static void child(void)
+ 		if (!pid)
+ 			memory_pressure_child();
+ 
+-		tst_res(TINFO, "Memory hungry child %i started, try %i", pid, retries);
++		tst_res(TINFO, "Memory pressure process %i started, try %i", pid, retries);
+ 
+ 		SAFE_WAIT(&status);
+ 	} while (retries++ < 10 && count_freed(ptr) == 0);
+@@ -251,22 +231,11 @@ static void child(void)
+ 	else
+ 		tst_res(TPASS, "All pages have expected content");
+ 
+-	if (swap_accounting_enabled)
+-		SAFE_FILE_PRINTF(memsw_limit_in_bytes_path, "%u", old_memsw_limit);
+-
+-	SAFE_FILE_PRINTF(limit_in_bytes_path, "%u", old_limit);
+-
+-	SAFE_MUNMAP(ptr, PAGES);
++	SAFE_MUNMAP(ptr, PAGES * page_size);
+ 
+ 	exit(0);
+ }
+ 
+-static void cleanup(void)
+-{
+-	if (cgroup_path[0] && !access(cgroup_path, F_OK))
+-		rmdir(cgroup_path);
+-}
+-
+ static void run(void)
+ {
+ 	pid_t pid;
+@@ -275,14 +244,10 @@ static void run(void)
+ retry:
+ 	pid = SAFE_FORK();
+ 
+-	if (!pid) {
+-		setup_cgroup_paths(getpid());
++	if (!pid)
+ 		child();
+-	}
+ 
+-	setup_cgroup_paths(pid);
+ 	SAFE_WAIT(&status);
+-	cleanup();
+ 
+ 	/*
+ 	 * Rarely cgroup OOM kills both children not only the one that allocates
+@@ -302,14 +267,9 @@ retry:
+ 
+ static void setup(void)
+ {
+-	long int swap_total;
+-
+-	if (access(MEMCG_PATH, F_OK)) {
+-		tst_brk(TCONF, "'" MEMCG_PATH
+-			"' not present, CONFIG_MEMCG missing?");
+-	}
++	long swap_total;
+ 
+-	if (!access(MEMCG_PATH "memory.memsw.limit_in_bytes", F_OK))
++	if (SAFE_CG_HAS(tst_cg, "memory.swap.max"))
+ 		swap_accounting_enabled = 1;
+ 	else
+ 		tst_res(TINFO, "Swap accounting is disabled");
+@@ -323,8 +283,9 @@ static void setup(void)
+ 
+ static struct tst_test test = {
+ 	.setup = setup,
+-	.cleanup = cleanup,
+ 	.test_all = run,
+ 	.needs_root = 1,
+ 	.forks_child = 1,
++	.needs_cgroup_ver = 2,
++	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
+ };
+-- 
+2.53.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
