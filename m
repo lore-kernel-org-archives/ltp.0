@@ -4,75 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8403F109190F
-	for <ltp@archiver.kernel.org>; Thu, 19 Mar 2026 18:55:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22A47109190B
+	for <ltp@archiver.kernel.org>; Thu, 19 Mar 2026 18:56:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1773946526; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=eSaE4zXm3hon/mjiDDu04xcHAgA71pwwIdtczoqkpnw=;
- b=hmYE/8PxEVwZPxzI4lXcqrP2jKnloBpM5LpyqE0FbTJW6faKDp4L/ZDGqlwB3Azd3F8Ah
- 0Wo9+X8PnrXmFWdDw17RRAcUnvPbIEcXvaWS4OhNKoeSaTfEWep/s1QUt/qzgMuDGDmWScW
- aEO30VfNU203P6PSWSSWflc3sQeks9A=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1773946564; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=+oz/kgTWkfh5+FU0X74C9FSEa8IXbQkWS/ksyy4AbSc=;
+ b=NuEYRmL0yD70pcYN3OO4WFG4Z6NMuJd1yGFegij333zgq5txDJ+yw86jzhxcqdC/7hohq
+ c6SanDIRGkadWpoO9SFZVpsmlhov3ghwzRUvCORHQR4cbqFBYny03p7vqWkAOQI5cLQTyyp
+ 304rpJh84X6FjJawfheM/inMcKbnkCY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CB0C03E30C1
-	for <ltp@archiver.kernel.org>; Thu, 19 Mar 2026 19:55:26 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id BFF9E3E30C2
+	for <ltp@archiver.kernel.org>; Thu, 19 Mar 2026 19:56:04 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D17FA3E1CEA
- for <ltp@lists.linux.it>; Thu, 19 Mar 2026 19:55:02 +0100 (CET)
-Received: from mail-dy1-x134a.google.com (mail-dy1-x134a.google.com
- [IPv6:2607:f8b0:4864:20::134a])
+ by picard.linux.it (Postfix) with ESMTPS id 739483E1CEA
+ for <ltp@lists.linux.it>; Thu, 19 Mar 2026 19:55:40 +0100 (CET)
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
+ [IPv6:2a00:1450:4864:20::233])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DF2601401248
- for <ltp@lists.linux.it>; Thu, 19 Mar 2026 19:55:01 +0100 (CET)
-Received: by mail-dy1-x134a.google.com with SMTP id
- 5a478bee46e88-2c0f6593ef5so914231eec.1
- for <ltp@lists.linux.it>; Thu, 19 Mar 2026 11:55:01 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C5D141401211
+ for <ltp@lists.linux.it>; Thu, 19 Mar 2026 19:55:39 +0100 (CET)
+Received: by mail-lj1-x233.google.com with SMTP id
+ 38308e7fff4ca-38704f70ea3so11627561fa.2
+ for <ltp@lists.linux.it>; Thu, 19 Mar 2026 11:55:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1773946539; cv=none;
+ d=google.com; s=arc-20240605;
+ b=C8SonsaaaNEy510fPNQuhQWs5DzvUDloYeUYHf9HP7Mp5YJBwq6YZ+7RpOhf1jZ4wI
+ EdEcgdzGAwxuTbyrM2OPASAvB0SjQON48YfG3zNE2z9qKLqj5kJaU1ama8DYCJ55jNud
+ CIZWI1n7andk3lS8zBr2opoIybTqcc0ndRE19yIzZTaa8xjFkFJPEhNGZ+teBsEZPBa2
+ JUWfYEfb45KTbvpXWkCO1S9pexnaGFNqJgjF3WikzIP6ws1E1to66tACeOYk+6NDIoIG
+ D+r+ID+TZxqI2/EoKH22I9rraqLPc5aKObzBcP2nq6i/+ltyeTq/ULHbQVzxaTZ5YW+H
+ w78g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:dkim-signature;
+ bh=K3rk0RJmJkK3rjcoG+WLX7OlLwh07j/T+iQvU0OP2cI=;
+ fh=bHAnNs0lV0TgPev7b1M0YDomSbZSyPHUPmBZH4cVpe8=;
+ b=QQz/cWqTCE6H/axQ+thXPsnGHmnWYDoYby2r5btoXmH9m8vrvah+5XzMfUNjG95B9S
+ JJTZEqkv21QhvL+YqIFRWWlspBuZ5IoiocDg1Fp5N1BroCr7xeJU3A392UhBYHC4EElZ
+ akgtpcCGKX4hjExMTwkPEmTe0SUREqecyNDjLXOlq2l3jUg0pFVLvh8F6G9U3Bvk5ENv
+ omf4uI0TiEG2+rAkFyiwHAIQbLqZtRuhVtC2NqCSmQKqb4ZkCV4o6Df386z36UueOAEw
+ p2OYJTnCnZaLzyw8XWaw4Gpz3HCQu+l8yUebslGKvY6ZEQa9h+ofAhjCICYQ4qRK3sn0
+ G+SA==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1773946500; x=1774551300; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=jz1+l9mLRvsD7OBkFrY1MChudUEOXqgJw4FMrCn2AIE=;
- b=pVWviM3NwefyZvoCZe3w/UDFJXgPIHI4aP7kMNU0GuZVkUwmDziBMG6O7E2jWsqS/y
- 9VkYXh6GIc72Ch2mk0n5PsbkTSgOfd7p7gVebcJt3DrUobzktkFA/4BL5Pt/wvsH3oBx
- wpiW6AEIOhyUN1fHrqlffdYMc0bZ2txtMy8WBVPeX96/JiVKqqdcE0rvwjDZwZK+zaIp
- tQSvvq9yS9jUR6tZHPVtwfA4pxdes2/WnsFRFEbWPg/vXcZEiU8AnzmqUE5rDvJbziF1
- 6vQCEKVBTIgCAiZAhIviSBClkqbY78cO9Far0CDxShvzM9fMkUOUuqpPAavHZhkhHKhb
- UHSg==
+ d=google.com; s=20251104; t=1773946539; x=1774551339; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=K3rk0RJmJkK3rjcoG+WLX7OlLwh07j/T+iQvU0OP2cI=;
+ b=eNlBPcxPRThYjND8ntavj05743KTUDWankSCZPiZyQQpus7Tk42Fh8wFlF+AidqLEZ
+ W/+EfXr2ofqqTlR/UOZJMngTFC8E4DZ7PiBrsCb9F/V2w7tZcToUx/57Ll354NedxYYJ
+ s3VZfyKV6HqMbWfVd/hERZ+n2NxTrmn+RXUlAVLIiVvWauu8uIfFHFlvlkVmyAvuYKj3
+ GH1LLqaySJApD92fOAsvjvk5laeS3Ne0Qsak91H8D2t2Z5AiBCQQaPP1e9p7LgNd9Geg
+ Zv6UKxlOfqBFCDqiUlCiAOq4mmvKEPkBhcDatC8m2UvULdxCRgGT0IxUkS5N4zAPOmw1
+ O6WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1773946500; x=1774551300;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=jz1+l9mLRvsD7OBkFrY1MChudUEOXqgJw4FMrCn2AIE=;
- b=fwMy4/COyeKt3dTpgkRhfcTwD9dXWSQnQabQ/a6dnnH04RdR4D19Jg9mu67MSEoL2b
- AmzEi1+F6nUjhcL/W/+ojsC2lDnU7QEGLpZ2JDPnvakXTmHNTCrVpR/fx2kCfGqGjl96
- eJExl4b9nn1RSSQvdxBLuoDNxO2ammv0sbzf+TjD9kungMChZGuIkJPdacweqwDaUv2h
- OlpkH9xMdI3Eo+dvW9lkRl8+O+rwxgImKkZbdMD6EkKOcdQXn9cM9aPmWKgi+kDJT46g
- WdEKT3qDtZFKdEV7GaScfFZYLyuXexdEhHZhA/hXmUe0iYETmtCEsJaW6EpqbTuFyCJq
- 9GdA==
-X-Gm-Message-State: AOJu0Yzd5TcmYUTVlGryNxyRwQUNWdfEEgudD5aDd4fzRvDzbHpCPeJv
- rQF4UL8u/6x0bhy6Ka+Epl5jKIX+5/BbfGdLqvd1Rl5mH2nC6fMrY40lrT285wPkndIMFljZpCA
- 0e3h4jqXSgXM0QhUnm+tYcNWdr6CDYS13mci+P/2CT9rXJs4OEKIrvLUfZOPjysTLtpZhj8hFYE
- w+2ps15y1Uk0XL5nLQZqt5GEMihk11WaPJ8zE9GWf6UeyEFTjlU1DkXN8RmA==
-X-Received: from dycmq9.prod.google.com ([2002:a05:7301:789:b0:2c0:be02:79e8])
- (user=chriswailes job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:7300:ed06:b0:2c0:dae2:9c5f with SMTP id
- 5a478bee46e88-2c109563c3fmr246844eec.2.1773946499319; 
- Thu, 19 Mar 2026 11:54:59 -0700 (PDT)
-Date: Thu, 19 Mar 2026 11:54:55 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.53.0.959.g497ff81fa9-goog
-Message-ID: <20260319185455.3683566-1-chriswailes@google.com>
-To: ltp@lists.linux.it
+ d=1e100.net; s=20251104; t=1773946539; x=1774551339;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=K3rk0RJmJkK3rjcoG+WLX7OlLwh07j/T+iQvU0OP2cI=;
+ b=sGPZ9VhB4I8I/3NINhZfItxejdVY4S4JvXsjDX90qrDcpD3DzC5kI0XB9j7juPCFf7
+ k3Wawzt2pJG9IG5dycQ7GTuAv5pjCvVqM+FV3IhiDDa8ixLCKp+Nxh1yaDCOlM9mS106
+ +rnJ76xcI/vZSMBiEQ5yzvgPQ4zTLJSWC92gOGEHqnwmXTQ9f3xvaO0htjmZL/b9oryD
+ 97q1A/n52fh2iEdynetrjb7IBDca5/aqJwClD5ss+Xm5J2Fie+dbQ/ttDkgY7VY215xr
+ NX7XR+0kGy+qGDhuOsdWl9Re401rIFru3b9VXnZcUn6Sn5dyEhdXRoWIHYq3kB32yNJQ
+ MGYg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVOHjwPK/oDa1JUe0sElbT47m5nq11OiAuAS8L230j9UeyBNMiufOulRkzWcT8K59FfNrs=@lists.linux.it
+X-Gm-Message-State: AOJu0YzyczgIi3yFEJ8jKDe+t2HyMsSdQ0kPjJu1yv93qh8bm1EqERx1
+ gUPDddFCyoDu+HLlME1mtqnzv+pBdoo7VOBb67SdEgA+VNZV8NlDu8O9PENW0AaTI8dzbUb4SJg
+ F+qCFPvL2LZ+WJHOAOiLY2aF8L6rEBCBk/BehJgfB
+X-Gm-Gg: ATEYQzzf09rWkfgaHmoQfzLrpQSKE3MMWPjVBDr4wSsjdDYfeQFeKVuTnCzTwzBRWp1
+ KTu4mlTBjOmBiKN3x84QQ2lnnPpdnKo/4bGusgNi+2YS+OfYCxAXeTTEUqjTBa5xnCPIZ6lpk2p
+ cUkrfz2wzL4vGQPYkzgs6G/vLO+YiEAYEai2iA2Eo8G7Yb1gtg4yH7c2n7Zt1Uf9lHuzj0lhjX/
+ v6q/plnlp0yiL/PyydPDjyR1aoQX6fpd5aJXjH7vdz/lKBT9IrXzUnpCp5yrY8oOTFXxtFsm7iu
+ rlTONX1d6e+G8RjvfDwKhjzTx4TjHkwoqwFGyQ==
+X-Received: by 2002:a05:651c:1b12:b0:38a:3374:f908 with SMTP id
+ 38308e7fff4ca-38bf9685a23mr1946021fa.16.1773946538451; Thu, 19 Mar 2026
+ 11:55:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAKfqHepUCKimv1xXxsAWw3bZRg=6VWBh7yyWOi=zuNaM5d9Eww@mail.gmail.com>
+ <DEZNCTGEXSY9.1RY75URI3UEQW@suse.com>
+ <CAKfqHeptLHymCgRyyUZ64UXoexoPEFsNHxSLa=aME9=U+dBywA@mail.gmail.com>
+ <7d12c14f-4654-4248-b478-f57d721aba9a@suse.com>
+ <CAEemH2fxanCLLMaMZRporvMXxdg0LKjO07_4suHgcFYxGQGCPQ@mail.gmail.com>
+ <CAKfqHert2XNHQ12ai3r7joZYwTcV2DkbW7jFu7HqB07ZncQr+w@mail.gmail.com>
+ <CAKfqHeonbt5n6d4GoWbmcqfAXpBdCsUNH0wbdzd1N65_+KHWiw@mail.gmail.com>
+ <abtzeEghSKbrVf38@redhat.com>
+In-Reply-To: <abtzeEghSKbrVf38@redhat.com>
+Date: Thu, 19 Mar 2026 11:55:26 -0700
+X-Gm-Features: AaiRm51fTmdd9AtgT5xoKEoKtMy_QgaKTzfA_Uw_qkn-uQqyQMGn5aGA931IelQ
+Message-ID: <CAKfqHeo2wkL77_zfegJJ0sY8erROEfeOd01KKFWLiJtAiksv8g@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Update clone3 wrapper signature
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] Update clone3 wrapper signature
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,108 +124,19 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Chris Wailes via ltp <ltp@lists.linux.it>
 Reply-To: Chris Wailes <chriswailes@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: chrubis@suse.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This CL adds the `ltp_clone3_raw` wrapper for direct testing of the
-syscall, conditionally defines `clone_args_minimal`, and adds a
-`ltp_clone3` wrapper for libc implementations that provide `clone3`.
----
- include/lapi/sched.h                        | 27 +++++++++++++++------
- testcases/kernel/syscalls/clone3/clone301.c |  2 +-
- testcases/kernel/syscalls/clone3/clone302.c |  2 +-
- 3 files changed, 22 insertions(+), 9 deletions(-)
-
-diff --git a/include/lapi/sched.h b/include/lapi/sched.h
-index 36f1ecad9..fc367f772 100644
---- a/include/lapi/sched.h
-+++ b/include/lapi/sched.h
-@@ -49,8 +49,7 @@ static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
- # define SCHED_ATTR_SIZE_VER0 48	/* sizeof first published struct */
- #endif
- 
--#ifndef HAVE_CLONE3
--struct clone_args {
-+struct clone_args_minimal {
- 	uint64_t __attribute__((aligned(8))) flags;
- 	uint64_t __attribute__((aligned(8))) pidfd;
- 	uint64_t __attribute__((aligned(8))) child_tid;
-@@ -59,12 +58,10 @@ struct clone_args {
- 	uint64_t __attribute__((aligned(8))) stack;
- 	uint64_t __attribute__((aligned(8))) stack_size;
- 	uint64_t __attribute__((aligned(8))) tls;
--	uint64_t __attribute__((aligned(8))) set_tid;
--	uint64_t __attribute__((aligned(8))) set_tid_size;
--	uint64_t __attribute__((aligned(8))) cgroup;
- };
- 
--struct clone_args_minimal {
-+#ifndef HAVE_CLONE_ARGS
-+struct clone_args {
- 	uint64_t __attribute__((aligned(8))) flags;
- 	uint64_t __attribute__((aligned(8))) pidfd;
- 	uint64_t __attribute__((aligned(8))) child_tid;
-@@ -73,12 +70,28 @@ struct clone_args_minimal {
- 	uint64_t __attribute__((aligned(8))) stack;
- 	uint64_t __attribute__((aligned(8))) stack_size;
- 	uint64_t __attribute__((aligned(8))) tls;
-+	uint64_t __attribute__((aligned(8))) set_tid;
-+	uint64_t __attribute__((aligned(8))) set_tid_size;
-+	uint64_t __attribute__((aligned(8))) cgroup;
- };
-+#endif
- 
--static inline int clone3(struct clone_args *args, size_t size)
-+static inline int ltp_clone3_raw(struct clone_args *args, size_t size)
- {
- 	return tst_syscall(__NR_clone3, args, size);
- }
-+
-+#ifdef HAVE_CLONE3_WRAPPER
-+static inline int ltp_clone3(struct clone_args *cl_args, size_t size,
-+               int (*fn)(void *), void *arg) {
-+	return clone3(cl_args, size, fn, arg);
-+}
-+#else
-+static inline int ltp_clone3(struct clone_args *cl_args, size_t size,
-+                             int (*fn)(void *), void *arg)
-+{
-+	return -1;
-+}
- #endif
- 
- static inline void clone3_supported_by_kernel(void)
-diff --git a/testcases/kernel/syscalls/clone3/clone301.c b/testcases/kernel/syscalls/clone3/clone301.c
-index deed30b9f..58fc1702e 100644
---- a/testcases/kernel/syscalls/clone3/clone301.c
-+++ b/testcases/kernel/syscalls/clone3/clone301.c
-@@ -123,7 +123,7 @@ static void run(unsigned int n)
- 	parent_received_signal = 0;
- 	SAFE_SIGACTION(tc->exit_signal, &psig_action, NULL);
- 
--	TEST(pid = clone3(args, sizeof(*args)));
-+	TEST(pid = ltp_clone3_raw(args, sizeof(*args)));
- 	if (pid < 0) {
- 		tst_res(TFAIL | TTERRNO, "clone3() failed (%d)", n);
- 		return;
-diff --git a/testcases/kernel/syscalls/clone3/clone302.c b/testcases/kernel/syscalls/clone3/clone302.c
-index 9e98f1954..883112183 100644
---- a/testcases/kernel/syscalls/clone3/clone302.c
-+++ b/testcases/kernel/syscalls/clone3/clone302.c
-@@ -83,7 +83,7 @@ static void run(unsigned int n)
- 		args->tls = tc->tls;
- 	}
- 
--	TEST(clone3(args, tc->size));
-+	TEST(ltp_clone3_raw(args, tc->size));
- 
- 	if (!TST_RET)
- 		exit(EXIT_SUCCESS);
--- 
-2.53.0.959.g497ff81fa9-goog
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+RG9uZS4gIFRoYW5rcyBmb3IgdGhlIGd1aWRhbmNlLgoKLSBDaHJpcwoKT24gV2VkLCBNYXIgMTgs
+IDIwMjYgYXQgODo1NOKAr1BNIExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPiB3cm90ZToKCj4g
+PiBXb3VsZCBpdCBiZSBiZXR0ZXIvZWFzaWVyIGZvciBtZSB0byBzdWJtaXQgdGhpcyB0aHJvdWdo
+IEdpdEh1Yj8KPgo+IFRoZSBwYXRjaCBnZW5lcmFsbHkgbG9va3MgZ29vZC4KPgo+IFdlIHByZWZl
+ciB0byByZXZpZXcgcGF0Y2ggaW4gbWFpbGluZyBsaXN0LiBDb3VsZCB5b3UgdHJ5IHRvIHJlc2Vu
+ZAo+IGl0IHZpYSB0aGUgZm9sbG93aW5nIGNvbW1hbmRzPwo+Cj4gICMgc3VkbyBkbmYgaW5zdGFs
+bCBnaXQtZW1haWwKPgo+ICAuLi4gZG8gc29tZSBsb2NhbCBjb25maWd1cmUgLi4uCj4KPiAgIyBn
+aXQgZm9ybWF0LXBhdGNoIC0xCj4gICMgZ2l0IHNlbmQtZW1haWwgMDAwMS14eCAtLXRvIGx0cEBs
+aXN0cy5saW51eC5pdAo+Cj4gLS0KPiBSZWdhcmRzLAo+IExpIFdhbmcKPgo+CgotLSAKTWFpbGlu
+ZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
