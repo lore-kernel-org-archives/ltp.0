@@ -4,88 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AB2C1098783
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 13:21:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36FC91098782
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 13:34:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774012902; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1774013672; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=/E/OCSKU5z8kcuwwCvtV2OZRoB2XZNLRW4QtOWy9ftI=;
- b=jzX4tllrB9j/7ngbhakg1zpv3qoC4lwSVR6s2iS7lUhN3UykzfBPB5V64CzktiH2ChqEG
- d4URS6w3PD1uvU3HhC7aqQdbmUxCjSLWO5Jk8hxfEE5Tjfg7TSyB25vAabRi9uybKYvwNm+
- 10pNaga7MjZGKs6GXRJwypbvG4dka3U=
+ bh=EiTauMj1X3ig7qeGIiSOojFLG4suh0c7w3+S5rHiLCw=;
+ b=dJ6x5H34ll667UnZbuFWAc6SBWUCxM3K12NAbWf3dvqqg05G84UtdlejEA10RUydt3dFC
+ n5V/x/1/2fFV9TUFSL1gA9UvAfg1iWk09wtjP968P9dkUzVbBqEWWFx4dads84ix7ccnHwU
+ ldikhp0FbObIA4bg1uaiOj8HI06Fxr4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B38943E30B4
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 14:21:42 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id BFFC23E55B9
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 14:34:32 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E8ACA3C57FD
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 14:21:17 +0100 (CET)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
+ by picard.linux.it (Postfix) with ESMTPS id 051A53C0322
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 14:34:09 +0100 (CET)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 81AAD600E21
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 14:21:16 +0100 (CET)
-Received: by mail-wm1-x32e.google.com with SMTP id
- 5b1f17b1804b1-486fba7ce4cso13618965e9.3
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 06:21:16 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 37E271400BD9
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 14:34:08 +0100 (CET)
+Received: by mail-wm1-x32b.google.com with SMTP id
+ 5b1f17b1804b1-4852afd42ceso14796475e9.2
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 06:34:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1774012876; x=1774617676; darn=lists.linux.it;
+ d=suse.com; s=google; t=1774013647; x=1774618447; darn=lists.linux.it;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=MVxEEgWchCUMCbqT/QlDQBLrOMwuumWnM01OGaiQmQ0=;
- b=cDN4galPG1QzBFCKrzZ3Bz0g6nb18BjMUy7nT/heQFS6SZpfYUKrD86tzzvr1hFr85
- 3Yatcekt9H7RGYxInwtwauknnpYMzLNrtZHpN2QC70+GnXQtfEzHE9eZGtIYB7KlDIa2
- 4M0RI+nTGGrDyrkR7DPWiSJgMpHXEPu++WpK4cgO2gboyJ8XggFISrdwusVtiQk/GOmO
- 1+kN9R6L/WWjvo8JujTWuKcpl30MN+yaN4ZCDPI125kHkiGn8ioVC59NnvTKGndAZ2Mk
- cLr+2RjWAQEEkxw8Yp3T/5wscXl0qQ9RClk6ms1OEjZl5FC4R1RGbDic8k8iVrnDgH+X
- TbrA==
+ bh=ihQPuyLxh+uT37xJjVrfLzidA1yNNi0sMltFXpj2zp8=;
+ b=AdAPWYhwlR3z9qVYvtHWx+KFc/YoAk8CiPbtXmfJvDgzLMBSYv+TG6b6qwa3HgTlTv
+ 5zNQwQkQYx/NT1ckNF1iZ7ku2rD+RmPo36Di1LbTe9yMddHCUwoLqIjVS+jUzhw0LGXf
+ 3wAqILoP73ZaF1nPSNTieBRNOfRU/DcxAGyrZANjjfe503PhaQrv3ziWhEECM/NEBWJv
+ WVxLucBMk335OVtzxJOJYNEzRzD0ZEi8E2YlevdSFG99Qs/s7eoSjziCJH5WMFXnoK+s
+ K9EY4CbdHCiLK6LsNMVsgA821peqQj1pp6GUD8toFaBkfgSbimz2LTpd4W0fqkaLekXj
+ G7uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774012876; x=1774617676;
+ d=1e100.net; s=20251104; t=1774013647; x=1774618447;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=MVxEEgWchCUMCbqT/QlDQBLrOMwuumWnM01OGaiQmQ0=;
- b=QhuCmvRXo9fjBm9UqWKn34hcqihFzOmUp2FuElmmDJaZTzdqKbXmL18dMR/lcf4LBW
- I9jCZsMxJJKKafoqiAcxsPc3K8PYkGnSnKemC9kBvSZEy7dAOZx/Z8dIxFcb2CtleOyi
- lvLesPxkfhO/cnouBiFAdPOhreIjJG7q5UmdLclB6qvW1r2DBpfeurkhpa1Pj+He3q3z
- W2I+A9n5GV9TXcbSYgFomzM8Zcdp11W08Nq6tlQqqGLV07cC7e8pt01heS9MOUsQ4u8/
- ehrnzugWuQgC9ZtaRid0iDpJ1ds5coEwjZInkHG+gBrIRIbBwo9y5H87wYVWvF0rRLzZ
- 8HeA==
+ bh=ihQPuyLxh+uT37xJjVrfLzidA1yNNi0sMltFXpj2zp8=;
+ b=WfstAVnUd+ISEZsMveiDLF1ljcc+OAOyryRE0iM8bQfvoeLkmIHm4NHgnjGEHgTmG0
+ LKQeBbCH1OWQQpvZsLdYqfbRyxa9audnipAdHdvqQzqkE19Qh/eOUhlbJBlLNauNeOgT
+ WS1ITHqUE3kE8Z/Hf5rCHxhOiE7nBM+2C2VHAyq3rCy/wvJ6R3DTqT5ZWuaRlBrn7CM2
+ 7ucFYWP1HOW3C1nv9K8HnDIeeu7QU/Kx0dz5irSXNqQXkyjNxsOgbPkOcnODXcTMm6su
+ t112nT83Ik0+6SordL92QWBOQm27Tc5BgRVvLu2fARfg6pugyB14JAib9dso+bw9l+Zh
+ YMjA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCX4AgerCvQgbRmUcEOct9oUuINyCHrm3BxL1HVC8Dwq9QEkJBcjJD0SDs7JTeuhdj8z3Eo=@lists.linux.it
-X-Gm-Message-State: AOJu0Yw/JqT1nbV8+TMK6oHPV83ff069ISlX1RiMxguD7pP6nzonaujZ
- R3Cd6W/X9IowhxjWv6UEds+zjFrNmGhTJFOOG5Nf2BgfljN7hwgPk2qcFziy9qafE0o=
-X-Gm-Gg: ATEYQzz54tq0u4rcZ/Sk9kXGEXqp3n1nz//YKIXDIAZhiBD2+pmmMTPoiXoTMxVchCN
- ntGVbRbNrSBEd2DLehpZeyD0b0RRHvMzaMKvU31FmHGU/1hVhzJTqylSAWa3Y7btORhTUyF+ahk
- aZ9ge1eboS4Tf6Bqgor29FYIX9j5esMhrO3sYwHXee7zcMGJw5WWoYPcbq2rUSnmlY1zjlTmUtf
- b6TQCcWpmD004avuR61MRR3jr6r2n8FaPQIbLgQo/stBcWm0Uqvmu/Qw8pYJMB2NxUozF/9xacx
- FAW6r0r69bObiDPWZrrbp8eGJOJt1cEY9R6DJGEECNdx+6yGFYoCn/DrjCEDXu4csCMUEdA3E2e
- S3dBvpC/0XTHacjsp/RagbluwxTX99lzPnmqc9c+dssz2xxV1J36MucHUYRdbieRAGj/Ed9QuMS
- /nCMeYskRE2cExMbMZS09VphPh5spPv9k3BeK5H3O/Ret6IWU=
-X-Received: by 2002:a05:600c:4707:b0:485:3c66:e230 with SMTP id
- 5b1f17b1804b1-486ff039929mr43763765e9.29.1774012875730; 
- Fri, 20 Mar 2026 06:21:15 -0700 (PDT)
+ AJvYcCWYl+g3ks0rcIde9bzdUaZS1z2OtRaYjoQdsn6bEyWuR8q2O9wpaq1Y3pxN4fVIXY6RfHI=@lists.linux.it
+X-Gm-Message-State: AOJu0YyLQ6yQB9JB4IqEIAFKltt2MjaNWKgC7ThEWu3RA5ZIwiRJ/P76
+ T0k38QCOev8oFvynExQeKaGZsv2yGaXu39TpPDRRz74JdH86+gNk+chVBlWXhLY44F4aD3voUrZ
+ RKCl9Iw0=
+X-Gm-Gg: ATEYQzz23HvjhdFZmObxA+BrucGpKiIcdXf1zsT4bQ3Rv1GoFl+k5lP4Rc/onUvZaEG
+ 1mcSPgD+5xeYccq7Q5SQFUpnt2+Zxwrmol/uqDNgESH2qJPhgCpiVtAGfksqO8++Z2eaOk9if6I
+ vWOCmzZbrpdplPfJ8F/FpmoVnuGYU/aDnpNvngbo6TiYYryS9Cktvy4mxtRKOlMXHcjvSboBD/h
+ aLadIx29XLZiJQvJMT3eT2xs2ffZR/BoJReqCTRM9RduhsAs880dwLObr+fto9MoiieFfErYyuc
+ VEnYAY9DhGVBlYFk6g8Am5tPM9aQatcW6flo5ZbwsFsifrNihzRBnvxSO0PfKjHtH6xW2rEmwCV
+ d3MhYzGO3dGMSBg1uezgTV0NXnLt8oRsZ4PD5Nb2bdRJuDpg6CvauwZjH+pVb8BEp0NfIuI4dXV
+ Ym4cvVGN6scFiiKZ+DzVp33l3WEeTaB6QhDmwcILZOTyZQmI4=
+X-Received: by 2002:a05:600c:c167:b0:486:fab9:a578 with SMTP id
+ 5b1f17b1804b1-486fedc3843mr45817385e9.11.1774013647385; 
+ Fri, 20 Mar 2026 06:34:07 -0700 (PDT)
 Received: from localhost.localdomain
  ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-486fe867e41sm17229065e9.4.2026.03.20.06.21.14
+ ffacd0b85a97d-43b644ae619sm7281334f8f.5.2026.03.20.06.34.06
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 20 Mar 2026 06:21:15 -0700 (PDT)
-Message-ID: <69bd49cb.050a0220.283c33.1d03@mx.google.com>
+ Fri, 20 Mar 2026 06:34:06 -0700 (PDT)
+Message-ID: <69bd4cce.df0a0220.1f9b07.885e@mx.google.com>
 To: "Cyril Hrubis" <chrubis@suse.cz>
-In-Reply-To: <ab0hXPbw1dXD4JY3@yuki.lan>
-Date: Fri, 20 Mar 2026 13:21:14 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+In-Reply-To: <ab0i-cmCvbuJc8dv@yuki.lan>
+Date: Fri, 20 Mar 2026 13:34:05 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/5] Update architectures syscalls identifiers
+Subject: Re: [LTP] [PATCH v2 2/5] Add listns fallback header
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,34 +106,20 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi!
 
 > Hi!
-> >  include/lapi/syscalls/arc.in         |   2 +
-> >  include/lapi/syscalls/arm.in         |   3 +-
-> >  include/lapi/syscalls/arm64.in       |   2 +
-> >  include/lapi/syscalls/i386.in        |   3 +-
-> >  include/lapi/syscalls/loongarch64.in |   3 ++
-> >  include/lapi/syscalls/mips64.in      |   4 +-
-> >  include/lapi/syscalls/mips64n32.in   |   4 +-
-> >  include/lapi/syscalls/mipso32.in     |   4 +-
-> >  include/lapi/syscalls/parisc.in      |   3 +-
-> >  include/lapi/syscalls/powerpc.in     |   3 +-
-> >  include/lapi/syscalls/powerpc64.in   |   3 +-
-> >  include/lapi/syscalls/s390.in        | 102 +++++++++--------------------------
+> > +static inline int listns(struct listns_req *req, uint64_t *ns_ids,
+> > +			 size_t nr_ns_ids, unsigned int flags)
+> > +{
+> > +	return tst_syscall(__NR_listns, req, ns_ids, nr_ns_ids, flags);
+> > +}
 > 
-> Why do we change so much in the s390.in? I'm not saying it's wrong (I
-> haven't checked) but even if it's correct it at least should have been
-> explained in the commit message.
+> Do we need a configure check in a case that glibc happens to eventually
+> add listns() syscall?
+> 
 
-I generated it automatically with generate_arch.sh script, which is verifying
-that the defined syscalls are actually supported by the architecture. It's
-all good when it comes to 32/64 bit variants syscalls, but it looks weird for
-others.
-
-I'm a bit puzzled as well..there is a risk that by touching so many syscalls
-numbers LTP will be out of sync with the underlying kernel. Maybe I will just
-add the syscalls which are really needed such as listns().
+Does it make sense at this stage?
 
 --
 Andrea Cervesato
