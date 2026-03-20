@@ -4,105 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E6FB109878D
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 15:15:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2F0810987A4
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 16:20:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3E1653E55C6
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 16:15:18 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 6DD923E610F
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 17:20:34 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AB3E63D067A
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 16:14:58 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 0634A3CFC0E
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 17:20:14 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 27FE8600054
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 16:14:58 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 947F9200AF6
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 17:20:14 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 75F4F4D27B;
- Fri, 20 Mar 2026 15:14:57 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C53E04D231;
+ Fri, 20 Mar 2026 16:20:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1774019697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1774023614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PGgA9gozrmJ/lTuOjtaazItOfZAMlgoOjxP8YEImTWI=;
- b=OfhvXh1oIGcrxg1ZWCkElm/1ohjAXJUfRqXOzg1VbN3BHGOADoCynrmdt9JkQGkoFXhmJe
- BbfU2g6O5Rxs+TE4JNwd+CJxg8oA3ka46ukrOKMnmuKxHvmDhmvTjwV0xjEd8nQhAaM2cq
- 0TTLXk+93DS4h0AVnPjYibw3eem7PLU=
+ bh=KGZxxUrKGxhYOul4V0fFLyVWt+UKUYD8BH2Zdb1Syak=;
+ b=nyNxXdkuP1vf7ceC0Yc7Vq0oGDen7N6NBSeRGIMCWNSP4Cti+GCBP5jvSe9N5FCMR5nop9
+ ckqHCYtVrZBXf/mORlco9jhYT1YyG7LlANdEjkTsBH+Q4lBTKTCVaKcFQk0hPISuuOTJ3C
+ v22tsjQMOOnlMd/2ouZqU0siRQhcKq4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1774019697;
+ s=susede2_ed25519; t=1774023614;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PGgA9gozrmJ/lTuOjtaazItOfZAMlgoOjxP8YEImTWI=;
- b=qu3wLT/i8YHxdeCCcOLia2AfhGFmxKq2WoEd5iuKcI4bj8w7BEl27VN8ZF0kv9dDewXVmk
- Fds7Id7BJ5/kUhDg==
+ bh=KGZxxUrKGxhYOul4V0fFLyVWt+UKUYD8BH2Zdb1Syak=;
+ b=MwjxtPnvhkU3b/768JekUf274NL7jufAJzBoOHory1puaj+FQUgOd7I7EhFqq/vamJJdI8
+ l1IZ/YdWaidWfcCQ==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OfhvXh1o;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="qu3wLT/i"
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ZidnI8R1;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=O635BYXU
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1774019697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1774023613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PGgA9gozrmJ/lTuOjtaazItOfZAMlgoOjxP8YEImTWI=;
- b=OfhvXh1oIGcrxg1ZWCkElm/1ohjAXJUfRqXOzg1VbN3BHGOADoCynrmdt9JkQGkoFXhmJe
- BbfU2g6O5Rxs+TE4JNwd+CJxg8oA3ka46ukrOKMnmuKxHvmDhmvTjwV0xjEd8nQhAaM2cq
- 0TTLXk+93DS4h0AVnPjYibw3eem7PLU=
+ bh=KGZxxUrKGxhYOul4V0fFLyVWt+UKUYD8BH2Zdb1Syak=;
+ b=ZidnI8R1lqfujYFkAZig0CCephjGRwuD43OWgeTqM9jMSMRzJkWyyimfBeJDkPgp4ldG24
+ 9CNWQAcrkP08ZBQ/ngIJlumlLVpIKlJolp4MG3sW6veRNiINkdWdcd9T2ZootDZPdAKguD
+ FWXszIT22EXRfa6te1GGczN0PXcGzxQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1774019697;
+ s=susede2_ed25519; t=1774023613;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PGgA9gozrmJ/lTuOjtaazItOfZAMlgoOjxP8YEImTWI=;
- b=qu3wLT/i8YHxdeCCcOLia2AfhGFmxKq2WoEd5iuKcI4bj8w7BEl27VN8ZF0kv9dDewXVmk
- Fds7Id7BJ5/kUhDg==
+ bh=KGZxxUrKGxhYOul4V0fFLyVWt+UKUYD8BH2Zdb1Syak=;
+ b=O635BYXUkDyvBFWpGQdB5TfJYYr04fSrWKx0LjzguEt+TnHbRWs6+RFwkPCd/bEdyvhfMF
+ 83jcxszUdFjrPOBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 64C5742872;
- Fri, 20 Mar 2026 15:14:57 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4BDF428B6;
+ Fri, 20 Mar 2026 16:20:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Vo/dFnFkvWkYagAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 20 Mar 2026 15:14:57 +0000
-Date: Fri, 20 Mar 2026 16:15:00 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id AFgYK71zvWm/LwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 20 Mar 2026 16:20:13 +0000
+Date: Fri, 20 Mar 2026 17:20:17 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ab1kdAOb5_YDqyLN@yuki.lan>
+Message-ID: <ab1zwXCUui24rmmC@yuki.lan>
 References: <20260313142600.243939-1-pvorel@suse.cz>
- <20260313142600.243939-6-pvorel@suse.cz>
- <abkh9aPkKAewapRr@redhat.com> <abqLM0iQY7nwPaDm@yuki.lan>
- <abqZ3h1iVo5DaQ_4@yuki.lan> <20260318154019.GE31214@pevik>
+ <20260313142600.243939-3-pvorel@suse.cz>
+ <abq1-BcXR1nfLGcU@yuki.lan> <20260318150252.GA31214@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260318154019.GE31214@pevik>
+In-Reply-To: <20260318150252.GA31214@pevik>
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ URIBL_BLOCKED(0.00)[isofs.sh:url,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,yuki.lan:mid,tst_test.sh:url,suse.cz:dkim,suse.cz:email];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; RCVD_COUNT_TWO(0.00)[2];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
  DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: 75F4F4D27B
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Rspamd-Queue-Id: C53E04D231
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/6] [WIP,RFC] tst_run.sh: Run setup() only once
+Subject: Re: [LTP] [PATCH 2/6] tst_env.sh: Backport common functions from
+ tst_test.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,76 +123,76 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > > It's a bit more complicated we do not have only iterations but also
-> > > duration and timeout per iteration. So we would need a function that
-> > > would return if the script should continue or not and also call the
-> > > heartbeat() function. Something as:
+> > SAFE instead so that the name is closer to the SAFE_XXX macros in C.
 > 
-> > > int tst_next_shell_iteration(void)
-> > > {
-> > > 	int cont = 0;
-> > > 	static int iteration = 0;
-> 
-> > > 	if (iteration < iterations)
-> > > 		cont = 1;
-> 
-> > > 	if (stop_time && get_time_ms() < stop_time())
-> > > 		cont = 1;
-> 
-> > > 	if (!cont)
-> > > 		return 0;
-> 
-> > > 	heartbeat();
-> > > 	return ++iteration;
-> > > }
-> 
-> > > The shell helper would call this and we would use it in tst_run.sh and
-> > > loop the tst_test() until we are said to stop.
-> 
-> Wait, tst_run_shell.c calls shell script via tst_run_script(). This can be
-> called only once, before starting the script...
+> Makes sense. I was even thinking on SAFE_CMD, but we use tst_rod.c, not
+> tst_cmd.c. OTOH it was obvious that ROD uses tst_rod.c, should it be also
+> renamed? What ROD means anyway? run or dye?
 
-The tst_run_script() is set as the tst_test.test or tst_test.test_all
-function. Then we enter the library via the tst_run_tcases() and we do
-the full test library init and everything.
+Run or die (we are not coloring anything).
 
-The problem with that is that we run the shell script is re-executed
-for each -i iteration. That means that unlike the fork() the whole
-environment is re-created. So we cannot run setup() only for first
-iteration as we do for C.
+And yes it would make sense to rename tst_rod.c to tst_safe_cmd.c or
+similar.
 
-So we either call the setup in each iteration (that means both tcnt and
--i) or we push the loop over tcnt and -i into the shell. I think that
-more elegant solution is the latter.
-
-> > Note also that this solution would move the iteration into the shell
+> > > +_tst_expect_pass()
+> > > +{
+> > > +	local fnc="$1"
+> > > +	shift
+> > > +
+> > > +	tst_rod "$@"
 > 
-> ... but from the code it's obvious that you want to call it more times.
-> How do you want to reach C library code from shell test?
-
-We would have to just call the tst_test->test() function directly in the
-fork_testrun() instead of testrun() for script tests. That would avoid
-all the looping and heartbeats() in C library in that case.
-
-> > script, since if we do not iterate in the shell, we will end up with a
-> > different environment in the second and subsequent iterations. That
-> > means that any variables exported in setup() would be lost in subsequent
-> > iterations, the pid of the shell would be different, etc.
+> > If I remmeber correctly the whole reason why we introduced tst_rod.c was
+> > that passing the $@ like this causes the $@ to be evaluated twice and
+> > produces unexpected results.
 > 
-> Yes, I noticed that during du01.sh rewrite. I was surprised but thought that you
-> wanted to have most of the library code be in C API (having shell part of the
-> shell loader really thin).
-> 
-> Before sending the patchset I was thinking if some shell variables should be
-> shared and exported into new shell run. But it'd be unpractical and as you write
-> PID of the shell would be always different.
-> 
-> I have to admit sometimes I think whether rewriting everything into C wouldn't
-> be a better time investment than implementing shell loader, given we are going
-> to redesign network API. Anyway, any new test should really be using C API.
+> FYI code is copy pasted from tst_test.sh. What do you want me to change?
 
-I think that the shell API is nearly finished at this point, the last
-unsolved piece is how we design the test iterations with -i and tcnt.
+I've spend a couple of minutes figuring out why we originaly implemented
+ROD_BASE() in C.
+
+The problem is that single quotes gets removed as soon as we pass the
+parameter.
+
+E.g.: ROD awk '{ print $1 }'
+
+Once we pass that to a shell function the '' disappear, they managed to
+keep the { print $1 } to be a single parameter in the list but they are
+not there anymore.
+
+And since we were manipulating the parameter list we got, we failed to
+reconstruct it correctly in shell since in the next step the { print $1 }
+breaks into four separate strings.
+
+As long as we pass the $@ as a whole (even after shift), it does work
+since the boundaries of parameters in $@ stay exactly as they were.
+
+TL;DR; The code you copy&pasted is correct, I only misremembered what
+was the problem back then.
+
+> > I'm not sure that adding the PASS_BRK and FAIL_BRK is a good idea. I
+> > would stick to simple EXPECT_PASS and EXPECT_FAIL. And maybe we can
+> > export TST_PASS variable as we do in C to match the API. I think that
+> > the closer the C and shell API are the better.
+> 
+> C API usually returns on if (!TST_PASS). I don't like it either, but it cannot
+> be shortened much as we don't use functions but macros.
+> 
+> But changing the code in the shell API does not look to me an improvement:
+> 
+> -EXPECT_PASS_BRK ping$TST_IPV6 -c1 -I $lhost $rhost \>/dev/null
+> +EXPECT_PASS_BRK ping$TST_IPV6 -c1 -I $lhost $rhost \>/dev/null
+> +[ "$TST_PASS" = 1 ] || tst_brk "Quit due the above error"
+
+Let's keep it then.
+
+> But OTOH maybe route-change-*.sh tests even don't need to quit.
+> And it's a question if isofs.sh does (and whether we should even keep isofs.sh).
+
+For the isofs I would probably generate the iso filesystems in advance
+and store them in git so that we don't have to re-generate them during
+the test run. Other than that mounting an iso filesystem over loopback
+and checking that the files are there (which the test does not do) is
+valid kernel test. But that is a different problem.
 
 -- 
 Cyril Hrubis
