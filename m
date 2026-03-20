@@ -4,107 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2F0810987A4
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 16:20:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DA9210987B6
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 17:01:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6DD923E610F
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 17:20:34 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id B1A8A3E5F3F
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 18:01:25 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0634A3CFC0E
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 17:20:14 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 74D083E1FFC
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 18:01:06 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 947F9200AF6
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 17:20:14 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 586C31A0100B
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 18:01:04 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C53E04D231;
- Fri, 20 Mar 2026 16:20:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1774023614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KGZxxUrKGxhYOul4V0fFLyVWt+UKUYD8BH2Zdb1Syak=;
- b=nyNxXdkuP1vf7ceC0Yc7Vq0oGDen7N6NBSeRGIMCWNSP4Cti+GCBP5jvSe9N5FCMR5nop9
- ckqHCYtVrZBXf/mORlco9jhYT1YyG7LlANdEjkTsBH+Q4lBTKTCVaKcFQk0hPISuuOTJ3C
- v22tsjQMOOnlMd/2ouZqU0siRQhcKq4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1774023614;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CCDC95BCF8;
+ Fri, 20 Mar 2026 17:01:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1774026063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jBy+rVnwU98GZbaM0jTFJz54FG6OTClwXCpIiuj46Qw=;
+ b=Xe9r5gyRxv/eb/JbVyS/20qFuz50xHANu+Pj+JuhwMZJ/841015FhWRpN4oPdUXGDL+naR
+ jDXDO2KPt+rumeilApu0aAHcj9z18Kg9uofunXB4w5tzshJbcKF4IGsfhn2w7Rwqg76tsI
+ w9Mq8TSuA0BOLTDMxky6HtEbbvqFpJM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1774026063;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KGZxxUrKGxhYOul4V0fFLyVWt+UKUYD8BH2Zdb1Syak=;
- b=MwjxtPnvhkU3b/768JekUf274NL7jufAJzBoOHory1puaj+FQUgOd7I7EhFqq/vamJJdI8
- l1IZ/YdWaidWfcCQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ZidnI8R1;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=O635BYXU
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1774023613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KGZxxUrKGxhYOul4V0fFLyVWt+UKUYD8BH2Zdb1Syak=;
- b=ZidnI8R1lqfujYFkAZig0CCephjGRwuD43OWgeTqM9jMSMRzJkWyyimfBeJDkPgp4ldG24
- 9CNWQAcrkP08ZBQ/ngIJlumlLVpIKlJolp4MG3sW6veRNiINkdWdcd9T2ZootDZPdAKguD
- FWXszIT22EXRfa6te1GGczN0PXcGzxQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1774023613;
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jBy+rVnwU98GZbaM0jTFJz54FG6OTClwXCpIiuj46Qw=;
+ b=SP3eKDVtK91oX0g057krURHR2ZQMwi+23uOIcPuc8YRSP+QrmidrKwGC+lPeLrE+0ycLtX
+ ldsvHFY5VB6toFBg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1774026062; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jBy+rVnwU98GZbaM0jTFJz54FG6OTClwXCpIiuj46Qw=;
+ b=ywmdcQezlYPnJw8VJCuXi3Y9JfgBv5gLcXQiL8Zgs1DvSVijuUIDjMG38rx/MzbFC3/6pI
+ fYh6X/zmnoOvnEWDDBQqJQD739Tb9MqFMwo/Ev9v63+xnnbZA1gje8x4BMVnOKz9a2Mi0l
+ lEXrOA9Hruf6JGjLjXivb2FAzdeNwaA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1774026062;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KGZxxUrKGxhYOul4V0fFLyVWt+UKUYD8BH2Zdb1Syak=;
- b=O635BYXUkDyvBFWpGQdB5TfJYYr04fSrWKx0LjzguEt+TnHbRWs6+RFwkPCd/bEdyvhfMF
- 83jcxszUdFjrPOBA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jBy+rVnwU98GZbaM0jTFJz54FG6OTClwXCpIiuj46Qw=;
+ b=4mO7lxj4fQK703DrnWOrHyyDl35+5P6tXWm0RzMnSwdLiDps/E/c3D2AXItHDCz4OHCsyk
+ qMH4G/EjKUsDtTCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4BDF428B6;
- Fri, 20 Mar 2026 16:20:13 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A94B7428DE;
+ Fri, 20 Mar 2026 17:01:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id AFgYK71zvWm/LwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 20 Mar 2026 16:20:13 +0000
-Date: Fri, 20 Mar 2026 17:20:17 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ab1zwXCUui24rmmC@yuki.lan>
-References: <20260313142600.243939-1-pvorel@suse.cz>
- <20260313142600.243939-3-pvorel@suse.cz>
- <abq1-BcXR1nfLGcU@yuki.lan> <20260318150252.GA31214@pevik>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id cGx4J059vWnaWQAAD6G6ig
+ (envelope-from <rbranco@suse.de>); Fri, 20 Mar 2026 17:01:02 +0000
+From: Ricardo Branco <rbranco@suse.de>
+To: ltp@lists.linux.it
+Date: Fri, 20 Mar 2026 18:00:56 +0100
+Message-ID: <20260320170058.433730-1-rbranco@suse.de>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260318150252.GA31214@pevik>
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- URIBL_BLOCKED(0.00)[isofs.sh:url,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,yuki.lan:mid,tst_test.sh:url,suse.cz:dkim,suse.cz:email];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: C53E04D231
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid,suse.de:email];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/6] tst_env.sh: Backport common functions from
- tst_test.sh
+Subject: [LTP] [PATCH] userfaultfd: Minor fixes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,87 +98,179 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Sebastian Chlad <sebastian.chlad@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > SAFE instead so that the name is closer to the SAFE_XXX macros in C.
-> 
-> Makes sense. I was even thinking on SAFE_CMD, but we use tst_rod.c, not
-> tst_cmd.c. OTOH it was obvious that ROD uses tst_rod.c, should it be also
-> renamed? What ROD means anyway? run or dye?
+- Use POSIX semantics for thread function
+- Set cleanup to call reset_pages
 
-Run or die (we are not coloring anything).
+Signed-off-by: Ricardo Branco <rbranco@suse.de>
+---
+ .../kernel/syscalls/userfaultfd/userfaultfd01.c      | 10 +++++++---
+ .../kernel/syscalls/userfaultfd/userfaultfd02.c      |  9 ++++++---
+ .../kernel/syscalls/userfaultfd/userfaultfd03.c      | 12 ++++++++----
+ .../kernel/syscalls/userfaultfd/userfaultfd04.c      |  8 ++++++--
+ .../kernel/syscalls/userfaultfd/userfaultfd05.c      | 10 +++++++---
+ .../kernel/syscalls/userfaultfd/userfaultfd06.c      |  2 +-
+ 6 files changed, 35 insertions(+), 16 deletions(-)
 
-And yes it would make sense to rename tst_rod.c to tst_safe_cmd.c or
-similar.
-
-> > > +_tst_expect_pass()
-> > > +{
-> > > +	local fnc="$1"
-> > > +	shift
-> > > +
-> > > +	tst_rod "$@"
-> 
-> > If I remmeber correctly the whole reason why we introduced tst_rod.c was
-> > that passing the $@ like this causes the $@ to be evaluated twice and
-> > produces unexpected results.
-> 
-> FYI code is copy pasted from tst_test.sh. What do you want me to change?
-
-I've spend a couple of minutes figuring out why we originaly implemented
-ROD_BASE() in C.
-
-The problem is that single quotes gets removed as soon as we pass the
-parameter.
-
-E.g.: ROD awk '{ print $1 }'
-
-Once we pass that to a shell function the '' disappear, they managed to
-keep the { print $1 } to be a single parameter in the list but they are
-not there anymore.
-
-And since we were manipulating the parameter list we got, we failed to
-reconstruct it correctly in shell since in the next step the { print $1 }
-breaks into four separate strings.
-
-As long as we pass the $@ as a whole (even after shift), it does work
-since the boundaries of parameters in $@ stay exactly as they were.
-
-TL;DR; The code you copy&pasted is correct, I only misremembered what
-was the problem back then.
-
-> > I'm not sure that adding the PASS_BRK and FAIL_BRK is a good idea. I
-> > would stick to simple EXPECT_PASS and EXPECT_FAIL. And maybe we can
-> > export TST_PASS variable as we do in C to match the API. I think that
-> > the closer the C and shell API are the better.
-> 
-> C API usually returns on if (!TST_PASS). I don't like it either, but it cannot
-> be shortened much as we don't use functions but macros.
-> 
-> But changing the code in the shell API does not look to me an improvement:
-> 
-> -EXPECT_PASS_BRK ping$TST_IPV6 -c1 -I $lhost $rhost \>/dev/null
-> +EXPECT_PASS_BRK ping$TST_IPV6 -c1 -I $lhost $rhost \>/dev/null
-> +[ "$TST_PASS" = 1 ] || tst_brk "Quit due the above error"
-
-Let's keep it then.
-
-> But OTOH maybe route-change-*.sh tests even don't need to quit.
-> And it's a question if isofs.sh does (and whether we should even keep isofs.sh).
-
-For the isofs I would probably generate the iso filesystems in advance
-and store them in git so that we don't have to re-generate them during
-the test run. Other than that mounting an iso filesystem over loopback
-and checking that the files are there (which the test does not do) is
-valid kernel test. But that is a different problem.
-
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+index 7368d3863..b481e5a15 100644
+--- a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+@@ -53,11 +53,14 @@ static void set_pages(void)
+ 
+ static void reset_pages(void)
+ {
+-	SAFE_MUNMAP(page, page_size);
+-	SAFE_MUNMAP(copy_page, page_size);
++	if (page) {
++		SAFE_MUNMAP(page, page_size);
++		SAFE_MUNMAP(copy_page, page_size);
++		page = NULL;
++	}
+ }
+ 
+-static void *handle_thread(void)
++static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+ 	static struct uffd_msg msg;
+ 	struct uffdio_copy uffdio_copy = {};
+@@ -129,4 +132,5 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.test = run,
+ 	.tcnt = ARRAY_SIZE(tcases),
++	.cleanup = reset_pages,
+ };
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd02.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd02.c
+index 2fd5ba5d8..db9ce4da4 100644
+--- a/testcases/kernel/syscalls/userfaultfd/userfaultfd02.c
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd02.c
+@@ -32,11 +32,13 @@ static void set_pages(void)
+ 
+ static void reset_pages(void)
+ {
+-	SAFE_MUNMAP(page, page_size);
+-	SAFE_MUNMAP(move_page, page_size);
++	if (page) {
++		SAFE_MUNMAP(page, page_size);
++		SAFE_MUNMAP(move_page, page_size);
++	}
+ }
+ 
+-static void *handle_thread(void)
++static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+ 	static struct uffd_msg msg;
+ 	struct uffdio_move uffdio_move = {};
+@@ -94,4 +96,5 @@ static void run(void)
+ static struct tst_test test = {
+ 	.test_all = run,
+ 	.min_kver = "6.8",
++	.cleanup = reset_pages,
+ };
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd03.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd03.c
+index b65f39eca..463dfba0b 100644
+--- a/testcases/kernel/syscalls/userfaultfd/userfaultfd03.c
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd03.c
+@@ -57,11 +57,14 @@ static void set_pages(void)
+ 
+ static void reset_pages(void)
+ {
+-	SAFE_MUNMAP(page, page_size);
+-	SAFE_MUNMAP(copy_page, page_size);
++	if (page) {
++		SAFE_MUNMAP(page, page_size);
++		SAFE_MUNMAP(copy_page, page_size);
++		page = NULL;
++	}
+ }
+ 
+-static void *handle_thread(void)
++static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+ 	static struct uffd_msg msg;
+ 	struct uffdio_copy uffdio_copy = {};
+@@ -132,5 +135,6 @@ static struct tst_test test = {
+ 	.needs_kconfigs = (const char *[]) {
+ 		"CONFIG_USERFAULTFD=y",
+ 		NULL
+-	}
++	},
++	.cleanup = reset_pages,
+ };
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd04.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd04.c
+index 4eb811e45..3273d20cb 100644
+--- a/testcases/kernel/syscalls/userfaultfd/userfaultfd04.c
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd04.c
+@@ -30,10 +30,13 @@ static void set_pages(void)
+ 
+ static void reset_pages(void)
+ {
+-	SAFE_MUNMAP(page, page_size);
++	if (page) {
++		SAFE_MUNMAP(page, page_size);
++		page = NULL;
++	}
+ }
+ 
+-static void *handle_thread(void)
++static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+ 	static struct uffd_msg msg;
+ 	struct uffdio_zeropage uffdio_zeropage = {};
+@@ -98,4 +101,5 @@ static void run(void)
+ 
+ static struct tst_test test = {
+ 	.test_all = run,
++	.cleanup = reset_pages,
+ };
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c
+index e25a227cf..4434f9b9f 100644
+--- a/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd05.c
+@@ -33,10 +33,13 @@ static void set_pages(void)
+ 
+ static void reset_pages(void)
+ {
+-	SAFE_MUNMAP(page, page_size);
++	if (page) {
++		SAFE_MUNMAP(page, page_size);
++		page = NULL;
++	}
+ }
+ 
+-static void *handle_thread(void)
++static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+ 	static struct uffd_msg msg;
+ 	struct uffdio_writeprotect uffdio_writeprotect = {};
+@@ -127,5 +130,6 @@ static struct tst_test test = {
+ 	.needs_kconfigs = (const char *[]) {
+ 		"CONFIG_HAVE_ARCH_USERFAULTFD_WP=y",
+ 		NULL
+-	}
++	},
++	.cleanup = reset_pages,
+ };
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
+index 5b1252c35..238556ba4 100644
+--- a/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd06.c
+@@ -58,7 +58,7 @@ static void reset_pages(void)
+ 	}
+ }
+ 
+-static void *handle_thread(void)
++static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+ 	static struct uffd_msg msg;
+ 	struct uffdio_poison uffdio_poison = {};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.53.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
