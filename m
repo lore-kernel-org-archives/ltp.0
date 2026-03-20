@@ -4,88 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCC0D1093182
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 07:46:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DF451093187
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 07:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1773992805; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=6XSWBKVE4cnhVv7hco9gOPcRhVShxhND/pHeghp/ySg=;
- b=ac2fDymw2FAcYCZgQ3bxmcxF2lwhxQXn4USfOZejxiMXcUJHq5TbhUyWgBD8LlQDGBhDK
- IFGefM7VsMHRdbeQsV7sTtTCjg3/tWB4M4GzN8XR5xQ0TFZhNRCZTuBTmF+FQj4GnHpMjdL
- 12ClQo8FuTcyZwcggNXQaPRjYmJ0ufQ=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1773993484; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=H5U/MI4XTiGyotIRDuDq9ka8sQg5yDiSi4WbY6eBk2Y=;
+ b=TMpvDl0jB9LqffdD3kmrTRAkh7t5vnR0obLgNVgGe0eQBDPhRvGid8C1FDB1jQKLpu2mR
+ KeK2CKvQKCJIvAw6C8oU4NsKcoQ7cpMyKg/6R9/sv3UzlKAY7KNHHiCM7M3e/5SawTXSI+e
+ JZ2hWFG4XgfGxat09yEuF3NaYad/u/Y=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6C2B33E1CDF
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 08:46:45 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id AF6493E1FFD
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 08:58:04 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 918413E1C3B
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 08:46:22 +0100 (CET)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+ by picard.linux.it (Postfix) with ESMTPS id 136333E1C3B
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 08:57:41 +0100 (CET)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
+ [IPv6:2607:f8b0:4864:20::549])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D21EA600681
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 08:46:21 +0100 (CET)
-Received: by mail-wm1-x329.google.com with SMTP id
- 5b1f17b1804b1-48334ee0aeaso14119195e9.1
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 00:46:21 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 556CD1001197
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 08:57:41 +0100 (CET)
+Received: by mail-pg1-x549.google.com with SMTP id
+ 41be03b00d2f7-c74217894d9so176683a12.2
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 00:57:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1773992781; x=1774597581; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=03bN422bJ/REWWKyJ2kqLMylqyiVpmbIvL3Hs099kZg=;
- b=ZlQkCpLLGzSsOz2ZFDLDiS6/lHz+CYgWNW5LumXR0CfxE27ovdJ0CFmcWalf8WUHcL
- 3TG90ojwCVMC7VP6MgkIzAU95fBmTOWAx7WB4EZZZapp9BQyWxrMEkNl7vRPHngaTWBg
- TPp6pU+tL/minqQml+wht1MmJYNswm2RrXajRobcXYRVEQ/5DpNW+3i69VxPA7UiDiK9
- kgcti2tgkSWwMPQNb5OIH0PTZ0fIvjnAqRe8aPsArvY94DCnCZ+FPlObKx+BowfvQLEy
- 5WfjyMzcSPRdGq54Da07CK9pfDe5NaSARnctrDi+HT0zXhioRl8RM7790rTqhtwii2ys
- lENg==
+ d=google.com; s=20251104; t=1773993459; x=1774598259; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=SLo1CQXJHMjlU9Nty8Kv+5/Wrp16fbKHPXDZxlHd4og=;
+ b=XXbLJr2re4+HPEDMU6aEnmkqqoLbvHKi3iszT1bEfpWLqvZhNLUN8qARRBQ+xyO/GT
+ 7gT3wKn71Hx1D9dFyv+RaEGZ00Z/XOSuXkHzzOAZq4xnUKmL6OfodfzEEYPjfFGknUnK
+ k1QArcKsoRnxqrZwoOCD1lVQXITMb+PB3vGSqv/HJN+sHL197X5JyB/Nn1tAeav0A1Or
+ OunOVtPr5my8SYpZQhbcJipE9DnZozJgWjfDmykJa8PegYxhEn0UTakgQznirDkqIB7+
+ 29c0Z8K4VqvO1i61gfx30QLeArS+P41LWuL8/cbrLxOFvF2TwN5HFQsPS0QgIB+rrN1G
+ Bw1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1773992781; x=1774597581;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=03bN422bJ/REWWKyJ2kqLMylqyiVpmbIvL3Hs099kZg=;
- b=tX4TZpRTpKE+gc5op7Yc8km1Bw+r7ZajDu7AK6mTUbsINwpLSoSlYIRccLG9vYn+Ln
- IJkLbGSPXYBkHXJpmZgdh1C0rT4pm31hRnRaR09b8ql5UafsNpzQ12XxnnSqMxKsfHt6
- ACJsRkdQg/KppzsmUAXic62+Q/pUwPPmbawFbHoc1/XBwDWcp80/RK36HdJd10qBGazX
- HxB2vZvKsqe0fChQDZ3dchJxdiWVASiNFa0fiInjz8RJh3w9kgBtzMV5xkmxn9iAMP91
- 4GQDq6Z4zur3LHpCGaei8GoOL8WfPt8E4UB9Kv4y975ckpaAWJ6GUPOYNZrOP+CXNpcj
- ay1w==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVdJtQ5SFh5Pl687jlnM1dhq49PikLk+vDmajJ+9a/It7+J0vbByffI9YWWWOZ8jkcz/S0=@lists.linux.it
-X-Gm-Message-State: AOJu0YyhNM21gq5ymiaditc7zA1WcRJnhogBEwX94u5V9CE64v5sYEOP
- DTnOjtOKrGXOHvVjTE1ZdQxzrn8CBdnK09z0GaBd3N3AHFNe4JT8BDqFxzPcEDtIlGU=
-X-Gm-Gg: ATEYQzxs4exuca9xu3k/8j8rwrWKLW0XSNGSJSkZCwoY4SrXzBVELFM57lOVU47xnn0
- BoO/hQYuOB5b+0DUjWwQ4+UZLlCbCCI8DeBY/iwIkJFL6c+ZUxFck/fP3Jy6V2DU4+sBp7ynNa/
- +JKdBGQsFwoCpAdPJVk686GdUoeTYqBml1XGV5V/yiHt0xCvFYSTZdWj4M494pFLI2kpFnAbPJY
- 8MeqPFLhfWjk0Dg2jJqieDteGQ9/i8kmN4AJ95kyGNea38GO2fblEdfFhOiC2m5i7hVcen9F5qC
- 9b88iXu6K8qK/kt6iC8xybbAia6oR2s159tUYz6mVauGSHg12Clhc3WBa9yBKjv9LZVt6i2B4Jr
- 4V/gZhFwsgFtE7UBtgLjJAVe1zZ0iY3RMtBpVFp7Y08lZ1Hx8gkXaQ0L6LRWyiXRaUQseGksaXC
- E8tvbDa6WJgou/VbfJwUmWAKQwuxSqZRGNs+yocU9l+fbJyis=
-X-Received: by 2002:a05:600c:8710:b0:480:690e:f14a with SMTP id
- 5b1f17b1804b1-486fee0b632mr29244995e9.14.1773992781012; 
- Fri, 20 Mar 2026 00:46:21 -0700 (PDT)
-Received: from localhost.localdomain
- ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-486f8ba4a74sm116701275e9.12.2026.03.20.00.46.20
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 20 Mar 2026 00:46:20 -0700 (PDT)
-Message-ID: <69bcfb4c.050a0220.196b4d.9984@mx.google.com>
-To: "Jan Polensky" <japo@linux.ibm.com>
-In-Reply-To: <20260316122725.122719-2-japo@linux.ibm.com>
-Date: Fri, 20 Mar 2026 07:46:19 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ d=1e100.net; s=20251104; t=1773993459; x=1774598259;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=SLo1CQXJHMjlU9Nty8Kv+5/Wrp16fbKHPXDZxlHd4og=;
+ b=aG7WL8WN45XDXLliaVs4QDEyGWW8+nItwLyIIJ6kkrrJuK7+bl3/UbJtf+LVha3cJi
+ kCT+fmJc5iUekp5Y6sSG/g7df9od03ppeWaDhpydzkJngCeELTdITS4XJOB1szhH+HXN
+ Jknv0Phs+wWXcWBdQfnC7o4sFEgMcN+noIaxIZJccKtkAHATYEccohdmeKmXUQRaMMDA
+ Rtvs+0wnLIw3P0IBCTp+/k4cfxOpambvm1Jdasl7+7brApaGzOTxkbAUwHK2SuMGa++4
+ LrZRcefDOhjZjDIohGM73iKw0i7TrWKexxxWfUHvcwzVpMFOJ3Z/W2NFI86xypt3Uldf
+ sAcA==
+X-Gm-Message-State: AOJu0YwQEyqMXAsKyYZbSqjJe56G//s0n8PbK7E/JE8va9ssk6mmGyfg
+ V3/DqqtHVePQoAo20WfuVosPNGksxQqjK0+A/C7COIw7hTtRvb1WqpM58DEriTJAkSlR+LyvrQU
+ /58jYFbAhvYoPVn6aj2XrURIoMM6trmwOY7gkdUflaUKD750wu0aLDDUWrGnP4mQB2Yjt1GAsd1
+ Ds/4A3s4ZXSFoa9/DU7MFWGzarLA==
+X-Received: from pga28.prod.google.com ([2002:a05:6a02:4f9c:b0:c0e:3543:bdb0])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a20:1596:b0:39b:cbab:63d6
+ with SMTP id adf61e73a8af0-39bce9b60c6mr1902129637.3.1773993459027; Fri, 20
+ Mar 2026 00:57:39 -0700 (PDT)
+Date: Fri, 20 Mar 2026 07:57:33 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.53.0.983.g0bb29b3bc5-goog
+Message-ID: <20260320075733.936817-1-wakel@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/2] fsetxattr02: Adapt test for kernel 7.1.0+
- socket xattr support
+Subject: [LTP] [PATCH] syscalls/file_attr01: Allow EOPNOTSUPP when
+ attributes is NULL
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,42 +85,158 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-MIME-Version: 1.0
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: Wake Liu <wakel@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+The syscalls file_getattr and file_setattr may return EOPNOTSUPP
+instead of EFAULT when the ufattr argument is NULL, specifically on
+filesystems that do not support extended attributes (e.g., tmpfs when
+CONFIG_TMPFS_XATTR is disabled).
 
-> +static void fix_sock(struct test_case *tc)
-> +{
-> +	/* dc0876b9846d ("xattr: support extended attributes on sockets") */
-> +	if (socket_xattr_supported)
-> +		tc->exp_err = 0;
+In the kernel, the fileattr_get/set operations are checked before the
+pointer dereference. If the filesystem does not define these operations,
+the kernel returns -ENOIOCTLCMD (translated to EOPNOTSUPP in userspace)
+before checking the validity of the user-provided pointer.
 
-There's a mix of `bool` and `int` here. I would just define tc->exp_err as `int`
-and leave `bool` out of the test for consistency.
+This is a valid behavior for kernel configurations where extended
+attributes are not enabled for certain filesystems. This leads to
+test failures on such systems:
+TFAIL: File attributes is NULL expected EFAULT: EOPNOTSUPP (95)
 
-Also I was thinking that we shouldn't explicitly edit static variables meant
-to describe the test scenario, so we probably need a local variable (also for
-consistency).
+This patch updates the test case to support multiple expected errnos
+using TST_EXP_FAIL_ARR, allowing both EFAULT and EOPNOTSUPP for the NULL
+attributes test case.
 
-    int exp_err = tc->exp_err;
+Signed-off-by: Wake Liu <wakel@google.com>
+---
+ .../kernel/syscalls/file_attr/file_attr01.c   | 35 ++++++++++++-------
+ 1 file changed, 22 insertions(+), 13 deletions(-)
 
-    if (socket_xattr_supported)
-        exp_err = 1;
+diff --git a/testcases/kernel/syscalls/file_attr/file_attr01.c b/testcases/kernel/syscalls/file_attr/file_attr01.c
+index c9c9288a1..02aea66a6 100644
+--- a/testcases/kernel/syscalls/file_attr/file_attr01.c
++++ b/testcases/kernel/syscalls/file_attr/file_attr01.c
+@@ -42,7 +42,8 @@ static struct tcase {
+ 	struct file_attr **ufattr;
+ 	size_t *usize;
+ 	int at_flags;
+-	int exp_errno;
++	int exp_errs[2];
++	int exp_errs_cnt;
+ 	char *msg;
+ } tcases[] = {
+ 	{
+@@ -50,7 +51,8 @@ static struct tcase {
+ 		.filename = &valid_filename,
+ 		.ufattr = &valid_file_attr,
+ 		.usize = &valid_usize,
+-		.exp_errno = EBADF,
++		.exp_errs = {EBADF},
++		.exp_errs_cnt = 1,
+ 		.msg = "Invalid file descriptor",
+ 	},
+ 	{
+@@ -58,7 +60,8 @@ static struct tcase {
+ 		.filename = &invalid_filename,
+ 		.ufattr = &valid_file_attr,
+ 		.usize = &valid_usize,
+-		.exp_errno = ENOENT,
++		.exp_errs = {ENOENT},
++		.exp_errs_cnt = 1,
+ 		.msg = "File doesn't exist",
+ 	},
+ 	{
+@@ -66,7 +69,8 @@ static struct tcase {
+ 		.filename = &null_ptr,
+ 		.ufattr = &valid_file_attr,
+ 		.usize = &valid_usize,
+-		.exp_errno = EFAULT,
++		.exp_errs = {EFAULT},
++		.exp_errs_cnt = 1,
+ 		.msg = "Filename is NULL",
+ 	},
+ 	{
+@@ -74,7 +78,8 @@ static struct tcase {
+ 		.filename = &valid_filename,
+ 		.ufattr = (struct file_attr **)(&null_ptr),
+ 		.usize = &valid_usize,
+-		.exp_errno = EFAULT,
++		.exp_errs = {EFAULT, EOPNOTSUPP},
++		.exp_errs_cnt = 2,
+ 		.msg = "File attributes is NULL",
+ 	},
+ 	{
+@@ -82,7 +87,8 @@ static struct tcase {
+ 		.filename = &valid_filename,
+ 		.ufattr = &valid_file_attr,
+ 		.usize = &zero,
+-		.exp_errno = EINVAL,
++		.exp_errs = {EINVAL},
++		.exp_errs_cnt = 1,
+ 		.msg = "File attributes size is zero",
+ 	},
+ 	{
+@@ -90,7 +96,8 @@ static struct tcase {
+ 		.filename = &valid_filename,
+ 		.ufattr = &valid_file_attr,
+ 		.usize = &small_usize,
+-		.exp_errno = EINVAL,
++		.exp_errs = {EINVAL},
++		.exp_errs_cnt = 1,
+ 		.msg = "File attributes size is too small",
+ 	},
+ 	{
+@@ -98,7 +105,8 @@ static struct tcase {
+ 		.filename = &valid_filename,
+ 		.ufattr = &valid_file_attr,
+ 		.usize = &big_usize,
+-		.exp_errno = E2BIG,
++		.exp_errs = {E2BIG},
++		.exp_errs_cnt = 1,
+ 		.msg = "File attributes size is too big",
+ 	},
+ 	{
+@@ -107,7 +115,8 @@ static struct tcase {
+ 		.ufattr = &valid_file_attr,
+ 		.usize = &valid_usize,
+ 		.at_flags = -1,
+-		.exp_errno = EINVAL,
++		.exp_errs = {EINVAL},
++		.exp_errs_cnt = 1,
+ 		.msg = "Invalid AT flags",
+ 	},
+ };
+@@ -117,18 +126,18 @@ static void run(unsigned int i)
+ 	struct tcase *tc = &tcases[i];
+ 
+ 	if (tst_variant) {
+-		TST_EXP_FAIL(file_getattr(
++		TST_EXP_FAIL_ARR(file_getattr(
+ 			*tc->dfd, *tc->filename,
+ 			*tc->ufattr, *tc->usize,
+ 			tc->at_flags),
+-			tc->exp_errno,
++			tc->exp_errs, tc->exp_errs_cnt,
+ 			"%s", tc->msg);
+ 	} else {
+-		TST_EXP_FAIL(file_setattr(
++		TST_EXP_FAIL_ARR(file_setattr(
+ 			*tc->dfd, *tc->filename,
+ 			*tc->ufattr, *tc->usize,
+ 			tc->at_flags),
+-			tc->exp_errno,
++			tc->exp_errs, tc->exp_errs_cnt,
+ 			"%s", tc->msg);
+ 	}
+ }
+-- 
+2.53.0.983.g0bb29b3bc5-goog
 
-I can add these two small things before merge if you agree with that.
-
-Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
