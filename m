@@ -4,57 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D002108B913
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 12:33:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D86C108B919
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 12:48:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D5EA3E30B1
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 13:33:26 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 9603C3E279D
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 13:48:08 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ED27B3C940A
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 13:33:07 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 6974E3D067A
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 13:47:49 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A42B820173B
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 13:33:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1774009987; x=1805545987;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=MZBdNcAGhLTuX7Nh04k9Ot+lUs7uwHkJv5/JwD2GOLo=;
- b=N3KDqQKKayDb7MwnQn5qYW0WntJWW3t21UjKQZFlgs6ckMyM+Nbkt1Ah
- JgHoFOTzWu6LPbnJmGTg1kFHh5Ey3hctj4VoWh3zx79yCLpGioc67gZl1
- P7ofZRR5r1fJ1Vcy4yAw31C58ACd8qzCqeL65MbkFfcBDhuY2d6agHJUj
- 2w4x0U0Unp8kzrFV4gfuGJEDQtJFtvsSjTMjr+6vlKAIyxGVHCWcb6Vt0
- Wjs2w4s2zuCtBQgs5VhY7wjsrerYz0dqmfQx91hgTfr/Uo5378h/FFc16
- 74ajawvjed43Ak0MeLouXvk9AuMPcjTOiJ8uTB1ps8eEPQOnQvencTMof g==;
-X-CSE-ConnectionGUID: xuCBdelVQuGaA2bQBv9qqg==
-X-CSE-MsgGUID: qFvdIDdqSIaFxnfGR1LK9g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11735"; a="85407974"
-X-IronPort-AV: E=Sophos;i="6.23,130,1770624000"; d="scan'208";a="85407974"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
- by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Mar 2026 05:33:05 -0700
-X-CSE-ConnectionGUID: DT4loMXMRZOf5jZcSHFwMQ==
-X-CSE-MsgGUID: pTKN7N7ERmi4jK/0R5+Rgw==
-X-ExtLoop1: 1
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
- by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Mar 2026 05:33:02 -0700
-From: Piotr Kubaj <piotr.kubaj@intel.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D92FA1400544
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 13:47:48 +0100 (CET)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 62JLTk493291959; Fri, 20 Mar 2026 12:47:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=B2GBUjddJOJvp8LlBluKYxAD8Nx/pB9GYGb1gXyXB
+ nk=; b=hvFvKVu6QYMrVaPHDeVZCYqTMJ4uif2EsjWKtWua18mwOxPnK/JOlMBme
+ ciH6xIOTVyOjDaysP/pPZyLFWKxnHfNVzN6SkYa/Y0qMrHz50yYj64xFAdmdjOKF
+ Rhy4g0UbiR65loN57FDoG6FNkvHD9FNgB05mrQEL4nkOc1T0+unQyOoWaiTkbpBM
+ o7Fr/DS6VlDmCYn2ffNmEysiLydfXvqtnyzHuJHlXKnZC4+M7f9kyRRvovyXfp9i
+ 8zV2G4AvNnxejLhsvw2Ix1xp0ocpeJhndCmGyaXakDWPNPZHTzv7UX8S0207cnkL
+ NvwYJryutvs5w4rQSQ4OgyrNqwH9A==
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cvx3danug-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 20 Mar 2026 12:47:46 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62K7xZUM028739;
+ Fri, 20 Mar 2026 12:47:46 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cwkgkq5j8-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 20 Mar 2026 12:47:46 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
+ [10.20.54.101])
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 62KCliBG30998848
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 20 Mar 2026 12:47:44 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 155622004E;
+ Fri, 20 Mar 2026 12:47:44 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 58FA120040;
+ Fri, 20 Mar 2026 12:47:43 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.43.5.99])
+ by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Fri, 20 Mar 2026 12:47:43 +0000 (GMT)
+From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Fri, 20 Mar 2026 13:32:57 +0100
-Message-ID: <20260320123257.124745-1-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
+Date: Fri, 20 Mar 2026 18:17:39 +0530
+Message-Id: <20260320124742.75946-1-sachinp@linux.ibm.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=arO/yCZV c=1 sm=1 tr=0 ts=69bd41f2 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=V8glGbnc2Ofi9Qvn3v5h:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=b8lekoXllzO_O2yKhu4A:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzIwMDEwMCBTYWx0ZWRfX+DsJx2sn6DnT
+ wcVYa6g5eRDI8pCgQkqxm95NRwQMw8upp/61X4txDkN6Rrl/NuhLQ1kt1KcOWkMgziiFG3u+COM
+ 1HIHA5cz2hE8lBSKFKMZOnf3yRQ69QlgHqojtyyZ4ZaV/3/XlHqPku090w+q1VVm3wgaHZzA3uN
+ Xy3goysiMyFn4T45P7fxhg27gCSpw6outmdCxCJ5ORjc8M1CabPbnA3fRrb0oQ5WHWq6WJMqqgL
+ Z+VCa4rInmd75nqAcKpZnHyCZ7r/5Q8dTxu5P123vKFurDZIwNVjur0Xh1wzQHB4nB9h9di4pxs
+ 4GYCxuCLD+GbWy0ZL/SPjWCVQ08Q/D3UbnX0Z2US5zujtQLwP87MJa1eD72PmQ6JxacrhcxP8Ie
+ 6liE0SRrDR6RjzXRaaQ/haGe9UHlZHcYTWH+T8qfq13ngrEOosQJ0P0DMxSntQWV+OMnFd3KRHO
+ tEjufHLYx2kxCpeXKAg==
+X-Proofpoint-GUID: Y99Nic1xnh6QRA_vLzf5KTM0-qb9Uo1W
+X-Proofpoint-ORIG-GUID: Y99Nic1xnh6QRA_vLzf5KTM0-qb9Uo1W
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-20_02,2026-03-19_05,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0 clxscore=1015
+ phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2603050001
+ definitions=main-2603200100
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] high_freq_hwp_cap_cppc.c: new test
+Subject: [LTP] [PATCH 0/3] io_uring READ(V), WRITE(v) operation tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,124 +107,85 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Verify for all online logical CPUs that their highest performance value are
-the same for HWP Capability MSR 0x771 and CPPC sysfs file.
+This patch series adds a set of test case to validate
+IOURING READ & WRITE (io_uring03), READV & WRITEV (io_uring04)
+operations. The patch also adds a common header file to
+avoid code duplication.
 
-Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+This patch series also refactors existing test io_uring01
+to use the common structures and function defined in header.
+
+These patches have been tested successfully on ppc64le
+arch (fedora and SLES flavours)
+
+Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
 ---
-Add the test to power_management_tests.
- runtest/power_management_tests                |  1 +
- testcases/kernel/power_management/.gitignore  |  1 +
- .../power_management/high_freq_hwp_cap_cppc.c | 66 +++++++++++++++++++
- 3 files changed, 68 insertions(+)
- create mode 100644 testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
+Changes from RFC patch series:
+- Addressed review comments
+- Refactored io_uring01 test to use common code
+- Removed git tags
+- Link to RFC: https://lore.kernel.org/ltp/20260318110328.52031-1-sachinp@linux.ibm.com/T/#t
 
-diff --git a/runtest/power_management_tests b/runtest/power_management_tests
-index 884e615cd..6d87dfb7f 100644
---- a/runtest/power_management_tests
-+++ b/runtest/power_management_tests
-@@ -1,4 +1,5 @@
- #POWER_MANAGEMENT
-+high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
- runpwtests01 runpwtests01.sh
- runpwtests02 runpwtests02.sh
- runpwtests03 runpwtests03.sh
-diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
-index 0c2a3ed4b..c13bca1c4 100644
---- a/testcases/kernel/power_management/.gitignore
-+++ b/testcases/kernel/power_management/.gitignore
-@@ -1 +1,2 @@
-+high_freq_hwp_cap_cppc
- pm_get_sched_values
-diff --git a/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-new file mode 100644
-index 000000000..e3008d38a
---- /dev/null
-+++ b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-@@ -0,0 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/*
-+ * Copyright (C) 2026 Intel - http://www.intel.com/
-+ */
-+
-+/*\
-+ * Verify for all online logical CPUs that their highest performance value are
-+ * the same for HWP Capability MSR 0x771 and CPPC sysfs file.
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_safe_prw.h"
-+
-+static int nproc;
-+
-+static void setup(void)
-+{
-+	nproc = tst_ncpus();
-+}
-+
-+static void run(void)
-+{
-+	bool status = true;
-+
-+	for (int i = 0; i < nproc; i++) {
-+		char path[PATH_MAX];
-+		unsigned long long msr_highest_perf = 0, sysfs_highest_perf = 0;
-+
-+		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/acpi_cppc/highest_perf", i);
-+		SAFE_FILE_SCANF(path, "%llu", &sysfs_highest_perf);
-+		tst_res(TDEBUG, "%s: %llu", path, sysfs_highest_perf);
-+
-+		snprintf(path, sizeof(path), "/dev/cpu/%d/msr", i);
-+		int fd = SAFE_OPEN(path, O_RDONLY);
-+
-+		if (SAFE_PREAD(1, fd, &msr_highest_perf, sizeof(msr_highest_perf), 0x771) == -1)
-+			tst_brk(TBROK | TERRNO, "MSR read error");
-+		msr_highest_perf &= (1ULL << 8) - 1;
-+		tst_res(TDEBUG, "%s: %llu", path, msr_highest_perf);
-+
-+		if (msr_highest_perf != sysfs_highest_perf)
-+			status = false;
-+	}
-+
-+	if (status)
-+		tst_res(TPASS, "Sysfs and MSR values are equal");
-+	else
-+		tst_res(TFAIL, "Highest performance values differ between sysfs and MSR");
-+}
-+
-+static struct tst_test test = {
-+	.needs_kconfigs = (const char *const []) {
-+		"CONFIG_ACPI_CPPC_LIB",
-+		"CONFIG_X86_MSR",
-+		NULL
-+	},
-+	.needs_root = 1,
-+	.setup = setup,
-+	.supported_archs = (const char *const []) {
-+		"x86",
-+		"x86_64",
-+		NULL
-+	},
-+	.test_all = run
-+};
+Test run:
+
+$ ./kirk -f iouring
+....
+Connecting to SUT: default
+
+Suite: iouring
+--------------
+io_uring01: pass  (0.005s)
+io_uring02: pass  (0.004s)
+io_uring03: pass  (0.004s)
+io_uring04: pass  (0.004s)
+
+Execution time: 0.054s
+
+Disconnecting from SUT: default
+
+.....
+------------------------
+      TEST SUMMARY
+------------------------
+Suite:   iouring
+Runtime: 0.017s
+Runs:    4
+
+Results:
+    Passed:   23
+    Failed:   0
+    Broken:   0
+    Skipped:  0
+    Warnings: 0
+
+Session stopped
+$
+
+---
+
+Sachin Sant (3):
+  io_uring: Test IORING READ and WRITE operations
+  io_uring: Test READV and WRITEV operations
+  io_uring: Refactor io_uring01 to use common code
+
+ runtest/syscalls                              |   2 +
+ testcases/kernel/syscalls/io_uring/.gitignore |   2 +
+ .../kernel/syscalls/io_uring/io_uring01.c     | 111 +++-----
+ .../kernel/syscalls/io_uring/io_uring03.c     | 130 +++++++++
+ .../kernel/syscalls/io_uring/io_uring04.c     | 231 +++++++++++++++
+ .../syscalls/io_uring/io_uring_common.h       | 265 ++++++++++++++++++
+ 6 files changed, 665 insertions(+), 76 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/io_uring/io_uring03.c
+ create mode 100644 testcases/kernel/syscalls/io_uring/io_uring04.c
+ create mode 100644 testcases/kernel/syscalls/io_uring/io_uring_common.h
+
 -- 
-2.47.3
-
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
+2.39.1
 
 
 -- 
