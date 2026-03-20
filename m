@@ -4,96 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD4CA1093163
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 02:03:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1773972198; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=EEZ8bVaGVPJbJjWpJacac5Y7XyAHYekea5/j4fVGZ+k=;
- b=JlUaz66pOl8MAhO0jdljs3jgX2Z4axLcMiPSM8kkMkXI7aNerme+dDQ1TfEoJ4Wk/O4x7
- pG79utH4hg+Dsg7zoo1rai5wec12VtwKP8BRJe0Cgym75a4enlbq5uVSyaP2WPzo6abqHbq
- dpKQT8ILqmIyNmz+lShvrXX79Prf3Bk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 240151093163
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 02:08:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0619E3E4B79
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 03:03:18 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 6FD1D3E491F
+	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 03:08:24 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2CDEF3C01E9
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 03:02:52 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 0964F3D0683
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 03:08:04 +0100 (CET)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4B9DC1001174
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 03:02:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1773972169;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=02HUb/FIDsSOoQrX6CkzmcEX3pRwIRBNuYWTloMaIbA=;
- b=DwUajlyxyUjWfafsJb6K9P9JTr4LsC9L2almNFz07w2WKY4TG00zUV35C2D3EOhSn8jBw9
- +JjxC+PcgFMMdv2vSVTglK4tnO155CtxFyu4r4TSe2D0x5GO/DoVcIN+jwxs33LF4G2tiF
- C+QKFXCZdYZQJMQE7KD/azZ7jrFf39M=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-298-RyZn4yj8MmOcV7RyFWQevg-1; Thu, 19 Mar 2026 22:02:47 -0400
-X-MC-Unique: RyZn4yj8MmOcV7RyFWQevg-1
-X-Mimecast-MFC-AGG-ID: RyZn4yj8MmOcV7RyFWQevg_1773972166
-Received: by mail-qk1-f198.google.com with SMTP id
- af79cd13be357-8cd849cd562so134726485a.0
- for <ltp@lists.linux.it>; Thu, 19 Mar 2026 19:02:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1773972166; x=1774576966;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=02HUb/FIDsSOoQrX6CkzmcEX3pRwIRBNuYWTloMaIbA=;
- b=ba7FvRRWGdYG96kuE8R6VabpNd8qhM8nEna37Tva7ptOlwHk9vZz9xVi2UW8zYyutI
- qQrvFvs0Yuk3H2PfgT5Iofsh0CRkmhcbN+054qINs2xG6fmsPo3rnQngV1ZuiXEhJe7/
- LWSo4wAwlkPZBAq+kXqMA4wbNcAUJhU8SgzTy3yfMQwwHv0HK+m41ORrND2De9G/Oth6
- /fnV8Le+1LOrDoQJEcqIj5ifWOJ9QGtBmiixddZaD06OYP1mLBfRz2zipv+6iPaV5ND2
- Pl+zP/vAleg7qw1715tNunRK6ORw7BP+zsjEMe/xA/Wtw9/3KhFO0PVKTzIeOWLeQP9w
- i7wQ==
-X-Gm-Message-State: AOJu0YxQQNSs8y39AG4WaiTi8BI39yqnZ8kArwWMnagowt2ruxXefbQk
- AZ5OD5gOQ499L0RuFBLQ0JnuKEQH6E2HePunG/S+RBKFDi6a2D5i9GyqmWxXI43tPaMWSOwGrGj
- kfRLul7ns+pKzGQA5kIsLIGT/Iiq6WSoktZyShFY49783Czyh1T6bNbsF5+IxOTxUKLMj8aiRSz
- n4gq5gqyTyOCONEct7vLkJVPbDBVBfRs/ySvFM
-X-Gm-Gg: ATEYQzw48mZAAe3zLK2LQ89A/QOk6fCiia+KoCEJZFHlJ44tDdNb2il10TYzD6H9K3D
- GqHh+27GdXtbaiwdczJS91Rw/vzj/oAm7LT8XtKtwLNp9rTnwmNB//ji1R8l2hiW/KR9mRK0EJn
- bY9iSsw6VaqhXZD2dE4R0XAGkTKhzfYtxEG57TPmOBozYaNLBVXljR/KKHJpRdE70BCBhREmOYn
- UQ4CD4MdmLZpTnXol62rHV7PNGmXj6l2Iq6/lFEDhudNOXz733srIBrVxxVvLWEWw+ah/cHfqzn
- HtJlQGrY76CKWa7cYodAsiogvCKuQbd3pbGAGDSYoJYU62Q4dE/52N4EBqcG2tr7L1WbmoAQXYm
- zJlEVattiTLPYS4qIFNnnABe6drCEx9LQIEj2oewQi2qUp1U=
-X-Received: by 2002:a05:620a:4594:b0:8cd:8751:2b26 with SMTP id
- af79cd13be357-8cfc7f823famr236420385a.58.1773972166328; 
- Thu, 19 Mar 2026 19:02:46 -0700 (PDT)
-X-Received: by 2002:a05:620a:4594:b0:8cd:8751:2b26 with SMTP id
- af79cd13be357-8cfc7f823famr236415885a.58.1773972165695; 
- Thu, 19 Mar 2026 19:02:45 -0700 (PDT)
-Received: from sbertram-thinkpadp1gen5.bos.com ([67.189.222.97])
- by smtp.gmail.com with ESMTPSA id
- af79cd13be357-8cfc90e7587sm59441485a.46.2026.03.19.19.02.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 19 Mar 2026 19:02:45 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 348221A0049E
+ for <ltp@lists.linux.it>; Fri, 20 Mar 2026 03:08:01 +0100 (CET)
+X-UUID: 965ae354240111f1a21c59e7364eecb8-20260320
+X-CTIC-Tags: HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME,
+ HR_CTE_8B
+ HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+ HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+ HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+ HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
+ SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
+ DMARC_NOPASS
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.11, REQID:dc72e87a-46f9-4eb6-9d4b-37c364fe0683, IP:10,
+ URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+ ON:release,TS:30
+X-CID-INFO: VERSION:1.3.11, REQID:dc72e87a-46f9-4eb6-9d4b-37c364fe0683, IP:10,
+ UR
+ L:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+ :release,TS:30
+X-CID-META: VersionHash:89c9d04, CLOUDID:c9c808d257f1a1bc761d5ac49c7dde6b,
+ BulkI
+ D:2603201007496OVVBHDI,BulkQuantity:0,Recheck:0,SF:17|19|66|78|81|82|102|1
+ 27|898,TC:nil,Content:0|15|50,EDM:5,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,Q
+ S:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,
+ ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 965ae354240111f1a21c59e7364eecb8-20260320
+X-User: gaoxiang@kylinos.cn
+Received: from fedora [(183.242.174.20)] by mailgw.kylinos.cn
+ (envelope-from <gaoxiang@kylinos.cn>)
+ (Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+ with ESMTP id 1200474721; Fri, 20 Mar 2026 10:07:46 +0800
+From: Gao Xiang <gaoxiang@kylinos.cn>
 To: ltp@lists.linux.it
-Date: Thu, 19 Mar 2026 22:02:19 -0400
-Message-ID: <20260320020233.211264-1-sbertram@redhat.com>
-X-Mailer: git-send-email 2.52.0
+Date: Fri, 20 Mar 2026 10:07:30 +0800
+Message-ID: <20260320020730.11233-1-gaoxiang@kylinos.cn>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <abvtSlnT-1P2pYZG@redhat.com>
+References: <abvtSlnT-1P2pYZG@redhat.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: ohJCjPVqPy602sERhQVf_nWGHHO13IwYAK_aX2StfR4_1773972166
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] semctl: updates for multi worker testing.
+Subject: [LTP] [PATCH v2] madvise09: support cgroup v2 via LTP cgroup API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,222 +77,213 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Stephen Bertram via ltp <ltp@lists.linux.it>
-Reply-To: Stephen Bertram <sbertram@redhat.com>
-Cc: Stephen Bertram <sbertram@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Changed semctl03, semctl05 and semctl07 by
-replacing the key with IPC_PRIVATE.
+Replace hard-coded cgroup v1 memory controller handling in madvise09
+with the LTP cgroup framework and cgroup v2 control file names..
 
-Changed semctl01, which required updates to
-reduce interference and provide an allowance
-for EINVAL and EIDRM.
+Rename the related limit variable to reflect the new interface instead
+of the old memsw naming since memsw.limit_in_bytes and memory.swap.max
+are different between cgroup v1 and v2.
 
-Signed-off-by: Stephen Bertram <sbertram@redhat.com>
+Also fix the munmap length argument to unmap the whole mapped area.
+
+Changes in v2:
+- Drop .needs_cgroup_ver = 2 becasue cgroup framework already maps
+v2 control files to v1.
+- Renmae the comments to use v2 control file names.
+
+Tested by running:
+madvise09 -i 10
+make check-madvise09
+
+Signed-off-by: Gao Xiang <gaoxiang@kylinos.cn>
 ---
- .../kernel/syscalls/ipc/semctl/semctl01.c     | 91 +++++++++++++------
- .../kernel/syscalls/ipc/semctl/semctl03.c     |  5 +-
- .../kernel/syscalls/ipc/semctl/semctl05.c     |  6 +-
- .../kernel/syscalls/ipc/semctl/semctl07.c     |  3 +-
- 4 files changed, 64 insertions(+), 41 deletions(-)
+ testcases/kernel/syscalls/madvise/madvise09.c | 82 +++++--------------
+ 1 file changed, 21 insertions(+), 61 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl01.c b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
-index 5bd675ab6..25c7ebc65 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl01.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
-@@ -8,6 +8,7 @@
- 
- #define _GNU_SOURCE
- #include <stdlib.h>
-+#include <pthread.h>
- #include "tst_safe_sysv_ipc.h"
+diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
+index 1a5cc9dcf..a120c03fd 100644
+--- a/testcases/kernel/syscalls/madvise/madvise09.c
++++ b/testcases/kernel/syscalls/madvise/madvise09.c
+@@ -17,8 +17,8 @@
+  * o Write to some of the madvised pages again, these must not be freed
+  *
+  * o Set memory limits
+- *   - limit_in_bytes = 8MB
+- *   - memsw.limit_in_bytes = 16MB
++ *   - memory.max = 8MB
++ *   - memory.swap.max = 16MB
+  *
+  *   The reason for doubling the limit_in_bytes is to have safe margin
+  *   for forking the memory hungy child etc. And the reason to setting
+@@ -45,13 +45,6 @@
  #include "tst_test.h"
- #include "lapi/sem.h"
-@@ -18,14 +19,16 @@
- #define NCHILD  5
- #define SEMUN_CAST (union semun)
+ #include "lapi/mmap.h"
  
--static int sem_id = -1;
--static int sem_index;
-+static __thread int sem_id = -1;
-+static __thread int sem_index;
- static struct semid_ds buf;
- static struct seminfo ipc_buf;
- static unsigned short array[PSEMS];
- static struct sembuf sops;
- static int pid_arr[NCHILD];
+-#define MEMCG_PATH "/sys/fs/cgroup/memory/"
+-
+-static char cgroup_path[PATH_MAX];
+-static char tasks_path[PATH_MAX];
+-static char limit_in_bytes_path[PATH_MAX];
+-static char memsw_limit_in_bytes_path[PATH_MAX];
+-
+ static size_t page_size;
+ static int sleep_between_faults;
  
-+static pthread_mutex_t sem_stat_lock = PTHREAD_MUTEX_INITIALIZER;
+@@ -61,6 +54,9 @@ static int swap_accounting_enabled;
+ #define TOUCHED_PAGE1 0
+ #define TOUCHED_PAGE2 10
+ 
++#define MEM_LIMIT (8 * 1024 * 1024)
++#define SWAP_LIMIT (2 * MEM_LIMIT)
 +
- static void kill_all_children(void)
+ static void memory_pressure_child(void)
  {
- 	int j;
-@@ -243,28 +246,36 @@ static struct tcases {
- 	union semun arg;
- 	void (*func_setup) ();
- } tests[] = {
--	{&sem_id, 0, IPC_STAT, func_stat, SEMUN_CAST & buf, NULL},
--	{&sem_id, 0, IPC_SET, func_set, SEMUN_CAST & buf, set_setup},
--	{&sem_id, 0, GETALL, func_gall, SEMUN_CAST array, NULL},
--	{&sem_id, 4, GETNCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
--	{&sem_id, 2, GETPID, func_pid, SEMUN_CAST & buf, pid_setup},
--	{&sem_id, 2, GETVAL, func_gval, SEMUN_CAST & buf, NULL},
--	{&sem_id, 4, GETZCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
--	{&sem_id, 0, SETALL, func_sall, SEMUN_CAST array, sall_setup},
--	{&sem_id, 4, SETVAL, func_sval, SEMUN_CAST INCVAL, NULL},
--	{&sem_id, 0, IPC_INFO, func_iinfo, SEMUN_CAST & ipc_buf, NULL},
--	{&sem_id, 0, SEM_INFO, func_sinfo, SEMUN_CAST & ipc_buf, NULL},
--	{&sem_index, 0, SEM_STAT, func_sstat, SEMUN_CAST & buf, NULL},
--	{&sem_id, 0, IPC_RMID, func_rmid, SEMUN_CAST & buf, NULL},
-+	{NULL, 0, IPC_STAT, func_stat, SEMUN_CAST & buf, NULL},
-+	{NULL, 0, IPC_SET, func_set, SEMUN_CAST & buf, set_setup},
-+	{NULL, 0, GETALL, func_gall, SEMUN_CAST array, NULL},
-+	{NULL, 4, GETNCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
-+	{NULL, 2, GETPID, func_pid, SEMUN_CAST & buf, pid_setup},
-+	{NULL, 2, GETVAL, func_gval, SEMUN_CAST & buf, NULL},
-+	{NULL, 4, GETZCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
-+	{NULL, 0, SETALL, func_sall, SEMUN_CAST array, sall_setup},
-+	{NULL, 4, SETVAL, func_sval, SEMUN_CAST INCVAL, NULL},
-+	{NULL, 0, IPC_INFO, func_iinfo, SEMUN_CAST & ipc_buf, NULL},
-+	{NULL, 0, SEM_INFO, func_sinfo, SEMUN_CAST & ipc_buf, NULL},
-+	{NULL, 0, SEM_STAT, func_sstat, SEMUN_CAST & buf, NULL},
-+	{NULL, 0, IPC_RMID, func_rmid, SEMUN_CAST & buf, NULL},
- };
+ 	size_t i, page_size = getpagesize();
+@@ -90,17 +86,6 @@ static void memory_pressure_child(void)
+ 	abort();
+ }
  
- static void verify_semctl(unsigned int n)
+-static void setup_cgroup_paths(int pid)
+-{
+-	snprintf(cgroup_path, sizeof(cgroup_path),
+-		 MEMCG_PATH "ltp_madvise09_%i/", pid);
+-	snprintf(tasks_path, sizeof(tasks_path), "%s/tasks", cgroup_path);
+-	snprintf(limit_in_bytes_path, sizeof(limit_in_bytes_path),
+-		 "%s/memory.limit_in_bytes", cgroup_path);
+-	snprintf(memsw_limit_in_bytes_path, sizeof(memsw_limit_in_bytes_path),
+-		 "%s/memory.memsw.limit_in_bytes", cgroup_path);
+-}
+-
+ static int count_freed(char *ptr)
  {
- 	struct tcases *tc = &tests[n];
--	int rval;
-+	int rval, sid;
-+	int retries = 5;
-+
-+	/* Resolve sem id: SEM_STAT uses sem_index, others use sem_id */
-+	if (tc->cmd == SEM_STAT)
-+		sid = sem_index;
-+	else {
-+		sid = sem_id;
-+		if (sid == -1)
-+			sem_id = sid = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
+ 	int i, ret = 0;
+@@ -157,14 +142,12 @@ static void child(void)
+ {
+ 	size_t i;
+ 	char *ptr;
+-	unsigned int usage, old_limit, old_memsw_limit;
+ 	int status, pid, retries = 0;
+ 
+-	SAFE_MKDIR(cgroup_path, 0777);
+-	SAFE_FILE_PRINTF(tasks_path, "%i", getpid());
++	SAFE_CG_PRINTF(tst_cg, "cgroup.procs", "%d", getpid());
+ 
+ 	ptr = SAFE_MMAP(NULL, PAGES * page_size, PROT_READ | PROT_WRITE,
+-	                 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+ 
+ 	for (i = 0; i < PAGES * page_size; i++)
+ 		ptr[i] = 'a';
+@@ -184,18 +167,15 @@ static void child(void)
+ 	ptr[TOUCHED_PAGE1 * page_size] = 'b';
+ 	ptr[TOUCHED_PAGE2 * page_size] = 'b';
+ 
+-	usage = 8 * 1024 * 1024;
+-	tst_res(TINFO, "Setting memory limits to %u %u", usage, 2 * usage);
+-
+-	SAFE_FILE_SCANF(limit_in_bytes_path, "%u", &old_limit);
+-
+-	if (swap_accounting_enabled)
+-		SAFE_FILE_SCANF(memsw_limit_in_bytes_path, "%u", &old_memsw_limit);
+-
+-	SAFE_FILE_PRINTF(limit_in_bytes_path, "%u", usage);
++	SAFE_CG_PRINTF(tst_cg, "memory.max", "%d", MEM_LIMIT);
++	tst_res(TINFO, "Setting memory.max to %d bytes", MEM_LIMIT);
+ 
+-	if (swap_accounting_enabled)
+-		SAFE_FILE_PRINTF(memsw_limit_in_bytes_path, "%u", 2 * usage);
++	if (swap_accounting_enabled) {
++		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%d", SWAP_LIMIT);
++		tst_res(TINFO, "Setting memory.swap.max to %d bytes", SWAP_LIMIT);
++	} else {
++		tst_res(TINFO, "memory.swap.max is unavailable, running without SWAP_LIMIT");
 +	}
  
--	if (sem_id == -1)
--		sem_id = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
- 	if (tc->func_setup) {
- 		switch (tc->cmd) {
- 		case GETNCNT:
-@@ -279,21 +290,41 @@ static void verify_semctl(unsigned int n)
- 		}
- 	}
+ 	do {
+ 		sleep_between_faults++;
+@@ -204,7 +184,7 @@ static void child(void)
+ 		if (!pid)
+ 			memory_pressure_child();
  
--	rval = SAFE_SEMCTL(*(tc->semid), tc->semnum, tc->cmd, tc->arg);
--	switch (tc->cmd) {
--	case GETNCNT:
--	case GETZCNT:
--	case GETPID:
--	case GETVAL:
--	case IPC_INFO:
--	case SEM_STAT:
-+	/* SEM_STAT: get index under lock, call SEM_STAT without lock, retry on EIDRM and EINVAL */
-+	if (tc->cmd == SEM_STAT) {
-+		do {
-+			pthread_mutex_lock(&sem_stat_lock);
-+			sem_index = semctl(0, 0, IPC_INFO, (union semun)&ipc_buf);
-+			pthread_mutex_unlock(&sem_stat_lock);
-+			if (sem_index < 0)
-+				tst_brk(TBROK | TERRNO, "semctl(0, 0, IPC_INFO)");
-+			rval = semctl(sem_index, 0, tc->cmd, tc->arg);
-+			if (rval >= 0)
-+				break;
-+			if ((errno != EIDRM && errno != EINVAL) || --retries <= 0)
-+				tst_brk(TBROK | TERRNO, "semctl(SEM_STAT)");
-+		} while (1);
- 		tc->func_test(rval);
--		break;
--	default:
-+	} else if (tc->cmd == IPC_RMID) {
-+		pthread_mutex_lock(&sem_stat_lock);
-+		SAFE_SEMCTL(sid, tc->semnum, tc->cmd, tc->arg);
-+		pthread_mutex_unlock(&sem_stat_lock);
- 		tc->func_test();
--		break;
-+	} else {
-+		rval = SAFE_SEMCTL(sid, tc->semnum, tc->cmd, tc->arg);
-+		switch (tc->cmd) {
-+		case GETNCNT:
-+		case GETZCNT:
-+		case GETPID:
-+		case GETVAL:
-+		case IPC_INFO:
-+			tc->func_test(rval);
-+			break;
-+		default:
-+			tc->func_test();
-+			break;
-+		}
- 	}
+-		tst_res(TINFO, "Memory hungry child %i started, try %i", pid, retries);
++		tst_res(TINFO, "Memory pressure process %i started, try %i", pid, retries);
+ 
+ 		SAFE_WAIT(&status);
+ 	} while (retries++ < 10 && count_freed(ptr) == 0);
+@@ -251,22 +231,11 @@ static void child(void)
+ 	else
+ 		tst_res(TPASS, "All pages have expected content");
+ 
+-	if (swap_accounting_enabled)
+-		SAFE_FILE_PRINTF(memsw_limit_in_bytes_path, "%u", old_memsw_limit);
 -
- 	if (tc->cmd == GETNCNT || tc->cmd == GETZCNT)
- 		kill_all_children();
+-	SAFE_FILE_PRINTF(limit_in_bytes_path, "%u", old_limit);
+-
+-	SAFE_MUNMAP(ptr, PAGES);
++	SAFE_MUNMAP(ptr, PAGES * page_size);
+ 
+ 	exit(0);
  }
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl03.c b/testcases/kernel/syscalls/ipc/semctl/semctl03.c
-index 5a11b95ef..dc11d0823 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl03.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl03.c
-@@ -84,14 +84,11 @@ static void verify_semctl(unsigned int n)
+ 
+-static void cleanup(void)
+-{
+-	if (cgroup_path[0] && !access(cgroup_path, F_OK))
+-		rmdir(cgroup_path);
+-}
+-
+ static void run(void)
+ {
+ 	pid_t pid;
+@@ -275,14 +244,10 @@ static void run(void)
+ retry:
+ 	pid = SAFE_FORK();
+ 
+-	if (!pid) {
+-		setup_cgroup_paths(getpid());
++	if (!pid)
+ 		child();
+-	}
+ 
+-	setup_cgroup_paths(pid);
+ 	SAFE_WAIT(&status);
+-	cleanup();
+ 
+ 	/*
+ 	 * Rarely cgroup OOM kills both children not only the one that allocates
+@@ -302,14 +267,9 @@ retry:
  
  static void setup(void)
  {
--	static key_t semkey;
- 	struct test_variants *tv = &variants[tst_variant];
- 
- 	tst_res(TINFO, "Testing variant: %s", tv->desc);
- 
--	semkey = GETIPCKEY();
+-	long int swap_total;
 -
--	sem_id = SAFE_SEMGET(semkey, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
-+	sem_id = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
+-	if (access(MEMCG_PATH, F_OK)) {
+-		tst_brk(TCONF, "'" MEMCG_PATH
+-			"' not present, CONFIG_MEMCG missing?");
+-	}
++	long swap_total;
  
- 	bad_ptr = tst_get_bad_addr(NULL);
- }
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl05.c b/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-index 985c1f039..f1ab69f59 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-@@ -45,11 +45,7 @@ static void verify_semctl(unsigned int n)
+-	if (!access(MEMCG_PATH "memory.memsw.limit_in_bytes", F_OK))
++	if (SAFE_CG_HAS(tst_cg, "memory.swap.max"))
+ 		swap_accounting_enabled = 1;
+ 	else
+ 		tst_res(TINFO, "Swap accounting is disabled");
+@@ -323,8 +283,8 @@ static void setup(void)
  
- static void setup(void)
- {
--	static key_t semkey;
--
--	semkey = GETIPCKEY();
--
--	sem_id = SAFE_SEMGET(semkey, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
-+	sem_id = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
- }
- 
- static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl07.c b/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-index 1b03f0ab2..a0b5f4928 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-@@ -130,10 +130,9 @@ static void verify_semctl(void)
- 
- static void setup(void)
- {
--	key_t key = GETIPCKEY();
- 	nsems = 1;
- 
--	semid = SAFE_SEMGET(key, nsems, SEM_RA | IPC_CREAT);
-+	semid = SAFE_SEMGET(IPC_PRIVATE, nsems, SEM_RA | IPC_CREAT);
- }
- 
- static void cleanup(void)
+ static struct tst_test test = {
+ 	.setup = setup,
+-	.cleanup = cleanup,
+ 	.test_all = run,
+ 	.needs_root = 1,
+ 	.forks_child = 1,
++	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
+ };
 -- 
-2.52.0
+2.53.0
 
 
 -- 
