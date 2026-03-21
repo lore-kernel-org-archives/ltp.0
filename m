@@ -4,78 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 013FB1094489
-	for <ltp@archiver.kernel.org>; Sat, 21 Mar 2026 15:38:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4909F109448F
+	for <ltp@archiver.kernel.org>; Sat, 21 Mar 2026 19:58:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 18E443E2B32
-	for <ltp@archiver.kernel.org>; Sat, 21 Mar 2026 16:38:21 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id A22983E3096
+	for <ltp@archiver.kernel.org>; Sat, 21 Mar 2026 20:58:50 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1CEC43CA61D
- for <ltp@lists.linux.it>; Sat, 21 Mar 2026 16:38:03 +0100 (CET)
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
- [IPv6:2607:f8b0:4864:20::542])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8365F3C59E2
+ for <ltp@lists.linux.it>; Sat, 21 Mar 2026 20:58:30 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9CFFB14000E8
- for <ltp@lists.linux.it>; Sat, 21 Mar 2026 16:38:02 +0100 (CET)
-Received: by mail-pg1-x542.google.com with SMTP id
- 41be03b00d2f7-c7358a7a8d1so1987575a12.3
- for <ltp@lists.linux.it>; Sat, 21 Mar 2026 08:38:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1774107480; x=1774712280; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=BJuLBjNWLxrMXxetKfkepCwpePV+vQ3mlMA/aHYTGgw=;
- b=XEBq9XNAawGEEZhPd/pzez/Okynj6ewXTgqexC4tR/rTsHSQo5kNG5r7IpxHa2Gmwp
- 4LwL5FwqJStKjfJWwj13snO0ypoQ5y1if5pkx7EXfFwt8ImVduQFS4Jm0cFmdFOfERxK
- atKvE7w7xJhUDA8q83Y/BGtnhw3XGrJW8p3Bhk7Pt1BQcblNYQHpoEaWIEseEIkGcgP1
- k/qx+MlJZLWhdnlWPVO4NxRj+qRpp96qwvR1amTDCrf+5cvL20IyHZhKOPi44Qjk/pQK
- Et7GgjOQQdImkSAAf9AH/umYHCjkapKIuwIR8lXY9bHr7YLbWr0Q2legYwd/FtwdQusA
- wnOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774107480; x=1774712280;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=BJuLBjNWLxrMXxetKfkepCwpePV+vQ3mlMA/aHYTGgw=;
- b=hRK4YuR+UQ+E0idgmw4ZUVNuQ6IKSxyfHtn7gf19ah/3pWwiZQGXKLnzjFO2FjbCag
- TCVHqDNIphcy8HhKFa617IhgrI9Z0ukMHfUqojJT700VbmoanUdRVF+rNVsFEf381MI7
- xJG3WsT5JZdkcxD1SRRKUDYT3PB9LPJY8TimcldFocEsJpjebm2ZHSE1q5qSnoLPpUV+
- AXueE5dw4D+WFTZ3XB27FDfoEF0zn8nbaU5H1HC4vJPlWt3Kj9eEUuLrAluF4Vvfg4wE
- Tc4Qkn08fl1RxzBnZIyNMt5RonRI+TbnQt7OzuePIXd+Yyp54AzRb8/67dA+bqhUmGlE
- 0+Lw==
-X-Gm-Message-State: AOJu0YytNAHdaz7Guy9DBH9I4FCeeojn8zwiAeA/gMSqcnkvsNgV3+hF
- fFj72zfj8ZEvds/bqpdWD8DGQBGfyuzvAu7YurxbTQ/oQ6LKXxsBZXykKCHFneYHVQ==
-X-Gm-Gg: ATEYQzyb67DQdNYvvndXaz0Qnz4EXaBgiSHvotvVHFlGKhbpuCY6Pk+/vJCct93wg4l
- KFYO00vtJQXXElQR7v8ihyPOaES/zF7eKUYdRdg2tSl6/oNQ2zBUkgEeum8gLXE5MeHj7cNjsMk
- 1s1qlrXD+RfDX9wkiMIwjz8R4gvCoHNnCsPlI3qSosCIrKd4N/Y0wDlK5ZvL/ry9sIFS1AN6+G7
- 0qQbcK3O3CIFr9Tn0Bs6O33Epq6q5p6vpauHl1uJmqFoM+/PHzGpRaESJT3Kmt64IA4aKX917IW
- yaK87UjVfntYX8+Qw6qwjTiXyaU8j+YudEwe9lbNmZ3Yy86RWU9WrdiIlRXLY50naQdbza6Gknu
- jVJlm2dmc+na+rk2GA65uztBv+4Dkg6E0nB+L3A7pJuWDncWLw90vKtMF09xeFYze4YrSCfgZZJ
- j9drNQqjvdEFn3scgaDC2GH3ruEurL88BXl4Fowyb/lA==
-X-Received: by 2002:a05:6a21:3283:b0:398:b5c0:583 with SMTP id
- adf61e73a8af0-39bcebbd4b5mr6061947637.40.1774107480440; 
- Sat, 21 Mar 2026 08:38:00 -0700 (PDT)
-Received: from localhost.localdomain ([59.16.109.172])
- by smtp.gmail.com with ESMTPSA id
- 41be03b00d2f7-c763ef3a0aasm1678963a12.10.2026.03.21.08.37.59
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 21 Mar 2026 08:38:00 -0700 (PDT)
-From: Jinseok Kim <always.starving0@gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 071FF140098E
+ for <ltp@lists.linux.it>; Sat, 21 Mar 2026 20:58:27 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C9D284D1FC;
+ Sat, 21 Mar 2026 19:58:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1774123101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=pXB2I9bG1kehzxkgb5IYHmIJjIaqyPd4Hs94YV2R47w=;
+ b=cr2wOhFvQJEeXwsgAkPGlksb5FzV6KktxiVGeTGW24ZrX8exkYqiG7ffIa4RDJHPLKSuZI
+ 9XzIWJ/gVjtlGmurSK9Mzw1o0rwTxlRSa62nbOWcnl2h9MRPy3R7Hy0hbv4OPXDxKX9i7I
+ S25357FjqdkJHYCmmjRJ46NoQyA6cnI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1774123101;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=pXB2I9bG1kehzxkgb5IYHmIJjIaqyPd4Hs94YV2R47w=;
+ b=tC8H0Yp6A63Pq18A0FaP+PIYloPMcmEUYxrozICSQD4PgXPx4lSGyHkA7PFFRkRbsZ+9d3
+ 0lmc/GUheN4nLjAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=jkbW8qOD;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=tZ1Fxc8C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1774123100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=pXB2I9bG1kehzxkgb5IYHmIJjIaqyPd4Hs94YV2R47w=;
+ b=jkbW8qOD2v2alN//asHd19j9R/lOXRpbsArxx79nw/QrGF4+W23hdRicC/yXMWzKsU1EC4
+ jYr/AFLTvyzgX1vU6ZiTQJt8QnJFMdVkBsLUs2/LeIpP/3Q32wOP8g27Gtw3Pnqo4J2f6d
+ xbZAfyeCoUafq3xCY6RC2WzLpCj4LCA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1774123100;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=pXB2I9bG1kehzxkgb5IYHmIJjIaqyPd4Hs94YV2R47w=;
+ b=tZ1Fxc8CTOooun/BWQX6A4fbOlI++oC1eI96L5dCKHiUcQAGp0P04d9fEPmt3VSyaURwlb
+ Flg/bTBFKXfnHiBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A64FA42F34;
+ Sat, 21 Mar 2026 19:58:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id q/vdJlz4vmnLKAAAD6G6ig
+ (envelope-from <rbranco@suse.de>); Sat, 21 Mar 2026 19:58:20 +0000
+From: Ricardo Branco <rbranco@suse.de>
 To: ltp@lists.linux.it
-Date: Sun, 22 Mar 2026 00:37:21 +0900
-Message-ID: <20260321153734.5590-1-always.starving0@gmail.com>
-X-Mailer: git-send-email 2.43.0
+Date: Sat, 21 Mar 2026 20:58:15 +0100
+Message-ID: <20260321195817.119695-1-rbranco@suse.de>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:mid,suse.de:dkim,suse.de:email,suse.com:email];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: C9D284D1FC
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] read: verify read size and data correctness
+Subject: [LTP] [PATCH] userfaultfd: Add test using UFFDIO_CONTINUE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,69 +113,228 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test only checked that read(2) did not fail, which allows
-partial reads or unexpected data to pass unnoticed.
-
-Verify that read(2) returns the expected number of bytes and
-that the read data matches the written buffer.
-
-Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
+Signed-off-by: Ricardo Branco <rbranco@suse.de>
 ---
- testcases/kernel/syscalls/read/read01.c | 27 ++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
+ include/lapi/userfaultfd.h                    |   1 +
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/userfaultfd/.gitignore    |   1 +
+ .../kernel/syscalls/userfaultfd/Makefile      |   1 +
+ .../syscalls/userfaultfd/userfaultfd07.c      | 161 ++++++++++++++++++
+ 5 files changed, 165 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
 
-diff --git a/testcases/kernel/syscalls/read/read01.c b/testcases/kernel/syscalls/read/read01.c
-index 68d6346c5..f205979b9 100644
---- a/testcases/kernel/syscalls/read/read01.c
-+++ b/testcases/kernel/syscalls/read/read01.c
-@@ -10,25 +10,38 @@
- #define SIZE 512
-
- static int fd;
--static char buf[SIZE];
-+static char write_buf[SIZE];
-+static char read_buf[SIZE];
-
- static void verify_read(void)
- {
- 	SAFE_LSEEK(fd, 0, SEEK_SET);
-
--	TEST(read(fd, buf, SIZE));
-+	TEST(read(fd, read_buf, SIZE));
-
--	if (TST_RET == -1)
-+	if (TST_RET == -1) {
- 		tst_res(TFAIL | TTERRNO, "read(2) failed");
--	else
--		tst_res(TPASS, "read(2) returned %ld", TST_RET);
-+		return;
+diff --git a/include/lapi/userfaultfd.h b/include/lapi/userfaultfd.h
+index aab3890b7..c05b8dbf5 100644
+--- a/include/lapi/userfaultfd.h
++++ b/include/lapi/userfaultfd.h
+@@ -171,6 +171,7 @@ struct uffdio_zeropage {
+ #ifndef UFFD_PAGEFAULT_FLAG_MINOR
+ #define UFFD_FEATURE_MINOR_HUGETLBFS		(1<<9)
+ #define UFFDIO_REGISTER_MODE_MINOR	((__u64)1<<2)
++#define UFFD_PAGEFAULT_FLAG_MINOR	(1<<2)
+ 
+ #define _UFFDIO_CONTINUE		(0x07)
+ #define UFFDIO_CONTINUE		_IOWR(UFFDIO, _UFFDIO_CONTINUE,	\
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 6ba0227a8..534140f42 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1780,6 +1780,7 @@ userfaultfd03 userfaultfd03
+ userfaultfd04 userfaultfd04
+ userfaultfd05 userfaultfd05
+ userfaultfd06 userfaultfd06
++userfaultfd07 userfaultfd07
+ 
+ ustat01 ustat01
+ ustat02 ustat02
+diff --git a/testcases/kernel/syscalls/userfaultfd/.gitignore b/testcases/kernel/syscalls/userfaultfd/.gitignore
+index bc32fdf3b..3478a162e 100644
+--- a/testcases/kernel/syscalls/userfaultfd/.gitignore
++++ b/testcases/kernel/syscalls/userfaultfd/.gitignore
+@@ -4,3 +4,4 @@
+ /userfaultfd04
+ /userfaultfd05
+ /userfaultfd06
++/userfaultfd07
+diff --git a/testcases/kernel/syscalls/userfaultfd/Makefile b/testcases/kernel/syscalls/userfaultfd/Makefile
+index 3252e47df..257249e88 100644
+--- a/testcases/kernel/syscalls/userfaultfd/Makefile
++++ b/testcases/kernel/syscalls/userfaultfd/Makefile
+@@ -17,3 +17,4 @@ userfaultfd03: CFLAGS += -pthread
+ userfaultfd04: CFLAGS += -pthread
+ userfaultfd05: CFLAGS += -pthread
+ userfaultfd06: CFLAGS += -pthread
++userfaultfd07: CFLAGS += -pthread
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
+new file mode 100644
+index 000000000..f2746d4ca
+--- /dev/null
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
+@@ -0,0 +1,161 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 SUSE LLC
++ * Author: Ricardo Branco <rbranco@suse.com>
++ */
++
++/*\
++ * Force a pagefault event and handle it using :manpage:`userfaultfd(2)`
++ * from a different thread testing UFFDIO_CONTINUE.
++ */
++
++#define _GNU_SOURCE
++#include "config.h"
++#include <poll.h>
++#include <unistd.h>
++#include "tst_test.h"
++#include "tst_safe_macros.h"
++#include "tst_safe_prw.h"
++#include "tst_safe_pthread.h"
++#include "lapi/memfd.h"
++#include "lapi/userfaultfd.h"
++#include "lapi/syscalls.h"
++
++static int page_size;
++static char *page;
++static int uffd;
++static int memfd = -1;
++
++static int sys_memfd_create(const char *name, unsigned int flags)
++{
++	return tst_syscall(__NR_memfd_create, name, flags);
++}
++
++static void set_pages(void)
++{
++	char ch = 'A';
++
++	page_size = sysconf(_SC_PAGE_SIZE);
++
++	memfd = sys_memfd_create("ltp-uffd-continue", MFD_CLOEXEC);
++	if (memfd < 0)
++		tst_brk(TBROK | TERRNO, "memfd_create failed");
++
++	SAFE_FTRUNCATE(memfd, page_size);
++
++	/*
++	 * Populate page cache so that after MADV_DONTNEED the next access
++	 * can generate a MINOR fault rather than a MISSING fault.
++	 */
++	SAFE_PWRITE(1, memfd, &ch, 1, 0);
++
++	page = SAFE_MMAP(NULL, page_size, PROT_READ, MAP_SHARED, memfd, 0);
++}
++
++static void reset_pages(void)
++{
++	if (page) {
++		SAFE_MUNMAP(page, page_size);
++		page = NULL;
 +	}
 +
-+	if (TST_RET != SIZE) {
-+		tst_res(TFAIL, "read(2) returned %ld, expected %d", TST_RET, SIZE);
-+		return;
++	if (memfd >= 0) {
++		SAFE_CLOSE(memfd);
++		memfd = -1;
++	}
++}
++
++static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
++{
++	static struct uffd_msg msg;
++	struct uffdio_continue uffdio_continue = {};
++	struct pollfd pollfd;
++	int nready;
++	char z = 'Z';
++
++	pollfd.fd = uffd;
++	pollfd.events = POLLIN;
++	nready = poll(&pollfd, 1, -1);
++	if (nready == -1)
++		tst_brk(TBROK | TERRNO, "Error on poll");
++
++	SAFE_READ(1, uffd, &msg, sizeof(msg));
++
++	if (msg.event != UFFD_EVENT_PAGEFAULT)
++		tst_brk(TFAIL, "Received unexpected UFFD_EVENT %d", msg.event);
++
++	if (!(msg.arg.pagefault.flags & UFFD_PAGEFAULT_FLAG_MINOR)) {
++		tst_brk(TBROK, "expected MINOR fault, got flags=0x%llx",
++			(unsigned long long)msg.arg.pagefault.flags);
 +	}
 +
-+	if (memcmp(write_buf, read_buf, SIZE)) {
-+		tst_res(TFAIL, "read(2) returned unexpected data");
-+		return;
-+	}
++	/* Update the shmem page in page cache before resuming the fault. */
++	SAFE_PWRITE(1, memfd, &z, 1, 0);
 +
-+	tst_res(TPASS, "read(2) returned expected data %ld", TST_RET);
- }
++	uffdio_continue.range.start =
++		msg.arg.pagefault.address & ~(page_size - 1);
++	uffdio_continue.range.len = page_size;
++
++	SAFE_IOCTL(uffd, UFFDIO_CONTINUE, &uffdio_continue);
++
++	close(uffd);
++	return NULL;
++}
++
++static void run(void)
++{
++	pthread_t thr;
++	struct uffdio_api uffdio_api = {};
++	struct uffdio_register uffdio_register;
++
++	set_pages();
++
++	uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, false);
++
++	uffdio_api.api = UFFD_API;
++	uffdio_api.features = UFFD_FEATURE_MINOR_SHMEM;
++
++	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
++
++	if (!(uffdio_api.features & UFFD_FEATURE_MINOR_SHMEM))
++		tst_brk(TCONF, "UFFD_FEATURE_MINOR_SHMEM not supported");
++
++	uffdio_register.range.start = (unsigned long) page;
++	uffdio_register.range.len = page_size;
++	uffdio_register.mode = UFFDIO_REGISTER_MODE_MINOR;
++
++	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
++
++	/*
++	 * Drop PTEs while retaining the cached shmem page so the next access
++	 * faults in MINOR mode.
++	 */
++	if (madvise(page, page_size, MADV_DONTNEED) < 0)
++		tst_brk(TBROK | TERRNO, "madvise MADV_DONTNEED failed");
++
++	SAFE_PTHREAD_CREATE(&thr, NULL, (void *) handle_thread, NULL);
++
++	char c = page[0];
++
++	if (c == 'Z')
++		tst_res(TPASS, "Pagefault handled via UFFDIO_CONTINUE");
++	else
++		tst_res(TFAIL, "pagefault not handled via UFFDIO_CONTINUE, got '%c'", c);
++
++	SAFE_PTHREAD_JOIN(thr, NULL);
++	reset_pages();
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	/*
++	 * UFFDIO_CONTINUE is available since 5.13 but
++	 * UFFD_FEATURE_MINOR_SHMEM appeared in 5.14
++	 */
++	.min_kver = "5.14",
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_HAVE_ARCH_USERFAULTFD_WP=y",
++		NULL
++	},
++	.cleanup = reset_pages,
++};
+-- 
+2.53.0
 
- static void setup(void)
- {
--	memset(buf, '*', SIZE);
-+	memset(write_buf, '*', SIZE);
- 	fd = SAFE_OPEN("testfile", O_RDWR | O_CREAT, 0700);
--	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, SIZE);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, write_buf, SIZE);
- }
-
- static void cleanup(void)
---
-2.43.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
