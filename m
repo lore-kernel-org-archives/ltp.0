@@ -4,58 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AB981094462
-	for <ltp@archiver.kernel.org>; Sat, 21 Mar 2026 08:39:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99039109447E
+	for <ltp@archiver.kernel.org>; Sat, 21 Mar 2026 14:09:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0734D3E2B24
-	for <ltp@archiver.kernel.org>; Sat, 21 Mar 2026 09:39:17 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id D6DBC3E2B2C
+	for <ltp@archiver.kernel.org>; Sat, 21 Mar 2026 15:09:04 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B5DF13E1188
- for <ltp@lists.linux.it>; Sat, 21 Mar 2026 09:38:57 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 1A4A33C76D1
+ for <ltp@lists.linux.it>; Sat, 21 Mar 2026 15:08:46 +0100 (CET)
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com
+ [IPv6:2607:f8b0:4864:20::543])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 767E4600707
- for <ltp@lists.linux.it>; Sat, 21 Mar 2026 09:38:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1774082337; x=1805618337;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=T1H7MmHENLbS90ECVJzxr3WF+oI6mWhnSmNM3a9sh98=;
- b=fOOhh6hF/oSIJnYQEn+vVuvhVnKR04R5SAFFPrasGt4JmHS0hg1jD+vL
- SmH4wq//+hr0Jm2PbG2cfF8HqDikAxzGlThKYx6RlyuePAK5qwWolcSe8
- m7wdpqo9k/X7Vqm5eIL7WFlYUa8vsgrz1/6giD4pyoNCqJBcXPaQUpZkA
- lVmqgAIAQiTualOzBXBr6bvB7cbBgMQlMibhxj29gYLWZXWKAn2lFq0cj
- GW77Fh8OoIYh615/v8XmGMth+yDil824Ka3yynYbR5AVLrfsndKSM/dLX
- J/H9NTCIiVoXUNZV7ZPmzzquo5PBSwpH0G1Eje8xP1JwLKmT2t6Xf+NGM g==;
-X-CSE-ConnectionGUID: YHN0jKTWQJiNT/oXYImEQw==
-X-CSE-MsgGUID: 62U3kSo2QKGzBJ3ABLEgDA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11735"; a="62719555"
-X-IronPort-AV: E=Sophos;i="6.23,133,1770624000"; d="scan'208";a="62719555"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
- by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Mar 2026 01:38:52 -0700
-X-CSE-ConnectionGUID: IAwdwlxGRKWltNNt1TzunA==
-X-CSE-MsgGUID: NldjyquxQ/O6o9e+mubwAw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,133,1770624000"; d="scan'208";a="228012175"
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
- by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Mar 2026 01:38:50 -0700
-From: Piotr Kubaj <piotr.kubaj@intel.com>
-To: ltp@lists.linux.it
-Date: Sat, 21 Mar 2026 09:38:14 +0100
-Message-ID: <20260321083813.138283-2-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A562F200275
+ for <ltp@lists.linux.it>; Sat, 21 Mar 2026 15:08:45 +0100 (CET)
+Received: by mail-pg1-x543.google.com with SMTP id
+ 41be03b00d2f7-c741db5d610so611756a12.3
+ for <ltp@lists.linux.it>; Sat, 21 Mar 2026 07:08:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1774102124; x=1774706924; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=PACKm29HH5vHP+i0DXV1RwibiK0rg7rlDIgPPV5V4yQ=;
+ b=LEfr8PjJ8E+fxl+vm+sKEShRc+y6B1YuqUmiTw0E0ijtKto3tof6ArQgrjCqB/FeIu
+ TYU5TIsP97lJOjFtBiwECbk3jUQQKc8zMvsUUPtdwBwjOyKdrnCLBoyZ8d5jN5uq2kIs
+ TOiTdUpLxVQGY4a6r+ECVcPscyIQ0Km81IqINTMy+RO9KNGxKjGqkYYaxcIuUS21E29g
+ Qke/jo9tEPYrWpGdjNmgrDGRbFrGBZc1uAvrMlLkDToFRbawAx92Xj91WYZao5BZZTja
+ FJukdWRegN3A2pQBkCu3gwwv7UZ+owLQkJc8CH4ErDJXJlyaWvnfBApc2OI4Rsz/2Gq1
+ VSkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1774102124; x=1774706924;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=PACKm29HH5vHP+i0DXV1RwibiK0rg7rlDIgPPV5V4yQ=;
+ b=rKBvCI98aXyqohyZDX0Z1ECKEuOU4cuIXNDcO/JwA7PZHLy8JGsXwUnm2MogbVx6eQ
+ iket9sfdUgMyAE2ckZyX+k/B22oE3FN8/67oClSLNo97WP2OkJEhXSuSCAZHrkhOHHvZ
+ RdgN3jZkkG4Z2CEdNPJIrXfLti1qeIMVnx9r1soCUrRXL8jxN/suF748FHDSJlkGpLF9
+ Tze7hyKaqLNP1bQXo2kCzgq4O5pWxyclFiWZv5puJbPOtIv4AvGroV9tP6DAhnkBjCtY
+ 5bF4hGHoNHTyvcxqL36X93mzrZ/yoravQX08t2do8Twg17eoZKSJ5HR5G+q0wD1WY1v7
+ H0aw==
+X-Gm-Message-State: AOJu0YwmZoBmxZa6pUtkILo3l2pjl/xTAbmiBwCynrAubA1GI9AdZA9k
+ CLbEUjmtjjToToVPjfDYxFZsVzAO8zf7G26dagbAeX3VaYHg3KzHh8OjlntiqHYxWQ==
+X-Gm-Gg: ATEYQzx9IO1KQvUa94t/B2BMg0e+MUmyp5de55OkwPtY4qWwVMOtd7njkTZ8fN4tmjv
+ 3z8HK+LSGhea80NfGuhsSOhNOmpkSsMh+8rlVdsMKkT7RP9Zp7oqNt51rA+tZx0CLJyUaXfkeqr
+ Tji31vpqudhIYNoI5jfZWWn0HkhBKc9pVKoG/zTwsNY1B1W4aGzjVrCsNlhZGjAoxzC0UEDxElA
+ ykjfErbZ1FqFNHChMTZ14NqO42vRlui7SM1U23DFw7HyoCMH0hnad6RuIhrU0BE3wuCrfp/9AzI
+ Qavdods3wLviq1+0BNQAs5P0e4de1IIqhcXusOoo/aD1545r0ErLh/EN/EKP3R57K9vU5uLNWHn
+ Zu9xOIM0VM5yBL70jJmqMWLp0NYaBZDWlDSDt2fsHVRtlHS0tsXeYmF5qFxoglphkidqc990Eky
+ 4qRJF6jtxKZCLuESMSsCiGRRpSydYpIzi0D4wC3/sJzg==
+X-Received: by 2002:a17:903:2f87:b0:2b0:7d3d:756a with SMTP id
+ d9443c01a7336-2b0827d2c55mr57476945ad.35.1774102123531; 
+ Sat, 21 Mar 2026 07:08:43 -0700 (PDT)
+Received: from localhost.localdomain ([59.16.109.172])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-2b0836b6dc8sm55980085ad.82.2026.03.21.07.08.42
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 21 Mar 2026 07:08:43 -0700 (PDT)
+From: Jinseok Kim <always.starving0@gmail.com>
+To: andrea.cervesato@suse.com
+Date: Sat, 21 Mar 2026 23:08:13 +0900
+Message-ID: <20260321140819.4157-1-always.starving0@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <69bd5204.050a0220.1a0553.f197@mx.google.com>
+References: <69bd5204.050a0220.1a0553.f197@mx.google.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] high_freq_hwp_cap_cppc.c: new test
+Subject: [LTP] [PATCH v4] open: fix cleanup condition and use snprintf
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,124 +88,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Verify for all online logical CPUs that their highest performance value are
-the same for HWP Capability MSR 0x771 and CPPC sysfs file.
+Replace sprintf() with snprintf() for safer string handling.
 
-Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+The cleanup logic checked '!first' to decide whether to close file
+descriptors. Since file descriptor 0 is valid, this may incorrectly
+skip cleanup and leak descriptors.
+
+Also initialize "first" to -1 and set the fds array to -1 after
+allocation. Skip such entries in cleanup() to avoid calling SAFE_CLOSE()
+on invalid file descriptors.
+
+Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
 ---
-Since SAFE_PREAD() already checks return code, remove the check.
- runtest/power_management_tests                |  1 +
- testcases/kernel/power_management/.gitignore  |  1 +
- .../power_management/high_freq_hwp_cap_cppc.c | 65 +++++++++++++++++++
- 3 files changed, 67 insertions(+)
- create mode 100644 testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
+ testcases/kernel/syscalls/open/open04.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/runtest/power_management_tests b/runtest/power_management_tests
-index 884e615cd..6d87dfb7f 100644
---- a/runtest/power_management_tests
-+++ b/runtest/power_management_tests
-@@ -1,4 +1,5 @@
- #POWER_MANAGEMENT
-+high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
- runpwtests01 runpwtests01.sh
- runpwtests02 runpwtests02.sh
- runpwtests03 runpwtests03.sh
-diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
-index 0c2a3ed4b..c13bca1c4 100644
---- a/testcases/kernel/power_management/.gitignore
-+++ b/testcases/kernel/power_management/.gitignore
-@@ -1 +1,2 @@
-+high_freq_hwp_cap_cppc
- pm_get_sched_values
-diff --git a/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-new file mode 100644
-index 000000000..99918906c
---- /dev/null
-+++ b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/*
-+ * Copyright (C) 2026 Intel - http://www.intel.com/
-+ */
-+
-+/*\
-+ * Verify for all online logical CPUs that their highest performance value are
-+ * the same for HWP Capability MSR 0x771 and CPPC sysfs file.
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_safe_prw.h"
-+
-+static int nproc;
-+
-+static void setup(void)
-+{
-+	nproc = tst_ncpus();
-+}
-+
-+static void run(void)
-+{
-+	bool status = true;
-+
-+	for (int i = 0; i < nproc; i++) {
-+		char path[PATH_MAX];
-+		unsigned long long msr_highest_perf = 0, sysfs_highest_perf = 0;
-+
-+		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/acpi_cppc/highest_perf", i);
-+		SAFE_FILE_SCANF(path, "%llu", &sysfs_highest_perf);
-+		tst_res(TDEBUG, "%s: %llu", path, sysfs_highest_perf);
-+
-+		snprintf(path, sizeof(path), "/dev/cpu/%d/msr", i);
-+		int fd = SAFE_OPEN(path, O_RDONLY);
-+
-+		SAFE_PREAD(1, fd, &msr_highest_perf, sizeof(msr_highest_perf), 0x771);
-+		msr_highest_perf &= (1ULL << 8) - 1;
-+		tst_res(TDEBUG, "%s: %llu", path, msr_highest_perf);
-+
-+		if (msr_highest_perf != sysfs_highest_perf)
-+			status = false;
+diff --git a/testcases/kernel/syscalls/open/open04.c b/testcases/kernel/syscalls/open/open04.c
+index 7573af1c8..78254d397 100644
+--- a/testcases/kernel/syscalls/open/open04.c
++++ b/testcases/kernel/syscalls/open/open04.c
+@@ -15,7 +15,8 @@
+
+ #define FNAME "open04"
+
+-static int fds_limit, first, i;
++static int fds_limit, i;
++static int first = -1;
+ static int *fds;
+ static char fname[20];
+
+@@ -29,10 +30,11 @@ static void setup(void)
+ 	first = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0777);
+
+ 	fds = SAFE_MALLOC(sizeof(int) * (fds_limit - first));
++	memset(fds, -1, sizeof(int) * (fds_limit - first));
+ 	fds[0] = first;
+
+ 	for (i = first + 1; i < fds_limit; i++) {
+-		sprintf(fname, FNAME ".%d", i);
++		snprintf(fname, sizeof(fname), FNAME ".%d", i);
+ 		fd = open(fname, O_RDWR | O_CREAT, 0777);
+ 		if (fd == -1) {
+ 			if (errno != EMFILE)
+@@ -46,17 +48,19 @@ static void setup(void)
+
+ static void run(void)
+ {
+-	sprintf(fname, FNAME ".%d", fds_limit);
++	snprintf(fname, sizeof(fname), FNAME ".%d", fds_limit);
+ 	TST_EXP_FAIL2(open(fname, O_RDWR | O_CREAT, 0777), EMFILE);
+ }
+
+ static void cleanup(void)
+ {
+-	if (!first || !fds)
++	if (first < 0 || !fds)
+ 		return;
+
+-	for (i = first; i < fds_limit; i++)
+-		SAFE_CLOSE(fds[i - first]);
++	for (i = first; i < fds_limit; i++) {
++		if (fds[i - first] != -1)
++			SAFE_CLOSE(fds[i - first]);
 +	}
-+
-+	if (status)
-+		tst_res(TPASS, "Sysfs and MSR values are equal");
-+	else
-+		tst_res(TFAIL, "Highest performance values differ between sysfs and MSR");
-+}
-+
-+static struct tst_test test = {
-+	.needs_kconfigs = (const char *const []) {
-+		"CONFIG_ACPI_CPPC_LIB",
-+		"CONFIG_X86_MSR",
-+		NULL
-+	},
-+	.needs_root = 1,
-+	.setup = setup,
-+	.supported_archs = (const char *const []) {
-+		"x86",
-+		"x86_64",
-+		NULL
-+	},
-+	.test_all = run
-+};
--- 
-2.47.3
 
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
-
+ 	if (fds)
+ 		free(fds);
+--
+2.43.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
