@@ -4,75 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02E7A1099B34
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 18:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774031982; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=plV74FY70zuXOcsWhC6dIbAuWRQ+jNFi3yxff4GE5oY=;
- b=CJf03Dd6RNsaw/A7LiPM9PXguKqVY5APHZ4bNZEn7Y5SViGHBCn4uqKjpPlvobVw6yAx3
- dcbeGE5ceO6umh3e3IvgyTb757+GUD4wDS7QMqscJfrHoF6wjfVtBzi+BYgTcVVr3/n1ojC
- WkSL960qxZpz9m0LNCDTUV28YjiL6gg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AB981094462
+	for <ltp@archiver.kernel.org>; Sat, 21 Mar 2026 08:39:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 564C93E5F41
-	for <ltp@archiver.kernel.org>; Fri, 20 Mar 2026 19:39:42 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0734D3E2B24
+	for <ltp@archiver.kernel.org>; Sat, 21 Mar 2026 09:39:17 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0CBF83CD411
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 19:39:19 +0100 (CET)
-Received: from mail-dy1-x1349.google.com (mail-dy1-x1349.google.com
- [IPv6:2607:f8b0:4864:20::1349])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id B5DF13E1188
+ for <ltp@lists.linux.it>; Sat, 21 Mar 2026 09:38:57 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 07168100046D
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 19:39:18 +0100 (CET)
-Received: by mail-dy1-x1349.google.com with SMTP id
- 5a478bee46e88-2c0f6593ef5so808589eec.1
- for <ltp@lists.linux.it>; Fri, 20 Mar 2026 11:39:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1774031957; x=1774636757; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=I1hxX1hM2tBKeDYEXGYTMrCWGz0Q6qLKRS8vaBrx2LU=;
- b=VAhx/Me8iA/00JMg9E1RiwdS7m5btsHTaHj9hlNYo5syaPJOl16tig1lfcUfQ5FhPC
- sOJ8Fov+C3bczTKCB2JT940+uQMJBS802XPFxWzvL3Fl0nP9OfP6r0EYts+A5DlvrE4H
- zqPLHBgMpaP2axeQPWtkxWT5joSc0RLNbvhmfJ+wPvrczb/DZEjyc/S64yNp8Axr3GFA
- 7zfr9/HQeJASYj46EI1pd3rUPPQzXTNh31ZTme+zLaYJFWRlJym1FCIUb11HBaqNjrni
- AnTpRW+9PpanVIZNMJZiMuUld5jaMTRtCNpyiG66w1OtFWQoWSbq6Rtr7j+lXEgnOnZd
- jb5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774031957; x=1774636757;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=I1hxX1hM2tBKeDYEXGYTMrCWGz0Q6qLKRS8vaBrx2LU=;
- b=T/3Z/hsnMhnpwXmJjsu0pMK9Mkss/Udwr/uNcg5XBngKCMyn29Sx5FyUQWzCFRpsHk
- DKJtBDe4jZWJM1kMriJL5RZ1vUhOGMBwONeceDPjbSXoDSww3f7D0i+4wLj+rvjqS3dF
- fqhlpBibfRuxNVGRoTXoEjRG0m+iMFt4/QIVZEuCyo8ZyqIRKDaz6ceXCcYkgEkuE2Yp
- NAMzlF6iht8TB8I9WueEx+SmRt7/xT11KYMOvPz2HP6+dJe+jK5mdvuugV7C1XXWnuTL
- CSLGHvjRJNvhMDZ5E+w4k2J+TaAXo8IM8/hRGnnMk1yfhTO/et2JDTI69gYb19oIWyLj
- ACxg==
-X-Gm-Message-State: AOJu0YxaLK1MTmgqsy6fzEMVouF1UPLnmik1ZOX27E5iwUKuQxw6j6yW
- NR2xtfauV12dsiF2scIksnwOCfZgB1eAGY1kiEvhtbirht94YnljhTSkm1CA9VD4sKQzksPbOBc
- DaO4ConsFYHmRalvGH+75AllJ0hBMM6xCqYzJVoypbEtp4nRS0wHZxbZOvaKjwYAXNVuQxJTeBk
- DVgdSVtCFvSQZUFO9Pd3Mzqf090OoirOHCkMtIDoAcO5VryFLgLYk985Yv0A==
-X-Received: from dltt4.prod.google.com ([2002:a05:701a:c964:b0:12a:7a40:ea24])
- (user=chriswailes job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:7022:b97:b0:128:d5f1:d595 with SMTP id
- a92af1059eb24-12a7268c096mr1685630c88.10.1774031956880; 
- Fri, 20 Mar 2026 11:39:16 -0700 (PDT)
-Date: Fri, 20 Mar 2026 11:39:07 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.53.0.959.g497ff81fa9-goog
-Message-ID: <20260320183907.117127-1-chriswailes@google.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 767E4600707
+ for <ltp@lists.linux.it>; Sat, 21 Mar 2026 09:38:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1774082337; x=1805618337;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=T1H7MmHENLbS90ECVJzxr3WF+oI6mWhnSmNM3a9sh98=;
+ b=fOOhh6hF/oSIJnYQEn+vVuvhVnKR04R5SAFFPrasGt4JmHS0hg1jD+vL
+ SmH4wq//+hr0Jm2PbG2cfF8HqDikAxzGlThKYx6RlyuePAK5qwWolcSe8
+ m7wdpqo9k/X7Vqm5eIL7WFlYUa8vsgrz1/6giD4pyoNCqJBcXPaQUpZkA
+ lVmqgAIAQiTualOzBXBr6bvB7cbBgMQlMibhxj29gYLWZXWKAn2lFq0cj
+ GW77Fh8OoIYh615/v8XmGMth+yDil824Ka3yynYbR5AVLrfsndKSM/dLX
+ J/H9NTCIiVoXUNZV7ZPmzzquo5PBSwpH0G1Eje8xP1JwLKmT2t6Xf+NGM g==;
+X-CSE-ConnectionGUID: YHN0jKTWQJiNT/oXYImEQw==
+X-CSE-MsgGUID: 62U3kSo2QKGzBJ3ABLEgDA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11735"; a="62719555"
+X-IronPort-AV: E=Sophos;i="6.23,133,1770624000"; d="scan'208";a="62719555"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+ by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Mar 2026 01:38:52 -0700
+X-CSE-ConnectionGUID: IAwdwlxGRKWltNNt1TzunA==
+X-CSE-MsgGUID: NldjyquxQ/O6o9e+mubwAw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,133,1770624000"; d="scan'208";a="228012175"
+Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
+ by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Mar 2026 01:38:50 -0700
+From: Piotr Kubaj <piotr.kubaj@intel.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+Date: Sat, 21 Mar 2026 09:38:14 +0100
+Message-ID: <20260321083813.138283-2-piotr.kubaj@intel.com>
+X-Mailer: git-send-email 2.47.3
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Update clone3 wrapper signature
+Subject: [LTP] [PATCH v4] high_freq_hwp_cap_cppc.c: new test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,142 +67,123 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Chris Wailes via ltp <ltp@lists.linux.it>
-Reply-To: Chris Wailes <chriswailes@google.com>
+Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
+ rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This CL adds the `ltp_clone3_raw` wrapper for direct testing of the
-syscall and adds a `ltp_clone3` wrapper for libc implementations that
-provide `clone3`.
+Verify for all online logical CPUs that their highest performance value are
+the same for HWP Capability MSR 0x771 and CPPC sysfs file.
 
-Signed-off-by: Chris Wailes <chriswailes@google.com>
+Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
 ---
+Since SAFE_PREAD() already checks return code, remove the check.
+ runtest/power_management_tests                |  1 +
+ testcases/kernel/power_management/.gitignore  |  1 +
+ .../power_management/high_freq_hwp_cap_cppc.c | 65 +++++++++++++++++++
+ 3 files changed, 67 insertions(+)
+ create mode 100644 testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
 
-Notes:
-    V2: Added HAVE_STRUCT_CLONE_ARGS and updated clone304.c
-
- configure.ac                                |  1 +
- include/lapi/sched.h                        | 27 +++++++++++++++------
- testcases/kernel/syscalls/clone3/clone301.c |  2 +-
- testcases/kernel/syscalls/clone3/clone302.c |  2 +-
- testcases/kernel/syscalls/clone3/clone304.c |  2 +-
- 5 files changed, 24 insertions(+), 10 deletions(-)
-
-diff --git a/configure.ac b/configure.ac
-index 043640240..d753df6f2 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -189,6 +189,7 @@ AC_CHECK_MEMBERS([struct utsname.domainname],,,[
- AC_CHECK_TYPES([enum kcmp_type],,,[#include <linux/kcmp.h>])
- AC_CHECK_TYPES([struct acct_v3],,,[#include <sys/acct.h>])
- AC_CHECK_TYPES([struct af_alg_iv, struct sockaddr_alg],,,[# include <linux/if_alg.h>])
-+AC_CHECK_TYPES([struct clone_args],,,[#include <sched.h>])
- AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_error,
- 		struct fanotify_event_info_header, struct fanotify_event_info_pidfd,
- 		struct fanotify_event_info_range],,,[#include <sys/fanotify.h>])
-diff --git a/include/lapi/sched.h b/include/lapi/sched.h
-index 36f1ecad9..05b322c1c 100644
---- a/include/lapi/sched.h
-+++ b/include/lapi/sched.h
-@@ -49,8 +49,7 @@ static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
- # define SCHED_ATTR_SIZE_VER0 48	/* sizeof first published struct */
- #endif
- 
--#ifndef HAVE_CLONE3
--struct clone_args {
-+struct clone_args_minimal {
- 	uint64_t __attribute__((aligned(8))) flags;
- 	uint64_t __attribute__((aligned(8))) pidfd;
- 	uint64_t __attribute__((aligned(8))) child_tid;
-@@ -59,12 +58,10 @@ struct clone_args {
- 	uint64_t __attribute__((aligned(8))) stack;
- 	uint64_t __attribute__((aligned(8))) stack_size;
- 	uint64_t __attribute__((aligned(8))) tls;
--	uint64_t __attribute__((aligned(8))) set_tid;
--	uint64_t __attribute__((aligned(8))) set_tid_size;
--	uint64_t __attribute__((aligned(8))) cgroup;
- };
- 
--struct clone_args_minimal {
-+#ifndef HAVE_STRUCT_CLONE_ARGS
-+struct clone_args {
- 	uint64_t __attribute__((aligned(8))) flags;
- 	uint64_t __attribute__((aligned(8))) pidfd;
- 	uint64_t __attribute__((aligned(8))) child_tid;
-@@ -73,12 +70,28 @@ struct clone_args_minimal {
- 	uint64_t __attribute__((aligned(8))) stack;
- 	uint64_t __attribute__((aligned(8))) stack_size;
- 	uint64_t __attribute__((aligned(8))) tls;
-+	uint64_t __attribute__((aligned(8))) set_tid;
-+	uint64_t __attribute__((aligned(8))) set_tid_size;
-+	uint64_t __attribute__((aligned(8))) cgroup;
- };
-+#endif
- 
--static inline int clone3(struct clone_args *args, size_t size)
-+static inline int ltp_clone3_raw(struct clone_args *args, size_t size)
- {
- 	return tst_syscall(__NR_clone3, args, size);
- }
+diff --git a/runtest/power_management_tests b/runtest/power_management_tests
+index 884e615cd..6d87dfb7f 100644
+--- a/runtest/power_management_tests
++++ b/runtest/power_management_tests
+@@ -1,4 +1,5 @@
+ #POWER_MANAGEMENT
++high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
+ runpwtests01 runpwtests01.sh
+ runpwtests02 runpwtests02.sh
+ runpwtests03 runpwtests03.sh
+diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
+index 0c2a3ed4b..c13bca1c4 100644
+--- a/testcases/kernel/power_management/.gitignore
++++ b/testcases/kernel/power_management/.gitignore
+@@ -1 +1,2 @@
++high_freq_hwp_cap_cppc
+ pm_get_sched_values
+diff --git a/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
+new file mode 100644
+index 000000000..99918906c
+--- /dev/null
++++ b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +
-+#ifdef HAVE_CLONE3
-+static inline int ltp_clone3(struct clone_args *cl_args, size_t size,
-+               int (*fn)(void *), void *arg) {
-+	return clone3(cl_args, size, fn, arg);
-+}
-+#else
-+static inline int ltp_clone3(struct clone_args *cl_args, size_t size,
-+                             int (*fn)(void *), void *arg)
++/*
++ * Copyright (C) 2026 Intel - http://www.intel.com/
++ */
++
++/*\
++ * Verify for all online logical CPUs that their highest performance value are
++ * the same for HWP Capability MSR 0x771 and CPPC sysfs file.
++ */
++
++#include "tst_test.h"
++#include "tst_safe_prw.h"
++
++static int nproc;
++
++static void setup(void)
 +{
-+	return -1;
++	nproc = tst_ncpus();
 +}
- #endif
- 
- static inline void clone3_supported_by_kernel(void)
-diff --git a/testcases/kernel/syscalls/clone3/clone301.c b/testcases/kernel/syscalls/clone3/clone301.c
-index 902e89091..668c1a225 100644
---- a/testcases/kernel/syscalls/clone3/clone301.c
-+++ b/testcases/kernel/syscalls/clone3/clone301.c
-@@ -123,7 +123,7 @@ static void run(unsigned int n)
- 	parent_received_signal = 0;
- 	SAFE_SIGACTION(tc->exit_signal, &psig_action, NULL);
- 
--	TEST(pid = clone3(args, sizeof(*args)));
-+	TEST(pid = ltp_clone3_raw(args, sizeof(*args)));
- 	if (pid < 0) {
- 		tst_res(TFAIL | TTERRNO, "clone3() failed (%d)", n);
- 		return;
-diff --git a/testcases/kernel/syscalls/clone3/clone302.c b/testcases/kernel/syscalls/clone3/clone302.c
-index 9e98f1954..883112183 100644
---- a/testcases/kernel/syscalls/clone3/clone302.c
-+++ b/testcases/kernel/syscalls/clone3/clone302.c
-@@ -83,7 +83,7 @@ static void run(unsigned int n)
- 		args->tls = tc->tls;
- 	}
- 
--	TEST(clone3(args, tc->size));
-+	TEST(ltp_clone3_raw(args, tc->size));
- 
- 	if (!TST_RET)
- 		exit(EXIT_SUCCESS);
-diff --git a/testcases/kernel/syscalls/clone3/clone304.c b/testcases/kernel/syscalls/clone3/clone304.c
-index f0ef7d7e8..b91a081e5 100644
---- a/testcases/kernel/syscalls/clone3/clone304.c
-+++ b/testcases/kernel/syscalls/clone3/clone304.c
-@@ -58,7 +58,7 @@ static void run(unsigned int n)
- 		args.set_tid_size = 1;
- 	}
- 
--	TST_EXP_FAIL(clone3(&args, sizeof(args)), EPERM,
-+	TST_EXP_FAIL(ltp_clone3_raw(&args, sizeof(args)), EPERM,
- 			"clone3(%s) set_tid_size=%ld",
- 			tc->sflags, args.set_tid_size);
- }
++
++static void run(void)
++{
++	bool status = true;
++
++	for (int i = 0; i < nproc; i++) {
++		char path[PATH_MAX];
++		unsigned long long msr_highest_perf = 0, sysfs_highest_perf = 0;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/acpi_cppc/highest_perf", i);
++		SAFE_FILE_SCANF(path, "%llu", &sysfs_highest_perf);
++		tst_res(TDEBUG, "%s: %llu", path, sysfs_highest_perf);
++
++		snprintf(path, sizeof(path), "/dev/cpu/%d/msr", i);
++		int fd = SAFE_OPEN(path, O_RDONLY);
++
++		SAFE_PREAD(1, fd, &msr_highest_perf, sizeof(msr_highest_perf), 0x771);
++		msr_highest_perf &= (1ULL << 8) - 1;
++		tst_res(TDEBUG, "%s: %llu", path, msr_highest_perf);
++
++		if (msr_highest_perf != sysfs_highest_perf)
++			status = false;
++	}
++
++	if (status)
++		tst_res(TPASS, "Sysfs and MSR values are equal");
++	else
++		tst_res(TFAIL, "Highest performance values differ between sysfs and MSR");
++}
++
++static struct tst_test test = {
++	.needs_kconfigs = (const char *const []) {
++		"CONFIG_ACPI_CPPC_LIB",
++		"CONFIG_X86_MSR",
++		NULL
++	},
++	.needs_root = 1,
++	.setup = setup,
++	.supported_archs = (const char *const []) {
++		"x86",
++		"x86_64",
++		NULL
++	},
++	.test_all = run
++};
 -- 
-2.53.0.959.g497ff81fa9-goog
+2.47.3
+
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
+Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
+
+Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
+This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
 
 
 -- 
