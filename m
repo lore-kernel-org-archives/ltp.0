@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1EB0F46126
-	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 14:06:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BA7EF46126
+	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 14:09:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1851E3E5568
-	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 15:06:30 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 7127D3E5C91
+	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 15:09:36 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2310B3E1459
- for <ltp@lists.linux.it>; Mon, 23 Mar 2026 15:06:07 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+ by picard.linux.it (Postfix) with ESMTPS id CFB2E3E1459
+ for <ltp@lists.linux.it>; Mon, 23 Mar 2026 15:09:16 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B0DD5200228
- for <ltp@lists.linux.it>; Mon, 23 Mar 2026 15:06:06 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BF5361000228
+ for <ltp@lists.linux.it>; Mon, 23 Mar 2026 15:09:15 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1774274767; x=1805810767;
+ t=1774274956; x=1805810956;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=6T89Ws5VgGefTb/76IrkiGd49rGVEVKHiUmQKPg0x1E=;
- b=QRLFO3X6WV3ioCPByN/MPsQkb9Uz5no43qdxCsvxRnHxoC2qECx+a/5b
- l36myjhNAmT4mprLum4OzUSjecduNgXLhSJ2o4evIPPW10qzFTrv/uzDg
- jo32nsOGRFmkY7WqWz7UdRMMDbG6Lk+kz9c70eATtcNP4j/PG72DuWLcn
- jrrAKWTSxgfj7Q8hR7rUiN9iv8q9Vy1Xk9rvlDxBHb4YvFQydx3dgtCEY
- gn/ziASOQA5wUelgSotpgfqsV2GojNF1iyFnHISwldn8loIMT+ahoBZuc
- n1ikCCqOyWv/Q4kwxy9I2OYjFfr1tFg3peHV6X9h4cobVg93WpXkBkKc1 A==;
-X-CSE-ConnectionGUID: 2+Dtq6tVSTCtAY9KxRFdGw==
-X-CSE-MsgGUID: dFEvdnbMSve5phhlX9qlHg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11738"; a="86638134"
-X-IronPort-AV: E=Sophos;i="6.23,137,1770624000"; d="scan'208";a="86638134"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
- by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2026 07:06:03 -0700
-X-CSE-ConnectionGUID: fvm+O8GiRwyCvnvafHFCFw==
-X-CSE-MsgGUID: Huq+AohiTLGs//l7wlBw5g==
+ bh=PX+8nMJsnMeiQVs02zaAroSHtRlmTHFQHNINbpGY7JE=;
+ b=e/HQ/4CsPCKo7BqBjeLzaz5dP2mcM8EWsZmYJcJskev//L9I0G4hvUZG
+ LoWf/U2tUf+vdCd065g2NdWlMFhuogKPYeytmMyRyKCyQTYlICSPyM0Sa
+ 0+BTeUJFVILfeNRGpXFoEE80iKd4XdBnkthc9Em85HSHfKndBFQyCy91x
+ TxqVuA6cJUgXatous2PctFnyb9BFAinal5/GvDfrl5AjfWTsCm3xlrDoQ
+ 3r/fXqK+q6is0fjujK3PqKDS6Tf1+5ecujjSNzU/Ju8pVK+sLU8yprTMx
+ KCVSI8Y3feFEI51rzqFD6fkDfa9TTEBXim7rBPRAo7csSK+UTborYzXyX g==;
+X-CSE-ConnectionGUID: cUZ9iifBQS2bc7ZXp0TyTQ==
+X-CSE-MsgGUID: tZ3DxGDGRDKwNtv3BIyhCA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11738"; a="85895351"
+X-IronPort-AV: E=Sophos;i="6.23,137,1770624000"; d="scan'208";a="85895351"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+ by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Mar 2026 07:09:14 -0700
+X-CSE-ConnectionGUID: ZGtG6NZzRDCz+HQYZjqPsg==
+X-CSE-MsgGUID: o45C3zBLTHSOcUdWPKv0Mg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,137,1770624000"; d="scan'208";a="219207091"
+X-IronPort-AV: E=Sophos;i="6.23,137,1770624000"; d="scan'208";a="223996321"
 Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
- by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2026 07:06:02 -0700
+ by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Mar 2026 07:09:12 -0700
 From: Piotr Kubaj <piotr.kubaj@intel.com>
 To: ltp@lists.linux.it
-Date: Mon, 23 Mar 2026 15:01:47 +0100
-Message-ID: <20260323140146.196684-2-piotr.kubaj@intel.com>
+Date: Mon, 23 Mar 2026 15:08:52 +0100
+Message-ID: <20260323140851.197426-2-piotr.kubaj@intel.com>
 X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v12] thermal: add new test group
+Subject: [LTP] [PATCH v13] thermal: add new test group
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,8 +85,7 @@ of thermal interrupts increased.
 Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
-Replace calloc() calls with SAFE_CALLOC(). Also friendly ping,
-is there anything missing anymore?
+One more calloc() replacement.
 ---
  runtest/thermal                               |   3 +
  testcases/kernel/Makefile                     |   1 +
@@ -144,7 +143,7 @@ index 000000000..4657c3fb3
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
 diff --git a/testcases/kernel/thermal/thermal_interrupt_events.c b/testcases/kernel/thermal/thermal_interrupt_events.c
 new file mode 100644
-index 000000000..c1443c0b3
+index 000000000..85b211c3e
 --- /dev/null
 +++ b/testcases/kernel/thermal/thermal_interrupt_events.c
 @@ -0,0 +1,217 @@
@@ -236,7 +235,7 @@ index 000000000..c1443c0b3
 +
 +	read_interrupts(interrupt_init, nproc);
 +
-+	x86_pkg_temp_tz = calloc(tz_counter, sizeof(bool));
++	x86_pkg_temp_tz = SAFE_CALLOC(tz_counter, sizeof(bool));
 +
 +	for (int i = 0; i < tz_counter; i++) {
 +		char path[PATH_MAX];
