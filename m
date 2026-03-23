@@ -4,105 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2437EFC72C5
-	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 07:27:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39502EC01A1
+	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 07:48:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774250830; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1774252100; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=04htk8kyv6apMZA0oK14+6VJRGQDAkgdFD0HUIJ6PJk=;
- b=n6ax/3uDAO9m24nZwq2rR0Yt6H5JDCWmtB2rwuBX38It4FjffdB68/3CjQYpvf1xTB4ll
- TCM4lSAydNvqerJdQ9RUyLIYuf9WDZVmjM3hZND0A1fyHCsv+maNy/HR5Bps6Cppcm0jZZt
- mp+p3wt60VMm6WnGsJdGOjbjQur43Hs=
+ bh=q0rxJdI7+xVE3VMzZ4erG8l14rmabE1vOcQ8uPEqWHs=;
+ b=lbmXY2xE+gIH13Z/l9SLJ6o14okmu0MZFB60cmvZeVOMOlQH8kiwcYxUmg4P66fS67Tdh
+ ufMaGm8NVYIGcQ6z8zgqus1wD44GtyLYCoV9n7dqki4sEI6iuKyGXhc+z/jawwbwJ8lQOWK
+ JL+yYk5/y2CEcHEUfJfm+jsKkkpCGBU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C5A5C3E2266
-	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 08:27:10 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id C599B3E2267
+	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 08:48:20 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 808D53E1452
- for <ltp@lists.linux.it>; Mon, 23 Mar 2026 08:26:45 +0100 (CET)
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com
- [IPv6:2607:f8b0:4864:20::534])
+ by picard.linux.it (Postfix) with ESMTPS id B26083C6147
+ for <ltp@lists.linux.it>; Mon, 23 Mar 2026 08:47:55 +0100 (CET)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 010BB600755
- for <ltp@lists.linux.it>; Mon, 23 Mar 2026 08:26:44 +0100 (CET)
-Received: by mail-pg1-x534.google.com with SMTP id
- 41be03b00d2f7-c70bfef17a4so1822993a12.2
- for <ltp@lists.linux.it>; Mon, 23 Mar 2026 00:26:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1774250803; cv=none;
- d=google.com; s=arc-20240605;
- b=KshT9UiwGf60GR7Pa/QuA3+b6Vo9sFQ90WrwMZMzd1wGNk/In5gZUu++Yd4hfQ2MSm
- o1XAHnFz7JAB7ya0yGCVMLt7dBiOb2OSwLOGblxa6SoyFmqvfDg0/+u3236yJvzSkz6d
- O3G4TCR1uPffCWafslgn13xtdwhVdlrA1w+0sNFvR2PkheW+def0BUvKlfIj3McKPOZ6
- YagFpgQGARmowyeqVERZ7dUejpMmW/tcObMU6FvEb18jLOcxTZ1ud7FAPLPR4E79rSDg
- /iaEnp+9SoPTazIwx8HfMUpz0VNDyLt2ESmNWObKo7b/TlcEmcR56XqAQdqZF1P2nQ27
- agmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20240605; 
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:dkim-signature;
- bh=B8HoSTfNfE54ah5zb+LjAkJossDzwozKIcx3o/j6kIU=;
- fh=cmR4S6Ly0xc3yKBvbQzAzwuxrXJZLhA//6ubmxpeQ5A=;
- b=GPAW36Ww4kCyJQLU4asgXPoPe4OrrUzxq3t9pH6lcDxMSFE0bKtg2IqofKsttkznUz
- 452fuHTBJqOpm0ococ6kqz6hSlfB0u/16Anwui8r0sG0fwF8C1vFh5X0OdpkWshAVPue
- WdPovwtQtggnugrGZaMo+BAXNc6c/cUwyOvxoCpw3SQrGBDgJyUFNIFk+iAGnZ25fvXk
- ubS1OccvkYvhnlBjGirScNtb0Prbact7V8A4e2SFM7MliXWVj2icS/oY2ZaxOOG0la/b
- WhLeWVuiFA6VonXzauzlIedvJu3f3D4VkSMbYjnlxhov9/0AfML989C6SS/akpIOL5jI
- 5tjg==; darn=lists.linux.it
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F174C1400C76
+ for <ltp@lists.linux.it>; Mon, 23 Mar 2026 08:47:54 +0100 (CET)
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-486b96760easo41613015e9.2
+ for <ltp@lists.linux.it>; Mon, 23 Mar 2026 00:47:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1774250803; x=1774855603; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=B8HoSTfNfE54ah5zb+LjAkJossDzwozKIcx3o/j6kIU=;
- b=r3INNhmLNPASYwuUiYmZ2HrCKYgPciGnHZyklq6tNtoQATvRDtiJxYmPeAdF5Fj2tp
- X4I/t1QFyPqAcB9dXOISzG4GVA3r5rXQjBJFHlqGWEaegp1cBQqPp+0OPqpTF/V9uchU
- GfDe29S734ryPujXl9VnUJyhsUKxc+dZETb5ofFZCcIbKqp0a3eRZqJXvonQ+7qct+/T
- 0WfN62TxsFGFttlKNUkKJYfOiSqiUkzSYsqpmvsbcnqyKP6unpToQ969SFshF1/Efxcp
- 103RL8Abd7o9YrEmoSkU9DrMBxQNYGWRWNTd8dfwcF8J70int8131kmQCmkEJoUzuMq9
- LXYw==
+ d=suse.com; s=google; t=1774252074; x=1774856874; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=hsI9Qze4L8YuT+RBV3sV6t29LaOQ4keOW+JZWOgj7Is=;
+ b=BER2TdCQE93klHD+6cRNA46Ybb3/cJwBlr5v3PXm3AlvwDQlB8CvWZrsBy8vARHfHz
+ 3erT8OmwPsuJTCS28WJMpILydlPliX6K4/qx9eG1OTx2UxjTNq01u2nIezbU6g4g0PXv
+ +/BhPMm+roY/Vq97cqlGuUp2B7jJNqOA/BUC5uQbmCmiXoPySgOZ0a3ETcXvLMNp77lo
+ 0U9nVH+I8SPOIW/E9HIv/JsHSL3KkkCK98riDedeopoNovI4x24h5bM4uqMc9wROikpZ
+ LhwSdkcGdnV78agEjKWWe0/DzbEtK4G3liWo0TdlH3855faryzWwoDRVFUvs7GV/7IsI
+ d83A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774250803; x=1774855603;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=1e100.net; s=20251104; t=1774252074; x=1774856874;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=B8HoSTfNfE54ah5zb+LjAkJossDzwozKIcx3o/j6kIU=;
- b=f4gGjwRKXZXrT9AQPwuqrnZdSSnUpU5Akaa1kEIQpjH3aoZRptCQF8zYu+rPp9t2H9
- 3UgmPpZxrfdSW6tdQK6nopYmdDBZNZ53d0up32Z98yh6eZEGaQ/I/+ZkKkhurvby0RYO
- EK0ACQH4Ri/km+cJlD/y9YU7u3Ga3HrZZz8TN6E+alwQznsJ571z6f6LCRoemzE3DlhC
- bR2Kf/W0sie3cmWp9K7YSvsBqoj7S348a5liz5pKu3+LT4f3FJX1iZbzZM6a/JYQebAM
- 5Fkj4asBAQPIpOf6H64rkC1Nm8zLbKYh8DppSPWBgPTCjkIuwYXTSIWEE5G8SFuvB2QH
- xYrg==
-X-Gm-Message-State: AOJu0YyR8oqZlwtXWe4o28hTKWhmKQk0NN6f6FoKDo7S6t/AJkTJjfbK
- pFNmF3tvyFhEfNUYfQkeMuS59RDJ6aOovTUgak6lfgCKdFAZvgEDOVJkcSP7xflgZowa4D/DkT2
- zbZCdLQ55uaYaIoH0gm0Xby0hd+1EgE+OR9r8yNbtLf0XYdQSDKDjVRR3Gec=
-X-Gm-Gg: ATEYQzxVshD/twzpyDDD1wQWMu+pMN+gtXK+qUN25GpqqZ8FnB5XAILDT9pQQnlm72j
- QtE9jVFSfBIPrzZf9q3YlryuBjF6is0rlpYYLm5hLrIvP6vvYq2uTc5b7O8ppcZHpLauiBt6gMZ
- wgaDwh6io/CujBW1VXgQr1wn02fSNKaQfQHzqVvXreRjB3Yg8MdqWqrElMaT0UvyHpbqX6MjVZD
- woGTqQ94OSgA1/kwvmznY74MUhffQmmyksXHf60oKTPylB1HAN4s3oBv2E7lrTReBIRJlraBh7q
- yZp9lT1WX8Hte/f/SbgiQPn+unRsvUvAU3T/IQ==
-X-Received: by 2002:a05:6a20:7fa7:b0:398:bbd6:80b9 with SMTP id
- adf61e73a8af0-39bcea5a1f4mr10377321637.23.1774250802808; Mon, 23 Mar 2026
- 00:26:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20260320075733.936817-1-wakel@google.com>
- <69bd0c05.050a0220.271ac6.1276@mx.google.com>
-In-Reply-To: <69bd0c05.050a0220.271ac6.1276@mx.google.com>
-Date: Mon, 23 Mar 2026 15:26:06 +0800
-X-Gm-Features: AaiRm50E8GwWiScL1313i1ER8_XlSQll1eKdIt8aY2veLNZAQCaZ5biq0bJ5Rbg
-Message-ID: <CAOcRiAF3gkD8QDr2L7g7DXpUwUurYDh7k-vBMmw=um5AdnuNMw@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ bh=hsI9Qze4L8YuT+RBV3sV6t29LaOQ4keOW+JZWOgj7Is=;
+ b=sa3OVcHG4efpRkHHfMBlbA8Oh5UNacXXJuiGonJ/LH1yze3dm3DJaVgYwWNqJtxNPH
+ h08i6OWH3QxKMTPxxypAREzEAhyMc9qC0t5Z3TSIZWcSR0YoADQlaJ+pg1nLxCoy5P14
+ FwIR/dB32S1bt7JnlXVW8W7OX6lpUAdnBJQMHwyCD1qajts/IXndbvBHTOmFR10eexwG
+ usedgqWc3qXRNkSGw8wS22TUV0/jmkqDSb8WWWNTy7NdD6URTgixHXb1xAGgGp8dTxgg
+ kBPd/bvixJon20pZGcqjfG3l/4qdrjfCq9l/JBejWpBzkPpMdSqvQpI4So2ehNlWQ+Nm
+ SMnw==
+X-Gm-Message-State: AOJu0Yxe+kZRUq30AjiLwtKPGj7WYGxhPiLNStUTpT3IGMa9jKJQ1xyD
+ AyU26jXQMx26AMvE2AUBRdSY0Fa9uP9XkuPwUp7DMbUvnqb42O5mweTeSRFpXESZq8rbyCTq96Z
+ JVQ595pY=
+X-Gm-Gg: ATEYQzy0RY1d0u3gRwQGTYldwgMG3ZPApFlavgRoiL3KDhgOoDLVugliCmmXAHM2RZ9
+ Y7xbHioeiKWcRgcDuDDTpjtk7gILBBAvfCZmBoo3V9eTnWgADoctkBnWW0UUFCMyv7VANbooTQb
+ j2lQVax160xAlsX/AIZD9cUPzyw35ZyY6YsTowqy6qzTJdyywKoYjN9rH2gSRHiVjIjFMwbfAFO
+ GThm7DfX3jb5TE8BD5qz7nJzZW+8qpV/pnEIHeF34okm9WfwpAhJq9EPoqNzatkx+0vQLMaJ/ND
+ e4XIziR4hWsPyAFQJ3y+xhc6gNYAGJzfLhpSLD75SGOMeinh0bwDfPn/Boi6L9M/d9FcZ1zfCG/
+ Jeqi3onrZ5R4cMKR2zr+wScrlA0P8CfrhusAaeT4InAWcSZZ2pJslIAR04jSxIAZcdowJKJr8Ol
+ gc9YYP4DfY4BxMqxwXYdZ4HW79YElxX5BLltf5pBRMioA=
+X-Received: by 2002:a05:600c:8b31:b0:485:9a50:3369 with SMTP id
+ 5b1f17b1804b1-486fee304c4mr157980695e9.29.1774252074252; 
+ Mon, 23 Mar 2026 00:47:54 -0700 (PDT)
+Received: from localhost.localdomain ([37.160.201.221])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-486f8ba4baesm512665195e9.13.2026.03.23.00.47.52
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 23 Mar 2026 00:47:53 -0700 (PDT)
+Message-ID: <69c0f029.050a0220.a284a.7ad8@mx.google.com>
+To: Pavithra <pavrampu@linux.ibm.com>
+In-Reply-To: <20260312055531.359885-1-pavrampu@linux.ibm.com>
+Date: Mon, 23 Mar 2026 07:47:49 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/file_attr01: Allow EOPNOTSUPP when
- attributes is NULL
+Subject: Re: [LTP] [PATCH] [PATCH v5] Migrating the
+ libhugetlbfs/testcases/truncate_above_4GB.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,69 +96,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Cc: Wake Liu via ltp <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: pavrampu@linux.ibm.com, ltp@lists.linux.it
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Wake,
->
-> > The syscalls file_getattr and file_setattr may return EOPNOTSUPP
-> > instead of EFAULT when the ufattr argument is NULL, specifically on
-> > filesystems that do not support extended attributes (e.g., tmpfs when
-> > CONFIG_TMPFS_XATTR is disabled).
->
-> Patch is technically correct but EOPNOTSUPP should not be tested int this way,
-> since we are not checking the underlying kernel configuration. For instance,
-> we might have xattr support, but getting EOPNOTSUPP and have a TPASS. This
-> would be a kernel bug hidden by the test structure.
->
-> In other circumstances (if xattr was our testing goal) we might have used
-> .needs_kconfig, but in this case we should use a different approach:
->
-> - we verify at runtime that our kernel supports xattr via tst_kconfig_check()
-> - if kernel doesn't support xattr, we expect EOPNOTSUPP. Otherwise, EFAULT
->
-> In this way we make sure that syscalls are raising the proper error according
-> to the kernel configuration.
->
-> WDYT?
->
-> --
-> Andrea Cervesato
-> SUSE QE Automation Engineer Linux
-> andrea.cervesato@suse.com
-
-Hi Andrea,
-
-Thanks for the quick review and the detailed feedback.
-
-I agree with your assessment that allowing EOPNOTSUPP unconditionally
-could potentially mask a kernel bug if xattr support is present but
-returns the wrong error. That's definitely something we should avoid.
-
-Your suggested approach using tst_kconfig_check() at runtime to verify
-kernel xattr support is much more robust and is the correct way to
-handle this. It ensures the syscalls raise the proper error based on
-the configuration.
-
-I will revise the patch (v2) to implement this logic:
-
-*   Check xattr support via tst_kconfig_check().
-*   If xattr is not supported, expect EOPNOTSUPP.
-*   Otherwise, expect EFAULT.
-
-I'll send it out shortly.
-
-Thanks again,
-
-
--- 
-Best Regards,
-Wake Liu
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUGF2aXRocmEsCgpUaGUgZm9sbG93aW5nIGlzIGp1c3QgYSBjb2Rpbmcgc3R5bGUvY29udmVu
+dGlvbnMgcmV2aWV3LCBub3QgYSBsb2dpYwpyZXZpZXcuIEkgd2lsbCBsZWF2ZSB0aGF0IGZvciBw
+ZW9wbGUgd2hvIHdvcmtlZCBvbiBodWdlIGZpbGVzLgoKLS0tLS0tLS0tCgpUaGUgc3ViamVjdCBs
+aW5lIHNob3VsZCBmb2xsb3cgTFRQIGNvbnZlbnRpb25zOgoKICBodWdlbW1hcDogQWRkIHRlc3Qg
+Zm9yIGh1Z2VwYWdlIHRydW5jYXRpb24gYWJvdmUgNEdCCgo+IENoYW5nZXMgaW4gdjU6Cj4gLSBN
+b2RpZmllZCBjb2RlIHRvIHVzZSBGT1VSR0lHIGluc3RlYWQgb2YgdHJ1bmNhdGVfcG9pbnQuCgpT
+YW1lIGlzc3VlIGFzIG5vdGVkIG9uIHlvdXIgcHJldmlvdXMgcGF0Y2g6IHRoZSBjb21taXQgYm9k
+eSBzaG91bGQKZXhwbGFpbiAqd2h5KiB0aGUgdGVzdCBpcyBiZWluZyBhZGRlZCDigJQgd2hhdCBr
+ZXJuZWwgYnVnIGl0IGd1YXJkcwphZ2FpbnN0LCB3aGF0IGl0IHZlcmlmaWVzLiBDaGFuZ2Vsb2cg
+ZW50cmllcyBiZWxvbmcgYmVsb3cgdGhlIC0tLQpzZXBhcmF0b3IgaW4gdGhlIHBhdGNoIGVtYWls
+LCBub3QgaW4gdGhlIGNvbW1pdCBib2R5LgoKPiArICpbRGVzY3JpcGl0b25dCgpNaXNzaW5nIHNw
+YWNlIGFmdGVyICosICJEZXNjcmlwaXRvbiIgaXMgbWlzc3BlbGxlZCwgYW5kIFtEZXNjcmlwdGlv
+bl0KaXMgYSBkZXByZWNhdGVkIGxhYmVsIGluIExUUCBkb2MgY29tbWVudHMuIERyb3AgdGhlIGxh
+YmVsIGVudGlyZWx5IOKAlAp0aGUgZXhpc3RpbmcgZGVzY3JpcHRpb24gdGV4dCBiZWxvdyBpdCBp
+cyBmaW5lIG9uIGl0cyBvd246CgogIC8qXAogICAqIEF0IG9uZSBzdGFnZSwgYSBtaXNjb252ZXJz
+aW9uIG9mIGh1Z2V0bGJfdm10cnVuY2F0ZV9saXN0IHRvIGEKICAgKiAuLi4KCj4gK3N0YXRpYyB2
+b2lkIHNpZ2J1c19oYW5kbGVyX2ZhaWwoaW50IHNpZ251bSwgc2lnaW5mb190ICpzaSwgdm9pZCAq
+dWMpCj4gK3sKPiArCXNpZ2xvbmdqbXAoc2lnX2VzY2FwZSwgMTcpOwo+ICt9Cj4gKwo+ICtzdGF0
+aWMgdm9pZCBzaWdidXNfaGFuZGxlcl9wYXNzKGludCBzaWdudW0sIHNpZ2luZm9fdCAqc2ksIHZv
+aWQgKnVjKQoKQWxsIHRocmVlIHBhcmFtZXRlcnMgYXJlIHVudXNlZCBpbiBib3RoIGhhbmRsZXJz
+LCBwcm9kdWNpbmcgYSBjb21waWxlcgp3YXJuaW5nIGZvciAndWMnLiBNYXJrIHRoZW0gd2l0aCBM
+VFBfQVRUUklCVVRFX1VOVVNFRDoKCiAgc3RhdGljIHZvaWQgc2lnYnVzX2hhbmRsZXJfZmFpbChp
+bnQgc2lnbnVtIExUUF9BVFRSSUJVVEVfVU5VU0VELAogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgc2lnaW5mb190ICpzaSBMVFBfQVRUUklCVVRFX1VOVVNFRCwKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHZvaWQgKnVjIExUUF9BVFRSSUJVVEVfVU5VU0VEKQoKQXBw
+bHkgdGhlIHNhbWUgdG8gc2lnYnVzX2hhbmRsZXJfcGFzcy4KCj4gKwlzdGF0aWMgbG9uZyBsb25n
+IGJ1Z2d5X29mZnNldDsKPiArCS4uLgo+ICsJYnVnZ3lfb2Zmc2V0ID0gRk9VUkdJRyAvIChocGFn
+ZV9zaXplIC8gcGFnZV9zaXplKTsKPiArCWJ1Z2d5X29mZnNldCA9IChsb25nIGxvbmcpUEFMSUdO
+KGJ1Z2d5X29mZnNldCwgaHBhZ2Vfc2l6ZSk7CgpidWdneV9vZmZzZXQgaXMgcmVjb21wdXRlZCBm
+cm9tIGdsb2JhbCBzdGF0aWNzLCBtYWtlIGl0IHB1YmxpYyBpbnN0ZWFkLgoKPiArY2xlYW51cDoK
+PiArCVNBRkVfTVVOTUFQKHEsIDMqaHBhZ2Vfc2l6ZSk7Cj4gKwlTQUZFX01VTk1BUChwLCBocGFn
+ZV9zaXplKTsKCnAgPT0gcSArIDIqaHBhZ2Vfc2l6ZSwgd2hpY2ggZmFsbHMgd2l0aGluIFtxLCBx
+ICsgMypocGFnZV9zaXplKS4gVGhlCmZpcnN0IFNBRkVfTVVOTUFQIGFscmVhZHkgY292ZXJzIHAn
+cyByZWdpb24sIHNvIHRoZSBzZWNvbmQgY2FsbCBpcyBhCnJlZHVuZGFudCBkb3VibGUtdW5tYXAu
+CgpSZWdhcmRzLAotLQpBbmRyZWEgQ2VydmVzYXRvClNVU0UgUUUgQXV0b21hdGlvbiBFbmdpbmVl
+ciBMaW51eAphbmRyZWEuY2VydmVzYXRvQHN1c2UuY29tCgotLSAKTWFpbGluZyBsaXN0IGluZm86
+IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
