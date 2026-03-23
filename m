@@ -4,102 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB2A2F483F8
-	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 20:56:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5205ED58CBF
+	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 20:56:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C339F3E6BD1
-	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 21:56:19 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 7AE783E6BD2
+	for <ltp@archiver.kernel.org>; Mon, 23 Mar 2026 21:56:36 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 851FD3E1712
- for <ltp@lists.linux.it>; Mon, 23 Mar 2026 21:56:04 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 9300A3E6B87
+ for <ltp@lists.linux.it>; Mon, 23 Mar 2026 21:56:06 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1565B100077A
- for <ltp@lists.linux.it>; Mon, 23 Mar 2026 21:56:02 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 95F3E100077A
+ for <ltp@lists.linux.it>; Mon, 23 Mar 2026 21:56:04 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 39F815BD63;
- Mon, 23 Mar 2026 20:56:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B54204D3A0;
+ Mon, 23 Mar 2026 20:56:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1774299362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=OHwWy4Cfi1aBaEjY/trhdt5HRdV9pgU7ipSMgqDneo4=;
- b=KC0wAeA471Nl6le0605sMLTv6nqqd/omW/vksZztnYLBBYzLU+9KZJrHb2LQMQZD7lr3Si
- APxhM05AeinxDFxOsnN9ALo39QofSwjo/sNEgm6j/Hkv5dxJA2ORf4vSPGMQLXp7shBor1
- 4ODU8mZgJtPg3/xR+eNJv7eeNnGq39I=
+ t=1774299363; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=cBvcdGGe374qcRsjFrUAQ/HCj6UfETO7GwilienH4Gg=;
+ b=xlMSD6oogxFkeRoMDqSuTfrowEmvl0iyJuiXlYsrkuRSlBzZTsSprfhESFAvxX08WmJSdB
+ wHgCBVftCcaJJL7tOAB8hknlaneZah/7bI2LfW/slKALOVkwYVN2uOBM3DGNJyeeaQC8Jt
+ k55tAP+aKz88NxV4ApPrSSJfbXZxvmM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1774299362;
+ s=susede2_ed25519; t=1774299363;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=OHwWy4Cfi1aBaEjY/trhdt5HRdV9pgU7ipSMgqDneo4=;
- b=r/b9/5Q/D8SYj24jmf+u3H8omzXR6tumNpN8lFB4Ci4dImfb4aG+fe7ZYA4SE4GRntmuM6
- 2dsnUSr5wMvUOaAw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0Lo7fyB2;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="ak/F/cIx"
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=cBvcdGGe374qcRsjFrUAQ/HCj6UfETO7GwilienH4Gg=;
+ b=+ced2wE3g0QdBmFymMLOj6SyEfYl/mZyySBDUb5N6/2P9e1o4m/1RG8Espqt8S6s1niRz9
+ prcmB4MY/mPYx3Cg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xlMSD6oo;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+ced2wE3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1774299361; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=OHwWy4Cfi1aBaEjY/trhdt5HRdV9pgU7ipSMgqDneo4=;
- b=0Lo7fyB2EYfbKVS8FGbmpfvvoT4X5LSB+j5aKc5fw9JGz6rgNx6US6QMVB/2kXI8T4xh3N
- lI+EtutPhuuWyliEnwZY82v5rxAMZhkRbeTiZZQeOmoJcHN6wESZAuFoErDDRvs+POg53f
- gJmWJIDNVPtQPuIH/cV8SlqNbwDfGfA=
+ t=1774299363; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=cBvcdGGe374qcRsjFrUAQ/HCj6UfETO7GwilienH4Gg=;
+ b=xlMSD6oogxFkeRoMDqSuTfrowEmvl0iyJuiXlYsrkuRSlBzZTsSprfhESFAvxX08WmJSdB
+ wHgCBVftCcaJJL7tOAB8hknlaneZah/7bI2LfW/slKALOVkwYVN2uOBM3DGNJyeeaQC8Jt
+ k55tAP+aKz88NxV4ApPrSSJfbXZxvmM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1774299361;
+ s=susede2_ed25519; t=1774299363;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=OHwWy4Cfi1aBaEjY/trhdt5HRdV9pgU7ipSMgqDneo4=;
- b=ak/F/cIxQLN0GFFkFT2cIa6xXA377IeT/1pGxTIjWoytCQ/XZTFNHd2xbf2a8Zi/hSxj1v
- k2Czt3qP46EqE8Dw==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=cBvcdGGe374qcRsjFrUAQ/HCj6UfETO7GwilienH4Gg=;
+ b=+ced2wE3g0QdBmFymMLOj6SyEfYl/mZyySBDUb5N6/2P9e1o4m/1RG8Espqt8S6s1niRz9
+ prcmB4MY/mPYx3Cg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0DFA643A8C;
- Mon, 23 Mar 2026 20:56:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CF1443A90;
+ Mon, 23 Mar 2026 20:56:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id BkZaAuGowWlqMgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 23 Mar 2026 20:56:01 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id eHthGeOowWlqMgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 23 Mar 2026 20:56:03 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon, 23 Mar 2026 21:55:42 +0100
-Message-ID: <20260323205547.19058-1-pvorel@suse.cz>
+Date: Mon, 23 Mar 2026 21:55:47 +0100
+Message-ID: <20260323205547.19058-6-pvorel@suse.cz>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260323205547.19058-1-pvorel@suse.cz>
+References: <20260323205547.19058-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
  R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:mid];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- FROM_EQ_ENVFROM(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
+ MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns, suse.cz:dkim, suse.cz:mid]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 39F815BD63
+ TO_DN_SOME(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:mid,suse.cz:email];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: B54204D3A0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/5] network: cleanup stress tests
+Subject: [LTP] [PATCH 5/5] ns-tools: Remove unused tools
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,47 +126,13 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Petr Vorel (5):
-  network: Remove outdated TCP stress tests
-  network: Remove outdated ICMP stress tests
-  network: Remove outdated UDP stress tests
-  network: Remove outdated route rmmod tests
-  ns-tools: Remove unused tools
+Remove most of the shell tools which were used by tests removed in
+previous 4 commits. Kept mostly C tools used by multicast and route
+tests. create_file is used by FTP and HTTP tests.
 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
  testcases/network/.gitignore                  |   5 -
- testcases/network/stress/icmp/Makefile        |   2 +-
- .../icmp/multi-diffip/00_Descriptions.txt     |  56 --
- .../network/stress/icmp/multi-diffip/Makefile |  29 -
- .../icmp/multi-diffip/icmp4-multi-diffip01    | 378 ----------
- .../icmp/multi-diffip/icmp4-multi-diffip02    |  66 --
- .../icmp/multi-diffip/icmp4-multi-diffip03    |  67 --
- .../icmp/multi-diffip/icmp4-multi-diffip04    |  66 --
- .../icmp/multi-diffip/icmp4-multi-diffip05    |  67 --
- .../icmp/multi-diffip/icmp4-multi-diffip06    |  67 --
- .../icmp/multi-diffip/icmp4-multi-diffip07    |  66 --
- .../icmp/multi-diffip/icmp6-multi-diffip01    |  56 --
- .../icmp/multi-diffip/icmp6-multi-diffip02    |  66 --
- .../icmp/multi-diffip/icmp6-multi-diffip03    |  67 --
- .../icmp/multi-diffip/icmp6-multi-diffip04    |  66 --
- .../icmp/multi-diffip/icmp6-multi-diffip05    |  67 --
- .../icmp/multi-diffip/icmp6-multi-diffip06    |  67 --
- .../icmp/multi-diffip/icmp6-multi-diffip07    |  66 --
- .../icmp/multi-diffnic/00_Descriptions.txt    |  56 --
- .../stress/icmp/multi-diffnic/Makefile        |  29 -
- .../icmp/multi-diffnic/icmp4-multi-diffnic01  | 301 --------
- .../icmp/multi-diffnic/icmp4-multi-diffnic02  |  66 --
- .../icmp/multi-diffnic/icmp4-multi-diffnic03  |  67 --
- .../icmp/multi-diffnic/icmp4-multi-diffnic04  |  66 --
- .../icmp/multi-diffnic/icmp4-multi-diffnic05  |  67 --
- .../icmp/multi-diffnic/icmp4-multi-diffnic06  |  67 --
- .../icmp/multi-diffnic/icmp4-multi-diffnic07  |  66 --
- .../icmp/multi-diffnic/icmp6-multi-diffnic01  |  56 --
- .../icmp/multi-diffnic/icmp6-multi-diffnic02  |  66 --
- .../icmp/multi-diffnic/icmp6-multi-diffnic03  |  67 --
- .../icmp/multi-diffnic/icmp6-multi-diffnic04  |  66 --
- .../icmp/multi-diffnic/icmp6-multi-diffnic05  |  67 --
- .../icmp/multi-diffnic/icmp6-multi-diffnic06  |  67 --
- .../icmp/multi-diffnic/icmp6-multi-diffnic07  |  66 --
  .../stress/ns-tools/00_Descriptions.txt       |  68 --
  testcases/network/stress/ns-tools/Makefile    |   7 +-
  .../network/stress/ns-tools/add_ipv6addr      |  93 ---
@@ -180,438 +155,7 @@ Petr Vorel (5):
  .../network/stress/ns-tools/ns-udpserver.c    | 375 ----------
  .../network/stress/ns-tools/output_ipsec_conf | 172 -----
  .../network/stress/ns-tools/set_ipv4addr      |  95 ---
- .../network/stress/route/00_Descriptions.txt  |   6 -
- testcases/network/stress/route/route4-rmmod   | 283 --------
- testcases/network/stress/route/route6-rmmod   | 279 --------
- testcases/network/stress/tcp/Makefile         |   5 +-
- .../tcp/multi-diffip/00_Descriptions.txt      | 125 ----
- .../network/stress/tcp/multi-diffip/Makefile  |  29 -
- .../tcp/multi-diffip/tcp4-multi-diffip01      | 450 ------------
- .../tcp/multi-diffip/tcp4-multi-diffip02      |  70 --
- .../tcp/multi-diffip/tcp4-multi-diffip03      |  70 --
- .../tcp/multi-diffip/tcp4-multi-diffip04      |  70 --
- .../tcp/multi-diffip/tcp4-multi-diffip05      |  70 --
- .../tcp/multi-diffip/tcp4-multi-diffip06      |  70 --
- .../tcp/multi-diffip/tcp4-multi-diffip07      |  70 --
- .../tcp/multi-diffip/tcp4-multi-diffip08      |  64 --
- .../tcp/multi-diffip/tcp4-multi-diffip09      |  70 --
- .../tcp/multi-diffip/tcp4-multi-diffip10      |  70 --
- .../tcp/multi-diffip/tcp4-multi-diffip11      |  70 --
- .../tcp/multi-diffip/tcp4-multi-diffip12      |  70 --
- .../tcp/multi-diffip/tcp4-multi-diffip13      |  70 --
- .../tcp/multi-diffip/tcp4-multi-diffip14      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip01      |  64 --
- .../tcp/multi-diffip/tcp6-multi-diffip02      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip03      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip04      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip05      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip06      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip07      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip08      |  64 --
- .../tcp/multi-diffip/tcp6-multi-diffip09      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip10      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip11      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip12      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip13      |  70 --
- .../tcp/multi-diffip/tcp6-multi-diffip14      |  70 --
- .../tcp/multi-diffnic/00_Descriptions.txt     | 125 ----
- .../network/stress/tcp/multi-diffnic/Makefile |  29 -
- .../tcp/multi-diffnic/tcp4-multi-diffnic01    | 383 -----------
- .../tcp/multi-diffnic/tcp4-multi-diffnic02    |  70 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic03    |  70 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic04    |  70 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic05    |  70 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic06    |  70 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic07    |  70 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic08    |  64 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic09    |  70 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic10    |  70 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic11    |  70 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic12    |  70 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic13    |  70 --
- .../tcp/multi-diffnic/tcp4-multi-diffnic14    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic01    |  64 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic02    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic03    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic04    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic05    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic06    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic07    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic08    |  64 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic09    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic10    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic11    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic12    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic13    |  70 --
- .../tcp/multi-diffnic/tcp6-multi-diffnic14    |  70 --
- .../tcp/multi-diffport/00_Descriptions.txt    | 125 ----
- .../stress/tcp/multi-diffport/Makefile        |  29 -
- .../tcp/multi-diffport/tcp4-multi-diffport01  | 382 ----------
- .../tcp/multi-diffport/tcp4-multi-diffport02  |  70 --
- .../tcp/multi-diffport/tcp4-multi-diffport03  |  70 --
- .../tcp/multi-diffport/tcp4-multi-diffport04  |  70 --
- .../tcp/multi-diffport/tcp4-multi-diffport05  |  70 --
- .../tcp/multi-diffport/tcp4-multi-diffport06  |  70 --
- .../tcp/multi-diffport/tcp4-multi-diffport07  |  70 --
- .../tcp/multi-diffport/tcp4-multi-diffport08  |  64 --
- .../tcp/multi-diffport/tcp4-multi-diffport09  |  70 --
- .../tcp/multi-diffport/tcp4-multi-diffport10  |  70 --
- .../tcp/multi-diffport/tcp4-multi-diffport11  |  70 --
- .../tcp/multi-diffport/tcp4-multi-diffport12  |  70 --
- .../tcp/multi-diffport/tcp4-multi-diffport13  |  70 --
- .../tcp/multi-diffport/tcp4-multi-diffport14  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport01  |  64 --
- .../tcp/multi-diffport/tcp6-multi-diffport02  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport03  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport04  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport05  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport06  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport07  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport08  |  64 --
- .../tcp/multi-diffport/tcp6-multi-diffport09  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport10  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport11  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport12  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport13  |  70 --
- .../tcp/multi-diffport/tcp6-multi-diffport14  |  70 --
- .../tcp/multi-sameport/00_Descriptions.txt    | 125 ----
- .../stress/tcp/multi-sameport/Makefile        |  29 -
- .../tcp/multi-sameport/tcp4-multi-sameport01  | 381 ----------
- .../tcp/multi-sameport/tcp4-multi-sameport02  |  70 --
- .../tcp/multi-sameport/tcp4-multi-sameport03  |  70 --
- .../tcp/multi-sameport/tcp4-multi-sameport04  |  70 --
- .../tcp/multi-sameport/tcp4-multi-sameport05  |  70 --
- .../tcp/multi-sameport/tcp4-multi-sameport06  |  70 --
- .../tcp/multi-sameport/tcp4-multi-sameport07  |  70 --
- .../tcp/multi-sameport/tcp4-multi-sameport08  |  64 --
- .../tcp/multi-sameport/tcp4-multi-sameport09  |  70 --
- .../tcp/multi-sameport/tcp4-multi-sameport10  |  70 --
- .../tcp/multi-sameport/tcp4-multi-sameport11  |  70 --
- .../tcp/multi-sameport/tcp4-multi-sameport12  |  70 --
- .../tcp/multi-sameport/tcp4-multi-sameport13  |  70 --
- .../tcp/multi-sameport/tcp4-multi-sameport14  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport01  |  64 --
- .../tcp/multi-sameport/tcp6-multi-sameport02  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport03  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport04  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport05  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport06  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport07  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport08  |  64 --
- .../tcp/multi-sameport/tcp6-multi-sameport09  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport10  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport11  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport12  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport13  |  70 --
- .../tcp/multi-sameport/tcp6-multi-sameport14  |  70 --
- .../stress/tcp/uni-basic/00_Descriptions.txt  | 124 ----
- .../network/stress/tcp/uni-basic/Makefile     |  29 -
- .../stress/tcp/uni-basic/tcp4-uni-basic01     | 529 --------------
- .../stress/tcp/uni-basic/tcp4-uni-basic02     |  67 --
- .../stress/tcp/uni-basic/tcp4-uni-basic03     |  67 --
- .../stress/tcp/uni-basic/tcp4-uni-basic04     |  67 --
- .../stress/tcp/uni-basic/tcp4-uni-basic05     |  67 --
- .../stress/tcp/uni-basic/tcp4-uni-basic06     |  67 --
- .../stress/tcp/uni-basic/tcp4-uni-basic07     |  67 --
- .../stress/tcp/uni-basic/tcp4-uni-basic08     |  61 --
- .../stress/tcp/uni-basic/tcp4-uni-basic09     |  68 --
- .../stress/tcp/uni-basic/tcp4-uni-basic10     |  68 --
- .../stress/tcp/uni-basic/tcp4-uni-basic11     |  68 --
- .../stress/tcp/uni-basic/tcp4-uni-basic12     |  68 --
- .../stress/tcp/uni-basic/tcp4-uni-basic13     |  68 --
- .../stress/tcp/uni-basic/tcp4-uni-basic14     |  68 --
- .../stress/tcp/uni-basic/tcp6-uni-basic01     |  61 --
- .../stress/tcp/uni-basic/tcp6-uni-basic02     |  68 --
- .../stress/tcp/uni-basic/tcp6-uni-basic03     |  68 --
- .../stress/tcp/uni-basic/tcp6-uni-basic04     |  68 --
- .../stress/tcp/uni-basic/tcp6-uni-basic05     |  68 --
- .../stress/tcp/uni-basic/tcp6-uni-basic06     |  68 --
- .../stress/tcp/uni-basic/tcp6-uni-basic07     |  68 --
- .../stress/tcp/uni-basic/tcp6-uni-basic08     |  62 --
- .../stress/tcp/uni-basic/tcp6-uni-basic09     |  69 --
- .../stress/tcp/uni-basic/tcp6-uni-basic10     |  69 --
- .../stress/tcp/uni-basic/tcp6-uni-basic11     |  69 --
- .../stress/tcp/uni-basic/tcp6-uni-basic12     |  69 --
- .../stress/tcp/uni-basic/tcp6-uni-basic13     |  69 --
- .../stress/tcp/uni-basic/tcp6-uni-basic14     |  69 --
- .../tcp/uni-dsackoff/00_Descriptions.txt      | 126 ----
- .../network/stress/tcp/uni-dsackoff/Makefile  |  29 -
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff01      |  81 ---
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff02      |  67 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff03      |  67 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff04      |  67 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff05      |  67 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff06      |  67 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff07      |  67 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff08      |  61 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff09      |  68 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff10      |  68 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff11      |  68 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff12      |  68 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff13      |  68 --
- .../tcp/uni-dsackoff/tcp4-uni-dsackoff14      |  68 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff01      |  61 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff02      |  68 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff03      |  68 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff04      |  68 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff05      |  68 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff06      |  68 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff07      |  68 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff08      |  62 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff09      |  69 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff10      |  69 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff11      |  69 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff12      |  69 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff13      |  69 --
- .../tcp/uni-dsackoff/tcp6-uni-dsackoff14      |  69 --
- .../tcp/uni-pktlossdup/00_Descriptions.txt    | 125 ----
- .../stress/tcp/uni-pktlossdup/Makefile        |  29 -
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup01  |  78 ---
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup02  |  67 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup03  |  67 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup04  |  67 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup05  |  67 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup06  |  67 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup07  |  67 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup08  |  61 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup09  |  68 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup10  |  68 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup11  |  68 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup12  |  68 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup13  |  68 --
- .../tcp/uni-pktlossdup/tcp4-uni-pktlossdup14  |  68 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup01  |  61 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup02  |  68 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup03  |  68 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup04  |  68 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup05  |  68 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup06  |  68 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup07  |  68 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup08  |  62 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup09  |  69 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup10  |  69 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup11  |  69 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup12  |  69 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup13  |  69 --
- .../tcp/uni-pktlossdup/tcp6-uni-pktlossdup14  |  69 --
- .../tcp/uni-sackoff/00_Descriptions.txt       | 126 ----
- .../network/stress/tcp/uni-sackoff/Makefile   |  29 -
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff01 |  84 ---
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff02 |  67 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff03 |  67 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff04 |  67 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff05 |  67 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff06 |  67 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff07 |  67 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff08 |  61 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff09 |  68 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff10 |  68 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff11 |  68 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff12 |  68 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff13 |  68 --
- .../stress/tcp/uni-sackoff/tcp4-uni-sackoff14 |  68 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff01 |  61 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff02 |  68 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff03 |  68 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff04 |  68 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff05 |  68 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff06 |  68 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff07 |  68 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff08 |  62 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff09 |  69 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff10 |  69 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff11 |  69 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff12 |  69 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff13 |  69 --
- .../stress/tcp/uni-sackoff/tcp6-uni-sackoff14 |  69 --
- .../tcp/uni-smallsend/00_Descriptions.txt     | 124 ----
- .../network/stress/tcp/uni-smallsend/Makefile |  29 -
- .../tcp/uni-smallsend/tcp4-uni-smallsend01    |  75 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend02    |  67 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend03    |  67 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend04    |  67 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend05    |  67 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend06    |  67 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend07    |  67 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend08    |  62 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend09    |  68 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend10    |  68 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend11    |  68 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend12    |  68 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend13    |  68 --
- .../tcp/uni-smallsend/tcp4-uni-smallsend14    |  68 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend01    |  61 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend02    |  68 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend03    |  68 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend04    |  68 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend05    |  68 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend06    |  68 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend07    |  68 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend08    |  62 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend09    |  69 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend10    |  69 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend11    |  69 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend12    |  69 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend13    |  69 --
- .../tcp/uni-smallsend/tcp6-uni-smallsend14    |  69 --
- .../stress/tcp/uni-tso/00_Descriptions.txt    | 125 ----
- testcases/network/stress/tcp/uni-tso/Makefile |  29 -
- .../network/stress/tcp/uni-tso/tcp4-uni-tso01 |  78 ---
- .../network/stress/tcp/uni-tso/tcp4-uni-tso02 |  67 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso03 |  67 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso04 |  67 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso05 |  67 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso06 |  67 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso07 |  67 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso08 |  61 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso09 |  68 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso10 |  68 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso11 |  68 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso12 |  68 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso13 |  68 --
- .../network/stress/tcp/uni-tso/tcp4-uni-tso14 |  68 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso01 |  61 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso02 |  68 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso03 |  68 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso04 |  68 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso05 |  68 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso06 |  68 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso07 |  68 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso08 |  62 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso09 |  69 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso10 |  69 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso11 |  69 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso12 |  69 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso13 |  69 --
- .../network/stress/tcp/uni-tso/tcp6-uni-tso14 |  69 --
- .../tcp/uni-winscale/00_Descriptions.txt      | 124 ----
- .../network/stress/tcp/uni-winscale/Makefile  |  30 -
- .../tcp/uni-winscale/tcp4-uni-winscale01      |  75 --
- .../tcp/uni-winscale/tcp4-uni-winscale02      |  67 --
- .../tcp/uni-winscale/tcp4-uni-winscale03      |  67 --
- .../tcp/uni-winscale/tcp4-uni-winscale04      |  67 --
- .../tcp/uni-winscale/tcp4-uni-winscale05      |  67 --
- .../tcp/uni-winscale/tcp4-uni-winscale06      |  68 --
- .../tcp/uni-winscale/tcp4-uni-winscale07      |  67 --
- .../tcp/uni-winscale/tcp4-uni-winscale08      |  61 --
- .../tcp/uni-winscale/tcp4-uni-winscale09      |  68 --
- .../tcp/uni-winscale/tcp4-uni-winscale10      |  68 --
- .../tcp/uni-winscale/tcp4-uni-winscale11      |  68 --
- .../tcp/uni-winscale/tcp4-uni-winscale12      |  68 --
- .../tcp/uni-winscale/tcp4-uni-winscale13      |  68 --
- .../tcp/uni-winscale/tcp4-uni-winscale14      |  68 --
- .../tcp/uni-winscale/tcp6-uni-winscale01      |  61 --
- .../tcp/uni-winscale/tcp6-uni-winscale02      |  68 --
- .../tcp/uni-winscale/tcp6-uni-winscale03      |  68 --
- .../tcp/uni-winscale/tcp6-uni-winscale04      |  68 --
- .../tcp/uni-winscale/tcp6-uni-winscale05      |  68 --
- .../tcp/uni-winscale/tcp6-uni-winscale06      |  68 --
- .../tcp/uni-winscale/tcp6-uni-winscale07      |  68 --
- .../tcp/uni-winscale/tcp6-uni-winscale08      |  62 --
- .../tcp/uni-winscale/tcp6-uni-winscale09      |  69 --
- .../tcp/uni-winscale/tcp6-uni-winscale10      |  69 --
- .../tcp/uni-winscale/tcp6-uni-winscale11      |  69 --
- .../tcp/uni-winscale/tcp6-uni-winscale12      |  69 --
- .../tcp/uni-winscale/tcp6-uni-winscale13      |  69 --
- .../tcp/uni-winscale/tcp6-uni-winscale14      |  69 --
- testcases/network/stress/udp/Makefile         |   5 +-
- .../udp/multi-diffip/00_Descriptions.txt      |  56 --
- .../network/stress/udp/multi-diffip/Makefile  |  29 -
- .../udp/multi-diffip/udp4-multi-diffip01      | 418 -----------
- .../udp/multi-diffip/udp4-multi-diffip02      |  66 --
- .../udp/multi-diffip/udp4-multi-diffip03      |  67 --
- .../udp/multi-diffip/udp4-multi-diffip04      |  66 --
- .../udp/multi-diffip/udp4-multi-diffip05      |  67 --
- .../udp/multi-diffip/udp4-multi-diffip06      |  67 --
- .../udp/multi-diffip/udp4-multi-diffip07      |  66 --
- .../udp/multi-diffip/udp6-multi-diffip01      |  56 --
- .../udp/multi-diffip/udp6-multi-diffip02      |  66 --
- .../udp/multi-diffip/udp6-multi-diffip03      |  67 --
- .../udp/multi-diffip/udp6-multi-diffip04      |  66 --
- .../udp/multi-diffip/udp6-multi-diffip05      |  67 --
- .../udp/multi-diffip/udp6-multi-diffip06      |  67 --
- .../udp/multi-diffip/udp6-multi-diffip07      |  66 --
- .../udp/multi-diffnic/00_Descriptions.txt     |  56 --
- .../network/stress/udp/multi-diffnic/Makefile |  29 -
- .../udp/multi-diffnic/udp4-multi-diffnic01    | 350 ----------
- .../udp/multi-diffnic/udp4-multi-diffnic02    |  66 --
- .../udp/multi-diffnic/udp4-multi-diffnic03    |  67 --
- .../udp/multi-diffnic/udp4-multi-diffnic04    |  66 --
- .../udp/multi-diffnic/udp4-multi-diffnic05    |  67 --
- .../udp/multi-diffnic/udp4-multi-diffnic06    |  67 --
- .../udp/multi-diffnic/udp4-multi-diffnic07    |  66 --
- .../udp/multi-diffnic/udp6-multi-diffnic01    |  56 --
- .../udp/multi-diffnic/udp6-multi-diffnic02    |  66 --
- .../udp/multi-diffnic/udp6-multi-diffnic03    |  67 --
- .../udp/multi-diffnic/udp6-multi-diffnic04    |  66 --
- .../udp/multi-diffnic/udp6-multi-diffnic05    |  67 --
- .../udp/multi-diffnic/udp6-multi-diffnic06    |  67 --
- .../udp/multi-diffnic/udp6-multi-diffnic07    |  66 --
- .../udp/multi-diffport/00_Descriptions.txt    |  56 --
- .../stress/udp/multi-diffport/Makefile        |  29 -
- .../udp/multi-diffport/udp4-multi-diffport01  | 343 ---------
- .../udp/multi-diffport/udp4-multi-diffport02  |  66 --
- .../udp/multi-diffport/udp4-multi-diffport03  |  67 --
- .../udp/multi-diffport/udp4-multi-diffport04  |  66 --
- .../udp/multi-diffport/udp4-multi-diffport05  |  67 --
- .../udp/multi-diffport/udp4-multi-diffport06  |  67 --
- .../udp/multi-diffport/udp4-multi-diffport07  |  66 --
- .../udp/multi-diffport/udp6-multi-diffport01  |  56 --
- .../udp/multi-diffport/udp6-multi-diffport02  |  66 --
- .../udp/multi-diffport/udp6-multi-diffport03  |  67 --
- .../udp/multi-diffport/udp6-multi-diffport04  |  66 --
- .../udp/multi-diffport/udp6-multi-diffport05  |  67 --
- .../udp/multi-diffport/udp6-multi-diffport06  |  67 --
- .../udp/multi-diffport/udp6-multi-diffport07  |  66 --
- .../stress/udp/uni-basic/00_Descriptions.txt  |  55 --
- .../network/stress/udp/uni-basic/Makefile     |  29 -
- .../stress/udp/uni-basic/udp4-uni-basic01     | 331 ---------
- .../stress/udp/uni-basic/udp4-uni-basic02     |  66 --
- .../stress/udp/uni-basic/udp4-uni-basic03     |  67 --
- .../stress/udp/uni-basic/udp4-uni-basic04     |  66 --
- .../stress/udp/uni-basic/udp4-uni-basic05     |  67 --
- .../stress/udp/uni-basic/udp4-uni-basic06     |  67 --
- .../stress/udp/uni-basic/udp4-uni-basic07     |  66 --
- .../stress/udp/uni-basic/udp6-uni-basic01     |  56 --
- .../stress/udp/uni-basic/udp6-uni-basic02     |  66 --
- .../stress/udp/uni-basic/udp6-uni-basic03     |  67 --
- .../stress/udp/uni-basic/udp6-uni-basic04     |  66 --
- .../stress/udp/uni-basic/udp6-uni-basic05     |  67 --
- .../stress/udp/uni-basic/udp6-uni-basic06     |  67 --
- .../stress/udp/uni-basic/udp6-uni-basic07     |  66 --
- 455 files changed, 6 insertions(+), 36713 deletions(-)
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/Makefile
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip01
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip02
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip03
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip04
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip05
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip06
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip07
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip01
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip02
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip03
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip04
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip05
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip06
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip07
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/Makefile
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic01
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic02
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic03
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic04
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic05
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic06
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic07
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic01
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic02
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic03
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic04
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic05
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic06
- delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic07
+ 23 files changed, 1 insertion(+), 3892 deletions(-)
  delete mode 100644 testcases/network/stress/ns-tools/add_ipv6addr
  delete mode 100644 testcases/network/stress/ns-tools/check_envval
  delete mode 100644 testcases/network/stress/ns-tools/check_icmpv4_connectivity
@@ -632,403 +176,4067 @@ Petr Vorel (5):
  delete mode 100644 testcases/network/stress/ns-tools/ns-udpserver.c
  delete mode 100644 testcases/network/stress/ns-tools/output_ipsec_conf
  delete mode 100644 testcases/network/stress/ns-tools/set_ipv4addr
- delete mode 100644 testcases/network/stress/route/route4-rmmod
- delete mode 100644 testcases/network/stress/route/route6-rmmod
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/Makefile
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip01
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip02
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip03
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip04
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip05
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip06
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip07
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip08
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip09
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip10
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip11
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip12
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip13
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp4-multi-diffip14
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip01
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip02
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip03
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip04
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip05
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip06
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip07
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip08
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip09
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip10
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip11
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip12
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip13
- delete mode 100644 testcases/network/stress/tcp/multi-diffip/tcp6-multi-diffip14
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/Makefile
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic01
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic02
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic03
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic04
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic05
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic06
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic07
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic08
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic09
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic10
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic11
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic12
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic13
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp4-multi-diffnic14
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic01
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic02
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic03
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic04
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic05
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic06
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic07
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic08
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic09
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic10
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic11
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic12
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic13
- delete mode 100644 testcases/network/stress/tcp/multi-diffnic/tcp6-multi-diffnic14
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/Makefile
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport01
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport02
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport03
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport04
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport05
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport06
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport07
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport08
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport09
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport10
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport11
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport12
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport13
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp4-multi-diffport14
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport01
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport02
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport03
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport04
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport05
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport06
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport07
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport08
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport09
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport10
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport11
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport12
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport13
- delete mode 100644 testcases/network/stress/tcp/multi-diffport/tcp6-multi-diffport14
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/Makefile
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport01
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport02
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport03
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport04
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport05
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport06
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport07
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport08
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport09
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport10
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport11
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport12
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport13
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp4-multi-sameport14
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport01
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport02
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport03
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport04
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport05
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport06
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport07
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport08
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport09
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport10
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport11
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport12
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport13
- delete mode 100644 testcases/network/stress/tcp/multi-sameport/tcp6-multi-sameport14
- delete mode 100644 testcases/network/stress/tcp/uni-basic/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/tcp/uni-basic/Makefile
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic01
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic02
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic03
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic04
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic05
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic06
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic07
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic08
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic09
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic10
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic11
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic12
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic13
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp4-uni-basic14
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic01
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic02
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic03
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic04
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic05
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic06
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic07
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic08
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic09
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic10
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic11
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic12
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic13
- delete mode 100644 testcases/network/stress/tcp/uni-basic/tcp6-uni-basic14
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/Makefile
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff01
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff02
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff03
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff04
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff05
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff06
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff07
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff08
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff09
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff10
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff11
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff12
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff13
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp4-uni-dsackoff14
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff01
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff02
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff03
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff04
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff05
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff06
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff07
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff08
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff09
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff10
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff11
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff12
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff13
- delete mode 100644 testcases/network/stress/tcp/uni-dsackoff/tcp6-uni-dsackoff14
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/Makefile
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup01
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup02
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup03
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup04
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup05
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup06
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup07
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup08
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup09
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup10
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup11
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup12
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup13
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp4-uni-pktlossdup14
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup01
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup02
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup03
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup04
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup05
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup06
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup07
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup08
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup09
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup10
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup11
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup12
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup13
- delete mode 100644 testcases/network/stress/tcp/uni-pktlossdup/tcp6-uni-pktlossdup14
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/Makefile
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff01
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff02
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff03
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff04
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff05
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff06
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff07
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff08
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff09
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff10
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff11
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff12
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff13
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp4-uni-sackoff14
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff01
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff02
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff03
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff04
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff05
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff06
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff07
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff08
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff09
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff10
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff11
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff12
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff13
- delete mode 100644 testcases/network/stress/tcp/uni-sackoff/tcp6-uni-sackoff14
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/Makefile
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend01
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend02
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend03
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend04
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend05
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend06
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend07
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend08
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend09
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend10
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend11
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend12
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend13
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp4-uni-smallsend14
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend01
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend02
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend03
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend04
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend05
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend06
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend07
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend08
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend09
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend10
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend11
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend12
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend13
- delete mode 100644 testcases/network/stress/tcp/uni-smallsend/tcp6-uni-smallsend14
- delete mode 100644 testcases/network/stress/tcp/uni-tso/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/tcp/uni-tso/Makefile
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso01
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso02
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso03
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso04
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso05
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso06
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso07
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso08
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso09
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso10
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso11
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso12
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso13
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp4-uni-tso14
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso01
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso02
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso03
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso04
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso05
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso06
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso07
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso08
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso09
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso10
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso11
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso12
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso13
- delete mode 100644 testcases/network/stress/tcp/uni-tso/tcp6-uni-tso14
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/Makefile
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale01
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale02
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale03
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale04
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale05
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale06
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale07
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale08
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale09
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale10
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale11
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale12
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale13
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp4-uni-winscale14
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale01
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale02
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale03
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale04
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale05
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale06
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale07
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale08
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale09
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale10
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale11
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale12
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale13
- delete mode 100644 testcases/network/stress/tcp/uni-winscale/tcp6-uni-winscale14
- delete mode 100644 testcases/network/stress/udp/multi-diffip/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/udp/multi-diffip/Makefile
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp4-multi-diffip01
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp4-multi-diffip02
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp4-multi-diffip03
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp4-multi-diffip04
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp4-multi-diffip05
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp4-multi-diffip06
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp4-multi-diffip07
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp6-multi-diffip01
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp6-multi-diffip02
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp6-multi-diffip03
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp6-multi-diffip04
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp6-multi-diffip05
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp6-multi-diffip06
- delete mode 100644 testcases/network/stress/udp/multi-diffip/udp6-multi-diffip07
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/Makefile
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp4-multi-diffnic01
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp4-multi-diffnic02
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp4-multi-diffnic03
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp4-multi-diffnic04
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp4-multi-diffnic05
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp4-multi-diffnic06
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp4-multi-diffnic07
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp6-multi-diffnic01
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp6-multi-diffnic02
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp6-multi-diffnic03
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp6-multi-diffnic04
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp6-multi-diffnic05
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp6-multi-diffnic06
- delete mode 100644 testcases/network/stress/udp/multi-diffnic/udp6-multi-diffnic07
- delete mode 100644 testcases/network/stress/udp/multi-diffport/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/udp/multi-diffport/Makefile
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp4-multi-diffport01
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp4-multi-diffport02
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp4-multi-diffport03
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp4-multi-diffport04
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp4-multi-diffport05
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp4-multi-diffport06
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp4-multi-diffport07
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp6-multi-diffport01
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp6-multi-diffport02
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp6-multi-diffport03
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp6-multi-diffport04
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp6-multi-diffport05
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp6-multi-diffport06
- delete mode 100644 testcases/network/stress/udp/multi-diffport/udp6-multi-diffport07
- delete mode 100644 testcases/network/stress/udp/uni-basic/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/udp/uni-basic/Makefile
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp4-uni-basic01
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp4-uni-basic02
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp4-uni-basic03
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp4-uni-basic04
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp4-uni-basic05
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp4-uni-basic06
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp4-uni-basic07
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp6-uni-basic01
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp6-uni-basic02
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp6-uni-basic03
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp6-uni-basic04
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp6-uni-basic05
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp6-uni-basic06
- delete mode 100644 testcases/network/stress/udp/uni-basic/udp6-uni-basic07
 
+diff --git a/testcases/network/.gitignore b/testcases/network/.gitignore
+index c65113960a..00b73161ca 100644
+--- a/testcases/network/.gitignore
++++ b/testcases/network/.gitignore
+@@ -26,16 +26,11 @@
+ /sockets/ltpServer
+ /sockets/vsock01
+ /stress/ns-tools/ns-icmp_redirector
+-/stress/ns-tools/ns-icmpv4_sender
+ /stress/ns-tools/ns-icmpv6_sender
+ /stress/ns-tools/ns-igmp_querier
+ /stress/ns-tools/ns-mcast_join
+ /stress/ns-tools/ns-mcast_receiver
+-/stress/ns-tools/ns-tcpclient
+-/stress/ns-tools/ns-tcpserver
+-/stress/ns-tools/ns-udpclient
+ /stress/ns-tools/ns-udpsender
+-/stress/ns-tools/ns-udpserver
+ /tcp_cmds/echo/createfile
+ /tcp_cmds/echo/echoes
+ /tcp_cmds/echo/echoes6
+diff --git a/testcases/network/stress/ns-tools/00_Descriptions.txt b/testcases/network/stress/ns-tools/00_Descriptions.txt
+index ab9c3ce8eb..56a221b714 100644
+--- a/testcases/network/stress/ns-tools/00_Descriptions.txt
++++ b/testcases/network/stress/ns-tools/00_Descriptions.txt
+@@ -1,83 +1,15 @@
+ This directory stores the utilities for the network stress tests
+ 
+ ====
+-
+-check_envval
+-	Check the environment variable for the network stress test
+-
+-get_ifname
+-	Get the interface name which belongs to the specified test link
+-
+-initialize_if
+-	Initialize the interface which belongs to the specified test link
+-
+-set_ipv4addr
+-	Set an IPv4 address to the interface which belongs to the specified
+-	test link
+-
+-add_ipv6addr
+-	Add an IPv6 address to the interface which belongs to the specified
+-	test link
+-
+-check_icmpv4_connectivity
+-	Check the ICMPv4 connectivity from a interface to an IPv4 address
+-
+-check_icmpv6_connectivity
+-	Check the ICMPv6 connectivity from a interface to a IPv6 address
+-
+-check_netem
+-	Check the remote host has netem functionality
+-
+-check_setkey
+-	Check the local/remote host has setkey command
+-
+ create_file
+ 	Create a file in the specified size
+ 
+-find_portbundle
+-	Find a bundle of consecutive ports
+-
+-killall_icmp_traffic
+-	Kill all of the icmp traffic utilities (ping or ping6)
+-
+-killall_udp_traffic
+-	Kill all of the udp traffic utilities (ns-udpserver, ns-udpclient)
+-
+-killall_tcp_traffic
+-	Kill all of the tcp traffic utilities (ns-tcpserver, ns-tcpclient)
+-
+-output_ipsec_conf
+-	Output IPsec configuration
+-
+-ns-echoclient
+-	Send various kind of echo request
+-
+-ns-udpserver (binary)
+-	UDP traffic server.
+-	Receive UDP datagram from a client, then send it to the client
+-
+-ns-udpclient (binary)
+-	UDP traffic client
+-	Send UDP datagram to a server, then receive datagram from it
+-
+-ns-tcpserver (binary)
+-	TCP traffic server.
+-	Accept connections from the clients, then send tcp segments to it
+-
+-ns-tcpclient (binary)
+-	TCP traffic client
+-	Request connections to the server, then receive tcp segments
+-
+ ns-icmp_redirector (binary)
+ 	ICMPv4/ICMPv6 redirect message sender
+ 	The host under test assume the host where this utility run is a
+ 	gateway. When the utility receives the packet from the host
+ 	under test. This utility reply ICMP redirect message.
+ 
+-ns-icmpv4_sender (binary)
+-	ICMPv4 echo request sender.
+-	This utility is also able to set illegal information in the IP header
+-
+ ns-icmpv6_sender (binary)
+ 	ICMPv6 message (Echo request / MLDv2 query) sender.
+ 	This utility is also able to set illegal information in the IP header
+diff --git a/testcases/network/stress/ns-tools/Makefile b/testcases/network/stress/ns-tools/Makefile
+index 5f4d17343c..b20b11b04c 100644
+--- a/testcases/network/stress/ns-tools/Makefile
++++ b/testcases/network/stress/ns-tools/Makefile
+@@ -6,12 +6,7 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-INSTALL_TARGETS		:= check_envval get_ifname initialize_if set_ipv4addr \
+-			   add_ipv6addr check_icmpv4_connectivity \
+-			   check_icmpv6_connectivity check_netem check_setkey \
+-			   create_file find_portbundle killall_icmp_traffic \
+-			   killall_tcp_traffic killall_udp_traffic output_ipsec_conf \
+-			   ns-echoclient tst_net_stress.sh
++INSTALL_TARGETS		:= create_file tst_net_stress.sh
+ 
+ FILTER_OUT_MAKE_TARGETS	:= ns-common
+ 
+diff --git a/testcases/network/stress/ns-tools/add_ipv6addr b/testcases/network/stress/ns-tools/add_ipv6addr
+deleted file mode 100644
+index 98e0e42e0b..0000000000
+--- a/testcases/network/stress/ns-tools/add_ipv6addr
++++ /dev/null
+@@ -1,93 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   add_ipv6addr
+-#
+-# Description:
+-#   Add an IPv6 address to the interface which belongs to the specified
+-#   test link
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# Arguments:
+-#   $1: target host to add the IPv6 address
+-#	  lhost - local host / rhost - remote host
+-#   $2: number of the test link
+-#   $3: network portion of the IPv6 address
+-#   $4: host portion of the IPv6 address
+-#
+-# Exit Value:
+-#    0: Exit normally
+-#   >0: Exit abnormally
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-# Check the environmanet variable for the test
+-. check_envval || exit 1
+-
+-# Arguments
+-if [ $# -ne 4 ]; then
+-    echo "Usage: $0 host_type link_number network_portion host_portion" >&2
+-    exit 1
+-fi
+-host_type=$1
+-link_num=$2
+-network_part=$3
+-host_part=$4
+-
+-# Check the host type
+-if [ $host_type != lhost -a $host_type != rhost ]; then
+-    echo "$0: 1st argumet is lhost or rhost" >&2
+-    exit 1
+-fi
+-
+-# Define IPv6 address and netmask
+-addr="${network_part}:${host_part}"
+-netmask=64
+-
+-# Assign IPv6 address to the interface belongs the nth Test Link
+-ifname=`get_ifname $host_type $link_num` || exit 1
+-
+-if [ $host_type = lhost ]; then
+-    ifconfig ${ifname} up ; ifconfig ${ifname} add ${addr}/${netmask}
+-    ret=$?
+-else
+-    ret=`$LTP_RSH $RHOST '( PATH=/sbin:/usr/sbin:$PATH ; ifconfig '${ifname}' up && ifconfig '${ifname}' add '${addr}/${netmask}' ) >/dev/null 2>&1; echo $?'`
+-fi
+-
+-if [ $ret -ne 0 ]; then
+-    echo "Cannot assign $addr to $ifname" >&2
+-    exit 1
+-fi
+diff --git a/testcases/network/stress/ns-tools/check_envval b/testcases/network/stress/ns-tools/check_envval
+deleted file mode 100644
+index e3eda5b0dc..0000000000
+--- a/testcases/network/stress/ns-tools/check_envval
++++ /dev/null
+@@ -1,88 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   check_envval
+-#
+-# Description:
+-#   Check the environment variable for the network stress test
+-#
+-# Returns:
+-#   0: All necessary environment variables are set.
+-#   1: Some variables are not set
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-. cmdlib.sh
+-
+-exists cut locale rsh
+-
+-# Unset the locale cocerned variables
+-for env in `locale | cut -f 1 -d '='` ; do
+-    unset $env
+-done
+-unset LANGUAGE
+-
+-# RHOST
+-RHOST=${RHOST:=127.0.0.1}
+-if [ x${RHOST} = x ]; then
+-    tst_resm TBROK "Environment variable RHOST is not set."
+-    exit 1
+-fi
+-
+-# LHOST_HWADDRS
+-LHOST_HWADDRS=${LHOST_HWADDRS:=}
+-if [ x"${LHOST_HWADDRS}" = x ]; then
+-    tst_resm TBROK "Environment variable LHOST_HWADDRS is not set."
+-    exit 1
+-fi
+-
+-# RHOST_HWADDRS
+-RHOST_HWADDRS=${RHOST_HWADDRS:=}
+-if [ x"${RHOST_HWADDRS}" = x ]; then
+-    tst_resm TBROK "Environment variable RHOST_HWADDRS is not set."
+-    exit 1
+-fi
+-
+-# LTP_RSH
+-LTP_RSH=${LTP_RSH:=}
+-if [ x"${LTP_RSH}" = x ]; then
+-    LTP_RSH="rsh -n"
+-elif [ "$LTP_RSH" = "rsh" ]; then
+-    LTP_RSH="rsh -n"
+-fi
+-
+-# TMPDIR
+-TMPDIR=${TMPDIR:=}
+-if [ x"${TMPDIR}" = x ]; then
+-    TMPDIR=/tmp
+-fi
+diff --git a/testcases/network/stress/ns-tools/check_icmpv4_connectivity b/testcases/network/stress/ns-tools/check_icmpv4_connectivity
+deleted file mode 100644
+index 7630aae685..0000000000
+--- a/testcases/network/stress/ns-tools/check_icmpv4_connectivity
++++ /dev/null
+@@ -1,70 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   check_icmpv4_connectivity
+-#
+-# Description:
+-#   Check the ICMPv4 connectivity from a interface to an IPv4 address
+-#
+-# Arguments:
+-#   $1: source interface name
+-#   $2: destination IPv4 address
+-#
+-# Returns:
+-#   0: connectivity is good
+-#   1: connectivity is someting wrong
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# The max number of ICMP echo request
+-PING_MAX=10
+-
+-# Check the arguments
+-if [ $# -ne 2 ]; then
+-    echo "Usage: $0 source_interface_name destionation_ipv4_address" >&2
+-    exit 1
+-fi
+-src_ifname=$1
+-dst_ipv4addr=$2
+-
+-cnt=0
+-while [ $cnt -lt $PING_MAX ]; do
+-    cnt=`expr $cnt + 1`
+-    ping -I $src_ifname -c 1 $dst_ipv4addr -w 1 > /dev/null 2>&1
+-    if [ $? -eq 0 ]; then
+-	exit 0
+-    fi
+-    sleep 1
+-done
+-
+-exit 1
+diff --git a/testcases/network/stress/ns-tools/check_icmpv6_connectivity b/testcases/network/stress/ns-tools/check_icmpv6_connectivity
+deleted file mode 100644
+index 10e432d97e..0000000000
+--- a/testcases/network/stress/ns-tools/check_icmpv6_connectivity
++++ /dev/null
+@@ -1,71 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   check_icmpv6_connectivity
+-#
+-# Description:
+-#   Functions for the network stress tests
+-#   Check the ICMPv6 connectivity from a interface to a IPv6 address
+-#
+-# Arguments:
+-#   $1: source interface name
+-#   $2: destination IPv6 address
+-#
+-# Returns:
+-#   0: connectivity is good.
+-#   1: connectivity is something wrong.
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# The max number of ICMP echo request
+-PING_MAX=10
+-
+-# Check the arguments
+-if [ $# -ne 2 ]; then
+-    echo "Usage: $0 source_interface_name destionation_ipv6_address" >&2
+-    exit 1
+-fi
+-src_ifname=$1
+-dst_ipv6addr=$2
+-
+-cnt=0
+-while [ $cnt -lt $PING_MAX ]; do
+-    cnt=`expr $cnt + 1`
+-    ping6 -I $src_ifname -c 1 $dst_ipv6addr -w 1 >/dev/null 2>&1
+-    if [ $? -eq 0 ]; then
+-	exit 0
+-    fi
+-    sleep 1
+-done
+-
+-exit 1
+diff --git a/testcases/network/stress/ns-tools/check_netem b/testcases/network/stress/ns-tools/check_netem
+deleted file mode 100644
+index 8b1a52bac3..0000000000
+--- a/testcases/network/stress/ns-tools/check_netem
++++ /dev/null
+@@ -1,73 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   check_netem
+-#
+-# Description:
+-#   Check the remote host has netem functionality
+-#
+-# Arguments:
+-#   None
+-#
+-# Returns:
+-#   0: netem functionality is available
+-#   1: not avaialble
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-# Check the environmanet variable for the test
+-. check_envval || exit 1
+-
+-# Check the tc command is available
+-ret=`$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH which tc >/dev/null 2>&1 ; echo $?'`
+-if [ $ret -ne 0 ]; then
+-    echo "The remote host does not have tc command"
+-    exit 1
+-fi
+-
+-# Check the netem functionality
+-ofile=`mktemp -p $TMPDIR`
+-$LTP_RSH $RHOST "PATH=/sbin:/usr/sbin:$PATH tc qdisc add dev eth0 root netem help" >$ofile 2>&1
+-grep -l "Usage:.*netem" $ofile >/dev/null 2>&1
+-if [ $? -ne 0 ]; then
+-    echo "The remote host does not have netem functionality"
+-    rm -f $ofile
+-    exit 1
+-else
+-    rm -f $ofile
+-    exit 0
+-fi
+diff --git a/testcases/network/stress/ns-tools/check_setkey b/testcases/network/stress/ns-tools/check_setkey
+deleted file mode 100644
+index e3a10d0ba2..0000000000
+--- a/testcases/network/stress/ns-tools/check_setkey
++++ /dev/null
+@@ -1,66 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   check_setkey
+-#
+-# Description:
+-#   Check the local/remote host has setkey command
+-#
+-# Arguments:
+-#   None
+-#
+-# Returns:
+-#   0: Both host have setkey command
+-#   1: One or both host doesn't have setkey command
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-# Check the environmanet variable for the test
+-. check_envval || exit 1
+-
+-which setkey >/dev/null 2>&1
+-if [ $? -ne 0 ]; then
+-    echo "The local host does not have setkey command"
+-    exit 1
+-fi
+-
+-ret=`$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH which setkey >/dev/null 2>&1 ; echo $?'`
+-if [ $ret -ne 0 ]; then
+-    echo "The remote host does not have setkey command"
+-    exit 1
+-fi
+diff --git a/testcases/network/stress/ns-tools/find_portbundle b/testcases/network/stress/ns-tools/find_portbundle
+deleted file mode 100644
+index 6ecdcfbdac..0000000000
+--- a/testcases/network/stress/ns-tools/find_portbundle
++++ /dev/null
+@@ -1,128 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   find_portbundle
+-#
+-# Description:
+-#   Find a bundle of consecutive ports
+-#
+-# Arguments:
+-#   $1: tcp or udp
+-#   $2: port which is the start point to check
+-#   $3: quantity of the ports
+-#
+-# Returns:
+-#   0: Success
+-#   1: Fail
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-
+-# Check argument
+-if [ $# -ne 3 ] ; then
+-    echo "Usage: find_portbundle protocol start_port quantity_of_ports" >&2
+-    exit 1
+-fi
+-protocol=$1
+-start_port=$2
+-port_quantity=$3
+-
+-# Specify the option of the nestat command
+-case $protocol in
+-    tcp)
+-    proto_opt="-t"
+-    ;;
+-    udp)
+-    proto_opt="-u"
+-    ;;
+-    *)
+-    echo "$protocol is not supported" >&2
+-    exit 1
+-    ;;
+-esac
+-
+-# Create the open port list
+-port_list=`mktemp`
+-netstat -a -n ${proto_opt} \
+-    | tail -n +3 \
+-    | awk '{ print $4 }' \
+-    | sed 's/^.*://' \
+-    | sort -n \
+-    | uniq > ${port_list}
+-
+-# Search the available ports
+-skip=1
+-min_port=$start_port
+-max_port=`expr $min_port + $port_quantity - 1`
+-if [ ${max_port} -gt 65535 ]; then
+-    rm -f $port_list
+-    exit 1
+-fi
+-
+-while read line ; do
+-    # Skip to the required port
+-    if [ $skip -eq 1 ]; then
+-	if [ $line -lt $start_port ]; then
+-	    continue
+-	else
+-	    skip=0
+-	fi
+-    fi
+-
+-    # If required quantity of the port isn't available, seach in the next range
+-    if [ $line -le $max_port ]; then
+-	min_port=`expr $line + 1`
+-	max_port=`expr $min_port + $port_quantity - 1`
+-	if [ $max_port -gt 65535 ]; then
+-	    rm -f $port_list
+-	    exit 1
+-	fi
+-	continue
+-    fi
+-    break
+-done < $port_list
+-
+-rm -f $port_list
+-
+-# Print the result. If required quantity is not 1, print in range expression
+-if [ $min_port -eq $max_port ]; then
+-    echo "$min_port"
+-else
+-    echo "$min_port-$max_port"
+-fi
+-
+-exit 0
+diff --git a/testcases/network/stress/ns-tools/get_ifname b/testcases/network/stress/ns-tools/get_ifname
+deleted file mode 100644
+index 14d4f020bc..0000000000
+--- a/testcases/network/stress/ns-tools/get_ifname
++++ /dev/null
+@@ -1,103 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   get_ifname
+-#
+-# Description:
+-#   Get the interface name which belongs to the specified test link
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# Arguments:
+-#   $1: Set the host type to set the IPv4 address
+-#       lhost - local host / rhost - remote host
+-#   $2: The number of the test link
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../ ; pwd)`}
+-TMPDIR=${TMPDIR:-/tmp}
+-export LTPROOT TMPDIR
+-
+-# Check the environment variable for the test
+-. check_envval || exit 1
+-
+-# Arguments
+-if [ $# -ne 2 ]; then
+-    echo "Usage: $0 host_type link_num" >&2
+-    exit 1
+-fi
+-host_type=$1
+-link_num=$2
+-
+-# Check the host type
+-case $host_type in
+-    lhost)
+-    hwaddrs="$LHOST_HWADDRS"
+-    ;;
+-
+-    rhost)
+-    hwaddrs="$RHOST_HWADDRS"
+-    ;;
+-
+-    *)
+-    echo "$0: 1st argument must be lhost or rhost" >&2
+-    exit 1
+-    ;;
+-esac
+-
+-# Pick HWaddr from HWaddr list
+-field=`expr $link_num + 1`
+-hwaddr=`echo $hwaddrs | cut -d ' ' -f $field`
+-if [ x${hwaddr} = x ]; then
+-    echo "HWaddr list ($hwaddrs) is something wrong." >&2
+-    exit 1
+-fi
+-
+-ip_link_show_out=`mktemp $TMPDIR/tmp.XXXXXXXX`
+-if [ $host_type = lhost ]; then
+-    ip link show > $ip_link_show_out 2>&1
+-else
+-    $LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip link show' \
+-		> $ip_link_show_out 2>&1
+-fi
+-ifname=`grep -1 -i $hwaddr $ip_link_show_out | head -n 1 | awk '{ print $2 }' | sed "s/://"` 2>/dev/null
+-rm -f $ip_link_show_out
+-
+-# Detect a interface name from the HWaddr
+-if [ x$ifname = x ]; then
+-    echo "Interface which has $hwaddr is not found." >&2
+-    exit 1
+-fi
+-
+-echo $ifname
+-exit 0
+diff --git a/testcases/network/stress/ns-tools/initialize_if b/testcases/network/stress/ns-tools/initialize_if
+deleted file mode 100644
+index d64203e4c1..0000000000
+--- a/testcases/network/stress/ns-tools/initialize_if
++++ /dev/null
+@@ -1,89 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   initialize_if
+-#
+-# Description:
+-#   Initialize the interface which belongs to the specified test link
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# Arguments:
+-#   $1:	Set the host type (lhost - local host | rhost - remote host)
+-#   $2: The number of the test link
+-#
+-# Exit Value:
+-#    0: Exit normally
+-#   >0: Exit abnormally
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-# Check the environmanet variable for the test
+-. check_envval || exit 1
+-
+-# Arguments
+-if [ $# -ne 2 ]; then
+-    echo "Usage: $0 host_type link_num" >&2
+-    exit 1
+-fi
+-host_type=$1
+-link_num=$2
+-
+-# Check the host type
+-if [ $host_type != lhost -a $host_type != rhost ]; then
+-    echo "$0: 1st argumet is lhost or rhost" >$2
+-    exit 1
+-fi
+-
+-# Define the interface name
+-ifname=`get_ifname $host_type $link_num` || exit 1
+-
+-# Initialize the specified interface
+-command="ifconfig $ifname down mtu 1500 ; ip route flush dev $ifname ; ip addr flush dev $ifname ; ifconfig $ifname up"
+-
+-if [ $host_type = lhost ]; then
+-    ( ifconfig $ifname down && \
+-    ip link set mtu 1500 dev $ifname && \
+-    ip route flush dev $ifname && \
+-    ip addr flush dev $ifname && \
+-    ifconfig $ifname up ) >/dev/null 2>&1
+-    ret=$?
+-else
+-    ret=`$LTP_RSH $RHOST '( PATH=/sbin:/usr/sbin:$PATH ; ifconfig '$ifname' down && ip link set mtu 1500 dev '$ifname' && ip route flush dev '$ifname' && ip addr flush dev '$ifname' && ifconfig '$ifname' up ) >/dev/null 2>&1 ; echo $?'`
+-fi
+-
+-if [ $ret -gt 0 ]; then
+-    echo "Failed to initialize $ifname" >&2
+-    exit 1
+-fi
+diff --git a/testcases/network/stress/ns-tools/killall_icmp_traffic b/testcases/network/stress/ns-tools/killall_icmp_traffic
+deleted file mode 100644
+index dfae98f937..0000000000
+--- a/testcases/network/stress/ns-tools/killall_icmp_traffic
++++ /dev/null
+@@ -1,83 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   killall_icmp_traffic
+-#
+-# Description:
+-#   Kill all of the icmp traffic utilities (ping or ping6)
+-#
+-# Arguments:
+-#   None
+-#
+-# Returns:
+-#   None
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-# Check the environmanet variable for the test
+-. check_envval || exit 1
+-
+-# Waiting time before outputting a warning message [sec]
+-WARN_WAIT=300
+-
+-
+-# Send SIGINT to ping and ping6
+-$LTP_RSH $RHOST "killall -SIGINT ping ping6" >/dev/null 2>&1
+-
+-# Verify the all ping utitlities are dead.
+-start_epoc=`date +%s`
+-while true ; do
+-    #ret=`$LTP_RSH $RHOST 'ps auxw | fgrep -v grep | grep -l [[:blank:]]ping6*[[:blank:]] >/dev/null 2>&1 ; echo $?'`
+-    ret=`$LTP_RSH $RHOST 'ps auxw | fgrep -v grep | grep -l /ping6*[[:blank:]] >/dev/null 2>&1 ; echo $?'`
+-
+-    if [ -z $ret ]; then
+-	continue
+-    fi
+-
+-    if [ $ret -ne 0 ]; then
+-	break
+-    fi
+-
+-    current_epoc=`date +%s`
+-    elapse_epoc=`expr $current_epoc - $start_epoc`
+-    if [ $elapse_epoc -ge $WARN_WAIT ]; then
+-	echo "ping command is not dead over $WARN_WAIT sec" >&2
+-    fi
+-
+-    $LTP_RSH $RHOST "killall -SIGINT ping ping6" >/dev/null 2>&1
+-    sleep 1
+-done
+diff --git a/testcases/network/stress/ns-tools/killall_tcp_traffic b/testcases/network/stress/ns-tools/killall_tcp_traffic
+deleted file mode 100644
+index 9ae36eeb7f..0000000000
+--- a/testcases/network/stress/ns-tools/killall_tcp_traffic
++++ /dev/null
+@@ -1,102 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   killall_tcp_traffic
+-#
+-# Description:
+-#   Kill all of the tcp traffic utilities (ns-tcpserver, ns-tcpclient)
+-#
+-# Arguments:
+-#   None
+-#
+-# Returns:
+-#   None
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-# Check the environmanet variable for the test
+-. check_envval || exit 1
+-
+-# Waiting time before outputting a warning message [sec]
+-WARN_WAIT=300
+-
+-
+-# Send SIGHUP both server and client
+-killall -SIGHUP ns-tcpserver >/dev/null 2>&1
+-$LTP_RSH $RHOST "killall -SIGHUP ns-tcpclient" >/dev/null 2>&1
+-
+-# Verify the server is dead.
+-start_epoc=`date +%s`
+-while true ; do
+-    ps auxw | fgrep -v grep | fgrep -l ns-tcpserver >/dev/null 2>&1
+-    if [ $? -ne 0 ]; then
+-	break
+-    fi
+-
+-    current_epoc=`date +%s`
+-    elapse_epoc=`expr $current_epoc - $start_epoc`
+-    if [ $elapse_epoc -ge $WARN_WAIT ]; then
+-	echo "TCP traffic server is not dead over $WARN_WAIT sec" >&2
+-    fi
+-
+-    killall -SIGHUP ns-tcpserver >/dev/null 2>&1
+-    sleep 1
+-done
+-
+-# Verify the client is dead.
+-start_epoc=`date +%s`
+-while true ; do
+-    ##ret=`$LTP_RSH $RHOST 'ps auxw | fgrep -v grep | grep -l '[[:blank:]]ns-tcpclient[[:blank:]]' >/dev/null 2>&1; echo $?'`
+-    ret=`$LTP_RSH $RHOST 'ps auxw | fgrep -v grep | grep -l '/ns-tcpclient[[:blank:]]' >/dev/null 2>&1; echo $?'`
+-
+-    if [ -z $ret ]; then
+-	continue
+-    fi
+-
+-    if [ $ret -ne 0 ]; then
+-	break
+-    fi
+-
+-    current_epoc=`date +%s`
+-    elapse_epoc=`expr $current_epoc - $start_epoc`
+-    if [ $elapse_epoc -ge $WARN_WAIT ]; then
+-	echo "TCP traffic client is not dead over $WARN_WAIT sec" >&2
+-    fi
+-
+-    $LTP_RSH $RHOST "killall -SIGHUP ns-tcpclient" >/dev/null 2>&1
+-    sleep 1
+-done
+diff --git a/testcases/network/stress/ns-tools/killall_udp_traffic b/testcases/network/stress/ns-tools/killall_udp_traffic
+deleted file mode 100644
+index 159057305b..0000000000
+--- a/testcases/network/stress/ns-tools/killall_udp_traffic
++++ /dev/null
+@@ -1,101 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   killall_udp_traffic
+-#
+-# Description:
+-#   Kill all of the udp traffic utilities (ns-udpserver, ns-udpclient)
+-#
+-# Arguments:
+-#   None
+-#
+-# Returns:
+-#   None
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-# Check the environmanet variable for the test
+-. check_envval || exit 1
+-
+-# Waiting time before outputting a warning message [sec]
+-WARN_WAIT=300
+-
+-
+-# Send SIGHUP both server and client
+-killall -SIGHUP ns-udpserver >/dev/null 2>&1
+-$LTP_RSH $RHOST "killall -SIGHUP ns-udpclient" >/dev/null 2>&1
+-
+-# Verify the server is dead.
+-start_epoc=`date +%s`
+-while true ; do
+-    ps auxw | fgrep -v grep | fgrep -l ns-udpserver >/dev/null 2>&1
+-    if [ $? -ne 0 ]; then
+-	break
+-    fi
+-
+-    current_epoc=`date +%s`
+-    elapse_epoc=`expr $current_epoc - $start_epoc`
+-    if [ $elapse_epoc -ge $WARN_WAIT ]; then
+-	tst_resm TINFO "UDP traffic server is not dead over $WARN_WAIT sec" >&2
+-    fi
+-
+-    killall -SIGHUP ns-udpserver >/dev/null 2>&1
+-    sleep 1
+-done
+-
+-# Verify the client is dead.
+-start_epoc=`date +%s`
+-while true ; do
+-    #ret=`$LTP_RSH $RHOST 'ps auxw | fgrep -v grep | grep -l '[[:blank:]]ns-udpclient[[:blank:]]' >/dev/null 2>&1; echo $?'`
+-    ret=`$LTP_RSH $RHOST 'ps auxw | fgrep -v grep | grep -l '/ns-udpclient[[:blank:]]' >/dev/null 2>&1; echo $?'`
+-
+-    if [ -z $ret ]; then
+-	continue
+-    fi
+-
+-    if [ $ret -ne 0 ]; then
+-	break
+-    fi
+-
+-    current_epoc=`date +%s`
+-    elapse_epoc=`expr $current_epoc - $start_epoc`
+-    if [ $elapse_epoc -ge $WARN_WAIT ]; then
+-	tst_resm TINFO "UDP traffic client is not dead over $WARN_WAIT sec" >&2
+-    fi
+-    $LTP_RSH $RHOST "killall -SIGHUP ns-udpclient" >/dev/null 2>&1
+-    sleep 1
+-done
+diff --git a/testcases/network/stress/ns-tools/ns-echoclient b/testcases/network/stress/ns-tools/ns-echoclient
+deleted file mode 100644
+index 1f31878238..0000000000
+--- a/testcases/network/stress/ns-tools/ns-echoclient
++++ /dev/null
+@@ -1,140 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   ns-echoclient
+-#
+-# Description:
+-#   Send various kind of echo request
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# Options:
+-#   -S name or IP address of the server
+-#   -f protocol family
+-#	4: IPv4
+-#	6: IPv6
+-#   -s array of packet size
+-#   -t timeout [sec]
+-#   -h display this usage
+-#
+-# Outputs:
+-#   Process ID of the TCP traffic server
+-#
+-# Exit Value:
+-#    0: Exit normally
+-#   >0: Exit abnormally
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function: usage
+-#
+-# Description:
+-#   Print the usage of this script, then exit
+-#
+-# Argument
+-#   value: exit value
+-#
+-#-----------------------------------------------------------------------
+-usage(){
+-    value=$1
+-    cat << EOD >&2
+-ns-echoclient [OPTION]
+-	-S name or IP address of the server
+-	-f protocol family
+-		4: IPv4
+-		6: IPv6
+-	-s array of packet size
+-	-h display this usage
+-EOD
+-
+-    exit $value
+-}
+-
+-
+-#
+-# Main
+-#
+-
+-family=0
+-
+-while getopts 'S:f:s:h' opt ; do
+-    case $opt in
+-	'S')
+-	server_name=$OPTARG
+-	;;
+-	'f')
+-	family=$OPTARG
+-	;;
+-	's')
+-	size_array="$OPTARG"
+-	;;
+-	'h')
+-	usage 0
+-	;;
+-	*)
+-	echo "Unknown option" >&2
+-	usage 1
+-	;;
+-    esac
+-done
+-
+-# Check the server name
+-if [ x$server_name = x ]; then
+-    echo "server name isn't specified."
+-    usage 1
+-fi
+-
+-# Define the protocol family
+-case $family in
+-    4)
+-    ping_command="ping"
+-    ;;
+-    6)
+-    ping_command="ping6"
+-    ;;
+-    *)
+-    echo "protocol family should be 4 or 6."
+-    usage 1
+-    ;;
+-esac
+-
+-# Send the echo request
+-if [ x"$size_array" = x ]; then
+-    $ping_command $server_name >/dev/null 2>&1 &
+-else
+-    for size in $size_array ; do
+-	$ping_command -s $size $server_name >/dev/null 2>&1 &
+-    done
+-fi
+-
+-exit 0
+diff --git a/testcases/network/stress/ns-tools/ns-icmpv4_sender.c b/testcases/network/stress/ns-tools/ns-icmpv4_sender.c
+deleted file mode 100644
+index f51ad5f564..0000000000
+--- a/testcases/network/stress/ns-tools/ns-icmpv4_sender.c
++++ /dev/null
+@@ -1,622 +0,0 @@
+-/******************************************************************************/
+-/*                                                                            */
+-/*   Copyright (c) International Business Machines  Corp., 2006               */
+-/*                                                                            */
+-/*   This program is free software;  you can redistribute it and/or modify    */
+-/*   it under the terms of the GNU General Public License as published by     */
+-/*   the Free Software Foundation; either version 2 of the License, or        */
+-/*   (at your option) any later version.                                      */
+-/*                                                                            */
+-/*   This program is distributed in the hope that it will be useful,          */
+-/*   but WITHOUT ANY WARRANTY;  without even the implied warranty of          */
+-/*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                */
+-/*   the GNU General Public License for more details.                         */
+-/*                                                                            */
+-/*   You should have received a copy of the GNU General Public License        */
+-/*   along with this program;  if not, write to the Free Software             */
+-/*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  */
+-/*                                                                            */
+-/******************************************************************************/
+-
+-/*
+- * File:
+- *	ns-icmpv4_sender.c
+- *
+- * Description:
+- *	This is ICMPv4 echo request sender.
+- *	This utility is also able to set illegal information in the IP header
+- *
+- * Author:
+- *	Mitsuru Chinen <mitch@jp.ibm.com>
+- *
+- * History:
+- *	Mar 5 2006 - Created (Mitsuru Chinen)
+- *---------------------------------------------------------------------------*/
+-
+-/*
+- * Header Files
+- */
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <netdb.h>
+-#include <signal.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include <sys/ioctl.h>
+-#include <sys/socket.h>
+-#include <arpa/inet.h>
+-#include <net/ethernet.h>
+-#include <net/if_arp.h>
+-
+-#include "ns-traffic.h"
+-
+-/*
+- * Structure Definitions
+- */
+-struct icmpv4_fake {
+-	struct ip4_datagram pkt;
+-	char *src_ifname;
+-	struct sockaddr_ll saddr_ll;
+-	struct sockaddr_ll daddr_ll;
+-	struct in_addr saddr;
+-	struct in_addr daddr;
+-	unsigned short int pkt_size;
+-	unsigned short int data_size;
+-	double timeout;
+-
+-	u_int16_t fake_flag;
+-};
+-
+-/*
+- * Gloval variables
+- */
+-char *program_name;		/* program name */
+-struct sigaction handler;	/* Behavior for a signal */
+-int catch_sighup;		/* When catch the SIGHUP, set to non-zero */
+-
+-/*
+- * Function: usage()
+- *
+- * Descripton:
+- *  Print the usage of this program. Then, terminate this program with
+- *  the specified exit value.
+- *
+- * Argument:
+- *  exit_value:	exit value
+- *
+- * Return value:
+- *  This function does not return.
+- */
+-void usage(char *program_name, int exit_value)
+-{
+-	FILE *stream = stdout;	/* stream where the usage is output */
+-
+-	if (exit_value == EXIT_FAILURE)
+-		stream = stderr;
+-
+-	fprintf(stream, "%s [OPTION]\n"
+-		"\t-I if_name\tInterface name of the source host\n"
+-		"\t-S ip_addr\tIPv4 address of the source host\n"
+-		"\t-M mac_addr\tMAC address of the destination host\n"
+-		"\t-D ip_addr\tIPv4 address of the destination host\n"
+-		"\t-s packetsize\tnumber of data bytes (exclude header)\n"
+-		"\t-t value\ttimeout [sec]\n"
+-		"\t-d\t\tdisplay debug informations\n"
+-		"\t-h\t\tdisplay this usage\n"
+-		"\n"
+-		"\t[options for fake]\n"
+-		"\t  -c\tbreak checksum\n"
+-		"\t  -f\tbreak fragment information\n"
+-		"\t  -i\tbreak IPv4 destination address\n"
+-		"\t  -l\tbreak header length\n"
+-		"\t  -L\tbreak total length\n"
+-		"\t  -p\tbreak protocol number\n"
+-		"\t  -v\tbreak IP version\n", program_name);
+-	exit(exit_value);
+-}
+-
+-/*
+- * Function: set_signal_flag()
+- *
+- * Description:
+- *  This function sets global variables accordig to signal
+- *
+- * Argument:
+- *  type: type of signal
+- *
+- * Return value:
+- *  None
+- */
+-void set_signal_flag(int type)
+-{
+-	if (debug)
+-		fprintf(stderr, "Catch signal. type is %d\n", type);
+-
+-	switch (type) {
+-	case SIGHUP:
+-		catch_sighup = 1;
+-		handler.sa_handler = SIG_IGN;
+-		if (sigaction(type, &handler, NULL) < 0)
+-			fatal_error("sigaction()");
+-		break;
+-
+-	default:
+-		fprintf(stderr, "Unexpected signal (%d) is caught\n", type);
+-		exit(EXIT_FAILURE);
+-	}
+-}
+-
+-/*
+- * Function: parse_options()
+- *
+- * Description:
+- *  This function parse the options, then modify the fake icmp data
+- *
+- * Argument:
+- *   argc:  the number of argument
+- *   argv:  arguments
+- *  fake_p: pointer to data of fake icmp data to modify
+- *
+- * Return value:
+- *  None
+- */
+-void parse_options(int argc, char *argv[], struct icmpv4_fake *fake_p)
+-{
+-	int optc;		/* option */
+-	unsigned long opt_ul;	/* option value in unsigned long */
+-	double opt_d;		/* option value in double */
+-	struct in_addr opt_addr;	/* option value in struct in_addr */
+-	struct sockaddr_ll opt_addr_ll;	/* option value in struct sockaddr_ll */
+-	int is_specified_src_ifname = 0;
+-	int is_specified_saddr = 0;
+-	int is_specified_daddr_ll = 0;
+-	int is_specified_daddr = 0;
+-
+-	while ((optc = getopt(argc, argv, "I:S:M:D:s:t:dhcfilLpv")) != EOF) {
+-		switch (optc) {
+-		case 'I':
+-			fake_p->src_ifname = strdup(optarg);
+-			if (fake_p->src_ifname == NULL)
+-				fatal_error("strdup() failed.");
+-			is_specified_src_ifname = 1;
+-			break;
+-
+-		case 'S':
+-			if (inet_pton(AF_INET, optarg, &opt_addr) <= 0) {
+-				fprintf(stderr, "Source address is wrong\n");
+-				usage(program_name, EXIT_FAILURE);
+-			}
+-			fake_p->saddr = opt_addr;
+-			is_specified_saddr = 1;
+-			break;
+-
+-		case 'M':
+-			if (eth_pton(AF_INET, optarg, &opt_addr_ll)) {
+-				fprintf(stderr,
+-					"Destination MAC address is wrong\n");
+-				usage(program_name, EXIT_FAILURE);
+-			}
+-			fake_p->daddr_ll = opt_addr_ll;
+-			is_specified_daddr_ll = 1;
+-			break;
+-
+-		case 'D':
+-			if (inet_pton(AF_INET, optarg, &opt_addr) <= 0) {
+-				fprintf(stderr,
+-					"Destination address is wrong\n");
+-				usage(program_name, EXIT_FAILURE);
+-			}
+-			fake_p->daddr = opt_addr;
+-			is_specified_daddr = 1;
+-			break;
+-
+-		case 's':
+-			opt_ul = strtoul(optarg, NULL, 0);
+-			if (opt_ul > ICMPV4_DATA_MAXSIZE) {
+-				fprintf(stderr,
+-					"Data size sholud be less than %d\n",
+-					ICMPV4_DATA_MAXSIZE + 1);
+-				usage(program_name, EXIT_FAILURE);
+-			}
+-			fake_p->data_size = opt_ul;
+-			break;
+-
+-		case 't':
+-			opt_d = strtod(optarg, NULL);
+-			if (opt_d < 0.0) {
+-				fprintf(stderr,
+-					"Timeout should be positive value\n");
+-				usage(program_name, EXIT_FAILURE);
+-			}
+-			fake_p->timeout = opt_d;
+-			break;
+-
+-		case 'd':
+-			debug = 1;
+-			break;
+-
+-		case 'h':
+-			usage(program_name, EXIT_SUCCESS);
+-			break;
+-
+-			/* Options for fake */
+-		case 'c':
+-			fake_p->fake_flag |= FAKE_CHECK;
+-			break;
+-
+-		case 'f':
+-			fake_p->fake_flag |= FAKE_FRAGMENT;
+-			break;
+-
+-		case 'i':
+-			fake_p->fake_flag |= FAKE_DADDR;
+-			break;
+-
+-		case 'l':
+-			fake_p->fake_flag |= FAKE_IHL;
+-			break;
+-
+-		case 'L':
+-			fake_p->fake_flag |= FAKE_TOT_LEN;
+-			break;
+-
+-		case 'p':
+-			fake_p->fake_flag |= FAKE_PROTOCOL;
+-			break;
+-
+-		case 'v':
+-			fake_p->fake_flag |= FAKE_VERSION;
+-			break;
+-
+-		default:
+-			usage(program_name, EXIT_FAILURE);
+-		}
+-	}
+-
+-	if (!is_specified_src_ifname) {
+-		fprintf(stderr,
+-			"Interface name of the source host is not specified\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-
+-	if (!is_specified_saddr) {
+-		fprintf(stderr, "Source IP address is not specified\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-
+-	if (!is_specified_daddr_ll) {
+-		fprintf(stderr, "Destination MAC address is not specified\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-
+-	if (!is_specified_daddr) {
+-		fprintf(stderr, "Destination IP address is not specified\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-}
+-
+-/*
+- * Function: complete_eth_addrs()
+- *
+- * Description:
+- *  This function sets the source and destination ethernet address completely
+- *
+- * Argument:
+- *  fake_p: pointer to data of fake icmp structure
+- *
+- * Return value:
+- *  None
+- *
+- */
+-void complete_eth_addrs(struct icmpv4_fake *fake_p)
+-{
+-	int sock_fd;		/* Socket for ioctl() */
+-	struct ifreq ifinfo;	/* Interface information */
+-
+-	if ((sock_fd = socket(AF_PACKET, SOCK_DGRAM, 0)) < 0)
+-		fatal_error("socket()");
+-
+-	/* Source */
+-	fake_p->saddr_ll.sll_family = AF_PACKET;	/* Always AF_PACKET */
+-	fake_p->saddr_ll.sll_protocol = htons(ETH_P_IP);	/* IPv4 */
+-	fake_p->saddr_ll.sll_hatype = ARPHRD_ETHER;	/* Header type */
+-	fake_p->saddr_ll.sll_pkttype = PACKET_HOST;	/* Packet type */
+-	fake_p->saddr_ll.sll_halen = ETH_ALEN;	/* Length of address */
+-
+-	/* Get the MAC address of the interface at source host */
+-	get_ifinfo(&ifinfo, sock_fd, fake_p->src_ifname, SIOCGIFHWADDR);
+-	memcpy(fake_p->saddr_ll.sll_addr, ifinfo.ifr_hwaddr.sa_data, ETH_ALEN);
+-
+-	/* Get the interface index */
+-	get_ifinfo(&ifinfo, sock_fd, fake_p->src_ifname, SIOCGIFINDEX);
+-	fake_p->saddr_ll.sll_ifindex = ifinfo.ifr_ifindex;
+-	fake_p->daddr_ll.sll_ifindex = ifinfo.ifr_ifindex;
+-
+-	close(sock_fd);
+-}
+-
+-/*
+- * Function: create_clean_packet()
+- *
+- * Description:
+- *  This function creates icmpv4 packet without any fakes
+- *
+- * Argument:
+- *  fake_p: pointer to data of fake icmp structure
+- *
+- * Return value:
+- *  None
+- */
+-void create_clean_packet(struct icmpv4_fake *fake_p)
+-{
+-	struct ip4_datagram pkt;	/* sending IPv4 packet */
+-	struct icmp4_segment *icmp_p;	/* ICMPv4 part of sending packet */
+-	unsigned short int pkt_size;
+-
+-	memset(&pkt, '\0', sizeof(struct ip4_datagram));
+-	pkt_size = sizeof(struct iphdr)	/* IP header */
+-	    +sizeof(struct icmphdr)	/* ICMP header */
+-	    +fake_p->data_size;	/* ICMP payload */
+-
+-	icmp_p = (struct icmp4_segment *)&(pkt.payload);
+-
+-	/* IPv4 Header */
+-	pkt.hdr.version = 4;
+-	pkt.hdr.ihl = sizeof(struct iphdr) / 4;
+-	pkt.hdr.tos = 0;
+-	pkt.hdr.tot_len = htons(pkt_size);
+-	pkt.hdr.id = htons(IPV4_PACKET_ID);
+-	pkt.hdr.frag_off = htons(IPV4_DEFAULT_FLAG);
+-	pkt.hdr.ttl = IPV4_DEFAULT_TTL;
+-	pkt.hdr.protocol = IPPROTO_ICMP;
+-	pkt.hdr.check = 0;	/* Calculate later */
+-	pkt.hdr.saddr = fake_p->saddr.s_addr;
+-	pkt.hdr.daddr = fake_p->daddr.s_addr;
+-
+-	/* ICMPv4 Header */
+-	icmp_p->hdr.type = ICMP_ECHO;
+-	icmp_p->hdr.code = 0;
+-	icmp_p->hdr.checksum = 0;	/* Calculate later */
+-	icmp_p->hdr.un.echo.id = htons(ICMP_ECHO_ID);
+-	icmp_p->hdr.un.echo.sequence = htons(1);
+-
+-	/* ICMPv4 Payload */
+-	fill_payload(icmp_p->data, fake_p->data_size);
+-
+-	/* Calcualte checksums */
+-	pkt.hdr.check = calc_checksum((u_int16_t *) (&pkt.hdr),
+-				      sizeof(struct iphdr));
+-	icmp_p->hdr.checksum = calc_checksum((u_int16_t *) icmp_p,
+-					     sizeof(struct icmphdr) +
+-					     fake_p->data_size);
+-
+-	/* Store the clean packet data */
+-	fake_p->pkt = pkt;
+-	fake_p->pkt_size = pkt_size;
+-}
+-
+-/*
+- * Function: thrust_fakes()
+- *
+- * Description:
+- *  This function thrust fake information to the icmp packet
+- *
+- * Argument:
+- *     pkt   : Payload of the Ethernet frame (Namely, IPv6 packet
+- *  fake_flag: Flag which represents what information would be faked
+- *
+- * Return value:
+- *  None
+- */
+-void thrust_fakes(struct ip4_datagram *pkt, u_int16_t fake_flag)
+-{
+-	int rand_val;
+-	size_t bitsize;
+-	u_int32_t seed;
+-
+-	if (debug)
+-		fprintf(stderr, "fake_flag = %2x\n", fake_flag);
+-
+-	if (fake_flag & FAKE_VERSION) {	/* version */
+-		bitsize = 4;
+-		seed = bit_change_seed(bitsize, 1);
+-		pkt->hdr.version ^= seed;
+-	}
+-
+-	if (fake_flag & FAKE_IHL) {	/* header length */
+-		bitsize = 4;
+-		seed = bit_change_seed(bitsize, 1);
+-		pkt->hdr.ihl ^= seed;
+-	}
+-
+-	if (fake_flag & FAKE_TOT_LEN) {	/* total length */
+-		bitsize = sizeof(pkt->hdr.tot_len) * 8;
+-		seed = bit_change_seed(bitsize, bitsize / 8);
+-		pkt->hdr.tot_len ^= seed;
+-	}
+-
+-	if (fake_flag & FAKE_FRAGMENT) {	/* fragment information */
+-		/* Set reserved flag */
+-		rand_val = rand() / ((RAND_MAX + 1U) / 16);
+-		if (!rand_val) {
+-			if (debug)
+-				fprintf(stderr, "Up reserved bit\n");
+-			pkt->hdr.frag_off |= htonl(0x80000000);
+-		}
+-
+-		/* Set more fragments flag */
+-		rand_val = rand() / ((RAND_MAX + 1U) / 3);
+-		if (!rand_val) {
+-			if (debug)
+-				fprintf(stderr, "Set more fragments flag\n");
+-			pkt->hdr.frag_off |= htons(0x2000);
+-		}
+-
+-		/* Unset unfragmented flag */
+-		rand_val = rand() / ((RAND_MAX + 1U) / 3);
+-		if (!rand_val) {
+-			if (debug)
+-				fprintf(stderr, "Unset unfragmented flag\n");
+-			pkt->hdr.frag_off &= htons(0xbfff);
+-		}
+-
+-		/* Set fragment offset */
+-		rand_val = rand() / ((RAND_MAX + 1U) / 3);
+-		if (!rand_val) {
+-			bitsize = 13;
+-			seed = bit_change_seed(bitsize, 0);
+-			if (debug)
+-				fprintf(stderr, "Set fragment offset %02x\n",
+-					seed);
+-			pkt->hdr.frag_off |= htons(seed);
+-		}
+-	}
+-
+-	if (fake_flag & FAKE_PROTOCOL) {	/* protocol */
+-		rand_val = rand() / ((RAND_MAX + 1U) / 5);
+-		switch (rand_val) {
+-		case 1:
+-		case 2:
+-			if (debug)
+-				fprintf(stderr, "Bit reverse\n");
+-			bitsize = sizeof(pkt->hdr.protocol) * 8;
+-			seed = bit_change_seed(bitsize, 0);
+-			pkt->hdr.protocol ^= seed;
+-			break;
+-
+-		case 3:
+-		case 4:
+-			if (debug)
+-				fprintf(stderr, "Unknown Protocol\n");
+-			if (rand_val) {
+-				int number;
+-				int counter;
+-				for (counter = 0; counter <= 0xff; counter++) {
+-					number =
+-					    rand() / ((RAND_MAX + 1U) / 0x100);
+-					if (getprotobynumber(number) == NULL) {
+-						pkt->hdr.protocol = number;
+-						break;
+-					}
+-				}
+-			}
+-			break;
+-
+-		default:
+-			if (debug)
+-				fprintf(stderr, "Do nothing\n");
+-			break;
+-		}
+-	}
+-
+-	if (fake_flag & FAKE_DADDR) {	/* destination address */
+-		bitsize = sizeof(pkt->hdr.daddr) * 8;
+-		seed = bit_change_seed(bitsize, bitsize / 8);
+-		pkt->hdr.daddr ^= seed;
+-	}
+-
+-	/* Recalculate checksum once */
+-	pkt->hdr.check = 0;
+-	pkt->hdr.check =
+-	    calc_checksum((u_int16_t *) & (pkt->hdr), sizeof(struct iphdr));
+-
+-	if (fake_flag & FAKE_CHECK) {	/* checksum */
+-		bitsize = sizeof(pkt->hdr.check) * 8;
+-		seed = bit_change_seed(bitsize, bitsize / 8);
+-		pkt->hdr.check ^= seed;
+-	}
+-}
+-
+-/*
+- * Function: send_packet()
+- *
+- * Description:
+- *  This function sends icmpv4 packet
+- *
+- * Argument:
+- *  fake_p: pointer to data of fake icmp structure
+- *
+- * Return value:
+- *  None
+- */
+-void send_packets(struct icmpv4_fake *fake_p)
+-{
+-	int sock_fd;
+-	int retval;
+-	struct ip4_datagram pkt;
+-	double start_time;
+-
+-	/* Open a socket */
+-	sock_fd = socket(AF_PACKET, SOCK_DGRAM, htons(ETH_P_IP));
+-	if (sock_fd < 0)
+-		fatal_error("socket()");
+-
+-	/* Bind the socket to the physical address */
+-	retval = bind(sock_fd, (struct sockaddr *)&(fake_p->saddr_ll),
+-		      sizeof(struct sockaddr_ll));
+-	if (retval < 0)
+-		fatal_error("bind()");
+-
+-	/* Set singal hander for SIGHUP */
+-	handler.sa_handler = set_signal_flag;
+-	handler.sa_flags = 0;
+-	if (sigfillset(&handler.sa_mask) < 0)
+-		fatal_error("sigfillset()");
+-	if (sigaction(SIGHUP, &handler, NULL) < 0)
+-		fatal_error("sigfillset()");
+-
+-	/*
+-	 * loop for sending packets
+-	 */
+-	pkt = fake_p->pkt;
+-	start_time = time(NULL);
+-
+-	for (;;) {
+-		if (fake_p->fake_flag) {
+-			pkt = fake_p->pkt;
+-			thrust_fakes(&pkt, fake_p->fake_flag);
+-		}
+-
+-		retval = sendto(sock_fd, &pkt, fake_p->pkt_size, 0,
+-				(struct sockaddr *)&(fake_p->daddr_ll),
+-				sizeof(struct sockaddr_ll));
+-		if (retval < 0)
+-			fatal_error("sendto()");
+-
+-		if (fake_p->timeout)	/* timeout */
+-			if (fake_p->timeout < difftime(time(NULL), start_time))
+-				break;
+-
+-		if (catch_sighup)	/* catch SIGHUP */
+-			break;
+-	}
+-
+-	/* Close the socket */
+-	close(sock_fd);
+-}
+-
+-/*
+- *
+- *  Function: main()
+- *
+- */
+-int main(int argc, char *argv[])
+-{
+-	struct icmpv4_fake fake_data;
+-
+-	debug = 0;
+-	program_name = strdup(argv[0]);
+-	srand(getpid());
+-
+-	memset(&fake_data, '\0', sizeof(struct icmpv4_fake));
+-	parse_options(argc, argv, &fake_data);
+-
+-	complete_eth_addrs(&fake_data);
+-	create_clean_packet(&fake_data);
+-
+-	send_packets(&fake_data);
+-
+-	exit(EXIT_SUCCESS);
+-}
+diff --git a/testcases/network/stress/ns-tools/ns-tcpclient.c b/testcases/network/stress/ns-tools/ns-tcpclient.c
+deleted file mode 100644
+index dc10d6ca78..0000000000
+--- a/testcases/network/stress/ns-tools/ns-tcpclient.c
++++ /dev/null
+@@ -1,346 +0,0 @@
+-/******************************************************************************/
+-/*                                                                            */
+-/*   Copyright (c) International Business Machines  Corp., 2005               */
+-/*                                                                            */
+-/*   This program is free software;  you can redistribute it and/or modify    */
+-/*   it under the terms of the GNU General Public License as published by     */
+-/*   the Free Software Foundation; either version 2 of the License, or        */
+-/*   (at your option) any later version.                                      */
+-/*                                                                            */
+-/*   This program is distributed in the hope that it will be useful,          */
+-/*   but WITHOUT ANY WARRANTY;  without even the implied warranty of          */
+-/*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                */
+-/*   the GNU General Public License for more details.                         */
+-/*                                                                            */
+-/*   You should have received a copy of the GNU General Public License        */
+-/*   along with this program;  if not, write to the Free Software             */
+-/*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  */
+-/*                                                                            */
+-/******************************************************************************/
+-
+-/*
+- * File:
+- *	ns-tcpclient.c
+- *
+- * Description:
+- *	This is TCP traffic client.
+- *	Request connections to the server, then receive tcp segments
+- *
+- * Author:
+- *	Mitsuru Chinen <mitch@jp.ibm.com>
+- *
+- * History:
+- *	Oct 19 2005 - Created (Mitsuru Chinen)
+- *---------------------------------------------------------------------------*/
+-
+-#include "ns-traffic.h"
+-
+-/*
+- * Gloval variables
+- */
+-struct sigaction handler;	/* Behavior for a signal */
+-int catch_sighup;		/* When catch the SIGHUP, set to non-zero */
+-
+-/*
+- * Standard Header Files
+- */
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <netdb.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include <sys/socket.h>
+-#include <sys/stat.h>
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-#include <netinet/in.h>
+-
+-/*
+- * Function: usage()
+- *
+- * Descripton:
+- *  Print the usage of this program. Then, terminate this program with
+- *  the specified exit value.
+- *
+- * Argument:
+- *  exit_value:	exit value
+- *
+- * Return value:
+- *  This function does not return.
+- */
+-void usage(char *program_name, int exit_value)
+-{
+-	FILE *stream = stdout;	/* stream where the usage is output */
+-
+-	if (exit_value == EXIT_FAILURE)
+-		stream = stderr;
+-
+-	fprintf(stream, "%s [OPTION]\n"
+-		"\t-S\tname or IP address of the server\n"
+-		"\t-f\tprotocol family\n"
+-		"\t\t  4 : IPv4\n"
+-		"\t\t  6 : IPv6\n"
+-		"\t-p\tport number\n"
+-		"\t-t\ttimeout [sec]\n"
+-		"\t-b\twork in the background\n"
+-		"\t-w\twork in the window scaling mode\n"
+-		"\t-d\tdisplay debug informations\n"
+-		"\t-h\tdisplay this usage\n", program_name);
+-	exit(exit_value);
+-}
+-
+-/*
+- * Function: set_signal_flag()
+- *
+- * Description:
+- *  This function sets global variables accordig to signal
+- *
+- * Argument:
+- *  type: type of signal
+- *
+- * Return value:
+- *  None
+- */
+-void set_signal_flag(int type)
+-{
+-	if (debug)
+-		fprintf(stderr, "Catch signal. type is %d\n", type);
+-
+-	switch (type) {
+-	case SIGHUP:
+-		catch_sighup = 1;
+-		handler.sa_handler = SIG_IGN;
+-		if (sigaction(type, &handler, NULL) < 0)
+-			fatal_error("sigaction()");
+-		break;
+-
+-	default:
+-		fprintf(stderr, "Unexpected signal (%d) is caught\n", type);
+-		exit(EXIT_FAILURE);
+-	}
+-}
+-
+-/*
+- *
+- *  Function: main()
+- *
+- */
+-int main(int argc, char *argv[])
+-{
+-	char *program_name = argv[0];
+-	int optc;		/* option */
+-	int sock_fd;		/* socket descriptor for a connection */
+-	char *server_name;	/* Name (or IP address) of the server */
+-	sa_family_t family;	/* protocol family */
+-	char *portnum;		/* port number in string representation */
+-	struct addrinfo hints;	/* hints for getaddrinfo() */
+-	struct addrinfo *res;	/* pointer to addrinfo structure */
+-	int err;		/* return value of getaddrinfo */
+-	int on;			/* on/off at an socket option */
+-	int recvbuf_size;	/* size of the receive buffer */
+-	socklen_t sock_optlen;	/* size of the result parameter */
+-	char *recvbuf;		/* pointer to the received message */
+-	ssize_t recvbyte_size;	/* size of the receive byte */
+-	time_t start_time;	/* time when the timer is start */
+-	double timeout = 0.0;	/* timeout */
+-	int background = 0;	/* If non-zero work in the background */
+-	size_t window_scaling = 0;	/* if non-zero, in the window scaling mode */
+-
+-	debug = 0;
+-
+-	/* Initilalize the client information */
+-	family = PF_UNSPEC;
+-	server_name = NULL;
+-	portnum = NULL;
+-
+-	/* Retrieve the options */
+-	while ((optc = getopt(argc, argv, "S:f:p:t:bwdh")) != EOF) {
+-		switch (optc) {
+-		case 'S':
+-			server_name = strdup(optarg);
+-			if (server_name == NULL) {
+-				fprintf(stderr, "strdup() failed.");
+-				exit(EXIT_FAILURE);
+-			}
+-			break;
+-
+-		case 'f':
+-			if (strncmp(optarg, "4", 1) == 0)
+-				family = PF_INET;	/* IPv4 */
+-			else if (strncmp(optarg, "6", 1) == 0)
+-				family = PF_INET6;	/* IPv6 */
+-			else {
+-				fprintf(stderr,
+-					"protocol family should be 4 or 6.\n");
+-				usage(program_name, EXIT_FAILURE);
+-			}
+-			break;
+-
+-		case 'p':
+-			{
+-				unsigned long int tmp;
+-				tmp = strtoul(optarg, NULL, 0);
+-				if (tmp < PORTNUMMIN || PORTNUMMAX < tmp) {
+-					fprintf(stderr,
+-						"The range of port is from %u to %u\n",
+-						PORTNUMMIN, PORTNUMMAX);
+-					usage(program_name, EXIT_FAILURE);
+-				}
+-				portnum = strdup(optarg);
+-			}
+-			break;
+-
+-		case 't':
+-			timeout = strtod(optarg, NULL);
+-			if (timeout < 0) {
+-				fprintf(stderr,
+-					"Timeout value is bigger than 0\n");
+-				usage(program_name, EXIT_FAILURE);
+-			}
+-			break;
+-
+-		case 'b':
+-			background = 1;
+-			break;
+-
+-		case 'w':
+-			window_scaling = 1;
+-			break;
+-
+-		case 'd':
+-			debug = 1;
+-			break;
+-
+-		case 'h':
+-			usage(program_name, EXIT_SUCCESS);
+-			break;
+-
+-		default:
+-			usage(program_name, EXIT_FAILURE);
+-		}
+-	}
+-
+-	/* Check the server name is specified. */
+-	if (server_name == NULL) {
+-		fprintf(stderr, "server name isn't specified.\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-
+-	/* Check the family is specified. */
+-	if (family == PF_UNSPEC) {
+-		fprintf(stderr, "protocol family isn't specified.\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-
+-	/* Check the port number is specified. */
+-	if (portnum == NULL) {
+-		fprintf(stderr, "port number isn't specified.\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-
+-	/* At first, SIGHUP are Ignored. */
+-	handler.sa_handler = set_signal_flag;
+-	handler.sa_flags = 0;
+-	if (sigfillset(&handler.sa_mask) < 0)
+-		fatal_error("sigfillset()");
+-	if (sigaction(SIGHUP, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-
+-	/* Set the hints to addrinfo() */
+-	memset(&hints, '\0', sizeof(struct addrinfo));
+-	hints.ai_family = family;
+-	hints.ai_socktype = SOCK_STREAM;
+-	hints.ai_protocol = IPPROTO_TCP;
+-
+-	/* Translate the network and service information of the client */
+-	err = getaddrinfo(server_name, portnum, &hints, &res);
+-	if (err) {
+-		fprintf(stderr, "getaddrinfo(): %s\n", gai_strerror(err));
+-		exit(EXIT_FAILURE);
+-	}
+-	if (res->ai_next) {
+-		fprintf(stderr, "getaddrinfo(): multiple address is found.");
+-		exit(EXIT_FAILURE);
+-	}
+-
+-	/* Create a socket */
+-	sock_fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+-	if (sock_fd < 0)
+-		fatal_error("socket()");
+-
+-	/* Enable to reuse the socket */
+-	on = 1;
+-	if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(int)))
+-		fatal_error("setsockopt()");
+-
+-	/* Maximize socket buffer, when window scaling mode */
+-	if (window_scaling)
+-		maximize_sockbuf(sock_fd);
+-
+-	/* Connect to the server */
+-	if (connect(sock_fd, res->ai_addr, res->ai_addrlen) < 0)
+-		fatal_error("connect()");
+-
+-	freeaddrinfo(res);
+-	free(server_name);
+-
+-	/* If -b option is specified, work as a daemon */
+-	if (background)
+-		if (daemon(0, 0) < 0)
+-			fatal_error("daemon()");
+-
+-	/* Get the size of receive buffer */
+-	sock_optlen = sizeof(recvbuf_size);
+-	if (getsockopt
+-	    (sock_fd, SOL_SOCKET, SO_RCVBUF, &recvbuf_size, &sock_optlen) < 0)
+-		fatal_error("getsockopt()");
+-	if (debug)
+-		fprintf(stderr, "recvbuf size of socket(%d) is %d\n", sock_fd,
+-			recvbuf_size);
+-
+-	/* Prepare a buffer to receive bytes */
+-	recvbuf = malloc(recvbuf_size);
+-	if (recvbuf == NULL) {
+-		fprintf(stderr, "malloc() is failed.\n");
+-		exit(EXIT_FAILURE);
+-	}
+-
+-	/*
+-	 * Loop for receiving data from the server
+-	 */
+-	start_time = time(NULL);
+-	handler.sa_handler = set_signal_flag;
+-	if (sigaction(SIGHUP, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-	for (;;) {
+-		recvbyte_size = recv(sock_fd, recvbuf, recvbuf_size, 0);
+-		if (recvbyte_size < (ssize_t) 0) {
+-			if (catch_sighup)
+-				break;
+-			else
+-				fatal_error("sendto()");
+-		} else if (recvbyte_size == (ssize_t) 0)
+-			break;
+-
+-		/* client timeout */
+-		if (timeout)
+-			if (timeout < difftime(time(NULL), start_time))
+-				break;
+-
+-		/* Catch SIGHUP */
+-		if (catch_sighup)
+-			break;
+-	}
+-	if (close(sock_fd) < 0)
+-		fatal_error("close()");
+-
+-	free(recvbuf);
+-
+-	if (debug)
+-		fprintf(stderr, "Client is finished without any error\n");
+-
+-	exit(EXIT_SUCCESS);
+-}
+diff --git a/testcases/network/stress/ns-tools/ns-tcpserver.c b/testcases/network/stress/ns-tools/ns-tcpserver.c
+deleted file mode 100644
+index bfbcc0d4e5..0000000000
+--- a/testcases/network/stress/ns-tools/ns-tcpserver.c
++++ /dev/null
+@@ -1,650 +0,0 @@
+-/******************************************************************************/
+-/*                                                                            */
+-/*   Copyright (c) International Business Machines  Corp., 2005               */
+-/*                                                                            */
+-/*   This program is free software;  you can redistribute it and/or modify    */
+-/*   it under the terms of the GNU General Public License as published by     */
+-/*   the Free Software Foundation; either version 2 of the License, or        */
+-/*   (at your option) any later version.                                      */
+-/*                                                                            */
+-/*   This program is distributed in the hope that it will be useful,          */
+-/*   but WITHOUT ANY WARRANTY;  without even the implied warranty of          */
+-/*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                */
+-/*   the GNU General Public License for more details.                         */
+-/*                                                                            */
+-/*   You should have received a copy of the GNU General Public License        */
+-/*   along with this program;  if not, write to the Free Software             */
+-/*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  */
+-/*                                                                            */
+-/******************************************************************************/
+-
+-/*
+- * File:
+- *	ns-tcpserver.c
+- *
+- * Description:
+- *      This is TCP traffic server.
+- *	Accept connections from the clients, then send tcp segments to clients
+- *
+- * Author:
+- *	Mitsuru Chinen <mitch@jp.ibm.com>
+- *
+- * History:
+- *	Oct 19 2005 - Created (Mitsuru Chinen)
+- *---------------------------------------------------------------------------*/
+-
+-#include "ns-traffic.h"
+-
+-/*
+- * Standard Include Files
+- */
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <netdb.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include <sys/select.h>
+-#include <sys/socket.h>
+-#include <sys/stat.h>
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-#include <netinet/in.h>
+-#include <netinet/tcp.h>
+-
+-/*
+- * Gloval variables
+- */
+-struct sigaction handler;	/* Behavior for a signal */
+-int catch_sighup;		/* When catch the SIGHUP, set to non-zero */
+-int catch_sigpipe;		/* When catch the SIGPIPE, set to non-zero */
+-
+-/*
+- * Structure: server_info
+- *
+- * Description:
+- *  This structure stores the information of a server
+- */
+-struct server_info {
+-	sa_family_t family;	/* protocol family */
+-	char *portnum;		/* port number */
+-	int listen_sd;		/* socket descriptor for listening */
+-	int concurrent;		/* if non-zero, act as a concurrent server */
+-	size_t current_connection;	/* number of the current connection */
+-	size_t max_connection;	/* maximum connection number */
+-	size_t lost_connection;	/* number of lost connection */
+-	size_t small_sending;	/* if non-zero, in the small sending mode */
+-	size_t window_scaling;	/* if non-zero, in the window scaling mode */
+-};
+-
+-/*
+- * Function: usage()
+- *
+- * Descripton:
+- *  Print the usage of this program. Then, terminate this program with
+- *  the specified exit value.
+- *
+- * Argument:
+- *  exit_value:	exit value
+- *
+- * Return value:
+- *  This function does not return.
+- */
+-void usage(char *program_name, int exit_value)
+-{
+-	FILE *stream = stdout;	/* stream where the usage is output */
+-
+-	if (exit_value == EXIT_FAILURE)
+-		stream = stderr;
+-
+-	fprintf(stream, "%s [OPTION]\n"
+-		"\t-f\tprotocol family\n"
+-		"\t\t  4 : IPv4\n"
+-		"\t\t  6 : IPv6\n"
+-		"\t-p\tport number\n"
+-		"\t-b\twork in the background\n"
+-		"\t-c\twork in the concurrent server mode\n"
+-		"\t-s\twork in the small sending mode\n"
+-		"\t-w\twork in the window scaling mode\n"
+-		"\t-o\tfilename where the server infomation is outputted\n"
+-		"\t-d\twork in the debug mode\n"
+-		"\t-h\tdisplay this usage\n"
+-		"" "*) Server works till it receives SIGHUP\n", program_name);
+-	exit(exit_value);
+-}
+-
+-/*
+- * Function: set_signal_flag()
+- *
+- * Description:
+- *  This function sets global variable according to the signal.
+- *  Once a signal is caught, the signal is ignored after that.
+- *
+- * Argument:
+- *  type: type of signal
+- *
+- * Return value:
+- *  None
+- */
+-void set_signal_flag(int type)
+-{
+-	/* Set SIG_IGN against the caught signal */
+-	handler.sa_handler = SIG_IGN;
+-	if (sigaction(type, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-
+-	if (debug)
+-		fprintf(stderr, "Catch signal. type is %d\n", type);
+-
+-	switch (type) {
+-	case SIGHUP:
+-		catch_sighup = 1;
+-		break;
+-	case SIGPIPE:
+-		catch_sigpipe = 1;
+-		break;
+-	default:
+-		fprintf(stderr, "Unexpected signal (%d) is caught\n", type);
+-		exit(EXIT_FAILURE);
+-	}
+-}
+-
+-/*
+- * Function: delete_zombies()
+- *
+- * Descripton:
+- *  Delete the zombies
+- *
+- * Argument:
+- *  info_p:	pointer to a server infomation
+- *
+- * Return value:
+- *  None
+- */
+-void delete_zombies(struct server_info *info_p)
+-{
+-	int status;		/* exit value of a child */
+-	pid_t zombie_pid;	/* process id of a zombie */
+-
+-	while (info_p->current_connection) {
+-		zombie_pid = waitpid((pid_t) - 1, &status, WNOHANG);
+-		if (zombie_pid == (pid_t) - 1)
+-			fatal_error("waitpid()");
+-		else if (zombie_pid == (pid_t) 0)
+-			break;
+-		else {
+-			--info_p->current_connection;
+-			if (status != EXIT_SUCCESS) {
+-				++info_p->lost_connection;
+-				if (debug)
+-					fprintf(stderr,
+-						"The number of lost conncections is %zu\n",
+-						info_p->lost_connection);
+-			}
+-		}
+-	}
+-}
+-
+-/*
+- * Function: create_listen_socket()
+- *
+- * Descripton:
+- *  Create a socket to listen for connections on a socket.
+- *  The socket discripter is stored info_p->listen_sd.
+- *
+- * Argument:
+- *  info_p:	pointer to a server infomation
+- *
+- * Return value:
+- *  None
+- */
+-void create_listen_socket(struct server_info *info_p)
+-{
+-	int on;			/* on/off at an socket option */
+-	int err;		/* return value of getaddrinfo */
+-	struct addrinfo hints;	/* hints for getaddrinfo() */
+-	struct addrinfo *res;	/* pointer to addrinfo */
+-
+-	/* Set the hints to addrinfo() */
+-	memset(&hints, '\0', sizeof(struct addrinfo));
+-	hints.ai_family = info_p->family;
+-	hints.ai_socktype = SOCK_STREAM;
+-	hints.ai_protocol = IPPROTO_TCP;
+-	hints.ai_flags = AI_PASSIVE;
+-
+-	/* Translate the network and service information of the server */
+-	err = getaddrinfo(NULL, info_p->portnum, &hints, &res);
+-	if (err) {
+-		fprintf(stderr, "getaddrinfo(): %s\n", gai_strerror(err));
+-		exit(EXIT_FAILURE);
+-	}
+-	if (res->ai_next) {
+-		fprintf(stderr, "getaddrinfo(): multiple address is found.");
+-		exit(EXIT_FAILURE);
+-	}
+-
+-	/* Create a socket for listening. */
+-	info_p->listen_sd = socket(res->ai_family,
+-				   res->ai_socktype, res->ai_protocol);
+-	if (info_p->listen_sd < 0)
+-		fatal_error("socket()");
+-
+-#ifdef IPV6_V6ONLY
+-	/* Don't accept IPv4 mapped address if the protocol family is IPv6 */
+-	if (res->ai_family == PF_INET6) {
+-		on = 1;
+-		if (setsockopt(info_p->listen_sd,
+-			       IPPROTO_IPV6, IPV6_V6ONLY, &on, sizeof(int)))
+-			fatal_error("setsockopt()");
+-	}
+-#endif
+-
+-	/* Enable to reuse the socket */
+-	on = 1;
+-	if (setsockopt(info_p->listen_sd,
+-		       SOL_SOCKET, SO_REUSEADDR, &on, sizeof(int)))
+-		fatal_error("setsockopt()");
+-
+-	/* Disable the Nagle algorithm, when small sending mode */
+-	if (info_p->small_sending) {
+-		on = 1;
+-		if (setsockopt(info_p->listen_sd,
+-			       IPPROTO_TCP, TCP_NODELAY, &on, sizeof(int)))
+-			fatal_error("setsockopt()");
+-		if (debug) {
+-			fprintf(stderr, "small sending[on]\n");
+-		}
+-	}
+-
+-	/* Maximize socket buffer, when window scaling mode */
+-	if (info_p->window_scaling)
+-		maximize_sockbuf(info_p->listen_sd);
+-
+-	/* Bind to the local address */
+-	if (bind(info_p->listen_sd, res->ai_addr, res->ai_addrlen) < 0)
+-		fatal_error("bind()");
+-	freeaddrinfo(res);
+-
+-	/* Start to listen for connections */
+-	if (listen(info_p->listen_sd, 5) < 0)
+-		fatal_error("listen()");
+-}
+-
+-/*
+- * Function: communicate_client()
+- *
+- * Descripton:
+- *  Communicate with the connected client.
+- *  Currently, this function sends tcp segment in the specified second
+- *  or recevie SIGHUP
+- *
+- * Argument:
+- *  sock_fd: socket descriptor to communicate with client
+- *  info_p:  pointer to a server infomation
+- *
+- * Return value:
+- *  0:	    success
+- *  other:  fail
+- */
+-int communicate_client(struct server_info *info_p, int sock_fd)
+-{
+-	char *sendmsg;		/* pointer to the message to send */
+-	int sndbuf_size;	/* size of the send buffer */
+-	socklen_t sock_optlen;	/* size of the result parameter */
+-	ssize_t sntbyte_size;	/* size of the sent byte */
+-	int ret = EXIT_SUCCESS;	/* The return value of this function */
+-
+-	if (info_p->small_sending) {	/* small sending mode */
+-		sndbuf_size = 1;
+-	} else {
+-		sock_optlen = sizeof(sndbuf_size);
+-		if (getsockopt
+-		    (sock_fd, SOL_SOCKET, SO_SNDBUF, &sndbuf_size,
+-		     &sock_optlen) < 0) {
+-			perror("getsockopt()");
+-			if (close(sock_fd))
+-				fatal_error("close()");
+-			return EXIT_FAILURE;
+-		}
+-	}
+-	if (debug)
+-		fprintf(stderr, "sndbuf size is %d\n", sndbuf_size);
+-
+-	/* Define the message */
+-	sendmsg = malloc(sndbuf_size);
+-	if (sendmsg == NULL) {
+-		fprintf(stderr, "malloc() is failed.\n");
+-		if (close(sock_fd))
+-			fatal_error("close()");
+-		return EXIT_FAILURE;
+-	}
+-
+-	/* Set a signal handler against SIGHUP and SIGPIPE */
+-	handler.sa_handler = set_signal_flag;
+-	if (sigaction(SIGHUP, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-	if (sigaction(SIGPIPE, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-
+-	/* Send the message */
+-	for (;;) {
+-		sntbyte_size = send(sock_fd, sendmsg, sndbuf_size, 0);
+-
+-		/* Catch SIGPIPE */
+-		if (catch_sigpipe) {
+-			if (debug)
+-				fprintf(stderr,
+-					"The client closed the connection.\n");
+-			break;
+-		}
+-
+-		/* Catch SIGHUP */
+-		if (catch_sighup)
+-			break;
+-
+-		if (sntbyte_size < (ssize_t) 0) {
+-			if (errno == EPIPE) {
+-				if (debug)
+-					fprintf(stderr,
+-						"The client closed the connection.\n");
+-			} else {
+-				printf("errno=%d\n", errno);
+-				perror("send()");
+-				ret = EXIT_FAILURE;
+-			}
+-			break;
+-		}
+-	}
+-
+-	free(sendmsg);
+-	if (close(sock_fd))
+-		fatal_error("close()");
+-	return ret;
+-}
+-
+-/*
+- * Function: handle_client()
+- *
+- * Descripton:
+- *  Accept a connection from a client, then fork to communicate the client
+- *
+- * Argument:
+- *  info_p:	pointer to a server infomation
+- *
+- * Return value:
+- *  0:	    success
+- *  other:  fail
+- */
+-int handle_client(struct server_info *info_p)
+-{
+-	int ret = EXIT_SUCCESS;	/* return value of this function */
+-	int do_accept = 1;	/* if non-zero, accept connection */
+-	fd_set read_fds;	/* list of file descriptor for reading */
+-	int max_read_fd = 0;	/* maximum number in the read fds */
+-
+-	info_p->current_connection = 0;
+-	FD_ZERO(&read_fds);
+-	FD_SET(info_p->listen_sd, &read_fds);
+-	max_read_fd = info_p->listen_sd;
+-
+-	/* Catch SIGHUP */
+-	handler.sa_handler = set_signal_flag;
+-	if (sigaction(SIGHUP, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-
+-	/* Loop to wait a new connection */
+-	for (;;) {
+-		if (do_accept) {
+-			int data_sd;	/* socket descriptor for send/recv data */
+-			socklen_t client_addr_len;	/* length of `client_addr' */
+-			struct sockaddr_storage client_addr;	/* address of a client */
+-			int select_ret;	/* return value of select() */
+-			fd_set active_fds;	/* list of the active file descriptor */
+-			struct timeval select_timeout;	/* timeout for select() */
+-
+-			/* When catch SIGHUP, no more connection is acceptted. */
+-			if (catch_sighup) {
+-				do_accept = 0;
+-				if (close(info_p->listen_sd))
+-					fatal_error("close()");
+-				continue;
+-			}
+-
+-			/* Check a connection is requested */
+-			active_fds = read_fds;
+-			select_timeout.tv_sec = 0;	/* 0.5 sec */
+-			select_timeout.tv_usec = 500000;
+-
+-			select_ret = select(max_read_fd + 1,
+-					    &active_fds, NULL, NULL,
+-					    &select_timeout);
+-			if (select_ret < 0) {
+-				do_accept = 0;
+-				if (!catch_sighup) {
+-					perror("select()");
+-					ret = EXIT_FAILURE;
+-				}
+-				if (close(info_p->listen_sd))
+-					fatal_error("close()");
+-				continue;
+-			} else if (select_ret == 0) {	/* select() is timeout */
+-				if (info_p->concurrent)
+-					delete_zombies(info_p);
+-				continue;
+-			}
+-
+-			/* Accetpt a client connection */
+-			if (FD_ISSET(info_p->listen_sd, &active_fds)) {
+-				client_addr_len =
+-				    sizeof(struct sockaddr_storage);
+-				data_sd =
+-				    accept(info_p->listen_sd,
+-					   (struct sockaddr *)&client_addr,
+-					   &client_addr_len);
+-				if (data_sd < 0) {
+-					do_accept = 0;
+-					if (!catch_sighup) {
+-						perror("accept()");
+-						ret = EXIT_FAILURE;
+-					}
+-					if (close(info_p->listen_sd))
+-						fatal_error("close()");
+-					continue;
+-				}
+-				if (debug)
+-					fprintf(stderr,
+-						"called accept(). data_sd=%d\n",
+-						data_sd);
+-
+-				/* Handle clients */
+-				if (info_p->concurrent) {	/* concurrent server. */
+-					pid_t child_pid;
+-					child_pid = fork();
+-					if (child_pid < 0) {	/* fork() is failed. */
+-						perror("fork()");
+-						if (close(data_sd))
+-							fatal_error("close()");
+-						if (close(info_p->listen_sd))
+-							fatal_error("close()");
+-						do_accept = 0;
+-						continue;
+-					} else if (child_pid == 0) {	/* case of a child */
+-						int exit_value;
+-						if (close(info_p->listen_sd))
+-							fatal_error("close()");
+-						exit_value =
+-						    communicate_client(info_p,
+-								       data_sd);
+-						if (debug)
+-							fprintf(stderr,
+-								"child(%d) exits. value is %d\n",
+-								getpid(),
+-								exit_value);
+-						exit(exit_value);
+-					} else {	/* case of the parent */
+-						if (close(data_sd))
+-							fatal_error("close()");
+-
+-						++info_p->current_connection;
+-						if (info_p->max_connection <
+-						    info_p->
+-						    current_connection) {
+-							info_p->max_connection =
+-							    info_p->
+-							    current_connection;
+-							if (debug)
+-								fprintf(stderr,
+-									"The maximum connection is updated. The number is %zu.\n",
+-									info_p->
+-									max_connection);
+-						}
+-						delete_zombies(info_p);
+-					}
+-				} else {	/* repeat server */
+-					ret =
+-					    communicate_client(info_p, data_sd);
+-					if (ret != EXIT_SUCCESS)
+-						if (close(info_p->listen_sd))
+-							fatal_error("close()");
+-					break;
+-				}
+-			}
+-		} else {
+-			/* case where new connection isn't accepted. */
+-			if (info_p->concurrent)
+-				delete_zombies(info_p);
+-			if (info_p->current_connection == 0)
+-				break;
+-		}
+-	}
+-	return ret;
+-}
+-
+-/*
+- *
+- *  Function: main()
+- *
+- */
+-int main(int argc, char *argv[])
+-{
+-	char *program_name = argv[0];
+-	int optc;		/* option */
+-	struct server_info server;	/* server information */
+-	int ret = EXIT_SUCCESS;	/* exit value */
+-	int background = 0;	/* If non-zero work in the background */
+-	FILE *info_fp = stdout;	/* FILE pointer to a information file */
+-
+-	debug = 0;
+-
+-	/* Initilalize the server information */
+-	memset(&server, '\0', sizeof(struct server_info));
+-	server.family = PF_UNSPEC;
+-	server.portnum = NULL;
+-
+-	/* Retrieve the options */
+-	while ((optc = getopt(argc, argv, "f:p:bcswo:dh")) != EOF) {
+-		switch (optc) {
+-		case 'f':
+-			if (strncmp(optarg, "4", 1) == 0)
+-				server.family = PF_INET;	/* IPv4 */
+-			else if (strncmp(optarg, "6", 1) == 0)
+-				server.family = PF_INET6;	/* IPv6 */
+-			else {
+-				fprintf(stderr,
+-					"protocol family should be 4 or 6.\n");
+-				usage(program_name, EXIT_FAILURE);
+-			}
+-			break;
+-
+-		case 'p':
+-			{
+-				unsigned long int num;
+-				num = strtoul(optarg, NULL, 0);
+-				if (num < PORTNUMMIN || PORTNUMMAX < num) {
+-					fprintf(stderr,
+-						"The range of port is from %u to %u\n",
+-						PORTNUMMIN, PORTNUMMAX);
+-					usage(program_name, EXIT_FAILURE);
+-				}
+-				server.portnum = strdup(optarg);
+-			}
+-			break;
+-
+-		case 'b':
+-			background = 1;
+-			break;
+-
+-		case 'c':
+-			server.concurrent = 1;
+-			break;
+-
+-		case 's':
+-			server.small_sending = 1;
+-			break;
+-
+-		case 'w':
+-			server.window_scaling = 1;
+-			break;
+-
+-		case 'o':
+-			if ((info_fp = fopen(optarg, "w")) == NULL) {
+-				fprintf(stderr, "Cannot open %s\n", optarg);
+-				exit(EXIT_FAILURE);
+-			}
+-			break;
+-
+-		case 'd':
+-			debug = 1;
+-			break;
+-
+-		case 'h':
+-			usage(program_name, EXIT_SUCCESS);
+-			break;
+-
+-		default:
+-			usage(program_name, EXIT_FAILURE);
+-		}
+-	}
+-
+-	/* Check the family is spefied. */
+-	if (server.family == PF_UNSPEC) {
+-		fprintf(stderr, "protocol family should be specified.\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-
+-	/* Check the port number is specfied. */
+-	if (server.portnum == NULL) {
+-		server.portnum = (char *)calloc(6, sizeof(char));
+-		sprintf(server.portnum, "%u", PORTNUMMIN);
+-	}
+-
+-	/* If -b option is specified, work as a daemon */
+-	if (background)
+-		if (daemon(0, 0) < 0)
+-			fatal_error("daemon()");
+-
+-	/* At first, SIGHUP is ignored. default with SIGPIPE */
+-	handler.sa_handler = SIG_IGN;
+-	if (sigfillset(&handler.sa_mask) < 0)
+-		fatal_error("sigfillset()");
+-	handler.sa_flags = 0;
+-
+-	if (sigaction(SIGHUP, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-
+-	/* Create a listen socket */
+-	create_listen_socket(&server);
+-
+-	/* Output any server information to the information file */
+-	fprintf(info_fp, "PID: %u\n", getpid());
+-	fflush(info_fp);
+-	if (info_fp != stdout)
+-		if (fclose(info_fp))
+-			fatal_error("fclose()");
+-
+-	/* Handle one or more tcp clients. */
+-	ret = handle_client(&server);
+-	exit(ret);
+-}
+diff --git a/testcases/network/stress/ns-tools/ns-udpclient.c b/testcases/network/stress/ns-tools/ns-udpclient.c
+deleted file mode 100644
+index 149a6298f4..0000000000
+--- a/testcases/network/stress/ns-tools/ns-udpclient.c
++++ /dev/null
+@@ -1,346 +0,0 @@
+-/******************************************************************************/
+-/*                                                                            */
+-/*   Copyright (c) International Business Machines  Corp., 2005               */
+-/*                                                                            */
+-/*   This program is free software;  you can redistribute it and/or modify    */
+-/*   it under the terms of the GNU General Public License as published by     */
+-/*   the Free Software Foundation; either version 2 of the License, or        */
+-/*   (at your option) any later version.                                      */
+-/*                                                                            */
+-/*   This program is distributed in the hope that it will be useful,          */
+-/*   but WITHOUT ANY WARRANTY;  without even the implied warranty of          */
+-/*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                */
+-/*   the GNU General Public License for more details.                         */
+-/*                                                                            */
+-/*   You should have received a copy of the GNU General Public License        */
+-/*   along with this program;  if not, write to the Free Software             */
+-/*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  */
+-/*                                                                            */
+-/******************************************************************************/
+-
+-/*
+- * File:
+- *	ns-udpclient.c
+- *
+- * Description:
+- *	This is UDP traffic client.
+- *	Send UDP datagram to a server, then receive datagram from it
+- *
+- * Author:
+- *	Mitsuru Chinen <mitch@jp.ibm.com>
+- *
+- * History:
+- *	Oct 19 2005 - Created (Mitsuru Chinen)
+- *---------------------------------------------------------------------------*/
+-
+-#include "ns-traffic.h"
+-
+-/*
+- * Fixed value
+- */
+-#define MESSAGE_LEN 1000	/* The length of message */
+-#define RECVFROM_TIMEOUT  1	/* Timeout length of recvfrom() */
+-
+-/*
+- * Gloval variables
+- */
+-struct sigaction handler;	/* Behavior for a signal */
+-int catch_sigalrm;		/* When catch the SIGALRM, set to non-zero */
+-int catch_sighup;		/* When catch the SIGHUP, set to non-zero */
+-
+-/*
+- * Standard Header Files
+- */
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <netdb.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include <sys/socket.h>
+-#include <sys/stat.h>
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-#include <netinet/in.h>
+-
+-/*
+- * Function: usage()
+- *
+- * Descripton:
+- *  Print the usage of this program. Then, terminate this program with
+- *  the specified exit value.
+- *
+- * Argument:
+- *  exit_value:	exit value
+- *
+- * Return value:
+- *  This function does not return.
+- */
+-void usage(char *program_name, int exit_value)
+-{
+-	FILE *stream = stdout;	/* stream where the usage is output */
+-
+-	if (exit_value == EXIT_FAILURE)
+-		stream = stderr;
+-
+-	fprintf(stream, "%s [OPTION]\n"
+-		"\t-S\tname or IP address of the server\n"
+-		"\t-f\tprotocol family\n"
+-		"\t\t  4 : IPv4\n"
+-		"\t\t  6 : IPv6\n"
+-		"\t-p\tport number\n"
+-		"\t-b\twork in the background\n"
+-		"\t-d\tdisplay debug informations\n"
+-		"\t-h\tdisplay this usage\n", program_name);
+-	exit(exit_value);
+-}
+-
+-/*
+- * Function: set_signal_flag()
+- *
+- * Description:
+- *  This function sets global variables accordig to signal
+- *
+- * Argument:
+- *  type: type of signal
+- *
+- * Return value:
+- *  None
+- */
+-void set_signal_flag(int type)
+-{
+-	if (debug)
+-		fprintf(stderr, "Catch signal. type is %d\n", type);
+-
+-	switch (type) {
+-	case SIGHUP:
+-		catch_sighup = 1;
+-		handler.sa_handler = SIG_IGN;
+-		if (sigaction(type, &handler, NULL) < 0)
+-			fatal_error("sigaction()");
+-		break;
+-
+-	case SIGALRM:
+-		catch_sigalrm = 1;
+-		break;
+-	default:
+-		fprintf(stderr, "Unexpected signal (%d) is caught\n", type);
+-		exit(EXIT_FAILURE);
+-	}
+-}
+-
+-/*
+- *
+- *  Function: main()
+- *
+- */
+-int main(int argc, char *argv[])
+-{
+-	char *program_name = argv[0];
+-	int optc;		/* option */
+-
+-	sa_family_t family;	/* protocol family */
+-	char *server_name;	/* Name (or IP address) of the server */
+-	char *portnum;		/* port number in string representation */
+-
+-	int sock_fd;		/* socket descriptor to access */
+-	int on;			/* on/off at an socket option */
+-
+-	struct addrinfo hints;	/* hints for getaddrinfo() */
+-	struct addrinfo *res;	/* pointer to addrinfo structure */
+-	int err;		/* return value of getaddrinfo */
+-
+-	char *message;		/* Pointer to the message */
+-	char *recvbuf = NULL;	/* Pointer to the message */
+-
+-	int background = 0;	/* work in the background if non-zero */
+-
+-	debug = 0;
+-
+-	/* Initilalize the client information */
+-	family = PF_UNSPEC;
+-	server_name = NULL;
+-	portnum = NULL;
+-
+-	/* Retrieve the options */
+-	while ((optc = getopt(argc, argv, "S:f:p:bdh")) != EOF) {
+-		switch (optc) {
+-		case 'S':
+-			server_name = strdup(optarg);
+-			if (server_name == NULL) {
+-				fprintf(stderr, "strdup() failed.");
+-				exit(EXIT_FAILURE);
+-			}
+-			break;
+-
+-		case 'f':
+-			if (strncmp(optarg, "4", 1) == 0)
+-				family = PF_INET;	/* IPv4 */
+-			else if (strncmp(optarg, "6", 1) == 0)
+-				family = PF_INET6;	/* IPv6 */
+-			else {
+-				fprintf(stderr,
+-					"protocol family should be 4 or 6.\n");
+-				usage(program_name, EXIT_FAILURE);
+-			}
+-			break;
+-
+-		case 'p':
+-			{
+-				unsigned long int tmp;
+-				tmp = strtoul(optarg, NULL, 0);
+-				if (tmp < PORTNUMMIN || PORTNUMMAX < tmp) {
+-					fprintf(stderr,
+-						"The range of port is from %u to %u\n",
+-						PORTNUMMIN, PORTNUMMAX);
+-					usage(program_name, EXIT_FAILURE);
+-				}
+-				portnum = strdup(optarg);
+-			}
+-			break;
+-
+-		case 'b':
+-			background = 1;
+-			break;
+-
+-		case 'd':
+-			debug = 1;
+-			break;
+-
+-		case 'h':
+-			usage(program_name, EXIT_SUCCESS);
+-			break;
+-
+-		default:
+-			usage(program_name, EXIT_FAILURE);
+-		}
+-	}
+-
+-	/* Check the family is specified. */
+-	if (family == PF_UNSPEC) {
+-		fprintf(stderr, "protocol family isn't specified.\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-
+-	/* Check the server name is specified. */
+-	if (server_name == NULL) {
+-		fprintf(stderr, "server name isn't specified.\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-
+-	/* Check the port number is specified. */
+-	if (portnum == NULL) {
+-		fprintf(stderr, "port number isn't specified.\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-
+-	/* If -b option is specified, work as a daemon */
+-	if (background)
+-		if (daemon(0, 0) < 0)
+-			fatal_error("daemon()");
+-
+-	/* Set a signal handler against SIGALRM */
+-	handler.sa_handler = set_signal_flag;
+-	handler.sa_flags = 0;
+-	if (sigfillset(&handler.sa_mask) < 0)
+-		fatal_error("sigfillset()");
+-	if (sigaction(SIGALRM, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-
+-	/* At first, SIGHUP are Ignored. */
+-	handler.sa_handler = SIG_IGN;
+-	if (sigaction(SIGHUP, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-
+-	/* Set the hints to addrinfo() */
+-	memset(&hints, '\0', sizeof(struct addrinfo));
+-	hints.ai_family = family;
+-	hints.ai_socktype = SOCK_DGRAM;
+-	hints.ai_protocol = IPPROTO_UDP;
+-
+-	err = getaddrinfo(server_name, portnum, &hints, &res);
+-	if (err) {
+-		fprintf(stderr, "getaddrinfo(): %s\n", gai_strerror(err));
+-		exit(EXIT_FAILURE);
+-	}
+-	if (res->ai_next) {
+-		fprintf(stderr, "getaddrinfo(): multiple address is found.");
+-		exit(EXIT_FAILURE);
+-	}
+-
+-	/* Create a socket */
+-	sock_fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+-	if (sock_fd < 0)
+-		fatal_error("socket()");
+-
+-	/* Enable to reuse the socket */
+-	on = 1;
+-	if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(int)))
+-		fatal_error("setsockopt()");
+-
+-	/* Create a message */
+-	message = malloc(MESSAGE_LEN);
+-	if (debug) {
+-		strncpy(message, "Hello!", MESSAGE_LEN);
+-		message[MESSAGE_LEN - 1] = '\0';
+-	}
+-
+-	/* Prepare the buffer to store the received message */
+-	recvbuf = malloc(MESSAGE_LEN + 1);
+-	if (recvbuf == NULL) {
+-		fprintf(stderr, "malloc() is failed.\n");
+-		exit(EXIT_FAILURE);
+-	}
+-
+-	/*
+-	 * Loop for access to the server
+-	 */
+-	handler.sa_handler = set_signal_flag;
+-	if (sigaction(SIGHUP, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-	for (;;) {
+-		int recvlen;	/* lenght of recevied message */
+-		struct sockaddr_storage from_addr;	/* address of a client */
+-		socklen_t from_addr_len;	/* length of `client_addr' */
+-
+-		/* Send the message to the server */
+-		if (sendto(sock_fd, message, MESSAGE_LEN, 0,
+-			   res->ai_addr, res->ai_addrlen) != MESSAGE_LEN) {
+-			if (catch_sighup)
+-				break;
+-			else
+-				fatal_error("sendto()");
+-		}
+-
+-		/* Receive the response from the server */
+-		from_addr_len = sizeof(from_addr);
+-		alarm(RECVFROM_TIMEOUT);
+-		if ((recvlen = recvfrom(sock_fd, recvbuf, MESSAGE_LEN, 0,
+-					(struct sockaddr *)&from_addr,
+-					&from_addr_len)) < 0) {
+-			if (errno == EINTR) {
+-				if (catch_sighup) {
+-					break;
+-				} else if (catch_sigalrm) {
+-					if (debug)
+-						fprintf(stderr,
+-							"recvfrom() is timeout\n");
+-					continue;
+-				}
+-			}
+-			fatal_error("recvfrom()");
+-		}
+-		alarm(0);
+-		recvbuf[recvlen] = '\0';
+-		if (debug)
+-			fprintf(stderr, "Message is %s\n", recvbuf);
+-
+-		/* Catch sighup */
+-		if (catch_sighup)
+-			break;
+-	}
+-
+-	exit(EXIT_SUCCESS);
+-}
+diff --git a/testcases/network/stress/ns-tools/ns-udpserver.c b/testcases/network/stress/ns-tools/ns-udpserver.c
+deleted file mode 100644
+index b4bacf612c..0000000000
+--- a/testcases/network/stress/ns-tools/ns-udpserver.c
++++ /dev/null
+@@ -1,375 +0,0 @@
+-/******************************************************************************/
+-/*                                                                            */
+-/*   Copyright (c) International Business Machines  Corp., 2005               */
+-/*                                                                            */
+-/*   This program is free software;  you can redistribute it and/or modify    */
+-/*   it under the terms of the GNU General Public License as published by     */
+-/*   the Free Software Foundation; either version 2 of the License, or        */
+-/*   (at your option) any later version.                                      */
+-/*                                                                            */
+-/*   This program is distributed in the hope that it will be useful,          */
+-/*   but WITHOUT ANY WARRANTY;  without even the implied warranty of          */
+-/*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                */
+-/*   the GNU General Public License for more details.                         */
+-/*                                                                            */
+-/*   You should have received a copy of the GNU General Public License        */
+-/*   along with this program;  if not, write to the Free Software             */
+-/*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  */
+-/*                                                                            */
+-/******************************************************************************/
+-
+-/*
+- * File:
+- *	ns-udpserver.c
+- *
+- * Description:
+- *	This is UDP traffic server.
+- *	Received UDP datagram from a client, then send it to the client
+- *
+- * Author:
+- *	Mitsuru Chinen <mitch@jp.ibm.com>
+- *
+- * History:
+- *	Oct 19 2005 - Created (Mitsuru Chinen)
+- *---------------------------------------------------------------------------*/
+-
+-#include "ns-traffic.h"
+-
+-/*
+- * Standard Include Files
+- */
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <netdb.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include <sys/select.h>
+-#include <sys/socket.h>
+-#include <sys/stat.h>
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-#include <netinet/in.h>
+-
+-/*
+- * Gloval variables
+- */
+-struct sigaction handler;	/* Behavior for a signal */
+-int catch_sighup;		/* When catch the SIGHUP, set to non-zero */
+-
+-/*
+- * Function: usage()
+- *
+- * Descripton:
+- *  Print the usage of this program. Then, terminate this program with
+- *  the specified exit value.
+- *
+- * Argument:
+- *  exit_value:	exit value
+- *
+- * Return value:
+- *  This function does not return.
+- */
+-void usage(char *program_name, int exit_value)
+-{
+-	FILE *stream = stdout;	/* stream where the usage is output */
+-
+-	if (exit_value == EXIT_FAILURE)
+-		stream = stderr;
+-
+-	fprintf(stream, "%s [OPTION]\n"
+-		"\t-f\tprotocol family\n"
+-		"\t\t  4 : IPv4\n"
+-		"\t\t  6 : IPv6\n"
+-		"\t-p\tport number\n"
+-		"\t\tthe port number specified by -p option would be the first port number\n"
+-		"\t-b\twork in the background\n"
+-		"\t-o\tfilename where the server infomation is outputted\n"
+-		"\t-d\twork in the debug mode\n"
+-		"\t-h\tdisplay this usage\n"
+-		"" "*) Server works till it receives SIGHUP\n", program_name);
+-	exit(exit_value);
+-}
+-
+-/*
+- * Function: set_signal_flag()
+- *
+- * Description:
+- *  This function sets global variable according to the signal.
+- *  Once a signal is caught, the signal is ignored after that.
+- *
+- * Argument:
+- *  type: type of signal
+- *
+- * Return value:
+- *  None
+- */
+-void set_signal_flag(int type)
+-{
+-	/* Set SIG_IGN against the caught signal */
+-	handler.sa_handler = SIG_IGN;
+-	if (sigaction(type, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-
+-	if (debug)
+-		fprintf(stderr, "Catch signal. type is %d\n", type);
+-
+-	switch (type) {
+-	case SIGHUP:
+-		catch_sighup = 1;
+-		break;
+-	default:
+-		fprintf(stderr, "Unexpected signal (%d) is caught\n", type);
+-		exit(EXIT_FAILURE);
+-	}
+-}
+-
+-/*
+- * Function: respond_to_client()
+- *
+- * Description:
+- *  Recieve the client data. Then, return the data to client.
+- *
+- * Argument:
+- *  sock_fd:	socket file descriptor
+- *
+- * Return value:
+- *  None
+- */
+-void respond_to_client(int sock_fd)
+-{
+-	char *msgbuf;		/* Pointer to the message */
+-	size_t msgbuf_size;	/* size of msgbuf */
+-	ssize_t msglen;		/* the length of message */
+-	socklen_t sock_optlen;	/* size of the result parameter */
+-	struct sockaddr_storage client_addr;	/* address of a client */
+-	socklen_t client_addr_len;	/* length of `client_addr' */
+-
+-	sock_optlen = sizeof(sock_optlen);
+-	if (getsockopt(sock_fd, SOL_SOCKET, SO_RCVBUF,
+-		       &msgbuf_size, &sock_optlen) < 0) {
+-		perror("getsockopt()");
+-		close(sock_fd);
+-		exit(EXIT_FAILURE);
+-	}
+-
+-	/* Allocate the memory for a message */
+-	msgbuf = malloc(msgbuf_size + 1);
+-	if (msgbuf == NULL) {
+-		fprintf(stderr, "malloc() is failed.\n");
+-		close(sock_fd);
+-		exit(EXIT_FAILURE);
+-	}
+-
+-	/* Receive a message */
+-	client_addr_len = sizeof(client_addr);
+-	if ((msglen = recvfrom(sock_fd, msgbuf, msgbuf_size, 0,
+-			       (struct sockaddr *)&client_addr,
+-			       &client_addr_len)) < 0)
+-		fatal_error("recvfrom()");
+-	msgbuf[msglen] = '\0';
+-
+-	if (debug)
+-		fprintf(stderr, "Message is %s\n", msgbuf);
+-
+-	/* Return the message to the client */
+-	if (sendto(sock_fd, msgbuf, msglen, 0,
+-		   (struct sockaddr *)&client_addr,
+-		   sizeof(client_addr)) != msglen)
+-		fatal_error("sendto()");
+-	free(msgbuf);
+-}
+-
+-/*
+- *
+- *  Function: main()
+- *
+- */
+-int main(int argc, char *argv[])
+-{
+-	char *program_name = argv[0];
+-	int optc;		/* option */
+-	sa_family_t family;	/* protocol family */
+-	char *portnum = NULL;	/* port number */
+-	int sock_fd;		/* socket binded open ports */
+-	int background = 0;	/* work in the background if non-zero */
+-	fd_set read_fds;	/* list of file descriptor for reading */
+-	int max_read_fd = 0;	/* maximum number in the read fds */
+-	FILE *info_fp = stdout;	/* FILE pointer to a information file */
+-	int on;			/* on/off at an socket option */
+-	int err;		/* return value of getaddrinfo */
+-	struct addrinfo hints;	/* hints for getaddrinfo() */
+-	struct addrinfo *res;	/* pointer to addrinfo */
+-
+-	debug = 0;
+-	family = PF_UNSPEC;
+-
+-	/* Retrieve the options */
+-	while ((optc = getopt(argc, argv, "f:p:bo:dh")) != EOF) {
+-		switch (optc) {
+-		case 'f':
+-			if (strncmp(optarg, "4", 1) == 0)
+-				family = PF_INET;	/* IPv4 */
+-			else if (strncmp(optarg, "6", 1) == 0)
+-				family = PF_INET6;	/* IPv6 */
+-			else {
+-				fprintf(stderr,
+-					"protocol family should be 4 or 6.\n");
+-				usage(program_name, EXIT_FAILURE);
+-			}
+-			break;
+-
+-		case 'p':
+-			{
+-				unsigned long int num;
+-				num = strtoul(optarg, NULL, 0);
+-				if (num < PORTNUMMIN || PORTNUMMAX < num) {
+-					fprintf(stderr,
+-						"The range of port is from %u to %u\n",
+-						PORTNUMMIN, PORTNUMMAX);
+-					usage(program_name, EXIT_FAILURE);
+-				}
+-				portnum = strdup(optarg);
+-			}
+-			break;
+-
+-		case 'b':
+-			background = 1;
+-			break;
+-
+-		case 'o':
+-			if ((info_fp = fopen(optarg, "w")) == NULL) {
+-				fprintf(stderr, "Cannot open %s\n", optarg);
+-				exit(EXIT_FAILURE);
+-			}
+-			break;
+-
+-		case 'd':
+-			debug = 1;
+-			break;
+-
+-		case 'h':
+-			usage(program_name, EXIT_SUCCESS);
+-			break;
+-
+-		default:
+-			usage(program_name, EXIT_FAILURE);
+-		}
+-	}
+-
+-	/* Check the family is spefied. */
+-	if (family == PF_UNSPEC) {
+-		fprintf(stderr, "protocol family should be specified.\n");
+-		usage(program_name, EXIT_FAILURE);
+-	}
+-
+-	/* At first, SIGHUP is ignored. */
+-	handler.sa_handler = SIG_IGN;
+-	if (sigfillset(&handler.sa_mask) < 0)
+-		fatal_error("sigfillset()");
+-	handler.sa_flags = 0;
+-
+-	if (sigaction(SIGHUP, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-
+-	/* Set the hints to addrinfo() */
+-	memset(&hints, '\0', sizeof(struct addrinfo));
+-	hints.ai_family = family;
+-	hints.ai_socktype = SOCK_DGRAM;
+-	hints.ai_protocol = IPPROTO_UDP;
+-	hints.ai_flags = AI_PASSIVE;
+-
+-	/* Translate the network and service information of the server */
+-	err = getaddrinfo(NULL, portnum, &hints, &res);
+-	if (err) {
+-		fprintf(stderr, "getaddrinfo(): %s\n", gai_strerror(err));
+-		exit(EXIT_FAILURE);
+-	}
+-	if (res->ai_next) {
+-		fprintf(stderr, "getaddrinfo(): multiple address is found.");
+-		exit(EXIT_FAILURE);
+-	}
+-
+-	/* Create a socket for listening. */
+-	sock_fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+-	if (sock_fd < 0)
+-		fatal_error("socket()");
+-
+-#ifdef IPV6_V6ONLY
+-	/* Don't accept IPv4 mapped address if the protocol family is IPv6 */
+-	if (res->ai_family == PF_INET6) {
+-		on = 1;
+-		if (setsockopt
+-		    (sock_fd, IPPROTO_IPV6, IPV6_V6ONLY, &on, sizeof(int)))
+-			fatal_error("setsockopt()");
+-	}
+-#endif
+-
+-	/* Enable to reuse the socket */
+-	on = 1;
+-	if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(int)))
+-		fatal_error("setsockopt()");
+-
+-	/* Bind to the local address */
+-	if (bind(sock_fd, res->ai_addr, res->ai_addrlen) < 0)
+-		fatal_error("bind()");
+-
+-	freeaddrinfo(res);
+-
+-	/* If -b option is specified, work as a daemon */
+-	if (background)
+-		if (daemon(0, 0) < 0)
+-			fatal_error("daemon()");
+-
+-	/* Output any server information to the information file */
+-	fprintf(info_fp, "PID: %u\n", getpid());
+-	fflush(info_fp);
+-	if (info_fp != stdout)
+-		if (fclose(info_fp))
+-			fatal_error("fclose()");
+-
+-	/* Catch SIGHUP */
+-	handler.sa_handler = set_signal_flag;
+-	if (sigaction(SIGHUP, &handler, NULL) < 0)
+-		fatal_error("sigaction()");
+-
+-	/* Loop to wait a client access */
+-	FD_ZERO(&read_fds);
+-	FD_SET(sock_fd, &read_fds);
+-	max_read_fd = sock_fd;
+-	for (;;) {
+-		int select_ret;	/* return value of select() */
+-		fd_set active_fds;	/* list of the active file descriptor */
+-		struct timeval select_timeout;	/* timeout for select() */
+-
+-		/* When catch SIGHUP, exit the loop */
+-		if (catch_sighup)
+-			break;
+-
+-		active_fds = read_fds;
+-		select_timeout.tv_sec = 0;	/* 0.5 sec */
+-		select_timeout.tv_usec = 500000;
+-
+-		select_ret = select(max_read_fd + 1, &active_fds,
+-				    NULL, NULL, &select_timeout);
+-		if (select_ret < 0) {
+-			if (catch_sighup)
+-				break;
+-			else
+-				fatal_error("select()");
+-		} else if (select_ret == 0) {
+-			continue;
+-		} else {
+-			if (FD_ISSET(sock_fd, &active_fds))
+-				respond_to_client(sock_fd);
+-		}
+-	}
+-
+-	/* Close the sockets */
+-	if (close(sock_fd))
+-		fatal_error("close()");
+-
+-	exit(EXIT_SUCCESS);
+-}
+diff --git a/testcases/network/stress/ns-tools/output_ipsec_conf b/testcases/network/stress/ns-tools/output_ipsec_conf
+deleted file mode 100644
+index 0dbf78dfca..0000000000
+--- a/testcases/network/stress/ns-tools/output_ipsec_conf
++++ /dev/null
+@@ -1,172 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   output_ipsec_conf
+-#
+-# Description:
+-#   Output IPsec configuration
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# Exit Value:
+-#    0: Exit normally
+-#   >0: Exit abnormally
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-$trace_logic
+-
+-# Encryption algorithm
+-EALGO="3des-cbc"
+-EALGO_KEY="_I_want_to_have_chicken_"
+-
+-# Authentication algorithm
+-AALGO="hmac-sha1"
+-AALGO_KEY="beef_fish_pork_salad"
+-
+-# Compression algorithm
+-CALGO="deflate"
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function: usage
+-#
+-# Description:
+-#   Print the usage of this script, then exit
+-#
+-#-----------------------------------------------------------------------
+-usage(){
+-    cat << EOD >&2
+-output_ipsec_conf flush
+-    Flush the SAD and SPD entries.
+-
+-output_ipsec_conf target protocol mode first_spi src_addr dst_addr
+-    target: target of the configuration file ( src / dst )
+-    protocol: ah / esp / ipcomp
+-    mode: transport / tunnel
+-    first_spi: the first spi value
+-    src_addr: source IP address
+-    dst_addr: destination IP address
+-EOD
+-
+-    exit 1
+-}
+-
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Main
+-#
+-#
+-
+-# When argument is `flush', flush the SAD and SPD
+-if [ x$1 = x"flush" ]; then
+-    echo "spdflush ;"
+-    echo "flush ;"
+-    exit 0
+-fi
+-
+-# source/destination IP addresses
+-if [ $# -ne 6 ]; then
+-    usage
+-fi
+-target=$1
+-protocol=$2
+-mode=$3
+-first_spi=$4
+-src_ipaddr=$5
+-dst_ipaddr=$6
+-
+-# Algorithm options for each protocol
+-case $protocol in
+-    ah)
+-    algo_line="-A $AALGO \"$AALGO_KEY\""
+-    ;;
+-    esp)
+-    algo_line="-E $EALGO \"$EALGO_KEY\" -A $AALGO \"$AALGO_KEY\""
+-    ;;
+-    ipcomp)
+-    algo_line="-C $CALGO"
+-    ;;
+-    *)
+-    usage
+-    ;;
+-esac
+-
+-# Write lines for adding an SAD entry
+-cat << EOD
+-add $src_ipaddr $dst_ipaddr $protocol $first_spi
+-    -m $mode
+-    $algo_line ;
+-
+-add $dst_ipaddr $src_ipaddr $protocol `expr $first_spi + 1`
+-    -m $mode
+-    $algo_line ;
+-
+-EOD
+-
+-# Write lines for adding an SPD entry
+-case $target in
+-    src)
+-    direct1=out
+-    direct2=in
+-    ;;
+-    dst)
+-    direct1=in
+-    direct2=out
+-    ;;
+-    *)
+-    usage
+-    ;;
+-esac
+-
+-case $mode in
+-    transport)
+-    cat << EOD
+-spdadd $src_ipaddr $dst_ipaddr any
+-    -P $direct1 ipsec $protocol/transport//use ;
+-
+-spdadd $dst_ipaddr $src_ipaddr any
+-    -P $direct2 ipsec $protocol/transport//use ;
+-EOD
+-    ;;
+-
+-    tunnel)
+-    cat << EOD
+-spdadd $src_ipaddr $dst_ipaddr any
+-    -P $direct1 ipsec $protocol/tunnel/${src_ipaddr}-${dst_ipaddr}/use ;
+-
+-spdadd $dst_ipaddr $src_ipaddr any
+-    -P $direct2 ipsec $protocol/tunnel/${dst_ipaddr}-${src_ipaddr}/use ;
+-EOD
+-    ;;
+-esac
+-
+-exit 0
+diff --git a/testcases/network/stress/ns-tools/set_ipv4addr b/testcases/network/stress/ns-tools/set_ipv4addr
+deleted file mode 100644
+index 1ec076955b..0000000000
+--- a/testcases/network/stress/ns-tools/set_ipv4addr
++++ /dev/null
+@@ -1,95 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   set_ipv4addr
+-#
+-# Description:
+-#   Set an IPv4 address to the interface which belongs to the specified
+-#   test link
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# Arguments:
+-#   $1:	target host to set the IPv6 address
+-#	    lhost - local host / rhost - remote host
+-#   $2: number of the test link
+-#   $3:	network portion of the IPv4 address
+-#   $4:	host portion of the IPv4 address
+-#
+-# Exit Value:
+-#    0: Exit normally
+-#   >0: Exit abnormally
+-#
+-# History:
+-#   Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-# Check the environmanet variable for the test
+-. check_envval || exit 1
+-
+-# Arguments
+-if [ $# -ne 4 ]; then
+-    echo "Usage: $0 host_type link_num network_portion host_portion" >&2
+-    exit 1
+-fi
+-host_type=$1
+-link_num=$2
+-network_part=$3
+-host_part=$4
+-
+-# Check the host type
+-if [ $host_type != lhost -a $host_type != rhost ]; then
+-    echo "$0: 1st argumet is lhost or rhost" >&2
+-    exit 1
+-fi
+-
+-# Define IPv4 address, netmask and broadcast
+-addr=${network_part}.${host_part}
+-netmask=`echo $network_part | sed "s/[[:digit:]]*/255/g"`.`echo $host_part | sed "s/[[:digit:]]*/0/g"`
+-broadcast=${network_part}.`echo $host_part | sed "s/[[:digit:]]*/255/g"`
+-
+-# Assign IPv4 address to the interface belongs the link_num Test Link
+-ifname=`get_ifname $host_type $link_num` || exit 1
+-
+-if [ $host_type = lhost ]; then
+-    ifconfig $ifname up
+-    ifconfig $ifname $addr netmask $netmask broadcast $broadcast
+-    ret=$?
+-else
+-    ret=`$LTP_RSH $RHOST '( PATH=/sbin:/usr/sbin:$PATH ; ifconfig '$ifname' up && ifconfig '$ifname $addr' netmask '$netmask' broadcast '$broadcast' ) >/dev/null 2>&1; echo $?'`
+-fi
+-
+-if [ $ret -gt 0 ]; then
+-    echo "Cannot set $addr to $ifname" >&2
+-    exit 1
+-fi
 -- 
 2.53.0
 
