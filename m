@@ -4,89 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9D25F54AAF
-	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 13:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774357819; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=kVKbHXjaeYCt6cxkZAqV4rPG3xHJ9aHFngZeAyz1xZI=;
- b=Jrq1/zdLH/g9PI4rN5H/+AbmvoX9JkeTeu3+rCwZXeCJOdvMTgmFHm3QTJExFYKAO2hqr
- 7iO+pzA/EEK49KytJIfXz/ylKD1LBSjvKOzuZmraPIj9wpK8rg+epuSfES5W1toj9C1+TD3
- zB/f55n+4eE2lkN8iwvUWXGTyHskVms=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FD96F54AAF
+	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 13:18:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 61BB13E5540
-	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 14:10:19 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 09BD63E553B
+	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 14:18:33 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B44103DADA3
- for <ltp@lists.linux.it>; Tue, 24 Mar 2026 14:09:55 +0100 (CET)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
- [IPv6:2a00:1450:4864:20::42c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 858993DADA3
+ for <ltp@lists.linux.it>; Tue, 24 Mar 2026 14:18:15 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 736AC200CFC
- for <ltp@lists.linux.it>; Tue, 24 Mar 2026 14:09:55 +0100 (CET)
-Received: by mail-wr1-x42c.google.com with SMTP id
- ffacd0b85a97d-43b48ac2727so946985f8f.3
- for <ltp@lists.linux.it>; Tue, 24 Mar 2026 06:09:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1774357795; x=1774962595; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=ZiW+ifZ/2VvbATZDohvut1+98RcXe5sY7SLNf5zUOH8=;
- b=ZOs7C9mThK1fBTDdGFrhUkHuJOuG5swWimTy691kCBkZ5y5qxCZWDJwlPM+mmmuu7Q
- Tz+CK6JdgaR0Hz0gaLqOWQzUuNCRXGrsWb4kzG0qqrzqWLCv6I/a/du+3K4sJR1pEYjJ
- TYNlVcrosrgpfjnj65rmLC2gTsyU5iOvDovr6NfVswZimgGVjCAJK5d/pb5nGLg5iT9V
- rnOWOgO8ikfQTVeu5b8T8bmpgBNf0tuFRrHhAOHOzxqpXXvH7zCK8icAFlmqTBFvpy/d
- QtxCdk5QUIEK4A/+a5+VE7pA+A9dSuEhjHadxf74O8cmRxmb6U98dErlWyZ+v0LYCVS4
- JvwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774357795; x=1774962595;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=ZiW+ifZ/2VvbATZDohvut1+98RcXe5sY7SLNf5zUOH8=;
- b=Q00heM0V38Pti0q/DzHVQ+cyAk1CsuO/WZJENVHnAzCj+1Oy0HDvcaV0ordbKrZJPq
- YR5yM1al/q22jT1AuF9sjbn7dmnMQ8bdImY+S76UyNi3UkokF6d81rEwgE19mb+NyyC6
- QCWc3TzRKVPQK2dco3xbKxXJXSMMBbDNip0TLmmxde/YXVcAjYqI12KGbzUPKPzhjQEw
- aiW4r/ATYTdmXsz2lV4nr0x9nxoItf7TXo8wa/9MPJqjGh6Fe2vyLcIY4hLXBrntKrHP
- EWcGagioXl0t0yGmcO3R063CA61wmSmfprt6tsAUBFJpRc2KnLfZhBjUXbwLi8vjVbPY
- Bv1A==
-X-Forwarded-Encrypted: i=1;
- AJvYcCW5OR6P2Upr1HS6cYDBiqJs5hVU+yJxVqMh9crqly2ALXqDAUqonIYyOF8RvY0M1hPETn8=@lists.linux.it
-X-Gm-Message-State: AOJu0YxnDPQGY/WVZh/64zBhyTE8Bquxh0IvufQCXqoc1XU0LttBs7Do
- eXG+lx26SKCYx+pXEq0zjuo6kpp0anwl8H8J+rMqr40qpYFx1W+RGFOmzTd1BPCVrwwgJym9O2g
- 9BAmU0GA=
-X-Gm-Gg: ATEYQzxVeVEIxiayxqAL8J1g+9tUirtBd0oVgNBQjft/fmRwd7KUzDE6E0gYc9IYCT5
- Lgx79OPiKd7j4HDU3mwSQZrAo74YdSXNmDK1kZMIA2PaJhstR1Z0me/RCNCXDSHWnOgN99DteYe
- jYhGuqrzJ11+wRnSO06xlYBCtk9fnZmlMDs1K8fhdmcvstCCQnzjKqMR+QzGmN9zmyCMc+vlcen
- J2kmDKzCF65/X7VoB/G9QGzBPhY45ljWf7WsQsEH783LOckZ9JQTN3l4pR1lvPR3bt13Ax1/uwp
- UtXCgrXQ8fOU9fx9X2aaiHJOmn5lSWh5gSUrlsfO523Z4sYyWz/anYUOPFMOello+SU7P+1Fg3b
- WvrMVExwNXb0qJ1FdSIoQpr1AKpqieuqmqMiwNpDm+YtHJGbGuOvHc2C/nEfDnfigmv2nt9hRtN
- x84nPnArCTBaFNZk6uNpVwFd1H3jtOXMT/AxVwhb5U
-X-Received: by 2002:a5d:588c:0:b0:439:ba57:5001 with SMTP id
- ffacd0b85a97d-43b642878b8mr25274531f8f.44.1774357794662; 
- Tue, 24 Mar 2026 06:09:54 -0700 (PDT)
-Received: from localhost.localdomain ([88.128.90.14])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-43b6471a297sm37023075f8f.37.2026.03.24.06.09.54
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Mar 2026 06:09:54 -0700 (PDT)
-Message-ID: <69c28d22.df0a0220.10593c.e983@mx.google.com>
-To: "Petr Vorel" <pvorel@suse.cz>
-In-Reply-To: <20260324082047.GA36627@pevik>
-Date: Tue, 24 Mar 2026 13:09:53 +0000
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 139F3200ADB
+ for <ltp@lists.linux.it>; Tue, 24 Mar 2026 14:18:14 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4CCF44D391;
+ Tue, 24 Mar 2026 13:18:14 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D4E643E62;
+ Tue, 24 Mar 2026 13:18:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 8/UlDRaPwmkDHwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 24 Mar 2026 13:18:14 +0000
+Date: Tue, 24 Mar 2026 14:18:11 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <acKPE_1MwQhayd4O@yuki.lan>
+References: <20260323210805.20929-1-pvorel@suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260323210805.20929-1-pvorel@suse.cz>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 4CCF44D391
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] dio_read: fix infinite loop when readsize >=
- filesize
+Subject: Re: [LTP] [RFC PATCH 1/1] LTP tests: Run without
+ LTP_REPRODUCIBLE_OUTPUT=1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,23 +72,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-MIME-Version: 1.0
+Cc: valgrind-developers@lists.sourceforge.net,
+ Martin Cermak <mcermak@redhat.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Thanks for the review.
+Hi!
+> LTP_REPRODUCIBLE_OUTPUT=1 environment variable was added in 5894abc5f to
+> help valgrind to use LTP for testing. It discards the actual content of
+> the messages printed by the test (removes everything after printing
+> TINFO/TPASS/TFAIL/...  flag).
+> 
+> Later LTP_QUIET=1 was added which suppresses printing TCONF, TWARN,
+> TINFO, and TDEBUG messages. Therefore LTP_REPRODUCIBLE_OUTPUT=1 is not
+> needed any more.
 
-Merged.
+I do not think so. We still have things like pids and timestamps in
+TPASS/TFAIL messages that needs to be removed in order for the output to
+be reproducible.
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
