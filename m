@@ -4,93 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D69BBF532FD
-	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 09:08:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774343322; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=ZJC7L1qKtDtkhHm0Cvmg5lL8Y+SGAK+oi/bsZhB8BA4=;
- b=NHMgicFqXu0SxI/15obdPiON7r9rhQWn5C1rZ2/o1ehheY/fXbFhlBW6CDziLroEldT7M
- o4/vBufiSKS3xN3SLsYAEaioOXHC2dn43+K0+6Rxef9Yvn7AUiwuLOqbaMKacbiwGqjQVhZ
- 19fX7GTNJsSiUURjCk1zqZxCjNf+G5g=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C78ACE9A75A
+	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 10:40:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6607D3E3004
-	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 10:08:42 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 4018C3E4862
+	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 11:40:46 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D69923E1C51
- for <ltp@lists.linux.it>; Tue, 24 Mar 2026 10:08:18 +0100 (CET)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 364873DDAD6
+ for <ltp@lists.linux.it>; Tue, 24 Mar 2026 11:40:26 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D749610009E0
- for <ltp@lists.linux.it>; Tue, 24 Mar 2026 10:08:15 +0100 (CET)
-Received: by mail-wr1-x42b.google.com with SMTP id
- ffacd0b85a97d-43b44c0bcdbso5474890f8f.1
- for <ltp@lists.linux.it>; Tue, 24 Mar 2026 02:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1774343295; x=1774948095; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=7e/VAUcNepekmz0ORnv+AKxRsAZHsCtLzIk2T1oYo3Y=;
- b=hB12YeS4B5T6Et/0yQMbWHfRU51tsIINx3hNPpQhCr4Ig2DGdqdLpcct6SllNTjvvM
- qcrMGxxe1Xc/BgSUp2gYJB1JNLq480OO1ke9NLYFu1I0rJcTA/OQhAVr5j4tpmlLIra9
- 4b3XwvmaVok4Ynhjbuxk9HylNPfQuDKZ61mp+0ER77cPz6gR6flMc/aaImzQA0fNe1gM
- D2NauWAvg5bO43VQmSCaLwKOTusYqfxcIqotxgE+Db9q7/5wt9+ALKaNbRZsX0VkE8KE
- lfrljJh9l9ZrNqIkixkSZ9CTNECnlLVikhWCPSGVmnA2WtLzcOLiNY8hiZ8TRjFKsdF6
- 2Sog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774343295; x=1774948095;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=7e/VAUcNepekmz0ORnv+AKxRsAZHsCtLzIk2T1oYo3Y=;
- b=JaKpvqam8Rh1lYIKxaDFafOjn3EDtrb60LuB0UQsNkL9ewqpktKM4X5mA8E75s4wLa
- WhTc2GtaBZcuC7BNOmhU+YCh4gRUYYgStfdIWZaZedu6GicXMTuDdpintEtF3RYq0ElP
- tb1AGU60kqzJUQGNI7y7o9OB43eQxmXOhd9+xg4gzBaSggpxMCGWcwmjRBRD/4R8MDht
- Ctq6b3DwfYBPMTXzxc1PBOYVUZvtnjXOci75adnvUC3ouzgLNur5TRzdrRMAXukV9rHN
- rkeJMeVMr/B7Nfa+OvGQ0t1bmQnk0nVSyICYsMEhCsFYzywHmZTlr0LOwHVnN1tfNh64
- roTA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXwWJHQaMGAVX+zvc9YjWcbmvWUq6Wt6uJwSnNaUG4XML3TeeX36Ixz9r5UEXSDqvExzmE=@lists.linux.it
-X-Gm-Message-State: AOJu0Yw4mbB+MkysWer4Wf53EteHhn/rropCqzaU7OZD3Qq3ZG7haWgP
- 35F4M2vROZpBsN+RY8Net6f/sM3dG8aiN2Js7FDPXuTHsj9QYhPERDqZ/4Yx0axLLN2z4j1qMH8
- dBYV7uzM=
-X-Gm-Gg: ATEYQzwWkx6KA0529TFYbzTbQHmn4uJABSC5TzX9Sxy7+ae/FJuvGYMcjB0giOT0sCe
- rmygViyt70UemunOduCSiZxw7z6369lLIjoJf6PfpsaQV61w2RpnR0eqffnq52tD9OA3eAXBvwW
- lAb8S7roLJzeVq7IthLUaw7lLZrUoLLeAXOXz6+20Z72KzSiFa+TnwYqmDNrvmARdq0ZnXdNLc0
- wQwN4ZkWwEJS2NNiADjYuGH2pR0aME4QLi/EGYuJjboQrb/Gl23qfChVNVmX3RlbIeEP9IgZc52
- /qCFldCRB9dGmySxyVbIRw5SCjmKJ8WSrj20RpNqB80TOuIb3NDApavg4nDOVPzhH3qp7YFQ1rX
- JE7vA+gieMAJZGde0anje8MUyGxVBaqpXUYdSDCnua5Z7xgu+HZ/JLya2M8c2SLwZ6Aki0IwCUW
- Xo4CkPGeC5uOhUeW3Kb/2F2qik41QfviHDZ6Sian4x0TcrgDPdf3fJPv6U0yBKlgaOyNGar0KXI
- 4WVmf6tRFSWdGNR+zuO+vWJGHMt9NuWeHmjd1g+bZNEaFYeZ/TkxQaeQGt9YX0wK26bG3Rr9gkq
- uulT8ya9tMXc
-X-Received: by 2002:a5d:5d85:0:b0:439:ca1f:3929 with SMTP id
- ffacd0b85a97d-43b6427a394mr21819449f8f.48.1774343294747; 
- Tue, 24 Mar 2026 02:08:14 -0700 (PDT)
-Received: from p200300ef2f4fc9009d1d98240e97e0a8.dip0.t-ipconnect.de
- (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
- [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-43b644bf1c5sm39775394f8f.14.2026.03.24.02.08.13
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Mar 2026 02:08:14 -0700 (PDT)
-Message-ID: <69c2547e.df0a0220.3512dd.98fb@mx.google.com>
-To: "Petr Vorel" <pvorel@suse.cz>
-In-Reply-To: <20260324082047.GA36627@pevik>
-Date: Tue, 24 Mar 2026 09:08:12 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AC8FE1400C64
+ for <ltp@lists.linux.it>; Tue, 24 Mar 2026 11:40:25 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E9E214D1D4
+ for <ltp@lists.linux.it>; Tue, 24 Mar 2026 10:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1774348819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jjzzzWkh//P16N5GUFjtck/wStalr2nevyKZWtaW9Hs=;
+ b=d3nm7cMb6xXGArOP8PA0d6HfRH0nqO3efSm/KJfRA0AL8NecWoc+PnKGkDdBhPQGynaPU8
+ RvhiltWLUI8dZmS3iZOW3r9on+4hTiz+rvbDrnVIC/V2Z/pSz3iL4RVgotc+Pv6H4Pl67Q
+ GJxTqB5OVWMaqCSp6zHw2y6h+g/gRk8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1774348819;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jjzzzWkh//P16N5GUFjtck/wStalr2nevyKZWtaW9Hs=;
+ b=oPRSonGoMlivyH4AfjJ0bQV3zAeh5JuyhV/fPH9Q2dWawprSyczLF+UG1W9k8GtMGdnmZJ
+ n2XZsH3wsxAQcyDQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="K/uRXX9r";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=JDdDEz5U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1774348818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jjzzzWkh//P16N5GUFjtck/wStalr2nevyKZWtaW9Hs=;
+ b=K/uRXX9riy5qU0P+bQmH4Oub7gNFxPQieqB4Q+JXTCOtEta/sGiD9cv4Wos7yOUudMqMy/
+ lwMUSSTVVcrUNvRFbpdCU0lzoRSD3CaIj87NKO540A3tlGSMamZuy1EDk9ChBXGeHbZPfO
+ 6Qo+Q2EVFAJbaxF68hxkalasJ/8Q8Ns=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1774348818;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=jjzzzWkh//P16N5GUFjtck/wStalr2nevyKZWtaW9Hs=;
+ b=JDdDEz5UoaDJHIoAtmmneZ3pFoMGfUhOiSuFYsALpP2LY7fS51x332jhJmAx9Ql0kja/P1
+ N2kfvZYlABsU96Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D77CA43DC6
+ for <ltp@lists.linux.it>; Tue, 24 Mar 2026 10:40:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id eDVmNBJqwmn3cAAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Tue, 24 Mar 2026 10:40:18 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Tue, 24 Mar 2026 11:40:17 +0100
+Message-ID: <20260324104018.10834-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.52.0
+MIME-Version: 1.0
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:dkim,suse.cz:email];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ TO_DN_NONE(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns, suse.cz:mid, suse.cz:dkim, suse.cz:email]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: E9E214D1D4
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] dio_read: fix infinite loop when readsize >=
- filesize
+Subject: [LTP] [PATCH] cpuset_memory: Fix hugetlb mntpoint
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,34 +114,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+The cpuset_memory test tries to mount hugetlb filesystem on a hardcoded
+directory in the root filesystem. This doesn't work on distros with
+read-only root. Change the mountpoint to the common temp directory
+instead.
 
-> As a fix for indefinite loop LGTM. But why it happen readsize >= filesize? These
-> are related to -r and -s values, but we always use -r 512k -w 512k -s 32M.
-> I wonder why this happen only on s390x? (I'd expect ppc64le which has different
-> page size.
-> 
-> Also that means that pread() is skipped when this happen.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-I was trying to fix this sporadic failure on s390x and I discovered this bug
-in the test so I send a patch. As you said, the DOR000 might still fail.
+Tested on SLE-Micro 6.
 
-What happens at the moment is that children seem to stuck. This fix should
-reduce the amount of messages and debug it a bit better. Let's see..
+ .../cpuset/cpuset_memory_test/cpuset_memory_testset.sh   | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
+index d63950f8e..581df5c32 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_testset.sh
+@@ -44,6 +44,7 @@ HUGEPAGESIZE=$(awk '/Hugepagesize/{ print $2 }' /proc/meminfo)
+ HUGEPAGESIZE=$((${HUGEPAGESIZE:-0} * 1024))
+ 
+ MEMORY_RESULT="$CPUSET_TMP/memory_result"
++HUGETLB_MNTPOINT="$CPUSET_TMP/hugetlb"
+ 
+ # simple_getresult
+ # $1 - cpuset_memory_test's pid
+@@ -181,8 +182,8 @@ test6()
+ 		return 0
+ 	fi
+ 
+-	mkdir /hugetlb
+-	mount -t hugetlbfs none /hugetlb
++	mkdir "$HUGETLB_MNTPOINT"
++	mount -t hugetlbfs none "$HUGETLB_MNTPOINT"
+ 
+ 	save_nr_hugepages=$(cat /proc/sys/vm/nr_hugepages)
+ 	echo $((2*$nr_mems)) > /proc/sys/vm/nr_hugepages
+@@ -190,8 +191,8 @@ test6()
+ 	cpuset_memory_test --shm --hugepage -s $HUGEPAGESIZE --key=7 >"$MEMORY_RESULT" &
+ 	simple_getresult $! "$CPUSET/0"
+ 
+-	umount /hugetlb
+-	rmdir /hugetlb
++	umount "$HUGETLB_MNTPOINT"
++	rmdir "$HUGETLB_MNTPOINT"
+ 
+ 	echo $save_nr_hugepages > /proc/sys/vm/nr_hugepages
+ 	if [ $(cat /proc/sys/vm/nr_hugepages) -ne $save_nr_hugepages ]; then
+-- 
+2.52.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
