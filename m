@@ -4,85 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70E46F54AAA
-	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 13:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9D25F54AAF
+	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 13:10:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774357567; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1774357819; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=VyFzpmkhVkFV0DHo0qq+G86QGICebKWB1xx0WQ4pACc=;
- b=Ks8fRK719akv1LYo7e8N7CIxcqcMrNVupUtP7jyPklms9ECRbmC6SixuBoMgwzpnKi5LK
- 5e/ORIWYn8ioYIRjloTjGnrEbv2JI6hK1ixLbWfi4HA1d9eIF06XHD12pFRzI+F5lEfjRWy
- 1LVLtOmc5/N12bkf5bjYWhkS0YNWBqo=
+ bh=kVKbHXjaeYCt6cxkZAqV4rPG3xHJ9aHFngZeAyz1xZI=;
+ b=Jrq1/zdLH/g9PI4rN5H/+AbmvoX9JkeTeu3+rCwZXeCJOdvMTgmFHm3QTJExFYKAO2hqr
+ 7iO+pzA/EEK49KytJIfXz/ylKD1LBSjvKOzuZmraPIj9wpK8rg+epuSfES5W1toj9C1+TD3
+ zB/f55n+4eE2lkN8iwvUWXGTyHskVms=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF6103E553B
-	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 14:06:07 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 61BB13E5540
+	for <ltp@archiver.kernel.org>; Tue, 24 Mar 2026 14:10:19 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7A6723DADA3
- for <ltp@lists.linux.it>; Tue, 24 Mar 2026 14:05:45 +0100 (CET)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
+ by picard.linux.it (Postfix) with ESMTPS id B44103DADA3
+ for <ltp@lists.linux.it>; Tue, 24 Mar 2026 14:09:55 +0100 (CET)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
+ [IPv6:2a00:1450:4864:20::42c])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BA968200AF0
- for <ltp@lists.linux.it>; Tue, 24 Mar 2026 14:05:44 +0100 (CET)
-Received: by mail-wm1-x32b.google.com with SMTP id
- 5b1f17b1804b1-482f454be5bso58635745e9.0
- for <ltp@lists.linux.it>; Tue, 24 Mar 2026 06:05:44 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 736AC200CFC
+ for <ltp@lists.linux.it>; Tue, 24 Mar 2026 14:09:55 +0100 (CET)
+Received: by mail-wr1-x42c.google.com with SMTP id
+ ffacd0b85a97d-43b48ac2727so946985f8f.3
+ for <ltp@lists.linux.it>; Tue, 24 Mar 2026 06:09:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1774357544; x=1774962344; darn=lists.linux.it;
+ d=suse.com; s=google; t=1774357795; x=1774962595; darn=lists.linux.it;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=mHsniOkVbAcBgduXcp8ljUoM8jMEnjilqBTMR0OzUJY=;
- b=FGyKoAchtp9n2tHbcu2QhpETLNCeq2XRvM+oDo9lbF9U/3e1FTlorRNmx9Xg1rdzeW
- ioq1395h5unuN8rR+wOMw/uLYg0WgockuvxU/53czGGUv3waytRxHhNH8zUvVLO/h4QC
- yLTZRUxhx+xD7u0uuToCm37h6gs6PcLccrCfH63pmSYwegr+7ThPcnqa81kpuWgsBisn
- /7st3Tx5EbcLatBnoqyCh+2GHW5Pgcs/UJVhE9FtgwMoBUZ5VMs3PdwyD/y4BQn2+anQ
- FY8qI2cWaN5SE7VT+ppcifGlEbQuICLBBkKQvMEOlAdRtMvo6DV0w1g04SLOQnM+Ya4b
- UqrA==
+ bh=ZiW+ifZ/2VvbATZDohvut1+98RcXe5sY7SLNf5zUOH8=;
+ b=ZOs7C9mThK1fBTDdGFrhUkHuJOuG5swWimTy691kCBkZ5y5qxCZWDJwlPM+mmmuu7Q
+ Tz+CK6JdgaR0Hz0gaLqOWQzUuNCRXGrsWb4kzG0qqrzqWLCv6I/a/du+3K4sJR1pEYjJ
+ TYNlVcrosrgpfjnj65rmLC2gTsyU5iOvDovr6NfVswZimgGVjCAJK5d/pb5nGLg5iT9V
+ rnOWOgO8ikfQTVeu5b8T8bmpgBNf0tuFRrHhAOHOzxqpXXvH7zCK8icAFlmqTBFvpy/d
+ QtxCdk5QUIEK4A/+a5+VE7pA+A9dSuEhjHadxf74O8cmRxmb6U98dErlWyZ+v0LYCVS4
+ JvwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774357544; x=1774962344;
+ d=1e100.net; s=20251104; t=1774357795; x=1774962595;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=mHsniOkVbAcBgduXcp8ljUoM8jMEnjilqBTMR0OzUJY=;
- b=IUTlV3tZkzoQFqSGdjugbll73SowaJkyCWodjULeQvgkPIL3T5LW4l0U1uG1zzIlLj
- cQmhORb3hV7Ss25EtMiXDCGzPzX3/W59LQjN8wvdXLZa/i38mK0ueV3pS6cuSDrPP+Js
- 861ASZe+rQqpneWXModdUKvTvoTnQDlB3SA4ge+/V9RBvnH2EAVvyzCQf18G/ZdJZLw5
- mf0/Dj+SgOZynO2e4P+PxgZWALB0ofiKxxml8mXhNUeZu2AdBDTlG/gmeiYHfcAag/uT
- nAjVYqi19cPSUDY7Fj1CnJBgNDitt9gV9B4Lfer/mZMOQcxYUwYJQdKRvUPdawyDZQfM
- wlcQ==
-X-Gm-Message-State: AOJu0YyJSiDW4cKpZnUmXYLbKKZ1TT0/5lQeZeCFSZ6kWh1Pl8krXiKQ
- 9D/NsQrvIuS3sVZjYDA4y8AHq6wFEu3uEWPCSY3LpXUG9KiPg5/GsLUzKim159vDC84=
-X-Gm-Gg: ATEYQzwPtCNpCc4njASRYIzEjBEH84GPUTb7M9M1r3zcQXbbnVQ1qWbIhv0Rsk/Mj6b
- eSxyWwuzVNPTsps4LWardsvqflRgrvRyYhEvCxf7SlR+JmXJKUBb0SJVn1P9zJZDpA9tPN69POP
- mPxa5Y/qQUAHOGW61MJg8CvWGq9cefbsRW9xIAq5lrGAKvepYMgZ93QsQAEW97zk4W67P+tdIr5
- pQBZgoN2h4U+BvIJb3MhdvWOJjoHWyPYFdFibYlUGPQe70SOfuQjpIk1XCcItC4obZn6d5z0EEb
- qJIyN0vzNHvCl4Mp4pDow1UWZMmDkKn/YPNid3TjQv/I+ZlU3UdRHyZl68gwfCZYJwFaF5SZFd2
- hDHMNoqac+Q5sLqeQYP9Y0sMK20AIWezaJOnf1tdZHE7e08r4LqsX5yWqTdbi55Hrip/PBEB5ac
- SU8dQp7bADRjeIHmoFd/KRwx5idJF6pKyhGrVGulfX
-X-Received: by 2002:a05:600c:4e13:b0:486:fbc4:8fe2 with SMTP id
- 5b1f17b1804b1-4870f22485fmr48756805e9.15.1774357543619; 
- Tue, 24 Mar 2026 06:05:43 -0700 (PDT)
+ bh=ZiW+ifZ/2VvbATZDohvut1+98RcXe5sY7SLNf5zUOH8=;
+ b=Q00heM0V38Pti0q/DzHVQ+cyAk1CsuO/WZJENVHnAzCj+1Oy0HDvcaV0ordbKrZJPq
+ YR5yM1al/q22jT1AuF9sjbn7dmnMQ8bdImY+S76UyNi3UkokF6d81rEwgE19mb+NyyC6
+ QCWc3TzRKVPQK2dco3xbKxXJXSMMBbDNip0TLmmxde/YXVcAjYqI12KGbzUPKPzhjQEw
+ aiW4r/ATYTdmXsz2lV4nr0x9nxoItf7TXo8wa/9MPJqjGh6Fe2vyLcIY4hLXBrntKrHP
+ EWcGagioXl0t0yGmcO3R063CA61wmSmfprt6tsAUBFJpRc2KnLfZhBjUXbwLi8vjVbPY
+ Bv1A==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCW5OR6P2Upr1HS6cYDBiqJs5hVU+yJxVqMh9crqly2ALXqDAUqonIYyOF8RvY0M1hPETn8=@lists.linux.it
+X-Gm-Message-State: AOJu0YxnDPQGY/WVZh/64zBhyTE8Bquxh0IvufQCXqoc1XU0LttBs7Do
+ eXG+lx26SKCYx+pXEq0zjuo6kpp0anwl8H8J+rMqr40qpYFx1W+RGFOmzTd1BPCVrwwgJym9O2g
+ 9BAmU0GA=
+X-Gm-Gg: ATEYQzxVeVEIxiayxqAL8J1g+9tUirtBd0oVgNBQjft/fmRwd7KUzDE6E0gYc9IYCT5
+ Lgx79OPiKd7j4HDU3mwSQZrAo74YdSXNmDK1kZMIA2PaJhstR1Z0me/RCNCXDSHWnOgN99DteYe
+ jYhGuqrzJ11+wRnSO06xlYBCtk9fnZmlMDs1K8fhdmcvstCCQnzjKqMR+QzGmN9zmyCMc+vlcen
+ J2kmDKzCF65/X7VoB/G9QGzBPhY45ljWf7WsQsEH783LOckZ9JQTN3l4pR1lvPR3bt13Ax1/uwp
+ UtXCgrXQ8fOU9fx9X2aaiHJOmn5lSWh5gSUrlsfO523Z4sYyWz/anYUOPFMOello+SU7P+1Fg3b
+ WvrMVExwNXb0qJ1FdSIoQpr1AKpqieuqmqMiwNpDm+YtHJGbGuOvHc2C/nEfDnfigmv2nt9hRtN
+ x84nPnArCTBaFNZk6uNpVwFd1H3jtOXMT/AxVwhb5U
+X-Received: by 2002:a5d:588c:0:b0:439:ba57:5001 with SMTP id
+ ffacd0b85a97d-43b642878b8mr25274531f8f.44.1774357794662; 
+ Tue, 24 Mar 2026 06:09:54 -0700 (PDT)
 Received: from localhost.localdomain ([88.128.90.14])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-487116ac0a8sm92389145e9.6.2026.03.24.06.05.42
+ ffacd0b85a97d-43b6471a297sm37023075f8f.37.2026.03.24.06.09.54
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Mar 2026 06:05:43 -0700 (PDT)
-Message-ID: <69c28c27.050a0220.1f29e8.ce4b@mx.google.com>
-To: "Piotr Kubaj" <piotr.kubaj@intel.com>
-In-Reply-To: <20260323140851.197426-2-piotr.kubaj@intel.com>
-Date: Tue, 24 Mar 2026 13:05:42 +0000
+ Tue, 24 Mar 2026 06:09:54 -0700 (PDT)
+Message-ID: <69c28d22.df0a0220.10593c.e983@mx.google.com>
+To: "Petr Vorel" <pvorel@suse.cz>
+In-Reply-To: <20260324082047.GA36627@pevik>
+Date: Tue, 24 Mar 2026 13:09:53 +0000
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v13] thermal: add new test group
+Subject: Re: [LTP] [PATCH] dio_read: fix infinite loop when readsize >=
+ filesize
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,62 +100,17 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Andrea Cervesato via ltp <ltp@lists.linux.it>
 Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
- helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
+Cc: Linux Test Project <ltp@lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Piotr,
+Thanks for the review.
 
-> +				ptr = endptr;
-> +				tst_res(TDEBUG, "interrupts[%d]: %ld", i, interrupts[i]);
+Merged.
 
-`interrupts` is uint64_t*, so we should use %ul instead.
-
-> +static void run(void)
-> +{
-> +	for (int i = 0; i < tz_counter; i++) {
-> +		if (x86_pkg_temp_tz[i])
-> +			test_zone(i);
-> +	}
-> +	read_interrupts(interrupt_later, nproc);
-> +
-> +	for (int i = 0; i < nproc; i++) {
-> +		if (interrupt_later[i] < interrupt_init[i])
-> +			tst_res(TFAIL, "CPU %d interrupt counter: %ld (previous: %ld)",
-> +				i, interrupt_later[i], interrupt_init[i]);
-
-We always consider TFAIL when counter decreases, but we never consider when
-it increases. Is there a reason for that?
-
-> +	}
-> +
-> +	if (temp <= temp_high)
-> +		tst_res(TFAIL, "Zone temperature is not rising as expected");
-> +	else
-> +		tst_res(TPASS, "x86 package thermal interrupt triggered");
-> +}
-
-I also have other questions in here. Why are we considering only the
-last zone temperature? Is there a reason for it, or we should save all
-temperature for all zones and eventually verify temperature increased
-specifically for each one of them?
-
-Because in a single socket system (I guess) we have one single
-temperature for all the zones, but on i.e. dual socket server, this
-test would verify that only the last zone has increased temperature
-above the higher level. And this is wrong, according to the goal of
-this test. We want to verify that kernel is correctly working for all 
-systems, correctly increasing the thermal counter for each thermal
-zone. If this is correct, `temp` and `temp_high` should be an array,
-where each item is associated to a zone, and it should be processed
-only at the end for TPASS/TFAIL.
-
-
-Kind Regards,
 --
 Andrea Cervesato
 SUSE QE Automation Engineer Linux
