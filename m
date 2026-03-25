@@ -4,90 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AE00103A99F
-	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 10:47:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774435650; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=1M512MSDtn2ZJ2+asC5Xm4c0yEPULN9jSzA2tLISa7Q=;
- b=jccXPuyhZYmQrnSFgPXN6GJvZXmpvs5uUl929b+GALzQgkld6pZ+71ck+mao6kUxWrqEf
- fgrnfQvCZx14WwmhwN/K05WxAuFKOxbktYIoOHHai52NEjA/06zNlnzyZyEstm3eBUCjbw4
- +8OOo8r4t5RdzPOnHgLR3ZcjRN5SY1g=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95AD8103A9A4
+	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 10:52:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 082043E2FFB
-	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 11:47:30 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 37CDF3E551F
+	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 11:52:06 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A17373E2AD6
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 11:47:07 +0100 (CET)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 5C0563D0E81
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 11:51:48 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0986C600E46
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 11:47:07 +0100 (CET)
-Received: by mail-wm1-x332.google.com with SMTP id
- 5b1f17b1804b1-4853e1ce427so53080955e9.3
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 03:47:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1774435626; x=1775040426; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=+QFk6ZnBlZ//tap8U2fhMQSj/s5VTayBty3cuJ5LAp0=;
- b=ZWTaKBPpA4zGLOceYbEn0XW5antbpE3iMCHHww4POPcayeO7u2NnGAZ+9tNGxQL1ci
- VcVZe3JWRsn63Fzb0gqbMk9GIgHD+koheapyEY4EUReZM1nbtRf8gF177NiPmVgUgySb
- 0gJ5us7tIRJey5p0wQEPWodOOCRE/JBojvbyaPMA1Fe6F1wkrV+353YXLjadt9/d0pnj
- qRLXYEmOzwlC3BfyEWu32lCbKSvQpAcprlPpZT0pbMj2BvmTbKC7Px7vc3sy2R8HXA4I
- WBbmAJIN52n48iT1frJ8oyusXBNxxSmEKDBXIlwFuoQap6i4/abs3TzFkV9WvPPmD01a
- jvQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774435626; x=1775040426;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=+QFk6ZnBlZ//tap8U2fhMQSj/s5VTayBty3cuJ5LAp0=;
- b=lYrt+uET1fxfrteGdhhlmPuQtP08xWJ0oMn0bjwTCusW/FP92hRp9Le53W3sGQUTsY
- U5mfm9OZLUsWw3SYv3dUCE20CIXsuzMHpr0G/W9FiPALeHwDiuTuzHKhKwJf174zoBx3
- 9IHSUjqb6liKd5zeoD/FQTYIetEycEpsTzVaqWkeZz7P8qD3YMRp7BCf3ncLNQ5rmpNA
- g+FY1RITEg2DMH51mXq07O1fMisbdMl8aATo7Z3qUBY2XSDGvM3vUW36bZYN94Hg0en+
- HRnSe4jSbnaz4YfNcR2JOGlhUUkdlzp5n2MSFKqXrmT8zkKFAuwUrzdWEXZf8+d2x1at
- m85w==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUCh8P0bIZoud0ugxtFmmT9Ie9hpqYFQsq0d4BMvbgcQwm/JFqjSkKyG3PTCAO9ugP6sW4=@lists.linux.it
-X-Gm-Message-State: AOJu0YxKXBQeEkLelRY+/e2tu9LD5keKmwiFK1XHO1FRH+0W+aVrkhLG
- dsNM5RalUFZ6n77YF/JdlOMZAeCMvPZrVLoiditz5Qw+qnoTpZ4fcocM3PU0nStHQiY=
-X-Gm-Gg: ATEYQzwxp3YjW3FLH4xSFiLu2hlcrZ3IHChrTI9XstZxJCTvis8d2lwj4neha34fP+8
- YKmLA6xJMfcGO7d6M18GXoqbfJY5FMKPuoSCPhkk+SjQDk0WqmOTZ8xtYYk8wnsmDum64e2gbgI
- xgXRq6aNV2uf02YtK5Q5HYRPn8CQ+iouD9NsCHexRHvxWfVovHYV2intSHRh9bUz5fSDn5VU9t0
- R6rLP/R4Reu65qynYxAyj4a+DgqPlYQNt1ewc0/nPm2/50TroKhCBi2MY2Wc9EopTE5Sk9csIbA
- Tm5nl6vSB3MslT3xHdPbggUR3LJ/+1SZZHNvWVOLCyuZPYJeau1UZ/VQEZOf+m5xfImL1dFIieA
- RNjRTDZZZEqpV+3CSdVqINXmaBH3WooM7qFb8f7AkVIKvKkZ9qLaeTYmp92ljwfaJ2ok2GACSg4
- Mz+ZHCcxVFubzgKb5R3WftEYqL1V4QuAuq75YUy/IAGVoujsRSRaEUafZjfbq2OoOvbZmAH/bPY
- /adybuSiZ9n21KlXL55X5mOkpBZXTqORRkVH+joyPRk90FpoieA6p0dx2FPEEHhccvhidSvVHr6
- Jg==
-X-Received: by 2002:a05:600c:c086:b0:485:30d4:6b9e with SMTP id
- 5b1f17b1804b1-487160564dfmr30465375e9.21.1774435626309; 
- Wed, 25 Mar 2026 03:47:06 -0700 (PDT)
-Received: from p200300ef2f4fc9002ac0653bb49440e6.dip0.t-ipconnect.de
- (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
- [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-48717341e29sm17594825e9.15.2026.03.25.03.47.05
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 25 Mar 2026 03:47:05 -0700 (PDT)
-Message-ID: <69c3bd29.050a0220.e1178.617b@mx.google.com>
-To: "Jan Polensky" <japo@linux.ibm.com>
-In-Reply-To: <acO7fmOx60tVMfIL@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
-Date: Wed, 25 Mar 2026 10:47:04 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8E1D46000E2
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 11:51:47 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 439495BD52;
+ Wed, 25 Mar 2026 10:51:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1774435906; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ODuj8ushU1FR1SpTeA4hPz2hLXI7TLUi7zwWElJooYE=;
+ b=spNGzJ1+ajbcUvbgak0zsGdfqotUR6EAgJBYBQOuKBHd6JWb90O085qg8o6WNRz4Tn7jyS
+ 2L6r3Oo+Da+KJBNUOw8NJH7hPmXIuaob7svch/T0E52w3rZvRfzXxM/sru4qtIC3uM39HG
+ K08LYN2UPFDxTZ1Hx1tFERbRGSALyFw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1774435906;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ODuj8ushU1FR1SpTeA4hPz2hLXI7TLUi7zwWElJooYE=;
+ b=Lto4fIRLof0FUuucU0MqgvyW1PuLefc8WgifUdo5ngzK4v6N/A9+rB17cete1yt01cEwI+
+ ZK7MNQyVpJIK8zCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1774435906; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ODuj8ushU1FR1SpTeA4hPz2hLXI7TLUi7zwWElJooYE=;
+ b=spNGzJ1+ajbcUvbgak0zsGdfqotUR6EAgJBYBQOuKBHd6JWb90O085qg8o6WNRz4Tn7jyS
+ 2L6r3Oo+Da+KJBNUOw8NJH7hPmXIuaob7svch/T0E52w3rZvRfzXxM/sru4qtIC3uM39HG
+ K08LYN2UPFDxTZ1Hx1tFERbRGSALyFw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1774435906;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ODuj8ushU1FR1SpTeA4hPz2hLXI7TLUi7zwWElJooYE=;
+ b=Lto4fIRLof0FUuucU0MqgvyW1PuLefc8WgifUdo5ngzK4v6N/A9+rB17cete1yt01cEwI+
+ ZK7MNQyVpJIK8zCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1DE684436F;
+ Wed, 25 Mar 2026 10:51:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id clEFBUK+w2kdZQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 25 Mar 2026 10:51:46 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 25 Mar 2026 11:51:45 +0100
+MIME-Version: 1.0
+Message-Id: <20260325-compile_flags_gitignore-v2-1-87b8bdabd676@suse.com>
+X-B4-Tracking: v=1; b=H4sIAEC+w2kC/4WNUQqDMBBEryL73ZQkopV+9R5FxCabuGCNZG1ok
+ dy9qRfo5xtm3uzAGAkZrtUOERMxhaWAPlVgpnHxKMgWBi11K2vdCBOeK804uHn0PHjayC8hojB
+ K2861DTptoazXiI7eh/neF56ItxA/x1FSv/S/MymhxENarC+IozHdjV+M51KHPuf8BfUTrHi9A
+ AAA
+X-Change-ID: 20260325-compile_flags_gitignore-c12d8f65ef2d
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1774435906; l=1030;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=ch9g2RinjAEbbTucV77gW5WiTZS8USRwRKR8hAqBiDA=;
+ b=giMygKGVZduiEz00vPIdA7SjBtf0itefF6X1Nl9NUMUohqXa+6X9EZOZhaaONsEF1UBNDezgu
+ NcRipDsrpOyDLj1Gr1qrlW7Z/q4FT8vXzGeeN+ZP2nONVlZy+zIhv4r
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ URIBL_BLOCKED(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo]; 
+ TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid, suse.com:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Add compile_flags.txt to gitignore file
+Subject: [LTP] [PATCH v2] Add cglangd specific files to gitignore
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,29 +116,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-> One thought: `compile_commands.json` (the compilation database) is also
-> commonly generated locally (e.g. with bear, compiledb), and not
-> necessarily in the repository root (often in a build directory). Since
-> the intent here is to prevent accidental inclusion in patch series, would
-> it make sense to ignore that filename as well?
+Add rule to ignore clangd LSP configuration from local repository.
 
-I think it's a good idea, thanks. Will send v2.
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Clangd is extensively used by IDEs and generic LSP wrappers to setup
+clangd configuration. This patch removes it from gitignore so we can
+safely avoid it gets into the patch-set when it's sent.
+---
+Changes in v2:
+- add compile_commands.json
+- Link to v1: https://lore.kernel.org/r/20260325-compile_flags_gitignore-v1-1-b0de37eeacc8@suse.com
+---
+ .gitignore | 2 ++
+ 1 file changed, 2 insertions(+)
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+diff --git a/.gitignore b/.gitignore
+index 24f4a4ea834e0b919e640e879fe5e5b5d7aec466..139ecded5fa0a47a12b97eac6ebf432cbe5e5c11 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -60,3 +60,5 @@ patches/
+ logfile.*
+ 
+ /utils/benchmark/ebizzy-0.3/ebizzy
++/compile_flags.txt
++/compile_commands.json
+
+---
+base-commit: b874b6a264cf4f343c17d543ebe4ff91fbb89042
+change-id: 20260325-compile_flags_gitignore-c12d8f65ef2d
+
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
