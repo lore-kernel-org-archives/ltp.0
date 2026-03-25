@@ -4,80 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E872106B518
-	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 12:22:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00EE5106B518
+	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 12:24:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1774441481; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=RyS7WCaInDJ7Ku82vvr4fVGukfMUCZgUpJhoKgB3Arg=;
+ b=ofbOVs/F7zmVC8PzSD2pjf6XbrwsNtPQXwrIGDNPCyl3WeQjE0DgEFO930kpZYmDz4kEE
+ 8J61iFc04VWpgMRfdFaDfmFyofwOqKviMfL7gyzEdaSE+wHTXusHLXH9A7ELE7BZ6ndKG0m
+ Ar7fB6GyhrL8RhLK+YRqEhSXDBb2guc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 18CFA3E2FFB
-	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 13:22:51 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id B3BCA3E2FFD
+	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 13:24:41 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CDF303E143F
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 13:22:32 +0100 (CET)
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com
- [IPv6:2607:f8b0:4864:20::1044])
+ by picard.linux.it (Postfix) with ESMTPS id C9A5B3C041A
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 13:24:18 +0100 (CET)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 556162003B7
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 13:22:32 +0100 (CET)
-Received: by mail-pj1-x1044.google.com with SMTP id
- 98e67ed59e1d1-35a1f549e7eso2940805a91.0
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 05:22:32 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D3A4C140122B
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 13:24:17 +0100 (CET)
+Received: by mail-wm1-x333.google.com with SMTP id
+ 5b1f17b1804b1-486fc4725f0so8741755e9.1
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 05:24:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1774441351; x=1775046151; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=cchd8EY3LQZrecvPfqdSCw1FSJxa+On/v7sif/CBCMA=;
- b=a1YcgR+tkuITu8XHzrj+q0ZT2wJ9Rg1NsoukdTMrnVKSOFYtxqubNbhIx9dI5OmUnS
- wcukoCi/JB+0dL3ebrQjohp/zGZAP+LGOuayAhXUX4P3Jb7Z1epYYGYtI9z/zgrq7xZ1
- Du/fTCM2nYgIBA9cmvkIE5MtI5+uA5Zhp6YWYiNl0DjKZAuReNkOH+D/69mN7XnMDyrL
- klvDjZks8pWL29sTRbqLzfujWU1+EXBTbZJkZeQ7GbhUuF4WyGm8TyoRlcQwAG/gAMhf
- fyTTnKrfBU2P5CpFYkgeAddxIYxjOnBUvnB14G6khdssto3xVPwMc7V/e7lAoyHkzQ/E
- NEUg==
+ d=suse.com; s=google; t=1774441457; x=1775046257; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=i/qqhjvYN6EMdYJV/6VObMoJyeuR8l6FU81DhL6DV8g=;
+ b=U0Q0H4p5KU2zC/jmCi4m5vM5f5OVwhq2wR2k728nct13OshN7EoaWyidD/XK7Xho52
+ vO7Ev4N5LpA4b1uUHfFFfYq8/YaScnweytJVTcHAo9Crw24zcEoLXhQdIZ6/9nQxPcfY
+ rwkx6caU55wqMRKqKpAvV3yUqgpy6d5jrg04I7GFcZ23n/gaUa50FReaGcwhmB6RNv+V
+ BULvT6e19AHNjUqfWpSMaysXTQHHG7/PXrC735lHlxmUNxQYATvxpFTJxJod+wIv3i/D
+ E4bgAJFolgvlWrUVscX9rCyrntKlrcDgIOamulx+qhX7rbK0GK/D+IwKaryuBssN4ikC
+ SqnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774441351; x=1775046151;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=cchd8EY3LQZrecvPfqdSCw1FSJxa+On/v7sif/CBCMA=;
- b=kctYtPf/sNXXk3dNdkUUm+WfmahyqWEBjCvAuAuNECi9xBSoYyqAteuG6Y5CKjRJ8B
- 0Ik7YLQ/oKNPLCNCINjPZTLepHRg3CDnCS03w6fMzH2UFR8psaHK//pmhTLDSZTuHx14
- yRYMj4uzHVUGUByXGhRDa8QMvdtrsW64V9JnXV7O4ytmPACJxf5UjWbnBubL+k04Iuel
- DA26ecUGQ35zzyKxXVBBF8w/x9gZmWZ2fdEALLkXW8X+fyM1bxB7bsBZ2hs3M3nvdU1d
- DtMihz9mdrNSLTBpDSZvGI+noPLdtHO2Dt97utAUklzrL0mkZySRqUcg+lRiTEMLtNsg
- Zjqg==
-X-Gm-Message-State: AOJu0YxizLhBPi+mbJ7cCp1frP5w+MnucxcLoiUlbhKfsUPgwN1NORUq
- lXsJvwozN12EtQyftLPLlJ0IpCb2nVv//WI8WBo29Vsq5Sj2K+N50ZkWKD5uhc0lOQ==
-X-Gm-Gg: ATEYQzwgZqLNpI0eWPzRhlibMV2X8dZe4qOrNJln8jzRMoI6hVFqjeSdQTcg1ab3rTA
- yPQr2C9gaievzBK6q+V30+OpAz3N07KP98rJhCMIwMpQuQS/8bJEK/f8JgsMBRXOtGHDsrODAd5
- gSBkzUkppcfNyP9SoGDbR8+Mgo+efeF+/z1xtdUN3qlcgLH4lRPY5vpFKG/45x+Biktp2c+wPja
- 5l6QLajz5YrasU5MU+f7qYpAHJF0Ub4tTAEwCDVxeTO0dCJP++avtzEc9Z+63gykfws/DNfuiHp
- 0qzpifx3aALiDDYQS2pCd22nFetN/hs4FVjtRH+GP5Xm2B1m6miGndHJ1rntkMHQxvY39GsRu7R
- y3SQ8TnjSScpBWja/INytjE760XarU4WcCZAWPvz0lVeR4LEFajnzKpc3VAw8J9dWrCjXKMs2Yp
- Ks5Aso86nsb/wUu2EcsZFHdUveutOViJneMwFEcmjG301V
-X-Received: by 2002:a17:90b:2dd2:b0:35c:854:d1d0 with SMTP id
- 98e67ed59e1d1-35c0dd94e96mr3029293a91.26.1774441350643; 
- Wed, 25 Mar 2026 05:22:30 -0700 (PDT)
-Received: from localhost.localdomain ([211.196.223.197])
+ d=1e100.net; s=20251104; t=1774441457; x=1775046257;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=i/qqhjvYN6EMdYJV/6VObMoJyeuR8l6FU81DhL6DV8g=;
+ b=i2PDfjIw94vPoM0elwmCruzZB6Ec+0aDkkMS+T8SZmbmm7sxipPKQK9G5CyKji6w1s
+ nfQ08mUqg+WIk79fYuHCKnMra+XvB5tKbyh1EkuJZ4QAzgFjP/5hwSRKte381E1W7Cnn
+ kAAOpYRKQsO2MQqje1Uf1aNjCR70daooRmXnoXJy1AUErTBP6/8xpn2UtPhJNNziXf38
+ Ce6AoC3R+Xv8UmpemtE+dQXqkYqAHOGlu4b6oHwI4QZx7sNmp2jmeBAltQ69OeSDDYdl
+ LjZdStTAxa7TR5PSst+bN/iLIydH4oNFWr9aBA3cVhQWT6tF3InqxlDzWwtgi2Ma/d/w
+ b+AQ==
+X-Gm-Message-State: AOJu0YyT1TPV80DSmoY1Hc4gn7YTP1HYeUYG7AgXGumYRDPEMgxxY0Dz
+ IgUnoKg/0h4TpXv0PBfyUBAS3531q3rb/yhj3p5S5lWJASLldqWxETf5QkADZTRHwJ0=
+X-Gm-Gg: ATEYQzwhp5rvTwguJom7Yzdk5VwGPq1axaw5JCtKnrb6MHzdJjvtBy+Rl/SHiQjs3zM
+ 33j1Lxmo1Urr998m5sjeF3pY8K0J43IOdUBVsYDrHFj2QSKpkLV8qfPgyGzAd/wfGLb/0tpM6nA
+ jmEMT10MBx5sbbJvYZKgtLyT/s9BZGnjBIm+Lb3HQhve/rfpq/iFHGcKyekd0/9cPNyl7bOppEG
+ uWphAmrDYkn388EjuLycijmGrpGf7dTuybXhSedNtg73l+fdH6CvKQr9rJ7ali45jemE49vkVSm
+ hwzmkIQS5R5I/I8pSkABhpKV3fHkhWsdS11r00sDDUzwza1wgWBQLcQCySAbf51csIP2UzvXpBf
+ hDvKkMw7pEb63S8w0lMczeqQWzo1+a9+ZcKACE9urjtXXZYLvUpl8HO4YIdZDzVtdd+l6U38rhh
+ mXJl/RuGYBFsDOjCf3gqcsxYYMWfrZBySQua/+9KUGmWCS6BhE/TvENKF+a1/c5t7/grqw4bYLo
+ QbnF0wTrARjzln7qm4ljh7ivYLYsK/QGVslqFhqIxafF8LzLuKc85YUDjqYEC2zwBTzjSQc2YKO
+ Vw==
+X-Received: by 2002:a05:600c:524f:b0:485:fbd2:f72 with SMTP id
+ 5b1f17b1804b1-48715fc76bdmr43265625e9.1.1774441456542; 
+ Wed, 25 Mar 2026 05:24:16 -0700 (PDT)
+Received: from p200300ef2f4fc9002ac0653bb49440e6.dip0.t-ipconnect.de
+ (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
+ [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
  by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-35c0dd77c57sm831731a91.5.2026.03.25.05.22.29
+ 5b1f17b1804b1-487117077cbsm124118985e9.6.2026.03.25.05.24.15
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 25 Mar 2026 05:22:30 -0700 (PDT)
-From: Jinseok Kim <always.starving0@gmail.com>
-To: andrea.cervesato@suse.com
-Date: Wed, 25 Mar 2026 21:22:05 +0900
-Message-ID: <20260325122207.1967-1-always.starving0@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <69c0e189.050a0220.8a4b1.49b0@mx.google.com>
-References: <69c0e189.050a0220.8a4b1.49b0@mx.google.com>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ Wed, 25 Mar 2026 05:24:16 -0700 (PDT)
+Message-ID: <69c3d3f0.050a0220.2bacda.8597@mx.google.com>
+To: "Piotr Kubaj" <piotr.kubaj@intel.com>
+In-Reply-To: <20260323113940.188663-2-piotr.kubaj@intel.com>
+Date: Wed, 25 Mar 2026 12:24:15 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5] open: fix cleanup condition and use snprintf
+Subject: Re: [LTP] [PATCH v6] high_freq_hwp_cap_cppc.c: new test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,87 +97,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
+ helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Replace sprintf() with snprintf() for safer string handling.
+Hi Piotr,
 
-The cleanup logic checked '!first' to decide whether to close file
-descriptors. Since file descriptor 0 is valid, this may incorrectly
-skip cleanup and leak descriptors.
+Thanks for the new test. A few issues below.
 
-Also initialize "first" to -1 and set the fds array to -1 after
-allocation. Skip such entries in cleanup() to avoid calling SAFE_CLOSE()
-on invalid file descriptors.
+> +/*
+> + * Copyright (C) 2026 Intel - http://www.intel.com/
+> + */
 
-Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
----
- testcases/kernel/syscalls/open/open04.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+The copyright line should include an author name and email, e.g.:
 
-diff --git a/testcases/kernel/syscalls/open/open04.c b/testcases/kernel/syscalls/open/open04.c
-index 7573af1c8..3457024fc 100644
---- a/testcases/kernel/syscalls/open/open04.c
-+++ b/testcases/kernel/syscalls/open/open04.c
-@@ -15,7 +15,8 @@
+  Copyright (c) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
 
- #define FNAME "open04"
+> +		if (i)
+> +			SAFE_FILE_SCANF(path, "%d", &online);
 
--static int fds_limit, first, i;
-+static int fds_limit;
-+static int first = -1;
- static int *fds;
- static char fname[20];
+SAFE_FILE_SCANF with "%d" expects a pointer to int, but `online` is
+bool (typically 1 byte). This is undefined behavior and will likely
+corrupt the stack on little-endian. Please use `int online = 1;`
+instead.
 
-@@ -29,10 +30,11 @@ static void setup(void)
- 	first = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0777);
+This should be spotted by any static analyzer or clangd..and even
+gcc shows this error.
 
- 	fds = SAFE_MALLOC(sizeof(int) * (fds_limit - first));
-+	memset(fds, -1, sizeof(int) * (fds_limit - first));
- 	fds[0] = first;
+> +		snprintf(path, sizeof(path), "/dev/cpu/%d/msr", i);
+> +		int fd = SAFE_OPEN(path, O_RDONLY);
+> +
+> +		SAFE_PREAD(1, fd, &msr_highest_perf, sizeof(msr_highest_perf), 0x771);
 
--	for (i = first + 1; i < fds_limit; i++) {
--		sprintf(fname, FNAME ".%d", i);
-+	for (int i = first + 1; i < fds_limit; i++) {
-+		snprintf(fname, sizeof(fname), FNAME ".%d", i);
- 		fd = open(fname, O_RDWR | O_CREAT, 0777);
- 		if (fd == -1) {
- 			if (errno != EMFILE)
-@@ -46,20 +48,22 @@ static void setup(void)
+SAFE_CLOSE(fd) right after it has been used. There's no need to keep it
+open after pread().
 
- static void run(void)
- {
--	sprintf(fname, FNAME ".%d", fds_limit);
-+	snprintf(fname, sizeof(fname), FNAME ".%d", fds_limit);
- 	TST_EXP_FAIL2(open(fname, O_RDWR | O_CREAT, 0777), EMFILE);
- }
+> +		msr_highest_perf &= (1ULL << 8) - 1;
 
- static void cleanup(void)
- {
--	if (!first || !fds)
--		return;
-+	if (first >= 0) {
-+		int limit = fds_limit - first;
+0x771 and the 8-bit mask are magic numbers. Named defines would
+help readability, e.g.:
 
--	for (i = first; i < fds_limit; i++)
--		SAFE_CLOSE(fds[i - first]);
-+		for (int i = 0; i < limit; i++) {
-+			if (fds[i] != -1)
-+				SAFE_CLOSE(fds[i]);
-+		}
-+	}
+  #define MSR_HWP_CAPABILITIES  0x771
+  #define HIGHEST_PERF_MASK     0xFF
 
--	if (fds)
--		free(fds);
-+	free(fds);
- }
+The test fails because msr device is not available, so you need:
 
- static struct tst_test test = {
+  .needs_drivers = (const char *const []) {                                                                                                        
+      "msr",                                                                                                                                       
+      NULL                                                                                                                                         
+  },
+
+And probably the CONFIG_X86_MSR=y check as well.
+
+Regards,
 --
-2.43.0
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
