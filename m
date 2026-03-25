@@ -4,58 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D756103A9A8
-	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 10:57:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29EF5106B506
+	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 12:06:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D07463E2FFA
-	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 11:57:45 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 648B03E2FFF
+	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 13:06:52 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BF6FC3E2AD0
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 11:57:28 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 919493E143F
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 13:06:35 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1310960207D
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 11:57:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1774436247; x=1805972247;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=rPEjcRvpBkwuxe0Na+ggF6jGnfGBGY433fQUSt9wxaM=;
- b=Vu+2GPsegPLvg1aQVIuUyLoCcPis3LOvUiYfQs4ufDvs4iCni0qHB22Q
- Mun9I7uX2dHFUYEb2dqH91WHg+3KU7gkzdvUqqHTmzRSsjgORRLTEJ161
- 41KgoyakTuQrqdD4YFgzJ5dpg5zYboF5V1sMoPst2aoFKW41FGDEx6wUu
- 9RD5WMOoiH3dvqzy0N2QVdQ0aFz2snWkHXh6zUponFQ+FgbFQauFBxKmK
- f6KSWCKS7TDAIvRmqQizWrAS6aDcIBn9aZoIymI4sZVuIQ/ko9wUg58cZ
- 6/ksfY10iSuP3dPj61hyPKW1RKXM17CS4YA3W03agmyKhyZCQ1PjD458H w==;
-X-CSE-ConnectionGUID: ClOpsZMETtiLniIW/oF4mg==
-X-CSE-MsgGUID: os7yN/wKQ9Ks+TGwamun7g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11739"; a="100916111"
-X-IronPort-AV: E=Sophos;i="6.23,140,1770624000"; d="scan'208";a="100916111"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
- by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2026 03:57:24 -0700
-X-CSE-ConnectionGUID: E/YpikEET6i6kuUbmjMMlA==
-X-CSE-MsgGUID: s/lvqX0URWauraez28PcRQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,140,1770624000"; d="scan'208";a="223856375"
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
- by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2026 03:57:22 -0700
-From: Piotr Kubaj <piotr.kubaj@intel.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D1C141400993
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 13:06:34 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B4C965BCCF;
+ Wed, 25 Mar 2026 12:06:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1774440393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=0jebzcFYuJi/2LEhKGAURZSL3KhxqqII9zrdHtPmbPM=;
+ b=s0OapVbHZ+W9DFJkzL/RwJxi3lFpHehic7+BBz+LFUfQIKl5nRbHmGp0c2TlOmy5e8rg4D
+ 4R13wjZNJiEgwijc0wZqxucZCjSdjupDhZEl6OUMrYXItIuXZzoNwC7N3JgKGy/mUq1rBI
+ tPcj4ldQ6dsZ5IFUCRWTttIiBFY92Bg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1774440393;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=0jebzcFYuJi/2LEhKGAURZSL3KhxqqII9zrdHtPmbPM=;
+ b=kOhWT7SR5Imb+8P+kqYsKVQ9QF3uwlNOC8XMBO/Dhg7aOZvIkd2llHp2dd6+j2uM+zCEoT
+ YM6jObgan+o9Q8AA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1774440393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=0jebzcFYuJi/2LEhKGAURZSL3KhxqqII9zrdHtPmbPM=;
+ b=s0OapVbHZ+W9DFJkzL/RwJxi3lFpHehic7+BBz+LFUfQIKl5nRbHmGp0c2TlOmy5e8rg4D
+ 4R13wjZNJiEgwijc0wZqxucZCjSdjupDhZEl6OUMrYXItIuXZzoNwC7N3JgKGy/mUq1rBI
+ tPcj4ldQ6dsZ5IFUCRWTttIiBFY92Bg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1774440393;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=0jebzcFYuJi/2LEhKGAURZSL3KhxqqII9zrdHtPmbPM=;
+ b=kOhWT7SR5Imb+8P+kqYsKVQ9QF3uwlNOC8XMBO/Dhg7aOZvIkd2llHp2dd6+j2uM+zCEoT
+ YM6jObgan+o9Q8AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 98E67443B9;
+ Wed, 25 Mar 2026 12:06:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id E56UI8nPw2klMgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 25 Mar 2026 12:06:33 +0000
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 25 Mar 2026 11:55:34 +0100
-Message-ID: <20260325105533.259287-2-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
+Date: Wed, 25 Mar 2026 13:06:29 +0100
+Message-ID: <20260325120629.113245-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ URIBL_BLOCKED(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v14] thermal: add new test group
+Subject: [LTP] [PATCH 1/1] tst_test.h: Convert rest of doc to kerneldoc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,325 +99,120 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Currently consists of only one test for the CPU package thermal sensor
-interface for Intel platforms.
-It works by checking the initial count of thermal interrupts. Then it
-decreases the threshold for sending a thermal interrupt to just above
-the current temperature and runs a workload on the CPU. Finally, it
-restores the original thermal threshold and checks whether the number
-of thermal interrupts increased.
-
-Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Addresses Andrea's feedback, adding support for testing all
-the matching thermal zones.
- runtest/thermal                               |   3 +
- testcases/kernel/Makefile                     |   1 +
- testcases/kernel/thermal/.gitignore           |   1 +
- testcases/kernel/thermal/Makefile             |   9 +
- .../kernel/thermal/thermal_interrupt_events.c | 230 ++++++++++++++++++
- 5 files changed, 244 insertions(+)
- create mode 100644 runtest/thermal
- create mode 100644 testcases/kernel/thermal/.gitignore
- create mode 100644 testcases/kernel/thermal/Makefile
- create mode 100644 testcases/kernel/thermal/thermal_interrupt_events.c
+ include/tst_test.h | 66 ++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 52 insertions(+), 14 deletions(-)
 
-diff --git a/runtest/thermal b/runtest/thermal
-new file mode 100644
-index 000000000..57e3d29f8
---- /dev/null
-+++ b/runtest/thermal
-@@ -0,0 +1,3 @@
-+# Thermal driver API
-+# https://docs.kernel.org/driver-api/thermal/
-+thermal_interrupt_events thermal_interrupt_events
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index 98fd45a9d..ac816e4e8 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -36,6 +36,7 @@ SUBDIRS			+= connectors \
- 			   sched \
- 			   security \
- 			   sound \
-+			   thermal \
- 			   tracing \
- 			   uevents \
- 			   watchqueue \
-diff --git a/testcases/kernel/thermal/.gitignore b/testcases/kernel/thermal/.gitignore
-new file mode 100644
-index 000000000..1090bdad8
---- /dev/null
-+++ b/testcases/kernel/thermal/.gitignore
-@@ -0,0 +1 @@
-+thermal_interrupt_events
-diff --git a/testcases/kernel/thermal/Makefile b/testcases/kernel/thermal/Makefile
-new file mode 100644
-index 000000000..4657c3fb3
---- /dev/null
-+++ b/testcases/kernel/thermal/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2025, Intel Corporation. All rights reserved.
-+# Author:Piotr Kubaj <piotr.kubaj@intel.com>
-+
-+top_srcdir             ?= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/thermal/thermal_interrupt_events.c b/testcases/kernel/thermal/thermal_interrupt_events.c
-new file mode 100644
-index 000000000..0317a0ff7
---- /dev/null
-+++ b/testcases/kernel/thermal/thermal_interrupt_events.c
-@@ -0,0 +1,230 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/*
-+ * Copyright (C) 2026 Intel - http://www.intel.com/
+diff --git a/include/tst_test.h b/include/tst_test.h
+index ddfe9d4d6c..fa336207e9 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -694,11 +694,25 @@ void tst_reinit(void);
+  */
+ int tst_run_script(const char *script_name, char *const params[]);
+ 
+-/*
+- * Sets entire timeout in seconds.
++/**
++ * tst_set_timeout() - Sets entire timeout in seconds.
++ *
++ * Allows to sett the overall timeout dynamically during the test setup phase.
++ * The timeout is specified in seconds and defines the total time allowed for a
++ * single test iteration, including the setup, runtime, and teardown phases.
++ *
++ * @timeout: A timeout in seconds.
+  */
+ void tst_set_timeout(int timeout);
+ 
++/**
++ * tst_multiply_timeout() - Multiply the timeout with LTP_TIMEOUT_MUL
++ * environment variable.
++ *
++ * @timeout: A timeout in seconds.
++ *
++ * Return: timeout multiplied with LTP_TIMEOUT_MUL environment variable.
 + */
+ unsigned int tst_multiply_timeout(unsigned int timeout);
+ 
+ /*
+@@ -710,19 +724,40 @@ unsigned int tst_multiply_timeout(unsigned int timeout);
+  */
+ unsigned int tst_remaining_runtime(void);
+ 
+-/*
+- * Sets maximal test runtime in seconds.
++/**
++ * tst_set_runtime() - Sets maximal test runtime in seconds.
++ *
++ * Allows for setting the runtime per test iteration dynamically during the test
++ * setup phase.  The runtime is specified in seconds and defines how long the
++ * test is allowed to execute its main workload, excluding the setup and
++ * teardown phases.
++ *
++ * This function is useful for tests where the duration of the main workload can
++ * be controlled or needs to be adjusted dynamically. For example, tests that
++ * run in a loop until the runtime expires can use this function to define how
++ * long they should execute.
++ *
++ * @runtime: A timeout in seconds.
+  */
+ void tst_set_runtime(int runtime);
+ 
+-/*
+- * Create and open a random file inside the given dir path.
+- * It unlinks the file after opening and return file descriptor.
++/**
++ * tst_creat_unlinked() - Create and open a random file inside the given
++ * directory path, unlinks the file after opening and return file descriptor.
++ *
++ * @path: Path to the directory.
++ * @flags: :manpage:`open(2)` flags.
++ * @mode: :manpage:`open(2)` mode.
++ *
++ * Return: the file descriptor.
+  */
+ int tst_creat_unlinked(const char *path, int flags, mode_t mode);
+ 
+-/*
+- * Returns path to the test temporary directory root (TMPDIR).
++/**
++ * tst_get_tmpdir_root() - Returns path to the test temporary directory root
++ * (TMPDIR environment variable).
++ *
++ * Return: the path to TMPDIR.
+  */
+ const char *tst_get_tmpdir_root(void);
+ 
+@@ -738,13 +773,16 @@ const char *tst_get_tmpdir_root(void);
+  */
+ bool tst_cmd_present(const char *cmd);
+ 
+-/*
+- * Validates exit status of child processes
+- */
+ int tst_validate_children_(const char *file, const int lineno,
+ 	unsigned int count);
+-#define tst_validate_children(child_count) \
+-	tst_validate_children_(__FILE__, __LINE__, (child_count))
 +
-+/*\
-+ * Tests the CPU package thermal sensor interface for Intel platforms.
-+
-+ * Works by checking the initial count of thermal interrupts. Then it
-+ * decreases the threshold for sending a thermal interrupt to just above
-+ * the current temperature and runs a workload on the CPU. Finally, it restores
-+ * the original thermal threshold and checks whether the number of thermal
-+ * interrupts increased.
++/**
++ * tst_validate_children() - Validates exit status of the child processes.
++ *
++ * @count: Number of the child processes.
 + */
-+
-+#include <ctype.h>
-+#include "tst_safe_stdio.h"
-+#include "tst_test.h"
-+#include "tst_timer_test.h"
-+
-+#define	RUNTIME		30
-+#define	SLEEP		10
-+#define	TEMP_INCREMENT	10
-+
-+static bool x86_pkg_temp_tz_found, *x86_pkg_temp_tz;
-+static char temp_path[PATH_MAX], trip_path[PATH_MAX];
-+static int nproc, temp_high, temp, trip, tz_counter;
-+static uint64_t *interrupt_init, *interrupt_later;
-+
-+static void read_interrupts(uint64_t *interrupts, const int nproc)
-+{
-+	bool interrupts_found = false;
-+	char line[8192];
-+
-+	memset(interrupts, 0, nproc * sizeof(*interrupts));
-+	FILE *fp = SAFE_FOPEN("/proc/interrupts", "r");
-+
-+	while (fgets(line, sizeof(line), fp)) {
-+		if (strstr(line, "Thermal event interrupts")) {
-+			interrupts_found = true;
-+			char *ptr = strchr(line, ':');
-+
-+			for (int i = 0; i < nproc; i++) {
-+				char *endptr;
-+
-+				while (*ptr && !isdigit(*ptr))
-+					ptr++;
-+
-+				errno = 0;
-+
-+				interrupts[i] = strtoull(ptr, &endptr, 10);
-+
-+				if (ptr == endptr)
-+					tst_brk(TBROK, "interrupt not found");
-+
-+				if (errno == ERANGE)
-+					tst_brk(TCONF, "interrupt out of range");
-+
-+				ptr = endptr;
-+				tst_res(TDEBUG, "interrupts[%d]: %ld", i, interrupts[i]);
-+			}
-+			break;
-+		}
-+	}
-+	SAFE_FCLOSE(fp);
-+	if (!interrupts_found)
-+		tst_brk(TCONF, "No Thermal event interrupts line in /proc/interrupts");
-+}
-+
-+static void setup(void)
-+{
-+	char line[8192];
-+
-+	nproc = tst_ncpus();
-+	tst_res(TDEBUG, "Number of logical cores: %d", nproc);
-+	interrupt_init = calloc(nproc, sizeof(uint64_t));
-+	interrupt_later = calloc(nproc, sizeof(uint64_t));
-+
-+	DIR *dir = SAFE_OPENDIR("/sys/class/thermal/");
-+	struct dirent *entry;
-+
-+	while ((entry = SAFE_READDIR(dir))) {
-+		if ((!strncmp(entry->d_name, "thermal_zone", sizeof("thermal_zone") - 1)))
-+			tz_counter++;
-+	}
-+	SAFE_CLOSEDIR(dir);
-+	tst_res(TDEBUG, "Found %d thermal zone(s)", tz_counter);
-+
-+	x86_pkg_temp_tz = calloc(tz_counter, sizeof(bool));
-+
-+	for (int i = 0; i < tz_counter; i++) {
-+		char path[PATH_MAX];
-+
-+		snprintf(path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/type", i);
-+		tst_res(TDEBUG, "Checking whether %s is x86_pkg_temp", path);
-+
-+		SAFE_FILE_SCANF(path, "%s", line);
-+		if (strstr(line, "x86_pkg_temp")) {
-+			tst_res(TDEBUG, "Thermal zone %d uses x86_pkg_temp", i);
-+			x86_pkg_temp_tz[i] = true;
-+			x86_pkg_temp_tz_found = true;
-+		}
-+	}
-+
-+	if (!x86_pkg_temp_tz_found)
-+		tst_brk(TCONF, "No thermal zone uses x86_pkg_temp");
-+}
-+
-+static void *cpu_workload(double run_time)
-+{
-+	tst_timer_start(CLOCK_MONOTONIC);
-+	int num = 2;
-+
-+	while (!tst_timer_expired_ms(run_time * 1000)) {
-+		for (int i = 2; i * i <= num; i++) {
-+			if (num % i == 0)
-+				break;
-+		}
-+		num++;
-+		SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+
-+		if (temp > temp_high)
-+			break;
-+	}
-+	return NULL;
-+}
-+
-+static void test_zone(int i)
-+{
-+	int sleep_time = SLEEP;
-+	double run_time = RUNTIME;
-+
-+	snprintf(temp_path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/temp", i);
-+	tst_res(TINFO, "Testing %s", temp_path);
-+	SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+	if (temp < 0)
-+		tst_brk(TBROK, "Unexpected zone temperature value %d", temp);
-+
-+	tst_res(TDEBUG, "Current temperature for %s: %d", temp_path, temp);
-+
-+	temp_high = temp + TEMP_INCREMENT;
-+
-+	snprintf(trip_path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/trip_point_1_temp", i);
-+
-+	tst_res(TDEBUG, "Setting new trip_point_1_temp value: %d", temp_high);
-+	SAFE_FILE_SCANF(trip_path, "%d", &trip);
-+	SAFE_FILE_PRINTF(trip_path, "%d", temp_high);
-+
-+	while (sleep_time > 0) {
-+		tst_res(TDEBUG, "Running for %f seconds, then sleeping for %d seconds", run_time, sleep_time);
-+
-+		for (int j = 0; j < nproc; j++) {
-+			if (!SAFE_FORK()) {
-+				cpu_workload(run_time);
-+				exit(0);
-+			}
-+		}
-+
-+		tst_reap_children();
-+
-+		SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+		tst_res(TDEBUG, "Temperature for %s after a test: %d", temp_path, temp);
-+
-+		if (temp > temp_high)
-+			break;
-+		sleep(sleep_time--);
-+		run_time -= 3;
-+	}
-+
-+}
-+
-+static void cleanup(void)
-+{
-+	if (x86_pkg_temp_tz_found) {
-+		for (int i = 0; i < tz_counter; i++) {
-+			if (x86_pkg_temp_tz[i]) {
-+				snprintf(trip_path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/trip_point_1_temp", i);
-+				SAFE_FILE_PRINTF(trip_path, "%d", trip);
-+			}
-+		}
-+	}
-+
-+	free(x86_pkg_temp_tz);
-+	free(interrupt_init);
-+	free(interrupt_later);
-+}
-+
-+static void run(void)
-+{
-+	for (int i = 0; i < tz_counter; i++) {
-+		if (x86_pkg_temp_tz[i]) {
-+			read_interrupts(interrupt_init, nproc);
-+			test_zone(i);
-+			read_interrupts(interrupt_later, nproc);
-+			for (int i = 0; i < nproc; i++) {
-+				if (interrupt_later[i] < interrupt_init[i])
-+					tst_res(TFAIL, "CPU %d interrupt counter: %ld (previous: %ld)",
-+						i, interrupt_later[i], interrupt_init[i]);
-+			}
-+			if (temp <= temp_high)
-+				tst_res(TFAIL, "Zone temperature is not rising as expected");
-+			else
-+				tst_res(TPASS, "x86 package thermal interrupt triggered");
-+		}
-+	}
-+
-+}
-+
-+static struct tst_test test = {
-+	.cleanup = cleanup,
-+	.forks_child = 1,
-+	.needs_drivers = (const char *const []) {
-+		"x86_pkg_temp_thermal",
-+		NULL
-+	},
-+	.min_runtime = 180,
-+	.needs_root = 1,
-+	.setup = setup,
-+	.supported_archs = (const char *const []) {
-+		"x86",
-+		"x86_64",
-+		NULL
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "9635c586a559ba0e45b2bfbff79c937ddbaf1a62"},
-+		{}
-+	},
-+	.test_all = run
-+};
++#define tst_validate_children(count) \
++	tst_validate_children_(__FILE__, __LINE__, (count))
+ 
+ #ifndef TST_NO_DEFAULT_MAIN
+ 
 -- 
-2.47.3
-
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
+2.53.0
 
 
 -- 
