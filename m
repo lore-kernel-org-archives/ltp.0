@@ -4,90 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29EF5106B506
-	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 12:06:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E872106B518
+	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 12:22:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 648B03E2FFF
-	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 13:06:52 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 18CFA3E2FFB
+	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 13:22:51 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 919493E143F
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 13:06:35 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CDF303E143F
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 13:22:32 +0100 (CET)
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com
+ [IPv6:2607:f8b0:4864:20::1044])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D1C141400993
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 13:06:34 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B4C965BCCF;
- Wed, 25 Mar 2026 12:06:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1774440393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=0jebzcFYuJi/2LEhKGAURZSL3KhxqqII9zrdHtPmbPM=;
- b=s0OapVbHZ+W9DFJkzL/RwJxi3lFpHehic7+BBz+LFUfQIKl5nRbHmGp0c2TlOmy5e8rg4D
- 4R13wjZNJiEgwijc0wZqxucZCjSdjupDhZEl6OUMrYXItIuXZzoNwC7N3JgKGy/mUq1rBI
- tPcj4ldQ6dsZ5IFUCRWTttIiBFY92Bg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1774440393;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=0jebzcFYuJi/2LEhKGAURZSL3KhxqqII9zrdHtPmbPM=;
- b=kOhWT7SR5Imb+8P+kqYsKVQ9QF3uwlNOC8XMBO/Dhg7aOZvIkd2llHp2dd6+j2uM+zCEoT
- YM6jObgan+o9Q8AA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1774440393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=0jebzcFYuJi/2LEhKGAURZSL3KhxqqII9zrdHtPmbPM=;
- b=s0OapVbHZ+W9DFJkzL/RwJxi3lFpHehic7+BBz+LFUfQIKl5nRbHmGp0c2TlOmy5e8rg4D
- 4R13wjZNJiEgwijc0wZqxucZCjSdjupDhZEl6OUMrYXItIuXZzoNwC7N3JgKGy/mUq1rBI
- tPcj4ldQ6dsZ5IFUCRWTttIiBFY92Bg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1774440393;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=0jebzcFYuJi/2LEhKGAURZSL3KhxqqII9zrdHtPmbPM=;
- b=kOhWT7SR5Imb+8P+kqYsKVQ9QF3uwlNOC8XMBO/Dhg7aOZvIkd2llHp2dd6+j2uM+zCEoT
- YM6jObgan+o9Q8AA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 98E67443B9;
- Wed, 25 Mar 2026 12:06:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id E56UI8nPw2klMgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 25 Mar 2026 12:06:33 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed, 25 Mar 2026 13:06:29 +0100
-Message-ID: <20260325120629.113245-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.53.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 556162003B7
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 13:22:32 +0100 (CET)
+Received: by mail-pj1-x1044.google.com with SMTP id
+ 98e67ed59e1d1-35a1f549e7eso2940805a91.0
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 05:22:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1774441351; x=1775046151; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=cchd8EY3LQZrecvPfqdSCw1FSJxa+On/v7sif/CBCMA=;
+ b=a1YcgR+tkuITu8XHzrj+q0ZT2wJ9Rg1NsoukdTMrnVKSOFYtxqubNbhIx9dI5OmUnS
+ wcukoCi/JB+0dL3ebrQjohp/zGZAP+LGOuayAhXUX4P3Jb7Z1epYYGYtI9z/zgrq7xZ1
+ Du/fTCM2nYgIBA9cmvkIE5MtI5+uA5Zhp6YWYiNl0DjKZAuReNkOH+D/69mN7XnMDyrL
+ klvDjZks8pWL29sTRbqLzfujWU1+EXBTbZJkZeQ7GbhUuF4WyGm8TyoRlcQwAG/gAMhf
+ fyTTnKrfBU2P5CpFYkgeAddxIYxjOnBUvnB14G6khdssto3xVPwMc7V/e7lAoyHkzQ/E
+ NEUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1774441351; x=1775046151;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=cchd8EY3LQZrecvPfqdSCw1FSJxa+On/v7sif/CBCMA=;
+ b=kctYtPf/sNXXk3dNdkUUm+WfmahyqWEBjCvAuAuNECi9xBSoYyqAteuG6Y5CKjRJ8B
+ 0Ik7YLQ/oKNPLCNCINjPZTLepHRg3CDnCS03w6fMzH2UFR8psaHK//pmhTLDSZTuHx14
+ yRYMj4uzHVUGUByXGhRDa8QMvdtrsW64V9JnXV7O4ytmPACJxf5UjWbnBubL+k04Iuel
+ DA26ecUGQ35zzyKxXVBBF8w/x9gZmWZ2fdEALLkXW8X+fyM1bxB7bsBZ2hs3M3nvdU1d
+ DtMihz9mdrNSLTBpDSZvGI+noPLdtHO2Dt97utAUklzrL0mkZySRqUcg+lRiTEMLtNsg
+ Zjqg==
+X-Gm-Message-State: AOJu0YxizLhBPi+mbJ7cCp1frP5w+MnucxcLoiUlbhKfsUPgwN1NORUq
+ lXsJvwozN12EtQyftLPLlJ0IpCb2nVv//WI8WBo29Vsq5Sj2K+N50ZkWKD5uhc0lOQ==
+X-Gm-Gg: ATEYQzwgZqLNpI0eWPzRhlibMV2X8dZe4qOrNJln8jzRMoI6hVFqjeSdQTcg1ab3rTA
+ yPQr2C9gaievzBK6q+V30+OpAz3N07KP98rJhCMIwMpQuQS/8bJEK/f8JgsMBRXOtGHDsrODAd5
+ gSBkzUkppcfNyP9SoGDbR8+Mgo+efeF+/z1xtdUN3qlcgLH4lRPY5vpFKG/45x+Biktp2c+wPja
+ 5l6QLajz5YrasU5MU+f7qYpAHJF0Ub4tTAEwCDVxeTO0dCJP++avtzEc9Z+63gykfws/DNfuiHp
+ 0qzpifx3aALiDDYQS2pCd22nFetN/hs4FVjtRH+GP5Xm2B1m6miGndHJ1rntkMHQxvY39GsRu7R
+ y3SQ8TnjSScpBWja/INytjE760XarU4WcCZAWPvz0lVeR4LEFajnzKpc3VAw8J9dWrCjXKMs2Yp
+ Ks5Aso86nsb/wUu2EcsZFHdUveutOViJneMwFEcmjG301V
+X-Received: by 2002:a17:90b:2dd2:b0:35c:854:d1d0 with SMTP id
+ 98e67ed59e1d1-35c0dd94e96mr3029293a91.26.1774441350643; 
+ Wed, 25 Mar 2026 05:22:30 -0700 (PDT)
+Received: from localhost.localdomain ([211.196.223.197])
+ by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-35c0dd77c57sm831731a91.5.2026.03.25.05.22.29
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 25 Mar 2026 05:22:30 -0700 (PDT)
+From: Jinseok Kim <always.starving0@gmail.com>
+To: andrea.cervesato@suse.com
+Date: Wed, 25 Mar 2026 21:22:05 +0900
+Message-ID: <20260325122207.1967-1-always.starving0@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <69c0e189.050a0220.8a4b1.49b0@mx.google.com>
+References: <69c0e189.050a0220.8a4b1.49b0@mx.google.com>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- URIBL_BLOCKED(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] tst_test.h: Convert rest of doc to kerneldoc
+Subject: [LTP] [PATCH v5] open: fix cleanup condition and use snprintf
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,121 +89,87 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Replace sprintf() with snprintf() for safer string handling.
+
+The cleanup logic checked '!first' to decide whether to close file
+descriptors. Since file descriptor 0 is valid, this may incorrectly
+skip cleanup and leak descriptors.
+
+Also initialize "first" to -1 and set the fds array to -1 after
+allocation. Skip such entries in cleanup() to avoid calling SAFE_CLOSE()
+on invalid file descriptors.
+
+Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
 ---
- include/tst_test.h | 66 ++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 52 insertions(+), 14 deletions(-)
+ testcases/kernel/syscalls/open/open04.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index ddfe9d4d6c..fa336207e9 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -694,11 +694,25 @@ void tst_reinit(void);
-  */
- int tst_run_script(const char *script_name, char *const params[]);
- 
--/*
-- * Sets entire timeout in seconds.
-+/**
-+ * tst_set_timeout() - Sets entire timeout in seconds.
-+ *
-+ * Allows to sett the overall timeout dynamically during the test setup phase.
-+ * The timeout is specified in seconds and defines the total time allowed for a
-+ * single test iteration, including the setup, runtime, and teardown phases.
-+ *
-+ * @timeout: A timeout in seconds.
-  */
- void tst_set_timeout(int timeout);
- 
-+/**
-+ * tst_multiply_timeout() - Multiply the timeout with LTP_TIMEOUT_MUL
-+ * environment variable.
-+ *
-+ * @timeout: A timeout in seconds.
-+ *
-+ * Return: timeout multiplied with LTP_TIMEOUT_MUL environment variable.
-+ */
- unsigned int tst_multiply_timeout(unsigned int timeout);
- 
- /*
-@@ -710,19 +724,40 @@ unsigned int tst_multiply_timeout(unsigned int timeout);
-  */
- unsigned int tst_remaining_runtime(void);
- 
--/*
-- * Sets maximal test runtime in seconds.
-+/**
-+ * tst_set_runtime() - Sets maximal test runtime in seconds.
-+ *
-+ * Allows for setting the runtime per test iteration dynamically during the test
-+ * setup phase.  The runtime is specified in seconds and defines how long the
-+ * test is allowed to execute its main workload, excluding the setup and
-+ * teardown phases.
-+ *
-+ * This function is useful for tests where the duration of the main workload can
-+ * be controlled or needs to be adjusted dynamically. For example, tests that
-+ * run in a loop until the runtime expires can use this function to define how
-+ * long they should execute.
-+ *
-+ * @runtime: A timeout in seconds.
-  */
- void tst_set_runtime(int runtime);
- 
--/*
-- * Create and open a random file inside the given dir path.
-- * It unlinks the file after opening and return file descriptor.
-+/**
-+ * tst_creat_unlinked() - Create and open a random file inside the given
-+ * directory path, unlinks the file after opening and return file descriptor.
-+ *
-+ * @path: Path to the directory.
-+ * @flags: :manpage:`open(2)` flags.
-+ * @mode: :manpage:`open(2)` mode.
-+ *
-+ * Return: the file descriptor.
-  */
- int tst_creat_unlinked(const char *path, int flags, mode_t mode);
- 
--/*
-- * Returns path to the test temporary directory root (TMPDIR).
-+/**
-+ * tst_get_tmpdir_root() - Returns path to the test temporary directory root
-+ * (TMPDIR environment variable).
-+ *
-+ * Return: the path to TMPDIR.
-  */
- const char *tst_get_tmpdir_root(void);
- 
-@@ -738,13 +773,16 @@ const char *tst_get_tmpdir_root(void);
-  */
- bool tst_cmd_present(const char *cmd);
- 
--/*
-- * Validates exit status of child processes
-- */
- int tst_validate_children_(const char *file, const int lineno,
- 	unsigned int count);
--#define tst_validate_children(child_count) \
--	tst_validate_children_(__FILE__, __LINE__, (child_count))
-+
-+/**
-+ * tst_validate_children() - Validates exit status of the child processes.
-+ *
-+ * @count: Number of the child processes.
-+ */
-+#define tst_validate_children(count) \
-+	tst_validate_children_(__FILE__, __LINE__, (count))
- 
- #ifndef TST_NO_DEFAULT_MAIN
- 
--- 
-2.53.0
+diff --git a/testcases/kernel/syscalls/open/open04.c b/testcases/kernel/syscalls/open/open04.c
+index 7573af1c8..3457024fc 100644
+--- a/testcases/kernel/syscalls/open/open04.c
++++ b/testcases/kernel/syscalls/open/open04.c
+@@ -15,7 +15,8 @@
 
+ #define FNAME "open04"
+
+-static int fds_limit, first, i;
++static int fds_limit;
++static int first = -1;
+ static int *fds;
+ static char fname[20];
+
+@@ -29,10 +30,11 @@ static void setup(void)
+ 	first = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0777);
+
+ 	fds = SAFE_MALLOC(sizeof(int) * (fds_limit - first));
++	memset(fds, -1, sizeof(int) * (fds_limit - first));
+ 	fds[0] = first;
+
+-	for (i = first + 1; i < fds_limit; i++) {
+-		sprintf(fname, FNAME ".%d", i);
++	for (int i = first + 1; i < fds_limit; i++) {
++		snprintf(fname, sizeof(fname), FNAME ".%d", i);
+ 		fd = open(fname, O_RDWR | O_CREAT, 0777);
+ 		if (fd == -1) {
+ 			if (errno != EMFILE)
+@@ -46,20 +48,22 @@ static void setup(void)
+
+ static void run(void)
+ {
+-	sprintf(fname, FNAME ".%d", fds_limit);
++	snprintf(fname, sizeof(fname), FNAME ".%d", fds_limit);
+ 	TST_EXP_FAIL2(open(fname, O_RDWR | O_CREAT, 0777), EMFILE);
+ }
+
+ static void cleanup(void)
+ {
+-	if (!first || !fds)
+-		return;
++	if (first >= 0) {
++		int limit = fds_limit - first;
+
+-	for (i = first; i < fds_limit; i++)
+-		SAFE_CLOSE(fds[i - first]);
++		for (int i = 0; i < limit; i++) {
++			if (fds[i] != -1)
++				SAFE_CLOSE(fds[i]);
++		}
++	}
+
+-	if (fds)
+-		free(fds);
++	free(fds);
+ }
+
+ static struct tst_test test = {
+--
+2.43.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
