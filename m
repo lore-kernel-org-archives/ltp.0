@@ -4,109 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BE52109C029
-	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 14:53:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774450396; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=8UG4xsZtWMT2Om/uaAncH5QgXWN8hFdLsojqVn87oQo=;
- b=J4AnIRPrXaWLlpLaVWP1743BK5D6Ifj7ybdkRQkuuqGW8HX3lvBFH423ySeJBZJ8rZecF
- J8Sr0YJQ46OlOOudc19eLSIanFXhQGHR/3l2oL6MbyqeobcLN90J9oIOYhIxEWBokOQ4Vci
- DLq5aRYMMYLFuiT5037Uap1EkHVVZzk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49E28109C02F
+	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 15:10:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A9DF93E2FED
-	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 15:53:16 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id BDCE63E3000
+	for <ltp@archiver.kernel.org>; Wed, 25 Mar 2026 16:10:57 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 38AFD3CC6A9
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 15:52:52 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 42EE63E1F8F
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 16:10:40 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A49E6600FA2
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 15:52:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1774450369;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=QvmP45Q8PbLTJk5HfDdmXBsRQB8bneXMWSSAwn2PPnE=;
- b=cvYd378P2MfJxkNxalkOTWW56c8hZuWcBXUzMU/YU2vzrpDpvP3PFLT5A0t5F6U9AAgpzk
- 2ls9tDAm9aBwTW9axR3CT3i0SgEpgVY1fp+EelXknYdplMk37IEOUGSLx9ta7ZO9ltJggC
- IYPAMxTGBKxXmrm6NVKgK1kebx6es9w=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-422-W6TK21wMN5mkobmF4PXyDQ-1; Wed, 25 Mar 2026 10:52:47 -0400
-X-MC-Unique: W6TK21wMN5mkobmF4PXyDQ-1
-X-Mimecast-MFC-AGG-ID: W6TK21wMN5mkobmF4PXyDQ_1774450367
-Received: by mail-ej1-f71.google.com with SMTP id
- a640c23a62f3a-b97a25a43f0so368278666b.1
- for <ltp@lists.linux.it>; Wed, 25 Mar 2026 07:52:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774450366; x=1775055166;
- h=user-agent:in-reply-to:content-disposition:mime-version:references
- :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=QvmP45Q8PbLTJk5HfDdmXBsRQB8bneXMWSSAwn2PPnE=;
- b=S5/O4Xg8tXk6wtfH/rwLhDVLszwauOcWtlxAWv/BgEYqcuCBzJOrC7e5Y1Mg00ZxD2
- 1/9FavF0cMr1wQTN6FNR2zuybaWpq/U8IUgeoKrz8L5xcZzfFrlEGU2Y4f1hNFhrNn+r
- t1GeLTBIvjpXRfvM4l1T2ePbc8MZXCTGZ1wSFkPRxt1dSKvNGehXYbIsweqz/GuFhyw+
- Y3pZf2rMKaJ+xIoS9xdnguxmMaoPclYQKH+ApOYxT4Vvz25bE5/eXeCFiS7egHmf55zq
- zoQMJ49rywYJS6+I0DdiN2TJeHISuXD3CJlPfli9aT2e3HR3cI7AY7Bk0a2wJZ05YDOn
- FU/w==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUsL1zJqcd8Hz9BVTvV6B3REH9/ue15OvCF6RkfH77rkeZIcjIP9KAuz49cAHZ5VQCsDzU=@lists.linux.it
-X-Gm-Message-State: AOJu0Ywp+VZe0sz4+zrjWLedJABKey6Ejrl4kutZ7vOihZLEs0GFFek1
- IEiMMpX5elfv0zfkUj9ne+y35XHWLRh/wku4oxWw3OLaI2UU0aotncSG6H8MUJnC6BOZPY69w4k
- G86iEMxLZmZs7FeOQxo7b9H1EqPW0LGHA7lJbNuZYdZz2qKhNPsDV
-X-Gm-Gg: ATEYQzxZE/PlQoKATMy+91IwoPdqsnvJmModIiXASGBcEpDL4pDA4dt2WSpNzpqSbqr
- XarOr5FjoShLh2JSuMwt2tGBLCLsjZiwdpQLtMyIDd592X651faVZsEoy5eESQy+wPJw95KuZt1
- +q8vMLohFWuq8BBZWMQburC1QufNYTcCPSsgHC8kzwgSFAWNGzWi2Fytm7AGCFbkHq+9apLlLjg
- ukaPt01NyF2+BwoD8AfInmrrtSd5rYRRx29cdhni8IghpmI8+6CvE3PlovCPMfaQEU+dviwgQb6
- rbJUJZONKdZg1RV8yvq62OXPJ7eOJ4CP1g/8/t8TLMRdKOCQyVsKohbtaED8VWFwl6Ub+o9CrAO
- TD32nuyk6DGubsq+d2K/b+/+2PqzU/InbSw==
-X-Received: by 2002:a17:906:fe03:b0:b98:36cd:7e18 with SMTP id
- a640c23a62f3a-b9a5426d368mr256699266b.40.1774450366370; 
- Wed, 25 Mar 2026 07:52:46 -0700 (PDT)
-X-Received: by 2002:a17:906:fe03:b0:b98:36cd:7e18 with SMTP id
- a640c23a62f3a-b9a5426d368mr256696166b.40.1774450365707; 
- Wed, 25 Mar 2026 07:52:45 -0700 (PDT)
-Received: from lida.tpb.lab.eng.brq.redhat.com ([213.175.37.14])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-b98b20c8c7bsm220504666b.63.2026.03.25.07.52.44
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 25 Mar 2026 07:52:45 -0700 (PDT)
-Date: Wed, 25 Mar 2026 15:52:43 +0100
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <20260325145243.daqrazagomckexgj@lida.tpb.lab.eng.brq.redhat.com>
-References: <20260323210805.20929-1-pvorel@suse.cz> <acKPE_1MwQhayd4O@yuki.lan>
- <20260324140938.nxlzn5f2f6iakrm5@lida.tpb.lab.eng.brq.redhat.com>
- <20260325090648.diugdugszgd3inuo@lida.tpb.lab.eng.brq.redhat.com>
- <20260325091003.GA86256@pevik>
- <20260325092156.3sxnn26nlejzzygn@lida.tpb.lab.eng.brq.redhat.com>
- <acOs7mrlNceEtchW@yuki.lan>
- <20260325094215.aiv3he5pdgm2v4fn@lida.tpb.lab.eng.brq.redhat.com>
- <acOxlitfqdMfAbZs@yuki.lan> <20260325135723.GA121486@pevik>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3D62C1001131
+ for <ltp@lists.linux.it>; Wed, 25 Mar 2026 16:10:38 +0100 (CET)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 62PEiJmu3111761; Wed, 25 Mar 2026 15:10:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+ content-type:date:from:in-reply-to:message-id:mime-version
+ :references:subject:to; s=pp1; bh=SjYJuc2A7IzAkC6ODkLX0x2hzt56R6
+ diG5UOX6+9pnY=; b=fyMcKkUk4p1gFkZdiNXD1U1vot6hbv738sZFKuZ0cq48sC
+ Oxl6Wsf/9TTDsitc+jSQ3I4gfIWNPwm+I51/kVDu8AAa+2ZiF/takxUPX71o3XN+
+ ew2FK6Bw1yt1SlB/s8JKVg+O0XFlkAgjucR/qQEFD2GMQD1zW1jfIXIXdvRv9iW1
+ x1NhviMz0tWvRp8zc60exZstg5f+wJbl4H8iD8GOVrGUuPG8B/eE+PqCeU/4L42U
+ zNSeEZaBsAsgeYs5ZR/wv/mLHAzxXwqNDFSJ07Nogh2uw/WVBF69rDsSsCALE2Xw
+ SEjaZUDCy/tI3HRamml/BsI6Wvn5SJBs9MHEy2yw==
+Received: from ppma22.wdc07v.mail.ibm.com
+ (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4d1kumr941-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 25 Mar 2026 15:10:37 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62PEnswo006009;
+ Wed, 25 Mar 2026 15:10:36 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4d261yq4h8-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 25 Mar 2026 15:10:36 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
+ [10.20.54.105])
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 62PFAYdc41615840
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 25 Mar 2026 15:10:34 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 573B72004F;
+ Wed, 25 Mar 2026 15:10:34 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id ED1062004D;
+ Wed, 25 Mar 2026 15:10:33 +0000 (GMT)
+Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com (unknown
+ [9.111.44.112])
+ by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+ Wed, 25 Mar 2026 15:10:33 +0000 (GMT)
+Date: Wed, 25 Mar 2026 16:10:32 +0100
+From: Jan Polensky <japo@linux.ibm.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>,
+ Linux Test Project <ltp@lists.linux.it>
+Message-ID: <acP66MTKk3LzceQD@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
+References: <20260325-compile_flags_gitignore-v2-1-87b8bdabd676@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20260325135723.GA121486@pevik>
-User-Agent: NeoMutt/20180716
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: pWgXjs4cXP036zrEOulH62CIHlCVYRraNJepuUd1c5M_1774450367
-X-Mimecast-Originator: redhat.com
 Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+In-Reply-To: <20260325-compile_flags_gitignore-v2-1-87b8bdabd676@suse.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0CEpUxc9yazBxpd-delYIChKNvKA7rpK
+X-Proofpoint-ORIG-GUID: 0CEpUxc9yazBxpd-delYIChKNvKA7rpK
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzI1MDEwNiBTYWx0ZWRfX+56LF/PaRj/q
+ 8PpxlDYaKjydKyeKMsgbHuSAy9JM8s8L6HAkZNDxLlpYGkHGLIrIIDQTXKt2/1Jn09uWlWcvBb6
+ cpnBWvBAGcGflwlvyBSnj2kW657/NKKFjZdjDAjbGXqlE/LCjU1gBzFTRiW7Fcxgz2op+q5ZmPO
+ JqcryhziZy7mmHHAHsU14WyYj+FHakLobMWSGA90o5IQeNaxlI/GpD0Tg/twUyw3l9T/osVTrIf
+ CsoO0UqoZsy/5IQWqtr3QnmJGbgbQHvNcdt5WgpRJ46enKhtaYcf1p1sUM6250OjhOrYR+XjapV
+ QZDYzR72qSoRuUPl6HeEwvfg6aAs0M8QG2y2eoEuzGghRUzTRo5ugchZlHaV/7BUS9CRREpSOAf
+ 18KQHhIst4agbMD8tzeyMpIzCCSQH65gQ+ngVbrVsDETXOHj96udf5HxCLay5Zx80i2UZpqgqtz
+ 6HbResmWnSbui6FABng==
+X-Authority-Analysis: v=2.4 cv=KbXfcAYD c=1 sm=1 tr=0 ts=69c3faed cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=kj9zAlcOel0A:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=VwQbUJbxAAAA:8
+ a=iox4zFpeAAAA:8 a=0Ni6rV8TAAAA:8 a=PpTQVM3mCUC9IMbezycA:9 a=CjuIK1q_8ugA:10
+ a=WzC6qhA0u3u7Ye7llzcV:22 a=MEv8DOuCJPEGjlO0Qob3:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-25_04,2026-03-24_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 impostorscore=0 malwarescore=0 adultscore=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2603250106
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [Valgrind-developers] [RFC PATCH 1/1] LTP tests: Run
- without LTP_REPRODUCIBLE_OUTPUT=1
+Subject: Re: [LTP] [PATCH v2] Add cglangd specific files to gitignore
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,46 +110,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Martin Cermak via ltp <ltp@lists.linux.it>
-Reply-To: Martin Cermak <mcermak@redhat.com>
-Cc: valgrind-developers@lists.sourceforge.net, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On  Wed  2026-03-25  14:57 , Petr Vorel wrote:
-> > Hi!
-> > > > > That sounds reasonable to me.  Which one would you prefer to
-> > > > > keep?  I'm inclined to suggest keeping LTP_REPRODUCIBLE_OUTPUT
-> > > > > and dropping LTP_QUIET but no really strong preference on my
-> > > > > side.  Thoughts?
-> 
-> > > > Maybe we can finally implement proper debug levels in LTP. E.g. hide
-> > > > TINFO and TWARN messages with debug level 0 and default to debug level
-> > > > 1. With debug level 2 we would show TDEBUG as well and with debug level
-> > > > 3 we would show TDEBUG messages for library too.
-> 
-> > > That would require running valgrind tests with something like
-> > > debug level -1 ;) because what LTP_REPRODUCIBLE_OUTPUT actually
-> > > does is that it hides testrun specific output like e.g. testrun
-> > > specific addresses, temporary file names etc.
-> 
-> > The LTP_REPRODUCIBLE_OUTPUT would have to stay, but the LTP_QUITE would
-> > have been replaced by different debug levels.
-> 
-> I thought just remove LTP_QUITE and control everything with
-> LTP_REPRODUCIBLE_OUTPUT.
+On Wed, Mar 25, 2026 at 11:51:45AM +0100, Andrea Cervesato wrote:
+> From: Andrea Cervesato <andrea.cervesato@suse.com>
+>
+> Add rule to ignore clangd LSP configuration from local repository.
+>
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+> Clangd is extensively used by IDEs and generic LSP wrappers to setup
+> clangd configuration. This patch removes it from gitignore so we can
+> safely avoid it gets into the patch-set when it's sent.
+> ---
+> Changes in v2:
+> - add compile_commands.json
+> - Link to v1: https://lore.kernel.org/r/20260325-compile_flags_gitignore-v1-1-b0de37eeacc8@suse.com
+> ---
+>  .gitignore | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/.gitignore b/.gitignore
+> index 24f4a4ea834e0b919e640e879fe5e5b5d7aec466..139ecded5fa0a47a12b97eac6ebf432cbe5e5c11 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -60,3 +60,5 @@ patches/
+>  logfile.*
+>
+>  /utils/benchmark/ebizzy-0.3/ebizzy
+> +/compile_flags.txt
+> +/compile_commands.json
+Hi Andrea,
 
-Sounds fine, Petr.  For Valgrind testing, the functionality of
-both LTP_REPRODUCIBLE_OUTPUT and LTP_QUIET is useful.  But
-there's no need to control the two features independently.
-Merging the functionality under one controlling env var works
-perfectly fine from the Valgrind testsuite perspective.
+thanks for spinning v2 so quickly!
+
+Small nit: with the leading '/', /compile_commands.json only matches in the
+repository root. However compile_commands.json is often generated in
+build/subdirectories (depending on where the build is run). If the goal is to
+prevent accidental inclusion anywhere, the pattern should be unanchored, e.g.:
+
+  compile_commands.json
+
+(or equivalently **/compile_commands.json).
+
+I can reproduce this by generating it from a subdir (e.g. via bear), which
+produces ./compile_commands.json there.
+
+	bear -- make
 
 Thanks,
-Martin
-
+Jan
+>
+> ---
+> base-commit: b874b6a264cf4f343c17d543ebe4ff91fbb89042
+> change-id: 20260325-compile_flags_gitignore-c12d8f65ef2d
+>
+> Best regards,
+> --
+> Andrea Cervesato <andrea.cervesato@suse.com>
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
