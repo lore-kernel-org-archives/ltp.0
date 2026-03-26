@@ -4,88 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA04C106F309
-	for <ltp@archiver.kernel.org>; Thu, 26 Mar 2026 08:59:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D83B106F30F
+	for <ltp@archiver.kernel.org>; Thu, 26 Mar 2026 09:41:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774515562; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1774518074; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=OgDpazxXycdyxhPrZzd+aCkUzvTvhgXIPRpbbSy7Bqo=;
- b=pHEz7WLkgf4gCO8457YOyKaxFZPnDTC8HSJG1Ei08HgdJCZJk3Qldxm7kopIa92DASTu6
- /zUj1mlmDKk7Rp3JLnR/CjnjiqEHyuOGC97ausGbTu/rd6Z3xbXUYqaQ9aT9DuyGR5b1yo8
- 4O6ardsBYc1z0cNs10JUp/Lxqnc9/JI=
+ bh=nGxibC0x+pAsVlnD88sbtPOJi7jHTRS3PNr+CED+yWQ=;
+ b=oRkMUcMSVAD1FOB24//8ZRllN+DCXLCL6goBhBT2fiRVLwPwR4JELrpzXkA/pPsF0GSBU
+ 0FB2OQO9/NE27ChFCA59vZIwgxKZNGdrN6BRXggXUrOJV7WIaLESKfTJOh3RoRq5e0E8juY
+ qDEabGCOh8vEqy95lkj1kfJpDAqmpao=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3F05D3E2ABA
-	for <ltp@archiver.kernel.org>; Thu, 26 Mar 2026 09:59:22 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 780F03E2AB8
+	for <ltp@archiver.kernel.org>; Thu, 26 Mar 2026 10:41:14 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 576AE3DCACD
- for <ltp@lists.linux.it>; Thu, 26 Mar 2026 09:58:58 +0100 (CET)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
+ by picard.linux.it (Postfix) with ESMTPS id 10CF03E1F8A
+ for <ltp@lists.linux.it>; Thu, 26 Mar 2026 10:40:50 +0100 (CET)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A89EE600756
- for <ltp@lists.linux.it>; Thu, 26 Mar 2026 09:58:57 +0100 (CET)
-Received: by mail-wm1-x32c.google.com with SMTP id
- 5b1f17b1804b1-4853c1ca73aso7140875e9.2
- for <ltp@lists.linux.it>; Thu, 26 Mar 2026 01:58:57 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7782710007BB
+ for <ltp@lists.linux.it>; Thu, 26 Mar 2026 10:40:50 +0100 (CET)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-486b9675d36so6888735e9.0
+ for <ltp@lists.linux.it>; Thu, 26 Mar 2026 02:40:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1774515537; x=1775120337; darn=lists.linux.it;
+ d=suse.com; s=google; t=1774518050; x=1775122850; darn=lists.linux.it;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=hnUPwnMFz9XXh2pY6WRjfIrD4qW0CLenumnCRicFldA=;
- b=OxPGKl/LlfPNoDH/wAoHixgk/Sa4TSry+v8KvBJU7qgOvlQ2dMY5/MRisaWOQWcx41
- CKaMSaj8jH9GChFQu7NklTTMvG7h7idmzSrq69WhEDZyNIaDMMe6BdwESS9pJrVwsOrX
- tGy9ECmJNLkv6KTYQhaP8tKHxWG2JOSJzWQNg6zI86+YdnPCQ74uToMO9OUY7nrN3tME
- N6uJwKxsj9RT0iLbvEWbcmkCnh6Qmm6bws6vBtOkWfoKJepCe2ZENt/qpnOtPaK/HAJO
- 4V/heay5XQYT2N2Q4UYRb5krIjfnZu/WFXlTwjn+f3F0q6UNqfXJhBXWU6GcTBIR4l9x
- 0JOw==
+ bh=xbf0mA+3EJbuV5L6RDGY9Ac/f629giCehHuph/1H++U=;
+ b=elCFNP79i6hEBfZgQjw17HdYj10nIsKv0jhAqauR5snnXc4Txm1Q1hlhryk4YehZAa
+ 4YRNEO5vKSCDFmHTF4klIgyCPAQWwKalZK0TCMQzIBrT4JVmUxA7M48T6QtwOdIjnA2c
+ x7PcEdG2OeO5lrdBBgKQJqoQXMH98cTX7jYzpVG37kuTXDfqFE4WFCtuJZ2Km0b2CfKA
+ jjWoVtHb8GcAaWG4paoI9tsdYH5+fNeK/b6Va6LRE2UQBZEmz/1/yNsXxAOpTt1dVw7w
+ Pfm3kmwfOaXjk6TjFKj9z9rsiUHzlc1R7suIWd2bHa5YcRnkXZOrIoSAQUce8pejPF7t
+ WhCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774515537; x=1775120337;
+ d=1e100.net; s=20251104; t=1774518050; x=1775122850;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=hnUPwnMFz9XXh2pY6WRjfIrD4qW0CLenumnCRicFldA=;
- b=UuefEsVJB+RouqmP9QolhObM9W+v/8cLn0iRS3YPnmCweeeJPFwKJQPuCKsMuoyiYu
- 1PzhFZGgyzyD4nVQOutAebYePifz17i2D6IrYgX0Dxt7l8nf3veHaUbJfDVEymK44OBq
- 96Ief0xIIYX1yUWc2wVznBCCh8kIkeBV4c1sbg4fvezW9JYLhXMeqTyrI2djIy1fCeQh
- WhdyB5BRF63ROlAx45NHVXkRvqE6ogkEmJeFMRLdRn8M1MGefXINZgyaudGYc6CbXz9M
- Dh2Yd8jzseCA9XsPpjUxAcXvSVlQwjQF7njGgLQ/q+VjCDhW0ND1BO7vesf6vzQQQGbC
- uA/g==
-X-Gm-Message-State: AOJu0Yydf+/AseeUAYctUzilc/tVPE9g3UFgUjIQxJPJwaebyxmvCYGJ
- VSJbRQ3quLZu1gMY0Mr43fWS4b82/y54DC77uXYEG2jUmfGm/urV25UWCgd8W6kHPQ4=
-X-Gm-Gg: ATEYQzwDEcDcG1Rkp55CO01HB+SI1wlgyw7ZviO1TGStapM/T1bi54ce5NodDQh4EJd
- YhAFrQAgcz/uCR0Em2gt3pkNvTabm26zk4dBU+fuW01YE+kzDXuzwlB6EmjX0fbo/h7Abz8t2CR
- 5zXL3Hb07fuUNweYWTk7Bpfe/+/cfmFXsezCcynYt4D6muD3SVdAZIpPfYBPduSCcTgDqECvIvE
- tYLaj9DFmAMMVU52SIwWvEAacZ9ebrYo5ix5wJX/r5UNNM30Ekq0+K9kNmXHbDzxM47ZZ+8WPBs
- Zz4G6OdSkyiiFrSR1I1YVPmqwHR9BCGXu2hp6bBHK7ovuLdWviPkCif1AZ7cYnCVSiO4wzkJXEH
- 5dGfb55o9Zp7ARUPKARfzCVwXuzytFAkhFcid0iv8q9S45CNgcQsTm8kKadkLMzeylQT6TuhpRi
- 1jkZP9BepuZOGPBokPmct/DNkp/LBBxgvlx7DWgVh3N/kp4D+iivC1AJLoqafRo5xwHN+Pf2k0e
- eOaFrSRVqkZK30qHzVc/heWGIehkdxit20=
-X-Received: by 2002:a05:600c:4685:b0:483:6a8d:b2f9 with SMTP id
- 5b1f17b1804b1-48715fc3994mr95486485e9.5.1774515536886; 
- Thu, 26 Mar 2026 01:58:56 -0700 (PDT)
+ bh=xbf0mA+3EJbuV5L6RDGY9Ac/f629giCehHuph/1H++U=;
+ b=OOJEF16PHAUz4SMRyVYB+fTOUT+5el/CDQrEDh8rpGQT+iJ+Hpk9SfQA0GMF5TK38Q
+ DlYN56ERem+0OqNf/Faoyv4Idw5qPBgHWgYo3uKRLuBkK32PMLiMieRlu34IkXEvCDdn
+ EhCJcEIwy3z95I5QbDRrJBbm4en8zGDn7/Bx9zYM4DbYr1RPuQvjThXJaUZx1+x2t51b
+ O6qWkB3r+p2pscH/5N1UPgQwwymdIBeqweZqWt7tVLKEphBOBVws/pNnyuStg9P8ct1J
+ lFPRRryP3tWNa96zEnVJuzVCSrANDHd4Pq9bgOA1o/uLyy84J5tvGZQZVTVOlm8afMHx
+ xMMg==
+X-Gm-Message-State: AOJu0Yyc0ErUbwjFR8GdhK+8WkA1NWKkO1ZEP3Oy36KoKqauAWjoAbdH
+ RAVNCjp5vu8j+GTa3mRTPIjyaWskauyTzdpOjkv/ol6OLoggudCVhBb1jKZNh0qVOt70FoxCgTp
+ Ptbh2xjk1jw==
+X-Gm-Gg: ATEYQzwrA+7v72kJfBn1ai8h+Pv32FlQIQaSRGwHIHy67IalTAEMcVYf5rMJuUHh6X0
+ cyRjES91J8qS7FQGoL+L3XxfC3LTKXNEdZDkdmo6Ar+B26ACvFVmx1QqVTfUYd2+dljH6DjOC47
+ gEVV/U37nd5QLuoMHB262ZE2YmdvyK59flfb/qr+9bSKSwqV+XPhVqaRWPIi4AbjlOdh/VfAOQn
+ A+MZEYj1JqMrGqHdb3ltEGjS/Q4+WwIrQQ0KV/F34KCdUgmc1TzZuEoGVOacE+em8a8Gh9Hn058
+ rY5vAstZu9HUHE2R92K1OoG4qnBscGr5oZrcbFqnM/A7QMg8vi6YFttuU6lsXxg0uRZf3EdQRYT
+ eWPjwchNwWfDMW79kz8mGBLTOCeFId0csQCd9VP6IaJ5/sbEwI8bewIPPQI7gm9pXQtsb0ol276
+ a6nbUQNMYTuuSVJmqBcez9gqzb5nlORra+JXbNtjyoxt7fvPge9BRlG4uv7ARQnFod2hI4rrUZN
+ xT68gCz0tWph5U4y6apCFNmU4a5PavPR54=
+X-Received: by 2002:a05:600c:8b88:b0:485:3ff1:d5c5 with SMTP id
+ 5b1f17b1804b1-48715fc321fmr100211175e9.7.1774518049755; 
+ Thu, 26 Mar 2026 02:40:49 -0700 (PDT)
 Received: from localhost.localdomain
  (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
  [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4872092883bsm10884605e9.27.2026.03.26.01.58.56
+ 5b1f17b1804b1-48722c8ca60sm17608805e9.7.2026.03.26.02.40.48
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 26 Mar 2026 01:58:56 -0700 (PDT)
-Message-ID: <69c4f550.050a0220.1d2cf9.0560@mx.google.com>
-To: "Piotr Kubaj" <piotr.kubaj@intel.com>
-In-Reply-To: <20260325105533.259287-2-piotr.kubaj@intel.com>
-Date: Thu, 26 Mar 2026 08:58:55 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ Thu, 26 Mar 2026 02:40:49 -0700 (PDT)
+Message-ID: <69c4ff21.050a0220.3574c5.1d14@mx.google.com>
+To: "Wei Gao" <wegao@suse.com>
+In-Reply-To: <20260326012908.6885-1-wegao@suse.com>
+Date: Thu, 26 Mar 2026 09:40:48 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v14] thermal: add new test group
+Subject: Re: [LTP] [PATCH v5] fanotify22.c: handle multiple asynchronous
+ error events
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,47 +101,56 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Andrea Cervesato via ltp <ltp@lists.linux.it>
 Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
- helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
+Cc: Jan Kara <jack@suse.cz>, kernel test robot <oliver.sang@intel.com>,
+ ltp@lists.linux.it
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGlvdHIsCgo+ICtzdGF0aWMgaW50IG5wcm9jLCB0ZW1wX2hpZ2gsIHRlbXAsIHRyaXAsIHR6
-X2NvdW50ZXI7CgpgdHJpcGAgaXMgYSBzaW5nbGUgaW50LCBidXQgY2xlYW51cCgpIHVzZXMgaXQg
-dG8gcmVzdG9yZSB0cmlwX3BvaW50XzFfdGVtcApmb3IgQUxMIHg4Nl9wa2dfdGVtcCB6b25lcy4g
-SWYgdGhlcmUgYXJlIG11bHRpcGxlIHN1Y2ggem9uZXMsIGVhY2gKdGVzdF96b25lKCkgY2FsbCBv
-dmVyd3JpdGVzIGB0cmlwYCBhdCB0aGUgU0FGRV9GSUxFX1NDQU5GLCBzbyBvbmx5IHRoZQpsYXN0
-IHpvbmUncyBvcmlnaW5hbCB2YWx1ZSBzdXJ2aXZlcy4gVGhlIGVhcmxpZXIgem9uZXMgZ2V0IHRo
-ZSB3cm9uZwp2YWx1ZSByZXN0b3JlZC4KClRoaXMgbmVlZHMgdG8gYmUgYSBwZXItem9uZSBhcnJh
-eSwgZS5nLiBgc3RhdGljIGludCAqdHJpcF9vcmlnO2AKYWxsb2NhdGVkIGFsb25nc2lkZSB4ODZf
-cGtnX3RlbXBfdHogaW4gc2V0dXAoKSwgd2l0aCBlYWNoIHpvbmUncwpvcmlnaW5hbCB0cmlwIHZh
-bHVlIHNhdmVkIGluZGl2aWR1YWxseS4KCj4gKwlpbnRlcnJ1cHRfaW5pdCA9IGNhbGxvYyhucHJv
-Yywgc2l6ZW9mKHVpbnQ2NF90KSk7Cj4gKwlpbnRlcnJ1cHRfbGF0ZXIgPSBjYWxsb2MobnByb2Ms
-IHNpemVvZih1aW50NjRfdCkpOwoKWy4uLl0KCj4gKwl4ODZfcGtnX3RlbXBfdHogPSBjYWxsb2Mo
-dHpfY291bnRlciwgc2l6ZW9mKGJvb2wpKTsKCkxUUCBoYXMgU0FGRV9DQUxMT0MoKSBpbiB0c3Rf
-c2FmZV9tYWNyb3MuaC4gUGxlYXNlIHVzZSBpdCBpbnN0ZWFkIG9mCnJhdyBjYWxsb2MoKSDigJQg
-aXQgaGFuZGxlcyB0aGUgTlVMTCBjaGVjayBhbmQgY2FsbHMgdHN0X2JyayhUQlJPSykgb24KZmFp
-bHVyZS4KCj4gKwkJCXRzdF9yZXMoVERFQlVHLCAiaW50ZXJydXB0c1slZF06ICVsZCIsIGksIGlu
-dGVycnVwdHNbaV0pOwoKaW50ZXJydXB0c1tpXSBpcyB1aW50NjRfdCBidXQgcHJpbnRlZCB3aXRo
-ICVsZC4gVXNlIFBSSXU2NDoKCiAgICB0c3RfcmVzKFRERUJVRywgImludGVycnVwdHNbJWRdOiAl
-IiBQUkl1NjQsIGksIGludGVycnVwdHNbaV0pOwoKU2FtZSBpc3N1ZSBiZWxvdyBpbiBydW4oKToK
-Cj4gKwkJCQl0c3RfcmVzKFRGQUlMLCAiQ1BVICVkIGludGVycnVwdCBjb3VudGVyOiAlbGQgKHBy
-ZXZpb3VzOiAlbGQpIiwKPiArCQkJCQlpLCBpbnRlcnJ1cHRfbGF0ZXJbaV0sIGludGVycnVwdF9p
-bml0W2ldKTsKCj4gKwkJU0FGRV9GSUxFX1NDQU5GKHBhdGgsICIlcyIsIGxpbmUpOwoKJXMgd2l0
-aG91dCBhIHdpZHRoIGxpbWl0IGNhbiBvdmVyZmxvdyBsaW5lWzgxOTJdLiBVc2UgIiU4MTkxcyIu
-Cgo+ICtzdGF0aWMgdm9pZCAqY3B1X3dvcmtsb2FkKGRvdWJsZSBydW5fdGltZSkKPiArewoKWy4u
-Ll0KCj4gKwlyZXR1cm4gTlVMTDsKPiArfQoKY3B1X3dvcmtsb2FkKCkgcmV0dXJucyB2b2lkICog
-YXMgaWYgaXQgd2VyZSBhIHB0aHJlYWQgc3RhcnQgcm91dGluZSwgYnV0Cml0IGlzIG9ubHkgY2Fs
-bGVkIGRpcmVjdGx5IGZyb20gdGhlIGNoaWxkIHByb2Nlc3MuIEl0IHNob3VsZCByZXR1cm4gdm9p
-ZC4KCj4gKwlmb3IgKGludCBpID0gMDsgaSA8IHR6X2NvdW50ZXI7IGkrKykgewo+ICsJCWlmICh4
-ODZfcGtnX3RlbXBfdHpbaV0pIHsKPiArCQkJcmVhZF9pbnRlcnJ1cHRzKGludGVycnVwdF9pbml0
-LCBucHJvYyk7Cj4gKwkJCXRlc3Rfem9uZShpKTsKPiArCQkJcmVhZF9pbnRlcnJ1cHRzKGludGVy
-cnVwdF9sYXRlciwgbnByb2MpOwo+ICsJCQlmb3IgKGludCBpID0gMDsgaSA8IG5wcm9jOyBpKysp
-IHsKCklubmVyIGBpYCBzaGFkb3dzIHRoZSBvdXRlciBsb29wIHZhcmlhYmxlIGBpYC4gUGxlYXNl
-IHJlbmFtZSB0byBgamAgb3IKYGNwdWAgdG8gYXZvaWQgY29uZnVzaW9uLgoKUmVnYXJkcywKLS0K
-QW5kcmVhIENlcnZlc2F0bwpTVVNFIFFFIEF1dG9tYXRpb24gRW5naW5lZXIgTGludXgKYW5kcmVh
-LmNlcnZlc2F0b0BzdXNlLmNvbQoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
-LmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi Wei,
+
+The overall approach with poll/read loop and consolidate_events() looks
+good. A few issues below.
+
+> +		char *current_pos = event_buf + read_len;
+> +		int ret = read(fd_notify, current_pos, BUF_SIZE - read_len);
+
+read() returns ssize_t, not int. Should be:
+
+		ssize_t ret = read(fd_notify, current_pos, BUF_SIZE - read_len);
+
+Also, both read_len and BUF_SIZE are effectively unsigned here. If
+read_len ever reaches or exceeds BUF_SIZE, the subtraction wraps to a
+huge value and read() will write past event_buf. A defensive check
+before the read would be safer:
+
+		if (read_len >= BUF_SIZE)
+			tst_brk(TBROK, "Event buffer full");
+
+> +		if (ret < 0) {
+> +			tst_res(TFAIL, "%s: read failed: %s", tcase->name, strerror(errno));
+> +			goto out;
+> +		}
+
+Two things here:
+
+1) Use TERRNO instead of manual strerror(errno):
+
+		tst_res(... | TERRNO, "%s: read failed", tcase->name);
+
+2) A read() failure after poll() confirmed data availability is a test
+   infrastructure problem, not a test logic failure. This should be
+   TBROK, not TFAIL:
+
+		tst_brk(TBROK | TERRNO, "%s: read failed", tcase->name);
+
+Regards,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
