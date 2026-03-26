@@ -4,90 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D83B106F30F
-	for <ltp@archiver.kernel.org>; Thu, 26 Mar 2026 09:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1640106F311
+	for <ltp@archiver.kernel.org>; Thu, 26 Mar 2026 10:01:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774518074; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1774519312; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=nGxibC0x+pAsVlnD88sbtPOJi7jHTRS3PNr+CED+yWQ=;
- b=oRkMUcMSVAD1FOB24//8ZRllN+DCXLCL6goBhBT2fiRVLwPwR4JELrpzXkA/pPsF0GSBU
- 0FB2OQO9/NE27ChFCA59vZIwgxKZNGdrN6BRXggXUrOJV7WIaLESKfTJOh3RoRq5e0E8juY
- qDEabGCOh8vEqy95lkj1kfJpDAqmpao=
+ bh=VhCA8cw/3vhUsd0X/eBhV779OECwUcgvOanqwB4FKWI=;
+ b=BkdbuUc84aat7sSgL8hz9K0e0sAym+4A8q2gmBDSOeDgp7gf7EFvy4xBqNAHPh4c5R9bc
+ NxokB8WsdHcQXBIhq2TSVnUXZ0A9dVdlBjfGIeAIy9fV3/oqyQP03wvPnkzXzimFeJCrpjW
+ vLhteVQmbXwcva3H3TbJDY+tJfQUMfI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 780F03E2AB8
-	for <ltp@archiver.kernel.org>; Thu, 26 Mar 2026 10:41:14 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 21C273E2AC1
+	for <ltp@archiver.kernel.org>; Thu, 26 Mar 2026 11:01:52 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 10CF03E1F8A
- for <ltp@lists.linux.it>; Thu, 26 Mar 2026 10:40:50 +0100 (CET)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+ by picard.linux.it (Postfix) with ESMTPS id 7CF3B3E2735
+ for <ltp@lists.linux.it>; Thu, 26 Mar 2026 11:01:27 +0100 (CET)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7782710007BB
- for <ltp@lists.linux.it>; Thu, 26 Mar 2026 10:40:50 +0100 (CET)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-486b9675d36so6888735e9.0
- for <ltp@lists.linux.it>; Thu, 26 Mar 2026 02:40:50 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EBFAD1A008B2
+ for <ltp@lists.linux.it>; Thu, 26 Mar 2026 11:01:16 +0100 (CET)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-486b9675d36so7092865e9.0
+ for <ltp@lists.linux.it>; Thu, 26 Mar 2026 03:01:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1774518050; x=1775122850; darn=lists.linux.it;
+ d=suse.com; s=google; t=1774519276; x=1775124076; darn=lists.linux.it;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=xbf0mA+3EJbuV5L6RDGY9Ac/f629giCehHuph/1H++U=;
- b=elCFNP79i6hEBfZgQjw17HdYj10nIsKv0jhAqauR5snnXc4Txm1Q1hlhryk4YehZAa
- 4YRNEO5vKSCDFmHTF4klIgyCPAQWwKalZK0TCMQzIBrT4JVmUxA7M48T6QtwOdIjnA2c
- x7PcEdG2OeO5lrdBBgKQJqoQXMH98cTX7jYzpVG37kuTXDfqFE4WFCtuJZ2Km0b2CfKA
- jjWoVtHb8GcAaWG4paoI9tsdYH5+fNeK/b6Va6LRE2UQBZEmz/1/yNsXxAOpTt1dVw7w
- Pfm3kmwfOaXjk6TjFKj9z9rsiUHzlc1R7suIWd2bHa5YcRnkXZOrIoSAQUce8pejPF7t
- WhCQ==
+ bh=Yl079hKQcShQ6h7tcWkYBwOl/EUgRVwTpAW2t1xWIKE=;
+ b=DuUR7I48xaUZNidU6BgitzbxOBzKMojACZrZ0M1T+3Dawknjv2+hIQeSAhGOIzVvBq
+ rCnmxZ5lw7iMBti7jUwVarOF8PHPhoDj7dW+2ZMUjS0GrL5OrtvZfGjqgLBoqpFZXITb
+ muoc7p2VluYdI55K0sqmRtN2w77Gyw1Z9Ry8sKl0qR/jwN0M9W2623E4tZkHoKuZy2V0
+ +zwrR31NpS0wn/l0scdP/Hf6FCnBtGdlG/HT5Trt9FoiTRudHZ4fkzi9nUFTkTsaynVM
+ 0dP1D5Y0Nq+uFqaD1Qkt7FHZQGhscTZuOmIFo2Gh89zDquE4aTOlC7rtYYcV3cxlcGWF
+ vieQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774518050; x=1775122850;
+ d=1e100.net; s=20251104; t=1774519276; x=1775124076;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=xbf0mA+3EJbuV5L6RDGY9Ac/f629giCehHuph/1H++U=;
- b=OOJEF16PHAUz4SMRyVYB+fTOUT+5el/CDQrEDh8rpGQT+iJ+Hpk9SfQA0GMF5TK38Q
- DlYN56ERem+0OqNf/Faoyv4Idw5qPBgHWgYo3uKRLuBkK32PMLiMieRlu34IkXEvCDdn
- EhCJcEIwy3z95I5QbDRrJBbm4en8zGDn7/Bx9zYM4DbYr1RPuQvjThXJaUZx1+x2t51b
- O6qWkB3r+p2pscH/5N1UPgQwwymdIBeqweZqWt7tVLKEphBOBVws/pNnyuStg9P8ct1J
- lFPRRryP3tWNa96zEnVJuzVCSrANDHd4Pq9bgOA1o/uLyy84J5tvGZQZVTVOlm8afMHx
- xMMg==
-X-Gm-Message-State: AOJu0Yyc0ErUbwjFR8GdhK+8WkA1NWKkO1ZEP3Oy36KoKqauAWjoAbdH
- RAVNCjp5vu8j+GTa3mRTPIjyaWskauyTzdpOjkv/ol6OLoggudCVhBb1jKZNh0qVOt70FoxCgTp
- Ptbh2xjk1jw==
-X-Gm-Gg: ATEYQzwrA+7v72kJfBn1ai8h+Pv32FlQIQaSRGwHIHy67IalTAEMcVYf5rMJuUHh6X0
- cyRjES91J8qS7FQGoL+L3XxfC3LTKXNEdZDkdmo6Ar+B26ACvFVmx1QqVTfUYd2+dljH6DjOC47
- gEVV/U37nd5QLuoMHB262ZE2YmdvyK59flfb/qr+9bSKSwqV+XPhVqaRWPIi4AbjlOdh/VfAOQn
- A+MZEYj1JqMrGqHdb3ltEGjS/Q4+WwIrQQ0KV/F34KCdUgmc1TzZuEoGVOacE+em8a8Gh9Hn058
- rY5vAstZu9HUHE2R92K1OoG4qnBscGr5oZrcbFqnM/A7QMg8vi6YFttuU6lsXxg0uRZf3EdQRYT
- eWPjwchNwWfDMW79kz8mGBLTOCeFId0csQCd9VP6IaJ5/sbEwI8bewIPPQI7gm9pXQtsb0ol276
- a6nbUQNMYTuuSVJmqBcez9gqzb5nlORra+JXbNtjyoxt7fvPge9BRlG4uv7ARQnFod2hI4rrUZN
- xT68gCz0tWph5U4y6apCFNmU4a5PavPR54=
-X-Received: by 2002:a05:600c:8b88:b0:485:3ff1:d5c5 with SMTP id
- 5b1f17b1804b1-48715fc321fmr100211175e9.7.1774518049755; 
- Thu, 26 Mar 2026 02:40:49 -0700 (PDT)
+ bh=Yl079hKQcShQ6h7tcWkYBwOl/EUgRVwTpAW2t1xWIKE=;
+ b=o/kaW9BFJByh69fKMGQP9Yo17hVU2vcy8ynZNC5wrF0eywX2JIDrN4iLHAgIcF+fbu
+ Tzvtu0sMbq1Z8X7WtWk1qbyqZ7SW/xe8/M0p0jeGwp8IklfrtBBKkeQimRvhWDRFZXJV
+ fD6ozq0bWlldoV20tneLhu5QwTTKQzDJwuKw4VECcEJdesK+NuoBeOmH2PzDzFJMGHlb
+ 3KUFUa8d7U0+fghqJApQWhl/CsRknYVbr4kDb9mrXSkQTSB4+UDSKILPe6tKXER3H87x
+ k6HPgPK6+6Gt9CZMiIYyG93bmgay7xi31hCgTJXyEEZAU1OlCUFH5UexE7hyF4RJRmnl
+ yGww==
+X-Gm-Message-State: AOJu0YwYzl9s5pFpC5n8RW9JaTVJosayg1NPWdVKETDyHN64QBKbdwDt
+ 3lTxiX/fbuFJ6aBod7dVHrxtL7v0XekdBB31s+qzpKV+3xHdtav8+2OZpbAMKVtfU3k=
+X-Gm-Gg: ATEYQzywKvEcfXpI9ajjkVVPohq8XF2vC133JoyQr9Rrw702UhsfY20rgANchQbDBwW
+ dCCOenKd+dmI1wgAzXPlnKMhNkRmcsvUIVPKjW1T2TFHZlMsVH+aliliPv0GDDEXVeR7YYv5GQG
+ QGnXRPoyjKJJyipR6DU8bQ7tmD7fRDfsXf84qoN1L4yf2HdwIYjvjBEd5n4frtEJ2U7T8yTxol5
+ s7ToTCR/oA6GJ4YWJOGHn3/7UcqNhOPIfNoUJLfsFYdfqM7IzH3j0RMJAcMw7NFCC7KNoFtNBCt
+ v6VQOtKiiUm70/9qKbQFqVTVEOUa+LQQagbLz7o59zey+/LKFowA7UMc0F4/43hYZBaygFVLAjd
+ KCiWax2EMOIlup2W8vdeJDV43VuCR/T/0ipyXJ72PFVZ88UY+XI/hs8vzvUROtIH2jmWtNM6bgb
+ TJq7ayh+NcUe+GBidTBocoRxkm6qxiOUv+Gw5O0nvZpeyk9fNlxhoqmjTcoy9MRs9C8DazwqUNa
+ IaEwAr/2hfGx1OzpyRt4z+CHLKRQRPV7D4=
+X-Received: by 2002:a05:600c:4b89:b0:487:219e:42d with SMTP id
+ 5b1f17b1804b1-487219e05a4mr11428035e9.11.1774519276006; 
+ Thu, 26 Mar 2026 03:01:16 -0700 (PDT)
 Received: from localhost.localdomain
  (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
  [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-48722c8ca60sm17608805e9.7.2026.03.26.02.40.48
+ 5b1f17b1804b1-4872438891asm2694975e9.6.2026.03.26.03.01.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 26 Mar 2026 02:40:49 -0700 (PDT)
-Message-ID: <69c4ff21.050a0220.3574c5.1d14@mx.google.com>
+ Thu, 26 Mar 2026 03:01:15 -0700 (PDT)
+Message-ID: <69c503eb.050a0220.3d57e6.08fc@mx.google.com>
 To: "Wei Gao" <wegao@suse.com>
-In-Reply-To: <20260326012908.6885-1-wegao@suse.com>
-Date: Thu, 26 Mar 2026 09:40:48 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+In-Reply-To: <20260325011605.5957-1-wegao@suse.com>
+Date: Thu, 26 Mar 2026 10:01:14 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] fanotify22.c: handle multiple asynchronous
- error events
+Subject: Re: [LTP] [PATCH v5] mremap07.c: New case check mremap with
+ MREMAP_DONTUNMAP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,8 +99,7 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Andrea Cervesato via ltp <ltp@lists.linux.it>
 Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Jan Kara <jack@suse.cz>, kernel test robot <oliver.sang@intel.com>,
- ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -111,40 +108,33 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Wei,
 
-The overall approach with poll/read loop and consolidate_events() looks
-good. A few issues below.
+we are almost there to merge. A few comments below..
 
-> +		char *current_pos = event_buf + read_len;
-> +		int ret = read(fd_notify, current_pos, BUF_SIZE - read_len);
+> This case test mremap() with MREMAP_DONTUNMAP and use userfaultfd
+> verifies fault which triggered by accessing old memory region.
 
-read() returns ssize_t, not int. Should be:
+English can be improved a bit here:
 
-		ssize_t ret = read(fd_notify, current_pos, BUF_SIZE - read_len);
+Test mremap() with MREMAP_DONTUNMAP and verify that accessing the old
+memory region triggers a page fault, which is then correctly handled
+by a userfaultfd handler.
 
-Also, both read_len and BUF_SIZE are effectively unsigned here. If
-read_len ever reaches or exceeds BUF_SIZE, the subtraction wraps to a
-huge value and read() will write past event_buf. A defensive check
-before the read would be safer:
+> +static void *fault_handler_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+> +{
 
-		if (read_len >= BUF_SIZE)
-			tst_brk(TBROK, "Event buffer full");
+Missing return NULL; in this function.
 
-> +		if (ret < 0) {
-> +			tst_res(TFAIL, "%s: read failed: %s", tcase->name, strerror(errno));
-> +			goto out;
-> +		}
+> +	if (strcmp(fault_addr, test_string) != 0)
+> +		tst_res(TFAIL, "Verification failed: Content of the old "
+> +			"address is '%s', expected '%s'", fault_addr, test_string);
+> +	else
+> +		tst_res(TPASS, "Verification passed: Content of the old "
+> +			"address is correct after fault handling");
+> +
 
-Two things here:
+We have TST_EXP_EQ_STR(fault_addr, test_string).
 
-1) Use TERRNO instead of manual strerror(errno):
-
-		tst_res(... | TERRNO, "%s: read failed", tcase->name);
-
-2) A read() failure after poll() confirmed data availability is a test
-   infrastructure problem, not a test logic failure. This should be
-   TBROK, not TFAIL:
-
-		tst_brk(TBROK | TERRNO, "%s: read failed", tcase->name);
+The rest is ok.
 
 Regards,
 --
