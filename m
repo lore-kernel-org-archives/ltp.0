@@ -4,96 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 086B910BA431
-	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 07:03:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774595001; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=SKFmcbtWQLmlZxXLlZSYW1VCqv+GzXBUaMwnrLMJjNg=;
- b=PAZHCnYh2t5zREYJZVI6h+2lxI86sVe6gXBAY4pDcJQBS3knDFomwKjcsotKVTqPJbcmP
- tKPqyhr0fcZ5EJGAdDQHRPvo1/g9o16l0c6I7ML+stIYW+/DZT0FLrH+2SbQz4gCyoBjsqO
- jk9DJUruC9+V/rWLb4k831KjqaeKB1s=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4111A10BA453
+	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 09:05:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C06D3DCFED
-	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 08:03:21 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id A51C63CBFB0
+	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 10:05:29 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 887723D9E8C
- for <ltp@lists.linux.it>; Fri, 27 Mar 2026 08:02:58 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 935393C2AF4
+ for <ltp@lists.linux.it>; Fri, 27 Mar 2026 10:05:09 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BA46D601514
- for <ltp@lists.linux.it>; Fri, 27 Mar 2026 08:02:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1774594975;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A7C63601CDB
+ for <ltp@lists.linux.it>; Fri, 27 Mar 2026 10:05:08 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BFFE24D343;
+ Fri, 27 Mar 2026 09:05:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1774602307;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IGii5oonFRCtW7LGEEJVanGlfc+d81TGw63/j6H88Nw=;
- b=hFStn7vcBuoqBFI/sHzqds9ZuZoi2B0WMhdW5EHE2l8uySV3wkE1Q1i+0BKT9R4SdAhBkv
- kp6nCl2Wi9bKA1bSmZ2W0WbWmsvzlH/LML8E1tzPLI44O748/a7cVUdX6BpZKtDHb/4yC2
- n078aBGIdAE7dmK1c/1EFxuE+BD4/Ec=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-688--J4nB6VoPy2yMdUxOq14sw-1; Fri, 27 Mar 2026 03:02:54 -0400
-X-MC-Unique: -J4nB6VoPy2yMdUxOq14sw-1
-X-Mimecast-MFC-AGG-ID: -J4nB6VoPy2yMdUxOq14sw_1774594973
-Received: by mail-pg1-f197.google.com with SMTP id
- 41be03b00d2f7-c737b6686ddso1270643a12.3
- for <ltp@lists.linux.it>; Fri, 27 Mar 2026 00:02:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774594973; x=1775199773;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=IGii5oonFRCtW7LGEEJVanGlfc+d81TGw63/j6H88Nw=;
- b=VR3QnfJ5HybBklnEn9pCfEg/ZHEHxq5SrsUtI95rLsxFVEvHrWnPo6CIzy/LiFDQnd
- OMt23Y3ephP3tiPH0fK13uyPvwxq7gvbAv2d3mkE26P2fbqhHnTuu2yzJDSbuHDq2eQK
- sizK3WmcbGgEWJ3aWk1zuvaqUEQs7V9xHSLEy2Lb8bGqHWN4mdyDIkAOpihVwCjp2JN3
- qBBGlMOuE86nXHLFR/hql2KLcQLW5GhGn9icSJVq2AHhd9VhMi66IILNJS7RrpQVd4WW
- AFIW3LgQ4CV1D+i3dIGwJnI6wqTYFeqC3gy2o3b6aeqohjn0kkjLCbdxYwRo+TZyFcde
- 6wfg==
-X-Gm-Message-State: AOJu0YwAumAh9e3CS3bNPhPgJC08ZgR0y+PlLQ9nUh+joeaFmnSYDCLL
- atUm8NB4Xpc/efZrSBufygx8pEMETVhWbki1G4+3BBoZmlEtErd+rWRa/MbGeLTaI/UjP3owtx4
- 9pP8nICwHNZeaqmMkgbPwI7bbmmmvwJveVb7a/wVevAJRFOaCCiwTGMcyIfY2
-X-Gm-Gg: ATEYQzwWEoEJ/thMgPF9yUA5bSgP2wdn7XoiPlGf5l0uC+MWqI8dUCHpendEEVAMQXn
- 58B2aPrlViZ7n1vfh8/zw1K9/v/dExitXpmaPvNveByEAc+W0KW5XVTbumTxQRFUAxdq904uD3u
- uPEk/0ogYk7RS9sWH6wDw3qYz3X4nKmIVt97iroMAkBUfrP5AXkm206P8wVu+veU9NIyd6hheH/
- McFvfE/HZfu/PLv8oS4yUM/XCa3hrQEGOeR0v5mHXVIdimAu4S+FgXfx5KdIaObLnQk0edD/dny
- 0TgjZPPj3uVgzFF71HZwxXvw8DRXWLwS/GtzFqweqPZIljIHi10mJRa/AH7qMoKPJdFi3VBTYRI
- J63IxkNFS1vUbdk8qSw==
-X-Received: by 2002:a05:6a00:1ac8:b0:82a:5ef0:210b with SMTP id
- d2e1a72fcca58-82c95e8804cmr1500633b3a.15.1774594972641; 
- Fri, 27 Mar 2026 00:02:52 -0700 (PDT)
-X-Received: by 2002:a05:6a00:1ac8:b0:82a:5ef0:210b with SMTP id
- d2e1a72fcca58-82c95e8804cmr1500597b3a.15.1774594972035; 
- Fri, 27 Mar 2026 00:02:52 -0700 (PDT)
-Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-82c7d388e5esm4813355b3a.37.2026.03.27.00.02.50
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 27 Mar 2026 00:02:51 -0700 (PDT)
-Date: Fri, 27 Mar 2026 15:02:48 +0800
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <acYrmGE0yu07rJsn@redhat.com>
-References: <20260326144006.3035-1-chrubis@suse.cz>
+ bh=4BoOzmCTJ9huteR6LibWup6+6a9skbMzf2O7PVjUsZM=;
+ b=A9ZTpsT3rMk5xJm5+rVu9rUKSohyu8Y4S41yOR59TDqfH+0FG1Enix+1c3skiBLv2YZJl1
+ 6tOAWZvBMHgacRmVwP+/EMUWalN82Y8taaYS/HwsVPZUNQiwJU5Kk1wk2Kfn7lPlMi/Xha
+ uADN4IX0Bi7ERN3ZWMPqW1EBDOampsM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1774602307;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=4BoOzmCTJ9huteR6LibWup6+6a9skbMzf2O7PVjUsZM=;
+ b=NL1G+M2cR/W2aigxtelgWNDPEptX6mQuvJnzyA8q4zp1I4gANe8Re5ixS40DfUxFONbeV6
+ DLesmMST/DpJyWAw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=CgAuWMi2;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Rg2pYaP4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1774602306;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=4BoOzmCTJ9huteR6LibWup6+6a9skbMzf2O7PVjUsZM=;
+ b=CgAuWMi2uEnBTGchQcO7SlIbMblvkVao5mGdqbbFIcm8WOpwv7GjJLTUh5vx/fRiLiNgjv
+ h7vt53updE7gxwjiCdqDIBYlY9UACHetIE/I2tjf9B0HhLmfq0+HUCham78Zu+EKlANNj7
+ D0HMLa+3R5GLyrJEb+6jB403GNKCL8A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1774602306;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=4BoOzmCTJ9huteR6LibWup6+6a9skbMzf2O7PVjUsZM=;
+ b=Rg2pYaP4Cxd65G51B3crpGyuA+Pc/wTpUYwpbz+yI8zvvq1B8teJnjmxTUcAIEyMzi/iUL
+ L8JT8KTk8i1LPJCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9C6EE4A0A2;
+ Fri, 27 Mar 2026 09:05:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ukFHJUJIxmnkBgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 27 Mar 2026 09:05:06 +0000
+Date: Fri, 27 Mar 2026 10:05:05 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20260327090505.GA40147@pevik>
+References: <20260326125216.159239-1-pvorel@suse.cz>
+ <acYYc47HXGYa5Mqj@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20260326144006.3035-1-chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 5VkiNgCnK8Y_r-K1aDAvik0nCKiRWn2J39m6kEM-wZQ_1774594973
-X-Mimecast-Originator: redhat.com
 Content-Disposition: inline
+In-Reply-To: <acYYc47HXGYa5Mqj@redhat.com>
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_DN_SOME(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto,suse.cz:dkim,suse.cz:email,ozlabs.org:url];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,ozlabs.org:url];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[4];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: BFFE24D343
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib: tst_kconfig: Add runtime checks
+Subject: Re: [LTP] [PATCH] userfaultfd03.c: Require kernel 6.1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,40 +123,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> So far for CONFIG_*_NS.
+Hi all,
 
-It would be great to have a description for the feature:
+TL;DR: refusing my patch. I'm sorry for the noise.
 
-Something maybe like:
+> On Thu, Mar 26, 2026 at 01:52:15PM +0100, Petr Vorel wrote:
+> > Required kernel functionality was added in kernel 6.1 (not 6.11)
 
- "Currently, LTP Kconfig parsing logic only checks if a feature was
-  enabled during kernel compilation (e.g., CONFIG_USER_NS=y). However,
-  some kernel features can be compiled in but disabled at runtime via
-  kernel command-line parameter or sysctls. When this happens, tests
-  relying on these Kconfig variables attempt to run and fail, rather
-  than being gracefully skipped.
-  
-  This patch introduces a runtime check mechanism for Kconfig variables.
-  When a monitored CONFIG_* variable is parsed as 'y' or 'm', the framework
-  now executes an associated runtime check function. If the runtime check
-  fails, the framework logs an info message and internally overrides the
-  variable's state to 'n'. This allows the existing LTP dependency logic
-  to properly skip tests that require the disabled feature."
+> - int res = (tst_kvercmp(6, 1, 0) < 0) ? TCONF : TBROK;
+First of all, I'm sorry. I was somehow blind to see kernel check above as 6.11,
+of course it is 6.1. That was the main idea about this patch.
 
-Also, add test_kconfig04.c in newlib_tests/ to verify this works?
+> > 2d5de004e009 ("userfaultfd: add /dev/userfaultfd for fine grained access control")
 
--- 
-Regards,
-Li Wang
+> > Because it's a new kernel functionality which has not been backported to
+> > enterprise kernels we can simplify check with just .min_kver.
 
+> > Fixes: b63ab54aee ("userfaultfd: Do not use min_kver as gate for test")
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> > Hi all,
+
+> > @Li I suppose RHEL kernel haven't backport this.
+
+> Why do you lack confidence in RHEL? haha :)
+
+Lol :). No, just my bad memory and info being on a different place.
+
+> I have confimed that both RHEL 9 and 10 have backported this
+> feature (commit 2d5de004e009).
+
+I'm sorry, I have forgotten it. Now I remember you did some related
+contributions but 1) that were in userfaultfd05.c (different file), 2) while
+this info is in patch on ML [1] instead of it 1840ee23d1 ("userfaultfd05:
+require CONFIG_HAVE_ARCH_USERFAULTFD_WP") was merged which does not have this
+info.
+
+Having written a reason for things being done differently helps to keep things
+not being accidentally removed (or realize it's no longer needed and can be
+removed). It's enough to have the info in git log (not everything has to be
+documented as a comment in the code). Having it in elsewhere (PR description,
+different patch) usually means the info is lost. Also finding the relevant
+discussion is why I put Link: tag with URL to patch in lore (yes, I trust lore
+archive more than our mailing list archive).
+
+Not everything needs to be in form of a comment in the code, but it's
+helps to find the reason if it's at least in git log.
+
+> As RHEL 9 is based on an older kernel(5.14) but includes this
+> backport, changing this to .min_kver = "6.1" will cause the
+> test to be incorrectly skipped (TCONF) on RHEL 9 systems.
+
+Thanks for info. Of course it will stay. But it'd be good to comment
+"needed for RHEL 9" in the test (unfortunately it's not in the commit message).
+
+> Anyway, back to the topic, what is the point of creating this patch?
+> Anything I missed?
+
+Nothing besides trying to fix 6.11 (which was not the case) and trying to
+simplify. But whole effort is somehow relevant to general checking test
+requirements cleanup (we had a discussion runtime checks vs. kconfig/min_kver
+which resulted in Cyril's "lib: tst_kconfig: Add runtime checks" [2]).
+
+Kind regards,
+Petr
+
+[1] https://lore.kernel.org/ltp/20260123054056.131992-1-liwang@redhat.com/
+[2] https://patchwork.ozlabs.org/project/ltp/patch/20260326144006.3035-1-chrubis@suse.cz/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
