@@ -4,110 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCD5C10F2861
-	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 17:34:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D466910F2861
+	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 17:35:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6E9C13D8BAE
-	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 18:34:39 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 012D43DB86E
+	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 18:35:02 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 69C5C3DD1A9
- for <ltp@lists.linux.it>; Fri, 27 Mar 2026 18:33:39 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 038113D8BAE
+ for <ltp@lists.linux.it>; Fri, 27 Mar 2026 18:33:44 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F11D81000784
- for <ltp@lists.linux.it>; Fri, 27 Mar 2026 18:33:38 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 547746021A6
+ for <ltp@lists.linux.it>; Fri, 27 Mar 2026 18:33:43 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A6DC35BE32;
- Fri, 27 Mar 2026 17:33:27 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C77AF5BD4A;
+ Fri, 27 Mar 2026 17:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1774632807; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=j4wIVjPKd8T32fznq1n0rP6FNc7s87hewJ6LZ4uIcKc=;
- b=2MDQLmv8jUhcxNPczOI6EPDDfv/0KVoXpnloRLwsLJCHdTcpoi7ZcnHqP+fc0b0E4DHmY7
- HIuS2uUH8B26zy4Ddu9mJ1cMEN/GtjpElKliuHlC3SYt+l8vNX0mm5aCgdhlgwHD/3m8ss
- KeWe7l/1fpGOPfWXQaM2huyDfcwlqhg=
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Xy4BAawfnAMIpAvKSsvGZajf3Re2isRKVR1Dx8H4VEY=;
+ b=ItToJ4dkr+0iUJaEpIaoOAcTZeYOirZ1CmKEUCyJ3ikaZvyBkzB6Lq3gnLF7l3dxnj0SsY
+ OzmC3QcijAd0Kkud7eX0c/O4H33pawb4/eEC/RFI41t+eHr+04dFk1aix89Jsp/L9SJHGP
+ ZbljFZYYI+DHJZaTKR8/lZqI+XdYB7o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1774632807;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=j4wIVjPKd8T32fznq1n0rP6FNc7s87hewJ6LZ4uIcKc=;
- b=hwlIxe9LSqJ0lMMG9ECxOT+njFNq0kP/TPGjsB7ma99St44t4uuID9PZCpT3Qu4twA911b
- d7+OlXOVnSLUqGAQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Xy4BAawfnAMIpAvKSsvGZajf3Re2isRKVR1Dx8H4VEY=;
+ b=rUkVuDeCVvgxOXWbuPuj9773kSjbS14FBn6a6u2A+O/eyvbFbwdfVOU0m8C2Nmz24aVChS
+ xOInwlrw2wKuFUBg==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2MDQLmv8;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hwlIxe9L
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=V+YTBDaj;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="DzxG/AFl"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1774632807; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=j4wIVjPKd8T32fznq1n0rP6FNc7s87hewJ6LZ4uIcKc=;
- b=2MDQLmv8jUhcxNPczOI6EPDDfv/0KVoXpnloRLwsLJCHdTcpoi7ZcnHqP+fc0b0E4DHmY7
- HIuS2uUH8B26zy4Ddu9mJ1cMEN/GtjpElKliuHlC3SYt+l8vNX0mm5aCgdhlgwHD/3m8ss
- KeWe7l/1fpGOPfWXQaM2huyDfcwlqhg=
+ t=1774632806; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Xy4BAawfnAMIpAvKSsvGZajf3Re2isRKVR1Dx8H4VEY=;
+ b=V+YTBDajrv8QNZebWT7nZYTSqIVQUXY/p+eRSZoQwRrQkL60Xlp4pLEd8wNi3PIS0CrT8n
+ Q3NHSE3Xx9k6W2AaDqGGZ8Yer0yRiFEVx3CVvtXQYoymQoclw07SEfso6o8iol2ZiWFHeV
+ s2A4k1rsIVOeLzaH2KmBTQIjiv2xueE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1774632807;
+ s=susede2_ed25519; t=1774632806;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=j4wIVjPKd8T32fznq1n0rP6FNc7s87hewJ6LZ4uIcKc=;
- b=hwlIxe9LSqJ0lMMG9ECxOT+njFNq0kP/TPGjsB7ma99St44t4uuID9PZCpT3Qu4twA911b
- d7+OlXOVnSLUqGAQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Xy4BAawfnAMIpAvKSsvGZajf3Re2isRKVR1Dx8H4VEY=;
+ b=DzxG/AFlKz0R9mThkG7R3iLn3BF6wgcZzBT2hdZmwH+LFjHg4sTzFTyvxmMsgy8si20k2a
+ 4j+Vbzq/bQvAg8CQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C4E24A0B3;
- Fri, 27 Mar 2026 17:33:27 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 953B94A0A2;
+ Fri, 27 Mar 2026 17:33:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id GPkNHWe/xmm0DgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 27 Mar 2026 17:33:27 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id L6vWIma/xmm0DgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 27 Mar 2026 17:33:26 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 27 Mar 2026 18:32:52 +0100
-Message-ID: <20260327173252.1112192-5-pvorel@suse.cz>
+Date: Fri, 27 Mar 2026 18:32:48 +0100
+Message-ID: <20260327173252.1112192-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260327173252.1112192-1-pvorel@suse.cz>
-References: <20260327173252.1112192-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:dkim,suse.cz:email];
- FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
  DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: A6DC35BE32
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[5]; RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:mid];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: C77AF5BD4A
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 4/4] doc: newlib_tests: Update debugging parameters
+Subject: [LTP] [PATCH v3 0/4] lib: LTP_DEBUG cleanup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,83 +113,29 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-* Improve wording in doc/developers/debugging.rst. Not mention 'y'
-  (enough for user is to know 1 and 2 + 'y' is mentioned at -h).
-* Mention all -D and LTP_DEBUG parameters in library test.
-* Keep info about the levels in developers/debugging.rst, link page in
-  user/setup_tests.
-* Remove values from old doc (we have enough places to sync on changes,
-  let's drop the old doc).
+Changes v2->v3:
+* C cleanup (tdebug_env[0] != '\0' => *tdebug_env, thanks Li)
+* Simplify -D code (Li)
+* New commit "doc: newlib_tests: Update debugging parameters"
 
-Follow-up: b415265cb3 ("doc/setup_tests: Document LTP_ENABLE_DEBUG=2")
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-New in v3.
+Link to v2:
+https://patchwork.ozlabs.org/project/ltp/list/?series=497627&state=*
+https://lore.kernel.org/ltp/20260327154603.GC1092845@pevik/T/#t
 
- doc/developers/debugging.rst     | 4 ++--
- doc/old/C-Test-API.asciidoc      | 4 ++--
- doc/users/setup_tests.rst        | 2 +-
- lib/newlib_tests/tst_res_flags.c | 2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/doc/developers/debugging.rst b/doc/developers/debugging.rst
-index 4e162068b4..43d142dfeb 100644
---- a/doc/developers/debugging.rst
-+++ b/doc/developers/debugging.rst
-@@ -9,10 +9,10 @@ Debug messages
- --------------
- 
- The LTP framework supports ``TDEBUG`` flag test debug messages. These
--messages can be enabled using the ``-D[1,2]`` parameter or setting ``LTP_DEBUG=1,2``
-+messages can be enabled using the ``-D`` parameter or setting ``LTP_DEBUG``
- environment variable (see :doc:`../users/setup_tests`).
- 
--The ``-D`` parameter also supports the following verbosity levels:
-+Both ``-D`` parameter and ``LTP_DEBUG``  support the following verbosity levels:
- 
-   ``-D1`` (or ``-D``): Enable debug logs for the test process only.
-   ``-D2``: Enable verbose debug logs for both the test and library processes.
-diff --git a/doc/old/C-Test-API.asciidoc b/doc/old/C-Test-API.asciidoc
-index 4207b28e92..503dc91ce5 100644
---- a/doc/old/C-Test-API.asciidoc
-+++ b/doc/old/C-Test-API.asciidoc
-@@ -232,8 +232,8 @@ Printf-like function to report test result, it's mostly used with ttype:
- | 'TPASS'  | Test has passed.
- | 'TFAIL'  | Test has failed.
- | 'TINFO'  | General message.
--| 'TDEBUG' | Debug message (new C API only, printed with '-D' or via 'LTP_DEBUG=1' or 'y'
--             environment variable), only for messages which would be too verbose for normal run.
-+| 'TDEBUG' | Debug message (new C API only, enabled via '-D' or 'LTP_DEBUG' environment variable)
-+             only for messages which would be too verbose for normal run.
- | 'TWARN'  | Something went wrong but we decided to continue. Mostly used in cleanup functions.
- |==============================
- 
-diff --git a/doc/users/setup_tests.rst b/doc/users/setup_tests.rst
-index a42c397feb..6f1d996e18 100644
---- a/doc/users/setup_tests.rst
-+++ b/doc/users/setup_tests.rst
-@@ -92,7 +92,7 @@ users.
- 
-    * - LTP_DEBUG
-      - Enable debug info (value ``1`` (``y``) or ``2`` for more verbose level).
--       Equivalent of ``-D`` parameter.
-+       Equivalent of the ``-D`` parameter (see :doc:`../developers/debugging`).
- 
- Test specific environment variables
- -----------------------------------
-diff --git a/lib/newlib_tests/tst_res_flags.c b/lib/newlib_tests/tst_res_flags.c
-index 9993d0f87d..cda0970702 100644
---- a/lib/newlib_tests/tst_res_flags.c
-+++ b/lib/newlib_tests/tst_res_flags.c
-@@ -21,7 +21,7 @@ static struct tcase {
- 	{FLAG(TCONF)},
- 	{FLAG(TWARN)},
- 	{FLAG(TINFO)},
--	{FLAG(TDEBUG), " (printed only with -D[1,2] or LTP_DEBUG=1,2)"},
-+	{FLAG(TDEBUG), " (printed only with -D[1,2] or LTP_DEBUG=1(y),2)"},
- };
- 
- static void do_cleanup(void)
+Petr Vorel (4):
+  lib: Ignore empty LTP_ENABLE_DEBUG
+  lib: Rename variable LTP_ENABLE_DEBUG => LTP_DEBUG
+  lib: Prefer LTP_DEBUG over -D
+  doc: newlib_tests: Update debugging parameters
+
+ doc/developers/debugging.rst     |  6 ++++--
+ doc/old/C-Test-API.asciidoc      |  4 ++--
+ doc/users/setup_tests.rst        |  4 ++--
+ lib/newlib_tests/tst_res_flags.c |  2 +-
+ lib/tst_test.c                   | 33 +++++++++++++++-----------------
+ 5 files changed, 24 insertions(+), 25 deletions(-)
+
 -- 
 2.53.0
 
