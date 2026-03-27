@@ -4,97 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 325DC10BA42D
-	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 05:41:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 086B910BA431
+	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 07:03:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774590103; h=date : to :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1774595001; h=date : to :
  message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=gl2n+F5f8Utn6n58LXfxE7CEnWSonDFypStcd4fvxW0=;
- b=VqGR9MJm9Q9RGD+PypXIE3ORn1rCHl/BYv8r1qtdFjgxL5Ov1M1Tj4N/zWfmPeeGh14jv
- VVe3wd/V/ayyR6mG2638aNwfL9DCsZk0qJnYXm9FHuki0ByfFnxGAuMrKJJOrVUu9+5bud3
- dwDXeoUWTixrm1vrwDNU8QO5qfuMBRM=
+ bh=SKFmcbtWQLmlZxXLlZSYW1VCqv+GzXBUaMwnrLMJjNg=;
+ b=PAZHCnYh2t5zREYJZVI6h+2lxI86sVe6gXBAY4pDcJQBS3knDFomwKjcsotKVTqPJbcmP
+ tKPqyhr0fcZ5EJGAdDQHRPvo1/g9o16l0c6I7ML+stIYW+/DZT0FLrH+2SbQz4gCyoBjsqO
+ jk9DJUruC9+V/rWLb4k831KjqaeKB1s=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 93A583D9E8C
-	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 06:41:43 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 8C06D3DCFED
+	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 08:03:21 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 51FF13C572F
- for <ltp@lists.linux.it>; Fri, 27 Mar 2026 06:41:16 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 887723D9E8C
+ for <ltp@lists.linux.it>; Fri, 27 Mar 2026 08:02:58 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 13C861000DAB
- for <ltp@lists.linux.it>; Fri, 27 Mar 2026 06:41:15 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BA46D601514
+ for <ltp@lists.linux.it>; Fri, 27 Mar 2026 08:02:57 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1774590074;
+ s=mimecast20190719; t=1774594975;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=L2Oqcj5gsI+f9oPfLPS2sLTOTF0MpwfuLG1kKhRd9b0=;
- b=EIj3HR69FlsWbm3sC1n+tfnwpb3ASZksAKgJc3i16RGzXHxKQqID4rXEJhINuqp2ZwJk8R
- GJ28l4Z2uL0VLreNWjUyqQsFyT++e6zXwmTOtWt0KXVL0sy2z4g5w/8QtBGDim4J4jIn/M
- Pj5kLgJH92vBKZNrbktfkcCj/umxDi0=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=IGii5oonFRCtW7LGEEJVanGlfc+d81TGw63/j6H88Nw=;
+ b=hFStn7vcBuoqBFI/sHzqds9ZuZoi2B0WMhdW5EHE2l8uySV3wkE1Q1i+0BKT9R4SdAhBkv
+ kp6nCl2Wi9bKA1bSmZ2W0WbWmsvzlH/LML8E1tzPLI44O748/a7cVUdX6BpZKtDHb/4yC2
+ n078aBGIdAE7dmK1c/1EFxuE+BD4/Ec=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-353-BQopA4KyMf2_cYO7nY71Mg-1; Fri, 27 Mar 2026 01:41:12 -0400
-X-MC-Unique: BQopA4KyMf2_cYO7nY71Mg-1
-X-Mimecast-MFC-AGG-ID: BQopA4KyMf2_cYO7nY71Mg_1774590071
-Received: by mail-pf1-f197.google.com with SMTP id
- d2e1a72fcca58-82a6906e35fso3330247b3a.0
- for <ltp@lists.linux.it>; Thu, 26 Mar 2026 22:41:11 -0700 (PDT)
+ us-mta-688--J4nB6VoPy2yMdUxOq14sw-1; Fri, 27 Mar 2026 03:02:54 -0400
+X-MC-Unique: -J4nB6VoPy2yMdUxOq14sw-1
+X-Mimecast-MFC-AGG-ID: -J4nB6VoPy2yMdUxOq14sw_1774594973
+Received: by mail-pg1-f197.google.com with SMTP id
+ 41be03b00d2f7-c737b6686ddso1270643a12.3
+ for <ltp@lists.linux.it>; Fri, 27 Mar 2026 00:02:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774590071; x=1775194871;
+ d=1e100.net; s=20251104; t=1774594973; x=1775199773;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=L2Oqcj5gsI+f9oPfLPS2sLTOTF0MpwfuLG1kKhRd9b0=;
- b=r2DnXDA4I2b60d3U3EkjLSSqSOjB8YULZ2yKXA1L7GBD0lu35WyYag9ChMYJzjFJVz
- TbLEWX1qxuL1FuTgVyU34D/ByB1n3YpIRlPwLQ70KxpAYsc2hqfZlr1+aY0gvYXmIkNP
- ZAzf3G2awfH3HJB2sujwGujvdbNlHvh2qS5ZXVbBphk5Ljiixv0uSsWU5DMTC3EKwBbD
- ezJtfoIVVadWHMJAo9I5DY1omDUNrf5iOmDZ5aIRQL4mbOW4omeD1wJ1s0NrtiE1O3Hj
- gElgxuIhesJ9lSJi7b0jB5LmmBtPuckRP2XwJadJxtKkEEzau9Mlr/hcANFLhw7TAkxM
- kQOA==
-X-Gm-Message-State: AOJu0YwyFm6JVmuaqYMEwq+DwS4zpltcizr01Q3/DPVw3cptrT9n+81G
- P4S8kKVR72ksoqGLsE9hEegyDZvrh7nkkhszzNmEfvxkw3MVxJSYvZizZP1ztUKI9Ub7CrYVjW7
- tTJIuH5cX3Sd0H0BQgolC2PTgnzv6FYDkTaZV0ZVVZZ4CqaE2yuuQ
-X-Gm-Gg: ATEYQzw2cKculoufWbiLwt/nThLsoK+ctnLu1qzoFP3sUcECMI009fpOYz6dOtTLpK4
- 85m4ArmpXmCOC1RoHADf8zs2XtOtD32/cPVuVkCs03s8fGvE/yc6NDGGgCQzoBVCG/qsiU0czI/
- MDxgbsVD40D91KIfhmViHofXLEumJL50IQJwkyoPrMN8lkUProvgz67+jgQZIxkr0AzAX4fMsIx
- G0l8xyOLJ2kojwMB8fWV5+Z2foDfLzvTSbwyjB58Xwllqdj4undiNxNbzKiXlsDNKLrhnwtgchM
- 5e+pZNgRyIneJbtB+2XyW5fIxCApaE4pk7lOoq+TOTB7v8jI8h6D0yVY6fO5QWd5UZuqe3y6GIU
- KxjMBBKdl8dxOLe7TEg==
-X-Received: by 2002:a05:6a20:2453:b0:398:8ea8:5f9f with SMTP id
- adf61e73a8af0-39c73557894mr4179041637.16.1774590070872; 
- Thu, 26 Mar 2026 22:41:10 -0700 (PDT)
-X-Received: by 2002:a05:6a20:2453:b0:398:8ea8:5f9f with SMTP id
- adf61e73a8af0-39c73557894mr4179026637.16.1774590070358; 
- Thu, 26 Mar 2026 22:41:10 -0700 (PDT)
+ bh=IGii5oonFRCtW7LGEEJVanGlfc+d81TGw63/j6H88Nw=;
+ b=VR3QnfJ5HybBklnEn9pCfEg/ZHEHxq5SrsUtI95rLsxFVEvHrWnPo6CIzy/LiFDQnd
+ OMt23Y3ephP3tiPH0fK13uyPvwxq7gvbAv2d3mkE26P2fbqhHnTuu2yzJDSbuHDq2eQK
+ sizK3WmcbGgEWJ3aWk1zuvaqUEQs7V9xHSLEy2Lb8bGqHWN4mdyDIkAOpihVwCjp2JN3
+ qBBGlMOuE86nXHLFR/hql2KLcQLW5GhGn9icSJVq2AHhd9VhMi66IILNJS7RrpQVd4WW
+ AFIW3LgQ4CV1D+i3dIGwJnI6wqTYFeqC3gy2o3b6aeqohjn0kkjLCbdxYwRo+TZyFcde
+ 6wfg==
+X-Gm-Message-State: AOJu0YwAumAh9e3CS3bNPhPgJC08ZgR0y+PlLQ9nUh+joeaFmnSYDCLL
+ atUm8NB4Xpc/efZrSBufygx8pEMETVhWbki1G4+3BBoZmlEtErd+rWRa/MbGeLTaI/UjP3owtx4
+ 9pP8nICwHNZeaqmMkgbPwI7bbmmmvwJveVb7a/wVevAJRFOaCCiwTGMcyIfY2
+X-Gm-Gg: ATEYQzwWEoEJ/thMgPF9yUA5bSgP2wdn7XoiPlGf5l0uC+MWqI8dUCHpendEEVAMQXn
+ 58B2aPrlViZ7n1vfh8/zw1K9/v/dExitXpmaPvNveByEAc+W0KW5XVTbumTxQRFUAxdq904uD3u
+ uPEk/0ogYk7RS9sWH6wDw3qYz3X4nKmIVt97iroMAkBUfrP5AXkm206P8wVu+veU9NIyd6hheH/
+ McFvfE/HZfu/PLv8oS4yUM/XCa3hrQEGOeR0v5mHXVIdimAu4S+FgXfx5KdIaObLnQk0edD/dny
+ 0TgjZPPj3uVgzFF71HZwxXvw8DRXWLwS/GtzFqweqPZIljIHi10mJRa/AH7qMoKPJdFi3VBTYRI
+ J63IxkNFS1vUbdk8qSw==
+X-Received: by 2002:a05:6a00:1ac8:b0:82a:5ef0:210b with SMTP id
+ d2e1a72fcca58-82c95e8804cmr1500633b3a.15.1774594972641; 
+ Fri, 27 Mar 2026 00:02:52 -0700 (PDT)
+X-Received: by 2002:a05:6a00:1ac8:b0:82a:5ef0:210b with SMTP id
+ d2e1a72fcca58-82c95e8804cmr1500597b3a.15.1774594972035; 
+ Fri, 27 Mar 2026 00:02:52 -0700 (PDT)
 Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
- 41be03b00d2f7-c7685ce90c5sm712350a12.16.2026.03.26.22.41.09
+ d2e1a72fcca58-82c7d388e5esm4813355b3a.37.2026.03.27.00.02.50
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 26 Mar 2026 22:41:09 -0700 (PDT)
-Date: Fri, 27 Mar 2026 13:41:07 +0800
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <acYYc47HXGYa5Mqj@redhat.com>
-References: <20260326125216.159239-1-pvorel@suse.cz>
+ Fri, 27 Mar 2026 00:02:51 -0700 (PDT)
+Date: Fri, 27 Mar 2026 15:02:48 +0800
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <acYrmGE0yu07rJsn@redhat.com>
+References: <20260326144006.3035-1-chrubis@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20260326125216.159239-1-pvorel@suse.cz>
+In-Reply-To: <20260326144006.3035-1-chrubis@suse.cz>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: yRAw7mjG1jQoa3AdUWCyMdIx8vNyLjDPKoU6DfFnfS8_1774590071
+X-Mimecast-MFC-PROC-ID: 5VkiNgCnK8Y_r-K1aDAvik0nCKiRWn2J39m6kEM-wZQ_1774594973
 X-Mimecast-Originator: redhat.com
 Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] userfaultfd03.c: Require kernel 6.1
+Subject: Re: [LTP] [PATCH] lib: tst_kconfig: Add runtime checks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,31 +113,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Mar 26, 2026 at 01:52:15PM +0100, Petr Vorel wrote:
-> Required kernel functionality was added in kernel 6.1 (not 6.11)
-> 2d5de004e009 ("userfaultfd: add /dev/userfaultfd for fine grained access control")
-> 
-> Because it's a new kernel functionality which has not been backported to
-> enterprise kernels we can simplify check with just .min_kver.
-> 
-> Fixes: b63ab54aee ("userfaultfd: Do not use min_kver as gate for test")
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi all,
-> 
-> @Li I suppose RHEL kernel haven't backport this.
+> So far for CONFIG_*_NS.
 
-Why do you lack confidence in RHEL? haha :)
+It would be great to have a description for the feature:
 
-I have confimed that both RHEL 9 and 10 have backported this
-feature (commit 2d5de004e009).
+Something maybe like:
 
-As RHEL 9 is based on an older kernel(5.14) but includes this
-backport, changing this to .min_kver = "6.1" will cause the
-test to be incorrectly skipped (TCONF) on RHEL 9 systems.
+ "Currently, LTP Kconfig parsing logic only checks if a feature was
+  enabled during kernel compilation (e.g., CONFIG_USER_NS=y). However,
+  some kernel features can be compiled in but disabled at runtime via
+  kernel command-line parameter or sysctls. When this happens, tests
+  relying on these Kconfig variables attempt to run and fail, rather
+  than being gracefully skipped.
+  
+  This patch introduces a runtime check mechanism for Kconfig variables.
+  When a monitored CONFIG_* variable is parsed as 'y' or 'm', the framework
+  now executes an associated runtime check function. If the runtime check
+  fails, the framework logs an info message and internally overrides the
+  variable's state to 'n'. This allows the existing LTP dependency logic
+  to properly skip tests that require the disabled feature."
 
-Anyway, back to the topic, what is the point of creating this patch?
-Anything I missed?
+Also, add test_kconfig04.c in newlib_tests/ to verify this works?
 
 -- 
 Regards,
