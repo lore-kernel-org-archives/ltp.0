@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B63C410F285E
-	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 17:33:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB17410F2861
+	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 17:34:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 21BD83DD114
-	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 18:33:47 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 928C43CFFAB
+	for <ltp@archiver.kernel.org>; Fri, 27 Mar 2026 18:34:05 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 67BD03CFB7B
- for <ltp@lists.linux.it>; Fri, 27 Mar 2026 18:33:28 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id DD8BC3DD308
+ for <ltp@lists.linux.it>; Fri, 27 Mar 2026 18:33:32 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CCE981A010E9
- for <ltp@lists.linux.it>; Fri, 27 Mar 2026 18:33:27 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2CE231A010F0
+ for <ltp@lists.linux.it>; Fri, 27 Mar 2026 18:33:31 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0C1DF4D2B9;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 732D04D1F6;
  Fri, 27 Mar 2026 17:33:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1774632807; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RcnjnRnolWBiiXPt1hlQMvtLPLPvvT15RCi88AWo0EE=;
- b=sQwkCH6LPjJMFw73k881FBj4jK2D9gQPXQYS2Pd/4JMIL3nKSgY8dSKGLVub7mBS7ETg+3
- jZleowZa4mRwsIlG58i+D7T5CxDempaLf4Xvj0TCsnF7n/cTC6zftyG1OVqfQmfL5LEou1
- TgDcqhDetPWJtw8ctfNd9lBztQ3/Qis=
+ bh=dxn+3vdHASTESJ9xI3eWbrsjxneSIXMw3UOdNz0yqM8=;
+ b=axgObEW2BGfig5BfLEPMMef8oF80Gcpq0y5n+DK/A+0jwAF6qIb4lO7DHkB4TMRq5QVTFT
+ dOL0F3obfyl+DXHddvWhvThoyAEK2XGyDOTlX2XgVyH+ODv9WAQ3vvHYbVQoSm1WKXocE+
+ rOnf7Rzf5wkbD5p9v+uz9YR4/KbJuYQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1774632807;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RcnjnRnolWBiiXPt1hlQMvtLPLPvvT15RCi88AWo0EE=;
- b=tGfyPTCylOPmipoYYEXECROa1VX+0mD0s1Y6YvsIiCchJn9cS/wd2qfuV4ApPex3VBby/W
- 4/zRYIifOHu/qhAg==
+ bh=dxn+3vdHASTESJ9xI3eWbrsjxneSIXMw3UOdNz0yqM8=;
+ b=JiT2VS7N1DwnkZRTCyVR52Zf5M90+rG1vJcpuLgiF6Z0SaBv8fAfVsholbxMRDK/HEErNH
+ EWoYaKAqNsFQ6mDw==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
@@ -53,32 +53,32 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RcnjnRnolWBiiXPt1hlQMvtLPLPvvT15RCi88AWo0EE=;
- b=sQwkCH6LPjJMFw73k881FBj4jK2D9gQPXQYS2Pd/4JMIL3nKSgY8dSKGLVub7mBS7ETg+3
- jZleowZa4mRwsIlG58i+D7T5CxDempaLf4Xvj0TCsnF7n/cTC6zftyG1OVqfQmfL5LEou1
- TgDcqhDetPWJtw8ctfNd9lBztQ3/Qis=
+ bh=dxn+3vdHASTESJ9xI3eWbrsjxneSIXMw3UOdNz0yqM8=;
+ b=axgObEW2BGfig5BfLEPMMef8oF80Gcpq0y5n+DK/A+0jwAF6qIb4lO7DHkB4TMRq5QVTFT
+ dOL0F3obfyl+DXHddvWhvThoyAEK2XGyDOTlX2XgVyH+ODv9WAQ3vvHYbVQoSm1WKXocE+
+ rOnf7Rzf5wkbD5p9v+uz9YR4/KbJuYQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1774632807;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RcnjnRnolWBiiXPt1hlQMvtLPLPvvT15RCi88AWo0EE=;
- b=tGfyPTCylOPmipoYYEXECROa1VX+0mD0s1Y6YvsIiCchJn9cS/wd2qfuV4ApPex3VBby/W
- 4/zRYIifOHu/qhAg==
+ bh=dxn+3vdHASTESJ9xI3eWbrsjxneSIXMw3UOdNz0yqM8=;
+ b=JiT2VS7N1DwnkZRTCyVR52Zf5M90+rG1vJcpuLgiF6Z0SaBv8fAfVsholbxMRDK/HEErNH
+ EWoYaKAqNsFQ6mDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CE92E4A0B1;
- Fri, 27 Mar 2026 17:33:26 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 41D584A0B1;
+ Fri, 27 Mar 2026 17:33:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id IBwGMWa/xmm0DgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 27 Mar 2026 17:33:26 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MD8yDme/xmm0DgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 27 Mar 2026 17:33:27 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 27 Mar 2026 18:32:49 +0100
-Message-ID: <20260327173252.1112192-2-pvorel@suse.cz>
+Date: Fri, 27 Mar 2026 18:32:51 +0100
+Message-ID: <20260327173252.1112192-4-pvorel@suse.cz>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260327173252.1112192-1-pvorel@suse.cz>
 References: <20260327173252.1112192-1-pvorel@suse.cz>
@@ -89,14 +89,14 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MIME_GOOD(-0.10)[text/plain]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
  TO_DN_SOME(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
  RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
  RCVD_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  RCPT_COUNT_FIVE(0.00)[5]; RCVD_TLS_ALL(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/4] lib: Ignore empty LTP_ENABLE_DEBUG
+Subject: [LTP] [PATCH v3 3/4] lib: Prefer LTP_DEBUG over -D
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,42 +113,88 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Empty LTP_ENABLE_DEBUG environment variable should be just ignored.
+Environment variable has usually higher preference than getopt.
+This includes disabling debugging even on -D:
+LTP_DEBUG= ./test05 -D2 means debugging disabled.
 
-This fixes warning:
-LTP_ENABLE_DEBUG= ./test05
-tst_test.c:1454: TWARN: Invalid LTP_ENABLE_DEBUG value:
+Also reduce duplicity of "Enabling debug info (level %d)" message and
+document that on -h and developers/debugging.rst.
 
-Reviewed-by: Li Wang <liwang@redhat.com>
 Fixes: e434de62b4 ("lib: Extend LTP_ENABLE_DEBUG to support verbosity levels")
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
 Changes v2->v3:
-* C cleanup (tdebug_env[0] != '\0' => *tdebug_env, thanks Li)
+* Simplify -D code (Li)
 
- lib/tst_test.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ doc/developers/debugging.rst |  2 ++
+ lib/tst_test.c               | 25 +++++++++++--------------
+ 2 files changed, 13 insertions(+), 14 deletions(-)
 
+diff --git a/doc/developers/debugging.rst b/doc/developers/debugging.rst
+index 36dda0d90f..4e162068b4 100644
+--- a/doc/developers/debugging.rst
++++ b/doc/developers/debugging.rst
+@@ -19,6 +19,8 @@ The ``-D`` parameter also supports the following verbosity levels:
+ 
+ Suppress all debug logs if no '-D' flag passed (default behavior).
+ 
++``LTP_DEBUG`` has higher preference than ``-D``.
++
+ Tracing and debugging syscalls
+ ------------------------------
+ 
 diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 2d62ab164d..6cd5546c0f 100644
+index ea1aa5d306..61e357af3f 100644
 --- a/lib/tst_test.c
 +++ b/lib/tst_test.c
-@@ -1445,13 +1445,13 @@ static void do_setup(int argc, char *argv[])
+@@ -654,11 +654,11 @@ static struct option {
+ 	char *optstr;
+ 	char *help;
+ } options[] = {
+-	{"h",  "-h       Prints this help"},
+-	{"i:", "-i n     Execute test n times"},
+-	{"I:", "-I x     Execute test for n seconds"},
+-	{"D::", "-D[1,2]  Prints debug information"},
+-	{"V",  "-V       Prints LTP version"},
++	{"h",  "-h        Prints this help"},
++	{"i:", "-i n      Execute test n times"},
++	{"I:", "-I x      Execute test for n seconds"},
++	{"D::", "-D[1,2]  Prints debug information (can be overwriten by LTP_DEBUG"},
++	{"V",  "-V        Prints LTP version"},
+ };
  
- 	parse_opts(argc, argv);
- 
--	if (tdebug_env && !context->tdebug) {
-+	if (tdebug_env && *tdebug_env && !context->tdebug) {
- 		if (!strcmp(tdebug_env, "2"))
- 			context->tdebug = 2;
- 		else if (!strcmp(tdebug_env, "1") || !strcmp(tdebug_env, "y"))
- 			context->tdebug = 1;
+ static void print_help(void)
+@@ -825,13 +825,9 @@ static void parse_opts(int argc, char *argv[])
+ 			tst_brk(TBROK, "Invalid option");
+ 		break;
+ 		case 'D':
+-			if (optarg)
+-				context->tdebug = SAFE_STRTOL(optarg, 1, 2);
+-			else
+-				context->tdebug = 1;
+-
+-			if (context->tdebug)
+-				tst_res(TINFO, "Enabling debug info (level %d)", context->tdebug);
++			if (getenv("LTP_DEBUG"))
++				break;
++			context->tdebug = optarg ? SAFE_STRTOL(optarg, 1, 2) : 1;
+ 		break;
+ 		case 'h':
+ 			print_help();
+@@ -1453,10 +1449,11 @@ static void do_setup(int argc, char *argv[])
  		else
--			tst_res(TWARN, "Invalid LTP_ENABLE_DEBUG value: %s", tdebug_env);
-+			tst_res(TWARN, "Invalid LTP_ENABLE_DEBUG value: '%s'", tdebug_env);
+ 			tst_res(TWARN, "Invalid LTP_DEBUG value: '%s'", tdebug_env);
  
- 		if (context->tdebug)
- 			tst_res(TINFO, "Enabling debug info (level %d)", context->tdebug);
+-		if (context->tdebug)
+-			tst_res(TINFO, "Enabling debug info (level %d)", context->tdebug);
+ 	}
+ 
++	if (context->tdebug)
++		tst_res(TINFO, "Enabling debug info (level %d)", context->tdebug);
++
+ 	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
+ 		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
+ 
 -- 
 2.53.0
 
