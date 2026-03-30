@@ -4,89 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5020BF3D60F
-	for <ltp@archiver.kernel.org>; Mon, 30 Mar 2026 08:32:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAFEEF3D61E
+	for <ltp@archiver.kernel.org>; Mon, 30 Mar 2026 08:39:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774859540; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1774859994; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=/AeS6O5ca07u2wBYHnw5ZFRQA4RMaeS96qmnoES3wnc=;
- b=cOAGvbVvgYWqx9Ld5rsd9VLIlSi8J2s78E1W2V1BjBcgSPHIkE7lfvBlHUeOceJrbC4Sr
- 0/Qn6MMaZGs9fqsAwp6e+XUHyRjg4l8jr12hMOmdiDLSSNOue60wm7ZzKBryEp3/ZPWybku
- 9gDzhfzYpKlggnc8jBBE0xPgRp7/97k=
+ bh=IAzDvRtXfo4e1t7IElMwzUPy0bxTFGZHddVY1jvoisk=;
+ b=TrqmCanc1BrU/uhQ5u3x05Jy6KrMXF11z27eZh5EsfGCySE2eNCaDsMwJj3zzb3vFJNvj
+ QMNvCijx7UtcuHGvPl5U1MGqwES+jEFWhYcGOyeHrCME9wwMUfzaLdFOzfUZ3WsFkXjlLKH
+ Z75xps1hx3q10E/eG8YhvEVHmzYBlwY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF5CE3E131D
-	for <ltp@archiver.kernel.org>; Mon, 30 Mar 2026 10:32:20 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 568D53C8235
+	for <ltp@archiver.kernel.org>; Mon, 30 Mar 2026 10:39:54 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D5DC13C1014
- for <ltp@lists.linux.it>; Mon, 30 Mar 2026 10:31:58 +0200 (CEST)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
+ by picard.linux.it (Postfix) with ESMTPS id F36743C1014
+ for <ltp@lists.linux.it>; Mon, 30 Mar 2026 10:39:29 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 43F3410009B5
- for <ltp@lists.linux.it>; Mon, 30 Mar 2026 10:31:58 +0200 (CEST)
-Received: by mail-wm1-x32e.google.com with SMTP id
- 5b1f17b1804b1-48700b1ba53so36874845e9.1
- for <ltp@lists.linux.it>; Mon, 30 Mar 2026 01:31:58 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9F4D2600795
+ for <ltp@lists.linux.it>; Mon, 30 Mar 2026 10:39:28 +0200 (CEST)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-43cfde3c3f3so621639f8f.3
+ for <ltp@lists.linux.it>; Mon, 30 Mar 2026 01:39:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1774859518; x=1775464318; darn=lists.linux.it;
+ d=suse.com; s=google; t=1774859968; x=1775464768; darn=lists.linux.it;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=ovGaIZCppCA25SlBG59vmYyFrLOY9sqrZJSfC/52hSs=;
- b=U1eLJ4uzBVouVqxWFPeGbHaekg7I67TKB9tKSgHI9K61K/4VCw8y4Xgx1WTgKj5mOP
- QkEtuVdtyzUttNPVU+LEhGJBXbnE6XnB0Gz6qgKvH644t7O6ix5yAqfSrft2UkNPEvEa
- wMJeqOVXfxjFeQtnhn+zZ4qWYbMdz0UvCY1Gy9ivC8i1km4h1Ez2K7OJ7u+StriJyiXN
- txBpxRBXnGqIBCFwfWpyWhfXFgaIC5oPB5c2xTdJjCDHgB74dJPIbJNDz6YZ5NlgfZNu
- p1pDAtDqDxcxdp6kA/vUnFsUvolhG9jQ7BxBKtDfgubN2lx7sOePiSU2KRLfBqEmY45T
- oJAQ==
+ bh=BWeNb0BQAXCOg4SVOPRcHn+U10d+F1WiQeE5mWAyh1E=;
+ b=IL9R7rlc0VLuBWBWzXsEp4qFfBfBQeq1hsxP7qI0HOJs+q+o1S3IveDVvylFPkSKBp
+ wUMtILTab/lXsXB+sf9Oa4bQtVBis2Q6bDa3EFZnjxYp2haI3v0cbTq99MvNqu8leQYm
+ uZvRe1Vuz5XbL///de5rUZbB5fPq16mzR0Lmjp2n+fddgSV22/cqVnLuLj/UUHNLrwfk
+ k46lvdP6Ry/DxGABn1GrLWOsIkKTkmjNxO7ZeUUsDU7Xew3sVuutAfwTgIc+kX7EdLv4
+ 9dE6tGxH8Rli+PHxGTNYdbTkQCFiCkR/cqf1WR2OqZLfaD1mjSXIf113Sf/mRVyZHQQB
+ QWJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774859518; x=1775464318;
+ d=1e100.net; s=20251104; t=1774859968; x=1775464768;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=ovGaIZCppCA25SlBG59vmYyFrLOY9sqrZJSfC/52hSs=;
- b=cF8DnL4Xa7A9Bn9GN0vKKfad4aO12ZW6YmfVwXV7odSUrw6lJK4ELfQ4zFw3evRnoN
- 1Lftk1Y7M46ypFX+b3zT9JHqaDflnAA1sb59Ws130XkOOjhOOjkmrK8CtO31gRU7EBqQ
- LLxQJZ77ZYNSuY6chZkNTvG1lqDMO4mPFPv7i8HkbvYrajYbONgGjupphU9J7j32UpaW
- gIhMb8ixogFJbROCg8C2QRbFXR+v8pMYazXvwtofccYmo921FVKIHGsizYWEFM2wGT9o
- felngVkyGvNyXmApgvVaWWauDH6ZkRFcPW7fy1/pWFW7W82TlSCO6kpCtfTJvViBX3sH
- /qGQ==
-X-Gm-Message-State: AOJu0YxRcVkBMoZB+7wxVkiGsP0/gIoFk4naVtfkuW5TP9yqgjX3NyOu
- lRMFPGOIXeq0z4DcvBmrOdeElKqBbqEejubpdld/2RgaM3xEaKng0qGWm46lFZalHPVMlsbaQuY
- wpf2ApnE=
-X-Gm-Gg: ATEYQzwCpOMvkgZGj3qNnB4oTxOeVLIxBWj2Eq4EoRahpz0W8ZpAbEo8ozTPtcmC+Zi
- CF625Uj1Q6wILMS05JjsGnzxsPdbwt2nosKZhaTUKb8hyNlZhM8Qcg81wX9qdN2MdxdLS78ZN/D
- MD9LRV0mi4iMzce3EWoard1VoyHoZSLVQEFLc+BW6h5G27LZbe1N1c4EaryMaa68Ig/FJE/KLH2
- mjqDapSQSGvtM5CCKIsXKcmP910WPIRZrKbV33Atq06uxLi/7CZl32zpL0wz3DjDCUeCucbS+/k
- l36SZMFCXrzaJ1mXpK7HD8Yk5jYCjYRuY58iKd/WYJk6zqeNFD6QgoSlwQHlWhhHewNel4KXbNO
- LrHfcDDfhUSuV56X+j4IX4HBRF7ThpYOy9ml2YXtLDxUhUVFDMMXQ1Au8ABj4F32pA9dkOYX7kV
- Lkc+ql1QVL0X9QYQX7B7cU9kjUVQjKCMmVChicJysq3yME7nsdeXRyb9daXCWwDaor3qwmiHB+d
- wP/IqPFxMuCTdTs8r/eLjvAceLafP5/FuM=
-X-Received: by 2002:a05:600c:1393:b0:485:3c8f:e4d9 with SMTP id
- 5b1f17b1804b1-487280a09a2mr194527215e9.26.1774859517524; 
- Mon, 30 Mar 2026 01:31:57 -0700 (PDT)
+ bh=BWeNb0BQAXCOg4SVOPRcHn+U10d+F1WiQeE5mWAyh1E=;
+ b=gjE0TK/XL1V2pyxMuJVSDsJVLy4E3f8WYleS4glXF8loubTwli3Okt7GJ/TDGD/vRU
+ C/3ytMMIlRhCg1gnD3zTMbeRiufqljT9KZBvEqyoDsOPZbir8aYQl/OxMEbZyHv4FSQg
+ dY1GoIZVpof7ih7M6swqIgj6m5dH2w5XvwFDyRM4kZxOafOJbcCkSnafoaWfqdZ6pQKj
+ vc+gnhG2Sa/bxUwYq9IwBNXcKLp2pBRHUMED1FwmiNZyCK+ix7LGo6QyZdX5e/15hiqf
+ K9WJ0xb1nBtD6Tw6Dx7mn2PdYN1XR2fn+l5gy0hSI70mvwz1TtEGUiOuSE0sJCeq+1zD
+ fWMA==
+X-Gm-Message-State: AOJu0YzYsFQdwNRfjhMcYdgZxHJ1fPObexOQ1pk8Yz50ZFLYIg1Tgli4
+ l/0o53Fu0egPB4wlmLqkxR2KWad/ciGz6nYU47kRYoDCIa2MjM7mdZuHT/IdNq4og9admQFEIQP
+ ic8PLpgk=
+X-Gm-Gg: ATEYQzzAoyEwYbS7iMlJVJVtbDeh2hEdiv3WhZysT9fsURxkEJhRps7QE2FiwMFbZjo
+ LNeXZwpu5jDzGvuqI1cAeK4AZOL+2LbQ9pBWhIIv8DI1MR2N0Gr9gI/x2uao0aNILDtf0b0W/kd
+ 3ET9Ezo29HkkidVYjYtNS4dr2kdW4FsFbtoxl+Xe29mNJzdd/o/Fjnsirm5+kK1LuzRHUXLp9ZK
+ bNye6mnteYYE24KsbnP1iGLjRMdd/c4sCwwk7mV17Xe8suRakMY4ZH5fUOj8v/bYWrGWxzQXJ5V
+ bjwk55jVkWRfJAltxOWVv1ecuXiMiZAZf+FygqRW6j8b/vAM+WqByhccu2h/brd0iKAUdEc8uwa
+ /AI61Qcn/xqlmkwy13OBMMusPGV4QljW63i4h8CRni+MGKL5qV/wNkkgUVhUyn3ykwNvJSbga3p
+ 0s+K/PaFezR9NdIAQzjH1b/GbaDALrfNNLnMK1s1vcq8tTG5ss8t7hl0jIC2Xl69FCJ16OlAo1P
+ Z/ao5csJsrQZsPcqxq+E2Y4z0W6qOTV2zA=
+X-Received: by 2002:a05:6000:1cd:b0:43c:f1a5:56f6 with SMTP id
+ ffacd0b85a97d-43cf1a55854mr10231724f8f.43.1774859967948; 
+ Mon, 30 Mar 2026 01:39:27 -0700 (PDT)
 Received: from localhost.localdomain
  (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
  [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-48722c9506dsm254167775e9.7.2026.03.30.01.31.57
+ ffacd0b85a97d-43cf2580168sm17916897f8f.36.2026.03.30.01.39.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 30 Mar 2026 01:31:57 -0700 (PDT)
-Message-ID: <69ca34fd.050a0220.3c7430.fd79@mx.google.com>
-To: "Ricardo Branco" <rbranco@suse.de>
-In-Reply-To: <20260321195817.119695-1-rbranco@suse.de>
-Date: Mon, 30 Mar 2026 08:31:56 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ Mon, 30 Mar 2026 01:39:27 -0700 (PDT)
+Message-ID: <69ca36bf.df0a0220.9a4c5.bfe1@mx.google.com>
+To: lufei <lufei@uniontech.com>
+In-Reply-To: <20260330071554.49304-1-lufei@uniontech.com>
+Date: Mon, 30 Mar 2026 08:39:27 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] userfaultfd: Add test using UFFDIO_CONTINUE
+Subject: Re: [LTP] [PATCH v2] Rewrite ftrace_regression tests with new C API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,102 +100,47 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Andrea Cervesato via ltp <ltp@lists.linux.it>
 Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+Cc: lufei <lufei@uniontech.com>, ltp@lists.linux.it
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Ricardo,
-
-The commit message needs a body explaining why this test is being added
-(e.g. UFFDIO_CONTINUE with minor shmem faults was previously untested)
-and that the missing UFFD_PAGEFAULT_FLAG_MINOR fallback define is also
-added.
-
-> +#define _GNU_SOURCE
-> +#include "config.h"
-
-_GNU_SOURCE is not needed here. None of the other userfaultfd tests use
-it and nothing in this test requires GNU extensions.
-
-[...]
-
-> +static int page_size;
-> +static char *page;
-> +static int uffd;
-> +static int memfd = -1;
-
-uffd must be initialized to -1. Zero is a valid fd (stdin).
-
-[...]
-
-> +static void reset_pages(void)
-> +{
-> +	if (page) {
-> +		SAFE_MUNMAP(page, page_size);
-> +		page = NULL;
-> +	}
-> +
-> +	if (memfd >= 0) {
-
-Use `if (memfd != -1)` -- that is the LTP fd-check convention.
-
-Also, reset_pages() is the .cleanup callback but never closes uffd. If
-run() aborts after SAFE_USERFAULTFD() but before spawning the thread
-(e.g. TCONF at the feature check), uffd leaks. Add:
-
-	if (uffd != -1)
-		SAFE_CLOSE(uffd);
-
-[...]
-
-> +	SAFE_IOCTL(uffd, UFFDIO_CONTINUE, &uffdio_continue);
-> +
-> +	close(uffd);
-> +	return NULL;
-
-Use SAFE_CLOSE(uffd) instead of close(uffd).
-
-[...]
-
-> +	uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, false);
-
-Consider passing true for the retry parameter. The test does not need
-privileged userfaultfd -- UFFD_FEATURE_MINOR_SHMEM works fine with
-UFFD_USER_MODE_ONLY. With false, the test unnecessarily TCONFs on
-systems where unprivileged_userfaultfd is disabled.
-
-[...]
-
-> +	uffdio_continue.range.start =
-> +		msg.arg.pagefault.address & ~(page_size - 1);
-
-page_size is int, so ~(page_size - 1) produces a signed int mask that
-gets sign-extended when applied to the __u64 address. Cast to avoid
-relying on implementation-defined behavior:
-
-	msg.arg.pagefault.address & ~((unsigned long)page_size - 1);
-
-[...]
-
-> +	.needs_kconfigs = (const char *[]) {
-> +		"CONFIG_HAVE_ARCH_USERFAULTFD_WP=y",
-> +		NULL
-> +	},
-
-This test uses UFFD_FEATURE_MINOR_SHMEM, not write-protect.
-CONFIG_HAVE_ARCH_USERFAULTFD_WP will wrongly skip the test on
-architectures that support minor faults but not WP. Use
-CONFIG_USERFAULTFD=y instead. The version gate is already handled by
-.min_kver = "5.14".
-
-Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgbHVmZWksCgo+ICsvKioKPiArICogZmlsZV9jb250YWluc19saW5lIC0gQ2hlY2sgaWYgYSBm
+aWxlIG9jbnRhaW5zIHNwZWNpZmljIGxpbmUsIHN0cmljdGx5CgpUeXBvOiAib2NudGFpbnMiIC0+
+ICJjb250YWlucyIuCgo+ICtzdGF0aWMgaW5saW5lIGludCBmaWxlX2NvbnRhaW5zKGNvbnN0IGNo
+YXIgKnBhdGgsIGNvbnN0IGNoYXIgKnN0cikKPiArewo+ICsJY2hhciAqYnVmID0gU0FGRV9NQUxM
+T0MoRlRSQUNFX0ZJTEVfQlVGX1NJWkUpOwo+ICsKPiArCWJ1ZlswXSA9ICdcMCc7Cj4gKwlTQUZF
+X0ZJTEVfU0NBTkYocGF0aCwgIiUxMDQ4NTc1W15ceDAxXSIsIGJ1Zik7CgpUaGUgaGFyZGNvZGVk
+IHdpZHRoIDEwNDg1NzUgbXVzdCBiZSBrZXB0IGluIHN5bmMgd2l0aCBGVFJBQ0VfRklMRV9CVUZf
+U0laRSAtIDEKbWFudWFsbHkuIEFsc28sIGFsbG9jYXRpbmcgMSBNQiBvbiBlYWNoIGNhbGwgaXMg
+aGVhdnkg4oCUIGZpbGVfY29udGFpbnMoKSBpcwpjYWxsZWQgdHdpY2UgaW4gZnRyYWNlX3JlZ3Jl
+c3Npb24wMi4gQ29uc2lkZXIgYSBzaW1wbGVyIGZpbGUgcmVhZGluZyBhcHByb2FjaC4KCj4gZGlm
+ZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvdHJhY2luZy9mdHJhY2VfdGVzdC9mdHJhY2VfcmVn
+cmVzc2lvbjAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3RyYWNpbmcvZnRyYWNlX3Rlc3QvZnRyYWNl
+X3JlZ3Jlc3Npb24wMS5jCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKWy4uLl0KPiArCWZvciAoaSA9
+IDA7IGkgPCBMT09QOyBpKyspIHsKPiArCQlTQUZFX0ZJTEVfUFJJTlRGKFNUQUNLX1RSQUNFUl9Q
+QVRILCAiMSIpOwo+ICsJCVNBRkVfRklMRV9QUklOVEYoVFJBQ0VfT1BUSU9OUywgInVzZXJzdGFj
+a3RyYWNlIik7ClsuLi5dCj4gKwkJU0FGRV9GSUxFX1BSSU5URihwYWdlX2ZhdWx0X3BhdGgsICIx
+Iik7Cj4gKwl9CgpUaGUgb2xkIHNoZWxsIHNjcmlwdCBzYXZlZCBhbmQgcmVzdG9yZWQgdGhlIHBh
+Z2UgZmF1bHQgZW5hYmxlIHZhbHVlIGFmdGVyCnRoZSBsb29wLiBUaGlzIHZlcnNpb24gd3JpdGVz
+ICIxIiBidXQgbmV2ZXIgcmVzdG9yZXMgaXQuIFVubW91bnRpbmcgZGVidWdmcwpkb2VzIG5vdCBy
+ZXNldCBrZXJuZWwgdHJhY2luZyBzdGF0ZS4gUGxlYXNlIGFkZCB0aGUgcGFnZV9mYXVsdF9wYXRo
+IHRvCi5zYXZlX3Jlc3RvcmUgb3Igc2F2ZS9yZXN0b3JlIGl0IG1hbnVhbGx5LgoKPiBkaWZmIC0t
+Z2l0IGEvdGVzdGNhc2VzL2tlcm5lbC90cmFjaW5nL2Z0cmFjZV90ZXN0L2Z0cmFjZV9yZWdyZXNz
+aW9uMDIuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvdHJhY2luZy9mdHJhY2VfdGVzdC9mdHJhY2VfcmVn
+cmVzc2lvbjAyLmMKPiBuZXcgZmlsZSBtb2RlIDEwMDY0NApbLi4uXQo+ICsvKlwKPiArICoKPiAr
+ICogQ2hlY2sgc2lnbmFsOnNpZ25hbF9nZW5lcmF0ZSBnaXZlcyAyIG1vcmUgZmllbGRzOiBncnAg
+cmVzCj4gKyAqCj4gKyAqLwoKUmVtb3ZlIHRoZSBibGFuayBsaW5lcyBiZWZvcmUvYWZ0ZXIgdGhl
+IGRlc2NyaXB0aW9uIGluc2lkZSB0aGUgLypcIGJsb2NrLgoKPiArCWlmIChmaWxlX2NvbnRhaW5z
+KFRSQUNFX0ZJTEUsICJncnA9IikgJiYgZmlsZV9jb250YWlucyhUUkFDRV9GSUxFLCAicmVzPSIp
+KQoKVGhlIG9sZCB0ZXN0IHVzZWQgJ2dycD1bMC05XSByZXM9WzAtOV0nIHdoaWNoIHZlcmlmaWVk
+IGJvdGggZmllbGRzIGFwcGVhciBvbgp0aGUgc2FtZSBsaW5lIHdpdGggZGlnaXQgdmFsdWVzLiBU
+aGlzIG9ubHkgY2hlY2tzIGZvciBzdWJzdHJpbmdzIGluZGVwZW5kZW50bHksCndoaWNoIGlzIGxl
+c3Mgc3RyaWN0LgoKQWxzbywgdGhlcmUgaXMgbm8gLmdpdGlnbm9yZSBpbiB0aGUgZnRyYWNlX3Rl
+c3QgZGlyZWN0b3J5LiBQbGVhc2UgYWRkIG9uZQp3aXRoIGVudHJpZXMgZm9yIGZ0cmFjZV9yZWdy
+ZXNzaW9uMDEgYW5kIGZ0cmFjZV9yZWdyZXNzaW9uMDIuCgpSZWdhcmRzLAotLQpBbmRyZWEgQ2Vy
+dmVzYXRvClNVU0UgUUUgQXV0b21hdGlvbiBFbmdpbmVlciBMaW51eAphbmRyZWEuY2VydmVzYXRv
+QHN1c2UuY29tCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQv
+bGlzdGluZm8vbHRwCg==
