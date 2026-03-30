@@ -4,98 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBDB7FB3CF5
-	for <ltp@archiver.kernel.org>; Mon, 30 Mar 2026 10:15:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5598FB3CF8
+	for <ltp@archiver.kernel.org>; Mon, 30 Mar 2026 10:23:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1774866217; h=message-id :
+ to : cc : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : mime-version : content-type : content-transfer-encoding :
+ sender : from; bh=OagrGGFQzKtKfI3oI+NQmzUUzCPsv/5Lc58IsrUcwts=;
+ b=i3SFtz5q58rWQwJG4SX/Igbll3VT99E8cnT1idhdZaVK5GUdylvYkN4+fq2TdWKgHjcfa
+ tMGB3q0oWAKocfOavIo8feTLTM5kk1IFiURPoXVh0dx9vJVht+mf1eRGNK7jjC2K1/AVaL4
+ YKhsqJ5KiIGEk7uHXx1/EfWaI+eeYbk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A9183E4F11
-	for <ltp@archiver.kernel.org>; Mon, 30 Mar 2026 12:15:27 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 7B64B3E4F12
+	for <ltp@archiver.kernel.org>; Mon, 30 Mar 2026 12:23:37 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DC6BC3E2AEA
- for <ltp@lists.linux.it>; Mon, 30 Mar 2026 12:15:09 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C0D683E2A58
+ for <ltp@lists.linux.it>; Mon, 30 Mar 2026 12:23:13 +0200 (CEST)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4A3DB1A009A5
- for <ltp@lists.linux.it>; Mon, 30 Mar 2026 12:15:08 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9A8C24D1F1;
- Mon, 30 Mar 2026 10:15:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1774865707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0bh9Flo8SlcGca88JZpKldKqQNE9ASCGpQe/Sz5ELDs=;
- b=HJxKTw93SRJ4DV3c29J5z+YLfNGYs8SYQU7m7ApP68H40QrunLGF+jQGzQTl39nTzEEdF/
- 5v4hbWE8bws4ARQl/m4d983ZNxG5wjcMSWXfi3AGL5PrY1kvi3xkZMUbNa7yn9oLnG6aYb
- BfIWEuLXQYN7LZXbo1hAziekCeVSe8E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1774865707;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0bh9Flo8SlcGca88JZpKldKqQNE9ASCGpQe/Sz5ELDs=;
- b=yZ7VGdpjhTzqUd4Ogkocqt01M4smjxwOVHdE4OM67oIXA5oMZb//fFkqtnwFhdRQbcrH4k
- ryItKKv52cXmkQCQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1774865707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0bh9Flo8SlcGca88JZpKldKqQNE9ASCGpQe/Sz5ELDs=;
- b=HJxKTw93SRJ4DV3c29J5z+YLfNGYs8SYQU7m7ApP68H40QrunLGF+jQGzQTl39nTzEEdF/
- 5v4hbWE8bws4ARQl/m4d983ZNxG5wjcMSWXfi3AGL5PrY1kvi3xkZMUbNa7yn9oLnG6aYb
- BfIWEuLXQYN7LZXbo1hAziekCeVSe8E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1774865707;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0bh9Flo8SlcGca88JZpKldKqQNE9ASCGpQe/Sz5ELDs=;
- b=yZ7VGdpjhTzqUd4Ogkocqt01M4smjxwOVHdE4OM67oIXA5oMZb//fFkqtnwFhdRQbcrH4k
- ryItKKv52cXmkQCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 84E6D4A0A2;
- Mon, 30 Mar 2026 10:15:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id nYqAHytNymn5UAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 30 Mar 2026 10:15:07 +0000
-Date: Mon, 30 Mar 2026 12:15:06 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <acpNKiCdqpKyhRo-@yuki.lan>
-References: <20260327160157.76906-1-rbranco@suse.de>
- <20260330072412.GA62327@pevik>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260330072412.GA62327@pevik>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 239361A00250
+ for <ltp@lists.linux.it>; Mon, 30 Mar 2026 12:23:13 +0200 (CEST)
+Received: by mail-wr1-x42e.google.com with SMTP id
+ ffacd0b85a97d-43cfac48bc7so614443f8f.0
+ for <ltp@lists.linux.it>; Mon, 30 Mar 2026 03:23:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1774866192; x=1775470992; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=6yoRcbuBtVr+pY1TRXlxTXDcKfvRgHs3YBaUEnn+glo=;
+ b=exCnHmj3O/89txkcr3KC9yPWcl0nvHBrGXMo2xmMiq0ldqhrrrJzBSLC3al9k4QWRL
+ ArSNTy8gVy4nZNv1Uxa8d29uEuKDRRo7H5vjn0nL0nsIgxw9i6r5KsXkL9FPjCgyMv5k
+ THKf9bwgpfDXsBU12IqwYC6s/jo73rlkTaUDNt0CsL4X6gJ8oP38IjBIJ7Gay3/60lWt
+ RqS86X9V/gYlzb9/8kSv61yzjQZP0T4tO24zuJBZKMUXctUAL87nIw96wh2hHvrV7DnX
+ mgn+ZmIkZIfxeRL6F5LPbUpUL7kGwmtjNHtG21ZztPKGhztNF9aiMNxmJZz6nnstxbfd
+ MbBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1774866192; x=1775470992;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=6yoRcbuBtVr+pY1TRXlxTXDcKfvRgHs3YBaUEnn+glo=;
+ b=nDoRbJpIJVP6R40icSdnFWe2VQmZ1wE5kE7w8dTPKzmBBuDgfwZebCC2pCZhlgbfWe
+ 3ZnxaJKquCt8X04+/CT9P/Hf6WMK/kCxqCPorb2gb3WBMeQwIXUS0M3yVL6B5HDEI+rC
+ Fs430Gh7ima53BUQYzIdx8bxE+xRPMpX+F4MSiLpf37HeRmkgo1O/WW7H56O9qtc7KkY
+ plZJAQqbX8aypHL/RJIEdpmECYc/Ta7cerUvX/4GJMinS27Buh/BVwGT5650M95J5UFp
+ Lyg2vKmEEAFyt/HhCLJ+HSt1IOdiEguaxMK9OPMdi3pbuXCnZi/itBObbkZU/2TO04i3
+ 6aMg==
+X-Gm-Message-State: AOJu0YyBDt6ihmUK8ZY3SAFDUPrggUeGQXx6XYnXssMTyqSVM8pojb4+
+ MMxjvKf8N8Obzph3c4cWYfgjg06NuJ4Dvv89Jvz1SbSykx41HgF+/MCPMqCOYc2OR8Pra2ZsmWz
+ svn9VpeE=
+X-Gm-Gg: ATEYQzwoifdIIF7zy0mQrB9Sip8eGw10BdKodmm3N6GaWmD50UYan0046rhMS+cGng3
+ Io/UqiKiDSwa9a+g1CSEXdxfAroSmKsdQxrGE68rqKxMXbKbxgq/XFzA7MjJgD9SsazhYviYke5
+ J87b54HZAI1urmZ0DtMS+OAVx4WMpCh8LKlGYJxJcHN++6re9WAubowNdVfI2uB81ul3r0bFFEZ
+ zwYouRPXKJ8ZMfaQnvyzKz82UXM5XmhWNQqIHsXElANtqa0Ml/wE5AIztyUT1nmkflwo29GytJY
+ C7/f0p1i4SKuHtmltBIbQJvpnlOl3IkFYeAXC1+aLQE03lB7GAhMXGaZe0AuJR0KOygvOszJwUr
+ /yHtl4LRVpYNB605Fd2xAxzbkQEDvADhmMeq3UiVJF0DUwljs001W6LdYlt8w54Ey1XqXx5KcQz
+ woV6O6+03LomF/sadK5spM57V7qCJuQeihlt0YgUL16ikjT81gkz+llnWReVOvSzTvgk8fWDnot
+ U+XeIg4X2G8kZWmiM2dEfl8YgfNheUw48s=
+X-Received: by 2002:a05:6000:612:b0:43d:60d:944b with SMTP id
+ ffacd0b85a97d-43d060d9570mr607862f8f.37.1774866192100; 
+ Mon, 30 Mar 2026 03:23:12 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
+ [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-43cf245ebafsm16475939f8f.21.2026.03.30.03.23.11
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 30 Mar 2026 03:23:11 -0700 (PDT)
+Message-ID: <69ca4f0f.df0a0220.131966.a7bf@mx.google.com>
+To: "Vasileios Almpanis via ltp" <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
+In-Reply-To: <20260330100750.858390-1-vasileios.almpanis@virtuozzo.com>
+Date: Mon, 30 Mar 2026 10:23:11 +0000
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] userfaultfd: Minor fixes
+Subject: Re: [LTP] [PATCH] pidns32: fix PID namespace nesting depth
+ off-by-one
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,52 +99,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> As a separate effort: Cyril raised a question if (as a separate effort) should
-> all test have some kconfig check (e.g. CONFIG_USERFAULTFD=y)
+Hi Vasileios,
+
+> -	if (tst_atomic_inc(level) == MAXNEST)
+> +	if (tst_atomic_load(level) == MAXNEST)
+>  		return cpid;
 > 
-> IMHO it's a question if we are ok with wide spread of needs_kconfig even if it's
-> not necessary (i.e. here SAFE_USERFAULTFD() check. In that case the benefit
-> would be 1) documentation of dependencies for testers in the test catalog 2)
-> check earlier that before running test code. And of course disadvantage to
-> really drag kconfig dependency, but we have accepted that already.
-> 
-> Ideally we'd decide on some policy (which may also includes .needs_drivers).
-> @all I planned to reword my original policy patch [1] to Li's suggestion +
-> Cyril's kconfig changes [2], but that still does not have "use kconfig to
-> document dependencies".
+> +	tst_atomic_inc(level);
 
-I think that we can get rid of needs_drivers if we add more runtime
-checks.
+Makes sense, the old code incremented before checking, so the counter
+hit 32 after only 31 clones. Splitting load and increment fixes it.
 
-We have needs_drivers in:
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-- kvm tests -> CONFIG_KVM + runtime check for kvm module
-- zram tests -> CONFIG_ZRAM + runtime check for zram module
-- squasfs tests -> CONFIG_SQUASHFS + runtime check for squashfs module
-- setxattr02 -> CONFIG_BLK_DEV_RAM + runtime check for brd module
-- ioctl08 -> has both filesystems and needs_drivers set to btrfs
-             likely we do not need the needs_drivers there
-- ioctl_loop tests -> CONFIG_BLK_DEV_LOOP + runtime check for loop module
-- madvise11 -> CONFIG_HWPOISON_INJECT + runtime check for hwpoison_inject module
-- quotactl tests -> CONFIG_QUOTA_V2 + runtime check for quota_v2 module
-- uinput tests -> CONFIG_BLK_DEV_LOOP + CONFIG_TUN + CONFIG_INPUT_UINPUT
-- can tests -> CONFIG_CAN_VCAN + CONFIG_CAN_RAW + CONFIG_CAN_BCM
-
-
-If we agree that we want to switch from needs_drivers to needs_kconfig +
-runtime checks I will add mappings from congfigs to module names into
-tst_kconfig and convert the tests..
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
