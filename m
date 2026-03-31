@@ -4,90 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 791BB1061B2E
-	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 11:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1774955966; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=Hfsjpws9Pm/QQ/0axEwWX+TYuYveYzF+dl8QVoHekFE=;
- b=hqUd66xCn8/n25ZPLJWqgomTbXYRjNmUDnYYa7cgJIEuslEcKsYYpST/T8qFluLNNHY34
- 08hIi4FmHM1nuRlnxPpq2IQOtFD1iq8HRmulqZ5RGHFqZe96xlzoUIMdRX3AxUqoCpjnWgX
- dXZETXRoHuBXTrysSOHqqO8PoMvwhtE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2EC01061B39
+	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 11:49:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0D0133E4ECE
-	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 13:19:26 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 544CE3E2F7E
+	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 13:49:42 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ACA6C3CD981
- for <ltp@lists.linux.it>; Tue, 31 Mar 2026 13:19:01 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A83073C2756
+ for <ltp@lists.linux.it>; Tue, 31 Mar 2026 13:49:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E6A141401250
- for <ltp@lists.linux.it>; Tue, 31 Mar 2026 13:19:00 +0200 (CEST)
-Received: by mail-wr1-x434.google.com with SMTP id
- ffacd0b85a97d-43cfde3c3f3so1698196f8f.3
- for <ltp@lists.linux.it>; Tue, 31 Mar 2026 04:19:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1774955940; x=1775560740; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=vLOMIizp25xRODfAoZCehKJCf+CAt/xEoAArzta5sK0=;
- b=fpVrIMsfmQBf7cJHEF//BLRkMcuw2kRErgoPctE22cnwhkbuijkvU+91mxcGiI4kYa
- OJ5hLbdollNBDN08VKcy6pcekzVepytMRHBs9+UaO2hSr+a28gnIs7OWeiMO/9pw6Yxb
- xg3etKUZoNZ204lCH8kyr0A3Ep59Lil+hiek10tBkJCc0SOPyG5rRvpNEWCxviFVPnOb
- vmPMFkaYk8XwG0zK7csBkYoWQkk2O23u7PJdrSuhq1vbq2SqJiuCeqbWmehwxJhdkZN0
- frlA67O5DRpHjUjU5m7UCOSFA8Fv5qJvYya3eUA/t18d17e8arQde/LDyFORafflX1m2
- zyZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1774955940; x=1775560740;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=vLOMIizp25xRODfAoZCehKJCf+CAt/xEoAArzta5sK0=;
- b=kPqV+iXMuUWcALS+GWFzDLM9w+grG7qExDFJ517c0Sl60Y8ZRqesVVZND+kExWgGuK
- iLQlNx3iVwpy8O7D/kYFsA19TNjnY3ktZW4Pl8/F5Ie+KrsiaLdonYu65Ckv5ZxEx1JC
- QQSI6QW+9AUf3n5lK+8A7a1NbI5Ew3oMPk0BzjTfQnOAmRihcmYa7eC7E9OZf2QZ8Yif
- GCaWYdyXZRbLalEB2E+Q9sUVdv55c4aOVWSz0QxmbcFHx4TsMFfW/XvZ3hgf3mGVVjCr
- dRmfmlq2cnPaY98/Qz/yf5BbQ3oXDbecYyLz9wz33puhJVTqtPYQuTZKCpxP60VBnnnt
- s7JA==
-X-Gm-Message-State: AOJu0YzfF47g8v0t09t4wAQzCIi4p7f6et6Wweqwa630tl+INTFAPtmB
- EQ76CAi0Hn8YLwvdA2D9c5191YMDn4UhsqBNLeaQeo4RZR21O6phBh/7BslZE6ZXXlKGI/huOzf
- 50OU=
-X-Gm-Gg: ATEYQzzAN1VoYhpddRPOLLEIG114MIQs5lVlgA89KZGLW0lWb6ZktJCvqbvLHttIk2u
- u/kLPj9b7fLOpv1fUmjEU5DBo6iY0mcwP8tWhY1zRcEAEkM5Chis35ukAbG/mHaYHlISDwfJb5H
- aVB51aHUs7h3Ch1UjbKFdJ98dsqkGEDw6fftp5QR72wVFIhyKme2/Sy+XAr3AS3IhHvbUwKJc73
- 1isBCqEig9O/q+nAQjxwEHd4tGeCdBulge4C8whSnTPuY0C5RvEhrWRQZYDY2A6g196gyIH9Clx
- bPGu1WSP0dLiL7V7DE28LwNMaPOCjYIaRkN8IYIB5zINCsjN1gEfoPPrELl6Ke8P7vHXJT0Dg6j
- PBTxRFoFXHz8u/C6PKihnpebiQHTsXFS6ZJAESESP94aoZJuThd27sToE8Lmv8RibsBaW3nM72A
- bCFO7BC8aS1eo=
-X-Received: by 2002:a05:6000:40dd:b0:43b:998c:9bbe with SMTP id
- ffacd0b85a97d-43b9e9e8e75mr27160455f8f.13.1774955939911; 
- Tue, 31 Mar 2026 04:18:59 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-43cf257b72dsm26677072f8f.34.2026.03.31.04.18.59
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 31 Mar 2026 04:18:59 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue, 31 Mar 2026 11:18:39 +0000
-Message-ID: <20260331111857.10995-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260317114635.944-1-wegao@suse.com>
-References: <20260317114635.944-1-wegao@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0B6061A007A2
+ for <ltp@lists.linux.it>; Tue, 31 Mar 2026 13:49:22 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4A2984D1E3;
+ Tue, 31 Mar 2026 11:49:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1774957756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=N/vKmGkFgcQxk+8GAaAZX9vAQC+0lvTTvtYG1utCWho=;
+ b=fJPhs6SFDXwB1WPWt+FDImwzand3AVJbBiPMYU47WjabwpksnuGKKzem6+ofmaN6GJY/Wk
+ Axzl6jEtTN/bVR2YL4Su234dOjdhOnVcjHrxRXnvMDygPRWlJb/FkSuK1rAn/iaaOYosB+
+ h23R+hmZ4KE86nNR9rorL/sZxS10pz0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1774957756;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=N/vKmGkFgcQxk+8GAaAZX9vAQC+0lvTTvtYG1utCWho=;
+ b=AamvQDuGo+uvL049YV6TaMjJMF3waft3G3/4i+Cq71sl7Ug1JAle0s6Zq1OHBQrg36MTkz
+ JkwVppY4VnCPalDA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1774957756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=N/vKmGkFgcQxk+8GAaAZX9vAQC+0lvTTvtYG1utCWho=;
+ b=fJPhs6SFDXwB1WPWt+FDImwzand3AVJbBiPMYU47WjabwpksnuGKKzem6+ofmaN6GJY/Wk
+ Axzl6jEtTN/bVR2YL4Su234dOjdhOnVcjHrxRXnvMDygPRWlJb/FkSuK1rAn/iaaOYosB+
+ h23R+hmZ4KE86nNR9rorL/sZxS10pz0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1774957756;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=N/vKmGkFgcQxk+8GAaAZX9vAQC+0lvTTvtYG1utCWho=;
+ b=AamvQDuGo+uvL049YV6TaMjJMF3waft3G3/4i+Cq71sl7Ug1JAle0s6Zq1OHBQrg36MTkz
+ JkwVppY4VnCPalDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2813C4A0A2;
+ Tue, 31 Mar 2026 11:49:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id jrgTCLy0y2kCbwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 31 Mar 2026 11:49:16 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue, 31 Mar 2026 13:48:56 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+Message-Id: <20260331-nanosleep_posix_fix-v1-1-7a707f871582@suse.com>
+X-B4-Tracking: v=1; b=H4sIAKe0y2kC/x2MWwqAIBAArxL7neAD/OgqESK61UKouBCCePekz
+ xmY6cBYCRm2pUPFl5hymqDWBcLt04WC4mTQUltpjBLJp8wPYnElMzV3UhPWKqt9CF5hhFmWilP
+ /1/0Y4wP7bpRxZQAAAA==
+X-Change-ID: 20260331-nanosleep_posix_fix-66162acca1ed
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1774957756; l=8054;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=tE5g1rymUoaL6FTelQrprJFFa88MW8OBGGZEWaXALLY=;
+ b=aXy9bw1qJOubqLfYmx7izzlOv3Oq9/kLsC6piA9UtRqnFC+qyAvTMIMAW94U91SQl8QX0bDi7
+ u3ghfUS4be8DlV0z5BJdKNviTIZEm4lA7Eu1wPLpvQ7JAaJMN/1qAW+
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
+ suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7] fanotify22.c: handle multiple asynchronous error
- events
+Subject: [LTP] [PATCH] nanosleep: Use CLOCK_MONOTONIC for elapsed time
+ measurement
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,237 +115,192 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: Jan Kara <jack@suse.cz>, kernel test robot <oliver.sang@intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since the introduction of the asynchronous fserror reporting framework
-(kernel commit 81d2e13a57c9), fanotify22 has encountered sporadic failures
-due to the non-deterministic nature of event delivery and merging:
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-1) tcase3 failure: A race condition occurs when the test reads the
-   notification fd between two events. Use a poll() and read() loop to wait
-   until the expected event.
+All nanosleep POSIX conformance tests used CLOCK_REALTIME to measure
+elapsed sleep duration. CLOCK_REALTIME can jump due to NTP corrections,
+VM time sync, or other wall-clock adjustments, causing sporadic test
+failures where measured time far exceeds expected sleep duration.
 
-2) tcase4 failure: The kernel may deliver errors as independent events
-   instead of a single merged event, since different worker kthread can
-   end up generating each event so they won't be merged. As suggested by
-   Jan Kara, this patch introduces a consolidate_events() helper. It iterates
-   through the event buffer, accumulates the error_count from all independent
-   events, and updates the first event's count in-place.
+Switch to CLOCK_MONOTONIC which is immune to wall-clock changes and is
+the correct clock for measuring elapsed durations.
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202602042124.87bd00e3-lkp@intel.com
-Suggested-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Wei Gao <wegao@suse.com>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-v6->v7:
-- validation check to accept either error or error2 in check_error_event_info_error
+ testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c | 4 ++--
+ testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c | 4 ++--
+ testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c | 4 ++--
+ .../open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c   | 4 ++--
+ testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c | 4 ++--
+ testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c | 4 ++--
+ testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c | 4 ++--
+ 7 files changed, 14 insertions(+), 14 deletions(-)
 
- .../kernel/syscalls/fanotify/fanotify22.c     | 113 +++++++++++++++---
- 1 file changed, 96 insertions(+), 17 deletions(-)
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c
+index 687d01e288d914fbbdc18287746f71296c7a4327..d76451e3438e15d44ab2c2b8d0b349e666daec8c 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c
+@@ -18,7 +18,7 @@ int main(void)
+ 	int sleepnsec = 3;
+ 	int slepts = 0, sleptns = 0;
+ 
+-	if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
++	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -30,7 +30,7 @@ int main(void)
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
++	if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c
+index 76f31982508dc87a4f400022cd46fe766071f27d..f72cbcfbbe06a0059bbc17ad617ca76c65651a93 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c
+@@ -21,7 +21,7 @@ int main(void)
+ 	int sleepsec = 30;
+ 	int pid;
+ 
+-	if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
++	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -46,7 +46,7 @@ int main(void)
+ 			perror("Error waiting for child to exit\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+-		if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
++		if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c
+index 31ac00858018c3741758d0b5f2bf28f87aa6c1bf..07ce767123443cea2754c8b5ff2a20ed536cbfec 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c
+@@ -28,7 +28,7 @@ int main(void)
+ 	int pid;
+ 	struct sigaction act;
+ 
+-	if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
++	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -64,7 +64,7 @@ int main(void)
+ 			perror("Error waiting for child to exit\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+-		if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
++		if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c
+index 883885df434fb4ba3bb555dd565880f14623a984..8bd372f590314faa8f15fccbe5325e9fa31a6f95 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c
+@@ -56,13 +56,13 @@ int main(void)
+ 		tssleepfor.tv_nsec = sleepvalid[i][1];
+ 		printf("sleep %d sec %d nsec\n",
+ 		       (int)tssleepfor.tv_sec, (int)tssleepfor.tv_nsec);
+-		if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
++		if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
+ 		if (nanosleep(&tssleepfor, &tsstorage) == 0) {
+-			if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
++			if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
+ 				perror("Error in clock_gettime()\n");
+ 				return PTS_UNRESOLVED;
+ 			}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c
+index cce3941e7be7212ea286647ec601d3ecbb9bb85a..f44d0f938a586defa3ef244371f1850865801afa 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c
+@@ -25,7 +25,7 @@ int main(void)
+ 	int failure = 0;
+ 	int slepts, sleptns;
+ 
+-	if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
++	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -38,7 +38,7 @@ int main(void)
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
+-		if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
++		if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c
+index bfc271edf25f9cd0f343eef11b335d5da20eb646..201ab72a5d4a5a345839fb87f4f1621c70a5bb36 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c
+@@ -26,7 +26,7 @@ int main(void)
+ 	int pid, slepts;
+ 	struct timespec tsbefore, tsafter;
+ 
+-	if (clock_gettime(CLOCK_REALTIME, &tsbefore) != 0) {
++	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) != 0) {
+ 		perror("clock_gettime() did not return success\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -74,7 +74,7 @@ int main(void)
+ 			return PTS_FAIL;
+ 		}
+ 
+-		if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
++		if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c
+index caf4470e4a26b27ec79deed27c147e2feceffdf8..eab419591ab0c27a5d2dfb556cf2f13f7cc25e6e 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c
+@@ -34,7 +34,7 @@ int main(void)
+ 	int pid;
+ 	struct sigaction act;
+ 
+-	if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
++	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -60,7 +60,7 @@ int main(void)
+ 			return CHILDFAILURE;
+ 		}
+ 
+-		if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
++		if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return CHILDFAILURE;
+ 		}
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify22.c b/testcases/kernel/syscalls/fanotify/fanotify22.c
-index e8002b160..f5d59b99d 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify22.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify22.c
-@@ -28,6 +28,7 @@
- #include "tst_test.h"
- #include <sys/fanotify.h>
- #include <sys/types.h>
-+#include <poll.h>
- 
- #ifdef HAVE_SYS_FANOTIFY_H
- #include "fanotify.h"
-@@ -88,7 +89,6 @@ static void trigger_bad_link_lookup(void)
- 			ret, BAD_LINK, errno, EUCLEAN);
- }
- 
--
- static void tcase3_trigger(void)
- {
- 	trigger_bad_link_lookup();
-@@ -104,6 +104,7 @@ static void tcase4_trigger(void)
- static struct test_case {
- 	char *name;
- 	int error;
-+	int error2;
- 	unsigned int error_count;
- 	struct fanotify_fid_t *fid;
- 	void (*trigger_error)(void);
-@@ -134,37 +135,79 @@ static struct test_case {
- 		.trigger_error = &tcase4_trigger,
- 		.error_count = 2,
- 		.error = EFSCORRUPTED,
-+		.error2 = ESHUTDOWN,
- 		.fid = &bad_file_fid,
- 	}
- };
- 
-+static size_t consolidate_events(char *buf, size_t len, const struct test_case *ex)
-+{
-+	struct fanotify_event_metadata *metadata, *first = NULL;
-+	struct fanotify_event_info_error *first_info = NULL;
-+	unsigned int total_count = 0;
-+	int event_num = 0;
-+
-+	for (metadata = (struct fanotify_event_metadata *)buf;
-+			FAN_EVENT_OK(metadata, len);
-+			metadata = FAN_EVENT_NEXT(metadata, len)) {
-+
-+		event_num++;
-+		struct fanotify_event_info_error *info = get_event_info_error(metadata);
-+
-+		if (!info) {
-+			tst_res(TFAIL, "Event [%d] missing error info", event_num);
-+			continue;
-+		}
-+
-+		if (info->error != ex->error && (ex->error2 == 0 || info->error != ex->error2)) {
-+			tst_res(TFAIL, "Event [%d] unexpected errno (%d)",
-+					event_num, info->error);
-+			continue;
-+		}
-+
-+		if (!first) {
-+			first = metadata;
-+			first_info = info;
-+		}
-+		total_count += info->error_count;
-+
-+		tst_res(TINFO, "Event [%d]: errno=%d, error_count=%d",
-+				event_num, info->error, info->error_count);
-+	}
-+
-+	if (first_info)
-+		first_info->error_count = total_count;
-+
-+	return (first) ? first->event_len : 0;
-+}
-+
- static int check_error_event_info_fid(struct fanotify_event_info_fid *fid,
- 				 const struct test_case *ex)
- {
- 	struct file_handle *fh = (struct file_handle *) &fid->handle;
- 
- 	if (memcmp(&fid->fsid, &ex->fid->fsid, sizeof(fid->fsid))) {
--		tst_res(TFAIL, "%s: Received bad FSID type (%x...!=%x...)",
--			ex->name, FSID_VAL_MEMBER(fid->fsid, 0),
-+		tst_res(TFAIL, "Received bad FSID type (%x...!=%x...)",
-+			FSID_VAL_MEMBER(fid->fsid, 0),
- 			ex->fid->fsid.val[0]);
- 
- 		return 1;
- 	}
- 	if (fh->handle_type != ex->fid->handle.handle_type) {
--		tst_res(TFAIL, "%s: Received bad file_handle type (%d!=%d)",
--			ex->name, fh->handle_type, ex->fid->handle.handle_type);
-+		tst_res(TFAIL, "Received bad file_handle type (%d!=%d)",
-+			fh->handle_type, ex->fid->handle.handle_type);
- 		return 1;
- 	}
- 
- 	if (fh->handle_bytes != ex->fid->handle.handle_bytes) {
--		tst_res(TFAIL, "%s: Received bad file_handle len (%d!=%d)",
--			ex->name, fh->handle_bytes, ex->fid->handle.handle_bytes);
-+		tst_res(TFAIL, "Received bad file_handle len (%d!=%d)",
-+			fh->handle_bytes, ex->fid->handle.handle_bytes);
- 		return 1;
- 	}
- 
- 	if (memcmp(fh->f_handle, ex->fid->handle.f_handle, fh->handle_bytes)) {
--		tst_res(TFAIL, "%s: Received wrong handle. "
--			"Expected (%x...) got (%x...) ", ex->name,
-+		tst_res(TFAIL, "Received wrong handle. "
-+			"Expected (%x...) got (%x...) ",
- 			*(int *)ex->fid->handle.f_handle, *(int *)fh->f_handle);
- 		return 1;
- 	}
-@@ -177,14 +220,15 @@ static int check_error_event_info_error(struct fanotify_event_info_error *info_e
- 	int fail = 0;
- 
- 	if (info_error->error_count != ex->error_count) {
--		tst_res(TFAIL, "%s: Unexpected error_count (%d!=%d)",
--			ex->name, info_error->error_count, ex->error_count);
-+		tst_res(TFAIL, "Unexpected error_count (%d!=%d)",
-+			info_error->error_count, ex->error_count);
- 		fail++;
- 	}
- 
--	if (info_error->error != ex->error) {
--		tst_res(TFAIL, "%s: Unexpected error code value (%d!=%d)",
--			ex->name, info_error->error, ex->error);
-+	if (info_error->error != ex->error &&
-+	    (ex->error2 == 0 || info_error->error != ex->error2)) {
-+		tst_res(TFAIL, "Unexpected error code value (%d!=%d)",
-+			info_error->error, ex->error);
- 		fail++;
- 	}
- 
-@@ -248,19 +292,54 @@ static void check_event(char *buf, size_t len, const struct test_case *ex)
- static void do_test(unsigned int i)
- {
- 	const struct test_case *tcase = &testcases[i];
--	size_t read_len;
-+	size_t read_len = 0;
-+	struct pollfd pfd;
-+	unsigned int accumulated_count = 0;
-+
-+	tst_res(TINFO, "Test case: %s", tcase->name);
- 
- 	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD|FAN_MARK_FILESYSTEM,
- 			   FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
- 
- 	tcase->trigger_error();
- 
--	read_len = SAFE_READ(0, fd_notify, event_buf, BUF_SIZE);
-+	pfd.fd = fd_notify;
-+	pfd.events = POLLIN;
-+
-+	while (accumulated_count < tcase->error_count) {
-+		if (poll(&pfd, 1, 5000) <= 0) {
-+			tst_res(TFAIL, "Timeout waiting for events");
-+			goto out;
-+		}
-+
-+		if (BUF_SIZE - read_len < FAN_EVENT_METADATA_LEN)
-+			tst_brk(TBROK, "Insufficient buffer space for next event");
-+
-+		char *current_pos = event_buf + read_len;
-+		ssize_t ret = SAFE_READ(0, fd_notify, current_pos, BUF_SIZE - read_len);
-+
-+		struct fanotify_event_metadata *m =
-+			(struct fanotify_event_metadata *)current_pos;
-+		while (FAN_EVENT_OK(m, ret)) {
-+			struct fanotify_event_info_error *e = get_event_info_error(m);
-+
-+			if (e)
-+				accumulated_count += e->error_count;
-+
-+			read_len += m->event_len;
-+			m = FAN_EVENT_NEXT(m, ret);
-+		}
-+	}
-+
-+	read_len = consolidate_events(event_buf, read_len, tcase);
-+
-+	check_event(event_buf, read_len, tcase);
-+
-+out:
- 
- 	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE|FAN_MARK_FILESYSTEM,
- 			   FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
- 
--	check_event(event_buf, read_len, tcase);
- 	/* Unmount and mount the filesystem to get it out of the error state */
- 	SAFE_UMOUNT(MOUNT_PATH);
- 	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
+---
+base-commit: 4688c20c01eece869b59e05ca3dd68c43e0d6af7
+change-id: 20260331-nanosleep_posix_fix-66162acca1ed
+
+Best regards,
 -- 
-2.52.0
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
