@@ -4,88 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2EC01061B39
-	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 11:49:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC3D61061B37
+	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 12:12:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 544CE3E2F7E
-	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 13:49:42 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 6A96E3E1CAA
+	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 14:12:07 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A83073C2756
- for <ltp@lists.linux.it>; Tue, 31 Mar 2026 13:49:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 1A4013CC93E
+ for <ltp@lists.linux.it>; Tue, 31 Mar 2026 14:11:48 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0B6061A007A2
- for <ltp@lists.linux.it>; Tue, 31 Mar 2026 13:49:22 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A6C8F10009F5
+ for <ltp@lists.linux.it>; Tue, 31 Mar 2026 14:11:47 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4A2984D1E3;
- Tue, 31 Mar 2026 11:49:16 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 394975BD89;
+ Tue, 31 Mar 2026 12:11:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1774957756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1774959106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=N/vKmGkFgcQxk+8GAaAZX9vAQC+0lvTTvtYG1utCWho=;
- b=fJPhs6SFDXwB1WPWt+FDImwzand3AVJbBiPMYU47WjabwpksnuGKKzem6+ofmaN6GJY/Wk
- Axzl6jEtTN/bVR2YL4Su234dOjdhOnVcjHrxRXnvMDygPRWlJb/FkSuK1rAn/iaaOYosB+
- h23R+hmZ4KE86nNR9rorL/sZxS10pz0=
+ bh=wo9nfZhlJhzzwvwvKDZ9KS2qEUgcH2OuzUWtXklPXYQ=;
+ b=Oqdw2hy7gpEyheV1dut4Lt+jhL+ICdQetghMhhvrAAsYdIENYHaJVEVBFT39wFJPbjd3hA
+ 6zeiFsBqQVGoZNtcywlmi/bQjGYE0Br7bkUXHovjarAFxEiYxysQnTU5uf6OkeT0LaMu/b
+ WsskpEZlt20QSE8Y/ul6/EBDkAvui7s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1774957756;
+ s=susede2_ed25519; t=1774959106;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=N/vKmGkFgcQxk+8GAaAZX9vAQC+0lvTTvtYG1utCWho=;
- b=AamvQDuGo+uvL049YV6TaMjJMF3waft3G3/4i+Cq71sl7Ug1JAle0s6Zq1OHBQrg36MTkz
- JkwVppY4VnCPalDA==
-Authentication-Results: smtp-out1.suse.de;
+ bh=wo9nfZhlJhzzwvwvKDZ9KS2qEUgcH2OuzUWtXklPXYQ=;
+ b=wToujE16JRFuIUpS9rxhBrMfNLTREFGVrrdj3kBRlIhUt31hLIYYXZItJjM/8VYiycCUo6
+ lWwh7Hy+PUmBeJDw==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1774957756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1774959106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=N/vKmGkFgcQxk+8GAaAZX9vAQC+0lvTTvtYG1utCWho=;
- b=fJPhs6SFDXwB1WPWt+FDImwzand3AVJbBiPMYU47WjabwpksnuGKKzem6+ofmaN6GJY/Wk
- Axzl6jEtTN/bVR2YL4Su234dOjdhOnVcjHrxRXnvMDygPRWlJb/FkSuK1rAn/iaaOYosB+
- h23R+hmZ4KE86nNR9rorL/sZxS10pz0=
+ bh=wo9nfZhlJhzzwvwvKDZ9KS2qEUgcH2OuzUWtXklPXYQ=;
+ b=Oqdw2hy7gpEyheV1dut4Lt+jhL+ICdQetghMhhvrAAsYdIENYHaJVEVBFT39wFJPbjd3hA
+ 6zeiFsBqQVGoZNtcywlmi/bQjGYE0Br7bkUXHovjarAFxEiYxysQnTU5uf6OkeT0LaMu/b
+ WsskpEZlt20QSE8Y/ul6/EBDkAvui7s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1774957756;
+ s=susede2_ed25519; t=1774959106;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=N/vKmGkFgcQxk+8GAaAZX9vAQC+0lvTTvtYG1utCWho=;
- b=AamvQDuGo+uvL049YV6TaMjJMF3waft3G3/4i+Cq71sl7Ug1JAle0s6Zq1OHBQrg36MTkz
- JkwVppY4VnCPalDA==
+ bh=wo9nfZhlJhzzwvwvKDZ9KS2qEUgcH2OuzUWtXklPXYQ=;
+ b=wToujE16JRFuIUpS9rxhBrMfNLTREFGVrrdj3kBRlIhUt31hLIYYXZItJjM/8VYiycCUo6
+ lWwh7Hy+PUmBeJDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2813C4A0A2;
- Tue, 31 Mar 2026 11:49:16 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 69E194A0A2;
+ Tue, 31 Mar 2026 12:11:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jrgTCLy0y2kCbwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 31 Mar 2026 11:49:16 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id NjdJFgG6y2mWBwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 31 Mar 2026 12:11:45 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 31 Mar 2026 13:48:56 +0200
+Date: Tue, 31 Mar 2026 14:11:44 +0200
 MIME-Version: 1.0
-Message-Id: <20260331-nanosleep_posix_fix-v1-1-7a707f871582@suse.com>
-X-B4-Tracking: v=1; b=H4sIAKe0y2kC/x2MWwqAIBAArxL7neAD/OgqESK61UKouBCCePekz
- xmY6cBYCRm2pUPFl5hymqDWBcLt04WC4mTQUltpjBLJp8wPYnElMzV3UhPWKqt9CF5hhFmWilP
- /1/0Y4wP7bpRxZQAAAA==
-X-Change-ID: 20260331-nanosleep_posix_fix-66162acca1ed
+Message-Id: <20260331-clock_settime_fix-v1-1-dfae06df2436@suse.com>
+X-B4-Tracking: v=1; b=H4sIAP+5y2kC/x2MWwqAIBAAryL7naAZ9rhKhJRutVQWGhFEd0/6n
+ IGZByIGwggNeyDgRZF2n0BmDOzc+wk5ucSQi1wLpSS3624XE/E8aUMz0s0rLKQsnR20qCF1R8C
+ k/2fbve8HmNZC4WMAAAA=
+X-Change-ID: 20260331-clock_settime_fix-8e4117dcb609
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1774957756; l=8054;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1774959105; l=12123;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=tE5g1rymUoaL6FTelQrprJFFa88MW8OBGGZEWaXALLY=;
- b=aXy9bw1qJOubqLfYmx7izzlOv3Oq9/kLsC6piA9UtRqnFC+qyAvTMIMAW94U91SQl8QX0bDi7
- u3ghfUS4be8DlV0z5BJdKNviTIZEm4lA7Eu1wPLpvQ7JAaJMN/1qAW+
+ bh=bTw1tt8Dkpi/21emNIqxNNDGu6MJrbKe9SzojacQ38s=;
+ b=nW1DMlk2z5SmzKBei77OUpII71ABZxZlC+X5qflSHQWxI5eyEz9aveyQpnriJ55cVWDPa+ODj
+ lzbEYHgsueaBYFIpZSHe9oB4CKtSpg2cqEISkwHRCvHVuxVPYjMNSeE
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -98,12 +99,11 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
  FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
- suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] nanosleep: Use CLOCK_MONOTONIC for elapsed time
- measurement
+Subject: [LTP] [PATCH] clock_settime: Detect external clock adjustments via
+ CLOCK_MONOTONIC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,181 +122,330 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-All nanosleep POSIX conformance tests used CLOCK_REALTIME to measure
-elapsed sleep duration. CLOCK_REALTIME can jump due to NTP corrections,
-VM time sync, or other wall-clock adjustments, causing sporadic test
-failures where measured time far exceeds expected sleep duration.
+These tests manipulate CLOCK_REALTIME to verify timer and
+clock_nanosleep behavior, but NTP or VM time sync can also adjust
+CLOCK_REALTIME during the test, causing timers to fire at wrong times
+and producing spurious failures.
 
-Switch to CLOCK_MONOTONIC which is immune to wall-clock changes and is
-the correct clock for measuring elapsed durations.
+Use CLOCK_MONOTONIC as a sideband check to detect external interference.
+If the monotonic elapsed time is anomalous, report UNTESTED instead of
+a false FAIL.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c | 4 ++--
- testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c | 4 ++--
- testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c | 4 ++--
- .../open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c   | 4 ++--
- testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c | 4 ++--
- testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c | 4 ++--
- testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c | 4 ++--
- 7 files changed, 14 insertions(+), 14 deletions(-)
+I used Claude to generate the right patches to fix sporadic issues in the
+clock_settime testing suite. We tried many attempt for fixing it, but the
+CLOCK_REALTIME usage seems to be the real issue in here. The idea is that
+we use internal Openposix mechanisms to skip tests if CLOCK_MONOTONIC
+usage spots a possible interference from external tools.
+---
+ .../conformance/interfaces/clock_settime/4-1.c     | 26 +++++++++++++++++
+ .../conformance/interfaces/clock_settime/5-1.c     | 33 +++++++++++++++++++++-
+ .../conformance/interfaces/clock_settime/5-2.c     | 33 +++++++++++++++++++++-
+ .../conformance/interfaces/clock_settime/7-1.c     | 28 ++++++++++++++++++
+ .../conformance/interfaces/clock_settime/7-2.c     | 31 +++++++++++++++++++-
+ 5 files changed, 148 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c
-index 687d01e288d914fbbdc18287746f71296c7a4327..d76451e3438e15d44ab2c2b8d0b349e666daec8c 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c
-@@ -18,7 +18,7 @@ int main(void)
- 	int sleepnsec = 3;
- 	int slepts = 0, sleptns = 0;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/4-1.c
+index f8a3e9c542ca8c9767cdd0057005e519f58b2b55..005d440985a71f62ede60b7696f6bd6f8d48f4b9 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/4-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/4-1.c
+@@ -42,6 +42,7 @@ int main(void)
+ {
+ 	struct sigevent ev;
+ 	struct timespec tpT0, tpT2, tpreset;
++	struct timespec mono_before, mono_after;
+ 	struct itimerspec its;
+ 	timer_t tid;
+ 	int delta;
+@@ -82,6 +83,11 @@ int main(void)
+ 		return PTS_UNRESOLVED;
+ 	}
  
--	if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
-+	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
- 		perror("Error in clock_gettime()\n");
++	if (clock_gettime(CLOCK_MONOTONIC, &mono_before) != 0) {
++		perror("clock_gettime() was not successful\n");
++		return PTS_UNRESOLVED;
++	}
++
+ 	if (timer_create(CLOCK_REALTIME, &ev, &tid) != 0) {
+ 		perror("timer_create() did not return success\n");
  		return PTS_UNRESOLVED;
- 	}
-@@ -30,7 +30,7 @@ int main(void)
- 		return PTS_UNRESOLVED;
- 	}
+@@ -116,10 +122,30 @@ int main(void)
  
--	if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
-+	if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
- 		perror("Error in clock_gettime()\n");
- 		return PTS_UNRESOLVED;
- 	}
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c
-index 76f31982508dc87a4f400022cd46fe766071f27d..f72cbcfbbe06a0059bbc17ad617ca76c65651a93 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c
-@@ -21,7 +21,7 @@ int main(void)
- 	int sleepsec = 30;
- 	int pid;
+ 	delta = tpT2.tv_sec - its.it_value.tv_sec;
  
--	if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
-+	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
- 		perror("Error in clock_gettime()\n");
- 		return PTS_UNRESOLVED;
- 	}
-@@ -46,7 +46,7 @@ int main(void)
- 			perror("Error waiting for child to exit\n");
- 			return PTS_UNRESOLVED;
- 		}
--		if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
-+		if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
- 			perror("Error in clock_gettime()\n");
- 			return PTS_UNRESOLVED;
- 		}
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c
-index 31ac00858018c3741758d0b5f2bf28f87aa6c1bf..07ce767123443cea2754c8b5ff2a20ed536cbfec 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c
-@@ -28,7 +28,7 @@ int main(void)
- 	int pid;
++	if (clock_gettime(CLOCK_MONOTONIC, &mono_after) != 0) {
++		perror("clock_gettime() was not successful\n");
++		return PTS_UNRESOLVED;
++	}
++
+ 	// add back time waited to reset value and reset time
+ 	tpreset.tv_sec += tpT2.tv_sec - tpT0.tv_sec;
+ 	setBackTime(tpreset);
+ 
++	/*
++	 * The expected monotonic elapsed time is SLEEPTIME + TIMEROFFSET
++	 * since after resetting the clock, the timer must wait another
++	 * full TIMEROFFSET. If monotonic time is much shorter, an external
++	 * clock adjustment (NTP, VM sync) interfered with the test.
++	 */
++	if (mono_after.tv_sec - mono_before.tv_sec <
++	    SLEEPTIME + TIMEROFFSET - ACCEPTABLEDELTA) {
++		printf("UNTESTED: external clock adjustment detected "
++		       "(monotonic elapsed %ds, expected ~%ds)\n",
++		       (int)(mono_after.tv_sec - mono_before.tv_sec),
++		       SLEEPTIME + TIMEROFFSET);
++		return PTS_UNTESTED;
++	}
++
+ 	printf("delta: %d\n", delta);
+ 	if ((delta <= ACCEPTABLEDELTA) && (delta >= 0)) {
+ 		printf("Test PASSED\n");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/5-1.c
+index 75fa591e014601b2ef9308a118992a704365392b..1d450c5f9feef0bafcfbb1b847bec33cb3e49a1f 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/5-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/5-1.c
+@@ -46,9 +46,11 @@ int main(void)
+ 	struct sigevent ev;
  	struct sigaction act;
+ 	struct timespec tsclock, ts, tsleft, tsreset;
++	struct timespec mono_before, mono_after;
+ 	struct itimerspec its;
+ 	timer_t tid;
+ 	sigset_t set;
++	int ns_ret;
  
--	if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
-+	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
- 		perror("Error in clock_gettime()\n");
+ 	/* Check that we're root...can't call clock_settime with CLOCK_REALTIME otherwise */
+ 	if (getuid() != 0) {
+@@ -97,6 +99,11 @@ int main(void)
  		return PTS_UNRESOLVED;
  	}
-@@ -64,7 +64,7 @@ int main(void)
- 			perror("Error waiting for child to exit\n");
- 			return PTS_UNRESOLVED;
- 		}
--		if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
-+		if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
- 			perror("Error in clock_gettime()\n");
- 			return PTS_UNRESOLVED;
- 		}
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c
-index 883885df434fb4ba3bb555dd565880f14623a984..8bd372f590314faa8f15fccbe5325e9fa31a6f95 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c
-@@ -56,13 +56,13 @@ int main(void)
- 		tssleepfor.tv_nsec = sleepvalid[i][1];
- 		printf("sleep %d sec %d nsec\n",
- 		       (int)tssleepfor.tv_sec, (int)tssleepfor.tv_nsec);
--		if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
-+		if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
- 			perror("Error in clock_gettime()\n");
- 			return PTS_UNRESOLVED;
- 		}
  
- 		if (nanosleep(&tssleepfor, &tsstorage) == 0) {
--			if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
-+			if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
- 				perror("Error in clock_gettime()\n");
- 				return PTS_UNRESOLVED;
- 			}
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c
-index cce3941e7be7212ea286647ec601d3ecbb9bb85a..f44d0f938a586defa3ef244371f1850865801afa 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c
-@@ -25,7 +25,7 @@ int main(void)
- 	int failure = 0;
- 	int slepts, sleptns;
- 
--	if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
-+	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
- 		perror("Error in clock_gettime()\n");
++	if (clock_gettime(CLOCK_MONOTONIC, &mono_before) != 0) {
++		perror("clock_gettime() was not successful\n");
++		return PTS_UNRESOLVED;
++	}
++
+ 	if (clock_gettime(CLOCK_REALTIME, &tsclock) != 0) {
+ 		printf("clock_gettime() did not return success\n");
  		return PTS_UNRESOLVED;
+@@ -112,7 +119,31 @@ int main(void)
+ 	ts.tv_sec = TIMERSEC + SLEEPDELTA;
+ 	ts.tv_nsec = 0;
+ 
+-	if (nanosleep(&ts, &tsleft) != -1) {
++	ns_ret = nanosleep(&ts, &tsleft);
++
++	if (clock_gettime(CLOCK_MONOTONIC, &mono_after) != 0) {
++		perror("clock_gettime() was not successful\n");
++		return PTS_UNRESOLVED;
++	}
++
++	/*
++	 * The relative timer should fire after TIMERSEC regardless of
++	 * clock_settime changes. If monotonic elapsed time is too far
++	 * from TIMERSEC, an external clock adjustment (NTP, VM sync)
++	 * interfered with the test.
++	 */
++	if (labs(mono_after.tv_sec - mono_before.tv_sec - TIMERSEC) >
++	    ACCEPTABLEDELTA + 1) {
++		printf("UNTESTED: external clock adjustment detected "
++		       "(monotonic elapsed %ds, expected ~%ds)\n",
++		       (int)(mono_after.tv_sec - mono_before.tv_sec),
++		       TIMERSEC);
++		tsreset.tv_sec += mono_after.tv_sec - mono_before.tv_sec;
++		setBackTime(tsreset);
++		return PTS_UNTESTED;
++	}
++
++	if (ns_ret != -1) {
+ 		printf("nanosleep() not interrupted\n");
+ 		return PTS_FAIL;
  	}
-@@ -38,7 +38,7 @@ int main(void)
- 			return PTS_UNRESOLVED;
- 		}
- 
--		if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
-+		if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
- 			perror("Error in clock_gettime()\n");
- 			return PTS_UNRESOLVED;
- 		}
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c
-index bfc271edf25f9cd0f343eef11b335d5da20eb646..201ab72a5d4a5a345839fb87f4f1621c70a5bb36 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c
-@@ -26,7 +26,7 @@ int main(void)
- 	int pid, slepts;
- 	struct timespec tsbefore, tsafter;
- 
--	if (clock_gettime(CLOCK_REALTIME, &tsbefore) != 0) {
-+	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) != 0) {
- 		perror("clock_gettime() did not return success\n");
- 		return PTS_UNRESOLVED;
- 	}
-@@ -74,7 +74,7 @@ int main(void)
- 			return PTS_FAIL;
- 		}
- 
--		if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
-+		if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
- 			perror("Error in clock_gettime()\n");
- 			return PTS_UNRESOLVED;
- 		}
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c
-index caf4470e4a26b27ec79deed27c147e2feceffdf8..eab419591ab0c27a5d2dfb556cf2f13f7cc25e6e 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c
-@@ -34,7 +34,7 @@ int main(void)
- 	int pid;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/5-2.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/5-2.c
+index b8a60028c6d3d1a3c0d75922f39697b57329c440..67f90f2fb7d1d841c914614d57bccab1fe7d3537 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/5-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/5-2.c
+@@ -46,9 +46,11 @@ int main(void)
+ 	struct sigevent ev;
  	struct sigaction act;
+ 	struct timespec tsclock, ts, tsleft, tsreset;
++	struct timespec mono_before, mono_after;
+ 	struct itimerspec its;
+ 	timer_t tid;
+ 	sigset_t set;
++	int ns_ret;
  
--	if (clock_gettime(CLOCK_REALTIME, &tsbefore) == -1) {
-+	if (clock_gettime(CLOCK_MONOTONIC, &tsbefore) == -1) {
- 		perror("Error in clock_gettime()\n");
+ 	/* Check that we're root...can't call clock_settime with CLOCK_REALTIME otherwise */
+ 	if (getuid() != 0) {
+@@ -97,6 +99,11 @@ int main(void)
  		return PTS_UNRESOLVED;
  	}
-@@ -60,7 +60,7 @@ int main(void)
- 			return CHILDFAILURE;
+ 
++	if (clock_gettime(CLOCK_MONOTONIC, &mono_before) != 0) {
++		perror("clock_gettime() was not successful\n");
++		return PTS_UNRESOLVED;
++	}
++
+ 	if (clock_gettime(CLOCK_REALTIME, &tsclock) != 0) {
+ 		printf("clock_gettime() did not return success\n");
+ 		return PTS_UNRESOLVED;
+@@ -112,7 +119,31 @@ int main(void)
+ 	ts.tv_sec = TIMERSEC + SLEEPDELTA;
+ 	ts.tv_nsec = 0;
+ 
+-	if (nanosleep(&ts, &tsleft) != -1) {
++	ns_ret = nanosleep(&ts, &tsleft);
++
++	if (clock_gettime(CLOCK_MONOTONIC, &mono_after) != 0) {
++		perror("clock_gettime() was not successful\n");
++		return PTS_UNRESOLVED;
++	}
++
++	/*
++	 * The relative timer should fire after TIMERSEC regardless of
++	 * clock_settime changes. If monotonic elapsed time is too far
++	 * from TIMERSEC, an external clock adjustment (NTP, VM sync)
++	 * interfered with the test.
++	 */
++	if (labs(mono_after.tv_sec - mono_before.tv_sec - TIMERSEC) >
++	    ACCEPTABLEDELTA + 1) {
++		printf("UNTESTED: external clock adjustment detected "
++		       "(monotonic elapsed %ds, expected ~%ds)\n",
++		       (int)(mono_after.tv_sec - mono_before.tv_sec),
++		       TIMERSEC);
++		tsreset.tv_sec += mono_after.tv_sec - mono_before.tv_sec;
++		setBackTime(tsreset);
++		return PTS_UNTESTED;
++	}
++
++	if (ns_ret != -1) {
+ 		printf("nanosleep() not interrupted\n");
+ 		return PTS_FAIL;
+ 	}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/7-1.c
+index 569eae904ef2eff41441029d3427313107febe53..ca325abb133195dad75f957f599a936a049bf657 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/7-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/7-1.c
+@@ -36,6 +36,7 @@
+ int main(void)
+ {
+ 	struct timespec tsT0, tsT1;
++	struct timespec mono_before, mono_after;
+ 	int pid;
+ 
+ 	/* Check that we're root...can't call clock_settime with CLOCK_REALTIME otherwise */
+@@ -49,6 +50,11 @@ int main(void)
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
++	if (clock_gettime(CLOCK_MONOTONIC, &mono_before) != 0) {
++		perror("clock_gettime() was not successful\n");
++		return PTS_UNRESOLVED;
++	}
++
+ 	if ((pid = fork()) == 0) {
+ 		/* child here */
+ 		int flags = 0;
+@@ -100,9 +106,31 @@ int main(void)
+ 			return PTS_UNRESOLVED;
  		}
  
--		if (clock_gettime(CLOCK_REALTIME, &tsafter) == -1) {
-+		if (clock_gettime(CLOCK_MONOTONIC, &tsafter) == -1) {
- 			perror("Error in clock_gettime()\n");
- 			return CHILDFAILURE;
++		if (clock_gettime(CLOCK_MONOTONIC, &mono_after) != 0) {
++			perror("clock_gettime() was not successful\n");
++			return PTS_UNRESOLVED;
++		}
++
+ 		getBeforeTime(&tsreset);	// get current time
+ 		tsreset.tv_sec += SMALLTIME;
+ 		setBackTime(tsreset);
++
++		/*
++		 * Expected monotonic elapsed time is SMALLTIME + SLEEPOFFSET
++		 * since after resetting the clock, the child must wait
++		 * another full SLEEPOFFSET. If monotonic time is much
++		 * shorter, an external clock adjustment (NTP, VM sync)
++		 * interfered with the test.
++		 */
++		if (mono_after.tv_sec - mono_before.tv_sec <
++		    SMALLTIME + SLEEPOFFSET - ACCEPTABLEDELTA - 1) {
++			printf("UNTESTED: external clock adjustment detected "
++			       "(monotonic elapsed %ds, expected ~%ds)\n",
++			       (int)(mono_after.tv_sec - mono_before.tv_sec),
++			       SMALLTIME + SLEEPOFFSET);
++			return PTS_UNTESTED;
++		}
++
+ 		if (WIFEXITED(i) && WEXITSTATUS(i)) {
+ 			printf("Test PASSED\n");
+ 			return PTS_PASS;
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/7-2.c b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/7-2.c
+index 7c340b6c97ce03a1b04709f06996e5a66e1a653a..1eced660640881e559e8b739e1a59df8897b17d4 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/7-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/7-2.c
+@@ -31,6 +31,7 @@
+ 
+ #define CHILDPASS 1
+ #define CHILDFAIL 0
++#define CHILDUNTESTED 2
+ 
+ int main(void)
+ {
+@@ -58,13 +59,38 @@ int main(void)
+ 		/* child here */
+ 		int flags = 0;
+ 		struct timespec tsT3;
++		struct timespec mono_start, mono_end;
+ 
+ 		flags |= TIMER_ABSTIME;
++
++		if (clock_gettime(CLOCK_MONOTONIC, &mono_start) != 0) {
++			perror("clock_gettime() was not successful\n");
++			return CHILDFAIL;
++		}
++
+ 		if (clock_nanosleep(CLOCK_REALTIME, flags, &tsT1, NULL) != 0) {
+ 			printf("clock_nanosleep() did not return success\n");
+ 			return CHILDFAIL;
  		}
+ 
++		if (clock_gettime(CLOCK_MONOTONIC, &mono_end) != 0) {
++			perror("clock_gettime() was not successful\n");
++			return CHILDFAIL;
++		}
++
++		/*
++		 * The parent sleeps 1s before jumping the clock forward.
++		 * If clock_nanosleep returned in less than 1s monotonic,
++		 * an external clock adjustment (NTP, VM sync) woke us
++		 * instead of the parent's clock_settime.
++		 */
++		if (mono_end.tv_sec - mono_start.tv_sec < 1) {
++			printf("UNTESTED: external clock adjustment detected "
++			       "(monotonic elapsed %ds)\n",
++			       (int)(mono_end.tv_sec - mono_start.tv_sec));
++			return CHILDUNTESTED;
++		}
++
+ 		if (clock_gettime(CLOCK_REALTIME, &tsT3) != 0) {
+ 			perror("clock_gettime() did not return success\n");
+ 			return CHILDFAIL;
+@@ -105,7 +131,10 @@ int main(void)
+ 
+ 		setBackTime(tsreset);	//should be ~= before time
+ 
+-		if (WIFEXITED(i) && WEXITSTATUS(i)) {
++		if (WIFEXITED(i) && WEXITSTATUS(i) == CHILDUNTESTED) {
++			printf("Test UNTESTED\n");
++			return PTS_UNTESTED;
++		} else if (WIFEXITED(i) && WEXITSTATUS(i)) {
+ 			printf("Test PASSED\n");
+ 			return PTS_PASS;
+ 		} else {
 
 ---
 base-commit: 4688c20c01eece869b59e05ca3dd68c43e0d6af7
-change-id: 20260331-nanosleep_posix_fix-66162acca1ed
+change-id: 20260331-clock_settime_fix-8e4117dcb609
 
 Best regards,
 -- 
