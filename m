@@ -4,70 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB3ACFF60FF
-	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 10:02:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FA301061B21
+	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 10:18:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 89FD13E2A40
-	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 12:02:18 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 86C093E2F78
+	for <ltp@archiver.kernel.org>; Tue, 31 Mar 2026 12:18:28 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CA47B3CAE45
- for <ltp@lists.linux.it>; Tue, 31 Mar 2026 12:01:59 +0200 (CEST)
-Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 323FA3CF3BD
+ for <ltp@lists.linux.it>; Tue, 31 Mar 2026 12:18:10 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 29BB720116C
- for <ltp@lists.linux.it>; Tue, 31 Mar 2026 12:01:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
- s=onoh2408; t=1774951311;
- bh=8MX4lqbgVZK5tmosGbcC/P11GneNnqNxzOlAebP9Nvg=;
- h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=OLaleyDBMffS0tItToU3SybNbGjOiPEJS2CvkqjGBFlSvI2RUaiTGX7u40aX/mn77
- fvlyqjhCqMjCqOsY4Y+SfPOBo2ll8Lzj+AmLFxIiB6W/n/ACQTmPgaj+bKgFoijXkg
- YO9hfnjFm3mj2yHdpXabaieG3YtTeUlpea247H5g=
-X-QQ-mid: zesmtpsz7t1774951305tfc298e9e
-X-QQ-Originating-IP: MKdFGiYr46yqxjefu65jRXbCw/VsvlmUCCuDyqxu9tM=
-Received: from localhost.localdomain ( [1.85.7.34])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Tue, 31 Mar 2026 18:01:43 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 13304817964270224312
-EX-QQ-RecipientCnt: 4
-From: lufei <lufei@uniontech.com>
-To: ltp@lists.linux.it
-Date: Tue, 31 Mar 2026 18:01:38 +0800
-Message-Id: <20260331100138.58202-1-lufei@uniontech.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20260331015538.53326-1-lufei@uniontech.com>
-References: <20260331015538.53326-1-lufei@uniontech.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 299EF200C09
+ for <ltp@lists.linux.it>; Tue, 31 Mar 2026 12:18:08 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 597C85BCD3;
+ Tue, 31 Mar 2026 10:18:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1774952288;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=G3fXQZq6WBzaMymtTeM8TeAn08TNGdWiHtd7hjR6avw=;
+ b=XaEbme2hLH3lbMQ4LD3XH5D8MPM5hKT9VGbATNP8GAbnsx/6lJ+OizUZgTSqLsfg8shrq7
+ +w8GPNRPvLKNLzqoLlZTtp/d5vmV5ihpuWYBd9E+rYRQ1BeDyXLbJW1Uea4c5k5ba8fr6d
+ zrh3IVfFneypj6xe+XgEDNLN7NA7NjU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1774952288;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=G3fXQZq6WBzaMymtTeM8TeAn08TNGdWiHtd7hjR6avw=;
+ b=ak34FcRwSSesdVSWXxWyWogovhLfysl8qgx5f6g+2oNLwxjRm4uiUusuyr8WSQkhoasCJ8
+ k6BDJTWstCQtaMBA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=uSbvHxeH;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=mb6QmyDp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1774952287;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=G3fXQZq6WBzaMymtTeM8TeAn08TNGdWiHtd7hjR6avw=;
+ b=uSbvHxeH+8kHoX6CK/TLoQ4i7yMaCOdk7wyeItrfYCpv/tUyeNXrZcOdeZNkzKfWiKS/Fj
+ nJog/6033AFgLN2/DFnoxg6fdzWrTZScqOyOoNqLA0meMw8uRQysv9mgo4rqcJKHC77Zeh
+ TNIy40mBFa8CCMKF8w+KtzUccqEywsI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1774952287;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=G3fXQZq6WBzaMymtTeM8TeAn08TNGdWiHtd7hjR6avw=;
+ b=mb6QmyDpH0AuAvgZ2Ly3NMctNv6LXkW3+UXmPS5gsGdQP4ooLom1sqzgHCbhEfEd9/oHPn
+ tw1uTdpChKXWmnDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DEF864A0A2;
+ Tue, 31 Mar 2026 10:18:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id DGBLLl6fy2lQDwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 31 Mar 2026 10:18:06 +0000
+Date: Tue, 31 Mar 2026 12:18:00 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Ricardo Branco <rbranco@suse.de>
+Message-ID: <20260331101800.GA40946@pevik>
+References: <20260330185759.398559-1-rbranco@suse.de>
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: zesmtpsz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz3a-1
-X-QQ-XMAILINFO: NWLpwLZrMWrI3jeNjqtsyDDP69veXFHyKgaJoW9wSRNMgHc2SwBbmaTU
- aLvXzciHaLniJ/9w+br22SzEeER8YR6PZHnqHdPRbGrXPfFaHJdOAj7WnlsSPRyds8OH7O0
- r7qg+D47OrvUiFjm3CVf4fI+i5uAaC7qgPQdhuO2fEZPw+YH35ksw+wcNV2R/4FONOYFUqu
- zxhH7qOGiC3ofjzvMqeZEpAE7phwjiSq9K+tQm8pA5QWbhqdAyXS65d8TctyjLOlYsyBovj
- +YxOWaMKJR9VOY2K69nrAYvkD0AGW2nlyW9nmLp2fW5x+UCDiaMFJ2VCt8x8jaipwWQVY1s
- SBt0AgVF4r6ZA8qy2sONxQW66Vk89kGLrwPZd0vyvHsaaSHzNXIEnYNM5pHKZOQPJQPcmEU
- v2VJ0Yf9chZgSIMTkcsd0Ra0fhDHCmg9/GE6t2V3KroYVM4L9Ja5XzaqV+abFf7cILdtXwO
- UfWPKI4CJM3ZEHf+W9/P6vP482HyH/j3Jyf5INDD4sUkQJomc6PtwwzKcA4HLNt3FBMZI1u
- iZojqepylcVaJC+sG4tRhbMDpk9eQ+mfzrDeGEEr3Ledh0VkSFOdGCE1CV/uRv+LtvFHvyz
- Rsm32G4WyFgeTxHpW1Ui3HYca/WbkpqBOvg5jNJruSc4UhLGYa3eJKyzy1/8fI6zRiX1lhV
- vEEQ19H/CPgbSAGxekqrbmyKxnKkpFDnU3mqJMxgkouFV9sXkvSRdXvapsDycGov1+evWmo
- QjB3JB02xWPBiv+xEhC0cV8RZ5ykXt23hCsZSGB4pg3+dVnpJJtiuYa2TetI1gxJV8X+CKY
- Wh22g6HVIVuk8okL7+3XtyXsPFxjCTEAFTcaZDptVn0lxN3oi8dADar1p11sZGwg9Ddh+/I
- 14tcKzD5SJGet781wUNNfCCJ/YK8kgHP6ZKje9Hkp2T8vrGVLlDHj4KR0h3ApsatIDD/PLY
- Bfa9JNL8pdj32H6DGWcEH6/5/9MxeLU1nNs609RXEDA7jVpIPQcQI3PVGIkC2UUBwrR33HT
- JJgUWj6xHPy7ILuxvA2DrPrgOI/ruW0xK1pQ8wVQOKWYEtx8R/
-X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
-X-QQ-RECHKSPAM: 0
+Content-Disposition: inline
+In-Reply-To: <20260330185759.398559-1-rbranco@suse.de>
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ REPLYTO_EQ_FROM(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: 597C85BCD3
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] Rewrite ftrace_regression tests with new C API
+Subject: Re: [LTP] [PATCH v2] userfaultfd: Add new test using UFFDIO_CONTINUE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,436 +116,162 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lufei <lufei@uniontech.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Rewritten from old shell scripts.
+Hi Ricardo,
 
-ftrace_regression01: regression test for panic bug while using
-userstacktrace, set userstacktrace in loop and check if success.
+> We test it with UFFD_PAGEFAULT_FLAG_MINOR.
+Thanks, minor things below.
 
-ftrace_regression02: for checking signal:signal_generate gives
-2 more fields: grp res.
+...
+> diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
+> new file mode 100644
+> index 000000000..644e7724e
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
+> @@ -0,0 +1,161 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2026 SUSE LLC
+> + * Author: Ricardo Branco <rbranco@suse.com>
+> + */
+> +
+> +/*\
+> + * Force a pagefault event and handle it using :manpage:`userfaultfd(2)`
+> + * from a different thread testing UFFDIO_CONTINUE.
+> + */
+> +
+> +#include "config.h"
+> +#include <poll.h>
+> +#include <unistd.h>
+> +#include "tst_test.h"
+> +#include "tst_safe_macros.h"
+> +#include "tst_safe_prw.h"
+> +#include "tst_safe_pthread.h"
+> +#include "lapi/memfd.h"
+> +#include "lapi/userfaultfd.h"
+> +#include "lapi/syscalls.h"
+> +
+> +static long page_size;
+> +static char *page;
+> +static int uffd = -1;
+> +static int memfd = -1;
+> +
+> +static int sys_memfd_create(const char *name, unsigned int flags)
+> +{
+> +	return tst_syscall(__NR_memfd_create, name, flags);
+We have this in testcases/kernel/syscalls/memfd_create/memfd_create_common.c.
+Moving it as static inline into include/lapi/memfd.h would help to DRY.
 
-Signed-off-by: lufei <lufei@uniontech.com>
----
- runtest/tracing                               |  4 +-
- .../kernel/tracing/ftrace_test/.gitignore     |  2 +
- .../tracing/ftrace_test/ftrace_regression.h   | 61 ++++++++++++++
- .../tracing/ftrace_test/ftrace_regression01.c | 82 ++++++++++++++++++
- .../ftrace_test/ftrace_regression01.sh        | 83 -------------------
- .../tracing/ftrace_test/ftrace_regression02.c | 56 +++++++++++++
- .../ftrace_test/ftrace_regression02.sh        | 63 --------------
- 7 files changed, 203 insertions(+), 148 deletions(-)
- create mode 100644 testcases/kernel/tracing/ftrace_test/.gitignore
- create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression.h
- create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression01.c
- delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
- create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
- delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
+> +}
+> +
+> +static void set_pages(void)
+> +{
+> +	char ch = 'A';
+> +
+> +	page_size = sysconf(_SC_PAGE_SIZE);
+Maybe SAFE_SYSCONF(_SC_PAGE_SIZE) or because it should be safe:
+getpagesize();
 
-diff --git a/runtest/tracing b/runtest/tracing
-index 674e2ad97..2a4a92c5f 100644
---- a/runtest/tracing
-+++ b/runtest/tracing
-@@ -1,6 +1,6 @@
- #DESCRIPTION:Tracing testing
--ftrace_regression01	ftrace_regression01.sh
--ftrace_regression02	ftrace_regression02.sh
-+ftrace_regression01	ftrace_regression01
-+ftrace_regression02	ftrace_regression02
- ftrace-stress-test	ftrace_stress_test.sh 90
- dynamic_debug01		dynamic_debug01.sh
- fanotify25 fanotify25
-diff --git a/testcases/kernel/tracing/ftrace_test/.gitignore b/testcases/kernel/tracing/ftrace_test/.gitignore
-new file mode 100644
-index 000000000..b0153e9fa
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/.gitignore
-@@ -0,0 +1,2 @@
-+ftrace_regression01
-+ftrace_regression02
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression.h b/testcases/kernel/tracing/ftrace_test/ftrace_regression.h
-new file mode 100644
-index 000000000..0efae7268
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression.h
-@@ -0,0 +1,61 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-+ * Copyright (c) 2026 lufei <lufei@uniontech.com>
-+ *
-+ * Shared header for ftrace regression tests.
-+ */
-+
-+#ifndef FTRACE_REGRESSION_H
-+#define FTRACE_REGRESSION_H
-+
-+#include "tst_test.h"
-+#include "tst_safe_file_ops.h"
-+#include "tst_safe_stdio.h"
-+
-+#include <regex.h>
-+#include <stdio.h>
-+
-+#define FTRACE_LINE_BUF_SIZE 1024
-+#define DEBUGFS_DIR "debugfs"
-+
-+/**
-+ * file_contains - Check if a file contains specific regex pattern.
-+ */
-+static inline int file_contains(const char *path, const char *pattern)
-+{
-+	FILE *fp = SAFE_FOPEN(path, "r");
-+	char *buf = SAFE_MALLOC(FTRACE_LINE_BUF_SIZE);
-+	bool found = false;
-+
-+	regex_t re;
-+
-+	if (regcomp(&re, pattern, REG_EXTENDED | REG_NOSUB) != 0) {
-+		SAFE_FCLOSE(fp);
-+		return found;
-+	}
-+
-+	while (fgets(buf, FTRACE_LINE_BUF_SIZE, fp)) {
-+		if (regexec(&re, buf, 0, NULL, 0) == 0) {
-+			found = true;
-+			break;
-+		}
-+	}
-+
-+	regfree(&re);
-+	SAFE_FCLOSE(fp);
-+	free(buf);
-+	return found;
-+}
-+
-+static inline void mount_debugfs(void)
-+{
-+	SAFE_MKDIR(DEBUGFS_DIR, 0755);
-+	SAFE_MOUNT(NULL, DEBUGFS_DIR, "debugfs", 0, NULL);
-+}
-+
-+static inline void umount_debugfs(void)
-+{
-+	SAFE_UMOUNT(DEBUGFS_DIR);
-+}
-+
-+#endif /* FTRACE_REGRESSION_H */
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression01.c b/testcases/kernel/tracing/ftrace_test/ftrace_regression01.c
-new file mode 100644
-index 000000000..be2327582
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression01.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2015 Red Hat Inc.
-+ * Copyright (c) 2026 lufei <lufei@uniontech.com>
-+ */
-+
-+/*\
-+ * Regression test for panic while using userstacktrace.
-+ *
-+ * BUG: unable to handle kernel paging request at 00000000417683c0
-+ *      IP: [<ffffffff8105c834>] update_curr+0x124/0x1e0
-+ *      Thread overran stack, or stack corrupted
-+ *      Oops: 0000 [#1] SMP
-+ *      last sysfs file: ../system/cpu/cpu15/cache/index2/shared_cpu_map
-+ *
-+ * The bug was fixed by:
-+ *      1dbd195 (tracing: Fix preempt count leak)
-+ */
-+
-+#include <unistd.h>
-+#include "ftrace_regression.h"
-+
-+#define STACK_TRACER_PATH "/proc/sys/kernel/stack_tracer_enabled"
-+#define TRACE_OPTIONS DEBUGFS_DIR "/tracing/trace_options"
-+#define EXC_PAGE_FAULT DEBUGFS_DIR "/tracing/events/exceptions/page_fault_kernel/enable"
-+#define MM_PAGE_FAULT DEBUGFS_DIR "/tracing/events/kmem/mm_kernel_pagefault/enable"
-+
-+#define LOOP 10
-+
-+static const char *page_fault_path;
-+static int page_fault_origin;
-+
-+static void setup(void)
-+{
-+	mount_debugfs();
-+
-+	if (access(EXC_PAGE_FAULT, F_OK) == 0)
-+		page_fault_path = EXC_PAGE_FAULT;
-+	else if (access(MM_PAGE_FAULT, F_OK) == 0)
-+		page_fault_path = MM_PAGE_FAULT;
-+	else
-+		tst_brk(TCONF, "Page fault event not available");
-+
-+	SAFE_FILE_SCANF(page_fault_path, "%d", &page_fault_origin);
-+}
-+
-+static void run(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < LOOP; i++) {
-+		SAFE_FILE_PRINTF(STACK_TRACER_PATH, "1");
-+		SAFE_FILE_PRINTF(TRACE_OPTIONS, "userstacktrace");
-+
-+		if (!file_contains(TRACE_OPTIONS, "^userstacktrace"))
-+			tst_brk(TBROK, "Failed to set userstacktrace");
-+
-+		SAFE_FILE_PRINTF(page_fault_path, "1");
-+	}
-+
-+	SAFE_FILE_PRINTF(page_fault_path, "%d", page_fault_origin);
-+
-+	tst_res(TPASS, "Test passed for setting userstacktrace "
-+			"bug(preempt count leak) not reproduced"
-+			);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+	.test_all = run,
-+	.cleanup = umount_debugfs,
-+	.save_restore = (const struct tst_path_val[]) {
-+		{STACK_TRACER_PATH, NULL, TST_SR_TCONF},
-+		{}
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "1dbd1951f39e"},
-+		{}
-+	},
-+};
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh b/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
-deleted file mode 100755
-index d6969cfc6..000000000
---- a/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
-+++ /dev/null
-@@ -1,83 +0,0 @@
--#! /bin/sh
--
--###########################################################################
--##                                                                       ##
--## Copyright (c) 2015, Red Hat Inc.                                      ##
--##                                                                       ##
--## This program is free software: you can redistribute it and/or modify  ##
--## it under the terms of the GNU General Public License as published by  ##
--## the Free Software Foundation, either version 3 of the License, or     ##
--## (at your option) any later version.                                   ##
--##                                                                       ##
--## This program is distributed in the hope that it will be useful,       ##
--## but WITHOUT ANY WARRANTY; without even the implied warranty of        ##
--## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          ##
--## GNU General Public License for more details.                          ##
--##                                                                       ##
--## You should have received a copy of the GNU General Public License     ##
--## along with this program. If not, see <http://www.gnu.org/licenses/>.  ##
--##                                                                       ##
--## Author: Li Wang <liwang@redhat.com>                                   ##
--##                                                                       ##
--###########################################################################
--##                                                                       ##
--## Summary:  panic while using userstacktrace                            ##
--##                                                                       ##
--## BUG: unable to handle kernel paging request at 00000000417683c0       ##
--##      IP: [<ffffffff8105c834>] update_curr+0x124/0x1e0                 ##
--##      PGD 41a796067 PUD 0                                              ##
--##      Thread overran stack, or stack corrupted                         ##
--##      Oops: 0000 [#1] SMP                                              ##
--##      last sysfs file: ../system/cpu/cpu15/cache/index2/shared_cpu_map ##
--##                                                                       ##
--## The bug was fixed by:                                                 ##
--##      1dbd195 (tracing: Fix preempt count leak)                        ##
--##                                                                       ##
--###########################################################################
--
--export TCID="ftrace_regression01"
--export TST_TOTAL=1
--
--. ftrace_lib.sh
--
--LOOP=10
--
--TSTACK_TRACE_PATH="/proc/sys/kernel/stack_tracer_enabled"
--EXC_PAGE_FAULT_ENABLE="$TRACING_PATH/events/exceptions/page_fault_kernel/enable"
--MM_PAGE_FAULT_ENABLE="$TRACING_PATH/events/kmem/mm_kernel_pagefault/enable"
--
--ftrace_userstacktrace_test()
--{
--	if [ ! -e "$TSTACK_TRACE_PATH" ]; then
--		tst_brkm TCONF "Stack Tracer is not cofigured in This kernel"
--	fi
--
--	for i in $(seq $LOOP); do
--		echo 1 >  $TSTACK_TRACE_PATH
--		echo userstacktrace > $TRACING_PATH/trace_options
--		grep -q "^userstacktrace"  $TRACING_PATH/trace_options
--		if [ $? -ne 0 ]; then
--			tst_brkm TBROK "Failed to set userstacktrace"
--		fi
--
--		if [ -f "$EXC_PAGE_FAULT_ENABLE" ]; then
--			exc_page_fault_enable=`cat $EXC_PAGE_FAULT_ENABLE`
--			echo 1 > $EXC_PAGE_FAULT_ENABLE
--		else
--			mm_page_fault_enable=`cat $MM_PAGE_FAULT_ENABLE`
--			echo 1 > $MM_PAGE_FAULT_ENABLE
--		fi
--	done
--
--	if [ -f "$EXC_PAGE_FAULT_ENABLE" ]; then
--		echo "$exc_page_fault_enable" > $EXC_PAGE_FAULT_ENABLE
--	else
--		echo "$mm_page_fault_enable" > $MM_PAGE_FAULT_ENABLE
--	fi
--
--	tst_resm TPASS "Finished running the test"
--}
--
--ftrace_userstacktrace_test
--
--tst_exit
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
-new file mode 100644
-index 000000000..b4aac7ad0
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2015 Red Hat Inc.
-+ * Copyright (c) 2026 lufei <lufei@uniontech.com>
-+ */
-+
-+/*\
-+ * Check signal:signal_generate gives 2 more fields: grp=[0-9] res=[0-9]
-+ */
-+
-+#include "ftrace_regression.h"
-+
-+#define SET_EVENT DEBUGFS_DIR "/tracing/set_event"
-+#define TRACING_ON DEBUGFS_DIR "/tracing/tracing_on"
-+#define TRACE_FILE DEBUGFS_DIR "/tracing/trace"
-+
-+#define LOOP 100
-+
-+static void run(void)
-+{
-+	int i;
-+	const char *const cmd_ls[] = {"ls", "-l", "/proc", NULL};
-+
-+	SAFE_FILE_PRINTF(SET_EVENT, "signal:signal_generate");
-+	SAFE_FILE_PRINTF(TRACING_ON, "1");
-+	SAFE_FILE_PRINTF(TRACE_FILE, "\n");
-+
-+	// to generate trace
-+	for (i = 0; i < LOOP; i++)
-+		SAFE_CMD(cmd_ls, "/dev/null", "/dev/null");
-+
-+	if (file_contains(TRACE_FILE, "grp=[0-9]") &&
-+			file_contains(TRACE_FILE, "res=[0-9]"))
-+		tst_res(TPASS, "Pattern grp=[0-9] res=[0-9] reported after "
-+			       "setting signal:signal_generate");
-+	else
-+		tst_res(TFAIL, "Pattern grp=[0-9] res=[0-9] not found in trace");
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.setup = mount_debugfs,
-+	.test_all = run,
-+	.cleanup = umount_debugfs,
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "ls"},
-+		{}
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "6c303d3ab39f"},
-+		{"linux-git", "163566f60bfe"},
-+		{}
-+	},
-+};
-+
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
-deleted file mode 100755
-index 3c32f219e..000000000
---- a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
-+++ /dev/null
-@@ -1,63 +0,0 @@
--#! /bin/sh
--
--###########################################################################
--##                                                                       ##
--## Copyright (c) 2015, Red Hat Inc.                                      ##
--##                                                                       ##
--## This program is free software: you can redistribute it and/or modify  ##
--## it under the terms of the GNU General Public License as published by  ##
--## the Free Software Foundation, either version 3 of the License, or     ##
--## (at your option) any later version.                                   ##
--##                                                                       ##
--## This program is distributed in the hope that it will be useful,       ##
--## but WITHOUT ANY WARRANTY; without even the implied warranty of        ##
--## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          ##
--## GNU General Public License for more details.                          ##
--##                                                                       ##
--## You should have received a copy of the GNU General Public License     ##
--## along with this program. If not, see <http://www.gnu.org/licenses/>.  ##
--##                                                                       ##
--## Author: Li Wang <liwang@redhat.com>                                   ##
--##                                                                       ##
--###########################################################################
--##                                                                       ##
--## Summary: check signal:signal_generate gives 2 more fields: grp res    ##
--##                                                                       ##
--## This testcase is writing for signal events change:                    ##
--##       6c303d3 tracing: let trace_signal_generate() report more info...##
--##       163566f tracing: send_sigqueue() needs trace_signal_generate()  ##
--##                                                                       ##
--###########################################################################
--
--export TCID="ftrace_regression02"
--export TST_TOTAL=1
--
--. ftrace_lib.sh
--
--ftrace_signal_test()
--{
--	# Set envent
--	echo 'signal:signal_generate' > $TRACING_PATH/set_event
--	echo 1 > $TRACING_PATH/tracing_on
--	echo > $TRACING_PATH/trace
--
--	# just to generate trace
--	for i in $(seq 100); do
--		ls -l /proc > /dev/null 2>&1
--	done
--
--	grep -q 'grp=[0-9] res=[0-9]' $TRACING_PATH/trace
--	if [ $? -eq 0 ]; then
--		tst_resm TPASS "finished running the test."
--	else
--		tst_resm TFAIL "running the test failed, please check log message."
--	fi
--}
--
--if tst_kvcmp -lt "3.2"; then
--	tst_brkm TCONF "The test should be run in kernels >= 3.2.0 Skip the test..."
--fi
--
--ftrace_signal_test
--
--tst_exit
--- 
-2.39.3
+> +
+> +	memfd = sys_memfd_create("ltp-uffd-continue", MFD_CLOEXEC);
+> +	if (memfd < 0)
+> +		tst_brk(TBROK | TERRNO, "memfd_create failed");
+> +
+> +	SAFE_FTRUNCATE(memfd, page_size);
+> +
+> +	/*
+> +	 * Populate page cache so that after MADV_DONTNEED the next access
+> +	 * can generate a MINOR fault rather than a MISSING fault.
+> +	 */
+> +	SAFE_PWRITE(1, memfd, &ch, 1, 0);
+> +
+> +	page = SAFE_MMAP(NULL, page_size, PROT_READ, MAP_SHARED, memfd, 0);
+> +}
+> +
+> +static void reset_pages(void)
+> +{
+> +	if (page) {
+> +		SAFE_MUNMAP(page, page_size);
+> +		page = NULL;
+> +	}
+> +
+> +	if (memfd != -1) {
+> +		SAFE_CLOSE(memfd);
+> +		memfd = -1;
+This is not needed, see include/tst_safe_macros.h
 
+#define SAFE_CLOSE(fd) do { \
+		safe_close(__FILE__, __LINE__, NULL, (fd)); \
+		fd = -1; \
+	} while (0)
+
+> +	}
+> +
+> +	if (uffd != -1) {
+> +		SAFE_CLOSE(uffd);
+> +		uffd = -1;
+And here.
+
+> +	}
+> +}
+> +
+> +static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+> +{
+> +	static struct uffd_msg msg;
+> +	struct uffdio_continue uffdio_continue = {};
+> +	struct pollfd pollfd;
+> +	int nready;
+> +	char z = 'Z';
+> +
+> +	pollfd.fd = uffd;
+> +	pollfd.events = POLLIN;
+> +	nready = poll(&pollfd, 1, -1);
+> +	if (nready == -1)
+> +		tst_brk(TBROK | TERRNO, "Error on poll");
+> +
+> +	SAFE_READ(1, uffd, &msg, sizeof(msg));
+> +
+> +	if (msg.event != UFFD_EVENT_PAGEFAULT)
+> +		tst_brk(TFAIL, "Received unexpected UFFD_EVENT %d", msg.event);
+> +
+> +	if (!(msg.arg.pagefault.flags & UFFD_PAGEFAULT_FLAG_MINOR)) {
+> +		tst_brk(TBROK, "expected MINOR fault, got flags=0x%llx",
+> +			(unsigned long long)msg.arg.pagefault.flags);
+> +	}
+> +
+> +	/* Update the shmem page in page cache before resuming the fault. */
+> +	SAFE_PWRITE(1, memfd, &z, 1, 0);
+> +
+> +	uffdio_continue.range.start =
+> +		msg.arg.pagefault.address & ~((unsigned long)page_size - 1);
+> +	uffdio_continue.range.len = page_size;
+> +
+> +	SAFE_IOCTL(uffd, UFFDIO_CONTINUE, &uffdio_continue);
+> +
+> +	SAFE_CLOSE(uffd);
+> +	return NULL;
+> +}
+> +
+> +static void run(void)
+> +{
+> +	pthread_t thr;
+> +	struct uffdio_api uffdio_api = {};
+> +	struct uffdio_register uffdio_register;
+> +
+> +	set_pages();
+Maybe have it as setup function instead of calling it manually at the beginning of run()?
+I'm not sure if it justifies, but remember possible running -i1000.
+
+THe rest LGTM.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
