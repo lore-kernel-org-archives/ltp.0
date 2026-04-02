@@ -4,98 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B7D0CC6B00
-	for <ltp@archiver.kernel.org>; Thu,  2 Apr 2026 07:49:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9B3DCC6B1E
+	for <ltp@archiver.kernel.org>; Thu,  2 Apr 2026 08:02:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 53F973E2A1C
-	for <ltp@archiver.kernel.org>; Thu,  2 Apr 2026 09:49:26 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 75A7E3E2A5A
+	for <ltp@archiver.kernel.org>; Thu,  2 Apr 2026 10:02:14 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 015223E2185
- for <ltp@lists.linux.it>; Thu,  2 Apr 2026 09:49:06 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id CF05B3E14A5
+ for <ltp@lists.linux.it>; Thu,  2 Apr 2026 10:01:54 +0200 (CEST)
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
  [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EFE191000D41
- for <ltp@lists.linux.it>; Thu,  2 Apr 2026 09:49:05 +0200 (CEST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2231E2009D1
+ for <ltp@lists.linux.it>; Thu,  2 Apr 2026 10:01:53 +0200 (CEST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 631HeX713127127
- for <ltp@lists.linux.it>; Thu, 2 Apr 2026 07:49:04 GMT
+ 631JfnG43676159
+ for <ltp@lists.linux.it>; Thu, 2 Apr 2026 08:01:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
  :content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=vz7XediQrIRoCTWiR4kqYtF8Nim8lpTZE6PhnwzIN
- sE=; b=qwSm3UOZn50D741nnia3G2Qe877wJUXDLMLBjTQjJV96X4zOv/eO+CL2p
- qD88CnCA4GyJjXHFnwvsJJG/byxYns2VyLDQOJbiUEoPydEK9jYEZ+xsosaVIJul
- Im/y2/a9deDlLgPT6SzDyWih9YvkSN4xO2Q9EXCE5amBiXQpE6xWdfs358WQoLXv
- c8nzAPJMkUtsVn8dPpTQn/ksGamL7lrJYTI4dNDt3pYA6VajMVrbMwxNeaxEPpX2
- jlekGQ2p0Zq9Tja2LlT12ywM9sEGxUVStUoVXbl5gXtoHvCFVnMHyzQeSAnXcr2M
- p22l8HrruIDM4wcN4RNNmtZCgfM6g==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4d65dck098-1
+ :subject:to; s=pp1; bh=44IEsK0xl6dEPwRaCYRS57YdhHRCqoFfL4EZ7WUBi
+ 6I=; b=llFICLkhFyXuWZhyAhpPNv6FuwKBpLkUMdMI//8/BVziBZrFtRcPJzKA2
+ 6w31e+uZTUQAaflDHtIlhbicMc/DnheRs++f9Ef5svhQxvBhbT8i4tPSZAqg267E
+ Vq55+yzVXJWSqbMUST+zKpBakEaDmky6N2J8fMfay0wd8HeQZ8sVYQlfv/kRIh5a
+ qQbHu8sDxbQbYi1Vl+OJ7czHdxTTSza4tAl+CTQ9zp7mlaA95tpkuZJNmFLCH1L9
+ L8QqiBnwgsC3gf7q8cG2Myks9J1t/AtsxvwVkCOuNYxL4Q1AnXl50PSQtWam8wuz
+ dMuogNDYKmHNDjdn7z9jJrq9HT/dQ==
+Received: from ppma13.dal12v.mail.ibm.com
+ (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4d66msaxx6-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Thu, 02 Apr 2026 07:49:03 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 63258D5p005910
- for <ltp@lists.linux.it>; Thu, 2 Apr 2026 07:49:03 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4d6spy99d0-1
+ for <ltp@lists.linux.it>; Thu, 02 Apr 2026 08:01:52 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 6326xBFY030995
+ for <ltp@lists.linux.it>; Thu, 2 Apr 2026 08:01:51 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+ by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4d6uhk11pj-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Thu, 02 Apr 2026 07:49:03 +0000
+ for <ltp@lists.linux.it>; Thu, 02 Apr 2026 08:01:51 +0000
 Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com
  [10.39.53.228])
- by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 6327n1FS27394722
+ by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 63281opB30147104
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 2 Apr 2026 07:49:02 GMT
+ Thu, 2 Apr 2026 08:01:50 GMT
 Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id AE4FD58059;
- Thu,  2 Apr 2026 07:49:01 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 546AB58066;
+ Thu,  2 Apr 2026 08:01:50 +0000 (GMT)
 Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 6302C58065;
- Thu,  2 Apr 2026 07:49:01 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 098EB58059;
+ Thu,  2 Apr 2026 08:01:50 +0000 (GMT)
 Received: from ktes.isst.tadn.ibm.com (unknown [9.5.15.16])
  by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
- Thu,  2 Apr 2026 07:49:01 +0000 (GMT)
+ Thu,  2 Apr 2026 08:01:49 +0000 (GMT)
 From: Soma Das <somadas1@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Thu,  2 Apr 2026 08:12:58 +0000
-Message-Id: <20260402081258.3239096-1-somadas1@linux.ibm.com>
+Date: Thu,  2 Apr 2026 08:25:46 +0000
+Message-Id: <20260402082546.3245433-1-somadas1@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=RsjI7SmK c=1 sm=1 tr=0 ts=69ce1f6f cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+X-Authority-Analysis: v=2.4 cv=J6enLQnS c=1 sm=1 tr=0 ts=69ce2270 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
  a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=V8glGbnc2Ofi9Qvn3v5h:22 a=VnNF1IyMAAAA:8 a=Z9b-flewM4-o50iZjQYA:9
-X-Proofpoint-GUID: 8RLiUODZdhkcAf5NFEV0vWO6b6NQzUwu
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDAyMDA2OCBTYWx0ZWRfX1faYDoN3zW2x
- b8dPe6uTYdM1bvDWxe+O8OJse5obSwcWVWaL9uJmhV8LKCN1wjwoOPVY9jjHTif3+rgdBVr1LOt
- KxwlVHxKRRDSrvtnbyLqh1JP3lUP0dzGDbx7iPJ4Wp6lTqbDq74W2jmD6GjG7ibL3nlo3AxfRLd
- 39sdWsd1CF2WUqqgfqILhFd+IiP7BG/h5PtilUZeZF/2OegCE76zBdR6Pb0DbOTYjU143ukOlln
- n5QvZWOw8nU3ffXnuVM1Dw86WmRIWeJU+mvEWQSyPPF7i+hKCzF6cnBQoA4VD/VnbgjQ5Zwc7sf
- 4VTS5MyIgP0316zXujrTpVjh+Wpe8ybuuMNhRYtufKYxqhY+LMdjisGHy3IHHyV+TF1owg1bt7R
- nss84WbyWaOa+MM5uY/UR4o3ucfwOGA67lah/inioZgIajrsPca/pMsDiuuen7Wf4uFRJDxMPd3
- +DSDGAUu/6jbJSLgHOA==
-X-Proofpoint-ORIG-GUID: 8RLiUODZdhkcAf5NFEV0vWO6b6NQzUwu
+ a=RzCfie-kr_QcCd8fBx8p:22 a=VnNF1IyMAAAA:8 a=omOdbC7AAAAA:8
+ a=rH-MzyGww2OwHRWN6wsA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDAyMDA2OCBTYWx0ZWRfXy/d14GDxnTjs
+ ZTQknnwMgSuXlMurCzfYRrqn5fIHDcDsaeOWJ8QzyOlqc5SsMl16Zzjc66MFWSAjp5nUl4xTatd
+ i54pCGvNEGiNepwJBPKy9APyeMiBfdHwXdvQjg0FqNOhioBAPBNgxlS4Bv+dqn87biKvX5dKxxV
+ T0b/FX6913ANOxQ6sMWtGaxLUEL9Yg9Y/lhhC8NQIwOdAH/Gg7RBXPH16Yy3TnvpIdKJGPTz7ck
+ l/3OYAQ2QEL9PABWAop6wHwigPCfR6qt8qb+l8xFOlhnSN0oSU+4HbtdHnv1JSkmXRTVVCMJRKx
+ LwFdUkj4T63Qp4bmpxHk4/ai3W1fz+ZEO5zElighVr6h5+nblGXAUVUp93EzPfzSJ7RJZ9HfC/l
+ Hygaaxm6Xs58C8OLXzIyTNHhzVB6lhdzgSaZjRWW6iUBqv6FyKo1pg/mlrpd/t7rVAHD6QJUbnL
+ SgR9T886f0OKY4dhndg==
+X-Proofpoint-GUID: tdTGmb4deXM0VpmtfM8UJUWgiHjj7y4w
+X-Proofpoint-ORIG-GUID: tdTGmb4deXM0VpmtfM8UJUWgiHjj7y4w
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-04-02_01,2026-04-02_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- suspectscore=0 malwarescore=0 spamscore=0 clxscore=1011 phishscore=0
- adultscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2603050001
- definitions=main-2604020068
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ suspectscore=0 clxscore=1015 adultscore=0 priorityscore=1501 bulkscore=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2604020068
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] zram: skip exfat on systems with large page size
+Subject: [LTP] [PATCH] cgroup: make regression test compatible with cgroup v2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,180 +112,393 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-exfat requires cluster size >= sector size, but defaults to 4KB.
-On systems with large page sizes (e.g., 64KB on POWER),
-zram uses page size as sector size, causing mkfs.exfat to fail.
+On kernels >= 5.8, cgroup v2 is mounted by default, causing
+cgroup v1 mount operations in the regression tests to fail.
 
-Skip exfat filesystem creation when page size > 4096 to avoid test failure.
+Add kernel version detection to skip v1-specific tests on
+systems where cgroup v2 is active by default. Also fix the
+cleanup function to handle cases where umount fails gracefully
+using retry logic and lazy unmount fallback.
 
 Signed-off-by: Soma Das <somadas1@linux.ibm.com>
 ---
- .../kernel/device-drivers/zram/zram01.sh      | 91 +++++++++++++++++++
- 1 file changed, 91 insertions(+)
+ .../cgroup/cgroup_regression_test.sh          | 215 +++++++++++++-----
+ 1 file changed, 160 insertions(+), 55 deletions(-)
 
-diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
-index 793f6603c..6afba21f0 100755
---- a/testcases/kernel/device-drivers/zram/zram01.sh
-+++ b/testcases/kernel/device-drivers/zram/zram01.sh
-@@ -11,6 +11,10 @@ TST_TESTFUNC="do_test"
- TST_NEEDS_CMDS="awk bc dd"
- TST_SETUP="setup"
+diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+index a91c400f8..86b79f424 100755
+--- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
++++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+@@ -2,8 +2,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2019-2022 Petr Vorel <pvorel@suse.cz>
+ # Copyright (c) 2009 FUJITSU LIMITED
+-# Author: Li Zefan <lizf@cn.fujitsu.com>
+-
++# Author: Li Zefan <lizf@cn.fujitsu.com> 
+ TST_TESTFUNC=test
+ TST_SETUP=do_setup
+ TST_CLEANUP=do_cleanup
+@@ -20,6 +19,13 @@ do_setup()
+ 		tst_brk TCONF ignored "Kernel does not support for control groups; skipping testcases";
+ 	fi
  
-+# Track devices that were skipped due to sector size incompatibility
-+# Format: space-separated list of device numbers (e.g., "2 5" if zram2 and zram5 were skipped)
-+skipped_devices=""
++	local kver=$(uname -r)
++	if kernel_supports_v2_by_default; then
++		tst_res TINFO "Kernel $kver: version >= 5.8 (mounts cgroup v2 by default)"
++	else
++		tst_res TINFO "Kernel $kver: version < 5.8 (no default v2 support)"
++	fi
 +
- check_space_for_fs()
+ 	dmesg -c > /dev/null
+ 	NR_BUG=`dmesg | grep -c "kernel BUG"`
+ 	NR_NULL=`dmesg | grep -c "kernel NULL pointer dereference"`
+@@ -29,11 +35,28 @@ do_setup()
+ 
+ do_cleanup()
  {
- 	local fs="$1"
-@@ -72,15 +76,59 @@ setup()
- 	zram_load
+-	if mountpoint -q cgroup/; then
+-		find cgroup/ -maxdepth 1 -depth -exec rmdir {} +
+-		umount cgroup/
+-		rmdir cgroup
+-	fi
++	local cgroup_mount="$PWD/cgroup"
++	local attempts=0
++	
++	while [ $attempts -lt 5 ]; do
++		if ! mount | grep -q "on $cgroup_mount type"; then
++			break
++		fi
++		
++		find "$cgroup_mount" -maxdepth 1 -depth -exec rmdir {} + 2>/dev/null || true
++		
++		umount -f "$cgroup_mount" 2>/dev/null || umount -l "$cgroup_mount" 2>/dev/null || true
++		sleep 1
++		
++		if mount | grep -q "on $cgroup_mount type"; then
++			fuser -km "$cgroup_mount" 2>/dev/null || true
++			sleep 1
++		fi
++		
++		attempts=$((attempts+1))
++	done
++	
++	rmdir "$cgroup_mount" 2>/dev/null || true
  }
  
-+check_fs_sector_support()
+ check_kernel_bug()
+@@ -78,6 +101,24 @@ check_kernel_bug()
+ 	return 1
+ }
+ 
++kernel_version()
 +{
-+	local fs="$1"
-+	local dev="$2"
-+	local page_size
-+	local sector_size
-+
-+	# Get the system page size - zram uses this as sector size
-+	page_size=$(getconf PAGE_SIZE 2>/dev/null)
-+	
-+	if [ -z "$page_size" ] || [ "$page_size" -lt 4096 ]; then
-+		# Default to 4KB if we can't determine page size
-+		page_size=4096
-+	fi
-+
-+	tst_res TINFO "check_fs_sector_support: $fs on zram$dev system_page_size=$page_size"
-+
-+	# CHECK: exfat requires cluster size >= sector size, but defaults to 4KB
-+	# On systems with large page sizes (e.g., 64KB on POWER), sector size > 4KB
-+	# This causes exfat filesystem creation to fail, so we skip it with TCONF
-+	if [ "$fs" = "exfat" ] && [ "$page_size" -gt 4096 ]; then
-+		tst_res TINFO "check_fs_sector_support: $fs on zram$dev has page_size=$page_size (> 4096), skipping"
-+		return 1  # Return failure (skip this filesystem)
-+	fi
-+
-+	return 0  # All other filesystems pass this check
++	uname -r | cut -d. -f1,2
 +}
 +
- zram_makefs()
++kernel_supports_v2_by_default()
++{
++	local kver=$(uname -r | cut -d. -f1,2)
++	local major=$(echo "$kver" | cut -d. -f1)
++	local minor=$(echo "$kver" | cut -d. -f2)
++	
++	# Kernel 5.8+ mounts cgroup v2 by default
++	if [ $major -gt 5 ] || ([ $major -eq 5 ] && [ $minor -ge 8 ]); then
++		return 0
++	fi
++	return 1
++}
++
+ #---------------------------------------------------------------------------
+ # Bug:    There was a race when keeping forking processes and at the same
+ #         time cat /cgroup/tasks (should be the very first time to read
+@@ -90,20 +131,54 @@ check_kernel_bug()
+ #---------------------------------------------------------------------------
+ test1()
  {
- 	local i=$dev_start
- 	local fs
-+	local sector_size
- 
-+	# Loop through each filesystem assigned to each zram device
- 	for fs in $zram_filesystems; do
-+		tst_res TINFO "zram_makefs: checking device zram$i for filesystem $fs"
-+		
-+		# Check if this filesystem is compatible with the device's sector size
-+		if ! check_fs_sector_support "$fs" "$i"; then
-+			# Filesystem not supported on this device - mark device as skipped
-+			sector_size=$(cat /sys/block/zram${i}/queue/logical_block_size)
-+			tst_res TCONF "mkfs.$fs does not support sector size $sector_size"
-+			skipped_devices="$skipped_devices $i"  # Add to skipped list
-+			i=$(($i + 1))
-+			continue  # Skip to next filesystem
-+		fi
++	if mount | grep -q "type cgroup2"; then
++		tst_res TCONF "cgroup v2 already active - cannot mount v1 on this kernel"
++		return
++	fi
 +
-+		# Filesystem is supported - attempt to create it
- 		tst_res TINFO "make $fs filesystem on /dev/zram$i"
- 		mkfs.$fs /dev/zram$i > err.log 2>&1
- 		if [ $? -ne 0 ]; then
-+			# Filesystem creation failed
- 			cat err.log
- 			tst_res TFAIL "Failed to make $fs on /dev/zram$i"
- 			tst_brk TBROK "Can't continue with mounting the FS"
-@@ -95,8 +143,27 @@ zram_makefs()
- zram_mount()
+ 	cgroup_regression_fork_processes &
+ 	sleep 1
+ 
+-	mount -t cgroup -o none,name=foo cgroup cgroup/
++	mount -t cgroup -o none,name=foo cgroup "$PWD/cgroup"
+ 	if [ $? -ne 0 ]; then
+ 		tst_res TFAIL "failed to mount cgroup filesystem"
+ 		kill -TERM $!
+ 		return
+ 	fi
+-	cat cgroup/tasks > /dev/null
++	cat "$PWD/cgroup/tasks" > /dev/null
+ 
+ 	kill -TERM $!
+ 	wait $! 2>/dev/null
+-	umount cgroup/
++	sleep 2
++	killall -9 cgroup_regression_fork_processes 2>/dev/null || true
++	sleep 1
++	sync
++	
++	local attempts=0
++	local cgroup_mount="$PWD/cgroup"
++	
++	while [ $attempts -lt 5 ]; do
++		if ! mount | grep -q "on $cgroup_mount type cgroup"; then
++			break
++		fi
++		
++		umount -f "$cgroup_mount" 2>/dev/null || umount -l "$cgroup_mount" 2>/dev/null || true
++		sleep 1
++		
++		if mount | grep -q "on $cgroup_mount type cgroup"; then
++			fuser -km "$cgroup_mount" 2>/dev/null || true
++			sleep 1
++		fi
++		
++		attempts=$((attempts+1))
++	done
++	sync
++	
++	if mount | grep -q "on $cgroup_mount type cgroup"; then
++		tst_res TFAIL "Failed to unmount cgroup"
++		return
++	fi
++	
+ 	check_kernel_bug
+ }
+ 
+@@ -115,31 +190,39 @@ test1()
+ #---------------------------------------------------------------------------
+ test2()
  {
- 	local i
-+	local skip
++	if mount | grep -q "type cgroup2"; then
++		tst_res TCONF "cgroup v2 already active - cannot mount v1 on this kernel"
++		return
++	fi
++
+ 	local val1
+ 	local val2
+-	local cgroup_version
++	local cgroup_mount="$PWD/cgroup"
  
-+	# Attempt to mount all zram devices
- 	for i in $(seq $dev_start $dev_end); do
-+		skip=0
-+		
-+		# Check if this device was marked as skipped during filesystem creation
-+		for dev in $skipped_devices; do
-+			if [ "$dev" = "$i" ]; then
-+				skip=1
-+				break
-+			fi
-+		done
+-	cgroup_require "memory"
+-	cgroup_version=$(cgroup_get_version "memory")
+-	if [ "$cgroup_version" = "2" ]; then
+-		tst_res TCONF "This test requires cgroup v1, but system is using cgroup v2"
+-		cgroup_cleanup
++	fuser -km "$cgroup_mount" 2>/dev/null || true
++	grep cgroup /proc/self/mounts | awk '{print $2}' | while read m; do
++		umount -lf "$m" 2>/dev/null || true
++	done
++	sleep 1
 +
-+		# Skip mounting devices that don't have filesystems
-+		if [ $skip -eq 1 ]; then
-+			tst_res TINFO "skipping mount of /dev/zram$i (filesystem not created)"
-+			continue
-+		fi
-+
-+		# Mount the filesystem that was created in zram_makefs
- 		tst_res TINFO "mount /dev/zram$i"
- 		mkdir zram$i
- 		ROD mount /dev/zram$i zram$i
-@@ -130,8 +197,27 @@ zram_fill_fs()
++	if mount | grep -q "on $cgroup_mount type"; then
++		tst_res TFAIL "Failed to clean up $cgroup_mount before mount attempt"
+ 		return
+ 	fi
+ 
+-	mount -t cgroup -o none,name=foo cgroup cgroup/
++	mount -t cgroup -o none,name=foo cgroup "$cgroup_mount"
+ 	if [ $? -ne 0 ]; then
+ 		tst_res TFAIL "Failed to mount cgroup filesystem"
+ 		return
+ 	fi
+ 
+-	echo 0 > cgroup/notify_on_release
+-	mkdir cgroup/0
+-	val1=`cat cgroup/0/notify_on_release`
++	echo 0 > "$cgroup_mount/notify_on_release"
++	mkdir "$cgroup_mount/0"
++	val1=`cat "$cgroup_mount/0/notify_on_release"`
+ 
+-	echo 1 > cgroup/notify_on_release
+-	mkdir cgroup/1
+-	val2=`cat cgroup/1/notify_on_release`
++	echo 1 > "$cgroup_mount/notify_on_release"
++	mkdir "$cgroup_mount/1"
++	val2=`cat "$cgroup_mount/1/notify_on_release"`
+ 
+ 	if [ $val1 -ne 0 -o $val2 -ne 1 ]; then
+ 		tst_res TFAIL "wrong notify_on_release value"
+@@ -147,8 +230,8 @@ test2()
+ 		tst_res TPASS "notify_on_release is inherited"
+ 	fi
+ 
+-	rmdir cgroup/0 cgroup/1
+-	tst_umount $PWD/cgroup
++	rmdir "$cgroup_mount/0" "$cgroup_mount/1" 2>/dev/null || true
++	umount -f "$cgroup_mount" 2>/dev/null || umount -l "$cgroup_mount" 2>/dev/null || true
+ }
+ 
+ #---------------------------------------------------------------------------
+@@ -201,6 +284,11 @@ test4()
  {
- 	local mem_used_total
- 	local b i r v
-+	local skip
+ 	local lines
  
-+	# Fill each mounted filesystem with data to test compression
- 	for i in $(seq $dev_start $dev_end); do
-+		skip=0
-+		
-+		# Check if this device was marked as skipped (has no filesystem)
-+		for dev in $skipped_devices; do
-+			if [ "$dev" = "$i" ]; then
-+				skip=1
-+				break
-+			fi
-+		done
++	if mount | grep -q "type cgroup2"; then
++		tst_res TCONF "cgroup v2 already active - skipping v1 test"
++		return
++	fi
 +
-+		# Skip filling devices that don't have filesystems
-+		if [ $skip -eq 1 ]; then
-+			tst_res TINFO "skipping fill of zram$i (filesystem not created)"
-+			continue
-+		fi
+ 	if [ ! -e /proc/lockdep ]; then
+ 		tst_res TCONF "CONFIG_LOCKDEP is not enabled"
+ 		return
+@@ -213,10 +301,11 @@ test4()
+ 		return
+ 	fi
+ 
+-	mount -t cgroup -o none,name=foo cgroup cgroup/
+-	mkdir cgroup/0
+-	rmdir cgroup/0
+-	tst_umount $PWD/cgroup
++	local cgroup_mount="$PWD/cgroup"
++	mount -t cgroup -o none,name=foo cgroup "$cgroup_mount"
++	mkdir "$cgroup_mount/0"
++	rmdir "$cgroup_mount/0"
++	tst_umount "$cgroup_mount"
+ 
+ 	if dmesg | grep -q "MAX_LOCKDEP_SUBCLASSES too low"; then
+ 		tst_res TFAIL "lockdep BUG was found"
+@@ -235,6 +324,11 @@ test4()
+ #---------------------------------------------------------------------------
+ test5()
+ {
++	if mount | grep -q "type cgroup2"; then
++		tst_res TCONF "cgroup v2 already active - skipping v1 test"
++		return
++	fi
 +
-+		# Fill this zram device with zeros to test compression ratio
- 		tst_res TINFO "filling zram$i (it can take long time)"
- 		b=0
- 		while true; do
-@@ -140,12 +226,15 @@ zram_fill_fs()
- 				>/dev/null 2>err.txt || break
- 			b=$(($b + 1))
- 		done
-+		
-+		# Verify that at least some data was written
- 		if [ $b -eq 0 ]; then
- 			[ -s err.txt ] && tst_res TWARN "dd error: $(cat err.txt)"
- 			tst_brk TBROK "cannot fill zram $i"
- 		fi
- 		tst_res TPASS "zram$i was filled with '$b' KB"
+ 	cgroup_regression_5_1.sh &
+ 	local pid1=$!
+ 	cgroup_regression_5_2.sh &
+@@ -245,10 +339,16 @@ test5()
+ 	wait $pid1 2>/dev/null
+ 	wait $pid2 2>/dev/null
  
-+		# Check if compression statistics are available (requires mm_stat)
- 		if [ ! -f "/sys/block/zram$i/mm_stat" ]; then
- 			if [ $i -eq 0 ]; then
- 				tst_res TCONF "zram compression ratio test requires zram mm_stat sysfs file"
-@@ -154,6 +243,7 @@ zram_fill_fs()
- 			continue
- 		fi
+-	mount -t cgroup none cgroup 2> /dev/null
+-	mkdir cgroup/0
+-	rmdir cgroup/0
+-	tst_umount $PWD/cgroup
++	local cgroup_mount="$PWD/cgroup"
++	if mount | grep -q "on $cgroup_mount type"; then
++		umount -l "$cgroup_mount" 2>/dev/null || true
++		sleep 1
++	fi
++
++	mount -t cgroup none "$cgroup_mount" 2> /dev/null
++	mkdir "$cgroup_mount/0"
++	rmdir "$cgroup_mount/0"
++	tst_umount "$cgroup_mount"
+ 	check_kernel_bug
+ }
  
-+		# Read and verify the compression ratio
- 		TST_RETRY_FN_EXP_BACKOFF "check_read_mem_used_total /sys/block/zram$i/mm_stat" 0 10
- 		mem_used_total=$(read_mem_used_total /sys/block/zram$i/mm_stat)
- 		tst_res TINFO "mem_used_total: $mem_used_total"
-@@ -161,6 +251,7 @@ zram_fill_fs()
- 		v=$((100 * 1024 * $b / $mem_used_total))
- 		r=$(echo "scale=2; $v / 100 " | bc)
+@@ -272,7 +372,9 @@ test6()
+ 	wait $pid1 2>/dev/null
+ 	wait $pid2 2>/dev/null
  
-+		# Fail if compression ratio is less than 1:1 (data grew instead of compressed)
- 		if [ "$v" -lt 100 ]; then
- 			tst_res TFAIL "compression ratio: $r:1"
- 			break
+-	umount cgroup/ 2> /dev/null
++	# Use absolute path with force unmount
++	local cgroup_mount="$PWD/cgroup"
++	umount -f "$cgroup_mount" 2>/dev/null || umount -l "$cgroup_mount" 2>/dev/null || true
+ 	check_kernel_bug
+ }
+ 
+@@ -288,11 +390,7 @@ test_7_1()
+ {
+ 	local subsys=$1
+ 	local subsys_path
+-	# we should be careful to select a $subsys_path which is related to
+-	# cgroup only: if cgroup debugging is enabled a 'debug' $subsys
+-	# could be passed here as params and this will lead to ambiguity and
+-	# errors when grepping simply for 'debug' in /proc/mounts since we'll
+-	# find also /sys/kernel/debug. Helper takes care of this.
++	local cgroup_mount="$PWD/cgroup"
+ 
+ 	cgroup_require "$subsys"
+ 	subsys_path=$(cgroup_get_mountpoint "$subsys")
+@@ -301,14 +399,11 @@ test_7_1()
+ 	sleep 100 < $subsys_path/0 &	# add refcnt to this dir
+ 	rmdir $subsys_path/0
+ 
+-	# remount with new subsystems added
+-	# since 2.6.28, this remount will fail
+-
+ 	if [ "$subsys_path" = "cgroup" ]; then
+-		mount -t cgroup -o remount xxx cgroup/ 2> /dev/null
++		mount -t cgroup -o remount xxx "$cgroup_mount" 2> /dev/null
+ 		kill -TERM $!
+ 		wait $! 2>/dev/null
+-		umount cgroup/
++		umount -f "$cgroup_mount" 2>/dev/null || umount -l "$cgroup_mount" 2>/dev/null || true
+ 	fi
+ 
+ 	cgroup_cleanup
+@@ -317,23 +412,27 @@ test_7_1()
+ test_7_2()
+ {
+ 	local subsys=$1
++	local cgroup_mount="$PWD/cgroup"
+ 
+-	mount -t cgroup -o none,name=foo cgroup cgroup/
++	if mount | grep -q "on $cgroup_mount type"; then
++		umount -f "$cgroup_mount" 2>/dev/null || umount -l "$cgroup_mount" 2>/dev/null || true
++		sleep 1
++	fi
++
++	mount -t cgroup -o none,name=foo cgroup "$cgroup_mount"
+ 	if [ $? -ne 0 ]; then
+ 		tst_res TFAIL "failed to mount cgroup"
+ 		return
+ 	fi
+ 
+-	mkdir cgroup/0
+-	sleep 100 < cgroup/0 &	# add refcnt to this dir
+-	rmdir cgroup/0
++	mkdir "$cgroup_mount/0"
++	sleep 100 < "$cgroup_mount/0" &	# add refcnt to this dir
++	rmdir "$cgroup_mount/0"
+ 
+-	# remount with some subsystems removed
+-	# since 2.6.28, this remount will fail
+-	mount -t cgroup -o remount,$subsys xxx cgroup/ 2> /dev/null
++	mount -t cgroup -o remount,$subsys xxx "$cgroup_mount" 2> /dev/null
+ 	kill -TERM $!
+ 	wait $! 2>/dev/null
+-	umount cgroup/
++	umount -f "$cgroup_mount" 2>/dev/null || umount -l "$cgroup_mount" 2>/dev/null || true
+ 
+ 	grep -q -w "cpu" /proc/cgroups
+ 	if [ $? -ne 0 -o ! -e /proc/sched_debug ]; then
+@@ -379,17 +478,23 @@ test7()
+ #---------------------------------------------------------------------------
+ test8()
+ {
+-	mount -t cgroup -o none,name=foo cgroup cgroup/
++	if mount | grep -q "type cgroup2"; then
++		tst_res TCONF "cgroup v2 already active - skipping v1 test"
++		return
++	fi
++
++	local cgroup_mount="$PWD/cgroup"
++	mount -t cgroup -o none,name=foo cgroup "$cgroup_mount"
+ 	if [ $? -ne 0 ]; then
+ 		tst_res TFAIL "failed to mount cgroup filesystem"
+ 		return
+ 	fi
+ 
+-	if cgroup_regression_getdelays -C cgroup/tasks > /dev/null 2>&1; then
++	if cgroup_regression_getdelays -C "$cgroup_mount/tasks" > /dev/null 2>&1; then
+ 		tst_res TFAIL "should have failed to get cgroupstat of tasks file"
+ 	fi
+ 
+-	umount cgroup/
++	umount -f "$cgroup_mount" 2>/dev/null || umount -l "$cgroup_mount" 2>/dev/null || true
+ 	check_kernel_bug
+ }
+ 
 -- 
 2.39.1
 
