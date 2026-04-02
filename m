@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D375D39418
-	for <ltp@archiver.kernel.org>; Thu,  2 Apr 2026 12:18:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81EFFD3941A
+	for <ltp@archiver.kernel.org>; Thu,  2 Apr 2026 12:18:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7F7673E0E6E
-	for <ltp@archiver.kernel.org>; Thu,  2 Apr 2026 14:18:28 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 401423E1E7F
+	for <ltp@archiver.kernel.org>; Thu,  2 Apr 2026 14:18:46 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 11B783E2F3D
- for <ltp@lists.linux.it>; Thu,  2 Apr 2026 14:14:25 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 74E263E2F48
+ for <ltp@lists.linux.it>; Thu,  2 Apr 2026 14:14:29 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 891E91A01123
- for <ltp@lists.linux.it>; Thu,  2 Apr 2026 14:14:24 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1352D1A002EF
+ for <ltp@lists.linux.it>; Thu,  2 Apr 2026 14:14:28 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4AAA25BDB1
+ by smtp-out2.suse.de (Postfix) with ESMTPS id ACAB55BDBC
  for <ltp@lists.linux.it>; Thu,  2 Apr 2026 12:14:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1775132057; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=JW2fKFhnR2hJcnyPHR7aV1HhaQWC9+57y6OGn6CcFso=;
- b=O3liel5MEQp0gVloL9Z8MJNKnM0qon/ldCCZRNBOVlvZyoWfABaa7eSf9fIoW2CxukUqjZ
- LAXBWZs8+rYPwFKls8Fvzc37EDo4cZ8xJGnnKOQBZaXpU4JLOGxVVJGtkSW+SGq+34sBX1
- uF0TxuYPRdPf/Hwd2rtyqZ9GRz3ehGA=
+ bh=ag+sGURf5Nj4OOCxSPIGR/iPHHIEQ2JHgK6WEmq8+y0=;
+ b=Zp8wjD49xNcgfHkKPXqSfemfapGklEsv/HPMfBzZtuIfsoAyM/Vn7zWHL8TDSGbsj/nbLl
+ slL1SQfrOotVPJAXKWOb5nE3OcX8Hho3ThZj4Z+utSQm+piECV7h40mDOE65EmoivCW+1Z
+ 7uaf6gexm3KMWWgf2DvZEy8BXdAAcNk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1775132057;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=JW2fKFhnR2hJcnyPHR7aV1HhaQWC9+57y6OGn6CcFso=;
- b=fKgIrBRMp9cze1S8tRrNIacPiojNT9hWqU8F25ebjX8Ziko+AHEVNVPxrUjWNuM5SPIv5B
- q5jvbnzaRkDHlFBQ==
+ bh=ag+sGURf5Nj4OOCxSPIGR/iPHHIEQ2JHgK6WEmq8+y0=;
+ b=H1yDRCGfxD3wg82VWLfhgU0WspcsjVtXSqTAdjf1k6u55lokknAq8VfpJ8p3H0jI2wI/1Y
+ qn8D54/ePmCHVNBw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
@@ -54,33 +54,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=JW2fKFhnR2hJcnyPHR7aV1HhaQWC9+57y6OGn6CcFso=;
- b=O3liel5MEQp0gVloL9Z8MJNKnM0qon/ldCCZRNBOVlvZyoWfABaa7eSf9fIoW2CxukUqjZ
- LAXBWZs8+rYPwFKls8Fvzc37EDo4cZ8xJGnnKOQBZaXpU4JLOGxVVJGtkSW+SGq+34sBX1
- uF0TxuYPRdPf/Hwd2rtyqZ9GRz3ehGA=
+ bh=ag+sGURf5Nj4OOCxSPIGR/iPHHIEQ2JHgK6WEmq8+y0=;
+ b=Zp8wjD49xNcgfHkKPXqSfemfapGklEsv/HPMfBzZtuIfsoAyM/Vn7zWHL8TDSGbsj/nbLl
+ slL1SQfrOotVPJAXKWOb5nE3OcX8Hho3ThZj4Z+utSQm+piECV7h40mDOE65EmoivCW+1Z
+ 7uaf6gexm3KMWWgf2DvZEy8BXdAAcNk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1775132057;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=JW2fKFhnR2hJcnyPHR7aV1HhaQWC9+57y6OGn6CcFso=;
- b=fKgIrBRMp9cze1S8tRrNIacPiojNT9hWqU8F25ebjX8Ziko+AHEVNVPxrUjWNuM5SPIv5B
- q5jvbnzaRkDHlFBQ==
+ bh=ag+sGURf5Nj4OOCxSPIGR/iPHHIEQ2JHgK6WEmq8+y0=;
+ b=H1yDRCGfxD3wg82VWLfhgU0WspcsjVtXSqTAdjf1k6u55lokknAq8VfpJ8p3H0jI2wI/1Y
+ qn8D54/ePmCHVNBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 325A54A0B0
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9E6944A0B0
  for <ltp@lists.linux.it>; Thu,  2 Apr 2026 12:14:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ddgqC5ldzmnbDgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ginCJZldzmndDgAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
  for <ltp@lists.linux.it>; Thu, 02 Apr 2026 12:14:17 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu,  2 Apr 2026 14:13:52 +0200
-Message-ID: <20260402121356.31266-14-chrubis@suse.cz>
+Date: Thu,  2 Apr 2026 14:13:53 +0200
+Message-ID: <20260402121356.31266-15-chrubis@suse.cz>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260402121356.31266-1-chrubis@suse.cz>
 References: <20260402121356.31266-1-chrubis@suse.cz>
@@ -101,7 +101,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  RCVD_TLS_ALL(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 13/17] tests: can: Switch from needs_drivers to
+Subject: [LTP] [PATCH 14/17] tests: fsetxattr: Switch from needs_drivers to
  needs_kconfigs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -121,61 +121,23 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/network/can/cve/can_bcm01.c                 | 6 +++---
- testcases/network/can/filter-tests/can_filter.c       | 6 +++---
- testcases/network/can/filter-tests/can_rcv_own_msgs.c | 6 +++---
- 3 files changed, 9 insertions(+), 9 deletions(-)
+ testcases/kernel/syscalls/fsetxattr/fsetxattr02.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/network/can/cve/can_bcm01.c b/testcases/network/can/cve/can_bcm01.c
-index 57ec4989f..3b66037e7 100644
---- a/testcases/network/can/cve/can_bcm01.c
-+++ b/testcases/network/can/cve/can_bcm01.c
-@@ -140,9 +140,9 @@ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+index 42dfc9d4f..2a48b7da7 100644
+--- a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
++++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+@@ -265,8 +265,8 @@ static struct tst_test test = {
+ 	.needs_devfs = 1,
+ 	.mntpoint = MNTPOINT,
  	.needs_root = 1,
- 	.skip_in_compat = 1,
- 	.min_runtime = 30,
 -	.needs_drivers = (const char *const[]) {
--		"vcan",
--		"can-bcm",
+-		"brd",
 +	.needs_kconfigs = (const char *const[]) {
-+		"CONFIG_CAN_VCAN",
-+		"CONFIG_CAN_BCM",
- 		NULL
++		"CONFIG_BLK_DEV_RAM",
+ 		NULL,
  	},
- 	.tags = (const struct tst_tag[]) {
-diff --git a/testcases/network/can/filter-tests/can_filter.c b/testcases/network/can/filter-tests/can_filter.c
-index 1ea8ea18f..8b4f2fc05 100644
---- a/testcases/network/can/filter-tests/can_filter.c
-+++ b/testcases/network/can/filter-tests/can_filter.c
-@@ -183,9 +183,9 @@ static struct tst_test test = {
- 		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
- 		{}
- 	},
--	.needs_drivers = (const char *const[]) {
--		"vcan",
--		"can-raw",
-+	.needs_kconfigs = (const char *const[]) {
-+		"CONFIG_CAN_VCAN",
-+		"CONFIG_CAN_RAW",
- 		NULL
- 	}
- };
-diff --git a/testcases/network/can/filter-tests/can_rcv_own_msgs.c b/testcases/network/can/filter-tests/can_rcv_own_msgs.c
-index ba40666dc..2c0acecf9 100644
---- a/testcases/network/can/filter-tests/can_rcv_own_msgs.c
-+++ b/testcases/network/can/filter-tests/can_rcv_own_msgs.c
-@@ -145,9 +145,9 @@ static struct tst_test test = {
- 		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
- 		{}
- 	},
--	.needs_drivers = (const char *const[]) {
--		"vcan",
--		"can-raw",
-+	.needs_kconfigs = (const char *const[]) {
-+		"CONFIG_CAN_VCAN",
-+		"CONFIG_CAN_RAW",
- 		NULL
- 	}
  };
 -- 
 2.52.0
