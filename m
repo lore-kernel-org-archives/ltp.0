@@ -4,100 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0876FD73093
-	for <ltp@archiver.kernel.org>; Fri,  3 Apr 2026 03:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1775187560; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=nZdFtNre+ceMWUP/yNdy2CJWQ3uWQQD6Y4GHOIkArAQ=;
- b=h9gOCaS1a7EcSgJPb3yXcZo3lNSKe4KsybNJdL2QF8lFacJ4RRE4a/Uh4yg/E2FFedzqf
- i+uduCrGV0Cvt0I6I6bQf6o769lwVW91O9NaXc0wSRAroIMFENAGgNYxzqN69FaINyZWES2
- moeoCBY5Mb7kyN7/w2D1YoehTtBHCjU=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB73CE8537A
+	for <ltp@archiver.kernel.org>; Fri,  3 Apr 2026 16:36:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AAD673CA01A
-	for <ltp@archiver.kernel.org>; Fri,  3 Apr 2026 05:39:20 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 462B33E4E53
+	for <ltp@archiver.kernel.org>; Fri,  3 Apr 2026 18:36:09 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B949B3E2389
- for <ltp@lists.linux.it>; Fri,  3 Apr 2026 05:38:53 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 775453E133C
+ for <ltp@lists.linux.it>; Fri,  3 Apr 2026 18:35:51 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 708EE601B25
- for <ltp@lists.linux.it>; Fri,  3 Apr 2026 05:38:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1775187531;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hCEw7O0JuQWN2+kSAxV2MWknOZPENZ6keNa4Qp2Drfk=;
- b=Vc2GMf3hda6R0phVEJSg1IXvKiPS8DUbuwRDNJeN8DOzCpycns+e92EyofNviaKmXYE4DD
- OsoTBBeXwHht67jpYCEKx8NuwYtXIccHh+Rxu8aTSZg1m0Lw8i7Al37KlLxUY/1GrZCNJV
- pjtvApH5n7rQd46o1Kpk21TLzCCmMQo=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-384-ZvFKNntNO8yDP7fR6UnZsQ-1; Thu, 02 Apr 2026 23:38:50 -0400
-X-MC-Unique: ZvFKNntNO8yDP7fR6UnZsQ-1
-X-Mimecast-MFC-AGG-ID: ZvFKNntNO8yDP7fR6UnZsQ_1775187529
-Received: by mail-pj1-f72.google.com with SMTP id
- 98e67ed59e1d1-358f058973fso1599514a91.1
- for <ltp@lists.linux.it>; Thu, 02 Apr 2026 20:38:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1775187529; x=1775792329;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=hCEw7O0JuQWN2+kSAxV2MWknOZPENZ6keNa4Qp2Drfk=;
- b=PrXa+dvlgwNOhm6g1uNUFZc+Qa/tw0DcPAOx21PwWFKMKvuYfOoV5AylBInl5S7oRC
- l7iOnPeRhRsLLh+mQLaIaKfby8DkHxziIWsZM6sLn9ThjUjhP6S2bdVROTtFufo9O9iM
- TXWvV7lHSAip+87322KNrUlI2Dlk3qrX5LBi46TDpi2Z9CQc7e6cnUp4YxbYckNvD+3p
- Pun4WJY7/mgHORx/6Zk0G7JIVN5yUnPtRtYlNAicxUcsMLOftMje15ryyjBpLmmk4STV
- jtkwzBIEoKnRXdKpqNSKgc4DCpieZ4nXy4fYZjfuUfcw8f34wzyrXSYx0/XLU3lrH2+B
- I8jA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVS77eXHDBghcr/aSmTEH/FohaENx+JNxKtM7cdpS+Wu3bKWATPCY2oZmD+j9rFrUNlH60=@lists.linux.it
-X-Gm-Message-State: AOJu0YyYVYJwXZIYsLpRCHQFfP09RkxoCQJ5NHg/zyN9EVN2+/89zZIj
- ISQPel2yq+bVcfVe7bKXH+b/nzRmS1QczdY0v0ZKJySvL5Pd/3EDJqWytBk0tjzbiI2ox8LdduP
- YXWe7Xtar7tScUrSeGf58JeJb1IqoIqJimVR5rJD06I3V5p+mnf9I
-X-Gm-Gg: AeBDiet2hv/R7tqX+7sXnhekTVS3ene+YbQCtV7b4+nMMDTR+mPPx18B1TM2IYn8Lmk
- KypfFYxZXHyfvX/qF9q2dasZ+Pu8BcYsJ5hxEWc/tSL45rsU1HRF29VsNt0zq9V1VsfQ6YsRbgn
- irjK933NcOiGJ18BiImdjd660WElvx9l0/5K1X7PBLrksYIyXb9k+qolLeuBEApkIZyfAGvZAUf
- FoFq977GhiOgqa8E7WRTyKx+sgQWoSm6Da1GBqMAr87VlWmjEKiEgDJfrqY37AhcnbScuy0hBsF
- ++VtZGj4QH/ANJ1t/UR783SA690nz01x0KHE0XMvRMCqWEZTg5m1Vpb+gJTj9ajkJA7Qz+m9by4
- KAu28J9YmzL173xZb2Q==
-X-Received: by 2002:a17:90b:52c7:b0:359:8dfd:64c8 with SMTP id
- 98e67ed59e1d1-35de69702cdmr1044726a91.24.1775187528859; 
- Thu, 02 Apr 2026 20:38:48 -0700 (PDT)
-X-Received: by 2002:a17:90b:52c7:b0:359:8dfd:64c8 with SMTP id
- 98e67ed59e1d1-35de69702cdmr1044706a91.24.1775187528392; 
- Thu, 02 Apr 2026 20:38:48 -0700 (PDT)
-Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-35de677e2dbsm327125a91.4.2026.04.02.20.38.47
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Apr 2026 20:38:47 -0700 (PDT)
-Date: Fri, 3 Apr 2026 11:38:45 +0800
-To: Jan Polensky <japo@linux.ibm.com>
-Message-ID: <ac82RcLOw_VAN0oy@redhat.com>
-References: <20260331200026.244979-1-japo@linux.ibm.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8E0191401202
+ for <ltp@lists.linux.it>; Fri,  3 Apr 2026 18:35:49 +0200 (CEST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 6339o1K11535595; Fri, 3 Apr 2026 16:35:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:in-reply-to:message-id
+ :mime-version:references:subject:to; s=pp1; bh=DKdtlhjTrp+zQioLv
+ RYlmfcV7FXjlzOp87WUxfPE+PQ=; b=UKsNOxFa8RZUdNI56zGSGy/SbMO+LvS+0
+ Iu3Fc3gH3Z6rRZeVJfzpwgCGaPaUJQVzGHTZyE+mnk5PxaK6+56YFIJ2TLZflD9K
+ Wgq1iIhAfcuFpY68DerFqsx62ClXpZDxQEnCHXfmguGzKMkSJgogQOP353lhqLXV
+ CRJs4sf26xvG0YMUDPIUasIbg65d3mV/j9IBxYG77eOLZoKAs/LKB6Q++DFEuD1m
+ ekb6Fg6EhLTUVxUeYQvmqClNe1Oto7GoIcRCuP+UVIT7geLvAmyf0Vhh1dxd23pN
+ xoCAQnyTlGMVRTC8h/ubfFP0UQ17XzgNbAL9DiVxJaxyYE/oFp6zw==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4d66q3hfma-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 03 Apr 2026 16:35:47 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 633Ch173021722;
+ Fri, 3 Apr 2026 16:35:46 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4d6sasxw77-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 03 Apr 2026 16:35:46 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com
+ [10.39.53.228])
+ by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 633GZic47209936
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 3 Apr 2026 16:35:44 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id B11EA58055;
+ Fri,  3 Apr 2026 16:35:44 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 4C51B5804B;
+ Fri,  3 Apr 2026 16:35:44 +0000 (GMT)
+Received: from ktes.isst.tadn.ibm.com (unknown [9.5.15.16])
+ by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+ Fri,  3 Apr 2026 16:35:44 +0000 (GMT)
+From: Soma Das <somadas1@linux.ibm.com>
+To: liwang@redhat.com
+Date: Fri,  3 Apr 2026 16:59:47 +0000
+Message-Id: <20260403165947.9094-1-somadas1@linux.ibm.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <ac8cNRNYBVHWi0o9@redhat.com>
+References: <ac8cNRNYBVHWi0o9@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20260331200026.244979-1-japo@linux.ibm.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: iUagbXvIh_5auJ-IfJl2eI66OOxpTJVghlPWo7W1Gyc_1775187529
-X-Mimecast-Originator: redhat.com
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tEuKYzt5oyts2vdjWFJ5KHyIwx9kBwS3
+X-Authority-Analysis: v=2.4 cv=frzRpV4f c=1 sm=1 tr=0 ts=69cfec63 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=U7nrCbtTmkRpXpFmAIza:22 a=ArsMc-J5l3kcVpZNYO4A:9
+X-Proofpoint-ORIG-GUID: tEuKYzt5oyts2vdjWFJ5KHyIwx9kBwS3
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDAzMDE0NSBTYWx0ZWRfX5CZqhfm8pRzk
+ bcrKzkaKqixeF7mxS44L/Ov25ji0g5kaNHPwYYH+Z8NjP6R9R4PJEjTVYtjFjjLJM1USzyECm1c
+ 2z3p+CGO/WpTTcYHoDjI/GvCEtefm5bcAHsW0VRAObEzJetWhkUBtOjVKv2YePzSKTSfHiLZtYO
+ rAnj+BsAwigtOGp86/17R9VTClBPf+hcRrIpzNf686KepFb/w9a2Pz2myg8FSstj0RJJfyctM+k
+ BdKiYBv7PzPte+q8qVWJ+2xsfsXlO/znsJ20gmgafYWGQm39tz6mGf6CBdmNC8hzxhgGAiKXfKK
+ 2Q6izcmmW1zZxo9FvouTMInv+l7akEov3/1L3joUM/HlzmRWD3i0Tfdl/jZD/rSCGEQjrWEkK5G
+ veaEtUlA0DVquTCQGaHEIePPG/QcCF7SLTB2Sw0jG50T8NoFGnQU1VlTUcOpeIO/cjUcg3gL58J
+ yFyF8FJeKyrB9dn0WzQ==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-04-03_05,2026-04-03_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 spamscore=0 priorityscore=1501 malwarescore=0 clxscore=1011
+ lowpriorityscore=0 bulkscore=0 adultscore=0 suspectscore=0 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2604030145
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/1] editorconfig: add consistent formatting
- rules for LTP
+Subject: Re: [LTP] [PATCH] zram: skip exfat on systems with large page size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,32 +106,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Li Wang via ltp <ltp@lists.linux.it>
-Reply-To: Li Wang <liwang@redhat.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: somadas1@linux.ibm.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Mar 31, 2026 at 10:00:26PM +0200, Jan Polensky wrote:
-> Introduce .editorconfig to keep indentation and whitespace consistent across
-> editors, preventing accidental reformatting and noisy diffs.
-> 
-> Signed-off-by: Jan Polensky <japo@linux.ibm.com>
+On Fri, Apr 03, 2026 at 09:47:33AM +0800, Li Wang wrote:
+> Or, can we specify the sector size with 'mkfs.$fs -c $page_size'
+> when detecting a large pagesize system?
 
-Woo! I replied to the wrong post, but I didn't say anything wrong.
-This patch is also very good.
+Thanks for the review.
 
-I would leave Petr or Andrea to merge it.
-Anyway:
+Using mkfs.exfat -c $page_size would technically work, but I avoided
+it because:
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+1. zram01 tests zram behaviour, not filesystem configuration -- using
+   a non-default cluster size feels out of scope.
+2. The cluster size must be valid for the disk size (only 25MB here),
+   so large cluster sizes could hit additional constraints.
 
--- 
-Regards,
-Li Wang
+Skipping with TCONF honestly reflects that default exfat tooling does
+not support this hardware configuration, which is useful signal.
 
+Happy to send a v2 with the -c approach if you prefer.
+
+Thanks,
+Soma
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
