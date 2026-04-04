@@ -4,90 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 443D7E88D72
-	for <ltp@archiver.kernel.org>; Sat,  4 Apr 2026 01:14:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73A3DE88D73
+	for <ltp@archiver.kernel.org>; Sat,  4 Apr 2026 01:15:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1775265250; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1775265306; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=qwhKRMtW8z8QYGQljvGMfU+cXfLWTA2UQa/nLEq+Tto=;
- b=eADPNFg761cXPxlUL4iias//zC3ms2nO6WsA9IotH+EhX9oKCCeCQi3YOHz8ORvGNesT0
- yj9X1wGHGhWNliEbcWDOSgwG/DqadUK9f7ZxOtJI70+OD4Z/DWjfUls2eYZeqt9ipD6mxV4
- x1FHE00dUhXPUGRqKrEzdd6xuqLh2Bg=
+ bh=EyLLtaUNThZCuJ1ZYQrX4p3E9Yf3ByLQcnd9kbPA2Xc=;
+ b=IMf37Ja5gkzUDL+2kLX6Fx0nGfOQjmJF1urQQeX3lW7Vk8r1EWl68C8Mpy5Toq4uk8iYN
+ 8xbNF5/H9KU0Tpes8S3GIJMNuLLcVR/F1tSgP+Vy7z1bLyegBUwGDXUnt+4PoWg+26qMtTd
+ frILgXyhZeDCq8dsEtPg0802rtpspmc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 12F7C3E4E5F
-	for <ltp@archiver.kernel.org>; Sat,  4 Apr 2026 03:14:10 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id ECC5E3E4E80
+	for <ltp@archiver.kernel.org>; Sat,  4 Apr 2026 03:15:05 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E1F123E4E54
- for <ltp@lists.linux.it>; Sat,  4 Apr 2026 03:13:45 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 5436B3CF512
+ for <ltp@lists.linux.it>; Sat,  4 Apr 2026 03:14:41 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 141841A00888
- for <ltp@lists.linux.it>; Sat,  4 Apr 2026 03:13:45 +0200 (CEST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-488971db0fdso12761535e9.0
- for <ltp@lists.linux.it>; Fri, 03 Apr 2026 18:13:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1775265224; x=1775870024; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=qCykQF2kCC5zwqjvHfl6Ie9BAloloa6IQFULWPdkKCk=;
- b=Vkzz8jeOa/QXj6dCesklECpJVEUYcTM/J8PaB+bxtF4c8oUyUme/wPm3ScoqPn2sFf
- lprLX2ptjF4rZNudk1NvsjGsHEaxXzIenEukjeMpopFBWYeIWAomR8S/tzp0jtFYWjN/
- Ham7pc9bj33gHqo55H6Cd2pZKEV1oTWLjZLu9tnmTlfOqLl/UELb1zFwOt8vlGrGAQUX
- PHQdBUV2M3srBFMw43XK4ESMkG7CElnQKXh097AGQWFpcH0+acIHyyUyPNYWWYU8+77d
- a+xrlxph0ZhxdExgwhRcbmNLckuREgUuyfCpsq0mgPEuRdIJbKHNGj3+JXl9lSdNrDi/
- wMrw==
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BE38F1000457
+ for <ltp@lists.linux.it>; Sat,  4 Apr 2026 03:14:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1775265278;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kjM8Gp357dnP1O/47c2v1FnZ74DuYX9OY8tv40NLR7E=;
+ b=KwlVsCWfp5E3f6KW8M33ySbf7D5eYAOJ+uK5DEbQBeJSVQZMKbgG03TScgFjCAhiwt2nBJ
+ EswPHeJZVCdyVDdwenK7OdLJEWelRYNB48f1XAYdhx86ne17tRnki+VQy3N5/qxRXdb22K
+ zp1KsofbWqxWNDu5ZECITHgOpXYf9kA=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-631-Iziw3etXNb2rWkcF6r8dTg-1; Fri, 03 Apr 2026 21:14:37 -0400
+X-MC-Unique: Iziw3etXNb2rWkcF6r8dTg-1
+X-Mimecast-MFC-AGG-ID: Iziw3etXNb2rWkcF6r8dTg_1775265276
+Received: by mail-pl1-f198.google.com with SMTP id
+ d9443c01a7336-2b23c909256so34395815ad.0
+ for <ltp@lists.linux.it>; Fri, 03 Apr 2026 18:14:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1775265224; x=1775870024;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=qCykQF2kCC5zwqjvHfl6Ie9BAloloa6IQFULWPdkKCk=;
- b=VGqwt6FJa3srrdcFUR9HO1r0pq733fOvaHxK/VsZJpA+6EaPbAjmUjuyHSQsfzjCwL
- hVIBTSwQcTfjH73nrMLMn0FXaUHbf38k7joHrNRWpaM1JJaHc1wbMGJcGqSNsqiO8plR
- IZUx+H+zxn0CEbQK4kWV8gFDcn/P6T3xXaqFfE0uA6zbrUnFpcZ2oD75qrML+Siq0SUf
- Qqo1EpiiJPQWQwZ9Ri32DXwslNLK7dMSMmNxTUT00UBDCxb0kk2WW634OmzKLT9Y/YE3
- 0yN35PWERh1ztURjuZhzt5Wpo3kMcsbkXF2XPMAZ+R8BdbhkIRgxYTLYAt56W1sa7HBD
- j0mw==
-X-Gm-Message-State: AOJu0YxnZlvrcPPXVupvHGLVJ6pMLGcNFwR+lWGMgSI/K/yK+reEkU3r
- oBYSueW10nGONpTDt7mjGxJABKtw5QBCw56q2ZOvz1zy9diYRnH5cN7mRgfbXc7i7MxjVPxCC2I
- fZGU=
-X-Gm-Gg: AeBDieuGhGxJzpd6CEZfpWopPeqiwanGeCeSWhXKwPr1u5tjlBRjaDQF89agkEHzV/Q
- WulFyOhkYkVW9M7nGtE2nn+USSMX70/rNN1kH2pSyZhPkgOt1RXps+uQGmbN1BdisnITsEASV1E
- gK6ugzEwKvPyTH2G6fzbPjp45wKKqYElmwCeUmhjQLzs6av9FCrmiNeqWPIOcWVZV4xywaZcEoZ
- uzzajpo9eIwB3puAMvz/PKkon90SClyH+qIAf34VTcwlJQ4TML4kMY+P17uvRaTljfWlaTWWoIg
- uBbEiLk1tFnUsvPZunaSlODM+C5p/CdB1z+GRBBwmRPYrs3QUvPCudnaaB8kV6AwZctHPrQxEM0
- xsRDNKdyLyzmEjwCJzDG7GhGYcbKSAwj78Wu1xs1cH/iNwx/kO8Soe4nD5l+xmXLWm9KwheL0+H
- fLV0Tc9/DlZM0=
-X-Received: by 2002:a05:600c:8b34:b0:487:1fb4:7e1 with SMTP id
- 5b1f17b1804b1-488997d530fmr75228035e9.22.1775265224149; 
- Fri, 03 Apr 2026 18:13:44 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- 5b1f17b1804b1-48899e491afsm30800315e9.17.2026.04.03.18.13.43
+ d=1e100.net; s=20251104; t=1775265276; x=1775870076;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=kjM8Gp357dnP1O/47c2v1FnZ74DuYX9OY8tv40NLR7E=;
+ b=lu+O/JwFNWy92PvhFr4QfkvDy3xKRRGiemzCCn80hPWVeIdDPxhQsubfq6CrCJEyl4
+ YY7XR30pjz530t7cUk4t4K33H07Syx6Hb0LWLMB41Nlq0PYokFH5opV4E6NvEGTfbPoK
+ IBrbx0aTMFx5gl2WOkMC5FvBhTysI1GWSms6xAxZK0QOfn20iehCtXITcXaXkNaSVAM6
+ gBcycFyJAhlibkM2WF/Twnl3xsRa2eWV/tFf3sAiqsYAIC4wruyffQiYNjvo+Mu+g62o
+ mMMitv3u9xZBp/7XroQEClf7w4GfIY6s03YOq7iuTBwSqXPysirckaW5xyjs95MNJqmn
+ Anbg==
+X-Gm-Message-State: AOJu0YygEyuSBT4wx2t9mxPzCulBj0ZXThvZSBwh8Oy3FGaSnU3dlKx+
+ N/DVfQybnkge1kmfBRtQp/H1SoVS1wqgoshbe9a0S5zqE8zx2+tMDSTw8Jlx3WlzZAXg0/dXWTB
+ q70R1Cp57uDOYTAS1ljLEWeUaN6e5FhkAMga4azXuq+XVOrwUFfN1
+X-Gm-Gg: AeBDiesLdYnD7h5pDHNPzMAXRmw/PodmdyoJvIzLJzIldvWTvWki7ZEGVRfTaOCARtK
+ cu7tcVZiG3GyuQl+DP/cc7uVCI3/lfvEdnEZnGrVvfkvmelwG+JGnAh34drGkdDh6GnBTNd1CdU
+ uP0k2vS4UrYRA++4uKzYS6bBUMBJJ9LJFx0DDIsqYIWzX3Vwz4lfLvftoJ6+0SV9UXNdO3QCpRv
+ RR2R60e6/m4lRXlliIy1JxtA373YrByLEh6lP2L5e+R51lVmBfa5YvTfWjOI0OOv9RWY3sDu8IM
+ njQbsFMcXtr2VeW9R9JJBvqKjdpB8NtBAZmPBvh+Id7ZIcFZFAPovAV1vbJqkYe+bhMQ26N7O7e
+ w4sfgBTsFKmhjaUBIIA==
+X-Received: by 2002:a17:903:2f08:b0:2b0:67fa:dbf8 with SMTP id
+ d9443c01a7336-2b2817e97b9mr52018235ad.41.1775265276086; 
+ Fri, 03 Apr 2026 18:14:36 -0700 (PDT)
+X-Received: by 2002:a17:903:2f08:b0:2b0:67fa:dbf8 with SMTP id
+ d9443c01a7336-2b2817e97b9mr52018055ad.41.1775265275597; 
+ Fri, 03 Apr 2026 18:14:35 -0700 (PDT)
+Received: from redhat.com ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-2b2747530e4sm71177695ad.18.2026.04.03.18.14.34
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 03 Apr 2026 18:13:43 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Sat,  4 Apr 2026 01:13:27 +0000
-Message-ID: <20260404011340.13288-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260317114635.944-1-wegao@suse.com>
-References: <20260317114635.944-1-wegao@suse.com>
+ Fri, 03 Apr 2026 18:14:34 -0700 (PDT)
+Date: Sat, 4 Apr 2026 09:14:32 +0800
+To: Soma Das <somadas1@linux.ibm.com>
+Message-ID: <adBl-CJwsLk8i43c@redhat.com>
+References: <ac8cNRNYBVHWi0o9@redhat.com>
+ <20260403165947.9094-1-somadas1@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+In-Reply-To: <20260403165947.9094-1-somadas1@linux.ibm.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: N9agXS3zGc-D6GWoPUb5ENuxlQ_2vNVnamcnIuLZSmk_1775265276
+X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7] io_submit04: Add test case for RWF_NOWAIT flag
+Subject: Re: [LTP] [PATCH] zram: skip exfat on systems with large page size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,220 +106,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+From: Li Wang via ltp <ltp@lists.linux.it>
+Reply-To: Li Wang <liwang@redhat.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fixes: #467
-Signed-off-by: Wei Gao <wegao@suse.com>
----
-v6->v7:
-- Fix 32bit issue, use TST_PTR_TO_UINT convert buf
-- Updated the comment header to use the :manpage:
-- Simplify logic in cleanup()
+Thanks for the explanation.
 
- configure.ac                                  |  1 +
- include/lapi/aio_abi.h                        | 44 +++++++++
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/io_submit/.gitignore      |  1 +
- .../kernel/syscalls/io_submit/io_submit04.c   | 99 +++++++++++++++++++
- 5 files changed, 146 insertions(+)
- create mode 100644 include/lapi/aio_abi.h
- create mode 100644 testcases/kernel/syscalls/io_submit/io_submit04.c
+I still think we should go with the -c approach rather than skipping.
+A couple of points:
 
-diff --git a/configure.ac b/configure.ac
-index e5d3ce063..812f17d8b 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -173,6 +173,7 @@ AC_CHECK_FUNCS_ONCE([ \
- ])
- AC_CHECK_FUNCS(mkdtemp,[],AC_MSG_ERROR(mkdtemp() not found!))
- 
-+AC_CHECK_MEMBERS([struct iocb.aio_rw_flags],,,[#include <linux/aio_abi.h>])
- AC_CHECK_MEMBERS([struct fanotify_event_info_fid.fsid.__val],,,[#include <sys/fanotify.h>])
- AC_CHECK_MEMBERS([struct perf_event_mmap_page.aux_head],,,[#include <linux/perf_event.h>])
- AC_CHECK_MEMBERS([struct sigaction.sa_sigaction],[],[],[#include <signal.h>])
-diff --git a/include/lapi/aio_abi.h b/include/lapi/aio_abi.h
-new file mode 100644
-index 000000000..ac78e5500
---- /dev/null
-+++ b/include/lapi/aio_abi.h
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 Wei Gao <wegao@suse.com>
-+ */
-+
-+#ifndef LAPI_AIO_ABI_H__
-+#define LAPI_AIO_ABI_H__
-+
-+#include <endian.h>
-+#include <linux/aio_abi.h>
-+
-+#ifndef RWF_NOWAIT
-+# define RWF_NOWAIT 0x00000008
-+#endif
-+
-+struct iocb_fallback {
-+	uint64_t aio_data;
-+#if __BYTE_ORDER == __LITTLE_ENDIAN
-+	uint32_t   aio_key;
-+	uint32_t aio_rw_flags;
-+#elif __BYTE_ORDER == __BIG_ENDIAN
-+	uint32_t aio_rw_flags;
-+	uint32_t   aio_key;
-+#else
-+#error edit for your odd byteorder.
-+#endif
-+	uint16_t   aio_lio_opcode;
-+	int16_t   aio_reqprio;
-+	uint32_t   aio_fildes;
-+	uint64_t   aio_buf;
-+	uint64_t   aio_nbytes;
-+	int64_t   aio_offset;
-+	uint64_t   aio_reserved2;
-+	uint32_t   aio_flags;
-+	uint32_t   aio_resfd;
-+};
-+
-+#ifndef HAVE_STRUCT_IOCB_AIO_RW_FLAGS
-+typedef struct iocb_fallback iocb;
-+#else
-+typedef struct iocb iocb;
-+#endif
-+
-+#endif /* LAPI_AIO_ABI_H__ */
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 6ba0227a8..d72fceb5e 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -699,6 +699,7 @@ io_setup02 io_setup02
- io_submit01 io_submit01
- io_submit02 io_submit02
- io_submit03 io_submit03
-+io_submit04 io_submit04
- 
- keyctl01 keyctl01
- keyctl02 keyctl02
-diff --git a/testcases/kernel/syscalls/io_submit/.gitignore b/testcases/kernel/syscalls/io_submit/.gitignore
-index 60b07970a..abe962e1c 100644
---- a/testcases/kernel/syscalls/io_submit/.gitignore
-+++ b/testcases/kernel/syscalls/io_submit/.gitignore
-@@ -1,3 +1,4 @@
- /io_submit01
- /io_submit02
- /io_submit03
-+/io_submit04
-diff --git a/testcases/kernel/syscalls/io_submit/io_submit04.c b/testcases/kernel/syscalls/io_submit/io_submit04.c
-new file mode 100644
-index 000000000..d68bde909
---- /dev/null
-+++ b/testcases/kernel/syscalls/io_submit/io_submit04.c
-@@ -0,0 +1,99 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * Test RWF_NOWAIT support in io_submit(), verifying that an
-+ * asynchronous read operation on a blocking resource (empty pipe)
-+ * will cause -EAGAIN. This is done by checking that io_getevents()
-+ * :manpage:`io_getevents(2)` syscall returns immediately and
-+ * io_event.res is equal to -EAGAIN.
-+ */
-+
-+#include "config.h"
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+#include "lapi/aio_abi.h"
-+
-+#define BUF_SIZE 100
-+
-+static int fd[2] = {-1, -1};
-+static aio_context_t ctx;
-+static char *buf;
-+static iocb *cb;
-+static iocb **iocbs;
-+
-+static void setup(void)
-+{
-+	if (tst_syscall(__NR_io_setup, 1, &ctx))
-+		tst_brk(TBROK | TERRNO, "io_setup failed");
-+
-+	SAFE_PIPE(fd);
-+
-+	cb->aio_fildes = fd[0];
-+	cb->aio_lio_opcode = IOCB_CMD_PREAD;
-+	cb->aio_buf = TST_PTR_TO_UINT(buf);
-+	cb->aio_offset = 0;
-+	cb->aio_nbytes = BUF_SIZE;
-+	cb->aio_rw_flags = RWF_NOWAIT;
-+
-+	iocbs[0] = cb;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd[0] != -1)
-+		SAFE_CLOSE(fd[0]);
-+
-+	if (fd[1] != -1)
-+		SAFE_CLOSE(fd[1]);
-+
-+	if (ctx && tst_syscall(__NR_io_destroy, ctx))
-+		tst_brk(TBROK | TERRNO, "io_destroy() failed");
-+}
-+
-+static void run(void)
-+{
-+	struct io_event evbuf;
-+	struct timespec timeout = { .tv_sec = 1 };
-+	long nr = 1;
-+
-+	TEST(tst_syscall(__NR_io_submit, ctx, nr, iocbs));
-+
-+	if (TST_RET == -1 && TST_ERR == EOPNOTSUPP) {
-+		tst_brk(TCONF, "RWF_NOWAIT not supported by kernel");
-+	} else if (TST_RET != nr) {
-+		tst_brk(TBROK | TTERRNO, "io_submit() returns %ld, expected %ld",
-+				TST_RET, nr);
-+	}
-+
-+	TEST(tst_syscall(__NR_io_getevents, ctx, 1, 1, &evbuf, &timeout));
-+
-+	if (TST_RET != 1) {
-+		tst_res(TFAIL | TTERRNO, "io_getevents() failed to get 1 event");
-+		return;
-+	}
-+
-+	if (evbuf.res == -EAGAIN)
-+		tst_res(TPASS, "io_getevents() returned EAGAIN on read event");
-+	else
-+		tst_res(TFAIL, "io_getevents() returned with %s instead of EAGAIN",
-+			strerror(-evbuf.res));
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_AIO=y",
-+		NULL
-+	},
-+	.bufs = (struct tst_buffers []) {
-+		{&buf, .size = BUF_SIZE},
-+		{&cb, .size = sizeof(iocb)},
-+		{&iocbs, .size = sizeof(iocb *)},
-+		{},
-+	}
-+};
+On 1, I don't think this changes the scope of the test. zram01 already
+invokes mkfs.$fs as a means to exercise zram, adjusting a parameter so
+that mkfs actually succeeds is just making the test work, not turning
+it into a filesystem configuration test.
+
+On 2, 25MB with a 64KB cluster size gives roughly 390 clusters, which
+is well within exfat's limits. Could you point out a concrete constraint
+that would actually fail here? If there isn't one, I'd prefer not to
+use a hypothetical concern as justification for skipping.
+
+On the TCONF, reporting TCONF here would make it look like exfat on
+zram is fundamentally broken on 64K-page systems, when in reality it
+works with a one-line change. That is a false negative we should
+avoid in a test suite.
+
+Please send a v2 with the -c approach.
+
+On Fri, Apr 03, 2026 at 04:59:47PM +0000, Soma Das wrote:
+> On Fri, Apr 03, 2026 at 09:47:33AM +0800, Li Wang wrote:
+> > Or, can we specify the sector size with 'mkfs.$fs -c $page_size'
+> > when detecting a large pagesize system?
+> 
+> Thanks for the review.
+> 
+> Using mkfs.exfat -c $page_size would technically work, but I avoided
+> it because:
+> 
+> 1. zram01 tests zram behaviour, not filesystem configuration -- using
+>    a non-default cluster size feels out of scope.
+> 2. The cluster size must be valid for the disk size (only 25MB here),
+>    so large cluster sizes could hit additional constraints.
+> 
+> Skipping with TCONF honestly reflects that default exfat tooling does
+> not support this hardware configuration, which is useful signal.
+> 
+> Happy to send a v2 with the -c approach if you prefer.
+> 
+> Thanks,
+> Soma
+> 
+
 -- 
-2.52.0
+Regards,
+Li Wang
 
 
 -- 
