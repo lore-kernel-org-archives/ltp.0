@@ -4,110 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83440FEEF33
-	for <ltp@archiver.kernel.org>; Tue,  7 Apr 2026 12:57:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2F37FEEF34
+	for <ltp@archiver.kernel.org>; Tue,  7 Apr 2026 13:24:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1AEB23E2E75
-	for <ltp@archiver.kernel.org>; Tue,  7 Apr 2026 14:57:30 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 4D4FE3E2E7B
+	for <ltp@archiver.kernel.org>; Tue,  7 Apr 2026 15:24:53 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3D9DB3E26B1
- for <ltp@lists.linux.it>; Tue,  7 Apr 2026 14:57:11 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id F19683C2150
+ for <ltp@lists.linux.it>; Tue,  7 Apr 2026 15:24:33 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 49514200748
- for <ltp@lists.linux.it>; Tue,  7 Apr 2026 14:57:10 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 243471A0065D
+ for <ltp@lists.linux.it>; Tue,  7 Apr 2026 15:24:32 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AEBBC5BD4F;
- Tue,  7 Apr 2026 12:57:08 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A6DDB4D2D5;
+ Tue,  7 Apr 2026 13:24:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1775566628;
+ t=1775568272;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=u17YuDGBod3hbw81spFZdUjHkrUQG58ZqtYSVaGfnqQ=;
- b=RnRllMJbVpjVWf2zvulxNshlWhSqBChdCWq4rCp/qUgzIfwUS/SJjHijJgrBTplvq/Wddw
- FdtjQGueDMF2aBSJ7TKW84uK41tb13YnksxnRKqXRZKILfAT3fPm21jCALRqBUvxreOpyX
- pRtz9vxyBQFjtYori28z8d7yr9ozIpA=
+ bh=sqPwf+sdRUS1BWQR3nmfljFdlROcvK34Nt72M/HdBk0=;
+ b=AQop48uvC1SEMVPtD5xGUZuwvcvHygsDpfci//4L/wEXXKqX5O/Wmxld04nRHwgYVartyJ
+ iHOzmY6IONvcPxfMGWaRxhM5xz4K4KW1+2lr/B1JPjtryqd430DilmLW2dd2hhFj4Eiw72
+ sfpJ6yaTKovz2uWkunN2jEuAhoyags0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1775566628;
+ s=susede2_ed25519; t=1775568272;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=u17YuDGBod3hbw81spFZdUjHkrUQG58ZqtYSVaGfnqQ=;
- b=DdRCUWHvjKBtjeDyS85M0yvcticJjfnJCc8AUrX9ZG8IxBGzjvMFt2YZv+DPqJG0LrvMQr
- Ey0y9CqgsbT+gZDQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=RnRllMJb;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=DdRCUWHv
+ bh=sqPwf+sdRUS1BWQR3nmfljFdlROcvK34Nt72M/HdBk0=;
+ b=C68PrTC0e7wHOZU/MvDtKBdVQ8UcF5k0/30GWH4nxPYZt8iirO2LPLSU6Xcwkpcv4NRwx3
+ 8Iq/mStout6Aa/Dw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=kNPysONF;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=VVT9jt8f
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1775566628;
+ t=1775568271;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=u17YuDGBod3hbw81spFZdUjHkrUQG58ZqtYSVaGfnqQ=;
- b=RnRllMJbVpjVWf2zvulxNshlWhSqBChdCWq4rCp/qUgzIfwUS/SJjHijJgrBTplvq/Wddw
- FdtjQGueDMF2aBSJ7TKW84uK41tb13YnksxnRKqXRZKILfAT3fPm21jCALRqBUvxreOpyX
- pRtz9vxyBQFjtYori28z8d7yr9ozIpA=
+ bh=sqPwf+sdRUS1BWQR3nmfljFdlROcvK34Nt72M/HdBk0=;
+ b=kNPysONFXiQeaP2uS9TnLcjFs4mSdWErNp2lE9NiwLJ6l+lJwNCYB/XSYu/s4vGkrGZ0zj
+ wMskyWiS/zaTtggvR6a6z43tQP+B5UklaWRZaIrcv9PBr4+PFoHRBeGOWdWf0BMVPG/YXi
+ 1nt8Y5419W+c58vdNr6TmCsLpoP95xI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1775566628;
+ s=susede2_ed25519; t=1775568271;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=u17YuDGBod3hbw81spFZdUjHkrUQG58ZqtYSVaGfnqQ=;
- b=DdRCUWHvjKBtjeDyS85M0yvcticJjfnJCc8AUrX9ZG8IxBGzjvMFt2YZv+DPqJG0LrvMQr
- Ey0y9CqgsbT+gZDQ==
+ bh=sqPwf+sdRUS1BWQR3nmfljFdlROcvK34Nt72M/HdBk0=;
+ b=VVT9jt8f4yPhO+wYFz3cf2XGhL67kus0mZdghNEv3NEhq4n0e2yG6i/3K5TMrHtWStxOLL
+ ZmHu0bRnrMQGchAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 961E14A0B0;
- Tue,  7 Apr 2026 12:57:08 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 696DF4A0B0;
+ Tue,  7 Apr 2026 13:24:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ymCXIyT/1GnmMQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 07 Apr 2026 12:57:08 +0000
-Date: Tue, 7 Apr 2026 14:56:58 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Pn/cGI8F1WnZTQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 07 Apr 2026 13:24:31 +0000
+Date: Tue, 7 Apr 2026 15:24:26 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20260407125658.GB25645@pevik>
+Message-ID: <20260407132426.GC25645@pevik>
 References: <20260325-infiniband_rdma-v1-0-9c1bd3e69d29@suse.com>
+ <20260325-infiniband_rdma-v1-2-9c1bd3e69d29@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260325-infiniband_rdma-v1-0-9c1bd3e69d29@suse.com>
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20260325-infiniband_rdma-v1-2-9c1bd3e69d29@suse.com>
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
+ MX_GOOD(-0.01)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_ALL(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FREEMAIL_CC(0.00)[lists.linux.it,gmail.com,redhat.com,ziepe.ca,vger.kernel.org,oss.oracle.com];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto,suse.cz:dkim,suse.cz:email];
  RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: AEBBC5BD4F
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ RCPT_COUNT_SEVEN(0.00)[7]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: A6DDB4D2D5
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/2] Add infiniband testing suite
+Subject: Re: [LTP] [PATCH 2/2] device-drivers/rdma: Add ucma_uaf01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,54 +122,311 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: rds-devel@oss.oracle.com, linux-rdma@vger.kernel.org,
+ Eric Biggers <ebiggers3@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Doug Ledford <dledford@redhat.com>, Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> This patch series introduces a test for infiniband testing, based on
-> https://marc.info/?l=linux-kernel&m=152625244101970&w=2.
-https://lore.kernel.org/lkml/20180513230237.GG677@sol.localdomain/
+Hi Andrea,
 
-Thanks for pointing out the C source.  I was looking at the original syzkaller
-reproducer [1] which IMHO did more things, simplified C source is quite similar
-to what you do in LTP test.
+it's been long time since this use-after-free was fixed, but IMHO still useful
+to have a test (it's also kind of smoke test for rdma_cm).
+Anyway, LGTM, but it'd be nice to reproduce the bug.
 
-Have you verified if it actually reproduce the bug on affected kernel? Does it
-reproduce the bug?
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-I tried it only on too new kernel (6.12 based SLE16 kernel, required to install
-rdma-core, rdma_cm kernel module, which creates /dev/infiniband/rdma_cm, was
-loaded by default).
+> Test for use-after-free in RDMA UCMA triggered by racing CREATE_ID,
+> BIND_IP, and LISTEN operations. Three threads concurrently issue
+> these commands to /dev/infiniband/rdma_cm and the test checks for
+> kernel taint (KASAN use-after-free detection).
 
-Kind regards,
-Petr
-
-[1] https://syzkaller.appspot.com/text?tag=ReproSyz&x=1686969e400000
-
-> Consider this as a snapshot for a possible test. I sent it to the ML
-> just to have some feedbacks.
+> The bug was fixed by kernel commit 5fe23f262e05
+> ("ucma: fix a use-after-free in ucma_resolve_ip()").
 
 > Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 > ---
-> Andrea Cervesato (2):
->       lapi: Add fallback rdma_user_cm.h definitions
->       device-drivers/rdma: Add ucma_uaf01 test
-
->  configure.ac                                      |   1 +
->  include/lapi/rdma_user_cm.h                       |  72 ++++++++
 >  runtest/kernel_misc                               |   1 +
 >  testcases/kernel/device-drivers/Makefile          |   1 +
 >  testcases/kernel/device-drivers/rdma/.gitignore   |   1 +
 >  testcases/kernel/device-drivers/rdma/Makefile     |   7 +
 >  testcases/kernel/device-drivers/rdma/ucma_uaf01.c | 208 ++++++++++++++++++++++
->  7 files changed, 291 insertions(+)
-> ---
-> base-commit: b874b6a264cf4f343c17d543ebe4ff91fbb89042
-> change-id: 20260325-infiniband_rdma-c94a1f4f7255
+>  5 files changed, 218 insertions(+)
 
-> Best regards,
+> diff --git a/runtest/kernel_misc b/runtest/kernel_misc
+> index 78f00d305fea10367fb4fd2845f25dd151a833ea..dcc3c0a44fb52a968f91a52758dbd43a3ce7a9ec 100644
+> --- a/runtest/kernel_misc
+> +++ b/runtest/kernel_misc
+> @@ -3,6 +3,7 @@ kmsg01 kmsg01
+>  fw_load fw_load
+>  rtc01 rtc01
+>  rtc02 rtc02
+> +ucma_uaf01 ucma_uaf01
+>  block_dev block_dev
+>  tpci tpci
+>  tbio tbio
+> diff --git a/testcases/kernel/device-drivers/Makefile b/testcases/kernel/device-drivers/Makefile
+> index 229a50683f5f629904ff591daa6fcd4f1c35fdf1..538df555395bf21062906ffa4125da4c767c1e24 100644
+> --- a/testcases/kernel/device-drivers/Makefile
+> +++ b/testcases/kernel/device-drivers/Makefile
+> @@ -11,6 +11,7 @@ SUBDIRS		:= acpi \
+>  		   locking \
+>  		   pci \
+>  		   rcu \
+> +		   rdma \
+>  		   rtc \
+>  		   tbio \
+>  		   uaccess \
+> diff --git a/testcases/kernel/device-drivers/rdma/.gitignore b/testcases/kernel/device-drivers/rdma/.gitignore
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..399ea290e4f9abd6b66800b21f4aea3eb33d3799
+> --- /dev/null
+> +++ b/testcases/kernel/device-drivers/rdma/.gitignore
+> @@ -0,0 +1 @@
+> +/ucma_uaf01
+> diff --git a/testcases/kernel/device-drivers/rdma/Makefile b/testcases/kernel/device-drivers/rdma/Makefile
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..5df01972aeab257b6ef24a928204b6b722c1cdef
+> --- /dev/null
+> +++ b/testcases/kernel/device-drivers/rdma/Makefile
+> @@ -0,0 +1,7 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2026 Linux Test Project
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/device-drivers/rdma/ucma_uaf01.c b/testcases/kernel/device-drivers/rdma/ucma_uaf01.c
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..313e2aee0ea0114ce37f006eca93ea66d86ddeea
+> --- /dev/null
+> +++ b/testcases/kernel/device-drivers/rdma/ucma_uaf01.c
+> @@ -0,0 +1,208 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2026 Linux Test Project
+> + */
+> +
+> +/*\
+> + * Test for use-after-free in RDMA UCMA triggered by concurrent CREATE_ID,
+> + * BIND_IP, and LISTEN operations via /dev/infiniband/rdma_cm.
+> + *
+> + * Requires root to open /dev/infiniband/rdma_cm.
+> + *
+> + * Three threads race to create, bind, and listen on RDMA connection manager
+> + * IDs. On vulnerable kernels, this triggers a use-after-free in
+> + * cma_listen_on_all() detected by KASAN.
+> + *
+> + * Based on a syzbot reproducer:
+> + * syzbot+db1c219466daac1083df@syzkaller.appspotmail.com
+
+Maybe link simplified C source from Eric on which you base LTP test (according
+to the cover letter)?
+https://lore.kernel.org/lkml/20180513230237.GG677@sol.localdomain/
+
+NOTE C reproducer [1] on db1c219466daac1083df page [2] is more complicated than
+the one From Eric.
+
+[1] https://syzkaller.appspot.com/text?tag=ReproC&x=1258d593800000
+[2] https://syzkaller.appspot.com/bug?extid=db1c219466daac1083df
+
+Kind regards,
+Petr
+
+> + *
+> + * Fixed in:
+> + *
+> + *  commit 5fe23f262e05
+> + *  ucma: fix a use-after-free in ucma_resolve_ip()
+> + */
+> +
+> +#include "tst_test.h"
+> +#include "tst_safe_pthread.h"
+> +#include "lapi/rdma_user_cm.h"
+> +
+> +#define RDMA_CM_DEV "/dev/infiniband/rdma_cm"
+> +
+> +static int cmfd = -1;
+> +static volatile uint32_t shared_id;
+> +static volatile int stop_threads;
+> +
+> +static void destroy_id(uint32_t id)
+> +{
+> +	ssize_t ret;
+> +
+> +	struct {
+> +		struct rdma_ucm_cmd_hdr hdr;
+> +		struct rdma_ucm_destroy_id destroy;
+> +	} msg = {
+> +		.hdr = {
+> +			.cmd = RDMA_USER_CM_CMD_DESTROY_ID,
+> +			.out = sizeof(struct rdma_ucm_create_id_resp),
+> +		},
+> +		.destroy = {
+> +			.id = id,
+> +		},
+> +	};
+> +	struct rdma_ucm_create_id_resp resp;
+> +
+> +	msg.destroy.response = (uintptr_t)&resp;
+> +
+> +	/* Errors expected due to racing with stale IDs */
+> +	ret = write(cmfd, &msg, sizeof(msg));
+> +	(void)ret;
+> +}
+> +
+> +static void *thread_create(void *arg)
+> +{
+> +	uint32_t id, prev_id = 0;
+> +	int has_prev = 0;
+> +
+> +	while (!stop_threads) {
+> +		struct {
+> +			struct rdma_ucm_cmd_hdr hdr;
+> +			struct rdma_ucm_create_id create;
+> +		} msg = {
+> +			.hdr = {
+> +				.cmd = RDMA_USER_CM_CMD_CREATE_ID,
+> +				.out = sizeof(id),
+> +			},
+> +			.create = {
+> +				.response = (uintptr_t)&id,
+> +				.ps = RDMA_PS_IPOIB,
+> +			},
+> +		};
+> +
+> +		if (write(cmfd, &msg, sizeof(msg)) > 0) {
+> +			if (has_prev)
+> +				destroy_id(prev_id);
+> +			prev_id = id;
+> +			has_prev = 1;
+> +			shared_id = id;
+> +		}
+> +	}
+> +
+> +	if (has_prev)
+> +		destroy_id(prev_id);
+> +
+> +	return arg;
+> +}
+> +
+> +static void *thread_bind(void *arg)
+> +{
+> +	ssize_t ret;
+> +
+> +	while (!stop_threads) {
+> +		struct {
+> +			struct rdma_ucm_cmd_hdr hdr;
+> +			struct rdma_ucm_bind_ip bind;
+> +		} msg = {
+> +			.hdr = {
+> +				.cmd = RDMA_USER_CM_CMD_BIND_IP,
+> +			},
+> +			.bind = {
+> +				.addr = {
+> +					.sin6_family = AF_INET6,
+> +					.sin6_addr = {
+> +						.s6_addr = { 0xff },
+> +					},
+> +				},
+> +				.id = shared_id,
+> +			},
+> +		};
+> +
+> +		/* Errors expected due to racing with stale IDs */
+> +		ret = write(cmfd, &msg, sizeof(msg));
+> +		(void)ret;
+> +	}
+> +
+> +	return arg;
+> +}
+> +
+> +static void *thread_listen(void *arg)
+> +{
+> +	ssize_t ret;
+> +
+> +	while (!stop_threads) {
+> +		struct {
+> +			struct rdma_ucm_cmd_hdr hdr;
+> +			struct rdma_ucm_listen listen;
+> +		} msg = {
+> +			.hdr = {
+> +				.cmd = RDMA_USER_CM_CMD_LISTEN,
+> +			},
+> +			.listen = {
+> +				.id = shared_id,
+> +			},
+> +		};
+> +
+> +		/* Errors expected due to racing with stale IDs */
+> +		ret = write(cmfd, &msg, sizeof(msg));
+> +		(void)ret;
+> +	}
+> +
+> +	return arg;
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	cmfd = open(RDMA_CM_DEV, O_WRONLY);
+> +	if (cmfd < 0) {
+> +		if (errno == ENOENT || errno == ENXIO)
+> +			tst_brk(TCONF, RDMA_CM_DEV " not available");
+> +		tst_brk(TBROK | TERRNO, "open(" RDMA_CM_DEV ")");
+> +	}
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (cmfd != -1)
+> +		SAFE_CLOSE(cmfd);
+> +}
+> +
+> +static void run(void)
+> +{
+> +	pthread_t threads[3];
+> +
+> +	stop_threads = 0;
+> +
+> +	SAFE_PTHREAD_CREATE(&threads[0], NULL, thread_create, NULL);
+> +	SAFE_PTHREAD_CREATE(&threads[1], NULL, thread_bind, NULL);
+> +	SAFE_PTHREAD_CREATE(&threads[2], NULL, thread_listen, NULL);
+> +
+> +	while (tst_remaining_runtime())
+> +		sleep(1);
+> +
+> +	stop_threads = 1;
+> +
+> +	SAFE_PTHREAD_JOIN(threads[0], NULL);
+> +	SAFE_PTHREAD_JOIN(threads[1], NULL);
+> +	SAFE_PTHREAD_JOIN(threads[2], NULL);
+> +
+> +	if (tst_taint_check())
+> +		tst_res(TFAIL, "Kernel is vulnerable (use-after-free in UCMA)");
+> +	else
+> +		tst_res(TPASS, "No kernel taint detected");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.runtime = 300,
+> +	.needs_root = 1,
+> +	.taint_check = TST_TAINT_W | TST_TAINT_D,
+> +	.needs_kconfigs = (const char *[]) {
+> +		"CONFIG_INFINIBAND",
+> +		"CONFIG_INFINIBAND_USER_ACCESS",
+> +		NULL
+> +	},
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "5fe23f262e05"},
+> +		{}
+> +	},
+> +};
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
