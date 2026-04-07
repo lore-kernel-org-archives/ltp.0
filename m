@@ -4,87 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8782CEDB7DC
-	for <ltp@archiver.kernel.org>; Tue,  7 Apr 2026 09:26:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1775554010; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=THaxjMp+CXUBoY964QBh2dkK/KojtxVr2y2DgMZU8jc=;
- b=KnYmjqCHFo3zHrJfPep/Aq0RklHC71nHwAWppXn1gguynu2dZJa9tQ3rJNaSaCBQquZz4
- 5DRGTOLDOb9X2NW8cbV758kayhb6ttc8/vOxWCpkmbjxT1YaGdRntEx2XGLCj29OBgI5SwZ
- 2J7YsAbMwTsrE60fA8iugVbEPHstwAc=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71AA5EDB7D4
+	for <ltp@archiver.kernel.org>; Tue,  7 Apr 2026 09:43:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E3C973E2148
-	for <ltp@archiver.kernel.org>; Tue,  7 Apr 2026 11:26:50 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 1062F3E29A7
+	for <ltp@archiver.kernel.org>; Tue,  7 Apr 2026 11:43:23 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BEC413DB86B
- for <ltp@lists.linux.it>; Tue,  7 Apr 2026 11:26:27 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E03EC3DB86B
+ for <ltp@lists.linux.it>; Tue,  7 Apr 2026 11:43:04 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 376EB200769
- for <ltp@lists.linux.it>; Tue,  7 Apr 2026 11:26:26 +0200 (CEST)
-Received: by mail-wr1-x430.google.com with SMTP id
- ffacd0b85a97d-43d17bb1c1dso4168169f8f.2
- for <ltp@lists.linux.it>; Tue, 07 Apr 2026 02:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1775553985; x=1776158785; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=ecWWtRfufrYJvrAYYO9YkKvDdFLnL/uRBSRp1gNGdT8=;
- b=gZ1DcNHlbprQsnCCozfSM+3DxGIZTES39K6W9ejC8A9OOtqZ049SyXdhwCjgslr07q
- QfvMGdAcC5oBTlG+9toI/mz0Ym8Tn3Fr19QVtDrgW9MjOMUFylwBDTbYc/ewGCVNJRMm
- r9u22MVsnhNwfdeX3drXpRgs/wlVsWeFY9cNxwu+AbNPk5icNKA44vImOtamCFft01N7
- ZyG23ZPbvArDGttRhdllL6++N7F64vwIW9uuZJbtGsOOvSIrq6LOYCrN/t6d0IgehNjK
- lHvhIe0/DBVSDjqZ3lpnizMDT5mcD5ATOSTnYvmpiboXsGvoOhRmo7UbAooaPT1igxeB
- Ef8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1775553985; x=1776158785;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=ecWWtRfufrYJvrAYYO9YkKvDdFLnL/uRBSRp1gNGdT8=;
- b=FKNJNXNShnBlDCLbOtyKCmTa6+zE1TwmeRgEiVKEVz25ITSK54TTeRse/KSEppwm3c
- 2EWgrLpcrvMqmr/98TcAkrlEnLRo7oeg3lRekW/bx5+wWz+T8U31BbIUkg8djNIxANGG
- bnF3RR3MO19mj0M1e0nQi/xsyU5dkp9IxRqaO81bpCP33waEQhVq9kqCT+QKLZtAtMP4
- H80NH6cEa1YNZhu7sNoTBy/kwqcgD7t/WL1wjnbjS46ibfWO0iTQxdZSZbFK5UBzFgWb
- j+afNtDQUbT3b0qt8VzqxDcr3CGTRoDVSpZyzWwnXaYs56TW3fsuZd/dF81TdxnQVwHy
- MtbA==
-X-Gm-Message-State: AOJu0Yy8xs7Tu0i1O+3BrwKibKudkogiMWdEKxWcDuyfqr3LPu8TOn6T
- G4/pTJKfYEwRttowepPQYoX6VF8bJs4Q9bRB/X5Zi251WLYsoeeJcNgM2MGKgnGKe0z9KNBBD7N
- 2788=
-X-Gm-Gg: AeBDiesOemKaaA05SFhnSaf9FYQA3EqgL/oofwpAuD6YIQVfxmX1x6Q/pcQkMk9n2Xr
- xYkLuNds4Ic/PdxmyWrEo9Impb/qO60zuAvC5jXl3fAwYU9ghkIkO9mi5gYhsewmSqYsfIrIuf3
- yBp0rKk7y82eMowjIFbBx0w138C1ZtZkoAqBvP+8jR4ILh1Dxic4+Fn0dDYL2eemLnsbGYra+i+
- r00IiRzjrLP1p8jIc6G41T8izn7GpP7RU035kO7ahNRA+vV8BGfncUlaq1oXMVWKXrbqoiiTBwk
- lm8i1pL7PDjG55XdBoLwd3YrtronGM79dqDvHy+mFHO2/9wu0/eTUnr/lnHpEg78cHZYE9/Wy7+
- T7bViRIZaj4WHhOxl4w7P4Fe3+sztMihsUGTat9RmpLeobsNDKD1tTP8vdJiTdnxfPb1wJVjvFy
- vP+1PMpVKIPxk60DtI3uBt0Q==
-X-Received: by 2002:a05:6000:40d9:b0:43d:4df5:3de with SMTP id
- ffacd0b85a97d-43d4df504d7mr491910f8f.31.1775553985189; 
- Tue, 07 Apr 2026 02:26:25 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-43d1e1fe0b0sm49571118f8f.0.2026.04.07.02.26.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Apr 2026 02:26:24 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue,  7 Apr 2026 09:26:11 +0000
-Message-ID: <20260407092616.15563-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5DA0120075E
+ for <ltp@lists.linux.it>; Tue,  7 Apr 2026 11:43:04 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 88D274E3B0;
+ Tue,  7 Apr 2026 09:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1775554982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rwmf17h0X4s0X5AbAAq6yXxGGrJP3SmNyhfKxQsjDh4=;
+ b=NkV+B4uPMeeIPs4BF6JoA9f55Wn2sC2XtAQLmeseiuRgZ9imRDjL58lScLmQ8coOKlGn1p
+ 44hHitMp3dDNxEKOOFkDzUqLHqMXESVipF7nMOLJHyRgRpt7JCgxoCQLNcCgFfJg4XvpGW
+ Syl34E1AzShGWDIlKIm1w7Cd/1DLLGY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1775554982;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rwmf17h0X4s0X5AbAAq6yXxGGrJP3SmNyhfKxQsjDh4=;
+ b=cJGsMX3hKYkAQjgNIYu2KI/M6ZU5B5RniZXgLOytchBluV/c+l7d6ga/Gu1dIIbRUqD4kk
+ myskVZJefEty9MDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1775554982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rwmf17h0X4s0X5AbAAq6yXxGGrJP3SmNyhfKxQsjDh4=;
+ b=NkV+B4uPMeeIPs4BF6JoA9f55Wn2sC2XtAQLmeseiuRgZ9imRDjL58lScLmQ8coOKlGn1p
+ 44hHitMp3dDNxEKOOFkDzUqLHqMXESVipF7nMOLJHyRgRpt7JCgxoCQLNcCgFfJg4XvpGW
+ Syl34E1AzShGWDIlKIm1w7Cd/1DLLGY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1775554982;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rwmf17h0X4s0X5AbAAq6yXxGGrJP3SmNyhfKxQsjDh4=;
+ b=cJGsMX3hKYkAQjgNIYu2KI/M6ZU5B5RniZXgLOytchBluV/c+l7d6ga/Gu1dIIbRUqD4kk
+ myskVZJefEty9MDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7A0A34A0B0;
+ Tue,  7 Apr 2026 09:43:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id xt3kHKbR1GlpaQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 07 Apr 2026 09:43:02 +0000
+Date: Tue, 7 Apr 2026 11:43:04 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <adTRqJao6jxdg-J1@yuki.lan>
+References: <20260402121356.31266-1-chrubis@suse.cz>
+ <20260402121356.31266-4-chrubis@suse.cz>
+ <20260402214727.GE225068@pevik>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260402214727.GE225068@pevik>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] shmctl03: Fix 32-bit compat mode failure by
- forcing limits
+Subject: Re: [LTP] [PATCH 03/17] lib: tst_kernel: Add
+ tst_check_module_driver()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,122 +109,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 64-bit kernels, the default shmmax and shmall values often exceed
-the range of a 32-bit unsigned long or are clipped differently by the
-kernel's compat syscall layer than they appear in /proc.
+Hi!
+> > -	return -1;
+> > +int tst_check_module_driver(const char *driver)
+> > +{
+> > +	return tst_search_driver(driver, "modules.dep");
+> 
+> Thinking about it twice, could we check for the module by reading
+> /sys/module/? Our current approach shows what module *should* be available, but
+> that might not be true for some reason (i.e. loadable module not installed).
 
-Link: https://lore.kernel.org/ltp/aJm5SBOaRoe1e0PB@yuki.lan/
-Signed-off-by: Wei Gao <wegao@suse.com>
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- include/tst_assert.h                          | 10 +++++---
- lib/tst_assert.c                              | 25 ++++++++++++++-----
- .../kernel/syscalls/ipc/shmctl/shmctl03.c     | 12 ++++++---
- 3 files changed, 35 insertions(+), 12 deletions(-)
+The modules.dep file contains names of all modules installed in
+particular kernel modules directory. We cannot do anything better than
+parsing that file because it's (re)genrated on the system each time
+packages with modules have been installed/removed. If that wasn't the
+case modprobe that depends on that file wouldn't work either.
 
-diff --git a/include/tst_assert.h b/include/tst_assert.h
-index dcb62dfea..5b3bd0e12 100644
---- a/include/tst_assert.h
-+++ b/include/tst_assert.h
-@@ -21,14 +21,18 @@ void tst_assert_int(const char *file, const int lineno,
- #define TST_ASSERT_FILE_INT(path, prefix, val) \
- 	tst_assert_file_int(__FILE__, __LINE__, path, prefix, val)
- 
-+#define TST_ASSERT_SATURATED_INT   0x01
-+#define TST_ASSERT_SATURATED_ULONG 0x02
-+#define TST_ASSERT_BITWISE         0x04
-+
- /*
-  * Same as tst_assert_int() but for unsigned long.
-  */
- void tst_assert_ulong(const char *file, const int lineno,
--                      const char *path, unsigned long val);
-+                      const char *path, unsigned long val, int flags);
- 
--#define TST_ASSERT_ULONG(path, val) \
--	tst_assert_ulong(__FILE__, __LINE__, path, val)
-+#define TST_ASSERT_ULONG(path, val, ...) \
-+	tst_assert_ulong(__FILE__, __LINE__, path, val, (0, ##__VA_ARGS__))
- 
- /*
-  * Asserts that integer value stored in the prefix field of file pointed by path
-diff --git a/lib/tst_assert.c b/lib/tst_assert.c
-index b68bd5d39..09d7d8a6f 100644
---- a/lib/tst_assert.c
-+++ b/lib/tst_assert.c
-@@ -23,18 +23,31 @@ void tst_assert_int(const char *file, const int lineno, const char *path, int va
- 	tst_res_(file, lineno, TFAIL, "%s != %d got %d", path, val, sys_val);
- }
- 
--void tst_assert_ulong(const char *file, const int lineno, const char *path, unsigned long val)
-+void tst_assert_ulong(const char *file, const int lineno, const char *path,
-+			unsigned long val, int flags)
- {
--	unsigned long sys_val;
--
--	safe_file_scanf(file, lineno, NULL, path, "%lu", &sys_val);
-+	unsigned long long sys_val_64;
-+	unsigned long expected_val;
-+
-+	safe_file_scanf(file, lineno, NULL, path, "%llu", &sys_val_64);
-+
-+	if (flags & TST_ASSERT_SATURATED_INT) {
-+		expected_val = (sys_val_64 > 2147483647ULL) ? 2147483647UL : (unsigned long)sys_val_64;
-+	} else if (flags & TST_ASSERT_SATURATED_ULONG) {
-+		expected_val = (sys_val_64 > 4294967295ULL) ? 4294967295UL : (unsigned long)sys_val_64;
-+	} else if (flags & TST_ASSERT_BITWISE) {
-+		expected_val = (unsigned long)(sys_val_64 & 0xFFFFFFFFULL);
-+	} else {
-+		expected_val = (unsigned long)sys_val_64;
-+	}
- 
--	if (val == sys_val) {
-+	if (val == expected_val) {
- 		tst_res_(file, lineno, TPASS, "%s = %lu", path, val);
- 		return;
- 	}
- 
--	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu", path, val, sys_val);
-+	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu (raw: %llu)",
-+		path, val, expected_val, sys_val_64);
- }
- 
- void tst_assert_file_int(const char *file, const int lineno, const char *path, const char *prefix, int val)
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-index a1f53e7c1..6d073789c 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-@@ -30,9 +30,15 @@ static void verify_ipcinfo(void)
- 	else
- 		tst_res(TPASS, "shmmin = 1");
- 
--	TST_ASSERT_ULONG("/proc/sys/kernel/shmmax", info.shmmax);
--	TST_ASSERT_ULONG("/proc/sys/kernel/shmmni", info.shmmni);
--	TST_ASSERT_ULONG("/proc/sys/kernel/shmall", info.shmall);
-+	if (tst_is_compat_mode()) {
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmmax", info.shmmax, TST_ASSERT_SATURATED_INT);
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmmni", info.shmmni, TST_ASSERT_BITWISE);
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmall", info.shmall, TST_ASSERT_BITWISE);
-+	} else {
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmmax", info.shmmax);
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmmni", info.shmmni);
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmall", info.shmall);
-+	}
- }
- 
- static struct tst_test test = {
 -- 
-2.52.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
