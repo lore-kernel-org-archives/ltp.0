@@ -4,96 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73BF6EF4EC9
-	for <ltp@archiver.kernel.org>; Mon,  6 Apr 2026 10:03:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B57F4EF4ECD
+	for <ltp@archiver.kernel.org>; Mon,  6 Apr 2026 11:43:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B64953CE11D
-	for <ltp@archiver.kernel.org>; Mon,  6 Apr 2026 12:03:42 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 1ED143D2269
+	for <ltp@archiver.kernel.org>; Mon,  6 Apr 2026 13:43:01 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3FF1D3C2B7E
- for <ltp@lists.linux.it>; Mon,  6 Apr 2026 12:03:21 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id D87D83C2F5B
+ for <ltp@lists.linux.it>; Mon,  6 Apr 2026 13:42:42 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 09E0A600131
- for <ltp@lists.linux.it>; Mon,  6 Apr 2026 12:03:20 +0200 (CEST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DC0F060013D
+ for <ltp@lists.linux.it>; Mon,  6 Apr 2026 13:42:41 +0200 (CEST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 635JP1Hq3413620
- for <ltp@lists.linux.it>; Mon, 6 Apr 2026 10:03:19 GMT
+ 635NfDPh3866508; Mon, 6 Apr 2026 11:42:39 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
  :content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=WFFV88/qt2KLnd7mp/4PpYQ/3GlG6ct9sk14FTV6s
- 9c=; b=TNZb38nZ2i3dqHP9gWARQ22xPcW6p/JN2tVRCr5k02i3iUi1zv9eFEZJ6
- aDzhZ78uJ363TPOScfr7wrP4x29S2YaDIkUahB2OnlDFcytTlTwThoH2wkBcvWxn
- d0hwsR8yU/xz2ns9mxUdHwn61yDTLe8s+hx7wGArVoOC9V4R59OVIIDvfWJt+13Q
- 8IsrnSwSzNIE4Uk8DMVt1ngzxie7b/6Dv6L8+8Ef+3akgqLsIR4fK3AjM+vLzXzq
- ahDiqSnHYVHnghFQ0yDWLtOSNWio7PHFnV749NOwBh83soEF6PHRzsD7GVm+edjv
- AJ6vZVDeMWXKIHKpY7s8TvBA4hVZA==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dar2gdt4k-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Mon, 06 Apr 2026 10:03:19 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 6366id1f014784
- for <ltp@lists.linux.it>; Mon, 6 Apr 2026 10:03:18 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dbf6jv26u-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Mon, 06 Apr 2026 10:03:18 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
- [10.20.54.102])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 636A3EVD29557432
+ :subject:to; s=pp1; bh=iW2bXk0Z36vCO3+y1FHBYIgPjNifSvX6x+rZ4Eg90
+ /k=; b=XebH4AdZ1IoX64nX1wtbvQKj+icr51WUui06VeDElij2e2w6VCpCqymB3
+ rYFd+Y5en8NjuXAOdJ8ASUceKF/cjBA8V0WWeVcaVmvTi6CD66S0YXIikLKw1IF1
+ 3Hya+J42zBRSXw0TI4lM946vYMw4JumoS85LM74lVWyZI31713TqV0+zyWunYslp
+ mECehFkMAx9CT9EEPUfGrqu/+vF7rKHR1iF9+PwHJySZYOR0TY9o/uEPSF5oup4z
+ CqQcpPEe/uT7FRd1+ZktH84AHGAp5EYF+LpcYHY6I2l1BnhsH6m6a1UU+1wwuND3
+ vtRnEYOvYylS1WyDw01gvIDrEpeSA==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4datc2pcd6-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 06 Apr 2026 11:42:39 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 636BdSFC020570;
+ Mon, 6 Apr 2026 11:42:38 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4dbdyncf48-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 06 Apr 2026 11:42:38 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
+ [10.20.54.104])
+ by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 636BgY5c52691410
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 6 Apr 2026 10:03:14 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 7A0922004D;
- Mon,  6 Apr 2026 10:03:14 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C4EBE2004B;
- Mon,  6 Apr 2026 10:03:13 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.109.228.243])
- by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Mon,  6 Apr 2026 10:03:13 +0000 (GMT)
-From: Abdulla <abdulla1@linux.ibm.com>
+ Mon, 6 Apr 2026 11:42:34 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 01BEF2004B;
+ Mon,  6 Apr 2026 11:42:34 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 37EF720040;
+ Mon,  6 Apr 2026 11:42:33 +0000 (GMT)
+Received: from ltcden9-lp6.ltc.tadn.ibm.com (unknown [9.5.7.39])
+ by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Mon,  6 Apr 2026 11:42:33 +0000 (GMT)
+From: =?UTF-8?q?=E2=80=9CSamir?= <samir@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Mon,  6 Apr 2026 15:33:11 +0530
-Message-Id: <20260406100311.79619-1-abdulla1@linux.ibm.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+Date: Tue,  7 Apr 2026 10:36:34 +0530
+Message-ID: <20260407050634.124265-1-samir@linux.ibm.com>
+X-Mailer: git-send-email 2.52.0
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rh1c7wD0AtfMqwbAd0cYzfDb5STlW9jK
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDA2MDA5NiBTYWx0ZWRfX0SUeGs7ayA5U
- aq0IoGxjwkfDYwvEOhxWX0PRm7AkVHKam940GYmcRW7u8jsXWyTUprOAL9PY8nfbV78hMgwQrc1
- 9Y8jyyUkV3c2iKGJz45awrOnIOJL6HKSTOvyaPQ+tsBifK0Ok9y22xMF0Av7uIn7y6lzV6t4AsK
- FkIvrhrOBCDBVThlrSyyr3sARUdQ6BnbOwSvrTqgK1TG2Ev9L7xJWzhX0M4Sc3jYhHOFp4UOl+P
- 9C5i8ZQbdNlvIDIG5CG19eiNTePsEZVJ10sLo/qNFyAbg8dAiE2hNUkswCKwzitJ1OTaTriPtpl
- +OlXdzTaM6WhyvhX0RRI3Qg2defIMSD2JjCGQmTZy6hCJs7HbKSnhrnV3svPtgWpONkbXvQjhY3
- Sz2zN3nT11sfeNTWwN0FCwUlLSAducCUR9eu1+Bzw3W85ZCHl57hmSmK9xVQ7xnSR6bg5fr2WU8
- AAmLHUT4TuDSUYZoWWg==
-X-Authority-Analysis: v=2.4 cv=b+u/I9Gx c=1 sm=1 tr=0 ts=69d384e7 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VnNF1IyMAAAA:8 a=BqmSNwtJosOcRg9k20kA:9
-X-Proofpoint-ORIG-GUID: rh1c7wD0AtfMqwbAd0cYzfDb5STlW9jK
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDA2MDExMSBTYWx0ZWRfX+2xCLz5UXNPC
+ EP1cd+HJ/KOwGxqRrGsJobx6pC+FnYiH0wIxqCHfxVAHduMeXW6+dRa+nxxxhiso5jjmy2H0yiv
+ nyFLlS7cbNT6zwfs+tHImjGpmhATXPwca8SFIOCHat9nwqvXm3TX39WwJyk0m3Eq2FDsds38Cuy
+ eUt86J7l1O7Ou0jFTAYflmsQBkqnNeN4Nu5tt75vPnT2wUq9lxXSmDc4k/xG/f/PQt8R7tsLV4r
+ BS0JktmiQlA5kTeXwcI5087iDV9vVPxJwOx31EaV+gFVdvXLyVWjt19J8LfzcYo8padcrW6vIbc
+ ceT7LHo1IyIQMMsUgRcXak8M6dv/hLy9FX6+IItAM6zbCiX3M1AbCgc1opTBNHeMqx33TGaN+nX
+ TmWnOfbGJlwRQvXcANkJTRgudVfp6ENBMXNfw8DCO3b5tsCPFzP25lGtzc0q3QpZr6UVc6//DgX
+ Afm20Th2LwqJjyAmOKQ==
+X-Proofpoint-GUID: pj3fAVar4CB0OiKEVCAMZIHJgtFhbdyA
+X-Proofpoint-ORIG-GUID: pj3fAVar4CB0OiKEVCAMZIHJgtFhbdyA
+X-Authority-Analysis: v=2.4 cv=HJvO14tv c=1 sm=1 tr=0 ts=69d39c2f cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=A5OVakUREuEA:10 a=M51BFTxLslgA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=U7nrCbtTmkRpXpFmAIza:22 a=VnNF1IyMAAAA:8
+ a=VcyuwuPAi_hLocmJvkYA:9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-04-06_02,2026-04-03_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 phishscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0
- impostorscore=0 malwarescore=0 spamscore=0 priorityscore=1501 clxscore=1011
+ impostorscore=0 suspectscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0
+ malwarescore=0 spamscore=0 phishscore=0 priorityscore=1501 bulkscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2604060096
+ reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2604060111
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/ioctl02: Move TTY discovery from shell to C
+Subject: [LTP] [PATCH v6] hugemmap37: Migrate truncate_sigbus_versus_oom
+ from libhugetlbfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,471 +106,181 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: =?UTF-8?q?=E2=80=9CSamir?= <samir@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test previously required a shell wrapper to discover and validate
-TTY devices. This modernization moves all TTY discovery logic into C,
-eliminating the shell dependency.
+Some kernels have a bug in the positioning of the test against
+i_size. This bug means that attempting to instantiate a page
+beyond the end of a hugepage file can result in an OOM and SIGKILL
+instead of the correct SIGBUS.
 
-Key changes:
-- Added is_valid_tty_name() for pattern matching tty[0-9]*
-- Added is_valid_tty_device() for ioctl-based validation
-- Added find_valid_ttys() for /dev directory scanning
-- Made device parameter optional with auto-discovery mode
-- Extracted test_single_device() for code reusability
+This test verifies that accessing memory beyond a truncated hugepage
+file correctly triggers SIGBUS rather than causing an OOM condition.
 
-The test now supports two modes:
-1. Single device: ./ioctl02 -d /dev/tty1 (backward compatible)
-2. Auto-discovery: ./ioctl02 (discovers all valid TTY devices)
-
-Signed-off-by: Shaik Abdulla <abdulla1@linux.ibm.com>
+Signed-off-by: Samir <samir@linux.ibm.com>
 ---
- .../syscalls/ioctl/ioctl02_modernized.c       | 431 ++++++++++++++++++
- 1 file changed, 431 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl02_modernized.c
+v6:
+1. Fixed description: Removed dangling comma and improved clarity
+2. Added 'static' keyword to setup() and cleanup() functions
+3. Fixed signal handler initialization:
+   - Zero-initialized struct sigaction with = {}
+   - Added sigemptyset(&sa.sa_mask)
+   - Removed SA_SIGINFO flag (using sa_handler, not sa_sigaction)
+4. Removed dead code: Deleted unused totpages assignment from setup()
+5. Fixed resource leaks in run_test():
+   - Added SAFE_MUNMAP() for both mapped regions (p and q)
+   - Added SAFE_CLOSE() for both file descriptors (fd and fdx)
+   - Reset fd and fdx to -1 after closing
+6. Fixed cleanup() checks: Changed 'if (fd > 0)' to 'if (fd != -1)'
+7. Initialized file descriptors to -1 at declaration
+---
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap37.c  | 106 ++++++++++++++++++
+ 3 files changed, 108 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl02_modernized.c b/testcases/kernel/syscalls/ioctl/ioctl02_modernized.c
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 0896d3c94..8aaafeee3 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -36,6 +36,7 @@ hugemmap30 hugemmap30
+ hugemmap31 hugemmap31
+ hugemmap32 hugemmap32
+ hugemmap34 hugemmap34
++hugemmap37 hugemmap37
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+ hugemmap05_3 hugemmap05 -s -m
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index b4455de51..38d428fe8 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -36,6 +36,7 @@
+ /hugetlb/hugemmap/hugemmap31
+ /hugetlb/hugemmap/hugemmap32
+ /hugetlb/hugemmap/hugemmap34
++/hugetlb/hugemmap/hugemmap37
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
 new file mode 100644
-index 000000000..44b43db19
+index 000000000..06813b976
 --- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl02_modernized.c
-@@ -0,0 +1,431 @@
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
+@@ -0,0 +1,106 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
-+ * Copyright (c) 2023 Marius Kittler <mkittler@suse.de>
-+ * Copyright (c) 2026 Modernization - TTY discovery moved from shell to C
++ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
 + */
 +
 +/*\
-+ * Test TCGETA/TCGETS and TCSETA/TCSETS ioctl implementations for tty driver.
++ * Some kernels have a bug in the positioning of the test against
++ * i_size. This bug means that attempting to instantiate a page
++ * beyond the end of a hugepage file can result in an OOM and SIGKILL
++ * instead of the correct SIGBUS.
 + *
-+ * This test can operate in two modes:
-+ * 1. Single device mode: Use -d option to test a specific TTY device
-+ * 2. Auto-discovery mode: Automatically discovers and tests all valid /dev/tty[0-9]* devices
-+ *
-+ * In this test, the parent and child open the parentty and the childtty
-+ * respectively.  After opening the childtty the child flushes the stream
-+ * and wakes the parent (thereby asking it to continue its testing). The
-+ * parent, then starts the testing. It issues a TCGETA/TCGETS ioctl to
-+ * get all the tty parameters. It then changes them to known values by
-+ * issuing a TCSETA/TCSETS ioctl. Then the parent issues a TCSETA/TCGETS
-+ * ioctl again and compares the received values with what it had set
-+ * earlier. The test fails if TCGETA/TCGETS or TCSETA/TCSETS fails, or if
-+ * the received values don't match those that were set. The parent does
-+ * all the testing, the requirement of the child process is to moniter
-+ * the testing done by the parent, and hence the child just waits for the
-+ * parent.
++ * The test:
++ * - Creates a hugepage file and maps it
++ * - Truncates the file to 0 size
++ * - Allocates all available hugepages to create memory pressure
++ * - Attempts to access the mapped memory
++ * - Verifies SIGBUS is received (correct behavior)
 + */
 +
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <ctype.h>
-+#include <dirent.h>
-+#include <sys/stat.h>
-+#include <asm/termbits.h>
++#include "hugetlb.h"
++#include <setjmp.h>
++#include <signal.h>
 +
-+#include "lapi/ioctl.h"
-+#include "tst_test.h"
++#define MNTPOINT "hugetlbfs/"
++static int fd = -1, fdx = -1;
 +
-+#define MAX_TTYS 100
-+#define TTY_PATH_MAX 256
++static unsigned long long hpage_size;
++static unsigned long totpages;
 +
-+static struct termio termio, termio_exp;
-+static struct termios termios, termios_exp, termios_bak;
++static sigjmp_buf sig_escape;
++static volatile int test_pass;
 +
-+static char *parenttty, *childtty;
-+static int parentfd = -1;
-+static int parentpid, childpid;
-+
-+/* TTY device list for auto-discovery mode */
-+static char *tty_list[MAX_TTYS];
-+static int tty_count = 0;
-+
-+static void do_child(void);
-+static void prepare_termio(void);
-+static void run_ptest(void);
-+static void chk_tty_parms_termio(void);
-+static void chk_tty_parms_termios(void);
-+static void setup(void);
-+static void cleanup(void);
-+static void test_single_device(const char *dev);
-+static void find_valid_ttys(void);
-+static void free_tty_list(void);
-+static int is_valid_tty_name(const char *name);
-+static int is_valid_tty_device(const char *path);
-+
-+static char *device;
-+
-+static struct variant {
-+	const char *name;
-+	void *termio, *termio_exp, *termio_bak;
-+	size_t termio_size;
-+	void (*check)(void);
-+	int tcget, tcset;
-+} variants[] = {
-+	{
-+		.name = "termio",
-+		.termio = &termio,
-+		.termio_exp = &termio_exp,
-+		.termio_size = sizeof(termio),
-+		.check = &chk_tty_parms_termio,
-+		.tcget = TCGETA,
-+		.tcset = TCSETA,
-+	},
-+	{
-+		.name = "termios",
-+		.termio = &termios,
-+		.termio_exp = &termios_exp,
-+		.termio_size = sizeof(termios),
-+		.check = &chk_tty_parms_termios,
-+		.tcget = TCGETS,
-+		.tcset = TCSETS,
-+	},
-+};
-+
-+/*
-+ * is_valid_tty_name() - Check if device name matches tty[0-9] or tty[0-9][0-9]
-+ */
-+static int is_valid_tty_name(const char *name)
++static void sigbus_handler(int signum LTP_ATTRIBUTE_UNUSED)
 +{
-+	const char *device_no;
-+
-+	/* Must start with "tty" */
-+	if (strncmp(name, "tty", 3) != 0)
-+		return 0;
-+
-+	device_no = name + 3;
-+
-+	/* Must have at least one digit */
-+	if (!isdigit(device_no[0]))
-+		return 0;
-+
-+	/* If there's a second character, it must be a digit */
-+	if (device_no[1] != '\0' && !isdigit(device_no[1]))
-+		return 0;
-+
-+	/* Must not have more than 2 digits */
-+	if (device_no[1] != '\0' && device_no[2] != '\0')
-+		return 0;
-+
-+	return 1;
++	test_pass = 1;
++	siglongjmp(sig_escape, 17);
 +}
 +
-+/*
-+ * is_valid_tty_device() - Validate TTY device by attempting ioctl
-+ * This replaces the shell's "stty -F" validation
-+ */
-+static int is_valid_tty_device(const char *path)
++static void run_test(void)
 +{
-+	int fd;
-+	struct termios t;
-+	int ret;
++	void *p, *q;
++	unsigned long i;
 +
-+	/* Try to open device with non-blocking flag */
-+	fd = open(path, O_RDWR | O_NONBLOCK);
-+	if (fd < 0)
-+		return 0;
++	test_pass = 0;
 +
-+	/* Try to get terminal attributes - this validates it's a real TTY */
-+	ret = ioctl(fd, TCGETS, &t);
-+	close(fd);
++	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++	SAFE_FTRUNCATE(fd, 0);
 +
-+	return (ret == 0);
-+}
-+
-+/*
-+ * find_valid_ttys() - Discover all valid TTY devices in /dev
-+ * This replaces the shell wrapper's "for tttype in `ls /dev/tty*`" logic
-+ */
-+static void find_valid_ttys(void)
-+{
-+	DIR *dir;
-+	struct dirent *entry;
-+	char tty_path[TTY_PATH_MAX];
-+
-+	dir = opendir("/dev");
-+	if (!dir)
-+		tst_brk(TBROK | TERRNO, "Cannot open /dev directory");
-+
-+	tst_res(TINFO, "Scanning /dev for valid TTY devices...");
-+
-+	while ((entry = readdir(dir)) != NULL) {
-+		/* Check if name matches tty[0-9] or tty[0-9][0-9] pattern */
-+		if (!is_valid_tty_name(entry->d_name))
-+			continue;
-+
-+		/* Build full path */
-+		snprintf(tty_path, sizeof(tty_path), "/dev/%s", entry->d_name);
-+
-+		/* Validate it's a working TTY device */
-+		if (!is_valid_tty_device(tty_path)) {
-+			tst_res(TINFO, "Skipping %s (not a valid TTY)", tty_path);
-+			continue;
-+		}
-+
-+		/* Add to list if we have space */
-+		if (tty_count >= MAX_TTYS) {
-+			tst_res(TWARN, "Too many TTY devices found, skipping %s", tty_path);
-+			continue;
-+		}
-+
-+		tty_list[tty_count] = strdup(tty_path);
-+		if (!tty_list[tty_count])
-+			tst_brk(TBROK | TERRNO, "Failed to allocate memory for TTY path");
-+
-+		tst_res(TINFO, "Found valid TTY device: %s", tty_path);
-+		tty_count++;
++	fdx = tst_creat_unlinked(MNTPOINT, 0, 0600);
++	totpages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	q = SAFE_MMAP(NULL, totpages * hpage_size, PROT_READ | PROT_WRITE, MAP_SHARED,
++			fdx, 0);
++	/* Touch the pages to ensure they're removed from the pool */
++	for (i = 0; i < totpages; i++) {
++		volatile char *x = (volatile char *)q + i * hpage_size;
++		*x = 0;
 +	}
++	/* SIGBUS is what *should* happen */
++	SAFE_FTRUNCATE(fdx, 0);
++	if (sigsetjmp(sig_escape, 1) == 0)
++		*((volatile unsigned int *)p);
 +
-+	closedir(dir);
++	if (test_pass)
++		tst_res(TPASS, "Expected SIGBUS triggered");
++	else
++		tst_res(TFAIL, "Didn't SIGBUS");
 +
-+	if (tty_count == 0)
-+		tst_brk(TBROK, "No valid TTY devices found in /dev");
-+
-+	tst_res(TINFO, "Total valid TTY devices found: %d", tty_count);
-+}
-+
-+/*
-+ * free_tty_list() - Free allocated TTY device paths
-+ */
-+static void free_tty_list(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < tty_count; i++) {
-+		if (tty_list[i]) {
-+			free(tty_list[i]);
-+			tty_list[i] = NULL;
-+		}
-+	}
-+	tty_count = 0;
-+}
-+
-+/*
-+ * test_single_device() - Test a single TTY device
-+ * Extracted from verify_ioctl() to support both single and multi-device modes
-+ */
-+static void test_single_device(const char *dev)
-+{
-+	parenttty = childtty = (char *)dev;
-+
-+	parentpid = getpid();
-+	childpid = SAFE_FORK();
-+	if (!childpid) {
-+		do_child();
-+		exit(EXIT_SUCCESS);
-+	}
-+
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	parentfd = SAFE_OPEN(parenttty, O_RDWR, 0777);
-+	SAFE_IOCTL(parentfd, TCFLSH, TCIOFLUSH);
-+
-+	run_ptest();
-+
-+	TST_CHECKPOINT_WAKE(0);
-+	SAFE_CLOSE(parentfd);
-+	parentfd = -1;
-+}
-+
-+static void verify_ioctl(void)
-+{
-+	int i;
-+
-+	tst_res(TINFO, "Testing %s variant", variants[tst_variant].name);
-+
-+	if (device) {
-+		/* Single device mode - test specified device only */
-+		tst_res(TINFO, "Single device mode: testing %s", device);
-+		test_single_device(device);
-+	} else {
-+		/* Auto-discovery mode - find and test all valid TTYs */
-+		tst_res(TINFO, "Auto-discovery mode: scanning for TTY devices");
-+		find_valid_ttys();
-+
-+		for (i = 0; i < tty_count; i++) {
-+			tst_res(TINFO, "Testing device %d/%d: %s",
-+				i + 1, tty_count, tty_list[i]);
-+			test_single_device(tty_list[i]);
-+		}
-+
-+		free_tty_list();
-+	}
-+}
-+
-+static void prepare_termio(void)
-+{
-+	/* Use "old" line discipline */
-+	termios_exp.c_line = termio_exp.c_line = 0;
-+
-+	/* Set control modes */
-+	termios_exp.c_cflag = termio_exp.c_cflag = B50 | CS7 | CREAD | PARENB | PARODD | CLOCAL;
-+
-+	/* Set control chars. */
-+	for (int i = 0; i < NCC; i++)
-+		termio_exp.c_cc[i] = CSTART;
-+	for (int i = 0; i < VEOL2; i++)
-+		termios_exp.c_cc[i] = CSTART;
-+
-+	/* Set local modes. */
-+	termios_exp.c_lflag = termio_exp.c_lflag =
-+	    ((unsigned short)(ISIG | ICANON | XCASE | ECHO | ECHOE | NOFLSH));
-+
-+	/* Set input modes. */
-+	termios_exp.c_iflag = termio_exp.c_iflag =
-+	    BRKINT | IGNPAR | INPCK | ISTRIP | ICRNL | IUCLC | IXON | IXANY |
-+	    IXOFF;
-+
-+	/* Set output modes. */
-+	termios_exp.c_oflag = termio_exp.c_oflag = OPOST | OLCUC | ONLCR | ONOCR;
-+}
-+
-+/*
-+ * run_ptest() - setup the various termio/termios structure values and issue
-+ * the TCSETA/TCSETS ioctl call with the TEST macro.
-+ */
-+static void run_ptest(void)
-+{
-+	struct variant *v = &variants[tst_variant];
-+
-+	/* Init termio/termios structures used to check if all params got set */
-+	memset(v->termio, 0, v->termio_size);
-+
-+	SAFE_IOCTL(parentfd, v->tcset, v->termio_exp);
-+
-+	/* Get termio and see if all parameters actually got set */
-+	SAFE_IOCTL(parentfd, v->tcget, v->termio);
-+	v->check();
-+}
-+
-+static int cmp_attr(unsigned long long exp, unsigned long long act, const char *attr)
-+{
-+	if (act == exp)
-+		return 0;
-+	tst_res(TFAIL, "%s has incorrect value %llu, expected %llu",
-+		attr, act, exp);
-+	return 1;
-+}
-+
-+static int cmp_c_cc(unsigned char *exp_c_cc, unsigned char *act_c_cc, int ncc)
-+{
-+	int i, fails = 0;
-+	char what[32];
-+
-+	for (i = 0; i < ncc; ++i) {
-+		sprintf(what, "control char %d", i);
-+		fails += cmp_attr(exp_c_cc[i], act_c_cc[i], what);
-+	}
-+	return fails;
-+}
-+
-+#define CMP_ATTR(term_exp, term, attr, flag)				\
-+({															\
-+	flag += cmp_attr((term_exp).attr, (term).attr, #attr);	\
-+	flag;                                                   \
-+})
-+
-+#define CMP_C_CC(term_exp, term, flag)								\
-+({																	\
-+	flag += cmp_c_cc(term_exp.c_cc, term.c_cc, sizeof(term.c_cc));	\
-+	flag;															\
-+})
-+
-+static void chk_tty_parms_termio(void)
-+{
-+	int flag = 0;
-+
-+	flag = CMP_ATTR(termio_exp, termio, c_line, flag);
-+	flag = CMP_C_CC(termio_exp, termio, flag);
-+	flag = CMP_ATTR(termio_exp, termio, c_lflag, flag);
-+	flag = CMP_ATTR(termio_exp, termio, c_iflag, flag);
-+	flag = CMP_ATTR(termio_exp, termio, c_oflag, flag);
-+
-+	if (!flag)
-+		tst_res(TPASS, "TCGETA/TCSETA tests");
-+}
-+
-+static void chk_tty_parms_termios(void)
-+{
-+	int flag = 0;
-+
-+	flag = CMP_ATTR(termios_exp, termios, c_line, flag);
-+	flag = CMP_C_CC(termios_exp, termios, flag);
-+	flag = CMP_ATTR(termios_exp, termios, c_lflag, flag);
-+	flag = CMP_ATTR(termios_exp, termios, c_iflag, flag);
-+	flag = CMP_ATTR(termios_exp, termios, c_oflag, flag);
-+
-+	if (!flag)
-+		tst_res(TPASS, "TCGETS/TCSETS tests");
-+}
-+
-+static void do_child(void)
-+{
-+	int cfd = SAFE_OPEN(childtty, O_RDWR, 0777);
-+
-+	SAFE_IOCTL(cfd, TCFLSH, TCIOFLUSH);
-+
-+	/* tell the parent that we're done */
-+	TST_CHECKPOINT_WAKE(0);
-+
-+	TST_CHECKPOINT_WAIT(0);
-+	tst_res(TINFO, "child: parent has finished testing");
-+	SAFE_CLOSE(cfd);
++	SAFE_MUNMAP(p, hpage_size);
++	SAFE_MUNMAP(q, totpages * hpage_size);
++	SAFE_CLOSE(fd);
++	SAFE_CLOSE(fdx);
++	fd = -1;
++	fdx = -1;
 +}
 +
 +static void setup(void)
 +{
-+	int fd;
++	struct sigaction sa = {};
 +
-+	if (device) {
-+		/* Single device mode - validate the specified device */
-+		tst_res(TINFO, "Using specified device: %s", device);
-+
-+		fd = SAFE_OPEN(device, O_RDWR, 0777);
-+		SAFE_IOCTL(fd, TCGETS, &termios_bak);
-+		SAFE_CLOSE(fd);
-+	} else {
-+		/* Auto-discovery mode - will find devices during test */
-+		tst_res(TINFO, "Auto-discovery mode enabled");
-+	}
-+
-+	prepare_termio();
++	sigemptyset(&sa.sa_mask);
++	sa.sa_flags = 0;
++	sa.sa_handler = sigbus_handler;
++	SAFE_SIGACTION(SIGBUS, &sa, NULL);
++	hpage_size = tst_get_hugepage_size();
 +}
 +
 +static void cleanup(void)
 +{
-+	if (parentfd >= 0) {
-+		SAFE_IOCTL(parentfd, TCSETS, &termios_bak);
-+		SAFE_CLOSE(parentfd);
-+	}
-+
-+	/* Free any allocated TTY list */
-+	free_tty_list();
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++	if (fdx != -1)
++		SAFE_CLOSE(fdx);
 +}
 +
 +static struct tst_test test = {
-+	.timeout = 20,
++	.tags = (struct tst_tag[]){{"linux-git", "ebed4bfc8da8"}, {}},
 +	.needs_root = 1,
-+	.needs_checkpoints = 1,
-+	.forks_child = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.needs_tmpdir = 1,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = verify_ioctl,
-+	.test_variants = 2,
-+	.options = (struct tst_option[]) {
-+		{"d:", &device, "TTY device to test (optional). If not specified, auto-discovers all /dev/tty[0-9]* devices. Example: /dev/tty1"},
-+		{}
-+	}
++	.test_all = run_test,
++	.hugepages = {1, TST_NEEDS},
 +};
-+
 -- 
-2.39.5 (Apple Git-154)
+2.52.0
 
 
 -- 
