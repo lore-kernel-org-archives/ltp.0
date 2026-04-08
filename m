@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 396221073CB6
-	for <ltp@archiver.kernel.org>; Wed,  8 Apr 2026 13:24:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C3B31073CBA
+	for <ltp@archiver.kernel.org>; Wed,  8 Apr 2026 13:28:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 604B53E2E5E
-	for <ltp@archiver.kernel.org>; Wed,  8 Apr 2026 15:24:19 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 9043F3E2E65
+	for <ltp@archiver.kernel.org>; Wed,  8 Apr 2026 15:28:38 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AB1B33E1228
- for <ltp@lists.linux.it>; Wed,  8 Apr 2026 15:24:00 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 568DC3DCD61
+ for <ltp@lists.linux.it>; Wed,  8 Apr 2026 15:28:20 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3C6081000999
- for <ltp@lists.linux.it>; Wed,  8 Apr 2026 15:23:58 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C63A01A007AB
+ for <ltp@lists.linux.it>; Wed,  8 Apr 2026 15:28:16 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1775654640; x=1807190640;
+ t=1775654900; x=1807190900;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=50KMLnrslnOfeGwD2tjDSZoCNqZuREkDfJJK37iCrzU=;
- b=SI6NYHi1KqE2l0jm+q/8ai5Hi7L/c8Hy5sjvwC8HUKGJSw2R4HOwJLQd
- Y8hy2wla53sdSsZSoPOA9MUsxrmfg/m0hKxCO5IheO/0poGnBJ1DloV7g
- b1qmr0IJUgJsU7CYWmm/VSWrPmYiWbMR8c/Da/HoatYzaOeiIT9AjU9qc
- kAvF8iu18fucgDhbNCQRlG/C+pJqPfflhro4yHYRPAKkTRSXvbYH+wIGk
- uyBrLKiCrMkHv3oRE99SrgUteb1+JTjCa32Y96BMHqcH4+mO4ERvlCFVV
- 9Djm4CPyRNomV9pr4gpn2MBM8wKO4ML3Y2/WkGfusprcnnY75Fw7AkYmM Q==;
-X-CSE-ConnectionGUID: IYO2B226Sfe+tAewXzvAHw==
-X-CSE-MsgGUID: bj/H5UVdQHOM/pcY5v7gHg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11753"; a="76648198"
-X-IronPort-AV: E=Sophos;i="6.23,167,1770624000"; d="scan'208";a="76648198"
+ bh=LBJ0Y/hZQDH5nKON3XkOvo2oIzFykk3gfxYJLcw1g7E=;
+ b=HEyDf3FUkv+55oMPexi4Fp+pga18FUmBHsBHWzAPYOeTYQj0/0KK/ol8
+ 43TClm125jPgbhJEqFAjGCSE0+Z0QdFZ0bknztuKy5umfn6Qvt5jQIwH7
+ DQYoBb3BGgGnvrcIJw6IRs6fO7Irts/or24mEsA+MaEOulKfLwtWuu50R
+ h2NvNcY7/RjP3aSwh3JV4rjbCQpgVLue0ygWPh+qo8IkcwUzSgTepQiYF
+ PbFL3eObqQGmY+GcR99cRC6oUPlvhmdqOaFj9u/AN5TcJr+afbCidVKtH
+ LM3cp1yTg+o4/JgoncSibCZsm7nfyrqceVXlelIh1k/L3eNggmhDgdfTx w==;
+X-CSE-ConnectionGUID: ktcUJ/1US12ufW2WyGcw2g==
+X-CSE-MsgGUID: VVh/Eb08TMurJvYD3VHEvQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11753"; a="76648649"
+X-IronPort-AV: E=Sophos;i="6.23,167,1770624000"; d="scan'208";a="76648649"
 Received: from fmviesa007.fm.intel.com ([10.60.135.147])
  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Apr 2026 06:23:56 -0700
-X-CSE-ConnectionGUID: WwntemekRku9RkfzBA08eQ==
-X-CSE-MsgGUID: j4WYYlCeS/+KK2KOeXecgA==
+ 08 Apr 2026 06:28:12 -0700
+X-CSE-ConnectionGUID: 2Gg5M42xRpmC5v1A6bcnog==
+X-CSE-MsgGUID: D9WjFrgOS+avTLfOHc4c0A==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,167,1770624000"; d="scan'208";a="225294915"
+X-IronPort-AV: E=Sophos;i="6.23,167,1770624000"; d="scan'208";a="225295895"
 Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Apr 2026 06:23:53 -0700
+ 08 Apr 2026 06:28:10 -0700
 From: Piotr Kubaj <piotr.kubaj@intel.com>
 To: ltp@lists.linux.it
-Date: Wed,  8 Apr 2026 15:22:12 +0200
-Message-ID: <20260408132211.653130-2-piotr.kubaj@intel.com>
+Date: Wed,  8 Apr 2026 15:27:29 +0200
+Message-ID: <20260408132728.653586-2-piotr.kubaj@intel.com>
 X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v15] thermal: add new test group
+Subject: [LTP] [PATCH v16] thermal: add new test group
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,15 +83,13 @@ of thermal interrupts increased.
 
 Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
 ---
-Address Andrea's feedback.
-Also, nproc is now a global variable, so read_interrupts() may be
-reduced to taking only one parameter.
+I previously missed Petr's email, this version addresses his feedback as well.
  runtest/thermal                               |   3 +
  testcases/kernel/Makefile                     |   1 +
  testcases/kernel/thermal/.gitignore           |   1 +
  testcases/kernel/thermal/Makefile             |   9 +
- .../kernel/thermal/thermal_interrupt_events.c | 232 ++++++++++++++++++
- 5 files changed, 246 insertions(+)
+ .../kernel/thermal/thermal_interrupt_events.c | 235 ++++++++++++++++++
+ 5 files changed, 249 insertions(+)
  create mode 100644 runtest/thermal
  create mode 100644 testcases/kernel/thermal/.gitignore
  create mode 100644 testcases/kernel/thermal/Makefile
@@ -142,10 +140,10 @@ index 000000000..4657c3fb3
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
 diff --git a/testcases/kernel/thermal/thermal_interrupt_events.c b/testcases/kernel/thermal/thermal_interrupt_events.c
 new file mode 100644
-index 000000000..b9a6018aa
+index 000000000..e3204784e
 --- /dev/null
 +++ b/testcases/kernel/thermal/thermal_interrupt_events.c
-@@ -0,0 +1,232 @@
+@@ -0,0 +1,235 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (C) 2026 Intel - http://www.intel.com/
@@ -167,6 +165,7 @@ index 000000000..b9a6018aa
 +#include "tst_test.h"
 +#include "tst_timer_test.h"
 +
++#define	TEST_RUNTIME	3
 +#define	RUNTIME		30
 +#define	SLEEP		10
 +#define	TEMP_INCREMENT	10
@@ -200,10 +199,10 @@ index 000000000..b9a6018aa
 +				interrupts[i] = strtoull(ptr, &endptr, 10);
 +
 +				if (ptr == endptr)
-+					tst_brk(TBROK, "interrupt not found");
++					tst_brk(TBROK, "CPU %d: interrupt not found", nproc);
 +
 +				if (errno == ERANGE)
-+					tst_brk(TCONF, "interrupt out of range");
++					tst_brk(TBROK, "CPU %d: interrupt out of range", nproc);
 +
 +				ptr = endptr;
 +				tst_res(TDEBUG, "interrupts[%d]: %" PRIu64, i, interrupts[i]);
@@ -221,6 +220,8 @@ index 000000000..b9a6018aa
 +	char line[8192];
 +
 +	nproc = tst_ncpus();
++	tst_set_runtime(nproc * TEST_RUNTIME);
++
 +	tst_res(TDEBUG, "Number of logical cores: %d", nproc);
 +	interrupt_init = SAFE_CALLOC(nproc, sizeof(uint64_t));
 +	interrupt_later = SAFE_CALLOC(nproc, sizeof(uint64_t));
@@ -364,7 +365,7 @@ index 000000000..b9a6018aa
 +		"x86_pkg_temp_thermal",
 +		NULL
 +	},
-+	.min_runtime = 180,
++	.min_runtime = 5,
 +	.needs_root = 1,
 +	.setup = setup,
 +	.supported_archs = (const char *const []) {
