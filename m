@@ -4,97 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E21CE9DE60
-	for <ltp@archiver.kernel.org>; Thu,  9 Apr 2026 08:28:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAD47E9DE6A
+	for <ltp@archiver.kernel.org>; Thu,  9 Apr 2026 08:35:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C1C253E2E5A
-	for <ltp@archiver.kernel.org>; Thu,  9 Apr 2026 10:28:08 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 582D43E2A04
+	for <ltp@archiver.kernel.org>; Thu,  9 Apr 2026 10:35:45 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 425E83E1557
- for <ltp@lists.linux.it>; Thu,  9 Apr 2026 10:27:50 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 853913E216E
+ for <ltp@lists.linux.it>; Thu,  9 Apr 2026 10:35:25 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CD384100018C
- for <ltp@lists.linux.it>; Thu,  9 Apr 2026 10:27:49 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 26ABF5BD1E;
- Thu,  9 Apr 2026 08:27:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1775723268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=52k8TVi5D9kmK8VOB+Qy9IOQ3bcMutzDnaD29rX0OAk=;
- b=2mGDQHFXQFzHSjPYEEzlkgfnLUDxoTlziSszxnDMk9Lw2x/khKQWrDgSWgVZH30VUfT0yf
- 32w5Keq3kQJbuIAJSIwu5wWt+3SXTRjeHA9PeSQ/Aa6BdvI2djuChTJTfE/2prdJcVG4Vs
- xQwentHBACkBz674GX/EZH34wpcm16g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1775723268;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=52k8TVi5D9kmK8VOB+Qy9IOQ3bcMutzDnaD29rX0OAk=;
- b=wphILVrwjJFHuY7ucZ4kW8mKqo+fUV2ZUaBX+GpPZ24VBnUTPUcKcB4zwJ2o8z683kuPlq
- impBVGY2lXO3DrBQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1775723267; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=52k8TVi5D9kmK8VOB+Qy9IOQ3bcMutzDnaD29rX0OAk=;
- b=CXdtODMgG/22QQD0C3ysj5q8MAvXjEAsEt9kK4LYfBO5bdiDdhksWapTFiLsB4ZZcu0jMU
- LIJEa+0wy7X6mEaA8z9JWVQ5foFSbQxuiTPs8XX3taNNgWUg0wqmtYGUK0EKj7P/TSVFgN
- 2T2x1M6FS3gPj2LUeHD0uLAD0QlXkjc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1775723267;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=52k8TVi5D9kmK8VOB+Qy9IOQ3bcMutzDnaD29rX0OAk=;
- b=a9XMC3dFFHFuM0Sr+pnHWqHUJMpDXX/FY54OQkNIXtwgq3S3Xg3odP+lPK//xoSiFpLObP
- XOa+BlYBxn22p5Bw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 15BC14A0B3;
- Thu,  9 Apr 2026 08:27:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6qdzBANj12n3DgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 09 Apr 2026 08:27:47 +0000
-Date: Thu, 9 Apr 2026 10:27:57 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: "Matthew R. Ochs" <mochs@nvidia.com>
-Message-ID: <addjDV_wbPgD0y8e@yuki.lan>
-References: <20260408174406.1572520-1-mochs@nvidia.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8BE051400345
+ for <ltp@lists.linux.it>; Thu,  9 Apr 2026 10:35:23 +0200 (CEST)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 638Iaudo2591197
+ for <ltp@lists.linux.it>; Thu, 9 Apr 2026 08:35:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=TZC87IlG17k2uuaGv0lxbZsEBGMMSfW1HvNuAfKcl
+ Wk=; b=D5B+Iq2jIeplvdG3Sl2AexD6j0W7N4hIOvgKdg+mhqZbmZgITuwzC006u
+ Cynw5kQTeHntLwJ5wRcKuNPAnzf2l4mAV6qoaW766U9Ga5PNJScXwsWquUg0IpsA
+ nTorq1DpHKbuR8oRGkZGFe5Ep3ui9753wht9IoS0BrIuaTVv5y3Gh6KQT7L9UBdP
+ 4AnkCt4iLMywMvZcbNqifxe8cvAM/e0TzB9TxujOy+ySkWN9gQlfmPL/nMpGNk/N
+ VtQHjzom10o4epG55D6mQsnd136vTUyOGOXfdqRDL4TZ6UWcz4YjPxRNnglekz0Y
+ YA5iigj+KsgWoA1Q6Z79cfl578KoA==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dcn2ec2s6-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 09 Apr 2026 08:35:21 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 6398BAeW030068
+ for <ltp@lists.linux.it>; Thu, 9 Apr 2026 08:35:20 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4dcme7jty6-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 09 Apr 2026 08:35:20 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
+ [10.20.54.106])
+ by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 6398ZG3C34799918
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 9 Apr 2026 08:35:16 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 938C820040;
+ Thu,  9 Apr 2026 08:35:16 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id E6F6F2004B;
+ Thu,  9 Apr 2026 08:35:15 +0000 (GMT)
+Received: from ktes.isst.tadn.ibm.com (unknown [9.5.15.16])
+ by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Thu,  9 Apr 2026 08:35:15 +0000 (GMT)
+From: lepillai@linux.ibm.com
+To: ltp@lists.linux.it
+Date: Thu,  9 Apr 2026 08:59:37 +0000
+Message-Id: <20260409085937.1253631-1-lepillai@linux.ibm.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260408174406.1572520-1-mochs@nvidia.com>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid, imap1.dmz-prg2.suse.org:helo,
- suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: oLyTuDZiUwPIuy4FLBguUnHk0INO9N8a
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDA5MDA3MiBTYWx0ZWRfX9XOM04w9yj/d
+ KpEH2c0gNiRuB1dM2DWSt/s0Hv44nUsvNIDzCVgssJD44FucAtxPpoNKTxd6MdQkaH0gsRyo/Ue
+ EWTNNO2FTjLmF4QaWU6XS2Rtw+WLiSDXTmIr6+pkmrdPVfpkU4jIjoQOTcVNwtZyy1fk+CXN7cx
+ npOilqcv+0NxxZd8NMNLX2sbQigoQ+gKS9PhxAShS9i/V3V8ZF1IB6bR8M31G+hVVTc3vfeHOMJ
+ 0GlS8DeE0oB1GhKEuefUFULwtF1A0Wx65wJ/kOj/DgewE/P36XaRGYJfUC3hotvk5yUPiCCPEa3
+ 75SbZPgUVoUITWkstMqKXyLyZUp8tH+kRpr+bEDkt1+LEKZb2sc+xetRauwiwqXLar8hqeqyvex
+ pfadY7st0Lb0jKvWHiRITwle/TlIR62ccR7dQLc+TauZoggXSKcWlaOWGkJc5EDV5MFThbOFgEW
+ JmrPC/qCzyVTWqFiBPw==
+X-Authority-Analysis: v=2.4 cv=Cfw4Irrl c=1 sm=1 tr=0 ts=69d764c9 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=iQ6ETzBq9ecOQQE5vZCe:22 a=VnNF1IyMAAAA:8 a=JQKlb9f-Zrdw7sqUV9EA:9
+X-Proofpoint-GUID: oLyTuDZiUwPIuy4FLBguUnHk0INO9N8a
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-04-09_02,2026-04-08_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 phishscore=0 clxscore=1015 adultscore=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2604010000 definitions=main-2604090072
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls: file_attr05: skip ntfs filesystem
+Subject: [LTP] [PATCH v2] growfiles:fix test failure due to missing directory
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,40 +105,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> LTP mounts ntfs via ntfs-3g (FUSE) rather than the kernel ntfs3
-> driver. ntfs-3g's ntfs_ioctl() returns EINVAL for any unhandled
-> ioctl, including FS_IOC_FSSETXATTR, so file_setattr() returns
-> EINVAL instead of the expected EOPNOTSUPP.
-> 
-> Add "ntfs" to skip_filesystems for the same reason "fuse" is
-> already skipped.
+From: lekshmi-cpillai <lepillai@linux.ibm.com>
 
-The "fuse" in skiplist should match all fuse based filesystems. We pass
-the skip_filesystems pointer to tst_get_supported_fs_types() in
-lib/tst_supported_fs_types.c. If "fuse" is present there we enable
-skip_fuse flag nad pass it to fs_could_be_used() function. In the
-fs_could_be_used() we check if filesystem is implemented by fuse and
-then skip it accordingly.
+Signed-off-by: lekshmi-cpillai <lepillai@linux.ibm.com>
+---
+ testcases/kernel/fs/doio/growfiles.c | 35 +++++++++++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
 
-When I run the test I see:
-
-...
-tst_supported_fs_types.c:165: TINFO: Skipping FUSE based ntfs as requested by the test
-...
-
-So likely something else is at play here. Are you sure you are dealing
-with a fuse based ntfs or with the kernel based implementation?
-
+diff --git a/testcases/kernel/fs/doio/growfiles.c b/testcases/kernel/fs/doio/growfiles.c
+index 21960f82a..5a76ef4c5 100644
+--- a/testcases/kernel/fs/doio/growfiles.c
++++ b/testcases/kernel/fs/doio/growfiles.c
+@@ -119,6 +119,38 @@ int lkfile(int fd, int operation, int lklevel);
+ int pre_alloc(int fd, long size);
+ #endif /* !linux */
+ 
++/* Helper function to create directories recursively */
++static int mkdir_recursive(const char *path, mode_t mode)
++{
++	char tmp[PATH_MAX];
++	char *p = NULL;
++	size_t len;
++	struct stat st;
++
++	snprintf(tmp, sizeof(tmp), "%s", path);
++	len = strlen(tmp);
++	if (tmp[len - 1] == '/')
++		tmp[len - 1] = 0;
++
++	for (p = tmp + 1; *p; p++) {
++		if (*p == '/') {
++			*p = 0;
++			if (stat(tmp, &st) == -1) {
++				if (mkdir(tmp, mode) == -1 && errno != EEXIST) {
++					return -1;
++				}
++			}
++			*p = '/';
++		}
++	}
++	if (stat(tmp, &st) == -1) {
++		if (mkdir(tmp, mode) == -1 && errno != EEXIST) {
++			return -1;
++		}
++	}
++	return 0;
++}
++
+ extern int datapidgen(int, char *, int, int);
+ extern int datapidchk(int, char *, int, int, char **);
+ 
+@@ -482,7 +514,7 @@ int main(int argc, char **argv)
+ 			unsetenv("TMPDIR");	/* force the use of auto_dir */
+ #endif
+ 			if (stat(auto_dir, &statbuf) == -1) {
+-				if (mkdir(auto_dir, 0777) == -1) {
++				if (mkdir_recursive(auto_dir, 0777) == -1) {
+ 					if (errno != EEXIST) {
+ 						fprintf(stderr,
+ 							"%s%s: Unable to make dir %s\n",
+@@ -3058,3 +3090,4 @@ int pre_alloc(int fd, long size)
+ 	return 0;
+ }
+ #endif
++
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.39.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
