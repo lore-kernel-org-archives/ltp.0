@@ -4,91 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 269D010FC465
-	for <ltp@archiver.kernel.org>; Thu,  9 Apr 2026 02:26:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1775701596; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=EzdhrAYGnQGgVVM8G/igsTo4XjQOHNnJzSt5/VuoswM=;
- b=nxw2Eh0FBPD1zyY7Xc+dEswMKPA8GY+rCAEKHtBzBdJ8UvQLVdxtHaasy//jwrG76E6Zk
- cTpIFScis8XT3CqrPYXbYHb2KR+/RV9+TGFESX2MjZtF5c5IWg7OFX6w9tRG2GeTvTc3Aji
- yrYTyXIWhCyLzDWYfeRPEEA79j2xI08=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDBF6E98FB6
+	for <ltp@archiver.kernel.org>; Thu,  9 Apr 2026 06:14:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DA75B3E6194
-	for <ltp@archiver.kernel.org>; Thu,  9 Apr 2026 04:26:36 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 00D833E2989
+	for <ltp@archiver.kernel.org>; Thu,  9 Apr 2026 08:14:13 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 945D53E60C0
- for <ltp@lists.linux.it>; Thu,  9 Apr 2026 04:26:11 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1C06C3E2970
+ for <ltp@lists.linux.it>; Thu,  9 Apr 2026 08:13:54 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8CC7E14002B7
- for <ltp@lists.linux.it>; Thu,  9 Apr 2026 04:26:10 +0200 (CEST)
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-488a8ca4aadso3575265e9.3
- for <ltp@lists.linux.it>; Wed, 08 Apr 2026 19:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1775701570; x=1776306370; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=jNNymPwD0XMezgwmXs9zQpJ1ji35r3CHsoskBrmIrDQ=;
- b=Bjz5GVbbNV3RV3+PyYf0e3VD6YrjHQpSGmAm++mCmYuoHr5UA+NrA/LRePe3CY4G22
- tvcF/s0LkG6hjXUORYveSbG62LM0u7jw7FKn2298LPoqevRYu0drlcwljzN/13kyvUT1
- +qrTYrkkVW4dmqCU4KLBH4E8W0rBcLA//ifdCNeZasDWZciTaOwC/fASP3C+mDPElUr7
- SUfN9+D9PkO07bQSiJoaYduI2aBH70ArardvxU4BaRhbs74m6XiEiSBFSUs6UC5XXidk
- ASuAC8QFPN304AGBWgAiuvwpmnHmXiZLJSfTDfxwY7kymgxh0OHWA5m0NpaD1DOaOBiu
- XsfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1775701570; x=1776306370;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=jNNymPwD0XMezgwmXs9zQpJ1ji35r3CHsoskBrmIrDQ=;
- b=I88uOUBsi5S1VaVMqNPr9HMZVBeV+Z+E4EZI95DDbYwCR0VLb0OylxgIKPNqRE8Qfm
- UuG0DN3IMm7wo5WW3tpYMoqFSLplx1RejqTVPDx5MqhOc47AKEnxyRidWvYfEpGAC4p+
- qaDQfzLTXYKbV7F3AEZ58IU2JQDq2X0hSDHaYEetWlacl9U+4tHOle0owKrlWaPPZbKg
- GE0bh/nKk1wEcfOsyXklHaXLqAvE0czmJRAidBxolOvOxsB1+UAS62CnxV6dJAixt5AF
- ezR/Q2XOnNx2CRiDT8+fW5IwcMcG+nbfJpbykEmNd0RjA2FDP+HyGAHJ1ZXETs17BLc/
- FFag==
-X-Gm-Message-State: AOJu0Yw7Vdcb/a6Q9slO2SduQJ6DecJ3SHzKs53l1sEG3hoE9y6bhiCp
- u9er+74BvCZaY/E8FGhGupTZVXkqLsKjfIma6dJSIpVVnp7jARGra/J/bhtS3YiCNaYNRJpOjOf
- FYOE=
-X-Gm-Gg: AeBDietFVVUN6QMJ3BiycX0SeoxJbzWUuuZ13lp7gYN9iUWE0YXb7PInF+Ub0PUHZiU
- BR5Y4j0iiW2a1c0G6ke3WdkCRrEkYM5OR4lHzmyR3FoxSepN/PXKJ/c8amwu7udZM3t1MGu5US8
- fCZKqpiDap/ohNG1wUB/AEjtdJd/oYs8zy1rF33icw8rQBeOCq5F+S3d4z7slyumLZCpyaut8vp
- ne+mDgC5Q5Jpx946u2Z2q2CechsGGOVlSyHrsNFfYvzt3AKrOr2/pAEcEgkZu3t1/q9qEq2b7AO
- 6rsauCwKCUlnkE0Qe/ctex/qcHBGZd1/V/buARLUxwp4i3gmQQLGZRuKhMuPpXHHAA4z0BCmlbX
- 2wBPElY+oiM4Yfybjpu0WdAN0QY6UuO3vwFRWjxO9fTJlS0w7Y7JLIkseA1ZVgQNfq6jZ+4dH1V
- TN47DhiHp5WqasP2G93ZluRyfs+K5MCX6OZ9lMwH4f
-X-Received: by 2002:a05:600c:5247:b0:488:b187:3c with SMTP id
- 5b1f17b1804b1-488b1870244mr185274045e9.14.1775701569736; 
- Wed, 08 Apr 2026 19:26:09 -0700 (PDT)
-Received: from autotest-wegao.qe.prg2.suse.org
- ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-488cd0b4829sm22265515e9.3.2026.04.08.19.26.09
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 08 Apr 2026 19:26:09 -0700 (PDT)
-Date: Thu, 9 Apr 2026 02:26:07 +0000
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <adcOPxR0ZgVuRS-a@autotest-wegao.qe.prg2.suse.org>
-References: <20260317114635.944-1-wegao@suse.com>
- <20260404011340.13288-1-wegao@suse.com> <adZot378W4Rg-g4V@yuki.lan>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 694911000524
+ for <ltp@lists.linux.it>; Thu,  9 Apr 2026 08:13:54 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7E2845BCE6;
+ Thu,  9 Apr 2026 06:13:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1775715233;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3GcTBX0Yad+SCC7SHDfvHzq5VEYInnZ2aQIFV8mcoOw=;
+ b=AJmCCxpetBu2Fj8j//GpTYbK+GZ6VFPHAawrLx9NtCcx+nhA2t3DTnoXNWuubsVBL6eoom
+ NBfShkNL65RMZ/+oqp2Z4w39ItVem3N8v6lnj9J+OJI6UQjRoCLYph0LgCE8hkKKiafj1N
+ kbKLbjJhWpEOZEuc0UK1Zg5jP4fclHA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1775715233;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3GcTBX0Yad+SCC7SHDfvHzq5VEYInnZ2aQIFV8mcoOw=;
+ b=P5/59UQGZV1mwD8wNgk5dy0Bn1yBwu3ibxaKeBy78ARUKJCyT+7xhxVs7fTykeIxo0mYUk
+ 2Sym/35X6PG1bmDg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1775715233;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3GcTBX0Yad+SCC7SHDfvHzq5VEYInnZ2aQIFV8mcoOw=;
+ b=AJmCCxpetBu2Fj8j//GpTYbK+GZ6VFPHAawrLx9NtCcx+nhA2t3DTnoXNWuubsVBL6eoom
+ NBfShkNL65RMZ/+oqp2Z4w39ItVem3N8v6lnj9J+OJI6UQjRoCLYph0LgCE8hkKKiafj1N
+ kbKLbjJhWpEOZEuc0UK1Zg5jP4fclHA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1775715233;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3GcTBX0Yad+SCC7SHDfvHzq5VEYInnZ2aQIFV8mcoOw=;
+ b=P5/59UQGZV1mwD8wNgk5dy0Bn1yBwu3ibxaKeBy78ARUKJCyT+7xhxVs7fTykeIxo0mYUk
+ 2Sym/35X6PG1bmDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 556B64A0B3;
+ Thu,  9 Apr 2026 06:13:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id phZ0E6FD12n5BgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 09 Apr 2026 06:13:53 +0000
+Date: Thu, 9 Apr 2026 08:13:47 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20260409061347.GA64002@pevik>
+References: <20260402200431.157875-1-pvorel@suse.cz>
+ <ac8f0MPErGdZzDNe@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <adZot378W4Rg-g4V@yuki.lan>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+In-Reply-To: <ac8f0MPErGdZzDNe@redhat.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[vmcp_m.sh:url,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v7] io_submit04: Add test case for RWF_NOWAIT flag
+Subject: Re: [LTP] [PATCH 1/1] Remove s390x test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,128 +108,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Jan Hoeppner <hoeppner@linux.vnet.ibm.com>,
+ Elif Aslan <elas@linux.vnet.ibm.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Apr 08, 2026 at 05:11:03PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/io_submit/io_submit04.c
-> > @@ -0,0 +1,99 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright (c) 2025 Wei Gao <wegao@suse.com>
-> > + */
-> > +
-> > +/*\
-> > + * Test RWF_NOWAIT support in io_submit(), verifying that an
-> > + * asynchronous read operation on a blocking resource (empty pipe)
-> > + * will cause -EAGAIN. This is done by checking that io_getevents()
-> > + * :manpage:`io_getevents(2)` syscall returns immediately and
-> > + * io_event.res is equal to -EAGAIN.
-> > + */
-> > +
-> > +#include "config.h"
-> > +#include "tst_test.h"
-> > +#include "lapi/syscalls.h"
-> > +#include "lapi/aio_abi.h"
-> > +
-> > +#define BUF_SIZE 100
-> > +
-> > +static int fd[2] = {-1, -1};
-> > +static aio_context_t ctx;
-> > +static char *buf;
-> > +static iocb *cb;
-> > +static iocb **iocbs;
-> > +
-> > +static void setup(void)
-> > +{
-> > +	if (tst_syscall(__NR_io_setup, 1, &ctx))
-> > +		tst_brk(TBROK | TERRNO, "io_setup failed");
-> 
-> Sorry if that was asked in previous reviews. Why are we using
-> tst_syscall() instead of the libaio functions like we do in the rest of
-> the tests?
+Hi Li,
 
-No one asked in previous reviews.
+> On Thu, Apr 02, 2026 at 10:04:31PM +0200, Petr Vorel wrote:
+> > vmcp_m.sh is a pure user space test (out of LTP scope). While test
+> > claims testing vmcp tool and module IMHO it's mainly testing vmcp basic
+> > usage (-h, -v), exit codes on error. The only real use is 'vmcp q dasd'.
 
-For io_submit0* test group, ONLY io_submit01.c use libaio function,
-io_submit02.c and io_submit03.c use tst_syscall. I guess io_submit01.c is explicitly
-designed to test the libaio library wrapper. Its documentation states: 
-"Test io_submit() invoked via libaio".
+> > s390-tools maintainers confirmed they have internal CI and are working
+> > on to be part of s390-tools on GitHub [1]. Another reason to remove.
 
-I prefer io_submit04.c use tst_syscall instead of libaio since no dependency with libaio-devel
-and makes the test more portable.
+> > Remove also runtest/s390x_tests, which contained only this test.
 
-If you are agree then i will send next patch with s/strerror/tst_strerrno fix.
-Thanks.
+> Agreed.
+> Reviewed-by: Li Wang <liwang@redhat.com>
 
-> 
-> > +	SAFE_PIPE(fd);
-> > +
-> > +	cb->aio_fildes = fd[0];
-> > +	cb->aio_lio_opcode = IOCB_CMD_PREAD;
-> > +	cb->aio_buf = TST_PTR_TO_UINT(buf);
-> > +	cb->aio_offset = 0;
-> > +	cb->aio_nbytes = BUF_SIZE;
-> > +	cb->aio_rw_flags = RWF_NOWAIT;
-> > +
-> > +	iocbs[0] = cb;
-> > +}
-> > +
-> > +static void cleanup(void)
-> > +{
-> > +	if (fd[0] != -1)
-> > +		SAFE_CLOSE(fd[0]);
-> > +
-> > +	if (fd[1] != -1)
-> > +		SAFE_CLOSE(fd[1]);
-> > +
-> > +	if (ctx && tst_syscall(__NR_io_destroy, ctx))
-> > +		tst_brk(TBROK | TERRNO, "io_destroy() failed");
-> > +}
-> > +
-> > +static void run(void)
-> > +{
-> > +	struct io_event evbuf;
-> > +	struct timespec timeout = { .tv_sec = 1 };
-> > +	long nr = 1;
-> > +
-> > +	TEST(tst_syscall(__NR_io_submit, ctx, nr, iocbs));
-> > +
-> > +	if (TST_RET == -1 && TST_ERR == EOPNOTSUPP) {
-> > +		tst_brk(TCONF, "RWF_NOWAIT not supported by kernel");
-> > +	} else if (TST_RET != nr) {
-> > +		tst_brk(TBROK | TTERRNO, "io_submit() returns %ld, expected %ld",
-> > +				TST_RET, nr);
-> > +	}
-> > +
-> > +	TEST(tst_syscall(__NR_io_getevents, ctx, 1, 1, &evbuf, &timeout));
-> > +
-> > +	if (TST_RET != 1) {
-> > +		tst_res(TFAIL | TTERRNO, "io_getevents() failed to get 1 event");
-> > +		return;
-> > +	}
-> > +
-> > +	if (evbuf.res == -EAGAIN)
-> > +		tst_res(TPASS, "io_getevents() returned EAGAIN on read event");
-> > +	else
-> > +		tst_res(TFAIL, "io_getevents() returned with %s instead of EAGAIN",
-> > +			strerror(-evbuf.res));
->                             ^
-> 			    tst_strerrno()
-> 
-> Other than these two minor issues I do not see any problems in the code,
-> the rest looks fine.
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+Thanks for your ack, merged!
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
