@@ -4,141 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D50CCF364D1
-	for <ltp@archiver.kernel.org>; Thu,  9 Apr 2026 22:55:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4158DF36B9A
+	for <ltp@archiver.kernel.org>; Fri, 10 Apr 2026 02:32:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1775775351; h=to : date :
- message-id : references : in-reply-to : content-id : mime-version :
- subject : list-id : list-unsubscribe : list-archive : list-post :
- list-help : list-subscribe : from : reply-to : cc : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1775788365; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=B3mCy6SY6xzUj85AS9uZbkahRwqswTmZqodz+LCsuUY=;
- b=daWI0x3ju4kqJyaiUC/7+VKQ82ZULALMLMyYUIYVsRmYLmZugZ2bSqdKWlOOjhbOT6z9T
- MLRceTSHM0hWWOGjjhrdsXQoipXrtjkgQEubPq9NP/ZEDXAX0ddRdOUzgxAVx84rRVhAHF8
- P+IyUpnZAUeAU/+d8DV9DHdu2Az/zwY=
+ bh=i4COvm1n959OT9k9D1yktuluTcuIcFmDCvWIfDksqrA=;
+ b=Oi9wEtzwBsbImqV9F9/8RYY8MbednclEO5dOrr29GTPrGyLoFu3+m4J6YBldP9D8DnC1q
+ Td6Pcc8PhrjG9YmQUOtoImxjNXaklu13X4/nT935EuRXeC+DClu0XsF5QSwoJSSujW6IYZK
+ /GnHsHvd7XwiPrxmbuQBfz75V2EJfmE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6C75F3E60A6
-	for <ltp@archiver.kernel.org>; Fri, 10 Apr 2026 00:55:51 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id AE3643E60AC
+	for <ltp@archiver.kernel.org>; Fri, 10 Apr 2026 04:32:45 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5B3633E1A21
- for <ltp@lists.linux.it>; Fri, 10 Apr 2026 00:55:26 +0200 (CEST)
-Received: from SN4PR0501CU005.outbound.protection.outlook.com
- (mail-southcentralusazlp170110003.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:c10d::3])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (secp384r1) server-signature RSA-PSS (2048 bits)
- server-digest SHA256) (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F0282600486
- for <ltp@lists.linux.it>; Fri, 10 Apr 2026 00:55:25 +0200 (CEST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Si24HgFKmk1MHMu4MWmwN0NLyTCkRdf+yh6GHqLNGgo//r3Ov0hHGY3i6U2txC1qMOKU85lHkxI5OwkKnYIHs/B/rabR5sE9nl6NELJANWVTFWUmwIk5/cnGvfz2VQdealfTGp+0eByCh2T9/h+pu1spC/ozUGntqHRYDTwAKc5/iJfZB2rC4FFtmh8qZrl4H3JdhxueuCDLXAJ8pJvtzfw+3or7bmN91Cw1L1fBPBH08dj7its5a9bOpjIJ0bY+D2i5WgEoGmuxNIZlN9ORS7lGXalDsdWhpW5y4C5ZvyEzkAlEFXpQ0IJMisOqeWUqjylirwH349CySDhit1kbtQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c88pcVBHlrXY6JemcbMCZBmswhEYiWelXU+jI25B1IM=;
- b=fVYqho1x3B/qE3qlVlE0/YX5oD6pwJRfHmzB3ja9zlgUx6sul/VuIj2gz1PUCuiFjrX1xUxltka2aoJgPzjWU8Jk1azvKuhjuQAk8okf+RNqicjpUVkbcZq1rBpXrkm907MmW7qZvCJAXqv7hvE72DxoJVo31wBaN4zOB++qK3whiIPiIm811EkXcpNybNxk/hujwH9+gtwTs5cDCjJWlGaXYNzxVQol4wr8vkXYKuYvgI0WlQoZq/t+aY9nKthNkskHm/Sfp7tQDQK3oQ1uU42+nSacWzJqSH8zI5h24Cp3tGH+Py3+Zp18x2ldVWYO3soK47yK2+FKCHR7wvK6YA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c88pcVBHlrXY6JemcbMCZBmswhEYiWelXU+jI25B1IM=;
- b=HFTFkqiw16A4ljcyHhTPKQ88doNF7RzCrZLVCbtJHoY5DxQLEOMen6yHCK/Yv/6BPyNXkSZ47IauylAZ61vvRlYEo5gcV59N5hEbqFWuIr1NcpbqwJ8SqYmqN/ZZWg9zuunq9zT7+4baaVhu7Rr4mYUnd11NM904dbAapjtBtjvMU4DL2W1tdNm/XCcx7tQJ+n0YbIXP8Nu6UAFxrtMgtXbowniTbwtZGNdvH8HFqW4kblk1ZIp97pgeav7pF2fyI0xpPPr+91u1hoN7bzmV67qEnF7UAx3CVwhH8qd83Ww0AfLa+KrAkGT28hIe2BIpae4KlJGMC4oJP+bp6YnN+A==
-Received: from DS0PR12MB8442.namprd12.prod.outlook.com (2603:10b6:8:125::12)
- by DM6PR12MB4122.namprd12.prod.outlook.com (2603:10b6:5:214::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9791.34; Thu, 9 Apr
- 2026 22:55:21 +0000
-Received: from DS0PR12MB8442.namprd12.prod.outlook.com
- ([fe80::c4df:b439:571:4591]) by DS0PR12MB8442.namprd12.prod.outlook.com
- ([fe80::c4df:b439:571:4591%6]) with mapi id 15.20.9791.032; Thu, 9 Apr 2026
- 22:55:20 +0000
-To: Petr Vorel <pvorel@suse.cz>
-Thread-Topic: [LTP] [PATCH] syscalls: file_attr05: skip ntfs filesystem
-Thread-Index: AQHcx39M5lxVQj5BUk6C0HklgVevaLXWXPyAgAD72gA=
-Date: Thu, 9 Apr 2026 22:55:20 +0000
-Message-ID: <79CF2D7E-5987-4321-BDE7-D5FF34EBF952@nvidia.com>
-References: <20260408174406.1572520-1-mochs@nvidia.com>
- <20260409075345.GC64002@pevik>
-In-Reply-To: <20260409075345.GC64002@pevik>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS0PR12MB8442:EE_|DM6PR12MB4122:EE_
-x-ms-office365-filtering-correlation-id: ae43da7e-f8b0-46ec-c138-08de968b13af
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
- ARA:13230040|366016|1800799024|376014|38070700021|18002099003|56012099003|22082099003;
-x-microsoft-antispam-message-info: wccl48Fay6LruMpaFLINY2g6CYgZo7VhNit6BAkzvIiqfxTy26AuX4HbNJK3vhn3i5OZ1krIBoMxIzh6sUR/np9dcX0O82yyjx6yIXyHxPLtxEkdHh34abdcVlO/EZPGASlMpeqou+iXeGPuMqUb4pvSjsXruNH+Zv5KwHxU3JZ30K0ZiRLf8y7KjzTXKdKtvFBOAewv2DxXL8pZR2bQzkwKR48/cpnhkpWzf27cvrCy7cWpx8uH0FQFMhgJgBS/nQ52310v/Mk8iRZWoBZFDNMNfK7O+WB3OX4gjBhxJKED0nZCL8d77KuCa73/JKtg7HVdXaUZ8APcd6OYkoCrPXaZ7hvKlImPuoJTlQODWaro4oa/aZMPAcg2tnmVwj0l2nfZpF2sRofu6avW6pYuNVsrgOHo+KyOcNGmxy28y3pMs9pUpu6k/LidF99+MYMicmrfiotSW3CLNTVBQnNbacx4ya2OGCkK3xU2X4lHmcP8zru1xCEQefpXa4HXbzVBOYpzyj1TotGPQJxVU0MRCuKxoYcqsvXlL2Vd2eyRoa2NwNPZDvc/yx9AQ9ud9qe5Goc3G0LqpYKr6ppxGYB0lWa9kHYEA6lB9lkb5q6wiufg3tVrQSA/IelyJ5nCyQwDPbxLbEYH2O0195Id38Ff354CZe4mG4FxjwB++HPM4qusGmCxgldr1f1K4SrGMu7RkPdeUqnTga9BQe3bmUVGJQ/OJ8cmzr/xnMj+IbRw2Geu1guAZebAaMjz6pktUw0mUfav9oxLOkDlUOyDfJb21Nwve0uLWdv/TOb1EWQ4u1g=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:DS0PR12MB8442.namprd12.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230040)(366016)(1800799024)(376014)(38070700021)(18002099003)(56012099003)(22082099003);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?b0plNGU5dEM1ekIyYklNODBWTXZkaEZPdzRKekU2eWcybGRmdkdRRjFEZzBz?=
- =?utf-8?B?d1pkOE1paFk3M0dIT3MxNjhhVEZDM01jQ3R0b2V6eWcvaFFSSWNUcVlBMWdy?=
- =?utf-8?B?ZUhKaGVCNDBUNFNHTzFlNnVYUmxPT05lc1A4U1p1dEcwR0V2YVQ2c2NnTFhU?=
- =?utf-8?B?VzZqdzd6VExwY2lyTFk2ayt5NjcwZmVpc2hoNWJkU3hSOWFuREdBMlFRQVM4?=
- =?utf-8?B?UUVNWG4ySjNFb1lRanpqSzU2Z3JndWlLaFVrUkROL1RJbXNrZ0NJS1JDMExL?=
- =?utf-8?B?bFR0QXhuZmU5SzZ4YWljUXM3NktiNjhHRWxSWWYreDhQc3kxNFk3Y05XdmRm?=
- =?utf-8?B?a05RK1FWSS9GQ2RjUDNydnJUN3krR3RyeVV0b1FNWmxBeXJhL0N2bXpGS2Vm?=
- =?utf-8?B?aVV3SHVWZWt5ZC9VaGNSMzRudmdvdTRjUFlaTWFOaHJqTk00NGR5S0tkSmtx?=
- =?utf-8?B?Z2RDUlF5TlJSSUlvenA1czNueVd3TXpUaTRMS1VGZ2tBL1JlVHBlUzB0MG1G?=
- =?utf-8?B?ZnUrT0lFTHY1TGgvMVdVZTA2QldOZ3lCUzh4UWNweVpiRjF5VXpja2RWN1lB?=
- =?utf-8?B?YzRJVjM2SVQ4SGhydmRTZTZ5L3JoR2prMmMrZmNnbk9ZTkhVQWxZdjdlYnor?=
- =?utf-8?B?TXJJb09WL2ViYjJMaFhPNmp1SHVBV1BJamV0cFBiNm04azVlUkI2ek41b0xm?=
- =?utf-8?B?dmNPRnRiUlp4T1dRUzVxNTNkMHBudFBDd3JBYVpiam0xbitNWk50YThRd3dH?=
- =?utf-8?B?bFRqOGVORTZRSWJ3VnZMTHhVUDFzanhFQzJseVRjOXRMcXdMMFlaOGlHSnhN?=
- =?utf-8?B?WjZjTUYwSmpJM25ya05LZkg3Ui92M1NnamVod09DVlZGWGxHM1o2by9Zc1la?=
- =?utf-8?B?c25FTDBKdWV6ZjBZdkgxNytDMmNBTzFGcXl6aytqc3pTVkNsNFZUaVoybmF3?=
- =?utf-8?B?NkF1NVZsNjM2aE5VOGtITmtZdXlKS3ZmQk5sWFdqbE81V1J6YWQ4T2kxT1Qv?=
- =?utf-8?B?VDNrOVRvbGpFT0V4d3dRSGJSZUZtWERmbHpQRHd6SFV2SkZGVDJyR2lqNW1O?=
- =?utf-8?B?eEVlWXV6bm9QaGwyS3Q5dEZINDk3dnExblBlYUVRcWtJYVV0Umd1SlFBUnM2?=
- =?utf-8?B?dDlCK2ZGbVN5VzJZcmRKSWlpZGdWTEh2SEhnbFk5RDRXbXA5S2dIZFBISmVt?=
- =?utf-8?B?NHh5RHFBNENJcVQ5NmFJRFp4Umk4WW0zTDN4Wk9rUVRPUFRnRjNPdlhKdjA2?=
- =?utf-8?B?ay9keGZUQ3ZpUFkzaG53UU9ZbmVFQ1dLbm9WeGVEYzczNUd0MjlGek1YWDNN?=
- =?utf-8?B?TXUrOC9hT0I3RTRYYkxmdktqeC9tVEZzLzh5cklMMkpDMjlPb3FWWlN1SzN6?=
- =?utf-8?B?WHlnL1NpalhIZ0JOeDYxOHdoanZteHdKN3lBSzFnVmJZN0Q3V1o3REdBSjBW?=
- =?utf-8?B?dUpEUGs3NEo4eXBCd3ZNckw2OGxUN1RmK0wzaStLV0twMEVXWktaYmJWayt0?=
- =?utf-8?B?b1VTeHZSL01aR050c095RTVGb1Z6d0d6SG1TajBjalJrSTF4eEhicDFod2pq?=
- =?utf-8?B?ZmhFdU80eW40U2tqTEFuTDhmbVdzK3FsbDAzbzlLTFFZQUFkNE5yZ0xuWnMy?=
- =?utf-8?B?ZDNhMXR3QnAvaE1pV1BGRWp5NlZrYWJCK2FpK1BEMC9vdDduUW1Balhxd3U1?=
- =?utf-8?B?WExJWjdrVi9KS1Mxak5QUDBSU2NNWGk1R1hRZEEzM2k1aktpaDlzN3dNMzQ0?=
- =?utf-8?B?VDltQ0VFa1RzM2pLcVBtUWtmeU1wS2hMc3Q1ZFhqMGhMYWlVaE53Mm9ML0FY?=
- =?utf-8?B?UXB0R0JTdXk2VGV0SS94OHJ3ZVhJbmFxby8yZ01kQng1SlduZWpibGVlb0RK?=
- =?utf-8?B?VlpZanBJMWdQUThmeTkyNDM3L29tWnNMSXFjRzRwVzYzS2ZKdkQ3YjdZbnk0?=
- =?utf-8?B?SnZSajhXaGdZdUk5R2hkN0t1b05TWXRyRGRuUmk1SUE3eFNZT2QwQnowLzlv?=
- =?utf-8?B?Z1ZrN3Q0c3dOYk9sbi9HZ1pRWFNyVUZjUnk4eU9Sb28rMWphUDN1WU43K0h1?=
- =?utf-8?B?YStpMGlYNGxiWVYwVXEzUWtNOHdwbFhRMnhVWm5XL25XVU5aRDlneXZDRlRi?=
- =?utf-8?B?UExkMUtTTlRtM0g0Z1MwTEppbThxUEMyM0Zja1JCQTd4S2ZPNTh1U0ZUL0pK?=
- =?utf-8?B?V1RDOC9uUmpybTRjODBpYW9pMWQzUE0zQTFDUCtnbUJoSi8zb1NhMGx6Z24w?=
- =?utf-8?B?Kzl4NWdaQzVQa2VCMG9wc28yMldRbVJ3S2hGODcrQ3R1bnFyTzRyV2E3Wk1p?=
- =?utf-8?B?c1pCbzVFSmkyYkhaZ3BMbERmaEJhU3pYM3NPT2RJSmVmb2IzSklEZz09?=
-Content-ID: <A303B019B54BDD4BA39725883C7E2CD2@namprd12.prod.outlook.com>
+ by picard.linux.it (Postfix) with ESMTPS id 5FF423E602F
+ for <ltp@lists.linux.it>; Fri, 10 Apr 2026 04:32:22 +0200 (CEST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9AE90600054
+ for <ltp@lists.linux.it>; Fri, 10 Apr 2026 04:32:21 +0200 (CEST)
+Received: by mail-wm1-x335.google.com with SMTP id
+ 5b1f17b1804b1-488a4bc360bso8381935e9.0
+ for <ltp@lists.linux.it>; Thu, 09 Apr 2026 19:32:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1775788341; x=1776393141; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=/KQvUyY4hFx23OLHpClhb/xFevHa4DCnMOgwsQfBrYI=;
+ b=J50UxYaBdi+ucPvcl4fnxLF9CjWRbiZz43E857GSxkqW6acwlWKXxiiZ0RuMr1dUj6
+ hsOZLYMQMfs5ofii3Un6V7amXG74ZwKgYr9twfh9BEcsuj148XZxvXgN+1CaoqAPK3dG
+ wuO57WciCh4nmKJmsw7f2o+z81UMzhPlUhdJKdNBVeeRLsjkDQz4v0Ncwd//HG/wF9AV
+ cC26HEhjFj2NdnDm+Hak1/7HrWOs+E22FjdU+/olCcWk+WUxehRWCIvpKD9pMIYmcJI0
+ 8MBwUaGxvYvtEofQhxoZtLK0agbobMI3Otx4J2AewmCi13zESOs/HvhCB5dTWP3/eRUK
+ JaLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1775788341; x=1776393141;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=/KQvUyY4hFx23OLHpClhb/xFevHa4DCnMOgwsQfBrYI=;
+ b=IfqgpWvdSkh8pp4uTjmQXQFn22uhBSvDNCkp6ixFWn1JGoOgHBl3SsEy+yLP3gvb7o
+ 48RqftM8pJC4Xie3RBqQ7v5zukiREsxQfuE+AT2w+O3HYZs0RC0X4PVfqUhOId38e3cl
+ NPTzr0ZLDG0ukCKs3ERzTgWTUnww5gXkKUqbnHWK3QipfGgy5+3Egv+Ha61p/JwAGX/I
+ FjSFNe93baQcpUvd0e5c5fMUgFuywBslQMneHcCEUe8qfnItagXaSiiphDXpwm27H6C2
+ uH6zCrVZbmkpSQq4HOXqaRLqzuAs/pQjfJVyOxwSGVdQjyb7LqHTJ/djrE7ZHAbcrRgM
+ nKGw==
+X-Gm-Message-State: AOJu0YzUlIH9Tt0MGSTUPGOuyhWQdMR9xDX5T41k3DaJ8nkAytF+qXbf
+ JihKspO2x7ltRWinDY9Gh6b3vwmxVqm5P5M7CuhRhbDCj5EZSGaOqawMHYNvdIviafkApIKj4Fa
+ w1+Q=
+X-Gm-Gg: AeBDieslQEFUMgYbuO9TBqGYDjBKaXHWT6zsgpkp9BXlJRTj4Ez0JqJLTN3EL7A4Gbl
+ 7qAakVSSJfObfXn5rPTemlJxwSrumE2j3Nfy87gR8yMwMaXfmQaYxAKWM9I4m7Y2FFLQ5WZljlO
+ 8OTh7+xfCyFgbdVg9kObwKtw2Z0tt/up9h6UJ0I8S7jqzsx4J+KI/FhWPKOxoG3iUXaZdgXPvxs
+ 5qddxOwb8To3VvjuTmc0PZnUqPwYtpjyDYdcGmxxUVaUOdthey8SHSGg+4VA0BivwIkCZoJUq+T
+ AXBa4qmbqcQigF1nqZGUiZ6ktK6ihYMiAT66w9lQxcyPpgyx76nSv43vULC/TRIhte7FNtFJrBW
+ bq4hdfpzTCOLx0PQamMulQ16l6SoqM3PNSBe/MyWbKmqengZHs/62NFvkZ/oIfAept+938Uun+E
+ Mn+Lu06yY/w+g=
+X-Received: by 2002:a05:600c:1987:b0:488:b187:d8ed with SMTP id
+ 5b1f17b1804b1-488d67bf765mr13166965e9.2.1775788340739; 
+ Thu, 09 Apr 2026 19:32:20 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-488d532ed4dsm36146795e9.4.2026.04.09.19.32.20
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 09 Apr 2026 19:32:20 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Fri, 10 Apr 2026 02:31:52 +0000
+Message-ID: <20260410023201.18119-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260325011605.5957-1-wegao@suse.com>
+References: <20260325011605.5957-1-wegao@suse.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB8442.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae43da7e-f8b0-46ec-c138-08de968b13af
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2026 22:55:20.7862 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cqwY3Kb0glhi6EGZIBgaH4yEiOy040as5ZileT23jYJBIRpTVXbysZmriDr/rfsKN1LyDdry4I3Ri9wGCjN5ww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4122
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls: file_attr05: skip ntfs filesystem
+Subject: [LTP] [PATCH v6] mremap07.c: New case check mremap with
+ MREMAP_DONTUNMAP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -150,93 +99,242 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Matt Ochs via ltp <ltp@lists.linux.it>
-Reply-To: Matt Ochs <mochs@nvidia.com>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwNCg0KPiBPbiBBcHIgOSwgMjAyNiwgYXQgMDI6NTMsIFBldHIgVm9yZWwgPHB2b3Jl
-bEBzdXNlLmN6PiB3cm90ZToNCj4gDQo+IEhpIE1hdHRoZXcsDQo+IA0KPj4gTFRQIG1vdW50cyBu
-dGZzIHZpYSBudGZzLTNnIChGVVNFKSByYXRoZXIgdGhhbiB0aGUga2VybmVsIG50ZnMzDQo+PiBk
-cml2ZXIuIG50ZnMtM2cncyBudGZzX2lvY3RsKCkgcmV0dXJucyBFSU5WQUwgZm9yIGFueSB1bmhh
-bmRsZWQNCj4+IGlvY3RsLCBpbmNsdWRpbmcgRlNfSU9DX0ZTU0VUWEFUVFIsIHNvIGZpbGVfc2V0
-YXR0cigpIHJldHVybnMNCj4+IEVJTlZBTCBpbnN0ZWFkIG9mIHRoZSBleHBlY3RlZCBFT1BOT1RT
-VVBQLg0KPiANCj4+IEFkZCAibnRmcyIgdG8gc2tpcF9maWxlc3lzdGVtcyBmb3IgdGhlIHNhbWUg
-cmVhc29uICJmdXNlIiBpcw0KPj4gYWxyZWFkeSBza2lwcGVkLg0KPiANCj4gUmV2aWV3ZWQtYnk6
-IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6Pg0KPiBHb29kIGNhdGNoLCB0aGFua3MhDQoNCkkg
-YXBwcmVjaWF0ZSB0aGUgcmV2aWV3IQ0KDQo+IA0KPiBXZSBkaWQgbm90IG5vdGljZSwgYmVjYXVz
-ZSB3ZSBoYXZlIG50ZnMzIGJsYWNrbGlzdGVkIGluIG9wZW5TVVNFIFR1bWJsZXdlZWQ6DQo+IA0K
-PiBjYXQgL2V0Yy9tb2Rwcm9iZS5kLzYwLWJsYWNrbGlzdF9mcy1udGZzMy5jb25mDQo+ICMgVGhl
-IG50ZnMzIGZpbGUgc3lzdGVtIGlzIGJsYWNrbGlzdGVkIGJ5IGRlZmF1bHQgYmVjYXVzZSBpdCBp
-c24ndCBhY3RpdmVseQ0KPiAjIHN1cHBvcnRlZCBieSBTVVNFLg0KPiBibGFja2xpc3QgbnRmczMN
-Cj4gIyBUaGUgZmlsZXN5c3RlbSBjYW4gYmUgdW4tYmxhY2tsaXN0ZWQgYnkgcnVubmluZyAibW9k
-cHJvYmUgbnRmczMiLg0KPiAjIFNlZSBSRUFETUUubWQgaW4gdGhlIHN1c2UtbW9kdWxlLXRvb2xz
-IHBhY2thZ2UgZm9yIGRldGFpbHMuDQo+IGluc3RhbGwgbnRmczMgL3Vzci9saWIvbW9kdWxlLWlu
-aXQtdG9vbHMvdW5ibGFja2xpc3QgbnRmczM7IC9zYmluL21vZHByb2JlIC0taWdub3JlLWluc3Rh
-bGwgbnRmczMNCj4gDQo+IFRoZXJlZm9yZSBpdCB3b3JrczoNCj4gIyAuL2ZpbGVfYXR0cjA1DQo+
-IC4uLg0KPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6OTg6IFRJTkZPOiBLZXJuZWwgc3VwcG9y
-dHMgZXh0Mg0KPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6NjM6IFRJTkZPOiBta2ZzLmV4dDIg
-ZG9lcyBleGlzdA0KPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6OTg6IFRJTkZPOiBLZXJuZWwg
-c3VwcG9ydHMgZXh0Mw0KPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6NjM6IFRJTkZPOiBta2Zz
-LmV4dDMgZG9lcyBleGlzdA0KPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6OTg6IFRJTkZPOiBL
-ZXJuZWwgc3VwcG9ydHMgZXh0NA0KPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6NjM6IFRJTkZP
-OiBta2ZzLmV4dDQgZG9lcyBleGlzdA0KPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6MTU3OiBU
-SU5GTzogU2tpcHBpbmcgeGZzIGFzIHJlcXVlc3RlZCBieSB0aGUgdGVzdA0KPiB0c3Rfc3VwcG9y
-dGVkX2ZzX3R5cGVzLmM6OTg6IFRJTkZPOiBLZXJuZWwgc3VwcG9ydHMgYnRyZnMNCj4gdHN0X3N1
-cHBvcnRlZF9mc190eXBlcy5jOjYzOiBUSU5GTzogbWtmcy5idHJmcyBkb2VzIGV4aXN0DQo+IHRz
-dF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzoxMDY6IFRJTkZPOiBTa2lwcGluZyBiY2FjaGVmcyBiZWNh
-dXNlIG9mIEZVU0UgYmxhY2tsaXN0DQo+IHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzoxNTc6IFRJ
-TkZPOiBTa2lwcGluZyB2ZmF0IGFzIHJlcXVlc3RlZCBieSB0aGUgdGVzdA0KPiB0c3Rfc3VwcG9y
-dGVkX2ZzX3R5cGVzLmM6OTg6IFRJTkZPOiBLZXJuZWwgc3VwcG9ydHMgZXhmYXQNCj4gdHN0X3N1
-cHBvcnRlZF9mc190eXBlcy5jOjYzOiBUSU5GTzogbWtmcy5leGZhdCBkb2VzIGV4aXN0DQo+IHRz
-dF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzoxMzM6IFRJTkZPOiBGVVNFIGRvZXMgc3VwcG9ydCBudGZz
-DQo+IHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzo2MzogVElORk86IG1rZnMubnRmcyBkb2VzIGV4
-aXN0DQo+IHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzoxNjU6IFRJTkZPOiBTa2lwcGluZyBGVVNF
-IGJhc2VkIG50ZnMgYXMgcmVxdWVzdGVkIGJ5IHRoZSB0ZXN0DQo+IC4uLg0KPiANCj4gQnV0IGlm
-IEkgZm9yY2UgbnRmcywgaXQgcmVhbGx5IGZhaWxzIGR1ZSB1c2luZyBudGZzMzoNCj4gIyBMVFBf
-Rk9SQ0VfU0lOR0xFX0ZTX1RZUEU9bnRmcyAuL2ZpbGVfYXR0cjA1DQo+IC4uLg0KPiB0c3Rfc3Vw
-cG9ydGVkX2ZzX3R5cGVzLmM6MTk5OiBUSU5GTzogV0FSTklORzogZm9yY2UgdGVzdGluZyBvbmx5
-IG50ZnMNCj4gdHN0X3Rlc3QuYzoxOTk3OiBUSU5GTzogPT09IFRlc3Rpbmcgb24gbnRmcyA9PT0N
-Cj4gdHN0X3Rlc3QuYzoxMjk1OiBUSU5GTzogRm9ybWF0dGluZyAvZGV2L2xvb3AwIHdpdGggbnRm
-cyBvcHRzPScnIGV4dHJhIG9wdHM9JycNCj4gVGhlIHBhcnRpdGlvbiBzdGFydCBzZWN0b3Igd2Fz
-IG5vdCBzcGVjaWZpZWQgZm9yIC9kZXYvbG9vcDAgYW5kIGl0IGNvdWxkIG5vdCBiZSBvYnRhaW5l
-ZCBhdXRvbWF0aWNhbGx5LiAgSXQgaGFzIGJlZW4gc2V0IHRvIDAuDQo+IFRoZSBudW1iZXIgb2Yg
-c2VjdG9ycyBwZXIgdHJhY2sgd2FzIG5vdCBzcGVjaWZpZWQgZm9yIC9kZXYvbG9vcDAgYW5kIGl0
-IGNvdWxkIG5vdCBiZSBvYnRhaW5lZCBhdXRvbWF0aWNhbGx5LiAgSXQgaGFzIGJlZW4gc2V0IHRv
-IDAuDQo+IFRoZSBudW1iZXIgb2YgaGVhZHMgd2FzIG5vdCBzcGVjaWZpZWQgZm9yIC9kZXYvbG9v
-cDAgYW5kIGl0IGNvdWxkIG5vdCBiZSBvYnRhaW5lZCBhdXRvbWF0aWNhbGx5LiAgSXQgaGFzIGJl
-ZW4gc2V0IHRvIDAuDQo+IFRvIGJvb3QgZnJvbSBhIGRldmljZSwgV2luZG93cyBuZWVkcyB0aGUg
-J3BhcnRpdGlvbiBzdGFydCBzZWN0b3InLCB0aGUgJ3NlY3RvcnMgcGVyIHRyYWNrJyBhbmQgdGhl
-ICdudW1iZXIgb2YgaGVhZHMnIHRvIGJlIHNldC4NCj4gV2luZG93cyB3aWxsIG5vdCBiZSBhYmxl
-IHRvIGJvb3QgZnJvbSB0aGlzIGRldmljZS4NCj4gdHN0X3Rlc3QuYzoxMzA3OiBUSU5GTzogTW91
-bnRpbmcgL2Rldi9sb29wMCB0byAvdG1wL0xUUF9maWxXZWdNZDIvbW50cG9pbnQgZnN0eXA9bnRm
-cyBmbGFncz0wDQo+IHRzdF90ZXN0LmM6MTMwNzogVElORk86IFRyeWluZyBGVVNFLi4uDQo+IGZp
-bGVfYXR0cjA1LmM6MjM6IFRGQUlMOiBmaWxlX3NldGF0dHIoQVRfRkRDV0QsIEZJTEVQQVRILCBh
-dHRyX3NldCwgRklMRV9BVFRSX1NJWkVfTEFURVNULCAwKSBleHBlY3RlZCBFT1BOT1RTVVBQOiBF
-SU5WQUwgKDIyKQ0KPiANCj4gT3RoZXIgd2F5IGlzIGlmIEkgcmVtb3ZlIGJsYWNrbGlzdCBhbmQg
-bWFudWFsbHkgcnVuICdtb2Rwcm9iZSBudGZzMycuDQo+IA0KPj4gU2lnbmVkLW9mZi1ieTogTWF0
-dGhldyBSLiBPY2hzIDxtb2Noc0BudmlkaWEuY29tPg0KPj4gLS0tDQo+PiB0ZXN0Y2FzZXMva2Vy
-bmVsL3N5c2NhbGxzL2ZpbGVfYXR0ci9maWxlX2F0dHIwNS5jIHwgMSArDQo+PiAxIGZpbGUgY2hh
-bmdlZCwgMSBpbnNlcnRpb24oKykNCj4gDQo+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9maWxlX2F0dHIvZmlsZV9hdHRyMDUuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvZmlsZV9hdHRyL2ZpbGVfYXR0cjA1LmMNCj4+IGluZGV4IDZjMTQ3MWRhMzNlNy4uODVi
-NmNhZmM1ZjE3IDEwMDY0NA0KPj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9maWxl
-X2F0dHIvZmlsZV9hdHRyMDUuYw0KPj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9m
-aWxlX2F0dHIvZmlsZV9hdHRyMDUuYw0KPj4gQEAgLTQ5LDYgKzQ5LDcgQEAgc3RhdGljIHN0cnVj
-dCB0c3RfdGVzdCB0ZXN0ID0gew0KPj4gLnNraXBfZmlsZXN5c3RlbXMgPSAoY29uc3QgY2hhciAq
-Y29uc3QgW10pIHsNCj4+ICJ4ZnMiLA0KPj4gImZ1c2UiLCAvKiBFSU5WQUwgaXMgcmFpc2VkIGJl
-Zm9yZSBFT1BOT1RTVVBQICovDQo+PiArICJudGZzIiwgLyogbW91bnRlZCB2aWEgbnRmcy0zZyAo
-RlVTRSksIHJldHVybnMgRUlOVkFMICovDQo+IEZvciBtZSBpdCdkIHdvcmsgdG8gcmVwbGFjZSAi
-ZnVzZSIgd2l0aCAibnRmcyIgKGkuZS4gcmVtb3ZlICJmdXNlIikuDQo+IERvZXMgaXQgd29yayBm
-b3IgeW91IGFzIHdlbGwsIG9yIHlvdSBuZWVkIHRvIGhhdmUgYmxhY2tsaXN0ZWQgYm90aD8NCg0K
-UmVnYXJkaW5nIHJlcGxhY2luZyAiZnVzZSIgd2l0aCAibnRmcyI6IG9uIFVidW50dSwgbnRmczMg
-aXMgYXZhaWxhYmxlDQphcyBhIGtlcm5lbCBtb2R1bGUsIHNvIHRoZSBkZXRlY3Rpb24gcmVwb3J0
-cyAiS2VybmVsIHN1cHBvcnRzIG50ZnPigJ0NCmFuZCB0aGUgRlVTRSBza2lwIHBhdGggbmV2ZXIg
-ZmlyZXMg4oCUIG1lYW5pbmcgImZ1c2UiIGFsb25lIGRvZXNu4oCZdA0KY2F0Y2ggaXQuIFJlbW92
-aW5nICJmdXNlIiB3b3VsZCBhbHNvIGRyb3AgY292ZXJhZ2Ugb2Ygb3RoZXINCkZVU0UtYmFzZWQg
-ZmlsZXN5c3RlbXMsIHNvIEknZCBwcmVmZXIgdG8ga2VlcCBib3RoIGVudHJpZXMuDQoNCi1tYXR0
-CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8v
-bHRwCg==
+This case test mremap() with MREMAP_DONTUNMAP and use userfaultfd
+verifies fault which triggered by accessing old memory region.
+
+Fixes: https://github.com/linux-test-project/ltp/issues/1168
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+v5->v6:
+- Refined the test description header
+- Added a missing return NULL to the fault_handler_thread
+- Replaced a manual strcmp and tst_res conditional block with the TST_EXP_EQ_STR macro
+ configure.ac                                |   1 +
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/mremap/.gitignore |   1 +
+ testcases/kernel/syscalls/mremap/Makefile   |   1 +
+ testcases/kernel/syscalls/mremap/mremap07.c | 158 ++++++++++++++++++++
+ 5 files changed, 162 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mremap/mremap07.c
+
+diff --git a/configure.ac b/configure.ac
+index 812f17d8b..211aaa8ad 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -46,6 +46,7 @@ AC_CHECK_DECLS([MADV_MERGEABLE],,,[#include <sys/mman.h>])
+ AC_CHECK_DECLS([NFTA_CHAIN_ID, NFTA_VERDICT_CHAIN_ID],,,[#include <linux/netfilter/nf_tables.h>])
+ AC_CHECK_DECLS([PR_CAPBSET_DROP, PR_CAPBSET_READ],,,[#include <sys/prctl.h>])
+ AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
++AC_CHECK_DECLS([MREMAP_DONTUNMAP],,,[#include <linux/mman.h>])
+ 
+ AC_CHECK_HEADERS_ONCE([ \
+     aio.h \
+diff --git a/runtest/syscalls b/runtest/syscalls
+index d72fceb5e..b9a9ce5fe 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -927,6 +927,7 @@ mremap03 mremap03
+ mremap04 mremap04
+ mremap05 mremap05
+ mremap06 mremap06
++mremap07 mremap07
+ 
+ mseal01 mseal01
+ mseal02 mseal02
+diff --git a/testcases/kernel/syscalls/mremap/.gitignore b/testcases/kernel/syscalls/mremap/.gitignore
+index ec15a19cd..292899e03 100644
+--- a/testcases/kernel/syscalls/mremap/.gitignore
++++ b/testcases/kernel/syscalls/mremap/.gitignore
+@@ -4,3 +4,4 @@
+ /mremap04
+ /mremap05
+ /mremap06
++/mremap07
+diff --git a/testcases/kernel/syscalls/mremap/Makefile b/testcases/kernel/syscalls/mremap/Makefile
+index 9f5aca9ec..8811b887e 100644
+--- a/testcases/kernel/syscalls/mremap/Makefile
++++ b/testcases/kernel/syscalls/mremap/Makefile
+@@ -8,5 +8,6 @@ LTPLIBS = ipc
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ mremap04: LTPLDLIBS  = -lltpipc
++mremap07: LDLIBS  += -lpthread
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mremap/mremap07.c b/testcases/kernel/syscalls/mremap/mremap07.c
+new file mode 100644
+index 000000000..0510fdfe1
+--- /dev/null
++++ b/testcases/kernel/syscalls/mremap/mremap07.c
+@@ -0,0 +1,158 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2025 Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * LTP test case for mremap() with MREMAP_DONTUNMAP and userfaultfd.
++ *
++ * Test mremap() with MREMAP_DONTUNMAP and verify that accessing the
++ * old memory region triggers a page fault, which is then correctly
++ * handled by a userfaultfd handler.
++ */
++
++#define _GNU_SOURCE
++#include <poll.h>
++#include <pthread.h>
++#include <linux/mman.h>
++
++#include "tst_test.h"
++#include "tst_safe_pthread.h"
++#include "lapi/userfaultfd.h"
++#include "config.h"
++
++#if HAVE_DECL_MREMAP_DONTUNMAP
++
++static int page_size;
++static int uffd = -1;
++static char *fault_addr;
++static char *new_remap_addr;
++
++static const char *test_string = "Hello, world! This is a test string that fills up a page.";
++
++static void *fault_handler_thread(void *arg LTP_ATTRIBUTE_UNUSED)
++{
++	struct uffd_msg msg;
++	struct uffdio_copy uffdio_copy;
++
++	TST_CHECKPOINT_WAIT(0);
++
++	struct pollfd pollfd;
++
++	pollfd.fd = uffd;
++	pollfd.events = POLLIN;
++
++	int nready = poll(&pollfd, 1, -1);
++
++	if (nready == -1)
++		tst_brk(TBROK | TERRNO, "poll() failed");
++
++	if (nready == 0)
++		tst_brk(TBROK, "poll() timed out unexpectedly");
++
++	SAFE_READ(1, uffd, &msg, sizeof(msg));
++
++	if (msg.event != UFFD_EVENT_PAGEFAULT)
++		tst_brk(TBROK, "Received unexpected UFFD_EVENT: %d", msg.event);
++
++	if ((char *)msg.arg.pagefault.address != fault_addr)
++		tst_brk(TBROK, "Page fault on unexpected address: %p", (void *)msg.arg.pagefault.address);
++
++	tst_res(TINFO, "Userfaultfd handler caught a page fault at %p", (void *)msg.arg.pagefault.address);
++
++	uffdio_copy.src = (unsigned long)new_remap_addr;
++	uffdio_copy.dst = (unsigned long)fault_addr;
++	uffdio_copy.len = page_size;
++	uffdio_copy.mode = 0;
++	uffdio_copy.copy = 0;
++
++	SAFE_IOCTL(uffd, UFFDIO_COPY, &uffdio_copy);
++	tst_res(TPASS, "Userfaultfd handler successfully handled the fault");
++
++	return NULL;
++}
++
++static void setup(void)
++{
++	page_size = getpagesize();
++	struct uffdio_api uffdio_api;
++	struct uffdio_register uffdio_register;
++
++	uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, true);
++
++	uffdio_api.api = UFFD_API;
++	uffdio_api.features = 0;
++	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
++
++	fault_addr = SAFE_MMAP(NULL, page_size,
++		PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++
++	tst_res(TINFO, "Original mapping created at %p", (void *)fault_addr);
++
++	strcpy(fault_addr, "ABCD");
++
++	uffdio_register.range.start = (unsigned long)fault_addr;
++	uffdio_register.range.len = page_size;
++	uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
++	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
++}
++
++static void cleanup(void)
++{
++	if (new_remap_addr && new_remap_addr != MAP_FAILED)
++		SAFE_MUNMAP(new_remap_addr, page_size);
++
++	if (fault_addr && fault_addr != MAP_FAILED)
++		SAFE_MUNMAP(fault_addr, page_size);
++
++	if (uffd != -1)
++		SAFE_CLOSE(uffd);
++}
++
++static void run(void)
++{
++	pthread_t handler_thread;
++
++	SAFE_PTHREAD_CREATE(&handler_thread, NULL,
++		fault_handler_thread, NULL);
++
++	new_remap_addr = mremap(fault_addr, page_size, page_size,
++		MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
++
++	if (new_remap_addr == MAP_FAILED)
++		tst_brk(TBROK | TERRNO, "mremap failed");
++
++	tst_res(TINFO, "New mapping created at %p", (void *)new_remap_addr);
++
++	strcpy(new_remap_addr, test_string);
++
++	TST_CHECKPOINT_WAKE(0);
++
++	tst_res(TINFO, "Main thread accessing old address %p to trigger fault",
++			(void *)fault_addr);
++
++	(void)*(volatile char *)fault_addr;
++
++	SAFE_PTHREAD_JOIN(handler_thread, NULL);
++
++	TST_EXP_EQ_STR(fault_addr, test_string);
++
++	SAFE_MUNMAP(new_remap_addr, page_size);
++	new_remap_addr = NULL;
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.needs_checkpoints = 1,
++	.cleanup = cleanup,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USERFAULTFD=y",
++		NULL,
++	},
++	.min_kver = "5.7",
++};
++
++#else
++TST_TEST_TCONF("Missing MREMAP_DONTUNMAP in <linux/mman.h>");
++#endif
+-- 
+2.52.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
