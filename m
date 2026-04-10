@@ -4,90 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4158DF36B9A
-	for <ltp@archiver.kernel.org>; Fri, 10 Apr 2026 02:32:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5868F36BA9
+	for <ltp@archiver.kernel.org>; Fri, 10 Apr 2026 05:48:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1775788365; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1775800101; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=i4COvm1n959OT9k9D1yktuluTcuIcFmDCvWIfDksqrA=;
- b=Oi9wEtzwBsbImqV9F9/8RYY8MbednclEO5dOrr29GTPrGyLoFu3+m4J6YBldP9D8DnC1q
- Td6Pcc8PhrjG9YmQUOtoImxjNXaklu13X4/nT935EuRXeC+DClu0XsF5QSwoJSSujW6IYZK
- /GnHsHvd7XwiPrxmbuQBfz75V2EJfmE=
+ bh=wDpT6EiG8ALmCxYEgVfJOTc+vvNzSYgLxnr4r0x4+WQ=;
+ b=FAt2q21ml2ld9lic7Z4WKVBe/oyhtYC2Y/KH7xROHk7sMuNi3ORzLe5j1oP1vecQ/17LA
+ qXyuPgHxJPuuGe/qLPPMN/xFVOrozpQff5DWvIrl3f3GribtpK6aGrTUVgHMMt/QmHB0FQr
+ Fqhmfo67ZJix9Qb18i8M36gC9JpKjQc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AE3643E60AC
-	for <ltp@archiver.kernel.org>; Fri, 10 Apr 2026 04:32:45 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 4DFBD3E1DE6
+	for <ltp@archiver.kernel.org>; Fri, 10 Apr 2026 07:48:21 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5FF423E602F
- for <ltp@lists.linux.it>; Fri, 10 Apr 2026 04:32:22 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+ by picard.linux.it (Postfix) with ESMTPS id 204383E149F
+ for <ltp@lists.linux.it>; Fri, 10 Apr 2026 07:47:55 +0200 (CEST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9AE90600054
- for <ltp@lists.linux.it>; Fri, 10 Apr 2026 04:32:21 +0200 (CEST)
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-488a4bc360bso8381935e9.0
- for <ltp@lists.linux.it>; Thu, 09 Apr 2026 19:32:21 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1711B1A0081A
+ for <ltp@lists.linux.it>; Fri, 10 Apr 2026 07:47:54 +0200 (CEST)
+Received: by mail-wr1-x436.google.com with SMTP id
+ ffacd0b85a97d-43b949bf4easo937961f8f.0
+ for <ltp@lists.linux.it>; Thu, 09 Apr 2026 22:47:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1775788341; x=1776393141; darn=lists.linux.it;
+ d=suse.com; s=google; t=1775800073; x=1776404873; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=/KQvUyY4hFx23OLHpClhb/xFevHa4DCnMOgwsQfBrYI=;
- b=J50UxYaBdi+ucPvcl4fnxLF9CjWRbiZz43E857GSxkqW6acwlWKXxiiZ0RuMr1dUj6
- hsOZLYMQMfs5ofii3Un6V7amXG74ZwKgYr9twfh9BEcsuj148XZxvXgN+1CaoqAPK3dG
- wuO57WciCh4nmKJmsw7f2o+z81UMzhPlUhdJKdNBVeeRLsjkDQz4v0Ncwd//HG/wF9AV
- cC26HEhjFj2NdnDm+Hak1/7HrWOs+E22FjdU+/olCcWk+WUxehRWCIvpKD9pMIYmcJI0
- 8MBwUaGxvYvtEofQhxoZtLK0agbobMI3Otx4J2AewmCi13zESOs/HvhCB5dTWP3/eRUK
- JaLw==
+ bh=Ud//P3rL+V/d77Oq7c/MCMUc85CtJBz9By+ouumU8k0=;
+ b=NUHNpG1emifgJm3OQt6zVo0UqQ28gIe20IbsHPxvk5FL2aKkf7AZUiCujo8RxqheDo
+ tULAwqN+Fbda8Mf3oCR/X8LaiugnsZ4ms+bOZxqKUwt49jbOvJjND45KL+eA5X4lCk7d
+ UncFnbNvPxCJTIqMsNl8BBNxAoZM8cdxKKqRAP7oIGUPtNY48E5RHHKw4gnuauafsbhy
+ 3vhUyhLK1oLZ9c/sJPft/3N+rKbzbLxheCEJK7LplInuW+wZZF/WD9lVeCYmrysvsfCU
+ WKo/CHEtKIV7wMSn7v3wTnzsU8G43koVwp1GdRck05bWpN5Nh4Jub1gWeWjxqg2pVRmU
+ FSug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1775788341; x=1776393141;
+ d=1e100.net; s=20251104; t=1775800073; x=1776404873;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=/KQvUyY4hFx23OLHpClhb/xFevHa4DCnMOgwsQfBrYI=;
- b=IfqgpWvdSkh8pp4uTjmQXQFn22uhBSvDNCkp6ixFWn1JGoOgHBl3SsEy+yLP3gvb7o
- 48RqftM8pJC4Xie3RBqQ7v5zukiREsxQfuE+AT2w+O3HYZs0RC0X4PVfqUhOId38e3cl
- NPTzr0ZLDG0ukCKs3ERzTgWTUnww5gXkKUqbnHWK3QipfGgy5+3Egv+Ha61p/JwAGX/I
- FjSFNe93baQcpUvd0e5c5fMUgFuywBslQMneHcCEUe8qfnItagXaSiiphDXpwm27H6C2
- uH6zCrVZbmkpSQq4HOXqaRLqzuAs/pQjfJVyOxwSGVdQjyb7LqHTJ/djrE7ZHAbcrRgM
- nKGw==
-X-Gm-Message-State: AOJu0YzUlIH9Tt0MGSTUPGOuyhWQdMR9xDX5T41k3DaJ8nkAytF+qXbf
- JihKspO2x7ltRWinDY9Gh6b3vwmxVqm5P5M7CuhRhbDCj5EZSGaOqawMHYNvdIviafkApIKj4Fa
- w1+Q=
-X-Gm-Gg: AeBDieslQEFUMgYbuO9TBqGYDjBKaXHWT6zsgpkp9BXlJRTj4Ez0JqJLTN3EL7A4Gbl
- 7qAakVSSJfObfXn5rPTemlJxwSrumE2j3Nfy87gR8yMwMaXfmQaYxAKWM9I4m7Y2FFLQ5WZljlO
- 8OTh7+xfCyFgbdVg9kObwKtw2Z0tt/up9h6UJ0I8S7jqzsx4J+KI/FhWPKOxoG3iUXaZdgXPvxs
- 5qddxOwb8To3VvjuTmc0PZnUqPwYtpjyDYdcGmxxUVaUOdthey8SHSGg+4VA0BivwIkCZoJUq+T
- AXBa4qmbqcQigF1nqZGUiZ6ktK6ihYMiAT66w9lQxcyPpgyx76nSv43vULC/TRIhte7FNtFJrBW
- bq4hdfpzTCOLx0PQamMulQ16l6SoqM3PNSBe/MyWbKmqengZHs/62NFvkZ/oIfAept+938Uun+E
- Mn+Lu06yY/w+g=
-X-Received: by 2002:a05:600c:1987:b0:488:b187:d8ed with SMTP id
- 5b1f17b1804b1-488d67bf765mr13166965e9.2.1775788340739; 
- Thu, 09 Apr 2026 19:32:20 -0700 (PDT)
+ bh=Ud//P3rL+V/d77Oq7c/MCMUc85CtJBz9By+ouumU8k0=;
+ b=T1VSPZLLbHUPjmAtewlcclcsdE0oqYDsPyMWLCiXAmVNT8KoxuC31vkMHejzf7fNn/
+ LfiybFHx4gv9+/H2fwetR5ucLjW5fEVF3QBA3lzyQ3MPjxY+I3pixuD01u+xKZcbE7sk
+ 2HbQCN2hT8pp8Z/O1VnuMTlVBC2vMp1fhvq6uQiNgufp7/TFLOdqTwObyn5Q2bGAxRHu
+ 1qty+IbqU+mKcGJN5S6DmVDJ1Q6va+V+DYzMX9Yh0L68xehBDxWQKjYSCD2T9CySJu0d
+ a3L43QzteZQkwUd63D/t/EmucN72JKWpLPU7RcofuZHF3SRaLnNG9EKcHJ1kNp4iYel7
+ rfGA==
+X-Gm-Message-State: AOJu0YxhF2SKBUFxTQZs6TQGpjTefzEMaXl7b5W05dGcRDzPiGdk8e3M
+ Jzr8qf0MvY+xR8C3IV/+y59aTOqk7MBUQaNAjcsv/ZmVXAGZMCy3xYkit/6hXh540AtUx4lv0W7
+ Obk0=
+X-Gm-Gg: AeBDiesLSFFnLc1QGJNizrtjenooD4MIlyKRc6MnF5pONWdG+rD2/2OYk7nstCns6SC
+ IRe4m3Kg3MWsNVf8xx6S6N/7WvpMjwjC1Fx5yGMMqu9JzbTb8zohma6jYMTmN4J/7gd7FzqkAH/
+ qnSbj88WlLDpJlH2Pq8TWVSGyQuDmYTnRmOqHMI/bDFdYlbqiEA7AWjPOiZG7mxAs40tKiHdywv
+ x49LzifT02XnIxGqxUlffxdYT//adsZVjKv+WgA8T2aNRS8i2qZvyTAO7xA3fiirFU9dTd0v7LX
+ 5tROz/xVQja3OnRyu8BeMH2b7PsTnMOQeg2YuXLj+UOfmds+3TrTYA+E/GS01LFdOlln+nAOVQb
+ wmipDWk6rdv+ZHeQJh0cmFR5+vOvDidtOkLuTZBB6pXEIR9c9PwZOwLvK437EOcbtfJVHPJM/89
+ Bixef9p1+aCOo=
+X-Received: by 2002:a05:6000:1866:b0:43d:1bf6:91b with SMTP id
+ ffacd0b85a97d-43d649741f7mr2340500f8f.16.1775800073126; 
+ Thu, 09 Apr 2026 22:47:53 -0700 (PDT)
 Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
  by smtp.gmail.com with UTF8SMTPSA id
- 5b1f17b1804b1-488d532ed4dsm36146795e9.4.2026.04.09.19.32.20
+ ffacd0b85a97d-43d63e5061fsm4433301f8f.30.2026.04.09.22.47.52
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 09 Apr 2026 19:32:20 -0700 (PDT)
+ Thu, 09 Apr 2026 22:47:52 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Fri, 10 Apr 2026 02:31:52 +0000
-Message-ID: <20260410023201.18119-1-wegao@suse.com>
+Date: Fri, 10 Apr 2026 05:47:40 +0000
+Message-ID: <20260410054750.18283-1-wegao@suse.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260325011605.5957-1-wegao@suse.com>
-References: <20260325011605.5957-1-wegao@suse.com>
+In-Reply-To: <20250603214503.3792293-1-wegao@suse.com>
+References: <20250603214503.3792293-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6] mremap07.c: New case check mremap with
- MREMAP_DONTUNMAP
+Subject: [LTP] [PATCH v4] fsconfig04.c: Check FSCONFIG_SET_PATH
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,232 +105,215 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This case test mremap() with MREMAP_DONTUNMAP and use userfaultfd
-verifies fault which triggered by accessing old memory region.
+Fixes: https://github.com/linux-test-project/ltp/issues/1169
 
-Fixes: https://github.com/linux-test-project/ltp/issues/1168
+The fsconfig01.c does not test if FSCONFIG_SET_PATH have any effect,
+most of the calls there just set dummy "sync" parameter. This test
+case aims to verify if the FSCONFIG_SET_PATH operation can be used
+to dynamically change the external journal device of ext3 or ext4
+filesystem.
+
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
-v5->v6:
-- Refined the test description header
-- Added a missing return NULL to the fault_handler_thread
-- Replaced a manual strcmp and tst_res conditional block with the TST_EXP_EQ_STR macro
- configure.ac                                |   1 +
- runtest/syscalls                            |   1 +
- testcases/kernel/syscalls/mremap/.gitignore |   1 +
- testcases/kernel/syscalls/mremap/Makefile   |   1 +
- testcases/kernel/syscalls/mremap/mremap07.c | 158 ++++++++++++++++++++
- 5 files changed, 162 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mremap/mremap07.c
+v3->v4:
+- Replace popen to SAFE_POPEN
 
-diff --git a/configure.ac b/configure.ac
-index 812f17d8b..211aaa8ad 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -46,6 +46,7 @@ AC_CHECK_DECLS([MADV_MERGEABLE],,,[#include <sys/mman.h>])
- AC_CHECK_DECLS([NFTA_CHAIN_ID, NFTA_VERDICT_CHAIN_ID],,,[#include <linux/netfilter/nf_tables.h>])
- AC_CHECK_DECLS([PR_CAPBSET_DROP, PR_CAPBSET_READ],,,[#include <sys/prctl.h>])
- AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
-+AC_CHECK_DECLS([MREMAP_DONTUNMAP],,,[#include <linux/mman.h>])
- 
- AC_CHECK_HEADERS_ONCE([ \
-     aio.h \
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/fsconfig/.gitignore |   1 +
+ .../kernel/syscalls/fsconfig/fsconfig04.c     | 163 ++++++++++++++++++
+ 3 files changed, 165 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig04.c
+
 diff --git a/runtest/syscalls b/runtest/syscalls
-index d72fceb5e..b9a9ce5fe 100644
+index d72fceb5e..49ba7d845 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -927,6 +927,7 @@ mremap03 mremap03
- mremap04 mremap04
- mremap05 mremap05
- mremap06 mremap06
-+mremap07 mremap07
+@@ -422,6 +422,7 @@ fremovexattr02 fremovexattr02
+ fsconfig01 fsconfig01
+ fsconfig02 fsconfig02
+ fsconfig03 fsconfig03
++fsconfig04 fsconfig04
  
- mseal01 mseal01
- mseal02 mseal02
-diff --git a/testcases/kernel/syscalls/mremap/.gitignore b/testcases/kernel/syscalls/mremap/.gitignore
-index ec15a19cd..292899e03 100644
---- a/testcases/kernel/syscalls/mremap/.gitignore
-+++ b/testcases/kernel/syscalls/mremap/.gitignore
-@@ -4,3 +4,4 @@
- /mremap04
- /mremap05
- /mremap06
-+/mremap07
-diff --git a/testcases/kernel/syscalls/mremap/Makefile b/testcases/kernel/syscalls/mremap/Makefile
-index 9f5aca9ec..8811b887e 100644
---- a/testcases/kernel/syscalls/mremap/Makefile
-+++ b/testcases/kernel/syscalls/mremap/Makefile
-@@ -8,5 +8,6 @@ LTPLIBS = ipc
- include $(top_srcdir)/include/mk/testcases.mk
- 
- mremap04: LTPLDLIBS  = -lltpipc
-+mremap07: LDLIBS  += -lpthread
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/mremap/mremap07.c b/testcases/kernel/syscalls/mremap/mremap07.c
+ fsmount01 fsmount01
+ fsmount02 fsmount02
+diff --git a/testcases/kernel/syscalls/fsconfig/.gitignore b/testcases/kernel/syscalls/fsconfig/.gitignore
+index cfedae5f7..bd3754c34 100644
+--- a/testcases/kernel/syscalls/fsconfig/.gitignore
++++ b/testcases/kernel/syscalls/fsconfig/.gitignore
+@@ -1,3 +1,4 @@
+ /fsconfig01
+ /fsconfig02
+ /fsconfig03
++/fsconfig04
+diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig04.c b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
 new file mode 100644
-index 000000000..0510fdfe1
+index 000000000..c6ff17f40
 --- /dev/null
-+++ b/testcases/kernel/syscalls/mremap/mremap07.c
-@@ -0,0 +1,158 @@
++++ b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
+@@ -0,0 +1,163 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2025 Wei Gao <wegao@suse.com>
 + */
 +
 +/*\
-+ * LTP test case for mremap() with MREMAP_DONTUNMAP and userfaultfd.
++ * This test aims to validate the functionality of fsconfig(FSCONFIG_SET_PATH) in
++ * dynamically altering the external journal device of a ext3 or ext4 filesystem.
++ * Case acquires three loop devices (dev0, dev1, dev2), it formats dev1 and dev2
++ * as external journal devices using the -O journal_dev option and assigns them
++ * the same UUID. Then formats dev0 (the main filesystem) multiple times, first
++ * associating it with dev1, then change to dev2, finally back to dev1 again as
++ * an external journal using the -J device= option.
 + *
-+ * Test mremap() with MREMAP_DONTUNMAP and verify that accessing the
-+ * old memory region triggers a page fault, which is then correctly
-+ * handled by a userfaultfd handler.
++ * 2 workarounds in this case need mention:
++ *
++ * - To avoid "journal UUID does not match" error when switch external journal device
++ *   we have to assign same UUID to dev1/dev2
++ * - Before fsconfig test we have to formats dev0 associating to dev1->dev2->dev1,
++ *   this will make sure both dev1/2's supper block contain correct content. Otherwise
++ *   you will encounter error such as "EXT4-fs (loop0): External journal has more than
++ *   one user (unsupported) - 0" when switch external journal device using fsconfig.
 + */
 +
-+#define _GNU_SOURCE
-+#include <poll.h>
-+#include <pthread.h>
-+#include <linux/mman.h>
-+
 +#include "tst_test.h"
-+#include "tst_safe_pthread.h"
-+#include "lapi/userfaultfd.h"
-+#include "config.h"
++#include "tst_safe_stdio.h"
++#include "lapi/fsmount.h"
++#include "old/tso_device.h"
 +
-+#if HAVE_DECL_MREMAP_DONTUNMAP
++#define MNTPOINT	"mntpoint"
++#define LOOP_DEV_SIZE 10
++#define UUID "d73c9e5e-97e4-4a9c-b17e-75a931b02660"
 +
-+static int page_size;
-+static int uffd = -1;
-+static char *fault_addr;
-+static char *new_remap_addr;
++static int fd;
++static const char *dev;
++static char dev0[NAME_MAX];
++static char dev1[NAME_MAX];
++static char dev2[NAME_MAX];
 +
-+static const char *test_string = "Hello, world! This is a test string that fills up a page.";
-+
-+static void *fault_handler_thread(void *arg LTP_ATTRIBUTE_UNUSED)
++static void cleanup(void)
 +{
-+	struct uffd_msg msg;
-+	struct uffdio_copy uffdio_copy;
++	if (fd != -1)
++		SAFE_CLOSE(fd);
 +
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	struct pollfd pollfd;
-+
-+	pollfd.fd = uffd;
-+	pollfd.events = POLLIN;
-+
-+	int nready = poll(&pollfd, 1, -1);
-+
-+	if (nready == -1)
-+		tst_brk(TBROK | TERRNO, "poll() failed");
-+
-+	if (nready == 0)
-+		tst_brk(TBROK, "poll() timed out unexpectedly");
-+
-+	SAFE_READ(1, uffd, &msg, sizeof(msg));
-+
-+	if (msg.event != UFFD_EVENT_PAGEFAULT)
-+		tst_brk(TBROK, "Received unexpected UFFD_EVENT: %d", msg.event);
-+
-+	if ((char *)msg.arg.pagefault.address != fault_addr)
-+		tst_brk(TBROK, "Page fault on unexpected address: %p", (void *)msg.arg.pagefault.address);
-+
-+	tst_res(TINFO, "Userfaultfd handler caught a page fault at %p", (void *)msg.arg.pagefault.address);
-+
-+	uffdio_copy.src = (unsigned long)new_remap_addr;
-+	uffdio_copy.dst = (unsigned long)fault_addr;
-+	uffdio_copy.len = page_size;
-+	uffdio_copy.mode = 0;
-+	uffdio_copy.copy = 0;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_COPY, &uffdio_copy);
-+	tst_res(TPASS, "Userfaultfd handler successfully handled the fault");
-+
-+	return NULL;
++	TST_EXP_PASS_SILENT(tst_detach_device(dev1));
++	TST_EXP_PASS_SILENT(tst_detach_device(dev2));
 +}
 +
 +static void setup(void)
 +{
-+	page_size = getpagesize();
-+	struct uffdio_api uffdio_api;
-+	struct uffdio_register uffdio_register;
++	strcpy(dev0, tst_device->dev);
++	dev = tst_acquire_loop_device(LOOP_DEV_SIZE, "dev1_file");
++	if (!dev)
++		tst_brk(TBROK, "acquire loop dev1 failed");
 +
-+	uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, true);
++	strcpy(dev1, dev);
++	dev = NULL;
 +
-+	uffdio_api.api = UFFD_API;
-+	uffdio_api.features = 0;
-+	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
++	dev = tst_acquire_loop_device(LOOP_DEV_SIZE, "dev2_file");
++	if (!dev)
++		tst_brk(TBROK, "acquire loop dev2 failed");
++	strcpy(dev2, dev);
 +
-+	fault_addr = SAFE_MMAP(NULL, page_size,
-+		PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	const char *const *mkfs_opts_set_UUID;
++	const char *const *mkfs_opts_set_journal_dev1;
++	const char *const *mkfs_opts_set_journal_dev2;
 +
-+	tst_res(TINFO, "Original mapping created at %p", (void *)fault_addr);
++	mkfs_opts_set_UUID = (const char *const []) {"-F", "-U", UUID,
++		"-O journal_dev", NULL};
 +
-+	strcpy(fault_addr, "ABCD");
++	char device_option_dev1[PATH_MAX];
++	char device_option_dev2[PATH_MAX];
 +
-+	uffdio_register.range.start = (unsigned long)fault_addr;
-+	uffdio_register.range.len = page_size;
-+	uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
-+	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
-+}
++	sprintf(device_option_dev1, "device=%s", dev1);
++	sprintf(device_option_dev2, "device=%s", dev2);
 +
-+static void cleanup(void)
-+{
-+	if (new_remap_addr && new_remap_addr != MAP_FAILED)
-+		SAFE_MUNMAP(new_remap_addr, page_size);
++	mkfs_opts_set_journal_dev1 = (const char *const []) {"-F", "-J",
++		device_option_dev1, NULL};
 +
-+	if (fault_addr && fault_addr != MAP_FAILED)
-+		SAFE_MUNMAP(fault_addr, page_size);
++	mkfs_opts_set_journal_dev2 = (const char *const []) {"-F", "-J",
++		device_option_dev2, NULL};
 +
-+	if (uffd != -1)
-+		SAFE_CLOSE(uffd);
++	SAFE_MKFS(dev1, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
++	SAFE_MKFS(dev2, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
++	SAFE_MKFS(dev0, tst_device->fs_type, mkfs_opts_set_journal_dev1, NULL);
++	SAFE_MKFS(dev0, tst_device->fs_type, mkfs_opts_set_journal_dev2, NULL);
++	SAFE_MKFS(dev0, tst_device->fs_type, mkfs_opts_set_journal_dev1, NULL);
 +}
 +
 +static void run(void)
 +{
-+	pthread_t handler_thread;
++	TEST(fd = fsopen(tst_device->fs_type, 0));
++	if (fd == -1)
++		tst_brk(TBROK | TTERRNO, "fsopen() failed");
 +
-+	SAFE_PTHREAD_CREATE(&handler_thread, NULL,
-+		fault_handler_thread, NULL);
++	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", dev0, 0));
++	if (TST_RET == -1)
++		tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
 +
-+	new_remap_addr = mremap(fault_addr, page_size, page_size,
-+		MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
++	TEST(fsconfig(fd, FSCONFIG_SET_PATH, "journal_path", dev2, 0));
++	if (TST_RET == -1) {
++		if (TST_ERR == EOPNOTSUPP)
++			tst_brk(TCONF, "fsconfig(FSCONFIG_SET_PATH) not supported");
++		else
++			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_PATH) failed");
++	}
 +
-+	if (new_remap_addr == MAP_FAILED)
-+		tst_brk(TBROK | TERRNO, "mremap failed");
++	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
++	if (TST_RET == -1)
++		tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
 +
-+	tst_res(TINFO, "New mapping created at %p", (void *)new_remap_addr);
++	char loop_name[NAME_MAX];
++	char path[PATH_MAX];
++	char device_str[NAME_MAX];
++	unsigned int major, minor, device_num;
++	unsigned int found = 0;
 +
-+	strcpy(new_remap_addr, test_string);
++	SAFE_SSCANF(dev2, "/dev/%s", loop_name);
 +
-+	TST_CHECKPOINT_WAKE(0);
++	snprintf(path, sizeof(path), "/sys/block/%s/dev", loop_name);
++	SAFE_FILE_SCANF(path, "%u:%u", &major, &minor);
++	device_num = (major << 8) | minor;
++	snprintf(device_str, sizeof(device_str), "0x%04X", device_num);
 +
-+	tst_res(TINFO, "Main thread accessing old address %p to trigger fault",
-+			(void *)fault_addr);
++	char line[PATH_MAX];
++	FILE *tune2fs;
 +
-+	(void)*(volatile char *)fault_addr;
++	sprintf(path, "tune2fs -l %s 2>&1", dev0);
++	tune2fs = SAFE_POPEN(path, "r");
 +
-+	SAFE_PTHREAD_JOIN(handler_thread, NULL);
++	while (fgets(line, PATH_MAX, tune2fs)) {
++		if (*line && strstr(line, "Journal device:") && strstr(line, device_str)) {
++			found = 1;
++			break;
++		}
++	}
 +
-+	TST_EXP_EQ_STR(fault_addr, test_string);
++	if (found == 1)
++		tst_res(TPASS, "Device found in journal");
++	else
++		tst_res(TFAIL, "Device not found in journal");
 +
-+	SAFE_MUNMAP(new_remap_addr, page_size);
-+	new_remap_addr = NULL;
++	pclose(tune2fs);
++	SAFE_CLOSE(fd);
 +}
 +
 +static struct tst_test test = {
 +	.test_all = run,
 +	.setup = setup,
-+	.needs_checkpoints = 1,
 +	.cleanup = cleanup,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_USERFAULTFD=y",
-+		NULL,
++	.needs_root = 1,
++	.format_device = 1,
++	.mntpoint = MNTPOINT,
++	.needs_cmds = (const char *[]) {
++		"tune2fs",
++		NULL
 +	},
-+	.min_kver = "5.7",
++	.filesystems = (struct tst_fs []) {
++		{.type = "ext3"},
++		{.type = "ext4"},
++		{}
++	},
 +};
-+
-+#else
-+TST_TEST_TCONF("Missing MREMAP_DONTUNMAP in <linux/mman.h>");
-+#endif
 -- 
 2.52.0
 
