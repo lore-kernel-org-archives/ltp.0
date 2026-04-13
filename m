@@ -4,83 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 957FDF34C65
-	for <ltp@archiver.kernel.org>; Mon, 13 Apr 2026 16:18:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02992F34C65
+	for <ltp@archiver.kernel.org>; Mon, 13 Apr 2026 16:55:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3403F3E4B3B
-	for <ltp@archiver.kernel.org>; Mon, 13 Apr 2026 18:17:59 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 726D73E213A
+	for <ltp@archiver.kernel.org>; Mon, 13 Apr 2026 18:55:45 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3B43D3DD13E
- for <ltp@lists.linux.it>; Mon, 13 Apr 2026 18:17:38 +0200 (CEST)
-Received: from mail-dl1-x1241.google.com (mail-dl1-x1241.google.com
- [IPv6:2607:f8b0:4864:20::1241])
+ by picard.linux.it (Postfix) with ESMTPS id E15313CD98D
+ for <ltp@lists.linux.it>; Mon, 13 Apr 2026 18:55:24 +0200 (CEST)
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com
+ [IPv6:2607:f8b0:4864:20::1042])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5E87A60020E
- for <ltp@lists.linux.it>; Mon, 13 Apr 2026 18:17:38 +0200 (CEST)
-Received: by mail-dl1-x1241.google.com with SMTP id
- a92af1059eb24-12c1a170a50so4330851c88.0
- for <ltp@lists.linux.it>; Mon, 13 Apr 2026 09:17:38 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5B50C6003BF
+ for <ltp@lists.linux.it>; Mon, 13 Apr 2026 18:55:24 +0200 (CEST)
+Received: by mail-pj1-x1042.google.com with SMTP id
+ 98e67ed59e1d1-35da9c0c007so4193064a91.2
+ for <ltp@lists.linux.it>; Mon, 13 Apr 2026 09:55:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776097057; x=1776701857; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1776099323; x=1776704123; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=qUozfgMij2Ne734+O09C4AuOlj48Go1mDlYuNt7fFzY=;
- b=KK/kXYCw0jsXHa5IJS7IMYHLybH0SW/m1o+7EkdTO05DH3aOdCAvSi4eayS9u577in
- x8O/XvVk9ngU/nIfW2BrW+IXbF324Iy4q8fgSAbd7FqvAdDr/+zPQ2Kf8fT2EbbooENw
- 0MwDL20dB77BUYodbHs0V9fX6hlORY09eTOPObbxR3P4dgaqK9vbk+YO4dUQSzwvXUa2
- jWAj8wXyLeRl/B270NhuTiXYM6BEBEaar5QeMFMmIubjuHJjESW5j1qmidtS9YTNvi53
- Ihxtq35iCiPscpM8O01HUUn8PwotS36K/nXxAllOdpLAEVH2Ad3/VMm93KcouzvUW7Fn
- n+ww==
+ bh=g0FFlJz2ZE4fMIVCrBob0heKs3fJzd9eIwkyCmz0x7U=;
+ b=KNkH2n1N9ecS1xRQBfXaJnHqAq7kaBxnW3f5RhgCrgw2KBPY21XmkkyjzIQ09mPUy0
+ Bu2FwqzX5OKLw4MFxIHBQgGn9B5z+q8OR14lx0u0Hy9uWJOWAD+57RtX+h0oxfv4qZ1U
+ Rlyw9jinX2GLaado7kEiU7yHizWkOUOcJr5Uxn50uyelkS9Uu3Ox99pX0BQMqHT78weK
+ svNZUrt3eXy9Ri7unYkEQnv07AtukreSCGT0O+fN43nZhRx4deZT3pcZ0ZUBr5BTm/tm
+ OKsgAycEMU8C57jK7N6UA47nNGCzV4ZmQbj0/dEXJdaqfUxNIvwYI3nNdbNhjriagDFS
+ Bvgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776097057; x=1776701857;
+ d=1e100.net; s=20251104; t=1776099323; x=1776704123;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=qUozfgMij2Ne734+O09C4AuOlj48Go1mDlYuNt7fFzY=;
- b=Maxs05O2kWWW31SDtTJLoNH6QcEjKPZHWibsgqTqkDHL6Wym3qmEGEHENLgm5qYmm2
- dBGbjnwmZeO1Fi6JYv9Eg12LECSxGgBoSgqRVGpSQWJTHpF6qJuqORSYciPDu0Tzw65Q
- v4JAkH86TUbuqsf39OjZV5LW30ynyqohH6lVk7VwguKZUwnDVrHVf/gG7UEhM1nvS8yi
- x4eqNEkdfImGndcujuqrZ902+lk9Z+h40WUqPheZVmOjfxTxHTD3N/2ZkmgNJTEymSRO
- tswP0vX/NrsWrRqeAeput5n5r5v7KS/dv8t08ablYbP27VNgTjgPBPHZbepAKb6bOLDA
- 8tTg==
-X-Gm-Message-State: AOJu0Yzc8x9pG4h8Dn1DSL5elIXPERJzr75f2BeJI/QieP3fzUPRhBLg
- XSHdcAvsA0ljD8AJhZVLTeGX/DL/YMboKsVXgZ6nvlgbzP+e5DXQIUxX
-X-Gm-Gg: AeBDietaDjnuoErlpoQzqODnExHb/zyloiFottjuCZL09RVR++08OMSeWz10mzIPk5h
- p7x7HT0jsptwsmbUiV/lUg9sw4wRl8t9pFyWoXq7qYh4auqpC48zyB08eBJemgZndi2BzN7U/u6
- uEbQAXHiCsHy9cr5BIGRHZ2eCMwoKnrCedPCS+HnE0j9yi/5pKW4ny0sJJYOwdLthAqOdenAf3c
- 3i3iGZrXh6SDGtc+wRBGsnpHNRXIPJk/HfeUdL7mV8aIMQtcvVqsiYiwz/eZxBOmyGldrG/Qe1U
- pn8eDmAnUtnt9B0dd4B+YxGHBAQty2oGOrYZ5hTpO9wRQDfFjZQBAPftdoAsExmEiqY6L6JijeE
- 6Bz+Hy2IjG6aNo+4YqXs1f6YQdzdtNH2jJLnNa3hd5/N9IZ2PAeL9NxpaPot54Yw8J8oX6/p6BH
- BIvO1tGfcvl51uSilz/MG1FL9XBxemXCwgaG5VbW3BeWjo3cK24xF1LeVuPfEhBdyuQMlVPj6Cy
- 1QvapHHSvtVdORhVwGMJul00KT9pRTc4nx0
-X-Received: by 2002:a05:7022:6894:b0:128:cf5c:5356 with SMTP id
- a92af1059eb24-12c34e68d6amr8173988c88.5.1776097056535; 
- Mon, 13 Apr 2026 09:17:36 -0700 (PDT)
-Received: from
- runnervm35a4x.wipwsgxeb1ru5pjoslepaynzca.dx.internal.cloudapp.net
- ([52.159.225.196]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-2d55faab010sm17309250eec.12.2026.04.13.09.17.35
+ bh=g0FFlJz2ZE4fMIVCrBob0heKs3fJzd9eIwkyCmz0x7U=;
+ b=Kq25nvNbLT1NCtKh/HINwodSY8D4xk4BWRsn+5udytZjo+Ah0H6H5bpYKBkuYsPA+L
+ NjDNxjfAWJ/AvnO/IY7LI9VzrZyaxhXXg9b/+KQoofspSxmixXz+ue0IY8vyAVeR0vrf
+ 3tN5DrKnBNg1ad4OkoU/WFjp7EzP20sD986J5ZwGdStCCXovDJmNezRAGAmH3F6HUV9Y
+ uBxIBDjFc0KWtlaCrOQLABiFUvRt3G0PbFEBV7ZtkH1jwNEK/54CXlhBofUjZ0BFuDEi
+ 9qXlQqgF56iILpa93OOnTCwHT5TnWLzgiUjI8ev/C8soNDStPkf/+b4annuFVzwd9my+
+ nDfA==
+X-Gm-Message-State: AOJu0YwiCD815CByECVjv90BHnEGJc+Jv5nEPlpw49DFKoVc6re95VOe
+ LcC3Ihi8nTVJQggz6UIFNYx2xUwegYVVdYCPMwDfaoZHlY6XXC/q16g=
+X-Gm-Gg: AeBDiesWfpoJqclPMl7ZG6Tfp8jtvXciP89yj6D7nqYsDku9pneUOvsMN3vm1M5gyuo
+ hrvmC1KXgo67z+6CTvGQ1RywmEaosXMGIEaO1uTo+TXXP/DrV3P2JNLz/Ijwkk021pCfsGKd+gj
+ NM//vgj64uHD+FqY5bF8Crnwu5/s9uEOLKK2X3JkI7nGd5H/LIyGBOO78Kp2wD3BxqMr/qNgYwH
+ PPBtg/NhJY41mCEd4xHOSj3AeuZ8X4zWt75n2mIYSoHZ3dyoBK3GbTJ2g2nCpsl19mYb2+SrSU4
+ eAfkPJyjOsr92LokeNVNNC+pFyXT1506tphy6JIVBW9Eo/zbHp03/vNFI+PII2Lc/vO14sRAuiv
+ R9zP9ZqWQ28X/tvg0z5gfLEgC4d2fiODU4j07wjmckfbEuG8ZHbk6KafiEEQfGBRxTa0KeH3zJk
+ xFlMteHAbeLvF30+b4kBMEkWf8V3griENCJevnL8DulDez
+X-Received: by 2002:a17:90b:1345:b0:35b:93d8:6aaa with SMTP id
+ 98e67ed59e1d1-35e42840b1cmr15881865a91.19.1776099322683; 
+ Mon, 13 Apr 2026 09:55:22 -0700 (PDT)
+Received: from localhost.localdomain ([211.196.223.197])
+ by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-35e3517f2a0sm20817930a91.17.2026.04.13.09.55.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Apr 2026 09:17:36 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Martin Cermak <mcermak@redhat.com>
-Date: Mon, 13 Apr 2026 16:17:34 +0000
-Message-ID: <20260413161734.3903-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260413155730.fnnhbyzqmmrxgfur@lida.tpb.lab.eng.brq.redhat.com>
-References: <20260413155730.fnnhbyzqmmrxgfur@lida.tpb.lab.eng.brq.redhat.com>
+ Mon, 13 Apr 2026 09:55:21 -0700 (PDT)
+From: Jinseok Kim <always.starving0@gmail.com>
+To: wangli.ahau@gmail.com,
+	pvorel@suse.cz
+Date: Tue, 14 Apr 2026 01:52:57 +0900
+Message-ID: <20260413165457.1349-1-always.starving0@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <CAE1O6mgFhsT0XP33=8Ji5dJPS5d27Oz8A74wWckcDX0c4LVHxQ@mail.gmail.com>
+References: <CAE1O6mgFhsT0XP33=8Ji5dJPS5d27Oz8A74wWckcDX0c4LVHxQ@mail.gmail.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Avoid Syscall param clock_settime(tp) points to
- uninitialised byte(s)
+Subject: [LTP] [PATCH v3] close: add test for double close EBADF
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,29 +95,88 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+Verify that calling close() on an already closed file descriptor fails
+with EBADF.
 
-our agent completed the review of the patch.
+This test adds coverage for a common state transition case where a
+previously valid file descriptor becomes invalid after close().
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
+---
+Changes in v3:
+- Add O_RDWR flag to SAFE_OPEN
+- Link to v2: https://lore.kernel.org/ltp/20260411110405.7330-1-always.starving0@gmail.com
 
-On Mon, 13 Apr 2026, Martin Cermak wrote:
-> Subject: [PATCH] Avoid Syscall param clock_settime(tp) points to uninitialised byte(s)
+Changes in v2:
+- Add additional test coverage to close02 instead of creating a separate
+  close03 test.
+- Link to v1: https://lore.kernel.org/ltp/20260406133134.17238-2-always.starving0@gmail.com
+---
+ testcases/kernel/syscalls/close/close02.c | 42 ++++++++++++++++++++---
+ 1 file changed, 38 insertions(+), 4 deletions(-)
 
-The subject copies the valgrind error message verbatim. Please use
-the standard LTP format:
+diff --git a/testcases/kernel/syscalls/close/close02.c b/testcases/kernel/syscalls/close/close02.c
+index 617c48237..3b3c61b1e 100644
+--- a/testcases/kernel/syscalls/close/close02.c
++++ b/testcases/kernel/syscalls/close/close02.c
+@@ -5,17 +5,51 @@
+  */
 
-  lib/tst_clocks: fix uninitialized memory in syscall_supported_by_kernel
+ /*\
+- * Call close(-1) and expects it to return EBADF.
++ * Verify :manpage:`close(2)` failure cases:
++ *
++ * 1) close(-1) returns EBADF.
++ * 2) closing the same fd twice returns EBADF on the second call.
+  */
 
-> -       struct __kernel_timespec foo;
-> +       struct __kernel_timespec foo = { 0, };
+ #include <errno.h>
++#include <fcntl.h>
++
+ #include "tst_test.h"
 
-Fix itself looks correct.
+-static void run(void)
++enum case_type {
++	INVALID_FD,
++	DOUBLE_CLOSE,
++};
++
++static struct tcase {
++	const char *desc;
++	enum case_type type;
++} tcases[] = {
++	{ "close(-1)", INVALID_FD },
++	{ "close same fd twice", DOUBLE_CLOSE },
++};
++
++static void verify_close(unsigned int i)
+ {
+-	TST_EXP_FAIL(close(-1), EBADF);
++	int fd;
++	struct tcase *tc = &tcases[i];
++
++	switch (tc->type) {
++	case INVALID_FD:
++		TST_EXP_FAIL(close(-1), EBADF, "%s", tc->desc);
++		break;
++
++	case DOUBLE_CLOSE:
++		fd = SAFE_OPEN("close02", O_CREAT | O_RDWR, 0600);
++
++		TST_EXP_PASS(close(fd), "%s: first close()", tc->desc);
++		TST_EXP_FAIL(close(fd), EBADF, "%s: second close()", tc->desc);
++		break;
++	}
+ }
 
-Regards,
-LTP AI Reviewer
+ static struct tst_test test = {
+-	.test_all = run,
++	.needs_tmpdir = 1,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_close,
+ };
+--
+2.43.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
