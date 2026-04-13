@@ -4,107 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B6C5E9381A
-	for <ltp@archiver.kernel.org>; Mon, 13 Apr 2026 05:28:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10AE8E64007
+	for <ltp@archiver.kernel.org>; Mon, 13 Apr 2026 06:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1776061231; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=VQU2VIJL67B/3Xq9XhDDWMZU02mQXWBE01Vs+QjRDuc=;
+ b=MNB0uWa0DZ0XpHxHX7TtYOaGhHNcgFivpxNh4iKPasp5oBLJz/qA6sU/+tXUwOA1a7a6z
+ EddCQm2VQh6mpYTopp+XmJF2Zv8CRNTtmbUZfMSf/LqmfPTvnQoTH2v5X4r7cJijJlZ2tlH
+ 9svef9AjYQKmNHetqrMKSSVj3ySXZOw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 82CFF3E2670
-	for <ltp@archiver.kernel.org>; Mon, 13 Apr 2026 07:28:07 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 72EE63E2138
+	for <ltp@archiver.kernel.org>; Mon, 13 Apr 2026 08:20:31 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7E34B3C0E59
- for <ltp@lists.linux.it>; Mon, 13 Apr 2026 07:27:47 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E19523DC6D1
+ for <ltp@lists.linux.it>; Mon, 13 Apr 2026 08:20:06 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B51BF600110
- for <ltp@lists.linux.it>; Mon, 13 Apr 2026 07:27:46 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 63CMQWVI3538921; Mon, 13 Apr 2026 05:27:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-type:date:from:in-reply-to:message-id:mime-version
- :references:subject:to; s=pp1; bh=SVxOFqRsC3ixlg75cc2qGaS9t15PHb
- AACdkUvwUVwrQ=; b=E6pCvlA8lvfKB48vyH1r7LEKMm8qSSxTeqjiU+3u0q74L4
- EIWhhKaPGF8Pky8J8etSw6hgEKD2yhRLugMF9h8RIvkdpSVFkTCw/ebUT/kT8k4N
- gXZ+r0fu5mmS6hYuqvF3OUfHageYSyP6+4FvaT0DZvQ4R/Gw+UXRn0DhXFAUcx+Q
- i+j/ScqlRT4fkd4+UT8W1zVBZxGzfOhlW0Hz436KBYCDsq3w17QPz3MW4t+f4Az0
- /yT7wvM05dx9+vmsYxouhW3l7i83BYCrhPvzz1Zq7Pca4iPpNlVLoigZYgCqZJ9Z
- GmVPmiMsRj6Ig+lMPItZo4z0etuyXl/OPifvg3dA==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dfdt3p4yq-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 13 Apr 2026 05:27:43 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 63D55us6025781;
- Mon, 13 Apr 2026 05:27:43 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dg3b1bh5h-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 13 Apr 2026 05:27:43 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com
- [10.39.53.228])
- by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 63D5RgEj10158610
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 13 Apr 2026 05:27:42 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 4A22958059;
- Mon, 13 Apr 2026 05:27:42 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 0DAA35804B;
- Mon, 13 Apr 2026 05:27:40 +0000 (GMT)
-Received: from [9.43.104.112] (unknown [9.43.104.112])
- by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTPS;
- Mon, 13 Apr 2026 05:27:39 +0000 (GMT)
-Message-ID: <f5b8b153-2fd8-4e6e-8446-0d9fe82221cd@linux.ibm.com>
-Date: Mon, 13 Apr 2026 10:57:36 +0530
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EB98C60011F
+ for <ltp@lists.linux.it>; Mon, 13 Apr 2026 08:20:05 +0200 (CEST)
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-4852b81c73aso37851695e9.3
+ for <ltp@lists.linux.it>; Sun, 12 Apr 2026 23:20:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1776061205; x=1776666005; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=/Fi1tV/kcSvfaPXhGwMCK1pn47NjYCFUWkTRTcNfbxE=;
+ b=cpNYBZsZIXFckazmGQwbhjFRYef8zNNy4ZK03pp4fdwGFQZZwrCrAG5yKBgQXXcvkA
+ 1GOrHVRAGGlugt/lg7GaeihC/bFs89T8J8EVqASTVJjfUVQXkP6xnpzW2AGjq/nfXpSW
+ b4RFVUUijDb3HkdxWsO2xE/ZK7Pxrqknpe+xQ1EQyWqje0cSY6dZufLYKlZPkMyHlZRU
+ 4SzjsJQCvN+PN+CyMJlBq+wM9X8SKpc7KV2d/RUFfSRIIBZZnVjDNKh7IGHEXfNLXaKT
+ 4dYwm0Z4iBFvcxF+4P/wNBzMYZQUankJ1PKFoTPcF2lIM4duVzRtFP3yTou84Qh6HPxx
+ Byyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776061205; x=1776666005;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=/Fi1tV/kcSvfaPXhGwMCK1pn47NjYCFUWkTRTcNfbxE=;
+ b=pRfc3mcLkGisfe2DQ1hIfD7k3elmmEwYZsEfPNAMV1TXBrxg5AtJUsTTbjo7aW3e/l
+ v0128oGWc/qHTUlO/6e3/kn88dDqdyFcf3jnP+zcR1aRZZ9bgxsl+vV+0+yrb+a4qk5v
+ mvDB78yZAtlxNsJxm01coQBvFPGWaqb4aenl4VTeZnRwClrHzdYwdp8BiGuTtl6T6Xqt
+ AkzDQzxXcWgbDsdy0hPJKOfR5yIWfBsf0l3wTLlauD0mJktqQvQFCUMUWHne+vtjLuzg
+ 7RpoV3Gu2aBVizdyB4U7KfBWM0S4rptMKiI5IY1GYZ0IWH+irGKAetw25b7WiLHMi0FR
+ Cb8Q==
+X-Gm-Message-State: AOJu0Ywz50sQvWzQFu2PYsxDLsLtBHvrm/mr58vdZBDQYHLI+glcIEcg
+ zSFSMrNn9LpWKVaxQxqPVzqQdqcIt3I5+slKjceDMuwOlWPJu8yY8YLJ+xvsD/1MfkSIyUWwg0G
+ ODVE=
+X-Gm-Gg: AeBDiesw21RRDv5nLGLqonvEH8YZLodId5zeNPxMFVB5WvywN1Cfnd92chg7wCIq9zX
+ LLfzUVdr7bEXE3lpPA8BhZXhy4DHDEq5i5zsdnhl8KONwhuW0y/77TsjqZ5B41wUcjuYPnZkb84
+ YDWHQHdD2mzUNqnxXb4KXMzyAsLKBUSbpp5ibNYP3iUYA8bBFRe2qKIVANllIRPkkKW5jSsNu8o
+ 8Gk5uLUl6yaDva2vDelYo81M4eKQ8HVzr98RQVzs1l/vnZx6/S/kOqbNWZH4PAWP9vaUmiiel20
+ IY+YU98ZYhArvFtQ99GHvn/svApEVNfZiu8Fu3Pm2z+79hqMseu0BP8skQGG2WMDei45+PGyH0F
+ uI+o/Mqvlwy3ORGULk7eUGXApv49VEyy5JAQjtu9TXm3SRxeetnrfHTkHAJQCaW0MCiiIcHdb+M
+ IBWy9o2DVCI/k=
+X-Received: by 2002:a05:600c:890e:b0:485:3dfc:569 with SMTP id
+ 5b1f17b1804b1-488d683665dmr106013315e9.16.1776061204807; 
+ Sun, 12 Apr 2026 23:20:04 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-488d5380feesm332418555e9.9.2026.04.12.23.20.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 12 Apr 2026 23:20:04 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Mon, 13 Apr 2026 06:19:53 +0000
+Message-ID: <20260413062002.20324-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260407092616.15563-1-wegao@suse.com>
+References: <20260407092616.15563-1-wegao@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Li Wang <liwang@redhat.com>
-References: <6215241a-07c4-4eed-8549-0e0afc2fc096@linux.ibm.com>
- <adxiNs3KpMO-nEVG@redhat.com>
-Content-Language: en-US
-From: Soma Das <somadas1@linux.ibm.com>
-In-Reply-To: <adxiNs3KpMO-nEVG@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-ORIG-GUID: GBn07ya7JYmr6zWUa4XqJ-4zr8dppvxG
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDEzMDA0OCBTYWx0ZWRfXwnEmqReBXbq9
- +fvkEP4JGMeSmu8lgCv9MjT0w9osXsOOGrsQ/PHmigPRVWyagV2Ekqrd6Uw3aBuMraBcR02awlG
- 0xShJW4/f9mU3uhxK44r8JF0/xCOy+cu/Y3jkFwaJHgLBVEnWabwFosAOYaRK3hMG+bSz/vSC+N
- zgdjQ/XMg+jkA5o4Z+Hh2mD3Eokk2A9Kucr7H/eFwkP0gA53D4Kw1v7nmeovBgvrZAqIQsUti3m
- dJMpdS3FVW0doICsx0u+OhjA8a7d6PmLc2Swgx+zYvVdNRyNiuFW3l0nBsncQ41ayB9NTHLD1M4
- wzC4X1OQftcB88j8LD4BtNbS4dJ3LLnrjYxQz0NGDgysBW0GFWMyvd0Pq1JA/JQfCrhNNIt2HiK
- xMzV6j1XwjoHGi4pDPxd8BbL8oeaXTCFIzu6A1/XFNk9YYUfyQsV81m21PQ1R/MfldKJHuTgnjV
- yPqYz9OABWIwxB3T9Mg==
-X-Proofpoint-GUID: RADzpe4uVJwHV5Hu1T2jYSo2FjqfJxrz
-X-Authority-Analysis: v=2.4 cv=WpEb99fv c=1 sm=1 tr=0 ts=69dc7ed0 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=iQ6ETzBq9ecOQQE5vZCe:22 a=r77TgQKjGQsHNAKrUKIA:9 a=pGLkceISAAAA:8
- a=WVoxJWIhaqlnrWsZqHgA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=20KFwNOVAAAA:8
- a=TEv-KCbQBO2lq7Ilr10A:9 a=3ZE5zfFXTYcXvKQm:21 a=_W_S_7VecoQA:10
- a=lqcHg5cX4UMA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-13_01,2026-04-09_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 phishscore=0 bulkscore=0 adultscore=0 spamscore=0
- malwarescore=0 clxscore=1015 lowpriorityscore=0 suspectscore=0
- impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604010000
- definitions=main-2604130048
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] mmap: fix intermittent OOM kill of test parent in
- mmap22
+Subject: [LTP] [PATCH v2] shmctl03: Fix 32-bit compat mode failure by
+ adjusting comparisons for compat mode truncation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,70 +99,130 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgTGkgV2FuZywKClRoYW5rcyBmb3IgdGhlIHJldmlldy4KClVuZGVyc3Rvb2QuIFNldHRpbmcg
-dGhlIGNoaWxkIHRvICsxMDAwIHJlbW92ZXMgbWVtb3J5IHByZXNzdXJlIAppbW1lZGlhdGVseSBv
-bmNlIGl0IGdldHMga2lsbGVkLCBjYXVzaW5nIHRoZSBwYXJlbnQgdG8gdGltZSBvdXQgd2l0aCAK
-VEZBSUwuIEknbGwgcmV3b3JrIHVzaW5nIHlvdXIgc3VnZ2VzdGVkIHxzdHJlc3NfY2hpbGQoKXwg
-YXBwcm9hY2ggd2l0aCAKMU1CIGNodW5rcyBhbmQgdGhlIDgwJSB0aHJlc2hvbGQgZGVsYXkuCgpJ
-J2xsIGFsc28gY2hlY2sgfGxpYi90c3RfbWVtdXRpbHMuaHwgYmVmb3JlIGZpbmFsaXppbmcuCgp2
-MiB3aWxsIGJlIHJlYmFzZWQgb24gbGF0ZXN0IG1hc3RlciBhbmQgc2VudCB2aWEgZ2l0IHNlbmQt
-ZW1haWwuCgpUaGFua3MsIFNvbWEgRGFzCgoKT24gMTMvMDQvMjYgODo1NSBBTSwgTGkgV2FuZyB3
-cm90ZToKPiBIaSBTb21hLAo+Cj4+ICDCoHN0YXRpYyB2b2lkIHN0cmVzc19jaGlsZCh2b2lkKQo+
-PiAgwqB7Cj4+ICDCoCDCoCDCoGZvciAoOzspIHsKPj4gQEAgLTYzLDkgKzgyLDI1IEBAIHN0YXRp
-YyB2b2lkIHRlc3RfbW1hcCh2b2lkKQo+Pgo+PiAgwqAgwqAgwqB2ZWMgPSBTQUZFX01BTExPQyhu
-cGFnZXMpOwo+Pgo+PiArwqAgwqAgLyoKPj4gK8KgIMKgIMKgKiBQcm90ZWN0IHRoZSBwYXJlbnQg
-KHRlc3QgaGFybmVzcykgZnJvbSB0aGUgT09NIGtpbGxlci4gQm90aCBwYXJlbnQKPj4gK8KgIMKg
-IMKgKiBhbmQgY2hpbGQgc2hhcmUgdGhlIHNhbWUgbWVtY2csIHNvIHdpdGhvdXQgYW4gZXhwbGlj
-aXQgaGludCB0aGUgT09NCj4+ICvCoCDCoCDCoCoga2lsbGVyIHBpY2tzIGJhc2VkIG9uIGhldXJp
-c3RpY3MgdGhhdCBjYW4gZmF2b3VyIHRoZSBwYXJlbnQuCj4+ICvCoCDCoCDCoCovCj4+ICvCoCDC
-oCBzZXRfb29tX3Njb3JlX2FkaigtMTAwMCk7Cj4+ICsKPj4gIMKgIMKgIMKgY2hpbGQgPSBTQUZF
-X0ZPUksoKTsKPj4gLcKgIMKgIGlmICghY2hpbGQpCj4+ICvCoCDCoCBpZiAoIWNoaWxkKSB7Cj4+
-ICvCoCDCoCDCoCDCoCAvKgo+PiArwqAgwqAgwqAgwqAgwqAqIE1ha2UgdGhlIGNoaWxkIHRoZSBw
-cmVmZXJyZWQgT09NIHZpY3RpbS4gSWYgT09NIGZpcmVzIHdoaWxlCj4+ICvCoCDCoCDCoCDCoCDC
-oCogdGhlIHN0cmVzcyB3b3JrZXIgaXMgZmlsbGluZyBtZW1vcnksIHRoZSBrZXJuZWwgbXVzdCBr
-aWxsIHRoZQo+PiArwqAgwqAgwqAgwqAgwqAqIGNoaWxkIChzdHJlc3Mgd29ya2VyKSBhbmQgbm90
-IHRoZSBwYXJlbnQgKHRlc3QgaGFybmVzcykuCj4+ICvCoCDCoCDCoCDCoCDCoCogb29tX3Njb3Jl
-X2Fkaj0xMDAwIGlzIHRoZSBtYXhpbXVtLCBndWFyYW50ZWVpbmcgdGhpcyBwcm9jZXNzCj4+ICvC
-oCDCoCDCoCDCoCDCoCogaXMgY2hvc2VuIGZpcnN0IHdpdGhpbiB0aGUgY2dyb3VwLgo+PiArwqAg
-wqAgwqAgwqAgwqAqLwo+PiArwqAgwqAgwqAgwqAgc2V0X29vbV9zY29yZV9hZGooMTAwMCk7Cj4g
-U2V0dGluZyB0aGUgY2hpbGQncyBvb21fc2NvcmVfYWRqIHRvIDEwMDAgZG9lcyBzZXZlcmVseSBj
-b21wcm9taXNlIHRoZQo+IHZhbGlkaXR5IG9mIHRoZSB0ZXN0LiBUaGlzIHdvdWxkIHR5cGljYWxs
-eSByZXN1bHQgaW4gYSBmYWxzZSBuZWdhdGl2ZS4KPgo+IEJlY2F1c2Ugb25jZSB0aGUgY2hpbGQg
-Z2V0cyBraWxsZWQgdGhlIG1lbW9yeSBzdHJlc3Mgd2lsbCBkaXNhcHBlYXIKPiBpbW1lZGlhdGVs
-eSwgYnV0IHRoZSBwYXJlbnQgc3RpbGwga2VlcHMgbG9vcGluZyBmb3IgY2hlY2sgaWYga2VybmVs
-IHJlY2xhaW0KPiB0aG9zZSBtZW1vcnksIGl0IHdpbGwgZXZhbnRhdWxseSByZXBvcnQgVEZBSUwg
-d2hlbiB0aW1lIGVsYXBzZWQuCj4KPiBJbnN0ZWFkIG9mIG1vZGlmeWluZyBvb21fc2NvcmVfYWRq
-IHRvIGludGVyZmVyZSB3aXRoIHRoZSBPT00ga2lsbGVyLCBhCj4gYmV0dGVyIGFwcHJvYWNoIGlz
-IHRvIG9wdGltaXplIGhvdyB0aGUgY2hpbGQgcHJvY2VzcyBnZW5lcmF0ZXMgbWVtb3J5Cj4gcHJl
-c3N1cmUsIG1ha2luZyBpdCBtb3JlIHJlZmxlY3RpdmUgb2YgcmVhbC13b3JsZCBtZW1vcnkgcmVj
-bGFpbSBzY2VuYXJpb3MuCj4KPiBGb3IgZXhhbXBsZSwgdGhlIGNoaWxkIHByb2Nlc3MgY2FuIGFs
-bG9jYXRlIGxhcmdlciBjaHVua3MgKGUuZy4sIDFNQikgdG8KPiByYXBpZGx5IGJ1aWxkIHVwIG1l
-bW9yeSBwcmVzc3VyZS4gT25jZSB0aGUgdG90YWwgYWxsb2NhdGVkIG1lbW9yeSBhcHByb2FjaGVz
-Cj4gdGhlIGNncm91cCBsaW1pdCAoZS5nLiwgODAlIGNhcGFjaXR5KSwgYSBzbWFsbCBkZWxheSBj
-YW4gYmUgaW50cm9kdWNlZAo+IGludG8gdGhlIGFsbG9jYXRpb24gbG9vcC4gVGhpcyBhcHByb2Fj
-aCBlZmZpY2llbnRseSBkcml2ZXMgdGhlIHN5c3RlbSB0bwo+IGl0cyBtZW1vcnkgbGltaXQgd2hp
-bGUgcHJvdmlkaW5nIHRoZSBrZXJuZWwncyByZWNsYWltIG1lY2hhbmlzbSBhIHN1ZmZpY2llbnQK
-PiB0aW1lIHdpbmRvdyB0byBpZGVudGlmeSBhbmQgZHJvcCBNQVBfRFJPUFBBQkxFIHBhZ2VzLiBJ
-dCBhbHNvIGVmZmVjdGl2ZWx5Cj4gYXZvaWRzIGFuIGluc3RhbnRhbmVvdXMgbWVtb3J5IHNwaWtl
-IHRoYXQgd291bGQgb3RoZXJ3aXNlIHRyaWdnZXIgdGhlIE9PTQo+IGtpbGxlciBwcmVtYXR1cmVs
-eS4KPgo+ICNkZWZpbmUgQ0hVTktfU0laRSAoMTAyNCAqIDEwMjQpCj4KPiBzdGF0aWMgdm9pZCBz
-dHJlc3NfY2hpbGQoc2l6ZV90IGNnX2xpbWl0KQo+IHsKPiAJc2l6ZV90IGFsbG9jYXRlZCA9IDA7
-Cj4gCXNpemVfdCB0aHJlc2hvbGQgPSBjZ19saW1pdCAqIDggLyAxMDsKPgo+IAlmb3IgKDs7KSB7
-Cj4gCQljaGFyICpidWYgPSBtYWxsb2MoQ0hVTktfU0laRSk7Cj4KPiAJCWlmICghYnVmKSB7Cj4g
-CQkJdXNsZWVwKDEwMDAwKTsKPiAJCQljb250aW51ZTsKPiAJCX0KPgo+IAkJbWVtc2V0KGJ1Ziwg
-J0InLCBDSFVOS19TSVpFKTsKPiAJCWFsbG9jYXRlZCArPSBDSFVOS19TSVpFOwo+Cj4gCQlpZiAo
-YWxsb2NhdGVkID49IHRocmVzaG9sZCkgewo+IAkJCXVzbGVlcCgxMDAwKTsKPiAJCX0KPiAJfQo+
-IH0KPgo+IEFuZCBzb21lIHdvcmtmbG93IGlzc3VlczoKPgo+ICAgLSBwbGVhc2UgcmViYXNlIHlv
-dSBjb2RlIG9uIHRoZSBsYXRlc3QgYnJhbmNoIGJlZm9yZSBjb29raW5nIGEgcGF0Y2guCj4KPiAg
-IC0gVXNlIGdpdCBzZW5kLWVtYWlsIHRvIHNlbmQgcGF0Y2ggdG8gTFRQIG1haWxpbmcgbGlzdC4K
-Pgo+ICAgLSBGWUk6IExUUCBoYXMgYWxyZWFkeSBhY2hpZXZlZCB0aGUgb29tIHByb3RlY3Rpb24g
-ZnVjbnRpb25zOgo+ICAgICBzZWU6IGxpYi90c3RfbWVtdXRpbHMuaAo+Cj4gTm90ZToKPiAgIFRo
-aXMgd29yay1lbWFpbCB3aWxsIGJlIGRpc2FibGVkIHNvb24sIHJlcGx5IHRvOndhbmdsaS5haGF1
-QGdtYWlsLmNvbQo+CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXgu
-aXQvbGlzdGluZm8vbHRwCg==
+On 64-bit kernels, the default shmmax and shmall values often exceed
+the range of a 32-bit unsigned long or are clipped differently by the
+kernel's compat syscall layer than they appear in /proc.
+
+Link: https://lore.kernel.org/ltp/aJm5SBOaRoe1e0PB@yuki.lan/
+Signed-off-by: Wei Gao <wegao@suse.com>
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ include/tst_assert.h                          | 10 ++++---
+ lib/tst_assert.c                              | 26 ++++++++++++++-----
+ .../kernel/syscalls/ipc/shmctl/shmctl03.c     | 12 ++++++---
+ 3 files changed, 36 insertions(+), 12 deletions(-)
+
+diff --git a/include/tst_assert.h b/include/tst_assert.h
+index dcb62dfea..5b3bd0e12 100644
+--- a/include/tst_assert.h
++++ b/include/tst_assert.h
+@@ -21,14 +21,18 @@ void tst_assert_int(const char *file, const int lineno,
+ #define TST_ASSERT_FILE_INT(path, prefix, val) \
+ 	tst_assert_file_int(__FILE__, __LINE__, path, prefix, val)
+ 
++#define TST_ASSERT_SATURATED_INT   0x01
++#define TST_ASSERT_SATURATED_ULONG 0x02
++#define TST_ASSERT_BITWISE         0x04
++
+ /*
+  * Same as tst_assert_int() but for unsigned long.
+  */
+ void tst_assert_ulong(const char *file, const int lineno,
+-                      const char *path, unsigned long val);
++                      const char *path, unsigned long val, int flags);
+ 
+-#define TST_ASSERT_ULONG(path, val) \
+-	tst_assert_ulong(__FILE__, __LINE__, path, val)
++#define TST_ASSERT_ULONG(path, val, ...) \
++	tst_assert_ulong(__FILE__, __LINE__, path, val, (0, ##__VA_ARGS__))
+ 
+ /*
+  * Asserts that integer value stored in the prefix field of file pointed by path
+diff --git a/lib/tst_assert.c b/lib/tst_assert.c
+index b68bd5d39..1598244c0 100644
+--- a/lib/tst_assert.c
++++ b/lib/tst_assert.c
+@@ -5,6 +5,7 @@
+  * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
+  */
+ #include <stdio.h>
++#include <limits.h>
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_assert.h"
+ #include "tst_test.h"
+@@ -23,18 +24,31 @@ void tst_assert_int(const char *file, const int lineno, const char *path, int va
+ 	tst_res_(file, lineno, TFAIL, "%s != %d got %d", path, val, sys_val);
+ }
+ 
+-void tst_assert_ulong(const char *file, const int lineno, const char *path, unsigned long val)
++void tst_assert_ulong(const char *file, const int lineno, const char *path,
++			unsigned long val, int flags)
+ {
+-	unsigned long sys_val;
+-
+-	safe_file_scanf(file, lineno, NULL, path, "%lu", &sys_val);
++	unsigned long long sys_val_64;
++	unsigned long expected_val;
++
++	safe_file_scanf(file, lineno, NULL, path, "%llu", &sys_val_64);
++
++	if (flags & TST_ASSERT_SATURATED_INT) {
++		expected_val = (sys_val_64 > (unsigned long long)INT_MAX) ? (unsigned long)INT_MAX : (unsigned long)sys_val_64;
++	} else if (flags & TST_ASSERT_SATURATED_ULONG) {
++		expected_val = (sys_val_64 > (unsigned long long)UINT_MAX) ? (unsigned long)UINT_MAX : (unsigned long)sys_val_64;
++	} else if (flags & TST_ASSERT_BITWISE) {
++		expected_val = (unsigned long)(sys_val_64 & 0xFFFFFFFFULL);
++	} else {
++		expected_val = (unsigned long)sys_val_64;
++	}
+ 
+-	if (val == sys_val) {
++	if (val == expected_val) {
+ 		tst_res_(file, lineno, TPASS, "%s = %lu", path, val);
+ 		return;
+ 	}
+ 
+-	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu", path, val, sys_val);
++	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu (raw: %llu)",
++		path, val, expected_val, sys_val_64);
+ }
+ 
+ void tst_assert_file_int(const char *file, const int lineno, const char *path, const char *prefix, int val)
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
+index a1f53e7c1..6d073789c 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
+@@ -30,9 +30,15 @@ static void verify_ipcinfo(void)
+ 	else
+ 		tst_res(TPASS, "shmmin = 1");
+ 
+-	TST_ASSERT_ULONG("/proc/sys/kernel/shmmax", info.shmmax);
+-	TST_ASSERT_ULONG("/proc/sys/kernel/shmmni", info.shmmni);
+-	TST_ASSERT_ULONG("/proc/sys/kernel/shmall", info.shmall);
++	if (tst_is_compat_mode()) {
++		TST_ASSERT_ULONG("/proc/sys/kernel/shmmax", info.shmmax, TST_ASSERT_SATURATED_INT);
++		TST_ASSERT_ULONG("/proc/sys/kernel/shmmni", info.shmmni, TST_ASSERT_BITWISE);
++		TST_ASSERT_ULONG("/proc/sys/kernel/shmall", info.shmall, TST_ASSERT_BITWISE);
++	} else {
++		TST_ASSERT_ULONG("/proc/sys/kernel/shmmax", info.shmmax);
++		TST_ASSERT_ULONG("/proc/sys/kernel/shmmni", info.shmmni);
++		TST_ASSERT_ULONG("/proc/sys/kernel/shmall", info.shmall);
++	}
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.52.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
