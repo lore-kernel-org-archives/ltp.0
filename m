@@ -4,95 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A6E0F9D0E7
-	for <ltp@archiver.kernel.org>; Tue, 14 Apr 2026 16:51:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1776185513; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=41nFBq71M5yr7h5pBtyZQPK1BVuYtFP+a4t5iAmww4g=;
- b=DrONfsfw9go628bwp4ma5Tu81U4JQwqTOLLkqd5AKaK9657/MB/Ei/sp58oRv8z0Y/mnn
- x+pZMjzK1Q/wlE8lgRfRsS+fPYywA3vSDc21KEjP0VMXi/nwBntt2o+PcmeyXedCIFUAC8W
- OncJ7mntOs+ldmEI6VE9H/ayKu7VmGY=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59A89F9D0DA
+	for <ltp@archiver.kernel.org>; Tue, 14 Apr 2026 17:00:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1A8CA3E5DFE
-	for <ltp@archiver.kernel.org>; Tue, 14 Apr 2026 18:51:53 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id F34743E5E00
+	for <ltp@archiver.kernel.org>; Tue, 14 Apr 2026 19:00:18 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F31B33E5DCA
- for <ltp@lists.linux.it>; Tue, 14 Apr 2026 18:51:29 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 998AF3CDC78
+ for <ltp@lists.linux.it>; Tue, 14 Apr 2026 18:59:59 +0200 (CEST)
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com
+ [IPv6:2607:f8b0:4864:20::242])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 681D31A0081F
- for <ltp@lists.linux.it>; Tue, 14 Apr 2026 18:51:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1776185487;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=11KTou324v0RBr/8mkrCAe7qCAN1uMNT7toQfl3hgdM=;
- b=NeG4jIY+yhfXMEF8gn2LElkc1bY7EjhSc1nzOQoDu/Q0iexYlp7c8uZIsKPkWL7pfWspft
- 9/PIUD/BFZecse9IjxSUvqIRJKEXZrwRR5dFZ41k2Xs0ZSvtwebHPbwldAtLX0OMrCoRU6
- qy8DFHyxuug5Q0dFJpSVVk+ogRpOicY=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-684-kBO_KxzyMOmZWFZW1by9Lg-1; Tue, 14 Apr 2026 12:51:26 -0400
-X-MC-Unique: kBO_KxzyMOmZWFZW1by9Lg-1
-X-Mimecast-MFC-AGG-ID: kBO_KxzyMOmZWFZW1by9Lg_1776185486
-Received: by mail-qv1-f69.google.com with SMTP id
- 6a1803df08f44-8ac566014e0so156943206d6.2
- for <ltp@lists.linux.it>; Tue, 14 Apr 2026 09:51:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776185486; x=1776790286;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1DFB7600702
+ for <ltp@lists.linux.it>; Tue, 14 Apr 2026 18:59:59 +0200 (CEST)
+Received: by mail-oi1-x242.google.com with SMTP id
+ 5614622812f47-470145d7df5so3538749b6e.0
+ for <ltp@lists.linux.it>; Tue, 14 Apr 2026 09:59:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1776185998; x=1776790798; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=11KTou324v0RBr/8mkrCAe7qCAN1uMNT7toQfl3hgdM=;
- b=ZeYq9t2U7TQXqBISc1tp+Q42Y/jgBahMJRDBm4Qv1MUhsVOznMubmHf8kxxapCJcIO
- MY1bTfEBzK4NfOfVihNvpYBQpLzKuLWJi9BYmKQOog9nwWPUwWkqI0u9HWspZ+UsuOHu
- sqOUHEtWtWce82UBd9klkVekvqi12IqF57d6xWPjBhJlSrQdF0ZvYJWCFqyV+s+q5ehT
- HipgCc3OXUy4+La2nySV22CMJZt/ovS4J3AOrkkOj9qJtrVjPqoN1l+TjuTm90VeQFqo
- 17hzm/veDr2tBMFhKPxQ3eV+X33JNHOuYiKwlFfKu9FJpah7VWgROSaDfAbKfH9El59j
- PbbA==
-X-Gm-Message-State: AOJu0Ywgz8iksWvsRX8AxBrhtFESGsKKdpZxIsXeh6YPPmLzvVOxUAAK
- ghVoXopOXyfCQ7K87MQX3cV6UsZAAVpVVQx2THzWekPMk89b6+yUr5UoZbBIB65AcH940MqmhzW
- 8/gJO1WyjdaNOPKHCs9peyaXxkQmluVoKeeXduTu0szXFMFSdZy59zpaCWGj4ohkACZ3KPr6i9s
- eWij8yCh0rzeX9O8MEHyh1pYV4S6nCALxp/BF2Ezk=
-X-Gm-Gg: AeBDiet2Q2PLCN+B7YTQb0LlBSY10Nw6blG7xokh/7wXzcEA5g8cHDvOi1fEsLXeJmJ
- +/HJU/o2jH/L6krh/mTc6jxuaYZl7t+sv4slvMoqYZRAfXh4izmPOoaX7XncO4aE3NkMS8qDz9/
- Er3esq1W07KYHdJGxnCTGwS1PSz2dRGh1pYUMMPTyrn3Xs1oGgK6RKREDqWZcpAG5R+XNgUF+CM
- 7XJhqcsNHE/K/R8vj2Nlh4DDqvnX6hpzMtc4b2LCdYzRVm8LaSMKKqtR+gm07g3bY+ZompvFpFQ
- FquxQHt1XMRYbR+4irNKrF+LTBQHfgRVPkNDI4ajZdDEissU76FnHMj6v2O7nPZEuDNuCQIXl9w
- 46nKg05Cs80smpTm1GCTkmp+7XerEMKoNiUGSOHE/R3PmXyQ=
-X-Received: by 2002:a05:6214:2422:b0:8ac:a8df:639b with SMTP id
- 6a1803df08f44-8aca8df6733mr166185236d6.39.1776185485620; 
- Tue, 14 Apr 2026 09:51:25 -0700 (PDT)
-X-Received: by 2002:a05:6214:2422:b0:8ac:a8df:639b with SMTP id
- 6a1803df08f44-8aca8df6733mr166184396d6.39.1776185484933; 
- Tue, 14 Apr 2026 09:51:24 -0700 (PDT)
-Received: from sbertram-thinkpadp1gen5.bos.com ([67.189.222.97])
- by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8ac84c495a5sm124834816d6.30.2026.04.14.09.51.24
+ bh=0RqwFWXA1r9C/qrxiI4Z6Cloe1c/7fkWOtsHTQZlJQA=;
+ b=H2s6N/knr3tpJjRbdIVQ8Wp1vvLXhA/DTe62zD55jPELnSMV1aEgCKFvAiK6PCSkU7
+ 9gGUPMvsHkCxHzMTN19MMgNu/zVnWhNyaEcyRTeJ6Se6L+QNTrjgR5pvw/TDWZZ7q9FK
+ iUSczqQXH3qPv59jhuPaMYy6ngP2tal4cTZVFuHK8fpbXKrJaMxAIrNhBhtwRAQ/G6+R
+ 8YEARrLmfFSntwhgfD2QC7gvBJPo4RfcxjuLI97HRq3Ag1CWK3qx+H6ak0QBaDxDhc/k
+ 9DHDUUkxpz0ilajtu+ZfhxUgSgLGbcQNzzp/wcvssT+SvEIUFltOiSP5ZObaLLs1mkdH
+ XGmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776185998; x=1776790798;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=0RqwFWXA1r9C/qrxiI4Z6Cloe1c/7fkWOtsHTQZlJQA=;
+ b=jJapk59rbDRZR444VorLTRyvEbYKUZEwmwrZcgDRCl8QSeMzIA525L7M6ODkuQayzf
+ 0XIAFSDBy+fpmLargZGlFEHl2f1mzFB5bdYEvTRJzDZ3er4qEwqQs2GdnQhEuKCbSTOh
+ nw6gPzb+QmgLS3CC+4SJXdY/8hYTtDT3arExsIqHFxMCASFxQEFPSEVhbphXGqIhwIdd
+ AAH7V3Rkv/14Fstkwy5uQqXUUH+pW6uOMRm8UdBMFNyRo/1J6wN9TnAkfvqbbuNexFLL
+ 8k3UNNeXn9pgUYl0sR8KuIg63cTuPwX7hH7VN2p7VcdJ0Akc9dBtYqUkGp+W7M/Uphk/
+ KJ8w==
+X-Gm-Message-State: AOJu0YxZydHWLa44inqrcMOgHHwX0zd9UPWuvHgo4q0xoVBiyGqc5/qS
+ v0dfAY5oQfEDCQXqL6m5IPoCWRCI7I+lInSi3D5e8FA2rOSie0aFoWrN
+X-Gm-Gg: AeBDiesNRAEudXItPvWd25JkCesKxMf9oSlj8zDlpBce9rZUOYTBgW2bBdR5D9kURNJ
+ IGs+bA1CHHzCntgzVj9DAoPJLfXAXkBGuzcvSCrpRvsfHh+o2aYzOh+ceM69QYsb6LBX6Fr7GJN
+ qnwJC49XAN/b2/r3boUng2pP4o8zwrUYFr69rSmmrgP2mLXA3GX1p3tJdS81qGN0ARIAmerVERu
+ sh+zUiYIsrDx3/1zT6gcq134aiNTdksZVmEI3iiOcEkWaEjEmnHfr6yFnXbG2lBol6tKlQznV6A
+ D1mbNo8cxAlNmZSa3ILN8+FU/CzWzoPIg5151eIIiuFUgdxdC14SSY2YvAtFQjkQQ2sPJRA1mzK
+ vP5BeExJP25fW0aOo813wiSN/aZjf87Rbm5lwbd2kwdEB7kfEMv+dKGWiEFuJL6coJFvMup4QnB
+ sRFMFmZGunVILASSjd40H6aOvb/yjBQoHBNwSg/+3RcmAKxRGxq6IM8CoqV7t/wB3NnDOxhkLh1
+ vF6ubU2SrVVDbRiYloo8//MAA==
+X-Received: by 2002:a05:6808:1a25:b0:46a:e0cd:2723 with SMTP id
+ 5614622812f47-4789d73d0b5mr8644031b6e.21.1776185997654; 
+ Tue, 14 Apr 2026 09:59:57 -0700 (PDT)
+Received: from
+ runnervm35a4x.kkizw1q41lvuhazfqxg01mu2mg.gx.internal.cloudapp.net
+ ([172.212.163.19]) by smtp.gmail.com with ESMTPSA id
+ 5614622812f47-478a0f1e841sm7879375b6e.5.2026.04.14.09.59.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Apr 2026 09:51:24 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue, 14 Apr 2026 12:51:14 -0400
-Message-ID: <20260414165117.843270-1-sbertram@redhat.com>
+ Tue, 14 Apr 2026 09:59:57 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Soma Das <somadas1@linux.ibm.com>
+Date: Tue, 14 Apr 2026 16:59:56 +0000
+Message-ID: <20260414165956.4038-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <53f26493-09fc-4f8b-9751-24d2c2e80697@linux.ibm.com>
+References: <53f26493-09fc-4f8b-9751-24d2c2e80697@linux.ibm.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: K0ncNNVqPgUooKWUUXfBcsknIiUPPpRylKuH0NajpE4_1776185486
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] semctl: use IPC_PRIVATE to minimize interference.
+Subject: Re: [LTP] sched_football: fix false failures on many-CPU systems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,80 +90,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Stephen Bertram via ltp <ltp@lists.linux.it>
-Reply-To: Stephen Bertram <sbertram@redhat.com>
-Cc: Stephen Bertram <sbertram@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This update solves previous issues when tests were
-run in parallel with multiple workers in tmt.
-
-Signed-off-by: Stephen Bertram <sbertram@redhat.com>
----
- testcases/kernel/syscalls/ipc/semctl/semctl03.c | 5 +----
- testcases/kernel/syscalls/ipc/semctl/semctl05.c | 6 +-----
- testcases/kernel/syscalls/ipc/semctl/semctl07.c | 3 +--
- 3 files changed, 3 insertions(+), 11 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl03.c b/testcases/kernel/syscalls/ipc/semctl/semctl03.c
-index 5a11b95ef..dc11d0823 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl03.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl03.c
-@@ -84,14 +84,11 @@ static void verify_semctl(unsigned int n)
- 
- static void setup(void)
- {
--	static key_t semkey;
- 	struct test_variants *tv = &variants[tst_variant];
- 
- 	tst_res(TINFO, "Testing variant: %s", tv->desc);
- 
--	semkey = GETIPCKEY();
--
--	sem_id = SAFE_SEMGET(semkey, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
-+	sem_id = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
- 
- 	bad_ptr = tst_get_bad_addr(NULL);
- }
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl05.c b/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-index 985c1f039..f1ab69f59 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-@@ -45,11 +45,7 @@ static void verify_semctl(unsigned int n)
- 
- static void setup(void)
- {
--	static key_t semkey;
--
--	semkey = GETIPCKEY();
--
--	sem_id = SAFE_SEMGET(semkey, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
-+	sem_id = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
- }
- 
- static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl07.c b/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-index 1b03f0ab2..a0b5f4928 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-@@ -130,10 +130,9 @@ static void verify_semctl(void)
- 
- static void setup(void)
- {
--	key_t key = GETIPCKEY();
- 	nsems = 1;
- 
--	semid = SAFE_SEMGET(key, nsems, SEM_RA | IPC_CREAT);
-+	semid = SAFE_SEMGET(IPC_PRIVATE, nsems, SEM_RA | IPC_CREAT);
- }
- 
- static void cleanup(void)
--- 
-2.53.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgU29tYSwKCk9uIFN1biwgMTIgQXByIDIwMjYgMTM6MTM6MDggKzAwMDAsIFNvbWEgRGFzIHdy
+b3RlOgo+IHNjaGVkX2Zvb3RiYWxsOiBmaXggZmFsc2UgZmFpbHVyZXMgb24gbWFueS1DUFUgc3lz
+dGVtcwo+Cj4gT24gbGFyZ2UgU01QIHN5c3RlbXMgd2l0aCBDT05GSUdfUlRfR1JPVVBfU0NIRUQ9
+biwgZm91ciBpbmRlcGVuZGVudAo+IGlzc3VlcyBjYXVzZSBmYWxzZSBmYWlsdXJlcy4KPgo+IDEu
+IFJUIHRocm90dGxpbmcuLi4KPiAyLiBPZmZlbnNlIGFuZCBkZWZlbnNlIHRocmVhZHMgd2VyZSB1
+bnBpbm5lZC4uLgo+IDMuIGdhbWVfb3ZlciB3YXMgbmV2ZXIgcmVzZXQgYmV0d2VlbiBpdGVyYXRp
+b25zLi4uCj4gNC4gc2NoZWRfc2V0c2NoZWR1bGVyKCkgZmFpbHVyZSBmb3IgdGhlIHJlZmVyZWUg
+d2FzIHNpbGVudGx5IGlnbm9yZWQuCgpUaGUgY29tbWl0IG1lc3NhZ2UgaXRzZWxmIGRlc2NyaWJl
+cyB0aGVzZSBhcyBmb3VyIGluZGVwZW5kZW50IGlzc3Vlcy4KUGxlYXNlIHNwbGl0IGludG8gZm91
+ciBzZXBhcmF0ZSBjb21taXRzIHNvIGJpc2VjdGlvbiBhbmQgYmFja3BvcnRpbmcKd29yayBjb3Jy
+ZWN0bHkuIEF0IG1pbmltdW0sIGZpeGVzIDMgKGdhbWVfb3ZlciByZXNldCBiZXR3ZWVuIC1pCml0
+ZXJhdGlvbnMpIGFuZCA0IChzY2hlZF9zZXRzY2hlZHVsZXIgZXJyb3IgY2hlY2spIGFyZSBmdWxs
+eSBvcnRob2dvbmFsCnRvIHRoZSBSVC10aHJvdHRsaW5nIGFuZCBDUFUtYWZmaW5pdHkgY2hhbmdl
+cyBhbmQgbXVzdCBiZSBzZXBhcmF0ZQpwYXRjaGVzLgoKWy4uLl0KCj4gKwlTQUZFX0ZJTEVfU0NB
+TkYoIi9wcm9jL3N5cy9rZXJuZWwvc2NoZWRfcnRfcnVudGltZV91cyIsICIlbGQiLAo+ICsJCQkm
+c2F2ZWRfcnRfcnVudGltZV91cyk7Cj4gLi4uCj4gKwlTQUZFX0ZJTEVfUFJJTlRGKCIvcHJvYy9z
+eXMva2VybmVsL3NjaGVkX3J0X3J1bnRpbWVfdXMiLCAiJWxkIiwgLTFMKTsKCkNvbnNpZGVyIHVz
+aW5nIC5zYXZlX3Jlc3RvcmUgaW4gc3RydWN0IHRzdF90ZXN0IGluc3RlYWQgb2YgbWFudWFsCnNh
+dmUvcmVzdG9yZSBpbiBzZXR1cC9jbGVhbnVwIOKAlCBpdCBpcyB0aGUgaWRpb21hdGljIExUUCBh
+cHByb2FjaCBmb3IKL3Byb2Mvc3lzIGtub2JzLgoKLS0tCk5vdGU6CgpPdXIgYWdlbnQgY29tcGxl
+dGVkIHRoZSByZXZpZXcgb2YgdGhlIHBhdGNoLiBUaGUgYWdlbnQgY2FuIHNvbWV0aW1lcwpwcm9k
+dWNlIGZhbHNlIHBvc2l0aXZlcyBhbHRob3VnaCBvZnRlbiBpdHMgZmluZGluZ3MgYXJlIGdlbnVp
+bmUuIElmIHlvdQpmaW5kIGlzc3VlcyB3aXRoIHRoZSByZXZpZXcsIHBsZWFzZSBjb21tZW50IHRo
+aXMgZW1haWwgb3IgaWdub3JlIHRoZQpzdWdnZXN0aW9ucy4KClJlZ2FyZHMsCkxUUCBBSSBSZXZp
+ZXdlcgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
+bmZvL2x0cAo=
