@@ -4,145 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C6ABED7B93
-	for <ltp@archiver.kernel.org>; Tue, 14 Apr 2026 09:29:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11CA9ED7BBE
+	for <ltp@archiver.kernel.org>; Tue, 14 Apr 2026 11:05:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 195093E4B1E
-	for <ltp@archiver.kernel.org>; Tue, 14 Apr 2026 11:29:25 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id A1F453E5BAF
+	for <ltp@archiver.kernel.org>; Tue, 14 Apr 2026 13:05:29 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 76A493C4F29
- for <ltp@lists.linux.it>; Tue, 14 Apr 2026 11:29:06 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7EF003E2673
+ for <ltp@lists.linux.it>; Tue, 14 Apr 2026 13:05:11 +0200 (CEST)
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com
+ [IPv6:2607:f8b0:4864:20::82d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DFBD81A00368
- for <ltp@lists.linux.it>; Tue, 14 Apr 2026 11:29:05 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C0DE55BDF1;
- Tue, 14 Apr 2026 09:29:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776158944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=QXchFeJis57IiRujanFcMUisTlN38i+uehDJLQVznrQ=;
- b=vaHmmGI73S/WwAqUXOMWbPHd3nJaIqVuJ8H2ikqhETt8Hd1RqXwt1ePdK+ZiuvrP0P+gsT
- 5izj0aOG8ohVyzNiRphK3XaWvHlx1y/6CqzAl8lSCj0M6oHbPmUnYFUf9oyitwS2saF9Yk
- y7CevsKE19nOaSz5bj1Aq1Jlgh57VGw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776158944;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=QXchFeJis57IiRujanFcMUisTlN38i+uehDJLQVznrQ=;
- b=yeDJtOFcw7PdZ42BY2Lj+uXrLtT37lGLsdo14JyT6AZgSVBT2sF42uC0sTI0I4l/7QNw0r
- wMbQe+vHBRICHLBQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776158944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=QXchFeJis57IiRujanFcMUisTlN38i+uehDJLQVznrQ=;
- b=vaHmmGI73S/WwAqUXOMWbPHd3nJaIqVuJ8H2ikqhETt8Hd1RqXwt1ePdK+ZiuvrP0P+gsT
- 5izj0aOG8ohVyzNiRphK3XaWvHlx1y/6CqzAl8lSCj0M6oHbPmUnYFUf9oyitwS2saF9Yk
- y7CevsKE19nOaSz5bj1Aq1Jlgh57VGw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776158944;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=QXchFeJis57IiRujanFcMUisTlN38i+uehDJLQVznrQ=;
- b=yeDJtOFcw7PdZ42BY2Lj+uXrLtT37lGLsdo14JyT6AZgSVBT2sF42uC0sTI0I4l/7QNw0r
- wMbQe+vHBRICHLBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B76EE4B38F;
- Tue, 14 Apr 2026 09:29:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id RLyQLOAI3mkETwAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Tue, 14 Apr 2026 09:29:04 +0000
-Message-ID: <8f26a37e-9443-4332-ac42-01443b19e18b@suse.cz>
-Date: Tue, 14 Apr 2026 11:29:00 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D4ED114004FD
+ for <ltp@lists.linux.it>; Tue, 14 Apr 2026 13:05:10 +0200 (CEST)
+Received: by mail-qt1-x82d.google.com with SMTP id
+ d75a77b69052e-506251815a3so45487221cf.0
+ for <ltp@lists.linux.it>; Tue, 14 Apr 2026 04:05:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776164709; cv=none;
+ d=google.com; s=arc-20240605;
+ b=Rr5/ZLiQxiwMdOdjX5u0i2sANIqtup1D6nkuMHaM/KkC46aVl5/WvI14IpcCVLPbn6
+ tl2A6kIfnyosjQ2+j7r3edssttPLwaRARqlw0a1ALMW87Dr9vYXzzwsEN19Iijvaoaac
+ vHqVpegrTMWZ7Dl9dXYjvPCSxPzqFghGXehSLFns8rdCIwSlGkmNqv/DxyNDsV85fqg7
+ no+IlxWcsSGS2lfK692om1qKDPvT+4Ayd4VQWfR3DOYnB/IDgJ4qRG+7CYGj9sCBJ2YF
+ Q5sEvYve0CCDkK2gUmzhVJnai+NrDI2wJaqx4OVuGsfF1sU7xILd1hPYK5+wpYZjpbE6
+ 3UVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:dkim-signature;
+ bh=InnZb6bYLqJHPDz/1LTH7y8TBZ2oy8kq0NtU64bI4qA=;
+ fh=7eNN6S1Oks6GVEFEp4i1FP2fnxgX3ahpsN/fPiHyj78=;
+ b=HA3pgtjF1hw9U9wIzqoJ/CYC8Z02jnfo/1/T7VKhMT3uRD2qAlb1ujF9foFTCfwVhV
+ OaraLOugwNDH3rXjs1obfjM9qhEIELcZ8S9XiKNzHU1zOL5IFFf9oCRSKbze29OuHgvQ
+ lgDS6kCncTNaKS7zKi1t3h5cy9bt/kuWkijWoxeZbWatwb+DQjIm5Ol9/zhsFJxUmDoQ
+ 99Khgd6U8TaHKAr3orydW3cJW7BZlPu+bz5Ms6zGvWaieRWE7AeFVb7QVLnMDt2rhDB7
+ sksBlJcrARof0+eHLgya1XDh1rKgeAi251mAxUfzgSbP0/cAv2CrhfQLKY5sKDamIWFk
+ iaug==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1776164709; x=1776769509; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=InnZb6bYLqJHPDz/1LTH7y8TBZ2oy8kq0NtU64bI4qA=;
+ b=XsbxjRCSnR1O7iW59psexoVcAdDDfwEXWhR5j+eSTfUqud39eAoCEKYNBY2IXJwOJa
+ OaTej/w3kwLn8VC5nPhSBgBZOgqRlxsN8RxVx9pSpGmYNlP92wRJ283+sfoDYYB3xixT
+ HN44Vah8OTSOHr1q7FfIfLUAJnmQni08tuwpjwo/xEzi28UOTVhCtJZW0Pxq4WucI7GY
+ c21edSP2pOrwyjFvBNHDeE8IfhGF485+km1QA960awWNOhxZeWYTzOt7ir4JtWPPW2X3
+ aqcnl6eWZIZCyfFnnS4qekeLMi8TrODWs+NjyOxfD/BkcVNU74lX4TChjaMquqXmrthB
+ EyuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776164709; x=1776769509;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=InnZb6bYLqJHPDz/1LTH7y8TBZ2oy8kq0NtU64bI4qA=;
+ b=P94m6xm/+DI5FOl1ALoIBhOc2/NCTwsaCYrTwIPzPr7ECIEvtpr5sqMeKnK1Zfou/q
+ BspT0T2Xl1++RkK+S3EqH8DEDlGIFlxqR5nw3XDCbqKGqZgWrzQDc049iB8biB1qLJLd
+ oTI4o2dszJa4sGHD/k7f244m0jU1YouHkrkcxGh+9F2a2NScUhX7WUuC/zW9ksLOex+l
+ 4kaZ4+dP+8ahBMBadJM/2bmwKz/+d0b2TEP5mylvujk9xCNw7/QnX3fGqduCHc7mwLBQ
+ hnhwVD5/ocMM8qv7tLOxnlyn8r5a+AbQ84ivvh+kS2pwA4r7WcKUUQe/RWJG8H3oddGH
+ 2IwQ==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ8mK9FbU0a9rXIYm11W92wCyCoCj55Yvq1VsA855DBk1yYqg5J4yVaBwHhd7SjYuSqkHPI=@lists.linux.it
+X-Gm-Message-State: AOJu0Yx26vlGTr4blIaJa8e5t365mNtHMoteR1PEhjl3LfMHQkj9nRNq
+ U5GuFb5m4R0RFj+1IjXeOSI6U/Oq/0sTnlmjLXyR6Dp2IndptJVST0/7KCVvLTEoWjGatpiD0Nm
+ FWUT8HIg8jNFmFHYBblxTjKNGc+1f/DdZEv2L2xH16lT46g==
+X-Gm-Gg: AeBDiesOI2XEED8MTdeu9wJisM0vuJyh/8XKw1NXxDfjXDWTbdTknirb6lxC1NYazW6
+ cPyDfv9NuGo9NiUU4TerU4GhKNllYjWEpBD8YaBTjixkRbckZbHKbsRmYqLUewFpEi0uqrJbcQU
+ qp5mUQDWzSujPEn67LJqtPir404jMwm9VjINfj/3TTPkDiKAN5Lqe/uO3BOn2bF/j68zohhUt+g
+ /AlxWGi4oUqW12lkls5mcWby0SFsGcFXMtETbJNIXDpDygYEA5/DXGnuJPXtjEc4gWR7RU+ptYy
+ obfE7w==
+X-Received: by 2002:ac8:590a:0:b0:509:3cd:b22f with SMTP id
+ d75a77b69052e-50dd5af20e4mr250333411cf.23.1776164709110; Tue, 14 Apr 2026
+ 04:05:09 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Li Wang <wangli.ahau@gmail.com>,
- Andrea Cervesato <andrea.cervesato@suse.com>
 References: <69dce7cd.050a0220.18678b.446a@mx.google.com>
  <CANgNiRz+BdnL-yYw3BqcKo+o2tSmPEV-wiaCftxse8rqEA+3fw@mail.gmail.com>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- xsFNBGaqVbgBEACpipjj9sTO/5/DFIIYr/HiC9GEAHpmU+jzRraYh7Lcx11XDVZ00nWN5AlO
- GL+UxpvYs9cInmLGVav2gK36FxAUsxl99OCQjM45OrQHVkyDPbeZzw7NSvEblv1gaydu/YKk
- ktwuO3yzjtb5X1hiDLYULorpCYGz8CXnkkoYm79fa0g+rTivJLMaMSnO2rDcp4EsSofBE/is
- UcG4e2BIUKQE2d+ogrbHYkmbt9jQZnyipCDm61yEiNZSKR9ktbQ8IvevCpoZJu+2EFRRhDsv
- 3lvNKmlJpa+MkZ/18u/OX5zZwyP5wS9SYGIAW9236R4qoFinYYlA1LeHjJtVLq2cVjIyo9Wm
- ZG5BPsKLC31H4dzGUcvBTU0D/V5dowb5Qnt0kPAb7cmKC3vNrVBgWjEwk8mwrzNj/6wUxugR
- OnFvuUljDT48su9MFsSCQtygR0qQNnuaSr1S+a0Mzd5NgOdQ3rgWV/T1YnlSjSQQAjykom2a
- nwVKhToJSFYBezItmE2raMUpToraDXa3we48HBibs7JH1PjUGMyX1ADwHg7oIQbRGLWtWWiS
- Dy9jL7rw46lEnRHm4KIvUC1jvBM1DPz5LHHRLsA0QmzmBbDMTGTKEuuUaIo9FclwNjhiSybb
- qWGF5JQZcihg/SSpTWcjucyeDyI/x6drNz/qpXSQz6Yk00MBDQARAQABzR9NYXJ0aW4gRG91
- Y2hhIDxtZG91Y2hhQHN1c2UuY3o+wsGaBBMBCABEAhsDBQkJZgGABQsJCAcCAiICBhUKCQgL
- AgQWAgMBAh4HAheAFiEEMmUpXLa1dxYwexErBwUVKaC6qJsFAmaqWFUCGQEACgkQBwUVKaC6
- qJv+WA//btgD9l5FyfsQW4qriE1nntpyuJ+rVSL/rICYOh5rK2zdpOikNdtqQ0XOQew4AuMB
- ZSONHn5GkmCTsIjLDIiGn1v88OHJ9P+FNtfdZmMyYUYRed3tgYqlIdTjAkUy/gzNuKQl26fU
- v4Yl50MIqhm/ILmlb2s+iA5W8IZSDwy4xZo886oRGYS8/ix23HuLXTMlHNZV1a1ty62tRLyq
- pIA4kX6ymLxlXoM6G3+Ie/DOSJuaa25dlSXNQhhcFYp0ytiLdr3vByKdUpPO+Cjct601+a3w
- HS/Xzt24hlMqhvtic8EPmNhNFDMosqJBTote/sTSsiUjgSAC8h2nm91+sPyr+U5c9Bdzcytl
- ZnCJOkm5iSSHQqpP/LxdRU1AiibK+BQUqAt7WjAWmneeFUskqC4Ss3GHr2yOoEro2Nbo8i1b
- RXG8F4H4GZB+osgGIDm3zejUdZ59701E4X3KEtmz8+m4hg37nudl2hIPjop/vS7wyah7J17i
- ujM/DQQflrorbv9xmcx0z/rgtwf73gYX48O3AQmh3HlpTQ2tnIojoteYujgwxMEToyBgRG7Y
- bDB40+umKnWLqN3QtKoPP9RUynWv7bTjXtwn0I7/ATw50yJqatP1dGXP/FY7zWEVyYNB5qUi
- ZpuUX95g3qtlSIqhBrR61phpu1bYaWB/IMKstSTwdCPOwU0EZqpVuAEQALHeH9zmpNzV8E3V
- SWffDMJRGeFjcJuha0wpHMUrXGmz7Mld6o8/ZXu8QXT5gM6r6UpXytN6dUfRdllgQoj2uSjg
- ZgoaDJ8HkLYjdrcipkX6IkAe8Q9i/sZvoekuwfqVgTMfwtGyl3vfgyQkX1NiNIU967MDewcT
- Krv+5qUFnnx67qLdcd2XfIo9dsxv9nqyp4AwHtZ6Sj40KCefuaVl7YpYM3H9AnfVusr56OQC
- 9VBPex98OzEGsROcijVvhdIChMkZazYdy643xhJ9i5fjdg7Lxwg7IbyjlpVn8gZ2CQ4BupjT
- wLgvEi2O1yZlNWNk3JJMgZ29O/qbZYmsSXkCmuUj1GcZm+mvVdc/GFlq4d9Eb9BItYCCiMlJ
- LFWhFghaaqv/tHgBPcx+vmxO6iZhl07mw+mv3VohlCyWrbM2mb9uwpOYmVZcNxsRHAXSUthx
- 9sG4Bv9Szg37D7C4pX5T5Q4OO29ss4VZflvgE3vRHQd373oxdhM5jcOCEbUKw7tTpiVRUhko
- lTvQScZMR1FletK5ieHnA06qrKCZpB+WP7xr3rYYYRVTW8qhdo7p+UnfVSzdErT6Sz35tlxg
- 0wQGWbTYsBw6mk0hjaqvUS7ffRFuoVVaVQJVXLscE/nv7b+3NtK0LCFDACsZX5A2Ee0AfpKw
- WM7PJAbuI4GHc1MhhLubABEBAAHCwXwEGAEIACYWIQQyZSlctrV3FjB7ESsHBRUpoLqomwUC
- ZqpVuAIbDAUJCWYBgAAKCRAHBRUpoLqom4RUD/4xLZz0ahnRPA7Y6IRX4/bB3fDMfMlxG0Dv
- Y6USpubfUqxG61Q6P/DfOLvp5iC5OYct7Id7arA/FsQs2g2L875pNefPLzuuG/XXujJ6Vokr
- WzMy/3gnBrvcUKTiVr+wLifenDDBImQzOTsjcTBpTzX8edGMrb2jnT1+M6VEWP8bMadbTMyE
- uVTsRqzKKRPPhp8dQX7DnPzfFixvBoSbodNaBL+R432Ljl9CvXkDDLymuLyzxPdhrQ3mf02T
- jq1nHXCXFm8zC3bRvCv7k8m/PLBY956/8OPRt3ePxSFgO/Pf3FKFTKIqHDiV3dAxAO7Ibuii
- Zr5AzfbRpdA7Gt8afL/yTujen+skhuVentxwhoLw/WqqgZefK9CUXTv5A9HzXuhsgTQPPzBn
- qsL+5eFNf1QBdRa6lInbwbH0vgHZEF04mK7Ac4dsXGU+cMsHEUaNhrEBoR0cu/NFfmlwpWqO
- sOf6M5s7RKNzreVXkrlArE+x29swkXZbxFoXuahA2iykPyyCAgPz0ikRI+374jXVAtbZAAut
- HD1KfuCahogFT4upYpOUl26KquywYOGciSan4jHuqXIVCQzjYd/zOzsL7hTJiteae/oOg4m5
- i8BUUzanmo3FPwFBcjEn4nDvkw/YEo5gtQZmrxOHQAdSHdyqtFgRxu4+w3JFmnQvkResUgm3 ag==
-In-Reply-To: <CANgNiRz+BdnL-yYw3BqcKo+o2tSmPEV-wiaCftxse8rqEA+3fw@mail.gmail.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[]; TAGGED_RCPT(0.00)[];
- FREEMAIL_TO(0.00)[gmail.com,suse.com];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- MID_RHS_MATCH_FROM(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; RCVD_TLS_ALL(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_DN_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ <8f26a37e-9443-4332-ac42-01443b19e18b@suse.cz>
+In-Reply-To: <8f26a37e-9443-4332-ac42-01443b19e18b@suse.cz>
+From: Li Wang <wangli.ahau@gmail.com>
+Date: Tue, 14 Apr 2026 19:04:57 +0800
+X-Gm-Features: AQROBzCC4xFYtqxVBlxt80HvV3uvvkAbroSccEjJMzHb-7Zb3s386XQ7ubfRKWI
+Message-ID: <CANgNiRwX10QS8DPeT5Yfs+K_S85L0CCMzHx1aMBpx-i38L-65A@mail.gmail.com>
+To: Martin Doucha <mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] AI review agent
 X-BeenThere: ltp@lists.linux.it
@@ -157,50 +107,41 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: LTP Mailing List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 4/14/26 10:36, Li Wang wrote:
-> Hi Andrea,
-> 
-> Thanks for the nice AI review tool.
-> I noticed that each automated AI review email starts with the
-> following disclaimer:
-> 
->> Our agent completed the review of the patch.
->> The agent can sometimes produce false positives although often its
->> findings are genuine. If you find issues with the review, please
->> comment this email or ignore the suggestions.
-> 
->  From my view, it consumes a little bit of energy to read or scroll
-> past this note at the beginning of every email.
-> 
-> Maybe we could just put it at the bottom of the email as a note?
-Hi,
-I think the e-mail should still start with some short notice that the 
-review was AI generated, with the longer disclaimer at the bottom. For 
-example:
+Martin Doucha <mdoucha@suse.cz> wrote:
 
-Hi $sender,
-this patch review was generated by AI. See disclaimer at the bottom.
+> On 4/14/26 10:36, Li Wang wrote:
+> > Hi Andrea,
+> >
+> > Thanks for the nice AI review tool.
+> > I noticed that each automated AI review email starts with the
+> > following disclaimer:
+> >
+> >> Our agent completed the review of the patch.
+> >> The agent can sometimes produce false positives although often its
+> >> findings are genuine. If you find issues with the review, please
+> >> comment this email or ignore the suggestions.
+> >
+> >  From my view, it consumes a little bit of energy to read or scroll
+> > past this note at the beginning of every email.
+> >
+> > Maybe we could just put it at the bottom of the email as a note?
+> Hi,
+> I think the e-mail should still start with some short notice that the
+> review was AI generated, with the longer disclaimer at the bottom. For
+> example:
 
-[... AI Patch Review ...]
+Maybe yes, I see Andrea already merged the PR, so let's see how it looks,
+if necessary, then we can follow up this suggestion. Thanks!
 
-Disclaimer: Our agent completed the review of this patch. The agent can
-sometimes produce false positives, although often its findings are
-genuine. If you find issues with the review, please reply to this email
-or ignore the suggestions.
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
