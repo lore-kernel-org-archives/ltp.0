@@ -4,110 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFD11F41987
-	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 09:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1115F41987
+	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 10:18:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9D03D3E5B7F
-	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 11:59:25 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 800CC3E5BAA
+	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 12:18:26 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B4F563E2660
- for <ltp@lists.linux.it>; Wed, 15 Apr 2026 11:59:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 9E18C3C1E06
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 12:18:07 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0F087200A00
- for <ltp@lists.linux.it>; Wed, 15 Apr 2026 11:59:03 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2732A600BCE
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 12:18:06 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2BD7D6A7E3;
- Wed, 15 Apr 2026 09:59:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776247143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=LGZf3ZWn6AZkDMOOLJ7WafJkMDYsIpk62g76Fnxo/Y4=;
- b=thdIP84TqDo836+Vwi0Jr4yrLRHcn+zcED8MY8/VAVgriNZ1YYpL39MdkZJVRzVenn9+JS
- FuhAWqb6YvfYmxQA4ruUPKmMg4lNf3Q3gjGzxuLnPZwm2ySExpTQCev5rlfAhmOwtbxcPG
- 1qRCP820gw1lCXQOG2uby+0KDAoa46g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776247143;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=LGZf3ZWn6AZkDMOOLJ7WafJkMDYsIpk62g76Fnxo/Y4=;
- b=fKPRncCXp+rLr5f5DYfw3eNbNDiGzhnhh8b4gdxRIQh3TSgAIGDSEUxCQaCV+lbKz+ZTLC
- a8TGKoC2oUmb9KAQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=thdIP84T;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fKPRncCX
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776247143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=LGZf3ZWn6AZkDMOOLJ7WafJkMDYsIpk62g76Fnxo/Y4=;
- b=thdIP84TqDo836+Vwi0Jr4yrLRHcn+zcED8MY8/VAVgriNZ1YYpL39MdkZJVRzVenn9+JS
- FuhAWqb6YvfYmxQA4ruUPKmMg4lNf3Q3gjGzxuLnPZwm2ySExpTQCev5rlfAhmOwtbxcPG
- 1qRCP820gw1lCXQOG2uby+0KDAoa46g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776247143;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=LGZf3ZWn6AZkDMOOLJ7WafJkMDYsIpk62g76Fnxo/Y4=;
- b=fKPRncCXp+rLr5f5DYfw3eNbNDiGzhnhh8b4gdxRIQh3TSgAIGDSEUxCQaCV+lbKz+ZTLC
- a8TGKoC2oUmb9KAQ==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 925205BE39;
+ Wed, 15 Apr 2026 10:18:06 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1831D4B950;
- Wed, 15 Apr 2026 09:59:03 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 841114B963;
+ Wed, 15 Apr 2026 10:18:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id S/J+BGdh32kiFQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 15 Apr 2026 09:59:03 +0000
-Date: Wed, 15 Apr 2026 11:59:16 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wYLEH95l32n9JwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 15 Apr 2026 10:18:06 +0000
+Date: Wed, 15 Apr 2026 12:18:20 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Sachin Sant <sachinp@linux.ibm.com>
-Message-ID: <ad9hdOxg9CYxgNBb@yuki.lan>
-References: <20260324052241.21455-1-sachinp@linux.ibm.com>
- <20260324052241.21455-3-sachinp@linux.ibm.com>
+To: Martin Cermak <mcermak@redhat.com>
+Message-ID: <ad9l7MeJneX1LdCe@yuki.lan>
+References: <20260414114758.7xtei7hyddxu2fic@lida.tpb.lab.eng.brq.redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260324052241.21455-3-sachinp@linux.ibm.com>
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- ARC_NA(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns, yuki.lan:mid]
+In-Reply-To: <20260414114758.7xtei7hyddxu2fic@lida.tpb.lab.eng.brq.redhat.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 925205BE39
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
 X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 2BD7D6A7E3
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] io_uring: Test READV and WRITEV operations
+Subject: Re: [LTP] Avoid syscall param ioctl(generic) points to
+ uninitialised byte(s)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,221 +71,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: valgrind-developers@lists.sourceforge.net, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +#include "io_uring_common.h"
-> +
-> +#define TEST_FILE "io_uring_test_file"
-> +#define QUEUE_DEPTH 2
-> +#define NUM_VECS 4
-> +#define VEC_SIZE 1024
-> +#define VAR_BUF1_SIZE 512
-> +#define VAR_BUF2_SIZE 1024
-> +#define VAR_BUF3_SIZE 256
-> +
-> +static struct iovec *write_iovs, *read_iovs;
-> +static struct iovec *var_write_iovs, *var_read_iovs;
-> +static struct io_uring_submit s;
-> +static sigset_t sig;
-> +
-> +static void prepare_write_buffers(void)
-> +{
-> +	size_t i, j;
-> +	char *buf;
-> +
-> +	for (i = 0; i < NUM_VECS; i++) {
-> +		buf = (char *)write_iovs[i].iov_base;
-> +		for (j = 0; j < write_iovs[i].iov_len; j++) {
-> +			/* Each vector has a different pattern */
-> +			buf[j] = 'A' + i + (j % 26);
-> +		}
-> +	}
-> +}
-> +
-> +static void prepare_read_buffers(void)
-> +{
-> +	size_t i;
-> +
-> +	for (i = 0; i < NUM_VECS; i++)
-> +		memset(read_iovs[i].iov_base, 0, read_iovs[i].iov_len);
-> +}
-> +
-> +static void clear_iovec_buffers(struct iovec *iovs, int nvecs)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < nvecs; i++)
-> +		memset(iovs[i].iov_base, 0, iovs[i].iov_len);
-> +}
-
-These two functions are nearly identical, we really need only one
-function to clear the buffers.
-
-> +static void verify_iovec_data(struct iovec *write_iovs, struct iovec *read_iovs,
-> +			      int nvecs, const char *test_name)
-> +{
-> +	int i;
-> +	size_t j;
-> +
-> +	for (i = 0; i < nvecs; i++) {
-> +		if (write_iovs[i].iov_len != read_iovs[i].iov_len) {
-> +			tst_res(TFAIL, "%s: iovec %d length mismatch: write=%zu read=%zu",
-> +				test_name, i, write_iovs[i].iov_len, read_iovs[i].iov_len);
-> +			return;
-> +		}
-> +
-> +		if (memcmp(write_iovs[i].iov_base, read_iovs[i].iov_base,
-> +			   write_iovs[i].iov_len) != 0) {
-> +			tst_res(TFAIL, "%s: data mismatch in vector %d", test_name, i);
-> +			for (j = 0; j < write_iovs[i].iov_len && j < 64; j++) {
-> +				char *wbuf = (char *)write_iovs[i].iov_base;
-> +				char *rbuf = (char *)read_iovs[i].iov_base;
-> +				if (wbuf[j] != rbuf[j]) {
-> +					tst_res(TINFO, "Vector %d: first mismatch at "
-> +						"offset %zu: wrote 0x%02x, read 0x%02x",
-> +						i, j, wbuf[j], rbuf[j]);
-> +					break;
-> +				}
-> +			}
-> +			return;
-> +		}
-> +	}
-> +
-> +	tst_res(TPASS, "%s: data integrity verified across %d vectors",
-> +		test_name, nvecs);
-> +}
-> +
-> +
-> +static void test_writev_readv(void)
-> +{
-> +	int fd;
-> +	int total_size = NUM_VECS * VEC_SIZE;
-> +
-> +	tst_res(TINFO, "Testing IORING_OP_WRITEV and IORING_OP_READV");
-> +
-> +	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT | O_TRUNC, 0644);
-> +
-> +	tst_res(TINFO, "Writing %d bytes using %d vectors", total_size, NUM_VECS);
-> +	io_uring_do_vec_io_op(&s, fd, IORING_OP_WRITEV, write_iovs, NUM_VECS,
-> +			      0, total_size, &sig);
-> +
-> +	SAFE_FSYNC(fd);
-> +
-> +	tst_res(TINFO, "Reading %d bytes using %d vectors", total_size, NUM_VECS);
-> +	io_uring_do_vec_io_op(&s, fd, IORING_OP_READV, read_iovs, NUM_VECS,
-> +			      0, total_size, &sig);
-> +
-> +	verify_iovec_data(write_iovs, read_iovs, NUM_VECS, "Basic vectored I/O");
-> +
-> +	SAFE_CLOSE(fd);
-> +}
-> +
-> +static void test_partial_vectors(void)
-> +{
-> +	int fd;
-> +	int half_size = 2 * VEC_SIZE;
-> +
-> +	tst_res(TINFO, "Testing partial vector operations");
-> +
-> +	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT | O_TRUNC, 0644);
-> +
-> +	/* Write first half using first 2 vectors at offset 0 */
-> +	io_uring_do_vec_io_op(&s, fd, IORING_OP_WRITEV, write_iovs, 2, 0,
-> +			      half_size, &sig);
-> +
-> +	/* Write second half using next 2 vectors at offset half_size */
-> +	io_uring_do_vec_io_op(&s, fd, IORING_OP_WRITEV, &write_iovs[2], 2,
-> +			      half_size, half_size, &sig);
-> +
-> +	SAFE_FSYNC(fd);
-> +
-> +	/* Read back entire file using all 4 vectors */
-> +	io_uring_do_vec_io_op(&s, fd, IORING_OP_READV, read_iovs, NUM_VECS, 0,
-> +			      NUM_VECS * VEC_SIZE, &sig);
-> +
-> +	verify_iovec_data(write_iovs, read_iovs, NUM_VECS, "Partial vector I/O");
-> +
-> +	SAFE_CLOSE(fd);
-> +}
-> +
-> +static void test_varying_sizes(void)
-> +{
-> +	int fd;
-> +	int expected_size = VAR_BUF1_SIZE + VAR_BUF2_SIZE + VAR_BUF3_SIZE;
-> +
-> +	tst_res(TINFO, "Testing vectors with varying sizes including zero-length buffer");
-> +
-> +	io_uring_init_buffer_pattern(var_write_iovs[0].iov_base, VAR_BUF1_SIZE, 'X');
-> +	io_uring_init_buffer_pattern(var_write_iovs[2].iov_base, VAR_BUF2_SIZE, 'Y');
-> +	io_uring_init_buffer_pattern(var_write_iovs[3].iov_base, VAR_BUF3_SIZE, 'Z');
-
-Can we handle this with the prepare_write_buffers() as well?
-
-> +	clear_iovec_buffers(var_read_iovs, 4);
-> +
-> +	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT | O_TRUNC, 0644);
-> +
-> +	io_uring_do_vec_io_op(&s, fd, IORING_OP_WRITEV, var_write_iovs, 4, 0,
-> +			      expected_size, &sig);
-> +
-> +	SAFE_FSYNC(fd);
-> +
-> +	io_uring_do_vec_io_op(&s, fd, IORING_OP_READV, var_read_iovs, 4, 0,
-> +			      expected_size, &sig);
-> +
-> +	verify_iovec_data(var_write_iovs, var_read_iovs, 4, "Varying size vector I/O with zero-length buffer");
-> +
-> +	SAFE_CLOSE(fd);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	test_writev_readv();
-> +	test_partial_vectors();
-> +	test_varying_sizes();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	io_uring_setup_supported_by_kernel();
-> +	sigemptyset(&sig);
-> +	memset(&s, 0, sizeof(s));
-> +	io_uring_setup_queue(&s, QUEUE_DEPTH, 0);
-> +	prepare_write_buffers();
-> +	prepare_read_buffers();
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	io_uring_cleanup_queue(&s, QUEUE_DEPTH);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +	.bufs = (struct tst_buffers []) {
-> +		{&write_iovs, .iov_sizes = (int[]){VEC_SIZE, VEC_SIZE, VEC_SIZE, VEC_SIZE, -1}},
-> +		{&read_iovs, .iov_sizes = (int[]){VEC_SIZE, VEC_SIZE, VEC_SIZE, VEC_SIZE, -1}},
-> +		{&var_write_iovs, .iov_sizes = (int[]){VAR_BUF1_SIZE, 0, VAR_BUF2_SIZE, VAR_BUF3_SIZE, -1}},
-> +		{&var_read_iovs, .iov_sizes = (int[]){VAR_BUF1_SIZE, 0, VAR_BUF2_SIZE, VAR_BUF3_SIZE, -1}},
-> +		{}
-> +	},
-> +	.save_restore = (const struct tst_path_val[]) {
-> +		{"/proc/sys/kernel/io_uring_disabled", "0",
-> +			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
-> +		{}
-> +	}
-> +};
-> -- 
-> 2.39.1
+> From b81924101f441d7f2103197c8b81a38e8920fda4 Mon Sep 17 00:00:00 2001
+> From: Super User <root@vm-10-0-185-15.hosted.upshift.rdu2.redhat.com>
+> Date: Wed, 20 Jan 2038 01:08:34 -0500
+> Subject: [PATCH] Avoid syscall param ioctl(generic) points to uninitialised
+>  byte(s)
 > 
+> lib/tst_clocks.c: fix uninitialized memory in run()  Reproducible
+>                   using userfaultfd01.
+
+This description does not seem to correspond to the actual change.
+
+> Signed-off-by: Martin Cermak <mcermak@redhat.com>
+> ---
+>  testcases/kernel/syscalls/userfaultfd/userfaultfd01.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+> index 7368d3863..d24766e7c 100644
+> --- a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+> +++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+> @@ -92,8 +92,8 @@ static void *handle_thread(void)
+>  static void run(unsigned int i)
+>  {
+>  	pthread_t thr;
+> -	struct uffdio_api uffdio_api = {};
+> -	struct uffdio_register uffdio_register;
+> +	struct uffdio_api uffdio_api = {0, };
+> +	struct uffdio_register uffdio_register = {0, };
+
+Given that we were using = {}; in the code before can we keep using that
+and for all instances?
+
+Also I assume the problem is the ioctls field in the uffdio_api
+structure that is not initialized beacuse is supposed to be set by
+kernel before returning into userspace. Should valgrind warn about such
+cases?
+
 
 -- 
 Cyril Hrubis
