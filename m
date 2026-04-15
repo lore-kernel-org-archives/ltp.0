@@ -4,62 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1115F41987
-	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 10:18:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22EA6F4198E
+	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 10:38:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1776249519; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=51D7J7gE4LE1DStXAPBXKf5piOc0+EJfLT+FUV2k68o=;
+ b=UJgYej7dRF1HWjgsJ+IrkABxM9OwjHMyYDccnBM3ckGS0+Yi4ynawilhku5+aLMR1Zqag
+ zeKd5ccPjvVNhWn6qyhvw+riEsztkdq8t/83XTaw0Q2DJ8Z8QNgk4+4WatDTeZ9HR3bZQNl
+ PfAumHkMl085ulIWK2zbGfLRWBAeivQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 800CC3E5BAA
-	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 12:18:26 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id A0A583E5B67
+	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 12:38:39 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9E18C3C1E06
- for <ltp@lists.linux.it>; Wed, 15 Apr 2026 12:18:07 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4E7443E4AE9
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 12:38:16 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2732A600BCE
- for <ltp@lists.linux.it>; Wed, 15 Apr 2026 12:18:06 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 925205BE39;
- Wed, 15 Apr 2026 10:18:06 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 841114B963;
- Wed, 15 Apr 2026 10:18:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id wYLEH95l32n9JwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 15 Apr 2026 10:18:06 +0000
-Date: Wed, 15 Apr 2026 12:18:20 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Martin Cermak <mcermak@redhat.com>
-Message-ID: <ad9l7MeJneX1LdCe@yuki.lan>
-References: <20260414114758.7xtei7hyddxu2fic@lida.tpb.lab.eng.brq.redhat.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 97576140004C
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 12:38:15 +0200 (CEST)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-488a9033b2cso80486195e9.2
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 03:38:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1776249495; x=1776854295; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=h/t1WPYIVWI93duWckuhOSzLDNnRSmSx5VvBqFjNU8E=;
+ b=ImBGSN+SHHlzmWpBIVqglWGcHzbT/qZnV8MM0g+FU/ffGWr3wfvgD+zrDsRf7rZSn9
+ vCD+7cHf7CkIlNRrAlPPsXqeu/fn4HEdLQ8KvMg3Zt8uaHEUz7Jy8mYJtLw6H8P7tUaE
+ afvzhxFlpDSnzPIY0Zx81+MxU4aKf8oWRmVgKs0Qrs9ufM5thEAEY4viRzoww/VCystB
+ B+AxNVLPg7SCM4gc8f5J2gZIoFKe81PJnuoEZALxqsNf2WWR/j1kXGeHKJ1mhzHmrMn7
+ 4Ahn9xSoNFG3w4jERn1CfdRlWoDKj5qRydrauSGBC1PbXUZ2OQ2QpvnSS4S9RqaDIyty
+ GBzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776249495; x=1776854295;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=h/t1WPYIVWI93duWckuhOSzLDNnRSmSx5VvBqFjNU8E=;
+ b=MsprnH4VnvfcT74uCDJNlIhkGoF6wBlohghmVDZljYzaKf8NO05Yt7615sR5Qar1lk
+ YbIUbfLevLntjJ4H4XWt0L7breLab+kfpFnkUwUXIHc91pxAtUaPG4E4/vwoDzALVenG
+ ovp5DNb8xJBXZOoy62N7Eyr94RKwdbJnvqRQGoEvUUOMawGqqa1lPr1Am6ya++annsWK
+ 4g7AhMokWko6nse07ee1KiZCSVSYHmTWxAIvYyF+kNyw+2SCvTh0ZpCyIv72qmLizf7x
+ 0cbecIuCYY0m4g8izGJp8QhCxILTJgXEyFvzLe3pWWtRESDPbWtbbEe2FLh3IZlYN+0K
+ SQog==
+X-Gm-Message-State: AOJu0Yzv6Jbk+O+cqOjBa5Ly5rCaxYB5CDCNy3C6CxaFesDJvmvZRI17
+ /RdfGpyWTgi6/CF9s2Nqzgt6e6v5b4oQpWW3SgFgXHg44vNw23w8qPxmM6RXGTVIltA1SzJHAFY
+ CrYs=
+X-Gm-Gg: AeBDievLGi3w7AxFFseXdzAbGtrnWaEfrm6jg6f/l9bQFMGEjS8cLevnmQjuY3fFDe5
+ Ig+1hznmtmpjb0T6AWizmv1ENVHRIuzcloApOtLgksA9KbH1TU0MvZ6lnXn/YH0VSu5Un2PlEmB
+ QRG5z2yKCsGvhQ1VWPr4Y0j38+Q97uLqLRTHxzmtERU8T+3gakge5byuE/xPdJ1FAOOa2q0aSWJ
+ FwrsEiUts9eS6sC6xPD9ciMhoAZfvdFxhcCPBi5R0Ov6mpmjQkCny7dUE0ALE4Ih74oo8RR2he6
+ +3vrfi8sgojinSX2IgMl09FkWEntJIIqhah85wlUhMu+gLan5URL1tJVKTH9+fnOFekSa9GD2qW
+ Sfad4/QRUJdapFl3k9xH6jWy8MtYY5Bc5zR4wmQI16+4hu7BBdSgU/EscHse2w1cA28H1TCq5EP
+ LgNOk4xTDmeU5n7rKM146Hyw==
+X-Received: by 2002:a05:600c:19cd:b0:485:17a7:b9c7 with SMTP id
+ 5b1f17b1804b1-488d67e3671mr288453215e9.10.1776249494690; 
+ Wed, 15 Apr 2026 03:38:14 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-488ede24eb0sm134881325e9.8.2026.04.15.03.38.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 15 Apr 2026 03:38:14 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Wed, 15 Apr 2026 10:37:53 +0000
+Message-ID: <20260415103812.21999-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260415060728.21662-1-wegao@suse.com>
+References: <20260415060728.21662-1-wegao@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260414114758.7xtei7hyddxu2fic@lida.tpb.lab.eng.brq.redhat.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Queue-Id: 925205BE39
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Avoid syscall param ioctl(generic) points to
- uninitialised byte(s)
+Subject: [LTP] [PATCH v6 0/2] open16: allow restricted O_CREAT of FIFOs and
+ regular files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,54 +99,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: valgrind-developers@lists.sourceforge.net, ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> From b81924101f441d7f2103197c8b81a38e8920fda4 Mon Sep 17 00:00:00 2001
-> From: Super User <root@vm-10-0-185-15.hosted.upshift.rdu2.redhat.com>
-> Date: Wed, 20 Jan 2038 01:08:34 -0500
-> Subject: [PATCH] Avoid syscall param ioctl(generic) points to uninitialised
->  byte(s)
-> 
-> lib/tst_clocks.c: fix uninitialized memory in run()  Reproducible
->                   using userfaultfd01.
+Wei Gao (2):
+  lib: New library function tst_get_free_uid
+  open16: allow restricted O_CREAT of FIFOs and regular files
 
-This description does not seem to correspond to the actual change.
+v6->v7:
+- Add commit body
+- Update test description
 
-> Signed-off-by: Martin Cermak <mcermak@redhat.com>
-> ---
->  testcases/kernel/syscalls/userfaultfd/userfaultfd01.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
-> index 7368d3863..d24766e7c 100644
-> --- a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
-> +++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
-> @@ -92,8 +92,8 @@ static void *handle_thread(void)
->  static void run(unsigned int i)
->  {
->  	pthread_t thr;
-> -	struct uffdio_api uffdio_api = {};
-> -	struct uffdio_register uffdio_register;
-> +	struct uffdio_api uffdio_api = {0, };
-> +	struct uffdio_register uffdio_register = {0, };
-
-Given that we were using = {}; in the code before can we keep using that
-and for all instances?
-
-Also I assume the problem is the ioctls field in the uffdio_api
-structure that is not initialized beacuse is supposed to be set by
-kernel before returning into userspace. Should valgrind warn about such
-cases?
-
+ include/tst_uid.h                         |   7 +-
+ lib/tst_uid.c                             |  26 +++++
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/open/.gitignore |   1 +
+ testcases/kernel/syscalls/open/open16.c   | 132 ++++++++++++++++++++++
+ 5 files changed, 165 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/open/open16.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.52.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
