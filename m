@@ -4,102 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F624F43834
-	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 15:20:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 479F0F4384C
+	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 15:35:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7007B3E71F5
-	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 17:20:35 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id B671B3E2985
+	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 17:35:17 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1C15E3E5BB2
- for <ltp@lists.linux.it>; Wed, 15 Apr 2026 17:20:16 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 508C63C52FE
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 17:34:57 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0FF872001A7
- for <ltp@lists.linux.it>; Wed, 15 Apr 2026 17:20:14 +0200 (CEST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 63FDF4mR1832986; Wed, 15 Apr 2026 15:20:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-type:date:from:in-reply-to:message-id:mime-version
- :references:subject:to; s=pp1; bh=Af01ivoeuYFqSYJayCOFLzVYnU73OQ
- T+qO+B8PcBH38=; b=YB6Gq5AvQBWDXNe3WXn+YYqupUwTLj3iLue76HorY3+yCl
- 0FECmFs1Q4AjvKsjbKN0LqKpR15tYL4awyCSCjFfkrpjLi6AKusl755hzrq2kJHS
- AoiwAN3H/TEbozBMhh2ZwsfPqnaHNedSX52kk4Iv4SN6snVQtmgrqI2KsrrzBdpz
- Ze3nnsIhcKeyiev8hQACsycmKTJtfUvNIL4GgmXZxhfM4W13XQzxvdHQe9pgCO4D
- Y5kBiDtdbrBkvpw+jls5bFMhci42M36pkd71i3l2m4sddl8DdZ+3hibfwWyXdEP4
- jglKTdAOWqLP3rhUEJObNMETJYP2vofTbhjNSSIw==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dh89rgtm0-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 15 Apr 2026 15:20:12 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 63FDt2tE025643;
- Wed, 15 Apr 2026 15:20:11 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dg2ujpkd1-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 15 Apr 2026 15:20:11 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
- [10.20.54.105])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 63FFKARQ26870518
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 15 Apr 2026 15:20:10 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 11FE120049;
- Wed, 15 Apr 2026 15:20:10 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id E41FB20040;
- Wed, 15 Apr 2026 15:20:09 +0000 (GMT)
-Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com (unknown
- [9.52.197.53]) by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Wed, 15 Apr 2026 15:20:09 +0000 (GMT)
-Date: Wed, 15 Apr 2026 17:20:08 +0200
-From: Jan Polensky <japo@linux.ibm.com>
-To: Li Wang <wangli.ahau@gmail.com>, Soma Das <somadas1@linux.ibm.com>
-Message-ID: <ad-sqJXCYZpBAKM0@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
-References: <53f26493-09fc-4f8b-9751-24d2c2e80697@linux.ibm.com>
- <ad5jSSYZJS0FdZva@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
- <CANgNiRyTovPjVq01n7sCNhbNdYNp6nSvWcpVV_8aC3+kBX0edg@mail.gmail.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 30F8860082D
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 17:34:55 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 94D9B6A7F0;
+ Wed, 15 Apr 2026 15:34:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776267294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=obikUQTPwU9fz4/MWU3admDQ/0CMk/eO2zq854vxbi4=;
+ b=eGLmLDHlO49deV7t95zmjRMbVYWDfmUMFQyE2WNiNn4Vt0gF5uAEYR2qIesaSbqUiv906u
+ XlmC59JTK8YgRSMbKPGPyH7Yj7eDJWWr1J1AtxIBT3XOEiH8mQ7AVy7rTNBNL9Ob3njKcU
+ lY4+Y05bIrIgxvefWmCyoU/oLewSj7E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776267294;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=obikUQTPwU9fz4/MWU3admDQ/0CMk/eO2zq854vxbi4=;
+ b=IhDkmb162qnqVOI8jksYmTXr8g4k4arJSCzTiqPIGhECxZIj3Vxi3D/rYuUSimPGPMWJud
+ t8nW6l2bAgSBG/CQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eGLmLDHl;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IhDkmb16
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776267294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=obikUQTPwU9fz4/MWU3admDQ/0CMk/eO2zq854vxbi4=;
+ b=eGLmLDHlO49deV7t95zmjRMbVYWDfmUMFQyE2WNiNn4Vt0gF5uAEYR2qIesaSbqUiv906u
+ XlmC59JTK8YgRSMbKPGPyH7Yj7eDJWWr1J1AtxIBT3XOEiH8mQ7AVy7rTNBNL9Ob3njKcU
+ lY4+Y05bIrIgxvefWmCyoU/oLewSj7E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776267294;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=obikUQTPwU9fz4/MWU3admDQ/0CMk/eO2zq854vxbi4=;
+ b=IhDkmb162qnqVOI8jksYmTXr8g4k4arJSCzTiqPIGhECxZIj3Vxi3D/rYuUSimPGPMWJud
+ t8nW6l2bAgSBG/CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 76E8C4BAA0;
+ Wed, 15 Apr 2026 15:34:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id xH8KHB6w32mKYgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 15 Apr 2026 15:34:54 +0000
+Date: Wed, 15 Apr 2026 17:35:08 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Michael Menasherov <mmenashe@redhat.com>
+Message-ID: <ad-wLMzLBVVIvUDA@yuki.lan>
+References: <20260413134029.43754-1-mmenashe@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CANgNiRyTovPjVq01n7sCNhbNdYNp6nSvWcpVV_8aC3+kBX0edg@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDE1MDE0MiBTYWx0ZWRfX4IN9oEcS/bD7
- +3PJT4LwtMMf0wj25UOD39ycyXJzmqSOS3mm0Q3U6yETsbvgF3m/IVlzj3hn3aJr8qNRvsQvzz9
- wfkiZE9WbT8sQ0rVscaj10Sy8vFNUPwPwvKJlwXKPANHTra4rAZLAQPM4lFANhXa7RyHSGgCQUV
- dSrgpLbx+mBIC8bD9Euwxu9/5Iuvt5VQDYR3AefnduSbmA31bHrzoieUxPDXTB0R0QN5nW3/Deg
- SHUM/sAXHKF70ijBB/Mb/SMJFGtN6HyBiKJB9e7nyg8cCx7WBdwK72J7btkuhj9U8CsuwdLCjmk
- u2RNg6soeMIfbG+h5Rj1I2GSWTJ+O3sDLemHunNbZrNrOOBya9vd8x2571qjgFsn34mMluQEDAU
- /RD6P1jdO41qjebo9V8scqk880F8OKUxugy+LZf+E4GoHGIHUoSqThAoABNe+Rrljn7CZMfzinp
- 8j5E1pNDTVejOIlpQbg==
-X-Proofpoint-ORIG-GUID: FmOAEovk6aA4xJ9z3cuDbby8_Ol1LBpa
-X-Proofpoint-GUID: SDTjYoCJFVmD1z3H8yWtHaNBPRGIRZ5F
-X-Authority-Analysis: v=2.4 cv=fYidDUQF c=1 sm=1 tr=0 ts=69dfacac cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=kj9zAlcOel0A:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=U7nrCbtTmkRpXpFmAIza:22 a=VnNF1IyMAAAA:8
- a=svtOvR90bENhbL-BqmcA:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-15_01,2026-04-13_04,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 impostorscore=0 clxscore=1015 malwarescore=0 phishscore=0
- bulkscore=0 priorityscore=1501 spamscore=0 suspectscore=0 lowpriorityscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604070000 definitions=main-2604150142
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+In-Reply-To: <20260413134029.43754-1-mmenashe@redhat.com>
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 94D9B6A7F0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] sched_football: fix false failures on many-CPU
- systems
+Subject: Re: [LTP] [PATCH v2] futex: Add error coverage tests for wait,
+ wake and cmp_requeue
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,190 +116,424 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: jstultz@google.com, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Apr 15, 2026 at 05:52:11PM +0800, Li Wang wrote:
-> Hi Soma and Jan,
->
-> > > 1. RT throttling freezes all SCHED_FIFO threads simultaneously. On
-> > > release, the kernel does not always reschedule the highest-priority
-> > > thread first on every CPU, so offense briefly runs and increments
-> > > the_ball before defense is rescheduled. Fix by saving and disabling
-> > > sched_rt_runtime_us in setup and restoring it in a new cleanup
-> > > callback.
->
-> Make sense, and like the AI-reviewer points out LTP provides an option
-> to save_restore it automatically.
->
-> > > 2. Offense and defense threads were unpinned, allowing the scheduler
-> > > to migrate them freely. An offense thread could land on a CPU with
-> > > no defense thread present and run unchecked. Fix by passing a CPU
-> > > index as the thread arg and calling sched_setaffinity() at thread
-> > > start. Pairs are distributed round-robin (i % ncpus) so each
-> > > offense thread shares its CPU with a defense thread.
->
-> This is a good thought, as for SCHED_FIFO it manages the corresponding
-> runqueue for each CPU and simply picks the higher priority task to run.
-> So pinning the threads to each CPU makes sense, but maybe we could
-> only pin the defense because:
->
-> With N defense threads pinned one per CPU, every CPU has a defense
-> thread at priority 30 permanently runnable. The offense threads at priority
-> 15, regardless of which CPU the scheduler places them on, will always find
-> a higher-priority defense thread on the same CPU's runqueue. Since
-> SCHED_FIFO strictly favors the higher-priority runnable task, offense can
-> never be picked.
->
-> Pinning offense as well would be redundant, it doesn't matter where offense
-> lands, because defense already covers every CPU. This also has the advantage
-> of letting the scheduler freely migrate offense threads without
-> affecting the test
-> outcome, which avoids interfering with the kernel's load balancing logic during
-> the test.
->
-> And, I'd suggest using tst_ncpus_available() instead of get_numcpus()
-> when distributing defense threads across CPUs, in case some CPUs are
-> offline. Pinning a defense thread to an offline CPU would leave that
-> CPU uncovered and allow offense to run unchecked. See:
->
-> Also, the short usleep() after setting kickoff_flag, which was originally
-> there to give the RT load balancer time to distribute threads across CPUs,
-> can now be removed, since defense is already pinned to every CPU and
-> coverage is guaranteed without any extra settling time.
->
-> -       if (tst_check_preempt_rt())
-> -               usleep(20000);
-> -       else
-> -               usleep(2000000);
->
->
-> > > 3. game_over was never reset between iterations, causing all threads
-> > > to exit immediately on reruns (-i N), making the test a no-op.
-> > > Fix by resetting both kickoff_flag and game_over at the top of
-> > > do_test().
->
-> Good catch.
->
-> > > 4. sched_setscheduler() failure for the referee was silently ignored.
-> > > If the call fails the test produces meaningless results. Fix by
-> > > checking the return value and calling tst_brk(TBROK) on failure.
->
-> +1
->
-> > Tested-by: Jan Polensky <japo@linux.ibm.com>
->
-> Thanks, can you re-test it based on what my above revision suggests?
->
-> --
-> Regards,
-> Li Wang
+Hi!
+> Improve error handling coverage for futex syscalls by adding tests
+> for missing error conditions that were previously untested.
+> 
+> futex_wait06 verifies EFAULT is returned when uaddr or timeout
+> points to unmapped memory.
+> 
+> futex_wait07 verifies EINTR is returned when futex_wait() is
+> interrupted by a signal.
+> 
+> futex_wake05 verifies EFAULT is returned when uaddr points to
+> unmapped or PROT_NONE memory.
+> 
+> futex_cmp_requeue03 verifies EFAULT is returned when uaddr or
+> uaddr2 points to unmapped memory, and EACCES or EFAULT when uaddr
+> points to memory without read permission (PROT_NONE). The EACCES
+> behavior was introduced in kernel 5.9.
 
-Hi Li, hi Soma,
+Generally it would be probably easier to review and applly if you split
+this into a series with one test per per patch.
 
-@Li: I incorporated your suggested changes and re-tested. Works fine for
-me on the same machine as before.
+> ---
+> v2: Use TST_EXP_FAIL macro as requested.
+>     Store address directly in testcase structs and not using flags.
+>     Use SAFE_MMAP and not raw as requested, also added a sign off.
+>  runtest/syscalls                              |   4 +
+>  testcases/kernel/syscalls/futex/.gitignore    |   4 +
+>  .../syscalls/futex/futex_cmp_requeue03.c      |  96 ++++++++++++++
+>  .../kernel/syscalls/futex/futex_wait06.c      |  73 +++++++++++
+>  .../kernel/syscalls/futex/futex_wait07.c      | 117 ++++++++++++++++++
+>  .../kernel/syscalls/futex/futex_wake05.c      |  86 +++++++++++++
+>  6 files changed, 380 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
+>  create mode 100644 testcases/kernel/syscalls/futex/futex_wait06.c
+>  create mode 100644 testcases/kernel/syscalls/futex/futex_wait07.c
+>  create mode 100644 testcases/kernel/syscalls/futex/futex_wake05.c
+> 
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 6ba0227a8..6c12dc225 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -1859,11 +1859,14 @@ perf_event_open02 perf_event_open02
+>  
+>  futex_cmp_requeue01 futex_cmp_requeue01
+>  futex_cmp_requeue02 futex_cmp_requeue02
+> +futex_cmp_requeue03 futex_cmp_requeue03
+>  futex_wait01 futex_wait01
+>  futex_wait02 futex_wait02
+>  futex_wait03 futex_wait03
+>  futex_wait04 futex_wait04
+>  futex_wait05 futex_wait05
+> +futex_wait06 futex_wait06
+> +futex_wait07 futex_wait07
+>  futex_waitv01 futex_waitv01
+>  futex_waitv02 futex_waitv02
+>  futex_waitv03 futex_waitv03
+> @@ -1871,6 +1874,7 @@ futex_wake01 futex_wake01
+>  futex_wake02 futex_wake02
+>  futex_wake03 futex_wake03
+>  futex_wake04 futex_wake04
+> +futex_wake05 futex_wake05
+>  futex_wait_bitset01 futex_wait_bitset01
+>  
+>  memfd_create01 memfd_create01
+> diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
+> index 9d08ba7d3..c47d39b5b 100644
+> --- a/testcases/kernel/syscalls/futex/.gitignore
+> +++ b/testcases/kernel/syscalls/futex/.gitignore
+> @@ -1,15 +1,19 @@
+>  /futex_cmp_requeue01
+>  /futex_cmp_requeue02
+> +/futex_cmp_requeue03
+>  /futex_wait01
+>  /futex_wait02
+>  /futex_wait03
+>  /futex_wait04
+>  /futex_wait05
+> +/futex_wait06
+> +/futex_wait07
+>  /futex_wait_bitset01
+>  /futex_wake01
+>  /futex_wake02
+>  /futex_wake03
+>  /futex_wake04
+> +/futex_wake05
+>  /futex_waitv01
+>  /futex_waitv02
+>  /futex_waitv03
+> diff --git a/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
+> new file mode 100644
+> index 000000000..099d5e35c
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
+> @@ -0,0 +1,96 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2026 Red Hat, Inc.
+> + */
+> +
+> +/*\
+> + * Check that futex(FUTEX_CMP_REQUEUE) returns EFAULT when uaddr or
+> + * uaddr2 points to unmapped memory, and EACCES (or EFAULT on older kernels)
+> + * when uaddr points to memory without read permission (PROT_NONE).
+> + *
+> + * The EACCES behavior for PROT_NONE was introduced in kernel 5.9.
+> + */
+> +
+> +#include <errno.h>
+> +#include <sys/mman.h>
+> +
+> +#include "futextest.h"
+> +
+> +static futex_t futex_var = FUTEX_INITIALIZER;
+> +static futex_t *prot_none_addr;
+> +
+> +static struct futex_test_variants variants[] = {
+> +#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
+> +	{ .fntype = FUTEX_FN_FUTEX, .desc = "syscall with old kernel spec"},
+> +#endif
+> +
+> +#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
+> +	{ .fntype = FUTEX_FN_FUTEX64, .desc = "syscall time64 with kernel spec"},
+> +#endif
+> +};
+> +
+> +static struct testcase {
+> +	const char *desc;
+> +	futex_t *uaddr;
+> +	futex_t *uaddr2;
+> +	int exp_errno;
+> +} testcases[3];
+> +
+> +static void run(unsigned int n)
+> +{
+> +	struct futex_test_variants *tv = &variants[tst_variant];
+> +	struct testcase *tc = &testcases[n];
+> +
+> +	TST_EXP_FAIL(futex_cmp_requeue(tv->fntype, tc->uaddr, futex_var,
+> +		tc->uaddr2, 1, 1, 0), tc->exp_errno, "%s", tc->desc);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	struct futex_test_variants *tv = &variants[tst_variant];
+> +	size_t pagesize = getpagesize();
+> +	futex_t *unmapped;
+> +
+> +	tst_res(TINFO, "Testing variant: %s", tv->desc);
+> +	futex_supported_by_kernel(tv->fntype);
+> +
+> +	unmapped = SAFE_MMAP(NULL, pagesize, PROT_READ | PROT_WRITE,
+> +		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +	SAFE_MUNMAP(unmapped, pagesize);
+> +
+> +	prot_none_addr = SAFE_MMAP(NULL, pagesize, PROT_NONE,
+> +		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +
+> +	testcases[0] = (struct testcase){
+> +		.desc = "uaddr unmapped",
+> +		.uaddr = unmapped,
+> +		.uaddr2 = &futex_var,
+> +		.exp_errno = EFAULT,
+> +	};
+> +	testcases[1] = (struct testcase){
+> +		.desc = "uaddr2 unmapped",
+> +		.uaddr = &futex_var,
+> +		.uaddr2 = unmapped,
+> +		.exp_errno = EFAULT,
+> +	};
+> +	testcases[2] = (struct testcase){
+> +		.desc = "uaddr PROT_NONE",
+> +		.uaddr = prot_none_addr,
+> +		.uaddr2 = &futex_var,
+> +		.exp_errno = tst_kvercmp(5, 9, 0) >= 0 ? EACCES : EFAULT,
+> +	};
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (prot_none_addr)
+> +		SAFE_MUNMAP(prot_none_addr, getpagesize());
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test = run,
+> +	.tcnt = ARRAY_SIZE(testcases),
+> +	.test_variants = ARRAY_SIZE(variants),
+> +};
+> diff --git a/testcases/kernel/syscalls/futex/futex_wait06.c b/testcases/kernel/syscalls/futex/futex_wait06.c
+> new file mode 100644
+> index 000000000..8bb563fb2
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/futex/futex_wait06.c
+> @@ -0,0 +1,73 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2026 Red Hat, Inc.
+> + */
+> +
+> +/*\
+> + * Check that futex(FUTEX_WAIT) returns EFAULT when:
+> + *
+> + * 1) uaddr points to unmapped memory
+> + * 2) timeout points to unmapped memory
+> + */
+> +#include <errno.h>
+> +#include <sys/mman.h>
+> +
+> +#include "futextest.h"
+> +
+> +static futex_t futex = FUTEX_INITIALIZER;
+> +
+> +static struct futex_test_variants variants[] = {
+> +#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
+> +	{ .fntype = FUTEX_FN_FUTEX, .tstype = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
+> +#endif
+> +
+> +#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
+> +	{ .fntype = FUTEX_FN_FUTEX64, .tstype = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
+> +#endif
+> +};
+> +
+> +static struct testcase {
+> +	const char *desc;
+> +	futex_t *uaddr;
+> +	void *timeout;
+> +} testcases[2];
+> +
+> +static void run(unsigned int n)
+> +{
+> +	struct futex_test_variants *tv = &variants[tst_variant];
+> +	struct testcase *tc = &testcases[n];
+> +
+> +	TST_EXP_FAIL(futex_syscall(tv->fntype, tc->uaddr, FUTEX_WAIT, futex,
+> +		tc->timeout, NULL, 0, 0), EFAULT, "%s", tc->desc);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	struct futex_test_variants *tv = &variants[tst_variant];
+> +	void *bad;
+> +
+> +	tst_res(TINFO, "Testing variant: %s", tv->desc);
+> +	futex_supported_by_kernel(tv->fntype);
+> +
+> +	bad = SAFE_MMAP(NULL, getpagesize(), PROT_READ | PROT_WRITE,
+> +		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +	SAFE_MUNMAP(bad, getpagesize());
+> +
+> +	testcases[0] = (struct testcase){
+> +		.desc = "uaddr points to unmapped memory",
+> +		.uaddr = bad,
+> +		.timeout = NULL,
+> +	};
+> +	testcases[1] = (struct testcase){
+> +		.desc = "timeout points to unmapped memory",
+> +		.uaddr = &futex,
+> +		.timeout = bad,
+> +	};
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test = run,
+> +	.tcnt = ARRAY_SIZE(testcases),
+> +	.test_variants = ARRAY_SIZE(variants),
+> +};
+> diff --git a/testcases/kernel/syscalls/futex/futex_wait07.c b/testcases/kernel/syscalls/futex/futex_wait07.c
+> new file mode 100644
+> index 000000000..a3c1c153d
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/futex/futex_wait07.c
+> @@ -0,0 +1,117 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2026 Red Hat, Inc.
+> + */
+> +
+> +/*\
+> + * Check that futex(FUTEX_WAIT) returns EINTR when interrupted by a signal.
+> + * A child process blocks on futex_wait() with a long timeout. The parent
+> + * waits for the child to enter sleep state, then sends SIGUSR1 to it.
+> + * The child verifies it received EINTR and exits accordingly.
+> + */
+> +
+> +#include <errno.h>
+> +#include <signal.h>
+> +#include <sys/wait.h>
+> +
+> +#include "futextest.h"
+> +
+> +static futex_t *futex;
+> +
+> +static struct futex_test_variants variants[] = {
+> +#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
+> +	{ .fntype = FUTEX_FN_FUTEX, .tstype = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
+> +#endif
+> +
+> +#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
+> +	{ .fntype = FUTEX_FN_FUTEX64, .tstype = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
+> +#endif
+> +};
+> +
+> +/* We need a handler so SIGUSR1 is caught instead of killing the process.
+> + * The empty body is needed, just receiving the signal is enough to
+> + * interrupt futex_wait() and make it return into EINTR -1 status.
+> + */
+> +static void sigusr1_handler(int sig LTP_ATTRIBUTE_UNUSED)
+> +{
+> +}
 
-	./sched_football -i 10
-    [snip]
-    Summary:
-    passed   10
-    failed   0
-    broken   0
-    skipped  0
-    warnings 0
+We have SIG_IGN for this purpose.
 
-Tested-by: Jan Polensky <japo@linux.ibm.com>
+> +static void do_child(void)
+> +{
+> +	struct futex_test_variants *tv = &variants[tst_variant];
+> +	struct sigaction sa;
+> +	struct tst_ts timeout;
+> +	int res;
+> +
+> +	/* Set up the signal handler for SIGUSR1 */
 
-@Soma: Feel free to pick it up, the diff/patch is attached below.
-Please note the additional join_threads() call, it is needed if you run the test like:
+Please avoid commenting obvious such as this comment. There is plenty of
+obvious comments that does not help at all.
 
-	./sched_football -i 10
+> +	sa.sa_handler = sigusr1_handler;
+> +	sa.sa_flags = 0;
+> +	SAFE_SIGEMPTYSET(&sa.sa_mask);
+> +	SAFE_SIGACTION(SIGUSR1, &sa, NULL);
+> +
+> +	/* Create a timeout for 5 sec for this variant.
+> +	 * if no one wakes the child before 5 sec, futex_wait() will return
+> +	 * on its own with ETIMEDOUT and will not wait any longer
+> +	 */
+> +	timeout = tst_ts_from_ms(tv->tstype, 5000);
+> +	res = futex_wait(tv->fntype, futex, *futex, &timeout, 0);
+> +
+> +	if (res != -1) {
+> +		tst_res(TFAIL, "futex_wait() should have failed with EINTR but returned success instead");
+> +		exit(1);
+> +	}
+> +	if (errno != EINTR) {
+> +		tst_res(TFAIL | TERRNO, "futex_wait() expected EINTR but got something else, errno");
+> +		exit(1);
+> +	}
+> +	tst_res(TPASS | TERRNO, "futex_wait() returned EINTR as expected");
 
-It seems the threads do not terminate correctly without it.
+This could be another TST_EXP_FAIL macro, right?
 
-diff --git a/testcases/realtime/func/sched_football/sched_football.c b/testcases/realtime/func/sched_football/sched_football.c
-index 43bac9468693..be0334da812e 100644
---- a/testcases/realtime/func/sched_football/sched_football.c
-+++ b/testcases/realtime/func/sched_football/sched_football.c
-@@ -118,23 +118,17 @@ void *thread_defense(void *arg)
- }
+> +	exit(0);
+> +}
+> +
+> +static void run(void)
+> +{
+> +	pid_t child;
+> +	int status;
+> +
+> +	child = SAFE_FORK();
+> +
+> +	if (child == 0) {
+> +		do_child();
+> +	}
 
- /* This is the offensive team. They're trying to move the ball */
--void *thread_offense(void *arg)
-+void *thread_offense(void *arg LTP_ATTRIBUTE_UNUSED)
- {
--	struct thread *t = (struct thread *)arg;
--	int cpu = (int)(intptr_t)t->arg;
--	cpu_set_t cpuset;
--
- 	prctl(PR_SET_NAME, "offense", 0, 0, 0);
+LKML does prefer not having curly braces around single line statements.
 
- 	/*
--	 * Pin to the same CPU as the paired defense thread so there is
--	 * always a higher-priority defense thread locally available to
--	 * preempt this one without requiring cross-CPU migration.
-+	 * Offense threads are not pinned. With defense threads pinned one per
-+	 * CPU at priority 30, every CPU has a higher-priority defense thread
-+	 * runnable. Offense at priority 15 can never be picked by SCHED_FIFO
-+	 * regardless of which CPU it lands on. Leaving offense unpinned avoids
-+	 * interfering with the kernel's load balancing logic.
- 	 */
--	CPU_ZERO(&cpuset);
--	CPU_SET(cpu, &cpuset);
--	if (sched_setaffinity(0, sizeof(cpuset), &cpuset) != 0)
--		tst_brk(TBROK | TERRNO, "sched_setaffinity failed for offense on CPU %d", cpu);
+> +	/* Wait until child is sleeping before sending signal */
+> +	TST_PROCESS_STATE_WAIT(child, 'S', 0);
+> +	/* Wake up the child so it will return EINTR -1 status */
+> +	SAFE_KILL(child, SIGUSR1);
+> +	SAFE_WAITPID(child, &status, 0);
+> +	/* Check if the child finished everything as it should */
+> +	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+> +		tst_res(TFAIL, "child exited abnormally");
+> +	}
 
- 	pthread_barrier_wait(&start_barrier);
- 	while (!tst_atomic_load(&kickoff_flag))
-@@ -169,10 +163,6 @@ void referee(int game_length)
+You can let the test library collect the child, no need to do that
+manually here.
 
- 	tst_atomic_store(0, &the_ball);
- 	tst_atomic_store(1, &kickoff_flag);
--	if (tst_check_preempt_rt())
--		usleep(20000);
--	else
--		usleep(2000000);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	struct futex_test_variants *tv = &variants[tst_variant];
+> +
+> +	tst_res(TINFO, "Testing variant: %s", tv->desc);
+> +	futex_supported_by_kernel(tv->fntype);
+> +
+> +	/* Futex needs to be in a shared memory so the parent and the child can access into it */
+> +	futex = SAFE_MMAP(NULL, sizeof(*futex), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
+> +	*futex = FUTEX_INITIALIZER;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (futex) {
+> +		SAFE_MUNMAP((void *)futex, sizeof(*futex));
+> +	}
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run,
+> +	.test_variants = ARRAY_SIZE(variants),
+> +	.forks_child = 1,
+> +};
 
- 	/* Watch the game */
- 	while ((now.tv_sec - start.tv_sec) < game_length) {
-@@ -199,10 +189,10 @@ static void do_test(void)
- 	int i;
-
- 	if (players_per_team == 0)
--		players_per_team = get_numcpus();
-+		players_per_team = tst_ncpus_available();
-
- 	/* actual CPU count used for affinity assignment, independent of players_per_team */
--	ncpus = get_numcpus();
-+	ncpus = tst_ncpus_available();
-
- 	tst_res(TINFO, "players_per_team: %d game_length: %d",
- 	       players_per_team, game_length);
-@@ -227,10 +217,8 @@ static void do_test(void)
- 	priority = 15;
- 	tst_res(TINFO, "Starting %d offense threads at priority %d",
- 	       players_per_team, priority);
--	/* i % ncpus distributes threads round-robin across CPUs; the CPU index is
--	 * passed as the thread arg so offense and defense pairs share the same CPU */
- 	for (i = 0; i < players_per_team; i++)
--		create_fifo_thread(thread_offense, (void *)(intptr_t)(i % ncpus), priority);
-+		create_fifo_thread(thread_offense, NULL, priority);
-
- 	/* Start the defense */
- 	priority = 30;
-@@ -248,6 +236,7 @@ static void do_test(void)
-
- 	referee(game_length);
-
-+	join_threads();
- 	pthread_barrier_destroy(&start_barrier);
- }
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
