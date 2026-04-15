@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4481FA0C32
-	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 06:08:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60C72FA0C32
+	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 06:08:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1776233296; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1776233318; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=Y1Fq/VTsrXS1gWjpuCgjJus0EGxtUV8jnySl7AI6ngk=;
- b=pZJMknyRkcN9OHdjnlwM/0xbk3SrYV21FG2aNTjQ3fbj+XoXHwawEritqqDyBP7xXkkV1
- RdZbD+zx9wGSIWqqS2Fb5UK5sP8TxQFExLtPv5EaiRv4A6QXieqN3l3RTPy3H0/3fm4lcs7
- jHoHJ/3cOA2yxomaDKGGNkkbWMq4HIk=
+ bh=rSQRm9YFSnnPbbj5Jmpuf6PG3Y0Wv8BKBuSf0ORLnbw=;
+ b=frOsMrklqFvIZLFq2PGZOXdERqf91FR6wWjO/1UUQf491IMXqkz3rFFCD9vZv9cRFBop8
+ wsWeg5Gxns7y0l4PAO0MwhfOOd+omAFQL4SLDPx6anz68+YH0zlgUl2mpRGfwYVwMY1WQGu
+ 7DitzKwL/sPHvKuUzdwYENGUwLF8P3I=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 37EBB3E2663
-	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 08:08:16 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id E98123E2143
+	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 08:08:37 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 896C33E2662
- for <ltp@lists.linux.it>; Wed, 15 Apr 2026 08:07:34 +0200 (CEST)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
+ by picard.linux.it (Postfix) with ESMTPS id DF6133E2662
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 08:07:35 +0200 (CEST)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B64391A006B2
- for <ltp@lists.linux.it>; Wed, 15 Apr 2026 08:07:33 +0200 (CEST)
-Received: by mail-wm1-x330.google.com with SMTP id
- 5b1f17b1804b1-4838c15e3cbso59456485e9.3
- for <ltp@lists.linux.it>; Tue, 14 Apr 2026 23:07:33 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6220960047F
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 08:07:35 +0200 (CEST)
+Received: by mail-wr1-x42e.google.com with SMTP id
+ ffacd0b85a97d-43d72875729so2105503f8f.3
+ for <ltp@lists.linux.it>; Tue, 14 Apr 2026 23:07:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1776233253; x=1776838053; darn=lists.linux.it;
+ d=suse.com; s=google; t=1776233254; x=1776838054; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=OHXW4iAKcO2NG9vmM7k/KQaTY3qyqN1mz5wOzdg4rS8=;
- b=HE43BhHa5WhRMnXQGbVew6mqJ9Wz8RDxMFpukCvjmW8hgc7r/pA7RpzrRqgHnrwBIq
- LOOyugKX/b0Uftpe/JJLSCVrqkBNpPBsE32KTVyurS4o2XXQ5VsKjv24EeLwyuY1Wuz9
- YSfl0YVmhuraKFaxpYoo93Q9JQ1Zhnm5SiVERV5jjepNSHe1CyPFyYHhK2E5SHxkIxMx
- KAJc0hBLkoBSxDjA+hZNpEQ4BugowYMHgPX/Sw26QBb89KJEiMQ+cyIljTlzInUAQtEm
- gEuzdcq8DdUO1/op2cnhE7dnrk3zswUOpre5gB7jhLtWwnDc9BHhT0bRI7wMaKGl/07a
- csgQ==
+ bh=7LtRleJbLmAib+ER61qN9f126OHiS1mbhSLPvhYyOU4=;
+ b=BX+jshHjaGMyDC1cRaMOSb7CR6Z43fKDkz/Kfupv1UAdi+TfDx0v2KGxuQOiKj/MsW
+ SuSzmPC6xQHlk0PaRqDlKcCclciO+4PeC2uSDgqcnWBmNWY3wbumeim1ZqHfqcjsRwTG
+ wbu5SGuj8GTbfW4kyxI74N5WAMdbLznt5MJzCCxLQArrzLZoAgIoztAiavPKSc9aAwas
+ VVvepgrtHFjJveC/Yp+YaUh5dLJUYmBX+8ULT8twLOpRDtwHNvlUr7qpspAkoOZ5no10
+ nJxtnu5Rz1W3c3wbpwW4U4Gels6NqQ+Jdpx31WZw7kG0kgCRH8Lbt2n/fzPLIajQanjZ
+ jkDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776233253; x=1776838053;
+ d=1e100.net; s=20251104; t=1776233254; x=1776838054;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=OHXW4iAKcO2NG9vmM7k/KQaTY3qyqN1mz5wOzdg4rS8=;
- b=JC8YG1hWescYkdQcgIficlQdzelYLvQ/we3f5x1h0gDdgAAEL5/5RmTxW1drJTy2xK
- ZisZqzk06l+V5TuwnIO/vvXYP3v8h5NPeHJ93iGTRi/ek/lL099/COtxRdQvDWuq8LF1
- qJrrFVBnFrQnC7VYxss4kw89539fR/1wlMcfpKgydwc9liAIzGnd+7XnVmBeBjul4E/h
- rTu3UpUJTrKxlMEcajMIjDma+hIxGLbn0p8a4tRVbo1/eShaUmf1xBhoXNu4pVZb2xW+
- J3PbJ9N16lmnntzY5pjPZj8u4Bb+k1rLYklTjtEMe7AwkihCCvc9V0/QqEGffKD1t1Pv
- vmQA==
-X-Gm-Message-State: AOJu0YyLL+8vDBNaRgZ0I4S01UuC9th6s0TLSFVS9xKjvctzFZWWPtA3
- oBrZYvqKCSRdSSRlpo/9BF6WsLiZkUp0oeQbsm7oPbaXjrwMc5mOA0AF+ia4jrnysb1m9BtFYrl
- 3VMM=
-X-Gm-Gg: AeBDiesyqN19SHVZJ/LkiAwN7IHDIaKafOkhMU5CGUJGDJnDJrg4gvt2KhdHjrxA3z3
- ia06qeME7glawUUZB4Sa1ys/sKMTZifM/vOiprYIPY/yqGcMIAljCIO2IYoo4B8OFmewP/Ywn/L
- HOQXVzylRMnDxVen0wIGEuRW4JjzmhnO4wQjSq6syL4SNn6IY36l5EWWjeGBMJQY5d7yCVxJOxU
- 6bOau3XvoWAwNDEgagGd5bEo5QGALYoN93K6XAurkqin87dRx5rz069AWUvGtQdw2kAneredIkP
- HuM2ZTOeMqMpc2g4JdwJeqU6VVxFv2+5q+zOZXELI0mpxvkP/SLB2atbGdfMtPevb7aYqyETkOj
- LuqGuQPTVtM7h01LvOAO6NnDNCNo1DIdf+q/TK5V+pMB8j10pG1rUfznD86btObJwNn69GIkMnB
- Ii1a4r6jUOQys=
-X-Received: by 2002:a05:600d:1c:b0:487:1108:48bc with SMTP id
- 5b1f17b1804b1-488d6836d87mr212468785e9.17.1776233252767; 
- Tue, 14 Apr 2026 23:07:32 -0700 (PDT)
+ bh=7LtRleJbLmAib+ER61qN9f126OHiS1mbhSLPvhYyOU4=;
+ b=bG0ZVgx/qyjca76irsAWkHpcYA+oPo/AAW2snXfH9gVoJuWmsvx4vTBfpOa3csGzSc
+ WCKk3ElYMuPy6TIp9HKj63QopHLZsMLZ6vYTZhC2rTvGkA4vyx+vQLEdkMKVwdUj6K4/
+ 2vMRb/szFJy3cijXw0J1KqxuP5OA/Oyhx9dqV/GS6XuaO7AyIXxpV7vNQHVfX1bjW9Ch
+ OuV04GV0LcXaEeblXhVqbI2xu0Ods0/Evq2nI1E5Kzbq6YhbJNHYb4r2HlzE3K3dfAzu
+ pcdkUSus4yKXBUHHG8NXZsOMlpwgWcf4Al7v48p2QLtFJCFkCXx5qI/lxXb48gBXoPRs
+ zI2w==
+X-Gm-Message-State: AOJu0Yxid6wfoHiNR8nkWuW9oHfHhAFrkg3ZDGasmWCzBg7bC73rtJiu
+ J46ozXXQ76DIsii7erFFpn17sVoRVsk4rmbCIZVncB9O2t44a/ehcoVQxjNkBZ2DXEH34LNoJ1j
+ 5NKA=
+X-Gm-Gg: AeBDietel/K72yXvaOkEk2xhVFkUOkr+mIuOZrUsSUbLBLHKXsTH19adrt858z+sPrH
+ /zFNZaY6FQ0Vi2GmHmqRSX1qrTsG9iTZ/8klaAYsjHVuBzFbhGtT6wwG/Y0IIFa2z9ve0++t5Z5
+ z5d30qvJTURjC2RTpyQxoE7WUdo+aylWXBxso/YBwSStcTlzDCmov3SXn4+deLwInsf1/Y0tIIx
+ aDxUeoy1rd3PXbbVJjqQ4W8RHqJU2YUB/HBHldZxFQifsgcwuxmJdV/wR5kNrHnOy02rMzy0PD7
+ tionNa7cd84+ADY/quDjiEoueSKsKbKd+tOOBnRBhLt/hLUVV7J3ygHvFa1Jy54wxxMSHs1M6sw
+ QPBdF55eoGqSex9VBKbx8qMJ4XI82tlXNtQ/77H0M2I1R81Q7usPGwBJa9/uWvswe5wIk4mFq0+
+ NYuTyN8KgvnMY=
+X-Received: by 2002:a05:6000:144c:b0:43d:7667:2c1c with SMTP id
+ ffacd0b85a97d-43d76672e26mr16805683f8f.51.1776233254502; 
+ Tue, 14 Apr 2026 23:07:34 -0700 (PDT)
 Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
  by smtp.gmail.com with UTF8SMTPSA id
- 5b1f17b1804b1-488ede1e050sm175159005e9.5.2026.04.14.23.07.32
+ ffacd0b85a97d-43ead3ebaaasm2126362f8f.32.2026.04.14.23.07.34
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Apr 2026 23:07:32 -0700 (PDT)
+ Tue, 14 Apr 2026 23:07:34 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Wed, 15 Apr 2026 06:07:16 +0000
-Message-ID: <20260415060728.21662-2-wegao@suse.com>
+Date: Wed, 15 Apr 2026 06:07:17 +0000
+Message-ID: <20260415060728.21662-3-wegao@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260415060728.21662-1-wegao@suse.com>
 References: <20250723154610.3860563-1-wegao@suse.com>
  <20260415060728.21662-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 1/2] lib: New library function tst_get_free_uid
+Subject: [LTP] [PATCH v6 2/2] open16: allow restricted O_CREAT of FIFOs and
+ regular files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,74 +109,168 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- include/tst_uid.h |  7 +++++--
- lib/tst_uid.c     | 26 ++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+), 2 deletions(-)
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/open/.gitignore |   1 +
+ testcases/kernel/syscalls/open/open16.c   | 129 ++++++++++++++++++++++
+ 3 files changed, 131 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/open/open16.c
 
-diff --git a/include/tst_uid.h b/include/tst_uid.h
-index 2237ddcbf..394cb3edc 100644
---- a/include/tst_uid.h
-+++ b/include/tst_uid.h
-@@ -8,10 +8,13 @@
- #include <sys/types.h>
+diff --git a/runtest/syscalls b/runtest/syscalls
+index d72fceb5e..c14ebb3a0 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1005,6 +1005,7 @@ open12 open12
+ open13 open13
+ open14 open14
+ open15 open15
++open16 open16
  
- /*
-- * Find unassigned gid. The skip argument can be used to ignore e.g. the main
-+ * Find unassigned uid/gid. The skip argument can be used to ignore e.g. the main
-  * group of a specific user in case it's not listed in the group file. If you
-- * do not need to skip any specific gid, simply set it to 0.
-+ * do not need to skip any specific id, simply set it to 0.
-  */
-+uid_t tst_get_free_uid_(const char *file, const int lineno, uid_t skip);
-+#define tst_get_free_uid(skip) tst_get_free_uid_(__FILE__, __LINE__, (skip))
+ openat01 openat01
+ openat02 openat02
+diff --git a/testcases/kernel/syscalls/open/.gitignore b/testcases/kernel/syscalls/open/.gitignore
+index af5997572..d2cacc02e 100644
+--- a/testcases/kernel/syscalls/open/.gitignore
++++ b/testcases/kernel/syscalls/open/.gitignore
+@@ -13,3 +13,4 @@
+ /open13
+ /open14
+ /open15
++/open16
+diff --git a/testcases/kernel/syscalls/open/open16.c b/testcases/kernel/syscalls/open/open16.c
+new file mode 100644
+index 000000000..9ec6515e7
+--- /dev/null
++++ b/testcases/kernel/syscalls/open/open16.c
+@@ -0,0 +1,129 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 Wei Gao <wegao@suse.com>
++ */
 +
- gid_t tst_get_free_gid_(const char *file, const int lineno, gid_t skip);
- #define tst_get_free_gid(skip) tst_get_free_gid_(__FILE__, __LINE__, (skip))
- 
-diff --git a/lib/tst_uid.c b/lib/tst_uid.c
-index af4ef8cf7..deff17085 100644
---- a/lib/tst_uid.c
-+++ b/lib/tst_uid.c
-@@ -5,6 +5,7 @@
- 
- #include <sys/types.h>
- #include <grp.h>
++/*\
++ * Verify disallows open of FIFOs or regular files not owned by the user in world
++ * writable sticky directories
++ */
++
 +#include <pwd.h>
- #include <errno.h>
- 
- #define TST_NO_DEFAULT_MAIN
-@@ -12,6 +13,31 @@
- #include "tst_uid.h"
- 
- #define MAX_GID 32767
-+#define MAX_UID 32767
++#include <stdlib.h>
++#include "tst_test.h"
++#include "tst_safe_file_at.h"
++#include "tst_uid.h"
 +
-+uid_t tst_get_free_uid_(const char *file, const int lineno, uid_t skip)
++#define DIR "ltp_tmp_check1"
++#define TEST_FILE "test_file_1"
++#define TEST_FIFO "test_fifo_1"
++#define PROTECTED_REGULAR "/proc/sys/fs/protected_regular"
++#define PROTECTED_FIFOS "/proc/sys/fs/protected_fifos"
++#define TEST_FIFO_PATH DIR "/" TEST_FIFO
++
++static int dir_fd = -1;
++static uid_t uid1, uid2;
++
++static void run(void)
 +{
-+	uid_t ret;
++	SAFE_CHMOD(DIR, 0777 | S_ISVTX);
++	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "0");
++	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "0");
 +
-+	errno = 0;
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(uid1);
 +
-+	for (ret = 1; ret < MAX_UID; ret++) {
-+		if (ret == skip || getpwuid(ret))
-+			continue;
++		int fd = SAFE_OPENAT(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777);
 +
-+		if (errno == 0 || errno == ENOENT || errno == ESRCH) {
-+			tst_res_(file, lineno, TINFO | TERRNO,
-+				"Found unused UID %d", (int)ret);
-+			return ret;
-+		}
++		SAFE_CLOSE(fd);
 +
-+		tst_brk_(file, lineno, TBROK|TERRNO, "User ID lookup failed");
-+		return (uid_t)-1;
++		SAFE_MKFIFO(TEST_FIFO_PATH, 0777);
++
++		exit(0);
 +	}
 +
-+	tst_brk_(file, lineno, TBROK, "No free user ID found");
-+	return (uid_t)-1;
++	tst_reap_children();
++
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(uid2);
++
++		int fd = TST_EXP_FD(openat(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777));
++
++		if (TST_PASS)
++			SAFE_CLOSE(fd);
++
++		fd = TST_EXP_FD(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777));
++
++		if (TST_PASS)
++			SAFE_CLOSE(fd);
++
++		exit(0);
++	}
++
++	tst_reap_children();
++
++	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "1");
++	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "1");
++
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(uid2);
++		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
++		TST_EXP_FAIL(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777), EACCES);
++
++		exit(0);
++	}
++
++	tst_reap_children();
++
++	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "2");
++	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "2");
++	SAFE_CHMOD(DIR, 0020 | S_ISVTX);
++
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(uid2);
++		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
++		TST_EXP_FAIL(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777), EACCES);
++
++		exit(0);
++	}
++
++	tst_reap_children();
++	SAFE_UNLINK(TEST_FIFO_PATH);
 +}
- 
- gid_t tst_get_free_gid_(const char *file, const int lineno, gid_t skip)
- {
++
++static void setup(void)
++{
++	struct passwd *pw;
++
++	pw = SAFE_GETPWNAM("nobody");
++	uid1 = pw->pw_uid;
++	uid2 = tst_get_free_uid(uid1);
++
++	umask(0);
++	SAFE_MKDIR(DIR, 0777 | S_ISVTX);
++	dir_fd = SAFE_OPEN(DIR, O_DIRECTORY);
++}
++
++static void cleanup(void)
++{
++	if (dir_fd != -1)
++		SAFE_CLOSE(dir_fd);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.test_all = run,
++	.needs_tmpdir = 1,
++	.forks_child = 1,
++	.save_restore = (const struct tst_path_val[]) {
++		{PROTECTED_REGULAR, NULL, TST_SR_TCONF},
++		{PROTECTED_FIFOS, NULL, TST_SR_TCONF},
++		{}
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "30aba6656f61"},
++		{}
++	}
++};
 -- 
 2.52.0
 
