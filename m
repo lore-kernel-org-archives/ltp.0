@@ -4,107 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 479F0F4384C
-	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 15:35:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18C6CF428E0
+	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 20:21:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1776284502; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=aOzN8O3IDj/djIvu58rZpuzhcRjP9QKMSsmpJvwPky0=;
+ b=ExMrA4lyQ+b6CV0UBSIkvKMgkkCNf++u1SYhpa9PIVhRSht/DmFUVjQyvsWVI3wDSnC+F
+ TSuZrR1Bd6wX3WlJ6uS2BymcmKS/gEqlfAdrBVqyBgyTEuMna/zdN1YXRNXM9uGhGmPrMhA
+ 4Bmv/wmv/fwh5bnpw+qjN1K6FwEUuSk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B671B3E2985
-	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 17:35:17 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 5DA133E2255
+	for <ltp@archiver.kernel.org>; Wed, 15 Apr 2026 22:21:42 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 508C63C52FE
- for <ltp@lists.linux.it>; Wed, 15 Apr 2026 17:34:57 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 890893CB6BF
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 22:21:17 +0200 (CEST)
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com
+ [IPv6:2607:f8b0:4864:20::92e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 30F8860082D
- for <ltp@lists.linux.it>; Wed, 15 Apr 2026 17:34:55 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 94D9B6A7F0;
- Wed, 15 Apr 2026 15:34:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776267294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=obikUQTPwU9fz4/MWU3admDQ/0CMk/eO2zq854vxbi4=;
- b=eGLmLDHlO49deV7t95zmjRMbVYWDfmUMFQyE2WNiNn4Vt0gF5uAEYR2qIesaSbqUiv906u
- XlmC59JTK8YgRSMbKPGPyH7Yj7eDJWWr1J1AtxIBT3XOEiH8mQ7AVy7rTNBNL9Ob3njKcU
- lY4+Y05bIrIgxvefWmCyoU/oLewSj7E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776267294;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=obikUQTPwU9fz4/MWU3admDQ/0CMk/eO2zq854vxbi4=;
- b=IhDkmb162qnqVOI8jksYmTXr8g4k4arJSCzTiqPIGhECxZIj3Vxi3D/rYuUSimPGPMWJud
- t8nW6l2bAgSBG/CQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eGLmLDHl;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IhDkmb16
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776267294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=obikUQTPwU9fz4/MWU3admDQ/0CMk/eO2zq854vxbi4=;
- b=eGLmLDHlO49deV7t95zmjRMbVYWDfmUMFQyE2WNiNn4Vt0gF5uAEYR2qIesaSbqUiv906u
- XlmC59JTK8YgRSMbKPGPyH7Yj7eDJWWr1J1AtxIBT3XOEiH8mQ7AVy7rTNBNL9Ob3njKcU
- lY4+Y05bIrIgxvefWmCyoU/oLewSj7E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776267294;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=obikUQTPwU9fz4/MWU3admDQ/0CMk/eO2zq854vxbi4=;
- b=IhDkmb162qnqVOI8jksYmTXr8g4k4arJSCzTiqPIGhECxZIj3Vxi3D/rYuUSimPGPMWJud
- t8nW6l2bAgSBG/CQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 76E8C4BAA0;
- Wed, 15 Apr 2026 15:34:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id xH8KHB6w32mKYgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 15 Apr 2026 15:34:54 +0000
-Date: Wed, 15 Apr 2026 17:35:08 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Michael Menasherov <mmenashe@redhat.com>
-Message-ID: <ad-wLMzLBVVIvUDA@yuki.lan>
-References: <20260413134029.43754-1-mmenashe@redhat.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 17E571A00264
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 22:21:17 +0200 (CEST)
+Received: by mail-ua1-x92e.google.com with SMTP id
+ a1e0cc1a2514c-95699e8e26aso893540241.0
+ for <ltp@lists.linux.it>; Wed, 15 Apr 2026 13:21:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776284476; cv=none;
+ d=google.com; s=arc-20240605;
+ b=bMC7tJ637NhO3YQ8ncdKvVOSPU8k3OoLVTguHnA8gp1SHNPggt9OX+SsYssvKcLh+P
+ wUcunzIAvXWyrBh9AcJr/lBJciY1zZbYFHfjhkqYYjhxQDGvkY6PfLyR/lv3WyknBP+i
+ O74d/CjdqApVKUembu3ZgUrQNJmr60VFf/7huCROJad5PRKjypC+8hXuHDnyTPbiYcvv
+ rwiBRbfCX/FiDtnJL8cs4lPin/myuKGjMwROdx8yRvQlkjv9tCnqqRU01wYnjV5OGevl
+ JmHSzsFjV4b/RCycZMR9t7ZfgMyRxgSEWpJXmAjt/ZJrs30t+nNwq9beZxvbKyVboRsH
+ PehA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:dkim-signature;
+ bh=lMeaEhX6NCDliM3JhdR1douUBFEeUzEBllgQHTNp2YI=;
+ fh=DUtt9KdDPrd81V+i/AjmN59os3iUSXX3UNjUPI6ZE6w=;
+ b=Bg29GWaRejIvtPq+w5+BM1r3omXOcKT+tbtNwHmByAaQMHH5Xxw8OgGbE13J8YGJ83
+ HreSoEnAvjmTK3LoMQiNByuWRQSooCXsEy/oTDVQ9OUDBA7uuFuftPRnOSpB3QZrHUvj
+ w2md9UxY05f6eKXXf7FFVxK5l3Xe7pY1KdzSQiC2Qr0plSoHb6HwIVaObwRzT4QN9JEQ
+ GfDxkDgzALE60E44VwFiYyu5UFBOJQ49tERnlHWAigETGea1BK/njLQpWgH8RzoKe/9H
+ wCK8OMcAT4Ptrx8gGgTkLX3mqjIdgv40Nme7/+d11imOuwLTSdEb0WKsWU7dYNw0WOHN
+ k8cg==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20251104; t=1776284476; x=1776889276; darn=lists.linux.it;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=lMeaEhX6NCDliM3JhdR1douUBFEeUzEBllgQHTNp2YI=;
+ b=ELo0BABYWS4wYRlyV5Fm5J3hcTHEDz0s1y9lKXTEeQqwiWq1V9HQzBh7BOw4e3R0IT
+ JPGOVSiCNnlet6q+rUJYL1t0Pw6IakjM4RvfhYszPpBv5eKSLXqgQFdcEbKBGD4ehOjY
+ bWO6MHaNziwE7nCfT1aeMjha0kn8ySfhU21qZRldg7UYIq2HogzxXfVDIwPY82BmHboH
+ yuWTj1T8su+DZNgTd0XzMmOzb1QYvMgDt49n0aBAL67tXw6YEl7UQWYZzJOQLGgiCyDT
+ blNd7Es07DhjiBIe+FGQWNJDGGWJKEW93ErhGIsxp8CQdy8F23/uGy62JGcWAcXrXusO
+ dawA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776284476; x=1776889276;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=lMeaEhX6NCDliM3JhdR1douUBFEeUzEBllgQHTNp2YI=;
+ b=Coaq8K+DzMK+/ud+1KVB9rj9lRhqU+AeCI7WFLqf9FDUNRuwok4zR2NAqQpwPkIVM/
+ dvsElMKOLRvsF93EMgVpNZzsD1xu9s9VMBT0/yowNlYfzIKAM9DpBKXRHZHvyMyzvxBJ
+ k8mRDzaVImJbirWzMY9TjMeDJ4y+zWTqMXsozM8t8+57vp1LIWtAJQjdWQT3LLm4XlnB
+ wR/T2NrY04TSf3UhaFw0dW4JkRUjib8+VXXfUCw+6mNMMmaI51tT9fflGm5xCtMB/46N
+ a9g+WZGXf5/z2tNQ/v+jWixoboWk++NQqu6Kw1VGTE4uTbfObwUsTz7X4lZQ3GgRbDf7
+ UXdQ==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ/X3iDIJe0SreDSSjVk6w0XnkQ6WZTDUpK1/5EuEftt5fmgBTRqlsnQ3X+3gJokcy0y3AQ=@lists.linux.it
+X-Gm-Message-State: AOJu0YxNjjCaX4fREMiIMgFNrDTdfE2SaA2+GkvgaVelBQy3PvFqa06R
+ CkkqpHbayWXq+ktsfZnjm451o6AQ3ZO609PM8ECoLlDopP9q7kIPhVUqxDKEybvWUnQxk5KA7p+
+ XSS71HHYwKu6c3n5GHKsWwW2U+6u9J5RNKIvRzik=
+X-Gm-Gg: AeBDievvfGALZbIhOpBZue7sRPo85NcFb2N98Cno0yTgjEmrGmgSl2yCNMcuq0ya1y9
+ XC6xGTyytFEUj/1uTP2fbWk3AfqI5+yVxpU/GvRuB7K19V3rqUPMY4G1mvmK22EqRB6PRjxZdPg
+ oAu8YPF1yJi1ZAPt9WKbkIgnFkCkLPFHjVb2wSBMGPW4K5HFzsJBO3O1k62PkTnuM/9zxxLVQSw
+ MfMKsGA0qWo/Q/lUCL9MxAO1PRRhS233F66VL9gxDCMc0mdVONDkFwsYF8HTa/aCIeXACujMtmr
+ 3gQXyEiqpqd8heLTMIk7VGY0XPz/JiZwi7748pTWAKUlMC1oqCTUuUtqauspuGsOYUp7
+X-Received: by 2002:a05:6102:1483:b0:605:558d:c7c2 with SMTP id
+ ada2fe7eead31-609ff0c1b4emr11105567137.12.1776284475113; Wed, 15 Apr 2026
+ 13:21:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260413134029.43754-1-mmenashe@redhat.com>
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 94D9B6A7F0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+References: <53f26493-09fc-4f8b-9751-24d2c2e80697@linux.ibm.com>
+ <ad5jSSYZJS0FdZva@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
+ <CANgNiRyTovPjVq01n7sCNhbNdYNp6nSvWcpVV_8aC3+kBX0edg@mail.gmail.com>
+ <ad-sqJXCYZpBAKM0@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
+In-Reply-To: <ad-sqJXCYZpBAKM0@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
+Date: Wed, 15 Apr 2026 13:21:02 -0700
+X-Gm-Features: AQROBzA8r9HH-Nf9i8y70cOjchP4rEIK2wmze41ac88q_PE9gJcAOnWgjlxHtvw
+Message-ID: <CANDhNCoAc4ktPUzqgam_oO7aAc4yp3nCqkcwQDvWs0zV15ZCaw@mail.gmail.com>
+To: Jan Polensky <japo@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] futex: Add error coverage tests for wait,
- wake and cmp_requeue
+Subject: Re: [LTP] [PATCH] sched_football: fix false failures on many-CPU
+ systems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,424 +118,66 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: John Stultz via ltp <ltp@lists.linux.it>
+Reply-To: John Stultz <jstultz@google.com>
+Cc: Soma Das <somadas1@linux.ibm.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Improve error handling coverage for futex syscalls by adding tests
-> for missing error conditions that were previously untested.
-> 
-> futex_wait06 verifies EFAULT is returned when uaddr or timeout
-> points to unmapped memory.
-> 
-> futex_wait07 verifies EINTR is returned when futex_wait() is
-> interrupted by a signal.
-> 
-> futex_wake05 verifies EFAULT is returned when uaddr points to
-> unmapped or PROT_NONE memory.
-> 
-> futex_cmp_requeue03 verifies EFAULT is returned when uaddr or
-> uaddr2 points to unmapped memory, and EACCES or EFAULT when uaddr
-> points to memory without read permission (PROT_NONE). The EACCES
-> behavior was introduced in kernel 5.9.
-
-Generally it would be probably easier to review and applly if you split
-this into a series with one test per per patch.
-
-> ---
-> v2: Use TST_EXP_FAIL macro as requested.
->     Store address directly in testcase structs and not using flags.
->     Use SAFE_MMAP and not raw as requested, also added a sign off.
->  runtest/syscalls                              |   4 +
->  testcases/kernel/syscalls/futex/.gitignore    |   4 +
->  .../syscalls/futex/futex_cmp_requeue03.c      |  96 ++++++++++++++
->  .../kernel/syscalls/futex/futex_wait06.c      |  73 +++++++++++
->  .../kernel/syscalls/futex/futex_wait07.c      | 117 ++++++++++++++++++
->  .../kernel/syscalls/futex/futex_wake05.c      |  86 +++++++++++++
->  6 files changed, 380 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
->  create mode 100644 testcases/kernel/syscalls/futex/futex_wait06.c
->  create mode 100644 testcases/kernel/syscalls/futex/futex_wait07.c
->  create mode 100644 testcases/kernel/syscalls/futex/futex_wake05.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 6ba0227a8..6c12dc225 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1859,11 +1859,14 @@ perf_event_open02 perf_event_open02
->  
->  futex_cmp_requeue01 futex_cmp_requeue01
->  futex_cmp_requeue02 futex_cmp_requeue02
-> +futex_cmp_requeue03 futex_cmp_requeue03
->  futex_wait01 futex_wait01
->  futex_wait02 futex_wait02
->  futex_wait03 futex_wait03
->  futex_wait04 futex_wait04
->  futex_wait05 futex_wait05
-> +futex_wait06 futex_wait06
-> +futex_wait07 futex_wait07
->  futex_waitv01 futex_waitv01
->  futex_waitv02 futex_waitv02
->  futex_waitv03 futex_waitv03
-> @@ -1871,6 +1874,7 @@ futex_wake01 futex_wake01
->  futex_wake02 futex_wake02
->  futex_wake03 futex_wake03
->  futex_wake04 futex_wake04
-> +futex_wake05 futex_wake05
->  futex_wait_bitset01 futex_wait_bitset01
->  
->  memfd_create01 memfd_create01
-> diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
-> index 9d08ba7d3..c47d39b5b 100644
-> --- a/testcases/kernel/syscalls/futex/.gitignore
-> +++ b/testcases/kernel/syscalls/futex/.gitignore
-> @@ -1,15 +1,19 @@
->  /futex_cmp_requeue01
->  /futex_cmp_requeue02
-> +/futex_cmp_requeue03
->  /futex_wait01
->  /futex_wait02
->  /futex_wait03
->  /futex_wait04
->  /futex_wait05
-> +/futex_wait06
-> +/futex_wait07
->  /futex_wait_bitset01
->  /futex_wake01
->  /futex_wake02
->  /futex_wake03
->  /futex_wake04
-> +/futex_wake05
->  /futex_waitv01
->  /futex_waitv02
->  /futex_waitv03
-> diff --git a/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
-> new file mode 100644
-> index 000000000..099d5e35c
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
-> @@ -0,0 +1,96 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2026 Red Hat, Inc.
-> + */
-> +
-> +/*\
-> + * Check that futex(FUTEX_CMP_REQUEUE) returns EFAULT when uaddr or
-> + * uaddr2 points to unmapped memory, and EACCES (or EFAULT on older kernels)
-> + * when uaddr points to memory without read permission (PROT_NONE).
-> + *
-> + * The EACCES behavior for PROT_NONE was introduced in kernel 5.9.
-> + */
-> +
-> +#include <errno.h>
-> +#include <sys/mman.h>
-> +
-> +#include "futextest.h"
-> +
-> +static futex_t futex_var = FUTEX_INITIALIZER;
-> +static futex_t *prot_none_addr;
-> +
-> +static struct futex_test_variants variants[] = {
-> +#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
-> +	{ .fntype = FUTEX_FN_FUTEX, .desc = "syscall with old kernel spec"},
-> +#endif
-> +
-> +#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
-> +	{ .fntype = FUTEX_FN_FUTEX64, .desc = "syscall time64 with kernel spec"},
-> +#endif
-> +};
-> +
-> +static struct testcase {
-> +	const char *desc;
-> +	futex_t *uaddr;
-> +	futex_t *uaddr2;
-> +	int exp_errno;
-> +} testcases[3];
-> +
-> +static void run(unsigned int n)
-> +{
-> +	struct futex_test_variants *tv = &variants[tst_variant];
-> +	struct testcase *tc = &testcases[n];
-> +
-> +	TST_EXP_FAIL(futex_cmp_requeue(tv->fntype, tc->uaddr, futex_var,
-> +		tc->uaddr2, 1, 1, 0), tc->exp_errno, "%s", tc->desc);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	struct futex_test_variants *tv = &variants[tst_variant];
-> +	size_t pagesize = getpagesize();
-> +	futex_t *unmapped;
-> +
-> +	tst_res(TINFO, "Testing variant: %s", tv->desc);
-> +	futex_supported_by_kernel(tv->fntype);
-> +
-> +	unmapped = SAFE_MMAP(NULL, pagesize, PROT_READ | PROT_WRITE,
-> +		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> +	SAFE_MUNMAP(unmapped, pagesize);
-> +
-> +	prot_none_addr = SAFE_MMAP(NULL, pagesize, PROT_NONE,
-> +		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> +
-> +	testcases[0] = (struct testcase){
-> +		.desc = "uaddr unmapped",
-> +		.uaddr = unmapped,
-> +		.uaddr2 = &futex_var,
-> +		.exp_errno = EFAULT,
-> +	};
-> +	testcases[1] = (struct testcase){
-> +		.desc = "uaddr2 unmapped",
-> +		.uaddr = &futex_var,
-> +		.uaddr2 = unmapped,
-> +		.exp_errno = EFAULT,
-> +	};
-> +	testcases[2] = (struct testcase){
-> +		.desc = "uaddr PROT_NONE",
-> +		.uaddr = prot_none_addr,
-> +		.uaddr2 = &futex_var,
-> +		.exp_errno = tst_kvercmp(5, 9, 0) >= 0 ? EACCES : EFAULT,
-> +	};
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (prot_none_addr)
-> +		SAFE_MUNMAP(prot_none_addr, getpagesize());
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test = run,
-> +	.tcnt = ARRAY_SIZE(testcases),
-> +	.test_variants = ARRAY_SIZE(variants),
-> +};
-> diff --git a/testcases/kernel/syscalls/futex/futex_wait06.c b/testcases/kernel/syscalls/futex/futex_wait06.c
-> new file mode 100644
-> index 000000000..8bb563fb2
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/futex/futex_wait06.c
-> @@ -0,0 +1,73 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2026 Red Hat, Inc.
-> + */
-> +
-> +/*\
-> + * Check that futex(FUTEX_WAIT) returns EFAULT when:
-> + *
-> + * 1) uaddr points to unmapped memory
-> + * 2) timeout points to unmapped memory
-> + */
-> +#include <errno.h>
-> +#include <sys/mman.h>
-> +
-> +#include "futextest.h"
-> +
-> +static futex_t futex = FUTEX_INITIALIZER;
-> +
-> +static struct futex_test_variants variants[] = {
-> +#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
-> +	{ .fntype = FUTEX_FN_FUTEX, .tstype = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
-> +#endif
-> +
-> +#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
-> +	{ .fntype = FUTEX_FN_FUTEX64, .tstype = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
-> +#endif
-> +};
-> +
-> +static struct testcase {
-> +	const char *desc;
-> +	futex_t *uaddr;
-> +	void *timeout;
-> +} testcases[2];
-> +
-> +static void run(unsigned int n)
-> +{
-> +	struct futex_test_variants *tv = &variants[tst_variant];
-> +	struct testcase *tc = &testcases[n];
-> +
-> +	TST_EXP_FAIL(futex_syscall(tv->fntype, tc->uaddr, FUTEX_WAIT, futex,
-> +		tc->timeout, NULL, 0, 0), EFAULT, "%s", tc->desc);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	struct futex_test_variants *tv = &variants[tst_variant];
-> +	void *bad;
-> +
-> +	tst_res(TINFO, "Testing variant: %s", tv->desc);
-> +	futex_supported_by_kernel(tv->fntype);
-> +
-> +	bad = SAFE_MMAP(NULL, getpagesize(), PROT_READ | PROT_WRITE,
-> +		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> +	SAFE_MUNMAP(bad, getpagesize());
-> +
-> +	testcases[0] = (struct testcase){
-> +		.desc = "uaddr points to unmapped memory",
-> +		.uaddr = bad,
-> +		.timeout = NULL,
-> +	};
-> +	testcases[1] = (struct testcase){
-> +		.desc = "timeout points to unmapped memory",
-> +		.uaddr = &futex,
-> +		.timeout = bad,
-> +	};
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test = run,
-> +	.tcnt = ARRAY_SIZE(testcases),
-> +	.test_variants = ARRAY_SIZE(variants),
-> +};
-> diff --git a/testcases/kernel/syscalls/futex/futex_wait07.c b/testcases/kernel/syscalls/futex/futex_wait07.c
-> new file mode 100644
-> index 000000000..a3c1c153d
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/futex/futex_wait07.c
-> @@ -0,0 +1,117 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2026 Red Hat, Inc.
-> + */
-> +
-> +/*\
-> + * Check that futex(FUTEX_WAIT) returns EINTR when interrupted by a signal.
-> + * A child process blocks on futex_wait() with a long timeout. The parent
-> + * waits for the child to enter sleep state, then sends SIGUSR1 to it.
-> + * The child verifies it received EINTR and exits accordingly.
-> + */
-> +
-> +#include <errno.h>
-> +#include <signal.h>
-> +#include <sys/wait.h>
-> +
-> +#include "futextest.h"
-> +
-> +static futex_t *futex;
-> +
-> +static struct futex_test_variants variants[] = {
-> +#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
-> +	{ .fntype = FUTEX_FN_FUTEX, .tstype = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
-> +#endif
-> +
-> +#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
-> +	{ .fntype = FUTEX_FN_FUTEX64, .tstype = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
-> +#endif
-> +};
-> +
-> +/* We need a handler so SIGUSR1 is caught instead of killing the process.
-> + * The empty body is needed, just receiving the signal is enough to
-> + * interrupt futex_wait() and make it return into EINTR -1 status.
-> + */
-> +static void sigusr1_handler(int sig LTP_ATTRIBUTE_UNUSED)
-> +{
-> +}
-
-We have SIG_IGN for this purpose.
-
-> +static void do_child(void)
-> +{
-> +	struct futex_test_variants *tv = &variants[tst_variant];
-> +	struct sigaction sa;
-> +	struct tst_ts timeout;
-> +	int res;
-> +
-> +	/* Set up the signal handler for SIGUSR1 */
-
-Please avoid commenting obvious such as this comment. There is plenty of
-obvious comments that does not help at all.
-
-> +	sa.sa_handler = sigusr1_handler;
-> +	sa.sa_flags = 0;
-> +	SAFE_SIGEMPTYSET(&sa.sa_mask);
-> +	SAFE_SIGACTION(SIGUSR1, &sa, NULL);
-> +
-> +	/* Create a timeout for 5 sec for this variant.
-> +	 * if no one wakes the child before 5 sec, futex_wait() will return
-> +	 * on its own with ETIMEDOUT and will not wait any longer
-> +	 */
-> +	timeout = tst_ts_from_ms(tv->tstype, 5000);
-> +	res = futex_wait(tv->fntype, futex, *futex, &timeout, 0);
-> +
-> +	if (res != -1) {
-> +		tst_res(TFAIL, "futex_wait() should have failed with EINTR but returned success instead");
-> +		exit(1);
-> +	}
-> +	if (errno != EINTR) {
-> +		tst_res(TFAIL | TERRNO, "futex_wait() expected EINTR but got something else, errno");
-> +		exit(1);
-> +	}
-> +	tst_res(TPASS | TERRNO, "futex_wait() returned EINTR as expected");
-
-This could be another TST_EXP_FAIL macro, right?
-
-> +	exit(0);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	pid_t child;
-> +	int status;
-> +
-> +	child = SAFE_FORK();
-> +
-> +	if (child == 0) {
-> +		do_child();
-> +	}
-
-LKML does prefer not having curly braces around single line statements.
-
-> +	/* Wait until child is sleeping before sending signal */
-> +	TST_PROCESS_STATE_WAIT(child, 'S', 0);
-> +	/* Wake up the child so it will return EINTR -1 status */
-> +	SAFE_KILL(child, SIGUSR1);
-> +	SAFE_WAITPID(child, &status, 0);
-> +	/* Check if the child finished everything as it should */
-> +	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-> +		tst_res(TFAIL, "child exited abnormally");
-> +	}
-
-You can let the test library collect the child, no need to do that
-manually here.
-
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	struct futex_test_variants *tv = &variants[tst_variant];
-> +
-> +	tst_res(TINFO, "Testing variant: %s", tv->desc);
-> +	futex_supported_by_kernel(tv->fntype);
-> +
-> +	/* Futex needs to be in a shared memory so the parent and the child can access into it */
-> +	futex = SAFE_MMAP(NULL, sizeof(*futex), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
-> +	*futex = FUTEX_INITIALIZER;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (futex) {
-> +		SAFE_MUNMAP((void *)futex, sizeof(*futex));
-> +	}
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run,
-> +	.test_variants = ARRAY_SIZE(variants),
-> +	.forks_child = 1,
-> +};
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gV2VkLCBBcHIgMTUsIDIwMjYgYXQgODoyMOKAr0FNIEphbiBQb2xlbnNreSA8amFwb0BsaW51
+eC5pYm0uY29tPiB3cm90ZToKPiBPbiBXZWQsIEFwciAxNSwgMjAyNiBhdCAwNTo1MjoxMVBNICsw
+ODAwLCBMaSBXYW5nIHdyb3RlOgo+ID4gSGkgU29tYSBhbmQgSmFuLAo+ID4KPiA+ID4gPiAxLiBS
+VCB0aHJvdHRsaW5nIGZyZWV6ZXMgYWxsIFNDSEVEX0ZJRk8gdGhyZWFkcyBzaW11bHRhbmVvdXNs
+eS4gT24KPiA+ID4gPiByZWxlYXNlLCB0aGUga2VybmVsIGRvZXMgbm90IGFsd2F5cyByZXNjaGVk
+dWxlIHRoZSBoaWdoZXN0LXByaW9yaXR5Cj4gPiA+ID4gdGhyZWFkIGZpcnN0IG9uIGV2ZXJ5IENQ
+VSwgc28gb2ZmZW5zZSBicmllZmx5IHJ1bnMgYW5kIGluY3JlbWVudHMKPiA+ID4gPiB0aGVfYmFs
+bCBiZWZvcmUgZGVmZW5zZSBpcyByZXNjaGVkdWxlZC4gRml4IGJ5IHNhdmluZyBhbmQgZGlzYWJs
+aW5nCj4gPiA+ID4gc2NoZWRfcnRfcnVudGltZV91cyBpbiBzZXR1cCBhbmQgcmVzdG9yaW5nIGl0
+IGluIGEgbmV3IGNsZWFudXAKPiA+ID4gPiBjYWxsYmFjay4KPiA+Cj4gPiBNYWtlIHNlbnNlLCBh
+bmQgbGlrZSB0aGUgQUktcmV2aWV3ZXIgcG9pbnRzIG91dCBMVFAgcHJvdmlkZXMgYW4gb3B0aW9u
+Cj4gPiB0byBzYXZlX3Jlc3RvcmUgaXQgYXV0b21hdGljYWxseS4KClRocm90dGxpbmcgc2hvdWxk
+bid0IGJyZWFrIHRoZSB0ZXN0LiBUaGUgZmFjdCB0aGF0IFNDSEVEX05PUk1BTCB0YXNrcwpyYW4g
+c2hvdWxkbid0IGNoYW5nZSB0aGUgb3JkZXJpbmcgd2hlbiB3ZSBnbyBiYWNrIHRvIHJ1bm5pbmcg
+UlQgdGFza3MuClRoaXMgaXMgbGlrZWx5IGEga2VybmVsIGJ1Zy4KCj4gPiA+ID4gMi4gT2ZmZW5z
+ZSBhbmQgZGVmZW5zZSB0aHJlYWRzIHdlcmUgdW5waW5uZWQsIGFsbG93aW5nIHRoZSBzY2hlZHVs
+ZXIKPiA+ID4gPiB0byBtaWdyYXRlIHRoZW0gZnJlZWx5LiBBbiBvZmZlbnNlIHRocmVhZCBjb3Vs
+ZCBsYW5kIG9uIGEgQ1BVIHdpdGgKPiA+ID4gPiBubyBkZWZlbnNlIHRocmVhZCBwcmVzZW50IGFu
+ZCBydW4gdW5jaGVja2VkLiBGaXggYnkgcGFzc2luZyBhIENQVQo+ID4gPiA+IGluZGV4IGFzIHRo
+ZSB0aHJlYWQgYXJnIGFuZCBjYWxsaW5nIHNjaGVkX3NldGFmZmluaXR5KCkgYXQgdGhyZWFkCj4g
+PiA+ID4gc3RhcnQuIFBhaXJzIGFyZSBkaXN0cmlidXRlZCByb3VuZC1yb2JpbiAoaSAlIG5jcHVz
+KSBzbyBlYWNoCj4gPiA+ID4gb2ZmZW5zZSB0aHJlYWQgc2hhcmVzIGl0cyBDUFUgd2l0aCBhIGRl
+ZmVuc2UgdGhyZWFkLgo+ID4KPiA+IFRoaXMgaXMgYSBnb29kIHRob3VnaHQsIGFzIGZvciBTQ0hF
+RF9GSUZPIGl0IG1hbmFnZXMgdGhlIGNvcnJlc3BvbmRpbmcKPiA+IHJ1bnF1ZXVlIGZvciBlYWNo
+IENQVSBhbmQgc2ltcGx5IHBpY2tzIHRoZSBoaWdoZXIgcHJpb3JpdHkgdGFzayB0byBydW4uCj4g
+PiBTbyBwaW5uaW5nIHRoZSB0aHJlYWRzIHRvIGVhY2ggQ1BVIG1ha2VzIHNlbnNlLCBidXQgbWF5
+YmUgd2UgY291bGQKPiA+IG9ubHkgcGluIHRoZSBkZWZlbnNlIGJlY2F1c2U6Cj4gPgo+ID4gV2l0
+aCBOIGRlZmVuc2UgdGhyZWFkcyBwaW5uZWQgb25lIHBlciBDUFUsIGV2ZXJ5IENQVSBoYXMgYSBk
+ZWZlbnNlCj4gPiB0aHJlYWQgYXQgcHJpb3JpdHkgMzAgcGVybWFuZW50bHkgcnVubmFibGUuIFRo
+ZSBvZmZlbnNlIHRocmVhZHMgYXQgcHJpb3JpdHkKPiA+IDE1LCByZWdhcmRsZXNzIG9mIHdoaWNo
+IENQVSB0aGUgc2NoZWR1bGVyIHBsYWNlcyB0aGVtIG9uLCB3aWxsIGFsd2F5cyBmaW5kCj4gPiBh
+IGhpZ2hlci1wcmlvcml0eSBkZWZlbnNlIHRocmVhZCBvbiB0aGUgc2FtZSBDUFUncyBydW5xdWV1
+ZS4gU2luY2UKPiA+IFNDSEVEX0ZJRk8gc3RyaWN0bHkgZmF2b3JzIHRoZSBoaWdoZXItcHJpb3Jp
+dHkgcnVubmFibGUgdGFzaywgb2ZmZW5zZSBjYW4KPiA+IG5ldmVyIGJlIHBpY2tlZC4KPiA+Cj4g
+PiBQaW5uaW5nIG9mZmVuc2UgYXMgd2VsbCB3b3VsZCBiZSByZWR1bmRhbnQsIGl0IGRvZXNuJ3Qg
+bWF0dGVyIHdoZXJlIG9mZmVuc2UKPiA+IGxhbmRzLCBiZWNhdXNlIGRlZmVuc2UgYWxyZWFkeSBj
+b3ZlcnMgZXZlcnkgQ1BVLiBUaGlzIGFsc28gaGFzIHRoZSBhZHZhbnRhZ2UKPiA+IG9mIGxldHRp
+bmcgdGhlIHNjaGVkdWxlciBmcmVlbHkgbWlncmF0ZSBvZmZlbnNlIHRocmVhZHMgd2l0aG91dAo+
+ID4gYWZmZWN0aW5nIHRoZSB0ZXN0Cj4gPiBvdXRjb21lLCB3aGljaCBhdm9pZHMgaW50ZXJmZXJp
+bmcgd2l0aCB0aGUga2VybmVsJ3MgbG9hZCBiYWxhbmNpbmcgbG9naWMgZHVyaW5nCj4gPiB0aGUg
+dGVzdC4KPiA+Cj4gPiBBbmQsIEknZCBzdWdnZXN0IHVzaW5nIHRzdF9uY3B1c19hdmFpbGFibGUo
+KSBpbnN0ZWFkIG9mIGdldF9udW1jcHVzKCkKPiA+IHdoZW4gZGlzdHJpYnV0aW5nIGRlZmVuc2Ug
+dGhyZWFkcyBhY3Jvc3MgQ1BVcywgaW4gY2FzZSBzb21lIENQVXMgYXJlCj4gPiBvZmZsaW5lLiBQ
+aW5uaW5nIGEgZGVmZW5zZSB0aHJlYWQgdG8gYW4gb2ZmbGluZSBDUFUgd291bGQgbGVhdmUgdGhh
+dAo+ID4gQ1BVIHVuY292ZXJlZCBhbmQgYWxsb3cgb2ZmZW5zZSB0byBydW4gdW5jaGVja2VkLiBT
+ZWU6CgpJIGRpZG4ndCBzZWUgdGhlIG9yaWduYWwgcGF0Y2ggaGVyZSwgYnV0IHRoZSB3aG9sZSBw
+b2ludCBvZgpzY2hlZF9mb290YmFsbCBpcyB0byBlbnN1cmUgdGhlIHRvcCA8bnVtIGNwdT4gKHVu
+YWZmaW5lZCkgcHJpb3JpdHkKdGFza3MgYXJlIGFsd2F5cyBydW4gYW5kIG5vIGxvd2VyIHByaW9y
+aXR5IHJ0IHRhc2tzIGFyZSBydW4gaW5zdGVhZC4KClNvIG5vbmUgb2YgdGhlIHRhc2tzIHNob3Vs
+ZCBiZSBwaW5uZWQgdG8gYW55IGNwdXMuIFRoZSBzY2hlZHVsZXIgaXMKc3VwcG9zZWQgdG8gZW5z
+dXJlIHRoZSBSVCBpbnZhcmlhbnQgaG9sZHMuClRoZXJlIGFyZSBzb21lIGtub3duIGJ1Z3MgYXQg
+dGhlIG1vbWVudCB0aGF0IHdpbGwgY2F1c2Ugc2NoZWRfZm9vdGJhbGwKdG8gZmFpbCAodGhlIFJU
+X1BVU0hfSVBJIGZlYXR1cmUsIGZvciBpbnN0YW5jZSkuIFRoYXQncyBhIHByb2JsZW0gd2l0aAp0
+aGUga2VybmVsLCBub3QgdGhlIHRlc3QuCgp0aGFua3MKLWpvaG4KCi0tIApNYWlsaW5nIGxpc3Qg
+aW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
