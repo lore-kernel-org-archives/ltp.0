@@ -4,98 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F0D0F8A16B
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 12:17:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EDADF8A16D
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 12:34:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 545A23E1962
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 14:17:24 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id CD6D13E264F
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 14:34:15 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 79E4F3E189F
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 14:16:46 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id B7F3A3C1E06
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 14:33:56 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5A2BF1400BC5
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 14:16:44 +0200 (CEST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 63FNrqRu089155
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
- content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=VsMoFGp0vLzFXlE6/KanojvhHoGHoLaPwKITlWZrg
- m4=; b=OlP8atb99qm1IK8TZePDzMgUbDuu83c5EFpS7cmMpdNefPzXTWi+QSu9Q
- ANVbNeT/sdjpqV0MoQl2HbP1zgHgWmAFq+gLec911hR9lHQdyEbkrp3eSwRWdXUn
- 4RSRUvkq2Ls91pKAllcQUVJJLndnnpa8ELw4fqnfwq6y06SzvNYwq333fvkTAajW
- BhHr/n8SYJ4/+OnIZjxYSs4RDzES0a0Ifh0icUdk33r5ld0q/fynwjztM1aNLZQt
- EuKq8iUzQWig6gRs+ofKp33YAukVOJ/e23xEXxsKGx+SpVqD91Wtatxnyxr4TWtf
- WfLlvgQhZBtkyozr+JETff4C926Mg==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dh89rn9q0-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:42 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 63GBuSM9030721
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:41 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4dg10yjw2y-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:41 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
- [10.20.54.105])
- by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 63GCGdIn41681362
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:39 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id AF60C20049
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:39 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 42D5220040
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:39 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.43.36.193])
- by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:39 +0000 (GMT)
-From: Sachin Sant <sachinp@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Thu, 16 Apr 2026 17:46:37 +0530
-Message-Id: <20260416121638.11858-1-sachinp@linux.ibm.com>
-X-Mailer: git-send-email 2.39.1
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E57AC200ACB
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 14:33:55 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 33D2C6A7EC;
+ Thu, 16 Apr 2026 12:33:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1776342835; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=+lc1Q1IiQa7A+4n/lLcvmuYAcs6fJtU/CkuDc1QgUGE=;
+ b=1TVIZuZv0OhN6T20ShPlpRw3hJ+OTmtoE21CyX7MSR/rSc9OgY1SbH6Mzc7a+T8QXuwG1M
+ 1t9fqJEq6Gk8lRxpGfxn1ajdoVRKpxn5wPMU+y5+adVrRFjk6Qr/Ok0mbpOPuPRFloGoXK
+ +/yfm8aDL/FA1jLn/Lz5t8hdxfJ2Afs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1776342835;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=+lc1Q1IiQa7A+4n/lLcvmuYAcs6fJtU/CkuDc1QgUGE=;
+ b=0GkvmJJ20Liqot/5yOYAwJBUOS4i19eNXxklks8YVxt45vVDm4kgQFqpKBtpreoZwZdmlw
+ YJrJXOpup+5Na6BA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=1TVIZuZv;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=0GkvmJJ2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1776342835; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=+lc1Q1IiQa7A+4n/lLcvmuYAcs6fJtU/CkuDc1QgUGE=;
+ b=1TVIZuZv0OhN6T20ShPlpRw3hJ+OTmtoE21CyX7MSR/rSc9OgY1SbH6Mzc7a+T8QXuwG1M
+ 1t9fqJEq6Gk8lRxpGfxn1ajdoVRKpxn5wPMU+y5+adVrRFjk6Qr/Ok0mbpOPuPRFloGoXK
+ +/yfm8aDL/FA1jLn/Lz5t8hdxfJ2Afs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1776342835;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=+lc1Q1IiQa7A+4n/lLcvmuYAcs6fJtU/CkuDc1QgUGE=;
+ b=0GkvmJJ20Liqot/5yOYAwJBUOS4i19eNXxklks8YVxt45vVDm4kgQFqpKBtpreoZwZdmlw
+ YJrJXOpup+5Na6BA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0BAC7593A3;
+ Thu, 16 Apr 2026 12:33:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id unTBADPX4GmaIgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 16 Apr 2026 12:33:55 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 16 Apr 2026 14:33:49 +0200
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDE2MDExMiBTYWx0ZWRfX05gqEiggm473
- NWVeczNuAUlx2vckyhjWgSnDWz4j70YTLqMbQdgxNJzba7GVvh4WWf1n6JvTznwrJfqm6uOBqag
- 8IWUhEsEuMeIrGkpgEC08DsLt2rXTArGIpbD8ULyLxwfQ0qguJzLThuXL486IpxMJU7DtuarkPq
- 18PBoKaOPP5a6HDh0nUmfUsA+R8s9ciDJDEYXEM/lsv3VbBEZmdpEHYGTUoJCz6/GCyicr5jxdz
- 8jCu22T7aV65UlnLZWcYB8CSyHdp5vVDDoKa4Lmj6EjfCikHUnWK8UjLOFA1gD60Cifi9YXaUds
- cw4CJMH54MYanZKcp1nYD2gV6Yqo2Djt3MkoEaT7Yfu76Iehxx3sXKmzfaK4NwvrchW8jUJEF4G
- t4MjBV/K/8Koleq94h7I05+0mtxGMjhujb/1pl2XyHOm+/Syhw6/EqXUvQhzu8szmzv8LVmj1MT
- ozCVZZhhjuZEtPwmvfg==
-X-Proofpoint-ORIG-GUID: z0S20KVi5zr8CrJM34Po6kG4I2km8gWR
-X-Proofpoint-GUID: z0S20KVi5zr8CrJM34Po6kG4I2km8gWR
-X-Authority-Analysis: v=2.4 cv=fYidDUQF c=1 sm=1 tr=0 ts=69e0d32a cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=U7nrCbtTmkRpXpFmAIza:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
- a=wt60Mp07Bq2YeaRHpIsA:9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-16_03,2026-04-13_04,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 impostorscore=0 clxscore=1015 malwarescore=0 phishscore=0
- bulkscore=0 priorityscore=1501 spamscore=0 suspectscore=0 lowpriorityscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604070000 definitions=main-2604160112
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+Message-Id: <20260416-fix_nanosleep_include-v2-1-b3147763acb8@suse.com>
+X-B4-Tracking: v=1; b=H4sIACzX4GkC/4WNUQqDMBBEryL73ZSsGJF+9R5FxCabumATyVZpk
+ dy9qRfo5xtm3uwglJgELtUOiTYWjqFAfarATmN4kGJXGGpdt7rBVnl+D2EMUWaiZeBg59WRImd
+ t5zV6TRrKdklUiof31heeWF4xfY6bDX/pP+OGCpU3XXM3xrTY4FVWobONT+hzzl9v5FiduQAAA
+ A==
+X-Change-ID: 20260416-fix_nanosleep_include-edcc8f01f0e0
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1776342834; l=14089;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=nc2uUj9Eu0ycWT4qdaergJHuOcrAT7DlCaZI4XzcDrg=;
+ b=KRloIGpF1DZ99O/hPpzcXFoM66fOUd6HbeW37UcMt//JOAD5ydAih3vfA5WoEM4Vs/3gDz3uV
+ e44ZeZnMKLyBnBYLD35OrrepkMoEK4KrOcFYnbeQPN9vfPVj4dzWOSd
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Queue-Id: 33D2C6A7EC
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 1/2] io_uring: Add test for READV and WRITEV
- operations
+Subject: [LTP] [PATCH v2] nanosleep: use POSIX runtime detection for
+ CLOCK_MONOTONIC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,314 +132,408 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add a test to validate vectored read and write operations using io_uring.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-1. IORING_OP_WRITEV - Writing data using multiple buffers (scatter)
-2. IORING_OP_READV - Reading data into multiple buffers (gather)
-3. Data integrity verification across multiple iovecs
-4. Edge cases with different iovec configurations including zero
-   buffer length
+All nanosleep POSIX conformance tests used a compile-time #ifdef on
+_POSIX_MONOTONIC_CLOCK to select the clock for measuring elapsed
+sleep duration. This was incorrect for two reasons:
 
-Additionally merge io_uring_init_buffer_pattern() into unified
-init_iovec_buffers() function that supports both rotating and
-simple character patterns
+1. Three test files (1-1.c, 2-1.c, 10000-1.c) did not include
+   <unistd.h>, so the macro was never defined and the tests silently
+   fell back to CLOCK_REALTIME.
 
-Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
+2. On Linux/glibc, _POSIX_MONOTONIC_CLOCK is defined as 0, meaning
+   support is optional and must be verified at runtime via
+   sysconf(_SC_MONOTONIC_CLOCK). The #ifdef treated 0 the same as
+   >0 (always available), which is not POSIX-correct.
+
+Using CLOCK_REALTIME caused sporadic test failures when NTP or VM
+time sync adjusted the wall clock during sleep, producing results
+like "slept 32s >> 10s".
+
+Extract the clock selection logic into a shared helpers.h with a
+get_supported_clock() function that performs proper POSIX runtime
+detection via sysconf(), and use it across all affected tests.
+
+Fixes: f992f6e25fce ("nanosleep: Use CLOCK_MONOTONIC for elapsed time measurement")
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-V5 changes:
-- Add clear_iovec_buffers() at the top of run()
-- Link to v4 https://lore.kernel.org/ltp/20260416062302.15804-1-sachinp@linux.ibm.com/T/
+Some nanosleep tests are not recognizing CLOCK_MONOTONIC at runtime
+even if it's available:
 
-V4 changes:
-- Updated commit message to remove references to non-existent function
-- Removed extra blank line before test_writev_readv()
-- Link to v3 https://lore.kernel.org/ltp/20260416042531.81093-1-sachinp@linux.ibm.com/T/
-
-V3 changes (2/3 io_uring04 only):
-- 1/3 and 3/3 from the patch series already merged.
-- Merged prepare_read_buffers() and clear_iovec_buffers() into
-single clear_iovec_buffers() function
-- Merged io_uring_init_buffer_pattern() into unified
-init_iovec_buffers() function that supports both rotating and
-simple character patterns
-- Removed io_uring_init_buffer_pattern() from io_uring_common.h as it's
-only used in io_uring04.c
-- Link to V2: https://lore.kernel.org/ltp/b4653e3f-ac9b-4a24-8d3f-51677c488e8c@linux.ibm.com/T/
-
-V2 changes:
-- Use guarded buffer(including iovec) allocation
-- Move setup/cleanup code from run to appropriate path
-- Add a function to map the OP to the enum name
-- Define and use generic cleanup functions
-- Add a buffer size 0 in the middle of the iovec
-- Simplify setup_io_uring_test to use common code.
-- Link to V1: https://lore.kernel.org/ltp/20260320124742.75946-1-sachinp@linux.ibm.com/T/#t
-
-Changes after RFC patch series:
-- Addressed review comments
-- Refactored io_uring01 test to use common code
-- Removed git tags
-- Link to RFC: https://lore.kernel.org/ltp/20260318110328.52031-1-sachinp@linux.ibm.com/T/#t
-
+CLOCK_MONOTONIC unavailable, test may fail due to external clock adjustments
+sleep 0 sec 30000000 nsec
+PASS - slept 0s30078623ns ~= 0s30000000ns
+sleep 1 sec 0 nsec
+PASS - slept 1s97618ns ~= 1s0ns
+sleep 1 sec 30000000 nsec
+PASS - slept 1s30109248ns ~= 1s30000000ns
+sleep 2 sec 0 nsec
+PASS - slept 2s147180ns ~= 2s0ns
+sleep 10 sec 5000 nsec
+FAIL - slept 32s630120452ns >> 10s5000ns
+sleep 13 sec 5 nsec
+PASS - slept 13s146848ns ~= 13s5ns
+sleep -1 sec -1 nsec
+sleep 0 sec -1 nsec
+sleep 1 sec 1000000000 nsec
+sleep 2 sec 1000000000 nsec
+sleep -2147483647 sec -2147483647 nsec
+sleep 1 sec 2147483647 nsec
+sleep 0 sec 1075002478 nsec
+At least one test FAILED
 ---
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/io_uring/.gitignore |   1 +
- .../kernel/syscalls/io_uring/io_uring04.c     | 223 ++++++++++++++++++
- 3 files changed, 225 insertions(+)
- create mode 100644 testcases/kernel/syscalls/io_uring/io_uring04.c
+Changes in v2:
+- add <unistd.h> to imports
+- Link to v1: https://lore.kernel.org/r/20260416-fix_nanosleep_include-v1-1-f584b5556141@suse.com
+---
+ .../conformance/interfaces/nanosleep/1-1.c         | 16 ++++---------
+ .../conformance/interfaces/nanosleep/1-2.c         | 16 ++++---------
+ .../conformance/interfaces/nanosleep/1-3.c         | 16 ++++---------
+ .../conformance/interfaces/nanosleep/10000-1.c     | 16 ++++---------
+ .../conformance/interfaces/nanosleep/2-1.c         | 16 ++++---------
+ .../conformance/interfaces/nanosleep/3-2.c         | 16 ++++---------
+ .../conformance/interfaces/nanosleep/7-2.c         | 16 ++++---------
+ .../conformance/interfaces/nanosleep/helpers.h     | 28 ++++++++++++++++++++++
+ 8 files changed, 56 insertions(+), 84 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 5025b259f..aa7a91d97 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1901,6 +1901,7 @@ membarrier01 membarrier01
- io_uring01 io_uring01
- io_uring02 io_uring02
- io_uring03 io_uring03
-+io_uring04 io_uring04
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c
+index 75b34346f13d9b62e2333dbc78023a812fc9c908..803569b138a1f17c0dede0c03406d3c7e52c4215 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-1.c
+@@ -11,24 +11,16 @@
+ #include <stdio.h>
+ #include <time.h>
+ #include "posixtest.h"
+-
+-#ifdef _POSIX_MONOTONIC_CLOCK
+-#define TEST_CLOCK CLOCK_MONOTONIC
+-#else
+-#define TEST_CLOCK CLOCK_REALTIME
+-#endif
++#include "helpers.h"
  
- # Tests below may cause kernel memory leak
- perf_event_open03 perf_event_open03
-diff --git a/testcases/kernel/syscalls/io_uring/.gitignore b/testcases/kernel/syscalls/io_uring/.gitignore
-index 9382ae413..36cd24662 100644
---- a/testcases/kernel/syscalls/io_uring/.gitignore
-+++ b/testcases/kernel/syscalls/io_uring/.gitignore
-@@ -1,3 +1,4 @@
- /io_uring01
- /io_uring02
- /io_uring03
-+/io_uring04
-diff --git a/testcases/kernel/syscalls/io_uring/io_uring04.c b/testcases/kernel/syscalls/io_uring/io_uring04.c
+ int main(void)
+ {
+ 	struct timespec tssleepfor, tsstorage, tsbefore, tsafter;
+ 	int sleepnsec = 3;
+ 	int slepts = 0, sleptns = 0;
++	clockid_t test_clock = get_supported_clock();
+ 
+-#ifndef _POSIX_MONOTONIC_CLOCK
+-	printf("CLOCK_MONOTONIC unavailable, test may fail due to external clock adjustments\n");
+-#endif
+-
+-	if (clock_gettime(TEST_CLOCK, &tsbefore) == -1) {
++	if (clock_gettime(test_clock, &tsbefore) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -40,7 +32,7 @@ int main(void)
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if (clock_gettime(TEST_CLOCK, &tsafter) == -1) {
++	if (clock_gettime(test_clock, &tsafter) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c
+index 4a38bd507bba47792b942feb53954b95e92dc222..116510ea26ab6b7792c9aba5aa18eb7b926e59df 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-2.c
+@@ -14,24 +14,16 @@
+ #include <unistd.h>
+ #include <sys/wait.h>
+ #include "posixtest.h"
+-
+-#ifdef _POSIX_MONOTONIC_CLOCK
+-#define TEST_CLOCK CLOCK_MONOTONIC
+-#else
+-#define TEST_CLOCK CLOCK_REALTIME
+-#endif
++#include "helpers.h"
+ 
+ int main(void)
+ {
+ 	struct timespec tssleepfor, tsstorage, tsbefore, tsafter;
+ 	int sleepsec = 30;
+ 	int pid;
++	clockid_t test_clock = get_supported_clock();
+ 
+-#ifndef _POSIX_MONOTONIC_CLOCK
+-	printf("CLOCK_MONOTONIC unavailable, test may fail due to external clock adjustments\n");
+-#endif
+-
+-	if (clock_gettime(TEST_CLOCK, &tsbefore) == -1) {
++	if (clock_gettime(test_clock, &tsbefore) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -56,7 +48,7 @@ int main(void)
+ 			perror("Error waiting for child to exit\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+-		if (clock_gettime(TEST_CLOCK, &tsafter) == -1) {
++		if (clock_gettime(test_clock, &tsafter) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c
+index 7d5600788d6bc4682f228ccc7c669576827c397a..6baed5c89aa5ccb149f0a47da05b17c4880c06d4 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/1-3.c
+@@ -15,12 +15,7 @@
+ #include <unistd.h>
+ #include <sys/wait.h>
+ #include "posixtest.h"
+-
+-#ifdef _POSIX_MONOTONIC_CLOCK
+-#define TEST_CLOCK CLOCK_MONOTONIC
+-#else
+-#define TEST_CLOCK CLOCK_REALTIME
+-#endif
++#include "helpers.h"
+ 
+ static void handler(int signo PTS_ATTRIBUTE_UNUSED)
+ {
+@@ -33,12 +28,9 @@ int main(void)
+ 	int sleepsec = 30;
+ 	int pid;
+ 	struct sigaction act;
++	clockid_t test_clock = get_supported_clock();
+ 
+-#ifndef _POSIX_MONOTONIC_CLOCK
+-	printf("CLOCK_MONOTONIC unavailable, test may fail due to external clock adjustments\n");
+-#endif
+-
+-	if (clock_gettime(TEST_CLOCK, &tsbefore) == -1) {
++	if (clock_gettime(test_clock, &tsbefore) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -74,7 +66,7 @@ int main(void)
+ 			perror("Error waiting for child to exit\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+-		if (clock_gettime(TEST_CLOCK, &tsafter) == -1) {
++		if (clock_gettime(test_clock, &tsafter) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c
+index ebcf366acb52fd149f19951a6e4e0764bd503807..c9d1cc303c629d7bbcf0fb4451103ef1729e4609 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/10000-1.c
+@@ -18,12 +18,7 @@
+ #include <time.h>
+ #include <errno.h>
+ #include "posixtest.h"
+-
+-#ifdef _POSIX_MONOTONIC_CLOCK
+-#define TEST_CLOCK CLOCK_MONOTONIC
+-#else
+-#define TEST_CLOCK CLOCK_REALTIME
+-#endif
++#include "helpers.h"
+ 
+ #define NUMVALID 6
+ #define NUMINVALID 7
+@@ -56,23 +51,20 @@ int main(void)
+ 	int i;
+ 	int failure = 0;
+ 	int slepts = 0, sleptns = 0;
+-
+-#ifndef _POSIX_MONOTONIC_CLOCK
+-	printf("CLOCK_MONOTONIC unavailable, test may fail due to external clock adjustments\n");
+-#endif
++	clockid_t test_clock = get_supported_clock();
+ 
+ 	for (i = 0; i < NUMVALID; i++) {
+ 		tssleepfor.tv_sec = sleepvalid[i][0];
+ 		tssleepfor.tv_nsec = sleepvalid[i][1];
+ 		printf("sleep %d sec %d nsec\n",
+ 		       (int)tssleepfor.tv_sec, (int)tssleepfor.tv_nsec);
+-		if (clock_gettime(TEST_CLOCK, &tsbefore) == -1) {
++		if (clock_gettime(test_clock, &tsbefore) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
+ 		if (nanosleep(&tssleepfor, &tsstorage) == 0) {
+-			if (clock_gettime(TEST_CLOCK, &tsafter) == -1) {
++			if (clock_gettime(test_clock, &tsafter) == -1) {
+ 				perror("Error in clock_gettime()\n");
+ 				return PTS_UNRESOLVED;
+ 			}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c
+index 8586e0ecec023029b60bce8ad5e1e72206daee34..02b122a786ef4e735d4e74f1a96e5263cd7333b1 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/2-1.c
+@@ -12,12 +12,7 @@
+ #include <stdio.h>
+ #include <time.h>
+ #include "posixtest.h"
+-
+-#ifdef _POSIX_MONOTONIC_CLOCK
+-#define TEST_CLOCK CLOCK_MONOTONIC
+-#else
+-#define TEST_CLOCK CLOCK_REALTIME
+-#endif
++#include "helpers.h"
+ 
+ #define NUMINTERVALS 13
+ int main(void)
+@@ -30,12 +25,9 @@ int main(void)
+ 	int i;
+ 	int failure = 0;
+ 	int slepts, sleptns;
++	clockid_t test_clock = get_supported_clock();
+ 
+-#ifndef _POSIX_MONOTONIC_CLOCK
+-	printf("CLOCK_MONOTONIC unavailable, test may fail due to external clock adjustments\n");
+-#endif
+-
+-	if (clock_gettime(TEST_CLOCK, &tsbefore) == -1) {
++	if (clock_gettime(test_clock, &tsbefore) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -48,7 +40,7 @@ int main(void)
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
+-		if (clock_gettime(TEST_CLOCK, &tsafter) == -1) {
++		if (clock_gettime(test_clock, &tsafter) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c
+index 1329a7e988055ed3815e4e4037f331f576264d1a..2110e0ddad36877150ba4aacaaf28a079207539a 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/3-2.c
+@@ -15,12 +15,7 @@
+ #include <sys/wait.h>
+ #include <stdlib.h>
+ #include "posixtest.h"
+-
+-#ifdef _POSIX_MONOTONIC_CLOCK
+-#define TEST_CLOCK CLOCK_MONOTONIC
+-#else
+-#define TEST_CLOCK CLOCK_REALTIME
+-#endif
++#include "helpers.h"
+ 
+ #define SLEEPSEC 5
+ 
+@@ -31,12 +26,9 @@ int main(void)
+ {
+ 	int pid, slepts;
+ 	struct timespec tsbefore, tsafter;
++	clockid_t test_clock = get_supported_clock();
+ 
+-#ifndef _POSIX_MONOTONIC_CLOCK
+-	printf("CLOCK_MONOTONIC unavailable, test may fail due to external clock adjustments\n");
+-#endif
+-
+-	if (clock_gettime(TEST_CLOCK, &tsbefore) != 0) {
++	if (clock_gettime(test_clock, &tsbefore) != 0) {
+ 		perror("clock_gettime() did not return success\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -84,7 +76,7 @@ int main(void)
+ 			return PTS_FAIL;
+ 		}
+ 
+-		if (clock_gettime(TEST_CLOCK, &tsafter) == -1) {
++		if (clock_gettime(test_clock, &tsafter) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c
+index 70eeca9ff8eb10ac052b81f102853747a5066685..16e44e142473188cdfab70e4d1d334e0bed71d1c 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/7-2.c
+@@ -16,12 +16,7 @@
+ #include <sys/wait.h>
+ #include <stdlib.h>
+ #include "posixtest.h"
+-
+-#ifdef _POSIX_MONOTONIC_CLOCK
+-#define TEST_CLOCK CLOCK_MONOTONIC
+-#else
+-#define TEST_CLOCK CLOCK_REALTIME
+-#endif
++#include "helpers.h"
+ 
+ #define CHILDSUCCESS 1
+ #define CHILDFAILURE 0
+@@ -39,12 +34,9 @@ int main(void)
+ 	int sleepsec = 30;
+ 	int pid;
+ 	struct sigaction act;
++	clockid_t test_clock = get_supported_clock();
+ 
+-#ifndef _POSIX_MONOTONIC_CLOCK
+-	printf("CLOCK_MONOTONIC unavailable, test may fail due to external clock adjustments\n");
+-#endif
+-
+-	if (clock_gettime(TEST_CLOCK, &tsbefore) == -1) {
++	if (clock_gettime(test_clock, &tsbefore) == -1) {
+ 		perror("Error in clock_gettime()\n");
+ 		return PTS_UNRESOLVED;
+ 	}
+@@ -70,7 +62,7 @@ int main(void)
+ 			return CHILDFAILURE;
+ 		}
+ 
+-		if (clock_gettime(TEST_CLOCK, &tsafter) == -1) {
++		if (clock_gettime(test_clock, &tsafter) == -1) {
+ 			perror("Error in clock_gettime()\n");
+ 			return CHILDFAILURE;
+ 		}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/helpers.h b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/helpers.h
 new file mode 100644
-index 000000000..6b6bb711d
+index 0000000000000000000000000000000000000000..a70e4c290c76c61adc55e9b006b65597dde4677d
 --- /dev/null
-+++ b/testcases/kernel/syscalls/io_uring/io_uring04.c
-@@ -0,0 +1,223 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
++++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/helpers.h
+@@ -0,0 +1,28 @@
 +/*
-+ * Copyright (C) 2026 IBM
-+ * Author: Sachin Sant <sachinp@linux.ibm.com>
-+ */
-+/*\
-+ * Test IORING_OP_READV and IORING_OP_WRITEV operations.
-+ *
-+ * This test validates vectored read and write operations using io_uring.
-+ * It tests:
-+ * 1. IORING_OP_WRITEV - Writing data using multiple buffers (scatter)
-+ * 2. IORING_OP_READV - Reading data into multiple buffers (gather)
-+ * 3. Data integrity verification across multiple iovecs
-+ * 4. Edge cases with different iovec configurations
++ * Copyright (c) 2026, Linux Test Project
++ * SPDX-License-Identifier: GPL-2.0-or-later
 + */
 +
-+#include "io_uring_common.h"
++#ifndef NANOSLEEP_HELPERS_H
++#define NANOSLEEP_HELPERS_H
 +
-+#define TEST_FILE "io_uring_test_file"
-+#define QUEUE_DEPTH 2
-+#define NUM_VECS 4
-+#define VEC_SIZE 1024
-+#define VAR_BUF1_SIZE 512
-+#define VAR_BUF2_SIZE 1024
-+#define VAR_BUF3_SIZE 256
++#include <stdio.h>
++#include <unistd.h>
++#include <time.h>
 +
-+static struct iovec *write_iovs, *read_iovs;
-+static struct iovec *var_write_iovs, *var_read_iovs;
-+static struct io_uring_submit s;
-+static sigset_t sig;
-+
-+/*
-+ * Initialize iovec buffers with pattern
-+ * @iovs: array of iovec structures
-+ * @nvecs: number of iovecs
-+ * @base_char: base character for pattern
-+ * @use_rotating: if true, use rotating pattern; if false, use simple repeat
-+ */
-+static void init_iovec_buffers(struct iovec *iovs, int nvecs,
-+				char base_char, int use_rotating)
++static inline clockid_t get_supported_clock(void)
 +{
-+	int i;
-+	size_t j;
-+	char *buf;
++#ifdef _POSIX_MONOTONIC_CLOCK
++	if (_POSIX_MONOTONIC_CLOCK > 0)
++		return CLOCK_MONOTONIC;
 +
-+	for (i = 0; i < nvecs; i++) {
-+		if (iovs[i].iov_len == 0)
-+			continue;
++	if (!_POSIX_MONOTONIC_CLOCK && sysconf(_SC_MONOTONIC_CLOCK) > 0)
++		return CLOCK_MONOTONIC;
++#endif
 +
-+		buf = (char *)iovs[i].iov_base;
-+		if (use_rotating) {
-+			/* Each vector has a different rotating pattern */
-+			for (j = 0; j < iovs[i].iov_len; j++)
-+				buf[j] = base_char + i + (j % 26);
-+		} else {
-+			for (j = 0; j < iovs[i].iov_len; j++)
-+				buf[j] = base_char + i;
-+		}
-+	}
++	printf("CLOCK_MONOTONIC unavailable, test may fail due to "
++	       "external clock adjustments\n");
++	return CLOCK_REALTIME;
 +}
 +
-+static void clear_iovec_buffers(struct iovec *iovs, int nvecs)
-+{
-+	int i;
-+
-+	for (i = 0; i < nvecs; i++)
-+		memset(iovs[i].iov_base, 0, iovs[i].iov_len);
-+}
-+
-+static void verify_iovec_data(struct iovec *write_iovs, struct iovec *read_iovs,
-+			      int nvecs, const char *test_name)
-+{
-+	int i;
-+	size_t j;
-+
-+	for (i = 0; i < nvecs; i++) {
-+		if (write_iovs[i].iov_len != read_iovs[i].iov_len) {
-+			tst_res(TFAIL, "%s: iovec %d length mismatch: write=%zu read=%zu",
-+				test_name, i, write_iovs[i].iov_len, read_iovs[i].iov_len);
-+			return;
-+		}
-+
-+		if (memcmp(write_iovs[i].iov_base, read_iovs[i].iov_base,
-+			   write_iovs[i].iov_len) != 0) {
-+			tst_res(TFAIL, "%s: data mismatch in vector %d", test_name, i);
-+			for (j = 0; j < write_iovs[i].iov_len && j < 64; j++) {
-+				char *wbuf = (char *)write_iovs[i].iov_base;
-+				char *rbuf = (char *)read_iovs[i].iov_base;
-+				if (wbuf[j] != rbuf[j]) {
-+					tst_res(TINFO, "Vector %d: first mismatch at "
-+						"offset %zu: wrote 0x%02x, read 0x%02x",
-+						i, j, wbuf[j], rbuf[j]);
-+					break;
-+				}
-+			}
-+			return;
-+		}
-+	}
-+
-+	tst_res(TPASS, "%s: data integrity verified across %d vectors",
-+		test_name, nvecs);
-+}
-+
-+static void test_writev_readv(void)
-+{
-+	int fd;
-+	int total_size = NUM_VECS * VEC_SIZE;
-+
-+	tst_res(TINFO, "Testing IORING_OP_WRITEV and IORING_OP_READV");
-+
-+	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT | O_TRUNC, 0644);
-+
-+	tst_res(TINFO, "Writing %d bytes using %d vectors", total_size, NUM_VECS);
-+	io_uring_do_vec_io_op(&s, fd, IORING_OP_WRITEV, write_iovs, NUM_VECS,
-+			      0, total_size, &sig);
-+
-+	SAFE_FSYNC(fd);
-+
-+	tst_res(TINFO, "Reading %d bytes using %d vectors", total_size, NUM_VECS);
-+	io_uring_do_vec_io_op(&s, fd, IORING_OP_READV, read_iovs, NUM_VECS,
-+			      0, total_size, &sig);
-+
-+	verify_iovec_data(write_iovs, read_iovs, NUM_VECS, "Basic vectored I/O");
-+
-+	SAFE_CLOSE(fd);
-+}
-+
-+static void test_partial_vectors(void)
-+{
-+	int fd;
-+	int half_size = 2 * VEC_SIZE;
-+
-+	tst_res(TINFO, "Testing partial vector operations");
-+
-+	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT | O_TRUNC, 0644);
-+
-+	/* Write first half using first 2 vectors at offset 0 */
-+	io_uring_do_vec_io_op(&s, fd, IORING_OP_WRITEV, write_iovs, 2, 0,
-+			      half_size, &sig);
-+
-+	/* Write second half using next 2 vectors at offset half_size */
-+	io_uring_do_vec_io_op(&s, fd, IORING_OP_WRITEV, &write_iovs[2], 2,
-+			      half_size, half_size, &sig);
-+
-+	SAFE_FSYNC(fd);
-+
-+	/* Read back entire file using all 4 vectors */
-+	io_uring_do_vec_io_op(&s, fd, IORING_OP_READV, read_iovs, NUM_VECS, 0,
-+			      NUM_VECS * VEC_SIZE, &sig);
-+
-+	verify_iovec_data(write_iovs, read_iovs, NUM_VECS, "Partial vector I/O");
-+
-+	SAFE_CLOSE(fd);
-+}
-+
-+static void test_varying_sizes(void)
-+{
-+	int fd;
-+	int expected_size = VAR_BUF1_SIZE + VAR_BUF2_SIZE + VAR_BUF3_SIZE;
-+
-+	tst_res(TINFO, "Testing vectors with varying sizes including zero-length buffer");
-+
-+	init_iovec_buffers(var_write_iovs, 4, 'X', 0);
-+
-+	clear_iovec_buffers(var_read_iovs, 4);
-+
-+	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT | O_TRUNC, 0644);
-+
-+	io_uring_do_vec_io_op(&s, fd, IORING_OP_WRITEV, var_write_iovs, 4, 0,
-+			      expected_size, &sig);
-+
-+	SAFE_FSYNC(fd);
-+
-+	io_uring_do_vec_io_op(&s, fd, IORING_OP_READV, var_read_iovs, 4, 0,
-+			      expected_size, &sig);
-+
-+	verify_iovec_data(var_write_iovs, var_read_iovs, 4, "Varying size vector I/O with zero-length buffer");
-+
-+	SAFE_CLOSE(fd);
-+}
-+
-+static void run(void)
-+{
-+	clear_iovec_buffers(read_iovs, NUM_VECS);
-+
-+	test_writev_readv();
-+	test_partial_vectors();
-+	test_varying_sizes();
-+}
-+
-+static void setup(void)
-+{
-+	io_uring_setup_supported_by_kernel();
-+	sigemptyset(&sig);
-+	memset(&s, 0, sizeof(s));
-+	io_uring_setup_queue(&s, QUEUE_DEPTH, 0);
-+	init_iovec_buffers(write_iovs, NUM_VECS, 'A', 1);
-+	clear_iovec_buffers(read_iovs, NUM_VECS);
-+}
-+
-+static void cleanup(void)
-+{
-+	io_uring_cleanup_queue(&s, QUEUE_DEPTH);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+	.bufs = (struct tst_buffers []) {
-+		{&write_iovs, .iov_sizes = (int[]){VEC_SIZE, VEC_SIZE, VEC_SIZE, VEC_SIZE, -1}},
-+		{&read_iovs, .iov_sizes = (int[]){VEC_SIZE, VEC_SIZE, VEC_SIZE, VEC_SIZE, -1}},
-+		{&var_write_iovs, .iov_sizes = (int[]){VAR_BUF1_SIZE, 0, VAR_BUF2_SIZE, VAR_BUF3_SIZE, -1}},
-+		{&var_read_iovs, .iov_sizes = (int[]){VAR_BUF1_SIZE, 0, VAR_BUF2_SIZE, VAR_BUF3_SIZE, -1}},
-+		{}
-+	},
-+	.save_restore = (const struct tst_path_val[]) {
-+		{"/proc/sys/kernel/io_uring_disabled", "0",
-+			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
-+		{}
-+	}
-+};
++#endif /* NANOSLEEP_HELPERS_H */
+
+---
+base-commit: 620d596c79493af089ba6a1c4dc79efcc76a67c7
+change-id: 20260416-fix_nanosleep_include-edcc8f01f0e0
+
+Best regards,
 -- 
-2.39.1
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
