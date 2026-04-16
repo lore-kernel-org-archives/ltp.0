@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C1DAF8A171
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 13:35:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 160CCF8A178
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 13:36:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D490C3C1824
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 15:35:53 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id CAAB53E4AD6
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 15:36:18 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 139743C1824
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:35:31 +0200 (CEST)
-Received: from mail-dy1-x1344.google.com (mail-dy1-x1344.google.com
- [IPv6:2607:f8b0:4864:20::1344])
+ by picard.linux.it (Postfix) with ESMTPS id B14DD3E4AD5
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:35:59 +0200 (CEST)
+Received: from mail-dl1-x1243.google.com (mail-dl1-x1243.google.com
+ [IPv6:2607:f8b0:4864:20::1243])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C0DD51400BC3
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:35:30 +0200 (CEST)
-Received: by mail-dy1-x1344.google.com with SMTP id
- 5a478bee46e88-2c156c4a9efso10723954eec.1
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 06:35:30 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0EFC8600B5C
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:35:59 +0200 (CEST)
+Received: by mail-dl1-x1243.google.com with SMTP id
+ a92af1059eb24-12732165d1eso19497411c88.1
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 06:35:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776346529; x=1776951329; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1776346557; x=1776951357; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=8OvufT7yU4lmk5gJIEHUmIiFb+V4CvXwqQVLMpHhsbQ=;
- b=Eu35b1MJsgoST+Y4lSSQEmwL8BBNIWQzKSSdTtgzguuiswGlwVECthZ35AY75x+vQC
- c4AE7UBx/ZoAByXP9BEgYJ8SHwPv2kXWoOX4azbZJZzrV201mhV4f8aWTBVwJ7H1xhHt
- eYPPlYkBs7lU7JTfDRhLfNyGoMKjRc9BTShSM60DOWU9BdfHmVv7xvDCx2qxb1lfvvtw
- Y2CzOrACNx9pXUSFirhSm5TnsFJMgQtMLEZ30vGqg+illd2apGcvj9itmNiVxELywRH3
- eh89sGYzdBYk3D6sfKsJRHZ76ndf/lM+og2C2Xf6Jvjm4WEuA5JbYFGSsMAkQ9bkyx6Y
- IHgQ==
+ bh=GN0mI51QXbU+n0scjrVS7RwLGhG39cDT1nAycs3B5MQ=;
+ b=RplAUx5UfdLqQibU5Wd+z27D9h+4+CQ4cXFEfJm9kE30ppry1oEyLmVDgIzZday0iG
+ ciBIk92k7KHL0XXZPO5awUMQPX8KiJvBjKmQHFXewPx7Hv/v1zeLX+5MRi4kD6y4lg9m
+ Y5YrK60aIm04jQnXRpKiB62Bw1lvLh+6XCLTRCnWixSRIkR9bCEuDkSZayyB42HRfGFc
+ Qr4tm69cTBV/Z5j9WH3kfZthxGdNaWMQQeMYoCoVimLe2WRMP7VjN8tES4CA3367FCb1
+ K4YVwM7OT4V/hYu9QRwi3zRGUbKZUDvYrZ/j8ncfj6psLaZadapO40D4m7NTuR85ar+j
+ 493g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776346529; x=1776951329;
+ d=1e100.net; s=20251104; t=1776346557; x=1776951357;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=8OvufT7yU4lmk5gJIEHUmIiFb+V4CvXwqQVLMpHhsbQ=;
- b=Bl3i2oDdE1IiNWhwbmIy79ULOu1ZnplZhIYNBp4gKERzmyXamw6TXu6M8mP84Hvc1R
- 0Ca4bsgh87ZsjbyzY2v8nQYOu7DJLMea6LefbbCFKDFWB/eU9qKx1LCG5Zk7N0ylK15H
- UcVsEBoeUzcjZKdATfrTSkYX9bVsGapGFosa/7FKm9fBRbDddzXfAHuvBbo9twQE9ltG
- 35F67SeI1ANAxnzTQ1SsIa03DiEA+qyHXjIxEARKk1mNpYSdqizcOLJGGEO95GZ37pqY
- f+VRi31ZeVZntcatL031VRWzYsQy/op1JN7PgZ4RIbaTxrZv3Ck7eJGTrNuvujHIT6oe
- d5nQ==
-X-Gm-Message-State: AOJu0Yz4mYvYCFBEKjFroDlrM82rbsNGWWESe1OvsqlM5lOJBpLZJE35
- d9Ps3Pll7V4GI76VyYPvdfqfNlZGBWU7HsYoOAwdiLc9taHEFGYmYBVJ
-X-Gm-Gg: AeBDiesxZtNlQChdo+lIAMLQ9zz3Ycsf7/Qv4kCzJ+CN3f+t+RHvGZBIgsks0FK0NeK
- 1+RUJdDokKi8XyRD0GD4V7pTqKiI7a6UhU3VGWiCARqw95KYde+EKLgZBHIffn61wRMbJw71320
- NkFTpnPPCCASRvz1STISh/tE0HteTUgzBizVNPAZu4iwjN99qqms0hOpxHCHihmTZ6XpTtsTDjU
- emVZXARyUjhh/PmIASc6FCNOBTkMESyzj4C2DKY/YTkkMSJTWFMNQjCYqgYnqjI7mxvI87PYHSg
- PHE30Ta+KTbQVXXo1jmYDnrPKXoHGIZpb1C7Ws//qln4h2NFYR5gsqrnB/aG1OZIYR1RPaORzdw
- chAbkqWnkzfgy8Vp71bWRjsN7pxfjxtUwC2R9aGxnJePvYTtW/UTte/AYYFv0wvDuwdXzemUC1t
- zp1M0vtTZGPpbGEgHzZQUNFhHKMlAwXlATNAv3582LHevdYRODWVKWKSZk9TxsLsKk5RkvfpaLb
- CRub5ouqyrh+IrmoHDdb2xbDYFQdMlaRN00ziI=
-X-Received: by 2002:a05:7300:b913:b0:2d9:6373:ad24 with SMTP id
- 5a478bee46e88-2d96373b29dmr9409296eec.26.1776346528841; 
- Thu, 16 Apr 2026 06:35:28 -0700 (PDT)
+ bh=GN0mI51QXbU+n0scjrVS7RwLGhG39cDT1nAycs3B5MQ=;
+ b=PpldA08r8GQVmDjReyMKAdQ3DIZgrEz4DUws5tjQM5vy5OaWuKv5pjVWTwGoJB43HG
+ NiMYjm4may/EOBbAjwF/jk778+k/O1GaTCyvlcgXOwhGk8vR0Fs2pqXhv1HS88brNqBm
+ s9s31BAASwJSNMsGFNJtqMpkvEC9DskAjQearVYtmWzyg8j0wtN5s0m5vySmOGRd3qG0
+ LqJRDbd/iWs7MZFfZNYIf780GsKYZib+BfzXZHq0oMedwpuCB59K/M2rgGI5FRqlvb6K
+ PL6vbiHmWlWk04Lnr9gnCQ239/zJDF72szfR1HjMN928wxYieZHuFrlCk6fgUH2l+aS2
+ Rotg==
+X-Gm-Message-State: AOJu0Yy2+nuQznIl9gwxUUB53PuIJ/NJlN4Bxx5OX0r7MAnqQsNBz4QH
+ U3K9nBxndz6BrcoThKDkX4cWWAyaIeh0N8+3z3igcOnvs6YSZqQRDPDU
+X-Gm-Gg: AeBDietuaPUytRcePHwCtV8Ej7iEHuvbhU4N+eseLcm3xe4dxb//6SAhFyX/T2Ba0oi
+ scZ0xYuoIK11AvF13XgDo4MhsCJLgq9Qfh9OblgObH7p1KiXoIhvDLbHKsN9rDhW4GgJ3/Dbtp5
+ Mvk1s4JDyYSx0thMH82LuWcWU6pPaFJKpKY708y/a+yYtfwAqsJ0im20yWzLfcrCdOppG+sSNEI
+ MKzjqc4ZM4dxa+ViNxOHl88AIgO6n7LdNo6UGM9AEPzFQaAGImPsIPxIqbMimLtT4ciqkD05M1Q
+ zddF4hMR/yR+VElCbXLYNmLh0ivOLIUiyM+5+j+JPX28pBpa0LWy8BSVPODBtxgx6GWoCrng5MF
+ r61a1L9InvQ1PKD0Muir+LYTn+rA4zhj25u++yABLoepr9AYMtXhR2nt+65sdLoLU85x2lVrMyL
+ 9PtDvupeRpmUDWpfaHTSLWxbpce+A7zpVaUcShPguSo9xn1o/Uyj54sALyYLxj6Lw27VkmR9SSr
+ fsxdVXSoLPx2nptOxX55Sq/A936KZH+AeWp
+X-Received: by 2002:a05:7022:6b8d:b0:129:fe5:117e with SMTP id
+ a92af1059eb24-12c34edd87dmr14168595c88.26.1776346557097; 
+ Thu, 16 Apr 2026 06:35:57 -0700 (PDT)
 Received: from
- runnervm35a4x.5mdysf0siviedfgc1genqfi2hh.dx.internal.cloudapp.net
- ([52.225.73.168]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-2de8f65f9bcsm8977422eec.22.2026.04.16.06.35.28
+ runnervm35a4x.prajoiou5htenajwodrmzf4tne.dx.internal.cloudapp.net
+ ([68.220.60.1]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-2de8f569f4bsm7125962eec.21.2026.04.16.06.35.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 16 Apr 2026 06:35:28 -0700 (PDT)
+ Thu, 16 Apr 2026 06:35:56 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Sachin Sant <sachinp@linux.ibm.com>
-Date: Thu, 16 Apr 2026 13:35:26 +0000
-Message-ID: <20260416133527.3891-1-linuxtestproject.agent@gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 16 Apr 2026 13:35:55 +0000
+Message-ID: <20260416133555.3952-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260416124144.19343-1-sachinp@linux.ibm.com>
-References: <20260416124144.19343-1-sachinp@linux.ibm.com>
+In-Reply-To: <20260416-fix_clock_settime_helper-v1-1-2874202291bf@suse.com>
+References: <20260416-fix_clock_settime_helper-v1-1-2874202291bf@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lapi/io_uring: Add fallback definitions for OP_READ(WRITE)
+Subject: Re: [LTP] clock_settime: use POSIX runtime detection for
+ CLOCK_MONOTONIC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,22 +98,10 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Sachin,
+Hi Andrea,
 
-On Thu, 16 Apr 2026 18:11:44 +0530, Sachin Sant wrote:
-> lapi/io_uring: Add fallback definitions for OP_READ(WRITE)
-
-> +#ifndef IORING_OP_READ
-> +/* Added in kernel v5.6 */
-> +#define IORING_OP_READ		22
-> +#endif /* IORING_OP_READ */
-> +
-> +#ifndef IORING_OP_WRITE
-> +/* Added in kernel v5.6 */
-> +#define IORING_OP_WRITE		23
-> +#endif /* IORING_OP_WRITE */
-
-Looks good.
+On Thu, 16 Apr 2026, Andrea Cervesato wrote:
+> clock_settime: use POSIX runtime detection for CLOCK_MONOTONIC
 
 Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
 
@@ -119,14 +109,11 @@ Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
 Note:
 
 Our agent completed the review of the patch. The full review can be
-found at: https://github.com/linux-test-project/ltp-agent/actions/runs/24513031465
+found at: https://github.com/linux-test-project/ltp-agent/actions/runs/24513029369
 
 The agent can sometimes produce false positives although often its
 findings are genuine. If you find issues with the review, please
 comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
