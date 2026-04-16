@@ -4,86 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2954F8D748
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 13:55:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1776347750; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=YvqeNtpBPm9qc3OSfFqse2kZPSzscZfUvg/b/x7dFB4=;
- b=BTx2KvFtWbA3ewScf7EyNQlrRx5hCN1J/qylb3AXJhtCUT4dtJHmhua1muDY4focv1OqT
- KCYVYawxJPduzxDYrFeScuT8QarMRnn3n0OG7zjkcPTYqXc4FByfAOh45IeV2pHImcjyg02
- GpcJdqpy2SBZb/b1bsDR3eM8FaQNdH8=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F815F8D74B
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 14:34:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5C2693E2DEB
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 15:55:50 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 07BA93E4AD4
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 16:34:04 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5B6893C1C92
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:55:26 +0200 (CEST)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9D3EC3E1685
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 16:33:40 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4A3DC600A43
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:55:21 +0200 (CEST)
-Received: by mail-wm1-x32b.google.com with SMTP id
- 5b1f17b1804b1-488ba6366a7so96477305e9.0
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 06:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1776347721; x=1776952521; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=vwL83qEngN7e6AD1Mj79n9iCe0N+D5Z/xknt+6rp9xw=;
- b=T+itLf+bth0Vn1JLdSiNEBh4dfWDrJ03eXT2x/qgbGAQKBLaKFUIKuIHVgR2fIRJge
- FaYfB9vapTs4i6Sq73tXNGc75sCJ5HN0COM8HxxIQ88utP0c21vLQCf7LOc49oLBZLzI
- jBFQgXwQ8F22ILMK6h+3TAjLN9pT4243OQg/JACjePivhUMDkVAN8DbsNvxcsPF/z1mf
- zAkiT0dSgUygfluHbWvi4ZEn7R2vQ6MH/CBRd/Isb4UAaPa1n5QFBULSDbuumHdt6umB
- qU2bi5PSZx2OYioCNaRVrn2mkzuTGtF3Y91inA2BYWnCztlg/lfyxfEso1GH+0eB2f05
- Cb/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776347721; x=1776952521;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=vwL83qEngN7e6AD1Mj79n9iCe0N+D5Z/xknt+6rp9xw=;
- b=g9dn3humMilKGvcktf0BjxZk9oWjBy/JyoA/f/rSgGg0ulGUWeWh04uKjfNx2CETY8
- aRM8ZzK8DNg/wlWKhDxPfGMA4k98Yv5Mo0cgIVQMIc/X5DbyvQNmj4adi15DNdoG/m1A
- bpomGNYa2iGFWTG2DZm4dmFuX8kROYqqcCbl7sQaGY90yP7F3ijf2WoWEwPO028yqcPG
- +F3IuyIPMomQIMCIWowUnpeb9MaKVgot7awll6skWzBbyc3xCiFZEhdUCwa6Ap2Sn0p9
- BmD8ZdJ+wQlVqPudUwwrhRs9KqUFjJ+4hg2JVYrXCcfxqYBQRfwuWT/EhRiTwv7eB4q7
- J1MQ==
-X-Forwarded-Encrypted: i=1;
- AFNElJ8zjnTeYVK1yXuMSIKWs1tOZ28ceJbTOgWsmiedsEv5VJl26pwZ/ApbFSQMizVKWryGX68=@lists.linux.it
-X-Gm-Message-State: AOJu0YwPCEct9OSCde+Y+zhqO/O4MenaKeugVOhrYijTFCm7CDUKQPq/
- EHZV+soJ2RzfmX9QivEbMdY2aB7cj/ApAbgBTj4AEcgaNbM3kTLm0wVU1mJb0Dbf9/c=
-X-Gm-Gg: AeBDieuRyEITvMk6WXGRf4/D2iQFNMxF1xMd05E1DHh2ueqPttNbc5lm3vxASbl2/rp
- y7fhC5h/J5mo14Rv0VrCUmL+SiveNKTGVCH2ZI8CaLNxvkpXkxNHtZk7rDrW09XHkBsUUNGOHhX
- Kzsd1q2ZedfE4XS7Ktxj6oVXXjpTkwI9rhRgKiUrRE0V6YtIwxEdLDT8C/erxCuUPHxrpj5IQHC
- Kgp9L8S8NovqcVu5M8U6NZ9OoOzKsUCyyonIxiqi8wsIELTnkYa5py3RvQOsYKGvwxUsb7JxTNK
- WjYl2HdSrmTJL7KVEihrzUSj08zrIrz3UUCMpjwtHmwkmMaR0+D2k+eMgL2KbIVtx9f/rG+Syr/
- 3ZiBvHvesl6GzZ6FLGI90RKG/fR47Icvt87um+5pswBVeQFuHG6srV+M4tniKHor3MwpyuSsTGg
- TJs3G0CxG0SWffW3YiaoOcGaWogSClt6aUk6OSb3jNF7359T84spk=
-X-Received: by 2002:a05:600d:9:b0:488:b4e3:aeca with SMTP id
- 5b1f17b1804b1-488d67bf177mr289831615e9.1.1776347720595; 
- Thu, 16 Apr 2026 06:55:20 -0700 (PDT)
-Received: from localhost.localdomain ([88.128.90.36])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-488f581d8eesm58408085e9.9.2026.04.16.06.55.20
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 16 Apr 2026 06:55:20 -0700 (PDT)
-Message-ID: <69e0ea48.050a0220.3113a3.2c6c@mx.google.com>
-To: linuxtestproject.agent@gmail.com
-In-Reply-To: <20260416135252.3834-1-linuxtestproject.agent@gmail.com>
-Date: Thu, 16 Apr 2026 13:55:19 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2D73E1000603
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 16:33:38 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C48C66A7EC;
+ Thu, 16 Apr 2026 14:33:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1776350017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0h/G41vZOBv7tkyijS8PxDV3cvBxEIW92pfiinxBaA8=;
+ b=X2iPm859spCJqdvQxZccHChxHYhe8S0ag6OOEDXO+Or0xa6/msrCYZ79+xy1ZNxnoxcVGF
+ oLkxZ4iWYiYWRkAQUih02+kN8pC4zK9GA6oZX6JSN+gWej6FPfU/xlyf/1Wrb0JwWqJuGI
+ k0Ehe9rZozUVCxOKLbUAoWTgyeuAi9w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1776350017;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0h/G41vZOBv7tkyijS8PxDV3cvBxEIW92pfiinxBaA8=;
+ b=3rZ4osMa8hRW2lURb2MxiHdzqpz1WaMzguhF9iyhpCj6mROeQWVWjJCuoU/orHyJrGgRjN
+ Gmmm3lnsiA2xHsCw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1776350016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0h/G41vZOBv7tkyijS8PxDV3cvBxEIW92pfiinxBaA8=;
+ b=jWt3uv/QFhX6Ge7FB8MwjZVbKfl3xvsQmgcDEw6UKmV0QEw4iZ0P0Vjl/titc23RVyFvnZ
+ gv2CD4kS6gy4ls6f2io5EB1yORHbnA9YjWnj+YODu+uADDaVe+ZhoY19TTv3wedJ5eK3Ts
+ 8d+vO3cSWWZe/i6eH0MlgZN2fDd3FaA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1776350016;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0h/G41vZOBv7tkyijS8PxDV3cvBxEIW92pfiinxBaA8=;
+ b=eZWrxhi3b8iveouWDSpBYUqDrhwnZqgg1qVzxbK+gN9MhivcD5UkAglD54HY/RTQTU4mPK
+ ikawJvaTf2PcVrDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 96382593A4;
+ Thu, 16 Apr 2026 14:33:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 4PqJIkDz4GniGQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 16 Apr 2026 14:33:36 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 16 Apr 2026 16:33:35 +0200
+MIME-Version: 1.0
+Message-Id: <20260416-stream_refactoring-v2-1-8321b1ec6f68@suse.com>
+References: <20260416-stream_refactoring-v2-0-8321b1ec6f68@suse.com>
+In-Reply-To: <20260416-stream_refactoring-v2-0-8321b1ec6f68@suse.com>
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1776350016; l=4993;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=d2vfPWFkSuh0KxbuI0eygCKqSQArqTWm5jp6e+q7wrE=;
+ b=ftunuW9z3mew6xI8pUGAcvFz2lR7Tx2HfA2Z48sghm4lIJVwZiGFG2Gk31mA/oQ/0lHh450gF
+ cGu19eDnUYHB/xHtL7JssunFawb/JpDF2uQZxgv5MZybwTygm7rt054
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid, suse.com:email,
+ imap1.dmz-prg2.suse.org:helo, suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] fsconfig04: Check FSCONFIG_SET_PATH
+Subject: [LTP] [PATCH v2 1/7] lib: add safe macros for stream testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,33 +116,204 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-> The patch has a `Fixes:` link to GitHub issue #1169, making this a
-> regression test. Add a `.tags` field:
-> 
-> 	.tags = (const struct tst_tag[]) {
-> 		{"github", "1169"},
-> 		{}
-> 	},
+Introduce the following SAFE_* macros for stream file testing:
 
-Please ignore this, I will add a rule so this won't happen, we dont
-want to have github fixes inside the tst_test struct :-)
+- SAFE_FREAD
+- SAFE_FWRITE
+- SAFE_FREOPEN
+- SAFE_FSEEK
+- SAFE_FTELL
+- SAFE_FILENO
+- SAFE_FFLUSH
 
-Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ include/safe_stdio_fn.h  |  21 ++++++++++
+ include/tst_safe_stdio.h |  21 ++++++++++
+ lib/safe_stdio.c         | 101 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 143 insertions(+)
+
+diff --git a/include/safe_stdio_fn.h b/include/safe_stdio_fn.h
+index 3818a86571a6d9bc63fcf432c93683bb3298e5b2..255a85949749748533e93b86c7cf170900e95082 100644
+--- a/include/safe_stdio_fn.h
++++ b/include/safe_stdio_fn.h
+@@ -32,4 +32,25 @@ int safe_asprintf(const char *file, const int lineno, void (cleanup_fn)(void),
+ FILE *safe_popen(const char *file, const int lineno, void (cleanup_fn)(void),
+ 		 const char *command, const char *type);
+ 
++size_t safe_fread(const char *file, const int lineno,
++		  void *ptr, size_t size, size_t n, FILE *stream);
++
++size_t safe_fwrite(const char *file, const int lineno,
++		   const void *ptr, size_t size, size_t n, FILE *stream);
++
++FILE *safe_freopen(const char *file, const int lineno,
++		   const char *path, const char *mode, FILE *stream);
++
++int safe_fseek(const char *file, const int lineno,
++	       FILE *f, long offset, int whence);
++
++long safe_ftell(const char *file, const int lineno,
++		FILE *f);
++
++int safe_fileno(const char *file, const int lineno,
++		FILE *stream);
++
++int safe_fflush(const char *file, const int lineno,
++		FILE *stream);
++
+ #endif /* SAFE_STDIO_FN_H__ */
+diff --git a/include/tst_safe_stdio.h b/include/tst_safe_stdio.h
+index e4bff34da15c9116809fcf851cbf544a51e384ef..45d4bc7e5d590468eec7a95b0aa37019e4e15f18 100644
+--- a/include/tst_safe_stdio.h
++++ b/include/tst_safe_stdio.h
+@@ -21,4 +21,25 @@
+ #define SAFE_POPEN(command, type) \
+ 	safe_popen(__FILE__, __LINE__, NULL, command, type)
+ 
++#define SAFE_FREAD(ptr, size, n, stream) \
++	safe_fread(__FILE__, __LINE__, ptr, size, n, stream)
++
++#define SAFE_FWRITE(ptr, size, n, stream) \
++	safe_fwrite(__FILE__, __LINE__, ptr, size, n, stream)
++
++#define SAFE_FREOPEN(path, mode, stream) \
++	safe_freopen(__FILE__, __LINE__, path, mode, stream)
++
++#define SAFE_FSEEK(f, offset, whence) \
++	safe_fseek(__FILE__, __LINE__, f, offset, whence)
++
++#define SAFE_FTELL(f) \
++	safe_ftell(__FILE__, __LINE__, f)
++
++#define SAFE_FILENO(f) \
++	safe_fileno(__FILE__, __LINE__, f)
++
++#define SAFE_FFLUSH(f) \
++	safe_fflush(__FILE__, __LINE__, f)
++
+ #endif /* TST_SAFE_STDIO_H__ */
+diff --git a/lib/safe_stdio.c b/lib/safe_stdio.c
+index ab23e43bb0835cdca5eaa015bc873fd23f9a8408..feb8a4b5c87c8b2cb7f7f59f6ba763e45acdf237 100644
+--- a/lib/safe_stdio.c
++++ b/lib/safe_stdio.c
+@@ -99,3 +99,104 @@ FILE *safe_popen(const char *file, const int lineno, void (cleanup_fn)(void),
+ 
+ 	return stream;
+ }
++
++size_t safe_fread(const char *file, const int lineno,
++	void *ptr, size_t size, size_t n, FILE *stream)
++{
++	size_t ret;
++
++	ret = fread(ptr, size, n, stream);
++	if (ret != n) {
++		tst_brkm_(file, lineno, TBROK, NULL,
++			"fread(%p, %lu, %lu, %p) read %lu bytes",
++			ptr, size, n, stream, ret);
++	}
++
++	return ret;
++}
++
++size_t safe_fwrite(const char *file, const int lineno,
++	const void *ptr, size_t size, size_t n, FILE *stream)
++{
++	size_t ret;
++
++	ret = fwrite(ptr, size, n, stream);
++	if (ret != n) {
++		tst_brkm_(file, lineno, TBROK, NULL,
++			"fwrite(%p, %lu, %lu, %p) written %lu bytes",
++			ptr, size, n, stream, ret);
++	}
++
++	return ret;
++}
++
++FILE *safe_freopen(const char *file, const int lineno,
++	       const char *path, const char *mode, FILE *stream)
++{
++	FILE *f = freopen(path, mode, stream);
++
++	if (!f) {
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
++			"freopen(%s,%s,%p) failed", path, mode, stream);
++	}
++
++	return f;
++}
++
++int safe_fseek(const char *file, const int lineno,
++		   FILE *f, long offset, int whence)
++{
++	int ret;
++
++	errno = 0;
++	ret = fseek(f, offset, whence);
++
++	if (ret == -1) {
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
++			"fseek(%p, %ld, %d)", f, offset, whence);
++	}
++
++	return ret;
++}
++
++long safe_ftell(const char *file, const int lineno,
++	       FILE *f)
++{
++	long ret;
++
++	errno = 0;
++	ret = ftell(f);
++
++	if (ret == -1)
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL, "ftell(%p)", f);
++
++	return ret;
++}
++
++int safe_fileno(const char *file, const int lineno,
++		FILE *f)
++{
++	int ret;
++
++	errno = 0;
++	ret = fileno(f);
++
++	if (ret == -1)
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL, "fileno(%p)", f);
++
++	return ret;
++}
++
++int safe_fflush(const char *file, const int lineno,
++		FILE *f)
++{
++	int ret;
++
++	errno = 0;
++	ret = fflush(f);
++
++	if (ret == EOF)
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL, "fflush(%p)", f);
++
++	return ret;
++}
+
+-- 
+2.51.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
