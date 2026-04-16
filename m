@@ -4,69 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EB9BF8A140
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 08:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3620F8A146
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 08:41:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B06DB3E263D
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 10:26:47 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 3FF683E2635
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 10:41:07 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8E7963D87C1
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 10:26:28 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 597923D87C1
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 10:40:49 +0200 (CEST)
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com
+ [IPv6:2607:f8b0:4864:20::835])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3CE541A00706
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 10:26:26 +0200 (CEST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 63FNtrod127659; Thu, 16 Apr 2026 08:26:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=escKvo
- yUcuJkQSKnvstUwO6v4ZAKcqHu/LaHpIGl9NY=; b=YZ+nOG/O/q4ZDMAgHxHvra
- sVjSmDJcLbZ4hqwxdVOi5emSmLku78S5Es+X8LyVFfdlExUlE8KnATFBDUklFbw5
- IhpGlKMMasqJolvysD5Exmt0ArF0nc7BpSXE4ByWmRiPfvgYDEnPcN44QG22tPwb
- CmLYmtSzeoZcZobFbi7JgdExmGJ7P+qfbvsHYj1dy9UzX3LP8hx1O6nAvYDnmDx1
- WSc4XugtbqdSSNR2xlFoFJ97GekJe+8o0fk/s3P8KDhHBCS8Plvb9RdbjZYxlJ1d
- +CYLlPIMfwZNPrA1d/PBmAbvh8Kf2vpqVwJ0SV7QWSorqb53stIsslZipjVZZNuQ
- ==
-Received: from ppma12.dal12v.mail.ibm.com
- (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dh89pkmb6-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 16 Apr 2026 08:26:24 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
- by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 63G6FXeI015164;
- Thu, 16 Apr 2026 08:26:23 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
- by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dg0mst840-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 16 Apr 2026 08:26:23 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com
- [10.39.53.228])
- by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 63G8QNOd21824240
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 16 Apr 2026 08:26:23 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id E60C658055;
- Thu, 16 Apr 2026 08:26:22 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 6621F5804B;
- Thu, 16 Apr 2026 08:26:20 +0000 (GMT)
-Received: from [9.123.5.88] (unknown [9.123.5.88])
- by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTPS;
- Thu, 16 Apr 2026 08:26:20 +0000 (GMT)
-Message-ID: <17da2ea7-b1f8-49ab-95ed-30083592e7fa@linux.ibm.com>
-Date: Thu, 16 Apr 2026 13:56:17 +0530
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F3DF12002D2
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 10:40:48 +0200 (CEST)
+Received: by mail-qt1-x835.google.com with SMTP id
+ d75a77b69052e-50b29c4e554so79227941cf.0
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 01:40:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776328848; cv=none;
+ d=google.com; s=arc-20240605;
+ b=U0lVB4hm//cFz03jIRVtYsBJVx57djeAKAS76NZPUq3mc+G/zUkYTJUJmOqBNeejSQ
+ IeZiLpdn6RHL4Tmv50Cc4G9B34ASgg1/iyghRSrM9P2H9YjDinpRmKrAVrFCtr4Ua+0r
+ RD5gife8Wy1XAzjAh4E4ZQoi0kvGDdRG42g6mLwz/1yn1Mpy0Ig25D0URKIROqiJ9pEa
+ zKxirB4YsuOVii+RwtlTrItrFMIycg7R+1TivC5o4OTcNPrLAOgO0r0ehYmZ8BI6BX0r
+ S8ezKp1vWX+5M2WvdaMUMsJvnW2dqeSYxfgD5BM++IrmSSZRBNjS+uRXKecYiZ8fee3Y
+ a51g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:dkim-signature;
+ bh=4c3RvBiPkdPFC0fmjYbOCnMdf+5YT+BLcXXu5L75KQo=;
+ fh=ZJtCY/Flzb2kIi63uVk8Xod53Hn2uNJF3rmZE9hGI7s=;
+ b=gp0imiO16P/X2t3sJKazYBu0syEv43XkY6zZI3XbQfu1acBB6PWWL1yrsLxqfNE6hj
+ e0ga1SEbmK4BCPr/0KVfZ3zGLWvo3mINhf9lDP+gBDMZCxNbLVdT1QvIzyXL3ts4BoJ+
+ 6zKD51JtRKxIUONBA6dRsbBllG3MM1ZZBJqVaoNtWinrJsM41xYVwT7/dnrvvANFZ3LB
+ wbZJ4kkD/GJje+F5OqNnVOf8osel6M56DtCe7Jna2PTEtUua0nTbEHXNbup9sewtAWdk
+ QxHQ4sWuqYmi1xd1xq4SDeT9tSQaAFVfMiKIUJNsE5pTfk4MopgK3M5IKcQAitjU0F9z
+ vnMw==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1776328848; x=1776933648; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=4c3RvBiPkdPFC0fmjYbOCnMdf+5YT+BLcXXu5L75KQo=;
+ b=WAYzjZNpg2l9qd6SwCux5da0o6DK2NF2CPhFOAZlEjCIh3ncA7CQ+tqIFfegrxGyeQ
+ 4o6Fg8oT6j3Ycm6GUDMQhaxrHNUVMVEqjWNrlZPYWTsMe1r7IZPtglwe+515TJaqjhwY
+ n2Pawnv6YcAvpD9oLjxiyE1xyXyNAvWGY5JKjKoIvBPraeEQLRNhFSsorMhqlEg1lo04
+ N3LXkkMPiu57htZpSofF1SVGi123bEFkzSZg66u9Hyh6ubTlMEU/KMxUgkcjPkiPtVpn
+ 0ZSzsvmPcV6kXBGCinquvi3n4unn+RYWmehnsAjqZ80SzoH66yp7Ddmh3uU+pn2qXyab
+ Zpyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776328848; x=1776933648;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=4c3RvBiPkdPFC0fmjYbOCnMdf+5YT+BLcXXu5L75KQo=;
+ b=Il9EMnbFYeuh+RCCy5y7KM+CygbmUOkrAxFuPtMPPI3RXTon9/ROuWDrcF3s6Tembk
+ QONlRsuqPztrNLKtrAUMgfZrQAopQFbwZNyYZlajIQftxS3i0C0dgxA7hsuAg6eLsF7z
+ 6tL6CTc9F+DqJ8CJcdg7EYDl+NvCxmwbmj32CRRrD4HQ3NjJPw0dPtHV9fE2sPPZSgR3
+ qkNVYyOoR5ohWraxUS7l/WRApBNROv/xYyR5jwRtO+hTYz4/LFzmUtv0kvoRaJbjOMs9
+ lRqmabwCXlcWLA6u740PMO3VLqMTz13lfRkPYI3AeKQrKLRJgzK9sivxzLJfaMd9ydQM
+ 9PWA==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ97JsIktC/xp0DHSJs25wxHYkt1tLrE1pc1+fQpaTHuPgMeQHmZq8+weMQqElj7R2lq0/g=@lists.linux.it
+X-Gm-Message-State: AOJu0Yyq50C4XK+D4W2cXLRM+DDlBwHt5enRcozklgukmwElFmqt4c9N
+ lAOg44vJDitdfTm0YqDea4yuI5qeG4DtivI2PUPpI+Ipx9I24+LL0WaZcYTXoMe/X4WllZyQCpt
+ Stpi4i3apBUIzWRGoXttT0BZrJ9GSHg==
+X-Gm-Gg: AeBDietlhDzz2QmdPSl2FO0xQTwQ1Wbjr7uR6uDEjH+IOPePzx2udbC5iZ6cyRs/rZG
+ 8AEIQGaMhhVBP7wAfB4TKoNYRf3qg8rV8XBed2II/psW/eKr68Wp2clnZ39PPClN6D8OM7XeQEK
+ M3i3/eAYhalbwcXt5PfKvWPRtoXdlme1EHMdm54YgkL5XJ+B3KKqXocwzayz6pSleV0HAMBlCws
+ Z8UQ1JJyyDC5wOcz6fPKdNuRYBytwyEkL/lcviGyjemtbCsZyGO1g+lM2WMh2z1WyT9PNI+bqGZ
+ 2c9yNqHRrKrjvuO5uw/RYqVasWk=
+X-Received: by 2002:a05:622a:610c:b0:509:2b02:c1bd with SMTP id
+ d75a77b69052e-50dd5b18f23mr364610521cf.12.1776328847748; Thu, 16 Apr 2026
+ 01:40:47 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Li Wang <wangli.ahau@gmail.com>, John Stultz <jstultz@google.com>
 References: <53f26493-09fc-4f8b-9751-24d2c2e80697@linux.ibm.com>
  <ad5jSSYZJS0FdZva@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
  <CANgNiRyTovPjVq01n7sCNhbNdYNp6nSvWcpVV_8aC3+kBX0edg@mail.gmail.com>
@@ -74,35 +91,14 @@ References: <53f26493-09fc-4f8b-9751-24d2c2e80697@linux.ibm.com>
  <CANDhNCoAc4ktPUzqgam_oO7aAc4yp3nCqkcwQDvWs0zV15ZCaw@mail.gmail.com>
  <CANgNiRz7c7mJ3E2QQwHCHb4=DCk-S6vXe3Xkge05xfYe2LYTEQ@mail.gmail.com>
  <CANgNiRxV5Kd1Y3hHjM4mXaE2sdjhCQdp4Ff85YdqxL_DOSZdgw@mail.gmail.com>
-Content-Language: en-US
-From: Soma Das <somadas1@linux.ibm.com>
-In-Reply-To: <CANgNiRxV5Kd1Y3hHjM4mXaE2sdjhCQdp4Ff85YdqxL_DOSZdgw@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-GUID: Xw79PeZSH08ZvO9XTzi8mQcnVFfe_6sf
-X-Proofpoint-ORIG-GUID: OMrDFgDoHn6SIW407WEhkZEh1Pqe6gnm
-X-Authority-Analysis: v=2.4 cv=WbE8rUhX c=1 sm=1 tr=0 ts=69e09d30 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=Y2IxJ9c9Rs8Kov3niI8_:22 a=T3dXcuBNJUA-V_xk3z0A:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDE2MDA3NyBTYWx0ZWRfX0uDAvJCwYQbQ
- BvwCTOPtOskQZ8JLp86iAAvu8Qvya1QZJ3HCkjEHBr8FSuB3mQA3HB3IKKLCLwYMSDd30W+wTJ4
- S/43pyNRHhpx/CcN0vVgdkEtPoLegrzKGubB7i1bkYf8oR3IG+rVzHfepo/tzMdIO98YQMESIMq
- FTDO9AEob1Mn3DmUxSjBMPxqwB3z9CtYkg8FDwNefPIv/x234yRnPeSiFEt0Ga02BX2s1GOstQ1
- GBbRiusJljycnD3ZhG/SxOTVaYLTRsqzwnhEfWwsQaJwn21rYQrVvxaXugQ+CgUH2jUTxYwDCZU
- eIZZ3sw/oLSsWSI1ESYRARtbQqjFXtSSB8r5ZbX2ynFHOCtgEOsEj7j/gTE0KFjRmMw0p+1zl6x
- az/QqiHQNt9a8PWqnfCw/BaNT7yQL0m2ppr+8yDZzvUkhc7LPhYF+cRmgcgkkMN6jJ0C0LtAi52
- ySpdNOtYEJJpu74TRfg==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-16_02,2026-04-13_04,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 bulkscore=0 priorityscore=1501 spamscore=0 clxscore=1011
- phishscore=0 impostorscore=0 adultscore=0 malwarescore=0 lowpriorityscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604070000 definitions=main-2604160077
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ <17da2ea7-b1f8-49ab-95ed-30083592e7fa@linux.ibm.com>
+In-Reply-To: <17da2ea7-b1f8-49ab-95ed-30083592e7fa@linux.ibm.com>
+From: Li Wang <wangli.ahau@gmail.com>
+Date: Thu, 16 Apr 2026 16:40:36 +0800
+X-Gm-Features: AQROBzAojD5Xc9fz-lpyxpA3HAJsugbDGfdZwkIsbylVgqkkN8UTmny4wbtOByo
+Message-ID: <CANgNiRx+Yww_+UE-DsUbpH_yAsM1VbeJTwX6aJkfFnDwMN1-ig@mail.gmail.com>
+To: Soma Das <somadas1@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] sched_football: fix false failures on many-CPU
  systems
@@ -117,74 +113,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: John Stultz <jstultz@google.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li, Jan, John,
+Soma Das <somadas1@linux.ibm.com> wrote:
 
-Thank you all for the detailed review and discussion.
-
-Based on the feedback, here is what I plan to incorporate in v2:
-
-  *
-
-    Pin only defense threads (one per CPU), leave offense unpinned
-
-  *
-
-    Replace |get_numcpus()| with |tst_ncpus_available()| to handle
-    offline CPUs
-
-  *
-
-    Drop the RT throttle disabling entirely - unnecessary once defense
-    is pinned per CPU
-
-  *
-
-    Remove the |usleep()| / |tst_check_preempt_rt()| block after kickoff
-
-  *
-
-    Add |join_threads()| before |pthread_barrier_destroy()| for clean
-    |-i N| reruns (thanks Jan for catching this)
-
-  *
-
-    Split into separate patches - at minimum fixes #3 and #4 will be
-    separate
-
-  *
-
-    Update commit message to clarify the test now verifies per-CPU
-    SCHED_FIFO priority ordering
-
-Will send v2 soon.
-
-Thanks,
-Soma
-
-
-On 16/04/26 11:23 AM, Li Wang wrote:
->> That's why I tend to believe disabling throttling for this specific test is the
->> wise and practical approach.
-> However, back to the original patch, disabling throttling was
-> indeed a bit of an overprotection based on the pined method
-> (I didn't realize that before).
+> Based on the feedback, here is what I plan to incorporate in v2:
 >
-> Once we go with pin 'defense' threads to every CPU, while leaving
-> the offense thread unpinned, this throttling can be kept enabled.
+>   * Pin only defense threads (one per CPU), leave offense unpinned
 >
-> Whichever CPU gets unthrottled first will instantly execute its local
-> defensetask, completely starving the lower-priority offense task.
+>   * Replace |get_numcpus()| with |tst_ncpus_available()| to handle
+>     offline CPUs
 >
-> It relies on strict local preemption to perfectly mask the SMP sequential
-> unthrottling latency, fixing the test without needing to disable
-> sched_rt_runtime_us in the kernel.
+>   * Drop the RT throttle disabling entirely - unnecessary once defense
+>     is pinned per CPU
 >
+>   * Remove the |usleep()| / |tst_check_preempt_rt()| block after kickoff
+>
+>   * Add |join_threads()| before |pthread_barrier_destroy()| for clean
+>     |-i N| reruns (thanks Jan for catching this)
+>
+>   * Split into separate patches - at minimum fixes #3 and #4 will be
+>     separate
+>
+>   * Update commit message to clarify the test now verifies per-CPU
+>     SCHED_FIFO priority ordering
+
+Generally that's my expected revision, but I would suggest you wait for
+John's reply to see if he has other suggestions.
+(John is an expert in schedulers :)
+
+But you can test the v2 on your side and feedback here firstly.
+
+
+-- 
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
