@@ -4,99 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52B34F8A17A
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 13:50:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85E76F8D743
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 13:53:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E1B0C3E4AD2
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 15:50:06 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 4A9D83E4AD7
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 15:53:17 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 10B3F3E2928
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:49:46 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E28523E2928
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:52:56 +0200 (CEST)
+Received: from mail-dy1-x1342.google.com (mail-dy1-x1342.google.com
+ [IPv6:2607:f8b0:4864:20::1342])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 586006002A2
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:49:46 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E95CF6A7FA;
- Thu, 16 Apr 2026 13:49:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776347385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=grMHWVg0XFHGgF5J7fSMVj8+Sq+3LKmDzspkh3EjMF0=;
- b=YpYH5YsRiAhqmOC1ui0S4399LPrkL1UL2J5aH8v2/A3xvt9EB+O+tElHZ8Rk5tjVzCPLyN
- IlQ/zuRPXPjoCsxV+BVG7hW/mGLgr6CXqAOaQJt98LNV8Bjgi2kz3dBAXQdzlKixGbsRbj
- Ady9ZNG+hu9sGmNgemfWpgB0WWUXb2g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776347385;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=grMHWVg0XFHGgF5J7fSMVj8+Sq+3LKmDzspkh3EjMF0=;
- b=daAx6f9LS4E3nrMhWpGboOT0XBqaboOk5E6PnMSYQjwNzrMW6eD/atn6OoRl/d6kFLn07e
- gTDHLUrjdLv15MCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776347384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=grMHWVg0XFHGgF5J7fSMVj8+Sq+3LKmDzspkh3EjMF0=;
- b=0rKoc1T4XJonus8eXot9kZTLdQV6RMRuTw4guAmlOQQ+g3IBI8+y80TYrfDngLhGopbKPP
- 5VcF6g+hDi2161KcbflhLPrAopKiWwzsLQbwM8JVRejawJJqnVuvpvZ4LOkzrHWRFlGtEJ
- Gp/VcAPliEUfNccXXf/7RUFC1RTNbrs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776347384;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=grMHWVg0XFHGgF5J7fSMVj8+Sq+3LKmDzspkh3EjMF0=;
- b=UabuFHXFknWhV3HMUk2V/YIOz8BheSWaRf5e7A5X4zmGddowtxPQx1vuq8QNqqXVVVigTF
- G7fc5WJPTxdMJBCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D8C2A593A3;
- Thu, 16 Apr 2026 13:49:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id olRRNPjo4GnDbQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 16 Apr 2026 13:49:44 +0000
-Date: Thu, 16 Apr 2026 15:49:58 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wake Liu <wakel@google.com>
-Message-ID: <aeDpBp_TNCJYCDzG@yuki.lan>
-References: <CAOcRiAF3gkD8QDr2L7g7DXpUwUurYDh7k-vBMmw=um5AdnuNMw@mail.gmail.com>
- <20260323074814.2930709-1-wakel@google.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B3CCC1000A32
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:52:55 +0200 (CEST)
+Received: by mail-dy1-x1342.google.com with SMTP id
+ 5a478bee46e88-2c15849aa2cso9605531eec.0
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 06:52:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1776347574; x=1776952374; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=sQ3Ql+zzhhwPo9z0WdnZgViC8aomBMjbI3Zpdqw0ZFY=;
+ b=H8syu/GqsnMYjyHDKBm10a4NfMjqsmDBv5lNvhBfIQaZvDcVjGApNa/RbaGRn597RY
+ 0PIdeK4nQN3eIq4MNWGGjO5JBkQQFoJAxjt4Hk/Ax4mhxrFJzrjsHTIPAnREBcRIeM26
+ gRssSiteJp/C1SWxKuGeri2T5dvfBxTCB3m1I0FP4eh6epbEflGHJjz4rTURnsUcF7T+
+ gpiq1g1F/uaMd6yTmOl9v33Pu6Yey+wc5LR24Fi4L77HqBRSQRV2WO96xRelDFlglElP
+ AWQ6aCd1JCTvpKsBrTRvI9X7BNoQcewvb5EvBuDpwq5bLSvAXGpxbAiUbGTyhw8lSe3f
+ w3Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776347574; x=1776952374;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=sQ3Ql+zzhhwPo9z0WdnZgViC8aomBMjbI3Zpdqw0ZFY=;
+ b=TlpJUPF68m6Km4X/YCcvKJKJFhtMMFcKZGW0kGxuV6taZpEGnnSLyvbNrUveIfRwNA
+ oH8mCK2FEBkS82n2cnrV9CXT36M1QBIAla3VuMDeDFxq+JPMVG3pLj8cQ35+7yAFz/Ui
+ De08Z2m3BE9WUwxWA/dZeug+Cv76FoTn5gXxAa33WSbeAQr9VpktuKuH5n5R2i+zZ1Al
+ VdECK9xqbCfQXO3KZpuytSKC878J1vn9YnVosd2hXLOuAA1F+D4bCJldgjDXou+WItc4
+ NqExLSXYmPzknb5VSbvsKfHWtxCshjXT5TxWAVu9PSNn/2U1zr7WyLRfk38E0Ks9wJMg
+ pjHA==
+X-Gm-Message-State: AOJu0YyVEqolosvKaC4MjThgWo0gYPQklDiIBAgodWAX3Al9R1WdEqPn
+ Sb3x6IP29YQFOeVp7HlWNkRUOzFoUSR+nIODBoNQnzbJU/mjC/oB8VKsZdKTkf6uqyk=
+X-Gm-Gg: AeBDietqAF3pHfsLfycFQ7H2sXCRRZmc/0h4mweCDuuAy2YaKd0ch5NtxS97YtOga8X
+ EIMK9lGVFj4HFZXCkz/77kiMwUe7Q1xDApxo2MwKigA/SWIVg/sUfQmMBPT0q+tbRxexAGMNPQ1
+ FbTuBAq1hJiU2nUCgFtmApvPHnSbYbDnBhvrY6uUO/zMHsQ15AxQx4tP2vA63ixaxU121DhYT0g
+ HSuMyPQ6EHwlIXcRvgBrXtdGw3+ZjZOePWZAxIV62usFqY79DhyTL9ZgGOVh0LJQZejQN4bcpD7
+ yFKJMwykCaKslWHktEeGbH46pzH6Rmj7BGMgrW+BICBxb4+mpA8kjeog+sxuKXT1jL2L1KN8wrI
+ V7zsCKE37+6MNtL4J7kQNYLTtXW6DhOLD7NpaiIC3rPiXmJ6LzQKfuCXif+o7cUAe8lUmvvJ9qh
+ yTLUD2VddlDjeJJDy7DVRAXf5dif7oXSGNZAslx3q36YBDNlccBAy3i20RZ4vlLJ8dvDHk0lF/Q
+ eOOjsVc0tjoMUYMfgeud2Unv00A3ZKoRX8/V60=
+X-Received: by 2002:a05:7300:dc06:b0:2d3:f3fc:bb6b with SMTP id
+ 5a478bee46e88-2d586381157mr16587771eec.1.1776347573886; 
+ Thu, 16 Apr 2026 06:52:53 -0700 (PDT)
+Received: from
+ runnervm35a4x.13zhbfioaj5ujjbwrwpeydmywg.dx.internal.cloudapp.net
+ ([20.57.198.225]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-2de8c016305sm7742053eec.5.2026.04.16.06.52.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 16 Apr 2026 06:52:53 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Wei Gao <wegao@suse.com>
+Date: Thu, 16 Apr 2026 13:52:52 +0000
+Message-ID: <20260416135252.3834-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260416112611.23057-1-wegao@suse.com>
+References: <20260416112611.23057-1-wegao@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260323074814.2930709-1-wakel@google.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,yuki.lan:mid,suse.cz:email]; 
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/file_attr01: Dynamically expect
- EOPNOTSUPP on tmpfs without xattr
+Subject: Re: [LTP] fsconfig04: Check FSCONFIG_SET_PATH
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,28 +97,40 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> @@ -115,20 +116,28 @@ static struct tcase {
->  static void run(unsigned int i)
->  {
->  	struct tcase *tc = &tcases[i];
-> +	int exp_errno = tc->exp_errno;
-> +
-> +	if (tc->ufattr == (struct file_attr **)(&null_ptr)) {
-> +		const char *const kconfig[] = {"CONFIG_TMPFS_XATTR=y", NULL};
-> +
-> +		if (!strcmp(tst_device->fs_type, "tmpfs") && tst_kconfig_check(kconfig))
-> +			exp_errno = EOPNOTSUPP;
-> +	}
+Hi Wei,
 
-The call to tst_kconfig_check() should be done once in the test setup()
-and we should set a flag based on the outcome. Without that we will
-parse the kernel config in each iteration of the run() function (e.g. if
-run the test with -i 10).
+On Thu, 16 Apr 2026, Wei Gao wrote:
+> fsconfig04: Check FSCONFIG_SET_PATH
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> +#include "old/tso_device.h"
+
+`tst_acquire_loop_device()` is not part of the new API (`tst_device.h`).
+Please use `tst_find_free_loopdev()` + `tst_attach_device()` from
+`tst_device.h` instead of pulling in a legacy header.
+
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+
+The patch has a `Fixes:` link to GitHub issue #1169, making this a
+regression test. Add a `.tags` field:
+
+	.tags = (const struct tst_tag[]) {
+		{"github", "1169"},
+		{}
+	},
+
+---
+Note:
+
+Our agent completed the review of the patch. The agent can sometimes
+produce false positives although often its findings are genuine. If you
+find issues with the review, please comment this email or ignore the
+suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
