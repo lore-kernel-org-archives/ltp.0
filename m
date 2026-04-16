@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82C0BF8A179
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 13:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78590F8A179
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 13:45:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2CE7F3E4ADD
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 15:44:57 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 287533E2DE7
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 15:45:28 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A6AF93C1C92
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:44:36 +0200 (CEST)
-Received: from mail-dy1-x1343.google.com (mail-dy1-x1343.google.com
- [IPv6:2607:f8b0:4864:20::1343])
+ by picard.linux.it (Postfix) with ESMTPS id 4D00D3E2928
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:45:08 +0200 (CEST)
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com
+ [IPv6:2607:f8b0:4864:20::843])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3124C600271
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:44:36 +0200 (CEST)
-Received: by mail-dy1-x1343.google.com with SMTP id
- 5a478bee46e88-2ba895adfeaso8565098eec.0
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 06:44:36 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C1BDE6008AA
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 15:45:07 +0200 (CEST)
+Received: by mail-qt1-x843.google.com with SMTP id
+ d75a77b69052e-50d7c12e48eso6240311cf.1
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 06:45:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776347074; x=1776951874; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1776347106; x=1776951906; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=BXuDgckK5czok9jhQa2NNEUySHfBZrr1D0XhJtCjuA8=;
- b=CGbK5A3qHDbYP/Untf6bq7/Ecg7pwKkRGB048f5pJNG6gvC7Uhe2qoT3eezymspUay
- JSx0SolK5QqEKT9py09cH5fD4zeWwmE5phFKa5jq1aevg34w3oPMzht2XAripQxiDPNm
- o+XStAZnRBdZZG4N24GlUhlglfrS0hztgdDeVNvCLQh1MbaAlmHVKj6/ny9xOUWWlqLw
- j14vN0tNJ5Q5qG9qABu31JozGvYWGpqVHeRZufe4guT6N13Yw8byVAYb9LDqo2iqutlV
- qpIBXx6f1VMTwpLQr5JnTRrWoLy58iXs+L1+ni/C72Y4kHAvnzbmjJbd0BUrnS7ui1Ub
- xATw==
+ bh=pWNYZLqsS5ALkE960tFGHXGTM/F4BVT64ItzDLcG3Rs=;
+ b=BJvS3nySeA8Q8qxg/G5YoOXnrJTITBEypYCiTuWXtT98cvEhQEOIpDEqf/MpbyOpiy
+ GzbvEXoK18P0u/TA4B7/lCz8ybbna5L3C2w/aitiU5Y+k+PNbb4wE78TAjBTRbCX7ADi
+ hPlB7G8F8tBUwdmkXAqCY/ldWqEKJgbBqNcu6CNJtYwJyQFouXT9r0KwlLFjY683Ws2F
+ kc6fGr8S9oKOh2C/KwRF++9aZQKX00kocLF211mHAEsoBLNrR/v9lbBveOKNqJzUn7LX
+ aww65j/HA1Te8+UIniq2O3KQc9OCgKzSdYA5ZNc2bKJnPN5CoHbxY/tSOqjAYb4VvgTI
+ VidA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776347074; x=1776951874;
+ d=1e100.net; s=20251104; t=1776347106; x=1776951906;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=BXuDgckK5czok9jhQa2NNEUySHfBZrr1D0XhJtCjuA8=;
- b=D/MJisVCEBCCcB1X1lasERO2gkfdz/oY2epxpIhpcjUouhOIEDm39/JvZhqz7GL2+f
- pq6RBOZj79VzoRQuZhsd4mY5dR+jS0zk3MBSNzsv81m1kiCaCsweXT7nnRam3QD091wy
- O6vLeNY2Z+SVcQ4TQmCoJ1snpmzuY4CQegx13KKmWEvQzyYsMUeYBieuPi/E1KeeCBPH
- JmmwTj9tXhDp1NbXpTbgUPoqgrvizjLYZ05lAdzXszFRCSQXrIdIo8FEQL2p6vQnQ5vZ
- 1JsP1u10HOzvpLVjXB8kQvwWNs2Uf+AAyBNU79NDU0hnXbjPjdlX2VlJsC7FPYym0ZgS
- j1ag==
-X-Gm-Message-State: AOJu0YwAelPqeh1D5MKALVlNLM6Yf9k95hdJ4M2QTgsER9wVYn+G+uDq
- 0yfdS6yOAtvGIWzIEIgwiV5yCkfgexKoo9FBKYOwzstdsTZkQbygg+c1
-X-Gm-Gg: AeBDietcUj70C7QTSq115HCr6XaEafSWM/ZESJJwz/9SIfjzfbvU1ggToh6aA/KIXNH
- vPD8v5TKyLsSjLi8ExAN6EZNtvXo6WPku67AHwEjZYUGckAC/Zr8rdCCjy3hoddegR1rwmErN6M
- tl0kPaOvMpnjgVMAKKyVQaqYatk2UKzaLE0ITUuNCuBwP2CoC6Xw9Ew+bO3MP2QHJd02fwD5y2i
- DZb8Akk4a9j7NWM54pdWskQmMtxmW8U6ImgLhteQbnciul/vZZdyO47HS0tIIhwT+It/HwRThZz
- XC7uibWUD3U3+WF0pGdsFBqZlQSOLITKUjFZhQN+Hgg/+fUniMc4nlrj3rFCb45PZlaQZSokU8W
- TT/u7c7Lg12NGFHx3y6H9A5wTrmPBKE1UQACvGX62w8lcx/A/gJHD8KO89KilsNkFMD1wDpggdt
- YOQCe5HGkW7s2IxsVFKNL1QrpTB9Ssy4l8VqtjcSEWXdkZEHwJwYPOBdU8KBDih0P0j9JaBLSog
- cZGJHWIr4+S/HDIKp1oZGHMwg2SSJh2CcpgT5YCKHTdDsKrscQ=
-X-Received: by 2002:a05:7300:8185:b0:2e2:27bb:a4a2 with SMTP id
- 5a478bee46e88-2e227bba962mr1118313eec.13.1776347074435; 
- Thu, 16 Apr 2026 06:44:34 -0700 (PDT)
+ bh=pWNYZLqsS5ALkE960tFGHXGTM/F4BVT64ItzDLcG3Rs=;
+ b=RjYYnAiBUMOqQhDtvDAr0LIVKlarEaOhpC/WD9AJCrFqHZxfmZ7kqmPT4ccU3rksVF
+ ZQgHsiEj90V1f/A2SSNgd7bp+jMRcN9KRCu6rpb/jIqLnEv8wbojZa4g8dMd4g5k+3zS
+ tukIygCrBIK/32wxFHhoTI1fpiV6bymFE28slNo1vgsNo001u4EOBexWxEnf7K7WObkj
+ dg647DibydpdIi7pPp7hZlO2X/QVBUknzGYRji53R4lvvufbCWopM7k9cjhF/CRp2LOG
+ FHXMFP3wkRG5eQ2exZIlZDaPoijgT7w+JiLdDSXxG3n8BbHUetaSAi8D3zGkU/34FpSg
+ C1pA==
+X-Gm-Message-State: AOJu0YzGCbcEVe78WBMqY3hpZ3PVxMclrLL2tMy+biFAs7R0wbl4E+jv
+ HJ4eGcSjU/ZvK0F/cJ272FnAqkOFYiyeNTUFdjqCWisn0cUsSwRS68sBCD5+NjMHMDA=
+X-Gm-Gg: AeBDiet2p23rq67JosY4+/je+LGD3ouWoAeBpoqu/JGWDSDqaPCThidc53+aZwIu/Ie
+ 3UqSrBk9kyFsk7T0paGx0Ksws+KO+EaUmf+1XQnv7QU3lO7hoG1C3mFIopuh3k5gvQA5hBTxGTI
+ WmhCEDMqCe8fLFkotfdsFZjbEZHmtFrnVdglN5HmcTldVIhmJQPcOO+SRbLinkENGlEndy3EVM8
+ 8s1+bMpYnH0pijfsjDxaYIE0qXp9GNjWzd6+ADOwo8+uFwyzk+YEA8+Rl46CPf312upAnpD8ATU
+ aBqdFc4TSr2i2muXH2FD2LQ3T/HCWTsYUDijAk0gua9p7NxfXcWhcUtqtJfhUoA3VLUQD4nFhFA
+ 4pBd1U/6FmI4qKWmx87OOvB9lso/7zpIdZQB8KLzF0CXL82FhCkPWfSgkc2bCeIqfLqDjScOdc2
+ l8PrPK3U1HJJaXxNNaw+RDZEFRQiBLu2Sgy4dUbRQdRYgZHhE75HDexmyFTxNfv2FbO4x3yjUsl
+ X1VYEr0hld6WwQVIcui1/stzCbX6R+Wr1CqNw95
+X-Received: by 2002:a05:622a:5a17:b0:50d:7632:ddb2 with SMTP id
+ d75a77b69052e-50e24ae4d5emr51479851cf.12.1776347105561; 
+ Thu, 16 Apr 2026 06:45:05 -0700 (PDT)
 Received: from
- runnervm35a4x.yfcsjvjaih0utiqzf5szcxmspb.yx.internal.cloudapp.net
- ([172.208.153.25]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-2de8fd54ef0sm7100961eec.29.2026.04.16.06.44.33
+ runnervm35a4x.acrcebrcupsetj21tpkunvq0he.ex.internal.cloudapp.net
+ ([20.102.223.155]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-50e21f8eb5csm28347621cf.8.2026.04.16.06.45.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 16 Apr 2026 06:44:34 -0700 (PDT)
+ Thu, 16 Apr 2026 06:45:05 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Jinseok Kim <always.starving0@gmail.com>
-Date: Thu, 16 Apr 2026 13:44:32 +0000
-Message-ID: <20260416134432.3941-1-linuxtestproject.agent@gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 16 Apr 2026 13:45:04 +0000
+Message-ID: <20260416134504.3846-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260416125554.2920-1-always.starving0@gmail.com>
-References: <20260416125554.2920-1-always.starving0@gmail.com>
+In-Reply-To: <20260416-fix_nanosleep_include-v2-1-b3147763acb8@suse.com>
+References: <20260416-fix_nanosleep_include-v2-1-b3147763acb8@suse.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] close02: add test for double close EBADF
+Subject: Re: [LTP] nanosleep: use POSIX runtime detection for CLOCK_MONOTONIC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,28 +91,28 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jinseok,
-
-On Thu, 16 Apr 2026, Jinseok Kim wrote:
-> close02: add test for double close EBADF
-
-Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
-
----
-Note:
-
-Our agent completed the review of the patch. The agent can sometimes
-produce false positives although often its findings are genuine. If you
-find issues with the review, please comment this email or ignore the
-suggestions.
-
-Regards,
-LTP AI Reviewer
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgQW5kcmVhLAoKT24gMjAyNi0wNC0xNiwgQW5kcmVhIENlcnZlc2F0byB3cm90ZToKPiBuYW5v
+c2xlZXA6IHVzZSBQT1NJWCBydW50aW1lIGRldGVjdGlvbiBmb3IgQ0xPQ0tfTU9OT1RPTklDCgo+
+ICtzdGF0aWMgaW5saW5lIGNsb2NraWRfdCBnZXRfc3VwcG9ydGVkX2Nsb2NrKHZvaWQpCj4gK3sK
+PiArI2lmZGVmIF9QT1NJWF9NT05PVE9OSUNfQ0xPQ0sKPiArCWlmIChfUE9TSVhfTU9OT1RPTklD
+X0NMT0NLID4gMCkKPiArCQlyZXR1cm4gQ0xPQ0tfTU9OT1RPTklDOwo+ICsKPiArCWlmICghX1BP
+U0lYX01PTk9UT05JQ19DTE9DSyAmJiBzeXNjb25mKF9TQ19NT05PVE9OSUNfQ0xPQ0spID4gMCkK
+PiArCQlyZXR1cm4gQ0xPQ0tfTU9OT1RPTklDOwo+ICsjZW5kaWYKPiArCj4gKwlwcmludGYoIkNM
+T0NLX01PTk9UT05JQyB1bmF2YWlsYWJsZSwgdGVzdCBtYXkgZmFpbCBkdWUgdG8gIgo+ICsJICAg
+ICAgICJleHRlcm5hbCBjbG9jayBhZGp1c3RtZW50c1xuIik7Cj4gKwlyZXR1cm4gQ0xPQ0tfUkVB
+TFRJTUU7Cj4gK30KCkNvcnJlY3QgUE9TSVggcnVudGltZSBkZXRlY3Rpb24g4oCUIGhhbmRsZXMg
+YWxsIHRocmVlIF9QT1NJWF9NT05PVE9OSUNfQ0xPQ0sKc3RhdGVzICg+MCwgPT0wLCB1bmRlZmlu
+ZWQpIHByb3Blcmx5LCBhbmQgdGhlIHVuaXN0ZC5oIGluY2x1ZGUgaW4gaGVscGVycy5oCmNsb3Nl
+cyB0aGUgc2lsZW50IGZhbGxiYWNrIHRoYXQgYWZmZWN0ZWQgMS0xLmMsIDItMS5jLCBhbmQgMTAw
+MDAtMS5jLgoKUmV2aWV3ZWQtYnk6IExUUCBBSSBSZXZpZXdlciA8bHRwLWFpQG5vcmVwbHkuZ2l0
+aHViLmNvbT4KCi0tLQpOb3RlOgoKT3VyIGFnZW50IGNvbXBsZXRlZCB0aGUgcmV2aWV3IG9mIHRo
+ZSBwYXRjaC4KClRoZSBhZ2VudCBjYW4gc29tZXRpbWVzIHByb2R1Y2UgZmFsc2UgcG9zaXRpdmVz
+IGFsdGhvdWdoIG9mdGVuIGl0cwpmaW5kaW5ncyBhcmUgZ2VudWluZS4gSWYgeW91IGZpbmQgaXNz
+dWVzIHdpdGggdGhlIHJldmlldywgcGxlYXNlCmNvbW1lbnQgdGhpcyBlbWFpbCBvciBpZ25vcmUg
+dGhlIHN1Z2dlc3Rpb25zLgoKUmVnYXJkcywKTFRQIEFJIFJldmlld2VyCgotLSAKTWFpbGluZyBs
+aXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
