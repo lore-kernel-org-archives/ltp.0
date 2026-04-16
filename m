@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C484BF8A140
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 08:03:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B416AF8A140
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 08:03:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 097F63E297F
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 10:03:21 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 6C2FA3E262F
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 10:03:38 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6AA543CDBD8
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 10:03:00 +0200 (CEST)
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
- [IPv6:2607:f8b0:4864:20::743])
+ by picard.linux.it (Postfix) with ESMTPS id E46233E2DE6
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 10:03:09 +0200 (CEST)
+Received: from mail-dl1-x1241.google.com (mail-dl1-x1241.google.com
+ [IPv6:2607:f8b0:4864:20::1241])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 12055600160
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 10:03:00 +0200 (CEST)
-Received: by mail-qk1-x743.google.com with SMTP id
- af79cd13be357-8cfc5941028so1111136885a.1
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 01:03:00 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8043D600860
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 10:03:09 +0200 (CEST)
+Received: by mail-dl1-x1241.google.com with SMTP id
+ a92af1059eb24-1279eced0b9so11209318c88.0
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 01:03:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776326579; x=1776931379; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1776326588; x=1776931388; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=EpHru6QosnpeLX/UiUL1pzdyF1uKp0ihd/6olAW/jEU=;
- b=iI2QhUUtfE1SujepNzGXpuvsXuwJlv3ssZVxjRmPfWdeCv+aLiQo8wfPqAn0lnDvfh
- 0mP6BOBVBIDKD9VmiIy1Ss6Dz0l7TkuPZJNIKa3KFuRYIO2LvWaGd+GnOKy+6apXAPtN
- oczFHoKDPs5jgau49+aDM60FXr7KLtDe8ftj1gbaMg/1m2CT/8/4MOTHX2iYDGms4vOp
- buzYBoTX9CdSSbK7DyeB2zz4ryyR7gtVZEWI/O9UZUVTqr1zaAmu6f1JRnhQJSLw8bZo
- QH+VsXQtIHoAqDyvk57NA3MzyDPpQIY6VCFevMDEISceVzH0n1defiHNSgiQiejGJXVa
- K2iA==
+ bh=h2jVbToG2xbbGnax4nzP6dZtd/pIuuuxQYlz7iTJ6L8=;
+ b=eeUuFbmYNp/Bm1yNLvmNFd7OggWKiPKoKCkaKdSas95M/IHb8GBDKKkS6Dcd4NsxcR
+ pvs1VJObZ7QDoEP63Aurb1v6XMpOfdMMkXre7T5bQJp89NOQnCqSFiuZtkE9LWwTkP/I
+ x99LAPEf3/MfVIlYJ+abdVCvQmx0yxbRYyGAc4zVApXtNlxvpn3YkMBiwpxg0F+Qj2Ry
+ BqcZjkCDLpbTXuyVy6MF1v+cGruEaCwhsuo+N3m9L1c9KI4yhSLUgYstJfNY2nRlbRG3
+ 3W6bPlwUdjt1A2gnGfba5DI4Otbhl/YhTdif0aDbnCF7o9/6hxllgP1bpy3lww023WQe
+ 1Z6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776326579; x=1776931379;
+ d=1e100.net; s=20251104; t=1776326588; x=1776931388;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=EpHru6QosnpeLX/UiUL1pzdyF1uKp0ihd/6olAW/jEU=;
- b=FYMW+cl6J/HOmdQHovtBo3EEQjfaj9i4B12YFbA8vqk/LVLanA0/bwPMAasgbxfvzb
- uVMA2fHs0PSsfnLfimLBPPZQxyNenFPPRhOnqu9ArYTfqiYmqFsGD92uUuoNTPYS+pT6
- 6tMWlJAW808kOwAqFQlqGVN1ULNdK4k4JQaOB3e7+iBkYWdfV/5do9UEIpeY4BVEuVlN
- /c8n8bLQwgSSon6ZaW8T6gYiSIWijYLa4cIOprSVHf7DDkSuRPUuX9Go4ImWlPJhYqmg
- K45rc2NMDBl9gTC8AILG/FKaN/55LFkjYiRjomO56FpRqPUAnLoMTGBg9LJcVdH1etdB
- AHDQ==
-X-Gm-Message-State: AOJu0Yy7iRA2hVGz8hT6tUo0BCM+bhxhATw9AVgK+vYEom3VYQ/QXDq5
- WKN/WtbgLH8/G4B+me+aqCcGjxP86B80RdhahF3CjxSZ+EnCDe3TmMTy
-X-Gm-Gg: AeBDieuqT4WhOrA5Ao9a4cy6v0DmVfUhxJuFWHErwiE/BMoG7rTBKk8LUzncPo/hW2d
- PMrUec6omrdyFKmFKzUGbESTLYe3O7heBnn4BDKch6ba6T+bZsLoW/7MN2nAmSuKFV0Z5d0YwzO
- 3pSi07GdVfNt3gXmKwXe7uaRb2/FVb8FUYLtaS1Vo4ixChtMuB07CzqBx0RpP961iK59i73crhR
- CIdWoD1PyKU0oF/5wGwE/hw5F7phuaAqcKXmGu6X7ZlmQHeVrLyVZpnnO3im7LUdLf3t9v+kjoU
- X0KQiQZYDu0HVKW/Jex2Db3SRSVwWWs/DNFPvpxzQ9ez7IyxokuHlo7NYlBCY8FO66QQtZ4tSrG
- zX+fc0+hpLFYO7URiP+FQHwe2IyYEmmN5J4WBzYEISnsmRWUpZtKNAMNiCEjCEABdftlOvUm+XO
- +eFE9i5ZuQPYZOuNh9K5mga3yDz6VwtRzuqkzPtPSSrYOLiBZX0XDRpTtKwye7Fp8HwAUI64nfk
- pNCRpqusxv5W6ZZ/sD3gRnbywI+LMpnvzmPSveU3vQuFc6KvvQ=
-X-Received: by 2002:a05:6214:2122:b0:8ac:af6d:6934 with SMTP id
- 6a1803df08f44-8acaf6d70bemr237900536d6.13.1776326578778; 
- Thu, 16 Apr 2026 01:02:58 -0700 (PDT)
+ bh=h2jVbToG2xbbGnax4nzP6dZtd/pIuuuxQYlz7iTJ6L8=;
+ b=VGxCOoaxNp/GUvfZwSXB5UjWjESHY2KWpMwe4v952ZakUR4DQy8mrab5CAyq1KGZWE
+ XH+rZN7rPd7KGmF+Foq+B+5v70CwxibOU3hsOtZWeknxrGlmFamoiZ1U4JuFLIJriwD4
+ BlCdjcadI5bw/kX2EIdAItZAdCPjS0RF+LwoppcniA6QgFb+dM7iH/it9OR3T5DJ+AgC
+ fhIPucTvCC/TGnk64Qa/4jhabvlluGJr9tMgAPVxilP2j0NExGMQzFgfpaumifABsBTf
+ IBFJgrFWDwhN5sPghSUQ75LMhEOJ63NvmInvHxIuOkjKUKW985LrUgodzHsaYdy9NNLc
+ peSA==
+X-Gm-Message-State: AOJu0YxPrBzgJU/rzXzMy5syJrwfKCoZbQfcfXt0I1LcrMd8/WNZZRJh
+ RAh2Dy2T+GUn2otuKo2b6wdYulDYP4ey4J/i6dAEQ4k15/z98BWRYElv
+X-Gm-Gg: AeBDietpzI4EZJ9Cv3rrCILbAthsJOjXibnJXA4F0uVMlxzjBoAX8WTO1MUV38wYNzp
+ ZGVjMhMFkvgJ5mvm9AkmZXC/Uh4WGK1F1WNm6cdHjYkD51rRxzTCIV+fXYxRZJmsnbLG88mJ2iN
+ PFEzUuwSTVvKE5S6Y3qVuyHCcR1T5H40FMaioyMHM+YV4fG2dV5RxJ9kE1WlFJEsnTkkHQvOGpW
+ 4KKlysE8ncEr0biJJRUmokna5B2xWfCECjYBhqjzEcmXAbzPSHO0CKUE0vVUyNDjZUhwykVzN+Y
+ cXaOUC/aAtjTCdYaJ9pWCdc+CckNVaGLQuTNlpW4Vp+HWTdFE89n8w7D0zw6tvsA3eKRD5SHzm6
+ rXLW7L8FOAY5sWmaBzSbwNYW6iKdRkajctWvO+T+HO/78XFiuEJPrf8vtO8KZ+9zkMXeWFNXofw
+ WRYQlE32YZTs+ssSH5uDnCIZIRQZoOjQqA1oxXaEB4VD8f3f6l9TNyAyl3sYC0FChb2MpqB332b
+ Z+oooXxuBxjNOk2DYYxBgTBkJ0quWBC8J0/Tlc=
+X-Received: by 2002:a05:7022:4a6:b0:128:d5f1:d595 with SMTP id
+ a92af1059eb24-12c34e8f6e5mr14048578c88.10.1776326587665; 
+ Thu, 16 Apr 2026 01:03:07 -0700 (PDT)
 Received: from
- runnervm35a4x.bbtuyqy0xgnulbf4x1n5xyw1wf.ex.internal.cloudapp.net
- ([64.236.176.196]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8ae6cbbbb2fsm30863866d6.34.2026.04.16.01.02.58
+ runnervm35a4x.naa1fqp52ykedpe5ofrqdcouyd.dx.internal.cloudapp.net
+ ([104.209.12.71]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-12c5e6a8496sm5056274c88.10.2026.04.16.01.03.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 16 Apr 2026 01:02:58 -0700 (PDT)
+ Thu, 16 Apr 2026 01:03:07 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Sachin Sant <sachinp@linux.ibm.com>
-Date: Thu, 16 Apr 2026 08:02:57 +0000
-Message-ID: <20260416080257.4077-1-linuxtestproject.agent@gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 16 Apr 2026 08:03:06 +0000
+Message-ID: <20260416080306.4018-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260416062302.15804-1-sachinp@linux.ibm.com>
-References: <20260416062302.15804-1-sachinp@linux.ibm.com>
+In-Reply-To: <20260416-fix_nanosleep_include-v1-1-f584b5556141@suse.com>
+References: <20260416-fix_nanosleep_include-v1-1-f584b5556141@suse.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] io_uring: Add test for READV and WRITEV operations
+Subject: Re: [LTP] nanosleep: use POSIX runtime detection for CLOCK_MONOTONIC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,52 +91,26 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Sachin,
-
-On Thu, 16 Apr 2026, Sachin Sant wrote:
-> io_uring: Add test for READV and WRITEV operations
-
-> Additionally merge io_uring_init_buffer_pattern() into unified
-> init_iovec_buffers() function that supports both rotating and
-> simple character patterns
-
-This mixes two logical changes in one commit. io_uring_init_buffer_pattern()
-was unused by any existing test; its removal should be a separate preceding
-commit, e.g. "io_uring: remove unused io_uring_init_buffer_pattern()".
-
-[...]
-
-> +static void setup(void)
-> +{
-> +	io_uring_setup_supported_by_kernel();
-> +	sigemptyset(&sig);
-> +	memset(&s, 0, sizeof(s));
-> +	io_uring_setup_queue(&s, QUEUE_DEPTH, 0);
-> +	init_iovec_buffers(write_iovs, NUM_VECS, 'A', 1);
-> +	clear_iovec_buffers(read_iovs, NUM_VECS);
-> +}
-
-read_iovs is modified by READV in run() but only cleared in setup(). With
--i, the second iteration starts with stale data. Add
-clear_iovec_buffers(read_iovs, NUM_VECS) at the top of run().
-
----
-Note:
-
-Our agent completed the review of the patch. The full review can be
-found at: https://patchwork.ozlabs.org/project/ltp/list/?series=500082
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgQW5kcmVhLAoKT24gVGh1LCAxNiBBcHIgMjAyNiAwODo1OTo1OSArMDIwMCwgQW5kcmVhIENl
+cnZlc2F0byB3cm90ZToKPiBuYW5vc2xlZXA6IHVzZSBQT1NJWCBydW50aW1lIGRldGVjdGlvbiBm
+b3IgQ0xPQ0tfTU9OT1RPTklDCgo+IC0jaW5jbHVkZSA8dW5pc3RkLmg+Cj4gICNpbmNsdWRlIDxz
+eXMvd2FpdC5oPgo+ICAjaW5jbHVkZSAicG9zaXh0ZXN0LmgiCj4gLQo+IC0jaWZkZWYgX1BPU0lY
+X01PTk9UT05JQ19DTE9DSwo+IC0jZGVmaW5lIFRFU1RfQ0xPQ0sgQ0xPQ0tfTU9OT1RPTklDCj4g
+LSNlbHNlCj4gLSNkZWZpbmUgVEVTVF9DTE9DSyBDTE9DS19SRUFMVElNRQo+IC0jZW5kaWYKPiAr
+I2luY2x1ZGUgImhlbHBlcnMuaCIKClRoaXMgYXBwbGllcyB0byAxLTIuYywgMS0zLmMsIDMtMi5j
+LCBhbmQgNy0yLmMuIFRoZXNlIGZpbGVzIGNhbGwKZm9yaygpIGFuZCBzbGVlcCgpIOKAlCBib3Ro
+IGRlY2xhcmVkIGluIDx1bmlzdGQuaD4g4oCUIGJ1dCB0aGUgZXhwbGljaXQKI2luY2x1ZGUgPHVu
+aXN0ZC5oPiBpcyByZW1vdmVkIGFuZCBub3cgb25seSBhcnJpdmVzIHRyYW5zaXRpdmVseSB2aWEK
+aGVscGVycy5oLiBFYWNoIGZpbGUgc2hvdWxkIGluY2x1ZGUgdGhlIGhlYWRlcnMgaXQgZGlyZWN0
+bHkgdXNlczsKcGxlYXNlIGtlZXAgI2luY2x1ZGUgPHVuaXN0ZC5oPiBpbiB0aGVzZSBmb3VyIGZp
+bGVzLgoKLS0tCk5vdGU6CgpPdXIgYWdlbnQgY29tcGxldGVkIHRoZSByZXZpZXcgb2YgdGhlIHBh
+dGNoLiBUaGUgYWdlbnQgY2FuIHNvbWV0aW1lcwpwcm9kdWNlIGZhbHNlIHBvc2l0aXZlcyBhbHRo
+b3VnaCBvZnRlbiBpdHMgZmluZGluZ3MgYXJlIGdlbnVpbmUuIElmCnlvdSBmaW5kIGlzc3VlcyB3
+aXRoIHRoZSByZXZpZXcsIHBsZWFzZSBjb21tZW50IHRoaXMgZW1haWwgb3IgaWdub3JlCnRoZSBz
+dWdnZXN0aW9ucy4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5p
+dC9saXN0aW5mby9sdHAK
