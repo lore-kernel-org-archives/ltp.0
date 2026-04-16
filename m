@@ -4,111 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 377D5F88089
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 07:22:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62242F8809D
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 07:25:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1776324334; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=vuNMnvyZPqeA0leVL30JblKiJd2p3WqyWiXBCCrIFXE=;
+ b=IiteF+OxMFZxJCgK78Eq5SHSznPsTbMVA70q9a8cbmiXJHDbbK+VCJgWayRvOUVVDBejv
+ CvkUo4RiZBxzw6WCMy5PWnySr3OzTAEFfmn/6e1ViUZk1lOz7aMHmubl2mgqOypLZddRJsZ
+ JZC7xImyd5OySTd8RguHYSFRRp9SJL8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C0ED63C9F04
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 09:22:51 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 1B8063E2140
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 09:25:34 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0DD923C98AB
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 09:22:32 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 178CF3C98AB
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 09:25:09 +0200 (CEST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 39E68600866
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 09:22:31 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7F7EE5BD1A;
- Thu, 16 Apr 2026 07:22:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776324150;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Wk9M2/8gFqOKtobEM5V99FBsLWDKSR8kvd3mSjXSxas=;
- b=1HaR6JAYDrTtSdTPSw5Wci8WuurL+G/NCQqFJJr2Kx13nD7klqJhKa+O9t78wKAEuDwpCq
- c83mz5a2KqQHds+GQp7as0BgRQcTv4uGCA1rJBRqdVf3j8SosOc+cIXGvyapKlHchIm9Pk
- 4fB69LRu0u0wcGkX97zUG2a/nlcIN5I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776324150;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Wk9M2/8gFqOKtobEM5V99FBsLWDKSR8kvd3mSjXSxas=;
- b=Z1aBSFZbmmtdK62ZoDfVRXYzoVOyKIh7sDNt46osOd5jLohgergDVs4azIIlMKqeqfHYFD
- wfbW8rco/B8bnDCw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1HaR6JAY;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Z1aBSFZb
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776324150;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Wk9M2/8gFqOKtobEM5V99FBsLWDKSR8kvd3mSjXSxas=;
- b=1HaR6JAYDrTtSdTPSw5Wci8WuurL+G/NCQqFJJr2Kx13nD7klqJhKa+O9t78wKAEuDwpCq
- c83mz5a2KqQHds+GQp7as0BgRQcTv4uGCA1rJBRqdVf3j8SosOc+cIXGvyapKlHchIm9Pk
- 4fB69LRu0u0wcGkX97zUG2a/nlcIN5I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776324150;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Wk9M2/8gFqOKtobEM5V99FBsLWDKSR8kvd3mSjXSxas=;
- b=Z1aBSFZbmmtdK62ZoDfVRXYzoVOyKIh7sDNt46osOd5jLohgergDVs4azIIlMKqeqfHYFD
- wfbW8rco/B8bnDCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 506F84BE38;
- Thu, 16 Apr 2026 07:22:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id BFtdEjaO4GkoagAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 16 Apr 2026 07:22:30 +0000
-Date: Thu, 16 Apr 2026 09:22:29 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Piotr Kubaj <piotr.kubaj@intel.com>
-Message-ID: <20260416072229.GA287995@pevik>
-References: <20260408132728.653586-2-piotr.kubaj@intel.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260408132728.653586-2-piotr.kubaj@intel.com>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- TO_DN_SOME(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+];
- ASN_FAIL(0.00)[7.9.0.0.4.6.0.0.0.5.1.0.0.1.0.0.4.0.1.0.1.8.2.b.0.4.e.d.7.0.a.2.asn6.rspamd.com:server
- fail]; 
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCPT_COUNT_FIVE(0.00)[6]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 7F7EE5BD1A
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6EFD360085F
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 09:25:09 +0200 (CEST)
+Received: by mail-wr1-x434.google.com with SMTP id
+ ffacd0b85a97d-43d76dd4ee8so3723160f8f.2
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 00:25:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1776324309; x=1776929109; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=Phn5IJVZ/94FjNGRzNXc6NrOx78Bx7ByFTHjmMzYX6Y=;
+ b=WN99AACfTLLhyM29398WNKzlzOTEJDDOTCQ01hyZgTzy0OmD8gCGRcCQNQWyh7EfD8
+ KilMMVH9rtUB/RHQwzIQuXNryBCJxYONbmD6xHccv3jKb4T1byouXIRcnsN2FJBciVW0
+ DEUCLM6IgZPa1/ekxnlM9FsmUwE/o1JyCz87Py6NEoeb4IwodLnHC0koks3gGIBO0y7u
+ /et5DMKG0ACXhRTFTpV88602hMzhh7fvixyhDdiLNGr7Sqrqs4roge1f1TF0L2ITIsyX
+ LC/I5gQxgyLxQWNJcq9oToFHccFXptVhZX0hCgVIxDyih1oKKt2CMI9tDFF3Ig5cFbl5
+ tTYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776324309; x=1776929109;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=Phn5IJVZ/94FjNGRzNXc6NrOx78Bx7ByFTHjmMzYX6Y=;
+ b=dJM8xM0NzjJvhmrF7+8euPAZKC9jcRcaFDyLfcJ8lHLjG6RqpbR40Ywr1x6KImzJWi
+ 5TRhFyldr18Se4hjPLS9eU0LBQapq6jn6U3NxeILdQb2F9El2zZHDOsYZJeAP6SHuDTq
+ mxtM02qdI9146QVt4KK2zDXY2SjXFj4e0evtrtezFEezDK94cM9bIWMPoMfEgv9GYS/7
+ rD0MnDKNngM8pfPrzwsSmkfQ18S4JWgHg6lelg7E+ZaeLSdNzTjr8znProEyJuFp6H4I
+ +x73OR49r9G4NrU3VldAkfwbqVGIXgiIPUoipT24JP+tYUwiR6LhUA3FnY8X0X7Jig5z
+ B1BQ==
+X-Gm-Message-State: AOJu0YzQMsFljKoHflVGZNT+LQACzzP+ywKxYGtW3B2w4vnX0CVd6m4w
+ LQXYu7rl/wKRjkN4yZqTvxYqOiWMdadXhasPE7NFoFwdv425BMaidvceLAG8bwSaQx4=
+X-Gm-Gg: AeBDievDOXT2vB1BowGZaJ1SyN04PaGly590h3bdF8KjW6vCHgBZjR/qX25gaVt+trv
+ YCWLQ2MpH/bc5lEAa5k5ySDLt3+mCNTg4mhs3LqBrlKPiXBXoailKwLg8dveDltwh9bW0yfvIdp
+ xNfppNfHMX0DuJCRnZN5AukZ5i+aS52RpzUnR2H5C4MmopTKX2pWx6WwHeQpAmihKyFKjY6xmnO
+ lhB6uct1MLyzA6qXuSLJH4C+cFPuAJd8X+B72umT9nVmnRTIw8j1t8LivuBC7zmveKY5t4zQqPB
+ aZ8W7pUCz/cIP80uXdhQTwQ/zO0gyKgsVkHLZnduMrXnUe9gvzcGe2ajv2aFSZcfYUTt57D3R+a
+ pEerJzDXU5okIOR7BDtoRiYPx1RVNIHF6cxWkoXlJgWA21LCGf4MuoMwszk9vzF51n9JhpxRReq
+ kieRRapAJn7EETo72TjKF/mx7aaMLfFlt1J5DrMqYSvkBjFKGeUdcutl2KPGou8EDHwmYBwmaZL
+ altuxz5dV6c9BY0H7SVFy72C2fp0zhn19A=
+X-Received: by 2002:a05:6000:290b:b0:43d:775b:c9c1 with SMTP id
+ ffacd0b85a97d-43d775bcb4fmr23530803f8f.1.1776324308747; 
+ Thu, 16 Apr 2026 00:25:08 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
+ [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-43ead3e00b3sm10716765f8f.27.2026.04.16.00.25.07
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 16 Apr 2026 00:25:08 -0700 (PDT)
+Message-ID: <69e08ed4.df0a0220.57300.4db0@mx.google.com>
+To: "Petr Vorel" <pvorel@suse.cz>
+In-Reply-To: <20260416070128.GA286748@pevik>
+Date: Thu, 16 Apr 2026 07:25:07 +0000
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v16] thermal: add new test group
+Subject: Re: [LTP] [PATCH 1/2] tst_test: Add $LTP_SINGLE_ITERATION to limit
+ variant
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,183 +97,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
- helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Currently consists of only one test for the CPU package thermal sensor
-> interface for Intel platforms.
-> It works by checking the initial count of thermal interrupts. Then it
-> decreases the threshold for sending a thermal interrupt to just above
-> the current temperature and runs a workload on the CPU. Finally, it
-> restores the original thermal threshold and checks whether the number
-> of thermal interrupts increased.
+Hi Petr,
 
-> Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
-> ---
-> I previously missed Petr's email, this version addresses his feedback as well.
+this patch is not applying anymore, can you please send a new version?
+So we are making sure that it's correctly implemented.
 
-Thank you!
-
-LGTM, minor formatting notes below (ignore, unless you need to send another
-version, or it could be done before merge).
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-We have (after update) few more fixes needed. But that can be done before merge.
-thermal_interrupt_events.c:64: CHECK: Avoid CamelCase: <PRIu64>
-thermal_interrupt_events.c:177: CHECK: Blank lines aren't necessary before a close brace '}'
-thermal_interrupt_events.c:215: CHECK: Blank lines aren't necessary before a close brace '}'
-
->  runtest/thermal                               |   3 +
->  testcases/kernel/Makefile                     |   1 +
->  testcases/kernel/thermal/.gitignore           |   1 +
->  testcases/kernel/thermal/Makefile             |   9 +
->  .../kernel/thermal/thermal_interrupt_events.c | 235 ++++++++++++++++++
->  5 files changed, 249 insertions(+)
->  create mode 100644 runtest/thermal
->  create mode 100644 testcases/kernel/thermal/.gitignore
->  create mode 100644 testcases/kernel/thermal/Makefile
->  create mode 100644 testcases/kernel/thermal/thermal_interrupt_events.c
-
-> diff --git a/runtest/thermal b/runtest/thermal
-> new file mode 100644
-> index 000000000..57e3d29f8
-> --- /dev/null
-> +++ b/runtest/thermal
-> @@ -0,0 +1,3 @@
-> +# Thermal driver API
-> +# https://docs.kernel.org/driver-api/thermal/
-> +thermal_interrupt_events thermal_interrupt_events
-> diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-> index 98fd45a9d..ac816e4e8 100644
-> --- a/testcases/kernel/Makefile
-> +++ b/testcases/kernel/Makefile
-> @@ -36,6 +36,7 @@ SUBDIRS			+= connectors \
->  			   sched \
->  			   security \
->  			   sound \
-> +			   thermal \
->  			   tracing \
->  			   uevents \
->  			   watchqueue \
-> diff --git a/testcases/kernel/thermal/.gitignore b/testcases/kernel/thermal/.gitignore
-> new file mode 100644
-> index 000000000..1090bdad8
-> --- /dev/null
-> +++ b/testcases/kernel/thermal/.gitignore
-> @@ -0,0 +1 @@
-> +thermal_interrupt_events
-> diff --git a/testcases/kernel/thermal/Makefile b/testcases/kernel/thermal/Makefile
-> new file mode 100644
-> index 000000000..4657c3fb3
-> --- /dev/null
-> +++ b/testcases/kernel/thermal/Makefile
-> @@ -0,0 +1,9 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2025, Intel Corporation. All rights reserved.
-> +# Author:Piotr Kubaj <piotr.kubaj@intel.com>
-> +
-> +top_srcdir             ?= ../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/thermal/thermal_interrupt_events.c b/testcases/kernel/thermal/thermal_interrupt_events.c
-> new file mode 100644
-> index 000000000..e3204784e
-> --- /dev/null
-> +++ b/testcases/kernel/thermal/thermal_interrupt_events.c
-> @@ -0,0 +1,235 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2026 Intel - http://www.intel.com/
-> + */
-> +
-> +/*\
-> + * Tests the CPU package thermal sensor interface for Intel platforms.
-> +
-> + * Works by checking the initial count of thermal interrupts. Then it
-> + * decreases the threshold for sending a thermal interrupt to just above
-> + * the current temperature and runs a workload on the CPU. Finally, it restores
-> + * the original thermal threshold and checks whether the number of thermal
-> + * interrupts increased.
-> + */
-> +
-> +#include <ctype.h>
-> +#include <inttypes.h>
-> +#include "tst_safe_stdio.h"
-> +#include "tst_test.h"
-> +#include "tst_timer_test.h"
-> +
-> +#define	TEST_RUNTIME	3
-> +#define	RUNTIME		30
-> +#define	SLEEP		10
-> +#define	TEMP_INCREMENT	10
-> +
-> +static bool x86_pkg_temp_tz_found, *x86_pkg_temp_tz;
-> +static char temp_path[PATH_MAX], trip_path[PATH_MAX];
-> +static int nproc, temp_high, temp, *trip_orig, tz_counter;
-> +static uint64_t *interrupt_init, *interrupt_later;
-> +
-> +static void read_interrupts(uint64_t *interrupts)
-> +{
-> +	bool interrupts_found = false;
-> +	char line[8192];
-> +
-> +	memset(interrupts, 0, nproc * sizeof(*interrupts));
-> +	FILE *fp = SAFE_FOPEN("/proc/interrupts", "r");
-> +
-> +	while (fgets(line, sizeof(line), fp)) {
-> +		if (strstr(line, "Thermal event interrupts")) {
-very nit: reverting the condition would allow to remove one indentation level
-(helps readability):
-
-	while (fgets(line, sizeof(line), fp)) {
-		if (!strstr(line, "Thermal event interrupts"))
-			continue;
-
-		interrupts_found = true;
-		char *ptr = strchr(line, ':');
-
-The rest LGTM.
-
-Kind regards,
-Petr
-
-> +			interrupts_found = true;
-> +			char *ptr = strchr(line, ':');
-> +
-> +			for (int i = 0; i < nproc; i++) {
-> +				char *endptr;
-> +
-> +				while (*ptr && !isdigit(*ptr))
-> +					ptr++;
-> +
-> +				errno = 0;
-> +
-> +				interrupts[i] = strtoull(ptr, &endptr, 10);
-> +
-> +				if (ptr == endptr)
-> +					tst_brk(TBROK, "CPU %d: interrupt not found", nproc);
-> +
-> +				if (errno == ERANGE)
-> +					tst_brk(TBROK, "CPU %d: interrupt out of range", nproc);
-> +
-> +				ptr = endptr;
-> +				tst_res(TDEBUG, "interrupts[%d]: %" PRIu64, i, interrupts[i]);
-> +			}
-> +			break;
-> +		}
-> +	}
-> +	SAFE_FCLOSE(fp);
-> +	if (!interrupts_found)
-> +		tst_brk(TCONF, "No Thermal event interrupts line in /proc/interrupts");
-> +}
+Thanks,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
