@@ -4,104 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 921CDF8D765
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 18:12:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71E3AF8D765
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 18:21:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1776363699; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=ELnSaMJmguZlH6CcUI45bNnBxjC9O8WZ0fJfldhOo9A=;
+ b=KBtwRJAyV9t71baDIktwrrio6vA0XLc6jQfYBbM1Ed/3ixIjz3K6oYN9t1fZtb6pVRcf6
+ WfocU3pHpXllGtiuVj/IPj5tp/selVSWBNemMmnj3vwB7jl+j5yOw+kyIQGCLFZ7FJ7FXAB
+ LHJw9Onrm3Z+i9kpZINkuHLFqdLVhs8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 11C653E7528
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 20:12:00 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id EBE163E74EC
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 20:21:38 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C1A173E5B61
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 20:11:41 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 05E6C3E54D2
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 20:21:13 +0200 (CEST)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CB7B4600054
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 20:11:40 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9617A5BD43;
- Thu, 16 Apr 2026 18:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776363099;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=TXcdpZFXvNB30vDclYCiENmQ7byh92bfM7GZQ0+WZYE=;
- b=kznwaYq+UrhoEqNMUdsU39cy6KmphXyo5c2fLff94XHMJ3IjZGlx+WSo7bOjP1N4i5i0NJ
- heIAUskhgJX+/OF8jkh2vmVuJJWjEwSIJGZoqVtROyMgsWfX51M8J9WUuNCONbBFEeS943
- jcyxl3OYc3YUt/92TV90YidOa7LB/sw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776363099;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=TXcdpZFXvNB30vDclYCiENmQ7byh92bfM7GZQ0+WZYE=;
- b=NzRk5GKWTiVTGc2LCWKfk0GlV/8Fl71U0mFHuA1zYtojpczDDab8OcgsfcpJwFG4s3/zY6
- kfk+2J8Rc8PLpQAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776363099;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=TXcdpZFXvNB30vDclYCiENmQ7byh92bfM7GZQ0+WZYE=;
- b=kznwaYq+UrhoEqNMUdsU39cy6KmphXyo5c2fLff94XHMJ3IjZGlx+WSo7bOjP1N4i5i0NJ
- heIAUskhgJX+/OF8jkh2vmVuJJWjEwSIJGZoqVtROyMgsWfX51M8J9WUuNCONbBFEeS943
- jcyxl3OYc3YUt/92TV90YidOa7LB/sw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776363099;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=TXcdpZFXvNB30vDclYCiENmQ7byh92bfM7GZQ0+WZYE=;
- b=NzRk5GKWTiVTGc2LCWKfk0GlV/8Fl71U0mFHuA1zYtojpczDDab8OcgsfcpJwFG4s3/zY6
- kfk+2J8Rc8PLpQAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4C245593A3;
- Thu, 16 Apr 2026 18:11:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jUJoCVsm4WnobgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 16 Apr 2026 18:11:39 +0000
-Date: Thu, 16 Apr 2026 20:11:29 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Jinseok Kim <always.starving0@gmail.com>
-Message-ID: <20260416181129.GB303991@pevik>
-References: <CANgNiRztOnor2mgLyfGxiCE01qyBwcsnZcrv1ZUi14KeFzctQw@mail.gmail.com>
- <20260416144626.6037-1-always.starving0@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260416144626.6037-1-always.starving0@gmail.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_TLS_ALL(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+]; TAGGED_RCPT(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- FREEMAIL_CC(0.00)[gmail.com,lists.linux.it];
- FREEMAIL_TO(0.00)[gmail.com]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
- RCPT_COUNT_THREE(0.00)[3]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2F9891A004CC
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 20:21:13 +0200 (CEST)
+Received: by mail-wr1-x433.google.com with SMTP id
+ ffacd0b85a97d-43cfbd17589so5946579f8f.0
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 11:21:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1776363672; x=1776968472; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=iU4iknwEGWB4XOgHWVNETy5kgGxUMSw4cDkWe/nbxKc=;
+ b=MBZm9CbKt9K8FPfKjHRFr7/+qSgCAy/53JcBH1tHI8gtYjAWix+9fyufiPD7w23jEx
+ eShXS6jptsNCicQKmGWWgPDL7ylMEjLfoGiPwdIF0l7gVqzoKIfpHYNKllOeoD7WQ/y3
+ x5XjsVAHudT1hBeZ+PG127CbNeRwzPbX2lnFHAWPhKk0r855q4+PuXW2MD8v7ox6Sq48
+ t2N6dOrdgdgrxf0RgjVGrWmHtZNSPjeJMNRWgcktSn2lw2OGPBaOryhGs9UYbSoBVn3K
+ mfIdFCbRS8q+Hwy/WM+GNXd5Mio5j1f6wLoRnyB6xwzKcM9JM1XxzwsnXeVV/62v1Pdh
+ eDIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776363672; x=1776968472;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=iU4iknwEGWB4XOgHWVNETy5kgGxUMSw4cDkWe/nbxKc=;
+ b=D0PFKSTNgFngjtl8ASD+6r6ch/e4Mo5ZsTtts9lXDTnHALcHZL1xtALzCLIU62kv7J
+ KnYjIluJT4rJ44we0xgNiqmauZB1kVRZC1ek2SgS3db/su6FBtjGbi+wQt0sRBjYn/67
+ 4EnD4IEvNbHO1tsLiRFVS5MwTiyZOcn/VJ52mpv/sft44QZ2rW5FuxpmZAp6tlcJjxto
+ KcVs1MB9TSa5/kgnLWgM14L2AYSGJ9TrVHpO4z2RWqOLsEolTZjXdYXwye7jQ/t22oXn
+ 3xS9DEaLHJXD1aUVtTI4szGjq3GS69HHE/kiTDQley6qFlj5N9NkuzQncJbnqvmJZWhq
+ 9Rag==
+X-Gm-Message-State: AOJu0Yy/C+6NlZi0ek0Bihg1xHVvPmCTAEyKmVUfefqDehhVZjZzyJAB
+ xN2MxbSm7XRL+Oqfm1k9E122zb0YXns1Fr/atGPdiKSt2m14lLBjPeABmvjMVKWCVjI=
+X-Gm-Gg: AeBDiesLAAaaIUwgku71EjgI2Y8vC2wnB9aSmYOOGej1tMPj7gEMAhTf6EtXDbwwtmw
+ h0Yw/MtUQYK87iKCioNSamdfKwgRHdJwi/t9xkbgsIhtU1JjiQpcABSbbzOH/0zLOjnpNcQfJX1
+ PBI9F1EtehQ6Q65RH0rgizEFaPlWpIDx39KeBMlHzXhV1w5O4Sf64KMwqQEkS6W5hLp9ZDrCBV9
+ gHImG5n9zrh2qQG9A2rbQEDFFIARWmioZTou7UHYBpp5PgSu1VRsCMWY/AsJXyUVA9WUMzJy4fV
+ HYLKCKcnIHXROmIcDjtLLaWbAvvf8sT9ZhGdxKqdSbMeS46z0DaJmLpY05SnH/boDHj5aIWgwcC
+ 4qWfjf0FLPiGqPZoSyEgN3I08NIJCfS/0nBiCzAL/bzoQWetf0Ta0kt3oc33Se9QXh1k6vdcqhR
+ P34kkapWlBd5gyHC1N4pTlLw+OLO4kHG94V2oc1egpRxGZX6QJrGapU7gwdDODeES71AobpOyCp
+ 4d2taKCQ2FnvysucAbK0G8BuGblfusgMj1fg9MeWA69XmINATvbXqWFfZ7C/mY9zNZgQ/9/PNxI
+ 3Ph4+tzryrUL
+X-Received: by 2002:a05:6000:2307:b0:43b:5022:7fa with SMTP id
+ ffacd0b85a97d-43fe1099defmr683545f8f.13.1776363672448; 
+ Thu, 16 Apr 2026 11:21:12 -0700 (PDT)
+Received: from p200300ef2f4fc9006244747c327404e1.dip0.t-ipconnect.de
+ (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
+ [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-43ead3d5eb4sm15903193f8f.20.2026.04.16.11.21.11
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 16 Apr 2026 11:21:12 -0700 (PDT)
+Message-ID: <69e12898.df0a0220.2f778f.1aed@mx.google.com>
+To: "Andrea Cervesato" <andrea.cervesato@suse.de>
+In-Reply-To: <20260416-stream_refactoring-v2-0-8321b1ec6f68@suse.com>
+Date: Thu, 16 Apr 2026 18:21:11 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] include/lapi: add leaf Makefile
+Subject: Re: [LTP] [PATCH v2 0/7] Rewrite fs stream testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,63 +98,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jinseok,
+Merged, thanks.
 
-> Hi,
-
-> Thanks for the review!
-Yw.
-
-> If we switch to generic_trunk, the current directory is not checked;
-> only subdirectories are traversed.
-
-FYI by this I meant this change (part of more changes stated previously):
-
-diff --git include/Makefile include/Makefile
-index 6b31b046e4..84cd4ed6e3 100644
---- include/Makefile
-+++ include/Makefile
-@@ -24,4 +24,4 @@ ac-maintainer-clean:: ac-clean
-
- vpath %.h $(abs_srcdir)
-
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
-
-> For example, running `make check` in include/ will descend into
-> include/lapi, and running `make check` in include/lapi will descend
-> into include/lapi/syscalls.
-
-And with that change make check in include works:
-
-ltp/include $ make check-tst_fs.h
-CHECK include/tst_fs.h
-tst_fs.h:83: CHECK: 'swtich' may be misspelled - perhaps 'switch'?
-tst_fs.h:157: WARNING: please, no spaces at the start of a line
-tst_fs.h:157: WARNING: Prefer __printf(1, 2) over __attribute__((format(printf, 1, 2)))
-make: [../include/mk/rules.mk:69: check-tst_fs.h] Error 1 (ignored)
-
-ltp/include/lapi $ make check-tls.h
-CHECK include/lapi/tls.h
-tls.h:1: WARNING: Improper SPDX comment style for 'tls.h', please use '/*' instead
-tls.h:1: WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
-tls.h:35: WARNING: do not add new typedefs
-tls.h:49: WARNING: Missing a blank line after declarations
-tls.h:56: WARNING: Missing a blank line after declarations
-make: [../../include/mk/rules.mk:69: check-tls.h] Error 1 (ignored)
-
-Kind regards,
-Petr
-
-> Thanks,
-> Jinseok.
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
