@@ -4,100 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 540A3F8A16A
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 12:08:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F25EDF8A16B
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 12:17:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E6FA73E2928
-	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 14:08:52 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 7712F3E2638
+	for <ltp@archiver.kernel.org>; Thu, 16 Apr 2026 14:17:05 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 833D73C1E06
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 14:08:34 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 66AF63C1E06
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 14:16:45 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E609E1A000BA
- for <ltp@lists.linux.it>; Thu, 16 Apr 2026 14:08:33 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 73F6E5BCF3;
- Thu, 16 Apr 2026 12:08:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776341312;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=A3lFTPXu9fiQVLcLeKWKYhqurLGLHQn+0Zpp9xNn6/o=;
- b=hAZl0jxijvG5TY7eRB78qmh7hYMU5xS7VRX7Q1CrXKu8HINZtLeUVlB373qbYER5hpr4O/
- 1/vE0gZ13A6HTJU7MtIG0hBi/2A7Z6yLEg8fZEuhf+zZO1umEzlmbQ4vSMFC+WYEaq7tc9
- OtLNTDZJoFxtnYxi4TMzvlRvNTbmrbs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776341312;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=A3lFTPXu9fiQVLcLeKWKYhqurLGLHQn+0Zpp9xNn6/o=;
- b=FYpNP7nW5GptFH38b8p28ZxogJNCE3RouEBhfKwI4px0itV2PrxdKg8jTBxpaz2ec5KHse
- 7wQdh65YmoJLiVBw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776341311;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=A3lFTPXu9fiQVLcLeKWKYhqurLGLHQn+0Zpp9xNn6/o=;
- b=E+GKR6S6Eil5tZqAcwTkiDT8+DooMYKqmZxzteMJqqCOJ+v0rvV7t822lMkSY+KcDfKolD
- +dYeMys992WGLm2x4GTHpQ/vGLpePRS/s5QTigr06Yp9L80I/fMtexhS4KBfdEelrAa7cg
- hXuOFUGAcFxIAq2xcy4TGJRWiqhc38Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776341311;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=A3lFTPXu9fiQVLcLeKWKYhqurLGLHQn+0Zpp9xNn6/o=;
- b=kxlYdkgLVE0kovyZN8HHrr8cO2O2m9sgQnW7AZxPkKG1QctM9d7q0VrIXDNUPfsfrzplWI
- oXq5VTwrXaB8U9Bg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5DABA593A3;
- Thu, 16 Apr 2026 12:08:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id gtoQFj/R4GkICQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 16 Apr 2026 12:08:31 +0000
-Date: Thu, 16 Apr 2026 14:08:21 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20260416120821.GB299728@pevik>
-References: <20260416-fix_nanosleep_include-v1-1-f584b5556141@suse.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2DFD5600AD1
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 14:16:44 +0200 (CEST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 63G2FAvg1733164
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+ content-transfer-encoding:date:from:in-reply-to:message-id
+ :mime-version:references:subject:to; s=pp1; bh=Q79PLk1p6Fgo9Y3kg
+ r/PprPKpokyLPVZkjq9cRj72hA=; b=Rt9O1t8KrlMirCCfZApgmA4+U3yIMwVyX
+ 1KAIOqYl1DM1n0/9XSsQbvqRbpU2ah8QXkCBy2myms3CV9PhWVVQwGitmU+0beql
+ 0tH5xd9Cd9rAokW4UhqyEM+diPqFrqLYHW15T+1FxQZ2D3L8cq/d8gEylnbICd3F
+ Wk1Mb9U86hBSLGYBKRpri3gPmhAOlslor5xuZznWUmdSa31BW1o/Xp998VHcCs+o
+ 4PS5tpRdcYXHkFjCQvcx07fAXNy7P9TRJXwww18F2qRwd1NlIhorJm+Z4EZuMKm2
+ 9ogm8q0YckwGXK9hR6l//KAQoSlCYPPROvio4a+66h1yn2zVmMDWA==
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dh89mcd1p-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:43 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 63GCEL3M004175
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:42 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4dg24kjpsa-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:42 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
+ [10.20.54.105])
+ by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 63GCGeTh37028336
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:40 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id B2D8820049
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:40 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 11CC320040
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:40 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.43.36.193])
+ by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP
+ for <ltp@lists.linux.it>; Thu, 16 Apr 2026 12:16:39 +0000 (GMT)
+From: Sachin Sant <sachinp@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Thu, 16 Apr 2026 17:46:38 +0530
+Message-Id: <20260416121638.11858-2-sachinp@linux.ibm.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20260416121638.11858-1-sachinp@linux.ibm.com>
+References: <20260416121638.11858-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260416-fix_nanosleep_include-v1-1-f584b5556141@suse.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
- TO_DN_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=I/dVgtgg c=1 sm=1 tr=0 ts=69e0d32b cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=V8glGbnc2Ofi9Qvn3v5h:22 a=VnNF1IyMAAAA:8 a=0lvGaKBS8MktGGdRkRQA:9
+X-Proofpoint-GUID: m7UVUy4LMC8LW1kHWaZemujYx6Fc4tkw
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDE2MDExMiBTYWx0ZWRfXwn/Ng6uzqv/X
+ 5pumypmuF7Ila0aGAmQtjIZ1Y/85ypUx7HIuSylG1XQQkPk/vteRYx5c9vArqWj+PXV2QUMm6Tj
+ meKngHAL9VFHWT4u9GRuzl7dtFcJhFnFbGJXVat+GUQOZLc+SeBJbGKcykc5tcBFoIYOnYeS7lX
+ 5hMCRbvuiWNQ3c8VhANDHYviHlKXjLTU11GxMyDWSNu9ZJOnfAl6hIe/xzqfmFgF/grTLyViB1S
+ GevjF+3drQWmsyYCX9QOnkHrqsQN28umehhPQjQvFlXCFYP1tCBDxbBbZS9Axh1ReRnM6KAwFLI
+ PfUe9gx6hely7lkdy4RVGjrQszowmID5XzKhmqRktmsUva6EHOBF+RrXrnY6kN64p0xvVB1oImx
+ qFD8a+ONkjwElctJGYfE2b+0jbUIhIeP5kYxr2WcRbj68AefCd0DwkIAKlDqhrDzNXHJMc+dT51
+ AzvXGxgsrHHpFxzRMQw==
+X-Proofpoint-ORIG-GUID: m7UVUy4LMC8LW1kHWaZemujYx6Fc4tkw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-04-16_03,2026-04-13_04,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 bulkscore=0 clxscore=1015 adultscore=0 lowpriorityscore=0
+ suspectscore=0 impostorscore=0 phishscore=0 spamscore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2604070000 definitions=main-2604160112
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] nanosleep: use POSIX runtime detection for
- CLOCK_MONOTONIC
+Subject: [LTP] [PATCH 2/2] io_uring: remove unused
+ io_uring_init_buffer_pattern()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,54 +109,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
-...
-> --- /dev/null
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/helpers.h
-> @@ -0,0 +1,28 @@
-> +/*
-> + * Copyright (c) 2026, Linux Test Project
-> + * SPDX-License-Identifier: GPL-2.0-or-later
-> + */
-> +
-> +#ifndef NANOSLEEP_HELPERS_H
-> +#define NANOSLEEP_HELPERS_H
-> +
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <time.h>
-> +
-> +static inline clockid_t get_supported_clock(void)
-> +{
-> +#ifdef _POSIX_MONOTONIC_CLOCK
-> +	if (_POSIX_MONOTONIC_CLOCK > 0)
-> +		return CLOCK_MONOTONIC;
-> +
-> +	if (!_POSIX_MONOTONIC_CLOCK && sysconf(_SC_MONOTONIC_CLOCK) > 0)
-> +		return CLOCK_MONOTONIC;
-> +#endif
-> +
-> +	printf("CLOCK_MONOTONIC unavailable, test may fail due to "
-> +	       "external clock adjustments\n");
-> +	return CLOCK_REALTIME;
-> +}
-> +
-> +#endif /* NANOSLEEP_HELPERS_H */
-Could you please also fix
-testcases/open_posix_testsuite/conformance/interfaces/clock_settime/helpers.h?
+The io_uring04 test merged the functionality of
+io_uring_init_buffer_pattern() into the unified function
+init_iovec_buffers(). Since io_uring_init_buffer_pattern()
+was not used by any existing test, remove it.
 
-The rest LGTM.
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
+---
+ .../kernel/syscalls/io_uring/io_uring_common.h      | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-Kind regards,
-Petr
+diff --git a/testcases/kernel/syscalls/io_uring/io_uring_common.h b/testcases/kernel/syscalls/io_uring/io_uring_common.h
+index aa31339fb..7816b55dc 100644
+--- a/testcases/kernel/syscalls/io_uring/io_uring_common.h
++++ b/testcases/kernel/syscalls/io_uring/io_uring_common.h
+@@ -230,19 +230,6 @@ static inline void io_uring_wait_cqe(struct io_uring_submit *s,
+ 	*cring->head = head + 1;
+ }
+ 
+-/*
+- * Initialize buffer with a repeating character pattern
+- * Useful for creating test data with predictable patterns
+- */
+-static inline void io_uring_init_buffer_pattern(char *buf, size_t size,
+-						char pattern)
+-{
+-	size_t i;
+-
+-	for (i = 0; i < size; i++)
+-		buf[i] = pattern;
+-}
+-
+ /*
+  * Submit and wait for a non-vectored I/O operation
+  * Combines io_uring_submit_sqe() and io_uring_wait_cqe() with result reporting
+-- 
+2.39.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
