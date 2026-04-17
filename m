@@ -4,105 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0E88F4368D
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 11:35:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0474EF4368A
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 11:41:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 70F333E4ADB
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 13:35:21 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 9B7333E5944
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 13:41:51 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5326D3CCB72
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 13:35:02 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 8CF2C3E2730
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 13:41:32 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AF19F1400206
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 13:35:01 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D1BBC600749
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 13:41:31 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3C3616A9AE;
- Fri, 17 Apr 2026 11:35:00 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 49CF06A9AF;
+ Fri, 17 Apr 2026 11:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776425700;
+ t=1776426086;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8MzDnSvdXETvWIVW+93a6GYOLyGx9oiQYl5w9oe3i1g=;
- b=nQGzFsGdIt2zq+czqxqtyn2JdsLgCYHmv3DGivTxo21b2/kxyFNMnTQB1CpgK8FaVsDmG1
- NHFZx4yQlHjjtI/jRsHkDzjVmMwf8CWuAPvUbdio2uNnlrb3qnPoE5mL1L3stRCsL+i30P
- W7QNhJCZmfVEQZaRPN29Ak9NiEJqsxs=
+ bh=v55+xZa9RLJDN9Bw6wQ5WtIzTdshQE9uz69AUkVqAuU=;
+ b=1PnmoCKOW8ezzcFSvsveOeEg9vrEJJiC64KKPBMhoL4qYL1RVsdmoOrqdv6Ogi6Ey/XyvI
+ Qo/C+7Hi8a2THV8qICPxI5RVIyZDenDSY8TyCPU0xYTQkTNccImK23GpnddBGNHWfRZ1BW
+ O4br35N960RKyy2Xbg+6J5iEYJAR8RM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776425700;
+ s=susede2_ed25519; t=1776426086;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8MzDnSvdXETvWIVW+93a6GYOLyGx9oiQYl5w9oe3i1g=;
- b=l2G6SPUT73yq+qSjEMZtW/91mMmMwIFRwr9Hyjia9LkWCdFy/QKK346HTf3d0WErB+RCS8
- LCtFFsM+afLML8CQ==
+ bh=v55+xZa9RLJDN9Bw6wQ5WtIzTdshQE9uz69AUkVqAuU=;
+ b=rHhltD2UR+nitbLF2RJItIibolRKYS0kSClpzZbRn+x8MXqcp53VAqKUNAybsPTUA0lE3G
+ CzkzKWi0g1OKdBDA==
 Authentication-Results: smtp-out1.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1PnmoCKO;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=rHhltD2U
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776425700;
+ t=1776426086;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8MzDnSvdXETvWIVW+93a6GYOLyGx9oiQYl5w9oe3i1g=;
- b=nQGzFsGdIt2zq+czqxqtyn2JdsLgCYHmv3DGivTxo21b2/kxyFNMnTQB1CpgK8FaVsDmG1
- NHFZx4yQlHjjtI/jRsHkDzjVmMwf8CWuAPvUbdio2uNnlrb3qnPoE5mL1L3stRCsL+i30P
- W7QNhJCZmfVEQZaRPN29Ak9NiEJqsxs=
+ bh=v55+xZa9RLJDN9Bw6wQ5WtIzTdshQE9uz69AUkVqAuU=;
+ b=1PnmoCKOW8ezzcFSvsveOeEg9vrEJJiC64KKPBMhoL4qYL1RVsdmoOrqdv6Ogi6Ey/XyvI
+ Qo/C+7Hi8a2THV8qICPxI5RVIyZDenDSY8TyCPU0xYTQkTNccImK23GpnddBGNHWfRZ1BW
+ O4br35N960RKyy2Xbg+6J5iEYJAR8RM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776425700;
+ s=susede2_ed25519; t=1776426086;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8MzDnSvdXETvWIVW+93a6GYOLyGx9oiQYl5w9oe3i1g=;
- b=l2G6SPUT73yq+qSjEMZtW/91mMmMwIFRwr9Hyjia9LkWCdFy/QKK346HTf3d0WErB+RCS8
- LCtFFsM+afLML8CQ==
+ bh=v55+xZa9RLJDN9Bw6wQ5WtIzTdshQE9uz69AUkVqAuU=;
+ b=rHhltD2UR+nitbLF2RJItIibolRKYS0kSClpzZbRn+x8MXqcp53VAqKUNAybsPTUA0lE3G
+ CzkzKWi0g1OKdBDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B540593AE;
- Fri, 17 Apr 2026 11:35:00 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EAE5D593AE;
+ Fri, 17 Apr 2026 11:41:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id bnLxAOQa4mljeAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 17 Apr 2026 11:35:00 +0000
-Date: Fri, 17 Apr 2026 13:34:53 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MPo6N2Uc4mltfgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 17 Apr 2026 11:41:25 +0000
+Date: Fri, 17 Apr 2026 13:41:24 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Li Wang <wangli.ahau@gmail.com>
-Message-ID: <20260417113453.GA409289@pevik>
+Message-ID: <20260417114124.GB409289@pevik>
 References: <20260410175031.16921-1-always.starving0@gmail.com>
  <20260413212007.GA164377@pevik>
  <CANgNiRztOnor2mgLyfGxiCE01qyBwcsnZcrv1ZUi14KeFzctQw@mail.gmail.com>
  <20260416180559.GA303991@pevik>
  <CANgNiRxx3MyMGsEXszhV1TcBc8XP9jSrYL_pnbwsUa4bb0-XiQ@mail.gmail.com>
+ <CANgNiRzSi2OgV-vu0amVvqNW_jUK_bBpjntubERaEd-5dqUVXg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CANgNiRxx3MyMGsEXszhV1TcBc8XP9jSrYL_pnbwsUa4bb0-XiQ@mail.gmail.com>
-X-Spamd-Result: default: False [-2.00 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <CANgNiRzSi2OgV-vu0amVvqNW_jUK_bBpjntubERaEd-5dqUVXg@mail.gmail.com>
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.21 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  SUSPICIOUS_RECIPS(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MX_GOOD(-0.01)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FREEMAIL_TO(0.00)[gmail.com]; ARC_NA(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FREEMAIL_TO(0.00)[gmail.com]; TO_DN_SOME(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  FREEMAIL_CC(0.00)[gmail.com,lists.linux.it,suse.cz];
- REPLYTO_EQ_FROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TAGGED_RCPT(0.00)[]; MISSING_XM_UA(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto, suse.cz:email,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; TAGGED_RCPT(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; MISSING_XM_UA(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Queue-Id: 49CF06A9AF
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] include/lapi: add leaf Makefile
 X-BeenThere: ltp@lists.linux.it
@@ -123,54 +132,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Petr Vorel <pvorel@suse.cz> wrote:
+Hi Li,
 
-> > > > +INSTALL_DIR            := $(includedir)/lapi
+> > Yes, that was exactly my point, we'd better remove the INSTALL_* part
+> > from the Makefile you posted.
 
-> > > I'm doubting should we install the include/lapi/ local header files to
-> > > the /opt/ltp/include?
+> > -INSTALL_DIR            := $(includedir)/lapi
+> > -
+> > -INSTALL_MODE           := 00644
+> > -
+> > -INSTALL_TARGETS                := *.h
 
-> > Do you question *whether* install lapi/*.h or *where* to install them?
-> > We install include/*.h files. What is a difference with include/lapi/?
+> And we even don't need the additional clean targets, for the make-check
+> which just simply:
 
-> The former, I guess we don't need to install any.
+> --- a/include/Makefile
+> +++ b/include/Makefile
+> @@ -24,4 +24,4 @@ ac-maintainer-clean:: ac-clean
 
-+1
+>  vpath %.h $(abs_srcdir)
 
-> > I'd say either install both or none. I would prefer to not install any,
-> > LTP library is not separated anyway (there is an old Andrea's effort, but that
-> > uses meson anyway). Installation was added in 2008 and I doubt anybody is using
-> > it.
+> -include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> diff --git a/include/lapi/Makefile b/include/lapi/Makefile
+> new file mode 100644
+> index 0000000..83ef85c
+> --- /dev/null
+> +++ b/include/lapi/Makefile
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (C) 2026 Jinseok Kim <always.starving0@gmail.com>
+> +
+> +top_srcdir              ?= ../../
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
 
-> Yes, that was exactly my point, we'd better remove the INSTALL_* part
-> from the Makefile you posted.
-
-> -INSTALL_DIR            := $(includedir)/lapi
-> -
-> -INSTALL_MODE           := 00644
-> -
-> -INSTALL_TARGETS                := *.h
-
-+1, let's drop it. Ideally as a separate patch in include/Makefile, so that
-include/lapi/Makefile can be based on it. Maybe we could even have a template in
-include/mk/ instead of copypasting (when now we will not have INSTALL_*, but I
-don't require it (it's just 2x Makefile, they can be copy pasted).
-
-
-> > > > --- include/lapi/syscalls/Makefile
-> > > > +++ /dev/null
-
-> > > Does the `make check` still work (inside include/lapi/syscalls/)
-> > > without this Makefile?
-
-> > Sure not. Do we really want to check generate_arch.sh and generate_syscalls.sh
-> > in arch? If yes, sure it needs to be added, but that was not my intention when
-> > creating #1262. I really wanted to check C (and shell) library and tests code.
-
-> I'm ok with both, so without that Makefile we could do `make check` in
-> /include/lapi/.
-
-+1.
++1 (+ deleted that INSTALL_* variables).
 
 Kind regards,
 Petr
