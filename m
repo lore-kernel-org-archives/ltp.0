@@ -4,92 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7E88F43681
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 08:48:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F30EF43683
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 08:51:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1776415888; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=hvztE4AMkbCR5lpgN5k18NRS0NRkMlAM8XVR3N3jgAM=;
+ b=mxfWYD0tkrpXQII7OrijHAd1nfovZjYKZwSg8I7ok76oS5fxK27dOVOkC9CyQqZ3F5eDV
+ ou1Jko57rOJRQ0vbwXZ9GcKl2hrOgSJCsUfHcNfLvChq5faeyTgCfcR3XneiPmvoomNNHZe
+ 56oEWUighdYHeY/CqkDjCFHG0ctGxBo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7DAB93E2FF5
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 10:48:55 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id D39D73E2DF1
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 10:51:28 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B6D4D3E2627
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 10:48:12 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 100993C22A5
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 04:06:49 +0200 (CEST)
+Received: from canpmsgout07.his.huawei.com (canpmsgout07.his.huawei.com
+ [113.46.200.222])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 73C2B1400DBA
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 10:48:11 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E4B205BCD3;
- Fri, 17 Apr 2026 08:48:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776415690; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=CXuNUOiWgbIq3WSPfbYW6MmjGMl/42G2eZa53fGS5/4=;
- b=JR8RUzeJZ5BE0x2ePNZpg5iMyZfOjKsgWItaVmdYZwDVv6pYawCEvNkdz21eJ9qJYrxEf7
- QcJ3tYb4RouzkEQmpIvw53gDTgpuGrcuDtVj7BsFJqPmAi1T6PQFzgIw0jldi7dA9kHy76
- 5Pj0FlwjlCmM54GFWokEpVJ3ohJlnU0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776415690;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=CXuNUOiWgbIq3WSPfbYW6MmjGMl/42G2eZa53fGS5/4=;
- b=3Oy36+ifJ8wUxBYnDH1q5aDV+ve9mHhsK2dJot9o41VcHk68AyFqRHW6IGogR3+T4m5oOA
- LPrZfirLrVuZWcCQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776415685; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=CXuNUOiWgbIq3WSPfbYW6MmjGMl/42G2eZa53fGS5/4=;
- b=uBd2u3YBYoWi98O4fVf1VodrRjCGnzkAMo/4NnVEbru48ABFku60RfQSxAGutLE6pHudln
- Ei82DALABNQtAoxe7YSMUZ/MZXeFHlPI5NmGor0GEiAhP+4wm8hab/YmoUzP+6HVdaCAl9
- udmD35VHPPAdZkLRbZXaHyktzuI+bn4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776415685;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=CXuNUOiWgbIq3WSPfbYW6MmjGMl/42G2eZa53fGS5/4=;
- b=wgyM7g4x8igjBI3owy40fyvmxvTztKoyYZNu/+b3rXcKksiC3Ww1YrWZ50sq1CBeTpBzp7
- DFhBubkYMPsba/DA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CBDE0593AE;
- Fri, 17 Apr 2026 08:48:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id RpZqMMXz4WmUUAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 17 Apr 2026 08:48:05 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 17 Apr 2026 10:47:57 +0200
-Message-ID: <20260417084758.329107-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.53.0
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 931FB6006F0
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 04:06:47 +0200 (CEST)
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+ c=relaxed/relaxed; q=dns/txt; h=From;
+ bh=mst2VvAGexRkgpsJeGTSWLDVEZQy44lplyCZkLL3GP8=;
+ b=Eryvz9kGZuGBAiIv5r9FbQAQ3nA3kzC7C6tNDcB4AT5jqiQ42giE/LaTHh0PtWAx+0Iaxzj7P
+ Sc24FfoDi2WbPF9pcwgmJd14e1+qyGD8xgcRwfbh/UEFecQq2YXlxFMoz2qlsbRk7i6AMfr014r
+ LBOs2x0pf7qs5E5WhLbp3FM=
+Received: from mail.maildlp.com (unknown [172.19.163.214])
+ by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4fxdPg45mTzLlYX;
+ Fri, 17 Apr 2026 10:00:23 +0800 (CST)
+Received: from dggpemr500010.china.huawei.com (unknown [7.185.36.210])
+ by mail.maildlp.com (Postfix) with ESMTPS id 3154F40561;
+ Fri, 17 Apr 2026 10:06:42 +0800 (CST)
+Received: from huawei.com (10.50.85.180) by dggpemr500010.china.huawei.com
+ (7.185.36.210) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 17 Apr
+ 2026 10:06:41 +0800
+To: <ltp@lists.linux.it>, <krzysztof.kozlowski@canonical.com>, <pvorel@suse.cz>
+Date: Fri, 17 Apr 2026 10:29:49 +0800
+Message-ID: <20260417022949.2881047-1-zhanghongtao35@huawei.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_TLS_ALL(0.00)[]; TO_DN_SOME(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Originating-IP: [10.50.85.180]
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ dggpemr500010.china.huawei.com (7.185.36.210)
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] safe_stdio: More checks for invalid function
- return values
+X-Mailman-Approved-At: Fri, 17 Apr 2026 10:51:05 +0200
+Subject: [LTP] [PATCH] tpci: Unbind/rebind driver in test_assign_resources()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,84 +71,108 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Hongtao Zhang via ltp <ltp@lists.linux.it>
+Reply-To: Hongtao Zhang <zhanghongtao35@huawei.com>
+Cc: bhelgaas@google.com, liuyongqiang13@huawei.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-LTP library pedantically check invalid function return values, add
-missing ones.
+[Problem]
+A kernel panic (UAF) occurs during cat /proc/iomem following this sequence:
+ltp_tpci test -> remove driver module -> cat /proc/iomem.
+The crash happens when the kernel traverses the iomem tree and attempts to
+access the driver name of a hinic NIC node.
 
-Fixes: 56221c5bb2 ("lib: add safe macros for stream testing suite")
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+[Panic Log]
+[ 1621.313131] Unable to handle kernel paging request at virtual address ffffc272c2eb21c0
+...
+[ 1621.699915] Call trace:
+[ 1621.706132]  string+0x54/0x130
+[ 1621.712899]  vsnprintf+0x248/0x6f0
+[ 1621.719989]  seq_printf+0xc4/0xe8
+[ 1621.726941]  r_show+0xc4/0x100
+[ 1621.733555]  seq_read_iter+0x358/0x478
+[ 1621.740846]  proc_reg_read_iter+0x68/0xe8
+[ 1621.748410]  vfs_read+0x200/0x2b0
+[ 1621.755224]  ksys_read+0x78/0x118
+[ 1621.761961]  __arm64_sys_read+0x24/0x38
+[ 1621.769169]  invoke_syscall+0x50/0x128
+[ 1621.776226]  el0_svc_common.constprop.0+0xc8/0xf0
+[ 1621.784206]  do_el0_svc+0x24/0x38
+[ 1621.790723]  el0_svc+0x44/0x200
+[ 1621.796996]  el0t_64_sync_handler+0x100/0x130
+[ 1621.804445]  el0t_64_sync+0x188/0x190
+
+[Output of cat /proc/iomem in vmcore]
+(res@ffff284005be3b00):30a000000000-313fffffffff : PCI Bus 0000:95 (name@ffff08400fd074e8)
+  (res@ffff282006696778):30a000000000-30a0113fffff : PCI Bus 0000:96 (name@ffff28200668d0e8)
+    (res@ffff282006690778):30a000000000-30a0113fffff : PCI Bus 0000:97 (name@ffff28200668f8e8)
+      (res@ffff282006693778):30a000000000-30a0044fffff : PCI Bus 0000:9b (name@ffff2820066990e8)
+        (res@ffff2820066a7678):30a000000000-30a003bfffff : 0000:9b:00.0 (name@ffff08400fd063d0)
+        (res@ffff2820066a74b8):30a003c00000-30a003cfffff : 0000:9b:00.0 (name@ffff08400fd063d0)
+        (res@ffff2820066a73b8):30a003d00000-30a003d1ffff : 0000:9b:00.0 (name@ffff08400fd063d0)
+        (res@ffff2820066a75f8):30a003d20000-30a003efffff : 0000:9b:00.0 (name@ffff08400fd063d0)
+        (res@ffff2820066a7438):30a003f00000-30a003f07fff : 0000:9b:00.0 (name@ffff08400fd063d0)
+			(res@ffff28201699cf00):30a0044a0000-30a0044a7fff : gdb: invalid kernel virtual address:	ffffc272c2eb21c0: type:	"gdb readmem callback"
+gdb: gdb request failed: dump_iomem
+crash>
+
+[Root Cause]
+In test_assign_resources(), a hinic BAR is reassigned to a different physical
+address. When the hinic driver is later removed, its .remove callback fails to
+release the resource because the driver's claimed range no longer matches the
+reassigned BAR range.
+Consequently, the resource node remains in the iomem tree after the module is
+unloaded. Since resource->name points to the module's reclaimed memory,
+it becomes a dangling pointer. Traversing /proc/iomem dereferences this
+invalid pointer, triggering the UAF panic.
+
+[Fix]
+In test_assign_resources(), for end-devices:
+unbind drivers before calling pci_release_resource;
+rebind driver after pci_assign_resource().
+
+Fixes: d631e9caef68 ("ltp_tpci.c: Add release operation before allocation")
+Signed-off-by: Hongtao Zhang <zhanghongtao35@huawei.com>
 ---
- lib/safe_stdio.c | 30 +++++++++++++++++++++++-------
- 1 file changed, 23 insertions(+), 7 deletions(-)
+ .../device-drivers/pci/tpci_kernel/ltp_tpci.c   | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/lib/safe_stdio.c b/lib/safe_stdio.c
-index feb8a4b5c8..ed5bca0072 100644
---- a/lib/safe_stdio.c
-+++ b/lib/safe_stdio.c
-@@ -153,7 +153,11 @@ int safe_fseek(const char *file, const int lineno,
+diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+index 660b3a423..2790a15d6 100644
+--- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
++++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+@@ -442,9 +442,26 @@ static int test_assign_resources(void)
  
- 	if (ret == -1) {
- 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
--			"fseek(%p, %ld, %d)", f, offset, whence);
-+			"fseek(%p, %ld, %d) failed", f, offset, whence);
-+	} else if (ret < 0) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
-+			"Invalid fseek(%p, %ld, %d) return value %d",
-+			f, offset, whence, ret);
+ 		if (r->flags & IORESOURCE_MEM &&
+ 			r->flags & IORESOURCE_PREFETCH) {
++
++			if (dev->hdr_type == PCI_HEADER_TYPE_NORMAL) {
++				if (dev->dev.driver)
++					device_release_driver(&dev->dev);
++			}
++
+ 			pci_release_resource(dev, i);
+ 			ret = pci_assign_resource(dev, i);
+ 			prk_info("assign resource to '%d', ret '%d'", i, ret);
++
++			if (ret == 0) {
++				if (dev->hdr_type == PCI_HEADER_TYPE_NORMAL) {
++					int attach_ret;
++
++					attach_ret = device_attach(&dev->dev);
++					if (attach_ret < 0)
++						prk_info("device_attach failed for endpoint, ret: %d", attach_ret);
++				}
++			}
++
+ 			rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
+ 		}
  	}
- 
- 	return ret;
-@@ -167,8 +171,12 @@ long safe_ftell(const char *file, const int lineno,
- 	errno = 0;
- 	ret = ftell(f);
- 
--	if (ret == -1)
--		tst_brkm_(file, lineno, TBROK | TERRNO, NULL, "ftell(%p)", f);
-+	if (ret == -1) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, NULL, "ftell(%p) failed", f);
-+	} else if (ret < 0) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
-+				  "Invalid ftell(%p) return value %ld", f, ret);
-+	}
- 
- 	return ret;
- }
-@@ -181,8 +189,12 @@ int safe_fileno(const char *file, const int lineno,
- 	errno = 0;
- 	ret = fileno(f);
- 
--	if (ret == -1)
--		tst_brkm_(file, lineno, TBROK | TERRNO, NULL, "fileno(%p)", f);
-+	if (ret == -1) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, NULL, "fileno(%p) failed", f);
-+	} else if (ret < 0) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
-+				  "Invalid fileno(%p) return value %d", f, ret);
-+	}
- 
- 	return ret;
- }
-@@ -195,8 +207,12 @@ int safe_fflush(const char *file, const int lineno,
- 	errno = 0;
- 	ret = fflush(f);
- 
--	if (ret == EOF)
--		tst_brkm_(file, lineno, TBROK | TERRNO, NULL, "fflush(%p)", f);
-+	if (ret == EOF) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, NULL, "fflush(%p) failed", f);
-+	} else if (!ret) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
-+				  "Invalid fflush(%p) return value %d", f, ret);
-+	}
- 
- 	return ret;
- }
 -- 
-2.53.0
+2.43.0
 
 
 -- 
