@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D202BF43687
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 09:22:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7939F43687
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 09:23:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8096A3E2954
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 11:22:54 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 831823E2954
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 11:23:20 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C21003E196A
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 11:22:34 +0200 (CEST)
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
- [IPv6:2607:f8b0:4864:20::741])
+ by picard.linux.it (Postfix) with ESMTPS id 4BB0A3E196A
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 11:23:02 +0200 (CEST)
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com
+ [IPv6:2607:f8b0:4864:20::341])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4A50D600B2A
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 11:22:34 +0200 (CEST)
-Received: by mail-qk1-x741.google.com with SMTP id
- af79cd13be357-8d736211595so26396785a.0
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 02:22:34 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C467A600A58
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 11:23:01 +0200 (CEST)
+Received: by mail-ot1-x341.google.com with SMTP id
+ 46e09a7af769-7dbff06e4a6so501161a34.1
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 02:23:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776417753; x=1777022553; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1776417780; x=1777022580; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=+kdh3Aoe2KpCdgqS1hEvIZL4ezHXrDrxrs8aIh/gxNk=;
- b=PFCCi8n0tSs3doPEoUcnQsZF5/nZmXrp7asSeUtIeEkLVq5E89HlhEV/uOQWS92ZHZ
- pAwn/D1OkEjWfKAZck4vXVfiZrk03qR6pg2BW0J6vuttx+Z1UDoJfppG/giONhhpwBQr
- HRRB6t7f9+xhRIjL2FacVyBoXQ+POSqrawJ1AhjZ2DtSNVRtNb/wm7aksXpCOvDZ9vaT
- mmOhcA8c1b7yBgderiYbYPLEAMwhMl/RoAZHa5zflUx6NA8KvQpDH37YwdQy6PYWOOtn
- 3IUWuB0Hkg67dwF/g9bHYMVbSYCNwc7OUoJu+T0jyqQvik+im0roiCRhkxEqtzzCZdLt
- qIbw==
+ bh=SLfeyPvmQ57PlCJvbSSoZnbQT/G5CJ7ThAqa7N+/7DU=;
+ b=q21qbwYn5Uup1aiiCxmbB6ETZegRhkuhqXpfJCfQ1BFsGzNnMZgQBOBVl8ki/YrCdT
+ GGj9mcxTCXMX3orlbM/WnGr8tOom6ZEmF/2cXSEc8yYjlEPwRy70xjeMunJP1qrXOXks
+ 5VMKzXv81e5ttELNR+1enAh0uyAj+YKuI7hMPF0qJ0FYD0Oa8zmy6SpK56RlQ85GfL1v
+ UNOQNBdCYnar6ia2Chg5YR4S5sXdaZ1vffO+QAaJZpJqW3drEUgE3qGkjYrSrt1Rgb4h
+ Zts83sCzaeaW66jBFii4KNRW7ux5wxCBXlhUQvPEhzBes3iNQv67NPBuVmNAmmNlyukU
+ LrcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776417753; x=1777022553;
+ d=1e100.net; s=20251104; t=1776417780; x=1777022580;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=+kdh3Aoe2KpCdgqS1hEvIZL4ezHXrDrxrs8aIh/gxNk=;
- b=o7UlDXLQjHX1jEcYuNvwKJjPb1phWQPnDYfLn35iXsNITkyacg4xugSRElzWmXHbdS
- ma3Ot7pp8tSNodndQtR03ObE28Wlxeh9AEi50oATw27glKsY+yVn2V6bq3XkYMuPlgfT
- 5d/JwwzH3vizxlX2/JlNt6k7l4KFBpdtvownGHXx7OEixa7/XVljr975k2p8UXh3i1MY
- bzNSHUUmMxYjAHzPlJQtev2BtswnqkAUYXL1J0uhwNI1/jt5Z1xITcM+VfFGRiOymJdb
- QVLz7ImklycM/srobLe1NgkQx5CD31XCn0qB1qbqEQy4IVnOV+PUjHN0oMQHp2vDhFbY
- EFag==
-X-Gm-Message-State: AOJu0YxmkicirtNQIZDfyEmwSbcgQ5ZqV5zAphqqDmP6Ald66U3icItZ
- vuqapcBJIbwm+Ko/nW4ZQCkdUjtiO5sBGWMW0uJfOydMn0mMLA8U+H2z
-X-Gm-Gg: AeBDiev1iBWEZf44LqS8NwISx/aoRi1UngasmSkOo0b4V/mbm7joCjyuQVcY9EqhPiK
- LP5KX/FN3/4WZzQMA2oZZqBOlMYJrZOI5S5+yTLtzbh0dupKocCF3nS/AYNvBOebNB2KwjjEHHg
- UFiALR32nHFbyDlq28D6XPRKg9Q2EHgKkQ5JlOwsMFmYJ/5j2a5MBATeKc27oSW/uBR0mxqb8dr
- R5SMX3PgW0jVl4bNTcLhpdg5mTbCTzolz3vv7gGbguK41tKnoIKrsPG1RHggoUKHK6zdWLsMc7E
- Hcj+Qmh9kigOPCA3b99kFUPXunNTaH4IU9SDtRo78TmyICa5Zr7j2wcSt+3wzGXokLXfHy1TVGF
- MAOm6wtxuw/Xrg+10G/3PBIXsEVobc+rIpFvqsjJdSpgBtNBL1zojQHQHFP25zpfxfIre0nE7Yy
- 6csZULp/aF/vSFbjBAmsRnPtHcybnGP+Zo6pB4xNG0v4C5m/HtpQKjYL/vNdS1VMBrEHyxz0x4R
- hKqJkP80OrOdXMFI4pnXefEdEcet5yOLXZZnSdBy69o18c+fV0=
-X-Received: by 2002:a05:620a:4613:b0:8d7:cf69:3c00 with SMTP id
- af79cd13be357-8e791b8d505mr235008285a.39.1776417753086; 
- Fri, 17 Apr 2026 02:22:33 -0700 (PDT)
+ bh=SLfeyPvmQ57PlCJvbSSoZnbQT/G5CJ7ThAqa7N+/7DU=;
+ b=Ht0f5ZaKTzfF0q5ZCrSuiDvrJ3ZciQbLluWvDEfEcZbtljMtOK1awndWN0SVApHD7f
+ igz5i0lDfk6aUwCSvgagcymHz8XlDoVqAe/3w+zXzqoczx7YnDwc38jUsXCHLrFInWn9
+ YHSs9fQVaH9Kq0RTc9PS4KXToX4C2Sq73GRdPpan3khN3QnFtc2DF+8N7Sl49PKSIiV6
+ 9M8eC+jMCCAKmb67Q7W0s15IuUoaIdBqlfShCcWKkY7fGVxRi0iOOufoz6YpuDLCD0JP
+ araznhr3tlGfv2mvOchEK5YVvJ82A/YkcpnqdZ4SAYsQCeAxN3RDZfzERy4/KnTTzW3W
+ Xd7w==
+X-Gm-Message-State: AOJu0Yx2b2BIhpGRrqpbpB5cp9icDmUj0qlZRtaUpPgICyuisOXg30rY
+ I1G7kJAVRSXhuWGYogZ8AX1CJZdnEVr/jrpqWBnN2B6DZvQNrJ5O8SNG
+X-Gm-Gg: AeBDieu70rZPhZmbaB9mJG9HzuX33FB6LudRxdL6PbI8k5Chr3/tWceSzsew9+aqMPq
+ B+C1S7k2DPinHMIZ9uQVg0dzY2cVLELSl2TRny58e9xuUPdFRqtkaXMSFYFCnNaGQYjlmNpHW/m
+ bgtafzhygj7iXSBQmdqBlEh/NKxeXrFEq6mVqNGyZzt8k7qpxEvjL/vWwBH1NkdkgEk/Rf5M+K8
+ zgbcQCfLOIjYEVqO6EcxUNxDeS5xMBGLGWw6c0pGHQ5lw0nSSlbKVPhE9jaIBHju9v+3eS3P0BK
+ XmmfTwUB4U17zyCTrkydVr1en0BBbkQgEikB8u+czCQbBBk2i+mD4N8d4R+Y5dwvxEciZuJfxul
+ zwTbRNLxkllWwJwdsNrPMpMtNu0Smg4ReqE2lSuZpF8LMB5aMFspaZlmQPr3ZeJd4Y6+UpFppM8
+ pldDlvbe9KTsjY9Fm2NkYlczNDiISAbGHyZLKk9k2/Igw3dZXr5zVUfpHUSmD7R94o0YmEJGd2M
+ HSimr1DaMLyLPsEiGDADpf2N8NYIFzURnbKdV5A29JYZFsbeA==
+X-Received: by 2002:a05:6830:7305:b0:7d7:cea3:6d89 with SMTP id
+ 46e09a7af769-7dc94fc94ecmr1260024a34.4.1776417780334; 
+ Fri, 17 Apr 2026 02:23:00 -0700 (PDT)
 Received: from
- runnervm35a4x.2nwclih42vyuji5rolimwxmlmg.ex.internal.cloudapp.net
- ([64.236.169.132]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-8e7d69ad49dsm82529385a.18.2026.04.17.02.22.32
+ runnervm35a4x.xplmaoejahduziehhbpepjkxga.gx.internal.cloudapp.net
+ ([52.173.181.17]) by smtp.gmail.com with ESMTPSA id
+ 46e09a7af769-7dc97502488sm754129a34.5.2026.04.17.02.22.59
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Apr 2026 02:22:32 -0700 (PDT)
+ Fri, 17 Apr 2026 02:23:00 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Martin Cermak <mcermak@redhat.com>
-Date: Fri, 17 Apr 2026 09:22:31 +0000
-Message-ID: <20260417092231.3781-1-linuxtestproject.agent@gmail.com>
+To: Hongtao Zhang <zhanghongtao35@huawei.com>
+Date: Fri, 17 Apr 2026 09:22:58 +0000
+Message-ID: <20260417092259.3879-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260417082920.1101928-1-mcermak@redhat.com>
-References: <20260417082920.1101928-1-mcermak@redhat.com>
+In-Reply-To: <20260417022949.2881047-1-zhanghongtao35@huawei.com>
+References: <20260417022949.2881047-1-zhanghongtao35@huawei.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Fix Valgrind warnings in ioctl_pidfd02
+Subject: Re: [LTP] tpci: Unbind/rebind driver in test_assign_resources()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,26 +90,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+Hi Hongtao,
 
-On Fri, 17 Apr 2026, Martin Cermak wrote:
-> Fix Valgrind warnings in ioctl_pidfd02
+On Fri, 17 Apr 2026 10:29:49 +0800, Hongtao Zhang wrote:
+> tpci: Unbind/rebind driver in test_assign_resources()
 
-The subject names ioctl_pidfd02, but the only changed file is
-lib/tst_clone.c. Use the component prefix instead:
+> +			if (dev->hdr_type == PCI_HEADER_TYPE_NORMAL) {
+> +				if (dev->dev.driver)
+> +					device_release_driver(&dev->dev);
+> +			}
+> +
+>  			pci_release_resource(dev, i);
+>  			ret = pci_assign_resource(dev, i);
+> +
+> +			if (ret == 0) {
+> +				if (dev->hdr_type == PCI_HEADER_TYPE_NORMAL) {
+> +					int attach_ret;
+> +
+> +					attach_ret = device_attach(&dev->dev);
+> +					if (attach_ret < 0)
+> +						prk_info("device_attach failed for endpoint, ret: %d", attach_ret);
+> +				}
+> +			}
 
-  lib/tst_clone: Fix clone() parent_tid argument when CLONE_PIDFD is used
+Properly unbinding before BAR reassignment and rebinding afterward
+prevents the dangling resource->name pointer UAF in /proc/iomem.
 
-> This patch also sets ARG4 and ARG5.
-
-No Fixes: tag. Please add one in the trailer pointing to the commit that
-introduced the 2-argument clone() fallback in tst_clone.c.
+Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
 
 ---
 Note:
