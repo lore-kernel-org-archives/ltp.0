@@ -4,111 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DE89F43680
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 09:03:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B134CF43687
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 09:17:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C5A803E2DDD
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 11:03:56 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 659603E4D3E
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 11:17:44 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 665713CCB72
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 11:03:39 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 16C653E16FB
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 11:17:26 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CB26D200AD4
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 11:03:32 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 696771400197
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 11:17:25 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 667626A847;
- Fri, 17 Apr 2026 09:03:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776416607;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=oU4cxef0cCDeX5rnBwGRP8zSXeJZF7C60aK+3I2L6pc=;
- b=tXGv6JPoduI44GAbkx7iH7eGvx26KJuLzAP8Cyx5ruYr2G2IQFCB6k2O6kjYkrvitNRqlW
- VCPM6w2+Rr2D+zB/xeOGPSfPL/wNe0zsFVeeBW5HEfRV7lhySRx5ca79npbAidUFo5dulq
- G9EGGwWUkjj4LsdepScZY9IA+QxTL0c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776416607;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=oU4cxef0cCDeX5rnBwGRP8zSXeJZF7C60aK+3I2L6pc=;
- b=bLq6i7Rhwhp+Fe3dNgA4mN8ftwt1S7zTVWPhG47pYsocYW+3v3k45QZTG2a5CPgde+vTuR
- GpvPxxsGHSIxZaBA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 34BC86A989;
+ Fri, 17 Apr 2026 09:17:25 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DM1CgGOk;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BRKkRSnt
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776416603;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=oU4cxef0cCDeX5rnBwGRP8zSXeJZF7C60aK+3I2L6pc=;
- b=DM1CgGOksc2tZAH6MEjoA6cKBd0GHP6QC5hb2x2VXM3NNxK9SUnP6j+mtSZczYXx/KYSCU
- K3r7rFhhwNZVjwLKbkeMSM4WkJudQiWcCpm/o7zzvBHTpWyMr5WR7++Ww8jHz1tO1ZMNcN
- LVb0K/CJ2nEGxSDINA+ZWu9mqpjGEOE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776416603;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=oU4cxef0cCDeX5rnBwGRP8zSXeJZF7C60aK+3I2L6pc=;
- b=BRKkRSntdNXVKzzToMxDXiY4QcogedD89LjQN52pNjksmcHC7TcaxW5SwtW8/klWvPSYLP
- PMU4EH730fzR6WAg==
+	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 33D91593AE;
- Fri, 17 Apr 2026 09:03:23 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 69FA2593AE;
+ Fri, 17 Apr 2026 09:17:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Nl9ECVv34Wl0YAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 17 Apr 2026 09:03:23 +0000
-Date: Fri, 17 Apr 2026 11:03:21 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <20260417090321.GB329568@pevik>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id W2A8GKT64WmzbgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 17 Apr 2026 09:17:24 +0000
+Date: Fri, 17 Apr 2026 11:17:38 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aeH6sravZ3nwD5NH@yuki.lan>
 References: <20260417085931.331281-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20260417085931.331281-1-pvorel@suse.cz>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 34BC86A989
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.21 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- SUSPICIOUS_RECIPS(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; ARC_NA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_DN_SOME(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,ubuntu.com:url,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- FREEMAIL_CC(0.00)[redhat.com,suse.cz,suse.com,gmail.com];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- TAGGED_RCPT(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: 667626A847
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
+ TAGGED_RCPT(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 1/1] ci: doc: Replace Ubuntu bionic with noble
 X-BeenThere: ltp@lists.linux.it
@@ -122,37 +70,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi!
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-> Replace Ubuntu 18.04 LTS bionic with  Ubuntu 24.04 LTS noble (the latest
-> Ubuntu LTS).
-
-> Ubuntu 18.04 LTS bionic EOL 3 years ago (2023-04). Repositories were
-> publicly available until now, remove it to fix CI.
-
-> Exact error is missing Packages file
-
->     W: Failed to fetch http://archive.ubuntu.com/ubuntu/dists/bionic-backports/InRelease  Connection failed [IP: 91.189.91.82 80]
->     E: Failed to fetch http://archive.ubuntu.com/ubuntu/dists/bionic/universe/binary-amd64/Packages  Connection timed out [IP: 91.189.92.23 80]
-
-> which causes gcc not being installed.
-
-> Although repository has Packages.gz and Packages.xz (therefore it
-> should somehow work or it might be GitHub Actions issue) we don't need
-> to keep bionic (we have older distro openSUSE Leap 42), which we still
-> use for testing SLE1-SP2 build).
-
-Other option would be to remove 22.04 LTS jammy (previous LTS), but I'm ok to
-keep it.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
