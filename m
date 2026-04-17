@@ -4,61 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 946ECF43699
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 12:54:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB71AF43697
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 12:58:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 34D273E5954
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 14:53:59 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 7501B3E5952
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 14:58:56 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E82383E2983
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 14:53:40 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 2285F3E2983
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 14:58:37 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3BA4B140032C
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 14:53:39 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 49A542003B6
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 14:58:36 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4FA385BD1C;
- Fri, 17 Apr 2026 12:53:39 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 631196A9C5;
+ Fri, 17 Apr 2026 12:58:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776430711;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mIF/V/m3w4LJp4IOxMMfhgzz5DrjcyHPqzIuAMnKjCk=;
+ b=PRwGHv7LbGSBIK2MnJnQFptRr2BXwk50ixutZv0DSGWfs2tFt/r5dKvgsscIbCrlF1T0Et
+ WxJd1idMI4ZrC/YlW2MQyKNRPq9XS4LQDzGL361esrmT/7XrNxGXNMVIGCExHqrNQDMfMi
+ +5luDSoWjTjRogN3Jys5wH0wfTQNuJA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776430711;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mIF/V/m3w4LJp4IOxMMfhgzz5DrjcyHPqzIuAMnKjCk=;
+ b=r4lOe7kd/qcPLTKYAZe102J3auXdMbAFQj/dQ2darkmhtwGl/4k+9qSWPnpJZXuxUXZD1K
+ Rnsv8UWxw/EnyVCg==
+Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776430707;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mIF/V/m3w4LJp4IOxMMfhgzz5DrjcyHPqzIuAMnKjCk=;
+ b=tS6sFkvKwD4gB+2vkpXGkFtqkqbDn/NVDkDL0eCvgkmm1DqVyMq/KN7r7+JT+WqMQP8/WJ
+ qeXlH/KVv70dyj0BvxMNiZWusGm8AeUzgbQhvg/P7apWXfJD4qP0FaerMQIZo/FoI7iAEL
+ 3EaAZXS2/GGDoRrMuco2ohUJl8+4Stk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776430707;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mIF/V/m3w4LJp4IOxMMfhgzz5DrjcyHPqzIuAMnKjCk=;
+ b=J9nUlcdkDnqSXuodgIO+2fnkBTeSa3b6FnN5/6/fFIPewCUYKD6UPjB3l/qITLTuxl6lFS
+ pqoxK14BxIkWnHCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2F459593AE;
- Fri, 17 Apr 2026 12:53:39 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4CB48593AE;
+ Fri, 17 Apr 2026 12:58:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id OBluClMt4mkNSAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 17 Apr 2026 12:53:39 +0000
-Date: Fri, 17 Apr 2026 14:53:22 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id SDHEEXMu4mn7TAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 17 Apr 2026 12:58:27 +0000
+Date: Fri, 17 Apr 2026 14:58:21 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20260417125322.GA419619@pevik>
-References: <20260416-fix_clock_settime_helper-v1-1-2874202291bf@suse.com>
+Message-ID: <20260417125821.GB419619@pevik>
+References: <20260416-fix_nanosleep_include-v2-1-b3147763acb8@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260416-fix_clock_settime_helper-v1-1-2874202291bf@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 4FA385BD1C
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+In-Reply-To: <20260416-fix_nanosleep_include-v2-1-b3147763acb8@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[ozlabs.org:url,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
+ RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] clock_settime: use POSIX runtime detection for
+Subject: Re: [LTP] [PATCH v2] nanosleep: use POSIX runtime detection for
  CLOCK_MONOTONIC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -78,77 +115,48 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Andrea,
 
-> The clock_settime helpers.h used a compile-time #ifdef on
-> _POSIX_MONOTONIC_CLOCK to select between real and stub
-> implementations of pts_mono_time_start()/pts_mono_time_check().
-
-> On Linux/glibc, _POSIX_MONOTONIC_CLOCK is defined as 0, meaning
-> support is optional and must be verified at runtime via
-> sysconf(_SC_MONOTONIC_CLOCK). The #ifdef treated 0 the same as
-> >0 (always available), which is not POSIX-correct.
-
-> Replace the compile-time #ifdef/#else split with a runtime
-> pts_mono_available() helper that performs proper POSIX detection
-> via sysconf(). Also add a missing #ifndef include guard and
-> #include <unistd.h> so _POSIX_MONOTONIC_CLOCK is always defined.
-
-> Fixes: 9ecb4a004b18 ("clock_settime: Detect external clock adjustments via CLOCK_MONOTONIC")
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  .../conformance/interfaces/clock_settime/helpers.h | 76 +++++++++++++---------
->  1 file changed, 46 insertions(+), 30 deletions(-)
-
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/helpers.h b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/helpers.h
-> index 37bf30926f039553e9e370751b7938ca5ea1d00a..b568ec8122d3bba8246b09a5b694f1263084a408 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/helpers.h
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/clock_settime/helpers.h
-> @@ -13,7 +13,11 @@
->   * by those tests.
->   */
-
-> +#ifndef CLOCK_SETTIME_HELPERS_H
-> +#define CLOCK_SETTIME_HELPERS_H
+...
+> --- /dev/null
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/nanosleep/helpers.h
+> @@ -0,0 +1,28 @@
+> +/*
+> + * Copyright (c) 2026, Linux Test Project
+> + * SPDX-License-Identifier: GPL-2.0-or-later
+> + */
 > +
->  #include <stdlib.h>
+> +#ifndef NANOSLEEP_HELPERS_H
+> +#define NANOSLEEP_HELPERS_H
+> +
+> +#include <stdio.h>
 > +#include <unistd.h>
-
->  static int getBeforeTime(struct timespec *tpget)
->  {
-> @@ -37,53 +41,65 @@ static int setBackTime(struct timespec tpset)
-
->  #define PTS_MONO_MAX_RETRIES 3
-
-> +static struct timespec pts_mono_start;
+> +#include <time.h>
 > +
-> +static inline int pts_mono_available(void)
+> +static inline clockid_t get_supported_clock(void)
 > +{
->  #ifdef _POSIX_MONOTONIC_CLOCK
-> -static struct timespec _pts_mono_start;
+> +#ifdef _POSIX_MONOTONIC_CLOCK
 > +	if (_POSIX_MONOTONIC_CLOCK > 0)
-> +		return 1;
+> +		return CLOCK_MONOTONIC;
 > +
 > +	if (!_POSIX_MONOTONIC_CLOCK && sysconf(_SC_MONOTONIC_CLOCK) > 0)
-This and the previous condition is the same as in patch for nanosleep.
-It's a simple code, but because it's still a bit specific, wouldn't it make
-sense to move the function from nanosleep/helpers.h [1]
-to newly created file in testcases/open_posix_testsuite/include/clock.h?
-And both tests would use it?
-
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/patch/20260416-fix_nanosleep_include-v2-1-b3147763acb8@suse.com/
-
-> +		return 1;
+> +		return CLOCK_MONOTONIC;
 > +#endif
-> +	return 0;
-> +}
+> +
+> +	printf("CLOCK_MONOTONIC unavailable, test may fail due to "
+> +	       "external clock adjustments\n");
++1 for warning. But please don't split string just due few chars over 100.
 
+> +	return CLOCK_REALTIME;
+I've suggested [1] in clock_settime [2] to move this function to newly created
+testcases/open_posix_testsuite/include/clock.h, so that clock_settime/helpers.h
+can also use it.
 
 Kind regards,
 Petr
+
+[1] https://lore.kernel.org/ltp/20260417125322.GA419619@pevik/
+[2] https://patchwork.ozlabs.org/project/ltp/patch/20260416-fix_clock_settime_helper-v1-1-2874202291bf@suse.com/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
