@@ -4,101 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F030F8DFEA
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 08:35:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1776414915; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=NFXpKNUt46vg33XweFRIU6qXAUNm1RKj9aKqTLjs1a4=;
- b=oDINBwM8CdJNUOGn8neVMdizzFC70OE0z4WXfA0WvmXpjdWe/J0aqqQUou0CGLHOYOmjh
- VV2V6AH7sejO6wyIteBg2CV4rfE5wFScaIwLTzDrOcDeQeyO0T7Y9dlVtaNL8jr4V/KPQMb
- O+txS95TZpKdZOYrR7MX4WJaGigXxkI=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EF6CF8DFF9
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 08:48:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C10EE3E2627
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 10:35:15 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id DB0613E2DDD
+	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 10:48:31 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2AE9E3C2B4B
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 10:34:52 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 88B193E2627
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 10:48:12 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 98D4D600A3A
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 10:34:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1776414889;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 02052600B2B
+ for <ltp@lists.linux.it>; Fri, 17 Apr 2026 10:48:10 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 12FE26A869;
+ Fri, 17 Apr 2026 08:48:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776415690; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=hFknYmXUOSE+SRVcbLK/TE7T7lH2V7GvdxTSG1FI6fg=;
- b=hwrxF+8HnTGxcFbIArfN7dIZq+hf9rR6/0nXZ91b647Bp2BLqAhjUITQx5h07wxgTfytGf
- eq2L8MeZLlc3/HtX8DpOH1lSe4qUzp1Ed/uSQnBWx/wWBaKPIeTwiv0UesX6iz0UYR3ahd
- zmaGd8u3/IzjfHMLvATjIPuU/d9YtZs=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-448-T8YxIN9yPqK936tgw3VJww-1; Fri, 17 Apr 2026 04:34:48 -0400
-X-MC-Unique: T8YxIN9yPqK936tgw3VJww-1
-X-Mimecast-MFC-AGG-ID: T8YxIN9yPqK936tgw3VJww_1776414887
-Received: by mail-wr1-f70.google.com with SMTP id
- ffacd0b85a97d-43d1ceb2ddfso320926f8f.2
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 01:34:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776414887; x=1777019687;
- h=user-agent:in-reply-to:content-disposition:mime-version:references
- :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=hFknYmXUOSE+SRVcbLK/TE7T7lH2V7GvdxTSG1FI6fg=;
- b=UwkG7UfiS0SJomG8UdAj3/mudlcPoLSWkwKsaMQES9qZJsyv/1hTqv4ldW3Bj7xWp+
- W/kdcZPQ1AsoO8nSJ7n3Tlyiqzbjw+Q9iwRPGYx39dUJAfzP02HVVRze193pvY+0BC7o
- 0h9vMfCVXdotdNCAqAzOEhrvyciDsQwNKkMOlKjxtwdL6JSPZkf1IJlLGzfKFNehUmwf
- qAoKQUnWb/uMlx6ZmPMBLh89+ujC/OfiCozR8JyH6OwcpcWT4lHtA5LMloxN+m3osnxL
- FgjVlBLTWn61yy8eesn3fvLS2jV+KAAK40JAc1F/VVhRQq24C7oKCiTupk5IFMkeOOe2
- ghQA==
-X-Forwarded-Encrypted: i=1;
- AFNElJ/02F5564aSdmpn3oOWgKMu2lqahvm/B0pmsSxBNbJStwb5Gn5uVafx3iBBVaVppaFruoU=@lists.linux.it
-X-Gm-Message-State: AOJu0YySLHQzQQa3GVfZ2SndDZhmgOrHRp9kPw3h30xC3qhjyjeK7MRG
- 4jt/gLwHgoL/+HGTdnYFdIdwc6YlXMAYSQeHEkPaa6l9RNigr92HqgNVqjGnxNjFJOYHFMGB7YI
- ljI0HvHJDBzyPnlBfmzTg9zihjzRTwr5WhYhjDQ5n97DFUjjKihVF
-X-Gm-Gg: AeBDiesIcSkS4GZF+r5HA4aU5EwWxbHcAiqNg5Bqe+5rNUKwBVZH8u86v5pUyF03O7T
- tUcaKxTH5LInQOeOgiw8Vr+yp+t54gvwtByJ9ECq+Fu01r2aN4pvgVJcB42AwzE5Ycs4IUxwiVX
- NU4iyeGshayBuPmzATMXU4xUId+C/dRDNfUJf5XprKSgwpBMStqMYclg5kOuR2rEFyOK9b4J7+v
- nItyxI2ksbiHXViUlbD0rEkSqIc6JQJomc5tg2wrEhyIMu7u/COGPK2/tuWlx51DuzBc6wJt8Ra
- +p71AA/fm6ac9zvOtyAwPfqBTtHJ+yUN/Qfo5JZsLsYXpG+DMmT55PaTaTKlOFw201FkCicfbAn
- zDT7ern9oLReaj6hNklAZKmNgmKT3DP7JHDQPbR+jVqKU
-X-Received: by 2002:a05:600c:1389:b0:485:9a50:338d with SMTP id
- 5b1f17b1804b1-488fb739d3amr26967885e9.3.1776414886855; 
- Fri, 17 Apr 2026 01:34:46 -0700 (PDT)
-X-Received: by 2002:a05:600c:1389:b0:485:9a50:338d with SMTP id
- 5b1f17b1804b1-488fb739d3amr26967125e9.3.1776414886200; 
- Fri, 17 Apr 2026 01:34:46 -0700 (PDT)
-Received: from lida.tpb.lab.eng.brq.redhat.com ([213.175.46.86])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-488fc11ced7sm24973275e9.0.2026.04.17.01.34.44
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 17 Apr 2026 01:34:45 -0700 (PDT)
-Date: Fri, 17 Apr 2026 10:34:43 +0200
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260417083443.v2yfuwvz2dstty7s@lida.tpb.lab.eng.brq.redhat.com>
-References: <20260415082547.vgn23q2aobxy5gzv@lida.tpb.lab.eng.brq.redhat.com>
- <ad93vsV4GZ4nenoR@yuki.lan>
+ bh=mnn54T+JcoPAUZcr9+j97ooam/LQDn34ym6lS4lS4PM=;
+ b=wbJLdSISidImbocpwLOr9V6CzbfE8DwTK7Mwe1C/U9WABhr6FEjiyCOqO+Ax8yKPL3jSFC
+ W9QruBHXuQPGeoQS97XQpp3gYeSCTAe94fYjEYK4uCDriaaimn2WwXjpeFl+Dpoe1jCDzZ
+ oOuKL+2zmT7GM5ZC43Qo8A+QT34ld7o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776415690;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=mnn54T+JcoPAUZcr9+j97ooam/LQDn34ym6lS4lS4PM=;
+ b=z4w+RFkgCw+kLzpBn/YVwUnaX0CLnXxf490KthbM1vHnG0804PhiKD8f19/85jXGKPZoia
+ 9qW2xuzxdT6o4KCw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776415686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=mnn54T+JcoPAUZcr9+j97ooam/LQDn34ym6lS4lS4PM=;
+ b=v20GVU3vNd6EDw7opH6VKZD7Iiiy7TInmnI9AK8t5f/k0YgBhR1yL/mFj4nFq4z7Ca41Ne
+ 14WqJwBkN1OQeUGQUilIExP317fP19gbf+whDLu3nJUjP4Tnko1FZlbjkNB874SWguSRuy
+ f98ueOdLDUqINksFEcFlkq/QuN3RD6M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776415686;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=mnn54T+JcoPAUZcr9+j97ooam/LQDn34ym6lS4lS4PM=;
+ b=G0TIF4p0vh1SV9TxjMvfG6ud09cps2iOgm/9ydqq8WBpcEKHaO0HVRLFhyq4FeICWrYiaz
+ ZcGYKkL3jdMVEJAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB060593AF;
+ Fri, 17 Apr 2026 08:48:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id oMRxOMXz4WmUUAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 17 Apr 2026 08:48:05 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Fri, 17 Apr 2026 10:47:58 +0200
+Message-ID: <20260417084758.329107-2-pvorel@suse.cz>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260417084758.329107-1-pvorel@suse.cz>
+References: <20260417084758.329107-1-pvorel@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <ad93vsV4GZ4nenoR@yuki.lan>
-User-Agent: NeoMutt/20180716
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: HHmMsZNqmbdDd4hMLzFKdG9w5E3f20Wr5Ng0AzARCY8_1776414887
-X-Mimecast-Originator: redhat.com
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Spamd-Result: default: False [-6.80 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_CONTAINS_FROM(1.00)[]; R_MISSING_CHARSET(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; TO_DN_SOME(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Make ioctl_pidfd02 valgrind-compliant
+Subject: [LTP] [PATCH 2/2] lib: Be pedantic on invalid comparison check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,75 +109,381 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Martin Cermak via ltp <ltp@lists.linux.it>
-Reply-To: Martin Cermak <mcermak@redhat.com>
-Cc: valgrind-developers@lists.sourceforge.net, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Invalid return values are when "ret < -1". While "ret < 0" mostly works
+due previous check "ret == -1" it can have misleading message when after
+code refactoring.
 
-On  Wed  2026-04-15  13:34 , Cyril Hrubis wrote:
-> >  #ifdef __s390x__
-> > -	pid = syscall(__NR_clone, NULL, flags);
-> > +	pid = syscall(__NR_clone, NULL, flags, args.pidfd);
-> >  #else
-> > -	pid = syscall(__NR_clone, flags, NULL);
-> > +	pid = syscall(__NR_clone, flags, NULL, args.pidfd);
-> >  #endif
-> 
-> Aren't we missing more that that?
-> 
-> Looking at kernel/fork.c:
-> 
-> #ifdef __ARCH_WANT_SYS_CLONE
-> #ifdef CONFIG_CLONE_BACKWARDS
-> SYSCALL_DEFINE5(clone, unsigned long, clone_flags, unsigned long, newsp,
->                  int __user *, parent_tidptr,
->                  unsigned long, tls,
->                  int __user *, child_tidptr)
-> #elif defined(CONFIG_CLONE_BACKWARDS2)
-> SYSCALL_DEFINE5(clone, unsigned long, newsp, unsigned long, clone_flags,
->                  int __user *, parent_tidptr,
->                  int __user *, child_tidptr,
->                  unsigned long, tls)
-> #elif defined(CONFIG_CLONE_BACKWARDS3)
-> SYSCALL_DEFINE6(clone, unsigned long, clone_flags, unsigned long, newsp,
->                 int, stack_size,
->                 int __user *, parent_tidptr,
->                 int __user *, child_tidptr,
->                 unsigned long, tls)
-> #else
-> SYSCALL_DEFINE5(clone, unsigned long, clone_flags, unsigned long, newsp,
->                  int __user *, parent_tidptr,
->                  int __user *, child_tidptr,
->                  unsigned long, tls)
-> #endif
-> {
->         struct kernel_clone_args args = {
->                 .flags          = (lower_32_bits(clone_flags) & ~CSIGNAL),
->                 .pidfd          = parent_tidptr,
->                 .child_tid      = child_tidptr,
->                 .parent_tid     = parent_tidptr,
->                 .exit_signal    = (lower_32_bits(clone_flags) & CSIGNAL),
->                 .stack          = newsp,
->                 .tls            = tls,
->         };
-> 
->         return kernel_clone(&args);
-> }
-> #endif
-> 
-> there is at least child_tidptr and tls as well.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ lib/safe_file_ops.c     |  2 +-
+ lib/safe_macros.c       | 16 ++++++++--------
+ lib/safe_net.c          | 14 +++++++-------
+ lib/safe_stdio.c        |  4 ++--
+ lib/tst_safe_io_uring.c |  4 ++--
+ lib/tst_safe_macros.c   | 16 ++++++++--------
+ lib/tst_safe_sysv_ipc.c | 10 +++++-----
+ lib/tst_safe_timerfd.c  |  2 +-
+ lib/tst_security.c      |  2 +-
+ 9 files changed, 35 insertions(+), 35 deletions(-)
 
-I've updated my patch (and commit message) accordingly, and sent
-it via git send-email per your suggestion - as a separate email.
-Please check.
-
-Cheers,
-Martin
+diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
+index 8314c4b1bb..0982274120 100644
+--- a/lib/safe_file_ops.c
++++ b/lib/safe_file_ops.c
+@@ -361,7 +361,7 @@ int safe_touch(const char *file, const int lineno,
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"Failed to open file '%s'", pathname);
+ 		return ret;
+-	} else if (ret < 0) {
++	} else if (ret < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"Invalid open(%s) return value %d", pathname, ret);
+ 		return ret;
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index 68b8747b4d..22b321fc45 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -89,7 +89,7 @@ safe_creat(const char *file, const int lineno, void (*cleanup_fn) (void),
+ 	if (rval == -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"creat(%s,%04o) failed", pathname, mode);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"Invalid creat(%s,%04o) return value %d", pathname,
+ 			mode, rval);
+@@ -258,7 +258,7 @@ int safe_open(const char *file, const int lineno, void (*cleanup_fn) (void),
+ 	if (rval == -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"open(%s,%d,%04o) failed", pathname, oflags, mode);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"Invalid open(%s,%d,%04o) return value %d", pathname,
+ 			oflags, mode, rval);
+@@ -297,7 +297,7 @@ ssize_t safe_read(const char *file, const int lineno, void (*cleanup_fn) (void),
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"read(%d,%p,%zu) failed, returned %zd", fildes, buf,
+ 			nbyte, rval);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"Invalid read(%d,%p,%zu) return value %zd", fildes,
+ 			buf, nbyte, rval);
+@@ -495,7 +495,7 @@ ssize_t safe_readlink(const char *file, const int lineno,
+ 	if (rval == -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"readlink(%s,%p,%zu) failed", path, buf, bufsize);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"Invalid readlink(%s,%p,%zu) return value %zd", path,
+ 			buf, bufsize, rval);
+@@ -554,7 +554,7 @@ ssize_t safe_write(const char *file, const int lineno, void (cleanup_fn) (void),
+ 			return rval;
+ 		}
+ 
+-		if (rval < 0) {
++		if (rval < -1) {
+ 			tst_brkm_(file, lineno, TBROK, cleanup_fn,
+ 			          "invalid write() return value %zi",
+ 				  rval);
+@@ -804,7 +804,7 @@ pid_t safe_wait(const char *file, const int lineno, void (cleanup_fn)(void),
+ 	if (rval == -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"wait(%p) failed", status);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"Invalid wait(%p) return value %d", status, rval);
+ 	}
+@@ -822,7 +822,7 @@ pid_t safe_waitpid(const char *file, const int lineno, void (cleanup_fn)(void),
+ 	if (rval == -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"waitpid(%d,%p,%d) failed", pid, status, opts);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"Invalid waitpid(%d,%p,%d) return value %d", pid,
+ 			status, opts, rval);
+@@ -1116,7 +1116,7 @@ ssize_t safe_getxattr(const char *file, const int lineno, const char *path,
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"getxattr(%s, %s, %p, %zu) failed",
+ 			path, name, value, size);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"Invalid getxattr(%s, %s, %p, %zu) return value %zd",
+ 			path, name, value, size, rval);
+diff --git a/lib/safe_net.c b/lib/safe_net.c
+index 5dec0de113..37a980fae9 100644
+--- a/lib/safe_net.c
++++ b/lib/safe_net.c
+@@ -127,7 +127,7 @@ int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
+ 
+ 		tst_brkm_(file, lineno, ttype | TERRNO, cleanup_fn,
+ 			"socket(%d, %d, %d) failed", domain, type, protocol);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"Invalid socket(%d, %d, %d) return value %d", domain,
+ 			type, protocol, rval);
+@@ -215,7 +215,7 @@ ssize_t safe_send(const char *file, const int lineno, char len_strict,
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"send(%d, %p, %zu, %d) failed", sockfd, buf, len,
+ 			flags);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"Invalid send(%d, %p, %zu, %d) return value %zd",
+ 			sockfd, buf, len, flags, rval);
+@@ -239,7 +239,7 @@ ssize_t safe_sendto(const char *file, const int lineno, char len_strict,
+ 			sockfd, buf, len, flags,
+ 			tst_sock_addr(dest_addr, addrlen, res, sizeof(res)),
+ 			addrlen);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"Invalid sendto(%d, %p, %zu, %d, %s, %d) return value %zd",
+ 			sockfd, buf, len, flags,
+@@ -260,7 +260,7 @@ ssize_t safe_sendmsg(const char *file, const int lineno, size_t len,
+ 	if (rval == -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"sendmsg(%d, %p, %d) failed", sockfd, msg, flags);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"Invalid sendmsg(%d, %p, %d) return value %zd",
+ 			sockfd, msg, flags, rval);
+@@ -284,7 +284,7 @@ ssize_t safe_recv(const char *file, const int lineno, size_t len,
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"recv(%d, %p, %zu, %d) failed", sockfd, buf, size,
+ 			flags);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"Invalid recv(%d, %p, %zu, %d) return value %zd",
+ 			sockfd, buf, size, flags, rval);
+@@ -308,7 +308,7 @@ ssize_t safe_recvmsg(const char *file, const int lineno, size_t len,
+ 	if (rval == -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"recvmsg(%d, %p, %d) failed", sockfd, msg, flags);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"Invalid recvmsg(%d, %p, %d) return value %zd",
+ 			sockfd, msg, flags, rval);
+@@ -396,7 +396,7 @@ int safe_accept(const char *file, const int lineno, void (cleanup_fn)(void),
+ 	if (rval == -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"accept(%d, %p, %d) failed", sockfd, addr, *addrlen);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"Invalid accept(%d, %p, %d) return value %d", sockfd,
+ 			addr, *addrlen, rval);
+diff --git a/lib/safe_stdio.c b/lib/safe_stdio.c
+index ed5bca0072..27b38aadcc 100644
+--- a/lib/safe_stdio.c
++++ b/lib/safe_stdio.c
+@@ -67,7 +67,7 @@ int safe_asprintf(const char *file, const int lineno, void (cleanup_fn)(void),
+ 	if (ret == -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"asprintf(%s,...) failed", fmt);
+-	} else if (ret < 0) {
++	} else if (ret < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+ 			"Invalid asprintf(%s,...) return value %d", fmt, ret);
+ 	}
+@@ -154,7 +154,7 @@ int safe_fseek(const char *file, const int lineno,
+ 	if (ret == -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"fseek(%p, %ld, %d) failed", f, offset, whence);
+-	} else if (ret < 0) {
++	} else if (ret < -1) {
+ 		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+ 			"Invalid fseek(%p, %ld, %d) return value %d",
+ 			f, offset, whence, ret);
+diff --git a/lib/tst_safe_io_uring.c b/lib/tst_safe_io_uring.c
+index de6869f501..627cedfe02 100644
+--- a/lib/tst_safe_io_uring.c
++++ b/lib/tst_safe_io_uring.c
+@@ -21,7 +21,7 @@ int safe_io_uring_init(const char *file, const int lineno,
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"io_uring_setup() failed");
+ 		return uring->fd;
+-	} else if (uring->fd < 0) {
++	} else if (uring->fd < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"io_uring_setup() returned invalid value %d",
+ 			uring->fd);
+@@ -98,7 +98,7 @@ int safe_io_uring_enter(const char *file, const int lineno, int strict,
+ 	if (ret == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"io_uring_enter() failed");
+-	} else if (ret < 0) {
++	} else if (ret < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid io_uring_enter() return value %d", ret);
+ 	} else if (strict && to_submit != (unsigned int)ret) {
+diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+index cdc8c7dd33..a893f73231 100644
+--- a/lib/tst_safe_macros.c
++++ b/lib/tst_safe_macros.c
+@@ -68,7 +68,7 @@ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid)
+ 	if (pgid == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO, "getpgid(%i) failed",
+ 			pid);
+-	} else if (pgid < 0) {
++	} else if (pgid < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid getpgid(%i) return value %d", pid, pgid);
+ 	}
+@@ -103,7 +103,7 @@ int safe_getgroups(const char *file, const int lineno, int size, gid_t list[])
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"getgroups(%i, %p)", size, list);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid getgroups(%i, %p) return value %d", size,
+ 			list, rval);
+@@ -120,7 +120,7 @@ int safe_personality(const char *filename, unsigned int lineno,
+ 	if (prev_persona == -1) {
+ 		tst_brk_(filename, lineno, TBROK | TERRNO,
+ 			 "persona(%ld) failed", persona);
+-	} else if (prev_persona < 0) {
++	} else if (prev_persona < -1) {
+ 		tst_brk_(filename, lineno, TBROK | TERRNO,
+ 			 "Invalid persona(%ld) return value %d", persona,
+ 			 prev_persona);
+@@ -139,7 +139,7 @@ int safe_pidfd_open(const char *file, const int lineno, pid_t pid,
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			 "pidfd_open(%i, %i) failed", pid, flags);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			 "Invalid pidfd_open(%i, %i) return value %d",
+ 			 pid, flags, rval);
+@@ -521,7 +521,7 @@ int safe_dup(const char *file, const int lineno, int oldfd)
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"dup(%i) failed", oldfd);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid dup(%i) return value %d", oldfd, rval);
+ 	}
+@@ -723,7 +723,7 @@ int safe_prctl(const char *file, const int lineno,
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"prctl(%d, %lu, %lu, %lu, %lu)",
+ 			option, arg2, arg3, arg4, arg5);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid prctl(%d, %lu, %lu, %lu, %lu) return value %d",
+ 			option, arg2, arg3, arg4, arg5, rval);
+@@ -746,7 +746,7 @@ ssize_t safe_readv(const char *file, const int lineno, char len_strict,
+ 	if (rval == -1 || (len_strict && rval != nbyte)) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"readv(%d,%p,%d) failed", fildes, iov, iovcnt);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid readv(%d,%p,%d) return value %zd",
+ 			fildes, iov, iovcnt, rval);
+@@ -788,7 +788,7 @@ ssize_t safe_writev(const char *file, const int lineno, char len_strict,
+ 	if (rval == -1 || (len_strict && rval != nbyte)) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"writev(%d,%p,%d) failed", fildes, iov, iovcnt);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid writev(%d,%p,%d) return value %zd",
+ 			fildes, iov, iovcnt, rval);
+diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
+index a196fc9ce4..4a16a86e12 100644
+--- a/lib/tst_safe_sysv_ipc.c
++++ b/lib/tst_safe_sysv_ipc.c
+@@ -70,7 +70,7 @@ int safe_msgget(const char *file, const int lineno, key_t key, int msgflg)
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO, "msgget(%i, %x) failed",
+ 			(int)key, msgflg);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid msgget(%i, %x) return value %d", (int)key,
+ 			msgflg, rval);
+@@ -110,7 +110,7 @@ ssize_t safe_msgrcv(const char *file, const int lineno, int msqid, void *msgp,
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"msgrcv(%i, %p, %zu, %li, %x) failed",
+ 			msqid, msgp, msgsz, msgtyp, msgflg);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid msgrcv(%i, %p, %zu, %li, %x) return value %ld",
+ 			msqid, msgp, msgsz, msgtyp, msgflg, rval);
+@@ -148,7 +148,7 @@ int safe_shmget(const char *file, const int lineno, key_t key, size_t size,
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"shmget(%i, %zu, %x) failed", (int)key, size, shmflg);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid shmget(%i, %zu, %x) return value %d",
+ 			(int)key, size, shmflg, rval);
+@@ -218,7 +218,7 @@ int safe_semget(const char *file, const int lineno, key_t key, int nsems,
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"semget(%i, %i, %x) failed", (int)key, nsems, semflg);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid semget(%i, %i, %x) return value %d",
+ 			(int)key, nsems, semflg, rval);
+@@ -272,7 +272,7 @@ int safe_semop(const char *file, const int lineno, int semid, struct sembuf *sop
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"semop(%d, %p, %zu) failed", semid, sops, nsops);
+-	} else if (rval < 0) {
++	} else if (rval < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid semop(%d, %p, %zu) return value %d",
+ 			semid, sops, nsops, rval);
+diff --git a/lib/tst_safe_timerfd.c b/lib/tst_safe_timerfd.c
+index d31f6e35e5..c08b468fce 100644
+--- a/lib/tst_safe_timerfd.c
++++ b/lib/tst_safe_timerfd.c
+@@ -21,7 +21,7 @@ int safe_timerfd_create(const char *file, const int lineno,
+ 	if (fd == -1) {
+ 		tst_brk_(file, lineno, TTYPE | TERRNO,
+ 			"timerfd_create(%s) failed", tst_clock_name(clockid));
+-	} else if (fd < 0) {
++	} else if (fd < -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid timerfd_create(%s) return value %d",
+ 			tst_clock_name(clockid), fd);
+diff --git a/lib/tst_security.c b/lib/tst_security.c
+index 00be4d72e2..b25605377c 100644
+--- a/lib/tst_security.c
++++ b/lib/tst_security.c
+@@ -122,7 +122,7 @@ int tst_secureboot_enabled(void)
+ 		tst_res(TINFO | TERRNO,
+ 			"Cannot open SecureBoot file");
+ 		return -1;
+-	} else if (fd < 0) {
++	} else if (fd < -1) {
+ 		tst_brk(TBROK | TERRNO, "Invalid open() return value %d", fd);
+ 		return -1;
+ 	}
+-- 
+2.53.0
 
 
 -- 
