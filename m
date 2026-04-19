@@ -4,107 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AFB4F436BD
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 17:11:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2068FF99C92
+	for <ltp@archiver.kernel.org>; Sun, 19 Apr 2026 01:22:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1776561751; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=vCmrNmT8QUiezaMbf9WbZ8izyJwQBxJO0nxnp2UkiWs=;
+ b=hh496YoxX1MxMKduV7k9PVmWlIQYFHRANBaYBQVmqQZIyX2FpKC8DO3DKYypdqseko3sY
+ I89EAdYMKNEysle/MsQ/zVBMqGZ3HsefRegHevj1o7sExh3v6MryAAJRA0wvi2B0K1xQ9Ex
+ KY2t0/vafQSF5oP+b0sKcjacIrFRR1Y=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9AF823E5952
-	for <ltp@archiver.kernel.org>; Fri, 17 Apr 2026 19:11:27 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 642903E588D
+	for <ltp@archiver.kernel.org>; Sun, 19 Apr 2026 03:22:31 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F0B013C1E06
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 19:11:07 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7D0BD3CE729
+ for <ltp@lists.linux.it>; Sun, 19 Apr 2026 03:22:07 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2F1441A00A44
- for <ltp@lists.linux.it>; Fri, 17 Apr 2026 19:11:06 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3B0596A9CD;
- Fri, 17 Apr 2026 17:11:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776445866;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ZoNpbTJG3FA+Y6/ojdio+/PmnI+Bl2TOJlXEMWDNRPc=;
- b=p8f9HgC81RqnGM4durgZx3xfS4BOkcEkxseOTwAdLLv3T5iUFg+alC5QLwazifO2qYMvyZ
- 9NMDXV3nZW4dz2svQgotp1+E3heJ8pENfVcs+XYKpxZIiKX7ftYWqAKG/MagbhGWIvTb3S
- 9xSw9wniFDqH5J5SWrwuNjpPAq15+DY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776445866;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ZoNpbTJG3FA+Y6/ojdio+/PmnI+Bl2TOJlXEMWDNRPc=;
- b=xpC/kqsu09Mh0R9uSJUz2I83Sy/6JwlEUoGqu5nmmrOkJp0YpXCkeQagMjbGw54q+Fjid/
- YcD+YEMHDw6JvXCw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776445866;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ZoNpbTJG3FA+Y6/ojdio+/PmnI+Bl2TOJlXEMWDNRPc=;
- b=p8f9HgC81RqnGM4durgZx3xfS4BOkcEkxseOTwAdLLv3T5iUFg+alC5QLwazifO2qYMvyZ
- 9NMDXV3nZW4dz2svQgotp1+E3heJ8pENfVcs+XYKpxZIiKX7ftYWqAKG/MagbhGWIvTb3S
- 9xSw9wniFDqH5J5SWrwuNjpPAq15+DY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776445866;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ZoNpbTJG3FA+Y6/ojdio+/PmnI+Bl2TOJlXEMWDNRPc=;
- b=xpC/kqsu09Mh0R9uSJUz2I83Sy/6JwlEUoGqu5nmmrOkJp0YpXCkeQagMjbGw54q+Fjid/
- YcD+YEMHDw6JvXCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BF5EC593AE;
- Fri, 17 Apr 2026 17:11:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 0EDgLKlp4mn4RAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 17 Apr 2026 17:11:05 +0000
-Date: Fri, 17 Apr 2026 19:11:04 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: =?iso-8859-2?Q?Micha=B3?= Grzelak <michal.grzelak@intel.com>
-Message-ID: <20260417171104.GB426937@pevik>
-References: <20260331183332.1773886-16-michal.grzelak@intel.com>
- <202604150702.d409a2b6-lkp@intel.com>
- <20260416064051.GA281695@pevik>
- <aeCShTeoW+lmHjHF@xsang-OptiPlex-9020>
- <2df6f595-da57-0668-951c-657c5c876333@intel.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id ACF7E600783
+ for <ltp@lists.linux.it>; Sun, 19 Apr 2026 03:22:06 +0200 (CEST)
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-488b0e1b870so27787755e9.2
+ for <ltp@lists.linux.it>; Sat, 18 Apr 2026 18:22:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1776561726; x=1777166526; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=pHOAB2sghkKBJvbhsfPKVMhflz3+vyGHwRaM93tzwtE=;
+ b=R6IkS2piFodPwss5Lh/iGmIWzbhFBiMa64QWlTFyygy/THPPEEfbdY+8XFP2vs6xwn
+ M6dmVUAXIyKcOikvxx48PI4pkpRee3+/DLtGsa4r73ItXuN2RkIrwznAeoF4Pfoj04mX
+ oEkJN/3iqHhlvWfNyxe6QCexJpBIrn6/loAUVOcYw15HjZjgX+sUOjTcbBVG5TTZVuNV
+ 2xRm4TRHN7VOBc7OnJFdOHkAr7tt4HVxrC6wKSVRbeb12LnphiwRyrhoD5buHV6cAp5u
+ 5VgsTtbp3abUy6grDjRjMGHJZhHPW6/UX+cbYPoig85TctIiFRFTtrsDMUb/tlEP/Q0B
+ ZHCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776561726; x=1777166526;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=pHOAB2sghkKBJvbhsfPKVMhflz3+vyGHwRaM93tzwtE=;
+ b=AQnlIb/n0zl+RIFJLMv0pNbLkhjBBgFG2qq9fDV/wJux0tXraft7m/3vUFJYYQ7xhY
+ mdacUdp1/CcGW5U/U+TzEkETeorXfE29FoVCIiil/0boVhIQq4V98lqtpmHaIJHs6moe
+ 1RynkS8gnAOuFNjtkY6txzMD1xfSecKzdcbwt3BVCBP6yoI3hogUpQIkt++Ndm5sHaRE
+ Bu8rpNEJMGethj6gXJ35d296J5DN9JtdSN7/73AqRcfuW43ZPmxhi+mT7wH/CEbTCn5B
+ aFK928IsF6iNpV2IXf1vGiTTGUduMLvOjRSJP2e2VxsCE9aExvrGwkP4pQmZJa5VM1AF
+ srYA==
+X-Gm-Message-State: AOJu0YxZ/zdkc9SJ+XT2Ng5X8IB1zTp6AIU67eRfRlWAXRBcwVkP25kf
+ jiaq3HRiIglEkXaAsx7b1qxRBtLEwPnlHUql9UbGtMnvUadZpMVgBD04FpYf6QL8QQ==
+X-Gm-Gg: AeBDieuoEXnd24QoFP1QLH/lr9VPfQrk6FGVY2bYot33sPsh9aKKaiGEXAWSmrGP1Zx
+ WILaTmdlvmOKxuesmU2bUcG0pnuhFD9kzFQhMLQwWunLjEB2+nX7ZYH+6/BIeSt+IqTgpuGa/Lv
+ xFxx/Q3ej8AZYlQfJEinJK8MgwL/7ODw0Iw3YD00mh1QIvNVvd69RcJeHlxaByFCWRTqXOrCrCb
+ LP01bamhkrLgEcmIFJb55z+uuejv4kQ3WSuIE347MRRHkjRNYckSLRel10nlmaPTrEG1TXgBGqC
+ DJN4K+rDXyaz8yfqrlEdATTAJX6yhjBMdHLbbF8bH/UzO6mmEPC+ArNOvCritYkLaKtHTPgmx5y
+ Nt/Wk/ozVeuJeCshsyESMoqJdLz/bs8lrd+emHPebhX3cZHVijHd1acQyhvg/3qNvgxsYMQTiP6
+ Udmb65kCGaC13odUc72VRj60Mvqi004UljqsCE5OSXIIdUuO+YjC8=
+X-Received: by 2002:a05:600c:8488:b0:488:a882:c7 with SMTP id
+ 5b1f17b1804b1-488fb77b575mr120134495e9.25.1776561726052; 
+ Sat, 18 Apr 2026 18:22:06 -0700 (PDT)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-43fe4cb13a0sm17309350f8f.8.2026.04.18.18.22.05
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 18 Apr 2026 18:22:05 -0700 (PDT)
+Date: Sun, 19 Apr 2026 01:22:04 +0000
+To: linuxtestproject.agent@gmail.com
+Message-ID: <aeQuPHn47KoO8r_P@autotest-wegao.qe.prg2.suse.org>
+References: <20260417122804.23890-1-wegao@suse.com>
+ <20260417132649.3984-1-linuxtestproject.agent@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <2df6f595-da57-0668-951c-657c5c876333@intel.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_SEVEN(0.00)[10];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+In-Reply-To: <20260417132649.3984-1-linuxtestproject.agent@gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 15/16] drm/i915/bios: search for VBT #57 by
- default
+Subject: Re: [LTP] mremap07.c: New test for mremap() with MREMAP_DONTUNMAP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,72 +98,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: lkp@intel.com, intel-gfx@lists.freedesktop.org,
- Jani Nikula <jani.nikula@linux.intel.com>, Oliver Sang <oliver.sang@intel.com>,
- oe-lkp@lists.linux.dev, linux-integrity@vger.kernel.org,
- intel-xe@lists.freedesktop.org, ltp@lists.linux.it
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Micha=B3, all,
-
-> Hi Petr & Oliver,
-
-> > in our tests, it's quite persistent and clean on parent:
-
-> I haven't reproduced it myself, but this issue seems somewhat related
-> with issue observed earlier by CI [1]. I would expect it to not be a
-> random glitch but a true bug related to the series.
-
-> In previous versions of the series, during parsing there was a
-> unfortunate snippet of:
-
-> +	const u32 *tables =3D block->tables;
-> +	size_t offset =3D 0;
-> +	size_t row_width;
-> +	const u32 *vals;
-> +
-> +	row_width =3D block->num_columns * sizeof(*tables);
-> +
-> +	for (int idx =3D 0; idx < block->num_tables; idx++) {
-> +		for (int row =3D 0; row < num_rows; row++) {
-> +			vals =3D &tables[offset];
+On Fri, Apr 17, 2026 at 01:26:49PM +0000, linuxtestproject.agent@gmail.com wrote:
+> Hi Wei,
+> 
+> On 2026-04-17, Wei Gao wrote:
+> > mremap07.c: New test for mremap() with MREMAP_DONTUNMAP
+> 
+> > +static void *fault_handler_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+> > +{
+> > +	struct uffd_msg msg;
+> > +	struct uffdio_copy uffdio_copy;
+> > +
+> > +	TST_CHECKPOINT_WAIT(0);
+> > +
+> > +	struct pollfd pollfd;
+> > +
+> > +	int nready = poll(&pollfd, 1, -1);
+> 
+> Nit: declare all variables at the top of the block, before any statements
+> (struct pollfd and int nready should move above TST_CHECKPOINT_WAIT(0)).
+Unless the LTP project strictly mandates a "declarations at the top" policy for tests, 
+I would prefer to keep the current implementation.
+> 
 > [...]
-> +			offset +=3D row_width;
-> +		}
-> +	}
+> 
+> Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
+> 
+> ---
+> Note:
+> 
+> Our agent completed the review of the patch. The full review can be
+> found at: <review_url>
+> 
+> The agent can sometimes produce false positives although often its
+> findings are genuine. If you find issues with the review, please
+> comment this email or ignore the suggestions.
+> 
+> Regards,
+> LTP AI Reviewer
 
-> Which caused hopping by 4 times more bytes than it should, because the
-> sizeof() wasn't meant to be there. Since parsing takes place at module
-> load, looks like it could be the issue. This seems especially convincing
-> given that report is from parse_vswing_preemph_snps(). I have to also
-> admit that it would be consistent with review comment from Sashiko [2].
-
-> Lastly, sadly due to poorly split commits, 15th patch from v1 turned on
-> whole VBT #57 searching. This probably caused bisect to point at 15th
-> patch instead of pointing at patch adding parsing code, which would
-> clearly show that patch/es introduce/s the bug.
-
-> Anyways, now the bug should be fixed in v2 [3].
-
-Micha=B3, thanks a lot for pointing pointing this out.
-
-Kind regards,
-Petr
-
-> [1] https://intel-gfx-ci.01.org/tree/drm-tip/Patchwork_164196v1/fi-hsw-47=
-70/dmesg0.txt
-> [2] https://sashiko.dev/#/patchset/20260331183332.1773886-1-michal.grzela=
-k%40intel.com?part=3D5
-> [3] https://lore.kernel.org/intel-gfx/20260415234639.3577774-21-michal.gr=
-zelak@intel.com/
-
-> BR,
-> Micha=B3
-
--- =
-
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
