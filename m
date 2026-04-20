@@ -4,95 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99AA0F557EF
-	for <ltp@archiver.kernel.org>; Mon, 20 Apr 2026 10:12:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3932FF55807
+	for <ltp@archiver.kernel.org>; Mon, 20 Apr 2026 10:24:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E61873E2DBE
-	for <ltp@archiver.kernel.org>; Mon, 20 Apr 2026 12:12:52 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 6AF623E2DBF
+	for <ltp@archiver.kernel.org>; Mon, 20 Apr 2026 12:24:11 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AE9D63E264F
- for <ltp@lists.linux.it>; Mon, 20 Apr 2026 12:12:33 +0200 (CEST)
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com
- [IPv6:2607:f8b0:4864:20::82b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7D19B3E264F
+ for <ltp@lists.linux.it>; Mon, 20 Apr 2026 12:23:51 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A85756008FA
- for <ltp@lists.linux.it>; Mon, 20 Apr 2026 12:12:32 +0200 (CEST)
-Received: by mail-qt1-x82b.google.com with SMTP id
- d75a77b69052e-50baafd6c4aso34028231cf.1
- for <ltp@lists.linux.it>; Mon, 20 Apr 2026 03:12:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1776679951; cv=none;
- d=google.com; s=arc-20240605;
- b=frMDrGekkWo5yCgBxbKPsTvpDkIpgb1QdsQZiAyaRGRJ1OtkxcPigiVqSryIFjCV4b
- 0K39HtobJEG8a4wFH5ZDeeFiWBoUWQJF4HgBc8hLfX8myPBnoAgclehEdBPvZKcg/kmt
- GYC14v8wpAAZsxBGlC/M6vYLmLIcvHxA27NfvWRGUhSrNTUDKa5ChCoxqYnYzQo/eLLL
- WXfPkXGS1bDSDcV6KvTVOh99Es7KbrLlNUZIAD9j6bMGdEEMFey11S++ungqEJkK3yVt
- KUTfNvqsEmHZRGwMnvFXdsEBcS1h8Fi7gJblxCdr500jmGSC406JihzhjbTQ9ggc1W4q
- dPYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20240605; 
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:dkim-signature;
- bh=1/4AZflGvZJsf1IN92T9ukMNX/2xjBErC1z/zar7mGk=;
- fh=zX7aXG63M/MDaAeMtz74XL/j2pKIuI298owFH4lsNpM=;
- b=h5DsJTjZtyFfyDoUSLOViN320VDoQkqGdxu8TuHutCGGruonfFvTx38fiGBEINc3+p
- jFDilCwHEsVq/0tawKePhURekOdbhXSWsouBoW0f/3cCPFHLLlvYH1To3zeZNzDmAaXe
- zvAE6XhpYbEet8GYwvr+U8Kv9xf+SAURFfu0o3EEjqVSAXOL1llnIWDkqiCyXIxW94QT
- 9KTqN+wVGbgDddnj+mGl5lveb9MpMJEtjRItmf9NvosrHKGwsFk9fVeMuVFxMxHD+fUb
- i0A92xRqrUZVXfxRo3JWqABeLiCP/Hj/WroyXiGKWGD1z+oFmsOTsK4OMulcHdEv7Z6T
- OwoA==; darn=lists.linux.it
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776679951; x=1777284751; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=1/4AZflGvZJsf1IN92T9ukMNX/2xjBErC1z/zar7mGk=;
- b=cCLfit6eul5cyq9VButLQNNtxf24wPvKFxKXcHGHZEEoXexOE0DNBu4I3xcOkiZ64J
- ZbeD6EH4C6+b3Kpo0ATwb9N4jDryt1YrcfRILfDKp0IFGcrRXzbeEr5EWzNLBLHUfJ+x
- av2ntg+RwStGmFR+o7r0UO4z3CT3essQSraFLbVjwY9+lkkaCWnIfOsYikgVabxNlnWS
- wBaGyZWAoCcCIL+wqOC9JKAK916pTkv/oIhwsRIACa6KzoPAQ2Sju5SpG3lppR1DC+Jb
- OQsnDq3t4bfQmhY9sivKKUJi3umexRTe3sYbhbJ3+pYG3YMArU0L3aq8Myd8krxBFshd
- qn9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776679951; x=1777284751;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=1/4AZflGvZJsf1IN92T9ukMNX/2xjBErC1z/zar7mGk=;
- b=fYTGbixET5Tnmhzt/LvEbPIytbeog6/FGAalfRExtUUNUZTqOJI7RYSKb8Q37+hmqM
- 9iTCs6+D1ZdE7o9ZBK4ZYBR3eAujwHutsPtXZ5wcpLVgsemAz4uV238lBPWUn1QY32rL
- cBOXWfqBgbgzfC9KKcy8wAZwF9a2cKJnYv5T+dKGPgBf/KqJghQJ8PkCURqVmX/icOBr
- 95POjj+0+fVOOI/CRPBoDHch4S9bFknExvfTK73+JfXPgcRsFaSPcM9zcVMBxs1ygZJq
- L1iyY3cS+EOSFsF7aSBTYx+IAL3e8qwGW0XILM1HrT1+OacL7vg+GcErdcjZwvTQmDAw
- VE9Q==
-X-Gm-Message-State: AOJu0YytnFmINdx2Sy+bBcmA7NyXSSYGK/t0lJ7bWG5b176Q9LiJrp6c
- Gcgz6c0n6H5qJa2+OFN75G6TXZ6b06e+X7GJaQUWSOOO4YCUuInPm5A2m8HEWpAoRG1Msa6UxkN
- 3uYgHD7Q7rhYf4jiuSLDJdRp2tqTo66fDKhY=
-X-Gm-Gg: AeBDieu5oBkw4MvslhuPBPeJhsv5QoKcq3W9S7qwnAngjnRQYTp6be9oElNYC9bN4nl
- uzzDy2tPgoMjylsz78htvcLhc1SAtYbFaWc7DfGVY7eDeqNiEbExL918LuvHrSl8actefhJSH2N
- Ien4Qpbyt2KyAJ37DRS4uHWXfRpdHxUnf+0+sZxKItb1jXX14Ha+BXqXLrgPB1qYOJFeXiiGFXQ
- BGeIpctE0AUEEr3kfevijga9IwdDss1adCzlqdzv2vapmCzvRMB39BaKK8RVVmnx3QHOv/LT3J2
- Bii3xqsRfrPWO50C
-X-Received: by 2002:a05:622a:2449:b0:50e:6399:eed4 with SMTP id
- d75a77b69052e-50e6399f879mr21092061cf.27.1776679951318; Mon, 20 Apr 2026
- 03:12:31 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9E453600902
+ for <ltp@lists.linux.it>; Mon, 20 Apr 2026 12:23:50 +0200 (CEST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 63JIqXs82886958; Mon, 20 Apr 2026 10:23:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:message-id
+ :mime-version:subject:to; s=pp1; bh=fkDkqWDhAnbEaVluQz7fT04YRjwN
+ Yy8r85QXfGYDa8E=; b=bps+Kc80YeUGoANQAFCWygeS173KT4QbDnQh9v9NFTML
+ JNfTRj+Y7dwiY8dc3mqTCkBvbwqJ0y8coLRsWoDfSWie2oX6GZKrO7P2rlWA4sOr
+ cT9Q8FahTLyAYs18iRhnH/rbN+YnvwQ1YWw5d7rwW1OZ/T+hNQonL5pmQUXQgyBR
+ h3IjNV6Y2AJ2+wye9TIjAJTH5D8kyziW5fkvSjO6ml7Ok5/86T18kPJy14AJAAbp
+ 3TD6X5kRR9PPS3CikXIO13OCi6WHs+zbIofRxnwHNNx8GLti8XJNom6iSH5HqB1o
+ /SPAAEIwM8hMl8uKVXYZvQ67PtWS8FInVG3bQ1Vukg==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dm2j6f9rj-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 20 Apr 2026 10:23:48 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63KAKa9G022356;
+ Mon, 20 Apr 2026 10:23:47 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4dmn9jvb47-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 20 Apr 2026 10:23:46 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
+ [10.20.54.104])
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 63KANhWA29557016
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 20 Apr 2026 10:23:43 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 1D514200D3;
+ Mon, 20 Apr 2026 10:23:43 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 30D5F200E1;
+ Mon, 20 Apr 2026 10:23:42 +0000 (GMT)
+Received: from li-49acbccc-2994-11b2-a85c-d51b89e344f1.ibm.com.com (unknown
+ [9.124.217.129])
+ by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Mon, 20 Apr 2026 10:23:41 +0000 (GMT)
+From: Pavithra <pavrampu@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Mon, 20 Apr 2026 15:53:39 +0530
+Message-ID: <20260420102339.729745-1-pavrampu@linux.ibm.com>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-References: <20260417065332.23663-1-wegao@suse.com>
- <20260417122804.23890-1-wegao@suse.com>
-In-Reply-To: <20260417122804.23890-1-wegao@suse.com>
-From: Li Wang <wangli.ahau@gmail.com>
-Date: Mon, 20 Apr 2026 18:12:19 +0800
-X-Gm-Features: AQROBzCJoUsswJZ0mNlknzEZucMYUoKm7F-7nCwLCeVV32N8R2S4gRqzE-FKmoA
-Message-ID: <CANgNiRxgPHo1yQGbT=QGK0NKQEAWO0_9qk6+xiXiC1S6vWvmfw@mail.gmail.com>
-To: Wei Gao <wegao@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDIwMDEwMCBTYWx0ZWRfX5i4gjVM0L7yU
+ nJSSfqC97ygvg3vnieBkS1RUaXdcRsFpuE/rmPJ7rspiX8Agt4FjZfgdgqvScprEd3CTqDSsy1Z
+ PYplA2lQt+ZwwYa41FbUQ0Y4FSGIonqHKWyw2V0jOjqt2gVnrX3mpkFvFmDwOZ87vRwNr16D9k/
+ JAMjX7k+7OS13WZEbNyBqTufWIVfNvheRpoovP3aOBkDnJFKA9dnXUJNiV5qKOgaLFpOBYLEnnj
+ L3kG8uw6fHh9aeTdgW33ar+sGrbrRjDHBJmbCNaoJsCletaXPdaty4IVmgMBB1iVI8grJVD4PIj
+ QlQbel00YmMF7M9fNpfjUM/0Bmir4T3dhCD0aLEj76ClXBLXREk5HB4tcEkskMlUi/YARDGc8Hp
+ FbQ/1LjIfQs0Rc7OUHeVFzCA1ksr+6jt2YgXl0S0oCHutmlUng6WtmcTr4xwoVDOP4mB27Ht6jI
+ AK8QS89F3exvBZ9TZNA==
+X-Proofpoint-GUID: Ndgkpe1qhf1U8HhkQJOzmge1REz8Eyly
+X-Authority-Analysis: v=2.4 cv=SOJykuvH c=1 sm=1 tr=0 ts=69e5feb4 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VnNF1IyMAAAA:8
+ a=3UEEET4vfHQdTR_TBpwA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: Ndgkpe1qhf1U8HhkQJOzmge1REz8Eyly
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-04-20_02,2026-04-17_04,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 spamscore=0 priorityscore=1501 lowpriorityscore=0
+ clxscore=1015 phishscore=0 suspectscore=0 adultscore=0 impostorscore=0
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2604070000
+ definitions=main-2604200100
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v8] mremap07.c: New test for mremap() with
- MREMAP_DONTUNMAP
+Subject: [LTP] [PATCH] Fix hugeshmat05 test failure on lpar with 1GB
+ hugepages.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,276 +109,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: pavrampu@linux.ibm.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
-
-This is an excellent test design, but still few places need
-refactoring in my opinion.
-
-Wei Gao via ltp <ltp@lists.linux.it> wrote:
-
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -46,6 +46,7 @@ AC_CHECK_DECLS([MADV_MERGEABLE],,,[#include <sys/mman.h>])
->  AC_CHECK_DECLS([NFTA_CHAIN_ID, NFTA_VERDICT_CHAIN_ID],,,[#include <linux/netfilter/nf_tables.h>])
->  AC_CHECK_DECLS([PR_CAPBSET_DROP, PR_CAPBSET_READ],,,[#include <sys/prctl.h>])
->  AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
-> +AC_CHECK_DECLS([MREMAP_DONTUNMAP],,,[#include <linux/mman.h>])
-
-I didn't go through all the previous discussion, but can we define
-MREMAP_DONTUNMAP in the lapi/mmap.h then remove the .min_kver
-and TST_TEST_TCONF?
-
-> +++ b/testcases/kernel/syscalls/mremap/mremap07.c
-...
-
-> +#define _GNU_SOURCE
-> +#include <poll.h>
-> +#include <pthread.h>
-> +#include <linux/mman.h>
-> +
-> +#include "tst_test.h"
-> +#include "tst_safe_pthread.h"
-> +#include "lapi/userfaultfd.h"
-> +#include "config.h"
-> +
-> +#if HAVE_DECL_MREMAP_DONTUNMAP
-> +
-> +static int page_size;
-> +static int uffd = -1;
-
-> +static char *fault_addr;
-> +static char *new_remap_addr;
-
-The two variables are not clear enough, I would suggest using
-old_addr, new_addr directly.
-
-> +static const char *test_string = "Hello, world! This is a test string that fills up a page.";
-
-We can just define in macro:
-
-    #define TEST_STRING_A "ABCD"
-    #define TEST_STRING_B "EFGH"
-
-
-> +static void setup(void)
-> +{
-> +       page_size = getpagesize();
-> +       struct uffdio_api uffdio_api;
-> +       struct uffdio_register uffdio_register;
-> +
-> +       uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, true);
-> +
-> +       uffdio_api.api = UFFD_API;
-> +       uffdio_api.features = 0;
-> +       SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
-> +
-> +       fault_addr = SAFE_MMAP(NULL, page_size,
-> +               PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-
-When we need indentation it's best to format it via "=" (if you use vim:).
-And make the newline start from the first "(" position in a function.
-
-> +
-> +       tst_res(TINFO, "Original mapping created at %p", (void *)fault_addr);
-> +
-> +       strcpy(fault_addr, "ABCD");
-> +
-> +       uffdio_register.range.start = (unsigned long)fault_addr;
-> +       uffdio_register.range.len = page_size;
-> +       uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
-> +       SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
-> +}
-> +
-...
-> +static void run(void)
-> +{
-> +       pthread_t handler_thread;
-> +
-> +       SAFE_PTHREAD_CREATE(&handler_thread, NULL,
-> +               fault_handler_thread, NULL);
-> +
-> +       new_remap_addr = mremap(fault_addr, page_size, page_size,
-> +               MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
-> +
-> +       if (new_remap_addr == MAP_FAILED)
-> +               tst_brk(TBROK | TERRNO, "mremap failed");
-> +
-> +       tst_res(TINFO, "New mapping created at %p", (void *)new_remap_addr);
-> +
-
-I strongly suggest verifying content of thenew_addr right after the
-page migration
-to ensure the PTEs were moved correctly without data loss.
-
-    TST_EXP_EQ_STR(new_addr, "ABCD");
-
-> +       strcpy(new_remap_addr, test_string);
-> +
-> +       TST_CHECKPOINT_WAKE(0);
-> +
-> +       tst_res(TINFO, "Main thread accessing old address %p to trigger fault",
-> +                       (void *)fault_addr);
-> +
-> +       (void)*(volatile char *)fault_addr;
-> +
-> +       SAFE_PTHREAD_JOIN(handler_thread, NULL);
-> +
-> +       TST_EXP_EQ_STR(fault_addr, test_string);
-> +
-> +       SAFE_MUNMAP(new_remap_addr, page_size);
-
-Add strcpy(old_addr, TEST_STRING_A); to support -i N.
-
-Below is a diff version base on your patch:
-
---- a/testcases/kernel/syscalls/mremap/mremap07.c
-+++ b/testcases/kernel/syscalls/mremap/mremap07.c
-@@ -25,10 +25,11 @@
-
- static int page_size;
- static int uffd = -1;
--static char *fault_addr;
--static char *new_remap_addr;
-+static char *old_addr;
-+static char *new_addr;
-
--static const char *test_string = "Hello, world! This is a test string
-that fills up a page.";
-+#define TEST_STRING_A "ABCD"
-+#define TEST_STRING_B "EFGH"
-
- static void *fault_handler_thread(void *arg LTP_ATTRIBUTE_UNUSED)
- {
-@@ -55,13 +56,13 @@ static void *fault_handler_thread(void *arg
-LTP_ATTRIBUTE_UNUSED)
-        if (msg.event != UFFD_EVENT_PAGEFAULT)
-                tst_brk(TBROK, "Received unexpected UFFD_EVENT: %d", msg.event);
-
--       if ((char *)msg.arg.pagefault.address != fault_addr)
-+       if ((char *)msg.arg.pagefault.address != old_addr)
-                tst_brk(TBROK, "Page fault on unexpected address: %p",
-(void *)msg.arg.pagefault.address);
-
-        tst_res(TINFO, "Userfaultfd handler caught a page fault at
-%p", (void *)msg.arg.pagefault.address);
-
--       uffdio_copy.src = (unsigned long)new_remap_addr;
--       uffdio_copy.dst = (unsigned long)fault_addr;
-+       uffdio_copy.src = (unsigned long)new_addr;
-+       uffdio_copy.dst = (unsigned long)old_addr;
-        uffdio_copy.len = page_size;
-        uffdio_copy.mode = 0;
-        uffdio_copy.copy = 0;
-@@ -74,24 +75,26 @@ static void *fault_handler_thread(void *arg
-LTP_ATTRIBUTE_UNUSED)
-
- static void setup(void)
- {
--       page_size = getpagesize();
-        struct uffdio_api uffdio_api;
-        struct uffdio_register uffdio_register;
-
-+       page_size = getpagesize();
-        uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, true);
-
-        uffdio_api.api = UFFD_API;
-        uffdio_api.features = 0;
-        SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
-
--       fault_addr = SAFE_MMAP(NULL, page_size,
--               PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+       old_addr = SAFE_MMAP(NULL, page_size,
-+                       PROT_READ | PROT_WRITE,
-+                       MAP_PRIVATE | MAP_ANONYMOUS,
-+                       -1, 0);
-
--       tst_res(TINFO, "Original mapping created at %p", (void *)fault_addr);
-+       tst_res(TINFO, "Original mapping created at %p", (void *)old_addr);
-
--       strcpy(fault_addr, "ABCD");
-+       strcpy(old_addr, TEST_STRING_A);
-
--       uffdio_register.range.start = (unsigned long)fault_addr;
-+       uffdio_register.range.start = (unsigned long)old_addr;
-        uffdio_register.range.len = page_size;
-        uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
-        SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
-@@ -99,11 +102,11 @@ static void setup(void)
-
- static void cleanup(void)
- {
--       if (new_remap_addr && new_remap_addr != MAP_FAILED)
--               SAFE_MUNMAP(new_remap_addr, page_size);
-+       if (new_addr && new_addr != MAP_FAILED)
-+               SAFE_MUNMAP(new_addr, page_size);
-
--       if (fault_addr && fault_addr != MAP_FAILED)
--               SAFE_MUNMAP(fault_addr, page_size);
-+       if (old_addr && old_addr != MAP_FAILED)
-+               SAFE_MUNMAP(old_addr, page_size);
-
-        if (uffd != -1)
-                SAFE_CLOSE(uffd);
-@@ -111,34 +114,36 @@ static void cleanup(void)
-
- static void run(void)
- {
-+       new_addr = NULL;
-        pthread_t handler_thread;
-
-        SAFE_PTHREAD_CREATE(&handler_thread, NULL,
--               fault_handler_thread, NULL);
-+                               fault_handler_thread, NULL);
-
--       new_remap_addr = mremap(fault_addr, page_size, page_size,
--               MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
-+       new_addr = mremap(old_addr, page_size, page_size,
-+                               MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
-
--       if (new_remap_addr == MAP_FAILED)
-+       if (new_addr == MAP_FAILED)
-                tst_brk(TBROK | TERRNO, "mremap failed");
-
--       tst_res(TINFO, "New mapping created at %p", (void *)new_remap_addr);
-+       tst_res(TINFO, "New mapping created at %p", (void *)new_addr);
-
--       strcpy(new_remap_addr, test_string);
-+       TST_EXP_EQ_STR(new_addr, TEST_STRING_A);
-+       strcpy(new_addr, TEST_STRING_B);
-
-        TST_CHECKPOINT_WAKE(0);
-
-        tst_res(TINFO, "Main thread accessing old address %p to trigger fault",
--                       (void *)fault_addr);
-+                       (void *)old_addr);
-
--       (void)*(volatile char *)fault_addr;
-+       (void)*(volatile char *)old_addr;
-
-        SAFE_PTHREAD_JOIN(handler_thread, NULL);
-
--       TST_EXP_EQ_STR(fault_addr, test_string);
-+       TST_EXP_EQ_STR(old_addr, TEST_STRING_B);
-
--       SAFE_MUNMAP(new_remap_addr, page_size);
--       new_remap_addr = NULL;
-+       SAFE_MUNMAP(new_addr, page_size);
-+       strcpy(old_addr, TEST_STRING_A);
- }
-
- static struct tst_test test = {
-
-
-
--- 
-Regards,
-Li Wang
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+TW9kaWZpZWQgdGhlIHRlc3QgdG8gZGV0ZWN0IGxhcmdlIGh1Z2VwYWdlIHNpemVzICjiiaUxR0Ip
+IGFuZCBhZGp1c3QgdGVzdCBzaXplcyBhY2NvcmRpbmdseS4KClNpZ25lZC1vZmYtYnk6IFBhdml0
+aHJhIDxwYXZyYW1wdUBsaW51eC5pYm0uY29tPgotLS0KIC4uLi9tZW0vaHVnZXRsYi9odWdlc2ht
+YXQvaHVnZXNobWF0MDUuYyAgICAgICB8IDMwICsrKysrKysrKysrKysrLS0tLS0KIDEgZmlsZSBj
+aGFuZ2VkLCAyMiBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rl
+c3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZXNobWF0L2h1Z2VzaG1hdDA1LmMgYi90ZXN0
+Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VzaG1hdC9odWdlc2htYXQwNS5jCmluZGV4IDNi
+MmFlMzUxYy4uYzFlMzRmOTk5IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdl
+dGxiL2h1Z2VzaG1hdC9odWdlc2htYXQwNS5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1
+Z2V0bGIvaHVnZXNobWF0L2h1Z2VzaG1hdDA1LmMKQEAgLTM3LDkgKzM3LDEzIEBAIHZvaWQgc2V0
+dXAodm9pZCkKIHsKIAlwYWdlX3NpemUgPSBnZXRwYWdlc2l6ZSgpOwogCWhwYWdlX3NpemUgPSBT
+QUZFX1JFQURfTUVNSU5GTygiSHVnZXBhZ2VzaXplOiIpICogMTAyNDsKKworCXRzdF9yZXMoVElO
+Rk8sICJQYWdlIHNpemU6ICVsZCBieXRlcyIsIHBhZ2Vfc2l6ZSk7CisJdHN0X3JlcyhUSU5GTywg
+Ikh1Z2VwYWdlIHNpemU6ICVsZCBieXRlcyAoJWxkIE1CKSIsCisJCWhwYWdlX3NpemUsIGhwYWdl
+X3NpemUgLyAoMTAyNCAqIDEwMjQpKTsKIH0KIAotdm9pZCBzaG1fdGVzdChpbnQgc2l6ZSkKK3Zv
+aWQgc2htX3Rlc3QobG9uZyBzaXplKQogewogCWludCBzaG1pZDsKIAljaGFyICpzaG1hZGRyOwpA
+QCAtNTYsNyArNjAsNyBAQCB2b2lkIHNobV90ZXN0KGludCBzaXplKQogCX0KIAogCXNobWFkZHJb
+MF0gPSAxOwotCXRzdF9yZXMoVElORk8sICJhbGxvY2F0ZWQgJWQgaHVnZSBieXRlcyIsIHNpemUp
+OworCXRzdF9yZXMoVElORk8sICJhbGxvY2F0ZWQgJWxkIGh1Z2UgYnl0ZXMiLCBzaXplKTsKIAog
+CWlmIChzaG1kdCgoY29uc3Qgdm9pZCAqKXNobWFkZHIpICE9IDApIHsKIAkJc2htY3RsKHNobWlk
+LCBJUENfUk1JRCwgTlVMTCk7CkBAIC02OSwxMyArNzMsMjMgQEAgdm9pZCBzaG1fdGVzdChpbnQg
+c2l6ZSkKIHN0YXRpYyB2b2lkIHRlc3RfaHVnZXNobWF0KHZvaWQpCiB7CiAJdW5zaWduZWQgaW50
+IGk7CisJbG9uZyBtdWx0aXBsaWVyOworCWxvbmcgdHN0X3NpemVzWzRdOworCisJLyoKKwkgKiBG
+b3IgbGFyZ2UgaHVnZXBhZ2Ugc2l6ZXMgKGUuZy4sIDFHQiksIHVzZSBOLzIgbXVsdGlwbGllciB0
+byBhdm9pZAorCSAqIGV4Y2Vzc2l2ZSBtZW1vcnkgcmVxdWlyZW1lbnRzICg0R0IgZm9yIE49NCB3
+aXRoIDFHQiBwYWdlcykgd2hpbGUKKwkgKiBzdGlsbCB0ZXN0aW5nIGFsaWdubWVudCBib3VuZGFy
+eSBjb25kaXRpb25zIHdpdGggbXVsdGlwbGUgcGFnZXMuCisJICovCisJaWYgKGhwYWdlX3NpemUg
+Pj0gMTAyNCAqIDEwMjQgKiAxMDI0KQorCQltdWx0aXBsaWVyID0gTiAvIDI7CisJZWxzZQorCQlt
+dWx0aXBsaWVyID0gTjsKIAotCWNvbnN0IGludCB0c3Rfc2l6ZXNbXSA9IHsKLQkJTiAqIGhwYWdl
+X3NpemUgLSBwYWdlX3NpemUsCi0JCU4gKiBocGFnZV9zaXplIC0gcGFnZV9zaXplIC0gMSwKLQkJ
+aHBhZ2Vfc2l6ZSwKLQkJaHBhZ2Vfc2l6ZSArIDEKLQl9OworCXRzdF9zaXplc1swXSA9IG11bHRp
+cGxpZXIgKiBocGFnZV9zaXplIC0gcGFnZV9zaXplOworCXRzdF9zaXplc1sxXSA9IG11bHRpcGxp
+ZXIgKiBocGFnZV9zaXplIC0gcGFnZV9zaXplIC0gMTsKKwl0c3Rfc2l6ZXNbMl0gPSBocGFnZV9z
+aXplOworCXRzdF9zaXplc1szXSA9IGhwYWdlX3NpemUgKyAxOwogCiAJZm9yIChpID0gMDsgaSA8
+IEFSUkFZX1NJWkUodHN0X3NpemVzKTsgKytpKQogCQlzaG1fdGVzdCh0c3Rfc2l6ZXNbaV0pOwot
+LSAKMi41My4wCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0
+L2xpc3RpbmZvL2x0cAo=
