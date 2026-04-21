@@ -4,65 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92505F8FA62
-	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 12:03:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 966F1F8FA6A
+	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 12:14:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 731ED3E4832
-	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 14:02:58 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 3070C3D0F0A
+	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 14:14:51 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ECE243D0F0A
- for <ltp@lists.linux.it>; Tue, 21 Apr 2026 14:02:40 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 762B73D0F0A
+ for <ltp@lists.linux.it>; Tue, 21 Apr 2026 14:14:32 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 529581A006F3
- for <ltp@lists.linux.it>; Tue, 21 Apr 2026 14:02:40 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D06342009FA
+ for <ltp@lists.linux.it>; Tue, 21 Apr 2026 14:14:31 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B39816A856;
- Tue, 21 Apr 2026 12:02:39 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 77A5C5BD19;
+ Tue, 21 Apr 2026 12:14:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776773670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LdZtTI6uMEkt9NDaGISEjWX9dkUGGfJoG8sEJ3gZ9mU=;
+ b=CA3CHxC1kGUVO8vuNBevnZBLAUgiNDnDHT5uCSvZGiecardEIR4m5TmZ5U83aOr0H+pG5N
+ bXjeT9C+zDltoGFIoGY0jXpu8d1EXuv/jUhWzX0CU0DSeMavXHFKO8cPQvz+xzctsxkdcj
+ ipFluCatmhYjninDy1TDEs2i+bpZPkc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776773670;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LdZtTI6uMEkt9NDaGISEjWX9dkUGGfJoG8sEJ3gZ9mU=;
+ b=m7rV5Z50Zn+TYTPUaYI2I5qFS7DBPjm+VgSLUx2a5PzH/Pqxb398AXBwbMvMJYl7G6rmYu
+ kt4oV2RkQmVHeeAQ==
+Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776773670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LdZtTI6uMEkt9NDaGISEjWX9dkUGGfJoG8sEJ3gZ9mU=;
+ b=CA3CHxC1kGUVO8vuNBevnZBLAUgiNDnDHT5uCSvZGiecardEIR4m5TmZ5U83aOr0H+pG5N
+ bXjeT9C+zDltoGFIoGY0jXpu8d1EXuv/jUhWzX0CU0DSeMavXHFKO8cPQvz+xzctsxkdcj
+ ipFluCatmhYjninDy1TDEs2i+bpZPkc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776773670;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LdZtTI6uMEkt9NDaGISEjWX9dkUGGfJoG8sEJ3gZ9mU=;
+ b=m7rV5Z50Zn+TYTPUaYI2I5qFS7DBPjm+VgSLUx2a5PzH/Pqxb398AXBwbMvMJYl7G6rmYu
+ kt4oV2RkQmVHeeAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D83C593AF;
- Tue, 21 Apr 2026 12:02:39 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5B0E0593AF;
+ Tue, 21 Apr 2026 12:14:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id W1DBJF9n52n0OAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 21 Apr 2026 12:02:39 +0000
-Date: Tue, 21 Apr 2026 14:02:51 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1A3iFCZq52mzRAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 21 Apr 2026 12:14:30 +0000
+Date: Tue, 21 Apr 2026 14:14:46 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <aedna2XyxNvk5ETm@yuki.lan>
-References: <20260402121356.31266-1-chrubis@suse.cz>
- <20260402121356.31266-17-chrubis@suse.cz>
- <CAEemH2c5OfBhcR_KB6LY4yJdxAUDR7HbWAf-V0KjiZMN2Jkarw@mail.gmail.com>
- <adTWHgQO2gLj_bXX@yuki.lan> <20260421114738.GM506589@pevik>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <aedqNpoUTVJ-j50L@yuki.lan>
+References: <20260402121356.31266-2-chrubis@suse.cz>
+ <69d7a0d6.050a0220.33d791.c2df@mx.google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260421114738.GM506589@pevik>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Queue-Id: B39816A856
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- TAGGED_RCPT(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+In-Reply-To: <69d7a0d6.050a0220.33d791.c2df@mx.google.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 16/17] lib: tst_test: Remove now unused
- needs_drivers
+Subject: Re: [LTP] [PATCH 01/17] syscalls: ioctl08: Remove .needs_drivers
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,18 +112,7 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> (Please consider configuring spell checker in your editor setup, or run make
-> check as I enabled in our checkpatch.pl configuration check for typos.)
-> 
-> AI would reword it, feel free to use some parts or ignore:
-> 
-> 	For some config options their presence in the config file is not enough to assure the functionality is present or enabled.
-> 	E.g. config option may be set to 'm' but the module may not be installed or functionality may be disabled on the kernel command line.
-> 
-> 	The kconfig library has a set of additional checks for a few config options that are used in the tests and need additional checks.
-> 	Please rebase before adding the text (I fixed typo in include/tst_test.h).
-
-I've already agreed to use the version from Li.
+Thanks for all the reviews, pushed.
 
 -- 
 Cyril Hrubis
