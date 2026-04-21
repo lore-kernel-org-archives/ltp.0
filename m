@@ -4,79 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F8C4F8FA8C
-	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 15:25:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C48DF8FA9A
+	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 16:09:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E9EBA3E4A89
-	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 17:25:19 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 998073E53C8
+	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 18:09:19 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6FDA43C5376
- for <ltp@lists.linux.it>; Tue, 21 Apr 2026 17:25:01 +0200 (CEST)
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
- [IPv6:2607:f8b0:4864:20::1043])
+ by picard.linux.it (Postfix) with ESMTPS id 7DE643C18AB
+ for <ltp@lists.linux.it>; Tue, 21 Apr 2026 18:08:58 +0200 (CEST)
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com
+ [IPv6:2607:f8b0:4864:20::442])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D37C01400BCE
- for <ltp@lists.linux.it>; Tue, 21 Apr 2026 17:25:00 +0200 (CEST)
-Received: by mail-pj1-x1043.google.com with SMTP id
- 98e67ed59e1d1-354a18c48b5so4109331a91.1
- for <ltp@lists.linux.it>; Tue, 21 Apr 2026 08:25:00 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C1B57600058
+ for <ltp@lists.linux.it>; Tue, 21 Apr 2026 18:08:54 +0200 (CEST)
+Received: by mail-pf1-x442.google.com with SMTP id
+ d2e1a72fcca58-82cf636dac8so1891634b3a.3
+ for <ltp@lists.linux.it>; Tue, 21 Apr 2026 09:08:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776785099; x=1777389899; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1776787733; x=1777392533; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=mXL7SpaZfRm6KBFvyOCe7+tK3xaok3mkXfZuQf7STTw=;
- b=AMQIrLZFCg/Mb4eQ7jgCgb6hApPK9RCs7/ehgH6ko0nkGxLmEfhFOD/CgTveu2S4c4
- 4qvdJLLQIgyZrJwfJr/pHPWvM+/TWvuTfxOa+EbBW5WJc5NQfM7xFnZ7s7ODWuOyDk5n
- sLg/PSwsknS4E8htahMJ09tJKRpbN8tzdCrAXXTlDu7tb+jF9IaNLuFG8oai28AvNhJy
- KH9XB6aPwprBegIxejHCvtGEzvv0z0SCG8biPSjRKjP7iv6YRvtvIgEPXi2A9YsCyBi6
- txXg9mlEJnoLUJVHLqomfqPtFGgfAKX+Fh1J0Ivi29uRqo46ppW1JV0wMQDYps03OLAk
- Fkeg==
+ bh=TgY88SDUC0vrQ7GG1ckPXnu/+eW08RZsUIs5FXvJfZw=;
+ b=V+FPirjWx6eNataShXwkKLObt5UGoG+fqqptqkEe7XhFewOt6qCMqkdTXI3aYO9ZIQ
+ YYOO6nyT6OgvYI3CXxEI4Fmy6KQK+4N3xHT5jHNbnOkzzm56U+/I4DdALUJx77RcAqhG
+ +gBbOxQA2ZeOUu60+Ef6UVqN1K9smJdQYrTGkAqGS2b770sx8T7SORrqZAuKljI8SW5I
+ P/I0aIro7j99sSo9V25JUkq/NQDdQ+QArCWJwkeISzMe0PvQUPsdacF9aMJrjberNqRH
+ JMJ7XL/QPWZnq+njqgzdbAECamXs07ztYqtERBmmVdHZ5OafSZwQrc3/GveIjaxFQCfI
+ GVhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776785099; x=1777389899;
+ d=1e100.net; s=20251104; t=1776787733; x=1777392533;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=mXL7SpaZfRm6KBFvyOCe7+tK3xaok3mkXfZuQf7STTw=;
- b=cKJclTRiLzrYc5cWuyMU88u48xfGNbQd9JnEzmm7WYIP2ASbegdV809KaJDwLtRgef
- DiEQDMkyKCRV4ryGGGOFHH9dKAvV8ABmdqSSKhMGVfa+/aifqj6aHdv9Mmfp6D65kOo3
- 251fq1f6G2S6OYCd+Nj9TEVSNon0hpGL/xG40nfCuuq5Q331Qbam6McBCOI/dlw/rJXW
- 7lDdJgnmkyiYvvk2hd/BHenA38KnZ2XBizWzK2B9RUc1uYwa0oJdjkixN2Q80iQN09o1
- ol73z1NHzRirtjugvdPge4lOVk4AD8r/J9LD2bBzN1hd9vMPHsTGFRblJtKO9AI6O5Rd
- DC2Q==
-X-Gm-Message-State: AOJu0Ywsu4xb1HD15BsjvvP+4jVhtIRvEXm99bM9tm7yu/M6ElQXZerq
- QqK1N8rhdnnbADhMUZIffabABrRC3znqxhmeazsbTRwaooBwUsUYIV/B5ep+0SeJIkjh
-X-Gm-Gg: AeBDies0pGZqSPfh1lkX88zbANu173EEH/kKsbE7df8HxKz2kgkuqmN1Yz/mvWuvjHJ
- BunpWPDX6nq/Qz8q3PX+x+aMhp75CN2KUBl83vUSfCzyufduGqz4xPidWSl22az+QuQEYM7vK5R
- QcRJJcaUz1CGouiF08MQ79iwDo6W672MsDuG9Mrb71j7EDytK+X0b6q+2vNJDkNkaD1RtV1Mfo1
- Cq2e/zc9eSgWgFORhb47+/XjlRzrB+1Mm6deIYpni/kIEPWfIF3HqTUWGxS1GLN1WT/+Es4TfrP
- n37niW10iDBw6CvPHfVEsxKxnM2LpdPaMYrEsILiaNsn7mt5E1ftEbqUOT8nKU2FBbCmXSPF0Jj
- z+ymxgKVpOBjdzrKkaGSPfZ+ZQuyLIrdLuZui9Vg43vmnAV0N3BETFWAxl7cWwZLeyXk9JzbFFR
- pHj9YUSJE4WVWb/ae96Gar1SRLfJmIulIhh+P84w2SX1tPN6nBKoXKZt4=
-X-Received: by 2002:a17:90b:3b47:b0:35a:329:73d8 with SMTP id
- 98e67ed59e1d1-361403b01cfmr19033553a91.4.1776785099044; 
- Tue, 21 Apr 2026 08:24:59 -0700 (PDT)
+ bh=TgY88SDUC0vrQ7GG1ckPXnu/+eW08RZsUIs5FXvJfZw=;
+ b=DW7aUvPItYsBaMSQSEvLb9KUvs6/El5WvjWxwkllQBTswnsncak+XbOpzf1g2ZaIBE
+ 74Jw6KrlOZUOOcFXl7RIy7OvYF74XqfTBGrE0Kga7gGP6m2GQRRYbfFR6eBuTmxZZxzz
+ viHRZibC2pQRNc/UdEbvRK5v6sVhebWWcbTFJ9HOmGUPfXm0bUMhEGgzpkwgdtFlMhoR
+ oZSxIQRd6BMw+TTOMdCc1s9iaOdg5QF5lS+vGpWZR2LblzsmfxZXoJtc2SGETyRAm2lc
+ XfpmoJeZg9GJt0ipxX0ZCyy+I8JTiMIeFdmp9g0EVOYu7Esqpic+xqV7agL5Uae2oook
+ I10w==
+X-Gm-Message-State: AOJu0YxTxxmsZEMafLtjsiQYMiLrhDKD8Yb5c9/6VuOpiZloyLt1I3bf
+ 3BrB1hCAM2HxajL44rAd3Q74P2OumooMmk7eDbcmkvHfaIAB2iRz9Vg=
+X-Gm-Gg: AeBDieuu4YMY5mHKDIgFGRyehIHXZ4jGmrxqYP+KLxYEM+WJ/mqBtJQ5efKP61oIY7L
+ gvElk22ygZksNGZcTqEwfyExrIv0srGlF/4hI4k64nsgCYpg7NDfALw9Y31McVyqSjYyAo3sQ6A
+ jKi3qm83Kh/aow/HKAhKuRLpHAck96eOvm3SQzKrPBwLEgi3tQHjR7dDQ1pTnUORAGwPDWqs3CK
+ elPPMasxunxoMjO10gdOiDjAkaQRdA4gwFVm5V54yUf+1ZK9M3J5qlDczkVFEUVtUL5lylWDQnm
+ syoORjrJypWnXzzD8KkTFSsTtMh7SwVLG816wv5VKEHfYqJBoArnd/GYc/mQfjqvwDt5tNKoxVB
+ /YuMKQMe1jV2ba6G52XXxbk6JZgOjU7ijQmhuzcavXesQMt+GgTmPbwQnS6a/ptXfjVlcP0BxAN
+ 8fm0RwATx4XJlLARD7jK0hbKtGLNZr1P9feZa97xruVGytWFoKEmV2r80=
+X-Received: by 2002:a05:6a00:1307:b0:82a:6b97:34ae with SMTP id
+ d2e1a72fcca58-82f8c8fb893mr18605989b3a.32.1776787732961; 
+ Tue, 21 Apr 2026 09:08:52 -0700 (PDT)
 Received: from localhost.localdomain ([211.196.223.197])
  by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-3614195a8f0sm13695089a91.12.2026.04.21.08.24.57
+ d2e1a72fcca58-82f8ec0092bsm15300618b3a.50.2026.04.21.09.08.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Apr 2026 08:24:58 -0700 (PDT)
+ Tue, 21 Apr 2026 09:08:52 -0700 (PDT)
 From: Jinseok Kim <always.starving0@gmail.com>
-To: pvorel@suse.cz
-Date: Wed, 22 Apr 2026 00:24:33 +0900
-Message-ID: <20260421152435.2871-1-always.starving0@gmail.com>
+To: pvorel@suse.cz,
+	wangli.ahau@gmail.com
+Date: Wed, 22 Apr 2026 01:08:16 +0900
+Message-ID: <20260421160828.4483-1-always.starving0@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260417105759.GA395133@pevik>
-References: <20260417105759.GA395133@pevik>
+In-Reply-To: <20260417113453.GA409289@pevik>
+References: <20260417113453.GA409289@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7] fstat: add test for multiple file types using fstat
+Subject: [LTP] [PATCH v2] include/lapi: add leaf Makefile
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,22 +96,50 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Convert include/Makefile to use generic_trunk_target.mk and
+add minimal leaf Makefile in include/lapi.
 
-Thanks for the review.
+Fixes: https://github.com/linux-test-project/ltp/issues/1262
 
-S_IFLNK is not suitable here since this test is based on fstat(), which
-follows symlinks. It is already covered by lstat tests (e.g. lstat01).
-This was also discussed here:
-https://lore.kernel.org/ltp/69b42eee.050a0220.281abf.2706@mx.google.com
+Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
+---
+Changes in v2:
+- Switch include/Makefile to trunk and remove lapi/syscalls/Makefile
+- Link to v1 : https://lore.kernel.org/ltp/20260410175031.16921-1-always.starving0@gmail.com
+---
+ include/Makefile      |  2 +-
+ include/lapi/Makefile | 10 ++++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+ create mode 100644 include/lapi/Makefile
 
-S_IFSOCK is also excluded since filesystem sockets cannot be opened,
-so they cannot be verified via fstat().
+diff --git a/include/Makefile b/include/Makefile
+index 6b31b046e..84cd4ed6e 100644
+--- a/include/Makefile
++++ b/include/Makefile
+@@ -24,4 +24,4 @@ ac-maintainer-clean:: ac-clean
 
-I think both cases are better covered by lstat/stat based tests.
+ vpath %.h $(abs_srcdir)
 
-Thanks,
-Jinseok
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/include/lapi/Makefile b/include/lapi/Makefile
+new file mode 100644
+index 000000000..f265f856d
+--- /dev/null
++++ b/include/lapi/Makefile
+@@ -0,0 +1,10 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2009, Cisco Systems Inc.
++# Copyright (c) Linux Test Project, 2026
++# Ngie Cooper, July 2009
++
++top_srcdir              ?= ../../
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+--
+2.43.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
