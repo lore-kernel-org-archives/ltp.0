@@ -4,81 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 534E4F8FA73
-	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 13:30:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9D06F8FA80
+	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 14:27:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BFF573E1292
-	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 15:30:15 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 656273E53CD
+	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 16:27:15 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EAA0E3C5376
- for <ltp@lists.linux.it>; Tue, 21 Apr 2026 15:29:55 +0200 (CEST)
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
- [IPv6:2607:f8b0:4864:20::741])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3BD183E2D90
+ for <ltp@lists.linux.it>; Tue, 21 Apr 2026 16:26:57 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6B7A660078C
- for <ltp@lists.linux.it>; Tue, 21 Apr 2026 15:29:55 +0200 (CEST)
-Received: by mail-qk1-x741.google.com with SMTP id
- af79cd13be357-8cb5c9ba82bso716931185a.2
- for <ltp@lists.linux.it>; Tue, 21 Apr 2026 06:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776778194; x=1777382994; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=EkPY3dRE7AOo0Bg2nN/eMNQRWld0HS9GOu/qR1JZRgQ=;
- b=mM3XYG+WL0XFXFRkr8vRyVHYmApZx2imd2khdawZWoPiRPiQenagZ9aQ/W4qSA3CMa
- oBv5p06EXtTvBMbeAbASu2xiVFaWWv/yGpMP3G3c+y3+HEkr+GS/Gz6a+NU+mSna0PHA
- 6aa0yDGptQNgx+LuPKh8UifnRqZyjcqYqRpFP7rWqfEW4Ap813BlGhILNPkD8Pc7NM34
- EGEb58A8D2RfyBUKYoW1R604A7sbQL5TAztlSN2WnHkZaQ+syG1Ars1PzkU2WCu9Ixbu
- wqjNGcLXQSm6qbbLmbU1lJvqgj2ehMzF0taJp3RkLYoAzLrX6R4n1DxlJF1Aw6fUZVjY
- x4Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776778194; x=1777382994;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=EkPY3dRE7AOo0Bg2nN/eMNQRWld0HS9GOu/qR1JZRgQ=;
- b=P6eq7If0dIQj6qCR3l8jgY+/Q+Z7v9DKWsRMWbPfJ3imQj3CqV06NwyeN0jgHtkNmN
- gMmwtCL/tp4d7FxGLb4B03Df2FzX5c6yYXumMAItjFlYZikv4SGG0fW4tqiSvOtE9mVc
- ghOTVReHsKlUVjc9lcwdD+NZ/BIRy+jVGP0k1gDhoHiwlpRkQlhobE10J7rJzw6sWSvc
- J2LmFwC41jcJoTxlUfAmsSkMp2r1MFkvGipx/AFxOsaq6mBphvfVDurJt+HnD8ZaZ7B/
- X2WwTrgWsbeyGmgu8ntSgsC/CC0BJM4z46/n11WViNAS+OcAjeWiDs6H1MQImjKqDJ0Q
- rCzA==
-X-Gm-Message-State: AOJu0Yxsm+i0VuWwAKvMXE8CG1JD7vlEqLxkK7+A6MvUoXD8uHgPZ1zy
- ku42ktY+1/tNDqJgxfQvp6On7gR09EXShf0MPh6HSM1aPWkL2k0zf9Ih
-X-Gm-Gg: AeBDiesHPlIDWL13eyj8hxGL2ZdQyNYQDQH0sIpR/IDpsHwOl0Ex+pI+z01Bqs3sbzb
- ygskEaWbngfej8m+1TWm2RfWk+MqXp8w7ZSMXaRATMm+Xp5xdPMNJzKmzyi14SjonroZtaeJZU6
- BYJ6RxOpjc0XX9O1G6pQOiqelRMwYubWrC+bq5PE1tgUkes8KdkijK0zpyuAsnIL9YFV8XnAUVb
- qxHu/zztRpaOByMof0YeooO510kPO4hVHvYpxHdJBAx71/a4X+w9XYxjIrYW7NhMo4LFDikkJmp
- Ttysiit7fjoUJL0tCr1grVvQx1Xxb/x0HZgPzVX+E+k0ooMYHSl+0nn9mRTKjbOEWW1jWz79K86
- edhuIrQj+dJpIBahOkJAw0Ht4aQBEQxl7/jE6fXpsm/ZCDYBVbsjqmCLK+5jEpl1+IDYTd/a384
- WrsWuZcfJIWJHMAZT4zZyvH4sosQQpS0VOFNZsmOepTb54mVCmqdKgxNkurJP2z+y5IlodTA7Jh
- wI7xaI6oXgipErp6PbSwBJoNZWVvwr92ypkj9qQLLNTxVR0BMGi
-X-Received: by 2002:a05:620a:19a5:b0:8d3:b614:9450 with SMTP id
- af79cd13be357-8e79217dc4bmr2528041685a.47.1776778194133; 
- Tue, 21 Apr 2026 06:29:54 -0700 (PDT)
-Received: from
- runnervmeorf1.c1owmm2apunufa0yanmraqiv1g.bx.internal.cloudapp.net
- ([172.203.253.162]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-8e7d92ce037sm1033297585a.32.2026.04.21.06.29.53
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Apr 2026 06:29:53 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C53AA1400C7E
+ for <ltp@lists.linux.it>; Tue, 21 Apr 2026 16:26:52 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3D5C96A8EF;
+ Tue, 21 Apr 2026 14:26:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776781611; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=76GuZhm4wrkNnr2HFJQe4tzT9zsHzxApG0mirLpWVfs=;
+ b=OrAhVq/dt7RKGVhBIrlaO5Q//CSU2nzmsmzWuoPj3Oj/+j/efz7O5oGxOCy6sf67g8xkma
+ X2iIn/9YSabbR93TNNMwIR9aeVYrDCLdM7ixs6Vt8MUgFBPsQG2F82pbHm5lFjfz/6ri+/
+ V3JUtxwo85dXkMxVye9u9f7PtLp/td0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776781611;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=76GuZhm4wrkNnr2HFJQe4tzT9zsHzxApG0mirLpWVfs=;
+ b=RIZnCy3zKjJEc2GyO3POJEr04rv54u7zpoPw+hELbBcisk7V4jsBecX9zQ8AM52dleh3Zc
+ nkMEkcuuCj4Ew7AQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776781610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=76GuZhm4wrkNnr2HFJQe4tzT9zsHzxApG0mirLpWVfs=;
+ b=dbX+v0CVo6VphQySBLwxKoH9oZYqXg7XVqGgFUDvZMraFW//AKJMAijNZnfIs84GQcieCR
+ t6EN7wswsyCemLXm2LEatffRjuiWs2gAGpxOVBd/Y6QFGM4reg/z2b3Sn8Xcc0QR3y+o9/
+ EhOigIqBHyQNTCN1Rl8bClZzx+ChKzY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776781610;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=76GuZhm4wrkNnr2HFJQe4tzT9zsHzxApG0mirLpWVfs=;
+ b=C3q1UMLUaWQZ9mC0KOh9JMWIuzIZR99UftyoIeCh/6BRpmxZP7EVAGl/poQ6utLmo9gg9W
+ GM5c5r2JVV8xA7Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2DEBA593AF;
+ Tue, 21 Apr 2026 14:26:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id vIn4CSqJ52luSQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 21 Apr 2026 14:26:50 +0000
+Date: Tue, 21 Apr 2026 16:27:05 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
 To: Li Wang <wangli.ahau@gmail.com>
-Date: Tue, 21 Apr 2026 13:29:53 +0000
-Message-ID: <20260421132953.3918-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260421130706.14254-1-wangli.ahau@gmail.com>
+Message-ID: <aeeJOUaVAXqkqRfI@yuki.lan>
 References: <20260421130706.14254-1-wangli.ahau@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260421130706.14254-1-wangli.ahau@gmail.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ ARC_NA(0.00)[]; TAGGED_RCPT(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; FREEMAIL_TO(0.00)[gmail.com];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, yuki.lan:mid,
+ suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib/tst_kconfig: rename runtime_check to
+Subject: Re: [LTP] [PATCH] lib/tst_kconfig: rename runtime_check to
  config_runtime_map
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -91,31 +108,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Hi!
+> Rename struct 'runtime_check' to 'config_runtime_map' and
+> array 'runtime_checks' to 'config_runtime_maps' to better
+> reflect their purpose of mapping kconfig options to runtime
+> checks.
+> 
+> Rename function runtime_check to kconfig_runtime_check for
+> consistency with kconfig_module_check().
+> 
+> Follow-up: d7d6512e89 ("lib: tst_kconfig: Add module presence checks")
+> Signed-off-by: Li Wang <wangli.ahau@gmail.com>
+> ---
+> 
+> Notes:
+>     Hi Cyril,
+>     
+>         It seems you forgot to add this modification at the top of
+>         the patchset. So I made it for the name consistency.
 
-On Tue, 21 Apr 2026, Li Wang wrote:
-> lib/tst_kconfig: rename runtime_check to config_runtime_map
+I was going to send the patch to the ML but you were faster...
 
-Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
+Anyways:
 
----
-Note:
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-Our agent completed the review of the patch. The full review can be
-found at: https://github.com/linux-test-project/ltp-agent/actions/runs/24724928089
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
