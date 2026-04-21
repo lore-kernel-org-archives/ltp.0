@@ -4,102 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E0FEF588C9
-	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 05:42:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F01C3F327B0
+	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 08:21:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1776759684; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=J6CRzOCJqTAbP0Oqi4YHpu19loU7GqIkfIHGbSsmhHs=;
+ b=DCoZzk+OztPzvx/ovFsqIEHvHspZ9z9cprIigQJdZ/rT2EbpiMc7T8jfM0mILP1x6OPaf
+ M76DXm3Nxrf0f4GUejuzh7vDYp0eZtWREfZWbWEnJJM1DTM8+Y15rhxMK4mK5JhU0JMgMcM
+ EogT7kKd8GKCU4zg7nnUxUg7MAlLgHw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 680923E1F85
-	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 07:42:38 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 7D9C53E293D
+	for <ltp@archiver.kernel.org>; Tue, 21 Apr 2026 10:21:24 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6A8B43E1B19
- for <ltp@lists.linux.it>; Tue, 21 Apr 2026 07:42:20 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2C0473E10D0
+ for <ltp@lists.linux.it>; Tue, 21 Apr 2026 10:21:00 +0200 (CEST)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 274CA1400DF4
- for <ltp@lists.linux.it>; Tue, 21 Apr 2026 07:42:18 +0200 (CEST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 63KJgp811536075; Tue, 21 Apr 2026 05:42:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
- content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=d3yost
- 709qgF8+kaaRo87RFsMc27JHJYbH32Hnjs3+k=; b=F4YHfmOc2tDPW4t+Ub8ch/
- Gd1KuaYrG2DuDLRx8IbjsBDPcawuNcrbb/r1uZ5iVJRpLgokJbvfrf8SKD7tCzi9
- BM5K1cyL0+R5e/G1zqEFWUJJw00fuI/DI5VfIHE5+QDXhoD5C0qmKzJr44s8//H9
- SYcoHgVu7jNfU5/lsbz7lXKdhRhNwsxsF6fMnC/i5jEEAcVrAp5rOBbQWwwHEMRO
- U5p7YtrKOIv4elxqNhjpUN4FBT77LhP3irAUKsBPC4zCziqK8cjqtzg15ahr69nc
- MXNxmQJGG8adE0/IfWJ6XbJHjRutHUlAwkdXg8ttGQseV1bbga9fffIVD4aGFHFg
- ==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dm2k6j58w-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 21 Apr 2026 05:42:16 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63L5ZGCV012467;
- Tue, 21 Apr 2026 05:42:16 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4dmmnvqmm0-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 21 Apr 2026 05:42:16 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com
- [10.39.53.232])
- by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 63L5gF3g27525778
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 21 Apr 2026 05:42:15 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id F37225805D;
- Tue, 21 Apr 2026 05:42:14 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id ED51458043;
- Tue, 21 Apr 2026 05:42:13 +0000 (GMT)
-Received: from [9.43.100.134] (unknown [9.43.100.134])
- by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
- Tue, 21 Apr 2026 05:42:13 +0000 (GMT)
-Message-ID: <c863cf21-44dd-4440-8be6-e8e509a9581b@linux.ibm.com>
-Date: Tue, 21 Apr 2026 11:12:12 +0530
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 61D161400B6B
+ for <ltp@lists.linux.it>; Tue, 21 Apr 2026 10:21:00 +0200 (CEST)
+Received: by mail-wr1-x42d.google.com with SMTP id
+ ffacd0b85a97d-43d7213b6ebso2614595f8f.3
+ for <ltp@lists.linux.it>; Tue, 21 Apr 2026 01:21:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1776759660; x=1777364460; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=wD615jqOCE0iG6VdVsrkLTZV06B6auGBhRE5+PruOFs=;
+ b=YaqbOV4bPdueWcR86MV2ez78x8o7etzqAbHSefd9HMJQ19FLkzqgvp6Vi43kpVWyg1
+ EdVxCa9FcU38ZrjEQhKQCIBlFjRAPZOI9oqjy7Qa+jcO6HQLrPeYN7Tqe57SYPrH6DUW
+ QjfQvQ1J+E1ij/KDn63HuFzeZuWD7Q2BUPizh3KoKim3aaqJvfGmZ4XtUi2h9BOFV9gG
+ qUSGDkC87t7A07OXWd1NjLpoFftH9UNiH6KPQOtKNyTTsTr/HboRpip1FXxOOsbRj90Y
+ /eHa86y/FORWX+FTR/JdW+2bcGRtTZu/ktpCnmypf59M3ZYEC5RwpDnPlyM7d5OJU62c
+ WNeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776759660; x=1777364460;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=wD615jqOCE0iG6VdVsrkLTZV06B6auGBhRE5+PruOFs=;
+ b=FAz/0Lp3VOb6OIQzA0BqXhmlBsbY635P4IjBwB8BUFmfOgWB9k///dKYvF4057Tbx7
+ oV+8wUSfnK3whWfJeGPRx+LvJKZmEqb+MqvS0cpK5Lp5E7mab76BjIy/IQ17wKeJ232D
+ QrJ4rDxKUy+XozT9wsgCYKVs7Zdb5pyawPuqdzJciKmlA2u5ofHYephqL9uU7tmw6jNx
+ uqf75L8VPd5zahCLo4hvIg7mci81tg6eVooD2Y1tQETvdYVaLHqBfVcjtCL38LS5Bn9s
+ X+UBepIRt9ranUwz25uqp53W/8AoPwepr03c1DfoBY7BtV/x/VmulVIr/qcbpqZkuPi9
+ B2NQ==
+X-Gm-Message-State: AOJu0YzCXClmFajhP1PQXirjo4gNEwkisz7Zt6kynH92Y0c7amtshJzD
+ KaNiFAjDLw7SIkTspLBcAkFGE23gIIJCEH/VhOg96PvtOrZJu4sr+aBA5l379JpETfcreg3+tGB
+ 6VH0=
+X-Gm-Gg: AeBDieuMljWrBoyGu2ykPtsAHDAFnzppZfgkkXks999IIU/zTEKFpQpdjXHi6i4Q9YP
+ SfKe1SzWmzWp5B0FUzmE+TtxlmZW/7lB8NV7iBpsQw4qgT0vSVPLlfMlLVobRN8H7qFHJ+mR3yg
+ wNlt6GMzC6dGvfiqZXglWSG1V8XxyZo2DNvxn3s9VHjWvltQI/hnt8wjNAOUYYhN8N+8MKNv9XQ
+ Laj3lCjYXiT6rGJMEMuUQnEsZjEJ77nYL0RKX+YUPEamIsH1KHm8E+SDydC0N/g0hNVNGjeo2kX
+ 3FV3E3gKLtVvQJvhF91nSZRaRXoy1NGe/8qXPEc8hMV+T1K/SDDbEInKfbg54RiQdSmTdrwZ8u9
+ OU8/ZWsO3w/MjxbJHoI9VZPBaVZYeY+pbWlxl9jZH2+0SSrhFpf3Mxaze30z4ttsekBnTxLI+Tm
+ jpQc28ZB9eiABbatNv0qA+ZJnSODKW1qVgbu2Sjd6veSy1ELUXB3I=
+X-Received: by 2002:a05:6000:2888:b0:43d:7b90:fa21 with SMTP id
+ ffacd0b85a97d-43fe3dcaefamr26739955f8f.12.1776759659694; 
+ Tue, 21 Apr 2026 01:20:59 -0700 (PDT)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-43fe4e4d525sm34179425f8f.31.2026.04.21.01.20.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 21 Apr 2026 01:20:59 -0700 (PDT)
+Date: Tue, 21 Apr 2026 08:20:57 +0000
+To: Li Wang <wangli.ahau@gmail.com>
+Message-ID: <aeczaSCt8Qnt0Uuc@autotest-wegao.qe.prg2.suse.org>
+References: <20260417065332.23663-1-wegao@suse.com>
+ <20260417122804.23890-1-wegao@suse.com>
+ <CANgNiRxgPHo1yQGbT=QGK0NKQEAWO0_9qk6+xiXiC1S6vWvmfw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Martin Doucha <mdoucha@suse.cz>, ltp@lists.linux.it
-References: <20260416124144.19343-1-sachinp@linux.ibm.com>
- <d787013b-6553-4751-bb32-45b5610efafe@suse.cz>
-Content-Language: en-US
-From: Sachin Sant <sachinp@linux.ibm.com>
-In-Reply-To: <d787013b-6553-4751-bb32-45b5610efafe@suse.cz>
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=L78theT8 c=1 sm=1 tr=0 ts=69e70e38 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=Wc6ArQDmqSo5o0SeNH0A:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDIxMDA0OSBTYWx0ZWRfX8UjzbdisZLZs
- 3lBU1AXWAao2ZdmxtO8V0Th+PHMhU+yaHu6b+GJFQbCIHKrZPe8o9uqRAybWFOlXI9Ctveg55AP
- 9cGqCSoCDTD4ilbBvGhJDliWkdfa7+ib65JaH6tru+Xftt0PIHqrHoNtRUS3Aneu+5Fmrh36DJm
- JezrSZP+qoE2shfdMfyzaDEQUUv7TfOrWFXMdBOjhIS9ZIcGp+uaKoMrQGK/kyWgOwJP6Ngjg0L
- m8ySbE2ZuKgomSX6jqv9OKK7sHwcKJZYciPM1no8xc34j3gnqSyiSb3VAoTw7YT/3/+t/QJdhLk
- 6X714goZcVmCsCkIx+3B5YA+x/Q3/O2z7ZmAsu1a9vv3/mRCNil2BODSxgoxyD3kAp8qKNwyIFo
- bwS4XwmmJG31u5QHOpJbYsgM6MMbD0O2Wc/UzValWB2PpY+lxVa49ZV0IaDOmM/2muj3U/PYpor
- 4tS1VjCmaL37lgg9FJw==
-X-Proofpoint-GUID: 349cK68NScTYUPV_QVfoc8n-tpP11q35
-X-Proofpoint-ORIG-GUID: 349cK68NScTYUPV_QVfoc8n-tpP11q35
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-21_01,2026-04-20_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 impostorscore=0 spamscore=0 bulkscore=0 suspectscore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 malwarescore=0 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604070000 definitions=main-2604210049
+Content-Disposition: inline
+In-Reply-To: <CANgNiRxgPHo1yQGbT=QGK0NKQEAWO0_9qk6+xiXiC1S6vWvmfw@mail.gmail.com>
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lapi/io_uring: Add fallback definitions for
- OP_READ(WRITE)
+Subject: Re: [LTP] [PATCH v8] mremap07.c: New test for mremap() with
+ MREMAP_DONTUNMAP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,34 +101,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+On Mon, Apr 20, 2026 at 06:12:19PM +0800, Li Wang wrote:
+> Hi Wei,
+> 
+> This is an excellent test design, but still few places need
+> refactoring in my opinion.
+> 
+> Wei Gao via ltp <ltp@lists.linux.it> wrote:
+> 
+> > --- a/configure.ac
+> > +++ b/configure.ac
+> > @@ -46,6 +46,7 @@ AC_CHECK_DECLS([MADV_MERGEABLE],,,[#include <sys/mman.h>])
+> >  AC_CHECK_DECLS([NFTA_CHAIN_ID, NFTA_VERDICT_CHAIN_ID],,,[#include <linux/netfilter/nf_tables.h>])
+> >  AC_CHECK_DECLS([PR_CAPBSET_DROP, PR_CAPBSET_READ],,,[#include <sys/prctl.h>])
+> >  AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
+> > +AC_CHECK_DECLS([MREMAP_DONTUNMAP],,,[#include <linux/mman.h>])
+> 
+> I didn't go through all the previous discussion, but can we define
+> MREMAP_DONTUNMAP in the lapi/mmap.h then remove the .min_kver
+> and TST_TEST_TCONF?
 
+To handle older kernels without using .min_kver and TST_TEST_TCONF, 
+we'd need to implement extra logic. Would it look something like the following?
 
-On 16/04/26 9:48 pm, Martin Doucha wrote:
-> Hi,
-> while this patch fixes compilation on older system lacking these 
-> constant definitions, the #ifndef macro is incorrect and always true.
->
-> The system constants are defined using an enum so they're not directly 
-> visible to the C preprocessor. The correct way to check for these two 
-> constants is through AC_CHECK_DECLS() in configure.ac.
->
+-	if (new_remap_addr == MAP_FAILED)
++	if (new_remap_addr == MAP_FAILED) {
++		if (errno == EINVAL)
++			tst_brk(TCONF | TERRNO, "mremap() with MREMAP_DONTUNMAP not supported");
++
+ 		tst_brk(TBROK | TERRNO, "mremap failed");
++	}
 
-Thanks Martin for the feedback.
-For some reason I did not receive this email until today.
+Test on old kernel if not using .min_kver/TST_TEST_TCONF?.
 
-I also see that you have already posted an updated patch to mailing list.
-Let me know if you want me to send an updated patch based on the
-feedback.
-
--- 
-Thanks
-- Sachin
-
+susetest:~/ltp/testcases/kernel/syscalls/mremap # uname -r
+4.12.14-122.231-default
+susetest:~/ltp/testcases/kernel/syscalls/mremap # ./mremap07 
+tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+tst_tmpdir.c:309: TINFO: Using /tmp/LTP_mreVVHzVk as tmpdir (btrfs filesystem)
+tst_test.c:2059: TINFO: LTP version: 20260130-147-g19c9b694c
+tst_test.c:2062: TINFO: Tested kernel: 4.12.14-122.231-default #1 SMP Wed Oct 2 17:30:21 UTC 2024 (5f0ddca) x86_64
+tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+tst_kconfig.c:714: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
+tst_test.c:1889: TINFO: Overall timeout per run is 0h 02m 00s
+mremap07.c:88: TINFO: Original mapping created at 0x7f19f2edb000
+mremap07.c:121: TBROK: mremap failed: EINVAL (22)
 
 
 -- 
