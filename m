@@ -4,80 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02373F94CB2
-	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 05:15:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B655F94CC2
+	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 05:18:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C38F83E259F
-	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 07:15:00 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 1E04E3E259F
+	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 07:18:29 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A55CF3E1A84
- for <ltp@lists.linux.it>; Wed, 22 Apr 2026 07:14:42 +0200 (CEST)
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com
- [IPv6:2607:f8b0:4864:20::42f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E1F6A3E1A84
+ for <ltp@lists.linux.it>; Wed, 22 Apr 2026 07:18:08 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7F26E600726
- for <ltp@lists.linux.it>; Wed, 22 Apr 2026 07:14:41 +0200 (CEST)
-Received: by mail-pf1-x42f.google.com with SMTP id
- d2e1a72fcca58-82d0b68837aso3249574b3a.2
- for <ltp@lists.linux.it>; Tue, 21 Apr 2026 22:14:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776834880; x=1777439680; darn=lists.linux.it;
- h=content-disposition:mime-version:mail-followup-to:reply-to
- :message-id:subject:cc:to:from:date:from:to:cc:subject:date
- :message-id:reply-to;
- bh=VUpuNXvb7bBCUkBFeFYAhZOJsWy+kONaYrEA9R0K2sQ=;
- b=ELYZPgp7+GxYbnSUH/b4m9zBPbyOs6Zu0xHQJ/ORCUMAbQtQYdV2Z37E38CnuUJ2B2
- l4B03yKKUI2tZNij1060KeguroHtghKTYjr/jX1Nd2/r76lLAEvRFhzIvxyR2nzDqUHT
- 6EuJJLJ/Fz6raiAtp5nmNiv+VPm3x2wt/LYZmL8LVDmf+/czASUOUc9CItgYryBj/Br/
- 3QXxt4UkUcO5qvUGv3g2tpjlxWzRSfOxB3SMlWhvFCw8CO2wN1cPBB06zolLTOyoha5k
- T2nIZcBlcpm1WiXd8SXQBE+E4QQM8S4orJe/MlvU6GbiV6d4JoDuogJedRMVoVdIwZ9A
- nR0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776834880; x=1777439680;
- h=content-disposition:mime-version:mail-followup-to:reply-to
- :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=VUpuNXvb7bBCUkBFeFYAhZOJsWy+kONaYrEA9R0K2sQ=;
- b=J/6Met/nk9Ad0a5XsAlKKUPNOiGVKAJKvfir06U6KLeh6c7Nk0dchl9P4EKHPJx2QA
- tzr0YVksJa6vJedtBPtCNth7bQ/XNm46vPwFIufT2IRvpi0rznyPDF2qmsH9+pXkhcRL
- IYoeF3tGMx4or+mf+KDWenxyu5njmME62QGoUaMHRJ+w0sOm2F7UCPO+5VqJTPBvfFln
- hrbqUqDV/H0peYXzZFlJxEep4mZ0ssNLgbpktkIGzwO/n4DfNEcI/aJ9pRtstWFIZwlU
- EEOJ6WRnRZ44BPcHrhPmO+FiI1TD+34Z8RKJxWLv1K0KdWzRvIf/jMQOxgXNC0y5K+Kj
- Rt4A==
-X-Gm-Message-State: AOJu0YxKDIOrKrVWz4Vr1/S1DgNhFDgQdbLFUQvqt5nUbl1fexQWsnuP
- lYa5SdyS0O8jvyMNHlB58nHZCvOBC3lyQW/9AAFIN/Ja7L4ezXylYsM=
-X-Gm-Gg: AeBDievuJjQ8DFFPDQDZ8gEBEYNBXfe1hozxzmT3tVAW6vCFc1G5E4irYhXqzczHOUi
- +GWAmSX1ri26OWRnvru90Diz1euX0MkBMWa+6+KAFxvsbDSlMzJqekKF0JN0BD8QobsEHGBPW8O
- 0jOusoB7J6MnfkQTWABZpkpEX2AGP1XkNSiibnr1BR7Y77wyZ0qP1OXGfxK0x161+90S8OLwz2j
- PQr4CKdEL4P/4hYKC5G+zD51I5B+Ymld+JCQQyHDIy9eFD1F4Q+DCdr7r4VEBi4Hwq/Om2XPST7
- QK40UvODFtac7syvC5Bo3z9wTvgmn+ecDMlUE2cXa97uAkl1kW9QlW1nn2I2Kl9QtTs39k1qjm6
- xe88a21nGJB2oCPgnFzwIQHtClx6uC6LZalUJ02azTnd3o2PBD49poWIo1t3zetH+CCc3vj/ZHc
- EIJdro7q2bTsQm5zrLIPCSU0HXhQG3Iy5J
-X-Received: by 2002:a05:6a00:340a:b0:82c:ae0e:dea with SMTP id
- d2e1a72fcca58-82f8c8c39b8mr19343723b3a.32.1776834879787; 
- Tue, 21 Apr 2026 22:14:39 -0700 (PDT)
-Received: from localhost ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-82f8ebb38ddsm14970955b3a.34.2026.04.21.22.14.38
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Apr 2026 22:14:39 -0700 (PDT)
-Date: Wed, 22 Apr 2026 13:14:36 +0800
-From: Li Wang <wangli.ahau@gmail.com>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <aehZPI4rKuzujsj6@gmail.com>
-Mail-Followup-To: Wei Gao <wegao@suse.com>, ltp@lists.linux.it,
- Andrea Cervesato <andrea.cervesato@suse.com>,
- Petr Vorel <pvorel@suse.cz>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4FA5B1400270
+ for <ltp@lists.linux.it>; Wed, 22 Apr 2026 07:18:07 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4551C5BD33;
+ Wed, 22 Apr 2026 05:18:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776835087;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pzwh7+wULhqNy373ItinQno8Pof204v/yAO/ob/2Z88=;
+ b=Lj+NZ/7fql7tMkFnBfRWP1tVNxHYmcJwXaiCuZzHEqh1D7b//yXJOaazLsk3c3tgJjCit1
+ zeZ+ABynEKdtwdOQfYIgb4fS24BPjkhW/Q9WW444EBKDQYRENoT+R2T0HmFX4O5TiEipq7
+ vAVnDgPtMIcWqX5mfX4rYFLgHeRFZac=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776835087;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pzwh7+wULhqNy373ItinQno8Pof204v/yAO/ob/2Z88=;
+ b=kJeLn7bPucjWy5VibnYaXIYqr3MISnkzmwxTvXRxDtOaCav4OYvAf1SiT04ZLZwvGM4y88
+ 3qd7DUfekXEZzJAQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="Lj+NZ/7f";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kJeLn7bP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1776835087;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pzwh7+wULhqNy373ItinQno8Pof204v/yAO/ob/2Z88=;
+ b=Lj+NZ/7fql7tMkFnBfRWP1tVNxHYmcJwXaiCuZzHEqh1D7b//yXJOaazLsk3c3tgJjCit1
+ zeZ+ABynEKdtwdOQfYIgb4fS24BPjkhW/Q9WW444EBKDQYRENoT+R2T0HmFX4O5TiEipq7
+ vAVnDgPtMIcWqX5mfX4rYFLgHeRFZac=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1776835087;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pzwh7+wULhqNy373ItinQno8Pof204v/yAO/ob/2Z88=;
+ b=kJeLn7bPucjWy5VibnYaXIYqr3MISnkzmwxTvXRxDtOaCav4OYvAf1SiT04ZLZwvGM4y88
+ 3qd7DUfekXEZzJAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 23125593AF;
+ Wed, 22 Apr 2026 05:18:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id j5CkBw9a6GnpGAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 22 Apr 2026 05:18:07 +0000
+Date: Wed, 22 Apr 2026 07:18:00 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Jinseok Kim <always.starving0@gmail.com>
+Message-ID: <20260422051800.GA392764@pevik>
+References: <20260417113453.GA409289@pevik>
+ <20260421160828.4483-1-always.starving0@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+In-Reply-To: <20260421160828.4483-1-always.starving0@gmail.com>
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FREEMAIL_TO(0.00)[gmail.com];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ FREEMAIL_CC(0.00)[gmail.com,lists.linux.it];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[generic_trunk_target.mk:url,suse.cz:dkim,suse.cz:replyto,suse.cz:email];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; TAGGED_RCPT(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; MISSING_XM_UA(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Queue-Id: 4551C5BD33
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v9] mremap07.c: New test for mremap() with
- MREMAP_DONTUNMAP
+Subject: Re: [LTP] [PATCH v2] include/lapi: add leaf Makefile
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,173 +120,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: 20260422023115.27534-1-wegao@suse.com
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi Jinseok,
 
-Wei Gao wrote:
+> Convert include/Makefile to use generic_trunk_target.mk and
+> add minimal leaf Makefile in include/lapi.
 
-> This test verifies the mremap() syscall with the MREMAP_DONTUNMAP flag.
-> It uses userfaultfd to verify that accessing the old memory region
-> correctly triggers a page fault after the mapping has been moved.
-> 
-> MREMAP_DONTUNMAP behavior with userfaultfd was not covered by existing
-> mremap tests. This test provides coverage for the feature requested in
-> the linked issue.
-> 
-> Closes: https://github.com/linux-test-project/ltp/issues/1168
-> Signed-off-by: Wei Gao <wegao@suse.com>
+add minimal leaf Makefile in include/lapi in order to have 'make check'.
+
+FYI AI is correct it's better to describe the reason (although we have a ticket,
+one day might github disappear and we lost the reason in the ticket).
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Wait little longer if Li has time to ack this.
+
+> Fixes: https://github.com/linux-test-project/ltp/issues/1262
+
+> Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
 > ---
-> v8->v9:
-> - Removed `MREMAP_DONTUNMAP` check from `configure.ac` and moved fallback to `include/lapi/mmap.h`.
-> - Renamed address variables to `old_addr` and `new_addr` for clarity.
-> - Replaced hardcoded strings with `TEST_STRING_A` and `TEST_STRING_B` macros.
-> - Improved code formatting and indentation.
-> - Removed `.min_kver = "5.7"` in favor of dynamic feature detection.
-> - Added runtime `EINVAL` check to trigger `TCONF` on unsupported kernels.
-> - Added verification logic for data content at `new_addr`.
-> - Fixed stability issues for multiple test iterations (`-i` option).
+> Changes in v2:
+> - Switch include/Makefile to trunk and remove lapi/syscalls/Makefile
+> - Link to v1 : https://lore.kernel.org/ltp/20260410175031.16921-1-always.starving0@gmail.com
+> ---
+>  include/Makefile      |  2 +-
+>  include/lapi/Makefile | 10 ++++++++++
+>  2 files changed, 11 insertions(+), 1 deletion(-)
+>  create mode 100644 include/lapi/Makefile
 
-Patch merged with some improvements (for better readability and reliability):
+> diff --git a/include/Makefile b/include/Makefile
+> index 6b31b046e..84cd4ed6e 100644
+> --- a/include/Makefile
+> +++ b/include/Makefile
+> @@ -24,4 +24,4 @@ ac-maintainer-clean:: ac-clean
 
---- a/testcases/kernel/syscalls/mremap/mremap07.c
-+++ b/testcases/kernel/syscalls/mremap/mremap07.c
-@@ -19,7 +19,6 @@
- #include "tst_safe_pthread.h"
- #include "lapi/userfaultfd.h"
- #include "lapi/mmap.h"
--#include "config.h"
+>  vpath %.h $(abs_srcdir)
 
- static int page_size;
- static int uffd = -1;
-@@ -33,33 +32,24 @@ static void *fault_handler_thread(void *arg LTP_ATTRIBUTE_UNUSED)
- {
-        struct uffd_msg msg;
-        struct uffdio_copy uffdio_copy;
-+       struct pollfd pollfd = { .fd = uffd, .events = POLLIN };
+> -include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> diff --git a/include/lapi/Makefile b/include/lapi/Makefile
+> new file mode 100644
+> index 000000000..f265f856d
+> --- /dev/null
+> +++ b/include/lapi/Makefile
+> @@ -0,0 +1,10 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (C) 2009, Cisco Systems Inc.
+I'll remove this line before merge. IMHO it's no longer Cisco work :).
+While this is related when code is significantly based on old code,
+I would not bother with 2 lines of Makefile.
 
-        TST_CHECKPOINT_WAIT(0);
+> +# Copyright (c) Linux Test Project, 2026
+> +# Ngie Cooper, July 2009
+And this one.
 
--       struct pollfd pollfd;
--
--       pollfd.fd = uffd;
--       pollfd.events = POLLIN;
--
--       int nready = poll(&pollfd, 1, -1);
--
--       if (nready == -1)
-+       if (poll(&pollfd, 1, -1) == -1)
-                tst_brk(TBROK | TERRNO, "poll() failed");
+Kind regards,
+Petr
 
--       if (nready == 0)
--               tst_brk(TBROK, "poll() timed out unexpectedly");
--
-        SAFE_READ(1, uffd, &msg, sizeof(msg));
-
-        if (msg.event != UFFD_EVENT_PAGEFAULT)
-                tst_brk(TBROK, "Received unexpected UFFD_EVENT: %d", msg.event);
-
--       if ((char *)msg.arg.pagefault.address != old_addr)
-+       if (msg.arg.pagefault.address != (unsigned long)old_addr)
-                tst_brk(TBROK, "Page fault on unexpected address: %p",
--                       (void *)msg.arg.pagefault.address);
-+                               (void *)msg.arg.pagefault.address);
-
-        tst_res(TINFO, "Userfaultfd handler caught a page fault at %p",
--               (void *)msg.arg.pagefault.address);
-+                       (void *)msg.arg.pagefault.address);
-
-        uffdio_copy.src = (unsigned long)new_addr;
-        uffdio_copy.dst = (unsigned long)old_addr;
-@@ -73,12 +63,32 @@ static void *fault_handler_thread(void *arg LTP_ATTRIBUTE_UNUSED)
-        return NULL;
- }
-
-+static void check_mremap_dontunmap(void)
-+{
-+       char *test = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE,
-+                               MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+
-+       char *tmp = mremap(test, page_size, page_size,
-+                               MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
-+
-+       if (tmp == MAP_FAILED) {
-+               if (errno == EINVAL)
-+                       tst_brk(TCONF | TERRNO,
-+                                       "MREMAP_DONTUNMAP not supported");
-+               tst_brk(TBROK | TERRNO, "mremap failed");
-+       }
-+
-+       SAFE_MUNMAP(tmp, page_size);
-+       SAFE_MUNMAP(test, page_size);
-+}
-+
- static void setup(void)
- {
-        struct uffdio_api uffdio_api;
-        struct uffdio_register uffdio_register;
-
-        page_size = getpagesize();
-+       check_mremap_dontunmap();
-        uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, true);
-
-        uffdio_api.api = UFFD_API;
-@@ -92,7 +102,7 @@ static void setup(void)
-
-        tst_res(TINFO, "Original mapping created at %p", (void *)old_addr);
-
--       strcpy(old_addr, TEST_STRING_A);
-+       memcpy(old_addr, TEST_STRING_A, sizeof(TEST_STRING_A));
-
-        uffdio_register.range.start = (unsigned long)old_addr;
-        uffdio_register.range.len = page_size;
-@@ -118,23 +128,17 @@ static void run(void)
-        pthread_t handler_thread;
-
-        SAFE_PTHREAD_CREATE(&handler_thread, NULL,
--                           fault_handler_thread, NULL);
-+                               fault_handler_thread, NULL);
-
-        new_addr = mremap(old_addr, page_size, page_size,
--                         MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
--
--       if (new_addr == MAP_FAILED) {
--               if (errno == EINVAL) {
--                       tst_brk(TCONF | TERRNO,
--                               "mremap with MREMAP_DONTUNMAP not supported?");
--               }
-+                               MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
-+       if (new_addr == MAP_FAILED)
-                tst_brk(TBROK | TERRNO, "mremap failed");
--       }
-
-        tst_res(TINFO, "New mapping created at %p", (void *)new_addr);
-
-        TST_EXP_EQ_STR(new_addr, TEST_STRING_A);
--       strcpy(new_addr, TEST_STRING_B);
-+       memcpy(new_addr, TEST_STRING_B, sizeof(TEST_STRING_B));
-
-        TST_CHECKPOINT_WAKE(0);
-
-@@ -148,8 +152,7 @@ static void run(void)
-        TST_EXP_EQ_STR(old_addr, TEST_STRING_B);
-
-        SAFE_MUNMAP(new_addr, page_size);
--       new_addr = NULL;
--       strcpy(old_addr, TEST_STRING_A);
-+       memcpy(old_addr, TEST_STRING_A, sizeof(TEST_STRING_A));
- }
-
- static struct tst_test test = {
-
--- 
-Regards,
-Li Wang
+> +
+> +top_srcdir              ?= ../../
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
