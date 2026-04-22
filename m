@@ -4,106 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42DBEF9EDC9
-	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 13:09:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1776863355; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=frSSmfkDPqgTRVssIQj25vnASGezbSWx8sOwEH0xDrU=;
- b=amygWnOda+GnBt9QXWg2g5UMNgZXpygwaj8fheAHHBBbWuUG8fAz2GOBf7bitXUE26dtO
- Ku40+EQe5/joVFgaIil+niqktnWreDxgqRDlBAXeJI4tkHQf8jCxGkMW4N9igh7/fAH2Fbs
- BMkIVA2DOkeYhF1Sgt6lz/ahZ4hK1L8=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D55CF9EDCD
+	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 13:29:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BA46D3E53C0
-	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 15:09:15 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id CF6573E53FB
+	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 15:29:40 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DDAC63E53BA
- for <ltp@lists.linux.it>; Wed, 22 Apr 2026 15:08:51 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DAFE13E2DC8
+ for <ltp@lists.linux.it>; Wed, 22 Apr 2026 15:29:21 +0200 (CEST)
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com
+ [IPv6:2607:f8b0:4864:20::841])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 451FA1A0036C
- for <ltp@lists.linux.it>; Wed, 22 Apr 2026 15:08:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1776863329;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=z4kzq26YTddBWUKoQQjpxC60sRmM7yX65o4pe1lLUKs=;
- b=WYYEfgeCMwB7HuwN39qVn0ZVJ1PFMruJ5rXPZ7A5o8AULHJWTSfB7/ydEhMutxrBzbOvId
- aaowPDcyU2j0oqI+0MPqHcKP1Ga6UIib4PiJE5c8QEMCK/Jb5q9DNPso1ITAcmLOHLvqm1
- 9c9ppjEVKAWJ0/Ru6ewv4d2dmHZlnI0=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-68-uFCcwCLyMPKTmEloHvoFwQ-1; Wed, 22 Apr 2026 09:08:47 -0400
-X-MC-Unique: uFCcwCLyMPKTmEloHvoFwQ-1
-X-Mimecast-MFC-AGG-ID: uFCcwCLyMPKTmEloHvoFwQ_1776863327
-Received: by mail-pg1-f199.google.com with SMTP id
- 41be03b00d2f7-c797efdaa9cso2507093a12.3
- for <ltp@lists.linux.it>; Wed, 22 Apr 2026 06:08:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776863326; x=1777468126;
- h=user-agent:in-reply-to:content-transfer-encoding
- :content-disposition:mime-version:references:message-id:subject:cc
- :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 79AD71000479
+ for <ltp@lists.linux.it>; Wed, 22 Apr 2026 15:29:21 +0200 (CEST)
+Received: by mail-qt1-x841.google.com with SMTP id
+ d75a77b69052e-50faeb8317bso21544731cf.2
+ for <ltp@lists.linux.it>; Wed, 22 Apr 2026 06:29:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1776864560; x=1777469360; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=z4kzq26YTddBWUKoQQjpxC60sRmM7yX65o4pe1lLUKs=;
- b=Wb5O7/2pA1P4cXJSqrbhixheQnCs60HyPLmp1jhx8bezXKKTvBtAsY8BrgnwxwlTN7
- L65Gkmq3NiencOTxdL/MmaS8Wb1WZsTCSVv3/dF+3tO2jLjHPhMfLcRMq2Lw08SKeyxt
- qydNk1/SZuA0Yc/c3gMsFicy5guRcKS/KxGA8GxCsvwvHZ8tPBoaFlw34/4XQDVhEc4f
- WDP/Ww4ujBdfmi0eECC+a4CNd2EoGc935U5a9zURzyoQLuo4U8hOcj4wSPIeugDymohg
- blW1Fa5uR3V1dWUh3887svb2dEv1Y3VzYJsGYusQgKU7kbnaHF5B8fPNxSgYKk0deGMH
- i1dw==
-X-Forwarded-Encrypted: i=1;
- AFNElJ9ZGIEKMf1dBTJC0/X/WMdTv1VUwGVdkXSt+Ryire4SJcxdiJF49XUm1bLHcwy0Lm44tE8=@lists.linux.it
-X-Gm-Message-State: AOJu0YzSwkl/CO7VbavNmTiqkHfiS7kB1ZgzZDb+AeXWC6uDqX3IqqXB
- /IYyPoCY7EkWCTKW0ZpGHTtU7UXDa2ZyOKSHLaIzVs6dZiOxlCNC6YvgtA9ebC0XkOzk1TJHAyg
- SmrPq+8dlqfQOayXJz7ql+yOR0I+9P0JqeCCfJfV923wdI7bABz89E3ybZ5sj
-X-Gm-Gg: AeBDieuKotW/1Hx3caUcRL4IWUjhVIZ/WalCVaLoc5TcwA3hfoB6pCBghscdcTelvVP
- iIPP0WcEOb911uoXSr/gXKnuQdSB5sJtLhPxnA9oCqe0gYeUiuSaXyZRvRMgvUKpRRyji1r5wQS
- mvF7OuM6IOQRZ8vOPUdT/uw8ZloPXhCKpZK7JtEtKbzFyj8amXq8W7aZckmvoMTWnOGt3cQpTk9
- aKbXIGSRz6wSSSKu7qHRmSi8TzUFpwfw4f61CRMzABSTrvAXLzH8QlZEpg5QoCBxH/1pZzTS4Le
- 1a/LqBuKUCKKq2XTGlxokM81UrXQr2PzzIt3OL0/r3uW3CB1dK+2AUOFgFY3TF2hvTZLXYMTGfB
- lL75UUnt19VrGsj5kKZFGcGbtcsHCRJm2yyBwLgnsnpsV
-X-Received: by 2002:a05:6a21:33a6:b0:3a2:d68d:9e6e with SMTP id
- adf61e73a8af0-3a2d68dd1aamr13014205637.10.1776863326453; 
- Wed, 22 Apr 2026 06:08:46 -0700 (PDT)
-X-Received: by 2002:a05:6a21:33a6:b0:3a2:d68d:9e6e with SMTP id
- adf61e73a8af0-3a2d68dd1aamr13014156637.10.1776863325833; 
- Wed, 22 Apr 2026 06:08:45 -0700 (PDT)
-Received: from lida.tpb.lab.eng.brq.redhat.com ([213.175.37.14])
- by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-82f8ec0307esm17450426b3a.53.2026.04.22.06.08.41
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 22 Apr 2026 06:08:45 -0700 (PDT)
-Date: Wed, 22 Apr 2026 15:08:37 +0200
+ bh=QM9j5mOFwrWhpzSIyQCMJIkyzNFJiSJWe55BHjuBLJI=;
+ b=SpWdjYjcznqb84+Hkvtbb4EStsIx8VbQ6nsE8z0ymf/ja9EtdqCclntNXY/+QWiZmQ
+ Aoc/0dS4Vc2a8XII16JkJ3usM8pJlPPK2XXPNCRlIHPnpxE9AzH8Q6Zh07zemnJspGMV
+ ZK8Hr6ikXSqkzd6Q8zgUu3dVtfgSEPaqoHvI3fi+wYBQOg3+VVu9oEd1Fcbm0I4vNpWp
+ zgR2HDnRNboMY2lTNyMGi9sSXLlPRgjXMK9uDdH/EMpb+S13m3SqfBTGewmx3j7bK5Gi
+ 92VegPjX7vF/F6bwoaD6l/Ltbt8nXVIubxc6Vh/zMSz+nFDCzwLe+Ttq20hZbxzSLiP+
+ JvJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776864560; x=1777469360;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=QM9j5mOFwrWhpzSIyQCMJIkyzNFJiSJWe55BHjuBLJI=;
+ b=bxlW3v9w7k6cwSosucnwVyG5S/lXgPVLb+vVE/WLsseW1dX2SY0JgWbOxpz62gu5ba
+ iVgFoTykNq2iSyngUYBgFWPz3y+XoK/NSXMCa4C3iFg2RezKFJRj6RdkwYGTdFKV+XBu
+ AA7TgFxZsdiDWEmdjHs+lSkFjvVkS9mXWlgVTAZj4zDwxgD5d2B3h9iY9bF7XlO9uXG0
+ EBPAGyo7o+O3udLNW807bVuaqtRhT+Qu/0LK2MY0N3sZf3z/u8KNJPIj9qifUt558YWr
+ EI0kZiyM5G+LwXrTQ8swCNK/9FuYjEc0vFEDtar2gNL+sqzKesaziZBbb7XLfVsF1W0V
+ iSQw==
+X-Gm-Message-State: AOJu0YzxFGy4AHh33Uo/tFVggiTl1JmF/6O8YkJFYfoxzAl9lZ/z00TX
+ S/BMc5vCFZyZ1R7zPIjC07HdD2WhfOfiiqheWMhdqmBtLtspvT7JE5gUt8HaZtPQtv4=
+X-Gm-Gg: AeBDiet5RMEx+j632TKec6D7Bv9frjZm4lOMG8p8Q9lfwf8IqDUXVjS9FsSPkWxjC0M
+ ULTosxEN+nkwcT2+kaxiqcgFOJZK+HcaRonizwdyJOUNz+zp0rfMSVZXcOx6r8+wTHPy96KHOV3
+ yOi1Z2HZR6GzqXLV9d9cHqKPKqMJxgqK2O57uQUQrjgvth6ynqFDanzjlaR3YnLNcG+hwCT6kea
+ srOUUl7Og9YWp6xD2gk59KjR0FmmjFAraRwrvwq8D65tKeHjwxidAGGQfoqK3AwzpiJ9EYacYAn
+ 81Kq79blKUO9UZTLByPlIRgqIgQlLCrgroJGgmPplHCyODY7W74P9Ujdn92Pkcm+3jdmpGFb9Rp
+ CZpEpB+f/QUzoxFbfSWSKhc1JeOh47VuLNdsNktJcTqAT1u1DLB1oKU5n74nLtE68owPUwO7sFW
+ +5cKuh0CiUZXR2VTBN7s36f4HqJYIw700JE0JQ9PKJ73C8z2uzgBXiYDuDlbSHdU9YbHs9tkyaC
+ oq0sbSfee91E7YSiPzfrIAYh9yQOYu/x27sTkjnwf7NIfWo
+X-Received: by 2002:a05:622a:5a0a:b0:509:127d:ee06 with SMTP id
+ d75a77b69052e-50e36c9140dmr53569551cf.58.1776864560147; 
+ Wed, 22 Apr 2026 06:29:20 -0700 (PDT)
+Received: from
+ runnervmeorf1.ahhkzqflhvruxcz0lwfxlmk5ff.bx.internal.cloudapp.net
+ ([20.55.15.102]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-50e394c1fddsm140337981cf.30.2026.04.22.06.29.19
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 22 Apr 2026 06:29:19 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <20260422130837.cdkcwxtbhkumx3eo@lida.tpb.lab.eng.brq.redhat.com>
-References: <20260421152349.1673057-1-mcermak@redhat.com>
- <20260422053712.GB392764@pevik>
- <319d3965-30f0-49c5-b747-ad16334391e2@suse.de>
- <20260422121742.GA419002@pevik>
+Date: Wed, 22 Apr 2026 13:29:18 +0000
+Message-ID: <20260422132918.3932-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260422113136.416482-1-pvorel@suse.cz>
+References: <20260422113136.416482-1-pvorel@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20260422121742.GA419002@pevik>
-User-Agent: NeoMutt/20180716
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: yMBwVW_EoF2YY79zxaqjUvAEzcKDIsv4Hy1VC5iz-aw_1776863327
-X-Mimecast-Originator: redhat.com
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [Valgrind-developers] [PATCH] Make userfaultfd0{1, 3,
- 4} LTP tests valgrind compatible
+Subject: Re: [LTP] include: Remove 'make install' support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,56 +91,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Martin Cermak via ltp <ltp@lists.linux.it>
-Reply-To: Martin Cermak <mcermak@redhat.com>
-Cc: valgrind-developers@lists.sourceforge.net, ltp@lists.linux.it
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On  Wed  2026-04-22  14:17 , Petr Vorel wrote:
-> =
+Hi Petr,
 
-> =
+On Wed, 22 Apr 2026, Petr Vorel wrote:
+> include: Remove 'make install' support
 
-> > On 4/22/26 7:37 AM, Petr Vorel wrote:
-> > > > However, some of the testcases can be easily changed to use forked
-> > > > processes instead of threads.  That's what this patch does.  When
-> > > > client program forks, Valgrind forks too, and that allows for the n=
-eeded
-> > > > parallelism to handle the page fault.
-> > > You understand process vs. threads more than me. But shouldn't mmap()=
- use
-> > > MAP_SHARED instead of MAP_PRIVATE for those which aren't using /dev/u=
-serfaultfd?
-> =
+> +# Copyright (c) Linux Test Project, 2026
 
-> > The documentation for userfaultfd mentions threads.=A0 I'm afraid we'll
-> > lose vital coverage if we move to forked processes.
-> =
+Nit: existing line above uses "(C)" (uppercase); "(c)" here is inconsistent.
 
-> +1, at least some tests would keep threads (not all userfaultfd tests wou=
-ld be
-> converted, but yes, that's why I suggested to use MAP_SHARED, which could=
- be
-> similar to threads (yes, the difference between processes and threads in =
-Linux
-> kernel is not that huge as both are created in clone(), it's mostly about=
- what
-> is shared).
+Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
 
-My goal is to make at least part of these userfaultfd tests
-compatible with Valgrind.  I've experimented with clone() and it
-seems like Valgrind has limited support for it.  That said,
-adding another set of userfaultfd tests using fork() or clone()
-instead of threads might help.  Some of such new tests will be
-"incompatible" with valgrind, but it might be a test coverage
-improvement.
+---
+Note:
 
-m.
+Our agent completed the review of the patch. The full review can be
+found at: <review_url>
 
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
--- =
+Regards,
+LTP AI Reviewer
 
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
