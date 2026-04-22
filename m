@@ -4,109 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B655F94CC2
-	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 05:18:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA301F94CC4
+	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 05:27:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1E04E3E259F
-	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 07:18:29 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 6EDB93E25A5
+	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 07:27:13 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E1F6A3E1A84
- for <ltp@lists.linux.it>; Wed, 22 Apr 2026 07:18:08 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id EA4EF3E1AA6
+ for <ltp@lists.linux.it>; Wed, 22 Apr 2026 07:26:55 +0200 (CEST)
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com
+ [IPv6:2607:f8b0:4864:20::433])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4FA5B1400270
- for <ltp@lists.linux.it>; Wed, 22 Apr 2026 07:18:07 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4551C5BD33;
- Wed, 22 Apr 2026 05:18:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776835087;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pzwh7+wULhqNy373ItinQno8Pof204v/yAO/ob/2Z88=;
- b=Lj+NZ/7fql7tMkFnBfRWP1tVNxHYmcJwXaiCuZzHEqh1D7b//yXJOaazLsk3c3tgJjCit1
- zeZ+ABynEKdtwdOQfYIgb4fS24BPjkhW/Q9WW444EBKDQYRENoT+R2T0HmFX4O5TiEipq7
- vAVnDgPtMIcWqX5mfX4rYFLgHeRFZac=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776835087;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pzwh7+wULhqNy373ItinQno8Pof204v/yAO/ob/2Z88=;
- b=kJeLn7bPucjWy5VibnYaXIYqr3MISnkzmwxTvXRxDtOaCav4OYvAf1SiT04ZLZwvGM4y88
- 3qd7DUfekXEZzJAQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="Lj+NZ/7f";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kJeLn7bP
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776835087;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pzwh7+wULhqNy373ItinQno8Pof204v/yAO/ob/2Z88=;
- b=Lj+NZ/7fql7tMkFnBfRWP1tVNxHYmcJwXaiCuZzHEqh1D7b//yXJOaazLsk3c3tgJjCit1
- zeZ+ABynEKdtwdOQfYIgb4fS24BPjkhW/Q9WW444EBKDQYRENoT+R2T0HmFX4O5TiEipq7
- vAVnDgPtMIcWqX5mfX4rYFLgHeRFZac=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776835087;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pzwh7+wULhqNy373ItinQno8Pof204v/yAO/ob/2Z88=;
- b=kJeLn7bPucjWy5VibnYaXIYqr3MISnkzmwxTvXRxDtOaCav4OYvAf1SiT04ZLZwvGM4y88
- 3qd7DUfekXEZzJAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 23125593AF;
- Wed, 22 Apr 2026 05:18:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id j5CkBw9a6GnpGAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 22 Apr 2026 05:18:07 +0000
-Date: Wed, 22 Apr 2026 07:18:00 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Jinseok Kim <always.starving0@gmail.com>
-Message-ID: <20260422051800.GA392764@pevik>
-References: <20260417113453.GA409289@pevik>
- <20260421160828.4483-1-always.starving0@gmail.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D91BD1000414
+ for <ltp@lists.linux.it>; Wed, 22 Apr 2026 07:26:54 +0200 (CEST)
+Received: by mail-pf1-x433.google.com with SMTP id
+ d2e1a72fcca58-82f83bd32efso3956267b3a.2
+ for <ltp@lists.linux.it>; Tue, 21 Apr 2026 22:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1776835613; x=1777440413; darn=lists.linux.it;
+ h=content-disposition:mime-version:mail-followup-to:reply-to
+ :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=kB2aikB0bx5IDh9O5Hn12g8SfA8i4YSnqzmg88Y6Y/I=;
+ b=o09AdIruaTrOItmqtFozWTJZrOjta/5gBl2H3B3WqX2yuh8IQQRR7Y4WFrvhMkwEup
+ R1TLXOZ7c2CbCYbMqggxjw3BpbadhYEYy8eb05m5RBqhN0CVle3laW5DNl8/2IVCEuso
+ Ut4+cko3BKgjgsiaNZgWWpqZbOPOQTwf9uYFB3lExO4I2yU+jUOYmmtSHJif6Pjfznox
+ SG7SC7CctINyODJnSrbMXjWKEp+ibO1MKC0AX7TG+knAaaW/fBBPzDlNpJaCo0IotskC
+ DIBl2oahg8mWV++LZ+c25KX5m+O4TjiFGzuF3hRjcL8f+SWaqfR1lqyWxvclh9Oup8To
+ W93w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1776835613; x=1777440413;
+ h=content-disposition:mime-version:mail-followup-to:reply-to
+ :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=kB2aikB0bx5IDh9O5Hn12g8SfA8i4YSnqzmg88Y6Y/I=;
+ b=nyEezKNebUaO17kSsxG1E+F5Ny6HX5jSsb8TINv9+0Al/uHr77je6eftKa4J//FJPV
+ 9YEyJeRg8z6oC184DZIplApBd/Oe0Wx8GfhE61LlWJiNX90KM99P69K6b5ykaW53lZ6Q
+ fJ6HOagQtuWVk2foaxcLtLUHE7T2Vq29TnxMWoXpaieHSYe9pXGhaly6NCD9XT9TzsW7
+ F4DJFS02xidFByuHijawptVBMlqjyzH+66PuPjk4KJEBfUF9AYocfzPF1BD2ZSw/3YvA
+ EfF8B4sUfyiye22ELZnaq/uPgoygvYlTGdMbONqEhQSn71DJg8iRkNBJl7hzDUs+i7nP
+ LYOg==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ96ZpmAKRkqLJ6aIGJvWkuIeXcbDmrzAVJ8Biet8qSj4jONwkjIHiTl1h09UNwmrxdI5mI=@lists.linux.it
+X-Gm-Message-State: AOJu0Yzc5Brw+fkx3WpTMZc7SZrNcAiMUTU4c3AkVrWTmGrZmWGvGmeh
+ 4f/kML7Ak5GlQv3qOOEeGtq4K5tn3rn+shI25Jk4F/KI7uLaO4lV4mUhwOAOt80s6Ixn
+X-Gm-Gg: AeBDieuE+qKIyTbRh/sfMy5D/LmSznjr+c8uhL6MU+ZXXx9V1BgP0qi+vqONe6YIbjN
+ BkJEFn18cqaP1QolmrvdPkN7AZ1AFkotWuPp7hZ6rEKVt7TMHjpPj9qoavfQPgoLdHkmNINVMDH
+ rULAMYlnPNu/Q3Dmimmk1AId18d5/g0eh18zwi+PCW2XK7SKtVU7K23qCfxZ5iJH3ZwXVSkqdgn
+ yIHVBEt9u48jTWlOaPiUTb99Yi7xqHUH6Kqps0zQtCx7O0KyIqS9uvkn2LBYlL/SkA4QZ3ESeOr
+ 4FjCsFUpC8wVCgzix1Q9+nayqHgoL6k8PIWoc8NteGEZelODNMwD4sVBpaiwdDJBQ+uzvmrzppf
+ 5BkojP26sQO+ZnUoV0aqt1C1dd9t5tJMgaFw6J1Ld0ZBsIxKw2ms/dJzwOdh01Amww8P6r5jQ5N
+ ZGIqhVPrn22MX+DmguBWvtz9xk+jd/HB9B
+X-Received: by 2002:a05:6a00:2889:b0:823:d2c:b156 with SMTP id
+ d2e1a72fcca58-82f8c7db2bemr22335274b3a.5.1776835613239; 
+ Tue, 21 Apr 2026 22:26:53 -0700 (PDT)
+Received: from localhost ([209.132.188.88]) by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-82f8ebe41cfsm16617173b3a.43.2026.04.21.22.26.52
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 21 Apr 2026 22:26:52 -0700 (PDT)
+Date: Wed, 22 Apr 2026 13:26:49 +0800
+From: Li Wang <wangli.ahau@gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <aehcGRoIxh8yW43y@gmail.com>
+Mail-Followup-To: Petr Vorel <pvorel@suse.cz>,
+ Jinseok Kim <always.starving0@gmail.com>, ltp@lists.linux.it
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260421160828.4483-1-always.starving0@gmail.com>
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FREEMAIL_TO(0.00)[gmail.com];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- FREEMAIL_CC(0.00)[gmail.com,lists.linux.it];
- DBL_BLOCKED_OPENRESOLVER(0.00)[generic_trunk_target.mk:url,suse.cz:dkim,suse.cz:replyto,suse.cz:email];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TAGGED_RCPT(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; MISSING_XM_UA(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: 4551C5BD33
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] include/lapi: add leaf Makefile
 X-BeenThere: ltp@lists.linux.it
@@ -120,74 +89,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Reply-To: 20260422051800.GA392764@pevik
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jinseok,
+Hi Petr, Jinseok,
 
-> Convert include/Makefile to use generic_trunk_target.mk and
-> add minimal leaf Makefile in include/lapi.
+Petr Vorel wrote:
 
-add minimal leaf Makefile in include/lapi in order to have 'make check'.
+> > Convert include/Makefile to use generic_trunk_target.mk and
+> > add minimal leaf Makefile in include/lapi.
+> 
+> add minimal leaf Makefile in include/lapi in order to have 'make check'.
+> 
+> FYI AI is correct it's better to describe the reason (although we have a ticket,
+> one day might github disappear and we lost the reason in the ticket).
+> 
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Wait little longer if Li has time to ack this.
 
-FYI AI is correct it's better to describe the reason (although we have a ticket,
-one day might github disappear and we lost the reason in the ticket).
+The v2 generally looks good (with Petr's suggestion).
+Feel free to merge/refine with:
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Wait little longer if Li has time to ack this.
+Reviewed-by: Li Wang <wangli.ahau@gmail.com>
 
-> Fixes: https://github.com/linux-test-project/ltp/issues/1262
-
-> Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
-> ---
-> Changes in v2:
-> - Switch include/Makefile to trunk and remove lapi/syscalls/Makefile
-> - Link to v1 : https://lore.kernel.org/ltp/20260410175031.16921-1-always.starving0@gmail.com
-> ---
->  include/Makefile      |  2 +-
->  include/lapi/Makefile | 10 ++++++++++
->  2 files changed, 11 insertions(+), 1 deletion(-)
->  create mode 100644 include/lapi/Makefile
-
-> diff --git a/include/Makefile b/include/Makefile
-> index 6b31b046e..84cd4ed6e 100644
-> --- a/include/Makefile
-> +++ b/include/Makefile
-> @@ -24,4 +24,4 @@ ac-maintainer-clean:: ac-clean
-
->  vpath %.h $(abs_srcdir)
-
-> -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
-> diff --git a/include/lapi/Makefile b/include/lapi/Makefile
-> new file mode 100644
-> index 000000000..f265f856d
-> --- /dev/null
-> +++ b/include/lapi/Makefile
-> @@ -0,0 +1,10 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (C) 2009, Cisco Systems Inc.
-I'll remove this line before merge. IMHO it's no longer Cisco work :).
-While this is related when code is significantly based on old code,
-I would not bother with 2 lines of Makefile.
-
-> +# Copyright (c) Linux Test Project, 2026
-> +# Ngie Cooper, July 2009
-And this one.
-
-Kind regards,
-Petr
-
-> +
-> +top_srcdir              ?= ../../
-> +
-> +include $(top_srcdir)/include/mk/env_pre.mk
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+-- 
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
