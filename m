@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51950F9EDD9
-	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 14:13:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68F25F9EDD9
+	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 14:13:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CA5B93E3039
-	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 16:13:00 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 5AA9C3E3039
+	for <ltp@archiver.kernel.org>; Wed, 22 Apr 2026 16:13:17 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D35D43C054A
- for <ltp@lists.linux.it>; Wed, 22 Apr 2026 16:12:40 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 3FF263E555E
+ for <ltp@lists.linux.it>; Wed, 22 Apr 2026 16:12:43 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0E389600696
- for <ltp@lists.linux.it>; Wed, 22 Apr 2026 16:12:39 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 87F041400458
+ for <ltp@lists.linux.it>; Wed, 22 Apr 2026 16:12:41 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 807665BD5C;
- Wed, 22 Apr 2026 14:12:39 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CAB366A8E2;
+ Wed, 22 Apr 2026 14:12:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1776867159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bNjw4sBufMBg598T/qzoANemJq101BaMJwzT18Nt3pM=;
- b=qdZuNtScyN8qBD/UkXuUfOu+2BajntpBV2V4vCSOjJYH5pdzLwMbeA08x5+D8xImFXvccs
- vKGg0tcoSM3FLzleJfQodJdj5iT35X9VtmRKwudrcVN4aAXY+5U+wxtgHRv29Vt1hoYSLk
- dYVrmqiMKiFsFxLQnbPPSSKsnRh3m8k=
+ bh=AL757g80cD8wt2DY+NfZvyTarGgZnLAKWpq7WQ7d1Mg=;
+ b=dXOgTzURYXv1Mx2dh4QQlg/8E5TKskerpc6HLoucl01fgW9Gdeo6D8GylcElr2wT37vh0o
+ Ghuesrg4VmY7KjUGBCK6dxJIR4FnAkD0FsKEbXVVM1dbx28/ZUHIwuKPR5NaUuOMEuBn/Y
+ 0NSUxkGL7UvK/mcS6IqDcB917+P/j4Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1776867159;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bNjw4sBufMBg598T/qzoANemJq101BaMJwzT18Nt3pM=;
- b=2Q2SJ+z3Gs2y5+9QlhrpFQZcxbjlhutXwpsWtrYlaMh3TKWcqOCgJAq/Ic/DcwZj3AfJBn
- U1CcrpBXyDSrhFBA==
-Authentication-Results: smtp-out2.suse.de;
+ bh=AL757g80cD8wt2DY+NfZvyTarGgZnLAKWpq7WQ7d1Mg=;
+ b=JcMPM9SAaMLThKtKuDXEkc7rWXv8T3NEF7rN6UJb8t25FbqHj5cC8q2caSvC7ytdDjnGnQ
+ CYoj8aJFlikHiUBg==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1776867159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1776867158; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bNjw4sBufMBg598T/qzoANemJq101BaMJwzT18Nt3pM=;
- b=qdZuNtScyN8qBD/UkXuUfOu+2BajntpBV2V4vCSOjJYH5pdzLwMbeA08x5+D8xImFXvccs
- vKGg0tcoSM3FLzleJfQodJdj5iT35X9VtmRKwudrcVN4aAXY+5U+wxtgHRv29Vt1hoYSLk
- dYVrmqiMKiFsFxLQnbPPSSKsnRh3m8k=
+ bh=AL757g80cD8wt2DY+NfZvyTarGgZnLAKWpq7WQ7d1Mg=;
+ b=BaujQ8oeDjO1JwSTDydzvIezyK396tWs3WvJFhueNzCzSGs22yCwsC9eOTwOznKpFWKQit
+ xPDWYKeAB2xhh+rzJqOeKAZjRmBsFEzr5MghgC5VvY95xRTefyl24FxpYvAz9F9uettzJz
+ mdXGekflcmHOqcjtix+ib3UxQCLGQTI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1776867159;
+ s=susede2_ed25519; t=1776867158;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bNjw4sBufMBg598T/qzoANemJq101BaMJwzT18Nt3pM=;
- b=2Q2SJ+z3Gs2y5+9QlhrpFQZcxbjlhutXwpsWtrYlaMh3TKWcqOCgJAq/Ic/DcwZj3AfJBn
- U1CcrpBXyDSrhFBA==
+ bh=AL757g80cD8wt2DY+NfZvyTarGgZnLAKWpq7WQ7d1Mg=;
+ b=k0PDVgJd6hCzLLf4/sQbV79uLjC2ZVvutkk03vdKGUxsmFrUICJ2SHGs3Dbpgp0GG3JBAs
+ ZafTG2Mw2hXKJYDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E1DBC593B1;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2ABAD593B0;
  Wed, 22 Apr 2026 14:12:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id yLL6NFbX6GnqUwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wKgOBlbX6GnqUwAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Wed, 22 Apr 2026 14:12:38 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 22 Apr 2026 16:12:31 +0200
-Message-ID: <20260422141234.632195-3-pvorel@suse.cz>
+Date: Wed, 22 Apr 2026 16:12:30 +0200
+Message-ID: <20260422141234.632195-2-pvorel@suse.cz>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260422141234.632195-1-pvorel@suse.cz>
 References: <20260422141234.632195-1-pvorel@suse.cz>
@@ -95,12 +96,11 @@ X-Spamd-Result: default: False [-1.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FREEMAIL_CC(0.00)[suse.cz,gmail.com,suse.com,redhat.com];
  TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email,suse.com:email];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo,suse.com:email];
  RCVD_COUNT_TWO(0.00)[2]; FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 2/5] lib: Rename variable LTP_ENABLE_DEBUG =>
- LTP_DEBUG
+Subject: [LTP] [PATCH v4 1/5] lib: Ignore empty LTP_ENABLE_DEBUG
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,101 +118,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-1) LTP_DEBUG is shorter to write.
-2) Enable is usually meant as boolean (on/off), that hides possible 2
-value even more.
+Empty LTP_ENABLE_DEBUG environment variable should be just ignored.
 
+This fixes warning:
+LTP_ENABLE_DEBUG= ./test05
+tst_test.c:1454: TWARN: Invalid LTP_ENABLE_DEBUG value:
+
+Fixes: e434de62b4 ("lib: Extend LTP_ENABLE_DEBUG to support verbosity levels")
 Reviewed-by: Li Wang <liwang@redhat.com>
 Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- doc/developers/debugging.rst     | 2 +-
- doc/old/C-Test-API.asciidoc      | 2 +-
- doc/users/setup_tests.rst        | 2 +-
- lib/newlib_tests/tst_res_flags.c | 2 +-
- lib/tst_test.c                   | 6 +++---
- 5 files changed, 7 insertions(+), 7 deletions(-)
+ lib/tst_test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/doc/developers/debugging.rst b/doc/developers/debugging.rst
-index 52f881c5c8..36dda0d90f 100644
---- a/doc/developers/debugging.rst
-+++ b/doc/developers/debugging.rst
-@@ -9,7 +9,7 @@ Debug messages
- --------------
- 
- The LTP framework supports ``TDEBUG`` flag test debug messages. These
--messages can be enabled using the ``-D[1,2]`` parameter or setting ``LTP_ENABLE_DEBUG=1,2``
-+messages can be enabled using the ``-D[1,2]`` parameter or setting ``LTP_DEBUG=1,2``
- environment variable (see :doc:`../users/setup_tests`).
- 
- The ``-D`` parameter also supports the following verbosity levels:
-diff --git a/doc/old/C-Test-API.asciidoc b/doc/old/C-Test-API.asciidoc
-index 44cc4e863b..7c5ad923dd 100644
---- a/doc/old/C-Test-API.asciidoc
-+++ b/doc/old/C-Test-API.asciidoc
-@@ -232,7 +232,7 @@ Printf-like function to report test result, it's mostly used with ttype:
- | 'TPASS'  | Test has passed.
- | 'TFAIL'  | Test has failed.
- | 'TINFO'  | General message.
--| 'TDEBUG' | Debug message (new C API only, printed with '-D' or via 'LTP_ENABLE_DEBUG=1' or 'y'
-+| 'TDEBUG' | Debug message (new C API only, printed with '-D' or via 'LTP_DEBUG=1' or 'y'
-              environment variable), only for messages which would be too verbose for normal run.
- | 'TWARN'  | Something went wrong but we decided to continue. Mostly used in cleanup functions.
- |==============================
-diff --git a/doc/users/setup_tests.rst b/doc/users/setup_tests.rst
-index 95d4d9e380..a42c397feb 100644
---- a/doc/users/setup_tests.rst
-+++ b/doc/users/setup_tests.rst
-@@ -90,7 +90,7 @@ users.
-      - Disable running test cleanup (defined in ``TST_CLEANUP``).
-        Shell API only.
- 
--   * - LTP_ENABLE_DEBUG
-+   * - LTP_DEBUG
-      - Enable debug info (value ``1`` (``y``) or ``2`` for more verbose level).
-        Equivalent of ``-D`` parameter.
- 
-diff --git a/lib/newlib_tests/tst_res_flags.c b/lib/newlib_tests/tst_res_flags.c
-index 21637a472b..9993d0f87d 100644
---- a/lib/newlib_tests/tst_res_flags.c
-+++ b/lib/newlib_tests/tst_res_flags.c
-@@ -21,7 +21,7 @@ static struct tcase {
- 	{FLAG(TCONF)},
- 	{FLAG(TWARN)},
- 	{FLAG(TINFO)},
--	{FLAG(TDEBUG), " (printed only with -D[1,2] or LTP_ENABLE_DEBUG=1,2)"},
-+	{FLAG(TDEBUG), " (printed only with -D[1,2] or LTP_DEBUG=1,2)"},
- };
- 
- static void do_cleanup(void)
 diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 229da669fa..c79cabcd7a 100644
+index 26f6510a0a..229da669fa 100644
 --- a/lib/tst_test.c
 +++ b/lib/tst_test.c
-@@ -675,7 +675,7 @@ static void print_help(void)
- 	fprintf(stderr, "LTP_COLORIZE_OUTPUT      Force colorized output behaviour (y/1 always, n/0: never)\n");
- 	fprintf(stderr, "LTP_DEV                  Path to the block device to be used (for .needs_device)\n");
- 	fprintf(stderr, "LTP_DEV_FS_TYPE          Filesystem used for testing (default: %s)\n", DEFAULT_FS_TYPE);
--	fprintf(stderr, "LTP_ENABLE_DEBUG         Print debug messages (set 1(y) or 2)\n");
-+	fprintf(stderr, "LTP_DEBUG                Print debug messages (set 1(y) or 2)\n");
- 	fprintf(stderr, "LTP_REPRODUCIBLE_OUTPUT  Values 1 or y discard the actual content of the messages printed by the test\n");
- 	fprintf(stderr, "LTP_QUIET                Values 1 or y will suppress printing TCONF, TWARN, TINFO, and TDEBUG messages\n");
- 	fprintf(stderr, "LTP_SINGLE_FS_TYPE       Specifies filesystem instead all supported (for .all_filesystems)\n");
-@@ -1400,7 +1400,7 @@ bool tst_cmd_present(const char *cmd)
+@@ -1445,13 +1445,13 @@ static void do_setup(int argc, char *argv[])
  
- static void do_setup(int argc, char *argv[])
- {
--	char *tdebug_env = getenv("LTP_ENABLE_DEBUG");
-+	char *tdebug_env = getenv("LTP_DEBUG");
- 	char *reproducible_env = getenv("LTP_REPRODUCIBLE_OUTPUT");
- 	char *quiet_env = getenv("LTP_QUIET");
+ 	parse_opts(argc, argv);
  
-@@ -1451,7 +1451,7 @@ static void do_setup(int argc, char *argv[])
+-	if (tdebug_env && !context->tdebug) {
++	if (tdebug_env && *tdebug_env && !context->tdebug) {
+ 		if (!strcmp(tdebug_env, "2"))
+ 			context->tdebug = 2;
  		else if (!strcmp(tdebug_env, "1") || !strcmp(tdebug_env, "y"))
  			context->tdebug = 1;
  		else
--			tst_res(TWARN, "Invalid LTP_ENABLE_DEBUG value: '%s'", tdebug_env);
-+			tst_res(TWARN, "Invalid LTP_DEBUG value: '%s'", tdebug_env);
+-			tst_res(TWARN, "Invalid LTP_ENABLE_DEBUG value: %s", tdebug_env);
++			tst_res(TWARN, "Invalid LTP_ENABLE_DEBUG value: '%s'", tdebug_env);
  
  		if (context->tdebug)
  			tst_res(TINFO, "Enabling debug info (level %d)", context->tdebug);
