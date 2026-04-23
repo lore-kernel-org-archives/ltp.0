@@ -4,49 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFA7EF9937D
-	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 12:04:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE611F9937D
+	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 12:04:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B9C623DDAD6
-	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 14:04:24 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 3F20C3E5382
+	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 14:04:44 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 949113E539B
- for <ltp@lists.linux.it>; Thu, 23 Apr 2026 14:03:12 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id E31A83E538F
+ for <ltp@lists.linux.it>; Thu, 23 Apr 2026 14:03:15 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 08FCB2009EF
- for <ltp@lists.linux.it>; Thu, 23 Apr 2026 14:03:11 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7136F60057D
+ for <ltp@lists.linux.it>; Thu, 23 Apr 2026 14:03:15 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5F1015BD76
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BC4BD5BCC8
  for <ltp@lists.linux.it>; Thu, 23 Apr 2026 12:03:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1776945787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bMcukR5qNnWXSiXNd+moiBK4NFsVEMxZOiEjAy6Xea0=;
- b=gF+Som3vQTb2DD+11Z2ZGXCqdNe00u87PWsWNaUzKHxEtJVWowe5Rm1yADKU3UnnO7pXdE
- OcydF7Ftrljfd0lkYgrObqV8wUwflFL9X2n+/f6usWzYj5+RscvGo0QEGGIXKHwpcOTQP/
- NIVjDURtdGCVXGTi17G4bFWTZnWzwDo=
+ bh=1xrNQuU5ltOUMNlGM3mEWn3lYLwz8cmYGQy00efDWlo=;
+ b=PK/6iXOYhw/ImBLbI20vIbUOTu3eTdwaP8QOCZsUWYibgvvb1w+kAwCRpfGs8wnx7fv6uJ
+ JSmo5P6461NzFmYHkmouUm6Htp2bSElTtydNiJd2+RrcJ4XP8MdJaOC0K2KzbUY410e1mt
+ 6KorrU5Xd3n2bZXMJOG0MCmeZ/GrsRw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1776945787;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bMcukR5qNnWXSiXNd+moiBK4NFsVEMxZOiEjAy6Xea0=;
- b=1XtNUs4bWFQEz2qD36ul3nC5qYe1xCnLTGGQrSLaQMUUQgn2aszPCrtP832uYyov9QWbMB
- XGTTWXpH7S8+JSAw==
+ bh=1xrNQuU5ltOUMNlGM3mEWn3lYLwz8cmYGQy00efDWlo=;
+ b=YEfRsxIds5MJZ+FI33yAqgZPkbkLgXpOs5iYEJNTva8qtfVqThGcT7YJlDowsuzKFlOUzB
+ VlD/8tu/uES3C7Cg==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
@@ -54,54 +53,54 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bMcukR5qNnWXSiXNd+moiBK4NFsVEMxZOiEjAy6Xea0=;
- b=gF+Som3vQTb2DD+11Z2ZGXCqdNe00u87PWsWNaUzKHxEtJVWowe5Rm1yADKU3UnnO7pXdE
- OcydF7Ftrljfd0lkYgrObqV8wUwflFL9X2n+/f6usWzYj5+RscvGo0QEGGIXKHwpcOTQP/
- NIVjDURtdGCVXGTi17G4bFWTZnWzwDo=
+ bh=1xrNQuU5ltOUMNlGM3mEWn3lYLwz8cmYGQy00efDWlo=;
+ b=PK/6iXOYhw/ImBLbI20vIbUOTu3eTdwaP8QOCZsUWYibgvvb1w+kAwCRpfGs8wnx7fv6uJ
+ JSmo5P6461NzFmYHkmouUm6Htp2bSElTtydNiJd2+RrcJ4XP8MdJaOC0K2KzbUY410e1mt
+ 6KorrU5Xd3n2bZXMJOG0MCmeZ/GrsRw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1776945787;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bMcukR5qNnWXSiXNd+moiBK4NFsVEMxZOiEjAy6Xea0=;
- b=1XtNUs4bWFQEz2qD36ul3nC5qYe1xCnLTGGQrSLaQMUUQgn2aszPCrtP832uYyov9QWbMB
- XGTTWXpH7S8+JSAw==
+ bh=1xrNQuU5ltOUMNlGM3mEWn3lYLwz8cmYGQy00efDWlo=;
+ b=YEfRsxIds5MJZ+FI33yAqgZPkbkLgXpOs5iYEJNTva8qtfVqThGcT7YJlDowsuzKFlOUzB
+ VlD/8tu/uES3C7Cg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D445593B3
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AAF11593B3
  for <ltp@lists.linux.it>; Thu, 23 Apr 2026 12:03:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id luLtEXsK6mnDUQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id gq+IKHsK6mnGUQAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
  for <ltp@lists.linux.it>; Thu, 23 Apr 2026 12:03:07 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 23 Apr 2026 14:03:07 +0200
-Message-ID: <20260423120309.18049-7-chrubis@suse.cz>
+Date: Thu, 23 Apr 2026 14:03:08 +0200
+Message-ID: <20260423120309.18049-8-chrubis@suse.cz>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260423120309.18049-1-chrubis@suse.cz>
 References: <20260423120309.18049-1-chrubis@suse.cz>
 MIME-Version: 1.0
 X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.998];
  MIME_GOOD(-0.10)[text/plain];
  FUZZY_RATELIMITED(0.00)[rspamd.com];
  RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
  ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[ev.events:url,suse.cz:mid,suse.cz:email];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,ev.events:url];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 6/8] syscalls: Add epoll_wait11
+Subject: [LTP] [PATCH v2 7/8] syscalls: Add epoll_wait12
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,89 +117,107 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test that checks that EPOLLHUP is generated properly when a pipe is
-closed while epoll_wait() waits on the read end of a pipe.
+A test for EPOLLERR when we are waiting to write into a pipe and the
+read end is closed.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/epoll_wait/.gitignore     |  1 +
- .../kernel/syscalls/epoll_wait/epoll_wait11.c | 94 +++++++++++++++++++
- 3 files changed, 96 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait11.c
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/epoll_wait/.gitignore     |   1 +
+ .../kernel/syscalls/epoll_wait/epoll_wait12.c | 112 ++++++++++++++++++
+ 3 files changed, 114 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait12.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 3fd61b814..c16cf3554 100644
+index c16cf3554..0787bbe72 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -199,6 +199,7 @@ epoll_wait07 epoll_wait07
- epoll_wait08 epoll_wait08
+@@ -200,6 +200,7 @@ epoll_wait08 epoll_wait08
  epoll_wait09 epoll_wait09
  epoll_wait10 epoll_wait10
-+epoll_wait11 epoll_wait11
+ epoll_wait11 epoll_wait11
++epoll_wait12 epoll_wait12
  
  epoll_pwait01 epoll_pwait01
  epoll_pwait02 epoll_pwait02
 diff --git a/testcases/kernel/syscalls/epoll_wait/.gitignore b/testcases/kernel/syscalls/epoll_wait/.gitignore
-index 30139375d..57bdf0806 100644
+index 57bdf0806..ad890d077 100644
 --- a/testcases/kernel/syscalls/epoll_wait/.gitignore
 +++ b/testcases/kernel/syscalls/epoll_wait/.gitignore
-@@ -8,3 +8,4 @@ epoll_wait07
- epoll_wait08
+@@ -9,3 +9,4 @@ epoll_wait08
  epoll_wait09
  epoll_wait10
-+epoll_wait11
-diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait11.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait11.c
+ epoll_wait11
++epoll_wait12
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait12.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait12.c
 new file mode 100644
-index 000000000..764fe5f61
+index 000000000..eed395fcf
 --- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait11.c
-@@ -0,0 +1,94 @@
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait12.c
+@@ -0,0 +1,112 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (c) Linux Test Project, 2026
 + */
 +
 +/*\
-+ * Verify that epoll_wait reports EPOLLHUP when the write end of a pipe is
-+ * closed while a child process is blocked in epoll_wait.
++ * Verify that epoll_wait reports EPOLLERR when the read end of a pipe is
++ * closed while a child process is blocked in epoll_wait on the write end.
 + *
 + * [Algorithm]
 + *
-+ * - Create a pipe and register the read end with an epoll instance for
-+ *   EPOLLIN.
-+ * - Fork a child that blocks in epoll_wait on the pipe read end.
-+ * - Parent waits for the child to enter sleep state, then closes the write
++ * - Create a pipe and fill it completely so the write end is not writable.
++ * - Register the write end with an epoll instance for EPOLLOUT.
++ * - Fork a child that closes its copy of the read end and blocks in
++ *   epoll_wait waiting for the pipe to become writable.
++ * - Parent waits for the child to enter sleep state, then closes the read
 + *   end.
-+ * - The child's epoll_wait should return with EPOLLHUP and the child reports
-+ *   the result via its exit code.
++ * - The child's epoll_wait should return with EPOLLERR set.
 + */
 +
 +#include <sys/epoll.h>
++#include <poll.h>
 +
 +#include "tst_test.h"
 +#include "tst_epoll.h"
 +
 +static int efd = -1, fds[2] = {-1, -1};
 +
++static void fill_pipe(int fd)
++{
++	char buf[4096];
++	struct pollfd pfd = {.fd = fd, .events = POLLOUT};
++	int nfd;
++
++	memset(buf, 'a', sizeof(buf));
++
++	do {
++		SAFE_WRITE(SAFE_WRITE_ANY, fd, buf, sizeof(buf));
++		nfd = poll(&pfd, 1, 0);
++		if (nfd == -1)
++			tst_brk(TBROK | TERRNO, "poll()");
++	} while (nfd > 0);
++}
++
 +static void run(void)
 +{
 +	pid_t pid;
 +
 +	SAFE_PIPE(fds);
++	fill_pipe(fds[1]);
 +
 +	efd = SAFE_EPOLL_CREATE1(0);
 +
 +	struct epoll_event ev = {
-+		.events = EPOLLIN,
-+		.data.fd = fds[0],
++		.events = EPOLLOUT,
++		.data.fd = fds[1],
 +	};
 +
-+	SAFE_EPOLL_CTL(efd, EPOLL_CTL_ADD, fds[0], &ev);
++	SAFE_EPOLL_CTL(efd, EPOLL_CTL_ADD, fds[1], &ev);
 +
 +	pid = SAFE_FORK();
 +	if (!pid) {
-+		SAFE_CLOSE(fds[1]);
++		SAFE_CLOSE(fds[0]);
 +
 +		TEST(epoll_wait(efd, &ev, 1, 5000));
 +		if (TST_RET != 1) {
@@ -210,26 +227,26 @@ index 000000000..764fe5f61
 +			exit(0);
 +		}
 +
-+		if (ev.data.fd != fds[0]) {
++		if (ev.data.fd != fds[1]) {
 +			tst_res(TFAIL, "epoll.data.fd %d, expected %d",
-+				ev.data.fd, fds[0]);
++				ev.data.fd, fds[1]);
 +			exit(0);
 +		}
 +
-+		if (!(ev.events & EPOLLHUP)) {
-+			tst_res(TFAIL, "events %x, EPOLLHUP not set",
++		if (!(ev.events & EPOLLERR)) {
++			tst_res(TFAIL, "events %x, EPOLLERR not set",
 +				ev.events);
 +			exit(0);
 +		}
 +
 +		tst_res(TPASS,
-+			"epoll_wait() reported EPOLLHUP on pipe hangup");
++			"epoll_wait() reported EPOLLERR on broken pipe");
 +		exit(0);
 +	}
 +
 +	TST_PROCESS_STATE_WAIT(pid, 'S', 0);
-+	SAFE_CLOSE(fds[1]);
 +	SAFE_CLOSE(fds[0]);
++	SAFE_CLOSE(fds[1]);
 +	SAFE_CLOSE(efd);
 +}
 +
