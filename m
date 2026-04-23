@@ -4,82 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13FD2FAD3E7
-	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 02:38:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E4B2F94CBB
+	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 06:44:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 99D8E3E53C0
-	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 04:38:15 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id CA2AC3E28DB
+	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 08:44:28 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 37AD53E28DF
- for <ltp@lists.linux.it>; Thu, 23 Apr 2026 04:37:56 +0200 (CEST)
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
- [IPv6:2607:f8b0:4864:20::743])
+ by picard.linux.it (Postfix) with ESMTPS id 0346A3E2588
+ for <ltp@lists.linux.it>; Thu, 23 Apr 2026 08:44:08 +0200 (CEST)
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com
+ [IPv6:2607:f8b0:4864:20::82e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 91B4F1400189
- for <ltp@lists.linux.it>; Thu, 23 Apr 2026 04:37:56 +0200 (CEST)
-Received: by mail-qk1-x743.google.com with SMTP id
- af79cd13be357-8ef0ba61d46so242309485a.2
- for <ltp@lists.linux.it>; Wed, 22 Apr 2026 19:37:56 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 789D01000421
+ for <ltp@lists.linux.it>; Thu, 23 Apr 2026 08:44:08 +0200 (CEST)
+Received: by mail-qt1-x82e.google.com with SMTP id
+ d75a77b69052e-50e63771eb0so42997531cf.3
+ for <ltp@lists.linux.it>; Wed, 22 Apr 2026 23:44:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776926647; cv=none;
+ d=google.com; s=arc-20240605;
+ b=hy6ioCczWVcQT4IixukfVXkSIrUjtKkPGT6JmgpAshLm2qCm/5X6KfGkvjiv/sJ8pn
+ iH504WEze6MhuECTrLWaorqiJvgZX+7R+rIJMMi+8uTH4xc8b2ZB6a0Is08mAxH8tDP+
+ vFFiABLtkMglD5K5urWFbglwmVJR2Tjc07z/2QJyAJs0Ru6pOFJyI/oUCgVqY6tK18zt
+ 526Un+2a+0TZGWk2Vji3g0jhl13pr11Hq9vOX9N1KlhYFRNO7zRN0HPvYxpEByfgZxD3
+ LC/9uFSHh042BZYROP09bWIl2Z+5RIk+UGIvY3eHmV+NKIO7lDaZhxPBRVdMvXsUjwPz
+ jbZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:dkim-signature;
+ bh=1u3bB43JQiZuo+K8GboRAZPWoPgfjKGk3LjK5qqP5Xo=;
+ fh=CuExz54ljsO/o995PG49UG+i4lYrQxd0nQjicfLDGOA=;
+ b=SOGfVwnbevlEkffJK9J8aaOdg/9UJS8I6ae67IRukJmbpyGJBaKNwJt5ds6MpB20SY
+ uWbzSA5oigPwfryVU1h9yRo7e4ZnVVaCmtr8zkTwAxe4h172IzXNQq5xuK44o02psoDR
+ MgIGOnmqWdueE+bo2IbDwXxqkjYRpEouMG7Sryl8Eu4p0gPqdEX6nSuBedl3htHM9Lhb
+ da5gkPIEbraoGpsSDlZJZaEF0WYZps5Bort/+Moz284pO8jxqX+U6KYCZ6uySeXjAF9R
+ hcxsqS4EnLCdLm59V33fZfG14Vvb5gu2kpAr5YPG/hRehO2vG0Kvtl/HHYzwFY1Gq/rS
+ sxyw==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776911875; x=1777516675; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=p7WkJk+N34mwF7k2DxKDUToUvBmmYhrtO/7hV+0itRs=;
- b=U2QRt+FLG7Zsal4HNDsTD+s1b138y4DF6WyLlwxsrnCzDs+DD7YSqSz4saSz8AOcA/
- 4+m2rclCoIeJ0+afYtlVK/kzihRe1pK+IHyoQHwGZvX71FCrXm3V44dDMEuHvgGXNh1P
- E4Gqi1zpps8bNz8IqxdR3dMUyhdUS8X5z1pmZT4E/sd9cexX2tbSFy9O0zSVhQbHy6ZF
- LBpQ9j/BzQyVDgKvhFrxwq3+TSJbKgvTTSXgZjEApltLbr3k36X4e8TqZCXd0NWQdUMS
- G2d8/B9kv7A5sw2Z0d3uiGSA2tzh8QbKsw+lxOL7CsBnCxl/mzEfnNN+F7BZWFoKErH+
- ygPA==
+ d=gmail.com; s=20251104; t=1776926647; x=1777531447; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=1u3bB43JQiZuo+K8GboRAZPWoPgfjKGk3LjK5qqP5Xo=;
+ b=Ube5hNSUACOcRkJGVOJixJkkGYY+sCdIa+Q32PdMt6JC/19YI5qM4+hAw2mQ6oXr1z
+ jO5hY/h1LO6xPry0phTaPj2K9VbQUZvoj9y/Uyoy/CzF7gpdMz8Jf82ZxFiSL3UIceVB
+ gDhq5o/fP5xL4GkfipeF4zmO41314L4K2kuR/NInyqowgEM7d9gcVfOwzBcdB50XTzfA
+ zhxYQtBS0SH+/a9FZlJqRFHygZs0tLoeerCl24SZ8owe3SS4wLUBGShWgDwrQ1+k+XV1
+ fynSrIaP/m5uiQww2VyVR75aFWcUwgxHoRn9+o72/Uh2wXPGBjVY306hFtc/QCKb7j4g
+ ozGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776911875; x=1777516675;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=p7WkJk+N34mwF7k2DxKDUToUvBmmYhrtO/7hV+0itRs=;
- b=NbtUKXxUveDSTrgtB1/VCQDkeoOBPdeFxuiHjY7w/aqoRsKcTfFNfq1LXB0N1oXsmt
- 5nndjUQ9ZngcMeBZ1jX0OTNM6lmCbAZX+2lM1UloyCor/5Z5tFaOCE7NAD21RwQao/B+
- oZQwtj11CPTkg3PxRZyMi5upg0LFgolJ4+3kPan89a/k1Hq9zocwuaFoR6SFopb2KTpu
- /S8U5+jIhGaGalm0gulHhdOiwkMhq9gdYirNojEQK1gxfcppmOG6l6n+HEWkA0JumjMi
- INxoQAeI5O+YCoRsvQT5lhMF1zYDR2yf8sh0CXV70rXGlZ7TP0Mysv8jeiRBphiYhHsx
- 3eQA==
-X-Gm-Message-State: AOJu0YxgK62T4ucGus90GemCt1EP+n1muOKHLM3DW6TYmpQ3KDCSX2Vg
- DnvQD4BLI1e/qIz4Dlj4UXcdghnTls5sWr6oYFV6PZekubOkuS3/q4pM
-X-Gm-Gg: AeBDievEl9OzJaRIsE9gta8DqN5vLU5d50Ejer4wFfOlcg4T7R2sPQze7L1jY6CVyIG
- CjiCcbVxrf1nrOZU8QgJNFY8evZNPaW7oCAt3Z3fc6puaSUac8GZOHFaVA3d4dKzos7nIFqiI/9
- xnXmyGQIDCr4FsXQSwHyk8mRzszujQzhnfQOFALHQIx9wXrAldq3MAtiOhDOIPGzHqKzPnB6WZu
- 9pLf7ANvctRwV9qkbVUSSMqc8G+WuWKd2HJgnl6Unbm71XepRTJbrrTziXcX51muZUMBLRivLon
- FUGcBfWY0PtFlvXueFRytcdjJF5pZbqJP1uGxWqr3S+7ubpXtsRQ3z6wTHEjw06QzeJugrz5XEN
- rdBXS0d2SdFV6v4sIiiBTd7NwAH07Z6yrmFYqfRA+vf/rnN8PpaAP6UH7k3TXrTAC3lGect3FwM
- c4wMbYQnvG6vCLD2AJafv5jK30RwaepGlAMGkawQNjFeQP6piLE3MlySkbkOS/Z+2tzEvxdmJHY
- cdcKwc4ze+OSv/9M5BKFEVPjRlaGfCTw1+QddYQVdMwrliR+8Fn
-X-Received: by 2002:a05:620a:471e:b0:8ee:f43a:bb6b with SMTP id
- af79cd13be357-8eef44a040dmr1263108885a.10.1776911875334; 
- Wed, 22 Apr 2026 19:37:55 -0700 (PDT)
-Received: from
- runnervmeorf1.sbo4f4120sjejcpudlippbucbf.ex.internal.cloudapp.net
- ([135.232.208.129]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-8ed54eb91a0sm779022085a.47.2026.04.22.19.37.54
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 22 Apr 2026 19:37:55 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Thu, 23 Apr 2026 02:37:53 +0000
-Message-ID: <20260423023753.3925-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260423023141.28151-1-wegao@suse.com>
-References: <20260423023141.28151-1-wegao@suse.com>
+ d=1e100.net; s=20251104; t=1776926647; x=1777531447;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=1u3bB43JQiZuo+K8GboRAZPWoPgfjKGk3LjK5qqP5Xo=;
+ b=mSIFUn4N7bolutgtxg54f9TNl6CmgnM9C2eDN36UaaxjnoALq7ED0DM1pKxOg2K/wv
+ u6fqeA5GXt18nRpmS1BYulvyC4izk2DgIrZb0MxecxMd2DXdgBiCFUs4+akxpzKH/i+f
+ a/GuxV4mSb6AO4akKIpj4P1WZlT/I+NsShVfd0LTRwK/0ID4mCAXwxmaw2aBozvQA8Sv
+ IK9MBkiaWccBqqqV8NaSX0j1EthxgKobnJOmhw8OD94cuO7z3YEXmdlJy21grb9NwGPu
+ AodO5Ne0yCxOmlMLBp9euq/u3xT+AN0eQI7viqt5uAFwUjhgNf/cHp04Vn0eAQ3DlinG
+ SCsA==
+X-Gm-Message-State: AOJu0YzHHVZosflz4NcLb9De3NYtZnXpb561FrAxFnCTARZZmRrBKc5i
+ o90YBOyt7eqNyyvYND6ItZIBnS8/aqN04TOxgDyddGpqnVr6cjPbH5qleW/izfrZVFj3w7FIMI1
+ bOLWs5e/BTlIHUjlF1OCD1KCJNO9x4w==
+X-Gm-Gg: AeBDiev/V8WytwDbyWT8sDM2Qm+rrr3e/b+6mn3++KpXmlNiwswxmfLNcZfAJejbe6v
+ cglV1U4+v+7YpzwjVUsUCAH/PUFphXp0x85w07ILQchMLUSje52k7yBPdsT9B5KTmYQO4WyBDp8
+ YdT2Z4EIPpPiR6kcTCgXuT5yy4FBDNg9VElrZTf0fD+kMYkF8tASqjs423YlNnR0FV1c31fvNuB
+ QDyZc5p696k+29cRL3//+yJNAWoKALZo12VHWq+kCd2reeEPfMUBS4QYQxYuiCPOxBa1zw82i1E
+ dROiVgOD2ztponOY6A==
+X-Received: by 2002:ac8:5892:0:b0:50b:5146:8803 with SMTP id
+ d75a77b69052e-50e36b41019mr401306401cf.21.1776926647200; Wed, 22 Apr 2026
+ 23:44:07 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+References: <20260422141234.632195-1-pvorel@suse.cz>
+ <20260422141234.632195-4-pvorel@suse.cz>
+In-Reply-To: <20260422141234.632195-4-pvorel@suse.cz>
+From: Li Wang <wangli.ahau@gmail.com>
+Date: Thu, 23 Apr 2026 14:43:56 +0800
+X-Gm-Features: AQROBzD5tT41X0L6aHdjPpUw9O5fxEASvvASm1UipQ0QLk6bntzAjFQNcsqlvEI
+Message-ID: <CANgNiRwFV2F2hG+7+v0NyrTa=ejhOSxSLrNt=5jKpd7VU62-cw@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] cve: icmp_rate_limit: set icmp_msgs_burst within network
- namespace
+Subject: Re: [LTP] [PATCH v4 3/5] lib: Prefer LTP_DEBUG over -D
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,26 +104,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it, Martin Cermak <mcermak@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgV2VpLAoKT24gMjAyNi0wNC0yMywgV2VpIEdhbyB3cm90ZToKPiBjdmU6IGljbXBfcmF0ZV9s
-aW1pdDogc2V0IGljbXBfbXNnc19idXJzdCB3aXRoaW4gbmV0d29yayBuYW1lc3BhY2UKCj4gIAlj
-aGlsZG5zID0gU0FGRV9PUEVOKCIvcHJvYy9zZWxmL25zL25ldCIsIE9fUkRPTkxZKTsKPiAgCj4g
-KwlTQUZFX0ZJTEVfUFJJTlRGKCIvcHJvYy9zeXMvbmV0L2lwdjQvaWNtcF9tc2dzX2J1cnN0Iiwg
-IjUwIik7CgpDb3JyZWN0IGZpeC4gVGhlIHNhdmVfcmVzdG9yZSBlbnRyeSB3YXMgd3JpdGluZyB0
-byB0aGUgaW5pdGlhbCBuYW1lc3BhY2UKYmVmb3JlIENMT05FX05FV05FVCwgbWFraW5nIGl0IGlu
-ZWZmZWN0aXZlIGluc2lkZSB0aGUgY2hpbGQgbmFtZXNwYWNlIHdoZXJlCnRoZSB0ZXN0IGFjdHVh
-bGx5IHJ1bnMuCgo+IC0JCXsiL3Byb2Mvc3lzL25ldC9pcHY0L2ljbXBfbXNnc19idXJzdCIsICI1
-MCIsIFRTVF9TUl9UQlJPS30sCgpObyBleHBsaWNpdCByZXN0b3JlIG5lZWRlZCDigJQgdGhlIHN5
-c2N0bCBsaXZlcyBpbiB0aGUgY2hpbGQgbmFtZXNwYWNlLCB3aGljaAppcyBkZXN0cm95ZWQgd2hl
-biB0aGUgdGVzdCBleGl0cy4KClJldmlld2VkLWJ5OiBMVFAgQUkgUmV2aWV3ZXIgPGx0cC1haUBu
-b3JlcGx5LmdpdGh1Yi5jb20+CgotLS0KTm90ZToKCk91ciBhZ2VudCBjb21wbGV0ZWQgdGhlIHJl
-dmlldyBvZiB0aGUgcGF0Y2guCgpUaGUgYWdlbnQgY2FuIHNvbWV0aW1lcyBwcm9kdWNlIGZhbHNl
-IHBvc2l0aXZlcyBhbHRob3VnaCBvZnRlbiBpdHMKZmluZGluZ3MgYXJlIGdlbnVpbmUuIElmIHlv
-dSBmaW5kIGlzc3VlcyB3aXRoIHRoZSByZXZpZXcsIHBsZWFzZQpjb21tZW50IHRoaXMgZW1haWwg
-b3IgaWdub3JlIHRoZSBzdWdnZXN0aW9ucy4KClJlZ2FyZHMsCkxUUCBBSSBSZXZpZXdlcgoKLS0g
-Ck1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Petr Vorel <pvorel@suse.cz> wrote:
+
+> Environment variable has usually higher preference than getopt.
+> This includes disabling debugging even on -D:
+> LTP_DEBUG= ./test05 -D2 means debugging disabled.
+>
+> Also reduce duplicity of "Enabling debug info (level %d)" message and
+> document that on -h and developers/debugging.rst.
+>
+> Fixes: e434de62b4 ("lib: Extend LTP_ENABLE_DEBUG to support verbosity levels")
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+
+Reviewed-by: Li Wang <wangli.ahau@gmail.com>
+
+
+-- 
+Regards,
+Li Wang
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
