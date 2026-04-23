@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A153F9936C
-	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 11:14:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C344F99373
+	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 11:18:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F29F53E2D81
-	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 13:14:08 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 74E083E2D7D
+	for <ltp@archiver.kernel.org>; Thu, 23 Apr 2026 13:18:16 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A8ADD3E1D62
- for <ltp@lists.linux.it>; Thu, 23 Apr 2026 13:13:49 +0200 (CEST)
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com
- [IPv6:2607:f8b0:4864:20::f42])
+ by picard.linux.it (Postfix) with ESMTPS id DF7913E1D62
+ for <ltp@lists.linux.it>; Thu, 23 Apr 2026 13:17:57 +0200 (CEST)
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
+ [IPv6:2607:f8b0:4864:20::742])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 376F1600669
- for <ltp@lists.linux.it>; Thu, 23 Apr 2026 13:13:49 +0200 (CEST)
-Received: by mail-qv1-xf42.google.com with SMTP id
- 6a1803df08f44-8ac9ef74131so102019746d6.1
- for <ltp@lists.linux.it>; Thu, 23 Apr 2026 04:13:49 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 682BE10005A1
+ for <ltp@lists.linux.it>; Thu, 23 Apr 2026 13:17:57 +0200 (CEST)
+Received: by mail-qk1-x742.google.com with SMTP id
+ af79cd13be357-8ef2118b478so260566385a.0
+ for <ltp@lists.linux.it>; Thu, 23 Apr 2026 04:17:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776942828; x=1777547628; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1776943076; x=1777547876; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=DuQ0xYndHNK9TYXmNQZC/P7G0P9e2btjG4lSJ8zqPfQ=;
- b=LrUy9ZMuNFlONPBErgzs3vba0KuxuoKKONgzlAS0ffywnZ837mk9CI2FStQXIhJ5Zx
- k30jmbFND1Nc+pmIpEv3JKwJCNb8qO/rzoVkABTz2vzP+Z8qcrjKschF5oE14pAO3DGM
- Y2rcb7WSp/rwWxsUtsHqfYreDEOBmTZpEWSRkFSYzT1clQkeKNiPTHa/+sJmfV3KhfP5
- RqFF+euOkqM5PAqr3AGrM280TLPnDvDwtbFOnRkcy0kBepjzdBLkFawsbJQ3zPq/MXCq
- yesuCuB0a1/RjUZ3F9dQ/yXhsY5achrXG6OS39lJkrmGc28rx7ODCnJrpU7fP+5/bQbU
- mrqQ==
+ bh=dJq9RvRYQFQstzUUDiBwFNtPWgUKQmy4JSm4bE9wnwk=;
+ b=nKebazML5YBX1rmNv7ylkvIH31TLYu0u1hK0V7zS30dC7qAyF9fdGVPwgkUH/JbMfZ
+ Fjmzzavt1mUCxbcJlwN8vn4k+V5Uk2Y4SX0qFXNsSGwirZy9YWHbeHvN4QhUl02FHP45
+ asYNgS2enNhvurPBzgygJIe1+ZV1I/6faI0DGmU8Vm3kATaQEnfVUPnxUE6kQMfqlf+f
+ 1fVV1MFDqc8FTQGSnxsQLlwqPvAQLWX4aNQ3pJ75brPdr285ySA2P8SWrpUo5rSQf7+P
+ HkLoFfItYm7hLWyJSpeEUTliCuRxVlY9tWgsH97tC2N4qLzD5d8IDCOku7B/1eFnGCE4
+ 4YXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776942828; x=1777547628;
+ d=1e100.net; s=20251104; t=1776943076; x=1777547876;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=DuQ0xYndHNK9TYXmNQZC/P7G0P9e2btjG4lSJ8zqPfQ=;
- b=KIuvWHNuq1jRWDgo7wNxSJqTQqpr390uy/kvjVN+jVamGm5y61t+U0QRVwsx9bvqvL
- OFRjrD7z0SK4/IuhNbtj92YUlywZalvVjYKSoIBHR5g2JXdQXTlQcAF+xifdkfceZn81
- yNDGsajtlCQom1cVrCeZuXhEsI97n3qMK8rQUBS4GxHb9cxp8ppVgjwMC8bZj7QYt5t1
- ryha0e+4dgHuGng4/97wENvc2Ybg1wEp3iCLU5sVOOit5c1yjW+e5on6KZEGETaJ220o
- MQoVSNjmPWPOTjl3GFur1VCzOY2q6Na+n2v47c4aB8lAjC+pJt1Z39sWXkdq/zdtCKbj
- t0vg==
-X-Gm-Message-State: AOJu0Yyg8OpjLVU8E0WqPw34ETNSF9ws8sNwmJpFGutE4kVOyOvnV0gB
- RO92wYFsBUBYOVtvBPYlaj+lD0QvWQZ1k3sDOrAB7zAnL/tdjpl5JzV8
-X-Gm-Gg: AeBDietuo24uYq0ODUbA441nYfbnlqrFvNdHKAqwWUQAXn6TPOs6JfVIO77wqDOYU6E
- baGoY8UfsTgY1zGPuSxa/BJsSmOF1B+DXeZgISv7k05yDedzuvuGKDk1cbFBIEcKBEpcr0axRcG
- 4twbMo7r1Gh8iu/Kn9Cp4sMq05lXV8tG71YjfNxxfte6xsNKYEzvtFQegAgUyk5kaZLXm5me86u
- U/3k0M0t0z5Oy/WGX6ZS2suyboIM9xhdmZOGOuonOagmUzxSmIQOOK2e37L7knaxTqyiP1D+xxh
- bm99yRoxjo/06PAOBdU+JFbEHst2YKM4ZMzlBlK1Y5pGIa6X+b7Lkfqe7h93VhRpxXb/LO2sAPG
- qG71fnHK5uiO0g3pAB80BsQ423FNeTdiUY1pnIqC7PC1SQ5n2LeiCwbyP5acJreGctcxf0hSG6J
- JKpsGeCDiPLnUYqpvjKNhHDk8A4malxwpYCCZPI1miF2+UHU0haX6uhVhtu+E612z3+RGUOehyJ
- C/SRNM6fwXd9OEs1e41YRfE2glVIf9WhvtzF55+0tQv7yallzZO
-X-Received: by 2002:a05:6214:8094:b0:8b0:31c6:5f85 with SMTP id
- 6a1803df08f44-8b031c65fb3mr358764986d6.28.1776942828045; 
- Thu, 23 Apr 2026 04:13:48 -0700 (PDT)
+ bh=dJq9RvRYQFQstzUUDiBwFNtPWgUKQmy4JSm4bE9wnwk=;
+ b=F4MZic4z4oPeNCV5AzxAj6Uu5WUwFhHyVFT9iqHNDTDExluKCiOP7zvCSTPj2CKHKN
+ PTWNZq8JYItM4KeGgoAu+U92VZwDoneN4HyGEntFJEbZoYFM4QtpC+Q9SLO3vjf0vrt5
+ 6vUxh12nL4yyt8NJB9ksPKNVuIRo9UECBhqoZy3/IuXQDGtWOsKbyuQaYALg63BS1VyV
+ OWs1SDl77ZQlz+/3Nqq4co9SpZUNqDTZl3GeDErCsQ4qdUH5i1Amg+WMMGV28B8pity3
+ YBVlNtixdmkivBrrj9U+1MUhHYUYDn321uKHiJMjnX6U6C1sQCa2vTs2xn+sABvFMEHS
+ 3WTg==
+X-Gm-Message-State: AOJu0Yw6muRaoYJi6bsRr/7Ne1IHYvMSqxMwowpyPDgZ6gHxYcYD5Xo6
+ fIC9EUZMyudYLAfN/dy+uuERXxmjIUsoRV2Dj7uh8DWWGgZuhkCLuyGyLdRqARqzWV4VcQ==
+X-Gm-Gg: AeBDietO7SqLv/UwaAN8zl+d+NYeomkp/v2LQcanUdtgnDdDf4TL+w0S3MbuIjtXnFG
+ XPynoa+ewxAn/pJykTFpd/GogPRLOlZrufozqjs4BAOTpbOhKm86CpD6Y6FmpBAtw0wKJW66unE
+ obIcwfynxG/I9gwjYtLn891DB5wPqiUgzkIO1Y1s+rcy1WkOFaE+9ODZ0+6QbinXTT/iuXzJM61
+ 1a6ubpBwBUiNhBFVhXzBZ4At9PAbW1z+bVdQWTzZPRtglLSDUc7lcBGVwnAYxVD8XDvAGCGFt6O
+ QMa0UXj1tprcxtC+ug0n3SfGHQqUFcEM9YCIN0tIV78y9pLdcmTk7bu9dFjG8B6I3BfC0umWLxg
+ zI4SOK6kJVJrlg/tU2YIOpmZF8M53CF7nFXyp3OeU1gr4LbzlAB5AKayouQgXgSAhe/6LZUUnUA
+ GuxQf8GPcE7CQnGD/izT4bjgY2Kvs46M1TVEmfdxpE8meERkM2uwu0POGDyyRlfHvSqRorgm3qg
+ nwBGSZk0A7NolPv26mmeg3FVsDecm2Vf+ztMu2Kr/AO5Za0xg==
+X-Received: by 2002:a05:620a:8d04:b0:8eb:f3c7:2246 with SMTP id
+ af79cd13be357-8ebf413733emr1501334285a.35.1776943076160; 
+ Thu, 23 Apr 2026 04:17:56 -0700 (PDT)
 Received: from
- runnervmeorf1.xbqmit5f5f2erozg2hxxbijevb.bx.internal.cloudapp.net
- ([172.174.223.244]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8b02ac429ffsm155643456d6.2.2026.04.23.04.13.47
+ runnervmeorf1.ajpjuzvd0pcu5m1ughqrvmkcxa.bx.internal.cloudapp.net
+ ([74.235.126.84]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-8e7d9abce59sm1881457385a.46.2026.04.23.04.17.55
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 23 Apr 2026 04:13:47 -0700 (PDT)
+ Thu, 23 Apr 2026 04:17:55 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Sachin Sant <sachinp@linux.ibm.com>
-Date: Thu, 23 Apr 2026 11:13:47 +0000
-Message-ID: <20260423111347.4028-1-linuxtestproject.agent@gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 23 Apr 2026 11:17:55 +0000
+Message-ID: <20260423111755.4154-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260423105304.59788-1-sachinp@linux.ibm.com>
-References: <20260423105304.59788-1-sachinp@linux.ibm.com>
+In-Reply-To: <20260423095834.11932-2-chrubis@suse.cz>
+References: <20260423095834.11932-2-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] doc: generate CVE reproducer statistics
+Subject: Re: [LTP] syscalls: Add epoll_create03
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,23 +96,82 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Sachin,
+Hi Cyril,
 
-On Thu, 23 Apr 2026 16:23:04 +0530, Sachin Sant wrote:
-> [PATCH] doc: generate CVE reproducer statistics
+--- [PATCH 3/8] ---
 
-> Fixes: https://github.com/linux-test-project/ltp/issues/1254
+On 2026-04-23, Cyril Hrubis wrote:
+> syscalls: Add epoll_wait09
 
-`Fixes:` is for commit references (Fixes: <sha> ("subject")). Use
-`Closes:` for GitHub issue URLs.
+> -epoll_wait08 epoll_wait08
+> +epoll_wait09 epoll_wait09
+
+This replaces the epoll_wait08 entry instead of adding epoll_wait09
+alongside it. epoll_wait08 will be built but never run.
+
+> That checks that events from recursive epoll are propagated correctly.
+
+"That checks..." is a dangling clause; the body must stand alone as a
+sentence (e.g. "Test that checks...").
+
+--- [PATCH 5/8] ---
+
+On 2026-04-23, Cyril Hrubis wrote:
+> syscall: Add epoll_wait10
+
+Prefix typo: "syscall:" should be "syscalls:" (all other patches in
+this series use "syscalls:").
+
+--- [PATCH 6/8] ---
+
+On 2026-04-23, Cyril Hrubis wrote:
+> syscalls: Add epoll_wait11
+>
+> A test that chcecks that EPOLLHUP is generated properly [...]
+
+Typo: "chcecks" -> "checks".
+
+> +	TST_PROCESS_STATE_WAIT(pid, 'S', 0);
+> +	SAFE_CLOSE(fds[1]);
+> +	SAFE_CLOSE(fds[0]);
+> +	SAFE_CLOSE(efd);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fds[1] > 0)
+> +		SAFE_CLOSE(fds[1]);
+
+fds[] and efd are closed in run() but not reset to -1; cleanup() then
+double-closes them on every run (TBROK). Reset each to -1 after
+SAFE_CLOSE in run(), and use != -1 guards in cleanup() per LTP
+convention.
+
+--- [PATCH 7/8] ---
+
+On 2026-04-23, Cyril Hrubis wrote:
+> +	TST_PROCESS_STATE_WAIT(pid, 'S', 0);
+> +	SAFE_CLOSE(fds[0]);
+> +	SAFE_CLOSE(fds[1]);
+> +	SAFE_CLOSE(efd);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fds[1] > 0)
+> +		SAFE_CLOSE(fds[1]);
+
+Same double-close defect as epoll_wait11; apply the same fix.
 
 ---
 Note:
 
-Our agent completed the review of the patch. The agent can sometimes
-produce false positives although often its findings are genuine. If
-you find issues with the review, please comment this email or ignore
-the suggestions.
+Our agent completed the review of the patch. The full review can be
+found at: https://github.com/linux-test-project/ltp-agent/actions/runs/24831850683
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
 Regards,
 LTP AI Reviewer
