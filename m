@@ -4,90 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DFE9FE5214
-	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 12:03:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1777032202; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=ICKkjd4Hai4m6MCbU9gNWBGVE4fgQEG41uaiOxLuG0I=;
- b=KPWlXAHsE2H8hYO1pyP+XTRO0O0e5g3x225iZ20qBbNNrVHMmBw08ZYrkJK95PT3oiuAs
- hVLwmENvGZB6hW4G/wc4Jagw2MiwISB3qELkLt/HUXlaZ5LgYh24MzmA/9fnEaM4NVZNa7I
- WYSMeEY02C5C8BEC2zvrox7wG8P2m/k=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA4BFFE5215
+	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 12:19:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 906C83E5348
-	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 14:03:22 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id A49643E5348
+	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 14:19:13 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 11D743E1AA2
- for <ltp@lists.linux.it>; Fri, 24 Apr 2026 14:02:56 +0200 (CEST)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id ACBCD3E1AA2
+ for <ltp@lists.linux.it>; Fri, 24 Apr 2026 14:18:54 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 78C9760049C
- for <ltp@lists.linux.it>; Fri, 24 Apr 2026 14:02:56 +0200 (CEST)
-Received: by mail-wm1-x334.google.com with SMTP id
- 5b1f17b1804b1-48984d29fe3so83559415e9.0
- for <ltp@lists.linux.it>; Fri, 24 Apr 2026 05:02:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1777032176; x=1777636976; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=qBlJzw0XoK4uFSZtBzeZk3bAjAIK7gnQ7gaTwsFaUcE=;
- b=PEp4K3tHjRQVZ5Yt55v5C4afiIbNhUQQeQseUp8QuOeXU2CRIdW9h9bmGdjxGaTWhs
- muAFyc3jTSkgIYc3RT05ay7w8nl2W7T3wRY3LZkv8vxDsx50xY8iETbda+OlTe5PX6Wt
- 3J1Ed3KAPFQMACnBJh3M58PjEL6jg1ZobpV79WfUv3bJDC/uNtzPquUh9f1WyBG9qrrn
- cmNBD+cAqIVYl8z0j7bHUaiIiKyRc0mUpP5iWfrM78nKCpmEQptlwTRK3JqztClyou3F
- ikYduWgjdJ/pqnwM3ERDWhVCtte3jtod5kHQfnbidu0h2t8AedKRl/Pk8L0rK/MqWZu9
- q9ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1777032176; x=1777636976;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=qBlJzw0XoK4uFSZtBzeZk3bAjAIK7gnQ7gaTwsFaUcE=;
- b=fUKQ4fwuyHwT8o0e4S3DnNZj7avnDjUvp9LK0ys4wIBWhEtOfB1ZhyZoamJ1pF2UDr
- xOaVsoQqWlnCcGpZDqcM9PhytWyEMAFBntls9xRBbcbb6RsrjI7hp+RVQ/3E0Li+ciE0
- Q4e1r9U6bnKB/XtcSRaca4h0upWwxd2+Qoshj6POyZuuTVzlpPzaHauxXzGR0Idz/+fd
- 1ZiU+saiijrvW712PKMZUwGfMkqR/AJOn8/mdQdbo6kpqz7Igj5Rrv70zBHgIs5zU+ls
- NgVc1OpQuNfl/DjCXwj6W7BEx6I7K5IosHz07fl/fAOYuxjdnuKwQxlWJlwMu2Y0fi9A
- DCSw==
-X-Gm-Message-State: AOJu0YwOcWwlA1G941jwiltMziTkg3Inok1xwRmqZfyucMHiOqisBFDI
- YJ4b2Vv/QMMd+09Pu7RmarBScfxZxIC/iqWC/JfG2UyznlA4pCgNTOEZfvFH094jBg==
-X-Gm-Gg: AeBDietU0tSSNBXk01mwmRKyp4qvKJzi8E/CRfp43Fcx/joeDI87psPb5OpHgJ5t7LG
- q/OXmYBvh8Xd6y1hqYIR5tua7wL0NBrWUvZVPlYZojLTpVm1YHXebh22lfu2l0RjOazG9B8Lh7x
- L9hoQBD0Ff4ymcGSOILfitm43Rt8Mz/QVuUTPXXSYRgMiYmGjFW+iWwoJHyNeqixGWRIjOGHpt9
- 3PODVk+1/mi5bTh1bwEX6XdAjq7Ga5tAchTeYCV0Xg4ddEcBOC022DHOufLlm3YXkUOAG4hDUQg
- Rwmnx2vtNgyuxj9gHIjo4yvjLumIM31WEFkwEYNIe7RHfMRIUk8xJST484MgS0HyleF6xYXWBxF
- z1ySluJn/U3Vfsf6P/RvYqXq0FpAQ8N5JYELQDRtKyJr1C9RXBeEP1Lc3MRfXkP0wt70Sadd5f3
- nzCiCkiJTtOqdCMap2lsK+d2xbe/d0OMMSUcM3DbWvxJ1WM8YWCPIWbG3UIuWP4g==
-X-Received: by 2002:a05:600c:3553:b0:48a:52f2:a0f1 with SMTP id
- 5b1f17b1804b1-48a52f2a5f0mr256479945e9.18.1777032174195; 
- Fri, 24 Apr 2026 05:02:54 -0700 (PDT)
-Received: from autotest-wegao.qe.prg2.suse.org
- ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-43fe4e4d6casm56423315f8f.32.2026.04.24.05.02.53
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 24 Apr 2026 05:02:53 -0700 (PDT)
-Date: Fri, 24 Apr 2026 12:02:52 +0000
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <aetb7HIEgZoZE8NO@autotest-wegao.qe.prg2.suse.org>
-References: <20260406023538.14739-1-wegao@suse.com>
- <20260424102238.GC505126@pevik>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D77351000B74
+ for <ltp@lists.linux.it>; Fri, 24 Apr 2026 14:18:53 +0200 (CEST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 63OBtCEE3107455; Fri, 24 Apr 2026 12:18:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:in-reply-to:message-id
+ :mime-version:references:subject:to; s=pp1; bh=8mJSs5dmP8rrwPX+G
+ IeHQRt6bObC+CWQlyH1s5p+N8c=; b=SfL4A0BUPaJu/4UTw0Y1m5XOK5rJIlJ1A
+ kIFMmB8mXD2klRmH8kybrFSWNSqGxdI9YsBY3B5bZlL4Md7bswdGjI6+vj9Yne5g
+ oL/gSs0drDFrzb6fw9FLnotNOHExdUNEbgDnjx3IdY0y8SYrZpGK6v5wmOTVb+md
+ LttPGY0iR1GNHXIS/ZrCaUfaN8zK3whPs5dc/I+uK9ENnB1/XLsUobGQi4gRItWs
+ lyKzt/D7TiJcVIMjmrilHWLuk3jvuw63ssiUNjk8Mzp2mlE14/jk+RotqWIS85qr
+ KH4ps801JMjRWB8hsLjMUQ4jw3upvfcbVCg1POAZJ8RcoR1IEBPBg==
+Received: from ppma22.wdc07v.mail.ibm.com
+ (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dpeu6mvvw-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 24 Apr 2026 12:18:52 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63OC5Y3P023347;
+ Fri, 24 Apr 2026 12:18:51 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4dpjkyaqmc-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 24 Apr 2026 12:18:51 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
+ [10.20.54.106])
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 63OCInaG51773778
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 24 Apr 2026 12:18:49 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 6324E2004B;
+ Fri, 24 Apr 2026 12:18:49 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 9ADC12004D;
+ Fri, 24 Apr 2026 12:18:48 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.43.65.190])
+ by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Fri, 24 Apr 2026 12:18:48 +0000 (GMT)
+From: Sachin Sant <sachinp@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Fri, 24 Apr 2026 17:48:45 +0530
+Message-Id: <20260424121845.10914-2-sachinp@linux.ibm.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20260424121845.10914-1-sachinp@linux.ibm.com>
+References: <20260424121845.10914-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260424102238.GC505126@pevik>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI0MDExOCBTYWx0ZWRfX1KyTD4a77o7B
+ QkbGiyobBfqxZ/I7J+GtUkmtkl2JEP0x5diDkbmc9IWTUxi9Lg4tkPkYTLCNx6UAoB3dXcjkr9t
+ XsFiQOcTXm8512QnRGFGlMzlUm6UGHw6OoPHBgLAvsccjy9NiXkOv+XxPHVYDBZLi8qOZVnN8tc
+ Jzba/4HKG6SWzxspyFTSjWRrn9kQ/MRvCAR8CErfMW0Qzn4PiFTb8/4FsQmACYQ91+eviZ1M+sL
+ NaMQlv2CfqKAOIP9uHH8QbCNUlwgvGb7vu+5OJtemWXD+Sh1968vAXtBgPpOrGdvHhuCNXF6ydf
+ L5M+vgbOExq6ORqnHIRXIII2p+dAHgdd8sJucvl6cj3XyQRQThv6tZ+OXExfJd2ci/GQCxHXqLj
+ gvDaz83z2t8fAAew2YMGoyjPSJ5j/A46AwCNaQmIX3w4ZYtm1SC1lF9/V1hZmXlNNwUOkSGS4D+
+ B79bItUSk8J3iMJoZnQ==
+X-Proofpoint-ORIG-GUID: aOR4Ov8_pmg3gSKOjCBS1qyD-BkuI1Ir
+X-Proofpoint-GUID: aOR4Ov8_pmg3gSKOjCBS1qyD-BkuI1Ir
+X-Authority-Analysis: v=2.4 cv=BYfoFLt2 c=1 sm=1 tr=0 ts=69eb5fac cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=RzCfie-kr_QcCd8fBx8p:22 a=GcyzOjIWAAAA:8 a=iox4zFpeAAAA:8 a=VnNF1IyMAAAA:8
+ a=ZDXDJ1Unu6paE_oJK8MA:9 a=hQL3dl6oAZ8NdCsdz28n:22 a=WzC6qhA0u3u7Ye7llzcV:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-04-23_03,2026-04-21_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 clxscore=1015 bulkscore=0
+ phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
+ definitions=main-2604240118
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] ioctl_pidfd06: Accept both ESRCH and EREMOTE
- for PIDFD_GET_INFO
+Subject: [LTP] [PATCH 2/2] doc: Rename statistics page to 'Supported
+ syscalls'
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,29 +109,129 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Apr 24, 2026 at 12:22:38PM +0200, Petr Vorel wrote:
-> Hi,
-> 
-> I have no idea what superseded this patch. But as Wai prefers it [1] I set state
-> new.  Alternative patch [2] [3], with discussion under v1 [4] [5].
-Thanks for change to new state.
-> 
-> Kind regards,
-> Petr
-> 
-> [1] https://lore.kernel.org/ltp/20260424095900.GA500158@pevik/T/#m58cbc2ecf73d7448bcb466a4a84b6845f147c1b9
-> [2] https://patchwork.ozlabs.org/project/ltp/patch/20260424101508.505501-1-pvorel@suse.cz/
-> [3] https://lore.kernel.org/ltp/20260424101508.505501-1-pvorel@suse.cz/T/#u
-> [4] https://patchwork.ozlabs.org/project/ltp/patch/20260424060543.462475-1-pvorel@suse.cz/
-> [5] https://lore.kernel.org/ltp/20260424095900.GA500158@pevik/T/#m58cbc2ecf73d7448bcb466a4a84b6845f147c1b9
+Rename the documentation page from 'Statistics' to 'Supported syscalls'
+to better reflect its content, which focuses on syscall coverage.
+
+- Renamed doc/users/stats.rst to doc/users/supported_syscalls.rst
+- Updated page title and description
+- Updated references in doc/index.rst
+- Updated spelling exclusion pattern in doc/conf.py
+- Renamed function definition from generate_syscalls_stats to
+  generate_supported_syscalls
+- Updated app.connect() call to use the new function name
+
+Cc: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
+---
+ doc/conf.py                      | 13 +++++++------
+ doc/index.rst                    |  6 +++---
+ doc/users/stats.rst              |  9 ---------
+ doc/users/supported_syscalls.rst |  9 +++++++++
+ 4 files changed, 19 insertions(+), 18 deletions(-)
+ delete mode 100644 doc/users/stats.rst
+ create mode 100644 doc/users/supported_syscalls.rst
+
+diff --git a/doc/conf.py b/doc/conf.py
+index 6d470d0d0..1be8fcae5 100644
+--- a/doc/conf.py
++++ b/doc/conf.py
+@@ -56,7 +56,7 @@ manpages_url = 'https://man7.org/linux/man-pages/man{section}/{page}.{section}.h
+ 
+ spelling_lang = "en_US"
+ spelling_warning = True
+-spelling_exclude_patterns = ['users/stats.rst']
++spelling_exclude_patterns = ['users/supported_syscalls.rst']
+ spelling_word_list_filename = "spelling_wordlist"
+ 
+ # -- Options for HTML output -------------------------------------------------
+@@ -66,11 +66,12 @@ html_theme = 'sphinx_rtd_theme'
+ html_static_path = ['_static']
+ 
+ 
+-def generate_syscalls_stats(_):
++def generate_supported_syscalls(_):
+     """
+-    Generate statistics for syscalls. We fetch the syscalls list from the kernel
+-    sources, then we compare it with testcases/kernel/syscalls folder and
+-    generate a file that is included in the statistics documentation section.
++    Generate supported syscalls documentation. We fetch the syscalls list from
++    the kernel sources, then we compare it with testcases/kernel/syscalls folder
++    and generate a file that is included in the supported syscalls documentation
++    section.
+     """
+     output = '_static/syscalls.rst'
+ 
+@@ -668,6 +669,6 @@ def setup(app):
+     customizations.
+     """
+     app.add_css_file('custom.css')
+-    app.connect('builder-inited', generate_syscalls_stats)
++    app.connect('builder-inited', generate_supported_syscalls)
+     app.connect('builder-inited', generate_cve_catalog)
+     app.connect('builder-inited', generate_test_catalog)
+diff --git a/doc/index.rst b/doc/index.rst
+index 733495f51..f80ca4be1 100644
+--- a/doc/index.rst
++++ b/doc/index.rst
+@@ -11,7 +11,7 @@
+    users/setup_tests
+    users/testers_guide
+    users/supported_systems
+-   users/stats
++   users/supported_syscalls
+    users/cve_catalog
+    users/test_catalog
+ 
+@@ -56,8 +56,8 @@ For users
+ :doc:`users/supported_systems`
+    A list of supported technologies by the LTP framework
+ 
+-:doc:`users/stats`
+-   Some LTP statistics
++:doc:`users/supported_syscalls`
++   Syscalls supported by LTP tests
+ 
+ :doc:`users/cve_catalog`
+    LTP reproducers for known CVEs
+diff --git a/doc/users/stats.rst b/doc/users/stats.rst
+deleted file mode 100644
+index 7073442aa..000000000
+--- a/doc/users/stats.rst
++++ /dev/null
+@@ -1,9 +0,0 @@
+-.. SPDX-License-Identifier: GPL-2.0-or-later
+-
+-Statistics
+-==========
+-
+-In this section we collect some statistics related to the current state of
+-LTP tests.
+-
+-.. include:: ../_static/syscalls.rst
+diff --git a/doc/users/supported_syscalls.rst b/doc/users/supported_syscalls.rst
+new file mode 100644
+index 000000000..6914852c6
+--- /dev/null
++++ b/doc/users/supported_syscalls.rst
+@@ -0,0 +1,9 @@
++.. SPDX-License-Identifier: GPL-2.0-or-later
++
++Supported syscalls
++==================
++
++In this section we collect information about syscalls that are currently
++tested by LTP.
++
++.. include:: ../_static/syscalls.rst
+-- 
+2.39.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
