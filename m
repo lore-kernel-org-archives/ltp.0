@@ -4,82 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1591AFDEE5F
-	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 02:42:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29ECDFB44A6
+	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 06:06:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ABF7C3E53C0
-	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 04:42:48 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 6916E3E4A71
+	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 08:06:06 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 651293E1AA2
- for <ltp@lists.linux.it>; Fri, 24 Apr 2026 04:42:29 +0200 (CEST)
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com
- [IPv6:2607:f8b0:4864:20::f41])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2E9853E2571
+ for <ltp@lists.linux.it>; Fri, 24 Apr 2026 08:05:49 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 737D81400744
- for <ltp@lists.linux.it>; Fri, 24 Apr 2026 04:42:29 +0200 (CEST)
-Received: by mail-qv1-xf41.google.com with SMTP id
- 6a1803df08f44-8acb09ddbf6so102308566d6.2
- for <ltp@lists.linux.it>; Thu, 23 Apr 2026 19:42:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1776998548; x=1777603348; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=2asbXm83jN1R5PqJcG4dIKq9UodeL0aCQif0Gn1ZtH4=;
- b=PY1MLCpGX7UjIKfL7TwPPVjGEa4RdBxSeyHzU+KzgZGbulkn9/oykuTkwVk3LoQjyV
- TJpu6IW2lsTwacFt1tn9D6urk/UiRl7lvX3ns5mKJJDDnanGpgFasU/EtyPQwoVXkkQK
- z+C27PF1Ih0S7sLUnQaAXENh1P2R3C3HLLgfQEN75w/Fvnt0IMqcgs6PUUGSt1tzDsdo
- gwX0OBOLgywmAJn9ljtfDZHSvU759hQCQOoezw9avDay7di/c8/rLpxTsNN4p7esfe71
- j6yrYKO4/Xgqq/AaGBZdJY9/2V0Mnvbpd04btEV1G3ILqEfuEVuI9C/Sdq61emudPYO3
- 7xXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1776998548; x=1777603348;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=2asbXm83jN1R5PqJcG4dIKq9UodeL0aCQif0Gn1ZtH4=;
- b=NpuDTX3uw9GoZWuowRfmJQddNoHrhnTEBI3B5XG0eGDQnyYDNOX42Fc7t6iammcp/g
- yoOiNpkNvvBA32zOWzDBzzwhtQIUjHY2YEXb2lH1hDCuxjgndd+9Q0cc8F0GAM2TXGsi
- fLtUVACg2cYSJzzcqkcrnSgDnNStHvriynnD5NxLRupWrSHZUWc47mdJyt+D/cjUk+Wg
- uzHnbFoGi2onOk9xpN9+aZOWZxdD+rxmqlKigfsz90QEg7yO+J3eKJsJQgDH5k0zP4Ma
- ygK1UzN3IVmaDtxNxK/FbAmS8O2yXcyQfxM9bWRA1jHbKEYXF4Ilr0ENZGmkFK7UzSeY
- V48Q==
-X-Gm-Message-State: AOJu0YyrPQ7yQwzlKU7OhzL22dZ8VKXgRXNPVOchB4h75Tya7q8l5370
- x00YgPghdQPZJJVE99scTe6E5XAezZgGcIso4Afw7QusXE4jwtZTOfVpJbDCY/RRWXcr1Q==
-X-Gm-Gg: AeBDies/bASnHB7PGotX+y9PH14lCZjaWeT+7AASGc+4VtD0OA5pl517dkeqJnG1o3z
- FKi8+r2CmcKppwCXcO7SlhjkxKOja+REMSnPDlQcKMDV7esor95EtV0oIJYDVT5deXGOmEI3mIu
- vmA0/MyAIiH4xC4uxqjc3sUIL8jNk+cBjXEyofHGIhDDshwx3Kra9t3SH5k9NpswVq+2ohPcKGH
- RPk/tBBu8Yh2OUmtQHDGRvFkoK9VKY8sK7JrhbV1Xihv1jp/rYNQweQOw32Dw0YxKWSiZERnmIx
- eShxkcrky9j+NnhJYKGjKLUum9FifYd8T7jMzun+z1FZKVBnrgXXwH5tCGjnNywevtTTkiZYymf
- 8rZD9odkVbhWV2QtvXIzO87QKcANUztIMCYkKU+/ImmoeM16bEpGrqQJy/nnxfI5RmFPmspTJXz
- WFHJofZqgDDIzqnGKS7PUqKeeGfEC8vY4Obc9kSoNPvdiv6IiMrV6o+ch67XtNvuX9O9p03cmaM
- dSBGfr9l3r9HVE0tLw/hKDGafIBz1lgJrnyo575sttnfXER
-X-Received: by 2002:a05:6214:2a4d:b0:89a:629:2203 with SMTP id
- 6a1803df08f44-8b02806fc0cmr515550136d6.11.1776998548275; 
- Thu, 23 Apr 2026 19:42:28 -0700 (PDT)
-Received: from
- runnervmeorf1.dfa5kwsimfeenovaffeki3ojdh.cx.internal.cloudapp.net
- ([48.214.55.48]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8b02ac72915sm176917556d6.15.2026.04.23.19.42.27
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 23 Apr 2026 19:42:28 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: lufei <lufei@uniontech.com>
-Date: Fri, 24 Apr 2026 02:42:27 +0000
-Message-ID: <20260424024227.4074-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260424020854.96845-1-lufei@uniontech.com>
-References: <20260424020854.96845-1-lufei@uniontech.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 972A260010A
+ for <ltp@lists.linux.it>; Fri, 24 Apr 2026 08:05:48 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CC7736A866;
+ Fri, 24 Apr 2026 06:05:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777010747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=M+a6r7NZVkRCp9bkYHtRUVZFDQBHBnqwQSO1GjswVxU=;
+ b=n7is2gV2xxU4d8mwj++lQpsJUzpsXxTK2e629bba5UeTtpdL1JBob9r92vMeyfxaaRY706
+ dlwFw7zuorDs3JuVy4RUpJYDtvg40DJBSh/7ZENo+eTDAd6TxaVHCFXPJgr9ght99AaTJA
+ hhQH82Nhlhp+hQeEOYgZT4RDCVuUslY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777010747;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=M+a6r7NZVkRCp9bkYHtRUVZFDQBHBnqwQSO1GjswVxU=;
+ b=Sy4/Tl1mxZqOR867vFkXSD+l3TGsLtEEWrvhlmyg9GlVzggRps99v8WZvha1RApbGyjZNl
+ y3g9/Vmer5nv1JBQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777010746; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=M+a6r7NZVkRCp9bkYHtRUVZFDQBHBnqwQSO1GjswVxU=;
+ b=sggjp0/KWRLX8UEBwigV1du9vlBPG/T0LjCeZzKrL5iStnHoXu7CUxNpnd0JrHJ3z8nazt
+ R8facjtZRbsWjVkeR3nOhLG/876+gZoRZZhvjYIbuS0gXI2OtGmIvda5+F88cWZLh1mzPd
+ CGPcFjhTnHyzOCs+Up+YreN4/CSVAL0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777010746;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=M+a6r7NZVkRCp9bkYHtRUVZFDQBHBnqwQSO1GjswVxU=;
+ b=9XYBfFCScA7ZBeKCTE9AIEHNdJpDr2nIr3rsuAfLfEdkK464qFaVO7f60mbozBaqczhBY2
+ 1Ez3RLR8WH+svCDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A9A0A593AE;
+ Fri, 24 Apr 2026 06:05:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 5OspKDoI62nWdgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 24 Apr 2026 06:05:46 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Fri, 24 Apr 2026 08:05:43 +0200
+Message-ID: <20260424060543.462475-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.999];
+ MIME_GOOD(-0.10)[text/plain];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ ARC_NA(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, imap1.dmz-prg2.suse.org:helo,
+ suse.cz:mid, suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Rewrite ftrace_regression tests with new C API
+Subject: [LTP] [PATCH 1/1] ioctl_pidfd06: Update kernel version
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,40 +101,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi lufei,
+Kernel commit ab89060fbc92e ("pidfs: return -EREMOTE when PIDFD_GET_INFO
+is called on another ns") from v7.0 was backported into stable/LTS
+kernels v6.18.14 (7446125afb6d9) and v6.19.10 (2920abaf56c09).
 
-On Fri, 24 Apr 2026, lufei wrote:
-> [PATCH] Rewrite ftrace_regression tests with new C API
-
-> +++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression.h
-> +/* SPDX-License-Identifier: GPL-2.0-or-later
-
-SPDX must use the single-line style: // SPDX-License-Identifier: GPL-2.0-or-later
-
-> + create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression01.c
-> + create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
-
-This adds two new test cases in a single commit. Please split into one
-commit per test; ftrace_regression.h can go with the first.
-
-[...]
-
+Reported-by: Wei Gao <wegao@suse.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Note:
+ testcases/kernel/syscalls/ioctl/ioctl_pidfd06.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Our agent completed the review of the patch. The agent can sometimes
-produce false positives although often its findings are genuine. If you
-find issues with the review, please comment this email or ignore the
-suggestions.
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_pidfd06.c b/testcases/kernel/syscalls/ioctl/ioctl_pidfd06.c
+index 0f24d4741f..cc66d54cf4 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_pidfd06.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_pidfd06.c
+@@ -54,7 +54,7 @@ static void setup(void)
+ 	if (!ioctl_pidfd_info_exit_supported())
+ 		tst_brk(TCONF, "PIDFD_INFO_EXIT is not supported by ioctl()");
+ 
+-	if (tst_kvercmp(7, 0, 0) >= 0)
++	if (tst_kvercmp(6, 18, 14) >= 0)
+ 		err_nr = EREMOTE;
+ }
+ 
+-- 
+2.53.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
