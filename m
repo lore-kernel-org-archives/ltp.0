@@ -4,100 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA4BFFE5215
-	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 12:19:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63A97FE5219
+	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 12:19:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A49643E5348
-	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 14:19:13 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 01A973E5355
+	for <ltp@archiver.kernel.org>; Fri, 24 Apr 2026 14:19:32 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ACBCD3E1AA2
+ by picard.linux.it (Postfix) with ESMTPS id 2652F3E1AA2
  for <ltp@lists.linux.it>; Fri, 24 Apr 2026 14:18:54 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D77351000B74
- for <ltp@lists.linux.it>; Fri, 24 Apr 2026 14:18:53 +0200 (CEST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 29493600682
+ for <ltp@lists.linux.it>; Fri, 24 Apr 2026 14:18:52 +0200 (CEST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 63OBtCEE3107455; Fri, 24 Apr 2026 12:18:52 GMT
+ 63OBAvVq3292261; Fri, 24 Apr 2026 12:18:51 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=8mJSs5dmP8rrwPX+G
- IeHQRt6bObC+CWQlyH1s5p+N8c=; b=SfL4A0BUPaJu/4UTw0Y1m5XOK5rJIlJ1A
- kIFMmB8mXD2klRmH8kybrFSWNSqGxdI9YsBY3B5bZlL4Md7bswdGjI6+vj9Yne5g
- oL/gSs0drDFrzb6fw9FLnotNOHExdUNEbgDnjx3IdY0y8SYrZpGK6v5wmOTVb+md
- LttPGY0iR1GNHXIS/ZrCaUfaN8zK3whPs5dc/I+uK9ENnB1/XLsUobGQi4gRItWs
- lyKzt/D7TiJcVIMjmrilHWLuk3jvuw63ssiUNjk8Mzp2mlE14/jk+RotqWIS85qr
- KH4ps801JMjRWB8hsLjMUQ4jw3upvfcbVCg1POAZJ8RcoR1IEBPBg==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dpeu6mvvw-1
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=3+XjxaFBXHmBStI+WwtRBvHkBQczpo6x11Xox3dWu
+ QM=; b=EGbrvxR3kzMZFvh7K26yIZJTNONVesrVOBWTQKjvnHfYh3lujYqqeNtD+
+ 86THR6cGTEi7IbRb1UShQjRH7Ycjb0uz1MGGQtzblMoXqXXinBFzPFkqYeoyqLaX
+ ZYstTspMU74b1gYOKB45n3IIzRirfvSbwgQt9MHeTMUnxCcl0nB5DJmuQOMUnGzG
+ F8X3y4MVmCRb0rCk7vYZJAX1sfMpbds6JaAiW9bAv5PT1+/5oLuCT8/6Xg76xVOv
+ F3ZwMI8Jy78Ms+/4eb5Gh3dKqe2p7Za20SKQk2w8nH4o0L9OlbVTsQ9xBI0cJ09Z
+ cd72rnz3gltDL/fI+j/cUdqA/4VMg==
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dphfrn3ha-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 24 Apr 2026 12:18:52 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63OC5Y3P023347;
- Fri, 24 Apr 2026 12:18:51 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4dpjkyaqmc-1
+ Fri, 24 Apr 2026 12:18:50 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63OC5QoO013046;
+ Fri, 24 Apr 2026 12:18:50 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dpjky2qa6-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 24 Apr 2026 12:18:51 +0000 (GMT)
+ Fri, 24 Apr 2026 12:18:49 +0000 (GMT)
 Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
  [10.20.54.106])
- by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 63OCInaG51773778
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 63OCIm0129819210
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 24 Apr 2026 12:18:49 GMT
+ Fri, 24 Apr 2026 12:18:48 GMT
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 6324E2004B;
- Fri, 24 Apr 2026 12:18:49 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 9ADC12004D;
+ by IMSVA (Postfix) with ESMTP id 39D1F2004B;
  Fri, 24 Apr 2026 12:18:48 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 4187B20043;
+ Fri, 24 Apr 2026 12:18:47 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.43.65.190])
  by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Fri, 24 Apr 2026 12:18:48 +0000 (GMT)
+ Fri, 24 Apr 2026 12:18:47 +0000 (GMT)
 From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Fri, 24 Apr 2026 17:48:45 +0530
-Message-Id: <20260424121845.10914-2-sachinp@linux.ibm.com>
+Date: Fri, 24 Apr 2026 17:48:44 +0530
+Message-Id: <20260424121845.10914-1-sachinp@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20260424121845.10914-1-sachinp@linux.ibm.com>
-References: <20260424121845.10914-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI0MDExOCBTYWx0ZWRfX1KyTD4a77o7B
- QkbGiyobBfqxZ/I7J+GtUkmtkl2JEP0x5diDkbmc9IWTUxi9Lg4tkPkYTLCNx6UAoB3dXcjkr9t
- XsFiQOcTXm8512QnRGFGlMzlUm6UGHw6OoPHBgLAvsccjy9NiXkOv+XxPHVYDBZLi8qOZVnN8tc
- Jzba/4HKG6SWzxspyFTSjWRrn9kQ/MRvCAR8CErfMW0Qzn4PiFTb8/4FsQmACYQ91+eviZ1M+sL
- NaMQlv2CfqKAOIP9uHH8QbCNUlwgvGb7vu+5OJtemWXD+Sh1968vAXtBgPpOrGdvHhuCNXF6ydf
- L5M+vgbOExq6ORqnHIRXIII2p+dAHgdd8sJucvl6cj3XyQRQThv6tZ+OXExfJd2ci/GQCxHXqLj
- gvDaz83z2t8fAAew2YMGoyjPSJ5j/A46AwCNaQmIX3w4ZYtm1SC1lF9/V1hZmXlNNwUOkSGS4D+
- B79bItUSk8J3iMJoZnQ==
-X-Proofpoint-ORIG-GUID: aOR4Ov8_pmg3gSKOjCBS1qyD-BkuI1Ir
-X-Proofpoint-GUID: aOR4Ov8_pmg3gSKOjCBS1qyD-BkuI1Ir
-X-Authority-Analysis: v=2.4 cv=BYfoFLt2 c=1 sm=1 tr=0 ts=69eb5fac cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+X-Proofpoint-GUID: ipmTv_r38_-V-K2ZhPM0fYyWhtX4fRan
+X-Proofpoint-ORIG-GUID: ipmTv_r38_-V-K2ZhPM0fYyWhtX4fRan
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI0MDExOCBTYWx0ZWRfX/6UmtWbArkry
+ 8BFSCCdWufOrdyo2488h922D9GszscH/6JdCCKaBNo73MR9VwD6cdJqjzJ35lY264iyNK9zGPZe
+ NozKw9fVNRB0XhS7s3xUmz3ojimAsibWVUGvlhCcOyfoGYjmGpyWVCVpjaBF3+0eFVLzcNMeBH/
+ 5dk36LES9cNTZPtuIVSe7X42TQMfHzoQjlqo2rZDpn1uLDP5fVFOeQ5qa543prshrDlY0powZg3
+ IMszzO+xfo7nXafhi6n2CV/tH7AC6Zq1FWpPXBH1umXbz2I/T/59+bAr2Lwsz8ZQRwXAYnpQCoK
+ iajUwg/Da/BPg1Rs6gfT4cgprGf8U7UAHUodvm9EqcHVrFzLvFGPiLUyFnioNZsrZa8hZEZ6Rrl
+ n5WHGQFt6uKYpVUK7PaO02LKJB5TNvHZ/QUebIEA9r/CV25WeHsyg777+YDtLE5IL/+QLWk4Mog
+ 2BvKyaQ1JN656FUTEvQ==
+X-Authority-Analysis: v=2.4 cv=SJxykuvH c=1 sm=1 tr=0 ts=69eb5faa cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
  a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=RzCfie-kr_QcCd8fBx8p:22 a=GcyzOjIWAAAA:8 a=iox4zFpeAAAA:8 a=VnNF1IyMAAAA:8
- a=ZDXDJ1Unu6paE_oJK8MA:9 a=hQL3dl6oAZ8NdCsdz28n:22 a=WzC6qhA0u3u7Ye7llzcV:22
+ a=uAbxVGIbfxUO_5tXvNgY:22 a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=sMBj6sIwAAAA:8 a=iox4zFpeAAAA:8 a=vWoT6DuTJhGiA10ru-4A:9
+ a=r1Yu_BK-E59k74aI3Q9G:22 a=WzC6qhA0u3u7Ye7llzcV:22
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-04-23_03,2026-04-21_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 impostorscore=0 malwarescore=0 suspectscore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 clxscore=1015 bulkscore=0
- phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
- definitions=main-2604240118
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ priorityscore=1501 suspectscore=0 malwarescore=0 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1015 adultscore=0 spamscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2604240118
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] doc: Rename statistics page to 'Supported
- syscalls'
+Subject: [LTP] [PATCH v3 1/2] doc: generate CVE catalog documentation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,121 +112,242 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Rename the documentation page from 'Statistics' to 'Supported syscalls'
-to better reflect its content, which focuses on syscall coverage.
+Add a Sphinx builder hook to parse runtest/cve and generate a
+comprehensive CVE catalog in a single documentation file.
 
-- Renamed doc/users/stats.rst to doc/users/supported_syscalls.rst
-- Updated page title and description
-- Updated references in doc/index.rst
-- Updated spelling exclusion pattern in doc/conf.py
-- Renamed function definition from generate_syscalls_stats to
-  generate_supported_syscalls
-- Updated app.connect() call to use the new function name
+The implementation:
+- Parses runtest/cve to extract CVE IDs, test names, and options
+- Generates a single CVE catalog file (_static/cves.rst) containing:
+  * Total CVE count
+  * All CVEs sorted in descending order (newest first)
+  * For each CVE:
+    - Links to CVE MITRE database
+    - Cross-references to test catalog entries
+    - Test command details and options
+    - Vulnerability description
+- Integrates CVE catalog into main documentation index
 
+Closes: https://github.com/linux-test-project/ltp/issues/1254
 Cc: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
 ---
- doc/conf.py                      | 13 +++++++------
- doc/index.rst                    |  6 +++---
- doc/users/stats.rst              |  9 ---------
- doc/users/supported_syscalls.rst |  9 +++++++++
- 4 files changed, 19 insertions(+), 18 deletions(-)
- delete mode 100644 doc/users/stats.rst
- create mode 100644 doc/users/supported_syscalls.rst
+V3 changes:
+- CVEs sorted in descending order
+- append test name to CVE id : CVE (Test Name)
+- Separate page for CVE catalog
+- Link cve testcases to Test catalog entry
+- v2 link https://lore.kernel.org/ltp/0df5f75d-eb8f-428e-9888-bb7a90a6b1a4@linux.ibm.com/
 
+V2 changes:
+- Replace Fixes tag by Closes
+- V1 link https://lore.kernel.org/ltp/20260423105304.59788-1-sachinp@linux.ibm.com/T/#u
+
+---
+ doc/Makefile              |   2 +-
+ doc/conf.py               | 127 ++++++++++++++++++++++++++++++++++++++
+ doc/index.rst             |   4 ++
+ doc/users/cve_catalog.rst |   6 ++
+ 4 files changed, 138 insertions(+), 1 deletion(-)
+ create mode 100644 doc/users/cve_catalog.rst
+
+diff --git a/doc/Makefile b/doc/Makefile
+index 3123b1cd7..baa228022 100644
+--- a/doc/Makefile
++++ b/doc/Makefile
+@@ -30,7 +30,7 @@ spelling:
+ 	$(RUN_VENV); sphinx-build -b spelling -d build/doctree . build/spelling
+ 
+ clean:
+-	rm -rf html/ build/ _static/syscalls.rst _static/tests.rst syscalls.tbl \
++	rm -rf html/ build/ _static/syscalls.rst _static/tests.rst _static/cves.rst syscalls.tbl \
+ 		${abs_top_builddir}/metadata/ltp.json
+ 
+ distclean: clean
 diff --git a/doc/conf.py b/doc/conf.py
-index 6d470d0d0..1be8fcae5 100644
+index 63d09352e..6d470d0d0 100644
 --- a/doc/conf.py
 +++ b/doc/conf.py
-@@ -56,7 +56,7 @@ manpages_url = 'https://man7.org/linux/man-pages/man{section}/{page}.{section}.h
+@@ -30,6 +30,16 @@ extensions = [
+     'sphinx.ext.extlinks',
+ ]
  
- spelling_lang = "en_US"
- spelling_warning = True
--spelling_exclude_patterns = ['users/stats.rst']
-+spelling_exclude_patterns = ['users/supported_syscalls.rst']
- spelling_word_list_filename = "spelling_wordlist"
++# Configure autosectionlabel to prefix labels with document name
++# This prevents duplicate labels when same test name appears in multiple files
++# Required for CVE catalog cross-references to work
++autosectionlabel_prefix_document = True
++# Only create labels for sections with unique names
++autosectionlabel_maxdepth = 2
++
++# Suppress duplicate label warnings for kernel-doc generated content
++suppress_warnings = ['autosectionlabel.*']
++
+ exclude_patterns = ["html*", '_static*', '.venv*']
+ extlinks = {
+     'repo': (f'{ltp_repo}/%s', '%s'),
+@@ -535,6 +545,122 @@ def generate_test_catalog(_):
+     with open(output, 'w+', encoding='utf-8') as new_tests:
+         new_tests.write('\n'.join(text))
  
- # -- Options for HTML output -------------------------------------------------
-@@ -66,11 +66,12 @@ html_theme = 'sphinx_rtd_theme'
- html_static_path = ['_static']
++def generate_cve_catalog(_):
++    """
++    Generate CVE catalog in a single file. Parse runtest/cve file and
++    generate documentation with links to CVE databases and test sources.
++    Similar to test_catalog, creates a single _static/cves.rst file with
++    all CVE information.
++    """
++    output = '_static/cves.rst'
++    runtest_cve = '../runtest/cve'
++
++    # Parse runtest/cve file
++    cve_data = {}
++    cve_pattern = re.compile(r'^(cve-(\d{4})-\d+)\s+(\S+)(?:\s+(.*))?$')
++
++    try:
++        with open(runtest_cve, 'r', encoding='utf-8') as f:
++            for line in f:
++                line = line.strip()
++                if not line or line.startswith('#'):
++                    continue
++
++                match = cve_pattern.match(line)
++                if match:
++                    cve_id = match.group(1).upper()
++                    year = match.group(2)
++                    test_name = match.group(3)
++                    options = match.group(4) if match.group(4) else ''
++
++                    cve_data[cve_id] = {
++                        'cve_id': cve_id,
++                        'year': year,
++                        'test_name': test_name,
++                        'options': options,
++                    }
++    except FileNotFoundError:
++        logger = sphinx.util.logging.getLogger(__name__)
++        msg = f"Can't find runtest/cve file ({runtest_cve})"
++        logger.warning(msg)
++        return
++
++    # Generate single CVE catalog file
++    total_cves = len(cve_data)
++    text = [
++        '.. warning::',
++        '    The following CVE catalog has been generated from the',
++        '    runtest/cve file and includes all CVE reproducers in LTP.',
++        '',
++        f'LTP includes reproducers for {total_cves} known CVEs. These '
++        'tests help verify',
++        'that systems are patched against known vulnerabilities.',
++        '',
++    ]
++
++    # Load metadata to check which tests have documentation
++    metadata = None
++    metadata_file = '../metadata/ltp.json'
++    try:
++        with open(metadata_file, 'r', encoding='utf-8') as data:
++            metadata = json.load(data)
++    except FileNotFoundError:
++        pass
++
++    # Add CVEs in descending order (newest first)
++    for cve_id, cve_info in sorted(cve_data.items(), reverse=True):
++        cve_url = f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve_id}"
++        test_name = cve_info["test_name"]
++
++        # Only create cross-reference if test exists in metadata
++        if metadata and test_name in metadata.get('tests', {}):
++            # Create anchor using the correct document path prefix
++            test_anchor = f"users/test_catalog:{test_name}"
++            test_link = f":ref:`{test_name} <{test_anchor}>`"
++        else:
++            # If test not in metadata, just use plain text formatting
++            test_link = f"``{test_name}``"
++
++        # Create section header with CVE ID and test name
++        section_title = f'{cve_id} ({test_name})'
++        text.extend([
++            section_title,
++            len(section_title) * '-',
++            '',
++            f'**CVE Reference:** `{cve_id} <{cve_url}>`_',
++            '',
++            f'**Test Name:** {test_link}',
++            '',
++        ])
++
++        if cve_info['options']:
++            text.extend([
++                f'**Test Options:** ``{cve_info["options"]}``',
++                '',
++            ])
++
++        # Build test command on a single line to avoid RST formatting issues
++        test_cmd = f'``{test_name}'
++        if cve_info['options']:
++            test_cmd += f' {cve_info["options"]}'
++        test_cmd += '``'
++
++        text.extend([
++            f'This test reproduces the vulnerability described in {cve_id}.',
++            'The test verifies that the system is properly patched against',
++            'this known security vulnerability.',
++            '',
++            f'* **CVE Year:** {cve_info["year"]}',
++            f'* **Test Command:** {test_cmd}',
++            '',
++            '.. raw:: html',
++            '',
++            '    <hr>',
++            '',
++        ])
++
++    with open(output, 'w+', encoding='utf-8') as cve_catalog:
++        cve_catalog.write('\n'.join(text))
  
- 
--def generate_syscalls_stats(_):
-+def generate_supported_syscalls(_):
+ def setup(app):
      """
--    Generate statistics for syscalls. We fetch the syscalls list from the kernel
--    sources, then we compare it with testcases/kernel/syscalls folder and
--    generate a file that is included in the statistics documentation section.
-+    Generate supported syscalls documentation. We fetch the syscalls list from
-+    the kernel sources, then we compare it with testcases/kernel/syscalls folder
-+    and generate a file that is included in the supported syscalls documentation
-+    section.
-     """
-     output = '_static/syscalls.rst'
- 
-@@ -668,6 +669,6 @@ def setup(app):
-     customizations.
+@@ -543,4 +669,5 @@ def setup(app):
      """
      app.add_css_file('custom.css')
--    app.connect('builder-inited', generate_syscalls_stats)
-+    app.connect('builder-inited', generate_supported_syscalls)
-     app.connect('builder-inited', generate_cve_catalog)
+     app.connect('builder-inited', generate_syscalls_stats)
++    app.connect('builder-inited', generate_cve_catalog)
      app.connect('builder-inited', generate_test_catalog)
 diff --git a/doc/index.rst b/doc/index.rst
-index 733495f51..f80ca4be1 100644
+index 496a12f80..733495f51 100644
 --- a/doc/index.rst
 +++ b/doc/index.rst
-@@ -11,7 +11,7 @@
-    users/setup_tests
+@@ -12,6 +12,7 @@
     users/testers_guide
     users/supported_systems
--   users/stats
-+   users/supported_syscalls
-    users/cve_catalog
+    users/stats
++   users/cve_catalog
     users/test_catalog
  
-@@ -56,8 +56,8 @@ For users
- :doc:`users/supported_systems`
-    A list of supported technologies by the LTP framework
+ .. toctree::
+@@ -58,6 +59,9 @@ For users
+ :doc:`users/stats`
+    Some LTP statistics
  
--:doc:`users/stats`
--   Some LTP statistics
-+:doc:`users/supported_syscalls`
-+   Syscalls supported by LTP tests
++:doc:`users/cve_catalog`
++   LTP reproducers for known CVEs
++
+ :doc:`users/test_catalog`
+    The LTP test catalog
  
- :doc:`users/cve_catalog`
-    LTP reproducers for known CVEs
-diff --git a/doc/users/stats.rst b/doc/users/stats.rst
-deleted file mode 100644
-index 7073442aa..000000000
---- a/doc/users/stats.rst
-+++ /dev/null
-@@ -1,9 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0-or-later
--
--Statistics
--==========
--
--In this section we collect some statistics related to the current state of
--LTP tests.
--
--.. include:: ../_static/syscalls.rst
-diff --git a/doc/users/supported_syscalls.rst b/doc/users/supported_syscalls.rst
+diff --git a/doc/users/cve_catalog.rst b/doc/users/cve_catalog.rst
 new file mode 100644
-index 000000000..6914852c6
+index 000000000..f109f01d0
 --- /dev/null
-+++ b/doc/users/supported_syscalls.rst
-@@ -0,0 +1,9 @@
++++ b/doc/users/cve_catalog.rst
+@@ -0,0 +1,6 @@
 +.. SPDX-License-Identifier: GPL-2.0-or-later
 +
-+Supported syscalls
-+==================
++CVE Catalog
++===========
 +
-+In this section we collect information about syscalls that are currently
-+tested by LTP.
-+
-+.. include:: ../_static/syscalls.rst
++.. include:: ../_static/cves.rst
 -- 
 2.39.1
 
