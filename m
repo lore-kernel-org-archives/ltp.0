@@ -4,100 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B52C1FF8860
-	for <ltp@archiver.kernel.org>; Mon, 27 Apr 2026 15:02:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0AECFF8868
+	for <ltp@archiver.kernel.org>; Mon, 27 Apr 2026 15:51:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DC1E53E2D8D
-	for <ltp@archiver.kernel.org>; Mon, 27 Apr 2026 17:02:13 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 909343E1AA0
+	for <ltp@archiver.kernel.org>; Mon, 27 Apr 2026 17:51:21 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E624F3D0EE9
- for <ltp@lists.linux.it>; Mon, 27 Apr 2026 17:01:54 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3F6883C8CBD
+ for <ltp@lists.linux.it>; Mon, 27 Apr 2026 17:51:00 +0200 (CEST)
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
+ [IPv6:2607:f8b0:4864:20::741])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 40F37200918
- for <ltp@lists.linux.it>; Mon, 27 Apr 2026 17:01:54 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 021C85BCFC
- for <ltp@lists.linux.it>; Mon, 27 Apr 2026 15:01:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1777302112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=gv4oqdGEtJGwyYJDQujQhIoJObWcNC0TwooXb4i9vwY=;
- b=KAls1YSAK2Lx0Mni2W6u6tgUEej+LCJdTY6kmJ//MpkYH3HRB0n9HQAXMjq7ttJiRKvCwD
- 2Ri2qTo78qiRUvRE1QrvU/XOoXbbAK48p0lzNsvIbuH1x0J3ctM7dNbOHX7AqA0AbCZPK6
- NAz6w109578OqhnrsYPC9vgiTixWKqM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1777302112;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=gv4oqdGEtJGwyYJDQujQhIoJObWcNC0TwooXb4i9vwY=;
- b=x8tzdWQW4o1VAzJeaQBU/V6Ffx6ltmWSb0pg6QEVyuFZjZ9fijb2oA3UWcJ3WuEMe8BpBn
- s9u4rkhzl2mUCVDA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=TXoUtJ0w;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FWdfUaUE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1777302109; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=gv4oqdGEtJGwyYJDQujQhIoJObWcNC0TwooXb4i9vwY=;
- b=TXoUtJ0w38mIGmCwkF9mwWcpnuRJPOOdNoUpSs1zIJcYRnEhVVIsV24IkuRjJ8dHbwJ2rR
- j0aLIm3X0HlsTvcOnRJvCHPVK0q+J2fRW+K6LKvk3GjcFp7AtCsno+sTEhLaV3Hn45FnB9
- 0toUdF2veI/F2USn5J3WfiDn+Zf2dGo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1777302109;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=gv4oqdGEtJGwyYJDQujQhIoJObWcNC0TwooXb4i9vwY=;
- b=FWdfUaUE0ki6dhX3e4Dx8CjIZnP1CbIOzpVJRaH94IJ8VwNmUEyBz87KS3D9GthFvpBB6m
- Bs5GEblOEjgLAcAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E1E28593B0
- for <ltp@lists.linux.it>; Mon, 27 Apr 2026 15:01:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id AmnXNlx672lLOAAAD6G6ig
- (envelope-from <mdoucha@suse.cz>)
- for <ltp@lists.linux.it>; Mon, 27 Apr 2026 15:01:48 +0000
-From: Martin Doucha <mdoucha@suse.cz>
-To: ltp@lists.linux.it
-Date: Mon, 27 Apr 2026 17:01:35 +0200
-Message-ID: <20260427150139.31685-1-mdoucha@suse.cz>
-X-Mailer: git-send-email 2.53.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 201E2200909
+ for <ltp@lists.linux.it>; Mon, 27 Apr 2026 17:51:00 +0200 (CEST)
+Received: by mail-qk1-x741.google.com with SMTP id
+ af79cd13be357-8d933da14f0so965110885a.2
+ for <ltp@lists.linux.it>; Mon, 27 Apr 2026 08:51:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1777305059; x=1777909859; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=gduAHd4Z80Zs+PJ6u+JRlGeel7Ny8NP2LS+whx+P4oQ=;
+ b=gZ1o7hfymCJWwvtybAOIMzeAlwq0Hdccx5IyjKLzgGsly+tVZeAj33uzbhE712U7bv
+ 2oiQs/JIfyHn+D44l1JZUYFaNW9kRWo6DEuCNYcRjhVmGqAv7j5UDeHWkPzPLd3g5snD
+ /R+fSnSOoODFoOSRz2ZGkEqoYC+8YgTqk/mps/BL7egVZQC7d/HqL0RoZ2Db8jGeoa4V
+ TVQ5YrDZGTNalDzF5ie+E9JPWuIUCwfkjP+WD9tc5mmSWBj9GMZwK5lGOEJQGldPm0yW
+ A4S639nh3WKBElf9wlxzfCUHOuHhHBP7HSblTPWOA9+FHCZSOZH0m84HFdHM5sSn2Hfb
+ tfNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1777305059; x=1777909859;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=gduAHd4Z80Zs+PJ6u+JRlGeel7Ny8NP2LS+whx+P4oQ=;
+ b=H6Os5DxCgtihCRIo5NNrUUkszBdfYsRa0CeFFjBYyaJk7D7xQpJ/mGYJOzQWhSZK5d
+ p6obHpdoUm+pkna2ytV/RRBZUZSnZvJD1aQynwPjTa3Wv3zqTn9kffMYQDpYbJ7DId7K
+ ue54g1X+G3tD923FQVxek0Cd81QEneeTnXrXPzMNDP4fMtZL+M5ZSkkGYteXPslopzMp
+ V1/hy0YhejF/GfieGuFH8z6vXQY4JL5pT54ZM0osY9Wy2m8kK/4Fa8O/V3Flf73sq7F/
+ aZ+jS3aKH62LxnqpT181z8o60Pl4qLK2PXS0Z1yTMNt5WyIqaqM4jMkykZIZeTmweMMt
+ /rcg==
+X-Gm-Message-State: AOJu0YxB8esjHSy/C0aN64ELFGpfVW27MW6SheXMerPu5umNZj5sZ+1G
+ odZt72zl/TD118V9f4IKSgI0jHiwWeoPcS3Oj2t+rX08uF1atLseBuUQ
+X-Gm-Gg: AeBDiet7zomuFd1kXzACKgBoVpw1EVAP8EInJh4eLeQZ4TdvUcTHsrIaL9z2VwxYMmL
+ ndHcumnsc+GpT2BKmW+AzG7gRXeJa2C90LXeeKLEJwtXEo5m2Mus6qbJ06C3DcIfidMmo7oOBrN
+ 1e0c4m5K+wKBzs7Ij8h10/l6cGZ4WTl3Y+/CFRHvei9z+RG1zFc+dDRM33IEuSG2imdvOce8jCX
+ eqIUNnsC1NoMkPtMPEiqyGUTHBFcscLDh3n8maIwwT/NPMrC/P87i50dwosf8Ab9MnhwatRxS18
+ DFoWvASY1ckwFtK1tz5Q5ymvbGQQKZ25q8l98ArZyt9PaqsjkC73aUsRnaWSUjfb37Xc1LPLzeg
+ Ce0g2Apge3sExZK1i5VD5S88gsPzNxwu4yTs+9dRA5Gf+oCn9n5Yx0vo56ZYDHeB+2+GmBgFnxG
+ in4GZpv0pfyshsYsF/FuonHZcW/UlB5cTq5NjFnHI8cAV+EZnpEQ01F/JZjPjKF5zDRiC76OQLU
+ OFi8zAzEOuJwzayXDAln4SjZe37z7RlHZVsf8g1Vurv25S/ljJsbFZoDlBb
+X-Received: by 2002:ac8:5d90:0:b0:50f:9c33:af18 with SMTP id
+ d75a77b69052e-50f9c33b626mr466464651cf.51.1777305057745; 
+ Mon, 27 Apr 2026 08:50:57 -0700 (PDT)
+Received: from
+ runnervmeorf1.alcvuz05nmmujijktqojz2jv5b.bx.internal.cloudapp.net
+ ([20.55.118.118]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-50e39130d7csm256365951cf.0.2026.04.27.08.50.57
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 27 Apr 2026 08:50:57 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 27 Apr 2026 15:50:56 +0000
+Message-ID: <20260427155056.3896-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260427150139.31685-1-mdoucha@suse.cz>
+References: <20260427150139.31685-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; RCPT_COUNT_ONE(0.00)[1];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FROM_HAS_DN(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: 021C85BCFC
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] lapi/io_uring: Add IORING_OP_READ/WRITE constants
+Subject: Re: [LTP] lapi/io_uring: Add IORING_OP_READ/WRITE constants
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,63 +91,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add fallback definitions for IORING_OP_READ and IORING_OP_WRITE.
-These constants have been added in kernel v5.6 and older systems may
-lack them, which results in LTP build failures.
+Hi Martin,
 
-Fixes: fcc4887e73 ("io_uring: Test IORING READ and WRITE operations")
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+On Mon, 27 Apr 2026 17:01:35 +0200, Martin Doucha wrote:
+> lapi/io_uring: Add IORING_OP_READ/WRITE constants
+
+> +#else /* IOSQE_FIXED_FILE */
+> +
+> +#if !HAVE_DECL_IORING_OP_READ
+> +#define IORING_OP_READ 22
+> +#endif
+> +
+> +#if !HAVE_DECL_IORING_OP_WRITE
+> +#define IORING_OP_WRITE 23
+> +#endif
+
+Placement and values are correct: IOSQE_FIXED_FILE was introduced in v5.1,
+IORING_OP_READ/WRITE in v5.6, so this handles the v5.1-v5.5 gap cleanly.
+
+Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
+
 ---
+Note:
 
-Changes since v1:
-- Fixed preprocessor conditions in io_uring.h
+Our agent completed the review of the patch.
 
- configure.ac            |  2 ++
- include/lapi/io_uring.h | 10 ++++++++++
- 2 files changed, 12 insertions(+)
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-diff --git a/configure.ac b/configure.ac
-index 812f17d8b..4b789bfe3 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -46,6 +46,8 @@ AC_CHECK_DECLS([MADV_MERGEABLE],,,[#include <sys/mman.h>])
- AC_CHECK_DECLS([NFTA_CHAIN_ID, NFTA_VERDICT_CHAIN_ID],,,[#include <linux/netfilter/nf_tables.h>])
- AC_CHECK_DECLS([PR_CAPBSET_DROP, PR_CAPBSET_READ],,,[#include <sys/prctl.h>])
- AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
-+AC_CHECK_DECLS([IORING_OP_READ],,,[#include <linux/io_uring.h>])
-+AC_CHECK_DECLS([IORING_OP_WRITE],,,[#include <linux/io_uring.h>])
- 
- AC_CHECK_HEADERS_ONCE([ \
-     aio.h \
-diff --git a/include/lapi/io_uring.h b/include/lapi/io_uring.h
-index c05517595..2026863a2 100644
---- a/include/lapi/io_uring.h
-+++ b/include/lapi/io_uring.h
-@@ -253,6 +253,16 @@ struct io_uring_probe {
- 	struct io_uring_probe_op ops[0];
- };
- 
-+#else /* IOSQE_FIXED_FILE */
-+
-+#if !HAVE_DECL_IORING_OP_READ
-+#define IORING_OP_READ 22
-+#endif
-+
-+#if !HAVE_DECL_IORING_OP_WRITE
-+#define IORING_OP_WRITE 23
-+#endif
-+
- #endif /* IOSQE_FIXED_FILE */
- 
- #ifndef IOSQE_IO_HADRLINK
--- 
-2.53.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
