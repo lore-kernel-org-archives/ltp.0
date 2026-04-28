@@ -4,101 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BD75FF885D
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 12:55:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67C47FF885D
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 12:58:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F0EFC3E2539
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 14:55:02 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 09A313E2D7F
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 14:58:34 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 59C8F3C7A5F
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 14:54:44 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 6D5243C7A5F
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 14:58:15 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6D0CB600779
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 14:54:43 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 63RKl5O21693197; Tue, 28 Apr 2026 12:54:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=GdI5n2
- Q8kcdqdYeHbBEJkMSY2v4ysY46wNIFHKTEYus=; b=eYZd2MujqiYvdmxtVzES5t
- U1zCiyDXAHsPSpwnF6BayTuIO6BnaU4g8Sl1r6r6aK+HQjBa9CQVfdOn8uUkuAz+
- y9KCNoDNRJwokygXjdVvClvyaNzosvXMHbTzZ3sc8fcsIb9xqv5GUduyP4+KBXwA
- 6kh4mMiSn5YiKwosVzapU2PjF89BwbzQelivC/PBJ+PaO6otD5O0gS8KSuVzTsny
- YcOapbSyVSX34DBSmZomuzDjLqqImTt/yZSyeK74sSnFcD6i5tgXhMwe4PAiKQDc
- cfnUlNjffbnLLnegbd8jb4PB8ZuL3oR965XKNRulAgejdUKqHdvSYMviFUjXfUDA
- ==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drn44nkpf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 28 Apr 2026 12:54:41 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63SCcpM9019202;
- Tue, 28 Apr 2026 12:54:40 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dsa5g9jtc-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 28 Apr 2026 12:54:40 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com
- [10.241.53.105])
- by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 63SCsdwL34275866
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 28 Apr 2026 12:54:39 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 268CA58055;
- Tue, 28 Apr 2026 12:54:39 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id E20A358043;
- Tue, 28 Apr 2026 12:54:37 +0000 (GMT)
-Received: from [9.43.64.210] (unknown [9.43.64.210])
- by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
- Tue, 28 Apr 2026 12:54:37 +0000 (GMT)
-Message-ID: <dd3502b7-670b-473c-b607-672695c06f4c@linux.ibm.com>
-Date: Tue, 28 Apr 2026 18:24:36 +0530
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C6B521000975
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 14:58:14 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D60D45BD2E;
+ Tue, 28 Apr 2026 12:58:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777381094;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Z2EJLfMq7Cc+3u6R417PX3b+TfJBNS0yPQmzvflTyhs=;
+ b=KiBiAitVvF3ibRkanMxWxl0Ig1/Y3W7xQiuPvJTOcaW9DzCYvRBSDWLm2D8F20fXnITO7t
+ dZfbPRIeH1u0WD7ZlAaHLKmH5HEwiYUCr9d1j4y48PLYAcTYOlYUxDnuwPEzICg+SfpjtM
+ ATbpnhgj4B1LHyVzdof5Ln4/h8MWyMk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777381094;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Z2EJLfMq7Cc+3u6R417PX3b+TfJBNS0yPQmzvflTyhs=;
+ b=EO0ZgzYVcjtiif9JQ4QLlR4KdUIaI9hWpRf+FOpAwh6oaS9oC160r7+YEQJMd3D4SsYuMU
+ m/o3yCklG3/wX1BA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PKMZCCGZ;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=L3B2NKLC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777381093;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Z2EJLfMq7Cc+3u6R417PX3b+TfJBNS0yPQmzvflTyhs=;
+ b=PKMZCCGZ+aa9QunTptVo9yoOErsOHURP9OGiDUx/SxJakxzVcjwIBibvfD/fOFQvibHlIk
+ NIMBIn5WBVXf4jWd6UgMUx6ljfdaaIxH6h1Td8swEkwZnHZfs1ySBnciqa33O2pqkoeO7l
+ K6d5cyHJr2OkyI3fE27Fch5KPzmI3os=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777381093;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Z2EJLfMq7Cc+3u6R417PX3b+TfJBNS0yPQmzvflTyhs=;
+ b=L3B2NKLC/TRUjwcY5wJTQQbbXzJu/zBIFJKW6Y2SdqAqgwETjxqXX6FF2CHonAWxuOaWHR
+ qgNiR7Aeog0aoGAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B2DA0593B0;
+ Tue, 28 Apr 2026 12:58:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id zVqJKuWu8GnJTAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 28 Apr 2026 12:58:13 +0000
+Date: Tue, 28 Apr 2026 14:58:04 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20260428125804.GA921372@pevik>
+References: <20260427115941.31945-1-wegao@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-References: <69f05e59.7b0a0220.32d441.7979@mx.google.com>
-Content-Language: en-US
-From: Sachin Sant <sachinp@linux.ibm.com>
-In-Reply-To: <69f05e59.7b0a0220.32d441.7979@mx.google.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: SkOq_SGMind-fcoz-Wvl6dyz16-6Iayy
-X-Authority-Analysis: v=2.4 cv=Ft81OWrq c=1 sm=1 tr=0 ts=69f0ae11 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=7ykl0th9h5gsoFEAXRAA:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: SkOq_SGMind-fcoz-Wvl6dyz16-6Iayy
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI4MDExOCBTYWx0ZWRfXx+CZP5IyoqY7
- zTbMWlUKnFKkklime95ck8O8V1RUyda3LorulpSLdeFnDj1sqb5B5qtzXlVk/C52RtoXf5+SM3b
- qbw3W8L5zrPjTK1OWze1zilnZy7Cm7tG5umsZleADh6XlSaWV3/4rOPb+v2FtNg405bcf6LpRO0
- KFS397vQjfH85IuyUtl9hnxzKTK0GRt7dOwDAbR+cWW8dOB8o7OfS3v/QH1bPiW55o4aHX4bpko
- N0l1int4xCxq7qP5O5dFycvgYOt9DGnlBTXNtVsmTJXFWM0NineSpAkGSfuntVLZyI73EqcFwui
- FON82g0Fs1OoZoT4UGKEzR31x9UfV0ejB9zpcQLcoxzjmq9U57GKrs7xB3KSiwzQUg5Dcfa2Ris
- D2i3l/V32xIR3gAGsp/ehjcH9MH4t80QDLo0Gn38V5qcpIiCGbKn27qbvVwDN7e1DLjkok41NHY
- U95AJJzeG/12D6PZFnw==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-28_04,2026-04-28_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 spamscore=0 impostorscore=0
- clxscore=1015 malwarescore=0 phishscore=0 suspectscore=0 adultscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2604280118
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260427115941.31945-1-wegao@suse.com>
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ RCPT_COUNT_FIVE(0.00)[5]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: D60D45BD2E
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/2] doc: generate CVE catalog documentation
+Subject: Re: [LTP] [PATCH v1] mmapstress06: TCONF on systems without swap
+ space
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,107 +119,86 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Li Wang <liwang@linux.dev>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi all,
 
+> mmapstress06 is designed to stress the mfile_swap kernel primitive, which
+> manages shared anonymous memory. On architectures with large pages (like
+> 64KB on ppc64le), the test's hardcoded request for 32769 pages results
+> in a ~2GB mapping. So in suse test system configured with 2GB of RAM and
+> no swap space, the test will fails with following information:
 
->> Add a Sphinx builder hook to parse runtest/cve and generate a
->> comprehensive CVE catalog in a single documentation file.
->>
->> The implementation:
->> - Parses runtest/cve to extract CVE IDs, test names, and options
->> - Generates a single CVE catalog file (_static/cves.rst) containing:
-> Please use just 'cve.rst' instead of 'cves.rst'. The plural is not
-> providing any info here.
-Sure, will change the name.
->> +def generate_cve_catalog(_):
->> +    """
->> +    Generate CVE catalog in a single file. Parse runtest/cve file and
->> +    generate documentation with links to CVE databases and test sources.
->> +    Similar to test_catalog, creates a single _static/cves.rst file with
->> +    all CVE information.
->> +    """
->> +    output = '_static/cves.rst'
->> +    runtest_cve = '../runtest/cve'
->> +
->> +    # Parse runtest/cve file
->> +    cve_data = {}
->> +    cve_pattern = re.compile(r'^(cve-(\d{4})-\d+)\s+(\S+)(?:\s+(.*))?$')
-> Do we need a regexp for this? The runtest file is well defining the
-> following structure:
-Yeah, we may not need a regexp here.
->
->    <cve-id> <binary> <arg0> <arg1> ..
->
-> We only need to split lines which are not starting with # char,
-> considering space as separator.
-got it. Will include this change in the next version.
->> +
->> +        text.extend([
->> +            f'This test reproduces the vulnerability described in {cve_id}.',
->> +            'The test verifies that the system is properly patched against',
->> +            'this known security vulnerability.',
->> +            '',
->> +            f'* **CVE Year:** {cve_info["year"]}',
->> +            f'* **Test Command:** {test_cmd}',
->> +            '',
->> +            '.. raw:: html',
->> +            '',
->> +            '    <hr>',
->> +            '',
->> +        ])
-> All this text is redundant and occupying space for no reason.
-> Also I'm not sure about this approach, now we have tests list duplication
-> inside the documentation.
->
-> What about generating only a simple reference table? There are only 3
-> information we need: CVE ID, test binary, year.
->
-> | ID | Test name | Year |
-> -------------------------
-> | .. |    ..     |  ..  |
->
-> etc..
-Okay. Do we need year in the column since the CVE name also has year.
-For cve.rst, I implemented the same logic as tests.rst.
+> mmapstress06: errno = 12; large mmap failed
+> for this test to run, it needs a mmap space of
+> 32769 pages
 
-A separate entry for CVE catalog.
-Once a user clicks on this option it will expand with a list of 
-individual CVE pages
-in the left pane. Each entry follows the following format
+> The failure occurs because the 2GB request cannot be fulfilled within
+> the 2GB RAM limit without swap backing. Since the test specifically
+> intends to exercise swap-related logic (mfile_swap), it should be skipped
+> with TCONF when the system lacks swap space.
 
-<CVE ID> ( <Test Name> )
+> Signed-off-by: Wei Gao <wegao@suse.com>
+> ---
+>  testcases/kernel/mem/mmapstress/mmapstress06.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 
-Based on review comments how should the page look like?
+> diff --git a/testcases/kernel/mem/mmapstress/mmapstress06.c b/testcases/kernel/mem/mmapstress/mmapstress06.c
+> index 37b7edc84..54b5febbf 100644
+> --- a/testcases/kernel/mem/mmapstress/mmapstress06.c
+> +++ b/testcases/kernel/mem/mmapstress/mmapstress06.c
+> @@ -51,6 +51,8 @@ void ok_exit();
 
-A separate entry for CVE catalog.
-Once a user clicks on this option it will display the CVE list in 
-tabular format
-sorted by year. The table will follow (assuming Year to be retained)
+>  #define ANON_GRAN_PAGES_MAX	(32U)
 
-| ID | Test name | Year |
--------------------------
-| .. |    ..     |  ..  |
+> +#include "tst_memutils.h"
+> +
+>  extern time_t time(time_t *);
+>  extern char *ctime(const time_t *);
+>  extern int atoi(const char *);
+> @@ -74,6 +76,12 @@ int main(int argc, char *argv[])
+>  		(void)fprintf(stderr, "usage: %s sleep_time\n", argv[0]);
+>  		anyfail();
+>  	}
+> +
+> +	if (tst_available_swap() <= 0) {
+> +		tst_resm(TCONF, "Test requires swap space to exercise mfile_swap logic");
+Why to require swap for the test instead of checking for ENOMEM later?
 
+> +		tst_exit();
+nit: I'd use tst_brkm() although it has ugly "Remaining cases broken" message as
+it will be more obvious when doing rewrite.
 
-Test name will point to an entry in Test catalog.
-No individual pages required for each CVE.
+> +	}
 
-Can you confirm?
-> There's no need to have a direct link to the CVE, since we already pointing
-Okay. I can make this change. I followed the earlier
+How about this? (with cleanup of ugly printf).
 
-Thanks for the review.
+Kind regards,
+Petr
 
--- 
-Thanks
-- Sachin
-
-
++++ testcases/kernel/mem/mmapstress/mmapstress06.c
+@@ -89,10 +89,12 @@ int main(int argc, char *argv[])
+ 	    (mmapaddr, (ANON_GRAN_PAGES_MAX * NMFPTEPG + 1) * pagesize,
+ 	     PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, 0,
+ 	     0) == (caddr_t) - 1) {
+-		ERROR("large mmap failed");
+-		printf("for this test to run, it needs a mmap space of\n");
+-		printf("%d pages\n", (ANON_GRAN_PAGES_MAX * NMFPTEPG + 1));
+-		return 1;
++		if (errno == ENOMEM) {
++			tst_brkm(TCONF, NULL, "not enough memory or swap for mmap() %d pages",
++					 ANON_GRAN_PAGES_MAX * NMFPTEPG + 1);
++		}
++
++		tst_brkm(TBROK | TERRNO, NULL, "mmap() failed");
+ 	}
+ 	(void)sleep(sleep_time);
+ 	(void)time(&t);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
