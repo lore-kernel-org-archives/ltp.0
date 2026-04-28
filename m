@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A1E3FF8868
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 14:43:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38B6DFF885A
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 14:44:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BAFF93E2D6E
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 16:43:21 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id E7CF93E49FB
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 16:44:39 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4E6283E1A46
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:43:03 +0200 (CEST)
-Received: from mail-dy1-x1341.google.com (mail-dy1-x1341.google.com
- [IPv6:2607:f8b0:4864:20::1341])
+ by picard.linux.it (Postfix) with ESMTPS id 34AEB3C66CA
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:44:21 +0200 (CEST)
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com
+ [IPv6:2607:f8b0:4864:20::f44])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D1F0D200049
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:43:02 +0200 (CEST)
-Received: by mail-dy1-x1341.google.com with SMTP id
- 5a478bee46e88-2b4520f6b32so16554021eec.0
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 07:43:02 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 79038600350
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:44:20 +0200 (CEST)
+Received: by mail-qv1-xf44.google.com with SMTP id
+ 6a1803df08f44-8a3342d301aso111346526d6.2
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 07:44:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1777387381; x=1777992181; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1777387459; x=1777992259; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=1BkMryCuD7eVQ7/jRjnQsS0SmIwK5ZCUPHNY3GiT03I=;
- b=Tus0CVA9a9ZuiqMWXsGtVRhZayJyht4ts0fr3dTrwvHqIMH1BC98lUDpL+EQWe8eBS
- iZguaq7g9iOwhmho7v2PGY2BBYdDk/Dn6y9qcEDxkFXVX1O9ScfdFUpFTnaZhTqWKHHy
- /Ref58ZZlwoZs9XSY0eTKeLHPtsPHs6V1c+cnBprh2WbWHoTybFl53P1J42HluUGAsws
- J+pP/6tnO6fUApCh6Y3gAFibj0iYcS+8BUzjPRd9BSktmocBcnGfpU+5hYCo9SlGxJD5
- QdgmV1ctgClvRXu39UGyOmM4IyetnsLZQJSxLgbT0RbbkMB5oA8/Mzqn+ifUhjiuoAYL
- R48A==
+ bh=tBqeDaQfRj6Ez/XFff7uZLqqqCbzFLjmt/cgm4UQs+M=;
+ b=J6YsXzUfjgbw7AnXXwL6zRXBYDMfZO8NRg/RDupk+LsgZD7haLRsy0xexelh2+jFuU
+ xIF1aUm/CIFdQ2wAmNO9gKoeV4BQeybPNHFaYe9XYSnwtVLCE771JxWBSnMaV4aNb65c
+ viIOcSIFJXB4PInX5g87QMaUYwmLrOf8x0L2mj7PWM9D2yuJu3FliTK3/wCpPy6L8mK2
+ t+LXeVSr0aKm3fcdoOFVShnGmeKphDPtICJ5wdS7xk0AuU1nr3ONemtIFUgZO/CBqt7T
+ KoT2zMnvEzju7SZEGY0gj0b1J+Ecu6ie13wYwdxNx+OIKKWUaNw1OUNAw5LA6xDX8YKf
+ pFzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1777387381; x=1777992181;
+ d=1e100.net; s=20251104; t=1777387459; x=1777992259;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=1BkMryCuD7eVQ7/jRjnQsS0SmIwK5ZCUPHNY3GiT03I=;
- b=SnEghNtGjcIw5aR5C0kJEg+n2VMX70t33nGKqaLmPgEp4A7BjVqLOGsExMCpLHWDSw
- lyLqMVKGJa1TlJ76g4jSOzxUeCEOwoR6kiJS30E+KfSWDH3Kqi5pV8EqJ6uEnoLfYLln
- QPYdM+0gJ0IPuqsUNPAtjTY5j3mpgThSzs+5EXwQmNpwIeQaPBIGi25gYzEEQUA6vPEq
- eT4XsrZxzpt16dtEBHHi12fCDw0cA1olPhKJCJt0KrBMBVn0LUX5NOUdpc38XS1SLYjW
- a5QzixackP70Jji7ReB/QhRoMjYfx667YZORAub8eYRB9mkny8HN799YD2n2MBTjTb9Q
- Q8Ag==
-X-Gm-Message-State: AOJu0Ywdq9nQcvm9vJtkYUI6hJgW+tJILt40/rUeu1XXG0royEEK1Fi9
- O8U7/uvOk8UmVLx8JnZHcIBV9gpPADkS2b0H48IELHe/brMkeyC/vgBW
-X-Gm-Gg: AeBDietV1D+9PNBMNKUKde9ab0sm3z5odYUIBTF52eiW662HzLU1XE25Yex7hxyRDo4
- XriNDZmsKeehaSxIAX5jm9d+iH4aabZNdUQmmB2sEyYoUNOvLI5kXptCfm8E7pTEctmJ0OftQiV
- 7pvvsC7iB7zlg4CaXAtUpoh2JNhQwLjIqkgzxd0s5Ik2wUBS6WtDtXIe6gUSQCl31nStmzyngLv
- NudpQRl4KR8tX/h72bNyK88xmfvYQ/YK/Phi/PZaYurmXNn+MSzSgHDbJX/sUKCLAw2/y6QVCnM
- 8iWKO0FPUFqWVEqFb1c0nlldsVBJQPVFmG1TxJfAsPFqDbV7qfUzDkRLngOoOi7/BDnFhZ7oSJL
- AbPxuxWaI8+ue5sVha1xYnfpVV5oSc8ToW4VF6lw28Ydpz4XKvOoJLrSfeoubNFp887BkfXXCfc
- 0ajLgqDUqJnZIfU7uPOV0hsHU8uC2tfjRU41nVNZ5VxBsaB/msZ3Awc0Ze8TRrrNjXAB0M/KWne
- BAShHZoMdcXh8J5g0kHmZ2wyOE4pLhlaGuSCApxQOrYtUA7yHJS8rZHwaiceQ==
-X-Received: by 2002:a05:7300:fd0d:b0:2ea:d965:a4b9 with SMTP id
- 5a478bee46e88-2ed0a03466amr1708437eec.7.1777387380940; 
- Tue, 28 Apr 2026 07:43:00 -0700 (PDT)
+ bh=tBqeDaQfRj6Ez/XFff7uZLqqqCbzFLjmt/cgm4UQs+M=;
+ b=EcdP6v/4Kqvoa0Sd/xzkk3753af150hcTB0VFDREsHgCxKngAIbWXd8NSFc64izKM2
+ EBFANTJM+UszCl9F6F3P4H15s4PnR8MMCAk2ChpCcgovRGEnxP62MG1zIPACPrNegrSM
+ 2P6iSEKBRnmNU0bn0JseZTzRVf7XAWkoz9Pe0bYjJOsFlUW0bvDjjCvO6ehSZS47dobU
+ Alw7tTlWak8E1jCfrZfblL8Aa7IAiYHzTPerUfbldrqndyrlwXROYK1UkXyXrSpw7E7i
+ 3d7IAQpX5RsomKUBi9G+xofFPYMaGK0NAfYwyksS8vZTPthPjIYt12vr8P7iukIQxVW1
+ dJiA==
+X-Gm-Message-State: AOJu0YxNBFGtqSm6pG/UOXL0VksTfYzgQGgC48wp2ta/UWwQVIdOMA0G
+ r/Ru2GLpdIldLSxrwr0kVW3yPe6uSNfP3p229eZhB5R7xtPogmYNvEPY
+X-Gm-Gg: AeBDietkzNdzv0kfj38jf+uNBA/UgB24Ojd2j6SWaEmuiYYXFOzQJfXSa9zSKiKFXI2
+ JQP0yeJ8MbQOgNgtsw+P6UzGRqul0ezuj7BeTS2ll3D1fwL/XvAF6oGRJKOtWpSYrW8GPyrr8+v
+ xFc4o/hkBS6lWhEVAvHeRGmSQ3ha4kr2ECNXBANFLG+g4avk8YZmlAfpG1rxCYXmv4n/7xBKtMu
+ DdA8qFqyJAFZcjRwAe+mUv9f92kpTOEnuqnAU1Avm4WQcPhizs/GECrz0yI0ZrotBEYOYajQuIL
+ J0+Y7NY5+zIFPmF7UCN/hkntP0iNJPM/W66rHd1pme2CZngBtEka7UKU2zSmsbfzOmtpPdm3XgL
+ 7kEK0dLfYbGm4f7jmea5ghG9GRCGnB5ycs1HwmDCyHyaSt02R8HbIiZWWZiKO8lKBMOGNnva/d5
+ yI5ocQ5I70eTi+AfE4ewaSgodyJ51bUyZbpdWqZcugoBiSW4AH/+hfFS3PA4N5uebKK00BBPrHe
+ T/ZJkOg67go5o3wCkWXN53pcv+AsBUgd57cwazPM9PhNhmwoO8=
+X-Received: by 2002:ad4:5bc2:0:b0:8b1:f2b7:cfb3 with SMTP id
+ 6a1803df08f44-8b3e2fff731mr51703756d6.20.1777387458904; 
+ Tue, 28 Apr 2026 07:44:18 -0700 (PDT)
 Received: from
- runnervmhkfpo.qpvj1weuju0e1kbcccd5wfpkkd.yx.internal.cloudapp.net
- ([57.151.143.178]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-2ed09dd953asm2365107eec.0.2026.04.28.07.43.00
+ runnervmhkfpo.ih4hag31ne3evk1eddqqqnr0uc.cx.internal.cloudapp.net
+ ([48.211.210.123]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8b3e2976bcbsm22296936d6.36.2026.04.28.07.44.18
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 28 Apr 2026 07:43:00 -0700 (PDT)
+ Tue, 28 Apr 2026 07:44:18 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 28 Apr 2026 14:42:59 +0000
-Message-ID: <20260428144259.3779-1-linuxtestproject.agent@gmail.com>
+To: Martin Doucha <mdoucha@suse.cz>
+Date: Tue, 28 Apr 2026 14:44:17 +0000
+Message-ID: <20260428144417.4093-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260428-fix_clock_settime_helper-v2-1-26cce3b7d706@suse.com>
-References: <20260428-fix_clock_settime_helper-v2-1-26cce3b7d706@suse.com>
+In-Reply-To: <20260428133233.28050-1-mdoucha@suse.cz>
+References: <20260428133233.28050-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] clock_settime: use POSIX runtime detection for
- CLOCK_MONOTONIC
+Subject: Re: [LTP] aio_cancel: Fix incorrect strerror() usage
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,41 +92,29 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
-
-On Tue, 28 Apr 2026 14:24:50 +0200, Andrea Cervesato wrote:
-> clock_settime: use POSIX runtime detection for CLOCK_MONOTONIC
-
-> +++ b/testcases/open_posix_testsuite/include/clock.h
-> @@ -0,0 +1,23 @@
-> +/*
-> + * Copyright (c) 2026, Linux Test Project
-> + * SPDX-License-Identifier: GPL-2.0-or-later
-> + */
-
-New Open POSIX testsuite headers should carry a "Created by: name <email>"
-line and a brief description of the file's purpose in the copyright block,
-consistent with the rest of the tree (e.g. helpers.h). Please add both.
-
-[...]
-
----
-Note:
-
-Our agent completed the review of the patch. The full review can be found at:
-https://patchwork.ozlabs.org/project/ltp/list/?series=501837
-
-The agent can sometimes produce false positives although often its findings
-are genuine. If you find issues with the review, please comment this email
-or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgTWFydGluLAoKLS0tIFtQQVRDSCAxLzJdIC0tLQoKT24gMjAyNi0wNC0yOCwgTWFydGluIERv
+dWNoYSB3cm90ZToKPiBhaW9fY2FuY2VsOiBGaXggaW5jb3JyZWN0IHN0cmVycm9yKCkgdXNhZ2UK
+ClRoaXMgaXMgZml4aW5nIGEgcmVhbCBidWcgYnV0IGJvdGggcGF0Y2hlcyBpbiB0aGlzIHNlcmll
+cyBhcmUgbWlzc2luZwpGaXhlczogdGFncy4KCi0tLSBbUEFUQ0ggMi8yXSAtLS0KCk9uIDIwMjYt
+MDQtMjgsIE1hcnRpbiBEb3VjaGEgd3JvdGU6Cj4gYWlvX2NhbmNlbF82LTE6IFJld3JpdGUgdGVz
+dAoKPiArCWlmIChncmV0ICE9IEFJT19DQU5DRUxFRCkgewo+ICsJCXByaW50ZihUTkFNRSAiIFVu
+ZXhwZWN0ZWQgYWlvX2NhbmNlbCgpIHJldHVybiB2YWx1ZTogJXNcbiIsCj4gKwkJCXN0cmVycm9y
+KGdyZXQpKTsKCnN0cmVycm9yKCkgZXhwZWN0cyBhbiBlcnJubyB2YWx1ZTsgQUlPX0NBTkNFTEVE
+LCBBSU9fTk9UQ0FOQ0VMRUQsIGFuZApBSU9fQUxMRE9ORSBhcmUgbm90IGVycm5vIHZhbHVlcyAo
+dGhleSBhcmUgMCwgMSwgMiBvbiBMaW51eCwgbWFwcGluZyB0bwoiU3VjY2VzcyIsICJPcGVyYXRp
+b24gbm90IHBlcm1pdHRlZCIsICJObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5IikuClVzZSAiJWQi
+IHRvIHByaW50IHRoZSByYXcgaW50ZWdlciBpbnN0ZWFkLgoKUHJlLWV4aXN0aW5nIGlzc3VlcyBu
+b3RpY2VkIGluIHRoZSBzdXJyb3VuZGluZyBjb2RlIChub3QgaW50cm9kdWNlZApieSB0aGlzIHBh
+dGNoKToKCi0gNS0xLmM6NzAsIDctMS5jOjU2IOKAlCBuYW5vc2xlZXAoKSB1c2VkIGZvciBzeW5j
+aHJvbml6YXRpb24gaW4gYQogIHBvbGxpbmcgbG9vcCAoc2xlZXAtYmFzZWQgc3luYykuCgotLS0K
+Tm90ZToKCk91ciBhZ2VudCBjb21wbGV0ZWQgdGhlIHJldmlldyBvZiB0aGUgcGF0Y2guIFRoZSBh
+Z2VudCBjYW4gc29tZXRpbWVzCnByb2R1Y2UgZmFsc2UgcG9zaXRpdmVzIGFsdGhvdWdoIG9mdGVu
+IGl0cyBmaW5kaW5ncyBhcmUgZ2VudWluZS4gSWYgeW91CmZpbmQgaXNzdWVzIHdpdGggdGhlIHJl
+dmlldywgcGxlYXNlIGNvbW1lbnQgdGhpcyBlbWFpbCBvciBpZ25vcmUgdGhlCnN1Z2dlc3Rpb25z
+LgoKUmVnYXJkcywKTFRQIEFJIFJldmlld2VyCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBz
+Oi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
