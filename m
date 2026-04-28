@@ -4,103 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38D46FF8868
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 09:39:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EE46FF8868
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 09:43:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C142D3E28A8
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 11:39:13 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 3266C3E49E5
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 11:43:56 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0FD063E2532
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 11:38:52 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 46EB23E2532
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 11:43:38 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 647FB10009AB
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 11:38:51 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2B5852009B7
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 11:43:35 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E27395BD3F;
- Tue, 28 Apr 2026 09:38:49 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B33DF5BD22;
+ Tue, 28 Apr 2026 09:43:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1777369130;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1777369414; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yjqgayUPQEeGoMOFjtpioDrGgKV02lokL1uQYKy46+c=;
- b=yU9AUCw21ceLSZiDjXnhgy49E5GTZUtQYAGU0EPKL2UPtwoE8ly9QtAf5sz/JQu21PLUWX
- l/CIXZfu7zS/P6C2FsV71CuJ+XYP3SPZuTjc8eSf1Vuxu36d9RxNiC1r9ZAeBy51X7PXLo
- k+Llnt2lTAiDsBFNWuQbkEJSA4uKq1A=
+ bh=n6K5K58H7lM1ZU88QaXF0/1D2FB+L+Cr4EAIVCE2uqM=;
+ b=ea1Ft24HgCLI3rARrLJKOKBH1Pp9MECszst06LbtG1HyyeFpZ4b2hiAEjmJZxSN0iaFzT1
+ Q9g8NgriG5rkO9j01/tXMTVZ/nqkoRDPlczCAsfePDRmWJhYwK7m0X5/OZdNgjODUQUMng
+ VUpIH/LS/J8/kDJJ91/e46uXHRiGhzs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1777369130;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1777369414;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yjqgayUPQEeGoMOFjtpioDrGgKV02lokL1uQYKy46+c=;
- b=zAmTECA3LvYiFCRQOLj82NjoIg3FLwDVdztzDo7JymUTa3IwI74i048bZjwr/yLd37yt9O
- 4qCKW2PNKHsNDwBg==
+ bh=n6K5K58H7lM1ZU88QaXF0/1D2FB+L+Cr4EAIVCE2uqM=;
+ b=AYRLxJBmqlRzVEolvEbFvR5mZLw5O5wF3O5qYHivMpyUjEMzO6xkOw6kgLTM5vyjqNoYH6
+ mrtuErT+kZix/RBQ==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1777369129;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1777369414; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yjqgayUPQEeGoMOFjtpioDrGgKV02lokL1uQYKy46+c=;
- b=gh85cZuwh+nSdwsEWQQuVp6w7hN0SbX8xG4pV6xW6ffWhI4tetln2PiAnWeGu44mhwdWCW
- iYpVHJ7+f3wCbgFPhbEcpQUBhXUdxTjl0F6zdRXSKqosCrGtq7yd11xViowZ91tAxcqUwP
- o6h/+sSiSm5uRN3OE0I1uZimtsK+ec4=
+ bh=n6K5K58H7lM1ZU88QaXF0/1D2FB+L+Cr4EAIVCE2uqM=;
+ b=ea1Ft24HgCLI3rARrLJKOKBH1Pp9MECszst06LbtG1HyyeFpZ4b2hiAEjmJZxSN0iaFzT1
+ Q9g8NgriG5rkO9j01/tXMTVZ/nqkoRDPlczCAsfePDRmWJhYwK7m0X5/OZdNgjODUQUMng
+ VUpIH/LS/J8/kDJJ91/e46uXHRiGhzs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1777369129;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1777369414;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yjqgayUPQEeGoMOFjtpioDrGgKV02lokL1uQYKy46+c=;
- b=fRSq1E7Duxhl7yqTeyKIbD2Z3ToPpzer49MIRzO81leR+iPBOjZ6JjK5jzMsoJUrTSMe1a
- 20l1fOPpHC8VXUAw==
+ bh=n6K5K58H7lM1ZU88QaXF0/1D2FB+L+Cr4EAIVCE2uqM=;
+ b=AYRLxJBmqlRzVEolvEbFvR5mZLw5O5wF3O5qYHivMpyUjEMzO6xkOw6kgLTM5vyjqNoYH6
+ mrtuErT+kZix/RBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B5CC593B0;
- Tue, 28 Apr 2026 09:38:49 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F8FF593B0;
+ Tue, 28 Apr 2026 09:43:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id /nNSICmA8GmSfAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 28 Apr 2026 09:38:49 +0000
-Date: Tue, 28 Apr 2026 11:38:48 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it, Martin Cermak <mcermak@redhat.com>
-Message-ID: <20260428093848.GA892289@pevik>
-References: <20260423084123.657690-1-pvorel@suse.cz>
- <20260423084123.657690-6-pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id TfPUHUaB8GlSAgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 28 Apr 2026 09:43:34 +0000
+Date: Tue, 28 Apr 2026 11:43:30 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <afCBQoHRZ3cqCsGe@yuki.lan>
+References: <20260423120309.18049-1-chrubis@suse.cz>
+ <69f064fa.5d0a0220.14ff24.d474@mx.google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260423084123.657690-6-pvorel@suse.cz>
-X-Spamd-Result: default: False [-2.00 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- SUSPICIOUS_RECIPS(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <69f064fa.5d0a0220.14ff24.d474@mx.google.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- TAGGED_RCPT(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_TLS_ALL(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
- RCPT_COUNT_FIVE(0.00)[5]; FROM_HAS_DN(0.00)[];
- FREEMAIL_CC(0.00)[suse.cz,gmail.com,suse.com];
+ FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 5/6] lib: Merge functionality of LTP_QUIET into
- LTP_REPRODUCIBLE_OUTPUT
+Subject: Re: [LTP] [PATCH v2 0/8] Add more epoll tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,70 +107,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+Hi!
+> The patch-set is generally ok, but there are multiple issues on
+> the Copyright part. Please take a look at that because sometimes
+> it shows Linux Test Project copyright and sometimes Cyril Hrubis
+> copyright.
 
-any change I'd get your explicit ack to this change
-(your Acked-by: or Reviewed-by: ?). It should be safe for Valgrind, but better
-you to double check.
+There are couple of other things to fix, mainly the failure pointed out
+by Li. I will fix all these and send v3.
 
-https://lore.kernel.org/ltp/20260423084123.657690-6-pvorel@suse.cz/
-https://patchwork.ozlabs.org/project/ltp/patch/20260423084123.657690-7-pvorel@suse.cz/
-
-> LTP_REPRODUCIBLE_OUTPUT=1 environment variable was added in 5894abc5f to
-> help valgrind to use LTP for testing. It discards the actual content of
-> the messages printed by the test (removes everything after printing
-> TINFO/TPASS/TFAIL/... flag).
-
-> Later LTP_QUIET=1 was added which suppresses printing TCONF, TINFO, and
-> TDEBUG messages.
-
-> Valgrind project uses both variables but no need to handle them
-> separately. Therefore merge functionality of LTP_QUIET into
-> LTP_REPRODUCIBLE_OUTPUT.
-
-> LTP_QUIET was not even documented in HTML doc.
-
-> Also fix help description, because TWARN was not skipped, although doc
-> claimed to do.
-
-> Implements: https://github.com/linux-test-project/ltp/issues/1306
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Changes v4->v5:
-> * Remove wrongly stated TWARN (error on code on master)
-> * Fix missing new lines in help (AI)
-> * Use single fprintf (Li)
-
->  doc/users/setup_tests.rst |  5 +++--
->  lib/tst_test.c            | 16 +++++-----------
->  2 files changed, 8 insertions(+), 13 deletions(-)
-
-> diff --git a/doc/users/setup_tests.rst b/doc/users/setup_tests.rst
-> index 6f1d996e18..491a5b003a 100644
-> --- a/doc/users/setup_tests.rst
-> +++ b/doc/users/setup_tests.rst
-> @@ -43,8 +43,9 @@ users.
->         Shell language: ``TST_NEEDS_DEVICE=1``.
-
->     * - LTP_REPRODUCIBLE_OUTPUT
-> -     - When set to ``1`` or ``y`` discards the actual content of the messages
-> -       printed by the test (suitable for a reproducible output).
-> +     - When set to ``1`` or ``y`` uppress printing TCONF, TINFO and TDEBUG
-Also AI found missing 's': s/uppress/suppress/
-I'll fix that before merging.
-
-Kind regards,
-Petr
-
-> +       messages and discards the actual content of the other messages printed
-> +       by the test (suitable for a reproducible output).
-...
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
