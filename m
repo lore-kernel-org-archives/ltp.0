@@ -4,82 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F14EFF8868
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 14:42:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A1E3FF8868
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 14:43:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1EC7E3E4923
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 16:42:00 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id BAFF93E2D6E
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 16:43:21 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E08373E1A46
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:41:40 +0200 (CEST)
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com
- [IPv6:2607:f8b0:4864:20::744])
+ by picard.linux.it (Postfix) with ESMTPS id 4E6283E1A46
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:43:03 +0200 (CEST)
+Received: from mail-dy1-x1341.google.com (mail-dy1-x1341.google.com
+ [IPv6:2607:f8b0:4864:20::1341])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 885BA600714
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:41:40 +0200 (CEST)
-Received: by mail-qk1-x744.google.com with SMTP id
- af79cd13be357-8dbbc6c16b2so1451832185a.0
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 07:41:40 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D1F0D200049
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:43:02 +0200 (CEST)
+Received: by mail-dy1-x1341.google.com with SMTP id
+ 5a478bee46e88-2b4520f6b32so16554021eec.0
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 07:43:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1777387299; x=1777992099; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1777387381; x=1777992181; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=G7RzkY1Zv30PEa2WknaLkTyq2OL1lc41K3rnz7lct6M=;
- b=Uqf2CZZ2JiY/Yw7VeTXv+6iNW4iX8Ubvz3YCRXWGFdJg/Tb8y+ZWVRt/SxbpuTv8uW
- ifgkam3IBw9swMshF1O4EXfcx5M8N+IFygzMW3Zyh2KJzGr6IbSZqp6ue3g/RAiK0x4Z
- DtucxjZUU7o23xw5eSuxUwGccjHq82DfHriGYtNu2KphZUOeLXkYH655L4ADtdLilaxD
- 8EIdU5Us/oxIxVWIKoxIJCBYETeLvA7gNT3JoeVGalIByfSbgvkt0yZT2krjmekJahvr
- B7K2cEaSUn1E+3JO9vE9YnVJT0HrgCkpjJ8mAZhhxgyklbBZCodeer3locXK2aes30jf
- fjXg==
+ bh=1BkMryCuD7eVQ7/jRjnQsS0SmIwK5ZCUPHNY3GiT03I=;
+ b=Tus0CVA9a9ZuiqMWXsGtVRhZayJyht4ts0fr3dTrwvHqIMH1BC98lUDpL+EQWe8eBS
+ iZguaq7g9iOwhmho7v2PGY2BBYdDk/Dn6y9qcEDxkFXVX1O9ScfdFUpFTnaZhTqWKHHy
+ /Ref58ZZlwoZs9XSY0eTKeLHPtsPHs6V1c+cnBprh2WbWHoTybFl53P1J42HluUGAsws
+ J+pP/6tnO6fUApCh6Y3gAFibj0iYcS+8BUzjPRd9BSktmocBcnGfpU+5hYCo9SlGxJD5
+ QdgmV1ctgClvRXu39UGyOmM4IyetnsLZQJSxLgbT0RbbkMB5oA8/Mzqn+ifUhjiuoAYL
+ R48A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1777387299; x=1777992099;
+ d=1e100.net; s=20251104; t=1777387381; x=1777992181;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=G7RzkY1Zv30PEa2WknaLkTyq2OL1lc41K3rnz7lct6M=;
- b=AhxzC/l//361/jzxT6dff1T+8N2VufED+m+etKe2u3j52lG3zuLonalRXpPDjmXcPo
- rvxtnVHXvxUSP2HUe85xSSHkJsMKzHO3t22alYULBDAV3fNt5WOUH+JTQcyhLIM4mld4
- NvVBIno8Uqi2sqgEgrjf5ETw1troUBBB1dPDAD/V3G14ZUP+KIMwQY0ou2ulm3CfJIdc
- mVStBIZ3VxxYIxrC0HCH/h82uPwuCr+VW6sKoVDpYud8lhWwXjxHp+sadh1EF7zqQ2IU
- BwGvbC+ngOYa9IU0TS9/+C8b3vVEqhPL/DVcSEjM31/MfXudcyIp/FHegoXjORwm5EmL
- ccng==
-X-Gm-Message-State: AOJu0YzjBWHSNAI4uHa94aCyleGCDBHd4RL2u6daREGwXoaOyfRaB0xb
- x6GWSTOGjN5LVrj1Tu+tkpb8VK8X+sCY7z/3NlTHboUGErEIYikY17f6
-X-Gm-Gg: AeBDievnkatLP4bm/kWO5WCNRjdajOF14mVxRQVZE0zNqVMHE/6xdGDjzICkTpMIfel
- eVN0ulMRZVEMJfR+farjdMFDE/dRXobJKrvBH4vL5ZcZ0ryVHVt/Yu3ZPTvQR3hHgNDZgS59U5O
- BhVAtVo3PX6NjGSTBTOhvDPkdTfO3zY+XrsjUNW85TYuzozf9jjsaooME2cmcHmZVYYkl/OXJ4Y
- aBBo1qmgNhbaRcQsMqC93l6V2yUfTBRytxt9Q9/p8361HQf1DWByW1mkjZiXNkPlgxZ5mi4Cy7C
- 8369jKqWmuaWrhAULoG9nT9Hzsj10/WbMaR9rGhsLzgTuYQBajYM2SYxmNIDqTCZqF9sTGzHsBZ
- rilji32G/1K5qA6eC+MjrPt5r8wmNX3NZS3rgVge17maz9V4dNAzTRJbrWHnRKD5/9I09DOusYW
- jRN4LyZvUP22D/z4UGHPNkhWCm2ltA6vcmWUsbeWZuPyD3GHNbzplSb0zSs5K4LQDBE3n28Uelb
- i14oohjwXtyimJJbOhosUTPlEDuTsL4ArYcihAyJWA5MpyWgAc=
-X-Received: by 2002:a05:620a:170c:b0:8f1:7ce7:5aff with SMTP id
- af79cd13be357-8f7ccfa6b37mr370830185a.1.1777387299202; 
- Tue, 28 Apr 2026 07:41:39 -0700 (PDT)
+ bh=1BkMryCuD7eVQ7/jRjnQsS0SmIwK5ZCUPHNY3GiT03I=;
+ b=SnEghNtGjcIw5aR5C0kJEg+n2VMX70t33nGKqaLmPgEp4A7BjVqLOGsExMCpLHWDSw
+ lyLqMVKGJa1TlJ76g4jSOzxUeCEOwoR6kiJS30E+KfSWDH3Kqi5pV8EqJ6uEnoLfYLln
+ QPYdM+0gJ0IPuqsUNPAtjTY5j3mpgThSzs+5EXwQmNpwIeQaPBIGi25gYzEEQUA6vPEq
+ eT4XsrZxzpt16dtEBHHi12fCDw0cA1olPhKJCJt0KrBMBVn0LUX5NOUdpc38XS1SLYjW
+ a5QzixackP70Jji7ReB/QhRoMjYfx667YZORAub8eYRB9mkny8HN799YD2n2MBTjTb9Q
+ Q8Ag==
+X-Gm-Message-State: AOJu0Ywdq9nQcvm9vJtkYUI6hJgW+tJILt40/rUeu1XXG0royEEK1Fi9
+ O8U7/uvOk8UmVLx8JnZHcIBV9gpPADkS2b0H48IELHe/brMkeyC/vgBW
+X-Gm-Gg: AeBDietV1D+9PNBMNKUKde9ab0sm3z5odYUIBTF52eiW662HzLU1XE25Yex7hxyRDo4
+ XriNDZmsKeehaSxIAX5jm9d+iH4aabZNdUQmmB2sEyYoUNOvLI5kXptCfm8E7pTEctmJ0OftQiV
+ 7pvvsC7iB7zlg4CaXAtUpoh2JNhQwLjIqkgzxd0s5Ik2wUBS6WtDtXIe6gUSQCl31nStmzyngLv
+ NudpQRl4KR8tX/h72bNyK88xmfvYQ/YK/Phi/PZaYurmXNn+MSzSgHDbJX/sUKCLAw2/y6QVCnM
+ 8iWKO0FPUFqWVEqFb1c0nlldsVBJQPVFmG1TxJfAsPFqDbV7qfUzDkRLngOoOi7/BDnFhZ7oSJL
+ AbPxuxWaI8+ue5sVha1xYnfpVV5oSc8ToW4VF6lw28Ydpz4XKvOoJLrSfeoubNFp887BkfXXCfc
+ 0ajLgqDUqJnZIfU7uPOV0hsHU8uC2tfjRU41nVNZ5VxBsaB/msZ3Awc0Ze8TRrrNjXAB0M/KWne
+ BAShHZoMdcXh8J5g0kHmZ2wyOE4pLhlaGuSCApxQOrYtUA7yHJS8rZHwaiceQ==
+X-Received: by 2002:a05:7300:fd0d:b0:2ea:d965:a4b9 with SMTP id
+ 5a478bee46e88-2ed0a03466amr1708437eec.7.1777387380940; 
+ Tue, 28 Apr 2026 07:43:00 -0700 (PDT)
 Received: from
- runnervmeorf1.net0ibprzlqujb4ppu2xd1znfd.ex.internal.cloudapp.net
- ([64.236.177.100]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-8f7c48c71fesm248077585a.5.2026.04.28.07.41.38
+ runnervmhkfpo.qpvj1weuju0e1kbcccd5wfpkkd.yx.internal.cloudapp.net
+ ([57.151.143.178]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-2ed09dd953asm2365107eec.0.2026.04.28.07.43.00
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 28 Apr 2026 07:41:38 -0700 (PDT)
+ Tue, 28 Apr 2026 07:43:00 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Piotr Kubaj <piotr.kubaj@intel.com>
-Date: Tue, 28 Apr 2026 14:41:37 +0000
-Message-ID: <20260428144138.4068-1-linuxtestproject.agent@gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue, 28 Apr 2026 14:42:59 +0000
+Message-ID: <20260428144259.3779-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260428124629.259405-2-piotr.kubaj@intel.com>
-References: <20260428124629.259405-2-piotr.kubaj@intel.com>
+In-Reply-To: <20260428-fix_clock_settime_helper-v2-1-26cce3b7d706@suse.com>
+References: <20260428-fix_clock_settime_helper-v2-1-26cce3b7d706@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] thermal: add new test group
+Subject: Re: [LTP] clock_settime: use POSIX runtime detection for
+ CLOCK_MONOTONIC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,44 +98,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Piotr,
+Hi Andrea,
 
-On Tue, 28 Apr 2026, Piotr Kubaj wrote:
-> thermal: add new test group
+On Tue, 28 Apr 2026 14:24:50 +0200, Andrea Cervesato wrote:
+> clock_settime: use POSIX runtime detection for CLOCK_MONOTONIC
 
-> +# Copyright (c) 2025, Intel Corporation. All rights reserved.
+> +++ b/testcases/open_posix_testsuite/include/clock.h
+> @@ -0,0 +1,23 @@
+> +/*
+> + * Copyright (c) 2026, Linux Test Project
+> + * SPDX-License-Identifier: GPL-2.0-or-later
+> + */
 
-Year should be 2026 (new file).
-
-[...]
-
-> +	FILE *fp = SAFE_FOPEN("/proc/interrupts", "r");
-> [...]
-> +			if (ptr == endptr)
-> +				tst_brk(TBROK, "CPU %d: interrupt not found", i);
-> +
-> +			if (errno == ERANGE)
-> +				tst_brk(TBROK, "CPU %d: interrupt out of range", i);
-
-Both tst_brk() calls fire before SAFE_FCLOSE(fp). Close fp before calling
-tst_brk() to avoid leaking the file descriptor.
+New Open POSIX testsuite headers should carry a "Created by: name <email>"
+line and a brief description of the file's purpose in the copyright block,
+consistent with the rest of the tree (e.g. helpers.h). Please add both.
 
 [...]
-
-> +		sleep(sleep_time--);
-
-Sleep-based synchronization is not allowed (G2). Replace with a polling
-loop using short yields or TST_RETRY_FUNC.
 
 ---
 Note:
 
-Our agent completed the review of the patch. The full review can be
-found at: https://github.com/linux-test-project/ltp-agent/actions/runs/25059182102
+Our agent completed the review of the patch. The full review can be found at:
+https://patchwork.ozlabs.org/project/ltp/list/?series=501837
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+The agent can sometimes produce false positives although often its findings
+are genuine. If you find issues with the review, please comment this email
+or ignore the suggestions.
 
 Regards,
 LTP AI Reviewer
