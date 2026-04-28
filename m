@@ -4,70 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21C2EFF885D
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 07:51:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DA23FF885A
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 07:53:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C59063E1B4F
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 09:51:39 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D45A13E28A8
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 09:53:33 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 913873CFBA2
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 09:51:19 +0200 (CEST)
-Received: from smtpbgsg1.qq.com (smtpbgsg1.qq.com [54.254.200.92])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 7053D3CFBA2
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 09:53:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 55A3B600B07
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 09:51:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
- s=onoh2408; t=1777362667;
- bh=eKPFEAvhIQbqTeitsC0wkrwle5wT3ZdR3MlOV0wJb4I=;
- h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=Ww02dAYIj67KDb0cypq55m8K7q93FnJy8SBsd3ZdV4ZaRKF4VkE0l7OWpwtMVa5tn
- UoVN/ZEKua9/Jy4Gnifh+bNSHzfcSeOpA1hm8Jec7GStXPUhLBNFqM5rEXwNrI8az+
- raEj1FcWLXH+ggUgKyrnCRvsaUx/ohu716r+L8hU=
-X-QQ-mid: zesmtpgz6t1777362660t03da256b
-X-QQ-Originating-IP: 1akFBkcfo2swFu/hESVV2n332fl+zjAgJ4QNs9Sozns=
-Received: from localhost.localdomain ( [1.85.7.34])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Tue, 28 Apr 2026 15:50:58 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 13918059677018093588
-EX-QQ-RecipientCnt: 6
-From: lufei <lufei@uniontech.com>
-To: ltp@lists.linux.it
-Date: Tue, 28 Apr 2026 15:50:54 +0800
-Message-Id: <20260428075054.105295-1-lufei@uniontech.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20260424020854.96845-1-lufei@uniontech.com>
-References: <20260424020854.96845-1-lufei@uniontech.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 947D31400BCA
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 09:53:13 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A21126A81D;
+ Tue, 28 Apr 2026 07:53:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777362786; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ob4VR6DPI5M4l2hQuO+vb91HT83n+uOoI8gpx+GpBBM=;
+ b=kmSHcwxxQWmT5Q/jHUw9hqlZ2nCRnYU0rdy7q60QqNnYoxlSrF8jKlNeGdt6z1Rsq1sEgj
+ yAe/EieQZUIMFNWmmcT62jU7OsfPPzig+0T9RVTX7eELkYJaYajazgqlfSH3mTOc5rBOF0
+ 0maj0DISIYMDNefddn3SNjkbFzon42U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777362786;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ob4VR6DPI5M4l2hQuO+vb91HT83n+uOoI8gpx+GpBBM=;
+ b=J7Uh+uvCeMJa1i/epKkkXlEj13ZtGc5hAZvRuOyQEnx5+QGdd+rWOlUS/KmFp+kRLUGR0t
+ EZmFbnrR6DupKqAg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=O+KD2XcX;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fBQ8AJiZ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777362785; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ob4VR6DPI5M4l2hQuO+vb91HT83n+uOoI8gpx+GpBBM=;
+ b=O+KD2XcXao9cd1VRoVNfX9GSJdPD/4a4eoroaNgmp7sLEWeW04WYy1sozc5qqAU6BDd+4X
+ Yj4qBOzBgzzpAb0JvbqZVI/+lCOwtzBQN3/jGzGL2Pz1M/dQvPBHNvtoRlQSNQldufP498
+ 3/X9Gs0PURVr5M02XJtcVAqG6lYG8CM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777362785;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ob4VR6DPI5M4l2hQuO+vb91HT83n+uOoI8gpx+GpBBM=;
+ b=fBQ8AJiZKxM3qi2wGw9QRuJP7T7ZoWY6PckAzeIK2rPILD8Mqqe1fK5ZHo5aTz1mG0hP6N
+ LLuHRysMJqSwRjAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 923B5593B0;
+ Tue, 28 Apr 2026 07:53:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id scVlImFn8Gm/EgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 28 Apr 2026 07:53:05 +0000
+Date: Tue, 28 Apr 2026 09:53:19 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: priyama2 <priyama2@linux.ibm.com>
+Message-ID: <afBnbxFLCb4vM39Z@yuki.lan>
+References: <20260429105114.710966-1-priyama2@linux.ibm.com>
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: zesmtpgz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz3a-1
-X-QQ-XMAILINFO: OMM1lJuT3MNKmuye4FBkEbF7EQ6DIqbUAUTGdLsIDPdC2pZzBcRNx/aP
- 9DYh3A7cyrQMmEm0QXkh0tkgJgBhRJ1PheFd7eFG2ZbtYz2ZCNy8RjjIEpujEHSGNEIfexa
- tMKgYF2OOC66Rj43sZAwvAr+H0eReQmv1tGR7UCQ179YQw9cP8WbW0hU6YPFa3D2kKvfWL7
- 8E+/PbJsJ0eICuaz6Ru1CHj69uvCGe4gY/u0UWwvxkk04ZE+C8kuAZYv3oblC5oOV6G9jhz
- afvcdrJEsg41ANyKGWmZeFUsOT967R96sMsBiJAS4o6SRHhf1Rb6QX9So0YGe39447jZIBO
- KC3Ciwp/gQ1jpmprF+QDHT+4S7SYwrA/HGQNcFBo2lFiUUrDKMdfcg4qSP3qY6PHBkS+B8W
- Eqf5aYPAOuA8rMj+T/Hf6AD8/ewZNYEsLAhz2c6q7uyBwPFzRLtNv83H+7tZeh7vweLviMN
- w6WxEY7zDTzRo3TLreq++wdrTvrHp1ROBCFEOlSgE/ZP1XVh/rplAzHL19CChjr2H16GXWn
- 7woKfj9VXRsF/uBloNeApKU6SIeGT8l8UMC9D+UU+l6IcooddOnrtLCC1aWVv/ab9vFM/8h
- TycGKMjhvVnsaYfSrFv+Y6XLxKr5evhsDSn43ris5qr4gVp3HrBuFUZvfv7JRKDoXlG9D2T
- mzr6FB3jP98QfC4ollFfbrowyWBUK5GEfi79knlRueAjoHaU73Z87/HSxGShN5KXY08Boyb
- BU2hTiSJYkNBAkF4LpnFdziRTKNJdfdCc3vaKFnOzos9k9PCOBSlyJMINBcTb0k2HxoL0/V
- omYB4GdsAfSKS2U43YuhDnuMT9vd4ym5xS/9W1AGQ17zLtek11B5zTzRt9Ps1JprTkSAXTm
- DJVpxw6Lvi8TTMQItJ9sCF1IP638LhH/lMGGAQIZS5yBkrD3whrbcsQ7LGuYjoVJaOnS+1M
- AZbf9rt2c9b3rhCqF6ZMPIIuv6CLX8T/wplWhERA47B5b/Fi4YFa7o50CkKSif5NSof2oCC
- 2YOEChni40Ktc/Ef79YVpawUrI3UVUKap46dK0L+NZO0WWI23GyniSI4r0SivjJul3n80ZC
- o9ioZ3kg5N3jPhWBGuvnIM=
-X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
-X-QQ-RECHKSPAM: 0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260429105114.710966-1-priyama2@linux.ibm.com>
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[nvmexpress.org:url,linux-test-project.readthedocs.io:url,linux-test-project.github.io:url,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email,yuki.lan:mid];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: A21126A81D
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6] Rewrite ftrace_regression tests with new C API
+Subject: Re: [LTP] [PATCH] testcases/nvme: Add NVMe device discovery and
+ identification test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,435 +114,340 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lufei <lufei@uniontech.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Rewritten from old shell scripts.
+Hi!
+> Signed-off-by: priyama2 <priyama2@linux.ibm.com>
+> ---
+>  testcases/kernel/device-drivers/nvme/Makefile |  42 ++++
+>  testcases/kernel/device-drivers/nvme/README   | 155 ++++++++++++
+>  testcases/kernel/device-drivers/nvme/nvme01.c | 236 ++++++++++++++++++
+>  3 files changed, 433 insertions(+)
+>  create mode 100644 testcases/kernel/device-drivers/nvme/Makefile
+>  create mode 100644 testcases/kernel/device-drivers/nvme/README
+>  create mode 100644 testcases/kernel/device-drivers/nvme/nvme01.c
+> 
+> diff --git a/testcases/kernel/device-drivers/nvme/Makefile b/testcases/kernel/device-drivers/nvme/Makefile
+> new file mode 100644
+> index 000000000..ace6696f6
+> --- /dev/null
+> +++ b/testcases/kernel/device-drivers/nvme/Makefile
+> @@ -0,0 +1,42 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2024 IBM Corporation
+> +#
+> +# Standalone Makefile for NVMe LTP test suite
+> +
+> +# Compiler and flags
+> +CC		= gcc
+> +CFLAGS		= -Wall -O2 -I/opt/ltp/include
+> +LDFLAGS		= -L/opt/ltp/lib
+> +LDLIBS		= -lltp -lrt
+> +
+> +# Test binaries
+> +TARGETS		= nvme01 nvme02 nvme03 nvme04
+> +
+> +# Build all tests
+> +all: $(TARGETS)
+> +
+> +nvme01: nvme01.c
+> +	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) $(LDLIBS)
+> +
+> +nvme02: nvme02.c
+> +	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) $(LDLIBS)
+> +
+> +nvme03: nvme03.c
+> +	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) $(LDLIBS)
+> +
+> +nvme04: nvme04.c
+> +	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) $(LDLIBS)
+> +
+> +# Install targets
+> +install: $(TARGETS)
+> +	@mkdir -p /opt/ltp/testcases/bin
+> +	@for target in $(TARGETS); do \
+> +		install -m 0755 $$target /opt/ltp/testcases/bin/; \
+> +	done
+> +	@echo "Tests installed to /opt/ltp/testcases/bin/"
+> +
+> +# Clean
+> +clean:
+> +	rm -f $(TARGETS) *.o
+> +
+> +.PHONY: all install clean
 
-ftrace_regression01: regression test for panic bug while using
-userstacktrace, set userstacktrace in loop and check if success.
+We have a buildsystem in LTP, all you need to do is to include the right
+file in the Makefile, do that instead.
 
-ftrace_regression02: for checking signal:signal_generate gives
-2 more fields: grp res.
+> diff --git a/testcases/kernel/device-drivers/nvme/README b/testcases/kernel/device-drivers/nvme/README
+> new file mode 100644
+> index 000000000..6ee5796fe
+> --- /dev/null
+> +++ b/testcases/kernel/device-drivers/nvme/README
+> @@ -0,0 +1,155 @@
+> +NVMe Test Suite for Linux Test Project (LTP)
+> +==============================================
+> +
+> +This directory contains test cases for NVMe (Non-Volatile Memory Express) 
+> +device functionality testing.
+> +
+> +Test Cases
+> +----------
+> +
+> +1. nvme01 - Device Discovery & Identification
+> +   Tests:
+> +   - Detect NVMe controllers
+> +   - Enumerate namespaces
+> +   - Verify PCI enumeration
+> +   - Check driver binding
+> +
+> +2. nvme02 - Namespace Management
+> +   Tests:
+> +   - Create namespaces (various sizes)
+> +   - Delete namespaces
+> +   - Attach/detach namespaces to controllers
+> +   - Resize namespaces
+> +   - Format namespaces (different block sizes: 512B, 4KB)
+> +   - Namespace sharing across controllers
+> +
+> +3. nvme03 - I/O Operations
+> +   Tests:
+> +   - Sequential read/write operations
+> +   - Random read/write operations
+> +   - Mixed workloads
+> +   - Different block sizes (512B, 4KB, 8KB)
+> +   - Queue depth variations
+> +   - Direct I/O vs buffered I/O
+> +
+> +4. nvme04 - Multipath & Redundancy
+> +   Tests:
+> +   - Path failover testing
+> +   - Load balancing across paths
+> +   - Path recovery
+> +   - ANA (Asymmetric Namespace Access) states
+> +   - Controller failover
+> +
+> +Requirements
+> +------------
+> +
+> +Hardware:
+> +- System with NVMe storage device(s)
+> +- For multipath tests: NVMe device with multiple paths configured
+> +
+> +Software:
+> +- Linux kernel with NVMe support (CONFIG_BLK_DEV_NVME=y)
+> +- nvme-cli tools (for namespace management tests)
+> +- Root/sudo privileges
+> +
+> +Building
+> +--------
+> +
+> +From the LTP root directory:
+> +  make -C testcases/kernel/device-drivers/nvme
+> +
+> +Or from this directory:
+> +  make
+> +
+> +Running Tests
+> +-------------
+> +
+> +Individual test execution:
+> +  ./nvme01
+> +  ./nvme02
+> +  ./nvme03
+> +  ./nvme04
+> +
+> +Using LTP runtest:
+> +  runltp -f nvme
+> +
+> +Using runtest file:
+> +  runltp -f /opt/ltp/runtest/nvme
+> +
+> +Test Results
+> +------------
+> +
+> +Tests use standard LTP result codes:
+> +- TPASS: Test passed
+> +- TFAIL: Test failed
+> +- TCONF: Test not configured (e.g., no NVMe device found)
+> +- TBROK: Test broken (setup failure)
+> +- TWARN: Test warning
+> +
+> +Notes
+> +-----
+> +
+> +1. Some tests require specific hardware configurations:
+> +   - nvme02: May require namespace management support
+> +   - nvme04: Requires multipath configuration for full testing
+> +
+> +2. Destructive tests:
+> +   - nvme02 includes namespace creation/deletion which may affect data
+> +   - Always run on test systems or with proper backups
+> +
+> +3. Performance tests (nvme03):
+> +   - Results vary based on hardware and system load
+> +   - Tests measure relative performance, not absolute benchmarks
+> +
+> +4. Root privileges:
+> +   - All tests require root access for device operations
+> +
+> +Test Coverage
+> +-------------
+> +
+> +The test suite covers:
+> +- Basic NVMe device detection and enumeration
+> +- Namespace lifecycle management
+> +- I/O performance characteristics
+> +- Multipath and redundancy features
+> +- Driver and controller state verification
+> +
+> +Known Limitations
+> +-----------------
+> +
+> +1. Namespace management tests may not work on all NVMe devices
+> +   (depends on controller capabilities)
+> +
+> +2. Multipath tests require specific hardware and kernel configuration
+> +
+> +3. Some tests are informational and may show TCONF on systems
+> +   without full NVMe feature support
+> +
+> +Contributing
+> +------------
+> +
+> +When adding new tests:
+> +1. Follow LTP coding standards
+> +2. Use tst_test.h framework
+> +3. Include proper error handling
+> +4. Document test purpose and requirements
+> +5. Test on multiple NVMe device types if possible
+> +
+> +References
+> +----------
+> +
+> +- NVMe Specification: https://nvmexpress.org/specifications/
+> +- Linux NVMe Driver: Documentation/block/nvme.rst
+> +- nvme-cli: https://github.com/linux-nvme/nvme-cli
+> +- LTP Documentation: https://linux-test-project.github.io/
+> +
+> +Authors
+> +-------
+> +
+> +Copyright (c) 2024 IBM Corporation
+> +LTP NVMe Test Suite
+> +
+> +License
+> +-------
+> +
 
-Signed-off-by: lufei <lufei@uniontech.com>
----
- runtest/tracing                               |  4 +-
- .../kernel/tracing/ftrace_test/.gitignore     |  2 +
- .../tracing/ftrace_test/ftrace_regression.h   | 62 ++++++++++++++
- .../tracing/ftrace_test/ftrace_regression01.c | 80 ++++++++++++++++++
- .../ftrace_test/ftrace_regression01.sh        | 83 -------------------
- .../tracing/ftrace_test/ftrace_regression02.c | 56 +++++++++++++
- .../ftrace_test/ftrace_regression02.sh        | 63 --------------
- 7 files changed, 202 insertions(+), 148 deletions(-)
- create mode 100644 testcases/kernel/tracing/ftrace_test/.gitignore
- create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression.h
- create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression01.c
- delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
- create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
- delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
+No README should be added. Instead the test description should be added
+into a special doc comment at the top of the test. That description is
+then extracted into online documentation:
 
-diff --git a/runtest/tracing b/runtest/tracing
-index 674e2ad97..2a4a92c5f 100644
---- a/runtest/tracing
-+++ b/runtest/tracing
-@@ -1,6 +1,6 @@
- #DESCRIPTION:Tracing testing
--ftrace_regression01	ftrace_regression01.sh
--ftrace_regression02	ftrace_regression02.sh
-+ftrace_regression01	ftrace_regression01
-+ftrace_regression02	ftrace_regression02
- ftrace-stress-test	ftrace_stress_test.sh 90
- dynamic_debug01		dynamic_debug01.sh
- fanotify25 fanotify25
-diff --git a/testcases/kernel/tracing/ftrace_test/.gitignore b/testcases/kernel/tracing/ftrace_test/.gitignore
-new file mode 100644
-index 000000000..b0153e9fa
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/.gitignore
-@@ -0,0 +1,2 @@
-+ftrace_regression01
-+ftrace_regression02
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression.h b/testcases/kernel/tracing/ftrace_test/ftrace_regression.h
-new file mode 100644
-index 000000000..ab18e3768
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression.h
-@@ -0,0 +1,62 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-+ * Copyright (c) 2026 lufei <lufei@uniontech.com>
-+ *
-+ * Shared header for ftrace regression tests.
-+ */
-+
-+#ifndef FTRACE_REGRESSION_H
-+#define FTRACE_REGRESSION_H
-+
-+#include "tst_test.h"
-+#include "tst_safe_file_ops.h"
-+#include "tst_safe_stdio.h"
-+
-+#include <regex.h>
-+#include <stdio.h>
-+
-+#define FTRACE_LINE_BUF_SIZE 1024
-+#define DEBUGFS_DIR "debugfs"
-+
-+/**
-+ * file_contains - Check if a file contains specific regex pattern.
-+ */
-+static inline int file_contains(const char *path, const char *pattern)
-+{
-+	FILE *fp = SAFE_FOPEN(path, "r");
-+	char *buf = SAFE_MALLOC(FTRACE_LINE_BUF_SIZE);
-+	bool found = false;
-+
-+	regex_t re;
-+
-+	if (regcomp(&re, pattern, REG_EXTENDED | REG_NOSUB) != 0) {
-+		SAFE_FCLOSE(fp);
-+		free(buf);
-+		return found;
-+	}
-+
-+	while (fgets(buf, FTRACE_LINE_BUF_SIZE, fp)) {
-+		if (regexec(&re, buf, 0, NULL, 0) == 0) {
-+			found = true;
-+			break;
-+		}
-+	}
-+
-+	regfree(&re);
-+	SAFE_FCLOSE(fp);
-+	free(buf);
-+	return found;
-+}
-+
-+static inline void mount_debugfs(void)
-+{
-+	SAFE_MKDIR(DEBUGFS_DIR, 0755);
-+	SAFE_MOUNT(NULL, DEBUGFS_DIR, "debugfs", 0, NULL);
-+}
-+
-+static inline void umount_debugfs(void)
-+{
-+	SAFE_UMOUNT(DEBUGFS_DIR);
-+}
-+
-+#endif /* FTRACE_REGRESSION_H */
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression01.c b/testcases/kernel/tracing/ftrace_test/ftrace_regression01.c
-new file mode 100644
-index 000000000..fa089587d
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression01.c
-@@ -0,0 +1,80 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2015 Red Hat Inc.
-+ * Copyright (c) 2026 lufei <lufei@uniontech.com>
-+ */
-+
-+/*\
-+ * Regression test for panic while using userstacktrace.
-+ *
-+ * BUG: unable to handle kernel paging request at 00000000417683c0
-+ *      IP: [<ffffffff8105c834>] update_curr+0x124/0x1e0
-+ *      Thread overran stack, or stack corrupted
-+ *      Oops: 0000 [#1] SMP
-+ *      last sysfs file: ../system/cpu/cpu15/cache/index2/shared_cpu_map
-+ *
-+ * The bug was fixed by:
-+ *      1dbd195 (tracing: Fix preempt count leak)
-+ */
-+
-+#include <unistd.h>
-+#include "ftrace_regression.h"
-+
-+#define STACK_TRACER_PATH "/proc/sys/kernel/stack_tracer_enabled"
-+#define TRACE_OPTIONS DEBUGFS_DIR "/tracing/trace_options"
-+#define EXC_PAGE_FAULT DEBUGFS_DIR "/tracing/events/exceptions/page_fault_kernel/enable"
-+#define MM_PAGE_FAULT DEBUGFS_DIR "/tracing/events/kmem/mm_kernel_pagefault/enable"
-+
-+#define LOOP 10
-+
-+static const char *page_fault_path;
-+static int page_fault_origin;
-+
-+static void setup(void)
-+{
-+	mount_debugfs();
-+
-+	if (access(EXC_PAGE_FAULT, F_OK) == 0)
-+		page_fault_path = EXC_PAGE_FAULT;
-+	else if (access(MM_PAGE_FAULT, F_OK) == 0)
-+		page_fault_path = MM_PAGE_FAULT;
-+	else
-+		tst_brk(TCONF, "Page fault event not available");
-+
-+	SAFE_FILE_SCANF(page_fault_path, "%d", &page_fault_origin);
-+}
-+
-+static void run(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < LOOP; i++) {
-+		SAFE_FILE_PRINTF(STACK_TRACER_PATH, "1");
-+		SAFE_FILE_PRINTF(TRACE_OPTIONS, "userstacktrace");
-+
-+		if (!file_contains(TRACE_OPTIONS, "^userstacktrace"))
-+			tst_brk(TBROK, "Failed to set userstacktrace");
-+
-+		SAFE_FILE_PRINTF(page_fault_path, "1");
-+	}
-+
-+	SAFE_FILE_PRINTF(page_fault_path, "%d", page_fault_origin);
-+
-+	tst_res(TPASS, "Preempt count leak bug not reproduced");
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+	.test_all = run,
-+	.cleanup = umount_debugfs,
-+	.save_restore = (const struct tst_path_val[]) {
-+		{STACK_TRACER_PATH, NULL, TST_SR_TCONF},
-+		{}
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "1dbd1951f39e"},
-+		{}
-+	},
-+};
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh b/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
-deleted file mode 100755
-index d6969cfc6..000000000
---- a/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
-+++ /dev/null
-@@ -1,83 +0,0 @@
--#! /bin/sh
--
--###########################################################################
--##                                                                       ##
--## Copyright (c) 2015, Red Hat Inc.                                      ##
--##                                                                       ##
--## This program is free software: you can redistribute it and/or modify  ##
--## it under the terms of the GNU General Public License as published by  ##
--## the Free Software Foundation, either version 3 of the License, or     ##
--## (at your option) any later version.                                   ##
--##                                                                       ##
--## This program is distributed in the hope that it will be useful,       ##
--## but WITHOUT ANY WARRANTY; without even the implied warranty of        ##
--## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          ##
--## GNU General Public License for more details.                          ##
--##                                                                       ##
--## You should have received a copy of the GNU General Public License     ##
--## along with this program. If not, see <http://www.gnu.org/licenses/>.  ##
--##                                                                       ##
--## Author: Li Wang <liwang@redhat.com>                                   ##
--##                                                                       ##
--###########################################################################
--##                                                                       ##
--## Summary:  panic while using userstacktrace                            ##
--##                                                                       ##
--## BUG: unable to handle kernel paging request at 00000000417683c0       ##
--##      IP: [<ffffffff8105c834>] update_curr+0x124/0x1e0                 ##
--##      PGD 41a796067 PUD 0                                              ##
--##      Thread overran stack, or stack corrupted                         ##
--##      Oops: 0000 [#1] SMP                                              ##
--##      last sysfs file: ../system/cpu/cpu15/cache/index2/shared_cpu_map ##
--##                                                                       ##
--## The bug was fixed by:                                                 ##
--##      1dbd195 (tracing: Fix preempt count leak)                        ##
--##                                                                       ##
--###########################################################################
--
--export TCID="ftrace_regression01"
--export TST_TOTAL=1
--
--. ftrace_lib.sh
--
--LOOP=10
--
--TSTACK_TRACE_PATH="/proc/sys/kernel/stack_tracer_enabled"
--EXC_PAGE_FAULT_ENABLE="$TRACING_PATH/events/exceptions/page_fault_kernel/enable"
--MM_PAGE_FAULT_ENABLE="$TRACING_PATH/events/kmem/mm_kernel_pagefault/enable"
--
--ftrace_userstacktrace_test()
--{
--	if [ ! -e "$TSTACK_TRACE_PATH" ]; then
--		tst_brkm TCONF "Stack Tracer is not cofigured in This kernel"
--	fi
--
--	for i in $(seq $LOOP); do
--		echo 1 >  $TSTACK_TRACE_PATH
--		echo userstacktrace > $TRACING_PATH/trace_options
--		grep -q "^userstacktrace"  $TRACING_PATH/trace_options
--		if [ $? -ne 0 ]; then
--			tst_brkm TBROK "Failed to set userstacktrace"
--		fi
--
--		if [ -f "$EXC_PAGE_FAULT_ENABLE" ]; then
--			exc_page_fault_enable=`cat $EXC_PAGE_FAULT_ENABLE`
--			echo 1 > $EXC_PAGE_FAULT_ENABLE
--		else
--			mm_page_fault_enable=`cat $MM_PAGE_FAULT_ENABLE`
--			echo 1 > $MM_PAGE_FAULT_ENABLE
--		fi
--	done
--
--	if [ -f "$EXC_PAGE_FAULT_ENABLE" ]; then
--		echo "$exc_page_fault_enable" > $EXC_PAGE_FAULT_ENABLE
--	else
--		echo "$mm_page_fault_enable" > $MM_PAGE_FAULT_ENABLE
--	fi
--
--	tst_resm TPASS "Finished running the test"
--}
--
--ftrace_userstacktrace_test
--
--tst_exit
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
-new file mode 100644
-index 000000000..2f963cb60
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2015 Red Hat Inc.
-+ * Copyright (c) 2026 lufei <lufei@uniontech.com>
-+ */
-+
-+/*\
-+ * Check signal:signal_generate gives 2 more fields: grp=[0-9] res=[0-9]
-+ */
-+
-+#include "ftrace_regression.h"
-+
-+#define SET_EVENT DEBUGFS_DIR "/tracing/set_event"
-+#define TRACING_ON DEBUGFS_DIR "/tracing/tracing_on"
-+#define TRACE_FILE DEBUGFS_DIR "/tracing/trace"
-+
-+#define LOOP 100
-+
-+static void run(void)
-+{
-+	int i;
-+	const char *const cmd_ls[] = {"ls", "-l", "/sys/kernel/tracing/", NULL};
-+
-+	SAFE_FILE_PRINTF(SET_EVENT, "signal:signal_generate");
-+	SAFE_FILE_PRINTF(TRACING_ON, "1");
-+	SAFE_FILE_PRINTF(TRACE_FILE, "\n");
-+
-+	/* to generate trace */
-+	for (i = 0; i < LOOP; i++)
-+		SAFE_CMD(cmd_ls, "/dev/null", "/dev/null");
-+
-+	if (file_contains(TRACE_FILE, "grp=[0-9]") &&
-+			file_contains(TRACE_FILE, "res=[0-9]"))
-+		tst_res(TPASS, "Pattern grp=[0-9] res=[0-9] reported after "
-+			       "setting signal:signal_generate");
-+	else
-+		tst_res(TFAIL, "Pattern grp=[0-9] res=[0-9] not found in trace");
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.setup = mount_debugfs,
-+	.test_all = run,
-+	.cleanup = umount_debugfs,
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "ls"},
-+		{}
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "6c303d3ab39f"},
-+		{"linux-git", "163566f60bfe"},
-+		{}
-+	},
-+};
-+
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
-deleted file mode 100755
-index 3c32f219e..000000000
---- a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
-+++ /dev/null
-@@ -1,63 +0,0 @@
--#! /bin/sh
--
--###########################################################################
--##                                                                       ##
--## Copyright (c) 2015, Red Hat Inc.                                      ##
--##                                                                       ##
--## This program is free software: you can redistribute it and/or modify  ##
--## it under the terms of the GNU General Public License as published by  ##
--## the Free Software Foundation, either version 3 of the License, or     ##
--## (at your option) any later version.                                   ##
--##                                                                       ##
--## This program is distributed in the hope that it will be useful,       ##
--## but WITHOUT ANY WARRANTY; without even the implied warranty of        ##
--## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          ##
--## GNU General Public License for more details.                          ##
--##                                                                       ##
--## You should have received a copy of the GNU General Public License     ##
--## along with this program. If not, see <http://www.gnu.org/licenses/>.  ##
--##                                                                       ##
--## Author: Li Wang <liwang@redhat.com>                                   ##
--##                                                                       ##
--###########################################################################
--##                                                                       ##
--## Summary: check signal:signal_generate gives 2 more fields: grp res    ##
--##                                                                       ##
--## This testcase is writing for signal events change:                    ##
--##       6c303d3 tracing: let trace_signal_generate() report more info...##
--##       163566f tracing: send_sigqueue() needs trace_signal_generate()  ##
--##                                                                       ##
--###########################################################################
--
--export TCID="ftrace_regression02"
--export TST_TOTAL=1
--
--. ftrace_lib.sh
--
--ftrace_signal_test()
--{
--	# Set envent
--	echo 'signal:signal_generate' > $TRACING_PATH/set_event
--	echo 1 > $TRACING_PATH/tracing_on
--	echo > $TRACING_PATH/trace
--
--	# just to generate trace
--	for i in $(seq 100); do
--		ls -l /proc > /dev/null 2>&1
--	done
--
--	grep -q 'grp=[0-9] res=[0-9]' $TRACING_PATH/trace
--	if [ $? -eq 0 ]; then
--		tst_resm TPASS "finished running the test."
--	else
--		tst_resm TFAIL "running the test failed, please check log message."
--	fi
--}
--
--if tst_kvcmp -lt "3.2"; then
--	tst_brkm TCONF "The test should be run in kernels >= 3.2.0 Skip the test..."
--fi
--
--ftrace_signal_test
--
--tst_exit
+https://linux-test-project.readthedocs.io/en/latest/users/test_catalog.html
+
+Also this is too verbose, there is a lot of useless information. Just
+keep the part that describes what the test actually does. No need to
+describe how to compile the tests or how to write new tests, we have
+plenty of online docs for LTP now.
+
+> diff --git a/testcases/kernel/device-drivers/nvme/nvme01.c b/testcases/kernel/device-drivers/nvme/nvme01.c
+> new file mode 100644
+> index 000000000..82fbd315b
+> --- /dev/null
+> +++ b/testcases/kernel/device-drivers/nvme/nvme01.c
+> @@ -0,0 +1,236 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2024 IBM Corporation
+> + * Author: LTP NVMe Test Suite
+                    ^
+		    This does not make any sense.
+
+
+And the part below should be the special doc comment that is exported
+into docs.
+
+> + * Test: NVMe Device Discovery & Identification
+> + *
+> + * This test verifies:
+> + * - Detection of NVMe controllers
+> + * - Enumeration of namespaces
+> + * - PCI enumeration verification
+> + * - Driver binding check
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <unistd.h>
+> +#include <fcntl.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <dirent.h>
+> +#include <errno.h>
+> +
+> +#include "tst_test.h"
+> +
+> +#define NVME_DEV_PATH "/dev"
+> +#define NVME_SYS_PATH "/sys/class/nvme"
+> +#define PCI_DEVICES_PATH "/sys/bus/pci/devices"
+> +
+> +static int nvme_device_found = 0;
+> +static char nvme_dev_name[256];
+> +
+> +/*
+> + * Test Case 1: Detect NVMe Controllers
+> + * Verifies that NVMe controllers are present in the system
+> + */
+
+No obvious comments like this one please. It's pretty clear from the
+function name what it does.
+
+> +static void test_detect_nvme_controllers(void)
+> +{
+> +	DIR *dir;
+> +	struct dirent *entry;
+> +	int found = 0;
+> +
+> +	dir = opendir(NVME_DEV_PATH);
+> +	if (!dir) {
+> +		tst_brk(TBROK | TERRNO, "Failed to open %s", NVME_DEV_PATH);
+> +		return;
+> +	}
+
+Use SAFE_MACROS() whenever possible. In this case SAFE_OPENDIR().
+
+> +	tst_res(TINFO, "Scanning for NVMe devices in %s", NVME_DEV_PATH);
+> +
+> +	while ((entry = readdir(dir)) != NULL) {
+> +		if (strncmp(entry->d_name, "nvme", 4) == 0 &&
+> +		    strlen(entry->d_name) == 5) {  /* nvme0, nvme1, etc. */
+                                                  ^
+                   No comments commenting obvious like this.
+
+> +			tst_res(TINFO, "Found NVMe controller: %s", entry->d_name);
+> +			strncpy(nvme_dev_name, entry->d_name, sizeof(nvme_dev_name) - 1);
+> +			found = 1;
+> +			nvme_device_found = 1;
+> +		}
+> +	}
+> +
+> +	closedir(dir);
+
+SAFE_CLOSEDIR()
+
+
+And similar comments apply for the rest of the code.
+
 -- 
-2.39.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
