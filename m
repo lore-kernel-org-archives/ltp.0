@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4DEFFF885A
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 14:40:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F14EFF8868
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 14:42:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 636F33E49F3
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 16:40:18 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 1EC7E3E4923
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 16:42:00 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8A7413E1A46
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:39:57 +0200 (CEST)
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com
- [IPv6:2607:f8b0:4864:20::841])
+ by picard.linux.it (Postfix) with ESMTPS id E08373E1A46
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:41:40 +0200 (CEST)
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com
+ [IPv6:2607:f8b0:4864:20::744])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BFA59200242
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:39:56 +0200 (CEST)
-Received: by mail-qt1-x841.google.com with SMTP id
- d75a77b69052e-506362ac5f7so94253281cf.1
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 07:39:56 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 885BA600714
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 16:41:40 +0200 (CEST)
+Received: by mail-qk1-x744.google.com with SMTP id
+ af79cd13be357-8dbbc6c16b2so1451832185a.0
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 07:41:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1777387195; x=1777991995; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1777387299; x=1777992099; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=vQZEiRu73og84jRFnORA8kt8941aWJhuW+gD4QioBHs=;
- b=OppizRSBVdO/UF9MUKaVEjRy8iv4jcIiniOgqbLEu2ZaWSIz6/oMBTSVIJh81Oqg0W
- 1R709+ollQryBX0KJRcHIg1naYttzweu68USx/55C8WbcVwRw99zpGs+jEUxoM1K9X7i
- jkDWZUZUG1KZQsIx/cEdgi4SojxMzG5FIoeQ4Bp8A+gIpfFP+m9YLOpHChbqaFFBj4S5
- 2AWU5CjJ/+yraSi8BlrIbfxWGHecnyxEJSy33hRQedW+WjJ+pIQjVG4kfKjKAk8JFv61
- Mdm/nThqAbQiRpvvaK/GfIlaqrtGiB84DyBHwNSzapy1P4YNYo5ZzwnYvHHcJooacUm6
- oq8g==
+ bh=G7RzkY1Zv30PEa2WknaLkTyq2OL1lc41K3rnz7lct6M=;
+ b=Uqf2CZZ2JiY/Yw7VeTXv+6iNW4iX8Ubvz3YCRXWGFdJg/Tb8y+ZWVRt/SxbpuTv8uW
+ ifgkam3IBw9swMshF1O4EXfcx5M8N+IFygzMW3Zyh2KJzGr6IbSZqp6ue3g/RAiK0x4Z
+ DtucxjZUU7o23xw5eSuxUwGccjHq82DfHriGYtNu2KphZUOeLXkYH655L4ADtdLilaxD
+ 8EIdU5Us/oxIxVWIKoxIJCBYETeLvA7gNT3JoeVGalIByfSbgvkt0yZT2krjmekJahvr
+ B7K2cEaSUn1E+3JO9vE9YnVJT0HrgCkpjJ8mAZhhxgyklbBZCodeer3locXK2aes30jf
+ fjXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1777387195; x=1777991995;
+ d=1e100.net; s=20251104; t=1777387299; x=1777992099;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=vQZEiRu73og84jRFnORA8kt8941aWJhuW+gD4QioBHs=;
- b=TfrnhKivML3zBKCYkwlj8sbpDaeTMEqhaWgthJHWLDNpm0F3SS59SmIf3cm3hhl6FI
- VLyQt/knFECFwdxUTleYjcIrIrz+iEikgIAfvIVZ28b4AuD5Z20MtzMvN/RY/RFJSx06
- oiKk7ok+04z4x1ahK45s3wcvbtIKjE8HzTU8kMLunOtKYz6pfI8G5yTFuNYBS7/i+LL9
- sHO8M6i0TYFEn8Y5yfgiNQkFOSoAMDm5X4PoHWlZuObRc7XoNiyZy4YZPT/2Cqx/1vV/
- eEM0Z1ojbVGim3AgbgesOWREKFe2t3zogh/PdU+UL3eueXNk9Zme1LLigCdrw7IlExWg
- 77Ag==
-X-Gm-Message-State: AOJu0Yy+uRFSqozEY3QU3fMYbwwT+qx8N71QsuWsllebmD5rhlltDJDn
- I5iEixdxVSt8F4qt+9NXqExmzxF2EwmlovszPDtXI9A9Za52tHLX2RvJdKANZNKlqXU=
-X-Gm-Gg: AeBDieurX2wZpW81ztuOlw+ZrbbxQlxyuT9KAstGqToBkbrVh29Lt1V521RM5AA4hEM
- zeg2UzoISqSx5uM5tkFC0vfKPnteyEKHX5WDNgvOiJmQAbcVQCPehetFpc3rYLiUrH4JIJnL1o/
- srQuwWguH231whFVnSXtcD8DRYY4UZE1OmK/EbO4an+MKrciISGxhaiG36eBUxnrw7ET2UEVzqx
- Jqk/WvEkMkaSeUkXit9Uox7c0aSdU0daUNkIYfOS8u1cYLHQB5SojfimrBwg/zZ0mvaejqZd1Xn
- 19tQUubhtwZM7esDSXtd9BsIrwo9z/wmY+Qwr1Sj2cr7laPQeQ7zIQm76eiJlzLUBxuixBpbWdq
- wyc+pZ0uSw35aFcg3Hc1QUOkM8okjs5W7yKCBD0Zp0KZfW7c0IrwT1pRzxUpfVwOg6TT6EV3goP
- Ov9y1Zwhmshuaj23aJAGREN1LC4ruUKRhYbcAhOPqiKcwDdEorcDHI8Q9icPf95nVXy2In79x+2
- xlfqV6aytHcn6g/yZ1HtGnoGfVF4lzY3KyarcdHDvQKOOAUbw==
-X-Received: by 2002:a05:622a:4587:b0:510:1543:31fd with SMTP id
- d75a77b69052e-5101543560bmr11208971cf.51.1777387195421; 
- Tue, 28 Apr 2026 07:39:55 -0700 (PDT)
+ bh=G7RzkY1Zv30PEa2WknaLkTyq2OL1lc41K3rnz7lct6M=;
+ b=AhxzC/l//361/jzxT6dff1T+8N2VufED+m+etKe2u3j52lG3zuLonalRXpPDjmXcPo
+ rvxtnVHXvxUSP2HUe85xSSHkJsMKzHO3t22alYULBDAV3fNt5WOUH+JTQcyhLIM4mld4
+ NvVBIno8Uqi2sqgEgrjf5ETw1troUBBB1dPDAD/V3G14ZUP+KIMwQY0ou2ulm3CfJIdc
+ mVStBIZ3VxxYIxrC0HCH/h82uPwuCr+VW6sKoVDpYud8lhWwXjxHp+sadh1EF7zqQ2IU
+ BwGvbC+ngOYa9IU0TS9/+C8b3vVEqhPL/DVcSEjM31/MfXudcyIp/FHegoXjORwm5EmL
+ ccng==
+X-Gm-Message-State: AOJu0YzjBWHSNAI4uHa94aCyleGCDBHd4RL2u6daREGwXoaOyfRaB0xb
+ x6GWSTOGjN5LVrj1Tu+tkpb8VK8X+sCY7z/3NlTHboUGErEIYikY17f6
+X-Gm-Gg: AeBDievnkatLP4bm/kWO5WCNRjdajOF14mVxRQVZE0zNqVMHE/6xdGDjzICkTpMIfel
+ eVN0ulMRZVEMJfR+farjdMFDE/dRXobJKrvBH4vL5ZcZ0ryVHVt/Yu3ZPTvQR3hHgNDZgS59U5O
+ BhVAtVo3PX6NjGSTBTOhvDPkdTfO3zY+XrsjUNW85TYuzozf9jjsaooME2cmcHmZVYYkl/OXJ4Y
+ aBBo1qmgNhbaRcQsMqC93l6V2yUfTBRytxt9Q9/p8361HQf1DWByW1mkjZiXNkPlgxZ5mi4Cy7C
+ 8369jKqWmuaWrhAULoG9nT9Hzsj10/WbMaR9rGhsLzgTuYQBajYM2SYxmNIDqTCZqF9sTGzHsBZ
+ rilji32G/1K5qA6eC+MjrPt5r8wmNX3NZS3rgVge17maz9V4dNAzTRJbrWHnRKD5/9I09DOusYW
+ jRN4LyZvUP22D/z4UGHPNkhWCm2ltA6vcmWUsbeWZuPyD3GHNbzplSb0zSs5K4LQDBE3n28Uelb
+ i14oohjwXtyimJJbOhosUTPlEDuTsL4ArYcihAyJWA5MpyWgAc=
+X-Received: by 2002:a05:620a:170c:b0:8f1:7ce7:5aff with SMTP id
+ af79cd13be357-8f7ccfa6b37mr370830185a.1.1777387299202; 
+ Tue, 28 Apr 2026 07:41:39 -0700 (PDT)
 Received: from
- runnervmeorf1.4zenpulcgpvenhjux0oihply3f.bx.internal.cloudapp.net
- ([74.235.70.231]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-5100da4d29bsm20008421cf.3.2026.04.28.07.39.54
+ runnervmeorf1.net0ibprzlqujb4ppu2xd1znfd.ex.internal.cloudapp.net
+ ([64.236.177.100]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-8f7c48c71fesm248077585a.5.2026.04.28.07.41.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 28 Apr 2026 07:39:55 -0700 (PDT)
+ Tue, 28 Apr 2026 07:41:38 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Sayali Patil <sayalip@linux.ibm.com>
-Date: Tue, 28 Apr 2026 14:39:54 +0000
-Message-ID: <20260428143954.4078-1-linuxtestproject.agent@gmail.com>
+To: Piotr Kubaj <piotr.kubaj@intel.com>
+Date: Tue, 28 Apr 2026 14:41:37 +0000
+Message-ID: <20260428144138.4068-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <91e8e5a0259ba981e530d099eb053395d8991177.1777377311.git.sayalip@linux.ibm.com>
-References: <91e8e5a0259ba981e530d099eb053395d8991177.1777377311.git.sayalip@linux.ibm.com>
+In-Reply-To: <20260428124629.259405-2-piotr.kubaj@intel.com>
+References: <20260428124629.259405-2-piotr.kubaj@intel.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] hugetlb/hugeshmat05: use size_t for hugepage allocation
- sizes
+Subject: Re: [LTP] thermal: add new test group
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,24 +91,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgU2F5YWxpLAoKT24gVHVlLCAyOCBBcHIgMjAyNiAxNzoyNzoyOSArMDUzMCwgU2F5YWxpIFBh
-dGlsIHdyb3RlOgo+IGh1Z2V0bGIvaHVnZXNobWF0MDU6IHVzZSBzaXplX3QgZm9yIGh1Z2VwYWdl
-IGFsbG9jYXRpb24gc2l6ZXMKClJldmlld2VkLWJ5OiBMVFAgQUkgUmV2aWV3ZXIgPGx0cC1haUBu
-b3JlcGx5LmdpdGh1Yi5jb20+CgpQcmUtZXhpc3RpbmcgaXNzdWVzIG5vdGljZWQgaW4gdGhlIHN1
-cnJvdW5kaW5nIGNvZGUgKG5vdCBpbnRyb2R1Y2VkCmJ5IHRoaXMgcGF0Y2gpOgoKLSBodWdlc2ht
-YXQwNS5jOjQ3IOKAlCBzaG1nZXQoKSBzaG91bGQgdXNlIFNBRkVfU0hNR0VUKCkKLSBodWdlc2ht
-YXQwNS5jOjUxIOKAlCBzaG1hdCgpIHNob3VsZCB1c2UgU0FGRV9TSE1BVCgpCi0gaHVnZXNobWF0
-MDUuYzo2MSDigJQgc2htZHQoKSBzaG91bGQgdXNlIFNBRkVfU0hNRFQoKQotIGh1Z2VzaG1hdDA1
-LmM6NjIsNjYg4oCUIHNobWN0bCgpIHNob3VsZCB1c2UgU0FGRV9TSE1DVEwoKQoKLS0tCk5vdGU6
-CgpPdXIgYWdlbnQgY29tcGxldGVkIHRoZSByZXZpZXcgb2YgdGhlIHBhdGNoLiBUaGUgYWdlbnQg
-Y2FuIHNvbWV0aW1lcwpwcm9kdWNlIGZhbHNlIHBvc2l0aXZlcyBhbHRob3VnaCBvZnRlbiBpdHMg
-ZmluZGluZ3MgYXJlIGdlbnVpbmUuIElmCnlvdSBmaW5kIGlzc3VlcyB3aXRoIHRoZSByZXZpZXcs
-IHBsZWFzZSBjb21tZW50IHRoaXMgZW1haWwgb3IgaWdub3JlCnRoZSBzdWdnZXN0aW9ucy4KClJl
-Z2FyZHMsCkxUUCBBSSBSZXZpZXdlcgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xp
-c3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi Piotr,
+
+On Tue, 28 Apr 2026, Piotr Kubaj wrote:
+> thermal: add new test group
+
+> +# Copyright (c) 2025, Intel Corporation. All rights reserved.
+
+Year should be 2026 (new file).
+
+[...]
+
+> +	FILE *fp = SAFE_FOPEN("/proc/interrupts", "r");
+> [...]
+> +			if (ptr == endptr)
+> +				tst_brk(TBROK, "CPU %d: interrupt not found", i);
+> +
+> +			if (errno == ERANGE)
+> +				tst_brk(TBROK, "CPU %d: interrupt out of range", i);
+
+Both tst_brk() calls fire before SAFE_FCLOSE(fp). Close fp before calling
+tst_brk() to avoid leaking the file descriptor.
+
+[...]
+
+> +		sleep(sleep_time--);
+
+Sleep-based synchronization is not allowed (G2). Replace with a polling
+loop using short yields or TST_RETRY_FUNC.
+
+---
+Note:
+
+Our agent completed the review of the patch. The full review can be
+found at: https://github.com/linux-test-project/ltp-agent/actions/runs/25059182102
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
