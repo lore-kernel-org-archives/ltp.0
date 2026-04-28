@@ -4,57 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A5FAFF8868
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 12:47:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BD75FF885D
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 12:55:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2EAFC3E2539
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 14:47:49 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id F0EFC3E2539
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 14:55:02 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2E6BA3CFC32
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 14:47:29 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 59C8F3C7A5F
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 14:54:44 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8D09E600068
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 14:47:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1777380449; x=1808916449;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=02drtmxPhOlpWgGD333ubKts+f4YnSlv6Ox+W80ctAw=;
- b=XmN48G4rEjajaWV690Hc9I5MHs2SegsgXPufQpn6QezrDmqsxLo5clRV
- o4B5Q24FfUc5CcaT1B7+HGvXk8+OqBV1GV+udvrcQNYR5VkyaRN9a9zA1
- /lb6ESBg+JWBNkww5wfC7kl6ME/JKUMEyD/hx/LRoNZnOxCzPgS2jJMJ3
- hX+rW9ISxURgdWwvE2O6BwX5A8LPrXBSrSr2guPZhVX79Gyo8rVqyWZ3T
- WqsDO2xVZpMAI/ccqxekbP8GgjAxkYlhrAYHs+o3wcDfDlkbm9lbQmgrr
- 9Wg/XQW2ZTeQIQzK1I8eKfB/YbLgD0N3RcfRsdTg8QybbULuFQDtTAuoW w==;
-X-CSE-ConnectionGUID: ET2Amr0sR/S+6YAV0BPmzA==
-X-CSE-MsgGUID: oioyHG2TRViESVrg7K807g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11769"; a="81892873"
-X-IronPort-AV: E=Sophos;i="6.23,204,1770624000"; d="scan'208";a="81892873"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
- by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Apr 2026 05:47:26 -0700
-X-CSE-ConnectionGUID: bihgeU85SqGJ4lkjR+g5LQ==
-X-CSE-MsgGUID: 3SSgJs4ETFa6Ot0dvAi2Ew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,204,1770624000"; d="scan'208";a="272081004"
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
- by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Apr 2026 05:47:24 -0700
-From: Piotr Kubaj <piotr.kubaj@intel.com>
-To: ltp@lists.linux.it
-Date: Tue, 28 Apr 2026 14:46:30 +0200
-Message-ID: <20260428124629.259405-2-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6D0CB600779
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 14:54:43 +0200 (CEST)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 63RKl5O21693197; Tue, 28 Apr 2026 12:54:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=GdI5n2
+ Q8kcdqdYeHbBEJkMSY2v4ysY46wNIFHKTEYus=; b=eYZd2MujqiYvdmxtVzES5t
+ U1zCiyDXAHsPSpwnF6BayTuIO6BnaU4g8Sl1r6r6aK+HQjBa9CQVfdOn8uUkuAz+
+ y9KCNoDNRJwokygXjdVvClvyaNzosvXMHbTzZ3sc8fcsIb9xqv5GUduyP4+KBXwA
+ 6kh4mMiSn5YiKwosVzapU2PjF89BwbzQelivC/PBJ+PaO6otD5O0gS8KSuVzTsny
+ YcOapbSyVSX34DBSmZomuzDjLqqImTt/yZSyeK74sSnFcD6i5tgXhMwe4PAiKQDc
+ cfnUlNjffbnLLnegbd8jb4PB8ZuL3oR965XKNRulAgejdUKqHdvSYMviFUjXfUDA
+ ==
+Received: from ppma13.dal12v.mail.ibm.com
+ (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drn44nkpf-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 28 Apr 2026 12:54:41 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63SCcpM9019202;
+ Tue, 28 Apr 2026 12:54:40 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+ by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dsa5g9jtc-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 28 Apr 2026 12:54:40 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com
+ [10.241.53.105])
+ by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 63SCsdwL34275866
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 28 Apr 2026 12:54:39 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 268CA58055;
+ Tue, 28 Apr 2026 12:54:39 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id E20A358043;
+ Tue, 28 Apr 2026 12:54:37 +0000 (GMT)
+Received: from [9.43.64.210] (unknown [9.43.64.210])
+ by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+ Tue, 28 Apr 2026 12:54:37 +0000 (GMT)
+Message-ID: <dd3502b7-670b-473c-b607-672695c06f4c@linux.ibm.com>
+Date: Tue, 28 Apr 2026 18:24:36 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+References: <69f05e59.7b0a0220.32d441.7979@mx.google.com>
+Content-Language: en-US
+From: Sachin Sant <sachinp@linux.ibm.com>
+In-Reply-To: <69f05e59.7b0a0220.32d441.7979@mx.google.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: SkOq_SGMind-fcoz-Wvl6dyz16-6Iayy
+X-Authority-Analysis: v=2.4 cv=Ft81OWrq c=1 sm=1 tr=0 ts=69f0ae11 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=7ykl0th9h5gsoFEAXRAA:9
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: SkOq_SGMind-fcoz-Wvl6dyz16-6Iayy
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI4MDExOCBTYWx0ZWRfXx+CZP5IyoqY7
+ zTbMWlUKnFKkklime95ck8O8V1RUyda3LorulpSLdeFnDj1sqb5B5qtzXlVk/C52RtoXf5+SM3b
+ qbw3W8L5zrPjTK1OWze1zilnZy7Cm7tG5umsZleADh6XlSaWV3/4rOPb+v2FtNg405bcf6LpRO0
+ KFS397vQjfH85IuyUtl9hnxzKTK0GRt7dOwDAbR+cWW8dOB8o7OfS3v/QH1bPiW55o4aHX4bpko
+ N0l1int4xCxq7qP5O5dFycvgYOt9DGnlBTXNtVsmTJXFWM0NineSpAkGSfuntVLZyI73EqcFwui
+ FON82g0Fs1OoZoT4UGKEzR31x9UfV0ejB9zpcQLcoxzjmq9U57GKrs7xB3KSiwzQUg5Dcfa2Ris
+ D2i3l/V32xIR3gAGsp/ehjcH9MH4t80QDLo0Gn38V5qcpIiCGbKn27qbvVwDN7e1DLjkok41NHY
+ U95AJJzeG/12D6PZFnw==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-04-28_04,2026-04-28_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 spamscore=0 impostorscore=0
+ clxscore=1015 malwarescore=0 phishscore=0 suspectscore=0 adultscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2604280118
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v17] thermal: add new test group
+Subject: Re: [LTP] [PATCH v3 1/2] doc: generate CVE catalog documentation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,338 +110,106 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Currently consists of only one test for the CPU package thermal sensor
-interface for Intel platforms.
-It works by checking the initial count of thermal interrupts. Then it
-decreases the threshold for sending a thermal interrupt to just above
-the current temperature and runs a workload on the CPU. Finally, it
-restores the original thermal threshold and checks whether the number
-of thermal interrupts increased.
 
-Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
----
-Addresses feedback from Petr and Andrea.
-Also now check whether trip_path exists.
 
- runtest/thermal                               |   3 +
- testcases/kernel/Makefile                     |   1 +
- testcases/kernel/thermal/.gitignore           |   1 +
- testcases/kernel/thermal/Makefile             |   9 +
- .../kernel/thermal/thermal_interrupt_events.c | 242 ++++++++++++++++++
- 5 files changed, 256 insertions(+)
- create mode 100644 runtest/thermal
- create mode 100644 testcases/kernel/thermal/.gitignore
- create mode 100644 testcases/kernel/thermal/Makefile
- create mode 100644 testcases/kernel/thermal/thermal_interrupt_events.c
+>> Add a Sphinx builder hook to parse runtest/cve and generate a
+>> comprehensive CVE catalog in a single documentation file.
+>>
+>> The implementation:
+>> - Parses runtest/cve to extract CVE IDs, test names, and options
+>> - Generates a single CVE catalog file (_static/cves.rst) containing:
+> Please use just 'cve.rst' instead of 'cves.rst'. The plural is not
+> providing any info here.
+Sure, will change the name.
+>> +def generate_cve_catalog(_):
+>> +    """
+>> +    Generate CVE catalog in a single file. Parse runtest/cve file and
+>> +    generate documentation with links to CVE databases and test sources.
+>> +    Similar to test_catalog, creates a single _static/cves.rst file with
+>> +    all CVE information.
+>> +    """
+>> +    output = '_static/cves.rst'
+>> +    runtest_cve = '../runtest/cve'
+>> +
+>> +    # Parse runtest/cve file
+>> +    cve_data = {}
+>> +    cve_pattern = re.compile(r'^(cve-(\d{4})-\d+)\s+(\S+)(?:\s+(.*))?$')
+> Do we need a regexp for this? The runtest file is well defining the
+> following structure:
+Yeah, we may not need a regexp here.
+>
+>    <cve-id> <binary> <arg0> <arg1> ..
+>
+> We only need to split lines which are not starting with # char,
+> considering space as separator.
+got it. Will include this change in the next version.
+>> +
+>> +        text.extend([
+>> +            f'This test reproduces the vulnerability described in {cve_id}.',
+>> +            'The test verifies that the system is properly patched against',
+>> +            'this known security vulnerability.',
+>> +            '',
+>> +            f'* **CVE Year:** {cve_info["year"]}',
+>> +            f'* **Test Command:** {test_cmd}',
+>> +            '',
+>> +            '.. raw:: html',
+>> +            '',
+>> +            '    <hr>',
+>> +            '',
+>> +        ])
+> All this text is redundant and occupying space for no reason.
+> Also I'm not sure about this approach, now we have tests list duplication
+> inside the documentation.
+>
+> What about generating only a simple reference table? There are only 3
+> information we need: CVE ID, test binary, year.
+>
+> | ID | Test name | Year |
+> -------------------------
+> | .. |    ..     |  ..  |
+>
+> etc..
+Okay. Do we need year in the column since the CVE name also has year.
+For cve.rst, I implemented the same logic as tests.rst.
 
-diff --git a/runtest/thermal b/runtest/thermal
-new file mode 100644
-index 000000000..57e3d29f8
---- /dev/null
-+++ b/runtest/thermal
-@@ -0,0 +1,3 @@
-+# Thermal driver API
-+# https://docs.kernel.org/driver-api/thermal/
-+thermal_interrupt_events thermal_interrupt_events
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index 98fd45a9d..ac816e4e8 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -36,6 +36,7 @@ SUBDIRS			+= connectors \
- 			   sched \
- 			   security \
- 			   sound \
-+			   thermal \
- 			   tracing \
- 			   uevents \
- 			   watchqueue \
-diff --git a/testcases/kernel/thermal/.gitignore b/testcases/kernel/thermal/.gitignore
-new file mode 100644
-index 000000000..1090bdad8
---- /dev/null
-+++ b/testcases/kernel/thermal/.gitignore
-@@ -0,0 +1 @@
-+thermal_interrupt_events
-diff --git a/testcases/kernel/thermal/Makefile b/testcases/kernel/thermal/Makefile
-new file mode 100644
-index 000000000..4657c3fb3
---- /dev/null
-+++ b/testcases/kernel/thermal/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2025, Intel Corporation. All rights reserved.
-+# Author:Piotr Kubaj <piotr.kubaj@intel.com>
-+
-+top_srcdir             ?= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/thermal/thermal_interrupt_events.c b/testcases/kernel/thermal/thermal_interrupt_events.c
-new file mode 100644
-index 000000000..79b4e2ba4
---- /dev/null
-+++ b/testcases/kernel/thermal/thermal_interrupt_events.c
-@@ -0,0 +1,242 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Intel - http://www.intel.com/
-+ */
-+
-+/*\
-+ * Tests the CPU package thermal sensor interface for Intel platforms.
-+
-+ * Works by checking the initial count of thermal interrupts. Then it
-+ * decreases the threshold for sending a thermal interrupt to just above
-+ * the current temperature and runs a workload on the CPU. Finally, it restores
-+ * the original thermal threshold and checks whether the number of thermal
-+ * interrupts increased.
-+ */
-+
-+#include <ctype.h>
-+#include <inttypes.h>
-+#include "tst_safe_stdio.h"
-+#include "tst_test.h"
-+#include "tst_timer_test.h"
-+
-+#define	TEST_RUNTIME	3
-+#define	RUNTIME		30
-+#define	SLEEP		10
-+#define	TEMP_INCREMENT	10
-+
-+static bool x86_pkg_temp_tz_found, *x86_pkg_temp_tz;
-+static char temp_path[PATH_MAX], trip_path[PATH_MAX];
-+static int nproc, temp_high, temp, *trip_orig, tz_counter;
-+static uint64_t *interrupt_init, *interrupt_later;
-+
-+static void read_interrupts(uint64_t *interrupts)
-+{
-+	bool interrupts_found = false;
-+	char line[8192];
-+
-+	memset(interrupts, 0, nproc * sizeof(*interrupts));
-+	FILE *fp = SAFE_FOPEN("/proc/interrupts", "r");
-+
-+	while (fgets(line, sizeof(line), fp)) {
-+		if (!strstr(line, "Thermal event interrupts"))
-+			continue;
-+
-+		interrupts_found = true;
-+		char *ptr = strchr(line, ':');
-+
-+		for (int i = 0; i < nproc; i++) {
-+			char *endptr;
-+
-+			while (*ptr && !isdigit(*ptr))
-+				ptr++;
-+
-+			errno = 0;
-+
-+			interrupts[i] = strtoull(ptr, &endptr, 10);
-+
-+			if (ptr == endptr)
-+				tst_brk(TBROK, "CPU %d: interrupt not found", i);
-+
-+			if (errno == ERANGE)
-+				tst_brk(TBROK, "CPU %d: interrupt out of range", i);
-+
-+			ptr = endptr;
-+			tst_res(TDEBUG, "interrupts[%d]: %" PRIu64, i, interrupts[i]);
-+		}
-+		break;
-+	}
-+	SAFE_FCLOSE(fp);
-+	if (!interrupts_found)
-+		tst_brk(TCONF, "No Thermal event interrupts line in /proc/interrupts");
-+}
-+
-+static void setup(void)
-+{
-+	char line[8192];
-+
-+	nproc = tst_ncpus();
-+	tst_set_runtime(nproc * TEST_RUNTIME);
-+
-+	tst_res(TDEBUG, "Number of logical cores: %d", nproc);
-+	interrupt_init = SAFE_CALLOC(nproc, sizeof(uint64_t));
-+	interrupt_later = SAFE_CALLOC(nproc, sizeof(uint64_t));
-+
-+	DIR *dir = SAFE_OPENDIR("/sys/class/thermal/");
-+	struct dirent *entry;
-+
-+	while ((entry = SAFE_READDIR(dir))) {
-+		if ((!strncmp(entry->d_name, "thermal_zone", sizeof("thermal_zone") - 1)))
-+			tz_counter++;
-+	}
-+	SAFE_CLOSEDIR(dir);
-+	tst_res(TDEBUG, "Found %d thermal zone(s)", tz_counter);
-+
-+	x86_pkg_temp_tz = SAFE_CALLOC(tz_counter, sizeof(bool));
-+	trip_orig = SAFE_CALLOC(tz_counter, sizeof(int));
-+
-+	for (int i = 0; i < tz_counter; i++) {
-+		char path[PATH_MAX];
-+
-+		snprintf(path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/type", i);
-+		tst_res(TDEBUG, "Checking whether %s is x86_pkg_temp", path);
-+
-+		SAFE_FILE_SCANF(path, "%8191s", line);
-+		if (strstr(line, "x86_pkg_temp")) {
-+			tst_res(TDEBUG, "Thermal zone %d uses x86_pkg_temp", i);
-+			x86_pkg_temp_tz[i] = true;
-+			x86_pkg_temp_tz_found = true;
-+			snprintf(trip_path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/trip_point_1_temp", i);
-+			SAFE_ACCESS(trip_path, R_OK | W_OK);
-+			SAFE_FILE_SCANF(trip_path, "%d", &trip_orig[i]);
-+		}
-+	}
-+
-+	if (!x86_pkg_temp_tz_found)
-+		tst_brk(TCONF, "No thermal zone uses x86_pkg_temp");
-+}
-+
-+static void cpu_workload(double run_time)
-+{
-+	tst_timer_start(CLOCK_MONOTONIC);
-+	int num = 2;
-+
-+	while (!tst_timer_expired_ms(run_time * 1000)) {
-+		for (int i = 2; i * i <= num; i++) {
-+			if (num % i == 0)
-+				break;
-+		}
-+		num++;
-+		SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+
-+		if (temp > temp_high)
-+			break;
-+	}
-+}
-+
-+static void test_zone(int i)
-+{
-+	int sleep_time = SLEEP;
-+	double run_time = RUNTIME;
-+
-+	snprintf(temp_path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/temp", i);
-+	tst_res(TINFO, "Testing %s", temp_path);
-+	SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+	if (temp < 0)
-+		tst_brk(TBROK, "Unexpected zone temperature value %d", temp);
-+
-+	tst_res(TDEBUG, "Current temperature for %s: %d", temp_path, temp);
-+
-+	temp_high = temp + TEMP_INCREMENT;
-+
-+	snprintf(trip_path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/trip_point_1_temp", i);
-+
-+	tst_res(TDEBUG, "Setting new trip_point_1_temp value: %d", temp_high);
-+	SAFE_FILE_PRINTF(trip_path, "%d", temp_high);
-+
-+	while (sleep_time > 0) {
-+		tst_res(TDEBUG, "Running for %f seconds, then sleeping for %d seconds", run_time, sleep_time);
-+
-+		for (int j = 0; j < nproc; j++) {
-+			if (!SAFE_FORK()) {
-+				cpu_workload(run_time);
-+				exit(0);
-+			}
-+		}
-+
-+		tst_reap_children();
-+
-+		SAFE_FILE_SCANF(temp_path, "%d", &temp);
-+		tst_res(TDEBUG, "Temperature for %s after a test: %d", temp_path, temp);
-+
-+		if (temp > temp_high)
-+			break;
-+		sleep(sleep_time--);
-+		run_time -= 3;
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	if (x86_pkg_temp_tz_found) {
-+		for (int i = 0; i < tz_counter; i++) {
-+			if (x86_pkg_temp_tz[i]) {
-+				snprintf(trip_path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/trip_point_1_temp", i);
-+				SAFE_FILE_PRINTF(trip_path, "%d", trip_orig[i]);
-+			}
-+		}
-+	}
-+
-+	free(x86_pkg_temp_tz);
-+	free(interrupt_init);
-+	free(interrupt_later);
-+	free(trip_orig);
-+}
-+
-+static void run(void)
-+{
-+	for (int i = 0; i < tz_counter; i++) {
-+		if (x86_pkg_temp_tz[i]) {
-+			read_interrupts(interrupt_init);
-+			test_zone(i);
-+			read_interrupts(interrupt_later);
-+
-+			bool interrupt_increased = false;
-+			for (int j = 0; j < nproc; j++) {
-+				if (interrupt_later[j] > interrupt_init[j]) {
-+					interrupt_increased = true;
-+					tst_res(TINFO, "CPU %d interrupt counter: %" PRIu64 " (previous: %" PRIu64 ")",
-+						j, interrupt_later[j], interrupt_init[j]);
-+				}
-+			}
-+
-+			if (!interrupt_increased)
-+				tst_res(TFAIL, "No thermal interrupt increase detected");
-+			else if (temp <= temp_high)
-+				tst_res(TFAIL, "Thermal interrupts increased but temperature did not rise as expected");
-+			else
-+				tst_res(TPASS, "x86 package thermal interrupt triggered");
-+		}
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.cleanup = cleanup,
-+	.forks_child = 1,
-+	.needs_drivers = (const char *const []) {
-+		"x86_pkg_temp_thermal",
-+		NULL
-+	},
-+	.min_runtime = 5,
-+	.needs_root = 1,
-+	.setup = setup,
-+	.supported_archs = (const char *const []) {
-+		"x86",
-+		"x86_64",
-+		NULL
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "9635c586a559ba0e45b2bfbff79c937ddbaf1a62"},
-+		{}
-+	},
-+	.test_all = run
-+};
+A separate entry for CVE catalog.
+Once a user clicks on this option it will expand with a list of 
+individual CVE pages
+in the left pane. Each entry follows the following format
+
+<CVE ID> ( <Test Name> )
+
+Based on review comments how should the page look like?
+
+A separate entry for CVE catalog.
+Once a user clicks on this option it will display the CVE list in 
+tabular format
+sorted by year. The table will follow (assuming Year to be retained)
+
+| ID | Test name | Year |
+-------------------------
+| .. |    ..     |  ..  |
+
+
+Test name will point to an entry in Test catalog.
+No individual pages required for each CVE.
+
+Can you confirm?
+> There's no need to have a direct link to the CVE, since we already pointing
+Okay. I can make this change. I followed the earlier
+
+Thanks for the review.
+
 -- 
-2.47.3
+Thanks
+- Sachin
 
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
 
 
 -- 
