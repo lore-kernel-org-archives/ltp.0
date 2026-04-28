@@ -4,91 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A403FF8868
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 11:53:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1777377203; h=message-id :
- to : cc : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : mime-version : content-type : content-transfer-encoding :
- sender : from; bh=RWBj789HCSiUrKB8R4V2KKfYWo3b/dWdN6e1tu5kcT0=;
- b=bw6K6jhbKbRk9Shl3/8S+uknq+R2ocnHh+QEF38uuUzRh6ubuBv/WU4Yb8EXLgAnHwKdt
- mQ3H+X811CB9adRGRQ8nVI+fMah387PH1K6h3v2fdD+hLGarndJvBIX1NuqNzLUkWnmMF+B
- V7JmLLwq21sBJE4m9YP2Xnxcw1xoFf4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA268FF8868
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 12:01:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 05DC43E49F3
-	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 13:53:23 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 4F8A83E49EB
+	for <ltp@archiver.kernel.org>; Tue, 28 Apr 2026 14:01:03 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 39A453E2D7C
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 13:53:00 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id AFDDC3E2D7C
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 13:58:03 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B4DF11000975
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 13:52:59 +0200 (CEST)
-Received: by mail-wr1-x436.google.com with SMTP id
- ffacd0b85a97d-43d7e23defbso6625056f8f.0
- for <ltp@lists.linux.it>; Tue, 28 Apr 2026 04:52:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1777377179; x=1777981979; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=ZPo3URXCssa2GL5B3r4/SSUvvYY+b+AoTfGuOSE6KqD2wA02RD8mo/vVcry77sda5R
- KUrD1NhrqBicrmBI7+q4tbgV1duHpb3w2zz4gNdwAX+EWOp8PGV5LmbUEEz6kIIbOQQ0
- 8t6rGRtO0grYKZ5tT4XZU8ykMHVCXm1ZMetLjOMmDCCtr9B5ILIDXbgMnTT0jezdSC6Z
- //rcAAKO8hqEJrDqtOB0hfxL4vbaf0Mqk+dHeXI6L0GDIPe3Wlyj4qw4Ji63rEoB8mN1
- 048wqTKdOoEFHYTMl3zdMuRR3Igk14r0ePYOJGspNr9bIsp3UWxHgFLqcKuzrvBO7Qlc
- xKpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1777377179; x=1777981979;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=FEVAB5Xi/87JP9TXN0+AHz022DcGMG6bBwjJeiU0K5azSWNaejFJHvMUztykB5Z5/R
- bo3ay1JDQ3Rwxb+iMvdLd5IQ89aj0nVpaFd1zos8RcMx7QX588SU5USNOCLzRGLzjaLJ
- 3+hMLzVfSDEQoOS8AGlpPDPxESrGxF8Rt8BLmQXvB2vJepCYWgvqDqZTQyzaO2TdO5Ip
- BaLeOq69dNoua2tWXGyoRiB1KhjS+0ECCOzuYvcMOh2UJYtrXWkLQOjnXF00JX+lWQGk
- A5kWHfBQjqPOlMyURxDXMtAlcjWptXzt8OWkqWhAxi81MAEbDYZgOUvH9OYSbeyqezve
- vUBA==
-X-Gm-Message-State: AOJu0YwhbkSOa4q2RFpPje21XLNRuUNpKXPrnxPcG610cN1rgpfuFEAz
- CP8adZVxjrCVvIK7NY7srDPYFUeLZBPG/VPLG6WVAkdo6KqPybskbeWCbzqyDNAEYnGXa67oZYN
- zPAEc9zfOcOII
-X-Gm-Gg: AeBDievoBeBktqiDsCkZZnBZo7YgGtkBCHhe2mSISMFw7HpLaktvxQlgTVvyVAGlFgp
- LcVBE8gafEtLCD2yiE07OYXVYePmMjc47M3/57RJXiYPGTdJBkO6dWPSOYqPOSSpwh5iofOjXMq
- Au5tMqS2y3xztn06tBzTWt08qPdctpGSmN1gSaZcJqN/oQ/cwU8g9NeqtdpHSVBd+X5aO8tEYYY
- G59Y9QvQIIOcpO7a51SRuiPxfc976OCihGFqrmg62BQ3q8twxYcQDAWg0XE9QKMsi59tEmQnbmQ
- ahr+mvRlQcE4XABisDsdeyrmpYz//9ZCCGCzwqjgqkPplC2p7VO12S5wEMR3qHqsjJgHPzi8FRa
- JU6ATxCj44Ea+Cv+mVbTD2yMgTpOr+ZWZbgCdQ5ZQj7E78NVyUXyMmNHl5lZzzJGlx7j9qTEVKn
- Yu9L/x7awywS5u5kfRDmiqYvyBsPmqrRdqeKcVMWU9rQZ1RO5JaUnwpXZPhdTNeekIprqLVmnYu
- k262cXXP0LM+f91waFCIVAaPKQYHyHN1ekAlx58NUpzkA==
-X-Received: by 2002:a05:6000:3105:b0:43d:242:b9bb with SMTP id
- ffacd0b85a97d-44648b510d4mr5023608f8f.18.1777377178767; 
- Tue, 28 Apr 2026 04:52:58 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
- [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4463f5b4fa2sm5765839f8f.19.2026.04.28.04.52.58
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 28 Apr 2026 04:52:58 -0700 (PDT)
-Message-ID: <69f09f9a.050a0220.321275.199a@mx.google.com>
-To: "Wei Gao via ltp" <ltp@lists.linux.it>
-Cc: ltp@lists.linux.it
-In-Reply-To: <20260427115941.31945-1-wegao@suse.com>
-Date: Tue, 28 Apr 2026 11:52:57 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B461B60004B
+ for <ltp@lists.linux.it>; Tue, 28 Apr 2026 13:58:02 +0200 (CEST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 63S729vP3293011; Tue, 28 Apr 2026 11:57:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=PaP8vRIrmpra8cJO8Ih+iklb/WEYYdAlCXSpykq7v
+ ww=; b=WrpYwETerFnElOBXY+kwu92Yv1AeGmMkE5/YxhMXp2+VAX7JTUNgUfhF/
+ hrhK0RSyy8fGmz4I9D8M+o+0nNe7YTKF78hMSL3NmD3J71qJxOjXrYd5NS7gc2ET
+ ZKR0KtNDw/AzVJRCF5kcHLGvn5xcIvp9leFYCKznk2dsYMYTOUuW6mrtZKvY80W+
+ ltOJ4MnF+AdedfKjax8X+e60BktKuyJbaGtCwVR/guSfc3H0S1XjRKboWa3pU2fI
+ pYa3Othc/blPXhQE8ZP+gKbqnX+/li5Vqeo5ndedsKUWvsDjSZpo7INT1qFzRE0Q
+ x/xTJc+50zzOVX4Z9x5ABTXWLhcvg==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drk1jmb2t-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 28 Apr 2026 11:57:38 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63SBcmPd024407;
+ Tue, 28 Apr 2026 11:57:37 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4ds7xq9mme-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 28 Apr 2026 11:57:37 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
+ [10.20.54.101])
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 63SBvYRA61669644
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 28 Apr 2026 11:57:34 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id EFB2020043;
+ Tue, 28 Apr 2026 11:57:33 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id CC5FF20040;
+ Tue, 28 Apr 2026 11:57:30 +0000 (GMT)
+Received: from li-3f69264c-2ce6-11b2-a85c-c3f414d24014.ibm.com.com (unknown
+ [9.124.222.20]) by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Tue, 28 Apr 2026 11:57:30 +0000 (GMT)
+From: Sayali Patil <sayalip@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Tue, 28 Apr 2026 17:27:29 +0530
+Message-ID: <91e8e5a0259ba981e530d099eb053395d8991177.1777377311.git.sayalip@linux.ibm.com>
+X-Mailer: git-send-email 2.52.0
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI4MDEwOCBTYWx0ZWRfX+Vu76kv6OA3O
+ o57KYd1Tgu4Ex5YS0xFbSlIHhkaalBG37V/9ZffYerntlWVOe2yuZESJ9FXM2V3W93HD7WkiIsr
+ WJAAWEfYmrsLVasf3wCTLVmI8ix/0JN5MD0BwADQv45o+m63nSHggZct42mUTZHTH6glIxmCVq/
+ sWlLLaw1Epw8sz/3XDrzJgHfv0fFOtaIi+U6TFYwL8632tKpMfKpgcS9L6A6Ul/ppyMggkVHxC1
+ 6RgGQYitK4QpodxYHfewpOyyJDEkby9z47FsN4Iu7bczTGjWty4+RAtgpmxVWII0l9rm0V3LUib
+ 8ZGyitNNftzWjdIJ1g0d7IZs4iKtZ8JtR2o5rBY0jQZWB7PJQ/dTJ9VVSCz8j74uIQaiIYCvRI8
+ I9ZAZYkbXD9guKOoswKnzNKD+5GeHI+g4USL8tlh262VbJzGzEEoUvNjvUVN3po1Rg/RRnbpeon
+ TNLjM+qsHNZqBc9hztg==
+X-Proofpoint-GUID: azsL-56p7feClyl_Uv5AJ6uOhy67dQcS
+X-Proofpoint-ORIG-GUID: kNBLZ-vPCSnXKvrlloK9co-key5NiKgy
+X-Authority-Analysis: v=2.4 cv=MohiLWae c=1 sm=1 tr=0 ts=69f0a0b2 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VnNF1IyMAAAA:8 a=AeWIWtLstDOc7VXNyXEA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-04-28_03,2026-04-21_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 adultscore=0 suspectscore=0 bulkscore=0 spamscore=0
+ priorityscore=1501 malwarescore=0 clxscore=1011 lowpriorityscore=0
+ impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
+ definitions=main-2604280108
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] mmapstress06: TCONF on systems without swap
- space
+X-Mailman-Approved-At: Tue, 28 Apr 2026 14:00:45 +0200
+Subject: [LTP] [PATCH] hugetlb/hugeshmat05: use size_t for hugepage
+ allocation sizes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,20 +109,66 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-MIME-Version: 1.0
+Cc: Ritesh Harjani <ritesh.list@gmail.com>,
+ Pavithra Prakash <pavrampu@linux.ibm.com>, sayalip@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+hugeshmat05 stores hugepage allocation sizes in int variables and
+passes them through shm_test(). This can overflow on systems with
+1GB hugepages, where computed test sizes may exceed INT_MAX.
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+For example, with 1GB hugepages and N=4, the test generates a 4GB
+allocation size. Storing this in int truncates the value, resulting
+in invalid sizes being passed to shmget() and subsequent failures
+such as EINVAL during shared memory attachment.
+
+Use size_t for size-related variables and update the corresponding
+printf format specifier to correctly represent allocation sizes.
+
+Fixes: 46640e176d ("hugetlb: add new testcase hugeshmat05.c")
+Reported-by: Pavithra Prakash <pavrampu@linux.ibm.com>
+Signed-off-by: Sayali Patil <sayalip@linux.ibm.com>
+---
+ testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c
+index 3b2ae351c..eb8663f2c 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c
+@@ -39,7 +39,7 @@ void setup(void)
+ 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+ }
+ 
+-void shm_test(int size)
++void shm_test(size_t size)
+ {
+ 	int shmid;
+ 	char *shmaddr;
+@@ -56,7 +56,7 @@ void shm_test(int size)
+ 	}
+ 
+ 	shmaddr[0] = 1;
+-	tst_res(TINFO, "allocated %d huge bytes", size);
++	tst_res(TINFO, "allocated %zu huge bytes", size);
+ 
+ 	if (shmdt((const void *)shmaddr) != 0) {
+ 		shmctl(shmid, IPC_RMID, NULL);
+@@ -70,7 +70,7 @@ static void test_hugeshmat(void)
+ {
+ 	unsigned int i;
+ 
+-	const int tst_sizes[] = {
++	const size_t tst_sizes[] = {
+ 		N * hpage_size - page_size,
+ 		N * hpage_size - page_size - 1,
+ 		hpage_size,
+-- 
+2.52.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
