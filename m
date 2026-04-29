@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D29EFF8864
-	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 07:33:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBA36FF8867
+	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 07:33:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4512B3E28C0
-	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 09:33:40 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 890D03E2578
+	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 09:33:56 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E75333CA6DC
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 09:33:21 +0200 (CEST)
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com
- [IPv6:2607:f8b0:4864:20::844])
+ by picard.linux.it (Postfix) with ESMTPS id EA3913E289B
+ for <ltp@lists.linux.it>; Wed, 29 Apr 2026 09:33:29 +0200 (CEST)
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
+ [IPv6:2607:f8b0:4864:20::742])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id ECD1B601926
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 09:33:15 +0200 (CEST)
-Received: by mail-qt1-x844.google.com with SMTP id
- d75a77b69052e-50e63771d91so110008131cf.0
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 00:33:15 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 66AE460093D
+ for <ltp@lists.linux.it>; Wed, 29 Apr 2026 09:33:29 +0200 (CEST)
+Received: by mail-qk1-x742.google.com with SMTP id
+ af79cd13be357-8f231f3b130so433253585a.3
+ for <ltp@lists.linux.it>; Wed, 29 Apr 2026 00:33:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1777447995; x=1778052795; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1777448008; x=1778052808; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=+VlCl07V9/Ht0oJhsLCIjqxiORDxVBiu/UU3zDZHPjk=;
- b=gpejEGaTGghEbMcTfDz5ceBqf3zjxFGsbXpTZneDsi/lGypkSfgiZ9IkXOlR0+rpX/
- QDFUcXieHVs4FaFXKDIj3ChYb2+7DMGWr2pqbzH80QuJqsP07a02Pbr/Cky5GbHpLM7y
- Le3rScEZtDtA2fonizZ9pHxBvO89ndBEFawCJZY+k8vjKy7DYdH87GQc18ZuGIlEEUmb
- N7dUYlwIrXjdPomz+aLbzuF4Sebi2fo82cU9NyyN134x5MeqV492K4L+Okk+pHx26cqi
- p5XTHvRIr77vilxn0KRMZI4ZYoYN5nO+zw0FhCdfJPbsqOsMz+G4odGGsEtCDmbFxOVr
- 6yzA==
+ bh=UQ1eNeemjpfn/Zby0D+Nw3Lacp5u0rWI6VmH6GrmxCw=;
+ b=dqeEvQY0R8dZozOJyB03B6tnlRRzl1NMm3c/yd/kQJ5aOW7enctDo/8LJatGWv58VJ
+ cAT6LTfaGDua3OZDq4tZI7LATmgV2rKC8y75e8zibOb7h8QZqE9C/jdXfO9ccMhbU2Hq
+ 377u3w5doKWwlcmvjIFimzDu5HPu+ZkY25B2FHHZUhpla11pzbz2Dmd77ZsnptKKwmBu
+ O/emWbdjz3I+Y9TuorSDHZyBt5PargIRdKWTKnYdRM872qkBhkaN7vTW3NpJRJNuoXwF
+ aUTcD5BqxkpfvvVJgFBbhVauEKkxU2L7y6FBlXAXW8MxykjKisuG1WD9uNIrOdrJKOWn
+ lLNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1777447995; x=1778052795;
+ d=1e100.net; s=20251104; t=1777448008; x=1778052808;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=+VlCl07V9/Ht0oJhsLCIjqxiORDxVBiu/UU3zDZHPjk=;
- b=A96Vj+JUbvCEfxZPoP5JJ023sRBMVfXrvzPVVpxJFdXMbZt2RSgXyAv5hBVAgyNU61
- HH7noa0fdi9LVtLD0SaSrjDt8blipaTPW2I19OTE0zjcuBd3U41n35qpNcDaEB1taTxy
- gTIgvse1jWEWK++KW2OFJCC6kWktvEKow6sN0oN/5IZaVmeJ7teZevc8KypffZcGmo8D
- liVMkiBdjmytlNMPZ6dPFRmFweExYmwgaHyPLyXJMCuAeCOu1XL6YVEhwcNGH+4QaWkr
- U/DXpYQB/KyV2JaEz6dDx3Z67asfdhX9MvUJNQcp33agr6qE4n7smehP0gE817xDMgWS
- 7xZQ==
-X-Gm-Message-State: AOJu0YyH/0kT/V7cvAWOdE01692VfDDwZFcSMbXIT6eQ34gYG5ciCOOx
- Hs5/9/bmaYWqE7CTLlUroFBvcLpMhxkrjWjRJ3dDBufMqUI73cxIOTNx
-X-Gm-Gg: AeBDievn9wALg1rA8hUXrPQoysWbMlIK6a77YqKqnWB5G8YkIfvAtjWtJK7lic6CNZR
- T237JxuyIqF/Sq3yNCsu2SBH/ZRQclFvxMmJOfOj4jl1bkQ3+KWsqU7hTcoHKy4jDyP/xPaOvVm
- O1sMm+aOPHfx4k/Gh2KKulY8nU3g99Jx2aqzUjHJO1wVgDrPhxaXR/fy3D4c6sJJsEuLEQevBk4
- 2t7Fjjl53zENV9B/kFKXH+/ib5Qeshq6RjL3x6b26fD3h6fBE6Mr+QNGBkgJ8BVX1Tm5/KDYKWf
- 5f76ahb9GAdyaEadrNC5OBQQ0gl6IlqClIie6o3Wad+uc35XYsfWfE9h6SRHAEWrhd0oK37Rklu
- iCsxOurCYMwuhlM6lFyDy3Lkujkhz1X6yE/VoDjo8RfvkHOrrfzQTVw39t5H9YViDbj+Ykpt4nY
- 7p67KXAx6Mng0tCFV+IKo+TaKFgEcEwXShQT2pueITBCyT9D5pqkz6acwazOPXBj5dNtuKwoUj5
- xdnvX+45nFHMumjfUl/PQQ7s+5wzbJr8D/USgPuJFxgAUDB7SM9TyoZpd6zlQ==
-X-Received: by 2002:ac8:5f85:0:b0:50d:a1c4:e154 with SMTP id
- d75a77b69052e-5100e19a1b9mr88528941cf.36.1777447994588; 
- Wed, 29 Apr 2026 00:33:14 -0700 (PDT)
+ bh=UQ1eNeemjpfn/Zby0D+Nw3Lacp5u0rWI6VmH6GrmxCw=;
+ b=ksANMSmjhDY00wBMPpTOWd1UJGF0xKHJXc1MVRflqs++i2ml7LkYtQnodkSualJuyg
+ BytNQZgCZnNzVxi4rLc1UtE5yF9VLgHj/94zsKvvd8m2tHNmRcm/de4HtVRQ7QgAWUpn
+ vOAAPG+rC/OpQKCIIgy7gd+WzBI+Zl5SSCOBQGQk2OTBNO/T3FTxca523ndBcWziIlwv
+ /jQDeeHLzsIulJF1p14QQMGgP4+dmHpmOLXrs/d4rLdBDdiC/cEd7EL1sszDUijzO2P/
+ o0j90tvoCJpnfsJzPS5KdsF2w7wKgNAdWdstcWu2a6Ge4wpM7PTy9/uc2QG6JLR9zPLJ
+ OkCw==
+X-Gm-Message-State: AOJu0YxJmrwa2atYLLaymKppJ6wUtzGiZNdf2akGIMAAIw/mv9Pk1j0x
+ GtAWZ/OGgvqFxycpuDjMR5T05EQ68rZlTQhhsrTwI4r3h0WDgg9rY1RrJo40IvqWOGI=
+X-Gm-Gg: AeBDievt8HCBLlxt5fSXxqYdsdKZd1QWH+Cij4vwXir9Vk/7edpq/oVIXkIjqNgM+LX
+ 6tjkti9+Y961Q18PIApsFCVJOC8LLUZil9cT4bvz3cBWi7a4DhfVB+A56lpHTgwRyt0PD9mHm3k
+ 6hdsNnMo+lG9G2ctanumXdMvVPod+K0lCpvmKdAfwJo119+LkHl4/DndxqdeKZGS+UJM4UJWyGp
+ iRtG/o+QVb5s5RDxEUF/U4JXaNyt2E4fSID4SOyhi2rzBIBoVZf+/mNL+D2CSL7yQqkyWfXb/oX
+ dcfwesNr2OogySfIeCJ0Ccx/GqOLMfGVW5JLVBgVhY4lB+9F7CVMn8lMkILFrgbjb4Oy7B8Z1fm
+ uLc7a7hspfxyssAHu+z1N30EW1rruTvbcT28A+7lx6TreeAeijRdwfBao/jCTeFwc28bCwMK6n2
+ y0LK6kRi9TYS8KAuPM4kn8t9/BXnMF2uZKnuyoSkn0M86GkFz73F47gE+a7xeF9rGRoXy5vKtf2
+ tQXlWtC/youhwDeULBQ4mPXdtBxH7fZakvtkgRDTD4ggvKcxmE=
+X-Received: by 2002:a05:622a:588f:b0:50f:c2d5:3154 with SMTP id
+ d75a77b69052e-51018a7ec1amr38184411cf.42.1777448008108; 
+ Wed, 29 Apr 2026 00:33:28 -0700 (PDT)
 Received: from
- runnervmeorf1.ilqebtjoo3redgtn5bhhrwy0we.ex.internal.cloudapp.net
- ([135.232.185.20]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-5101ae3cf8fsm10974561cf.17.2026.04.29.00.33.14
+ runnervmeorf1.iyldqaevqpzuto5kdmxufowjjb.ex.internal.cloudapp.net
+ ([64.236.134.167]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-5101acf99afsm11142421cf.12.2026.04.29.00.33.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Apr 2026 00:33:14 -0700 (PDT)
+ Wed, 29 Apr 2026 00:33:27 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: priyama2 <priyama2@linux.ibm.com>
-Date: Wed, 29 Apr 2026 07:33:13 +0000
-Message-ID: <20260429073313.4011-1-linuxtestproject.agent@gmail.com>
+Date: Wed, 29 Apr 2026 07:33:26 +0000
+Message-ID: <20260429073327.3985-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260430154852.896072-1-priyama2@linux.ibm.com>
-References: <20260430154852.896072-1-priyama2@linux.ibm.com>
+In-Reply-To: <20260430155241.897024-1-priyama2@linux.ibm.com>
+References: <20260430155241.897024-1-priyama2@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] testcases/nvme: Add NVMe device discovery and
  identification test
@@ -92,36 +92,85 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUHJpeWEsCgpPbiBUaHUsIDMwIEFwciAyMDI2IDE1OjQ4OjUyICswMDAwLCBwcml5YW1hMiB3
-cm90ZToKPiB0ZXN0Y2FzZXMvbnZtZTogQWRkIE5WTWUgZGV2aWNlIGRpc2NvdmVyeSBhbmQgaWRl
-bnRpZmljYXRpb24gdGVzdAo+Cj4gVGhpcyB0ZXN0IHZlcmlmaWVzIE5WTWUgZGV2aWNlIGRpc2Nv
-dmVyeSBhbmQgaWRlbnRpZmljYXRpb24gYnk6Cj4gLSBEZXRlY3RpbmcgTlZNZSBjb250cm9sbGVy
-cyBpbiAvZGV2Cj4gWy4uLl0KClRoZSBjb21taXQgYm9keSBkZXNjcmliZXMgd2hhdCB0aGUgdGVz
-dCBkb2VzIGJ1dCBub3Qgd2h5IGl0IGlzIG5lZWRlZCDigJQKd2hhdCBjb3ZlcmFnZSBnYXAgZG9l
-cyB0aGlzIGZpbGw/IEFsc28sICJDaGFuZ2VzIGluIHYyOiIgYmVsb25ncyBpbiB0aGUKY292ZXIg
-bGV0dGVyLCBub3QgdGhlIGNvbW1pdCBib2R5OyBzdHJpcCBpdCBiZWZvcmUgc2VuZGluZy4KCj4g
-KysrIGIvdGVzdGNhc2VzL2tlcm5lbC9kZXZpY2UtZHJpdmVycy9udm1lL252bWUwMQo+IG5ldyBm
-aWxlIG1vZGUgMTAwNzU1Cj4gIEJpbiAwIC0+IDk5NTUzNiBieXRlcwoKRG8gbm90IGNvbW1pdCBj
-b21waWxlZCBiaW5hcmllcy4gUmVtb3ZlIG52bWUwMSBmcm9tIHRoZSBwYXRjaCBhbmQgYWRkIGEK
-LmdpdGlnbm9yZSBpbiB0aGUgdGVzdCBkaXJlY3RvcnkgbGlzdGluZyBpdC4KCj4gKyAqIENvcHly
-aWdodCAoYykgMjAyNCBJQk0gQ29ycG9yYXRpb24KClRoaXMgZmlsZSBpcyBuZXcgYW5kIGFkZGVk
-IGluIDIwMjY7IHVzZSB0aGUgY3VycmVudCB5ZWFyLgoKPiArc3RhdGljIGludCBudm1lX2Rldmlj
-ZV9mb3VuZDsKPiArc3RhdGljIGNoYXIgbnZtZV9kZXZfbmFtZVsyNTZdOwoKVGhlc2Ugc3RhdGlj
-cyBhcmUgc2V0IGluIGNhc2UgMCBvZiBydW4oKSBidXQgbmV2ZXIgY2xlYXJlZC4gV2l0aCAtaSwK
-c3RhbGUgc3RhdGUgZnJvbSBhIHByaW9yIGl0ZXJhdGlvbiBwZXJzaXN0cyBpbnRvIHN1YnNlcXVl
-bnQgb25lcy4gUmVzZXQKdGhlbSBhdCB0aGUgdG9wIG9mIHJ1bigpLgoKPiArCS5uZWVkc19yb290
-ID0gMSwKCk5vIG9wZXJhdGlvbiBpbiB0aGlzIHRlc3QgcmVxdWlyZXMgcm9vdC4gQWxsIHJlYWRz
-IGZyb20gL2RldiBhbmQgc3lzZnMKYXJlIGFjY2Vzc2libGUgdG8gdW5wcml2aWxlZ2VkIHVzZXJz
-LiBEcm9wIG5lZWRzX3Jvb3QuCgpUaGUgcGF0Y2ggaXMgYWxzbyBtaXNzaW5nIGEgcnVudGVzdCBl
-bnRyeSAoZS5nLiBpbiBydW50ZXN0L2RyaXZlcnMpIGFuZAphIC5naXRpZ25vcmUgZW50cnkgZm9y
-IHRoZSBudm1lMDEgYmluYXJ5LgoKLS0tCk5vdGU6CgpPdXIgYWdlbnQgY29tcGxldGVkIHRoZSBy
-ZXZpZXcgb2YgdGhlIHBhdGNoLgoKVGhlIGFnZW50IGNhbiBzb21ldGltZXMgcHJvZHVjZSBmYWxz
-ZSBwb3NpdGl2ZXMgYWx0aG91Z2ggb2Z0ZW4gaXRzCmZpbmRpbmdzIGFyZSBnZW51aW5lLiBJZiB5
-b3UgZmluZCBpc3N1ZXMgd2l0aCB0aGUgcmV2aWV3LCBwbGVhc2UKY29tbWVudCB0aGlzIGVtYWls
-IG9yIGlnbm9yZSB0aGUgc3VnZ2VzdGlvbnMuCgpSZWdhcmRzLApMVFAgQUkgUmV2aWV3ZXIKCi0t
-IApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi Priya,
+
+On 2026-04-30, priyama2 <priyama2@linux.ibm.com> wrote:
+> [PATCH] testcases/nvme: Add NVMe device discovery and identification test
+
+The subject prefix should match the actual directory path:
+testcases/kernel/device-drivers/nvme:
+
+The commit body only describes what the test does (restating the subject).
+Please add a sentence explaining why the test is needed, e.g. what gap in
+NVMe coverage this fills.
+
+> +/*
+> + * Copyright (c) 2024 IBM Corporation
+
+New files added in 2026 must use 2026 as the copyright year.
+
+[...]
+
+> +SUBDIRS		:= acpi \
+> +		   ...
+
+testcases/kernel/device-drivers/Makefile has an explicit SUBDIRS list that
+does not include nvme. The directory will not be built. Add nvme to the list.
+
+[...]
+
+> +static int nvme_device_found;
+> +static char nvme_dev_name[256];
+
+These statics are written in run() case 0 and read in cases 1-3 but are
+never reset at the top of run(). With -i, stale values from a previous
+iteration carry over. Reset them at the start of run().
+
+[...]
+
+> +	.needs_root = 1,
+
+All operations here (reading /dev, /sys) are world-readable. Remove
+.needs_root = 1.
+
+[...]
+
+> +		fp = fopen(class_path, "r");
+> +		if (!fp)
+> +			continue;
+> +		...
+> +		fclose(fp);
+
+Use SAFE_FOPEN/SAFE_FCLOSE (include/tst_safe_stdio.h), or document why
+the raw call with continue-on-failure is intentional.
+
+[...]
+
+> +	len = readlink(driver_path, driver_link, sizeof(driver_link) - 1);
+
+Use SAFE_READLINK (include/tst_safe_macros.h).
+
+Also missing:
+- testcases/kernel/device-drivers/nvme/.gitignore entry for nvme01
+- runtest/ entry for nvme01 (e.g. in runtest/drivers)
+
+---
+Note:
+
+Our agent completed the review of the patch. The full review can be
+found at: (not available)
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
