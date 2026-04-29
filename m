@@ -4,92 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 163D1FF8867
-	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 12:12:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70BF3FF8867
+	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 12:21:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CCB6F3E2D98
-	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 14:12:03 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 041483E49C3
+	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 14:21:38 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1B3453CEE87
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 14:11:43 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id EF3A23E12DF
+ for <ltp@lists.linux.it>; Wed, 29 Apr 2026 14:21:19 +0200 (CEST)
+Received: from mail-dy1-x1343.google.com (mail-dy1-x1343.google.com
+ [IPv6:2607:f8b0:4864:20::1343])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 776D910009FF
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 14:11:43 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 688E46A88B
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 12:11:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1777464698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=hHUcFZteYBs6F9jNOhPOkjNj9eRCuac0yDH9FYbqYvg=;
- b=BRBHqQ2H08uoGhi3LRfEaebi1CnA/3exRcFNNKPEYCxqvaLdna6KYmL0ND4qROO59cq0JL
- bvj4ag7G7l5jQ9D4SczHPMJnhWfDZbL+1q6iN1Aw2HG7/M2ioXfqnJ540HPFZsmQtr0Hb9
- eNW8XMaHSf10GuCO1ICb+jJ+AJ606tI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1777464698;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=hHUcFZteYBs6F9jNOhPOkjNj9eRCuac0yDH9FYbqYvg=;
- b=8iyHSwMMmEi01/rUfpOtRG+DS9PpswMQz/g6/o9EwRlk8zoq4z4e0wtp4ykDqAnwzse/k8
- 23XR1wkw5/JGmVAA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1777464694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=hHUcFZteYBs6F9jNOhPOkjNj9eRCuac0yDH9FYbqYvg=;
- b=CxZ0lSuV/0B0Nyg+T2peOo5ILt34m3bnV5xMXsWLI2Tc6hW40EFzfkismpwC1+XrDmr8XS
- 9WFmJULz/4HqLw7xyky9FtBIIKVvxZnCRFgTDSjfE4ttWEI6W9JIRDrdePbzGOokehX7O/
- L0rMNuk3E8EX1QNgev1maeBeZqE0hmk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1777464694;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=hHUcFZteYBs6F9jNOhPOkjNj9eRCuac0yDH9FYbqYvg=;
- b=wQE89eoWcGUl8TQZXHncHtSOPo0d6ROlRx9VH0v7k4KS24JHFdJpYHe4XKLkSVDyWZF6tH
- 4H6t8oZpN9yaxLCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5FFD2593B0
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 12:11:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id pz4eF3b18WmdWgAAD6G6ig
- (envelope-from <mdoucha@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 12:11:34 +0000
-From: Martin Doucha <mdoucha@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed, 29 Apr 2026 14:11:27 +0200
-Message-ID: <20260429121129.21911-1-mdoucha@suse.cz>
-X-Mailer: git-send-email 2.53.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4A8B21A0064F
+ for <ltp@lists.linux.it>; Wed, 29 Apr 2026 14:21:19 +0200 (CEST)
+Received: by mail-dy1-x1343.google.com with SMTP id
+ 5a478bee46e88-2ba9c484e5eso12666006eec.1
+ for <ltp@lists.linux.it>; Wed, 29 Apr 2026 05:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1777465278; x=1778070078; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=VzHq7PGTGxPyPjJYJwVvZTJS6MLsaOMoeYbq7Vcz368=;
+ b=b8R6A4OJSlGgUURq6bn8bSZxqZmaQXunZbIkisXFuo2TmSyndKp5xNSt/i4CKprHeI
+ tpKXuVyqHg0vV8Je61RRsQOsWQzACBnRMtljunIzF1PjqcC2wYPkForxe2m/ZvsVUG3l
+ jkBhet3Y1yE2ngReS6JxS0aCnsYiEytakRtZkvSGt9KJkzhJZ2ahBEbBJt0wmGBJzm0u
+ VphhqJF4iHs7WefeiQnncdaojqNMo0qSHHcxg3pRJltnSYH+nXtVtVZk4P1iab6XT9xi
+ scmufxPqqLI92FTKOnlaumex1j55PlCRyML+bnoq8he/NnchbIKAQtx6Zinl53pAEcb7
+ 3H9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1777465278; x=1778070078;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=VzHq7PGTGxPyPjJYJwVvZTJS6MLsaOMoeYbq7Vcz368=;
+ b=hTmIK96/YuBefvj1AQD6wUKNTnK2kVJubJm18nm6qB3D0+Ovm+6ekfkqKHCLeJV5vI
+ 8NevgdFlfh7rW/YK7TAhNspu4HV1s9PqjeQi3KDZfJkWdGV+SBJb8tLcl0bRgdJWDZjy
+ TnnfluGep1e2imNIJkBpL3fjrPCRlnkG6xhDSv84v0qLWa8098+4lLkl7Ffph49KF5uN
+ LJSiICBqZC1XQoScPOLzDIuw7COiZ4/G46pzMEQDZBHaU7PwZq07hP8+n6R0c2H20wYG
+ pqTvbg0YWkk54o+4Pb6t9If6xzB3kkGNh087aZqWYknmoBpCvzrtnAeANdsd2ttkiv4y
+ nZRw==
+X-Gm-Message-State: AOJu0YzMagAgE8Q2tfGaxvobIqUlpEEfyTNmVB6Ik9BdA31JYnq5satT
+ 43G23OWFuE//pu9rLncN3ZwkKyfXf+GIc5OvJsSKQ4nG9IgOmsiS8hApM+T6py2rmgZkLA==
+X-Gm-Gg: AeBDieuCNSm99RhpFSTTXIJVsOcW0omX9YKHjGljHZVwyeisDJrwnTbRnomr1JUANqU
+ LWCUA5iDgA7WRv+pWyMBWV2Npsgo5taOIAHlzPLaa6jpkYjDcSLW9dU0zVmmon5ev1ieSHrNm1q
+ AqNbyWXYghPGB6QuN5PCyZiDzglsPVB7uS6eHIlEUrtJ4NJolnneeij+SyvjAEFwC1KJFOcVOCg
+ jK6i35oN/2TenCajjorTQDFIGgEVjuAeck7zd6TfFHQdqVXmuE/HQKo25ksOSmEY4Hx3d3/P1Wo
+ 7hESfv/Clii0q6IQhUCpkJW+UboYwLW+fQDGaK2Aotasb4bezXCWGVoyrllaISaDGExlTTXb68P
+ Ro+U/FUG6CeGgG5LhROOe9QAiXac7LFsl65TznImDBrZT5jkC5qiNW0BY/41KWCTMUZsJ4DzBtr
+ jMT6xwd8nP7Vv3zgnGy7i1kwJ02GPYVz7VuxDaUkszi0xkWE3SyySXtNL9ZYftPMXS8v3jXu9NY
+ v0MrunscB0g78YWGPG0cXVqid4ogaLbtk+6xydtzZPPJYn3Dw==
+X-Received: by 2002:a05:7300:cb85:b0:2da:a813:a60c with SMTP id
+ 5a478bee46e88-2ed0a1163b7mr3945190eec.20.1777465277509; 
+ Wed, 29 Apr 2026 05:21:17 -0700 (PDT)
+Received: from
+ runnervmeorf1.cwerdptpvzpeflxqczcybh3zdd.yx.internal.cloudapp.net
+ ([52.161.74.198]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-2ed1bf8ddaasm1964464eec.7.2026.04.29.05.21.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 29 Apr 2026 05:21:17 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 29 Apr 2026 12:21:16 +0000
+Message-ID: <20260429122116.3978-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260429105644.986278-1-pvorel@suse.cz>
+References: <20260429105644.986278-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] icmp_rate_limit01: Fix rate limit change on older
- kernels
+Subject: Re: [LTP] Move runtest/irq into runtest/kernel_misc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,51 +90,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The icmp_msgs_burst sysfile was added to non-root namespaces in kernel
-v6.12. Older kernels allow changing the value only from the root
-namespace. Set the global limit first, then change the test namespace
-limit as well if needed.
+Hi Petr,
 
-Fixes: 3c4c712f1f9b ("cve: icmp_rate_limit: set icmp_msgs_burst within network namespace")
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+On 2026-04-29, Petr Vorel <pvorel@suse.cz> wrote:
+> Move runtest/irq into runtest/kernel_misc
+
+> -irqbalance01 irqbalance01
+> ...
+> +irqbalance01 irqbalance01
+
+Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
+
 ---
- testcases/cve/icmp_rate_limit01.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Note:
 
-diff --git a/testcases/cve/icmp_rate_limit01.c b/testcases/cve/icmp_rate_limit01.c
-index 5193c5dfd..37bc71cb8 100644
---- a/testcases/cve/icmp_rate_limit01.c
-+++ b/testcases/cve/icmp_rate_limit01.c
-@@ -62,7 +62,12 @@ static void setup(void)
- 	/* Do NOT close this FD, or both interfaces will be destroyed */
- 	childns = SAFE_OPEN("/proc/self/ns/net", O_RDONLY);
- 
--	SAFE_FILE_PRINTF("/proc/sys/net/ipv4/icmp_msgs_burst", "50");
-+	/*
-+	 * Set namespace local rate limit if needed. The global limit might
-+	 * be ignored otherwise.
-+	 */
-+	if (!access("/proc/sys/net/ipv4/icmp_msgs_burst", F_OK))
-+		SAFE_FILE_PRINTF("/proc/sys/net/ipv4/icmp_msgs_burst", "50");
- 
- 	/* Configure child namespace */
- 	CREATE_VETH_PAIR("ltp_veth1", "ltp_veth2");
-@@ -257,6 +262,7 @@ static struct tst_test test = {
- 	},
- 	.save_restore = (const struct tst_path_val[]) {
- 		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
-+		{"/proc/sys/net/ipv4/icmp_msgs_burst", "50", TST_SR_TBROK},
- 		{}
- 	},
- 	.tags = (const struct tst_tag[]) {
--- 
-2.53.0
+Our agent completed the review of the patch.
 
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
