@@ -4,98 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F2A2FF8864
-	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 05:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96B38FF8867
+	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 06:11:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2F8C43E2107
-	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 07:49:01 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 2B49A3E252D
+	for <ltp@archiver.kernel.org>; Wed, 29 Apr 2026 08:11:12 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 10C8A3E1A9F
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 07:48:43 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 7320D3D03F5
+ for <ltp@lists.linux.it>; Wed, 29 Apr 2026 08:10:52 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E8F5F1000977
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 07:48:42 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 63SJIRuN3583678; Wed, 29 Apr 2026 05:48:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=TUv8NfLu4NFS+bR2F
- uvjaEPwubJUTBFUPdIbqPeeoBg=; b=UvuKudCEyOYZHcfHTKGClj9z7OOqHQFXM
- wGuXQ65YVWCRd4UhwVNPcwvkmGRYB1yTThSkZTxx1tqplLMjhuWgDN86Yutjn4RB
- WJs317et5lvHNGXkkxWOi88YJ+Lp1E736vY/LV+jgmLYQzjidi0B2194Vl+kAG40
- SI8LwJqJOJHYJM0O3iVRsAmeAIMpIG4XcoIBuu/2h94xYDRS33lAW6DRJXikB+fB
- OXWca1YIj4xarhl4URPl9ffgfftp5e5Sgqtd3nTHFcoEevsXpbc7qjRj3kkKerjI
- B9jBGRZNT8yjcGt6sIOe+zHcHnB094agkzxGvo8HCBjpx+IypVlCA==
-Received: from ppma21.wdc07v.mail.ibm.com
- (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drn44s206-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 29 Apr 2026 05:48:40 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63T5coCP016260;
- Wed, 29 Apr 2026 05:48:39 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
- by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4ds8xk50tw-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 29 Apr 2026 05:48:39 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com
- [10.241.53.103])
- by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 63T5mcVj14287576
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 29 Apr 2026 05:48:38 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 740FB58056;
- Wed, 29 Apr 2026 05:48:38 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 39D7A58052;
- Wed, 29 Apr 2026 05:48:38 +0000 (GMT)
-Received: from botlp69.isst.tadn.ibm.com (unknown [9.5.7.36])
- by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
- Wed, 29 Apr 2026 05:48:38 +0000 (GMT)
-From: priyama2@linux.ibm.com
-To: ltp@lists.linux.it
-Date: Thu, 30 Apr 2026 15:52:41 +0000
-Message-ID: <20260430155241.897024-1-priyama2@linux.ibm.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260428075302.7320ef7e3@imap1.dmz-prg2.suse.org>
-References: <20260428075302.7320ef7e3@imap1.dmz-prg2.suse.org>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 91C871400C60
+ for <ltp@lists.linux.it>; Wed, 29 Apr 2026 08:10:51 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9B6C75BD3F;
+ Wed, 29 Apr 2026 06:10:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777443044;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZoYkLNZdDDtbXfm4XXwBQQQe3dfYSdtnWbJno9gORSE=;
+ b=gxfoVG6JVoT4YWN6B5lFAQDaXGzxRXFbbLWVfancNQPuW2apUOaiGcOrhmenGvZz68bG9l
+ 00eHdELLTuCIiZRoJJVF0H7MNdUBH8TqIaDqoiDXX9ii4hBcn/m9msSf9O3F62ka2932Sj
+ LUaA1yhBts+P2sEhNzxeXsGIkDlQPRQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777443044;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZoYkLNZdDDtbXfm4XXwBQQQe3dfYSdtnWbJno9gORSE=;
+ b=aa/Z8Ht/2rUKp6bqo11ZicPqhlDmm3jUkJpyGXCfQCwnbCR5UAq6JsZQNC0ULxMS3O2mvP
+ pc+428blH/d7T8Cg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gxfoVG6J;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="aa/Z8Ht/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777443044;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZoYkLNZdDDtbXfm4XXwBQQQe3dfYSdtnWbJno9gORSE=;
+ b=gxfoVG6JVoT4YWN6B5lFAQDaXGzxRXFbbLWVfancNQPuW2apUOaiGcOrhmenGvZz68bG9l
+ 00eHdELLTuCIiZRoJJVF0H7MNdUBH8TqIaDqoiDXX9ii4hBcn/m9msSf9O3F62ka2932Sj
+ LUaA1yhBts+P2sEhNzxeXsGIkDlQPRQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777443044;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZoYkLNZdDDtbXfm4XXwBQQQe3dfYSdtnWbJno9gORSE=;
+ b=aa/Z8Ht/2rUKp6bqo11ZicPqhlDmm3jUkJpyGXCfQCwnbCR5UAq6JsZQNC0ULxMS3O2mvP
+ pc+428blH/d7T8Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 75FC1593B0;
+ Wed, 29 Apr 2026 06:10:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id r7XSG+Sg8WnDQgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 29 Apr 2026 06:10:44 +0000
+Date: Wed, 29 Apr 2026 08:10:43 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20260429061043.GA539072@pevik>
+References: <20260427115941.31945-1-wegao@suse.com>
+ <20260428125804.GA921372@pevik> <20260428163415.GB921372@pevik>
+ <afFrf9OtAUkcOjLT@autotest-wegao.qe.prg2.suse.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 66Ei08qr6-DLFuesq2XLoboPWEHlgxXb
-X-Authority-Analysis: v=2.4 cv=Ft81OWrq c=1 sm=1 tr=0 ts=69f19bb8 cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
- a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=iQ6ETzBq9ecOQQE5vZCe:22 a=VnNF1IyMAAAA:8 a=HKdTNp9lvr2wyx0tH1cA:9
-X-Proofpoint-GUID: 66Ei08qr6-DLFuesq2XLoboPWEHlgxXb
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI5MDA1NCBTYWx0ZWRfX6InkOaEaQcI/
- OvEzU86m8r4WQYmZ2/6RhyWYgmjCvdzAyZzsZCWKptQBNslNsaO9WxQh8YzIUmnd8p0ywe2JrK0
- oG6A6IoR+Mva1crCuw7kv0ynsjBUKrKRTUU/zVd0Rjnvw8kyR9NfOg7VOcPUdCdJ15yvRtPyT5W
- SMOlRn+QwOw+JF7q4BR2r83eiqK7pqMgYmb4B1ZDq2+I0As115D1cL/ZmkzeR+0EWBjg7V3PK/1
- YUoxDWXz5cRdHXIzPKB6y3BPBf3A34aktnzLN1L0qkYvwrXeqCf2zpAwdLyTi62QEuYf0bHaqjn
- hdiZpeuzbbKFUCwB1oNFk4ILmhB/WYN5jBZIfRGT7MHSn2hGcuy7d2HYsBODsL75Qr+Nm7/wyuI
- +98Gi2xxBxOgaU32HDqOuCEOAuKSCsiLCnwLDTatYQMXAx9V/kJ+zREA/Tzh/Z6Vvn/K42UMA5F
- SyxOfflipBKhWDK9C2Q==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-28_05,2026-04-28_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 spamscore=0 impostorscore=0
- clxscore=1015 malwarescore=0 phishscore=0 suspectscore=0 adultscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2604290054
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <afFrf9OtAUkcOjLT@autotest-wegao.qe.prg2.suse.org>
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[6];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Queue-Id: 9B6C75BD3F
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] testcases/nvme: Add NVMe device discovery and
- identification test
+Subject: Re: [LTP] [PATCH v1] mmapstress06: TCONF on systems without swap
+ space
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,266 +120,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Li Wang <liwang@linux.dev>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: priyama2 <priyama2@linux.ibm.com>
+> On Tue, Apr 28, 2026 at 06:34:15PM +0200, Petr Vorel wrote:
+> > Hi all,
 
-This test verifies NVMe device discovery and identification by:
-- Detecting NVMe controllers in /dev
-- Enumerating namespaces for detected controllers
-- Verifying PCI enumeration (class code 0x010802)
-- Checking NVMe driver binding
+> > > Hi all,
 
-Changes in v2:
-- Use LTP buildsystem instead of standalone Makefile
-- Remove README file (use doc comments instead)
-- Fix author attribution
-- Add proper LTP documentation comment format
-- Use SAFE_OPENDIR() and SAFE_CLOSEDIR() macros
-- Remove obvious and redundant comments
-- Code cleanup and style improvements
+> > > > mmapstress06 is designed to stress the mfile_swap kernel primitive, which
+> > Uh, I overlooked "mfile_swap kernel primitive". Then the approach would make
+> > sense, but is it really true? mfile_swap does not exist any more, not even in a
+> > git log. Test was added in January 2003, e.g. even before 2.6.
 
-Signed-off-by: priyama2 <priyama2@linux.ibm.com>
----
- testcases/kernel/device-drivers/nvme/Makefile |   7 +
- testcases/kernel/device-drivers/nvme/nvme01.c | 208 ++++++++++++++++++
- 2 files changed, 215 insertions(+)
- create mode 100644 testcases/kernel/device-drivers/nvme/Makefile
- create mode 100644 testcases/kernel/device-drivers/nvme/nvme01.c
+> > > > manages shared anonymous memory. On architectures with large pages (like
+> > > > 64KB on ppc64le), the test's hardcoded request for 32769 pages results
+> > > > in a ~2GB mapping. So in suse test system configured with 2GB of RAM and
+> > > > no swap space, the test will fails with following information:
 
-diff --git a/testcases/kernel/device-drivers/nvme/Makefile b/testcases/kernel/device-drivers/nvme/Makefile
-new file mode 100644
-index 000000000..d47e99e6a
---- /dev/null
-+++ b/testcases/kernel/device-drivers/nvme/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2024 IBM Corporation
-+
-+top_srcdir	?= ../../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/device-drivers/nvme/nvme01.c b/testcases/kernel/device-drivers/nvme/nvme01.c
-new file mode 100644
-index 000000000..f448e7e5c
---- /dev/null
-+++ b/testcases/kernel/device-drivers/nvme/nvme01.c
-@@ -0,0 +1,208 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2024 IBM Corporation
-+ * Author: Priya Gopinath <priyama2@linux.ibm.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify NVMe device discovery and identification:
-+ *
-+ * - Detect NVMe controllers in /dev
-+ * - Enumerate namespaces for detected controllers
-+ * - Verify PCI enumeration (class code 0x010802)
-+ * - Check NVMe driver binding
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <dirent.h>
-+#include <errno.h>
-+
-+#include "tst_test.h"
-+
-+#define NVME_DEV_PATH "/dev"
-+#define NVME_SYS_PATH "/sys/class/nvme"
-+#define PCI_DEVICES_PATH "/sys/bus/pci/devices"
-+
-+static int nvme_device_found;
-+static char nvme_dev_name[256];
-+
-+static void test_detect_nvme_controllers(void)
-+{
-+	DIR *dir;
-+	struct dirent *entry;
-+	int found = 0;
-+
-+	dir = SAFE_OPENDIR(NVME_DEV_PATH);
-+
-+	tst_res(TINFO, "Scanning for NVMe devices in %s", NVME_DEV_PATH);
-+
-+	while ((entry = readdir(dir)) != NULL) {
-+		if (strncmp(entry->d_name, "nvme", 4) == 0 &&
-+		    strlen(entry->d_name) == 5) {
-+			tst_res(TINFO, "Found NVMe controller: %s", entry->d_name);
-+			strncpy(nvme_dev_name, entry->d_name, sizeof(nvme_dev_name) - 1);
-+			found = 1;
-+			nvme_device_found = 1;
-+		}
-+	}
-+
-+	SAFE_CLOSEDIR(dir);
-+
-+	if (found)
-+		tst_res(TPASS, "NVMe controller(s) detected successfully");
-+	else
-+		tst_res(TCONF, "No NVMe controllers found in system");
-+}
-+
-+static void test_enumerate_namespaces(void)
-+{
-+	DIR *dir;
-+	struct dirent *entry;
-+	int ns_count = 0;
-+	char search_pattern[32];
-+
-+	if (!nvme_device_found) {
-+		tst_res(TCONF, "No NVMe device found, skipping namespace enumeration");
-+		return;
-+	}
-+
-+	snprintf(search_pattern, sizeof(search_pattern), "%sn", nvme_dev_name);
-+
-+	dir = SAFE_OPENDIR(NVME_DEV_PATH);
-+
-+	tst_res(TINFO, "Enumerating namespaces for %s", nvme_dev_name);
-+
-+	while ((entry = readdir(dir)) != NULL) {
-+		if (strncmp(entry->d_name, search_pattern, strlen(search_pattern)) == 0) {
-+			tst_res(TINFO, "Found namespace: %s", entry->d_name);
-+			ns_count++;
-+		}
-+	}
-+
-+	SAFE_CLOSEDIR(dir);
-+
-+	if (ns_count > 0)
-+		tst_res(TPASS, "Enumerated %d namespace(s) successfully", ns_count);
-+	else
-+		tst_res(TPASS, "No namespaces found for %s (device may not have namespaces configured)", nvme_dev_name);
-+}
-+
-+static void test_verify_pci_enumeration(void)
-+{
-+	DIR *dir;
-+	struct dirent *entry;
-+	int found = 0;
-+	char class_path[512];
-+	FILE *fp;
-+	char class_id[16];
-+
-+	if (!nvme_device_found) {
-+		tst_res(TCONF, "No NVMe device found, skipping PCI enumeration check");
-+		return;
-+	}
-+
-+	dir = SAFE_OPENDIR(PCI_DEVICES_PATH);
-+
-+	tst_res(TINFO, "Checking PCI enumeration for NVMe devices");
-+
-+	while ((entry = readdir(dir)) != NULL) {
-+		if (entry->d_name[0] == '.')
-+			continue;
-+
-+		snprintf(class_path, sizeof(class_path), "%s/%s/class",
-+			 PCI_DEVICES_PATH, entry->d_name);
-+
-+		fp = fopen(class_path, "r");
-+		if (!fp)
-+			continue;
-+
-+		if (fgets(class_id, sizeof(class_id), fp)) {
-+			if (strncmp(class_id, "0x010802", 8) == 0) {
-+				tst_res(TINFO, "Found NVMe PCI device: %s (class: %s)",
-+					entry->d_name, class_id);
-+				found = 1;
-+			}
-+		}
-+		fclose(fp);
-+	}
-+
-+	SAFE_CLOSEDIR(dir);
-+
-+	if (found)
-+		tst_res(TPASS, "NVMe device properly enumerated on PCI bus");
-+	else
-+		tst_res(TFAIL, "NVMe device not found on PCI bus");
-+}
-+
-+static void test_check_driver_binding(void)
-+{
-+	char driver_path[512];
-+	char driver_link[512];
-+	ssize_t len;
-+
-+	if (!nvme_device_found) {
-+		tst_res(TCONF, "No NVMe device found, skipping driver binding check");
-+		return;
-+	}
-+
-+	snprintf(driver_path, sizeof(driver_path), "%s/%s/device/driver",
-+		 NVME_SYS_PATH, nvme_dev_name);
-+
-+	len = readlink(driver_path, driver_link, sizeof(driver_link) - 1);
-+	if (len == -1) {
-+		tst_res(TFAIL | TERRNO, "Failed to read driver symlink for %s", nvme_dev_name);
-+		return;
-+	}
-+
-+	driver_link[len] = '\0';
-+
-+	tst_res(TINFO, "Driver binding: %s", driver_link);
-+
-+	if (strstr(driver_link, "nvme") != NULL)
-+		tst_res(TPASS, "NVMe driver properly bound to device");
-+	else
-+		tst_res(TFAIL, "Unexpected driver bound to NVMe device: %s", driver_link);
-+}
-+
-+static void setup(void)
-+{
-+	/* Check if nvme module is loaded */
-+	if (access("/sys/module/nvme", F_OK) != 0)
-+		tst_brk(TCONF, "NVMe kernel module not loaded");
-+
-+	tst_res(TINFO, "NVMe Device Discovery & Identification Test");
-+}
-+
-+static void run(unsigned int n)
-+{
-+	switch (n) {
-+	case 0:
-+		test_detect_nvme_controllers();
-+		break;
-+	case 1:
-+		test_enumerate_namespaces();
-+		break;
-+	case 2:
-+		test_verify_pci_enumeration();
-+		break;
-+	case 3:
-+		test_check_driver_binding();
-+		break;
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = 4,
-+	.setup = setup,
-+	.needs_root = 1,
-+};
--- 
-2.52.0
+> > I'm not really sure. if that's caused by missing swap or would it work on
+> > machine with RAM big enough which has swap disabled (I guess you retest with
+> > e.g. 8 GB RAM). Otherwise I'd prefer prefer to deal with errno ENOMEM (12)
+> > instead (as I pointed out previously).
 
+
+> Base description/implementation of test case, The original test is "passive," merely creating a 
+> mapping and relying on external processes to trigger swapping(case has sleep_time parameter).
+> Further more, this case is "ghost test" for current kernel, it do mmap but never 
+> writes to it, so kernel never actually allocated memory, 
+> Together with current obsolete logic(test targets legcy mfile_swap) i suggest just delete 
+> it instead of wasting time patching(refactor) it. What do you think? @Petr @wang li?
+
+I'm ok with deleting, but i hope others will have look on it as well.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
