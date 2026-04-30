@@ -4,100 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67F13FF886F
-	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 05:10:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50B08FF8875
+	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 05:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1777526382; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=Ua9fsL7nXJp07DtC6J87sJizvSWw/S78X0RR2aM9ND0=;
+ b=UVQc74PobbhXkEJy07GzNKQLAEJZOLhkWv/6QXYQptJjDG6YXdNSki6aWRkUBMQQWIFkE
+ 5ZI0xLoOhHKTlep+agLo0fHMqOyTZdA99soeCDSynqT1BdeAT5qNbQJi6ZZNSmbWGB/+P2T
+ C1tAc6onJfFOpujxVNlOFsnDSCsKemE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C5C8C3E24FE
-	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 07:10:41 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id E11CE3E182A
+	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 07:19:42 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 743143E0E7A
- for <ltp@lists.linux.it>; Thu, 30 Apr 2026 07:10:22 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CD7AB3C5ED7
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 07:19:19 +0200 (CEST)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9AAE9600749
- for <ltp@lists.linux.it>; Thu, 30 Apr 2026 07:10:21 +0200 (CEST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 63THKaJR2036575; Thu, 30 Apr 2026 05:10:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=en6c89Ng9NQdeXySa
- gZOxmvAHvFEo+srAzzrw4eNqyY=; b=p80o3jaeZPpQ4WS2yPwCcoKEij4WOFV1J
- SqaXhBY8rIF4hidLHzYPyST92jSPR8SCQtg9nzg3yV1NLrSF2DWQjVk0yfaTCcID
- OK+prKfi8C9qKokFA3Hu1Hr0bqh9kQRoIqE4huu58K3uVHSPaZaqwiGcHRPMLmiD
- QKZY97Knxuwm+OtCN2u8N1YDLnh2GFIQMC+qHAwx0jZbXwcMBC3L0Yrub2oq89nG
- DtELR7HsH+kEn3u/PxZOb/kQOWoOEHpVjkL2p2mTAcnp2uLafyER4T9cl1NL4JBO
- 2NFQgEJ41h96tEDW7EC62rUpCSvMBQmKCsFCfZwJd0qOb7JqEIXaA==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drk1jvgpe-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 30 Apr 2026 05:10:19 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63U58w8l013487;
- Thu, 30 Apr 2026 05:10:18 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dsamyh8c5-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 30 Apr 2026 05:10:18 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com
- [10.39.53.232])
- by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 63U5AH8e64749908
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 30 Apr 2026 05:10:17 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 84C9058043;
- Thu, 30 Apr 2026 05:10:17 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 2A63658053;
- Thu, 30 Apr 2026 05:10:17 +0000 (GMT)
-Received: from botlp69.isst.tadn.ibm.com (unknown [9.5.7.36])
- by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
- Thu, 30 Apr 2026 05:10:17 +0000 (GMT)
-From: priyama2@linux.ibm.com
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id AC3FD1A0037B
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 07:19:18 +0200 (CEST)
+Received: by mail-wm1-x332.google.com with SMTP id
+ 5b1f17b1804b1-48374014a77so5062055e9.3
+ for <ltp@lists.linux.it>; Wed, 29 Apr 2026 22:19:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1777526358; x=1778131158; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=0jA69VNxe8pEXVQ7AIskqtx3z4p7+0nq7Ms+dDhJCMA=;
+ b=XjjFHO1R3Z339Y/q1REMJGcrSPVmw8Y+qs6dIbQON065zbqDiLkMDaTaQoeIFYYmoY
+ JVhOEhdXqIeqXQszF4JGbCSFk/gySaHsDePoMK6qJTOoEq7NnvL97/rh4RQQOtHbklmR
+ Ba1QGIJIBl4+yYJFCQ0oTvoawu4j+lEnHej8rXQXyZiY12crhZui07O2mJsaJq7sVkc/
+ uJAtmwPBfkgjIeHt4iH3rs0i1P8SwqSteDzLRKofJEqoIVQ0KQ3mzSO4GhPUDJXnqCch
+ 0yyTWNtnTU0cunpyUK55G0W/cxdrzzvXjgVXRHluR01N4kskkVvPwhZQWkn2/fcpi5do
+ 9EsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1777526358; x=1778131158;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=0jA69VNxe8pEXVQ7AIskqtx3z4p7+0nq7Ms+dDhJCMA=;
+ b=fpEeu5RTrw9kfvI0VbMUFDQbq69DpROcKC8HRoD6eDeYTCo8Jhc7F7iaf9plwsA+t+
+ f3Dmq/NMhq+MNba/hiKV5RgBziOz6dClDpJQEqC2hPTihargH2lBZyvVoHnYz1YMN1Uk
+ mAymK+JQbj/pzyem0znHZUIETqK4naCGdGXYvnI7y9QMFJcITF8s5LrkW4iNltUuVntm
+ GBs8zofm4pNxYhEZhqKhP2N4kvP8Nu57fSc2z9UCJ7ycqzQ4IUU5pMmwTTosxhCYMSxI
+ 0yHMtjIb3nuwjowwyKXiaar39SBBHVDtYtj+zs5vTjpxJuMHabASOqW0N0wKkOJ9u3QC
+ k+MQ==
+X-Gm-Message-State: AOJu0YyE4koPzJQFSMwAluDLwpegNw5k5fWvAE+MjTVD/vk3TsCUdfVP
+ aBSsyrdcX3CCZz/nk+HwFiJ1Y3W4UDdDhH90Wp5nQHdpwrInaBQleWO5BUF4qf17vwdt1H8AZOr
+ SEy8=
+X-Gm-Gg: AeBDiesiWuxN41f/YAz9Lxbz/xR4PfLm4fhIrMg2Vz1rLRE5MObyD4NQyQWchpWWNho
+ k/F2yD/BVB4y1XINqLBWO7Y6PxbDoJXbFlKLoLAGkxczLM6ESdaOvIJLLom4QPi3mNDS/9fHdBv
+ JkUvFiFdstsLgxf2LEFt3h/AYeKyPbOeOxAsYXpLdmFR5I/bxyHdq8sq48NXdC9G9dTt2o0klGm
+ qegWkCHqWaUFmDyBOM2YUDXGmuLVOJmuSwlZXK30gj6Wb3imDpIjpr4qKyKkbd5Eiw15m0I2+pR
+ xNLmEKkFSAe46aUddLUB9S6ORHgb2DkAd5Bdg1g/5Srp3lOJOOmjEAV6hOK/F9CYH/imkF+Y81G
+ c7h0Y6xvtzZObvxY41i8gyaygBrWIO8YEhakcLxBLYZg+f5cjuOxzpnYDGZdNRAEgnKEP1h5dRJ
+ NaJRZnNGF6v3pjM91LHNzg4Q==
+X-Received: by 2002:a05:600c:6285:b0:483:709e:f238 with SMTP id
+ 5b1f17b1804b1-48a84486f35mr23637445e9.29.1777526357648; 
+ Wed, 29 Apr 2026 22:19:17 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-48a81b99127sm36825955e9.0.2026.04.29.22.19.17
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 29 Apr 2026 22:19:17 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Fri,  1 May 2026 15:14:20 +0000
-Message-ID: <20260501151420.1042995-1-priyama2@linux.ibm.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260428075302.7320ef7e3@imap1.dmz-prg2.suse.org>
-References: <20260428075302.7320ef7e3@imap1.dmz-prg2.suse.org>
+Date: Thu, 30 Apr 2026 05:19:07 +0000
+Message-ID: <20260430051915.2178-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260416112611.23057-1-wegao@suse.com>
+References: <20260416112611.23057-1-wegao@suse.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDMwMDA0NSBTYWx0ZWRfX2/JDwTnLiYZ9
- 8VrOnpu9sdkIhUVNbbq/mUeA9tj7NLFMWS85C4LfrRuk9QSUQZJsfHDzXZ3P9kpIqknnWDtncKC
- gxUQ4tfSmkE+b94IBS6gWEs6JT18mXN45PF/JF7eaCvtYH0z89vS0BClhpDaRtW/tVZuuDrmY5U
- SOeYKXh68v8BPiDrFrCIMekYc+rpGR7UGoG/hwfFC5scrOmjGYhZh4heEQO/rG/H2wHg1nF4emh
- VorIsyKhXXVwDDNtQXsI1vJS5GBGhIYkoDH2YJQ3zWx6qArAwItwk9aW8qBEHVXBbYzet+G+pNb
- L32mfxwfB5zZ5BM/XX1TNn7cfNSgrMFju0jTqAi9AdPJOJU2JyxzWILtUmqLOSqdEtwto601l95
- Z/5tSJpPB3neySZ2kqSr/HgM/aFN1ItCAXVULtUXJPeHo3n7y1CW66WRQE5ss75ELNSBi3bvqbC
- ItspFgcBvjIc1K6W3mQ==
-X-Proofpoint-GUID: 9zi4XND94uTnvnPs2xcZxblBp3M2vF_8
-X-Proofpoint-ORIG-GUID: 9zi4XND94uTnvnPs2xcZxblBp3M2vF_8
-X-Authority-Analysis: v=2.4 cv=MohiLWae c=1 sm=1 tr=0 ts=69f2e43b cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VnNF1IyMAAAA:8 a=_TXCIjpbKOfXyxnRZMsA:9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-30_01,2026-04-28_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 adultscore=0 suspectscore=0 bulkscore=0 spamscore=0
- priorityscore=1501 malwarescore=0 clxscore=1015 lowpriorityscore=0
- impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
- definitions=main-2604300045
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] testcases/kernel/device-drivers/nvme: Add NVMe
- device discovery test
+Subject: [LTP] [PATCH v6] fsconfig04: Check FSCONFIG_SET_PATH
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,305 +98,230 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: priyama2 <priyama2@linux.ibm.com>
+The fsconfig01.c does not test if FSCONFIG_SET_PATH have any effect,
+most of the calls there just set dummy "sync" parameter. This test
+case aims to verify if the FSCONFIG_SET_PATH operation can be used
+to dynamically change the external journal device of ext3 or ext4
+filesystem.
 
-This test fills a gap in NVMe test coverage by validating basic device
-enumeration and driver binding, which are fundamental prerequisites for
-any NVMe functionality testing.
-
-The test verifies:
-- Detection of NVMe controllers in /dev
-- Enumeration of namespaces for detected controllers
-- PCI enumeration (class code 0x010802)
-- NVMe driver binding
-
-Changes in v3:
-- Fix subject prefix to match directory path
-- Update copyright year to 2026
-- Add nvme to SUBDIRS in testcases/kernel/device-drivers/Makefile
-- Reset static variables at start of run() for -i support
-- Remove .needs_root (all operations are world-readable)
-- Use SAFE_FOPEN/SAFE_FCLOSE for PCI class file access
-- Use SAFE_READLINK for driver symlink reading
-- Add .gitignore entry for nvme01 binary
-- Add runtest/device-drivers entry for nvme01
-- Fix author field to use priyama2
-
-Changes in v2:
-- Use LTP buildsystem instead of standalone Makefile
-- Remove README file (use doc comments instead)
-- Add proper LTP documentation comment format
-- Use SAFE_OPENDIR() and SAFE_CLOSEDIR() macros
-- Remove obvious and redundant comments
-- Code cleanup and style improvements
-
-Signed-off-by: priyama2 <priyama2@linux.ibm.com>
+Fixes: https://github.com/linux-test-project/ltp/issues/1169
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- runtest/device-drivers                        |   1 +
- testcases/kernel/device-drivers/Makefile      |   1 +
- .../kernel/device-drivers/nvme/.gitignore     |   1 +
- testcases/kernel/device-drivers/nvme/Makefile |   7 +
- testcases/kernel/device-drivers/nvme/nvme01.c | 205 ++++++++++++++++++
- 5 files changed, 215 insertions(+)
- create mode 100644 runtest/device-drivers
- create mode 100644 testcases/kernel/device-drivers/nvme/.gitignore
- create mode 100644 testcases/kernel/device-drivers/nvme/Makefile
- create mode 100644 testcases/kernel/device-drivers/nvme/nvme01.c
+v5->v6:
+- use `tst_find_free_loopdev()` + `tst_attach_device()` from
+`tst_device.h` instead of pulling in a legacy header.
 
-diff --git a/runtest/device-drivers b/runtest/device-drivers
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/fsconfig/.gitignore |   1 +
+ .../kernel/syscalls/fsconfig/fsconfig04.c     | 172 ++++++++++++++++++
+ 3 files changed, 174 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig04.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 5025b259f..84adf4fad 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -422,6 +422,7 @@ fremovexattr02 fremovexattr02
+ fsconfig01 fsconfig01
+ fsconfig02 fsconfig02
+ fsconfig03 fsconfig03
++fsconfig04 fsconfig04
+ 
+ fsmount01 fsmount01
+ fsmount02 fsmount02
+diff --git a/testcases/kernel/syscalls/fsconfig/.gitignore b/testcases/kernel/syscalls/fsconfig/.gitignore
+index cfedae5f7..bd3754c34 100644
+--- a/testcases/kernel/syscalls/fsconfig/.gitignore
++++ b/testcases/kernel/syscalls/fsconfig/.gitignore
+@@ -1,3 +1,4 @@
+ /fsconfig01
+ /fsconfig02
+ /fsconfig03
++/fsconfig04
+diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig04.c b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
 new file mode 100644
-index 000000000..a7295584e
+index 000000000..f00ce88e4
 --- /dev/null
-+++ b/runtest/device-drivers
-@@ -0,0 +1 @@
-+nvme01 nvme01
-diff --git a/testcases/kernel/device-drivers/Makefile b/testcases/kernel/device-drivers/Makefile
-index 229a50683..664f4cd18 100644
---- a/testcases/kernel/device-drivers/Makefile
-+++ b/testcases/kernel/device-drivers/Makefile
-@@ -9,6 +9,7 @@ SUBDIRS		:= acpi \
- 		   block \
- 		   cpufreq \
- 		   locking \
-+		   nvme \
- 		   pci \
- 		   rcu \
- 		   rtc \
-diff --git a/testcases/kernel/device-drivers/nvme/.gitignore b/testcases/kernel/device-drivers/nvme/.gitignore
-new file mode 100644
-index 000000000..c60bc210c
---- /dev/null
-+++ b/testcases/kernel/device-drivers/nvme/.gitignore
-@@ -0,0 +1 @@
-+nvme01
-diff --git a/testcases/kernel/device-drivers/nvme/Makefile b/testcases/kernel/device-drivers/nvme/Makefile
-new file mode 100644
-index 000000000..d47e99e6a
---- /dev/null
-+++ b/testcases/kernel/device-drivers/nvme/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2024 IBM Corporation
-+
-+top_srcdir	?= ../../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/device-drivers/nvme/nvme01.c b/testcases/kernel/device-drivers/nvme/nvme01.c
-new file mode 100644
-index 000000000..3c3cb92ce
---- /dev/null
-+++ b/testcases/kernel/device-drivers/nvme/nvme01.c
-@@ -0,0 +1,205 @@
++++ b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
+@@ -0,0 +1,172 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2026 IBM Corporation
-+ * Author: priyama2 <priyama2@linux.ibm.com>
++ * Copyright (c) 2026 Wei Gao <wegao@suse.com>
 + */
 +
-+/* * [Description]
++/*\
++ * This test aims to validate the functionality of fsconfig(FSCONFIG_SET_PATH) in
++ * dynamically altering the external journal device of a ext3 or ext4 filesystem.
++ * Case acquires three loop devices (dev0, dev1, dev2), it formats dev1 and dev2
++ * as external journal devices using the -O journal_dev option and assigns them
++ * the same UUID. Then formats dev0 (the main filesystem) multiple times, first
++ * associating it with dev1, then change to dev2, finally back to dev1 again as
++ * an external journal using the -J device= option.
 + *
-+ * Verify NVMe device discovery and identification.
++ * 2 Implementation notes in this case need mention:
 + *
-+ * This test fills a gap in NVMe test coverage by validating basic device
-+ * enumeration and driver binding, which are fundamental prerequisites for
-+ * any NVMe functionality testing.
-+ *
-+ * - Detect NVMe controllers in /dev
-+ * - Enumerate namespaces for detected controllers
-+ * - Verify PCI enumeration (class code 0x010802)
-+ * - Check NVMe driver binding
++ * - To avoid "journal UUID does not match" error when switch external journal device
++ *   we have to assign same UUID to dev1/dev2
++ * - Before fsconfig test we have to format dev0 associating to dev1->dev2->dev1,
++ *   this will make sure both dev1/2's super block contain correct content. Otherwise
++ *   you will encounter error such as "EXT4-fs (loop0): External journal has more than
++ *   one user (unsupported) - 0" when switch external journal device using fsconfig.
 + */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <dirent.h>
-+#include <errno.h>
 +
 +#include "tst_test.h"
 +#include "tst_safe_stdio.h"
++#include "lapi/fsmount.h"
 +
-+#define NVME_DEV_PATH "/dev"
-+#define NVME_SYS_PATH "/sys/class/nvme"
-+#define PCI_DEVICES_PATH "/sys/bus/pci/devices"
++#define MNTPOINT	"mntpoint"
++#define LOOP_DEV_SIZE 10
++#define UUID "d73c9e5e-97e4-4a9c-b17e-75a931b02660"
 +
-+static int nvme_device_found;
-+static char nvme_dev_name[256];
++static int fd = -1;
++static char dev0[PATH_MAX];
++static char dev1[PATH_MAX];
++static char dev2[PATH_MAX];
 +
-+static void test_detect_nvme_controllers(void)
++static void cleanup(void)
 +{
-+	DIR *dir;
-+	struct dirent *entry;
-+	int found = 0;
++	if (fd != -1)
++		SAFE_CLOSE(fd);
 +
-+	dir = SAFE_OPENDIR(NVME_DEV_PATH);
++	if (dev1[0])
++		tst_detach_device(dev1);
 +
-+	tst_res(TINFO, "Scanning for NVMe devices in %s", NVME_DEV_PATH);
-+
-+	while ((entry = readdir(dir)) != NULL) {
-+		if (strncmp(entry->d_name, "nvme", 4) == 0 &&
-+		    strlen(entry->d_name) == 5) {
-+			tst_res(TINFO, "Found NVMe controller: %s", entry->d_name);
-+			strncpy(nvme_dev_name, entry->d_name, sizeof(nvme_dev_name) - 1);
-+			found = 1;
-+			nvme_device_found = 1;
-+		}
-+	}
-+
-+	SAFE_CLOSEDIR(dir);
-+
-+	if (found)
-+		tst_res(TPASS, "NVMe controller(s) detected successfully");
-+	else
-+		tst_res(TCONF, "No NVMe controllers found in system");
-+}
-+
-+static void test_enumerate_namespaces(void)
-+{
-+	DIR *dir;
-+	struct dirent *entry;
-+	int ns_count = 0;
-+	char search_pattern[32];
-+
-+	if (!nvme_device_found) {
-+		tst_res(TCONF, "No NVMe device found, skipping namespace enumeration");
-+		return;
-+	}
-+
-+	snprintf(search_pattern, sizeof(search_pattern), "%sn", nvme_dev_name);
-+
-+	dir = SAFE_OPENDIR(NVME_DEV_PATH);
-+
-+	tst_res(TINFO, "Enumerating namespaces for %s", nvme_dev_name);
-+
-+	while ((entry = readdir(dir)) != NULL) {
-+		if (strncmp(entry->d_name, search_pattern, strlen(search_pattern)) == 0) {
-+			tst_res(TINFO, "Found namespace: %s", entry->d_name);
-+			ns_count++;
-+		}
-+	}
-+
-+	SAFE_CLOSEDIR(dir);
-+
-+	if (ns_count > 0)
-+		tst_res(TPASS, "Enumerated %d namespace(s) successfully", ns_count);
-+	else
-+		tst_res(TPASS, "No namespaces found for %s (device may not have namespaces configured)", nvme_dev_name);
-+}
-+
-+static void test_verify_pci_enumeration(void)
-+{
-+	DIR *dir;
-+	struct dirent *entry;
-+	int found = 0;
-+	char class_path[512];
-+	FILE *fp;
-+	char class_id[16];
-+
-+	if (!nvme_device_found) {
-+		tst_res(TCONF, "No NVMe device found, skipping PCI enumeration check");
-+		return;
-+	}
-+
-+	dir = SAFE_OPENDIR(PCI_DEVICES_PATH);
-+
-+	tst_res(TINFO, "Checking PCI enumeration for NVMe devices");
-+
-+	while ((entry = readdir(dir)) != NULL) {
-+		if (entry->d_name[0] == '.')
-+			continue;
-+
-+		snprintf(class_path, sizeof(class_path), "%s/%s/class",
-+			 PCI_DEVICES_PATH, entry->d_name);
-+
-+		fp = SAFE_FOPEN(class_path, "r");
-+
-+		if (fgets(class_id, sizeof(class_id), fp)) {
-+			if (strncmp(class_id, "0x010802", 8) == 0) {
-+				tst_res(TINFO, "Found NVMe PCI device: %s (class: %s)",
-+					entry->d_name, class_id);
-+				found = 1;
-+			}
-+		}
-+		SAFE_FCLOSE(fp);
-+	}
-+
-+	SAFE_CLOSEDIR(dir);
-+
-+	if (found)
-+		tst_res(TPASS, "NVMe device properly enumerated on PCI bus");
-+	else
-+		tst_res(TFAIL, "NVMe device not found on PCI bus");
-+}
-+
-+static void test_check_driver_binding(void)
-+{
-+	char driver_path[512];
-+	char driver_link[512];
-+
-+	if (!nvme_device_found) {
-+		tst_res(TCONF, "No NVMe device found, skipping driver binding check");
-+		return;
-+	}
-+
-+	snprintf(driver_path, sizeof(driver_path), "%s/%s/device/driver",
-+		 NVME_SYS_PATH, nvme_dev_name);
-+
-+	SAFE_READLINK(driver_path, driver_link, sizeof(driver_link));
-+
-+	tst_res(TINFO, "Driver binding: %s", driver_link);
-+
-+	if (strstr(driver_link, "nvme") != NULL)
-+		tst_res(TPASS, "NVMe driver properly bound to device");
-+	else
-+		tst_res(TFAIL, "Unexpected driver bound to NVMe device: %s", driver_link);
++	if (dev2[0])
++		tst_detach_device(dev2);
 +}
 +
 +static void setup(void)
 +{
-+	if (access("/sys/module/nvme", F_OK) != 0)
-+		tst_brk(TCONF, "NVMe kernel module not loaded");
++	strcpy(dev0, tst_device->dev);
 +
-+	tst_res(TINFO, "NVMe Device Discovery & Identification Test");
++	if (tst_prealloc_file("dev1_file", 1024 * 1024, LOOP_DEV_SIZE))
++		tst_brk(TBROK, "Failed to create dev1_file");
++
++	if (tst_find_free_loopdev(dev1, sizeof(dev1)) == -1)
++		tst_brk(TBROK, "No free loop device found for dev1");
++
++	if (tst_attach_device(dev1, "dev1_file"))
++		tst_brk(TBROK, "Failed to attach dev1_file to %s", dev1);
++
++	if (tst_prealloc_file("dev2_file", 1024 * 1024, LOOP_DEV_SIZE))
++		tst_brk(TBROK, "Failed to create dev2_file");
++
++	if (tst_find_free_loopdev(dev2, sizeof(dev2)) == -1)
++		tst_brk(TBROK, "No free loop device found for dev2");
++
++	if (tst_attach_device(dev2, "dev2_file"))
++		tst_brk(TBROK, "Failed to attach dev2_file to %s", dev2);
++
++	const char *const *mkfs_opts_set_UUID;
++	const char *const *mkfs_opts_set_journal_dev1;
++	const char *const *mkfs_opts_set_journal_dev2;
++
++	mkfs_opts_set_UUID = (const char *const []) {"-F", "-U", UUID,
++		"-O", "journal_dev", NULL};
++
++	char device_option_dev1[PATH_MAX];
++	char device_option_dev2[PATH_MAX];
++
++	snprintf(device_option_dev1, sizeof(device_option_dev1), "device=%s", dev1);
++	snprintf(device_option_dev2, sizeof(device_option_dev2), "device=%s", dev2);
++
++	mkfs_opts_set_journal_dev1 = (const char *const []) {"-F", "-J",
++		device_option_dev1, NULL};
++
++	mkfs_opts_set_journal_dev2 = (const char *const []) {"-F", "-J",
++		device_option_dev2, NULL};
++
++	SAFE_MKFS(dev1, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
++	SAFE_MKFS(dev2, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
++	SAFE_MKFS(dev0, tst_device->fs_type, mkfs_opts_set_journal_dev1, NULL);
++	SAFE_MKFS(dev0, tst_device->fs_type, mkfs_opts_set_journal_dev2, NULL);
++	SAFE_MKFS(dev0, tst_device->fs_type, mkfs_opts_set_journal_dev1, NULL);
 +}
 +
-+static void run(unsigned int n)
++static void run(void)
 +{
-+	/* Reset state for each iteration */
-+	nvme_device_found = 0;
-+	memset(nvme_dev_name, 0, sizeof(nvme_dev_name));
++	TEST(fd = fsopen(tst_device->fs_type, 0));
++	if (fd == -1)
++		tst_brk(TBROK | TTERRNO, "fsopen() failed");
 +
-+	switch (n) {
-+	case 0:
-+		test_detect_nvme_controllers();
-+		break;
-+	case 1:
-+		test_enumerate_namespaces();
-+		break;
-+	case 2:
-+		test_verify_pci_enumeration();
-+		break;
-+	case 3:
-+		test_check_driver_binding();
-+		break;
++	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", dev0, 0));
++	if (TST_RET == -1)
++		tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
++
++	TEST(fsconfig(fd, FSCONFIG_SET_PATH, "journal_path", dev2, 0));
++	if (TST_RET == -1) {
++		if (TST_ERR == EOPNOTSUPP)
++			tst_brk(TCONF, "fsconfig(FSCONFIG_SET_PATH) not supported");
++		else
++			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_PATH) failed");
 +	}
++
++	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
++	if (TST_RET == -1)
++		tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
++
++	char loop_name[NAME_MAX];
++	char path[PATH_MAX];
++	char device_str[NAME_MAX];
++	unsigned int major, minor, device_num;
++	unsigned int found = 0;
++
++	SAFE_SSCANF(dev2, "/dev/%s", loop_name);
++
++	snprintf(path, sizeof(path), "/sys/block/%s/dev", loop_name);
++	SAFE_FILE_SCANF(path, "%u:%u", &major, &minor);
++	device_num = (major << 8) | minor;
++	snprintf(device_str, sizeof(device_str), "0x%04x", device_num);
++
++	char line[PATH_MAX];
++	FILE *tune2fs;
++
++	snprintf(path, sizeof(path), "tune2fs -l %s 2>&1", dev0);
++	tune2fs = SAFE_POPEN(path, "r");
++
++	while (fgets(line, PATH_MAX, tune2fs)) {
++		if (*line && strstr(line, "Journal device:") && strstr(line, device_str)) {
++			found = 1;
++			break;
++		}
++	}
++
++	if (found == 1)
++		tst_res(TPASS, "Device found in journal");
++	else
++		tst_res(TFAIL, "Device not found in journal");
++
++	pclose(tune2fs);
++	SAFE_CLOSE(fd);
 +}
 +
 +static struct tst_test test = {
-+	.test = run,
-+	.tcnt = 4,
++	.test_all = run,
 +	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.format_device = 1,
++	.mntpoint = MNTPOINT,
++	.needs_cmds = (struct tst_cmd []) {
++		{.cmd = "tune2fs"},
++		{}
++	},
++	.filesystems = (struct tst_fs []) {
++		{.type = "ext3"},
++		{.type = "ext4"},
++		{}
++	},
 +};
 -- 
 2.52.0
