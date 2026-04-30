@@ -4,82 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8F2ACD13D3
-	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 06:35:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B5B9FF886F
+	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 06:35:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1B96F3E2895
-	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 08:35:41 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 11F8A3E2106
+	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 08:35:58 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7DEB73E255B
- for <ltp@lists.linux.it>; Thu, 30 Apr 2026 08:35:03 +0200 (CEST)
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
- [IPv6:2607:f8b0:4864:20::743])
+ by picard.linux.it (Postfix) with ESMTPS id B50DF3E2CFE
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 08:35:12 +0200 (CEST)
+Received: from mail-dl1-x1244.google.com (mail-dl1-x1244.google.com
+ [IPv6:2607:f8b0:4864:20::1244])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D98A96008C0
- for <ltp@lists.linux.it>; Thu, 30 Apr 2026 08:35:02 +0200 (CEST)
-Received: by mail-qk1-x743.google.com with SMTP id
- af79cd13be357-8eab809593cso58140885a.3
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 23:35:02 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 340A8140033C
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 08:35:12 +0200 (CEST)
+Received: by mail-dl1-x1244.google.com with SMTP id
+ a92af1059eb24-12c8ccc7755so863029c88.0
+ for <ltp@lists.linux.it>; Wed, 29 Apr 2026 23:35:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1777530902; x=1778135702; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1777530910; x=1778135710; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=/CouMg6Rwh8LRPN0uu7sBlus20fuovY5UkE6tBvmXJc=;
- b=leTaybieA9swltWyrUjd0iIb4XVnkvj0j/JXNgvEAjl1buR95YPbVotKC0MYeG/fCE
- rj2H+vi65973IMAUTxNjvLUuytZy8xYtHOSkTgrBMLtPhRE1vlQSvZjMlInGCioDOPRh
- wuT9sCMY9a9Qr+Sw9tV2Klr8EctYjL183mIrBRBoohQ0oelpo5Vb/qZQQv0246MktZDk
- JItIx0seswEBateVu3NTfdJrEM0cTxINeKl0iN74voDXmmmaAvVPZP515ykNctK1q1h+
- J4a6AbXUBoMfiPmFVD/ZSoOvsN1MedFe0ro6S9QiJj0hlCJxmpuFrcjrzqBaU0EIwdAo
- 4+Zg==
+ bh=LwQyJO50C0oXmA4DMVirP4fFlMiZ+p20Gx96/k+F4Hw=;
+ b=FLksZh7Rg8S2dAFUOV+BOQaJ7ol1/4PpB/MKisW+LKYmfzcBE67jJRoQskwNdyeuZg
+ SyQQxDNKe6uU1uxDgKven6CLBNW0+6cFFfRG9CwEPJymSMQVtpuWElckNjXrg9VvKZVl
+ obJY4jlkiZ4erIyEfqN+ehCrbuGXxBOpm2BReN3IIZi6Xw4rD+v/+IL//vvLekdeLywY
+ QN+lCdG1tf8ejHMeU5JJaF6rhbLjY95SBLmHZUS8Xz5nkIDc4G36rNuBxf8EcsV6+uVg
+ Ya1xQ+W9lpauxSm7VmlWPOjCHtiVI0DGd/P1UD7H2q95InjA8TeuCQM7eKJ17u4OiFua
+ lpCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1777530902; x=1778135702;
+ d=1e100.net; s=20251104; t=1777530910; x=1778135710;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=/CouMg6Rwh8LRPN0uu7sBlus20fuovY5UkE6tBvmXJc=;
- b=kya9vHedQMjY4kPBubp2bGy87a2LgOePM1bV9HqCqnxvXGL7DEUIrIN/7gVyTSSsRS
- VyqDSeqf0qYrZ5G/4A+Dm2SPpJewQ7jug20dX/MMCBGOihdV+Ifa96bLSvTrlUICUvL3
- /vtLZcHU3YCoYq9+NSkDSzGoe/GT7RlSDjqwVe7DcxEqizFMvXvYzcIxUfqVJtz72mtf
- qcZQJ3LvedJBy+tu7sBTcAwXuRL6OerPFHWUdE9PS1ZZZNIeGkmculITuBI5z4QUA1KJ
- mPJVXkefM4H8GrBDsIqQowMWBne0lVKGUU7EUanm7Ljs259FZ0QOHIJxxR8kWzctcb1E
- HdCQ==
-X-Gm-Message-State: AOJu0YxPyQ3omWxRygbx5nrWxv325jDUVnXhVivTPSbp3qCkpMEIO6oA
- B2Bl3DPBo7FTHv4zcmjeM1tu0F92GlGMSup2seHYcX+ZnFuU8nryVdRT
-X-Gm-Gg: AeBDieu2nIytG7n9oryiPQ8hKJT4gmljcYi6sH25Mzt1MZg9o3krPzxDkxLdhTlXp3J
- niH+3ky9sPLL3YyIgrUpnM60bBEbgQTQ3KDLlC30K4/PblrHBm+u4s1NTbY9LsneSE2YHO4cbfk
- h3ZIbBziyX5xDpMR9jZk0ylte0nU6r2aPdzeIHySWmeza8Faekmv9ZfNNFyMkbHdhbaMQoJ0+3F
- BPsgPXbbI3/pPAZPKnUKP8rbXoukZqW5rZNy4eYFdWkTpGbqC3IxaYwlvLkG8rkkpXisNmAZ3or
- /XdHtnLSH4iM4qzfZNmYkXtx0nAUoAwzhJJEC7wwfbqvHDlXCWCKzhhkALE7W3KNvgsuV37NkWR
- Ty0x8s3uHZKLf3dzSk4bRS7GuSGy2gHhewRkG3fyVCG6GII6yqbWHWyHVngEcq7wY5vL3NN18eU
- Y5ozW1CVQoWBlumMvEICQZ2SWuiY0HZ70quPp3pEVYQho3B1Byi6vkEyXl4jgNhQOCJFe45BrgU
- Sn1y7rYC+rLhWWdR6zjDUNpJ168iCwN6JeGqvTn7nFaWQzWIw==
-X-Received: by 2002:a05:620a:280c:b0:8cf:d62a:c81d with SMTP id
- af79cd13be357-8fa88942bb7mr267249185a.29.1777530901456; 
- Wed, 29 Apr 2026 23:35:01 -0700 (PDT)
+ bh=LwQyJO50C0oXmA4DMVirP4fFlMiZ+p20Gx96/k+F4Hw=;
+ b=WjWbi634+hiOUu0LGwJuSiyZkTwt/qrsxZATwGjg3bDsav9gU+4VaG7NlwNXGnliA8
+ AsO6jxmcHLQzgr17SiBV1TdnTTMMjhqOtiff9AvgiMGVzqNQo9OPM9HzlETeF0HKCjAH
+ 3hAqkChOkzSVniJhdu2u0tCUC0xIY+mDFDlq4cYf8kFgk5cEmkmxGYT56gU/8rdygifp
+ ny+OJ7ZzcnU5Ypf8xJU8SIqXX1a7qzE55uvfqJUNHPw/Kpu25kUYU7uWq783deLbWe1E
+ HaZS4t0c4HXJOe69ZTeQiq1zIz0qp5LutdxXMMBtt2ve3YvKNy7YLt4moBw014x+tNhq
+ FeKA==
+X-Gm-Message-State: AOJu0YwxcwgH7ITzAOB7b/iXtyzaeFx4TPhvX+fdZEsIgJmvQUGO7Q9w
+ /hBLZ1L+9tWp0ejfv8ZqvmVgf6Og7Mz5QrOQagP8liJua1KzhY+aZaw4
+X-Gm-Gg: AeBDieulGFUON7HL4DlsV/UOHqzbMXIen/VzGUWhSXbNDFxpL1W6giaJ+yJ1PcRAWdy
+ 6OT58eBG81QBCd/0p0BOMe36QTWX5qrw4TlWWUox/DCh15o7v6a0CZyXKFrcaUBjpYrgQ6quewr
+ I30BYBiYliMci/KTyLH/cTOY6d7xnFOEW2BePj6sKhMVnJjntq6LqdhMJ2ug5bkBpNN5RrBAwAJ
+ pbUaO4qG+86kFOw01M/qKmfixFlYA1CSio7AT3vqOkQP1rYveIcK9uyTROcp/oCbkYbkOH5rG4/
+ jIMDmiwY/ORBix0oiw4WXvCxBcbUYomX6ocTa7H7RSNrNj2hHr5XUHCYF2U2vsd75/VhEHq07tV
+ FqhJyKPPbiwG7om8Ys8VObvjLF9P1bb/rMHxY+DVK9xTiJv8cL8LvsFtJtusVTbGTIK2MJpl06u
+ nFO/TSx+VAfay0kUPK0gXZ+HzyZo86Ebs5cx/k+BDx1OPSRXIBMUKqJWraJIFHa6TnGq6Se3pLD
+ 0S0enmUtBU1QEf1XDpG2d/bsl+LljYy+8sE+StA2jH6rvy+nVM=
+X-Received: by 2002:a05:701b:280d:b0:12d:ed19:e69f with SMTP id
+ a92af1059eb24-12ded19e77bmr233893c88.22.1777530910411; 
+ Wed, 29 Apr 2026 23:35:10 -0700 (PDT)
 Received: from
- runnervmeorf1.25nck5mkgfoenofczkdl0zm0ze.cx.internal.cloudapp.net
- ([20.55.223.181]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8b3ff335ccdsm10555386d6.20.2026.04.29.23.35.01
+ runnervmeorf1.g5u13dfph0depip0q4sluubs0f.dx.internal.cloudapp.net
+ ([52.159.226.242]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-12de321f1cesm8132687c88.8.2026.04.29.23.35.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Apr 2026 23:35:01 -0700 (PDT)
+ Wed, 29 Apr 2026 23:35:10 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Thu, 30 Apr 2026 06:35:00 +0000
-Message-ID: <20260430063500.4035-1-linuxtestproject.agent@gmail.com>
+To: priyama2 <priyama2@linux.ibm.com>
+Date: Thu, 30 Apr 2026 06:35:08 +0000
+Message-ID: <20260430063508.4014-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260430034724.1628-1-wegao@suse.com>
-References: <20260430034724.1628-1-wegao@suse.com>
+In-Reply-To: <20260501151420.1042995-1-priyama2@linux.ibm.com>
+References: <20260501151420.1042995-1-priyama2@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] shmctl03: Fix 32-bit compat mode failure by adjusting
- comparisons for compat mode truncation
+Subject: Re: [LTP] testcases/kernel/device-drivers/nvme: Add NVMe device
+ discovery test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,32 +93,58 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgV2VpLAoKT24gVGh1LCAzMCBBcHIgMjAyNiwgV2VpIEdhbyB3cm90ZToKPiBzaG1jdGwwMzog
-Rml4IDMyLWJpdCBjb21wYXQgbW9kZSBmYWlsdXJlIGJ5IGFkanVzdGluZyBjb21wYXJpc29ucyBm
-b3IKPiBjb21wYXQgbW9kZSB0cnVuY2F0aW9uCgo+ICsjZGVmaW5lIFRTVF9BU1NFUlRfU0FUVVJB
-VEVEX0lOVCAgIDB4MDEKWy4uLl0KPiArCWlmIChmbGFncyAmIFRTVF9BU1NFUlRfU0FUVVJBVEVE
-X0lOVCkgewo+ICsJCWlmIChzeXNfdmFsXzY0ID4gKHVuc2lnbmVkIGxvbmcgbG9uZylJTlRfTUFY
-KQo+ICsJCQlleHBlY3RlZF92YWwgPSAodW5zaWduZWQgbG9uZylJTlRfTUFYOwoKRm9yIHNobW1h
-eCBpbiBjb21wYXQgbW9kZSwgY2FuIHlvdSBjb25maXJtIHRoZSBzYXR1cmF0aW9uIGlzIHRvIElO
-VF9NQVgKKDJeMzEtMSkgcmF0aGVyIHRoYW4gVUlOVF9NQVggKDJeMzItMSk/ICBUaGUgY29tcGF0
-X3NobWluZm82NC5zaG1tYXgKZmllbGQgaXMgX19jb21wYXRfdWxvbmdfdCAodW5zaWduZWQgMzIt
-Yml0KSwgc28gdHJ1bmNhdGlvbiB0byBVSU5UX01BWAp3b3VsZCBiZSB0aGUgbmF0dXJhbCBleHBl
-Y3RhdGlvbi4gIEEgcmVmZXJlbmNlIHRvIHRoZSByZWxldmFudCBrZXJuZWwKY29tcGF0IGNvZGUg
-cGF0aCBpbiBpcGMvc2htLmMgd291bGQgaGVscCBjbGFyaWZ5LgoKUHJlLWV4aXN0aW5nIGlzc3Vl
-cyBub3RpY2VkIGluIHRoZSBzdXJyb3VuZGluZyBjb2RlIChub3QgaW50cm9kdWNlZApieSB0aGlz
-IHBhdGNoKToKCi0gdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pcGMvc2htY3RsL3NobWN0bDAz
-LmM6MTMg4oCUICNpbmNsdWRlCiAgInRzZV9uZXdpcGMuaCIgYXBwZWFycyB1bnVzZWQ7IG5vIHN5
-bWJvbHMgZnJvbSBpdCBhcmUgcmVmZXJlbmNlZC4KCi0tLQpOb3RlOgoKT3VyIGFnZW50IGNvbXBs
-ZXRlZCB0aGUgcmV2aWV3IG9mIHRoZSBwYXRjaC4gVGhlIGZ1bGwgcmV2aWV3IGNhbiBiZQpmb3Vu
-ZCBhdDogaHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXRlc3QtcHJvamVjdC9sdHAtYWdlbnQvYWN0
-aW9ucy9ydW5zLzI1MTUwODU4ODgxCgpUaGUgYWdlbnQgY2FuIHNvbWV0aW1lcyBwcm9kdWNlIGZh
-bHNlIHBvc2l0aXZlcyBhbHRob3VnaCBvZnRlbiBpdHMKZmluZGluZ3MgYXJlIGdlbnVpbmUuIElm
-IHlvdSBmaW5kIGlzc3VlcyB3aXRoIHRoZSByZXZpZXcsIHBsZWFzZQpjb21tZW50IHRoaXMgZW1h
-aWwgb3IgaWdub3JlIHRoZSBzdWdnZXN0aW9ucy4KClJlZ2FyZHMsCkxUUCBBSSBSZXZpZXdlcgoK
-LS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0
-cAo=
+Hi priyama2,
+
+On Fri, 1 May 2026 15:14:20 +0000, priyama2 wrote:
+> +++ b/testcases/kernel/device-drivers/nvme/Makefile
+> +# Copyright (c) 2024 IBM Corporation
+
+This file is new and added in 2026; the copyright year must match the
+year of creation. Change 2024 -> 2026.
+
+[...]
+
+> +static int nvme_device_found;
+> +static char nvme_dev_name[256];
+
+[...]
+
+> +static void run(unsigned int n)
+> +{
+> +	/* Reset state for each iteration */
+> +	nvme_device_found = 0;
+> +	memset(nvme_dev_name, 0, sizeof(nvme_dev_name));
+> +
+> +	switch (n) {
+> +	case 0:
+> +		test_detect_nvme_controllers();
+> +		break;
+> +	case 1:
+> +		test_enumerate_namespaces();
+
+With .tcnt = 4, each run(n) is a separate call, so the reset at the top
+zeroes out nvme_device_found before cases 1-3 can use the value set by
+case 0. On a machine with NVMe hardware, cases 1-3 always TCONF. Move
+the device discovery into setup() so the state persists across all run()
+invocations.
+
+---
+Note:
+
+Our agent completed the review of the patch. The full review can be
+found at: https://github.com/linux-test-project/ltp-agent/actions/runs/25150858409
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
