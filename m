@@ -4,81 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48D63FF8875
-	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 09:18:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4354EFF8875
+	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 09:20:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D5AFA3E52F4
-	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 11:18:53 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id F13D93E49DA
+	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 11:20:14 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 32FFA3E210C
- for <ltp@lists.linux.it>; Thu, 30 Apr 2026 11:18:35 +0200 (CEST)
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com
- [IPv6:2607:f8b0:4864:20::744])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C088A3E210C
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 11:19:57 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C22316012A2
- for <ltp@lists.linux.it>; Thu, 30 Apr 2026 11:18:34 +0200 (CEST)
-Received: by mail-qk1-x744.google.com with SMTP id
- af79cd13be357-8cb38e86cf2so58634685a.1
- for <ltp@lists.linux.it>; Thu, 30 Apr 2026 02:18:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1777540713; x=1778145513; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=Scx0F50+s/5R6QyHFXK94XLOuvwylKu2H/YDKUnJ9Sc=;
- b=DK4ibauys1KD8VvFpK69YxST/jWJOdFPwL/95qPT8vTn62YGmlELZY6L7Ef79uhRoP
- tkqZjY2Z/0t8/u/whqAnhHdcU79eSqizycK9EQN047+J1TjtaswSlBRERryuCjXLSi6m
- i8i//cFwfCN1U29T8TEa4EsVmhMJK+V0dg5sLhiW7zrf4UrZ42hIjC+CH2UbwiTUTfL2
- uMHmCFOu3ob3J5knYDuo1gyuYeMW/UHIwbczuNKL7e8hNd9wfprGRFIzfIW8RRlL9bHe
- UKWlj599+igPJxhS+IIMoquYfPzj0yawnDxAfS3sK2qwQT1gdmHuXF9UgG5pjhzIqgEx
- OgsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1777540713; x=1778145513;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=Scx0F50+s/5R6QyHFXK94XLOuvwylKu2H/YDKUnJ9Sc=;
- b=WSMqqEafF++K2WSxueCrON7Uz3oRp8xBN8MOMBiOOWEHMniajK+sCmU7h11lo3AzWc
- 7Dq8MoEoc3LXeYkI0NT8PH+mzHKNZtsoGreGOxxwog62xMPaMUmcGpK7MZD+cf75c+7L
- 8rhETBlaJBcm2z95dRdjCpUxgZ7eTjum2OXE/6vLhh6oMQUcZ5CuyLLyPM0YlaU+Lomq
- 6jr6DdrOY8eE22Ewv0a/fi++OacRc4JUT4SslgtQBgV2ox5t9WLhH46ecc247R6s5pm2
- VXst1MmhQ7u+kVYCScYD+ftGFJuOCxg26nA/FDtGKgPolO9bBNbVCzMRvIjXIivJ+Eo6
- 8SKA==
-X-Gm-Message-State: AOJu0Yz3cVuZiUonI8iq2KQ9xWXJIhFJ7YB1l2HnXtOny/OTjmUBgSzq
- oKEF+noPGc+JoJLH4LHf+4nInAiW2FXcTJgri+z6xx4Zqr/17eRO95kN
-X-Gm-Gg: AeBDietEfr+xadrmZYiOHd7b7DzAzgr3VE0R38QbbtnTMfSEczvBG1EHtzwU7Q8bu6B
- 0eotnqLzJVhUb8NMJc6NQALR5GVWtSwgctmjZu2/i27CdTjRu4aYjUh5UZgmQq1jy+tpRKny7Cq
- msOiEUFcxecraDc1AkOJEtTYoBCra7odPXVEWIKFceRS3xxiSunPIiOvRLsapgTjSFj1wJsJAXC
- ow2LMr03Z+0uXogNaPF/blNmSjGGmZjL38TgDMX1x2hOJ+AjokE9m3zoWCZ/MsvxY75saKmrZcK
- JOIfDAN6AFJEnlwF/icffG0KyCuaeQDQZ0dDKdVPSSfuYimxU5MdiAcE1+ZcuBJQpxnk8M1SAOn
- mY55FeKMrc+r0noYt/NqO5LHhSqfPlxJN13mYxllZYQY5S20eP32OhIY1pxMB2cQPpNlasCncbe
- Bh0xLeAf8HCgja7mZar17uMEK1SWY1gD2klycHKKS++on+Rif/hRmpj4r9CKp5Z+SZZvwQvqdCI
- zzlfwqdPhILtbu3yDHtUhX4xckun0kWjQEzj4i/YTw7Z7pk4uRppPtNIl4=
-X-Received: by 2002:a05:620a:40c9:b0:8eb:10d4:a46e with SMTP id
- af79cd13be357-8fa8a3ca2famr302691085a.45.1777540713353; 
- Thu, 30 Apr 2026 02:18:33 -0700 (PDT)
-Received: from
- runnervmeorf1.11dd50q2uqgerai5ailtq5mtfd.bx.internal.cloudapp.net
- ([4.236.158.81]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-8f93ccfecdesm403104585a.13.2026.04.30.02.18.33
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 30 Apr 2026 02:18:33 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Piotr Kubaj <piotr.kubaj@intel.com>
-Date: Thu, 30 Apr 2026 09:18:32 +0000
-Message-ID: <20260430091832.3987-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260430084239.320182-2-piotr.kubaj@intel.com>
-References: <20260430084239.320182-2-piotr.kubaj@intel.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 29CC2200B3D
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 11:19:56 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 85F696A7CD
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 09:19:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777540796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=1Xwc4dzH4mXgvOWli6Hm3DROT3gfQ4A4tIwzKIUo19M=;
+ b=L4Dd5y9Bm5jQ2pCdQ+I4BzWNH8pt7X6RuxUuDRQiPLROzjc5Gi1F/8HUoL1kxR5KtdXIXx
+ HgLAae+8YKOOd1qNVQBkABeexE9cxLGFBBiniFx8j4wMTRPsbGuXwwkoYpZwjaSHomdqYP
+ jZehLVxTc10wQY7YTnPkl0X5o51Dzww=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777540796;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=1Xwc4dzH4mXgvOWli6Hm3DROT3gfQ4A4tIwzKIUo19M=;
+ b=Qtq0VGauC+n/1nHjodoljiXOV7T7aa3vAMMCDQwVwAdKQ2VXBSPBvK+6ELNAMKHGNROmq7
+ s2uzgNvUVerDOSBA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777540796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=1Xwc4dzH4mXgvOWli6Hm3DROT3gfQ4A4tIwzKIUo19M=;
+ b=L4Dd5y9Bm5jQ2pCdQ+I4BzWNH8pt7X6RuxUuDRQiPLROzjc5Gi1F/8HUoL1kxR5KtdXIXx
+ HgLAae+8YKOOd1qNVQBkABeexE9cxLGFBBiniFx8j4wMTRPsbGuXwwkoYpZwjaSHomdqYP
+ jZehLVxTc10wQY7YTnPkl0X5o51Dzww=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777540796;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=1Xwc4dzH4mXgvOWli6Hm3DROT3gfQ4A4tIwzKIUo19M=;
+ b=Qtq0VGauC+n/1nHjodoljiXOV7T7aa3vAMMCDQwVwAdKQ2VXBSPBvK+6ELNAMKHGNROmq7
+ s2uzgNvUVerDOSBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 75FC7593B0
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 09:19:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id tNarG7we82k4OgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 09:19:56 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu, 30 Apr 2026 11:19:56 +0200
+Message-ID: <20260430091956.10915-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] thermal: add new test group
+Subject: [LTP] [PATCH] lib: tst_test: tst_reinit() abort when already
+ initialized
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,44 +102,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Piotr,
+Calling tst_reinit() when library is already initialized or calling it
+for a second time is always mistake. With that we silenty drop the old
+IPC region, that may have contained test results and there are likely
+other problems possibly caused by initializing the test library twice.
 
-On Thu, 30 Apr 2026 10:42:40 +0200, Piotr Kubaj wrote:
-> [PATCH] thermal: add new test group
+To fix that this patch adds tst_brk() that abort the test if we call
+tst_reinit() with already initialized test library.
 
-> +# Copyright (c) 2025, Intel Corporation. All rights reserved.
-
-Wrong year in the new Makefile -- should be 2026.
-
-> +	while (sleep_time > 0) {
-> +		[...]
-> +		tst_reap_children();
-> +		[...]
-> +		sleep(sleep_time--);
-
-sleep() must not be used for synchronization (G2). The children are
-already reaped with tst_reap_children(); this sleep is waiting for a
-hardware thermal state change. Use a polling loop with
-tst_timer_start()/tst_timer_expired_ms() instead, which you already
-use in cpu_workload().
-
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
-Note:
+ lib/tst_test.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Our agent completed the review of the patch.
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 26f6510a0..fa61e1be4 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -196,6 +196,9 @@ void tst_reinit(void)
+ 	size_t size = getpagesize();
+ 	int fd;
+ 
++	if (ipc)
++		tst_brk(TBROK, "Test library already initialized!");
++
+ 	if (!path)
+ 		tst_brk(TBROK, IPC_ENV_VAR" is not defined");
+ 
+-- 
+2.53.0
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
