@@ -4,50 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C781CCFA13
-	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 10:34:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E4C4CD13DE
+	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 11:09:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1B83D3E6C88
-	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 12:34:53 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id ED5063E53DC
+	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 13:09:20 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4BDCF3E57BC
- for <ltp@lists.linux.it>; Thu, 30 Apr 2026 12:34:33 +0200 (CEST)
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::b8])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id D4F363E2892
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 13:09:00 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D893B1000DA7
- for <ltp@lists.linux.it>; Thu, 30 Apr 2026 12:34:32 +0200 (CEST)
-Date: Thu, 30 Apr 2026 18:34:24 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1777545271;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DU85KNfEtt0JJJlGcDoATA2N34B38MERnqNbtDo112U=;
- b=Z7HSrNLIr2b8CSDHHbQFYAeXyPe7Doh9bSbQsQuim2V7GATEHy78++5vGvyeECN6yGca7i
- gIIk3gbXqPexFYDNmisF9xgrZCKBh3Dsx12M1yjkGoMPnQsskmdfi34coAhxGuA1zN2Jgs
- JNB3OJKAKS93pCv/FFuYNgJa3sHacl4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
-From: Li Wang <li.wang@linux.dev>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <afMwMO1yTBGDLQJc@linux.dev>
-Mail-Followup-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
-References: <20260430091956.10915-1-chrubis@suse.cz>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6ECC31000DA3
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 13:08:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1777547340; x=1809083340;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=68SL1i2LETRztbuRin5fDoRprTaxq6Mw1jPnQ+GJnDc=;
+ b=BsHVCExv34M7Ku37zZasOxW5lwj7+GSRZfmV4t/Y0uVrUux1clbtlh8Z
+ CdTkc1/mrFn3aI4QhYI2duZwg9bEjGOmO8aIJq0f0fXfKkHUAAetTocLn
+ OY6VRpL3JM9pv8bQADaGQEF/vBvuM/b79iNV6dlxtOBnAo3eCv9cN4kpL
+ g8B1AWtUst/p/BE1VlbZU8Bs+UxQTJNQu/qbrNxlC11dttwkzynuyeNG2
+ n5iFAGMk4aAgKXvJlxt19MN6oX3EygZ1tRJbc9PHsafnoYMbzNKu7Bsg1
+ Jj6lVbWi9I+84NSllTc+E4ZzA2fwot9Q+Mg7TJ5kjqfSizb8LIDfxs7cG A==;
+X-CSE-ConnectionGUID: 2Sz3M97vTZi/ri2Wf26e8A==
+X-CSE-MsgGUID: RCZVpkbVQzC54BcM/RHJiQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11771"; a="77659207"
+X-IronPort-AV: E=Sophos;i="6.23,207,1770624000"; d="scan'208";a="77659207"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+ by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Apr 2026 04:08:56 -0700
+X-CSE-ConnectionGUID: pwffLdEUQnq/v0jOdrtsLg==
+X-CSE-MsgGUID: zDKQvcdZQEOOXChapuMylg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,207,1770624000"; d="scan'208";a="236335823"
+Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
+ by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Apr 2026 04:08:54 -0700
+From: Piotr Kubaj <piotr.kubaj@intel.com>
+To: ltp@lists.linux.it
+Date: Thu, 30 Apr 2026 13:07:56 +0200
+Message-ID: <20260430110755.331002-2-piotr.kubaj@intel.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260430091956.10915-1-chrubis@suse.cz>
-X-Migadu-Flow: FLOW_OUT
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib: tst_test: tst_reinit() abort when already
- initialized
+Subject: [LTP] [PATCH v8] high_freq_hwp_cap_cppc.c: new test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -59,31 +67,147 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
+ rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Apr 30, 2026 at 11:19:56AM +0200, Cyril Hrubis wrote:
-> Calling tst_reinit() when library is already initialized or calling it
-> for a second time is always mistake. With that we silenty drop the old
-> IPC region, that may have contained test results and there are likely
-> other problems possibly caused by initializing the test library twice.
-> 
-> To fix that this patch adds tst_brk() that abort the test if we call
-> tst_reinit() with already initialized test library.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Verify for all online logical CPUs that their highest performance value are
+the same for HWP Capability MSR 0x771 and CPPC sysfs file.
 
-Reviewed-by: Li Wang <li.wang@linux.dev>
+Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+---
+Moved path string outside of the loop, per Andrea's review.
+"online" sysfs node is only available for CPUs other than cpu0.
+ runtest/power_management_tests                |  1 +
+ testcases/kernel/power_management/.gitignore  |  1 +
+ .../power_management/high_freq_hwp_cap_cppc.c | 86 +++++++++++++++++++
+ 3 files changed, 88 insertions(+)
+ create mode 100644 testcases/kernel/power_management/.gitignore
+ create mode 100644 testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
 
-The patch itself looks good, I'm just wondering how you found
-this issue, was it called twice somewhere/in a test?
-
+diff --git a/runtest/power_management_tests b/runtest/power_management_tests
+index b670da6ec..4da57ee72 100644
+--- a/runtest/power_management_tests
++++ b/runtest/power_management_tests
+@@ -1,4 +1,5 @@
+ #POWER_MANAGEMENT
++high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
+ runpwtests03 runpwtests03.sh
+ runpwtests04 runpwtests04.sh
+ runpwtests06 runpwtests06.sh
+diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
+new file mode 100644
+index 000000000..03f0c83e4
+--- /dev/null
++++ b/testcases/kernel/power_management/.gitignore
+@@ -0,0 +1 @@
++high_freq_hwp_cap_cppc
+diff --git a/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
+new file mode 100644
+index 000000000..fb1b8edc7
+--- /dev/null
++++ b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
+@@ -0,0 +1,86 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
++ */
++
++/*\
++ * Verify for all online logical CPUs that their highest performance value are
++ * the same for HWP Capability MSR 0x771 and CPPC sysfs file.
++ */
++
++#include "tst_test.h"
++#include "tst_safe_prw.h"
++
++#define MSR_HWP_CAPABILITIES	0x771
++#define HIGHEST_PERF_MASK	0xFF
++
++static int nproc;
++
++static void setup(void)
++{
++	nproc = tst_ncpus_conf();
++}
++
++static void run(void)
++{
++	bool status = true;
++	char path[PATH_MAX];
++
++	for (int i = 0; i < nproc; i++) {
++		int online = 1;
++		unsigned long long msr_highest_perf = 0, sysfs_highest_perf = 0;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/online", i);
++		if (i)
++			SAFE_FILE_SCANF(path, "%d", &online);
++
++		if (!online) {
++			tst_res(TINFO, "CPU%d offline, skipping", i);
++			continue;
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/acpi_cppc/highest_perf", i);
++		if (access(path, F_OK) == -1) {
++			tst_res(TCONF | TERRNO, "CPPC sysfs not available, skipping");
++			return;
++		}
++
++		SAFE_FILE_SCANF(path, "%llu", &sysfs_highest_perf);
++		tst_res(TDEBUG, "%s: %llu", path, sysfs_highest_perf);
++
++		snprintf(path, sizeof(path), "/dev/cpu/%d/msr", i);
++		int fd = SAFE_OPEN(path, O_RDONLY);
++
++		SAFE_PREAD(1, fd, &msr_highest_perf, sizeof(msr_highest_perf), MSR_HWP_CAPABILITIES);
++		SAFE_CLOSE(fd);
++		msr_highest_perf &= HIGHEST_PERF_MASK;
++		tst_res(TDEBUG, "%s: %llu", path, msr_highest_perf);
++
++		if (msr_highest_perf != sysfs_highest_perf) {
++			tst_res(TINFO, "cpu%d: sysfs=%llu MSR=%llu",
++				i, sysfs_highest_perf, msr_highest_perf);
++			status = false;
++		}
++	}
++
++	if (status)
++		tst_res(TPASS, "Sysfs and MSR values are equal");
++	else
++		tst_res(TFAIL, "Highest performance values differ between sysfs and MSR");
++}
++
++static struct tst_test test = {
++	.needs_kconfigs = (const char *const []) {
++		"CONFIG_ACPI_CPPC_LIB",
++		"CONFIG_X86_MSR",
++		NULL
++	},
++	.needs_root = 1,
++	.setup = setup,
++	.supported_archs = (const char *const []) {
++		"x86",
++		"x86_64",
++		NULL
++	},
++	.test_all = run
++};
 -- 
-Regards,
-Li Wang
+2.47.3
+
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
+Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
+
+Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
+This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
