@@ -4,91 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2658FF8864
-	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 03:48:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1777520880; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=0BDyr1MKism39JyWa+VOHAQAXMCJNkuTy/DCm2V841A=;
- b=PmaGQn15U/N8a0r7gf9+WwPLKI4u1KHK+Pll2zDhzGBZ5IC2j07FvxhLxpqWQ52xcvGUD
- pI/Q+jDIgwY26QVnwwmOjnTTO8OQ9/ak6KXNNrHrtAAD0PfKc2PS1DAnsXhEtP4wXl9u72i
- 2+r/A+8PKRFLr3cjRwqekIxfyA1m5xo=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67F13FF886F
+	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 05:10:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2E8AD3E929D
-	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 05:48:00 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id C5C8C3E24FE
+	for <ltp@archiver.kernel.org>; Thu, 30 Apr 2026 07:10:41 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DD7853E1630
- for <ltp@lists.linux.it>; Thu, 30 Apr 2026 05:47:34 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 743143E0E7A
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 07:10:22 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5ECAF1000740
- for <ltp@lists.linux.it>; Thu, 30 Apr 2026 05:47:34 +0200 (CEST)
-Received: by mail-wr1-x436.google.com with SMTP id
- ffacd0b85a97d-43cfd1f9fd1so223913f8f.3
- for <ltp@lists.linux.it>; Wed, 29 Apr 2026 20:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1777520853; x=1778125653; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=S9ANyz8nyqtDXFuJAYKKsaQDXzPVdfxC0VzaUiaG40E=;
- b=QfP8ydOTRY/6KO/VO4KIsSt+oSc9LzkaxqKg7IY4JQG3PCqRQKqMccXD/o7iycZ86X
- t7L9S5QIKn9TtllZH62nta1RLfkhsnfavVavfowN2y9wK0A7qz3ZrBfjYNj7IE0U4Bn2
- G+bwyrLwLuLvsI1lI5MlrjHfDTlfrho77yHADeQiqTgrKoIXWp8ctdhxQFPLvMwJj/26
- p4VfZJxNLgUdFEuaXBCzcN0kNMpwqQkGmLg3XtyckyzZn9tFyuVyurNaenFelB6BVbbw
- WBQsS3Ikcv67i5leWQ7UdkMQQQ6ZJy6QHfRzIWcSIEb7gsxz9JLkxZhTdBfzj707gUfw
- 1gng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1777520853; x=1778125653;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=S9ANyz8nyqtDXFuJAYKKsaQDXzPVdfxC0VzaUiaG40E=;
- b=amj5zVX+wFB3JejlSfXd2VIdp6AXq33837WJOy57MPDvuUxCeO5+zOouUWRnt67fkF
- l2bG/Q+7Qt+sr/KalZkcHsEc/Nssd6p+EafRcH7FF/gvJ7rGHg5wDc6BynVRmxkQexCp
- a0VuKahvbTl/lz06eaCd84Ho5qdLHhvditqwF5b3RUXzOoke+Z4dkNDjTngrhq6DDLQp
- e2P5j4uk17Xa6rGIvmsM+1fb/L1kveSGscFSL4+3TneUw9Dct07JWZqSiOne8Cl267nU
- Gn8K824fIrfHxqqV/OW+7zQgPr+XfH1v9XKCkuszCZdRZAk4Tp3WT6gl8TS4MC0Iwx8K
- MyMA==
-X-Gm-Message-State: AOJu0Yx4sEd8je19qmTfBYy6MS/bwbIMnshvuz10HoNuUOZRYfIGb0xH
- adpObcM2yNIWJ7GI67lHOBxVPz7lGsyYXvera8Rk2LLh8R+kgEnKWUntxB6FMRCQqrWlHm0wc1C
- 7U4k=
-X-Gm-Gg: AeBDietcwW2KFh9a6jggiGlKhGKS2lkYONFtG+sxhRp30SHk/k1tv2OXcvUIKi+CyIJ
- T7zS8o7sq0x/Mnk8FW09YPoMjAnQiGllsfAf3n6/THgce/sVyR5xTB4qoPMnrNXYjboTi2MU4nY
- j/I1uFsyJTvxkJRwmSlAuE95K9Q0EJ5jmUij4/uusbmx+jIQRRdXWV9e7HMzTzJkiMsRg0Q2+Qk
- W7AL6MZLBjZT5fIxwVTESBk5WRkrIGHjj5EJvmChQoigmb4DMUjNmkNH3l7IoPeds8K6lFzFccn
- hKzLqyWnx+dXBNrb5XbqKtK2X/LWSzUQ1V69tGaNAWf6CRce1j9IfAS86p0xLmezTkUFi+ZmII6
- 4hTyHSfkDm5e68nA2/c05faAnTmq6CGTxIN6QErgtWIpHFaAFjWOB3KrqzblQzhxBkQYN9P38op
- ePbfPKdY2Lxhpj6DzImxnOyg==
-X-Received: by 2002:a05:6000:2385:b0:43d:70de:1c68 with SMTP id
- ffacd0b85a97d-4493fa01907mr1570493f8f.30.1777520853362; 
- Wed, 29 Apr 2026 20:47:33 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-447b3d482d3sm9704239f8f.1.2026.04.29.20.47.32
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Apr 2026 20:47:33 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9AAE9600749
+ for <ltp@lists.linux.it>; Thu, 30 Apr 2026 07:10:21 +0200 (CEST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 63THKaJR2036575; Thu, 30 Apr 2026 05:10:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:in-reply-to:message-id
+ :mime-version:references:subject:to; s=pp1; bh=en6c89Ng9NQdeXySa
+ gZOxmvAHvFEo+srAzzrw4eNqyY=; b=p80o3jaeZPpQ4WS2yPwCcoKEij4WOFV1J
+ SqaXhBY8rIF4hidLHzYPyST92jSPR8SCQtg9nzg3yV1NLrSF2DWQjVk0yfaTCcID
+ OK+prKfi8C9qKokFA3Hu1Hr0bqh9kQRoIqE4huu58K3uVHSPaZaqwiGcHRPMLmiD
+ QKZY97Knxuwm+OtCN2u8N1YDLnh2GFIQMC+qHAwx0jZbXwcMBC3L0Yrub2oq89nG
+ DtELR7HsH+kEn3u/PxZOb/kQOWoOEHpVjkL2p2mTAcnp2uLafyER4T9cl1NL4JBO
+ 2NFQgEJ41h96tEDW7EC62rUpCSvMBQmKCsFCfZwJd0qOb7JqEIXaA==
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drk1jvgpe-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 30 Apr 2026 05:10:19 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63U58w8l013487;
+ Thu, 30 Apr 2026 05:10:18 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dsamyh8c5-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 30 Apr 2026 05:10:18 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com
+ [10.39.53.232])
+ by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 63U5AH8e64749908
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 30 Apr 2026 05:10:17 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 84C9058043;
+ Thu, 30 Apr 2026 05:10:17 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 2A63658053;
+ Thu, 30 Apr 2026 05:10:17 +0000 (GMT)
+Received: from botlp69.isst.tadn.ibm.com (unknown [9.5.7.36])
+ by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+ Thu, 30 Apr 2026 05:10:17 +0000 (GMT)
+From: priyama2@linux.ibm.com
 To: ltp@lists.linux.it
-Date: Thu, 30 Apr 2026 03:47:16 +0000
-Message-ID: <20260430034724.1628-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260429111823.1046-1-wegao@suse.com>
-References: <20260429111823.1046-1-wegao@suse.com>
+Date: Fri,  1 May 2026 15:14:20 +0000
+Message-ID: <20260501151420.1042995-1-priyama2@linux.ibm.com>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260428075302.7320ef7e3@imap1.dmz-prg2.suse.org>
+References: <20260428075302.7320ef7e3@imap1.dmz-prg2.suse.org>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDMwMDA0NSBTYWx0ZWRfX2/JDwTnLiYZ9
+ 8VrOnpu9sdkIhUVNbbq/mUeA9tj7NLFMWS85C4LfrRuk9QSUQZJsfHDzXZ3P9kpIqknnWDtncKC
+ gxUQ4tfSmkE+b94IBS6gWEs6JT18mXN45PF/JF7eaCvtYH0z89vS0BClhpDaRtW/tVZuuDrmY5U
+ SOeYKXh68v8BPiDrFrCIMekYc+rpGR7UGoG/hwfFC5scrOmjGYhZh4heEQO/rG/H2wHg1nF4emh
+ VorIsyKhXXVwDDNtQXsI1vJS5GBGhIYkoDH2YJQ3zWx6qArAwItwk9aW8qBEHVXBbYzet+G+pNb
+ L32mfxwfB5zZ5BM/XX1TNn7cfNSgrMFju0jTqAi9AdPJOJU2JyxzWILtUmqLOSqdEtwto601l95
+ Z/5tSJpPB3neySZ2kqSr/HgM/aFN1ItCAXVULtUXJPeHo3n7y1CW66WRQE5ss75ELNSBi3bvqbC
+ ItspFgcBvjIc1K6W3mQ==
+X-Proofpoint-GUID: 9zi4XND94uTnvnPs2xcZxblBp3M2vF_8
+X-Proofpoint-ORIG-GUID: 9zi4XND94uTnvnPs2xcZxblBp3M2vF_8
+X-Authority-Analysis: v=2.4 cv=MohiLWae c=1 sm=1 tr=0 ts=69f2e43b cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VnNF1IyMAAAA:8 a=_TXCIjpbKOfXyxnRZMsA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-04-30_01,2026-04-28_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 adultscore=0 suspectscore=0 bulkscore=0 spamscore=0
+ priorityscore=1501 malwarescore=0 clxscore=1015 lowpriorityscore=0
+ impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
+ definitions=main-2604300045
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] shmctl03: Fix 32-bit compat mode failure by
- adjusting comparisons for compat mode truncation
+Subject: [LTP] [PATCH v3] testcases/kernel/device-drivers/nvme: Add NVMe
+ device discovery test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,132 +109,306 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 64-bit kernels, the default shmmax and shmall values often exceed
-the range of a 32-bit unsigned long or are clipped differently by the
-kernel's compat syscall layer than they appear in /proc.
+From: priyama2 <priyama2@linux.ibm.com>
 
-Link: https://lore.kernel.org/ltp/aJm5SBOaRoe1e0PB@yuki.lan/
-Signed-off-by: Wei Gao <wegao@suse.com>
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+This test fills a gap in NVMe test coverage by validating basic device
+enumeration and driver binding, which are fundamental prerequisites for
+any NVMe functionality testing.
+
+The test verifies:
+- Detection of NVMe controllers in /dev
+- Enumeration of namespaces for detected controllers
+- PCI enumeration (class code 0x010802)
+- NVMe driver binding
+
+Changes in v3:
+- Fix subject prefix to match directory path
+- Update copyright year to 2026
+- Add nvme to SUBDIRS in testcases/kernel/device-drivers/Makefile
+- Reset static variables at start of run() for -i support
+- Remove .needs_root (all operations are world-readable)
+- Use SAFE_FOPEN/SAFE_FCLOSE for PCI class file access
+- Use SAFE_READLINK for driver symlink reading
+- Add .gitignore entry for nvme01 binary
+- Add runtest/device-drivers entry for nvme01
+- Fix author field to use priyama2
+
+Changes in v2:
+- Use LTP buildsystem instead of standalone Makefile
+- Remove README file (use doc comments instead)
+- Add proper LTP documentation comment format
+- Use SAFE_OPENDIR() and SAFE_CLOSEDIR() macros
+- Remove obvious and redundant comments
+- Code cleanup and style improvements
+
+Signed-off-by: priyama2 <priyama2@linux.ibm.com>
 ---
- include/tst_assert.h                          |  9 ++++---
- lib/tst_assert.c                              | 27 ++++++++++++++-----
- .../kernel/syscalls/ipc/shmctl/shmctl03.c     | 17 +++++++++---
- 3 files changed, 41 insertions(+), 12 deletions(-)
+ runtest/device-drivers                        |   1 +
+ testcases/kernel/device-drivers/Makefile      |   1 +
+ .../kernel/device-drivers/nvme/.gitignore     |   1 +
+ testcases/kernel/device-drivers/nvme/Makefile |   7 +
+ testcases/kernel/device-drivers/nvme/nvme01.c | 205 ++++++++++++++++++
+ 5 files changed, 215 insertions(+)
+ create mode 100644 runtest/device-drivers
+ create mode 100644 testcases/kernel/device-drivers/nvme/.gitignore
+ create mode 100644 testcases/kernel/device-drivers/nvme/Makefile
+ create mode 100644 testcases/kernel/device-drivers/nvme/nvme01.c
 
-diff --git a/include/tst_assert.h b/include/tst_assert.h
-index dcb62dfea..2f1051270 100644
---- a/include/tst_assert.h
-+++ b/include/tst_assert.h
-@@ -21,14 +21,17 @@ void tst_assert_int(const char *file, const int lineno,
- #define TST_ASSERT_FILE_INT(path, prefix, val) \
- 	tst_assert_file_int(__FILE__, __LINE__, path, prefix, val)
- 
-+#define TST_ASSERT_SATURATED_INT   0x01
-+#define TST_ASSERT_BITWISE         0x02
+diff --git a/runtest/device-drivers b/runtest/device-drivers
+new file mode 100644
+index 000000000..a7295584e
+--- /dev/null
++++ b/runtest/device-drivers
+@@ -0,0 +1 @@
++nvme01 nvme01
+diff --git a/testcases/kernel/device-drivers/Makefile b/testcases/kernel/device-drivers/Makefile
+index 229a50683..664f4cd18 100644
+--- a/testcases/kernel/device-drivers/Makefile
++++ b/testcases/kernel/device-drivers/Makefile
+@@ -9,6 +9,7 @@ SUBDIRS		:= acpi \
+ 		   block \
+ 		   cpufreq \
+ 		   locking \
++		   nvme \
+ 		   pci \
+ 		   rcu \
+ 		   rtc \
+diff --git a/testcases/kernel/device-drivers/nvme/.gitignore b/testcases/kernel/device-drivers/nvme/.gitignore
+new file mode 100644
+index 000000000..c60bc210c
+--- /dev/null
++++ b/testcases/kernel/device-drivers/nvme/.gitignore
+@@ -0,0 +1 @@
++nvme01
+diff --git a/testcases/kernel/device-drivers/nvme/Makefile b/testcases/kernel/device-drivers/nvme/Makefile
+new file mode 100644
+index 000000000..d47e99e6a
+--- /dev/null
++++ b/testcases/kernel/device-drivers/nvme/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2024 IBM Corporation
 +
- /*
-  * Same as tst_assert_int() but for unsigned long.
-  */
- void tst_assert_ulong(const char *file, const int lineno,
--                      const char *path, unsigned long val);
-+                      const char *path, unsigned long val, int flags);
- 
--#define TST_ASSERT_ULONG(path, val) \
--	tst_assert_ulong(__FILE__, __LINE__, path, val)
-+#define TST_ASSERT_ULONG(path, val, ...) \
-+	tst_assert_ulong(__FILE__, __LINE__, path, val, (0, ##__VA_ARGS__))
- 
- /*
-  * Asserts that integer value stored in the prefix field of file pointed by path
-diff --git a/lib/tst_assert.c b/lib/tst_assert.c
-index b68bd5d39..fd651f53a 100644
---- a/lib/tst_assert.c
-+++ b/lib/tst_assert.c
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
-  */
- #include <stdio.h>
-+#include <limits.h>
- #define TST_NO_DEFAULT_MAIN
- #include "tst_assert.h"
- #include "tst_test.h"
-@@ -23,18 +24,32 @@ void tst_assert_int(const char *file, const int lineno, const char *path, int va
- 	tst_res_(file, lineno, TFAIL, "%s != %d got %d", path, val, sys_val);
- }
- 
--void tst_assert_ulong(const char *file, const int lineno, const char *path, unsigned long val)
-+void tst_assert_ulong(const char *file, const int lineno, const char *path,
-+		      unsigned long val, int flags)
- {
--	unsigned long sys_val;
--
--	safe_file_scanf(file, lineno, NULL, path, "%lu", &sys_val);
-+	unsigned long long sys_val_64;
-+	unsigned long expected_val;
++top_srcdir	?= ../../../..
 +
-+	safe_file_scanf(file, lineno, NULL, path, "%llu", &sys_val_64);
++include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/device-drivers/nvme/nvme01.c b/testcases/kernel/device-drivers/nvme/nvme01.c
+new file mode 100644
+index 000000000..3c3cb92ce
+--- /dev/null
++++ b/testcases/kernel/device-drivers/nvme/nvme01.c
+@@ -0,0 +1,205 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 IBM Corporation
++ * Author: priyama2 <priyama2@linux.ibm.com>
++ */
 +
-+	if (flags & TST_ASSERT_SATURATED_INT) {
-+		if (sys_val_64 > (unsigned long long)INT_MAX)
-+			expected_val = (unsigned long)INT_MAX;
-+		else
-+			expected_val = (unsigned long)sys_val_64;
-+	} else if (flags & TST_ASSERT_BITWISE) {
-+		expected_val = (unsigned long)(sys_val_64 & 0xFFFFFFFFULL);
-+	} else {
-+		expected_val = (unsigned long)sys_val_64;
++/* * [Description]
++ *
++ * Verify NVMe device discovery and identification.
++ *
++ * This test fills a gap in NVMe test coverage by validating basic device
++ * enumeration and driver binding, which are fundamental prerequisites for
++ * any NVMe functionality testing.
++ *
++ * - Detect NVMe controllers in /dev
++ * - Enumerate namespaces for detected controllers
++ * - Verify PCI enumeration (class code 0x010802)
++ * - Check NVMe driver binding
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <dirent.h>
++#include <errno.h>
++
++#include "tst_test.h"
++#include "tst_safe_stdio.h"
++
++#define NVME_DEV_PATH "/dev"
++#define NVME_SYS_PATH "/sys/class/nvme"
++#define PCI_DEVICES_PATH "/sys/bus/pci/devices"
++
++static int nvme_device_found;
++static char nvme_dev_name[256];
++
++static void test_detect_nvme_controllers(void)
++{
++	DIR *dir;
++	struct dirent *entry;
++	int found = 0;
++
++	dir = SAFE_OPENDIR(NVME_DEV_PATH);
++
++	tst_res(TINFO, "Scanning for NVMe devices in %s", NVME_DEV_PATH);
++
++	while ((entry = readdir(dir)) != NULL) {
++		if (strncmp(entry->d_name, "nvme", 4) == 0 &&
++		    strlen(entry->d_name) == 5) {
++			tst_res(TINFO, "Found NVMe controller: %s", entry->d_name);
++			strncpy(nvme_dev_name, entry->d_name, sizeof(nvme_dev_name) - 1);
++			found = 1;
++			nvme_device_found = 1;
++		}
 +	}
- 
--	if (val == sys_val) {
-+	if (val == expected_val) {
- 		tst_res_(file, lineno, TPASS, "%s = %lu", path, val);
- 		return;
- 	}
- 
--	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu", path, val, sys_val);
-+	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu (raw: %llu)",
-+		path, val, expected_val, sys_val_64);
- }
- 
- void tst_assert_file_int(const char *file, const int lineno, const char *path, const char *prefix, int val)
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-index a1f53e7c1..e6c7a8027 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-@@ -30,9 +30,20 @@ static void verify_ipcinfo(void)
- 	else
- 		tst_res(TPASS, "shmmin = 1");
- 
--	TST_ASSERT_ULONG("/proc/sys/kernel/shmmax", info.shmmax);
--	TST_ASSERT_ULONG("/proc/sys/kernel/shmmni", info.shmmni);
--	TST_ASSERT_ULONG("/proc/sys/kernel/shmall", info.shmall);
-+	if (tst_is_compat_mode()) {
-+		/*
-+		 * On 64-bit kernel, shmmax is clamped to INT_MAX for 32-bit
-+		 * compat syscall, while shmmni and shmall are truncated
-+		 * to 32-bit.
-+		 */
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmmax", info.shmmax, TST_ASSERT_SATURATED_INT);
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmmni", info.shmmni, TST_ASSERT_BITWISE);
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmall", info.shmall, TST_ASSERT_BITWISE);
-+	} else {
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmmax", info.shmmax);
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmmni", info.shmmni);
-+		TST_ASSERT_ULONG("/proc/sys/kernel/shmall", info.shmall);
++
++	SAFE_CLOSEDIR(dir);
++
++	if (found)
++		tst_res(TPASS, "NVMe controller(s) detected successfully");
++	else
++		tst_res(TCONF, "No NVMe controllers found in system");
++}
++
++static void test_enumerate_namespaces(void)
++{
++	DIR *dir;
++	struct dirent *entry;
++	int ns_count = 0;
++	char search_pattern[32];
++
++	if (!nvme_device_found) {
++		tst_res(TCONF, "No NVMe device found, skipping namespace enumeration");
++		return;
 +	}
- }
- 
- static struct tst_test test = {
++
++	snprintf(search_pattern, sizeof(search_pattern), "%sn", nvme_dev_name);
++
++	dir = SAFE_OPENDIR(NVME_DEV_PATH);
++
++	tst_res(TINFO, "Enumerating namespaces for %s", nvme_dev_name);
++
++	while ((entry = readdir(dir)) != NULL) {
++		if (strncmp(entry->d_name, search_pattern, strlen(search_pattern)) == 0) {
++			tst_res(TINFO, "Found namespace: %s", entry->d_name);
++			ns_count++;
++		}
++	}
++
++	SAFE_CLOSEDIR(dir);
++
++	if (ns_count > 0)
++		tst_res(TPASS, "Enumerated %d namespace(s) successfully", ns_count);
++	else
++		tst_res(TPASS, "No namespaces found for %s (device may not have namespaces configured)", nvme_dev_name);
++}
++
++static void test_verify_pci_enumeration(void)
++{
++	DIR *dir;
++	struct dirent *entry;
++	int found = 0;
++	char class_path[512];
++	FILE *fp;
++	char class_id[16];
++
++	if (!nvme_device_found) {
++		tst_res(TCONF, "No NVMe device found, skipping PCI enumeration check");
++		return;
++	}
++
++	dir = SAFE_OPENDIR(PCI_DEVICES_PATH);
++
++	tst_res(TINFO, "Checking PCI enumeration for NVMe devices");
++
++	while ((entry = readdir(dir)) != NULL) {
++		if (entry->d_name[0] == '.')
++			continue;
++
++		snprintf(class_path, sizeof(class_path), "%s/%s/class",
++			 PCI_DEVICES_PATH, entry->d_name);
++
++		fp = SAFE_FOPEN(class_path, "r");
++
++		if (fgets(class_id, sizeof(class_id), fp)) {
++			if (strncmp(class_id, "0x010802", 8) == 0) {
++				tst_res(TINFO, "Found NVMe PCI device: %s (class: %s)",
++					entry->d_name, class_id);
++				found = 1;
++			}
++		}
++		SAFE_FCLOSE(fp);
++	}
++
++	SAFE_CLOSEDIR(dir);
++
++	if (found)
++		tst_res(TPASS, "NVMe device properly enumerated on PCI bus");
++	else
++		tst_res(TFAIL, "NVMe device not found on PCI bus");
++}
++
++static void test_check_driver_binding(void)
++{
++	char driver_path[512];
++	char driver_link[512];
++
++	if (!nvme_device_found) {
++		tst_res(TCONF, "No NVMe device found, skipping driver binding check");
++		return;
++	}
++
++	snprintf(driver_path, sizeof(driver_path), "%s/%s/device/driver",
++		 NVME_SYS_PATH, nvme_dev_name);
++
++	SAFE_READLINK(driver_path, driver_link, sizeof(driver_link));
++
++	tst_res(TINFO, "Driver binding: %s", driver_link);
++
++	if (strstr(driver_link, "nvme") != NULL)
++		tst_res(TPASS, "NVMe driver properly bound to device");
++	else
++		tst_res(TFAIL, "Unexpected driver bound to NVMe device: %s", driver_link);
++}
++
++static void setup(void)
++{
++	if (access("/sys/module/nvme", F_OK) != 0)
++		tst_brk(TCONF, "NVMe kernel module not loaded");
++
++	tst_res(TINFO, "NVMe Device Discovery & Identification Test");
++}
++
++static void run(unsigned int n)
++{
++	/* Reset state for each iteration */
++	nvme_device_found = 0;
++	memset(nvme_dev_name, 0, sizeof(nvme_dev_name));
++
++	switch (n) {
++	case 0:
++		test_detect_nvme_controllers();
++		break;
++	case 1:
++		test_enumerate_namespaces();
++		break;
++	case 2:
++		test_verify_pci_enumeration();
++		break;
++	case 3:
++		test_check_driver_binding();
++		break;
++	}
++}
++
++static struct tst_test test = {
++	.test = run,
++	.tcnt = 4,
++	.setup = setup,
++};
 -- 
 2.52.0
 
