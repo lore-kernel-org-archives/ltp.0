@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 980C9CD13DA
-	for <ltp@archiver.kernel.org>; Sat,  2 May 2026 08:15:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1777709731; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=PSfdWPORP/4S+tUMTjiOvfEyTEsoeerWrlFSqkVI+J4=;
- b=Lvf5cfCsuuDnDBt6nmJ45nLuyuJwNoBQmt2EiIHA6zN+BMnVx6d8lxZV16pKra5wrjzUR
- 7KURSEkVVnkaCAgvi4EJtODBp2STbwQ79AepVSo2HgKjHKgj5gVberj63ZYJhxM49GUI8xH
- Phq/SrD8n+GL1yVCZluGEh/5wBmt6Tk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFC3BFF885A
+	for <ltp@archiver.kernel.org>; Sun,  3 May 2026 08:56:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9F14C3E24F5
-	for <ltp@archiver.kernel.org>; Sat,  2 May 2026 10:15:31 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 168983E1FD3
+	for <ltp@archiver.kernel.org>; Sun,  3 May 2026 10:56:30 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CFB753CECB5
- for <ltp@lists.linux.it>; Sat,  2 May 2026 10:15:07 +0200 (CEST)
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com
- [IPv6:2607:f8b0:4864:20::449])
+ by picard.linux.it (Postfix) with ESMTPS id 3885A3E16F0
+ for <ltp@lists.linux.it>; Sun,  3 May 2026 10:56:11 +0200 (CEST)
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
+ [IPv6:2607:f8b0:4864:20::1043])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3AAA86012B3
- for <ltp@lists.linux.it>; Sat,  2 May 2026 10:15:07 +0200 (CEST)
-Received: by mail-pf1-x449.google.com with SMTP id
- d2e1a72fcca58-82f896eb6faso2832009b3a.3
- for <ltp@lists.linux.it>; Sat, 02 May 2026 01:15:07 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A900060029D
+ for <ltp@lists.linux.it>; Sun,  3 May 2026 10:56:10 +0200 (CEST)
+Received: by mail-pj1-x1043.google.com with SMTP id
+ 98e67ed59e1d1-362e30526f8so1269482a91.3
+ for <ltp@lists.linux.it>; Sun, 03 May 2026 01:56:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1777709705; x=1778314505; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=X72uZw7lhsX+prQYnKj1oeF1Br5FZ5xlBuQfhk4UprI=;
- b=WF3GXO9RQpY5i58Jf6AiANtlAy/uWE+9tJTDkcxgeoQCCtqSfxSPmrUnxLMvfT23R4
- bb4zrto7kPXfbPQSJ8mr9SzD8TTZ1N4/586V6R27tH3x0BZwXERE7JWZ6a0WXlwQVDpB
- 6gwUHPa568o8gFqniEEXE9bpTEnHbjgExJaETqvgVQgcioypFx8kJUibrv94JbjK+zHw
- isgnaALwD+TAnB/YG1ImBu1zHn1R5Pp1WB0/8UdlCMEAhBzaqvFUlm3Q3RKuFkmY/pVg
- ZOZpiSXh/ntSgLnZMo1XIFkArpcqPbJDX2kjfQ45ehHepyCuM/8kyOxiCPXaZ5cud3Ud
- IaIg==
+ d=gmail.com; s=20251104; t=1777798569; x=1778403369; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to;
+ bh=t7iomLe5ZcM1VHftyXu2sJIzkQC2IhxehXiBm4uZYtQ=;
+ b=RU2k+uInw3tTbkQdURlgS+IUwrowbxvNLnn6RdxkwEhoeFlM8W79MYXubLZ51GjI8/
+ 88HmQqFwE5Y1RhHHDIkYsbqP3wZdh+P5y5OiK1u01UxDN+xSKU2+ZpgGhrq7ykAkK9pb
+ VhAH5fz5OgZVBrUhrJvcnYadL2wtsYjC7zNwmdciPc5RMvbx2pa38Hm8o3xp5UmI5YHa
+ y8toE5p5ECFxup99dWqj6njs400KpWP6e7sGa8z4W69w5Lea2Ed8DToAPmTA7LT8tjEJ
+ mMvK8e1NMOZjA6W5AAr4VZGRJABAoLPEG0leKZouyqumklmJd/7lnGU+oAT5ZZMfZ4+5
+ Lb5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1777709705; x=1778314505;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=X72uZw7lhsX+prQYnKj1oeF1Br5FZ5xlBuQfhk4UprI=;
- b=GcWge+nFHSkEUMVo2icWNX6/a3PgQFITZwzTbaHP5xdQDtkNAl4YMdfwvUvup7JGqN
- Rv0/kDY1EQX+KXu9feh9tElOfpWroawul4cCiFst8QuscZHx2MtuAjt0EEf3TlWsxlc1
- im5FXAoNnFa3EZNGwJdRYi0ar64I9bys0L1EbW/y6Oj2Yl1Xg4XQJDBEysYqg+WLVfcW
- vnloS24zF+btMXD8xOKYff1CuvzA+AhM3SoVH1NHR9vPEZkt+HSt3ElxFZfw8/Izduv3
- nOrsr/kA/ylwqP4+s9/1kddX0J/EDEx0REFzOaped2G/Nr/9Fmpr6OzEj5FRE6IfUkq8
- MCvQ==
-X-Gm-Message-State: AOJu0YxEb9fXrU1TH4BuyaJU5IubeW0mz75bNEfSGzJVgl8mRAQTYj8O
- 5hLq+MrIpyrYmUxBRUST3TPKRBybPoOsdRGfO1c28iiaxLFaZ1fdVKjdlKoRT/ISUbbqwCGFY4r
- zWk84i5dV5OROWUMJpzHJAm+GkpPB4vOnQnVjYrI37+siQi0dSplDXKAIr/gEcW8KNfuHLiq3ni
- BGttA/NwMzg9XrNmf007tO52oxBv+FLn76HxSSw6V+CpHRAMg=
-X-Received: from pfzz25.prod.google.com ([2002:a05:6a00:1f9:b0:835:38e9:3254])
- (user=chihsheng job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:3d44:b0:82a:79b8:2049 with SMTP id
- d2e1a72fcca58-8352d218aa1mr2591514b3a.25.1777709705023; 
- Sat, 02 May 2026 01:15:05 -0700 (PDT)
-Date: Sat,  2 May 2026 08:14:46 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.54.0.545.g6539524ca2-goog
-Message-ID: <20260502081446.10472-1-chihsheng@google.com>
+ d=1e100.net; s=20251104; t=1777798569; x=1778403369;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=t7iomLe5ZcM1VHftyXu2sJIzkQC2IhxehXiBm4uZYtQ=;
+ b=GcAnNOh6ykFvOr3PiUiBi+0o1CfOjatCtm34o/T1KNEQlGD0TWtbXH3jc0fkspsJkb
+ uYp4XAxpsIbqhdb9yowuORXFu9s4lxryAz0dNJzAPlx22LTFTcHs1kt03hf2D79T0ubm
+ 9tjkmKRxikWnVUYAarqEf4jRl7hZVKPmKMP4C03FwyEGRhEri5c9aIDZyqAKSUw1rAv4
+ iW0oRWV0YN+3/+DehBHtNo8spie/tD5JW+SuTUHA1EbyKNXyPqLfJDo2E0v4dp7WuqxP
+ lifd+KaHHi0sO9aczu/CwNEwBjj+bIDaDDORhNErDbebpnJ20uko64xG59tUY9sXO49K
+ /PAw==
+X-Gm-Message-State: AOJu0YwSU47bFn0g8LLU7IJJBnx78+8evh7/WZtMwas9EWXZvcYyvMXF
+ xVt48dkXw6PoWo61eF34YdgBWFUNIEAXV2Jez1C3PGieGBSGW/BAKGvBmAKX9e6uDRVn
+X-Gm-Gg: AeBDievQ07xyBHyFtPgxcToAOd3TLXFebsc4Vw48+1YvkJNXOJLvVH5FuIa4/zMMnQ0
+ Iou8+LBZh6XJuAtAuPPVl5BR4QZz6eRJA+IE1gz7Tl/dVOeKIS/vZDBS7akWVOrwJJgPrWGmjCj
+ MG6weIV5v2/p+e2oS80yhozdOzFJ8ciYMwbljWZM2z3z3IOPZ1ApOEdMCMbBVmaiLEAilA9c/gR
+ jZ9z61uo0PDOdTxHVWwwNuRu/eN6sbQfihd1OC8M+wy2hOVdVAIFMJpT+9itEBZ5ENCBqDSI+iw
+ l6FENOjCStzn7TFT1CKRiRfOnsG6CT5ND9sxrp2QhDbSACGd1tZd94UZvJ4XTjO+jkPeVDM8utG
+ k3kMvrKNWMaYtsCkuPFSKdj28h5vZ5ATpc3nW1w7iIBqxed+zDC34ewSVbV2Z0DXwCHkubC6JVw
+ 2xiepwjY0O9Q2pMyoWFQAPnFJgteVwPFtjr/v6iAm9mbZQK95yHYma
+X-Received: by 2002:a17:90b:3a4b:b0:359:d54:846f with SMTP id
+ 98e67ed59e1d1-3650cd4ce6emr5349433a91.7.1777798568583; 
+ Sun, 03 May 2026 01:56:08 -0700 (PDT)
+Received: from localhost.localdomain ([59.16.109.172])
+ by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-364ebec899esm8044167a91.1.2026.05.03.01.56.07
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 03 May 2026 01:56:08 -0700 (PDT)
+From: Jinseok Kim <always.starving0@gmail.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+Date: Sun,  3 May 2026 17:55:37 +0900
+Message-ID: <20260503085544.16915-1-always.starving0@gmail.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] tst_virt: Add fallback KVM detection via virtio block
- devices
+Subject: [LTP] [PATCH 0/2] syscalls: clean up getpid/getppid tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,60 +86,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Darren Chang via ltp <ltp@lists.linux.it>
-Reply-To: Darren Chang <chihsheng@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Currently, is_kvm() relies on reading /proc/cpuinfo to find the
-"QEMU Virtual CPU" string.
+This series updates the tests to:
+- Link to the manpage in docparse comments
+- Remove unused header includes
+- Fix minor style issues in getpid02.c
+- Tighten input validation in getppid02.c
 
-This patch introduces a fallback mechanism to detect KVM environments
-by checking for the existence of standard virtio block devices when the
-CPU info check fails. Specifically, it probes for:
-- /sys/block/vda (Reliable sysfs kernel interface)
-- /dev/vda       (Standard Linux device node)
-- /dev/block/vda (Android's ueventd device node)
+Also, getpid02.c and getppid02.c appear to have overlapping coverage.
+Since getpid02.c seems to exercise a broader set of checks, would merging
+getppid02.c into it make sense?
 
-Including "/dev/block/vda" ensures that the detection works seamlessly
-within Android emulator environments (such as Cuttlefish),
-which use ueventd and place block devices under /dev/block/ instead of
-the standard Linux /dev/.
+Jinseok Kim (2):
+  getpid: Link manpage and fix minor issues
+  getppid: Link manpage and fix minor issues
 
-Signed-off-by: Darren Chang <chihsheng@google.com>
----
- lib/tst_virt.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ testcases/kernel/syscalls/getpid/getpid01.c   |  3 ++-
+ testcases/kernel/syscalls/getpid/getpid02.c   | 10 +++++-----
+ testcases/kernel/syscalls/getppid/getppid01.c |  6 +++---
+ testcases/kernel/syscalls/getppid/getppid02.c |  5 ++---
+ 4 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/lib/tst_virt.c b/lib/tst_virt.c
-index 109d7a853..ac0aef665 100644
---- a/lib/tst_virt.c
-+++ b/lib/tst_virt.c
-@@ -44,6 +44,19 @@ static int is_kvm(void)
- 	}
- 
- 	SAFE_FCLOSE(NULL, cpuinfo);
-+
-+	/* * Fallback check for KVM:
-+	 * Android's ueventd creates block devices in /dev/block/
-+	 * instead of the standard Linux /dev/, so we check both.
-+	 */
-+	if (!found) {
-+		if (access("/dev/vda", F_OK) == 0 ||
-+			access("/sys/block/vda", F_OK) == 0 ||
-+			access("/dev/block/vda", F_OK) == 0) {
-+			found = 1;
-+		}
-+	}
-+
- 	return found;
- }
- 
--- 
-2.54.0.545.g6539524ca2-goog
-
+--
+2.43.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
