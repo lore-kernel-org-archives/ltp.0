@@ -4,98 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93478CD3430
-	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 13:26:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D782CD3436
+	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 13:30:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4AC873E2CA2
-	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 15:26:31 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 27CCF3E6213
+	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 15:30:57 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 460183E18E6
- for <ltp@lists.linux.it>; Mon,  4 May 2026 15:26:11 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 3F5E03E250F
+ for <ltp@lists.linux.it>; Mon,  4 May 2026 15:30:43 +0200 (CEST)
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com
+ [91.218.175.173])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 16AA96005C1
- for <ltp@lists.linux.it>; Mon,  4 May 2026 15:26:09 +0200 (CEST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 6442Vm6k3098521; Mon, 4 May 2026 13:26:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=Iijp5+RBiMaK4jgWQ0CZWNNLGJP2moBCOKM6/OEGR
- wU=; b=LY+taGLg9TuOPNiTm2jUfxv5miDaetxM2b3i7nFxXQW7OKQS+WTWEWVuP
- 51y2m0QiOsee2CovuLsoNLd7tFdYDp35MyUK75HWLj5gHbwxzLiatSJNeUQPxQ0L
- KiNKPG8ZFTToVkz5q0ysi98pde+0vtqriyatBpxLgy7tLy4jzgkDOV9YZ95wgh/K
- KN5pGvhfW1O5PgJB5U1d8mGDrDb9VKUrjTp95WpJvuhV3cPklhOtosM56AqICrVa
- NBhYCiy0KKKDNIe6RDoOXfvQWwhOboSs+2DsPyZKiLU7vZz5cJzHJ7G4j3NZrPIP
- YHK9BlfwxlJE8+sLXWOw8KLyVTa4Q==
-Received: from ppma12.dal12v.mail.ibm.com
- (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dw9y1754c-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 04 May 2026 13:26:07 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
- by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 644DOTH4018561;
- Mon, 4 May 2026 13:26:06 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
- by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dwukq5e1m-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 04 May 2026 13:26:06 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
- [10.20.54.105])
- by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 644DQ3LX49217860
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 4 May 2026 13:26:03 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 3927F2004B;
- Mon,  4 May 2026 13:26:03 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 682E320040;
- Mon,  4 May 2026 13:26:02 +0000 (GMT)
-Received: from ltcden9-lp1.ltc.tadn.ibm.com (unknown [9.5.7.39])
- by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Mon,  4 May 2026 13:26:02 +0000 (GMT)
-From: Samir <samir@linux.ibm.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E34E86001E4
+ for <ltp@lists.linux.it>; Mon,  4 May 2026 15:30:37 +0200 (CEST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+ t=1777901436;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Wgj0E2uoznJJ/zvV5doPyECbNIwacotCkKEpRJ9v0Cw=;
+ b=em6/UOjt0d+OOYrPT05BVq1rBzPIWkgPbWkXeik+xsdq4HXDKip4UQPpPTEccrjcRRiHgE
+ 99jTbJY1nCKes8Tq2KKnx0r6x3BWiKpwJI3rZgeploeSAct7qErxjIud5SBk+UpJSg07S0
+ jbnSLnH6nkwvxILQlaPNSeySsfFBln0=
+From: Li Wang <li.wang@linux.dev>
 To: ltp@lists.linux.it
-Date: Mon,  4 May 2026 15:24:05 +0200
-Message-ID: <20260504132405.333588-1-samir@linux.ibm.com>
-X-Mailer: git-send-email 2.53.0
+Date: Mon,  4 May 2026 21:30:20 +0800
+Message-ID: <20260504133020.14129-1-li.wang@linux.dev>
+In-Reply-To: <20260501135100.42278-1-li.wang@linux.dev>
+References: <20260501135100.42278-1-li.wang@linux.dev>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: XjAcw_PceYmNHYM9qysIdCNFaocZQNdg
-X-Proofpoint-GUID: XjAcw_PceYmNHYM9qysIdCNFaocZQNdg
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTA0MDEzOSBTYWx0ZWRfXxEcfEhSnGq8F
- WzeeoZYqjqRYBjft7JgCYoOdUEO4R8fa+mLw5xJ/vXDefnQGzRvvUJ3c3ueavkyeNIJnbRRBqsR
- Ey82VmHtF3JjwsJm6p7ByG2l07+yZd2MbCj/6OLcxkGtgl1OIZ6D7BJPyrk4O69Nw7BJTdqOCJZ
- 7roYN51k5QIjrO3W/QI450Y78hFaZHE46CMuzh93/GUDT+KhGnM57ljA2JL0ZRVgAyJkO+1qIIV
- zvkFKtt8C3inNATZCuLeF7vWRroVnfUb4KxokF1zO5ARrHlPD+l64y0Aquc5X3X5eThFS5xde72
- ZczxJORthCEczt9MCakUSdQN9b6YxCP7W327j8ZADnzUJ+Nu29o0dJiQhSidWgxP1NmN1p6TTCu
- ds9GNVQAIVDVCPa3rgDoiYN7/5+aLkAkcvEFVwRjlnqQCMNHjArN+sAeeqw5hLaTFsYdECWhh3H
- p76Ai4xRpFxqWpvFHiQ==
-X-Authority-Analysis: v=2.4 cv=UbFhjqSN c=1 sm=1 tr=0 ts=69f89e6f cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=U7nrCbtTmkRpXpFmAIza:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=NEAV23lmAAAA:8
- a=CylOrNp7lBMHbkEDpsIA:9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-05-04_04,2026-04-30_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 spamscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 phishscore=0 impostorscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2605040139
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Migadu-Flow: FLOW_OUT
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5] Migrating the
- libhugetlbfs/testcases/alloc-instantiate-race.c test
+Subject: [LTP] [PATCH v2] lib: Introduce tst_path.h to consolidate system
+ paths
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,382 +57,1999 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Samir <samir@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This test is designed to detect a kernel allocation race introduced
-with hugepage demand-faulting.  The problem is that no lock is held
-between allocating a hugepage and instantiating it in the
-pagetables or page cache index.  In between the two, the (huge)
-page is cleared, so there's substantial time.  Thus two processes
-can race instantiating the (same) last available hugepage - one
-will fail on the allocation, and thus cause an OOM fault even
-though the page it actually wants is being instantiated by the
-other racing process.
+We have a lot of hardcoded strings and duplicated macros for /proc
+and /sys paths scattered throughout the testcases.
 
-Signed-off-by: Samir <samir@linux.ibm.com>
-v3: https://lore.kernel.org/all/20250928030721.3537869-1-samir@linux.ibm.com/
-v4: https://lore.kernel.org/ltp/20260317095559.5766-1-samir@linux.ibm.com/
+This patch introduces a new common header, tst_path.h, to centralize
+and standardize these path definitions. By unifying these macros, we
+reduce code duplication, improve maintainability, and ensure consistent
+path usage across the entire LTP codebase.
 
-LTP Github CI link: https://github.com/linux-test-project/ltp/pull/1313
-All the checks are passed
----
-v4:
-Addressed review comments:
-- Removed unnecessary [Description] tag from comment block
-- Added static keyword to global variables (child1, child2, race_type, fd_sync)
-- Moved totpages and hpage_size to local scope in run_test()
-- Replaced busy loop with TST_CHECKPOINT_WAIT/WAKE mechanism
-- Fixed indentation in thread_racer() function
-- Made check_online_cpus() function static
-- Declared loop variable 'i' inside for loops using C99 style
-- Removed unnecessary 'available' variable, use CPU_COUNT() directly
-- Fixed indentation for tst_res() call
-- Removed q_sync global variable to avoid uninitialized access
-- Removed unused SYSFS_CPU_ONLINE_FMT macro
-- Optimized variable scope throughout the code
-- Implemented proper checkpoint synchronization pattern
-- Added cleanup() function for resource cleanup
-- Updated Makefile, runtest/hugetlb, and .gitignore
-
-v5:
-- Replace empty initializer {} with {NULL, NULL, NULL} to fix
--Wmissing-field-initializers warning in the options array terminator.
+Signed-off-by: Li Wang <li.wang@linux.dev>
 ---
 
-Signed-off-by: Samir <samir@linux.ibm.com>
----
- runtest/hugetlb                               |   1 +
- testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/Makefile      |   2 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap36.c  | 279 ++++++++++++++++++
- 4 files changed, 283 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+Notes:
+    v2:
+    	* Added subsystem prefixes (VM_, MM_) to macros for better namespace.
+    	* Renamed the KSM helper macro from KSM_FP(s) to MM_KSM_FP(s).
+    	* Grouped hugepages/ and transparent_hugepage/ paths together.
+    	* Added a new NETWORK section with PATH_NET_IPV4 and NET_IPV4_FP.
+    	* Fixed formatting to use tabs for consistent alignment.
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 0896d3c94..bd40a7a30 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -36,6 +36,7 @@ hugemmap30 hugemmap30
- hugemmap31 hugemmap31
- hugemmap32 hugemmap32
- hugemmap34 hugemmap34
-+hugemmap36 hugemmap36
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
- hugemmap05_3 hugemmap05 -s -m
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index b4455de51..2ddef6bf1 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -36,6 +36,7 @@
- /hugetlb/hugemmap/hugemmap31
- /hugetlb/hugemmap/hugemmap32
- /hugetlb/hugemmap/hugemmap34
-+/hugetlb/hugemmap/hugemmap36
- /hugetlb/hugeshmat/hugeshmat01
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-index 6e72e7009..0147929e8 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-@@ -12,3 +12,5 @@ CFLAGS_no_stack_prot := $(filter-out -fstack-clash-protection, $(CFLAGS))
+ include/tst_hugepage.h                        | 10 +----
+ include/tst_path.h                            | 45 +++++++++++++++++++
+ include/tst_test.h                            |  1 +
+ lib/newlib_tests/test19.c                     |  6 +--
+ lib/newlib_tests/test20.c                     |  8 ++--
+ lib/newlib_tests/test_zero_hugepage.c         |  4 +-
+ lib/tst_hugepage.c                            | 14 +++---
+ lib/tst_test.c                                |  2 +-
+ testcases/cve/cve-2015-3290.c                 |  6 +--
+ testcases/cve/cve-2017-16939.c                |  2 +-
+ testcases/cve/cve-2022-4378.c                 | 16 +++----
+ testcases/cve/icmp_rate_limit01.c             |  2 +-
+ testcases/cve/tcindex01.c                     |  2 +-
+ testcases/kernel/containers/pidns/pidns05.c   |  2 +-
+ testcases/kernel/containers/userns/userns01.c |  4 +-
+ .../containers/userns/userns06_capcheck.c     |  2 +-
+ testcases/kernel/containers/userns/userns07.c |  2 +-
+ testcases/kernel/containers/userns/userns08.c |  8 ++--
+ testcases/kernel/include/ksm_helper.h         |  2 +-
+ testcases/kernel/lib/ksm_helper.c             |  4 +-
+ testcases/kernel/logging/kmsg/kmsg01.c        |  4 +-
+ .../kernel/mem/hugetlb/hugemmap/hugemmap05.c  |  8 +---
+ .../kernel/mem/hugetlb/hugemmap/hugemmap08.c  |  6 +--
+ .../kernel/mem/hugetlb/hugemmap/hugemmap10.c  |  8 ++--
+ .../kernel/mem/hugetlb/hugemmap/hugemmap32.c  | 11 +++--
+ .../kernel/mem/hugetlb/hugemmap/hugemmap34.c  |  1 -
+ .../mem/hugetlb/hugeshmat/hugeshmat04.c       |  2 +-
+ .../mem/hugetlb/hugeshmget/hugeshmget03.c     |  2 +-
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h    |  2 +-
+ testcases/kernel/mem/ksm/ksm01.c              | 10 ++---
+ testcases/kernel/mem/ksm/ksm02.c              | 10 ++---
+ testcases/kernel/mem/ksm/ksm03.c              | 10 ++---
+ testcases/kernel/mem/ksm/ksm04.c              | 10 ++---
+ testcases/kernel/mem/ksm/ksm05.c              |  4 +-
+ testcases/kernel/mem/ksm/ksm06.c              | 32 ++++++-------
+ testcases/kernel/mem/ksm/ksm07.c              | 28 ++++++------
+ testcases/kernel/mem/ksm/ksm_test.h           | 24 +++++-----
+ testcases/kernel/mem/oom/oom.h                | 13 +++---
+ testcases/kernel/mem/oom/oom01.c              |  2 -
+ testcases/kernel/mem/oom/oom02.c              |  2 +-
+ testcases/kernel/mem/oom/oom03.c              |  2 +-
+ testcases/kernel/mem/oom/oom04.c              |  2 +-
+ testcases/kernel/mem/oom/oom05.c              |  2 +-
+ testcases/kernel/mem/thp/thp.h                |  4 +-
+ testcases/kernel/mem/thp/thp02.c              |  2 +-
+ testcases/kernel/mem/thp/thp03.c              |  2 +-
+ .../kernel/sched/sysctl/proc_sched_rt01.c     |  6 +--
+ .../kernel/syscalls/fanotify/fanotify10.c     |  9 ++--
+ testcases/kernel/syscalls/fcntl/fcntl35.c     | 10 ++---
+ testcases/kernel/syscalls/inotify/inotify07.c |  2 +-
+ testcases/kernel/syscalls/inotify/inotify08.c |  2 +-
+ .../kernel/syscalls/io_uring/io_uring01.c     |  2 +-
+ .../kernel/syscalls/io_uring/io_uring02.c     |  2 +-
+ .../kernel/syscalls/io_uring/io_uring03.c     |  2 +-
+ .../kernel/syscalls/ipc/msgget/msgget03.c     |  2 +-
+ .../kernel/syscalls/ipc/msgget/msgget04.c     |  2 +-
+ .../kernel/syscalls/ipc/msgget/msgget05.c     |  2 +-
+ .../kernel/syscalls/ipc/semget/semget05.c     |  4 +-
+ .../kernel/syscalls/ipc/shmctl/shmctl03.c     |  6 +--
+ .../kernel/syscalls/ipc/shmget/shmget02.c     |  2 +-
+ .../kernel/syscalls/ipc/shmget/shmget03.c     |  2 +-
+ .../kernel/syscalls/ipc/shmget/shmget05.c     |  2 +-
+ .../kernel/syscalls/ipc/shmget/shmget06.c     |  2 +-
+ testcases/kernel/syscalls/keyctl/keyctl02.c   |  2 +-
+ testcases/kernel/syscalls/madvise/madvise01.c |  1 -
+ testcases/kernel/syscalls/madvise/madvise02.c |  3 +-
+ testcases/kernel/syscalls/madvise/madvise06.c |  2 +-
+ testcases/kernel/syscalls/madvise/madvise08.c |  2 +-
+ .../syscalls/memfd_create/memfd_create04.c    |  4 +-
+ .../syscalls/migrate_pages/migrate_pages02.c  |  2 +-
+ .../syscalls/migrate_pages/migrate_pages03.c  |  8 ++--
+ testcases/kernel/syscalls/mmap/mmap10.c       |  4 +-
+ .../kernel/syscalls/move_pages/move_pages12.c | 12 +++--
+ .../kernel/syscalls/newuname/newuname01.c     |  8 ++--
+ .../perf_event_open/perf_event_open02.c       |  2 +-
+ testcases/kernel/syscalls/pkeys/pkey01.c      |  1 -
+ testcases/kernel/syscalls/preadv2/preadv203.c |  2 +-
+ .../kernel/syscalls/readahead/readahead02.c   |  5 +--
+ .../sched_rr_get_interval01.c                 |  2 +-
+ testcases/kernel/syscalls/sendmsg/sendmsg03.c |  2 +-
+ testcases/kernel/syscalls/sendto/sendto03.c   |  2 +-
+ testcases/kernel/syscalls/setpgid/setpgid02.c |  2 +-
+ .../kernel/syscalls/setsockopt/setsockopt05.c |  2 +-
+ .../kernel/syscalls/setsockopt/setsockopt06.c |  2 +-
+ .../kernel/syscalls/setsockopt/setsockopt08.c |  2 +-
+ .../kernel/syscalls/setsockopt/setsockopt09.c |  2 +-
+ testcases/kernel/syscalls/splice/splice.h     |  8 ++--
+ testcases/kernel/syscalls/splice/splice06.c   |  4 +-
+ testcases/kernel/syscalls/syslog/syslog11.c   |  2 +-
+ testcases/kernel/syscalls/wait4/wait402.c     |  2 +-
+ testcases/kernel/syscalls/waitid/waitid10.c   |  2 +-
+ testcases/network/iptables/nft02.c            |  2 +-
+ testcases/network/packet/fanout01.c           |  2 +-
+ 93 files changed, 263 insertions(+), 237 deletions(-)
+ create mode 100644 include/tst_path.h
+
+diff --git a/include/tst_hugepage.h b/include/tst_hugepage.h
+index 6b865b2f2..0fca9b91f 100644
+--- a/include/tst_hugepage.h
++++ b/include/tst_hugepage.h
+@@ -6,15 +6,7 @@
+ #ifndef TST_HUGEPAGE__
+ #define TST_HUGEPAGE__
  
- hugemmap06: CFLAGS+=-pthread
- hugemmap34: CFLAGS=$(CFLAGS_no_stack_prot)
-+hugemmap36: LDLIBS+=-lpthread
-+hugemmap36: CFLAGS+=-pthread
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+-#define PATH_HUGEPAGES	"/sys/kernel/mm/hugepages/"
+-#define PATH_NR_HPAGES	"/proc/sys/vm/nr_hugepages"
+-#define PATH_OC_HPAGES "/proc/sys/vm/nr_overcommit_hugepages"
+-
+-#define MEMINFO_HPAGE_TOTAL  "HugePages_Total:"
+-#define MEMINFO_HPAGE_FREE   "HugePages_Free:"
+-#define MEMINFO_HPAGE_RSVD   "HugePages_Rsvd:"
+-#define MEMINFO_HPAGE_SURP   "HugePages_Surp:"
+-#define MEMINFO_HPAGE_SIZE   "Hugepagesize:"
++#include "tst_path.h"
+ 
+ extern char *nr_opt; /* -s num   Set the number of the been allocated hugepages */
+ extern char *Hopt;   /* -H /..   Location of hugetlbfs, i.e.  -H /var/hugetlbfs */
+diff --git a/include/tst_path.h b/include/tst_path.h
 new file mode 100644
-index 000000000..3bc858546
+index 000000000..7fe96a978
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
-@@ -0,0 +1,279 @@
++++ b/include/tst_path.h
+@@ -0,0 +1,45 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (C) 2005-2006 IBM Corporation
-+ * Author: David Gibson & Adam Litke
++ * Copyright (c) Linux Test Project, 2026
++ * Copyright (c) 2026 Li Wang <li.wang@linux.dev>
 + */
 +
-+/*
-+ * This test is designed to detect a kernel allocation race introduced
-+ * with hugepage demand-faulting.  The problem is that no lock is held
-+ * between allocating a hugepage and instantiating it in the
-+ * pagetables or page cache index.  In between the two, the (huge)
-+ * page is cleared, so there's substantial time.  Thus two processes
-+ * can race instantiating the (same) last available hugepage - one
-+ * will fail on the allocation, and thus cause an OOM fault even
-+ * though the page it actually wants is being instantiated by the
-+ * other racing process.
-+ */
++#ifndef TST_PATH__
++#define TST_PATH__
 +
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <pthread.h>
-+#include "tst_safe_pthread.h"
-+#include "hugetlb.h"
++/* PROC */
++#define PROC_SYS_VM		"/proc/sys/vm/"
++#define PROC_SYS_FS		"/proc/sys/fs/"
++#define PROC_SYS_NET		"/proc/sys/net/"
++#define PROC_SYS_USER		"/proc/sys/user/"
++#define PROC_SYS_KERNEL		"/proc/sys/kernel/"
 +
-+#define MNTPOINT "hugetlbfs/"
++/* SYS */
++#define SYS_KERNEL_MM		"/sys/kernel/mm/"
 +
-+static char *str_op;
-+static int child1, child2, race_type, fd_sync;
++/* VM */
++#define PATH_VM_NR_HPAGES       PROC_SYS_VM "nr_hugepages"
++#define PATH_VM_OC_HPAGES       PROC_SYS_VM "nr_overcommit_hugepages"
++#define PATH_VM_DROP_CACHES     PROC_SYS_VM "drop_caches"
++#define PATH_VM_COMPACT_MEMORY  PROC_SYS_VM "compact_memory"
 +
-+struct racer_info {
-+	void *p;
-+	int cpu;
-+	int status;
-+};
++/* HUGETLB */
++#define PATH_MM_HUGEPAGES	SYS_KERNEL_MM "hugepages/"
++#define PATH_MM_THP		SYS_KERNEL_MM "transparent_hugepage/"
 +
-+static int one_racer(void *p, int cpu)
-+{
-+	volatile int *pi = p;
-+	cpu_set_t *cpuset;
-+	size_t mask_size;
-+	int err;
++/* KSM */
++#define PATH_MM_KSM		SYS_KERNEL_MM "ksm/"
++#define MM_KSM_FP(s)		(PATH_MM_KSM s)
 +
-+	cpuset = CPU_ALLOC(cpu + 1);
-+	if (!cpuset)
-+		tst_brk(TBROK | TERRNO, "CPU_ALLOC() failed");
++/* NETWORK */
++#define PATH_NET_IPV4		PROC_SYS_NET "ipv4/"
++#define NET_IPV4_FP(s)		(PATH_NET_IPV4 s)
 +
-+	mask_size = CPU_ALLOC_SIZE(cpu + 1);
++/* MEMINFO */
++#define MEMINFO_HPAGE_TOTAL	"HugePages_Total:"
++#define MEMINFO_HPAGE_FREE	"HugePages_Free:"
++#define MEMINFO_HPAGE_RSVD	"HugePages_Rsvd:"
++#define MEMINFO_HPAGE_SURP	"HugePages_Surp:"
++#define MEMINFO_HPAGE_SIZE	"Hugepagesize:"
 +
-+	/* Split onto different CPUs to encourage the race */
-+	CPU_ZERO_S(mask_size, cpuset);
-+	CPU_SET_S(cpu, mask_size, cpuset);
++#endif /* TST_PATH_H */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index f12c59f39..4898cfe4c 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -26,6 +26,7 @@
+ #include "tst_mkfs.h"
+ #include "tst_fs.h"
+ #include "tst_pid.h"
++#include "tst_path.h"
+ #include "tst_cmd.h"
+ #include "tst_cpu.h"
+ #include "tst_process_state.h"
+diff --git a/lib/newlib_tests/test19.c b/lib/newlib_tests/test19.c
+index a5683eaa4..0a7766192 100644
+--- a/lib/newlib_tests/test19.c
++++ b/lib/newlib_tests/test19.c
+@@ -10,7 +10,7 @@
+ 
+ static void setup(void)
+ {
+-	SAFE_FILE_PRINTF("/proc/sys/kernel/core_pattern", "changed");
++	SAFE_FILE_PRINTF(PROC_SYS_KERNEL "core_pattern", "changed");
+ 	tst_sys_conf_dump();
+ }
+ 
+@@ -25,8 +25,8 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.save_restore = (const struct tst_path_val[]) {
+ 		{"/proc/nonexistent", NULL, TST_SR_SKIP},
+-		{"/proc/sys/kernel/numa_balancing", NULL, TST_SR_TBROK},
+-		{"/proc/sys/kernel/core_pattern", NULL, TST_SR_TCONF},
++		{PROC_SYS_KERNEL "numa_balancing", NULL, TST_SR_TBROK},
++		{PROC_SYS_KERNEL "core_pattern", NULL, TST_SR_TCONF},
+ 		{}
+ 	},
+ };
+diff --git a/lib/newlib_tests/test20.c b/lib/newlib_tests/test20.c
+index 3726cea0e..4df4b5507 100644
+--- a/lib/newlib_tests/test20.c
++++ b/lib/newlib_tests/test20.c
+@@ -16,10 +16,10 @@ static void do_test(void) {
+ 	unsigned long val, hpages;
+ 
+ 	tst_res(TINFO, "tst_hugepages = %lu", tst_hugepages);
+-	SAFE_FILE_PRINTF("/proc/sys/kernel/numa_balancing", "1");
++	SAFE_FILE_PRINTF(PROC_SYS_KERNEL "numa_balancing", "1");
+ 
+ 	hpages = test.hugepages.number;
+-	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
++	SAFE_FILE_SCANF(PATH_VM_NR_HPAGES, "%lu", &val);
+ 	if (val != hpages)
+ 		tst_brk(TBROK, "nr_hugepages = %lu, but expect %lu", val, hpages);
+ 	else
+@@ -28,7 +28,7 @@ static void do_test(void) {
+ 	struct tst_hugepage hp = { 1000000000000, TST_REQUEST };
+ 	hpages = tst_reserve_hugepages(&hp);
+ 
+-	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
++	SAFE_FILE_SCANF(PATH_VM_NR_HPAGES, "%lu", &val);
+ 	if (val != hpages)
+ 		tst_brk(TBROK, "nr_hugepages = %lu, but expect %lu", val, hpages);
+ 	else
+@@ -39,7 +39,7 @@ static struct tst_test test = {
+ 	.test_all = do_test,
+ 	.hugepages = {2, TST_NEEDS},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/kernel/numa_balancing", "0", TST_SR_TBROK},
++		{PROC_SYS_KERNEL "numa_balancing", "0", TST_SR_TBROK},
+ 		{}
+ 	},
+ };
+diff --git a/lib/newlib_tests/test_zero_hugepage.c b/lib/newlib_tests/test_zero_hugepage.c
+index eec48ffb4..a0bcdd0de 100644
+--- a/lib/newlib_tests/test_zero_hugepage.c
++++ b/lib/newlib_tests/test_zero_hugepage.c
+@@ -15,7 +15,7 @@ static void do_test(void)
+ {
+ 	unsigned long val, hpages;
+ 
+-	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
++	SAFE_FILE_SCANF(PATH_VM_NR_HPAGES, "%lu", &val);
+ 	if (val != 0)
+ 		tst_brk(TBROK, "nr_hugepages = %lu, but expect 0", val);
+ 	else
+@@ -23,7 +23,7 @@ static void do_test(void)
+ 
+ 	struct tst_hugepage hp = { 3, TST_REQUEST };
+ 	hpages = tst_reserve_hugepages(&hp);
+-	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
++	SAFE_FILE_SCANF(PATH_VM_NR_HPAGES, "%lu", &val);
+ 	if (val != hpages)
+ 		tst_brk(TBROK, "nr_hugepages = %lu, but expect %lu", val, hpages);
+ 	else
+diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
+index d2e70a955..40ecfa162 100644
+--- a/lib/tst_hugepage.c
++++ b/lib/tst_hugepage.c
+@@ -14,7 +14,7 @@ char *Hopt;
+ 
+ size_t tst_get_hugepage_size(void)
+ {
+-	if (access(PATH_HUGEPAGES, F_OK))
++	if (access(PATH_MM_HUGEPAGES, F_OK))
+ 		return 0;
+ 
+ 	return SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+@@ -24,12 +24,12 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+ {
+ 	unsigned long val, max_hpages;
+ 	struct tst_path_val pvl = {
+-		.path = PATH_NR_HPAGES,
++		.path = PATH_VM_NR_HPAGES,
+ 		.val = NULL,
+ 		.flags = TST_SR_SKIP_MISSING | TST_SR_TCONF_RO
+ 	};
+ 
+-	if (access(PATH_HUGEPAGES, F_OK)) {
++	if (access(PATH_MM_HUGEPAGES, F_OK)) {
+ 		if (hp->policy == TST_NEEDS)
+ 			tst_brk(TCONF, "hugetlbfs is not supported");
+ 		tst_hugepages = 0;
+@@ -46,8 +46,8 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+ 		goto set_hugepages;
+ 	}
+ 
+-	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
+-	SAFE_FILE_PRINTF("/proc/sys/vm/compact_memory", "1");
++	SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "3");
++	SAFE_FILE_PRINTF(PATH_VM_COMPACT_MEMORY, "1");
+ 	if (hp->policy == TST_NEEDS) {
+ 		tst_hugepages += SAFE_READ_MEMINFO("HugePages_Total:");
+ 		goto set_hugepages;
+@@ -66,8 +66,8 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+ 
+ set_hugepages:
+ 	tst_sys_conf_save(&pvl);
+-	SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%lu", tst_hugepages);
+-	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
++	SAFE_FILE_PRINTF(PATH_VM_NR_HPAGES, "%lu", tst_hugepages);
++	SAFE_FILE_SCANF(PATH_VM_NR_HPAGES, "%lu", &val);
+ 	if (val != tst_hugepages)
+ 		tst_brk(TCONF, "nr_hugepages = %lu, but expect %lu. "
+ 				"Not enough hugepages for testing.",
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 469a3f6b6..96714e4ea 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1209,7 +1209,7 @@ static void prepare_and_mount_dev_fs(const char *mntpoint)
+ 
+ static void prepare_and_mount_hugetlb_fs(void)
+ {
+-	if (access(PATH_HUGEPAGES, F_OK))
++	if (access(PATH_MM_HUGEPAGES, F_OK))
+ 		tst_brk(TCONF, "hugetlbfs is not supported");
+ 
+ 	SAFE_MOUNT("none", tst_test->mntpoint, "hugetlbfs", 0, NULL);
+diff --git a/testcases/cve/cve-2015-3290.c b/testcases/cve/cve-2015-3290.c
+index cb60582b4..7a2f8ab38 100644
+--- a/testcases/cve/cve-2015-3290.c
++++ b/testcases/cve/cve-2015-3290.c
+@@ -466,12 +466,12 @@ static void setup(void)
+          * knowing if perf_event_open() support is enabled is checking for
+          * the existence of the file /proc/sys/kernel/perf_event_paranoid.
+          */
+-	if (access("/proc/sys/kernel/perf_event_paranoid", F_OK) == -1)
++	if (access(PROC_SYS_KERNEL "perf_event_paranoid", F_OK) == -1)
+ 		tst_brk(TCONF, "Kernel doesn't have perf_event support");
+ 
+-	SAFE_FILE_SCANF("/proc/sys/kernel/perf_event_mlock_kb",
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL "perf_event_mlock_kb",
+ 			"%d", &event_mlock_kb);
+-	SAFE_FILE_SCANF("/proc/sys/kernel/perf_event_max_sample_rate",
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL "perf_event_max_sample_rate",
+ 			"%d", &max_sample_rate);
+ }
+ 
+diff --git a/testcases/cve/cve-2017-16939.c b/testcases/cve/cve-2017-16939.c
+index 098a86841..175aed8f3 100644
+--- a/testcases/cve/cve-2017-16939.c
++++ b/testcases/cve/cve-2017-16939.c
+@@ -91,7 +91,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/cve/cve-2022-4378.c b/testcases/cve/cve-2022-4378.c
+index e7e2b9af3..3a3f8c48a 100644
+--- a/testcases/cve/cve-2022-4378.c
++++ b/testcases/cve/cve-2022-4378.c
+@@ -22,13 +22,13 @@ static struct testcase {
+ 	const char *path;
+ 	int err;
+ } testcase_list[] = {
+-	{"/proc/sys/net/ipv4/icmp_ratelimit", EINVAL},
+-	{"/proc/sys/net/ipv4/icmp_ratemask", EINVAL},
+-	{"/proc/sys/net/ipv4/icmp_echo_ignore_all", EINVAL},
+-	{"/proc/sys/net/ipv4/tcp_probe_interval", EINVAL},
+-	{"/proc/sys/net/ipv4/tcp_keepalive_time", EINVAL},
+-	{"/proc/sys/net/ipv4/tcp_notsent_lowat", EINVAL},
+-	{"/proc/sys/net/ipv4/ip_local_reserved_ports", 0}
++	{NET_IPV4_FP("icmp_ratelimit"), EINVAL},
++	{NET_IPV4_FP("icmp_ratemask"), EINVAL},
++	{NET_IPV4_FP("icmp_echo_ignore_all"), EINVAL},
++	{NET_IPV4_FP("tcp_probe_interval"), EINVAL},
++	{NET_IPV4_FP("tcp_keepalive_time"), EINVAL},
++	{NET_IPV4_FP("tcp_notsent_lowat"), EINVAL},
++	{NET_IPV4_FP("ip_local_reserved_ports"), 0}
+ };
+ 
+ static void setup(void)
+@@ -93,7 +93,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/cve/icmp_rate_limit01.c b/testcases/cve/icmp_rate_limit01.c
+index 5193c5dfd..cf47e112b 100644
+--- a/testcases/cve/icmp_rate_limit01.c
++++ b/testcases/cve/icmp_rate_limit01.c
+@@ -256,7 +256,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/cve/tcindex01.c b/testcases/cve/tcindex01.c
+index 478d75055..7eb5bec8f 100644
+--- a/testcases/cve/tcindex01.c
++++ b/testcases/cve/tcindex01.c
+@@ -149,7 +149,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/kernel/containers/pidns/pidns05.c b/testcases/kernel/containers/pidns/pidns05.c
+index 4b0478c84..b50f7ad33 100644
+--- a/testcases/kernel/containers/pidns/pidns05.c
++++ b/testcases/kernel/containers/pidns/pidns05.c
+@@ -71,7 +71,7 @@ static int find_cinit_pids(pid_t *pids)
+ 
+ static void setup(void)
+ {
+-	SAFE_FILE_SCANF("/proc/sys/kernel/pid_max", "%d\n", &pid_max);
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL	"pid_max", "%d\n", &pid_max);
+ }
+ 
+ static void run(void)
+diff --git a/testcases/kernel/containers/userns/userns01.c b/testcases/kernel/containers/userns/userns01.c
+index 6ee9fa7d0..5242bf7de 100644
+--- a/testcases/kernel/containers/userns/userns01.c
++++ b/testcases/kernel/containers/userns/userns01.c
+@@ -22,8 +22,8 @@
+ #include <sys/capability.h>
+ #include "lapi/sched.h"
+ 
+-#define OVERFLOWUIDPATH "/proc/sys/kernel/overflowuid"
+-#define OVERFLOWGIDPATH "/proc/sys/kernel/overflowgid"
++#define OVERFLOWUIDPATH PROC_SYS_KERNEL	"overflowuid"
++#define OVERFLOWGIDPATH PROC_SYS_KERNEL	"overflowgid"
+ 
+ static long overflowuid;
+ static long overflowgid;
+diff --git a/testcases/kernel/containers/userns/userns06_capcheck.c b/testcases/kernel/containers/userns/userns06_capcheck.c
+index 8669657b9..e623fffbb 100644
+--- a/testcases/kernel/containers/userns/userns06_capcheck.c
++++ b/testcases/kernel/containers/userns/userns06_capcheck.c
+@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
+ 	if (argc < 2)
+ 		tst_brk(TBROK, "userns06_capcheck <privileged|unprivileged>");
+ 
+-	SAFE_FILE_SCANF("/proc/sys/kernel/cap_last_cap", "%d", &last_cap);
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL	"cap_last_cap", "%d", &last_cap);
+ 
+ 	if (strcmp("privileged", argv[1]))
+ 		expected_cap_flag = 0;
+diff --git a/testcases/kernel/containers/userns/userns07.c b/testcases/kernel/containers/userns/userns07.c
+index 9e34a3d9b..de41c77b1 100644
+--- a/testcases/kernel/containers/userns/userns07.c
++++ b/testcases/kernel/containers/userns/userns07.c
+@@ -93,7 +93,7 @@ static struct tst_test test = {
+ 		NULL,
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/kernel/unprivileged_userns_clone", "1", TST_SR_SKIP},
++		{PROC_SYS_KERNEL "unprivileged_userns_clone", "1", TST_SR_SKIP},
+ 		{}
+ 	},
+ };
+diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
+index fbe51c8a5..61cc22842 100644
+--- a/testcases/kernel/containers/userns/userns08.c
++++ b/testcases/kernel/containers/userns/userns08.c
+@@ -26,6 +26,8 @@
+ #include "lapi/sched.h"
+ #include "tst_safe_file_at.h"
+ 
++#define PROC_SYS_USER	"/proc/sys/user/"
 +
-+	err = sched_setaffinity(getpid(), mask_size, cpuset);
-+	if (err == -1)
-+		tst_brk(TBROK | TERRNO, "sched_setaffinity() failed");
+ static pid_t clone_newuser(void)
+ {
+ 	const struct tst_clone_args cargs = {
+@@ -119,7 +121,7 @@ static void setup(void)
+ 	SAFE_WRITE(SAFE_WRITE_ALL, fd, "\n", 1);
+ 	SAFE_CLOSE(fd);
+ 
+-	SAFE_TRY_FILE_PRINTF("/proc/sys/user/max_user_namespaces", "%d", 10);
++	SAFE_TRY_FILE_PRINTF(PROC_SYS_USER "max_user_namespaces", "%d", 10);
+ }
+ 
+ static struct tst_test test = {
+@@ -133,8 +135,8 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", NULL, TST_SR_SKIP},
+-		{"/proc/sys/kernel/unprivileged_userns_clone", "1", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", NULL, TST_SR_SKIP},
++		{PROC_SYS_KERNEL "unprivileged_userns_clone", "1", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/kernel/include/ksm_helper.h b/testcases/kernel/include/ksm_helper.h
+index d4a6d5c7d..2b523b108 100644
+--- a/testcases/kernel/include/ksm_helper.h
++++ b/testcases/kernel/include/ksm_helper.h
+@@ -7,7 +7,7 @@
+ #ifndef KSM_HELPER_H
+ #define KSM_HELPER_H
+ 
+-#define PATH_KSM	"/sys/kernel/mm/ksm/"
++#include "tst_path.h"
+ 
+ void wait_ksmd_full_scan(void);
+ 
+diff --git a/testcases/kernel/lib/ksm_helper.c b/testcases/kernel/lib/ksm_helper.c
+index 586a0d1ee..7d92bdf1c 100644
+--- a/testcases/kernel/lib/ksm_helper.c
++++ b/testcases/kernel/lib/ksm_helper.c
+@@ -15,7 +15,7 @@ void wait_ksmd_full_scan(void)
+ 	unsigned long full_scans, at_least_one_full_scan;
+ 	int count = 0;
+ 
+-	SAFE_FILE_SCANF(PATH_KSM "full_scans", "%lu", &full_scans);
++	SAFE_FILE_SCANF(PATH_MM_KSM "full_scans", "%lu", &full_scans);
+ 	/*
+ 	 * The current scan is already in progress so we can't guarantee that
+ 	 * the get_user_pages() is called on every existing rmap_item if we
+@@ -30,7 +30,7 @@ void wait_ksmd_full_scan(void)
+ 	while (full_scans < at_least_one_full_scan) {
+ 		sleep(1);
+ 		count++;
+-		SAFE_FILE_SCANF(PATH_KSM "full_scans", "%lu", &full_scans);
++		SAFE_FILE_SCANF(PATH_MM_KSM "full_scans", "%lu", &full_scans);
+ 	}
+ 
+ 	tst_res(TINFO, "ksm daemon takes %ds to run two full scans", count);
+diff --git a/testcases/kernel/logging/kmsg/kmsg01.c b/testcases/kernel/logging/kmsg/kmsg01.c
+index ba8179d5a..32225a059 100644
+--- a/testcases/kernel/logging/kmsg/kmsg01.c
++++ b/testcases/kernel/logging/kmsg/kmsg01.c
+@@ -32,8 +32,8 @@
+ #define NUM_READ_MSGS 3
+ #define NUM_READ_RETRY 10
+ #define NUM_OVERWRITE_MSGS 1024
+-#define PRINTK "/proc/sys/kernel/printk"
+-#define CONSOLE_LOGLEVEL_QUIET   4
++#define PRINTK PROC_SYS_KERNEL "printk"
++#define CONSOLE_LOGLEVEL_QUIET  4
+ 
+ static int console_loglevel = -1;
+ 
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+index 75f28102d..ff736bec0 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+@@ -31,10 +31,6 @@ static char path_sys_sz_resv[BUFSIZ];
+ static char path_sys_sz_surp[BUFSIZ];
+ static char path_sys_sz_huge[BUFSIZ];
+ 
+-#define PATH_PROC_VM		"/proc/sys/vm/"
+-#define PATH_PROC_OVER		PATH_PROC_VM "nr_overcommit_hugepages"
+-#define PATH_PROC_HUGE		PATH_PROC_VM "nr_hugepages"
+-
+ /* Only ia64 requires this */
+ #ifdef __ia64__
+ #define ADDR (void *)(0x8000000000000000UL)
+@@ -191,8 +187,8 @@ static void setup(void)
+ 		path = path_sys_sz_huge;
+ 		pathover = path_sys_sz_over;
+ 	} else {
+-		path = PATH_PROC_HUGE;
+-		pathover = PATH_PROC_OVER;
++		path = PATH_VM_NR_HPAGES;
++		pathover = PATH_VM_OC_HPAGES;
+ 	}
+ 
+ 	if (opt_alloc) {
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
+index b9d61dd66..5884938cb 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
+@@ -102,11 +102,11 @@ static void run_test(unsigned int test_type)
+ 	switch (test_type) {
+ 	case WITHOUT_OVERCOMMIT:
+ 		tst_res(TINFO, "Without overcommit testing...");
+-		SAFE_FILE_PRINTF(PATH_OC_HPAGES, "%d", 0);
++		SAFE_FILE_PRINTF(PATH_VM_OC_HPAGES, "%d", 0);
+ 		break;
+ 	case WITH_OVERCOMMIT:
+ 		tst_res(TINFO, "With overcommit testing...");
+-		SAFE_FILE_PRINTF(PATH_OC_HPAGES, "%d", 2);
++		SAFE_FILE_PRINTF(PATH_VM_OC_HPAGES, "%d", 2);
+ 		break;
+ 	}
+ 	test_chunk_overcommit();
+@@ -129,7 +129,7 @@ static struct tst_test test = {
+ 	.needs_hugetlbfs = 1,
+ 	.forks_child = 1,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{PATH_OC_HPAGES, NULL, TST_SR_TCONF},
++		{PATH_VM_OC_HPAGES, NULL, TST_SR_TCONF},
+ 		{}
+ 	},
+ 	.tcnt = 2,
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
+index e1795153d..f721ee6bb 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
+@@ -134,7 +134,7 @@ static int set_nr_hugepages_(long count, char *desc, int line)
+ 	long min_size;
+ 	long et, ef, er, es;
+ 
+-	SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%lu", count);
++	SAFE_FILE_PRINTF(PATH_VM_NR_HPAGES, "%lu", count);
+ 
+ 	/* The code below is based on set_max_huge_pages in mm/hugetlb.c */
+ 	es = prev_surp;
+@@ -433,7 +433,7 @@ static void run_test(void)
+ static void setup(void)
+ {
+ 	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
+-	SAFE_FILE_PRINTF(PATH_OC_HPAGES, "%lu", tst_hugepages);
++	SAFE_FILE_PRINTF(PATH_VM_OC_HPAGES, "%lu", tst_hugepages);
+ 	private_resv = kernel_has_private_reservations();
+ }
+ 
+@@ -447,8 +447,8 @@ static struct tst_test test = {
+ 	.mntpoint = MNTPOINT,
+ 	.needs_hugetlbfs = 1,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{PATH_OC_HPAGES, NULL, TST_SR_TCONF},
+-		{PATH_NR_HPAGES, NULL, TST_SR_TCONF},
++		{PATH_VM_OC_HPAGES, NULL, TST_SR_TCONF},
++		{PATH_VM_NR_HPAGES, NULL, TST_SR_TCONF},
+ 		{}
+ 	},
+ 	.setup = setup,
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
+index 188ee2176..b8636cbbd 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
+@@ -21,7 +21,6 @@
+ 
+ #include "hugetlb.h"
+ 
+-#define PATH_HUGEPAGE "/sys/kernel/mm/hugepages"
+ #define GIGANTIC_MIN_ORDER 10
+ 
+ static int org_g_hpages;
+@@ -45,14 +44,14 @@ static void setup(void)
+ 	struct dirent *ent;
+ 	unsigned long hpage_size;
+ 
+-	if (access(PATH_HUGEPAGE, F_OK))
++	if (access(PATH_MM_HUGEPAGES, F_OK))
+ 		tst_brk(TCONF, "hugetlbfs is not supported");
+ 
+-	dir = SAFE_OPENDIR(PATH_HUGEPAGE);
++	dir = SAFE_OPENDIR(PATH_MM_HUGEPAGES);
+ 	while ((ent = SAFE_READDIR(dir))) {
+ 		if ((sscanf(ent->d_name, "hugepages-%lukB", &hpage_size) == 1) &&
+ 			is_hugetlb_gigantic(hpage_size * 1024)) {
+-			sprintf(g_hpage_path, "%s/%s/%s", PATH_HUGEPAGE,
++			sprintf(g_hpage_path, "%s/%s/%s", PATH_MM_HUGEPAGES,
+ 					ent->d_name, "nr_hugepages");
+ 			break;
+ 		}
+@@ -62,8 +61,8 @@ static void setup(void)
+ 
+ 	SAFE_CLOSEDIR(dir);
+ 
+-	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
+-	SAFE_FILE_PRINTF("/proc/sys/vm/compact_memory", "1");
++	SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "3");
++	SAFE_FILE_PRINTF(PATH_VM_COMPACT_MEMORY, "1");
+ 
+ 	if (tst_available_mem() < (long long)hpage_size) {
+ 		g_hpage_path[0] = '\0';
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c
+index ab7469cd7..52d6f43f8 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c
+@@ -32,7 +32,6 @@
+ #define STACK_ALLOCATION_SIZE	(16*1024*1024)
+ #endif
+ #define MNTPOINT "hugetlbfs/"
+-#define PATH_HUGEPAGE "/sys/kernel/mm/hugepages"
+ 
+ #define STACKS_MAX 64
+ 
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+index 9f877fd07..dfbad4b1a 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+@@ -82,7 +82,7 @@ static void setup(void)
+ 	long hpage_size, orig_hugepages;
+ 	unsigned long new_shmmax;
+ 
+-	orig_hugepages = TST_SYS_CONF_LONG_GET("/proc/sys/vm/nr_hugepages");
++	orig_hugepages = TST_SYS_CONF_LONG_GET(PATH_VM_NR_HPAGES);
+ 	SAFE_FILE_SCANF(PATH_SHMMAX, "%lu", &new_shmmax);
+ 
+ 	if (new_shmmax < SIZE)
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+index 625761f6e..150c9b61e 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+@@ -19,7 +19,7 @@
+  * depending on the system being tested.
+  */
+ #define MAXIDS	8192
+-#define PATH_SHMMNI	"/proc/sys/kernel/shmmni"
++#define PATH_SHMMNI	PROC_SYS_KERNEL	"shmmni"
+ 
+ static size_t shm_size;
+ static int shm_id_1 = -1;
+diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+index fa742eb8d..ae23261d4 100644
+--- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
++++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+@@ -29,7 +29,7 @@
+ #define SHM_HUGETLB	04000	/* segment is mapped via hugetlb */
+ #endif
+ 
+-#define PATH_SHMMAX "/proc/sys/kernel/shmmax"
++#define PATH_SHMMAX PROC_SYS_KERNEL "shmmax"
+ 
+ #ifndef barrier
+ # ifdef mb
+diff --git a/testcases/kernel/mem/ksm/ksm01.c b/testcases/kernel/mem/ksm/ksm01.c
+index be03f943f..d61ac77b5 100644
+--- a/testcases/kernel/mem/ksm/ksm01.c
++++ b/testcases/kernel/mem/ksm/ksm01.c
+@@ -74,13 +74,13 @@ static struct tst_test test = {
+ 	},
+ 	.setup = setup,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/sys/kernel/mm/ksm/run", NULL, TST_SR_TBROK},
+-		{"/sys/kernel/mm/ksm/sleep_millisecs", NULL, TST_SR_TBROK},
+-		{"/sys/kernel/mm/ksm/max_page_sharing", NULL,
++		{MM_KSM_FP("run"), NULL, TST_SR_TBROK},
++		{MM_KSM_FP("sleep_millisecs"), NULL, TST_SR_TBROK},
++		{MM_KSM_FP("max_page_sharing"), NULL,
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+-		{"/sys/kernel/mm/ksm/merge_across_nodes", "1",
++		{MM_KSM_FP("merge_across_nodes"), "1",
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+-		{"/sys/kernel/mm/ksm/smart_scan", "0",
++		{MM_KSM_FP("smart_scan"), "0",
+ 			TST_SR_SKIP_MISSING | TST_SR_TBROK_RO},
+ 		{}
+ 	},
+diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
+index 147e7e834..c2e276ccc 100644
+--- a/testcases/kernel/mem/ksm/ksm02.c
++++ b/testcases/kernel/mem/ksm/ksm02.c
+@@ -97,13 +97,13 @@ static struct tst_test test = {
+ 	},
+ 	.setup = setup,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/sys/kernel/mm/ksm/run", NULL, TST_SR_TBROK},
+-		{"/sys/kernel/mm/ksm/sleep_millisecs", NULL, TST_SR_TBROK},
+-		{"/sys/kernel/mm/ksm/max_page_sharing", NULL,
++		{MM_KSM_FP("run"), NULL, TST_SR_TBROK},
++		{MM_KSM_FP("sleep_millisecs"), NULL, TST_SR_TBROK},
++		{MM_KSM_FP("max_page_sharing"), NULL,
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+-		{"/sys/kernel/mm/ksm/merge_across_nodes", "1",
++		{MM_KSM_FP("merge_across_nodes"), "1",
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+-		{"/sys/kernel/mm/ksm/smart_scan", "0",
++		{MM_KSM_FP("smart_scan"), "0",
+ 			TST_SR_SKIP_MISSING | TST_SR_TBROK_RO},
+ 		{}
+ 	},
+diff --git a/testcases/kernel/mem/ksm/ksm03.c b/testcases/kernel/mem/ksm/ksm03.c
+index 34a086ae7..2ca15bf3a 100644
+--- a/testcases/kernel/mem/ksm/ksm03.c
++++ b/testcases/kernel/mem/ksm/ksm03.c
+@@ -79,13 +79,13 @@ static struct tst_test test = {
+ 	},
+ 	.setup = setup,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/sys/kernel/mm/ksm/run", NULL, TST_SR_TBROK},
+-		{"/sys/kernel/mm/ksm/sleep_millisecs", NULL, TST_SR_TBROK},
+-		{"/sys/kernel/mm/ksm/max_page_sharing", NULL,
++		{MM_KSM_FP("run"), NULL, TST_SR_TBROK},
++		{MM_KSM_FP("sleep_millisecs"), NULL, TST_SR_TBROK},
++		{MM_KSM_FP("max_page_sharing"), NULL,
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+-		{"/sys/kernel/mm/ksm/merge_across_nodes", "1",
++		{MM_KSM_FP("merge_across_nodes"), "1",
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+-		{"/sys/kernel/mm/ksm/smart_scan", "0",
++		{MM_KSM_FP("smart_scan"), "0",
+ 			TST_SR_SKIP_MISSING | TST_SR_TBROK_RO},
+ 		{}
+ 	},
+diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
+index a9a06be40..dfc62a78d 100644
+--- a/testcases/kernel/mem/ksm/ksm04.c
++++ b/testcases/kernel/mem/ksm/ksm04.c
+@@ -86,13 +86,13 @@ static struct tst_test test = {
+ 	},
+ 	.setup = setup,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/sys/kernel/mm/ksm/run", NULL, TST_SR_TBROK},
+-		{"/sys/kernel/mm/ksm/sleep_millisecs", NULL, TST_SR_TBROK},
+-		{"/sys/kernel/mm/ksm/max_page_sharing", NULL,
++		{MM_KSM_FP("run"), NULL, TST_SR_TBROK},
++		{MM_KSM_FP("sleep_millisecs"), NULL, TST_SR_TBROK},
++		{MM_KSM_FP("max_page_sharing"), NULL,
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+-		{"/sys/kernel/mm/ksm/merge_across_nodes", "1",
++		{MM_KSM_FP("merge_across_nodes"), "1",
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+-		{"/sys/kernel/mm/ksm/smart_scan", "0",
++		{MM_KSM_FP("smart_scan"), "0",
+ 			TST_SR_SKIP_MISSING | TST_SR_TBROK_RO},
+ 		{}
+ 	},
+diff --git a/testcases/kernel/mem/ksm/ksm05.c b/testcases/kernel/mem/ksm/ksm05.c
+index 96ffad511..047acd2bf 100644
+--- a/testcases/kernel/mem/ksm/ksm05.c
++++ b/testcases/kernel/mem/ksm/ksm05.c
+@@ -93,8 +93,8 @@ static struct tst_test test = {
+ 	.forks_child = 1,
+ 	.test_all = test_ksm,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/sys/kernel/mm/ksm/run", "1", TST_SR_TBROK},
+-		{"/sys/kernel/mm/ksm/smart_scan", "0",
++		{MM_KSM_FP("run"), "1", TST_SR_TBROK},
++		{MM_KSM_FP("smart_scan"), "0",
+ 			TST_SR_SKIP_MISSING | TST_SR_TBROK_RO},
+ 		{}
+ 	},
+diff --git a/testcases/kernel/mem/ksm/ksm06.c b/testcases/kernel/mem/ksm/ksm06.c
+index 22371ea53..e8caf361f 100644
+--- a/testcases/kernel/mem/ksm/ksm06.c
++++ b/testcases/kernel/mem/ksm/ksm06.c
+@@ -78,8 +78,8 @@ static void test_ksm(void)
+ 
+ 	numa_free_nodemask(bm);
+ 
+-	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
+-	SAFE_FILE_PRINTF(PATH_KSM "pages_to_scan", "%ld",
++	SAFE_FILE_PRINTF(PATH_MM_KSM "sleep_millisecs", "0");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "pages_to_scan", "%ld",
+ 			 nr_pages * nodes->cnt);
+ 	/*
+ 	 * merge_across_nodes and max_page_sharing setting can be changed
+@@ -87,24 +87,24 @@ static void test_ksm(void)
+ 	 * to unmerge pages first, then to 1 after changing merge_across_nodes,
+ 	 * to remerge according to the new setting.
+ 	 */
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+-	if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
+-		SAFE_FILE_PRINTF(PATH_KSM "max_page_sharing",
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "2");
++	if (access(PATH_MM_KSM "max_page_sharing", F_OK) == 0)
++		SAFE_FILE_PRINTF(PATH_MM_KSM "max_page_sharing",
+ 			"%ld", nr_pages * nodes->cnt);
+ 	tst_res(TINFO, "Start to test KSM with merge_across_nodes=1");
+-	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "1");
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "merge_across_nodes", "1");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "1");
+ 	ksm_group_check(1, 1, nr_pages * nodes->cnt - 1, 0, 0, 0,
+ 			nr_pages * nodes->cnt);
+ 
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "2");
+ 	tst_res(TINFO, "Start to test KSM with merge_across_nodes=0");
+-	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "0");
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "merge_across_nodes", "0");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "1");
+ 	ksm_group_check(1, nodes->cnt, nr_pages * nodes->cnt - nodes->cnt,
+ 			0, 0, 0, nr_pages * nodes->cnt);
+ 
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "2");
+ 
+ 	for (i = 0; i < nodes->cnt; i++)
+ 		SAFE_MUNMAP(memory[i], length);
+@@ -132,12 +132,12 @@ static struct tst_test test = {
+ 	},
+ 	.setup = setup,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/sys/kernel/mm/ksm/max_page_sharing", NULL,
++		{MM_KSM_FP("max_page_sharing"), NULL,
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+-		{"/sys/kernel/mm/ksm/run", NULL, TST_SR_TBROK},
+-		{"/sys/kernel/mm/ksm/sleep_millisecs", NULL, TST_SR_TBROK},
+-		{"/sys/kernel/mm/ksm/merge_across_nodes", NULL, TST_SR_TCONF},
+-		{"/sys/kernel/mm/ksm/smart_scan", "0",
++		{MM_KSM_FP("run"), NULL, TST_SR_TBROK},
++		{MM_KSM_FP("sleep_millisecs"), NULL, TST_SR_TBROK},
++		{MM_KSM_FP("merge_across_nodes"), NULL, TST_SR_TCONF},
++		{MM_KSM_FP("smart_scan"), "0",
+ 			TST_SR_SKIP_MISSING | TST_SR_TBROK_RO},
+ 		{}
+ 	},
+diff --git a/testcases/kernel/mem/ksm/ksm07.c b/testcases/kernel/mem/ksm/ksm07.c
+index 6b97b4591..2286010fa 100644
+--- a/testcases/kernel/mem/ksm/ksm07.c
++++ b/testcases/kernel/mem/ksm/ksm07.c
+@@ -57,24 +57,24 @@ static void verify_ksm(void)
+ 
+ 	tst_res(TINFO, "KSM merging");
+ 
+-	if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
+-		SAFE_FILE_PRINTF(PATH_KSM "run", "2");
++	if (access(PATH_MM_KSM "max_page_sharing", F_OK) == 0)
++		SAFE_FILE_PRINTF(PATH_MM_KSM "run", "2");
+ 
+ 	/* Set defalut ksm scan values. */
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
+-	SAFE_FILE_PRINTF(PATH_KSM "pages_to_scan", "%ld", 100l);
+-	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "1");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "pages_to_scan", "%ld", 100l);
++	SAFE_FILE_PRINTF(PATH_MM_KSM "sleep_millisecs", "0");
+ 
+ 	/* Measure pages skipped aka "smart scan". */
+-	SAFE_FILE_SCANF(PATH_KSM "full_scans", "%d", &full_scans_begin);
+-	SAFE_FILE_SCANF(PATH_KSM "pages_skipped", "%d", &pages_skipped_begin);
++	SAFE_FILE_SCANF(PATH_MM_KSM "full_scans", "%d", &full_scans_begin);
++	SAFE_FILE_SCANF(PATH_MM_KSM "pages_skipped", "%d", &pages_skipped_begin);
+ 	wait_ksmd_full_scan();
+ 
+ 	tst_res(TINFO, "stop KSM");
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "0");
+ 
+-	SAFE_FILE_SCANF(PATH_KSM "full_scans", "%d", &full_scans_end);
+-	SAFE_FILE_SCANF(PATH_KSM "pages_skipped", "%d", &pages_skipped_end);
++	SAFE_FILE_SCANF(PATH_MM_KSM "full_scans", "%d", &full_scans_end);
++	SAFE_FILE_SCANF(PATH_MM_KSM "pages_skipped", "%d", &pages_skipped_end);
+ 	diff_pages = pages_skipped_end - pages_skipped_begin;
+ 	diff_scans = full_scans_end - full_scans_begin;
+ 
+@@ -98,10 +98,10 @@ static struct tst_test test = {
+ 		{}
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{PATH_KSM "pages_skipped", NULL, TST_SR_TCONF},
+-		{PATH_KSM "run", NULL, TST_SR_TCONF},
+-		{PATH_KSM "sleep_millisecs", NULL, TST_SR_TCONF},
+-		{PATH_KSM "smart_scan", "1",
++		{MM_KSM_FP("pages_skipped"), NULL, TST_SR_TCONF},
++		{MM_KSM_FP("run"), NULL, TST_SR_TCONF},
++		{MM_KSM_FP("sleep_millisecs"), NULL, TST_SR_TCONF},
++		{MM_KSM_FP("smart_scan"), "1",
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF},
+ 		{}
+ 	},
+diff --git a/testcases/kernel/mem/ksm/ksm_test.h b/testcases/kernel/mem/ksm/ksm_test.h
+index cbad147d4..2e846ecaf 100644
+--- a/testcases/kernel/mem/ksm/ksm_test.h
++++ b/testcases/kernel/mem/ksm/ksm_test.h
+@@ -13,7 +13,7 @@ static inline void check(char *path, long int value)
+ 	char fullpath[BUFSIZ];
+ 	long actual_val;
+ 
+-	snprintf(fullpath, BUFSIZ, PATH_KSM "%s", path);
++	snprintf(fullpath, BUFSIZ, PATH_MM_KSM "%s", path);
+ 	SAFE_FILE_SCANF(fullpath, "%ld", &actual_val);
+ 
+ 	if (actual_val != value)
+@@ -41,8 +41,8 @@ static inline void final_group_check(int run, int pages_shared, int pages_sharin
+ 	 * can lead to unexpected false positives where page_volatile
+ 	 * is elevated and page_unshared is recessed.
+ 	 */
+-	SAFE_FILE_SCANF(PATH_KSM "run", "%d", &ksm_run_orig);
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
++	SAFE_FILE_SCANF(PATH_MM_KSM "run", "%d", &ksm_run_orig);
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "0");
+ 
+ 	check("pages_shared", pages_shared);
+ 	check("pages_sharing", pages_sharing);
+@@ -51,7 +51,7 @@ static inline void final_group_check(int run, int pages_shared, int pages_sharin
+ 	check("sleep_millisecs", sleep_millisecs);
+ 	check("pages_to_scan", pages_to_scan);
+ 
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "%d", ksm_run_orig);
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "%d", ksm_run_orig);
+ }
+ 
+ static inline void ksm_group_check(int run, int pages_shared, int pages_sharing,
+@@ -251,14 +251,14 @@ static inline void create_same_memory(unsigned int size, int num, unsigned int u
+ 	stop_ksm_children(child, num);
+ 
+ 	tst_res(TINFO, "KSM merging...");
+-	if (access(PATH_KSM "max_page_sharing", F_OK) == 0) {
+-		SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+-		SAFE_FILE_PRINTF(PATH_KSM "max_page_sharing", "%ld", size * pages * num);
++	if (access(PATH_MM_KSM "max_page_sharing", F_OK) == 0) {
++		SAFE_FILE_PRINTF(PATH_MM_KSM "run", "2");
++		SAFE_FILE_PRINTF(PATH_MM_KSM "max_page_sharing", "%ld", size * pages * num);
+ 	}
+ 
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
+-	SAFE_FILE_PRINTF(PATH_KSM "pages_to_scan", "%ld", size * pages * num);
+-	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "1");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "pages_to_scan", "%ld", size * pages * num);
++	SAFE_FILE_PRINTF(PATH_MM_KSM "sleep_millisecs", "0");
+ 
+ 	resume_ksm_children(child, num);
+ 	stop_ksm_children(child, num);
+@@ -277,13 +277,13 @@ static inline void create_same_memory(unsigned int size, int num, unsigned int u
+ 	ksm_group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+ 
+ 	tst_res(TINFO, "KSM unmerging...");
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "2");
+ 
+ 	resume_ksm_children(child, num);
+ 	final_group_check(2, 0, 0, 0, 0, 0, size * pages * num);
+ 
+ 	tst_res(TINFO, "stop KSM.");
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "0");
+ 	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
+ 
+ 	while (waitpid(-1, &status, 0) > 0)
+diff --git a/testcases/kernel/mem/oom/oom.h b/testcases/kernel/mem/oom/oom.h
+index 42ed181b0..cec4a7c31 100644
+--- a/testcases/kernel/mem/oom/oom.h
++++ b/testcases/kernel/mem/oom/oom.h
+@@ -7,16 +7,17 @@
+ #define OOM_H_
+ 
+ #include <pthread.h>
++#include "tst_path.h"
+ #include "config.h"
+ #include "numa_helper.h"
+ 
+-#define PATH_KSM        "/sys/kernel/mm/ksm/"
+-
+ #define LENGTH			(3UL<<30)
+ #define NORMAL			1
+ #define MLOCK			2
+ #define KSM			3
+ 
++#define OVERCOMMIT_MEMORY	PROC_SYS_VM "overcommit_memory"
 +
-+	/* Wait for parent to signal both racers to start */
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	/* Set the shared value */
-+	*pi = 1;
-+
-+	CPU_FREE(cpuset);
-+	return 0;
-+}
-+
-+static void proc_racer(void *p, int cpu)
-+{
-+	exit(one_racer(p, cpu));
-+}
-+
-+static void *thread_racer(void *info)
-+{
-+	struct racer_info *ri = info;
-+
-+	ri->status = one_racer(ri->p, ri->cpu);
-+	return ri;
-+}
-+
-+static void check_online_cpus(int online_cpus[], int nr_cpus_needed)
-+{
-+	cpu_set_t cpuset;
-+	int total_cpus, cpu_idx;
-+
-+	CPU_ZERO(&cpuset);
-+
-+	for (int i = 0; i < CPU_SETSIZE; i++)
-+		CPU_SET(i, &cpuset);
-+
-+	if (sched_setaffinity(0, sizeof(cpuset), &cpuset) == -1)
-+		tst_brk(TBROK | TERRNO, "sched_setaffinity() reset failed");
-+
-+	total_cpus = get_nprocs_conf();
-+
-+	if (sched_getaffinity(0, sizeof(cpu_set_t), &cpuset) == -1)
-+		tst_brk(TBROK | TERRNO, "sched_getaffinity() failed");
-+
-+	tst_res(TINFO, "Online CPUs needed: %d, available: %d",
-+		nr_cpus_needed, CPU_COUNT(&cpuset));
-+
-+	if (CPU_COUNT(&cpuset) < nr_cpus_needed)
-+		tst_brk(TCONF, "At least %d online CPUs are required", nr_cpus_needed);
-+
-+	cpu_idx = 0;
-+	for (int i = 0; i < total_cpus && cpu_idx < nr_cpus_needed; i++) {
-+		if (CPU_ISSET(i, &cpuset))
-+			online_cpus[cpu_idx++] = i;
-+	}
-+
-+	if (cpu_idx < nr_cpus_needed)
-+		tst_brk(TBROK, "Unable to find enough online CPUs");
-+}
-+
-+static void run_race(int race_type)
-+{
-+	int fd = -1;
-+	void *p = MAP_FAILED;
-+	void *tret1, *tret2;
-+	int status1 = 0, status2 = 0;
-+	int online_cpus[2];
-+	long hpage_size;
-+	pthread_t thread1, thread2;
-+
-+	check_online_cpus(online_cpus, 2);
-+
-+	hpage_size = tst_get_hugepage_size();
-+
-+	/* Get a new file for the final page */
-+	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
-+	tst_res(TINFO, "Mapping final page..");
-+
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, race_type, fd, 0);
-+
-+	if (race_type == MAP_SHARED) {
-+		child1 = SAFE_FORK();
-+		if (child1 == 0)
-+			proc_racer(p, online_cpus[0]);
-+
-+		child2 = SAFE_FORK();
-+		if (child2 == 0)
-+			proc_racer(p, online_cpus[1]);
-+
-+		/* Wake both children to start the race simultaneously */
-+		TST_CHECKPOINT_WAKE2(0, 2);
-+
-+		SAFE_WAITPID(child1, &status1, 0);
-+		tst_res(TINFO, "Child 1 status: %x", status1);
-+
-+		SAFE_WAITPID(child2, &status2, 0);
-+		tst_res(TINFO, "Child 2 status: %x", status2);
-+
-+		if (WIFSIGNALED(status1))
-+			tst_res(TFAIL, "Child 1 killed by signal %s",
-+				strsignal(WTERMSIG(status1)));
-+		if (WIFSIGNALED(status2))
-+			tst_res(TFAIL, "Child 2 killed by signal %s",
-+				strsignal(WTERMSIG(status2)));
-+	} else {
-+		struct racer_info ri1 = {
-+			.p = p,
-+			.cpu = online_cpus[0],
-+			.status = -1,
-+		};
-+		struct racer_info ri2 = {
-+			.p = p,
-+			.cpu = online_cpus[1],
-+			.status = -1,
-+		};
-+
-+		SAFE_PTHREAD_CREATE(&thread1, NULL, thread_racer, &ri1);
-+		SAFE_PTHREAD_CREATE(&thread2, NULL, thread_racer, &ri2);
-+
-+		/* Wake both threads to start the race simultaneously */
-+		TST_CHECKPOINT_WAKE2(0, 2);
-+
-+		SAFE_PTHREAD_JOIN(thread1, &tret1);
-+		if (tret1 != &ri1)
-+			tst_res(TFAIL, "Thread 1 returned %p not %p, killed?",
-+				tret1, &ri1);
-+
-+		SAFE_PTHREAD_JOIN(thread2, &tret2);
-+		if (tret2 != &ri2)
-+			tst_res(TFAIL, "Thread 2 returned %p not %p, killed?",
-+				tret2, &ri2);
-+
-+		status1 = ri1.status;
-+		status2 = ri2.status;
-+	}
-+
-+	if (status1 != 0)
-+		tst_res(TFAIL, "Racer 1 terminated with code %d", status1);
-+
-+	if (status2 != 0)
-+		tst_res(TFAIL, "Racer 2 terminated with code %d", status2);
-+
-+	if (status1 == 0 && status2 == 0)
-+		tst_res(TPASS, "Test completed successfully");
-+
-+	if (fd >= 0)
-+		SAFE_CLOSE(fd);
-+
-+	if (p != MAP_FAILED)
-+		SAFE_MUNMAP(p, hpage_size);
-+}
-+
-+static void run_test(void)
-+{
-+	unsigned long totpages;
-+	long hpage_size;
-+	void *p_sync = MAP_FAILED;
-+
-+	totpages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	hpage_size = tst_get_hugepage_size();
-+
-+	tst_res(TINFO, "Instantiating..");
-+
-+	fd_sync = tst_creat_unlinked(MNTPOINT, 0, 0600);
-+
-+	tst_res(TINFO, "Mapping %ld/%ld pages..", totpages - 1, totpages);
-+	p_sync = SAFE_MMAP(NULL, (totpages - 1) * hpage_size, PROT_READ|PROT_WRITE,
-+			   MAP_SHARED, fd_sync, 0);
-+
-+	run_race(race_type);
-+
-+	if (fd_sync >= 0)
-+		SAFE_CLOSE(fd_sync);
-+
-+	if (p_sync != MAP_FAILED)
-+		SAFE_MUNMAP(p_sync, (totpages - 1) * hpage_size);
-+}
-+
-+static void setup(void)
-+{
-+	if (str_op) {
-+		if (strcmp(str_op, "shared") == 0)
-+			race_type = MAP_SHARED;
-+		else if (strcmp(str_op, "private") == 0)
-+			race_type = MAP_PRIVATE;
-+		else
-+			tst_brk(TBROK, "Invalid parameter: use -m <private|shared>");
-+	} else {
-+		/* Default to shared if no option is passed */
-+		race_type = MAP_SHARED;
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd_sync >= 0)
-+		SAFE_CLOSE(fd_sync);
-+
-+	if (child1 > 0) {
-+		if (kill(child1, 0) == 0)
-+			SAFE_KILL(child1, SIGKILL);
-+	}
-+
-+	if (child2 > 0) {
-+		if (kill(child2, 0) == 0)
-+			SAFE_KILL(child2, SIGKILL);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.options = (struct tst_option[]) {
-+		{"m:", &str_op, "Type of mmap() mapping <private|shared>"},
-+		{NULL, NULL, NULL}
-+	},
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {2, TST_NEEDS},
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+	.min_cpus = 2
-+};
+ #ifdef HAVE_NUMA_V2
+ static inline void set_global_mempolicy(int mempolicy)
+ {
+@@ -217,15 +218,15 @@ static inline void testoom(int mempolicy, int lite, int retcode, int allow_sigki
+ 	 * Skip oom(KSM) if lite == 1, since limit_in_bytes may vary from
+ 	 * run to run, which isn't reliable for oom03 cgroup test.
+ 	 */
+-	if (access(PATH_KSM, F_OK) == -1 || lite == 1) {
++	if (access(PATH_MM_KSM, F_OK) == -1 || lite == 1) {
+ 		tst_res(TINFO, "KSM is not configed or lite == 1, "
+ 			 "skip OOM test for KSM pags");
+ 	} else {
+ 		tst_res(TINFO, "start OOM testing for KSM pages.");
+-		SAFE_FILE_SCANF(PATH_KSM "run", "%d", &ksm_run_orig);
+-		SAFE_FILE_PRINTF(PATH_KSM "run", "1");
++		SAFE_FILE_SCANF(MM_KSM_FP("run"), "%d", &ksm_run_orig);
++		SAFE_FILE_PRINTF(MM_KSM_FP("run"), "1");
+ 		oom(KSM, lite, retcode, allow_sigkill);
+-		SAFE_FILE_PRINTF(PATH_KSM "run", "%d", ksm_run_orig);
++		SAFE_FILE_PRINTF(MM_KSM_FP("run"), "%d", ksm_run_orig);
+ 	}
+ }
+ 
+diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
+index 48fe85849..46ea0c562 100644
+--- a/testcases/kernel/mem/oom/oom01.c
++++ b/testcases/kernel/mem/oom/oom01.c
+@@ -17,8 +17,6 @@
+ #include "tst_test.h"
+ #include "oom.h"
+ 
+-#define OVERCOMMIT_MEMORY "/proc/sys/vm/overcommit_memory"
+-
+ static void verify_oom(void)
+ {
+ 	/* we expect mmap to fail before OOM is hit */
+diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
+index 01a405ec1..d0c19051a 100644
+--- a/testcases/kernel/mem/oom/oom02.c
++++ b/testcases/kernel/mem/oom/oom02.c
+@@ -49,7 +49,7 @@ static struct tst_test test = {
+ 	.test_all = verify_oom,
+ 	.skip_in_compat = 1,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/vm/overcommit_memory", "1", TST_SR_TBROK},
++		{OVERCOMMIT_MEMORY, "1", TST_SR_TBROK},
+ 		{}
+ 	},
+ };
+diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+index f218b8130..03dca168b 100644
+--- a/testcases/kernel/mem/oom/oom03.c
++++ b/testcases/kernel/mem/oom/oom03.c
+@@ -76,7 +76,7 @@ static struct tst_test test = {
+ 	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
+ 	.skip_in_compat = 1,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/vm/overcommit_memory", "1", TST_SR_TBROK},
++		{OVERCOMMIT_MEMORY, "1", TST_SR_TBROK},
+ 		{}
+ 	},
+ };
+diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
+index d4beb12c7..ea632acab 100644
+--- a/testcases/kernel/mem/oom/oom04.c
++++ b/testcases/kernel/mem/oom/oom04.c
+@@ -72,7 +72,7 @@ static struct tst_test test = {
+ 	.needs_cgroup_ctrls = (const char *const []){ "cpuset", NULL },
+ 	.skip_in_compat = 1,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/vm/overcommit_memory", "1", TST_SR_TBROK},
++		{OVERCOMMIT_MEMORY, "1", TST_SR_TBROK},
+ 		{}
+ 	},
+ };
+diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+index 6b8d436d1..edb690676 100644
+--- a/testcases/kernel/mem/oom/oom05.c
++++ b/testcases/kernel/mem/oom/oom05.c
+@@ -95,7 +95,7 @@ static struct tst_test test = {
+ 	},
+ 	.skip_in_compat = 1,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/vm/overcommit_memory", "1", TST_SR_TBROK},
++		{OVERCOMMIT_MEMORY, "1", TST_SR_TBROK},
+ 		{}
+ 	},
+ };
+diff --git a/testcases/kernel/mem/thp/thp.h b/testcases/kernel/mem/thp/thp.h
+index 7723bedc2..5d6acf413 100644
+--- a/testcases/kernel/mem/thp/thp.h
++++ b/testcases/kernel/mem/thp/thp.h
+@@ -6,11 +6,11 @@
+ #ifndef THP_H
+ #define THP_H
+ 
+-#define PATH_THP "/sys/kernel/mm/transparent_hugepage/"
++#include "tst_path.h"
+ 
+ static inline void check_hugepage(void)
+ {
+-        if (access(PATH_HUGEPAGES, F_OK))
++        if (access(PATH_MM_HUGEPAGES, F_OK))
+                 tst_brk(TCONF, "Huge page is not supported.");
+ }
+ 
+diff --git a/testcases/kernel/mem/thp/thp02.c b/testcases/kernel/mem/thp/thp02.c
+index 4bfe37a20..89b49848c 100644
+--- a/testcases/kernel/mem/thp/thp02.c
++++ b/testcases/kernel/mem/thp/thp02.c
+@@ -97,7 +97,7 @@ static void setup(void)
+ {
+ 	long memfree;
+ 
+-	if (access(PATH_THP, F_OK) == -1)
++	if (access(PATH_MM_THP, F_OK) == -1)
+ 		tst_brk(TCONF, "THP not enabled in kernel?");
+ 
+ 	check_hugepage();
+diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/thp03.c
+index e8d22669e..8cd8e5f9c 100644
+--- a/testcases/kernel/mem/thp/thp03.c
++++ b/testcases/kernel/mem/thp/thp03.c
+@@ -79,7 +79,7 @@ static void thp_test(void)
+ 
+ static void setup(void)
+ {
+-	if (access(PATH_THP, F_OK) == -1)
++	if (access(PATH_MM_THP, F_OK) == -1)
+ 		tst_brk(TCONF, "THP not enabled in kernel?");
+ 
+ 	check_hugepage();
+diff --git a/testcases/kernel/sched/sysctl/proc_sched_rt01.c b/testcases/kernel/sched/sysctl/proc_sched_rt01.c
+index df57ebcde..2a72bf40d 100644
+--- a/testcases/kernel/sched/sysctl/proc_sched_rt01.c
++++ b/testcases/kernel/sched/sysctl/proc_sched_rt01.c
+@@ -26,9 +26,9 @@
+ #include <stdio.h>
+ #include "tst_test.h"
+ 
+-#define RT_PERIOD_US "/proc/sys/kernel/sched_rt_period_us"
+-#define RT_RUNTIME_US "/proc/sys/kernel/sched_rt_runtime_us"
+-#define RR_TIMESLICE_MS "/proc/sys/kernel/sched_rr_timeslice_ms"
++#define RT_PERIOD_US	PROC_SYS_KERNEL "sched_rt_period_us"
++#define RT_RUNTIME_US	PROC_SYS_KERNEL "sched_rt_runtime_us"
++#define RR_TIMESLICE_MS	PROC_SYS_KERNEL "sched_rr_timeslice_ms"
+ 
+ static int period_fd;
+ static int runtime_fd;
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+index 41f13408a..8b4491a80 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify10.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+@@ -99,8 +99,7 @@ static int ignore_mark_unsupported;
+ #define FILE_EXEC_PATH2 MNT2_PATH"/"TEST_APP
+ #define FILE2_EXEC_PATH2 MNT2_PATH"/"TEST_APP2
+ 
+-#define DROP_CACHES_FILE "/proc/sys/vm/drop_caches"
+-#define CACHE_PRESSURE_FILE "/proc/sys/vm/vfs_cache_pressure"
++#define CACHE_PRESSURE_FILE PROC_SYS_VM "vfs_cache_pressure"
+ 
+ static pid_t child_pid;
+ static int bind_mount_created;
+@@ -517,9 +516,9 @@ static void drop_caches(void)
+ 	 * In order to ensure that the inode can be released in the two-tier
+ 	 * directory structure, drop_cache is required three times.
+ 	 */
+-	SAFE_FILE_PRINTF(DROP_CACHES_FILE, "3");
+-	SAFE_FILE_PRINTF(DROP_CACHES_FILE, "3");
+-	SAFE_FILE_PRINTF(DROP_CACHES_FILE, "3");
++	SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "3");
++	SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "3");
++	SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "3");
+ }
+ 
+ static int create_fanotify_groups(unsigned int n)
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl35.c b/testcases/kernel/syscalls/fcntl/fcntl35.c
+index 2d730377b..69ed8b149 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl35.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl35.c
+@@ -49,13 +49,13 @@ static void setup(void)
+ 	test_max_unpriv = getpagesize();
+ 	test_max_priv = test_max_unpriv * 16;
+ 
+-	if (!access("/proc/sys/fs/pipe-max-size", F_OK)) {
+-		SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d",
++	if (!access(PROC_SYS_FS "pipe-max-size", F_OK)) {
++		SAFE_FILE_SCANF(PROC_SYS_FS "pipe-max-size", "%d",
+ 				&pipe_max_unpriv);
+-		SAFE_FILE_PRINTF("/proc/sys/fs/pipe-max-size", "%d",
++		SAFE_FILE_PRINTF(PROC_SYS_FS "pipe-max-size", "%d",
+ 				test_max_unpriv);
+ 	} else {
+-		tst_brk(TCONF, "/proc/sys/fs/pipe-max-size doesn't exist");
++		tst_brk(TCONF, PROC_SYS_FS "pipe-max-size doesn't exist");
+ 	}
+ 
+ 	pw = SAFE_GETPWNAM("nobody");
+@@ -63,7 +63,7 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	SAFE_FILE_PRINTF("/proc/sys/fs/pipe-max-size", "%d", pipe_max_unpriv);
++	SAFE_FILE_PRINTF(PROC_SYS_FS "pipe-max-size", "%d", pipe_max_unpriv);
+ }
+ 
+ static int verify_pipe_size(int exp_pip_sz, char *desp)
+diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
+index b4000f353..505f82159 100644
+--- a/testcases/kernel/syscalls/inotify/inotify07.c
++++ b/testcases/kernel/syscalls/inotify/inotify07.c
+@@ -153,7 +153,7 @@ static void setup(void)
+ 	tst_res(TINFO, DIR_PATH " ino=%lu", buf.st_ino);
+ 
+ 	/* Drop dentry caches, so overlayfs will allocate a new dentry */
+-	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "2");
++	SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "2");
+ 
+ 	/* Copy up directory to make it a merge directory */
+ 	SAFE_CHMOD(DIR_PATH, 0700);
+diff --git a/testcases/kernel/syscalls/inotify/inotify08.c b/testcases/kernel/syscalls/inotify/inotify08.c
+index e0837cac3..0d127031d 100644
+--- a/testcases/kernel/syscalls/inotify/inotify08.c
++++ b/testcases/kernel/syscalls/inotify/inotify08.c
+@@ -146,7 +146,7 @@ static void setup(void)
+ 			major(buf.st_dev), minor(buf.st_dev));
+ 
+ 	/* Drop dentry caches, so overlayfs will allocate a new dentry */
+-	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "2");
++	SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "2");
+ 
+ 	/* Copy up file */
+ 	SAFE_CHMOD(FILE_PATH, 0600);
+diff --git a/testcases/kernel/syscalls/io_uring/io_uring01.c b/testcases/kernel/syscalls/io_uring/io_uring01.c
+index 4c64e562b..1f562cc2f 100644
+--- a/testcases/kernel/syscalls/io_uring/io_uring01.c
++++ b/testcases/kernel/syscalls/io_uring/io_uring01.c
+@@ -165,7 +165,7 @@ static struct tst_test test = {
+ 		{}
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/kernel/io_uring_disabled", "0",
++		{PROC_SYS_KERNEL "io_uring_disabled", "0",
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+ 		{}
+ 	}
+diff --git a/testcases/kernel/syscalls/io_uring/io_uring02.c b/testcases/kernel/syscalls/io_uring/io_uring02.c
+index 50206cf1f..7052a1c62 100644
+--- a/testcases/kernel/syscalls/io_uring/io_uring02.c
++++ b/testcases/kernel/syscalls/io_uring/io_uring02.c
+@@ -255,7 +255,7 @@ static struct tst_test test = {
+ 		{}
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/kernel/io_uring_disabled", "0",
++		{PROC_SYS_KERNEL "io_uring_disabled", "0",
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+ 		{}
+ 	},
+diff --git a/testcases/kernel/syscalls/io_uring/io_uring03.c b/testcases/kernel/syscalls/io_uring/io_uring03.c
+index 645c96b02..e5c804831 100644
+--- a/testcases/kernel/syscalls/io_uring/io_uring03.c
++++ b/testcases/kernel/syscalls/io_uring/io_uring03.c
+@@ -133,7 +133,7 @@ static struct tst_test test = {
+ 		{}
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/kernel/io_uring_disabled", "0",
++		{PROC_SYS_KERNEL "io_uring_disabled", "0",
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+ 		{}
+ 	}
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+index f3d7579a3..4c9409c0c 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+@@ -74,7 +74,7 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = verify_msgget,
+ 	.save_restore = (const struct tst_path_val[]){
+-		{"/proc/sys/kernel/msgmni", NULL, TST_SR_TCONF},
++		{PROC_SYS_KERNEL "msgmni", NULL, TST_SR_TCONF},
+ 		{}
+ 	}
+ };
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget04.c b/testcases/kernel/syscalls/ipc/msgget/msgget04.c
+index 7f8f2ed9e..af7e3f8a4 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget04.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget04.c
+@@ -22,7 +22,7 @@
+ #include "tst_safe_sysv_ipc.h"
+ #include "tse_newipc.h"
+ 
+-#define NEXT_ID_PATH "/proc/sys/kernel/msg_next_id"
++#define NEXT_ID_PATH PROC_SYS_KERNEL "msg_next_id"
+ static int queue_id, pid;
+ static key_t msgkey;
+ 
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget05.c b/testcases/kernel/syscalls/ipc/msgget/msgget05.c
+index c683142f5..e362f7fb0 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget05.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget05.c
+@@ -20,7 +20,7 @@
+ #include "tst_safe_sysv_ipc.h"
+ #include "tse_newipc.h"
+ 
+-#define NEXT_ID_PATH "/proc/sys/kernel/msg_next_id"
++#define NEXT_ID_PATH PROC_SYS_KERNEL "msg_next_id"
+ 
+ static int queue_id[2], pid;
+ static key_t msgkey[2];
+diff --git a/testcases/kernel/syscalls/ipc/semget/semget05.c b/testcases/kernel/syscalls/ipc/semget/semget05.c
+index 57a65dbdd..5ef242d8e 100644
+--- a/testcases/kernel/syscalls/ipc/semget/semget05.c
++++ b/testcases/kernel/syscalls/ipc/semget/semget05.c
+@@ -38,7 +38,7 @@ static void setup(void)
+ 	used_cnt = GET_USED_ARRAYS();
+ 	tst_res(TINFO, "Current environment %d semaphore arrays are already in use",
+ 		used_cnt);
+-	SAFE_FILE_SCANF("/proc/sys/kernel/sem", "%*d %*d %*d %d", &maxsems);
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL "sem", "%*d %*d %*d %d", &maxsems);
+ 
+ 	/* Prevent timeout due to high semaphore array limit */
+ 	tst_set_runtime(maxsems / 200);
+@@ -74,7 +74,7 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = verify_semget,
+ 	.save_restore = (const struct tst_path_val[]){
+-		{"/proc/sys/kernel/sem", NULL,
++		{PROC_SYS_KERNEL "sem", NULL,
+ 			TST_SR_TCONF_MISSING | TST_SR_SKIP_RO},
+ 		{}
+ 	}
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
+index a1f53e7c1..4e45af4af 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
+@@ -30,9 +30,9 @@ static void verify_ipcinfo(void)
+ 	else
+ 		tst_res(TPASS, "shmmin = 1");
+ 
+-	TST_ASSERT_ULONG("/proc/sys/kernel/shmmax", info.shmmax);
+-	TST_ASSERT_ULONG("/proc/sys/kernel/shmmni", info.shmmni);
+-	TST_ASSERT_ULONG("/proc/sys/kernel/shmall", info.shmall);
++	TST_ASSERT_ULONG(PROC_SYS_KERNEL "shmmax", info.shmmax);
++	TST_ASSERT_ULONG(PROC_SYS_KERNEL "shmmni", info.shmmni);
++	TST_ASSERT_ULONG(PROC_SYS_KERNEL "shmall", info.shmall);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+index 5c77d47d8..99f7a5f92 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
++++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+@@ -143,7 +143,7 @@ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.hugepages = {TST_NO_HUGEPAGES},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/kernel/shmmax", "8192", TST_SR_TCONF_MISSING | TST_SR_TBROK_RO},
++		{PROC_SYS_KERNEL "shmmax", "8192", TST_SR_TCONF_MISSING | TST_SR_TBROK_RO},
+ 		{}
+ 	},
+ };
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget03.c b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+index a54540d58..17fce4c70 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/shmget03.c
++++ b/testcases/kernel/syscalls/ipc/shmget/shmget03.c
+@@ -37,7 +37,7 @@ static void setup(void)
+ 	used_cnt = GET_USED_SEGMENTS();
+ 	tst_res(TINFO, "Current environment %d shared memory segments are already in use",
+ 		used_cnt);
+-	SAFE_FILE_SCANF("/proc/sys/kernel/shmmni", "%i", &maxshms);
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL "shmmni", "%i", &maxshms);
+ 
+ 	queues = SAFE_MALLOC((maxshms - used_cnt) * sizeof(int));
+ 	for (num = 0; num < maxshms - used_cnt; num++) {
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget05.c b/testcases/kernel/syscalls/ipc/shmget/shmget05.c
+index 246674938..eadf9992a 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/shmget05.c
++++ b/testcases/kernel/syscalls/ipc/shmget/shmget05.c
+@@ -23,7 +23,7 @@
+ #include "tst_safe_sysv_ipc.h"
+ #include "tse_newipc.h"
+ 
+-#define NEXT_ID_PATH "/proc/sys/kernel/shm_next_id"
++#define NEXT_ID_PATH PROC_SYS_KERNEL "shm_next_id"
+ static int shm_id, pid;
+ static key_t shmkey;
+ 
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget06.c b/testcases/kernel/syscalls/ipc/shmget/shmget06.c
+index 420844f0a..e6d027809 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/shmget06.c
++++ b/testcases/kernel/syscalls/ipc/shmget/shmget06.c
+@@ -21,7 +21,7 @@
+ #include "tst_safe_sysv_ipc.h"
+ #include "tse_newipc.h"
+ 
+-#define NEXT_ID_PATH "/proc/sys/kernel/shm_next_id"
++#define NEXT_ID_PATH PROC_SYS_KERNEL "shm_next_id"
+ 
+ static int shm_id[2], pid;
+ static key_t shmkey[2];
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl02.c b/testcases/kernel/syscalls/keyctl/keyctl02.c
+index 3c5a2501e..6241f4126 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl02.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl02.c
+@@ -30,7 +30,7 @@
+ 
+ #define LOOPS	20000
+ #define MAX_WAIT_FOR_GC_MS 5000
+-#define PATH_KEY_COUNT_QUOTA	"/proc/sys/kernel/keys/root_maxkeys"
++#define PATH_KEY_COUNT_QUOTA	PROC_SYS_KERNEL "keys/root_maxkeys"
+ 
+ static int orig_maxkeys;
+ static int realtime_kernel;
+diff --git a/testcases/kernel/syscalls/madvise/madvise01.c b/testcases/kernel/syscalls/madvise/madvise01.c
+index 884c59b0b..b9ba4bdbe 100644
+--- a/testcases/kernel/syscalls/madvise/madvise01.c
++++ b/testcases/kernel/syscalls/madvise/madvise01.c
+@@ -24,7 +24,6 @@
+ 
+ #define TMP_DIR "tmp_madvise"
+ #define TEST_FILE TMP_DIR"/testfile"
+-#define KSM_SYS_DIR "/sys/kernel/mm/ksm"
+ #define STR "abcdefghijklmnopqrstuvwxyz12345\n"
+ 
+ static char *sfile;
+diff --git a/testcases/kernel/syscalls/madvise/madvise02.c b/testcases/kernel/syscalls/madvise/madvise02.c
+index cc3faf5cf..a55385040 100644
+--- a/testcases/kernel/syscalls/madvise/madvise02.c
++++ b/testcases/kernel/syscalls/madvise/madvise02.c
+@@ -46,7 +46,6 @@
+ #define MAP_SIZE (4 * 1024)
+ #define TEST_FILE "testfile"
+ #define STR "abcdefghijklmnopqrstuvwxyz12345\n"
+-#define KSM_SYS_DIR	"/sys/kernel/mm/ksm"
+ 
+ static struct stat st;
+ static long pagesize;
+@@ -98,7 +97,7 @@ static void tcases_filter(void)
+ 		case MADV_UNMERGEABLE:
+ 			/* kernel configured with CONFIG_KSM,
+ 			 * skip EINVAL test for MADV_MERGEABLE. */
+-			if (access(KSM_SYS_DIR, F_OK) == 0)
++			if (access(PATH_MM_KSM, F_OK) == 0)
+ 				tc->skip = 1;
+ 		break;
+ 		case MADV_WILLNEED:
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+index a9df913fc..42e8ba826 100644
+--- a/testcases/kernel/syscalls/madvise/madvise06.c
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -48,7 +48,7 @@
+ #define PASS_THRESHOLD (CHUNK_SZ / 4)
+ #define PASS_THRESHOLD_KB (PASS_THRESHOLD / 1024)
+ 
+-static const char drop_caches_fname[] = "/proc/sys/vm/drop_caches";
++static const char drop_caches_fname[] = PATH_VM_DROP_CACHES;
+ static int pg_sz, stat_refresh_sup;
+ 
+ static long init_swap, init_swap_cached, init_cached;
+diff --git a/testcases/kernel/syscalls/madvise/madvise08.c b/testcases/kernel/syscalls/madvise/madvise08.c
+index 96bcaf159..03bc26acb 100644
+--- a/testcases/kernel/syscalls/madvise/madvise08.c
++++ b/testcases/kernel/syscalls/madvise/madvise08.c
+@@ -33,7 +33,7 @@
+ #include "tst_test.h"
+ #include "lapi/mmap.h"
+ 
+-#define CORE_PATTERN "/proc/sys/kernel/core_pattern"
++#define CORE_PATTERN PROC_SYS_KERNEL "core_pattern"
+ #define CORE_FILTER "/proc/self/coredump_filter"
+ #define YCOUNT 0x500L
+ #define FMEMSIZE (YCOUNT + 0x2L)
+diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create04.c b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
+index 8a12a72ff..3114f87b4 100644
+--- a/testcases/kernel/syscalls/memfd_create/memfd_create04.c
++++ b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
+@@ -46,7 +46,7 @@ static void check_hugepage_support(struct test_flag *test_flags)
+ {
+ 	char pattern[64];
+ 
+-	sprintf(pattern, PATH_HUGEPAGES);
++	sprintf(pattern, PATH_MM_HUGEPAGES);
+ 	strcat(pattern, "hugepages-");
+ 	strcat(pattern, test_flags->h_size);
+ 
+@@ -84,7 +84,7 @@ static void memfd_huge_x_controller(unsigned int n)
+ 
+ static void setup(void)
+ {
+-	if (access(PATH_HUGEPAGES, F_OK))
++	if (access(PATH_MM_HUGEPAGES, F_OK))
+ 		tst_brk(TCONF, "Huge page is not supported");
+ }
+ 
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+index 780aae1b5..e9b502fb8 100644
+--- a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+@@ -324,7 +324,7 @@ static struct tst_test test = {
+ 	.test_all = run,
+ 	.setup = setup,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/kernel/numa_balancing", "0",
++		{PROC_SYS_KERNEL "numa_balancing", "0",
+ 			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+ 		{}
+ 	},
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+index 59d7e79db..c77d187ee 100644
+--- a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+@@ -49,7 +49,7 @@ static void setup(void)
+ 	int n;
+ 	unsigned long nodemask_size;
+ 
+-	if (access(PATH_KSM, F_OK))
++	if (access(PATH_MM_KSM, F_OK))
+ 		tst_brk(TCONF, "KSM configuration was not enabled");
+ 
+ 	if (get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes) < 0)
+@@ -93,8 +93,8 @@ static void setup(void)
+ 		memset(test_pages[n], 0, page_size);
+ 	}
+ 
+-	SAFE_FILE_SCANF(PATH_KSM "run", "%d", &orig_ksm_run);
+-	SAFE_FILE_PRINTF(PATH_KSM "run", "%d", 1);
++	SAFE_FILE_SCANF(PATH_MM_KSM "run", "%d", &orig_ksm_run);
++	SAFE_FILE_PRINTF(PATH_MM_KSM "run", "%d", 1);
+ 	wait_ksmd_full_scan();
+ }
+ 
+@@ -111,7 +111,7 @@ static void cleanup(void)
+ 	free(new_nodes[1]);
+ 
+ 	if (orig_ksm_run != -1)
+-		SAFE_FILE_PRINTF(PATH_KSM "run", "%d", orig_ksm_run);
++		SAFE_FILE_PRINTF(PATH_MM_KSM "run", "%d", orig_ksm_run);
+ }
+ 
+ static void migrate_test(void)
+diff --git a/testcases/kernel/syscalls/mmap/mmap10.c b/testcases/kernel/syscalls/mmap/mmap10.c
+index fb5543899..a60c70514 100644
+--- a/testcases/kernel/syscalls/mmap/mmap10.c
++++ b/testcases/kernel/syscalls/mmap/mmap10.c
+@@ -40,7 +40,7 @@
+ #include "tst_test.h"
+ 
+ #define SIZE (5 * TST_MB)
+-#define PATH_KSM "/sys/kernel/mm/ksm/"
++#define PATH_MM_KSM SYS_KERNEL_MM "ksm/"
+ 
+ static size_t page_sz;
+ static char *memory;
+@@ -60,7 +60,7 @@ static void run(unsigned int i)
+ 	int fd = -1;
+ 
+ 	if (tc->add_ksm) {
+-		if (access(PATH_KSM, F_OK) == -1)
++		if (access(PATH_MM_KSM, F_OK) == -1)
+ 			tst_brk(TCONF, "KSM configuration is not enabled");
+ 		else
+ 			tst_res(TINFO, "Add to KSM regions");
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages12.c b/testcases/kernel/syscalls/move_pages/move_pages12.c
+index 440773a38..b2ec0e70f 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages12.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages12.c
+@@ -76,8 +76,6 @@
+ 
+ #define LOOPS	10000
+ #define PATH_MEMINFO	"/proc/meminfo"
+-#define PATH_NR_HUGEPAGES	"/proc/sys/vm/nr_hugepages"
+-#define PATH_HUGEPAGES	"/sys/kernel/mm/hugepages/"
+ #define TEST_NODES	2
+ 
+ static struct tcase {
+@@ -259,7 +257,7 @@ static void setup(void)
+ 
+ 	check_config(TEST_NODES);
+ 
+-	if (access(PATH_HUGEPAGES, F_OK))
++	if (access(PATH_MM_HUGEPAGES, F_OK))
+ 		tst_brk(TCONF, "Huge page not supported");
+ 
+ 	ret = get_allowed_nodes(NH_MEMS, TEST_NODES, &node1, &node2);
+@@ -269,7 +267,7 @@ static void setup(void)
+ 	pgsz = (int)get_page_size();
+ 	SAFE_FILE_LINES_SCANF(PATH_MEMINFO, "Hugepagesize: %d", &hpsz);
+ 
+-	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
++	SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "3");
+ 	SAFE_FILE_LINES_SCANF(PATH_MEMINFO, "MemFree: %ld", &memfree);
+ 	tst_res(TINFO, "Free RAM %ld kB", memfree);
+ 
+@@ -307,10 +305,10 @@ static void setup(void)
+ 	hpsz *= 1024;
+ 
+ 	if (orig_hugepages_node1 == -1 || orig_hugepages_node2 == -1) {
+-		SAFE_FILE_SCANF(PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
++		SAFE_FILE_SCANF(PATH_VM_NR_HPAGES, "%ld", &orig_hugepages);
+ 		tst_res(TINFO, "Increasing global hugepages pool to %ld",
+ 			orig_hugepages + 8);
+-		SAFE_FILE_PRINTF(PATH_NR_HUGEPAGES, "%ld", orig_hugepages + 8);
++		SAFE_FILE_PRINTF(PATH_VM_NR_HPAGES, "%ld", orig_hugepages + 8);
+ 	}
+ 
+ 	alloc_free_huge_on_node(node1, 4L * hpsz);
+@@ -320,7 +318,7 @@ static void setup(void)
+ static void cleanup(void)
+ {
+ 	if (orig_hugepages != -1)
+-		SAFE_FILE_PRINTF(PATH_NR_HUGEPAGES, "%ld", orig_hugepages);
++		SAFE_FILE_PRINTF(PATH_VM_NR_HPAGES, "%ld", orig_hugepages);
+ 
+ 	if (orig_hugepages_node1 != -1) {
+ 		SAFE_FILE_PRINTF(path_hugepages_node1,
+diff --git a/testcases/kernel/syscalls/newuname/newuname01.c b/testcases/kernel/syscalls/newuname/newuname01.c
+index 37058023a..4318b4fff 100644
+--- a/testcases/kernel/syscalls/newuname/newuname01.c
++++ b/testcases/kernel/syscalls/newuname/newuname01.c
+@@ -31,16 +31,16 @@ static void run(void)
+ 
+ 	TST_EXP_EQ_STR(name->sysname, "Linux");
+ 
+-	SAFE_FILE_SCANF("/proc/sys/kernel/hostname", "%1023[^\n]", proc_val);
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL "hostname", "%1023[^\n]", proc_val);
+ 	TST_EXP_EQ_STR(name->nodename, proc_val);
+ 
+-	SAFE_FILE_SCANF("/proc/sys/kernel/osrelease", "%1023[^\n]", proc_val);
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL "osrelease", "%1023[^\n]", proc_val);
+ 	TST_EXP_EQ_STR(name->release, proc_val);
+ 
+-	SAFE_FILE_SCANF("/proc/sys/kernel/version", "%1023[^\n]", proc_val);
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL "version", "%1023[^\n]", proc_val);
+ 	TST_EXP_EQ_STR(name->version, proc_val);
+ 
+-	SAFE_FILE_SCANF("/proc/sys/kernel/domainname", "%1023[^\n]", proc_val);
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL "domainname", "%1023[^\n]", proc_val);
+ 	TST_EXP_EQ_STR(name->domainname, proc_val);
+ }
+ 
+diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
+index 7306ecf51..2614f62d6 100644
+--- a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
++++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
+@@ -211,7 +211,7 @@ static void setup(void)
+ 	 * knowing if perf_event_open() support is enabled is checking for
+ 	 * the existence of the file /proc/sys/kernel/perf_event_paranoid.
+ 	 */
+-	if (access("/proc/sys/kernel/perf_event_paranoid", F_OK) == -1)
++	if (access(PROC_SYS_KERNEL "perf_event_paranoid", F_OK) == -1)
+ 		tst_brk(TCONF, "Kernel doesn't have perf_event support");
+ 
+ 	bind_to_current_cpu();
+diff --git a/testcases/kernel/syscalls/pkeys/pkey01.c b/testcases/kernel/syscalls/pkeys/pkey01.c
+index 8cbe2d6b5..6762d9912 100644
+--- a/testcases/kernel/syscalls/pkeys/pkey01.c
++++ b/testcases/kernel/syscalls/pkeys/pkey01.c
+@@ -36,7 +36,6 @@
+ 
+ #define TEST_FILE "pkey_testfile"
+ #define STR "abcdefghijklmnopqrstuvwxyz12345\n"
+-#define PATH_VM_NRHPS "/proc/sys/vm/nr_hugepages"
+ 
+ static int size;
+ static int execute_supported = 1;
+diff --git a/testcases/kernel/syscalls/preadv2/preadv203.c b/testcases/kernel/syscalls/preadv2/preadv203.c
+index 472543e5c..96f14ff32 100644
+--- a/testcases/kernel/syscalls/preadv2/preadv203.c
++++ b/testcases/kernel/syscalls/preadv2/preadv203.c
+@@ -58,7 +58,7 @@ static volatile int stop;
+ 
+ static void drop_caches(void)
+ {
+-	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
++	SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "3");
+ }
+ 
+ /*
+diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
+index 5ebc43278..5e1d2350c 100644
+--- a/testcases/kernel/syscalls/readahead/readahead02.c
++++ b/testcases/kernel/syscalls/readahead/readahead02.c
+@@ -35,7 +35,6 @@
+ #include "lapi/syscalls.h"
+ 
+ static char testfile[PATH_MAX] = "testfile";
+-#define DROP_CACHES_FNAME "/proc/sys/vm/drop_caches"
+ #define PROC_IO_FNAME "/proc/self/io"
+ #define DEFAULT_FILESIZE (64 * 1024 * 1024)
+ #define SHORT_SLEEP_US 5000
+@@ -97,7 +96,7 @@ static int has_file(const char *fname, int required)
+ 
+ static void drop_caches(void)
+ {
+-	SAFE_FILE_PRINTF(DROP_CACHES_FNAME, "1");
++	SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "1");
+ }
+ 
+ static unsigned long get_bytes_read(void)
+@@ -430,7 +429,7 @@ static void setup(void)
+ 	if (access(PROC_IO_FNAME, F_OK))
+ 		tst_brk(TCONF, "Requires " PROC_IO_FNAME);
+ 
+-	has_file(DROP_CACHES_FNAME, 1);
++	has_file(PATH_VM_DROP_CACHES, 1);
+ 
+ 	/* check if readahead is supported */
+ 	tst_syscall(__NR_readahead, 0, 0, 0);
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+index 6dbf5af89..c12d987e8 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+@@ -17,7 +17,7 @@
+ #include "tst_timer.h"
+ #include "tst_sched.h"
+ 
+-#define PROC_SCHED_RR_TIMESLICE_MS	"/proc/sys/kernel/sched_rr_timeslice_ms"
++#define PROC_SCHED_RR_TIMESLICE_MS	PROC_SYS_KERNEL "sched_rr_timeslice_ms"
+ static int proc_flag;
+ 
+ struct tst_ts tp;
+diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg03.c b/testcases/kernel/syscalls/sendmsg/sendmsg03.c
+index 34ebc7e95..b7187fd8f 100644
+--- a/testcases/kernel/syscalls/sendmsg/sendmsg03.c
++++ b/testcases/kernel/syscalls/sendmsg/sendmsg03.c
+@@ -111,7 +111,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/kernel/syscalls/sendto/sendto03.c b/testcases/kernel/syscalls/sendto/sendto03.c
+index 622de6474..b35e51b96 100644
+--- a/testcases/kernel/syscalls/sendto/sendto03.c
++++ b/testcases/kernel/syscalls/sendto/sendto03.c
+@@ -205,7 +205,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/kernel/syscalls/setpgid/setpgid02.c b/testcases/kernel/syscalls/setpgid/setpgid02.c
+index 978d255e5..fd5823bd8 100644
+--- a/testcases/kernel/syscalls/setpgid/setpgid02.c
++++ b/testcases/kernel/syscalls/setpgid/setpgid02.c
+@@ -42,7 +42,7 @@ static void setup(void)
+ 	 * pid_max would not be in use by another process and guarantees that
+ 	 * it corresponds to an invalid PGID, generating EPERM.
+ 	 */
+-	SAFE_FILE_SCANF("/proc/sys/kernel/pid_max", "%d\n", &inval_pgid);
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL "pid_max", "%d\n", &inval_pgid);
+ }
+ 
+ static void run(unsigned int n)
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt05.c b/testcases/kernel/syscalls/setsockopt/setsockopt05.c
+index 35a3d1bd3..d09a3b527 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt05.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt05.c
+@@ -88,7 +88,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt06.c b/testcases/kernel/syscalls/setsockopt/setsockopt06.c
+index 2160b29e7..840155b8d 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt06.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt06.c
+@@ -116,7 +116,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt08.c b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+index 76ec1054e..70985571b 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt08.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt08.c
+@@ -158,7 +158,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt09.c b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
+index a4b6b9315..c3f46443a 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt09.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt09.c
+@@ -111,7 +111,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/kernel/syscalls/splice/splice.h b/testcases/kernel/syscalls/splice/splice.h
+index 16e4c98ed..a5313e0a3 100644
+--- a/testcases/kernel/syscalls/splice/splice.h
++++ b/testcases/kernel/syscalls/splice/splice.h
+@@ -26,13 +26,13 @@ static inline int get_max_limit(int default_len_data)
+ {
+ 	int pipe_max_unpriv;
+ 
+-	if (!access("/proc/sys/fs/pipe-max-size", F_OK)) {
+-		SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d", &pipe_max_unpriv);
++	if (!access(PROC_SYS_FS "pipe-max-size", F_OK)) {
++		SAFE_FILE_SCANF(PROC_SYS_FS "pipe-max-size", "%d", &pipe_max_unpriv);
+ 		return MIN(pipe_max_unpriv, default_len_data);
+ 	}
+ 
+-	if (!access("/proc/sys/fs/pipe-max-pages", F_OK)) {
+-		SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-pages", "%d", &pipe_max_unpriv);
++	if (!access(PROC_SYS_FS "pipe-max-pages", F_OK)) {
++		SAFE_FILE_SCANF(PROC_SYS_FS "pipe-max-pages", "%d", &pipe_max_unpriv);
+ 		return MIN(pipe_max_unpriv * getpagesize(), default_len_data);
+ 	}
+ 
+diff --git a/testcases/kernel/syscalls/splice/splice06.c b/testcases/kernel/syscalls/splice/splice06.c
+index e64d32ded..860960640 100644
+--- a/testcases/kernel/syscalls/splice/splice06.c
++++ b/testcases/kernel/syscalls/splice/splice06.c
+@@ -25,8 +25,8 @@
+ #define PIPE_MAX_INIT_SIZE 65536
+ #define DOMAIN_INIT_NAME "LTP_INIT"
+ #define DOMAIN_TEST_NAME "LTP_TEST"
+-#define INTEGER_PROCFILE "/proc/sys/fs/pipe-max-size"
+-#define STRING_PROCFILE "/proc/sys/kernel/domainname"
++#define INTEGER_PROCFILE PROC_SYS_FS "pipe-max-size"
++#define STRING_PROCFILE PROC_SYS_KERNEL "domainname"
+ static int pipe_max_test_size;
+ 
+ static void format_str(char *str)
+diff --git a/testcases/kernel/syscalls/syslog/syslog11.c b/testcases/kernel/syscalls/syslog/syslog11.c
+index 28a6fdf49..f657fef28 100644
+--- a/testcases/kernel/syscalls/syslog/syslog11.c
++++ b/testcases/kernel/syscalls/syslog/syslog11.c
+@@ -56,7 +56,7 @@ static void run(unsigned int n)
+ static struct tst_test test = {
+ 	.test = run,
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/kernel/printk", NULL, TST_SR_TBROK},
++		{PROC_SYS_KERNEL "printk", NULL, TST_SR_TBROK},
+ 		{}
+ 	},
+ 	.needs_root = 1,
+diff --git a/testcases/kernel/syscalls/wait4/wait402.c b/testcases/kernel/syscalls/wait4/wait402.c
+index 18ed0814f..12e8b68fa 100644
+--- a/testcases/kernel/syscalls/wait4/wait402.c
++++ b/testcases/kernel/syscalls/wait4/wait402.c
+@@ -25,7 +25,7 @@ static void run(void)
+ 
+ static void setup(void)
+ {
+-	SAFE_FILE_SCANF("/proc/sys/kernel/pid_max", "%d\n", &pid_max);
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL "pid_max", "%d\n", &pid_max);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/waitid/waitid10.c b/testcases/kernel/syscalls/waitid/waitid10.c
+index 14d4ba76b..ef701e8ef 100644
+--- a/testcases/kernel/syscalls/waitid/waitid10.c
++++ b/testcases/kernel/syscalls/waitid/waitid10.c
+@@ -48,7 +48,7 @@ static void setup(void)
+ 	char c;
+ 
+ 	SAFE_GETRLIMIT(RLIMIT_CORE, &rlim);
+-	SAFE_FILE_SCANF("/proc/sys/kernel/core_pattern", "%c", &c);
++	SAFE_FILE_SCANF(PROC_SYS_KERNEL	"core_pattern", "%c", &c);
+ 
+ 	if (rlim.rlim_cur)
+ 		return;
+diff --git a/testcases/network/iptables/nft02.c b/testcases/network/iptables/nft02.c
+index 5f0671c5d..fb06cfa3d 100644
+--- a/testcases/network/iptables/nft02.c
++++ b/testcases/network/iptables/nft02.c
+@@ -203,7 +203,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+diff --git a/testcases/network/packet/fanout01.c b/testcases/network/packet/fanout01.c
+index dc1ff6ce5..18e766d45 100644
+--- a/testcases/network/packet/fanout01.c
++++ b/testcases/network/packet/fanout01.c
+@@ -96,7 +96,7 @@ static struct tst_test test = {
+ 		NULL
+ 	},
+ 	.save_restore = (const struct tst_path_val[]) {
+-		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{PROC_SYS_USER "max_user_namespaces", "1024", TST_SR_SKIP},
+ 		{}
+ 	},
+ 	.tags = (const struct tst_tag[]) {
 -- 
-2.53.0
+2.54.0
 
 
 -- 
