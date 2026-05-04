@@ -4,116 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC1F8CD3423
-	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 08:12:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EED8BCD3423
+	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 08:31:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 589723E2CA1
-	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 10:12:14 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 898B33E4822
+	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 10:31:41 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 809FA3D2280
- for <ltp@lists.linux.it>; Mon,  4 May 2026 10:11:56 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 284393E1869
+ for <ltp@lists.linux.it>; Mon,  4 May 2026 10:31:22 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C47F21A004E5
- for <ltp@lists.linux.it>; Mon,  4 May 2026 10:11:54 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5F9566002B8
+ for <ltp@lists.linux.it>; Mon,  4 May 2026 10:31:22 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3A6635C05B;
- Mon,  4 May 2026 08:11:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1777882308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D37F16AD86;
+ Mon,  4 May 2026 08:31:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777883481; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=itXkkeahZ5vQwe3TtXph8gTVZcqYFLyakToevXkU9YA=;
- b=VcUks06di6Pwm3/gtiQU3heeQamzUBA7ChCm3uOOwOjNnFauB8CcsnNn487BNwyTwHU8UC
- ENNFXI0dYux95JO+4tPazhMKnlP7uAoT8cSpo3U6OuSQyhiZ1NwDjBghZbn8xgutoarQX5
- 4CWJmU12pKdLhTboVMkFYNx8/SyvSo0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1777882308;
+ in-reply-to:in-reply-to:references:references;
+ bh=MlOWZ5/VRwy6YcjzXlVHOL2AKiC4GjaJCFOGRR4qUrQ=;
+ b=n63H2mWETdo4f8AyhCtBPvibnPCEyDxwqHX/zCbEQO4mNBUXJgosZLR4iPgRYGMZKPMp1w
+ 831YEJvCyygmxevABfeQz2o0j3TxIWw2jy9FEVnu/oRgbgXPf6E27rlycqvui3l7Jfhrts
+ yvxG9sDZU5FbeGTCrRACoSh4E1PLGTs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777883481;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=itXkkeahZ5vQwe3TtXph8gTVZcqYFLyakToevXkU9YA=;
- b=dJc4yyD2cKtnwqyQ9U+40vHnwfjeJjD8TBi/+MyAeEEj/jTuhWUM5+GAbCZLDSkQXlruok
- jz/FQQzHI9gU0GCg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=VcUks06d;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=dJc4yyD2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1777882308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ in-reply-to:in-reply-to:references:references;
+ bh=MlOWZ5/VRwy6YcjzXlVHOL2AKiC4GjaJCFOGRR4qUrQ=;
+ b=/TMtVirXHIIyRm5tga3VlStD+aX+oEX3fDfq3BplYeWZYKq8RV6VWhu1sHXaVzUYL19JWN
+ uB1a1gJ68BEdOIAw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="W/C7iqQP";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+gYgbawx
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777883480; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=itXkkeahZ5vQwe3TtXph8gTVZcqYFLyakToevXkU9YA=;
- b=VcUks06di6Pwm3/gtiQU3heeQamzUBA7ChCm3uOOwOjNnFauB8CcsnNn487BNwyTwHU8UC
- ENNFXI0dYux95JO+4tPazhMKnlP7uAoT8cSpo3U6OuSQyhiZ1NwDjBghZbn8xgutoarQX5
- 4CWJmU12pKdLhTboVMkFYNx8/SyvSo0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1777882308;
+ in-reply-to:in-reply-to:references:references;
+ bh=MlOWZ5/VRwy6YcjzXlVHOL2AKiC4GjaJCFOGRR4qUrQ=;
+ b=W/C7iqQPKmYTdZ2BN+CSYpbrryzjxsRSOFrACfX5db7uYMi8uydiuoVVQCbf/F+cX/2JZe
+ y3Q3b359abVNlf5i95bQ5Giwj4F9xmuMfnF9C7hpLor+xurHiIZr1GxZume3kuamV+cREi
+ TwNdVj0ldyq7TTJZF9VtLgvToCcMGrQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777883480;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=itXkkeahZ5vQwe3TtXph8gTVZcqYFLyakToevXkU9YA=;
- b=dJc4yyD2cKtnwqyQ9U+40vHnwfjeJjD8TBi/+MyAeEEj/jTuhWUM5+GAbCZLDSkQXlruok
- jz/FQQzHI9gU0GCg==
+ in-reply-to:in-reply-to:references:references;
+ bh=MlOWZ5/VRwy6YcjzXlVHOL2AKiC4GjaJCFOGRR4qUrQ=;
+ b=+gYgbawxd5elJtiRwVlHU5EOJEiZHp3DfrXsSPFg89EfQTHOn/1IiLTmAyAacBdfZASwTS
+ YNFqO7R8sYuA+GDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 223F1593A3;
- Mon,  4 May 2026 08:11:48 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C15CB593A3;
+ Mon,  4 May 2026 08:31:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 7bbIBsRU+GmXUgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 04 May 2026 08:11:48 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 04 May 2026 10:11:47 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2QkHLlhZ+GlpZwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 04 May 2026 08:31:20 +0000
+Date: Mon, 4 May 2026 10:31:22 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Jinseok Kim <always.starving0@gmail.com>
+Message-ID: <afhZWvFkvOBd5w7Q@yuki.lan>
+References: <20260430150942.4859-1-always.starving0@gmail.com>
 MIME-Version: 1.0
-Message-Id: <20260504-fix_b4_check-v1-1-8673c1083319@suse.com>
-X-B4-Tracking: v=1; b=H4sIAMJU+GkC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzMDUwMT3bTMivgkk/jkjNTkbF0TY0tDY5Mki8Q0S2MloJaColSgPNi46Nj
- aWgD8abxvXgAAAA==
-X-Change-ID: 20260504-fix_b4_check-439134b8af93
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1777882308; l=929;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=YlxM24VGOsEw198F3fuauzNP+s6OPVBsdmxTyyj+g5U=;
- b=EW4PqtHEQrVeSXBqSBth1kFF9NC+7sk9869yUKvz4EY4El/+f3OxREh90RsQtYivv737qF9YU
- KeZxXi/kih+D1J9gvyc2fsVvhG9ABXNpE1PE6ko2xQp9uYAN2kHS39o
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+Content-Disposition: inline
+In-Reply-To: <20260430150942.4859-1-always.starving0@gmail.com>
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  MX_GOOD(-0.01)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[];
+ URIBL_BLOCKED(0.00)[suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ FREEMAIL_TO(0.00)[gmail.com]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- URIBL_BLOCKED(0.00)[suse.de:dkim,checkpatch.pl:url,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:email];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: 3A6635C05B
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ TAGGED_RCPT(0.00)[]; DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Queue-Id: D37F16AD86
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] b4: fix errors in b4 prep --check command
+Subject: Re: [LTP] [RFC] testcases: unify naming for syscall tests ending in
+ digits
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,41 +119,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi!
+> I noticed both styles are used for tests of syscalls ending in digits:
+> 
+> For example:
+>   dup2/dup201.c
+>   dup3/dup3_01.c
+> 
+> Would it be better to unify them as dup2_01.c / dup3_01.c for consistency?
 
-Set non-file mode for `b4 prep --check` command, so checkpatch won't
-threat commits as files.
+It makes sense to unify, I'm not sure if it should be dup201.c and
+dup301.c or dup2_01.c and dup3_02.c.
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- .b4-config | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If we want to keep the naming consistent with the rest of LTP we should
+probably go for dup201.c and dup301.c but it's a bit less readable than
+the underscore variant.
 
-diff --git a/.b4-config b/.b4-config
-index ff3199624cb250239c7e62c3b1939085a7e4e2c2..aea68ad8f622ea701c90037ee7a1968a7d4a209e 100644
---- a/.b4-config
-+++ b/.b4-config
-@@ -6,5 +6,5 @@
-     pw-project = ltp
- 
-     # other checkpatch.pl options from .checkpatch.conf are used
--    prep-perpatch-check-cmd = ./scripts/checkpatch.pl -q --mailback --showfile
-+    prep-perpatch-check-cmd = ./scripts/checkpatch.pl -q --mailback --showfile --no-f
-     am-perpatch-check-cmd = ./scripts/checkpatch.pl -q --mailback
+Does anyone else has an opinion here?
 
----
-base-commit: 72ca484cca53710b956ba2fcc1ff203fe9c9b73b
-change-id: 20260504-fix_b4_check-439134b8af93
-
-Best regards,
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
