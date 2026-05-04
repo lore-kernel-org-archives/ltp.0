@@ -4,96 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E66AFFF885A
-	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 09:08:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A89BFCD3423
+	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 09:26:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1777886818; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=151d2kv/+l6pOHXsWZdye4cU9q9uT+EYI0//cLELNg4=;
+ b=aGtKTJ/RvkVqfMHp1hE0jgINLg9v74BKtxJiTdpqu3wPkVmFcDUweW59I5PD6JrW5JkP7
+ g+Z92rubxfyVPULQPCv54Scbr7psp56fNpWwI0gqPO0azamX0+94OkgXZSVzeXnL9xwo1L1
+ gg+a/oQDJHpyrTMGqTAbb4yMINBKJr0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8110C3E2D31
-	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 11:08:20 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 41DF33E4822
+	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 11:26:58 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F22513E2CA2
- for <ltp@lists.linux.it>; Mon,  4 May 2026 11:08:00 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 482153E1FD0
+ for <ltp@lists.linux.it>; Mon,  4 May 2026 11:26:35 +0200 (CEST)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9F958600435
- for <ltp@lists.linux.it>; Mon,  4 May 2026 11:07:59 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 51CA26A81B;
- Mon,  4 May 2026 09:07:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1777885678; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FcPFOTs7SiOwGrnrEsFHMO0fqMvdm4YYg1mqAyyw56c=;
- b=O76EwszrerGy1EdzwXoE9j84dQwes8M6wOhaDSSQMEyUmeAlarAic2aQKoDait4Ioy+VT9
- F0eiyelhxuFKo/N7zlIYf03YDnJw+Ovy0CkVMSXHqYss5IVWk/Y4w6YOOScKqIAON8BwVh
- 6HHWXSo0l6r5AOgHyGlEjtmMbFHzIO4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1777885678;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FcPFOTs7SiOwGrnrEsFHMO0fqMvdm4YYg1mqAyyw56c=;
- b=f8628lnImwQA6oXFF+3VJBN/CUP0Kmo9cSlPEpEz8G7FHjYWUTxJofOUS/7wBb7nfT6+k4
- fGlUCa7sPzJfkoAQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1777885678; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FcPFOTs7SiOwGrnrEsFHMO0fqMvdm4YYg1mqAyyw56c=;
- b=O76EwszrerGy1EdzwXoE9j84dQwes8M6wOhaDSSQMEyUmeAlarAic2aQKoDait4Ioy+VT9
- F0eiyelhxuFKo/N7zlIYf03YDnJw+Ovy0CkVMSXHqYss5IVWk/Y4w6YOOScKqIAON8BwVh
- 6HHWXSo0l6r5AOgHyGlEjtmMbFHzIO4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1777885678;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FcPFOTs7SiOwGrnrEsFHMO0fqMvdm4YYg1mqAyyw56c=;
- b=f8628lnImwQA6oXFF+3VJBN/CUP0Kmo9cSlPEpEz8G7FHjYWUTxJofOUS/7wBb7nfT6+k4
- fGlUCa7sPzJfkoAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3E661593A3;
- Mon,  4 May 2026 09:07:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ZpMIDu5h+GlDDgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 04 May 2026 09:07:58 +0000
-Date: Mon, 4 May 2026 11:07:52 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <afhh6HGimjQqHvWf@yuki.lan>
-References: <20260429-fix_clock_settime_helper-v3-1-2608c39d8499@suse.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260429-fix_clock_settime_helper-v3-1-2608c39d8499@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- URIBL_BLOCKED(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo,yuki.lan:mid,linux.it:url,suse.com:email];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, imap1.dmz-prg2.suse.org:helo,
- suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C456C140026F
+ for <ltp@lists.linux.it>; Mon,  4 May 2026 11:26:33 +0200 (CEST)
+Received: by mail-wr1-x433.google.com with SMTP id
+ ffacd0b85a97d-43eb05b1875so1965010f8f.3
+ for <ltp@lists.linux.it>; Mon, 04 May 2026 02:26:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1777886793; x=1778491593; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=qLwHAjuZ/8Y4TlZ+7r8IK0hJW6fIhdZCp60Me6mml+4=;
+ b=cYDGbD1r5Tle4sR/0gnUdUIBoY1icLfEHXTUwgKl6RJmR4cZliQq96B/17AqKZNvNB
+ m3zfOUGMhDw+7yR4r5mP63dmFQRJP/lyyk+xPWiK7ISAnhd68UpnDmBmaJxx6FaDxung
+ LzFy6KdTMFSfQa9+CdWcxHVTg6C4omWB+wWJFgb2P7RNLpexCBWaaqjVgoJlZswjI35n
+ lYJPfYHAx7lKVk2joo1f4ohadi4zu3HQIhnPQBJ70xdR5F2Ovo0JPVpKOfFV4VE/i+P9
+ 8TWKuY72imLbusNAlQwo6cahLj61uReMxZxh5+6KEegWbdf3ER2wESkqJ5l4w51uaEi6
+ KyGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1777886793; x=1778491593;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=qLwHAjuZ/8Y4TlZ+7r8IK0hJW6fIhdZCp60Me6mml+4=;
+ b=ioj9Mb4JwSDB8ylSz3D50pyR3b5XmUfLAm8ZAhNH5YF3YmXhViDHViLV75rqtdfg3c
+ Ohyzx4yBHa/DPKfE3HiXzEILmCdL+onWJ0F/ig7uaj0rtHAAIpP57EKpXi+WaPv4ilt7
+ 04Gt406LcdClnZUrktTLQ5CjdRI6OY0xHYcd5jJXbEG2j4xad7Iu1wwevd7DBfpxW1Ei
+ ngJazKOF5aG2RFlNXO2E3NcXe7tcH+0A48h2df9/9tMF3SmFPW5pfFpZvKBIOiK3Jr7B
+ zuudXsYGM+YMaoCcenJ+0/Swj8F9qSLXjZ6ZeDCzZ05fhQJxeMDNXUGiPXK+wbHwM3ww
+ EGRg==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ+dcQ/dsGSUVC0WLZ5x1Qvx/8VP2Ha3Mel9T97PYFXbDG4WSIsIcK9UI8fdwLtMDN2ydLw=@lists.linux.it
+X-Gm-Message-State: AOJu0YzXX/qDSPgDtYgUSp6JN5k4vanY9u39Z+aMqdCx6RsG1HX7p+Aq
+ VzgJGCLVb625cwdVMbEUJFn8sAJo+g8N9Uud69c/vaj62BbN69HNKHIa19FRpNagsAw=
+X-Gm-Gg: AeBDieuCLlEVyUUxf0NyUWbcWW4N223VebHuERVxmNGuv2v/ySxmAIQvdAivsek1zfU
+ d65UgxDmJu4BkQHsbieAqEy4FE5zEJQdot2OONl3siE/SQkZEHTrZ6ZKu80/47qD2u5TnO3xX2o
+ plY1Zl71vTnq6QSYclxYbCmOpucClCOEK8bsQfNuTHHZwlespO1s2cYUbnQbHFI/BKbAxb1muUl
+ SvHfTUGVff4GrsQKZjjbJ+JbejcFv5eMnlOvoo3TTHjAAQbPk7yr/YYcR+3m1Y6qducVM2u5gGN
+ URo4Br/Ho7Zhgr61zTVNGVDhH4oikJW03+/bvssYkKZJZ0/Qgq6HyefU2j1b8GybPdX3d94j/7J
+ J0/XZqdnWr5plAvGVRO0okVsGj3AkfmdjYCCApa1VOxHLqgwWaw4PNmrQNntISfPMHIcsJ9pbGa
+ M9RVsCEWC+SsVm8U6Atnw+AiFRLYYG4Mi6+X4XnKuLFt0APY8Oxyx5
+X-Received: by 2002:a05:6000:2f87:b0:43c:f8b4:e58 with SMTP id
+ ffacd0b85a97d-44bb6ab1e87mr14102963f8f.41.1777886793121; 
+ Mon, 04 May 2026 02:26:33 -0700 (PDT)
+Received: from localhost.localdomain ([88.128.90.106])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-44a981dee7asm25455153f8f.21.2026.05.04.02.26.32
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 04 May 2026 02:26:32 -0700 (PDT)
+Message-ID: <69f86648.5d0a0220.1636fb.612a@mx.google.com>
+To: "Cyril Hrubis" <chrubis@suse.cz>
+In-Reply-To: <afhh6HGimjQqHvWf@yuki.lan>
+Date: Mon, 04 May 2026 09:26:31 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v3] clock_settime: use POSIX runtime detection for
  CLOCK_MONOTONIC
@@ -108,124 +97,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: Linux Test Project <ltp@lists.linux.it>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> diff --git a/testcases/open_posix_testsuite/include/clock.h b/testcases/open_posix_testsuite/include/clock.h
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..221dd38ff34b627aa5f6c07825cd7439cf559c74
-> --- /dev/null
-> +++ b/testcases/open_posix_testsuite/include/clock.h
-> @@ -0,0 +1,77 @@
-> +/*
-> + * Copyright (c) 2026, Linux Test Project
-> + * SPDX-License-Identifier: GPL-2.0-or-later
-> + */
-> +
-> +#ifndef PTS_CLOCK_H
-> +#define PTS_CLOCK_H
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <time.h>
-> +#include <unistd.h>
-> +
-> +static inline int pts_mono_available(void)
-> +{
-> +#ifdef _POSIX_MONOTONIC_CLOCK
-> +	if (_POSIX_MONOTONIC_CLOCK > 0)
-> +		return 1;
-> +
-> +	if (!_POSIX_MONOTONIC_CLOCK && sysconf(_SC_MONOTONIC_CLOCK) > 0)
-> +		return 1;
-> +#endif
-> +	return 0;
-> +}
-> +
-> +#define PTS_MONO_MAX_RETRIES 3
-> +
-> +static struct timespec pts_mono_start;
-> +
-> +static inline int pts_mono_time_start(void)
-> +{
-> +	if (!pts_mono_available()) {
-> +		static int warned;
-> +
-> +		if (!warned) {
-> +			printf("CLOCK_MONOTONIC unavailable, test may fail due to clock adjustment\n");
-> +			warned = 1;
-> +		}
-> +		return 0;
-> +	}
-> +
-> +#ifdef _POSIX_MONOTONIC_CLOCK
+Hi Cyril,
 
-I suppose that this not correct either. If _POSIX_MONOTONIC_CLOCK is set
-to -1 the CLOCK_MONOTONIC constant may not be defined.
-
-So we either have to to do
-
-#if _POSIX_MONOTONIC_CLOCK >= 0
-
-or
-
-#ifdef CLOCK_MONOTONIC
-
-> +	if (clock_gettime(CLOCK_MONOTONIC, &pts_mono_start) != 0) {
-> +		perror("clock_gettime(CLOCK_MONOTONIC) failed");
-> +		return -1;
-> +	}
-> +#endif
-> +	return 0;
-> +}
-> +
-> +static inline int pts_mono_time_check(unsigned int expected_secs)
-> +{
-> +#ifdef _POSIX_MONOTONIC_CLOCK
-> +	if (pts_mono_available()) {
-> +		struct timespec now;
-> +		long elapsed;
-> +
-> +		if (clock_gettime(CLOCK_MONOTONIC, &now) != 0) {
-> +			perror("clock_gettime(CLOCK_MONOTONIC) failed");
-> +			return -1;
-> +		}
-> +
-> +		elapsed = now.tv_sec - pts_mono_start.tv_sec;
-> +
-> +		if (labs(elapsed - (long)expected_secs) > 1) {
-> +			printf("Clock adjustment detected (elapsed %lds, expected ~%us)\n",
-> +			       elapsed, expected_secs);
-> +			return 1;
-> +		}
-> +		return 0;
-> +	}
-> +#endif
-> +	(void)expected_secs;
-> +	return 0;
-> +}
-> +
-> +#endif /* PTS_CLOCK_H */
+> > +#ifdef _POSIX_MONOTONIC_CLOCK
 > 
-> ---
-> base-commit: 1d2ea5b042a6c6c169689efebd856583200c564f
-> change-id: 20260429-fix_clock_settime_helper-7670708ed94f
+> I suppose that this not correct either. If _POSIX_MONOTONIC_CLOCK is set
+> to -1 the CLOCK_MONOTONIC constant may not be defined.
 > 
-> Best regards,
-> -- 
-> Andrea Cervesato <andrea.cervesato@suse.com>
+> So we either have to to do
 > 
+> #if _POSIX_MONOTONIC_CLOCK >= 0
 > 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> or
+> 
+> #ifdef CLOCK_MONOTONIC
+> 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+You are right, that's indeed a valid value. I double checked the
+definition and some systems might set it to -1.
+
+I will send a fix for it with the new version.
+
+Regards,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
