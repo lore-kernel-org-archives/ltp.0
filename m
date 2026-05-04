@@ -4,86 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D084BFF885A
-	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 11:11:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1777893109; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=LUoALwl5sQj1FBzZH0UB/ltC5hNvNoTeXsBcE/pNvso=;
- b=MrqvpYmERWfX1YZTNEx30M5DsyQhiOaPDRLYUwDNaGvwHPRR9gWoBk28K2f2oWjNCyjaV
- HXV08Jq2blpeT5n2YZCZrIaeslorI25kzjcV+ih+JO/CaXpHzq8DMv63cnLaHsDUqHr8fWo
- ppBgp+jN9ODd5U6Mh1nplUPc/9cf080=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3F42CD342C
+	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 11:18:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 474903E4AC0
-	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 13:11:49 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 75F743E61FD
+	for <ltp@archiver.kernel.org>; Mon,  4 May 2026 13:18:03 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C87213E49A8
- for <ltp@lists.linux.it>; Mon,  4 May 2026 13:11:25 +0200 (CEST)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A70663E49A8
+ for <ltp@lists.linux.it>; Mon,  4 May 2026 13:17:43 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D426B1A00264
- for <ltp@lists.linux.it>; Mon,  4 May 2026 13:11:24 +0200 (CEST)
-Received: by mail-wm1-x32b.google.com with SMTP id
- 5b1f17b1804b1-4891c0620bcso27625105e9.1
- for <ltp@lists.linux.it>; Mon, 04 May 2026 04:11:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1777893084; x=1778497884; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=PKM4/aJGLM2FRXZe+qw1T0dTtwU+Nc+ASFiP8O8aPE4=;
- b=L08/24Wv1aevuElcUZmyASGL+dYdoOyvpShEv/ay/v/XsNlO2ewCN7LKjnFFFIJRO2
- 1C1TvtvQJyHhQaU9AXS+hGcs2WarZQVssIC+8wM+N9D66SvEATpfgsDJk4TgH/qWM1PV
- 6G42yhJMTAy4SWNtGU7X4daf4DmTTNHVRSXpQrUwlZjGdiwhnkj7QaLbTmvfVtBGaApO
- FFhzz7mhkSHB7Y8N1/A5UM9pOtvjCNE1ooKKQEChBNeOvm1VtzZ1DMoW170j6hHr0Kwr
- KXESVNkU/cyQ9uuMJxvGXAgYVH3swJOI6csTlYoE6I2OL3aX6GGNEbi3FDwNwIFY66lT
- QG+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1777893084; x=1778497884;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=PKM4/aJGLM2FRXZe+qw1T0dTtwU+Nc+ASFiP8O8aPE4=;
- b=BJaWK3GOmW+uCqZgtZZ7/4i/e5/p+lY2hdXQg6OfrFyvHf2ZMX+7MYPEZwEF+uiCl+
- cy3KAy5jh6+D1be0FM7ih7AfhgB4j6BRAfHQQGj/om0/R+5/1GipGYSYK0KIMsv1zzYf
- gK5JCTzeyVX54NEP7m2iMjtGpWZyECNmY02F3Be0kL1eSQx1ABQz+B+c67XvKa8VuGJN
- +QCo6xrZMcnqdTg5OugKhALp9Zq1Ksw8tEf96AFjn4rpqj7gW5k94AZ3Apfw/c0eUw+3
- 1WiccgGEM2UV4eg33IROA/PJsqpmPCodJiXY73em668KVTo72mj3Kzm02d8k3SKQOV1a
- jF1g==
-X-Gm-Message-State: AOJu0YyZP673DzhV24sNJnR4ROvk7UCniFIWJE5765Gm3aVHwmFmcG3w
- jaFkwAs+0M1DMLAD0iURpuCKvfCHD2rKRNIJwnctbJXJt9MgJXQFezMGDoXYlOuMnqqtNZ9pT3X
- cAPi7u7dcQg==
-X-Gm-Gg: AeBDievVY6Ls2f9n74JD1pVn+AJJy+wxeTenfr/E9fb704SyV83BNRkJKwR9ij0VMCx
- jPQVSlQXptUFJLpsptsuMQAInHqmBwoUtd6d7nEALzN5pjC9uiweytf/owdXAvhQwbTzKg8jc20
- gvEx68JnBv5QT5LoQtuYtqAmmjYYBqXyrDtzztKzUFJ/PHyUI4As6WOPTK+SuB6VgAeepH/hQBd
- Rgq7EPs8oaQkLSfYcGWY/cRtZ1EPXwERxCvCLeJAfo+trMskmYHU6XgNC7mPxWazXsui+ayy8aB
- 0HyYOHj2MC/DG0sqQD8TKNgv57jhuEgpIWd6oxrhRaXdBPR7P8TrQWMoQxS1Vm7VU6+CdXogTnu
- XhEZAPlQ+G0kQXXc45hFImIa4magjFitp8/7mcMmi069GYSUWn+v+rA9VulKNyiaVc8/EgB0z7i
- e45QKNrTEDm4mjKXWhbgbtRZznc7YvB+KWWqeYy+Po0VjQkluokbGR
-X-Received: by 2002:a05:600c:5308:b0:48a:5565:ec3d with SMTP id
- 5b1f17b1804b1-48d03b401f5mr89043535e9.22.1777893083784; 
- Mon, 04 May 2026 04:11:23 -0700 (PDT)
-Received: from localhost.localdomain ([88.128.90.106])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-44a8bf18c9bsm24963041f8f.0.2026.05.04.04.11.22
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 04 May 2026 04:11:23 -0700 (PDT)
-Message-ID: <69f87edb.5d0a0220.e12b4.1927@mx.google.com>
-To: "Wake Liu via ltp" <ltp@lists.linux.it>
-In-Reply-To: <20260430112346.4054436-1-wakel@google.com>
-Date: Mon, 04 May 2026 11:11:22 +0000
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7CC9B1A00153
+ for <ltp@lists.linux.it>; Mon,  4 May 2026 13:17:41 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BC0916AADE;
+ Mon,  4 May 2026 11:17:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777893455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jUMR7OPHn8nED9HWOYBOyav0uXDQrvS/xqvKfOOIeCU=;
+ b=1iTnaEksyn8XKU2bOhpEg7XvX73i1CsQeuCXU+Q7zsiV8oYdQ6LDXto+tcAffYkRqezQcH
+ 3qLlGm3Ha/DtS8Nq59ib3rLgvK8nFT6si2A3HrZHAmc+hIlkyH2QERf42kEwPLCaQfU2on
+ k6hHK06bC8t1LVIgMPtVQ2QHcdjwEOU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777893455;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jUMR7OPHn8nED9HWOYBOyav0uXDQrvS/xqvKfOOIeCU=;
+ b=xeef6lsSV1+19cM3HAAAls42VVY5ttA40LIVj/8fMl1OJcGt0ti3VtW1nSCV6xSGwe28QF
+ 6OG63iqeaCJiOtCw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1777893455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jUMR7OPHn8nED9HWOYBOyav0uXDQrvS/xqvKfOOIeCU=;
+ b=1iTnaEksyn8XKU2bOhpEg7XvX73i1CsQeuCXU+Q7zsiV8oYdQ6LDXto+tcAffYkRqezQcH
+ 3qLlGm3Ha/DtS8Nq59ib3rLgvK8nFT6si2A3HrZHAmc+hIlkyH2QERf42kEwPLCaQfU2on
+ k6hHK06bC8t1LVIgMPtVQ2QHcdjwEOU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1777893455;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jUMR7OPHn8nED9HWOYBOyav0uXDQrvS/xqvKfOOIeCU=;
+ b=xeef6lsSV1+19cM3HAAAls42VVY5ttA40LIVj/8fMl1OJcGt0ti3VtW1nSCV6xSGwe28QF
+ 6OG63iqeaCJiOtCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A5286593A3;
+ Mon,  4 May 2026 11:17:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id livbJk+A+GnBEQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 04 May 2026 11:17:35 +0000
+Date: Mon, 4 May 2026 13:17:37 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <afiAUXp-UY52IuKz@yuki.lan>
+References: <20260504-safe_splice-v3-0-e5acf4c9193b@suse.com>
+ <20260504-safe_splice-v3-1-e5acf4c9193b@suse.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260504-safe_splice-v3-1-e5acf4c9193b@suse.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
+ linux.it:url, suse.cz:email, yuki.lan:mid]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] listmount04: Allow both EINVAL and EBADF for
- BEFORE_6_17_9 case
+Subject: Re: [LTP] [PATCH v3 1/2] lib: Add SAFE_SPLICE() macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,57 +107,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Wake Liu <wakel@google.com>, ltp@lists.linux.it
-MIME-Version: 1.0
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wake,
+Hi!
+> Add new SAFE_SPLIT() in lapi/splice.h.
+> 
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+>  include/lapi/splice.h | 28 ++++++++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+> 
+> diff --git a/include/lapi/splice.h b/include/lapi/splice.h
+> index 191b22d2d6397d1efad5e2025be5a2c4370724dc..e346e5cca9f44bd8421c6b99f84cd4646269ac1f 100644
+> --- a/include/lapi/splice.h
+> +++ b/include/lapi/splice.h
+> @@ -7,6 +7,13 @@
+>  #ifndef LAPI_SPLICE_H__
+>  #define LAPI_SPLICE_H__
+>  
+> +#ifndef _GNU_SOURCE
+> +# define _GNU_SOURCE
+> +#endif
+> +
+> +#include <fcntl.h>
+> +#include <sys/types.h>
+> +
+>  #include "config.h"
+>  #include "lapi/syscalls.h"
+>  
+> @@ -19,4 +26,25 @@ static inline ssize_t splice(int fd_in, loff_t *off_in, int fd_out,
+>  }
+>  #endif
+>  
+> +static inline ssize_t safe_splice(const char *file, const int lineno,
+> +				   int fd_in, loff_t *off_in,
+> +				   int fd_out, loff_t *off_out,
+> +				   size_t len, unsigned int flags)
+> +{
+> +	ssize_t ret;
+> +
+> +	ret = splice(fd_in, off_in, fd_out, off_out, len, flags);
+> +
+> +	if (ret < 0) {
+> +		tst_brk_(file, lineno, TBROK | TERRNO,
+> +			"splice(%d, %d, %zu) failed", fd_in, fd_out, len);
 
-> On some LTS kernels (like 6.12.y or 6.6.y), the bug fix
-> commit 78f0e33cd6c9 ("fs/namespace: correctly handle errors returned
-> by grab_requested_mnt_ns") was backported.
+Why don't we print the offsets?
 
-Actually that commit is included from 6.18, which make it non-available
-also in 6.17.9. The `BEFORE_6_17_9` variable excludes 6.17.9 (equivalent
-to < operation).
 
-This means the patch is not resolving the issue for that specific kernel,
-but only for the kernels before that commit. Is that correct?
+Otherwise:
 
-For instance, the patch fails with `v6.18-rc1-118-ga3f8f8662771`:
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-tst_test.c:2042: TINFO: Tested kernel: 6.18.0-rc1-virtme #9 SMP PREEMPT_DYNAMIC Mon May  4 13:01:41 CEST 2026 x86_64
-tst_kconfig.c:90: TINFO: Parsing kernel config '/lib/modules/6.18.0-rc1-virtme/build/.config'
-tst_test.c:1867: TINFO: Overall timeout per run is 0h 00m 30s
-listmount04.c:161: TPASS: request points to unaccessible memory : EFAULT (14)
-listmount04.c:161: TPASS: mnt_ids points to unaccessible memory : EFAULT (14)
-listmount04.c:161: TPASS: invalid flags : EINVAL (22)
-listmount04.c:161: TPASS: insufficient mnt_id_req.size : EINVAL (22)
-listmount04.c:141: TCONF: Test not suitable for current kernel version
-listmount04.c:161: TFAIL: invalid mnt_id_req.mnt_ns_fd expected EBADF: EINVAL (22)
-listmount04.c:161: TPASS: invalid mnt_id_req.param : EINVAL (22)
-listmount04.c:161: TPASS: invalid mnt_id_req.mnt_id : EINVAL (22)
-listmount04.c:161: TPASS: non-existant mnt_id : ENOENT (2)
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +#define SAFE_SPLICE(fd_in, off_in, fd_out, off_out, len, flags) \
+> +	safe_splice(__FILE__, __LINE__, (fd_in), (off_in), (fd_out), \
+> +		    (off_out), (len), (flags))
+> +
+>  #endif /* LAPI_SPLICE_H__ */
+> 
+> -- 
+> 2.51.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-Summary:
-passed   7
-failed   1
-broken   0
-skipped  1
-warnings 0
-
-I guess the choice is to use EINVAL when >= 6.18. EBADF otherwise.
-
-Kind regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
