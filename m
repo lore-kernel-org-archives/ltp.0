@@ -4,106 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE6B5CD3430
-	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 09:16:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA32DCD342F
+	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 09:50:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 41C4F3E616F
-	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 11:16:28 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id AABD33E617D
+	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 11:50:30 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2BCAB3E289B
- for <ltp@lists.linux.it>; Tue,  5 May 2026 10:45:24 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 079633D0517
+ for <ltp@lists.linux.it>; Tue,  5 May 2026 11:50:11 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 89EFE100092E
- for <ltp@lists.linux.it>; Tue,  5 May 2026 10:45:23 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 952466B5FE;
- Tue,  5 May 2026 08:45:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1777970723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4OSgXJUkJ00jXrYzxUgO/CnDrBrFad3DktlhFpMWOIE=;
- b=t6YKBsX5eVOR3GPEWjW0amBGgV+HKduUvBER1svWoLnoH3V2TIRca0eEb9N2UwopETE5C+
- PDU4SeRprD/ErnG+mxOLjDK2xGSiZPA8IJi81KozknBrg63CI0NABqGKjfESdqXFP/my7O
- CtGUEzM0S3zG0SV8lim5o5vd+ZT9QXk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1777970723;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4OSgXJUkJ00jXrYzxUgO/CnDrBrFad3DktlhFpMWOIE=;
- b=jT5MZziBttbYdvBJNJZ4h4uhWvVik6NVIbUJh8KsTkFmp+IVQGQ7c9s3v6Ccbg5ko7fzZL
- R6Nsyn5tYVU7sACA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1777970721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4OSgXJUkJ00jXrYzxUgO/CnDrBrFad3DktlhFpMWOIE=;
- b=rPZCfZSSnsQjMgj/OA72TiUaDgvt+z6dN+hqWBs60kf8RMQhmZq0vBLEIs2JcZx3Bg8G+Q
- MaQupBbDzWeGiZ+ApyOjsq9PxZlmcvFGxJw7VFkvkZZ+eSnpNNlRZ9Ke82wTwFNS8tdvLy
- cLZ1Kb0+nBmlQUjzdmcbLDV0yxMN7w4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1777970721;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=4OSgXJUkJ00jXrYzxUgO/CnDrBrFad3DktlhFpMWOIE=;
- b=kFBYB6ZZnxDZJnRU3wkOXqjhIxE83NLM3/djuFTCTsreAmHU5vioo6uZUIh7TrW+V+vO5t
- H/MAQ1XZjaMnJkCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5E0B2593A3;
- Tue,  5 May 2026 08:45:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 0xIhFCGu+WlBKAAAD6G6ig
- (envelope-from <dwagner@suse.de>); Tue, 05 May 2026 08:45:21 +0000
-Message-ID: <3191ffc7-8ff7-4b14-8bb0-934853e6d2ea@suse.de>
-Date: Tue, 5 May 2026 10:45:16 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 55B30140098C
+ for <ltp@lists.linux.it>; Tue,  5 May 2026 11:50:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1777974610; x=1809510610;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=OlJUzn4p5qbMT46466BcqMUDYgybKGsfvGFxui1HN7k=;
+ b=a+/zRYCHP0/2Fk4yrEic+++59TbfYwsDZDz96yKNp8lTkjV8KtlZ+YC1
+ NcoAuQLLOrhh3C629FqO9eODrvfcQ7224F4UzPifyJSVOpW9pcWVTH1ku
+ 7T3bNWUTRkt3A8pHzGCUPIwFxvqxUm8E0DHjjPsgsUQoGhnJeT0hw3i/3
+ zlx1RR0i2h5Ti329kSI0uyi+eNKKOTvKb9i4Ue/H4xOYfz+7e+H4wpbth
+ 6ZvjF04Pa4cVeaKJWLAcplOL8mF1RPqBCusxb6pqY1C6Nvrab1RKe5O9f
+ CsQ073VXiJ4v4TECiSTn1qoWvXfU4FEcW3glm5moS7RLm5Gp7wWuFubDh A==;
+X-CSE-ConnectionGUID: 6mNhffEaRqWVykq7fLSzfg==
+X-CSE-MsgGUID: 471IxR5aSiyZ90RpLZr0uA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11776"; a="96409489"
+X-IronPort-AV: E=Sophos;i="6.23,217,1770624000"; d="scan'208";a="96409489"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+ by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 May 2026 02:50:04 -0700
+X-CSE-ConnectionGUID: MWlgZsFmQGOK37Mw6Xqq9w==
+X-CSE-MsgGUID: c++SnJq3TFy3Yd8O6wLU4Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,217,1770624000"; d="scan'208";a="240066159"
+Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
+ by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 May 2026 02:50:02 -0700
+From: Piotr Kubaj <piotr.kubaj@intel.com>
+To: ltp@lists.linux.it
+Date: Tue,  5 May 2026 11:48:54 +0200
+Message-ID: <20260505094853.25383-2-piotr.kubaj@intel.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Sebastian Chlad <sebastianchlad@gmail.com>, priyama2@linux.ibm.com
-References: <20260428075302.7320ef7e3@imap1.dmz-prg2.suse.org>
- <20260501151420.1042995-1-priyama2@linux.ibm.com>
- <CAJCsO8epT++TaOs7=NAy+jC4pQDN9tA-1n_tFy233sHKkJ697w@mail.gmail.com>
-Content-Language: en-US
-From: Daniel Wagner <dwagner@suse.de>
-In-Reply-To: <CAJCsO8epT++TaOs7=NAy+jC4pQDN9tA-1n_tFy233sHKkJ697w@mail.gmail.com>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FREEMAIL_TO(0.00)[gmail.com,linux.ibm.com];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
- TO_DN_SOME(0.00)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MID_RHS_MATCH_FROM(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; RCVD_TLS_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid, imap1.dmz-prg2.suse.org:helo,
- env_pre.mk:url, linux.it:url]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 05 May 2026 11:16:10 +0200
-Subject: Re: [LTP] [PATCH v3] testcases/kernel/device-drivers/nvme: Add NVMe
- device discovery test
+Subject: [LTP] [PATCH v4] cpufreq.c: add new test for cpufreq sysfs
+ interface validation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,248 +67,458 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>, daniel.wagner@suse.com,
- ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
+ rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-QWRkaW5nIFNoaW4naWNoaXJvCgpPbiA1LzUvMjYgNTo0NiBBTSwgU2ViYXN0aWFuIENobGFkIHdy
-b3RlOgo+IEhpIFByaXlhbWEsCj4gCj4gU29ycnkgZm9yIHRvcC1wb3N0aW5nLCBidXQgSSBoYXZl
-IGEgYnJvYWRlciBxdWVzdGlvbiBoZXJlLgo+IAo+IEZpcnN0IG9mIGFsbCwgdGhhbmtzIGZvciB3
-b3JraW5nIG9uIHRoaXMgYW5kIGZvciBsb29raW5nIGludG8gTlZNZSBjb3ZlcmFnZS4KPiAKPiBC
-ZWZvcmUgZ29pbmcgZnVydGhlciwgY291bGQgeW91IHBsZWFzZSBleHBsYWluIHRoZSBpbnRlbmRl
-ZCBMVFAtc3BlY2lmaWMgCj4gdmFsdWUgb2YKPiB0aGlzIHRlc3Q/IGJsa3Rlc3RzIGFscmVhZHkg
-aGFzIGEgZGVkaWNhdGVkIE5WTWUgdGVzdCBncm91cCB3aXRoIG11Y2ggCj4gYnJvYWRlcgo+IGNv
-dmVyYWdlLCBpbmNsdWRpbmcgY29udHJvbGxlci9uYW1lc3BhY2UgZGlzY292ZXJ5LCBOVk1lIGNv
-bW1hbmRzLCAKPiBmYWJyaWNzLCBldGMuOgo+IAo+IGh0dHBzOi8vZ2l0aHViLmNvbS9saW51eC1i
-bGt0ZXN0cy9ibGt0ZXN0cy90cmVlL21hc3Rlci90ZXN0cy9udm1lIAo+IDxodHRwczovL2dpdGh1
-Yi5jb20vbGludXgtYmxrdGVzdHMvYmxrdGVzdHMvdHJlZS9tYXN0ZXIvdGVzdHMvbnZtZT4KPiAK
-PiBTbyBJIHRoaW5rIHdlIHNob3VsZCBiZSBjYXJlZnVsIG5vdCB0byBkdXBsaWNhdGUgY292ZXJh
-Z2UgdW5sZXNzIHRoZXJlIAo+IGlzIGEgY2xlYXIKPiByZWFzb24gZm9yIGhhdmluZyBhIHNtYWxs
-IExUUC1sZXZlbCBzbW9rZSB0ZXN0IGFzIHdlbGwuIE1heWJlIHlvdXIgCj4gaW50ZW50aW9uIGlz
-Cj4gZGlmZmVyZW50PyBDb3VsZCB5b3UgcGxlYXNlIGNsYXJpZnk/Cj4gCj4gQ2hlZXJzLAo+IFNl
-YmFzdGlhbgo+IAo+IE9uIFRodSwgMzAgQXByIDIwMjYgYXQgMDc6MTAsIDxwcml5YW1hMkBsaW51
-eC5pYm0uY29tIAo+IDxtYWlsdG86cHJpeWFtYTJAbGludXguaWJtLmNvbT4+IHdyb3RlOgo+IAo+
-ICAgICBGcm9tOiBwcml5YW1hMiA8cHJpeWFtYTJAbGludXguaWJtLmNvbSA8bWFpbHRvOnByaXlh
-bWEyQGxpbnV4LmlibS5jb20+Pgo+IAo+ICAgICBUaGlzIHRlc3QgZmlsbHMgYSBnYXAgaW4gTlZN
-ZSB0ZXN0IGNvdmVyYWdlIGJ5IHZhbGlkYXRpbmcgYmFzaWMgZGV2aWNlCj4gICAgIGVudW1lcmF0
-aW9uIGFuZCBkcml2ZXIgYmluZGluZywgd2hpY2ggYXJlIGZ1bmRhbWVudGFsIHByZXJlcXVpc2l0
-ZXMgZm9yCj4gICAgIGFueSBOVk1lIGZ1bmN0aW9uYWxpdHkgdGVzdGluZy4KPiAKPiAgICAgVGhl
-IHRlc3QgdmVyaWZpZXM6Cj4gICAgIC0gRGV0ZWN0aW9uIG9mIE5WTWUgY29udHJvbGxlcnMgaW4g
-L2Rldgo+ICAgICAtIEVudW1lcmF0aW9uIG9mIG5hbWVzcGFjZXMgZm9yIGRldGVjdGVkIGNvbnRy
-b2xsZXJzCj4gICAgIC0gUENJIGVudW1lcmF0aW9uIChjbGFzcyBjb2RlIDB4MDEwODAyKQo+ICAg
-ICAtIE5WTWUgZHJpdmVyIGJpbmRpbmcKPiAKPiAgICAgQ2hhbmdlcyBpbiB2MzoKPiAgICAgLSBG
-aXggc3ViamVjdCBwcmVmaXggdG8gbWF0Y2ggZGlyZWN0b3J5IHBhdGgKPiAgICAgLSBVcGRhdGUg
-Y29weXJpZ2h0IHllYXIgdG8gMjAyNgo+ICAgICAtIEFkZCBudm1lIHRvIFNVQkRJUlMgaW4gdGVz
-dGNhc2VzL2tlcm5lbC9kZXZpY2UtZHJpdmVycy9NYWtlZmlsZQo+ICAgICAtIFJlc2V0IHN0YXRp
-YyB2YXJpYWJsZXMgYXQgc3RhcnQgb2YgcnVuKCkgZm9yIC1pIHN1cHBvcnQKPiAgICAgLSBSZW1v
-dmUgLm5lZWRzX3Jvb3QgKGFsbCBvcGVyYXRpb25zIGFyZSB3b3JsZC1yZWFkYWJsZSkKPiAgICAg
-LSBVc2UgU0FGRV9GT1BFTi9TQUZFX0ZDTE9TRSBmb3IgUENJIGNsYXNzIGZpbGUgYWNjZXNzCj4g
-ICAgIC0gVXNlIFNBRkVfUkVBRExJTksgZm9yIGRyaXZlciBzeW1saW5rIHJlYWRpbmcKPiAgICAg
-LSBBZGQgLmdpdGlnbm9yZSBlbnRyeSBmb3IgbnZtZTAxIGJpbmFyeQo+ICAgICAtIEFkZCBydW50
-ZXN0L2RldmljZS1kcml2ZXJzIGVudHJ5IGZvciBudm1lMDEKPiAgICAgLSBGaXggYXV0aG9yIGZp
-ZWxkIHRvIHVzZSBwcml5YW1hMgo+IAo+ICAgICBDaGFuZ2VzIGluIHYyOgo+ICAgICAtIFVzZSBM
-VFAgYnVpbGRzeXN0ZW0gaW5zdGVhZCBvZiBzdGFuZGFsb25lIE1ha2VmaWxlCj4gICAgIC0gUmVt
-b3ZlIFJFQURNRSBmaWxlICh1c2UgZG9jIGNvbW1lbnRzIGluc3RlYWQpCj4gICAgIC0gQWRkIHBy
-b3BlciBMVFAgZG9jdW1lbnRhdGlvbiBjb21tZW50IGZvcm1hdAo+ICAgICAtIFVzZSBTQUZFX09Q
-RU5ESVIoKSBhbmQgU0FGRV9DTE9TRURJUigpIG1hY3Jvcwo+ICAgICAtIFJlbW92ZSBvYnZpb3Vz
-IGFuZCByZWR1bmRhbnQgY29tbWVudHMKPiAgICAgLSBDb2RlIGNsZWFudXAgYW5kIHN0eWxlIGlt
-cHJvdmVtZW50cwo+IAo+ICAgICBTaWduZWQtb2ZmLWJ5OiBwcml5YW1hMiA8cHJpeWFtYTJAbGlu
-dXguaWJtLmNvbQo+ICAgICA8bWFpbHRvOnByaXlhbWEyQGxpbnV4LmlibS5jb20+Pgo+ICAgICAt
-LS0KPiAgICAgIMKgcnVudGVzdC9kZXZpY2UtZHJpdmVyc8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIHzCoCDCoDEgKwo+ICAgICAgwqB0ZXN0Y2FzZXMva2VybmVsL2RldmljZS1k
-cml2ZXJzL01ha2VmaWxlwqAgwqAgwqAgfMKgIMKgMSArCj4gICAgICDCoC4uLi9rZXJuZWwvZGV2
-aWNlLWRyaXZlcnMvbnZtZS8uZ2l0aWdub3JlwqAgwqAgwqB8wqAgwqAxICsKPiAgICAgIMKgdGVz
-dGNhc2VzL2tlcm5lbC9kZXZpY2UtZHJpdmVycy9udm1lL01ha2VmaWxlIHzCoCDCoDcgKwo+ICAg
-ICAgwqB0ZXN0Y2FzZXMva2VybmVsL2RldmljZS1kcml2ZXJzL252bWUvbnZtZTAxLmMgfCAyMDUg
-KysrKysrKysrKysrKysrKysrCj4gICAgICDCoDUgZmlsZXMgY2hhbmdlZCwgMjE1IGluc2VydGlv
-bnMoKykKPiAgICAgIMKgY3JlYXRlIG1vZGUgMTAwNjQ0IHJ1bnRlc3QvZGV2aWNlLWRyaXZlcnMK
-PiAgICAgIMKgY3JlYXRlIG1vZGUgMTAwNjQ0IHRlc3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZl
-cnMvbnZtZS8uZ2l0aWdub3JlCj4gICAgICDCoGNyZWF0ZSBtb2RlIDEwMDY0NCB0ZXN0Y2FzZXMv
-a2VybmVsL2RldmljZS1kcml2ZXJzL252bWUvTWFrZWZpbGUKPiAgICAgIMKgY3JlYXRlIG1vZGUg
-MTAwNjQ0IHRlc3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZlcnMvbnZtZS9udm1lMDEuYwo+IAo+
-ICAgICBkaWZmIC0tZ2l0IGEvcnVudGVzdC9kZXZpY2UtZHJpdmVycyBiL3J1bnRlc3QvZGV2aWNl
-LWRyaXZlcnMKPiAgICAgbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiAgICAgaW5kZXggMDAwMDAwMDAw
-Li5hNzI5NTU4NGUKPiAgICAgLS0tIC9kZXYvbnVsbAo+ICAgICArKysgYi9ydW50ZXN0L2Rldmlj
-ZS1kcml2ZXJzCj4gICAgIEBAIC0wLDAgKzEgQEAKPiAgICAgK252bWUwMSBudm1lMDEKPiAgICAg
-ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZlcnMvTWFrZWZpbGUgYi90
-ZXN0Y2FzZXMvCj4gICAgIGtlcm5lbC9kZXZpY2UtZHJpdmVycy9NYWtlZmlsZQo+ICAgICBpbmRl
-eCAyMjlhNTA2ODMuLjY2NGY0Y2QxOCAxMDA2NDQKPiAgICAgLS0tIGEvdGVzdGNhc2VzL2tlcm5l
-bC9kZXZpY2UtZHJpdmVycy9NYWtlZmlsZQo+ICAgICArKysgYi90ZXN0Y2FzZXMva2VybmVsL2Rl
-dmljZS1kcml2ZXJzL01ha2VmaWxlCj4gICAgIEBAIC05LDYgKzksNyBAQCBTVUJESVJTwqAgwqAg
-wqAgwqAgwqA6PSBhY3BpIFwKPiAgICAgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgYmxv
-Y2sgXAo+ICAgICAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBjcHVmcmVxIFwKPiAgICAg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgbG9ja2luZyBcCj4gICAgICvCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCBudm1lIFwKPiAgICAgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgcGNpIFwKPiAgICAgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgcmN1IFwKPiAgICAg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgcnRjIFwKPiAgICAgZGlmZiAtLWdpdCBhL3Rl
-c3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZlcnMvbnZtZS8uZ2l0aWdub3JlIGIvCj4gICAgIHRl
-c3RjYXNlcy9rZXJuZWwvZGV2aWNlLWRyaXZlcnMvbnZtZS8uZ2l0aWdub3JlCj4gICAgIG5ldyBm
-aWxlIG1vZGUgMTAwNjQ0Cj4gICAgIGluZGV4IDAwMDAwMDAwMC4uYzYwYmMyMTBjCj4gICAgIC0t
-LSAvZGV2L251bGwKPiAgICAgKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9kZXZpY2UtZHJpdmVycy9u
-dm1lLy5naXRpZ25vcmUKPiAgICAgQEAgLTAsMCArMSBAQAo+ICAgICArbnZtZTAxCj4gICAgIGRp
-ZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2RldmljZS1kcml2ZXJzL252bWUvTWFrZWZpbGUg
-Yi8KPiAgICAgdGVzdGNhc2VzL2tlcm5lbC9kZXZpY2UtZHJpdmVycy9udm1lL01ha2VmaWxlCj4g
-ICAgIG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gICAgIGluZGV4IDAwMDAwMDAwMC4uZDQ3ZTk5ZTZh
-Cj4gICAgIC0tLSAvZGV2L251bGwKPiAgICAgKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9kZXZpY2Ut
-ZHJpdmVycy9udm1lL01ha2VmaWxlCj4gICAgIEBAIC0wLDAgKzEsNyBAQAo+ICAgICArIyBTUERY
-LUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgo+ICAgICArIyBDb3B5cmlnaHQg
-KGMpIDIwMjQgSUJNIENvcnBvcmF0aW9uCj4gICAgICsKPiAgICAgK3RvcF9zcmNkaXLCoCDCoCDC
-oD89IC4uLy4uLy4uLy4uCj4gICAgICsKPiAgICAgK2luY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNs
-dWRlL21rL2Vudl9wcmUubWsgPGh0dHA6Ly9lbnZfcHJlLm1rPgo+ICAgICAraW5jbHVkZSAkKHRv
-cF9zcmNkaXIpL2luY2x1ZGUvbWsvZ2VuZXJpY190cnVua190YXJnZXQubWsgPGh0dHA6Ly8KPiAg
-ICAgZ2VuZXJpY190cnVua190YXJnZXQubWs+Cj4gICAgIGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMv
-a2VybmVsL2RldmljZS1kcml2ZXJzL252bWUvbnZtZTAxLmMgYi8KPiAgICAgdGVzdGNhc2VzL2tl
-cm5lbC9kZXZpY2UtZHJpdmVycy9udm1lL252bWUwMS5jCj4gICAgIG5ldyBmaWxlIG1vZGUgMTAw
-NjQ0Cj4gICAgIGluZGV4IDAwMDAwMDAwMC4uM2MzY2I5MmNlCj4gICAgIC0tLSAvZGV2L251bGwK
-PiAgICAgKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9kZXZpY2UtZHJpdmVycy9udm1lL252bWUwMS5j
-Cj4gICAgIEBAIC0wLDAgKzEsMjA1IEBACj4gICAgICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
-cjogR1BMLTIuMC1vci1sYXRlcgo+ICAgICArLyoKPiAgICAgKyAqIENvcHlyaWdodCAoYykgMjAy
-NiBJQk0gQ29ycG9yYXRpb24KPiAgICAgKyAqIEF1dGhvcjogcHJpeWFtYTIgPHByaXlhbWEyQGxp
-bnV4LmlibS5jb20KPiAgICAgPG1haWx0bzpwcml5YW1hMkBsaW51eC5pYm0uY29tPj4KPiAgICAg
-KyAqLwo+ICAgICArCj4gICAgICsvKiAqIFtEZXNjcmlwdGlvbl0KPiAgICAgKyAqCj4gICAgICsg
-KiBWZXJpZnkgTlZNZSBkZXZpY2UgZGlzY292ZXJ5IGFuZCBpZGVudGlmaWNhdGlvbi4KPiAgICAg
-KyAqCj4gICAgICsgKiBUaGlzIHRlc3QgZmlsbHMgYSBnYXAgaW4gTlZNZSB0ZXN0IGNvdmVyYWdl
-IGJ5IHZhbGlkYXRpbmcgYmFzaWMKPiAgICAgZGV2aWNlCj4gICAgICsgKiBlbnVtZXJhdGlvbiBh
-bmQgZHJpdmVyIGJpbmRpbmcsIHdoaWNoIGFyZSBmdW5kYW1lbnRhbAo+ICAgICBwcmVyZXF1aXNp
-dGVzIGZvcgo+ICAgICArICogYW55IE5WTWUgZnVuY3Rpb25hbGl0eSB0ZXN0aW5nLgo+ICAgICAr
-ICoKPiAgICAgKyAqIC0gRGV0ZWN0IE5WTWUgY29udHJvbGxlcnMgaW4gL2Rldgo+ICAgICArICog
-LSBFbnVtZXJhdGUgbmFtZXNwYWNlcyBmb3IgZGV0ZWN0ZWQgY29udHJvbGxlcnMKPiAgICAgKyAq
-IC0gVmVyaWZ5IFBDSSBlbnVtZXJhdGlvbiAoY2xhc3MgY29kZSAweDAxMDgwMikKPiAgICAgKyAq
-IC0gQ2hlY2sgTlZNZSBkcml2ZXIgYmluZGluZwo+ICAgICArICovCj4gICAgICsKPiAgICAgKyNk
-ZWZpbmUgX0dOVV9TT1VSQ0UKPiAgICAgKyNpbmNsdWRlIDxzdGRpby5oPgo+ICAgICArI2luY2x1
-ZGUgPHN0ZGxpYi5oPgo+ICAgICArI2luY2x1ZGUgPHN0cmluZy5oPgo+ICAgICArI2luY2x1ZGUg
-PHVuaXN0ZC5oPgo+ICAgICArI2luY2x1ZGUgPGZjbnRsLmg+Cj4gICAgICsjaW5jbHVkZSA8c3lz
-L3R5cGVzLmg+Cj4gICAgICsjaW5jbHVkZSA8c3lzL3N0YXQuaD4KPiAgICAgKyNpbmNsdWRlIDxk
-aXJlbnQuaD4KPiAgICAgKyNpbmNsdWRlIDxlcnJuby5oPgo+ICAgICArCj4gICAgICsjaW5jbHVk
-ZSAidHN0X3Rlc3QuaCIKPiAgICAgKyNpbmNsdWRlICJ0c3Rfc2FmZV9zdGRpby5oIgo+ICAgICAr
-Cj4gICAgICsjZGVmaW5lIE5WTUVfREVWX1BBVEggIi9kZXYiCj4gICAgICsjZGVmaW5lIE5WTUVf
-U1lTX1BBVEggIi9zeXMvY2xhc3MvbnZtZSIKPiAgICAgKyNkZWZpbmUgUENJX0RFVklDRVNfUEFU
-SCAiL3N5cy9idXMvcGNpL2RldmljZXMiCj4gICAgICsKPiAgICAgK3N0YXRpYyBpbnQgbnZtZV9k
-ZXZpY2VfZm91bmQ7Cj4gICAgICtzdGF0aWMgY2hhciBudm1lX2Rldl9uYW1lWzI1Nl07Cj4gICAg
-ICsKPiAgICAgK3N0YXRpYyB2b2lkIHRlc3RfZGV0ZWN0X252bWVfY29udHJvbGxlcnModm9pZCkK
-PiAgICAgK3sKPiAgICAgK8KgIMKgIMKgIMKgRElSICpkaXI7Cj4gICAgICvCoCDCoCDCoCDCoHN0
-cnVjdCBkaXJlbnQgKmVudHJ5Owo+ICAgICArwqAgwqAgwqAgwqBpbnQgZm91bmQgPSAwOwo+ICAg
-ICArCj4gICAgICvCoCDCoCDCoCDCoGRpciA9IFNBRkVfT1BFTkRJUihOVk1FX0RFVl9QQVRIKTsK
-PiAgICAgKwo+ICAgICArwqAgwqAgwqAgwqB0c3RfcmVzKFRJTkZPLCAiU2Nhbm5pbmcgZm9yIE5W
-TWUgZGV2aWNlcyBpbiAlcyIsCj4gICAgIE5WTUVfREVWX1BBVEgpOwo+ICAgICArCj4gICAgICvC
-oCDCoCDCoCDCoHdoaWxlICgoZW50cnkgPSByZWFkZGlyKGRpcikpICE9IE5VTEwpIHsKPiAgICAg
-K8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgaWYgKHN0cm5jbXAoZW50cnktPmRfbmFtZSwgIm52bWUi
-LCA0KSA9PSAwICYmCj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHN0cmxlbihl
-bnRyeS0+ZF9uYW1lKSA9PSA1KSB7Cj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoHRzdF9yZXMoVElORk8sICJGb3VuZCBOVk1lIGNvbnRyb2xsZXI6ICVzIiwKPiAgICAg
-ZW50cnktPmRfbmFtZSk7Cj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oHN0cm5jcHkobnZtZV9kZXZfbmFtZSwgZW50cnktPmRfbmFtZSwKPiAgICAgc2l6ZW9mKG52bWVf
-ZGV2X25hbWUpIC0gMSk7Cj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oGZvdW5kID0gMTsKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgbnZt
-ZV9kZXZpY2VfZm91bmQgPSAxOwo+ICAgICArwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB9Cj4gICAg
-ICvCoCDCoCDCoCDCoH0KPiAgICAgKwo+ICAgICArwqAgwqAgwqAgwqBTQUZFX0NMT1NFRElSKGRp
-cik7Cj4gICAgICsKPiAgICAgK8KgIMKgIMKgIMKgaWYgKGZvdW5kKQo+ICAgICArwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqB0c3RfcmVzKFRQQVNTLCAiTlZNZSBjb250cm9sbGVyKHMpIGRldGVjdGVk
-Cj4gICAgIHN1Y2Nlc3NmdWxseSIpOwo+ICAgICArwqAgwqAgwqAgwqBlbHNlCj4gICAgICvCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoHRzdF9yZXMoVENPTkYsICJObyBOVk1lIGNvbnRyb2xsZXJzIGZv
-dW5kIGluIHN5c3RlbSIpOwo+ICAgICArfQo+ICAgICArCj4gICAgICtzdGF0aWMgdm9pZCB0ZXN0
-X2VudW1lcmF0ZV9uYW1lc3BhY2VzKHZvaWQpCj4gICAgICt7Cj4gICAgICvCoCDCoCDCoCDCoERJ
-UiAqZGlyOwo+ICAgICArwqAgwqAgwqAgwqBzdHJ1Y3QgZGlyZW50ICplbnRyeTsKPiAgICAgK8Kg
-IMKgIMKgIMKgaW50IG5zX2NvdW50ID0gMDsKPiAgICAgK8KgIMKgIMKgIMKgY2hhciBzZWFyY2hf
-cGF0dGVyblszMl07Cj4gICAgICsKPiAgICAgK8KgIMKgIMKgIMKgaWYgKCFudm1lX2RldmljZV9m
-b3VuZCkgewo+ICAgICArwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB0c3RfcmVzKFRDT05GLCAiTm8g
-TlZNZSBkZXZpY2UgZm91bmQsIHNraXBwaW5nCj4gICAgIG5hbWVzcGFjZSBlbnVtZXJhdGlvbiIp
-Owo+ICAgICArwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqByZXR1cm47Cj4gICAgICvCoCDCoCDCoCDC
-oH0KPiAgICAgKwo+ICAgICArwqAgwqAgwqAgwqBzbnByaW50ZihzZWFyY2hfcGF0dGVybiwgc2l6
-ZW9mKHNlYXJjaF9wYXR0ZXJuKSwgIiVzbiIsCj4gICAgIG52bWVfZGV2X25hbWUpOwo+ICAgICAr
-Cj4gICAgICvCoCDCoCDCoCDCoGRpciA9IFNBRkVfT1BFTkRJUihOVk1FX0RFVl9QQVRIKTsKPiAg
-ICAgKwo+ICAgICArwqAgwqAgwqAgwqB0c3RfcmVzKFRJTkZPLCAiRW51bWVyYXRpbmcgbmFtZXNw
-YWNlcyBmb3IgJXMiLCBudm1lX2Rldl9uYW1lKTsKPiAgICAgKwo+ICAgICArwqAgwqAgwqAgwqB3
-aGlsZSAoKGVudHJ5ID0gcmVhZGRpcihkaXIpKSAhPSBOVUxMKSB7Cj4gICAgICvCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoGlmIChzdHJuY21wKGVudHJ5LT5kX25hbWUsIHNlYXJjaF9wYXR0ZXJuLAo+
-ICAgICBzdHJsZW4oc2VhcmNoX3BhdHRlcm4pKSA9PSAwKSB7Cj4gICAgICvCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoHRzdF9yZXMoVElORk8sICJGb3VuZCBuYW1lc3BhY2U6ICVz
-IiwgZW50cnktCj4gICAgICA+ZF9uYW1lKTsKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgbnNfY291bnQrKzsKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfQo+
-ICAgICArwqAgwqAgwqAgwqB9Cj4gICAgICsKPiAgICAgK8KgIMKgIMKgIMKgU0FGRV9DTE9TRURJ
-UihkaXIpOwo+ICAgICArCj4gICAgICvCoCDCoCDCoCDCoGlmIChuc19jb3VudCA+IDApCj4gICAg
-ICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHRzdF9yZXMoVFBBU1MsICJFbnVtZXJhdGVkICVkIG5h
-bWVzcGFjZShzKQo+ICAgICBzdWNjZXNzZnVsbHkiLCBuc19jb3VudCk7Cj4gICAgICvCoCDCoCDC
-oCDCoGVsc2UKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgdHN0X3JlcyhUUEFTUywgIk5v
-IG5hbWVzcGFjZXMgZm91bmQgZm9yICVzIChkZXZpY2UKPiAgICAgbWF5IG5vdCBoYXZlIG5hbWVz
-cGFjZXMgY29uZmlndXJlZCkiLCBudm1lX2Rldl9uYW1lKTsKPiAgICAgK30KPiAgICAgKwo+ICAg
-ICArc3RhdGljIHZvaWQgdGVzdF92ZXJpZnlfcGNpX2VudW1lcmF0aW9uKHZvaWQpCj4gICAgICt7
-Cj4gICAgICvCoCDCoCDCoCDCoERJUiAqZGlyOwo+ICAgICArwqAgwqAgwqAgwqBzdHJ1Y3QgZGly
-ZW50ICplbnRyeTsKPiAgICAgK8KgIMKgIMKgIMKgaW50IGZvdW5kID0gMDsKPiAgICAgK8KgIMKg
-IMKgIMKgY2hhciBjbGFzc19wYXRoWzUxMl07Cj4gICAgICvCoCDCoCDCoCDCoEZJTEUgKmZwOwo+
-ICAgICArwqAgwqAgwqAgwqBjaGFyIGNsYXNzX2lkWzE2XTsKPiAgICAgKwo+ICAgICArwqAgwqAg
-wqAgwqBpZiAoIW52bWVfZGV2aWNlX2ZvdW5kKSB7Cj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoHRzdF9yZXMoVENPTkYsICJObyBOVk1lIGRldmljZSBmb3VuZCwgc2tpcHBpbmcgUENJCj4g
-ICAgIGVudW1lcmF0aW9uIGNoZWNrIik7Cj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHJl
-dHVybjsKPiAgICAgK8KgIMKgIMKgIMKgfQo+ICAgICArCj4gICAgICvCoCDCoCDCoCDCoGRpciA9
-IFNBRkVfT1BFTkRJUihQQ0lfREVWSUNFU19QQVRIKTsKPiAgICAgKwo+ICAgICArwqAgwqAgwqAg
-wqB0c3RfcmVzKFRJTkZPLCAiQ2hlY2tpbmcgUENJIGVudW1lcmF0aW9uIGZvciBOVk1lIGRldmlj
-ZXMiKTsKPiAgICAgKwo+ICAgICArwqAgwqAgwqAgwqB3aGlsZSAoKGVudHJ5ID0gcmVhZGRpcihk
-aXIpKSAhPSBOVUxMKSB7Cj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGlmIChlbnRyeS0+
-ZF9uYW1lWzBdID09ICcuJykKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgY29udGludWU7Cj4gICAgICsKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgc25wcmlu
-dGYoY2xhc3NfcGF0aCwgc2l6ZW9mKGNsYXNzX3BhdGgpLCAiJXMvJXMvY2xhc3MiLAo+ICAgICAr
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgUENJX0RFVklDRVNfUEFUSCwgZW50
-cnktPmRfbmFtZSk7Cj4gICAgICsKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZnAgPSBT
-QUZFX0ZPUEVOKGNsYXNzX3BhdGgsICJyIik7Cj4gICAgICsKPiAgICAgK8KgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgaWYgKGZnZXRzKGNsYXNzX2lkLCBzaXplb2YoY2xhc3NfaWQpLCBmcCkpIHsKPiAg
-ICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgaWYgKHN0cm5jbXAoY2xhc3Nf
-aWQsICIweDAxMDgwMiIsIDgpID09IDApIHsKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgdHN0X3JlcyhUSU5GTywgIkZvdW5kIE5WTWUgUENJCj4g
-ICAgIGRldmljZTogJXMgKGNsYXNzOiAlcykiLAo+ICAgICArwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBlbnRyeS0+ZF9uYW1lLCBjbGFz
-c19pZCk7Cj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoGZvdW5kID0gMTsKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-fQo+ICAgICArwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB9Cj4gICAgICvCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoFNBRkVfRkNMT1NFKGZwKTsKPiAgICAgK8KgIMKgIMKgIMKgfQo+ICAgICArCj4gICAg
-ICvCoCDCoCDCoCDCoFNBRkVfQ0xPU0VESVIoZGlyKTsKPiAgICAgKwo+ICAgICArwqAgwqAgwqAg
-wqBpZiAoZm91bmQpCj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHRzdF9yZXMoVFBBU1Ms
-ICJOVk1lIGRldmljZSBwcm9wZXJseSBlbnVtZXJhdGVkIG9uCj4gICAgIFBDSSBidXMiKTsKPiAg
-ICAgK8KgIMKgIMKgIMKgZWxzZQo+ICAgICArwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB0c3RfcmVz
-KFRGQUlMLCAiTlZNZSBkZXZpY2Ugbm90IGZvdW5kIG9uIFBDSSBidXMiKTsKPiAgICAgK30KPiAg
-ICAgKwo+ICAgICArc3RhdGljIHZvaWQgdGVzdF9jaGVja19kcml2ZXJfYmluZGluZyh2b2lkKQo+
-ICAgICArewo+ICAgICArwqAgwqAgwqAgwqBjaGFyIGRyaXZlcl9wYXRoWzUxMl07Cj4gICAgICvC
-oCDCoCDCoCDCoGNoYXIgZHJpdmVyX2xpbmtbNTEyXTsKPiAgICAgKwo+ICAgICArwqAgwqAgwqAg
-wqBpZiAoIW52bWVfZGV2aWNlX2ZvdW5kKSB7Cj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oHRzdF9yZXMoVENPTkYsICJObyBOVk1lIGRldmljZSBmb3VuZCwgc2tpcHBpbmcKPiAgICAgZHJp
-dmVyIGJpbmRpbmcgY2hlY2siKTsKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgcmV0dXJu
-Owo+ICAgICArwqAgwqAgwqAgwqB9Cj4gICAgICsKPiAgICAgK8KgIMKgIMKgIMKgc25wcmludGYo
-ZHJpdmVyX3BhdGgsIHNpemVvZihkcml2ZXJfcGF0aCksICIlcy8lcy9kZXZpY2UvCj4gICAgIGRy
-aXZlciIsCj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBOVk1FX1NZU19QQVRILCBudm1l
-X2Rldl9uYW1lKTsKPiAgICAgKwo+ICAgICArwqAgwqAgwqAgwqBTQUZFX1JFQURMSU5LKGRyaXZl
-cl9wYXRoLCBkcml2ZXJfbGluaywgc2l6ZW9mKGRyaXZlcl9saW5rKSk7Cj4gICAgICsKPiAgICAg
-K8KgIMKgIMKgIMKgdHN0X3JlcyhUSU5GTywgIkRyaXZlciBiaW5kaW5nOiAlcyIsIGRyaXZlcl9s
-aW5rKTsKPiAgICAgKwo+ICAgICArwqAgwqAgwqAgwqBpZiAoc3Ryc3RyKGRyaXZlcl9saW5rLCAi
-bnZtZSIpICE9IE5VTEwpCj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHRzdF9yZXMoVFBB
-U1MsICJOVk1lIGRyaXZlciBwcm9wZXJseSBib3VuZCB0byBkZXZpY2UiKTsKPiAgICAgK8KgIMKg
-IMKgIMKgZWxzZQo+ICAgICArwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB0c3RfcmVzKFRGQUlMLCAi
-VW5leHBlY3RlZCBkcml2ZXIgYm91bmQgdG8gTlZNZQo+ICAgICBkZXZpY2U6ICVzIiwgZHJpdmVy
-X2xpbmspOwo+ICAgICArfQo+ICAgICArCj4gICAgICtzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQo+
-ICAgICArewo+ICAgICArwqAgwqAgwqAgwqBpZiAoYWNjZXNzKCIvc3lzL21vZHVsZS9udm1lIiwg
-Rl9PSykgIT0gMCkKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgdHN0X2JyayhUQ09ORiwg
-Ik5WTWUga2VybmVsIG1vZHVsZSBub3QgbG9hZGVkIik7Cj4gICAgICsKPiAgICAgK8KgIMKgIMKg
-IMKgdHN0X3JlcyhUSU5GTywgIk5WTWUgRGV2aWNlIERpc2NvdmVyeSAmIElkZW50aWZpY2F0aW9u
-IFRlc3QiKTsKPiAgICAgK30KPiAgICAgKwo+ICAgICArc3RhdGljIHZvaWQgcnVuKHVuc2lnbmVk
-IGludCBuKQo+ICAgICArewo+ICAgICArwqAgwqAgwqAgwqAvKiBSZXNldCBzdGF0ZSBmb3IgZWFj
-aCBpdGVyYXRpb24gKi8KPiAgICAgK8KgIMKgIMKgIMKgbnZtZV9kZXZpY2VfZm91bmQgPSAwOwo+
-ICAgICArwqAgwqAgwqAgwqBtZW1zZXQobnZtZV9kZXZfbmFtZSwgMCwgc2l6ZW9mKG52bWVfZGV2
-X25hbWUpKTsKPiAgICAgKwo+ICAgICArwqAgwqAgwqAgwqBzd2l0Y2ggKG4pIHsKPiAgICAgK8Kg
-IMKgIMKgIMKgY2FzZSAwOgo+ICAgICArwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB0ZXN0X2RldGVj
-dF9udm1lX2NvbnRyb2xsZXJzKCk7Cj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGJyZWFr
-Owo+ICAgICArwqAgwqAgwqAgwqBjYXNlIDE6Cj4gICAgICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oHRlc3RfZW51bWVyYXRlX25hbWVzcGFjZXMoKTsKPiAgICAgK8KgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgYnJlYWs7Cj4gICAgICvCoCDCoCDCoCDCoGNhc2UgMjoKPiAgICAgK8KgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgdGVzdF92ZXJpZnlfcGNpX2VudW1lcmF0aW9uKCk7Cj4gICAgICvCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoGJyZWFrOwo+ICAgICArwqAgwqAgwqAgwqBjYXNlIDM6Cj4gICAgICvCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoHRlc3RfY2hlY2tfZHJpdmVyX2JpbmRpbmcoKTsKPiAgICAgK8Kg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgYnJlYWs7Cj4gICAgICvCoCDCoCDCoCDCoH0KPiAgICAgK30K
-PiAgICAgKwo+ICAgICArc3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0ZXN0ID0gewo+ICAgICArwqAg
-wqAgwqAgwqAudGVzdCA9IHJ1biwKPiAgICAgK8KgIMKgIMKgIMKgLnRjbnQgPSA0LAo+ICAgICAr
-wqAgwqAgwqAgwqAuc2V0dXAgPSBzZXR1cCwKPiAgICAgK307Cj4gICAgIC0tIAo+ICAgICAyLjUy
-LjAKPiAKPiAKPiAgICAgLS0gCj4gICAgIE1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
-LmxpbnV4Lml0L2xpc3RpbmZvL2x0cCA8aHR0cHM6Ly8KPiAgICAgbGlzdHMubGludXguaXQvbGlz
-dGluZm8vbHRwPgo+IAoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51
-eC5pdC9saXN0aW5mby9sdHAK
+Runs various sanity checks for intel_pstate cpufreq sysfs interface.
+
+Checks whether intel_pstate driver is used, whether it is possible
+to switch scaling_governor to powersave and performance,
+whether it is possible to disable turbo frequency and
+whether it is possible to change scaling_min_freq and scaling_max_freq
+to its minimal valid and maximal valid values.
+
+Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+---
+Fix issue pointed by review:
+scaling_governor is modified for every online CPU (in both the active-mode
+and passive-mode loops) but is never saved in setup() nor restored in
+cleanup(). After the test exits each CPU is left with scaling_governor set
+to "schedutil". Please save the original value per CPU in setup() alongside
+previous_scaling_max_freq and restore it in cleanup().
+
+Additionally, properly restore intel_pstate/status.
+ runtest/power_management_tests               |   1 +
+ testcases/kernel/power_management/.gitignore |   1 +
+ testcases/kernel/power_management/cpufreq.c  | 386 +++++++++++++++++++
+ 3 files changed, 388 insertions(+)
+ create mode 100644 testcases/kernel/power_management/.gitignore
+ create mode 100644 testcases/kernel/power_management/cpufreq.c
+
+diff --git a/runtest/power_management_tests b/runtest/power_management_tests
+index b670da6ec..0bc7dd0c8 100644
+--- a/runtest/power_management_tests
++++ b/runtest/power_management_tests
+@@ -1,4 +1,5 @@
+ #POWER_MANAGEMENT
++cpufreq cpufreq
+ runpwtests03 runpwtests03.sh
+ runpwtests04 runpwtests04.sh
+ runpwtests06 runpwtests06.sh
+diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
+new file mode 100644
+index 000000000..7f34e4c2f
+--- /dev/null
++++ b/testcases/kernel/power_management/.gitignore
+@@ -0,0 +1 @@
++cpufreq
+diff --git a/testcases/kernel/power_management/cpufreq.c b/testcases/kernel/power_management/cpufreq.c
+new file mode 100644
+index 000000000..c45c3fd4f
+--- /dev/null
++++ b/testcases/kernel/power_management/cpufreq.c
+@@ -0,0 +1,386 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
++ */
++
++/*\
++ * Runs various sanity checks for intel_pstate cpufreq sysfs interface.
++ *
++ * Checks whether intel_pstate driver is used, whether it is possible to switch
++ * scaling_governor to powersave and performance, whether it is possible
++ * to disable turbo frequency and whether it is possible to change
++ * scaling_min_freq and scaling_max_freq to its minimal valid and maximal valid
++ * values.
++ */
++
++#include "tst_test.h"
++
++static bool *online;
++static bool setup_done;
++static char path[PATH_MAX], intel_pstate_status[16];
++static char (*previous_scaling_governor)[16];
++static int no_turbo, nproc;
++static long *previous_scaling_max_freq, *previous_scaling_min_freq;
++
++static void cleanup(void)
++{
++	if (!setup_done) {
++		free(online);
++		free(previous_scaling_max_freq);
++		free(previous_scaling_min_freq);
++		free(previous_scaling_governor);
++		return;
++	}
++
++	SAFE_FILE_PRINTF("/sys/devices/system/cpu/intel_pstate/status", "%s", intel_pstate_status);
++	SAFE_FILE_PRINTF("/sys/devices/system/cpu/intel_pstate/no_turbo", "%d", no_turbo);
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor", i);
++		SAFE_FILE_PRINTF(path, "%s", previous_scaling_governor[i]);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_max_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", previous_scaling_max_freq[i]);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_min_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", previous_scaling_min_freq[i]);
++	}
++
++	free(online);
++	free(previous_scaling_max_freq);
++	free(previous_scaling_min_freq);
++	free(previous_scaling_governor);
++}
++
++static void setup(void)
++{
++	SAFE_FILE_SCANF("/sys/devices/system/cpu/intel_pstate/no_turbo", "%d", &no_turbo);
++	SAFE_FILE_SCANF("/sys/devices/system/cpu/intel_pstate/status", "%15s", intel_pstate_status);
++
++	nproc = tst_ncpus_conf();
++	online = SAFE_CALLOC(nproc, sizeof(*online));
++	previous_scaling_max_freq = SAFE_CALLOC(nproc, sizeof(*previous_scaling_max_freq));
++	previous_scaling_min_freq = SAFE_CALLOC(nproc, sizeof(*previous_scaling_min_freq));
++	previous_scaling_governor = SAFE_CALLOC(nproc, sizeof(*previous_scaling_governor));
++	online[0] = true;
++	for (int i = 1; i < nproc; i++) {
++		int tmp;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/online", i);
++		SAFE_FILE_SCANF(path, "%d", &tmp);
++		online[i] = (bool)tmp;
++	}
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor", i);
++		SAFE_FILE_SCANF(path, "%15s", previous_scaling_governor[i]);
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_max_freq", i);
++		SAFE_FILE_SCANF(path, "%ld", &previous_scaling_max_freq[i]);
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_min_freq", i);
++		SAFE_FILE_SCANF(path, "%ld", &previous_scaling_min_freq[i]);
++	}
++
++	SAFE_FILE_PRINTF("/sys/devices/system/cpu/intel_pstate/status", "active");
++
++	setup_done = true;
++}
++
++static void run(void)
++{
++	const char * const cpufreq_nodes[] = {
++		"affected_cpus",
++		"cpuinfo_max_freq",
++		"cpuinfo_min_freq",
++		"cpuinfo_transition_latency",
++		"related_cpus",
++		"scaling_available_governors",
++		"scaling_cur_freq",
++		"scaling_driver",
++		"scaling_governor",
++		"scaling_max_freq",
++		"scaling_min_freq",
++		"scaling_setspeed",
++		NULL
++	};
++	char contents[256] = {0}, path_cpuinfo_min_freq[PATH_MAX];
++	int fd, no_turbo_val;
++	long cpuinfo_max_freq = 0, cpuinfo_min_freq = 0, scaling_max_freq, scaling_min_freq;
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_driver", i);
++
++		SAFE_FILE_SCANF(path, "%255s", contents);
++		tst_res(TDEBUG, "Checking whether %s is \"intel_pstate\"", path);
++		if (strstr(contents, "intel_pstate")) {
++			tst_res(TPASS, "%s is intel_pstate", path);
++		} else {
++			tst_res(TINFO, "%s contains: %s", path, contents);
++			tst_res(TFAIL, "%s is not intel_pstate", path);
++		}
++
++		for (int j = 0; cpufreq_nodes[j]; j++) {
++			struct stat stats;
++
++			snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/%s", i, cpufreq_nodes[j]);
++			tst_res(TDEBUG, "Checking whether %s is a regular file", path);
++			SAFE_STAT(path, &stats);
++			if (!S_ISREG(stats.st_mode)) {
++				tst_res(TINFO, "%s mode: %o", path, stats.st_mode);
++				tst_res(TFAIL, "%s is not a regular file", path);
++			} else {
++				tst_res(TPASS, "%s is a regular file", path);
++			}
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_available_governors", i);
++		memset(contents, 0, sizeof(contents));
++		fd = SAFE_OPEN(path, O_RDONLY);
++		SAFE_READ(0, fd, contents, sizeof(contents));
++		SAFE_CLOSE(fd);
++
++		tst_res(TDEBUG, "Checking whether %s contains \"performance\" and \"powersave\"", path);
++		if (strstr(contents, "performance") && strstr(contents, "powersave")) {
++			tst_res(TPASS, "%s contains: %s", path, contents);
++		} else {
++			tst_res(TINFO, "%s contains: %s", path, contents);
++			tst_res(TFAIL, "%s is not \"performance powersave\"", path);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor", i);
++		tst_res(TDEBUG, "Checking %s", path);
++		memset(contents, 0, sizeof(contents));
++		SAFE_FILE_SCANF(path, "%255s", contents);
++		if (strstr(contents, "performance")) {
++			tst_res(TDEBUG, "%s is \"performance\"", path);
++			tst_res(TDEBUG, "Checking whether %s can be switched to \"powersave\"", path);
++			SAFE_FILE_PRINTF(path, "powersave");
++			memset(contents, 0, sizeof(contents));
++			SAFE_FILE_SCANF(path, "%255s", contents);
++			if (strstr(contents, "powersave"))
++				tst_res(TPASS, "Changing scaling_governor from performance to powersave succeeded");
++			else
++				tst_res(TFAIL, "%s: failed to change scaling_governor from performance to powersave, current scaling_governor: %s", path, contents);
++
++		} else if (strstr(contents, "powersave")) {
++			tst_res(TDEBUG, "%s is \"powersave\"", path);
++			tst_res(TDEBUG, "Checking whether %s can be switched to \"performance\"", path);
++			SAFE_FILE_PRINTF(path, "performance");
++			memset(contents, 0, sizeof(contents));
++			SAFE_FILE_SCANF(path, "%255s", contents);
++			if (strstr(contents, "performance"))
++				tst_res(TPASS, "Changing scaling_governor from powersave to performance succeeded");
++			else
++				tst_res(TFAIL, "%s: failed to change scaling_governor from powersave to performance, current scaling_governor: %s", path, contents);
++
++		} else {
++			tst_brk(TBROK, "Unknown scaling_governor: %s", contents);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_max_freq", i);
++		snprintf(path_cpuinfo_min_freq, sizeof(path_cpuinfo_min_freq), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_min_freq", i);
++		tst_res(TDEBUG, "Checking whether %s is bigger than cpuinfo_min_freq", path);
++		SAFE_FILE_SCANF(path, "%ld", &cpuinfo_max_freq);
++
++		SAFE_FILE_SCANF(path_cpuinfo_min_freq, "%ld", &cpuinfo_min_freq);
++
++		if (cpuinfo_min_freq > cpuinfo_max_freq)
++			tst_res(TFAIL, "Value in %s: %ld, should be bigger than cpuinfo_min_freq: %ld", path, cpuinfo_max_freq, cpuinfo_min_freq);
++		else
++			tst_res(TPASS, "Value in %s: %ld, is bigger than cpuinfo_min_freq: %ld", path, cpuinfo_max_freq, cpuinfo_min_freq);
++	}
++
++	snprintf(path, sizeof(path), "/sys/devices/system/cpu/intel_pstate/status");
++	tst_res(TDEBUG, "Checking whether %s contains \"active\"", path);
++	memset(contents, 0, sizeof(contents));
++	SAFE_FILE_SCANF(path, "%255s", contents);
++
++	if (strstr(contents, "active"))
++		tst_res(TPASS, "%s is \"active\"", path);
++	else
++		tst_res(TFAIL, "%s is not \"active\", but %s", path, contents);
++
++	tst_res(TDEBUG, "Checking whether %s can be switched to \"passive\"", path);
++	SAFE_FILE_PRINTF(path, "passive");
++	memset(contents, 0, sizeof(contents));
++	SAFE_FILE_SCANF(path, "%255s", contents);
++
++	if (strstr(contents, "passive"))
++		tst_res(TPASS, "%s is \"passive\"", path);
++	else
++		tst_res(TFAIL, "%s is not \"passive\", but %s", path, contents);
++
++	tst_res(TDEBUG, "Checking whether %s can be switched back to \"active\"", path);
++	SAFE_FILE_PRINTF(path, "active");
++	memset(contents, 0, sizeof(contents));
++	SAFE_FILE_SCANF(path, "%255s", contents);
++
++	if (strstr(contents, "active"))
++		tst_res(TPASS, "%s is \"active\"", path);
++	else
++		tst_res(TFAIL, "%s is not \"active\", but %s", path, contents);
++
++	snprintf(path, sizeof(path), "/sys/devices/system/cpu/intel_pstate/no_turbo");
++	tst_res(TDEBUG, "Checking whether %s can be switched to 1", path);
++	SAFE_FILE_PRINTF(path, "1");
++	SAFE_FILE_SCANF(path, "%d", &no_turbo_val);
++
++	if (no_turbo_val == 1)
++		tst_res(TPASS, "%s is \"1\"", path);
++	else
++		tst_res(TFAIL, "%s is not \"1\", but %d", path, no_turbo_val);
++
++	tst_res(TDEBUG, "Checking whether %s can be switched back to 0", path);
++	SAFE_FILE_PRINTF(path, "0");
++	SAFE_FILE_SCANF(path, "%d", &no_turbo_val);
++
++	if (no_turbo_val == 0)
++		tst_res(TPASS, "%s is \"0\"", path);
++	else
++		tst_res(TFAIL, "%s is not \"0\", but %d", path, no_turbo_val);
++
++	tst_res(TDEBUG, "Checking whether scaling_available_governors contains \"performance\" and \"schedutil\" after switching /sys/devices/system/cpu/intel_pstate/status to \"passive\"");
++	snprintf(path, sizeof(path), "/sys/devices/system/cpu/intel_pstate/status");
++	SAFE_FILE_PRINTF(path, "passive");
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_available_governors", i);
++		memset(contents, 0, sizeof(contents));
++		fd = SAFE_OPEN(path, O_RDONLY);
++		SAFE_READ(0, fd, contents, sizeof(contents));
++		SAFE_CLOSE(fd);
++
++		tst_res(TDEBUG, "Checking whether %s contains \"performance\" and \"schedutil\"", path);
++		if (strstr(contents, "performance") && strstr(contents, "schedutil")) {
++			tst_res(TPASS, "%s contains: %s", path, contents);
++		} else {
++			tst_res(TINFO, "%s contains: %s", path, contents);
++			tst_res(TFAIL, "%s does not contain \"performance\" and \"schedutil\"", path);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor", i);
++		tst_res(TDEBUG, "Checking whether %s can be changed to performance", path);
++		SAFE_FILE_PRINTF(path, "performance");
++		memset(contents, 0, sizeof(contents));
++		SAFE_FILE_SCANF(path, "%255s", contents);
++
++		if (strstr(contents, "performance"))
++			tst_res(TPASS, "%s is \"performance\"", path);
++		else
++			tst_res(TFAIL, "%s is not \"performance\", but %s", path, contents);
++
++		tst_res(TDEBUG, "Checking whether %s can be changed to schedutil", path);
++		SAFE_FILE_PRINTF(path, "schedutil");
++		memset(contents, 0, sizeof(contents));
++		SAFE_FILE_SCANF(path, "%255s", contents);
++
++		if (strstr(contents, "schedutil"))
++			tst_res(TPASS, "%s is \"schedutil\"", path);
++		else
++			tst_res(TFAIL, "%s is not \"schedutil\", but %s", path, contents);
++	}
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_max_freq", i);
++		tst_res(TDEBUG, "Checking whether %s can be assigned to scaling_max_freq and scaling_min_freq", path);
++		SAFE_FILE_SCANF(path, "%ld", &cpuinfo_max_freq);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_min_freq", i);
++		SAFE_FILE_SCANF(path, "%ld", &cpuinfo_min_freq);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_max_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", cpuinfo_max_freq);
++		SAFE_FILE_SCANF(path, "%ld", &scaling_max_freq);
++
++		if (cpuinfo_max_freq < scaling_max_freq) {
++			tst_res(TINFO, "cpuinfo_max_freq: %ld", cpuinfo_max_freq);
++			tst_res(TINFO, "scaling_max_freq: %ld", scaling_max_freq);
++			tst_res(TFAIL, "Failure setting %s", path);
++		} else {
++			tst_res(TPASS, "Successfully set up %s", path);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_min_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", cpuinfo_max_freq);
++		SAFE_FILE_SCANF(path, "%ld", &scaling_min_freq);
++
++		if (cpuinfo_max_freq < scaling_min_freq) {
++			tst_res(TINFO, "cpuinfo_max_freq: %ld", cpuinfo_max_freq);
++			tst_res(TINFO, "scaling_min_freq: %ld", scaling_min_freq);
++			tst_res(TFAIL, "Failure setting %s", path);
++		} else {
++			tst_res(TPASS, "Successfully set up %s", path);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_min_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", previous_scaling_min_freq[i]);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_max_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", previous_scaling_max_freq[i]);
++	}
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_max_freq", i);
++		tst_res(TDEBUG, "Checking whether %s can be assigned to scaling_max_freq and scaling_min_freq", path);
++		SAFE_FILE_SCANF(path, "%ld", &cpuinfo_max_freq);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_min_freq", i);
++		SAFE_FILE_SCANF(path, "%ld", &cpuinfo_min_freq);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_min_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", cpuinfo_min_freq);
++		SAFE_FILE_SCANF(path, "%ld", &scaling_min_freq);
++
++		if (cpuinfo_min_freq > scaling_min_freq) {
++			tst_res(TINFO, "cpuinfo_min_freq: %ld", cpuinfo_min_freq);
++			tst_res(TINFO, "scaling_min_freq: %ld", scaling_min_freq);
++			tst_res(TFAIL, "Failure setting %s", path);
++		} else {
++			tst_res(TPASS, "Successfully set up %s", path);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_max_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", cpuinfo_min_freq);
++		SAFE_FILE_SCANF(path, "%ld", &scaling_max_freq);
++
++		if (cpuinfo_min_freq > scaling_max_freq) {
++			tst_res(TINFO, "cpuinfo_min_freq: %ld", cpuinfo_min_freq);
++			tst_res(TINFO, "scaling_max_freq: %ld", scaling_max_freq);
++			tst_res(TFAIL, "Failure setting %s", path);
++		} else {
++			tst_res(TPASS, "Successfully set up %s", path);
++		}
++	}
++}
++
++static struct tst_test test = {
++	.cleanup = cleanup,
++	.needs_kconfigs = (const char *const []) {
++		"CONFIG_X86_INTEL_PSTATE",
++		NULL
++	},
++	.needs_root = 1,
++	.setup = setup,
++	.supported_archs = (const char *const []) {
++		"x86",
++		"x86_64",
++		NULL
++	},
++	.test_all = run
++};
+-- 
+2.47.3
+
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
+Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
+
+Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
+This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
