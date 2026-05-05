@@ -4,57 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A5D8CD342F
-	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 09:56:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7460FF885A
+	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 10:53:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A8F53E617B
-	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 11:56:01 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 1CD453E6173
+	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 12:53:31 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3796B3E289B
- for <ltp@lists.linux.it>; Tue,  5 May 2026 11:55:43 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 7A5033E616A
+ for <ltp@lists.linux.it>; Tue,  5 May 2026 12:53:12 +0200 (CEST)
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com
+ [IPv6:2607:f8b0:4864:20::342])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 28D5C1A007F6
- for <ltp@lists.linux.it>; Tue,  5 May 2026 11:55:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1777974943; x=1809510943;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=6gBIuQStNmRsgSdA67RsTCTra8rLeF2lpW1TqNdYOmE=;
- b=gzk6UKmDKFBApZEbWi2PU9nOZsFH2sjbsSlGeaaO1BnvWme0U/EGJDCd
- VXStVk0KOnZ3ykICuFzfFojZumeXTz70sBmk5oWYf+ZxzWBbcUbOnvn1c
- QrWONUxHKgRg317WtDauRKhaTL4yGaHBNfhCgl3Qldcfd0mOJ8BWSwHNJ
- lYi8W0ddOoMO8WGZnMEQ5ILhKc4W/t7KgbKMOgTbyWHNX2y5oa/K131R7
- A7jiWqNbfIUSVEoVWZtRwl/ZpDlp5vqJvfUf7+ilWjq4cp69WcC7XW0gh
- 9kq/17X4Av9VrdNKBpTKF2YoFivKotXAj0kUgDqZQo3EepHV4FHIFqAZR A==;
-X-CSE-ConnectionGUID: zquWoMe9R/e3eGeI6s4NkQ==
-X-CSE-MsgGUID: 8uphmJ+vSXOTRg0eAyT3pg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11776"; a="89944940"
-X-IronPort-AV: E=Sophos;i="6.23,217,1770624000"; d="scan'208";a="89944940"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
- by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 May 2026 02:55:39 -0700
-X-CSE-ConnectionGUID: mcL5nLXSSFune9kIIfuIDA==
-X-CSE-MsgGUID: YqnMy4HGTteZaJA48sOhOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,217,1770624000"; d="scan'208";a="231397069"
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
- by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 May 2026 02:55:36 -0700
-From: Piotr Kubaj <piotr.kubaj@intel.com>
-To: ltp@lists.linux.it
-Date: Tue,  5 May 2026 11:54:52 +0200
-Message-ID: <20260505095451.26212-2-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5355A1000935
+ for <ltp@lists.linux.it>; Tue,  5 May 2026 12:53:09 +0200 (CEST)
+Received: by mail-ot1-x342.google.com with SMTP id
+ 46e09a7af769-7dbca22dbfeso2905886a34.1
+ for <ltp@lists.linux.it>; Tue, 05 May 2026 03:53:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1777978388; x=1778583188; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=K3TSHgcup5GoIpk9cvbCHpZn39n4+SSDEhk2aZIHVsU=;
+ b=RPruWs5bxMt/6SApRcZv4s8AXeNJxUYMEpsJq43+6V3e4cY+UJawloa1gk04OgK2/6
+ rzq8OG67LFxNvBA7ktK2tGjooda7lWgeF7gYn8QRM2/LJIW0bkfOmrNayubuG+rAVJwA
+ yyib0i4BebKINGMK0O/1ZRHKgZuNnjWkdOo+3HUdSoWPI6RnND+Fmng9EDxypPFVB8f9
+ WaojQUDLWPslD4+fiFizW55OEEnoBx8BQtbkXG1yd+F1FP8SkyxCCfJ26/WY87U6ZV3u
+ 5r0wf5s/v9s1BM05RB6GximtCKK1ITnTE9HCwg4qq2MT4xzTeotvxLPmVgMjeVyrTqFt
+ /8cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1777978388; x=1778583188;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=K3TSHgcup5GoIpk9cvbCHpZn39n4+SSDEhk2aZIHVsU=;
+ b=fJYV94drsC8q4I3qjrIsQ/hegmaVsWogvTzkdxD9t9BtVkLe50rA2rO1jXo88fVEO4
+ j+LRooihZYrAjzpmt0dMKhBxFpBGm8VtJuWy9DtYz+7ww8i4SLfaH9A07mYVWMqNdCZR
+ dWnaj40+jBrVBzX9i2vaYk+szUvjHoEVCes88ShoQYhC8IxqTlq4sVYfstS90H4RfmiQ
+ /jU5ex8eKHNLdqxgcvnJm6NNzaiMe0faFwN7M4XTq0d5mexqDR6UHeNMrIm7AM2Xf4mO
+ h6P6W89VKUrM+7XX+WywpzE/saYskQPk+EOHNlM9Th6fHEGaevcNxkqymqIjRg1jE9ca
+ me2w==
+X-Gm-Message-State: AOJu0YzuhcUXwQrZnEvNlz6NVPhz9XVnkbbLGv1jP+0Hdcn65STflhft
+ ri2sAkOubybGLMzv+NRP6GGDQtA4qpVF77YxfJi84KonTJRoK4NrGB3Y
+X-Gm-Gg: AeBDieuydgdJdso80E9uOTNXM80tAF2jz5QslHWpM0UG5b5PuivC6yOoEjPGiWTM4/B
+ pEAgogQI0jD6//7KcVoOHpZMxlZUUaoltGd3iZHfyxy/dM1XUGxpdZupGcfRUkJn4frYMDnSkvZ
+ shXjKxtsgnoCPj4U/Is5MO4DOGnSGXL4QCtChJ7V10cwwvwfPshvBTry9RHJsT3EdOZilpi1Q85
+ ceNiwGLJ4shq6ZDjbCj48cSmjU3oeSGCNg1xwINHTEcomRuMR0h1k4nR63T32qIGX22WOLGXlIV
+ jhdHAUkfDcSRgzNQglvUyf2rxD9fyfO1AMKt2kJ3yJlgQUZjjn57S72XFw1PmO2UDwuPoKuCA6x
+ 9LYRvWcbRkvXv1UKGqV0iqc6wlY/aMAVfHIpMq6rjh8Jcqs1+Hc/7FwkJL3EbBZ8eoZS+kIuX8I
+ J99SYs9f8nXDYiSCkHHUNNXDWV7W3t7M3LfkHD4igO/F5K2w7Ocy0sDDx6SscDcsHW1jBapJrJy
+ ZT/f/5Iwjxr2wLxfOhVCwcACOmS+ihozAKRz+9XXrvo+aPj
+X-Received: by 2002:a05:6830:6d2f:b0:7de:4fc6:a588 with SMTP id
+ 46e09a7af769-7e188715e00mr1348493a34.23.1777978387993; 
+ Tue, 05 May 2026 03:53:07 -0700 (PDT)
+Received: from
+ runnervmeorf1.to02svzrmkrudjrmfnnyhvzpob.gx.internal.cloudapp.net
+ ([52.154.21.55]) by smtp.gmail.com with ESMTPSA id
+ 46e09a7af769-7decac83717sm9791464a34.19.2026.05.05.03.53.07
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 05 May 2026 03:53:07 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Piotr Kubaj <piotr.kubaj@intel.com>
+Date: Tue,  5 May 2026 10:53:06 +0000
+Message-ID: <20260505105306.3983-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260505094853.25383-2-piotr.kubaj@intel.com>
+References: <20260505094853.25383-2-piotr.kubaj@intel.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v10] high_freq_hwp_cap_cppc.c: new test
+Subject: Re: [LTP] cpufreq.c: add new test for cpufreq sysfs interface
+ validation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,175 +92,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Verify for all online logical CPUs that their highest performance value are
-the same for HWP Capability MSR 0x771 and CPPC sysfs file.
-
-On HWP-capable x86 platforms the acpi_cppc/highest_perf sysfs attribute is
-expected to reflect the same highest-performance value that firmware
-programs into the HWP Capabilities MSR (0x771, bits 7:0). A mismatch
-between the two interfaces indicates a kernel regression in how CPPC
-values are exposed to userspace, and would break tools (e.g. cpupower,
-intel_pstate tuning scripts) that rely on the sysfs interface to make
-frequency-scaling decisions.
-
-Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
----
-Addressed both points raised in a review:
-1. motivation for the test.
-2. fd leak.
- runtest/power_management_tests                |   1 +
- testcases/kernel/power_management/.gitignore  |   1 +
- .../power_management/high_freq_hwp_cap_cppc.c | 105 ++++++++++++++++++
- 3 files changed, 107 insertions(+)
- create mode 100644 testcases/kernel/power_management/.gitignore
- create mode 100644 testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-
-diff --git a/runtest/power_management_tests b/runtest/power_management_tests
-index b670da6ec..4da57ee72 100644
---- a/runtest/power_management_tests
-+++ b/runtest/power_management_tests
-@@ -1,4 +1,5 @@
- #POWER_MANAGEMENT
-+high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
- runpwtests03 runpwtests03.sh
- runpwtests04 runpwtests04.sh
- runpwtests06 runpwtests06.sh
-diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
-new file mode 100644
-index 000000000..03f0c83e4
---- /dev/null
-+++ b/testcases/kernel/power_management/.gitignore
-@@ -0,0 +1 @@
-+high_freq_hwp_cap_cppc
-diff --git a/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-new file mode 100644
-index 000000000..d3c697875
---- /dev/null
-+++ b/testcases/kernel/power_management/high_freq_hwp_cap_cppc.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
-+ */
-+
-+/*\
-+ * Verify for all online logical CPUs that their highest performance value are
-+ * the same for HWP Capability MSR 0x771 and CPPC sysfs file.
-+ *
-+ * On HWP-capable x86 platforms the acpi_cppc/highest_perf sysfs attribute is
-+ * expected to reflect the same highest-performance value that firmware
-+ * programs into the HWP Capabilities MSR (0x771, bits 7:0). A mismatch
-+ * between the two interfaces indicates a kernel regression in how CPPC
-+ * values are exposed to userspace, and would break tools (e.g. cpupower,
-+ * intel_pstate tuning scripts) that rely on the sysfs interface to make
-+ * frequency-scaling decisions.
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_safe_prw.h"
-+
-+#define MSR_HWP_CAPABILITIES	0x771
-+#define HIGHEST_PERF_MASK	0xFF
-+
-+static int nproc;
-+static int fd = -1;
-+
-+static void setup(void)
-+{
-+	if (access("/dev/cpu/0/msr", F_OK) == -1)
-+		tst_brk(TCONF | TERRNO, "msr driver not loaded");
-+
-+	if (access("/sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf", F_OK) == -1)
-+		tst_brk(TCONF | TERRNO, "CPPC sysfs not available");
-+
-+	nproc = tst_ncpus_conf();
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd != -1)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static void run(void)
-+{
-+	bool status = true;
-+	char path[PATH_MAX];
-+
-+	for (int i = 0; i < nproc; i++) {
-+		int online = 1;
-+		unsigned long long msr_highest_perf = 0, sysfs_highest_perf = 0;
-+
-+		if (i) {
-+			snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/online", i);
-+			SAFE_FILE_SCANF(path, "%d", &online);
-+		}
-+
-+		if (!online) {
-+			tst_res(TINFO, "CPU%d offline, skipping", i);
-+			continue;
-+		}
-+
-+		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/acpi_cppc/highest_perf", i);
-+		SAFE_FILE_SCANF(path, "%llu", &sysfs_highest_perf);
-+		tst_res(TDEBUG, "%s: %llu", path, sysfs_highest_perf);
-+
-+		snprintf(path, sizeof(path), "/dev/cpu/%d/msr", i);
-+		fd = SAFE_OPEN(path, O_RDONLY);
-+
-+		SAFE_PREAD(1, fd, &msr_highest_perf, sizeof(msr_highest_perf), MSR_HWP_CAPABILITIES);
-+		SAFE_CLOSE(fd);
-+		fd = -1;
-+		msr_highest_perf &= HIGHEST_PERF_MASK;
-+		tst_res(TDEBUG, "%s: %llu", path, msr_highest_perf);
-+
-+		if (msr_highest_perf != sysfs_highest_perf) {
-+			tst_res(TINFO, "cpu%d: sysfs=%llu MSR=%llu",
-+				i, sysfs_highest_perf, msr_highest_perf);
-+			status = false;
-+		}
-+	}
-+
-+	if (status)
-+		tst_res(TPASS, "Sysfs and MSR values are equal");
-+	else
-+		tst_res(TFAIL, "Highest performance values differ between sysfs and MSR");
-+}
-+
-+static struct tst_test test = {
-+	.needs_kconfigs = (const char *const []) {
-+		"CONFIG_ACPI_CPPC_LIB",
-+		"CONFIG_X86_MSR",
-+		NULL
-+	},
-+	.needs_root = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.supported_archs = (const char *const []) {
-+		"x86",
-+		"x86_64",
-+		NULL
-+	},
-+	.test_all = run
-+};
--- 
-2.47.3
-
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUGlvdHIsCgpPbiBUdWUsIDA1IE1heSAyMDI2IDExOjQ4OjU0ICswMjAwLCBQaW90ciBLdWJh
+aiB3cm90ZToKPiBjcHVmcmVxLmM6IGFkZCBuZXcgdGVzdCBmb3IgY3B1ZnJlcSBzeXNmcyBpbnRl
+cmZhY2UgdmFsaWRhdGlvbgo+Cj4gUnVucyB2YXJpb3VzIHNhbml0eSBjaGVja3MgZm9yIGludGVs
+X3BzdGF0ZSBjcHVmcmVxIHN5c2ZzIGludGVyZmFjZS4KPgo+IENoZWNrcyB3aGV0aGVyIGludGVs
+X3BzdGF0ZSBkcml2ZXIgaXMgdXNlZCwgd2hldGhlciBpdCBpcyBwb3NzaWJsZQo+IHRvIHN3aXRj
+aCBzY2FsaW5nX2dvdmVybm9yIHRvIHBvd2Vyc2F2ZSBhbmQgcGVyZm9ybWFuY2UsCj4gd2hldGhl
+ciBpdCBpcyBwb3NzaWJsZSB0byBkaXNhYmxlIHR1cmJvIGZyZXF1ZW5jeSBhbmQKPiB3aGV0aGVy
+IGl0IGlzIHBvc3NpYmxlIHRvIGNoYW5nZSBzY2FsaW5nX21pbl9mcmVxIGFuZCBzY2FsaW5nX21h
+eF9mcmVxCj4gdG8gaXRzIG1pbmltYWwgdmFsaWQgYW5kIG1heGltYWwgdmFsaWQgdmFsdWVzLgoK
+VGhlIGJvZHkgb25seSBkZXNjcmliZXMgd2hhdCB0aGUgdGVzdCBkb2VzLCBub3Qgd2h5IGl0IGlz
+IG5lZWRlZC4gQWRkIGEKc2VudGVuY2Ugc3RhdGluZyB0aGUgbW90aXZhdGlvbiDigJQgZS5nLiBs
+YWNrIG9mIHJlZ3Jlc3Npb24gY292ZXJhZ2UgZm9yIHRoZQppbnRlbF9wc3RhdGUgc3lzZnMgaW50
+ZXJmYWNlLCBvciBhIHNwZWNpZmljIGlzc3VlIHRoYXQgcHJvbXB0ZWQgdGhpcyB0ZXN0LgoKUHJl
+LWV4aXN0aW5nIGlzc3VlcyBub3RpY2VkIGluIHRoZSBzdXJyb3VuZGluZyBjb2RlIChub3QgaW50
+cm9kdWNlZApieSB0aGlzIHBhdGNoKToKCi0gY3B1ZnJlcS5jOjE5IOKAlCBgc3RhdGljIGNoYXIg
+cGF0aFtQQVRIX01BWF1gIHVzZWQgYXMgYSBzaGFyZWQgc2NyYXRjaAogIGJ1ZmZlciBhY3Jvc3Mg
+c2V0dXAvcnVuL2NsZWFudXA7IGEgZnVuY3Rpb24tbG9jYWwgYnVmZmVyIGluIHJ1bigpIHdvdWxk
+CiAgYmUgY2xlYW5lci4KCi0tLQpOb3RlOgoKT3VyIGFnZW50IGNvbXBsZXRlZCB0aGUgcmV2aWV3
+IG9mIHRoZSBwYXRjaC4gVGhlIGZ1bGwgcmV2aWV3IGNhbiBiZQpmb3VuZCBhdDogaHR0cHM6Ly9n
+aXRodWIuY29tL2xpbnV4LXRlc3QtcHJvamVjdC9sdHAtYWdlbnQvYWN0aW9ucy9ydW5zLzI1Mzcx
+ODMwMjIxCgpUaGUgYWdlbnQgY2FuIHNvbWV0aW1lcyBwcm9kdWNlIGZhbHNlIHBvc2l0aXZlcyBh
+bHRob3VnaCBvZnRlbiBpdHMKZmluZGluZ3MgYXJlIGdlbnVpbmUuIElmIHlvdSBmaW5kIGlzc3Vl
+cyB3aXRoIHRoZSByZXZpZXcsIHBsZWFzZQpjb21tZW50IHRoaXMgZW1haWwgb3IgaWdub3JlIHRo
+ZSBzdWdnZXN0aW9ucy4KClJlZ2FyZHMsCkxUUCBBSSBSZXZpZXdlcgoKLS0gCk1haWxpbmcgbGlz
+dCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
