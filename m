@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FCE5CD3427
-	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 17:32:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EABAAFF8855
+	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 17:53:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7E9953E6AE1
-	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 19:32:43 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 7C29F3E6ADB
+	for <ltp@archiver.kernel.org>; Tue,  5 May 2026 19:53:57 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 66CE93E1FD2
- for <ltp@lists.linux.it>; Tue,  5 May 2026 19:32:24 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id F366B3E24C9
+ for <ltp@lists.linux.it>; Tue,  5 May 2026 19:53:38 +0200 (CEST)
 Received: from mail-dy1-x1344.google.com (mail-dy1-x1344.google.com
  [IPv6:2607:f8b0:4864:20::1344])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 01FF11400B8C
- for <ltp@lists.linux.it>; Tue,  5 May 2026 19:32:24 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 982666009F7
+ for <ltp@lists.linux.it>; Tue,  5 May 2026 19:53:38 +0200 (CEST)
 Received: by mail-dy1-x1344.google.com with SMTP id
- 5a478bee46e88-2f3c623322bso2659214eec.0
- for <ltp@lists.linux.it>; Tue, 05 May 2026 10:32:23 -0700 (PDT)
+ 5a478bee46e88-2ef2a1cc06dso26513eec.0
+ for <ltp@lists.linux.it>; Tue, 05 May 2026 10:53:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1778002342; x=1778607142; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1778003617; x=1778608417; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=GSoBqsjbFl8q+6zwL64yOjvi2W1+4b1yk7/xy64KHw4=;
- b=DfS6BHeSOE5WBJGAHNjynpVM7vaNSikWyKYWY5A76GOt/H4TuaOJ2lZZ0tr1MWewNb
- 4KYNLerX0n26T+zp8z6Ur78sRJN2M3ZJx4g51bTg7gE9twgrDnb9b2vZc3CIhhcJFaH3
- LDqXyVX7H4FJpwDQOuFjwC8feR2clrJaKCOX7nU3TZqjUCVe/sg0kKQpNJPvnhgOB93v
- SdMaPXvDb4wuMnnt3rdnn+SZOUVLMX6XtB/w2tb1WvHKUq5vtFOGpZyHiofbnB3SKe+X
- JLKQWALR4yUFzkQLb1qARNZiM8KSUTAcMDLyG8I1dgxXUZ0T3pO+mUJVMRazqyRdpuof
- qlYQ==
+ bh=tPZYEFrX5+u4+ixuYkFiUaK/bNxOyrNNZIfgGgO7IW4=;
+ b=PA1kWGgRWJYU1U6ayWi3aRbrLozJhNHAx/d5sYKTi9hYKb1AJSj8hTwnBe4VUIcnbQ
+ jWj1ebuHAo50chogBoWI8cbecl0OfI/UZ046+xVJp+0V13NaKjKWjORUfZdrixaKqroT
+ yACJPUE4D7GUfY2jhcfoYNbuRk0DqqBsmrhMRuRB6Pv8/PLJFUp3VgOS7/BdH2C0tGCy
+ n5clE6GAxyLnpA6/2TcxA94ZJmk9z0X/lsfppUq/ouknUXjxzWqobuS9x4rsB5M0PUzh
+ oFHk6qN86FeJ/s7vg3op+d7uNso/scr8BbbfaDPRWYR+PTsqkAiQD9BHLEKcRW9l5uBP
+ GTDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1778002342; x=1778607142;
+ d=1e100.net; s=20251104; t=1778003617; x=1778608417;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=GSoBqsjbFl8q+6zwL64yOjvi2W1+4b1yk7/xy64KHw4=;
- b=X/HtRiUedUtXpPJtvPtJ/A3YjcpJ8FtMl+Og+xPaznwiGJk/kVBS8vjlYh3AaiRRjx
- LBszdvVtoygGy4y02Xc87zTg/rumv2x0LBiYxXLikj2kLhjDRuzKCRhYXe/m993wZ8PO
- zjrJVP2tDjivDHIzIXPyIezAkweoq324IBGoyVG5Jue2ytuXs81BLV76G7cEPIfxyJDW
- sXcLr1r2sZt3ONRSqF+I/iPzvChIQs7mVennhXHYP+rkYFLM4h4zP5cYv81fdVyY5Y0P
- J1jDmxjdg8s0ywdvKE5tDm+eeZ6BoFGi8gznERTjmRkuDv6/pmIAvP6KBXwflUSXu0Ry
- 7VpA==
-X-Gm-Message-State: AOJu0Yz4PU8VkKS18FWeAPNMBbu1yO5yDjRU4GdBR3F2aEnN2gcEBUvO
- V+RhvSSTsPAXqenkAn4XAwYalTaGhHcBwNIKCYvTO/hTD9UKjFM59Bop
-X-Gm-Gg: AeBDieunxOHoO9wlVJwKR5N315OC+VS98Yb6yjkAEYS4EtbDF8Sg01/znQbDDjHGa6P
- h2/Ee1TCtEDgALTSLZSJQ+LR/eAdx70N53GDS422Gzo6w14A1TXl3Y9l0HJfFziD5bJlsY8ciNq
- 6eSiPs2KMa3xOcIft3l0qg/wvy4K0hr4bVSk2GsPEePw+vdDh1pgEd1hEZrRjjAno+bpebBsTYu
- /GM1aXmpIGoBsfhlDzy/c6WTS3Z1cBxYq/TYQJoeaGQCVEBgpM788LWLmImrg19v4yexCdahBnU
- ucocue2Np3QNBDPVlIqHH9XEXbtqZJvSp/MhINkwq15vb3Pz+PgsPMJLBlAsusNxxjxzakkLlW+
- rQdQuFcvviU3i3Gpt73TrgzQ0QCJ2u8zE/9zwEyBsT0lUQ+42CpLSNvYOkO2AA8v7lHIcooeUSv
- wgqTD6D6pJHFwkVGZlERMv+iM1W80SuuSeNvMtxq+p8GslbICMTZtqocfXrXRuv5FJqlkymVdsP
- LETyW/YSw36rfCC/gig8bAajG37tQbVrcoBeBcQcmOPynhELYQ/
-X-Received: by 2002:a05:693c:2c14:b0:2dd:6937:79c8 with SMTP id
- 5a478bee46e88-2f54ad730a3mr108091eec.5.1778002342068; 
- Tue, 05 May 2026 10:32:22 -0700 (PDT)
+ bh=tPZYEFrX5+u4+ixuYkFiUaK/bNxOyrNNZIfgGgO7IW4=;
+ b=RRXwOVTOo/K6nAt27LIa9KA8wlxO+xb6RQT5hbvfkLG6ppLAiHV/7YFNeLNcnrNY4d
+ 8egR7xCm3oaLyp6g3Z+WQ20GI8YmtKzVgr1Rwjz+xGNI7BeEwaDzMpndx+aFlSKRcZfq
+ TAA9dY6MeSV4DRKjwikj/y8XPg+AfNbkHflTX9znR+aBMmigzgRGNQqQYR8xXDp4oKYR
+ XkeM14Up5z3ss3RJOBSMco0h0fnC2n42Ku9AMsRvk4sJC9zIq3NwlfRYe6Kp+wk8h47S
+ J7q690b4XWpPBdAlhNVGzx7qIVlM8pQr35DSK9yqd2VzZQvwehNsxIiz9C5pRMa2qp6i
+ cEEg==
+X-Gm-Message-State: AOJu0Yz6j2+KRBlOcYIrF/VdTiOEaCUqhDnCWLcYlbYceu7aDIplJRHa
+ RTG3zXUC3x+3r5M0XHAZekoNViteMOXLuAMe7mhA1lcGxAZnE+6Ua2CR
+X-Gm-Gg: AeBDies2q4mq1NpaUj2qs8ZMcK6W+UCBGOWnVTt8OHiqGM5T7hFoREjl9/2j7tUVFfD
+ uExxdDo2en1MjMh96TAC4o0Nt9CTjnAic0uymsxL0CKWeoDvBUEeR6Ts0nozIlgRa2fJ1Iv4cDl
+ hVZh/MPiRy8oBgvop3tQLVJV0Q0o0jp1jPmwjv0sbLBsb/UZ9PHssGEvrAftBYQCNfRjZyQB3TN
+ 7/fXoyW6fIWSOxtjtLHxUT7YFhZMDUSM4F70wqXDbFq84nynj7Qau87XP7f3iEhAhKmmO7SlLHH
+ kbz+JOL9lQ2MyDJEczCpimKbhxqlISZAOAop07bZ9z21i2Hv227dGMMKocivq9ztq6th7K5jJ8L
+ Ps1iR2TjW0cpOdPCq+lv15GbpNxGnf2nu9j5cGG8kASy/ujPE+/koh6Mh6NuiUM2QVRGWRA11c5
+ lcX9fGD0wxGnxd2s9P8AniHIvLiVT6kOLDe0wCSfftVfnE5AUnkcXDk/GilXuhXzUo33IN9fQNX
+ J8PJrG6U94LzLXpXcVS+GtXwFPTg/ZFq6EvKll+eC/yG/kMwslKSPo=
+X-Received: by 2002:a05:7300:a987:b0:2d8:7302:d21 with SMTP id
+ 5a478bee46e88-2f549e6b1d2mr165468eec.16.1778003616851; 
+ Tue, 05 May 2026 10:53:36 -0700 (PDT)
 Received: from
- runnervmeorf1.si5vesnirltutgysy1tpxjbuwf.dx.internal.cloudapp.net
- ([172.184.220.149]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-2ee3889d634sm25748841eec.3.2026.05.05.10.32.21
+ runnervmeorf1.j4d2msqytdjuzezxjpe1iftl5h.phxx.internal.cloudapp.net
+ ([172.182.226.214]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-2ee3889cf53sm28233385eec.5.2026.05.05.10.53.36
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 May 2026 10:32:21 -0700 (PDT)
+ Tue, 05 May 2026 10:53:36 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Ricardo Branco <rbranco@suse.de>
-Date: Tue,  5 May 2026 17:32:20 +0000
-Message-ID: <20260505173220.3999-1-linuxtestproject.agent@gmail.com>
+To: Piotr Kubaj <piotr.kubaj@intel.com>
+Date: Tue,  5 May 2026 17:53:35 +0000
+Message-ID: <20260505175335.4038-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260505131538.21645-1-rbranco@suse.de>
-References: <20260505131538.21645-1-rbranco@suse.de>
+In-Reply-To: <20260505110208.32207-2-piotr.kubaj@intel.com>
+References: <20260505110208.32207-2-piotr.kubaj@intel.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] userfaultfd: Minor fixes
+Subject: Re: [LTP] cpufreq.c: add new test for cpufreq sysfs interface
+ validation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,62 +92,31 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Ricardo,
-
-On Tue, 5 May 2026 15:14:41 +0200, Ricardo Branco wrote:
-> userfaultfd: Minor fixes
->
-> - Use POSIX semantics for thread function
-> - Set cleanup to call reset_pages
-> - Use long for page_size and use unsigned cast
-> - Call the SAFE_ versions of some system calls
-> - Use TFAIL consistently for unexpected UFFD_EVENTs
-
-The body only lists what was changed, not why. Please add at least a
-sentence per item explaining the problem: e.g. the thread function had
-the wrong signature (UB when cast to pthread start routine), missing
-.cleanup caused leaks on early abort, int page_size causes sign-extension
-in the bitwise address mask, etc.
-
-> -static void *handle_thread(void)
-> +static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
->
-> -       tst_brk(TBROK | TERRNO, "Received unexpected UFFD_EVENT %d", msg.event);
-> +       tst_brk(TFAIL, "Received unexpected UFFD_EVENT %d", msg.event);
->
-> -       page_size = sysconf(_SC_PAGE_SIZE);
-> +       page_size = SAFE_SYSCONF(_SC_PAGE_SIZE);
-> +       .cleanup = reset_pages,
-
-These are five distinct fix categories (thread signature, resource
-management, type correctness, SAFE-macro adoption, result-code change).
-Please split them into focused commits so each can be reviewed and
-bisected independently.
-
-Pre-existing issues noticed in the surrounding code (not introduced
-by this patch):
-
-- userfaultfd04.c (and similar): early-return TFAIL path skips
-  SAFE_PTHREAD_JOIN, leaving the handler thread un-joined.
-- userfaultfd03.c: .needs_root = 1 may be unnecessary since
-  /dev/userfaultfd was designed for unprivileged access.
-
----
-Note:
-
-Our agent completed the review of the patch.
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUGlvdHIsCgpPbiBUdWUsIDUgTWF5IDIwMjYgMTM6MDI6MDkgKzAyMDAsIFBpb3RyIEt1YmFq
+IHdyb3RlOgo+IGNwdWZyZXEuYzogYWRkIG5ldyB0ZXN0IGZvciBjcHVmcmVxIHN5c2ZzIGludGVy
+ZmFjZSB2YWxpZGF0aW9uCgo+ICsvKlwKPiArICogUnVucyB2YXJpb3VzIHNhbml0eSBjaGVja3Mg
+Zm9yIGludGVsX3BzdGF0ZSBjcHVmcmVxIHN5c2ZzIGludGVyZmFjZS4KPiArICogLi4uCj4gKyAq
+LwoKVGhlIGRvYyBjb21tZW50IGRvZXMgbm90IHN0YXRlIHdoeSByb290IGlzIG5lZWRlZC4gUGVy
+IGdyb3VuZC1ydWxlcyBydWxlIDQsCmRvY3VtZW50IHRoZSByZWFzb24gaW4gdGhlIGRvYyBibG9j
+ayDigJQgZS5nLiAiUmVxdWlyZXMgcm9vdCB0byB3cml0ZSB0bwovc3lzL2RldmljZXMvc3lzdGVt
+L2NwdS9pbnRlbF9wc3RhdGUvIGFuZCBwZXItQ1BVIGNwdWZyZXEgc3lzZnMgYXR0cmlidXRlcy4i
+CgpbLi4uXQoKPiArCVNBRkVfRklMRV9TQ0FORigiL3N5cy9kZXZpY2VzL3N5c3RlbS9jcHUvaW50
+ZWxfcHN0YXRlL25vX3R1cmJvIiwgIiVkIiwgJm5vX3R1cmJvKTsKPiArCVNBRkVfRklMRV9TQ0FO
+RigiL3N5cy9kZXZpY2VzL3N5c3RlbS9jcHUvaW50ZWxfcHN0YXRlL3N0YXR1cyIsICIlMTVzIiwg
+aW50ZWxfcHN0YXRlX3N0YXR1cyk7CgpDT05GSUdfWDg2X0lOVEVMX1BTVEFURT15IGRvZXMgbm90
+IGd1YXJhbnRlZSB0aGUgZHJpdmVyIGlzIGFjdGl2ZSBhdCBydW50aW1lCihhY3BpX2NwdWZyZXEg
+bWF5IHRha2Ugb3Zlciwgb3IgdGhlIGRyaXZlciBtYXkgYmUgaW4gIm9mZiIgbW9kZSkuIElmIHRo
+ZQpzeXNmcyBmaWxlcyBhcmUgYWJzZW50LCBTQUZFX0ZJTEVfU0NBTkYgY2FsbHMgdHN0X2JyayhU
+QlJPSykuIEd1YXJkIHdpdGgKYW4gZXhpc3RlbmNlIGNoZWNrIGFuZCB1c2UgdHN0X2JyayhUQ09O
+RiwgImludGVsX3BzdGF0ZSBkcml2ZXIgbm90IGFjdGl2ZSIpCmluc3RlYWQuCgotLS0KTm90ZToK
+Ck91ciBhZ2VudCBjb21wbGV0ZWQgdGhlIHJldmlldyBvZiB0aGUgcGF0Y2guIFRoZSBhZ2VudCBj
+YW4gc29tZXRpbWVzIHByb2R1Y2UKZmFsc2UgcG9zaXRpdmVzIGFsdGhvdWdoIG9mdGVuIGl0cyBm
+aW5kaW5ncyBhcmUgZ2VudWluZS4gSWYgeW91IGZpbmQgaXNzdWVzCndpdGggdGhlIHJldmlldywg
+cGxlYXNlIGNvbW1lbnQgdGhpcyBlbWFpbCBvciBpZ25vcmUgdGhlIHN1Z2dlc3Rpb25zLgoKUmVn
+YXJkcywKTFRQIEFJIFJldmlld2VyCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
+dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
