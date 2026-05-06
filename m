@@ -4,101 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC568CD343B
-	for <ltp@archiver.kernel.org>; Wed,  6 May 2026 15:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1778080811; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=r0hBWmJS8ZoabB4RfleNIE2iO8B5EkXOTgPL7Nk3mZM=;
- b=je1/kX+GJbxmVFYLWhK9uBm8bmqi+lCr3iM1OJsT5P/OrV6s2ii1aegk3ac1pVjGGoQ8R
- QtrdniUkVZa+T2Ers7SaCLdntvOv1rTlLOn8KDWgs4A+X072GBYeDuSWI8k1AlbrcjE7dyK
- FU8jZDQrL5xFjF6velnvY9qyPiFg88o=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01AAECD342C
+	for <ltp@archiver.kernel.org>; Wed,  6 May 2026 15:27:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 60C7A3C5A8C
-	for <ltp@archiver.kernel.org>; Wed,  6 May 2026 17:20:11 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 68F263E6167
+	for <ltp@archiver.kernel.org>; Wed,  6 May 2026 17:27:25 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E8A0E3E65A5
- for <ltp@lists.linux.it>; Wed,  6 May 2026 17:18:16 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id D249B3C5A8C
+ for <ltp@lists.linux.it>; Wed,  6 May 2026 17:27:05 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3DA6A1A00982
- for <ltp@lists.linux.it>; Wed,  6 May 2026 17:18:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1778080694;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1A1696009E8
+ for <ltp@lists.linux.it>; Wed,  6 May 2026 17:27:04 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0E6026ABF1;
+ Wed,  6 May 2026 15:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1778081224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CW08z9pGHyXYfeAAgPmQjnqzWN3yJZ9FozyxaxroIh8=;
- b=OHU2qC7zROWuF6esEtAZVwiYfKZupS+MxBu7gpH4QkMnu+u4KELPfeN7pXWs/3kkJWXDrb
- CGyXjssxvFLV9MyHawN9ZAJUDnkKTxp6I65ylRyARalja0VpTJB1A3hvsi9V2LHbhrABZh
- 39W29W6He71SWKQrmcQB93xCCAKD75A=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-297-3Vymf5YkPheXgMOhSdEPzg-1; Wed, 06 May 2026 11:18:12 -0400
-X-MC-Unique: 3Vymf5YkPheXgMOhSdEPzg-1
-X-Mimecast-MFC-AGG-ID: 3Vymf5YkPheXgMOhSdEPzg_1778080691
-Received: by mail-wr1-f72.google.com with SMTP id
- ffacd0b85a97d-44a52d5e572so3142229f8f.3
- for <ltp@lists.linux.it>; Wed, 06 May 2026 08:18:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1778080691; x=1778685491;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=CW08z9pGHyXYfeAAgPmQjnqzWN3yJZ9FozyxaxroIh8=;
- b=NakDPD85GyiEbwV89e46yI6R6KArQMuIjrrvou1PeBLEj+alnhdS27FFSiffTkMBeo
- Z34+Z/NyJbfP3GNrLYnsklFfHLTeCzJjC1O3sgAw6/fK9nJkTQCky+UQobioul90dYvO
- 8RdoSgJT7UDHdFf8we6V9ouT1jRAOgqiCWOn3K26JPgDrZaouW7Jgp/HZZEf79b1/Kwx
- ukUegG48Dcs+oIqeM8kdmWrCzt0fDhSTi5B7pAZm2WOO2g7xhKs68HaApg8Nf6ayCOWY
- vRqifxVRj+kj82mswqonfsd/F4QIAFso7mkLdi9bcZVEZk1a1BYPLjs5I65QVeHYwVLR
- jscA==
-X-Gm-Message-State: AOJu0YyyamJD2u5FcgtdFfn7dqWZr1O/imFUyhc3tcWdmJhvbH6wqrvW
- IZ83DIfPE3WosXs4Crn2gjTAuVTHSYSuw3dlzz3WqUun+zGKZ3Akz1holNAB+Bp948HlhPKo/tr
- 2LtD7Qk4ItsqHVi12af2i29Quo6au3MOByz6flLV1za7JHekPGt3Agijz4BHD5tfE8eIxOgnyRA
- JO+RtniK5Ioh0TwT1ILmVwYsPENVmOh9znIHWF
-X-Gm-Gg: AeBDietCsKCWeNnk+16Zw5xdXwIR7teVnpl+/ZiSFLdjHCwCaWjwZUkHW2WlVlNyfXT
- dF8uJ+G08ElKba+cyG5zXhVDS1Q53awo1Xh7BQr31U3LjdLjlG2R81wZw6qsn/swfhQIvFjwCT3
- ompQZvFLk0978umyPW3mOGf89caaGbceBJek1ZzccYonMRlcHe4lFlICyhY/sK8lhdRbWqtxV22
- Zi058JZQFMWqjV8xal7SVhgxiPJj9TiXpJM+BzW4NpROH5RRYk6+KNoThVK5tK1dNQm4ukYDo0G
- HmOZ8GuL6yJLF+T6fvLZh6eH+GNblrtYYd2lMq0mqembqE7Ix8aeUXDRm78MITp1jmDtYzbGku/
- JZXFVEB1GslFPxKfi6URx0YlkfOqIdt5rjUYf+lP75zACk7Mb5owKjLLaSCgRXqj37CcB6q0jJl
- oXc8fG7Q==
-X-Received: by 2002:a05:6000:2386:b0:43d:1cec:4767 with SMTP id
- ffacd0b85a97d-4515d9a02c4mr6891751f8f.36.1778080690742; 
- Wed, 06 May 2026 08:18:10 -0700 (PDT)
-X-Received: by 2002:a05:6000:2386:b0:43d:1cec:4767 with SMTP id
- ffacd0b85a97d-4515d9a02c4mr6891638f8f.36.1778080689913; 
- Wed, 06 May 2026 08:18:09 -0700 (PDT)
-Received: from fedora.redhat.com (85.65.168.167.dynamic.barak-online.net.
- [85.65.168.167]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4505238e174sm13323519f8f.1.2026.05.06.08.18.08
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 06 May 2026 08:18:08 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Wed,  6 May 2026 18:18:01 +0300
-Message-ID: <20260506151801.20401-5-mmenashe@redhat.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260506151801.20401-1-mmenashe@redhat.com>
-References: <20260506151801.20401-1-mmenashe@redhat.com>
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=GyrN606+joKqOSgo8bAY99Zb35XOtps786v0fIfZdlF+xZMPTVeSuN9xpGy8j0JC7HzUTv
+ M50alo1GVSRqOXY5UpSRSFPTnPLVdfpdmtId9UcIeMPPTCRSiQpbUBy3uaWv+eyCHC4ypQ
+ ugFqWlGww6U/U2AggTHCIVBVNXbKPb0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1778081224;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=fyzxEbjY6r4yrlWTKXWGriJm4uyiQ6Be85I6I0hhXAgSK/V5T7JS4ycfyGxma5vwsfKTju
+ /Q012Nnt3gyCfdCA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=GyrN606+;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fyzxEbjY
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1778081224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=GyrN606+joKqOSgo8bAY99Zb35XOtps786v0fIfZdlF+xZMPTVeSuN9xpGy8j0JC7HzUTv
+ M50alo1GVSRqOXY5UpSRSFPTnPLVdfpdmtId9UcIeMPPTCRSiQpbUBy3uaWv+eyCHC4ypQ
+ ugFqWlGww6U/U2AggTHCIVBVNXbKPb0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1778081224;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=fyzxEbjY6r4yrlWTKXWGriJm4uyiQ6Be85I6I0hhXAgSK/V5T7JS4ycfyGxma5vwsfKTju
+ /Q012Nnt3gyCfdCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EA56B593A3;
+ Wed,  6 May 2026 15:27:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id BI9oOMdd+2ljYwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 06 May 2026 15:27:03 +0000
+Date: Wed, 6 May 2026 17:27:06 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <aftdyoP-XdsOGl7D@yuki.lan>
+References: <20260429145314.79256-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: ZeB2GSSlbCnob7yNleQoVOBvKqdB9XG0NsrbyyMO-jk_1778080691
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260429145314.79256-1-mdoucha@suse.cz>
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: 0E6026ABF1
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [ltp v2 4/4] futex_cmp_requeue03: Add EFAULT and EACCES error
- coverage test
+Subject: Re: [LTP] [PATCH v2 1/2] aio_cancel: Fix incorrect strerror() usage
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,143 +112,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Michael Menasherov via ltp <ltp@lists.linux.it>
-Reply-To: Michael Menasherov <mmenashe@redhat.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
----
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/futex/.gitignore    |  1 +
- .../syscalls/futex/futex_cmp_requeue03.c      | 96 +++++++++++++++++++
- 3 files changed, 98 insertions(+)
- create mode 100644 testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
+Hi!
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 4d85a1d26..65baa44dc 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1908,3 +1908,4 @@ perf_event_open03 perf_event_open03
- futex_wait06 futex_wait06
- futex_wait07 futex_wait07
- futex_wake05 futex_wake05
-+futex_cmp_requeue03 futex_cmp_requeue03
-diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
-index c11546e07..231b6bd25 100644
---- a/testcases/kernel/syscalls/futex/.gitignore
-+++ b/testcases/kernel/syscalls/futex/.gitignore
-@@ -16,3 +16,4 @@
- /futex_wait06
- /futex_wait07
- /futex_wake05
-+/futex_cmp_requeue03
-diff --git a/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
-new file mode 100644
-index 000000000..099d5e35c
---- /dev/null
-+++ b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Red Hat, Inc.
-+ */
-+
-+/*\
-+ * Check that futex(FUTEX_CMP_REQUEUE) returns EFAULT when uaddr or
-+ * uaddr2 points to unmapped memory, and EACCES (or EFAULT on older kernels)
-+ * when uaddr points to memory without read permission (PROT_NONE).
-+ *
-+ * The EACCES behavior for PROT_NONE was introduced in kernel 5.9.
-+ */
-+
-+#include <errno.h>
-+#include <sys/mman.h>
-+
-+#include "futextest.h"
-+
-+static futex_t futex_var = FUTEX_INITIALIZER;
-+static futex_t *prot_none_addr;
-+
-+static struct futex_test_variants variants[] = {
-+#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
-+	{ .fntype = FUTEX_FN_FUTEX, .desc = "syscall with old kernel spec"},
-+#endif
-+
-+#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .fntype = FUTEX_FN_FUTEX64, .desc = "syscall time64 with kernel spec"},
-+#endif
-+};
-+
-+static struct testcase {
-+	const char *desc;
-+	futex_t *uaddr;
-+	futex_t *uaddr2;
-+	int exp_errno;
-+} testcases[3];
-+
-+static void run(unsigned int n)
-+{
-+	struct futex_test_variants *tv = &variants[tst_variant];
-+	struct testcase *tc = &testcases[n];
-+
-+	TST_EXP_FAIL(futex_cmp_requeue(tv->fntype, tc->uaddr, futex_var,
-+		tc->uaddr2, 1, 1, 0), tc->exp_errno, "%s", tc->desc);
-+}
-+
-+static void setup(void)
-+{
-+	struct futex_test_variants *tv = &variants[tst_variant];
-+	size_t pagesize = getpagesize();
-+	futex_t *unmapped;
-+
-+	tst_res(TINFO, "Testing variant: %s", tv->desc);
-+	futex_supported_by_kernel(tv->fntype);
-+
-+	unmapped = SAFE_MMAP(NULL, pagesize, PROT_READ | PROT_WRITE,
-+		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	SAFE_MUNMAP(unmapped, pagesize);
-+
-+	prot_none_addr = SAFE_MMAP(NULL, pagesize, PROT_NONE,
-+		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+
-+	testcases[0] = (struct testcase){
-+		.desc = "uaddr unmapped",
-+		.uaddr = unmapped,
-+		.uaddr2 = &futex_var,
-+		.exp_errno = EFAULT,
-+	};
-+	testcases[1] = (struct testcase){
-+		.desc = "uaddr2 unmapped",
-+		.uaddr = &futex_var,
-+		.uaddr2 = unmapped,
-+		.exp_errno = EFAULT,
-+	};
-+	testcases[2] = (struct testcase){
-+		.desc = "uaddr PROT_NONE",
-+		.uaddr = prot_none_addr,
-+		.uaddr2 = &futex_var,
-+		.exp_errno = tst_kvercmp(5, 9, 0) >= 0 ? EACCES : EFAULT,
-+	};
-+}
-+
-+static void cleanup(void)
-+{
-+	if (prot_none_addr)
-+		SAFE_MUNMAP(prot_none_addr, getpagesize());
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(testcases),
-+	.test_variants = ARRAY_SIZE(variants),
-+};
 -- 
-2.53.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
