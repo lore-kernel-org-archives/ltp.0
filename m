@@ -4,91 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0726ECD343B
-	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 07:33:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1778139203; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=a7Ab+kZ7lNrt7PB4erwOcNnYKRC2oprLjh2bH9qRXG0=;
- b=SpAoaJ8iKEmHoTR0p/QB21z/NjsrR7AsnMtsA/Ba8Y/Qu70ooyoRaN1I9tw6JDHG7b5A0
- 0BzWv6wpoBe47hpxHmnMu9uFn9Vs9xIJY3xxdupWbFulsnQkLJF3rEmRvLczTDJMhbwCl2r
- UM4u2c9PwSKVkuFDgXDnrCh3LewQd2Q=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75181CD343B
+	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 07:34:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C4B03E2877
-	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 09:33:23 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 333163E2876
+	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 09:34:45 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 407553CB935
- for <ltp@lists.linux.it>; Thu,  7 May 2026 09:33:00 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 622693CB935
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 09:34:25 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EF8801400433
- for <ltp@lists.linux.it>; Thu,  7 May 2026 09:32:59 +0200 (CEST)
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-48984d29fe3so6240785e9.0
- for <ltp@lists.linux.it>; Thu, 07 May 2026 00:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1778139179; x=1778743979; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=ab8bqdyoMC2pr2XM/LsnGJeFtPztME6IG6jAtyfx+Fc=;
- b=cByrlAX3cSpN+PEc7RXEoBZuhRsnfiphdcbfHAUaHGzvyq/Eo4bhoSry34iTN9KEIg
- kBID4H6+5WnWtu0lTRHYwCTKn0zEjrCwa/UPlgpfe/wTQlsdd611LeM3EqwgyjqvlY/Z
- Rm3uYhVEOLLAiPru73ADvAZN7R+KAqvhkAH9CLcFvhdKu+GWgArG60Og5xpVnnjH8xpA
- 1uGNkartUyzhgFssZeMVjTn5JaIrcitYsqc08gK+WJA/6kzYdcc8NbYD6S3G8WLzUbhQ
- wSuAYngOVvH0qNAPjRUcOT7g/NIjYY1TomEtFjUtn6Op516UYRUlgFdjj8cZbfDU9CXs
- iKXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1778139179; x=1778743979;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=ab8bqdyoMC2pr2XM/LsnGJeFtPztME6IG6jAtyfx+Fc=;
- b=jUiIMSypcqM344QfsofAGmFrdL5+AwIGzPLfBVTjgpQ2TGFt9F5X8XXQuwA8g6TxDE
- 6Sd1iYHog/v+n+aFK3Sc9kuK5lFsC0D5SxCqQCzv3ywQXCSHeivhaVakTHBgtrNktK6v
- jzsFwkpsa9sJ8fTCPfKMVe43GG6i3xjMN2Ytu+vHg9qFQpTFLnPEb0n4zHu/vwNSWmIv
- NQXU1cUvIzi+9JA5HaEOX8VQGz7xMCd1TzQ2iyTI7b/MZiA0yJ7N5FIb98uA0KFlyLpX
- VWjgM9DrC+mivf0RA350bp5g1f/hltZ+TILGyX8HnxhGajfBBtx6TZpdd8RAcCCVzwhI
- Ho6g==
-X-Forwarded-Encrypted: i=1;
- AFNElJ+F9J+Rps5KdkX5Wlf1NPLzCvufTdZJ95ho/+GKZ5XWXCJnIlCYPAyzjV+HAU2F877XTvw=@lists.linux.it
-X-Gm-Message-State: AOJu0YxzhQbPhAbHUuv8ieBisirqHWpiqbFnOHJkTgJ8e3qHUs62ad2E
- IIOo1vy4jDOdrcrmCG+ADW3CpvjDRZlWdqmIix7Tl2pM6iGjROS3aaYUm3JujIvX5QH0zhN0l2D
- 6+NkFM2JUrA==
-X-Gm-Gg: AeBDiesoJ98yDLL5lB6pOWqzea2mLySaPSssq53vxjkCEk6u5MjdgunLeqAh7LjutBr
- N4PolIPOQbWUHcfJaRVqcCKs6LFa8jzZntGyjNIsjSepT0KZq1nQnVjZiKGr2uct+ctoNG8f7kL
- nmgTaGe75zhFAmuPBXAreb1JLSz4jl3fbZlg5h8/K3bQeHSm7E8E2PjaFl5GKaI51060MERSJgG
- ovJoNW8LCkmrrNRrvXPq5GvYDTIAMy4mB/MLMxH27QYnwdOyacTmaFRqIXuZiFSmflSvCtqKt+N
- goVLAGIHzLHvGkNrEuXcdQ+g3bGRzlo4c84DMnyqZtWEs4lXyqnbnzNxvUAGe2l4bJvshLYnfey
- 6sgI2EtORcLErEoceaCx3MhgoJ0jzihhUIXDt2Z51oTqN02v23FaG4AEI9exVhJuEeZptioEzfp
- D7QA3AUfZ8G30nl5hI4twJ9Yr1Dq9P5poTUuP5PsqT5Lvz+XT6JKKQYO7PSNiJGu7tb1ocgI/ou
- QO3baik8pq1QZ5lajX9Z2bCuOwGvdYpev9XB4NWB/L6dm+W+U44EFMe
-X-Received: by 2002:a05:600c:35d6:b0:48a:53ea:13eb with SMTP id
- 5b1f17b1804b1-48e51f21e88mr114694995e9.5.1778139179325; 
- Thu, 07 May 2026 00:32:59 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
- [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-48e53895effsm100395015e9.3.2026.05.07.00.32.58
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 07 May 2026 00:32:59 -0700 (PDT)
-Message-ID: <69fc402b.050a0220.36c077.a5aa@mx.google.com>
-To: "Cyril Hrubis" <chrubis@suse.cz>
-In-Reply-To: <aftt_phyFZNngJ4e@yuki.lan>
-Date: Thu, 07 May 2026 07:32:58 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5556960066C
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 09:34:24 +0200 (CEST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 646LRdSu2332110
+ for <ltp@lists.linux.it>; Thu, 7 May 2026 07:34:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+ content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=L78WdfHe4ZtzN56zvYaumhTlzCiOGORD8XLIITnRR
+ FM=; b=mdUOQ0ZAekvRIZYGNtf85mfsg13E5qId5dUUVt8+vaoKxMn3sDa+f6nBb
+ cmW8TSEE7sd1nkLGqqSXDEIgdxs0576UTrTHt+KKIthc7ubIx5kRX7pP/ei4hk0U
+ bWsiFF2GYlznUUpfub91rLkSrITjaeGx5f4SghXxuBfWMlrBVrPrDQb4Q1z/xrmg
+ 9c24TWQFB4FIhLeh4sIPK782EuiacsD25IzV26rCFddtDJzxeiXB0mOJbtqw2v/l
+ uVYPnhutx6AFIali16to92uxcqRtItXSxF9zRAOfzhe8NVAP8IHBpfuz2T3BGolw
+ 95IGecyiDM74nLEDpL6rSu+SISu1Q==
+Received: from ppma22.wdc07v.mail.ibm.com
+ (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dw9xxutxd-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 07 May 2026 07:34:22 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 6477Ohs4018183
+ for <ltp@lists.linux.it>; Thu, 7 May 2026 07:34:21 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4dwuywa2gb-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 07 May 2026 07:34:21 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
+ [10.20.54.105])
+ by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 6477YJ9u47579542
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Thu, 7 May 2026 07:34:19 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 9CC6A20049
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 07:34:19 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 0B02D20040
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 07:34:19 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.43.69.33])
+ by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 07:34:18 +0000 (GMT)
+From: Sachin Sant <sachinp@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Thu,  7 May 2026 13:04:14 +0530
+Message-Id: <20260507073417.64123-1-sachinp@linux.ibm.com>
+X-Mailer: git-send-email 2.39.1
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTA3MDA2OCBTYWx0ZWRfX4lbCkiVWYjnQ
+ xJP4EuXOGk9MEq48fbb22FbNzEdEHKbFkSUB3Z9cJDCW/ie90/yWjnJK398XmELjji/oRl0JBPZ
+ KO1Q/VeMOEmaPa5nJSVw0L2hStY3/n/FRx2eekz4vEJHsxBc5o6LfheCtViTTkgy+6Od52uFlLN
+ iY4rF1IjCD/MkyTnanix+V6SksLm9MydUsvCmqkcym6tVVXdVEKpni30br1ZO5Jjrfv8bNyWjsV
+ NCBv33ZUxxtDQhenD8KNu7K+i+M8fHDy8IRR/uRHRRpr/NCdliE8dH0g7PD4GRraziSEnH7YpVv
+ Q5p4s4ZM4kZFGuPv3NowFS/i9phiwOeiit4+CrTNtlx0HmCrDrObwz9btwoMteSU6hR1FStU+IR
+ yral98FL4ufgkbqo0oYhyFmqN/7pbOdRB5CgBMqvH3JF0kSO6WVJYxjP0R/Ps6t3CdyFUwifGzc
+ nnEVWmy2nCZx34Z1I5A==
+X-Proofpoint-ORIG-GUID: bh7OTW2NwKzMxiFZLLfjkebsrBKMyKu5
+X-Proofpoint-GUID: bh7OTW2NwKzMxiFZLLfjkebsrBKMyKu5
+X-Authority-Analysis: v=2.4 cv=ctWrVV4i c=1 sm=1 tr=0 ts=69fc407e cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=V8glGbnc2Ofi9Qvn3v5h:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=1XWaLZrsAAAA:8
+ a=IcgqxEhh3HAFs1W3iaAA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-05-06_02,2026-05-06_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 clxscore=1015
+ suspectscore=0 impostorscore=0 spamscore=0 malwarescore=0 phishscore=0
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
+ definitions=main-2605070068
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/2] aio_cancel_6-1: Rewrite test
+Subject: [LTP] [PATCH v7 1/4] io_uring: Add io_uring04 test for vectored I/O
+ operations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,33 +109,294 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Add new test case io_uring04.c to validate IORING_OP_READV and
+IORING_OP_WRITEV operations with uniform buffer sizes.
 
-> Hi!
-> >  
-> >  	/* try to cancel the last one queued */
->            ^
-> 	   This comment is no longer true, right?
-> 
-> I guess that we should just remove it.
-> 
+Test performs:
+- Vectored write using multiple uniform buffers (4 x 1024 bytes)
+- Vectored read back into multiple uniform buffers
+- Data integrity verification across all vectors
 
-I can remove it before merge.
+Also add helper functions to io_uring_common.h:
+- io_uring_init_iovec_pattern(): Initialize iovec buffers with patterns
+- io_uring_clear_iovec(): Clear iovec buffers by zeroing data
+- io_uring_verify_iovec(): Verify data integrity between write/read iovecs
 
-Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+Update runtest/syscalls and .gitignore to include the new test.
+
+Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
+---
+V7 changes:
+- Declare fd as static with file scope.
+- Reset fd at the top of run(), and close it in cleanup()
+- Link to v6 https://lore.kernel.org/ltp/20260506183750.97191-1-sachinp@linux.ibm.com/T/#t
+
+V6 changes:
+- Split io_uring04.c into 3 independent tests
+- Link to v5 https://lore.kernel.org/ltp/69fb33a1.5d0a0220.337e29.6038@mx.google.com/T/#t
+
+V5 changes:
+- Add clear_iovec_buffers() at the top of run()
+- Link to v4 https://lore.kernel.org/ltp/20260416062302.15804-1-sachinp@linux.ibm.com/T/
+
+V4 changes:
+- Updated commit message to remove references to non-existent function
+- Removed extra blank line before test_writev_readv()
+- Link to v3 https://lore.kernel.org/ltp/20260416042531.81093-1-sachinp@linux.ibm.com/T/
+
+V3 changes (2/3 io_uring04 only):
+- 1/3 and 3/3 from the patch series already merged.
+- Merged prepare_read_buffers() and clear_iovec_buffers() into
+single clear_iovec_buffers() function
+- Merged io_uring_init_buffer_pattern() into unified
+init_iovec_buffers() function that supports both rotating and
+simple character patterns
+- Removed io_uring_init_buffer_pattern() from io_uring_common.h as it's
+only used in io_uring04.c
+- Link to V2: https://lore.kernel.org/ltp/b4653e3f-ac9b-4a24-8d3f-51677c488e8c@linux.ibm.com/T/
+
+V2 changes:
+- Use guarded buffer(including iovec) allocation
+- Move setup/cleanup code from run to appropriate path
+- Add a function to map the OP to the enum name
+- Define and use generic cleanup functions
+- Add a buffer size 0 in the middle of the iovec
+- Simplify setup_io_uring_test to use common code.
+- Link to V1: https://lore.kernel.org/ltp/20260320124742.75946-1-sachinp@linux.ibm.com/T/#t
+
+Changes after RFC patch series:
+- Addressed review comments
+- Refactored io_uring01 test to use common code
+- Removed git tags
+- Link to RFC: https://lore.kernel.org/ltp/20260318110328.52031-1-sachinp@linux.ibm.com/T/#t
+
+---
+ runtest/syscalls                              |  1 +
+ testcases/kernel/syscalls/io_uring/.gitignore |  1 +
+ .../kernel/syscalls/io_uring/io_uring04.c     | 89 +++++++++++++++++++
+ .../syscalls/io_uring/io_uring_common.h       | 86 ++++++++++++++++++
+ 4 files changed, 177 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/io_uring/io_uring04.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index f790e8f84..6b047b5fd 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1904,6 +1904,7 @@ membarrier01 membarrier01
+ io_uring01 io_uring01
+ io_uring02 io_uring02
+ io_uring03 io_uring03
++io_uring04 io_uring04
+ 
+ # Tests below may cause kernel memory leak
+ perf_event_open03 perf_event_open03
+diff --git a/testcases/kernel/syscalls/io_uring/.gitignore b/testcases/kernel/syscalls/io_uring/.gitignore
+index 9382ae413..36cd24662 100644
+--- a/testcases/kernel/syscalls/io_uring/.gitignore
++++ b/testcases/kernel/syscalls/io_uring/.gitignore
+@@ -1,3 +1,4 @@
+ /io_uring01
+ /io_uring02
+ /io_uring03
++/io_uring04
+diff --git a/testcases/kernel/syscalls/io_uring/io_uring04.c b/testcases/kernel/syscalls/io_uring/io_uring04.c
+new file mode 100644
+index 000000000..652a2b2cb
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_uring/io_uring04.c
+@@ -0,0 +1,89 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 IBM
++ * Author: Sachin Sant <sachinp@linux.ibm.com>
++ */
++/*\
++ * Test basic IORING_OP_READV and IORING_OP_WRITEV operations.
++ *
++ * This test validates basic vectored read and write operations using
++ * io_uring with uniform buffer sizes. It performs:
++ * 1. IORING_OP_WRITEV - Writing data using multiple uniform buffers
++ * 2. IORING_OP_READV - Reading data back into multiple uniform buffers
++ * 3. Data integrity verification across all vectors
++ */
++
++#include "io_uring_common.h"
++
++#define TEST_FILE "io_uring_test_file"
++#define QUEUE_DEPTH 2
++#define NUM_VECS 4
++#define VEC_SIZE 1024
++
++static struct iovec *write_iovs, *read_iovs;
++static struct io_uring_submit s;
++static sigset_t sig;
++static int fd = -1;
++
++static void run(void)
++{
++	int total_size = NUM_VECS * VEC_SIZE;
++
++	fd = -1;
++
++	io_uring_init_iovec_pattern(write_iovs, NUM_VECS, 'A', 1);
++	io_uring_clear_iovec(read_iovs, NUM_VECS);
++
++	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT | O_TRUNC, 0644);
++
++	tst_res(TINFO, "Writing %d bytes using %d vectors",
++		total_size, NUM_VECS);
++	io_uring_do_vec_io_op(&s, fd, IORING_OP_WRITEV, write_iovs, NUM_VECS,
++			      0, total_size, &sig);
++
++	SAFE_FSYNC(fd);
++
++	tst_res(TINFO, "Reading %d bytes using %d vectors",
++		total_size, NUM_VECS);
++	io_uring_do_vec_io_op(&s, fd, IORING_OP_READV, read_iovs, NUM_VECS,
++			      0, total_size, &sig);
++
++	io_uring_verify_iovec(write_iovs, read_iovs, NUM_VECS);
++
++	SAFE_CLOSE(fd);
++}
++
++static void setup(void)
++{
++	io_uring_setup_supported_by_kernel();
++	sigemptyset(&sig);
++	memset(&s, 0, sizeof(s));
++	io_uring_setup_queue(&s, QUEUE_DEPTH, 0);
++}
++
++static void cleanup(void)
++{
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++
++	io_uring_cleanup_queue(&s, QUEUE_DEPTH);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_tmpdir = 1,
++	.bufs = (struct tst_buffers []) {
++		{&write_iovs, .iov_sizes = (int[]){VEC_SIZE, VEC_SIZE,
++						   VEC_SIZE, VEC_SIZE, -1}},
++		{&read_iovs, .iov_sizes = (int[]){VEC_SIZE, VEC_SIZE,
++						  VEC_SIZE, VEC_SIZE, -1}},
++		{}
++	},
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/kernel/io_uring_disabled", "0",
++			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
++		{}
++	}
++};
+diff --git a/testcases/kernel/syscalls/io_uring/io_uring_common.h b/testcases/kernel/syscalls/io_uring/io_uring_common.h
+index aa31339fb..523f686f8 100644
+--- a/testcases/kernel/syscalls/io_uring/io_uring_common.h
++++ b/testcases/kernel/syscalls/io_uring/io_uring_common.h
+@@ -275,4 +275,90 @@ static inline void io_uring_do_vec_io_op(struct io_uring_submit *s, int fd,
+ 		expected_size);
+ }
+ 
++/*
++ * Initialize iovec buffers with pattern
++ * @iovs: array of iovec structures
++ * @nvecs: number of iovecs
++ * @base_char: base character for pattern (must be 'A'-'Z')
++ * @use_rotating: if non-zero, use rotating pattern; if zero, use simple repeat
++ */
++static inline void io_uring_init_iovec_pattern(struct iovec *iovs, int nvecs,
++					       char base_char, int use_rotating)
++{
++	int i;
++	size_t j;
++	char *buf;
++
++	if (base_char < 'A' || base_char > 'Z')
++		tst_brk(TBROK, "base_char must be 'A'-'Z', got '%c'",
++			base_char);
++
++	for (i = 0; i < nvecs; i++) {
++		if (iovs[i].iov_len == 0)
++			continue;
++
++		buf = (char *)iovs[i].iov_base;
++		if (use_rotating) {
++			/* Each vector has a different rotating pattern */
++			for (j = 0; j < iovs[i].iov_len; j++)
++				buf[j] = 'A' + ((base_char - 'A' + i + j) % 26);
++		} else {
++			for (j = 0; j < iovs[i].iov_len; j++)
++				buf[j] = 'A' + ((base_char - 'A' + i) % 26);
++		}
++	}
++}
++
++/*
++ * Clear iovec buffers by zeroing all data
++ */
++static inline void io_uring_clear_iovec(struct iovec *iovs, int nvecs)
++{
++	int i;
++
++	for (i = 0; i < nvecs; i++)
++		memset(iovs[i].iov_base, 0, iovs[i].iov_len);
++}
++
++/*
++ * Verify data integrity between write and read iovecs
++ * Stops test execution on verification failure
++ */
++static inline void io_uring_verify_iovec(struct iovec *write_iovs,
++					 struct iovec *read_iovs, int nvecs)
++{
++	int i;
++	size_t j;
++
++	for (i = 0; i < nvecs; i++) {
++		if (write_iovs[i].iov_len != read_iovs[i].iov_len) {
++			tst_brk(TFAIL,
++				"iovec %d length mismatch: write=%zu read=%zu",
++				i, write_iovs[i].iov_len, read_iovs[i].iov_len);
++		}
++
++		if (memcmp(write_iovs[i].iov_base, read_iovs[i].iov_base,
++			   write_iovs[i].iov_len) != 0) {
++			for (j = 0; j < write_iovs[i].iov_len; j++) {
++				char *wbuf = (char *)write_iovs[i].iov_base;
++				char *rbuf = (char *)read_iovs[i].iov_base;
++
++				if (wbuf[j] != rbuf[j]) {
++					tst_res(TINFO,
++						"Vector %d: first mismatch at "
++						"offset %zu: wrote 0x%02x, "
++						"read 0x%02x",
++						i, j,
++						(unsigned char)wbuf[j],
++						(unsigned char)rbuf[j]);
++					break;
++				}
++			}
++			tst_brk(TFAIL, "data mismatch in vector %d", i);
++		}
++	}
++
++	tst_res(TPASS, "data integrity verified across %d vectors", nvecs);
++}
++
+ #endif /* IO_URING_COMMON_H */
+-- 
+2.39.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
