@@ -4,89 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93F77CD3442
-	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 16:57:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1778173063; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=5bEHY09mTjNfxqbmDxLkwDBwAIh3gcTofFa7yWdJM5k=;
- b=jMzVhEmPC8EkC7GoVJHsCLLJMKfmIMZ6vgNb7Wl7dpD3dcF9XZXHaOga619tjdtbDMz+i
- pJT3okXS2qLbDzeopPIOvRjn6qxr1JWpsleU5RQd7ey7sJzk8az1jg+tBMdo4w0EKyt/Nyg
- jgaEFxrhxWv/nskEzryWYPZDA7Zlf9o=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0136CD343F
+	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 18:11:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D18193E6173
-	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 18:57:43 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 70AB43E6A71
+	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 20:11:13 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EF2633E1F33
- for <ltp@lists.linux.it>; Thu,  7 May 2026 18:57:20 +0200 (CEST)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0107D3C7F2A
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 20:10:51 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 191A41400971
- for <ltp@lists.linux.it>; Thu,  7 May 2026 18:57:20 +0200 (CEST)
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-488af9fdaa7so7087485e9.1
- for <ltp@lists.linux.it>; Thu, 07 May 2026 09:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1778173039; x=1778777839; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=gwxlQ+HCKAwTcm7GBhTxeztsEbFN3Knu22gyYl/yVAw=;
- b=ZX8wfIZU/Qw25WWCzqKrE4SdvcnRwA6tfmmD33gZ5izoe0165/SV4L7CiJXnVKKwIT
- gBkaoIOMNTB/wJfXgev+4JE1jIgZnebMk7uXBCRodaJ6psHdGMZaFYSjug8ZKngNI+N2
- FUfIWXXY57oe9jaXbsYcXirIM+ZMYrU/MU/0w87mtHDuYIr5iiEN6TV2grfV8+uzfifi
- nEbx32rhnl3QviiSc8s7ggsxfyhVLALqsUyArWbC+TGyfTbJRpXTJKqx3L2Mj84f4aoA
- F055KZsImrTQ5P9w50DuWG1SvfXKFQRlNNhpT3DIr6k0F1uzFKqm6tOAPU6FjBhCY3pT
- zVcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1778173039; x=1778777839;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=gwxlQ+HCKAwTcm7GBhTxeztsEbFN3Knu22gyYl/yVAw=;
- b=JNdgjWHf6rA9DP5hYXVywBqEn96diOq5RFuz4KP8kxA8j4G8meTnddJfuWLUfOKq2c
- G6BVj5iQxiATjudt3Xwr0wPePWWw4lD6nUH1/bRKaCxKjscd0rs7mmamYX2uwscsHzam
- RCBuHf1kRUJDANfrafW9fMoeUNING6BRZOhGN0uAruW6xwZ7uJXDrM0K4/CTEuT6HpTi
- A/KQYmcFFoRHXLpwXT2F1kylQ0rGt+U9givBpI1t0f0NKXYA24xeqbOsprr/sLqNdBgO
- i350rvTQtSDygtpvb2d5Y/5jEq+vG5HFJucgDN82yIhrWX+WNjKCk1gGKi0MLx89YCU3
- nvHg==
-X-Forwarded-Encrypted: i=1;
- AFNElJ/f0CTy738XdeHNryqn9+zUbqtgNUAOl5ju5fVf/N/kAP1s89sxrI3SSaSUr3/sxUrIL6s=@lists.linux.it
-X-Gm-Message-State: AOJu0Yzu6AsxwlvWnhxbKqvpwMXsZSopRu93LstlgO7OgPRshA9QXUUK
- 7PjrAkJv/EHcy512FFWrG92ao0/+ZETB2lbmLcs57jm4AsUjnOoYyaqIZjn1zo+JZYM=
-X-Gm-Gg: AeBDieu7fJ8veqxEkWpOhgjRCijY1jTiyXjp6SVgrheDevXYf+nsxzYpKaeWzj/Boyd
- XSSgD167Aha1psTjbiog8n65M87Uj+K8mYgRXkSYqSiYjYHcHGnQImSRjcDWDcOUw7Bi3OyAk/M
- WQ/w8lRTB7c+uhx4vqQEBInbngDb7S87lZPVNj1ShLvZV6msGK+cKfU2PS8fz8pAwz6lqMu3e0C
- DoI7UavspPxFxpynDA0cFhBJSMtb/EWFpLBrCQauDey8b/xICTctFa+/fLWw7IWWmKOovfAtcir
- KHZnjGFQ/qwRMzg89lbleeMs2Lz5qGPKvnpc4oSVSOR9By3wKtX0tRR0wTHaWtiFSsuBNfDVxPh
- 09gmD+ZNs9nUKUXEarqEzngCFBtWcIBpV25g+fDZm3XjjJlgTrNRD0IsbbsGHvR7SyBHCt3rjFZ
- cTvgV/Sqmjz8PBIZpMtLHm8F+yYzwsxF5vPQxEs5uGCcornv8cJCOyAhjVBvp3MbM43i1IUqyvQ
- EAdDsJ/XtFCF25bJDBZdZrg6ZtxnrZQTY4=
-X-Received: by 2002:a05:600c:3f18:b0:48e:5990:9698 with SMTP id
- 5b1f17b1804b1-48e5990978bmr99840535e9.24.1778173039376; 
- Thu, 07 May 2026 09:57:19 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
- [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-48e5389da63sm138079825e9.4.2026.05.07.09.57.18
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 07 May 2026 09:57:19 -0700 (PDT)
-Message-ID: <69fcc46f.050a0220.abd0.4550@mx.google.com>
-To: "Cyril Hrubis" <chrubis@suse.cz>
-In-Reply-To: <afylLJCi9a-FELwp@yuki.lan>
-Date: Thu, 07 May 2026 16:57:18 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DC7CD1000482
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 20:10:50 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8D42666EA6;
+ Thu,  7 May 2026 18:10:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1778177449; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=zzWqHKtIfqNkNAn9hxwyxpHeHOoc5pCfpsY6/90Ko7g=;
+ b=hWLVJv8h8WG6cv9Uj4d1PCu1BhIGrspsTReBuVzUloA7/sYiJWu909x6z2vaj6LdU0Gtar
+ G0lBZXzfa7Flzz5LmSPQ/4nQbwUWWRFGG0rqtYevRcHLl7KMdKBv+o39ANnzGjad0j+Eic
+ nskNbR0+ssXdO5atwCzcPXo1lwCOjhQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1778177449;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=zzWqHKtIfqNkNAn9hxwyxpHeHOoc5pCfpsY6/90Ko7g=;
+ b=49o2WNuhHrhNGame+/SgGeBFhdqIamrAIknoTxMVebM8cRYDAIhtl6w6ZM8lsb5QdvYiqX
+ 4So5Urf9uZ4nk4Cg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1778177449; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=zzWqHKtIfqNkNAn9hxwyxpHeHOoc5pCfpsY6/90Ko7g=;
+ b=hWLVJv8h8WG6cv9Uj4d1PCu1BhIGrspsTReBuVzUloA7/sYiJWu909x6z2vaj6LdU0Gtar
+ G0lBZXzfa7Flzz5LmSPQ/4nQbwUWWRFGG0rqtYevRcHLl7KMdKBv+o39ANnzGjad0j+Eic
+ nskNbR0+ssXdO5atwCzcPXo1lwCOjhQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1778177449;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=zzWqHKtIfqNkNAn9hxwyxpHeHOoc5pCfpsY6/90Ko7g=;
+ b=49o2WNuhHrhNGame+/SgGeBFhdqIamrAIknoTxMVebM8cRYDAIhtl6w6ZM8lsb5QdvYiqX
+ 4So5Urf9uZ4nk4Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5198C593A7;
+ Thu,  7 May 2026 18:10:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id a9ukEKnV/Gm3EwAAD6G6ig
+ (envelope-from <rbranco@suse.de>); Thu, 07 May 2026 18:10:49 +0000
+From: Ricardo Branco <rbranco@suse.de>
+To: ltp@lists.linux.it
+Date: Thu,  7 May 2026 20:10:39 +0200
+Message-ID: <20260507181045.19489-1-rbranco@suse.de>
+X-Mailer: git-send-email 2.54.0
+MIME-Version: 1.0
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; TO_DN_SOME(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.de:email,
+ suse.de:mid]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] userfaultfd: Add helper for checking UFFD feature support
+Subject: [LTP] [PATCH v7 1/2] memfd_create: move sys_memfd_create() to
+ lapi/memfd.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,34 +102,101 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it, linuxtestproject.agent@gmail.com
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> The commit is there:
-> 
-> commit 1840ee23d172b5ab04cca7c2acfa48755b041911
-> Author: Li Wang <li.wang@linux.dev>
-> Date:   Fri Jan 23 19:54:19 2026 +0800
-> 
->     userfaultfd05: require CONFIG_HAVE_ARCH_USERFAULTFD_WP
+Add the static inline wrapper to include/lapi/memfd.h and include the
+required headers so other tests can reuse it.
 
-sigh. Im wondering why it didn't catch it, this is the basics.
+Also fix some minor issues detected by make check.
 
-I think we need to separate the logical review from everything
-that can be done with a linter. I will explore this possibility
-in the next weeks when I will have more time.
+Signed-off-by: Ricardo Branco <rbranco@suse.de>
+---
+ include/lapi/memfd.h                                      | 8 ++++++++
+ testcases/kernel/syscalls/memfd_create/memfd_create01.c   | 1 -
+ .../kernel/syscalls/memfd_create/memfd_create_common.c    | 5 -----
+ .../kernel/syscalls/memfd_create/memfd_create_common.h    | 4 +---
+ 4 files changed, 9 insertions(+), 9 deletions(-)
 
-Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+diff --git a/include/lapi/memfd.h b/include/lapi/memfd.h
+index 57b6cd83d..46ccb0a3f 100644
+--- a/include/lapi/memfd.h
++++ b/include/lapi/memfd.h
+@@ -6,6 +6,9 @@
+ #ifndef LAPI_MEMFD_H__
+ #define LAPI_MEMFD_H__
+ 
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++
+ /* flags for memfd_create(2) (unsigned int) */
+ #ifndef MFD_CLOEXEC
+ # define MFD_CLOEXEC             0x0001U
+@@ -47,4 +50,9 @@
+ #define MFD_HUGE_16GB (34 << 26)
+ #endif
+ 
++static inline int sys_memfd_create(const char *name, unsigned int flags)
++{
++	return tst_syscall(__NR_memfd_create, name, flags);
++}
++
+ #endif /* LAPI_MEMFD_H__ */
+diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create01.c b/testcases/kernel/syscalls/memfd_create/memfd_create01.c
+index 73f6b01e8..28ad04a86 100644
+--- a/testcases/kernel/syscalls/memfd_create/memfd_create01.c
++++ b/testcases/kernel/syscalls/memfd_create/memfd_create01.c
+@@ -212,7 +212,6 @@ static void test_share_open(int fd)
+ 	SAFE_CLOSE(fd2);
+ }
+ 
+-
+ static const struct tcase {
+ 	int flags;
+ 	void (*func)(int fd);
+diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
+index a52b02a56..63e8daac5 100644
+--- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
++++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
+@@ -24,11 +24,6 @@
+ 
+ #include "memfd_create_common.h"
+ 
+-int sys_memfd_create(const char *name, unsigned int flags)
+-{
+-	return tst_syscall(__NR_memfd_create, name, flags);
+-}
+-
+ int check_fallocate(const char *filename, const int lineno, int fd,
+ 			int mode, off_t offset, off_t len)
+ {
+diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.h b/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
+index 60ad895fe..df809d6c7 100644
+--- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
++++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
+@@ -50,7 +50,7 @@
+ 	check_munmap(__FILE__, __LINE__, (p), (length))
+ 
+ #define CHECK_MFD_HAS_SEALS(fd, seals) \
+-	check_mfd_has_seals(__FILE__, __LINE__, (fd), (seals));
++	check_mfd_has_seals(__FILE__, __LINE__, (fd), (seals))
+ 
+ #define CHECK_MFD_ADD_SEALS(fd, seals) \
+ 	({int r = SAFE_FCNTL((fd), F_ADD_SEALS, (seals)); \
+@@ -101,8 +101,6 @@ int mfd_flags_available(const char *filename, const int lineno,
+ 
+ int get_mfd_all_available_flags(const char *filename, const int lineno);
+ 
+-int sys_memfd_create(const char *name, unsigned int flags);
+-
+ int check_fallocate(const char *filename, const int lineno, int fd,
+ 			int mode, off_t offset, off_t len);
+ int check_fallocate_fail(const char *filename, const int lineno, int fd,
+-- 
+2.54.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
