@@ -4,83 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C233CCD3427
-	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 11:57:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE598CD343F
+	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 11:58:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 523833CC6A7
-	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 13:57:54 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9FDDF3E5F70
+	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 13:58:24 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AA4A43CC6A7
- for <ltp@lists.linux.it>; Thu,  7 May 2026 13:57:35 +0200 (CEST)
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com
- [IPv6:2607:f8b0:4864:20::f44])
+ by picard.linux.it (Postfix) with ESMTPS id EDB1E3E2C9F
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 13:58:06 +0200 (CEST)
+Received: from mail-dy1-x1341.google.com (mail-dy1-x1341.google.com
+ [IPv6:2607:f8b0:4864:20::1341])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DC2501000521
- for <ltp@lists.linux.it>; Thu,  7 May 2026 13:57:34 +0200 (CEST)
-Received: by mail-qv1-xf44.google.com with SMTP id
- 6a1803df08f44-8b4298d271fso10380026d6.3
- for <ltp@lists.linux.it>; Thu, 07 May 2026 04:57:34 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5BB7A14002D1
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 13:58:06 +0200 (CEST)
+Received: by mail-dy1-x1341.google.com with SMTP id
+ 5a478bee46e88-2ba9c484e5eso756511eec.1
+ for <ltp@lists.linux.it>; Thu, 07 May 2026 04:58:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1778155054; x=1778759854; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1778155085; x=1778759885; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=TI8v0U+zjQaWKE37ISSgxeRyL27CCJ7yO/YBYFImK8A=;
- b=ppH69GvBp+JTsdb1jQZn09aJxczzdq/TLIyjCyVWFHx66oSsMkqGUYvr9M8pZYUuA4
- 8V8ZDKYtFAGvbzw03feNZnc9CRYyThAwL++T2uUcxD2dacTSzGaPtsDDqn0ZmUjhfYmf
- IcdK4keMgDK23h/Og68dWcAOBFjBYPQBykGuilFo5Kj+lTZuyHAo2K/JviwXljxeslkN
- ce4a7vBZZmMOcMhAa7aY5GfpanpAurI4QDVvGCT2LDbHfmFVL9eqfRUYeKqhYkNZzCf2
- k9/y15WlnnsahPq01NfT/espp5Lgays1NNSw+jL/6c5h/70A7Q1WtD0BDyDGf02e1rPN
- TUFQ==
+ bh=m/lOjR8KcZflpG0+1dXLATN/26v9ZtlHwrMP0hGHYyg=;
+ b=COnDDm8GVnmLGXaiGZlac8UuJuRDMg12fR2eLVrNw+2IdpHXFgFTDg/fAqy7GApoYi
+ 7V9gtxHNecOzzhA9A7IwxQaD9J+2K5wTj0GxgwAxK65NxB3yReWjZFdhTXTYDyKiT3w1
+ NPhiEku2aZ9wAuhsslBE8fnSdaCSQdhn3uMjNq76EPqM5ncEixtRNCVCayORLG8kczu/
+ ZvKIKkx4wBLDY6WZtmqlMim68pTYICKP7oEl2gMYeeveR8T9O6gTI48cRz0ZbNsjanWw
+ Ty3HKUDwu2Ge2vHxnp2/ZrBpGwZ799RJ3HML1R+kw29aWzQKk4D+083ZCfRU7jMNxML+
+ 1IqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1778155054; x=1778759854;
+ d=1e100.net; s=20251104; t=1778155085; x=1778759885;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=TI8v0U+zjQaWKE37ISSgxeRyL27CCJ7yO/YBYFImK8A=;
- b=bKzETgxenTRQy6fgOoJDglpk5G1y8bq4xf5k5t09JuZrLSPoFMBG2TQN/LYtPq6Mwf
- Ch5ObX1TsemS+lSCIEtR9ud6ruVrpaajndU8PnGCh2jJvkTqusWayMY9644/ANeA5nq3
- UUPHniuTki8MlJ5Hnq/PoW05F6/Q4q6jDFKjkDpVTTWZXM8MncRAk9iAdFC50CZWYWqe
- iB68u7u8pzGoAj40qAtILCsAFRz3J3cdR150oexPZNIOCQh2nBpuaaCsZ0wlKGixYEOf
- cy6YyC5GBSDSabODAI+yP/GyRyooyu9UuMUlidWmJkuw9f5ZrLbapAC3Bm/GqbtNHrh8
- oeZw==
-X-Gm-Message-State: AOJu0YzG+BFpCFidO0LBzt/cXzYwDgMAQYKUOBzscKJ/HUFeQIvCCdDD
- qy1cXCxLst0Zklq4j5O6XeXptGHwlx29Xtg5TpN6nICLwc+3JJNBkg0c
-X-Gm-Gg: AeBDievFHZiNBSL1NP0JRC5MBv5G1wB4HcONOgwIpZ5MIgmao6x15W8UWsOixHmyRgm
- jmwXe8sDZELoW6RqKfBNnlJtneZbm5nBbRiyBWwqEIC/Jqpbh5ERzripzpv7DYRwGR+UHWW/WUl
- Jep3IJcvyhjm29Qiyk00rDsDaDtpx7tAeDi+BOTPnugCX5MzY16/qtK3sQdMSntBJs14Btr2Nnr
- IB3u6vA44sXBIIk3sJZauNKpJUm5ZlbHG8GW8K4qs+wx6kIV7nmLwXd8Xtbm+VNcnOmbyqztBPY
- Re0ROQbqE76D/12U5YFosKd3jlJaLYUcz9AkjAzrmdcAYGyPfAUK9wJJzeP2JioTegPVFEuUSKk
- x06IFv3n6g5arcqTYowEmqmMrsYwuscORntoaY7DZNpVp+xDlUmQ/Xxj8esZDpZchL+nXKaBPpf
- uWDdpX2eyKh9TBxGSECC7pQMdgEwM3bSyY1zcQ2EsCzhECP5UbrNknZhiFBnZjZ858DSWzukBbY
- TjWxJiawBfek1GyDeqjApAdzslQK/q8bym7+BCf5SrQ5RKFLSqUpn47irI=
-X-Received: by 2002:a05:6214:5544:b0:8b0:2017:958e with SMTP id
- 6a1803df08f44-8bc42a704b5mr111950726d6.13.1778155053590; 
- Thu, 07 May 2026 04:57:33 -0700 (PDT)
+ bh=m/lOjR8KcZflpG0+1dXLATN/26v9ZtlHwrMP0hGHYyg=;
+ b=aD6YipBRFj8VccfLgOvzd0tUDqqf92aDaxCyy3PHUtnK+M42jf0WABv64OmQGN59um
+ 1KCznZrpiXjk8S/XAem7GQSfkLZloNdykSR8Sp1AYkf/5sL4Rq9l+/u0wtzlj/GxsUPY
+ 7kqjxMdf1hGU+aJyngwJGQcCxGodzYe9qTNph5s1IlcyCiWvowl8nzSNc2613TWx5daY
+ o5XZPEDGUfAA1haLrSbE0+Y7a3nPFrO6470/pmMuLdvy3jY9Gf3f8cchB4A9S5AZJkG3
+ uCms4NqWg4OIZ6k3q7snuwTSJrZlTU5Zel55bIIzx6bd3fDVWEP7B80qVFiDNj9gNxsH
+ 799w==
+X-Gm-Message-State: AOJu0YxwLEfwWVnEEkpqqsO345o5tTjaEnOrBbGPjA0DWVD7W2HvuwZ3
+ kX3OkU2MzR0W33f72xgQ9FIwwG3HrOz09NMt6RIxoo0wdjGa1r5p5CBv
+X-Gm-Gg: AeBDiesS+uNbO9EBOCPqEH0/FCmSNwYEB44vzakx6Zfo40AOiuuG7ng+iLk3gRu+H6a
+ O19wGN/Md6m91rgx90VJvmvmTozq9NRxkFYqipjrCiHV/gTiyyehbW+8XUA/S4lJc4BDmUliSSY
+ gXkke2+GQ6lSpKQFfkKE+/M6F+8XLI0il0c8lxCftzD2cV/93Sv+hT2RaXXRxC4RVBcJ7yBCfgP
+ S3HXrMh/eG0NrCKYUIN3EjMtVGCrQu/OGQ7lrXjLeXPjNkBU2aBlMDWW3CktjOQM96aTcxdAa1Z
+ WQoCYInDCyvHBrMLUELheMrLGsQEmEdrckneAPXfxJ0N+L+VNkhURdFfw5tUvOicNOGphFME+fG
+ 6XF7ZpbJp87+482hSCgiGo5rRCu+GseOBoqE65VTtLPIF6ZdY69EjCUx6z879/Ppb0xim1W9dM1
+ pUsntWtBwi4HcDch6cSoGMvrXWs9kjlUfOyj4nPTyOCafcVxxy3oPzlPMcd+/FjNelECl6TjpXC
+ Od7lg0BZTPYjM50OflRpzUSAfHsH7gCdgMU9EszJtEWpmRZXNSPYyjGl/ZIcdmD
+X-Received: by 2002:a05:693c:3015:b0:2ef:2878:7ade with SMTP id
+ 5a478bee46e88-2f548b9d579mr4180950eec.15.1778155084452; 
+ Thu, 07 May 2026 04:58:04 -0700 (PDT)
 Received: from
- runnervmeorf1.l03qozouujiejn2dhmjp1n313d.cx.internal.cloudapp.net
- ([20.57.47.228]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8b538b1d953sm231904476d6.3.2026.05.07.04.57.33
+ runnervmeorf1.2sftis5shwvehknfm3w5ec0hue.phxx.internal.cloudapp.net
+ ([172.182.226.73]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-2f56cec592asm8274848eec.5.2026.05.07.04.58.03
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 07 May 2026 04:57:33 -0700 (PDT)
+ Thu, 07 May 2026 04:58:04 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Piotr Kubaj <piotr.kubaj@intel.com>
-Date: Thu,  7 May 2026 11:57:32 +0000
-Message-ID: <20260507115732.4031-1-linuxtestproject.agent@gmail.com>
+To: Li Wang <li.wang@linux.dev>
+Date: Thu,  7 May 2026 11:58:03 +0000
+Message-ID: <20260507115803.4007-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260507111145.112276-2-piotr.kubaj@intel.com>
-References: <20260507111145.112276-2-piotr.kubaj@intel.com>
+In-Reply-To: <20260507094643.47079-1-li.wang@linux.dev>
+References: <20260507094643.47079-1-li.wang@linux.dev>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] cpufreq.c: add new test for cpufreq sysfs interface
- validation
+Subject: Re: [LTP] ima: rewrite ima_mmap auxiliary with TST_NO_DEFAULT_MAIN
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,10 +96,30 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Piotr,
+Hi Li,
 
-On Thu, 7 May 2026, Piotr Kubaj wrote:
-> cpufreq.c: add new test for cpufreq sysfs interface validation
+On 2026-05-07, Li Wang wrote:
+> ima: rewrite ima_mmap auxiliary with TST_NO_DEFAULT_MAIN
+
+> +#define TST_NO_DEFAULT_MAIN
+>  #include "tst_test.h"
+
+> +	tst_reinit();
+> +	if (argc != 2)
+> +		tst_brk(TBROK, "usage: ima_mmap <filename>");
+> +
+> +	fd = SAFE_OPEN(argv[1], O_CREAT | O_RDWR, S_IRWXU);
+>  	file = SAFE_MMAP(NULL, MMAPSIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+>  	SAFE_CLOSE(fd);
+> +	/* Waiting until ima_violations.sh open and close file */
+>  	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+> +	SAFE_MUNMAP(file, MMAPSIZE);
+>  	tst_res(TPASS, "test completed");
+
+Correct pattern. Moving tst_reinit() before any framework use and
+switching to TST_NO_DEFAULT_MAIN properly fixes the IPC corruption.
+The checkpoint handshake inversion between the helper and the shell
+script is consistent.
 
 Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
 
@@ -109,7 +127,7 @@ Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
 Note:
 
 Our agent completed the review of the patch. The full review can be
-found at: https://patchwork.ozlabs.org/project/ltp/list/?series=503158
+found at: (not available)
 
 The agent can sometimes produce false positives although often its
 findings are genuine. If you find issues with the review, please
