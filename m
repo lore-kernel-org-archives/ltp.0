@@ -4,61 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A023CD3442
-	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 18:11:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0886ECD343F
+	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 18:32:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DD6433E6A69
-	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 20:11:31 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id DBF553E6A70
+	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 20:32:52 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E859A3E6A67
- for <ltp@lists.linux.it>; Thu,  7 May 2026 20:10:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 060DA3CAD2E
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 20:32:33 +0200 (CEST)
+Received: from mail-dy1-x1342.google.com (mail-dy1-x1342.google.com
+ [IPv6:2607:f8b0:4864:20::1342])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5E4C42002C7
- for <ltp@lists.linux.it>; Thu,  7 May 2026 20:10:55 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 28B3566EA5;
- Thu,  7 May 2026 18:10:51 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E1A98593A7;
- Thu,  7 May 2026 18:10:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id QH3cM6rV/Gm3EwAAD6G6ig
- (envelope-from <rbranco@suse.de>); Thu, 07 May 2026 18:10:50 +0000
-From: Ricardo Branco <rbranco@suse.de>
-To: ltp@lists.linux.it
-Date: Thu,  7 May 2026 20:10:40 +0200
-Message-ID: <20260507181045.19489-2-rbranco@suse.de>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AC7BB60048D
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 20:32:32 +0200 (CEST)
+Received: by mail-dy1-x1342.google.com with SMTP id
+ 5a478bee46e88-2f0d3e07e30so3047261eec.0
+ for <ltp@lists.linux.it>; Thu, 07 May 2026 11:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1778178751; x=1778783551; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=kGN5XxGAztbWKpFhmrvsjuuC0FURguLCGr+iBms6jDg=;
+ b=l0Qiqo0EH2pI7eMSQWAYqoEzQ7taLJCekFYds5TOSOyg/mJ0jgm0gsV1yqW76/ujay
+ /ZZw3DoWqKmc/6dTMX6GOIMl7eoxIueG4I7gfsaGGm4Nd3CPrFJLQoQo2FXKINLoKeJ3
+ KXdNA//WRArukP/hjc/Mxw7DJlUlYa6M3zTigWSmYWBKt8/r1EL0ppqd8T4AMwJP2Uae
+ i5LH1OMiAWy+4lRZFTB5gGLBwfIafwOO/3rjBiRuBKMvTZODv8X4dSe1K94DSn5zZrI2
+ a5UDiHFjOjlJvx6GadiZaC/bv8XEJ5cY+cb9NshsAUr6oTdezpQaVj4NQBFzAF5Auh/P
+ mEhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1778178751; x=1778783551;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=kGN5XxGAztbWKpFhmrvsjuuC0FURguLCGr+iBms6jDg=;
+ b=XKerqHRKT6KBl2o6d6sVUsHU+x5vtvFE84+M4z2H6+JCfBUzG4QnhYbYM3q5kJXlAo
+ 6zQzrxPJVm7FCbS6ts1ieXIAAccSDMyxC9PJsOvlY7gKvzDifYsi47AAPtSDGKxp6qFj
+ jRz56v40uGePTMZve3o7jsLnCEiuAU+GdszQsvyOi2vRMFNW25VMvcwp9wxjDAV+7Dag
+ tWn0hOw8fv2ReIiJNwGywzlKZGeG4exvZ7UZJC/eT5vKMkRFdZ8pDPO8QmNSZ88xgYJ0
+ I2TIDJxFfyaouHYbQu+/d6fQGTf30ex1Ok9Zc2cKh6GXCdYGp5eLEgTevEZeVJ7y1zDa
+ /EHg==
+X-Gm-Message-State: AOJu0Yynuld1GPk1GvlC+UCzs+pqdfoBJ/7tkKrFIE/Cs3STaDa6x8wk
+ nrhkEylvk6VLG/o8laoWAnChPGjOeumt3tBEOp1INx5s573MH2HF6KC/
+X-Gm-Gg: Acq92OFr7Kta6X21ApJVxaWgnksq8Yc5DwsCRKT90PAULJVeC/xX83za5K5H/G2tnly
+ Bz4jbY9omXNBJKZ4yapHdrZWPySAy3fF5pd5tzaekEIJa2YlcRg1rsQwqJvRaeOO+sitwyNbR6C
+ rPnccPdlEEaDQqPKenjf1geVM8QACrNZajLu6n/Mhfb521pRNJFPZQqf2qNGUxNsbbiMEPU3jKl
+ 8kawZab1CFh1JRNFlBx7JgwrYCobytbz3Hab16Xe9DmOxDeyLm4pS3T7w/ZnrfZ+VxxdnbsESTp
+ VkGXl9r6gtCgJN4hclACKhtml6hVK+gOdGCL65/zZ30OStGWX0Gm0GzWbTpz05YQ7Q0Kb9Niz8m
+ l2mM1Bg2c22kHS3pAq5B2+IYaifzjW8reONuSLevCGlpGJUkhSmRa/G8SPFdtJ/a/c++jaCasFI
+ VcQaqwDgt3f0Fw0JQPUVjBcmkrncqLG5bJo/+dgSkhAaOsxl1igFWbPMHVLTEVMQSRe+oM0LfR+
+ XsVcYbwKs63Qa1AMFTulNk2OY82Qe96eWNVdd9T6e6yCLyoVio0
+X-Received: by 2002:a05:7300:434b:b0:2f1:496c:94bf with SMTP id
+ 5a478bee46e88-2f54ac74875mr4149111eec.16.1778178750755; 
+ Thu, 07 May 2026 11:32:30 -0700 (PDT)
+Received: from
+ runnervmeorf1.1dshg3pmcm0u5kp2on5g3fpz3a.dx.internal.cloudapp.net
+ ([172.184.209.181]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-2f82eba9f4dsm114343eec.15.2026.05.07.11.32.30
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 07 May 2026 11:32:30 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Ricardo Branco <rbranco@suse.de>
+Date: Thu,  7 May 2026 18:32:27 +0000
+Message-ID: <20260507183227.4098-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260507181045.19489-1-rbranco@suse.de>
 References: <20260507181045.19489-1-rbranco@suse.de>
 MIME-Version: 1.0
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 28B3566EA5
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7 2/2] userfaultfd: Add new test using UFFDIO_CONTINUE
+Subject: Re: [LTP] memfd_create: move sys_memfd_create() to lapi/memfd.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,233 +90,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add test to exercise UFFDIO_CONTINUE on a shared-memory mapping with
-UFFD_PAGEFAULT_FLAG_MINOR. The test populates a memfd-backed page,
-drops only the PTEs with MADV_DONTNEED, verifies that the resulting
-fault is reported as MINOR, updates the page cache from the handler
-thread, and resumes execution with UFFDIO_CONTINUE.
-
-Signed-off-by: Ricardo Branco <rbranco@suse.de>
----
- include/lapi/userfaultfd.h                    |   1 +
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/userfaultfd/.gitignore    |   1 +
- .../kernel/syscalls/userfaultfd/Makefile      |   1 +
- .../syscalls/userfaultfd/userfaultfd07.c      | 155 ++++++++++++++++++
- 5 files changed, 159 insertions(+)
- create mode 100644 testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
-
-diff --git a/include/lapi/userfaultfd.h b/include/lapi/userfaultfd.h
-index 170dfadd4..4a25e7338 100644
---- a/include/lapi/userfaultfd.h
-+++ b/include/lapi/userfaultfd.h
-@@ -171,6 +171,7 @@ struct uffdio_zeropage {
- #ifndef UFFD_PAGEFAULT_FLAG_MINOR
- #define UFFD_FEATURE_MINOR_HUGETLBFS		(1<<9)
- #define UFFDIO_REGISTER_MODE_MINOR	((__u64)1<<2)
-+#define UFFD_PAGEFAULT_FLAG_MINOR	(1<<2)
- 
- #define _UFFDIO_CONTINUE		(0x07)
- #define UFFDIO_CONTINUE		_IOWR(UFFDIO, _UFFDIO_CONTINUE,	\
-diff --git a/runtest/syscalls b/runtest/syscalls
-index f790e8f84..9fea02cd8 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1784,6 +1784,7 @@ userfaultfd03 userfaultfd03
- userfaultfd04 userfaultfd04
- userfaultfd05 userfaultfd05
- userfaultfd06 userfaultfd06
-+userfaultfd07 userfaultfd07
- 
- ustat01 ustat01
- ustat02 ustat02
-diff --git a/testcases/kernel/syscalls/userfaultfd/.gitignore b/testcases/kernel/syscalls/userfaultfd/.gitignore
-index bc32fdf3b..3478a162e 100644
---- a/testcases/kernel/syscalls/userfaultfd/.gitignore
-+++ b/testcases/kernel/syscalls/userfaultfd/.gitignore
-@@ -4,3 +4,4 @@
- /userfaultfd04
- /userfaultfd05
- /userfaultfd06
-+/userfaultfd07
-diff --git a/testcases/kernel/syscalls/userfaultfd/Makefile b/testcases/kernel/syscalls/userfaultfd/Makefile
-index 3252e47df..257249e88 100644
---- a/testcases/kernel/syscalls/userfaultfd/Makefile
-+++ b/testcases/kernel/syscalls/userfaultfd/Makefile
-@@ -17,3 +17,4 @@ userfaultfd03: CFLAGS += -pthread
- userfaultfd04: CFLAGS += -pthread
- userfaultfd05: CFLAGS += -pthread
- userfaultfd06: CFLAGS += -pthread
-+userfaultfd07: CFLAGS += -pthread
-diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
-new file mode 100644
-index 000000000..7a1dff8a1
---- /dev/null
-+++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
-@@ -0,0 +1,155 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 SUSE LLC
-+ * Author: Ricardo Branco <rbranco@suse.com>
-+ */
-+
-+/*\
-+ * Force a pagefault event and handle it using :manpage:`userfaultfd(2)`
-+ * from a different thread testing UFFDIO_CONTINUE.
-+ */
-+
-+#include "config.h"
-+#include <poll.h>
-+#include <unistd.h>
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "tst_safe_prw.h"
-+#include "tst_safe_pthread.h"
-+#include "lapi/memfd.h"
-+#include "lapi/userfaultfd.h"
-+#include "lapi/syscalls.h"
-+
-+static long page_size;
-+static char *page;
-+static int uffd = -1;
-+static int memfd = -1;
-+
-+static void setup(void)
-+{
-+	CHECK_UFFD_FEATURE(UFFD_FEATURE_MINOR_SHMEM);
-+}
-+
-+static void set_pages(void)
-+{
-+	char ch = 'A';
-+
-+	page_size = SAFE_SYSCONF(_SC_PAGE_SIZE);
-+
-+	memfd = sys_memfd_create("ltp-uffd-continue", MFD_CLOEXEC);
-+	if (memfd < 0)
-+		tst_brk(TBROK | TERRNO, "memfd_create failed");
-+
-+	SAFE_FTRUNCATE(memfd, page_size);
-+
-+	/*
-+	 * Populate page cache so that after MADV_DONTNEED the next access
-+	 * can generate a MINOR fault rather than a MISSING fault.
-+	 */
-+	SAFE_PWRITE(1, memfd, &ch, 1, 0);
-+
-+	page = SAFE_MMAP(NULL, page_size, PROT_READ, MAP_SHARED, memfd, 0);
-+}
-+
-+static void reset_pages(void)
-+{
-+	if (page) {
-+		SAFE_MUNMAP(page, page_size);
-+		page = NULL;
-+	}
-+
-+	if (memfd != -1)
-+		SAFE_CLOSE(memfd);
-+
-+	if (uffd != -1)
-+		SAFE_CLOSE(uffd);
-+}
-+
-+static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
-+{
-+	static struct uffd_msg msg;
-+	struct uffdio_continue uffdio_continue = {};
-+	struct pollfd pollfd;
-+	int nready;
-+	char z = 'Z';
-+
-+	pollfd.fd = uffd;
-+	pollfd.events = POLLIN;
-+	nready = poll(&pollfd, 1, -1);
-+	if (nready == -1)
-+		tst_brk(TBROK | TERRNO, "Error on poll");
-+
-+	SAFE_READ(1, uffd, &msg, sizeof(msg));
-+
-+	if (msg.event != UFFD_EVENT_PAGEFAULT)
-+		tst_brk(TFAIL, "Received unexpected UFFD_EVENT %d", msg.event);
-+
-+	if (!(msg.arg.pagefault.flags & UFFD_PAGEFAULT_FLAG_MINOR)) {
-+		tst_brk(TFAIL, "expected MINOR fault, got flags=0x%llx",
-+			(unsigned long long)msg.arg.pagefault.flags);
-+	}
-+
-+	/* Update the shmem page in page cache before resuming the fault. */
-+	SAFE_PWRITE(1, memfd, &z, 1, 0);
-+
-+	uffdio_continue.range.start =
-+		msg.arg.pagefault.address & ~((unsigned long)page_size - 1);
-+	uffdio_continue.range.len = page_size;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_CONTINUE, &uffdio_continue);
-+
-+	SAFE_CLOSE(uffd);
-+	return NULL;
-+}
-+
-+static void run(void)
-+{
-+	pthread_t thr;
-+	struct uffdio_api uffdio_api = {};
-+	struct uffdio_register uffdio_register;
-+
-+	set_pages();
-+
-+	uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, false);
-+
-+	uffdio_api.api = UFFD_API;
-+	uffdio_api.features = UFFD_FEATURE_MINOR_SHMEM;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
-+
-+	uffdio_register.range.start = (unsigned long)page;
-+	uffdio_register.range.len = page_size;
-+	uffdio_register.mode = UFFDIO_REGISTER_MODE_MINOR;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
-+
-+	/*
-+	 * Drop PTEs while retaining the cached shmem page so the next access
-+	 * faults in MINOR mode.
-+	 */
-+	if (madvise(page, page_size, MADV_DONTNEED) < 0)
-+		tst_brk(TBROK | TERRNO, "madvise MADV_DONTNEED failed");
-+
-+	SAFE_PTHREAD_CREATE(&thr, NULL, (void *)handle_thread, NULL);
-+
-+	char c = page[0];
-+
-+	if (c == 'Z')
-+		tst_res(TPASS, "Pagefault handled via UFFDIO_CONTINUE");
-+	else
-+		tst_res(TFAIL, "pagefault not handled via UFFDIO_CONTINUE, got '%c'", c);
-+
-+	SAFE_PTHREAD_JOIN(thr, NULL);
-+	reset_pages();
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	/*
-+	 * UFFDIO_CONTINUE is available since 5.13 but
-+	 * UFFD_FEATURE_MINOR_SHMEM appeared in 5.14
-+	 */
-+	.min_kver = "5.14",
-+	.cleanup = reset_pages,
-+};
--- 
-2.54.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUmljYXJkbywKCi0tLSBbUEFUQ0ggMS8yXSAtLS0KCk9uIDIwMjYtMDUtMDcsIFJpY2FyZG8g
+QnJhbmNvIHdyb3RlOgo+IG1lbWZkX2NyZWF0ZTogbW92ZSBzeXNfbWVtZmRfY3JlYXRlKCkgdG8g
+bGFwaS9tZW1mZC5oCj4KPiBBZGQgdGhlIHN0YXRpYyBpbmxpbmUgd3JhcHBlciB0byBpbmNsdWRl
+L2xhcGkvbWVtZmQuaCBhbmQgaW5jbHVkZSB0aGUKPiByZXF1aXJlZCBoZWFkZXJzIHNvIG90aGVy
+IHRlc3RzIGNhbiByZXVzZSBpdC4KPgo+IEFsc28gZml4IHNvbWUgbWlub3IgaXNzdWVzIGRldGVj
+dGVkIGJ5IG1ha2UgY2hlY2suCgpUaGUgImFsc28gZml4IiBpbmRpY2F0ZXMgYSBzZWNvbmQgbG9n
+aWNhbCBjaGFuZ2UgYnVuZGxlZCBpbi4gUGxlYXNlIHNwbGl0CnRoZSBtaW5vciBjbGVhbnVwIGZp
+eGVzIChibGFuayBsaW5lIGluIG1lbWZkX2NyZWF0ZTAxLmMsIHRyYWlsaW5nIHNlbWljb2xvbgpp
+biBDSEVDS19NRkRfSEFTX1NFQUxTKSBpbnRvIGEgc2VwYXJhdGUgY29tbWl0IHNvIGVhY2ggcGF0
+Y2ggY29udGFpbnMKZXhhY3RseSBvbmUgbG9naWNhbCBjaGFuZ2UuCgo+IC0JY2hlY2tfbWZkX2hh
+c19zZWFscyhfX0ZJTEVfXywgX19MSU5FX18sIChmZCksIChzZWFscykpOwo+ICsJY2hlY2tfbWZk
+X2hhc19zZWFscyhfX0ZJTEVfXywgX19MSU5FX18sIChmZCksIChzZWFscykpCgpUaGlzIGZpeCBp
+cyBpbmRlcGVuZGVudCBvZiB0aGUgc3lzX21lbWZkX2NyZWF0ZSgpIG1vdmUg4oCUIHNlcGFyYXRl
+IGNvbW1pdC4KClByZS1leGlzdGluZyBpc3N1ZXMgbm90aWNlZCBpbiB0aGUgc3Vycm91bmRpbmcg
+Y29kZSAobm90IGludHJvZHVjZWQKYnkgdGhpcyBwYXRjaCk6CgotIGluY2x1ZGUvbGFwaS9tZW1m
+ZC5oIChwcmUtcGF0Y2gpIOKAlCBmaWxlIHJlbGllZCBvbiBjYWxsZXJzIHRvIHB1bGwgaW4KICB0
+c3RfdGVzdC5oIGFuZCBsYXBpL3N5c2NhbGxzLmggdHJhbnNpdGl2ZWx5OyBub3cgY29ycmVjdGx5
+IHNlbGYtY29udGFpbmVkLgoKLS0tCk5vdGU6CgpPdXIgYWdlbnQgY29tcGxldGVkIHRoZSByZXZp
+ZXcgb2YgdGhlIHBhdGNoLiBUaGUgZnVsbCByZXZpZXcgY2FuIGJlCmZvdW5kIGF0OiBodHRwczov
+L2dpdGh1Yi5jb20vbGludXgtdGVzdC1wcm9qZWN0L2x0cC1hZ2VudC9hY3Rpb25zL3J1bnMvMjU1
+MTQyNjk4OTEKClRoZSBhZ2VudCBjYW4gc29tZXRpbWVzIHByb2R1Y2UgZmFsc2UgcG9zaXRpdmVz
+IGFsdGhvdWdoIG9mdGVuIGl0cwpmaW5kaW5ncyBhcmUgZ2VudWluZS4gSWYgeW91IGZpbmQgaXNz
+dWVzIHdpdGggdGhlIHJldmlldywgcGxlYXNlCmNvbW1lbnQgdGhpcyBlbWFpbCBvciBpZ25vcmUg
+dGhlIHN1Z2dlc3Rpb25zLgoKUmVnYXJkcywKTFRQIEFJIFJldmlld2VyCgotLSAKTWFpbGluZyBs
+aXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
