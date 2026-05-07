@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94C39CD3427
-	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 12:37:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 988CCCD3427
+	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 12:37:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1778157419; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1778157446; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
  bh=RWBj789HCSiUrKB8R4V2KKfYWo3b/dWdN6e1tu5kcT0=;
- b=nkFI0OqNop1VowXrgVEf7sYghRMRqX/U1AtQMLfKRRhQfR89lHTCeAnMh2HBErPh0Gc5r
- eZicN5EgHx6enimFr7+6e/fAHtbLURjNir8LL+sfEg33/H+U96gBpmqqWWXbIqoO2DoRZzO
- EM60T8SMMk8TQXu8B7ccrHnqdEJsqtc=
+ b=UNWiqtfCCQXX8lE5pdx6QSNEkvdqnxQh4mCdI8gj2n6I7UEOKuPlxm+7oAQRsL6wnqWuG
+ cx+r84DAKvK9SbU8fuoKgFeBGCSpX/7N/8pvOXEK+kl0ytaAm3WWrmmTXW4ZlyeYgTBef8f
+ 2R3Llvtx8OUENZ+dj726JhuJoinzXrE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 21F8C3CBC10
-	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 14:36:59 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 471223E24EB
+	for <ltp@archiver.kernel.org>; Thu,  7 May 2026 14:37:26 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D7FD83C1BE3
- for <ltp@lists.linux.it>; Thu,  7 May 2026 14:36:36 +0200 (CEST)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
+ by picard.linux.it (Postfix) with ESMTPS id EBB143E6149
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 14:36:42 +0200 (CEST)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0D10D600649
- for <ltp@lists.linux.it>; Thu,  7 May 2026 14:36:36 +0200 (CEST)
-Received: by mail-wm1-x32c.google.com with SMTP id
- 5b1f17b1804b1-488a88aeec9so10048925e9.2
- for <ltp@lists.linux.it>; Thu, 07 May 2026 05:36:36 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 10C7F1A00493
+ for <ltp@lists.linux.it>; Thu,  7 May 2026 14:36:42 +0200 (CEST)
+Received: by mail-wm1-x32b.google.com with SMTP id
+ 5b1f17b1804b1-48d146705b4so9971605e9.3
+ for <ltp@lists.linux.it>; Thu, 07 May 2026 05:36:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1778157395; x=1778762195; darn=lists.linux.it;
+ d=suse.com; s=google; t=1778157401; x=1778762201; darn=lists.linux.it;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:from:to:cc:subject:date:message-id:reply-to;
  bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=YKggGuLD9vcYYvJ32lz+CxFFkQ5GPLpBBlW7YKQvGMfVRRYGHTjrsTwQmffEv5ZV2g
- f4DPFi+9Cv3Adca1BdTP8ASMt+pSlszbCKF1g1TEz99I5XXKBsAp6Vg1z5ZE4Ty7Fgst
- QwRnOhuDv7GwaI49h35u1H2LulBJiuXfiepv/50+Be9gfZ5MRPdfMZYLMN3gyc27p3ve
- Y2PCafuNleE9MiNp08B5a1VbDyskXun0etUs2IeAVBP1J9YVVd9iXyd9IrTLsBoKYUGZ
- 8kuzmvjlTLeSLaqhF5i6GRGNLvW4YZ0d0NfNnYmwAlr7xA9uDsETveFZoTKV8dFbNqAu
- hSbQ==
+ b=dr2i55ivQ5AJaQT58OP1412iP2RRJS+36Vstqbj6NjNLnlSzbFJX/q2Uzx6D2iZ0wz
+ N8pqlaj/Qm1IOX3YhNPfEKFmNAem4pUb0UqDAKRCsqc4raQu/1BpvnpK2vywk6Dwexgm
+ 4ZHUy+BNUXO+vmrdy4fm6ICKSYlm76x/NgCQhb9Jf1JZ0wBTcfrso/8rJ4aVBlgt2Ifj
+ 5VLKYuG2t4I1AecPZkptK99ZjtWHjAYxYVFOBUdTAt4d1GekcstX6seB3inp/th5Tydl
+ 775elvOESfWRiYCWsYwjntFVfK3GfUOuzxgnGmBjSrd/qLQXBOqep5lm+7W8kvB0jxSC
+ Z2ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1778157395; x=1778762195;
+ d=1e100.net; s=20251104; t=1778157401; x=1778762201;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
  bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=lrNcxaHtnwpCb5SeD/9s6Un1W1V5mhFrkkS1VWlLbnznVd3gOBWsjSH3JfknSwCfgY
- 8vCQUsNwDvD8hTKzMGx7VYM3+CECboFZsOjLn1k7IZ+TWs3oOtPbHeKN/dQctp4A7qq2
- orYkgP9q0/H7MTSpBvdfK1On5WT5OVYmW8qG5dLgwtrH/csxtgyLlOM/F1bTav+RU/Ly
- p7wJfE7bEZX1+H86UM57sUJ8x36PfUKRtf26xkmjqR/RhAohiCS1sxoRrZIUnRFfl2bP
- MYIF8qwVuAzohbJ1CTZeX9rbsmMFouIPKjCSNjqW3vU8G4WZVj5sGEkUipAe7TY9uyE9
- w5OA==
-X-Gm-Message-State: AOJu0YyeZDxm9c2R4aRCnelJDNSuTBwGvDOmChhN0KIdHoq3Q4ZVp7NT
- GBWAozIZTfBMcvE2FgVuANuVt2RDFle9FCLVdiIfRPiNjYajOzGnqjVsVCrzTmXT2Wc=
-X-Gm-Gg: AeBDiesDeEcBcBAdBZuJTzbgAv2ik/GIPirf5j2a2oh93bMVIHAHRdruQk2HLuoy5S3
- /w57qnKtiw1GOKa9sIuyT54ADPJaNjHY2rv9uUV0Snvvoz31ebWA5xxQS2IEyqsIPp/10GWdSpX
- +McfVfujyxCBFzvP7/41Q4n/sUF16EqLZBbtOtJmHJ3kD2xqCI/9SRwvFlLJKwC2H0XkDeuKTVu
- YFaBBGQ8/ASPeWeJMWYsv14evDjjLM77fN53nQ83HBLkScb1PlXHhQzhm3iRwOTU/YlbmgxTJVm
- C4MFe1PMti9njQpIBm88l3D7xEYbzuEDWfE3M1qAG16ec2kMq6DNXDh+7Ypr/xt2IUvg2J3SDjM
- WHI4qjQLLbrMLrzhvhhUCTgeQQvhMBWb7fTqU6dUUhSLb1mXNO72uMs2pizYrhNJCVG2jssz5hw
- VjT02WO8WPEMFlI+RS5urWDRe5QqWXk3PjaJVj+XPO7+GeTxkqsu0=
-X-Received: by 2002:a05:600c:8b8b:b0:48a:97b6:7420 with SMTP id
- 5b1f17b1804b1-48e51f4143fmr125408705e9.24.1778157395305; 
- Thu, 07 May 2026 05:36:35 -0700 (PDT)
+ b=S+xJymQQaKvj/8O6PjsFttuHhT5NQZlAXaRhfkztjTdNuVZ7G6jbgkqfRm0WYq4QIf
+ Qfm+YZgnmrEn81IhflzvYmzAcYMLt52TunvSj6fuKVw+CAsKAz505OR7oE9h13ZHycb2
+ lPI+fsyvpzBcnzlrvtMjrFHEheT+vSqkzs/p7FV5NT0nXajLD22eIe+jaKu+mQZ0lQol
+ kFuDcBQ9FabpFUX8jsocZizdTxz5zy9GG7kWZXAFeko6ycxDIeUeOK9HoQAgkcOYgs80
+ rcsG9gAN+Lvi0LotFz8HCFX8F4smK7H0VChPIdp1Vxk88PamoiOd+uUfxWtAe9mO0Vz6
+ fXfA==
+X-Gm-Message-State: AOJu0YxeenSpgQ+653sfwjIcDEkRy/6rZJrQEnSoa/ocusHtBag5pnDz
+ Tb1p4P2I+2/oZYl2JrafOb1O382Y5vDBjBS8Hvu5ZCPTbepKhqFXvivzt7F2qkyKAwQ=
+X-Gm-Gg: AeBDieuGdT8jtfEyhxNf58kPtcS4GzWSvnqwWBfag4nTMrQJ7ecnll00Td7XRAk83Tu
+ BBrgj+Ye0KNxVdndOnMLV5m8zmlrYqAVMH4HIWJYkftxYozNq2zt2Bu24cmIpkztl/p/mvxxhSN
+ THqsAzxPgfG+/SpdLeGZAIlu2LdR+aQXdTeacdCP9UgZ4MCLBfjXEMvFJq0q1Utv1uJJ5+Bl07k
+ +JO4lOQKmen5Y7yRsjDIU/erQvTeCKz5T8mxFQVNNt+LQE/NmW78qCm4u6sv2P13Q250c7rHvVd
+ D0Z6TNSD9t9t4spGf18QBsd0bzNrwB33tnV1C+Kvg2tXOjEE45K2ydYl/vupXgEb0aW9QmnMbYU
+ Sdceyovr6u5OV+sEewcu4A3nDxvm3wsYja2SBxZ2KoZZUKzZPWEPrnog7S4bjZkMc09nIc2oiFi
+ MLo3c/7VVpzaDLzmaZubc8DchjTGkngSuXH4aWHwNLp6LDNK7jc6w=
+X-Received: by 2002:a05:600c:1c26:b0:488:9439:880d with SMTP id
+ 5b1f17b1804b1-48e51f5c282mr131516925e9.29.1778157401200; 
+ Thu, 07 May 2026 05:36:41 -0700 (PDT)
 Received: from localhost.localdomain ([88.128.90.98])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-48e538fb1a7sm213044255e9.9.2026.05.07.05.36.34
+ 5b1f17b1804b1-48e539109b7sm112845105e9.15.2026.05.07.05.36.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 07 May 2026 05:36:35 -0700 (PDT)
-Message-ID: <69fc8753.050a0220.144360.7890@mx.google.com>
+ Thu, 07 May 2026 05:36:40 -0700 (PDT)
+Message-ID: <69fc8758.050a0220.15cd0b.891c@mx.google.com>
 To: "Ricardo Branco" <rbranco@suse.de>
-In-Reply-To: <20260507122858.19670-3-rbranco@suse.de>
-Date: Thu, 07 May 2026 12:36:33 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+In-Reply-To: <20260507122858.19670-2-rbranco@suse.de>
+Date: Thu, 07 May 2026 12:36:40 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/3] userfaultfd: Reset wp_fault_seen on each
- run()
+Subject: Re: [LTP] [PATCH v4 2/3] userfaultfd: Use two-step handshake to
+ probe features
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
