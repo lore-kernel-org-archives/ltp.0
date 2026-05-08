@@ -4,89 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98A3ACD342F
-	for <ltp@archiver.kernel.org>; Fri,  8 May 2026 09:29:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67894CD3436
+	for <ltp@archiver.kernel.org>; Fri,  8 May 2026 10:01:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1778232550; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1778234490; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=Uf8nI+4CD/kFD03HaD2TxD8UOnPmwy3S6WiTpVS6KyI=;
- b=CXu9BfbAaRiuHAGv2eeZyt2qg1lxjrO8f3GzrlKNJx0OOeuRBC/8MrvVB2VftrfibiEnX
- N//q9EOlqKLfpeoDgWfJW6clF4o3iMi2MnZ4qu1Snf7Tyv23f989pJ6JOiELdvZ/4qH5k35
- a6on01tyLhWTLwJslGT6JLA3uwCL/TQ=
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=q5JnMNnFQznBZ/6pZzgGSkWHigR5ew8YovWWq1jFE60=;
+ b=hYOCLANPBIyDVIiNrpI8Ta7ScUzj7giP9TPH09ifwHfa1r7ammYH8JBm1KNycz8qfwMau
+ iRKf1d00QrqLC6mbYqzHFEJ7O56632cwIqvePZrNOKAeYvk1334EsTYnOs8HrrojRzIehIe
+ m6CZwd9wdwGEYsYPjh4tR8vo5c2XZKQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4F8633E2C24
-	for <ltp@archiver.kernel.org>; Fri,  8 May 2026 11:29:10 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id EF6623C988E
+	for <ltp@archiver.kernel.org>; Fri,  8 May 2026 12:01:29 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6D4AF3E2460
- for <ltp@lists.linux.it>; Fri,  8 May 2026 11:28:46 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
+ by picard.linux.it (Postfix) with ESMTPS id 52D9A3C988E
+ for <ltp@lists.linux.it>; Fri,  8 May 2026 12:01:06 +0200 (CEST)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E69AB100037D
- for <ltp@lists.linux.it>; Fri,  8 May 2026 11:28:45 +0200 (CEST)
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-43d75312379so1904458f8f.1
- for <ltp@lists.linux.it>; Fri, 08 May 2026 02:28:45 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6753114001F4
+ for <ltp@lists.linux.it>; Fri,  8 May 2026 12:01:05 +0200 (CEST)
+Received: by mail-wm1-x32b.google.com with SMTP id
+ 5b1f17b1804b1-488d2079582so19979425e9.2
+ for <ltp@lists.linux.it>; Fri, 08 May 2026 03:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1778232525; x=1778837325; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=J6xHGFAj3Usp4hb4Hwq2eO82yLsoFIxhGCCy7eDAIWc=;
- b=YhYzggllsE1L9QucvL00KgZj5cF/pM4QiKwn3WOG3hAFrnxV3ga3kxosWxjtWgOj8j
- hdMUoG+WJZL+8p9vkl8gEiYo2mpva67iYevmkmJS9VcIJI+IqjBs5KsRA1tRAPDmbpKw
- 9TBB4AeFUGRXM2vHyZHQN28QM+c+oKyqw1i2PhCGA9iD5bIe2s4D86AOQpvf4cGSpPj5
- aS84eiUq91nuJwqsqIQhiMpkUK75hZgbeLVW9RyTA+WWSZG9RIYw/TrbNXx6Jn82O6P8
- DnnBz205AE85r//PNbU2ud+3vQzDv5hu4Aht3+yOSJHRStZRyCGPHalJ5IW/jrWjpfOH
- Wp3Q==
+ d=suse.com; s=google; t=1778234464; x=1778839264; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=/sV5w8DzIX5fEXvfEEKvIEUq5qAGKn3xwE7rbiSbs8Q=;
+ b=L9ArVhfhVskFjZjv/ee/tuhdfQkOkiklJT1+Lp/oisDZDXTew1QOwUB/zXYnRt0a0g
+ 98PHWcRtGBEv933+E6MKdn6TFnQC2YSKdnNlq2APfw2Vcxm+biMONklU/HIEgHFX+g1m
+ dXKgWytNAy1VhY2/wd4697wrKhKWN32QfAOb2fkWcV2P+6a1PHjiwzHJiJsmH3bMLXgm
+ 8OxVBcyKik9KbmRI3JexSzSWDh7oQwZSOhE94IdJQkeldnJi8Sb6AeADHyuj6OBNoQrs
+ 5DM5id2Xq3a1EtYNFctK6emoRxK/xfnJAjdFNKzb4lqwG4+iuLLHCtuGALlSE3bMm+mN
+ 8oNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1778232525; x=1778837325;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=1e100.net; s=20251104; t=1778234464; x=1778839264;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=J6xHGFAj3Usp4hb4Hwq2eO82yLsoFIxhGCCy7eDAIWc=;
- b=GHrnrI6sLSgTx89hNq1xRKvp1FTO8K3k+CKTBXpbvXplaRlm3tTwyKJCtgWmPO1hVQ
- UK9wOLSovSFvGt/stQG7YhLBRR6NzfZXs+veaD3dAv2HyKsP3nl+aqp2e3Yk8d1jGATs
- SAvjCCfMOuI9roDIp+baENbjQyzlZjXWqJemkxFXZvOrDmyPSK7COo30uI/EzkoX2iHn
- HdhwVJYNEcXnsY1o3uzX9q01OY4ADnTW1MP7RA1DgN3Vp1txSY9zaIo8+gcfhOfb3yr0
- 6nwIagqNZoUIsQuFBhI/PC9C2yl+Ml6y5keDy0edhdChDZEZ41vj2PYNeecbJvv8LHhi
- on9Q==
-X-Forwarded-Encrypted: i=1;
- AFNElJ9/0THjax8v+DjuVYzWOHc4yaGhtuFYlNJ6WhluWrc28FlzfryuvfyiDmmt0q263zRkC0M=@lists.linux.it
-X-Gm-Message-State: AOJu0YzeXS+Rb/tE+BoDHiMTMycVY6ClS+1MfG8uUG09/LQmv43BKNux
- UW7RI6ZvCHRZFVjUbZaP5pUlcSDoJ/I8VymVjve6z7NBCnKJtnsOvYLmu8S1TeEfRZI=
-X-Gm-Gg: Acq92OE90narecGr/TlYoXUocB6K1biiALA+pGmL0y2Jiewe+u3KgjNZD14w6ERqgE9
- sgUdKfzeyAsNwnahJyHdVxL8SMlg/9pjvNOcZriVOuQl7qTnDMf7/fZ1KWXdIpYX1w7R1O6cCuM
- ppLH5mRBmtZq11nUOg3luSlMTCbpQrIC2+qVXilpuuUp3Z+VohHI4jPntNYEM7ryC27Q+KxgQCY
- 1+dTB57sF2HpWKqfVIhIwT4gYYv+sRS3MdZ3iAfYgiDshBz76PA6BWSTHNmRPwXraiV9uHS8vAF
- 1/cQNq71L2r/7pW6nOIhdfi1cLJwxXCzT6CZcV1uEML2/VSkiduimUTEdQo0wkEQcN0jMfiXyJs
- g/vSJQyqRFLgIP2GSXSsqdFJVXaSf/J5OvM0whdu9ldKSnhkVQEfER606eX4AxmnMch2dy5p4Th
- YTEe2MN/FFvjel3z3zBbfBI2Xqaxi1N0VMHGFYmLJlVN/LDjV/SdywZRkmd+vun9uNuyxv+OIQR
- hjL3EYGDdrty3YO1ciFf81eh/ZIK8zfreY=
-X-Received: by 2002:a5d:5e01:0:b0:43e:531f:720c with SMTP id
- ffacd0b85a97d-452e96d51bbmr9848507f8f.11.1778232525203; 
- Fri, 08 May 2026 02:28:45 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f4fc9009ff26ae1d4042002.dip0.t-ipconnect.de.
- [2003:ef:2f4f:c900:9ff2:6ae1:d404:2002])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4548e6a73c3sm3298065f8f.3.2026.05.08.02.28.44
+ bh=/sV5w8DzIX5fEXvfEEKvIEUq5qAGKn3xwE7rbiSbs8Q=;
+ b=DWsQA27sSJiN0rqT/7QhvldL1p0mQZ7U7700jW+oDVszXO7wiLTbVRNciSpivt4p1Z
+ JkwpkwbQfVtthwpdRnhy2Hrusr25vi7WAZIanfaesZTYgTb+kNA8iw0NMui1hiEhLFo6
+ YFoTUDHNkgkyOQQh60klx2ntfUAJrSRafnWeaLQauzL85Cxn5UcB41WrDiytbcQQWoj1
+ DAcAjdH1WzIfUn1Cd9JjBFiUZd8VB2C4lZQyWxLGkSdlBScxXvlZOx7I3ebisj9DgRXa
+ v1Spgpqd2iALfkbmIVsuDrQ31CWF5dFQS3CjPYmltQ8TK7wBqNzpmrjN7Su59rrbhgrG
+ hOfQ==
+X-Gm-Message-State: AOJu0Yx1xSKW9W8mpzUuglBTYWSXJ3Plpx9jE2YSYO54Q9xMVvwH8pOJ
+ 6z05tro/HS012Z+h9wF1/kU54I/n2xY6PTjDkwS1EfNZiQ9CtveWfNn3ZaUvMm+nrHwhSlFQz9J
+ jQ/k=
+X-Gm-Gg: AeBDiesCMVnRsG7QTL3rrvL3JdZf4Hm7k+5uia2DJK/qV44l8Z6weZLb1rEaIAVISfL
+ O3P1pcMgxlV2QtxOb2Bs6ngbogrjZkFmmEct+iNZ+T4STrPksaX0+WxcX7s5ruerQPXyommD70D
+ uwIIdCk4ZxNpmZo5QXsIaKi848Uw8yriHGrZaxQREzYC51ho52I9Ez8niViSD4jjV44BEeO3y8g
+ uolkSZMg/EIZ/WbGPGd8WeCxVMAX6FoozJSBWj2D9yHxu/nXLV2k0goHVRxEK7AoQiLvkxbLgu6
+ olkpZml5os32K7dlP16sEVK9I5W8T7OehyTvyPIz+FP4TUQ9VGdVHbuFrFJVnS/seDBzu8uJVzN
+ MuPOrO0hBzAfqPa50gCV3Wck5bEzUaYg+d+SOlrlZxka5ubV4eGqkGCFoIPNi3storO3DrTPw2s
+ 5pZtP37SU7uRo=
+X-Received: by 2002:a05:600c:8011:b0:488:8840:e5ae with SMTP id
+ 5b1f17b1804b1-48e51f3b589mr177683105e9.24.1778234464344; 
+ Fri, 08 May 2026 03:01:04 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-48e68ef0024sm29392585e9.14.2026.05.08.03.01.03
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 08 May 2026 02:28:44 -0700 (PDT)
-Message-ID: <69fdaccc.df0a0220.3305d6.27a5@mx.google.com>
-To: linuxtestproject.agent@gmail.com
-In-Reply-To: <20260508092646.3949-1-linuxtestproject.agent@gmail.com>
-Date: Fri, 08 May 2026 09:28:44 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ Fri, 08 May 2026 03:01:04 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Fri,  8 May 2026 10:00:58 +0000
+Message-ID: <20260508100101.7741-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lapi: fallback SPLICE_F_MORE
+Subject: [LTP] [PATCH v1] pthread_detach/1-2: Fix race condition between
+ thread exit and join
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,26 +95,90 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGksCgo+IEhpIEFuZHJlYSwKPiAKPiAtLS0gW1BBVENIIDEvM10gLS0tCj4gCj4gT24gMjAyNi0w
-NS0wOCwgQW5kcmVhIENlcnZlc2F0byB3cm90ZToKPiA+IGxhcGk6IGZhbGxiYWNrIFNQTElDRV9G
-X01PUkUKPiAKPiBUaGUgY29tbWl0IGJvZHkgaXMgZW1wdHkuIFBsZWFzZSBhZGQgYXQgbGVhc3Qg
-b25lIHNlbnRlbmNlIGV4cGxhaW5pbmcKPiB3aHkgdGhpcyBmYWxsYmFjayBpcyBuZWVkZWQg4oCU
-IGUuZy4gd2hpY2gga2VybmVsIHZlcnNpb24gaW50cm9kdWNlZAo+IFNQTElDRV9GX01PUkUsIG9y
-IHRoYXQgaXQgaXMgcmVxdWlyZWQgYnkgdGhlIHhmcm0wMSB0ZXN0IGFkZGVkIGxhdGVyCj4gaW4g
-dGhpcyBzZXJpZXMuCj4gCj4gLS0tIFtQQVRDSCAyLzNdIC0tLQo+IAo+IE9uIDIwMjYtMDUtMDgs
-IEFuZHJlYSBDZXJ2ZXNhdG8gd3JvdGU6Cj4gPiBsYXBpOiBmYWxsYmFjayBVRFBfRU5DQVAgYW5k
-IFVEUF9FTkNBUF9FU1BJTlVEUAo+IAo+IFNhbWUgaXNzdWU6IHRoZSBjb21taXQgYm9keSBpcyBl
-bXB0eS4gQWRkIGEgc2VudGVuY2UgZGVzY3JpYmluZyB3aHkKPiB0aGVzZSBjb25zdGFudHMgbmVl
-ZCBhIGZhbGxiYWNrIGRlZmluaXRpb24uCgpUaGVzZSB0d28gY2FuIGJlIHNhZmVseSBpZ25vcmVk
-LgoKUmVnYXJkcywKLS0KQW5kcmVhIENlcnZlc2F0bwpTVVNFIFFFIEF1dG9tYXRpb24gRW5naW5l
-ZXIgTGludXgKYW5kcmVhLmNlcnZlc2F0b0BzdXNlLmNvbQoKLS0gCk1haWxpbmcgbGlzdCBpbmZv
-OiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Latest test in our openqa setup(kernel 7.0.3) show following error:
+
+FAILED: We were able to join a detached thread.
+
+Add a second synchronization semaphore to ensure the child thread remains alive until
+the main thread has completed its checks can make test case pass.
+
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ .../interfaces/pthread_detach/1-2.c           | 25 +++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/1-2.c
+index dc5ed39d3..1a9650f49 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/1-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/1-2.c
+@@ -92,6 +92,7 @@
+ /********************************************************************************************/
+ 
+ static unsigned int sc;
++static sem_t sem_exit;
+ 
+ static void *threaded(void *arg)
+ {
+@@ -113,6 +114,15 @@ static void *threaded(void *arg)
+ 		UNRESOLVED(errno, "Failed to post the semaphore");
+ 	}
+ 
++	/* Wait for the main thread to allow exit */
++	do {
++		ret = sem_wait(&sem_exit);
++	}
++	while ((ret == -1) && (errno == EINTR));
++	if (ret == -1) {
++		UNRESOLVED(errno, "Failed to wait for the exit semaphore");
++	}
++
+ 	return arg;
+ }
+ 
+@@ -125,6 +135,11 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ 
+ 	scenar_init();
+ 
++	ret = sem_init(&sem_exit, 0, 0);
++	if (ret != 0) {
++		UNRESOLVED(errno, "Failed to init the exit semaphore");
++	}
++
+ 	for (sc = 0; sc < NSCENAR; sc++) {
+ #if VERBOSE > 0
+ 		output("-----\n");
+@@ -202,11 +217,21 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ 				    ("We were able to join a detached thread.");
+ 			}
+ 
++			/* Allow the thread to exit */
++			do {
++				ret = sem_post(&sem_exit);
++			}
++			while ((ret == -1) && (errno == EINTR));
++			if (ret == -1) {
++				UNRESOLVED(errno, "Failed to post the exit semaphore");
++			}
++
+ 			/* Let the thread an additionnal row to cleanup */
+ 			sched_yield();
+ 		}
+ 	}
+ 
++	sem_destroy(&sem_exit);
+ 	scenar_fini();
+ #if VERBOSE > 0
+ 	output("-----\n");
+-- 
+2.52.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
