@@ -4,102 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 286D2CD37AC
-	for <ltp@archiver.kernel.org>; Mon, 11 May 2026 08:41:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEDCECD37AC
+	for <ltp@archiver.kernel.org>; Mon, 11 May 2026 11:31:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BB79B3C94A0
-	for <ltp@archiver.kernel.org>; Mon, 11 May 2026 10:41:47 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5BBAD3CB6BF
+	for <ltp@archiver.kernel.org>; Mon, 11 May 2026 13:31:19 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 755833C72B5
- for <ltp@lists.linux.it>; Mon, 11 May 2026 10:41:28 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 553CA3C94A0
+ for <ltp@lists.linux.it>; Mon, 11 May 2026 13:30:59 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3F50D20092C
- for <ltp@lists.linux.it>; Mon, 11 May 2026 10:41:26 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 64ABQHig3268997; Mon, 11 May 2026 08:41:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=uf0WLp
- Fmkrl50BlYEbhsanvd+AtPHuz5ZK9ZTg4kzd4=; b=qx+RQc1L3JAwczPYke+S5u
- +d/pkRYORhKim5OTVi87/9aQQXaixFD4m2OVBrsM2JPm4gh3hNBM/Z0uKTan2AAU
- G92jiI+Dghl9e2YWk7o907tJt06tioXih3uJlx1HBBMtuFt0+F0xxNGDfFt2BHFi
- Wu8w7qUIZjv1ItgqrHO4Frv1ZtubkAHfzFxAa4TvtxxNlLxuVYD8EoarCpLM8e5d
- qtq7NRueAa+QmEmomw2vWU9lMKuJHjBLiGrhVvA1w6to2NHYSXpQQIbvhZcwcplG
- kKOIpEMxWAvoFKKkJqwt07TP90ieH8u6CuHxIeOOIgHxv6a+0DaWx028tgzBh8mQ
- ==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4e1ve6ydjw-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 11 May 2026 08:41:24 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 64B8dQMo028821;
- Mon, 11 May 2026 08:41:23 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4e2fmvvhs4-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 11 May 2026 08:41:23 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com
- [10.39.53.232])
- by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 64B8fMWq27132658
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 11 May 2026 08:41:23 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id A73C458061;
- Mon, 11 May 2026 08:41:22 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 6A9065805D;
- Mon, 11 May 2026 08:41:21 +0000 (GMT)
-Received: from [9.43.85.184] (unknown [9.43.85.184])
- by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
- Mon, 11 May 2026 08:41:21 +0000 (GMT)
-Message-ID: <dbf74dbf-b326-4c70-b12c-371a51cec232@linux.ibm.com>
-Date: Mon, 11 May 2026 14:11:19 +0530
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E58B214002D7
+ for <ltp@lists.linux.it>; Mon, 11 May 2026 13:30:58 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2513061902;
+ Mon, 11 May 2026 11:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1778499057; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hJc6O0hI2kaJDeWXjMFNVxxmJOga27fJGm783MFh7c8=;
+ b=cacETrShei3IZwTDtGFHM3GTUJAbOk8X/DmIMGf2YXGEwG2rRx1/IOORFPo0vbcOmqFgaS
+ mytdkVNnfO+lcxbZ9KiUP2qT5gfSe1Sndq9UEEPVgDlsCBHwlf/8Rk7umfBLPTaIMmp6Do
+ ylI/sBnRV2FwyjCDyLfaMzvHBKf8lNs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1778499057;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hJc6O0hI2kaJDeWXjMFNVxxmJOga27fJGm783MFh7c8=;
+ b=wXicU7aC3fy3roxP0tWoSpK0ZuGE0/uCmEjugnrIoUAH7UGFESIUWGwkF8L+qty6cXEi5Y
+ +NgrH2T++Uw6vkBw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1778499057; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hJc6O0hI2kaJDeWXjMFNVxxmJOga27fJGm783MFh7c8=;
+ b=cacETrShei3IZwTDtGFHM3GTUJAbOk8X/DmIMGf2YXGEwG2rRx1/IOORFPo0vbcOmqFgaS
+ mytdkVNnfO+lcxbZ9KiUP2qT5gfSe1Sndq9UEEPVgDlsCBHwlf/8Rk7umfBLPTaIMmp6Do
+ ylI/sBnRV2FwyjCDyLfaMzvHBKf8lNs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1778499057;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hJc6O0hI2kaJDeWXjMFNVxxmJOga27fJGm783MFh7c8=;
+ b=wXicU7aC3fy3roxP0tWoSpK0ZuGE0/uCmEjugnrIoUAH7UGFESIUWGwkF8L+qty6cXEi5Y
+ +NgrH2T++Uw6vkBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 18946593A3;
+ Mon, 11 May 2026 11:30:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 0Hr5BfG9AWp5LQAAD6G6ig
+ (envelope-from <jack@suse.cz>); Mon, 11 May 2026 11:30:57 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id AD9F2A079E; Mon, 11 May 2026 13:30:52 +0200 (CEST)
+Date: Mon, 11 May 2026 13:30:52 +0200
+From: Jan Kara <jack@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <dllhd4i2z3jzj7eexflii5iu44dvlteh53tdwtnmcrlqru3il5@zimp5y7yyiys>
+References: <20260331111857.10995-1-wegao@suse.com>
+ <20260507025345.6722-1-wegao@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20260511070852.90379-1-pvorel@suse.cz>
-Content-Language: en-US
-From: Sachin Sant <sachinp@linux.ibm.com>
-In-Reply-To: <20260511070852.90379-1-pvorel@suse.cz>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTExMDA5NCBTYWx0ZWRfX2XuYXBwSmyTM
- PfNrDN7RVSLK53O+gJzIaJLkh9dBwpR8LbQHV9oRdn1nGEahY+13YNakcuEMd9G77zXJJisMCvR
- jjED40DQnYE5n3HHzcwNsn6Lm2RtBA4lSFkJBSASTqiltY99wEA5VdYHk6+A715HagHB2vPjWKs
- tEaX3e5dzwkUyHw0bVGTz9gL9nt3C8Tv/wjbd2x78awet45nFX7QyEoqb4IGIK1BRXif5h/IqBP
- Ul4EPEwyEhJRkf7lmFIAdH78jw3hbcMrqBwvnz/n7w404onQEEeGMNUtm6FPdTjc4Xiop/s9UwE
- 29L5kec4aIAVBDuY3YGHJq2w1NiHFnmKUDGw1m7C4s6+KUvoYLi86p/JERhL3cCpNCRziX9hUFj
- zk9F8hHHXCXySliV4uvlh8AX4S9r5Hyivyb6GBNfvrtTmH0/TGUfWQCt3ZtzFyeWrKzHoXbEFmk
- vP45q/7Vrpq88VQOqGQ==
-X-Proofpoint-GUID: CdRIfIPzdN2IXj8u7ttOlWRnE0LBQYt4
-X-Proofpoint-ORIG-GUID: CdRIfIPzdN2IXj8u7ttOlWRnE0LBQYt4
-X-Authority-Analysis: v=2.4 cv=CeQ4Irrl c=1 sm=1 tr=0 ts=6a019634 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=8r2qhXULAAAA:8
- a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=NEAV23lmAAAA:8
- a=vEI_lbc5AAAA:8 a=VwQbUJbxAAAA:8 a=CCpqsmhAAAAA:8 a=5KEJ3k9QAAAA:8
- a=BquUM75wbReE0kUCSmgA:9 a=QEXdDO2ut3YA:10 a=8gvLZcY7Nlvl4CGD_6nf:22
- a=YUII-3zZ2UlQWlJ17VRX:22 a=ul9cdbp4aOFLsgKbc677:22 a=olg2BfGzmf2haRflzj8J:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-05-11_02,2026-05-08_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 clxscore=1011 adultscore=0 malwarescore=0 bulkscore=0
- priorityscore=1501 phishscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2605110094
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260507025345.6722-1-wegao@suse.com>
+X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ RCPT_COUNT_FIVE(0.00)[5]; FROM_EQ_ENVFROM(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_LAST(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, imap1.dmz-prg2.suse.org:helo,
+ suse.cz:email, intel.com:email, pfd.events:url]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] doc/cve_catalog: Link CVE to www.cve.org
+Subject: Re: [LTP] [PATCH v8] fanotify22.c: handle multiple asynchronous
+ error events
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,88 +109,255 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: kernel test robot <oliver.sang@intel.com>, Jan Kara <jack@suse.cz>,
+ ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+On Thu 07-05-26 02:53:33, Wei Gao wrote:
+> Since the introduction of the asynchronous fserror reporting framework
+> (kernel commit 81d2e13a57c9), fanotify22 has encountered sporadic failures
+> due to the non-deterministic nature of event delivery and merging:
+> 
+> 1) tcase3 failure: A race condition occurs when the test reads the
+>    notification fd between two events. Use a poll() and read() loop to wait
+>    until the expected events are delivered.
+> 
+> 2) tcase4 failure: The kernel may deliver errors as independent events
+>    instead of a single merged event, as different worker kthreads can
+>    end up generating each event. As suggested by Jan Kara, this patch
+>    introduces a consolidate_events() helper. It iterates through the
+>    event buffer, identifies the primary event matching the expected error,
+>    accumulates the error_count from all independent events, and updates
+>    the primary event's count in-place for validation.
+> 
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202602042124.87bd00e3-lkp@intel.com
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Wei Gao <wegao@suse.com>
 
+Looks good to me. Feel free to add:
 
-On 11/05/26 12:38 pm, Petr Vorel wrote:
-> Although test_catalog page links to www.cve.org, it's more convenient for
-> readers to have that link also on page dedicated to CVEs.
->
-> While at it, change warning to note (it's really an info, nothing to
-> warn about).
->
-> Follow-up: 79396c7b71 ("doc: Add CVE catalog to documentation")
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
-> Hi Sachin, Andrea,
->
-> thanks a lot for implementing the CVE list page. Very simple change to
-> it but I prefer not to modify the page without your ack.
-I am okay with this change. In-fact I had this change included in one of the
-intermediate versions of the CVE catalog patch.
-
-Based on review comments (The CVE link is present in corresponding test 
-catalog
-page) it was later removed
-
-> Kind regards,
-> Petr
->
->   doc/conf.py | 9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/doc/conf.py b/doc/conf.py
-> index 668cb4d980..591c1534df 100644
-> --- a/doc/conf.py
-> +++ b/doc/conf.py
-> @@ -19,6 +19,7 @@ author = 'Linux Test Project'
->   release = '1.0'
->   ltp_repo = 'https://github.com/linux-test-project/ltp'
->   ltp_repo_base_url = f"{ltp_repo}/tree/master"
-> +cve_url = "https://www.cve.org/CVERecord?id="
->   
->   # -- General configuration ---------------------------------------------------
->   # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-> @@ -293,7 +294,7 @@ def _generate_tags_table(tags):
->           "linux-stable-git": "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=",
->           "glibc-git": "https://sourceware.org/git/?p=glibc.git;a=commit;h=",
->           "musl-git": "https://git.musl-libc.org/cgit/musl/commit/src/linux/clone.c?id=",
-> -        "CVE": "https://www.cve.org/CVERecord?id=CVE-",
-> +        "CVE": cve_url + 'CVE-',
->       }
->   
->       table = [
-> @@ -586,7 +587,7 @@ def generate_cve_catalog(_):
->       # Generate single CVE catalog file
->       total_cves = len(cve_data)
->       text = [
-> -        '.. warning::',
-> +        '.. note::',
->           '    The following CVE catalog has been generated from test',
->           '    metadata and includes all CVE reproducers in LTP.',
->           '',
-> @@ -614,8 +615,10 @@ def generate_cve_catalog(_):
->           # Join multiple tests with commas
->           tests_str = ', '.join(test_links)
->   
-> +        cve_link = f'`{cve_id} <{cve_url}{cve_id}>`_'
+> v7->v8:
+> - Fix a logic bug where the test would fail if a secondary error (like ESHUTDOWN) was the first event in the buffer
+> - Move variable declarations to the top of blocks to follow the preferred LTP coding style
+>  .../kernel/syscalls/fanotify/fanotify22.c     | 119 +++++++++++++++---
+>  1 file changed, 102 insertions(+), 17 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify22.c b/testcases/kernel/syscalls/fanotify/fanotify22.c
+> index e8002b160..c124e1904 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify22.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify22.c
+> @@ -28,6 +28,7 @@
+>  #include "tst_test.h"
+>  #include <sys/fanotify.h>
+>  #include <sys/types.h>
+> +#include <poll.h>
+>  
+>  #ifdef HAVE_SYS_FANOTIFY_H
+>  #include "fanotify.h"
+> @@ -88,7 +89,6 @@ static void trigger_bad_link_lookup(void)
+>  			ret, BAD_LINK, errno, EUCLEAN);
+>  }
+>  
+> -
+>  static void tcase3_trigger(void)
+>  {
+>  	trigger_bad_link_lookup();
+> @@ -104,6 +104,7 @@ static void tcase4_trigger(void)
+>  static struct test_case {
+>  	char *name;
+>  	int error;
+> +	int error2;
+>  	unsigned int error_count;
+>  	struct fanotify_fid_t *fid;
+>  	void (*trigger_error)(void);
+> @@ -134,37 +135,79 @@ static struct test_case {
+>  		.trigger_error = &tcase4_trigger,
+>  		.error_count = 2,
+>  		.error = EFSCORRUPTED,
+> +		.error2 = ESHUTDOWN,
+>  		.fid = &bad_file_fid,
+>  	}
+>  };
+>  
+> +static struct fanotify_event_metadata *consolidate_events(char *buf, size_t len, const struct test_case *ex)
+> +{
+> +	struct fanotify_event_metadata *metadata, *primary = NULL;
+> +	struct fanotify_event_info_error *info, *primary_info = NULL;
+> +	unsigned int total_count = 0;
+> +	int event_num = 0;
 > +
->           text.extend([
-> -            f'   * - {cve_id}',
-> +            f'   * - {cve_link}',
->               f'     - {tests_str}',
->           ])
->   
-
+> +	for (metadata = (struct fanotify_event_metadata *)buf;
+> +			FAN_EVENT_OK(metadata, len);
+> +			metadata = FAN_EVENT_NEXT(metadata, len)) {
+> +
+> +		event_num++;
+> +		info = get_event_info_error(metadata);
+> +
+> +		if (!info) {
+> +			tst_res(TFAIL, "Event [%d] missing error info", event_num);
+> +			continue;
+> +		}
+> +
+> +		if (info->error != ex->error && (ex->error2 == 0 || info->error != ex->error2)) {
+> +			tst_res(TFAIL, "Event [%d] unexpected errno (%d)",
+> +					event_num, info->error);
+> +			continue;
+> +		}
+> +
+> +		if (!primary && info->error == ex->error) {
+> +			primary = metadata;
+> +			primary_info = info;
+> +		}
+> +		total_count += info->error_count;
+> +
+> +		tst_res(TINFO, "Event [%d]: errno=%d, error_count=%d",
+> +				event_num, info->error, info->error_count);
+> +	}
+> +
+> +	if (primary_info)
+> +		primary_info->error_count = total_count;
+> +
+> +	return primary;
+> +}
+> +
+>  static int check_error_event_info_fid(struct fanotify_event_info_fid *fid,
+>  				 const struct test_case *ex)
+>  {
+>  	struct file_handle *fh = (struct file_handle *) &fid->handle;
+>  
+>  	if (memcmp(&fid->fsid, &ex->fid->fsid, sizeof(fid->fsid))) {
+> -		tst_res(TFAIL, "%s: Received bad FSID type (%x...!=%x...)",
+> -			ex->name, FSID_VAL_MEMBER(fid->fsid, 0),
+> +		tst_res(TFAIL, "Received bad FSID type (%x...!=%x...)",
+> +			FSID_VAL_MEMBER(fid->fsid, 0),
+>  			ex->fid->fsid.val[0]);
+>  
+>  		return 1;
+>  	}
+>  	if (fh->handle_type != ex->fid->handle.handle_type) {
+> -		tst_res(TFAIL, "%s: Received bad file_handle type (%d!=%d)",
+> -			ex->name, fh->handle_type, ex->fid->handle.handle_type);
+> +		tst_res(TFAIL, "Received bad file_handle type (%d!=%d)",
+> +			fh->handle_type, ex->fid->handle.handle_type);
+>  		return 1;
+>  	}
+>  
+>  	if (fh->handle_bytes != ex->fid->handle.handle_bytes) {
+> -		tst_res(TFAIL, "%s: Received bad file_handle len (%d!=%d)",
+> -			ex->name, fh->handle_bytes, ex->fid->handle.handle_bytes);
+> +		tst_res(TFAIL, "Received bad file_handle len (%d!=%d)",
+> +			fh->handle_bytes, ex->fid->handle.handle_bytes);
+>  		return 1;
+>  	}
+>  
+>  	if (memcmp(fh->f_handle, ex->fid->handle.f_handle, fh->handle_bytes)) {
+> -		tst_res(TFAIL, "%s: Received wrong handle. "
+> -			"Expected (%x...) got (%x...) ", ex->name,
+> +		tst_res(TFAIL, "Received wrong handle. "
+> +			"Expected (%x...) got (%x...) ",
+>  			*(int *)ex->fid->handle.f_handle, *(int *)fh->f_handle);
+>  		return 1;
+>  	}
+> @@ -177,14 +220,15 @@ static int check_error_event_info_error(struct fanotify_event_info_error *info_e
+>  	int fail = 0;
+>  
+>  	if (info_error->error_count != ex->error_count) {
+> -		tst_res(TFAIL, "%s: Unexpected error_count (%d!=%d)",
+> -			ex->name, info_error->error_count, ex->error_count);
+> +		tst_res(TFAIL, "Unexpected error_count (%d!=%d)",
+> +			info_error->error_count, ex->error_count);
+>  		fail++;
+>  	}
+>  
+> -	if (info_error->error != ex->error) {
+> -		tst_res(TFAIL, "%s: Unexpected error code value (%d!=%d)",
+> -			ex->name, info_error->error, ex->error);
+> +	if (info_error->error != ex->error &&
+> +	    (ex->error2 == 0 || info_error->error != ex->error2)) {
+> +		tst_res(TFAIL, "Unexpected error code value (%d!=%d)",
+> +			info_error->error, ex->error);
+>  		fail++;
+>  	}
+>  
+> @@ -248,19 +292,60 @@ static void check_event(char *buf, size_t len, const struct test_case *ex)
+>  static void do_test(unsigned int i)
+>  {
+>  	const struct test_case *tcase = &testcases[i];
+> -	size_t read_len;
+> +	struct fanotify_event_metadata *m, *primary;
+> +	struct fanotify_event_info_error *e;
+> +	char *current_pos;
+> +	ssize_t ret;
+> +	size_t read_len = 0;
+> +	struct pollfd pfd;
+> +	unsigned int accumulated_count = 0;
+> +
+> +	tst_res(TINFO, "Test case: %s", tcase->name);
+>  
+>  	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD|FAN_MARK_FILESYSTEM,
+>  			   FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
+>  
+>  	tcase->trigger_error();
+>  
+> -	read_len = SAFE_READ(0, fd_notify, event_buf, BUF_SIZE);
+> +	pfd.fd = fd_notify;
+> +	pfd.events = POLLIN;
+> +
+> +	while (accumulated_count < tcase->error_count) {
+> +		if (poll(&pfd, 1, 5000) <= 0) {
+> +			tst_res(TFAIL, "Timeout waiting for events");
+> +			goto out;
+> +		}
+> +
+> +		if (BUF_SIZE - read_len < FAN_EVENT_METADATA_LEN)
+> +			tst_brk(TBROK, "Insufficient buffer space for next event");
+> +
+> +		current_pos = event_buf + read_len;
+> +		ret = SAFE_READ(0, fd_notify, current_pos, BUF_SIZE - read_len);
+> +
+> +		m = (struct fanotify_event_metadata *)current_pos;
+> +		while (FAN_EVENT_OK(m, ret)) {
+> +			e = get_event_info_error(m);
+> +
+> +			if (e)
+> +				accumulated_count += e->error_count;
+> +
+> +			read_len += m->event_len;
+> +			m = FAN_EVENT_NEXT(m, ret);
+> +		}
+> +	}
+> +
+> +	primary = consolidate_events(event_buf, read_len, tcase);
+> +
+> +	if (primary)
+> +		check_event((char *)primary, primary->event_len, tcase);
+> +	else
+> +		tst_res(TFAIL, "No primary error event found");
+> +
+> +out:
+>  
+>  	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE|FAN_MARK_FILESYSTEM,
+>  			   FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
+>  
+> -	check_event(event_buf, read_len, tcase);
+>  	/* Unmount and mount the filesystem to get it out of the error state */
+>  	SAFE_UMOUNT(MOUNT_PATH);
+>  	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
+> -- 
+> 2.52.0
+> 
 -- 
-Thanks
-- Sachin
-
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
