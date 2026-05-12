@@ -4,98 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4237FCD4855
-	for <ltp@archiver.kernel.org>; Tue, 12 May 2026 11:11:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D824CD4F21
+	for <ltp@archiver.kernel.org>; Tue, 12 May 2026 11:49:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BBDDE3D0E81
-	for <ltp@archiver.kernel.org>; Tue, 12 May 2026 13:11:21 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 1D68D3D2269
+	for <ltp@archiver.kernel.org>; Tue, 12 May 2026 13:49:23 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6AD123CCDD4
- for <ltp@lists.linux.it>; Tue, 12 May 2026 13:11:03 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id F19F23CDE4A
+ for <ltp@lists.linux.it>; Tue, 12 May 2026 13:49:03 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DBED31A01069
- for <ltp@lists.linux.it>; Tue, 12 May 2026 13:11:02 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id ABBBE2010EE
+ for <ltp@lists.linux.it>; Tue, 12 May 2026 13:49:02 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 35080760AF;
- Tue, 12 May 2026 11:10:52 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 27BBB6C1B9;
+ Tue, 12 May 2026 11:49:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1778584256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1778586541; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Haslk+r6xWZV1fnSZtZIfmt89t9/XKHt4kjbGAYQW5E=;
- b=BlHyBFrX1I6rT/gVBjc9SS29dRcteS10jxL/HQ/B9LKMOCWbmNDzCSItiw5Piye/jCjEMi
- RXui1ef0lldYmu8aPzLCWEp4XHb9pEsTFRaCz43vrN/zOaCs7rKexKx7E92I+xiANaElal
- jTe/R9B0uB1hcAQdIpNvxIOALZulJsU=
+ bh=9f0MA+MPgT5JZvGztAOCfxKSJsALxNry5Ks1oU8UQXI=;
+ b=OS5tawFeEwU4vxPTtdVevnQe9BF6fMDsFo5+qFTqVEkaB6lewVhkhTmUbzlLcE1XsZRBd/
+ Be9sYUZw6vHefFzwLbp268PXw+s4Dk9hUlCsoLObEsIIKwFvGakzo/YiZuxhcxaIkGY62G
+ T4xu0GgWBjNEbH1H2EPSfmW7Oc57cjs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1778584256;
+ s=susede2_ed25519; t=1778586541;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Haslk+r6xWZV1fnSZtZIfmt89t9/XKHt4kjbGAYQW5E=;
- b=3pkaKsFolMp+ljWXNI/XT80fqwFM/X+4bTtaG0fDuO4FQTxTHMjngKD5jTB7l9unjH6ZXb
- BMLknjptWyCsZYAg==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=9f0MA+MPgT5JZvGztAOCfxKSJsALxNry5Ks1oU8UQXI=;
+ b=foq2JuD0tqBX023iJP/V0B6bkqx7q033iyINr2/C5YldhGOYv+0zXCh83MrYJsM1xIuzwR
+ SuPpYw6r6wt6sGAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OS5tawFe;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=foq2JuD0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1778584252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1778586541; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Haslk+r6xWZV1fnSZtZIfmt89t9/XKHt4kjbGAYQW5E=;
- b=f6E/ovLyD+uc57Rkd5fqJnzZdKt3gDdiB9JI1dGMsza0IK0n61/xgEZJrc0lJ6b54qW8Xn
- JdH8u+GUQ4rV6D/BU6Jh/dR/fM7GjDyb70K4zmJuChEM1lA0u5hGj81lEJObP1jJxeo+hu
- CaQI/kuNVvWJn2ll+HTN8fDZRBgs6Bk=
+ bh=9f0MA+MPgT5JZvGztAOCfxKSJsALxNry5Ks1oU8UQXI=;
+ b=OS5tawFeEwU4vxPTtdVevnQe9BF6fMDsFo5+qFTqVEkaB6lewVhkhTmUbzlLcE1XsZRBd/
+ Be9sYUZw6vHefFzwLbp268PXw+s4Dk9hUlCsoLObEsIIKwFvGakzo/YiZuxhcxaIkGY62G
+ T4xu0GgWBjNEbH1H2EPSfmW7Oc57cjs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1778584252;
+ s=susede2_ed25519; t=1778586541;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Haslk+r6xWZV1fnSZtZIfmt89t9/XKHt4kjbGAYQW5E=;
- b=XPLOsuXfUo3YbDq295zz4cuOx3Fi1HZCxtg2nhNQFVUTqW1k0ktZgol/D1TU4GO3hfolKp
- dPG8hXRXx+NrqPBA==
+ bh=9f0MA+MPgT5JZvGztAOCfxKSJsALxNry5Ks1oU8UQXI=;
+ b=foq2JuD0tqBX023iJP/V0B6bkqx7q033iyINr2/C5YldhGOYv+0zXCh83MrYJsM1xIuzwR
+ SuPpYw6r6wt6sGAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 22633593A9;
- Tue, 12 May 2026 11:10:52 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0BDF9593A9;
+ Tue, 12 May 2026 11:49:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id SUwSB7wKA2p6HgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 12 May 2026 11:10:52 +0000
-Date: Tue, 12 May 2026 13:10:56 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ZkGpAa0TA2oZRQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 12 May 2026 11:49:01 +0000
+Date: Tue, 12 May 2026 13:49:05 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <agMKwNsX6A7WDDn_@yuki.lan>
-References: <20260509082649.8533-1-wegao@suse.com>
+To: Ricardo Branco <rbranco@suse.de>
+Message-ID: <agMTsW0GeDZJsHxD@yuki.lan>
+References: <20260507181045.19489-1-rbranco@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260509082649.8533-1-wegao@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20260507181045.19489-1-rbranco@suse.de>
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FROM_HAS_DN(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, imap1.dmz-prg2.suse.org:helo,
- yuki.lan:mid, suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:email];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 27BBB6C1B9
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] OpenPOSIX: Allow 0 return value when detaching
- or joining joined thread
+Subject: Re: [LTP] [PATCH v7 1/2] memfd_create: move sys_memfd_create() to
+ lapi/memfd.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,84 +123,15 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Latest test in our openqa setup (Linux 7.1-rc2, Glibc 2.43) show following errors:
-> - pthread_detach_4-2: Test FAILED: Incorrect return code: 0 instead of ESRCH
-> - pthread_join_6-2: Test FAILED: Return code should be ESRCH, but is: 0 instead.
+> Add the static inline wrapper to include/lapi/memfd.h and include the
+> required headers so other tests can reuse it.
 > 
-> These are caused by glibc commit 5da15b15adab661c80e373b6af89be0b5fa5b3ad
-> ("nptl: Do not use pthread set_tid_address as state synchronization (BZ #19951)").
+> Also fix some minor issues detected by make check.
 > 
-> The new glibc logic removed the explicit validation of thread handles that
-> previously returned ESRCH:
-> 
-> --- a/nptl/pthread_detach.c
-> -  if (INVALID_NOT_TERMINATED_TD_P (pd))
-> -    return ESRCH;
-> 
-> --- a/nptl/pthread_join_common.c
-> -  if (INVALID_NOT_TERMINATED_TD_P (pd))
-> -    return ESRCH;
-> -
-> 
-> Update the tests to allow both return codes.
-> 
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  .../conformance/interfaces/pthread_detach/4-2.c             | 6 +++---
->  .../conformance/interfaces/pthread_join/6-2.c               | 6 +++---
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c
-> index a6dc83efd..1e7b84117 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c
-> @@ -18,7 +18,7 @@
->   * 1. Create a thread.
->   * 2.Wait 'till the thread exits.
->   * 3.Try and detach this thread.
-> - * 4.Check the return value and make sure it is ESRCH
-> + * 4.Check the return value and make sure it is ESRCH or 0
->   *
->   */
->  
-> @@ -59,9 +59,9 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
->  	ret = pthread_detach(new_th);
->  
->  	/* Check return value of pthread_detach() */
-> -	if (ret != ESRCH) {
-> +	if (ret != ESRCH && ret != 0) {
->  		printf
-> -		    ("Test FAILED: Incorrect return code: %d instead of ESRCH\n",
-> +		    ("Test FAILED: Incorrect return code: %d instead of ESRCH or 0\n",
->  		     ret);
->  		return PTS_FAIL;
+> Signed-off-by: Ricardo Branco <rbranco@suse.de>
 
-Technically since this is open posix testsuite we should PTS_UNTESTED on
-0 since we were not able to trigger the error since the implementation
-does not implement the optional behavior.
-
-Something as:
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c
-index 1e7b84117..fc7a6e9c9 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c
-@@ -58,8 +58,13 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
-        /* Detach the non-existant thread. */
-        ret = pthread_detach(new_th);
-
-+       if (ret == 0) {
-+               printf("Test UNTESTED: Implementation does not return ESCHR\n");
-+               return PTS_UNTESTED;
-+       }
-+
-        /* Check return value of pthread_detach() */
--       if (ret != ESRCH && ret != 0) {
-+       if (ret != ESRCH) {
-                printf
-                    ("Test FAILED: Incorrect return code: %d instead of ESRCH or 0\n",
-                     ret);
-
+You already got my Reviewed-by: for this patch you should have added it
+here in this version.
 
 -- 
 Cyril Hrubis
