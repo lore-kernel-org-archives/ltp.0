@@ -4,101 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A90DBCD4840
-	for <ltp@archiver.kernel.org>; Mon, 11 May 2026 12:44:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 341F9CD4855
+	for <ltp@archiver.kernel.org>; Tue, 12 May 2026 08:08:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1ADF03CB9F7
-	for <ltp@archiver.kernel.org>; Mon, 11 May 2026 14:44:40 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 576D23CF2B9
+	for <ltp@archiver.kernel.org>; Tue, 12 May 2026 10:08:39 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7125F3C041A
- for <ltp@lists.linux.it>; Mon, 11 May 2026 14:44:18 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id AC59B3CC915
+ for <ltp@lists.linux.it>; Tue, 12 May 2026 10:08:19 +0200 (CEST)
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
+ [IPv6:2607:f8b0:4864:20::742])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B206160042C
- for <ltp@lists.linux.it>; Mon, 11 May 2026 14:44:17 +0200 (CEST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 64BAEMOS4020088; Mon, 11 May 2026 12:44:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=YO7Zy1
- yravIXI04FVwMuXL9fLglGhHzVHODVUkoKcI0=; b=Fj2vuRCiUGHOD+r1LeFKqK
- KfhYmJLyhdPccRMkOsIRHyoqaXTY4ue7oAzw6cu9h465qam9BFztubAGieHkhMQK
- EZ/gMbaH4c4clZefMj7XgcSJ5tGU5Zl7494DpNx0jGNS5esUALqYJOQ7kFaJgTQc
- JQg0b0SVscfSOL9eavwcQjkiObiwFfHXcTJ8L8Sdu+uVFppw49ROsat7fEKwH2Pt
- ZresJacOOBTuqOG2x/2RxYdxkq753kMWBKyPqs+iwKWKzSurWbXNZaqXYHKnoH7a
- gB0uilXB4l+igrsQsSxkbygyUWexbmHx9xSYa4OS/9z3hBr4VnvMQIL5YDJ8GpBg
- ==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4e1ubdqt68-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 11 May 2026 12:44:15 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 64BCdTpE008788;
- Mon, 11 May 2026 12:44:15 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4e2hxy50rx-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 11 May 2026 12:44:15 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com
- [10.241.53.101])
- by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 64BCiET431916762
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 11 May 2026 12:44:14 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 9A62A5805C;
- Mon, 11 May 2026 12:44:14 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 4FE565805A;
- Mon, 11 May 2026 12:44:13 +0000 (GMT)
-Received: from [9.43.107.54] (unknown [9.43.107.54])
- by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
- Mon, 11 May 2026 12:44:13 +0000 (GMT)
-Message-ID: <dc4311f6-014b-4fe1-b7ee-5e3399d0a0e5@linux.ibm.com>
-Date: Mon, 11 May 2026 18:14:11 +0530
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7EF591A00933
+ for <ltp@lists.linux.it>; Tue, 12 May 2026 10:08:18 +0200 (CEST)
+Received: by mail-qk1-x742.google.com with SMTP id
+ af79cd13be357-8d736211595so371104385a.0
+ for <ltp@lists.linux.it>; Tue, 12 May 2026 01:08:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1778573297; x=1779178097; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=oQwzvWevRFf2A9PoU0LFMA+H7l+9E2nW4uuM7AAkRzo=;
+ b=dh/UxoevFJ/+cWezPO+E5lMHIj4UIazjiQ6kIgsBdmPZSYgTiaroZFmz1/Z7kaw4Mg
+ zb9KZ1angRrdyzS6pOCBkjQl48JRiCO2N6lAu60Mwt4tU3upIbMg7zuoRbx4AybCOcNt
+ 38L+s4MuqWsrjNpK9zBmrMngBybtyGQeCj1LJWVpk/nR2S+OQ/ObqVvytyc9/GeePXya
+ 2bivzqxgzsVzvjnLcBuRT26NMYiXF/wJcTtFOwrDL8uMsaz8j56qColN4k+TWCBhoBKP
+ Io/RvHAe7s8d0dZvcYKPwFdnEDAxrW+xzzUfZyljaBnA7Bz2D5eQducJ5VCo0d6M4d4e
+ sEAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1778573297; x=1779178097;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=oQwzvWevRFf2A9PoU0LFMA+H7l+9E2nW4uuM7AAkRzo=;
+ b=T9qDBsWWiWoWNCPMdZc54U3ROEp6m2MDLq2wMbiCM9o73r4Ph7F28qZiQkLBmOT5de
+ 9KpH1a9YLBvSbUNhh3ZAeWBso9Jfx/TD6EBwFD3kHT/RXsxVKStmImgMXMohVNzfYh7I
+ Te2GkBsJ99N11GG4S5lruWoh9qIThTJwzNRGFT3loy4kO6vRquS1NpQX9d91ok/pKt7J
+ l25oD3IMvINdxg+ENLbiLPO97IQaxGNVO8ZfOACduY1n6/aI7bslcw3MKFhQAvwf+FcB
+ JJ/Y3oOWHeB7xeFsaDxGaOPClzK6lgmxjtasX+2e9mVmc8w2oh54aaPRjWMAVpCTZPlc
+ a2nQ==
+X-Gm-Message-State: AOJu0YyH3EpRoah7Fu4ceM/JHiWh7W5bxtOUW5qxpTnOLP855HRxkR1P
+ wxtEEWCpSQQ6KxxLBA7J55WhnGfSmlL7xjsE6rlMtnBbVM2c/aPmPNLY
+X-Gm-Gg: Acq92OHimn+hUrbvyuU21QEExf11z9FoVHZImoWWbhHv4bvOmoTxkBlKbgNS5HBjQYB
+ GcYID71OiZZPWQL6vbrQDc4X+rJtNSr5RNa/bmnrryVn5wWpiw+8lz+1hbZ8i0aTAyfazj3p/sx
+ TDaIKkfYO+IZ+hrJgqD/JOBZ90i+f+L8UMclRwDYBAmyOTwVYAB9FpSbEQMhtyO2yz1cT+cGScm
+ uRe6A3fQYqLrRl5iRiVwAXEJnle+UPkIq2z6XrVNpZjhfMWgVOdxVW/XuMKsFG/PU3BxGsCOZdO
+ WGzbTXUMF27BnlU/fefTCzVN5wMIGTkJSgJ/jGJLZZ0rKWTHQ0pH/v6UDBeEqEhfJTPbCRkXdlg
+ 5YZq5xNQlj+wCe/KIt+bIGiEz1UU4VET+sm1ONnCPgBPw32XZZlUITwhQsHbxXBZqTt56OgmjE7
+ dgw5mQOe+/v9Qo/qxQBg83ckMJWHL1UZCH37oih43Fr6nj5T9V9O/ZsYvsp8OP3QV2s+Edtn4Wn
+ e2jSQNutP/+1Oc1fnmUJgZXypk/tLS0lH3eZVs=
+X-Received: by 2002:a05:620a:22bc:b0:90c:fc17:95f8 with SMTP id
+ af79cd13be357-90cfc17a137mr178028185a.51.1778573297117; 
+ Tue, 12 May 2026 01:08:17 -0700 (PDT)
+Received: from
+ runnervmeorf1.1vi0t330zhkepje5rbhct212od.ex.internal.cloudapp.net
+ ([135.232.200.2]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-90d4a6a3859sm79769485a.23.2026.05.12.01.08.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 12 May 2026 01:08:16 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Wei Gao <wegao@suse.com>
+Date: Tue, 12 May 2026 08:08:15 +0000
+Message-ID: <20260512080815.3976-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260509082649.8533-1-wegao@suse.com>
+References: <20260509082649.8533-1-wegao@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20260511070852.90379-1-pvorel@suse.cz>
-Content-Language: en-US
-From: Sachin Sant <sachinp@linux.ibm.com>
-In-Reply-To: <20260511070852.90379-1-pvorel@suse.cz>
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=BezoFLt2 c=1 sm=1 tr=0 ts=6a01cf1f cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17 a=8r2qhXULAAAA:8
- a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=V8glGbnc2Ofi9Qvn3v5h:22 a=VnNF1IyMAAAA:8
- a=NiYv6D_-EqcXDy79cBkA:9 a=QEXdDO2ut3YA:10 a=8gvLZcY7Nlvl4CGD_6nf:22
-X-Proofpoint-GUID: wkaqDshaLloODKSA2RN-B7vd7ntkOuMw
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTExMDE0MCBTYWx0ZWRfXxukzQNrqd8J8
- HZpVWT+dZEtVjY7Qk/jzVT0O9oABD5bSlzILsW0u5Pkrrd7x6Ui4xvGqiv3YDXHQ/maYLe3IuXP
- ICnN47S9VTB4PEx+BGlyR4alcGEv1e+/tu+zM/ZuE5iRaLqPTTQqxhkj3RPmpVljmMk9W8fk3jm
- y7irH6tjD7bAdzrmRFdE/N7Ntbyei/Oadn4ODwxLFjGoBCcXN6KIRV9MpFPoMy1/bhW+nQDO2cE
- PKUmZz+jf3mASXYVi3kWqcRY2F1aNQbI3LryY2qBvcXvu8CxFpTuyon9hAdo81W05O9EY7BjOpY
- rrbyl1XaGNpoy64IdxKIaifFv8nC6S15s8mVdSpq90hjtWQDDfXuwdK1sJECIUvaXjrliB73mj1
- Iy9sDnZfSYmlEqGuFxgSYlcxZALuyrH2aTPO5HARVLVMTngqVac1kpPqYScd3Xu8YFQKHrSxp68
- usXJQdwBf5C1PZpVASg==
-X-Proofpoint-ORIG-GUID: wkaqDshaLloODKSA2RN-B7vd7ntkOuMw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-05-11_03,2026-05-08_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0 malwarescore=0
- adultscore=0 lowpriorityscore=0 suspectscore=0 impostorscore=0 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2605110140
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] doc/cve_catalog: Link CVE to www.cve.org
+Subject: Re: [LTP] OpenPOSIX: Allow 0 return value when detaching or joining
+ joined thread
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,29 +91,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-
-
-On 11/05/26 12:38 pm, Petr Vorel wrote:
-> Although test_catalog page links to www.cve.org, it's more convenient for
-> readers to have that link also on page dedicated to CVEs.
->
-> While at it, change warning to note (it's really an info, nothing to
-> warn about).
->
-> Follow-up: 79396c7b71 ("doc: Add CVE catalog to documentation")
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-Reviewed-by: Sachin Sant <sachinp@linux.ibm.com>
-
--- 
-Thanks
-- Sachin
-
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgV2VpLAoKT24gU2F0LCAwOSBNYXkgMjAyNiAwODoyNjo0NyArMDAwMCwgV2VpIEdhbyB3cm90
+ZToKPiBPcGVuUE9TSVg6IEFsbG93IDAgcmV0dXJuIHZhbHVlIHdoZW4gZGV0YWNoaW5nIG9yIGpv
+aW5pbmcgam9pbmVkIHRocmVhZAoKPiBUaGVzZSBhcmUgY2F1c2VkIGJ5IGdsaWJjIGNvbW1pdCA1
+ZGExNWIxNWFkYWI2NjFjODBlMzczYjZhZjg5YmUwYjVmYTViM2FkCj4gKCJucHRsOiBEbyBub3Qg
+dXNlIHB0aHJlYWQgc2V0X3RpZF9hZGRyZXNzIGFzIHN0YXRlIHN5bmNocm9uaXphdGlvbiAoQlog
+IzE5OTUxKSIpLgoKVGhlIG1vdGl2YXRpb24gaXMgY2xlYXIgYW5kIHRoZSBmaXggbG9va3MgY29y
+cmVjdCDigJQgYWNjZXB0aW5nIDAgaW4gYWRkaXRpb24KdG8gRVNSQ0ggbWF0Y2hlcyB0aGUgbmV3
+IGdsaWJjIGJlaGF2aW9yLgoKPiBUaGUgbmV3IGdsaWJjIGxvZ2ljIHJlbW92ZWQgdGhlIGV4cGxp
+Y2l0IHZhbGlkYXRpb24gb2YgdGhyZWFkIGhhbmRsZXMgdGhhdAo+IHByZXZpb3VzbHkgcmV0dXJu
+ZWQgRVNSQ0g6CgpUaGUgY29tbWl0IG1lc3NhZ2UgaXMgbWlzc2luZyBhIFNpZ25lZC1vZmYtYnk6
+IHRhZy4gUGxlYXNlIGFkZDoKCiAgU2lnbmVkLW9mZi1ieTogV2VpIEdhbyA8d2VnYW9Ac3VzZS5j
+b20+CgotLS0KTm90ZToKCk91ciBhZ2VudCBjb21wbGV0ZWQgdGhlIHJldmlldyBvZiB0aGUgcGF0
+Y2guIFRoZSBmdWxsIHJldmlldyBjYW4gYmUKZm91bmQgYXQ6IGh0dHBzOi8vZ2l0aHViLmNvbS9s
+aW51eC10ZXN0LXByb2plY3QvbHRwLWFnZW50L2FjdGlvbnMvcnVucy8yNTcyMTY3MzA1MQoKVGhl
+IGFnZW50IGNhbiBzb21ldGltZXMgcHJvZHVjZSBmYWxzZSBwb3NpdGl2ZXMgYWx0aG91Z2ggb2Z0
+ZW4gaXRzCmZpbmRpbmdzIGFyZSBnZW51aW5lLiBJZiB5b3UgZmluZCBpc3N1ZXMgd2l0aCB0aGUg
+cmV2aWV3LCBwbGVhc2UKY29tbWVudCB0aGlzIGVtYWlsIG9yIGlnbm9yZSB0aGUgc3VnZ2VzdGlv
+bnMuCgpSZWdhcmRzLApMVFAgQUkgUmV2aWV3ZXIKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0
+cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
