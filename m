@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E9F6CD4851
-	for <ltp@archiver.kernel.org>; Wed, 13 May 2026 16:28:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E45BCD4F21
+	for <ltp@archiver.kernel.org>; Wed, 13 May 2026 16:29:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 298713C574A
-	for <ltp@archiver.kernel.org>; Wed, 13 May 2026 18:28:04 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 36D2F3C24C2
+	for <ltp@archiver.kernel.org>; Wed, 13 May 2026 18:29:51 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F30BD3C1D75
- for <ltp@lists.linux.it>; Wed, 13 May 2026 18:27:45 +0200 (CEST)
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com
- [IPv6:2607:f8b0:4864:20::842])
+ by picard.linux.it (Postfix) with ESMTPS id DE7693C0D0D
+ for <ltp@lists.linux.it>; Wed, 13 May 2026 18:29:32 +0200 (CEST)
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
+ [IPv6:2607:f8b0:4864:20::742])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2A0E91A00997
- for <ltp@lists.linux.it>; Wed, 13 May 2026 18:27:44 +0200 (CEST)
-Received: by mail-qt1-x842.google.com with SMTP id
- d75a77b69052e-50fb4a7d704so51948291cf.1
- for <ltp@lists.linux.it>; Wed, 13 May 2026 09:27:44 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 527231000985
+ for <ltp@lists.linux.it>; Wed, 13 May 2026 18:29:32 +0200 (CEST)
+Received: by mail-qk1-x742.google.com with SMTP id
+ af79cd13be357-902deb2412fso766505585a.3
+ for <ltp@lists.linux.it>; Wed, 13 May 2026 09:29:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1778689663; x=1779294463; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1778689771; x=1779294571; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=dq/VlNUJbY3tE1kDbaJuIUmEkd3eVI8pfMu+xe+IvD0=;
- b=ZcEqeuTQaRt8GM0C/PnKAmAic/TY82+MpDHGCHIajTakreZ5blevFZPDci0IR4ThuI
- 1rGd7iGWIH8Of8jhepnMAUQ2o/4ileL7VIz7GpM59fVNNytAYyc6QHVKNlmfSuqKreHZ
- sDoqr2L2D1uxGZTFc+tdXrDCits/VhD8LhVppFavZ20QbqqGyCW9Xz8KoHfjH0fOImCq
- uhqvWQE/fMnAqrvcqPJCPgu45GLyBYCN/UdAg+E8Iac02tWtZVwPIoKr/20slSxzb8Hx
- MZJVjNPH2T9fqmpNu452mXDRSRHdJAnETuS4jAV8nyPgjq4lo5maVETc5D0kCn7Q8rTj
- Afpg==
+ bh=rmdgDDTo8FRMZ+x8J1P6zCWcQksdUGn+UM47C+z8AtM=;
+ b=RUPdKLOnB+NIxFbiD7+Q553vrmomswE7FJ1K/3e1zGMUycEvs+8cewe8VsaHpL0Z+M
+ TYGU49RtkQoZsJPlJcvbZf61V/cxmYMGSk5IuGBBDDsZV7f1GPxLzDB60DTeWtP0VcKo
+ 24nEi8EiMDky8dIML0+pMTtWYR/RzdqDOTfDUgmRaUnkJO0GCfrBTg5+bpbLRFyWOybM
+ VJjYxukpsUKGpHCy74DivhDu87AEcwlGdgqIJWQy6bBGCwBfO5hOym3auBKFCUb63A9h
+ MJMcKHZ9c5jAGrpBGWZVsj3SIRV88hbZjoTADc8dMCOpPCa7upYHF9Ax0nXy7JNSzdtQ
+ dU5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1778689663; x=1779294463;
+ d=1e100.net; s=20251104; t=1778689771; x=1779294571;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=dq/VlNUJbY3tE1kDbaJuIUmEkd3eVI8pfMu+xe+IvD0=;
- b=EkKlRy2NK11V6C+sxPGrhT8uNK1wr2b36dcrUr4zyd8rWZVm+NR0fIGHkGNzDVwUrC
- v1zW5UtMwfKJq30MfT2m+6f/ZSJJ3NfphKoJSVeiyXLcapvNPI6KHa3ECs10MnFva+7A
- xklClcfkCPSVcNkNWGkVMdJM19Ncpgpg1aoNv0Tdle1RlYA6fiVhc44pylRMaUROLGPk
- AV0fs5H/28W6yzAzYwkSJ8re4wOj7aiTgAlhnTF3ZTuwfn1fpkZKkczEF6mGW7G9IpRD
- rj8r5lhHz/tlTUUpPK8mXFfQQ8xsdgfYsCjJEMZb7zRm+5i3kiK2EghUgsXm8Ph+MX07
- QRzQ==
-X-Gm-Message-State: AOJu0YymhPAf7bJra7oPnvRoSZ6W1ICI2KwLmAd2IOJ+CUDBZLvT6zOY
- E4Zj5e1+XpwfQzzVORgLqLwaXxJ40b7JcwvOUk/eYCPoChC6MRiY9CRb
-X-Gm-Gg: Acq92OF+JlndRgMxfY0ZEP+V7XD7N4MpsZlQxSXoPq8UXKUKm2tIFRkzzi2gLXykWzA
- BYMcASbhqI2dR3UKb/RApKuwUx901qpj77mynFmpARLf82gv/RfeOwMSA59LDYhpaCUKMwj2rl9
- qioaWcUeBLyevwS+n4bQutw+MS1y/MYWivxByeMnqTv4JNKaYbKjsod6L2obuV1IP1LfMWqELZc
- m6Ky1AYjXoHNfy/+q2RnYI8k3xOVZSlyLx39HSzttoO/stgUq2URAOS7u7fWlxuyGnmhe+HDQ9b
- SWXtUXSqHfjsvYgAwDfUMvfJ1fWb7NXFRZ7qgw0yPTozMnX3WKvL+qaBWvCFCdvvD2VQfWG5dzW
- c/nxz5qd22s04eJWgRH5hUfvjAKc2CxWtBk7UsTcu32ymMObKh0pFi99SZFKB/zk02++WQ1/jb4
- q4zV+WGiSQCH00xGo2M46P8ThsSQbePkco6gyfASfg2qTVMMSK/FY0MBcQ2YcCptvk8BK1FdtBi
- zOj0EYQyp/D+AKM88i7SjwTqsACQsYI2pEZqYM=
-X-Received: by 2002:a05:622a:54b:b0:515:6c6b:48a5 with SMTP id
- d75a77b69052e-5162f51ea48mr53812421cf.27.1778689662751; 
- Wed, 13 May 2026 09:27:42 -0700 (PDT)
+ bh=rmdgDDTo8FRMZ+x8J1P6zCWcQksdUGn+UM47C+z8AtM=;
+ b=gRwfjhre9qSVk1nVrX52mLQTqGzPmjkJqUKooIneVhmvFdjpTDr1fg4HT7KnDoCLdh
+ SeoXwGFFOkR6hRw9qXfbctNuq2K82fM5PFDf+pRUsh+vxnI6q56yONulj1D7SylRK57I
+ /Las7RslZjc3yEyuPiGKZOjqKFtZe5dNSkmXCOT09AuD190ZEZMvFaPNsOqki26oxlax
+ 8ONBEfdpULvssuRhs1s1JmVwitj1b1pB+NbsEStWx2PDnKESY5LWBpOJ8zGXj00iu/aH
+ LEV1DJ7UPVZ4DPuo8mHAO69GaR8EOQvIaTBKVvaDI5laKVCDvrBP7WyroyMu92H56Pji
+ 4yeA==
+X-Gm-Message-State: AOJu0YxLgQ6061Y9qtgUs3Q2MOSo26yAn5MdJHcON8KzXNTje/TTrz6P
+ AQXTFqI+sAuj64D8+xHwpfQulIwsis0niFiFnlPvkELLU8eNdJDtYe7D
+X-Gm-Gg: Acq92OG7qDACwPhEGEY5HXZID/EpdW5UOr+xIwtRtzFjcbUMdDYzwiBQ1MWx/SRHHrP
+ clui6lqvwf0hiHvQh4CN6CHgl3LvLPafDQmf22WhrgMjNIShiVxueXK46JNcj2PGIiQrb5KktTq
+ 9Qtb/OvTnTHpYJ2uBmEfEMFAHK5aV4QOn3WLZu4enMNRUfRScwSSgc/Qo7sBQmNNlKZQ1yzaani
+ L2w6JFfeBCrki11P7aU2hjuLC+esU7UQSqttLDmYdBn5dS3e9QHeux2q++pE+6dHkocqKhkG0iJ
+ GxpD9JWBp9zl9+hJxhnGhDjzL+C/dWw3Hm99KnWaFVg8iGbzr087QxHjDaYUIE4za+4Byc2GWNu
+ i2TpZOb27nCcvp+SymSoUW3A23Oh9ORCLjwcrT31nth116ASIixJrnLImadGHFOxCF8h5SP2ruz
+ DyNj1S48yHEEUzHGcj+xP39SbbguxVaEYg0/isF4IaaTGDEQpIHAjo+VAzLRm7+B+olX0mmoYo4
+ BNCsVxYad/vWTvXE+K/3P31s902P9P1ucr7Ze0riIom394Sfls=
+X-Received: by 2002:a05:620a:469e:b0:90f:5da3:950e with SMTP id
+ af79cd13be357-90f888c31a9mr675881685a.9.1778689766341; 
+ Wed, 13 May 2026 09:29:26 -0700 (PDT)
 Received: from
- runnervmeorf1.4zsvnx0dqyzujgjah2l4ucpvih.cx.internal.cloudapp.net
- ([172.172.87.51]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-5148e836e32sm152663981cf.25.2026.05.13.09.27.42
+ runnervmeorf1.lca4z4pwcdgebph4hp2vtpj1rd.bx.internal.cloudapp.net
+ ([20.163.133.232]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8b53ca982a1sm411305066d6.38.2026.05.13.09.29.26
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 13 May 2026 09:27:42 -0700 (PDT)
+ Wed, 13 May 2026 09:29:26 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 13 May 2026 16:27:41 +0000
-Message-ID: <20260513162741.4013-1-linuxtestproject.agent@gmail.com>
+Date: Wed, 13 May 2026 16:29:25 +0000
+Message-ID: <20260513162925.4072-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260513-fragnesia-v1-1-80c5b3b09005@suse.com>
-References: <20260513-fragnesia-v1-1-80c5b3b09005@suse.com>
+In-Reply-To: <20260513-fragnesia-v2-1-07a822c66cbd@suse.com>
+References: <20260513-fragnesia-v2-1-07a822c66cbd@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] sockets/xfrm02: Add ESP-in-TCP page cache corruption test
 X-BeenThere: ltp@lists.linux.it
@@ -99,39 +99,40 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-On 2026-05-13, Andrea Cervesato wrote:
+On Wed, 13 May 2026 17:35:03 +0200, Andrea Cervesato wrote:
 > sockets/xfrm02: Add ESP-in-TCP page cache corruption test
+
+> +		SAFE_POSIX_FADVISE(cli_fd, 0, 0, POSIX_FADV_DONTNEED);
+
+posix_fadvise(2) is only valid for regular files; on a socket fd it
+returns ESPIPE, causing SAFE_POSIX_FADVISE to call tst_brk(TBROK) in
+the child and the test never actually exercises the corruption path.
+Replace with SAFE_POSIX_FADVISE(file_fd, 0, DATA_SIZE, POSIX_FADV_DONTNEED).
+
+> +	/* Let the espintcp strparser process buffered ESP data */
+> +	usleep(30000);
+
+Sleep-based synchronization is not allowed (G2). Use poll() on acc_fd
+waiting for POLLIN to detect when the strparser has consumed the data.
 
 > +	acc_fd = SAFE_ACCEPT(srv_fd, NULL, NULL);
 > +	SAFE_CLOSE(srv_fd);
 
-srv_fd is not reset to -1 after this close. cleanup() checks
-`srv_fd != -1` and will double-close the stale descriptor. Add
-`srv_fd = -1;` here.
+srv_fd is not reset to -1 after close here; cleanup() will find
+srv_fd != -1 and attempt a double-close, hitting TBROK on every run.
+Add `srv_fd = -1;` after SAFE_CLOSE(srv_fd).
 
-> +	file_fd = SAFE_OPEN(TESTFILE, O_WRONLY | O_CREAT, 0444);
-> +	SAFE_WRITE(SAFE_WRITE_ALL, file_fd, original, DATA_SIZE);
-> +	SAFE_CLOSE(file_fd);
-[...]
-> +	SAFE_CLOSE(file_fd);
-[...]
-> +	SAFE_CLOSE(file_fd);
+> +cve-2026-fragnesia xfrm02
 
-Same problem for file_fd: none of the three SAFE_CLOSE calls in run()
-reset file_fd to -1, so cleanup() will double-close it. Add
-`file_fd = -1;` after each one.
-
-> +	splice(pipefd[0], NULL, cli_fd, NULL, DATA_SIZE, 0);
-
-SAFE_SPLICE exists. If failure on patched kernels must be tolerated,
-capture the return in a local variable and add a comment explaining
-why the error is intentionally ignored.
+Please confirm whether the fix for this CVE is in kernel 7.1 (current
+stable). If not, this belongs in runtest/staging with a [STAGING]
+prefix in the commit subject.
 
 ---
 Note:
 
 Our agent completed the review of the patch. The full review can be
-found at: https://patchwork.ozlabs.org/project/ltp/list/?series=504173
+found at: https://github.com/linux-test-project/ltp-agent/actions/runs/25811801064
 
 The agent can sometimes produce false positives although often its
 findings are genuine. If you find issues with the review, please
