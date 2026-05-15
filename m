@@ -4,83 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CA91CD343F
-	for <ltp@archiver.kernel.org>; Fri, 15 May 2026 15:16:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10A69CD4F48
+	for <ltp@archiver.kernel.org>; Fri, 15 May 2026 15:33:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CC39E3E2C1B
-	for <ltp@archiver.kernel.org>; Fri, 15 May 2026 17:16:52 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id A2AEA3E57DA
+	for <ltp@archiver.kernel.org>; Fri, 15 May 2026 17:33:14 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 550303E18AD
- for <ltp@lists.linux.it>; Fri, 15 May 2026 17:16:32 +0200 (CEST)
-Received: from mail-dl1-x1242.google.com (mail-dl1-x1242.google.com
- [IPv6:2607:f8b0:4864:20::1242])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D55803DC86F
+ for <ltp@lists.linux.it>; Fri, 15 May 2026 17:32:57 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 14A6B1000DAD
- for <ltp@lists.linux.it>; Fri, 15 May 2026 17:16:32 +0200 (CEST)
-Received: by mail-dl1-x1242.google.com with SMTP id
- a92af1059eb24-133466cf955so6280719c88.0
- for <ltp@lists.linux.it>; Fri, 15 May 2026 08:16:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1778858190; x=1779462990; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=ldlmmC5AK4CsG/UD/0Rc4bykoh0ziWbPiYBn+ybn/WU=;
- b=GcRuEJSHOKsvMpMiaEqS5IIaDZx6UlxSS4D1dpzBYpWZYwN0vLRH4sRLtCex9ESvgL
- jij8GRd5KdZEMe0RFDeuwK3SjFXXETxjIF0fZbc2wCbFNkYYq9SxpugY68gdbWz2ibAT
- 8nU9MbGeX1k/kHvYYTQtoYoJIPHQoLJlM6ds+uPd0wYjJo4RS0Jdh8kgWWJxWqAueFvx
- JTzILgyuRWYImYRA/AiLVojsOxseZKWjNQSQ3vCwRA8l7NVifUWplwZ1y3fE/Vn8jZ/7
- CoL7mHFvq5L5YhP8ewIrN47mi8MMKm/piSo22moQa+n643wDTrcDe7EnbavkHAQo0S8v
- YFRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1778858190; x=1779462990;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=ldlmmC5AK4CsG/UD/0Rc4bykoh0ziWbPiYBn+ybn/WU=;
- b=CKoTSZmtxFAq02rvO/+OJpi9cJTDTAuO8oenTwIu0u2k8ORM35j9PAp0W8Mt0p/Uty
- JG4DgTlJrpi2CrC++C6GSGz1SlWyLnb5y5nxvb3Zwo7xq6ycT6qgFIDgDmw6Y45xsdpg
- sQ+JD8Lq33HGPpzKvNxVDQ6m8/KrzVOhyg/MEZJw93Zx2yWTl/e+knN4IPpPLoh4l9C/
- ecHoA4RmPolqGpJLypfqp35gZrfPxhySaA8i91loQLBFJr+dh7a9ixd4BXLBprOEAnuS
- 6ieBLRZ7SlEAb+dI/e+qGO7GsCySUF/4mKL7qEnJYWpUUlvS3GXG5pkLFqTZB3LnqLrO
- 6EVA==
-X-Gm-Message-State: AOJu0YxUY45nWB5492tlTSntKbh3+EL9+dR7lHBw6mg4ufO7W1QqDu9Z
- mS01kKZF8RV2rZzOPb9JEEwIJPPiH+E6ZmcE5+gb1PImvOF9ySGu5RMd
-X-Gm-Gg: Acq92OFC8D1GZhnJQao1jthkijHMCrT6Eo1sdZh8OmOkhhBRmjsDLB0/0XIR3WlFc3e
- DCl2kwkSQEWODpTla5gqP8rJnezfIX4UmGiy/mnKlM5Tc7tJCdVAoOe6sv3/S9/n/aNgxsX9Qez
- 2AUQ5HZv8RpQWySHRqbrVCS9IoLTsD6wXkecZQysWcL94DOGklBJ+d7Ou6XHQwaHZKbqV/7Pm62
- 1fAkZzCqrUXCLEKMJW4yBteD1YpesegIdD8nuNFT232Cej+rXCnYiq4fLJB+VbCQcMzU7190lvn
- sxYESt9KHCDIbyhYVXI5Fn5lg7fEB4uGoAN/tYCzXcNJgkYlWlwhvpgY3IshTM0DMa1eUWRhzPD
- h6NwtEWaCAwlrwtrLqZZ2omDkCA6GcY0+orvBXCwIaHhlaZFYXeC9Rk/AYO63XAV8F+TgjKa3pA
- 7nAU7Gt0+z/zcLCfTCWI7yWmt4/ZXsM6iL0fNl0fyU9SN+tAtK7RaKdRghDeuCNbQa2xCQ/lGTf
- K6b8qdtcg9CDV1E9+Ect8/pfhSfdl95RdI7xPUj
-X-Received: by 2002:a05:7022:40c:b0:12d:b205:c737 with SMTP id
- a92af1059eb24-1350451e639mr2006643c88.17.1778858190353; 
- Fri, 15 May 2026 08:16:30 -0700 (PDT)
-Received: from
- runnervmrw5os.pexe2arhy53e1kmc0kdex5vwzc.dx.internal.cloudapp.net
- ([52.159.247.147]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-134cc33a618sm10206293c88.12.2026.05.15.08.16.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 15 May 2026 08:16:30 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 15 May 2026 15:16:28 +0000
-Message-ID: <20260515151628.3875-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260515133613.31249-1-pvorel@suse.cz>
-References: <20260515133613.31249-1-pvorel@suse.cz>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 60548200B60
+ for <ltp@lists.linux.it>; Fri, 15 May 2026 17:32:57 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 33B52619FC;
+ Fri, 15 May 2026 15:32:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1778859176;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TAdp/aKeHy7jIiMjz1ZKFUiIUMnmuQGX3HSvU8C/BMg=;
+ b=V4mdxeGHjFETy6enUB8nB3hlPceqRMj25hnh7+1UabyboSJ0liaMDhRhiPVzarQZNAoTYR
+ lmM5+ulXXoQ4phL4dPeKDJF9FR2UPmNrbshO9HaLrihWJhnM5/hvcoozRf5eKoTFusKrh5
+ AHFvT+qwNkAmhjYo8q70yp6npvG2u1s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1778859176;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TAdp/aKeHy7jIiMjz1ZKFUiIUMnmuQGX3HSvU8C/BMg=;
+ b=2mLBp9bvV1RS0sTk4uHkg/t6goZHTOmH7YjX+fbqrTebtn6PiNH5CrI2d9uhuLNLuYqnyX
+ Al+vEyibuHYx5DBQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1778859176;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TAdp/aKeHy7jIiMjz1ZKFUiIUMnmuQGX3HSvU8C/BMg=;
+ b=V4mdxeGHjFETy6enUB8nB3hlPceqRMj25hnh7+1UabyboSJ0liaMDhRhiPVzarQZNAoTYR
+ lmM5+ulXXoQ4phL4dPeKDJF9FR2UPmNrbshO9HaLrihWJhnM5/hvcoozRf5eKoTFusKrh5
+ AHFvT+qwNkAmhjYo8q70yp6npvG2u1s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1778859176;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TAdp/aKeHy7jIiMjz1ZKFUiIUMnmuQGX3HSvU8C/BMg=;
+ b=2mLBp9bvV1RS0sTk4uHkg/t6goZHTOmH7YjX+fbqrTebtn6PiNH5CrI2d9uhuLNLuYqnyX
+ Al+vEyibuHYx5DBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 12607593A9;
+ Fri, 15 May 2026 15:32:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id qnT1Aqg8B2rrZgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 15 May 2026 15:32:56 +0000
+Date: Fri, 15 May 2026 17:32:50 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20260515153250.GA45497@pevik>
+References: <20260501135100.42278-1-li.wang@linux.dev>
+ <20260504133020.14129-1-li.wang@linux.dev>
+ <afi3Ml5vFv2irnc0@yuki.lan>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <afi3Ml5vFv2irnc0@yuki.lan>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
+ ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,linux.dev:email,suse.cz:replyto];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] tst_net.sh: tst_rhost_run(): Go to LTP temporary
- directory first
+Subject: Re: [LTP] [PATCH v2] lib: Introduce tst_path.h to consolidate
+ system paths
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,24 +111,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwKCk9uIEZyaSwgMTUgTWF5IDIwMjYgMTU6MzY6MTMgKzAyMDAsIFBldHIgVm9yZWwg
-d3JvdGU6Cj4gdHN0X25ldC5zaDogdHN0X3Job3N0X3J1bigpOiBHbyB0byBMVFAgdGVtcG9yYXJ5
-IGRpcmVjdG9yeSBmaXJzdAoKPiArCVsgIiRUU1RfVE1QRElSX1JIT1NUIiA9IDEgXSAmJiBjbWQ9
-ImNkICRUU1RfVE1QRElSOyAkY21kIgoKUmV2aWV3ZWQtYnk6IExUUCBBSSBSZXZpZXdlciA8bHRw
-LWFpQG5vcmVwbHkuZ2l0aHViLmNvbT4KClByZS1leGlzdGluZyBpc3N1ZXMgbm90aWNlZCBpbiB0
-aGUgc3Vycm91bmRpbmcgY29kZSAobm90IGludHJvZHVjZWQKYnkgdGhpcyBwYXRjaCk6CgotIHRl
-c3RjYXNlcy9saWIvdHN0X25ldC5zaDoxMjE2IOKAlCAid29ya2Fyb3VuZCIga2V5d29yZCBpbiB0
-c3RfcmVzXyBUSU5GTwogIG1lc3NhZ2U7IG5vdCBhIEcxIHZpb2xhdGlvbiBidXQgd29ydGggYSBu
-b3RlIGlmIGV2ZXIgcmV2aXNpdGluZyB0aGF0IHBhdGguCgotLS0KTm90ZToKCk91ciBhZ2VudCBj
-b21wbGV0ZWQgdGhlIHJldmlldyBvZiB0aGUgcGF0Y2guIFRoZSBhZ2VudCBjYW4gc29tZXRpbWVz
-CnByb2R1Y2UgZmFsc2UgcG9zaXRpdmVzIGFsdGhvdWdoIG9mdGVuIGl0cyBmaW5kaW5ncyBhcmUg
-Z2VudWluZS4gSWYgeW91CmZpbmQgaXNzdWVzIHdpdGggdGhlIHJldmlldywgcGxlYXNlIGNvbW1l
-bnQgdGhpcyBlbWFpbCBvciBpZ25vcmUgdGhlCnN1Z2dlc3Rpb25zLgoKUmVnYXJkcywKTFRQIEFJ
-IFJldmlld2VyCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQv
-bGlzdGluZm8vbHRwCg==
+> Hi!
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) Linux Test Project, 2026
+> > + * Copyright (c) 2026 Li Wang <li.wang@linux.dev>
+> > + */
+> > +
+> > +#ifndef TST_PATH__
+> > +#define TST_PATH__
+> > +
+> > +/* PROC */
+> > +#define PROC_SYS_VM		"/proc/sys/vm/"
+> > +#define PROC_SYS_FS		"/proc/sys/fs/"
+> > +#define PROC_SYS_NET		"/proc/sys/net/"
+> > +#define PROC_SYS_USER		"/proc/sys/user/"
+> > +#define PROC_SYS_KERNEL		"/proc/sys/kernel/"
+> > +/* SYS */
+> > +#define SYS_KERNEL_MM		"/sys/kernel/mm/"
+
+> I wonder if this is really better. The macro name is not shorter and the
+> kernel path is not going to change since it's part of API.
+
+IMHO it's not about kernel change but about user typos :).
+I prefer constants (build failure in case of typo instead of wrong patch being
+hidden for years).
+
+I thought in the past about replacing tag keys ("linux-git", "glibc-git", ...)
+with constants, but never implement it as I expected it'd be rejected as
+useless.
+
+Kind regards,
+Petr
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
