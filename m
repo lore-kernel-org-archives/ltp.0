@@ -4,98 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 684C0CD4F3C
-	for <ltp@archiver.kernel.org>; Tue, 19 May 2026 18:31:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 969D7CD4F3C
+	for <ltp@archiver.kernel.org>; Tue, 19 May 2026 18:31:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1779215494; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=QLqdpDobad4ASOvSgcdwn1p4Z8PUJq2j8kaTADNSr+8=;
- b=aMdADioXkqwTdW7Fl1xxGU7NZeFA4fSP8KX6OMqxafgJZ5flrJkCFgIt9tkvnxBCG/aNP
- L54hTHIuPuPeMHVx77dCn505hK+9V2gAVtzqzjlixFBmnY7bcEeFwOgfb+NQ0y0bSYnpw+a
- YTahJCSis0eF89TUTo+8mHkRu65E+tc=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1779215516; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=rtVqWv+iBak5ZdFqSCZltj9cZKFwAb4NtjLENVXqhtg=;
+ b=PkMpz8+vi/ox5izqaDrP61dVln0sWNlkQxsh9SFQZcUGXmenkxqnYMtQsHwH7Ce+kmexE
+ DmeEVNR5XWaP3Pbvp5/Xt2usdY4g7qKK4l987gcY3J8CNR+skaZmvxuSnjJVSt1aApy81p/
+ HDIkG0S9gj87iC+m7z0f1pugCp/w4SQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 165983C71D0
-	for <ltp@archiver.kernel.org>; Tue, 19 May 2026 20:31:34 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 46A103C7189
+	for <ltp@archiver.kernel.org>; Tue, 19 May 2026 20:31:56 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B6E143C5742
- for <ltp@lists.linux.it>; Tue, 19 May 2026 20:30:47 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 37EB53C70F0
+ for <ltp@lists.linux.it>; Tue, 19 May 2026 20:30:50 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 438BF14001E9
- for <ltp@lists.linux.it>; Tue, 19 May 2026 20:30:46 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BE6901400215
+ for <ltp@lists.linux.it>; Tue, 19 May 2026 20:30:49 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1779215445;
+ s=mimecast20190719; t=1779215448;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=BM67CqJ2JeDzDRgLmDSm/Gw2hSnqRnqbEGt9PIyHlRk=;
- b=F+aaPxPtOl4+ynJjvFQjOU3dATvkla6MCf8uEDgklPu9sFMUQ+AwFY2eTKl/qSN47/hs+y
- 9WgLX3tpkIsN7dMyJxVzelV3oeSh+PXDbiW7+gEMLkrou0pOWyJrDhlFN/zKq6gRwTTv7m
- hPptu4Kn1rH90JcXSJ4Cu5Lf1qwaCFo=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=k8pvQ4IYdFU97tDhuzBbE/O/yvZOFFVCQuY866yDi8Y=;
+ b=MD9GMtzgJXZx1RmSIQh0U9q9Z8nkX4ObphFw/Jt66PKOEM5+8jivyS0mI8h7GBMT4cw2TU
+ ZS9cDcd0lRe0aNrWajRl8sY3YQy8LvcYtKUZXJeoWnf9G16YXmmI6rZxHbz+mQBpnbJU2A
+ HloWaZYKUq1sRAOTDIrNJLtFAvbqTLs=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-461-kD3LJaeqOxy2D6VwDxk56A-1; Tue, 19 May 2026 14:30:41 -0400
-X-MC-Unique: kD3LJaeqOxy2D6VwDxk56A-1
-X-Mimecast-MFC-AGG-ID: kD3LJaeqOxy2D6VwDxk56A_1779215440
-Received: by mail-wr1-f70.google.com with SMTP id
- ffacd0b85a97d-44f56d5523eso3855722f8f.1
- for <ltp@lists.linux.it>; Tue, 19 May 2026 11:30:41 -0700 (PDT)
+ us-mta-220-IxrDsXM-NpGHDcMC1Kvj9Q-1; Tue, 19 May 2026 14:30:46 -0400
+X-MC-Unique: IxrDsXM-NpGHDcMC1Kvj9Q-1
+X-Mimecast-MFC-AGG-ID: IxrDsXM-NpGHDcMC1Kvj9Q_1779215445
+Received: by mail-wr1-f71.google.com with SMTP id
+ ffacd0b85a97d-45e78dd7baaso2733779f8f.0
+ for <ltp@lists.linux.it>; Tue, 19 May 2026 11:30:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779215440; x=1779820240;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=BM67CqJ2JeDzDRgLmDSm/Gw2hSnqRnqbEGt9PIyHlRk=;
- b=avqIHqzg+wRI5Nj2hFzdDEvIbn+VB6KQQ0PH1F/qjHqMIO4UEtn9+nJLVOBpUba57K
- 6vikY2UyPfPMGneQzrZS5SgNwmEKIpeB7yRW05YXOk4QNItknQ4KPVMiGVPasu/71Y7x
- ZC3TqfzKWXeWRXWKjR0gRQqUgGrAWRU1jBcYiqZsmNJ9FjJLGseUJQQoj5m6XxwaB+ge
- HB/IRmvxNzAJ7D8BATeGJoQ00kY9tdJwwibe6jTlCniiS1TAIY8HfN8aCies/cjgGISM
- eGfAqkjg/dE0Ot6PnkaV4w7KroS04eLrAInZZtJBR+c5Im+kWsEJ72KItVzvRVn9U0UY
- 2aHA==
-X-Gm-Message-State: AOJu0YxAFH+ABW4UAN4olGFfr3s+sTVeSZEst6Nwt8gfBeKZpl7EZygP
- c3xNCdK7C02BHsNq21DT1+s3mOnpAcSXxcrHye7mGacJRLdeFIzgtRJ/bl8RbKc8z9dDYKUGcsY
- p5ngQHrAWPX0vu0BM8PHrw5dhUeunveewGpVq+wwElmKMUJC/WNsdESzvdZAOJZNUXZpV4h5Im2
- ijKNx7glOSb+4emaV4/HGqSyiyorvB/NuUY0Ut
-X-Gm-Gg: Acq92OFk7hQTJUAoCdpXdnsHiyGkD3n5xDPhUnle8inBW75CMMEl6XvQlC7sk9z7y7k
- +aFAUJjY196vOogeIg6zi/pHEsENrUDkoKUsk09GYqx8O7ctFxye7Cknb8/4sO9pAD1DkZEYx2s
- Df4joWFOtPg23Bd2+V1EhMb0oyqZZtC7ws3DI07v3Co6AUFEfSFls99i7tjUqcp9o09OSMBdEPR
- lw/jW7oiboYGUfjC+ItL/5JS0E/e/yE9ojEZIlcONE4ESXVRiMrwlRq8qhOr2Os2cpxsbvjINZz
- otnwst9gNbQr2hmGs+VvtpeJkxskZCWzd4nJ+PN8+ufi0WdZhKssoKZp7eZfrjoLJfymIoREQve
- asts8cMwW0tvejLs72KgjZ/718gk53hCCVhKWYqj8IbkHigkxjEb1cgH4Ji4FOq4kYAdZA5mLXV
- o=
-X-Received: by 2002:a05:6000:1a8e:b0:43e:a70d:7622 with SMTP id
- ffacd0b85a97d-45e5c58d96amr31373162f8f.22.1779215439892; 
- Tue, 19 May 2026 11:30:39 -0700 (PDT)
-X-Received: by 2002:a05:6000:1a8e:b0:43e:a70d:7622 with SMTP id
- ffacd0b85a97d-45e5c58d96amr31373113f8f.22.1779215439527; 
- Tue, 19 May 2026 11:30:39 -0700 (PDT)
+ d=1e100.net; s=20251104; t=1779215445; x=1779820245;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=k8pvQ4IYdFU97tDhuzBbE/O/yvZOFFVCQuY866yDi8Y=;
+ b=esF4Ext4UZa14HnFsqJ2yty+tRlw6tT1OcrzAkQLJMICrhoZzGY6tsQnunGZ1yOGAS
+ SE8DeWLh/t7ZaiK//RGkPhHL9BO5tcwnf/Osv1Da7+rG/+LQFiDSfD1KjCWK/e7MKew5
+ rN/SxtMlFKul0ZZYD043bV8GxNPWw5dlAoTay6E0QkINcK1GTQ0tgqNnTLLOVp8jI02v
+ ByKbHIe5i4ELWRbBqJoBpFHj+t8fOAH+Uicf8m9MTFg8/6JMkAiL2gikFZO2W6zCD8Rq
+ 7YIJpDsrpEbtvx739UOwDAgBmS6xi0INQGm14WD2SuvmkrAjCKdO1Bu1kjpLITUOst05
+ E5vw==
+X-Gm-Message-State: AOJu0Yw4Xko18pJBFlvKn5HEsmxWquVf7AWC2x3/6gLnOXud7eTd1gl/
+ 6ojDwd7HHgmeHHFj8zO8i1lLOzUHzyH6GH/TRUMe7XPhCsmBwuegR+/tb9mC4fqH1VHx0xej8hG
+ DnTXKIIfGtd8ABfqx4YoKDdNf6Gr9umS4tHF5CeKCqfPKOc9JuCII76Ns4ViGR1wHzxCneeN8Uc
+ xkOATNGfEtYECpP+WgxLY2gH2dz2GHOBER/agq
+X-Gm-Gg: Acq92OGZxfBDL4epx+87fLExm1kmCEoxuLqsGvtwt/DDKkGCaEJNaJI11Y99MvDKgxn
+ E9LzH/lY96MvKtUizHf6Awncc45aVXG7jElpJQdcZnjFglqCTkR9LRWFZxDw4Eh1vgDKc8lxygU
+ WZIBY/AAQqUMUjbhlS2JOVJuIyqTInMjMH0frSftoqLdURVhpYwPJkHJuhd2ZRpQpL9je7LDTQq
+ Qc17m3RNl28VPWFbC4NxSw9ictBB4Vse+0a5/0FKV+k6mMRmBzZbmdb4NPHAd/2vmiEdov/JFDI
+ wB0rdG+8oxzpwp2+Iwi5ymmxrmdHPcFEZ1/a90RC7/urkuYdx8sE1D25Kf8Phq1zbDhQACOE/AU
+ gitM2eKI37z8hOCrTXZScfzbKNJ9NUSnm/NPAhBDsysHFq39rPs3fx1bmTYWy8Oq/
+X-Received: by 2002:a05:6000:2081:b0:455:8733:2026 with SMTP id
+ ffacd0b85a97d-45e5c5c2502mr32815551f8f.15.1779215444605; 
+ Tue, 19 May 2026 11:30:44 -0700 (PDT)
+X-Received: by 2002:a05:6000:2081:b0:455:8733:2026 with SMTP id
+ ffacd0b85a97d-45e5c5c2502mr32815486f8f.15.1779215444143; 
+ Tue, 19 May 2026 11:30:44 -0700 (PDT)
 Received: from fedora.redhat.com (89-139-213-92.bb.netvision.net.il.
  [89.139.213.92]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-45da0a19a0csm45128468f8f.20.2026.05.19.11.30.33
+ ffacd0b85a97d-45da0a19a0csm45128468f8f.20.2026.05.19.11.30.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 19 May 2026 11:30:35 -0700 (PDT)
+ Tue, 19 May 2026 11:30:42 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Tue, 19 May 2026 21:30:27 +0300
-Message-ID: <20260519183031.114591-1-mmenashe@redhat.com>
+Date: Tue, 19 May 2026 21:30:29 +0300
+Message-ID: <20260519183031.114591-3-mmenashe@redhat.com>
 X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260519183031.114591-1-mmenashe@redhat.com>
+References: <20260519183031.114591-1-mmenashe@redhat.com>
 MIME-Version: 1.0
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: Uh54nPSnq3NXSB9pHgof0-B-ZUDaX2w6EOv5oEibYR4_1779215440
+X-Mimecast-MFC-PROC-ID: 0gpsMBpJbiMpXu8NDswZ-9CXNqwmSyP53ucjQTnjYaw_1779215445
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 0/4] futex: Add error coverage tests for wait,
- wake and cmp_requeue
+Subject: [LTP] [PATCH v5 2/4] futex_wait07: Add EINTR error coverage test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,46 +116,129 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Improve error handling coverage for futex syscalls by adding tests
-for missing error conditions that were previously untested.
+futex(FUTEX_WAIT) has no existing test for EINTR. Add coverage for
+the case where the wait is interrupted by a signal before the futex
+word changes.
 
-v5:
-- Use compile-time testcase arrays with double pointers instead of
-  runtime initialization in setup()
-- Fix sparse warnings: add (void *) cast in SAFE_MUNMAP calls
-- Remove unnecessary braces in single-statement if blocks
-
-v4:
-- Use TST_EXP_FAIL instead of manual error checks
-- Add kernel version check for EACCES in futex_cmp_requeue03
-- Restructure testcases to use direct pointers instead of flag fields
-- Replace raw mmap() with SAFE_MMAP() in futex_wait06
-- Remove manual SAFE_WAITPID, let library collect child
-- Remove obvious comments in futex_wait07
-
-v3:
-- Fix copyright year 2024 -> 2026
-- Use /*\ comment format for test catalog
-- Add Signed-off-by
-
-Michael Menasherov (4):
-  futex_wait06: Add EFAULT error coverage test
-  futex_wait07: Add EINTR error coverage test
-  futex_wake05: Add EFAULT error coverage test
-  futex_cmp_requeue03: Add EFAULT error coverage test
-
- runtest/syscalls                              |   4 +
- testcases/kernel/syscalls/futex/.gitignore    |   4 +
- .../syscalls/futex/futex_cmp_requeue03.c      | 100 ++++++++++++++++++
- .../kernel/syscalls/futex/futex_wait06.c      |  75 +++++++++++++
- .../kernel/syscalls/futex/futex_wait07.c      |  87 +++++++++++++++
- .../kernel/syscalls/futex/futex_wake05.c      |  86 +++++++++++++++
- 6 files changed, 356 insertions(+)
- create mode 100644 testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
- create mode 100644 testcases/kernel/syscalls/futex/futex_wait06.c
+Signed-off-by: Michael Menasherov <mmenashe@redhat.com>
+---
+ runtest/syscalls                              |  1 +
+ testcases/kernel/syscalls/futex/.gitignore    |  1 +
+ .../kernel/syscalls/futex/futex_wait07.c      | 87 +++++++++++++++++++
+ 3 files changed, 89 insertions(+)
  create mode 100644 testcases/kernel/syscalls/futex/futex_wait07.c
- create mode 100644 testcases/kernel/syscalls/futex/futex_wake05.c
 
+diff --git a/runtest/syscalls b/runtest/syscalls
+index e8ef890f3..e428deda1 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1908,3 +1908,4 @@ io_uring03 io_uring03
+ # Tests below may cause kernel memory leak
+ perf_event_open03 perf_event_open03
+ futex_wait06 futex_wait06
++futex_wait07 futex_wait07
+diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
+index 56596dcb4..74ac9a926 100644
+--- a/testcases/kernel/syscalls/futex/.gitignore
++++ b/testcases/kernel/syscalls/futex/.gitignore
+@@ -14,3 +14,4 @@
+ /futex_waitv02
+ /futex_waitv03
+ /futex_wait06
++/futex_wait07
+diff --git a/testcases/kernel/syscalls/futex/futex_wait07.c b/testcases/kernel/syscalls/futex/futex_wait07.c
+new file mode 100644
+index 000000000..fca7c7059
+--- /dev/null
++++ b/testcases/kernel/syscalls/futex/futex_wait07.c
+@@ -0,0 +1,87 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 Red Hat, Inc.
++ */
++
++/*\
++ * Check that futex(FUTEX_WAIT) returns EINTR when interrupted by a signal.
++ * A child process blocks on futex_wait() with a long timeout. The parent
++ * waits for the child to enter sleep state, then sends SIGUSR1 to it.
++ * The child verifies it received EINTR and exits accordingly.
++ */
++
++#include <errno.h>
++#include <signal.h>
++
++#include "futextest.h"
++
++static futex_t *futex;
++
++static struct futex_test_variants variants[] = {
++#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
++	{ .fntype = FUTEX_FN_FUTEX, .tstype = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
++#endif
++
++#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
++	{ .fntype = FUTEX_FN_FUTEX64, .tstype = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
++#endif
++};
++
++/* Empty handler: receiving the signal is sufficient to interrupt futex_wait(). */
++static void sigusr1_handler(int sig LTP_ATTRIBUTE_UNUSED)
++{
++}
++
++static void do_child(void)
++{
++	struct futex_test_variants *tv = &variants[tst_variant];
++	struct sigaction sa;
++	struct tst_ts timeout;
++
++	sa.sa_handler = sigusr1_handler;
++	sa.sa_flags = 0;
++	SAFE_SIGEMPTYSET(&sa.sa_mask);
++	SAFE_SIGACTION(SIGUSR1, &sa, NULL);
++
++	timeout = tst_ts_from_ms(tv->tstype, 5000);
++	TST_EXP_FAIL(futex_wait(tv->fntype, futex, *futex, &timeout, 0), EINTR);
++	exit(0);
++}
++
++static void run(void)
++{
++	pid_t child;
++
++	child = SAFE_FORK();
++
++	if (child == 0)
++		do_child();
++
++	TST_PROCESS_STATE_WAIT(child, 'S', 0);
++	SAFE_KILL(child, SIGUSR1);
++}
++
++static void setup(void)
++{
++	struct futex_test_variants *tv = &variants[tst_variant];
++
++	tst_res(TINFO, "Testing variant: %s", tv->desc);
++	futex_supported_by_kernel(tv->fntype);
++
++	futex = SAFE_MMAP(NULL, sizeof(*futex), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
++	*futex = FUTEX_INITIALIZER;
++}
++
++static void cleanup(void)
++{
++	if (futex)
++		SAFE_MUNMAP((void *)futex, sizeof(*futex));
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++	.test_variants = ARRAY_SIZE(variants),
++	.forks_child = 1,
++};
 -- 
 2.54.0
 
