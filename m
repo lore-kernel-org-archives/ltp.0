@@ -4,102 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCCB6CD4851
-	for <ltp@archiver.kernel.org>; Tue, 19 May 2026 08:45:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAAE2CD4851
+	for <ltp@archiver.kernel.org>; Tue, 19 May 2026 08:53:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1779180816; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=1etNJ5sZSab6vtdD/bu381lk2IKYUuoJH2GXtWhylZg=;
+ b=f8iSdKKPIdGRqYhRO+eYK23Is+44KwntBRR8QRcfZhuktrFWcFVK2XYPDEv8+yehJCDpl
+ BSS4BChtJc5KyQ4WKpY3v/UJWQR+gSZYf6nQdYp1toc5fUmr/KJj4nrAdMyEtT4xclbQEDJ
+ p+4IfCch3Ucn/C0mb/OVEIXYr6WHfbY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 55C383C6BFE
-	for <ltp@archiver.kernel.org>; Tue, 19 May 2026 10:45:26 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 567803C66C1
+	for <ltp@archiver.kernel.org>; Tue, 19 May 2026 10:53:36 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 42FB63C5E9F
- for <ltp@lists.linux.it>; Tue, 19 May 2026 10:45:07 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 12DF83C06AD
+ for <ltp@lists.linux.it>; Tue, 19 May 2026 10:53:13 +0200 (CEST)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7287F6009C9
- for <ltp@lists.linux.it>; Tue, 19 May 2026 10:45:06 +0200 (CEST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 64J84w6O2799624
- for <ltp@lists.linux.it>; Tue, 19 May 2026 08:44:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
- content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=GS6D5T
- 6TWQkYchDWQZGHng9yTl5gFtku+U6JJ/P1U44=; b=MZh3IzwmzBsraKMBfyczWw
- fO0Y7R85sRsfWDBjJy/0/EPAXZONTpdx/C9fy7JD6caePlUAq+/2aqpFzGvlqBQS
- hE2tzZ9IGykUaHxJQXzcvXhfu1MwgW/Cj4ZYUf+kTdDgwP/0qdbO1XBwBSRDwZCC
- Cixc1u6PLh+8OkFw83L8DbA9VxPlFAKXj+JWaPOsPKupMvc73PDTjZckK7cyxUDy
- v+rQAaVilvPogWj72hGnXOvKD22PQ+IoUdNatEac6modsgWzH5J5+ljQNCQ9QkAN
- FfWHfN/iTqGWj4/f1/7toTXBSJHBuVVmneHvII2R7eTTltNInTOGaSkTQQwq/wLQ
- ==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4e6haw3cpg-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Tue, 19 May 2026 08:44:57 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 64J8dCXl014487
- for <ltp@lists.linux.it>; Tue, 19 May 2026 08:44:56 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4e75ky1fn9-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Tue, 19 May 2026 08:44:56 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com
- [10.39.53.229])
- by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 64J8itTq25428524
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Tue, 19 May 2026 08:44:55 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8DEC558059
- for <ltp@lists.linux.it>; Tue, 19 May 2026 08:44:55 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 5C39E5805B
- for <ltp@lists.linux.it>; Tue, 19 May 2026 08:44:54 +0000 (GMT)
-Received: from [9.43.59.246] (unknown [9.43.59.246])
- by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP
- for <ltp@lists.linux.it>; Tue, 19 May 2026 08:44:54 +0000 (GMT)
-Message-ID: <51507e20-d908-4213-967e-df74bacd87fa@linux.ibm.com>
-Date: Tue, 19 May 2026 14:14:51 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: ltp@lists.linux.it
-References: <20260507073417.64123-1-sachinp@linux.ibm.com>
-Content-Language: en-US
-From: Sachin Sant <sachinp@linux.ibm.com>
-In-Reply-To: <20260507073417.64123-1-sachinp@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTE5MDA4NCBTYWx0ZWRfX4X9jw6s0vF2P
- ldDAnHYWms7gzbrqNB8Bw313KRfZZ2SPwus2gIO1tzIdwTYtI1U5Kt+rpb5afK9mWh8iXN2R9UQ
- OITLPY2xn4KiF3rapzj7HkKiR9H17Cz/SQ+3LPYdZpOemX+nCIdmyD4mB8pschWaBRhZDpuc71n
- xzQOnDO4U+TTaVqq9nTJSzlLa1Za9U+1/ZNkgq/19eUOD+GH2u85P8BleR0oW1dETrqYZo0ivCm
- tx3oz46+2KfVOq10O8bqZ2yHARYxrZZUzcGnRTdXSWFog6b6Li2YE5e3rfl4TO8INK+MfzJoTLI
- W/WAamlkI/0XzpaV2JZcNzWvgKL6bGWf+F3rTo0M2BqQKSEKTYqJ8zqi9/xyUIgRiN6dgC6r8Eo
- cOGdoGROeZBcyDsnmJElj2zcx8+yKHoy0rJUK5yF9SbJuSuKON7ZK4mFXBvRGlJ215N5mkbWP7R
- 0Uk9ZbJLMTKxQCepJjA==
-X-Authority-Analysis: v=2.4 cv=Np/htcdJ c=1 sm=1 tr=0 ts=6a0c2309 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=6W1MH8sdw8fM1a1v2L8A:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: s2UjhdCldhl9VOrPUqFlumm-eFVRuvw7
-X-Proofpoint-GUID: s2UjhdCldhl9VOrPUqFlumm-eFVRuvw7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-05-19_02,2026-05-18_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 spamscore=0 clxscore=1015 priorityscore=1501 impostorscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 phishscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2605130000 definitions=main-2605190084
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A12ED1A008B2
+ for <ltp@lists.linux.it>; Tue, 19 May 2026 10:53:12 +0200 (CEST)
+Received: by mail-wm1-x332.google.com with SMTP id
+ 5b1f17b1804b1-4890d945eb4so22952815e9.0
+ for <ltp@lists.linux.it>; Tue, 19 May 2026 01:53:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1779180792; x=1779785592; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=hbLoU8ezVdfbPjMGlwB/i3AcxjOTdS7MEXpcRUHZZ+w=;
+ b=IO2apYzV+9AxV9KMqk5EXxxc1xM6f1NsUxPhOjCIWwgYMY17UA71K0FCE+/RXeebzp
+ 51tLVSZAPyz9bhOiY1DE+Zeggoqj1K+64KdQbeOYc/772CtwdC9Ui4Y2oUJ8Y2MKZ7Nd
+ MR4MTGNLmvBZBQ5Lc5xWpNUZAjzvJxEtXXhr0SU6tXG8gos1Xl4ktc8r29HMraNnupKo
+ QGvXLJH4HlOJ++AixZjk2C8Sh5J3K1MMBsi27EamjjRwZAt7iNjI4NQKeTFpkDM7Xb0o
+ +Itwo1s721p8GMwESghYW80qYv9GoAiSCw8A/XqpoljNREtTBuIWvcGAVA2LGbsr9v6I
+ ZiIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1779180792; x=1779785592;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=hbLoU8ezVdfbPjMGlwB/i3AcxjOTdS7MEXpcRUHZZ+w=;
+ b=ri81fCGnWlNWxz4IY3qJNg+n29Ej1R+zbEgo3J4damyBWJUu+z9SIIIV6iZV5uiruB
+ hE1Il76LpmkHx5E7PQjXl5Di7LXkGcXXMi0K14R5+ZTqBtki+zlnKiCHfkbSih75xNcg
+ 6ROqZgpJA2W7sukVr4HBd5icVnFXQw+hH92vwPSssvUoUPWk8150AwhnimHQutFRlrLf
+ IdHmE3tpN7JC3J2jCNB0gswonSZMz+EkGSBHQDoqsLfeeYgS1MsZI6VVKkBBPmzmN28B
+ puc3ONh85R02m/1HssH60S4Bne+OM2/OW+W22Ms9ScT1EmxVTr0NgxHq4gwKXTy2pVkx
+ IJwQ==
+X-Gm-Message-State: AOJu0YyFb2e8Xr1DYR/kdYNiClyaG3fC/WQ/3BrvJi6u+bg/NPDvzpel
+ YaRKgsueigAQEbcbuzZGkmW5YesjzFS1pMThsFIeeGMxGh0G0S93B/+2IW2ui6/9PA+CGyOtlfW
+ i39V+FeG6kr7c
+X-Gm-Gg: Acq92OGr7wnyqQ09MfwEom9V3ic8LOnOwaKG9adwE6gzkhwS/c95NaZ06KvMTHdcF2L
+ ixZUS0NkevbUYYQUlTFt9AK0OXewR8QNH3JeDwxEs2q8IIDSu3YfpDQWAksTE4lTTX05Wn+5xf4
+ KysGn4Im3vVx9jJqV7m/ihVmVnGHMTL/YbtBD4LNXyvaX9cy6VTyXpMR+U8UjAvoQnGOJGJ4QwJ
+ tL9inR51S6P2aYwuqnDMyO4+Zdald3mp7UyWLOXUlyN4zfpnZoWQyF78K3+0TqpSSno8cSndmh/
+ G7sie4HJPn+/HGEUYy3mJ2ct4s7VnPJM5KXNJfz2+T8NNhZgbFesClqS1R5FCQdIL3RwpAntkW9
+ FHRYJFCPWoVkLDuqyzlEF3o4TEpBoyyga2HdCBoR3NJEBGp4T/gGhxNDA9oTs8yac9rUqli9PH0
+ FRR8OQ+vn0w6NEZ3atBgY/ce0kDz6YYPe7ncLOBv7912HYhA/0NdZddySjWynXfpAUbZJ1NPC5
+X-Received: by 2002:a7b:cc15:0:b0:490:161a:38a0 with SMTP id
+ 5b1f17b1804b1-490161a392dmr61134545e9.9.1779180791971; 
+ Tue, 19 May 2026 01:53:11 -0700 (PDT)
+Received: from localhost.localdomain (wl.mlade.cb.wlnet.cz. [193.165.72.195])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-45da0fe0fecsm40449166f8f.26.2026.05.19.01.53.11
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 19 May 2026 01:53:11 -0700 (PDT)
+Message-ID: <6a0c24f7.2ffe362e.37b206.8df3@mx.google.com>
+To: "Andrea Cervesato" <andrea.cervesato@suse.com>
+In-Reply-To: <6a0c22a5.1e1038c1.175b08.7bc9@mx.google.com>
+Date: Tue, 19 May 2026 08:53:10 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v7 1/4] io_uring: Add io_uring04 test for vectored
- I/O operations
+Subject: Re: [LTP] [PATCH v1] af_alg08: Allow EINVAL when calling recv()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,21 +94,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Wei Gao via ltp <ltp@lists.linux.it>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A gentle reminder.
+Sorry I didn't double check the CI. Can you please send a new
+version fixing the patch applying issue?
+https://github.com/linux-test-project/ltp/actions/runs/26086543445
 
-Let me know if there are any additional review comments
-on this patch series.
-
--- 
-Thanks
-- Sachin
-
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
