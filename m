@@ -4,112 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4BEACD4F54
-	for <ltp@archiver.kernel.org>; Wed, 20 May 2026 09:32:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DAE2CD4F54
+	for <ltp@archiver.kernel.org>; Wed, 20 May 2026 09:45:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1FB933C735A
-	for <ltp@archiver.kernel.org>; Wed, 20 May 2026 11:32:58 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 1BDF23C737D
+	for <ltp@archiver.kernel.org>; Wed, 20 May 2026 11:45:36 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A52F73C71F4
- for <ltp@lists.linux.it>; Wed, 20 May 2026 11:32:36 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 515FB3C724C
+ for <ltp@lists.linux.it>; Wed, 20 May 2026 11:45:17 +0200 (CEST)
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com
+ [IPv6:2607:f8b0:4864:20::842])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 71F106005FC
- for <ltp@lists.linux.it>; Wed, 20 May 2026 11:32:36 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8F4AB67677;
- Wed, 20 May 2026 09:32:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1779269555;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/PPyR+Cav1szB7AYQBuZXiIA7Yoe5oYoNJNMXbKvP3s=;
- b=fuAcEivqUsCynuHRUlErQIaqike9irQ/AEdoLB1pO6DlmvXYLG2Pt18CiPQ8hDNqQd8Bbm
- r7ylV7h45RLaJ5G4ZFrlja9BPg+msrbgHCGnWrmtU/UpCDI9Lgjd4lA0lX2vzDTxFx/xQJ
- 1GwUaf5MbDUSShvB781G7H383SCc1g4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1779269555;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/PPyR+Cav1szB7AYQBuZXiIA7Yoe5oYoNJNMXbKvP3s=;
- b=oGQ67JN5xdTu+/2LclL5TD4QxeHga0dbIU15CJzdfm9IDxfY6bcgmzR0fJprpJZ3cRiGLz
- HpRMi7Mh9f40SZBQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=fuAcEivq;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=oGQ67JN5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1779269555;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/PPyR+Cav1szB7AYQBuZXiIA7Yoe5oYoNJNMXbKvP3s=;
- b=fuAcEivqUsCynuHRUlErQIaqike9irQ/AEdoLB1pO6DlmvXYLG2Pt18CiPQ8hDNqQd8Bbm
- r7ylV7h45RLaJ5G4ZFrlja9BPg+msrbgHCGnWrmtU/UpCDI9Lgjd4lA0lX2vzDTxFx/xQJ
- 1GwUaf5MbDUSShvB781G7H383SCc1g4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1779269555;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/PPyR+Cav1szB7AYQBuZXiIA7Yoe5oYoNJNMXbKvP3s=;
- b=oGQ67JN5xdTu+/2LclL5TD4QxeHga0dbIU15CJzdfm9IDxfY6bcgmzR0fJprpJZ3cRiGLz
- HpRMi7Mh9f40SZBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F8C7593AA;
- Wed, 20 May 2026 09:32:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id YiaoHrN/DWoXWQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 20 May 2026 09:32:35 +0000
-Date: Wed, 20 May 2026 11:32:26 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260520093226.GA90509@pevik>
-References: <20260505083016.36843-1-li.wang@linux.dev>
- <20260515155814.GB45497@pevik> <agf53mSShy735Whu@linux.dev>
- <20260516171536.GA190882@pevik> <agkn30ZUs1h8Da3s@linux.dev>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E0A33600755
+ for <ltp@lists.linux.it>; Wed, 20 May 2026 11:45:12 +0200 (CEST)
+Received: by mail-qt1-x842.google.com with SMTP id
+ d75a77b69052e-512f750d4b2so55535201cf.1
+ for <ltp@lists.linux.it>; Wed, 20 May 2026 02:45:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1779270311; x=1779875111; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=gr9mfAemOakV8D0ckBhwxQXfyQKue6xyaIjIDwpR6FU=;
+ b=AN9ETyccypMF38wPGe2NJ8lw8HGwUxC0ims8eDSdicDpmJt09oD6cSAcAcMAoGidrt
+ GJUiC024qkqEyK7ss8Ft9gelFwlL4M/QYWqw8FYS0rJHayCSq8hDdpM4gE9Kj4UBwG5P
+ rmcPN+U3/WdCSH6g/RnMwUY+c2sLI+xEriqcNhOZPQu1aVL+iJDTdltNCnCWC4MBebiQ
+ oLAYqNN3PAscSlNxRlhID8/+7TvWkcFBkJcOW+lg3M9hz+4wr+WmyId/Sz4bNCW03IP+
+ F3yq1oWmJudIp1Q1hoCXja81Em3D2SyfXb4x4hOiHfRdhelRACiJo9f8iCZwnj/aUzGc
+ /dIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1779270311; x=1779875111;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=gr9mfAemOakV8D0ckBhwxQXfyQKue6xyaIjIDwpR6FU=;
+ b=SgMP/T/nITRMmLkcPisiyXZZLL4/l4FjsDWFttIIyHSjbiqMfyxlcBq8R1QbEXiGOZ
+ ntFefvL8GYqKohRNgvOPOxxc8pajWqToyhEZasxyeaRXaYkG8/OWW9kD5HSpXD1JwZv7
+ 0bgwmKhNMw2SDOaSmYLAirkE2xajA0NiCaV2aPAOnS1ufr+b0St22MX5dqOY31FbAGlw
+ j+Ajtgd42jJU8l8ddkDEZ2wc7BBUd8rHWr7GdLg7nSBDm/XrFS9im9bV837ivKjMRE2V
+ yUw8vKSbD8h0sdBnisBS0BqBcDIRgxxJmY96pOZDGO1UcH6qb8+lZYs66pJ3P3MsIIMx
+ lYLQ==
+X-Gm-Message-State: AOJu0YwIalIGamujpSinREBiYBhMOYEgdt09Zi2DNgdT5V1qwypcv4oq
+ DwUWoysy0pnpOT6W+BSdEdo/TfvrbIxW/OJo9D1S/S+aJtGyHCsqyCHI
+X-Gm-Gg: Acq92OHEmEVIN1eI+v0sNhSOl87WIx0N6K1tZE1inQ3E4TE+1+f4bgS8msdeX2Im1qe
+ XBUEO4fuCuLUxdSY0d3NShLn0Q85vQW5Td2zfp+8cHdJqzeMMG12FYjesbW/emzWolCogcSqmHu
+ sxJahBvJjWbVpN7XJW5aRmdUHQFuG1xQp2kq31Ue4whsKRP3GPuhnH5wFMjsRQlBo4ejknRSGj2
+ 9IEBKJ2YtTB4WZuP3mFLmmseo8PQmPgHNuqOFs8am8Epmkz0vYnIY04Q+DZ2XvouARaXHnIaYo/
+ OkDeoa1bLF8xO1p3ahCIbUxwgRayy/7KYKFA7kyUgaOvBltQGTDk67j8VSNqoxadvFTqi8SXtz5
+ tv1GvSYseDMEWekOMVu5KZnqfWTGo/Vl3Zy3GVzdQ1T11EMJ4RRvt/VYY8DmY645tolVKDAYLuI
+ RFmCJXzdU+Zz1XotZUHZ2lmOx9wvy31MZMIMC2rTm3tjomnin5tHrv6UcfxoN0yu3Qi+fGiePJ/
+ 1PyaYj9Pvi/82df/M9L5kNvOO0IifLZRTIwng==
+X-Received: by 2002:a05:622a:2505:b0:50d:8905:7cc7 with SMTP id
+ d75a77b69052e-51659eda415mr266813711cf.0.1779270311525; 
+ Wed, 20 May 2026 02:45:11 -0700 (PDT)
+Received: from
+ runnervmrw5os.bbvfuim50bhurirfaguag3kcgf.bx.internal.cloudapp.net
+ ([20.83.174.52]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-5164581fdf9sm187975161cf.24.2026.05.20.02.45.11
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 20 May 2026 02:45:11 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Michael Menasherov <mmenashe@redhat.com>
+Date: Wed, 20 May 2026 09:45:10 +0000
+Message-ID: <20260520094510.4156-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260520074427.39155-2-mmenashe@redhat.com>
+References: <20260520074427.39155-2-mmenashe@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <agkn30ZUs1h8Da3s@linux.dev>
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[]; MISSING_XM_UA(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; REPLYTO_EQ_FROM(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: 8F4AB67677
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] lib: Introduce tst_path_macros.h to
- consolidate system paths
+Subject: Re: [LTP] futex_wait06: Add EFAULT error coverage test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,85 +90,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Hi Michael,
 
-> Petr Vorel wrote:
+On Wed, 20 May 2026, Michael Menasherov wrote:
+> [PATCH 1/4] futex_wait06: Add EFAULT error coverage test
+> [PATCH 2/4] futex_wait07: Add EINTR error coverage test
+> [PATCH 3/4] futex_wake05: Add EFAULT error coverage test
+> [PATCH 4/4] futex_cmp_requeue03: Add EFAULT error coverage test
 
-> > The problem is even now on master:
-> > output of testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c contains e.g. PATH_OC_HPAGES
-> > from include/tst_hugepage.h.
+Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
 
-> > https://linux-test-project.readthedocs.io/en/latest/users/test_catalog.html#hugemmap10
+---
+Note:
 
-> > da3088183a ("metadata: metaparse: Implement recursive include")
-> > skips certain LTP includes e.g. tst_test.h in skip_includes[] causes
-> > all definitions not being propagated. I guess it could be fixable to parse
-> > include/tst_test.h and include certain headers.
+Our agent completed the review of the patch.
 
-> > $ metadata/metaparse -v testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
-> > does not print INCLUDE .. because include/tst_hugepage.h is included via
-> > tst_test.h, not directly in the test.
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-> After looking into the mataparse.c I think we have two methods:
-
-> 1. Explicitly parsing tst_path_defs.h in metaparse.c:
-
->    Since tst_test.h is explicitly ignored by the skip_includes[] array,
->    any files it includes (e.g. tst_path_defs.h) are consequently bypassed
->    by the parser. To resolve this, we can instruct metaparse to proactively
->    search for and parse tst_path_defs.h during its initialization phase.
-
->    We can achieve this by adding a dedicated function in metaparse.c to
->    read this specific header file, and then invoking it within the main
->    parse_file function.
-
-LGTM.
-
-> 2. Simply adding the list of macros to the internal_macros[].
-
->    As long as all the konbs definitions are listed there, metaparse can
->    convert them into string paths in tst_test for use in ltp.json.
-
-> --- a/metadata/metaparse.c
-> +++ b/metadata/metaparse.c
-> @@ -881,6 +881,66 @@ static const struct macro {
->         {"TST_SR_TBROK_RO", "TBROK_RO"},
->         {"TST_SR_TCONF_RO", "TCONF_RO"},
->         {"TST_SR_SKIP_RO", "SKIP_RO"},
-> +        {"PATH_KERNEL_HOSTNAME", "/proc/sys/kernel/hostname"},
-> +        {"PATH_KERNEL_OSRELEASE", "/proc/sys/kernel/osrelease"},
-> +        {"PATH_KERNEL_VERSION", "/proc/sys/kernel/version"},
-> +        {"PATH_KERNEL_DOMAINNAME", "/proc/sys/kernel/domainname"},
-> +        {"PATH_KERNEL_PRINTK", "/proc/sys/kernel/printk"},
-> +        {"PATH_KERNEL_PID_MAX", "/proc/sys/kernel/pid_max"},
-> +        {"PATH_KERNEL_SHMMAX", "/proc/sys/kernel/shmmax"},
-> ...
-
-If you mean that the definitions would be on more places (tst_path_defs.h and
-metadata/metaparse.c) I would not consider is as a good option.
-
-> I don't have any preferences, but method-1 looks more elegant.
-
-+1
-
-> > My fear was that to clash with existing system headers causing build failure due
-> > macro redefinition (that's IMHO reason for "TST_" prefix). But "PATH_" might
-> > be safe, because /usr/include/paths.h contains "_PATH_" prefix - with leading
-> > underscore (e.g. _PATH_CONSOLE). And the only "PATH_" prefix is PATH_MAX
-> > in /usr/include/limits.h.
-
-> We now have PATH_{KERNEL|USER|VM|FS}, so conflicts should be very low.
-
-OK with me, but I'd prefer to get this acked by somebody else.
-
-Kind regards,
-Petr
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
