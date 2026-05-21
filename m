@@ -4,88 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CC61CD4F3D
-	for <ltp@archiver.kernel.org>; Wed, 20 May 2026 14:43:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A06ACD4F3D
+	for <ltp@archiver.kernel.org>; Thu, 21 May 2026 02:24:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1779288196; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1779330252; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=apy/l1RXlzJuaE8x/aR/8391uIfcA4IXIrGLiLW7Khw=;
- b=kd69c1dLEpxgxFpcGNT7RmPlenQmnjaBJFKRlStjcs34LPoN7K/CfGiwPK7eWBT0KQ1ec
- qvjWXu52WuERux0Fq5pgLsRa5d/CBsMu1Gj+cOfJe7icED2bK7teNgLbf41BfTM8D5HnNsa
- 985x0/IswRQmmgT4/rnbaNBLhmm0tCo=
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=WTaEoLoNzMbhByobhnyiu+LCDPaTrGI/oDcV8lkCrjg=;
+ b=pMaTp3WFzqA0IVINFH0tpPeoEp3zazgNTitk5kGeMmxCyyFyPNlQ7QHPLis2H3onlbYoJ
+ Mv+fDK9y49ElhZdGi4zju/ZrKd7PaC6XoFO/rJ+L1nDgf2RNwIb5LEORA9PEeXqJiSZk72U
+ ZJ7fYx8jeA0WLJ59+pDjSOAD5MVPC+4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DCD6E3C737E
-	for <ltp@archiver.kernel.org>; Wed, 20 May 2026 16:43:16 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 281243C737E
+	for <ltp@archiver.kernel.org>; Thu, 21 May 2026 04:24:12 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B62C73C71BF
- for <ltp@lists.linux.it>; Wed, 20 May 2026 16:42:52 +0200 (CEST)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
+ by picard.linux.it (Postfix) with ESMTPS id EDE553C737E
+ for <ltp@lists.linux.it>; Thu, 21 May 2026 04:23:48 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 28376601BCA
- for <ltp@lists.linux.it>; Wed, 20 May 2026 16:42:52 +0200 (CEST)
-Received: by mail-wm1-x332.google.com with SMTP id
- 5b1f17b1804b1-48fe26a177cso37401425e9.1
- for <ltp@lists.linux.it>; Wed, 20 May 2026 07:42:52 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8902610005F7
+ for <ltp@lists.linux.it>; Thu, 21 May 2026 04:23:47 +0200 (CEST)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-44ccbd3290aso5156602f8f.2
+ for <ltp@lists.linux.it>; Wed, 20 May 2026 19:23:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1779288171; x=1779892971; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=nqvXPsRYGSY85VoLf7m0tN8NleZ6D2A0QzEFb1IkAng=;
- b=VFA7/o0SdXrVVZgsF1y07G2zS/NEEjCIXvPm3AVniQcAAym6KQ4V3n5N2wDWkDxnj4
- 8BSpygfGdCDb3wi261zOjAUAJcHoZLekkK/XQkR9+U7HJkwb7kFR4x85HFnuBw02wp67
- xuuqpmD4KJ53RSq1zOu3WE8RW1FIUyuqRu1dOdVVOIy/WqwcbfVTIHKbs97d3X3u5dLA
- dXHLNCQCxIWIrXE3ubjYQAqK+FfAQOkwR2u1LYrHrrzOKmUS68EC2QsvsgCJ+HnCpofu
- THKNVzLG6KD0No3NVpSH/ygirfua09ldGG3TYRx3mSIc2Phr9Udgn1tG8CkaYomIWF96
- 5w1w==
+ d=suse.com; s=google; t=1779330227; x=1779935027; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=X2WxKMKRIPXn/LMTRMQaz+6zYn5Ule4H/Dy8AO4z+9g=;
+ b=fJ3bU5zRMLLTBTIKliUhM3H79imTakUcKaoCgZLuUwNGj6DjIgUUrshyhoHWO5lo0c
+ mXuGh7YZ7DvwdsigwEgh4FkuAuyIaXu3/eXsV31XtXq10VQ5C/0ofpkd+PVkrJxER+0n
+ IoComnSEQAyVrufCw+6NM9G/BlFE2pTGwF3cIHyTyb2eM9fJTPQP364SuQspLlVX+DRb
+ 6q8dSlqMkWfNeM9EVuQsrPkHvATAQrMdw1ZO5kU/K0fn8+8yqXIId89AuvoVndgla5Yw
+ ouqwHSQQ9/+Vmu8fxVHcRdDfDtfquH3Ex3hh5BzxrEadXjzd+geAOEXSQcrC171lLlWP
+ QiBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779288171; x=1779892971;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=1e100.net; s=20251104; t=1779330227; x=1779935027;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=nqvXPsRYGSY85VoLf7m0tN8NleZ6D2A0QzEFb1IkAng=;
- b=qzmC9HWXjxF2SI7Rle8a/59ud18cf0p4k4cbrPrKy1BT+KycP98Rrw0yh1y7T/kyLd
- 1VbJUpJiwwow7146oZBJ9Gblz2ZDq5yepqQmcTiCIEd4UKIrUkcnHFeRraIU8UD/7D8N
- jWBaQma7AikAmESTMA/m1enpbi5GvhpIOXcB77eWqq4RyRE7YIyq76clP8Ir0ertQDOY
- Q2RL2KHP9IeujDIFTdmYNHUOGtw3cTwxPf7dn6GILLlSLuXZPREBhSjMrI8pfTaZzTIc
- WQ2EKmiUvIp7ouzYViVnaJhIhRa3MBe7tAZx1412kvwBZ8bn89zzKqQb/URqElXSKtKz
- uF0w==
-X-Forwarded-Encrypted: i=1;
- AFNElJ+mHwUHtYN6UBPc97n8N5A5Z7F0glMf3CMj1caGITNZ69oNhuCgs2hHyKZZws7MwhFLlLc=@lists.linux.it
-X-Gm-Message-State: AOJu0YzHNLoDAZbfDQwRcDt0wtsfRsrPC2wvdYp3SxJ/XYjSjViB2zhv
- Pue+PT5iWgRXd1T5fTwgThTes2hjEK6CTmg0PZXRndr68iis05B1Ds/bYSmY6WQ0pms=
-X-Gm-Gg: Acq92OHrCnnKxlIMpBBcrRLUfLB7+5YGSr5ra93fcFhS9fP/MLaHxF64E+2NDL1SPpk
- cmPoZHqyaVyRq2J2VYmOyCUevaiJAl9H8OcPm53Vy3zHBuSN8Dl/sAj0DUPr+gQNygJyz3i8rvH
- WElK4R9wnxRBQmKd+eXpactOvyNcv2/i0S+/9zW+oXFS69+t+sLvXpik2/yZwRLinZ//CQP/3Bs
- axPdYEg7yU4breImD6u5QR7GCoBjcIGODPY8YIAQa3xvTDo0UxrxlbUbgwvjEwNOpHUszCEcyjR
- NA04Ka5tx6BRZEi9XYpbQpjgazzbNxc/1JROeufChGTRvyfvp7Oz186dRGRLmregKrF62sV/Trj
- ylaHOzHRPgwc2M2ZvtE7HsiiJvaJzoeHhyumaCtLMv0MZZazqkoZvkk4Sd6o52MKWNbG/kmJxBJ
- oNXyxT7tW89ZOsUyIb7srImTaQQzRo4QbQBcqTVdvZEqGKli0WGJJGby66v6wGkA==
-X-Received: by 2002:a05:600d:8:b0:488:904b:f31 with SMTP id
- 5b1f17b1804b1-48fe6325213mr310143695e9.22.1779288171502; 
- Wed, 20 May 2026 07:42:51 -0700 (PDT)
-Received: from localhost.localdomain (wl.mlade.cb.wlnet.cz. [193.165.72.195])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-48febe60fc0sm156956075e9.21.2026.05.20.07.42.50
+ bh=X2WxKMKRIPXn/LMTRMQaz+6zYn5Ule4H/Dy8AO4z+9g=;
+ b=QXpyy8BcKJLI8A2oidFWrkRienxd8HawRGIXz2lhNKknTZIX6zAko6dmnAPsEXL3F3
+ +GJyRYePiPAgfDK+BE6WxXoz5kwcTThYB+NYKbRsoQ6Dr9cZzc5F13zDamJYi3O4PgA6
+ xnRTfGVDz8NVL+3znpfVI1yItwjAKyIM9hL5+snaUePUjyoYAHOjLu9lmtha+o6cmIQ7
+ xWwz0xZN7ogZCOP7JfJr6zDNcTVxTk//mklNyDzs3oZMlooAucVCF6LWpe+/xpL1WLu1
+ xzLwqtotxUXUemcFbHukp9UnUdvh6LDAxZx09nLlV/0aEnXxNVHmY2gMAxqYX6fPB0ig
+ wixw==
+X-Gm-Message-State: AOJu0YwpDtZIs4xpoEubrbZN02Asxt3Q/I+8HSgStGRkwjll+OXEBgOd
+ aRy8GvdNSDtjb6BWGHTN6LyjtZ0a+FZU0GL1HoevPPN6kYVaG2yc7MnHt5UgA79FXEx4/KrNpvu
+ Hmt8=
+X-Gm-Gg: Acq92OGODMi7MD+i0kY8FPebtZZDhtY8h0vROK5n5S08zlhNPijxqpsg8rsUNh6Nk5l
+ nIjcq9OxIgA9D/QVDZQDtfOQy7GSRdJYYMGgX/NAwnsd8D/gzzX+pm317Y/TXOLiiQAtEM/bM1S
+ 1j3vtGFT6M+ZPJAa6ea9elYWK1EyTKCMbFqk8RMDlx0dygao8jaxBcO9PDR/ccuQAYEqH/SyVBi
+ NCNbCDExqO1mtkxvdP7hLcPTSgrI7PhV770BBv5BAAlfcA4FXEVkSCyUlYJwEmMDP9G/pB4EG9t
+ jO2Wm2EC80uSGSO0cgLWVkMJfBYJepf4iYwg73adDCSfr7iyYpd4F0Dif6bwyCetBTy7kN3M5jU
+ +zmGupVhUs1cEP4FEahZMmv+vhbOn9ZYuSRU6AoNdQhXiwocbTYgZSolCQqAkW/paCkJ0/j0Myp
+ yE4sbSFbvReQw=
+X-Received: by 2002:a05:6000:4205:b0:454:af3:33a0 with SMTP id
+ ffacd0b85a97d-45ea38b4eb3mr1257902f8f.17.1779330226939; 
+ Wed, 20 May 2026 19:23:46 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ ffacd0b85a97d-45d9adc2209sm55262304f8f.0.2026.05.20.19.23.42
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 20 May 2026 07:42:51 -0700 (PDT)
-Message-ID: <6a0dc86b.8ad23161.248f65.9428@mx.google.com>
-To: "Martin Doucha" <mdoucha@suse.cz>
-In-Reply-To: <a17d2c76-3b48-480a-bf2b-39fa49cbf952@suse.cz>
-Date: Wed, 20 May 2026 14:42:50 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ Wed, 20 May 2026 19:23:43 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Thu, 21 May 2026 02:23:14 +0000
+Message-ID: <20260521022315.8924-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] sockets/xfrm03: Add skb_segment SKBFL_SHARED_FRAG
- stripping test
+Subject: [LTP] [PATCH v1] OpenPOSIX: Return PTS_UNTESTED when detaching or
+ joining joined thread returns 0
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,31 +96,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-MIME-Version: 1.0
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+The previous commit allowed a 0 return value, but as suggested by Cyril,
+returning PTS_UNTESTED is more appropriate for Open POSIX testsuite when
+the implementation does not trigger the optional ESRCH error.
 
-> I've tried to simplify the namespace setup but I haven't found a usable 
-> kernel build where I could verify that the reproducer still fails even 
-> though esp6 variant of Fragnesia is already fixed. I can only find 
-> kernels where both CVE variants are fixed or present. We should revisit 
-> this after Labs conf.
+Latest test in our openqa setup (Linux 7.1-rc2, Glibc 2.43) show following errors:
+- pthread_detach_4-2: Test FAILED: Incorrect return code: 0 instead of ESRCH
+- pthread_join_6-2: Test FAILED: Return code should be ESRCH, but is: 0 instead.
 
-yes, I was able to reproduce this bug on tumbleweed only. Let's talk
-about the Labs conference.
+These are caused by glibc commit 5da15b15adab661c80e373b6af89be0b5fa5b3ad
+("nptl: Do not use pthread set_tid_address as state synchronization (BZ #19951)").
 
-Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+Fixes: 630827d58634 ("OpenPOSIX: Allow 0 return value when detaching or joining joined thread")
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ .../conformance/interfaces/pthread_detach/4-2.c       | 11 ++++++++---
+ .../conformance/interfaces/pthread_join/6-2.c         | 10 +++++++---
+ 2 files changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c
+index 1e7b84117..4e5d80c96 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-2.c
+@@ -18,7 +18,7 @@
+  * 1. Create a thread.
+  * 2.Wait 'till the thread exits.
+  * 3.Try and detach this thread.
+- * 4.Check the return value and make sure it is ESRCH or 0
++ * 4.Check the return value and make sure it is ESRCH
+  *
+  */
+ 
+@@ -58,10 +58,15 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ 	/* Detach the non-existant thread. */
+ 	ret = pthread_detach(new_th);
+ 
++	if (ret == 0) {
++		printf("Test UNTESTED: Implementation does not return ESRCH\n");
++		return PTS_UNTESTED;
++	}
++
+ 	/* Check return value of pthread_detach() */
+-	if (ret != ESRCH && ret != 0) {
++	if (ret != ESRCH) {
+ 		printf
+-		    ("Test FAILED: Incorrect return code: %d instead of ESRCH or 0\n",
++		    ("Test FAILED: Incorrect return code: %d instead of ESRCH\n",
+ 		     ret);
+ 		return PTS_FAIL;
+ 
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/6-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/6-2.c
+index 4052a55e2..c924578a2 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/6-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/6-2.c
+@@ -61,11 +61,15 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ 
+ 	/*
+ 	 * Now that the thread has returned, try to join it again.
+-	 * It should give the error code of ESRCH or 0.
++	 * It should give the error code of ESRCH.
+ 	 */
+ 	ret = pthread_join(new_th, NULL);
+-	if (ret != ESRCH && ret != 0) {
+-		printf("Test FAILED: Return code should be ESRCH or 0, but is: "
++	if (ret == 0) {
++		printf("Test UNTESTED: Implementation does not return ESRCH\n");
++		return PTS_UNTESTED;
++	}
++	if (ret != ESRCH) {
++		printf("Test FAILED: Return code should be ESRCH, but is: "
+ 		       "%d instead.\n", ret);
+ 		return PTS_FAIL;
+ 	}
+-- 
+2.54.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
