@@ -4,82 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D84ECD4F3D
-	for <ltp@archiver.kernel.org>; Thu, 21 May 2026 03:42:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B793CD4F3D
+	for <ltp@archiver.kernel.org>; Thu, 21 May 2026 03:46:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF63D3C73DE
-	for <ltp@archiver.kernel.org>; Thu, 21 May 2026 05:42:56 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 249493C73E0
+	for <ltp@archiver.kernel.org>; Thu, 21 May 2026 05:46:44 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5061B3C737E
- for <ltp@lists.linux.it>; Thu, 21 May 2026 05:42:39 +0200 (CEST)
-Received: from mail-dl1-x1242.google.com (mail-dl1-x1242.google.com
- [IPv6:2607:f8b0:4864:20::1242])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3E7173C737E
+ for <ltp@lists.linux.it>; Thu, 21 May 2026 05:46:25 +0200 (CEST)
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::b5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6368D60012C
- for <ltp@lists.linux.it>; Thu, 21 May 2026 05:42:37 +0200 (CEST)
-Received: by mail-dl1-x1242.google.com with SMTP id
- a92af1059eb24-135e88b8e55so5772510c88.0
- for <ltp@lists.linux.it>; Wed, 20 May 2026 20:42:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1779334956; x=1779939756; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=MvxAEhXIvJRqk+BSvdDit6vRHuw85sYEp+xZtU11UlQ=;
- b=MPnSBf0Z5RwNJ2RR+LhaK1yMR9Esm3CixXmkJPjqXePDVnyYxFM8Dp0+yRnnkUk2wI
- Jwqw7GPBrmK8iB6O1rNps1Zsr4xCv/m6L1hJWGOmIbWwx3Lvk6qN3oTsgFk70+gtDJ18
- I6qY37HY3IUzi+XqdJJf2xhSYLOM1RyxUKn/dTDNdMsD4XSp2FWfFPnv5lCRu1hjeh0Q
- i0DE6asWucBwwEJYTsgLvNAfUa9x4tcTyHfuVPvTnhgvM3rNT5w2/+wD09JIUG9UGHeT
- iCnKwk4z3wdTvVIwnq+Xp/2/XRrKZODn5zbBqjUIISI0Jotu0wLGj1qJznkt+qBnbGGj
- ydfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779334956; x=1779939756;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=MvxAEhXIvJRqk+BSvdDit6vRHuw85sYEp+xZtU11UlQ=;
- b=oAyqT4b+jotL9vpiose7BYYaChMuR5UMGmbyrUrHdk4ZZP1TWT+Nn4kTyRoiTTg0DO
- icriN/n1dXsB1xmxrK2eOKUGE75CyerWzW4y4JH39E0U58bV0VRmUngUNxIoMDmLbc+1
- X+R4egPgfuHucUSR39boH1cCMJjQTnz0zB9j18Ngmtldum+IGecX8EYBMHXDpPVtfM7A
- Z1ikDT9afpt72NOc9UXKTby8P730zatLBbun2X69SQefsJZbwcYUOKbCsGJkzXeMqUgV
- n2yxX/Q1QU6VNnH+UDWfo+XW97CpH9a5wkJgCwwJRTujJFRGhH6XhiKIuL7Vxk+T77al
- Q7vA==
-X-Gm-Message-State: AOJu0YxFRNjmcDJqowYpjtcCowXwQAy9MAE6qaqNyd3mlWA02p1cVJVx
- EJPyA+oqyuUm7Q2YKmmJCNIvLKuQvEQPrq7ftl4H367s9a2FhyJ/pct0
-X-Gm-Gg: Acq92OGm+ZWxj8XDsVZk/xaBncKoWJl1TNuEiJb7mnBEl4IQZ6EgY5KHN5LCIfjPNIg
- 4KDvYelRy4EXcFldXsU4SjiK3P+z2P8H2/O/lrlNE43GSBPrwA/I3N2kerbe8mCVzbzEOrUd+W2
- olAyIyrr+9sy35fBsJxaZGGS0iMQJygeZvBn1KEMYDA7kxgrocr7M0r6o6ZHAHfslHEe+eU62m6
- yF9AYlRQkYnq3/U33T0VnxzuqyaUptrQpsL8wHdhtnFUqMg3KaeIcAzVaa5/xV931De9UPWuL7x
- muCLPmoWBLsz1d3rqq8Sg2pIoVmUp9JxQCScYI+9ZYkJXBeBwb0StYrTb5sGZ66TUCkVL0HWIgh
- HCNA1TD49orVQdioYxmWiVedTtQQr3lH9wfnhjfY26gmYd/K61vFzXV0Z8ZEZyHMC7bKtJDYCwn
- R+mcuaowzR1xciaMdN3Cvd2VwGMbbDMv3FT3dNLZRFR2hbRb3CySZZ+5IYfxnYXc4mNy2fGv6S3
- 10GmBW7/bBTmvAAFX8QGH/E5v23K/T6EzckX3NiaAuETPD+kxo=
-X-Received: by 2002:a05:7022:ea28:b0:12b:fb81:d69b with SMTP id
- a92af1059eb24-13632e45002mr602683c88.19.1779334955632; 
- Wed, 20 May 2026 20:42:35 -0700 (PDT)
-Received: from
- runnervmrw5os.ad2jx1yswqge1po1cwcnrolnac.dx.internal.cloudapp.net
- ([52.159.227.195]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-134cb5b3c20sm28949389c88.0.2026.05.20.20.42.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 20 May 2026 20:42:35 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Thu, 21 May 2026 03:42:33 +0000
-Message-ID: <20260521034233.4014-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260521022315.8924-1-wegao@suse.com>
-References: <20260521022315.8924-1-wegao@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EC0A81A00660
+ for <ltp@lists.linux.it>; Thu, 21 May 2026 05:46:22 +0200 (CEST)
+Date: Thu, 21 May 2026 11:46:15 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+ t=1779335180;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=rvZd/5vg/v6qyhUMnz1lyl1kq0OtWt6BN3t5F4Oj+EY=;
+ b=bXlWfQIeg+fEyKKN1LA0ASD6j7gXi/5NmewOncuO0H+gGawXH2hELVeqY7XBalB7OwzGrM
+ IP7Yc/ewN24HfGFKuSgSkrBAKZiYvhbDOWFpoAOnvOl12jo9We09jcYNmZRhO38S1zTzJo
+ Ed1qz2oMH4PAbVncDgG3yBOWNRTPgZI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+From: Li Wang <li.wang@linux.dev>
+To: ltp@lists.linux.it
+Message-ID: <ag6AB0v9am5pNoLQ@linux.dev>
+Mail-Followup-To: ltp@lists.linux.it
+References: <20260521032759.18727-1-li.wang@linux.dev>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260521032759.18727-1-li.wang@linux.dev>
+X-Migadu-Flow: FLOW_OUT
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] OpenPOSIX: Return PTS_UNTESTED when detaching or joining
- joined thread returns 0
+Subject: Re: [LTP] [PATCH v4 1/2] lib: Introduce tst_path_defs.h to
+ consolidate system paths
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,26 +59,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgV2VpLAoKT24gMjAyNi0wNS0yMSwgV2VpIEdhbyB3cm90ZToKPiBPcGVuUE9TSVg6IFJldHVy
-biBQVFNfVU5URVNURUQgd2hlbiBkZXRhY2hpbmcgb3Igam9pbmluZyBqb2luZWQgdGhyZWFkIHJl
-dHVybnMgMAoKPiArICAgICAgIGlmIChyZXQgPT0gMCkgewo+ICsgICAgICAgICAgICAgICBwcmlu
-dGYoIlRlc3QgVU5URVNURUQ6IEltcGxlbWVudGF0aW9uIGRvZXMgbm90IHJldHVybiBFU1JDSFxu
-Iik7Cj4gKyAgICAgICAgICAgICAgIHJldHVybiBQVFNfVU5URVNURUQ7Cj4gKyAgICAgICB9CgpD
-b3JyZWN0IGFwcHJvYWNoIOKAlCByZXR1cm5pbmcgUFRTX1VOVEVTVEVEIGlzIG1vcmUgc2VtYW50
-aWNhbGx5IGFjY3VyYXRlIHRoYW4KYWNjZXB0aW5nIDAgYXMgYSBwYXNzaW5nIHJlc3VsdCB3aGVu
-IEVTUkNIIGlzIHRoZSBleHBlY3RlZCBvcHRpb25hbCBiZWhhdmlvci4KClJldmlld2VkLWJ5OiBM
-VFAgQUkgUmV2aWV3ZXIgPGx0cC1haUBub3JlcGx5LmdpdGh1Yi5jb20+CgotLS0KTm90ZToKCk91
-ciBhZ2VudCBjb21wbGV0ZWQgdGhlIHJldmlldyBvZiB0aGUgcGF0Y2guIFRoZSBmdWxsIHJldmll
-dyBjYW4gYmUKZm91bmQgYXQ6IGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9s
-dHAvbGlzdC8/c2VyaWVzPTUwNTI2MAoKVGhlIGFnZW50IGNhbiBzb21ldGltZXMgcHJvZHVjZSBm
-YWxzZSBwb3NpdGl2ZXMgYWx0aG91Z2ggb2Z0ZW4gaXRzCmZpbmRpbmdzIGFyZSBnZW51aW5lLiBJ
-ZiB5b3UgZmluZCBpc3N1ZXMgd2l0aCB0aGUgcmV2aWV3LCBwbGVhc2UKY29tbWVudCB0aGlzIGVt
-YWlsIG9yIGlnbm9yZSB0aGUgc3VnZ2VzdGlvbnMuCgpSZWdhcmRzLApMVFAgQUkgUmV2aWV3ZXIK
-Ci0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9s
-dHAK
+Li Wang wrote:
+
+...
+
+> +/* KERNEL */
+> +#define PATH_KERNEL_HOSTNAME			"/proc/sys/kernel/hostname"
+> +#define PATH_KERNEL_OSRELEASE			"/proc/sys/kernel/osrelease"
+> +#define PATH_KERNEL_VERSION			"/proc/sys/kernel/version"
+> +#define PATH_KERNEL_DOMAINNAME			"/proc/sys/kernel/domainname"
+> +#define PATH_KERNEL_PRINTK			"/proc/sys/kernel/printk"
+> +#define PATH_KERNEL_PID_MAX			"/proc/sys/kernel/pid_max"
+> +#define PATH_KERNEL_SHMMAX			"/proc/sys/kernel/shmmax"
+> +#define PATH_KERNEL_SHMMNI			"/proc/sys/kernel/shmmni"
+> +#define PATH_KERNEL_SHMALL			"/proc/sys/kernel/shmall"
+> +#define PATH_KERNEL_SHM_NEXT_ID			"/proc/sys/kernel/shm_next_id"
+> +#define PATH_KERNEL_MSGMNI			"/proc/sys/kernel/msgmni"
+> +#define PATH_KERNEL_MSG_NEXT_ID			"/proc/sys/kernel/msg_next_id"
+> +#define PATH_KERNEL_SEM				"/proc/sys/kernel/sem"
+> +#define PATH_KERNEL_CORE_PATTERN		"/proc/sys/kernel/core_pattern"
+> +#define PATH_KERNEL_CAP_LAST_CAP		"/proc/sys/kernel/cap_last_cap"
+> +#define PATH_KERNEL_NUMA_BALANCING		"/proc/sys/kernel/numa_balancing"
+> +#define PATH_KERNEL_IO_URING_DISABLED		"/proc/sys/kernel/io_uring_disabled"
+> +#define PATH_KERNEL_OVERFLOWUID			"/proc/sys/kernel/overflowuid"
+> +#define PATH_KERNEL_OVERFLOWGID			"/proc/sys/kernel/overflowgid"
+> +#define PATH_KERNEL_PERF_EVENT_PARANOID		"/proc/sys/kernel/perf_event_paranoid"
+> +#define PATH_KERNEL_PERF_EVENT_MLOCK_KB		"/proc/sys/kernel/perf_event_mlock_kb"
+> +#define PATH_KERNEL_PERF_EVENT_MAX_SAMPLE_RATE	"/proc/sys/kernel/perf_event_max_sample_rate"
+> +#define PATH_KERNEL_SCHED_RT_PERIOD_US		"/proc/sys/kernel/sched_rt_period_us"
+> +#define PATH_KERNEL_SCHED_RT_RUNTIME_US		"/proc/sys/kernel/sched_rt_runtime_us"
+> +#define PATH_KERNEL_SCHED_RR_TIMESLICE_MS	"/proc/sys/kernel/sched_rr_timeslice_ms"
+> +#define PATH_KERNEL_UNPRIVILEGED_USERNS_CLONE	"/proc/sys/kernel/unprivileged_userns_clone"
+
+And, we could shorten those with PATH_KERN_* if people thinks
+the marco string is too long.
+
+-- 
+Regards,
+Li Wang
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
