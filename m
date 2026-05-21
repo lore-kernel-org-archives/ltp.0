@@ -4,82 +4,149 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99052CD4F3D
-	for <ltp@archiver.kernel.org>; Thu, 21 May 2026 03:47:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0A29CD4F3C
+	for <ltp@archiver.kernel.org>; Thu, 21 May 2026 07:54:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 223523C73DE
-	for <ltp@archiver.kernel.org>; Thu, 21 May 2026 05:47:13 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 2E8223C74E0
+	for <ltp@archiver.kernel.org>; Thu, 21 May 2026 09:54:50 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 96EBF3C737E
- for <ltp@lists.linux.it>; Thu, 21 May 2026 05:46:53 +0200 (CEST)
-Received: from mail-dy1-x1341.google.com (mail-dy1-x1341.google.com
- [IPv6:2607:f8b0:4864:20::1341])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 57B973C051C
+ for <ltp@lists.linux.it>; Thu, 21 May 2026 09:54:29 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5DD6860075C
- for <ltp@lists.linux.it>; Thu, 21 May 2026 05:46:53 +0200 (CEST)
-Received: by mail-dy1-x1341.google.com with SMTP id
- 5a478bee46e88-3042dffd80bso545121eec.0
- for <ltp@lists.linux.it>; Wed, 20 May 2026 20:46:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1779335212; x=1779940012; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=nCSQVIftRtdNv3wXOjUw5vgR25FACDQHkN4XpuKZfHQ=;
- b=cDYLgk8OV60Yxg1xt6FH1LAEZvCkW1O+Bjl4owsohEBj7+F0MJa01FdGv9lwJXalF1
- EF0q7EY9R4W9kdaSYiIf+c4+SQC1V4QuEaoOCTXCDFBK75QfQAe4jXe5cpDHfVxZoe3m
- NIyzqrAtH7zCTL5mknoTK6LjKuRwf8UBDYUvRxsL5nnGN6MQfSWPJXlwPwh3bwdKyDny
- yAsSZRIJitn/ur1NVvxF+/TVQuUW/IzB+kAdGnmRsYx4arXrrWHWgpokr37J2ch6ZxCP
- ExAYl+5zmVJmZBHJR4Ouv9GWw/qzH3MC7CWgrb6DtqFtzBJOI8GBgyhfcCJIwrWJbiOz
- lFgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779335212; x=1779940012;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=nCSQVIftRtdNv3wXOjUw5vgR25FACDQHkN4XpuKZfHQ=;
- b=DLikhw7YVRQn0dXtGcFupoDyNJYba+nB/YGN8g/G4/yX1BkOHBDWyQkXgevJAltyKu
- USvZCUEU6TPAZXQoVU0p0n+xcHfOfs57E+a/N+oDbORA/OLcPY0nO3SRQbxRonhpujzX
- 5b9ihSdFbEMtKmm2Hy4d+RKVJUzKY/6gvIUjwMv2WU8Gp2bA9R/XXv7yp4RYLR7qgFzk
- FpdqC1QjFAL087AkPPBr5cKbgAmLODon47eUOots8pNAXYeGwJeTKPbLaYJiLJVLQn27
- yY6cqIHLPv09BW6zMqa8tUmZpa4uzKS2PPuWajysx6wc0vOhB2lnYu1cYZRKnsJAgBE4
- bIjQ==
-X-Gm-Message-State: AOJu0YyrXEJS/5Ez9XP66EvtUQ++hfgQ3ehTQbeOU/x82VXzvsLgKp1L
- bDvVXRf5Q1OHQCohUrxZdhkmT6bOxxNPPFAnjttBQUW1e5iqwoAbvTjy
-X-Gm-Gg: Acq92OHEnMnjyge/yHniT9RunMfxRCPe5gcBYrnAYk3bzo4vMpMcOzVEGVCfYju9I6K
- SV5APLKN848i4pJxMDG1skpYIPFVseGa5joHVQyIREQ7OVKmzWCmaAbvjXfEc7wbJ+6iAQwpfBp
- Wq1rPVWrw3KuLZMBbhhy5hRLL7QQi6HO+D3X5nDa58p+FRowO2VH6zrs0nx/dv0jZSKzOrijPCi
- Xj6VwCAOIW+BSiC4ePJJ4ZebzD1JkmLm4QnJ4HrZeai5Tiy0zsshzqDd7cqPlPFcu6BxmaJIihH
- Anq89SnCQlF+NfgT0svdD2csa+8r70yzVIRc6yxGLjhqY+OkGfpVpIqg1VVhP2V8LysH4lez3+p
- c/GfRO3/58u7debp/W6ryLP6KW80lXhlKizeGivcXNG0BH3W6MZuiawkTZUDYiE1FaE2vnqw05I
- M8HdwyeT9mKlsekpkcrcLxQO4YOJFvyKC5q4tL06kCn4uqZewBmAhzGSIxMdCm8elMqq749RSuj
- 2D0qzKWW1y0pSXRW9zVlpzn+xcEU0HYTJoJCws=
-X-Received: by 2002:a05:7300:641a:b0:2c4:dd55:ffc1 with SMTP id
- 5a478bee46e88-3042f43486bmr759221eec.2.1779335211531; 
- Wed, 20 May 2026 20:46:51 -0700 (PDT)
-Received: from
- runnervmrw5os.cddunxfqncwu5ncfdzyn0hhfze.dx.internal.cloudapp.net
- ([52.159.244.82]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-30296dcb6f6sm25971091eec.17.2026.05.20.20.46.50
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 20 May 2026 20:46:51 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Li Wang <li.wang@linux.dev>
-Date: Thu, 21 May 2026 03:46:49 +0000
-Message-ID: <20260521034649.4079-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260521032759.18727-1-li.wang@linux.dev>
-References: <20260521032759.18727-1-li.wang@linux.dev>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2E339600077
+ for <ltp@lists.linux.it>; Thu, 21 May 2026 09:54:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1779350067; x=1810886067;
+ h=date:from:to:cc:subject:message-id:mime-version;
+ bh=0MHOSe7S0Scg1xO04VNklEYFhRVGehleoxLF24+4dWk=;
+ b=Oi6cEr85mTY2UIrnI1BONmStvMNk6immhOcqjFi31Rhba0hJkiaM0CC6
+ 6fJsTF9vTWjzkefARBzvk8pgCEY2BuXHVfIqyEj7eLyw09BC0TWEvOQLg
+ O0RtDoNSlVOOf+qp8hugRXV/GXPjwdNfaN54M4ikLWCHq5MzuYJMStV77
+ oMomnK7t2DDCxHJqN/f34ByZLY3f4hwpIs2lG0jxdjNYWzGr4i9Reu/tM
+ qJC9IvnsHtna8GuuK/KlKrzbpY9KHEfJNmc3/xyvRwix6HmQ6ja76Du6c
+ MJx+rCcxumLxWmjnFNeq7sFij415PDOY142pC83InegYBO2jG7LFE+4CS Q==;
+X-CSE-ConnectionGUID: F7NQsOp4QPKDe9uoYJHbxA==
+X-CSE-MsgGUID: PqosDDwORgihCi5daMGctQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11792"; a="80244811"
+X-IronPort-AV: E=Sophos;i="6.23,245,1770624000"; d="scan'208";a="80244811"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+ by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 May 2026 00:54:23 -0700
+X-CSE-ConnectionGUID: mIrgVBf8S3ivNOpH1osVZA==
+X-CSE-MsgGUID: zffrLt2DRhupzdyJrzEYpA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,245,1770624000"; d="scan'208";a="242258564"
+Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
+ by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 May 2026 00:54:22 -0700
+Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Thu, 21 May 2026 00:54:22 -0700
+Received: from ORSEDG903.ED.cps.intel.com (10.7.248.13) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37 via Frontend Transport; Thu, 21 May 2026 00:54:22 -0700
+Received: from CH4PR04CU002.outbound.protection.outlook.com (40.107.201.66) by
+ edgegateway.intel.com (134.134.137.113) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Thu, 21 May 2026 00:54:20 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=CAyxHPhpc8LSleQy1o9IcSHO09qF/wbqRxFp76N3PEaZUCkLyfhERm70M9mS/QPrzCjDcWpExH5G4aappYSGJ0KKuSQHx6LVkGCGcP70QuY4tVvA7/Vd6sOCDnCgMRt6+8aeBpFFkNo/gUglrO1dKcjp6E7nPtoCKbPROD8jUq1HetwIoT2vR4mszlYR8qm+ZwcbebKr/XtCWKoSRcXTG8abpGZAZyjtpm37luKcHuvV447VAcNf0RULxd74rHXmx20VZFzkplwQkZg6BItV6VT2+r/t1Xl8F7mA1fEZMle/yczdy45J7eRl6iNrCSp2vdglOmjKy1klkWi+3nforQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SNhTifyZLhvlck5iWv+9fk40xnwqB87Oo4v/pLpTCiI=;
+ b=CXPIipRgaQApC3N7EiDqDSUgoL1zYIUdvubS7rX8llbJT2qdRPhziha+EM9a+5sFo6OiuRyVclK0cihKc6ZuQIRb7qGe/55+X1iodwRZ8B8apR76NnuqWwvSu9PV6TOhawV4PRj+zyz3cvpcmIKgY9nJwmKUeYzvAqNLW/yiZSHdmTwDGSO1ppocBoSEGrP02oy2RQqmhGh16GS7uKCQ07MPNxAzEgzQtFhQY1SpjajcpYciB3/LnXR0mkNdclizFCt94b2VjRjPCxuyNbmbtBJlIc1JelXaNl7oD1+IszyJ9sHWAS9EbCIt9nO0lQAj34uPQNYpGeL50sw4jVNM9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB5832.namprd11.prod.outlook.com (2603:10b6:510:141::7)
+ by DM3PPFF2E67D388.namprd11.prod.outlook.com (2603:10b6:f:fc00::f60)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.16; Thu, 21 May
+ 2026 07:54:12 +0000
+Received: from PH0PR11MB5832.namprd11.prod.outlook.com
+ ([fe80::106e:78dd:4c96:d707]) by PH0PR11MB5832.namprd11.prod.outlook.com
+ ([fe80::106e:78dd:4c96:d707%3]) with mapi id 15.21.0025.020; Thu, 21 May 2026
+ 07:54:11 +0000
+Date: Thu, 21 May 2026 15:54:05 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Message-ID: <202605211529.6ba1b4ff-lkp@intel.com>
+Content-Disposition: inline
+User-Agent: s-nail v14.9.25
+X-ClientProxiedBy: TPYP295CA0039.TWNP295.PROD.OUTLOOK.COM
+ (2603:1096:7d0:7::10) To PH0PR11MB5832.namprd11.prod.outlook.com
+ (2603:10b6:510:141::7)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5832:EE_|DM3PPFF2E67D388:EE_
+X-MS-Office365-Filtering-Correlation-Id: 29f59b81-b14b-472e-dde0-08deb70e2547
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+ ARA:13230040|376014|366016|1800799024|56012099003|3023799007|18002099003|11063799006;
+X-Microsoft-Antispam-Message-Info: J9LTw56rMVjMDtX64iGBCUf+h4pC/YKfFFIK0PaBuoJf0i6vpbb/5t+WQGsNlkLy74dVlZfgEDsv7+04WJRI5ZM/tddGqiufnfSfh2wOr8xMkL7qwyiZ9tciPwt80NnKNw/dkYRq4HogyEtTWRzwZ2Q3bAclyaToLgOUJJjTrEDau/Ybhi06Txl8Q+rMSZCAHjSvVpRKIIsT7R8rxunhPdyIG3/aHIayn09oUMG15GxLtHzyNdSlgHQEwjHo/zjwKUpgCrZSodNpie9vu4ve16pfQfB1pGeiPqgEdOWLgLks5eYn2HhHnxzQVHpccHGJWQP7hZpiQ9QYqoAPVUD1ZfNEOsXRNNBmRIJhDFMAzuUpmeKmtRU7PqTPy1vbsHWYcW8ooITfQM7ydhXm4RmyYVI94DDnCBNVp55g3Aw/JBpTGPrgkFOkxWhAYqhzaYnoaDP2yNZua5KSkJvHjRVBeaOjaysoYJD4QjrODZfn5oEp+BO6iAI9h+a3PH2Gi9eUUGxqZXHDbzFySX4voeA9VbJ+FqlNE08N7f/lnZDfsaaNRVOn70CSwMbSTHwUxP9h4bVxkVHY7ynKdY/jrAhAWsd4jjgBr/0jVD2O44Slx2v5TIROJkX5z6jwyZzSpQGP3r/P/dpHhWCDOEME8iks8A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:PH0PR11MB5832.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(376014)(366016)(1800799024)(56012099003)(3023799007)(18002099003)(11063799006);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5Yyw0TFpLgC189Ph0gco6plcJcZASFQcyxE07eOKAWO8Zdct4B96oujDRWT0?=
+ =?us-ascii?Q?05iz4j588fUbm6vKvwHtZd3hw/UE8TNYLB3JLTK3mjbEDOq7jLhaPIcLMqdo?=
+ =?us-ascii?Q?Cup9++y5g3xhpIOdGpQgpKVE05L5vdG9cZlvNQT9fjdxoobUbFj+boQOJ6xT?=
+ =?us-ascii?Q?o3PbSXM97HWiHXt4qSUF+CcuZoI7k9Xns4UnDSe9H9fTk0ijZOZ7ROclQ6oC?=
+ =?us-ascii?Q?qInDfw6dddUmXbyRb0m/3Jw72Ea47yEtC1exH8r2HWfKSiZu4I1/sKGc+bkO?=
+ =?us-ascii?Q?UfS2ZyCVowXGPjs9OMwRrhgrhY3LGop39abC4TSf4GDzv9gzXZzhIRnhDzX+?=
+ =?us-ascii?Q?5W9J7vWqnbnEH1XjiHByQoDQ9/hH47F5S6B27++MO3GYvzrsdpqLAVLdseH0?=
+ =?us-ascii?Q?viM0AVdOhWFmaJfC7gnKw2AcczwaTScPCQ21CRkmrUzZRs3VBxR57+sRXg7t?=
+ =?us-ascii?Q?zY+3YlzojjfQvNcKA3urNULPSTYjyy66CXTCJCDBhc9/TyjdynqKK5wJx0xq?=
+ =?us-ascii?Q?FCNwxUoYLhIfaWL898O1ASWE4apLA80L0cWzRi58FKeDkqBHzeOMUxG+0ct1?=
+ =?us-ascii?Q?nqjSUeEYI8m6znMkw8qhhi1qpJJ6hg8l/OK/mQZbZwV/s43zZEEiERzF7x9K?=
+ =?us-ascii?Q?y/tkYOiyJOqBSVZwPSwCJtkKJOFPAP0rNCfPwfAdpcM+QyQuorfRy1ierYK3?=
+ =?us-ascii?Q?xUq6pZ72rwcpJqws+ldx7ikpS5YSy2bnNKo/ZI46jgpljUKW6+1wUq31R/YU?=
+ =?us-ascii?Q?CXrV0x0vXYS9a+das05itlggmvFJvmDpLXooLLPKqdvOIi2STJdk3iLKRNnS?=
+ =?us-ascii?Q?C10qQDMPy9sJ3dGmTapwVganrmhd0l8ms3rMtFUEGdOKO1DA/Ew1t2uxVmI4?=
+ =?us-ascii?Q?jTnS+bMT3F75PCOVLVEW8tX+gNZroXOCLWiTdKH/vv4Lh8V/le15JMFdG4Vz?=
+ =?us-ascii?Q?yfQMfbuhdY8yhj1k7TM93luMLjCCrj6z6rYi0H98x6Dp196ELwPGJNjHBT2+?=
+ =?us-ascii?Q?xkS8JHaewoj4VEY2+3UBQ9LSmhas+bt33VSMKKLi4uccMz5Xr6fT7NFBLVAs?=
+ =?us-ascii?Q?aTciK25NmYRz7g1Fo7zCL4av5Eh2SkudI2en5OplcXSNluwsDxWJ2+IYJYrD?=
+ =?us-ascii?Q?G03l2qXu6sgosu2zQQVBU9zBmwr5XF9YzT5LnDv7z16sPscXH3fBzNSYG5k1?=
+ =?us-ascii?Q?ka6LreUIPVL2DmfuoyF7wchpoJwA8OWyX4SoBxBCfwVsCkCLQUc2jcsZx+ft?=
+ =?us-ascii?Q?aXTBmjhdP9fvj776ROp19LePg6TA84CLjPU//JbqWSKDmLCa20Vta02k4fej?=
+ =?us-ascii?Q?kxtQsoBh4FJvbDMYG464DdY7Uyi+Yutpv0HqKOgPb5p6RtR82M/xsvldolP6?=
+ =?us-ascii?Q?Rkj6m+KfRsK9dOQOQtt2LKWusq3tkmOFj4m9kqcRCY172rT92E0jiY+tjfxj?=
+ =?us-ascii?Q?YYtJaDuSnofLGSmOx//ACR2MM7ufT6M1pm4ji0qPjUNPaO4ZG5LSaPgD+MJJ?=
+ =?us-ascii?Q?xihFdf81X2q/wfB0YBUKT5NebmlmD+RhKhO4A6CXSETfbPuf0z7yuN0ioh7u?=
+ =?us-ascii?Q?afKXcBEv6ao52107BIGD8OY3/30K5I7BzsL38MCcY0ZAsrsWo61LbBcdoz1W?=
+ =?us-ascii?Q?gLqVWaP2Sm7WAP9a0nJGym4dx5O5nGTI/ivJYGArRKOKxsVRwfzq0gYWezV8?=
+ =?us-ascii?Q?bu9JV0Z5RkJITa1Hff76VOsQt/VjMiJwylARdIB+Itz38rfn83n+v0y6Ik76?=
+ =?us-ascii?Q?sCppTiFVug=3D=3D?=
+X-Exchange-RoutingPolicyChecked: tODyluBTa9cqip0zV0PjECKIKncjZJtMZxG7IQPlumGaGCi9TYzIkJJ9/odapnpFAezCwGcVNhYzV1AfrGDMJ0vgJuo3tB8+0lg/M8m7H3fVXsotuFKhkBAWR5NjkpwBX5O0+Z/8pdTc9u8XSgAMiWNZ4uLo/DlnB93L4tTTlJPBa0YAKWhGM9LvGG4J+oXYXu0l2PZO3Dh5hNLzPLpUORnY3XBohnVlR4pEnRNGynmferwcmk5B/Klw/op7m0bEnV1B2MzCwHJk2NW6wFakXeTJrZsjKD0aPno4XJVJlyl1LH9X3fppmbYrUVCxI7JZyjll3EtdsJeXFLHv8liuTQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29f59b81-b14b-472e-dde0-08deb70e2547
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5832.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2026 07:54:11.7542 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cC94XvvRJ7VXYjhqd9RgafL+hrPUz18MfkQ0eorc/f/QiqlOHboZWp4swA8xr2ky7JOiBCDONtQW2swJYqUbRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PPFF2E67D388
+X-OriginatorOrg: intel.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib: Introduce tst_path_defs.h to consolidate system paths
+Subject: [LTP] [paulmckrcu:dev.2026.05.07a] [rcutorture] c2e6a63ac1:
+ RIP:rcu_torture_irq[rcutorture]
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,22 +158,139 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: oe-lkp@lists.linux.dev, oliver.sang@intel.com, lkp@intel.com,
+ ltp@lists.linux.it, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgTGksCgotLS0gW1BBVENIIDIvMl0gLS0tCgpPbiAyMDI2LTA1LTIxLCBMaSBXYW5nIHdyb3Rl
-Ogo+IG1ldGFwYXJzZTogRXhwbGljaXRseSBwYXJzZSBlc3NlbnRpYWwgaGVhZGVycyBmb3IgbWFj
-cm9zCgo+ICtzdGF0aWMgY29uc3QgY2hhciAqbXVzdF9pbmNsdWRlc1tdID0gewo+ICsgICAgICAg
-InRzdF9wYXRoX2RlZnMuaCIsCj4gKyAgICAgICBOVUxMCj4gK307Cj4gKwo+ICtzdGF0aWMgdm9p
-ZCBwYXJzZV9tdXN0X2ZpbGVzKHZvaWQpCj4gK3sKPiArICAgICAgIHVuc2lnbmVkIGludCBpLCBq
-OwoKVGhlIG5ldyBjb2RlIHVzZXMgc3BhY2VzIGZvciBpbmRlbnRhdGlvbi4gVGhlIHJlc3Qgb2Yg
-bWV0YXBhcnNlLmMgdXNlcwp0YWJzIOKAlCBwbGVhc2UgZml4IHRvIG1hdGNoLgoKWy4uLl0KCi0t
-LQpOb3RlOgoKT3VyIGFnZW50IGNvbXBsZXRlZCB0aGUgcmV2aWV3IG9mIHRoZSBwYXRjaC4KClRo
-ZSBhZ2VudCBjYW4gc29tZXRpbWVzIHByb2R1Y2UgZmFsc2UgcG9zaXRpdmVzIGFsdGhvdWdoIG9m
-dGVuIGl0cwpmaW5kaW5ncyBhcmUgZ2VudWluZS4gSWYgeW91IGZpbmQgaXNzdWVzIHdpdGggdGhl
-IHJldmlldywgcGxlYXNlCmNvbW1lbnQgdGhpcyBlbWFpbCBvciBpZ25vcmUgdGhlIHN1Z2dlc3Rp
-b25zLgoKUmVnYXJkcywKTFRQIEFJIFJldmlld2VyCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
-dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+
+hi, Paul,
+
+below report is just FYI. if the issue is soloved on newer branched, please just
+ignore. thanks
+
+
+Hello,
+
+
+kernel test robot noticed "RIP:rcu_torture_irq[rcutorture]" on:
+
+commit: c2e6a63ac168107454d5fe595c1213e5760d642f ("rcutorture: Test RCU readers from hardware interrupt handlers")
+https://github.com/paulmckrcu/linux dev.2026.05.07a
+
+in testcase: ltp
+version: 
+with following parameters:
+
+	test: kernel_misc
+
+
+
+config: x86_64-rhel-9.4-ltp
+compiler: gcc-14
+test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-4790T CPU @ 2.70GHz (Haswell) with 16G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202605211529.6ba1b4ff-lkp@intel.com
+
+
+
+kern  :warn  : [  434.509085] [   T5907] ------------[ cut here ]------------
+kern  :warn  : [  434.509089] [   T5907] WARNING: kernel/rcu/rcutorture.c:2653 at rcu_torture_irq+0x119/0x170 [rcutorture], CPU#2: rcu_torture_rea/5907
+kern  :warn  : [  434.509137] [   T5907] Modules linked in: rcutorture(+) torture netconsole binfmt_misc snd_hda_codec_intelhdmi snd_hda_codec_hdmi btrfs libblake2b zstd_compress raid6_pq intel_rapl_msr intel_rapl_common xor snd_hda_codec_alc882 x86_pkg_temp_thermal snd_hda_codec_realtek_lib i915 snd_hda_codec_generic intel_powerclamp sd_mod coretemp snd_hda_intel intel_gtt drm_buddy sg snd_hda_codec ttm kvm_intel snd_soc_rt5640 drm_display_helper snd_soc_rl6231 snd_hda_core regmap_i2c kvm snd_intel_dspcfg cec snd_soc_core snd_intel_sdw_acpi drm_client_lib snd_hwdep snd_compress irqbypass drm_kms_helper rapl mxm_wmi ahci snd_pcm libahci alx video intel_cstate intel_uncore pcspkr mei_me i2c_i801 libata mdio snd_timer mei i2c_smbus lpc_ich snd wmi soundcore acpi_pad joydev drm fuse nfnetlink [last unloaded: ltp_uaccess(OE)]
+kern  :warn  : [  434.509249] [   T5907] CPU: 2 UID: 0 PID: 5907 Comm: rcu_torture_rea Tainted: G S      W  OE       7.1.0-rc1+ #1 PREEMPT(lazy)
+kern  :warn  : [  434.509265] [   T5907] Tainted: [S]=CPU_OUT_OF_SPEC, [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+kern  :warn  : [  434.509267] [   T5907] Hardware name: Gigabyte Technology Co., Ltd. Z97X-UD5H/Z97X-UD5H, BIOS F9 04/21/2015
+kern  :warn  : [  434.509270] [   T5907] RIP: 0010:rcu_torture_irq (rcu/rcutorture.c:2654 (discriminator 1)) rcutorture
+kern  :warn  : [  434.509287] [   T5907] Code: 93 20 01 00 00 48 83 c4 08 48 c7 c6 10 bb 19 c1 48 89 c7 5b e9 68 14 f7 c2 48 83 c4 08 5b c3 cc cc cc cc 0f 0b e9 0e ff ff ff <0f> 0b e9 fc fe ff ff e8 5b 00 da c0 e9 5a ff ff ff 48 89 04 24 e8
+All code
+========
+   0:	93                   	xchg   %eax,%ebx
+   1:	20 01                	and    %al,(%rcx)
+   3:	00 00                	add    %al,(%rax)
+   5:	48 83 c4 08          	add    $0x8,%rsp
+   9:	48 c7 c6 10 bb 19 c1 	mov    $0xffffffffc119bb10,%rsi
+  10:	48 89 c7             	mov    %rax,%rdi
+  13:	5b                   	pop    %rbx
+  14:	e9 68 14 f7 c2       	jmp    0xffffffffc2f71481
+  19:	48 83 c4 08          	add    $0x8,%rsp
+  1d:	5b                   	pop    %rbx
+  1e:	c3                   	ret
+  1f:	cc                   	int3
+  20:	cc                   	int3
+  21:	cc                   	int3
+  22:	cc                   	int3
+  23:	0f 0b                	ud2
+  25:	e9 0e ff ff ff       	jmp    0xffffffffffffff38
+  2a:*	0f 0b                	ud2		<-- trapping instruction
+  2c:	e9 fc fe ff ff       	jmp    0xffffffffffffff2d
+  31:	e8 5b 00 da c0       	call   0xffffffffc0da0091
+  36:	e9 5a ff ff ff       	jmp    0xffffffffffffff95
+  3b:	48 89 04 24          	mov    %rax,(%rsp)
+  3f:	e8                   	.byte 0xe8
+
+Code starting with the faulting instruction
+===========================================
+   0:	0f 0b                	ud2
+   2:	e9 fc fe ff ff       	jmp    0xffffffffffffff03
+   7:	e8 5b 00 da c0       	call   0xffffffffc0da0067
+   c:	e9 5a ff ff ff       	jmp    0xffffffffffffff6b
+  11:	48 89 04 24          	mov    %rax,(%rsp)
+  15:	e8                   	.byte 0xe8
+kern  :warn  : [  434.509290] [   T5907] RSP: 0018:ffffc9000261fc10 EFLAGS: 00010046
+kern  :warn  : [  434.509294] [   T5907] RAX: 0000000080000002 RBX: ffff888396343248 RCX: ffffffff81828b23
+kern  :warn  : [  434.509297] [   T5907] RDX: 0000000000000000 RSI: ffff888396343240 RDI: 0000000000000000
+kern  :warn  : [  434.509299] [   T5907] RBP: 0000000000000246 R08: 0000000000000000 R09: fffffbfff0c72894
+kern  :warn  : [  434.509301] [   T5907] R10: ffffffff863944a7 R11: 0000000000000000 R12: ffffffffc11a3f10
+kern  :warn  : [  434.509303] [   T5907] R13: 0000000000000000 R14: ffffffffc11a3f10 R15: 0000000000000000
+kern  :warn  : [  434.509316] [   T5907] FS:  0000000000000000(0000) GS:ffff88840ef63000(0000) knlGS:0000000000000000
+kern  :warn  : [  434.509318] [   T5907] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+kern  :warn  : [  434.509320] [   T5907] CR2: 000056053f590492 CR3: 000000041c870005 CR4: 00000000001726f0
+kern  :warn  : [  434.509323] [   T5907] Call Trace:
+kern  :warn  : [  434.509325] [   T5907]  <TASK>
+kern  :warn  : [  434.509327] [   T5907]  generic_exec_single (smp.c:136 smp.c:453)
+kern  :warn  : [  434.509332] [   T5907]  ? __pfx_rcu_torture_irq (rcu/rcutorture.c:2607) rcutorture
+kern  :warn  : [  434.509360] [   T5907]  smp_call_function_single (smp.c:699)
+kern  :warn  : [  434.509364] [   T5907]  ? __pfx_smp_call_function_single (smp.c:375 (discriminator 4))
+kern  :warn  : [  434.509367] [   T5907]  ? local_clock_noinstr (sched/clock.c:307)
+kern  :warn  : [  434.509371] [   T5907] rcu_torture_reader (rcu/rcutorture.c:2700) rcutorture
+kern  :warn  : [  434.509398] [   T5907]  ? __pfx_rcu_torture_reader (rcu/rcutorture.c:4041) rcutorture
+kern  :warn  : [  434.509412] [   T5907]  ? _raw_spin_lock_irqsave (linux/instrumented.h:55 linux/atomic/atomic-instrumented.h:1301 asm-generic/qspinlock.h:111 linux/spinlock.h:187 linux/spinlock_api_smp.h:133 locking/spinlock.c:166)
+kern  :warn  : [  434.509417] [   T5907]  ? __pfx_rcu_torture_timer (linux/slab.h:950) rcutorture
+kern  :warn  : [  434.509443] [   T5907]  ? __kthread_parkme (linux/instrumented.h:82 asm-generic/bitops/instrumented-non-atomic.h:141 kthread.c:272)
+kern  :warn  : [  434.509448] [   T5907]  ? __pfx_rcu_torture_reader (rcu/rcutorture.c:4041) rcutorture
+kern  :warn  : [  434.509465] [   T5907]  ? __pfx_rcu_torture_reader (rcu/rcutorture.c:4041) rcutorture
+kern  :warn  : [  434.509490] [   T5907]  kthread (kthread.c:436)
+kern  :warn  : [  434.509493] [   T5907]  ? recalc_sigpending (linux/instrumented.h:97 asm-generic/bitops/instrumented-atomic.h:41 linux/thread_info.h:109 signal.c:181)
+kern  :warn  : [  434.509495] [   T5907]  ? __pfx_kthread (linux/list.h:381 (discriminator 2))
+kern  :warn  : [  434.509498] [   T5907]  ret_from_fork (x86/kernel/process.c:158)
+kern  :warn  : [  434.509502] [   T5907]  ? __pfx_ret_from_fork (x86/include/asm/entry-common.h:54)
+kern  :warn  : [  434.509504] [   T5907]  ? switch_fpu (linux/instrumented.h:82 asm-generic/bitops/instrumented-non-atomic.h:141 linux/thread_info.h:133 linux/sched.h:2067 x86/include/asm/fpu/sched.h:34)
+kern  :warn  : [  434.509508] [   T5907]  ? __switch_to (x86/kernel/process_64.c:403 x86/kernel/process_64.c:663)
+kern  :warn  : [  434.509511] [   T5907]  ? __switch_to_asm (x86/entry/entry_64.S:206)
+kern  :warn  : [  434.509515] [   T5907]  ? __pfx_kthread (linux/list.h:381 (discriminator 2))
+kern  :warn  : [  434.509517] [   T5907]  ret_from_fork_asm (x86/entry/entry_64.S:245)
+kern  :warn  : [  434.509522] [   T5907]  </TASK>
+kern  :warn  : [  434.509523] [   T5907] ---[ end trace 0000000000000000 ]---
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20260521/202605211529.6ba1b4ff-lkp@intel.com
+
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
