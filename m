@@ -4,151 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4760CD5BAB
-	for <ltp@archiver.kernel.org>; Fri, 22 May 2026 01:55:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC49CCD5BAC
+	for <ltp@archiver.kernel.org>; Fri, 22 May 2026 09:01:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8EC373CD53E
-	for <ltp@archiver.kernel.org>; Fri, 22 May 2026 03:55:21 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 08C313CD59B
+	for <ltp@archiver.kernel.org>; Fri, 22 May 2026 11:01:19 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 750AD3CD45C
- for <ltp@lists.linux.it>; Fri, 22 May 2026 03:55:00 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id BC2253CD516
+ for <ltp@lists.linux.it>; Fri, 22 May 2026 11:00:59 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1A7CC2002A1
- for <ltp@lists.linux.it>; Fri, 22 May 2026 03:54:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1779414899; x=1810950899;
- h=date:from:to:cc:subject:message-id:references:
- in-reply-to:mime-version;
- bh=L25ROA2m2qxvxQICZu2FdNWhgAxk6xGxSZZ6ntmqp8I=;
- b=gLX1dya0oKFnaBIv9Q/Y7ij6SCjLxRmqwyTH0bSn/M64B10jUU1qWeo9
- ZEBzCWENA3KYoQsBLMi/ldwIHhHR5f95o9Q23IG32maQIj0msEbME18Wv
- hgx3YwerbR/Sj4ffFK26/zzgNO7L0NKuzk0L5k1Fpc9vdUI5sa7B8Bl/2
- kbS7nNx6xbBbGkGfK0GnDgmGRILce84L+LERhMFg1P+CLQzzfoL39rrxp
- ut1b9YOk7GxRZeoZInokr9qfImmFdOKjwQwk1JJ66HsNnt8KonjnEpkQ/
- UHCNd1O1aoRXi6riIFKm0Wb16+onQLTibXiO7/dglQsJJE95x5atMTmtx A==;
-X-CSE-ConnectionGUID: Zkc7FoMgQZu70RfirQB8Hw==
-X-CSE-MsgGUID: Gc07bFxYRMCuTDkVIPtddg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11793"; a="79493813"
-X-IronPort-AV: E=Sophos;i="6.24,161,1774335600"; d="scan'208";a="79493813"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
- by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 May 2026 18:54:56 -0700
-X-CSE-ConnectionGUID: VdjpTI3vTjSXtFtZ6QCcFw==
-X-CSE-MsgGUID: 3fWwAPAuR5qLsGB6VFLjpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,161,1774335600"; d="scan'208";a="264549264"
-Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
- by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 May 2026 18:54:55 -0700
-Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Thu, 21 May 2026 18:54:55 -0700
-Received: from ORSEDG901.ED.cps.intel.com (10.7.248.11) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37 via Frontend Transport; Thu, 21 May 2026 18:54:55 -0700
-Received: from CH4PR04CU002.outbound.protection.outlook.com (40.107.201.44) by
- edgegateway.intel.com (134.134.137.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Thu, 21 May 2026 18:54:54 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=A9Vl3u5z1lIoLxGjS4YxbSMJuveWofMdFLTYa2yLCWlQ6cScynvE5Xeqwz0F5C7GMkoTWZf1cIOcF59NZBvBNGjvxxSKXpW5AdFy6WD2nST/lWC1iN1lwYsF4uwodqfbakC2mfd6G2QZ2A9DPTkcPjNizsMo9FvY/O4vd1nsr+sOohLekaJVh7GuInbQh+W6dp4liymdDYmQmpNXjumWwJkSZGX+GP1tWY8a9YWBIirlIJF775/PigPIQ9RRvQhDlRaTMxuUIP7uiKoDmPXz0scugrVx2KsikAt9YdHXZQQPIaNo+Sfmb/3YyPpMnz6b+sVfX8JXvqMkRd5VGIkg4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BOKxIGgeRtnW9+Nd8vCyIPzD8S+xx7SXHG/XLjxyExw=;
- b=ISlbB2fdPRqWok2F7VTmixkhZ8XayqZtmG5bW826lAzUHZH530F6Elr/i46qANvzR84Ph9/v/Ia5HcbqAfkUmNShP8BkPJLj5uRf0ax5UEHgq5VVrDDdoS0Vv7VoQHlDXsR3A+EzVDeahzYqFqU/CEWtZziWX6gUxQ7PVAXOmkhtrg1zp2NY0bjXn3A9yfuP4R67e7/hDFiWNgKXrShUOSwaev3+rY8eAotRoGTpAKZFzifngoyFHUYEx6bP3N40iuuIj21ja3IJIG+jOu0s24VFzId9lH/f2NDu/qxqNL78bpbPVjUsFppuqJYxx39UmQpKNDKy3KBqXb0we7MLog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB5832.namprd11.prod.outlook.com (2603:10b6:510:141::7)
- by CH0PR11MB8190.namprd11.prod.outlook.com (2603:10b6:610:188::5)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.17; Fri, 22 May
- 2026 01:54:51 +0000
-Received: from PH0PR11MB5832.namprd11.prod.outlook.com
- ([fe80::106e:78dd:4c96:d707]) by PH0PR11MB5832.namprd11.prod.outlook.com
- ([fe80::106e:78dd:4c96:d707%3]) with mapi id 15.21.0025.020; Fri, 22 May 2026
- 01:54:50 +0000
-Date: Fri, 22 May 2026 09:54:42 +0800
-From: Oliver Sang <oliver.sang@intel.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Message-ID: <ag+3YgTltgXdb4Ha@xsang-OptiPlex-9020>
-References: <202605211529.6ba1b4ff-lkp@intel.com>
- <e43a6e6a-da4b-4b69-add1-2bcb33cbb0d7@paulmck-laptop>
-Content-Disposition: inline
-In-Reply-To: <e43a6e6a-da4b-4b69-add1-2bcb33cbb0d7@paulmck-laptop>
-X-ClientProxiedBy: TP0P295CA0036.TWNP295.PROD.OUTLOOK.COM
- (2603:1096:910:4::15) To PH0PR11MB5832.namprd11.prod.outlook.com
- (2603:10b6:510:141::7)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 893E410006C2
+ for <ltp@lists.linux.it>; Fri, 22 May 2026 11:00:58 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E3C3A6BC64;
+ Fri, 22 May 2026 09:00:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1779440456; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aeZL/5WSr1TInTXsItPDNCdJcopnJY/NaexC3nS4NeY=;
+ b=NI3i5NLdmrKvhTUzNdF3QuFFvtQBgDQkFZJSoJRl8XwRzOOFkFCoFZi5fvaClG/jZwdmfw
+ /ClW8Nl04728FhsXdDKqogKtnCtELUDbFMUpxGrLrOl94YQIkYwAYMTZPIFfKbZNOh1S5P
+ 7LGdq/bTyx1+Go1D0uEOUAL51XNsHBQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1779440456;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aeZL/5WSr1TInTXsItPDNCdJcopnJY/NaexC3nS4NeY=;
+ b=UkQorXYlLsTN0GoTYyrYdY0h+OOFUXUUemRnJHwQWldOStegmnrUuQZE2p/vIOL5ZSFIli
+ Pjroq3XUruzEbdDg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eXxmuQRz;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nPz8SAJf
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1779440455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aeZL/5WSr1TInTXsItPDNCdJcopnJY/NaexC3nS4NeY=;
+ b=eXxmuQRz658WYhldTd3YC/sX+m+xyOwFkUkwqFQQ7xsu02Sixck955YKPj5UxEr8AG+BOK
+ SkYx6ugJNCESMPQWb4GIQgqHZQLqRI5IyaHJqeT4ZDmEiB2Fs4WINzBxT8mBwI1KXe2KKz
+ oibkIJY6Jp6MH7Dc++Ehrpd3UA+n65E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1779440455;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aeZL/5WSr1TInTXsItPDNCdJcopnJY/NaexC3nS4NeY=;
+ b=nPz8SAJf3GGEZKd5VV7LSap7pJgOxb7ehsHB2lTbt5HBlXX7QOfKl2G4xLjPhFOUnT6lQc
+ 7yXs6zpbLQLu9HBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D191F593A8;
+ Fri, 22 May 2026 09:00:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +1hhMkcbEGpjLAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 22 May 2026 09:00:55 +0000
+Date: Fri, 22 May 2026 11:00:43 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <ahAbOy1KY2lRhegN@yuki.lan>
+References: <69fb0616.df0a0220.22cc2d.40d2@mx.google.com>
+ <17e62d0f-2573-46d6-957a-0ad37f977c5b@suse.cz>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB5832:EE_|CH0PR11MB8190:EE_
-X-MS-Office365-Filtering-Correlation-Id: df85128c-bb27-4ba4-71ba-08deb7a51c0d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
- ARA:13230040|376014|366016|1800799024|18002099003|56012099003|22082099003|11063799006|5023799004|6133799003|4143699003;
-X-Microsoft-Antispam-Message-Info: uxL/VbqLmZgNqtus/wLMqnAOAGqV0idYSN72UOGAbQ8NoKVCYqI4iPSjps8HJ3BOvDky9fDXqzq2/KjFPG1OjKhcjm6t5l2Il0UtOr60XUUe8ddFL48harzYY+jvJKqP0d70FtUuoIFVBKI0170jYEDTIwmaESCe8t17QJ8ktVR52y1z/LUMPLFJZ8BZ5/AHnkjlXXsQYnGtiT719Ds3K/3YAx5joMW9QtR7fOlGht/q561dwfMibLFjoJ8cbPFh3LI5jLnG72g5752PWW+sT5lriaGBF+7IwkNY5TwcNUPO1L+PLOCsPKUNKgCVrPPYLZqWXXtDMaht54y2EjIjiHqpG26b5eAi4ZjQ00sjmxaoK7LlNtnQej6JbBkdrCwgbyEn1Guqt1XE1J/foMQFCV9OJdVvIh9pLD9WFnMyTmEbjLYmidIhFYdA07x3VdUjVDdamx3ndUhDM1QiNB1eHnH4MfNW9ooLkf6lTAnbWhgfwNHmzpHlBJrFPjcS2Q5zM6+Y+LmA6Ct4duay8+OQUAjh4yFZDaMI1Nll8mAmfGSazs6k2c81gOvG4HMKY/XP74vi7hLUicXlXlTBiNTHmu5QlIkH727hrTBq86Sy+pEvRgFfojND7PN36777XowL5TQMGUKhwaJm63h047uxvhRjC/j4Wc6yb5msjQEYGq700/cad88PUdCfJSz/F/hi
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:PH0PR11MB5832.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230040)(376014)(366016)(1800799024)(18002099003)(56012099003)(22082099003)(11063799006)(5023799004)(6133799003)(4143699003);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Y1NGJzaAyXauD/pRdGYTeN3R2NVlg0UJw/DAzO0nGwVHAnDu/j1rZlISni42?=
- =?us-ascii?Q?dKDzJb1uHPUnyntufe7KGZISWRn9hDfMr1b9+Z1Yc6ktplPybPdefP37bmFA?=
- =?us-ascii?Q?43hDGD8gTQeYL8wAnr9Ecqp5bIkVlRLclwyoJp9xYHfHqtbu7AH1rZ3b2Idz?=
- =?us-ascii?Q?2G0MlOMhclmg6xdRlt0FhW1TeU35jgiNl5kCQlyzGhqkFEeu582je+p7JjqX?=
- =?us-ascii?Q?Cv6H81lM8RAz7aDTLuOLbs3qaqUlRZGOCsWA3dXfpUHkVYSLfljDSt/i+GY2?=
- =?us-ascii?Q?xOKzVhklB7IuulKFPtnVSuQEx0asMRWxdo2oWXCU/nufqRK6haVBucYLXO2h?=
- =?us-ascii?Q?HMwOnqba/RKkWD+iqdOdcVbqaqWm20Cs0sGrq0pjNbeDy3i0MHhbQHf69gza?=
- =?us-ascii?Q?vF9lPa4YAgMxiVYZVOF5WicZrMDm/bl24HjdEIWU4H1eHPt5szQ8hDcYxfXq?=
- =?us-ascii?Q?NIeowhJr8c1dhQUt2CX9OS58HXqV//KdOs5dqFBahleSgkrdAeBROigbOtKS?=
- =?us-ascii?Q?0/nrX23aeIh24EfB6OzSxLNRF/MDczw83SCwmyFxE+mlPX+W58hYssuOEs3h?=
- =?us-ascii?Q?1QbuMQazL8N48BND5QSTv8hMSlcuo+kE4UuQFlrLA/Rqdj4TUsbc/fxJCz+0?=
- =?us-ascii?Q?dpkWJxqVHA2oYuNeeG5Pptx1QQaau4ZiOSKmPCdS7erqixiFBAZwR8yDJZak?=
- =?us-ascii?Q?HSIFWmsPJwgHGegM2uwKc5sueJy8RkoHgG5wCpuWZcXMgOBH/IyYHpRwS5Sl?=
- =?us-ascii?Q?lCdy5f6UJc8YFeIajdMh0Mse5j3HClUeBJs/cPeDp/ifsWCsXp/TVC/1D54b?=
- =?us-ascii?Q?Gqi/W5U+2ZYpyluyGhDHLrXSNMx8SXxOu6D0I0ftJF3USHVdSxrxqwlBGF0R?=
- =?us-ascii?Q?5+zsbC/ScyKtr43Ay3c+iHUytebJ/Sv/eJVk2BQ0cwxmecOLAW/1IqLuxb27?=
- =?us-ascii?Q?rA7zcLiY0LvYIH710obMjBiGusEZX/NDFTd1y73BOqMLkZUWHftC6eOtgiN2?=
- =?us-ascii?Q?YvCIEiVHl2Itiuho4FPLb8aGOMBcnXUeRsl8N5y4ogRQ+6Sq5p4UzSgIBTO1?=
- =?us-ascii?Q?FcZgH0H0fAdiwbuVADAQwYrY8WvAWhpjjG+uaarH+uVj32aP0S/y/jY21qJE?=
- =?us-ascii?Q?jRzG4EAIWAKO+dRdEqnG1ZxK3EexJ87u7F52MaaKrn+/Q+CcMEl0iYntdK/F?=
- =?us-ascii?Q?yNlunD/g2qicJtjAjLuEsCWjT1s6qTyTFPDPyTAebgFzyZGhDex+QBPi3GMN?=
- =?us-ascii?Q?qIqzjIIdt056d6lb0YfMZHm14/jiz2SEypHnkD2CbGEOF0UR7PAdB2opj/Pb?=
- =?us-ascii?Q?N+ueMx00ovDreteN8zo6coQVuKiuhy40WO6xPwkthpNTyAN8cdo4jDBj8/I5?=
- =?us-ascii?Q?x+JYOwBuBKnIkJEHxzfFE7U3Oybl2eqyr9FQybiulFC9S6YR8UG0BrgdfhHd?=
- =?us-ascii?Q?PJiCX24bsIcF82mszAtVxjnxPFqFrpRU/y7dotzkibo947+tWdtY42I29wnG?=
- =?us-ascii?Q?Z/vEi2cD8qHLESUrFs3+Qlukd6a/tc9HVdWXFlO7ZlRjCH3UEPI4xqyrAyEC?=
- =?us-ascii?Q?6IxVcAhEBYiH6GLBKDElOE+VETa1auDTmK52zYE7ppDjG8pCk7I+i2QLX+10?=
- =?us-ascii?Q?2lMy1o6AM8Cs6SIKUQ/4syv5OJ6QjTH1anNrFMhDT1Yn1aBTmPUXXeDl/nB/?=
- =?us-ascii?Q?UcNUX3LO07tk3k25Y531FUhrKdRFi0hfC0h+kDEBj/1kpqknVMlaNUpGjskt?=
- =?us-ascii?Q?yJZUz0U9KA=3D=3D?=
-X-Exchange-RoutingPolicyChecked: I3pVwjhV4hqNijhF0Jdfs2tA5A0Vui/sqcz288M7kf3PMRH/Wm4DLhhAl+75NnDmzaMUqKO6s92TAXaxnhV9vOCtQHawxX66Jl7ZoRrwzFYBTwHhJjuBPr9B+PIg0+zehn6QbG0kDMoiiRAdwHGJ8rQUqIkzfZ69geZA2xSWMFCHBeStym+EX4yApAVdFq1QyDeK1krzKT5Qfoujwampm/BoF3LZy8EcVV4T2MwvJPeK+xf9qZndH8YzykbgQaCUFI7bsxkY9Ab159cww6VkumB4Pz5uebRDNy6pO6li5YkUuZKpGY34L1aAk+zr20yVwBcRHcaQKZx9azNyAVcb8g==
-X-MS-Exchange-CrossTenant-Network-Message-Id: df85128c-bb27-4ba4-71ba-08deb7a51c0d
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5832.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2026 01:54:50.4356 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: X3D/LZu9sWnLfSSWjC0Dvh+bX7eXdwu/jwFbu/JltyDAtnc0LYcitOgbk7SwpV0Gg3MqXNvI59/L48+TN2lJeg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB8190
-X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <17e62d0f-2573-46d6-957a-0ad37f977c5b@suse.cz>
+X-Rspamd-Queue-Id: E3C3A6BC64
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid,suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ internal_greylist_whitelist(0.00)[2a07:de40:b281:104:10:150:64:97];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [paulmckrcu:dev.2026.05.07a] [rcutorture] c2e6a63ac1:
- RIP:rcu_torture_irq[rcutorture]
+Subject: Re: [LTP] [PATCH] icmp_rate_limit01: Fix rate limit change on older
+ kernels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -160,31 +119,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: oe-lkp@lists.linux.dev, oliver.sang@intel.com, lkp@intel.com,
- ltp@lists.linux.it, linux-kernel@vger.kernel.org
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-hi, Paul,
-
-On Thu, May 21, 2026 at 08:55:53AM -0700, Paul E. McKenney wrote:
-
-[...]
-
+Hi!
+> >> @@ -257,6 +262,7 @@ static struct tst_test test = {
+> >>   	},
+> >>   	.save_restore = (const struct tst_path_val[]) {
+> >>   		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
+> >> +		{"/proc/sys/net/ipv4/icmp_msgs_burst", "50", TST_SR_TBROK},
+> > 
+> > Shouldn't we use TST_SR_SKIP_MISSING here instead of TBROK?
 > 
-> This should be fixed in branch dev.2026.05.19a.  The problem was that
-> I forgot that smp_call_function_single() handlers can be invoked from
-> the idle loop instead of from an actual hardware interrupt handler.
-> 
-> The devil truly is in the details!  ;-)
+> Hi,
+> this .save_restore line references the icmp_msgs_burst sysfile in global 
+> network namespace which exists on all kernels since v3.18 if they have 
+> IPv4 support enabled. I guess we should add CONFIG_INET to 
+> .needs_kconfigs but otherwise the .save_restore is correct.
 
-thanks a lot for information!
+Sounds good to me. Feel free to add my Reviewed-by: to a patch with
+CONFIG_INET in the .needs_kconfigs
 
-> 
-> 							Thanx, Paul
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
