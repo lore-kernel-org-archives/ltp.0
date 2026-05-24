@@ -4,82 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F4C0CD5BAB
-	for <ltp@archiver.kernel.org>; Sun, 24 May 2026 17:06:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B06D7CD5BB1
+	for <ltp@archiver.kernel.org>; Sun, 24 May 2026 18:17:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C49453E9E52
-	for <ltp@archiver.kernel.org>; Sun, 24 May 2026 19:06:23 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id DF44B3E9E44
+	for <ltp@archiver.kernel.org>; Sun, 24 May 2026 20:17:12 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D4FDC3C58CC
- for <ltp@lists.linux.it>; Sun, 24 May 2026 19:06:02 +0200 (CEST)
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com
- [IPv6:2607:f8b0:4864:20::f41])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DD7593C74EF
+ for <ltp@lists.linux.it>; Sun, 24 May 2026 20:16:52 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 980926002C8
- for <ltp@lists.linux.it>; Sun, 24 May 2026 19:06:01 +0200 (CEST)
-Received: by mail-qv1-xf41.google.com with SMTP id
- 6a1803df08f44-8c921396e37so92075816d6.2
- for <ltp@lists.linux.it>; Sun, 24 May 2026 10:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1779642360; x=1780247160; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=qi9FcCKKpf+E+v8wvSQt5qCvfZ975hdNdrMilEznPso=;
- b=bjsnCzWjR/Az00KfhXVcE/XocAuuQ8asrxHVs9Pzwt5KFQYLPr1fOwIsrAu6ZzwdV5
- 9DhbpcIxmkJq3EfHnAerYJeBDBivlq/xP8x0bZcxu3vSyU6ZeHkENiZuCKml3JBvM9Ao
- /akXEChPwFuEAVcKZxSLEUOANiT9jnnN71jHnMgh8TkTS8+xVhHaN6SsoIFqlJ4T/rcK
- bRjlgYCM94sAXnKmba6UQB6rGgCHsLLeTFL/Li1w1Qgp1Htq5D1By7XB4LQOcOQOpYwZ
- QlWMfjNxXYBLWR1iXFxInPq7jGY2VhxG3UsaDF91yYkp/IBV8BdulwPgxk86CHwFF9WW
- pWwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779642360; x=1780247160;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=qi9FcCKKpf+E+v8wvSQt5qCvfZ975hdNdrMilEznPso=;
- b=DtsQrI7Et/7Dg4Hn2v1Zt5vLAB7mt8xgG9MNS0MEJo2pAR3uQ+j2SZv6Ik+Oh/g6OW
- L1ZBJ6c2OedJTtWpDJ2Yc/KPj9EdzbqwCkbaogztlZCw2vaur/ccv6Z+GtMB0uLo3jEW
- +kO0UYVuMDiTa2vpZcxFCzie6RhHNW7yqAQhqNUc0oRCQpT5kx7By/7JATBLXuAtp5CN
- J49cYBlnOVNnhyV4HKaWj+EExlJvn6iL0PRJ94fnQQlijBLUWY+bCZB/gBSLyfbacdbx
- GkO7Npj+3MjkbBs0Cy2jbtebj2VE80awKpjapDfyJeZ505pmMGxGB4nPCmAA7xEqmDhQ
- ryRg==
-X-Gm-Message-State: AOJu0YwIdAER8CR2prQnvgtsKhmSn1EbMea+apot/hTlCke37IR39+dd
- JXlBy534UKlKdMCdBMskgxjvljoB/5JRNl7XSfK8FHUsAnswGSpY72/Z
-X-Gm-Gg: Acq92OH17kubVruD9Yjc7hxhcvuKyO6sl6QMs/vFbTrDulSInXR8Z1UpsC0u5Q0EtAW
- MMBUgk15owl/WNvx9+WVEPY5XhMYmLD6JCseQdKXpd0bDMumRdrnTxYarzS/aSKakAZlOFW05ST
- 3UX2ynAbebtw59X/P/GmGLrrcIpIHScPTwVwxcEgB3uM+LsJ1PE46Ei1HXA4M5pVFBYgqTaKO4i
- dswJfSpGgFtpX4stM5IBVClCeiT5fUfZoNvknGP0KHy4hV+PVePKxIk2nfQcgRhjtZPqdc3s9J+
- UdhBjs4gWnDrjIXQ08sQP6ueKuXGNQ8cL1zWhBYUPi9FTBs9GT5oP+YvXuGndlxjk8R5mbAA6YF
- 7Q5DCQEkRnY7vB/40r0GFveenAjQ3prbKUcdnk66M4YQFv8BEK6kDCXeZTzYyR+wt0nw66ORZvH
- X+saNm/cUkTdzX2OJt1OPnME6E+oyfc4yGOQeGkWyvVM2W2pnXN6LYmvTjPfGGBPly01U48S8WI
- lhGLbAptXC8palze7KIAtW1+dIQWZ8uYV/G+Ouw
-X-Received: by 2002:a05:6214:f0a:b0:8ac:7d7a:56fb with SMTP id
- 6a1803df08f44-8cc7b53d578mr193189956d6.5.1779642360344; 
- Sun, 24 May 2026 10:06:00 -0700 (PDT)
-Received: from
- runnervmg397c.zm1gstafu1aubcwruotojqkf4h.bx.internal.cloudapp.net
- ([74.235.134.165]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8cc8130a1a3sm86648046d6.37.2026.05.24.10.06.00
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 24 May 2026 10:06:00 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Jinseok Kim <always.starving0@gmail.com>
-Date: Sun, 24 May 2026 17:05:59 +0000
-Message-ID: <20260524170559.3969-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260524154221.2064-1-always.starving0@gmail.com>
-References: <20260524154221.2064-1-always.starving0@gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D5ED81400167
+ for <ltp@lists.linux.it>; Sun, 24 May 2026 20:16:51 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 20D4C6B702;
+ Sun, 24 May 2026 18:16:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1779646605;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+P6JairdPflhfP2Wc1aKVaso0K0YdWNwL7Z4T8RouMs=;
+ b=V8qn250n2XKfjdLGnGtTheyJ1vo56/kkn3Xn/NaIpXDfLkKg9/F8wwzV4vA13rrGtFHqr1
+ ztHdiZnOwxLc+ty0RpesgrGFARsxutIt87WD7tJ/T9PnU31N13fNk+L+F2PZudAYI/Ku/X
+ 7YwNlikziIyscn7My5BnNYRdgjHFWoA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1779646605;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+P6JairdPflhfP2Wc1aKVaso0K0YdWNwL7Z4T8RouMs=;
+ b=mBiv9WaVoe+bOSbuHGbt7zGXgu41O+piqUKONFP/7fhbDVnozeojoh0s9Bv61NwZtYLTIP
+ KdQK8KUDEgkZ+tAQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=V8qn250n;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=mBiv9WaV
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1779646605;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+P6JairdPflhfP2Wc1aKVaso0K0YdWNwL7Z4T8RouMs=;
+ b=V8qn250n2XKfjdLGnGtTheyJ1vo56/kkn3Xn/NaIpXDfLkKg9/F8wwzV4vA13rrGtFHqr1
+ ztHdiZnOwxLc+ty0RpesgrGFARsxutIt87WD7tJ/T9PnU31N13fNk+L+F2PZudAYI/Ku/X
+ 7YwNlikziIyscn7My5BnNYRdgjHFWoA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1779646605;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+P6JairdPflhfP2Wc1aKVaso0K0YdWNwL7Z4T8RouMs=;
+ b=mBiv9WaVoe+bOSbuHGbt7zGXgu41O+piqUKONFP/7fhbDVnozeojoh0s9Bv61NwZtYLTIP
+ KdQK8KUDEgkZ+tAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C01D7597FD;
+ Sun, 24 May 2026 18:16:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id oNUxKIxAE2owNgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Sun, 24 May 2026 18:16:44 +0000
+Date: Sun, 24 May 2026 20:16:39 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Sebastian Chlad <sebastianchlad@gmail.com>
+Message-ID: <20260524181639.GA26213@pevik>
+References: <20260523101749.27657-1-sebastian.chlad@suse.com>
+ <20260523165718.26187-1-sebastian.chlad@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260523165718.26187-1-sebastian.chlad@suse.com>
+X-Rspamd-Queue-Id: 20D4C6B702
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FREEMAIL_TO(0.00)[gmail.com]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] power_management: rewrite runpwtests04.sh in C
+Subject: Re: [LTP] [PATCH v4] io_uring/pintheft: Add CVE-2026-43494
+ regression test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,70 +118,144 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Sebastian Chlad <sebastian.chlad@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jinseok,
+Hi Sebastian,
 
-On Mon, 25 May 2026 00:42:20 +0900, Jinseok Kim wrote:
-> power_management: rewrite runpwtests04.sh in C
+> Test for PinTheft (CVE-2026-43494), fixed by:
+> e17492979319 ("net/rds: reset op_nents when zerocopy page pin fails")
 
-[...]
+Thanks you!
 
-> +static void verify_cpuidle(unsigned int i)
+> The bug is in the RDS zerocopy send error path: when pinning user pages
+> for zerocopy send fails partway through, the error cleanup drops a page
+> reference that the RDS message cleanup will drop again. Combined with
+> io_uring fixed buffer registrations, this double-drop drains the
+> FOLL_PIN counter and causes a page-cache overwrite exploitable for local
+> privilege escalation (PinTheft).
+
+...
+> +static void setup(void)
 > +{
-> +	int fd;
-> +	char path[PATH_MAX];
-> +	char buf[32];
+> +	struct io_uring_params params = {};
+> +	struct iovec fixed_iov;
+> +	int val;
 > +
-> +	snprintf(path, sizeof(path), "%s/%s", CPUIDLE_PATH, tcases[i].name);
+> +	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
+> +	io_uring_setup_supported_by_kernel();
 > +
-> +	fd = SAFE_OPEN(path, O_RDONLY);
+> +	/*
+> +	 * The exploit primitive keeps one fixed-buffer registration alive and
+> +	 * clones it to another ring.
+> +	 */
+> +	ring_fd1 = io_uring_setup(1, &params);
+> +	if (ring_fd1 < 0)
+> +		tst_brk(TBROK | TERRNO, "io_uring_setup() failed for first ring");
+> +
+> +	memset(&params, 0, sizeof(params));
+> +
+> +	ring_fd2 = io_uring_setup(1, &params);
+> +	if (ring_fd2 < 0)
+> +		tst_brk(TBROK | TERRNO, "io_uring_setup() failed for second ring");
+> +
+> +	rds_fd = socket(AF_RDS, SOCK_SEQPACKET | SOCK_CLOEXEC, 0);
+> +	if (rds_fd < 0) {
+> +		if (errno == EAFNOSUPPORT || errno == ESOCKTNOSUPPORT ||
+> +		    errno == EPROTONOSUPPORT || errno == ENOPROTOOPT)
+> +			tst_brk(TCONF | TERRNO, "RDS is not available");
+> +
+> +		tst_brk(TBROK | TERRNO, "socket(AF_RDS) failed");
 
-SAFE_OPEN() on a non-existent file aborts the test with TBROK.  The
-files `current_governor_ro` and `current_driver` may not exist on every
-system that has a cpuidle directory (e.g. no cpuidle driver loaded, or
-kernel lacks CONFIG_CPU_IDLE_GOV_*).  Use open() directly and convert
-ENOENT to TCONF:
+Just a quick Sunday evening comment (not yet looking into the reproducer itself).
+I wonder if we need this complicated check when we already have kconfig based
+checks at the end. Could we just simply use SAFE_SOCKET() here? Or have you
+encountered problems with older kernels?
 
-    fd = open(path, O_RDONLY);
-    if (fd < 0) {
-        if (errno == ENOENT)
-            tst_res(TCONF, "%s not available", path);
-        else
-            tst_res(TFAIL | TERRNO, "open(%s) failed", path);
-        return;
-    }
+And I haven't found any sysctl check (it's just a kernel module), which would be
+then part of lib/tst_kconfig.c.
 
-> +static struct tcases {
-> +	const char *name;
-> +} tcases[] = {
+> +	}
+> +
+> +	/* PinTheft uses the RDS TCP transport, so base RDS is not enough. */
+> +	val = RDS_TRANS_TCP;
+> +	TEST(setsockopt(rds_fd, SOL_RDS, SO_RDS_TRANSPORT, &val, sizeof(val)));
+> +
+> +	if (TST_RET) {
+> +		if (TST_ERR == ENOPROTOOPT || TST_ERR == EINVAL)
+> +			tst_brk(TCONF | TERRNO, "RDS TCP transport is not available");
+> +
+> +		tst_brk(TBROK | TERRNO, "setsockopt(SO_RDS_TRANSPORT) failed");
+And the same here just SAFE_SETSOCKOPT() ?
+> +	}
+...
+> +	/*
+> +	 * Register only the first page as an io_uring fixed buffer. This creates
+> +	 * the long-term page pin whose reference accounting the RDS bug damages.
+> +	 */
+> +	if (io_uring_register(ring_fd1, IORING_REGISTER_BUFFERS, &fixed_iov, 1))
+> +		tst_brk(TBROK | TERRNO, "IORING_REGISTER_BUFFERS failed");
+> +
+> +	buffer_registered = 1;
+> +
+> +	/*
+> +	 * Clone the fixed buffer registration into the second ring, matching the
+> +	 * public reproducer's lifetime pattern without performing the later
+> +	 * page-cache overwrite stage.
+> +	 */
+> +	if (clone_buffers(ring_fd2, ring_fd1)) {
+> +		if (errno == EINVAL || errno == EOPNOTSUPP)
+> +			tst_brk(TCONF | TERRNO, "IORING_REGISTER_CLONE_BUFFERS is not supported");
+Also here do we need it? IMHO CONFIG_IO_URING should be enough.
+And if errno is really needed, it'd IMHO be better to be in handled in
+clone_buffers(), not separately.
 
-Tag and variable share the same name.  LTP convention uses the singular
-for the struct tag: `struct tcase { ... } tcases[] = {`.
+> +
+> +		tst_brk(TBROK | TERRNO, "IORING_REGISTER_CLONE_BUFFERS failed");
+> +	}
+...
+> +	/* Mirror the public PoC trigger: RDS zerocopy over TCP. */
+> +	val = 1;
+> +	if (setsockopt(rds_fd, SOL_SOCKET, SO_ZEROCOPY, &val, sizeof(val))) {
+> +		if (errno == ENOPROTOOPT || errno == EINVAL)
+> +			tst_brk(TCONF | TERRNO, "SO_ZEROCOPY not supported on RDS sockets");
+And here I'd also simplify with SAFE_SETSOCKOPT().
+> +		tst_brk(TBROK | TERRNO, "setsockopt(SO_ZEROCOPY) failed");
+> +	}
+...
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.timeout = 60,
+> +	.forks_child = 1,
+> +	.taint_check = TST_TAINT_W | TST_TAINT_D,
+> +	.needs_kconfigs = (const char *[]) {
+> +		"CONFIG_RDS",
+> +		"CONFIG_RDS_TCP",
+CONFIG_RDS_TCP implies CONFIG_RDS.
 
-[...]
+Kind regards,
+Petr
 
-The new test is named `pwtests01` while the shell test it replaces was
-`runpwtests04`.  The commit message does not explain the rename.  If
-`pwtests01` is intentional (e.g. start of a new naming series), please
-document it briefly.
-
----
-Note:
-
-Our agent completed the review of the patch. The full review can be
-found at: https://github.com/linux-test-project/ltp/actions
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+> +		"CONFIG_IO_URING",
+> +		NULL
+> +	},
+> +	.save_restore = (const struct tst_path_val[]) {
+> +		{"/proc/sys/kernel/io_uring_disabled", "0",
+> +			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
+> +		{}
+> +	},
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "e17492979319"},
+> +		{"CVE", "2026-43494"},
+> +		{}
+> +	}
+> +};
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
