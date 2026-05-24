@@ -4,82 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EFA4CD5BAC
-	for <ltp@archiver.kernel.org>; Sat, 23 May 2026 18:08:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF107CD5BAB
+	for <ltp@archiver.kernel.org>; Sun, 24 May 2026 15:43:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7B7DB3E658C
-	for <ltp@archiver.kernel.org>; Sat, 23 May 2026 20:08:19 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id E5DE43E9E42
+	for <ltp@archiver.kernel.org>; Sun, 24 May 2026 17:43:09 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 377A93C58F2
- for <ltp@lists.linux.it>; Sat, 23 May 2026 20:07:57 +0200 (CEST)
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com
- [IPv6:2607:f8b0:4864:20::344])
+ by picard.linux.it (Postfix) with ESMTPS id 412303C9769
+ for <ltp@lists.linux.it>; Sun, 24 May 2026 17:42:50 +0200 (CEST)
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com
+ [IPv6:2607:f8b0:4864:20::443])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 84E6620014D
- for <ltp@lists.linux.it>; Sat, 23 May 2026 20:07:57 +0200 (CEST)
-Received: by mail-ot1-x344.google.com with SMTP id
- 46e09a7af769-7e6201aeb2aso608628a34.3
- for <ltp@lists.linux.it>; Sat, 23 May 2026 11:07:57 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E50CD1400170
+ for <ltp@lists.linux.it>; Sun, 24 May 2026 17:42:48 +0200 (CEST)
+Received: by mail-pf1-x443.google.com with SMTP id
+ d2e1a72fcca58-836ebdeb969so4024722b3a.3
+ for <ltp@lists.linux.it>; Sun, 24 May 2026 08:42:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1779559676; x=1780164476; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=g+uh9BXDP9i1IceRQUrbOtXsPgRWS2k1UOCBFDa98Dk=;
- b=dgshpiVxqnBvuDus8fz0XTYDwDf28mDm0Wma2dYZcmUvMenem9ZfBMTwhFz/OZSyny
- 1svhQEfrZVuULNj/7+Z1/4Z3MKFlOyh5r0WMmmvR5vm4qkTfRBrKNxpvX18XoKrTaJFb
- h7zPNV+MHLn0BO9+fGN0j4ssW8xefzjRL4yluI8ztaMh4UspUiOs4cAW5nh5834FvbT7
- 0z5aHgg58F7KGN/bj6k2qK3KqG80Up9YsqdKqcX1DGGLHLxix47EYM71o3PCZSGijdEF
- /5yG1qjxWbnGQDlWilV7Pq/192ccKmtXoJ1HtPMGkv4t9MU8jNbaDGXNlsrFnmAiT5cA
- YZhQ==
+ d=gmail.com; s=20251104; t=1779637367; x=1780242167; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to;
+ bh=xrYZLemoqzX0weBJIMQPQCeHaAJFsItoVFER1s6SYeI=;
+ b=BHMc7QXfqz5uCjbJ7gugqKShZHErZCSKVpUHuD9PXJU2BtwkTYXbGSwu3hX+VVlyVH
+ XBQxBY4j2bPp8gfBExCzDuwyA26NgPdfEW/kOkZ1Dks6lz5sciEKggmB0TnXwWfFhEkc
+ TJ5Zrr1bhuxTslt/tQNegHyxCq9X7shOd3/V8MbQhY2yUM2JM0qVlmHP7XE9FortJamp
+ tKz+ynqlmnH0qOZ23cRC5yV16UOVfUU3WbQLb7FvljJhpJLDihYd9JtbXy0vFpPPF6pO
+ ivRN/YKx19oZoy/9+K4rfw7h038ZMjYjud/35a4eNLsRZ+RJo6/IaFhtFsEPiOAJnXaw
+ A0Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779559676; x=1780164476;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=g+uh9BXDP9i1IceRQUrbOtXsPgRWS2k1UOCBFDa98Dk=;
- b=bOEnBZKKHjgDtFFIDaYEXQ3Q20v6S6Q33/kLlautfit58pzMDdqjpFlN2kAdrBA5YN
- kfGLP47gRA5tsqgey6ttlQIzwj5vhM8MRw+/W1wAZr42gOg22iu0rzVwbs2rJZYV6a7b
- Ozgg0j2+YTAJbMUvsfukJczYOeLCP+a9DiyhxH/sMCJcpK0Eecj4+AKPoFGxUMMx9SAd
- Q3wZ7peHdyQmoC1dH9dGkblzNYJCuOF0PpHvSkPN1cKeIs2xP9LIecwiyh/QZngq3Lde
- jXnsQm92nNhcQnsQoip36i3hb8HZSwdLJ0icOWhz9+RXipDcQx+aVcSR9AaLkotG1eeP
- hdDg==
-X-Gm-Message-State: AOJu0Ywm07wjE4AFeHI38lfqAmBnWdioY5igUvgOBxHi4+sNF08yzSuw
- R4eHKOmhIn1xjez9btdzKsAnAFm9e8cSptctw+2bPdX1SVyUO5RHyE7T
-X-Gm-Gg: Acq92OHZjvuCEInmMphkDIACRiCGCzFfbK7azZ0Zjzj3yM2ldb0BQd4gLOE6aQxftp1
- PtiKKJsm0VGBbfb2y3M0a4JiX4OpNwv3ldjeDiGcg2ncCyZMFFzvbUVWmdhFUBHMGxBSrPUwPTf
- Hg2sYlFV1Cp8Pg0Yt8AR2zIlA4Pb8HLy3wWS6s5Wkfn3u1Hyut/XzjPaAjPmmhpfZ0UplKtZDdb
- yzXsRW5ao0YX5BbBTzU4AcWaJxG0fc6On+82EyHWQG25saKmwXLwy5WbbfpPCQhAPaHZgGnBgXU
- RIvXAHG/JZvkJz9gSDyXRE+4H5TRYT28cklEcJFkRRjzVIR0/6Gc794ungPHht/6kCnmY4y380u
- HWHfUP43KCTUVp9aCzSqo2urs6Y/z8L1rPiuscqsB3CGTjDO5zuMh5ImyMOA6swqCxQ8vww43eZ
- nuWPwe08c9EB2bwax6/qkBLUPiE/K7qXFZP27EHkU0PUNy9G1zEvrQNP9vZ7xh/QvLPhSybcawX
- SogJweLGQC6a2Ns/9HrfWU+ULIkxhtPQtZTcoI3lmkmPtAyK/U=
-X-Received: by 2002:a05:6830:7309:b0:7dc:cefa:1c37 with SMTP id
- 46e09a7af769-7e5fee7650amr5417397a34.23.1779559676146; 
- Sat, 23 May 2026 11:07:56 -0700 (PDT)
-Received: from
- runnervmg397c.puhy35dt5qredbdnpghlbhtnxe.gx.internal.cloudapp.net
- ([172.212.160.52]) by smtp.gmail.com with ESMTPSA id
- 46e09a7af769-7e606459dadsm3640337a34.4.2026.05.23.11.07.55
+ d=1e100.net; s=20251104; t=1779637367; x=1780242167;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=xrYZLemoqzX0weBJIMQPQCeHaAJFsItoVFER1s6SYeI=;
+ b=Ge42mIJVW4jKiaKTtAtC2evt4n4oyKXthHY0vctWdAVeRD1H7Vo0fSW7WQcP9Bih1R
+ gLp9Pq3hhQl/7aOiqkxITkHP5H4lK87rAzcXfwb0bPfkLZidxKTzHdKUlMDevyIBK+zI
+ dGvaBCKwDCMUmkI965ocQbWsub7AAGAicHdWpAuRh23bWM9eZ3JT+5I3cjBCluMIF5KC
+ OZfP6lqZzEqo8YP6rS/3R0G2d5ulDgSSUTxeL1y3j7kjfJNtoFTG28J+02J/VtXc9WAA
+ VM0+Jka7j3I6WqRgUuoZEvCht5D98B6JR4G5DQwDld7kBvhvjK6j/Jcewr0gqkm6ZZAW
+ 88sA==
+X-Gm-Message-State: AOJu0Yz3AO8v6O/NASET50IZ0zzAn5xL8CAUkZ6cWVQOfKtDVhKdKapH
+ tJUfb50Z+Qj2gUcinPqUwbYZoz0EcsiQyL7qyTTTCK9vZVox7zi4VBzIw1aOB6BkAg==
+X-Gm-Gg: Acq92OGKTFhq7hNsBft9GAmrw4qVjN8qIOUBwsd/+JQcBYiEv27ymCr+jqM12Q4N3cK
+ E3nJGPyP9p1NcFLwe1KKjHG91YXrBQRUJhFnc4WTHKhI7deEJQdKLMF/DSbWk7Eax6LacQ5Nnze
+ SHOevgxeoYDIY/HD8BWp+HbQXhhb7JKPWYZkenddBCxIK470pKN4aNgEIdzB/c9nQ2SWCzFvUF/
+ X/ueKYFwPkphhTCRoT8gCm1GBqp1zCearduOZw5JlJYa7ZSzME64ZQnbavWMnS1QTy231S3mGPP
+ mNWNvtZ9ZL+BgKDajlT5gbbukr8DZzQCUIOD5Ii2UY8eZfGbvQDycDfHqcozfACclWTKuYRuhnu
+ CNHUnRM1U/woz2A1/g+n+Ul2+ePVSFxJR4TgZTRHGQVxckBnTnrH4g2ExPh9v7bR29EmADEpT6J
+ WrxioQ+FXSHDx6Or317vDRqTYErYrcTpPSzvzdgko9v6atox4aOub0
+X-Received: by 2002:a05:6a00:950f:b0:82f:7ba2:e120 with SMTP id
+ d2e1a72fcca58-8415f32f096mr10588548b3a.28.1779637366977; 
+ Sun, 24 May 2026 08:42:46 -0700 (PDT)
+Received: from localhost.localdomain ([59.16.109.172])
+ by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-84164e9e635sm7773503b3a.38.2026.05.24.08.42.45
+ for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 23 May 2026 11:07:55 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Sebastian Chlad <sebastianchlad@gmail.com>
-Date: Sat, 23 May 2026 18:07:54 +0000
-Message-ID: <20260523180754.3853-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260523165718.26187-1-sebastian.chlad@suse.com>
-References: <20260523165718.26187-1-sebastian.chlad@suse.com>
+ Sun, 24 May 2026 08:42:46 -0700 (PDT)
+From: Jinseok Kim <always.starving0@gmail.com>
+To: ltp@lists.linux.it
+Date: Mon, 25 May 2026 00:42:20 +0900
+Message-ID: <20260524154221.2064-1-always.starving0@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] io_uring/pintheft: Add CVE-2026-43494 regression test
+Subject: [LTP] [PATCH v2] power_management: rewrite runpwtests04.sh in C
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,51 +87,174 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgU2ViYXN0aWFuLAoKT24gU2F0LCAyMyBNYXkgMjAyNiAxODo1NzoxOCArMDIwMCwgU2ViYXN0
-aWFuIENobGFkIHdyb3RlOgo+IGlvX3VyaW5nL3BpbnRoZWZ0OiBBZGQgQ1ZFLTIwMjYtNDM0OTQg
-cmVncmVzc2lvbiB0ZXN0CgpbLi4uXQoKPiArI2lmbmRlZiBIQVZFX1NUUlVDVF9JT19VUklOR19D
-TE9ORV9CVUZGRVJTCj4gK3N0cnVjdCBpb191cmluZ19jbG9uZV9idWZmZXJzIHsKPiArICAgICAg
-IHVpbnQzMl90IHNyY19mZDsKPiArICAgICAgIHVpbnQzMl90IGZsYWdzOwo+ICsgICAgICAgdWlu
-dDMyX3QgcGFkWzZdOwo+ICt9Owo+ICsjZW5kaWYKClRoZSBmYWxsYmFjayBzdHJ1Y3QgZG9lc24n
-dCBtYXRjaCB0aGUgdXBzdHJlYW0ga2VybmVsIGRlZmluaXRpb24KKGluY2x1ZGUvdWFwaS9saW51
-eC9pb191cmluZy5oKS4gIFRoZSBrZXJuZWwgaGFzOgoKICBzdHJ1Y3QgaW9fdXJpbmdfY2xvbmVf
-YnVmZmVycyB7CiAgICAgICAgICBfX3UzMiAgIHNyY19mZDsKICAgICAgICAgIF9fdTMyICAgZmxh
-Z3M7CiAgICAgICAgICBfX3UzMiAgIHNyY19vZmY7CiAgICAgICAgICBfX3UzMiAgIGRzdF9vZmY7
-CiAgICAgICAgICBfX3UzMiAgIG5yOwogICAgICAgICAgX191MzIgICBwYWRbM107CiAgfTsKClRv
-dGFsIHNpemUgaXMgdGhlIHNhbWUgKDggw5cgdTMyID0gMzIgYnl0ZXMpLCBzbyB0aGUgdGVzdCBo
-YXBwZW5zIHRvCndvcmsgY29ycmVjdGx5IGJlY2F1c2UgeW91IHplcm8gdGhlIHdob2xlIHN0cnVj
-dCBhbmQgb25seSBzZXQgc3JjX2ZkLgpCdXQgdGhlIGxhcGkgaGVhZGVyIGlzIHdyb25nOiBmdXR1
-cmUgdXNlcnMgd2hvIHRyeSB0byBzZXQgc3JjX29mZiwKZHN0X29mZiwgb3IgbnIgd2lsbCB3cml0
-ZSBpbnRvIHBhZFtdIGluc3RlYWQgb2YgdGhlIHJlYWwgZmllbGRzLiAgRml4CnRoZSBmYWxsYmFj
-ayB0byBtYXRjaCB0aGUga2VybmVsIGxheW91dC4KClsuLi5dCgo+ICsJZm9yIChpID0gMCwgZWZh
-dWx0cyA9IDA7IGkgPCBHVVBfUElOX0NPVU5USU5HX0JJQVM7IGkrKykgewoKWy4uLl0KCj4gKwkJ
-cmV0ID0gc2VuZG1zZyhyZHNfZmQsICZtc2csIE1TR19aRVJPQ09QWSB8IE1TR19ET05UV0FJVCk7
-Cj4gKwkJaWYgKHJldCA+PSAwKQo+ICsJCQl0c3RfYnJrKFRCUk9LLCAic2VuZG1zZygpIHVuZXhw
-ZWN0ZWRseSBzdWNjZWVkZWQgYXQgaXRlciAlZCIsIGkpOwoKVGhlIFJEUyBzb2NrZXQgaXMgb3Bl
-bmVkIHdpdGggU09DS19DTE9FWEVDIGJ1dCBubyBPX0NMT0VYRUMgaXMgc2V0Cm9uIHRoZSBpb191
-cmluZyByaW5nIGZkcyAocmluZ19mZDEsIHJpbmdfZmQyKS4gIEJvdGggcmluZ3MgYXJlCnRoZXJl
-Zm9yZSBpbmhlcml0ZWQgYnkgdGhlIGZvcmsoKWVkIGNoaWxkLiAgdHJpZ2dlcigpIC0+IGNsZWFu
-dXAoKQp1bnJlZ2lzdGVycyBidWZmZXJzIGZyb20gdGhlICpzaGFyZWQqIGlvX3VyaW5nIGluc3Rh
-bmNlcyBiZWZvcmUgdGhlCmNoaWxkIGV4aXRzLCBzbyB0aGUgcGFyZW50J3MgY2xlYW51cCgpIGhp
-dHMgSU9SSU5HX1VOUkVHSVNURVJfQlVGRkVSUwpvbiBhbHJlYWR5LXVucmVnaXN0ZXJlZCByaW5n
-cy4gIFRoZSByZXR1cm4gdmFsdWUgb2YgaW9fdXJpbmdfcmVnaXN0ZXIoKQppbiBjbGVhbnVwKCkg
-aXMgc2lsZW50bHkgaWdub3JlZCwgc28gdGhpcyBkb2Vzbid0IGNyYXNoLCBidXQgaXQgbWVhbnMK
-dGhlICJkb3VibGUtdW5waW4gV0FSTi9CVUdfT04iIGNhbiBmaXJlIGluIHRoZSBjaGlsZCdzIGNs
-ZWFudXAgcGFzcwpiZWZvcmUgdGhlIHBhcmVudCBldmVuIGdldHMgdG8gY2hlY2sgdGFpbnQuICBD
-b25zaWRlciBvcGVuaW5nIHRoZSByaW5nCmZkcyB3aXRoIE9fQ0xPRVhFQyBzbyB0aGUgY2hpbGQg
-b25seSBvcGVyYXRlcyBvbiB0aGUgcmRzIHNvY2tldCwgb3IKZG9jdW1lbnQgdGhlIGludGVudGlv
-bmFsIHNoYXJpbmcgZXhwbGljaXRseS4KClsuLi5dCgpTdW1tYXJ5OiB0aGUgc3RydWN0IGlvX3Vy
-aW5nX2Nsb25lX2J1ZmZlcnMgZmFsbGJhY2sgZGVmaW5pdGlvbiBtdXN0IGJlCmNvcnJlY3RlZCB0
-byBtYXRjaCB0aGUga2VybmVsIGxheW91dCBiZWZvcmUgbWVyZ2luZy4KCi0tLQpOb3RlOgoKT3Vy
-IGFnZW50IGNvbXBsZXRlZCB0aGUgcmV2aWV3IG9mIHRoZSBwYXRjaC4gVGhlIGFnZW50IGNhbiBz
-b21ldGltZXMKcHJvZHVjZSBmYWxzZSBwb3NpdGl2ZXMgYWx0aG91Z2ggb2Z0ZW4gaXRzIGZpbmRp
-bmdzIGFyZSBnZW51aW5lLiBJZiB5b3UKZmluZCBpc3N1ZXMgd2l0aCB0aGUgcmV2aWV3LCBwbGVh
-c2UgY29tbWVudCB0aGlzIGVtYWlsIG9yIGlnbm9yZSB0aGUKc3VnZ2VzdGlvbnMuCgpSZWdhcmRz
-LApMVFAgQUkgUmV2aWV3ZXIKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5s
-aW51eC5pdC9saXN0aW5mby9sdHAK
+As part of the ongoing effort to reduce shell-based tests in LTP,
+rewrite the cpuidle sysfs smoke test in C using the modern LTP test API.
+
+The new implementation preserves the original test semantics while
+removing shell dependencies.
+
+Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
+---
+Changes in v2:
+- Update runtest entry
+- Clarify commit message
+- Link to v1 : https://lore.kernel.org/ltp/20260516200015.12689-1-always.starving0@gmail.com
+---
+ runtest/power_management_tests                |  2 +-
+ testcases/kernel/power_management/.gitignore  |  1 +
+ testcases/kernel/power_management/pwtests01.c | 52 +++++++++++++++++
+ .../kernel/power_management/runpwtests04.sh   | 58 -------------------
+ 4 files changed, 54 insertions(+), 59 deletions(-)
+ create mode 100644 testcases/kernel/power_management/.gitignore
+ create mode 100644 testcases/kernel/power_management/pwtests01.c
+ delete mode 100755 testcases/kernel/power_management/runpwtests04.sh
+
+diff --git a/runtest/power_management_tests b/runtest/power_management_tests
+index b670da6ec..4246a16d4 100644
+--- a/runtest/power_management_tests
++++ b/runtest/power_management_tests
+@@ -1,4 +1,4 @@
+ #POWER_MANAGEMENT
++pwtests01 pwtests01
+ runpwtests03 runpwtests03.sh
+-runpwtests04 runpwtests04.sh
+ runpwtests06 runpwtests06.sh
+diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
+new file mode 100644
+index 000000000..33a901350
+--- /dev/null
++++ b/testcases/kernel/power_management/.gitignore
+@@ -0,0 +1 @@
++/pwtests01
+diff --git a/testcases/kernel/power_management/pwtests01.c b/testcases/kernel/power_management/pwtests01.c
+new file mode 100644
+index 000000000..90d05ee05
+--- /dev/null
++++ b/testcases/kernel/power_management/pwtests01.c
+@@ -0,0 +1,52 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 Jinseok Kim <always.starving0@gmail.com>
++ */
++
++/*\
++ * Basic cpuidle sysfs smoke test.
++ *
++ * Verify that selected cpuidle sysfs files are readable.
++ */
++
++#include <fcntl.h>
++#include <unistd.h>
++
++#include "tst_test.h"
++
++#define CPUIDLE_PATH "/sys/devices/system/cpu/cpuidle"
++
++static struct tcases {
++	const char *name;
++} tcases[] = {
++	{ "current_governor_ro" },
++	{ "current_driver" },
++};
++
++static void verify_cpuidle(unsigned int i)
++{
++	int fd;
++	char path[PATH_MAX];
++	char buf[32];
++
++	snprintf(path, sizeof(path), "%s/%s", CPUIDLE_PATH, tcases[i].name);
++
++	fd = SAFE_OPEN(path, O_RDONLY);
++
++	SAFE_READ(0, fd, buf, sizeof(buf));
++	SAFE_CLOSE(fd);
++
++	tst_res(TPASS, "%s read successfully", path);
++}
++
++static void setup(void)
++{
++	if (access(CPUIDLE_PATH, R_OK))
++		tst_brk(TCONF, "%s is not available", CPUIDLE_PATH);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_cpuidle,
++};
+diff --git a/testcases/kernel/power_management/runpwtests04.sh b/testcases/kernel/power_management/runpwtests04.sh
+deleted file mode 100755
+index 6565320d2..000000000
+--- a/testcases/kernel/power_management/runpwtests04.sh
++++ /dev/null
+@@ -1,58 +0,0 @@
+-#! /bin/sh
+-#
+-# Copyright (c) International Business Machines  Corp., 2001
+-# Author: Nageswara R Sastry <nasastry@in.ibm.com>
+-#
+-# This program is free software;  you can redistribute it and#or modify
+-# it under the terms of the GNU General Public License as published by
+-# the Free Software Foundation; either version 2 of the License, or
+-# (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful, but
+-# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+-# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+-# for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program;  if not, write to the Free Software Foundation,
+-# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-
+-export TCID="Power_Management04"
+-export TST_TOTAL=1
+-
+-. test.sh
+-. pm_include.sh
+-
+-check_cpuidle_sysfs_files() {
+-	RC=0
+-	if [ -d /sys/devices/system/cpu/cpuidle ] ; then
+-		for files in current_governor_ro current_driver
+-		do
+-			cat /sys/devices/system/cpu/cpuidle/${files} \
+-				>/dev/null 2>&1
+-			if [ $? -ne 0 ] ; then
+-				echo "${0}: FAIL: cat ${files}"
+-				RC=1
+-			fi
+-		done
+-	fi
+-	if [ ${RC} -eq 0 ] ; then
+-		echo "${0}: PASS: Checking cpu idle sysfs files"
+-	else
+-		echo "${0}: FAIL: Checking cpu idle sysfs files"
+-	fi
+-	return $RC
+-}
+-
+-# Checking test environment
+-check_arch
+-
+-# Checking cpuidle sysfs interface files
+-if check_cpuidle_sysfs_files ; then
+-	tst_resm TPASS "CPUIDLE sysfs tests passed"
+-else
+-    tst_resm TFAIL "CPUIDLE sysfs tests failed"
+-fi
+-
+-tst_exit
+--
+2.43.0
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
