@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79229CD5BB1
-	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 19:43:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F10DCD5BC9
+	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 19:45:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 249FF3E63B6
-	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 21:43:00 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 609C23E63B6
+	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 21:45:32 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1F8223D56E0
- for <ltp@lists.linux.it>; Mon, 25 May 2026 21:42:41 +0200 (CEST)
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com
- [IPv6:2607:f8b0:4864:20::842])
+ by picard.linux.it (Postfix) with ESMTPS id 3FB9A3D56E0
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 21:45:14 +0200 (CEST)
+Received: from mail-dy1-x1342.google.com (mail-dy1-x1342.google.com
+ [IPv6:2607:f8b0:4864:20::1342])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C0F2060044B
- for <ltp@lists.linux.it>; Mon, 25 May 2026 21:42:40 +0200 (CEST)
-Received: by mail-qt1-x842.google.com with SMTP id
- d75a77b69052e-516cbde40f2so48646311cf.3
- for <ltp@lists.linux.it>; Mon, 25 May 2026 12:42:40 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D1D3810007C8
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 21:45:13 +0200 (CEST)
+Received: by mail-dy1-x1342.google.com with SMTP id
+ 5a478bee46e88-304545f5206so4425136eec.0
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 12:45:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1779738159; x=1780342959; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1779738312; x=1780343112; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=l5hhHVgXfgZi7/X/JJRZKPleKjySx0Fpjr8bYXjxtPU=;
- b=XelQYQER/TSQttj9fH+JsI9srbdmcX9MITGVEB8zx9ApNx3Tf+JO3dK2TSI0Uv9W3l
- Hb6d7PcKaeLowve2LuEp37wfGBKF36XBuo5cjyPXmN8BWAjo/Vw0vMlP5AbGN1n5BcSi
- TuLLUpQkk+1sWcdidKt5rEaDxhd0+8ZBq6TlblkJNu6+8w6rq29HMC/C2BKAkcMrKkkU
- jUQewcGsMK/QbczvnzzXSCHycb3y5Jhd4ewrzmiCXABkiL8r4+0SeWJfL37gsuNtIJ+n
- 0513gWPhjMxYqq5qK8FzfoepTQh9FYj6pjOIogPRfUO7JUPu10UMyhNElt+KJsdmWUCB
- D+mg==
+ bh=MRF6Qoc7DEuR/k7OCEYU0/DNqZPvIaFPuQheQGWvGuA=;
+ b=BCrf3hb8vI+tmXaR9FsL0LHjpTJnRU8tnuKxF6IbDvEoYMCgCvbpUw9uGufRuf9YqE
+ XNa53yKqf57OfnQy5WlCG6G2hmtC/CiomejG5AeumrEPvv12JFBJLTAfAgQQroMUR5fw
+ LzJCxMlxHpVa+QfAO66saFKadRvF8U4uMrIEzstNkbkXjVy0SrnKmiSudzkuvUp7s09Q
+ yZEA9P9widkUvLNvauyz4cvj6DYtx1/Lg0TIHTECgKx5yycpQRwJrVXeiqLv8wMYfySU
+ ts3wasM7muBry/qmfjxmMVlsQHNTvTFqeo5WBd92zCeUe00+oVWY9kL5YtDtTuvfArYQ
+ cc6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779738159; x=1780342959;
+ d=1e100.net; s=20251104; t=1779738312; x=1780343112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=l5hhHVgXfgZi7/X/JJRZKPleKjySx0Fpjr8bYXjxtPU=;
- b=PHdtEiviCFJtih8g8zTv4UEqKWaACh6FUS1GstOM9bKjFDBRCNT798MLOpy7vhNNxJ
- YxdTDTRHw/hBeR4lafNxZxaoJLmBs/s/hEOOe71TCqOVC7fBtJZowPsblCwhq4QUw22F
- ThPX9KB1fHpPx23ms4DcZr6uu2CsU/UVdHrfWqJKXinZQnpl5NH6FO6ZDf3NoijSL4K3
- hmR7K64YTLVcO5sz+zL+PEgfa91K7dztOhRPZicPnNtJwnW/jUlolVWtfDVHpteWQNEx
- FKSaaOkraJM03haeiWtBCmFPMM3Ok7e9dpT7RuT6OfKMdJ6dnq0f2C6CHI610LszZB/c
- +Rrw==
-X-Gm-Message-State: AOJu0Yz/V3VeNXXLZBrKkyUfKC4xRN1vqtXDXXo6xJory1LG9SYDZget
- F52w+2bf0O6wY4+9tUhl39jDQWt3ll2ZmXj+HSBPyGuYrNTbHSOGo/QI
-X-Gm-Gg: Acq92OEVRJ/n8Ku5DEQ9yXGCmAIjQ61ef+ITMTVD4BHD9l6cXKkky9omOUbYTk7f2LR
- CaWR36FzuLlup2Bxvh/19ZikTJwJwNOuYwETJkTS9pwUX3alz0ujO3Fj1pBDuzB8AFdZidwhZld
- nDujpdz+ZlEcHbOBAidD1xBVMAjztmLyv8Voz3h0dQG2iHiNCjH77RIDAVin4EMPteIK8elENb7
- FePvRI3vWeCsykatqLhsOMyVdzHuojmqlGGDHZfO3urp9TzOmfh6utiS2w+XVc6bbqzCGPNaCnV
- wl6IgOvEIhOhopQx4OVZEw5MIiW8+fjXzFMdQRf+DrFYYIXO7CM2NpMT0I94uNXEBxvwjCdsAMM
- j9+Y5RZnuMMAm3wT+a83/qdZlMEI1HbL8Zp+r07LjbyVx/4Lxrto9r94K4XUbz2t3YeJWZ17LnK
- F4P7vqRKjsxuV37GxkwXyUiCS4oTEDpEJumyOOhV++ShAW5BKY8GSWX6900nQP+p3KPmMv0w7/3
- MMKBdZlBv0qu85K6jnU1i6kQWUZx2fY37YG3Q==
-X-Received: by 2002:a05:622a:1aa0:b0:516:de71:e216 with SMTP id
- d75a77b69052e-516de71e358mr189406681cf.1.1779738159443; 
- Mon, 25 May 2026 12:42:39 -0700 (PDT)
+ bh=MRF6Qoc7DEuR/k7OCEYU0/DNqZPvIaFPuQheQGWvGuA=;
+ b=bQkDvuP3M9wSpEZiM8z/UP+rleIRmhWfWG9wlpkEb+1Cxn12N80khdxn+I4lF1/uo7
+ YK39XMufycgv4VG9Nb1Fs0Xfx9RggZKyxa8Z+BT1uVXgRdLzIfepLN3fK0XAMZLkAJfz
+ 3muJN3K1akO8gtXjZpcsvO3TezgvFA2Hlz5krkuvAOzujLFq6G3j1JOdLf70Lf4bOPoU
+ J05DULKP3rW03mh43DpC3rQbIorvGUff+Ekbj4/TJUA68cL7vgC98OKSWBum35RDdt5q
+ nBViGYOnAXxBad+AGp6LYIQmoRtR8iI8HSysUVOUk4kkE0BDKB1Ru8jF+Rqiz4smZghg
+ sWng==
+X-Gm-Message-State: AOJu0YwSnRK7tk8x5E1qSSZF3psnhYhASJlx3nBWmV1aZhD4DFz2qb1C
+ sdTMZHvD0OK/64kxHiOCYMUw3ZvzHySqrbeNpLwwPhsEG98HYPRSJuP15qQL1dylcpo=
+X-Gm-Gg: Acq92OEc+5TvaLj6j0Kpc1+IduD3pqa4wCMf5kpFEy4d/9p79t7F/AQ6rc1PmsFgp2d
+ 3/tJUtqrUEONkrCzLbPvYS+9vKqaIEVd1BrF0rKNvF6IN+iq5ehv24twsaD+LBMxxTGVNSPkI80
+ eJiOUL3yz4TYRetvPcYUiroPaGRCpAlaMxolKRn1RrhfjbYldFEcZGEijSfbfkZa9MFX3B2aGkf
+ iRwSuworwOlVoJ9ef0+Q4xoAFZPkTsM4oqX0qCg/3J+TXUxul7Ql1i8+KyO7oYqqeqbfv84hkK/
+ UYzdtvOnd4qmsGcwxX9zJ8KdpxjEvRK4c5/n0H6gn73sCSX1ysX1p9xanznB8YG6hLzMfYgUT3Z
+ ZbtxwG+kN6iYqrxoGBc9Osx6KSIkTnRwKMKL7esGd8cUJu7RGf7TH5HBZWhi0YPu7+6iShMu358
+ 6/F3C2OlWJAc02g6RPjiv+zpSkS3ii9RLpXaFxpg6NLzrjPhtEiN3Ce2NvLsQ5hCMXdmFrVYLK/
+ 049d/4u8JXJYXu8N08YFcY4wvuvEpSu/JAubKdh
+X-Received: by 2002:a05:7301:169a:b0:2de:3022:a459 with SMTP id
+ 5a478bee46e88-30449102827mr6356225eec.21.1779738312005; 
+ Mon, 25 May 2026 12:45:12 -0700 (PDT)
 Received: from
- runnervmg397c.twwycwkaznxeznykkqsgfknjya.cx.internal.cloudapp.net
- ([9.234.149.84]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-516d8d0a4e3sm99800451cf.29.2026.05.25.12.42.38
+ runnervmg397c.uvxblrwqa1zupfq2yy0hgeyqod.yx.internal.cloudapp.net
+ ([172.215.211.27]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-30452230dddsm11019826eec.17.2026.05.25.12.45.11
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 25 May 2026 12:42:39 -0700 (PDT)
+ Mon, 25 May 2026 12:45:11 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Date: Mon, 25 May 2026 19:42:38 +0000
-Message-ID: <20260525194238.3953-1-linuxtestproject.agent@gmail.com>
+To: Michael Menasherov <mmenashe@redhat.com>
+Date: Mon, 25 May 2026 19:45:10 +0000
+Message-ID: <20260525194510.4034-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260525190127.397779-1-avinesh.kumar@suse.com>
-References: <20260525190127.397779-1-avinesh.kumar@suse.com>
+In-Reply-To: <20260525190344.60330-2-mmenashe@redhat.com>
+References: <20260525190344.60330-2-mmenashe@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] zram01: Specify filesystem type explicitly in mount
+Subject: Re: [LTP] futex_wait06: Add EFAULT error coverage test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,50 +91,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
-
-On Mon, 25 May 2026 21:01:23 +0200, Avinesh Kumar wrote:
-> zram01: Specify filesystem type explicitly in mount
-
-> -	for i in $(seq $dev_start $dev_end); do
-> -		tst_res TINFO "mount /dev/zram$i"
-> +	local i=$dev_start
-> +	local fs
-> +
-> +	for fs in $zram_filesystems; do
-> +		tst_res TINFO "mount /dev/zram$i ($fs)"
->  		mkdir zram$i
-> -		ROD mount /dev/zram$i zram$i
-> +		ROD mount -t "$fs" /dev/zram$i zram$i
->  		dev_mounted=$i
-> +		i=$((i + 1))
->  	done
-
-Nit: the rest of the file uses `$(($i + 1))` (e.g. zram_makefs). Prefer
-`i=$(($i + 1))` here for consistency.
-
-[...]
-
-Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
-
----
-Note:
-
-Our agent completed the review of the patch. The full review can be
-found at: https://github.com/linux-test-project/ltp-agent/actions/runs/26416857886
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgTWljaGFlbCwKCk9uIE1vbiwgMjUgTWF5IDIwMjYsIE1pY2hhZWwgTWVuYXNoZXJvdiB3cm90
+ZToKPiBmdXRleF93YWl0MDY6IEFkZCBFRkFVTFQgZXJyb3IgY292ZXJhZ2UgdGVzdAoKWy4uLl0K
+Cj4gLS0tIGEvcnVudGVzdC9zeXNjYWxscwo+ICsrKyBiL3J1bnRlc3Qvc3lzY2FsbHMKPiBAQCAt
+MTg3Niw2ICsxODc3LDkgQEAgZnV0ZXhfd2FrZTA0IGZ1dGV4X3dha2UwNAo+ICBmdXRleF93YWl0
+X2JpdHNldDAxIGZ1dGV4X3dhaXRfYml0c2V0MDEKPiArZnV0ZXhfd2FpdDA2IGZ1dGV4X3dhaXQw
+Ngo+ICtmdXRleF93YWl0MDcgZnV0ZXhfd2FpdDA3Cj4gK2Z1dGV4X3dha2UwNSBmdXRleF93YWtl
+MDUKCmZ1dGV4X3dhaXQwNiBhbmQgZnV0ZXhfd2FpdDA3IHNob3VsZCBiZSBpbnNlcnRlZCBhZnRl
+ciBmdXRleF93YWl0MDUKKGJlZm9yZSBmdXRleF93YWl0djAxKSwgYW5kIGZ1dGV4X3dha2UwNSBz
+aG91bGQgZm9sbG93IGZ1dGV4X3dha2UwNAooYmVmb3JlIGZ1dGV4X3dhaXRfYml0c2V0MDEpLiBB
+bGwgdGhyZWUgYXJlIGN1cnJlbnRseSBhcHBlbmRlZCBhdCB0aGUKd3JvbmcgcG9zaXRpb24uCgpb
+Li4uXQoKLS0tIFtQQVRDSCA0LzRdIGZ1dGV4X2NtcF9yZXF1ZXVlMDMgLS0tCgo+ICtmdXRleF9j
+bXBfcmVxdWV1ZTAzIGZ1dGV4X2NtcF9yZXF1ZXVlMDMKClBsYWNlbWVudCBpcyBjb3JyZWN0IGhl
+cmUuCgo+ICtzdGF0aWMgZnV0ZXhfdCBmdXRleF92YXIgPSBGVVRFWF9JTklUSUFMSVpFUjsKPiAr
+c3RhdGljIGZ1dGV4X3QgKmZ1dGV4X3B0ciA9ICZmdXRleF92YXI7Cgo+ICsJVFNUX0VYUF9GQUlM
+KGZ1dGV4X2NtcF9yZXF1ZXVlKHR2LT5mbnR5cGUsICp0Yy0+dWFkZHIsIGZ1dGV4X3ZhciwKPiAr
+CQkqdGMtPnVhZGRyMiwgMSwgMSwgMCksIHRjLT5leHBfZXJybm8sICIlcyIsIHRjLT5kZXNjKTsK
+CkZvciB0aGUgInVhZGRyMiB1bm1hcHBlZCIgY2FzZSB0aGUgY2FsbCBwYXRoIHJlYWNoZXMgdGhl
+IHVhZGRyMiBrZXkKbG9va3VwIG9ubHkgYWZ0ZXIgdmVyaWZ5aW5nICp1YWRkciA9PSB2YWwuIFNp
+bmNlIGJvdGggZnV0ZXhfdmFyIGFuZCB2YWwKYXJlIEZVVEVYX0lOSVRJQUxJWkVSICgwKSwgdGhl
+IGNvbXBhcmlzb24gcGFzc2VzIGFuZCBFRkFVTFQgaXMgcmV0dXJuZWQKb24gdGhlIHVhZGRyMiBw
+YWdlIHJlc29sdXRpb24g4oCUIGFzIGludGVuZGVkLiBObyBpc3N1ZSwganVzdCBub3RpbmcgdGhl
+CmRlcGVuZGVuY3kgZm9yIHJlYWRlcnMuCgotLS0KU3VtbWFyeTogZml4IHRoZSBydW50ZXN0IGlu
+c2VydGlvbiBwb2ludHMgZm9yIGZ1dGV4X3dhaXQwNiwgZnV0ZXhfd2FpdDA3LAphbmQgZnV0ZXhf
+d2FrZTA1IGJlZm9yZSByZXN1Ym1pdHRpbmcuCgotLS0KTm90ZToKCk91ciBhZ2VudCBjb21wbGV0
+ZWQgdGhlIHJldmlldyBvZiB0aGUgcGF0Y2guIFRoZSBmdWxsIHJldmlldyBjYW4gYmUKZm91bmQg
+YXQ6IChSRVZJRVdfVVJMIG5vdCBzZXQpCgpUaGUgYWdlbnQgY2FuIHNvbWV0aW1lcyBwcm9kdWNl
+IGZhbHNlIHBvc2l0aXZlcyBhbHRob3VnaCBvZnRlbiBpdHMKZmluZGluZ3MgYXJlIGdlbnVpbmUu
+IElmIHlvdSBmaW5kIGlzc3VlcyB3aXRoIHRoZSByZXZpZXcsIHBsZWFzZQpjb21tZW50IHRoaXMg
+ZW1haWwgb3IgaWdub3JlIHRoZSBzdWdnZXN0aW9ucy4KClJlZ2FyZHMsCkxUUCBBSSBSZXZpZXdl
+cgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZv
+L2x0cAo=
