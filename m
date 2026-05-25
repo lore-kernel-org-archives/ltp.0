@@ -4,111 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6CD2CD5BB1
-	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 15:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA9CCCD5BB1
+	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 15:15:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A3F363E62EA
-	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 17:15:39 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 6219D3E62D8
+	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 17:15:56 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 69E933E62E6
- for <ltp@lists.linux.it>; Mon, 25 May 2026 17:15:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 23A753E62E4
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 17:15:13 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EDCFE600709
- for <ltp@lists.linux.it>; Mon, 25 May 2026 17:15:07 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E0B791A0065D
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 17:15:11 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 82E316B0EC
- for <ltp@lists.linux.it>; Mon, 25 May 2026 15:15:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DE6B96AA0C
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 15:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1779722101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1779722105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kg5f+JbijVPe497KgwTntZYtNfzxWpf1hQMZeDUcADA=;
- b=2vCCztfdypi0YkqZtIXao673q1dpZ1iBC1yD3KDj2b77mh4e/Soa5j+ypFOOQdUqlDW9xj
- 2Tnm7r/sOQX/jaHdHGwaoHjuRcDovMOg0dyb9+8p7MeyoeBZsMCo25mU6yl+PBTl8ZHgrh
- XItZufpmnyrxuyzb0fFyd+WZ4YXyqpM=
+ bh=2Vh9x6J6I2Szop5zRHGzELvTfi2ZIB6/OO8as51wqzY=;
+ b=lFX/U6WMQJfTsZk8uMFfL884IZjgkLnu38hRuGEuPNFO5jTsQfhlo6fjK+DyOOE5RNMGfr
+ p4PqZ1CGhiCafXNqYgJNG+5eDvIBQJP5M61RoVVBli0DT1SxZEkE5f05RwkYwb2y4OppVt
+ U3gsXO3KzAX5IC+6K6V2nQAHvbtwq2g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1779722101;
+ s=susede2_ed25519; t=1779722105;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kg5f+JbijVPe497KgwTntZYtNfzxWpf1hQMZeDUcADA=;
- b=U3F5S/Va3f1ALqM0Yw0wuHj8Pfi44IRX6Y9N8dzxE5CgePHNojUY6Fbpr32BiKu/msAgcu
- mfmTlKQ66JlrMYDw==
+ bh=2Vh9x6J6I2Szop5zRHGzELvTfi2ZIB6/OO8as51wqzY=;
+ b=0wGC/oI+nGWZlx42bJ6LJ4VO4dIxSn/ELOXai7cQZgMmI6crk87FESVe9DEsovGJ6VoIIG
+ y3AxEI8+7TLczcAQ==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2vCCztfd;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="U3F5S/Va"
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1779722101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1779722105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kg5f+JbijVPe497KgwTntZYtNfzxWpf1hQMZeDUcADA=;
- b=2vCCztfdypi0YkqZtIXao673q1dpZ1iBC1yD3KDj2b77mh4e/Soa5j+ypFOOQdUqlDW9xj
- 2Tnm7r/sOQX/jaHdHGwaoHjuRcDovMOg0dyb9+8p7MeyoeBZsMCo25mU6yl+PBTl8ZHgrh
- XItZufpmnyrxuyzb0fFyd+WZ4YXyqpM=
+ bh=2Vh9x6J6I2Szop5zRHGzELvTfi2ZIB6/OO8as51wqzY=;
+ b=lFX/U6WMQJfTsZk8uMFfL884IZjgkLnu38hRuGEuPNFO5jTsQfhlo6fjK+DyOOE5RNMGfr
+ p4PqZ1CGhiCafXNqYgJNG+5eDvIBQJP5M61RoVVBli0DT1SxZEkE5f05RwkYwb2y4OppVt
+ U3gsXO3KzAX5IC+6K6V2nQAHvbtwq2g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1779722101;
+ s=susede2_ed25519; t=1779722105;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kg5f+JbijVPe497KgwTntZYtNfzxWpf1hQMZeDUcADA=;
- b=U3F5S/Va3f1ALqM0Yw0wuHj8Pfi44IRX6Y9N8dzxE5CgePHNojUY6Fbpr32BiKu/msAgcu
- mfmTlKQ66JlrMYDw==
+ bh=2Vh9x6J6I2Szop5zRHGzELvTfi2ZIB6/OO8as51wqzY=;
+ b=0wGC/oI+nGWZlx42bJ6LJ4VO4dIxSn/ELOXai7cQZgMmI6crk87FESVe9DEsovGJ6VoIIG
+ y3AxEI8+7TLczcAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7123259CE8
- for <ltp@lists.linux.it>; Mon, 25 May 2026 15:15:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC54259CE6
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 15:15:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id cpC4GnVnFGpNYAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id fvisMHlnFGpaYAAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Mon, 25 May 2026 15:15:01 +0000
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 15:15:05 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon, 25 May 2026 17:14:48 +0200
-Message-ID: <20260525151449.203586-2-chrubis@suse.cz>
+Date: Mon, 25 May 2026 17:14:49 +0200
+Message-ID: <20260525151449.203586-3-chrubis@suse.cz>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260525151449.203586-1-chrubis@suse.cz>
 References: <20260525151449.203586-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 82E316B0EC
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_ONE(0.00)[1];
- MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email,suse.cz:mid];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.999];
+ MIME_GOOD(-0.10)[text/plain];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ internal_greylist_whitelist(0.00)[10.150.64.97];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] safe_macros: Add SAFE_READ_ANY_EAGAIN
+Subject: [LTP] [PATCH 2/2] syscalls/inotify{07,
+ 08}: Fix TBROK on older kernels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,60 +119,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Similarily to the safe_write() this turns the len_strict into three way
-switch with the new value SAFE_READ_ANY_EAGAIN=2 that turns EAGAIN into
-a read with a zero lenght.
+When kernel fails to generate events the read returns EAGAIN and since
+we switches to SAFE_READ() the tests now TBROK when kernel does not
+generate events. Fix this by passing the newly introduced
+SAFE_READ_ANY_EAGAIN flag to the SAFE_READ().
 
+Fixes: deda021818a4 ('inotify: modernize with SAFE_ wrappers')
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/safe_macros_fn.h | 10 ++++++++++
- lib/safe_macros.c        |  5 ++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/inotify/inotify07.c | 2 +-
+ testcases/kernel/syscalls/inotify/inotify08.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/safe_macros_fn.h b/include/safe_macros_fn.h
-index 9a09c4922..031b1ff98 100644
---- a/include/safe_macros_fn.h
-+++ b/include/safe_macros_fn.h
-@@ -36,6 +36,16 @@ enum safe_write_opts {
- 	SAFE_WRITE_RETRY = 2,
- };
+diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
+index b4000f353..9cadbf656 100644
+--- a/testcases/kernel/syscalls/inotify/inotify07.c
++++ b/testcases/kernel/syscalls/inotify/inotify07.c
+@@ -88,7 +88,7 @@ void verify_inotify(void)
+ 	strcpy(event_set[test_cnt].name, FILE_NAME);
+ 	test_cnt++;
  
-+
-+enum safe_read_opts {
-+	/* no lenght strictness, short reads are ok */
-+	SAFE_READ_ANY = 0,
-+	/* strict lenght, short reads trigger TBROK */
-+	SAFE_READ_ALL = 1,
-+	/* converts EAGAIN to read that returns 0 */
-+	SAFE_READ_ANY_EAGAIN = 2,
-+};
-+
- char* safe_basename(const char *file, const int lineno,
-                     void (*cleanup_fn)(void), char *path);
+-	int len = SAFE_READ(0, fd_notify, event_buf, EVENT_BUF_LEN);
++	int len = SAFE_READ(SAFE_READ_ANY_EAGAIN, fd_notify, event_buf, EVENT_BUF_LEN);
  
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 68b8747b4..f838ede66 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -294,6 +294,9 @@ ssize_t safe_read(const char *file, const int lineno, void (*cleanup_fn) (void),
- 	rval = read(fildes, buf, nbyte);
+ 	int i = 0, test_num = 0;
+ 	while (i < len) {
+diff --git a/testcases/kernel/syscalls/inotify/inotify08.c b/testcases/kernel/syscalls/inotify/inotify08.c
+index e0837cac3..23d3c5a65 100644
+--- a/testcases/kernel/syscalls/inotify/inotify08.c
++++ b/testcases/kernel/syscalls/inotify/inotify08.c
+@@ -86,7 +86,7 @@ void verify_inotify(void)
+ 	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
+ 	SAFE_TOUCH(OVL_UPPER"/"FILE_NAME, 0644, NULL);
  
- 	if (rval == -1) {
-+		if (len_strict == SAFE_READ_ANY_EAGAIN && errno == EAGAIN)
-+			return 0;
-+
- 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
- 			"read(%d,%p,%zu) failed, returned %zd", fildes, buf,
- 			nbyte, rval);
-@@ -301,7 +304,7 @@ ssize_t safe_read(const char *file, const int lineno, void (*cleanup_fn) (void),
- 		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
- 			"Invalid read(%d,%p,%zu) return value %zd", fildes,
- 			buf, nbyte, rval);
--	} else if (len_strict && (size_t)rval != nbyte) {
-+	} else if (len_strict == SAFE_READ_ALL && (size_t)rval != nbyte) {
- 		tst_brkm_(file, lineno, TBROK, cleanup_fn,
- 			  "Short read(%d,%p,%zu) returned only %zd",
- 			  fildes, buf, nbyte, rval);
+-	int len = SAFE_READ(0, fd_notify, event_buf, EVENT_BUF_LEN);
++	int len = SAFE_READ(SAFE_READ_ANY_EAGAIN, fd_notify, event_buf, EVENT_BUF_LEN);
+ 
+ 	int i = 0, test_num = 0;
+ 	while (i < len) {
 -- 
 2.53.0
 
