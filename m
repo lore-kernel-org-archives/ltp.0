@@ -4,101 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54884CD5BB1
-	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 19:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1779735952; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=VQWu09+PqS2RPb3gbGdfFXsWzvq0s0jHqUj/Kk2l920=;
- b=H7uQcWDkBsAp2VigK4owVedgNWjO0DU4ZKlPp2NhCyj7D/CTslqzc4gmFU4M7kuqOeK/o
- La3YMQzZRKRBFosa0wltHV+nJkVFMOJg4vnq4DC3ZGM+otMnJS+z2VXTu1/kWL++ZrPp9A3
- DuFBC+YZ0tVt4Y8Kgu0rfuF2/DLsXeo=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79229CD5BB1
+	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 19:43:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D7A333E160C
-	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 21:05:52 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 249FF3E63B6
+	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 21:43:00 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 156D93E2D73
- for <ltp@lists.linux.it>; Mon, 25 May 2026 21:03:58 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1F8223D56E0
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 21:42:41 +0200 (CEST)
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com
+ [IPv6:2607:f8b0:4864:20::842])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8E439600726
- for <ltp@lists.linux.it>; Mon, 25 May 2026 21:03:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1779735836;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=mgi5DvA0EA/SqHZX+OjDrQtkgzvBx5e5m3m8nkJEd4M=;
- b=aD0Tyes42P+ukCbo1jCrblWDs9ONt4M6RqIQtuNWv5u736LWoe7B0ExTRJ57KowR9Dw6+B
- zzInI1yjksVR61MHEA/av4//m28pceHLGMA6pr/Ax3UCYOlARFlQD4rAocbkgc6gE4l12X
- 4XucVRg3yk3xBQXoAOklpqJ/qZyBafo=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-675-LOkTFytzMFCkbzuBf-yz2A-1; Mon, 25 May 2026 15:03:54 -0400
-X-MC-Unique: LOkTFytzMFCkbzuBf-yz2A-1
-X-Mimecast-MFC-AGG-ID: LOkTFytzMFCkbzuBf-yz2A_1779735833
-Received: by mail-wm1-f69.google.com with SMTP id
- 5b1f17b1804b1-48fd3dbd16aso78705415e9.0
- for <ltp@lists.linux.it>; Mon, 25 May 2026 12:03:54 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C0F2060044B
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 21:42:40 +0200 (CEST)
+Received: by mail-qt1-x842.google.com with SMTP id
+ d75a77b69052e-516cbde40f2so48646311cf.3
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 12:42:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1779738159; x=1780342959; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=l5hhHVgXfgZi7/X/JJRZKPleKjySx0Fpjr8bYXjxtPU=;
+ b=XelQYQER/TSQttj9fH+JsI9srbdmcX9MITGVEB8zx9ApNx3Tf+JO3dK2TSI0Uv9W3l
+ Hb6d7PcKaeLowve2LuEp37wfGBKF36XBuo5cjyPXmN8BWAjo/Vw0vMlP5AbGN1n5BcSi
+ TuLLUpQkk+1sWcdidKt5rEaDxhd0+8ZBq6TlblkJNu6+8w6rq29HMC/C2BKAkcMrKkkU
+ jUQewcGsMK/QbczvnzzXSCHycb3y5Jhd4ewrzmiCXABkiL8r4+0SeWJfL37gsuNtIJ+n
+ 0513gWPhjMxYqq5qK8FzfoepTQh9FYj6pjOIogPRfUO7JUPu10UMyhNElt+KJsdmWUCB
+ D+mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779735833; x=1780340633;
+ d=1e100.net; s=20251104; t=1779738159; x=1780342959;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=mgi5DvA0EA/SqHZX+OjDrQtkgzvBx5e5m3m8nkJEd4M=;
- b=hjbDpiA9epE3TYQtzV4Z8TZG569TPacHC49IQP2DQICFeu0EE5coe2LRtLnhIjwgtV
- anY792I1Y+1A5zM7IkCxjM4KrtKGwDiSfDxcrMl6PaHAniWcxl4yz0v3do0m23/l1nkN
- WokmhwuUR+Ejpsw9/MqK+kuGeXi2KZWG2dAR2LU4xan/WmU1yFv8L0kpRobZryndxdkJ
- +5fuHi/V4qfwCKZkLVa+o1SvQqz1qBRzXi8c5zA7IXAgi13ddXNBSv0agWFbJpD0eXtL
- /8aSFag5CRKmjG0/23u7etOS3WeUeAXzkqP+wChkcmEyqTKZXAaglqPqRsGc9xhQokRG
- jWGw==
-X-Gm-Message-State: AOJu0YwJBqo7w6+4lVxEvAJFVOkMNtJfMt8fyf0LZodYjFX6hkeaWyuv
- p31PIKM3E69TGj9Jxi1GdXspWdxrtyoq3x7epUrAmeAghnX4nrL6B3/XT30+W3RszGgxBa1b/tZ
- RZXyl3CWASYUzASzFPY6QiSh/d/rBtEt6wIahYyN0mJ6SEVvho3JrILEgmLs7fSKivc/JqSWjtQ
- 3eXmonX3eMqY1rT42GJvWTEkvKQUuyAHPZfQZ9
-X-Gm-Gg: Acq92OFl//HS2DusQDM11h5XaJc+1FvUKs/IbL43tbXK1p7w/aEzerpzqzd4zd4ITUD
- TjROR49Ef6kgOkqBVuO2dMBDhMzhVMHUKRZunmRuFprao1HO2Di3l3Ob/g2dEQ6bTzduA4Y0btV
- A/dEXd6wbgdpsuMMgRxzmSvV2y6YPctRMHFNMVRHKqeD7igabl9MSCrP83qO3yTddRvptjhFLsB
- OoMYxttOE5yIrrd/0C1KP/7MhKXEAbo2MngK0EV4rwZwbdbQDSthk/ruq2vT+XlqsapXIixhcfS
- HZrf9HRcAMTcxz151bEki+GNb5cmbURUf3nslOwaWiwR/CSzEhrLYqzjsK3TJKT47FQKJ2ciGUX
- EMKldA/hX+ppS14BC1fXwqKc+T1O1rL1OJXf1jhcWXIFmvJMOrum7h8kR98YVijFLdx9UFCY7
-X-Received: by 2002:a05:600c:34c5:b0:490:601f:d775 with SMTP id
- 5b1f17b1804b1-490601fd89emr110604725e9.5.1779735833421; 
- Mon, 25 May 2026 12:03:53 -0700 (PDT)
-X-Received: by 2002:a05:600c:34c5:b0:490:601f:d775 with SMTP id
- 5b1f17b1804b1-490601fd89emr110604265e9.5.1779735833011; 
- Mon, 25 May 2026 12:03:53 -0700 (PDT)
-Received: from fedora.redhat.com (89-138-3-119.bb.netvision.net.il.
- [89.138.3.119]) by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4904527f7f7sm397695995e9.7.2026.05.25.12.03.52
+ bh=l5hhHVgXfgZi7/X/JJRZKPleKjySx0Fpjr8bYXjxtPU=;
+ b=PHdtEiviCFJtih8g8zTv4UEqKWaACh6FUS1GstOM9bKjFDBRCNT798MLOpy7vhNNxJ
+ YxdTDTRHw/hBeR4lafNxZxaoJLmBs/s/hEOOe71TCqOVC7fBtJZowPsblCwhq4QUw22F
+ ThPX9KB1fHpPx23ms4DcZr6uu2CsU/UVdHrfWqJKXinZQnpl5NH6FO6ZDf3NoijSL4K3
+ hmR7K64YTLVcO5sz+zL+PEgfa91K7dztOhRPZicPnNtJwnW/jUlolVWtfDVHpteWQNEx
+ FKSaaOkraJM03haeiWtBCmFPMM3Ok7e9dpT7RuT6OfKMdJ6dnq0f2C6CHI610LszZB/c
+ +Rrw==
+X-Gm-Message-State: AOJu0Yz/V3VeNXXLZBrKkyUfKC4xRN1vqtXDXXo6xJory1LG9SYDZget
+ F52w+2bf0O6wY4+9tUhl39jDQWt3ll2ZmXj+HSBPyGuYrNTbHSOGo/QI
+X-Gm-Gg: Acq92OEVRJ/n8Ku5DEQ9yXGCmAIjQ61ef+ITMTVD4BHD9l6cXKkky9omOUbYTk7f2LR
+ CaWR36FzuLlup2Bxvh/19ZikTJwJwNOuYwETJkTS9pwUX3alz0ujO3Fj1pBDuzB8AFdZidwhZld
+ nDujpdz+ZlEcHbOBAidD1xBVMAjztmLyv8Voz3h0dQG2iHiNCjH77RIDAVin4EMPteIK8elENb7
+ FePvRI3vWeCsykatqLhsOMyVdzHuojmqlGGDHZfO3urp9TzOmfh6utiS2w+XVc6bbqzCGPNaCnV
+ wl6IgOvEIhOhopQx4OVZEw5MIiW8+fjXzFMdQRf+DrFYYIXO7CM2NpMT0I94uNXEBxvwjCdsAMM
+ j9+Y5RZnuMMAm3wT+a83/qdZlMEI1HbL8Zp+r07LjbyVx/4Lxrto9r94K4XUbz2t3YeJWZ17LnK
+ F4P7vqRKjsxuV37GxkwXyUiCS4oTEDpEJumyOOhV++ShAW5BKY8GSWX6900nQP+p3KPmMv0w7/3
+ MMKBdZlBv0qu85K6jnU1i6kQWUZx2fY37YG3Q==
+X-Received: by 2002:a05:622a:1aa0:b0:516:de71:e216 with SMTP id
+ d75a77b69052e-516de71e358mr189406681cf.1.1779738159443; 
+ Mon, 25 May 2026 12:42:39 -0700 (PDT)
+Received: from
+ runnervmg397c.twwycwkaznxeznykkqsgfknjya.cx.internal.cloudapp.net
+ ([9.234.149.84]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-516d8d0a4e3sm99800451cf.29.2026.05.25.12.42.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 25 May 2026 12:03:52 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Mon, 25 May 2026 22:03:44 +0300
-Message-ID: <20260525190344.60330-5-mmenashe@redhat.com>
+ Mon, 25 May 2026 12:42:39 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Avinesh Kumar <avinesh.kumar@suse.com>
+Date: Mon, 25 May 2026 19:42:38 +0000
+Message-ID: <20260525194238.3953-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260525190344.60330-1-mmenashe@redhat.com>
-References: <20260525190344.60330-1-mmenashe@redhat.com>
+In-Reply-To: <20260525190127.397779-1-avinesh.kumar@suse.com>
+References: <20260525190127.397779-1-avinesh.kumar@suse.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: Uf27U2iLEmNLnMhMTD061WUWOKDQJ8AAYgnNw9XxxtM_1779735833
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v9 4/4] futex_cmp_requeue03: Add EFAULT error coverage
- test
+Subject: Re: [LTP] zram01: Specify filesystem type explicitly in mount
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,150 +91,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Michael Menasherov via ltp <ltp@lists.linux.it>
-Reply-To: Michael Menasherov <mmenashe@redhat.com>
+Cc: ltp@lists.linux.it, LTP AI Reviewer <ltp-ai@noreply.github.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-futex(FUTEX_CMP_REQUEUE) has no existing test for EFAULT. Add coverage
-for the cases where uaddr or uaddr2 points to unmapped or inaccessible
-(PROT_NONE) memory.
+Hi Avinesh,
 
-Signed-off-by: Michael Menasherov <mmenashe@redhat.com>
+On Mon, 25 May 2026 21:01:23 +0200, Avinesh Kumar wrote:
+> zram01: Specify filesystem type explicitly in mount
+
+> -	for i in $(seq $dev_start $dev_end); do
+> -		tst_res TINFO "mount /dev/zram$i"
+> +	local i=$dev_start
+> +	local fs
+> +
+> +	for fs in $zram_filesystems; do
+> +		tst_res TINFO "mount /dev/zram$i ($fs)"
+>  		mkdir zram$i
+> -		ROD mount /dev/zram$i zram$i
+> +		ROD mount -t "$fs" /dev/zram$i zram$i
+>  		dev_mounted=$i
+> +		i=$((i + 1))
+>  	done
+
+Nit: the rest of the file uses `$(($i + 1))` (e.g. zram_makefs). Prefer
+`i=$(($i + 1))` here for consistency.
+
+[...]
+
+Reviewed-by: LTP AI Reviewer <ltp-ai@noreply.github.com>
+
 ---
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/futex/.gitignore    |  1 +
- .../syscalls/futex/futex_cmp_requeue03.c      | 95 +++++++++++++++++++
- 3 files changed, 97 insertions(+)
- create mode 100644 testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
+Note:
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2b1f6a763..d2e7f2b98 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1863,6 +1863,7 @@ perf_event_open02 perf_event_open02
- 
- futex_cmp_requeue01 futex_cmp_requeue01
- futex_cmp_requeue02 futex_cmp_requeue02
-+futex_cmp_requeue03 futex_cmp_requeue03
- futex_wait01 futex_wait01
- futex_wait02 futex_wait02
- futex_wait03 futex_wait03
-diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
-index c11546e07..231b6bd25 100644
---- a/testcases/kernel/syscalls/futex/.gitignore
-+++ b/testcases/kernel/syscalls/futex/.gitignore
-@@ -16,3 +16,4 @@
- /futex_wait06
- /futex_wait07
- /futex_wake05
-+/futex_cmp_requeue03
-diff --git a/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
-new file mode 100644
-index 000000000..44887001f
---- /dev/null
-+++ b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Red Hat, Inc. Michael Menasherov <mmenashe@redhat.com>
-+ */
-+
-+/*\
-+ * Check that futex(FUTEX_CMP_REQUEUE) returns EFAULT when uaddr or
-+ * uaddr2 points to unmapped memory, or when uaddr points to memory
-+ * without read permission (PROT_NONE).
-+ */
-+
-+#include <errno.h>
-+#include <sys/mman.h>
-+
-+#include "futextest.h"
-+
-+static futex_t futex_var = FUTEX_INITIALIZER;
-+static futex_t *futex_ptr = &futex_var;
-+static futex_t *unmapped_addr;
-+static futex_t *prot_none_addr;
-+
-+static struct futex_test_variants variants[] = {
-+#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
-+	{ .fntype = FUTEX_FN_FUTEX, .desc = "syscall with old kernel spec"},
-+#endif
-+
-+#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .fntype = FUTEX_FN_FUTEX64, .desc = "syscall time64 with kernel spec"},
-+#endif
-+};
-+
-+static struct testcase {
-+	const char *desc;
-+	futex_t **uaddr;
-+	futex_t **uaddr2;
-+	int exp_errno;
-+} testcases[] = {
-+	{
-+		.desc = "uaddr unmapped",
-+		.uaddr = &unmapped_addr,
-+		.uaddr2 = &futex_ptr,
-+		.exp_errno = EFAULT,
-+	},
-+	{
-+		.desc = "uaddr2 unmapped",
-+		.uaddr = &futex_ptr,
-+		.uaddr2 = &unmapped_addr,
-+		.exp_errno = EFAULT,
-+	},
-+	{
-+		.desc = "uaddr PROT_NONE",
-+		.uaddr = &prot_none_addr,
-+		.uaddr2 = &futex_ptr,
-+		.exp_errno = EFAULT,
-+	},
-+};
-+
-+static void run(unsigned int n)
-+{
-+	struct futex_test_variants *tv = &variants[tst_variant];
-+	struct testcase *tc = &testcases[n];
-+
-+	TST_EXP_FAIL(futex_cmp_requeue(tv->fntype, *tc->uaddr, futex_var,
-+		*tc->uaddr2, 1, 1, 0), tc->exp_errno, "%s", tc->desc);
-+}
-+
-+static void setup(void)
-+{
-+	struct futex_test_variants *tv = &variants[tst_variant];
-+	size_t pagesize = getpagesize();
-+
-+	tst_res(TINFO, "Testing variant: %s", tv->desc);
-+	futex_supported_by_kernel(tv->fntype);
-+
-+	unmapped_addr = SAFE_MMAP(NULL, pagesize, PROT_READ | PROT_WRITE,
-+		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	SAFE_MUNMAP((void *)unmapped_addr, pagesize);
-+
-+	prot_none_addr = SAFE_MMAP(NULL, pagesize, PROT_NONE,
-+		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (prot_none_addr)
-+		SAFE_MUNMAP((void *)prot_none_addr, getpagesize());
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(testcases),
-+	.test_variants = ARRAY_SIZE(variants),
-+};
--- 
-2.54.0
+Our agent completed the review of the patch. The full review can be
+found at: https://github.com/linux-test-project/ltp-agent/actions/runs/26416857886
 
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
