@@ -4,86 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CE8ACD5BC9
-	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 19:01:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88CA5CD5BB1
+	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 19:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1779735715; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1779735856; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=XtFGAt5tZ9AU5SoaO+spXUoHyWmty1lFOXH6+ZPufFc=;
- b=AdbqRWDBt63bJ2HQwSgx1gaYW4FtPqA93BqXNmpN1gxr/h3kFQkYEPjTEwMgqlfDrwIQE
- iXpZF1+F2f4siU3uIXxNkoI7e3LjJAsNOsEQ+nxV6MDADahMNlTritRx4QmiAtK2ym5he2m
- ZblYxWeW+aCiBEGhHMzz02XwivgabF8=
+ bh=sjg9DoayC2583HfILmE8bQWsrpc++xCGS5c0bMBIMoY=;
+ b=ixff0GxP8aJhUyb27WI8Xiv7HlNGL273YE+w+GGvZSrJ+YdtA2DwJFvC2w/rILeBEek/Q
+ B86/6+8hPmF9cLnsZ+f52kcG3L0fqUahQN2IjXXNZjABUV1iYPokHCWCTI12fI1TBTQ3uwj
+ JpFlh1nZZEZs/gZJTKjKuG34aWHUwjU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8DC383E5294
-	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 21:01:55 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 36AFA3E2D47
+	for <ltp@archiver.kernel.org>; Mon, 25 May 2026 21:04:16 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 13C6C3D56E0
- for <ltp@lists.linux.it>; Mon, 25 May 2026 21:01:31 +0200 (CEST)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3B8723D56E0
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 21:03:52 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6D42C10007C1
- for <ltp@lists.linux.it>; Mon, 25 May 2026 21:01:30 +0200 (CEST)
-Received: by mail-wm1-x329.google.com with SMTP id
- 5b1f17b1804b1-49039a8851fso42268835e9.2
- for <ltp@lists.linux.it>; Mon, 25 May 2026 12:01:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1779735690; x=1780340490; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=DLZK6hTSc028rfmsOy0YUeReTlFPEvYNNfr2kMj7KXU=;
- b=U+eI1yegjQCN3QS0zjDHHr0mQOoVuKX1zSUfeolQP1idsaAWsDMFACeMdLBFQBR6X9
- mVQFEdWmps+PfIC2vTcKKYiTyTu+XoiJG1l2WbbA1pbOoSeWTzDvITDhkKjLLTleLY4r
- DRQpPPI2qPIdpPXM4gr6yZF4yo2HXMQwCLkd5/ITqaScszYYcu/nRZVIcF9Gutnvv9V2
- qwIWIDyZNzuhc1YYCFUppi3IdT1vq6HiAXEO7j6JqoeO8ME0Y1BV1aESzyuTrpw8FDzC
- e9KwoFQwamPJN+X37mbp//wYdUpr1o8yujGDMVFGDZVervQngSbOB4vHxbvPjWO4fbBY
- z0cQ==
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 88E1210007C1
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 21:03:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1779735829;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=HLimG2oyfQGgZg5Opae9ngiW6e/nRl0PDNXPrQ7yqgg=;
+ b=Br4EtYfdnIaJnF6OA+0fpZMMqWoIro0t5W2jDH8WjuQH87Vb/qphWaGn+lmJjipYuEHjAX
+ DrRf++2j7k2nnku3gtVVOptGT+tD9IcUxpfWsul2fC9UG2Pm+CpqKbWeZAK/nBasy5nJoZ
+ Uo/j0+dR1/sBoSR+T/0m2E+cR/uaqqw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-414-qCDEj1r8P9ydlFI1JuCxLg-1; Mon, 25 May 2026 15:03:48 -0400
+X-MC-Unique: qCDEj1r8P9ydlFI1JuCxLg-1
+X-Mimecast-MFC-AGG-ID: qCDEj1r8P9ydlFI1JuCxLg_1779735827
+Received: by mail-wm1-f71.google.com with SMTP id
+ 5b1f17b1804b1-48fd3dbd16aso78704485e9.0
+ for <ltp@lists.linux.it>; Mon, 25 May 2026 12:03:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779735690; x=1780340490;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=DLZK6hTSc028rfmsOy0YUeReTlFPEvYNNfr2kMj7KXU=;
- b=OC5zEAtQiIcPDD9kiYECDXFXpSF8sfxfGU9/F4XpvetfpIDtmu6Y/qQiGE33Ed7n0H
- MEf/9DtHg/ANDdCAEnmFb/HjkTmhj9Y0STleyNCXAVjf/bLJioeNGkx9sa2CKbeTGmQh
- mScS60DB5e8FukjEQdpLkvj07UKl32G+m1PKMcwDKEGriWEW4pAUy186UjoTh1O1JOjM
- KWMqwDmMV1mR2HkUjU0iOaoVa+z8qBhjZW/31vJp4zEQtSDgLPJqdW0mfYQ0qL593Rl2
- tYuW3FyjneEsaYTKqZO7SG7kaZaCy1Oea5M0KrGxYhAnkzQvym4fI8g3J57c2NBL0gLZ
- CjwA==
-X-Gm-Message-State: AOJu0Yw8Q9cYT2AjWABSjOX/7ZmOj4zRrXYexHQSi+mEQ56hHCX0UdXh
- KDoP7r6vcddx+HyXp1lKDnDgxVgWLs9Yoyy6TmwuaSlo/nvl2KgfTDY9eiDjgFmMhE+MB7A3HAM
- i/cw0kgo=
-X-Gm-Gg: Acq92OFLmVeaaplDVWrk7xTji9ujLFQT6zerpfHeWpMLuS6MYdSAZ1WCEqU7AFOEO2k
- U/BPxkhWlAdHSiSF3g0+9YtFqY8+ainG9lJYYMvBO4j9elW4a4NC+95w38j9zwN6/AyR4byRtPs
- mU0Dcxm/d6VYRKx0ho/1/aJpxgX47HcMTmmA/sIsjGxeMG34ehs7LCozpjPVqTZ5pKXemk/onVN
- +TyvXFyBmHKke2R3ouyNBLizjAh+ev0TzzUQMviErN1lkbmUZYJa1PJItG6IyyeP0mXotYcSCB3
- dWEGTF+ET0/9zNURpdkDvXjxWAcQd9GUw8d9Cnu5lyreaGLTQBkt+119uqMtSx2C23xGoj5mnzC
- qnTipyjDGhAy5UQGLzgR06ZjQCgfoyl5lAQ/5h4/Q5iKxxynVf3B9aI66I4P0LQWCsco0cz16SU
- bjez724M4WUg==
-X-Received: by 2002:a05:600c:a30d:b0:48e:5d91:cfe3 with SMTP id
- 5b1f17b1804b1-490424ac7bcmr191509725e9.1.1779735689694; 
- Mon, 25 May 2026 12:01:29 -0700 (PDT)
-Received: from localhost ([2a07:b241:1004:8300::1000])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-45eb6c9f598sm29873391f8f.6.2026.05.25.12.01.28
- for <ltp@lists.linux.it>
+ d=1e100.net; s=20251104; t=1779735827; x=1780340627;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=HLimG2oyfQGgZg5Opae9ngiW6e/nRl0PDNXPrQ7yqgg=;
+ b=d2Qqw79V8U4VDfc41wg7aifLZIZt2EibTyVTSbyYJDCDzCkYbS0zG3srpQ/NkZ6DMw
+ 1ISOu7Nfn/TkxfwTBT77JlJFSjX74BxMKheORn/zA+L8G7052RYz/yW90oEvvoO6SDbW
+ FeEnS3soldlK/TdZsTyqAQ+r8aZ9KG4E0bz+97ydrFXYqtZFvr5Ao7mVE343Q3Q5mieY
+ 2I0Q5CNyXpD22hx6I52BUXLcXWnEOZbYj/UFiwJ8ns9bB8RQ6WUi57vMpu29njwvySTe
+ OCUlRuEYSO7rKzjRCfYTv+ZhtAfd1Idyu/neu8PO0UhprzyjPCXyI/75Ad9R8Za8fZeZ
+ rQeA==
+X-Gm-Message-State: AOJu0YxFHdDb13QUB0yZ6zEY+e8N/E3JMhJ1qPnEGl67HRQ8xpEjr515
+ rw7dd4cLDwmmZdAKcs3YfhIrEc4fgfa+InEP+SaVvoHxGcegZKNT0pzJ/tdP+EwNw/skUg53jIP
+ sUkOT0/FfK/8Ym6MSFtUfpjfTQrX53SmIrxYe8SYdS7bZUhjSKM4/BU9vfat8qyKK8W9HoaG89H
+ U0/+vjnhfRG6VQbf893W6nnYZ3gqtEbrdnDR94
+X-Gm-Gg: Acq92OEddTBhgc+MDaAR4MK04fVSdkJcN72Ws7yOFwcYZXSubp//UYNWdhi64JSuGfs
+ nMWzZvKvU9cB6GOZ/T4CKuQKQwBtSIl5doUO98QQ/qenyMnIEYR9n8ZMOH73Ukl6Ml8HrCOKkIK
+ GcgDg7QcAq1OXDiq1gB085Zmoy1AP70vQoGDyjUq75QySBjvqlCbkh5aKVuOeenDtqUo2Iu33y/
+ f5CnwcSPLGc2EJyOjWiB8tAjhEV+LPKbNxW7JMK86aDtz55I8pWgm9JTYQ4G15aXBPVtLaZbvY+
+ F3stRPgSHy1W/ft7ZXn2HxLROTd5rYzxK9F2UKE6xqhiOgIq/ZVk45JTxVTMxybca5+qgyaTxWW
+ 625yCABZZjE88E7k8kHoVqIHETle0E9Suy0x7FJxGxR0HtNMF0ImUn+omhCkp7w==
+X-Received: by 2002:a05:600c:45c9:b0:490:5cb3:e94a with SMTP id
+ 5b1f17b1804b1-4905cb3eb81mr118589935e9.2.1779735826743; 
+ Mon, 25 May 2026 12:03:46 -0700 (PDT)
+X-Received: by 2002:a05:600c:45c9:b0:490:5cb3:e94a with SMTP id
+ 5b1f17b1804b1-4905cb3eb81mr118589535e9.2.1779735826332; 
+ Mon, 25 May 2026 12:03:46 -0700 (PDT)
+Received: from fedora.redhat.com (89-138-3-119.bb.netvision.net.il.
+ [89.138.3.119]) by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4904527f7f7sm397695995e9.7.2026.05.25.12.03.45
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 25 May 2026 12:01:28 -0700 (PDT)
+ Mon, 25 May 2026 12:03:45 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Mon, 25 May 2026 21:01:23 +0200
-Message-ID: <20260525190127.397779-1-avinesh.kumar@suse.com>
+Date: Mon, 25 May 2026 22:03:40 +0300
+Message-ID: <20260525190344.60330-1-mmenashe@redhat.com>
 X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: yfQk8LCdSsm3yiBNA0HB26Q7GC0lJpZpXIWP-ltAxVk_1779735827
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] zram01: Specify filesystem type explicitly in mount
+Subject: [LTP] [PATCH v9 0/4] futex: Add error coverage tests for wait,
+ wake and cmp_requeue
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,59 +106,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Avinesh Kumar via ltp <ltp@lists.linux.it>
-Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
+From: Michael Menasherov via ltp <ltp@lists.linux.it>
+Reply-To: Michael Menasherov <mmenashe@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-util-linux 2.42 converts "ntfs" to "ntfs3" during auto-detection,
-causing mount failures on systems with CONFIG_NTFS3_FS disabled
-even when ntfs-3g is available.
+Improve error handling coverage for futex syscalls by adding tests
+for missing error conditions that were previously untested.
 
-tst_supported_fs_types.c:141: TINFO: FUSE does support ntfs
-tst_supported_fs_types.c:67: TINFO: mkfs.ntfs does exist
-tst_supported_fs_types.c:137: TINFO: Filesystem ntfs3 is not supported
-...
-...
-zram01 6 TINFO: mount /dev/zram7
-mount: /tmp/LTP_zram01.YG3YHQhMER/zram7: unknown filesystem type 'ntfs3'.
-       dmesg(1) may have more information after failed mount system call.
-zram01 6 TBROK: mount /dev/zram7 zram7 failed
+futex_wait06 verifies EFAULT is returned when uaddr or timeout
+points to unmapped memory.
 
-Fix by specifying -t option with the filesystem type that LTP
-verified as supported, avoiding auto-detection.
+futex_wait07 verifies EINTR is returned when futex_wait() is
+interrupted by a signal.
 
-Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
----
- testcases/kernel/device-drivers/zram/zram01.sh | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+futex_wake05 verifies EFAULT is returned when uaddr points to
+unmapped or PROT_NONE memory.
 
-diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
-index 793f6603c..4b7f2a753 100755
---- a/testcases/kernel/device-drivers/zram/zram01.sh
-+++ b/testcases/kernel/device-drivers/zram/zram01.sh
-@@ -94,13 +94,15 @@ zram_makefs()
- 
- zram_mount()
- {
--	local i
-+	local i=$dev_start
-+	local fs
- 
--	for i in $(seq $dev_start $dev_end); do
--		tst_res TINFO "mount /dev/zram$i"
-+	for fs in $zram_filesystems; do
-+		tst_res TINFO "mount /dev/zram$i ($fs)"
- 		mkdir zram$i
--		ROD mount /dev/zram$i zram$i
-+		ROD mount -t "$fs" /dev/zram$i zram$i
- 		dev_mounted=$i
-+		i=$((i + 1))
- 	done
- 
- 	tst_res TPASS "mount of zram device(s) succeeded"
+futex_cmp_requeue03 verifies EFAULT is returned when uaddr or
+uaddr2 points to unmapped or inaccessible (PROT_NONE) memory.
+
+v9:
+ - futex_wait06: replace raw pointer approach with tst_ts_from_ms()
+   so tv->tstype is used properly, following the pattern of other
+   futex tests
+ - runtest/syscalls: place futex_cmp_requeue03 after futex_cmp_requeue02
+   rather than at the end of the futex block
+
+Michael Menasherov (4):
+  futex_wait06: Add EFAULT error coverage test
+  futex_wait07: Add EINTR error coverage test
+  futex_wake05: Add EFAULT error coverage test
+  futex_cmp_requeue03: Add EFAULT error coverage test
+
+ runtest/syscalls                              |  4 +
+ testcases/kernel/syscalls/futex/.gitignore    |  4 +
+ .../syscalls/futex/futex_cmp_requeue03.c      | 95 +++++++++++++++++++
+ .../kernel/syscalls/futex/futex_wait06.c      | 74 +++++++++++++++
+ .../kernel/syscalls/futex/futex_wait07.c      | 87 +++++++++++++++++
+ .../kernel/syscalls/futex/futex_wake05.c      | 87 +++++++++++++++++
+ 6 files changed, 351 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
+ create mode 100644 testcases/kernel/syscalls/futex/futex_wait06.c
+ create mode 100644 testcases/kernel/syscalls/futex/futex_wait07.c
+ create mode 100644 testcases/kernel/syscalls/futex/futex_wake05.c
+
 -- 
 2.54.0
 
