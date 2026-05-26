@@ -4,99 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1D31CD5BC8
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 09:09:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1779786576; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=Rz2y4m7MGX7y/MoSKRpiPkkma3gjhjX+eBJXjvlZmvc=;
- b=Pdq68/dHLczeNeHPW196ywLH/MgpE52Ny0d25py788OEWvjcetSIe6iyusK9+SGTGHU8G
- 464LtusiBd2D3b4j+of7YaZHrbU4//urpZ50LD6G5t1RvttcLDY91seym7ClbCq3pGInMQK
- rS2BCfGYhZxEr0q6gAWMtYp1o+xW1TA=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54839CD5BB1
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 11:50:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 53AB93E523B
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 11:09:36 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 1A4703E526D
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 13:50:22 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EDECD3E5249
- for <ltp@lists.linux.it>; Tue, 26 May 2026 11:07:47 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 697F63C73EE
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 13:50:01 +0200 (CEST)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3D5341000607
- for <ltp@lists.linux.it>; Tue, 26 May 2026 11:07:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1779786465;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=hCjGCjkdYB5+matJnCx/PQBSDVG4p+jiPRg9biqKEIc=;
- b=ChlATe8UOQytrJDCmh9sRy0/4nqiMxn2OaPP4Sak1yK+Mq4+0YM65/Jj7jrzmcev5bPNk/
- hIR+zD+o2E/PGQNcaiShJrvgszMJNogphigebWOdB181/EuHXHHAG/iUG/SnoflOtHgI0e
- a8r/mFNsSw1h7usnZP1wqtEXA5OUTrc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-322--8wUBq1MOBSFx7T0AWWG2g-1; Tue, 26 May 2026 05:07:41 -0400
-X-MC-Unique: -8wUBq1MOBSFx7T0AWWG2g-1
-X-Mimecast-MFC-AGG-ID: -8wUBq1MOBSFx7T0AWWG2g_1779786460
-Received: by mail-wr1-f70.google.com with SMTP id
- ffacd0b85a97d-45ea19f2564so5132258f8f.2
- for <ltp@lists.linux.it>; Tue, 26 May 2026 02:07:41 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 01576200753
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 13:50:01 +0200 (CEST)
+Received: by mail-wm1-x334.google.com with SMTP id
+ 5b1f17b1804b1-49041e84237so33256185e9.1
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 04:50:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779796200; cv=none;
+ d=google.com; s=arc-20240605;
+ b=Ab0YkT53FGW4KoEr2ZfLP0oScG6sYKvK1/4+44EiqoDT21AvVtVdYUgP4Eykm4Hkzc
+ OTUs3+S7DU5ho56GozLKSPpmP1CXxqzK5LK6lIGFSSrBRs+WFQ2X6RUxZJYDEyDl0+8j
+ oxqywMdqpwAUoVhXQ3mqIvT7Wt5LooBJi7ronbrvqpxPTRasCyzUIajVGbK5r0gVkqPa
+ J2QvmsVFuyOQu+NqinC9l3q6IgkhMtXrlQUVXTMZ2paJ0XfMNdBJhxwiQfi89GQlu2z3
+ As3Qcd91LJEUvUMY80ZisLbA4IueKrIG/0P6gWtPrCPtAf+xalp+RtEZdEGRvdA8kqJN
+ rg/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:dkim-signature;
+ bh=RdgGw4jS0plJoYmX3Um9mPRvgp8PHoCqs47YktuuZu4=;
+ fh=OOkx/wpptziDfcHXMb/r02tPpkip32ILmNFUYS5Uidk=;
+ b=cIaFsP4x7wNTG69lpqI4RtWmbkLlBk68xl0C0aUfawQtwrKZII0RnuUKAKvG7XQy8E
+ 0+gZjA83nLqA6SPYSlremEsAAHuv7yjeDB8BGogKWSUh71Fmbz8FBAqDMB0thEpbHCsM
+ Yvtl3yDS9i/GxDap7WzkVDF6Rfyfe52a/1ugbVzqjcJIDpO84muyVzsYyrYlAKhaXP2n
+ Ztvf255mRnDqLKfTtsiztbGRxLpFKAwKjxRES1hgEyKCGZDNgnD6S+sNk6XJFqonFA29
+ EgamVtFlnXuNMGPrUysk/Pknm7PnWNU9v3xIldrypVjR874uEY7SGYY2K0xYYZkgzP1A
+ wFag==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1779796200; x=1780401000; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=RdgGw4jS0plJoYmX3Um9mPRvgp8PHoCqs47YktuuZu4=;
+ b=NbOjgJ7YceAsKDgHLzVlVeFM1WSaGNz+Zhx62XzVghv5rvjFvSYp0QrioKH0mvjS1I
+ mlkKPscAzWU/q9F/o0sdJMNcf24inBl/TIbwF7IbZ120CAHxLXUR96reNLRJ3SfiKmi6
+ NSMaQvf6p9Zccy4BoqPl03I3mLZ1AivS7ixXlhKXoMxurfskORXqOuTDScoEkM2o4lK2
+ AZll0Jb0/3ejWVtaqT/cKK9Y9HXaVmT1HTOskICyeL0P9Kl0PQwhJ5ON8b5v5KpriWCn
+ 0pj+l8AM7N7b/lPjBvKuonqisEPQ0hij/NIvHHUNBeOvYCcIt5IlIe5HB0+FWdyYrqb9
+ Tbfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779786460; x=1780391260;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=hCjGCjkdYB5+matJnCx/PQBSDVG4p+jiPRg9biqKEIc=;
- b=c6tBv1SXWTBWLRGyUev6bPxxwg5D0QaRdKSgbV3cPRCsjTVWDSYkBzJJfvgofxpuYh
- SXSpvIkFPng4YzVhO/Ob7jiFJMw4e59GQNpCFn7iEUvQTtyigZIYE93lCiHlvSjAB3PG
- 3rxdy4m0nf9yR7f6sO072VDhSead8aju8FErpc7mcjj1UL7Sa10LFp8ytyqmezRlKjcD
- /CvKuZcR6PDH/b/kc7ds9rXBGVJQU6b9aX/bmAmYlOLOLOH620nMtEYJ+VDVLqzi5cO6
- FzBrRnF3jqtm4hYJ7xxM9qHV+SGa3Dm/SJC8eNvBsQS7gsaJ729m9GUCzdM9FRKsXPdG
- HKeQ==
-X-Gm-Message-State: AOJu0Yw+wwL33etpfLRGIp0Y0Zovgq8ubthpbu0os1KlvigoJ2ohoP/g
- aA5n0Tjemf7QJncqkzY+q/N3Gva/5KY08Icw8C3D8qvoasdLlfq0CzqfdYz5ZjoknGH7XSSjpcC
- Tgd3dLyxqDgBa5U9d83UUK8OcVu1GFiA/NBg93kVzS9NsPpxEkJzydP0F2+W4sVKKwOwmxYA5Iq
- +2GKN3soKx5W9sOtvBrX6EU8t8t1CdSQbz6xQ6
-X-Gm-Gg: Acq92OFHWvst9rf+eXdUXEVU3afKhhPq+u2vzL17BMKX6ACJCpDIx1Z6ayA7i5zmfwD
- vtzv2yqA97zMYiXItd+oS+cUjnNGf1WZSLIUHjOeN+8L/H+VLSmfFpTFTwSjl2XiIFXfyoTrbbq
- 4gc/4U2cz4Gt6OmRWdXxAN3CHEaRFdiM5oBQBAmsr9WBeZ+jWJf++ezFx2COZyH8SH0A/4MyXI9
- ENuWVDJBuS7CS2xeRtpyMEMGKn208RAknmUIBc/iDHMV4m+qGWKOCqAQLZjgWRzMXr8leuiEErk
- brbfZ6Zr5/RC30BtEqj3MfcyglK6aA67O9VG584SxjViFUyr7beo63W2qAkFM5hSZbV0VkF6XdI
- M6iNLFV7q3d9TGUPR7y/xmB5lA0mNwWPA8tqaKse6uFmw23UJNCxleq6uFEqntg==
-X-Received: by 2002:a05:6000:1446:b0:43d:7a97:78af with SMTP id
- ffacd0b85a97d-45eb38e04e3mr30843511f8f.42.1779786459912; 
- Tue, 26 May 2026 02:07:39 -0700 (PDT)
-X-Received: by 2002:a05:6000:1446:b0:43d:7a97:78af with SMTP id
- ffacd0b85a97d-45eb38e04e3mr30843454f8f.42.1779786459333; 
- Tue, 26 May 2026 02:07:39 -0700 (PDT)
-Received: from fedora.redhat.com (89-138-3-119.bb.netvision.net.il.
- [89.138.3.119]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-45eb6c9f58dsm33274647f8f.5.2026.05.26.02.07.37
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 May 2026 02:07:38 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue, 26 May 2026 12:07:29 +0300
-Message-ID: <20260526090730.22455-4-mmenashe@redhat.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260526090730.22455-1-mmenashe@redhat.com>
-References: <20260526090730.22455-1-mmenashe@redhat.com>
+ d=1e100.net; s=20251104; t=1779796200; x=1780401000;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=RdgGw4jS0plJoYmX3Um9mPRvgp8PHoCqs47YktuuZu4=;
+ b=G9FRhhnoyX3NY7iPnWfJ/8LnsNekXUU6etORqF81M7jbu1fdbkWHBH/xTLEbjt0YDU
+ SuK1fzm2faScWzY64FKubUMQUgtWz3KxVVBipPK+Sl1YOROAbMfc1NG+kenPgXj5MKGk
+ 4d7miBIzmHZOArrpVlT15HpjgD0rjvo/VS2VgIAQCejlxMOlb+5R+YTBk8gS/rB9nTIr
+ EbPnb51w3Z37z5OZmrEEdGQhkIOwulDCS1qMCbRwlzBS5u0xSDey1OBb7UFr27HKi9eR
+ OmJbHccYmIFVbK2AyVdqg4gOvpyW/10cuNqgSioSvW/3VenyRon7FZqZ4Tyd6ZZo5PC0
+ TaIw==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ+xah5Rshrp8GCPMiO4lpiZab2/xfT8Mdc3HJu3wa2ayI6CqIAqGEeJB9vEdNoZTGcg4zk=@lists.linux.it
+X-Gm-Message-State: AOJu0YwWQglk13qo3myemolMYgf0l14FGNktpJJ7cazDgfhU2JzQM+vv
+ F0rXnklOKeh3QewBfShBdIKVNnKW4hL7kXzzGFFit3A/LqqceQukBXRQP4C/EVB4AprqhcCqvFC
+ Q64v1OIyNdgztXPbvWC0r1fSIwLqTd/VtZp6PQUQ=
+X-Gm-Gg: Acq92OHbasoVdOcnJlhLihRtNDsV1hcsplYGZifMva2S6cg9tbq9Ex0nahZLO6ZK0lI
+ xRzUFx7+tPhC9agMtaiw2Vo5Wc2c2MG0gfD+twuIZwaCiNatB4B0fAqrGyyldYgqP/8Y5xPyONa
+ CWyngiPErgU5M/98RPiprUhlNcvhygv+lHOfdPkpBX7e8hgIPX659x22Xv0BnltBDdtILJF6kWS
+ wEaOHylsN7raFR1SPZhV3hpGsg9MPPo7nKNeKnNegc4tT+z1VGgrudn6uQQcIafbRb4XHJHX8iO
+ 4WzCAH//wg7AvZS4UHFYQrZLfRTVvHkm5VUhng==
+X-Received: by 2002:a05:600c:8686:b0:489:32b:ac0b with SMTP id
+ 5b1f17b1804b1-4904226f20bmr169853145e9.6.1779796200136; Tue, 26 May 2026
+ 04:50:00 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: LB6uvF7fFnF3hVgeE-k9Ah0yaD6D6Z6rf5tS-oWD47c_1779786460
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+References: <20260428075302.7320ef7e3@imap1.dmz-prg2.suse.org>
+ <20260501151420.1042995-1-priyama2@linux.ibm.com>
+ <CAJCsO8epT++TaOs7=NAy+jC4pQDN9tA-1n_tFy233sHKkJ697w@mail.gmail.com>
+ <3191ffc7-8ff7-4b14-8bb0-934853e6d2ea@suse.de>
+ <bf329b6c-1acb-4168-82f8-a1c3de600dc9@linux.ibm.com>
+ <ahTtZMiQ52AlVrU_@shinmob>
+In-Reply-To: <ahTtZMiQ52AlVrU_@shinmob>
+From: Sebastian Chlad <sebastianchlad@gmail.com>
+Date: Tue, 26 May 2026 13:49:48 +0200
+X-Gm-Features: AVHnY4Jd6Xf3KHtmi6RLf10ueHQaNUgkTs_MC_bCLdYh46hnVvC8mNICHa0d4Tc
+Message-ID: <CAJCsO8cZqzQ+6t6ebd-qYG+=DE_LY4sAfWMgRRq7fX8yyrVvgA@mail.gmail.com>
+To: "Shin'ichiro Kawasaki" <shinichiro.kawasaki@wdc.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v10 3/4] futex_wake05: Add EFAULT error coverage test
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v3] testcases/kernel/device-drivers/nvme: Add NVMe
+ device discovery test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,141 +112,178 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Michael Menasherov via ltp <ltp@lists.linux.it>
-Reply-To: Michael Menasherov <mmenashe@redhat.com>
+Cc: Sebastian Chlad <sebastian.chlad@suse.com>, daniel.wagner@suse.com,
+ ltp@lists.linux.it, Daniel Wagner <dwagner@suse.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-futex(FUTEX_WAKE) has no existing test for EFAULT. Add coverage for
-the cases where uaddr points to unmapped or PROT_NONE memory.
+Hi Priyama, Shin'ichiro,
 
-Signed-off-by: Michael Menasherov <mmenashe@redhat.com>
----
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/futex/.gitignore    |  1 +
- .../kernel/syscalls/futex/futex_wake05.c      | 87 +++++++++++++++++++
- 3 files changed, 89 insertions(+)
- create mode 100644 testcases/kernel/syscalls/futex/futex_wake05.c
+On Tue, 26 May 2026 at 03:21, Shin'ichiro Kawasaki <
+shinichiro.kawasaki@wdc.com> wrote:
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index e6c5d5112..8c4d9be6c 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1877,6 +1877,7 @@ futex_wake01 futex_wake01
- futex_wake02 futex_wake02
- futex_wake03 futex_wake03
- futex_wake04 futex_wake04
-+futex_wake05 futex_wake05
- futex_wait_bitset01 futex_wait_bitset01
- 
- memfd_create01 memfd_create01
-diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
-index 74ac9a926..c11546e07 100644
---- a/testcases/kernel/syscalls/futex/.gitignore
-+++ b/testcases/kernel/syscalls/futex/.gitignore
-@@ -15,3 +15,4 @@
- /futex_waitv03
- /futex_wait06
- /futex_wait07
-+/futex_wake05
-diff --git a/testcases/kernel/syscalls/futex/futex_wake05.c b/testcases/kernel/syscalls/futex/futex_wake05.c
-new file mode 100644
-index 000000000..b2b280c88
---- /dev/null
-+++ b/testcases/kernel/syscalls/futex/futex_wake05.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Red Hat, Inc. Michael Menasherov <mmenashe@redhat.com>
-+ */
-+
-+/*\
-+ * Check that futex(FUTEX_WAKE) returns EFAULT when uaddr points to
-+ * unmapped or PROT_NONE memory.
-+ *
-+ * The test uses opflags=0 (no FUTEX_PRIVATE_FLAG), so futex_wake() takes
-+ * the shared-futex path in get_futex_key() which must resolve the physical
-+ * page. For PROT_NONE memory this page lookup fails with EFAULT, even though
-+ * futex_wake() never reads *uaddr.
-+ */
-+
-+#include <errno.h>
-+#include <sys/mman.h>
-+#include "futextest.h"
-+
-+static futex_t *unmapped_addr;
-+static futex_t *prot_none_addr;
-+
-+static struct futex_test_variants variants[] = {
-+#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
-+	{ .fntype = FUTEX_FN_FUTEX, .desc = "syscall with old kernel spec"},
-+#endif
-+
-+#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .fntype = FUTEX_FN_FUTEX64, .desc = "syscall time64 with kernel spec"},
-+#endif
-+};
-+
-+static struct testcase {
-+	const char *desc;
-+	futex_t **addr;
-+	int exp_errno;
-+} testcases[] = {
-+	{
-+		.desc = "uaddr unmapped",
-+		.addr = &unmapped_addr,
-+		.exp_errno = EFAULT,
-+	},
-+	{
-+		.desc = "uaddr PROT_NONE",
-+		.addr = &prot_none_addr,
-+		.exp_errno = EFAULT,
-+	},
-+};
-+
-+static void run(unsigned int n)
-+{
-+	struct futex_test_variants *tv = &variants[tst_variant];
-+	struct testcase *tc = &testcases[n];
-+
-+	TST_EXP_FAIL(futex_wake(tv->fntype, *tc->addr, 1, 0),
-+		tc->exp_errno, "%s", tc->desc);
-+}
-+
-+static void setup(void)
-+{
-+	struct futex_test_variants *tv = &variants[tst_variant];
-+	size_t pagesize = getpagesize();
-+
-+	tst_res(TINFO, "Testing variant: %s", tv->desc);
-+	futex_supported_by_kernel(tv->fntype);
-+
-+	unmapped_addr = SAFE_MMAP(NULL, pagesize, PROT_READ | PROT_WRITE,
-+		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	SAFE_MUNMAP((void *)unmapped_addr, pagesize);
-+
-+	prot_none_addr = SAFE_MMAP(NULL, pagesize, PROT_NONE,
-+		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (prot_none_addr)
-+		SAFE_MUNMAP((void *)prot_none_addr, getpagesize());
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(testcases),
-+	.test_variants = ARRAY_SIZE(variants),
-+};
--- 
-2.54.0
+> Hello Priyama,
+>
+> From blktests maintainer side, let me share my views on your proposal.
+>
+> Blktests started as the community effort among the kernel storage
+> sub-system
+> developers. It was discussed at LSF/MM 2017, and started as the place to
+> stock
+> test scripts for the kernel stroage sub-system. In my understanding, the
+> developers expect blktests is the test set to run before posting patches
+> for the
+> storage subsystem. In the same manner, I expect and hope that nvme driver
+> patches tested with the nvme test group in blktests, to reduce the load of
+> reviewers and maintainers.
+>
+> When LTP supports the nvme tests as you propose, what will be your
+> expectation
+> for nvme driver patch submitters? Do you expect they run both blktests
+> nvme test
+> group and LTP nvme group? If so, I suggest to add linux-nvme mailing list
+> to
+> this discussion thread to ask their opinions.
+>
+> Also, please find my inline comment below.
+>
+> On May 25, 2026 / 11:00, priyama2 wrote:
+> > Hi Sebastian,
+> >
+> > Thank you for raising this important question. After reviewing blktests'
+> > coverage, I see the concern about duplication.
+> >
+> > *Proposed LTP NVMe Test Suite - System Integration Focus:*
+> >
+> > Rather than duplicating blktests' comprehensive NVMe protocol testing, I
+> > propose LTP focus on system-level integration and kernel API validation.
+>
+> The primary role of the blktests nvme test group is to cover the nvme
+> driver
+> codes in the kernel source tree. It is not intended to test NVMe protocol
+> or
+> NVMe devices. Blktests can be used for NVMe protocol/device testing as
+> just a
+> side effect.
+>
+>   It is often discussed to extend blktests to cover NVMe device
+> compatibility
+>   test with Linux nvme driver, but it is still an idea at this moment.
+>
+> I guess you misunderstood this point, so the list below still has
+> duplications
+> with the blktests coverage. It will make it difficult to tell which test
+> framework (blktests or LTP) to add new nvme driver tests.
+>
+>
+Personally I agree with the above - the list still has duplications.
+If we get clinical and define things carefully, we still - I believe -
+expose ourselves to such duplications in the future.
+Effectively we would have NVMe tests in both LTP and blktests, people will
+contribute to both and we end up with competing tests...
 
+LTP is oftentimes used for some regression testing. From this standpoint I
+would assume it might make sense to introduce some sort
+of NVMe sometests - basic coverage to see if things are terribly broken.
+Personally I would still prefer to use blktests/nvme as that one is
+well maintained and goes deeper into details.
+
+But yeah your ideas are great however -  writing directly -  I would just
+implement them in the blktests, so we end up with more mature coverage in
+there
+rather than spreading the effort on 2 testing tools (ltp and blktests).
+
+I would also emphasize the point made here by Shin'ichiro and earlier by
+Daniel - blktests are run on the relevant -next trees, so we would be
+better off
+with more mature tests in the blktests.
+
+cheers,
+Sebastian
+
+
+>   Said that, the list below includes testing aspects that is not yet
+> covered.
+>   I agree that those ideas are great.
+>
+>
+> > Here's an overview of the planned test suite:
+> >
+> > *1. nvme01 - Device Discovery & System Integration (Current Patch)*
+> >
+> >  * Basic device enumeration through /sys and /dev interfaces
+> >  * Driver binding verification
+> >  * *LTP-specific angle*: Validates kernel's sysfs/devfs integration,
+> >    not NVMe protocol
+> >
+> > *2. nvme02 - File System Operations (Planned)*
+> >
+> >  * Standard POSIX I/O operations (open, read, write, close, fsync)
+> >  * O_DIRECT, O_SYNC flag behavior
+> >  * mmap() operations on NVMe-backed files
+> >  * File locking (flock, fcntl) with NVMe storage
+> >  * *Differentiation*: Tests syscall interface, not NVMe commands
+> >
+> > *3. nvme03 - Process & Thread Safety (Planned)*
+> >
+> >  * Concurrent access from multiple processes
+> >  * fork() with open NVMe file descriptors
+> >  * Thread-safe I/O operations
+> >  * Signal handling during NVMe I/O
+> >  * *Differentiation*: Multi-process integration, not device-level testing
+> >
+> > *4. nvme04 - Resource Management & Limits (Planned)*
+> >
+> >  * Cgroup I/O throttling with NVMe devices
+> >  * ulimit enforcement (RLIMIT_FSIZE, RLIMIT_NOFILE)
+> >  * Disk quota behavior on NVMe filesystems
+> >  * Memory pressure scenarios
+> >  * *Differentiation*: Kernel resource management integration
+> >
+> > *Key Differentiators from blktests:*
+> >
+> > Aspect        blktests        LTP (Proposed)
+> > *Focus*       NVMe protocol & features        System call & kernel API
+> > *Scope*       Block layer specifics   Multi-subsystem integration
+> > *Interface*   NVMe commands, ioctl    POSIX syscalls (read/write/open)
+> > *Duration*    Comprehensive (longer)  Smoke tests (<5 min total)
+> > *Use Case*    NVMe validation         System regression detection
+> >
+> > *Concrete Examples of LTP-Specific Value:*
+> >
+> > 1. *System Integration*: Does|fsync()|properly flush NVMe write cache
+> >    through the kernel's VFS layer?
+> > 2. *Process Safety*: Can a child process inherit and use parent's NVMe
+> >    file descriptor after|fork()|?
+> > 3. *Resource Limits*: Does cgroup I/O throttling correctly limit NVMe
+> >    bandwidth?
+> > 4. *Platform Coverage*: Does NVMe work in PowerPC LPAR, s390x LPAR, ARM
+> >    virtualization?
+> > 5. *Container Integration*: Are NVMe devices properly accessible in
+> >    containerized environments?
+> >
+> > *Positioning:*
+> >
+> >  * *blktests*: "Does NVMe hardware/protocol work correctly?"
+> >  * *LTP*: "Does the kernel's NVMe integration work with the rest of the
+> >    system?"
+> >
+> > *Current Status & Next Steps:*
+> >
+> > The current nvme01 patch is admittedly basic. I'm happy to:
+> >
+> > 1. *Withdraw*if LTP prefers no NVMe coverage
+> > 2. *Refocus*nvme01 on system integration (e.g., test sysfs attribute
+> >    access patterns)
+> > 3. *Proceed*with the differentiated test suite outlined above
+> > 4. *Collaborate*with blktests maintainers to ensure no overlap
+> >
+> > Please let know which direction would the LTP community prefer?
+> >
+> > Best regards, priyama2
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
