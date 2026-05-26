@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5C0ECD5BB1
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 13:59:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85569CD5BC8
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 14:02:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 94CD03E62BD
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 15:59:45 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id E59DA3E62C2
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 16:02:53 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 57A9B3C58D5
- for <ltp@lists.linux.it>; Tue, 26 May 2026 15:59:27 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 199753E524A
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 16:02:35 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 88C811A006EF
- for <ltp@lists.linux.it>; Tue, 26 May 2026 15:59:25 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A04AC600851
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 16:02:34 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B50CE6AC78;
- Tue, 26 May 2026 13:59:23 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 36AB875F2C;
+ Tue, 26 May 2026 14:02:34 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B049E5A239;
- Tue, 26 May 2026 13:59:22 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 235935A23B;
+ Tue, 26 May 2026 14:02:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id NLm6KTqnFWryEQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 26 May 2026 13:59:22 +0000
-Date: Tue, 26 May 2026 15:59:11 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id fFFpB/qnFWocFQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 26 May 2026 14:02:34 +0000
+Date: Tue, 26 May 2026 16:02:19 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ahWnL1wIVzaXrhhi@yuki.lan>
+Message-ID: <ahWn6zko0ktmS15V@yuki.lan>
 References: <20260526083406.357092-1-chrubis@suse.cz>
- <20260526083406.357092-3-chrubis@suse.cz>
- <20260526134533.GC215060@pevik>
+ <20260526083406.357092-2-chrubis@suse.cz>
+ <20260526133922.GB215060@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260526134533.GC215060@pevik>
+In-Reply-To: <20260526133922.GB215060@pevik>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
-X-Rspamd-Queue-Id: B50CE6AC78
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 36AB875F2C
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/2] syscalls/inotify{07,
- 08}: Fix TBROK on older kernels
+Subject: Re: [LTP] [PATCH v2 1/2] safe_macros: Add SAFE_READ_ANY_EAGAIN
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,11 +80,22 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Maybe later after the release we could think about about shorten this with
-> definitions. I'm ok if you consider this as not useful.
+> ...
+> > +/* supported values for safe_read() len_strict parameter */
+> Could we have kerneldoc (ok to fix before merge).
+> 
+> /**
+>  * enum safe_read_opts - supported values for safe_read() len_strict parameter */
+>  *
+>  * @SAFE_READ_ANY: no length strictness, short reads are ok.
+>  * @SAFE_READ_ALL: strict length, short reads trigger :c:enum:`TBROK <tst_res_flags>`.
+>  * @SAFE_READ_ANY_EAGAIN: converts EAGAIN to read that returns 0.
+>  */
+> 
+> Otherwise LGTM, thanks for spotting the error.
 
-I was thinking about this, but I wanted to have minimal fix before the
-release. We can rethink the SAFE_WRITE and SAFE_READ API later on.
+I would avoid that for now, since we are likely going to change the API
+after the release. Is that okay?
 
 -- 
 Cyril Hrubis
