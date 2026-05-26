@@ -4,83 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9ABC2CD5BB1
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 15:29:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49EF7CD5BC8
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 15:30:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4D33B3E62BE
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 17:29:36 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 046173E7D4A
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 17:30:14 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C21243E62B3
- for <ltp@lists.linux.it>; Tue, 26 May 2026 17:29:17 +0200 (CEST)
-Received: from mail-dy1-x1344.google.com (mail-dy1-x1344.google.com
- [IPv6:2607:f8b0:4864:20::1344])
+ by picard.linux.it (Postfix) with ESMTPS id 14CB13E62B3
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 17:29:57 +0200 (CEST)
+Received: from mail-dy1-x1343.google.com (mail-dy1-x1343.google.com
+ [IPv6:2607:f8b0:4864:20::1343])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5CF881000223
- for <ltp@lists.linux.it>; Tue, 26 May 2026 17:29:17 +0200 (CEST)
-Received: by mail-dy1-x1344.google.com with SMTP id
- 5a478bee46e88-2f68f3b075fso2149326eec.0
- for <ltp@lists.linux.it>; Tue, 26 May 2026 08:29:17 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B1762600070
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 17:29:56 +0200 (CEST)
+Received: by mail-dy1-x1343.google.com with SMTP id
+ 5a478bee46e88-2ee990e8597so25631434eec.1
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 08:29:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1779809356; x=1780414156; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1779809395; x=1780414195; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=KWVqD3wi61mrqswQKBHIJZnaqrymwWXImLah2hqCH74=;
- b=UV5B0LvsL+DkkRSOrQEQ8cdp5mgSXXObNzmIhH6ed4aaGcCWEHoR4lUAtplNWvseZX
- sg2vp8rmd6H33d0wGI0r8hZeiHsyk7IPtFUQDVu8ql8tSDIeKLMe4fMWgzBPh73yNMcg
- yL61q91TdWnMsps9acqwa9QPOfWRCm0n5TQw/pgiPPlT2Z2ZfRXVGfsrsghoQXFEvyuw
- CQcODWqjKQ4yGj4DQzdZA2ts/gNnfR89O2Z2vKinRX76yNiWBTxMatGXx+nnzD00+7le
- w6lOgeZy6lwZX+WEybzGDoswLu2CyjFzCKKP6pOtTC9GU8VpirLKXLDnFRn5MgGgtZbQ
- Z16g==
+ bh=oNUCRQEwCOzK+BYAq7IWCwTpwNi3TXaowgx1GATJda8=;
+ b=DdWxcs9X4d7mXBg83iIwmHrNQNNOh5ilgpysFW413lOnZhQC6/ceQJ/J23zReeVISK
+ V6g/BHYtV6UIlMfI2s8QzbxMkGTcJkvQQBdAZMJSPILoCnligyg9IVLsxhbNGvUMQF+Z
+ 2N0si5r0zaaraaj/A5UFcrb4FlYEdeBtc+AdTKr3oXpHSr8ZCKAmLV1UvODYsXQvlPPX
+ felam7lpKZZE3dWDPOaGnkFyl2HrqE1aoMsjmsGJ+mochcimzHcN+I+AriqNlfzSdzYg
+ dYjXah9U6HrPP0stYYGeogh2mX3yOmG2/I86i6kEVQ11pYKtSQUPvByO+cQ2M+Hus/H/
+ ZCaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779809356; x=1780414156;
+ d=1e100.net; s=20251104; t=1779809395; x=1780414195;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=KWVqD3wi61mrqswQKBHIJZnaqrymwWXImLah2hqCH74=;
- b=BAS8oTBuvrVDzILMJXtNPFP5FCXYAFf1YdRpM9EQ4bGtEqtJe3MTWPrN7cDbIh4iP1
- XyaaqZwQH6q3aUJF4jtR4AxXcoUAOgvbJwmu5W9r9+4FiM1EgVtoomnFJVIE0TsTIAAp
- iLM3DQOP8pbmnObC53KiAyBlV3eIVQ1AUX15g3MZ6NGy60/r69UdZxG0aMe0AfRzBqiT
- 8gzEL1fTqgRR2r4GXWbFd6drCTGUc+vZhEDDgJkEEAQKMst0FVRL43IhO49x5xvrWQTy
- wz5Ee5lc5o9tzcPoysBST5TIGY+qP44AfTjA1nI96EcRfWsCTpZuOVqv5WkfKP5Q9uCH
- daMQ==
-X-Gm-Message-State: AOJu0YypBx4edfJFmeQbHuN0K/iKYeGIPn4VnIJAFhf9Q5YcREry1d8W
- QgC2q22dGnbwxXUqmWprzaHvO9qAsY8ADT2uu28QBm8Ok9rFfTuD3fkt
-X-Gm-Gg: Acq92OF1tZVHj9Y9d7x/WpWImDX5jnG+EI/rUrxQA6WdpOMZU3eaH7IHkR8o4Uoy7cx
- wacXGvrOH+53HV5y5vgmjAUxREZzdTneuBU8vwZ3evLuL7RGv28axlF2Qy8EhIoeM5pXLO4pUun
- LVtiPXSRue9hzUrdZul7wFvNkVdbE0cpOyuN2gVRvyzz5GdImhxjXeeT2fWVTMPkF58E9FBvGyK
- RMeme/HgYB9/oL7iLGByD9vDnWqR/M09EcnwPkRlxFb5L6HLUyTuZr5ReIw6l3rSt0wrfPu+qKg
- l+ytuJxOEF8nbVv3GwfJ0iBlSUWGh03hTDjRBVR9LlkvKRUKtvDVTQ5wJwxUzKN8WSpVMEHEKSh
- xVQAJh3D+9pIQbwuFAA14Lg+WrkZ0HPnVZxs2pEMFv35j4UV7JvHvTiSgApk7qaxZgZh2H7Gpc7
- BP7PNg5cclftZLkEMcmtHFmjwLW6P/WJvx3cUplNTzLZBa5ZdjB3fbrT3ECE1wnYmcfLVeL6T4k
- /Z140Mb7dGrVfb3KBOM9hdnEJ8Tb8l880xAfq4=
-X-Received: by 2002:a05:7300:ad2d:b0:2c7:ea98:d94 with SMTP id
- 5a478bee46e88-30448ffda4emr8297293eec.2.1779809355609; 
- Tue, 26 May 2026 08:29:15 -0700 (PDT)
+ bh=oNUCRQEwCOzK+BYAq7IWCwTpwNi3TXaowgx1GATJda8=;
+ b=cLodQmtrx96xjPUg6PltgmZOGnloRoxWLTnYlCIMcl5F/g+PIY6nSTGz7O8HaBjCx8
+ AQlieCjM2WRksCh03/i8xr+8hHP18hlC5FWBzRKpObZgv/rlVwNYpN80eAJKdxrII1VU
+ Jk8aTXBIFr1PN/2eJUR0+DnCtVitlIkJFmUYy7Ey3ZxriFL48RjVXVwLskbxAVOFUzdx
+ O7tSKW9rhlfL7gnJtWmeUnnf+YZI5mFQjzSVFP+64pCLIqELfT+MiIxSKnxNPpS1+GpL
+ b3QLhDcT6YUtfwHzFEEF5yCxIeFDLRsW7pNaVgRQpRqeugLFXWikErG/6N+lVCsxuoDz
+ C6MA==
+X-Gm-Message-State: AOJu0YwbdjyHT9SfIaUgHGh8nq0egj9YW3bCZY+5LDlR6ZRFiryVNt1n
+ 5vHd9wMhz9Tz7O36Pin0kX21VurTKgh2+kvXlvOvgqUPwdAFGmEs4X7U
+X-Gm-Gg: Acq92OGgIIiSCfS67wWUCfVIg+ts+LWGnrpG22pewKkea0NCLgYgediQei4vxfzZhBi
+ miFBf7/x7jet74TXAirS1Lp1nXfbb1vH7af1ow1bVzSyXnRbFVoa4OG7XdajF/m3/q0bo21awiC
+ JP3cQgybq9jtA53kvHjD8t0lRwmxufyYFKF8jpRmOGmuM5GpeUN5eTBAxd2296iZxGDSUYHMhBt
+ mh/8c0+Bomkir631Sm3hkIT3XN/1SEJjU0xwhBKZWrE+5B+74OFS9lFpMepo3Lx8VIuLWNhxA2q
+ EgHHlASwjqhgnbe9J23vaSYGeE7bTkVAtg8Gi/OS3cOBHQUhgTyESa7CxZU2H/zXuITZfb3OVfP
+ ESBIE3te66mqN5GOBSVifXyQvM8AxRW9vMRAwIeYafT/n1aPko21eXgJNKT0s23M8hITAtUH3pb
+ 0h9l8qF46PST17aougXfInZ+o7fLcE2ihrxD9dtrKYt55soOVkZ3fXIO1JDQ6lJnqLTYyMjXs0J
+ iX8qYQXvETjBv5vZAhAwAsshkV7Q0fTC/l/8PZpFg==
+X-Received: by 2002:a05:7301:169a:b0:2f5:6d9c:7156 with SMTP id
+ 5a478bee46e88-30449101dc3mr9034673eec.17.1779809394982; 
+ Tue, 26 May 2026 08:29:54 -0700 (PDT)
 Received: from
- runnervmg397c.g4nerqiq52bu3pqkxddim1hjba.dx.internal.cloudapp.net
- ([20.189.181.74]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3045245f4e5sm10959422eec.28.2026.05.26.08.29.14
+ runnervmg397c.r5jbl4mdtirulmehxqxm4a3ntd.phxx.internal.cloudapp.net
+ ([20.168.109.86]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-304535ae870sm10484193eec.19.2026.05.26.08.29.54
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 May 2026 08:29:15 -0700 (PDT)
+ Tue, 26 May 2026 08:29:54 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Tue, 26 May 2026 15:29:13 +0000
-Message-ID: <20260526152913.3671-1-linuxtestproject.agent@gmail.com>
+To: Michael Menasherov <mmenashe@redhat.com>
+Date: Tue, 26 May 2026 15:29:53 +0000
+Message-ID: <20260526152953.3854-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260526083650.14036-1-wegao@suse.com>
-References: <20260526083650.14036-1-wegao@suse.com>
+In-Reply-To: <20260526090730.22455-2-mmenashe@redhat.com>
+References: <20260526090730.22455-2-mmenashe@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] min_free_kbytes: Handle transient memory drops in
- check_monitor
+Subject: Re: [LTP] futex_wait06: Add EFAULT error coverage test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,32 +96,28 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi Michael,
 
-On Tue May 26 08:36:47 2026 +0000, Wei Gao wrote:
-> min_free_kbytes: Handle transient memory drops in check_monitor
+On Tue May 26 2026, Michael Menasherov wrote:
+> futex_wait06: Add EFAULT error coverage test
 
->  	struct sigaction sa;
->  
-> +	end = 0;
-> +
+All good. Approved.
 
-Good catch for multi-iteration support.
+--- [PATCH 2/4] ---
 
-> -		sleep(2);
-> +		usleep(100000);
+> futex_wait07: Add EINTR error coverage test
 
-Changing from 2s to 100ms makes the monitor much more responsive.
+All good. Approved.
 
-> +		for (i = 1; i < 1024; i *= 2) {
-> +			usleep(i * 1000);
-> +			memfree = SAFE_READ_MEMINFO("MemFree:");
-> +			if (memfree >= tune)
-> +				break;
-> +		}
+--- [PATCH 3/4] ---
 
-The exponential backoff is a good approach. Total wait time is ~1023ms
-(1+2+4+8+16+32+64+128+256+512), matching the commit message.
+> futex_wake05: Add EFAULT error coverage test
+
+All good. Approved.
+
+--- [PATCH 4/4] ---
+
+> futex_cmp_requeue03: Add EFAULT error coverage test
 
 All good. Approved.
 
