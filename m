@@ -4,113 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 188E8CD5BC8
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 08:35:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C7EECD5BC8
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 08:37:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1779784636; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=SAx7Fv1JkFoDGjvE1LZaqh37lfKIvK2z8hwWkR+JYC4=;
+ b=fQkY8FdEfk7vjhhXM53/g994HAC5nRxD11+LUX+uAeNWwenLbcDp4oCWHcG3PIjL5HQvf
+ HAMk1OPdeiWrrUYxYm453rQOELzse1wAJCpBWrvkiu0RbFxIW3CAdzFK1Tla/XSrqXo1AiS
+ DfPBy/Sx6ZZ/pZvZdouzkf9/PJPQNZg=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4704F3E525E
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 10:35:19 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id B05AA3E525B
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 10:37:16 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4BF463E525B
- for <ltp@lists.linux.it>; Tue, 26 May 2026 10:34:21 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0FEC63C5730
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 10:36:54 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 28A3D10006CD
- for <ltp@lists.linux.it>; Tue, 26 May 2026 10:34:19 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 34D9975D62
- for <ltp@lists.linux.it>; Tue, 26 May 2026 08:34:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1779784454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=R7J8Qe6DSmzpRX8nl0nboMOFArUI/7aIES0nIsgZMsU=;
- b=dVdWgyQaWL7/12HCIyz5tzKOPR4p/pmWRIMGT22c/jMY4sHewqpr6pRytUJL6dQz9GLNzF
- 6Xkofgt/V1K1Gf1PccxoSdizOrNdLseInhlfrjE9xIi03DTuuiUX2lFEsyts6XoCTQEgDW
- zox5CxFnb9F6e9qo6UfZAQ/hco8Gil8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1779784454;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=R7J8Qe6DSmzpRX8nl0nboMOFArUI/7aIES0nIsgZMsU=;
- b=dcpa+ye/Gu4m5LIJ2raFG875dJaDGtdsbI9qDfP1W9a/q6ILiK6S3ZxrH56hXFQnWu4OhR
- JQzZ3lN8rHEOL+CQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dVdWgyQa;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="dcpa+ye/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1779784454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=R7J8Qe6DSmzpRX8nl0nboMOFArUI/7aIES0nIsgZMsU=;
- b=dVdWgyQaWL7/12HCIyz5tzKOPR4p/pmWRIMGT22c/jMY4sHewqpr6pRytUJL6dQz9GLNzF
- 6Xkofgt/V1K1Gf1PccxoSdizOrNdLseInhlfrjE9xIi03DTuuiUX2lFEsyts6XoCTQEgDW
- zox5CxFnb9F6e9qo6UfZAQ/hco8Gil8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1779784454;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=R7J8Qe6DSmzpRX8nl0nboMOFArUI/7aIES0nIsgZMsU=;
- b=dcpa+ye/Gu4m5LIJ2raFG875dJaDGtdsbI9qDfP1W9a/q6ILiK6S3ZxrH56hXFQnWu4OhR
- JQzZ3lN8rHEOL+CQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 217125A0F7
- for <ltp@lists.linux.it>; Tue, 26 May 2026 08:34:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id uc4+BwZbFWo9SwAAD6G6ig
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 26 May 2026 08:34:14 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 598B11400159
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 10:36:53 +0200 (CEST)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-4906238c62eso17231895e9.3
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 01:36:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1779784613; x=1780389413; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=RX7pSwbDcUhw9pbESlIku7OKuq1kKDC39mKFnqTt18I=;
+ b=DhtXE9c75ytM9OMMFkQ6TKb76sTmcOU29WEHQCyNeDmmIzds4BEjyQ7+/j07xbR3v3
+ HbwfZQm90yVBmXTSDd/I8A/PsBriJFj1KgEY6CdXhTmCf1w4jGlNCYTn+d+6/kiaLERu
+ 5WDENK2OMN0ULDYBGzBUt3BVpPv62ymTUtHeZ0EgZ0pihm+QKZrbi9Jr8rbeamwil++T
+ LMTAilVGb9VWY1rfPMqjeHxkZxVY4P/rMY0NMv583N8mBKjfCIKWIyzKD+nNbT5Q7cVW
+ XieNx5qKfh94ywknkwX8Pt441gEsG/3pvkfBHHk4f3wOBQHxK2eBMzJ2l2zCOHBkpdq4
+ hm/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1779784613; x=1780389413;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=RX7pSwbDcUhw9pbESlIku7OKuq1kKDC39mKFnqTt18I=;
+ b=fwjgNnS2WzPapfExSIXKFEi3+yyAJgsWiaLQf6kZ2vpMlrssNVIWBcbNcA0XowHYkL
+ v3WKJuDLCArMLx/hTxXs6slqT+EE7aR00fj3IpZeij9YO/Ko1EO9G3bj3jTwGnPBhI6s
+ 1PqLTwgFj0//CVZJ5BAxZjngRFIXgGBnoREFOZQeJeQG74VoA+yAIQRhwseU7MpKt+Ge
+ buL26evg0xJ6JPcSpe9A7p7bqgRrAu9iLOK5CxFO36MibSIp8roDblyrCXDluh+k+xln
+ qU93yu1XrSCUEk4I+mDgPgJ/deCjJxE4NCQbFRyplvvWYakisBwWQ8CmWD4LSQ9+rstX
+ 6c6w==
+X-Gm-Message-State: AOJu0Yw1aLkl6MfQ4kETq9jAmtym774V5mufbSc0wRGnCU38ioZNJBvN
+ 24/JhDdsNEktWlaQMZiJK/oLp9nxO6g5jmFhm64LLIDTJR9WGPIR4foJliiaL8gHP3UlrTJXWcf
+ XdSQ=
+X-Gm-Gg: Acq92OGPtArtiEMNVAkpRTgPMdH3UwM9Gh01lrLXiFOQ97cN/PjygRS1U5ljmGIrs+O
+ /yhbyYJXLIU9Kt6ErVWm4ODp8bAz26V+pMZ38qu5uEt+TTX4fFl1EzObJaiOki4ek+/dK7stE4N
+ PmE/6hpWwRivDOiwMCEG2jwmTKTiv5x8387597YV1+klEaqQwl5IyBV8Rei7HsDDluEmFt87gqs
+ KCDG/73TAnbDkIZF2qa0580uZ84HJwH6mIBnP3Tqnf5bM6wPH8MO0eNw20MXS1Ynjft3/YY4OcR
+ gwKJuhCAKhaCm0BQeTJ+mwZe3FfCvqPVAWd5TaDvgVlQX5U2FoJosf/mw4RHf+FwIK3csDUGltL
+ YthxZC5FbdgdNUVaIdUUQVdzVXdscE5nqe1qXKTRPMHGRKoIWSMobsVyoq7rlzYfpYootnrvJIC
+ liwGNLzDVhYAE=
+X-Received: by 2002:a05:600c:4e4b:b0:489:1c32:210d with SMTP id
+ 5b1f17b1804b1-49069da61admr83113855e9.15.1779784612602; 
+ Tue, 26 May 2026 01:36:52 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-490452580dfsm160176975e9.1.2026.05.26.01.36.52
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 26 May 2026 01:36:52 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Tue, 26 May 2026 10:34:06 +0200
-Message-ID: <20260526083406.357092-3-chrubis@suse.cz>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260526083406.357092-1-chrubis@suse.cz>
-References: <20260526083406.357092-1-chrubis@suse.cz>
+Date: Tue, 26 May 2026 08:36:47 +0000
+Message-ID: <20260526083650.14036-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 34D9975D62
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; RCPT_COUNT_ONE(0.00)[1];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FROM_HAS_DN(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] syscalls/inotify{07,
- 08}: Fix TBROK on older kernels
+Subject: [LTP] [PATCH v1] min_free_kbytes: Handle transient memory drops in
+ check_monitor
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,51 +95,108 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-When kernel fails to generate events the read returns EAGAIN and since
-we switched to SAFE_READ() the tests now TBROK when kernel does not
-generate events. Fix this by passing the newly introduced
-SAFE_READ_ANY_EAGAIN flag to the SAFE_READ().
+High memory pressure can cause MemFree to temporarily drop below the
+min_free_kbytes threshold before the kernel reclaimer can catch up.
+This results in intermittent test failures, particularly observed on
+openQA aarch64 machines.
 
-Fixes: deda021818a4 ('inotify: modernize with SAFE_ wrappers')
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Implement a 1-second grace period with exponential backoff polling
+(from 1ms up to 512ms) in check_monitor() to allow the kernel time to
+reclaim memory. Also the global 'end' flag is reset for multi-iteration
+support (-i).
+
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- testcases/kernel/syscalls/inotify/inotify07.c | 2 +-
- testcases/kernel/syscalls/inotify/inotify08.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ .../kernel/mem/tunable/min_free_kbytes.c      | 36 +++++++++++++------
+ 1 file changed, 26 insertions(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
-index b4000f353..9cadbf656 100644
---- a/testcases/kernel/syscalls/inotify/inotify07.c
-+++ b/testcases/kernel/syscalls/inotify/inotify07.c
-@@ -88,7 +88,7 @@ void verify_inotify(void)
- 	strcpy(event_set[test_cnt].name, FILE_NAME);
- 	test_cnt++;
+diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
+index a62e4ae9d..59ba6a9e1 100644
+--- a/testcases/kernel/mem/tunable/min_free_kbytes.c
++++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright (c) Linux Test Project, 2012-2025
++ * Copyright (c) Linux Test Project, 2012-2026
+  * Copyright (C) 2012-2017  Red Hat, Inc.
+  */
  
--	int len = SAFE_READ(0, fd_notify, event_buf, EVENT_BUF_LEN);
-+	int len = SAFE_READ(SAFE_READ_ANY_EAGAIN, fd_notify, event_buf, EVENT_BUF_LEN);
+@@ -53,6 +53,8 @@ static void min_free_kbytes_test(void)
+ 	int pid, status;
+ 	struct sigaction sa;
  
- 	int i = 0, test_num = 0;
- 	while (i < len) {
-diff --git a/testcases/kernel/syscalls/inotify/inotify08.c b/testcases/kernel/syscalls/inotify/inotify08.c
-index e0837cac3..23d3c5a65 100644
---- a/testcases/kernel/syscalls/inotify/inotify08.c
-+++ b/testcases/kernel/syscalls/inotify/inotify08.c
-@@ -86,7 +86,7 @@ void verify_inotify(void)
- 	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
- 	SAFE_TOUCH(OVL_UPPER"/"FILE_NAME, 0644, NULL);
++	end = 0;
++
+ 	sa.sa_handler = sighandler;
+ 	if (sigemptyset(&sa.sa_mask) < 0)
+ 		tst_brk(TBROK | TERRNO, "sigemptyset");
+@@ -140,14 +142,13 @@ static void test_tune(unsigned long overcommit_policy)
+ 		} else {
+ 			if (WIFEXITED(status)) {
+ 				if (WEXITSTATUS(status) != 0) {
+-					tst_res(TFAIL, "child unexpectedly "
+-						 "failed: %d", status);
++					tst_res(TFAIL, "child unexpectedly failed: %d",
++						status);
+ 				}
+ 			} else if (!WIFSIGNALED(status) ||
+ 				   WTERMSIG(status) != SIGKILL) {
+-				tst_res(TFAIL,
+-					 "child unexpectedly failed: %d",
+-					 status);
++				tst_res(TFAIL, "child unexpectedly failed: %d",
++					status);
+ 			}
+ 		}
+ 	}
+@@ -183,18 +184,33 @@ static void check_monitor(void)
+ {
+ 	unsigned long tune;
+ 	unsigned long memfree;
++	int i;
  
--	int len = SAFE_READ(0, fd_notify, event_buf, EVENT_BUF_LEN);
-+	int len = SAFE_READ(SAFE_READ_ANY_EAGAIN, fd_notify, event_buf, EVENT_BUF_LEN);
+ 	while (!end) {
+ 		memfree = SAFE_READ_MEMINFO("MemFree:");
+ 		tune = TST_SYS_CONF_LONG_GET(MIN_FREE_KBYTES);
  
- 	int i = 0, test_num = 0;
- 	while (i < len) {
+ 		if (memfree < tune) {
+-			tst_res(TINFO, "MemFree is %lu kB, "
+-				 "min_free_kbytes is %lu kB", memfree, tune);
+-			tst_res(TFAIL, "MemFree < min_free_kbytes");
++			/*
++			 * Give it some time to reclaim. The kernel should keep
++			 * MemFree above min_free_kbytes, but transient drops
++			 * are possible under high pressure.
++			 */
++			for (i = 1; i < 1024; i *= 2) {
++				usleep(i * 1000);
++				memfree = SAFE_READ_MEMINFO("MemFree:");
++				if (memfree >= tune)
++					break;
++			}
++
++			if (memfree < tune) {
++				tst_res(TINFO, "MemFree is %lu kB, min_free_kbytes is %lu kB",
++					memfree, tune);
++				tst_res(TFAIL, "MemFree < min_free_kbytes");
++			}
+ 		}
+ 
+-		sleep(2);
++		usleep(100000);
+ 	}
+ }
+ 
 -- 
-2.53.0
+2.54.0
 
 
 -- 
