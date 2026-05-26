@@ -4,86 +4,157 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C7EECD5BC8
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 08:37:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1779784636; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=SAx7Fv1JkFoDGjvE1LZaqh37lfKIvK2z8hwWkR+JYC4=;
- b=fQkY8FdEfk7vjhhXM53/g994HAC5nRxD11+LUX+uAeNWwenLbcDp4oCWHcG3PIjL5HQvf
- HAMk1OPdeiWrrUYxYm453rQOELzse1wAJCpBWrvkiu0RbFxIW3CAdzFK1Tla/XSrqXo1AiS
- DfPBy/Sx6ZZ/pZvZdouzkf9/PJPQNZg=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 520C1CD5BC8
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 08:45:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B05AA3E525B
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 10:37:16 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id C26853E2069
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 10:45:06 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0FEC63C5730
- for <ltp@lists.linux.it>; Tue, 26 May 2026 10:36:54 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 631993C71CE
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 10:44:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 598B11400159
- for <ltp@lists.linux.it>; Tue, 26 May 2026 10:36:53 +0200 (CEST)
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-4906238c62eso17231895e9.3
- for <ltp@lists.linux.it>; Tue, 26 May 2026 01:36:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1779784613; x=1780389413; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=RX7pSwbDcUhw9pbESlIku7OKuq1kKDC39mKFnqTt18I=;
- b=DhtXE9c75ytM9OMMFkQ6TKb76sTmcOU29WEHQCyNeDmmIzds4BEjyQ7+/j07xbR3v3
- HbwfZQm90yVBmXTSDd/I8A/PsBriJFj1KgEY6CdXhTmCf1w4jGlNCYTn+d+6/kiaLERu
- 5WDENK2OMN0ULDYBGzBUt3BVpPv62ymTUtHeZ0EgZ0pihm+QKZrbi9Jr8rbeamwil++T
- LMTAilVGb9VWY1rfPMqjeHxkZxVY4P/rMY0NMv583N8mBKjfCIKWIyzKD+nNbT5Q7cVW
- XieNx5qKfh94ywknkwX8Pt441gEsG/3pvkfBHHk4f3wOBQHxK2eBMzJ2l2zCOHBkpdq4
- hm/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779784613; x=1780389413;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=RX7pSwbDcUhw9pbESlIku7OKuq1kKDC39mKFnqTt18I=;
- b=fwjgNnS2WzPapfExSIXKFEi3+yyAJgsWiaLQf6kZ2vpMlrssNVIWBcbNcA0XowHYkL
- v3WKJuDLCArMLx/hTxXs6slqT+EE7aR00fj3IpZeij9YO/Ko1EO9G3bj3jTwGnPBhI6s
- 1PqLTwgFj0//CVZJ5BAxZjngRFIXgGBnoREFOZQeJeQG74VoA+yAIQRhwseU7MpKt+Ge
- buL26evg0xJ6JPcSpe9A7p7bqgRrAu9iLOK5CxFO36MibSIp8roDblyrCXDluh+k+xln
- qU93yu1XrSCUEk4I+mDgPgJ/deCjJxE4NCQbFRyplvvWYakisBwWQ8CmWD4LSQ9+rstX
- 6c6w==
-X-Gm-Message-State: AOJu0Yw1aLkl6MfQ4kETq9jAmtym774V5mufbSc0wRGnCU38ioZNJBvN
- 24/JhDdsNEktWlaQMZiJK/oLp9nxO6g5jmFhm64LLIDTJR9WGPIR4foJliiaL8gHP3UlrTJXWcf
- XdSQ=
-X-Gm-Gg: Acq92OGPtArtiEMNVAkpRTgPMdH3UwM9Gh01lrLXiFOQ97cN/PjygRS1U5ljmGIrs+O
- /yhbyYJXLIU9Kt6ErVWm4ODp8bAz26V+pMZ38qu5uEt+TTX4fFl1EzObJaiOki4ek+/dK7stE4N
- PmE/6hpWwRivDOiwMCEG2jwmTKTiv5x8387597YV1+klEaqQwl5IyBV8Rei7HsDDluEmFt87gqs
- KCDG/73TAnbDkIZF2qa0580uZ84HJwH6mIBnP3Tqnf5bM6wPH8MO0eNw20MXS1Ynjft3/YY4OcR
- gwKJuhCAKhaCm0BQeTJ+mwZe3FfCvqPVAWd5TaDvgVlQX5U2FoJosf/mw4RHf+FwIK3csDUGltL
- YthxZC5FbdgdNUVaIdUUQVdzVXdscE5nqe1qXKTRPMHGRKoIWSMobsVyoq7rlzYfpYootnrvJIC
- liwGNLzDVhYAE=
-X-Received: by 2002:a05:600c:4e4b:b0:489:1c32:210d with SMTP id
- 5b1f17b1804b1-49069da61admr83113855e9.15.1779784612602; 
- Tue, 26 May 2026 01:36:52 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- 5b1f17b1804b1-490452580dfsm160176975e9.1.2026.05.26.01.36.52
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 May 2026 01:36:52 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue, 26 May 2026 08:36:47 +0000
-Message-ID: <20260526083650.14036-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AA58A2009ED
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 10:44:47 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1A53F6B11C;
+ Tue, 26 May 2026 08:44:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1779785086; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=W/fEKYlmG2kVFSKSyL4CjliYrnXkUGFPrZYFizF8xmY=;
+ b=WZXnXG72drDkBzON+nKqfxsA5lCMlmr8jKLN95AF3GqxX/ymRMmfJ1mFjVFEXDLnhKX1CF
+ nFFpeM44sTZX6fXCzttPLAwcVoVW5bnozcSg7f+eVKHkQDn1PBrLTvZ7SAFB3p0IoK3cQd
+ cfGI+UxTXeCw2zil+IdalGcoqIfGShw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1779785086;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=W/fEKYlmG2kVFSKSyL4CjliYrnXkUGFPrZYFizF8xmY=;
+ b=bpjdWFCMWiY2PyznKHffgx9lqBfdwOsiGjTNRqKkmn5dHdGsJw6MCFFJ4eFiAHU/crwamv
+ iYr2A1f4STj94CBg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=WZXnXG72;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=bpjdWFCM
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1779785086; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=W/fEKYlmG2kVFSKSyL4CjliYrnXkUGFPrZYFizF8xmY=;
+ b=WZXnXG72drDkBzON+nKqfxsA5lCMlmr8jKLN95AF3GqxX/ymRMmfJ1mFjVFEXDLnhKX1CF
+ nFFpeM44sTZX6fXCzttPLAwcVoVW5bnozcSg7f+eVKHkQDn1PBrLTvZ7SAFB3p0IoK3cQd
+ cfGI+UxTXeCw2zil+IdalGcoqIfGShw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1779785086;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=W/fEKYlmG2kVFSKSyL4CjliYrnXkUGFPrZYFizF8xmY=;
+ b=bpjdWFCMWiY2PyznKHffgx9lqBfdwOsiGjTNRqKkmn5dHdGsJw6MCFFJ4eFiAHU/crwamv
+ iYr2A1f4STj94CBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0EE635A0FF;
+ Tue, 26 May 2026 08:44:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6RAjA35dFWrRVQAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Tue, 26 May 2026 08:44:46 +0000
+Message-ID: <da5ffd24-8285-4888-a77d-0d70511afe8d@suse.cz>
+Date: Tue, 26 May 2026 10:44:45 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
+References: <20260526083406.357092-1-chrubis@suse.cz>
+ <20260526083406.357092-3-chrubis@suse.cz>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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 ag==
+In-Reply-To: <20260526083406.357092-3-chrubis@suse.cz>
+X-Rspamd-Queue-Id: 1A53F6B11C
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MID_RHS_MATCH_FROM(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim, suse.cz:email, suse.cz:mid,
+ imap1.dmz-prg2.suse.org:rdns, imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] min_free_kbytes: Handle transient memory drops in
- check_monitor
+Subject: Re: [LTP] [PATCH v2 2/2] syscalls/inotify{07,
+ 08}: Fix TBROK on older kernels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,109 +166,65 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-High memory pressure can cause MemFree to temporarily drop below the
-min_free_kbytes threshold before the kernel reclaimer can catch up.
-This results in intermittent test failures, particularly observed on
-openQA aarch64 machines.
+Hi,
+for both patches:
 
-Implement a 1-second grace period with exponential backoff polling
-(from 1ms up to 512ms) in check_monitor() to allow the kernel time to
-reclaim memory. Also the global 'end' flag is reset for multi-iteration
-support (-i).
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- .../kernel/mem/tunable/min_free_kbytes.c      | 36 +++++++++++++------
- 1 file changed, 26 insertions(+), 10 deletions(-)
+On 5/26/26 10:34, Cyril Hrubis wrote:
+> When kernel fails to generate events the read returns EAGAIN and since
+> we switched to SAFE_READ() the tests now TBROK when kernel does not
+> generate events. Fix this by passing the newly introduced
+> SAFE_READ_ANY_EAGAIN flag to the SAFE_READ().
+> 
+> Fixes: deda021818a4 ('inotify: modernize with SAFE_ wrappers')
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>   testcases/kernel/syscalls/inotify/inotify07.c | 2 +-
+>   testcases/kernel/syscalls/inotify/inotify08.c | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
+> index b4000f353..9cadbf656 100644
+> --- a/testcases/kernel/syscalls/inotify/inotify07.c
+> +++ b/testcases/kernel/syscalls/inotify/inotify07.c
+> @@ -88,7 +88,7 @@ void verify_inotify(void)
+>   	strcpy(event_set[test_cnt].name, FILE_NAME);
+>   	test_cnt++;
+>   
+> -	int len = SAFE_READ(0, fd_notify, event_buf, EVENT_BUF_LEN);
+> +	int len = SAFE_READ(SAFE_READ_ANY_EAGAIN, fd_notify, event_buf, EVENT_BUF_LEN);
+>   
+>   	int i = 0, test_num = 0;
+>   	while (i < len) {
+> diff --git a/testcases/kernel/syscalls/inotify/inotify08.c b/testcases/kernel/syscalls/inotify/inotify08.c
+> index e0837cac3..23d3c5a65 100644
+> --- a/testcases/kernel/syscalls/inotify/inotify08.c
+> +++ b/testcases/kernel/syscalls/inotify/inotify08.c
+> @@ -86,7 +86,7 @@ void verify_inotify(void)
+>   	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
+>   	SAFE_TOUCH(OVL_UPPER"/"FILE_NAME, 0644, NULL);
+>   
+> -	int len = SAFE_READ(0, fd_notify, event_buf, EVENT_BUF_LEN);
+> +	int len = SAFE_READ(SAFE_READ_ANY_EAGAIN, fd_notify, event_buf, EVENT_BUF_LEN);
+>   
+>   	int i = 0, test_num = 0;
+>   	while (i < len) {
 
-diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
-index a62e4ae9d..59ba6a9e1 100644
---- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-+++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Copyright (c) Linux Test Project, 2012-2025
-+ * Copyright (c) Linux Test Project, 2012-2026
-  * Copyright (C) 2012-2017  Red Hat, Inc.
-  */
- 
-@@ -53,6 +53,8 @@ static void min_free_kbytes_test(void)
- 	int pid, status;
- 	struct sigaction sa;
- 
-+	end = 0;
-+
- 	sa.sa_handler = sighandler;
- 	if (sigemptyset(&sa.sa_mask) < 0)
- 		tst_brk(TBROK | TERRNO, "sigemptyset");
-@@ -140,14 +142,13 @@ static void test_tune(unsigned long overcommit_policy)
- 		} else {
- 			if (WIFEXITED(status)) {
- 				if (WEXITSTATUS(status) != 0) {
--					tst_res(TFAIL, "child unexpectedly "
--						 "failed: %d", status);
-+					tst_res(TFAIL, "child unexpectedly failed: %d",
-+						status);
- 				}
- 			} else if (!WIFSIGNALED(status) ||
- 				   WTERMSIG(status) != SIGKILL) {
--				tst_res(TFAIL,
--					 "child unexpectedly failed: %d",
--					 status);
-+				tst_res(TFAIL, "child unexpectedly failed: %d",
-+					status);
- 			}
- 		}
- 	}
-@@ -183,18 +184,33 @@ static void check_monitor(void)
- {
- 	unsigned long tune;
- 	unsigned long memfree;
-+	int i;
- 
- 	while (!end) {
- 		memfree = SAFE_READ_MEMINFO("MemFree:");
- 		tune = TST_SYS_CONF_LONG_GET(MIN_FREE_KBYTES);
- 
- 		if (memfree < tune) {
--			tst_res(TINFO, "MemFree is %lu kB, "
--				 "min_free_kbytes is %lu kB", memfree, tune);
--			tst_res(TFAIL, "MemFree < min_free_kbytes");
-+			/*
-+			 * Give it some time to reclaim. The kernel should keep
-+			 * MemFree above min_free_kbytes, but transient drops
-+			 * are possible under high pressure.
-+			 */
-+			for (i = 1; i < 1024; i *= 2) {
-+				usleep(i * 1000);
-+				memfree = SAFE_READ_MEMINFO("MemFree:");
-+				if (memfree >= tune)
-+					break;
-+			}
-+
-+			if (memfree < tune) {
-+				tst_res(TINFO, "MemFree is %lu kB, min_free_kbytes is %lu kB",
-+					memfree, tune);
-+				tst_res(TFAIL, "MemFree < min_free_kbytes");
-+			}
- 		}
- 
--		sleep(2);
-+		usleep(100000);
- 	}
- }
- 
+
 -- 
-2.54.0
-
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
