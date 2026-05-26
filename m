@@ -4,96 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2020BCD5BC8
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 14:11:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D17D2CD5BB1
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 14:14:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 297CE3E62BD
-	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 16:11:19 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 7D3B03E62CC
+	for <ltp@archiver.kernel.org>; Tue, 26 May 2026 16:14:40 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 89FBF3CB041
- for <ltp@lists.linux.it>; Tue, 26 May 2026 16:10:59 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id C97263C01A4
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 16:14:20 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 059291A00812
- for <ltp@lists.linux.it>; Tue, 26 May 2026 16:10:58 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DAA4C60095A
+ for <ltp@lists.linux.it>; Tue, 26 May 2026 16:14:18 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7C7C175B90;
- Tue, 26 May 2026 14:10:57 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4A2D065731;
+ Tue, 26 May 2026 14:14:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1779804657;
+ t=1779804857;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ef+o+v26vIeXJk79YPRVH7qvs/ZcUSvNgYO+j0AJd1g=;
- b=aa3sRB6g6sB6kz9mZoGv3nPfLvwpTH7oL8IOgB/q/2zyfXPOmUK4WjuQqO8uIaiqQuh9Ez
- dg7c/Phrg5v1mVHeKL42YGLrY4epdU1Gd26yhJJdkJ+Sm76m1zrqMCCge/lv3QE6v3JhhZ
- 4JdswG1AW5tHmSI5DhHfAMdVZzkZW/U=
+ bh=EgJnPtJHohc4ZdHfAiAPuS/mUJn7VAHeML3YyO3VZKo=;
+ b=JRQtLbrb9plkfblpCo4Wz3eugdiTcWdf//R6xC94vW0UgQYHquef5HxKnk0kiABGKW/5Pv
+ CrBt5UKVS3Bh9Sv/TuYHUauPnJt53Dde/OuHnpATe87oDzE+X0sw6Nd/3soRR2od6iGWHF
+ HwiA5P+YxHX3V9WM/IyzvhqFwGYG71Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1779804657;
+ s=susede2_ed25519; t=1779804857;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ef+o+v26vIeXJk79YPRVH7qvs/ZcUSvNgYO+j0AJd1g=;
- b=cnNwcyJAI6zod9qiD70u24LbsQhm+luhnmnonx28L6mHgtSFA9Jn3eS8D3kgq193+WNhvY
- I57zI6cuusWdHiBw==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=EgJnPtJHohc4ZdHfAiAPuS/mUJn7VAHeML3YyO3VZKo=;
+ b=LEgvfKGdiVN4w0zckDw5KVY5M4dN/SjgT81QT+Z4Ub1QeO3OcB+JkEg0BPNKOGvmb6Vs3I
+ MRGDZ2t2jJi/fBBg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JRQtLbrb;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=LEgvfKGd
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1779804657;
+ t=1779804857;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ef+o+v26vIeXJk79YPRVH7qvs/ZcUSvNgYO+j0AJd1g=;
- b=aa3sRB6g6sB6kz9mZoGv3nPfLvwpTH7oL8IOgB/q/2zyfXPOmUK4WjuQqO8uIaiqQuh9Ez
- dg7c/Phrg5v1mVHeKL42YGLrY4epdU1Gd26yhJJdkJ+Sm76m1zrqMCCge/lv3QE6v3JhhZ
- 4JdswG1AW5tHmSI5DhHfAMdVZzkZW/U=
+ bh=EgJnPtJHohc4ZdHfAiAPuS/mUJn7VAHeML3YyO3VZKo=;
+ b=JRQtLbrb9plkfblpCo4Wz3eugdiTcWdf//R6xC94vW0UgQYHquef5HxKnk0kiABGKW/5Pv
+ CrBt5UKVS3Bh9Sv/TuYHUauPnJt53Dde/OuHnpATe87oDzE+X0sw6Nd/3soRR2od6iGWHF
+ HwiA5P+YxHX3V9WM/IyzvhqFwGYG71Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1779804657;
+ s=susede2_ed25519; t=1779804857;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ef+o+v26vIeXJk79YPRVH7qvs/ZcUSvNgYO+j0AJd1g=;
- b=cnNwcyJAI6zod9qiD70u24LbsQhm+luhnmnonx28L6mHgtSFA9Jn3eS8D3kgq193+WNhvY
- I57zI6cuusWdHiBw==
+ bh=EgJnPtJHohc4ZdHfAiAPuS/mUJn7VAHeML3YyO3VZKo=;
+ b=LEgvfKGdiVN4w0zckDw5KVY5M4dN/SjgT81QT+Z4Ub1QeO3OcB+JkEg0BPNKOGvmb6Vs3I
+ MRGDZ2t2jJi/fBBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0910F5A245;
- Tue, 26 May 2026 14:10:56 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B7915A248;
+ Tue, 26 May 2026 14:14:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id VvfKN/CpFWqKHQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 26 May 2026 14:10:56 +0000
-Date: Tue, 26 May 2026 16:10:54 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id eDSzOLiqFWqbIAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 26 May 2026 14:14:16 +0000
+Date: Tue, 26 May 2026 16:14:11 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Wei Gao <wegao@suse.com>
-Message-ID: <20260526141054.GA175193@pevik>
+Message-ID: <20260526141411.GB175193@pevik>
 References: <20260526083650.14036-1-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20260526083650.14036-1-wegao@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 4A2D065731
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto,suse.com:email]; 
- RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v1] min_free_kbytes: Handle transient memory drops
  in check_monitor
@@ -117,80 +128,7 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Wei,
 
-> High memory pressure can cause MemFree to temporarily drop below the
-> min_free_kbytes threshold before the kernel reclaimer can catch up.
-> This results in intermittent test failures, particularly observed on
-> openQA aarch64 machines.
-
-> Implement a 1-second grace period with exponential backoff polling
-> (from 1ms up to 512ms) in check_monitor() to allow the kernel time to
-> reclaim memory.
-
-> Also the global 'end' flag is reset for multi-iteration
-> support (-i).
-IMHO this is not needed. Is it just wrong AI hint or you really spot it's
-needed?
-
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  .../kernel/mem/tunable/min_free_kbytes.c      | 36 +++++++++++++------
->  1 file changed, 26 insertions(+), 10 deletions(-)
-
-> diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
-> index a62e4ae9d..59ba6a9e1 100644
-> --- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-> +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> - * Copyright (c) Linux Test Project, 2012-2025
-> + * Copyright (c) Linux Test Project, 2012-2026
->   * Copyright (C) 2012-2017  Red Hat, Inc.
->   */
-
-> @@ -53,6 +53,8 @@ static void min_free_kbytes_test(void)
->  	int pid, status;
->  	struct sigaction sa;
-
-> +	end = 0;
-Why I think it's not needed? Here you're in the parent. But the value is changed
-only in child (forked process), they run in a separate memory spaces (change in
-child is not visible for the parent).
-
-In patch without it + updated commit message you may add:
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-> +
->  	sa.sa_handler = sighandler;
->  	if (sigemptyset(&sa.sa_mask) < 0)
->  		tst_brk(TBROK | TERRNO, "sigemptyset");
-> @@ -140,14 +142,13 @@ static void test_tune(unsigned long overcommit_policy)
->  		} else {
->  			if (WIFEXITED(status)) {
->  				if (WEXITSTATUS(status) != 0) {
-> -					tst_res(TFAIL, "child unexpectedly "
-> -						 "failed: %d", status);
-> +					tst_res(TFAIL, "child unexpectedly failed: %d",
-> +						status);
->  				}
->  			} else if (!WIFSIGNALED(status) ||
->  				   WTERMSIG(status) != SIGKILL) {
-> -				tst_res(TFAIL,
-> -					 "child unexpectedly failed: %d",
-> -					 status);
-> +				tst_res(TFAIL, "child unexpectedly failed: %d",
-> +					status);
->  			}
-Unrelated cleanup, but thanks.
-
->  		}
->  	}
-> @@ -183,18 +184,33 @@ static void check_monitor(void)
->  {
->  	unsigned long tune;
->  	unsigned long memfree;
-> +	int i;
-
+...
 >  	while (!end) {
 >  		memfree = SAFE_READ_MEMINFO("MemFree:");
 >  		tune = TST_SYS_CONF_LONG_GET(MIN_FREE_KBYTES);
@@ -215,13 +153,21 @@ Unrelated cleanup, but thanks.
 > +				tst_res(TINFO, "MemFree is %lu kB, min_free_kbytes is %lu kB",
 > +					memfree, tune);
 > +				tst_res(TFAIL, "MemFree < min_free_kbytes");
-> +			}
->  		}
+nit: TINFO message followed by TFAIL message is not optimal. I'd either always
+print TINFO:
 
-> -		sleep(2);
-> +		usleep(100000);
->  	}
->  }
+			tst_res(TINFO, "MemFree is %lu kB, min_free_kbytes is %lu kB",
+				memfree, tune);
+
+			if (memfree < tune) {
+				tst_res(TFAIL, "MemFree < min_free_kbytes");
+
+or combine info in the error message:
+			if (memfree < tune) {
+				tst_res(TFAIL, "MemFree %lu kB < min_free_kbytes %lu kB", memfree, tune);
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
