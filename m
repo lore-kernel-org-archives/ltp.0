@@ -4,100 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60A2BCD5BDE
-	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 09:28:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9B13CD4F54
+	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 09:28:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1779874079; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1779874101; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=vUQqCyOEF+r4jCmSbAhYpu1Z6AKQHpL1HaZBgtKyYB8=;
- b=fuJtTRBPWnZq288urLSOZJIdDoDP3dWdG4VR5vvoGgOiBLKhd9v1b+3zb9TLTrOqQldQW
- O4gLJ5g2VyrOpL6Syrl7RtHGhkRogH77a/88IYWa3Fvfuy6LR67Ac7ZQ48P//4DmhAIiJMC
- PXeUhLCznjGCzMkEIXEaqXPjor72C6U=
+ bh=1T0fT571oEkrTVbZvrXt/RzsoEtbo/hGxvt4aL9Ku10=;
+ b=RtBirP1ogdc5htLGMEvUiv1IYIVq940tctsMMq8pEOSPWGc5Fmk6gbR8p9NguAxeT8YFK
+ 53kZE2ipEN+KIczeBd41Wqehm8qJwoM+qNZAxlbx5fKOEeVm3/RgyVjwetmFnHZYhF4CYKX
+ c8SeaoTMmZabyzdrczOf7XiYqOsFVdE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E4D803CB98B
-	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 11:27:59 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 631303C9A33
+	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 11:28:21 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8434A3CB69A
- for <ltp@lists.linux.it>; Wed, 27 May 2026 11:26:32 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 3AA983CB69A
+ for <ltp@lists.linux.it>; Wed, 27 May 2026 11:26:33 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C1804600ADF
- for <ltp@lists.linux.it>; Wed, 27 May 2026 11:26:31 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8E5631000989
+ for <ltp@lists.linux.it>; Wed, 27 May 2026 11:26:32 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1779873990;
+ s=mimecast20190719; t=1779873991;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=uZAj81vg7UdQnS+0iskttImribHHfAO+YYWNW2506Rs=;
- b=K9557BpCFgmHxtbcR2bO2NvCsN1OSg2uFYL9ZouWlRoYaNMKUE+wv9T3+mxm6/0dxy8+sl
- PHOaMDgOikTgevlda0WKedzdfga0xN3ZgfmmkL77fbabPCv0odx2HPeRV9YksFC5x3wxxm
- 1Nrk7wzLR4g5pcYPnpIeugANaQxLRAQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=QHx6ZScccUvs0lY8y/mFAckXqXoAKNw8Iwym4SnikqM=;
+ b=ZK/nT1OXaIQ39Pnoazo5RtsXK4n9wMXaaSB4l0EBTLyME7zQydYxzrl0huv391MwNRmwQ+
+ 5QmHJaJMvtr5re8F4W8HL/vAduQzm708mlRhCwIm5yZGkX/OmShazCIAHWA6xSSJstbeCI
+ wO2m2YyS9pX7CF6vEd0d2OHMRXNMnfw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-453-xgabKAD5O4eZ-lpGhi_AqQ-1; Wed, 27 May 2026 05:26:28 -0400
-X-MC-Unique: xgabKAD5O4eZ-lpGhi_AqQ-1
-X-Mimecast-MFC-AGG-ID: xgabKAD5O4eZ-lpGhi_AqQ_1779873987
-Received: by mail-wm1-f71.google.com with SMTP id
- 5b1f17b1804b1-49047e9ca88so41671765e9.3
- for <ltp@lists.linux.it>; Wed, 27 May 2026 02:26:28 -0700 (PDT)
+ us-mta-663-I8rp9R6hPNurm6mIPt34EA-1; Wed, 27 May 2026 05:26:30 -0400
+X-MC-Unique: I8rp9R6hPNurm6mIPt34EA-1
+X-Mimecast-MFC-AGG-ID: I8rp9R6hPNurm6mIPt34EA_1779873989
+Received: by mail-wr1-f72.google.com with SMTP id
+ ffacd0b85a97d-4411a36715dso7557080f8f.2
+ for <ltp@lists.linux.it>; Wed, 27 May 2026 02:26:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779873987; x=1780478787;
+ d=1e100.net; s=20251104; t=1779873989; x=1780478789;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=uZAj81vg7UdQnS+0iskttImribHHfAO+YYWNW2506Rs=;
- b=KYCFYV/DMUSxbAy3w68oi3FlFDeSgQSiEcnXJUEW1/MiPS2sEywJ8nD9nrGq24aN8o
- Vahgb8SMw3ohlqnWRgPjgHnjWldTDG6ccZdamYcQpQ1G+YiuRSz+9WE3ACxKC9wMA78Z
- YN5b5b53QbGdAFHCMdvgRei4dMyXQj+WzMj6Rqsdqdhi3PHiXuTHtLhGsp527sTrnlxy
- huE7DVb8LIRVaIotDrZQqIRh7I+l3Arg4zmty50WBiQ5wUkb8/bS3KgmEs3mXT/auWQ/
- Nhl2YrRmYGuJB34srSrDM/KowHm1LRG+rxErt9Gs/YJWLKGrImnHyVJYc3y1P9PuhHNn
- RyiA==
-X-Gm-Message-State: AOJu0YxRg5fMmTeIX8UrxDt1qhCvW9yQTnbWJwz5p74uWmoWnZQsTC7n
- KZJtq/nEa3PVAoGZWWRrd19KEnzPn13imkCC0D1aOvERwtb4i84J8OkBXiqwpGqzW7AJcbn+Ry/
- B1V/wxjizNTH1HAAkly3d6MGP8+IlKgpTipVpF8uVoJmnfCDroDEMOhXaeC6FIojJqUxFtdCEmI
- lllOoCvMUFa36xWZ5VTBwvhBo03V0v8Tx3wyu4
-X-Gm-Gg: Acq92OFKZCd+Gyojte7moTNNmg2d3qPkqwwPXhlzYvGscxB4qsBM7gYVT6JspRq5BkR
- mNVgTcRNMppjt88hr04uq2KokQPGtyS21MqKzmqaLWigbzUiFs863D5WjqWrqBdieIihxuJFndm
- KSt5tdI1gOTdpN7YxNtSd+GLmtLOnqhiwNgyOQxp85shjC1aAiANRjQ5xxG2PSH1VUPC0D9PIxU
- lTX9D827lzX7xqjotG77dUd+RVQsuCCqtj5K6knzOKfIcF3FyhurY7Tb7+LthYqe9mr4dY3Mdih
- hycHw7HuJBQXsrK6XvSos5gpNbrZ+MJ9/MuWtHjpN7FrOdIFTSot0EUAMghr3MdGTyL1a9YDThX
- H+/Ds5dNgjL+smhfX9e23VVEwFo9m65qcb3cjN9BmXVusPEa441rnxLoPv9cgPw==
-X-Received: by 2002:a05:600c:1c0b:b0:488:b187:3c with SMTP id
- 5b1f17b1804b1-490426aa7acmr410376375e9.14.1779873987248; 
- Wed, 27 May 2026 02:26:27 -0700 (PDT)
-X-Received: by 2002:a05:600c:1c0b:b0:488:b187:3c with SMTP id
- 5b1f17b1804b1-490426aa7acmr410375945e9.14.1779873986749; 
- Wed, 27 May 2026 02:26:26 -0700 (PDT)
+ bh=QHx6ZScccUvs0lY8y/mFAckXqXoAKNw8Iwym4SnikqM=;
+ b=PycS+IvCNoBcI0KeefhXxoN5TSkLefRf3Lw1rmAjQGJ54FkYnRb8dULG8Uhzf3uVo2
+ 9k1fQ75pLyinMu8D2PDOUv8Z/GdBQpqQoJwO7fHdpxb8FbYKUUKhUjA4W2GQ8QymU1rG
+ aUBhiH88XBea9cx7A1On2g7CMQq7k4V53ROARaCx2nIDMfzPZUyZ9mgpNnczULyrNwVN
+ iJUHvbNoAueU7VbnKiie+Hv9ihF6IaUPlZWVEydlonJGVT5QcRzDIeRvStapiXARpoUX
+ voJo6U7aTlqEjaDMhEknU7uwx1ybl36nnaFok2kI3riPDk6PHMUCqOPhRz6EoTmEFCJx
+ J07A==
+X-Gm-Message-State: AOJu0YxUrYv4og77HPybliukb5mHvAd8O1OqS9IPVyvYAVO18GcQKSVn
+ RUZb1ivGfN0fnzg9NOLY4M8+3nrKiFUuxPKl+TiCxw4DyhbBQsXM5KwMKsf3DVTvfCSjaNolRmE
+ jf8Q8qXDZuoPG7X0Vv56Y/rlT09csbK9bGVSvp2FKAOwVQPwQM3ULHV7ocZUw5zuBfbQWxMx5dO
+ uCaewmL2cOS5HD1Gs8bqgAe5Jlg0ysFNcgDDMn
+X-Gm-Gg: Acq92OGdPomPpUagdBlWiAPtmTdJ1RtJBQcW54gZ3vPlqRPHsfAgrFgX29UdqJyqN2W
+ 58pXq9c245DrOl174jOXjXYTGuvFrKYQStBodZLWyLRNKLyswATtririu2TGiemI/6ycY3HwfNJ
+ duO0Q32UFPCEhDpKkhOFIsWXIc8bNwjiI+2hyWi7bRxzSsi/COgjHm+75np7XuDBh6yvRmLtiEc
+ 2F+G5ix2/EV2APntvYpuehgZPF1Euh/DFptNyK1gvS2LR24RWc92BCFzcIhINy0t3tZF7d7wcEP
+ i/NxM4Ycg21zZ1VxBTfP6uk/HJ+Z3zdFvG7Ij+XrcW4dEFtgtjxb3UdQZnYzMYjugVz7PqTE5wr
+ NBYIojLmjLVlXw/CVAj7xnJnmTLt+dnZ1pwua7aGqhFJ1+qmcmw5CjYc5GfhCzNfOuqqYuVIf
+X-Received: by 2002:a05:6000:461b:b0:451:4d47:c9d9 with SMTP id
+ ffacd0b85a97d-45eb38b5c4bmr36604959f8f.14.1779873988749; 
+ Wed, 27 May 2026 02:26:28 -0700 (PDT)
+X-Received: by 2002:a05:6000:461b:b0:451:4d47:c9d9 with SMTP id
+ ffacd0b85a97d-45eb38b5c4bmr36604908f8f.14.1779873988282; 
+ Wed, 27 May 2026 02:26:28 -0700 (PDT)
 Received: from fedora.redhat.com (89-138-3-119.bb.netvision.net.il.
  [89.138.3.119]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-45edb5a281dsm4552653f8f.24.2026.05.27.02.26.24
+ ffacd0b85a97d-45edb5a281dsm4552653f8f.24.2026.05.27.02.26.26
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 27 May 2026 02:26:25 -0700 (PDT)
+ Wed, 27 May 2026 02:26:27 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Wed, 27 May 2026 12:26:17 +0300
-Message-ID: <20260527092618.14824-4-mmenashe@redhat.com>
+Date: Wed, 27 May 2026 12:26:18 +0300
+Message-ID: <20260527092618.14824-5-mmenashe@redhat.com>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260527092618.14824-1-mmenashe@redhat.com>
 References: <20260527092618.14824-1-mmenashe@redhat.com>
 MIME-Version: 1.0
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 3x5qwBzivM7mOlosVtIsJvMFPJAs5ej2RMctW8wRCCU_1779873987
+X-Mimecast-MFC-PROC-ID: Xgc-71ud7OxyjMManyUPTdbHXYQ6xGb-3QVKDd9cMZw_1779873989
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v14 3/4] futex_wake05: Add EFAULT error coverage test
+Subject: [LTP] [PATCH v14 4/4] futex_cmp_requeue03: Add EFAULT error
+ coverage test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,44 +116,45 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-futex(FUTEX_WAKE) has no existing test for EFAULT. Add coverage for
-the cases where uaddr points to unmapped or PROT_NONE memory.
+futex(FUTEX_CMP_REQUEUE) has no existing test for EFAULT. Add coverage
+for the cases where uaddr or uaddr2 points to unmapped or inaccessible
+(PROT_NONE) memory.
 
 Signed-off-by: Michael Menasherov <mmenashe@redhat.com>
 ---
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/futex/.gitignore    |  1 +
- .../kernel/syscalls/futex/futex_wake05.c      | 89 +++++++++++++++++++
- 3 files changed, 91 insertions(+)
- create mode 100644 testcases/kernel/syscalls/futex/futex_wake05.c
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/futex/.gitignore    |   1 +
+ .../syscalls/futex/futex_cmp_requeue03.c      | 102 ++++++++++++++++++
+ 3 files changed, 104 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index e6c5d5112..8c4d9be6c 100644
+index 8c4d9be6c..87bd5aeac 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1877,6 +1877,7 @@ futex_wake01 futex_wake01
- futex_wake02 futex_wake02
- futex_wake03 futex_wake03
- futex_wake04 futex_wake04
-+futex_wake05 futex_wake05
- futex_wait_bitset01 futex_wait_bitset01
+@@ -1863,6 +1863,7 @@ perf_event_open02 perf_event_open02
  
- memfd_create01 memfd_create01
+ futex_cmp_requeue01 futex_cmp_requeue01
+ futex_cmp_requeue02 futex_cmp_requeue02
++futex_cmp_requeue03 futex_cmp_requeue03
+ futex_wait01 futex_wait01
+ futex_wait02 futex_wait02
+ futex_wait03 futex_wait03
 diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
-index 74ac9a926..c11546e07 100644
+index c11546e07..231b6bd25 100644
 --- a/testcases/kernel/syscalls/futex/.gitignore
 +++ b/testcases/kernel/syscalls/futex/.gitignore
-@@ -15,3 +15,4 @@
- /futex_waitv03
+@@ -16,3 +16,4 @@
  /futex_wait06
  /futex_wait07
-+/futex_wake05
-diff --git a/testcases/kernel/syscalls/futex/futex_wake05.c b/testcases/kernel/syscalls/futex/futex_wake05.c
+ /futex_wake05
++/futex_cmp_requeue03
+diff --git a/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
 new file mode 100644
-index 000000000..5b0f4ac17
+index 000000000..6063ddd86
 --- /dev/null
-+++ b/testcases/kernel/syscalls/futex/futex_wake05.c
-@@ -0,0 +1,89 @@
++++ b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
+@@ -0,0 +1,102 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (C) 2026 Red Hat, Inc.
@@ -161,13 +162,15 @@ index 000000000..5b0f4ac17
 + */
 +
 +/*\
-+ * Check that futex(FUTEX_WAKE) returns EFAULT when uaddr points to
-+ * unmapped or PROT_NONE memory.
++ * Check that futex(FUTEX_CMP_REQUEUE) returns EFAULT when uaddr or
++ * uaddr2 points to unmapped memory, or when uaddr points to memory
++ * without read permission (PROT_NONE).
 + *
-+ * The test uses opflags=0 (no FUTEX_PRIVATE_FLAG), so futex_wake() takes
-+ * the shared-futex path in get_futex_key() which must resolve the physical
-+ * page. For PROT_NONE memory this page lookup fails with EFAULT, even though
-+ * futex_wake() never reads *uaddr.
++ * The test uses opflags=0 (no FUTEX_PRIVATE_FLAG) so get_futex_key()
++ * takes the shared-futex path and resolves the physical page; this
++ * lookup fails with EFAULT for unmapped and PROT_NONE addresses.
++ * get_futex_key() is called for both uaddr and uaddr2 before the
++ * *uaddr == val check; futex_var and val are both FUTEX_INITIALIZER.
 + */
 +
 +#include <errno.h>
@@ -175,6 +178,8 @@ index 000000000..5b0f4ac17
 +
 +#include "futextest.h"
 +
++static futex_t futex_var = FUTEX_INITIALIZER;
++static futex_t *futex_ptr = &futex_var;
 +static futex_t *unmapped_addr;
 +static futex_t *prot_none_addr;
 +
@@ -190,17 +195,26 @@ index 000000000..5b0f4ac17
 +
 +static struct testcase {
 +	const char *desc;
-+	futex_t **addr;
++	futex_t **uaddr;
++	futex_t **uaddr2;
 +	int exp_errno;
 +} testcases[] = {
 +	{
 +		.desc = "uaddr unmapped",
-+		.addr = &unmapped_addr,
++		.uaddr = &unmapped_addr,
++		.uaddr2 = &futex_ptr,
++		.exp_errno = EFAULT,
++	},
++	{
++		.desc = "uaddr2 unmapped",
++		.uaddr = &futex_ptr,
++		.uaddr2 = &unmapped_addr,
 +		.exp_errno = EFAULT,
 +	},
 +	{
 +		.desc = "uaddr PROT_NONE",
-+		.addr = &prot_none_addr,
++		.uaddr = &prot_none_addr,
++		.uaddr2 = &futex_ptr,
 +		.exp_errno = EFAULT,
 +	},
 +};
@@ -210,8 +224,8 @@ index 000000000..5b0f4ac17
 +	struct futex_test_variants *tv = &variants[tst_variant];
 +	struct testcase *tc = &testcases[n];
 +
-+	TST_EXP_FAIL(futex_wake(tv->fntype, *tc->addr, 1, 0),
-+		     tc->exp_errno, "%s", tc->desc);
++	TST_EXP_FAIL(futex_cmp_requeue(tv->fntype, *tc->uaddr, futex_var,
++				       *tc->uaddr2, 1, 1, 0), tc->exp_errno, "%s", tc->desc);
 +}
 +
 +static void setup(void)
