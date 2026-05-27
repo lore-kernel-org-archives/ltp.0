@@ -4,100 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9B13CD4F54
-	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 09:28:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1779874101; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=1T0fT571oEkrTVbZvrXt/RzsoEtbo/hGxvt4aL9Ku10=;
- b=RtBirP1ogdc5htLGMEvUiv1IYIVq940tctsMMq8pEOSPWGc5Fmk6gbR8p9NguAxeT8YFK
- 53kZE2ipEN+KIczeBd41Wqehm8qJwoM+qNZAxlbx5fKOEeVm3/RgyVjwetmFnHZYhF4CYKX
- c8SeaoTMmZabyzdrczOf7XiYqOsFVdE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59E2ACD5BD5
+	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 09:54:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 631303C9A33
-	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 11:28:21 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C643D3C9A33
+	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 11:54:03 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3AA983CB69A
- for <ltp@lists.linux.it>; Wed, 27 May 2026 11:26:33 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6CBEA3C6FCD
+ for <ltp@lists.linux.it>; Wed, 27 May 2026 11:53:44 +0200 (CEST)
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com
+ [IPv6:2607:f8b0:4864:20::f43])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8E5631000989
- for <ltp@lists.linux.it>; Wed, 27 May 2026 11:26:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1779873991;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=QHx6ZScccUvs0lY8y/mFAckXqXoAKNw8Iwym4SnikqM=;
- b=ZK/nT1OXaIQ39Pnoazo5RtsXK4n9wMXaaSB4l0EBTLyME7zQydYxzrl0huv391MwNRmwQ+
- 5QmHJaJMvtr5re8F4W8HL/vAduQzm708mlRhCwIm5yZGkX/OmShazCIAHWA6xSSJstbeCI
- wO2m2YyS9pX7CF6vEd0d2OHMRXNMnfw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-663-I8rp9R6hPNurm6mIPt34EA-1; Wed, 27 May 2026 05:26:30 -0400
-X-MC-Unique: I8rp9R6hPNurm6mIPt34EA-1
-X-Mimecast-MFC-AGG-ID: I8rp9R6hPNurm6mIPt34EA_1779873989
-Received: by mail-wr1-f72.google.com with SMTP id
- ffacd0b85a97d-4411a36715dso7557080f8f.2
- for <ltp@lists.linux.it>; Wed, 27 May 2026 02:26:29 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EC51960093B
+ for <ltp@lists.linux.it>; Wed, 27 May 2026 11:53:43 +0200 (CEST)
+Received: by mail-qv1-xf43.google.com with SMTP id
+ 6a1803df08f44-8bb09239328so86976016d6.3
+ for <ltp@lists.linux.it>; Wed, 27 May 2026 02:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1779875623; x=1780480423; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=t1BwIO+wyA0vNzSv8KtZqlkcyqlN7InO5r6okKTlels=;
+ b=T5ZUDVVpYKKhEsR3ue0a5yIX31d2Ys03j0dEJwOd2XoPFVxDkZuOSdnOnoeXUUvxR0
+ 1XvQzVKmZBDCepadxPzzP73gYKRLlGkZYqeJgx9yEDQfNdxYbEmntdLjFUr7fn2u+a/Z
+ TNbyO+y72h2Su2MqSRgApgkTPjhsH5PUGdVBCx9b7RPV1mDcqk98/eehHLfrX6NXLrMB
+ 99o1PLyu53ObKINu/cgtWD+A+ZOZmpw3oLV4/x6h/jsT9RccH+pFd6bcl3FY3cKlMYaa
+ nVJh6wA1ORAIlGyXGPrVmKM2/HlbwLPgqup2nxaaWkmOcMN6U22WywXZbNnciSZoI3RI
+ bPtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779873989; x=1780478789;
+ d=1e100.net; s=20251104; t=1779875623; x=1780480423;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=QHx6ZScccUvs0lY8y/mFAckXqXoAKNw8Iwym4SnikqM=;
- b=PycS+IvCNoBcI0KeefhXxoN5TSkLefRf3Lw1rmAjQGJ54FkYnRb8dULG8Uhzf3uVo2
- 9k1fQ75pLyinMu8D2PDOUv8Z/GdBQpqQoJwO7fHdpxb8FbYKUUKhUjA4W2GQ8QymU1rG
- aUBhiH88XBea9cx7A1On2g7CMQq7k4V53ROARaCx2nIDMfzPZUyZ9mgpNnczULyrNwVN
- iJUHvbNoAueU7VbnKiie+Hv9ihF6IaUPlZWVEydlonJGVT5QcRzDIeRvStapiXARpoUX
- voJo6U7aTlqEjaDMhEknU7uwx1ybl36nnaFok2kI3riPDk6PHMUCqOPhRz6EoTmEFCJx
- J07A==
-X-Gm-Message-State: AOJu0YxUrYv4og77HPybliukb5mHvAd8O1OqS9IPVyvYAVO18GcQKSVn
- RUZb1ivGfN0fnzg9NOLY4M8+3nrKiFUuxPKl+TiCxw4DyhbBQsXM5KwMKsf3DVTvfCSjaNolRmE
- jf8Q8qXDZuoPG7X0Vv56Y/rlT09csbK9bGVSvp2FKAOwVQPwQM3ULHV7ocZUw5zuBfbQWxMx5dO
- uCaewmL2cOS5HD1Gs8bqgAe5Jlg0ysFNcgDDMn
-X-Gm-Gg: Acq92OGdPomPpUagdBlWiAPtmTdJ1RtJBQcW54gZ3vPlqRPHsfAgrFgX29UdqJyqN2W
- 58pXq9c245DrOl174jOXjXYTGuvFrKYQStBodZLWyLRNKLyswATtririu2TGiemI/6ycY3HwfNJ
- duO0Q32UFPCEhDpKkhOFIsWXIc8bNwjiI+2hyWi7bRxzSsi/COgjHm+75np7XuDBh6yvRmLtiEc
- 2F+G5ix2/EV2APntvYpuehgZPF1Euh/DFptNyK1gvS2LR24RWc92BCFzcIhINy0t3tZF7d7wcEP
- i/NxM4Ycg21zZ1VxBTfP6uk/HJ+Z3zdFvG7Ij+XrcW4dEFtgtjxb3UdQZnYzMYjugVz7PqTE5wr
- NBYIojLmjLVlXw/CVAj7xnJnmTLt+dnZ1pwua7aGqhFJ1+qmcmw5CjYc5GfhCzNfOuqqYuVIf
-X-Received: by 2002:a05:6000:461b:b0:451:4d47:c9d9 with SMTP id
- ffacd0b85a97d-45eb38b5c4bmr36604959f8f.14.1779873988749; 
- Wed, 27 May 2026 02:26:28 -0700 (PDT)
-X-Received: by 2002:a05:6000:461b:b0:451:4d47:c9d9 with SMTP id
- ffacd0b85a97d-45eb38b5c4bmr36604908f8f.14.1779873988282; 
- Wed, 27 May 2026 02:26:28 -0700 (PDT)
-Received: from fedora.redhat.com (89-138-3-119.bb.netvision.net.il.
- [89.138.3.119]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-45edb5a281dsm4552653f8f.24.2026.05.27.02.26.26
+ bh=t1BwIO+wyA0vNzSv8KtZqlkcyqlN7InO5r6okKTlels=;
+ b=d+qGxFQfYeCyBAlVj9XRNPDJqswePiCUlcpxLoroza9A7ZzBy91RHnA1SFI/4BzsGx
+ bzhS9fmXmj+27dFyU59bOnrg+d8U8Dru/G9RWD13g9mXBapTVQTc08j7XL6ly5pvoASh
+ rJ1HM+pUZBnp9tgBc1f4S53dO6+5vdwr77jsF/ohbejikPfvYelJgTQAIS2+EMruuJSD
+ FNGlVsgVGkPNUl9ZtR4ZNgPilIBi8VMXajOl3WcC1jHvuH2q36vPqpLJRWEevWZH5jNJ
+ sHn2fH6s5PulqJZ0aWGffgvujuOFa9Jok27Bgi3bg04oyC3DpJz5DuyRcuQT/FpJc6J6
+ um9w==
+X-Gm-Message-State: AOJu0Yyn7/p5aHmM0twxyUF32mFxLzyjkqM6t88l83JBvsiV4Xm6hbXw
+ FnKe5N0p/Qz/k2KL0c9F3rkp5IS+2jHWEx7seB6MrMKjtBAoLNcdJ2+EQIYvGo2G64Q=
+X-Gm-Gg: Acq92OGtfbCRA6ikpQtSTIPgYvTCUKWGDgaAN7YDaQ9bLZbWnBm2Rui7u4gzf3r7abg
+ kJBGiXPtSYEV6RyMV0Ip0s9/lOyQc2Ayw8LCvZwi0OBlA+wH9hEgjjKHw1Cv8ssOqfO1V5A6cMF
+ e2Zkg++7DpbQU2pt3+e68d20+HgaZvnFo6eXZvLNpdNHLeixXv1GD1+Af36jAT9Qb1o3wd9HrOe
+ 04EjVw58uMl2V5MlpUUahmYFUZkD5FrwNiR99z6nThvDcynz7vnBiKWVEwEuHacLiOgtAWQGs34
+ XZj3XZTn5pn6MRS/zdFkRL0ACqTCMVjUy/csy4psoh40CJppsifpti+1Jfi2BUQsctShk4xGbR4
+ fHdODXz8iWyewaEJ8n+RLikuqv5yZV2Rd8s1cFlrT11Ruahw0uVTOGeidmhXEJBvFtKIkJIELMh
+ PcOV+/u1d/0hi+nkVHg3Yd+AbgTzwqP6T7CUpkTgT6BryKh/tv1SO9DuZ+34XplBDXqg0XvNNvx
+ RC3TooAEKixBkAhxMG4NuMjmHtgNOA1j1SKaOWyYHcOvIqa1Iw=
+X-Received: by 2002:a05:6214:1d0d:b0:8ac:abc5:8754 with SMTP id
+ 6a1803df08f44-8cc7b65ccb5mr334800486d6.30.1779875622569; 
+ Wed, 27 May 2026 02:53:42 -0700 (PDT)
+Received: from
+ runnervmg397c.0xavb5yt4blube0y5vrnuhw5xc.ex.internal.cloudapp.net
+ ([64.236.177.115]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8cc80dcd81esm163108306d6.9.2026.05.27.02.53.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 27 May 2026 02:26:27 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Wed, 27 May 2026 12:26:18 +0300
-Message-ID: <20260527092618.14824-5-mmenashe@redhat.com>
+ Wed, 27 May 2026 02:53:42 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: AnonymeMeow <anonymemeow@gmail.com>
+Date: Wed, 27 May 2026 09:53:40 +0000
+Message-ID: <20260527095340.4092-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260527092618.14824-1-mmenashe@redhat.com>
-References: <20260527092618.14824-1-mmenashe@redhat.com>
+In-Reply-To: <20260527064041.50443-1-anonymemeow@gmail.com>
+References: <20260527064041.50443-1-anonymemeow@gmail.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: Xgc-71ud7OxyjMManyUPTdbHXYQ6xGb-3QVKDd9cMZw_1779873989
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v14 4/4] futex_cmp_requeue03: Add EFAULT error
- coverage test
+Subject: Re: [LTP] fanotify: prepare tests for thread pidfd reporting
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,157 +91,107 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Michael Menasherov via ltp <ltp@lists.linux.it>
-Reply-To: Michael Menasherov <mmenashe@redhat.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-futex(FUTEX_CMP_REQUEUE) has no existing test for EFAULT. Add coverage
-for the cases where uaddr or uaddr2 points to unmapped or inaccessible
-(PROT_NONE) memory.
+Hi AnonymeMeow,
 
-Signed-off-by: Michael Menasherov <mmenashe@redhat.com>
+On Wed May 27 2026, AnonymeMeow wrote:
+> fanotify: prepare tests for thread pidfd reporting
+
+Commit message body is an email exchange transcript rather than a clean
+description of what the patch does and why. Please rewrite it as a
+standalone commit message.
+
 ---
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/futex/.gitignore    |   1 +
- .../syscalls/futex/futex_cmp_requeue03.c      | 102 ++++++++++++++++++
- 3 files changed, 104 insertions(+)
- create mode 100644 testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 8c4d9be6c..87bd5aeac 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1863,6 +1863,7 @@ perf_event_open02 perf_event_open02
- 
- futex_cmp_requeue01 futex_cmp_requeue01
- futex_cmp_requeue02 futex_cmp_requeue02
-+futex_cmp_requeue03 futex_cmp_requeue03
- futex_wait01 futex_wait01
- futex_wait02 futex_wait02
- futex_wait03 futex_wait03
-diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
-index c11546e07..231b6bd25 100644
---- a/testcases/kernel/syscalls/futex/.gitignore
-+++ b/testcases/kernel/syscalls/futex/.gitignore
-@@ -16,3 +16,4 @@
- /futex_wait06
- /futex_wait07
- /futex_wake05
-+/futex_cmp_requeue03
-diff --git a/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
-new file mode 100644
-index 000000000..6063ddd86
---- /dev/null
-+++ b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
-@@ -0,0 +1,102 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Red Hat, Inc.
-+ * Copyright (C) 2026 Michael Menasherov <mmenashe@redhat.com>
-+ */
-+
-+/*\
-+ * Check that futex(FUTEX_CMP_REQUEUE) returns EFAULT when uaddr or
-+ * uaddr2 points to unmapped memory, or when uaddr points to memory
-+ * without read permission (PROT_NONE).
-+ *
-+ * The test uses opflags=0 (no FUTEX_PRIVATE_FLAG) so get_futex_key()
-+ * takes the shared-futex path and resolves the physical page; this
-+ * lookup fails with EFAULT for unmapped and PROT_NONE addresses.
-+ * get_futex_key() is called for both uaddr and uaddr2 before the
-+ * *uaddr == val check; futex_var and val are both FUTEX_INITIALIZER.
-+ */
-+
-+#include <errno.h>
-+#include <sys/mman.h>
-+
-+#include "futextest.h"
-+
-+static futex_t futex_var = FUTEX_INITIALIZER;
-+static futex_t *futex_ptr = &futex_var;
-+static futex_t *unmapped_addr;
-+static futex_t *prot_none_addr;
-+
-+static struct futex_test_variants variants[] = {
-+#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
-+	{ .fntype = FUTEX_FN_FUTEX, .desc = "syscall with old kernel spec"},
-+#endif
-+
-+#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .fntype = FUTEX_FN_FUTEX64, .desc = "syscall time64 with kernel spec"},
-+#endif
-+};
-+
-+static struct testcase {
-+	const char *desc;
-+	futex_t **uaddr;
-+	futex_t **uaddr2;
-+	int exp_errno;
-+} testcases[] = {
-+	{
-+		.desc = "uaddr unmapped",
-+		.uaddr = &unmapped_addr,
-+		.uaddr2 = &futex_ptr,
-+		.exp_errno = EFAULT,
-+	},
-+	{
-+		.desc = "uaddr2 unmapped",
-+		.uaddr = &futex_ptr,
-+		.uaddr2 = &unmapped_addr,
-+		.exp_errno = EFAULT,
-+	},
-+	{
-+		.desc = "uaddr PROT_NONE",
-+		.uaddr = &prot_none_addr,
-+		.uaddr2 = &futex_ptr,
-+		.exp_errno = EFAULT,
-+	},
-+};
-+
-+static void run(unsigned int n)
-+{
-+	struct futex_test_variants *tv = &variants[tst_variant];
-+	struct testcase *tc = &testcases[n];
-+
-+	TST_EXP_FAIL(futex_cmp_requeue(tv->fntype, *tc->uaddr, futex_var,
-+				       *tc->uaddr2, 1, 1, 0), tc->exp_errno, "%s", tc->desc);
-+}
-+
-+static void setup(void)
-+{
-+	struct futex_test_variants *tv = &variants[tst_variant];
-+	size_t pagesize = getpagesize();
-+
-+	tst_res(TINFO, "Testing variant: %s", tv->desc);
-+	futex_supported_by_kernel(tv->fntype);
-+
-+	unmapped_addr = SAFE_MMAP(NULL, pagesize, PROT_READ | PROT_WRITE,
-+				  MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	SAFE_MUNMAP((void *)unmapped_addr, pagesize);
-+
-+	prot_none_addr = SAFE_MMAP(NULL, pagesize, PROT_NONE,
-+				   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (prot_none_addr)
-+		SAFE_MUNMAP((void *)prot_none_addr, getpagesize());
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(testcases),
-+	.test_variants = ARRAY_SIZE(variants),
-+};
--- 
-2.54.0
+> diff --git a/include/lapi/pidfd.h b/include/lapi/pidfd.h
 
+PIDFD_THREAD is used in fanotify21.c but is not defined in
+include/lapi/pidfd.h. On systems with kernel headers older than 6.9
+this will fail to compile. Add a fallback:
+
+  #ifndef PIDFD_THREAD
+  # define PIDFD_THREAD O_EXCL
+  #endif
+
+---
+
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/...
+
+[...]
+
+> +unsigned int needs_thread_pidfd;
+
+Other boolean-like fields in test_case_t use int. Make this int for
+consistency.
+
+[...]
+
+The file-level docstring says the test "ensures that the fanotify(7) API
+returns an expected error code when provided an invalid initialization
+flag". The new third test case behaves differently depending on kernel
+support (may expect success). Update the docstring.
+
+---
+
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify21.c b/...
+
+[...]
+
+> +if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+> +tst_brk(TBROK, "child process terminated incorrectly");
+> +
+
+Trailing whitespace on the blank line above.
+
+[...]
+
+> +static pthread_t do_pthread_create(int want_pidfd_err)
+> +{
+[...]
+> +SAFE_PTHREAD_JOIN(worker, (void **)&status);
+> +if (status != 0)
+
+status is int (4 bytes) but pthread_join writes a void* (8 bytes on
+64-bit) at that address, corrupting the stack. Use NULL since the return
+value is not needed:
+
+  SAFE_PTHREAD_JOIN(worker, NULL);
+
+[...]
+
+> +if (tc->trigger_in_child && !tc->want_pidfd_err) {
+> +int status;
+> +TST_CHECKPOINT_WAKE(0);
+> +if (TST_VARIANT_PIDFD_THREAD) {
+> +SAFE_PTHREAD_JOIN(worker_id.pthread_id, (void **)&status);
+> +if (status != 0)
+
+Same bug: (void **)&status writes 8 bytes to a 4-byte int. Use NULL or
+a void* variable here too.
+
+---
+
+Needs revision:
+- Add PIDFD_THREAD fallback to include/lapi/pidfd.h
+- Fix SAFE_PTHREAD_JOIN (void **)&status type mismatch in both call sites
+- Clean up commit message
+- Update fanotify20 docstring to cover the new kernel-conditional test case
+- Fix trailing whitespace and needs_thread_pidfd type
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
