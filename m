@@ -4,80 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D86DCD6E41
-	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 13:07:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1B64CD5BD5
+	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 13:25:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0ACD03CAFF3
-	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 15:07:16 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 21B6C3CBE28
+	for <ltp@archiver.kernel.org>; Wed, 27 May 2026 15:25:14 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A81803C036C
- for <ltp@lists.linux.it>; Wed, 27 May 2026 15:06:55 +0200 (CEST)
-Received: from mail-dy1-x1342.google.com (mail-dy1-x1342.google.com
- [IPv6:2607:f8b0:4864:20::1342])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 878233C58CC
+ for <ltp@lists.linux.it>; Wed, 27 May 2026 15:24:55 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5919B1A009A4
- for <ltp@lists.linux.it>; Wed, 27 May 2026 15:06:55 +0200 (CEST)
-Received: by mail-dy1-x1342.google.com with SMTP id
- 5a478bee46e88-3044857f09aso7275281eec.1
- for <ltp@lists.linux.it>; Wed, 27 May 2026 06:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1779887214; x=1780492014; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=+91VXetjBB+8nHe3HdRfNcbjAHodcu7CBxu/179brBY=;
- b=cj1EtqcJHwfEyxpayPiZvHD5CBKtNMUeWTHMZ4xSGInrx5NPEO4Z8sbE+Y85nyJddH
- ohYw4YzSi5MfLCx/Vfgp9JypLED0ZYiYlSuOii8H/lsYHk8Cg3eWeswhbljxsAc9APwN
- EBi4QRz/5khda+Qm09ZPLHSmXIF/0MgFff8SqWGFkzjGgUuyANdv//eFG0n18QTek7x8
- +7nhsQ0j22eM5eMHE4eC5bf1yl1322aZSe3VvhQ55syhZfg+AQFGthEnNlbYOZv0HsNr
- l9UHYGJbNczM6/QU1aTqpmIznyzUqg7+A0hINPlovs2ItIml8NTPeFzZzfENIOf9YwjQ
- /lBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779887214; x=1780492014;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=+91VXetjBB+8nHe3HdRfNcbjAHodcu7CBxu/179brBY=;
- b=KcqrGkOB1bMFoJHUlW2z0MWvznTXVYXFCckHFIY/oY3vzYu6VBTD//N8AToKiQKLwN
- 2MBGgpWEKsyz5E9sPbYSbxGDtIhqsOJJFRad13lcvsq/5MG7jt9ECq39sAMZF93A9i28
- yzQO8daBdcBvi4ximHtE+GXd3RKubgwZKG3aIjwgU9cuN8SmpafcbenQ84qfw56GeWp1
- oWKKMKbjpf3jpyEpjlolzRgzq4+Gy/hlAI74wwGiPI8C4RsQsSPFQ5IVRkOpxJYiSwBg
- 3o44dFj9r/WoN/iWgLjny03FoTVXd73aYi80qeRxcm5Uzkdq1S3dyPgyXU9Jibkx+w0d
- tXEA==
-X-Gm-Message-State: AOJu0YzKGWbSpuxx8/FwjRSX0lIhvxfBEZeKBeoTu6hWq6NwGwcxQaRy
- 61UEcRGtAYT6r+BUiWd6WNNtJww1r6IfFRGee1JS8tfO4SPZtua3iRcTSNAp7VtLtoo=
-X-Gm-Gg: Acq92OEPqDh6TOSKCQaMGInf8mQ8KaqKYwtweaqjac4i4EU9+pst53a1sQDnMjDIZ3a
- ZUuWAcOdTVQRV38KqqnlkdANfTdCva2MpELXnMWABnFzU/caEftx0xhbwBlYlJQOx+ITOiBBvmc
- 3QjVi9fJwE2MRYdMcLRhpr6kkHWXCDFTyHvDufbqGTICnc05gRk4uizLUCcQULVuDGz9b9BQ/yw
- iL3H77wdUfaCS+vaHWOvJBKqtsZYf8OBiWD5BJJdWK2gmqRj+U3SqIYp9rCVkz8EQOiokBE7NIP
- eREKDVwBAUOZs5tuwgOsZoELathld9pQzvqEoAj3k/6SfqP3JYUa+7DfdMkUOjtBTCxouH58m4B
- +HhNjvcfAtnHLqMPXmsDwIwrQ4gLgw1YUBpGvRm+3nJVK7vlaxFaLebTtIut9EXHbDvaj0CtCxx
- CVSMFm+oF254Xz9OJWcouVjaZIXZGmtsbZoCPPinmvI0iGtn69jOM/4dVmhKzQuNlmvxsKrG+yH
- ZPFkghb5cRXvp3sMRXJrvkHGluil83rUzkGl0nVa1T8+pzAarnHlYJy3Bc=
-X-Received: by 2002:a05:7300:2382:b0:304:c572:18b0 with SMTP id
- 5a478bee46e88-304c5721e05mr822933eec.31.1779887213669; 
- Wed, 27 May 2026 06:06:53 -0700 (PDT)
-Received: from
- runnervmg397c.ji1a2uz2t1tupgawfdyie1rgtd.dx.internal.cloudapp.net
- ([13.83.216.98]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3045225b7b6sm17219783eec.25.2026.05.27.06.06.53
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 27 May 2026 06:06:53 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 27 May 2026 13:06:52 +0000
-Message-ID: <20260527130652.4138-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260527103756.448843-1-chrubis@suse.cz>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B5B6F600958
+ for <ltp@lists.linux.it>; Wed, 27 May 2026 15:24:54 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D0F46676D7;
+ Wed, 27 May 2026 13:24:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1779888293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y5zzZxPnqrLq9R0xtFY4dlfgntex7SQPZDQRGgaKpgw=;
+ b=BEF14QNVqbwh+BEQd2n7moq5JdNCjXDhG3ZPyvqSTeV/nyYIA4caEga/r/x8KQlkLN1Q9I
+ imo7Gm8KJJ4jkGZ4/NrwFty0zB9KqlJUXASC5jIsUgYAYz5Wde8FOVmBJ8xJ1mOIpYNwxd
+ /2112eBHriwni1+Pk6wFNJ42Qhk7A+M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1779888293;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y5zzZxPnqrLq9R0xtFY4dlfgntex7SQPZDQRGgaKpgw=;
+ b=ugqIuLN5P/wWKD+dvQf0kTHaWF8ctOHItEUVJG/snMeMgArFZTjCFkPNmihJb1CzKVCFmW
+ uYjhkK5RVD19SPCQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MDry0j9e;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5X74hPfk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1779888289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y5zzZxPnqrLq9R0xtFY4dlfgntex7SQPZDQRGgaKpgw=;
+ b=MDry0j9eMkB+aT3ZHnJYaOgJgUQpmvS2bs7ggE8JGaUBJkhEfFgpHcpIZvckL+M9OKBVt9
+ +NJOh3i4F5kNZCs4lieuQVCfDZV5wVqgwMMowqhtY4Yu9ZQzYR3v2j3D8R0TqJjg6DFC7b
+ sJbflugGrJoT/MEhlMcB1TkPbb2DUgw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1779888289;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y5zzZxPnqrLq9R0xtFY4dlfgntex7SQPZDQRGgaKpgw=;
+ b=5X74hPfkAN9y8XlMFPr0Qhr8sxHwB5vvf0t9cvmEbpbYuBpVHyO/qXt/nlWSxPlxpjf7mg
+ 4obkf7ZYXpSMaiDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA7BE5A852;
+ Wed, 27 May 2026 13:24:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id J4MILKHwFmrzIwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 27 May 2026 13:24:49 +0000
+Date: Wed, 27 May 2026 15:24:43 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: linuxtestproject.agent@gmail.com
+Message-ID: <ahbwmz3GOoJlhM1G@yuki.lan>
 References: <20260527103756.448843-1-chrubis@suse.cz>
+ <20260527130652.4138-1-linuxtestproject.agent@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260527130652.4138-1-linuxtestproject.agent@gmail.com>
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: D0F46676D7
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TAGGED_RCPT(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FREEMAIL_TO(0.00)[gmail.com]; MISSING_XM_UA(0.00)[];
+ ARC_NA(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,yuki.lan:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ TO_DN_NONE(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] syscalls/madvise06: Fix sporadic not enough RAM TCONFs
 X-BeenThere: ltp@lists.linux.it
@@ -97,36 +123,29 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi!
+> > On systems with <= 2GB RAM the test produced sporadic TCONFs. That is
+> > because even if the test setup does sync() and drops caches the system
+> > starts fauting in pages immediatelly after caches were dropped. It may
+> > easily happen that system may fault in a few hundred of MBs of memory
+> > betwen the write to drop_caches and the time sysinfo() syscall returns.
+> 
+> Three typos in the commit body: "fauting" -> "faulting", "immediatelly"
+> -> "immediately", "betwen" -> "between".
 
-On Wed, 27 May 2026 12:37:56 +0200, Cyril Hrubis wrote:
-> syscalls/madvise06: Fix sporadic not enough RAM TCONFs
+Fixed the typos and pushed.
 
-> On systems with <= 2GB RAM the test produced sporadic TCONFs. That is
-> because even if the test setup does sync() and drops caches the system
-> starts fauting in pages immediatelly after caches were dropped. It may
-> easily happen that system may fault in a few hundred of MBs of memory
-> betwen the write to drop_caches and the time sysinfo() syscall returns.
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> 
+> Duplicate Reviewed-by tag.
 
-Three typos in the commit body: "fauting" -> "faulting", "immediatelly"
--> "immediately", "betwen" -> "between".
+How did it pick up this? This wasn't in the orignal patch, only in a
+mail reply.
 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Duplicate Reviewed-by tag.
-
-[...]
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
