@@ -4,84 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B21F2CD6E44
-	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 15:20:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32F83CD4F54
+	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 15:20:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A0A33CFFC6
-	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 17:20:02 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 9B42A3D000B
+	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 17:20:17 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 237DF3CB44A
- for <ltp@lists.linux.it>; Thu, 28 May 2026 17:19:43 +0200 (CEST)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
- [IPv6:2a00:1450:4864:20::62e])
+ by picard.linux.it (Postfix) with ESMTPS id 3551C3CEE87
+ for <ltp@lists.linux.it>; Thu, 28 May 2026 17:19:42 +0200 (CEST)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
+ [IPv6:2a00:1450:4864:20::630])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8B460602270
- for <ltp@lists.linux.it>; Thu, 28 May 2026 17:19:43 +0200 (CEST)
-Received: by mail-ej1-x62e.google.com with SMTP id
- a640c23a62f3a-bd2d8bb1068so2366608266b.1
- for <ltp@lists.linux.it>; Thu, 28 May 2026 08:19:43 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E4037201DAB
+ for <ltp@lists.linux.it>; Thu, 28 May 2026 17:19:41 +0200 (CEST)
+Received: by mail-ej1-x630.google.com with SMTP id
+ a640c23a62f3a-bd21ffaca79so2360940966b.0
+ for <ltp@lists.linux.it>; Thu, 28 May 2026 08:19:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1779981583; x=1780586383; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=m7ut+RhGP4s1Xy445lkTHmcOOXnl4w9cuBMvQ4t59Vk=;
- b=eyaqwsx1HW9/vffamhOeUl8PodOqIKHHOmJJ+oK1XhTWf8om7tOQ80vs4+PNvUOAKW
- +jMbDuTgrZyCqPBbuPDJV1WCqs1zhOfteeT2YgGmSnhS9x+M6Ds+dzESP+lqZlc0DEW9
- 0yLZq6pfNXOSszD/rX8JUNcb4QlVEg41eI7tJDz6bWfvcNMoMTx6F28AKEoNUV5RP9oL
- dbCr2iLJXTKy93N1FzNnBAxSUFIUmdI7xUu9sNv07K/sVdNaOOwgtrxpZMMbHi2qgGJI
- Y8Qh7cPdZipjmOY0PdfMdhEkZ40INPSAGMaqH7/DBI1CRS/28uRvNAYGErgekBHa/clc
- jyHQ==
+ d=gmail.com; s=20251104; t=1779981581; x=1780586381; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=QcSddsN1Qhgy/fSbEMrvSTBWSbf3D2z77MRBOwhAPIs=;
+ b=NnDbHAJhjVZf4DFsNVH2jCTSfrzEd3xzHkJYN/zBBI05CEUlErUj+bxR8lLQoR/2gu
+ c9x5n2PnDZqYMO8Lv1e1n29m8Qi/fnESb0mxUftZjnkEQuLcRRqZpWhoVdszhloYOJ73
+ wLEnH5y5knHrCdSDXYLvnlUzVeYi78fxw44GknN92mc8AAjFm8oGFWb4kohWgvxrF+lh
+ bO/D17e8YELFD/LISUOS9b8iAKzjLMM0A8bPCAEA2mOpop7s/JG5DrJdqWPcuimifDZt
+ 9UbNWzdCVbJdWQnnOX/TyJtxANZj0/5oWOEoH8eCOEwr5Mv/EdUYpuFoeLfFiwoV/WXv
+ v5zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779981583; x=1780586383;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=m7ut+RhGP4s1Xy445lkTHmcOOXnl4w9cuBMvQ4t59Vk=;
- b=dVKU8sfi1F/uwsoBrgc71xfAqyzxqsmzBAY3GIc0bR8ymIuoMJEvYo//waXUsx383Q
- 59cSTJghY1+SLISTAeOHXNLTmvz7Si3vHXFArpkQdQ9Bh89F6Q2K+YiMXGYVGesCwJ4x
- hIcmS6l/9f+OzyRMBdlIBgudJQsWpOn9b4y+7K7NVgQXhtlmWZmWXCx/etjf3C86WMhL
- Z9IT3uIfkDqAGwKPmksFIo3omgZgqwDFXUX5db+Zdq38vkYyoz74m402q8RuLhEBmgpZ
- So/wLkDtdF9r1GDqc3MvpSF7OKU5nq0iPp/B7hjY43vPBAxf0279UMnWBoSpIMHzZIJA
- P6/w==
+ d=1e100.net; s=20251104; t=1779981581; x=1780586381;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=QcSddsN1Qhgy/fSbEMrvSTBWSbf3D2z77MRBOwhAPIs=;
+ b=Q4mO9BvRyRYcMTz7ix+q+rZEVsTI6/0gi5B3mPEfNyT/2UPrlHI1IZ0UtgYzW0m4Vr
+ +Nza42+6smKsPXaCKtlczkURo4vBFmHijQdhzkmdeKP5C53BhFfOX2cOeZpGhkFafwlV
+ iMcig5GozEdT0fzIFAKfeyjuxkmMyjzcI6qQyLHn2nWpC7Avu0cE/OoF95j+2gSWs69w
+ KgxpSNfzfViCuc6+HbfDYase/pYyHInoivjrsEtTry5mi1V9XJvMHC4hSa17c6d/dhZs
+ t7HsHBpLCvoX1b6E3rFCXA38BADuuX811Y9yl0/gcYZHV+Usfg+QdTjQYvNlYiYfi6l8
+ h2eQ==
 X-Forwarded-Encrypted: i=1;
- AFNElJ8rfSyIua8Tpuo4ePvQ6M1i42Yo3oQNYdAuJJ/Ir2TO3L3R8GAu9Tmg2Hp/SznBoVQ8dvs=@lists.linux.it
-X-Gm-Message-State: AOJu0YynIZb374vEcRfcCJ91Jc7Eg6T8lGj5NZM2ehC65Ojz1NnvAaPu
- k9x5bdxWz6uBCs1CDdP7Hb/QuxS6DawJi/zzAOhmeVucvbzMsDyVlQ/i
-X-Gm-Gg: Acq92OEe6aNTDKHl1lvcPGqYhvZlgVJCuIJoqHDY3kWmjsChw43EYdI8O3vVvM597bM
- JKHMjL/iQAE8PPo49Gszp7vOeaZ1hnsgGHTtEkVJ5oC1q9HXHcVrFdFX90TGBsk1P9RlfMnety9
- vZB2YJPhqKj+TYg8bwZX3v6YOcUM3BybEu3qjaJcBvYcEZKzV9tCmlE+eKw309iVmrHHFbU0Jew
- x6YQ4CBwGr4fiKtZiqm+3X7TLG5Ilw/YWuQZli5m8NqmvS/tS5RnOM2hAqJxH0tuph8vRNGeZ+d
- 5I3o9XEnyeoP3EkLvm0tB/fooGPqyblk7a8LlFa0nqkE2iQwSJxnUv1FvhiWF52UZUCimo2m2lA
- 7kqLk00Re0DtlvOcHHfOk3LQc8172d9m+qEkzRFVG5qioFYbysXqdSzlJ2WGHhx/rx47tCeAPdy
- yYp1bY3xOt5bgmjlYbO/kefON6YXVpV9gMxZfX3I/SZLWc45i1TpYpxT2Xu2g4HZLZn7TzxpXqa
- GsJwhxseXR+vjpExPZMXm0proLLji3OaXGKac6trk9RmyNP1g==
-X-Received: by 2002:a17:907:7803:b0:bd5:e3e:98cf with SMTP id
- a640c23a62f3a-bdd281a5d20mr1281437666b.46.1779981582651; 
- Thu, 28 May 2026 08:19:42 -0700 (PDT)
+ AFNElJ+x34/2TpGVfYDs/+yGdUyPjuVmDBthpVEAzWRxwL5hbpAFZLVNcK+tLSbMHtnXsBD5PrA=@lists.linux.it
+X-Gm-Message-State: AOJu0YzMboFEKG6nnNx79VF49Ghx4iEDD947CSxB12FoKys3iKFniJYR
+ kn7Lrq7kR2CdojLP0xBbrufadx7aBUngL6VmONHD+fivqKBVkqvledh5
+X-Gm-Gg: Acq92OGo3BcXFM2aP9rpJR01anKN4kp0G3Gg3jXeB3DR23HEhd3xWoWeaC0L8DjUF4p
+ tp+Upo+CUX/U6LfsMgxDZ4j+g/K9Um7p52UIY4BllKESNKr9lB+4DNFqXywHlY5OAB7pdYI+4sf
+ QsodgJi1x19RWfOU4Vb4NZN73O7kamTbAlCPB01lXIwfQuTYMC5RqQooLgGHnW1IQDcpK10JqX8
+ AHaEjcjlKvjv2hx/i/f7avlIt7xTlxXcL8YjK7BW+fggpvQzWmWGwdn5sa5LQbCuYDpdrgAWsIa
+ QIyzqcMM5M9+Gg8p1ZjiCsmfoH49xXVFenzPIIEKn5Zy0SDKfHCCgoNLrQQPFmbFUKtJIB03pqg
+ QmXiqEJU4QPe/bQHDZd3uoS0vsKQnH4dY9JNJvVdHFBctd11TiF/wk6IWB5Ek+VFDJBgBy7S/bb
+ nKe+g2yx9VFi7yTB+b0HMEURIyrUi6jBI64ZlVYkrfRQYbP3fERUt0vaiF2g4lZGZQUu1dd8DU3
+ W9hlr1tEf/3bMRfLjNmLRYIudL+UmOOtyz+xAE=
+X-Received: by 2002:a17:907:1b06:b0:bd5:b27:c02e with SMTP id
+ a640c23a62f3a-be86d71c01amr138196666b.6.1779981580592; 
+ Thu, 28 May 2026 08:19:40 -0700 (PDT)
 Received: from localhost
  (2001-1c00-570d-ee00-4e63-8cf6-4447-e472.cable.dynamic.v6.ziggo.nl.
  [2001:1c00:570d:ee00:4e63:8cf6:4447:e472])
  by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-bddc264e419sm724469466b.12.2026.05.28.08.19.41
+ a640c23a62f3a-bddc68e0ad1sm731423066b.60.2026.05.28.08.19.39
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 28 May 2026 08:19:41 -0700 (PDT)
+ Thu, 28 May 2026 08:19:39 -0700 (PDT)
 From: Amir Goldstein <amir73il@gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 28 May 2026 17:19:38 +0200
-Message-ID: <20260528151938.909301-2-amir73il@gmail.com>
+Date: Thu, 28 May 2026 17:19:37 +0200
+Message-ID: <20260528151938.909301-1-amir73il@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260528151938.909301-1-amir73il@gmail.com>
-References: <20260528151938.909301-1-amir73il@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] fanotify21: fix test failure when running iterations
+Subject: [LTP] [PATCH] fanotify13: fix test failure when running iterations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,68 +98,124 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Peter reported that fanotify21 -i2 fails.
-Fix this by always remounting ro/rw before every test.
-Use a bind mount, where remount works regardless of base fs.
+The test case for FAN_SELETE_SELF deletes the objects created in
+do_setup() so we need to re-create them for the next iteration.
 
-Reported-by: pvorel@suse.cz
-Link: https://lore.kernel.org/linux-fsdevel/20260527072312.GA231966@pevik/
+This bring up a problem with ext2 and filesystem that do not support
+RENAME_EXCHANGE because overlayfs fails to re-create objects over a
+whiteout.
+
+It is generally not interesting to test overlayfs over such base fs,
+but for now, let just exclude this type of base fs from the delete
+self event test case.
+
+Reported-by: AnonymeMeow <anonymemeow@gmail.com>
+Link: https://lore.kernel.org/linux-fsdevel/20260527195056.337081-1-anonymemeow@gmail.com/
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
 
 Petr,
 
-This is a simplified version of AnonymeMeow's patch.
+The basic fix is taken from AnonymeMeow's patch.
+
+I applied a skip instead of fix for the issue with test_variant 3 on
+ext2 base fs.
 
 Thanks,
 Amir.
 
- .../kernel/syscalls/fanotify/fanotify21.c      | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ .../kernel/syscalls/fanotify/fanotify13.c     | 37 +++++++++++++++----
+ 1 file changed, 29 insertions(+), 8 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify21.c b/testcases/kernel/syscalls/fanotify/fanotify21.c
-index c95895c93..fd18d7e29 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify21.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify21.c
-@@ -123,6 +123,9 @@ static void do_setup(void)
- 	int pidfd;
- 	int init_flags = FAN_REPORT_PIDFD;
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
+index 32b2b8238..d2e65167f 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify13.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
+@@ -109,6 +109,7 @@ static int nofid_fd;
+ static int fanotify_fd;
+ static int at_handle_fid;
+ static int filesystem_mark_unsupported;
++static int rename_exchange_unsupported;
+ static char events_buf[BUF_SIZE];
+ static struct event_t event_set[EVENT_MAX];
  
-+	/* Bind mount so remount ro/rw always work */
-+	SAFE_MOUNT(MOUNT_PATH, MOUNT_PATH, "none", MS_BIND, NULL);
-+
- 	if (tst_variant) {
- 		fanotify_fd = -1;
- 		fd_error_unsupported = fanotify_init_flags_supported_on_fs(FAN_REPORT_FD_ERROR, ".");
-@@ -171,15 +174,9 @@ static void do_test(unsigned int num)
+@@ -190,6 +191,13 @@ static void do_test(unsigned int number)
  		return;
  	}
  
--	if (tc->remount_ro) {
--		/* SAFE_MOUNT fails to remount FUSE */
--		if (mount(tst_device->dev, MOUNT_PATH, tst_device->fs_type,
--			  MS_REMOUNT|MS_RDONLY, NULL) != 0) {
--			tst_brk(TFAIL,
--				"filesystem %s failed to remount readonly",
--				tst_device->fs_type);
--		}
--	}
-+	/* remount ro/rw the bind mount */
-+	SAFE_MOUNT("none", MOUNT_PATH, "none", MS_BIND | MS_REMOUNT |
-+		   (tc->remount_ro ? MS_RDONLY : 0), NULL);
- 
- 	/*
- 	 * Generate the event in either self or a child process. Event
-@@ -355,6 +352,9 @@ static void do_cleanup(void)
- 
- 	if (self_pidfd_fdinfo)
- 		free(self_pidfd_fdinfo);
++	if (tst_variant && (tc->mask & FAN_DELETE_SELF) &&
++	    (!ovl_bind_mounted || rename_exchange_unsupported)) {
++		/* The eviction of base fs inodes is defered due to overlay held reference */
++		tst_res(TCONF, "overlayfs base fs cannot be watched for delete self events");
++		return;
++	}
 +
-+	/* Unmount the bind mount */
-+	SAFE_UMOUNT(MOUNT_PATH);
+ 	if (filesystem_mark_unsupported && mark->flag != FAN_MARK_INODE) {
+ 		FANOTIFY_MARK_FLAGS_ERR_MSG(mark, filesystem_mark_unsupported);
+ 		return;
+@@ -211,11 +219,6 @@ static void do_test(unsigned int number)
+ 			tst_res(TCONF, "overlayfs base fs cannot be watched with mount mark");
+ 			goto out;
+ 		}
+-		if (tc->mask & FAN_DELETE_SELF) {
+-			/* The eviction of base fs inodes is defered due to overlay held reference */
+-			tst_res(TCONF, "overlayfs base fs cannot be watched for delete self events");
+-			goto out;
+-		}
+ 		SAFE_MOUNT(OVL_MNT, MOUNT_PATH, "none", MS_BIND, NULL);
+ 	}
+ 
+@@ -339,10 +342,18 @@ static void do_test(unsigned int number)
+ 			"Did not get an expected event (expected: %llx)",
+ 			event_set[i].expected_mask);
+ 	}
++
++	if (tc->mask & FAN_DELETE_SELF) {
++		create_objects();
++		get_object_stats();
++	}
+ out:
+ 	SAFE_CLOSE(fanotify_fd);
  }
  
- static struct tst_test test = {
++#define TST_VARINAT_OVL_LOWER (tst_variant & 1)
++#define TST_VARIANT_OVL_WATCH (tst_variant > 2)
++
+ static void do_setup(void)
+ {
+ 	const char *mnt;
+@@ -370,10 +381,9 @@ static void do_setup(void)
+ 		if (!ovl_mounted)
+ 			return;
+ 
+-		mnt = tst_variant & 1 ? OVL_LOWER : OVL_UPPER;
++		mnt = TST_VARINAT_OVL_LOWER ? OVL_LOWER : OVL_UPPER;
+ 	} else {
+ 		mnt = OVL_BASE_MNTPOINT;
+-
+ 	}
+ 	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_FID, mnt);
+ 	SAFE_MKDIR(MOUNT_PATH, 0755);
+@@ -385,7 +395,18 @@ static void do_setup(void)
+ 	/* Create file and directory objects for testing on base fs */
+ 	create_objects();
+ 
+-	if (tst_variant > 2) {
++	/* RENAME_EXCHANGE is required for create over whiteout in overlayfs */
++	if (TST_VARINAT_OVL_LOWER) {
++		rename_exchange_unsupported = renameat2(AT_FDCWD, FILE_PATH_ONE,
++							AT_FDCWD, FILE_PATH_TWO,
++							RENAME_EXCHANGE);
++		if (rename_exchange_unsupported) {
++			tst_res(TCONF, "RENAME_EXCHANGE not supported on %s",
++				tst_device->fs_type);
++		}
++	}
++
++	if (TST_VARIANT_OVL_WATCH) {
+ 		/* Setup watches on overlayfs */
+ 		SAFE_MOUNT(OVL_MNT, MOUNT_PATH, "none", MS_BIND, NULL);
+ 		ovl_bind_mounted = 1;
 -- 
 2.54.0
 
