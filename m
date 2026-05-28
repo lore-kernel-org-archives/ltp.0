@@ -4,155 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05485CD4F54
-	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 16:45:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AE1ACD5BD5
+	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 18:44:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AEE833D01D0
-	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 18:45:22 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 1CE243CFFC6
+	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 20:44:16 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E92503CED10
- for <ltp@lists.linux.it>; Thu, 28 May 2026 18:45:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 03DC43C5AD2
+ for <ltp@lists.linux.it>; Thu, 28 May 2026 20:43:56 +0200 (CEST)
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
+ [IPv6:2607:f8b0:4864:20::741])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7A2F4600285
- for <ltp@lists.linux.it>; Thu, 28 May 2026 18:45:04 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CEC206B1C1;
- Thu, 28 May 2026 16:45:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1779986704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=L6NEd3NrJTIE+s8aIu7FT3l3buQ+/hvhuODuzvYPQH8=;
- b=a6htSr9LncYmSxByFNbcpPomdigE5hci8aZ98aKMaoqTyQWRbfA21NRr32ZQJ9VkT8j6s/
- xNpR9ILWtYCxzTncFHOfpBEKWnQsuGN7rKYzo843jEcnMkoczhRtvoNFpFzalAVUj81PG7
- AMooMISp1SATvUg5+7FtOCfyqUViaps=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1779986704;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=L6NEd3NrJTIE+s8aIu7FT3l3buQ+/hvhuODuzvYPQH8=;
- b=BIHyuhpVjzj38JqmBn10DPZOGVnt27xsbTyiS3JnZ8HeXLeP+9k6LdfzaG1eLooqDcTDUe
- vjcMD9kuByP7t/Dw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=062SIKXr;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=gzOv9gGV
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1779986703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=L6NEd3NrJTIE+s8aIu7FT3l3buQ+/hvhuODuzvYPQH8=;
- b=062SIKXrNtU/rG6g3WqsbIub8k9LPFW1NFtvL8sIsapIs81/7jIN5DeF1w4XmuOFKwsl39
- aCC/tgbS6YxT9e05ryaSWKmHoXEma8knKrPNY5H8+Bv8zCWnDPE4UcdNRGqKwdCNY4+0g5
- 51LYAgI8AyRRDy6Z9pmEHIrhDin4+64=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1779986703;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=L6NEd3NrJTIE+s8aIu7FT3l3buQ+/hvhuODuzvYPQH8=;
- b=gzOv9gGVs0J1CIiA/LtaxLN50izFRXdnbwCB7d+6Wj7J8WuySSEoEy7W5etg+k1CsH06Tn
- m681aWmHFvw9BTAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C33665AEAC;
- Thu, 28 May 2026 16:45:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Dq1ZLw9xGGrPCQAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Thu, 28 May 2026 16:45:03 +0000
-Message-ID: <11106a2a-175f-4b40-af46-d7ff4fb15c26@suse.cz>
-Date: Thu, 28 May 2026 18:45:03 +0200
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 701CD600736
+ for <ltp@lists.linux.it>; Thu, 28 May 2026 20:43:56 +0200 (CEST)
+Received: by mail-qk1-x741.google.com with SMTP id
+ af79cd13be357-910f734b477so1333806985a.0
+ for <ltp@lists.linux.it>; Thu, 28 May 2026 11:43:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1779993835; x=1780598635; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=US/vWQlrTygzSnAqih6HJ3VT3zBsoAE3XiaPXNuoyxA=;
+ b=LykhdbJ1wic6qKMk21yyc9LwQuS609nRWD8kcWuZZQHsxA3Mn8joiuMALCJCSUdCre
+ vjf/IuO2Lqp+d2o/r/XcOFI9AqmrvDjO/xGKfxKBxfi2+L+TUUXkZkUe+RnZRvT2LAOc
+ yWNsqb1mnyKuWMF3J4WgpM5lnyXjvQb2FdCOh1YO7xf8ndw0DRBgQXyYHsSmOG57GzAa
+ L1JTcCmQEQNDiskUrlcz2Kst5dyuacV5fH9kU74jqqlwjJnnyAvDtXo3D/nxflIM9F2d
+ JraOguTEoom1CzSt22SK3f0mH7UfjWZok/30gYwmazajymeBcsOBBT/Jh/ZWfD6Z9m4R
+ OBsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1779993835; x=1780598635;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=US/vWQlrTygzSnAqih6HJ3VT3zBsoAE3XiaPXNuoyxA=;
+ b=GGB+Qhz8V8ZlbTSlqLvY59YbNQU4nZyAur1NdTcR2TB7vIz4SvUFBrqBLd4Yoxk0yU
+ dTuJb42/4Qfe/lg5SwAnAHaWPhIXGtORKrkoo1NczRKWeYKbPLc4XISL4FU/4us/bR5V
+ 2T6lHqFC8RLAIG9G5aK2mBPJ8HtwP2O9iOIrkiJXhYZA7NJISwz2U+b2zG9YGt32nIMG
+ 9fXFu7u1rnc1tfATddOSsMS6xAn79wGpMiWfr+hbpqO8H4cMKmX9vh5q4Y7o7pw77msj
+ TbXyp39bqdAc8v4KXD1slTkPDDOQWDcdIdrp65CTTkTSE63jkSd9xfwDEMcbW30BQTg/
+ aZUw==
+X-Gm-Message-State: AOJu0YzlWORuORBHuDnw3kxN2p9gbz7/4/fqwsNt00O058qrqusWvkrV
+ ogAUCKrLjG8NJHAN2H8giA13pmvIJPNAXr1EA2ONi8YJhAXEnBYotHoK
+X-Gm-Gg: Acq92OEqYf3Re5udI+uGTYuQt1Q26oV8Mr9uqlPZeQeqtsyu9yNPhDKfu17eAH0tAXp
+ 2+YUOJJqUClnjtFO3F/aGOIo1vJDU1HZyrtFNScs3d5efaNTbCh+s47yqJLa6YjZwni8vWGO8CU
+ eKHUYpQKWDK5znKZeG3Z0ZhoUHkUewMdWXNBGQYihThU/pEea2L8kbaNKqHblwot10133VoHFvQ
+ jEecpPZE3ZTa42KnlUAV0Sr0CiZg+ESrEcZ0l9Tu6ZPfz9FE4Z7JUsr6lFbdt4q8Hi+1KXh+SPe
+ ZLEPWvUXq5hRVj3GGV5llZRz0dxl+qz9DgI4hdwMloTfAClk7Rj0utAK14YNvlPinTBUA5ySA/4
+ Kn8Rv6MgQ5m3pZgjzpsNeKblRrcn/eJgZ22xDEnVtczAcCdtKtHwFKdNoCs8HKE5Feso0TMhNZ8
+ nbyWePRucjA0vWLGkrahAycZYVVdPlPYbGnxB3v6RFcz5qVW2lCkrIRRwF3CbUU4ujwUFO4GI0S
+ YX6KsX0Q1sJAMc3ROLMI2IWz9UkCWj3pukcclEDTcRosVauSvh7XD3CDLtbjw==
+X-Received: by 2002:a05:620a:262a:b0:914:ca75:e8c7 with SMTP id
+ af79cd13be357-9152d08cb6amr28453585a.56.1779993835205; 
+ Thu, 28 May 2026 11:43:55 -0700 (PDT)
+Received: from
+ runnervm3jyl0.1c5fwzodld1edfr115mfuvh5ec.ex.internal.cloudapp.net
+ ([64.236.200.105]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-914f87cda12sm896581385a.31.2026.05.28.11.43.54
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 28 May 2026 11:43:54 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 28 May 2026 18:43:53 +0000
+Message-ID: <20260528184353.3954-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260528162920.914321-1-amir73il@gmail.com>
+References: <20260528162920.914321-1-amir73il@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, Sebastian Chlad <sebastianchlad@gmail.com>
-References: <20260523101749.27657-1-sebastian.chlad@suse.com>
- <20260523165718.26187-1-sebastian.chlad@suse.com>
- <20260524181639.GA26213@pevik>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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 ag==
-In-Reply-To: <20260524181639.GA26213@pevik>
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: CEC206B1C1
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[]; FREEMAIL_TO(0.00)[suse.cz,gmail.com];
- MID_RHS_MATCH_FROM(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] io_uring/pintheft: Add CVE-2026-43494
- regression test
+Subject: Re: [LTP] fanotify21: fix test failure when running iterations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -164,49 +91,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Sebastian Chlad <sebastian.chlad@suse.com>, ltp@lists.linux.it
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-
-On 5/24/26 20:16, Petr Vorel wrote:
->> +	rds_fd = socket(AF_RDS, SOCK_SEQPACKET | SOCK_CLOEXEC, 0);
->> +	if (rds_fd < 0) {
->> +		if (errno == EAFNOSUPPORT || errno == ESOCKTNOSUPPORT ||
->> +		    errno == EPROTONOSUPPORT || errno == ENOPROTOOPT)
->> +			tst_brk(TCONF | TERRNO, "RDS is not available");
->> +
->> +		tst_brk(TBROK | TERRNO, "socket(AF_RDS) failed");
-> 
-> Just a quick Sunday evening comment (not yet looking into the reproducer itself).
-> I wonder if we need this complicated check when we already have kconfig based
-> checks at the end. Could we just simply use SAFE_SOCKET() here? Or have you
-> encountered problems with older kernels?
-
-I've checked, SAFE_SOCKET() will fail on kernel-default-base due to the 
-usual kconfig-RPM mismatch.
-
->> +	if (clone_buffers(ring_fd2, ring_fd1)) {
->> +		if (errno == EINVAL || errno == EOPNOTSUPP)
->> +			tst_brk(TCONF | TERRNO, "IORING_REGISTER_CLONE_BUFFERS is not supported");
-> Also here do we need it? IMHO CONFIG_IO_URING should be enough.
-> And if errno is really needed, it'd IMHO be better to be in handled in
-> clone_buffers(), not separately.
-
-IORING_REGISTER_CLONE_BUFFERS was added in kernel v6.12 so the feature 
-check is also needed.
-
--- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgQW1pciwKCk9uIFRodSwgMjggTWF5IDIwMjYgMTg6Mjk6MTkgKzAyMDAsIEFtaXIgR29sZHN0
+ZWluIHdyb3RlOgo+IGZhbm90aWZ5MjE6IGZpeCB0ZXN0IGZhaWx1cmUgd2hlbiBydW5uaW5nIGl0
+ZXJhdGlvbnMKCkFsbCBnb29kLiBSZXZpZXdlZC4KCk9uIFRodSwgMjggTWF5IDIwMjYgMTg6Mjk6
+MjAgKzAyMDAsIEFtaXIgR29sZHN0ZWluIHdyb3RlOgo+IGZhbm90aWZ5MTM6IGZpeCB0ZXN0IGZh
+aWx1cmUgd2hlbiBydW5uaW5nIGl0ZXJhdGlvbnMKCj4gK2lmICh0c3RfdmFyaWFudCAmJiAodGMt
+Pm1hc2sgJiBGQU5fREVMRVRFX1NFTEYpICYmCj4gKyAgICAoIW92bF9iaW5kX21vdW50ZWQgfHwg
+cmVuYW1lX2V4Y2hhbmdlX3Vuc3VwcG9ydGVkKSkgewo+ICsvKiBUaGUgZXZpY3Rpb24gb2YgYmFz
+ZSBmcyBpbm9kZXMgaXMgZGVmZXJlZCBkdWUgdG8gb3ZlcmxheSBoZWxkIHJlZmVyZW5jZSAqLwoK
+VHlwbzogImRlZmVyZWQiIOKGkiAiZGVmZXJyZWQiLiAoTW92ZWQgZnJvbSBvbGQgbG9jYXRpb24u
+KQoKWy4uLl0KCj4gKyNkZWZpbmUgVFNUX1ZBUklBTlRfT1ZMX0xPV0VSICh0c3RfdmFyaWFudCAm
+IDEpCj4gKyNkZWZpbmUgVFNUX1ZBUklBTlRfT1ZMX1dBVENIICh0c3RfdmFyaWFudCA+IDIpCgpU
+aGVzZSBtYWNyb3MgYXJlIGRlZmluZWQgYWZ0ZXIgZG9fdGVzdCgpIGJ1dCBkb190ZXN0KCkgZG9l
+cyBub3QgdXNlIHRoZW0g4oCUCm9ubHkgZG9fc2V0dXAoKSBkb2VzLiBQbGFjZW1lbnQgaXMgZmlu
+ZS4KClsuLi5dCgpBbGwgZ29vZCBvdGhlcndpc2UuIFJldmlld2VkLgoKUHJlLWV4aXN0aW5nIGlz
+c3VlcyBub3RpY2VkIGluIHRoZSBzdXJyb3VuZGluZyBjb2RlIChub3QgaW50cm9kdWNlZApieSB0
+aGlzIHBhdGNoKToKCi0gZmFub3RpZnkyMS5jIOKAlCBmYW5vdGlmeV9mZCBpcyBhIGdsb2JhbCBz
+dGF0aWMgaW5pdGlhbGlzZWQgdG8gMDsgaWYKICBkb19zZXR1cCgpIGV4aXRzIGVhcmx5IGZvciB0
+c3RfdmFyaWFudD0wIGJlZm9yZSBTQUZFX0ZBTk9USUZZX0lOSVQoKSwKICBkb19jbGVhbnVwKCkg
+d291bGQgY2FsbCBTQUZFX0NMT1NFKDApLCBjbG9zaW5nIHN0ZGluLiBTYW1lIHBhdHRlcm4KICBl
+eGlzdHMgaW4gdGhlIHByZS1wYXRjaCBjb2RlLgoKLS0tCk5vdGU6CgpUaGUgYWdlbnQgY2FuIHNv
+bWV0aW1lcyBwcm9kdWNlIGZhbHNlIHBvc2l0aXZlcyBhbHRob3VnaCBvZnRlbiBpdHMKZmluZGlu
+Z3MgYXJlIGdlbnVpbmUuIElmIHlvdSBmaW5kIGlzc3VlcyB3aXRoIHRoZSByZXZpZXcsIHBsZWFz
+ZQpjb21tZW50IHRoaXMgZW1haWwgb3IgaWdub3JlIHRoZSBzdWdnZXN0aW9ucy4KClJlZ2FyZHMs
+CkxUUCBBSSBSZXZpZXdlcgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxp
+bnV4Lml0L2xpc3RpbmZvL2x0cAo=
