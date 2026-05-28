@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 470BDCD5BD5
-	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 16:03:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D21B3CD5BD5
+	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 16:29:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 072FB3D0EA6
-	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 18:03:52 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 3EC823D01D0
+	for <ltp@archiver.kernel.org>; Thu, 28 May 2026 18:29:40 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3646D3CED10
- for <ltp@lists.linux.it>; Thu, 28 May 2026 18:03:18 +0200 (CEST)
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com
- [IPv6:2607:f8b0:4864:20::f42])
+ by picard.linux.it (Postfix) with ESMTPS id F35743CBA47
+ for <ltp@lists.linux.it>; Thu, 28 May 2026 18:29:22 +0200 (CEST)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
+ [IPv6:2a00:1450:4864:20::630])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DE8DB1A00700
- for <ltp@lists.linux.it>; Thu, 28 May 2026 18:03:17 +0200 (CEST)
-Received: by mail-qv1-xf42.google.com with SMTP id
- 6a1803df08f44-8ccdf8d4ac5so2536216d6.1
- for <ltp@lists.linux.it>; Thu, 28 May 2026 09:03:17 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 971211A007AB
+ for <ltp@lists.linux.it>; Thu, 28 May 2026 18:29:22 +0200 (CEST)
+Received: by mail-ej1-x630.google.com with SMTP id
+ a640c23a62f3a-bcd0111ea98so1806263266b.1
+ for <ltp@lists.linux.it>; Thu, 28 May 2026 09:29:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1779984197; x=1780588997; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=6AIr69WcU4alccRhYbk5JAYXCT25xIgcb1yMWnFKQb8=;
- b=Uzb3LotFg2Le9LTK93ncQL/4WzRyx62FvTgQ/D/zANCURIlOdBIjSQkXVQCYn60V/X
- +MarErlQO+plSlX+8zHTkI47CP79y6bTJg6Gu7oNMu5u3CuzsJUBtBKOGivMKQZHGdIn
- 1OIQV7YM0kzEg/e5OGoNUVcouXyFumvF4giUX00/HHH07oG0WYlljC2psA12hfgZZdkv
- S5KS1vEPiITvsbIa9Mv9/lZRHMJRsgf1bXBi9FF4kWBQe4XULaSaeGW6nJ1bJlONgSeM
- EVoWLQj5xhz7KylhPgWX8zzRobtY+qcoEL1S+EeNva1z2fJD79CoLDm3x5RGb9rHnmKa
- 6hWg==
+ d=gmail.com; s=20251104; t=1779985762; x=1780590562; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=u1j9gs+T1Y2cuH+LdhMzekqSJPfvpxLoyYSDn7ed2LY=;
+ b=d2IXQbEpyKbi4g99ELv7e4YR1mJREcVxp8fSK+04XLCHWK0XEC40vBTJeiKRla8FSX
+ 9rRvMJ3x039E0KqWSP1B54D253hFF/QaSVtd7B70B5XE70LFyhCkcWvH31bByZcTwcvV
+ C8PgKHCpimXBVUM3icWM9a1M9+cB2tQNudpKiT2YsKSFyFbALOYjVWVOmSVTKIWDmX1V
+ 4ADPGsKz5QBx51PgVCzUj/Z08UnfeX+xjCD2R+41ZY3OQtLGmdudm/Z1ggIJx9CzrTuf
+ dCjxu75dBVOyc1t1t6AaEZmT1+AeGWiErKvpqwP04ERDd5SM2d/nD41ZNiHZ+565X1R6
+ o4/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1779984197; x=1780588997;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=6AIr69WcU4alccRhYbk5JAYXCT25xIgcb1yMWnFKQb8=;
- b=cP8/G42rhDxkcI6qUWSfxrPkVnbF2vi1W5rq3FBp/AE8a625Ro3ARmUOaYjzX1Qd9e
- OARtuzWkVY+pPDkHqouzpDbWvwfFiBZg9sEaWxbzsuHiu578KUbgAbShMDFy1wJmcJOk
- 3RA2Df+A3y80cDAWQt1l1X08rXqEVPmaP6jK1PQ0VSdKxbnxK+VE7Qe9OQZjclynaAgg
- MVIrZrIw3mIX3cfe8/XABxgMEdEbuMEAnWUb72+v0pE9DUwEHP57hX+1kpNBrPwy5hdG
- YZvdNLyXC0riQVuPYvJZuqvDFoDZY3bcubMQ3qJlH1ELjZioEPUjO6pQYuOIVjeUlL+h
- SeKw==
-X-Gm-Message-State: AOJu0YwNAzZG6BAucXdw5TO1vsU1oUQeraooAqqeTOeNim5imbG+OFBQ
- YtGncjGDKVXDwyHzQUkV3ppbPpwOvqjmmUZwfDlDx1ZnpPmfzFVYnh0W
-X-Gm-Gg: Acq92OFsiu4i5ebZ4k8v/IENhTa38fkXuE/a8pZPkXuFmwt7KTAPhTkEkliE0FdRCcP
- z+IpYXACEe94S4sFRexfoMNy+ueDSPZP7MVvnxD6V2fvo2lT9IHFOHPslhyDmv13iyKCWAr/dMG
- MCL87IyQHPGgQT+rQxdQJCQlwgT3bs5VlUg361jvSkzg3LWgfL0zC4tt8k7BBQLJb+2PEkJ6u0H
- 0XWDUS4dEr7F5ZFq8ne5ldpyMVGpxLfGCmeZiiCOiaCYhok/tiJu8lc7/8VkzFZMEqimU7X0yG6
- 0C6LndeGFKAIUbK+Fy3cD8E0sMIZ477O/XYwSwfJYcI9LoybvMoeOXUewnTnQzAa0gzRy+2vcih
- Y/bspY8aqsiUSCXqYWMP+8z3vgHkwtvSfttSxLDTAdGmIx0BaV0TDHRg0znVt24VMiDSpM29F4d
- Ykq/Su5qndVlOTHzZaW398tuw567A3Wi9wBM8xcw9e/NoG5UYwtcR/Vo3gfNTCkLFYxxKPMCUiR
- wfozVaBzHz33znFDLcV6mXU1yX8uM8fgK8qUGg/jMRYBcBsZw==
-X-Received: by 2002:a05:6214:3d8e:b0:8cb:f0e8:4a20 with SMTP id
- 6a1803df08f44-8cc7b59a411mr427892736d6.23.1779984196491; 
- Thu, 28 May 2026 09:03:16 -0700 (PDT)
-Received: from
- runnervm3jyl0.j13nh154uwcunnvc2ptqax0c5a.ex.internal.cloudapp.net
- ([52.240.186.26]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8cca4705c62sm118902516d6.27.2026.05.28.09.03.15
+ d=1e100.net; s=20251104; t=1779985762; x=1780590562;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=u1j9gs+T1Y2cuH+LdhMzekqSJPfvpxLoyYSDn7ed2LY=;
+ b=sFR0KAnlpHaYwWT/hGKGF7ryJWgVP+8REKt1weqwxScbAg+hyO+KHmjYb2XNrqU5lV
+ zs9Lk2YO2+3sgWg4cFZNwcNpPG7xLfaMzKcI0NG9CCQImpHQBlZY6FSlwnS2Ah9agXLu
+ d1/PCFZSSPcIJ/f+GjF7F8v7egUl2w2fdhCXXpN+FENz3QRorEPZbmG9ZwtuXGI7S7K3
+ gyQ36ID4kghZnRA2YALQ74GUfIdZueBqTnJofg5Cc42WA248V67YdCyjdkBIdhj3UaMk
+ RB8ZzAnU3hKq73oV7SAfWEY3XDlPG9lf7BjQGUxrYPwyH27hD6+rN0c2E9+Ryk6YWhgJ
+ 53WA==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ/cfPqzpSwIA70eK9g/uvIF+hTRAguQllyYdypFEtbOXCPbBL2y+NBE0ED65H26XDuV8zM=@lists.linux.it
+X-Gm-Message-State: AOJu0YzZ0uMuVeHfaYdSJhZ1yvEyYcvy2jUlSLbXwwMKKtSsCdsUEPit
+ YWf6fn632LMPJ3ejeFcItfxyK0jX7YKpprCjtd8jLPL3gec2Q95H15mrehtLJ8M8
+X-Gm-Gg: Acq92OGJcycC8zrxv3XOs2Zl1nPTjo071usn54UWatPQlWs333wsy5WFxIJG+x/fMyU
+ Dj8Q1IGM73CMK1/Bb3oREWrLfMqD74beDryPsvOnw1/15pVY5i2znwTv9wtvDY9gDluIcGnoVk/
+ oNthZJbYaahmmVlaSvsnvfxTJS1vYAuliCrJIJC8Z/HeQiaoB+UPeA1YzNP0xHaOxcnmr/NJmzK
+ Sp/ymuK5+7QEDHc8m9tvROKJcW2MU1A8s0zjRpc/q6Dz4PdyYnXmq3zClCEC8enIdlrhm+OiQSb
+ oc+x9s4rpEQ5du7rzCWYRRqoC98vVWhUwam7tabyljdE5LBOUDjcmUydad5kE+FD9U2hR9nftQl
+ WXbzKSb3lQGZlKl4qPW7LFLvEVrCZJVWm2qkctU+LKGMycTWLHTfeTQDzwkqC68aa6qn412MQuK
+ sDDa3y61gvBaaNuy2+bAUSC88tI699iJ022fcL4vLU5463hl+eWURO4WAztFXna3mClcIDdTibe
+ XDVqJhIUEMV0LiSf5QTqWpg/H5FAU693gBsxKI=
+X-Received: by 2002:a17:907:7613:b0:bd5:5834:1d3f with SMTP id
+ a640c23a62f3a-bdd29068588mr1231446266b.22.1779985761600; 
+ Thu, 28 May 2026 09:29:21 -0700 (PDT)
+Received: from localhost
+ (2001-1c00-570d-ee00-4e63-8cf6-4447-e472.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:570d:ee00:4e63:8cf6:4447:e472])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-bddc2c4e3d5sm759056866b.15.2026.05.28.09.29.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 28 May 2026 09:03:16 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 28 May 2026 16:03:14 +0000
-Message-ID: <20260528160315.3991-1-linuxtestproject.agent@gmail.com>
+ Thu, 28 May 2026 09:29:21 -0700 (PDT)
+From: Amir Goldstein <amir73il@gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 28 May 2026 18:29:19 +0200
+Message-ID: <20260528162920.914321-1-amir73il@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260528151938.909301-2-amir73il@gmail.com>
-References: <20260528151938.909301-2-amir73il@gmail.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] fanotify21: fix test failure when running iterations
+Subject: [LTP] [PATCH v2 1/2] fanotify21: fix test failure when running
+ iterations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,37 +91,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it,
+ AnonymeMeow <anonymemeow@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQW1pciwKCk9uIFRodSwgMjggTWF5IDIwMjYgMTc6MTk6MzggKzAyMDAsIEFtaXIgR29sZHN0
-ZWluIHdyb3RlOgo+IGZhbm90aWZ5MjE6IGZpeCB0ZXN0IGZhaWx1cmUgd2hlbiBydW5uaW5nIGl0
-ZXJhdGlvbnMKCj4gKy8qIEJpbmQgbW91bnQgc28gcmVtb3VudCByby9ydyBhbHdheXMgd29yayAq
-Lwo+ICtTQUZFX01PVU5UKE1PVU5UX1BBVEgsIE1PVU5UX1BBVEgsICJub25lIiwgTVNfQklORCwg
-TlVMTCk7CgpUaGUgc2VsZi1iaW5kLW1vdW50IGFwcHJvYWNoIGlzIGNsZWFuIOKAlCBpdCBkZWNv
-dXBsZXMgdGhlIHJlbW91bnQKcm8vcncgc3RhdGUgZnJvbSB0aGUgdW5kZXJseWluZyBmaWxlc3lz
-dGVtIHR5cGUsIHJlbW92aW5nIGJvdGggdGhlCkZVU0Ugc3BlY2lhbC1jYXNlIGFuZCB0aGUgbmVl
-ZCBmb3IgdHN0X2RldmljZS0+ZnNfdHlwZSBpbiB0aGUgcmVtb3VudApjYWxsLgoKPiAtaWYgKHRj
-LT5yZW1vdW50X3JvKSB7Cj4gLS8qIFNBRkVfTU9VTlQgZmFpbHMgdG8gcmVtb3VudCBGVVNFICov
-Cj4gLWlmIChtb3VudCh0c3RfZGV2aWNlLT5kZXYsIE1PVU5UX1BBVEgsIHRzdF9kZXZpY2UtPmZz
-X3R5cGUsCj4gLSAgTVNfUkVNT1VOVHxNU19SRE9OTFksIE5VTEwpICE9IDApIHsKPiAtdHN0X2Jy
-ayhURkFJTCwKPiAtImZpbGVzeXN0ZW0gJXMgZmFpbGVkIHRvIHJlbW91bnQgcmVhZG9ubHkiLAo+
-IC10c3RfZGV2aWNlLT5mc190eXBlKTsKPiAtfQo+IC19Cj4gKy8qIHJlbW91bnQgcm8vcncgdGhl
-IGJpbmQgbW91bnQgKi8KPiArU0FGRV9NT1VOVCgibm9uZSIsIE1PVU5UX1BBVEgsICJub25lIiwg
-TVNfQklORCB8IE1TX1JFTU9VTlQgfAo+ICsgICAodGMtPnJlbW91bnRfcm8gPyBNU19SRE9OTFkg
-OiAwKSwgTlVMTCk7CgpHb29kIOKAlCBhbHdheXMgcmVtb3VudGluZyB0byB0aGUgY29ycmVjdCBz
-dGF0ZSAocncgb3Igcm8pIGJlZm9yZSBlYWNoCnRlc3QgY2FzZSBpcyBleGFjdGx5IHdoYXQgd2Fz
-IG1pc3NpbmcgYW5kIGV4cGxhaW5zIHRoZSAtaTIgZmFpbHVyZS4KCj4gKy8qIFVubW91bnQgdGhl
-IGJpbmQgbW91bnQgKi8KPiArU0FGRV9VTU9VTlQoTU9VTlRfUEFUSCk7CgpDb3JyZWN0LiBUaGUg
-YmluZCBtb3VudCBpcyBjbGVhbmVkIHVwIGJlZm9yZSB0aGUgTFRQIGZyYW1ld29yawp1bm1vdW50
-cyB0aGUgdW5kZXJseWluZyBkZXZpY2UuCgo+ICtSZXBvcnRlZC1ieTogcHZvcmVsQHN1c2UuY3oK
-Ck1pc3NpbmcgZnVsbCBuYW1lLiBTaG91bGQgYmU6CgogIFJlcG9ydGVkLWJ5OiBQZXRyIFZvcmVs
-IDxwdm9yZWxAc3VzZS5jej4KClsuLi5dCgotLS0KTm90ZToKClRoZSBhZ2VudCBjYW4gc29tZXRp
-bWVzIHByb2R1Y2UgZmFsc2UgcG9zaXRpdmVzIGFsdGhvdWdoIG9mdGVuIGl0cwpmaW5kaW5ncyBh
-cmUgZ2VudWluZS4gSWYgeW91IGZpbmQgaXNzdWVzIHdpdGggdGhlIHJldmlldywgcGxlYXNlCmNv
-bW1lbnQgdGhpcyBlbWFpbCBvciBpZ25vcmUgdGhlIHN1Z2dlc3Rpb25zLgoKUmVnYXJkcywKTFRQ
-IEFJIFJldmlld2VyCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXgu
-aXQvbGlzdGluZm8vbHRwCg==
+Peter reported that fanotify21 -i2 fails.
+Fix this by always remounting ro/rw before every test.
+Use a bind mount, where remount works regardless of base fs.
+
+Reported-by: Petr Vorel <pvorel@suse.cz>
+Link: https://lore.kernel.org/linux-fsdevel/20260527072312.GA231966@pevik/
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+---
+
+changes since v1:
+- Address LTP AI Reviewer comments
+
+ .../kernel/syscalls/fanotify/fanotify21.c      | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify21.c b/testcases/kernel/syscalls/fanotify/fanotify21.c
+index 340fb0018..4d2115469 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify21.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify21.c
+@@ -123,6 +123,9 @@ static void do_setup(void)
+ 	int pidfd;
+ 	int init_flags = FAN_REPORT_PIDFD;
+ 
++	/* Bind mount so remount ro/rw always work */
++	SAFE_MOUNT(MOUNT_PATH, MOUNT_PATH, "none", MS_BIND, NULL);
++
+ 	if (tst_variant) {
+ 		fanotify_fd = -1;
+ 		fd_error_unsupported = fanotify_init_flags_supported_on_fs(FAN_REPORT_FD_ERROR, ".");
+@@ -171,15 +174,9 @@ static void do_test(unsigned int num)
+ 		return;
+ 	}
+ 
+-	if (tc->remount_ro) {
+-		/* SAFE_MOUNT fails to remount FUSE */
+-		if (mount(tst_device->dev, MOUNT_PATH, tst_device->fs_type,
+-			  MS_REMOUNT|MS_RDONLY, NULL) != 0) {
+-			tst_brk(TFAIL,
+-				"filesystem %s failed to remount readonly",
+-				tst_device->fs_type);
+-		}
+-	}
++	/* remount ro/rw the bind mount */
++	SAFE_MOUNT("none", MOUNT_PATH, "none", MS_BIND | MS_REMOUNT |
++		   (tc->remount_ro ? MS_RDONLY : 0), NULL);
+ 
+ 	/*
+ 	 * Generate the event in either self or a child process. Event
+@@ -355,6 +352,9 @@ static void do_cleanup(void)
+ 
+ 	if (self_pidfd_fdinfo)
+ 		free(self_pidfd_fdinfo);
++
++	/* Unmount the bind mount */
++	SAFE_UMOUNT(MOUNT_PATH);
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.54.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
