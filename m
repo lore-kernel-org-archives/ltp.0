@@ -4,105 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 390CBCD4F54
-	for <ltp@archiver.kernel.org>; Fri, 29 May 2026 13:52:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B011ECD6E49
+	for <ltp@archiver.kernel.org>; Fri, 29 May 2026 16:08:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C7AB33E2034
-	for <ltp@archiver.kernel.org>; Fri, 29 May 2026 15:52:23 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 031013E76A6
+	for <ltp@archiver.kernel.org>; Fri, 29 May 2026 18:08:02 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AE0333E2034
- for <ltp@lists.linux.it>; Fri, 29 May 2026 15:52:05 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 58A8C3C6FCD
+ for <ltp@lists.linux.it>; Fri, 29 May 2026 18:07:43 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7CA741000D40
- for <ltp@lists.linux.it>; Fri, 29 May 2026 15:52:04 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A91551A00CCE
+ for <ltp@lists.linux.it>; Fri, 29 May 2026 18:07:42 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D6F6466D82;
- Fri, 29 May 2026 13:52:01 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7A3DF670A1;
+ Fri, 29 May 2026 16:07:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1780062722; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=XEg75lcxLC0IFCoXG9tEFBfZo2i+gFP8eRf6j2A1efM=;
- b=PKi5peKTod5QlndkISHh7qiVI+Q83ntDhFC3P6WVhW+HRBPWDPEPpTlg0ON1gkeWJXaFc7
- koEwt0iQn32Xtzm1Av3/ku+Dil9mPiTaYJ4nxizKb8pZrzjr9J6/Vcb8LJK4zw6KV+nWuS
- ab/BI0zSGtNHa9iFUG1PryS1dHR3IIE=
+ t=1780070861;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PzNNtPSseuPuEZTDOgHBWuOpXwdY1y5gA9vyY+yvqXs=;
+ b=SkkeoMGuH3YfIB1IK0NOAA5QA6hNUPXnattcwKqdekjjOFOhurc9cnXFd+Spqq1KL0CYvm
+ SthSHJmtJKQOHvZ9XPtSIOAK1tBtp7cL9ZiVDVUqHt19K+h3roK+uQbsVIxnV5IilT1K9A
+ 5zZY5Ei0YO/BUxffLnprfYpqhlXcoig=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1780062722;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=XEg75lcxLC0IFCoXG9tEFBfZo2i+gFP8eRf6j2A1efM=;
- b=thk1ElDQP4NCC5fRNWKkIZG/tRUVJ7ukbz7rhIrq4CEoT14Di9u7kgKzc9TSnpfPe2baVD
- H2oZt9kowOP7JBBA==
+ s=susede2_ed25519; t=1780070861;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PzNNtPSseuPuEZTDOgHBWuOpXwdY1y5gA9vyY+yvqXs=;
+ b=lpEXTWCkbqVr00ciOGW5RESwuTe1ZXoZrS5IptoccYNs4kPYotqze5ZwBfT9kA/M13XsJD
+ C05j84gtY97lIsAw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=sAaCRLe9;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4WMcj7g3
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="BgK4hF/t";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2sJCmsK1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1780062721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=XEg75lcxLC0IFCoXG9tEFBfZo2i+gFP8eRf6j2A1efM=;
- b=sAaCRLe9EnGAVAkAOcGQYfPyRsqEnLtdSkQOBTvKhRcmmLVwVge3pMUutEOM0zweNPVLPm
- XeYYdxdExjjdIJkHUMraFiEYcvjkQbUuDzJpnVwz6Fn/PQZdMzZyP5lLKo+sEjhWdD8I+A
- M5cunNeFmuqBtU+B8kqmBVPnmpNO4kg=
+ t=1780070860;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PzNNtPSseuPuEZTDOgHBWuOpXwdY1y5gA9vyY+yvqXs=;
+ b=BgK4hF/tPqRCMBCiuxdg6m8CpGbS781A6X/N/WXoPV2Jla17md/Lhy6teGv3TzgleUw6NO
+ 8PVHajJ1i4YLeSWjoproqSjqSlrqPtfKJiPUXlQMl56q6B/8KZjiKwUQf/Uyk70/vJ1x9A
+ uGSO4Yu1V9ZlGQl2g8xz3ByG40AFZDU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1780062721;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=XEg75lcxLC0IFCoXG9tEFBfZo2i+gFP8eRf6j2A1efM=;
- b=4WMcj7g3eTU1W3B/Kl5wPGfVNsjwHpKzi91U++ytxqCpTrna/KfhkgaTDcU6m0Ahf0vMmp
- hAl5vxLVe4vDjEAQ==
+ s=susede2_ed25519; t=1780070860;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PzNNtPSseuPuEZTDOgHBWuOpXwdY1y5gA9vyY+yvqXs=;
+ b=2sJCmsK1jhVPv6tOI+LCG7jJBDRmW2A10lWjFCqWAtxSGOEKLpKY+y5lXRWQCHERIqoFxZ
+ 9TUja/gH2HDo7BAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C5F18779A7;
- Fri, 29 May 2026 13:52:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 470EA779A7;
+ Fri, 29 May 2026 16:07:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id mvgeLwGaGWrCXAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 29 May 2026 13:52:01 +0000
-Date: Fri, 29 May 2026 15:51:56 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it, linux-kernel@vger.kernel.org,
- libc-alpha@sourceware.org, valgrind-developers@lists.sourceforge.net
-Message-ID: <ahmZ_HcEEuyPzPFq@yuki.lan>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id yuTlDsy5GWo+YgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 29 May 2026 16:07:40 +0000
+Date: Fri, 29 May 2026 18:07:08 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20260529160708.GA287653@pevik>
+References: <20260527050843.14963-1-wegao@suse.com> <ahcQd-5ffiCDU8IE@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
+In-Reply-To: <ahcQd-5ffiCDU8IE@yuki.lan>
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: D6F6466D82
+X-Rspamd-Queue-Id: 7A3DF670A1
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCPT_COUNT_SEVEN(0.00)[7]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.cz:replyto];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for May
- 2026
+Subject: Re: [LTP] [PATCH v2] mem/min_free_kbytes: Add grace period for
+ memory reclaim
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,242 +116,91 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lwn@lwn.net, akpm@linux-foundation.org, torvalds@linux-foundation.org
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Good news everyone,
+Hi all,
 
-the Linux Test Project test suite stable release for *May 2026* has been
-released.
+> > @@ -140,14 +140,13 @@ static void test_tune(unsigned long overcommit_policy)
+> >  		} else {
+> >  			if (WIFEXITED(status)) {
+> >  				if (WEXITSTATUS(status) != 0) {
+> > -					tst_res(TFAIL, "child unexpectedly "
+> > -						 "failed: %d", status);
+> > +					tst_res(TFAIL, "child unexpectedly failed: %d",
+> > +						status);
 
-Since the last release 253 patches by 27 authors were merged.
+> We do have tst_strstatus().
 
-Patch review is what most of the projects struggle with and LTP is no
-different. If you can spare some effort helping with the patch review is mo=
-re
-than welcomed.
++1, I fixed this as a separate change:
+https://github.com/linux-test-project/ltp/commit/d81526f7da5645a04d6e03e557d3c829b67b3c57
 
-NOTABLE CHANGES
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >  				}
+> >  			} else if (!WIFSIGNALED(status) ||
+> >  				   WTERMSIG(status) != SIGKILL) {
+> > -				tst_res(TFAIL,
+> > -					 "child unexpectedly failed: %d",
+> > -					 status);
+> > +				tst_res(TFAIL, "child unexpectedly failed: %d",
+> > +					status);
+> >  			}
+> >  		}
+> >  	}
+> > @@ -183,18 +182,32 @@ static void check_monitor(void)
+> >  {
+> >  	unsigned long tune;
+> >  	unsigned long memfree;
+> > +	int i;
 
-* RUNLTP AND LTP-PAN WERE FINALLY REMOVED
+> >  	while (!end) {
+> >  		memfree = SAFE_READ_MEMINFO("MemFree:");
+> >  		tune = TST_SYS_CONF_LONG_GET(MIN_FREE_KBYTES);
 
-  The modern replacement kirk is now production ready for several releases
-  hence we finally decided to remove the decade old hacky scripts to run the
-  tests.
+> >  		if (memfree < tune) {
+> > -			tst_res(TINFO, "MemFree is %lu kB, "
+> > -				 "min_free_kbytes is %lu kB", memfree, tune);
+> > -			tst_res(TFAIL, "MemFree < min_free_kbytes");
+> > +			/*
+> > +			 * Give it some time to reclaim. The kernel should keep
+> > +			 * MemFree above min_free_kbytes, but transient drops
+> > +			 * are possible under high pressure.
+> > +			 */
+> > +			for (i = 1; i < 1024; i *= 2) {
+> > +				usleep(i * 1000);
+> > +				memfree = SAFE_READ_MEMINFO("MemFree:");
+> > +				if (memfree >= tune)
+> > +					break;
+> > +			}
+> > +
+> > +			if (memfree < tune) {
+> > +				tst_res(TFAIL, "MemFree %lu kB < min_free_kbytes %lu kB",
+> > +					memfree, tune);
+> > +			}
+> >  		}
 
-  See: https://kirk.readthedocs.io/en/latest/
+> Looks good.
 
-* New CVE tests
-  - xfrm03: skb_segment SKBFL_SHARED_FRAG stripping test (CVE-2026-46300)
-  - xfrm02: ESP-in-TCP page cache corruption test (CVE-2026-46300)
-  - xfrm01: xfrm ESP page cache corruption test (CVE-2026-43284)
-  - af_alg08: page cache corruption through the AEAD scratch-write (CVE-202=
-6-31431)
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-  There are a couple more high profile CVE reproducers in the pipeline and =
-we
-  expect much more to be added in next month(s).
+> I think that we also want to change the test so that the monitor is
+> started and stopped for each testcase with a specific value we set the
+> min_free_kbytes to. Running it asynchronously like this may mean that we
+> will be looking for a wrong value for the second if we are unlucky. But
+> that can be done later on.
 
-  We also have a new autogenerated page with list of all LTP CVE reproducer=
-s:
+@Wei Unfortunately this does not help on the current stable kernels (at least
+not on 7.0.10 on Tumbleweed. We discussed it with Vlastimil Babka and Cyril
+Hrubis and the conclusion  is to start with running the monitor synchronously
+with each subtestcase and making sure MemFree is big enough before we start the
+monitor and the process that creates memory stress.
+Also, please rebase when doing changes.
 
-  https://linux-test-project.readthedocs.io/en/latest/users/cve_catalog.html
+Kind regards,
+Petr
 
-* New tests
-  - close02: Test for double close EBADF
-  - ioctl_getlbmd01: Test for ioctl() FS_IOC_GETLBMD_CAP on block devices.
-  - mremap07: Test for mremap() with MREMAP_DONTUNMAP
-  - io_uring03: Tests for IORING_OP_READ and IORING_OP_WRITE.
-  - io_submit04: Test case for RWF_NOWAIT flag
-  - userfaultfd06: Test case for UFFDIO_POISON
-  - fanotify25: Tests that fanotify works on tracing filesystem
-  - poll04: Test for POLLNVAL on invalid fd
-  - poll03: Test for POLLHUP
-  - chdir02: Tests that valid buffer lengts up to PATH_MAX are accepted cor=
-rectly
-
-* Increased coverage
-  - mount_setattr01: Tests open_tree_attr() syscall as well.
-
-* Rewritten and updated tests
-  - aio_cancel_{2-1, 3-1, 4-1, 6-1}: Were fixed to properly block in the mi=
-ddle
-                                     of the write operations.
-  - ima_violations.sh: Was fixed to use proper synchronization with a child=
- process.
-  - ima_kexec.sh: Was fixed to work with UEFI systemd-boot
-  - stream{01,02,03,04,05} Were cleaned up and rewritten to new test API.
-  - sysinfo01: Was rewritten as a proper test.
-  - madvise09: Was rewritten to support cgroup V2 as well.
-  - readahead02: Now waits for the cache to fill in order not to fail on sl=
-ow
-                 I/O devices.
-
-* Removed tests
-  - runpwtest{01,02,05} and runpwtests_exclusive*
-
-    Which were testing removed sched_mc_power_savings and
-    sched_smt_power_savings sysfs knobs.
-
-  - vmcp_m.sh A s390x userspace tool test which was moved to s390-tools pac=
-kage
-
-* The checks for CONFIG variables can now have associated runtime checks
-
-  E.g. CONFIG_USER_NS also checks for /proc/self/ns/user presense or CONFIG=
-_KVM
-  checks for presence of kvm.ko module if it's set to 'm'. This simplifies =
-the
-  amount of checks tests needs to do in a test setup().
-
-* The test library was changed to treat fuse NTFS and in-kernel NTFS as
-  different filesystems. Which means that tests that iterate over all avail=
-able
-  filesystems will test both implementations now.
-
-* OpenPOSIX wall clock tests now detect jumps in time (due to NTP or VM ste=
-al
-  time) and retry the test if detected.
-
-* The timeouts for checkpoints are now scaled with the tst_multiply_timeout=
-()
-
-* The ltp-aiodio runtest file cleanups and speedups
-
-  The dio_sparse tests were removed from ltp-aiodio.part4 since these tests=
- are
-  executed in ltp-aiodio.part2 already and there is no need to run them twi=
-ce.
-
-  The file sizes in the runtest files were adjusted so that the tests finish
-  faster without sacrificing too much coverage.
-
-- 13 test were rewritten to the new test library API
-
-+ The usual amount of fixes and cleanups
-
-NOTABLE CHANGES IN NETWORK TESTS
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-brought to you by Petr Vorel
-
-* Removed tests
-  - route[46]-rmmod outdated route rmmod tests
-  - udp_ipsec{_vti,}.sh outdated UDP stress tests
-  - icmp-uni-{basic,vti}.sh utdated ICMP stress tests
-  - tcp_ipsec{_vti,}.sh outdated TCP stress tests
-
-* wireguard tests were fixed to properly work on RO /
-
-* NFS tests were fixed to work properly on two host setup
-
-
-DOWNLOAD AND LINKS
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-The latest version of the test-suite contains 3000+ tests for the Linux
-and can be downloaded at:
-
-https://github.com/linux-test-project/ltp/releases/tag/20260529
-
-The project pages as well as GIT repository are hosted on GitHub:
-
-https://github.com/linux-test-project/ltp
-
-If you ever wondered how to write a LTP testcase, don't miss our developer
-documentation at:
-
-https://linux-test-project.readthedocs.io/en/latest/developers/test_case_tu=
-torial.html
-
-And our library API documentation at:
-
-https://linux-test-project.readthedocs.io/en/latest/developers/api_c_tests.=
-html
-
-Patches, new tests, bugs, comments or questions should go to to our mailing
-list at ltp@lists.linux.it.
-
-
-CREDITS
-=3D=3D=3D=3D=3D=3D=3D
-
-Many thanks to the people contributing to this release:
-
-git shortlog -s -e -n 20260130..
-
-    73  Petr Vorel <pvorel@suse.cz>
-    42  Andrea Cervesato <andrea.cervesato@suse.com>
-    39  Cyril Hrubis <chrubis@suse.cz>
-    18  Martin Doucha <mdoucha@suse.cz>
-    13  Li Wang <li.wang@linux.dev>
-    12  Jinseok Kim <always.starving0@gmail.com>
-    12  Wei Gao <wegao@suse.com>
-     5  Ricardo Branco <rbranco@suse.de>
-     4  Guixiong Wei via ltp <ltp@lists.linux.it>
-     4  Jan Polensky <japo@linux.ibm.com>
-     4  Sachin Sant <sachinp@linux.ibm.com>
-     3  Avinesh Kumar <avinesh.kumar@suse.com>
-     3  Stephen Bertram via ltp <ltp@lists.linux.it>
-     3  Vasileios Almpanis <vasileios.almpanis@virtuozzo.com>
-     2  Changwei Zou <changwei.zou@canonical.com>
-     2  Martin Cermak <mcermak@redhat.com>
-     2  Samir <samir@linux.ibm.com>
-     2  Wake Liu via ltp <ltp@lists.linux.it>
-     2  Xiang Gao <gaoxiang@kylinos.cn>
-     1  Chris Wailes <chriswailes@google.com>
-     1  Darren Chang <chihsheng@google.com>
-     1  Disha Goel <disgoel@linux.ibm.com>
-     1  Fushuai Wang <wangfushuai@baidu.com>
-     1  Jeff Mahoney <jeffm@suse.com>
-     1  Sayali Patil <sayalip@linux.ibm.com>
-     1  Sebastian Chlad <sebastianchlad@gmail.com>
-     1  Soma Das <somadas1@linux.ibm.com>
-
-And also thanks to patch reviewers:
-
-git log 20260130.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | s=
-ort | uniq -c | sort -n -r
-
-    109 Andrea Cervesato <andrea.cervesato@suse.com>
-     85 Cyril Hrubis <chrubis@suse.cz>
-     80 Petr Vorel <pvorel@suse.cz>
-     19 LTP AI Reviewer <ltp-ai@noreply.github.com>
-     18 Li Wang <liwang@redhat.com>
-     13 Li Wang <li.wang@linux.dev>
-     10 Martin Doucha <mdoucha@suse.cz>
-      8 Ricardo B. Marli=E8re <rbm@suse.com>
-      5 Li Wang <wangli.ahau@gmail.com>
-      5 Jan Stancek <jstancek@redhat.com>
-      5 Jan Kara <jack@suse.cz>
-      3 Avinesh Kumar <avinesh.kumar@suse.com>
-      2 Enji Cooper <yaneurabeya@gmail.com>
-      2 Anders Roxell <anders.roxell@linaro.org>
-      1 Sachin Sant <sachinp@linux.ibm.com>
-      1 Amir Goldstein <amir73il@gmail.com>
-
-And everyone else suggesting or co-developing:
-
-git log 20260130.. | grep -Ei '(suggested|co-developed)-by:' | sed 's/.*by:=
- //' | sort | uniq -c | sort -n -r
- =
-
-      5 Cyril Hrubis <chrubis@suse.cz>
-      1 Petr Vorel <pvorel@suse.cz>
-      1 Jan Kara <jack@suse.cz>
-      1 Eric Dumazet <edumazet@google.com>
-      1 Claude <noreply@anthropic.com>
-      1 Andrea Cervesato <andrea.cervesato@suse.com>
-      1 Al Viro <viro@zeniv.linux.org.uk>
--- =
-
-Cyril Hrubis
-chrubis@suse.cz
-
--- =
-
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
