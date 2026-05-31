@@ -4,81 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E471CD4F54
-	for <ltp@archiver.kernel.org>; Sun, 31 May 2026 00:08:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63504CD6E52
+	for <ltp@archiver.kernel.org>; Sun, 31 May 2026 12:46:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7CEC03CFC0D
-	for <ltp@archiver.kernel.org>; Sun, 31 May 2026 02:08:43 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 57AEC3C86D9
+	for <ltp@archiver.kernel.org>; Sun, 31 May 2026 14:46:07 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 620C73CC04D
- for <ltp@lists.linux.it>; Sun, 31 May 2026 02:08:26 +0200 (CEST)
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com
- [IPv6:2607:f8b0:4864:20::841])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C85DC3C6F9F
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 14:45:47 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B9E48600474
- for <ltp@lists.linux.it>; Sun, 31 May 2026 02:08:25 +0200 (CEST)
-Received: by mail-qt1-x841.google.com with SMTP id
- d75a77b69052e-5174a1da4b2so1906341cf.2
- for <ltp@lists.linux.it>; Sat, 30 May 2026 17:08:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780186104; x=1780790904; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=K0p1xL94XVUyfNLypIrV0NXSZ29d+gTQ0wMUhl50p3g=;
- b=KivGJfhW/6ZUBfEEU1OLXKHQ8euSa+Kxy4vdoqUs3QicSXjxqyFoIMgF8u09tYG/62
- TZMzByh012vfYn4oPGYEL8UtXdPt7fMJImPp+AANgPxWHCrIib7K6ZYsOxr5noFIJS5H
- t6qki2xBMYlCSU1PCxFp+4Q6FNwpv6Jc5+FUpKX+mjU1K1FcCHVlK88bVQE7lI8H/UgO
- PR8/QSOMBLXOskTM+F+KimjAzYtwIp/Rqo8NKZDcs66ERLi424mojvBqiKysQsLr2zGy
- Mc5Eoou+1f7QXsIlQ3UIZOiCObLEJ9hFkxPvwnXTQlppZeKG5OItTcklPkBdHD2qi3qi
- RsFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780186104; x=1780790904;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=K0p1xL94XVUyfNLypIrV0NXSZ29d+gTQ0wMUhl50p3g=;
- b=OVQKbBvoCc5k6DFWe6PSAiFnxum93TjpkFg6g7RJzCljgQm4hElvbcqkJa5dXfyZc2
- xolRaov+8d5nn1yL4qm6XvG+VoUnVf4XafXQeuuFOyPLguhS3e8l5AmMmHre9++rY3bZ
- /0FsXmkM/BTh/syxPGgsvUKZxmuExlPin75gABRgucROwG1CQpt/tN+kQCFG1dJ3ZWx0
- GoQA0/g20jjyGxOH9ba0P+7YcyTS5oPr9jNyg+tLBezXVpRR1qZI5syBThBHFGOZ87ZM
- C+0aM/QQCd6tv64e8/w98hg0hkeHVkg6Y5Mit+txgt2lJcfEHINu7GRzYgA5GsALgv44
- y4Rw==
-X-Gm-Message-State: AOJu0YyTwgkC+o2oZdtn69M1/p3GwmdvieUxpd/pN5seIxEJK3ZATxs/
- a9xfic0FUN6NzfKrYLI1sg1Z4p4LogRA9J6C6Aua5CBXx/qFRSHiFKm3
-X-Gm-Gg: Acq92OG0KSHg+Huw4VPFjCtyLr1KPUxYwrnn2gqo5sE8pEg8EzZrgId1Ooy3iXGiI7o
- 1nlLSItY8gE3/CujkgHBXW19Cp/N+HcyMW+aIWcKMnN0FunU/akP4Me1dodAmhQQLbmEnqzn3BR
- x6S7HVGK02fxAciCxpK1OfHtkW8k/ZKdwO2rWiSsw4NURK52gyWpZ/JdjdWj2kBO6SNZ33Wal+T
- HS6wj0Lu9RGul+dHoBRtWl0UNuIasthtRxQDqWIlR3ZytTjYMEFoJpIzzoT92u3zzUUKbZgH5ne
- Gv3eUDXtCzzNpHU5Lfn9bm9qcPeV92lIL18Qz1bZ3rgR75YD/OlBueS2997pOKOTt3TfDvyz4kN
- O0Bk/KhR+nurjEqWgWeqv4i0cXvjwd03ZL/H7EEOTT/bu2f0VTjsyvY9a0FEGlxa5z6cftVZcq4
- O9nA6lc7dE9ETnsHOBUtYaVwv9161Jaoxd6aatI2jBZMu6nNbzHfM37XWSIArRDn70qhf84DKp6
- SUEFyb1B2vcirvsUXDS4hbVb2u+a1KV2yh5aFuKwmxp5gVSe4U=
-X-Received: by 2002:a05:622a:411a:b0:50d:9c60:fe2a with SMTP id
- d75a77b69052e-5173a61b9c8mr78971811cf.1.1780186103935; 
- Sat, 30 May 2026 17:08:23 -0700 (PDT)
-Received: from
- runnervm3jyl0.vuofcnqkcubu3oy5yogz5ckase.bx.internal.cloudapp.net
- ([172.178.118.80]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-51741de5b6esm21047481cf.30.2026.05.30.17.08.22
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 30 May 2026 17:08:22 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Pradeep Susarla <pradeep.susarla@gmail.com>
-Date: Sun, 31 May 2026 00:08:21 +0000
-Message-ID: <20260531000822.4114-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260530234123.1718-1-pradeep.susarla@inmarsat.com>
-References: <20260530234123.1718-1-pradeep.susarla@inmarsat.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1909310005A7
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 14:45:46 +0200 (CEST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 64V402Mi1231997
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 12:45:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+ content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=anMgIniPnWD3OAHZHfgvLcOED4ihxj2OfdlifImPN
+ dM=; b=VXLBhK8qlEYv37rQDeexaIQEk9td8ogaRS30Bn/e9Yng4N6HlG9HfkGz4
+ 8fdBXneoCyCIouOZKBYSstXGU+MqBqdUy25iLgfMpk+JIIlztGFUf1ZWtK/AED8E
+ bmXVor1Rb2gUA8FMW05rd0DCR3Z9UyFrYa6QJOewVHFAN6iOZIV19RO2zj5jKYvc
+ T6IuhgdhT8hiqo0JqIt4egg79Cinoa3iV7SOtbnjUGElVyoHa2GXwpqaIADdwXEM
+ TSWILXfN8Qtj8VB0LNu4y+NYBY6fr9M5TQFl2VJerU8bqfIyldo0f3RpuL+W7fJJ
+ 6jqYsHAvJlLyTIXnJJk53cQVAU3VQ==
+Received: from ppma22.wdc07v.mail.ibm.com
+ (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efqhsv9wh-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 12:45:44 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 64VCd8EN023078
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 12:45:44 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4egakvhu0y-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 12:45:44 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
+ [10.20.54.101])
+ by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 64VCjgPI40108322
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 12:45:42 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 32CC520043
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 12:45:42 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id C550F20040
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 12:45:41 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.43.54.110])
+ by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 12:45:41 +0000 (GMT)
+From: Sachin Sant <sachinp@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Sun, 31 May 2026 18:15:32 +0530
+Message-Id: <20260531124540.70788-1-sachinp@linux.ibm.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: PBfb4k5GR7AdMYYP9002WBdR5zJ04_sr
+X-Authority-Analysis: v=2.4 cv=fv/sol4f c=1 sm=1 tr=0 ts=6a1c2d78 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=RzCfie-kr_QcCd8fBx8p:22 a=NEAV23lmAAAA:8 a=LCdtP3Myv0Pgu0m3IOIA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTMxMDEzOCBTYWx0ZWRfXzuvTyylfqv7c
+ EsACWn36YcedzuLdXpTq9U29pNlD14iPYFzSoq78ngH3j5y2pEAhfzn5Ad6Cco3lOBrD3k3ukG+
+ NlQqkCapwdWtyMWptgj+V0kRmQklWoPQUqYPCIengeOhILX8CrzpK4FGHcOCWzSXf4yFdZgR4co
+ tREf4XAbNdICAhXOdknP8Ffk78OskpzSa8bYAqkJFjsY6NEHqV3nh8kzAi61PycJ+0Z0JW7+GgD
+ nUmeansF6LZd3X5ZQar+nuXTSIXRn4aIvwxTa38gL6ozYhQNjZqf9IiZYIJybMHMQjdpTyi5mhJ
+ BEM6tmZ4F6A8Rs8XHRQ4K43zdqpm3Swf5b8WAaKiOhPikjgn6XAwt50giRnWU50Zp1MUfCVoQLV
+ l6YJly6SdjaBK3Q/xpDXXipd9tIKqXbcmVeA92ypEU5bzbby7pA2PV7bi8uro3/tjIOZNwD8s4l
+ 6iZyTsiXJMcFowdf/PA==
+X-Proofpoint-ORIG-GUID: PBfb4k5GR7AdMYYP9002WBdR5zJ04_sr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-05-31_04,2026-05-28_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2605310138
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] hugetlb: Migrate library and numa helpers to libs/
+Subject: [LTP] [RFC][PATCH 0/8] Convert shell-based ACL test (tacl_xattr.sh)
+ to C
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,60 +106,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Pradeep,
+This patch series converts the existing shell-based ACL
+test (tacl_xattr.sh) to C implementation, providing better
+integration with the LTP test framework and more precise
+control over test execution.
 
-On Sun, 31 May 2026 00:41:23 +0100, Pradeep Susarla wrote:
-> hugetlb: Migrate library and numa helpers to libs/
->
-> Consolidate two test helpers into the global libs/ location, following
-> the tse_ (extended, non-core library) naming adopted for libs/ (tst_ =
-> core lib/, tse_ = extended libs/, tso_ = legacy):
->
-> hugetlb library:
->   testcases/kernel/mem/hugetlb/lib/hugetlb.h -> include/tse_hugetlb.h
->   testcases/kernel/mem/hugetlb/lib/hugetlb.c -> libs/hugetlb/tse_hugetlb.c
-> [...]
-> write_node_cpusets():
->   Moved from testcases/kernel/lib/numa_cpuset.c (libkerntest.a) into
->   libs/numa/tse_numa.c (libltpnuma.a)
+Partially closes(convert tacl_xattr.sh to C)
+https://github.com/linux-test-project/ltp/issues/1265
 
-The patch bundles two independent migrations: the hugetlb library
-(lib/hugetlb.c/h -> libs/hugetlb/) and write_node_cpusets()
-(numa_cpuset.c -> libs/numa/). The two changes touch completely separate
-test suites (hugetlb vs ksm/oom) and have no dependency on each other.
-An intermediate state with only the hugetlb migration applied is
-perfectly coherent.
+The conversion splits functionality into seven focused test files.
+Patch 1/8 adds acl_user_obj01.c
+Patch 2/8 adds acl_mask01.c
+Patch 3/8 adds acl_other01.c
+Patch 4/8 adds acl_inherit01.c
+Patch 5/8 adds acl_file_ops01.c
+Patch 6/8 adds acl_link01.c
+Patch 7/8 adds xattr_test01.c
 
-Could these be split into two commits, one per migration, per the
-"one logical change per patch" rule?
+The code has been successfully tested on SLES (kernel 6.12)
+and fedora (kernel 7.0) releases. 
 
-Pre-existing issues noticed in the surrounding code (not introduced
-by this patch):
+Sachin Sant (8):
+  fs/acl: Add ACL_USER_OBJ permissions test
+  fs/acl: Add ACL mask interaction tests
+  fs/acl: Add ACL_OTHER permissions test
+  fs/acl: Add default ACL inheritance test
+  fs/acl: Add chmod/chown ACL interaction tests
+  fs/acl: Add symlink ACL operations test
+  fs/acl: Add extended attributes test
+  fs/acl: Remove old shell-based ACL test
 
-- libs/numa/tse_numa.c in gather_node_cpus() -- the trailing-comma
-  removal `cpus[strlen(cpus) - 1] = '\0'` is reached unconditionally
-  after the loop. If no CPUs are found (all offline or the node has
-  none), cpus[] remains empty, strlen(cpus) returns 0, and the
-  subtraction wraps to SIZE_MAX, writing outside the buffer. The guard
-  in write_node_cpusets() checks strlen(cpus) only after
-  gather_node_cpus() has already returned, so the write happens first.
-  This was present in the original numa_cpuset.c before the move.
+ runtest/fs                               |   8 +
+ testcases/kernel/fs/acl/.gitignore       |   7 +
+ testcases/kernel/fs/acl/Makefile         |  10 +
+ testcases/kernel/fs/acl/acl_file_ops01.c | 296 +++++++++
+ testcases/kernel/fs/acl/acl_inherit01.c  | 112 ++++
+ testcases/kernel/fs/acl/acl_lib.h        | 342 ++++++++++
+ testcases/kernel/fs/acl/acl_link01.c     | 124 ++++
+ testcases/kernel/fs/acl/acl_mask01.c     | 277 ++++++++
+ testcases/kernel/fs/acl/acl_other01.c    | 101 +++
+ testcases/kernel/fs/acl/acl_user_obj01.c | 109 +++
+ testcases/kernel/fs/acl/tacl_xattr.sh    | 807 -----------------------
+ testcases/kernel/fs/acl/xattr_test01.c   | 349 ++++++++++
+ 12 files changed, 1735 insertions(+), 807 deletions(-)
+ create mode 100644 testcases/kernel/fs/acl/.gitignore
+ create mode 100644 testcases/kernel/fs/acl/Makefile
+ create mode 100644 testcases/kernel/fs/acl/acl_file_ops01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_inherit01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_lib.h
+ create mode 100644 testcases/kernel/fs/acl/acl_link01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_mask01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_other01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_user_obj01.c
+ delete mode 100755 testcases/kernel/fs/acl/tacl_xattr.sh
+ create mode 100644 testcases/kernel/fs/acl/xattr_test01.c
 
----
-Note:
+-- 
+2.39.1
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
