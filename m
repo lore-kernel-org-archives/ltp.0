@@ -4,90 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53691CD6E52
-	for <ltp@archiver.kernel.org>; Sun, 31 May 2026 13:43:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1C6ACD6E5D
+	for <ltp@archiver.kernel.org>; Sun, 31 May 2026 13:51:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1780234999; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1780235512; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=ULUrHjseEhz6k1QSYpnsEsYwUBBwm5tobz+zJg3d8fA=;
- b=rDfNp5vLno34UDWHCcmVGPwZB2TMrd38Q7bNfUTFuOHp+TATrY0K5qFilqfedcSHM+CO/
- q4B50kuRo8VEXN6Cc0CNqCa3B8rl59o8HQwCdCCba4hwOWZRpM4AJCDXuWFInRUPvQYTWsa
- vCUr7h4x4MVvJJEpXWguAJdUNweQE50=
+ bh=wcunlBX7mPx0OqW33JdD1pNDLxqHUdJfEMf6Gjhyggg=;
+ b=b1NzrcOQY/FdiU0etqRuf1ku6GnT8eFr2vHbEKMae2bXS3ERITkEsV4YvL8E60cugO38x
+ jsV0uXST2SpK9UZ5ne7DbX2beAzLMugBiVhF/F+sGQTlVCTFimYiTxcoOmIu2/JbmxOFQsH
+ 5k61RBomAD88WoJUZ7cTuM33X9LrUAE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C938B3C8B57
-	for <ltp@archiver.kernel.org>; Sun, 31 May 2026 15:43:19 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 3830E3C560C
+	for <ltp@archiver.kernel.org>; Sun, 31 May 2026 15:51:52 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1A2D63C560C
- for <ltp@lists.linux.it>; Sun, 31 May 2026 15:42:56 +0200 (CEST)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
+ by picard.linux.it (Postfix) with ESMTPS id 019743C560C
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 15:51:28 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 334AE6002E5
- for <ltp@lists.linux.it>; Sun, 31 May 2026 15:42:56 +0200 (CEST)
-Received: by mail-wm1-x32c.google.com with SMTP id
- 5b1f17b1804b1-490a765f2feso5285905e9.1
- for <ltp@lists.linux.it>; Sun, 31 May 2026 06:42:56 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BE0452000B2
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 15:51:26 +0200 (CEST)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-490a7629893so5580975e9.0
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 06:51:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1780234975; x=1780839775; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=bITcF7bgYmcjdQEPUGnR0tUAwdiGu3jVZ/gFau37EyA=;
- b=gjGvI9eUg6iByFRmHmL8ulvod29C7LCd7t0IDYvoQeAP0IKfpn3kjDfueSFKiht7kT
- MiPnGhMMSxjgq7KQT/CtCmegEb3VmTLnaOk8SI/zV7CpKy54dl42jcSf4GQljWY7D0mR
- I5+OdWl+ykuzxKPvP7fLw0DAq7obMW+7p4mntoT02G0hGA3CT92SmYgF4mm4Er2dcTQz
- EqokBpvyQ1xRFnPTcxHaNDe9HclK9S8Vz0237LXIyUJGxDPGoJTrv0p1ttGFSSRXygoY
- vwnCOles9m+G6m4hpBRFaCfSRm5U+kgdZ+zPDre2fnBRJ5LrIcraDNqvjUos9xO1lGEX
- XeTg==
+ d=suse.com; s=google; t=1780235486; x=1780840286; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=7tDkemwlFo3tsNAu2nSScwETph25ciceve3vQM7fpv4=;
+ b=BRkgBx4+2Ixnqrt7vd7gCg+S5D7q6xwc6DLXug4Z4DE19raR82mzq7yFWn8LN9NpVO
+ nfIHasBb6ovh4yUnCwxE8sDfsMk6CkNFse/hZVOi30yQA4BG2D0dYrtfRMwQAFXl3oh2
+ yajrB7ZNGFoTaa3tc3dBUpTgBuukNYeNG8uXQ+VQMOh8KrOUK3booCTB95dkNjw9Fl6+
+ qXSUYW4NW3HJCD7rRqSmLJfB13ovLCxa1JxQU6a3paqigwyMkwkOBoVQGVjK18mhKlkM
+ 83jS4fvF7NNLagdPA/99glIVbiAqaoLrkx3H4PvqTEiH601CdMLjRMpcjc0NIagLo1bQ
+ RDSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780234975; x=1780839775;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=bITcF7bgYmcjdQEPUGnR0tUAwdiGu3jVZ/gFau37EyA=;
- b=KzS51PUGvc+9Tlyc33awAkgOeHakaZl+h4uJZJoPq7y1ayPUAHmCqxaplvkIXSQBxg
- 6n2mg4gJx6FHB24mNGd6AO2DTwx+iUxax2BiIGJbxSXW5PKwe9h4j4qsmZ83mRuugq+l
- TycVVHB8I3wX816CWgsSAgPkxrIbRWSoH+PGSK6MGtLrj8GH4fAo/n9Kn9NozlCvj9YV
- To5AXr/W4Tq3YG9XQp58omzplNDVYPEQ8R27CzChDxaA7Klou02NGvqIpOm0LWBq/7Gf
- 1/wgLME7lwTYw3W/J75HsxSU9XiLMKRFn4Z74io0f1mYKBOjOffolsnu1WlV9ow/Srox
- 0DgA==
-X-Gm-Message-State: AOJu0YyRyl6VPO18UUUrcLzysGnQHIOwg+uEfmngOsutU1rinx7L/HUO
- G0rv8bzxTOhf3Vde0QaKJuFcFUD+q/VDb+2xLn/KZl0RWVmxMrTWvtHmvWaBWtPUE1B7IseMhQL
- t8Rc=
-X-Gm-Gg: Acq92OFmRKPCQu+ioLCHgyY4v0oQT79cHJU+QHyikdKnA0xnJ1UxCN8NHwziHmYB9NJ
- teRk9BxIUK0fUy7hirMv1zERvfkv9WFLyUwx6xBZW4JNZJamhjP9ceCezS8a2QfY1+8o9SVGX0k
- 6A84IkhLJbaX1aog+zdCMU4G0Rk8mNB7d8J6iQ7gCA5BytiLIW/6y1gBWqtpzo3gapPXKJUJy/W
- NOt6fvrt5UpnqCM62l9HL0m32+B5EO2DutmC+GLDhTN/SlVxCTbqBK51xYZ7lxImmJ2pdAFSwHw
- ek7bavCsAer+Fmr382bhC687P8gvDxtTbFc7Fy2NTVHZa/OVzmEisu6QrhtMdNOJLrUAqtwwLf7
- osk01b6efBbGbcsJT/V2ZXXtkrGWCUOoK+G3yku0+rJMsSmvQLfzl3ontV4mgf6VIQjrQ/eqika
- s9P+ab7syJm9Lc104PSskwLQ==
-X-Received: by 2002:a05:600c:c4a4:b0:490:6e12:a40f with SMTP id
- 5b1f17b1804b1-490a291cce1mr130552955e9.12.1780234975563; 
- Sun, 31 May 2026 06:42:55 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- 5b1f17b1804b1-4909c6319ddsm177296855e9.0.2026.05.31.06.42.55
+ d=1e100.net; s=20251104; t=1780235486; x=1780840286;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=7tDkemwlFo3tsNAu2nSScwETph25ciceve3vQM7fpv4=;
+ b=kO27Tm2K60jPzhaDYrGnC8FgRJe9kmr8tqWGM0FtcvJv6qr5RoWSFav+Z6GxYU8kjf
+ av7ZqSm7/i7I4Bm2O5flt/g8f/aky9XSB2Xf1FdnIyM8RyORj7Y8ufceZUOESnQq/axH
+ WjLy3jN46mvePUUnTQ6ESMdenv/fL6YLwTrIVN3uCEu9V7lmG2lPfpHO3kAWFEqLmr1J
+ eg5g4A1EOWTqpnep/d7/ds+RK8PpPSNx4DWbjHPVib4bCxQsmYyyTQ5LwWZ5wA9lmjvh
+ T3pyOfKV/yiDfnZSsfW8dPu358OVIh6SHS0ozdwL4wkXrKcKeLyGJp8P4mEioNY7/CeZ
+ SvoQ==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ/i+6VI0P9/bSNvMhkF8r5GbY1cJhyCeC4WIiOyZJVHeJwmYA91f0FOnpDW12xkX4mpTbs=@lists.linux.it
+X-Gm-Message-State: AOJu0YyAoVA+XJENJ6vyRX5dOoqyllj3yLhrpyLWuGVEzQ/CvdJg/w/s
+ +nKbehqKV55fDkM9SzLPqiN1EdKG9gOVwg0Wph3np6Tronl1e4YsLSnxKbPPgntZVjQdHODxbGE
+ HiLU=
+X-Gm-Gg: Acq92OEZ1m+Fkg66SlNhxMKZL1YtJ7gKeYh4MuzTbrjG5Ep3WUTkGiNAaYsFGs7O0/w
+ mpbYk1UecCn9JDDhVsmu3Rd4u7GAmGSPywKTGya/joBAt+isKLp7qZ8w7TWQ0Gx3GJRe1LMFThK
+ o7fANkP84lr2NvxLBqlM+a+M1I3yhvYPDSl+JXE+WwBrwV3MRPrpWq+SbAMMOW2EXBe2i4dEfS5
+ CDxITY51sWD3AalO3ZaqOYGfeOiQq9LG6jbo+2qNKdfGNOqdmxix9RSyNr1eFpr8o3ff7C6Lr+M
+ 3eEVmq3VoUQ1kna00wjrg1mRItvAN0CRC082kcgBom5vbWVXRZ6bVnnsKo7P7GxV2rTCmGUR/pO
+ BfXVGsbGWwzgxdeD9SqrgZeXwFHLULwP5B8rkgpNMu04E+mYGGtTRv6cpMUa3xFdoUcz8s3xOGc
+ S51wqzNhkMsAz4h1MizNYAowiY9LyEBkMMqNil9Hcuw8ZXSmpQhRo=
+X-Received: by 2002:a05:600c:2a8a:b0:490:44eb:c1ec with SMTP id
+ 5b1f17b1804b1-490a293cf3bmr89670265e9.27.1780235486133; 
+ Sun, 31 May 2026 06:51:26 -0700 (PDT)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4909cab7b00sm188867695e9.14.2026.05.31.06.51.25
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 31 May 2026 06:42:55 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Sun, 31 May 2026 13:40:47 +0000
-Message-ID: <20260531134250.25279-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260527050843.14963-1-wegao@suse.com>
-References: <20260527050843.14963-1-wegao@suse.com>
+ Sun, 31 May 2026 06:51:25 -0700 (PDT)
+Date: Sun, 31 May 2026 13:51:24 +0000
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ahw83IPF8_y8yvHj@autotest-wegao.qe.prg2.suse.org>
+References: <20260527050843.14963-1-wegao@suse.com> <ahcQd-5ffiCDU8IE@yuki.lan>
+ <20260529160708.GA287653@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260529160708.GA287653@pevik>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] min_free_kbytes: Handle transient memory drops in
- check_monitor
+Subject: Re: [LTP] [PATCH v2] mem/min_free_kbytes: Add grace period for
+ memory reclaim
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,121 +104,91 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Wei Gao via ltp <ltp@lists.linux.it>
 Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-High memory pressure can cause MemFree to temporarily drop below the
-min_free_kbytes threshold before the kernel reclaimer can catch up.
-This results in intermittent test failures, particularly observed on
-openQA aarch64 machines where swap is exhausted.
+On Fri, May 29, 2026 at 06:07:08PM +0200, Petr Vorel wrote:
+> Hi all,
+> 
+> 
+> > I think that we also want to change the test so that the monitor is
+> > started and stopped for each testcase with a specific value we set the
+> > min_free_kbytes to. Running it asynchronously like this may mean that we
+> > will be looking for a wrong value for the second if we are unlucky. But
+> > that can be done later on.
+> 
+> @Wei Unfortunately this does not help on the current stable kernels (at least
+> not on 7.0.10 on Tumbleweed. We discussed it with Vlastimil Babka and Cyril
+> Hrubis and the conclusion  is to start with running the monitor synchronously
+> with each subtestcase and making sure MemFree is big enough before we start the
+> monitor and the process that creates memory stress.
+> Also, please rebase when doing changes.
 
-Implement a 2-second grace period with high-accuracy 10ms fixed polling
-in check_monitor() to allow the kernel time to reclaim memory.
+Base my latest v3 patch test result, it can pass Tumbleweed test now.
+And if you check the log of patchv3, there is always big enough mem
+before we start monitor, so i do not think monitor synchronously can
+help, only increase pool time and threadhold can help.
 
-Introduce a 10% tolerance (90% threshold) for the MemFree check. Our
-measurements showed that under extreme pressure, MemFree can take a
-long time to recover to the exact 100% MIN_FREE_KBYTES, or may stay slightly
-below it. This tolerance prevents false positives and avoids excessive
-wait times while still ensuring memory is maintained near the required level.
 
-Enhanced diagnostics are added to report MemAvailable and the minimum
-memory level seen during the pressure period to aid in future
-calibration.
-
-Signed-off-by: Wei Gao <wegao@suse.com>
----
-v2->v3:
-- Switched from an exponential backoff retry loop to a fixed 10ms polling interval for up to 2 seconds. 
-  This provides better resolution and a more predictable grace period for the kernel to reclaim memory.
-- Introduced a 10% tolerance threshold (90% of min_free_kbytes). Memory levels staying within this range 
-  after the grace period are now logged as info rather than failing, avoiding false positives on systems 
-  under extreme pressure.
-- Added enhanced diagnostics: the test now reports MemAvailable, the minimum MemFree level seen during 
-  the pressure period, and the percentage of the threshold achieved.
-- Refined logging to clearly distinguish between recovery, tolerance-level maintenance, and actual failures.
-
- .../kernel/mem/tunable/min_free_kbytes.c      | 49 ++++++++++++++++---
- 1 file changed, 42 insertions(+), 7 deletions(-)
-
-diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
-index 7882c6072..bd3821cf1 100644
---- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-+++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Copyright (c) Linux Test Project, 2012-2025
-+ * Copyright (c) Linux Test Project, 2012-2026
-  * Copyright (C) 2012-2017  Red Hat, Inc.
-  */
- 
-@@ -177,20 +177,55 @@ static int eatup_mem(unsigned long overcommit_policy)
- 
- static void check_monitor(void)
- {
--	unsigned long tune;
--	unsigned long memfree;
-+	unsigned long tune, threshold;
-+	unsigned long memfree, memavail, min_memfree;
-+	int i, retry_count;
- 
- 	while (!end) {
- 		memfree = SAFE_READ_MEMINFO("MemFree:");
- 		tune = TST_SYS_CONF_LONG_GET(MIN_FREE_KBYTES);
-+		/*
-+		 * Allow 10% tolerance to account for transient states.
-+		 */
-+		threshold = tune * 9 / 10;
- 
- 		if (memfree < tune) {
--			tst_res(TINFO, "MemFree is %lu kB, "
--				 "min_free_kbytes is %lu kB", memfree, tune);
--			tst_res(TFAIL, "MemFree < min_free_kbytes");
-+			min_memfree = memfree;
-+			retry_count = 0;
-+			/*
-+			 * Give it some time to reclaim. The kernel should keep
-+			 * MemFree above min_free_kbytes, but transient drops
-+			 * are possible under high pressure.
-+			 * Check every 10ms for up to 2 seconds for high accuracy.
-+			 */
-+			for (i = 10; i <= 2000; i += 10) {
-+				retry_count++;
-+				usleep(10000);
-+				memfree = SAFE_READ_MEMINFO("MemFree:");
-+				if (memfree < min_memfree)
-+					min_memfree = memfree;
-+
-+				if (memfree >= tune)
-+					break;
-+			}
-+
-+			memavail = SAFE_READ_MEMINFO("MemAvailable:");
-+
-+			if (memfree < threshold) {
-+				tst_res(TINFO, "tune=%lu, threshold=%lu", tune, threshold);
-+				tst_res(TINFO, "MemFree=%lu, MemAvailable=%lu, MinSeen=%lu (%lu%%)",
-+					memfree, memavail, min_memfree, (min_memfree * 100 / tune));
-+				tst_res(TFAIL, "MemFree < 90%% of min_free_kbytes after ~2s");
-+			} else if (memfree < tune) {
-+				tst_res(TINFO, "MemFree (%lu) stayed within 10%% tolerance (min %lu%%, avail %lu) after ~2s",
-+					memfree, (min_memfree * 100 / tune), memavail);
-+			} else {
-+				tst_res(TINFO, "MemFree recovered to %lu (min %lu%%, avail %lu) after %d retries (~%d ms)",
-+					memfree, (min_memfree * 100 / tune), memavail, retry_count, i);
-+			}
- 		}
- 
--		sleep(2);
-+		usleep(100000);
- 	}
- }
- 
--- 
-2.54.0
-
+tst_test.c:2042: TINFO: LTP version: 20260529
+tst_test.c:2045: TINFO: Tested kernel: 7.0.10-2-default #1 SMP PREEMPT_DYNAMIC Sat May 23 12:09:09 UTC 2026 (bb95589) aarch64
+tst_test.c:1864: TINFO: Test timeout is not limited
+min_free_kbytes.c:89: TINFO: Setting /proc/sys/vm/overcommit_memory to 2
+min_free_kbytes.c:93: TINFO: Setting /proc/sys/vm/min_free_kbytes to 45056
+memfree is 1200068 kB before eatup mem   <<<<<<<
+memfree is 74972 kB after eatup mem
+min_free_kbytes.c:95: TINFO: Setting /proc/sys/vm/min_free_kbytes to 90112
+memfree is 1680500 kB before eatup mem   <<<<<<<
+min_free_kbytes.c:224: TINFO: MemFree recovered to 93868 (min 98%, avail 0) after 1 retries (~10 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 96684 (min 98%, avail 0) after 1 retries (~10 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 94712 (min 93%, avail 0) after 1 retries (~10 ms)
+memfree is 94760 kB after eatup mem
+min_free_kbytes.c:103: TINFO: Setting /proc/sys/vm/min_free_kbytes to 40165
+memfree is 1655360 kB before eatup mem
+min_free_kbytes.c:224: TINFO: MemFree recovered to 40748 (min 99%, avail 0) after 2 retries (~20 ms)
+memfree is 75220 kB after eatup mem
+min_free_kbytes.c:89: TINFO: Setting /proc/sys/vm/overcommit_memory to 0
+min_free_kbytes.c:93: TINFO: Setting /proc/sys/vm/min_free_kbytes to 45056
+memfree is 1727596 kB before eatup mem
+min_free_kbytes.c:95: TINFO: Setting /proc/sys/vm/min_free_kbytes to 90112
+memfree is 1716960 kB before eatup mem
+min_free_kbytes.c:224: TINFO: MemFree recovered to 92648 (min 96%, avail 0) after 4 retries (~40 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 91488 (min 85%, avail 0) after 9 retries (~90 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 90348 (min 69%, avail 0) after 28 retries (~280 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 98264 (min 79%, avail 0) after 27 retries (~270 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 92440 (min 80%, avail 0) after 14 retries (~140 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 91864 (min 72%, avail 0) after 27 retries (~270 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 94816 (min 86%, avail 0) after 4 retries (~40 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 92680 (min 86%, avail 0) after 3 retries (~30 ms)
+min_free_kbytes.c:103: TINFO: Setting /proc/sys/vm/min_free_kbytes to 40165
+memfree is 1651044 kB before eatup mem
+min_free_kbytes.c:224: TINFO: MemFree recovered to 45152 (min 94%, avail 1252) after 4 retries (~40 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 55620 (min 91%, avail 7644) after 1 retries (~10 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 46452 (min 72%, avail 0) after 2 retries (~20 ms)
+min_free_kbytes.c:89: TINFO: Setting /proc/sys/vm/overcommit_memory to 1
+min_free_kbytes.c:93: TINFO: Setting /proc/sys/vm/min_free_kbytes to 45056
+memfree is 1703808 kB before eatup mem
+min_free_kbytes.c:224: TINFO: MemFree recovered to 53224 (min 87%, avail 11664) after 1 retries (~10 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 53500 (min 98%, avail 10556) after 1 retries (~10 ms)
+min_free_kbytes.c:95: TINFO: Setting /proc/sys/vm/min_free_kbytes to 90112
+memfree is 1664820 kB before eatup mem <<<<<<<<<<<<
+min_free_kbytes.c:224: TINFO: MemFree recovered to 91172 (min 68%, avail 0) after 73 retries (~730 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 92996 (min 78%, avail 0) after 14 retries (~140 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 91500 (min 72%, avail 0) after 94 retries (~940 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 92760 (min 91%, avail 0) after 9 retries (~90 ms)
+min_free_kbytes.c:103: TINFO: Setting /proc/sys/vm/min_free_kbytes to 40165
+memfree is 1654728 kB before eatup mem
+min_free_kbytes.c:224: TINFO: MemFree recovered to 41508 (min 96%, avail 0) after 1 retries (~10 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 41984 (min 96%, avail 0) after 1 retries (~10 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 52068 (min 93%, avail 3480) after 1 retries (~10 ms)
+min_free_kbytes.c:224: TINFO: MemFree recovered to 47720 (min 98%, avail 0) after 1 retries (~10 ms)
+min_free_kbytes.c:79: TPASS: min_free_kbytes test pass
+> 
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
