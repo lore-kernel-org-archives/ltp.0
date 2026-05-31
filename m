@@ -4,93 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1C6ACD6E5D
-	for <ltp@archiver.kernel.org>; Sun, 31 May 2026 13:51:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1780235512; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=wcunlBX7mPx0OqW33JdD1pNDLxqHUdJfEMf6Gjhyggg=;
- b=b1NzrcOQY/FdiU0etqRuf1ku6GnT8eFr2vHbEKMae2bXS3ERITkEsV4YvL8E60cugO38x
- jsV0uXST2SpK9UZ5ne7DbX2beAzLMugBiVhF/F+sGQTlVCTFimYiTxcoOmIu2/JbmxOFQsH
- 5k61RBomAD88WoJUZ7cTuM33X9LrUAE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD567CD6E57
+	for <ltp@archiver.kernel.org>; Sun, 31 May 2026 23:41:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3830E3C560C
-	for <ltp@archiver.kernel.org>; Sun, 31 May 2026 15:51:52 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 869603CDC08
+	for <ltp@archiver.kernel.org>; Mon,  1 Jun 2026 01:41:42 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 019743C560C
- for <ltp@lists.linux.it>; Sun, 31 May 2026 15:51:28 +0200 (CEST)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+ by picard.linux.it (Postfix) with ESMTPS id 1A27E3C5E52
+ for <ltp@lists.linux.it>; Mon,  1 Jun 2026 01:41:25 +0200 (CEST)
+Received: from mail-dl1-x1242.google.com (mail-dl1-x1242.google.com
+ [IPv6:2607:f8b0:4864:20::1242])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BE0452000B2
- for <ltp@lists.linux.it>; Sun, 31 May 2026 15:51:26 +0200 (CEST)
-Received: by mail-wm1-x329.google.com with SMTP id
- 5b1f17b1804b1-490a7629893so5580975e9.0
- for <ltp@lists.linux.it>; Sun, 31 May 2026 06:51:26 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 957EF1A0049E
+ for <ltp@lists.linux.it>; Mon,  1 Jun 2026 01:41:24 +0200 (CEST)
+Received: by mail-dl1-x1242.google.com with SMTP id
+ a92af1059eb24-137dd3cb5dcso1071666c88.0
+ for <ltp@lists.linux.it>; Sun, 31 May 2026 16:41:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1780235486; x=1780840286; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=7tDkemwlFo3tsNAu2nSScwETph25ciceve3vQM7fpv4=;
- b=BRkgBx4+2Ixnqrt7vd7gCg+S5D7q6xwc6DLXug4Z4DE19raR82mzq7yFWn8LN9NpVO
- nfIHasBb6ovh4yUnCwxE8sDfsMk6CkNFse/hZVOi30yQA4BG2D0dYrtfRMwQAFXl3oh2
- yajrB7ZNGFoTaa3tc3dBUpTgBuukNYeNG8uXQ+VQMOh8KrOUK3booCTB95dkNjw9Fl6+
- qXSUYW4NW3HJCD7rRqSmLJfB13ovLCxa1JxQU6a3paqigwyMkwkOBoVQGVjK18mhKlkM
- 83jS4fvF7NNLagdPA/99glIVbiAqaoLrkx3H4PvqTEiH601CdMLjRMpcjc0NIagLo1bQ
- RDSw==
+ d=gmail.com; s=20251104; t=1780270883; x=1780875683; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=9spyD7HcCkOxHrC0Nw8WolBHgyo3nwgUyv5TRRZdziI=;
+ b=b6coKk3juWgy472fa3i3OhvMxYE0mtQ07nBp1CTAm5JrbtzmX82aBHSzyVAgHiDGAM
+ NGnZhvgKUf9KS4TiMUbJT/ZIFYbYwR49BOexSK0kXPNtzLA6Tkd+lWUQuQVTEwuCK9nk
+ tTgsZlU5VhxLPwCRpoWs6InxObD8e2NGUjC92WUbTE+RqDRQOdEIgEojL3jtjrmb/ESf
+ 3NhsP+GZQS+k0PY43HYsx8ZPNwSaRmsED4mkFP+zfs8JQURBW1sCmPBTcugS2asPxpqk
+ L2B9yYHK6YU5aQeyiJrxJIqC/GSVRdg/XpX91UhJLLCujf4LI7oK5Ux2WthfOBbygzZu
+ iW9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780235486; x=1780840286;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=7tDkemwlFo3tsNAu2nSScwETph25ciceve3vQM7fpv4=;
- b=kO27Tm2K60jPzhaDYrGnC8FgRJe9kmr8tqWGM0FtcvJv6qr5RoWSFav+Z6GxYU8kjf
- av7ZqSm7/i7I4Bm2O5flt/g8f/aky9XSB2Xf1FdnIyM8RyORj7Y8ufceZUOESnQq/axH
- WjLy3jN46mvePUUnTQ6ESMdenv/fL6YLwTrIVN3uCEu9V7lmG2lPfpHO3kAWFEqLmr1J
- eg5g4A1EOWTqpnep/d7/ds+RK8PpPSNx4DWbjHPVib4bCxQsmYyyTQ5LwWZ5wA9lmjvh
- T3pyOfKV/yiDfnZSsfW8dPu358OVIh6SHS0ozdwL4wkXrKcKeLyGJp8P4mEioNY7/CeZ
- SvoQ==
+ d=1e100.net; s=20251104; t=1780270883; x=1780875683;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=9spyD7HcCkOxHrC0Nw8WolBHgyo3nwgUyv5TRRZdziI=;
+ b=SlrUBbYm/7HLbH26wHv2dFIUoXSA0+6YpA1p3rH74fzPpIQGh0FfMFrd27ysgwCGd9
+ OfzXcVsfhzowRsiUAzJzp9qA/IMqvGzDICrV+20vVCVKzYWLNXOP9pvVgaEtM42buT+6
+ RyyNXz5Ss+arNBsxYpzGtw775dfMYBEY0DsItzpS/fiqwhyfc+qGTOWOtfAp5odJNylU
+ hudNpzPRN46NUYm/wacXHsodPP8Hu9PqjnF3eSEKblkkrwb9/9DaLT1qHitN37S8Vz/Z
+ oErj9d/g2ZiY/dIKII5XZZ6L/OPz22m35ZwP6TvFr/VHkDaa3fBVsjuIPqT18gRZ/8Mj
+ bANg==
 X-Forwarded-Encrypted: i=1;
- AFNElJ/i+6VI0P9/bSNvMhkF8r5GbY1cJhyCeC4WIiOyZJVHeJwmYA91f0FOnpDW12xkX4mpTbs=@lists.linux.it
-X-Gm-Message-State: AOJu0YyAoVA+XJENJ6vyRX5dOoqyllj3yLhrpyLWuGVEzQ/CvdJg/w/s
- +nKbehqKV55fDkM9SzLPqiN1EdKG9gOVwg0Wph3np6Tronl1e4YsLSnxKbPPgntZVjQdHODxbGE
- HiLU=
-X-Gm-Gg: Acq92OEZ1m+Fkg66SlNhxMKZL1YtJ7gKeYh4MuzTbrjG5Ep3WUTkGiNAaYsFGs7O0/w
- mpbYk1UecCn9JDDhVsmu3Rd4u7GAmGSPywKTGya/joBAt+isKLp7qZ8w7TWQ0Gx3GJRe1LMFThK
- o7fANkP84lr2NvxLBqlM+a+M1I3yhvYPDSl+JXE+WwBrwV3MRPrpWq+SbAMMOW2EXBe2i4dEfS5
- CDxITY51sWD3AalO3ZaqOYGfeOiQq9LG6jbo+2qNKdfGNOqdmxix9RSyNr1eFpr8o3ff7C6Lr+M
- 3eEVmq3VoUQ1kna00wjrg1mRItvAN0CRC082kcgBom5vbWVXRZ6bVnnsKo7P7GxV2rTCmGUR/pO
- BfXVGsbGWwzgxdeD9SqrgZeXwFHLULwP5B8rkgpNMu04E+mYGGtTRv6cpMUa3xFdoUcz8s3xOGc
- S51wqzNhkMsAz4h1MizNYAowiY9LyEBkMMqNil9Hcuw8ZXSmpQhRo=
-X-Received: by 2002:a05:600c:2a8a:b0:490:44eb:c1ec with SMTP id
- 5b1f17b1804b1-490a293cf3bmr89670265e9.27.1780235486133; 
- Sun, 31 May 2026 06:51:26 -0700 (PDT)
-Received: from autotest-wegao.qe.prg2.suse.org
- ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ AFNElJ/yOj8PA5zqmDp8FLl7WowdIQVIMzeJAUAzvaT8NVctP4tey8e7/8xdS1aOxHYTXlOT7BI=@lists.linux.it
+X-Gm-Message-State: AOJu0Yx4jPiJQ/oeP4G1UiqpfzkhG2e0iR/vHB4UM/xb+g2gShgxkDR6
+ bcgcUC+AThexUIfwYdk9lWE2pMfBjvLqGwmrMgGR+uQktez/LHYYxlSe
+X-Gm-Gg: Acq92OEPtvsKZRDVSEudTo74u7BXs1lKKuKq+mJFsHQuQ0M1yzG/AJNPazq/i8HC2mQ
+ xtfL6VW7Y7+yZnPsZd8rqQKNJz+6+DFDsfBd35e/WcEle+E8cPkkljhKaotQHSZaJ7O/5Tpy3eu
+ Uv7yyg/oVi2rIbQvMPMbwAiRK2CibdiwZ4myoj47zG1mQY7Hjc1Up2OWY5cgy4lz0neMxUaZJpu
+ CuDEHw+S8SnaqMoJMyRMK6OyKgp1aBjkFbmffqDlIfvh28Mro8vhKb0BpaDlFMUGe7deAohztB4
+ ukahpbDvqrofGGUbWvokCRmygWFo1zqxM7JBv/iVDni+lLYj6MTJvNZ7Pm7CaqgwKQhFV/YT5vM
+ 9cDgxjFB5ueDcv4c5YZ3CSjH5YNaEw3zehbEyazwzA38ZgasnYxXOT/dTS5EBayyQK7eeAOr+SS
+ aYHljlir3/Te3ApWVW90Dagj2/mOl/ig==
+X-Received: by 2002:a05:7300:6427:b0:2ed:e12:376d with SMTP id
+ 5a478bee46e88-304fa6dcc72mr3991490eec.35.1780270882557; 
+ Sun, 31 May 2026 16:41:22 -0700 (PDT)
+Received: from anonyme ([2605:52c0:2:2f27:be24:11ff:fe89:6f0f])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4909cab7b00sm188867695e9.14.2026.05.31.06.51.25
+ 5a478bee46e88-304ed2c154fsm6762953eec.3.2026.05.31.16.41.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 31 May 2026 06:51:25 -0700 (PDT)
-Date: Sun, 31 May 2026 13:51:24 +0000
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ahw83IPF8_y8yvHj@autotest-wegao.qe.prg2.suse.org>
-References: <20260527050843.14963-1-wegao@suse.com> <ahcQd-5ffiCDU8IE@yuki.lan>
- <20260529160708.GA287653@pevik>
+ Sun, 31 May 2026 16:41:22 -0700 (PDT)
+From: AnonymeMeow <anonymemeow@gmail.com>
+To: amir73il@gmail.com
+Date: Mon,  1 Jun 2026 07:41:16 +0800
+Message-ID: <20260531234116.36480-1-anonymemeow@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260528162920.914321-2-amir73il@gmail.com>
+References: <20260528162920.914321-2-amir73il@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260529160708.GA287653@pevik>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] mem/min_free_kbytes: Add grace period for
- memory reclaim
+Subject: [LTP] [PATCH] fanotify13: fix test failure when running iterations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,93 +90,152 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
+Cc: jack@suse.cz, ltp@lists.linux.it, AnonymeMeow <anonymemeow@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, May 29, 2026 at 06:07:08PM +0200, Petr Vorel wrote:
-> Hi all,
-> 
-> 
-> > I think that we also want to change the test so that the monitor is
-> > started and stopped for each testcase with a specific value we set the
-> > min_free_kbytes to. Running it asynchronously like this may mean that we
-> > will be looking for a wrong value for the second if we are unlucky. But
-> > that can be done later on.
-> 
-> @Wei Unfortunately this does not help on the current stable kernels (at least
-> not on 7.0.10 on Tumbleweed. We discussed it with Vlastimil Babka and Cyril
-> Hrubis and the conclusion  is to start with running the monitor synchronously
-> with each subtestcase and making sure MemFree is big enough before we start the
-> monitor and the process that creates memory stress.
-> Also, please rebase when doing changes.
+The FAN_DELETE_SELF test case removes test files, causing later
+iterations to crash. Recreate the removed files after the test to
+restore the expected initial state. And adjust the overlayfs mount
+timing to avoid creating files directly in the filesystem underneath
+the already mounted overlayfs.
 
-Base my latest v3 patch test result, it can pass Tumbleweed test now.
-And if you check the log of patchv3, there is always big enough mem
-before we start monitor, so i do not think monitor synchronously can
-help, only increase pool time and threadhold can help.
+Signed-off-by: AnonymeMeow <anonymemeow@gmail.com>
+---
 
+Hi, Amir,
 
-tst_test.c:2042: TINFO: LTP version: 20260529
-tst_test.c:2045: TINFO: Tested kernel: 7.0.10-2-default #1 SMP PREEMPT_DYNAMIC Sat May 23 12:09:09 UTC 2026 (bb95589) aarch64
-tst_test.c:1864: TINFO: Test timeout is not limited
-min_free_kbytes.c:89: TINFO: Setting /proc/sys/vm/overcommit_memory to 2
-min_free_kbytes.c:93: TINFO: Setting /proc/sys/vm/min_free_kbytes to 45056
-memfree is 1200068 kB before eatup mem   <<<<<<<
-memfree is 74972 kB after eatup mem
-min_free_kbytes.c:95: TINFO: Setting /proc/sys/vm/min_free_kbytes to 90112
-memfree is 1680500 kB before eatup mem   <<<<<<<
-min_free_kbytes.c:224: TINFO: MemFree recovered to 93868 (min 98%, avail 0) after 1 retries (~10 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 96684 (min 98%, avail 0) after 1 retries (~10 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 94712 (min 93%, avail 0) after 1 retries (~10 ms)
-memfree is 94760 kB after eatup mem
-min_free_kbytes.c:103: TINFO: Setting /proc/sys/vm/min_free_kbytes to 40165
-memfree is 1655360 kB before eatup mem
-min_free_kbytes.c:224: TINFO: MemFree recovered to 40748 (min 99%, avail 0) after 2 retries (~20 ms)
-memfree is 75220 kB after eatup mem
-min_free_kbytes.c:89: TINFO: Setting /proc/sys/vm/overcommit_memory to 0
-min_free_kbytes.c:93: TINFO: Setting /proc/sys/vm/min_free_kbytes to 45056
-memfree is 1727596 kB before eatup mem
-min_free_kbytes.c:95: TINFO: Setting /proc/sys/vm/min_free_kbytes to 90112
-memfree is 1716960 kB before eatup mem
-min_free_kbytes.c:224: TINFO: MemFree recovered to 92648 (min 96%, avail 0) after 4 retries (~40 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 91488 (min 85%, avail 0) after 9 retries (~90 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 90348 (min 69%, avail 0) after 28 retries (~280 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 98264 (min 79%, avail 0) after 27 retries (~270 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 92440 (min 80%, avail 0) after 14 retries (~140 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 91864 (min 72%, avail 0) after 27 retries (~270 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 94816 (min 86%, avail 0) after 4 retries (~40 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 92680 (min 86%, avail 0) after 3 retries (~30 ms)
-min_free_kbytes.c:103: TINFO: Setting /proc/sys/vm/min_free_kbytes to 40165
-memfree is 1651044 kB before eatup mem
-min_free_kbytes.c:224: TINFO: MemFree recovered to 45152 (min 94%, avail 1252) after 4 retries (~40 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 55620 (min 91%, avail 7644) after 1 retries (~10 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 46452 (min 72%, avail 0) after 2 retries (~20 ms)
-min_free_kbytes.c:89: TINFO: Setting /proc/sys/vm/overcommit_memory to 1
-min_free_kbytes.c:93: TINFO: Setting /proc/sys/vm/min_free_kbytes to 45056
-memfree is 1703808 kB before eatup mem
-min_free_kbytes.c:224: TINFO: MemFree recovered to 53224 (min 87%, avail 11664) after 1 retries (~10 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 53500 (min 98%, avail 10556) after 1 retries (~10 ms)
-min_free_kbytes.c:95: TINFO: Setting /proc/sys/vm/min_free_kbytes to 90112
-memfree is 1664820 kB before eatup mem <<<<<<<<<<<<
-min_free_kbytes.c:224: TINFO: MemFree recovered to 91172 (min 68%, avail 0) after 73 retries (~730 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 92996 (min 78%, avail 0) after 14 retries (~140 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 91500 (min 72%, avail 0) after 94 retries (~940 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 92760 (min 91%, avail 0) after 9 retries (~90 ms)
-min_free_kbytes.c:103: TINFO: Setting /proc/sys/vm/min_free_kbytes to 40165
-memfree is 1654728 kB before eatup mem
-min_free_kbytes.c:224: TINFO: MemFree recovered to 41508 (min 96%, avail 0) after 1 retries (~10 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 41984 (min 96%, avail 0) after 1 retries (~10 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 52068 (min 93%, avail 3480) after 1 retries (~10 ms)
-min_free_kbytes.c:224: TINFO: MemFree recovered to 47720 (min 98%, avail 0) after 1 retries (~10 ms)
-min_free_kbytes.c:79: TPASS: min_free_kbytes test pass
-> 
-> Kind regards,
-> Petr
+I think we shouldn't unconditionally recreate the files through the
+overlayfs. Because files created through overlayfs end up in the upper
+dir, but test variant 3 is intended to verify events reported for lower
+dir files opened through overlayfs, then starting from the second
+iteration variant 3 would test events for upper dir files instead, which
+does not match the intended test scenario.
+
+Therefore, I updated my previous patch to unmount the overlayfs mount
+and its bind mount before cleaning the upper dir, and mount them back
+afterwards. This avoids modifying the underlying fs while the overlayfs
+is still mounted.
+
+And since modifying the backing fs of a mounted overlayfs is undefined
+behavior, I adjusted the overlayfs setup timing so that the test files
+are created before overlayfs is mounted.
+
+With Best Regards,
+AnonymeMeow
+
+---
+ .../kernel/syscalls/fanotify/fanotify13.c     | 50 +++++++++++++++----
+ 1 file changed, 41 insertions(+), 9 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
+index 76d40eaf7..c4223c3e9 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify13.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
+@@ -53,6 +53,9 @@
+ #define FILE_PATH_ONE MOUNT_PATH"/"FILE_ONE
+ #define FILE_PATH_TWO MOUNT_PATH"/"FILE_TWO
+ 
++#define TST_VARIANT_OVL_LOWER (tst_variant & 1)
++#define TST_VARIANT_OVL_WATCH (tst_variant > 2)
++
+ #if defined(HAVE_NAME_TO_HANDLE_AT)
+ struct event_t {
+ 	unsigned long long expected_mask;
+@@ -137,6 +140,22 @@ static void delete_objects(void)
+ 	}
+ }
+ 
++static void clean_upper_dir(void)
++{
++	unsigned int i;
++
++	SAFE_UMOUNT(MOUNT_PATH);
++	SAFE_UMOUNT(OVL_MNT);
++
++	SAFE_MOUNT(OVL_UPPER, MOUNT_PATH, "none", MS_BIND, NULL);
++	for (i = 0; i < ARRAY_SIZE(objects); i++)
++		SAFE_UNLINK(objects[i].path);
++	SAFE_UMOUNT(MOUNT_PATH);
++
++	SAFE_MOUNT_OVERLAY();
++	SAFE_MOUNT(OVL_MNT, MOUNT_PATH, "none", MS_BIND, NULL);
++}
++
+ static void get_object_stats(void)
+ {
+ 	unsigned int i;
+@@ -340,6 +359,15 @@ static void do_test(unsigned int number)
+ 			"Did not get an expected event (expected: %llx)",
+ 			event_set[i].expected_mask);
+ 	}
++
++	if (tc->mask & FAN_DELETE_SELF) {
++		if (TST_VARIANT_OVL_LOWER) {
++			clean_upper_dir();
++		} else {
++			create_objects();
++			get_object_stats();
++		}
++	}
+ out:
+ 	SAFE_CLOSE(fanotify_fd);
+ }
+@@ -367,14 +395,11 @@ static void do_setup(void)
+ 	 */
+ 	if (tst_variant) {
+ 		REQUIRE_HANDLE_TYPE_SUPPORTED_BY_KERNEL(AT_HANDLE_FID);
+-		ovl_mounted = TST_MOUNT_OVERLAY();
+-		if (!ovl_mounted)
+-			return;
+-
+-		mnt = tst_variant & 1 ? OVL_LOWER : OVL_UPPER;
++		
++		tst_create_overlay_dirs();
++		mnt = TST_VARIANT_OVL_LOWER ? OVL_LOWER : OVL_UPPER;
+ 	} else {
+ 		mnt = OVL_BASE_MNTPOINT;
+-
+ 	}
+ 	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_FID, mnt);
+ 	SAFE_MKDIR(MOUNT_PATH, 0755);
+@@ -385,8 +410,14 @@ static void do_setup(void)
+ 
+ 	/* Create file and directory objects for testing on base fs */
+ 	create_objects();
++	
++	if (tst_variant) {
++		ovl_mounted = TST_MOUNT_OVERLAY();
++		if (!ovl_mounted)
++			return;
++	}
+ 
+-	if (tst_variant > 2) {
++	if (TST_VARIANT_OVL_WATCH) {
+ 		/* Setup watches on overlayfs */
+ 		SAFE_MOUNT(OVL_MNT, MOUNT_PATH, "none", MS_BIND, NULL);
+ 		ovl_bind_mounted = 1;
+@@ -416,12 +447,13 @@ static void do_cleanup(void)
+ 		SAFE_CLOSE(fanotify_fd);
+ 	if (ovl_bind_mounted)
+ 		SAFE_UMOUNT(MOUNT_PATH);
++	if (ovl_mounted)
++		SAFE_UMOUNT(OVL_MNT);
+ 	if (bind_mounted) {
++		delete_objects();
+ 		SAFE_UMOUNT(MOUNT_PATH);
+ 		SAFE_RMDIR(MOUNT_PATH);
+ 	}
+-	if (ovl_mounted)
+-		SAFE_UMOUNT(OVL_MNT);
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.54.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
