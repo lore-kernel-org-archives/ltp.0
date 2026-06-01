@@ -4,82 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67CDECD5BD1
-	for <ltp@archiver.kernel.org>; Mon,  1 Jun 2026 09:40:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 145DBCD6E56
+	for <ltp@archiver.kernel.org>; Mon,  1 Jun 2026 09:53:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DDD733E56CF
-	for <ltp@archiver.kernel.org>; Mon,  1 Jun 2026 11:40:05 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 6AA2E3E56D4
+	for <ltp@archiver.kernel.org>; Mon,  1 Jun 2026 11:53:18 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 06F673CC5FB
- for <ltp@lists.linux.it>; Mon,  1 Jun 2026 11:39:49 +0200 (CEST)
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com
- [IPv6:2607:f8b0:4864:20::842])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CFF853E48AE
+ for <ltp@lists.linux.it>; Mon,  1 Jun 2026 11:52:58 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A4877200756
- for <ltp@lists.linux.it>; Mon,  1 Jun 2026 11:39:48 +0200 (CEST)
-Received: by mail-qt1-x842.google.com with SMTP id
- d75a77b69052e-516d78df76aso102094021cf.3
- for <ltp@lists.linux.it>; Mon, 01 Jun 2026 02:39:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780306787; x=1780911587; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=6emkyLWuMxbtSzmywOJLlZmmi6UEbThXx4ug/bD0fEo=;
- b=tCLYKNzPLZnzHz376cZ4R/MH5CdT1SPNOOEB04rujaJpB8bcSbUIYsAvBUFXq65tjp
- f2ghZltURkFSdrs7rupTSNHX4YGcg6p6Mm027PnVnWmZImw2hOtwSabWQ6Ohn5LcGdTs
- TSpCdlIrEK8p5abrTP5lvcER+vylM/riGKa3FU1tnWbf1+O0OJGCcyyas3o9WR2N/59i
- qOHSiNIkcG2pAXMV5k8NxtV/jsdM626YfN72KJ2sJeQBg9hV4rm4hpmpdF9AXaqSOTdr
- y51Ziv4oTKhctw+CNHI+MlNwipr6bk3ATIZNAtPui1O80fKysvT3bYgVQkKzGUcYrnFf
- xeZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780306787; x=1780911587;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=6emkyLWuMxbtSzmywOJLlZmmi6UEbThXx4ug/bD0fEo=;
- b=p65nexbimVmpAIYFl8VvLHpFv4CQxAbVem1LuMBtQ5XeAbXtflFrSQ3vd1PJVuHqEg
- wxrSzPa5oLpdOPnvb+1CJdmPZEI+tEzaii6NlV9uFEpF1zkXxNs4MT6xkr+XA9l/k+zC
- Wxc8mfBybhpZx2vx0KA3Kp5vceD8mGksZbKgJFKBxLYWetZCJ4yS5e6TTWsnDVgKvKwb
- CnV3OHYy8STsf4gw8+FRtlJY0D7w0CJFP7ioztIJAufQHsK/VPjLjdSicUe2O6WiNhTX
- PdV7/pqCF+koPAtCWeJACulMb+NWJJ7xwyU30bkl3D5Okz9MytZhWEe1rNV9Y9TCRRmJ
- aCMw==
-X-Gm-Message-State: AOJu0Yy+MSJoLkSmzyKrhliFhol1m5V7WRFoQijeOb0j3qt5yd+Imz1v
- oukm2jKY1qMgK+vmFoI0a93UZgVbNIRe/EOZuXngr2F+gH5ULaRlIZCA
-X-Gm-Gg: Acq92OE50NVeQklorz57LEOT/2F28qP9Wex5zz4Nr+/ZgVQN4TWZoBhl2x+0XHkiyDc
- hwzSEIKjLeNAgLO7sRSTfKO55j7Gx/zXFFcwK4/2A78nRXZ3ax95b4Q5w99xSb0Qg7ajynlgrXP
- rUghKrPezvM4dxfcEcTqt8XdcIOmuqZ4vdbb6tPVaHGw9mGoqpLaj7BN2jNjw+w6/qg+oZkmKq9
- TbfNb96Os98cpkchdpCOkMZ9w7jwfaB5zWRqKnw8V1HOs+bqY3mUCqv1sQGBzSNdS4CS7S2ujkV
- Vgdnwr0qOSaBwhtizpszIIbKc2YQ0QdpnC3Pm+/5+xltdQbnDH+MwAL1TJ6hbJxi+8KQd+B9JiJ
- ValsvxTPPx9FQc5YraaGGg4FkXJDgKM0biH45sGFqhNKQJJwo9sHzwzL6MWysKZz4Zyu3UnncJ4
- 5kwwoUxIzgnVAg1USRUXXBhuzh9g3pTtThox3puNb4Wsm0r4mwCNXvUuy3vJcNrP5dqLpWVpWNM
- 8idYiVBOOkRf9nqKnRWsr+H0JnnKjG/RDvxuClz6NyEUjccr/HKCERHqUTr
-X-Received: by 2002:a05:622a:a902:b0:517:28fe:d700 with SMTP id
- d75a77b69052e-5173a79c9c5mr126324661cf.8.1780306787253; 
- Mon, 01 Jun 2026 02:39:47 -0700 (PDT)
-Received: from
- runnervm3jyl0.alcvuz05nmmujijktqojz2jv5b.bx.internal.cloudapp.net
- ([20.55.118.116]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-517519dfdbcsm26829431cf.7.2026.06.01.02.39.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 01 Jun 2026 02:39:46 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon,  1 Jun 2026 09:39:46 +0000
-Message-ID: <20260601093946.4671-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260601-gitignore_ltp_agent-v3-1-b39af1578972@suse.com>
-References: <20260601-gitignore_ltp_agent-v3-1-b39af1578972@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BA2C0600837
+ for <ltp@lists.linux.it>; Mon,  1 Jun 2026 11:52:57 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D790F66E51;
+ Mon,  1 Jun 2026 09:52:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1780307577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=eMguafUOEqW0h5f6CLV22eQ5JhDVGx+I/TBXCuPzKJg=;
+ b=0PffMpIfJuz3BzSa4crEMnYM6cPvpxHCFvLkU/NVWUpA6/LRqxmpIqWS5ZwL9hYqtpxzUb
+ BBR9eKpn9PBVXVNww1k8gvE87b120LyhINO1xg/D2a5sgKsPdhTX2H41NmtuiLhEEcc5Ud
+ twaky4yXKmZ1etZ4I7LqSd9PouqVF3w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1780307577;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=eMguafUOEqW0h5f6CLV22eQ5JhDVGx+I/TBXCuPzKJg=;
+ b=JpxOVGkmxa61SNa7nFR00cVLnYMrh4pCT97b4mzrap93F84F3BC6b8NZTnVJSrjKOZVu0q
+ hDkmxt/F6M11+yAg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=AZR+e0gS;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=z7UVEJGb
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1780307576; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=eMguafUOEqW0h5f6CLV22eQ5JhDVGx+I/TBXCuPzKJg=;
+ b=AZR+e0gS4wLXJ3e3k+PJREok29ZQvne4Nl0EzdIAbNoyjUoa08O4zIT7Ef/ovb49N5lKV7
+ NEa8woLMDkg8zJTgBVjeJVid6sw+sNq/2OIGAOn0hzv0r0gbZMxmtIcYqTXgk64mTPK6zx
+ Jn59Qt12E/p9kk0Y8GR1Hq9a5Ho29U4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1780307576;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=eMguafUOEqW0h5f6CLV22eQ5JhDVGx+I/TBXCuPzKJg=;
+ b=z7UVEJGb8bm0txmA1f6f73kFE4LEXkbPNw5o2/DcY86lyjX/UZvRyAmUAF61SmISygzQb9
+ DqtuItRKgQfmA5Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BBD53779A8;
+ Mon,  1 Jun 2026 09:52:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id KFs8LHhWHWrqZwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 01 Jun 2026 09:52:56 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Mon, 01 Jun 2026 11:52:54 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Message-Id: <20260601-doc_update-v1-1-b0f59834fbae@suse.com>
+References: <20260601-doc_update-v1-0-b0f59834fbae@suse.com>
+In-Reply-To: <20260601-doc_update-v1-0-b0f59834fbae@suse.com>
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1780307576; l=10353;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=pcdh00XUW9dIb/p6Tz1nUzviN6ruaHfFtBBPM9CX7Jw=;
+ b=dJVAbSRNDEpbx66mFiwrbmUQAlt/pG6V+f9OeVsQR4kqMpfwnF5bBJLqFSwaJA1chxWUS8hmu
+ w95NvkG3VCiDo9804Zg+WCBmCoISz3DOZXAEaRkggetu/hIto5QuAwZ
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: D790F66E51
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,linux-test-project.readthedocs.io:url,suse.de:dkim];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] gitignore: ignore ltp-agent setup files
+Subject: [LTP] [PATCH 1/4] doc: Fix broken references and outdated content
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,43 +126,224 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP AI Reviewer <ltp-ai@ltp.example.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQW5kcmVhLAoKT24gTW9uLCAwMSBKdW4gMjAyNiAwODo0NjoxMCArMDIwMCwgQW5kcmVhIENl
-cnZlc2F0byB3cm90ZToKPiBnaXRpZ25vcmU6IGlnbm9yZSBsdHAtYWdlbnQgc2V0dXAgZmlsZXMK
-CkluZnJhc3RydWN0dXJlLW9ubHkgcGF0Y2ggKGAuZ2l0aWdub3JlYCBvbmx5KSDigJQgY29kZSBy
-ZXZpZXcgY2hlY2tsaXN0CnNraXBwZWQgcGVyIHByb3RvY29sLgoKQ09NTUlUIE1FU1NBR0UKLS0t
-LS0tLS0tLS0tLS0KVGhlIHN1YmplY3QgZm9sbG93cyA8YXJlYT46IDxkZXNjcmlwdGlvbj4gZm9y
-bWF0IHdpdGggaW1wZXJhdGl2ZSBtb29kLgoKVGhlIGJvZHkgYWNjdXJhdGVseSBlbnVtZXJhdGVz
-IHRoZSBpbmplY3RlZCBhcnRlZmFjdHM6IEFHRU5UUy5tZCwgR0VNSU5JLm1kLAouYWdlbnRzLCAu
-Y2xhdWRlLCBhbmQgdGhlIGFnZW50cy8sIGxpbnRlci8sIHNraWxscy8gc3ltbGlua3MuCgpUaGUg
-cmF0aW9uYWxlIGZvciByb290LWFuY2hvcmluZyAvYWdlbnRzLCAvbGludGVyLCBhbmQgL3NraWxs
-cyB3aXRoIGEKbGVhZGluZyAnLycgYW5kIG5vIHRyYWlsaW5nIHNsYXNoIGlzIGNvcnJlY3Q6CiAg
-LSBMZWFkaW5nICcvJyBwcmV2ZW50cyBzaGFkb3dpbmcgc2FtZS1uYW1lZCBzdWJkaXJlY3Rvcmll
-cyBkZWVwZXIgaW4gdGhlCiAgICB0cmVlIChlLmcuIGEgaHlwb3RoZXRpY2FsIHRlc3RjYXNlcy9m
-b28vYWdlbnRzLykuCiAgLSBPbWl0dGluZyB0aGUgdHJhaWxpbmcgc2xhc2ggaXMgbmVjZXNzYXJ5
-IGJlY2F1c2UgdGhlc2UgYXJlIHN5bWxpbmtzOyBhCiAgICB0cmFpbGluZyBzbGFzaCBpbiAuZ2l0
-aWdub3JlIG9ubHkgbWF0Y2hlcyByZWFsIGRpcmVjdG9yaWVzLCBub3Qgc3ltbGlua3MsCiAgICBz
-byB0aGUgZW50cmllcyB3b3VsZCBzaWxlbnRseSBmYWlsIHRvIHN1cHByZXNzIHRoZW0gd2l0aG91
-dCBpdC4KCi8ucGkvIGNvcnJlY3RseSB1c2VzIGJvdGggYSByb290IGFuY2hvciBhbmQgYSB0cmFp
-bGluZyBzbGFzaCAoYWN0dWFsCmRpcmVjdG9yeSwgbm90IGEgc3ltbGluaykuCgpQQVRDSCBDT1JS
-RUNUTkVTUwotLS0tLS0tLS0tLS0tLS0tLQpBbGwgbmluZSBhZGRlZCBlbnRyaWVzIG1hcCAxOjEg
-dG8gdGhlIGFydGVmYWN0cyBkZXNjcmliZWQgaW4gdGhlIGJvZHkuClRoZSB0d28gY29tbWVudCBo
-ZWFkZXJzICgiIyBsdHAtYWdlbnQgc2V0dXAiIGFuZCAiIyBhZ2VudHMgZmlsZXMiKSBjbGVhbmx5
-CnNlcGFyYXRlIHRoZSBpbmplY3RlZCBydW50aW1lIGFydGVmYWN0cyBmcm9tIHRoZSBzY3JhdGNo
-IHdvcmtpbmcgZmlsZXMuCgpUaGUgdW5hbmNob3JlZCBlbnRyaWVzICguYWdlbnRzLCAuY2xhdWRl
-LCByZXZpZXctaW5saW5lLnR4dCwgQUdFTlRTLm1kLApHRU1JTkkubWQpIGxhY2sgYSBsZWFkaW5n
-ICcvJy4gVGhpcyBtYWtlcyB0aGVtIG1hdGNoIGFueXdoZXJlIGluIHRoZSB0cmVlLApub3QganVz
-dCBhdCB0aGUgcm9vdC4gRm9yIC5hZ2VudHMgYW5kIC5jbGF1ZGUgdGhpcyBpcyBhIHNsaWdodCBv
-dmVyc2hvb3QKY29tcGFyZWQgdG8gdGhlIGFuY2hvcmVkIHRyZWF0bWVudCBvZiAvYWdlbnRzLCAv
-bGludGVyLCAvc2tpbGxzLCBidXQgdGhlCmNvbW1pdCBib2R5IGRvZXMgbm90IGNsYWltIHRoZXNl
-IGFyZSBhbmNob3JlZC4gSW4gcHJhY3RpY2UsIG5vIHRlc3QgY29kZQpjcmVhdGVzIC5hZ2VudHMg
-b3IgLmNsYXVkZSBzdWJkaXJlY3Rvcmllcywgc28gbm8gZmFsc2Ugc3VwcHJlc3Npb24gaXMKZXhw
-ZWN0ZWQuIFRoaXMgaXMgbm90ZWQgZm9yIGNvbXBsZXRlbmVzcyBidXQgZG9lcyBub3QgcmVxdWly
-ZSBhIGZpeC4KClZlcmRpY3Q6IFJldmlld2VkIOKckwoKUmV2aWV3ZWQtYnk6IExUUCBBSSBSZXZp
-ZXdlciA8bHRwLWFpQGx0cC5leGFtcGxlLmNvbT4KCkxUUCBBSSBSZXZpZXdlcgoKLS0gCk1haWxp
-bmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+Fix kernel-doc reference to renamed tse_numa.h header, correct
+TST_EXP_POSSITIVE typo and RST formatting in tst_test_macros.h,
+use :c:struct: instead of :ref: for struct cross-references, fix
+broken lapi/ :master: links, drop stale lapi/stat.h notes, correct
+kirk invocation example and use md5sum/sha1sum commands.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ doc/developers/api_c_tests.rst            |  2 +-
+ doc/developers/api_shell_tests.rst        |  2 +-
+ doc/developers/test_case_tutorial.rst     | 19 ++++++++-----------
+ doc/developers/todo.rst                   |  2 +-
+ doc/developers/writing_tests.rst          |  6 +++---
+ doc/maintainers/ltp_release_procedure.rst |  4 ++--
+ doc/maintainers/patch_review.rst          |  6 +++---
+ include/tst_test_macros.h                 |  8 ++++----
+ 8 files changed, 23 insertions(+), 26 deletions(-)
+
+diff --git a/doc/developers/api_c_tests.rst b/doc/developers/api_c_tests.rst
+index 26b46d92d9f0aa724f10a960b6c5cce59ae1d3e8..65cf6d6cd0be5cb4cd9c986e09df021071d968f1 100644
+--- a/doc/developers/api_c_tests.rst
++++ b/doc/developers/api_c_tests.rst
+@@ -50,7 +50,7 @@ Process state
+ 
+ NUMA
+ ----
+-.. kernel-doc:: ../../include/tst_numa.h
++.. kernel-doc:: ../../include/tse_numa.h
+ 
+ Option parsing
+ --------------
+diff --git a/doc/developers/api_shell_tests.rst b/doc/developers/api_shell_tests.rst
+index 51bb04a4e155e83c3302b4664886d49624f51a9f..9a3ff795f1b0cedbfa3b126fe0acad8d24e5c704 100644
+--- a/doc/developers/api_shell_tests.rst
++++ b/doc/developers/api_shell_tests.rst
+@@ -30,7 +30,7 @@ documentation at https://linux-test-project.readthedocs.io/en/latest/users/test_
+ The shell loader test library uses the :doc:`../developers/api_c_tests`
+ internally by parsing a special JSON formatted comment and
+ initializing it accordingly. The JSON format is nearly 1:1 serialization of the
+-:ref:`struct tst_test` into a JSON. The environment must be always preset even
++:c:struct:`tst_test` into a JSON. The environment must be always preset even
+ when it's empty.
+ 
+ .. code-block:: shell
+diff --git a/doc/developers/test_case_tutorial.rst b/doc/developers/test_case_tutorial.rst
+index 240897e36b8fd7c5f70cf426f81ef4bfc0e562a0..28eda5ae69f7e358383ae44d5d23bd2e4d79b487 100644
+--- a/doc/developers/test_case_tutorial.rst
++++ b/doc/developers/test_case_tutorial.rst
+@@ -137,7 +137,7 @@ initialization code. It is important to note that this is a completely
+ ordinary, independent C program, however ``main()`` is missing because it is
+ implemented in :master:`include/tst_test.h`.
+ 
+-We specify what code we want to run as part of the test using :ref:`struct tst_test`.
++We specify what code we want to run as part of the test using :c:struct:`tst_test`.
+ Various callbacks can be set by the test writer, including
+ ``test.test_all``, which we have set to ``run()``. The test harness will execute
+ this callback in a separate process (using ``fork()``), forcibly terminating it
+@@ -205,8 +205,8 @@ please do:
+ 
+ This should build the test and then run it. However, even though the test is
+ in :master:`testcases/kernel/syscalls` directory it won't be automatically ran
+-as part of the syscalls test group (e.g. not run via ``kirk -r math``.  For
+-this we need to add it to the runtest file. So open :master:`runtest/syscalls`
++as part of the syscalls test group (e.g. not run via ``kirk -f syscalls``).
++For this we need to add it to the runtest file. So open :master:`runtest/syscalls`
+ and add the lines starting with a ``+``.
+ 
+ .. code-block::
+@@ -517,15 +517,14 @@ that should be by setting ``.needs_tmpdir = 1``.
+     /*************** statx structure and wrapper goes here ! ***************/
+     ...
+ 
+-We have added an extra include :master:`lapi/fcntl.h` which wraps the system header by
++We have added an extra include :master:`include/lapi/fcntl.h` which wraps the system header by
+ the same name (``#include <fcntl.h>``). This header ensures we have definitions
+ for recently added macros such as ``AT_FDCWD`` by providing fall backs if the
+-system header does not have them. The :master:`lapi/` directory contains a number of
++system header does not have them. The :master:`include/lapi/` directory contains a number of
+ headers like this.
+ 
+-At some point we may wish to add :master:`lapi/stat.h` to provide a fall back for
+-macros such as ``STATX_BASIC_STATS``. However for the time being we have just
+-defined it in the test.
++The :master:`include/lapi/stat.h` header provides similar fall backs for
++macros such as ``STATX_BASIC_STATS`` used by this test.
+ 
+ 
+ .. code-block:: c
+@@ -759,9 +758,7 @@ the next section and come back later.
+ Submitting the test for review
+ ------------------------------
+ 
+-Ignoring the fact we should probably create :master:`lapi/stat.h` along with a bunch
+-of fallback logic in the build system. We can now get our test ready for
+-submission.
++We can now get our test ready for submission.
+ 
+ The first thing you need to do before considering submitting your test is run
+ ``make check-statx01`` or ``make check`` in the test's directory. Again, we use
+diff --git a/doc/developers/todo.rst b/doc/developers/todo.rst
+index 4ca8612db727bf6f5b7f5ed055ae512f077f246a..9f74533807f8dfcd6e85a6540196e8de748d9da8 100644
+--- a/doc/developers/todo.rst
++++ b/doc/developers/todo.rst
+@@ -61,5 +61,5 @@ LTP root folder:
+ 
+ LTP also provides a shell loader implementation for plain-C tests inside
+ :master:`testcases/lib/tst_run_shell.c` and it permits to run shell tests
+-into plain-C LTP API, featuring :ref:`struct tst_test` initializations and a
++into plain-C LTP API, featuring :c:struct:`tst_test` initializations and a
+ direct access to kernel syscalls.
+diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
+index 35ae84c6ddd35cb83b59d6333235d1d3db3d87fd..b875903c2a6caf7c5ef75066b4fcaec108594b2b 100644
+--- a/doc/developers/writing_tests.rst
++++ b/doc/developers/writing_tests.rst
+@@ -138,7 +138,7 @@ The following linting code can be found when we run ``make check``:
+ 
+     * - LTP-005
+       - Array must terminate with a sentinel value (i.e. ``NULL`` or ``{}``)
+-      - When defining arrays in the :ref:`struct tst_test` structure, we need to
++      - When defining arrays in the :c:struct:`tst_test` structure, we need to
+         end the array items with a sentinel ``NULL`` value.
+ 
+ Shell coding style
+@@ -361,7 +361,7 @@ LTP C And Shell Test API Comparison
+ .. list-table::
+     :header-rows: 1
+ 
+-    * - C API :ref:`struct tst_test` members
++    * - C API :c:struct:`tst_test` members
+       - Shell API ``$TST_*`` variables
+ 
+     * - .all_filesystems
+@@ -531,5 +531,5 @@ LTP C And Shell Test API Comparison
+     * - C API other structs
+       - Shell API ``$TST_*`` variables
+ 
+-    * - :ref:`struct tst_device`
++    * - ``struct tst_device``
+       - TST_DEVICE
+diff --git a/doc/maintainers/ltp_release_procedure.rst b/doc/maintainers/ltp_release_procedure.rst
+index 6dbafa4f81ebd3c843ef66547340012c59521fb8..7851440125ba54707026d3d380e2b3ef0def368d 100644
+--- a/doc/maintainers/ltp_release_procedure.rst
++++ b/doc/maintainers/ltp_release_procedure.rst
+@@ -112,8 +112,8 @@ metadata documentation:
+     tar -cJf ltp-full-YYYYMMDD.tar.xz ltp-full-YYYYMMDD --exclude .git
+ 
+     # Generate checksums
+-    md5 ltp-full-YYYYMMDD.tar.xz > ltp-full-YYYYMMDD.tar.xz.md5
+-    sha1 ltp-full-YYYYMMDD.tar.xz > ltp-full-YYYYMMDD.tar.xz.sha1
++    md5sum    ltp-full-YYYYMMDD.tar.xz > ltp-full-YYYYMMDD.tar.xz.md5
++    sha1sum   ltp-full-YYYYMMDD.tar.xz > ltp-full-YYYYMMDD.tar.xz.sha1
+     sha256sum ltp-full-YYYYMMDD.tar.xz > ltp-full-YYYYMMDD.tar.xz.sha256
+ 
+ You can use :master:`tools/create-tarballs-metadata.sh` script to have the above
+diff --git a/doc/maintainers/patch_review.rst b/doc/maintainers/patch_review.rst
+index 28bc4faf343047edfcf647b38f053f923b7de5c7..a328948094029c2a6c2b550c66df8e0236c0ab42 100644
+--- a/doc/maintainers/patch_review.rst
++++ b/doc/maintainers/patch_review.rst
+@@ -146,12 +146,12 @@ New test should
+ C tests
+ ~~~~~~~
+ 
+-* Use :doc:`../developers/api_c_tests`, implementing :ref:`struct tst_test`
++* Use :doc:`../developers/api_c_tests`, implementing :c:struct:`tst_test`
+ * Test binaries are added into corresponding ``.gitignore`` files
+ * Check coding style with ``make check``
+ * Metadata documentation
+-* If a test is a regression test it should include :ref:`.tags<struct tst_tag>` in the
+-  :ref:`struct tst_test` definition
++* If a test is a regression test it should include :c:struct:`.tags <tst_tag>` in the
++  :c:struct:`tst_test` definition
+ 
+ Shell tests
+ ~~~~~~~~~~~
+diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+index b1e74278d5ddb25293d38507482dc5a5cdafdbd0..f06c8aeb77558c0c09880f905ccc5b85d9f277a3 100644
+--- a/include/tst_test_macros.h
++++ b/include/tst_test_macros.h
+@@ -146,7 +146,7 @@ extern int TST_PASS;
+  * @SCALL: Tested syscall.
+  * @...: A printf-like parameters.
+  *
+- * This is a variant of the TST_EXP_POSSITIVE() for a more specific case that
++ * This is a variant of the TST_EXP_POSITIVE() for a more specific case that
+  * the returned value is a file descriptor.
+  */
+ #define TST_EXP_FD(SCALL, ...)                                                 \
+@@ -200,7 +200,7 @@ extern int TST_PASS;
+  * @SCALL: Tested syscall.
+  * @...: A printf-like parameters.
+  *
+- * This is a variant of the TST_EXP_POSSITIVE() for a more specific case that
++ * This is a variant of the TST_EXP_POSITIVE() for a more specific case that
+  * the returned value is a pid.
+  */
+ #define TST_EXP_PID(SCALL, ...)                                                \
+@@ -379,8 +379,8 @@ extern int TST_PASS;
+  * @...: A printf-like parameters.
+  *
+  * This macro works like TST_EXP_PASS_PTR_VOID() but checks the return
+- * value against NULL instead of (void *)-1. Use this for libc functions
+- * such as fopen() that return NULL on failure.
++ * value against NULL instead of ``(void *)-1``. Use this for libc functions
++ * such as :manpage:`fopen(3)` that return NULL on failure.
+  */
+ #define TST_EXP_PASS_PTR_NULL(SCALL, ...)                                      \
+ 	TST_EXP_PASS_PTR_(SCALL, #SCALL, NULL, ##__VA_ARGS__)
+
+-- 
+2.51.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
