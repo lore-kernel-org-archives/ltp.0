@@ -4,118 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42825CD6E4A
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 10:10:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A76E8CD6E57
+	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 11:23:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C881F3E30CB
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 12:10:44 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 10C693E56C4
+	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 13:23:48 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 42CBA3E30B8
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 12:09:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id F33EB3E30CC
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 13:23:29 +0200 (CEST)
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com
+ [IPv6:2607:f8b0:4864:20::f42])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9DBF91002892
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 12:09:46 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DDD82689BB;
- Tue,  2 Jun 2026 10:09:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1780394970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FjZY2618DqVptpKT0kGcqRi74t9+Re1oh5A1rNoD0mU=;
- b=Gtldy8cbOq4PEnT/U9g48n2Y6edHF+rO7KpUfcKZ6mCUwxS6vQXMgVq3IKbmT7o4eGmIwg
- qm4+Ln4qPws4qJ8+badljPvQqEW2uNPJxcMDM0v9heoNMZVPLtD4diisbSuH0ihOspnw1I
- JOu2e1WkMQefbmtGB3qkXAS3EYsG6a0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1780394970;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FjZY2618DqVptpKT0kGcqRi74t9+Re1oh5A1rNoD0mU=;
- b=09wuXqYkDeV01yrB19/Kcncr7yajRhnf/0m3NPjnU5/GZ9ZaMF3fIhDvmMwIRSG0O9zNrN
- 2tg8+a5Hu0yvk+BQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Gtldy8cb;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=09wuXqYk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1780394970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FjZY2618DqVptpKT0kGcqRi74t9+Re1oh5A1rNoD0mU=;
- b=Gtldy8cbOq4PEnT/U9g48n2Y6edHF+rO7KpUfcKZ6mCUwxS6vQXMgVq3IKbmT7o4eGmIwg
- qm4+Ln4qPws4qJ8+badljPvQqEW2uNPJxcMDM0v9heoNMZVPLtD4diisbSuH0ihOspnw1I
- JOu2e1WkMQefbmtGB3qkXAS3EYsG6a0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1780394970;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FjZY2618DqVptpKT0kGcqRi74t9+Re1oh5A1rNoD0mU=;
- b=09wuXqYkDeV01yrB19/Kcncr7yajRhnf/0m3NPjnU5/GZ9ZaMF3fIhDvmMwIRSG0O9zNrN
- 2tg8+a5Hu0yvk+BQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BC847779A7;
- Tue,  2 Jun 2026 10:09:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id aH5lLNqrHmo/dQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 02 Jun 2026 10:09:30 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 02 Jun 2026 12:09:30 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6864310000CA
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 13:23:29 +0200 (CEST)
+Received: by mail-qv1-xf42.google.com with SMTP id
+ 6a1803df08f44-8cce87d7995so51632156d6.0
+ for <ltp@lists.linux.it>; Tue, 02 Jun 2026 04:23:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1780399408; x=1781004208; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=HmQKNO1A/GqHFqFVWl8RU7uHIaVKwSDwA/fx+OR4Muc=;
+ b=bf1v1Ev9ZChRiGqKGL/xKO+zxndEi4gKGfDGEdtc91EpYdUXLoVjP5/QZJWbqBgNSh
+ fFhQ0XkSQN3rS3fHTbnniEyYWdfoTtgcNW7mtcFmp9nFzk+H8kWgKaflLThCnBTnR8P0
+ zdTC8Vtor0sSDHFGJkRklYFQdRGJ4nX1i0Y3tjMK0ZNwyEFawNL40GprMIQKo5i+3D+0
+ fecCNpo5Jcpje5f5bUqZLP5E010A0rkBuvZHf3CPGoVw9ojgJkuAaoQnMHKRfzC105mG
+ ZrPZurk7WzukJKm1iXdYaMn0QJfZfp4FMvKLUfy3wuKGDZX/m0+zHeI3PrEX5pwX95s7
+ 8YYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1780399408; x=1781004208;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=HmQKNO1A/GqHFqFVWl8RU7uHIaVKwSDwA/fx+OR4Muc=;
+ b=hplh/oGLm0OabT5tP22bWFjRuwdhaidE53q44NZ09fBGzITGrQl0jAih6g+0m1I655
+ dJm78NIyd0600eyli+hZGfubfKlP3+lB9Ko1w0ve/4OUN+hGxo+NnaXZ3zQh+5nDbCn7
+ VYZ5EDVcGkDSi2g8mSf3tJl6nbyQJdR5TT0rTLoKF2+S8dXS9ePYG5KMvLLRTbY8WRLv
+ 9bDttQtdfVo13v4drmYl0wyA8aJ8DjWwLzRawKqVzdAIv0lhGBrAfLRMc7A64uW7m6bH
+ xaSR4gVlNOOkX6UuP09DYfWwx0ZUWPyvRkFq9gXOsXVJzUyLfJd7XTBxyCMDs7GLD8Va
+ x/ow==
+X-Gm-Message-State: AOJu0YwuP2NVKIy5cZ0i0ApZeCiNQoELjWKNYiOdgnhUjYYNv5+0GzfC
+ Jw4nKel1dXDOz+zSC8lJPzapLiUBX8HbqUfk9B/asx2mYuH3rBoWJ6VU
+X-Gm-Gg: Acq92OF4FdkHjdUUrh+ZfgEdwWrh/unC1ZOHrdm5KN9p6I2Nu1cBMs0chVQfAjV/2Xy
+ ig0DCyOjXEstE74Ic7AR3PISAZspUL/+8OH7pSjK+L8GktoJMoZWZUKsa48/uZOZ+0j+jM+OmHJ
+ KFtevs5eXe52bicJ/8uMp2ML/xo+o5JyouRVSo8ZyxuxcsLkbXHA6tnun5K+1TUbxYcZTlNWytl
+ rTxI9lltww4dl6AGx/0twgakQFGDh3GUO+A4b1i4cKCmem9SnejkGnmnaUSPR1ffbF6kKxUxtg5
+ RANnf3QWkysGBmdp+j98E/9TXkSIdUHoQpyzTMnIL0u+u2q/jPKavphdDZZ0bPNygYiRWwCuyqH
+ x7fdR9i/zeHRysy3CRcMpSmuzDk+7znjU1DfJfRNEyV6CeIG3gM+eeZLzZ2TmgljYbwqJj7nQIt
+ UzkJDXoK63KMdDW3lNBjjXsRsHgsqd6bxWMme1h60Y1AXz//jofhgdViFTCSUiU4sk46BKjFmIi
+ TWAfhpLYSvj1jUYUbv4tKBLHfov+FMnPLqBF7Eks+HU/u9n
+X-Received: by 2002:a05:622a:2606:b0:517:6c6f:8ee3 with SMTP id
+ d75a77b69052e-5176c6f9251mr25961151cf.10.1780399407828; 
+ Tue, 02 Jun 2026 04:23:27 -0700 (PDT)
+Received: from
+ runnervm3jyl0.thalhjjse5aevfwueukddivcod.cx.internal.cloudapp.net
+ ([40.79.247.67]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-51741b29745sm78441581cf.8.2026.06.02.04.23.27
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 02 Jun 2026 04:23:27 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Samir <samir@linux.ibm.com>
+Date: Tue,  2 Jun 2026 11:23:26 +0000
+Message-ID: <20260602112326.3920-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260602095656.404290-1-samir@linux.ibm.com>
+References: <20260602095656.404290-1-samir@linux.ibm.com>
 MIME-Version: 1.0
-Message-Id: <20260602-doc_add_missing_headers-v2-2-9ccd988c093d@suse.com>
-References: <20260602-doc_add_missing_headers-v2-0-9ccd988c093d@suse.com>
-In-Reply-To: <20260602-doc_add_missing_headers-v2-0-9ccd988c093d@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1780394970; l=6936;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=ucaoOkIv90GH5TjaUotiPzEh56jUP44Jdbhs/X2q0ac=;
- b=NH7+Cl3kUyNp2x2Tk5iIkK2hOEksXIVIb0tLrJdGxtL/mjxNCe7myX8RLGRUafY+DCgIbjVED
- MaFjPKl9pdwDFE4DHUv/65PTs1HOwXsAy8SpPmxOG/zMr8fH2bO6CTa
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: DDD82689BB
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/3] doc: Complete struct tst_test table and shell
- API docs
+Subject: Re: [LTP] cfs-scheduler: Fixed "make check" errors and warnings in
+ hackbench.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,277 +92,79 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Add 8 missing struct tst_test fields to the C/Shell API comparison
-table in writing_tests.rst: .filesystems, .forks_child, .min_runtime,
-.needs_abi_bits, .needs_cgroup_nsdelegate, .needs_cgroup_ver,
-.needs_hugetlbfs and .runs_script, and fix the alphabetical ordering
-of .mnt_flags and .min_swap_avail.
-
-Add a shell API variables reference section to api_shell_tests.rst
-documenting all public TST_* input/output variables, checkpoint
-functions, and retry helpers.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- doc/developers/api_shell_tests.rst | 163 +++++++++++++++++++++++++++++++++++++
- doc/developers/writing_tests.rst   |  28 ++++++-
- 2 files changed, 189 insertions(+), 2 deletions(-)
-
-diff --git a/doc/developers/api_shell_tests.rst b/doc/developers/api_shell_tests.rst
-index 937ffee2ea468552e5160775153990f13ea10f88..168e6c122730b4e9ace07a1f9d8554f8d8f9a290 100644
---- a/doc/developers/api_shell_tests.rst
-+++ b/doc/developers/api_shell_tests.rst
-@@ -93,3 +93,166 @@ interrupted by :ref:`tst_brk`.
- 
-    .. literalinclude:: ../../testcases/lib/tests/shell_loader_setup_cleanup.sh
-       :language: shell
-+
-+Shell API variables
-+-------------------
-+
-+The following variables are available to shell tests. Variables marked
-+*input* are set by the test before sourcing ``tst_run.sh``; variables
-+marked *output* are set by the library for tests to read.
-+
-+Test definition (input)
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+``TST_TESTFUNC``
-+    Name of the test function (required).
-+
-+``TST_CNT``
-+    Number of test cases. When set the test function is called
-+    ``TST_CNT`` times with a counter argument.
-+
-+``TST_SETUP``
-+    Name of the setup function (called once before tests).
-+
-+``TST_CLEANUP``
-+    Name of the cleanup function (called once after tests or on
-+    ``tst_brk``).
-+
-+``TST_OPTS``
-+    Extra getopts option string.
-+
-+``TST_PARSE_ARGS``
-+    Name of a function to parse extra options from ``TST_OPTS``.
-+
-+``TST_USAGE``
-+    Name of a function printing extra usage information.
-+
-+``TST_POS_ARGS``
-+    Number of expected positional arguments.
-+
-+``TST_TEST_DATA``
-+    Space-separated data passed as a second argument to the test
-+    function.
-+
-+``TST_TEST_DATA_IFS``
-+    Custom delimiter for ``TST_TEST_DATA`` (default: space).
-+
-+Requirements (input)
-+~~~~~~~~~~~~~~~~~~~~
-+
-+``TST_NEEDS_ROOT``
-+    Set to 1 to require root privileges.
-+
-+``TST_NEEDS_TMPDIR``
-+    Set to 1 to create a temporary directory.
-+
-+``TST_NEEDS_DEVICE``
-+    Set to 1 to prepare a block device.
-+
-+``TST_NEEDS_CMDS``
-+    Space-separated list of required commands.
-+
-+``TST_NEEDS_MODULE``
-+    Kernel module name that must be loadable.
-+
-+``TST_NEEDS_DRIVERS``
-+    Space-separated list of required kernel drivers.
-+
-+``TST_NEEDS_KCONFIGS``
-+    Space-separated list of required kernel config options
-+    (e.g. ``CONFIG_NUMA=y``).
-+
-+``TST_NEEDS_KCONFIGS_IFS``
-+    Custom delimiter for ``TST_NEEDS_KCONFIGS`` (default: comma).
-+
-+``TST_NEEDS_CHECKPOINTS``
-+    Set to 1 to enable checkpoint support.
-+
-+``TST_MIN_KVER``
-+    Minimum kernel version string (e.g. ``4.18``).
-+
-+Device and filesystem (input)
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+``TST_FORMAT_DEVICE``
-+    Set to 1 to format ``TST_DEVICE`` before the test.
-+
-+``TST_MOUNT_DEVICE``
-+    Set to 1 to mount ``TST_DEVICE`` at ``TST_MNTPOINT``.
-+
-+``TST_DEV_EXTRA_OPTS``
-+    Extra options passed to ``mkfs``.
-+
-+``TST_DEV_FS_OPTS``
-+    Extra filesystem-specific ``mkfs`` options.
-+
-+``TST_FS_TYPE``
-+    Filesystem type for formatting (default: ``ext2``).
-+
-+``TST_DEVICE_SIZE``
-+    Device size in MB.
-+
-+``TST_ALL_FILESYSTEMS``
-+    Set to 1 to repeat the test for each supported filesystem.
-+
-+``TST_SKIP_FILESYSTEMS``
-+    Space-separated list of filesystems to skip.
-+
-+``TST_MNT_PARAMS``
-+    Mount flags/options string.
-+
-+Miscellaneous (input)
-+~~~~~~~~~~~~~~~~~~~~~
-+
-+``TST_SKIP_IN_LOCKDOWN``
-+    Set to 1 to skip when kernel lockdown is active.
-+
-+``TST_SKIP_IN_SECUREBOOT``
-+    Set to 1 to skip when Secure Boot is enabled.
-+
-+``TST_TIMEOUT``
-+    Test timeout in seconds.
-+
-+Output variables
-+~~~~~~~~~~~~~~~~
-+
-+``TST_TMPDIR``
-+    Path to the temporary directory (when ``TST_NEEDS_TMPDIR=1``).
-+
-+``TST_STARTWD``
-+    Original working directory before ``chdir`` to ``TST_TMPDIR``.
-+
-+``TST_DEVICE``
-+    Block device path (when ``TST_NEEDS_DEVICE=1``).
-+
-+``TST_MNTPOINT``
-+    Mount point path.
-+
-+``TST_MODPATH``
-+    Path to the loaded kernel module.
-+
-+Checkpoint functions
-+~~~~~~~~~~~~~~~~~~~~
-+
-+``TST_CHECKPOINT_WAIT``
-+    Wait on checkpoint (argument: checkpoint id).
-+
-+``TST_CHECKPOINT_WAKE``
-+    Wake one waiter on checkpoint (argument: checkpoint id).
-+
-+``TST_CHECKPOINT_WAKE2``
-+    Wake multiple waiters (arguments: checkpoint id, count).
-+
-+``TST_CHECKPOINT_WAKE_AND_WAIT``
-+    Wake one waiter and then wait (argument: checkpoint id).
-+
-+Retry helpers
-+~~~~~~~~~~~~~
-+
-+``TST_RETRY_FUNC``
-+    Retry a function until it succeeds or times out
-+    (arguments: function, expected value).
-+
-+``TST_RETRY_FN_EXP_BACKOFF``
-+    Like ``TST_RETRY_FUNC`` with exponential backoff
-+    (arguments: function, expected value, max delay).
-diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
-index dc40324b16d40c4d210fe0dfa6b311b5b3337c7a..4db57898fcf08b83e68be996f666e91c418838fc 100644
---- a/doc/developers/writing_tests.rst
-+++ b/doc/developers/writing_tests.rst
-@@ -382,6 +382,12 @@ LTP C And Shell Test API Comparison
-     * - .dev_min_size
-       - TST_DEVICE_SIZE
- 
-+    * - .filesystems
-+      - \-
-+
-+    * - .forks_child
-+      - not applicable
-+
-     * - .format_device
-       - TST_FORMAT_DEVICE
- 
-@@ -399,21 +405,33 @@ LTP C And Shell Test API Comparison
-     * - .min_mem_avail
-       - not applicable
- 
--    * - .mnt_flags
--      - TST_MNT_PARAMS
-+    * - .min_runtime
-+      - \-
- 
-     * - .min_swap_avail
-       - not applicable
- 
-+    * - .mnt_flags
-+      - TST_MNT_PARAMS
-+
-     * - .mntpoint | .mnt_data
-       - TST_MNTPOINT
- 
-     * - .mount_device
-       - TST_MOUNT_DEVICE
- 
-+    * - .needs_abi_bits
-+      - not applicable
-+
-     * - .needs_cgroup_ctrls
-       - \-
- 
-+    * - .needs_cgroup_nsdelegate
-+      - \-
-+
-+    * - .needs_cgroup_ver
-+      - \-
-+
-     * - .needs_checkpoints
-       - TST_NEEDS_CHECKPOINTS
- 
-@@ -426,6 +444,9 @@ LTP C And Shell Test API Comparison
-     * - .needs_device
-       - TST_NEEDS_DEVICE
- 
-+    * - .needs_hugetlbfs
-+      - \-
-+
-     * - removed
-       - TST_NEEDS_DRIVERS
- 
-@@ -453,6 +474,9 @@ LTP C And Shell Test API Comparison
-     * - .restore_wallclock
-       - not applicable
- 
-+    * - .runs_script
-+      - not applicable
-+
-     * - .sample
-       - \-
- 
-
--- 
-2.51.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgU2FtaXIsCgpTb21lIGlzc3VlcyBuZWVkIHRvIGJlIGFkZHJlc3NlZCBiZWZvcmUgdGhpcyBj
+YW4gYmUgbWVyZ2VkLgoKT24gVHVlLCAwMiBKdW4gMjAyNiAxMTo1Njo1NiArMDIwMCwgU2FtaXIg
+PHNhbWlyQGxpbnV4LmlibS5jb20+IHdyb3RlOgo+IGNmcy1zY2hlZHVsZXI6IEZpeGVkICJtYWtl
+IGNoZWNrIiBlcnJvcnMgYW5kIHdhcm5pbmdzIGluIGhhY2tiZW5jaC5jCgpbQ09NTUlUIE1FU1NB
+R0VdCgoxLiBTdWJqZWN0IGxpbmUgdXNlcyBwYXN0IHRlbnNlLiBMVFAgKGxpa2UgdGhlIExpbnV4
+IGtlcm5lbCkgdXNlcwogICBpbXBlcmF0aXZlIG1vb2QgaW4gY29tbWl0IHN1YmplY3RzOgoKICAg
+ICBjZnMtc2NoZWR1bGVyOiBGaXggJ21ha2UgY2hlY2snIGVycm9ycyBhbmQgd2FybmluZ3MgaW4g
+aGFja2JlbmNoLmMKCiAgIEFsc28sIHByZWZlciBzaW5nbGUgcXVvdGVzIG92ZXIgZG91YmxlIHF1
+b3RlcyBpbiBzdWJqZWN0cy4KCjIuIFRoZSBTaWduZWQtb2ZmLWJ5IGxpbmUgY29udGFpbnMgb25s
+eSBhIGZpcnN0IG5hbWUuIFRoZSBEQ08gcmVxdWlyZXMKICAgYSByZWFsIGZ1bGwgbmFtZSAoZmly
+c3QgYW5kIGxhc3QpLiBQbGVhc2UgdXNlIHlvdXIgZnVsbCBuYW1lLCBlLmcuOgoKICAgICBTaWdu
+ZWQtb2ZmLWJ5OiBTYW1pciBMYXN0bmFtZSA8c2FtaXJAbGludXguaWJtLmNvbT4KCjMuIFRoZSB2
+ZXJzaW9uLXRyYWNraW5nIGJsb2NrIGRvZXMgbm90IGJlbG9uZyBpbiB0aGUgY29tbWl0IG1lc3Nh
+Z2UgYm9keS4KICAgUmVtb3ZlIGl0IGJlZm9yZSBtZXJnaW5nOgoKICAgICBQYXRjaCB2MTogaHR0
+cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbHRwLzIwMjYwNDA3MDYyMzM2LjEyNzQ1NC0xLXNhbWlyQGxp
+bnV4LmlibS5jb20vCiAgICAgUGF0Y2ggdjI6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2x0cC8y
+MDI2MDQxMjEyMjg0Mi4xMDc0MDE3LTEtc2FtaXJAbGludXguaWJtLmNvbS8KCiAgICAgQWRkcmVz
+c2VkIHJldmlldyBjb21tZW50cyBmcm9tIHBhdGNoIHYyIC0+IHBhdGNoIHYzOgogICAgIC0gQWRk
+IFNQRFgtTGljZW5zZS1JZGVudGlmaWVyIGhlYWRlciBhcyByZXF1ZXN0ZWQgYnkgQW5kcmVhIENl
+cnZlc2F0by4KCiAgIFRoaXMgaXMgcGF0Y2gtc3VibWlzc2lvbiBtZXRhZGF0YSBmb3IgdGhlIGNv
+dmVyIGxldHRlciAvIGxvcmUgdGhyZWFkLAogICBub3QgcGFydCBvZiB0aGUgcGVybWFuZW50IGhp
+c3RvcnkuCgo0LiBUaGUgYnVsbGV0LWxpc3QgYm9keSAoImhhY2tiZW5jaC5jOiAtIEFkZCBTUERY
+LUxpY2Vuc2UtSWRlbnRpZmllciDigKYiKQogICBkZXNjcmliZXMgaW5kaXZpZHVhbCBsaW5lIGNo
+YW5nZXMgdGhhdCBhcmUgc2VsZi1ldmlkZW50IGZyb20gdGhlIGRpZmYuCiAgIFJlcGxhY2UgaXQg
+d2l0aCBvbmUgb3IgdHdvIHNlbnRlbmNlcyBleHBsYWluaW5nICp3aHkqIHRoZSBjaGFuZ2VzIHdl
+cmUKICAgbWFkZSwgZS5nLjoKCiAgICAgRml4IGFsbCAibWFrZSBjaGVjayIgd2FybmluZ3MgaW4g
+aGFja2JlbmNoLmMgdG8gY29tcGx5IHdpdGggdGhlIExUUAogICAgIGNvZGluZyBzdHlsZSBndWlk
+ZWxpbmVzLgoKW0NPREVdCgo+IC0vKiBDb3B5cmlnaHQgUnVzdHkgUnVzc2VsbCwgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwo+IC0vKiBDb3B5cmln
+aHQgUGllcnJlIFBlaWZmZXIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAqLwo+IC0vKiBDb3B5cmlnaHQgWmhhbmcsIFlhbm1pbiwgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwo+IC0vKiBDb3B5cmlnaHQg
+SW5nbyBNb2xuYXIsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAqLwo+IC0vKiBDb3B5cmlnaHQgQXJqYW4gdmFuIGRlIFZlbiwgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwo+ICsvKiBBdXRob3JzOiBSdXN0
+eSBSdXNzZWxsIDxydXN0eUBydXN0Y29ycC5jb20uYXU+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAqLwo+ICsvKiAgICAgICAgICBQaWVycmUgUGVpZmZlciA8cGllcnJlLnBlaWZmZXJAYnVs
+bC5uZXQ+ICAgICAgICAgICAgICAgICAgICAgICAgICAqLwo+ICsvKiAgICAgICAgICBJbmdvIE1v
+bG5hciA8bWluZ29AZWx0ZS5odT4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAqLwo+ICsvKiAgICAgICAgICBBcmphbiB2YW4gZGUgVmVuIDxhcmphbkBpbmZyYWRlYWQub3Jn
+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwo+ICsvKiAgICAgICAgICBaaGFuZywgWWFu
+bWluIDx5YW5taW5femhhbmdAbGludXguaW50ZWwuY29tPiAgICAgICAgICAgICAgICAgICAgKi8K
+CjUuIFRoZSBvcmlnaW5hbCBmaWxlIGxpc3RlZCB0aGVzZSBmaXZlIGNvbnRyaWJ1dG9ycyBhcyAq
+Y29weXJpZ2h0IGhvbGRlcnMqCiAgICgiQ29weXJpZ2h0IFJ1c3R5IFJ1c3NlbGwiLCBldGMuKS4g
+VGhlIHBhdGNoIHNpbGVudGx5IGRlbW90ZXMgdGhlbSB0bwogICBtZXJlICJBdXRob3JzIiBlbnRy
+aWVzLCBzdHJpcHBpbmcgdGhlIGNvcHlyaWdodCBkZXNpZ25hdGlvbiBlbnRpcmVseS4KICAgQ29w
+eXJpZ2h0IG5vdGljZXMgbXVzdCBiZSBwcmVzZXJ2ZWQuIEVpdGhlciByZXRhaW4gdGhlbSBhcyBj
+b3B5cmlnaHQKICAgbGluZXMgKGFkZGluZyBlbWFpbHMgd2hlcmUga25vd24pIG9yIG9idGFpbiBl
+eHBsaWNpdCBwZXJtaXNzaW9uIGZyb20KICAgZWFjaCBob2xkZXIgdG8gcmVtb3ZlIHRoZSBjb3B5
+cmlnaHQgY2xhaW0uCgogICBGb3IgZXhhbXBsZToKICAgICAvKiBDb3B5cmlnaHQgUnVzdHkgUnVz
+c2VsbCA8cnVzdHlAcnVzdGNvcnAuY29tLmF1PiAgICAgICAgICAgICAgICAgICAgICAgKi8KICAg
+ICAvKiBDb3B5cmlnaHQgUGllcnJlIFBlaWZmZXIgPHBpZXJyZS5wZWlmZmVyQGJ1bGwubmV0PiAg
+ICAgICAgICAgICAgICAgICAgKi8KICAgICAuLi4KCjYuIFRoZSBaaGFuZywgWWFubWluIGxpbmUg
+aW4gdGhlIEF1dGhvcnMgYmxvY2sgaGFzIGZld2VyIHRyYWlsaW5nIHNwYWNlcwogICB0aGFuIHRo
+ZSBvdGhlciBsaW5lcywgYnJlYWtpbmcgdGhlIGNvbHVtbiBhbGlnbm1lbnQ6CgogICAgIC8qICAg
+ICAgICAgIFpoYW5nLCBZYW5taW4gPHlhbm1pbl96aGFuZ0BsaW51eC5pbnRlbC5jb20+ICAgICAg
+ICAgICAgICAgICAgICAqLwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgXi0tIG9ubHkgMjAgc3BhY2VzCgogICBBbGwgb3RoZXIgZW50
+cmllcyBlbmQgd2l0aCAyNiBzcGFjZXMgYmVmb3JlICIqLyIuIFBhZCB0byBtYXRjaC4KCj4gLQlm
+b3IgKGogPSAwOyBqIDwgbnVtX2ZkczsgaisrKSB7Cj4gLQkJU0FGRV9GUkVFKHJldl9jdHhfdGFi
+W2kgKiBudW1fZmRzICsgal0pCj4gLQl9Cj4gKwlmb3IgKGogPSAwOyBqIDwgbnVtX2Zkczsgaisr
+KQo+ICsJCVNBRkVfRlJFRShyZXZfY3R4X3RhYltpICogbnVtX2ZkcyArIGpdKQoKNy4gRXZlcnkg
+b3RoZXIgY2FsbCB0byBTQUZFX0ZSRUUgaW4gdGhlIGZpbGUgaXMgdGVybWluYXRlZCB3aXRoIGEK
+ICAgc2VtaWNvbG9uIChlLmcuICJTQUZFX0ZSRUUoc25kX2N0eF90YWJbaV0pOyIpLiBBbHRob3Vn
+aCB0aGUgbWFjcm8KICAgZXhwYW5kcyB0byBhIGNvbXBvdW5kIHN0YXRlbWVudCBzbyB0aGUgc2Vt
+aWNvbG9uIGlzIG5vdCBzdHJpY3RseQogICByZXF1aXJlZCwgb21pdHRpbmcgaXQgaGVyZSBjcmVh
+dGVzIGFuIGluY29uc2lzdGVuY3kuIEFkZCB0aGUgc2VtaWNvbG9uOgoKICAgICBTQUZFX0ZSRUUo
+cmV2X2N0eF90YWJbaSAqIG51bV9mZHMgKyBqXSk7CgpWZXJkaWN0OiBOZWVkcyByZXZpc2lvbgoK
+VGhhbmtzLApMVFAgQUkgUmV2aWV3ZXIKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9s
+aXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
