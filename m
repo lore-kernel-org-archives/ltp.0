@@ -4,98 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56B0ACD6E60
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 12:20:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F501CD6E4A
+	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 12:21:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E2A213E1606
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 14:20:54 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id BCD053E56C4
+	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 14:21:08 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9D7913E13D7
+ by picard.linux.it (Postfix) with ESMTPS id 5E3083E13D7
  for <ltp@lists.linux.it>; Tue,  2 Jun 2026 14:20:07 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6CD3B6003A8
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 14:20:05 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6B4222000D5
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 14:20:06 +0200 (CEST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 652BZNLX569575 for <ltp@lists.linux.it>; Tue, 2 Jun 2026 12:20:04 GMT
+ 6525FWI03724979
+ for <ltp@lists.linux.it>; Tue, 2 Jun 2026 12:20:05 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
  content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=IMMu94kfq7ecVa2eU
- lfxUxNF56BvU/SuRfMvnqy7w4k=; b=aNs6mcdBjzMflxH7ZCGU57gfT35CHxvku
- BiPGHzYMZijzlUeEIaq5UxckloD7boY/XMYR6LXwhWS5HVIptG0p8fTs3ICueGj7
- IvgrxhXasXFQ5C9G+XuUIbIX/Wgvc9YL1GaDqzLqUMs30IqJkx6Wr/80v1dEOLuZ
- U3P+IZnNsqyUOFGME67z6UuW0NbE1Tre3S320yBucCvpuHChc/gFrTyPRmKFETtC
- xXzO1EFP7r4HZAaQNnhgLyrapl4cktoVEN76nAc6CIZBjOLNrL2FwlGLUf+H5rkz
- cWyQqjFEpL+0zSrhsYV6IFBUUZV/EvOQzKe/+wEAU1eA9m0rzAt8w==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efqd45v6k-1
+ :mime-version:references:subject:to; s=pp1; bh=ymXcZhyardAJPw0pb
+ F3f+CasF2i1umRa5i8hxmKOghY=; b=Qm0yxa1kYX5hyhVAInR/psWoqYTM2JhZo
+ f49YByw7GUB3uzIFsJ1nPCNfejZMINJz8pMAMuxWOr1mBB4WfSuH1R1E3/qzbSMM
+ D5AsGR65+KQCbi6WvqhbFeutVnZ/e43Yr/4wGS9g9kkYvX3tb76KLB0QyCF4NDeB
+ rfC9bTvVr0BrJEQcvo0nnjLetnL1eyPtZk5fh5qhxs99FLUvQYgiilUFk7WAp9Zg
+ e3TPpQp4N51eJvtsI3BvmhRdfLeSDQgt1uGmoB9gBM+GVKhhpUJjsQS/S2sp2aMY
+ 9jYjW1JzgXF92YQZ80MFyRT5KVeIept1dgaKetVrxSUHrPGoT8Hkg==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efpae5emq-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Tue, 02 Jun 2026 12:20:04 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 652C9C97028566
+ for <ltp@lists.linux.it>; Tue, 2 Jun 2026 12:20:04 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4ega7qbbuq-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
  for <ltp@lists.linux.it>; Tue, 02 Jun 2026 12:20:03 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 652C98Db028046
- for <ltp@lists.linux.it>; Tue, 2 Jun 2026 12:20:02 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4egakvu9g3-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Tue, 02 Jun 2026 12:20:02 +0000 (GMT)
 Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
  [10.20.54.104])
  by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 652CK0Ct49611122
+ 652CK2cX57016696
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Tue, 2 Jun 2026 12:20:00 GMT
+ for <ltp@lists.linux.it>; Tue, 2 Jun 2026 12:20:02 GMT
 Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8535620043
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 12:20:00 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 4E44420043
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 12:20:02 +0000 (GMT)
 Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 102C920040
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 12:20:00 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id B544D20040
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 12:20:01 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.43.122.22])
  by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 12:19:59 +0000 (GMT)
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 12:20:01 +0000 (GMT)
 From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Tue,  2 Jun 2026 17:49:51 +0530
-Message-Id: <20260602121958.27494-2-sachinp@linux.ibm.com>
+Date: Tue,  2 Jun 2026 17:49:53 +0530
+Message-Id: <20260602121958.27494-4-sachinp@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20260602121958.27494-1-sachinp@linux.ibm.com>
 References: <20260602121958.27494-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjAyMDExNiBTYWx0ZWRfX00x6kBjIa9ro
- tKN5+bFAGGlxJvwOZsdTwIeFd13kH3apeH7msp8duMbktearvcVKZdSNJWHDwphvYAwRmtLDalH
- 0R7IAaqQRySSEuunu5XqquvOj5gugVKGJ923sSFdH/h1sjffe7tLzF5/dvywbUFs1lC0bMO7T9k
- rhpqD1md5hZjjuCBeJFHJCdowrz5UguNfy/ceYkCof0QHylM0jQ7nbl/CJ7Za+n/mni5NcgoWuQ
- Hh5teVz2R5FPJdt4/v1G1SY1kN0C8aVsovn3RBuifSGtUtRO3LMB3BvFMflmlxw+ZzQ1jj2t/yx
- M2Q7AOVp3I6eQVcNqbLHo3OHw3Qfx4gC+93C5BVQEbeI+I9/PWwbkuouZJqdyTYmb+9y6k+eOJI
- PyDpQaqQCVfOSkuVZSp7QAUQYbejKbG+/JzAItL62ELiXmzv2fSgNoGnE+ODI+PNSNGUgV6ahMK
- TCYDp+PBBSPsqMlJ3Ow==
-X-Proofpoint-GUID: fLmJFtNWYBiVSt0rzrd5s5jVDWSwtDly
-X-Proofpoint-ORIG-GUID: fLmJFtNWYBiVSt0rzrd5s5jVDWSwtDly
-X-Authority-Analysis: v=2.4 cv=DZknbPtW c=1 sm=1 tr=0 ts=6a1eca73 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+X-Authority-Analysis: v=2.4 cv=Zt3d7d7G c=1 sm=1 tr=0 ts=6a1eca74 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
  a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=iQ6ETzBq9ecOQQE5vZCe:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
- a=IWz6FgtjMmSTfD7O6AEA:9
+ a=V8glGbnc2Ofi9Qvn3v5h:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=cubczD--SJyynV9FOe8A:9
+X-Proofpoint-GUID: wAdHmHpU4Ko8BfoS8DhIHKL5ca-o3xKa
+X-Proofpoint-ORIG-GUID: wAdHmHpU4Ko8BfoS8DhIHKL5ca-o3xKa
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjAyMDExNiBTYWx0ZWRfXxrVgptbqCdsz
+ 0qI+2r65agZfE7/epgZkoRaxakOIw9sG0KO7J2+wfJFgs6Nx+QqGvgKQTt81lWQlqVoZo7X6ylx
+ PgVCLud3fFfsgDD35aa439YVdH3Cl1bf+N/OKl5JeDIkX5vrcYkiMwRELMWWzzQVQzY+n9WJXpd
+ MO5Wq9mRA44TWyOSz+ivaeYbXvFSS8jEx6K/XwPHcDeESut6BOxKMxHIHBkNcuEwpf+p/oEukMV
+ uOcGBMSgVjFLNUYDIMSDcmr9RtkczUFHXK/TcDPJBy3AxfW+YZ0OrZT+gyjnwyyyEkoBgPWv2H7
+ vRsKES1HgCVNDfFG6XnJTohB2UXb/3HsU0SZt3Xh1XohLrRuSw4bGXhN2Q99pmwA28FpOh7vmja
+ Oc2f9ho+/UxZPpL4HZx0Jj8ZGIICmaeAsIqau+8Z3rrGq0jrdvwvthdjV0yKLWb0N0sUID39Fer
+ zzZ1xQNkx1yyHEPqR7Q==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-06-02_01,2026-05-28_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 clxscore=1015 suspectscore=0 impostorscore=0 lowpriorityscore=0
- phishscore=0 malwarescore=0 priorityscore=1501 bulkscore=0 adultscore=0
+ impostorscore=0 suspectscore=0 priorityscore=1501 bulkscore=0 clxscore=1015
+ phishscore=0 spamscore=0 malwarescore=0 adultscore=0 lowpriorityscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606020116
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 1/8] fs/acl: Add ACL_USER_OBJ permissions test
+Subject: [LTP] [PATCH v1 3/8] fs/acl: Add ACL_OTHER permissions test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,441 +113,54 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add acl_user_obj01 test to validate ACL_USER_OBJ (owner) permissions.
-This test verifies that:
+Add acl_other01 test to validate that ACL_OTHER permissions are
+not affected by ACL_MASK.
 
-- Traditional permission bits restrict owner access
-- ACL_USER_OBJ entries override permission bits
-- Owner permissions work correctly with ACL entries
+The test verifies that:
+- ACL_OTHER entry with rwx permissions allows access
+- ACL_MASK set to --- does not restrict ACL_OTHER
+- Users not matching owner, named users, or groups use ACL_OTHER
 
-The test creates a directory with restrictive permissions, verifies
-that file creation is denied, then sets ACL_USER_OBJ with write
-permissions and confirms that file creation succeeds.
-
-The patch also adds acl_lib.h containing shared helper functions
-and definitions for ACL and extended attribute tests. This
-library provides:
-
-- Test user management (ltpuser1, ltpuser2, ltpuser3)
-- ACL entry creation and manipulation helpers
-- File operation helpers with different uid/gid
-- Test path management and cleanup functions
-- Extended attribute test definitions
+This confirms that ACL_MASK only affects ACL_USER, ACL_GROUP_OBJ,
+and ACL_GROUP entries, but not ACL_OTHER.
 
 Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
 ---
 V1 changes:
-- Use ACL_LIBS variable instead of hardcoded -lacl in Makefile
-- Move ACL header includes inside feature guards in acl_lib.h
 - Use HAVE_LIBACL guards in .c code
 - Report TCONF when libacl is not available
 - rfc link https://lore.kernel.org/ltp/477836fd-80c8-4168-bfe6-00b374bb2534@linux.ibm.com/T/#t
 
 ---
- runtest/fs                               |   2 +
- testcases/kernel/fs/acl/.gitignore       |   1 +
- testcases/kernel/fs/acl/Makefile         |  10 +
- testcases/kernel/fs/acl/acl_lib.h        | 348 +++++++++++++++++++++++
- testcases/kernel/fs/acl/acl_user_obj01.c | 115 ++++++++
- 5 files changed, 476 insertions(+)
- create mode 100644 testcases/kernel/fs/acl/.gitignore
- create mode 100644 testcases/kernel/fs/acl/Makefile
- create mode 100644 testcases/kernel/fs/acl/acl_lib.h
- create mode 100644 testcases/kernel/fs/acl/acl_user_obj01.c
+ runtest/fs                            |   1 +
+ testcases/kernel/fs/acl/.gitignore    |   1 +
+ testcases/kernel/fs/acl/acl_other01.c | 107 ++++++++++++++++++++++++++
+ 3 files changed, 109 insertions(+)
+ create mode 100644 testcases/kernel/fs/acl/acl_other01.c
 
 diff --git a/runtest/fs b/runtest/fs
-index 1d753e0dd..debedb9ae 100644
+index b1202dc03..4a528e08e 100644
 --- a/runtest/fs
 +++ b/runtest/fs
-@@ -87,3 +87,5 @@ binfmt_misc01 binfmt_misc01.sh
- binfmt_misc02 binfmt_misc02.sh
+@@ -90,3 +90,4 @@ squashfs01 squashfs01
  
- squashfs01 squashfs01
-+
-+acl_user_obj01 acl_user_obj01
+ acl_user_obj01 acl_user_obj01
+ acl_mask01 acl_mask01
++acl_other01 acl_other01
 diff --git a/testcases/kernel/fs/acl/.gitignore b/testcases/kernel/fs/acl/.gitignore
-new file mode 100644
-index 000000000..d9c46db11
---- /dev/null
+index bfcdee93d..c3ec0fad3 100644
+--- a/testcases/kernel/fs/acl/.gitignore
 +++ b/testcases/kernel/fs/acl/.gitignore
-@@ -0,0 +1 @@
-+/acl_user_obj01
-diff --git a/testcases/kernel/fs/acl/Makefile b/testcases/kernel/fs/acl/Makefile
+@@ -1,2 +1,3 @@
+ /acl_user_obj01
+ /acl_mask01
++/acl_other01
+diff --git a/testcases/kernel/fs/acl/acl_other01.c b/testcases/kernel/fs/acl/acl_other01.c
 new file mode 100644
-index 000000000..e094549a7
+index 000000000..e16c9ac66
 --- /dev/null
-+++ b/testcases/kernel/fs/acl/Makefile
-@@ -0,0 +1,10 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 IBM
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+LDLIBS			+= $(ACL_LIBS)
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/fs/acl/acl_lib.h b/testcases/kernel/fs/acl/acl_lib.h
-new file mode 100644
-index 000000000..5044ce02e
---- /dev/null
-+++ b/testcases/kernel/fs/acl/acl_lib.h
-@@ -0,0 +1,348 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (c) IBM, 2026
-+ * Original shell test by Kai Zhao (ltcd3@cn.ibm.com)
-+ * Converted to C by Sachin Sant <sachinp@linux.ibm.com>
-+ *
-+ * Common library for ACL and extended attribute tests
-+ */
-+
-+#ifndef ACL_LIB_H
-+#define ACL_LIB_H
-+
-+#include <pwd.h>
-+#include <grp.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <sys/xattr.h>
-+
-+#include "config.h"
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+
-+#ifdef HAVE_LIBACL
-+#include <sys/acl.h>
-+#include <acl/libacl.h>
-+#endif
-+
-+#define MNTPOINT	"mntpoint"
-+#define TESTDIR		MNTPOINT "/testdir"
-+#define TESTFILE	TESTDIR "/testfile"
-+#define TESTSYMLINK	TESTDIR "/testsymlink"
-+#define XATTR_BACKUP_FILE MNTPOINT "/xattr_backup.txt"
-+#define TEST_USER1	"ltpuser1"
-+#define TEST_USER2	"ltpuser2"
-+#define TEST_USER3	"ltpuser3"
-+
-+#define USER1_CREATED (1 << 0)
-+#define USER2_CREATED (1 << 1)
-+#define USER3_CREATED (1 << 2)
-+
-+/* Extended attribute test values */
-+#define XATTR_TEST_DIR_NAME	"user.test_attr"
-+#define XATTR_TEST_DIR_VALUE	"test_value"
-+#define XATTR_TEST_DIR_SIZE	10
-+#define XATTR_TEST_FILE_NAME	"user.file_attr"
-+#define XATTR_TEST_FILE_VALUE	"file_val"
-+#define XATTR_TEST_FILE_SIZE	8
-+#define XATTR_TEST1_NAME	"user.test1"
-+#define XATTR_TEST1_VALUE	"value1"
-+#define XATTR_TEST1_SIZE	6
-+#define XATTR_TEST2_NAME	"user.test2"
-+#define XATTR_TEST2_VALUE	"value2"
-+#define XATTR_TEST2_SIZE	6
-+
-+/* Global variables for test users */
-+extern uid_t user1_uid, user2_uid, user3_uid;
-+extern gid_t user1_gid, user2_gid, user3_gid;
-+extern int users_created;
-+
-+/* Helper functions */
-+static inline void reset_test_path(void)
-+{
-+	if (unlink(TESTSYMLINK) == -1 && errno != ENOENT)
-+		tst_res(TWARN | TERRNO, "unlink(%s) failed", TESTSYMLINK);
-+
-+	if (unlink(TESTFILE) == -1 && errno != ENOENT)
-+		tst_res(TWARN | TERRNO, "unlink(%s) failed", TESTFILE);
-+
-+	if (rmdir(TESTDIR) == -1 && errno != ENOENT)
-+		tst_res(TWARN | TERRNO, "rmdir(%s) failed", TESTDIR);
-+
-+	SAFE_MKDIR(TESTDIR, 0755);
-+	SAFE_CHOWN(TESTDIR, user1_uid, user1_gid);
-+}
-+
-+static inline void cleanup_testfile(void)
-+{
-+	if (unlink(TESTFILE) == -1 && errno != ENOENT)
-+		tst_res(TWARN | TERRNO, "unlink(%s) failed", TESTFILE);
-+}
-+
-+#ifdef HAVE_LIBACL
-+static inline void safe_acl_free(void *ptr)
-+{
-+	if (ptr && acl_free(ptr) == -1)
-+		tst_res(TWARN | TERRNO, "acl_free failed");
-+}
-+
-+static inline void safe_add_perm(acl_permset_t permset, acl_perm_t perm)
-+{
-+	if (acl_add_perm(permset, perm) == -1)
-+		tst_brk(TBROK | TERRNO, "acl_add_perm failed");
-+}
-+
-+static inline void safe_fill_permset(acl_permset_t permset, int perms)
-+{
-+	if (acl_clear_perms(permset) == -1)
-+		tst_brk(TBROK | TERRNO, "acl_clear_perms failed");
-+
-+	if (perms & ACL_READ)
-+		safe_add_perm(permset, ACL_READ);
-+
-+	if (perms & ACL_WRITE)
-+		safe_add_perm(permset, ACL_WRITE);
-+
-+	if (perms & ACL_EXECUTE)
-+		safe_add_perm(permset, ACL_EXECUTE);
-+}
-+
-+/*
-+ * Helper to clear ACL mask permissions.
-+ * Finds the ACL_MASK entry in the given ACL and sets its permissions to 0.
-+ */
-+static inline void clear_acl_mask_perms(acl_t acl)
-+{
-+	acl_entry_t entry;
-+	acl_permset_t permset;
-+	acl_tag_t tag;
-+	int i;
-+
-+	for (i = ACL_FIRST_ENTRY; ; i = ACL_NEXT_ENTRY) {
-+		int ret = acl_get_entry(acl, i, &entry);
-+
-+		if (ret == -1)
-+			tst_brk(TBROK | TERRNO, "acl_get_entry failed");
-+
-+		if (ret != 1)
-+			break;
-+
-+		if (acl_get_tag_type(entry, &tag) == -1)
-+			tst_brk(TBROK | TERRNO, "acl_get_tag_type failed");
-+
-+		if (tag != ACL_MASK)
-+			continue;
-+
-+		if (acl_get_permset(entry, &permset) == -1)
-+			tst_brk(TBROK | TERRNO, "acl_get_permset failed");
-+
-+		safe_fill_permset(permset, 0);
-+
-+		if (acl_set_permset(entry, permset) == -1)
-+			tst_brk(TBROK | TERRNO, "acl_set_permset failed");
-+
-+		break;
-+	}
-+}
-+
-+/*
-+ * Helper to add an ACL entry with optional qualifier.
-+ * For ACL_USER and ACL_GROUP tags, qualifier must be provided.
-+ * For other tags (ACL_USER_OBJ, ACL_GROUP_OBJ, ACL_OTHER, ACL_MASK),
-+ * qualifier should be NULL.
-+ */
-+static inline void add_acl_entry_with_qualifier(acl_t acl, acl_tag_t tag,
-+						const void *qualifier,
-+						int perms)
-+{
-+	acl_entry_t entry;
-+	acl_permset_t permset;
-+
-+	if (acl_create_entry(&acl, &entry) == -1)
-+		tst_brk(TBROK | TERRNO, "acl_create_entry failed");
-+
-+	if (acl_set_tag_type(entry, tag) == -1)
-+		tst_brk(TBROK | TERRNO, "acl_set_tag_type failed");
-+
-+	/* Set qualifier for ACL_USER and ACL_GROUP entries */
-+	if (qualifier && acl_set_qualifier(entry, qualifier) == -1)
-+		tst_brk(TBROK | TERRNO, "acl_set_qualifier failed");
-+
-+	if (acl_get_permset(entry, &permset) == -1)
-+		tst_brk(TBROK | TERRNO, "acl_get_permset failed");
-+
-+	safe_fill_permset(permset, perms);
-+
-+	if (acl_set_permset(entry, permset) == -1)
-+		tst_brk(TBROK | TERRNO, "acl_set_permset failed");
-+}
-+
-+/* Convenience wrapper for entries without qualifiers */
-+static inline void add_acl_entry(acl_t acl, acl_tag_t tag, int perms)
-+{
-+	add_acl_entry_with_qualifier(acl, tag, NULL, perms);
-+}
-+
-+/* Convenience wrapper for named user entries */
-+static inline void add_named_user_acl_entry(acl_t acl, uid_t uid, int perms)
-+{
-+	add_acl_entry_with_qualifier(acl, ACL_USER, &uid, perms);
-+}
-+
-+/* Convenience wrapper for named group entries */
-+static inline void add_named_group_acl_entry(acl_t acl, gid_t gid, int perms)
-+{
-+	add_acl_entry_with_qualifier(acl, ACL_GROUP, &gid, perms);
-+}
-+
-+static inline void add_empty_acl_entry(acl_t acl, acl_tag_t tag)
-+{
-+	add_acl_entry(acl, tag, 0);
-+}
-+
-+static inline void set_acl_file(const char *path, acl_type_t type, acl_t acl)
-+{
-+	if (acl_valid(acl) == -1)
-+		tst_brk(TBROK | TERRNO, "acl_valid failed");
-+
-+	if (acl_set_file(path, type, acl) == -1)
-+		tst_brk(TBROK | TERRNO, "acl_set_file(%s) failed", path);
-+}
-+#endif
-+
-+static inline int create_file_as(uid_t uid, gid_t gid, mode_t mode,
-+				 int use_umask, mode_t mask)
-+{
-+	pid_t pid;
-+	int status;
-+
-+	pid = SAFE_FORK();
-+	if (!pid) {
-+		int fd, err;
-+
-+		if (setgroups(0, NULL) == -1) {
-+			err = errno;
-+			_exit(err);
-+		}
-+
-+		if (setgid(gid) == -1) {
-+			err = errno;
-+			_exit(err);
-+		}
-+
-+		if (setuid(uid) == -1) {
-+			err = errno;
-+			_exit(err);
-+		}
-+
-+		if (use_umask)
-+			umask(mask);
-+
-+		fd = open(TESTFILE, O_CREAT | O_WRONLY, mode);
-+		if (fd >= 0) {
-+			close(fd);
-+			_exit(0);
-+		}
-+
-+		err = errno;
-+		_exit(err);
-+	}
-+
-+	SAFE_WAITPID(pid, &status, 0);
-+
-+	if (!WIFEXITED(status))
-+		tst_brk(TBROK, "Child terminated abnormally");
-+
-+	return WEXITSTATUS(status);
-+}
-+
-+static inline int try_create_as(uid_t uid, gid_t gid, mode_t mode)
-+{
-+	return create_file_as(uid, gid, mode, 0, 0);
-+}
-+
-+static inline int create_with_umask_as(uid_t uid, gid_t gid, mode_t mode,
-+					mode_t mask)
-+{
-+	return create_file_as(uid, gid, mode, 1, mask);
-+}
-+
-+static inline void create_user_if_needed(const char *username, int flag)
-+{
-+	struct passwd *pw;
-+
-+	errno = 0;
-+	pw = getpwnam(username);
-+	if (!pw && errno != 0)
-+		tst_brk(TBROK | TERRNO, "getpwnam(%s) failed", username);
-+
-+	if (!pw) {
-+		if (tst_cmd((const char *[]){"useradd", "-M", username, NULL},
-+			    NULL, NULL, TST_CMD_PASS_RETVAL) != 0)
-+			tst_brk(TCONF, "Failed to create user %s", username);
-+		users_created |= flag;
-+	}
-+}
-+
-+static inline void create_test_users(void)
-+{
-+	create_user_if_needed(TEST_USER1, USER1_CREATED);
-+	create_user_if_needed(TEST_USER2, USER2_CREATED);
-+	create_user_if_needed(TEST_USER3, USER3_CREATED);
-+}
-+
-+static inline void init_test_users(void)
-+{
-+	struct passwd *pw;
-+
-+	create_test_users();
-+
-+	pw = SAFE_GETPWNAM(TEST_USER1);
-+	user1_uid = pw->pw_uid;
-+	user1_gid = pw->pw_gid;
-+
-+	pw = SAFE_GETPWNAM(TEST_USER2);
-+	user2_uid = pw->pw_uid;
-+	user2_gid = pw->pw_gid;
-+
-+	pw = SAFE_GETPWNAM(TEST_USER3);
-+	user3_uid = pw->pw_uid;
-+	user3_gid = pw->pw_gid;
-+}
-+
-+static inline void cleanup_test_users(void)
-+{
-+	if (users_created & USER1_CREATED)
-+		tst_cmd((const char *[]){"userdel", TEST_USER1, NULL},
-+			NULL, NULL, TST_CMD_PASS_RETVAL);
-+
-+	if (users_created & USER2_CREATED)
-+		tst_cmd((const char *[]){"userdel", TEST_USER2, NULL},
-+			NULL, NULL, TST_CMD_PASS_RETVAL);
-+
-+	if (users_created & USER3_CREATED)
-+		tst_cmd((const char *[]){"userdel", TEST_USER3, NULL},
-+			NULL, NULL, TST_CMD_PASS_RETVAL);
-+}
-+
-+static inline void cleanup_test_paths(void)
-+{
-+	if (unlink(TESTSYMLINK) == -1 && errno != ENOENT)
-+		tst_res(TWARN | TERRNO, "unlink(%s) failed", TESTSYMLINK);
-+
-+	if (unlink(TESTFILE) == -1 && errno != ENOENT)
-+		tst_res(TWARN | TERRNO, "unlink(%s) failed", TESTFILE);
-+
-+	if (unlink(XATTR_BACKUP_FILE) == -1 && errno != ENOENT)
-+		tst_res(TWARN | TERRNO, "unlink(%s) failed",
-+			XATTR_BACKUP_FILE);
-+
-+	if (rmdir(TESTDIR) == -1 && errno != ENOENT)
-+		tst_res(TWARN | TERRNO, "rmdir(%s) failed", TESTDIR);
-+}
-+
-+#endif /* ACL_LIB_H */
-diff --git a/testcases/kernel/fs/acl/acl_user_obj01.c b/testcases/kernel/fs/acl/acl_user_obj01.c
-new file mode 100644
-index 000000000..4f34085e8
---- /dev/null
-+++ b/testcases/kernel/fs/acl/acl_user_obj01.c
-@@ -0,0 +1,115 @@
++++ b/testcases/kernel/fs/acl/acl_other01.c
+@@ -0,0 +1,107 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) IBM, 2026
@@ -556,13 +170,22 @@ index 000000000..4f34085e8
 + */
 +
 +/*\
-+ * Test ACL_USER_OBJ permissions.
++ * Test ACL_OTHER permissions.
 + *
-+ * Verify that owner permissions (ACL_USER_OBJ) correctly control access
-+ * to files and directories. The test validates that:
-+ * - Traditional permission bits deny access when restrictive
-+ * - ACL_USER_OBJ entries can grant access beyond permission bits
-+ * - Owner permissions work independently of group and other permissions
++ * Verify that ACL_OTHER permissions work correctly and are not affected
++ * by ACL_MASK. The ACL_OTHER entry controls access for users who don't
++ * match any other ACL entry (not the owner, not in any named user entry,
++ * not in the owning group, and not in any named group entry).
++ *
++ * Unlike ACL_USER, ACL_GROUP, and ACL_GROUP_OBJ entries, ACL_OTHER
++ * permissions are not restricted by the ACL_MASK.
++ *
++ * [Algorithm]
++ *
++ * 1. Set up ACL with rwx permissions for ACL_OTHER
++ * 2. Set ACL_MASK to --- (no permissions)
++ * 3. Attempt file creation as a user matching ACL_OTHER
++ * 4. Verify access is granted despite restrictive mask
 + */
 +
 +#include "acl_lib.h"
@@ -578,50 +201,33 @@ index 000000000..4f34085e8
 +	acl_t acl;
 +	int err;
 +
-+	tst_res(TINFO, "Testing ACL_USER_OBJ permissions");
++	tst_res(TINFO, "Testing ACL_OTHER permissions");
 +	reset_test_path();
 +
-+	/* Test 1: Verify permission bits deny access */
-+	SAFE_CHMOD(TESTDIR, 0500);
-+
-+	err = try_create_as(user1_uid, user1_gid, 0644);
-+	if (!err) {
-+		cleanup_testfile();
-+		tst_res(TFAIL, "Created file without write permission");
-+		return;
-+	}
-+
-+	if (err != EACCES) {
-+		errno = err;
-+		tst_res(TFAIL | TERRNO, "Expected EACCES from owner create");
-+		return;
-+	}
-+
-+	tst_res(TPASS, "File creation denied by permission bits");
-+
-+	/* Test 2: Verify ACL_USER_OBJ grants access */
-+	acl = acl_init(3);
++	acl = acl_init(4);
 +	if (!acl)
 +		tst_brk(TBROK | TERRNO, "acl_init failed");
 +
 +	add_acl_entry(acl, ACL_USER_OBJ,
 +		      ACL_READ | ACL_WRITE | ACL_EXECUTE);
 +	add_empty_acl_entry(acl, ACL_GROUP_OBJ);
-+	add_empty_acl_entry(acl, ACL_OTHER);
++	add_empty_acl_entry(acl, ACL_MASK);
++	add_acl_entry(acl, ACL_OTHER,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE);
 +
 +	set_acl_file(TESTDIR, ACL_TYPE_ACCESS, acl);
 +	safe_acl_free(acl);
 +
-+	err = try_create_as(user1_uid, user1_gid, 0644);
++	err = try_create_as(user2_uid, user2_gid, 0644);
 +	if (err) {
 +		errno = err;
 +		tst_res(TFAIL | TERRNO,
-+			"Failed to create file with ACL_USER_OBJ rwx");
++			"ACL_OTHER rwx should allow access despite mask");
 +		return;
 +	}
 +
 +	cleanup_testfile();
-+	tst_res(TPASS, "ACL_USER_OBJ permissions work correctly");
++	tst_res(TPASS, "ACL_OTHER not affected by mask");
 +}
 +
 +static void setup(void)
