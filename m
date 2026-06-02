@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49DF0CD6E57
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 11:25:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE1B2CD6E57
+	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 11:27:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9EC583E3096
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 13:25:16 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 74FA13E23C4
+	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 13:27:16 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ACC793E56CA
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 13:24:03 +0200 (CEST)
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com
- [IPv6:2607:f8b0:4864:20::f42])
+ by picard.linux.it (Postfix) with ESMTPS id 6DA1A3E1DBC
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 13:26:59 +0200 (CEST)
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com
+ [IPv6:2607:f8b0:4864:20::744])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 21DAE10000CA
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 13:24:03 +0200 (CEST)
-Received: by mail-qv1-xf42.google.com with SMTP id
- 6a1803df08f44-8ccea53f35cso46153366d6.1
- for <ltp@lists.linux.it>; Tue, 02 Jun 2026 04:24:03 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A22B11A00438
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 13:26:58 +0200 (CEST)
+Received: by mail-qk1-x744.google.com with SMTP id
+ af79cd13be357-9154ca1aa1dso309295485a.0
+ for <ltp@lists.linux.it>; Tue, 02 Jun 2026 04:26:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780399442; x=1781004242; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1780399617; x=1781004417; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=VL2coPTUxijZ4sOch/LVcN3Xfp40mvD7+AVE4QD4VWQ=;
- b=C3LSrDheMmiXyDARWtiEG3iD/jdckHcPUUtvQ8OPBtPFqvWqbEvYc1dBPNTfBdgOfZ
- v8r4rQcJiWZXpg3cwx0juTTNynosQTqkzvSx9r/Pg0qeFXAsgtRvQrFKQ2mfEeUn7MSa
- 1vlppasgv1zBTmB8oFtqIEWZhUXeyFuhcnqa2PSw7HwcX4YxaZyvyJF2zNa+jHGMgtJJ
- vq+9TIYpdBS7dy7i3xi+SP75qrp1MztpdsjHpbaPLV2SMbJK0ACews2x9UsPyv8PlFCX
- U2jYufoMceWB05BYb/zPz0Hx/JaKL+cRNAvga+ZBVfS59EdaHxij4i0VPKziAHaox6OL
- q5YQ==
+ bh=qJSxytXS5CmNpiShiLFladLsvXYPEo8v45/C4sg3nV0=;
+ b=pbyOJcCMFZa3pLu5+XFKdMrxMFODV8uYnsUmISm6g6FopoX9zVJoRKfskIZgOE8Ohk
+ KHZbSjr9A7jzapq4OHsHxCUXMALrsJpnjmsIKMbH6rq//H9p5F/we+5/b5CCSwi8NIwo
+ FofNCTlXVju87c5o3lKYa7up+HnLNscxbdW9A1LaK8cnTi1G3v3Mn2yYIT2MGM271g8K
+ m2CbsczLxzn3P0DEq9NOXuvAboSexo3BiWsPREXK0Z9mGAouG8NaWnl7j8+cwPeUZArj
+ s/7WlSJRsYl2TzrPELVE+ERr6RDdpPyvJymWbLHS60VTVZYZGsdBt18k9mOmtnzoCgbB
+ pFmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780399442; x=1781004242;
+ d=1e100.net; s=20251104; t=1780399617; x=1781004417;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=VL2coPTUxijZ4sOch/LVcN3Xfp40mvD7+AVE4QD4VWQ=;
- b=MYH85XZm7DXpLWfr+WN5xhv840IICYNjyeJRWYKBnQiq5IbMp7cECfBxAaSmLcKE10
- 8rm+1BItkMwCkdrn7mO4XltntxqkvWX/As+DSw4Bk0jJGzP1zP0KfJqdAEKPX4mFUzyQ
- THnl0ekMsNmBRr1yyZKUWaceFilmjE4jsIxD5LGqR/e6+2wd91OzC8ykE5TMOw3gIYtv
- AQanWyXqR+mHSrH/V8/b/JrpblDstnpZAgqmyJmWQr++cdHUa3C9dZxDd+YGYqN9PelV
- t7nUYr8sj2/m8uTob8I1dVEIaiaXdq2lFKaY+AICAwRvywV4MiQzyJLFcbIaOPFJBKhs
- yPhQ==
-X-Gm-Message-State: AOJu0Yy+E41D8ufzvErdv1oGDnOHqC3yj/hN6C3BTd4YSkFv0mlb3r85
- iq6kXtVq0H/fjCs8TjXfZMsZOPTY7YncEBZm2Br6POWWKqHENLZknygQ
-X-Gm-Gg: Acq92OGpW3T1u+3Dn85Wg1TDWRJ5NzXSpj7ho9WhLXwsqgabdmkmcUIT1PMIFA1ASRO
- EVBQhb9+DLOnJS78TdOne7eLWgRXBTsR/5s8gWiJOCN7DrDYJdbf9mLSCkFI/dkUNcUN2y7diEj
- bSV5W6/rpiymPP/ZYcoSMFiJ5QAMCcZYIw8/eXaitiHiFqZoct47dbHEdpC02wVY4aUAqLM1atu
- 8adNPf33KzfFb4UKKk9fzJNo0I1LCtsThAQQiZ07WTMZo7ZFH31JbYlcfaCTzC2i9b/zaeEWQ+d
- tqDR9yCswpgDepP+tfGa+QXOmw/kxDVIvwHsfwVqgTDpTSqwxghRR9GefwSlrmTI07/FI7NXT8L
- CzxOAif9cbR2JIebmowlfWjjsdS9Iyyyq5Ol1x0xhuIuUfs+TWS7P+3iO9yoL8OkquJuVmZb0TF
- blYKzgE8kPp45zvsNsHtaZ+AbMpdRx0iyC/1Hy2hkme2AWlL/qgEwxe/ZZxNFh+JVY2L1+T1L05
- GMU8suj9l6F1Ex7uXDRwQBBcTrsRNDcHvlg8KJ6o5Yb8Zq/tA==
-X-Received: by 2002:a05:6214:8088:b0:8cc:f0e0:f90b with SMTP id
- 6a1803df08f44-8ccf0e0fbb0mr230034486d6.40.1780399441753; 
- Tue, 02 Jun 2026 04:24:01 -0700 (PDT)
+ bh=qJSxytXS5CmNpiShiLFladLsvXYPEo8v45/C4sg3nV0=;
+ b=LtYZzzfSSUU8rl17E5nTdgoDDfD9orF30ZfdO6wutd7QamU3UQOQ+OIsWCqG+IwCsS
+ dE+kO6UhzawiVYkahFwAAH/OfvTqVa3zx0Tc0Oruh/db2SqAGn12kGuaDHH2OIg+ZaNv
+ fUpvyja8H+kNXaryIhGCVrAfpklepE5tywoF6hLu1fx8e/9FVzpizddm+b4yfQSCvTW7
+ x/G8yASLP1KCTfagNqAaADHcB5yDx6IIvUHDsUEQPuDcYKUDyIAgvg1ppTs4mxWhd1Ix
+ M4kwc0biU/OK3vf1AOcTMnEmabWHO+Gdquu99Ys+wkUrus2RCmzcnu4SoyPfj7AhWUfH
+ KvEg==
+X-Gm-Message-State: AOJu0YxnRN6oWRRR3a/xr5tUhcTYcyj11joHoSfJPgJ2+dS5ryHJFWaY
+ x5wsPV2gCCEoj2s7CWBZ5Axr8fchRCPItut56rXYtfyej6jOEESwcHnAmeHWzkh/yxg=
+X-Gm-Gg: Acq92OFQWBV3Gal9zvjgAJYX2mqIw9wwhHvc5hVT7w0GPDjXxEWnwJ192wjeYKEmyl/
+ 0+Q8uiEPb0Ct1hokw+1Z+86bEs9RHS/DFPmQKJuAQfAZnkMoz4NjUKagqyElFgaOzfHyr938O/X
+ hfvvzbbFBSgY+F5Pi1WNRmaQGCM4M0NUavoybGJZyIQu49QicUuSRNIOECyeRtCvzsdZ8QQqxK4
+ i/M+/7xu/LIgJyxofjoMIDHtGtmAg+fkOwDA7mb5CbMGtdLFaWsFG2/FFYXAyL+l2FI0+g1cD0F
+ Fa0lrvFMyIJvujOEmpbfm0HvmbcG6oBceAxt0oelIRo/kGgI4YYSF4VfvQwNociWFimXFyEIwVy
+ S8way7CNx4gMYsGRTdh6GV0KToZLc3AcF5BAq7uWm68PQtUL7Dp66WTCGLWPNzxnYPK2dlQfHgQ
+ fU507DGRINU7JSibd8MeCfPLeGh5SJLV0XNsn31lXF2Oc3/gVQe90VIdwy5JKx19dxJ5b5LJixB
+ 0eKN9HjzuLbC9IDT/dbpl211X/Iwv8vJkd/XWeUVPRj+OUB6XQ=
+X-Received: by 2002:a05:620a:4081:b0:915:7787:200c with SMTP id
+ af79cd13be357-91577f1fd3amr459559485a.23.1780399617394; 
+ Tue, 02 Jun 2026 04:26:57 -0700 (PDT)
 Received: from
- runnervm3jyl0.cqadvpg5n3kehpcxmdhhiz2x0h.ex.internal.cloudapp.net
- ([64.236.133.99]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8ccea0635b1sm118725136d6.11.2026.06.02.04.24.01
+ runnervm3jyl0.ysas3otiowhuxowhhblauwz2td.bx.internal.cloudapp.net
+ ([172.203.213.80]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-91583668ebdsm41473685a.33.2026.06.02.04.26.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 02 Jun 2026 04:24:01 -0700 (PDT)
+ Tue, 02 Jun 2026 04:26:56 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Samir <samir@linux.ibm.com>
-Date: Tue,  2 Jun 2026 11:24:00 +0000
-Message-ID: <20260602112400.4056-1-linuxtestproject.agent@gmail.com>
+To: panzhe <panzhe@kylinos.cn>
+Date: Tue,  2 Jun 2026 11:26:56 +0000
+Message-ID: <20260602112656.4143-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260602100512.404810-1-samir@linux.ibm.com>
-References: <20260602100512.404810-1-samir@linux.ibm.com>
+In-Reply-To: <20260602090214.252840-1-panzhe@kylinos.cn>
+References: <20260602090214.252840-1-panzhe@kylinos.cn>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] cfs-scheduler: Fixed "make check" warning in
- cfs_bandwidth01.c
+Subject: Re: [LTP] gethostname02: Accept EOVERFLOW on alpha
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,40 +90,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: LTP AI Reviewer <ltp-ai-reviewer@lists.linux.it>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Samir,
+Hi panzhe,
 
-On Tue Jun  2 12:05:12 2026 +0200, Samir wrote:
-> cfs-scheduler: Fixed "make check" warning in cfs_bandwidth01.c
+On Tue, 2026-06-02 at 17:02 +0800, panzhe wrote:
+> gethostname02: Accept EOVERFLOW on alpha
+>
+> On alpha glibc's gethostname() directly calls the kernel
+> syscall and sets errno to EOVERFLOW when the buffer is
+> too small, because the kernel truncates silently and the
+> string is not null terminated.
+>
+> On the other hand, the generic posix implementation used
+> on x86_64 sets ENAMETOOLONG in this case.
+>
+> Fix this by accepting both errnos.
+>
+> Closes: https://github.com/linux-test-project/ltp/issues/1319
+> Signed-off-by: panzhe <panzhe@kylinos.cn>
 
-> -static int may_have_waiters = 0;
-> +static int may_have_waiters;
+Commit message: OK.  The alpha-specific behaviour is confirmed by glibc's
+sysdeps/unix/sysv/linux/alpha/gethostname.c:
 
-All good. Reviewed.
+    result = INLINE_SYSCALL(gethostname, 2, name, len);
+    if (result == 0 && memchr(name, '\0', len) == NULL) {
+        __set_errno(EOVERFLOW);
+        result = -1;
+    }
 
-Pre-existing issues noticed in the surrounding code (not introduced
-by this patch):
+When the kernel truncates the hostname to exactly `len` bytes (no null
+terminator), glibc detects the missing '\0' and raises EOVERFLOW.  The
+commit message accurately describes this.
 
-- cfs_bandwidth01.c in do_test() -- sleep(1) and sleep(2) are used
-  for process synchronization (waiting for workers to start and for
-  throttling to take effect). Is there a checkpoint-based or
-  polling-based approach that could replace these to avoid flakiness
-  under load? The checkpoint mechanism is already used elsewhere in
-  this test.
+> -	TST_EXP_FAIL(gethostname(hostname, real_length - 1), ENAMETOOLONG,
+> +	const int exp_errnos[] = {ENAMETOOLONG, EOVERFLOW};
+> +	TST_EXP_FAIL_ARR(gethostname(hostname, real_length - 1),
+> +		exp_errnos, ARRAY_SIZE(exp_errnos),
+> +		"len is smaller than the actual size");
 
----
-Note:
+TST_EXP_FAIL_ARR usage is correct.  The array is passed as const int *,
+matching the tst_errno_in_set() signature.  ARRAY_SIZE is preferred over a
+hardcoded count.  EOVERFLOW is available via <errno.h>, which tst_test.h
+already includes.
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+Note: ltp-linter was not available in the review environment and could not
+be run.
 
-Regards,
+Verdict: Reviewed
+
+Reviewed-by: LTP AI Reviewer <ltp-ai-reviewer@lists.linux.it>
+
 LTP AI Reviewer
 
 -- 
