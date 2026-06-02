@@ -4,80 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 730BCCD5BD1
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 01:08:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1780362503; h=date :
- in-reply-to : mime-version : references : message-id : to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=DsXLwfIqeRySysCc4JbJ5gIII0hSOqE+DeMzydC8hz0=;
- b=YbVzD1ek4ROa5t9HD4VUvUV2pkCyajb79GQuFtDS/JONG3J7W5olSkTobuMEKkyMDSfzL
- ymZuqrSgmpe4c4EOofld/at6bKANXw6wd8AjSevj2I6A9dFBKKZ8Lir/ImXtzFDP5jpM43D
- gGCe8HMnXyWlRQjFKavIyXZ6wuqBuFk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93E73C5DF71
+	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 04:03:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BF6BB3E18F5
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 03:08:23 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id D51623E5A02
+	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 06:03:16 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 228FC3E18F5
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 03:08:01 +0200 (CEST)
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com
- [IPv6:2607:f8b0:4864:20::44a])
+ by picard.linux.it (Postfix) with ESMTPS id B87D23E0D5A
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 06:02:58 +0200 (CEST)
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com
+ [IPv6:2607:f8b0:4864:20::f41])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 716AA100115F
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 03:08:01 +0200 (CEST)
-Received: by mail-pf1-x44a.google.com with SMTP id
- d2e1a72fcca58-8422a0eee68so3301031b3a.0
- for <ltp@lists.linux.it>; Mon, 01 Jun 2026 18:08:01 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2208960248A
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 06:02:58 +0200 (CEST)
+Received: by mail-qv1-xf41.google.com with SMTP id
+ 6a1803df08f44-8ce9e56f68cso15653816d6.2
+ for <ltp@lists.linux.it>; Mon, 01 Jun 2026 21:02:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1780362480; x=1780967280; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:from:to:cc:subject:date:message-id:reply-to;
- bh=zOS0DNzqZLNehz/EUMxb0BEDjqjlk8DeUaA9hnhhxP4=;
- b=skKQoHo9FDDs+j6s/d6Dmq2tzsfwum1AT7uyoKwfT39/odXEb2y+OxRJKEbpkMuwL2
- 1IQ/sXktB6xRD7DS5w7CWveL0kZjRULL/ezqEOepymSCNNlh3cWjBCoo5PQXbBVBZ8FE
- EXLvLHuv0//IUM9gnHHna/s1Y6YsZa2Jc5xJN2BmZAL6v5fyHIWRrxCZv8PyBYFJObpC
- QtLYxhwnNk3+IKE5WSHW1FW2XUZ+xyyPFkIwllc1nBFOQvnstiamc8bnzS/hSoa+j82z
- XrZSQPl+qXx7Cd1frKhVqqpifKMv8bYzVbAMxY8CIDbDGg+e3MpybUTsVc0JmNviEs8d
- H0CA==
+ d=gmail.com; s=20251104; t=1780372977; x=1780977777; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=nWjCHDOt1qmr89LfgD68Y01YgtN0hD3OisSmI8kuviw=;
+ b=IECq8b8RaPwvROld5VUacCUlpeM6U+/5Q6njsf7fajrdWQqrTzsgXOecRLLq5mMBUj
+ WnAKVmhbwss6bBFJ8KLzAppCqdweTWvVFCdy0TMItn9pkgKeQVqTOca4tiAbbi+4PZ9U
+ A2SQUT3Udwh9ldFLgzy3zcoPzUz3Sa5mSmdTDLG4I+xZsXpaytIjudUMaLd5ixvnnP9n
+ GtiAO6LHxEmRMT6G/qX8SZ7CLorqsqdkGi9Z9JyPJUw7eN4yJxyaCFKYKdkbsjKGAllB
+ J21orKEWK3aa0qbeUbr++Q87g2FRLqw4mo65BcHEP1Fz9XMwWbiyC+rQz4Ma0JOKXmlw
+ AVJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780362480; x=1780967280;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=zOS0DNzqZLNehz/EUMxb0BEDjqjlk8DeUaA9hnhhxP4=;
- b=NrHiQA5NKaZS1wxioNQSma0FK1lBPaJYJK0F52kNcpZqIesIN0SjaKn4riKeq0NQp/
- 9lz7p6FxAd3BJOOXndLkT4PYcVAe2aeWneJGMBgarWIfVaso7ib0/zrncBn8epjUAkAT
- Oj4HWNJhOF2aCJaxkHgYcf58DaUrjTVM9SYB+zNjQ169HNFpCPeu60GtCyjZiQ6ggels
- bQwVgDsrPLSJk1K/ls42x37EB8nqb6+PMQhFfwtXqFG29wMJn78iOWj6hTOHBJIDIlk4
- VPfJtWbQsiZnM3K/XbRhDjd8OSscNnzwzJ5h0cMpNkJlC214e0Ruq5rqeQfLPK9U6l6P
- W/9A==
-X-Gm-Message-State: AOJu0Ywn+qW6fWp8Kua1SJfXiSjsaoYFohsucYjI1G6X+fCm5+u3rr5Q
- KrAACSu9iIiFCPtrlg9MHC1jRZ+y0BiiDPyUjKYIk+UhNTarMLajZI8t3sPXue/ptC0fLr9qATR
- wYkVLqncr9etwN/32JqzE1AYXbZEDlPpU2N4VJ9AfS07b4vdd6viJfKx2RqA5TcPnuxqE1cWxTD
- xHwbY0JTUx/Ri1dvz2pJzhBNakSsB/DbmMyM143A6Kp7x/8HM=
-X-Received: from pfbki2.prod.google.com ([2002:a05:6a00:9482:b0:842:3d2d:1e7e])
- (user=chihsheng job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:a908:b0:836:3f6a:3e77 with SMTP id
- d2e1a72fcca58-8422578c834mr12655294b3a.17.1780362479303; 
- Mon, 01 Jun 2026 18:07:59 -0700 (PDT)
-Date: Tue,  2 Jun 2026 01:07:54 +0000
-In-Reply-To: <20260601165331.4077251-1-chihsheng@google.com>
-Mime-Version: 1.0
-References: <20260601165331.4077251-1-chihsheng@google.com>
-X-Mailer: git-send-email 2.54.0.929.g9b7fa37559-goog
-Message-ID: <20260602010754.190896-1-chihsheng@google.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ d=1e100.net; s=20251104; t=1780372977; x=1780977777;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=nWjCHDOt1qmr89LfgD68Y01YgtN0hD3OisSmI8kuviw=;
+ b=n/mLYjXTCrKNdj58ZDj4bUkiI9vnSAJoor/bvOSLOW1dvXcR0P3tlnW4MQll4qOU0H
+ Ay3SVOHmAU20lHMzIw9E1+x72JiAZk/AsU1jc8oa3wPN14MyeJYBX6F3OzbAh9TcnamV
+ 3Nl4EeKRGoii6Wns8yqTkel2yRGIXcOAH/u6Pl/XODchJW3RONbU4Q6z+NPnzGNvYrRc
+ F+0heh4Qs3LT/Dw5EyIOK8owbj9tGQVahEeeW0VaDj2ALmrjGvpi9jCOXJwTvSNkSvrM
+ 2x7d3GSqmrXRLFJGypw4qY03Hd3A4vtkIplnF7WiDaj4Xo14sWwsKmh5zAGPWzm+ZOQb
+ sXUw==
+X-Gm-Message-State: AOJu0YzbL46Ysa7G9ynfWUus0hXiYz/nJjtkuhKzXeWim8ozvTRNTZOP
+ fAg3dFO+hfOtIHRfWjepKCoCaqBPMp9ICGj3AqKY5Foz2/NKjU13vJ6k
+X-Gm-Gg: Acq92OEXaoioMR/4/LjO6vsmGCKBFLE/7a1g201PkGNDvm485z7l1XIq7Po1m2cHmMH
+ dQPooCfcrJomit1W5qQjO3yek3iI+id8f6kXcpP/HpUOxs0/lsVGdi3kaXaJB/Dos6fOHWRN193
+ ZNWfPjS2EW6y838Uy5XkQt+enEvRrqIuoZZnxpsdr8xzdRJxwIqk8+XtxoQHfa8BqFH7/4xbqUp
+ KJH9syegvM449PuIrqH146zAKwcUZPLxDXR3aX6X5Go+DsqFr16sgQXCbE9iGuX0tVICEFO0YJ7
+ azCsIPCo4h77yQoeQ6gDFi+7+08NXDnopmjgfSiOpAsYejLFZw6FpCBjftF3Xv1lbEO/4/AY3hv
+ IYvPzr8V1P5ofIQOwWXJKOhQWlWpoibTtk/VsukS5R2Sb5x44p5tfYp3XRtHhQ7qfxNJnLjF6EC
+ KxaVI+3ser6/2ll4Wjl4OGX/PYn6kT8GyWfZDIL+Daz0mWopy0OlmHeoJxa2zy3Sg+jnhLcEOof
+ mpmPq/0aQGKTMg0W4sJ8Y1dnk0tHz+WiEjcrzHmwLMiRwG+JA==
+X-Received: by 2002:a05:6214:5092:b0:8c4:7416:1b6f with SMTP id
+ 6a1803df08f44-8ccefddecefmr222239926d6.35.1780372976674; 
+ Mon, 01 Jun 2026 21:02:56 -0700 (PDT)
+Received: from
+ runnervm3jyl0.qilvsxr1i0gu1nlevhtqjzscxd.bx.internal.cloudapp.net
+ ([172.214.44.51]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8ccea23e115sm109727536d6.42.2026.06.01.21.02.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 01 Jun 2026 21:02:56 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Wei Gao <wegao@suse.com>
+Date: Tue,  2 Jun 2026 04:02:55 +0000
+Message-ID: <20260602040255.3991-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260602010137.27226-1-wegao@suse.com>
+References: <20260602010137.27226-1-wegao@suse.com>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] syscalls/xattr: Add runtime probe for socket xattr
- backports
+Subject: Re: [LTP] min_free_kbytes: Handle transient memory drops in
+ check_monitor
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,120 +92,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Darren Chang via ltp <ltp@lists.linux.it>
-Reply-To: Darren Chang <chihsheng@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Upstream commit dc0876b9846d ("xattr: support extended attributes on
-sockets") was merged in v7.1. Currently, setxattr02 and fsetxattr02
-strictly expect EPERM for sockets on kernels < 7.1.
-
-However, downstream kernels (e.g., Android mainline branches) often
-backport this feature to older kernel versions (such as 7.0). On
-these kernels, the strict version check causes a false positive failure:
-"passed unexpectedly".
-
-This patch introduces a runtime probe in setup() for both tests to
-detect if older kernels have the backported feature. If the xattr
-syscalls succeed on a socket during setup, we assume the patch is
-present and adjust the expected result to pass.
-
-Signed-off-by: Darren Chang <chihsheng@google.com>
----
- .../kernel/syscalls/fsetxattr/fsetxattr02.c   | 34 ++++++++++++++++---
- .../kernel/syscalls/setxattr/setxattr02.c     | 14 ++++++++
- 2 files changed, 44 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-index 2a48b7da7..4a0997445 100644
---- a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-+++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-@@ -19,10 +19,10 @@
-  * - Set attribute to a block special file, fsetxattr(2) should
-  *   return -1 and set errno to EPERM.
-  * - Set attribute to a UNIX domain socket, fsetxattr(2) should
-- *   return -1 and set errno to EPERM on kernels < 7.1.0.
-- *   On kernel 7.1.0+ (dc0876b9846d "xattr: support extended
-- *   attributes on sockets"), returns 0 (success) as sockets now
-- *   support user.* xattrs.
-+ *   return -1 and set errno to EPERM on kernels < 7.1, unless the
-+ *   feature is detected at runtime (e.g. backport). On kernel 7.1+
-+ *   (dc0876b9846d "xattr: support extended attributes on sockets"),
-+ *   or when the backport is probed in setup(), returns 0 (success).
-  */
- 
- /*
-@@ -209,6 +209,7 @@ static void verify_fsetxattr(unsigned int i)
- static void setup(void)
- {
- 	size_t i = 0;
-+	size_t socket_idx = ARRAY_SIZE(tc);
- 	struct sockaddr_un sun;
- 
- 	dev_t dev = makedev(1, 3);
-@@ -245,6 +246,31 @@ static void setup(void)
- 	}
- 
- 	socket_xattr_supported = tst_kvercmp(7, 1, 0) >= 0;
-+
-+	/*
-+	 * Commit dc0876b9846d "xattr: support extended attributes on sockets"
-+	 * merged in 7.1 mainline, but might be backported.
-+	 * Try to set xattr on socket to detect support.
-+	 */
-+	if (!socket_xattr_supported) {
-+		for (i = 0; i < ARRAY_SIZE(tc); i++) {
-+			if (tc[i].issocket) {
-+				socket_idx = i;
-+				break;
-+			}
-+		}
-+
-+		if (socket_idx != ARRAY_SIZE(tc)) {
-+			if (fsetxattr(tc[socket_idx].fd, tc[socket_idx].key,
-+				      tc[socket_idx].value, tc[socket_idx].size,
-+				      tc[socket_idx].flags) == 0) {
-+				tst_res(TINFO, "Socket xattr support detected (backport)");
-+				socket_xattr_supported = true;
-+
-+				SAFE_FREMOVEXATTR(tc[socket_idx].fd, tc[socket_idx].key);
-+			}
-+		}
-+	}
- }
- 
- static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/setxattr/setxattr02.c b/testcases/kernel/syscalls/setxattr/setxattr02.c
-index 994ab655d..167e068cf 100644
---- a/testcases/kernel/syscalls/setxattr/setxattr02.c
-+++ b/testcases/kernel/syscalls/setxattr/setxattr02.c
-@@ -196,6 +196,20 @@ static void setup(void)
- 	SAFE_MKNOD(SOCK, S_IFSOCK | 0777, 0);
- 
- 	socket_xattr_supported = tst_kvercmp(7, 1, 0) >= 0;
-+
-+	/*
-+	 * Commit dc0876b9846d "xattr: support extended attributes on sockets"
-+	 * merged in 7.1 mainline, but might be backported.
-+	 * Try to set xattr on socket to detect support.
-+	 */
-+	if (!socket_xattr_supported) {
-+		if (setxattr(SOCK, XATTR_TEST_KEY, XATTR_TEST_VALUE,
-+			     XATTR_TEST_VALUE_SIZE, XATTR_CREATE) == 0) {
-+			tst_res(TINFO, "Socket xattr support detected (backport)");
-+			socket_xattr_supported = true;
-+			SAFE_REMOVEXATTR(SOCK, XATTR_TEST_KEY);
-+		}
-+	}
- }
- 
- static struct tst_test test = {
--- 
-2.54.0.929.g9b7fa37559-goog
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgV2VpLAoKVGhhbmtzIGZvciB0aGUgcGF0Y2guIEEgZmV3IGNvbW1lbnRzIGJlbG93LgoKPiBt
+aW5fZnJlZV9rYnl0ZXM6IEhhbmRsZSB0cmFuc2llbnQgbWVtb3J5IGRyb3BzIGluIGNoZWNrX21v
+bml0b3IKPgo+IEhpZ2ggbWVtb3J5IHByZXNzdXJlIGNhbiBjYXVzZSBNZW1GcmVlIHRvIHRlbXBv
+cmFyaWx5IGRyb3AgYmVsb3cgdGhlCj4gbWluX2ZyZWVfa2J5dGVzIHRocmVzaG9sZCBiZWZvcmUg
+dGhlIGtlcm5lbCByZWNsYWltZXIgY2FuIGNhdGNoIHVwLgo+IFRoaXMgcmVzdWx0cyBpbiBpbnRl
+cm1pdHRlbnQgdGVzdCBmYWlsdXJlcywgb2JzZXJ2ZWQgb24gb3BlblFBIGFhcmNoNjQKPiB2aXJ0
+dWFsIG1hY2hpbmVzLgo+Cj4gSW1wbGVtZW50IGEgMi1zZWNvbmQgZ3JhY2UgcGVyaW9kIHdpdGgg
+aGlnaC1hY2N1cmFjeSAxMG1zIGZpeGVkIHBvbGxpbmcKPiBpbiBjaGVja19tb25pdG9yKCkgdG8g
+YWxsb3cgdGhlIGtlcm5lbCB0aW1lIHRvIHJlY2xhaW0gbWVtb3J5Lgo+Cj4gSW50cm9kdWNlIGEg
+MTAlIHRvbGVyYW5jZSAoOTAlIHRocmVzaG9sZCkgZm9yIHRoZSBNZW1GcmVlIGNoZWNrLiBNeQo+
+IG1lYXN1cmVtZW50cyBzaG93ZWQgdGhhdCB1bmRlciBleHRyZW1lIHByZXNzdXJlLCBNZW1GcmVl
+IGNhbiBkaXAgYXMgbG93Cj4gYXMgfjUwJSB0byB+NzAlIG9mIHRoZSB0YXJnZXQuIFdoaWxlIGl0
+IHR5cGljYWxseSByZWNvdmVycyBhYm92ZSA5MCUKPiB3aXRoaW4gb25lIHNlY29uZCwgaGl0dGlu
+ZyB0aGUgZXhhY3QgMTAwJSB3YXRlcm1hcmsgc29tZXRpbWVzIGNhbiB0YWtlCj4gc2lnbmlmaWNh
+bnRseSBsb25nZXIuIFRoaXMgdG9sZXJhbmNlIHByZXZlbnRzIGZhbHNlIHBvc2l0aXZlcyBkdXJp
+bmcgdGhlCj4gc2xvdyByZWNvdmVyeSB0YWlsIHdoaWxlIHN0aWxsIGVuc3VyaW5nIG1lbW9yeSBp
+cyBtYWludGFpbmVkIG5lYXIgdGhlCj4gcmVxdWlyZWQgbGV2ZWwuCgpQbGVhc2UgcmV3cml0ZSBp
+biBpbXBlcnNvbmFsIGZvcm0sIGUuZy46CiAgIk1lYXN1cmVtZW50cyB1bmRlciBleHRyZW1lIHBy
+ZXNzdXJlIHNob3cgTWVtRnJlZSBjYW4gZGlwIGFzIGxvdyBhcwogICB+NTAlIHRvIH43MCUgb2Yg
+dGhlIHRhcmdldC4iCgpDb21taXQgbWVzc2FnZXMgYmVjb21lIGEgcGVybWFuZW50IHBhcnQgb2Yg
+dGhlIHByb2plY3QgaGlzdG9yeSBhbmQKc2hvdWxkIGF2b2lkIGZpcnN0LXBlcnNvbiBsYW5ndWFn
+ZS4KCj4gLXVuc2lnbmVkIGxvbmcgdHVuZTsKPiAtdW5zaWduZWQgbG9uZyBtZW1mcmVlOwo+ICt1
+bnNpZ25lZCBsb25nIHR1bmUsIHRocmVzaG9sZDsKPiArdW5zaWduZWQgbG9uZyBtZW1mcmVlLCBt
+aW5fbWVtZnJlZTsKPiAraW50IGk7Cj4KPiAgd2hpbGUgKCFlbmQpIHsKPiAgbWVtZnJlZSA9IFNB
+RkVfUkVBRF9NRU1JTkZPKCJNZW1GcmVlOiIpOwo+ICB0dW5lID0gVFNUX1NZU19DT05GX0xPTkdf
+R0VUKE1JTl9GUkVFX0tCWVRFUyk7Cj4gKy8qCj4gKyAqIEFsbG93IDEwJSB0b2xlcmFuY2UgdG8g
+YWNjb3VudCBmb3IgdHJhbnNpZW50IHN0YXRlcy4KPiArICovCj4gK3RocmVzaG9sZCA9IHR1bmUg
+KiA5IC8gMTA7Cj4KPiAgaWYgKG1lbWZyZWUgPCB0dW5lKSB7Cj4gLXRzdF9yZXMoVElORk8sICJN
+ZW1GcmVlIGlzICVsdSBrQiwgIgo+IC0gIm1pbl9mcmVlX2tieXRlcyBpcyAlbHUga0IiLCBtZW1m
+cmVlLCB0dW5lKTsKPiAtdHN0X3JlcyhURkFJTCwgIk1lbUZyZWUgPCBtaW5fZnJlZV9rYnl0ZXMi
+KTsKPiArbWluX21lbWZyZWUgPSBtZW1mcmVlOwo+ICsvKgo+ICsgKiBHaXZlIGl0IHNvbWUgdGlt
+ZSB0byByZWNsYWltLiBUaGUga2VybmVsIHNob3VsZCBrZWVwCj4gKyAqIE1lbUZyZWUgYWJvdmUg
+bWluX2ZyZWVfa2J5dGVzLCBidXQgdHJhbnNpZW50IGRyb3BzCj4gKyAqIGFyZSBwb3NzaWJsZSB1
+bmRlciBoaWdoIHByZXNzdXJlLgo+ICsgKiBDaGVjayBldmVyeSAxMG1zIGZvciB1cCB0byAyIHNl
+Y29uZHMgZm9yIGhpZ2ggYWNjdXJhY3kuCj4gKyAqLwo+ICtmb3IgKGkgPSAxMDsgaSA8PSAyMDAw
+OyBpICs9IDEwKSB7Cj4gK3VzbGVlcCgxMDAwMCk7Cj4gK21lbWZyZWUgPSBTQUZFX1JFQURfTUVN
+SU5GTygiTWVtRnJlZToiKTsKPiAraWYgKG1lbWZyZWUgPCBtaW5fbWVtZnJlZSkKPiArbWluX21l
+bWZyZWUgPSBtZW1mcmVlOwo+ICsKPiAraWYgKG1lbWZyZWUgPj0gdHVuZSkKPiArYnJlYWs7Cj4g
+K30KClRoZSBpbm5lciBwb2xsaW5nIGxvb3AgZG9lcyBub3QgY2hlY2sgdGhlICdlbmQnIGZsYWcs
+IHdoaWNoIGlzIHNldCB0byAxCmJ5IHRoZSBTSUdVU1IxIGhhbmRsZXIgd2hlbiB0aGUgcGFyZW50
+IGZpbmlzaGVzLiBJbiB0aGUgb3JpZ2luYWwgY29kZSwKdGhlIHNpbmdsZSBzbGVlcCgyKSBhdCB0
+aGUgYm90dG9tIG9mIHRoZSBvdXRlciBsb29wIHdhcyBpbnRlcnJ1cHRlZCBieQp0aGUgc2lnbmFs
+ICh1c2xlZXAvc2xlZXAgcmV0dXJuIEVJTlRSKSwgc28gdGhlIG91dGVyIHdoaWxlICghZW5kKSBj
+aGVjawpmaXJlZCBwcm9tcHRseS4gV2l0aCB0aGUgbmV3IGdyYWNlIHBlcmlvZCBsb29wLCB0aGUg
+c2lnbmFsIGNhbiBmaXJlCndoaWxlIHdlIGFyZSBpbiBhbnkgb2YgdGhlIDIwMCBpbm5lciB1c2xl
+ZXAoMTAwMDApIGNhbGxzOyB0aGUgc2xlZXAKcmV0dXJucyBlYXJseSBidXQgdGhlIGxvb3AgYm9k
+eSBjb250aW51ZXMsIGFuZCB0aGUgb3V0ZXIgd2hpbGUgKCFlbmQpCmNhbm5vdCBiZSByZWFjaGVk
+IHVudGlsIHRoZSBmdWxsIH4yIHNlY29uZHMgZWxhcHNlLgoKUGxlYXNlIGFkZCBhbiBlYXJseSBl
+eGl0OgoKICBmb3IgKGkgPSAxMDsgaSA8PSAyMDAwOyBpICs9IDEwKSB7CiAgICAgIGlmIChlbmQp
+CiAgICAgICAgICByZXR1cm47CiAgICAgIHVzbGVlcCgxMDAwMCk7CiAgICAgIG1lbWZyZWUgPSBT
+QUZFX1JFQURfTUVNSU5GTygiTWVtRnJlZToiKTsKICAgICAgaWYgKG1lbWZyZWUgPCBtaW5fbWVt
+ZnJlZSkKICAgICAgICAgIG1pbl9tZW1mcmVlID0gbWVtZnJlZTsKICAgICAgaWYgKG1lbWZyZWUg
+Pj0gdHVuZSkKICAgICAgICAgIGJyZWFrOwogIH0KCkFsdGVybmF0aXZlbHkgYSBgYnJlYWtgIGlz
+IHN1ZmZpY2llbnQgaWYgdGhlIG91dGVyIGxvb3AgY2hlY2sgaXMKcmVhY2hlZCBxdWlja2x5LCBi
+dXQgYHJldHVybmAgaXMgY2xlYW5lciBnaXZlbiB0aGUgZnVuY3Rpb24gb25seSBoYXMKb25lIGV4
+aXQgcG9pbnQgYW55d2F5LgoKPiAraWYgKG1lbWZyZWUgPCB0aHJlc2hvbGQpIHsKPiArdHN0X3Jl
+cyhURkFJTCwgIk1lbUZyZWUgJWx1IDwgOTAlJSBvZiBtaW5fZnJlZV9rYnl0ZXMgJWx1IChNaW5T
+ZWVuOiAlbHUlJSkgYWZ0ZXIgMnMiLAo+ICttZW1mcmVlLCB0dW5lLCAobWluX21lbWZyZWUgKiAx
+MDAgLyB0dW5lKSk7Cj4gK30gZWxzZSBpZiAobWVtZnJlZSA8IHR1bmUpIHsKPiArdHN0X3JlcyhU
+SU5GTywgIk1lbUZyZWUgKCVsdSkgc3RheWVkIHdpdGhpbiAxMCUlIHRvbGVyYW5jZSAobWluICVs
+dSUlKSBhZnRlciB+MnMiLAo+ICttZW1mcmVlLCAobWluX21lbWZyZWUgKiAxMDAgLyB0dW5lKSk7
+Cj4gK30gZWxzZSB7Cj4gK3RzdF9yZXMoVElORk8sICJNZW1GcmVlIHJlY292ZXJlZCB0byAlbHUg
+KG1pbiAlbHUlJSkgYWZ0ZXIgJWQgbXMiLAo+ICttZW1mcmVlLCAobWluX21lbWZyZWUgKiAxMDAg
+LyB0dW5lKSwgaSk7Cj4gK30KCk1pbm9yOiB0aGUgVElORk8gbWVzc2FnZXMgbWl4IGtCIHZhbHVl
+cyBhbmQgcGVyY2VudGFnZSB2YWx1ZXMgdXNpbmcgdGhlCnNhbWUgZm9ybWF0IHNwZWNpZmllciAl
+bHUsIHdoaWNoIGNhbiBiZSBjb25mdXNpbmcgaW4gdGhlIG91dHB1dC4gVGhlClRGQUlMIGxpbmUg
+cHJpbnRzIE1lbUZyZWUgYW5kIHR1bmUgYXMgcmF3IGtCIHZhbHVlcyBidXQgbGFiZWxzIHRoZSB0
+aGlyZAphcmd1bWVudCAiKE1pblNlZW46IE4lKSIg4oCUIHRoZSBpbnRlbnQgaXMgY2xlYXIgYnV0
+IGFkZGluZyAia0IiIHVuaXRzIHRvCnRoZSBmaXJzdCB0d28gdmFsdWVzIHdvdWxkIGJlIG1vcmUg
+Y29uc2lzdGVudDoKCiAgIk1lbUZyZWUgJWx1IGtCIDwgOTAlJSBvZiBtaW5fZnJlZV9rYnl0ZXMg
+JWx1IGtCIChNaW5TZWVuOiAlbHUlJSkgYWZ0ZXIgMnMiCgpTaW1pbGFybHkgZm9yIHRoZSBUSU5G
+TyBsaW5lcy4KCi0tLQoKVmVyZGljdDogTmVlZHMgcmV2aXNpb24KClRoZSBtaXNzaW5nICdlbmQn
+IGNoZWNrIGluIHRoZSBpbm5lciBwb2xsaW5nIGxvb3AgaXMgYSByZWdyZXNzaW9uOiBpdApyZW1v
+dmVzIHRoZSBwcm9tcHQgdGVybWluYXRpb24gYmVoYXZpb3VyIG9mIHRoZSBvcmlnaW5hbCBzbGVl
+cCgyKSBhbmQKY2FuIGRlbGF5IHRoZSB0ZXN0IGV4aXQgYnkgdXAgdG8gMiBzZWNvbmRzIGFmdGVy
+IFNJR1VTUjEgaXMgcmVjZWl2ZWQuClBsZWFzZSBmaXggYmVmb3JlIG1lcmdpbmcuIFRoZSBjb21t
+aXQgbWVzc2FnZSBmaXJzdC1wZXJzb24gd29yZGluZyBhbmQKdGhlIG1pc3Npbmcga0IgdW5pdCBs
+YWJlbHMgYXJlIG1pbm9yIGFuZCBjYW4gYmUgYWRkcmVzc2VkIGluIHRoZSBzYW1lCnJlc3Bpbi4K
+CkxUUCBBSSBSZXZpZXdlcgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxp
+bnV4Lml0L2xpc3RpbmZvL2x0cAo=
