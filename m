@@ -4,82 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 514CCCD5BD1
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 17:34:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09562CD6E60
+	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 17:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1780421711; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=RPAwA6L3OdKy9E/zH+atZVylVbORlFsYz6W99AjUyDo=;
+ b=QRihORUqmYW7ReJlhHdY1CU+Oy6yadbVXxfU+uRg+h1d4bAkicFxojK9reWLyExQuH70d
+ rRrmVqvwSGN63EFy1EmgMKI0CGpNsrh/1nFqkYn1zr72kHEjUg6sjZxpzh/wPqNmQ3JQlMj
+ QdISZl9XrLv0SYYZ01WTun+CEUMicAQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5904D3E722A
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 19:34:51 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 94A8F3E7232
+	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 19:35:11 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8E3643D0EA6
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 19:34:33 +0200 (CEST)
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com
- [IPv6:2607:f8b0:4864:20::744])
+ by picard.linux.it (Postfix) with ESMTPS id 42BD43E722D
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 19:34:35 +0200 (CEST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0DA6A6005CC
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 19:34:33 +0200 (CEST)
-Received: by mail-qk1-x744.google.com with SMTP id
- af79cd13be357-91541fa94aaso391716985a.2
- for <ltp@lists.linux.it>; Tue, 02 Jun 2026 10:34:32 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 77B2C14002A6
+ for <ltp@lists.linux.it>; Tue,  2 Jun 2026 19:34:34 +0200 (CEST)
+Received: by mail-wr1-x429.google.com with SMTP id
+ ffacd0b85a97d-45eecb8bf67so4141318f8f.2
+ for <ltp@lists.linux.it>; Tue, 02 Jun 2026 10:34:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780421672; x=1781026472; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=oWQSzAmFp7gSs1mzoTCtnIQVbbQU3l3lEF9E/l7chJc=;
- b=nK6/obaEw+3l3rJfkoES+R4bVLfL3oqXFjKPw/wserXDdLQB9zLWLgfToQGYTYaPrP
- Ug33P/MNzdy+r5x2aOnyMiVzmgX6l4CyIhey3TR445IfVvjWvGPD8KgHGOqcmbWMJlYg
- 29XSWCPtqQLjw50Pq1Xd6kP6qvGz83/VG5UofupUfdkpb2nQGrxVON3jxJfeDS+QFbCR
- aXftnnKKsDndbkkchtfu9nGiBsyKqdPbj65QK/J55cqtt+NySp9kW/ocdmdzrnqkrY3c
- /31EknKqnKfWLXs9jj108BY8YgGVnh5rAETktZZBe6PC0c5PqN9/sj3rPvU6f2qRLt6b
- Ldvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780421672; x=1781026472;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ d=suse.com; s=google; t=1780421674; x=1781026474; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
  :to:cc:subject:date:message-id:reply-to;
- bh=oWQSzAmFp7gSs1mzoTCtnIQVbbQU3l3lEF9E/l7chJc=;
- b=ikI9+GJNmOak78FTvYMEs0bO3NHMI0W/oJDHxwPzACyL00JdFdSHU02GxE+wPYNIk0
- nhQPSqTrYI3omCqDo0Rxr1CwSwcHLancL4jckA2H126Ziw3ubxOsNTlzxkI5GaOr9Oob
- cOZ9q9TgnxoiAfAuk7GwuMeRMIk1mG07uqHl5oz/jySHsygqa7VuKOvRBr9tf+gAxWmn
- sWerMRBtWsIyXosUgGCkwyZZeZREucLvKhbwwTu7bhaw3nonzDZxbQQfgee+HfEYWNT0
- F8lrLS29jDSuoz52TZiDToHCtBWKahth2kxIUZrekGA+nVQXGsJzBcTPwAk2SO8Hd2Sd
- XO4w==
-X-Gm-Message-State: AOJu0Yyii/pBrZ+WyLMoHmOd30fDrdlsrtEfVGJ6SNBHCk7mj6C27WPV
- f+sBM3zqQbtLVMSVN1AEAPX0mHk/aeXlYlERvjX256wFQjVTRGeicEYQ
-X-Gm-Gg: Acq92OHXAXGLsNjJwOLBsc3wta8chXhp4mCWJYPu/JFsaL37NpTQeI5BEpebyI/il8v
- D93hyVRvHUnm1v73mkqEHa8TKmADsib6MIM8daiUO16BIXgvupIgicpH16xf7sIZFof7q6jX6GP
- jhJvpYMUZPU4pWskz2VdjaYs07VRxIExU1YR1wE/FPoVksE12GNXmxtEXtt1ex+pn+ENUNCy2iA
- HURsAELWNu+s4RPYqmnILeAK0s7Z0kAjz8V3QeeH0tyZTQukMyLVQ2a8TW8qL0z5rE/OIvv/ySY
- pDcq7OuOUigKGz+aahKGcdg6NxuuQZBD6bIuLsJwUgvX0DoGAo4mljfDk2Usv1NcdFFiLV+Rv4+
- tYl9Ky5wjHwziCIplZTg7tw/KX+hTeDwS6OW45eXRX608boQM7ujgPhx0Pe0MuLR+23gsnOqu+c
- hGtALz5qIgXTLPWkvJSsg0Abk5dfCFSWDOT/4/IZDpQcMtMpZ5oTIZTyvEjo358OhU+n4+WKiTo
- FuXM4ya7yRzsoL90RekAK79T3lBrrcTGZ5MeeLBJ6Dt7xKTpQ==
-X-Received: by 2002:a05:620a:172b:b0:915:3d27:a816 with SMTP id
- af79cd13be357-9158a39997cmr19812985a.49.1780421671633; 
- Tue, 02 Jun 2026 10:34:31 -0700 (PDT)
-Received: from
- runnervm3jyl0.morafjup3qwelmjmd1ehkbn3kc.bx.internal.cloudapp.net
- ([20.106.183.52]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-9158a3eea49sm5267985a.44.2026.06.02.10.34.30
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 02 Jun 2026 10:34:31 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue,  2 Jun 2026 17:34:30 +0000
-Message-ID: <20260602173430.4191-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260602-doc_add_missing_headers-v3-1-474deff77d2a@suse.com>
-References: <20260602-doc_add_missing_headers-v3-1-474deff77d2a@suse.com>
+ bh=8dYM8o+mFxU1GXND1qdOkxhPJNFIc9QARCqMll7yc7M=;
+ b=DRBbqhuhYPr2ovwAvjf2ZHJ4i0uKHMWUZJI/kLr/u1ystJvc88pnoeD0gxQ3nCz7fA
+ znP94LdU96gE+ZrIr7BSBM/I51dJDmt/ePTDxN2wUiyPFIbkbTbNjDbRY1ItCSawYrBk
+ gwlGW4HmogFn7tj8FCj860A2eCtpEOaRxGTcjtMP4FQjnzEWSjz3GlqvIGxz6sSc34Ch
+ H2jnfvfrGsuUAl7OBF5jxddbZEyjTpUHPcFgXJe3dirbAid79j22GOutDry6H5fbwN4z
+ K8YAx2dLMEq/5SVhae1kO/S67ZWeleGcxzcx7YrxYGieJUHerqBIWRiBtXsehzw1+kcn
+ vusA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1780421674; x=1781026474;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=8dYM8o+mFxU1GXND1qdOkxhPJNFIc9QARCqMll7yc7M=;
+ b=GTpO3LCrwPjD6jMAlWjjnbJumtwHRQrXrRoxkiEXoBrDvbGrN2sMsv7f67EfrIFNT3
+ b+5YXRzN4/Xedb+ZmG7pYjM5N05AL3hlcCkitrwOvvRhPiss7yItmPKArXjAIPhvH+FN
+ f7ZPOB5rEZmdfDvtzierp+lYR6TOywhjG1Okf9M5tklEJHAdoQcutdFD+DD3Iy2peuz/
+ E+0iYrjI1FtkJ4z/M5+G4EcWhep8X9Gs6uD8vOGQ+GM+Yck/Fd3f1w7OtKohOK3q3t0H
+ k9kWeKoSACbBWslL7qTHjd5tb3hVdJcSnfmTBuaqB/MOAZRonPVdSzDi1EMxl02UtLIf
+ Uqcg==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ+IJQK/iRYWZJnpG4RZJoI/U2zlLa5RmFPvqFJwlp9E4aSTyotgIxCLsbCaS2SENiGRkPA=@lists.linux.it
+X-Gm-Message-State: AOJu0Yz8IFh3woHJxnwrrXs1t+oeaLHNIVClBgi26skQom1aGsqEYAOM
+ IqYbm+QLRhbSAQP+f7uZZpbt4XfuphLcQCVv1sqBlp09aYlAODxF8sXCE48/1Dzl9hBhoHOGhLG
+ 6gSuSs20=
+X-Gm-Gg: Acq92OG3LcRpxtvduw2sUZEf/Y/71drWwU9jmuEOn+kwZ2WDEefXMdVoagovtf3X5kc
+ 2mz1p7cdxc3yFii7KTky5R11LO9KYWXYKNmhLUp0jVm9pUn3k0o85oFgJWnqYnTPJOfb292b00o
+ meQAGCwjJ+GImVxHepPUOuvuzAD1qNYeAnVbtspoHsR6loOO3EqlOZZoJ2FFj9rvGIadQmzYmNi
+ DsEHkL+xM9MSKfsSdiFG7g7tVsR+aD1VXDIMcQrkKqcvOyOpX7xMK5rKUbF6h4NGqkYPZlSd1VL
+ dwjry+A5+ImOnvtFGamfW6eETadUBNwf4h2zZzctkYsoD7sgI4jrE3x+u6cY2Q9usKaznQa0Lig
+ 6G71qAE02AOLI9aIpGQTu7HO/RHoXGxNvafN4MsIEb/laUfIlHnz8W1hn81FFbv1FVMttKdoa+v
+ 0MsAl2NJ5Ctpy/Otd27tVaaUgN7XJsNK8Y/lXGJ0ejQH74Znyn/A7QkwTnhnkfvw==
+X-Received: by 2002:a05:600c:620e:b0:48f:e230:d5ab with SMTP id
+ 5b1f17b1804b1-490b50c56dfmr12231755e9.31.1780421673726; 
+ Tue, 02 Jun 2026 10:34:33 -0700 (PDT)
+Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-4601f2ed944sm852715f8f.13.2026.06.02.10.34.33
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 02 Jun 2026 10:34:33 -0700 (PDT)
+Message-ID: <8a180e4a-88a4-4e69-be5d-86c75d1417d0@suse.com>
+Date: Tue, 2 Jun 2026 19:34:32 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: panzhe <panzhe@kylinos.cn>, Linux Test Project <ltp@lists.linux.it>
+References: <20260602090214.252840-1-panzhe@kylinos.cn>
+Content-Language: en-US
+In-Reply-To: <20260602090214.252840-1-panzhe@kylinos.cn>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] doc: Add missing API references to api_c_tests.rst
+Subject: Re: [LTP] [PATCH v2] gethostname02: Accept EOVERFLOW on alpha
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,58 +103,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGksCgpbUEFUQ0ggMS8zXSBkb2M6IEFkZCBtaXNzaW5nIEFQSSByZWZlcmVuY2VzIHRvIGFwaV9j
-X3Rlc3RzLnJzdAoKVGhlIGNvbW1pdCBtZXNzYWdlIGFjY3VyYXRlbHkgZGVzY3JpYmVzIHRoZSBj
-aGFuZ2VzLiBUaGUgRml4ZXM6IHRhZyBpcwpjb3JyZWN0LiBUaGUga2VybmVsLWRvYyBmb3JtYXQg
-Y29udmVyc2lvbnMgbG9vayBnb29kIG92ZXJhbGwsIGJ1dCB0aGVyZQppcyBvbmUgYnVnIChzZWUg
-YmVsb3cpLgoKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS90c3RfZnV6enlfc3luYy5oIGIvaW5jbHVk
-ZS90c3RfZnV6enlfc3luYy5oCj4gLi4uCj4gKy8qKgo+ICsgKiB0c3RfZnpzeW5jX3dhaXRfYSgp
-IC0gV2FpdCBpbiB0aHJlYWQgQS4KPiArICogQHBhaXI6IEZ1enp5IHN5bmMgcGFpci4KPiArICov
-Cj4gICovCj4gIHN0YXRpYyBpbmxpbmUgdm9pZCB0c3RfZnpzeW5jX3dhaXRfYShzdHJ1Y3QgdHN0
-X2Z6c3luY19wYWlyICpwYWlyKQoKQlVHOiBUaGUgcGF0Y2ggYWRkcyBhIG5ldyBjbG9zaW5nIGAq
-L2AgYXQgbGluZSA2MTcgYnV0IGRvZXMgbm90IHJlbW92ZQp0aGUgcHJlLWV4aXN0aW5nIGAqL2Ag
-YXQgbGluZSA2MTggKHRoZSBvbGQgY29tbWVudCdzIGNsb3NpbmcgbWFya2VyKS4KVGhlIHJlc3Vs
-dCBpbiB0aGUgZmlsZSBpcyB0d28gY29uc2VjdXRpdmUgYCovYCBsaW5lczoKCiAgNjE0OiAvKioK
-ICA2MTU6ICAqIHRzdF9menN5bmNfd2FpdF9hKCkgLSBXYWl0IGluIHRocmVhZCBBLgogIDYxNjog
-ICogQHBhaXI6IEZ1enp5IHN5bmMgcGFpci4KICA2MTc6ICAqLwogIDYxODogICovICAgICAgICAg
-ICAgPC0tIHN0cmF5OyBjYXVzZXMgYSBjb21waWxhdGlvbiBlcnJvcgogIDYxOTogc3RhdGljIGlu
-bGluZSB2b2lkIHRzdF9menN5bmNfd2FpdF9hKHN0cnVjdCB0c3RfZnpzeW5jX3BhaXIgKnBhaXIp
-CgpBIGJhcmUgYCovYCBhdCBmaWxlIHNjb3BlIGlzIGludmFsaWQgQyBhbmQgd2lsbCBmYWlsIHRv
-IGNvbXBpbGUuClBsZWFzZSBkcm9wIGxpbmUgNjE4LgoKVmVyZGljdDogTmVlZHMgcmV2aXNpb24g
-4pyXCgotLS0KCltQQVRDSCAyLzNdIGRvYzogQ29tcGxldGUgc3RydWN0IHRzdF90ZXN0IHRhYmxl
-IGFuZCBzaGVsbCBBUEkgZG9jcwoKVGhlIGVpZ2h0IG5ldyAuc3RydWN0IHRzdF90ZXN0IHJvd3Mg
-YWxsIGNvcnJlc3BvbmQgdG8gcmVhbCBmaWVsZHMgaW4KaW5jbHVkZS90c3RfdGVzdC5oLiBUaGUg
-bW50X2ZsYWdzIC8gbWluX3N3YXBfYXZhaWwgcmUtb3JkZXJpbmcgaXMKY29ycmVjdCAoYWxwaGFi
-ZXRpY2FsIG9yZGVyIGlzIG5vdyBtaW5fciA8IG1pbl9zIDwgbW50X2YpLiBUaGUgc2hlbGwKQVBJ
-IHZhcmlhYmxlIHJlZmVyZW5jZSBzZWN0aW9uIGhhcyBiZWVuIHZlcmlmaWVkIGFnYWluc3QgdGhl
-CmltcGxlbWVudGF0aW9uIGluIHRlc3RjYXNlcy9saWIvdHN0X3Rlc3Quc2g6CgotIFRTVF9DSEVD
-S1BPSU5UX1dBSVQvV0FLRS9XQUtFMi9XQUtFX0FORF9XQUlUIHNpZ25hdHVyZXMgYXJlIGFjY3Vy
-YXRlLgotIFRTVF9SRVRSWV9GVU5DICgyIGFyZ3MpIGFuZCBUU1RfUkVUUllfRk5fRVhQX0JBQ0tP
-RkYgKDMgYXJncykgbWF0Y2guCi0gVFNUX05FRURTX0tDT05GSUdTX0lGUyBkZWZhdWx0IGRlbGlt
-aXRlciAoY29tbWEpIGlzIGNvcnJlY3QuCi0gVFNUX0RFVklDRV9TSVpFLCBUU1RfU0tJUF9JTl9M
-T0NLRE9XTiwgVFNUX1NLSVBfSU5fU0VDVVJFQk9PVCwKICBUU1RfVElNRU9VVCBhbGwgbWF0Y2gg
-dGhlIHNoZWxsIGxpYnJhcnkuCi0gLmZvcmtzX2NoaWxkIC8gLnJ1bnNfc2NyaXB0IGFzICJub3Qg
-YXBwbGljYWJsZSIgaW4gc2hlbGwgaXMgY29ycmVjdC4KLSAubWluX3J1bnRpbWUgLyAubmVlZHNf
-YWJpX2JpdHMgYXMgXC0gKG5vIHNoZWxsIGVxdWl2YWxlbnQpIGlzIGNvcnJlY3QuCgpWZXJkaWN0
-OiBSZXZpZXdlZC1ieTogTFRQIEFJIFJldmlld2VyIDxsdHAtYWktcmV2aWV3ZXJAZXhhbXBsZS5j
-b20+IOKckwoKLS0tCgpbUEFUQ0ggMy8zXSBkb2M6IEFkZCBTQUZFXyogbWFjcm9zIHJlZmVyZW5j
-ZSBwYWdlCgpUaGUgbmV3IGFwaV9zYWZlX21hY3Jvcy5yc3QgZmlsZSBsaXN0cyAyNDUgU0FGRV8q
-IGVudHJpZXMsIG1hdGNoaW5nCnRoZSBjb3VudCBpbiB0aGUgY29tbWl0IG1lc3NhZ2UuIFRoZSBT
-QUZFX01NQVAgc2lnbmF0dXJlIHdhcyB2ZXJpZmllZAphZ2FpbnN0IHRzdF9zYWZlX21hY3Jvc19p
-bmxpbmUuaC4gVGhlIHRvY3RyZWUgcGxhY2VtZW50IGluIGRvYy9pbmRleC5yc3QKKGFmdGVyIGFw
-aV9jX3Rlc3RzLCBiZWZvcmUgYXBpX3NoZWxsX3Rlc3RzKSBpcyBsb2dpY2FsLiBUaGUgRm9yCkRl
-dmVsb3BlcnMgc2VjdGlvbiBibHVyYiBpcyBhY2N1cmF0ZS4KClZlcmRpY3Q6IFJldmlld2VkLWJ5
-OiBMVFAgQUkgUmV2aWV3ZXIgPGx0cC1haS1yZXZpZXdlckBleGFtcGxlLmNvbT4g4pyTCgotLS0K
-ClNlcmllcyB2ZXJkaWN0OiBOZWVkcyByZXZpc2lvbgoKVGhlIG9ubHkgYmxvY2tpbmcgaXNzdWUg
-aXMgaW4gcGF0Y2ggMS8zOiB0aGUgZHVwbGljYXRlIGAqL2Agb24gbGluZSA2MTgKb2YgaW5jbHVk
-ZS90c3RfZnV6enlfc3luYy5oLCBpbnRyb2R1Y2VkIHdoZW4gY29udmVydGluZyB0aGUKdHN0X2Z6
-c3luY193YWl0X2EoKSBjb21tZW50IHRvIGtlcm5lbC1kb2MgZm9ybWF0LiBUaGlzIGlzIGEgY29t
-cGlsYXRpb24KZXJyb3IuIFBhdGNoZXMgMi8zIGFuZCAzLzMgbG9vayBnb29kLgoKTFRQIEFJIFJl
-dmlld2VyCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlz
-dGluZm8vbHRwCg==
+Hi,
+
+On 6/2/26 11:02 AM, panzhe wrote:
+> On alpha glibc's gethostname() directly calls the kernel
+> syscall and sets errno to EOVERFLOW when the buffer is
+> too small, because the kernel truncates silently and the
+> string is not null terminated.
+> 
+> On the other hand, the generic posix implementation used
+> on x86_64 sets ENAMETOOLONG in this case.
+> 
+> Fix this by accepting both errnos.
+> 
+> Closes: https://github.com/linux-test-project/ltp/issues/1319
+> Signed-off-by: panzhe <panzhe@kylinos.cn>
+> ---
+>   testcases/kernel/syscalls/gethostname/gethostname02.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/gethostname/gethostname02.c b/testcases/kernel/syscalls/gethostname/gethostname02.c
+> index c56fcb800..dd1f4e39e 100644
+> --- a/testcases/kernel/syscalls/gethostname/gethostname02.c
+> +++ b/testcases/kernel/syscalls/gethostname/gethostname02.c
+> @@ -7,7 +7,7 @@
+>   /*\
+>    * Verify that gethostname(2) fails with
+>    *
+> - * - ENAMETOOLONG when len is smaller than the actual size
+> + * - ENAMETOOLONG or EOVERFLOW when len is smaller than the actual size
+>    */
+>   
+>   #include "tst_test.h"
+> @@ -16,11 +16,13 @@ static void verify_gethostname(void)
+>   {
+>   	char hostname[HOST_NAME_MAX + 1];
+>   	int real_length;
+> +	const int exp_errnos[] = {ENAMETOOLONG, EOVERFLOW};
+>   
+>   	SAFE_GETHOSTNAME(hostname, sizeof(hostname));
+>   	real_length = strlen(hostname);
+>   
+> -	TST_EXP_FAIL(gethostname(hostname, real_length - 1), ENAMETOOLONG,
+> +	TST_EXP_FAIL_ARR(gethostname(hostname, real_length - 1),
+> +		exp_errnos, ARRAY_SIZE(exp_errnos),
+
+Please also fix make check error here
+
+ > make check-gethostname02
+CHECK testcases/kernel/syscalls/gethostname/gethostname02.c
+gethostname02.c:25: CHECK: Alignment should match open parenthesis
+
+with that
+Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
+
+>   		"len is smaller than the actual size");
+>   }
+>   
+
+Regards,
+Avinesh
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
