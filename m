@@ -4,96 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4547CD6E55
-	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 14:03:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21C6BCD6E57
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 14:03:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 834A53E7220
-	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 16:03:18 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id C6C1A3E721B
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 16:03:33 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 982D33E7218
+ by picard.linux.it (Postfix) with ESMTPS id CBA573E7218
  for <ltp@lists.linux.it>; Wed,  3 Jun 2026 16:02:00 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C5770140097D
- for <ltp@lists.linux.it>; Wed,  3 Jun 2026 16:01:59 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 324FA1400989
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 16:02:00 +0200 (CEST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 6537NOjW1360394
- for <ltp@lists.linux.it>; Wed, 3 Jun 2026 14:01:57 GMT
+ 6536qHSW2403947
+ for <ltp@lists.linux.it>; Wed, 3 Jun 2026 14:01:58 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
- content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=ZPMkDDRM78o/vW/BFNaKnc+xXONo/ozykVgyFdUE4
- 1g=; b=MnM8ATfhglh3Y9Fq4p2wsZPuBEjiGzkW/kSYjyO2AIRxTW2chmJ+/G5UG
- 2X0VDjScJ8FYyF4rlug6aj9TQIUDxzR/k+wJMnVpjeH9RcQUyrzY1axNTyYtHnkh
- U6U19PiMUNdNGLoo6IkeJmGnmUowmWxdFe7GRlCbHZ4Z/AyLqFj2Lv3fbu7mLBgf
- vIm8AO6H18RfRZ9QKBG6cauKpS9zMY8T3NEm5HulC/DuR4+EsXupiq6SvARAqVxM
- 5J5/gqO5Od0Kan8y9gKp8KlGcq4BKiCf/cCkexVfkEM2SxSxOq07urPOxd26hjRV
- 9vm33HjR5ZHfpMomJtSueBdel8KMQ==
-Received: from ppma21.wdc07v.mail.ibm.com
- (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efqd4baed-1
+ content-transfer-encoding:date:from:in-reply-to:message-id
+ :mime-version:references:subject:to; s=pp1; bh=/DkQDtI7GdExU/e0r
+ NmARVGu8M0Vhun2262UX+RQYjc=; b=tVw2d6m8fYiKLZIqgkQ8Pd9viSKz7FweI
+ 0Hbc72byl6LSED9KoFiFvS0AhbVhJ7Ma72g1+ZJ6AYavJ+D05r6zcYiNLrvAg/Ji
+ 0rJ09iYVa6+PZuuPY4TadPPcPcMrHgP9n3iW0Zun62TinkQG5qjSwRWTD1IY65Fo
+ 1xNURYp5mWXPNhv933Vr629Z4C2ixJ4qxhSSk0dYqMG+htgJdw8P6v4eqRJGLf5u
+ U3nlzPK0K4uJ2fx9Mlrs+XM4ssJP6tcSACEQdkOhTUBOLAJ7j56YPVR+kvTPMtfI
+ LHjA4mApkuTg3WSUgXD6OQiE8QI/6OLmdjNhYGENMLqgjBrNGr7hw==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efpaear5h-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Wed, 03 Jun 2026 14:01:52 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 653DsCss011584
- for <ltp@lists.linux.it>; Wed, 3 Jun 2026 14:01:51 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4egb7k8ft8-1
+ for <ltp@lists.linux.it>; Wed, 03 Jun 2026 14:01:58 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 653Ds6Oq009762
+ for <ltp@lists.linux.it>; Wed, 3 Jun 2026 14:01:57 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4ega7qgna2-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Wed, 03 Jun 2026 14:01:51 +0000 (GMT)
+ for <ltp@lists.linux.it>; Wed, 03 Jun 2026 14:01:57 +0000 (GMT)
 Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
  [10.20.54.105])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 653E1nIP15139218
+ by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 653E1uD445678920
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Wed, 3 Jun 2026 14:01:49 GMT
+ for <ltp@lists.linux.it>; Wed, 3 Jun 2026 14:01:56 GMT
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C70DE2004D
- for <ltp@lists.linux.it>; Wed,  3 Jun 2026 14:01:49 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id EA7492004D
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 14:01:55 +0000 (GMT)
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id E62D420049
- for <ltp@lists.linux.it>; Wed,  3 Jun 2026 14:01:48 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 7B77B20049
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 14:01:55 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.43.49.158])
  by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP
- for <ltp@lists.linux.it>; Wed,  3 Jun 2026 14:01:48 +0000 (GMT)
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 14:01:55 +0000 (GMT)
 From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Wed,  3 Jun 2026 19:31:39 +0530
-Message-Id: <20260603140147.50738-1-sachinp@linux.ibm.com>
+Date: Wed,  3 Jun 2026 19:31:45 +0530
+Message-Id: <20260603140147.50738-7-sachinp@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20260603140147.50738-1-sachinp@linux.ibm.com>
+References: <20260603140147.50738-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjAzMDEzMSBTYWx0ZWRfX/r7ygLeXOq/G
- PKuxtF+zffS4R6L0zoqnafOAgu//4JPp7WIrYh6cRmIUpyk3MYeexYC1eOJLjMJrIE/s5GVYN2d
- 63+roXwQrOPZw2/aXevbBsLyDLI1ZGWBrcr8KkKrH4oyahKR8X93Tih59gmb1ngIPnCR4kCvAhn
- z8yec1SxxruYcC0Ldg37vxcl+AOmFNb0SclHmOIo9gOvp2C/iPYWlUiPuKiU1KOydWOi9kfVNNv
- lQA983yjJVHG7wgjpxvkFI+kSugzcqYUHgfE62qg16DebUNuvikFKKJzpyaaAbu9lhhFYyWC+A2
- WGUGfXooBJjCykS9PbG5NkOp96Z2kmZjM4ZsYma59msOGTXUxo5b2h7D1XX9pgMa2AfHXx0GjDk
- G8MT4RyfV7cjcENkmuEPNUsz+cBw2Q==
-X-Proofpoint-GUID: FVmYBK-rozqQE3quFdw7OPRLxNaOVVBf
-X-Proofpoint-ORIG-GUID: FVmYBK-rozqQE3quFdw7OPRLxNaOVVBf
-X-Authority-Analysis: v=2.4 cv=DZknbPtW c=1 sm=1 tr=0 ts=6a2033d1 cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+X-Authority-Analysis: v=2.4 cv=Zt3d7d7G c=1 sm=1 tr=0 ts=6a2033d6 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
  a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=iQ6ETzBq9ecOQQE5vZCe:22 a=NEAV23lmAAAA:8 a=h6E-47DaE3Z72ltqIZ8A:9
+ a=V8glGbnc2Ofi9Qvn3v5h:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=eCRKlbhf3gbom1IL6usA:9
+X-Proofpoint-GUID: Bey_EzVPXezJcAW_CQRYq4sRHTL5WKg1
+X-Proofpoint-ORIG-GUID: Bey_EzVPXezJcAW_CQRYq4sRHTL5WKg1
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjAzMDEzMSBTYWx0ZWRfXy6p+IG4xMr8e
+ KePi2CteBy0BqzTbI4dj80KB3g+VQtIeXv3MmhkL6OGE9bTauxavw6xc1PN3a3MTHLjJWUSvFDi
+ q0wt9rR/Pj3yUsfDH135MeYISydpSIX48d8B8Jq29mhf8NtTkCcippafVwwjdDkvHvzGTgFokwY
+ Jw9urBaWnytjMdY7zC2BmfdaqDihSpUJpHmRUkHUyeSGp8eI8vzqRZLjJNmobkV9ugjejwDqn6q
+ n0yTwRiQ5wWrAVxVWhV8wtCZIygJc8h7VGvQF6/crrWQZ/n82t1iJEkE25k1cD4HzK0psU4b3pj
+ hXZg9mFC4VeVTCp/YNtknaw0B1LJtIfIRAY8/M0rAAtmf7g/8zwXsqsTGkTHC4LLDJf/tnCHVeO
+ xysIWqZ7k5hfTNHIMzl9VHk0IsolmPUposcKisY2skphTQ/8rHLQhLA1CtrCC4NA9e5/9qzO0oI
+ er5Cs8qu255YwvG7TGw==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-06-03_04,2026-05-28_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 malwarescore=0 phishscore=0 bulkscore=0 suspectscore=0
- adultscore=0 lowpriorityscore=0 classifier=typeunknown authscore=0 authtc=
- authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.22.0-2605210000 definitions=main-2606030131
+ impostorscore=0 suspectscore=0 priorityscore=1501 bulkscore=0 clxscore=1015
+ phishscore=0 spamscore=0 malwarescore=0 adultscore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606030131
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 0/8] Convert shell-based ACL test (tacl_xattr.sh)
- to C
+Subject: [LTP] [PATCH v3 6/8] fs/acl: Add symlink ACL operations test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,79 +114,218 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This patch series converts the existing shell-based ACL
-test (tacl_xattr.sh) to C implementation, providing better
-integration with the LTP test framework and more precise
-control over test execution.
+Add acl_link01 test to verify that ACL operations on symlinks
+follow the symlink to the target file. The test validates that
+setting and getting ACLs through a symlink path affects the
+target file, not the symlink itself.
 
-v2 -> v3
-Updated patches 1 through 7 to address review comments.
+Test coverage:
+- Create regular file and symlink
+- Set ACL through symlink path
+- Verify ACL was set on target file
+- Get ACL through symlink path
+- Compare ACLs to ensure they match
 
-v1 -> v2
-Updated patches 1/8, 6/8 and 7/8 to address review comments.
-Remaining patches remain unchanged
+Test returns TCONF if ACL is not supported by the filesystem.
 
-Partially closes(convert tacl_xattr.sh to C)
-https://github.com/linux-test-project/ltp/issues/1265
+Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
+---
+V3 changes:
+- Updated the test to read the ACL from both TESTSYMLINK
+  and TESTFILE, and verify the expected entries/permissions match.
+- Updated commit message to reflect this change.
+- Updated copyright header as per LTP format.
+- v2 link https://lore.kernel.org/ltp/20260603065744.47106-1-sachinp@linux.ibm.com/T/#t
 
-The conversion splits functionality into seven focused test files.
-Patch 1/8 adds acl_user_obj01.c
-Patch 2/8 adds acl_mask01.c
-Patch 3/8 adds acl_other01.c
-Patch 4/8 adds acl_inherit01.c
-Patch 5/8 adds acl_file_ops01.c
-Patch 6/8 adds acl_link01.c
-Patch 7/8 adds xattr_test01.c
+V2 changes:
+- Updated incorrect TCONF message and description text
+- Updated commit message to remove incorrect symlinks wording
+- Use reset_test_path_no_chown variant to skip chown step
+  and removed needs_cmd tag to avoid useradd/userdel dependency
+- v1 link https://lore.kernel.org/ltp/20260602121958.27494-1-sachinp@linux.ibm.com/T/#t
 
-The code has been successfully tested on SLES (kernel 6.12)
-and fedora (kernel 7.0) releases on ppc64le arch.
+V1 changes:
+- Use HAVE_LIBACL guards in .c code
+- Report TCONF when libacl is not available
+- rfc link https://lore.kernel.org/ltp/477836fd-80c8-4168-bfe6-00b374bb2534@linux.ibm.com/T/#t
 
-Test build is clean in various distros. CI build report at
-https://github.com/sacsant/ltp/actions/runs/26887166705
-opensuse job failed due to package dependency issues.
-
-Running the test in a distro missing acl development package
-or acl library comes out clean with TCONF
-
-root@linux:/opt/ltp# ./testcases/bin/acl_user_obj01
-tst_test.c:1414: TCONF: libacl or ACL headers are not available
-root@linux:/opt/ltp#
- 
-Sachin Sant (8):
-  fs/acl: Add ACL_USER_OBJ permissions test
-  fs/acl: Add ACL mask interaction tests
-  fs/acl: Add ACL_OTHER permissions test
-  fs/acl: Add default ACL inheritance test
-  fs/acl: Add chmod/chown ACL interaction tests
-  fs/acl: Add symlink ACL operations test
-  fs/acl: Add extended attributes test
-  fs/acl: Remove old shell-based ACL test
-
- runtest/fs                               |   9 +
- testcases/kernel/fs/acl/.gitignore       |   7 +
- testcases/kernel/fs/acl/Makefile         |  10 +
- testcases/kernel/fs/acl/acl_file_ops01.c | 302 +++++++++
- testcases/kernel/fs/acl/acl_inherit01.c  | 118 ++++
- testcases/kernel/fs/acl/acl_lib.h        | 353 ++++++++++
- testcases/kernel/fs/acl/acl_link01.c     | 146 ++++
- testcases/kernel/fs/acl/acl_mask01.c     | 283 ++++++++
- testcases/kernel/fs/acl/acl_other01.c    | 107 +++
- testcases/kernel/fs/acl/acl_user_obj01.c | 116 ++++
- testcases/kernel/fs/acl/tacl_xattr.sh    | 807 -----------------------
- testcases/kernel/fs/acl/xattr_test01.c   | 336 ++++++++++
- 12 files changed, 1787 insertions(+), 807 deletions(-)
- create mode 100644 testcases/kernel/fs/acl/.gitignore
- create mode 100644 testcases/kernel/fs/acl/Makefile
- create mode 100644 testcases/kernel/fs/acl/acl_file_ops01.c
- create mode 100644 testcases/kernel/fs/acl/acl_inherit01.c
- create mode 100644 testcases/kernel/fs/acl/acl_lib.h
+---
+ runtest/fs                           |   1 +
+ testcases/kernel/fs/acl/.gitignore   |   1 +
+ testcases/kernel/fs/acl/acl_link01.c | 146 +++++++++++++++++++++++++++
+ 3 files changed, 148 insertions(+)
  create mode 100644 testcases/kernel/fs/acl/acl_link01.c
- create mode 100644 testcases/kernel/fs/acl/acl_mask01.c
- create mode 100644 testcases/kernel/fs/acl/acl_other01.c
- create mode 100644 testcases/kernel/fs/acl/acl_user_obj01.c
- delete mode 100755 testcases/kernel/fs/acl/tacl_xattr.sh
- create mode 100644 testcases/kernel/fs/acl/xattr_test01.c
 
+diff --git a/runtest/fs b/runtest/fs
+index f1eea055b..64deb56e6 100644
+--- a/runtest/fs
++++ b/runtest/fs
+@@ -94,3 +94,4 @@ acl_mask01 acl_mask01
+ acl_other01 acl_other01
+ acl_inherit01 acl_inherit01
+ acl_file_ops01 acl_file_ops01
++acl_link01 acl_link01
+diff --git a/testcases/kernel/fs/acl/.gitignore b/testcases/kernel/fs/acl/.gitignore
+index eb4b4a227..4a071d516 100644
+--- a/testcases/kernel/fs/acl/.gitignore
++++ b/testcases/kernel/fs/acl/.gitignore
+@@ -3,3 +3,4 @@
+ /acl_other01
+ /acl_inherit01
+ /acl_file_ops01
++/acl_link01
+diff --git a/testcases/kernel/fs/acl/acl_link01.c b/testcases/kernel/fs/acl/acl_link01.c
+new file mode 100644
+index 000000000..6615d9b32
+--- /dev/null
++++ b/testcases/kernel/fs/acl/acl_link01.c
+@@ -0,0 +1,146 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 IBM
++ *
++ * Original shell test by Kai Zhao (ltcd3@cn.ibm.com)
++ * Converted to C by Sachin Sant <sachinp@linux.ibm.com>
++ */
++
++/*\
++ * Test ACL operations on symlinks.
++ *
++ * Verify that ACL operations on symlinks follow the symlink to the target
++ * file. When setting or getting ACLs through a symlink path, the operation
++ * should affect the target file, not the symlink itself.
++ *
++ * Note: Some filesystems may not support ACLs on the target file and will
++ * return EOPNOTSUPP, which is treated as TCONF (test not applicable).
++ *
++ * [Algorithm]
++ *
++ * 1. Create a regular file
++ * 2. Create a symlink pointing to the file
++ * 3. Set ACL through the symlink path
++ * 4. Verify the ACL was set on the target file
++ * 5. Get ACL through the symlink path
++ * 6. Verify we can read the ACL through the symlink
++ */
++
++#include "acl_lib.h"
++
++#ifdef HAVE_LIBACL
++
++static void run(void)
++{
++	acl_t acl, target_acl, symlink_acl;
++	int fd = -1;
++	int err;
++
++	tst_res(TINFO, "Testing ACL operations on symlinks");
++	reset_test_path_no_chown();
++
++	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0644);
++	SAFE_CLOSE(fd);
++
++	SAFE_SYMLINK("testfile", TESTSYMLINK);
++
++	acl = acl_init(3);
++	if (!acl) {
++		cleanup_testfile();
++		tst_brk(TBROK | TERRNO, "acl_init failed");
++	}
++
++	add_acl_entry(acl, ACL_USER_OBJ, ACL_READ | ACL_WRITE);
++	add_acl_entry(acl, ACL_GROUP_OBJ, ACL_READ);
++	add_acl_entry(acl, ACL_OTHER, ACL_READ);
++
++	err = acl_set_file(TESTSYMLINK, ACL_TYPE_ACCESS, acl);
++	if (err == -1) {
++		safe_acl_free(acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		if (errno == EOPNOTSUPP) {
++			tst_res(TCONF,
++				"ACL not supported by this filesystem");
++			return;
++		}
++		tst_brk(TBROK | TERRNO, "acl_set_file on symlink failed");
++	}
++
++	safe_acl_free(acl);
++
++	target_acl = acl_get_file(TESTFILE, ACL_TYPE_ACCESS);
++	if (!target_acl) {
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_brk(TBROK | TERRNO, "acl_get_file on target failed");
++	}
++
++	symlink_acl = acl_get_file(TESTSYMLINK, ACL_TYPE_ACCESS);
++	if (!symlink_acl) {
++		safe_acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_brk(TBROK | TERRNO, "acl_get_file on symlink failed");
++	}
++
++	err = acl_cmp(target_acl, symlink_acl);
++	if (err == -1) {
++		safe_acl_free(symlink_acl);
++		safe_acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_brk(TBROK | TERRNO, "acl_cmp failed");
++	}
++
++	safe_acl_free(symlink_acl);
++	safe_acl_free(target_acl);
++
++	if (unlink(TESTSYMLINK) == -1)
++		tst_res(TWARN | TERRNO, "unlink symlink failed");
++	cleanup_testfile();
++
++	if (err != 0) {
++		tst_res(TFAIL,
++			"ACL via symlink differs from ACL on target file");
++		return;
++	}
++
++	tst_res(TPASS, "ACL set via symlink was applied to target file");
++}
++
++static void setup(void)
++{
++	reset_test_path_no_chown();
++}
++
++static void cleanup(void)
++{
++	cleanup_test_paths();
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.mount_device = 1,
++	.mntpoint = MNTPOINT,
++	.forks_child = 1,
++	.filesystems = (struct tst_fs[]) {
++		{.type = "ext2", .mnt_data = "acl"},
++		{.type = "ext3", .mnt_data = "acl"},
++		{.type = "ext4", .mnt_data = "acl"},
++		{.type = "xfs"},
++		{.type = "btrfs"},
++		{}
++	}
++};
++
++#else
++TST_TEST_TCONF("libacl or ACL headers are not available");
++#endif
 -- 
 2.39.1
 
