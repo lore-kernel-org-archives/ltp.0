@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D94DACD6E57
-	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 14:45:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA2AFCD6E55
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 14:52:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 70EA83E7214
-	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 16:45:03 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 48D9A3E7218
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 16:52:55 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B05E93CE107
- for <ltp@lists.linux.it>; Wed,  3 Jun 2026 16:44:47 +0200 (CEST)
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com
- [IPv6:2607:f8b0:4864:20::844])
+ by picard.linux.it (Postfix) with ESMTPS id EB5603E18E3
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 16:52:40 +0200 (CEST)
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
+ [IPv6:2607:f8b0:4864:20::643])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 024C360067D
- for <ltp@lists.linux.it>; Wed,  3 Jun 2026 16:44:46 +0200 (CEST)
-Received: by mail-qt1-x844.google.com with SMTP id
- d75a77b69052e-517583cb07aso32852431cf.2
- for <ltp@lists.linux.it>; Wed, 03 Jun 2026 07:44:46 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 56233600859
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 16:52:39 +0200 (CEST)
+Received: by mail-pl1-x643.google.com with SMTP id
+ d9443c01a7336-2bea7176c72so100120125ad.0
+ for <ltp@lists.linux.it>; Wed, 03 Jun 2026 07:52:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780497886; x=1781102686; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1780498358; x=1781103158; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=040MzuwTPVyTLhKFDzmg46HRtMxJyYfLEHunddqMj08=;
- b=q3g/3dONyb4o0ZEToKX1Z27+TBiXwGmHT0domfuOhrvvJMq3L5d19adS2WTS3Rmw/4
- 2m0VAV+9mxaeEotq1cXN32jj1GB3kMV0A7qX7KvrashrGAhQN2CbMrqpAWLRIlJVVARE
- TDt2wQIbqJwodUQzbmaynjO+tUBsIwvpBDcZzJwiinRLG0vO3KOuMjlC9nWvAkuwMQGf
- 0FrvsZGZHIlVFklkg3INkNMw38IsG8c9SnvY/yw67J3OiSbBHDviv9fy15nUKZ5W77ae
- LafjZDvhuFe9JCa8TjtKkG8EXt+y834lYOyFKel++KPW0oCnAVcDHlIzUYbtW5JsF9rz
- F3qw==
+ bh=Ktyvd9dt8jwSUi5N8XNgMVDImEhaUfgldBNp0RmPF0k=;
+ b=GTbQ4pieTfoJn73K0NYRHj15sCxeF3K+pNnmXknIvN7Pe30RZS2juGoSCR2T8LGp0b
+ arDMUaixP7g4xVshvjjf/56zwCKWRZvKQ3VqPo+Wz3ga63rWappQrRCy7aScIugD4wF/
+ UJqISvpC99H7FFSpjpNF/zaFbZmiellcOlmEgCA9MegizfcKm1pxlppDiIV1BLdWwrPq
+ 7gW/T5iUany1trxv53lYw174Q+RH5Nf2M+3V12aIpkQwYeMYcQXb0whUbfHTrUDHz2If
+ 4VQt4fASfD9Dp55J5S2bmpT4fCC6wrcwg+NGFBfhK6LallmM+lj9o+JtMblHr2owtCfS
+ ZRfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780497886; x=1781102686;
+ d=1e100.net; s=20251104; t=1780498358; x=1781103158;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=040MzuwTPVyTLhKFDzmg46HRtMxJyYfLEHunddqMj08=;
- b=pgIpbAcQYUr9xo0CLAeQQJSQXZ3lu64t8O3a278M0D0cpBG3saWgjmL5l0pte9wVVb
- yFEC5k53BSiuXh6zqbypme80w05PvKaUl6mGVIZB+OB3XoFfGeMGB37Fxcx+cBGi7eCj
- STu26XCFv+iw1KUAIXxPSzJ6biZUonTyoy+Pc/xtvCChb1US7wVM4FRDzNZrWywkG3DA
- R5qm4cpRarVHz0nmiEMijXFOQtywVrcp+6LYmnj9aKE+zhPQh7v4weAzu5LD63uH5zrV
- 77jlcOsD2oPwwPPMs6RIQj5lgclm0AICsibzEISqQ8XW69ZfroCL6JcPBhXH0Ux6JUqp
- 7E1A==
-X-Gm-Message-State: AOJu0YyAx/4Dn7Bk7KRn+iXYEUsif/vXHUuiwv1Hh3m8Pf6oix1Rf/1d
- zcratX1e7nulKssj4Hui9ksC2YyYDXE7pKxgKD7XCoZyqTZCdGxRKt5l
-X-Gm-Gg: Acq92OFvNsZmkbX7L+wEtOyyWkm9jwB5qTU53Z5NUSZyWbLmaSyq6ZGoR22ShvCD4T8
- QQh03Ut6fKhW4FL9Cro/V/jlstqcNxlsM1aiqIH8nJeBXobQ8Am3as8sytocBxuEuuhTOp2lB2N
- kuyFf9K0IZctv863qhV2DoYhWNKhCD783/pbBEPGCWTDYt4MbWg+jgZfa/nPXY1r804SEqg1vSP
- K61NpZpAugK9Lby19PPrYUygqDJkJAXpv1tgjXuNO+KNHvhuIGp5lr78XIoeKK+pFmjtsFCczmF
- mJlxtsUxxpLwchRWT36/hUc3Qp656g1BSVfveNbhoM/6Ybl3XXKA9OPYEWzJadklK53TWh4BXb4
- /Qiy2aoHYCr9M2GHBsGsEVZiV9TY4tEuLYzqSxDAoJ7ffkfHL52GuXYhiSQiglGS5sGk0RKyAQR
- BFJhYhEgIhZpUljGot824igsid7wEAK4RwYWM103PtS+n32H5VjQhC/Tb236iUWS6N8v78XdmAE
- pWMfvTRfa5q+mc7T1i8gOc5IHusMq7A1U0aWyWghedfP8FI
-X-Received: by 2002:a05:622a:581a:b0:517:736b:e0c2 with SMTP id
- d75a77b69052e-517786aa792mr51491361cf.27.1780497885489; 
- Wed, 03 Jun 2026 07:44:45 -0700 (PDT)
+ bh=Ktyvd9dt8jwSUi5N8XNgMVDImEhaUfgldBNp0RmPF0k=;
+ b=dYc7OeRE7+oMjBCpI8EOCQsZkk4Hpd8BuMo9yKmUhpKBY3DsZV8OKa+jw+OPTfQwMp
+ qlPyW9Rh+OnqhieTKv1Bse37AwrFgy+/yzvZRFF+tNWrjuFuU0oXkqENR3UJ16i39HpU
+ pxG5BpIB7uOMp7bVSZA0Y/gGr0seA8sqD0NBe0IeqMf6WuKhweYvXFTBBWnm7HBBZ55B
+ LeMLAv9N/r6OKm/FulL+yiQXedM74jZVCFL55ZOXxu8a4l/2JjHXvAkcsCEXny5Lfrdt
+ iRFHEM0T7atqjXNpcb/Ai37F4ZaoGGVvr2ZE8YBlSAoJgqjqTdXcJMlX3kYma2d/SceI
+ 1PPw==
+X-Gm-Message-State: AOJu0YxNMVMFvjBONRSiZnwhWKVl36LlSJTZNjIlTdlQyfJyrnBavJz/
+ wGPzX7SHssT1uYBg2nO3D5zRzPu23qu4iw6tGGo6z831cxDl1rQQ9wIM
+X-Gm-Gg: Acq92OHVzBsrjl/BVmYYK+LDOHg1UZ3dIbu0IfR0NuoeAqMxFU6vUykOwIwUGSWrqP3
+ Pky8tooY55UV28aoZ6u8LutRUuSGmVTxDhWEuZanqnm+y45d/iFPsl8fbemgQEbIz0ufEPKgBwQ
+ DrobTcNcMNWWpi5XuDDhxkHYixFWUVuDvBcEfB2m5i9lldUX89iq4ol478vwt5UvcTHS+E+tAGz
+ +YXQNoRD/TLaqRqb/deeFecZ1Fu945gWGzVaDiy5o1RI0Ub6mSdrST1eyKH+oHAAoV4i/hwUwwW
+ m1gzriSA7JzfMCUa6ZQ8uPlLFgNrQHyiOj2d4I0k1W95W/7wB+LJzr9r38xf0biH4w43Wu+JAWf
+ pa76C7oJxpI6N/YmKSKxFlEroYoiI8OsZ+Sez/d0GhmziH0YH10AhPA0nYo+WfkPUEj9ybGUo3+
+ 5jR6D+votPp4zEmY+szuOUKZ9iJLqt4DA2ynzpBtmA2512pxC2tRK5RGqHP25Dcm5vdnilcOP0l
+ Sqc1ILM3oQbtbZY0uAEev2/Sfk8tcvcnJaMwsHZ+huStYg=
+X-Received: by 2002:a17:902:f785:b0:2bc:b80f:677e with SMTP id
+ d9443c01a7336-2c163d8ebccmr42113055ad.25.1780498357040; 
+ Wed, 03 Jun 2026 07:52:37 -0700 (PDT)
 Received: from
- runnervm3jyl0.ifytnyyjtqiufk1iw4ikp3oyca.bx.internal.cloudapp.net
- ([52.150.28.36]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-51775dcf367sm25523471cf.25.2026.06.03.07.44.45
+ runnervm3jyl0.atih1j5idlnuzf0a0ifstqup0a.xx.internal.cloudapp.net
+ ([4.155.99.36]) by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-2c166396fa9sm27608955ad.66.2026.06.03.07.52.35
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 03 Jun 2026 07:44:45 -0700 (PDT)
+ Wed, 03 Jun 2026 07:52:35 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  3 Jun 2026 14:44:44 +0000
-Message-ID: <20260603144444.4237-1-linuxtestproject.agent@gmail.com>
+To: Sachin Sant <sachinp@linux.ibm.com>
+Date: Wed,  3 Jun 2026 14:52:34 +0000
+Message-ID: <20260603145235.4335-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260603115828.587769-2-pvorel@suse.cz>
-References: <20260603115828.587769-2-pvorel@suse.cz>
+In-Reply-To: <20260603140147.50738-2-sachinp@linux.ibm.com>
+References: <20260603140147.50738-2-sachinp@linux.ibm.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] renameat201.c: Rewrite into new API,
- split into renameat203.c
+Subject: Re: [LTP] fs/acl: Add ACL_USER_OBJ permissions test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,156 +92,109 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
-
-thanks for working on the renameat2 conversion/cleanup. The direction looks good, but I don't think this series is ready yet. There are a few must-fix issues here:
-
-- patch 1 adds renameat203.c but does not register it in runtest/syscalls, so the new test never runs;
-- patch 1 also drops the old btrfs-specific RENAME_EXCHANGE handling for the ENOENT case, which will regress on the kernels mentioned in the commit message;
-- patch 3 moves the fallback into a misleading lapi/stdio.h name and puts a non-static function definition into a public header.
-
-Please see inline comments below.
-
----
-[PATCH 1/3] renameat201.c: Rewrite into new API, split into renameat203.c
-
-BUG: renameat203 is built but never added to runtest/syscalls, so the new test will not be executed by the harness.
-
-> runtest/syscalls
-> renameat201 renameat201
-> renameat202 renameat202 -i 10
-
-Please add:
-
-> renameat203 renameat203
-
-Without that, the split is incomplete.
-
-BUG: this patch removes the old btrfs-specific handling for RENAME_EXCHANGE, but one of the remaining cases still depends on it.
-
-> +	{NON_EXIST, FLAGS_ERRNO_DESC(RENAME_EXCHANGE, ENOENT)},
-> ...
-> +	TST_EXP_FAIL(renameat2(olddirfd, TEST_FILE, newdirfd, tc->newpath,
-> +			   tc->flags), tc->exp_errno);
-
-On older btrfs kernels, RENAME_EXCHANGE returns EINVAL because the flag is not supported, regardless of whether newpath exists. The old code handled this with a TCONF path:
-
-> if ((test->flags & RENAME_EXCHANGE) && EINVAL == TEST_ERRNO
->     && fs_type == TST_BTRFS_MAGIC)
-
-That exception needs to be restored for the RENAME_EXCHANGE case, otherwise this will fail on the backported kernels mentioned in the commit message.
-
-BUG: fs_type became dead code in renameat201.c.
-
-> +static long fs_type;
-> ...
-> +	fs_type = tst_fs_type(".");
-
-After removing the btrfs check from renameat2_verify(), fs_type is no longer used. Either restore the compatibility check above or drop fs_type entirely.
-
-BUG: renameat203.c is left with an unfinished TODO in submitted code.
-
-> +static void setup(void)
-> +{
-> +	// TODO
-> +	fs_type = tst_fs_type(".");
-
-Please do not leave a bare TODO in the final patch. Either finish whatever is missing or remove the comment.
-
-minor: desc points to string literals, so this should be const char *.
-
-> +struct tcase {
-> +	const char *newpath;
-> +	int flags;
-> +	int exp_errno;
-> +	char *desc;
-
-minor: the macro ordering is a bit confusing here:
-
-> +#define TEST_PATH TEST_DIR TEST_FILE
-> +#define TEST_PATH2 TEST_DIR2 TEST_FILE2
-> +
-> +#define TEST_FILE "test_file"
-> +#define TEST_FILE2 "test_file2"
-
-This works because macro expansion is lazy, but it reads backwards. Please define TEST_FILE/TEST_FILE2 before the TEST_PATH helpers.
-
-nit: LTP subjects usually omit the .c suffix, so I would expect:
-
-> renameat201: Rewrite into new API, split into renameat203
-
-Commit message nits:
-- "lets keep" -> "let's keep"
-- "Due cdd1fedf8261c" -> "Due to cdd1fedf8261c"
-- "defacto" -> "de facto"
-- "somehow covered" is vague; "also covered" would read better
-
----
-[PATCH 2/3] renameat202.c: Rewrite into new API
-
-nit: typo in the test description.
-
->  * Verify that :manpage:`renameat2(2)` with RENAME_EXCHANGE swapps the content.
-
-"swapps" -> "swaps"
-
-nit: same subject style comment as patch 1; I'd drop the .c suffix:
-
-> renameat202: Rewrite into new API
-
-Commit message nits:
-- "Due cdd1fedf8261c" -> "Due to cdd1fedf8261c"
-- "defacto" -> "de facto"
-- "Again, as in previous commit," is weak context; I'd restate the actual constraint directly instead of referring back to the previous patch
-
----
-[PATCH 3/3] lapi: Move renameat2.h into lapi/stdio.h
-
-NACK: lapi/stdio.h is the wrong name for this fallback.
-
-> +++ b/include/lapi/stdio.h
-
-stdio.h means standard I/O. renameat2() is a rename syscall, not a stdio interface. Other lapi headers are named after the API they provide (execveat.h, close_range.h, fallocate.h, ...), so this really should be something like lapi/renameat2.h (or, less preferably, lapi/rename.h).
-
-BUG: the fallback definition in a public header must be static inline.
-
-> +#ifndef HAVE_RENAMEAT2
-> +int renameat2(int olddirfd, const char *oldpath, int newdirfd,
-> +				const char *newpath, unsigned int flags)
-> +{
-> +	return tst_syscall(__NR_renameat2, olddirfd, oldpath, newdirfd,
-> +						newpath, flags);
-> +}
-> +#endif
-
-All other lapi fallback wrappers use static inline. Without that, including this header in multiple translation units can produce multiple-definition linker failures. For a shared lapi header, that is a real bug and must be fixed before merge.
-
-minor: these includes are not needed for the renameat2() fallback:
-
-> +#include <stdio.h>
-> +#include <stdint.h>
-
-The old test-local header only needed config.h, lapi/syscalls.h and sys/types.h, and that is enough here too.
-
-minor: once the header is renamed, the subject should probably be adjusted as well, since the patch does more than just "move renameat2.h"; it also updates the tests to include the new header.
-
----
-So overall this is a NACK for now.
-
-The must-fix items are:
-1. add renameat203 to runtest/syscalls;
-2. restore the btrfs/RENAME_EXCHANGE compatibility handling in renameat201;
-3. rename lapi/stdio.h to something API-appropriate;
-4. make the fallback wrapper static inline.
-
-The rest are minor cleanups, but I would also fix them in the respin.
-
-Thanks.
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gV2VkLCAzIEp1biAyMDI2IDE5OjMxOjQwICswNTMwLCBTYWNoaW4gU2FudCB3cm90ZToKPiBm
+cy9hY2w6IEFkZCBBQ0xfVVNFUl9PQkogcGVybWlzc2lvbnMgdGVzdAo+IGZzL2FjbDogQWRkIEFD
+TCBtYXNrIGludGVyYWN0aW9uIHRlc3RzCj4gZnMvYWNsOiBBZGQgQUNMX09USEVSIHBlcm1pc3Np
+b25zIHRlc3QKPiBmcy9hY2w6IEFkZCBkZWZhdWx0IEFDTCBpbmhlcml0YW5jZSB0ZXN0Cj4gZnMv
+YWNsOiBBZGQgY2htb2QvY2hvd24gQUNMIGludGVyYWN0aW9uIHRlc3RzCj4gZnMvYWNsOiBBZGQg
+c3ltbGluayBBQ0wgb3BlcmF0aW9ucyB0ZXN0Cj4gZnMvYWNsOiBBZGQgZXh0ZW5kZWQgYXR0cmli
+dXRlcyB0ZXN0Cj4gZnMvYWNsOiBSZW1vdmUgb2xkIHNoZWxsLWJhc2VkIEFDTCB0ZXN0CgpUaGUg
+b3ZlcmFsbCBhcHByb2FjaCBpcyBzb3VuZCDigJQgcmVwbGFjaW5nIHRoZSBvbGQgbW9ub2xpdGhp
+YyBzaGVsbCBzY3JpcHQKd2l0aCBmb2N1c2VkIEMgdGVzdHMgaXMgdGhlIHJpZ2h0IGRpcmVjdGlv
+biwgYW5kIHRoZSBzaGFyZWQgYWNsX2xpYi5oIGlzCndlbGwtc3RydWN0dXJlZC4gSG93ZXZlciB0
+aGVyZSBhcmUgYSBmZXcgaXNzdWVzIHRoYXQgbmVlZCBhZGRyZXNzaW5nIGJlZm9yZQp0aGlzIGlz
+IHJlYWR5LgoKLS0tCkJMT0NLSU5HCi0tLQoKWzFdIGFjbF9saW5rMDEuYzogdGVzdCBpcyB2YWN1
+b3VzIGFuZCBkb2VzIG5vdCB2ZXJpZnkgc3ltbGluay1mb2xsb3dpbmcKClRoZSB0ZXN0IGNyZWF0
+ZXMgVEVTVEZJTEUgd2l0aCBtb2RlIDA2NDQsIHRoZW4gc2V0czoKCiAgQUNMX1VTRVJfT0JKID0g
+cnctCiAgQUNMX0dST1VQX09CSiA9IHItLQogIEFDTF9PVEhFUiAgICAgPSByLS0KCnZpYSBURVNU
+U1lNTElOSy4gVGhhdCBBQ0wgaXMgYml0LWZvci1iaXQgaWRlbnRpY2FsIHRvIHRoZSBtaW5pbWFs
+IEFDTAphbHJlYWR5IGltcGxpZWQgYnkgbW9kZSAwNjQ0LCBzbyBhY2xfc2V0X2ZpbGUoKSBjaGFu
+Z2VzIG5vdGhpbmcuICBUaGVuCmFjbF9nZXRfZmlsZSgpIGlzIGNhbGxlZCBvbiBib3RoIFRFU1RG
+SUxFIGFuZCBURVNUU1lNTElOSzsgc2luY2UgYm90aApyZXNvbHZlIHRvIHRoZSBzYW1lIGlub2Rl
+LCBhY2xfY21wKCkgaXMgdHJpdmlhbGx5IDAgcmVnYXJkbGVzcyBvZiB3aGV0aGVyCnRoZSBzeW1s
+aW5rIHdhcyBmb2xsb3dlZCBkdXJpbmcgdGhlIHNldCBjYWxsLgoKVGhlIHRlc3Qgd291bGQgcGFz
+cyBldmVuIGlmIGFjbF9zZXRfZmlsZSgpIG9uIGEgc3ltbGluayB3ZXJlIGEgbm8tb3AuCgpGaXg6
+IHNldCBhIGRlbGliZXJhdGVseSBkaXN0aW5jdCBBQ0wgdGhyb3VnaCB0aGUgc3ltbGluayDigJQg
+b25lIHRoYXQgaXMKZGlmZmVyZW50IGZyb20gdGhlIGZpbGUncyBpbml0aWFsIHN0YXRlIOKAlCBh
+bmQgdGhlbiB2ZXJpZnkgdGhlIHRhcmdldCBmaWxlJ3MKQUNMIHJlZmxlY3RzIHRoYXQgY2hhbmdl
+LiAgRm9yIGV4YW1wbGU6CgogIFNBRkVfT1BFTihURVNURklMRSwgT19DUkVBVCB8IE9fV1JPTkxZ
+LCAwNjAwKTsKCiAgYWNsID0gYWNsX2luaXQoMyk7CiAgYWRkX2FjbF9lbnRyeShhY2wsIEFDTF9V
+U0VSX09CSiwgQUNMX1JFQUQgfCBBQ0xfV1JJVEUgfCBBQ0xfRVhFQ1VURSk7CiAgYWRkX2FjbF9l
+bnRyeShhY2wsIEFDTF9HUk9VUF9PQkosIEFDTF9SRUFEIHwgQUNMX1dSSVRFKTsKICBhZGRfYWNs
+X2VudHJ5KGFjbCwgQUNMX09USEVSLCAwKTsKCiAgLyogU2V0IHRoZSBuZXcgQUNMIHRocm91Z2gg
+dGhlIHN5bWxpbmsgKi8KICBhY2xfc2V0X2ZpbGUoVEVTVFNZTUxJTkssIEFDTF9UWVBFX0FDQ0VT
+UywgYWNsKTsKCiAgLyogTm93IHJlYWQgZnJvbSB0aGUgdGFyZ2V0IGFuZCBmcm9tIHRoZSBzeW1s
+aW5rICovCiAgdGFyZ2V0X2FjbCAgPSBhY2xfZ2V0X2ZpbGUoVEVTVEZJTEUsIEFDTF9UWVBFX0FD
+Q0VTUyk7CiAgc3ltbGlua19hY2wgPSBhY2xfZ2V0X2ZpbGUoVEVTVFNZTUxJTkssIEFDTF9UWVBF
+X0FDQ0VTUyk7CgogIC8qIEJvdGggbXVzdCBtYXRjaCB0aGUgQUNMIHdlIHNldCwgYW5kIHRoZSB0
+YXJnZXQgbXVzdCBkaWZmZXIgZnJvbSAwNjAwICovCgpXaXRoIGEgZGlzdGluY3QgQUNMLCBhIGZh
+aWx1cmUgdG8gZm9sbG93IHRoZSBzeW1saW5rIGR1cmluZyB0aGUgc2V0IGNhbGwKd291bGQgYmUg
+Y2F1Z2h0IGJlY2F1c2UgdGhlIHRhcmdldCBmaWxlJ3MgbW9kZS9BQ0wgd291bGQgcmVtYWluIGF0
+IDA2MDAuCgotLS0KClsyXSBhY2xfb3RoZXIwMS5jOiBjb3JyZWN0bmVzcyBkZXBlbmRzIG9uIGRp
+c3Ryby1zcGVjaWZpYyB1c2VyYWRkIGJlaGF2aW91cgoKVGhlIHRlc3QgcmVsaWVzIG9uIHVzZXIy
+X2dpZCAhPSB1c2VyMV9naWQgc28gdGhhdCB1c2VyMiBmYWxscyB0aHJvdWdoIHRvCkFDTF9PVEhF
+UiByYXRoZXIgdGhhbiBtYXRjaGluZyBBQ0xfR1JPVVBfT0JKICh0aGUgZGlyZWN0b3J5J3Mgb3du
+aW5nCmdyb3VwIGlzIHVzZXIxX2dpZCkuICBXaGV0aGVyIHVzZXJhZGQgY3JlYXRlcyBhIHByaXZh
+dGUgZ3JvdXAgcGVyIHVzZXIgaXMKY29udHJvbGxlZCBieSBVU0VSR1JPVVBTX0VOQUIgaW4gL2V0
+Yy9sb2dpbi5kZWZzLiAgT24gbWFueSBkaXN0cmlidXRpb25zCnRoaXMgZGVmYXVsdHMgdG8gInll
+cyIsIGJ1dCBpdCBpcyBub3QgdW5pdmVyc2FsLiAgT24gYSBzeXN0ZW0gd2hlcmUKVVNFUkdST1VQ
+U19FTkFCPW5vLCBib3RoIHVzZXJzIHdvdWxkIHNoYXJlIHRoZSBzYW1lIHByaW1hcnkgR0lEIGFu
+ZCB1c2VyMgp3b3VsZCBtYXRjaCBBQ0xfR1JPVVBfT0JKIChtYXNrZWQgdG8gLS0tIGJ5IEFDTF9N
+QVNLKSwgY2F1c2luZyBFQUNDRVMgYW5kCmEgZmFsc2UgdGVzdCBmYWlsdXJlLgoKRml4OiBleHBs
+aWNpdGx5IHJlcXVlc3QgYSB1c2VyLXByaXZhdGUgZ3JvdXA6CgogIHRzdF9jbWQoKGNvbnN0IGNo
+YXIgKltdKXsidXNlcmFkZCIsICItTSIsICItVSIsIHVzZXJuYW1lLCBOVUxMfSwgLi4uKTsKClRo
+ZSAiLVUiIGZsYWcgY3JlYXRlcyBhIGdyb3VwIHdpdGggdGhlIHNhbWUgbmFtZSBhcyB0aGUgdXNl
+ciwgZ3VhcmFudGVlaW5nCmEgZGlzdGluY3QgR0lEIGV2ZW4gd2hlbiBVU0VSR1JPVVBTX0VOQUI9
+bm8uICBDaGVjayB0aGF0IHlvdXIgdGFyZ2V0CnVzZXJhZGQgc3VwcG9ydHMgLVUgKGl0IGlzIHBh
+cnQgb2Ygc2hhZG93LXV0aWxzIGFuZCBhdmFpbGFibGUgb24gYWxsCm1haW5zdHJlYW0gZGlzdHJv
+cykuCgpUaGUgc2FtZSBjb25jZXJuIGFwcGxpZXMgdG8gYWNsX21hc2swMS5jIHdoaWNoIHRlc3Rz
+IEFDTF9HUk9VUCBhbmQKQUNMX0dST1VQX09CSiBpbnRlcmFjdGlvbnMgZGVwZW5kaW5nIG9uIHVz
+ZXIvZ3JvdXAgc2VwYXJhdGlvbi4KCi0tLQpOT04tQkxPQ0tJTkcKLS0tCgpbM10gYWNsX2xpYi5o
+OiBjcmVhdGVfdXNlcl9pZl9uZWVkZWQoKSB1c2VzIFRDT05GIHdoZW4gVEJST0sgaXMgY29ycmVj
+dAoKICBpZiAodHN0X2NtZCgoY29uc3QgY2hhciAqW10peyJ1c2VyYWRkIiwgIi1NIiwgdXNlcm5h
+bWUsIE5VTEx9LAogICAgICAgICAgICAgIE5VTEwsIE5VTEwsIFRTVF9DTURfUEFTU19SRVRWQUwp
+ICE9IDApCiAgICAgIHRzdF9icmsoVENPTkYsICJGYWlsZWQgdG8gY3JlYXRlIHVzZXIgJXMiLCB1
+c2VybmFtZSk7CgpUaGUgbmVlZHNfY21kcyBmaWVsZCBhbHJlYWR5IGhhbmRsZXMgdGhlICJ1c2Vy
+YWRkIG5vdCBpbnN0YWxsZWQiIGNhc2UKd2l0aCBUQ09ORi4gIE9uY2UgdXNlcmFkZCBpcyBwcmVz
+ZW50IGJ1dCByZXR1cm5zIG5vbi16ZXJvIChlLmcuIFBBTQpwb2xpY3ksIGNvbnRhaW5lciB1c2Vy
+LW5hbWVzcGFjZSByZXN0cmljdGlvbnMsIG5zcyBmYWlsdXJlcyksIHRoZSB0ZXN0CmNhbm5vdCBi
+ZSBzZXQgdXAg4oCUIHRoYXQgaXMgVEJST0ssIG5vdCBUQ09ORi4gIFVzaW5nIFRDT05GIGhlcmUg
+c2lsZW50bHkKc2tpcHMgdGhlIHRlc3QgaW5zdGVhZCBvZiBzdXJmYWNpbmcgdGhlIHNldHVwIGZh
+aWx1cmUuCgogIHRzdF9icmsoVEJST0ssICJGYWlsZWQgdG8gY3JlYXRlIHVzZXIgJXMiLCB1c2Vy
+bmFtZSk7CgotLS0KCls0XSBhY2xfbGliLmg6IHNldF9hY2xfZmlsZSgpIHNob3VsZCB0cmVhdCBF
+T1BOT1RTVVBQIGFzIFRDT05GCgogIHN0YXRpYyBpbmxpbmUgdm9pZCBzZXRfYWNsX2ZpbGUoY29u
+c3QgY2hhciAqcGF0aCwgYWNsX3R5cGVfdCB0eXBlLCBhY2xfdCBhY2wpCiAgewogICAgICAuLi4K
+ICAgICAgaWYgKGFjbF9zZXRfZmlsZShwYXRoLCB0eXBlLCBhY2wpID09IC0xKQogICAgICAgICAg
+dHN0X2JyayhUQlJPSyB8IFRFUlJOTywgImFjbF9zZXRfZmlsZSglcykgZmFpbGVkIiwgcGF0aCk7
+CiAgfQoKSWYgUE9TSVggQUNMIHN1cHBvcnQgaXMgbWlzc2luZyBhdCB0aGUga2VybmVsIGxldmVs
+IChDT05GSUdfRlNfUE9TSVhfQUNMCm5vdCBzZXQpIGFuZCB0aGUgZmlsZXN5c3RlbSByZXR1cm5z
+IEVPUE5PVFNVUFAsIGFsbCB0ZXN0cyB0aGF0IGdvIHRocm91Z2gKc2V0X2FjbF9maWxlKCkgd2ls
+bCByZXBvcnQgVEJST0sgaW5zdGVhZCBvZiBUQ09ORi4gIGFjbF9saW5rMDEuYyBhbHJlYWR5Cmhh
+bmRsZXMgdGhpcyBjb3JyZWN0bHkgaW5saW5lOyB0aGUgc2FtZSB0cmVhdG1lbnQgc2hvdWxkIGJl
+IGluIHRoZSBzaGFyZWQKaGVscGVyOgoKICBpZiAoYWNsX3NldF9maWxlKHBhdGgsIHR5cGUsIGFj
+bCkgPT0gLTEpIHsKICAgICAgaWYgKGVycm5vID09IEVPUE5PVFNVUFApCiAgICAgICAgICB0c3Rf
+YnJrKFRDT05GIHwgVEVSUk5PLCAiQUNMIG5vdCBzdXBwb3J0ZWQgb24gJXMiLCBwYXRoKTsKICAg
+ICAgdHN0X2JyayhUQlJPSyB8IFRFUlJOTywgImFjbF9zZXRfZmlsZSglcykgZmFpbGVkIiwgcGF0
+aCk7CiAgfQoKLS0tCgpbNV0gYWNsX2luaGVyaXQwMS5jOiBhY2xfZ2V0X2ZpbGUoKSByZXN1bHQg
+aXMgbmV2ZXIgaW5zcGVjdGVkCgogIGZpbGVfYWNsID0gYWNsX2dldF9maWxlKFRFU1RGSUxFLCBB
+Q0xfVFlQRV9BQ0NFU1MpOwogIGlmICghZmlsZV9hY2wpIHsKICAgICAgY2xlYW51cF90ZXN0Zmls
+ZSgpOwogICAgICB0c3RfYnJrKFRCUk9LIHwgVEVSUk5PLCAiYWNsX2dldF9maWxlIGZhaWxlZCIp
+OwogIH0KICBzYWZlX2FjbF9mcmVlKGZpbGVfYWNsKTsKClRoZSB0ZXN0IHN0YXRlcyBpdCB2ZXJp
+ZmllcyB0aGF0ICJ0aGUgZmlsZSBpbmhlcml0cyB0aGUgZGVmYXVsdCBBQ0wgYXMKaXRzIGFjY2Vz
+cyBBQ0wiIGJ1dCB0aGUgcmV0cmlldmVkIEFDTCBvYmplY3QgaXMgZnJlZWQgaW1tZWRpYXRlbHkg
+d2l0aG91dAphbnkgY29udGVudCBjaGVjay4gIFRoZSBtb2RlLWJpdCB2ZXJpZmljYXRpb24gKDA0
+NDQpIGlzIHN1ZmZpY2llbnQgdG8KY29uZmlybSB0aGUgaW5oZXJpdGVkIEFDTCB3YXMgYXBwbGll
+ZCBmb3IgYSBtaW5pbWFsIEFDTCwgc28gZWl0aGVyOgoKICAoYSkgUmVtb3ZlIHRoZSBhY2xfZ2V0
+X2ZpbGUoKSBibG9jayBhbmQgYWRkIGEgY29tbWVudCBleHBsYWluaW5nIHRoYXQKICAgICAgZm9y
+IGEgbWluaW1hbCBpbmhlcml0ZWQgQUNMIHRoZSBtb2RlIGJpdHMgYXJlIHRoZSBjYW5vbmljYWwg
+Y2hlY2ssIG9yCgogIChiKSBJdGVyYXRlIGZpbGVfYWNsIGFuZCB2ZXJpZnkgdGhhdCBlYWNoIGVu
+dHJ5IG1hdGNoZXMgdGhlIGV4cGVjdGVkCiAgICAgIGluaGVyaXRlZCBwZXJtaXNzaW9ucy4KCkFz
+IHdyaXR0ZW4gdGhlIGJsb2NrIG1pc2xlYWRzIHRoZSByZWFkZXIgaW50byB0aGlua2luZyB0aGUg
+QUNMIGNvbnRlbnQKaXMgYmVpbmcgdmFsaWRhdGVkIHdoZW4gaXQgaXMgbm90LgoKLS0tCgpTYWNo
+aW4gU2FudCA8c2FjaGlucEBsaW51eC5pYm0uY29tPgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBo
+dHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
