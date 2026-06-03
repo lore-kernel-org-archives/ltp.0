@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03248CD6E55
-	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 11:58:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 298AECD6E55
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 11:59:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 905053E619C
-	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 13:58:57 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id BD1623E61A8
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 13:59:10 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A00463E5DD2
+ by picard.linux.it (Postfix) with ESMTPS id 762AF3E5DD2
  for <ltp@lists.linux.it>; Wed,  3 Jun 2026 13:58:42 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D7F09600811
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D81C420076B
  for <ltp@lists.linux.it>; Wed,  3 Jun 2026 13:58:41 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 496CA67569;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 31B076A952;
  Wed,  3 Jun 2026 11:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1780487921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vtjM0eVfpXekoHk4QnXVhTbAto+6pk7U6wNuRXUFh4s=;
- b=hJr+ZS/TbINGrDU4EnG8PWoNRXWH5YEI88/Hpxllc3YY2tf1FDMWQCW4UrUYDqLZVO16Jv
- qxZp/uP81StFagBZV/K76NvDRKX1MOOmjgdE3u4GCv2x1sncfTACkkvowgeDVkhAlWussW
- YIhEOO3+CeJ0jnyzYWncj+u8C6IAkFY=
+ bh=L068Tw6zEQZ6jpZkNZcE4tF0m70SNB+VMnqdCvHehhg=;
+ b=IlH2U8h4a3OjaAz2EswaUhTYVutgDGvHKmJW7cZFYTjEO6UB7F7SBy+0JlyClBTxzGnmlm
+ s3zX+sEX/2I3/JRKl6y/xj7v06OutRQDePcFqX1IkkzcjHgswIel15LI7EVz5w5PugDLXv
+ zlwmTNcJxZB72eiuR8Fdq8T/9YH53Uc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1780487921;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vtjM0eVfpXekoHk4QnXVhTbAto+6pk7U6wNuRXUFh4s=;
- b=r0btWUBZJNTP8OGv2LIkxyAlw4K9PvpuIg90J58h4Fzud0HaMDa/0uOjjU9RzK4ed4TjDQ
- W3U7E5qxCCgi4fCg==
-Authentication-Results: smtp-out2.suse.de;
+ bh=L068Tw6zEQZ6jpZkNZcE4tF0m70SNB+VMnqdCvHehhg=;
+ b=FwIa9VDWtXI4nnatgvlcins7abu1N/h2JOmixxdfDEUC9iEs6R+P6GibJwvuXfTfbYvFYZ
+ BmA3mqMQbTJnzdAQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1780487921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vtjM0eVfpXekoHk4QnXVhTbAto+6pk7U6wNuRXUFh4s=;
- b=hJr+ZS/TbINGrDU4EnG8PWoNRXWH5YEI88/Hpxllc3YY2tf1FDMWQCW4UrUYDqLZVO16Jv
- qxZp/uP81StFagBZV/K76NvDRKX1MOOmjgdE3u4GCv2x1sncfTACkkvowgeDVkhAlWussW
- YIhEOO3+CeJ0jnyzYWncj+u8C6IAkFY=
+ bh=L068Tw6zEQZ6jpZkNZcE4tF0m70SNB+VMnqdCvHehhg=;
+ b=IlH2U8h4a3OjaAz2EswaUhTYVutgDGvHKmJW7cZFYTjEO6UB7F7SBy+0JlyClBTxzGnmlm
+ s3zX+sEX/2I3/JRKl6y/xj7v06OutRQDePcFqX1IkkzcjHgswIel15LI7EVz5w5PugDLXv
+ zlwmTNcJxZB72eiuR8Fdq8T/9YH53Uc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1780487921;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vtjM0eVfpXekoHk4QnXVhTbAto+6pk7U6wNuRXUFh4s=;
- b=r0btWUBZJNTP8OGv2LIkxyAlw4K9PvpuIg90J58h4Fzud0HaMDa/0uOjjU9RzK4ed4TjDQ
- W3U7E5qxCCgi4fCg==
+ bh=L068Tw6zEQZ6jpZkNZcE4tF0m70SNB+VMnqdCvHehhg=;
+ b=FwIa9VDWtXI4nnatgvlcins7abu1N/h2JOmixxdfDEUC9iEs6R+P6GibJwvuXfTfbYvFYZ
+ BmA3mqMQbTJnzdAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 31212779A9;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 110A2779A8;
  Wed,  3 Jun 2026 11:58:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id kG77CvEWIGqLagAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id KNt2A/EWIGqLagAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Wed, 03 Jun 2026 11:58:41 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed,  3 Jun 2026 13:58:27 +0200
-Message-ID: <20260603115828.587769-3-pvorel@suse.cz>
+Date: Wed,  3 Jun 2026 13:58:26 +0200
+Message-ID: <20260603115828.587769-2-pvorel@suse.cz>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260603115828.587769-1-pvorel@suse.cz>
 References: <20260603115828.587769-1-pvorel@suse.cz>
@@ -88,14 +89,15 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MIME_GOOD(-0.10)[text/plain]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
  FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid,suse.com:email];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
  FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
  RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/3] renameat202.c: Rewrite into new API
+Subject: [LTP] [PATCH 1/3] renameat201.c: Rewrite into new API,
+ split into renameat203.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,27 +114,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Again, as in previous commit, Due cdd1fedf8261c ("btrfs: add support
-for RENAME_EXCHANGE and RENAME_WHITEOUT") from v4.7-rc1 which has been
-backported to 4.4 based SLES 12-SP3 kernel it's not possible to use
-TST_EXP_PASS() (which would further simplify the code) because we cannot
-raise .min_kver = "4.7".
+Keep only expected errors changes in renameat201.c, move successful
+cases into renameat203.c (although RENAME_EXCHANGE is somehow covered by
+renameat202.c, lets keep simple RENAME_EXCHANGE test also in new
+renameat203.c).
+
+Due cdd1fedf8261c ("btrfs: add support for RENAME_EXCHANGE and
+RENAME_WHITEOUT") from v4.7-rc1 which has been backported to 4.4 based
+SLES 12-SP3 kernel it's not possible to use TST_EXP_PASS() (which would
+further simplify the code) because we cannot raise .min_kver = "4.7".
 
 Other options would be to use tst_kvercmp2(), which is defacto
 deprecated (single test is using it).
 
-* Replace char content[] as preprocessor macro, fix typo implemeted.
+Simplify, print a description, fix typo implemented.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .../kernel/syscalls/renameat2/renameat202.c   | 159 ++++++------------
- 1 file changed, 55 insertions(+), 104 deletions(-)
+ .../kernel/syscalls/renameat2/renameat201.c   | 172 +++++-------------
+ .../kernel/syscalls/renameat2/renameat203.c   |  99 ++++++++++
+ 2 files changed, 148 insertions(+), 123 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/renameat2/renameat203.c
 
-diff --git a/testcases/kernel/syscalls/renameat2/renameat202.c b/testcases/kernel/syscalls/renameat2/renameat202.c
-index a635206f7d..17acd7206e 100644
---- a/testcases/kernel/syscalls/renameat2/renameat202.c
-+++ b/testcases/kernel/syscalls/renameat2/renameat202.c
-@@ -1,31 +1,17 @@
+diff --git a/testcases/kernel/syscalls/renameat2/renameat201.c b/testcases/kernel/syscalls/renameat2/renameat201.c
+index 01e34d6534..a7ec388ab4 100644
+--- a/testcases/kernel/syscalls/renameat2/renameat201.c
++++ b/testcases/kernel/syscalls/renameat2/renameat201.c
+@@ -1,163 +1,89 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
   * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
@@ -154,10 +162,26 @@ index a635206f7d..17acd7206e 100644
   */
  
 - /* Description:
-- *   Calls renameat2(2) with the flag RENAME_EXCHANGE and check that
-- *   the content was swapped
+- *   Verify that:
+- *   1) renameat2(2) returns -1 and sets errno to EEXIST because newpath
+- *		already exists and the flag RENAME_NOREPLACE is used.
+- *   2) renameat2(2) returns 0.
+- *   3) renameat2(2) returns -1 and sets errno to ENOENT because the flag
+- *		RENAME_EXCHANGE is used and newpath does not exist.
+- *   4) renameat2(2) returns 0 because the flag RENAME_NOREPLACE is used,
+- *		both olddirfd and newdirfd are valid and oldpath exists and
+- *		newpath does not exist.
+- *   5) renameat2(2) returns -1 and sets errno to EINVAL because
+- *		RENAME_NOREPLACE and RENAME_EXCHANGE are used together
+- *   6) renameat2(2) returns -1 and sets errno to EINVAL because
+- *		RENAME_WHITEOUT and RENAME_EXCHANGE are used together
 +/*\
-+ * Verify that :manpage:`renameat2(2)` with RENAME_EXCHANGE swapps the content.
++ * Verify that :manpage:`renameat2(2)` returns -1 and sets errno to:
++ *
++ * 1. EEXIST when newpath already exists and the flag RENAME_NOREPLACE is used.
++ * 2. ENOENT when the flag RENAME_EXCHANGE is used and newpath does not exist.
++ * 3. EINVAL when RENAME_NOREPLACE and RENAME_EXCHANGE are used together
++ * 4. EINVAL when RENAME_WHITEOUT and RENAME_EXCHANGE are used together
   */
  
  #define _GNU_SOURCE
@@ -169,121 +193,247 @@ index a635206f7d..17acd7206e 100644
  #include "renameat2.h"
  
  #define TEST_DIR "test_dir/"
-@@ -34,80 +20,42 @@
+ #define TEST_DIR2 "test_dir2/"
+ 
++#define TEST_PATH TEST_DIR TEST_FILE
++#define TEST_PATH2 TEST_DIR2 TEST_FILE2
++
  #define TEST_FILE "test_file"
  #define TEST_FILE2 "test_file2"
+-#define TEST_FILE3 "test_file3"
+ #define NON_EXIST "non_exist"
  
--char *TCID = "renameat202";
-+#define CONTENT "content"
- 
- static int olddirfd;
- static int newdirfd;
- static int fd = -1;
--static int cnt;
+-char *TCID = "renameat201";
 -
--static const char content[] = "content";
- static long fs_type;
+-static int olddirfd;
+-static int newdirfd;
+-static long fs_type;
++#define FLAGS_ERRNO_DESC(x, y) .flags = x, .exp_errno = y, .desc = "flags: " #x ", errno: " #y
  
--
--int TST_TOTAL = 1;
+-static struct test_case {
+-	int *olddirfd;
+-	const char *oldpath;
+-	int *newdirfd;
++static struct tcase {
+ 	const char *newpath;
+ 	int flags;
+ 	int exp_errno;
+-} test_cases[] = {
+-	{&olddirfd, TEST_FILE, &newdirfd, TEST_FILE2, RENAME_NOREPLACE, EEXIST},
+-	{&olddirfd, TEST_FILE, &newdirfd, TEST_FILE2, RENAME_EXCHANGE, 0},
+-	{&olddirfd, TEST_FILE, &newdirfd, NON_EXIST, RENAME_EXCHANGE, ENOENT},
+-	{&olddirfd, TEST_FILE, &newdirfd, TEST_FILE3, RENAME_NOREPLACE, 0},
+-	{&olddirfd, TEST_FILE, &newdirfd, TEST_FILE2, RENAME_NOREPLACE
+-				| RENAME_EXCHANGE, EINVAL},
+-	{&olddirfd, TEST_FILE, &newdirfd, TEST_FILE2, RENAME_WHITEOUT
+-				| RENAME_EXCHANGE, EINVAL}
++	char *desc;
++} tcases[] = {
++	{TEST_FILE2, FLAGS_ERRNO_DESC(RENAME_NOREPLACE, EEXIST)},
++	{NON_EXIST, FLAGS_ERRNO_DESC(RENAME_EXCHANGE, ENOENT)},
++	{TEST_FILE2, FLAGS_ERRNO_DESC(RENAME_NOREPLACE | RENAME_EXCHANGE, EINVAL)},
++	{TEST_FILE2, FLAGS_ERRNO_DESC(RENAME_WHITEOUT | RENAME_EXCHANGE, EINVAL)}
+ };
+ 
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
 -
 -static void setup(void);
 -static void cleanup(void);
--static void renameat2_verify(void);
+-static void renameat2_verify(const struct test_case *test);
 -
 -
 -int main(int ac, char **av)
 -{
+-	int i;
 -	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
+-	for (lc = 0; lc < TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -
--		TEST(renameat2(olddirfd, TEST_FILE,
--				newdirfd, TEST_FILE2, RENAME_EXCHANGE));
--
--		cnt++;
--
--		renameat2_verify();
+-		for (i = 0; i < TST_TOTAL; i++)
+-			renameat2_verify(&test_cases[i]);
 -	}
 -
 -	cleanup();
 -	tst_exit();
 -}
-+/* workaround for iterations not being exposed by lib/tst_test.c */
-+static int cnt;
++static int olddirfd;
++static int newdirfd;
++static long fs_type;
  
  static void setup(void)
  {
 -	tst_tmpdir();
 -
 -	fs_type = tst_fs_type(cleanup, ".");
--
--	SAFE_MKDIR(cleanup, TEST_DIR, 0700);
--	SAFE_MKDIR(cleanup, TEST_DIR2, 0700);
 +	fs_type = tst_fs_type(".");
  
--	SAFE_TOUCH(cleanup, TEST_DIR TEST_FILE, 0600, NULL);
--	SAFE_TOUCH(cleanup, TEST_DIR2 TEST_FILE2, 0600, NULL);
+-	SAFE_MKDIR(cleanup, TEST_DIR, 0700);
+-	SAFE_MKDIR(cleanup, TEST_DIR2, 0700);
 +	SAFE_MKDIR(TEST_DIR, 0700);
 +	SAFE_MKDIR(TEST_DIR2, 0700);
  
--	olddirfd = SAFE_OPEN(cleanup, TEST_DIR, O_DIRECTORY);
--	newdirfd = SAFE_OPEN(cleanup, TEST_DIR2, O_DIRECTORY);
-+	SAFE_TOUCH(TEST_DIR TEST_FILE, 0600, NULL);
-+	SAFE_TOUCH(TEST_DIR2 TEST_FILE2, 0600, NULL);
- 
--	SAFE_FILE_PRINTF(cleanup, TEST_DIR TEST_FILE, "%s", content);
+-	SAFE_TOUCH(cleanup, TEST_DIR TEST_FILE, 0600, NULL);
+-	SAFE_TOUCH(cleanup, TEST_DIR2 TEST_FILE2, 0600, NULL);
+-	SAFE_TOUCH(cleanup, TEST_DIR TEST_FILE3, 0600, NULL);
 +	olddirfd = SAFE_OPEN(TEST_DIR, O_DIRECTORY);
 +	newdirfd = SAFE_OPEN(TEST_DIR2, O_DIRECTORY);
  
-+	SAFE_FILE_PRINTF(TEST_DIR TEST_FILE, "%s", CONTENT);
+-	olddirfd = SAFE_OPEN(cleanup, TEST_DIR, O_DIRECTORY);
+-	newdirfd = SAFE_OPEN(cleanup, TEST_DIR2, O_DIRECTORY);
++	SAFE_TOUCH(TEST_PATH, 0600, NULL);
++	SAFE_TOUCH(TEST_PATH2, 0600, NULL);
  }
  
  static void cleanup(void)
  {
 -	if (olddirfd > 0 && close(olddirfd) < 0)
 -		tst_resm(TWARN | TERRNO, "close olddirfd failed");
-+	if (olddirfd > 0)
-+		SAFE_CLOSE(olddirfd);
- 
+-
 -	if (newdirfd > 0 && close(newdirfd) < 0)
 -		tst_resm(TWARN | TERRNO, "close newdirfd failed");
 -
--	if (fd > 0 && close(fd) < 0)
--		tst_resm(TWARN | TERRNO, "close fd failed");
--
 -	tst_rmdir();
++	if (olddirfd > 0)
++		SAFE_CLOSE(olddirfd);
+ 
 +	if (newdirfd > 0)
 +		SAFE_CLOSE(newdirfd);
- 
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
  }
  
- static void renameat2_verify(void)
-@@ -116,51 +64,54 @@ static void renameat2_verify(void)
- 	struct stat st;
- 	char *emptyfile;
- 	char *contentfile;
--	int readn, data_len;
+-static void renameat2_verify(const struct test_case *test)
++static void renameat2_verify(unsigned int i)
+ {
+-	TEST(renameat2(*(test->olddirfd), test->oldpath,
+-			*(test->newdirfd), test->newpath, test->flags));
 -
--	if (TEST_ERRNO == EINVAL && TST_BTRFS_MAGIC == fs_type) {
--		tst_brkm(TCONF, cleanup,
+-	if ((test->flags & RENAME_EXCHANGE) && EINVAL == TEST_ERRNO
+-		&& fs_type == TST_BTRFS_MAGIC) {
+-		tst_resm(TCONF,
 -			"RENAME_EXCHANGE flag is not implemeted on %s",
 -			tst_fs_type_name(fs_type));
+-		return;
 -	}
- 
--	if (TEST_RETURN != 0) {
+-
+-	if (test->exp_errno && TEST_RETURN != -1) {
+-		tst_resm(TFAIL, "renameat2() succeeded unexpectedly");
+-		return;
+-	}
+-
+-	if (test->exp_errno == 0 && TEST_RETURN != 0) {
 -		tst_resm(TFAIL | TTERRNO, "renameat2() failed unexpectedly");
 -		return;
-+	TEST(renameat2(olddirfd, TEST_FILE, newdirfd, TEST_FILE2,
-+		       RENAME_EXCHANGE));
+-	}
+-
+-	if (test->exp_errno == TEST_ERRNO) {
+-		tst_resm(TPASS | TTERRNO,
+-		"renameat2() returned the expected value");
+-		return;
+-	}
+-
+-	tst_resm(TFAIL | TTERRNO,
+-		"renameat2() got unexpected return value: expected: %d - %s",
+-			test->exp_errno, tst_strerrno(test->exp_errno));
++	struct tcase *tc = &tcases[i];
+ 
++	tst_res(TINFO, "Testing flag: %s", tc->desc);
++
++	TST_EXP_FAIL(renameat2(olddirfd, TEST_FILE, newdirfd, tc->newpath,
++						   tc->flags), tc->exp_errno);
+ }
++
++static struct tst_test test = {
++	.test = renameat2_verify,
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_tmpdir = 1,
++};
+diff --git a/testcases/kernel/syscalls/renameat2/renameat203.c b/testcases/kernel/syscalls/renameat2/renameat203.c
+new file mode 100644
+index 0000000000..dba12e48b3
+--- /dev/null
++++ b/testcases/kernel/syscalls/renameat2/renameat203.c
+@@ -0,0 +1,99 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
++ * Copyright (c) 2026 Petr Vorel <pvorel@suse.cz>
++ */
++
++/*\
++ * Verify that :manpage:`renameat2(2)` works on these flags:
++ *
++ * 1. RENAME_EXCHANGE
++ * 2. RENAME_NOREPLACE
++ */
++
++#define _GNU_SOURCE
++
++#include "lapi/fcntl.h"
++#include "tst_test.h"
++#include "renameat2.h"
++
++#define TEST_DIR "test_dir/"
++#define TEST_DIR2 "test_dir2/"
++
++#define TEST_FILE "test_file"
++#define TEST_FILE2 "test_file2"
++
++#define TEST_PATH TEST_DIR TEST_FILE
++#define TEST_PATH2 TEST_DIR2 TEST_FILE2
++
++#define FLAGS_DESC(x) .flags = x, .desc = #x
++
++static struct tcase {
++	int flags;
++	char *desc;
++} tcases[] = {
++	{FLAGS_DESC(RENAME_EXCHANGE)},
++	{FLAGS_DESC(RENAME_NOREPLACE)},
++};
++
++static int olddirfd;
++static int newdirfd;
++static long fs_type;
++
++static void setup(void)
++{
++	// TODO
++	fs_type = tst_fs_type(".");
++
++	SAFE_MKDIR(TEST_DIR, 0700);
++	SAFE_MKDIR(TEST_DIR2, 0700);
++
++	olddirfd = SAFE_OPEN(TEST_DIR, O_DIRECTORY);
++	newdirfd = SAFE_OPEN(TEST_DIR2, O_DIRECTORY);
++}
++
++static void cleanup(void)
++{
++	if (olddirfd > 0)
++		SAFE_CLOSE(olddirfd);
++
++	if (newdirfd > 0)
++		SAFE_CLOSE(newdirfd);
++}
++
++static void renameat2_verify(unsigned int i)
++{
++	struct tcase *tc = &tcases[i];
++
++	tst_res(TINFO, "Testing flag: %s", tc->desc);
++
++	SAFE_TOUCH(TEST_PATH, 0600, NULL);
++	if (!i)
++		SAFE_TOUCH(TEST_PATH2, 0600, NULL);
++
++	TEST(renameat2(olddirfd, TEST_FILE, newdirfd, TEST_FILE2, tc->flags));
++	SAFE_UNLINK(TEST_PATH2);
 +
 +	if (TST_RET == -1) {
 +		/*
@@ -292,62 +442,18 @@ index a635206f7d..17acd7206e 100644
 +		 * based SLES 12-SP3 kernel.
 +		 */
 +		if (TST_ERR == EINVAL && fs_type == TST_BTRFS_MAGIC) {
-+			tst_brk(TCONF, "RENAME_EXCHANGE flag is not implemented on %s",
++			tst_res(TCONF, "RENAME_EXCHANGE flag is not implemented on %s",
 +				tst_fs_type_name(fs_type));
++			return;
 +		}
 +		tst_brk(TFAIL | TTERRNO, "renameat2() failed");
- 	}
- 
--	if (cnt % 2 == 1) {
-+	if (cnt % 2 == 0) {
- 		emptyfile = TEST_DIR TEST_FILE;
- 		contentfile = TEST_DIR2 TEST_FILE2;
- 	} else {
- 		emptyfile = TEST_DIR2 TEST_FILE2;
- 		contentfile = TEST_DIR TEST_FILE;
- 	}
-+	cnt++;
- 
--	fd = SAFE_OPEN(cleanup, contentfile, O_RDONLY);
--
--	SAFE_STAT(cleanup, emptyfile, &st);
-+	fd = SAFE_OPEN(contentfile, O_RDONLY);
- 
--	readn = SAFE_READ(cleanup, 0, fd, str, BUFSIZ);
-+	SAFE_STAT(emptyfile, &st);
- 
--	if (close(fd) < 0)
--		tst_brkm(TERRNO | TFAIL, cleanup, "close fd failed");
--	fd = 0;
-+	SAFE_READ(SAFE_READ_ANY_EAGAIN, fd, str, BUFSIZ);
-+	SAFE_CLOSE(fd);
- 
--	data_len = sizeof(content) - 1;
--	if (readn != data_len) {
--		tst_resm(TFAIL, "Wrong number of bytes read after renameat2(). "
--				"Expect %d, got %d", data_len, readn);
--		return;
--	}
--	if (strncmp(content, str, data_len)) {
--		tst_resm(TFAIL, "File content changed after renameat2(). "
--				"Expect '%s', got '%s'", content, str);
-+	TST_EXP_EQ_STRN(CONTENT, str, sizeof(CONTENT) - 1);
-+	if (!TST_PASS)
- 		return;
--	}
-+
- 	if (st.st_size) {
--		tst_resm(TFAIL, "emptyfile has non-zero file size");
-+		tst_res(TFAIL, "emptyfile has non-zero file size");
- 		return;
- 	}
--	tst_resm(TPASS, "renameat2() test passed");
-+
-+	tst_res(TPASS, "renameat2() test passed");
- }
++	}
++	tst_res(TPASS, "renameat2() passed");
++}
 +
 +static struct tst_test test = {
-+	.test_all = renameat2_verify,
++	.test = renameat2_verify,
++	.tcnt = ARRAY_SIZE(tcases),
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.needs_tmpdir = 1,
