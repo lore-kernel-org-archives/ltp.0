@@ -4,77 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00A58CD6E55
-	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 05:14:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1780463669; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=y5N7aUU1O+G4PfFKcALLgmTh79RpP/I3FmzhB8+P9pM=;
- b=kT1NzHy8BHWcrwtCYi3U5j9d0g2I6CyuMUPf+Vw7UoeYjEogPSHUfKEu5dNuf8siCzDfC
- Abk3+QK3bsjV8DwVxtau3s2YxqMf+c62S/EdGtqr8XkFt0p+DFGiU4fqVzfnyM6/LufCooe
- iCV34oEhJ50ItTi1+RSdig8dwqDQV54=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDDD0CD6E4A
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 06:58:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5018B3E2C5E
-	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 07:14:29 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 3BF133E3051
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 08:58:13 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 964BE3D01C8
- for <ltp@lists.linux.it>; Wed,  3 Jun 2026 07:14:09 +0200 (CEST)
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
- [IPv6:2607:f8b0:4864:20::549])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9C7A63E1DBD
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 08:57:53 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D845C1A0009C
- for <ltp@lists.linux.it>; Wed,  3 Jun 2026 07:14:08 +0200 (CEST)
-Received: by mail-pg1-x549.google.com with SMTP id
- 41be03b00d2f7-c85dcdbe502so405908a12.2
- for <ltp@lists.linux.it>; Tue, 02 Jun 2026 22:14:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1780463647; x=1781068447; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=FJ+DfHrfPx6bLno0+0DSWu6nL0Whh6rzbIUAklqWkfs=;
- b=eDzS/kJhWq9P2C9+FaTQpAf+KBJr8kGrLZLuT12od7b9Q+1/1YEZghyZ8eQdk95ag1
- VEeKfigkY3JLNxdO0dECPE8mDc6BPBrBBfoEVnd9y3Au9G72Wopmnktcd5+NUMGl4N3n
- GG7cLqocCbA1u5D4AV0RNT3xuLAZ4eQcPTUrz+dEJTukZxYn/c6MHLOS+JY2T5kOFxbg
- jvR6McTZj8XHX6rgE6Y/bEV+yeFQDEIvPhC+ObVRSt8S94UrA8K/LQgmpvISPimlGtzU
- atx8FjYcC3QSTRFDloEf14MmPAIZ9QbRKRYNxMlHWvAHefVH7ienab0tRE+r4stahMRL
- +c2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780463647; x=1781068447;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=FJ+DfHrfPx6bLno0+0DSWu6nL0Whh6rzbIUAklqWkfs=;
- b=TQxnB5BBASDf2gWeEDxurPv53wTgcpOvInPbgOa4jJtsArkFwTh16jUf4ZMYPwp+fq
- vOycnNOqRlf4MEeX0ocBCLgT6N07/doIKpf1Hqfaq6g/9CgXGNcjZYmfBAD2BEhrA0Pj
- Vm37sfHxSBAo5C/LFUMMHauEochcqtdsso21Y1GeRA7x/QVRVL/PhU/BoInwgMIYzXDN
- sxIhz5aYD8+MSXW57zcH/pJ9oZ6isbZlBqVmu5zIAiAGsVcvF/D9kNgQ+JyD24oCb5A3
- 4J8zEjZX3gBB3/4LrhIGoUJKs+R5pKjj+ZubofJ8Hf6HqXRM4rmCW5exUzlUvJNYvsdd
- /r3w==
-X-Gm-Message-State: AOJu0Ywj/QIpkcPpyDjiorh425oy5QfxCumhoPNOeO0G3JR0F0AVWCF4
- PBbOFh084MJSKx7kjkMyNtA55rFDN1z3r5Zj5yxZV2AUffpVKIeYpSnpQV4PIEWMbhfMiUWh48e
- mhUyIen2l7pPagZrLj2pay32VyTQujghfRjUwq8AXqm6oNJWjOB8xErWfxiKa/TiQtouA6jJkLi
- dodwv1jEgc50OxGyyXSjvP7UQBMvlWW4nGDEOx6odxYUPtB5I=
-X-Received: from pfbki2.prod.google.com ([2002:a05:6a00:9482:b0:842:3d2d:1e7e])
- (user=chihsheng job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:288c:b0:842:5777:71b7 with SMTP id
- d2e1a72fcca58-84284facf26mr1807352b3a.48.1780463646215; 
- Tue, 02 Jun 2026 22:14:06 -0700 (PDT)
-Date: Wed,  3 Jun 2026 05:14:01 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.54.0.1032.g2f8565e1d1-goog
-Message-ID: <20260603051401.658906-1-chihsheng@google.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EB1291000612
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 08:57:52 +0200 (CEST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 65345Dwg3195132
+ for <ltp@lists.linux.it>; Wed, 3 Jun 2026 06:57:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+ content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=uzdCzH+phKyI7ND9LZCFu5/UEETjZEuOHcMiR8Req
+ d4=; b=R7AXLDZ4IvUCWit2hHgLV0C+9SQyp+Kx7vHksyFFn6fwUCFoA+Dqsl0Ek
+ BJOhlOWkA8hJfEgPc3Qu4dF9SIYpCwOUKoVzlGaHFf6+w5OUVZYBGfPzUKLfr31b
+ DDxl0Vv+pdafoVNRjVJskFLq+hq8GFTw4UfHtGtBHlPMolDAaMPccFzXE03fCHaQ
+ hfZpoTykzlrKA7IZIXnXRDOC28dhKk1/O/Z0hdkQTb9dIdGymLxBikA+Yal3cwRr
+ opLSC2lzgOtvAbNXvB5w5aVbOy+DAmBQUdNFC4N4ZuaZvDaSM0LRwOwdwENZicIz
+ 17EGNy/S2cA33HEbWyz83T0xFgheA==
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efqht921y-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Wed, 03 Jun 2026 06:57:50 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 6536s57J021497
+ for <ltp@lists.linux.it>; Wed, 3 Jun 2026 06:57:50 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4egbqhew4h-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Wed, 03 Jun 2026 06:57:50 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
+ [10.20.54.101])
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 6536vmcc50856210
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Wed, 3 Jun 2026 06:57:48 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 4805320043
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 06:57:48 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id A1FA42004B
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 06:57:47 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.43.45.245])
+ by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 06:57:47 +0000 (GMT)
+From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+Date: Wed,  3 Jun 2026 12:27:36 +0530
+Message-Id: <20260603065744.47106-1-sachinp@linux.ibm.com>
+X-Mailer: git-send-email 2.39.1
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: OAAvr62PFiVrlxyhcrTWCa3rxyAmWILN
+X-Authority-Analysis: v=2.4 cv=fv/sol4f c=1 sm=1 tr=0 ts=6a1fd06e cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=RzCfie-kr_QcCd8fBx8p:22 a=NEAV23lmAAAA:8 a=g6LbLeqArzY_OsvLhU0A:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjAzMDA2MSBTYWx0ZWRfX1ErZ6PFOEs0b
+ 6f+LalRluuf3r91PjlVSqHOlROf35fEhg+U9nDY6T7cN3kZhkAnlRnxQtPqky5wL7XEXbjyt4ZD
+ 8id3Kpanm6p6sGvxHmw+lA4sRZbIm9nYdCsWZG/P3dkSDkCyLk0T2UYHSZl7vhhxEJAGfkvIq41
+ qK4zgMDrsGjrTi0LpEbup1+i+gNJKgDDIli5AkqfyIJ6xqC1UVPyNPV44u9dKM4Jw3zEvMaE/wn
+ iz5LqpNpMvV93xqyg/hXWonNdori2NPCoAl4I0hPZn+tSBCZWpdJL2ihxtxzyx56XSRe9qtDYB2
+ w99Kxx+J725zXoNOZUFIQf6j6qA/zsb+MKzHM5PoJ/3KA0lCKEP79QzJ+EWYA9TAfH2qfYH0qaX
+ ndqWENs+C/fnwSAO+kLgbK9sfZe1M5vFgRYCPYlao/XasSwJ4jgAShKs3qPyDa6MfKJvJeYrF7B
+ kB/lla2BVUcdq4d7RiA==
+X-Proofpoint-ORIG-GUID: OAAvr62PFiVrlxyhcrTWCa3rxyAmWILN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-03_02,2026-05-28_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606030061
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/listmount04: Detect backported commit
- 78f0e33cd6c9 dynamically
+Subject: [LTP] [PATCH v2 0/8] Convert shell-based ACL test (tacl_xattr.sh)
+ to C
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,150 +107,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Darren Chang via ltp <ltp@lists.linux.it>
-Reply-To: Darren Chang <chihsheng@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Commit 78f0e33cd6c9 ("fs/namespace: correctly handle errors returned
-by grab_requested_mnt_ns") changed the expected errno for an invalid
-mnt_ns_fd from EINVAL to EBADF. This was introduced in v6.17.9.
+This patch series converts the existing shell-based ACL
+test (tacl_xattr.sh) to C implementation, providing better
+integration with the LTP test framework and more precise
+control over test execution.
 
-Currently, the test relies solely on tst_kvercmp() to determine which
-errno to expect. However, this causes the test to fail on older LTS
-or Android kernels (e.g., v6.12) that have backported this specific
-patch. On these kernels, listmount() correctly returns EBADF, but the
-test expects EINVAL purely based on the older kernel version number.
+v1 -> v2
+Updated patches 1/8, 6/8 and 7/8 to address review comments.
+Remaining patches remain unchanged
 
-Fix this by introducing a runtime probe in setup(). By issuing a dummy
-listmount() syscall with an invalid mnt_ns_fd (-1), we can check the
-returned errno and accurately determine the kernel's behavior regardless
-of its version string.
+Partially closes(convert tacl_xattr.sh to C)
+https://github.com/linux-test-project/ltp/issues/1265
 
-Additionally, rename the 'kver' variable to 'current_fd_err_behavior'
-and update the macros to clearly reflect the expected errno behavior
-(INVALID_FD_RET_EINVAL vs INVALID_FD_RET_EBADF) rather than relying on
-version thresholds, improving overall code readability and semantics.
+The conversion splits functionality into seven focused test files.
+Patch 1/8 adds acl_user_obj01.c
+Patch 2/8 adds acl_mask01.c
+Patch 3/8 adds acl_other01.c
+Patch 4/8 adds acl_inherit01.c
+Patch 5/8 adds acl_file_ops01.c
+Patch 6/8 adds acl_link01.c
+Patch 7/8 adds xattr_test01.c
 
-Signed-off-by: Darren Chang <chihsheng@google.com>
----
- .../kernel/syscalls/listmount/listmount04.c   | 51 ++++++++++++++-----
- 1 file changed, 39 insertions(+), 12 deletions(-)
+The code has been successfully tested on SLES (kernel 6.12)
+and fedora (kernel 7.0) releases on ppc64le arch.
 
-diff --git a/testcases/kernel/syscalls/listmount/listmount04.c b/testcases/kernel/syscalls/listmount/listmount04.c
-index 919f4c854..38eaffede 100644
---- a/testcases/kernel/syscalls/listmount/listmount04.c
-+++ b/testcases/kernel/syscalls/listmount/listmount04.c
-@@ -15,22 +15,26 @@
- 
- #define _GNU_SOURCE
- 
-+#include <errno.h>
- #include "config.h"
- #include "tst_test.h"
- #include "lapi/mount.h"
- #include "lapi/syscalls.h"
- 
- #define MNT_SIZE 32
-+
- /*
-  * For commit 78f0e33cd6c9 ("fs/namespace: correctly handle errors returned
-  * by grab_requested_mnt_ns") from v6.18-rc7 backported to v6.17.9.
-+ * Defines the expected error code behavior when an invalid file descriptor
-+ * is passed to mnt_ns_fd (previously known as spare).
-  */
--#define BEFORE_6_17_9 1
--#define AFTER_6_17_9 2
-+#define INVALID_FD_RET_EINVAL 1
-+#define INVALID_FD_RET_EBADF  2
- 
- static mnt_id_req *request;
- static uint64_t mnt_ids[MNT_SIZE];
--static int kver;
-+static int current_fd_err_behavior;
- 
- static struct tcase {
- 	int req_usage;
-@@ -43,7 +47,7 @@ static struct tcase {
- 	uint64_t flags;
- 	int exp_errno;
- 	char *msg;
--	int kver;
-+	int fd_err_behavior;
- } tcases[] = {
- 	{
- 		.req_usage = 0,
-@@ -89,7 +93,7 @@ static struct tcase {
- 		.nr_mnt_ids = MNT_SIZE,
- 		.exp_errno = EINVAL,
- 		.msg = "invalid mnt_id_req.spare",
--		.kver = BEFORE_6_17_9,
-+		.fd_err_behavior = INVALID_FD_RET_EINVAL,
- 	},
- 	{
- 		.req_usage = 1,
-@@ -100,7 +104,7 @@ static struct tcase {
- 		.nr_mnt_ids = MNT_SIZE,
- 		.exp_errno = EBADF,
- 		.msg = "invalid mnt_id_req.mnt_ns_fd",
--		.kver = AFTER_6_17_9,
-+		.fd_err_behavior = INVALID_FD_RET_EBADF,
- 	},
- 	{
- 		.req_usage = 1,
-@@ -137,8 +141,9 @@ static void run(unsigned int n)
- 	struct tcase *tc = &tcases[n];
- 	mnt_id_req *req = NULL;
- 
--	if (tc->kver && tc->kver != kver) {
--		tst_res(TCONF, "Test not suitable for current kernel version");
-+	/* Skip tests that do not match the runtime behavior of current kernel */
-+	if (tc->fd_err_behavior && tc->fd_err_behavior != current_fd_err_behavior) {
-+		tst_res(TCONF, "Test not suitable for current kernel's FD error behavior");
- 		return;
- 	}
- 
-@@ -159,10 +164,32 @@ static void run(unsigned int n)
- 
- static void setup(void)
- {
--	if (tst_kvercmp(6, 17, 9) >= 0)
--		kver = AFTER_6_17_9;
--	else
--		kver = BEFORE_6_17_9;
-+	/* 1. If kernel is 6.17.9 or newer, it definitively has the new behavior */
-+	if (tst_kvercmp(6, 17, 9) >= 0) {
-+		current_fd_err_behavior = INVALID_FD_RET_EBADF;
-+		return;
-+	}
-+
-+	/* 2. Runtime probe for older kernels:
-+	 * Check if commit 78f0e33cd6c9 was backported by manually issuing
-+	 * a syscall with an invalid mnt_ns_fd (-1).
-+	 */
-+	mnt_id_req probe_req = {
-+		.size = MNT_ID_REQ_SIZE_VER0,
-+		.mnt_id = LSMT_ROOT,
-+		.mnt_ns_fd = -1,
-+		.param = 0
-+	};
-+
-+	tst_syscall(__NR_listmount, &probe_req, mnt_ids, MNT_SIZE, 0);
-+
-+	/* 3. Set global behavior flag based on actual kernel response */
-+	if (errno == EBADF) {
-+		tst_res(TINFO, "Detected backported commit 78f0e33cd6c9 (returns EBADF)");
-+		current_fd_err_behavior = INVALID_FD_RET_EBADF;
-+	} else {
-+		current_fd_err_behavior = INVALID_FD_RET_EINVAL;
-+	}
- }
- 
- static struct tst_test test = {
+Test build is clean in various distros. CI build report at
+https://github.com/sacsant/ltp/actions/runs/26867544650
+s390x job failure is due to docker image pull issue.
+
+Running the test in a distro missing acl development package
+or acl library comes out clean with TCONF
+
+root@linux:/opt/ltp# ./testcases/bin/acl_user_obj01
+tst_test.c:1414: TCONF: libacl or ACL headers are not available
+root@linux:/opt/ltp#
+
+Sachin Sant (8):
+  fs/acl: Add ACL_USER_OBJ permissions test
+  fs/acl: Add ACL mask interaction tests
+  fs/acl: Add ACL_OTHER permissions test
+  fs/acl: Add default ACL inheritance test
+  fs/acl: Add chmod/chown ACL interaction tests
+  fs/acl: Add symlink ACL operations test
+  fs/acl: Add extended attributes test
+  fs/acl: Remove old shell-based ACL test
+
+ runtest/fs                               |   9 +
+ testcases/kernel/fs/acl/.gitignore       |   7 +
+ testcases/kernel/fs/acl/Makefile         |  10 +
+ testcases/kernel/fs/acl/acl_file_ops01.c | 302 +++++++++
+ testcases/kernel/fs/acl/acl_inherit01.c  | 118 ++++
+ testcases/kernel/fs/acl/acl_lib.h        | 353 ++++++++++
+ testcases/kernel/fs/acl/acl_link01.c     | 119 ++++
+ testcases/kernel/fs/acl/acl_mask01.c     | 283 ++++++++
+ testcases/kernel/fs/acl/acl_other01.c    | 107 +++
+ testcases/kernel/fs/acl/acl_user_obj01.c | 116 ++++
+ testcases/kernel/fs/acl/tacl_xattr.sh    | 807 -----------------------
+ testcases/kernel/fs/acl/xattr_test01.c   | 336 ++++++++++
+ 12 files changed, 1760 insertions(+), 807 deletions(-)
+ create mode 100644 testcases/kernel/fs/acl/.gitignore
+ create mode 100644 testcases/kernel/fs/acl/Makefile
+ create mode 100644 testcases/kernel/fs/acl/acl_file_ops01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_inherit01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_lib.h
+ create mode 100644 testcases/kernel/fs/acl/acl_link01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_mask01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_other01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_user_obj01.c
+ delete mode 100755 testcases/kernel/fs/acl/tacl_xattr.sh
+ create mode 100644 testcases/kernel/fs/acl/xattr_test01.c
+
 -- 
-2.54.0.1032.g2f8565e1d1-goog
+2.39.1
 
 
 -- 
