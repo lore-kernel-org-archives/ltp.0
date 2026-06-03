@@ -4,82 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 664E6CD6E55
-	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 04:15:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00A58CD6E55
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 05:14:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1780463669; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=y5N7aUU1O+G4PfFKcALLgmTh79RpP/I3FmzhB8+P9pM=;
+ b=kT1NzHy8BHWcrwtCYi3U5j9d0g2I6CyuMUPf+Vw7UoeYjEogPSHUfKEu5dNuf8siCzDfC
+ Abk3+QK3bsjV8DwVxtau3s2YxqMf+c62S/EdGtqr8XkFt0p+DFGiU4fqVzfnyM6/LufCooe
+ iCV34oEhJ50ItTi1+RSdig8dwqDQV54=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A60EC3E747F
-	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 06:15:42 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 5018B3E2C5E
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 07:14:29 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 969C23E1DBD
- for <ltp@lists.linux.it>; Wed,  3 Jun 2026 06:15:27 +0200 (CEST)
-Received: from mail-dy1-x1342.google.com (mail-dy1-x1342.google.com
- [IPv6:2607:f8b0:4864:20::1342])
+ by picard.linux.it (Postfix) with ESMTPS id 964BE3D01C8
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 07:14:09 +0200 (CEST)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
+ [IPv6:2607:f8b0:4864:20::549])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E11671000499
- for <ltp@lists.linux.it>; Wed,  3 Jun 2026 06:15:26 +0200 (CEST)
-Received: by mail-dy1-x1342.google.com with SMTP id
- 5a478bee46e88-30749947917so2264126eec.1
- for <ltp@lists.linux.it>; Tue, 02 Jun 2026 21:15:26 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D845C1A0009C
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 07:14:08 +0200 (CEST)
+Received: by mail-pg1-x549.google.com with SMTP id
+ 41be03b00d2f7-c85dcdbe502so405908a12.2
+ for <ltp@lists.linux.it>; Tue, 02 Jun 2026 22:14:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780460125; x=1781064925; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=/3K+SQ5m4qr8COlhpAE1Dxs/YurUbVYIy4Bqs0wky6Y=;
- b=fDfx0b4GAbeKNE3t0gHsQxDm9+LL03tLgSb0McPHmVy1IuibbcdhSD2Kvp38NrDOSu
- YC8ShSfv4D4LdWiHt7h+flJFCNNOClzT+jWGNECva/Ikyw98lrYUHBjlTYiZMp+Yg7j0
- ZiLxYiyy9jC4eANuUleEq00N0kltpLW98loLE9RwSd2agpchND97+UL/Dr9RDuyfTBOh
- p9tzKoqAfBXSNA0Z5hwfdGjpmzmEISldq1haUgGsOjNJFIPCDlg01hEFrLrMJCzG23TJ
- r4mFDrdCh6DuHMim61vGkeNr2vM+xnZSFG3f4BS0Bk+q1863dgu4uepJJ0V2XpxHPCge
- n5nw==
+ d=google.com; s=20251104; t=1780463647; x=1781068447; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=FJ+DfHrfPx6bLno0+0DSWu6nL0Whh6rzbIUAklqWkfs=;
+ b=eDzS/kJhWq9P2C9+FaTQpAf+KBJr8kGrLZLuT12od7b9Q+1/1YEZghyZ8eQdk95ag1
+ VEeKfigkY3JLNxdO0dECPE8mDc6BPBrBBfoEVnd9y3Au9G72Wopmnktcd5+NUMGl4N3n
+ GG7cLqocCbA1u5D4AV0RNT3xuLAZ4eQcPTUrz+dEJTukZxYn/c6MHLOS+JY2T5kOFxbg
+ jvR6McTZj8XHX6rgE6Y/bEV+yeFQDEIvPhC+ObVRSt8S94UrA8K/LQgmpvISPimlGtzU
+ atx8FjYcC3QSTRFDloEf14MmPAIZ9QbRKRYNxMlHWvAHefVH7ienab0tRE+r4stahMRL
+ +c2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780460125; x=1781064925;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=/3K+SQ5m4qr8COlhpAE1Dxs/YurUbVYIy4Bqs0wky6Y=;
- b=hL33jPq++oDXgGiYsCmqb2fr3yI5r1YdYQ296ZvtHXG9y7hmaPQ5xoFmJiDY8XOmmz
- W30b2KSnIZt2SczC1OBtzpFkDDYl2a1xxvH8bJBMjd3Ux23DU0JftugUgEfmPmNidBLP
- URbBZDKBgBthwwqOrknux8aFPeT7d32H2UU6wimEySTvLmfuFLngqU9aDo6M83keVmsy
- nF3wgbyqAUilbz6/FXQ9ImhpNxGtPImCkHmcCnZWoAzZmU35iqrV6t53XPTxPNC/Lu9o
- 0X7MBqtEjYTu8rb5D5nqhpT6SQPq75zG4VaixHKr313nCYnAk2YKs+6opxFxfikPUUUp
- GEVg==
-X-Gm-Message-State: AOJu0Yyd/IrIpauI6Nx70Fyi5dJRHRPGOB9hYd1rA1RUJyXvv0ViAXxt
- Vj//7YIeVHbzXJ8RwkDfAQiVT8O1oBOYnxKG0M70W+vfbQ71Gl0o077d
-X-Gm-Gg: Acq92OFjiZ6Hv1dHJJCUpH1UhjubiCmCtelde6W474ldm32ZV1jc0v+PQ161qbSx+13
- 9q4zYl2ifP/ykI4pMDcwb4zIITb8tTmZdKAUe6zl2AzMKFLti8wyO0ed+eBLRWlLOQ89Uza6R9G
- kwF73Rem+bTLJVpWldVzozFM3gLT8ryFU0WX7uhlzFo9I6cQez8HvcHx7N2vXPrlx32DATKUOZZ
- NQE6KXlvlTBEVUhEXcJ+05wuEwN+T0zwzZMovBO+xTCwTUqcqtdQXxOUOmE2WhJOVCQ/Wsi3hf6
- Lc0KyPY8DzhMKoxUqssRG+ynupF9wGboElVVEoGD5TPEl9LbtWeLigDz9kTYRy004l11veWzIj8
- drBsvZaDBdEqACauJcUbDf1GFI2FImmMKgOis+bt3H+nxo6pzoSQoPfmGx+iBBkYR6Y5frMfvTQ
- 3IWhOtSa5E3UDyH0aKgxgF4SmEWb3XlGlCIC4zTkoe52kzRXunc6Krff83k3OgHdKEPElNhd1a6
- MT6M7ptAH1hoNY+Yry5EWmL0HMFaTF7PfahRta3oGficvd5
-X-Received: by 2002:a05:7300:3b05:b0:304:de8e:17b with SMTP id
- 5a478bee46e88-3074fa57336mr859101eec.5.1780460125091; 
- Tue, 02 Jun 2026 21:15:25 -0700 (PDT)
-Received: from
- runnervm3jyl0.mwfy1h1i4mauxh5d5aut53bbia.dx.internal.cloudapp.net
- ([13.64.25.181]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3074df48671sm1300315eec.24.2026.06.02.21.15.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 02 Jun 2026 21:15:24 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: AnonymeMeow <anonymemeow@gmail.com>
-Date: Wed,  3 Jun 2026 04:15:22 +0000
-Message-ID: <20260603041522.3879-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260603015841.16230-1-anonymemeow@gmail.com>
-References: <20260603015841.16230-1-anonymemeow@gmail.com>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ d=1e100.net; s=20251104; t=1780463647; x=1781068447;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=FJ+DfHrfPx6bLno0+0DSWu6nL0Whh6rzbIUAklqWkfs=;
+ b=TQxnB5BBASDf2gWeEDxurPv53wTgcpOvInPbgOa4jJtsArkFwTh16jUf4ZMYPwp+fq
+ vOycnNOqRlf4MEeX0ocBCLgT6N07/doIKpf1Hqfaq6g/9CgXGNcjZYmfBAD2BEhrA0Pj
+ Vm37sfHxSBAo5C/LFUMMHauEochcqtdsso21Y1GeRA7x/QVRVL/PhU/BoInwgMIYzXDN
+ sxIhz5aYD8+MSXW57zcH/pJ9oZ6isbZlBqVmu5zIAiAGsVcvF/D9kNgQ+JyD24oCb5A3
+ 4J8zEjZX3gBB3/4LrhIGoUJKs+R5pKjj+ZubofJ8Hf6HqXRM4rmCW5exUzlUvJNYvsdd
+ /r3w==
+X-Gm-Message-State: AOJu0Ywj/QIpkcPpyDjiorh425oy5QfxCumhoPNOeO0G3JR0F0AVWCF4
+ PBbOFh084MJSKx7kjkMyNtA55rFDN1z3r5Zj5yxZV2AUffpVKIeYpSnpQV4PIEWMbhfMiUWh48e
+ mhUyIen2l7pPagZrLj2pay32VyTQujghfRjUwq8AXqm6oNJWjOB8xErWfxiKa/TiQtouA6jJkLi
+ dodwv1jEgc50OxGyyXSjvP7UQBMvlWW4nGDEOx6odxYUPtB5I=
+X-Received: from pfbki2.prod.google.com ([2002:a05:6a00:9482:b0:842:3d2d:1e7e])
+ (user=chihsheng job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a00:288c:b0:842:5777:71b7 with SMTP id
+ d2e1a72fcca58-84284facf26mr1807352b3a.48.1780463646215; 
+ Tue, 02 Jun 2026 22:14:06 -0700 (PDT)
+Date: Wed,  3 Jun 2026 05:14:01 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.54.0.1032.g2f8565e1d1-goog
+Message-ID: <20260603051401.658906-1-chihsheng@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] fanotify13: fix test failure when running iterations
+Subject: [LTP] [PATCH] syscalls/listmount04: Detect backported commit
+ 78f0e33cd6c9 dynamically
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,84 +86,151 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Darren Chang via ltp <ltp@lists.linux.it>
+Reply-To: Darren Chang <chihsheng@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQW5vbnltZU1lb3csCgpUaGFuayB5b3UgZm9yIHRoZSBwYXRjaC4gVGhlIG92ZXJhbGwgYXBw
-cm9hY2ggaXMgY29ycmVjdCDigJQgdGhlIHR3byBwcm9ibGVtcwppZGVudGlmaWVkIChtaXNzaW5n
-IHN0YXRlIHJlc3RvcmF0aW9uIGFmdGVyIEZBTl9ERUxFVEVfU0VMRiBhbmQgdGhlIG92ZXJsYXlm
-cwptb3VudC10aW1pbmcgaXNzdWUgaW4gc2V0dXApIGFyZSByZWFsLCBhbmQgdGhlIHNwbGl0IGJl
-dHdlZW4KY2xlYW5fdXBwZXJfZGlyKCkgZm9yIHRoZSBsb3dlci1vbmx5IGNhc2UgYW5kIGNyZWF0
-ZV9vYmplY3RzKCkgZm9yIHRoZSByZXN0CmlzIHNvdW5kLiBIb3dldmVyIHRoZXJlIGlzIG9uZSBj
-b3JyZWN0bmVzcyBnYXAgdGhhdCBuZWVkcyBmaXhpbmcgYmVmb3JlIHRoaXMKY2FuIGJlIGFwcGxp
-ZWQuCgotLS0KCltCVUddIHJlc3RvcmVfb2JqZWN0cygpIGRvZXMgbm90IHJlLWFkZCB0aGUgbm9m
-aWRfZmQgbWFyawoKSW4gZG9fc2V0dXAoKSwgYSBtYXJrIHdpdGhvdXQgRkFOX1JFUE9SVF9GSUQg
-aXMgcGxhY2VkIG9uIEZJTEVfUEFUSF9PTkUKc3BlY2lmaWNhbGx5IHRvIGV4ZXJjaXNlIHRoZSAi
-dW5pbml0aWFsaXplZCBjb25uZWN0b3ItPmZzaWQgY2FjaGUiIHBhdGgKKHJlZ3Jlc3Npb24gdGVz
-dCBmb3IgYzI4NWEyZjAxZDY5KToKCiAgICBub2ZpZF9mZCA9IFNBRkVfRkFOT1RJRllfSU5JVChG
-QU5fQ0xBU1NfTk9USUYsIE9fUkRPTkxZKTsKICAgIC4uLgogICAgU0FGRV9GQU5PVElGWV9NQVJL
-KG5vZmlkX2ZkLCBGQU5fTUFSS19BREQsIEZBTl9DTE9TRV9XUklURSwgQVRfRkRDV0QsCiAgICAg
-ICAgICAgICAgICAgICAgICBGSUxFX1BBVEhfT05FKTsKClRoZSBuZXcgcmVzdG9yZV9vYmplY3Rz
-KCkgY29ycmVjdGx5IHJlYnVpbGRzIGZpbGVzIGFuZCByZWZyZXNoZXMgZmlkcywgYnV0IGl0CmNh
-bGxzIGNyZWF0ZV9vYmplY3RzKCkgZm9yIHZhcmlhbnRzIDAgYW5kIDQgKFRTVF9WQVJJQU5UX09W
-TF9MT1dFUiA9PSAwKS4KVGhvc2UgY2FsbHMgYWxsb2NhdGUgbmV3IGlub2RlcyBhdCB0aGUgc2Ft
-ZSBwYXRocy4gVGhlIG5vZmlkX2ZkIG1hcmsgcmVtYWlucwpib3VuZCB0byB0aGUgKm9sZCosIG5v
-dy1vcnBoYW5lZCBpbm9kZTsgdGhlIG5ldyBGSUxFX1BBVEhfT05FIGlub2RlIGhhcyBubwpub2Zp
-ZCBtYXJrIGF0IGFsbC4gT24gdGhlIHNlY29uZCBpdGVyYXRpb24sIHNldHVwX21hcmtzKCkgYXR0
-YWNoZXMgZmFub3RpZnlfZmQKKEZBTl9SRVBPUlRfRklEKSB0byBhIGZyZXNoIGlub2RlIHRoYXQg
-aGFzIG5ldmVyIGhhZCBhIG5vbi1GSUQgbWFyaywgc28gdGhlCnZlcnkgc2NlbmFyaW8gdGhhdCBj
-Mjg1YTJmMDFkNjkgZml4ZXMgaXMgbm8gbG9uZ2VyIGV4ZXJjaXNlZC4KCkZvciB2YXJpYW50IDMg
-KFRTVF9WQVJJQU5UX09WTF9MT1dFUiA9PSAxKSwgY2xlYW5fdXBwZXJfZGlyKCkgb25seSByZW1v
-dmVzCm92ZXJsYXlmcyB3aGl0ZW91dHMgZnJvbSBPVkxfVVBQRVIgYW5kIHJlbW91bnRzIHRoZSBv
-dmVybGF5OyB0aGUgb3JpZ2luYWwKT1ZMX0xPV0VSIGlub2RlcyBhcmUgbmV2ZXIgZnJlZWQsIHNv
-IHRoZSBub2ZpZF9mZCBtYXJrIGlzIHByZXNlcnZlZC4gQnV0CnZhcmlhbnRzIDAgYW5kIDQgYm90
-aCBnbyB0aHJvdWdoIGNyZWF0ZV9vYmplY3RzKCksIHdoZXJlIHRoZSBpbm9kZXMgYXJlCnJlcGxh
-Y2VkLgoKK3N0YXRpYyB2b2lkIHJlc3RvcmVfb2JqZWN0cyh2b2lkKQoreworaWYgKFRTVF9WQVJJ
-QU5UX09WTF9MT1dFUikKK2NsZWFuX3VwcGVyX2RpcigpOworZWxzZQorY3JlYXRlX29iamVjdHMo
-KTsKKworLyogR2V0IHRoZSByZS1jcmVhdGVkIG9iamVjdCBpZHMgKi8KK2dldF9vYmplY3Rfc3Rh
-dHMoKTsKK30KCkZpeDogcmUtYWRkIHRoZSBub2ZpZF9mZCBtYXJrIGFmdGVyIHJlLWNyZWF0aW5n
-IHRoZSBvYmplY3RzIHNvIHRoYXQgdGhlCmNvbm5lY3RvciBzdGF0ZSBtYXRjaGVzIGRvX3NldHVw
-KCk6Cgogc3RhdGljIHZvaWQgcmVzdG9yZV9vYmplY3RzKHZvaWQpCiB7CiBpZiAoVFNUX1ZBUklB
-TlRfT1ZMX0xPV0VSKQogY2xlYW5fdXBwZXJfZGlyKCk7CiBlbHNlCiBjcmVhdGVfb2JqZWN0cygp
-OwogCisvKiBSZS1hZGQgdGhlIG5vZmlkIG1hcms7IGNyZWF0ZV9vYmplY3RzKCkgY3JlYXRlcyBu
-ZXcgaW5vZGVzICovCitTQUZFX0ZBTk9USUZZX01BUksobm9maWRfZmQsIEZBTl9NQVJLX0FERCwg
-RkFOX0NMT1NFX1dSSVRFLAorICAgQVRfRkRDV0QsIEZJTEVfUEFUSF9PTkUpOworCiAvKiBHZXQg
-dGhlIHJlLWNyZWF0ZWQgb2JqZWN0IGlkcyAqLwogZ2V0X29iamVjdF9zdGF0cygpOwogfQoKRm9y
-IHZhcmlhbnQgMyB0aGlzIGlzIGEgaGFybWxlc3Mgbm8tb3AgKEZBTl9NQVJLX0FERCBvbiBhbiBh
-bHJlYWR5LW1hcmtlZAppbm9kZSBzdWNjZWVkcyBhbmQgbGVhdmVzIHRoZSBtYXJrIHVuY2hhbmdl
-ZCkuIEZvciB2YXJpYW50cyAwIGFuZCA0IGl0CnJlc3RvcmVzIGZ1bGwgY292ZXJhZ2Ugb2YgYzI4
-NWEyZjAxZDY5LgoKLS0tCgpbTklUXSBDb21taXQgbWVzc2FnZTogImNyYXNoIiBpcyBpbXByZWNp
-c2UKCj4gVGhlIEZBTl9ERUxFVEVfU0VMRiB0ZXN0IGNhc2UgcmVtb3ZlcyB0ZXN0IGZpbGVzLCBj
-YXVzaW5nIGxhdGVyCj4gaXRlcmF0aW9ucyB0byBjcmFzaC4KClNBRkVfT1BFTigpIGZhaWxpbmcg
-ZHVlIHRvIEVOT0VOVCBjYXVzZXMgdHN0X2JyayhUQlJPSywgLi4uKSwgd2hpY2gKdGVybWluYXRl
-cyB0aGUgaXRlcmF0aW9uIOKAlCBub3QgYSBjcmFzaC4gImZhaWwiIG9yICJhYm9ydCIgd291bGQg
-YmUgbW9yZQphY2N1cmF0ZSBMVFAgdGVybWlub2xvZ3kuCgotLS0KCltOSVRdIFRyYWlsaW5nIHdo
-aXRlc3BhY2UgaW4gZG9fc2V0dXAoKQoKVGhlIGJsYW5rIGxpbmUgaW5zZXJ0ZWQgYWZ0ZXIgY3Jl
-YXRlX29iamVjdHMoKTsgaW4gZG9fc2V0dXAoKSBjYXJyaWVzIGEKdHJhaWxpbmcgVEFCL3NwYWNl
-LiBjaGVja3BhdGNoLnBsIHdpbGwgZmxhZyBpdC4gUGxlYXNlIHJlbW92ZS4KCiAvKiBDcmVhdGUg
-ZmlsZSBhbmQgZGlyZWN0b3J5IG9iamVjdHMgZm9yIHRlc3Rpbmcgb24gYmFzZSBmcyAqLwogY3Jl
-YXRlX29iamVjdHMoKTsKLTx0cmFpbGluZyB3aGl0ZXNwYWNlIGhlcmU+CisKIGlmICh0c3RfdmFy
-aWFudCkgewoKLS0tCgpFdmVyeXRoaW5nIGVsc2UgbG9va3MgZ29vZDoKCi0gVGhlIG1hY3JvIGRl
-ZmluaXRpb25zIGZvciBUU1RfVkFSSUFOVF9PVkxfTE9XRVIgLyBUU1RfVkFSSUFOVF9PVkxfV0FU
-Q0ggYXJlCiAgY29ycmVjdCBmb3IgYWxsIDUgdmFyaWFudHMgYW5kIHJlcGxhY2UgdGhlIHR3byBv
-cGVuLWNvZGVkIGV4cHJlc3Npb25zIG5lYXRseS4KLSBjbGVhbl91cHBlcl9kaXIoKSBjb3JyZWN0
-bHkgaGFuZGxlcyBkaXJlY3Rvcnkgd2hpdGVvdXRzOiBzaW5jZSBhbGwgb2JqZWN0cwogIChpbmNs
-dWRpbmcgRElSX09ORSkgd2VyZSBjcmVhdGVkIGluIE9WTF9MT1dFUiBhbmQgT1ZMX1VQUEVSIHN0
-YXJ0cyBlbXB0eSwKICBvdmVybGF5ZnMgY3JlYXRlcyBjaGFyLWRldmljZSAoYyAwIDApIHdoaXRl
-b3V0cyBpbiBPVkxfVVBQRVIgZm9yIGFsbCB0aHJlZQogIGRlbGV0ZWQgb2JqZWN0cywgc28gU0FG
-RV9VTkxJTksoKSB3b3JrcyB1bmlmb3JtbHkuCi0gTW92aW5nIFRTVF9NT1VOVF9PVkVSTEFZKCkg
-dG8gYWZ0ZXIgY3JlYXRlX29iamVjdHMoKSBjb3JyZWN0bHkgYXZvaWRzCiAgY3JlYXRpbmcgZmls
-ZXMgZGlyZWN0bHkgaW4gdGhlIGxvd2VyL3VwcGVyIGRpcmVjdG9yeSB3aGlsZSB0aGUgb3Zlcmxh
-eSBpcwogIGFscmVhZHkgbW91bnRlZC4KLSBUaGUgbW91bnQvdW1vdW50IHNlcXVlbmNlIGluIGNs
-ZWFuX3VwcGVyX2RpcigpIGludGVyYWN0cyBjb3JyZWN0bHkgd2l0aAogIGRvX2NsZWFudXAoKTog
-dGhlIE9WTF9MT1dFUiBiaW5kIG1vdW50IChiaW5kX21vdW50ZWQpIHJlbWFpbnMgb24gdGhlIGJv
-dHRvbQogIG9mIHRoZSBNT1VOVF9QQVRIIHN0YWNrIGFuZCBpcyB1bm1vdW50ZWQgbGFzdCBpbiBj
-bGVhbnVwLgotIEtlcm5lbCBjb21taXRzIGMyODVhMmYwMWQ2OSwgYmMyNDczYzkwZmNhLCBhbmQg
-YzQ1YmVlYmZkZTM0YSBhcmUgYWxsIHByZXNlbnQKICBpbiBrZXJuZWwgNy4xIChjdXJyZW50IHN0
-YWJsZSk7IG5vIHN0YWdpbmcgY29uY2VybnMuCi0gcnVudGVzdCBlbnRyeSBjb25maXJtZWQ6IHN5
-c2NhbGxzL2Zhbm90aWZ5MTMgZmFub3RpZnkxMy4KClZlcmRpY3Q6IE5lZWRzIHJldmlzaW9uCgpM
-VFAgQUkgUmV2aWV3ZXIKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51
-eC5pdC9saXN0aW5mby9sdHAK
+Commit 78f0e33cd6c9 ("fs/namespace: correctly handle errors returned
+by grab_requested_mnt_ns") changed the expected errno for an invalid
+mnt_ns_fd from EINVAL to EBADF. This was introduced in v6.17.9.
+
+Currently, the test relies solely on tst_kvercmp() to determine which
+errno to expect. However, this causes the test to fail on older LTS
+or Android kernels (e.g., v6.12) that have backported this specific
+patch. On these kernels, listmount() correctly returns EBADF, but the
+test expects EINVAL purely based on the older kernel version number.
+
+Fix this by introducing a runtime probe in setup(). By issuing a dummy
+listmount() syscall with an invalid mnt_ns_fd (-1), we can check the
+returned errno and accurately determine the kernel's behavior regardless
+of its version string.
+
+Additionally, rename the 'kver' variable to 'current_fd_err_behavior'
+and update the macros to clearly reflect the expected errno behavior
+(INVALID_FD_RET_EINVAL vs INVALID_FD_RET_EBADF) rather than relying on
+version thresholds, improving overall code readability and semantics.
+
+Signed-off-by: Darren Chang <chihsheng@google.com>
+---
+ .../kernel/syscalls/listmount/listmount04.c   | 51 ++++++++++++++-----
+ 1 file changed, 39 insertions(+), 12 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/listmount/listmount04.c b/testcases/kernel/syscalls/listmount/listmount04.c
+index 919f4c854..38eaffede 100644
+--- a/testcases/kernel/syscalls/listmount/listmount04.c
++++ b/testcases/kernel/syscalls/listmount/listmount04.c
+@@ -15,22 +15,26 @@
+ 
+ #define _GNU_SOURCE
+ 
++#include <errno.h>
+ #include "config.h"
+ #include "tst_test.h"
+ #include "lapi/mount.h"
+ #include "lapi/syscalls.h"
+ 
+ #define MNT_SIZE 32
++
+ /*
+  * For commit 78f0e33cd6c9 ("fs/namespace: correctly handle errors returned
+  * by grab_requested_mnt_ns") from v6.18-rc7 backported to v6.17.9.
++ * Defines the expected error code behavior when an invalid file descriptor
++ * is passed to mnt_ns_fd (previously known as spare).
+  */
+-#define BEFORE_6_17_9 1
+-#define AFTER_6_17_9 2
++#define INVALID_FD_RET_EINVAL 1
++#define INVALID_FD_RET_EBADF  2
+ 
+ static mnt_id_req *request;
+ static uint64_t mnt_ids[MNT_SIZE];
+-static int kver;
++static int current_fd_err_behavior;
+ 
+ static struct tcase {
+ 	int req_usage;
+@@ -43,7 +47,7 @@ static struct tcase {
+ 	uint64_t flags;
+ 	int exp_errno;
+ 	char *msg;
+-	int kver;
++	int fd_err_behavior;
+ } tcases[] = {
+ 	{
+ 		.req_usage = 0,
+@@ -89,7 +93,7 @@ static struct tcase {
+ 		.nr_mnt_ids = MNT_SIZE,
+ 		.exp_errno = EINVAL,
+ 		.msg = "invalid mnt_id_req.spare",
+-		.kver = BEFORE_6_17_9,
++		.fd_err_behavior = INVALID_FD_RET_EINVAL,
+ 	},
+ 	{
+ 		.req_usage = 1,
+@@ -100,7 +104,7 @@ static struct tcase {
+ 		.nr_mnt_ids = MNT_SIZE,
+ 		.exp_errno = EBADF,
+ 		.msg = "invalid mnt_id_req.mnt_ns_fd",
+-		.kver = AFTER_6_17_9,
++		.fd_err_behavior = INVALID_FD_RET_EBADF,
+ 	},
+ 	{
+ 		.req_usage = 1,
+@@ -137,8 +141,9 @@ static void run(unsigned int n)
+ 	struct tcase *tc = &tcases[n];
+ 	mnt_id_req *req = NULL;
+ 
+-	if (tc->kver && tc->kver != kver) {
+-		tst_res(TCONF, "Test not suitable for current kernel version");
++	/* Skip tests that do not match the runtime behavior of current kernel */
++	if (tc->fd_err_behavior && tc->fd_err_behavior != current_fd_err_behavior) {
++		tst_res(TCONF, "Test not suitable for current kernel's FD error behavior");
+ 		return;
+ 	}
+ 
+@@ -159,10 +164,32 @@ static void run(unsigned int n)
+ 
+ static void setup(void)
+ {
+-	if (tst_kvercmp(6, 17, 9) >= 0)
+-		kver = AFTER_6_17_9;
+-	else
+-		kver = BEFORE_6_17_9;
++	/* 1. If kernel is 6.17.9 or newer, it definitively has the new behavior */
++	if (tst_kvercmp(6, 17, 9) >= 0) {
++		current_fd_err_behavior = INVALID_FD_RET_EBADF;
++		return;
++	}
++
++	/* 2. Runtime probe for older kernels:
++	 * Check if commit 78f0e33cd6c9 was backported by manually issuing
++	 * a syscall with an invalid mnt_ns_fd (-1).
++	 */
++	mnt_id_req probe_req = {
++		.size = MNT_ID_REQ_SIZE_VER0,
++		.mnt_id = LSMT_ROOT,
++		.mnt_ns_fd = -1,
++		.param = 0
++	};
++
++	tst_syscall(__NR_listmount, &probe_req, mnt_ids, MNT_SIZE, 0);
++
++	/* 3. Set global behavior flag based on actual kernel response */
++	if (errno == EBADF) {
++		tst_res(TINFO, "Detected backported commit 78f0e33cd6c9 (returns EBADF)");
++		current_fd_err_behavior = INVALID_FD_RET_EBADF;
++	} else {
++		current_fd_err_behavior = INVALID_FD_RET_EINVAL;
++	}
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.54.0.1032.g2f8565e1d1-goog
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
