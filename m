@@ -4,94 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09562CD6E60
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 17:35:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1780421711; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=RPAwA6L3OdKy9E/zH+atZVylVbORlFsYz6W99AjUyDo=;
- b=QRihORUqmYW7ReJlhHdY1CU+Oy6yadbVXxfU+uRg+h1d4bAkicFxojK9reWLyExQuH70d
- rRrmVqvwSGN63EFy1EmgMKI0CGpNsrh/1nFqkYn1zr72kHEjUg6sjZxpzh/wPqNmQ3JQlMj
- QdISZl9XrLv0SYYZ01WTun+CEUMicAQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F1CECD6E4A
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 01:50:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 94A8F3E7232
-	for <ltp@archiver.kernel.org>; Tue,  2 Jun 2026 19:35:11 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 938893E722C
+	for <ltp@archiver.kernel.org>; Wed,  3 Jun 2026 03:50:04 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 42BD43E722D
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 19:34:35 +0200 (CEST)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id AB58A3CE107
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 03:49:47 +0200 (CEST)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 77B2C14002A6
- for <ltp@lists.linux.it>; Tue,  2 Jun 2026 19:34:34 +0200 (CEST)
-Received: by mail-wr1-x429.google.com with SMTP id
- ffacd0b85a97d-45eecb8bf67so4141318f8f.2
- for <ltp@lists.linux.it>; Tue, 02 Jun 2026 10:34:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1780421674; x=1781026474; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=8dYM8o+mFxU1GXND1qdOkxhPJNFIc9QARCqMll7yc7M=;
- b=DRBbqhuhYPr2ovwAvjf2ZHJ4i0uKHMWUZJI/kLr/u1ystJvc88pnoeD0gxQ3nCz7fA
- znP94LdU96gE+ZrIr7BSBM/I51dJDmt/ePTDxN2wUiyPFIbkbTbNjDbRY1ItCSawYrBk
- gwlGW4HmogFn7tj8FCj860A2eCtpEOaRxGTcjtMP4FQjnzEWSjz3GlqvIGxz6sSc34Ch
- H2jnfvfrGsuUAl7OBF5jxddbZEyjTpUHPcFgXJe3dirbAid79j22GOutDry6H5fbwN4z
- K8YAx2dLMEq/5SVhae1kO/S67ZWeleGcxzcx7YrxYGieJUHerqBIWRiBtXsehzw1+kcn
- vusA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780421674; x=1781026474;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=8dYM8o+mFxU1GXND1qdOkxhPJNFIc9QARCqMll7yc7M=;
- b=GTpO3LCrwPjD6jMAlWjjnbJumtwHRQrXrRoxkiEXoBrDvbGrN2sMsv7f67EfrIFNT3
- b+5YXRzN4/Xedb+ZmG7pYjM5N05AL3hlcCkitrwOvvRhPiss7yItmPKArXjAIPhvH+FN
- f7ZPOB5rEZmdfDvtzierp+lYR6TOywhjG1Okf9M5tklEJHAdoQcutdFD+DD3Iy2peuz/
- E+0iYrjI1FtkJ4z/M5+G4EcWhep8X9Gs6uD8vOGQ+GM+Yck/Fd3f1w7OtKohOK3q3t0H
- k9kWeKoSACbBWslL7qTHjd5tb3hVdJcSnfmTBuaqB/MOAZRonPVdSzDi1EMxl02UtLIf
- Uqcg==
-X-Forwarded-Encrypted: i=1;
- AFNElJ+IJQK/iRYWZJnpG4RZJoI/U2zlLa5RmFPvqFJwlp9E4aSTyotgIxCLsbCaS2SENiGRkPA=@lists.linux.it
-X-Gm-Message-State: AOJu0Yz8IFh3woHJxnwrrXs1t+oeaLHNIVClBgi26skQom1aGsqEYAOM
- IqYbm+QLRhbSAQP+f7uZZpbt4XfuphLcQCVv1sqBlp09aYlAODxF8sXCE48/1Dzl9hBhoHOGhLG
- 6gSuSs20=
-X-Gm-Gg: Acq92OG3LcRpxtvduw2sUZEf/Y/71drWwU9jmuEOn+kwZ2WDEefXMdVoagovtf3X5kc
- 2mz1p7cdxc3yFii7KTky5R11LO9KYWXYKNmhLUp0jVm9pUn3k0o85oFgJWnqYnTPJOfb292b00o
- meQAGCwjJ+GImVxHepPUOuvuzAD1qNYeAnVbtspoHsR6loOO3EqlOZZoJ2FFj9rvGIadQmzYmNi
- DsEHkL+xM9MSKfsSdiFG7g7tVsR+aD1VXDIMcQrkKqcvOyOpX7xMK5rKUbF6h4NGqkYPZlSd1VL
- dwjry+A5+ImOnvtFGamfW6eETadUBNwf4h2zZzctkYsoD7sgI4jrE3x+u6cY2Q9usKaznQa0Lig
- 6G71qAE02AOLI9aIpGQTu7HO/RHoXGxNvafN4MsIEb/laUfIlHnz8W1hn81FFbv1FVMttKdoa+v
- 0MsAl2NJ5Ctpy/Otd27tVaaUgN7XJsNK8Y/lXGJ0ejQH74Znyn/A7QkwTnhnkfvw==
-X-Received: by 2002:a05:600c:620e:b0:48f:e230:d5ab with SMTP id
- 5b1f17b1804b1-490b50c56dfmr12231755e9.31.1780421673726; 
- Tue, 02 Jun 2026 10:34:33 -0700 (PDT)
-Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4601f2ed944sm852715f8f.13.2026.06.02.10.34.33
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 02 Jun 2026 10:34:33 -0700 (PDT)
-Message-ID: <8a180e4a-88a4-4e69-be5d-86c75d1417d0@suse.com>
-Date: Tue, 2 Jun 2026 19:34:32 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EE6F71400053
+ for <ltp@lists.linux.it>; Wed,  3 Jun 2026 03:49:44 +0200 (CEST)
+X-UUID: 79d51e0c5eee11f1aa26b74ffac11d73-20260603
+X-CTIC-Tags: HR_CC_AS_FROM, HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME,
+ HR_CTE_8B
+ HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+ HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+ HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+ HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
+ SN_UNTRUSTED, SN_UNFAMILIAR, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
+ UD_TRUSTED, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_COMM
+ GTI_C_CI, GTI_FG_IT, GTI_RG_INFO, GTI_C_BU, AMN_GOOD ABX_MISS_RDNS
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12, REQID:03af2997-4ca4-44cf-83ca-be8e75a7408f, IP:20,
+ URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+ ON:release,TS:-5
+X-CID-INFO: VERSION:1.3.12, REQID:03af2997-4ca4-44cf-83ca-be8e75a7408f, IP:20,
+ UR
+ L:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+ :release,TS:-5
+X-CID-META: VersionHash:e7bac3a, CLOUDID:8392c002763f36bff04a71471ba41bc8,
+ BulkI
+ D:260603094937SDEFVDSR,BulkQuantity:0,Recheck:0,SF:17|19|66|78|102|127|850
+ |865|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:1,File:nil,RT:nil,Bulk:ni
+ l,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE
+ :0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 79d51e0c5eee11f1aa26b74ffac11d73-20260603
+X-User: panzhe@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+ (envelope-from <panzhe@kylinos.cn>) (Generic MTA)
+ with ESMTP id 289596107; Wed, 03 Jun 2026 09:49:36 +0800
+From: panzhe <panzhe@kylinos.cn>
+To: ltp@lists.linux.it
+Date: Wed,  3 Jun 2026 09:49:33 +0800
+Message-Id: <20260603014933.30653-1-panzhe@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: panzhe <panzhe@kylinos.cn>, Linux Test Project <ltp@lists.linux.it>
-References: <20260602090214.252840-1-panzhe@kylinos.cn>
-Content-Language: en-US
-In-Reply-To: <20260602090214.252840-1-panzhe@kylinos.cn>
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] gethostname02: Accept EOVERFLOW on alpha
+Subject: [LTP] [PATCH v3] gethostname02: Accept EOVERFLOW on alpha
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,73 +76,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Avinesh Kumar via ltp <ltp@lists.linux.it>
-Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+On alpha glibc's gethostname() directly calls the kernel
+syscall and sets errno to EOVERFLOW when the buffer is
+too small, because the kernel truncates silently and the
+string is not null terminated.
 
-On 6/2/26 11:02 AM, panzhe wrote:
-> On alpha glibc's gethostname() directly calls the kernel
-> syscall and sets errno to EOVERFLOW when the buffer is
-> too small, because the kernel truncates silently and the
-> string is not null terminated.
-> 
-> On the other hand, the generic posix implementation used
-> on x86_64 sets ENAMETOOLONG in this case.
-> 
-> Fix this by accepting both errnos.
-> 
-> Closes: https://github.com/linux-test-project/ltp/issues/1319
-> Signed-off-by: panzhe <panzhe@kylinos.cn>
-> ---
->   testcases/kernel/syscalls/gethostname/gethostname02.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/gethostname/gethostname02.c b/testcases/kernel/syscalls/gethostname/gethostname02.c
-> index c56fcb800..dd1f4e39e 100644
-> --- a/testcases/kernel/syscalls/gethostname/gethostname02.c
-> +++ b/testcases/kernel/syscalls/gethostname/gethostname02.c
-> @@ -7,7 +7,7 @@
->   /*\
->    * Verify that gethostname(2) fails with
->    *
-> - * - ENAMETOOLONG when len is smaller than the actual size
-> + * - ENAMETOOLONG or EOVERFLOW when len is smaller than the actual size
->    */
->   
->   #include "tst_test.h"
-> @@ -16,11 +16,13 @@ static void verify_gethostname(void)
->   {
->   	char hostname[HOST_NAME_MAX + 1];
->   	int real_length;
-> +	const int exp_errnos[] = {ENAMETOOLONG, EOVERFLOW};
->   
->   	SAFE_GETHOSTNAME(hostname, sizeof(hostname));
->   	real_length = strlen(hostname);
->   
-> -	TST_EXP_FAIL(gethostname(hostname, real_length - 1), ENAMETOOLONG,
-> +	TST_EXP_FAIL_ARR(gethostname(hostname, real_length - 1),
-> +		exp_errnos, ARRAY_SIZE(exp_errnos),
+On the other hand, the generic posix implementation used
+on x86_64 sets ENAMETOOLONG in this case.
 
-Please also fix make check error here
+Fix this by accepting both errnos.
 
- > make check-gethostname02
-CHECK testcases/kernel/syscalls/gethostname/gethostname02.c
-gethostname02.c:25: CHECK: Alignment should match open parenthesis
+Closes: https://github.com/linux-test-project/ltp/issues/1319
+Signed-off-by: panzhe <panzhe@kylinos.cn>
+---
+ testcases/kernel/syscalls/gethostname/gethostname02.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-with that
-Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
-
->   		"len is smaller than the actual size");
->   }
->   
-
-Regards,
-Avinesh
+diff --git a/testcases/kernel/syscalls/gethostname/gethostname02.c b/testcases/kernel/syscalls/gethostname/gethostname02.c
+index c56fcb800..23ab25010 100644
+--- a/testcases/kernel/syscalls/gethostname/gethostname02.c
++++ b/testcases/kernel/syscalls/gethostname/gethostname02.c
+@@ -7,7 +7,7 @@
+ /*\
+  * Verify that gethostname(2) fails with
+  *
+- * - ENAMETOOLONG when len is smaller than the actual size
++ * - ENAMETOOLONG or EOVERFLOW when len is smaller than the actual size
+  */
+ 
+ #include "tst_test.h"
+@@ -16,12 +16,14 @@ static void verify_gethostname(void)
+ {
+ 	char hostname[HOST_NAME_MAX + 1];
+ 	int real_length;
++	const int exp_errnos[] = {ENAMETOOLONG, EOVERFLOW};
+ 
+ 	SAFE_GETHOSTNAME(hostname, sizeof(hostname));
+ 	real_length = strlen(hostname);
+ 
+-	TST_EXP_FAIL(gethostname(hostname, real_length - 1), ENAMETOOLONG,
+-		"len is smaller than the actual size");
++	TST_EXP_FAIL_ARR(gethostname(hostname, real_length - 1),
++			 exp_errnos, ARRAY_SIZE(exp_errnos),
++			 "len is smaller than the actual size");
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.25.1
 
 
 -- 
