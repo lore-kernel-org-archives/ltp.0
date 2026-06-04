@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87C39CD6E77
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 17:55:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26AEACD6E77
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 17:57:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 635873E71BD
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 19:55:28 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 871343E6199
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 19:57:36 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 62ECE3CD56E
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 19:55:11 +0200 (CEST)
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com
- [IPv6:2607:f8b0:4864:20::f43])
+ by picard.linux.it (Postfix) with ESMTPS id 47D743CD56E
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 19:57:18 +0200 (CEST)
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
+ [IPv6:2607:f8b0:4864:20::743])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EFF96600A7C
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 19:55:10 +0200 (CEST)
-Received: by mail-qv1-xf43.google.com with SMTP id
- 6a1803df08f44-8ced8f44da0so10261996d6.2
- for <ltp@lists.linux.it>; Thu, 04 Jun 2026 10:55:10 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2805A2009B6
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 19:57:16 +0200 (CEST)
+Received: by mail-qk1-x743.google.com with SMTP id
+ af79cd13be357-91550f68089so108835485a.2
+ for <ltp@lists.linux.it>; Thu, 04 Jun 2026 10:57:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780595710; x=1781200510; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1780595835; x=1781200635; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=HLXOWrmKt1qpX6/1w8VtgjlV/5XY3MAUWc9qCKlPPeI=;
- b=Xoeafyq+Y9T5I8ZhqzM2aAhVlXILSjy+YoFvLhVM3Q2TAMA1lF0qIyI/HUDYps9T13
- NWwckF17k7IOFJDCqbBpaEi7BFh7LNA3w9o1O9AkMwSv09/jCObVNbVzWnGaJcG5NJNY
- fHVXv0LDDjr7AP5QIH1zSPikkhXFAq+Gsdsy7PrKM8CzKMn9LFHJnzUINfYWs3h9oun+
- yGq+NAf19VPa3s2KOacZOvEsAs5rbxSdWWawfVZZkujAISNc2aGj46oY2qatCXXgWC4C
- R0gvmvMM9lJB/bvs8GC262AxqIMClrBYJoDknu748DYZrtIH4N08bYtaZ1Gsc/KTmdW+
- PlXw==
+ bh=bctekbIWoOjTquUj4m0dfE+lIwqM5e1loeRTVK4ORpE=;
+ b=AFLXv6DoZpA2/ZioTTa+wMoemjJfApNCnu89Xzs/Reu+dDM8AnjS+Z3IjGxf/09RGG
+ X5JdTVhifV05sW5xg0EPMM/pD5jVBvTx47i4B2GpSX1iMHPeX5CQFVTwr28G+KHz1aJn
+ qrLA/+IB0o5lly6TFgIoj8ZlzMIipP3fGf8JKDjGhpCs3g3PrrRTr/BcejRieKRgK2Yx
+ aSztMF1s6QE2yi8+KV06Q/J7o3m2G3Od8jF6FF5325+fJvnAQT5ORrSuTUYrb4KFdJTS
+ mbUrdVpgFHlDC3ehV95x93cEFAk6yrE2kif+WW/XQkNS2FDaxx3Bnl1cYiqrCjifaqEJ
+ bXZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780595710; x=1781200510;
+ d=1e100.net; s=20251104; t=1780595835; x=1781200635;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=HLXOWrmKt1qpX6/1w8VtgjlV/5XY3MAUWc9qCKlPPeI=;
- b=etYWuR+0w+TIjf2e+c6jz+CXadvdzmDpyaOyniWD224R7M8LG343UkVKPa1ALf/Cth
- MKzptYfoGwzijIAqmxsa2PIw8I8/3m0Klc/sInGu/nOedG/dvV3CIEOmh8WkoNU6VqGF
- sHYkfw84EEfQEtE7dxkcKixfp/EFEFfEZUjMavtzIBzLlD2MEri1W3RA0UYeGjcX5aEc
- 1mSKlOdM6qy56K7RV+Q8+bxmN0FQRJGEpkijV41FZtQrjp5CRYRv+mB20TVp3j9aJlM6
- 7zxhsy98iWy1n1QE8uxuVMFkRF0C8x4p44wyiLZG5uL1VybuUID1TdxOvFWFY+VAvN3Y
- K28A==
-X-Gm-Message-State: AOJu0YzeIsHbrUiNvb9ZiV6+dn6S6nNQgZfngQG5jmUuQPaA+HhrZkAq
- qcsD0Edf22sjZmUBhkt5S+jt/331HjNwYs+eB3+osG1kDgYan9hLgwMj
-X-Gm-Gg: Acq92OEOjKS87eJ/3wYnkCslSZUdcXIJhi1SDPOipnOuw15OEUL/txjKQvbf857Al1G
- 726sr4VEg/fybvY3oJx9TDDgJ8PSFV1MDxx8dG/FoDL+dYd956gTyJs4yNIS+hh5wsQ8Jy797JL
- yr6NuZB7ztG89tzy2/LzklddNARlC5ko4ptm6r6azK+1iMNHb1PZH96gq06OmfB/Dt2hb7Y7fqd
- EOKuDQkT6m8cxd9f9xjRZXDAIssAiz4Rr3L4eGUmajK6cAQ0ZLNTf8EPnOr28DJsoYpxX5mDTSm
- sRqaxv93I7ZGU/7RXNXFreKqIR32dTEWGsNHl3/JnhJvxnrmsz8tKwohNG12Qp+SpJBfJ19QWw2
- G0wXeIbvLNIEOZINcF/Fm5Mj5TcxjQPmu8EMnTM0fTxd7tVbuqlrwf5YyZEeRtHTqevLyRaOkto
- DZsk4e8drA7xkQI3EVSYRNiWCMpl+r7IrEJ4cfgzDoCil+JmPcGfVkUVtu1M1rU5ttu02iv3Fid
- vtC6njaQUc/Z4muszcopBQTQVI405aK3E4/mUDog0+mSt0=
-X-Received: by 2002:a0c:e749:0:b0:8cc:60dc:a249 with SMTP id
- 6a1803df08f44-8cee63b0d08mr1673986d6.42.1780595709501; 
- Thu, 04 Jun 2026 10:55:09 -0700 (PDT)
+ bh=bctekbIWoOjTquUj4m0dfE+lIwqM5e1loeRTVK4ORpE=;
+ b=bkQj8y65n0QGrdRRbB7calhrUNIX0E2IgMbSsWke51LLW+/Erj0cHrr4f+OfyCDfDd
+ 1UzmuzWGgOLH0D9vtGf9WqHYqBVFsMjdUg88/fhGQA0fOVcuZfVny8097PLGsBDDmRCL
+ wbkL19nNRd9ECfpykSyFe5z006n/NOLack5YYDlcuK2YqfmvrrK9EU7pOd0acCySzXbn
+ AQqTmSgaY3QjGCp49XYbuFiHDrm5slDsxa1PHu+6xA8fMnyiTwplDN0cfGq4lBHM4m3K
+ N6lOud9T4KQE2vXG5BujKr+TtSDWh9DqSDyxH0DawNB2+JxI92nAxWp4gpK3lSCVmsAH
+ W4Ng==
+X-Gm-Message-State: AOJu0YzzF4z9DSERt/Zak+3YaVW1TkGS3gFSV1jTEwh4RpGN0b9P4g5s
+ yKAzaopQaY+FfhAhYw/7CxbSLJbHEnw9v+DWYD34pqT7UGiaBc9DO1rC
+X-Gm-Gg: Acq92OHOJWwCiGRiALeXU4enXXCMImeMOClwqLUNU7rUrOkeQa18rMKiOdvOIa1CqUb
+ AXKmVNxXBlg2jkgyvUTNnIXw2EOH3yCKibWE9uNRSDQwSujX0qQibiHQpWLSg/o0QRVd3b1DDf0
+ HUgIdh6g0nqpLoWN/2qY783evmaYkt+OXiLZ1uroDGmb2AfkTwtqjQTYyfl7yaaOxb1mx1i7b7J
+ YpcLDPj46uPNbu1HLvzHG6zR7YAdx5zll2Vpu26jtaDZFtZ/Sk3a2FhpG57tNKbRKyagNFlw2Nf
+ 2seomwgMbgas+HjzXlK9yJE+C7h7JpQ3+jpfmleUe41SkJE0Q2FgNwe+rfgI5/cciO1HqlkfZCl
+ kjDfvU1s6klZ7iqnIlHmge43VM+qtu2zXiYgMbC47DHkBTeLZfJiLiaRRmSmSrp9Kk1CUlaQ5Qa
+ 5eJuinHhL6HZi/E3OMnqH1IDT/kR1TlQb47U1lVT/b6HFpysXwCCDp9R2BRD66VBmfuWqA1BcYL
+ 8i0F1txx27Shup6V2ce1i2aZOmWb6avtRXUal8nqX33Qss2/tc=
+X-Received: by 2002:a05:620a:460b:b0:915:7f4d:8642 with SMTP id
+ af79cd13be357-915a9a4761fmr46114085a.0.1780595834900; 
+ Thu, 04 Jun 2026 10:57:14 -0700 (PDT)
 Received: from
- runnervm3jyl0.t0wjbh1ntu3exmtqficsg1sdwa.cx.internal.cloudapp.net
- ([20.49.61.54]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8ceccdb5e92sm58581206d6.11.2026.06.04.10.55.08
+ runnervm3jyl0.s1jfbgqwn2qebkyxgm3fhys44b.ex.internal.cloudapp.net
+ ([64.236.142.151]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-9159cd628f8sm303684985a.4.2026.06.04.10.57.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 04 Jun 2026 10:55:09 -0700 (PDT)
+ Thu, 04 Jun 2026 10:57:14 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: yeziwen1989@yeah.net
-Date: Thu,  4 Jun 2026 17:55:07 +0000
-Message-ID: <20260604175507.3923-1-linuxtestproject.agent@gmail.com>
+To: Jinseok Kim <always.starving0@gmail.com>
+Date: Thu,  4 Jun 2026 17:57:13 +0000
+Message-ID: <20260604175713.3951-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260604160112.159917-1-yeziwen1989@yeah.net>
-References: <20260604160112.159917-1-yeziwen1989@yeah.net>
+In-Reply-To: <20260604150643.3433-1-always.starving0@gmail.com>
+References: <20260604150643.3433-1-always.starving0@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] execve05: add exit call when execve failed
+Subject: Re: [LTP] fstat02: Verify st_ino field
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,21 +97,25 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Yeguojin,
+Hi Jinseok,
 
-On Fri Jun 5 00:01:12 2026, Yeguojin wrote:
-> execve05: add exit call when execve failed
+On Fri, 5 Jun 2026 00:06:41 +0900, Jinseok Kim wrote:
+> fstat02: Verify st_ino field
 
-The Signed-off-by: tag is missing. It is mandatory for all LTP patches.
+> fstat01 does not currently verify the st_ino field.
+
+The patch modifies fstat02.c, not fstat01.c -- and fstat01 does not
+exist in this directory. Should this say "fstat02"?
 
 Verdict: Needs revision
 
 Pre-existing issues:
 
-testcases/kernel/syscalls/execve/execve05.c: The doc comment has a
-duplicate reference -- "execve(2) :manpage:`execve(2)`" -- which
-renders as "execve(2) execve(2)" in the documentation. The plain text
-"execve(2)" before the :manpage: directive should be removed.
+  static int fildes;
+
+File descriptors should be initialized to -1, not 0 (stdin). The
+cleanup guard should use `fildes != -1` instead of `fildes > 0` to
+match.
 
 ---
 Note:
