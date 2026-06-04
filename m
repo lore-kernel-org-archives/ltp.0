@@ -4,108 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E413BCD6E4A
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 09:48:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D942CD6E57
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 09:50:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5BDE93E71C0
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 11:48:00 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 28A7F3E54DE
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 11:50:54 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 383D33E2773
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:47:44 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id D30DD3E1CF6
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:50:38 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5B365100093E
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:47:42 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7B248100052E
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:50:38 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9C2C76AE14;
- Thu,  4 Jun 2026 09:47:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1780566461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=dP73VJCXszidLGimsqClgLAh8Q/jfQlNjkEGOxKqmny5UHYNt8EJlBktNFTE/cPs0awz/h
- KOxu6eQgs65P4IexZc5vKydr04/JtiKY4tZNR8xP2AyBJ06RufTYI0H4YTdvZwhC0ZjmmF
- psGeXXLl5Of0p85avLU9a+AHyfIpvDo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1780566461;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=13LjskRYdrI2U7SuFrS0uLr6J0bn6FrzU6W1ZAEV8sAS+6hzjTUQeGKIxH+KX3eiDMkVLt
- wv0OkQ6nO9VQVIDQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=q2fJKg7X;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jUiH4LQt
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1780566460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=q2fJKg7X5BjFL02xQQCpIKbOpjCSIG0BulLVq/7rPItVvf857pqS3q+9EHOjo4rEJFCL7f
- UrOHAgIb4PLS56oC4Xg3NRerxXbmRg3g5b27mvHEoQfnl4b+KUdVSfQzLxs+c4TQmBJdL0
- JULm/q5u3d5bkYxrA/XcnuCiTwon6hA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1780566460;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=jUiH4LQtjDvhmkej/HiPL48dVeUSJWWeAG0LpUfjl0qmFsdUIHeeDWSiGQW8b2/CO84Nce
- kQhZSX+jA9AUkYBQ==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 062A56802B;
+ Thu,  4 Jun 2026 09:50:38 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 804B1779A8;
- Thu,  4 Jun 2026 09:47:40 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EC923779A8;
+ Thu,  4 Jun 2026 09:50:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id cOOGHrxJIWpPWgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 04 Jun 2026 09:47:40 +0000
-Date: Thu, 4 Jun 2026 11:47:36 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id yrSmOG1KIWoZXQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 04 Jun 2026 09:50:37 +0000
+Date: Thu, 4 Jun 2026 11:50:34 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Li Wang <li.wang@linux.dev>
-Message-ID: <aiFJuDRWWpI5WBuk@yuki.lan>
+Message-ID: <aiFKatipB8ypAsdf@yuki.lan>
 References: <20260604094200.21643-1-li.wang@linux.dev>
- <20260604094200.21643-2-li.wang@linux.dev>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260604094200.21643-2-li.wang@linux.dev>
+In-Reply-To: <20260604094200.21643-1-li.wang@linux.dev>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 062A56802B
 X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 9C2C76AE14
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,yuki.lan:mid,suse.cz:email,suse.cz:dkim];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 2/2] metaparse: Explicitly parse essential
- headers for macros
+Subject: Re: [LTP] [PATCH v5 1/2] lib: Introduce tst_path_defs.h to
+ consolidate system paths
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,6 +79,21 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
+> +/* NETWORK */
+> +#define PATH_NET_IPV4				"/proc/sys/net/ipv4/"
+> +#define PATH_NET_IPV4_ICMP_RATELIMIT		"/proc/sys/net/ipv4/icmp_ratelimit"
+> +#define PATH_NET_IPV4_ICMP_RATEMASK		"/proc/sys/net/ipv4/icmp_ratemask"
+> +#define PATH_NET_IPV4_ICMP_ECHO_IGNORE_ALL	"/proc/sys/net/ipv4/icmp_echo_ignore_all"
+> +#define PATH_NET_IPV4_ICMP_MSGS_BURST		"/proc/sys/net/ipv4/icmp_msgs_burst"
+> +#define PATH_NET_IPV4_TCP_PROBE_INTERVAL	"/proc/sys/net/ipv4/tcp_probe_interval"
+> +#define PATH_NET_IPV4_TCP_KEEPALIVE_TIME	"/proc/sys/net/ipv4/tcp_keepalive_time"
+> +#define PATH_NET_IPV4_TCP_NOTSENT_LOWAT		"/proc/sys/net/ipv4/tcp_notsent_lowat"
+> +#define PATH_NET_IPV4_IP_LOCAL_RESERVED_PORTS	"/proc/sys/net/ipv4/ip_local_reserved_ports"
+
+Maybe we can drop the NET here as well, the IPV4 is descriptive enough.
+e.g. PATH_IPV4_ICMP_RATELIMIT
+
+
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
