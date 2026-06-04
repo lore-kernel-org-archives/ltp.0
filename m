@@ -4,100 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD3DFCD6E68
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 06:55:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89F75CD6E68
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 06:55:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 742843E548A
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 08:55:28 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 5FD683E5488
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 08:55:43 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9399C3E5493
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 08:54:27 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id C474C3E54DB
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 08:54:26 +0200 (CEST)
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
  [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CCFFA1000923
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 08:54:26 +0200 (CEST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A4E241A007E3
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 08:54:25 +0200 (CEST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 653L0IoM3309410
- for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:25 GMT
+ 653GdEus3100564
+ for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:23 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
  content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=+Pn6/fXKOAS8ga3n0
- Llu4UF3YfOtIolXx5oE0mzKedY=; b=FPxVmFizlVfEB4Pd082c3XjhqCs/L3vSa
- mGBg0QzRUOtqicNTLIMT1aKZ9rSmk234lvLsS1SyW8heTs+cJ0aHvP3mGCvS48mt
- 0bCPg6KHN37IaZtzp9l3yPjxYhpaBFW4gEzgHbKyWmzYbAsYlPlxmHEEUEM3h36Q
- D/RPkTl05ZalO+4AjRHPSsFxzMCo5RJYedKwvJnve7SfCIHLwJI2KXeCOUfBw/iX
- KvFfYNsfxVWW0twhCX9u4RuY7Jh3pJeRtHhlaAwjpuv2ZU8UXTzlBCfVYets8Ikk
- xQaz62mROy/2G3nRDHAOwNP253mqrdhNiEM6blsdQ/DroDBWWoRPQ==
-Received: from ppma21.wdc07v.mail.ibm.com
- (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efnahx5qt-1
+ :mime-version:references:subject:to; s=pp1; bh=UoPvifGOV/xyP04Jy
+ 4nAPCQUjavE2Hx1y99Vtf3NeBk=; b=W+dkTBg+DwQwzfSBk6HdlKingFz7VlpUa
+ mvy9wwmI9/QXL8R8jSHGOscZaUd6llElhNJjTixe5iqOrKXzIskxnfeUXqF8871z
+ IT7QgVk0mBaeDBOO7HtILIhrGyxh2AjMFq4sL1oDdHDYgBH77PsJA4rQfas763+n
+ /k6CYAp326E/cUpnsEGS+yl2kWM08I3lFTB7vJ2FD23F9Cxn9wkEzXOapzWTps9B
+ Z48x5uTPYxQ99MqwYDSvruRQJUuh2USGg+Ob9oKeWtqBEAgVfJX8nSbpYMY8VBgC
+ au1uH+tNzkPrlPmJrZ4f1NNf4+BGOjxSETZZ4Jaz25MwH7wY8j/eg==
+Received: from ppma22.wdc07v.mail.ibm.com
+ (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efqhtdx9m-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Thu, 04 Jun 2026 06:54:25 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 6546s91K027443
- for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:24 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
- by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4egb7kbxns-1
+ for <ltp@lists.linux.it>; Thu, 04 Jun 2026 06:54:23 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 6546s76W028279
+ for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:22 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4egakw416j-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Thu, 04 Jun 2026 06:54:24 +0000 (GMT)
+ for <ltp@lists.linux.it>; Thu, 04 Jun 2026 06:54:22 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
  [10.20.54.102])
- by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 6546sMKX52232538
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 6546sK7649086922
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:22 GMT
+ for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:20 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id AD6AA20043
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:22 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id C2E7D2004B
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:20 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id E94FA20040
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:21 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 62C7220040
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:20 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.43.32.72])
  by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:21 +0000 (GMT)
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:20 +0000 (GMT)
 From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Thu,  4 Jun 2026 12:24:14 +0530
-Message-Id: <20260604065417.25924-6-sachinp@linux.ibm.com>
+Date: Thu,  4 Jun 2026 12:24:12 +0530
+Message-Id: <20260604065417.25924-4-sachinp@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20260604065417.25924-1-sachinp@linux.ibm.com>
 References: <20260604065417.25924-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA0MDA2MiBTYWx0ZWRfXx4H4qfrW01UE
- NHCx73scB6oQdh+y2zOaVUiltER9pdk2PMtTtVCkTGBENXm/Gbp2NEhiuP4+ZUkCuoYRH3vXytJ
- W4H17Z08jPLddHSow7jomx8OFX/1mwD5y+dO6epjW/lynQeSLQ6dh3D8Lg4bPzxbEjq43kz6LHp
- /qftxlpsrBsmImhd8BtlJHCE/jrflHE9ycANTHECceAFe3LUJKompyBvlagnus5jMEJiRiLH1E+
- +HTmRkzMe5RWYvVPhuQWfREgVK9Hq3iHjL+aF8S6n7j5KYhdd2PP8h8xGAn1qWw5CQMD2GGvIwd
- Bg2hpT1pyNekmPUwuyQmEmoVh+AzRYOLWVsD4j8H6MsGHLhgCp8y73WoPYJrO8QLu2v4bhWSfuJ
- DNnNDHbHngAEMfgtZ+DO/Xahs9Aq8jIgVxvEwyH33BJVa0HrY270E2ManvyM6W3ezMug9bRSsFN
- ZEjsib0g/ZCpV3kW16A==
-X-Proofpoint-ORIG-GUID: pyCLKFnrMH5_safe86qwrUyuPSC4m1b5
-X-Authority-Analysis: v=2.4 cv=cOzQdFeN c=1 sm=1 tr=0 ts=6a212121 cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+X-Proofpoint-GUID: mUoTER_0OvkTfQcGwE11Q1PtIWOtEZLy
+X-Authority-Analysis: v=2.4 cv=fv/sol4f c=1 sm=1 tr=0 ts=6a21211f cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
  a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
- a=Prl9aMG8E3N3fFo_o2AA:9
-X-Proofpoint-GUID: pyCLKFnrMH5_safe86qwrUyuPSC4m1b5
+ a=RzCfie-kr_QcCd8fBx8p:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=cubczD--SJyynV9FOe8A:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA0MDA2MiBTYWx0ZWRfX2T2El6Pg7xwy
+ zb495aH3aClQJYRoY8f++S68K6QIFaTDyiDKNwTNg0DgC2tiGoCGMOiXxTKuAU/qEQhqNBzsx4W
+ UYKFSbf3ySoZzcFUJNJVcxA/NbROW/6LsQL+BGGMthN6Wi7oeBdubliyzr8FxFqFO2FmW7f2KwC
+ n7f/jDDI0hT+D/OnnafCB2Y0lRoqW6i0eyWxTFRQ/8b+Bk0LrgVE6ulb+xxePSePiABH9OZ8Cr/
+ 7jsLP0WbjDAnNyMeJQqQJA11XKt9B7Dun1i9DTwFsW+NfBFqL4g2N1GnhsjGRz46nraNRDNsfEB
+ fTvge9fO2V+7NsgzEUX4pUUd+xxNbsIxkgv3KAwf/3wJQVMTgCpt8GjB4Sr3W68rA8bAVV60SST
+ Wvlk0j1AwQOwqgeBtlIc50JxXEDsUU1RhC2zYkBjK0hUd26DA9Fyid3+NnM9uEtd1IxPgwXF96L
+ V6yHE5BaYK2RSUyBq8w==
+X-Proofpoint-ORIG-GUID: mUoTER_0OvkTfQcGwE11Q1PtIWOtEZLy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-06-04_02,2026-05-28_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 impostorscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
- malwarescore=0 phishscore=0 suspectscore=0 priorityscore=1501 adultscore=0
+ adultscore=0 priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606040062
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 5/8] fs/acl: Add chmod/chown ACL interaction tests
+Subject: [LTP] [PATCH v2 3/8] fs/acl: Add ACL_OTHER permissions test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,19 +114,16 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add acl_file_ops01 test with 2 test cases to validate chmod and
-chown interaction with ACL entries:
+Add acl_other01 test to validate that ACL_OTHER permissions are
+not affected by ACL_MASK.
 
-1. chmod interaction - Verifies that chmod updates ACL_USER_OBJ,
-   ACL_GROUP_OBJ, and ACL_OTHER entries to match new permission bits.
-   Sets ACL with read-only, then chmod 0777, and confirms all three
-   ACL entries now have rwx permissions.
+The test verifies that:
+- ACL_OTHER entry with rwx permissions allows access
+- ACL_MASK set to --- does not restrict ACL_OTHER
+- Users not matching owner, named users, or groups use ACL_OTHER
 
-2. chown interaction - Verifies that chown changes file owner and
-   group without modifying ACL entry permissions. Sets ACL entries,
-   performs chown, and confirms ACL permissions are preserved.
-
-These tests ensure chmod and chown work correctly with ACL-enabled files.
+This confirms that ACL_MASK only affects ACL_USER, ACL_GROUP_OBJ,
+and ACL_GROUP entries, but not ACL_OTHER.
 
 Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
 ---
@@ -140,36 +137,35 @@ V1 changes:
 - rfc link https://lore.kernel.org/ltp/477836fd-80c8-4168-bfe6-00b374bb2534@linux.ibm.com/T/#t
 
 ---
- runtest/fs                               |   1 +
- testcases/kernel/fs/acl/.gitignore       |   1 +
- testcases/kernel/fs/acl/acl_file_ops01.c | 302 +++++++++++++++++++++++
- 3 files changed, 304 insertions(+)
- create mode 100644 testcases/kernel/fs/acl/acl_file_ops01.c
+ runtest/fs                            |   1 +
+ testcases/kernel/fs/acl/.gitignore    |   1 +
+ testcases/kernel/fs/acl/acl_other01.c | 107 ++++++++++++++++++++++++++
+ 3 files changed, 109 insertions(+)
+ create mode 100644 testcases/kernel/fs/acl/acl_other01.c
 
 diff --git a/runtest/fs b/runtest/fs
-index fd295edc7..f1eea055b 100644
+index 69ecb8647..f25487a33 100644
 --- a/runtest/fs
 +++ b/runtest/fs
-@@ -93,3 +93,4 @@ acl_user_obj01 acl_user_obj01
+@@ -91,3 +91,4 @@ squashfs01 squashfs01
+ # Run the acl tests
+ acl_user_obj01 acl_user_obj01
  acl_mask01 acl_mask01
- acl_other01 acl_other01
- acl_inherit01 acl_inherit01
-+acl_file_ops01 acl_file_ops01
++acl_other01 acl_other01
 diff --git a/testcases/kernel/fs/acl/.gitignore b/testcases/kernel/fs/acl/.gitignore
-index bc03ba1fd..eb4b4a227 100644
+index bfcdee93d..c3ec0fad3 100644
 --- a/testcases/kernel/fs/acl/.gitignore
 +++ b/testcases/kernel/fs/acl/.gitignore
-@@ -2,3 +2,4 @@
+@@ -1,2 +1,3 @@
+ /acl_user_obj01
  /acl_mask01
- /acl_other01
- /acl_inherit01
-+/acl_file_ops01
-diff --git a/testcases/kernel/fs/acl/acl_file_ops01.c b/testcases/kernel/fs/acl/acl_file_ops01.c
++/acl_other01
+diff --git a/testcases/kernel/fs/acl/acl_other01.c b/testcases/kernel/fs/acl/acl_other01.c
 new file mode 100644
-index 000000000..c7b5d777f
+index 000000000..b2bad3387
 --- /dev/null
-+++ b/testcases/kernel/fs/acl/acl_file_ops01.c
-@@ -0,0 +1,302 @@
++++ b/testcases/kernel/fs/acl/acl_other01.c
+@@ -0,0 +1,107 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 IBM
@@ -179,26 +175,22 @@ index 000000000..c7b5d777f
 + */
 +
 +/*\
-+ * Test chmod and chown interaction with ACLs.
++ * Test ACL_OTHER permissions.
 + *
-+ * Verify that standard file operations (chmod, chown) interact correctly
-+ * with ACLs:
-+ * - chmod should update ACL_USER_OBJ, ACL_GROUP_OBJ, and ACL_OTHER entries
-+ * - chown should change file owner/group without affecting ACL entries
-+ * - ACL permissions should be preserved after ownership changes
++ * Verify that ACL_OTHER permissions work correctly and are not affected
++ * by ACL_MASK. The ACL_OTHER entry controls access for users who don't
++ * match any other ACL entry (not the owner, not in any named user entry,
++ * not in the owning group, and not in any named group entry).
++ *
++ * Unlike ACL_USER, ACL_GROUP, and ACL_GROUP_OBJ entries, ACL_OTHER
++ * permissions are not restricted by the ACL_MASK.
 + *
 + * [Algorithm]
 + *
-+ * Test 1 - chmod interaction:
-+ * 1. Create file with read-only ACL entries
-+ * 2. Use chmod to set permissions to 0777
-+ * 3. Verify ACL entries are updated to rwx for user, group, and other
-+ *
-+ * Test 2 - chown interaction:
-+ * 1. Create file with specific ACL entries (rw for user, r for group/other)
-+ * 2. Use chown to change owner and group
-+ * 3. Verify ownership changed correctly
-+ * 4. Verify ACL entries preserved their permissions after chown
++ * 1. Set up ACL with rwx permissions for ACL_OTHER
++ * 2. Set ACL_MASK to --- (no permissions)
++ * 3. Attempt file creation as a user matching ACL_OTHER
++ * 4. Verify access is granted despite restrictive mask
 + */
 +
 +#include "acl_lib.h"
@@ -209,216 +201,38 @@ index 000000000..c7b5d777f
 +
 +#ifdef HAVE_LIBACL
 +
-+/*
-+ * Test chmod interaction with ACLs.
-+ * chmod should update ACL_USER_OBJ, ACL_GROUP_OBJ, and ACL_OTHER.
-+ */
-+static void test_chmod_acl(void)
++static void run(void)
 +{
 +	acl_t acl;
-+	acl_entry_t entry;
-+	acl_permset_t permset;
-+	acl_tag_t tag;
-+	int fd = -1;
-+	int i;
-+	int user_ok = 0, group_ok = 0, other_ok = 0;
++	int err;
 +
-+	tst_res(TINFO, "Testing chmod interaction with ACLs");
++	tst_res(TINFO, "Testing ACL_OTHER permissions");
 +	reset_test_path();
 +
-+	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0644);
-+	SAFE_CLOSE(fd);
-+
-+	acl = acl_init(3);
-+	if (!acl) {
-+		cleanup_testfile();
++	acl = acl_init(4);
++	if (!acl)
 +		tst_brk(TBROK | TERRNO, "acl_init failed");
-+	}
 +
-+	add_acl_entry(acl, ACL_USER_OBJ, ACL_READ);
-+	add_acl_entry(acl, ACL_GROUP_OBJ, ACL_READ);
-+	add_acl_entry(acl, ACL_OTHER, ACL_READ);
-+	set_acl_file(TESTFILE, ACL_TYPE_ACCESS, acl);
++	add_acl_entry(acl, ACL_USER_OBJ,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE);
++	add_empty_acl_entry(acl, ACL_GROUP_OBJ);
++	add_empty_acl_entry(acl, ACL_MASK);
++	add_acl_entry(acl, ACL_OTHER,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE);
++
++	set_acl_file(TESTDIR, ACL_TYPE_ACCESS, acl);
 +	safe_acl_free(acl);
 +
-+	SAFE_CHMOD(TESTFILE, 0777);
-+
-+	acl = acl_get_file(TESTFILE, ACL_TYPE_ACCESS);
-+	if (!acl) {
-+		cleanup_testfile();
-+		tst_brk(TBROK | TERRNO, "acl_get_file failed");
-+	}
-+
-+	for (i = ACL_FIRST_ENTRY; ; i = ACL_NEXT_ENTRY) {
-+		int ret;
-+
-+		ret = acl_get_entry(acl, i, &entry);
-+		if (ret == -1) {
-+			safe_acl_free(acl);
-+			cleanup_testfile();
-+			tst_brk(TBROK | TERRNO, "acl_get_entry failed");
-+		}
-+
-+		if (ret != 1)
-+			break;
-+
-+		if (acl_get_tag_type(entry, &tag) == -1) {
-+			safe_acl_free(acl);
-+			cleanup_testfile();
-+			tst_brk(TBROK | TERRNO,
-+				"acl_get_tag_type failed");
-+		}
-+
-+		if (acl_get_permset(entry, &permset) == -1) {
-+			safe_acl_free(acl);
-+			cleanup_testfile();
-+			tst_brk(TBROK | TERRNO,
-+				"acl_get_permset failed");
-+		}
-+
-+		if (tag == ACL_USER_OBJ) {
-+			if (acl_get_perm(permset, ACL_READ) == 1 &&
-+			    acl_get_perm(permset, ACL_WRITE) == 1 &&
-+			    acl_get_perm(permset, ACL_EXECUTE) == 1)
-+				user_ok = 1;
-+		} else if (tag == ACL_GROUP_OBJ) {
-+			if (acl_get_perm(permset, ACL_READ) == 1 &&
-+			    acl_get_perm(permset, ACL_WRITE) == 1 &&
-+			    acl_get_perm(permset, ACL_EXECUTE) == 1)
-+				group_ok = 1;
-+		} else if (tag == ACL_OTHER) {
-+			if (acl_get_perm(permset, ACL_READ) == 1 &&
-+			    acl_get_perm(permset, ACL_WRITE) == 1 &&
-+			    acl_get_perm(permset, ACL_EXECUTE) == 1)
-+				other_ok = 1;
-+		}
-+	}
-+
-+	safe_acl_free(acl);
-+	cleanup_testfile();
-+
-+	if (user_ok && group_ok && other_ok)
-+		tst_res(TPASS, "chmod correctly updated ACL entries");
-+	else
-+		tst_res(TFAIL, "chmod did not update ACL entries correctly");
-+}
-+
-+/*
-+ * Test chown interaction with ACLs.
-+ * chown should change file owner and group without affecting ACL entries.
-+ */
-+static void test_chown_acl(void)
-+{
-+	acl_t acl;
-+	acl_entry_t entry;
-+	acl_tag_t tag;
-+	acl_permset_t permset;
-+	struct stat st;
-+	int fd = -1;
-+	int i, found_user_obj = 0, found_group_obj = 0, found_other = 0;
-+
-+	tst_res(TINFO, "Testing chown interaction with ACLs");
-+	reset_test_path();
-+
-+	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0644);
-+	SAFE_CLOSE(fd);
-+
-+	acl = acl_init(3);
-+	if (!acl) {
-+		cleanup_testfile();
-+		tst_brk(TBROK | TERRNO, "acl_init failed");
-+	}
-+
-+	add_acl_entry(acl, ACL_USER_OBJ, ACL_READ | ACL_WRITE);
-+	add_acl_entry(acl, ACL_GROUP_OBJ, ACL_READ);
-+	add_acl_entry(acl, ACL_OTHER, ACL_READ);
-+	set_acl_file(TESTFILE, ACL_TYPE_ACCESS, acl);
-+	safe_acl_free(acl);
-+
-+	SAFE_CHOWN(TESTFILE, user2_uid, user2_gid);
-+
-+	SAFE_STAT(TESTFILE, &st);
-+
-+	if (st.st_uid != user2_uid || st.st_gid != user2_gid) {
-+		cleanup_testfile();
-+		tst_res(TFAIL, "chown did not change owner/group correctly");
-+		return;
-+	}
-+
-+	/* Verify ACL entries are preserved after chown */
-+	acl = acl_get_file(TESTFILE, ACL_TYPE_ACCESS);
-+	if (!acl) {
-+		cleanup_testfile();
-+		tst_brk(TBROK | TERRNO, "acl_get_file failed");
-+	}
-+
-+	for (i = ACL_FIRST_ENTRY; ; i = ACL_NEXT_ENTRY) {
-+		int ret = acl_get_entry(acl, i, &entry);
-+
-+		if (ret == -1) {
-+			safe_acl_free(acl);
-+			cleanup_testfile();
-+			tst_brk(TBROK | TERRNO, "acl_get_entry failed");
-+		}
-+
-+		if (ret != 1)
-+			break;
-+
-+		if (acl_get_tag_type(entry, &tag) == -1) {
-+			safe_acl_free(acl);
-+			cleanup_testfile();
-+			tst_brk(TBROK | TERRNO, "acl_get_tag_type failed");
-+		}
-+
-+		if (acl_get_permset(entry, &permset) == -1) {
-+			safe_acl_free(acl);
-+			cleanup_testfile();
-+			tst_brk(TBROK | TERRNO, "acl_get_permset failed");
-+		}
-+
-+		if (tag == ACL_USER_OBJ) {
-+			found_user_obj = 1;
-+			if (!acl_get_perm(permset, ACL_READ) ||
-+			    !acl_get_perm(permset, ACL_WRITE)) {
-+				safe_acl_free(acl);
-+				cleanup_testfile();
-+				tst_res(TFAIL,
-+					"ACL_USER_OBJ perms changed after chown");
-+				return;
-+			}
-+		} else if (tag == ACL_GROUP_OBJ) {
-+			found_group_obj = 1;
-+			if (!acl_get_perm(permset, ACL_READ) ||
-+			    acl_get_perm(permset, ACL_WRITE)) {
-+				safe_acl_free(acl);
-+				cleanup_testfile();
-+				tst_res(TFAIL,
-+					"ACL_GROUP_OBJ perms changed after chown");
-+				return;
-+			}
-+		} else if (tag == ACL_OTHER) {
-+			found_other = 1;
-+			if (!acl_get_perm(permset, ACL_READ) ||
-+			    acl_get_perm(permset, ACL_WRITE)) {
-+				safe_acl_free(acl);
-+				cleanup_testfile();
-+				tst_res(TFAIL,
-+					"ACL_OTHER perms changed after chown");
-+				return;
-+			}
-+		}
-+	}
-+
-+	safe_acl_free(acl);
-+
-+	if (!found_user_obj || !found_group_obj || !found_other) {
-+		cleanup_testfile();
-+		tst_res(TFAIL, "ACL entries missing after chown");
++	err = try_create_as(user2_uid, user2_gid, 0644);
++	if (err) {
++		errno = err;
++		tst_res(TFAIL | TERRNO,
++			"ACL_OTHER rwx should allow access despite mask");
 +		return;
 +	}
 +
 +	cleanup_testfile();
-+	tst_res(TPASS, "chown preserved ACL entries correctly");
++	tst_res(TPASS, "ACL_OTHER not affected by mask");
 +}
 +
 +static void setup(void)
@@ -433,21 +247,8 @@ index 000000000..c7b5d777f
 +	cleanup_test_users();
 +}
 +
-+static void run(unsigned int n)
-+{
-+	switch (n) {
-+	case 0:
-+		test_chmod_acl();
-+		break;
-+	case 1:
-+		test_chown_acl();
-+		break;
-+	}
-+}
-+
 +static struct tst_test test = {
-+	.test = run,
-+	.tcnt = 2,
++	.test_all = run,
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.needs_root = 1,
