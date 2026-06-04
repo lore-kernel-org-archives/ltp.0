@@ -4,49 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68BD3CD6E4A
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 09:43:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E413BCD6E4A
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 09:48:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 046E53E618A
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 11:43:23 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 5BDE93E71C0
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 11:48:00 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9D36B3E605B
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:42:57 +0200 (CEST)
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com
- [IPv6:2001:41d0:203:375::ad])
+ by picard.linux.it (Postfix) with ESMTPS id 383D33E2773
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:47:44 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D1B8F1400244
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:42:54 +0200 (CEST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1780566173;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5B365100093E
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:47:42 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9C2C76AE14;
+ Thu,  4 Jun 2026 09:47:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1780566461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gCyHhRmfVipr+W72qeFpe8Jb+WoGW62XnCzyWc1nlCc=;
- b=YkZb5JY45HhkNhMkhfEYWrFiDppyhfZXv9wHq98Dmk496ewFfE7/4s3arZ1z878GD/SDjf
- 8h21X66YmID1Rr+ZYf/HOKjb5n3438KK0eRHN7Ez4pHfutuApGOxoSDwwlcmeNBMLtTWN7
- 7wNGk9SRihpBrHomVhCu354hEmOw94Q=
-From: Li Wang <li.wang@linux.dev>
-To: ltp@lists.linux.it
-Date: Thu,  4 Jun 2026 17:42:00 +0800
-Message-ID: <20260604094200.21643-2-li.wang@linux.dev>
-In-Reply-To: <20260604094200.21643-1-li.wang@linux.dev>
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=dP73VJCXszidLGimsqClgLAh8Q/jfQlNjkEGOxKqmny5UHYNt8EJlBktNFTE/cPs0awz/h
+ KOxu6eQgs65P4IexZc5vKydr04/JtiKY4tZNR8xP2AyBJ06RufTYI0H4YTdvZwhC0ZjmmF
+ psGeXXLl5Of0p85avLU9a+AHyfIpvDo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1780566461;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=13LjskRYdrI2U7SuFrS0uLr6J0bn6FrzU6W1ZAEV8sAS+6hzjTUQeGKIxH+KX3eiDMkVLt
+ wv0OkQ6nO9VQVIDQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=q2fJKg7X;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jUiH4LQt
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1780566460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=q2fJKg7X5BjFL02xQQCpIKbOpjCSIG0BulLVq/7rPItVvf857pqS3q+9EHOjo4rEJFCL7f
+ UrOHAgIb4PLS56oC4Xg3NRerxXbmRg3g5b27mvHEoQfnl4b+KUdVSfQzLxs+c4TQmBJdL0
+ JULm/q5u3d5bkYxrA/XcnuCiTwon6hA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1780566460;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=jUiH4LQtjDvhmkej/HiPL48dVeUSJWWeAG0LpUfjl0qmFsdUIHeeDWSiGQW8b2/CO84Nce
+ kQhZSX+jA9AUkYBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 804B1779A8;
+ Thu,  4 Jun 2026 09:47:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id cOOGHrxJIWpPWgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 04 Jun 2026 09:47:40 +0000
+Date: Thu, 4 Jun 2026 11:47:36 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <li.wang@linux.dev>
+Message-ID: <aiFJuDRWWpI5WBuk@yuki.lan>
 References: <20260604094200.21643-1-li.wang@linux.dev>
+ <20260604094200.21643-2-li.wang@linux.dev>
 MIME-Version: 1.0
-X-Migadu-Flow: FLOW_OUT
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260604094200.21643-2-li.wang@linux.dev>
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 9C2C76AE14
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,yuki.lan:mid,suse.cz:email,suse.cz:dkim];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 2/2] metaparse: Explicitly parse essential headers
- for macros
+Subject: Re: [LTP] [PATCH v5 2/2] metaparse: Explicitly parse essential
+ headers for macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,82 +117,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The metadata parser misses important path definition macros located in
-tst_path_defs.h. This occurs because the file is included via
-tst_test.h, which is intentionally ignored by the skip_includes[]
-array to reduce parsing overhead. As a result, the dependency chain
-is broken, and the underlying macros are never extracted.
+Hi!
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-To fix this without parsing the entirety of tst_test.h, this patch
-introduces a must_includes[] array and a parse_must_files() function.
-This allows the parser to explicitly locate and extract '#define' macros
-from specific foundational headers directly from the include paths.
-
-This data driven approach keeps the logic clean and provides an easily
-extensible way to handle future headers that might face the same
-include-skip issue.
-
-Fixes: da3088183a ("metadata: metaparse: Implement recursive include")
-Signed-off-by: Li Wang <li.wang@linux.dev>
----
- metadata/metaparse.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/metadata/metaparse.c b/metadata/metaparse.c
-index c495d2eb5..561cbb9d2 100644
---- a/metadata/metaparse.c
-+++ b/metadata/metaparse.c
-@@ -968,6 +968,33 @@ static struct data_node *parse_file(const char *fname)
- 	return res;
- }
- 
-+static const char *must_includes[] = {
-+	"tst_path_defs.h",
-+	NULL
-+};
-+
-+static void parse_must_files(void)
-+{
-+	unsigned int i, j;
-+	FILE *f;
-+	const char *token;
-+
-+	for (i = 0; must_includes[i]; i++) {
-+		for (j = 0; j < cmdline_includepaths; j++) {
-+			f = open_file(cmdline_includepath[j], must_includes[i]);
-+			if (!f)
-+				continue;
-+
-+			while ((token = next_token(f, NULL))) {
-+				if (!strcmp(token, "define"))
-+					parse_macro(f);
-+			}
-+			fclose(f);
-+			break;
-+		}
-+	}
-+}
-+
- struct typemap {
- 	const char *id;
- 	enum data_type type;
-@@ -1176,6 +1203,8 @@ int main(int argc, char *argv[])
- 		return 1;
- 	}
- 
-+	parse_must_files();
-+
- 	res = parse_file(argv[optind]);
- 	if (!res)
- 		return 0;
 -- 
-2.54.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
