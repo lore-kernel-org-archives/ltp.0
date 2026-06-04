@@ -4,101 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E0D4CD6E68
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 05:57:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1780552664; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=a3rvyekdzOJGt0IcIl1Jf+pJCjRSVRb7oK2ByPs+3e4=;
- b=hkduiksvgmOBVQx+ZkGqEdhujq+ezQg+YtcQG3k7ixUA0RtgL2F9uZEGcaI2IIXKR2UEl
- JGDUeUD2Vm5rP1+8V6Jr5fSh+GE0nEl3M9q8HKX3ReeSESTVZH/AlQ6o+IUKlhra8k1Atq+
- CatJApk56IEZsgECUQkAix1lryCPTVk=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 794E6CD6E68
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 06:54:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A2AC3E2790
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 07:57:44 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 762C33E48AB
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 08:54:41 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8FD993E276F
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 07:57:24 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id EAABE3C701F
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 08:54:23 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C3B9560007F
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 07:57:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1780552642;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=dSLFjvo/WDkAsNuNHp7KQZm06Zb2oxJTU7gKgfHl+Ao=;
- b=WZbhhUE5y2RCRZ/Wf30t5A3DarThEXCBBW6I4ZJccll+TZZZHu73WDeHMWZOkcjDgVA5xR
- aKbBPFz7a6w1UgJL1I8zMB4iDpX3zJ0VK+kOKRDRlAiIQ788ShgDFvSgdcJvkGHI7U2aYE
- zy3Y2kUNLz96D6fjX9Sycp4PNwZ+zLU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-426-3DFaEY79MQOXxyTCUNJAAg-1; Thu, 04 Jun 2026 01:57:20 -0400
-X-MC-Unique: 3DFaEY79MQOXxyTCUNJAAg-1
-X-Mimecast-MFC-AGG-ID: 3DFaEY79MQOXxyTCUNJAAg_1780552639
-Received: by mail-wr1-f69.google.com with SMTP id
- ffacd0b85a97d-460153ce644so182617f8f.0
- for <ltp@lists.linux.it>; Wed, 03 Jun 2026 22:57:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780552639; x=1781157439;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=dSLFjvo/WDkAsNuNHp7KQZm06Zb2oxJTU7gKgfHl+Ao=;
- b=BuLXE4g5Ur5cvnyws6EFEvRLUUzbK4Kdtrw0MffBR+H5Jtya2GaMCkapHH/dfTtyLi
- lm/jQd0nMEhgbDzo2xkgli7wuGuW2ppUcWuKPFQJdk/CC4W92ipAWKk57H3P/kFKuy6u
- A4VhJ2H6WQo2u2AdLI8rmaoMgnHl9zsnUiSRvMVBdWb1YPO9RbsVKTdFPVLJBDyklLzV
- ZoSqmEmHpd7kCF0pg4BbkxqoSHe8Ds6L6QnXgsVe5+r8YbjMclkUbdGhZ7EDZ50kcne7
- aR3+QlRxLY1kUy8LYc8N5Q6w1dFc5a7Mx815R1cqhuMGN4L5SwxRPyBdg9nPS4xitrfQ
- LPGA==
-X-Gm-Message-State: AOJu0YwjWkgV0eCIu/dbwj+mGUXLjP2Q8Gj8jKBJN8U/k8TTnWRcECJ0
- qC9NJ7ZHd26fDCvIAFpyKv+7nrlkr4dxn8su3qqD0F2H1/f2i8CbfwHCTV+x9XsrpOQ/Cbb7tnQ
- iYX6HOsT55Raz4E0KTp72ipKNB5mM8kBuLdl0ZXtpPNhv4XqTdkJUzU8n0SV9otAFZIIKyoUOwa
- AJzi4KCxZShcNoKcWPBn/rkw4Jhy5sJkkMB9qK
-X-Gm-Gg: Acq92OF/vyMgQo84qi39+AOxd4SJEA+wxkl3ZjUGUErCrr38QvsEVO0+5C+vrw3bCAa
- XSMlTeSVEFO3ySSsgwdDIuUIEv00c2t/EhhvlEKI/f7T2XgP1a2wo1gKzYEfjwkSJiJNObClLAx
- 8H8IK00jDm1tFebfBNzlpXah5gP93MhDOq1DBYPvVrLPnjmpSmys7bqu8cxJKvTxbJDpHOb4WNc
- p8zVspxnp56o8g7sbjXwQw+E7EoKIfhmDZFYYSM4tWyRlseN7XLtbt8jaTKYsnowKXcI0fg89l+
- w6Gg5omY1U2ryDsOm2J4W9d2DslgScQaj0nJZTCax7ggnDM/GVedhVg8alpezT3xAZ9yriy/P6f
- tvpU3nG33fKc90nHQPzHt9wUUAQhvGSjJFkkEWnFClnLovU7EWsBe8PPReNneX7iat/RxfmuqR6
- wGgg==
-X-Received: by 2002:a05:600c:8184:b0:490:44eb:c1d9 with SMTP id
- 5b1f17b1804b1-490b60fb00amr92078035e9.28.1780552639145; 
- Wed, 03 Jun 2026 22:57:19 -0700 (PDT)
-X-Received: by 2002:a05:600c:8184:b0:490:44eb:c1d9 with SMTP id
- 5b1f17b1804b1-490b60fb00amr92077755e9.28.1780552638726; 
- Wed, 03 Jun 2026 22:57:18 -0700 (PDT)
-Received: from fedora.redhat.com (46-116-121-128.bb.netvision.net.il.
- [46.116.121.128]) by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-490bc3fd663sm50289385e9.10.2026.06.03.22.57.17
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 03 Jun 2026 22:57:18 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 05ED0200254
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 08:54:22 +0200 (CEST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 653GaWTS3642169
+ for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+ content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=1wDZgjQ2sjobMWWobvYRJ5lAcC8EXZtqz+K0/09qU
+ vs=; b=SaXt9MKhGzJE+ats0ff8UFGHxQvMimuL3rwsTmYKYZO4PMIH7PB+IWY+i
+ jPnT8lSzV0/oS7RNTxrvp8Wy/RqJc5s5cSaM89+gJgMnCUyUMn087j/T2P8j5WBo
+ sewPEt6+IrgM4c+kg3+Kss0krIJSmrdKG2pqLsJqIG+Nkxj47R5Dkc8/XDTXrar1
+ ouIIyoI/iWLTl3tEMlR2kVzUqdDLIoNKpjAfyQ/i0wYo2SfBjNDaeWVkrtRXoNIJ
+ eH1wFYZX8urJzoqDg+R7srt3N7Xz1ALSIrSqUKjK2xKYeBY/5oI070U8xYpajUH2
+ o1G28R2HrxZliCTGytVE7jF51248w==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efnahx5qj-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 04 Jun 2026 06:54:20 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 6546s7lf018583
+ for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:20 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4ega7qm391-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 04 Jun 2026 06:54:20 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
+ [10.20.54.102])
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 6546sILk13500820
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:18 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 7BD4820040
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:18 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 1FC1620043
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:18 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.43.32.72])
+ by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:17 +0000 (GMT)
+From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Thu,  4 Jun 2026 08:57:16 +0300
-Message-ID: <20260604055716.12177-1-mmenashe@redhat.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260527092618.14824-1-mmenashe@redhat.com>
-References: <20260527092618.14824-1-mmenashe@redhat.com>
+Date: Thu,  4 Jun 2026 12:24:09 +0530
+Message-Id: <20260604065417.25924-1-sachinp@linux.ibm.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 6HH_WBj4pl8YxyHnW36RndUJZ4Hpmr43nJeUF5tSg0k_1780552639
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA0MDA2MiBTYWx0ZWRfX1EHNg+Eez/6K
+ SB0cFsoFIlKc7gBYApkOt/39/GB9n9VGlZa/C9O4jO1/lSjeViQ5D/FxoTc3mNFCjmrwqd5loC0
+ WTCSFlXgGPHZ5OJRCphgpzCUvSWElU1SPuYNY8CI6zxdD8OI6rykaLqpmoL0sGh/wP0PSs1BLpE
+ T38uR4FZc3zmEfU+jFoSuIfBDz5pyBcoMD/94aB0v6sjyfWjHQQYf7UzVT4V+QB2H/XxqMgy2KE
+ RMR3w+clphXHq62iAbO67aCiNPUfz7o1aLzFmKzvYVvYBCG4caiyv5g83xtce74Pw63v9ZUhbIN
+ 3ohIxc84rv2+OwdlCXHsroj3ui9Vy0nEYQZBm7MOk6T8Ar1AD+Su0HAFrxdahajvGtA4EJMaF1K
+ zhMWgaioLdWcM4MK+SccWpuo0mxWsIBgpJ2JtZfCadrm3a/l2Bl9+d8lr8ca7PY+RW57zzCttVO
+ qzOu4xALSAnAr5Q0Wgw==
+X-Proofpoint-ORIG-GUID: zTO0HSwwwxmMU-AbXeXxyv9J6vLvdMUv
+X-Authority-Analysis: v=2.4 cv=cOzQdFeN c=1 sm=1 tr=0 ts=6a21211d cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=Y2IxJ9c9Rs8Kov3niI8_:22 a=NEAV23lmAAAA:8 a=h6E-47DaE3Z72ltqIZ8A:9
+X-Proofpoint-GUID: zTO0HSwwwxmMU-AbXeXxyv9J6vLvdMUv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-04_02,2026-05-28_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 impostorscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 phishscore=0 suspectscore=0 priorityscore=1501 adultscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606040062
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v14 0/4] futex: Add error coverage tests for wait,
- wake and cmp_requeue
+Subject: [LTP] [PATCH v4 0/8] Convert shell-based ACL test (tacl_xattr.sh)
+ to C
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,25 +106,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Michael Menasherov via ltp <ltp@lists.linux.it>
-Reply-To: Michael Menasherov <mmenashe@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+This patch series converts the existing shell-based ACL
+test (tacl_xattr.sh) to C implementation, providing better
+integration with the LTP test framework and more precise
+control over test execution.
 
-Just a kind reminder about this patch series (v14) sent on May 27th.
-The LTP AI Reviewer has approved all four patches with no issues found.
+v3 -> v4
+Updated patches 1/8, 4/8 & 6/8 to address review comments.
+No changes to other patches in the series.
 
-Would appreciate it if a human maintainer could take a look when
-time permits.
+v2 -> v3
+Updated patches 1 through 7 to address review comments.
 
-GitHub PR: https://github.com/linux-test-project/ltp/pull/1301
+v1 -> v2
+Updated patches 1/8, 6/8 and 7/8 to address review comments.
+Remaining patches remain unchanged
 
-Thanks,
-Michael Menasherov
+Partially closes(convert tacl_xattr.sh to C)
+https://github.com/linux-test-project/ltp/issues/1265
+
+The conversion splits functionality into seven focused test files.
+Patch 1/8 adds acl_user_obj01.c
+Patch 2/8 adds acl_mask01.c
+Patch 3/8 adds acl_other01.c
+Patch 4/8 adds acl_inherit01.c
+Patch 5/8 adds acl_file_ops01.c
+Patch 6/8 adds acl_link01.c
+Patch 7/8 adds xattr_test01.c
+
+The code has been successfully tested on SLES (kernel 6.12)
+and fedora (kernel 7.0) releases on ppc64le arch.
+
+Test build is clean in various distros. CI build report at
+https://github.com/sacsant/ltp/actions/runs/26932470285
+
+Running the test in a distro missing acl development package
+or acl library comes out clean with TCONF
+
+root@linux:/opt/ltp# ./testcases/bin/acl_user_obj01
+tst_test.c:1414: TCONF: libacl or ACL headers are not available
+root@linux:/opt/ltp#
+
+Sachin Sant (8):
+  fs/acl: Add ACL_USER_OBJ permissions test
+  fs/acl: Add ACL mask interaction tests
+  fs/acl: Add ACL_OTHER permissions test
+  fs/acl: Add default ACL inheritance test
+  fs/acl: Add chmod/chown ACL interaction tests
+  fs/acl: Add symlink ACL operations test
+  fs/acl: Add extended attributes test
+  fs/acl: Remove old shell-based ACL test
+
+ runtest/fs                               |   9 +
+ testcases/kernel/fs/acl/.gitignore       |   7 +
+ testcases/kernel/fs/acl/Makefile         |  10 +
+ testcases/kernel/fs/acl/acl_file_ops01.c | 302 +++++++++
+ testcases/kernel/fs/acl/acl_inherit01.c  | 116 ++++
+ testcases/kernel/fs/acl/acl_lib.h        | 357 ++++++++++
+ testcases/kernel/fs/acl/acl_link01.c     | 148 +++++
+ testcases/kernel/fs/acl/acl_mask01.c     | 283 ++++++++
+ testcases/kernel/fs/acl/acl_other01.c    | 107 +++
+ testcases/kernel/fs/acl/acl_user_obj01.c | 116 ++++
+ testcases/kernel/fs/acl/tacl_xattr.sh    | 807 -----------------------
+ testcases/kernel/fs/acl/xattr_test01.c   | 336 ++++++++++
+ 12 files changed, 1791 insertions(+), 807 deletions(-)
+ create mode 100644 testcases/kernel/fs/acl/.gitignore
+ create mode 100644 testcases/kernel/fs/acl/Makefile
+ create mode 100644 testcases/kernel/fs/acl/acl_file_ops01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_inherit01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_lib.h
+ create mode 100644 testcases/kernel/fs/acl/acl_link01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_mask01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_other01.c
+ create mode 100644 testcases/kernel/fs/acl/acl_user_obj01.c
+ delete mode 100755 testcases/kernel/fs/acl/tacl_xattr.sh
+ create mode 100644 testcases/kernel/fs/acl/xattr_test01.c
+
+-- 
+2.39.1
 
 
 -- 
