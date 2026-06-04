@@ -4,101 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85D77CD6E68
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 06:54:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D888ACD6E4A
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 06:55:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C77503C701F
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 08:54:57 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 64B1B3E5488
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 08:55:13 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3B3F63E5493
+ by picard.linux.it (Postfix) with ESMTPS id 5D4593E54D9
  for <ltp@lists.linux.it>; Thu,  4 Jun 2026 08:54:26 +0200 (CEST)
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1CAC51000901
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 08:54:24 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4BD42600425
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 08:54:25 +0200 (CEST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 653HGSbH3621258
+ 653IxAqt2481076
  for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:23 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
- content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=JBR44Q
- hqUGBJ1CYny06TS2QW3XHJ8LrBd6zYnQKvp1k=; b=lur+m0lVUoB/cpp+fHcT1E
- OPvgWBtHSUh4mF8b3wOzuvaxYQn/cRsODvwtbtLalrTWiMY1Q5RtllDq2rGaAm+M
- wXcnzrQW0X48E2vgz2oq9WgejtJKsnfBjEQ4EQ5i0eNVgBs6a8m8kfdJejAM/M8y
- 0a8JlXQX3gYB2tEpjiwqW5e5mrORyFbIoqZivFS4aSgkb/rSEmaexF9ZbZqcYAnU
- 923y1q41E5Vf4MoWLEmd+EvwuflFcogOO5DJXqRzPwkRNt6wcHM65KgVwyUvGfdZ
- oZZXs7xck1dPqLF00o8QGdS/0IFrfCa33kxntbuQX4rXElP454ioyADtnATr7VHg
- ==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efqd4ep0w-1
+ content-transfer-encoding:date:from:in-reply-to:message-id
+ :mime-version:references:subject:to; s=pp1; bh=ZufnXggHMwTPqaWp8
+ 6qEqpi0rMDAvR5Qt5HP1H3QWz8=; b=lZGZmN/Cb+dCY/6YEwKdlJmv82HgQd7CC
+ wiqpANfve3xSKs3RFhXgmbt3dbug0fzWDobGE5ijiUZproPCfuFk847jwBDxT7Se
+ jx+Ha6qPWPeO3+888l5uVTGeQOEul6rlXdRXClWWRfdx/r5RhgpHQmD3f4yOocTk
+ 713ydDSG7OJllGEl2CYXtuvRkVbFj/Wl61HbeOh7BYhkWRq7QIkQajoMK8jYQqUF
+ /Vc8qYHin+Lg3IaiZedQtssitDyrtpWNn3n9jP/oX4qbYSTNBtxYxwb2VzJQ/0TW
+ OxiBzlVcBi4+SRYBgEupSfL20IFJRnD5lsd0awlvlqUCB1ZACaaUg==
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efqjqejd9-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 04 Jun 2026 06:54:23 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 6546s7n8028134
+ for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:22 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4egbqhktqr-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
  for <ltp@lists.linux.it>; Thu, 04 Jun 2026 06:54:22 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 6546s76U028279
- for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:21 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4egakw416e-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Thu, 04 Jun 2026 06:54:21 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
  [10.20.54.102])
  by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 6546sJrD11076062
+ 6546sKYt21430608
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:19 GMT
+ for <ltp@lists.linux.it>; Thu, 4 Jun 2026 06:54:20 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 60FF620043
+ by IMSVA (Postfix) with ESMTP id 180402004B
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:20 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id AB80120043
  for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:19 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C761620040
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:18 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.43.32.72])
  by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:18 +0000 (GMT)
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 06:54:19 +0000 (GMT)
 From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Thu,  4 Jun 2026 12:24:10 +0530
-Message-Id: <20260604065417.25924-2-sachinp@linux.ibm.com>
+Date: Thu,  4 Jun 2026 12:24:11 +0530
+Message-Id: <20260604065417.25924-3-sachinp@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20260604065417.25924-1-sachinp@linux.ibm.com>
 References: <20260604065417.25924-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA0MDA2MiBTYWx0ZWRfXzK+vMElngIXq
- QIFYBBzxMdUC1TZ4ZEw9KwFk3PFDZjzSNL1Q4qi8yfoUjGGHhCI0uyemGzFlT/2Vc4SqNSUftWN
- LwSgNsr++ki1fFVQ0QBh8OOtOUXw8X5QnA0xT+3/Z2w2EaqWSiOnUzTO831cuXdlrIQmfymKllx
- hcaf6r2QLs5C+o1xzjkOdnEvCg2NaEw194mb1jcJvkzc+uulFguJ1VX9I0MVa1eiJ0Pq+LaAG8i
- oaVmboZoUFVuP/zPCbwCp7So36gZ+Jeq8yBJvQ7rlrjcXIvLI1boy5OPGg5/bak8EjYNwDzSWY7
- O4EhRBcbnQNKzlVUFybdGgkuZPSZevYiZRm9O2i3GBQ82aza7hrMwGn5vuwM4boCg33WAm1iEUp
- qP+k9sNDAP2bJLZFzWQsiATbQkZlWRRWZ1+5vVzAJLuxYLTa9oPlVRA5V5ZqqPCDfk6NH/tt4GB
- vIkZ7jdO1waABt51NSw==
-X-Proofpoint-GUID: 1mlNOWILeq6JnlsEBWJEE9knvY_blGB6
-X-Proofpoint-ORIG-GUID: 1mlNOWILeq6JnlsEBWJEE9knvY_blGB6
-X-Authority-Analysis: v=2.4 cv=DZknbPtW c=1 sm=1 tr=0 ts=6a21211e cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=VwQbUJbxAAAA:8
- a=VnNF1IyMAAAA:8 a=Fq4sSuEgM_UNLcTddYMA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: phcZMa50kcr0_AkkOPQjb86R42IiRsgy
+X-Proofpoint-GUID: phcZMa50kcr0_AkkOPQjb86R42IiRsgy
+X-Authority-Analysis: v=2.4 cv=bcVbluPB c=1 sm=1 tr=0 ts=6a21211f cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=d8xIq5HwmNcXnGyXC6cA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA0MDA2MiBTYWx0ZWRfXy4YaFBDUm7L0
+ xcM1GRk1aC8BiDZWAMIPypXndHNJcoRfoiWqEC+mp+yhNeLHpFWnX6p7Hwz+thOku+uTyaJz8/k
+ FZfYxXMjd44O/vPuSKy1lCnVL24ZcvabZ66/UJ+5scqV+6DDRyVG6F6UJmfUMbCwq+REnZA2huF
+ a7Vn4VSmsjqlEil7j1KjwfFbIDS+do4qu342NS4wQ7Fv8h1Has8kKYSZvO6Uf74il9G57EMl4Yb
+ JrmUGDrFyevQxzd0eYiQQFVAgzlKRpEyzNk/70siHfL/BfyhfjGTxkSIfX024sVKa6eDoKhtdEo
+ DsfUDovfqaFxhgVajJfJ7W68FfyKLkvjK/cGIyFAk/4q51uAKcMlVJUHx8Wqt4Q5gSHB3t336uj
+ CWQaoxo6I0wbOZwvvENEYaiBQIFZfHvrfgp8G6Eukjdo1/pkCfoDxRxfcU3Vy3R+QsRWXq07Sjz
+ 52grGlyeRkvXNA5qAOQ==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-06-04_02,2026-05-28_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 clxscore=1015 suspectscore=0 impostorscore=0 lowpriorityscore=0
- phishscore=0 malwarescore=0 priorityscore=1501 bulkscore=0 adultscore=0
+ impostorscore=0 clxscore=1015 adultscore=0 priorityscore=1501 phishscore=0
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606040062
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 1/8] fs/acl: Add ACL_USER_OBJ permissions test
+Subject: [LTP] [PATCH v2 2/8] fs/acl: Add ACL mask interaction tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,283 +109,351 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-QWRkIGFjbF91c2VyX29iajAxIHRlc3QgdG8gdmFsaWRhdGUgQUNMX1VTRVJfT0JKIChvd25lcikg
-cGVybWlzc2lvbnMuClRoaXMgdGVzdCB2ZXJpZmllcyB0aGF0OgotIFRyYWRpdGlvbmFsIHBlcm1p
-c3Npb24gYml0cyByZXN0cmljdCBvd25lciBhY2Nlc3MKLSBBQ0xfVVNFUl9PQkogZW50cmllcyBv
-dmVycmlkZSBwZXJtaXNzaW9uIGJpdHMKLSBPd25lciBwZXJtaXNzaW9ucyB3b3JrIGNvcnJlY3Rs
-eSB3aXRoIEFDTCBlbnRyaWVzCgpUaGUgdGVzdCBjcmVhdGVzIGEgZGlyZWN0b3J5IHdpdGggcmVz
-dHJpY3RpdmUgcGVybWlzc2lvbnMsIHZlcmlmaWVzCnRoYXQgZmlsZSBjcmVhdGlvbiBpcyBkZW5p
-ZWQsIHRoZW4gc2V0cyBBQ0xfVVNFUl9PQkogd2l0aCB3cml0ZQpwZXJtaXNzaW9ucyBhbmQgY29u
-ZmlybXMgdGhhdCBmaWxlIGNyZWF0aW9uIHN1Y2NlZWRzLgoKVGhlIHBhdGNoIGFsc28gYWRkcyBh
-Y2xfbGliLmggY29udGFpbmluZyBzaGFyZWQgaGVscGVyIGZ1bmN0aW9ucwphbmQgZGVmaW5pdGlv
-bnMgZm9yIEFDTCBhbmQgZXh0ZW5kZWQgYXR0cmlidXRlIHRlc3RzLiBUaGlzCmxpYnJhcnkgcHJv
-dmlkZXM6CgotIFRlc3QgdXNlciBtYW5hZ2VtZW50IChsdHB1c2VyMSwgbHRwdXNlcjIsIGx0cHVz
-ZXIzKQotIEFDTCBlbnRyeSBjcmVhdGlvbiBhbmQgbWFuaXB1bGF0aW9uIGhlbHBlcnMKLSBGaWxl
-IG9wZXJhdGlvbiBoZWxwZXJzIHdpdGggZGlmZmVyZW50IHVpZC9naWQKLSBUZXN0IHBhdGggbWFu
-YWdlbWVudCBhbmQgY2xlYW51cCBmdW5jdGlvbnMKLSBFeHRlbmRlZCBhdHRyaWJ1dGUgdGVzdCBk
-ZWZpbml0aW9ucwotIHJlc2V0X3Rlc3RfcGF0aF9ub19jaG93biB2YXJpYW50IHRvIHNraXAgY2hv
-d24gc3RlcAoKU2lnbmVkLW9mZi1ieTogU2FjaGluIFNhbnQgPHNhY2hpbnBAbGludXguaWJtLmNv
-bT4KLS0tClY0IGNoYW5nZXM6Ci0gQWRkwqAtVcKgZmxhZyBpbiBjcmVhdGVfdXNlcl9pZl9uZWVk
-ZWQoKcKgdG8gdXNlcmFkZCBmb3IgZ3VhcmFudGVlZAogIHVzZXItcHJpdmF0ZSBncm91cHMuCi0g
-TW92ZSBFT1BOT1RTVVBQIGhhbmRsaW5nIGludG/CoHNldF9hY2xfZmlsZSgpwqBoZWxwZXIKLSB2
-MyBsaW5rIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2x0cC8yMDI2MDYwMzE0MDE0Ny41MDczOC0x
-LXNhY2hpbnBAbGludXguaWJtLmNvbS9ULyN0CgpWMyBjaGFuZ2VzOgotIFVwZGF0ZWQgY29weXJp
-Z2h0IGhlYWRlciBhcyBwZXIgTFRQIGZvcm1hdC4KLSB2MiBsaW5rIGh0dHBzOi8vbG9yZS5rZXJu
-ZWwub3JnL2x0cC8yMDI2MDYwMzA2NTc0NC40NzEwNi0xLXNhY2hpbnBAbGludXguaWJtLmNvbS9U
-LyN0CgpWMiBjaGFuZ2VzOgotIEFkZGVkIHJlc2V0X3Rlc3RfcGF0aF9ub19jaG93biB2YXJpYW50
-IHRvIHNraXAgY2hvd24gc3RlcC4KIGFjbF9saW5rMDEgYW5kIHhhdHRyX3Rlc3QwMSB0ZXN0cyBh
-cmUgdXBkYXRlZCB0byB1c2UgdGhpcwogdmFyaWFudC4KLSBVcGRhdGVkIGFjbF91c2VyX29iajAx
-LmMgdG8gY29ycmVjdCBpbmNvcnJlY3QgZGVzY3JpcHRpb24KLSB2MSBsaW5rIGh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL2x0cC8yMDI2MDYwMjEyMTk1OC4yNzQ5NC0xLXNhY2hpbnBAbGludXguaWJt
-LmNvbS9ULyN0CgpWMSBjaGFuZ2VzOgotIFVzZSBBQ0xfTElCUyB2YXJpYWJsZSBpbnN0ZWFkIG9m
-IGhhcmRjb2RlZCAtbGFjbCBpbiBNYWtlZmlsZQotIE1vdmUgQUNMIGhlYWRlciBpbmNsdWRlcyBp
-bnNpZGUgZmVhdHVyZSBndWFyZHMgaW4gYWNsX2xpYi5oCi0gVXNlIEhBVkVfTElCQUNMIGd1YXJk
-cyBpbiAuYyBjb2RlCi0gUmVwb3J0IFRDT05GIHdoZW4gbGliYWNsIGlzIG5vdCBhdmFpbGFibGUK
-LSByZmMgbGluayBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvNDc3ODM2ZmQtODBjOC00MTY4
-LWJmZTYtMDBiMzc0YmIyNTM0QGxpbnV4LmlibS5jb20vVC8jdAoKLS0tCiBydW50ZXN0L2ZzICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAzICsKIHRlc3RjYXNlcy9rZXJuZWwvZnMv
-YWNsLy5naXRpZ25vcmUgICAgICAgfCAgIDEgKwogdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvTWFr
-ZWZpbGUgICAgICAgICB8ICAxMCArCiB0ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC9hY2xfbGliLmgg
-ICAgICAgIHwgMzU3ICsrKysrKysrKysrKysrKysrKysrKysrCiB0ZXN0Y2FzZXMva2VybmVsL2Zz
-L2FjbC9hY2xfdXNlcl9vYmowMS5jIHwgMTE2ICsrKysrKysrCiA1IGZpbGVzIGNoYW5nZWQsIDQ4
-NyBpbnNlcnRpb25zKCspCiBjcmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9mcy9h
-Y2wvLmdpdGlnbm9yZQogY3JlYXRlIG1vZGUgMTAwNjQ0IHRlc3RjYXNlcy9rZXJuZWwvZnMvYWNs
-L01ha2VmaWxlCiBjcmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvYWNs
-X2xpYi5oCiBjcmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvYWNsX3Vz
-ZXJfb2JqMDEuYwoKZGlmZiAtLWdpdCBhL3J1bnRlc3QvZnMgYi9ydW50ZXN0L2ZzCmluZGV4IDFk
-NzUzZTBkZC4uMmE4Nzg3NDRiIDEwMDY0NAotLS0gYS9ydW50ZXN0L2ZzCisrKyBiL3J1bnRlc3Qv
-ZnMKQEAgLTg3LDMgKzg3LDYgQEAgYmluZm10X21pc2MwMSBiaW5mbXRfbWlzYzAxLnNoCiBiaW5m
-bXRfbWlzYzAyIGJpbmZtdF9taXNjMDIuc2gKIAogc3F1YXNoZnMwMSBzcXVhc2hmczAxCisKKyMg
-UnVuIHRoZSBhY2wgdGVzdHMKK2FjbF91c2VyX29iajAxIGFjbF91c2VyX29iajAxCmRpZmYgLS1n
-aXQgYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC8uZ2l0aWdub3JlIGIvdGVzdGNhc2VzL2tlcm5l
-bC9mcy9hY2wvLmdpdGlnbm9yZQpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwMDAu
-LmQ5YzQ2ZGIxMQotLS0gL2Rldi9udWxsCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNsLy5n
-aXRpZ25vcmUKQEAgLTAsMCArMSBAQAorL2FjbF91c2VyX29iajAxCmRpZmYgLS1naXQgYS90ZXN0
-Y2FzZXMva2VybmVsL2ZzL2FjbC9NYWtlZmlsZSBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNsL01h
-a2VmaWxlCm5ldyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAwMC4uZTA5NDU0OWE3Ci0t
-LSAvZGV2L251bGwKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvTWFrZWZpbGUKQEAgLTAs
-MCArMSwxMCBAQAorIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgor
-IyBDb3B5cmlnaHQgKGMpIDIwMjYgSUJNCisKK3RvcF9zcmNkaXIJCT89IC4uLy4uLy4uLy4uCisK
-K2luY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL3Rlc3RjYXNlcy5taworCitMRExJQlMJ
-CQkrPSAkKEFDTF9MSUJTKQorCitpbmNsdWRlICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay9nZW5l
-cmljX2xlYWZfdGFyZ2V0Lm1rCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC9h
-Y2xfbGliLmggYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC9hY2xfbGliLmgKbmV3IGZpbGUgbW9k
-ZSAxMDA2NDQKaW5kZXggMDAwMDAwMDAwLi43ZDIzOGNlMGYKLS0tIC9kZXYvbnVsbAorKysgYi90
-ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC9hY2xfbGliLmgKQEAgLTAsMCArMSwzNTcgQEAKKy8qIFNQ
-RFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyICovCisvKgorICogQ29weXJp
-Z2h0IChjKSAyMDI2IElCTQorICogT3JpZ2luYWwgc2hlbGwgdGVzdCBieSBLYWkgWmhhbyAobHRj
-ZDNAY24uaWJtLmNvbSkKKyAqIENvbnZlcnRlZCB0byBDIGJ5IFNhY2hpbiBTYW50IDxzYWNoaW5w
-QGxpbnV4LmlibS5jb20+CisgKgorICogQ29tbW9uIGxpYnJhcnkgZm9yIEFDTCBhbmQgZXh0ZW5k
-ZWQgYXR0cmlidXRlIHRlc3RzCisgKi8KKworI2lmbmRlZiBBQ0xfTElCX0gKKyNkZWZpbmUgQUNM
-X0xJQl9ICisKKyNpbmNsdWRlIDxwd2QuaD4KKyNpbmNsdWRlIDxncnAuaD4KKyNpbmNsdWRlIDxl
-cnJuby5oPgorI2luY2x1ZGUgPGZjbnRsLmg+CisjaW5jbHVkZSA8c3RyaW5nLmg+CisjaW5jbHVk
-ZSA8c3lzL3N0YXQuaD4KKyNpbmNsdWRlIDxzeXMvdHlwZXMuaD4KKyNpbmNsdWRlIDxzeXMvd2Fp
-dC5oPgorI2luY2x1ZGUgPHN5cy94YXR0ci5oPgorCisjaW5jbHVkZSAiY29uZmlnLmgiCisjaW5j
-bHVkZSAidHN0X3Rlc3QuaCIKKyNpbmNsdWRlICJ0c3Rfc2FmZV9zdGRpby5oIgorCisjaWZkZWYg
-SEFWRV9MSUJBQ0wKKyNpbmNsdWRlIDxzeXMvYWNsLmg+CisjaW5jbHVkZSA8YWNsL2xpYmFjbC5o
-PgorI2VuZGlmCisKKyNkZWZpbmUgTU5UUE9JTlQJIm1udHBvaW50IgorI2RlZmluZSBURVNURElS
-CQlNTlRQT0lOVCAiL3Rlc3RkaXIiCisjZGVmaW5lIFRFU1RGSUxFCVRFU1RESVIgIi90ZXN0Zmls
-ZSIKKyNkZWZpbmUgVEVTVFNZTUxJTksJVEVTVERJUiAiL3Rlc3RzeW1saW5rIgorI2RlZmluZSBY
-QVRUUl9CQUNLVVBfRklMRSBNTlRQT0lOVCAiL3hhdHRyX2JhY2t1cC50eHQiCisjZGVmaW5lIFRF
-U1RfVVNFUjEJImx0cHVzZXIxIgorI2RlZmluZSBURVNUX1VTRVIyCSJsdHB1c2VyMiIKKyNkZWZp
-bmUgVEVTVF9VU0VSMwkibHRwdXNlcjMiCisKKyNkZWZpbmUgVVNFUjFfQ1JFQVRFRCAoMSA8PCAw
-KQorI2RlZmluZSBVU0VSMl9DUkVBVEVEICgxIDw8IDEpCisjZGVmaW5lIFVTRVIzX0NSRUFURUQg
-KDEgPDwgMikKKworLyogRXh0ZW5kZWQgYXR0cmlidXRlIHRlc3QgdmFsdWVzICovCisjZGVmaW5l
-IFhBVFRSX1RFU1RfRElSX05BTUUJInVzZXIudGVzdF9hdHRyIgorI2RlZmluZSBYQVRUUl9URVNU
-X0RJUl9WQUxVRQkidGVzdF92YWx1ZSIKKyNkZWZpbmUgWEFUVFJfVEVTVF9ESVJfU0laRQkxMAor
-I2RlZmluZSBYQVRUUl9URVNUX0ZJTEVfTkFNRQkidXNlci5maWxlX2F0dHIiCisjZGVmaW5lIFhB
-VFRSX1RFU1RfRklMRV9WQUxVRQkiZmlsZV92YWwiCisjZGVmaW5lIFhBVFRSX1RFU1RfRklMRV9T
-SVpFCTgKKyNkZWZpbmUgWEFUVFJfVEVTVDFfTkFNRQkidXNlci50ZXN0MSIKKyNkZWZpbmUgWEFU
-VFJfVEVTVDFfVkFMVUUJInZhbHVlMSIKKyNkZWZpbmUgWEFUVFJfVEVTVDFfU0laRQk2CisjZGVm
-aW5lIFhBVFRSX1RFU1QyX05BTUUJInVzZXIudGVzdDIiCisjZGVmaW5lIFhBVFRSX1RFU1QyX1ZB
-TFVFCSJ2YWx1ZTIiCisjZGVmaW5lIFhBVFRSX1RFU1QyX1NJWkUJNgorCisvKiBHbG9iYWwgdmFy
-aWFibGVzIGZvciB0ZXN0IHVzZXJzICovCitleHRlcm4gdWlkX3QgdXNlcjFfdWlkLCB1c2VyMl91
-aWQsIHVzZXIzX3VpZDsKK2V4dGVybiBnaWRfdCB1c2VyMV9naWQsIHVzZXIyX2dpZCwgdXNlcjNf
-Z2lkOworZXh0ZXJuIGludCB1c2Vyc19jcmVhdGVkOworCisvKiBIZWxwZXIgZnVuY3Rpb25zICov
-CitzdGF0aWMgaW5saW5lIHZvaWQgcmVzZXRfdGVzdF9wYXRoX25vX2Nob3duKHZvaWQpCit7CisJ
-aWYgKHVubGluayhURVNUU1lNTElOSykgPT0gLTEgJiYgZXJybm8gIT0gRU5PRU5UKQorCQl0c3Rf
-cmVzKFRXQVJOIHwgVEVSUk5PLCAidW5saW5rKCVzKSBmYWlsZWQiLCBURVNUU1lNTElOSyk7CisK
-KwlpZiAodW5saW5rKFRFU1RGSUxFKSA9PSAtMSAmJiBlcnJubyAhPSBFTk9FTlQpCisJCXRzdF9y
-ZXMoVFdBUk4gfCBURVJSTk8sICJ1bmxpbmsoJXMpIGZhaWxlZCIsIFRFU1RGSUxFKTsKKworCWlm
-IChybWRpcihURVNURElSKSA9PSAtMSAmJiBlcnJubyAhPSBFTk9FTlQpCisJCXRzdF9yZXMoVFdB
-Uk4gfCBURVJSTk8sICJybWRpciglcykgZmFpbGVkIiwgVEVTVERJUik7CisKKwlTQUZFX01LRElS
-KFRFU1RESVIsIDA3NTUpOworfQorCitzdGF0aWMgaW5saW5lIHZvaWQgcmVzZXRfdGVzdF9wYXRo
-KHZvaWQpCit7CisJcmVzZXRfdGVzdF9wYXRoX25vX2Nob3duKCk7CisJU0FGRV9DSE9XTihURVNU
-RElSLCB1c2VyMV91aWQsIHVzZXIxX2dpZCk7Cit9CisKK3N0YXRpYyBpbmxpbmUgdm9pZCBjbGVh
-bnVwX3Rlc3RmaWxlKHZvaWQpCit7CisJaWYgKHVubGluayhURVNURklMRSkgPT0gLTEgJiYgZXJy
-bm8gIT0gRU5PRU5UKQorCQl0c3RfcmVzKFRXQVJOIHwgVEVSUk5PLCAidW5saW5rKCVzKSBmYWls
-ZWQiLCBURVNURklMRSk7Cit9CisKKyNpZmRlZiBIQVZFX0xJQkFDTAorc3RhdGljIGlubGluZSB2
-b2lkIHNhZmVfYWNsX2ZyZWUodm9pZCAqcHRyKQoreworCWlmIChwdHIgJiYgYWNsX2ZyZWUocHRy
-KSA9PSAtMSkKKwkJdHN0X3JlcyhUV0FSTiB8IFRFUlJOTywgImFjbF9mcmVlIGZhaWxlZCIpOwor
-fQorCitzdGF0aWMgaW5saW5lIHZvaWQgc2FmZV9hZGRfcGVybShhY2xfcGVybXNldF90IHBlcm1z
-ZXQsIGFjbF9wZXJtX3QgcGVybSkKK3sKKwlpZiAoYWNsX2FkZF9wZXJtKHBlcm1zZXQsIHBlcm0p
-ID09IC0xKQorCQl0c3RfYnJrKFRCUk9LIHwgVEVSUk5PLCAiYWNsX2FkZF9wZXJtIGZhaWxlZCIp
-OworfQorCitzdGF0aWMgaW5saW5lIHZvaWQgc2FmZV9maWxsX3Blcm1zZXQoYWNsX3Blcm1zZXRf
-dCBwZXJtc2V0LCBpbnQgcGVybXMpCit7CisJaWYgKGFjbF9jbGVhcl9wZXJtcyhwZXJtc2V0KSA9
-PSAtMSkKKwkJdHN0X2JyayhUQlJPSyB8IFRFUlJOTywgImFjbF9jbGVhcl9wZXJtcyBmYWlsZWQi
-KTsKKworCWlmIChwZXJtcyAmIEFDTF9SRUFEKQorCQlzYWZlX2FkZF9wZXJtKHBlcm1zZXQsIEFD
-TF9SRUFEKTsKKworCWlmIChwZXJtcyAmIEFDTF9XUklURSkKKwkJc2FmZV9hZGRfcGVybShwZXJt
-c2V0LCBBQ0xfV1JJVEUpOworCisJaWYgKHBlcm1zICYgQUNMX0VYRUNVVEUpCisJCXNhZmVfYWRk
-X3Blcm0ocGVybXNldCwgQUNMX0VYRUNVVEUpOworfQorCisvKgorICogSGVscGVyIHRvIGNsZWFy
-IEFDTCBtYXNrIHBlcm1pc3Npb25zLgorICogRmluZHMgdGhlIEFDTF9NQVNLIGVudHJ5IGluIHRo
-ZSBnaXZlbiBBQ0wgYW5kIHNldHMgaXRzIHBlcm1pc3Npb25zIHRvIDAuCisgKi8KK3N0YXRpYyBp
-bmxpbmUgdm9pZCBjbGVhcl9hY2xfbWFza19wZXJtcyhhY2xfdCBhY2wpCit7CisJYWNsX2VudHJ5
-X3QgZW50cnk7CisJYWNsX3Blcm1zZXRfdCBwZXJtc2V0OworCWFjbF90YWdfdCB0YWc7CisJaW50
-IGk7CisKKwlmb3IgKGkgPSBBQ0xfRklSU1RfRU5UUlk7IDsgaSA9IEFDTF9ORVhUX0VOVFJZKSB7
-CisJCWludCByZXQgPSBhY2xfZ2V0X2VudHJ5KGFjbCwgaSwgJmVudHJ5KTsKKworCQlpZiAocmV0
-ID09IC0xKQorCQkJdHN0X2JyayhUQlJPSyB8IFRFUlJOTywgImFjbF9nZXRfZW50cnkgZmFpbGVk
-Iik7CisKKwkJaWYgKHJldCAhPSAxKQorCQkJYnJlYWs7CisKKwkJaWYgKGFjbF9nZXRfdGFnX3R5
-cGUoZW50cnksICZ0YWcpID09IC0xKQorCQkJdHN0X2JyayhUQlJPSyB8IFRFUlJOTywgImFjbF9n
-ZXRfdGFnX3R5cGUgZmFpbGVkIik7CisKKwkJaWYgKHRhZyAhPSBBQ0xfTUFTSykKKwkJCWNvbnRp
-bnVlOworCisJCWlmIChhY2xfZ2V0X3Blcm1zZXQoZW50cnksICZwZXJtc2V0KSA9PSAtMSkKKwkJ
-CXRzdF9icmsoVEJST0sgfCBURVJSTk8sICJhY2xfZ2V0X3Blcm1zZXQgZmFpbGVkIik7CisKKwkJ
-c2FmZV9maWxsX3Blcm1zZXQocGVybXNldCwgMCk7CisKKwkJaWYgKGFjbF9zZXRfcGVybXNldChl
-bnRyeSwgcGVybXNldCkgPT0gLTEpCisJCQl0c3RfYnJrKFRCUk9LIHwgVEVSUk5PLCAiYWNsX3Nl
-dF9wZXJtc2V0IGZhaWxlZCIpOworCisJCWJyZWFrOworCX0KK30KKworLyoKKyAqIEhlbHBlciB0
-byBhZGQgYW4gQUNMIGVudHJ5IHdpdGggb3B0aW9uYWwgcXVhbGlmaWVyLgorICogRm9yIEFDTF9V
-U0VSIGFuZCBBQ0xfR1JPVVAgdGFncywgcXVhbGlmaWVyIG11c3QgYmUgcHJvdmlkZWQuCisgKiBG
-b3Igb3RoZXIgdGFncyAoQUNMX1VTRVJfT0JKLCBBQ0xfR1JPVVBfT0JKLCBBQ0xfT1RIRVIsIEFD
-TF9NQVNLKSwKKyAqIHF1YWxpZmllciBzaG91bGQgYmUgTlVMTC4KKyAqLworc3RhdGljIGlubGlu
-ZSB2b2lkIGFkZF9hY2xfZW50cnlfd2l0aF9xdWFsaWZpZXIoYWNsX3QgYWNsLCBhY2xfdGFnX3Qg
-dGFnLAorCQkJCQkJY29uc3Qgdm9pZCAqcXVhbGlmaWVyLAorCQkJCQkJaW50IHBlcm1zKQorewor
-CWFjbF9lbnRyeV90IGVudHJ5OworCWFjbF9wZXJtc2V0X3QgcGVybXNldDsKKworCWlmIChhY2xf
-Y3JlYXRlX2VudHJ5KCZhY2wsICZlbnRyeSkgPT0gLTEpCisJCXRzdF9icmsoVEJST0sgfCBURVJS
-Tk8sICJhY2xfY3JlYXRlX2VudHJ5IGZhaWxlZCIpOworCisJaWYgKGFjbF9zZXRfdGFnX3R5cGUo
-ZW50cnksIHRhZykgPT0gLTEpCisJCXRzdF9icmsoVEJST0sgfCBURVJSTk8sICJhY2xfc2V0X3Rh
-Z190eXBlIGZhaWxlZCIpOworCisJLyogU2V0IHF1YWxpZmllciBmb3IgQUNMX1VTRVIgYW5kIEFD
-TF9HUk9VUCBlbnRyaWVzICovCisJaWYgKHF1YWxpZmllciAmJiBhY2xfc2V0X3F1YWxpZmllcihl
-bnRyeSwgcXVhbGlmaWVyKSA9PSAtMSkKKwkJdHN0X2JyayhUQlJPSyB8IFRFUlJOTywgImFjbF9z
-ZXRfcXVhbGlmaWVyIGZhaWxlZCIpOworCisJaWYgKGFjbF9nZXRfcGVybXNldChlbnRyeSwgJnBl
-cm1zZXQpID09IC0xKQorCQl0c3RfYnJrKFRCUk9LIHwgVEVSUk5PLCAiYWNsX2dldF9wZXJtc2V0
-IGZhaWxlZCIpOworCisJc2FmZV9maWxsX3Blcm1zZXQocGVybXNldCwgcGVybXMpOworCisJaWYg
-KGFjbF9zZXRfcGVybXNldChlbnRyeSwgcGVybXNldCkgPT0gLTEpCisJCXRzdF9icmsoVEJST0sg
-fCBURVJSTk8sICJhY2xfc2V0X3Blcm1zZXQgZmFpbGVkIik7Cit9CisKKy8qIENvbnZlbmllbmNl
-IHdyYXBwZXIgZm9yIGVudHJpZXMgd2l0aG91dCBxdWFsaWZpZXJzICovCitzdGF0aWMgaW5saW5l
-IHZvaWQgYWRkX2FjbF9lbnRyeShhY2xfdCBhY2wsIGFjbF90YWdfdCB0YWcsIGludCBwZXJtcykK
-K3sKKwlhZGRfYWNsX2VudHJ5X3dpdGhfcXVhbGlmaWVyKGFjbCwgdGFnLCBOVUxMLCBwZXJtcyk7
-Cit9CisKKy8qIENvbnZlbmllbmNlIHdyYXBwZXIgZm9yIG5hbWVkIHVzZXIgZW50cmllcyAqLwor
-c3RhdGljIGlubGluZSB2b2lkIGFkZF9uYW1lZF91c2VyX2FjbF9lbnRyeShhY2xfdCBhY2wsIHVp
-ZF90IHVpZCwgaW50IHBlcm1zKQoreworCWFkZF9hY2xfZW50cnlfd2l0aF9xdWFsaWZpZXIoYWNs
-LCBBQ0xfVVNFUiwgJnVpZCwgcGVybXMpOworfQorCisvKiBDb252ZW5pZW5jZSB3cmFwcGVyIGZv
-ciBuYW1lZCBncm91cCBlbnRyaWVzICovCitzdGF0aWMgaW5saW5lIHZvaWQgYWRkX25hbWVkX2dy
-b3VwX2FjbF9lbnRyeShhY2xfdCBhY2wsIGdpZF90IGdpZCwgaW50IHBlcm1zKQoreworCWFkZF9h
-Y2xfZW50cnlfd2l0aF9xdWFsaWZpZXIoYWNsLCBBQ0xfR1JPVVAsICZnaWQsIHBlcm1zKTsKK30K
-Kworc3RhdGljIGlubGluZSB2b2lkIGFkZF9lbXB0eV9hY2xfZW50cnkoYWNsX3QgYWNsLCBhY2xf
-dGFnX3QgdGFnKQoreworCWFkZF9hY2xfZW50cnkoYWNsLCB0YWcsIDApOworfQorCitzdGF0aWMg
-aW5saW5lIHZvaWQgc2V0X2FjbF9maWxlKGNvbnN0IGNoYXIgKnBhdGgsIGFjbF90eXBlX3QgdHlw
-ZSwgYWNsX3QgYWNsKQoreworCWlmIChhY2xfdmFsaWQoYWNsKSA9PSAtMSkKKwkJdHN0X2JyayhU
-QlJPSyB8IFRFUlJOTywgImFjbF92YWxpZCBmYWlsZWQiKTsKKworCWlmIChhY2xfc2V0X2ZpbGUo
-cGF0aCwgdHlwZSwgYWNsKSA9PSAtMSkgeworCQlpZiAoZXJybm8gPT0gRU9QTk9UU1VQUCkKKwkJ
-CXRzdF9icmsoVENPTkYgfCBURVJSTk8sICJBQ0wgbm90IHN1cHBvcnRlZCBvbiAlcyIsCisJCQkJ
-cGF0aCk7CisJCXRzdF9icmsoVEJST0sgfCBURVJSTk8sICJhY2xfc2V0X2ZpbGUoJXMpIGZhaWxl
-ZCIsIHBhdGgpOworCX0KK30KKyNlbmRpZgorCitzdGF0aWMgaW5saW5lIGludCBjcmVhdGVfZmls
-ZV9hcyh1aWRfdCB1aWQsIGdpZF90IGdpZCwgbW9kZV90IG1vZGUsCisJCQkJIGludCB1c2VfdW1h
-c2ssIG1vZGVfdCBtYXNrKQoreworCXBpZF90IHBpZDsKKwlpbnQgc3RhdHVzOworCisJcGlkID0g
-U0FGRV9GT1JLKCk7CisJaWYgKCFwaWQpIHsKKwkJaW50IGZkLCBlcnI7CisKKwkJaWYgKHNldGdy
-b3VwcygwLCBOVUxMKSA9PSAtMSkgeworCQkJZXJyID0gZXJybm87CisJCQlfZXhpdChlcnIpOwor
-CQl9CisKKwkJaWYgKHNldGdpZChnaWQpID09IC0xKSB7CisJCQllcnIgPSBlcnJubzsKKwkJCV9l
-eGl0KGVycik7CisJCX0KKworCQlpZiAoc2V0dWlkKHVpZCkgPT0gLTEpIHsKKwkJCWVyciA9IGVy
-cm5vOworCQkJX2V4aXQoZXJyKTsKKwkJfQorCisJCWlmICh1c2VfdW1hc2spCisJCQl1bWFzayht
-YXNrKTsKKworCQlmZCA9IG9wZW4oVEVTVEZJTEUsIE9fQ1JFQVQgfCBPX1dST05MWSwgbW9kZSk7
-CisJCWlmIChmZCA+PSAwKSB7CisJCQljbG9zZShmZCk7CisJCQlfZXhpdCgwKTsKKwkJfQorCisJ
-CWVyciA9IGVycm5vOworCQlfZXhpdChlcnIpOworCX0KKworCVNBRkVfV0FJVFBJRChwaWQsICZz
-dGF0dXMsIDApOworCisJaWYgKCFXSUZFWElURUQoc3RhdHVzKSkKKwkJdHN0X2JyayhUQlJPSywg
-IkNoaWxkIHRlcm1pbmF0ZWQgYWJub3JtYWxseSIpOworCisJcmV0dXJuIFdFWElUU1RBVFVTKHN0
-YXR1cyk7Cit9CisKK3N0YXRpYyBpbmxpbmUgaW50IHRyeV9jcmVhdGVfYXModWlkX3QgdWlkLCBn
-aWRfdCBnaWQsIG1vZGVfdCBtb2RlKQoreworCXJldHVybiBjcmVhdGVfZmlsZV9hcyh1aWQsIGdp
-ZCwgbW9kZSwgMCwgMCk7Cit9CisKK3N0YXRpYyBpbmxpbmUgaW50IGNyZWF0ZV93aXRoX3VtYXNr
-X2FzKHVpZF90IHVpZCwgZ2lkX3QgZ2lkLCBtb2RlX3QgbW9kZSwKKwkJCQkJbW9kZV90IG1hc2sp
-Cit7CisJcmV0dXJuIGNyZWF0ZV9maWxlX2FzKHVpZCwgZ2lkLCBtb2RlLCAxLCBtYXNrKTsKK30K
-Kworc3RhdGljIGlubGluZSB2b2lkIGNyZWF0ZV91c2VyX2lmX25lZWRlZChjb25zdCBjaGFyICp1
-c2VybmFtZSwgaW50IGZsYWcpCit7CisJc3RydWN0IHBhc3N3ZCAqcHc7CisKKwllcnJubyA9IDA7
-CisJcHcgPSBnZXRwd25hbSh1c2VybmFtZSk7CisJaWYgKCFwdyAmJiBlcnJubyAhPSAwKQorCQl0
-c3RfYnJrKFRCUk9LIHwgVEVSUk5PLCAiZ2V0cHduYW0oJXMpIGZhaWxlZCIsIHVzZXJuYW1lKTsK
-KworCWlmICghcHcpIHsKKwkJaWYgKHRzdF9jbWQoKGNvbnN0IGNoYXIgKltdKXsidXNlcmFkZCIs
-ICItTSIsICItVSIsIHVzZXJuYW1lLAorCQkJICAgIE5VTEx9LCBOVUxMLCBOVUxMLCBUU1RfQ01E
-X1BBU1NfUkVUVkFMKSAhPSAwKQorCQkJdHN0X2JyayhUQlJPSywgIkZhaWxlZCB0byBjcmVhdGUg
-dXNlciAlcyIsIHVzZXJuYW1lKTsKKwkJdXNlcnNfY3JlYXRlZCB8PSBmbGFnOworCX0KK30KKwor
-c3RhdGljIGlubGluZSB2b2lkIGNyZWF0ZV90ZXN0X3VzZXJzKHZvaWQpCit7CisJY3JlYXRlX3Vz
-ZXJfaWZfbmVlZGVkKFRFU1RfVVNFUjEsIFVTRVIxX0NSRUFURUQpOworCWNyZWF0ZV91c2VyX2lm
-X25lZWRlZChURVNUX1VTRVIyLCBVU0VSMl9DUkVBVEVEKTsKKwljcmVhdGVfdXNlcl9pZl9uZWVk
-ZWQoVEVTVF9VU0VSMywgVVNFUjNfQ1JFQVRFRCk7Cit9CisKK3N0YXRpYyBpbmxpbmUgdm9pZCBp
-bml0X3Rlc3RfdXNlcnModm9pZCkKK3sKKwlzdHJ1Y3QgcGFzc3dkICpwdzsKKworCWNyZWF0ZV90
-ZXN0X3VzZXJzKCk7CisKKwlwdyA9IFNBRkVfR0VUUFdOQU0oVEVTVF9VU0VSMSk7CisJdXNlcjFf
-dWlkID0gcHctPnB3X3VpZDsKKwl1c2VyMV9naWQgPSBwdy0+cHdfZ2lkOworCisJcHcgPSBTQUZF
-X0dFVFBXTkFNKFRFU1RfVVNFUjIpOworCXVzZXIyX3VpZCA9IHB3LT5wd191aWQ7CisJdXNlcjJf
-Z2lkID0gcHctPnB3X2dpZDsKKworCXB3ID0gU0FGRV9HRVRQV05BTShURVNUX1VTRVIzKTsKKwl1
-c2VyM191aWQgPSBwdy0+cHdfdWlkOworCXVzZXIzX2dpZCA9IHB3LT5wd19naWQ7Cit9CisKK3N0
-YXRpYyBpbmxpbmUgdm9pZCBjbGVhbnVwX3Rlc3RfdXNlcnModm9pZCkKK3sKKwlpZiAodXNlcnNf
-Y3JlYXRlZCAmIFVTRVIxX0NSRUFURUQpCisJCXRzdF9jbWQoKGNvbnN0IGNoYXIgKltdKXsidXNl
-cmRlbCIsIFRFU1RfVVNFUjEsIE5VTEx9LAorCQkJTlVMTCwgTlVMTCwgVFNUX0NNRF9QQVNTX1JF
-VFZBTCk7CisKKwlpZiAodXNlcnNfY3JlYXRlZCAmIFVTRVIyX0NSRUFURUQpCisJCXRzdF9jbWQo
-KGNvbnN0IGNoYXIgKltdKXsidXNlcmRlbCIsIFRFU1RfVVNFUjIsIE5VTEx9LAorCQkJTlVMTCwg
-TlVMTCwgVFNUX0NNRF9QQVNTX1JFVFZBTCk7CisKKwlpZiAodXNlcnNfY3JlYXRlZCAmIFVTRVIz
-X0NSRUFURUQpCisJCXRzdF9jbWQoKGNvbnN0IGNoYXIgKltdKXsidXNlcmRlbCIsIFRFU1RfVVNF
-UjMsIE5VTEx9LAorCQkJTlVMTCwgTlVMTCwgVFNUX0NNRF9QQVNTX1JFVFZBTCk7Cit9CisKK3N0
-YXRpYyBpbmxpbmUgdm9pZCBjbGVhbnVwX3Rlc3RfcGF0aHModm9pZCkKK3sKKwlpZiAodW5saW5r
-KFRFU1RTWU1MSU5LKSA9PSAtMSAmJiBlcnJubyAhPSBFTk9FTlQpCisJCXRzdF9yZXMoVFdBUk4g
-fCBURVJSTk8sICJ1bmxpbmsoJXMpIGZhaWxlZCIsIFRFU1RTWU1MSU5LKTsKKworCWlmICh1bmxp
-bmsoVEVTVEZJTEUpID09IC0xICYmIGVycm5vICE9IEVOT0VOVCkKKwkJdHN0X3JlcyhUV0FSTiB8
-IFRFUlJOTywgInVubGluayglcykgZmFpbGVkIiwgVEVTVEZJTEUpOworCisJaWYgKHVubGluayhY
-QVRUUl9CQUNLVVBfRklMRSkgPT0gLTEgJiYgZXJybm8gIT0gRU5PRU5UKQorCQl0c3RfcmVzKFRX
-QVJOIHwgVEVSUk5PLCAidW5saW5rKCVzKSBmYWlsZWQiLAorCQkJWEFUVFJfQkFDS1VQX0ZJTEUp
-OworCisJaWYgKHJtZGlyKFRFU1RESVIpID09IC0xICYmIGVycm5vICE9IEVOT0VOVCkKKwkJdHN0
-X3JlcyhUV0FSTiB8IFRFUlJOTywgInJtZGlyKCVzKSBmYWlsZWQiLCBURVNURElSKTsKK30KKwor
-I2VuZGlmIC8qIEFDTF9MSUJfSCAqLwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9h
-Y2wvYWNsX3VzZXJfb2JqMDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNsL2FjbF91c2VyX29i
-ajAxLmMKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMDAwLi42Yjk3ZTRjY2MKLS0t
-IC9kZXYvbnVsbAorKysgYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC9hY2xfdXNlcl9vYmowMS5j
-CkBAIC0wLDAgKzEsMTE2IEBACisvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1v
-ci1sYXRlcgorLyoKKyAqIENvcHlyaWdodCAoYykgMjAyNiBJQk0KKyAqCisgKiBPcmlnaW5hbCBz
-aGVsbCB0ZXN0IGJ5IEthaSBaaGFvIChsdGNkM0Bjbi5pYm0uY29tKQorICogQ29udmVydGVkIHRv
-IEMgYnkgU2FjaGluIFNhbnQgPHNhY2hpbnBAbGludXguaWJtLmNvbT4KKyAqLworCisvKlwKKyAq
-IFRlc3QgQUNMX1VTRVJfT0JKIHBlcm1pc3Npb25zLgorICoKKyAqIFZlcmlmeSB0aGF0IG93bmVy
-IHBlcm1pc3Npb25zIChBQ0xfVVNFUl9PQkopIGNvcnJlY3RseSBjb250cm9sIGFjY2VzcworICog
-dG8gZmlsZXMgYW5kIGRpcmVjdG9yaWVzLiBUaGUgdGVzdCB2YWxpZGF0ZXMgdGhhdDoKKyAqIC0g
-QUNMX1VTRVJfT0JKIHBlcm1pc3Npb25zIGFyZSBhcHBsaWVkIGRpcmVjdGx5IGFzIHRoZSBvd25l
-ciBiaXRzCisgKiAtIFNldHRpbmcgQUNMX1VTRVJfT0JKPXJ3eCB2aWEgYWNsX3NldF9maWxlKCkg
-b3ZlcnJpZGVzIGEgcHJldmlvdXMKKyAqICAgY2htb2QgcmVzdHJpY3Rpb24KKyAqIC0gT3duZXIg
-cGVybWlzc2lvbnMgd29yayBpbmRlcGVuZGVudGx5IG9mIGdyb3VwIGFuZCBvdGhlciBwZXJtaXNz
-aW9ucworICovCisKKyNpbmNsdWRlICJhY2xfbGliLmgiCisKK3VpZF90IHVzZXIxX3VpZCwgdXNl
-cjJfdWlkLCB1c2VyM191aWQ7CitnaWRfdCB1c2VyMV9naWQsIHVzZXIyX2dpZCwgdXNlcjNfZ2lk
-OworaW50IHVzZXJzX2NyZWF0ZWQgPSAwOworCisjaWZkZWYgSEFWRV9MSUJBQ0wKKworc3RhdGlj
-IHZvaWQgcnVuKHZvaWQpCit7CisJYWNsX3QgYWNsOworCWludCBlcnI7CisKKwl0c3RfcmVzKFRJ
-TkZPLCAiVGVzdGluZyBBQ0xfVVNFUl9PQkogcGVybWlzc2lvbnMiKTsKKwlyZXNldF90ZXN0X3Bh
-dGgoKTsKKworCS8qIFRlc3QgMTogVmVyaWZ5IHBlcm1pc3Npb24gYml0cyBkZW55IGFjY2VzcyAq
-LworCVNBRkVfQ0hNT0QoVEVTVERJUiwgMDUwMCk7CisKKwllcnIgPSB0cnlfY3JlYXRlX2FzKHVz
-ZXIxX3VpZCwgdXNlcjFfZ2lkLCAwNjQ0KTsKKwlpZiAoIWVycikgeworCQljbGVhbnVwX3Rlc3Rm
-aWxlKCk7CisJCXRzdF9yZXMoVEZBSUwsICJDcmVhdGVkIGZpbGUgd2l0aG91dCB3cml0ZSBwZXJt
-aXNzaW9uIik7CisJCXJldHVybjsKKwl9CisKKwlpZiAoZXJyICE9IEVBQ0NFUykgeworCQllcnJu
-byA9IGVycjsKKwkJdHN0X3JlcyhURkFJTCB8IFRFUlJOTywgIkV4cGVjdGVkIEVBQ0NFUyBmcm9t
-IG93bmVyIGNyZWF0ZSIpOworCQlyZXR1cm47CisJfQorCisJdHN0X3JlcyhUUEFTUywgIkZpbGUg
-Y3JlYXRpb24gZGVuaWVkIGJ5IHBlcm1pc3Npb24gYml0cyIpOworCisJLyogVGVzdCAyOiBWZXJp
-ZnkgQUNMX1VTRVJfT0JKIGdyYW50cyBhY2Nlc3MgKi8KKwlhY2wgPSBhY2xfaW5pdCgzKTsKKwlp
-ZiAoIWFjbCkKKwkJdHN0X2JyayhUQlJPSyB8IFRFUlJOTywgImFjbF9pbml0IGZhaWxlZCIpOwor
-CisJYWRkX2FjbF9lbnRyeShhY2wsIEFDTF9VU0VSX09CSiwKKwkJICAgICAgQUNMX1JFQUQgfCBB
-Q0xfV1JJVEUgfCBBQ0xfRVhFQ1VURSk7CisJYWRkX2VtcHR5X2FjbF9lbnRyeShhY2wsIEFDTF9H
-Uk9VUF9PQkopOworCWFkZF9lbXB0eV9hY2xfZW50cnkoYWNsLCBBQ0xfT1RIRVIpOworCisJc2V0
-X2FjbF9maWxlKFRFU1RESVIsIEFDTF9UWVBFX0FDQ0VTUywgYWNsKTsKKwlzYWZlX2FjbF9mcmVl
-KGFjbCk7CisKKwllcnIgPSB0cnlfY3JlYXRlX2FzKHVzZXIxX3VpZCwgdXNlcjFfZ2lkLCAwNjQ0
-KTsKKwlpZiAoZXJyKSB7CisJCWVycm5vID0gZXJyOworCQl0c3RfcmVzKFRGQUlMIHwgVEVSUk5P
-LAorCQkJIkZhaWxlZCB0byBjcmVhdGUgZmlsZSB3aXRoIEFDTF9VU0VSX09CSiByd3giKTsKKwkJ
-cmV0dXJuOworCX0KKworCWNsZWFudXBfdGVzdGZpbGUoKTsKKwl0c3RfcmVzKFRQQVNTLCAiQUNM
-X1VTRVJfT0JKIHBlcm1pc3Npb25zIHdvcmsgY29ycmVjdGx5Iik7Cit9CisKK3N0YXRpYyB2b2lk
-IHNldHVwKHZvaWQpCit7CisJaW5pdF90ZXN0X3VzZXJzKCk7CisJcmVzZXRfdGVzdF9wYXRoKCk7
-Cit9CisKK3N0YXRpYyB2b2lkIGNsZWFudXAodm9pZCkKK3sKKwljbGVhbnVwX3Rlc3RfcGF0aHMo
-KTsKKwljbGVhbnVwX3Rlc3RfdXNlcnMoKTsKK30KKworc3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0
-ZXN0ID0geworCS50ZXN0X2FsbCA9IHJ1biwKKwkuc2V0dXAgPSBzZXR1cCwKKwkuY2xlYW51cCA9
-IGNsZWFudXAsCisJLm5lZWRzX3Jvb3QgPSAxLAorCS5tb3VudF9kZXZpY2UgPSAxLAorCS5tbnRw
-b2ludCA9IE1OVFBPSU5ULAorCS5mb3Jrc19jaGlsZCA9IDEsCisJLmZpbGVzeXN0ZW1zID0gKHN0
-cnVjdCB0c3RfZnNbXSkgeworCQl7LnR5cGUgPSAiZXh0MiIsIC5tbnRfZGF0YSA9ICJhY2wifSwK
-KwkJey50eXBlID0gImV4dDMiLCAubW50X2RhdGEgPSAiYWNsIn0sCisJCXsudHlwZSA9ICJleHQ0
-IiwgLm1udF9kYXRhID0gImFjbCJ9LAorCQl7LnR5cGUgPSAieGZzIn0sCisJCXsudHlwZSA9ICJi
-dHJmcyJ9LAorCQl7fQorCX0sCisJLm5lZWRzX2NtZHMgPSAoc3RydWN0IHRzdF9jbWRbXSkgewor
-CQl7LmNtZCA9ICJ1c2VyYWRkIn0sCisJCXsuY21kID0gInVzZXJkZWwifSwKKwkJe30KKwl9Cit9
-OworCisjZWxzZQorVFNUX1RFU1RfVENPTkYoImxpYmFjbCBvciBBQ0wgaGVhZGVycyBhcmUgbm90
-IGF2YWlsYWJsZSIpOworI2VuZGlmCi0tIAoyLjM5LjEKCgotLSAKTWFpbGluZyBsaXN0IGluZm86
-IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Add acl_mask01 test with 3 test cases to validate ACL_MASK
+interaction with named user and group entries:
+
+1. ACL_USER with mask - Named user permissions restricted by mask
+2. ACL_GROUP with mask - Named group permissions restricted by mask
+3. ACL_GROUP_OBJ with mask - Group owner permissions restricted by mask
+
+Each test verifies that:
+- With mask set to rwx, access is granted
+- With mask cleared (---), access is denied with EACCES
+
+This validates that ACL_MASK correctly restricts permissions for
+ACL_USER, ACL_GROUP, and ACL_GROUP_OBJ entries.
+
+Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
+---
+V2 changes:
+- Updated copyright header as per LTP format.
+- v1 link https://lore.kernel.org/ltp/20260602121958.27494-1-sachinp@linux.ibm.com/T/#t
+
+V1 changes:
+- Use HAVE_LIBACL guards in .c code
+- Report TCONF when libacl is not available
+- rfc link https://lore.kernel.org/ltp/477836fd-80c8-4168-bfe6-00b374bb2534@linux.ibm.com/T/#t
+
+---
+ runtest/fs                           |   1 +
+ testcases/kernel/fs/acl/.gitignore   |   1 +
+ testcases/kernel/fs/acl/acl_mask01.c | 283 +++++++++++++++++++++++++++
+ 3 files changed, 285 insertions(+)
+ create mode 100644 testcases/kernel/fs/acl/acl_mask01.c
+
+diff --git a/runtest/fs b/runtest/fs
+index 2a878744b..69ecb8647 100644
+--- a/runtest/fs
++++ b/runtest/fs
+@@ -90,3 +90,4 @@ squashfs01 squashfs01
+ 
+ # Run the acl tests
+ acl_user_obj01 acl_user_obj01
++acl_mask01 acl_mask01
+diff --git a/testcases/kernel/fs/acl/.gitignore b/testcases/kernel/fs/acl/.gitignore
+index d9c46db11..bfcdee93d 100644
+--- a/testcases/kernel/fs/acl/.gitignore
++++ b/testcases/kernel/fs/acl/.gitignore
+@@ -1 +1,2 @@
+ /acl_user_obj01
++/acl_mask01
+diff --git a/testcases/kernel/fs/acl/acl_mask01.c b/testcases/kernel/fs/acl/acl_mask01.c
+new file mode 100644
+index 000000000..4bf9324d4
+--- /dev/null
++++ b/testcases/kernel/fs/acl/acl_mask01.c
+@@ -0,0 +1,283 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 IBM
++ *
++ * Original shell test by Kai Zhao (ltcd3@cn.ibm.com)
++ * Converted to C by Sachin Sant <sachinp@linux.ibm.com>
++ */
++
++/*\
++ * Test ACL mask interaction with named users and groups.
++ *
++ * Verify that ACL_MASK correctly restricts permissions for:
++ * - ACL_USER (named user) entries
++ * - ACL_GROUP (named group) entries
++ * - ACL_GROUP_OBJ (group owner) entries
++ *
++ * The mask acts as an upper bound on permissions for these entry types.
++ * Even if an entry grants full permissions, the mask can restrict them.
++ * ACL_USER_OBJ and ACL_OTHER are not affected by the mask.
++ *
++ * [Algorithm]
++ *
++ * For each entry type (ACL_USER, ACL_GROUP, ACL_GROUP_OBJ):
++ * 1. Set up ACL with full permissions for the entry
++ * 2. Set mask to allow full permissions (rwx)
++ * 3. Verify access is granted
++ * 4. Clear mask permissions (---)
++ * 5. Verify access is denied despite entry having full permissions
++ */
++
++#include "acl_lib.h"
++
++uid_t user1_uid, user2_uid, user3_uid;
++gid_t user1_gid, user2_gid, user3_gid;
++int users_created = 0;
++
++#ifdef HAVE_LIBACL
++
++/*
++ * Test ACL_USER permissions with mask.
++ * Named user permissions should be restricted by ACL_MASK.
++ */
++static void test_acl_user_with_mask(void)
++{
++	acl_t acl;
++	int err;
++
++	tst_res(TINFO, "Testing ACL_USER with mask");
++	reset_test_path();
++
++	acl = acl_init(5);
++	if (!acl)
++		tst_brk(TBROK | TERRNO, "acl_init failed");
++
++	add_acl_entry(acl, ACL_USER_OBJ,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE);
++	add_named_user_acl_entry(acl, user3_uid,
++				 ACL_READ | ACL_WRITE | ACL_EXECUTE);
++	add_empty_acl_entry(acl, ACL_GROUP_OBJ);
++	add_acl_entry(acl, ACL_MASK,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE);
++	add_empty_acl_entry(acl, ACL_OTHER);
++
++	set_acl_file(TESTDIR, ACL_TYPE_ACCESS, acl);
++	safe_acl_free(acl);
++
++	err = try_create_as(user3_uid, user3_gid, 0644);
++	if (err) {
++		errno = err;
++		tst_res(TFAIL | TERRNO,
++			"ACL_USER with mask rwx should allow access");
++		return;
++	}
++
++	cleanup_testfile();
++
++	acl = acl_get_file(TESTDIR, ACL_TYPE_ACCESS);
++	if (!acl)
++		tst_brk(TBROK | TERRNO, "acl_get_file failed");
++
++	clear_acl_mask_perms(acl);
++	set_acl_file(TESTDIR, ACL_TYPE_ACCESS, acl);
++	safe_acl_free(acl);
++
++	err = try_create_as(user3_uid, user3_gid, 0644);
++	if (!err) {
++		cleanup_testfile();
++		tst_res(TFAIL, "ACL_USER with mask --- should deny access");
++		return;
++	}
++
++	if (err != EACCES) {
++		errno = err;
++		tst_res(TFAIL | TERRNO, "Expected EACCES from named user");
++		return;
++	}
++
++	tst_res(TPASS, "ACL_USER with mask works correctly");
++}
++
++/*
++ * Test ACL_GROUP permissions with mask.
++ * Named group permissions should be restricted by ACL_MASK.
++ */
++static void test_acl_group_with_mask(void)
++{
++	acl_t acl;
++	int err;
++
++	tst_res(TINFO, "Testing ACL_GROUP with mask");
++	reset_test_path();
++
++	acl = acl_init(5);
++	if (!acl)
++		tst_brk(TBROK | TERRNO, "acl_init failed");
++
++	add_acl_entry(acl, ACL_USER_OBJ,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE);
++	add_empty_acl_entry(acl, ACL_GROUP_OBJ);
++	add_named_group_acl_entry(acl, user2_gid,
++				  ACL_READ | ACL_WRITE | ACL_EXECUTE);
++	add_acl_entry(acl, ACL_MASK,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE);
++	add_empty_acl_entry(acl, ACL_OTHER);
++
++	set_acl_file(TESTDIR, ACL_TYPE_ACCESS, acl);
++	safe_acl_free(acl);
++
++	err = try_create_as(user2_uid, user2_gid, 0644);
++	if (err) {
++		errno = err;
++		tst_res(TFAIL | TERRNO,
++			"ACL_GROUP with mask rwx should allow access");
++		return;
++	}
++
++	cleanup_testfile();
++
++	acl = acl_get_file(TESTDIR, ACL_TYPE_ACCESS);
++	if (!acl)
++		tst_brk(TBROK | TERRNO, "acl_get_file failed");
++
++	clear_acl_mask_perms(acl);
++	set_acl_file(TESTDIR, ACL_TYPE_ACCESS, acl);
++	safe_acl_free(acl);
++
++	err = try_create_as(user2_uid, user2_gid, 0644);
++	if (!err) {
++		cleanup_testfile();
++		tst_res(TFAIL, "ACL_GROUP with mask --- should deny access");
++		return;
++	}
++
++	if (err != EACCES) {
++		errno = err;
++		tst_res(TFAIL | TERRNO, "Expected EACCES from named group");
++		return;
++	}
++
++	tst_res(TPASS, "ACL_GROUP with mask works correctly");
++}
++
++/*
++ * Test ACL_GROUP_OBJ permissions with mask.
++ * Group owner permissions should be restricted by ACL_MASK.
++ */
++static void test_acl_group_obj_with_mask(void)
++{
++	acl_t acl;
++	int err;
++
++	tst_res(TINFO, "Testing ACL_GROUP_OBJ with mask");
++	reset_test_path();
++
++	SAFE_CHOWN(TESTDIR, user1_uid, user2_gid);
++
++	acl = acl_init(4);
++	if (!acl)
++		tst_brk(TBROK | TERRNO, "acl_init failed");
++
++	add_acl_entry(acl, ACL_USER_OBJ,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE);
++	add_acl_entry(acl, ACL_GROUP_OBJ,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE);
++	add_acl_entry(acl, ACL_MASK,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE);
++	add_empty_acl_entry(acl, ACL_OTHER);
++
++	set_acl_file(TESTDIR, ACL_TYPE_ACCESS, acl);
++	safe_acl_free(acl);
++
++	err = try_create_as(user2_uid, user2_gid, 0644);
++	if (err) {
++		errno = err;
++		tst_res(TFAIL | TERRNO,
++			"ACL_GROUP_OBJ with mask rwx should allow access");
++		return;
++	}
++
++	cleanup_testfile();
++
++	acl = acl_get_file(TESTDIR, ACL_TYPE_ACCESS);
++	if (!acl)
++		tst_brk(TBROK | TERRNO, "acl_get_file failed");
++
++	clear_acl_mask_perms(acl);
++	set_acl_file(TESTDIR, ACL_TYPE_ACCESS, acl);
++	safe_acl_free(acl);
++
++	err = try_create_as(user2_uid, user2_gid, 0644);
++	if (!err) {
++		cleanup_testfile();
++		SAFE_CHOWN(TESTDIR, user1_uid, user1_gid);
++		tst_res(TFAIL,
++			"ACL_GROUP_OBJ with mask --- should deny access");
++		return;
++	}
++
++	if (err != EACCES) {
++		SAFE_CHOWN(TESTDIR, user1_uid, user1_gid);
++		errno = err;
++		tst_res(TFAIL | TERRNO, "Expected EACCES from group owner");
++		return;
++	}
++
++	SAFE_CHOWN(TESTDIR, user1_uid, user1_gid);
++	tst_res(TPASS, "ACL_GROUP_OBJ with mask works correctly");
++}
++
++static void setup(void)
++{
++	init_test_users();
++	reset_test_path();
++}
++
++static void cleanup(void)
++{
++	cleanup_test_paths();
++	cleanup_test_users();
++}
++
++static void run(unsigned int n)
++{
++	switch (n) {
++	case 0:
++		test_acl_user_with_mask();
++		break;
++	case 1:
++		test_acl_group_with_mask();
++		break;
++	case 2:
++		test_acl_group_obj_with_mask();
++		break;
++	}
++}
++
++static struct tst_test test = {
++	.test = run,
++	.tcnt = 3,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.mount_device = 1,
++	.mntpoint = MNTPOINT,
++	.forks_child = 1,
++	.filesystems = (struct tst_fs[]) {
++		{.type = "ext2", .mnt_data = "acl"},
++		{.type = "ext3", .mnt_data = "acl"},
++		{.type = "ext4", .mnt_data = "acl"},
++		{.type = "xfs"},
++		{.type = "btrfs"},
++		{}
++	},
++	.needs_cmds = (struct tst_cmd[]) {
++		{.cmd = "useradd"},
++		{.cmd = "userdel"},
++		{}
++	}
++};
++
++#else
++TST_TEST_TCONF("libacl or ACL headers are not available");
++#endif
+-- 
+2.39.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
