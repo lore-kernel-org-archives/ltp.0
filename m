@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E989CD6E6B
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 11:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DAD1CD6E4A
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 11:29:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 45B793E52CB
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 13:02:15 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 0751F3E5BEC
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 13:29:26 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5CF0E3D07B4
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 13:01:58 +0200 (CEST)
-Received: from mail-dl1-x122c.google.com (mail-dl1-x122c.google.com
- [IPv6:2607:f8b0:4864:20::122c])
+ by picard.linux.it (Postfix) with ESMTPS id BAB733C0E9E
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 13:29:08 +0200 (CEST)
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com
+ [IPv6:2607:f8b0:4864:20::f43])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CF250200969
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 13:01:57 +0200 (CEST)
-Received: by mail-dl1-x122c.google.com with SMTP id
- a92af1059eb24-137ec563a95so571121c88.0
- for <ltp@lists.linux.it>; Thu, 04 Jun 2026 04:01:57 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 605E9600445
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 13:29:08 +0200 (CEST)
+Received: by mail-qv1-xf43.google.com with SMTP id
+ 6a1803df08f44-8cce22e029cso21123916d6.0
+ for <ltp@lists.linux.it>; Thu, 04 Jun 2026 04:29:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780570916; x=1781175716; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1780572547; x=1781177347; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=r1Q1qAZu2qYkUexNMjWmo9Wc+1S6+IiEYuQ08fsq+og=;
- b=VzrOLYHtR+7eTk9N6UXyP/cC71SDl7It9LQT+DEK7RTpKyvmYXJTzgFdBS8lPx3jFa
- SWE+2Ztp+oMVx+4/zer+WKcSZ90BbFX6IpLXK/Q4DTCsvo5saU51OJ9GUDil+WAUU7Vg
- ewPrQrXYTWpmbIrKYSFTVV3hoQ1RCXTXKV6kcT10cIM9UlRN3t49Jqc+FI2fFYB8VwOm
- EFDh91L8Yi0+/wCgZl7dsfNz7yrYp+/MWC4V8Vo8ez/o/5grS4U6SUPo23ABwvKZhhoB
- 3vvSg7aHHOl9eQYlQJt9X/MkE3A97abM/BYnF9RYtHa1kLGPvu6kjIs5CJAuQpXwxLde
- Ffkw==
+ bh=zb2eaaRROZ9qFpXO/LCmssjc/nDg+Uy38RwdI8cpGy4=;
+ b=Rnx21VWwEZNy78IZCRd5OFdzxf5FbPnXnuiU6+X02+MA8PohJGEOj07qhBhe5ULsXk
+ wteUGzzK5pILptmGmaEfr4loC707/JgVXwi5jkOlsmmnVSZFFrY7R5eaSxb2GVpgK/6O
+ sjbA/DceJZyQ+bJAnBcdkPgsC9keQbfhJsLx8seFQ4lrzLMihIkwmewgKIoVWCC1UxQ4
+ p7rgKJPWmxlitvFxQix7BmrYVxqQFprTIAKWRgRsF8czdVL/2GhiSvJfRoN3eiVs+IbA
+ UTLel2THGdMa1OMPCrd2TrWEAhK+CQ9wWX3kraCW6oA/A7XV1HavWv7k4mgL0JSjDr3h
+ 36pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780570916; x=1781175716;
+ d=1e100.net; s=20251104; t=1780572547; x=1781177347;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=r1Q1qAZu2qYkUexNMjWmo9Wc+1S6+IiEYuQ08fsq+og=;
- b=A04yrO3K5cV2FTvJ6e+dT6gPbqpYtkcC98xOo84Zn73L539EonzTJg8DPomWN0NNTA
- TLGI+eGUgMCzdqzNKLY834mVYxP030dQSqsZTiKknIhyoXEnojp6JS0BH2XNLpcq/t3s
- I2tqkh6jIGcfAflaHW+FJUC4FUQSTLM8jUUAwChPR0pKqxpTZfzzXXm3e+7PhywlHrBE
- ETta65EIoTdjxwepxw7O7FwcdM9v5lhENk83rFxO41E6zEeLVhVd/UIBAyWdE+aQR+kL
- HPTY+EB1nFxWajiYFyURAqnDJ6FHZXu09gMm2geZ63wRtxmHz48kJfVDZEe7IVx6Ukos
- 50Ag==
-X-Gm-Message-State: AOJu0Yx70rLCkz21eDc30gAUUXlsMI5xQ+RgZgygdoZH8qWzPnmKsX2f
- N4tvmThigLL8jAemGJXskkj0v9JWis7P9mhU64/H+J7ZF0p8RKpOqj2AYzPJ0idc
-X-Gm-Gg: Acq92OEMq4HXGwebCWAI7Y00Ep3FtXu6DVkVcqXqNMlLvQ4FAJoIJmzUf5giTeOa4ce
- qXuPz29/0ApchR0r+vV3wc8GsIVfY49FBTOVlkUucIAv7jQf9IyAyTjlGNPOLDBnwVhZofiu65V
- tRJqitflJPITcvaK+Ir/SWEtZhQcVHr5JhikmrIQh0EeR7SYoxVcJbUSO+qe7YQoj94pAk3BYgr
- KR6jMnx4a4DjUm/Jamv4k1Kk+wX1Ihz5ZONdZjj6HbjiAUQcdR8wLJvCGR9vmTZOkvMzegRajsT
- eKVTsls25AwYMBXHrIIeyqfDyCvjVLfqBvEvh6VnZkFPPdkfQKpRhLhPr7W4k1w6MiPQj/VqjzH
- cW8jbFXu7H0IgcDpJL9O2uGMFpdzXwOo2oS7ERzMBqfYT7y17aAp9wrezjNCO7qY/B1KjBk+vyt
- 9ywUCYaTxP/HvumbTCZM0bF1LwXmMhmSSCdfP+mHzSSJIS6RbXaFExVvsc3GvjHA==
-X-Received: by 2002:a05:693c:2c97:b0:2ce:25be:c8e8 with SMTP id
- 5a478bee46e88-3074fb56f74mr4046668eec.17.1780570915698; 
- Thu, 04 Jun 2026 04:01:55 -0700 (PDT)
-Received: from localhost.localdomain ([45.146.54.109])
- by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3074db525a1sm4796077eec.1.2026.06.04.04.01.53
+ bh=zb2eaaRROZ9qFpXO/LCmssjc/nDg+Uy38RwdI8cpGy4=;
+ b=a5rgpnP6ECtzkUqB6aBL1h3NBUDy/IyWR9K7a0H+Q+v1D9YofS3Za+AiJx7XrCwOp+
+ n9wjem6l49vDr8m6MBfbkNLGjIux12fG05v8iKOpvWZ7W0c2SL3w/nZQwzUC0ydETY0P
+ pF/bxuOcGyyNHF+SyFNgfB8jTMVfXVvpZv6aK08rW2dvtWmY1koNsSl2i8g73d0QfI5o
+ D6qgKGh4jie4Kl3btKm0IiOCx1Krshj+IMiCBWV25calqgGQ07YR668YHKjkgDoxpdsT
+ WNBdroN9e3zdrlTMJR+wQ3loYg54sVdMu93mwW6/uWn5z0kaFw4FLGBaRIF2o8llfd3M
+ /iEA==
+X-Gm-Message-State: AOJu0YyJYD6XAfAZ9jkelbjkeyIeXSmQxuumKp3NFfKn/hZJUe9/zTYR
+ ciBhJeWmshgBC+xTytBNdjOUCqDzkyPi2ZjAM/gEZWGloorsBHld9yZ2C8KKIL/R
+X-Gm-Gg: Acq92OGYpbd/izzVaUHSuvD0EKZWrvfaK54lqYKKb0AVzSi/GYQmDWcYA19WIcmU5Yv
+ zJTtyoJpISJcWxICx6qUb65eILHiCv1YF2tXogb+E4eHcoXflioVP2Q9YJf2QfrHGNiZW/YwAQt
+ bO3m1Cp5jKQOgIzVwuB5vjSTk+0pibkj42GIiIMuBNlRL4r9xU6k1PjfSV209GmpsmpyVlkZNAJ
+ dOLZrS5Hg6dbjLTArI5kf5qVthfOQdhOtzW9MW099rpEeRzZy1s/Y9jjQDQodJSGMJkibZaOVJr
+ jlk/48VVwcx9IvSLW4phbvsOa2pjSLTUHSzm5/qGo/xELNwIUBGTuPyDRWzIM7i+s8kF4ATbLJe
+ 5VwlNWHwxog8ll6bLkHEk/cd1gOM93sf+if3wiW2Apj2oOcjlrb+KxyvGXTTltCxDWCSaRv6pDX
+ UHkJZ5painUZWzzj3ooX3O/MpVKyHwnBX963hwmVKdYCNA8urdPPq3/eaPUTByVqM8+GjcuH7j8
+ 3kebfFkd0OG/OfdEAQh6KuAMleSqE1XWMlOdG7YYe3VsC/QePPG
+X-Received: by 2002:a05:6214:419f:b0:8ce:b9fb:8630 with SMTP id
+ 6a1803df08f44-8ced824ad51mr42445756d6.24.1780572547083; 
+ Thu, 04 Jun 2026 04:29:07 -0700 (PDT)
+Received: from
+ runnervm3jyl0.d25eko5qp01u1c5angi00huzxc.ex.internal.cloudapp.net
+ ([135.232.208.145]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8cecd26b3b9sm50256486d6.45.2026.06.04.04.29.06
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 04 Jun 2026 04:01:55 -0700 (PDT)
-From: XiaoLei Wu <wxl18715129466@gmail.com>
-To: ltp@lists.linux.it
-Date: Thu,  4 Jun 2026 19:01:38 +0800
-Message-ID: <20260604110138.774341-1-wxl18715129466@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ah_4n5km_qrz4nmk@yuki.lan>
-References: <ah_4n5km_qrz4nmk@yuki.lan>
+ Thu, 04 Jun 2026 04:29:06 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: XiaoLei Wu <wxl18715129466@gmail.com>
+Date: Thu,  4 Jun 2026 11:29:05 +0000
+Message-ID: <20260604112905.3987-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260604110138.774341-1-wxl18715129466@gmail.com>
+References: <20260604110138.774341-1-wxl18715129466@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] lib: treat ntfs3 as ntfs in filesystem skiplists
+Subject: Re: [LTP] lib: treat ntfs3 as ntfs in filesystem skiplists
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,41 +90,72 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: XiaoLei Wu <wxl18715129466@gmail.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-ntfs3 is handled as a separate filesystem, but tests that skip ntfs
-generally want to skip ntfs3 as well. Handle this in the common
-skiplist check instead of adding ntfs3 to individual tests.
+Hi XiaoLei,
 
-Signed-off-by: XiaoLei Wu <wxl18715129466@gmail.com>
+On Thu Jun 4 19:01:38 2026 +0800, XiaoLei Wu wrote:
+> lib: treat ntfs3 as ntfs in filesystem skiplists
+
+> +       if (!strcmp(fs_type, "ntfs3"))
+> +               fs_type = "ntfs";
+> +
+>         if (!skiplist)
+>                 return 0;
+> 
+>         for (i = 0; skiplist[i]; i++) {
+>                 if (!strcmp(fs_type, skiplist[i]))
+>                         return 1;
+
+The mapping is one-directional: ntfs3 is remapped to ntfs before the
+loop, so a skiplist containing "ntfs3" (without "ntfs") will no longer
+match.
+
+For example, a test calling:
+
+  tst_get_supported_fs_types((const char *const []){ "ntfs3", NULL });
+
+expects ntfs3 to be excluded, but after this change the lookup
+compares "ntfs" against "ntfs3" in the list and returns 0, so ntfs3
+is not skipped.
+
+No test in the tree has this pattern today, so there is no immediate
+regression. But the API contract of tst_fs_in_skiplist has changed
+silently: passing "ntfs3" in a skiplist no longer skips ntfs3.
+
+Is that intentional? If the design decision is "callers must use
+'ntfs' to cover both drivers", then a code comment on
+tst_fs_in_skiplist (and perhaps on tst_get_supported_fs_types) to
+that effect would make the contract clear and prevent future callers
+from hitting this silently.
+
+Alternatively, normalising on both sides of the comparison would
+preserve the old contract while adding the new ntfs-covers-ntfs3
+behaviour:
+
+  for (i = 0; skiplist[i]; i++) {
+          const char *entry = skiplist[i];
+          if (!strcmp(entry, "ntfs3"))
+                  entry = "ntfs";
+          if (!strcmp(fs_type, entry))
+                  return 1;
+  }
+
+Verdict: Needs revision
+
 ---
-Changes in v2:
-- Move ntfs3 handling to tst_fs_in_skiplist() instead of adding ntfs3 to
-  individual test skip lists.
+Note:
 
- lib/tst_supported_fs_types.c | 3 +++
- 1 file changed, 3 insertions(+)
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-index d3020fc..d20c655 100644
---- a/lib/tst_supported_fs_types.c
-+++ b/lib/tst_supported_fs_types.c
-@@ -72,6 +72,9 @@ int tst_fs_in_skiplist(const char *fs_type, const char *const *skiplist)
- {
- 	unsigned int i;
- 
-+	if (!strcmp(fs_type, "ntfs3"))
-+		fs_type = "ntfs";
-+
- 	if (!skiplist)
- 		return 0;
- 
--- 
-2.43.0
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
