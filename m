@@ -4,46 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63469CD6E57
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 09:52:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 441ECCD6E57
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 09:57:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EDB383E54DB
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 11:52:26 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id AEF953E54F1
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 11:57:47 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2235A3E1CF6
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:52:11 +0200 (CEST)
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::b8])
+ by picard.linux.it (Postfix) with ESMTPS id 517333E1CF6
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:57:32 +0200 (CEST)
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com
+ [95.215.58.179])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A5BDB1A00807
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:52:06 +0200 (CEST)
-Date: Thu, 4 Jun 2026 17:52:01 +0800
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D4C5360063A
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 11:57:31 +0200 (CEST)
+Date: Thu, 4 Jun 2026 17:57:06 +0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1780566726;
+ t=1780567051;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=oddT4ZnCsHkwgN9JNI91d3Z30EOVoUsiAFDXB3t9EgU=;
- b=N6g5/pFwerlkRR2fL1jnrEzfU22BE9uH48TIXhGHlq/teJzG5slsFiYTz2uaPv+izidZDC
- kIcfTDT6Wx1dwJDlNPYCJ/pKDXVUD+/jXl084DX9niGYC5dycMIeOK8GF0hEx3Usuey/jy
- juT4KjAhjaQSno7t58dSd/DxPtCaxe4=
+ bh=V4jXDo1KedyuiKxoQU33pEQPmp5TvaScpvdEe1lLklY=;
+ b=cIVuniAgioiSGKegfjxGHriuuWAupgfU2OcaqGwNt3gpk/JxbQP7o2eWufXtJjuD3OFlcq
+ +Lk5VSzb488mx9dM9W6m3eT5o67+fvAFM0umQMxd90T21Iw15bBR64EPVQ3VWDQYpbSkua
+ 4DR5ojf4zewnwyaEo/uU8CNP3mit/Wc=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
  include these headers.
 From: Li Wang <li.wang@linux.dev>
-To: ltp@lists.linux.it
-Message-ID: <aiFKwQ163zjrPA2t@linux.dev>
-Mail-Followup-To: ltp@lists.linux.it
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <aiFL8n8SMITbE-LZ@linux.dev>
+Mail-Followup-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
 References: <20260604094200.21643-1-li.wang@linux.dev>
+ <aiFKatipB8ypAsdf@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260604094200.21643-1-li.wang@linux.dev>
+In-Reply-To: <aiFKatipB8ypAsdf@yuki.lan>
 X-Migadu-Flow: FLOW_OUT
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v5 1/2] lib: Introduce tst_path_defs.h to
  consolidate system paths
@@ -58,30 +60,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Li Wang wrote:
+Cyril Hrubis wrote:
 
-> We have a lot of hardcoded strings and duplicated macros for /proc
-> and /sys paths scattered throughout the testcases.
+> Hi!
+> > +/* NETWORK */
+> > +#define PATH_NET_IPV4				"/proc/sys/net/ipv4/"
+> > +#define PATH_NET_IPV4_ICMP_RATELIMIT		"/proc/sys/net/ipv4/icmp_ratelimit"
+> > +#define PATH_NET_IPV4_ICMP_RATEMASK		"/proc/sys/net/ipv4/icmp_ratemask"
+> > +#define PATH_NET_IPV4_ICMP_ECHO_IGNORE_ALL	"/proc/sys/net/ipv4/icmp_echo_ignore_all"
+> > +#define PATH_NET_IPV4_ICMP_MSGS_BURST		"/proc/sys/net/ipv4/icmp_msgs_burst"
+> > +#define PATH_NET_IPV4_TCP_PROBE_INTERVAL	"/proc/sys/net/ipv4/tcp_probe_interval"
+> > +#define PATH_NET_IPV4_TCP_KEEPALIVE_TIME	"/proc/sys/net/ipv4/tcp_keepalive_time"
+> > +#define PATH_NET_IPV4_TCP_NOTSENT_LOWAT		"/proc/sys/net/ipv4/tcp_notsent_lowat"
+> > +#define PATH_NET_IPV4_IP_LOCAL_RESERVED_PORTS	"/proc/sys/net/ipv4/ip_local_reserved_ports"
 > 
-> This patch introduces a new common header, tst_path_defs.h, to centralize
-> and standardize these path definitions. By unifying these macros, we
-> reduce code duplication, improve maintainability, and ensure consistent
-> path usage across the entire LTP codebase.
-> 
-> Signed-off-by: Li Wang <li.wang@linux.dev>
-> Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> Maybe we can drop the NET here as well, the IPV4 is descriptive enough.
+> e.g. PATH_IPV4_ICMP_RATELIMIT
 
-Forgot to paste the notes:
+Makes sense. I'll update that before merging and wait for a few more ACKs.
 
-  v5:
-      * add PATH_{KERN|USER} strings
-      * change MM_KSM_FP()/NET_IPV4_FP() to explicit paths
-      * rebase to the main branch
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+Thanks!
 
 -- 
 Regards,
