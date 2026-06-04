@@ -4,79 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5507CD6E77
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 14:21:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70267CD6E4A
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 14:21:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 05F173E618C
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 16:21:12 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id AC17F3E605B
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 16:21:25 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 83C2D3E16D0
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 16:20:55 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 1C1B43E6195
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 16:20:58 +0200 (CEST)
 Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com
  [IPv6:2607:f8b0:4864:20::442])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1E21020093D
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 16:20:55 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0451D60056E
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 16:20:56 +0200 (CEST)
 Received: by mail-pf1-x442.google.com with SMTP id
- d2e1a72fcca58-8423f52af13so541329b3a.2
+ d2e1a72fcca58-8421f0e9c5bso346866b3a.3
  for <ltp@lists.linux.it>; Thu, 04 Jun 2026 07:20:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780582853; x=1781187653; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=GwL0MnjiTYTiqi5SdhTb1z+1pyBp4N4zEmISXCZLUvM=;
- b=ICQ94m/zevIujOjiB5t3Iq88f1wdzjXb/HQjV6xHxa24EV7n8fABWqtQsZC+Tr8IEK
- GX7pmTwDRDLN01OeEM1FRVVhQb7nzXbLHuw8g70WeCFwdUJPyLtsikTdchz4RfTsX7KG
- XlcmQu2+LZKp6DYwQ0PmHD6hH0E5OeFJ/J4NXBh+mdLrgHeRlPb2Z7tnA6U8pUsrumaA
- c3o43LBYm47i/ers29ccyQuau8afEyHfShbfvug16IlU2IIhnK7RPD22jpf2CI8zS0Ky
- T4J9UfhExCmXgGw2CbiwnObPMeO6hwVd1D7l5gl3BH+LjTFwb1iFL1NmIMxSL+9GqdA1
- 1z3Q==
+ d=gmail.com; s=20251104; t=1780582854; x=1781187654; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+ :reply-to; bh=8wn52FT8P6TBqqwuGJvtnyN1hqDHh0yh794B2f8GLAU=;
+ b=EZHkCbt8OCc+Qjbi6EzULndcSGQ+PGtR/m6N6Nwa+vQbo5UYApe/ZCuu1774QSGO0N
+ Wualm8L2r7bY6ylUnsYlVQ9BHJvrf2QS9OUgN7Zrb2SG6j2XDvuEKww7LI/WeDzNyvS4
+ oRAQdD0t07DAvON2DbT/mG4wwTbw7D6VNhj/YVKGLzjkcOkimIozs6CQNuqSwr6kjR7s
+ fhg0sDRRPipDeVlD/K0C6wQPqZyU44mszzKYMrrxh8fxDsz5Dj49gSeRbYy3Kr6EA4GW
+ zLuF8qSuSC6oGaUjuyZrDzGm0GyRqh/YpCfYpY7oBbAIPqMt9plzWRQ3zlO3j2HLxmZ8
+ 0BzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780582853; x=1781187653;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=GwL0MnjiTYTiqi5SdhTb1z+1pyBp4N4zEmISXCZLUvM=;
- b=gOTx/gk5qsw4sbkPRtP10eZACNjG0zxlcAVikn+DTTNedJnBFo6LW5giDRGrMMExmh
- 9csrpbK/6mnhHqhtPZNliNjaSup1RGvOPZ2yPTYIyhDlvnW/Nyx7bR78NtxolTV+sweN
- x8ql8J/wcO6e7m87vtBxSXunCsx9XSuniw46QRhz3/z+lO2Yvjcmm9/RmTRygQ7m+XdH
- 97WvHKZwcEfQlzpJy2bGqhZ7LkYh96UeIhJnj21CR7xq9/0efFdjfXeYRse3/KANKiUg
- JVSSgVDrVUy/Fl2JJ179znmZQyj+x+fYHcul9H75Eu28AIDRD7jYW8VLdjrUn0z+/SHH
- 3R0A==
-X-Gm-Message-State: AOJu0Yz6u6AdjqkAMyMs5pHQObeMO7mXoJ8S5xu0HyZytSNxIsbQipw+
- Oi3YN2GAjeoCqk6jCsPBic7povc3ME7hcNceJUwm75g2JZdZ2wNDMzJ454l8kd9Xcg==
-X-Gm-Gg: Acq92OHm2ncy+HoBo11bbq5ZXp0ADpd7aLDNxIdNAfZQKnglzuBlQupxcBjW5KP+Kp4
- ZsqSqn0Wjs4Gr9VtKeLvwMTNMUDF1Eq0dwnf8C4s9jbw5Lum0h6bKy4oPS2CUd8NRn1qudM+Eqc
- fQsXbgYutcQ0GbSeEdPDkXYqewSeCZwk6021jD0r+Z56sDsyVt3ujbxrLHGBzkl0tuQzbdMpX9c
- AvN6cpACbQXawdM1KfC0pWiqYIkbFpSAQysLmCvchjsA60S3p9F6/eMED8VNLEKczfRspunBN3h
- uRGxNCW6Z0aJTpc9lzfNlZw1Zax/+HaKYwajLkAGcYVEE2z+TTZwiyVzIoixBDaVJT+hkoAo1lg
- iHwOpZ2M1WQqw69o6kje08O9Yyh1AicaPOB5qft9Yb5FgqcF4Vlyvpv0kFZTwoFyLj0LES39kvZ
- 5hWbKAAbDpSvmdgDLTvzGtvJuk9yKepCaJcKOtS+aMegQMwNXIDlNhS5g=
-X-Received: by 2002:a05:6a00:3288:b0:842:377a:4dcd with SMTP id
- d2e1a72fcca58-84284eecfc5mr7917734b3a.43.1780582853127; 
- Thu, 04 Jun 2026 07:20:53 -0700 (PDT)
+ d=1e100.net; s=20251104; t=1780582854; x=1781187654;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:to:from:x-gm-gg:x-gm-message-state:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=8wn52FT8P6TBqqwuGJvtnyN1hqDHh0yh794B2f8GLAU=;
+ b=RB4PpvVJVvV/llnrtqrRN90lBfok0YHFEbjsw6Y0t2+p/xuuNF0VC16oxl++AjEn+G
+ ANWO7yOuaLRzM2yvCXtBj5FJ7+7xZSU5qkwQdM1X791m6lmeATy87G5Ec6kIVuS3E3/5
+ 9t8dkvT+5Un+QHNDVkKuZQSNWhpRHThQKhvQDclkxqKYpeWzivGrutMrtGdBCuZOdnnr
+ FJihiViBfG5YUk4jCBsvxoZAaYut5blwjlboEQ+GotCzAJNlA0/+N86+EKI3zUDwJ5xA
+ q0BYxyKG+AuvdIOBYn4lM6IMhrJc9+vuS0TVojGsm7ifzuTjDZIKWL1UaFGYvFjuMw2V
+ WBMA==
+X-Gm-Message-State: AOJu0Yz7fsqWww6L1mVh4Sojk6CPoEnr4buKDiu1GgsuRecAu7FUiMWD
+ PN4igGyvLoEI478es8T5grAHDBgFOOjrq7NKB0TAvZad63flzuDSfIoWWa5AhucJhg==
+X-Gm-Gg: Acq92OEuDItoU1JgAdj33YB72DHKNZw//jNKUSXUfhJH+pVfH1sBqA/FPuQklTaBtnm
+ vr6KPmudLeaX1ych2AWJgy7GtdvWQAdnRmumpO5uWYMCJ4deJ0zhLl8ooLBCJ9yBMNtM7luKyFo
+ uEyVCyvUNAIoie9HbyAx8610vVpB221SIB33Scn2emH0sRaVphW3A8wpVY6Lr0sSf0gW9QdCKhC
+ We53mf7S0vnqIGfmeLskg13lxQ4BdTdEbhi0VAc6fRTwJi8vvuaNmm7m1U3J01XoBKNxdPJcmtY
+ maUn2JbWwD6jq61fwl/LYipB6KyKaBkg0QUi0ikSotn7MgIqadf+KUBrT1Islrb7TOYCz9zqdbb
+ lii2OY98icRXJYN1jB7A+J8p5/sech4uJ4t04+VFv/9auMNsRNbtfPFS1K6nS4g1Mz0WUusfXQc
+ dEZdF2AFQ7hlXtdvvNaf+b7ZqiWYOjxvXBbZ01e8g20k4vCbYVV/MAATo=
+X-Received: by 2002:a05:6a00:94d5:b0:842:5a8d:302c with SMTP id
+ d2e1a72fcca58-84284fd2f60mr8340510b3a.38.1780582854247; 
+ Thu, 04 Jun 2026 07:20:54 -0700 (PDT)
 Received: from localhost.localdomain ([211.196.223.197])
  by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-84282916b10sm6464018b3a.58.2026.06.04.07.20.52
+ d2e1a72fcca58-84282916b10sm6464018b3a.58.2026.06.04.07.20.53
  for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 04 Jun 2026 07:20:52 -0700 (PDT)
+ Thu, 04 Jun 2026 07:20:53 -0700 (PDT)
 From: Jinseok Kim <always.starving0@gmail.com>
 To: ltp@lists.linux.it
-Date: Thu,  4 Jun 2026 23:20:26 +0900
-Message-ID: <20260604142029.2077-1-always.starving0@gmail.com>
+Date: Thu,  4 Jun 2026 23:20:27 +0900
+Message-ID: <20260604142029.2077-2-always.starving0@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260604142029.2077-1-always.starving0@gmail.com>
+References: <20260604142029.2077-1-always.starving0@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v8 1/2] open: remove O_DIRECTORY case (move to fstat
- test)
+Subject: [LTP] [PATCH v8 2/2] fstat: add test for multiple file types using
+ fstat
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,75 +95,155 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The O_DIRECTORY test case was mostly verifying fstat() behavior on an
-existing directory rather than testing any specific open() behavior.
-
-Following review suggestion, remove it from open01.c. A separate fstat
-test will be added in a follow-up patch to cover file type checks
-(S_ISDIR, etc.) more comprehensively.
+Following review feedback, create a dedicated fstat test that verifies
+S_ISREG(), S_ISDIR(), S_ISFIFO(), S_ISCHR(), S_ISBLK() on different file
+types.
 
 Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
 ---
- testcases/kernel/syscalls/open/open01.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+Changes in v8:
+- Link to the man page
+- Remove desc from tcase and TST_EXP_EXPR
+- Link to v7: https://lore.kernel.org/ltp/20260327152751.3637-1-always.starving0@gmail.com
+---
+ runtest/syscalls                           |   2 +
+ testcases/kernel/syscalls/fstat/.gitignore |   2 +
+ testcases/kernel/syscalls/fstat/fstat04.c  | 103 +++++++++++++++++++++
+ 3 files changed, 107 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fstat/fstat04.c
 
-diff --git a/testcases/kernel/syscalls/open/open01.c b/testcases/kernel/syscalls/open/open01.c
-index 1cefb4790..1413ccdec 100644
---- a/testcases/kernel/syscalls/open/open01.c
-+++ b/testcases/kernel/syscalls/open/open01.c
-@@ -6,15 +6,12 @@
-  */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index f790e8f84..d420df905 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -436,6 +436,8 @@ fstat02 fstat02
+ fstat02_64 fstat02_64
+ fstat03 fstat03
+ fstat03_64 fstat03_64
++fstat04 fstat04
++fstat04_64 fstat04_64
 
- /*\
-- * Basic :manpage:`open(2)` test, checking sticky/directory bit.
-+ * Basic :manpage:`open(2)` test, checking sticky bit.
-  *
-  * 1. Open a new file with O_CREAT, fstat.st_mode should not have the
-  *    01000 (S_ISVTX) bit on. In Linux, the save text bit is *NOT* cleared.
-- * 2. Open a new directory with O_DIRECTORY, fstat.st_mode should have the
-- *    040000 (S_IFDIR) bit on.
-  */
-
--#define _GNU_SOURCE		/* for O_DIRECTORY */
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-@@ -22,7 +19,6 @@
- #include "tst_test.h"
-
- #define TEST_FILE	"testfile"
--#define TEST_DIR	"testdir"
-
- static int fd;
-
-@@ -34,7 +30,6 @@ static struct tcase {
- 	char *desc;
- } tcases[] = {
- 	{TEST_FILE, O_RDWR | O_CREAT, 01444, S_ISVTX, "sticky bit"},
--	{TEST_DIR, O_DIRECTORY, 0, S_IFDIR, "directory bit"}
- };
-
- static void verify_open(unsigned int n)
-@@ -60,11 +55,6 @@ static void verify_open(unsigned int n)
- 		SAFE_UNLINK(tc->filename);
- }
-
--static void setup(void)
--{
--	SAFE_MKDIR(TEST_DIR, 0755);
--}
--
- static void cleanup(void)
- {
- 	if (fd > 0)
-@@ -74,7 +64,6 @@ static void cleanup(void)
- static struct tst_test test = {
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.needs_tmpdir = 1,
--	.setup = setup,
- 	.cleanup = cleanup,
- 	.test = verify_open,
- };
+ #fstatat64/newfstatat test cases
+ fstatat01 fstatat01
+diff --git a/testcases/kernel/syscalls/fstat/.gitignore b/testcases/kernel/syscalls/fstat/.gitignore
+index 9b1089438..a1f538f7e 100644
+--- a/testcases/kernel/syscalls/fstat/.gitignore
++++ b/testcases/kernel/syscalls/fstat/.gitignore
+@@ -2,3 +2,5 @@
+ /fstat02_64
+ /fstat03
+ /fstat03_64
++/fstat04
++/fstat04_64
+diff --git a/testcases/kernel/syscalls/fstat/fstat04.c b/testcases/kernel/syscalls/fstat/fstat04.c
+new file mode 100644
+index 000000000..b7af04002
+--- /dev/null
++++ b/testcases/kernel/syscalls/fstat/fstat04.c
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 Jinseok Kim <always.starving0@gmail.com>
++ */
++/*\
++ * Verify that :manpage:`fstat(2)` correctly identifies various
++ * file types.
++ */
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/sysmacros.h>
++#include "tst_test.h"
++
++#define MOUNT_PATH	"test_mnt"
++#define REG_FILE	"regfile"
++#define DIR_FILE	"dirfile"
++#define FIFO_FILE	"fifofile"
++#define CHR_DEV	MOUNT_PATH "/chrdev"
++#define BLK_DEV	MOUNT_PATH "/blkdev"
++
++static struct tcase {
++	const char *path;
++	mode_t exp_type;
++} tcases[] = {
++	{ REG_FILE,	S_IFREG },
++	{ DIR_FILE,	S_IFDIR },
++	{ FIFO_FILE,	S_IFIFO },
++	{ CHR_DEV,	S_IFCHR },
++	{ BLK_DEV,	S_IFBLK },
++};
++
++static void verify_fstat(unsigned int i)
++{
++	struct tcase *tc = &tcases[i];
++	struct stat buf;
++
++	int flags = O_RDONLY | O_NONBLOCK;
++
++	if (tc->exp_type == S_IFDIR)
++		flags |= O_DIRECTORY;
++
++	int fd = SAFE_OPEN(tc->path, flags);
++
++	SAFE_FSTAT(fd, &buf);
++	SAFE_CLOSE(fd);
++
++	switch (tc->exp_type) {
++	case S_IFREG:
++		TST_EXP_EXPR(S_ISREG(buf.st_mode));
++		break;
++	case S_IFDIR:
++		TST_EXP_EXPR(S_ISDIR(buf.st_mode));
++		break;
++	case S_IFIFO:
++		TST_EXP_EXPR(S_ISFIFO(buf.st_mode));
++		break;
++	case S_IFCHR:
++		TST_EXP_EXPR(S_ISCHR(buf.st_mode));
++		break;
++	case S_IFBLK:
++		TST_EXP_EXPR(S_ISBLK(buf.st_mode));
++		break;
++	}
++}
++
++static void setup(void)
++{
++	SAFE_TOUCH(REG_FILE, 0644, NULL);
++	SAFE_MKDIR(DIR_FILE, 0755);
++
++	SAFE_MKNOD(FIFO_FILE, S_IFIFO | 0777, 0);
++	SAFE_MKNOD(CHR_DEV, S_IFCHR | 0777, makedev(1, 3));
++	SAFE_MKNOD(BLK_DEV, S_IFBLK | 0777, makedev(7, 3));
++}
++
++static void cleanup(void)
++{
++	if (!access(REG_FILE, F_OK))
++		SAFE_UNLINK(REG_FILE);
++
++	if (!access(DIR_FILE,  F_OK))
++		SAFE_RMDIR(DIR_FILE);
++
++	if (!access(FIFO_FILE, F_OK))
++		SAFE_UNLINK(FIFO_FILE);
++
++	if (!access(CHR_DEV, F_OK))
++		SAFE_UNLINK(CHR_DEV);
++
++	if (!access(BLK_DEV, F_OK))
++		SAFE_UNLINK(BLK_DEV);
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = verify_fstat,
++	.mntpoint = MOUNT_PATH,
++	.needs_devfs = 1,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++};
 --
 2.43.0
 
