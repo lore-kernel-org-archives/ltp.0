@@ -4,97 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04ABACD6E57
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 10:00:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7328CD6E57
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 10:17:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7F07C3E548A
-	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 12:00:54 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 031C73E5A94
+	for <ltp@archiver.kernel.org>; Thu,  4 Jun 2026 12:17:23 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DA2E63E1DDE
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 12:00:37 +0200 (CEST)
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com
- [IPv6:2607:f8b0:4864:20::232])
+ by picard.linux.it (Postfix) with ESMTPS id CCD2C3E165C
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 12:17:07 +0200 (CEST)
+Received: from mail-dy1-x1344.google.com (mail-dy1-x1344.google.com
+ [IPv6:2607:f8b0:4864:20::1344])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 84E77100052E
- for <ltp@lists.linux.it>; Thu,  4 Jun 2026 12:00:37 +0200 (CEST)
-Received: by mail-oi1-x232.google.com with SMTP id
- 5614622812f47-4863cd278d7so334667b6e.1
- for <ltp@lists.linux.it>; Thu, 04 Jun 2026 03:00:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1780567236; cv=none;
- d=google.com; s=arc-20240605;
- b=NYv+iTJzBm9IhnzVMjDHCyAquSE8nekearIrN5tiYiurERNYgVEdU2yNpJdBLSkgW1
- QUwQ9h4I8KLeyawz8sSbNi62M8KdrAW5bmCV9OvzinzJuJBaMHE/LOq1QDwF1iYLvGtH
- w3ACbotBbbLE/dVCNX4m1+9f0RHY/u32Y8GLQroXUl2KuUqedqChZDmuhmPvEtbC2VzW
- KLiKeh5AFv4ntsVJ/0OQYl2iYNc2dHX8EA+SFrvD6DDfC8HQaaIaPv6fz2m5GQNky+p9
- o4cxaGEnofFFQ3d1frZEMPAg5ie/e/Db6kmnJ5d1jkH+UvNij/gknOUbsqEj0P82hJoW
- PDDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20240605; 
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:dkim-signature;
- bh=GirRFJW06tQWpyQav+nQW/N64iFalwEVlkcMbBoS68c=;
- fh=CtANDuKPIj0v88UI/q53VwcIw+6Tu5LcBkgNvW2iY8U=;
- b=OJOKL4X2c6UieUKfYuUMFLlRnaYRFbBW5+12EQQZCOORkwgH3ta9fIxCuVaJ9/Ql9o
- xcwO+8CgX78iGIQJFGloxY+Gfh7GaoU7qFj8hBYWD1gU0ERdrg/eaRyCOGhDbzGxpGgo
- a95soIq9Z/H+08bll1dE882bDOM1gn4WjbQ40Aersc3n/40yRxiUShvAeCN6pauhNXAM
- J2IfO78L4cNfmvRGHh6cGJuUrmpk1vmbdeq/iDtDYuH8mlxD85rHtV2yRKTC7RUkN7Y9
- coPyso09bXKtRvkLK2V/nVysiHnXcCMHk+0pKDrL7fA0YFaP2BphYVUA1m1auvaM8hRc
- nU4Q==; darn=lists.linux.it
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 27FA51A00706
+ for <ltp@lists.linux.it>; Thu,  4 Jun 2026 12:17:07 +0200 (CEST)
+Received: by mail-dy1-x1344.google.com with SMTP id
+ 5a478bee46e88-304f0039c02so905487eec.1
+ for <ltp@lists.linux.it>; Thu, 04 Jun 2026 03:17:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780567236; x=1781172036; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=GirRFJW06tQWpyQav+nQW/N64iFalwEVlkcMbBoS68c=;
- b=kgOBCOSdS1rC8DQpJmCAD+/yU1mxHPUHNUQoFa1RqOV+yCsOMoNf28DXWZVKVXLBL4
- TDZomGcm2ctLcs4hgW1ZLmQL5fc77hdoBnkLki1rqQRszfyGHHk55jIASFi7z9sYJrJB
- qlxYdXMpv7Kj8PU3YB+1PTy2t7psiCcH0CUs3cnOIMKzbFiVs7uHlbl5DiOKOR1i4AWC
- 9z6jLU0os/EsBMj94N2ZEGGIvlry+8fDS+ZIy9LaPdTZjNqZ8mF0f39sezGB46v66tUU
- guZKvby57U8VORF2Lsi8e3fiZMFQOrhaeppdilisCrtmipLCsL/G0zOH92WNAQCysDog
- 3Jcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780567236; x=1781172036;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=gmail.com; s=20251104; t=1780568225; x=1781173025; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=GirRFJW06tQWpyQav+nQW/N64iFalwEVlkcMbBoS68c=;
- b=b95VZR1uETdHN3gpSPToJ/vgbUHVEGAOROhuAQRu7Q5+Vdbc9Bhcl44NiwCOWH0QKE
- t5ar504jL5gb7VFLnyJJXSFBjPP5lpniVdIw5VB4OuEtAzHX83alCSVsV+i7F+/jmHgX
- XsUA3cG/5S0WpdZXk6iJIUaPqFHiablLL1Qo/HVwCFyXOL009L+3t41qFLELZg73X5zr
- dC8dK4K9dlNzaCHeTcW/bcX2CGefwzRzzMV5jhZd86hJrQ79LnWgv3jbkVqjQCDqba4S
- R0tMwyAciEpYNW2kRABqngMBKhlukaeTkXFMYxsrw615doHNRK4miCyOkYZP2naQaQ3a
- dNqQ==
-X-Gm-Message-State: AOJu0Yz2Jek/SjW/y6XaOyCxZlEb/22Dk1JUWPLKlUv4JRn5MtXlQMEZ
- qvDGAYMCbaBW7oE/zQ4vhxHmNlAPV++h2pV2+7xs6m3Y8adcO9L3hF7qp58n6NKbz6x/CEgCUQI
- 36IpU61itdklf3ZkXiuMH0XZGu0vjUvspVO+LhoHwHQ==
-X-Gm-Gg: Acq92OHADpaIxCCbo/Dyf5xSp/pgR7jwFFFLkIaFw5FykHYl0cd9EM6GxcgdVJM1+Ip
- zpr/3lBR5FPsCyiSskgtSqkrWU4SStXbFi02K0HGEBKq+/N8bTVkyMzKiflygDobOFsjLEDVqhB
- 7vIWat08DZVNeicLbKEm5PS19caiK3kegJjABh/BAZqjDI9nKPcYZvJpCGzCdZtjZhqbntW9rOx
- a5MdiFK7ILkI8lN3CBZLQaV6MhXcfD6OuPpa8Qn11RReUGTdiHhwb461aX1rSSyC9TD+sbPAKAh
- XBxKo1mAppUea5wMW9aHQc+fJVFaGXejZOroDGeft2zEZyKI1ifmfUQC/g==
-X-Received: by 2002:a05:6808:17a2:b0:486:5115:6c0 with SMTP id
- 5614622812f47-4865aa254f0mr4403564b6e.14.1780567236057; Thu, 04 Jun 2026
- 03:00:36 -0700 (PDT)
+ bh=HHlfByxYlbm64EHXdKG7loZHd3KpV6KvXMCznA8gs24=;
+ b=MRe+2xCmNFvPQCD+lSM8Y3QKC8Z58q9bYWfzvfyVZWsFa+FKC0oyY3IZboe9IO2jZS
+ ryD7p2OaoaVRCDViGNOKDfGcCerq/RALaAdWuahr0zCq0MwHwm0U6Wx1bQiW8F9ngllX
+ x6kBlvOkcruXr2ItIMLLdCjK8BO9O7yod+8Hy/+Tl8gUD2i+dGuQh58lx5kdoyL1V8zs
+ vmS1hYhNtafuRwEuhzVxQk/OsERDQj0ZPmm7miNbROqmv0S55zCBK/hhxcDaq+4umQUr
+ 5ztauyfLXIc+LCB+KNrWlD2JyCUFStfgzxyKPlX75Uny0nq2RNp/2fJnWgs/VRU7AyQ1
+ HFJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1780568225; x=1781173025;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=HHlfByxYlbm64EHXdKG7loZHd3KpV6KvXMCznA8gs24=;
+ b=l2xDJPXu8wFMYFnlb49UDvWUYWK76tM/06xpJC584sKEum9Tj80pNTN5JMAniTV6CL
+ 5/xsfgdtoxf5k5KwsBg+cF63lFzhNi65gQgTXBTu4kBm3JIgPCdHkgYndcQaWxy3ZvL7
+ KfEhhIgboFl8lqAW8BvcJTFH+n2V+hJ+CDxIyw7QtjClSPNoEcO0vXt1BwoDS8bhbFmY
+ dQ3pJLmPEjvsfy8RFS/i31sw6RE9sNJu+MdaFpk8whkUCr5amGIZPi8fw6LgJlu5zXmy
+ Cz8Z+F3uV6wsY5Y9gTQS1PW4cbckaOk7TmnfT6pOvcqtAZZX1enlpxNPYUQoHfG1SebP
+ B1KQ==
+X-Gm-Message-State: AOJu0YycrAYrMf5bcv6c1rl1vqEqwc9UmL2+N5rs6jG2R76jBjD67Jg1
+ K7BjGn0mgxIxrebbot8nz0l4pKYUeUJHGRJuCTVXvJZhYChNzKvOqFLj7vT1TelN
+X-Gm-Gg: Acq92OGSP9VKM5HW9aaHOUPwpLy7nHTUi0pxKouAUfa9Oxj+Kq/g4UiJbSBBeZ1e0l+
+ MXapJBoL1KaOJy55jW6a/hjLGutQtaPza9dQteJ60L1++HmzaaaCSL+zreD2wMmNx0mU6FVXdKz
+ AFpx0MA2OM2FVikHdQzx4L277RaKxlKrc7EPGVw3+qHsKz2nG8OIVqZlYldVzl7C/t8UYwCTQb1
+ GavhxfAUoKG4W/ix3V8N2yVmHaIyOqJPnqe7G3w7xN+dGH2O4iMzOtGXtokb3YonfVximsDJ3GH
+ 2AZ4/37w7QEEasX/PKKuIms+LfRPoprWtJdJ3FfNO95DuFz0aEzAz/j2orb9W67g3za9CPBNYtH
+ XEXxmdC5b8aZZzQZQ4o7uBNh0nPCGg5Tbo3c7J9yjmFu45XOgyj1bYIQDmlzqPyTPS+emQlEsGR
+ teVjtVwQBKqvOYcksAgoZElP/NBcX4HyL/tZKx+c8GwJ8kZ4qxIuPrm4aXG2sGMFhdgD6ry81V4
+ 18YJOfGmaseAzX09MgzyXrE7VNT/m0IbGKlGvJ67YNn29AXXA==
+X-Received: by 2002:a05:7300:3254:b0:304:e6f8:7ccf with SMTP id
+ 5a478bee46e88-3074fbebfdfmr3847597eec.27.1780568225352; 
+ Thu, 04 Jun 2026 03:17:05 -0700 (PDT)
+Received: from
+ runnervm3jyl0.wuolxekxhwgeff4ufomx33wcof.dx.internal.cloudapp.net
+ ([20.168.157.83]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-3074db85f60sm6558274eec.8.2026.06.04.03.17.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 04 Jun 2026 03:17:04 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu,  4 Jun 2026 10:17:02 +0000
+Message-ID: <20260604101702.3939-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260604-doc_add_missing_headers-v5-1-2e0adc082d5a@suse.com>
+References: <20260604-doc_add_missing_headers-v5-1-2e0adc082d5a@suse.com>
 MIME-Version: 1.0
-References: <20260602064442.718507-1-wxl18715129466@gmail.com>
- <ah_65vifTFw0LNy0@yuki.lan>
- <CANJThoG6kuQ7tAqMr3JVMuu7qu8QZXMqDTU27skohpB37k8xJg@mail.gmail.com>
- <aiE5GFLKJ_q7NEK5@yuki.lan>
-In-Reply-To: <aiE5GFLKJ_q7NEK5@yuki.lan>
-From: xl wu <wxl18715129466@gmail.com>
-Date: Thu, 4 Jun 2026 18:00:24 +0800
-X-Gm-Features: AVHnY4LvDvfXg5Lv5SaLto0hZ5Wml6Mc4jgLCjbZvi5XFgh9UhIaCDPRKhKmsfI
-Message-ID: <CANJThoE=Grdsq6Nr7zHAqYDtBiMJ1kvFXhR73GtF9wn8oucH0w@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/unlink09: report unsupported inode flags
- as TCONF
+Subject: Re: [LTP] doc: Add missing API references to api_c_tests.rst
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,17 +96,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-> If we do that we would miss a bug when the support would be disabled by
-> a mistake in one of the filesystems. So as long as the filesystems that
-> lack the support are filtered out it's better to make sure that the
-> functionality is there unconditionally.
+Hi Andrea,
 
-that makes sense. If unsupported filesystems are filtered out by the
-skiplist, keeping ENOTTY as a failure for the remaining filesystems is
-better.
+On Thu, 4 Jun 2026 10:45:08 +0200, Andrea Cervesato wrote:
+> doc: Add missing API references to api_c_tests.rst
 
-Thanks.
+--- [PATCH 1/3] ---
+
+> Fixes: eef750db28 ("libs: adopt tse_ prefix for extended (non-core) library")
+
+The hash eef750db28 is not present in this repository:
+
+  git cat-file -t eef750db28
+  fatal: Not a valid object name eef750db28
+
+Is this the correct commit hash?
+
+Verdict: Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
