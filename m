@@ -4,110 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5923ACD6E7D
-	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 15:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02C02CD6E7C
+	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 16:10:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8BB263E604F
-	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 17:31:24 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 279673E6031
+	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 18:10:29 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 286EC3D07B4
- for <ltp@lists.linux.it>; Fri,  5 Jun 2026 17:31:09 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B8A533E168E
+ for <ltp@lists.linux.it>; Fri,  5 Jun 2026 18:10:12 +0200 (CEST)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 17E6A600CE8
- for <ltp@lists.linux.it>; Fri,  5 Jun 2026 17:31:08 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9A0216A887;
- Fri,  5 Jun 2026 15:31:07 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E4E6779A8;
- Fri,  5 Jun 2026 15:31:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id NupbIrvrImpWCwAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Fri, 05 Jun 2026 15:31:07 +0000
-Message-ID: <f7605d0c-5d50-4905-8fa8-2aff1413c052@suse.cz>
-Date: Fri, 5 Jun 2026 17:30:59 +0200
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B7ADC600049
+ for <ltp@lists.linux.it>; Fri,  5 Jun 2026 18:10:11 +0200 (CEST)
+Received: by mail-lf1-x131.google.com with SMTP id
+ 2adb3069b0e04-5aa63daf2a5so2151041e87.3
+ for <ltp@lists.linux.it>; Fri, 05 Jun 2026 09:10:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linux-foundation.org; s=google; t=1780675811; x=1781280611;
+ darn=lists.linux.it; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=y6UQFMgxs4xPTWbEaYQXP4WreuO3V04h3DiBWisQT8s=;
+ b=XAZBlsquRq4OJP5GN2H87wCRP7vl2A4at2YKjoitCTsqoz3o4+7khnNMBA/4jkSmPY
+ DZTzN8PVajDuvSyrXREWHp67yTQCjiTChdz8/dOyj/eZz7hp3kwDy0EEm7+ys44Ks87E
+ YDSrYW/kB55RzPPn0eNpsla5rMUVWDtQgLyFE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1780675811; x=1781280611;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=y6UQFMgxs4xPTWbEaYQXP4WreuO3V04h3DiBWisQT8s=;
+ b=rvmQIlUJxMIohJmsHxjFVgrcJ46Sm3Pu3t3yYExfUBEb6gm6Hcws6lT0ahbeD4kLLo
+ nA6YtWvXWw5O/QgsMpbPgc4O8e683J9iocUAYO1hTaGqqlYeAH7ImrqtO+NuHS7HTGi+
+ mfTsQ3MC8Pz4v5ZNlopB1uCfr9kIcupXEp9F014VJ2v5KCykmShKS7evzwvt4vmwKwyI
+ xm21IyKh8jaCqQg7LlqJGMnvBw6l0kOXYlEGFJrAGKfXaj5LGc77JJ2yxfElldMqzF9A
+ 7LUvs7JsLWEPLFKCzPXG29dJDQublRVOlkVWgRMh1nqK8fQc3+nOZe4ncNeUJ8EMie/o
+ cUmw==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ/CDcIQlII7Rp04K3C4aOydH+w5GMQiW168PlI1mLLT71ZzajeqP3ZjTLaEl0ZUOhFGliQ=@lists.linux.it
+X-Gm-Message-State: AOJu0Yxk4FJYnTo5wXPlD9crwj/zPIWy7BJnVObnIEmMhnOq6eowygut
+ TOLfeAxtmZeq27i1CwFYGlWLhcIsDj2FYbGmIJ4L/FvE4eKWYrsR0MVYm/GrNy7zG8tdtcCqNMD
+ d9k5mNbJsSw==
+X-Gm-Gg: Acq92OGT6IBO252NJytUsmsAkBHuXCODr84JKUJYQ45Or7x7DsJXx+GnssJ7mTMspvz
+ 4ZTuop+ecsMgWXD2droIky6mLdhrVwVHEy3K7YigLsoeMkylv3YjA3PgA2V4JNxtjiIzJAXnoL1
+ MMnnqhc/hGFoQuUsx6Z6mRdP9ksmWgQpZdMNu3XtSRAg0Om9Vm6M821+t2J4nxc0zbgQv/sAzY0
+ T7vG4Yua78GM5hiKWqfB2CMg/y3Iw9O4jBrG+SeHJUIFIUkddbNfp3Vqrk1iL5UM4c/LWHcDs5/
+ XLw8vXv66H8pNcyuXY2WUybd440sbblQsNKzae4/z+xh4SCrfAJiQbqVnAlR54m3icmNWiST+qF
+ 9xAtBYypKGdwsDDgemjUtPRbNh93S+o3e37/ERcHUmLf9rvablWtA7k297olVaHVUr6YR+AcfrC
+ YPekoBDgYFWFcujlRjUPR9wdz1vHlgCIUmgFhdhCI8hqLKX7IarRxCC2MFr108s5b8710Inmn9z
+ LN2jn+uLTZ1ehiAi4AOF/hJOg==
+X-Received: by 2002:a05:6512:23a2:b0:5aa:6b0b:1f40 with SMTP id
+ 2adb3069b0e04-5aa87b671e6mr1550120e87.2.1780675810744; 
+ Fri, 05 Jun 2026 09:10:10 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com.
+ [209.85.208.176]) by smtp.gmail.com with ESMTPSA id
+ 2adb3069b0e04-5aa7b99cd4asm1927006e87.83.2026.06.05.09.10.10
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 05 Jun 2026 09:10:10 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id
+ 38308e7fff4ca-3966c0d5ac9so21226591fa.2
+ for <ltp@lists.linux.it>; Fri, 05 Jun 2026 09:10:10 -0700 (PDT)
+X-Forwarded-Encrypted: i=1;
+ AFNElJ+p94oiF38q8GFtm1QSKpCfXzZLKR4VS3qR7eoYJNJYsefAmJu/4LxOYP9MUxW2xKg+WIg=@lists.linux.it
+X-Received: by 2002:a17:907:9686:b0:bee:323d:1239 with SMTP id
+ a640c23a62f3a-bf372e1e4fdmr260752266b.38.1780675389972; Fri, 05 Jun 2026
+ 09:03:09 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Sebastian Chlad <sebastianchlad@gmail.com>, ltp@lists.linux.it
-References: <89e9004c-4415-4f05-8288-4f73a491d8dd@suse.cz>
- <20260604163909.17853-1-sebastian.chlad@suse.com>
- <20260604163909.17853-2-sebastian.chlad@suse.com>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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 ag==
-In-Reply-To: <20260604163909.17853-2-sebastian.chlad@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Queue-Id: 9A0216A887
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+References: <20260531010107.1953702-1-safinaskar@gmail.com>
+ <20260531010107.1953702-3-safinaskar@gmail.com>
+ <d9806b34-fc73-4878-997a-95c5e8ae4b29@sirena.org.uk>
+In-Reply-To: <d9806b34-fc73-4878-997a-95c5e8ae4b29@sirena.org.uk>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 5 Jun 2026 09:02:52 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjBZAzPdZgEeHAtSiwJpomt8ZZgKbixuiHfRm09a4=PtA@mail.gmail.com>
+X-Gm-Features: AVVi8CdZ5f-_r2ry70kDuq_xsye2rLgypwsymONxqFNfT92KlgrDUIUXs4-jBmo
+Message-ID: <CAHk-=wjBZAzPdZgEeHAtSiwJpomt8ZZgKbixuiHfRm09a4=PtA@mail.gmail.com>
+To: Mark Brown <broonie@kernel.org>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 2/2] io_uring04: Add CVE-2026-43494 regression
- test
+Subject: Re: [LTP] [PATCH 2/3] vmsplice: make vmsplice a trivial wrapper for
+ preadv2/pwritev2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,73 +103,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Sebastian Chlad <sebastian.chlad@suse.com>
+Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@infradead.org>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-api@vger.kernel.org,
+ ltp@lists.linux.it, linux-kernel@vger.kernel.org,
+ Matthew Wilcox <willy@infradead.org>, patches@lists.linux.dev,
+ Askar Safin <safinaskar@gmail.com>, linux-mm@kvack.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>, David Howells <dhowells@redhat.com>,
+ netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ David Hildenbrand <david@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Aiswharya.TCV@arm.com,
+ Pedro Falcato <pfalcato@suse.de>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-one minor suggestion below, otherwise for both patches:
+On Fri, 5 Jun 2026 at 04:02, Mark Brown <broonie@kernel.org> wrote:
+>
+> FWIW this is triggering a failure in the LTP vmsplice01 test case (which
+> sends with a vmsplice() and then tries to read that with a splice()) in
+> -next:
+>
+> | tst_tmpdir.c:316: TINFO: Using /tmp/LTP_vmsp3vEmQ as tmpdir (tmpfs filesystem)
+> | L4471tst_test.c:2047: TINFO: LTP version: 20260130
+> | L4472tst_test.c:2050: TINFO: Tested kernel: 7.1.0-rc6-next-20260604 #1 SMP @1780589917 armv7l
+> | L4473tst_kconfig.c:71: TINFO: Couldn't locate kernel config!
+> | L4474tst_test.c:1875: TINFO: Overall timeout per run is 0h 00m 30s
 
-Reviewed-by: Martin Doucha <mdoucha@suse.cz>
+I htink this is the same thing that Christian already noted (he said
+"reported by David", but I don't know which David ;), where the
+vmsplice() writev() emulation was done as a blocking write, even
+though vmsplice only blocked at the beginning (ie waiting only for
+_initial_ space to write, not then blocking afterwards).
 
-On 6/4/26 18:38, Sebastian Chlad wrote:
-> +	/*
-> +	 * Each send pins page 0, faults on page 1 (PROT_NONE), and on a
-> +	 * vulnerable kernel double-drops page 0's reference. EFAULT is the
-> +	 * expected error; other errors do not count as successful steals.
-> +	 */
-> +	for (i = 0, efaults = 0; i < GUP_PIN_COUNTING_BIAS; i++) {
-
-AFAICT, you need to get GUP_PIN_COUNTING_BIAS EFAULTs to successfully 
-reproduce the main bug. It might be better to change the loop condition 
-like this:
-
-for (...; efaults < GUP_PIN_COUNTING_BISA && i < 10 * 
-GUP_PIN_COUNTING_BIAS; ...) {
-
-Then you'll have some extra margin for exhausting the pin counter even 
-if you can't steal a pin in every iteration. Though I suppose triggering 
-enough EFAULTs not a problem at the moment.
-
-> +		/* rds_cmsg_zcopy() in net/rds/send.c */
-> +		*(uint32_t *)CMSG_DATA(cmsg) = (uint32_t)i;
-> +
-> +		ret = sendmsg(rds_fd, &msg, MSG_ZEROCOPY | MSG_DONTWAIT);
-> +		if (ret >= 0)
-> +			tst_brk(TBROK, "sendmsg() unexpectedly succeeded at iter %d", i);
-> +
-> +		if (errno == EFAULT)
-> +			efaults++;
-> +		else if (!first_bad_errno)
-> +			first_bad_errno = errno;
-> +	}
-> +
-> +	if (first_bad_errno) {
-> +		tst_res(TINFO, "sendmsg() returned unexpected errno %d (%s) on at least one iteration",
-> +			first_bad_errno, tst_strerrno(first_bad_errno));
-> +	}
-> +
-> +	tst_res(TINFO, "Completed %d/%d sendmsg() attempts with EFAULT",
-> +		efaults, GUP_PIN_COUNTING_BIAS);
-> +
-> +	if (efaults == 0)
-> +		tst_brk(TCONF, "sendmsg() never returned EFAULT - GUP pin path not exercised");
-> +
-> +	if (efaults < GUP_PIN_COUNTING_BIAS)
-> +		tst_res(TWARN, "Only %d/%d sends returned EFAULT - FOLL_PIN counter may not be fully drained",
-> +			efaults, GUP_PIN_COUNTING_BIAS);
-> +}
-
--- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+                 Linus
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
