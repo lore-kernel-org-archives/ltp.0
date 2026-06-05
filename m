@@ -4,87 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D79E5CD6E74
-	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 09:39:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73554CD6E5D
+	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 09:42:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1780652387; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1780652555; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=NK9fnMFlx+nFkeJjUbHQj9riMMTcaARvaXBd21b7Uw8=;
- b=Pb024TNjUC4FWa7GKcasXxX7JaKSXRYzFSInnCkwe2W7IPWxaHIq7AgToxfFQ0KLnPUmG
- 1Qb8JT99poSWvcfS/B6nJgG5WrEVDQfeHrDZLTCvULJBxSa0z0X9DJXVj5WomQaKT4kBPNe
- 1xqqWRDuTjYuZZaoH7CapMQgylssD9U=
+ bh=y105NBT5QaDfv7QJr5KKGzfaPZu6SSEmnxJacoakKZ8=;
+ b=aodXfLhuQpaojKKlOAh4iFhxL9Sk2GfgXLsEUH+in8plF3fP4iVrtRmzozbMwCfFFfpwf
+ ZdaZqok/FYrxRv+bTeQQFFeZULbuXgJ0LB5PWeVVksJ04WNRCWwPhORNxZu+YKN58JEAnJ8
+ 6cBTrxl8cA9BHOaxtJzGTFbW1DCJzRg=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1F6013E547C
-	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 11:39:47 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id E7D8C3E547A
+	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 11:42:35 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ACAA43CCEAA
- for <ltp@lists.linux.it>; Fri,  5 Jun 2026 11:39:26 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
+ by picard.linux.it (Postfix) with ESMTPS id 50EB73CCEAA
+ for <ltp@lists.linux.it>; Fri,  5 Jun 2026 11:42:16 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F24A11000A5B
- for <ltp@lists.linux.it>; Fri,  5 Jun 2026 11:39:25 +0200 (CEST)
-Received: by mail-wr1-x430.google.com with SMTP id
- ffacd0b85a97d-4602e2a0372so964337f8f.3
- for <ltp@lists.linux.it>; Fri, 05 Jun 2026 02:39:25 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E32FC6003FD
+ for <ltp@lists.linux.it>; Fri,  5 Jun 2026 11:42:15 +0200 (CEST)
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-490ae94a89eso14618455e9.1
+ for <ltp@lists.linux.it>; Fri, 05 Jun 2026 02:42:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1780652365; x=1781257165; darn=lists.linux.it;
+ d=suse.com; s=google; t=1780652535; x=1781257335; darn=lists.linux.it;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=08wQEAfxvYWaYzMMAvz9PQtjxuXAo1mWEIEY5qAEEAA=;
- b=Ghvfb2lJrXhC/X4UorziXWQB+C/lw6veaVk8fYMqzhCyh7iJ+kXpFpAwAa5wKLwzQj
- rm/BdjalF46bzdts08C6Jz0I00yjYjCh5Yo4xM0ZZq5xvi0i5Jv+Kvhd1w1F7d20R9iL
- wwgxrizGJC3SvMwsynv3uWTJmS5xArIAfnlLTUuwoOLSlXMY7Q3kyGLhIQb/FdISC8nP
- uDve2VfSer56gKPgNhh7U26pqvXDzVg+YBSpKSwLnmAtYt8h6bMjZOxlwj3pfmw55C2N
- TE5HNxpT11oews8ivXHNEWQgmdb8g1HEYwGGLnJgyqgkwK0somYlOJtLc5vmHj2JskvI
- ByEA==
+ bh=/1gxRsPTSnYIF6a61/b0ikm6LKszMOL5jlA8AI3ezHM=;
+ b=AoZ96BFkSExwZSq84EFqD3DgG11OlUSG6iiZ0yf7B4S/Aqc+fVKLdIQ3twXOzfdnUL
+ Ia3Rz7X8OitS6dK/MqxzJZT/W68oop4krh1xSXX74gHQJycCzqUex2fKQFhJUa28Wxc0
+ Dc0V+nN7VXSwdKCNAYHplGqQps0JBGeosyzytjb9g9Kazg4koje5IHQ9dbUgAYEKLEXl
+ MZoVv/J6RvuqBLxtMHClPkW2BPYG7+ckrxDReoin7zwF1obXTAp/AIDAIDG3Qbq06hdm
+ 0mNVfkZHFhg6mv0o8sYADImPpfjrU9VJNHU+jNGGessHPU5tpxhWeaXfE+5GqvHUo+nG
+ XF9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780652365; x=1781257165;
+ d=1e100.net; s=20251104; t=1780652535; x=1781257335;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=08wQEAfxvYWaYzMMAvz9PQtjxuXAo1mWEIEY5qAEEAA=;
- b=JXv2aRibkXLMnQeCZV89xpa4+gG+L3+Pzx6WAXevi5cZaqgzDz6u7HUun9mLAbF8Rw
- j9DnB11r4qFP6CJ1/5mBVj5ebmeqT9cMjzTQ4v1r7jGtKRc/zn/m+e8B6k2r1xcNANtc
- P4jhQqBi/H/OSlF2RNsObBI240TSVwr1HVpsxa7qA0Y1FpcWeCypccj3gHLVCGcdlGMl
- wQ6cwCrMzBx4b4/FiIzuZflbAOoLrcpKEUf8kW35JLrQXe18PahWHqgTVF8KbHR+afhh
- S3ney6waWSqrvtcJLOI8JTqzVM00zMyWSBCQ3WjY/fWjdqsIGRWcTv/onLxV+3ZOUDt2
- b79w==
-X-Forwarded-Encrypted: i=1;
- AFNElJ8xMBP3MjKel52rcf50/XVgx7RttupZoENEjI5eOPYqRAoz5vfChJgKfuhheDyP5KvYciA=@lists.linux.it
-X-Gm-Message-State: AOJu0YyjfurqN62tw2IB/BOVPbic6XVEecekV8wT5CU2OuoQqIChM7wc
- YeL1vPE3uynfz/mksPcc+WhukHXrgyeiQoeIS/K3g3rLrHcllBTD3aBMB4g5Yf8zzOA=
-X-Gm-Gg: Acq92OECUC+V54gJtwDWOEhHMlVmVs7JucM/E7DJPxVT89GbtISGaDElvh2bZpXMMNX
- nM1wVQ5Ur2idx6PZvKQi+M7K7GJjj+YnsEhzYVIGWOyheZnShfSqysQqlIy3lJObXn+YgsyRZIK
- QyjJ7GIwxwxnVj/HAPtALmdiJMljAzfmk6D3U24ow/6S3TjZGEPEUUtaBlL7D/oCnuqKRONfCRo
- Dblg8aga1ypf1lrRaSF2/+Nu5nBrbLWeen5Rwi4/aCLIG3FKv1E/nhxnmyWotbQa+mMqdhUmuTb
- VepZczz6FKDQClwMFu+x/jaBF0w5uhI9IHj65xHjEs4RArvCbGp5uBplbgpVTqBmG9WthnMHFl2
- FLSwuaIscmmlFaEE3ENs7O3/vd0JhG93ftHGISdFvKc7uJR+BvN3NshJrdCsOpF/cKVOSNJZmRz
- w2MOOSAJwGxlldUu5JjQnaxBGIxnBePGs8zQlCb4NQ6JicMdqrI/Ke5lJ+lg==
-X-Received: by 2002:adf:f24d:0:b0:45e:ed7f:1d9 with SMTP id
- ffacd0b85a97d-46030615ab8mr3535979f8f.17.1780652365345; 
- Fri, 05 Jun 2026 02:39:25 -0700 (PDT)
+ bh=/1gxRsPTSnYIF6a61/b0ikm6LKszMOL5jlA8AI3ezHM=;
+ b=g1vXo8ZN+BKrjknZ/cWAvDuza3Pe+iUk/pIapwkP0uFFodOtu98W0O0VgNCd4cSpRK
+ zj9pYVrFmzk3vdjwXDOyPRwRmkE327icQdAGeqBXLwm98qWfAAS0+dmVUP+KpqqF00jr
+ taie5UaZvmFdRwvzbrTrXOhXm2bbgu/k7GauHYcgmcMhXsqS10NpT8+8zaI1y5YAsuvb
+ mdfqkSqkpCcqbu2gCniv4uNxyFTvpx0YHqyLGtOF49hVVlcSIyisqRvpuGnEmqwcb4cw
+ VehxjOOkbqV9sYtet66EfGiN+F35PA6Av/r81D9+PYgz5tmWdXS61gnBtzKwU8l5rwzZ
+ M4gQ==
+X-Gm-Message-State: AOJu0YyNPb6k8IRP0h6s5/lbQW1eo6Q+XLrVA0TUoq6GigXi8YxVj3p7
+ y5Xw7ydBcvfsm4xuMHTNAF+b9M+ELdXLKzhU3cLWaNN9Vl3F9CVHYOJe6C1JXHMW38I=
+X-Gm-Gg: Acq92OElheCLrVewTrDPf3dmeshiy39bZYqmIQX8rWU7BgiZwBFb1+pJmi9Q4Dyvfa9
+ veRBY5yYlyUtxCUbQqLWuo02JwjeBuFJsBysMChVkycB3KmWCmCp6wabwUgMkVlqc36kX/u+AMg
+ C3CEWdOe1LiRRyjTYxAt2yzcZdIktf7Ho6zYnuSAhMARWUW91QqSx6AI7WCC2XFIx++eFJk54UB
+ 3/D2amsDmCTjgYSb1/WFh4ngAdaYCn8fDkklRzgkswqdRdvdrWK8gFEZUpB9/O7/RJ/Hpi8bVtw
+ 0A4HrIuv7MZSFLKwR5+4X7ec8K/piE17TEMnWjeiyJ401Ieu5KgwsCTA/FODHvYJT/tDh3DgXRN
+ molrR/4EYOoWMQ/oQ0OnBxoMubnRE1em+TZO1GLOcwaeHns0a+LqjRwDL/B/R/8rb/BL+6BVZHh
+ S8Ht3l+nJ6Ty04J16GVWajio/ZxvhxchC7iGRG4om7VEtMWRwdjSibbAbma43HG72Zf7O8
+X-Received: by 2002:a05:600c:8208:b0:490:bb37:9d49 with SMTP id
+ 5b1f17b1804b1-490c25b136amr44592005e9.11.1780652535270; 
+ Fri, 05 Jun 2026 02:42:15 -0700 (PDT)
 Received: from localhost.localdomain
  ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4601f351d69sm40132225f8f.29.2026.06.05.02.39.24
+ 5b1f17b1804b1-490c2c9ea37sm60604615e9.0.2026.06.05.02.42.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 05 Jun 2026 02:39:25 -0700 (PDT)
-Message-ID: <6a22994d.159d33f9.2309c6.e4c8@mx.google.com>
-To: linuxtestproject.agent@gmail.com
-In-Reply-To: <20260605093020.4127-1-linuxtestproject.agent@gmail.com>
-Date: Fri, 05 Jun 2026 09:39:24 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ Fri, 05 Jun 2026 02:42:15 -0700 (PDT)
+Message-ID: <6a2299f7.34ecd23a.11d42a.38e2@mx.google.com>
+To: "Wei Gao" <wegao@suse.com>
+In-Reply-To: <aiKYR7gagyA0y9zP@autotest-wegao.qe.prg2.suse.org>
+Date: Fri, 05 Jun 2026 09:42:14 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] doc: Add missing API references to api_c_tests.rst
+Subject: Re: [LTP] [PATCH v2] mmapstress06: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,60 +103,15 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+> Some error happen i have not noticed such as "manpage:`mmap(2)" format
+> is also created by ltp-convert skill, you can check AI feedback on v2. I
+> have no idea why this kind of simple issue still happen.
 
-> 
-> >     Fixes: eef750db28 ("libs: adopt tse_ prefix for extended (non-core) library")
-> 
-> The Fixes tag references a commit that does not exist in the git
-> history. `git cat-file -t eef750db28` returns "Not a valid object
-> name". Either the hash is wrong or the tag should be dropped.
-> 
+You can probably run /ltp-review after converting the test to spot the
+errors on the commit. You should have quite a similar CI review.
 
-This is caused by the CI. I need to fix it.
-
-> --- [PATCH 2/3] ---
-> 
-> >     * - .needs_device
-> >       - TST_NEEDS_DEVICE
-> >
-> > +    * - .needs_hugetlbfs
-> > +      - \-
-> > +
-> >      * - removed
-> >        - TST_NEEDS_DRIVERS
-> 
-> The `removed` row corresponds to the formerly-named `.needs_drivers`
-> field. Alphabetically `needs_drivers` (d) sorts before
-> `needs_hugetlbfs` (h), so the `removed` row should appear before
-> `.needs_hugetlbfs`, not after it.
-
-This is valid.
-
-> 
-> >     Add 8 missing struct tst_test fields to the C/Shell API comparison
-> >     table in writing_tests.rst: ...
-> >
-> >     Add a shell API variables reference section to api_shell_tests.rst
-> 
-> Two independent changes are bundled here: updating the comparison
-> table in writing_tests.rst and adding the "Shell API variables"
-> section to api_shell_tests.rst. These touch different files and serve
-> different purposes. Each should be a separate commit per ground rule 7
-> (one logical change per patch).
-> 
-> --- [PATCH 3/3] ---
-> 
-> > - ``SAFE_FILE_READ_STR(path, buf)``
-> 
-> The macro is declared in include/tst_safe_file_ops.h as:
-> 
->   #define SAFE_FILE_READ_STR(path, buf, buf_size)
-> 
-> It takes three arguments, not two. The `buf_size` parameter is
-> missing from the listed signature.
-
-This is also valid.
+I updated the agent, make sure to run ./setup <agent> again before
+doing it.
 
 --
 Andrea Cervesato
