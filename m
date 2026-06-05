@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB416CD6E5D
-	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 09:17:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A8BCCD6E5D
+	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 09:17:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E6CD23E547B
-	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 11:17:31 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id D89163E5475
+	for <ltp@archiver.kernel.org>; Fri,  5 Jun 2026 11:17:46 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5E84C3C7509
- for <ltp@lists.linux.it>; Fri,  5 Jun 2026 11:17:16 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 34A2E3E5FFF
+ for <ltp@lists.linux.it>; Fri,  5 Jun 2026 11:17:22 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8F0AE1000A0E
- for <ltp@lists.linux.it>; Fri,  5 Jun 2026 11:17:15 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 41673600BDC
+ for <ltp@lists.linux.it>; Fri,  5 Jun 2026 11:17:21 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 979AD758EA;
- Fri,  5 Jun 2026 09:17:14 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4018D7591F;
+ Fri,  5 Jun 2026 09:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1780651034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1780651035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=wojy5u0Nu9ZhtESzduD7CFryxM299TwGRA627BhIDQ8=;
- b=TnHzZhclPcWnF/w9C62FjI22T9UsedtfFiZ2ABNq70Md+LuYnjzMlODoy0TpF1fGoipwGg
- YvP5Y1DCqhCQ1d1vTp/qLiaKsG61GBDN9LMLgDdaVqzVep+JS0nN0ry66zYzx6IO3PasBM
- jbMyHOmGNKDuBYLAdjaVOyfczodURUs=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=jA8nAVZd9wRuARmTj9+SYIZf38N9aKW/HN/1ncLIIL8=;
+ b=D4SRji1ZOczz6tm3MnvYfAsZjjQT3P4ioChCOLX9CkrMfxk08FNn1epMARQ/0dR9u5Zqxj
+ SUfw+9Ugq8y8fkixJovSFhsSOIxbmHXD332+X8bLXNJI00TbMNgYL5p/d3x0Sk7CY+D1Y/
+ 1jrdPJkmEqpmj3mhEMEht8+cpnmXtFc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1780651034;
+ s=susede2_ed25519; t=1780651035;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=wojy5u0Nu9ZhtESzduD7CFryxM299TwGRA627BhIDQ8=;
- b=vWZyJ3ZlHDoSTi7mLlqnyVgQ82F11t7NLpi05YrXWPuh0YiDSlaUZzyrmaTSe2pT5THGe/
- 9Kicu0s3hYepvAAA==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=jA8nAVZd9wRuARmTj9+SYIZf38N9aKW/HN/1ncLIIL8=;
+ b=L+XtZRoqPH7zWgpXEXqYb+Qrs0BqZGq1Ix29gilAOBEvqk2Bz1Jb2YHBWATuZDNGCKUVok
+ 4SUU943onVjk7JAg==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=TnHzZhcl;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=vWZyJ3Zl
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=D4SRji1Z;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=L+XtZRoq
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1780651034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1780651035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=wojy5u0Nu9ZhtESzduD7CFryxM299TwGRA627BhIDQ8=;
- b=TnHzZhclPcWnF/w9C62FjI22T9UsedtfFiZ2ABNq70Md+LuYnjzMlODoy0TpF1fGoipwGg
- YvP5Y1DCqhCQ1d1vTp/qLiaKsG61GBDN9LMLgDdaVqzVep+JS0nN0ry66zYzx6IO3PasBM
- jbMyHOmGNKDuBYLAdjaVOyfczodURUs=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=jA8nAVZd9wRuARmTj9+SYIZf38N9aKW/HN/1ncLIIL8=;
+ b=D4SRji1ZOczz6tm3MnvYfAsZjjQT3P4ioChCOLX9CkrMfxk08FNn1epMARQ/0dR9u5Zqxj
+ SUfw+9Ugq8y8fkixJovSFhsSOIxbmHXD332+X8bLXNJI00TbMNgYL5p/d3x0Sk7CY+D1Y/
+ 1jrdPJkmEqpmj3mhEMEht8+cpnmXtFc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1780651034;
+ s=susede2_ed25519; t=1780651035;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=wojy5u0Nu9ZhtESzduD7CFryxM299TwGRA627BhIDQ8=;
- b=vWZyJ3ZlHDoSTi7mLlqnyVgQ82F11t7NLpi05YrXWPuh0YiDSlaUZzyrmaTSe2pT5THGe/
- 9Kicu0s3hYepvAAA==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=jA8nAVZd9wRuARmTj9+SYIZf38N9aKW/HN/1ncLIIL8=;
+ b=L+XtZRoqPH7zWgpXEXqYb+Qrs0BqZGq1Ix29gilAOBEvqk2Bz1Jb2YHBWATuZDNGCKUVok
+ 4SUU943onVjk7JAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 63B44779A9;
- Fri,  5 Jun 2026 09:17:14 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 17760779A8;
+ Fri,  5 Jun 2026 09:17:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 61KLFRqUImodHAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 05 Jun 2026 09:17:14 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2D3JAhuUImodHAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 05 Jun 2026 09:17:15 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 05 Jun 2026 11:17:12 +0200
-Message-Id: <20260605-doc_add_missing_headers-v6-0-678aac302a60@suse.com>
+Date: Fri, 05 Jun 2026 11:17:14 +0200
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIABiUImoC/43OTWrDMBAF4KsErasijST/dNV7hGLEzCjWInbRN
- KYl+O5VsjIG0y7fwHzv3ZVwySzq7XRXhZcseZ5qaF5OCsc4XVhnqlmBgcY0xmqacYhEwzWL5Ok
- yjByJi2iMwVLfkYOIqn5/Fk75+ymfP2oes3zN5edZtNjH9W9zsdroJllmZ3sfKL3LTfgV56t6k
- AtsGThmoDI9Yp3Xoekd7Rj3T8ZVxreeOKW2JYg7xm8Zd8z4ytjELroW0IawY8KW8cdMqAywiYS
- mAwrbNeu6/gJpM5Dr2QEAAA==
-X-Change-ID: 20260601-doc_add_missing_headers-ca51d98d32ac
+Message-Id: <20260605-doc_add_missing_headers-v6-2-678aac302a60@suse.com>
+References: <20260605-doc_add_missing_headers-v6-0-678aac302a60@suse.com>
+In-Reply-To: <20260605-doc_add_missing_headers-v6-0-678aac302a60@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1780651034; l=3561;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1780651034; l=7632;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=DmP242ChNEVWcClsM10eZBuEQxijY1tfwdfd/2K7nyI=;
- b=GepI58zri8KtXqJkdN9Q5lRQMr8cMlCJJWX8+BrYXUtq/Ru1DjsOjSX/KCsrgTiP8VR6hHNKJ
- YyHtwzvhLwBCjqZx7Tjrdcj9mwebl+6A4+kYf96TWgrg77fEl63ieCk
+ bh=8Vb6UNuXH7pxpkFm2B7PuWFBfJ9k1yVPOc15zVJzFTQ=;
+ b=SLi1mK0H3qy/xmzY8uQVr5ERFFy6jGMpBZaDMOaP4fwBDtQAXaki/Qiuj1vAwMP9JlieC2QTq
+ Gp6wqJFltVZD23wbMcdTdLJfSbSkRPpN2ZvcVNTdoU/LJhDwpge8q9C
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Rspamd-Action: no action
@@ -98,25 +98,26 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
  RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
  FUZZY_RATELIMITED(0.00)[rspamd.com];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.de:dkim];
+ FROM_HAS_DN(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:email,suse.com:mid];
  TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- URIBL_BLOCKED(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.com:email,suse.com:mid];
  DKIM_TRACE(0.00)[suse.de:+]
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 979AD758EA
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Rspamd-Queue-Id: 4018D7591F
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 0/3] Complete the documentation adding missing
- headers
+Subject: [LTP] [PATCH v6 2/3] doc: Complete struct tst_test table and shell
+ API docs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -133,84 +134,291 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This conversion and fix has been done with Claude Code.
-Complete this review before adding these changes:
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-https://patchwork.ozlabs.org/project/ltp/list/?series=506891
+Add 8 missing struct tst_test fields to the C/Shell API comparison
+table in writing_tests.rst: .filesystems, .forks_child, .min_runtime,
+.needs_abi_bits, .needs_cgroup_nsdelegate, .needs_cgroup_ver,
+.needs_hugetlbfs and .runs_script, and fix the alphabetical ordering
+of .mnt_flags and .min_swap_avail.
 
-- add missing headers
-- convert documentation from doxygen to kernel-doc
-- add SAFE_* macro section
+Add a shell API variables reference section to api_shell_tests.rst
+documenting all public TST_* input/output variables, checkpoint
+functions, and retry helpers.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v6:
-- PATCH 3: replace the U+2014 em-dash next to SAFE_CLOSE in
-  api_safe_macros.rst with an ASCII '--' so doc/ stays ASCII-only
-- Link to v5: https://lore.kernel.org/r/20260604-doc_add_missing_headers-v5-0-2e0adc082d5a@suse.com
+ doc/developers/api_shell_tests.rst | 183 +++++++++++++++++++++++++++++++++++++
+ doc/developers/writing_tests.rst   |  28 +++++-
+ 2 files changed, 209 insertions(+), 2 deletions(-)
 
-Changes in v5:
-- PATCH 1: drop the stray empty "Verdict:" line accidentally left in
-  the commit message body
-- PATCH 1: remove the leftover "@sa tst_fzsync_pair" Doxygen directive
-  from the file-level overview comment in tst_fuzzy_sync.h
-- PATCH 2: extend the shell API variables reference with the remaining
-  public inputs (TST_DISABLE_APPARMOR, TST_DISABLE_SELINUX,
-  TST_SKIP_LSM_WARNINGS, TST_NO_DEFAULT_RUN, TST_TMPDIR_RHOST)
-- Link to v4: https://lore.kernel.org/r/20260603-doc_add_missing_headers-v4-0-1fe3a372c155@suse.com
+diff --git a/doc/developers/api_shell_tests.rst b/doc/developers/api_shell_tests.rst
+index 937ffee2ea468552e5160775153990f13ea10f88..a70b118db544137850368bb4502c4e93ab1a1589 100644
+--- a/doc/developers/api_shell_tests.rst
++++ b/doc/developers/api_shell_tests.rst
+@@ -93,3 +93,186 @@ interrupted by :ref:`tst_brk`.
+ 
+    .. literalinclude:: ../../testcases/lib/tests/shell_loader_setup_cleanup.sh
+       :language: shell
++
++Shell API variables
++-------------------
++
++The following variables are available to shell tests. Variables marked
++*input* are set by the test before sourcing ``tst_run.sh``; variables
++marked *output* are set by the library for tests to read.
++
++Test definition (input)
++~~~~~~~~~~~~~~~~~~~~~~~
++
++``TST_TESTFUNC``
++    Name of the test function (required).
++
++``TST_CNT``
++    Number of test cases. When set the test function is called
++    ``TST_CNT`` times with a counter argument.
++
++``TST_SETUP``
++    Name of the setup function (called once before tests).
++
++``TST_CLEANUP``
++    Name of the cleanup function (called once after tests or on
++    ``tst_brk``).
++
++``TST_OPTS``
++    Extra getopts option string.
++
++``TST_PARSE_ARGS``
++    Name of a function to parse extra options from ``TST_OPTS``.
++
++``TST_USAGE``
++    Name of a function printing extra usage information.
++
++``TST_POS_ARGS``
++    Number of expected positional arguments.
++
++``TST_TEST_DATA``
++    Space-separated data passed as a second argument to the test
++    function.
++
++``TST_TEST_DATA_IFS``
++    Custom delimiter for ``TST_TEST_DATA`` (default: space).
++
++Requirements (input)
++~~~~~~~~~~~~~~~~~~~~
++
++``TST_NEEDS_ROOT``
++    Set to 1 to require root privileges.
++
++``TST_NEEDS_TMPDIR``
++    Set to 1 to create a temporary directory.
++
++``TST_NEEDS_DEVICE``
++    Set to 1 to prepare a block device.
++
++``TST_NEEDS_CMDS``
++    Space-separated list of required commands.
++
++``TST_NEEDS_MODULE``
++    Kernel module name that must be loadable.
++
++``TST_NEEDS_DRIVERS``
++    Space-separated list of required kernel drivers.
++
++``TST_NEEDS_KCONFIGS``
++    Space-separated list of required kernel config options
++    (e.g. ``CONFIG_NUMA=y``).
++
++``TST_NEEDS_KCONFIGS_IFS``
++    Custom delimiter for ``TST_NEEDS_KCONFIGS`` (default: comma).
++
++``TST_NEEDS_CHECKPOINTS``
++    Set to 1 to enable checkpoint support.
++
++``TST_MIN_KVER``
++    Minimum kernel version string (e.g. ``4.18``).
++
++Device and filesystem (input)
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++``TST_FORMAT_DEVICE``
++    Set to 1 to format ``TST_DEVICE`` before the test.
++
++``TST_MOUNT_DEVICE``
++    Set to 1 to mount ``TST_DEVICE`` at ``TST_MNTPOINT``.
++
++``TST_DEV_EXTRA_OPTS``
++    Extra options passed to ``mkfs``.
++
++``TST_DEV_FS_OPTS``
++    Extra filesystem-specific ``mkfs`` options.
++
++``TST_FS_TYPE``
++    Filesystem type for formatting (default: ``ext2``).
++
++``TST_DEVICE_SIZE``
++    Device size in MB.
++
++``TST_ALL_FILESYSTEMS``
++    Set to 1 to repeat the test for each supported filesystem.
++
++``TST_SKIP_FILESYSTEMS``
++    Space-separated list of filesystems to skip.
++
++``TST_MNT_PARAMS``
++    Mount flags/options string.
++
++Miscellaneous (input)
++~~~~~~~~~~~~~~~~~~~~~
++
++``TST_SKIP_IN_LOCKDOWN``
++    Set to 1 to skip when kernel lockdown is active.
++
++``TST_SKIP_IN_SECUREBOOT``
++    Set to 1 to skip when Secure Boot is enabled.
++
++``TST_DISABLE_APPARMOR``
++    Set to 1 to disable AppArmor before the test runs (requires root).
++
++``TST_DISABLE_SELINUX``
++    Set to 1 to put SELinux in permissive mode before the test runs
++    (requires root).
++
++``TST_SKIP_LSM_WARNINGS``
++    Set to 1 to suppress the library's warnings about active LSMs
++    (AppArmor, SELinux) at startup.
++
++``TST_NO_DEFAULT_RUN``
++    Set to a non-empty value to source ``tst_test.sh`` without invoking
++    ``tst_run`` automatically. Useful for shell libraries that build on
++    top of the test API.
++
++``TST_TIMEOUT``
++    Test timeout in seconds.
++
++``TST_TMPDIR_RHOST``
++    Set to 1 to also clean up the temporary directory on the remote
++    host (used by network tests).
++
++Output variables
++~~~~~~~~~~~~~~~~
++
++``TST_TMPDIR``
++    Path to the temporary directory (when ``TST_NEEDS_TMPDIR=1``).
++
++``TST_STARTWD``
++    Original working directory before ``chdir`` to ``TST_TMPDIR``.
++
++``TST_DEVICE``
++    Block device path (when ``TST_NEEDS_DEVICE=1``).
++
++``TST_MNTPOINT``
++    Mount point path.
++
++``TST_MODPATH``
++    Path to the loaded kernel module.
++
++Checkpoint functions
++~~~~~~~~~~~~~~~~~~~~
++
++``TST_CHECKPOINT_WAIT``
++    Wait on checkpoint (argument: checkpoint id).
++
++``TST_CHECKPOINT_WAKE``
++    Wake one waiter on checkpoint (argument: checkpoint id).
++
++``TST_CHECKPOINT_WAKE2``
++    Wake multiple waiters (arguments: checkpoint id, count).
++
++``TST_CHECKPOINT_WAKE_AND_WAIT``
++    Wake one waiter and then wait (argument: checkpoint id).
++
++Retry helpers
++~~~~~~~~~~~~~
++
++``TST_RETRY_FUNC``
++    Retry a function until it succeeds or times out
++    (arguments: function, expected value).
++
++``TST_RETRY_FN_EXP_BACKOFF``
++    Like ``TST_RETRY_FUNC`` with exponential backoff
++    (arguments: function, expected value, max delay).
+diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
+index dc40324b16d40c4d210fe0dfa6b311b5b3337c7a..4db57898fcf08b83e68be996f666e91c418838fc 100644
+--- a/doc/developers/writing_tests.rst
++++ b/doc/developers/writing_tests.rst
+@@ -382,6 +382,12 @@ LTP C And Shell Test API Comparison
+     * - .dev_min_size
+       - TST_DEVICE_SIZE
+ 
++    * - .filesystems
++      - \-
++
++    * - .forks_child
++      - not applicable
++
+     * - .format_device
+       - TST_FORMAT_DEVICE
+ 
+@@ -399,21 +405,33 @@ LTP C And Shell Test API Comparison
+     * - .min_mem_avail
+       - not applicable
+ 
+-    * - .mnt_flags
+-      - TST_MNT_PARAMS
++    * - .min_runtime
++      - \-
+ 
+     * - .min_swap_avail
+       - not applicable
+ 
++    * - .mnt_flags
++      - TST_MNT_PARAMS
++
+     * - .mntpoint | .mnt_data
+       - TST_MNTPOINT
+ 
+     * - .mount_device
+       - TST_MOUNT_DEVICE
+ 
++    * - .needs_abi_bits
++      - not applicable
++
+     * - .needs_cgroup_ctrls
+       - \-
+ 
++    * - .needs_cgroup_nsdelegate
++      - \-
++
++    * - .needs_cgroup_ver
++      - \-
++
+     * - .needs_checkpoints
+       - TST_NEEDS_CHECKPOINTS
+ 
+@@ -426,6 +444,9 @@ LTP C And Shell Test API Comparison
+     * - .needs_device
+       - TST_NEEDS_DEVICE
+ 
++    * - .needs_hugetlbfs
++      - \-
++
+     * - removed
+       - TST_NEEDS_DRIVERS
+ 
+@@ -453,6 +474,9 @@ LTP C And Shell Test API Comparison
+     * - .restore_wallclock
+       - not applicable
+ 
++    * - .runs_script
++      - not applicable
++
+     * - .sample
+       - \-
+ 
 
-Changes in v4:
-- fix build errors
-- Link to v3: https://lore.kernel.org/r/20260602-doc_add_missing_headers-v3-0-474deff77d2a@suse.com
-
-Changes in v3:
-- PATCH 3: add the missing blank line between tst_mount_has_opt() and
-  the tst_is_mounted() kernel-doc block in tst_device.h
-- PATCH 3: restore the "Requires <string.h>" note (for strlen()) in the
-  TST_KCONFIG_INIT() kernel-doc comment in tst_kconfig.h
-- Link to v2: https://lore.kernel.org/r/20260602-doc_add_missing_headers-v2-0-9ccd988c093d@suse.com
-
-Changes in v2:
-- PATCH 1: drop the incorrect claim about fixing the tse_numa.h
-  kernel-doc reference (it was already correct) and correct the header
-  count from 12 to 10 (tse_numa.h and tse_swap.h were already present)
-- PATCH 1: remove leftover Doxygen directives (@param, @return,
-  @relates, @sa) in tst_fuzzy_sync.h that the new kernel-doc comments
-  superseded
-- PATCH 2: drop the already-applied field-rename claims (.runtime,
-  .hugepages, dev_* moves) from the commit message and correct the
-  added-field count from 10 to 8
-- PATCH 3: fix the copyright year (2025 -> 2026), remove the duplicate
-  SAFE_MMAP entry from the core macros section, and correct the macro
-  count from 217 to 216
-- Link to v1: https://lore.kernel.org/r/20260601-doc_add_missing_headers-v1-0-6f1ee31945df@suse.com
-
----
-Andrea Cervesato (3):
-      doc: Add missing API references to api_c_tests.rst
-      doc: Complete struct tst_test table and shell API docs
-      doc: Add SAFE_* macros reference page
-
- doc/developers/api_c_tests.rst     |  71 +++++--
- doc/developers/api_safe_macros.rst | 382 +++++++++++++++++++++++++++++++++++++
- doc/developers/api_shell_tests.rst | 183 ++++++++++++++++++
- doc/developers/writing_tests.rst   |  28 ++-
- doc/index.rst                      |   4 +
- include/tse_uinput.h               |  30 +--
- include/tst_clone.h                |  24 ++-
- include/tst_device.h               | 166 ++++++++++------
- include/tst_fuzzy_sync.h           | 232 +++++++++++-----------
- include/tst_hugepage.h             |  35 +++-
- include/tst_kconfig.h              |  78 ++++----
- include/tst_taint.h                |  32 ++--
- 12 files changed, 972 insertions(+), 293 deletions(-)
----
-base-commit: d635eefe6f4cc0791c6cbd3c564c420ca303e729
-change-id: 20260601-doc_add_missing_headers-ca51d98d32ac
-
-Best regards,
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.51.0
 
 
 -- 
