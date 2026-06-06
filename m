@@ -4,98 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E1A9CD8C85
-	for <ltp@archiver.kernel.org>; Sat,  6 Jun 2026 19:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ACCACD8C85
+	for <ltp@archiver.kernel.org>; Sat,  6 Jun 2026 19:58:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B1BC13E5FC7
-	for <ltp@archiver.kernel.org>; Sat,  6 Jun 2026 21:56:47 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id ECC493E5FCC
+	for <ltp@archiver.kernel.org>; Sat,  6 Jun 2026 21:58:57 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6A0783C888C
- for <ltp@lists.linux.it>; Sat,  6 Jun 2026 21:56:31 +0200 (CEST)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 501783E23C4
+ for <ltp@lists.linux.it>; Sat,  6 Jun 2026 21:58:41 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 75AB41A006AB
- for <ltp@lists.linux.it>; Sat,  6 Jun 2026 21:56:30 +0200 (CEST)
-Received: by mail-wm1-x32a.google.com with SMTP id
- 5b1f17b1804b1-490be03d47bso24754425e9.0
- for <ltp@lists.linux.it>; Sat, 06 Jun 2026 12:56:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1780775790; cv=none;
- d=google.com; s=arc-20240605;
- b=B63eHG9fpyV12D7dYkq/q1BkzZiJ+jJrSk1LXuGjG4j5R4MKT9164UbL6YCPWAIafg
- xQzWgJZcsdoLB4eU5WNO/O5wNM0930FVPjrIMX2gE/a+zye8Pu+lhbqPPBbKwamZKUBh
- OiSfZBuwzKonT6FnEQWTLA9ykHuBZD1ALCOpij4ljbBm9eeehSauNh0d0T6EF/882Qys
- teMUl8eRuBqYxVWASHrkptirnauxMsF9ZosnCd97LSzsw2VcvCbJ3N6U97tPqEEaNJ7g
- ZTVXf4fQ4VUQn0wW6xAsTCNzi6Y9tVM9m2Rb7IXvsL5jewkkcOeVJLUUN1QUGj/wDvsE
- siOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20240605; 
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:dkim-signature;
- bh=LQNfm5sLQqJ3JjRMRn7FV2f+bEg1KyySrHSIgtzxwls=;
- fh=b0eNH9RvD8XXI5/t++skn8rGfPbQGMoqY/Y0j0bpd7E=;
- b=KBL7TCXzih8bg0TmAbsV9O28MGPstAfqqk1v6BX2XetEmgUkjekI5T2ruc/tol1spg
- +IEpSoASV7o0AWs0jrpMnEgBQ/U+VKTRejCJqecA0dwnqbd6s111AkU9wrgeXjPcLCjp
- y43pn1txjqUKu2a2mRfqTmg3t77Wp1nibUV8z6KzApjz4SXuw5olpdhltwPYZKrR8njW
- pd2ioNEphRPxgNLBGoxLjMI8+SUEfzcXZhjactos+qGVaZwvkDFcvhPDioMqe046Oqo7
- s2yno7AHttgC6WzE2PaC0Il4aLlw1sopIwELg53g4qgACHAsMd8oRr9uJx6V9fWbITIG
- eSzQ==; darn=lists.linux.it
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780775790; x=1781380590; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=LQNfm5sLQqJ3JjRMRn7FV2f+bEg1KyySrHSIgtzxwls=;
- b=a0nMKPNIF9/0rMx0+qz5788U0+19VlkB4pS5OAoVmtC6fE6SMovfTaR+6FS1H4l+Zs
- x94CSn+xCnv5EAZCLxtc9Sts5pWWWfJzwyTKCVdCjRPi8nyRw9yR/JYLR3gNehDLPa9K
- MxSgH+W912lz527/abnCtfqRs4voiC5o44MZeAGxG1C123SusUDzpDy03nfQKPcdSg6i
- eA8vTnTo+NN56Z6ZD8yivuT/GipVCIP5E/AKw5hsBht6YBBt+ckOUirwO1j4pro+/uS7
- OYb6YrD9mvFYz/oLZMV+JQOzKzGHO15xuo7eAf7xLcnMnzHCIoVsyvFEwkX/p3ouFar+
- Bg0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780775790; x=1781380590;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=LQNfm5sLQqJ3JjRMRn7FV2f+bEg1KyySrHSIgtzxwls=;
- b=JGwC0HE88IbF6r0267tVycImq1Hppnuy1MkYVhwwK50kQcdMp+J953VOFBMxAdF65s
- U2ydyvhNOUaWNdmhcds+g1mtFuCS2IH3U9m/HSjzeoGTcA/+EeuAPE26bjHVbndsJUQA
- GqmymJ0Gyo7mXGvFSvT+7LFJ9hpHrK14q6YrHltN/zbi/574gos6HDtdWoaAiO2NTKYB
- I54fnCSqyEP3T22g0sXA4k4rxwibYZFoAgSgt51DM/RUmPOB6ome94sGZA65Iu7RCFqq
- msEPOvi8aXNIoPEKgOqpFUJa4zcfAD5vEZD4Gfi/8tb/kksN9F/256lkiXQd9DHxwMDO
- Ay4g==
-X-Gm-Message-State: AOJu0YwkdvvAonggRfTU91Cl2ayjQSowk7IMTjOf65CILxoh9KQcupzQ
- jDWPQtnJNGS9oJwAP/YT0zVlSJZGVnNwOfjq6LLCAeT6idcClKAw7MtHsOsPPDQwd06nbnA6biD
- eQJVoZrjsl7j6Tp78QX6DSSgTiaXKQ08=
-X-Gm-Gg: Acq92OH+4ntUPikCsN+sSbQljCHGfAQ0yGUjSQstl0QQhNJMva18QpY8biUe00yWWem
- wAvV2FoKmr5VHhLBPKiqm/DH4x4TqQCId3kg9ae7lt82jCok+fPhtW8m51bvOW5TLBoUcTaEJ/G
- 9hNRNrfS5M+Pdnic8s1tgt0aIIv+1LGfGHsRY+fsk/voyTi8NhNpkxam/ehrQJT7LFihX+2xBX+
- mHciHxpCb0fN4vbOOqew8XHjL6lksCW2fhPYA9BTjWOmN4MydhuL8ynsMI/KMj15O8FBQI7E8mk
- 3uCArQ0OxDlaWs0BAPbK/3zgy48SprypP7tJHS85yUCvkDrwXQdHUkXZf90Jig==
-X-Received: by 2002:a05:600c:314e:b0:490:a29b:e72f with SMTP id
- 5b1f17b1804b1-490c25898d8mr152636585e9.4.1780775789642; Sat, 06 Jun 2026
- 12:56:29 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1F2536002CC
+ for <ltp@lists.linux.it>; Sat,  6 Jun 2026 21:58:38 +0200 (CEST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 65631TC92074606
+ for <ltp@lists.linux.it>; Sat, 6 Jun 2026 19:58:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=DSRYqiStjRdx2zv/a3RszYY3JBJvhLEiseP7LFmgI
+ sU=; b=CJLXBvf7WrD7Xggg22VQO2AAY1URL6QAjXJWRR4av7df6uC78Da8lBJ5l
+ DeiDLn9GZhbekzKnTDdUuEWz0bGEb/2X8tfknbqy3NIqJn8knNqbVzrpzAqs6jgS
+ Fj/g7l9i65ROr5k+XB+kXxTGL4aOu4F+1yfyRlW0Ndo69rrmW+b4KXCuUfDlXaAz
+ 40iEhPp4OnmVlFaIJt51sj0tIs53iWpe2RHrzJ7hriFqdQorTFH4FFhEulUml+jx
+ MVtFzbRfl0OUt6e1hLhZ+riwWDHPN9yj0PaS8hy4lWgwLp6roX3CmeQ+kgS95bKn
+ 3QsMUJTYCQaowy2R0fBir4L3yqZXg==
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4emb951y68-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Sat, 06 Jun 2026 19:58:36 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 656JnaCe028777
+ for <ltp@lists.linux.it>; Sat, 6 Jun 2026 19:58:36 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4egcwyxgeb-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Sat, 06 Jun 2026 19:58:36 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
+ [10.20.54.105])
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 656JwWvq56623492
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Sat, 6 Jun 2026 19:58:32 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 7FA9320049;
+ Sat,  6 Jun 2026 19:58:32 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id BAAB720040;
+ Sat,  6 Jun 2026 19:58:31 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.43.127.204])
+ by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Sat,  6 Jun 2026 19:58:31 +0000 (GMT)
+From: Praveen K Pandey <praveen@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Sun,  7 Jun 2026 01:28:13 +0530
+Message-ID: <20260606195818.95400-1-praveen@linux.ibm.com>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
-References: <20260507073417.64123-1-sachinp@linux.ibm.com>
- <51507e20-d908-4213-967e-df74bacd87fa@linux.ibm.com>
-In-Reply-To: <51507e20-d908-4213-967e-df74bacd87fa@linux.ibm.com>
-From: Sebastian Chlad <sebastianchlad@gmail.com>
-Date: Sat, 6 Jun 2026 21:56:17 +0200
-X-Gm-Features: AVVi8Ce3wAMIlywY_NBcECqsFkFF3PxfsQXXKMexVd0_sBO8LnTKyli4WytmDKQ
-Message-ID: <CAJCsO8fQOQfa08bN92zkbqhU_B0B0Ojx2xRm0+TA6jP6WSkZ5g@mail.gmail.com>
-To: Sachin Sant <sachinp@linux.ibm.com>,
- Sebastian Chlad <sebastian.chlad@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=N4UZ0W9B c=1 sm=1 tr=0 ts=6a247bed cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=U7nrCbtTmkRpXpFmAIza:22 a=RmiRHZcbX2QtkFt7TYQA:9
+X-Proofpoint-ORIG-GUID: nYipA09_SoekiWabxrfuKbryHmfmyBWj
+X-Proofpoint-GUID: nYipA09_SoekiWabxrfuKbryHmfmyBWj
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA2MDIwMSBTYWx0ZWRfXxpGyjsOVesiz
+ vtDalgpyYNrQNs7fdY29Qyo6K/cpACAYRyS9rrxpxD/L1vR3OCBDwo0ZFteNd4o7pfiPMUSMZ2u
+ HLJwtqJt7tDT2Yw5Qxw079Buu5ZeyLJsu/aDgZRKFwzmj/1os5kvB5FDsQ2xdczkjZiGE5zdtDG
+ tw6ROXqTwq3TgNsSErI4o2KTyP+paTG0iV54i1uWTWGrBPqlrcA1HNC9O2ElljVDMfJyTf+hO+v
+ HALlFmovhPuKEqPjFaoC/73Y2U+I77JyeLXXsu8OITknwc/1htKQoSsf2Sna6WG9IomEOgD5q3p
+ o26ZllTwsCpIema/Q7gSHJv5myTLBnF272eMJQKypGqjZsuYH83x2Vdpbb/hLUND20Yf8nllC3z
+ lWLjFvh1iuYFrQdvFOaLES2JGRBpKsuMkf6mJ1hwWKPRe4W4SVZpm41eE4bJmzrr3+KIjJVjeaR
+ d8fqdQjxRQfKeKlw28A==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-06_05,2026-06-05_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 malwarescore=0 spamscore=0 clxscore=1015 lowpriorityscore=0
+ phishscore=0 impostorscore=0 adultscore=0 priorityscore=1501 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606060201
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v7 1/4] io_uring: Add io_uring04 test for vectored
- I/O operations
+Subject: [LTP] [LTP PATCH v2 0/5] ftrace: Convert shell tests to C
+ implementation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,70 +106,114 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Sachin
+This patch series converts ftrace shell-based tests to C implementation
+to address GitHub issue #1282. The conversion provides better
+maintainability, performance, and integration with LTP's C test
+framework.
 
-On Tue, 19 May 2026 at 10:45, Sachin Sant <sachinp@linux.ibm.com> wrote:
+Changes in v2:
+- Fixed compilation issues identified during testing
+- Added TST_NO_DEFAULT_MAIN to ftrace_lib.c to prevent multiple main() definitions
+- Changed tst_get_tmpdir() to tst_tmpdir_path() (correct LTP API)
+- Removed tst_test.h from ftrace_lib.h (library headers shouldn't include it)
+- Added tst_test.h includes to all test files
+- Replaced SAFE_FPRINTF with SAFE_FILE_PRINTF in ftrace_regression01.c
+- Removed unused variable in ftrace_stress_test.c
+- Changed max_runtime to timeout in ftrace_stress_test.c
+- Removed deprecated [Description] headers from test files
+- Replaced usleep() with TST_RETRY_FUNC() to comply with LTP Ground Rule 2
+- Fixed Makefile: moved dependency rules after generic_leaf_target.mk include
+- Added FILTER_OUT_MAKE_TARGETS for library object
+- Changed to per-target LDLIBS for pthread linking
+- Removed unnecessary INSTALL_TARGETS
+- Updated runtest/tracing to use C binaries
+- Removed invalid "Fixes: #1282" tags from all commits
+- All patches now have proper Signed-off-by tags
 
-> A gentle reminder.
->
-> Let me know if there are any additional review comments
-> on this patch series.
->
+Summary of changes:
+- Patch 1: Add common ftrace library (ftrace_lib.c/h)
+- Patch 2: Convert ftrace_regression01.sh to C
+- Patch 3: Convert ftrace_regression02.sh to C  
+- Patch 4: Convert 18 ftrace_stress/*.sh scripts to single C implementation
+- Patch 5: Remove obsolete shell scripts
 
-I see some fundamental problems here which admittedly started before this
-series. I believe these need to be fixed before we apply more tests on top
-of it.
+Key improvements:
+- Multi-threaded stress testing using pthread
+- Proper LTP API usage (TST_RETRY_FUNC, SAFE_* macros)
+- Better error handling and resource management
+- Reduced code duplication through shared library
+- Compliance with LTP coding standards and ground rules
 
-In io_uring_submit_sqe() and io_uring_submit_sqe_vec(), opcode is passed as
-user_data:
-io_uring_submit_sqe_internal(s, fd, opcode, (unsigned long)buf,
-                             len, offset, opcode);
+Testing:
+- All tests compile successfully without warnings
+- Tests run correctly and produce expected results (PASS/TCONF)
+- Verified on Power architecture (ppc64le)
 
-user_data is supposed to be a unique per-request identifier for correlating
-CQEs back to their SQEs. Using opcode there is meaningless as a tag.
+Praveen K Pandey (5):
+  ftrace: Add common library for C implementation
+  ftrace: Add C implementation of ftrace_regression01
+  ftrace: Add C implementation of ftrace_regression02
+  ftrace: Add C implementation of ftrace_stress_test and update build
+  ftrace: Remove obsolete shell scripts from ftrace_stress folder
 
-The existing tests happen to pass because io_uring_do_io_op() and
-io_uring_do_vec_io_op() always submit exactly one SQE and immediately
-block waiting for its CQE, so correlation is never actually needed.
-However, any test with multiple in-flight SQEs of the same opcode would
-pass;
-the user_data check in io_uring_wait-cqe() would match regardless of which
-CQE corresponds to which request.
+ runtest/tracing                                   |   6 +-
+ testcases/kernel/tracing/ftrace_test/Makefile     |  19 +-
+ .../kernel/tracing/ftrace_test/ftrace_lib.c       | 352 +++++++++++++++++++++
+ .../kernel/tracing/ftrace_test/ftrace_lib.h       | 140 ++++++++
+ .../tracing/ftrace_test/ftrace_regression01.c     | 124 +++++++
+ .../tracing/ftrace_test/ftrace_regression02.c     |  99 ++++++
+ .../tracing/ftrace_test/ftrace_stress_test.c      | 320 ++++++++++++++++++
+ .../ftrace_stress/ftrace_buffer_size_kb.sh        |  44 ---
+ .../ftrace_stress/ftrace_current_tracer.sh        |  44 ---
+ .../ftrace_stress/ftrace_ftrace_enabled.sh        |  44 ---
+ .../ftrace_function_profile_enabled.sh             |  44 ---
+ .../ftrace_test/ftrace_stress/ftrace_set_event.sh |  44 ---
+ .../ftrace_stress/ftrace_set_ftrace_filter.sh     |  44 ---
+ .../ftrace_stress/ftrace_set_ftrace_pid.sh        |  44 ---
+ .../ftrace_stress/ftrace_stack_max_size.sh        |  44 ---
+ .../ftrace_stress/ftrace_stack_trace.sh           |  44 ---
+ .../ftrace_test/ftrace_stress/ftrace_trace.sh     |  44 ---
+ .../ftrace_stress/ftrace_trace_clock.sh           |  44 ---
+ .../ftrace_stress/ftrace_trace_options.sh         |  44 ---
+ .../ftrace_stress/ftrace_trace_pipe.sh            |  44 ---
+ .../ftrace_stress/ftrace_trace_stat.sh            |  44 ---
+ .../ftrace_stress/ftrace_tracing_cpumask.sh       |  44 ---
+ .../ftrace_stress/ftrace_tracing_enabled.sh       |  44 ---
+ .../ftrace_stress/ftrace_tracing_max_latency.sh   |  44 ---
+ .../ftrace_stress/ftrace_tracing_on.sh            |  44 ---
+ 25 files changed, 1053 insertions(+), 809 deletions(-)
+ create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_lib.c
+ create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_lib.h
+ create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression01.c
+ create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
+ create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_stress_test.c
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size_kb.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_current_tracer.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_ftrace_enabled.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_function_profile_enabled.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_set_event.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_set_ftrace_filter.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_set_ftrace_pid.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_stack_max_size.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_stack_trace.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_clock.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_options.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_pipe.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_stat.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_cpumask.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_enabled.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_max_latency.sh
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_on.sh
 
-Please hold off on applying this series until the underlying issue is
-fixed. I will send a patch to correct the user_data handling.
+-- 
+2.43.0
 
-I also think io_uring_do_io_op() and io_uring_do_vec_io_op() should not
-tightly couple SQE submission with waiting for a CQE.
-Keeping them as a single helper makes the tests effectively synchronous and
-does not model real io_uring usage.
-It would be cleaner to have separate helpers for submitting SQEs and
-waiting/reaping CQEs, and let each test handle CQE validation and
-result reporting in its own body.
-Having basic smoke tests, sending single SQE and checking CQE makes sense
-in LTP, but I doubt we shall have this as a helper.
-
-
-> --
-> Thanks
-> - Sachin
->
->
->
-Thanks and let me know if I misunderstand something here. It's the first
-time I look at this code really.
-Sebastian
-
-
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
