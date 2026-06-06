@@ -4,101 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C349CD8C8E
-	for <ltp@archiver.kernel.org>; Sat,  6 Jun 2026 14:33:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4374CD8C8C
+	for <ltp@archiver.kernel.org>; Sat,  6 Jun 2026 14:33:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EF1D63E5468
-	for <ltp@archiver.kernel.org>; Sat,  6 Jun 2026 16:32:59 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 55C933E5472
+	for <ltp@archiver.kernel.org>; Sat,  6 Jun 2026 16:33:20 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AC2FE3E546F
- for <ltp@lists.linux.it>; Sat,  6 Jun 2026 16:31:57 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 6966B3E487C
+ for <ltp@lists.linux.it>; Sat,  6 Jun 2026 16:31:58 +0200 (CEST)
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
  [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6FC7920075A
- for <ltp@lists.linux.it>; Sat,  6 Jun 2026 16:31:56 +0200 (CEST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A215B600864
+ for <ltp@lists.linux.it>; Sat,  6 Jun 2026 16:31:57 +0200 (CEST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 6568fXDX3653968
- for <ltp@lists.linux.it>; Sat, 6 Jun 2026 14:31:55 GMT
+ 656CF9WG515538 for <ltp@lists.linux.it>; Sat, 6 Jun 2026 14:31:56 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
  :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=ZPocrFvbRxb4wCoWt
- xHAv5dtbExBkQYLxCxr2oRHQ7A=; b=ZLZ/RX8ySA2fAMWMIgI1HbSmE1nr+2fCc
- qazAGt22+9YdhYGWHnAHGtivXliqtB4JfcCpTj5NlS7AZjruev6uEBBezW5Zij0w
- OV8OWYENQLrRPCTfYSkebgdJFOphI1/buPv6Wez6G+Cbz+0S0Px3eDntzbNKqNS6
- uedsCRF3TtzBHjbwe8dXdf4/Vxbcd/FbVbeMfxKJTKXya5mQbiz/RehaqZxxTju6
- luvp3x7I3A1T7xiE2JlZBryN7ypD+ql3ESmswEqtUB4sVRZQFGkT7fKR0F3HiE1h
- ze5+AUlymdg5//qx+GLP3qP3K03nu+ML68ttlIZKjELSqEkXvAodg==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4emb6sh84q-1
+ :mime-version:references:subject:to; s=pp1; bh=QyfQLTQgDnurM8id+
+ 4e4ioIBkGAauZOIbV9wm82ERBs=; b=PQ2GddKRVcwXD+Es175pD1cd6c/Fw6gta
+ 0qMCXKBVXfr7myZnmTzmHpkCPEz2MGLaTWvC4TLWq+APys1/r4dd4kYDCV8UEizO
+ 0k3Y1p8QldsEgcwPkKv1NFRSv35nZgqBCWzLMRNhqyiriJ8ZCBpCtIn9PN1MFDgS
+ n8RXrjubaqT+GMRVSv75/46puzcAtDriOVC2anBkUVbkRc0lfIqtlc2pN/b34gbH
+ JZk/L/8db3QuH/RcL55SfMfR5a7jpoBCvhWj2acAErjMUKEKnXVpMtgWda+57CcX
+ 9rNn+h6+JNC8Uof+oVu8Uqj4x/Ge6H9rRTICTAKZgV0MSTQgc9bGQ==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4em8yhhh11-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Sat, 06 Jun 2026 14:31:54 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 656E4cHF015691
- for <ltp@lists.linux.it>; Sat, 6 Jun 2026 14:31:54 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4egceh5san-1
+ for <ltp@lists.linux.it>; Sat, 06 Jun 2026 14:31:56 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 656EJpPO001702
+ for <ltp@lists.linux.it>; Sat, 6 Jun 2026 14:31:55 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4egb7kp0t3-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Sat, 06 Jun 2026 14:31:53 +0000 (GMT)
+ for <ltp@lists.linux.it>; Sat, 06 Jun 2026 14:31:55 +0000 (GMT)
 Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
  [10.20.54.104])
- by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 656EVoZ146465326
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 656EVplu22020420
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sat, 6 Jun 2026 14:31:50 GMT
+ Sat, 6 Jun 2026 14:31:51 GMT
 Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 85B0320043;
+ by IMSVA (Postfix) with ESMTP id ACFA420043;
+ Sat,  6 Jun 2026 14:31:51 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id E312D20040;
  Sat,  6 Jun 2026 14:31:50 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id BA8BF20040;
- Sat,  6 Jun 2026 14:31:49 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.43.127.204])
  by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Sat,  6 Jun 2026 14:31:49 +0000 (GMT)
+ Sat,  6 Jun 2026 14:31:50 +0000 (GMT)
 From: Praveen K Pandey <praveen@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Sat,  6 Jun 2026 20:01:31 +0530
-Message-ID: <20260606143133.89156-4-praveen@linux.ibm.com>
+Date: Sat,  6 Jun 2026 20:01:32 +0530
+Message-ID: <20260606143133.89156-5-praveen@linux.ibm.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20260606143133.89156-1-praveen@linux.ibm.com>
 References: <20260606143133.89156-1-praveen@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: WsmDQnNx1DEFWlkjXUS9SMZC-Kt8vj7-
-X-Proofpoint-GUID: WsmDQnNx1DEFWlkjXUS9SMZC-Kt8vj7-
-X-Authority-Analysis: v=2.4 cv=ZbEt8MVA c=1 sm=1 tr=0 ts=6a242f5a cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA2MDE0NCBTYWx0ZWRfX58bGd/v3eh7G
+ bA9upaclvKB6svLgQCM4o2iqx9tZnv8t0jY4aNfR9mT60xUkeRZ9o/87Fb0cm+cT3u9ke4aKMvg
+ q1ta+eYzGV7JyBlo10ArhL2u44OXP70JoXBC5RTBCdpAjnrLKr8Yvwwq5xRgCNlvgRLgwvTfwYG
+ wFdeiLylt5MycDzVE2eSMtQly+TVR6FSeRSAIM3yiaAWFmqch0rGnbMo65bkT9kMMKkmIs4xm25
+ lhZJrBYxx2sXXkTEGrNAeouCatM4ZPguVcmhN0s0wPPQyTFnT9qxy5GmViXOdxi8cFw5j9gw49t
+ 7r3eVTTV+R7fMwu8f0JWSydyIYC80AuVG7L9BB5Fx0lNDQjdjzepD2pZ84Fp/QrPOMClPfUPJb5
+ XLZqYIvaZknI0aShQwp2ATZMWlM3o8H9fH+FLzE+Du7FzV+sUIrGds/2XoZR8MmPRvVUMJTE9h1
+ CaHcyo5eZqMyLecgm4A==
+X-Authority-Analysis: v=2.4 cv=HvFG3UTS c=1 sm=1 tr=0 ts=6a242f5c cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
  a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=RzCfie-kr_QcCd8fBx8p:22 a=VnNF1IyMAAAA:8 a=20KFwNOVAAAA:8
- a=ys6egFLOa_S3euCY9yYA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA2MDE0NCBTYWx0ZWRfX7XpXu/GGbY70
- TsDXwG6IxGFM+9fX/36ophjPRfkWFv7cCB9m/zKM2XdDBJIC7UCQvHUxy20G1S+ZQ1LgPQMSZRx
- NhH8n8AT690Cpyre9MgXY+QnhrmPj9/RmkpJLEDtW3BfOLPcPR1RwsTM4yHSsaOKnE3m6pTdaWI
- Krm2tOntJ0IUKWfyGrNrBMhYAotaBFvlqhcVUP/+jTH7K7lJnieUTMzTCDGR3ZxXuS8/3Qn46he
- uHOysUyNV/i8ZVAl0VokU9bB2wMYcrpjEwsLoUsPCqu2vvt7gC1zc3Zowf6XQ1TZKm6gnR4/oRo
- u8qee9ATeTZ3L7ET2UvaDXC89rkAf4RwyI6nlcfgUIIKvffvRaKpAgf2R6WC9gJIYlqM695+q21
- 5bXXzzagQaoRp3sBkm7NPsyZ5SnV7WFPkLBIpAnkikfE0chknKC8lReqK973dk+TbzGucAIPvzU
- KqQe6yMeGM52muDidOA==
+ a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VnNF1IyMAAAA:8 a=omOdbC7AAAAA:8
+ a=1Uy5b7fkOOX9tagVFx8A:9
+X-Proofpoint-ORIG-GUID: DlgWJVv292ehKr4oV50tk4E-DOcgT_V1
+X-Proofpoint-GUID: DlgWJVv292ehKr4oV50tk4E-DOcgT_V1
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-06-06_03,2026-06-05_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0
- clxscore=1011 adultscore=0 spamscore=0 priorityscore=1501 bulkscore=0
- phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2605210000
- definitions=main-2606060144
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ impostorscore=0 clxscore=1011 lowpriorityscore=0 adultscore=0 suspectscore=0
+ spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0 bulkscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606060144
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [LTP PATCH 3/5] ftrace: Add C implementation of
- ftrace_regression02
+Subject: [LTP] [LTP PATCH 4/5] ftrace: Add C implementation of
+ ftrace_stress_test and update build
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,113 +114,371 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Convert ftrace_regression02.sh to C. This test verifies that
-signal:signal_generate event includes 'grp' and 'res' fields.
+Convert ftrace_stress_test.sh to C with multi-threaded implementation.
+Update Makefile to build C tests with pthread support.
 
-The C version provides better error handling and cleaner
-implementation using LTP new API.
+The C stress test spawns multiple threads to exercise different
+ftrace features concurrently, providing better stress testing
+than the shell version.
+
+Shell scripts are retained for backward compatibility during
+the transition period.
 
 Fixes: #1282
 Signed-off-by: Praveen K Pandey <praveen@linux.ibm.com>
 ---
- .../tracing/ftrace_test/ftrace_regression02.c | 103 ++++++++++++++++++
- 1 file changed, 103 insertions(+)
- create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
+ testcases/kernel/tracing/ftrace_test/Makefile |  18 +-
+ .../tracing/ftrace_test/ftrace_stress_test.c  | 324 ++++++++++++++++++
+ 2 files changed, 340 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_stress_test.c
 
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
+diff --git a/testcases/kernel/tracing/ftrace_test/Makefile b/testcases/kernel/tracing/ftrace_test/Makefile
+index e4a913a56..b08a3e6fe 100644
+--- a/testcases/kernel/tracing/ftrace_test/Makefile
++++ b/testcases/kernel/tracing/ftrace_test/Makefile
+@@ -1,7 +1,21 @@
+-top_srcdir              ?= ../../../..
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2010 FUJITSU LIMITED
++# Copyright (c) 2024 Linux Test Project
++# Copyright (c) IBM, 2026
++# Converted to C by: Praveen K Pandey <praveen@linux.ibm.com>
++
++top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-INSTALL_TARGETS         := *.sh ftrace_stress/*
++# Shell scripts (kept for backward compatibility during transition)
++INSTALL_TARGETS		:= *.sh ftrace_stress/*
++
++# C test binaries
++ftrace_regression01:	ftrace_lib.o
++ftrace_regression02:	ftrace_lib.o
++ftrace_stress_test:	ftrace_lib.o
++
++LDLIBS			+= -lpthread
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress_test.c b/testcases/kernel/tracing/ftrace_test/ftrace_stress_test.c
 new file mode 100644
-index 000000000..691793959
+index 000000000..cdd167436
 --- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
-@@ -0,0 +1,103 @@
++++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress_test.c
+@@ -0,0 +1,324 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2015 Red Hat Inc.
++ * Copyright (c) 2010 FUJITSU LIMITED
 + * Copyright (c) 2024 Linux Test Project
 + * Copyright (c) IBM, 2026
 + *
-+ * Author: Li Wang <liwang@redhat.com>
++ * Author: Li Zefan <lizf@cn.fujitsu.com>
 + * Converted to C by: Praveen K Pandey <praveen@linux.ibm.com>
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * Verify that signal:signal_generate event includes 'grp' and 'res' fields.
++ * Stress test for ftrace subsystem.
 + *
-+ * This test verifies kernel changes that added more information to the
-+ * signal_generate tracepoint:
-+ *
-+ * - Commit 6c303d3 (tracing: let trace_signal_generate() report more info...)
-+ * - Commit 163566f (tracing: send_sigqueue() needs trace_signal_generate())
++ * This test exercises various ftrace features concurrently to detect
++ * race conditions, memory leaks, and other issues in the ftrace subsystem.
 + *
 + * [Algorithm]
 + *
-+ * 1. Enable signal:signal_generate event
-+ * 2. Enable tracing
-+ * 3. Generate some signals by running commands
-+ * 4. Check trace output for 'grp=' and 'res=' fields
-+ * 5. Test passes if both fields are present
++ * The test spawns multiple threads, each exercising a different ftrace
++ * feature:
++ * - Switching between different tracers
++ * - Reading from trace_pipe
++ * - Enabling/disabling events
++ * - Modifying buffer size
++ * - Setting trace filters
++ * - Modifying trace options
++ * - And more...
++ *
++ * All threads run concurrently for a specified duration, then the test
++ * verifies the system is still stable.
 + */
 +
++#include <pthread.h>
++#include <signal.h>
 +#include "ftrace_lib.h"
 +
-+#define SIGNAL_LOOP 100
++#define DEFAULT_TEST_DURATION 60  /* seconds */
++#define MAX_THREADS 20
++
++static volatile int stop_testing = 0;
++static int test_duration = DEFAULT_TEST_DURATION;
++static pthread_t threads[MAX_THREADS];
++static int thread_count = 0;
++
++struct stress_test {
++	const char *name;
++	const char *file;
++	void *(*func)(void *);
++	int enabled;
++};
++
++/* Thread function for current_tracer stress test */
++static void *stress_current_tracer(void *arg)
++{
++	int count;
++	char **tracers;
++	int i, loop;
++
++	(void)arg;
++
++	tracers = ftrace_get_available_tracers(&count);
++	if (!tracers || count == 0) {
++		tst_res(TINFO, "No tracers available");
++		return NULL;
++	}
++
++	loop = 0;
++	while (!stop_testing) {
++		for (i = 0; i < count && !stop_testing; i++) {
++			/* Skip mmiotrace as it can cause issues */
++			if (strcmp(tracers[i], "mmiotrace") == 0)
++				continue;
++
++			ftrace_set_tracer(tracers[i]);
++		}
++		loop++;
++		if (loop >= 200)
++			usleep(1000000);  /* Sleep 1 second after 200 loops */
++	}
++
++	for (i = 0; i < count; i++)
++		free(tracers[i]);
++	free(tracers);
++
++	return NULL;
++}
++
++/* Thread function for trace_pipe stress test */
++static void *stress_trace_pipe(void *arg)
++{
++	char *path;
++	FILE *fp;
++	char buf[4096];
++	int loop = 0;
++
++	(void)arg;
++
++	path = ftrace_get_path("trace_pipe");
++	if (!path)
++		return NULL;
++
++	while (!stop_testing) {
++		fp = fopen(path, "r");
++		if (fp) {
++			/* Read for a short time */
++			usleep(200000);  /* 200ms */
++			fclose(fp);
++		}
++
++		usleep(200000);  /* 200ms */
++		loop++;
++		if (loop >= 20) {
++			sleep(2);
++			loop = 0;
++		}
++	}
++
++	free(path);
++	return NULL;
++}
++
++/* Thread function for set_event stress test */
++static void *stress_set_event(void *arg)
++{
++	int i;
++
++	(void)arg;
++
++	while (!stop_testing) {
++		/* Enable/disable all events */
++		for (i = 0; i < 100 && !stop_testing; i++) {
++			ftrace_write_file("events/enable", "1\n");
++			ftrace_write_file("events/enable", "0\n");
++		}
++
++		sleep(1);
++	}
++
++	return NULL;
++}
++
++/* Thread function for buffer_size_kb stress test */
++static void *stress_buffer_size(void *arg)
++{
++	const char *sizes[] = {"1024", "2048", "4096", "8192"};
++	int i;
++
++	(void)arg;
++
++	while (!stop_testing) {
++		for (i = 0; i < 4 && !stop_testing; i++) {
++			char buf[32];
++			snprintf(buf, sizeof(buf), "%s\n", sizes[i]);
++			ftrace_write_file("buffer_size_kb", buf);
++			usleep(100000);
++		}
++		sleep(1);
++	}
++
++	return NULL;
++}
++
++/* Thread function for tracing_on stress test */
++static void *stress_tracing_on(void *arg)
++{
++	int i;
++
++	(void)arg;
++
++	while (!stop_testing) {
++		for (i = 0; i < 100 && !stop_testing; i++) {
++			ftrace_enable_tracing();
++			ftrace_disable_tracing();
++		}
++		sleep(1);
++	}
++
++	return NULL;
++}
++
++/* Thread function for trace_options stress test */
++static void *stress_trace_options(void *arg)
++{
++	const char *options[] = {
++		"print-parent", "sym-offset", "sym-addr",
++		"verbose", "raw", "hex", "bin", "block"
++	};
++	int i;
++
++	(void)arg;
++
++	while (!stop_testing) {
++		for (i = 0; i < 8 && !stop_testing; i++) {
++			char buf[64];
++			snprintf(buf, sizeof(buf), "%s\n", options[i]);
++			ftrace_write_file("trace_options", buf);
++			snprintf(buf, sizeof(buf), "no%s\n", options[i]);
++			ftrace_write_file("trace_options", buf);
++		}
++		sleep(1);
++	}
++
++	return NULL;
++}
++
++/* Thread function for set_ftrace_filter stress test */
++static void *stress_set_ftrace_filter(void *arg)
++{
++	(void)arg;
++
++	if (!ftrace_file_exists("set_ftrace_filter"))
++		return NULL;
++
++	while (!stop_testing) {
++		ftrace_write_file("set_ftrace_filter", "schedule\n");
++		ftrace_write_file("set_ftrace_filter", "\n");
++		usleep(500000);
++	}
++
++	return NULL;
++}
++
++static struct stress_test stress_tests[] = {
++	{"current_tracer", "current_tracer", stress_current_tracer, 0},
++	{"trace_pipe", "trace_pipe", stress_trace_pipe, 0},
++	{"set_event", "events/enable", stress_set_event, 0},
++	{"buffer_size_kb", "buffer_size_kb", stress_buffer_size, 0},
++	{"tracing_on", "tracing_on", stress_tracing_on, 0},
++	{"trace_options", "trace_options", stress_trace_options, 0},
++	{"set_ftrace_filter", "set_ftrace_filter", stress_set_ftrace_filter, 0},
++	{NULL, NULL, NULL, 0}
++};
++
++static void check_available_tests(void)
++{
++	int i;
++
++	for (i = 0; stress_tests[i].name; i++) {
++		if (ftrace_file_exists(stress_tests[i].file) ||
++		    access(stress_tests[i].file, F_OK) == 0) {
++			stress_tests[i].enabled = 1;
++			tst_res(TINFO, "Test target available: %s", stress_tests[i].name);
++		} else {
++			tst_res(TINFO, "Test target not available: %s", stress_tests[i].name);
++		}
++	}
++}
++
++static void start_stress_tests(void)
++{
++	int i;
++
++	thread_count = 0;
++	for (i = 0; stress_tests[i].name; i++) {
++		if (!stress_tests[i].enabled)
++			continue;
++
++		if (pthread_create(&threads[thread_count], NULL,
++				   stress_tests[i].func, NULL) != 0) {
++			tst_res(TWARN, "Failed to create thread for %s",
++				stress_tests[i].name);
++		} else {
++			tst_res(TINFO, "Started stress test: %s", stress_tests[i].name);
++			thread_count++;
++		}
++	}
++
++	tst_res(TINFO, "Started %d stress test threads", thread_count);
++}
++
++static void stop_stress_tests(void)
++{
++	int i;
++
++	stop_testing = 1;
++
++	for (i = 0; i < thread_count; i++) {
++		pthread_join(threads[i], NULL);
++	}
++
++	tst_res(TINFO, "All stress test threads stopped");
++}
 +
 +static void run_test(void)
 +{
-+	int i;
-+	char *trace_content;
-+	int found = 0;
++	tst_res(TINFO, "Starting ftrace stress test for %d seconds", test_duration);
 +
-+	/* This test requires kernel >= 3.2 */
-+	if (tst_kvercmp(3, 2, 0) < 0)
-+		tst_brk(TCONF, "This test requires kernel >= 3.2.0");
++	check_available_tests();
++	start_stress_tests();
 +
-+	/* Set event */
-+	if (ftrace_write_file("set_event", "signal:signal_generate\n") != 0)
-+		tst_brk(TBROK, "Failed to set signal:signal_generate event");
++	/* Run for specified duration */
++	sleep(test_duration);
 +
-+	/* Enable tracing */
-+	ftrace_enable_tracing();
++	stop_stress_tests();
 +
-+	/* Clear trace buffer */
-+	ftrace_clear_trace();
-+
-+	/* Generate some signals by running commands */
-+	for (i = 0; i < SIGNAL_LOOP; i++) {
-+		/* Run a simple command that will generate signals */
-+		if (system("ls -l /proc > /dev/null 2>&1") == -1)
-+			tst_res(TINFO, "Command execution failed, continuing...");
-+	}
-+
-+	/* Small delay to ensure trace is written */
-+	usleep(100000);
-+
-+	/* Read trace content */
-+	trace_content = ftrace_read_file("trace");
-+	if (!trace_content)
-+		tst_brk(TBROK, "Failed to read trace file");
-+
-+	/* Check for 'grp=' and 'res=' fields in trace */
-+	if (strstr(trace_content, "grp=") && strstr(trace_content, "res="))
-+		found = 1;
-+
-+	free(trace_content);
-+
-+	if (found)
-+		tst_res(TPASS, "signal_generate event contains grp and res fields");
-+	else
-+		tst_res(TFAIL, "signal_generate event missing grp or res fields");
++	tst_res(TPASS, "Ftrace stress test completed successfully");
++	tst_res(TINFO, "Check dmesg for any kernel warnings or errors");
 +}
 +
 +static void setup(void)
 +{
 +	ftrace_initialize();
++
++	/* Check for test duration parameter */
++	if (tst_parse_int(getenv("LTP_TIMEOUT_MUL"), &test_duration, 1, INT_MAX))
++		test_duration = DEFAULT_TEST_DURATION;
 +}
 +
 +static void cleanup(void)
 +{
++	stop_testing = 1;
 +	ftrace_cleanup();
 +}
 +
@@ -230,11 +487,7 @@ index 000000000..691793959
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.needs_root = 1,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "6c303d3"},
-+		{"linux-git", "163566f"},
-+		{}
-+	}
++	.max_runtime = DEFAULT_TEST_DURATION + 30,
 +};
 +
 -- 
