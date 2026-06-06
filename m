@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4016CD8C92
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 09:14:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 918D4CD8C9F
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 09:14:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 25F7E3E3056
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 11:14:20 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id A25303E4E83
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 11:14:34 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E88DA3C9A7C
- for <ltp@lists.linux.it>; Sat,  6 Jun 2026 08:11:49 +0200 (CEST)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
- [IPv6:2a00:1450:4864:20::42e])
+ by picard.linux.it (Postfix) with ESMTPS id 851743C9A7C
+ for <ltp@lists.linux.it>; Sat,  6 Jun 2026 08:12:15 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 948CC20097C
- for <ltp@lists.linux.it>; Sat,  6 Jun 2026 08:11:49 +0200 (CEST)
-Received: by mail-wr1-x42e.google.com with SMTP id
- ffacd0b85a97d-45ef41adbc1so1941244f8f.0
- for <ltp@lists.linux.it>; Fri, 05 Jun 2026 23:11:49 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 56F39200B02
+ for <ltp@lists.linux.it>; Sat,  6 Jun 2026 08:12:13 +0200 (CEST)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-490be29c1c5so31789785e9.2
+ for <ltp@lists.linux.it>; Fri, 05 Jun 2026 23:12:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780726309; x=1781331109; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1780726333; x=1781331133; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=0+ggg4zFesK0IrYb2saIE8cPaSi4XEf6KWehvtWp5AY=;
- b=X7l9cR6q97mfl5oV4LubmWZvSZNJCcsoPt2xonpc3K3SyFgky2jqgz/trJHaAD7z8T
- IFzIRySlpgW8DwxUPEBaa3kMu7ZDrnVIzzfe3z34PvGHaZhY67yR1+dfgtD4n/awX22z
- /Dk3dSnmT2kzYQ+2xYtrdidfd+xgRL8mN5J2h4tIG6dKz1eNZK565NB7waSMVS0ip0WV
- NNIC0IJ3GuObVF9IBXcxeBmRCsFwPd0hDWb7LnqAAqBJFye2eHW0sb6MnqOcotwMyk5a
- /A9PDQci+YMJAWletJKhM8reONvwUv+oQr5ri8h4WacTmV0TUXv4kVTTqShCikqvrOAS
- UayQ==
+ bh=ybLyqkJC8PpxOPGtytqXN1jytQgb2AKCO5QalzHljcA=;
+ b=BoNPWEsYdKhSTPUxu3EDgGDueXBBbbHWQyN5+Yv0a/KBIKuoV25TjgSBXYXVjKIu03
+ l6G7/OLko45ng+8TZi/K6BjGMu4EcpD8p3pTzrKSOkTmWT3Y5QrT9rcb/vQW6INiLhn3
+ 5S0eCD56myvU2OyCHRWkcetRJ25VJFdysISc12jBh4VvNfEgMUxnWhHzf9FklgIw/Zr/
+ YDie1wvZkugEaf02mnwjWlSLbhcWuiX0AMAYWDFgnJ8BZ96zrsKq3HtAgrX+qsu6C25h
+ 9SFJKv4d35t/IzOr/Od7gUJRHn0vqynigRPdXy7x3ozEYE2OUfn8Vb+x9KdrTvQY+Rd8
+ lifQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780726309; x=1781331109;
+ d=1e100.net; s=20251104; t=1780726333; x=1781331133;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=0+ggg4zFesK0IrYb2saIE8cPaSi4XEf6KWehvtWp5AY=;
- b=J528WS7CS8PqxEO7X72IydRRxix4hh/HrjzDO/BFZcxxZlDLX5nhMhemetkyCJMWg8
- M2Wd7Ue51EILv81CVek9j0r4BMeb4/ReEBFLMOalI9kDfG9VV5Cxfb2WXfMYWTWIZKOh
- znk2b2xHoSBERnuygwxgyuygtfMEriP3XzQmoxluwsaT0Ah1s8+YcAN/vIttXZA0iofl
- 04FXT9lz1PkHJgGSrUTqBqpiBpyrGcgoMnaaVGhoAcHGth6eo3v6PBU9WK2tYxCw412d
- okI57g2XfB8IlOevDhZI8qsARqrIBUdmxVIxv0WRKI6vi/GTKFFrfPT94Dz1Z9x39QuZ
- piwg==
+ bh=ybLyqkJC8PpxOPGtytqXN1jytQgb2AKCO5QalzHljcA=;
+ b=fYAiQ9tTD0/5Fs/zkXI7kCiXsnA2kLITlncNfdBxRaXT1iZkqSPaYebK+pmLa5nN30
+ Xliqxx1LYYjKMHAOHQKeE8EuHi2+UtyfsgNWULtsFxlVOgSCH/PWvxfktQxDDAKUhP78
+ GbzYgHGm8iaUO9KERuIp83bBmWfH1Af3OPfEAMwBf14h5sBp22zXGTkTycCBEguQH9lM
+ s7JR81XbgzyMT8OLhzrkP2Lties5Xu9EUzHZbfvcO2w9vk5Tvta9OEnux8BiSyyUqCXz
+ evc+cV7PUgkIYKDLrk05gcQe3lqjGUg/h3FAtYrSP94DegAR2UrnarMSpHCryk9BixSY
+ 9taw==
 X-Forwarded-Encrypted: i=1;
- AFNElJ/eVk7KoYVxwcK044CmCxGWH/jMvMGjejJkDPXHcW7p6Dyfm54BL64TTYXsJ0oVdplZyE4=@lists.linux.it
-X-Gm-Message-State: AOJu0YwXaE69e5Lt6Ty76mv9m/6HwQ58lyWFbXBOFreQlkje40HDOKwI
- B30QXXAP7Zlj/Ikm/Tweg4qKZxHJOx5vN43VimmBrHf79RL0EN/UMuUq
-X-Gm-Gg: Acq92OGz66kvCslwU+rL6y5RwG0Zph7hr/pD0F1qJhNWY7vj4FphTBqEPOtarvGIFSu
- rVVfCtjGwtuLyE2UkxpeuaMb2DQUUcnysnn/FRGPWvk1ZXllXKall1w1CehFnFsbyYQVPxskrQj
- MfWD0Pztbd1tLXyfbFIfvesqql7LCA2nmI/Ujq18SFz4EV0CkNLBY1qD2bhUCgiiQIEFutLqPbN
- WABI8ajg3zslMg1hR/dd8FeNk6c3V6H4mS3yA/s6udejXEMsPmzR6IHBAHwhpwe+nQH2nXlh+2i
- QjADQ+DaOQjc9fT3ZlGkcvUGkuLiy22Z5Ac/FRKeB4KOwD6kQzhFOtLqFBdtQPycQDgmYkLahlC
- zCHX1nn75tTENqXLDRRDBE0Yk+pjHus4McVFSoKF6BIRqeTX+FocYvrl8hQUxQlxv2Adj80d7Sq
- FW/kyZ4xU3u0S/nx9ownw6iViJO+sZwoLciXF7nnU2
-X-Received: by 2002:adf:e014:0:20b0:45e:f29d:d438 with SMTP id
- ffacd0b85a97d-46030618a38mr7876243f8f.28.1780726308885; 
- Fri, 05 Jun 2026 23:11:48 -0700 (PDT)
+ AFNElJ8Y6M9GpT6rvyPLu7U33gARansOcQZlM22qROeFxEkcakKImaAmrCMRGbMNKIp7/l/2J9g=@lists.linux.it
+X-Gm-Message-State: AOJu0Yyhs+fhVkqsnessoF2r0XR+AR/KVgZvP/0w6GLwJmE/fOq7GtCq
+ 2SLJ+dLRise5P4S4+9FS+bPHHM5qshJcIqQs6woajdl3WC8cE4bBhtXj
+X-Gm-Gg: Acq92OEb/WpVNVXMUysGVdJDQUqkL2Yf90fl+ZzJYH9hlhmzMgHazF1pCOOhFEq8fKw
+ 8AOXHBAEdHsseDmbPHhBw+3/EdMyEr09+d+x6A99j2GpueWO9M00NU7w8+qncn0RbF4n3ia/8PI
+ Z1F23BhXrfNrF7yMIHclrGQURkL9uUY2I3SpIVOQ4/Ckan15oIAKmyzlcNKiUAmhHFi6EOfVe3J
+ oLjsy+lox7+Q0cIOiq6cH9YKqO+IL+Pb5tHnMVachksfut5S3QRGlaEolLR6zMBYGlDM577fdVf
+ 99m1A4uvU0Ih2lF7+/yBE5eF708UeVSO8ydrG7oDTfh7D+gfJKTrBEIifQEpGgnBCryMH3/BvnJ
+ RZhAcVF7CfNi1BtWiqZWUpS8S4Ghm4VnO2GOSTw+nypgCPlvV0Buw9T5GkZnl4Y6F7VTv9KG++Q
+ ZA/v3Z7TTQGwjzij2uOxYi8/rT7M3veGx5824axDZt
+X-Received: by 2002:a05:600c:8b0c:b0:490:ba61:7981 with SMTP id
+ 5b1f17b1804b1-490c25c1e4amr103918225e9.23.1780726332629; 
+ Fri, 05 Jun 2026 23:12:12 -0700 (PDT)
 Received: from localhost ([212.73.77.104]) by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-46028a6dce6sm24115947f8f.30.2026.06.05.23.11.46
+ 5b1f17b1804b1-490c2c9ea37sm178712255e9.0.2026.06.05.23.12.10
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 05 Jun 2026 23:11:48 -0700 (PDT)
+ Fri, 05 Jun 2026 23:12:12 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
  Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
-Date: Sat,  6 Jun 2026 06:10:28 +0000
-Message-ID: <20260606061031.3744880-3-safinaskar@gmail.com>
+Date: Sat,  6 Jun 2026 06:10:29 +0000
+Message-ID: <20260606061031.3744880-4-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260606061031.3744880-1-safinaskar@gmail.com>
 References: <20260606061031.3744880-1-safinaskar@gmail.com>
@@ -79,7 +80,8 @@ MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Mon, 08 Jun 2026 11:13:16 +0200
-Subject: [LTP] [PATCH 2/5] vmsplice: change argument type back to "int"
+Subject: [LTP] [PATCH 3/5] splice: turn wait_for_space flags argument into
+ bool
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,42 +111,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-My previous vmsplice patchset changed vmsplice argument from
-"int" to "unsigned long". This may cause problems, so let's
-change it back.
+I want to do this, because I will move this function to fs/pipe.c.
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- fs/read_write.c          | 2 +-
- include/linux/syscalls.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ fs/splice.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index e224e7cb8..77487b307 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -1218,7 +1218,7 @@ SYSCALL_DEFINE6(pwritev2, unsigned long, fd, const struct iovec __user *, vec,
- /*
-  * Legacy preadv2/pwritev2 wrapper.
-  */
--SYSCALL_DEFINE4(vmsplice, unsigned long, fd, const struct iovec __user *, vec,
-+SYSCALL_DEFINE4(vmsplice, int, fd, const struct iovec __user *, vec,
- 		unsigned long, vlen, unsigned int, flags)
+diff --git a/fs/splice.c b/fs/splice.c
+index 6ddf7dd72..707db2c2c 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -1239,7 +1239,7 @@ ssize_t splice_file_range(struct file *in, loff_t *ppos, struct file *out,
+ }
+ EXPORT_SYMBOL(splice_file_range);
+ 
+-static int wait_for_space(struct pipe_inode_info *pipe, unsigned flags)
++static int wait_for_space(struct pipe_inode_info *pipe, bool non_block)
  {
- 	if (unlikely(flags & ~SPLICE_F_ALL))
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index a86a88207..46a3ec954 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -514,7 +514,7 @@ asmlinkage long sys_ppoll_time32(struct pollfd __user *, unsigned int,
- 			  struct old_timespec32 __user *, const sigset_t __user *,
- 			  size_t);
- asmlinkage long sys_signalfd4(int ufd, sigset_t __user *user_mask, size_t sizemask, int flags);
--asmlinkage long sys_vmsplice(unsigned long fd, const struct iovec __user *vec,
-+asmlinkage long sys_vmsplice(int fd, const struct iovec __user *vec,
- 			     unsigned long vlen, unsigned int flags);
- asmlinkage long sys_splice(int fd_in, loff_t __user *off_in,
- 			   int fd_out, loff_t __user *off_out,
+ 	for (;;) {
+ 		if (unlikely(!pipe->readers)) {
+@@ -1248,7 +1248,7 @@ static int wait_for_space(struct pipe_inode_info *pipe, unsigned flags)
+ 		}
+ 		if (!pipe_is_full(pipe))
+ 			return 0;
+-		if (flags & SPLICE_F_NONBLOCK)
++		if (non_block)
+ 			return -EAGAIN;
+ 		if (signal_pending(current))
+ 			return -ERESTARTSYS;
+@@ -1268,7 +1268,7 @@ ssize_t splice_file_to_pipe(struct file *in,
+ 	ssize_t ret;
+ 
+ 	pipe_lock(opipe);
+-	ret = wait_for_space(opipe, flags);
++	ret = wait_for_space(opipe, flags & SPLICE_F_NONBLOCK);
+ 	if (!ret)
+ 		ret = do_splice_read(in, offset, opipe, len, flags);
+ 	pipe_unlock(opipe);
 -- 
 2.47.3
 
