@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF67ACD8C88
-	for <ltp@archiver.kernel.org>; Sun,  7 Jun 2026 08:02:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F6F5CD8C8C
+	for <ltp@archiver.kernel.org>; Sun,  7 Jun 2026 08:02:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 27D363E2EB0
-	for <ltp@archiver.kernel.org>; Sun,  7 Jun 2026 10:02:23 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 69D9D3E1617
+	for <ltp@archiver.kernel.org>; Sun,  7 Jun 2026 10:02:37 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2CDDE3C973B
- for <ltp@lists.linux.it>; Sun,  7 Jun 2026 10:02:08 +0200 (CEST)
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com
- [IPv6:2607:f8b0:4864:20::f43])
+ by picard.linux.it (Postfix) with ESMTPS id 261013E2FCD
+ for <ltp@lists.linux.it>; Sun,  7 Jun 2026 10:02:15 +0200 (CEST)
+Received: from mail-dl1-x1241.google.com (mail-dl1-x1241.google.com
+ [IPv6:2607:f8b0:4864:20::1241])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8DD156009D5
- for <ltp@lists.linux.it>; Sun,  7 Jun 2026 10:02:07 +0200 (CEST)
-Received: by mail-qv1-xf43.google.com with SMTP id
- 6a1803df08f44-8ce9ddeddefso36812546d6.0
- for <ltp@lists.linux.it>; Sun, 07 Jun 2026 01:02:07 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 630DB2009CE
+ for <ltp@lists.linux.it>; Sun,  7 Jun 2026 10:02:15 +0200 (CEST)
+Received: by mail-dl1-x1241.google.com with SMTP id
+ a92af1059eb24-135e7f4a295so1855412c88.0
+ for <ltp@lists.linux.it>; Sun, 07 Jun 2026 01:02:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780819326; x=1781424126; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1780819334; x=1781424134; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=ymVujRBEALt5+d87kKTZA04AdWEzasfUUzGyBYStJqY=;
- b=jc1d60Bap/UF9R5S72vtl0T7NvIkeHgE5B3udxyzl7g8vXKs+EYcqWkJTlrSror/pF
- lcOPsUWrKufnewt6FYpAjBiFaLzBz/3hJd/CWkrwZAcOSC4BWs3jqy2wWxdKNaqz4i/4
- 74Bm6L47dlX++5Aj4z6FnkYrsx6v6EWWr3vRz/9+6mLXjbCfWDX3sKnI1l7LN9z6oa/Z
- 5eqNWkMvrSoB9PMO6uTAIndirM9YKw2z6gMymuePsmKpkQewaHDAgC8DYRSQXM0STaJB
- n3Hb4kxViUsJkGETKxW5PhSmlcWrJhQJkTWafFGcQup8Ak5VgKvlebQXETXwXUKjjOvy
- IxOA==
+ bh=xhhP0svh8ItNPfQjjPUVIxh7N6x7KaU5lgQL9dVHM78=;
+ b=A3QBkVerg25EfeNqmN4BbvOb1Y2IJNu7geMCEFKcwE4YF7iHO0N7Lmw31wQ52ew9gc
+ CtaPLclQpP8Rz1FdggpAlDFpOjI53qhp6MhqoolwMYROZmYU6/UXOi2RZ8oTQgKV71Ug
+ tvJWBBcUIMMWHusvQsYy29hm8VSww7jnr+XiNloQElbrBJUx+U35FBJwBy4K20ZT7Oj+
+ T2FHAUSThgx3b5pfSSpwxCIq87HI+g6VfZ0ILLRXoa87KgI1S2tM0zjf/ZjXPtlWpQJs
+ 4RCCzW46RcXTIGBI8C3FndV1nDHwf6j44+H20S3GmKjTrxcC2eO4vpctDjo0ckUi8d//
+ yGKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780819326; x=1781424126;
+ d=1e100.net; s=20251104; t=1780819334; x=1781424134;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=ymVujRBEALt5+d87kKTZA04AdWEzasfUUzGyBYStJqY=;
- b=eN2gUdi3OEWLu0sMhQ9D7Up9GUxfE3noOD/jXAgPaGkq/rE1Xg1cN7f3ki1ooclsGs
- 0ZRtr0YSAuvj8Ry+ljv+BaiEOWOG2lXg939yBqZaPmsDEUs7Ol5jgo3aX1ewM7FNhd7x
- tl2ndNlqP3DtOk8yPUsHvH9c7eQJgaL+77jopHyt1GcwCbjXpLdoJ6hnaCwqh4ZQOcb6
- 6a4yAdqEnkiW9CIWPY9fYvw5cCIcO3+vFLl/W886TisySmTPVJDO1LZ+OhkzpyfRlLI4
- TofU46/RwYhKtSqI5SrgYH8Oe+IUcXYN871/de7EsE7/gED+nz5p8ZIXw56K+n3Gl7Z+
- gaIA==
-X-Gm-Message-State: AOJu0YyMrvJXuvJ58gPNmp51q2/KynEU/lpCJ6Mm/W0+qdCW3mtpJI0t
- TbG5T8rK20AwrzCm+FEqpQKeD+eIGkTTcRRSC6WaAWPV3DQIesmw6ZYd
-X-Gm-Gg: Acq92OGbesdqKs2CyBAQO5g9Opyai9ChCjGBEmp68GSbBKbyc8e/PR4Gk0g2FAyXKyb
- XBQCZlfKTCjXJstVzq1iZAb6hO9MEi2yPb25eXAFVF85HUp8DGaXbzNBv1kCsh/53VEjU+yGdG5
- G2h+y4WmHEOVxzPNvWkR187UujAVsOzU0C+rdY2WPits52p7TifHSWniHLWSNVtAjWgHsgSO7Ko
- rzLHDpRrJjAGASYarFs/NaYL0Llr9B/ulAod7tM+WilL/m/4s1P5/Mt031hjSzulRzu34DRSI8z
- u5dFfydU+dt4EPYt+knrAI+/9fnTFHoI3bbjPp3td4izIRtiNdQ3nnB5P9flfloAUQRcglxmUgA
- WJNQ2Al7rRrkvmfAXLBZOGuVui+eZt1ZqgJZ1ijoXQ0lf+u9JxF8DOddo+UnOqM8bhggfFmD0Nx
- dMWXkLXPTNWcujWivpTuuwJ/GkpBA0uD2Bhsx8UrmfKXYCg52eRvHsvLZRh0Lg8DDv4ImjvEuhN
- WZizaACELUMkzR11+jeqek9uLNEUDIikP75sQnGj36hLExA
-X-Received: by 2002:a05:620a:390e:b0:915:87e9:2c49 with SMTP id
- af79cd13be357-915a9c29513mr1781119785a.13.1780819326171; 
- Sun, 07 Jun 2026 01:02:06 -0700 (PDT)
+ bh=xhhP0svh8ItNPfQjjPUVIxh7N6x7KaU5lgQL9dVHM78=;
+ b=s1nzo62KxTSzZXa8M9Wd8RWUHwou7B7ov2X2aUelzp+kBQNewm5j0rATf4DQ5zotq2
+ KokBxPx6PxUEYQn3PzX6sQOFXvZWel0SHFAvhfo9W7QTq3P1DEsvWKhikk5zqp0ZgKSS
+ GPnPchipP7x+M2719czCaIKJmktuDPIwNpe/dXjnB99SH6lhh8uD8rMS5fa/gzqf4A35
+ TX0uBtaJDe7hc8TKqpWLF6HYLBZnaIhqITUiVp7CRxOBKqR0lCYI1geIvxmeb+RbSg+U
+ 1UAnM/1rkmis+Q+1gb0uqrQxQJlJJo2K7O4HNcVu5WgEaHlhe9Z4pD+0bsjLbU7l2uxi
+ ARoQ==
+X-Gm-Message-State: AOJu0YyhpwD8STZefXWl2OKgymG2pfF/ZA8+Gjs4x1oUMiXz72V7c7Im
+ DWxCy0B69hycHSn1JEIUiA91cFMaXkVUgectR57a1vrnVA7GZWQV4PuYecJMfdSk
+X-Gm-Gg: Acq92OE7hrIigmWxBG5r89hSo6Br4uq65orJ/Rqn/70KwqSlA3/Ld0l3+4GbQqtmVmM
+ 4C89ijiCoTirg8UKmpfHIIME6Wck0KOOg3sUuRo4KynEnBpiedtBEPQGOMRULXzPnjbdz/Jcvzj
+ 1sM1n5TV+YQNSKKX2sJV2v0nWPCbf0LFi6i7hfpInelBpAlpFUkRtTznS/AGlIhJE8Fmq1rS9bh
+ YUF7MpVLIjD73LPEbxMRs4FKjD8A20Wa0weftTJEB2KlYB/Qi0IItFQxBnNmnPseW3PblQZ5qfT
+ GzEo6Mxn6ugFC82KYlMKPbBpHSClHzz9yicMp2/p6MsDRaxbJI1m4DrNxlm85ohxSndSFjIrVsK
+ BfF6UMgSKjhlirYdmwBHe0JlcC7nzjcM5wVcQ/XIi/w/jybQTWCQgtfF4/fLEmV9F3aIzFCv8pi
+ UpcAYB15+DdKRiKb+Mh/eVZbW27B25+rj5KY/Rl87mXRiTAmjG2FTwXnwHTte6uqGhGSEmdEpc4
+ emkvnfEmK177TyFOr26T3ZZkrcrOOfqhrOBadHL0iQFgKqJ2g==
+X-Received: by 2002:a05:7022:160c:b0:12c:1288:ce63 with SMTP id
+ a92af1059eb24-13807d7b5camr4256786c88.13.1780819333545; 
+ Sun, 07 Jun 2026 01:02:13 -0700 (PDT)
 Received: from
- runnervm3jyl0.zjkurybzvyseff1vs2zn4x4edf.bx.internal.cloudapp.net
- ([20.120.84.86]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-9158a3b3f6bsm1362410785a.33.2026.06.07.01.02.05
+ runnervm3jyl0.2b4dycjmhivupb0lganmtm1jpc.dx.internal.cloudapp.net
+ ([20.57.198.164]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-3074df64eb9sm11765811eec.25.2026.06.07.01.02.13
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 07 Jun 2026 01:02:05 -0700 (PDT)
+ Sun, 07 Jun 2026 01:02:13 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Praveen K Pandey <praveen@linux.ibm.com>
-Date: Sun,  7 Jun 2026 08:02:05 +0000
-Message-ID: <20260607080205.4091-1-linuxtestproject.agent@gmail.com>
+To: Wei Gao <wegao@suse.com>
+Date: Sun,  7 Jun 2026 08:02:12 +0000
+Message-ID: <20260607080212.3930-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260607044201.22859-2-praveen@linux.ibm.com>
-References: <20260607044201.22859-2-praveen@linux.ibm.com>
+In-Reply-To: <20260607045219.32729-1-wegao@suse.com>
+References: <20260607045219.32729-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] ftrace: Add common library for C implementation
+Subject: Re: [LTP] mmapstress06: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,73 +96,40 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Praveen,
+Hi Wei,
 
-On Sun, 07 Jun 2026 10:11:56 +0530, Praveen K Pandey wrote:
-> ftrace: Add common library for C implementation
+On Sun, 07 Jun 2026 04:52:06 +0000, Wei Gao wrote:
+> mmapstress06: Convert to new API
 
---- [PATCH 1/5] ---
-
-> +tracing_path = malloc(PATH_MAX);
-> +if (!tracing_path)
-> +tst_brk(TBROK | TERRNO, "malloc failed");
+> +static void cleanup(void)
+> +{
+> +	if (child_pid > 0) {
+> +		SAFE_KILL(child_pid, SIGKILL);
+> +		SAFE_WAITPID(child_pid, NULL, 0);
+> +	}
 > +
-> +snprintf(tracing_path, PATH_MAX, "%s/tracing", debugfs_path);
+> +	if (cg_child) {
+> +		SAFE_CG_PRINTF(tst_cg_drain, "cgroup.procs", "%d", getpid());
+> +		cg_child = tst_cg_group_rm(cg_child);
+> +	}
+> +}
 
-The blank line between `tst_brk()` and `snprintf()` has a trailing
-tab. The same pattern appears on many blank lines throughout
-ftrace_lib.c (at least lines 56, 78, 93, 97, 111, 115, 118, 121,
-135, 138, 141, 150, 154, 157, 160, 163, 171, 175, 178 and more).
-`make check` would catch all of these.
+The drain step moves the parent process into tst_cg_drain, but the
+parent was never placed into cg_child -- only the forked child was
+(via SAFE_CG_PRINTF(cg_child, "cgroup.procs", ...) inside the child
+block). After SAFE_KILL + SAFE_WAITPID, the child has exited and the
+kernel has already removed it from cg_child, so the cgroup is empty
+and tst_cg_group_rm() can be called directly.
 
---- [PATCH 2/5] ---
+Draining the parent out of its current cgroup (tst_cg, managed by the
+framework) into tst_cg_drain leaves the test process in the wrong
+cgroup after cleanup. Compare with ksm02.c, where the drain is correct
+because the parent explicitly moves itself into a child cgroup first.
 
-The commit body says:
+The fix is to drop the SAFE_CG_PRINTF(tst_cg_drain, ...) line:
 
-  This test validates that function tracing works correctly by:
-  - Enabling function tracing
-  - Verifying trace output contains function calls
-  - Checking for kernel crashes or hangs
-
-The test does none of that. It enables the userstacktrace option
-together with page fault events and repeats the loop to check the
-kernel does not panic (regression for commit 1dbd195). The body
-needs to describe what the code actually does.
-
---- [PATCH 3/5] ---
-
-Same problem with the commit body:
-
-  This test validates that function graph tracing works correctly by:
-  - Enabling function_graph tracer
-  - Verifying trace output contains function graph format
-  - Checking for kernel crashes or hangs
-
-The test verifies that the signal:signal_generate tracepoint exposes
-'grp=' and 'res=' fields. This description appears to belong to a
-different test.
-
-> +/* This test requires kernel >= 3.2 */
-> +if (tst_kvercmp(3, 2, 0) < 0)
-> +tst_brk(TCONF, "This test requires kernel >= 3.2.0");
-
-Kernel version gating must use `.min_kver = "3.2"` in
-`struct tst_test` rather than an inline `tst_kvercmp()` call.
-See c-tests rule 9.
-
---- [PATCH 4/5] ---
-
-> +/* Check for test duration parameter */
-> +if (tst_parse_int(getenv("LTP_TIMEOUT_MUL"), &test_duration,
-> +  1, INT_MAX))
-> +test_duration = DEFAULT_TEST_DURATION;
-
-`LTP_TIMEOUT_MUL` is a floating-point CI timeout multiplier (e.g.
-"1.5"), not an integer duration. `tst_parse_int()` will silently
-fail for float values, leaving the duration at 60 s. If it happens
-to be set to a small integer like "2", the stress run would last
-only 2 s instead of 60 s. Either drop this override or use a
-dedicated environment variable for duration control.
+	if (cg_child)
+		cg_child = tst_cg_group_rm(cg_child);
 
 Verdict: Needs revision
 
