@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F6F5CD8C8C
-	for <ltp@archiver.kernel.org>; Sun,  7 Jun 2026 08:02:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2AC5CD8C88
+	for <ltp@archiver.kernel.org>; Sun,  7 Jun 2026 12:37:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 69D9D3E1617
-	for <ltp@archiver.kernel.org>; Sun,  7 Jun 2026 10:02:37 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id C62033C96A5
+	for <ltp@archiver.kernel.org>; Sun,  7 Jun 2026 14:37:00 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 261013E2FCD
- for <ltp@lists.linux.it>; Sun,  7 Jun 2026 10:02:15 +0200 (CEST)
-Received: from mail-dl1-x1241.google.com (mail-dl1-x1241.google.com
- [IPv6:2607:f8b0:4864:20::1241])
+ by picard.linux.it (Postfix) with ESMTPS id A00E93C2666
+ for <ltp@lists.linux.it>; Sun,  7 Jun 2026 14:36:45 +0200 (CEST)
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com
+ [IPv6:2607:f8b0:4864:20::f44])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 630DB2009CE
- for <ltp@lists.linux.it>; Sun,  7 Jun 2026 10:02:15 +0200 (CEST)
-Received: by mail-dl1-x1241.google.com with SMTP id
- a92af1059eb24-135e7f4a295so1855412c88.0
- for <ltp@lists.linux.it>; Sun, 07 Jun 2026 01:02:15 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 070F114001F4
+ for <ltp@lists.linux.it>; Sun,  7 Jun 2026 14:36:45 +0200 (CEST)
+Received: by mail-qv1-xf44.google.com with SMTP id
+ 6a1803df08f44-8cebfb15413so38582836d6.0
+ for <ltp@lists.linux.it>; Sun, 07 Jun 2026 05:36:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780819334; x=1781424134; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1780835804; x=1781440604; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=xhhP0svh8ItNPfQjjPUVIxh7N6x7KaU5lgQL9dVHM78=;
- b=A3QBkVerg25EfeNqmN4BbvOb1Y2IJNu7geMCEFKcwE4YF7iHO0N7Lmw31wQ52ew9gc
- CtaPLclQpP8Rz1FdggpAlDFpOjI53qhp6MhqoolwMYROZmYU6/UXOi2RZ8oTQgKV71Ug
- tvJWBBcUIMMWHusvQsYy29hm8VSww7jnr+XiNloQElbrBJUx+U35FBJwBy4K20ZT7Oj+
- T2FHAUSThgx3b5pfSSpwxCIq87HI+g6VfZ0ILLRXoa87KgI1S2tM0zjf/ZjXPtlWpQJs
- 4RCCzW46RcXTIGBI8C3FndV1nDHwf6j44+H20S3GmKjTrxcC2eO4vpctDjo0ckUi8d//
- yGKw==
+ bh=v6DENwu6rC8fDvVpiL+zUfm5QiRLHOhs+Hoq35MCMSo=;
+ b=UmNIvcZClN2c4xYCiQEtglxSzrn28LDVnY5W8QJ2FUcY6gSKT+cfORhYy0XKSR+fLE
+ fE0deO+6wIbR4XQ6qK0d/VYeApp9ZY9K6lVKmnRf8hTZFimW0N4s76TKg05DO6Jrh20x
+ ujeKp0+BTU+PeyAeGmkiMrb7Xc5TAeIAw/ia8hrAn0Blxm+hDOT9v7dnTiKQT40vxS7F
+ HDr9D3e2pco9igdHlL/IWM0lhQydy8KlZRsFz3yOyN1zp8U+y9FsBxi9UqfOdJtwcHBu
+ /QpXV4bQ89IWcfoV3lZ29+aujBbDNYKzO8+8h8HY/ENr/M5vfSOClimoIGQ6pe+d+iOr
+ JkfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780819334; x=1781424134;
+ d=1e100.net; s=20251104; t=1780835804; x=1781440604;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=xhhP0svh8ItNPfQjjPUVIxh7N6x7KaU5lgQL9dVHM78=;
- b=s1nzo62KxTSzZXa8M9Wd8RWUHwou7B7ov2X2aUelzp+kBQNewm5j0rATf4DQ5zotq2
- KokBxPx6PxUEYQn3PzX6sQOFXvZWel0SHFAvhfo9W7QTq3P1DEsvWKhikk5zqp0ZgKSS
- GPnPchipP7x+M2719czCaIKJmktuDPIwNpe/dXjnB99SH6lhh8uD8rMS5fa/gzqf4A35
- TX0uBtaJDe7hc8TKqpWLF6HYLBZnaIhqITUiVp7CRxOBKqR0lCYI1geIvxmeb+RbSg+U
- 1UAnM/1rkmis+Q+1gb0uqrQxQJlJJo2K7O4HNcVu5WgEaHlhe9Z4pD+0bsjLbU7l2uxi
- ARoQ==
-X-Gm-Message-State: AOJu0YyhpwD8STZefXWl2OKgymG2pfF/ZA8+Gjs4x1oUMiXz72V7c7Im
- DWxCy0B69hycHSn1JEIUiA91cFMaXkVUgectR57a1vrnVA7GZWQV4PuYecJMfdSk
-X-Gm-Gg: Acq92OE7hrIigmWxBG5r89hSo6Br4uq65orJ/Rqn/70KwqSlA3/Ld0l3+4GbQqtmVmM
- 4C89ijiCoTirg8UKmpfHIIME6Wck0KOOg3sUuRo4KynEnBpiedtBEPQGOMRULXzPnjbdz/Jcvzj
- 1sM1n5TV+YQNSKKX2sJV2v0nWPCbf0LFi6i7hfpInelBpAlpFUkRtTznS/AGlIhJE8Fmq1rS9bh
- YUF7MpVLIjD73LPEbxMRs4FKjD8A20Wa0weftTJEB2KlYB/Qi0IItFQxBnNmnPseW3PblQZ5qfT
- GzEo6Mxn6ugFC82KYlMKPbBpHSClHzz9yicMp2/p6MsDRaxbJI1m4DrNxlm85ohxSndSFjIrVsK
- BfF6UMgSKjhlirYdmwBHe0JlcC7nzjcM5wVcQ/XIi/w/jybQTWCQgtfF4/fLEmV9F3aIzFCv8pi
- UpcAYB15+DdKRiKb+Mh/eVZbW27B25+rj5KY/Rl87mXRiTAmjG2FTwXnwHTte6uqGhGSEmdEpc4
- emkvnfEmK177TyFOr26T3ZZkrcrOOfqhrOBadHL0iQFgKqJ2g==
-X-Received: by 2002:a05:7022:160c:b0:12c:1288:ce63 with SMTP id
- a92af1059eb24-13807d7b5camr4256786c88.13.1780819333545; 
- Sun, 07 Jun 2026 01:02:13 -0700 (PDT)
+ bh=v6DENwu6rC8fDvVpiL+zUfm5QiRLHOhs+Hoq35MCMSo=;
+ b=oFRzMvmiYdxsHh/RPhz3qlf3kXz9L6v1YFEkNE11TB6ccS7DZQeawiN7Qmlz4Pa+l6
+ oFkUdxn8gI2P0rH2HSVJU7XVGdQXSQbxIJmv1C6TdYOt3yiyLWFAzp8bhv4z5/jIE9x3
+ 7GNpVPesG9wqq74mEOOXH9Z8m5q4YVmJdTX1laI3CLqWUPrG44UUKNAQAKAu+yRtZtNr
+ WAqsYibi6AGQx6RKRqACwHbhcdiAVpCbSjHIx9vBJ3jXT3Wm09s4on1Fwihcxpv5fAkP
+ M3Uc4DoBlj7AjT8Fmg50gvUzXXnKtN2mPrOHe0ZdB84/5lwSxHk4PzEaJXBtN5gK3vgs
+ N11A==
+X-Gm-Message-State: AOJu0Yw/menFqzFjfTl9L8ItFJ9Y6rW5GpnyCYdMTzdEums3/9lufCOC
+ SQdRsGa1zU/iXzN025BjEZmmemFRxnOpyk/2+bp5+/ian8/j+5yymfsHfrGKtXMi
+X-Gm-Gg: Acq92OEBBz15kRmODT9HkfiZzmr7Sj30HbRDLmVNKHLZlAsC9mexbvbjW3o5SjnxYvk
+ HrLnGv/fhMRg/RTX3/awtuHf/LwJ5SUAChANvuf1y60qWBwvPxpe39OEnq595RAW5a5NxoEFSD/
+ cOzQT4NiyY3557ZxXMQPpAW2U3kb2E3jRaeHhvR5Sc0+wFG8qTlqF3jvtlzmCIl1XGS6C0MMrW/
+ 4d7K+QbuCChu0/kaCyUwnTG9oROzNTlYhoOl7aIR7T2gX+Rjy3zVnU2O9iOQOtau/jTreVcUpL5
+ Dw2wBigdhyrOC590wMoBc0q9Mv89/tlcH4ZwMRciqSrCOC28EQLeqaOuoMRBU6rd87Aob8tEreP
+ 8FAoiwtTRimAaMXDaHHFRgCi8PCsfdBrrUZ1TnHOI1j7+Guoa7vjmMJGz5QERBV5jWso7CbKh0x
+ Tbhx5E9RHVz+56JSYCprgNYHXBxQKY8FrJYERiphu80UoBbk+jkzHklHwnl2eiUsPgYQnDqRyKf
+ LlUpFC6cbCIEcB+Gm0uUs7txO6xpR+xHqzGqs8nnB5khFBbNJk=
+X-Received: by 2002:a0c:f146:0:20b0:8cc:f074:95e with SMTP id
+ 6a1803df08f44-8cee61337camr147970996d6.30.1780835803629; 
+ Sun, 07 Jun 2026 05:36:43 -0700 (PDT)
 Received: from
- runnervm3jyl0.2b4dycjmhivupb0lganmtm1jpc.dx.internal.cloudapp.net
- ([20.57.198.164]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3074df64eb9sm11765811eec.25.2026.06.07.01.02.13
+ runnervm3jyl0.ipqzque04imezfhyn235lw4voh.bx.internal.cloudapp.net
+ ([172.178.119.36]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8ceccdc91cesm133284036d6.19.2026.06.07.05.36.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 07 Jun 2026 01:02:13 -0700 (PDT)
+ Sun, 07 Jun 2026 05:36:43 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Sun,  7 Jun 2026 08:02:12 +0000
-Message-ID: <20260607080212.3930-1-linuxtestproject.agent@gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Sun,  7 Jun 2026 12:36:42 +0000
+Message-ID: <20260607123642.7543-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260607045219.32729-1-wegao@suse.com>
-References: <20260607045219.32729-1-wegao@suse.com>
+In-Reply-To: <20260605-doc_add_missing_headers-v6-1-678aac302a60@suse.com>
+References: <20260605-doc_add_missing_headers-v6-1-678aac302a60@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] mmapstress06: Convert to new API
+Subject: Re: [LTP] doc: Add missing API references to api_c_tests.rst
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,40 +96,34 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi Andrea,
 
-On Sun, 07 Jun 2026 04:52:06 +0000, Wei Gao wrote:
-> mmapstress06: Convert to new API
+On Fri, 5 Jun 2026 11:17:13 +0200, Andrea Cervesato <andrea.cervesato@suse.com> wrote:
+> [PATCH] doc: Add missing API references to api_c_tests.rst
 
-> +static void cleanup(void)
-> +{
-> +	if (child_pid > 0) {
-> +		SAFE_KILL(child_pid, SIGKILL);
-> +		SAFE_WAITPID(child_pid, NULL, 0);
-> +	}
-> +
-> +	if (cg_child) {
-> +		SAFE_CG_PRINTF(tst_cg_drain, "cgroup.procs", "%d", getpid());
-> +		cg_child = tst_cg_group_rm(cg_child);
-> +	}
-> +}
+--- [PATCH 1/3] ---
 
-The drain step moves the parent process into tst_cg_drain, but the
-parent was never placed into cg_child -- only the forked child was
-(via SAFE_CG_PRINTF(cg_child, "cgroup.procs", ...) inside the child
-block). After SAFE_KILL + SAFE_WAITPID, the child has exited and the
-kernel has already removed it from cg_child, so the cgroup is empty
-and tst_cg_group_rm() can be called directly.
+> Fixes: eef750db28 ("libs: adopt tse_ prefix for extended (non-core) library")
 
-Draining the parent out of its current cgroup (tst_cg, managed by the
-framework) into tst_cg_drain leaves the test process in the wrong
-cgroup after cleanup. Compare with ksm02.c, where the drain is correct
-because the parent explicitly moves itself into a child cgroup first.
+The commit eef750db28 referenced in the Fixes tag does not exist in the
+LTP git history. Is the commit hash correct?
 
-The fix is to drop the SAFE_CG_PRINTF(tst_cg_drain, ...) line:
+--- [PATCH 2/3] ---
 
-	if (cg_child)
-		cg_child = tst_cg_group_rm(cg_child);
+> doc: Complete struct tst_test table and shell API docs
+> 
+> Add 8 missing struct tst_test fields to the C/Shell API comparison
+> table in writing_tests.rst: .filesystems, .forks_child, .min_runtime,
+> .needs_abi_bits, .needs_cgroup_nsdelegate, .needs_cgroup_ver,
+> .needs_hugetlbfs and .runs_script, and fix the alphabetical ordering
+> of .mnt_flags and .min_swap_avail.
+> 
+> Add a shell API variables reference section to api_shell_tests.rst
+> documenting all public TST_* input/output variables, checkpoint
+> functions, and retry helpers.
+
+The commit body describes what changed, but does not explain why the change
+is needed. Could you provide a motivation for the change?
 
 Verdict: Needs revision
 
