@@ -4,64 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6010CD8C9F
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 09:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7077CCD8C9F
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 11:01:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3746A3E4E76
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 11:41:57 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id A79473E5F88
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 13:01:31 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5FA383C1ACE
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 11:41:40 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1F1F73E4E83
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 13:01:15 +0200 (CEST)
+Received: from mail-dy1-x1341.google.com (mail-dy1-x1341.google.com
+ [IPv6:2607:f8b0:4864:20::1341])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 752DA1A0037B
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 11:41:38 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B691F6A882;
- Mon,  8 Jun 2026 09:41:35 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A2725779A7;
- Mon,  8 Jun 2026 09:41:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ssW8Jk+OJmo1EwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 08 Jun 2026 09:41:35 +0000
-Date: Mon, 8 Jun 2026 11:41:29 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Praveen K Pandey <praveen@linux.ibm.com>
-Message-ID: <aiaOSb3OCJRd1Qry@yuki.lan>
-References: <20260608055000.97154-1-praveen@linux.ibm.com>
- <20260608055000.97154-2-praveen@linux.ibm.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E424F600F05
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 13:01:13 +0200 (CEST)
+Received: by mail-dy1-x1341.google.com with SMTP id
+ 5a478bee46e88-3042a388168so2268204eec.1
+ for <ltp@lists.linux.it>; Mon, 08 Jun 2026 04:01:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1780916472; x=1781521272; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=wW0QUc/fyO6oRvYvCQ8IX9qBO0WZPTRGHV8hEo3RmBs=;
+ b=eTrJLV3H7cGvLBYbjJIYm4wsCbqXohQ7IPT0c/Nfs7TAfw+MC4dwkkJqz/EAof29Zq
+ 1S6VE+X8XWF6kFDa+oLG2eSXeY8+R0k5gjKMGXcvT/CLGPJIsnzSnM6pJcc/+aJ/rLJI
+ U06o17iC9zFsidOfB4i/Y6GgR7L/wCeEr48qqvLyS6PmjB6c/EEhNtunqJRvYDLIYV69
+ fizjtEORJEPKKC9BqtE6S8dyyOmqzzTvL4I8KaVJKJnQIR8fcKv+QH43YrNYDdZbfoz5
+ dq1KyDQvb03ydnFmAyH6DWv0odBYJTTExelVETL6Zg6WUi6pmZNjTYCntMbtKSRJM7CN
+ zkGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1780916472; x=1781521272;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=wW0QUc/fyO6oRvYvCQ8IX9qBO0WZPTRGHV8hEo3RmBs=;
+ b=sOgX1+sXC2b4lkW30iSI9CmOupEQ/LMS8w8ItrvEbHDU1g3lYYPC2+6Q1P7i/IKmo5
+ FYIToIgdKoDxXCME0jyUejfFph2N9PyOk+1l2lWNfR7FsUy4E8QreHH8MiWjazhZ/D1i
+ n3UuQ+vdB5X9iNHDC59d4XfVABWomvu4beblmja3Ffgl9UQyVWIEJfcvcMi27llZbR1z
+ vh9GZLnAHEEk7gAt7j42+DhZt0cxKGs0wLxM/SdZq/mFVLnyuTkOHSU1W90MmbqAOpYj
+ 1LUnABGuetYrBDHJpHjuskuSzYCM9TSFBOyn7pUNTdFUym7kREMUh0zhoR0nuQF4SmXK
+ OgZg==
+X-Gm-Message-State: AOJu0Yx6p7CNAb4cz+ulMZnC7I8eOtTn77wuhQMp3XojN18h7aoDvG9y
+ 2vM7J1aJT88WKDxUsz49lJUanX1T2vl0VD7MR9TZWA4G6QYwq1mPAkV/6Vi7pVzO
+X-Gm-Gg: Acq92OHQMpUulzcFAoRCnmmdhN5dhBWoVlzLS9QWoW2P5i0S+ShsEkmeuE9219AMik+
+ +vx6t4xDXE8xSNoQIsmpk8+uYgzbBxMYKLwGwQEMgXPpIVdxRvf4NGhQQ+LwmME49wRtLc4TX5W
+ I1jbynd6CaxG2nQDzWcEMfrGvP2q26uKeo92NI9Bt22ekm4YsZn5EmKSHWF3qj+c1kix2cjJIWu
+ oZTEQ2F9Td0KIOjnLOMeF4iWmM3JX5oq7bPrO+1Qws9xSoCN4PFNA5e98anT+Uj5cDSrDGwCxrq
+ E1joeXE/aJUnVdFqcRIUVi2JohXw4oR5qzAnJ1abIC1Y3zziELQHCvCISHTkVu85/4sXFHH/LyK
+ puwsPUg22RH7404h9axz0Pzoeu630X+AvYbNBWyz7vXzsueOfIUP2XvWZxoGrjVgxEDYdMAYG67
+ miEC05T390PK4WnGlKzj9mVY+uDnibP0sFR1uYkOd4og0sYHiGtoMB+eWYr1w9/6w9u6LYkaE9C
+ 8NjYbbH4mXu2Xowh6Br5uWY3IHaUgNCo5K+tgGFM4lYeglO3Zk=
+X-Received: by 2002:a05:7301:420a:b0:2ca:bd22:6102 with SMTP id
+ 5a478bee46e88-3077fff0c2fmr3980584eec.14.1780916471975; 
+ Mon, 08 Jun 2026 04:01:11 -0700 (PDT)
+Received: from
+ runnervm3jyl0.gqycc2zpl1wenkeeoydy3zbfbh.dx.internal.cloudapp.net
+ ([52.159.247.233]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-3074df349d8sm16580059eec.22.2026.06.08.04.01.11
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 08 Jun 2026 04:01:11 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Sachin Sant <sachinp@linux.ibm.com>
+Date: Mon,  8 Jun 2026 11:01:10 +0000
+Message-ID: <20260608110110.4175-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260608092200.92827-2-sachinp@linux.ibm.com>
+References: <20260608092200.92827-2-sachinp@linux.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260608055000.97154-2-praveen@linux.ibm.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Queue-Id: B691F6A882
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [LTP PATCH v4 1/5] ftrace: Add common library for C
- implementation
+Subject: Re: [LTP] fs/acl: Add ACL_USER_OBJ permission test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,589 +97,115 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_lib.c b/testcases/kernel/tracing/ftrace_test/ftrace_lib.c
-> new file mode 100644
-> index 000000000..8b93b9849
-> --- /dev/null
-> +++ b/testcases/kernel/tracing/ftrace_test/ftrace_lib.c
-> @@ -0,0 +1,358 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2010 FUJITSU LIMITED
-> + * Copyright (c) 2024 Linux Test Project
-> + * Copyright (c) IBM, 2026
-> + *
-> + * Author: Li Zefan <lizf@cn.fujitsu.com>
-> + * Converted to C by: Praveen K Pandey <praveen@linux.ibm.com>
-> + */
-> +
-> +#define TST_NO_DEFAULT_MAIN
-> +#include "ftrace_lib.h"
-> +#include "tst_test.h"
-> +#include "tst_safe_macros.h"
-> +#include "tst_safe_stdio.h"
-> +
-> +char *tracing_path = NULL;
-> +char *debugfs_path = NULL;
-> +static int debugfs_mounted_by_us = 0;
-> +struct ftrace_saved_state saved_state = {0};
+Hi Sachin,
 
-Static variables are initialized to zero by compiler automatically, no
-need to do it here.
+On Mon, 8 Jun 2026 14:51:53 +0530, Sachin Sant wrote:
+> fs/acl: Add ACL_USER_OBJ permission test
 
-> +void ftrace_initialize(void)
-> +{
-> +	FILE *fp;
-> +	char line[PATH_MAX];
-> +	int found = 0;
-> +
-> +	/* Check if debugfs is already mounted */
+--- [PATCH 1/8] ---
 
-Please avoid comment that state the obvious, e.g. say in english exactly
-what the code does.
+> +#include <sys/xattr.h>
 
-> +	fp = SAFE_FOPEN("/proc/mounts", "r");
-> +	while (fgets(line, sizeof(line), fp)) {
-> +		if (strstr(line, "debugfs")) {
-> +			debugfs_path = strdup("/sys/kernel/debug");
-> +			found = 1;
-> +			break;
+acl_lib.h includes <sys/xattr.h> unconditionally. LTP's configure.ac
+checks for this header and defines HAVE_SYS_XATTR_H. Other xattr tests
+(e.g. setxattr01, setxattr02, setxattr03) guard their code with
+#ifdef HAVE_SYS_XATTR_H.
+
+Each .c test file should wrap all test code in a file-level guard with
+TST_TEST_TCONF in the #else branch, e.g.:
+
+  #include "acl_lib.h"
+
+  #ifdef HAVE_SYS_XATTR_H
+
+  /* ... all test code ... */
+
+  static struct tst_test test = { ... };
+
+  #else
+      TST_TEST_TCONF("sys/xattr.h is not available");
+  #endif
+
+Without this, the tests will fail to compile on systems where
+sys/xattr.h is not available.
+
+--- [PATCH 6/8] ---
+
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_root = 1,
+> +	.mount_device = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.forks_child = 1,
+
+acl_link01 never forks a child process. It does not call SAFE_FORK(),
+try_create_as(), or create_file_as(). Should .forks_child be dropped?
+
+--- [PATCH 7/8] ---
+
+> +	TST_EXP_PASS_SILENT(setxattr(TESTDIR, XATTR_TEST_DIR_NAME,
+> +				     XATTR_TEST_DIR_VALUE,
+> +				     XATTR_TEST_DIR_SIZE, 0));
+> +	if (!TST_PASS) {
+> +		if (TST_ERR == EOPNOTSUPP) {
+> +			tst_res(TCONF, "Extended attributes not supported");
+> +			return;
 > +		}
-> +	}
-> +	SAFE_FCLOSE(fp);
-
-This whole thing could be just:
-
-	if (tst_fs_is_mounted("/sys/kernel/debug")) {
-		debugfs_path = strdup("/sys/kernel/debug");
-		if (!debugfs_path)
-			tst_brk(TBROK, ...);
-	}
-
-Ideally SAFE_STRDUP() should be added to the test library (in a separate
-patch) so that we can simplify this even further to:
-
-	if (tst_fs_is_mounted("/sys/kernel/debug"))
-		debugfs_path = SAFE_STRDUP("/sys/kernel/debug");
-
-> +	/* Mount debugfs if not already mounted */
-> +	if (!found) {
-
-No need to add found flag, we can do if (!debugfs_path) here instead.
-
-> +		char *tmpdir = tst_tmpdir_path();
-> +		debugfs_path = malloc(PATH_MAX);
-> +		if (!debugfs_path)
-> +			tst_brk(TBROK | TERRNO, "malloc failed");
-> +		snprintf(debugfs_path, PATH_MAX, "%s/debugfs", tmpdir);
-
-This could be single line with SAFE_ASPRINTF()
-
-> +		SAFE_MKDIR(debugfs_path, 0755);
-> +		SAFE_MOUNT("debugfs", debugfs_path, "debugfs", 0, NULL);
-> +		debugfs_mounted_by_us = 1;
-> +	}
-> +
-> +	/* Set tracing path */
-> +	tracing_path = malloc(PATH_MAX);
-> +	if (!tracing_path)
-> +		tst_brk(TBROK | TERRNO, "malloc failed");
-> +
-> +	snprintf(tracing_path, PATH_MAX, "%s/tracing", debugfs_path);
-
-This can be SAFE_ASPRINTF() as well.
-
-
-> +	/* Check if tracing is supported */
-> +	if (access(tracing_path, F_OK) != 0)
-> +		tst_brk(TCONF, "Tracing is not supported");
-> +
-> +	/* Save current settings */
-> +	ftrace_save_settings();
-> +}
-> +
-> +void ftrace_cleanup(void)
-> +{
-> +	ftrace_restore_settings();
-> +
-> +	if (debugfs_mounted_by_us && debugfs_path) {
-> +		tst_umount(debugfs_path);
-> +		rmdir(debugfs_path);
-> +	}
-> +
-> +	free(tracing_path);
-> +	free(debugfs_path);
-> +
-> +	/* Free saved state */
-> +	free(saved_state.trace_options);
-> +	free(saved_state.tracing_on);
-> +	free(saved_state.buffer_size);
-> +	free(saved_state.tracing_cpumask);
-> +	free(saved_state.tracing_enabled);
-> +	free(saved_state.stack_tracer_enabled);
-> +	free(saved_state.ftrace_enabled);
-> +	free(saved_state.function_profile_enabled);
-> +}
-> +
-> +char *ftrace_get_path(const char *filename)
-> +{
-> +	char *path;
-> +
-> +	path = malloc(PATH_MAX);
-> +	if (!path)
-> +		return NULL;
-> +
-> +	snprintf(path, PATH_MAX, "%s/%s", tracing_path, filename);
-
-SAFE_ASPRINTF() here as well.
-
-> +	return path;
-> +}
-> +
-> +char *ftrace_read_file(const char *filename)
-> +{
-> +	char *path;
-> +	FILE *fp;
-> +	char *content = NULL;
-> +	size_t len = 0;
-> +	ssize_t read;
-> +	char *line = NULL;
-> +	size_t total_size = 0;
-> +
-> +	path = ftrace_get_path(filename);
-> +	if (!path)
-> +		return NULL;
-> +
-> +	fp = fopen(path, "r");
-> +	free(path);
-> +
-> +	if (!fp)
-> +		return NULL;
-> +
-> +	/* Read entire file */
-> +	while ((read = getline(&line, &len, fp)) != -1) {
-> +		char *new_content = realloc(content, total_size + read + 1);
-> +		if (!new_content) {
-> +			free(content);
-> +			free(line);
-> +			fclose(fp);
-> +			return NULL;
-> +		}
-> +		content = new_content;
-> +		memcpy(content + total_size, line, read);
-> +		total_size += read;
-> +	}
-> +
-> +	if (content)
-> +		content[total_size] = '\0';
-> +
-> +	free(line);
-> +	fclose(fp);
-> +
-> +	return content;
-> +}
-> +
-> +int ftrace_write_file(const char *filename, const char *content)
-> +{
-> +	char *path;
-> +	FILE *fp;
-> +	int ret;
-> +
-> +	path = ftrace_get_path(filename);
-> +	if (!path)
-> +		return -1;
-> +
-> +	fp = fopen(path, "w");
-> +	free(path);
-> +
-> +	if (!fp)
-> +		return -1;
-> +
-> +	ret = fprintf(fp, "%s", content);
-> +	fclose(fp);
-
-This could be replaced by single SAFE_FILE_PRINTF()
-
-> +	return (ret > 0) ? 0 : -1;
-> +}
-> +
-> +int ftrace_file_exists(const char *filename)
-> +{
-> +	char *path;
-> +	int ret;
-> +
-> +	path = ftrace_get_path(filename);
-> +	if (!path)
-> +		return 0;
-> +
-> +	ret = (access(path, F_OK) == 0);
-> +	free(path);
-> +
-> +	return ret;
-> +}
-> +
-> +void ftrace_save_settings(void)
-> +{
-> +	if (saved_state.saved)
+> +		tst_res(TFAIL, "setxattr on directory failed");
 > +		return;
-> +
-> +	saved_state.trace_options = ftrace_read_file("trace_options");
-> +	saved_state.tracing_on = ftrace_read_file("tracing_on");
-> +	saved_state.buffer_size = ftrace_read_file("buffer_size_kb");
-> +
-> +	if (ftrace_file_exists("tracing_cpumask"))
-> +		saved_state.tracing_cpumask = ftrace_read_file("tracing_cpumask");
-> +
-> +	if (ftrace_file_exists("tracing_enabled"))
-> +		saved_state.tracing_enabled = ftrace_read_file("tracing_enabled");
-> +
-> +	if (ftrace_file_exists("stack_max_size")) {
-> +		char *path = strdup("/proc/sys/kernel/stack_tracer_enabled");
-> +		FILE *fp = fopen(path, "r");
-> +
-> +		if (fp) {
-> +			saved_state.stack_tracer_enabled = malloc(32);
-> +			if (saved_state.stack_tracer_enabled)
-> +				fgets(saved_state.stack_tracer_enabled, 32, fp);
-> +			fclose(fp);
-> +		}
-> +		free(path);
 > +	}
-> +
-> +	if (access("/proc/sys/kernel/ftrace_enabled", F_OK) == 0) {
-> +		FILE *fp = fopen("/proc/sys/kernel/ftrace_enabled", "r");
-> +
-> +		if (fp) {
-> +			saved_state.ftrace_enabled = malloc(32);
-> +			if (saved_state.ftrace_enabled)
-> +				fgets(saved_state.ftrace_enabled, 32, fp);
-> +			fclose(fp);
-> +		}
-> +	}
-> +
-> +	if (ftrace_file_exists("function_profile_enabled"))
-> +		saved_state.function_profile_enabled = ftrace_read_file("function_profile_enabled");
-> +
-> +	saved_state.saved = 1;
-> +}
-> +
-> +void ftrace_restore_settings(void)
-> +{
-> +	if (!saved_state.saved)
-> +		return;
-> +
-> +	/* Reset tracer and events */
-> +	ftrace_write_file("current_tracer", "nop\n");
-> +	ftrace_write_file("events/enable", "0\n");
-> +
-> +	if (ftrace_file_exists("tracing_max_latency"))
-> +		ftrace_write_file("tracing_max_latency", "0\n");
-> +
-> +	if (saved_state.tracing_cpumask)
-> +		ftrace_write_file("tracing_cpumask", saved_state.tracing_cpumask);
-> +
-> +	if (ftrace_file_exists("trace_clock"))
-> +		ftrace_write_file("trace_clock", "local\n");
-> +
-> +	if (saved_state.function_profile_enabled)
-> +		ftrace_write_file("function_profile_enabled", saved_state.function_profile_enabled);
-> +
-> +	if (saved_state.ftrace_enabled) {
-> +		FILE *fp = fopen("/proc/sys/kernel/ftrace_enabled", "w");
-> +		if (fp) {
-> +			fprintf(fp, "%s", saved_state.ftrace_enabled);
-> +			fclose(fp);
-> +		}
-> +	}
-> +
-> +	if (saved_state.stack_tracer_enabled && ftrace_file_exists("stack_max_size")) {
-> +		FILE *fp = fopen("/proc/sys/kernel/stack_tracer_enabled", "w");
-> +		if (fp) {
-> +			fprintf(fp, "%s", saved_state.stack_tracer_enabled);
-> +			fclose(fp);
-> +		}
-> +		ftrace_write_file("stack_max_size", "0\n");
-> +	}
-> +
-> +	if (saved_state.buffer_size)
-> +		ftrace_write_file("buffer_size_kb", saved_state.buffer_size);
-> +
-> +	if (saved_state.tracing_on)
-> +		ftrace_write_file("tracing_on", saved_state.tracing_on);
-> +
-> +	if (saved_state.tracing_enabled)
-> +		ftrace_write_file("tracing_enabled", saved_state.tracing_enabled);
-> +
-> +	/* Restore trace options */
-> +	if (saved_state.trace_options) {
-> +		char *options = strdup(saved_state.trace_options);
-> +		char *token = strtok(options, "\n");
-> +		while (token) {
-> +			ftrace_write_file("trace_options", token);
-> +			token = strtok(NULL, "\n");
-> +		}
-> +		free(options);
-> +	}
-> +
-> +	/* Clear trace */
-> +	ftrace_clear_trace();
-> +
-> +	/* Clear filter */
-> +	if (ftrace_file_exists("set_ftrace_filter"))
-> +		ftrace_write_file("set_ftrace_filter", "\n");
-> +}
-> +
-> +char **ftrace_get_available_tracers(int *count)
-> +{
-> +	char *content;
-> +	char **tracers = NULL;
-> +	int n = 0;
-> +	char *token;
-> +	char *saveptr;
-> +
-> +	content = ftrace_read_file("available_tracers");
-> +	if (!content) {
-> +		*count = 0;
-> +		return NULL;
-> +	}
-> +
-> +	/* Count tracers */
-> +	char *tmp = strdup(content);
-> +	token = strtok_r(tmp, " \n", &saveptr);
-> +	while (token) {
-> +		n++;
-> +		token = strtok_r(NULL, " \n", &saveptr);
-> +	}
-> +	free(tmp);
-> +
-> +	/* Allocate array */
-> +	tracers = malloc(sizeof(char *) * n);
-> +	if (!tracers) {
-> +		free(content);
-> +		*count = 0;
-> +		return NULL;
-> +	}
-> +
-> +	/* Fill array */
-> +	n = 0;
-> +	token = strtok_r(content, " \n", &saveptr);
-> +	while (token) {
-> +		tracers[n++] = strdup(token);
-> +		token = strtok_r(NULL, " \n", &saveptr);
-> +	}
-> +
-> +	free(content);
-> +	*count = n;
-> +	return tracers;
 
-This would be much easier if you just read the file line by line
+TST_EXP_PASS_SILENT already reports TFAIL on failure. Then the code
+reports TFAIL again (or TCONF for EOPNOTSUPP), resulting in
+double-reporting. For the EOPNOTSUPP case the output will contain a
+contradictory TFAIL followed by TCONF.
 
-	f = SAFE_FOPEN(...)
+Since custom failure handling is needed here (EOPNOTSUPP -> TCONF),
+TEST() should be used instead:
 
-	while (fgets(line, sizeof(line), f) {
-		...
-	}
+  TEST(setxattr(TESTDIR, XATTR_TEST_DIR_NAME,
+                XATTR_TEST_DIR_VALUE, XATTR_TEST_DIR_SIZE, 0));
+  if (TST_RET == -1) {
+      if (TST_ERR == EOPNOTSUPP) {
+          tst_res(TCONF, "Extended attributes not supported");
+          return;
+      }
+      tst_res(TFAIL | TTERRNO, "setxattr on directory failed");
+      return;
+  }
 
-	SAFE_FCLOSE(f);
+The same pattern appears for the second setxattr call in test_xattr()
+and the first setxattr call in test_xattr_backup_restore().
 
-> +}
-> +
-> +int ftrace_set_tracer(const char *tracer)
-> +{
-> +	char buf[256];
-> +	snprintf(buf, sizeof(buf), "%s\n", tracer);
-> +	return ftrace_write_file("current_tracer", buf);
-> +}
-> +
-> +void ftrace_clear_trace(void)
-> +{
-> +	ftrace_write_file("trace", "\n");
-> +}
-> +
-> +void ftrace_enable_tracing(void)
-> +{
-> +	ftrace_write_file("tracing_on", "1\n");
-> +}
-> +
-> +void ftrace_disable_tracing(void)
-> +{
-> +	ftrace_write_file("tracing_on", "0\n");
-> +}
+> +	.forks_child = 1,
 
-Generally it would make sense to keep the paths to these files in a
-global variables, set then only once in the init and then we could just
-do:
+Same as patch 6/8: xattr_test01 never forks a child process.
+Should .forks_child be dropped?
 
-void ftrace_set_tracer(const char *tracer)
-{
-	SAFE_FILE_PRINTF(path_ftrace_tracer, "%s", tracer);
-}
+--- Applies to patches 2/8 through 7/8 ---
 
-> diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_lib.h b/testcases/kernel/tracing/ftrace_test/ftrace_lib.h
-> new file mode 100644
-> index 000000000..b40877ed1
-> --- /dev/null
-> +++ b/testcases/kernel/tracing/ftrace_test/ftrace_lib.h
-> @@ -0,0 +1,139 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Copyright (c) 2010 FUJITSU LIMITED
-> + * Copyright (c) 2024 Linux Test Project
-> + * Copyright (c) IBM, 2026
+> + * [Algorithm]
 > + *
-> + * Author: Li Zefan <lizf@cn.fujitsu.com>
-> + * Converted to C by: Praveen K Pandey <praveen@linux.ibm.com>
-> + */
-> +
-> +#ifndef FTRACE_LIB_H
-> +#define FTRACE_LIB_H
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
-> +#include <sys/mount.h>
-> +#include <sys/stat.h>
-> +#include <sys/types.h>
-> +#include <errno.h>
-> +#include <limits.h>
-> +
-> +/* Global paths */
-> +extern char *tracing_path;
-> +extern char *debugfs_path;
-> +
-> +/* Saved settings for cleanup */
-> +struct ftrace_saved_state {
-> +	char *trace_options;
-> +	char *tracing_on;
-> +	char *buffer_size;
-> +	char *tracing_cpumask;
-> +	char *tracing_enabled;
-> +	char *stack_tracer_enabled;
-> +	char *ftrace_enabled;
-> +	char *function_profile_enabled;
-> +	int saved;
-> +};
-> +
-> +extern struct ftrace_saved_state saved_state;
-> +
+> + * 1. Set up ACL with full permissions for the entry
 
-Why is this leaking into the tests? None of these low level details
-should be exposed since you are building a library for the tests to use.
+The [Algorithm] section must use a bulleted list with "-" markers,
+not numbered lists. This applies to all six tests that have an
+[Algorithm] block (acl_mask01, acl_other01, acl_inherit01,
+acl_file_ops01, acl_link01, xattr_test01).
 
-> +/**
-> + * ftrace_initialize() - Initialize ftrace test environment
-> + *
-> + * This function:
-> + * - Checks if debugfs is mounted, mounts it if needed
-> + * - Verifies tracing support
-> + * - Saves current ftrace settings
+Verdict: Needs revision
 
-We use kernel doc comments that are parsed and exported into
-documentation.
+---
+Note:
 
-https://docs.kernel.org/doc-guide/kernel-doc.html
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-> + */
-> +void ftrace_initialize(void);
-> +
-> +/**
-> + * ftrace_cleanup() - Cleanup and restore ftrace settings
-> + *
-> + * Restores all saved ftrace settings and unmounts debugfs if needed
-> + */
-> +void ftrace_cleanup(void);
-> +
-> +/**
-> + * ftrace_save_settings() - Save current ftrace settings
-> + *
-> + * Saves all ftrace configuration to restore later
-> + */
-> +void ftrace_save_settings(void);
-> +
-> +/**
-> + * ftrace_restore_settings() - Restore saved ftrace settings
-> + *
-> + * Restores ftrace configuration saved by ftrace_save_settings()
-> + */
-> +void ftrace_restore_settings(void);
-> +
-> +/**
-> + * ftrace_get_path() - Get full path to a tracing file
-> + * @filename: Name of the file in tracing directory
-> + *
-> + * Returns: Allocated string with full path (caller must free)
-> + */
-> +char *ftrace_get_path(const char *filename);
-> +
-> +/**
-> + * ftrace_read_file() - Read content from a tracing file
-> + * @filename: Name of the file in tracing directory
-> + *
-> + * Returns: Allocated string with file content (caller must free)
-> + */
-> +char *ftrace_read_file(const char *filename);
-> +
-> +/**
-> + * ftrace_write_file() - Write content to a tracing file
-> + * @filename: Name of the file in tracing directory
-> + * @content: Content to write
-> + *
-> + * Returns: 0 on success, -1 on failure
-> + */
-> +int ftrace_write_file(const char *filename, const char *content);
-> +
-> +/**
-> + * ftrace_file_exists() - Check if a tracing file exists
-> + * @filename: Name of the file in tracing directory
-> + *
-> + * Returns: 1 if exists, 0 otherwise
-> + */
-> +int ftrace_file_exists(const char *filename);
-> +
-> +/**
-> + * ftrace_get_available_tracers() - Get list of available tracers
-> + * @count: Pointer to store number of tracers
-> + *
-> + * Returns: Array of tracer names (caller must free)
-> + */
-> +char **ftrace_get_available_tracers(int *count);
-> +
-> +/**
-> + * ftrace_set_tracer() - Set current tracer
-> + * @tracer: Name of the tracer to set
-> + *
-> + * Returns: 0 on success, -1 on failure
-> + */
-> +int ftrace_set_tracer(const char *tracer);
-> +
-> +/**
-> + * ftrace_clear_trace() - Clear the trace buffer
-> + */
-> +void ftrace_clear_trace(void);
-> +
-> +/**
-> + * ftrace_enable_tracing() - Enable tracing
-> + */
-> +void ftrace_enable_tracing(void);
-> +
-> +/**
-> + * ftrace_disable_tracing() - Disable tracing
-> + */
-> +void ftrace_disable_tracing(void);
-> +
-> +#endif /* FTRACE_LIB_H */
-> -- 
-> 2.50.1
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
