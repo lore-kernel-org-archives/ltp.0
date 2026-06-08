@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 683B7CD8C92
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 14:38:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E02A0CD8CA4
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 14:39:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ED83D3E6F9C
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 16:38:16 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 8C55D3E6F93
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 16:39:50 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4E8753E6FE3
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 16:37:15 +0200 (CEST)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
+ by picard.linux.it (Postfix) with ESMTPS id 53EAD3C1ADA
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 16:39:34 +0200 (CEST)
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com
+ [IPv6:2607:f8b0:4864:20::843])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B1F43601FF5
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 16:37:14 +0200 (CEST)
-Received: by mail-wr1-x431.google.com with SMTP id
- ffacd0b85a97d-45eeba68948so3120528f8f.1
- for <ltp@lists.linux.it>; Mon, 08 Jun 2026 07:37:14 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A9DFA60078F
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 16:39:33 +0200 (CEST)
+Received: by mail-qt1-x843.google.com with SMTP id
+ d75a77b69052e-517583cb07aso48884311cf.2
+ for <ltp@lists.linux.it>; Mon, 08 Jun 2026 07:39:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780929434; x=1781534234; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1780929572; x=1781534372; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=VpyMLKcXcUq75ksR1Gt4AdgQ+WsIolO10mFLTjIb0DM=;
- b=HkFGT3b2Jy21HMsGRDM17gZBhNW9EHJv9/G5mmfZS3a2OQA0RaYsrffrRvwt9ss5/L
- /xl37EmYuXMQ7YaJCnNuqIzOWlDNJibkL69f5WlO30+uIEiqnEEzbMUM36Ss4hFD5nxZ
- 03tjKpDu3hQP7OwEspdOYcVJoOXm/OJ8pqCewcpAnCnP2hCauNyGaa5/4NrFCxyViCpN
- zd4scuLuDisflR+4gf57EwTuMr6PTZMuBfjsUM8Xzj30/NUNAfk6b2Q/qc851btryLwO
- ISdDFCFpySSAnk8xNvjXS0VpQ0OuVVU4V15RAq850aFVSaL4bvpFakVCMW6uSwLoQVPd
- MBFg==
+ bh=hnhvCPovNraZkZKAJZyDlyyGyJaNDYi4gWKHB+MjJE0=;
+ b=TeTvNgKnaQO+MK2raDvV39YNrg+NkJF8Gjl6aFIzTAdA81Uu0bIIbJtW5OY/Vust3O
+ nKs0kf3wT9p9zN6VDfrj5o6p5GMQ8yW8SCANDmpwuD/eCslgYtDhJHZgD/T7g3FCAvch
+ GJnzsXgmVF570MIZueIRyTTTjqHeLBjRa2/pFOaMAZN6UTD/thn7DXiOZb4tlAmjqieq
+ ma5ll9VMlSST4apOnBOIuuhhlxJHC9qu1uPuuMUt2TLhiFcHmW+hHO5bT0qaBV/aueYI
+ CLqbFGt60QJY+4EtcRz0vNSJqadOuAOn+qaD+Q5GoKeYZx/ro1Hd0+iIxbRAimuGqOcn
+ r0yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780929434; x=1781534234;
+ d=1e100.net; s=20251104; t=1780929572; x=1781534372;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=VpyMLKcXcUq75ksR1Gt4AdgQ+WsIolO10mFLTjIb0DM=;
- b=DJtaleZXxtRhvILmH2ccfr7OksiN9yw+jk7FavZjgTzhBdjKfvEJNg0s8W872Wr746
- 8Y3f94Zs55rd7Y+dTzQbCPdcjjXlXXdZNesZ4mDxQG1qQx/jm4ltxCeCMDotVewTZRfv
- ClzeWb2jekaePFkBEcPUz1R/2jg8jgOMpO12MZFUWR28nbDzRum0s10fI9NldB5pQjYP
- RpFTUhMCLm5nZ0IdZdfyMunXZQkyk25bG904RanFlofM50EtKvaqAMweTbOjhyFKUuHA
- GYguHTyaJUM0IBzVI/7r7pgaVVZWPRMNrZ/QklAEVDdsKmAHm7nw7qLD4jG40hp7wYOb
- jUEQ==
-X-Gm-Message-State: AOJu0YwSlbc3rox2ZC/liJsSadNzmagmGYeXoQhavA1sLjV7HWrunxsg
- azvjsd0TjD0BZRMtDyvV9MBoshCjOAIb6ILIdNi+JVWBSoBubwPHEormep9qDA==
-X-Gm-Gg: Acq92OEsVRBhkzI3C8xoCvcAGMbG317SfmizJmtx3tUDQTXGvAhVxyKnX2sLLOz9sje
- N68LMfNUKFDWNB6zvGIs09kY/teO1PMSTGWenMIYFj0el4tb6U8bOgnp09TIQLHukq7g54q3Ev8
- Ek/egeKlvM8Hj0eSZPdB9AMpHgwNThHUqzK85TFQQtsvn9J05Kf8TnwXrJ2Ec9BK1O+J6NrG6hZ
- T//qj7SNtp3nDkXD3woNrmiKaoL7L0M6Jd+13qlCtUR7UWHo8Ynl0g3cd1h2ENSS13vlqYt1woE
- oIttLzN6YK1RGC8Wq1cPSFnIlBhkMIjQVU2FUDPNQsfFHl+wY20ROb0/foQDlEQgPPv67w3j/wl
- CSF8OdmYyCcmIwRccMgiuswMVU6MPXBwEOGBnpXGCK0Ko0pjEXJ/8SqangWTUcpEJXGQAOmANKj
- 77Ca23ifEs1tWJi8wnIQEeDvPmYc0CYqM5phRL61r6Cq/CvhMH7OUiTwawF+klRO8b8cu2C+8bP
- nGTsD20
-X-Received: by 2002:a05:6000:25c4:b0:43d:7c6c:a0dd with SMTP id
- ffacd0b85a97d-460306226c3mr27391315f8f.35.1780929434019; 
- Mon, 08 Jun 2026 07:37:14 -0700 (PDT)
-Received: from localhost.suse.org ([37.109.163.161])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4601f34413csm52180854f8f.21.2026.06.08.07.37.13
+ bh=hnhvCPovNraZkZKAJZyDlyyGyJaNDYi4gWKHB+MjJE0=;
+ b=DhcOFuRKfdAYGebHffOe80vySfa8GuVpjKLHnVJXBuwrUcssjxD6O8K3lrjK7jKXEI
+ VADvEhbSLLjnMW3xf6wXjBRhNdt5bzU/uZSUSKUpfQk6dFQ9uKTq5ThV0IwVK+ahmLza
+ Zc2Z2uW1KwQT/Zpj6tfittXRVKag9DbfkXdLZFj2mj3mLbK0PwLuhvBZB1jKj/yIiBB8
+ cnJnKS+6asbJgvxxSuBYamdxXPMdQbxPBdO16iuTYvqeR3qN4SlRkZ3ev2CXY6mCh4b7
+ svt8i4aNUAbSWo4b7Dwhf6PcVPMWZumcST7eKVIBPkjxtMa00XeLU3OAZ1fr/Na7MOAx
+ logg==
+X-Gm-Message-State: AOJu0Yzyh4BqFDvpO7g4mIQ8YSNkBfycS7eDEzJk/SsBWq731lFaeJqF
+ esTDPMWiCHH1DjhFbwvzqnyu8YfSA+3WHuqc4uTiPqOe7dy2uK615laU
+X-Gm-Gg: Acq92OFx3n87Q1MXOvsFcSH/+ZSCBcFB2s1/pa8q4vke8i6BdyBycsFpXcw9JuTJVCh
+ ik1cTQnmruZO4EFLMmP3r9BYboQ8KugX/UbH/NGZiZscFW6KutUlmN9Z/lyO28M46gFEaQRK1A4
+ +O37LBxthE/o88BDwOF6nDAUWI9SiL37rDgrJyUFWFKO039XX9hl6J4FOPLAV81JA64KtOV4bTn
+ C+shFQqbSVXolzhxjaMriAQd99yWj9xPVtLvdtuTYoe49RGlw3s74V3d4lcB24mzjqtX9U4l9z9
+ dqmrC1uRmgP/N8wgjMqYXDh4tQyZ2+8SEHWI8KkVEHghzp433f0PhZ9ygVnF1M3xh0m+mRPJVFh
+ wtw5tENzdWHHD5StxNWSeRjrNECSp2/Mcw9vgvTAfEzAK2Bu2U5PjILX4TxBhy0oEj4APV2sTZP
+ TDKXVA2HxV22N5Nn1Xk3Rt3qvD/qZAygFSEsAoulZo7vqSjKN5fLCcwQk+H6p/EGkR0CVmTjpNC
+ gnYg6HeKpeDqqWzT2NXFOFrxwUN5wzutJxxgkAOcJZfyKn4
+X-Received: by 2002:a05:622a:17cc:b0:517:5e32:f3bf with SMTP id
+ d75a77b69052e-51795b9e179mr231600361cf.20.1780929572285; 
+ Mon, 08 Jun 2026 07:39:32 -0700 (PDT)
+Received: from
+ runnervm3jyl0.t44aakfgbf0ebggs33ekaeudia.bx.internal.cloudapp.net
+ ([20.55.86.182]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-51775dd2e53sm154156281cf.24.2026.06.08.07.39.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 08 Jun 2026 07:37:13 -0700 (PDT)
-From: Sebastian Chlad <sebastianchlad@gmail.com>
-X-Google-Original-From: Sebastian Chlad <sebastian.chlad@suse.com>
-To: ltp@lists.linux.it
-Date: Mon,  8 Jun 2026 16:36:52 +0200
-Message-ID: <20260608143652.6356-4-sebastian.chlad@suse.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260608143652.6356-1-sebastian.chlad@suse.com>
-References: <20260608143652.6356-1-sebastian.chlad@suse.com>
+ Mon, 08 Jun 2026 07:39:31 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Praveen K Pandey <praveen@linux.ibm.com>
+Date: Mon,  8 Jun 2026 14:39:30 +0000
+Message-ID: <20260608143930.4256-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260608132526.42325-2-praveen@linux.ibm.com>
+References: <20260608132526.42325-2-praveen@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] io_uring03: Update to use new io_uring_common.h
- helpers
+Subject: Re: [LTP] ftrace: Add common library for C implementation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,145 +90,141 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Sebastian Chlad <sebastian.chlad@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Sebastian Chlad <sebastian.chlad@suse.com>
+Hi Praveen,
+
+On Mon, 8 Jun 2026 18:55:22 +0530, Praveen K Pandey wrote:
+> ftrace: Add common library for C implementation
+
+--- [PATCH 1/5] ---
+
+> +// Made with Bob
+
+What is this? This is a C++ style comment (kernel style requires
+/* ... */) and seems like a leftover that should be removed.
+
+> +int ftrace_set_tracer(const char *tracer)
+> +{
+> +	char *path;
+> +	int ret;
+
+`ret` is declared but never used in this function since
+SAFE_FILE_PRINTF() is used for the write. Should be removed.
+
+> +	if (saved_state.trace_options) {
+> +		char *options = strdup(saved_state.trace_options);
+> +		char *token = strtok(options, "\n");
+
+If strdup() returns NULL (OOM), passing NULL as the first argument
+to strtok() on the first call is undefined behavior. The other
+strdup() call in ftrace_initialize() checks for NULL, so this one
+should too.
+
+--- [PATCH 2/5] ---
+
+> ftrace: Convert ftrace_regression01.sh to C
+>
+> Convert ftrace_regression01.sh to C using the new LTP test API.
+> This test validates basic ftrace functionality by testing all
+> available tracers.
+
+The commit body does not match the test. The code (and the doc
+block) test for a kernel panic triggered by userstacktrace with
+page fault events, not "basic ftrace functionality by testing all
+available tracers."
+
+> - Sets .min_kver = "2.6.29" for kernel version requirement
+
+The code does not set .min_kver at all. The commit body should
+match the actual struct tst_test definition.
+
+--- [PATCH 3/5] ---
+
+> ftrace: Convert ftrace_regression02.sh to C
+>
+> - Sets .min_kver = "2.6.29" for kernel version requirement
+
+The code sets .min_kver = "3.2", not "2.6.29".
+
+--- [PATCH 4/5] ---
+
+> +static volatile int stop_testing = 0;
+
+> +static void stop_stress_tests(void)
+> +{
+> +	int i;
+> +
+> +	stop_testing = 1;
+> +
+> +	for (i = 0; i < thread_count; i++) {
+> +		pthread_join(threads[i], NULL);
+> +	}
+
+> +static void run_test(void)
+> +{
+> +	...
+> +	stop_stress_tests();
+
+> +static void cleanup(void)
+> +{
+> +	if (thread_count > 0) {
+> +		stop_testing = 1;
+> +		stop_stress_tests();
+> +	}
+
+On the normal path, run_test() calls stop_stress_tests() which
+joins all threads, then cleanup() is called and
+stop_stress_tests() runs again. Calling pthread_join() on
+already-joined threads is undefined behavior.
+
+One fix: reset thread_count to 0 at the end of
+stop_stress_tests().
+
+Also, stop_testing is never reset to 0 between iterations, so
+running with -i N would cause iterations 2+ to spawn threads
+that exit immediately (all threads check
+`while (!stop_testing)`). Both stop_testing and thread_count
+should be re-initialized in run_test() or setup().
+
+--- [PATCH 5/5] ---
+
+> diff --git a/testcases/kernel/tracing/ftrace_test/Makefile
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +
+> +# C test binaries with shared library dependencies
+> +ftrace_regression01:	ftrace_lib.o
+> +ftrace_regression02:	ftrace_lib.o
+> +ftrace_stress_test:	ftrace_lib.o
+
+The Makefile changes (FILTER_OUT_MAKE_TARGETS, library
+dependencies, -lpthread) are deferred to patch 5, but the C
+source files are added in patches 1-4. This means the build
+breaks at every intermediate commit: patch 1 adds ftrace_lib.c
+(which defines TST_NO_DEFAULT_MAIN and has no main()), but the
+old Makefile's auto-detection tries to build it as a standalone
+binary and the link fails. Patches 2-4 likewise cannot link
+without the ftrace_lib.o dependency.
+
+Each patch in the series must compile on its own. The Makefile
+changes should be moved earlier, or folded into the respective
+patches that add the C files.
+
+Verdict: Needs revision
+
 ---
- .../kernel/syscalls/io_uring/io_uring03.c     | 77 +++++++++++++++----
- 1 file changed, 60 insertions(+), 17 deletions(-)
+Note:
 
-diff --git a/testcases/kernel/syscalls/io_uring/io_uring03.c b/testcases/kernel/syscalls/io_uring/io_uring03.c
-index 645c96b02..2d1672c6d 100644
---- a/testcases/kernel/syscalls/io_uring/io_uring03.c
-+++ b/testcases/kernel/syscalls/io_uring/io_uring03.c
-@@ -2,6 +2,9 @@
- /*
-  * Copyright (C) 2026 IBM
-  * Author: Sachin Sant <sachinp@linux.ibm.com>
-+ *
-+ * Copyright (C) 2026 Sebastian Chlad <sebastian.chlad@suse.com>
-+ *
-  */
- /*
-  * Test IORING_OP_READ and IORING_OP_WRITE operations.
-@@ -53,53 +56,93 @@ static void verify_data_integrity(const char *test_name)
- 
- static void test_write_read(void)
- {
-+	struct io_uring_sqe *sqe;
-+	struct io_uring_cqe *cqe;
- 	int fd;
- 
- 	init_buffer('A');
--
- 	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT | O_TRUNC, 0644);
- 
- 	tst_res(TINFO, "Testing IORING_OP_WRITE");
--	io_uring_do_io_op(&s, fd, IORING_OP_WRITE, write_buf, BLOCK_SZ, 0,
--			  &sig);
-+	sqe = io_uring_get_sqe(&s);
-+	io_uring_prep_write(sqe, fd, write_buf, BLOCK_SZ, 0);
-+	io_uring_sqe_set_data64(sqe, 1);
-+	io_uring_submit(&s);
-+
-+	cqe = io_uring_wait_cqe(&s, &sig);
-+	if (cqe->res != BLOCK_SZ)
-+		tst_brk(TBROK, "IORING_OP_WRITE failed: res=%d", cqe->res);
-+	tst_res(TPASS, "IORING_OP_WRITE: %d bytes written", cqe->res);
-+	io_uring_cqe_seen(&s);
- 
- 	SAFE_FSYNC(fd);
- 
- 	tst_res(TINFO, "Testing IORING_OP_READ");
- 	memset(read_buf, 0, BLOCK_SZ);
--	io_uring_do_io_op(&s, fd, IORING_OP_READ, read_buf, BLOCK_SZ, 0,
--			  &sig);
-+	sqe = io_uring_get_sqe(&s);
-+	io_uring_prep_read(sqe, fd, read_buf, BLOCK_SZ, 0);
-+	io_uring_sqe_set_data64(sqe, 2);
-+	io_uring_submit(&s);
- 
--	verify_data_integrity("Basic I/O");
-+	cqe = io_uring_wait_cqe(&s, &sig);
-+	if (cqe->res != BLOCK_SZ)
-+		tst_brk(TBROK, "IORING_OP_READ failed: res=%d", cqe->res);
-+	tst_res(TPASS, "IORING_OP_READ: %d bytes read", cqe->res);
-+	io_uring_cqe_seen(&s);
- 
-+	verify_data_integrity("Basic I/O");
- 	SAFE_CLOSE(fd);
- }
- 
- static void test_partial_io(void)
- {
--	int fd;
-+	struct io_uring_sqe *sqe;
-+	struct io_uring_cqe *cqe;
- 	size_t half = BLOCK_SZ / 2;
-+	int fd;
- 
- 	tst_res(TINFO, "Testing partial I/O operations");
--
- 	init_buffer('a');
--
- 	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT | O_TRUNC, 0644);
- 
--	io_uring_do_io_op(&s, fd, IORING_OP_WRITE, write_buf, half, 0,
--			  &sig);
--
--	io_uring_do_io_op(&s, fd, IORING_OP_WRITE, write_buf + half, half,
--			  half, &sig);
-+	sqe = io_uring_get_sqe(&s);
-+	io_uring_prep_write(sqe, fd, write_buf, half, 0);
-+	io_uring_sqe_set_data64(sqe, 1);
-+	io_uring_submit(&s);
-+
-+	cqe = io_uring_wait_cqe(&s, &sig);
-+	if (cqe->res != (int)half)
-+		tst_brk(TBROK, "IORING_OP_WRITE failed: res=%d", cqe->res);
-+	tst_res(TPASS, "IORING_OP_WRITE: %d bytes written at offset 0", cqe->res);
-+	io_uring_cqe_seen(&s);
-+
-+	sqe = io_uring_get_sqe(&s);
-+	io_uring_prep_write(sqe, fd, write_buf + half, half, half);
-+	io_uring_sqe_set_data64(sqe, 2);
-+	io_uring_submit(&s);
-+
-+	cqe = io_uring_wait_cqe(&s, &sig);
-+	if (cqe->res != (int)half)
-+		tst_brk(TBROK, "IORING_OP_WRITE failed: res=%d", cqe->res);
-+	tst_res(TPASS, "IORING_OP_WRITE: %d bytes written at offset %zu",
-+		cqe->res, half);
-+	io_uring_cqe_seen(&s);
- 
- 	SAFE_FSYNC(fd);
- 
- 	memset(read_buf, 0, BLOCK_SZ);
--	io_uring_do_io_op(&s, fd, IORING_OP_READ, read_buf, BLOCK_SZ, 0,
--			  &sig);
-+	sqe = io_uring_get_sqe(&s);
-+	io_uring_prep_read(sqe, fd, read_buf, BLOCK_SZ, 0);
-+	io_uring_sqe_set_data64(sqe, 3);
-+	io_uring_submit(&s);
- 
--	verify_data_integrity("Partial I/O");
-+	cqe = io_uring_wait_cqe(&s, &sig);
-+	if (cqe->res != BLOCK_SZ)
-+		tst_brk(TBROK, "IORING_OP_READ failed: res=%d", cqe->res);
-+	tst_res(TPASS, "IORING_OP_READ: %d bytes read", cqe->res);
-+	io_uring_cqe_seen(&s);
- 
-+	verify_data_integrity("Partial I/O");
- 	SAFE_CLOSE(fd);
- }
- 
--- 
-2.51.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
