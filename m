@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29886CD98CE
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 06:32:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28D90CD98C5
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 06:59:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5ADFB3E49E5
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 08:32:28 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 8D5E23E5A43
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 08:59:25 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E63123E2164
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 08:32:12 +0200 (CEST)
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
- [IPv6:2607:f8b0:4864:20::742])
+ by picard.linux.it (Postfix) with ESMTPS id 1DF0D3E2744
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 19:13:04 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9B0E61A003E7
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 08:32:11 +0200 (CEST)
-Received: by mail-qk1-x742.google.com with SMTP id
- af79cd13be357-91ae31bbaa9so37161585a.1
- for <ltp@lists.linux.it>; Sun, 14 Jun 2026 23:32:11 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B2B3360018E
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 19:13:03 +0200 (CEST)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-490ae94a89eso38831255e9.1
+ for <ltp@lists.linux.it>; Mon, 08 Jun 2026 10:13:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781505130; x=1782109930; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1780938783; x=1781543583; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=G+6Prhx2pSA8+Tu8AaBxZzlG9uLRGvabVIdTFzg7l1c=;
- b=bsgd8HKpRvxP1H+h4/CQ5bW3Q691Sjl+WaZEqfm30PQdGoXGN8hKjM4R0dB6IGEusU
- 7DotMQacQyTVucZKcHlk2ooIugFYDoEmJ14rG97HHz4jfh99yp08vKV53No9NOBdfK1i
- vL0ol/iOkAFLAR+cxXYZWfDlDSyvqCDxYBC4KNxn75IIXBX+riKSxOvqf+uA3q6FvK26
- yjChhbYnv75u9zgb2Anv3pkjKd/bfmliQm9n9J2fk6E9PI4/AdDbB8QJUhGYWQVLv9g1
- irmPfmh219qSDxtSYsGrkz40fKkg4vDDwWAbVuC1DZVOKyECIKt2gu1LTA23TgUmDZMB
- fuww==
+ bh=AUpt/EToVTToJvd7YASG+3OoKZxNxbXoqptfVbb/HeE=;
+ b=nW6ucuQsloW756Uwio+MEP6hFE+T52E/otTE/fzvHjnBR9RuFfHJFdXK2gmP1Brjjw
+ RG/QFqqDQ563uMiF4a1OPT9bqQ27mZXPENOwEQpVgAGyNvA/5D4Xm+D0tvBJF8gTZT7e
+ np+Ko0fbzPVYq91KTGvL2gq0d9w7evMGQtLvjsrmUGjsko5c6ydVRLb7Hpe8uJLpX8t3
+ XXXkYmwbKEesl7a11RKd6TKoWeL9SYRvzK7ZI5ndUtOwqUkCNAfCwvqTMuI2Vco/y8Cd
+ TVa3qF0yW86X1a0w3GrOLgDi9NVwkQKWX/KWBgRTU+L0ux3dLMiH2OH60GpEyyti/kGZ
+ ZnBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781505130; x=1782109930;
+ d=1e100.net; s=20251104; t=1780938783; x=1781543583;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=G+6Prhx2pSA8+Tu8AaBxZzlG9uLRGvabVIdTFzg7l1c=;
- b=blK3xeuOBxmytj/0q2Ho86D+drR9qDFE4/EfbTRMcQHLOnxg8d845Y7oz9JzSOEW0G
- zw2HxjRTP7R9RvtCJOk2b8AMYxN3l+266BwThZblgFUscMy3qTjii2XWH+AlLTqEXx3N
- Ld6ihYW9HUkI3OkdRF6Zsx4NdNHDVDrXztzpSfNK88Zxe/nmr04AA1tR+IRKJOXwojDm
- dhficopC/ha0QyI1oCO7q6hVC79cTX811J29GtgD278w13PeQ5ay3Y1K4lpClmSHzYPE
- 5CpuBS/N83lFyOpIKfVlAhfRh4H8OHi7MJ3G5iBAaAj7yrHpMGErlHa7vAbWa2KRbCxK
- vHkw==
-X-Gm-Message-State: AOJu0YzWbfvxvdwl0s1GEHUJnnhwMFXcIxO0+ataGkI9g6ZXONaguzn3
- PXHodIHXTydEtHE1PDqVxv/yY21Ug63Iycw0fZc3V8EENnsmFnINJxZd
-X-Gm-Gg: Acq92OEdR6dBrp9Iz6LzvhjaOxAJ3KaJNQLJiebpMmfnDY9G0oy1r/6LKziQKsPRDdB
- +BvDm17y/3qR/klA35FtdpjJ8VO41G3eCmSZi77FdYUqfo1J90WTtqZHpQEWcGjJ/bvjAt+amuQ
- QVJ9ptEA0SGh3lHE4mwJAbzlbgtypzwZvPsXlSHwfv7r+j4uoaH5XZZC/5ee7ZZvnfIui8+GD6y
- H+TAkKzz1vjj7i+3I4OENKfckL1j3Bt1X/JuUdmCz1vt1X2blWHGI1931lRRC/sHbD6mIZeVO1p
- 5O+DNB6uCaL/WeO0V2vzj5CukHNlnRutSx0sLgbjk5FZjKnokFUlKgtiSSr1OnAXdwoorUk+7Wf
- 3wziAeUIBAahGQKMEqJ1po3c9p4f8jwZpE7Yjemg4rvMOkUuE8mhBKPcyJsIaLCH0gw2jfMLGoz
- 8aKtbHQE+McaMoaFWIw0F3bpsXA7iS1e4dQ6Pz+mUYdR/+o6FvRNgSyNUN2A6FKHlmXsaFHOfUC
- P0f8G/9Ws9vee4/Ze00VZFwlROSem3kzYHtuvoh
-X-Received: by 2002:a05:620a:40d5:b0:914:babf:9f45 with SMTP id
- af79cd13be357-9161bccc30cmr1907772085a.26.1781505130250; 
- Sun, 14 Jun 2026 23:32:10 -0700 (PDT)
-Received: from
- runnervm1li68.3o0hpsufxxkehjtylihp12zn3b.ex.internal.cloudapp.net
- ([135.232.225.18]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-91619ed7fdfsm1030628185a.3.2026.06.14.23.32.09
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 14 Jun 2026 23:32:10 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Sachin Sant <sachinp@linux.ibm.com>
-Date: Mon, 15 Jun 2026 06:32:08 +0000
-Message-ID: <20260615063208.4077-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260615052953.18183-2-sachinp@linux.ibm.com>
-References: <20260615052953.18183-2-sachinp@linux.ibm.com>
+ bh=AUpt/EToVTToJvd7YASG+3OoKZxNxbXoqptfVbb/HeE=;
+ b=ank2hXzcE1vcdwZmD6O7jpIEvZcRuSL+Tb69yj0zAKLiCVcHiPNubtCAuBbzLwfvMd
+ z1BHM74rjYqMp5q/wRrlv4vdb/bFIR2fKDsTJ0Z3i+Ql6VI/eLt9CC00J5Y6trARJeoP
+ 71hDbNdwLRSgSa7hlZ/KYFApJiY9SnNDYhjX5J55LWBF54Igp6/Rg923GME/nMnQFuAY
+ 5s9pWOGSQFjz6P2YRoVLIn2za0J9zv+Y7vENBE1IJkU9vGlDPanIFmGUE8cf+rJCkE81
+ SN2KLaiTzUzzZHa/+urB6ViOgFVM0OLC3zH7u6xqJNKUrsJ8tCYg665ho5V0iCiCgTLf
+ c4PQ==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ9zpEQMgpkDVwmPyqIkUoGcX3WnHMRURCu4h8xLh8zgrReOvFCXeW1Hhc4XvBFMxzJoxsk=@lists.linux.it
+X-Gm-Message-State: AOJu0YzHFYv76wNY38cqxl530LhRE3r3+kFbjHrZXzW+T9xZPGgB2tdr
+ LLaRm/9CtUoOoAt5EBUlGINYukndrHpiFSC+rvzxI2k4DQZoRvSd21nz
+X-Gm-Gg: Acq92OHboTXJ2La3srzr9U4rb5ZeIND6rYdQueoar0ozFq2+nP8Ey+tlUkRgRVRztsr
+ SUyhZZGqakZeYxaJvVF2UMlhQzUS016PWWN0DN8Y+d0Enhc3SBGTxplq7O5A1rDxccby0sfjGBc
+ f/+arQ9mFIok7prN0h1STNGVb6rvRZHhdRKvNzuRMXYA2GFV9/yGKAn2lUuWHLZg4Aud089IZCi
+ zn7Hnb5LxlJ3RCeDdCOxjOIE3jNO4LKAnh/mJ4/vCjh+4MjbgNtXedI8JTCOHexuS/IZ43X8QAK
+ wqpzs9mIndwdIsn5JGDoZaeGnurJwUpi8aoIAYfgG6cU9n1kHbmg+MizwZha2Hy3t4Aas1MVsIw
+ XVjTEJDtLVvW5cL1YMdepZ31slpi3Gg7ocn3avdYwzPgefuFrYBMScZkaIkF/VF0M6s3ijJ9U74
+ rPl+aWugPewNHgTamoC5Pm78mDUKyTvzlTo1Ny5Whn
+X-Received: by 2002:a05:600c:458a:b0:490:389:7644 with SMTP id
+ 5b1f17b1804b1-490c25fbd78mr244360025e9.17.1780938782731; 
+ Mon, 08 Jun 2026 10:13:02 -0700 (PDT)
+Received: from localhost ([212.73.77.104]) by smtp.gmail.com with UTF8SMTPSA id
+ ffacd0b85a97d-4601f351ac0sm97432933f8f.27.2026.06.08.10.12.59
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 08 Jun 2026 10:13:02 -0700 (PDT)
+From: Askar Safin <safinaskar@gmail.com>
+To: andrea.cervesato@suse.com
+Date: Mon,  8 Jun 2026 20:12:31 +0300
+Message-ID: <20260608171231.1480447-1-safinaskar@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <6a26aa28.283787d8.1f1282.ba36@mx.google.com>
+References: <6a26aa28.283787d8.1f1282.ba36@mx.google.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] fs/acl: Add ACL_USER_OBJ permission test
+X-Mailman-Approved-At: Mon, 15 Jun 2026 08:59:10 +0200
+Subject: Re: [LTP] [PATCH 0/5] vmsplice: fix some problems in my previous
+ vmsplice patchset
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,81 +91,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: jack@suse.cz, kernel@infinite-source.de, linux-kernel@vger.kernel.org,
+ fuse-devel@lists.linux.dev, linux-mm@kvack.org, collin.funk1@gmail.com,
+ joannelkoong@gmail.com, miklos@szeredi.hu, david.laight.linux@gmail.com,
+ pfalcato@suse.de, willy@infradead.org, hch@infradead.org, metze@samba.org,
+ rostedt@goodmis.org, viro@zeniv.linux.org.uk, david@kernel.org,
+ ltp@lists.linux.it, axboe@kernel.dk, dhowells@redhat.com, brauner@kernel.org,
+ netdev@vger.kernel.org, patches@lists.linux.dev, luto@amacapital.net,
+ safinaskar@gmail.com, linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ akpm@linux-foundation.org, torvalds@linux-foundation.org, w@1wt.eu
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Sachin,
+"Andrea Cervesato" <andrea.cervesato@suse.com>:
+> Hi Askar,
+> 
+> the patch-set doesn't apply:
 
-On Mon, 15 Jun 2026, Sachin Sant wrote:
-> fs/acl: Add ACL_USER_OBJ permission test
+This is patchset for Linux kernel.
+(It is expected it will fix some failing LTP tests, among other things.)
 
---- [PATCH 2/8] ---
-
-> +static void test_acl_user_with_mask(void)
-> ...
-> +static void test_acl_group_with_mask(void)
-> ...
-> +static void test_acl_group_obj_with_mask(void)
-> ...
-> +static void run(unsigned int n)
-> +{
-> +	switch (n) {
-> +	case 0:
-> +		test_acl_user_with_mask();
-> +		break;
-> +	case 1:
-> +		test_acl_group_with_mask();
-> +		break;
-> +	case 2:
-> +		test_acl_group_obj_with_mask();
-> +		break;
-> +	}
-> +}
-
-The three test functions share the same algorithmic structure:
-set up ACL with full permissions for an entry type, verify
-access is granted with mask=rwx, clear the mask, verify
-access is denied. They differ only in the ACL entry type
-(ACL_USER / ACL_GROUP / ACL_GROUP_OBJ) and the UID/GID
-used.
-
-Could these be collapsed into a single parametrized test
-function driven by a struct tcase array? Something along
-the lines of:
-
-  struct tcase {
-      uint16_t tag;
-      uid_t uid;
-      gid_t gid;
-      uid_t owner_uid;
-      gid_t owner_gid;
-      const char *desc;
-  } tcases[] = {
-      {ACL_USER, USER3_UID, USER3_GID,
-       TEST_UID, TEST_GID, "ACL_USER with mask"},
-      {ACL_GROUP, USER2_UID, USER2_GID,
-       TEST_UID, TEST_GID, "ACL_GROUP with mask"},
-      {ACL_GROUP_OBJ, USER2_UID, USER2_GID,
-       TEST_UID, USER2_GID, "ACL_GROUP_OBJ with mask"},
-  };
-
-That would remove roughly 130 lines of duplicated logic and
-make the data-driven pattern explicit.
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+-- 
+Askar Safin
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
