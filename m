@@ -4,84 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05497CD8C92
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 09:15:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BD85CD8C9F
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 09:19:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 07CA43E4E75
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 11:15:06 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 98E123E4E86
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 11:19:15 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A5B613C9A7C
- for <ltp@lists.linux.it>; Sat,  6 Jun 2026 08:13:01 +0200 (CEST)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0A43C3C0039
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 11:18:59 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1F98C6007A4
- for <ltp@lists.linux.it>; Sat,  6 Jun 2026 08:13:01 +0200 (CEST)
-Received: by mail-wm1-x329.google.com with SMTP id
- 5b1f17b1804b1-490a76757e5so17001745e9.2
- for <ltp@lists.linux.it>; Fri, 05 Jun 2026 23:13:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780726380; x=1781331180; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=Y22J8nzR3UW0cMYCUVJWDcFSFo/6kHGVqnn/SzRaSz8=;
- b=g4qiBZ6jnr1oc2OyIZlRUO1tpHqBc9HBfh8JK/6+X3pQ1dQ0SsN7e9xvTaWRvHs60u
- YV9hzG0YGhCQuWC4R+dTRTpd1l0ceOB9u4cu+ym4ueuRwDwl2Tg98zWdzgfrLnekxkIj
- F+Y6vy7lik4vVVpi54gR6RmH8+hq1hHLhg5sM9gH1z9yYibSg0mCWM3vtxNr7bLi/OiX
- yh6TgUMjNq62oyQYe1o6x+ZGouP5zbADF56JtLZVjUQpiTMcOpLcMxjc8N42YYh540Kk
- I2a6hg4ccuNHX0brJsna5PDQjhv94/85+YViIQCkVSdpzrdxkalc1cS6lDOd3n/ESzzU
- xbcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780726380; x=1781331180;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=Y22J8nzR3UW0cMYCUVJWDcFSFo/6kHGVqnn/SzRaSz8=;
- b=hRHeaFzgWkacleMC3+oCg1xJAlujta4/gYws2poBsFRoQoe2z6n4i3C7mdYNQP/Rm7
- AySfU+R7IBIs/MJgUyadzCr2aOJJrGSRDKkG8QfrvlptaV4u+hdUkC82HC8dgHvhajDu
- kn+oBPLn1pRMLs89Y1MtIhtdnI48eXESgchAb/CF+SI05w+4wFB3stzaP+6SyQ2+BgGW
- raYcKZvMQtS2h3bOGpyfPLCGvkoO6LMPjhUnau2PfFuZb5GRllxiOCmqA5hhiRgYh6j+
- s8MDeIFWXjd77rPzXRQkfRPqbrqeEtVNcb1YULj5OM6kXmX7hnJjZ9t3f9tfoiCode8K
- ATqQ==
-X-Forwarded-Encrypted: i=1;
- AFNElJ9LPc8kenaXix1kln/oswmoTHCDXSgWGzYC03EdQ16P6UZ+6wHdtVISmIb9apqix3OLTHs=@lists.linux.it
-X-Gm-Message-State: AOJu0YxfBSp3Q3xiBFRPcojNAHksZM+QdrN8v8Mb7NDNcQqHaqI27b57
- 0m5+4O9FPEUD0aULB4GNzo795Sv+3b3JYFfp4/u2zUTQRYlkk/JmRedy
-X-Gm-Gg: Acq92OEE+VMKhK7ane70irnIej1jgR7fVF8f+lujThyIEgq1/eywmtJOEq5mxCyBq41
- JrKqqVqAln4sEXxGSnXMRLI92hhq7yqdfC4kAQ67iUVP5qSneWgmCqvkABI8jlNp9eFTwOeOOeU
- 3rXmpPbJn1BqZqMaCIOW8p4TnKEFFcmIfAA4lDdBdGmQv4D0eQGfhNnAxEOoIZcN+xxsyEPLHtl
- UiQbDEr6WEwfiHGce2svZKcYJe4lxUHU5ji3ya3o8JhJg0Sp/9xD7jeN+jhvlMh3hD8rmhFUBn2
- jyNuY6WSsl1wevTmzJNtCTNU70/0DrZiAm5tAn86NHmdEl2d0LE3s2zsllpoIHHr0b2g4AWlQVr
- T9HDmDHZtWbyI4ZfXN8YP5JywvlRaHSPGkFl+Ljz+JBS9dNv14v2PKlP44Of4sFAzvu/+ktCpyA
- Pxo4XXru22RT793miARiH2g3oPe4CJsw==
-X-Received: by 2002:a05:600c:c0d3:b0:490:b0e0:3de2 with SMTP id
- 5b1f17b1804b1-490c265c148mr78044605e9.33.1780726380490; 
- Fri, 05 Jun 2026 23:13:00 -0700 (PDT)
-Received: from localhost ([212.73.77.104]) by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-4601f2eadefsm32281391f8f.11.2026.06.05.23.12.57
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 05 Jun 2026 23:13:00 -0700 (PDT)
-From: Askar Safin <safinaskar@gmail.com>
-To: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
-Date: Sat,  6 Jun 2026 06:10:31 +0000
-Message-ID: <20260606061031.3744880-6-safinaskar@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260606061031.3744880-1-safinaskar@gmail.com>
-References: <20260606061031.3744880-1-safinaskar@gmail.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 423B36001E7
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 11:18:58 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 689077591C;
+ Mon,  8 Jun 2026 09:18:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1780910337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0bfPfhua5wnuDSJ6XfpJDZweO+zqkqYomBNgG4IvnCU=;
+ b=LrzQGF/xjJiyGNs1GAnZd2aQ6eZguY+Q9VbhnaxnlNsVkqwlVIy6gKiWxqoM5XQ46Oy1PF
+ dRcvlf/gVVEbUp0V13VnJZfbi064OvWFw/5GAKzX5TQMlx4l6jPmlc3k5+mndUoml6SzDI
+ GdHOpbkqeeivq5Zgi22+xGZR4cJMzjs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1780910337;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0bfPfhua5wnuDSJ6XfpJDZweO+zqkqYomBNgG4IvnCU=;
+ b=UL44d8Xxwh5wkoouUVzYtI/H8cbOP+eyTlEewGsh5bSwLq+5m8KVHZBNIOCOJsQBjBcev8
+ j3i+1xfwzuu/TlBg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1gTJGVIR;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=LXx9obit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1780910333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0bfPfhua5wnuDSJ6XfpJDZweO+zqkqYomBNgG4IvnCU=;
+ b=1gTJGVIRAqhhVlTs2JVjF4r4JFfkXaOr6xh98bOFJA1jzTjnFN/zmVCCQmm+ZvJaThoerU
+ lKc94yJSqiUPZA0zRtWS0cIMVNQE7rJ7W/5zsAz8lnUPxwp3S2ayZCawkc4K7LjvG/TIC9
+ vjeT6L7GDgfx3FBQYAisz2AvRLxgliY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1780910333;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0bfPfhua5wnuDSJ6XfpJDZweO+zqkqYomBNgG4IvnCU=;
+ b=LXx9obitESRJLMR+1bKYXXxi3cxbMrpJQYEHY9SmVDA3MtONMjPc1HCmXSLKNGNTbr9LPQ
+ pcpXO6EUQ7H4x3DA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 58491779AA;
+ Mon,  8 Jun 2026 09:18:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id UeZXFP2IJmruewAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 08 Jun 2026 09:18:53 +0000
+Date: Mon, 8 Jun 2026 11:18:47 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: linuxtestproject.agent@gmail.com
+Message-ID: <aiaI90UCa6OTP3dN@yuki.lan>
+References: <20260608074419.1276-1-wegao@suse.com>
+ <20260608085931.3981-1-linuxtestproject.agent@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260608085931.3981-1-linuxtestproject.agent@gmail.com>
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 689077591C
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ FREEMAIL_TO(0.00)[gmail.com]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[3];
+ RCVD_COUNT_TWO(0.00)[2];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim]; TAGGED_RCPT(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.cz:email, suse.cz:dkim,
+ yuki.lan:mid, linux.dev:email, imap1.dmz-prg2.suse.org:rdns,
+ imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 08 Jun 2026 11:13:16 +0200
-Subject: [LTP] [PATCH 5/5] vmsplice: make sure we don't wait after writing
- some data
+Subject: Re: [LTP] ksm: Fix sysfs path concatenation in ksm_test.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,99 +122,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: The 8472 <kernel@infinite-source.de>, patches@lists.linux.dev,
- David Howells <dhowells@redhat.com>, linux-mm@kvack.org,
- Collin Funk <collin.funk1@gmail.com>, Joanne Koong <joannelkoong@gmail.com>,
- Miklos Szeredi <miklos@szeredi.hu>,
- David Laight <david.laight.linux@gmail.com>,
- Matthew Wilcox <willy@infradead.org>, Christoph Hellwig <hch@infradead.org>,
- Steven Rostedt <rostedt@goodmis.org>, fuse-devel@lists.linux.dev,
- David Hildenbrand <david@kernel.org>, Pedro Falcato <pfalcato@suse.de>,
- ltp@lists.linux.it, Jens Axboe <axboe@kernel.dk>,
- Stefan Metzmacher <metze@samba.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
- linux-api@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>, Willy Tarreau <w@1wt.eu>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Make sure we don't wait for space in pipe after writing some data.
-This is needed for compatibility with previous version of vmsplice.
-Found by LTP vmsplice01.
-See comments in the code and links below for details.
+Hi!
+> On Mon, 8 Jun 2026 07:44:15 +0000, Wei Gao wrote:
+> > ksm: Fix sysfs path concatenation in ksm_test.h
+> 
+> > Fixes: 40a366b53adc ("lib: Introduce tst_path_defs.h to consolidate system paths")
+> 
+> This commit hash does not exist in the LTP repository. Could the
+> reference be verified and corrected?
+> 
+> Verdict: Needs revision
 
-Link: https://lore.kernel.org/all/20260603-raumfahrt-unmerklich-ertrugen-c4ecae70d5f9@brauner/
-Link: https://lore.kernel.org/all/CAHk-=wgV-j-G3d+899Zm1pQ=NaJrddPz=GKcL5Yw5DTUM=GaUw@mail.gmail.com/
-Signed-off-by: Askar Safin <safinaskar@gmail.com>
----
- fs/read_write.c | 39 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 37 insertions(+), 2 deletions(-)
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 77487b307..dbd0debc2 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -1221,6 +1221,8 @@ SYSCALL_DEFINE6(pwritev2, unsigned long, fd, const struct iovec __user *, vec,
- SYSCALL_DEFINE4(vmsplice, int, fd, const struct iovec __user *, vec,
- 		unsigned long, vlen, unsigned int, flags)
- {
-+	struct pipe_inode_info *pipe;
-+
- 	if (unlikely(flags & ~SPLICE_F_ALL))
- 		return -EINVAL;
- 
-@@ -1229,11 +1231,44 @@ SYSCALL_DEFINE4(vmsplice, int, fd, const struct iovec __user *, vec,
- 		return -EBADF;
- 
- 	/* We do vfs_writev/vfs_readv, so it is okay to pass "false" here */
--	if (!get_pipe_info(fd_file(f), /* for_splice = */ false))
-+	pipe = get_pipe_info(fd_file(f), /* for_splice = */ false);
-+
-+	if (!pipe)
- 		return -EBADF;
- 
- 	if (fd_file(f)->f_mode & FMODE_WRITE) {
--		ssize_t ret = vfs_writev(fd_file(f), vec, vlen, NULL, (flags & SPLICE_F_NONBLOCK) ? RWF_NOWAIT : 0);
-+		/*
-+		 * When writing to the pipe, previous implementation of vmsplice
-+		 * first waited for space in the pipe to appear
-+		 * (depending on whether SPLICE_F_NONBLOCK was passed),
-+		 * then did unconditional non-blocking write to the pipe.
-+		 *
-+		 * This differs from what pwritev2 does.
-+		 *
-+		 * For compatibility we do the same thing previous
-+		 * implementation did.
-+		 *
-+		 * We lock the pipe, do pipe_wait_for_space, then unlock
-+		 * the pipe, and then do vfs_writev. vfs_writev internally
-+		 * locks the pipe again. This may cause TOCTOU: when we
-+		 * do vfs_writev, the pipe may become full again. So we
-+		 * do a loop.
-+		 */
-+
-+		bool non_block = (flags & SPLICE_F_NONBLOCK) || (fd_file(f)->f_flags & O_NONBLOCK);
-+		ssize_t ret;
-+
-+		do {
-+			pipe_lock(pipe);
-+			ret = pipe_wait_for_space(pipe, non_block);
-+			pipe_unlock(pipe);
-+
-+			if (ret < 0)
-+				break;
-+
-+			ret = vfs_writev(fd_file(f), vec, vlen, NULL, RWF_NOWAIT);
-+		} while (!non_block && ret == -EAGAIN);
-+
- 		if (ret > 0)
- 			add_wchar(current, ret);
- 		inc_syscw(current);
+@Andrea the bot still misses existing patches:
+
+$ git log 40a366b53adc
+
+commit 40a366b53adc477d950cc73f071b0cd4ebe25f85
+Author: Li Wang <li.wang@linux.dev>
+Date:   Thu Jun 4 17:41:59 2026 +0800
+
+    lib: Introduce tst_path_defs.h to consolidate system paths
+
+    We have a lot of hardcoded strings and duplicated macros for /proc
+    and /sys paths scattered throughout the testcases.
+
+    This patch introduces a new common header, tst_path_defs.h, to centralize
+    and standardize these path definitions. By unifying these macros, we
+    reduce code duplication, improve maintainability, and ensure consistent
+    path usage across the entire LTP codebase.
+
+    Signed-off-by: Li Wang <li.wang@linux.dev>
+    Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
+    Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+
 -- 
-2.47.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
