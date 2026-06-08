@@ -4,82 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7077CCD8C9F
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 11:01:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 340E9CD8C9D
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 11:27:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A79473E5F88
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 13:01:31 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 89FBB3E5F89
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 13:27:37 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1F1F73E4E83
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 13:01:15 +0200 (CEST)
-Received: from mail-dy1-x1341.google.com (mail-dy1-x1341.google.com
- [IPv6:2607:f8b0:4864:20::1341])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A3CB83C19F0
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 13:27:20 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E424F600F05
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 13:01:13 +0200 (CEST)
-Received: by mail-dy1-x1341.google.com with SMTP id
- 5a478bee46e88-3042a388168so2268204eec.1
- for <ltp@lists.linux.it>; Mon, 08 Jun 2026 04:01:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780916472; x=1781521272; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=wW0QUc/fyO6oRvYvCQ8IX9qBO0WZPTRGHV8hEo3RmBs=;
- b=eTrJLV3H7cGvLBYbjJIYm4wsCbqXohQ7IPT0c/Nfs7TAfw+MC4dwkkJqz/EAof29Zq
- 1S6VE+X8XWF6kFDa+oLG2eSXeY8+R0k5gjKMGXcvT/CLGPJIsnzSnM6pJcc/+aJ/rLJI
- U06o17iC9zFsidOfB4i/Y6GgR7L/wCeEr48qqvLyS6PmjB6c/EEhNtunqJRvYDLIYV69
- fizjtEORJEPKKC9BqtE6S8dyyOmqzzTvL4I8KaVJKJnQIR8fcKv+QH43YrNYDdZbfoz5
- dq1KyDQvb03ydnFmAyH6DWv0odBYJTTExelVETL6Zg6WUi6pmZNjTYCntMbtKSRJM7CN
- zkGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780916472; x=1781521272;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=wW0QUc/fyO6oRvYvCQ8IX9qBO0WZPTRGHV8hEo3RmBs=;
- b=sOgX1+sXC2b4lkW30iSI9CmOupEQ/LMS8w8ItrvEbHDU1g3lYYPC2+6Q1P7i/IKmo5
- FYIToIgdKoDxXCME0jyUejfFph2N9PyOk+1l2lWNfR7FsUy4E8QreHH8MiWjazhZ/D1i
- n3UuQ+vdB5X9iNHDC59d4XfVABWomvu4beblmja3Ffgl9UQyVWIEJfcvcMi27llZbR1z
- vh9GZLnAHEEk7gAt7j42+DhZt0cxKGs0wLxM/SdZq/mFVLnyuTkOHSU1W90MmbqAOpYj
- 1LUnABGuetYrBDHJpHjuskuSzYCM9TSFBOyn7pUNTdFUym7kREMUh0zhoR0nuQF4SmXK
- OgZg==
-X-Gm-Message-State: AOJu0Yx6p7CNAb4cz+ulMZnC7I8eOtTn77wuhQMp3XojN18h7aoDvG9y
- 2vM7J1aJT88WKDxUsz49lJUanX1T2vl0VD7MR9TZWA4G6QYwq1mPAkV/6Vi7pVzO
-X-Gm-Gg: Acq92OHQMpUulzcFAoRCnmmdhN5dhBWoVlzLS9QWoW2P5i0S+ShsEkmeuE9219AMik+
- +vx6t4xDXE8xSNoQIsmpk8+uYgzbBxMYKLwGwQEMgXPpIVdxRvf4NGhQQ+LwmME49wRtLc4TX5W
- I1jbynd6CaxG2nQDzWcEMfrGvP2q26uKeo92NI9Bt22ekm4YsZn5EmKSHWF3qj+c1kix2cjJIWu
- oZTEQ2F9Td0KIOjnLOMeF4iWmM3JX5oq7bPrO+1Qws9xSoCN4PFNA5e98anT+Uj5cDSrDGwCxrq
- E1joeXE/aJUnVdFqcRIUVi2JohXw4oR5qzAnJ1abIC1Y3zziELQHCvCISHTkVu85/4sXFHH/LyK
- puwsPUg22RH7404h9axz0Pzoeu630X+AvYbNBWyz7vXzsueOfIUP2XvWZxoGrjVgxEDYdMAYG67
- miEC05T390PK4WnGlKzj9mVY+uDnibP0sFR1uYkOd4og0sYHiGtoMB+eWYr1w9/6w9u6LYkaE9C
- 8NjYbbH4mXu2Xowh6Br5uWY3IHaUgNCo5K+tgGFM4lYeglO3Zk=
-X-Received: by 2002:a05:7301:420a:b0:2ca:bd22:6102 with SMTP id
- 5a478bee46e88-3077fff0c2fmr3980584eec.14.1780916471975; 
- Mon, 08 Jun 2026 04:01:11 -0700 (PDT)
-Received: from
- runnervm3jyl0.gqycc2zpl1wenkeeoydy3zbfbh.dx.internal.cloudapp.net
- ([52.159.247.233]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3074df349d8sm16580059eec.22.2026.06.08.04.01.11
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 08 Jun 2026 04:01:11 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Sachin Sant <sachinp@linux.ibm.com>
-Date: Mon,  8 Jun 2026 11:01:10 +0000
-Message-ID: <20260608110110.4175-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260608092200.92827-2-sachinp@linux.ibm.com>
-References: <20260608092200.92827-2-sachinp@linux.ibm.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1830F200D04
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 13:27:19 +0200 (CEST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 6588w5o13370905; Mon, 8 Jun 2026 11:27:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=n6EvNV
+ TaHTgTPwxMu7BEgWgfUkV3tfNerM4YN4xQ6+4=; b=Xv5j7Rjc8cwTvayTLsBMlx
+ kQ+/XlR+J1jIVDUM2oW+xh5LDt5QLTc9X9QFYWGrTTx3kEan64UfWuztpBzBQyJ3
+ JTzuHyBAOzyZ6AmVt7WUY/mS3zn99ZY+02SudreH9OFyMgfk/PhCCgklwq4lfzVl
+ byTYzZELMEIsBYdS3XIvQx7xyIkH4SnuadtasqiBAKNmclNTnNpEQnFh7F2s4Nz3
+ mcmfX2se9TUcjeBNS1GQkUeVEDFohynJHg3ClarAKoBWeyRcdS+ceDr6cqHlKCrE
+ WxDE0k4TNJr20qs1/oItBtpu7ty4kKAFDO8quEHxkZ5TvLEWwwZnA5G09AB67vWw
+ ==
+Received: from ppma22.wdc07v.mail.ibm.com
+ (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4em9ydxys8-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 08 Jun 2026 11:27:17 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 658BJvMQ005562;
+ Mon, 8 Jun 2026 11:27:17 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4emx8vw5cj-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 08 Jun 2026 11:27:17 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com
+ [10.241.53.100])
+ by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 658BRG2852298064
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 8 Jun 2026 11:27:16 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 9A5085805D;
+ Mon,  8 Jun 2026 11:27:16 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 618CC58057;
+ Mon,  8 Jun 2026 11:27:15 +0000 (GMT)
+Received: from [9.43.109.84] (unknown [9.43.109.84])
+ by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+ Mon,  8 Jun 2026 11:27:15 +0000 (GMT)
+Message-ID: <84984062-a7fb-4cb3-b036-510c6cf4ca25@linux.ibm.com>
+Date: Mon, 8 Jun 2026 16:57:14 +0530
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Sebastian Chlad <sebastianchlad@gmail.com>,
+ Sebastian Chlad <sebastian.chlad@suse.com>
+References: <20260507073417.64123-1-sachinp@linux.ibm.com>
+ <51507e20-d908-4213-967e-df74bacd87fa@linux.ibm.com>
+ <CAJCsO8fQOQfa08bN92zkbqhU_B0B0Ojx2xRm0+TA6jP6WSkZ5g@mail.gmail.com>
+Content-Language: en-US
+From: Sachin Sant <sachinp@linux.ibm.com>
+In-Reply-To: <CAJCsO8fQOQfa08bN92zkbqhU_B0B0Ojx2xRm0+TA6jP6WSkZ5g@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA4MDEwNCBTYWx0ZWRfX7/am6BCgVETt
+ q36pnSiTbm6Bd8gsX4Uq6xrJLrWYHJ9bWUyu8D0jK1IChCNnz/qVK6HEN+JgNHgisXbiS2/JBIW
+ IN99LBroa/KcdKXo/9A6qRqhu+6rYC6k11DNV46tUmi6FqqmHn9XAq4hSyqfBr8GNcd6wkU1Ti5
+ iT7YSP2mpL9ZHC5js43co43BbN2bseyIh0p/dPz9WphKQCeS5kxkrARneUp4lDp7sTEU4QnGc1r
+ BSoJKvCIXRQyy/ReXxx8mx3AijKOlDFtPHtdKCRD1o6T2ZFp/zX6VMilbYmxddL6UqhoyZ0Aed8
+ 66BSCac/fUEA+gxrm2zI1xo/xU56u3Bon0ihOkp0l1Bm7f0WxXHvxVDfoSdiqjOwpH9pOG/byl0
+ UYHL3ZCyVqKO06IXhXMx503+CSibcnOrWlq8vz2oeWBNbQKGhTQuKdVkbzHqDb7i0nHv0leahDZ
+ BS0ZFTYVpFDu7dsPukg==
+X-Authority-Analysis: v=2.4 cv=QKhYgALL c=1 sm=1 tr=0 ts=6a26a716 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=V8glGbnc2Ofi9Qvn3v5h:22 a=xvEzGbcZP-CkC8YoyhYA:9
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: NkhFcqjODyjAOOcRHQhJsm4W5gp0dxXM
+X-Proofpoint-ORIG-GUID: Wf5Cprs2mS5HomsWJsTk4hoPwgLIZajT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-08_03,2026-06-05_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 adultscore=0 phishscore=0
+ malwarescore=0 impostorscore=0 suspectscore=0 spamscore=0 clxscore=1011
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606080104
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] fs/acl: Add ACL_USER_OBJ permission test
+Subject: Re: [LTP] [PATCH v7 1/4] io_uring: Add io_uring04 test for vectored
+ I/O operations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,120 +116,85 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Sachin,
 
-On Mon, 8 Jun 2026 14:51:53 +0530, Sachin Sant wrote:
-> fs/acl: Add ACL_USER_OBJ permission test
+Hi Sebastian
+> I see some fundamental problems here which admittedly started before this
+> series. I believe these need to be fixed before we apply more tests on top
+> of it.
+>
+> In io_uring_submit_sqe() and io_uring_submit_sqe_vec(), opcode is passed as
+> user_data:
+> io_uring_submit_sqe_internal(s, fd, opcode, (unsigned long)buf,
+>                               len, offset, opcode);
+>
+> user_data is supposed to be a unique per-request identifier for correlating
+> CQEs back to their SQEs. Using opcode there is meaningless as a tag.
+>
+> The existing tests happen to pass because io_uring_do_io_op() and
+> io_uring_do_vec_io_op() always submit exactly one SQE and immediately
+> block waiting for its CQE, so correlation is never actually needed.
+> However, any test with multiple in-flight SQEs of the same opcode would
+> pass;
+> the user_data check in io_uring_wait-cqe() would match regardless of which
+> CQE corresponds to which request.
+>
+> Please hold off on applying this series until the underlying issue is
+> fixed. I will send a patch to correct the user_data handling.
+You're right.
 
---- [PATCH 1/8] ---
+In io_uring_submit_sqe() and io_uring_submit_sqe_vec(), we currently 
+pass the
+opcode as user_data through io_uring_submit_sqe_internal().
+As you pointed out, that is not a meaningful per-request identifier and it
+breaks CQE-to-SQE correlation once there is more than one in-flight request
+with the same opcode.
 
-> +#include <sys/xattr.h>
+> I also think io_uring_do_io_op() and io_uring_do_vec_io_op() should not
+> tightly couple SQE submission with waiting for a CQE.
+> Keeping them as a single helper makes the tests effectively synchronous and
+> does not model real io_uring usage.
+> It would be cleaner to have separate helpers for submitting SQEs and
+> waiting/reaping CQEs, and let each test handle CQE validation and
+> result reporting in its own body.
+> Having basic smoke tests, sending single SQE and checking CQE makes sense
+> in LTP, but I doubt we shall have this as a helper.
 
-acl_lib.h includes <sys/xattr.h> unconditionally. LTP's configure.ac
-checks for this header and defines HAVE_SYS_XATTR_H. Other xattr tests
-(e.g. setxattr01, setxattr02, setxattr03) guard their code with
-#ifdef HAVE_SYS_XATTR_H.
+The existing helpers
+io_uring_do_io_op() and io_uring_do_vec_io_op() hide this because they
+submit a single SQE and immediately wait for a single CQE, so the tests
+are effectively synchronous. That makes the current code work for simple
+smoke coverage, but it is not a good base for adding more
+io_uring tests.
 
-Each .c test file should wrap all test code in a file-level guard with
-TST_TEST_TCONF in the #else branch, e.g.:
+I agree that we should fix this first before applying more tests on top.
 
-  #include "acl_lib.h"
+The right direction seems to be:
 
-  #ifdef HAVE_SYS_XATTR_H
+- stop using opcode as user_data
+- make user_data a caller-provided per-request tag/context
+- separate SQE submission from CQE waiting/reaping
+- let each test validate CQEs and report results explicitly as needed
 
-  /* ... all test code ... */
+I'll wait for your patch and rework the helpers/tests on top of that 
+approach.
+> Thanks and let me know if I misunderstand something here. It's the first
+> time I look at this code really.
+> Sebastian
+>
 
-  static struct tst_test test = { ... };
+Nope, you are spot-on with the analysis. Let me know if I can help in 
+any way.
 
-  #else
-      TST_TEST_TCONF("sys/xattr.h is not available");
-  #endif
+-- 
+Thanks
+- Sachin
 
-Without this, the tests will fail to compile on systems where
-sys/xattr.h is not available.
 
---- [PATCH 6/8] ---
-
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +	.mount_device = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.forks_child = 1,
-
-acl_link01 never forks a child process. It does not call SAFE_FORK(),
-try_create_as(), or create_file_as(). Should .forks_child be dropped?
-
---- [PATCH 7/8] ---
-
-> +	TST_EXP_PASS_SILENT(setxattr(TESTDIR, XATTR_TEST_DIR_NAME,
-> +				     XATTR_TEST_DIR_VALUE,
-> +				     XATTR_TEST_DIR_SIZE, 0));
-> +	if (!TST_PASS) {
-> +		if (TST_ERR == EOPNOTSUPP) {
-> +			tst_res(TCONF, "Extended attributes not supported");
-> +			return;
-> +		}
-> +		tst_res(TFAIL, "setxattr on directory failed");
-> +		return;
-> +	}
-
-TST_EXP_PASS_SILENT already reports TFAIL on failure. Then the code
-reports TFAIL again (or TCONF for EOPNOTSUPP), resulting in
-double-reporting. For the EOPNOTSUPP case the output will contain a
-contradictory TFAIL followed by TCONF.
-
-Since custom failure handling is needed here (EOPNOTSUPP -> TCONF),
-TEST() should be used instead:
-
-  TEST(setxattr(TESTDIR, XATTR_TEST_DIR_NAME,
-                XATTR_TEST_DIR_VALUE, XATTR_TEST_DIR_SIZE, 0));
-  if (TST_RET == -1) {
-      if (TST_ERR == EOPNOTSUPP) {
-          tst_res(TCONF, "Extended attributes not supported");
-          return;
-      }
-      tst_res(TFAIL | TTERRNO, "setxattr on directory failed");
-      return;
-  }
-
-The same pattern appears for the second setxattr call in test_xattr()
-and the first setxattr call in test_xattr_backup_restore().
-
-> +	.forks_child = 1,
-
-Same as patch 6/8: xattr_test01 never forks a child process.
-Should .forks_child be dropped?
-
---- Applies to patches 2/8 through 7/8 ---
-
-> + * [Algorithm]
-> + *
-> + * 1. Set up ACL with full permissions for the entry
-
-The [Algorithm] section must use a bulleted list with "-" markers,
-not numbered lists. This applies to all six tests that have an
-[Algorithm] block (acl_mask01, acl_other01, acl_inherit01,
-acl_file_ops01, acl_link01, xattr_test01).
-
-Verdict: Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
