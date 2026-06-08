@@ -4,110 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BD85CD8C9F
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 09:19:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73C30CD8C92
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 09:21:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1780910460; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=nvN0Or0UfDePHF8LiEmhPMD0Y42gi1SrSL/VLAWeTSw=;
+ b=UIvSdvFiYgzev4W/OM79iKkbUHXR+drdRu3zalb2HuArHdurTQHl5cYu1qbBCfYAg1DWB
+ 8pTodaiQVw44Oxx3F023KT4TR11zLysfN23YuPLui0qfct4QR0/9mpyB+3nyty30K0mTsq9
+ 9CqDAWSRuieRRGNjHv5keadegDSK4pI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 98E123E4E86
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 11:19:15 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 061C73E5F89
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 11:21:00 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0A43C3C0039
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 11:18:59 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 511ED3C0039
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 11:20:40 +0200 (CEST)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
+ [IPv6:2a00:1450:4864:20::635])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 423B36001E7
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 11:18:58 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 689077591C;
- Mon,  8 Jun 2026 09:18:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1780910337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0bfPfhua5wnuDSJ6XfpJDZweO+zqkqYomBNgG4IvnCU=;
- b=LrzQGF/xjJiyGNs1GAnZd2aQ6eZguY+Q9VbhnaxnlNsVkqwlVIy6gKiWxqoM5XQ46Oy1PF
- dRcvlf/gVVEbUp0V13VnJZfbi064OvWFw/5GAKzX5TQMlx4l6jPmlc3k5+mndUoml6SzDI
- GdHOpbkqeeivq5Zgi22+xGZR4cJMzjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1780910337;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0bfPfhua5wnuDSJ6XfpJDZweO+zqkqYomBNgG4IvnCU=;
- b=UL44d8Xxwh5wkoouUVzYtI/H8cbOP+eyTlEewGsh5bSwLq+5m8KVHZBNIOCOJsQBjBcev8
- j3i+1xfwzuu/TlBg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1gTJGVIR;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=LXx9obit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1780910333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0bfPfhua5wnuDSJ6XfpJDZweO+zqkqYomBNgG4IvnCU=;
- b=1gTJGVIRAqhhVlTs2JVjF4r4JFfkXaOr6xh98bOFJA1jzTjnFN/zmVCCQmm+ZvJaThoerU
- lKc94yJSqiUPZA0zRtWS0cIMVNQE7rJ7W/5zsAz8lnUPxwp3S2ayZCawkc4K7LjvG/TIC9
- vjeT6L7GDgfx3FBQYAisz2AvRLxgliY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1780910333;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0bfPfhua5wnuDSJ6XfpJDZweO+zqkqYomBNgG4IvnCU=;
- b=LXx9obitESRJLMR+1bKYXXxi3cxbMrpJQYEHY9SmVDA3MtONMjPc1HCmXSLKNGNTbr9LPQ
- pcpXO6EUQ7H4x3DA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 58491779AA;
- Mon,  8 Jun 2026 09:18:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UeZXFP2IJmruewAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 08 Jun 2026 09:18:53 +0000
-Date: Mon, 8 Jun 2026 11:18:47 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: linuxtestproject.agent@gmail.com
-Message-ID: <aiaI90UCa6OTP3dN@yuki.lan>
-References: <20260608074419.1276-1-wegao@suse.com>
- <20260608085931.3981-1-linuxtestproject.agent@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260608085931.3981-1-linuxtestproject.agent@gmail.com>
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 689077591C
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
- FREEMAIL_TO(0.00)[gmail.com]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[3];
- RCVD_COUNT_TWO(0.00)[2];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim]; TAGGED_RCPT(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.cz:email, suse.cz:dkim,
- yuki.lan:mid, linux.dev:email, imap1.dmz-prg2.suse.org:rdns,
- imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9D1B96002AE
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 11:20:39 +0200 (CEST)
+Received: by mail-ej1-x635.google.com with SMTP id
+ a640c23a62f3a-bec4639953dso716141666b.1
+ for <ltp@lists.linux.it>; Mon, 08 Jun 2026 02:20:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1780910439; x=1781515239; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=77c9iMnIxIk2HiLnQQRt6+FS9la8ORz2syx1LZwlJNM=;
+ b=QfdgSXYPyK3aD3Yau2nUbZi+rj6tfeDmsc0esaD0h3HFcGUy/6ihAJS/7Ngb094aGi
+ cJou6lV6DMigG1iko9jAowZWIVzlO8B3rtJEVSukIEZLOwPSoQhfTpeyQwK0YpTallNL
+ n6gHacJxWbltYyBKkaTk6s4AP/Rp64NEqyY+0KiyDJIDZKwKLN6h1a791VUfXad156bn
+ o1XF4aFFpnOTq8nFnWrUMfRt/Rk/wjxV0a3OCvYnzKQ/0RaKo9BQjHB9AAwB3OAMtsqW
+ fFVNu3l4sfQNA1JJ1WW+iXyDn6931mE0Y0AMgifNtUXfog9Rr23Ljd0ifIc6I7JQazki
+ wTRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1780910439; x=1781515239;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=77c9iMnIxIk2HiLnQQRt6+FS9la8ORz2syx1LZwlJNM=;
+ b=rJIfnKS8BoV5KjVnOcVeflGARUtl0QL9JtsQmwvTCk5h2TxPpJPL36YyuEL17zhUAb
+ 21ejZetWoX7s0fHyuIZF4yVFrdEnKRPSyTxBB+Hi6XX6x6zMS+u0yyqaR9UCoJav/hB4
+ ujPqYRs1t2XN70M3LbUWFIueIYn/iKaF7huhiDk4yPZaTz6JpSB8z4rXy5Kbp2/1y4V0
+ xozdt7XqsIwLlxJtihfkp8iDu71g2kqq1+X5nJlVzSCwcTQhnXT/xH3Aw044I/yd4RTm
+ BipONISVvhXHZVMkksyynylWJgVYK5C0+eN6oUHfF5H2xUMWtLweqcH4Dka3axLaU/cX
+ M6XQ==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ9Qr5WrFVPjzjcc7e8J7PD09d5GMtnGhx20bC0oGrlmK6at2zH+ES+lESfqovyhUvZGJ8A=@lists.linux.it
+X-Gm-Message-State: AOJu0Yx48re9wshZuPjEcdP7dkEzou0uJ1mhvrjV5dc0Xeo+aVXOPQhv
+ uZ4aU27GLbMTX7TYSr8d/leFA/gL6VRHWr7fk2FzxdptnbXPFa+prAHOjAs+GyPMNZM=
+X-Gm-Gg: Acq92OE50DuK3NtzvaaI1JOghBIjGmWLw3Hsj7EKCYO7boF/xgwUGwLIOb7Vcuyc7t/
+ WWvKy3zcRV5NmUj9vmZnjECVyZ6l9U6Mu5RYI2UV3fFUi6Ktg0D+cwNkTlxsKroY8FQ3Wkr3nJM
+ iLnXaatZMsdFy1s05dvjZTe81H8RzPETxvwV3hnsQv+B2/Va30eF42wLR4bC3eVUcAkfVy+KHly
+ lnOYA3bl27dFVmTR11Qfob2A/waejFBWaxY0Jdt+q0s5L0PxQga42neMJR/NoqvXFOYWeCLtAGA
+ 2I3R8/9aP1jTolSfrsBlPLhs1XWxF0t6mNOXUYrknt+XIDJuCksLBG/4qzyaFnmH1BQajRZP+7x
+ +IeRHC4S1E8PlcS6I0MKIQJHiPWIZwCOO2S8FLmvc5FEAJsRC3Ccl5WmsIm4OW3ctnpixw+4uVv
+ q54stpf1AsFrNAyjnz2vIQ94buN0v+/rO19+HEajp38IdMtBS4OuA=
+X-Received: by 2002:a17:907:6c0f:b0:bee:f402:5567 with SMTP id
+ a640c23a62f3a-bf37283bdb0mr678690666b.41.1780910438814; 
+ Mon, 08 Jun 2026 02:20:38 -0700 (PDT)
+Received: from localhost.localdomain ([37.162.88.57])
+ by smtp.gmail.com with ESMTPSA id
+ 4fb4d7f45d1cf-68e64c2ef2dsm6733391a12.1.2026.06.08.02.20.37
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 08 Jun 2026 02:20:38 -0700 (PDT)
+Message-ID: <6a268966.415315f7.3b149a.b50d@mx.google.com>
+To: "Cyril Hrubis" <chrubis@suse.cz>
+In-Reply-To: <aiaI90UCa6OTP3dN@yuki.lan>
+Date: Mon, 08 Jun 2026 09:20:36 +0000
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] ksm: Fix sysfs path concatenation in ksm_test.h
@@ -122,50 +96,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it, linuxtestproject.agent@gmail.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> On Mon, 8 Jun 2026 07:44:15 +0000, Wei Gao wrote:
-> > ksm: Fix sysfs path concatenation in ksm_test.h
+Hi Cyril,
+
+> @Andrea the bot still misses existing patches:
 > 
-> > Fixes: 40a366b53adc ("lib: Introduce tst_path_defs.h to consolidate system paths")
+> $ git log 40a366b53adc
 > 
-> This commit hash does not exist in the LTP repository. Could the
-> reference be verified and corrected?
+> commit 40a366b53adc477d950cc73f071b0cd4ebe25f85
+> Author: Li Wang <li.wang@linux.dev>
+> Date:   Thu Jun 4 17:41:59 2026 +0800
 > 
-> Verdict: Needs revision
+>     lib: Introduce tst_path_defs.h to consolidate system paths
+> 
+>     We have a lot of hardcoded strings and duplicated macros for /proc
+>     and /sys paths scattered throughout the testcases.
+> 
+>     This patch introduces a new common header, tst_path_defs.h, to centralize
+>     and standardize these path definitions. By unifying these macros, we
+>     reduce code duplication, improve maintainability, and ensure consistent
+>     path usage across the entire LTP codebase.
+> 
+>     Signed-off-by: Li Wang <li.wang@linux.dev>
+>     Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
+>     Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
+Yes I seen, this is really annoying. I will find a way to fix it,
+but it's supposed to be fixed already.
 
-@Andrea the bot still misses existing patches:
-
-$ git log 40a366b53adc
-
-commit 40a366b53adc477d950cc73f071b0cd4ebe25f85
-Author: Li Wang <li.wang@linux.dev>
-Date:   Thu Jun 4 17:41:59 2026 +0800
-
-    lib: Introduce tst_path_defs.h to consolidate system paths
-
-    We have a lot of hardcoded strings and duplicated macros for /proc
-    and /sys paths scattered throughout the testcases.
-
-    This patch introduces a new common header, tst_path_defs.h, to centralize
-    and standardize these path definitions. By unifying these macros, we
-    reduce code duplication, improve maintainability, and ensure consistent
-    path usage across the entire LTP codebase.
-
-    Signed-off-by: Li Wang <li.wang@linux.dev>
-    Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
-    Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
