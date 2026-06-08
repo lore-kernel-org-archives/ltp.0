@@ -4,101 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 919CACD8C9D
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 13:41:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7EB6CD8C92
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 14:13:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 073B43E6F96
-	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 15:41:15 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 411743E56C6
+	for <ltp@archiver.kernel.org>; Mon,  8 Jun 2026 16:13:29 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 284E63E4E74
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 15:40:59 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4C83C3C8679
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 16:13:13 +0200 (CEST)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1B6331A01091
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 15:40:58 +0200 (CEST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 6586c5tO2323666; Mon, 8 Jun 2026 13:40:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=PvtPbR
- 0VKroTFIaVeWbZ5cBtMzs8lNtqi2iQHegm06M=; b=VCykzDgXuuAaAySCJpRaCm
- QRaJ7iWZLtP+6K5l/DoftEezT1jvygFnp2+0jANLWMCxO4g5SYbWt8xd1uXEXwFz
- cCXMLtib2rkNaaxyDWCNfvu63Qj588trmXGzF/pDzZ0shk502m05tQoUYPxuSH4W
- LelCyi4AoaYowluEPUJtHGjbYYR7ZCLNxysM/8wvj1lYUFG2T/j1WoqVGrCZlY0B
- 50dbOroCLVu8wpejN+g1bs2Yr+h4IXo9UmxOwUThCy8H7U7Dk5JyCaWMaWkA5Z//
- 0asWuqZc4DCTV8oTelTRyOhHUalbE63yD7aYzd24vbDNCKBWO5jRBDpSDOkXf/rw
- ==
-Received: from ppma23.wdc07v.mail.ibm.com
- (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4em8yhqny9-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 08 Jun 2026 13:40:57 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 658DYgvk003501;
- Mon, 8 Jun 2026 13:40:56 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
- by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4emycgwef2-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 08 Jun 2026 13:40:56 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com
- [10.241.53.100])
- by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 658DePMo26411642
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 8 Jun 2026 13:40:25 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id D52CA58057;
- Mon,  8 Jun 2026 13:40:55 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 03A6958059;
- Mon,  8 Jun 2026 13:40:55 +0000 (GMT)
-Received: from [9.43.109.84] (unknown [9.43.109.84])
- by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
- Mon,  8 Jun 2026 13:40:54 +0000 (GMT)
-Message-ID: <8a4a075d-0440-4f16-b88c-f09b1961e030@linux.ibm.com>
-Date: Mon, 8 Jun 2026 19:10:53 +0530
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CFAC110007B6
+ for <ltp@lists.linux.it>; Mon,  8 Jun 2026 16:13:11 +0200 (CEST)
+Received: by mail-wr1-x42e.google.com with SMTP id
+ ffacd0b85a97d-45eeba68948so3095107f8f.1
+ for <ltp@lists.linux.it>; Mon, 08 Jun 2026 07:13:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1780927991; cv=none;
+ d=google.com; s=arc-20240605;
+ b=jLks/j/rjfXZ9WjqR/XkcENLfIpVcLf2tFyh+o5OzFB/5tg+1m0oZU8WxyUvpwbFx5
+ KAwdKa7vQUTkOcbtzDPRsrfCr7SnsB7dV8qrDHEchySZSKvzV5GFhhLKJSERW5FNabLu
+ JwHXLuXlQ35JpFzMayA8kbPrJna4nuRTh5y8Pgu/3abUNpzV3wtgmtVuh0iVeJVq0WvW
+ eHnTQveDL82fTQoDja2VjvUcL0Nj+N5NWjHUY4ScSKA9n4Ci6lXyNfDd2NIueEXA9ORE
+ E5NUhnEeFMeRNN5CPC9CzVp4OLWZTniKMt1ggTVDyP6PIRzDeJryzEfzDm8Ta49+4BFP
+ ShVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:dkim-signature;
+ bh=asu3zEliwHeScXpAbXlPOmJqDKfTyJhHx0iWc99DjGs=;
+ fh=6BHTRZs0fq26Pu1/Vq2EC9nEfgkqMZLdRlTIOrnG7LY=;
+ b=UV+t3bauSVr2RSLrEpg+u5pKIxL+4Go8Us8FwHbmSgeXZuYQxQeCr46SF7QBwkj1uC
+ d5GjROuIYTF+nk3J1DFaERa3lGJZJWSCgzAfNz24fp1d5Sjo1sNyXk8+WGUabL6H5vOP
+ lap8qxYuJkKKlzzMFsS1AKDkR4IUvfYK3ok52sVtCCT93GeF9vdR+A8cBR7D++xnplQU
+ iXyoVrogeFH+nT6jh7z9ssgRV/6gBPgH1O+sXsYPcb0s6HGDnw3KbR6VH+sK5xtlBsID
+ AMxFi/ih7kP7hraFQ82yCJT7KozHkjKHQbwwVtNwIYUTMjC4MTjqGxwv+mia06dosigL
+ 22HA==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1780927991; x=1781532791; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=asu3zEliwHeScXpAbXlPOmJqDKfTyJhHx0iWc99DjGs=;
+ b=j13q3FU6hYCTRGhV7Ejnqj3mOAgRN4tViwBJtyLRJMtPHsVgwAhQC+qpGj4obw7ppK
+ eON/pk5b/QNst9JIlXP0O3qZFCHn1ye4qUB+UcwpT/67fM1dHK9G5iBIoEI2a5d6XAkb
+ 2YeH09odvgqucrEuTo2pkAmAmLf5P5CVcSioSd70RKj0AzoxSJmm6fP0eWXW3JJiefV+
+ z/jbK+5ucvGtUx33jK+pJUrza5hNd9Oc4AWES3hZSW6sXrHuTHHYKbqzDL416po2QW0T
+ zoV5kh6rUbKY5wM5Guk/eUuBg0EzDmNeaV9cIAaS/gpEjGnoHicX7mCCe1dETkLzuQrr
+ PDEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1780927991; x=1781532791;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=asu3zEliwHeScXpAbXlPOmJqDKfTyJhHx0iWc99DjGs=;
+ b=Z/U4AVbOliudoSwNPT8NnAc4ipfnC29eL7GdIU8F06vNecuetqLg0qwEF+TqaFtGBy
+ zaRuey4kr58TRXYl/xzWDFOTlamUYrDOJsm+M5C0Bx/A4wUSv8moHj6oKaBbQx84599I
+ A8hbwgGQDYK/YBteRl41LHPhZitZJmXhs9ri4DSs+cEdmkp9ph3RGjhUHjQn4Zsi0VJ0
+ 1C9kjeguYeblpNqjOMMCbr3DQK8uX5979NjIiO+sBaroJvrJyjOMyFwOumNqLKDLsfmI
+ 2euJkBnXIZvLSKP4SGxUEJvsgUKrE6JxLcfhwN9HaXbmctfl4mz6a7XUmuu0CfDQywm5
+ 8ghQ==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ/2LLHvFT+BbT8TeyBQHm6zo0c0ltj2AyHAiKO7co+w4uCsZ+dEBPal2ZQmUxA+sHye1z8=@lists.linux.it
+X-Gm-Message-State: AOJu0YxESkNWfbwtd9uPScdzHc6CxBfzOPhocJn7r0Qy8R4wVJ1WS7Tq
+ yY4/B6mn7yqJvsdp6TXCzmKcallOoJHYD3vG3Rwodk0KIIaQOjeeNDfbEyGB8v8uVM0O5TqP+Mj
+ cHMIo6QgJPUawQWB2gfvMFcdpsa3ZNpA=
+X-Gm-Gg: Acq92OGROL57Bop5Uezn6aUj5VSNjJ+irPHoyOdbq/i2BCOfTe6wgLqewhv/IVVmC9I
+ ZbV4zXQvTbr5XnXZ+Mf4QpW7hasRMWmMcTG+13ptkmJQ0sSyKHG/YGVOwP9ZbO7+LEEmBMLX2we
+ QXFIm0lSlgaCGxLU/rK273qaX9mUQ3KY3Ta16ZZwB3pIKS7YAKAELMPX3L4lX1L2PfO6IBOSA7D
+ 2pFXB1TPQXieqfN1C1gLqHveu9fBMAUtW6ghOS/svOVqshz7otH+fdX4r2D5AJrtC9Ustc8g86T
+ K9wAtdWbKJbx2rXUQD21+ZoWaWRyhrYNZlgUQJjDI/iA5Rn3UWo=
+X-Received: by 2002:a05:600c:83c3:b0:490:b355:9c70 with SMTP id
+ 5b1f17b1804b1-490c25a5970mr285907995e9.11.1780927991066; Mon, 08 Jun 2026
+ 07:13:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20260608092200.92827-1-sachinp@linux.ibm.com>
- <20260608092200.92827-2-sachinp@linux.ibm.com> <aiauHurwBjafsd4R@yuki.lan>
-Content-Language: en-US
-From: Sachin Sant <sachinp@linux.ibm.com>
-In-Reply-To: <aiauHurwBjafsd4R@yuki.lan>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA4MDEyOSBTYWx0ZWRfX5I5U0sTtT3lv
- dsyDu4PNDNUc/26gmhJwmHo5HVx6kdwfryr1Sm78ADaOIAmYQTAExCuo8FXNnjnEbaMfXP6fyMg
- v7uCxzUVG2VRaw4tYoSuJVdyiydUt8/t3kBzgQ010E7CPiwLhpVCKwS/cAOOltg6MXjRfp2MiwF
- awjc3h3oIivBWuVusBXvaPAhekzJ8HdldZIsX5B2IziCRHwfnZatmoqBZEE+vHZy5eopAdHtpeJ
- jNjtzI0uIQXCGR9OZbtn06SVMuWJ8zJ4BxSoNq+dWLcvKCl8i6mLNitjfmw8doGV+nFxQd8c5rk
- b1uGWtY3HDbza0NKrEbAwxS22Um2UCFSpbhbW9zJHI8Lpjcd1vR0A+JXag+BqvhEEGY0Gjku9A3
- B/lLeuSchiylGVJVjPj0h/XaNn2oCO+vQd80bJ7gp7dnM1bHEWI/ErOHqaWvkVzDSRTH+LuYqNj
- rUdWv80ROyqvjLgCHiA==
-X-Authority-Analysis: v=2.4 cv=HvFG3UTS c=1 sm=1 tr=0 ts=6a26c669 cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VnNF1IyMAAAA:8
- a=Vj7jC-xpH-o7r-cHIioA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: OyPGV4wLjZ21a242TNUeIPY5-llhFVBk
-X-Proofpoint-GUID: OyPGV4wLjZ21a242TNUeIPY5-llhFVBk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
- definitions=2026-06-08_03,2026-06-05_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0 suspectscore=0
- spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0 bulkscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606080129
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+References: <20260507073417.64123-1-sachinp@linux.ibm.com>
+ <51507e20-d908-4213-967e-df74bacd87fa@linux.ibm.com>
+ <CAJCsO8fQOQfa08bN92zkbqhU_B0B0Ojx2xRm0+TA6jP6WSkZ5g@mail.gmail.com>
+ <84984062-a7fb-4cb3-b036-510c6cf4ca25@linux.ibm.com>
+In-Reply-To: <84984062-a7fb-4cb3-b036-510c6cf4ca25@linux.ibm.com>
+From: Sebastian Chlad <sebastianchlad@gmail.com>
+Date: Mon, 8 Jun 2026 16:12:58 +0200
+X-Gm-Features: AVVi8Cf7XT2836W0XS6NTPdtB5BlICaBvaM09mYHHmlqwWWi-goC3S_4RgHJPDU
+Message-ID: <CAJCsO8eP4395bv7vXLXQ=xn1-77dDBPGnutMiAmh7P-o41F=4A@mail.gmail.com>
+To: Sachin Sant <sachinp@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 1/8] fs/acl: Add ACL_USER_OBJ permission test
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v7 1/4] io_uring: Add io_uring04 test for vectored
+ I/O operations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,346 +109,106 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Sebastian Chlad <sebastian.chlad@suse.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi Sachin,
 
-
-On 08/06/26 5:27 pm, Cyril Hrubis wrote:
->> +
->> +	if (type == ACL_TYPE_ACCESS)
->> +		xattr_name = XATTR_NAME_POSIX_ACL_ACCESS;
->> +	else if (type == ACL_TYPE_DEFAULT)
->> +		xattr_name = XATTR_NAME_POSIX_ACL_DEFAULT;
->> +	else {
->> +		errno = EINVAL;
->> +		return NULL;
->> +	}
-> We are using this in two places, maybe it's worth having an
-> acl_type_to_name() functions and use that instead.
-Makes sense. Will make the change.
->> +	header = (struct posix_acl_xattr_header *)buf;
->> +	if (le32_to_cpu(header->a_version) != POSIX_ACL_XATTR_VERSION) {
->> +		free(buf);
->> +		errno = EINVAL;
->> +		return NULL;
->> +	}
->> +
->> +	count = (size - sizeof(*header)) / sizeof(struct posix_acl_xattr_entry);
->> +	entries = (struct posix_acl_xattr_entry *)(buf + sizeof(*header));
-> Maybe we can define a structure with both header and entries in order to
-> avoid some of the casts here. Maybe this would work:
->
-> struct acl_xattr {
-> 	struct posix_acl_xattr_header header;
-> 	struct posix_acl_xattr_entry entries[];
-> };
->
-> And then we could do:
->
-> 	struct acl_xattr *ax = (void*)buf;
->
-> 	if (le32_to_cpu(ax->header.a_version) == ACL_TYPE_ACCESS) {
-> 		...
-> 	}
->
-> 	...
->
-> 	for (i = 0; i < conut; i++) {
-> 		uint16_t tag = le16_to_cpu(ax->entries[i].e_tag);
-> 		...
->
-> 	}
-Okay, will check.
->> +	acl = acl_init();
->> +	if (!acl) {
->> +		free(buf);
->> +		return NULL;
->> +	}
->> +
->> +	for (i = 0; i < count; i++) {
->> +		uint16_t tag = le16_to_cpu(entries[i].e_tag);
->> +		uint16_t perm = le16_to_cpu(entries[i].e_perm);
->> +		uint32_t id = le32_to_cpu(entries[i].e_id);
->> +
->> +		if (acl_add_entry(acl, tag, perm, id) < 0) {
->> +			acl_free(acl);
->> +			free(buf);
->> +			return NULL;
->> +		}
->> +	}
->> +
->> +	free(buf);
->> +	return acl;
->> +}
->> +
->> +/*
->> + * Check if an ACL entry has a specific permission
->> + */
->> +static inline int acl_entry_has_perm(struct acl_entry *entry, uint16_t perm)
->> +{
->> +	return (entry->perm & perm) == perm;
->> +}
->> +
->> +/*
->> + * Check if an ACL entry has all rwx permissions
->> + */
->> +static inline int acl_entry_has_rwx(struct acl_entry *entry)
->> +{
->> +	return acl_entry_has_perm(entry, ACL_READ) &&
->> +	       acl_entry_has_perm(entry, ACL_WRITE) &&
->> +	       acl_entry_has_perm(entry, ACL_EXECUTE);
-> Can't we pass all the bits to a single call of the function like
-> acl_entry_has_perm(entry, ACL_READ | ACL_WRITE | ACL_EXECUTE) ?
-Yes, will change.
->> +}
->> +
->> +/*
->> + * Find an ACL entry by tag type
->> + */
->> +static inline struct acl_entry *acl_find_entry(struct acl *acl, uint16_t tag,
->> +					       uint32_t id)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < acl->count; i++) {
->> +		if (acl->entries[i].tag == tag) {
->> +			if (tag == ACL_USER || tag == ACL_GROUP) {
->> +				if (acl->entries[i].id == id)
->> +					return &acl->entries[i];
->> +			} else {
->> +				return &acl->entries[i];
->> +			}
->> +		}
->> +	}
->> +
->> +	return NULL;
->> +}
->> +
->> +/*
->> + * Update ACL mask permissions
->> + */
->> +static inline int acl_set_mask_perms(struct acl *acl, uint16_t perm)
->> +{
->> +	struct acl_entry *mask_entry = acl_find_entry(acl, ACL_MASK, 0);
->> +
->> +	if (!mask_entry) {
->> +		errno = ENOENT;
->> +		return -1;
->> +	}
->> +
->> +	mask_entry->perm = perm;
->> +	return 0;
->> +}
->> +
->> +static inline int create_file_as(uid_t uid, gid_t gid, mode_t mode,
->> +				 int use_umask, mode_t mask)
->> +{
->> +	pid_t pid;
->> +	int status;
->> +
->> +	pid = SAFE_FORK();
->> +	if (!pid) {
->> +		int fd, err;
->> +
->> +		if (setgroups(0, NULL) == -1) {
->> +			err = errno;
->> +			_exit(err);
->> +		}
->> +
->> +		if (setgid(gid) == -1) {
->> +			err = errno;
->> +			_exit(err);
->> +		}
->> +
->> +		if (setuid(uid) == -1) {
->> +			err = errno;
->> +			_exit(err);
->> +		}
-> These should be SAFE_MACROS().
-Can you elaborate on this?
-This code runs in a forked child process that intentionally tests 
-permission scenarios.
-The function expects these calls to potentially fail as part of testing 
-ACL behavior.
-
-The current pattern of capturing errno and exiting with it is correct for
-communicating failure back to the parent.
-SAFE_* macros would call tst_brk(TBROK) on failure, which is 
-inappropriate in
-a child process testing permissions.
-
-The parent process checks the exit status to determine if the operation
-succeeded or failed (line 442: return WEXITSTATUS(status))
+On Mon, 8 Jun 2026 at 13:27, Sachin Sant <sachinp@linux.ibm.com> wrote:
 
 >
->> +		if (use_umask)
->> +			umask(mask);
->> +
->> +		fd = open(TESTFILE, O_CREAT | O_WRONLY, mode);
->> +		if (fd >= 0) {
->> +			close(fd);
->> +			_exit(0);
->> +		}
-> Generally in LTP we want to check the test conditions right after they
-> happen. So this function should get expected errno as last parameter and
-> we should check for the result right here with something as:
+> Hi Sebastian
+> > I see some fundamental problems here which admittedly started before this
+> > series. I believe these need to be fixed before we apply more tests on
+> top
+> > of it.
+> >
+> > In io_uring_submit_sqe() and io_uring_submit_sqe_vec(), opcode is passed
+> as
+> > user_data:
+> > io_uring_submit_sqe_internal(s, fd, opcode, (unsigned long)buf,
+> >                               len, offset, opcode);
+> >
+> > user_data is supposed to be a unique per-request identifier for
+> correlating
+> > CQEs back to their SQEs. Using opcode there is meaningless as a tag.
+> >
+> > The existing tests happen to pass because io_uring_do_io_op() and
+> > io_uring_do_vec_io_op() always submit exactly one SQE and immediately
+> > block waiting for its CQE, so correlation is never actually needed.
+> > However, any test with multiple in-flight SQEs of the same opcode would
+> > pass;
+> > the user_data check in io_uring_wait-cqe() would match regardless of
+> which
+> > CQE corresponds to which request.
+> >
+> > Please hold off on applying this series until the underlying issue is
+> > fixed. I will send a patch to correct the user_data handling.
+> You're right.
 >
-> 	if (errno)
-> 		ST_EXP_FAIL()
-> 	else
-> 		TST_EXP_FD()
+> In io_uring_submit_sqe() and io_uring_submit_sqe_vec(), we currently
+> pass the
+> opcode as user_data through io_uring_submit_sqe_internal().
+> As you pointed out, that is not a meaningful per-request identifier and it
+> breaks CQE-to-SQE correlation once there is more than one in-flight request
+> with the same opcode.
 >
-> With that we do need to propagate the return value manually, which is
-> prone to errors, and do not need to process the child exit value
-> manually, we can just let the library collect the children with
-> tst_reap_children().
+> > I also think io_uring_do_io_op() and io_uring_do_vec_io_op() should not
+> > tightly couple SQE submission with waiting for a CQE.
+> > Keeping them as a single helper makes the tests effectively synchronous
+> and
+> > does not model real io_uring usage.
+> > It would be cleaner to have separate helpers for submitting SQEs and
+> > waiting/reaping CQEs, and let each test handle CQE validation and
+> > result reporting in its own body.
+> > Having basic smoke tests, sending single SQE and checking CQE makes sense
+> > in LTP, but I doubt we shall have this as a helper.
 >
->> +		err = errno;
->> +		_exit(err);
->> +	}
->> +
->> +	SAFE_WAITPID(pid, &status, 0);
->> +
->> +	if (!WIFEXITED(status))
->> +		tst_brk(TBROK, "Child terminated abnormally");
->> +
->> +	return WEXITSTATUS(status);
+> The existing helpers
+> io_uring_do_io_op() and io_uring_do_vec_io_op() hide this because they
+> submit a single SQE and immediately wait for a single CQE, so the tests
+> are effectively synchronous. That makes the current code work for simple
+> smoke coverage, but it is not a good base for adding more
+> io_uring tests.
 >
->> +}
->> +
->> +static inline int try_create_as(uid_t uid, gid_t gid, mode_t mode)
->> +{
->> +	return create_file_as(uid, gid, mode, 0, 0);
->> +}
->> +
->> +static inline int create_with_umask_as(uid_t uid, gid_t gid, mode_t mode,
->> +					mode_t mask)
->> +{
->> +	return create_file_as(uid, gid, mode, 1, mask);
->> +}
->> +
->> +static inline void cleanup_test_paths(void)
->> +{
->> +	if (unlink(TESTSYMLINK) == -1 && errno != ENOENT)
->> +		tst_res(TWARN | TERRNO, "unlink(%s) failed", TESTSYMLINK);
->> +
->> +	if (unlink(TESTFILE) == -1 && errno != ENOENT)
->> +		tst_res(TWARN | TERRNO, "unlink(%s) failed", TESTFILE);
->> +
->> +	if (rmdir(TESTDIR) == -1 && errno != ENOENT)
->> +		tst_res(TWARN | TERRNO, "rmdir(%s) failed", TESTDIR);
-> Maybe we need SAFE_TRY_UNLINK() and SAFE_TRY_RMDIR() that wouldn't TBROK
-> on ENOENT and then we could use it here.
-Good point. Let me check on this.
->> +}
->> +
->> +#endif /* ACL_LIB_H */
->> diff --git a/testcases/kernel/fs/acl/acl_user_obj01.c b/testcases/kernel/fs/acl/acl_user_obj01.c
->> new file mode 100644
->> index 000000000..01abfbf4e
->> --- /dev/null
->> +++ b/testcases/kernel/fs/acl/acl_user_obj01.c
->> @@ -0,0 +1,154 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (c) 2026 IBM
->> + *
->> + * Original shell test by Kai Zhao (ltcd3@cn.ibm.com)
->> + * Converted to C by Sachin Sant <sachinp@linux.ibm.com>
->> + */
->> +
->> +/*\
->> + * Test ACL_USER_OBJ permissions using direct xattr manipulation.
->> + *
->> + * Verify that owner permissions (ACL_USER_OBJ) correctly control access
->> + * to files and directories. The test validates that:
->> + * - ACL_USER_OBJ permissions are applied directly as the owner bits
->> + * - Setting ACL_USER_OBJ=rwx via setxattr() overrides a previous
->> + *   chmod restriction
->> + * - Owner permissions work independently of group and other permissions
->> + *
->> + * This test uses arbitrary UIDs without creating actual users, testing
->> + * only the kernel ACL implementation.
->> + */
->> +
->> +#include "acl_lib.h"
->> +
->> +#define TEST_UID 1000
->> +#define TEST_GID 1000
->> +
->> +/*
->> + * Test permission bits deny access.
->> + * Owner should be denied write access when mode is 0500.
->> + */
->> +static void test_deny_by_mode(void)
->> +{
->> +	int err;
->> +
->> +	tst_res(TINFO, "Testing permission bits deny access");
->> +	reset_test_path();
->> +
->> +	SAFE_CHOWN(TESTDIR, TEST_UID, TEST_GID);
->> +	SAFE_CHMOD(TESTDIR, 0500);
->> +
->> +	err = try_create_as(TEST_UID, TEST_GID, 0644);
->> +	if (!err) {
->> +		cleanup_testfile();
->> +		tst_res(TFAIL, "Created file without write permission");
->> +		return;
->> +	}
->> +
->> +	if (err != EACCES) {
->> +		errno = err;
->> +		tst_res(TFAIL | TERRNO, "Expected EACCES from owner create");
->> +		return;
->> +	}
->> +
->> +	tst_res(TPASS, "File creation denied by permission bits");
->> +}
->> +
->> +/*
->> + * Test ACL_USER_OBJ grants access.
->> + * Setting ACL_USER_OBJ=rwx should override previous chmod restriction.
->> + */
->> +static void test_grant_by_acl(void)
->> +{
->> +	struct acl *acl = NULL;
->> +	int err;
->> +
->> +	tst_res(TINFO, "Testing ACL_USER_OBJ grants access");
->> +	reset_test_path();
->> +
->> +	SAFE_CHOWN(TESTDIR, TEST_UID, TEST_GID);
->> +	SAFE_CHMOD(TESTDIR, 0500);
->> +
->> +	acl = acl_init();
->> +	if (!acl)
->> +		tst_brk(TBROK | TERRNO, "acl_init failed");
->> +
->> +	if (acl_add_entry(acl, ACL_USER_OBJ,
->> +			  ACL_READ | ACL_WRITE | ACL_EXECUTE, 0) < 0)
->> +		goto cleanup_acl;
->> +
->> +	if (acl_add_entry(acl, ACL_GROUP_OBJ, 0, 0) < 0)
->> +		goto cleanup_acl;
->> +
->> +	if (acl_add_entry(acl, ACL_OTHER, 0, 0) < 0)
->> +		goto cleanup_acl;
-> Maybe we can just call SAFE_MALLOC() and tst_brk() internally in these
-> functions so that we don't have to complicate the code here. We do call
-> tst_brk() in cleanup_acl: anyways.
-Thanks, yes make sense. Similar code pattern is used in multiple tests.
-This should help simplify. Will check on this.
+> I agree that we should fix this first before applying more tests on top.
+>
+> The right direction seems to be:
+>
+> - stop using opcode as user_data
+> - make user_data a caller-provided per-request tag/context
+> - separate SQE submission from CQE waiting/reaping
+> - let each test validate CQEs and report results explicitly as needed
+>
+> I'll wait for your patch and rework the helpers/tests on top of that
+> approach.
+> > Thanks and let me know if I misunderstand something here. It's the first
+> > time I look at this code really.
+> > Sebastian
+> >
+>
+> Nope, you are spot-on with the analysis. Let me know if I can help in
+> any way.
+>
+>
+I have the patches ready, so you could absolutely help with the review of
+those.
+I'm about to send them to the mailing list
 
--- 
-Thanks
-- Sachin
+Thanks,
+Sebastian
 
 
+
+> --
+> Thanks
+> - Sachin
+>
+>
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
