@@ -4,88 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A1C1CD8CAE
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 04:17:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92525CD8CAE
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 04:17:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7B6F83CFEDB
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 06:17:19 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 24C043E2CB3
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 06:17:34 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 511473E2D7F
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 06:16:46 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 5DCA63E2D7F
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 06:16:48 +0200 (CEST)
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
  [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 65BCB601402
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 06:16:45 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 632DA602468
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 06:16:47 +0200 (CEST)
 Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 658EQYgR4003514; Tue, 9 Jun 2026 04:16:43 GMT
+ 658E4dpO3934488; Tue, 9 Jun 2026 04:16:46 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
  :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=TBx2EVwMFz3KrXbc9
- dIEiTkco+xK5srragwNdwj99OA=; b=GIC+WAPf6Mk1/jWhzeZkLJcbO6fRjwBhL
- MXgU7VPo3MSeB6dZ1AZO6jhI+/xppxc5qJUC6UNzdIvmeOOvnSetyXZBK6ClM5lL
- BHgch5LRCROZ2DyzYSBtqFLm9Ac2n7Y96dSjHcmK/gLqf+VIrj6aZHn/1VWseoO5
- RHHGg3xSqolYJiRM8Hp+Kwm8/ueYAmqUexe4JkZeNb3D7PprpwsmyBbyuMITqLLL
- YX9ZqqSa4wIyes4EAND2ucwNqhm7FX5HntZeJzr1mAqhHZfLwL6Fya2VhIN5mFI2
- 0mHXMaInQPunLAc6OjfPG5j03UH76e5HgloI9xYywAyRwRZgBczbA==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4emb6st3x7-1
+ :mime-version:references:subject:to; s=pp1; bh=V6Wmouut4zyIvAdLv
+ UMJgyAgtIXLJFICdCxmcVCO4NI=; b=NLcMJko11MKzE3NNjEysJQQzHHGiDJrDc
+ 9DSS2bDl0rMYLCmT/KD3AKFweJxLUZpXml1lSdHo3ulhF57gTYnzpsZOsHLEjr4f
+ DnfVkNhqaPSs0jENq8eizj5qZdm2UaBfx42VoadyM8BoSsygVnWcoI1OR2WGrxF4
+ Fx1YaYnvnzOhHdaNyyv1Tfp0+GT6wYO5spjgWZv18fsbGnQ3pndWL5us+C4Dq1Vw
+ SPj0VgsvpzSN2YXVmBJ1sC4YhDwphDv/U/UZ3xAT0BQFMjMGxGOePpnbHWvY8XgW
+ Hp89+O+9swrR1CgHUyBp7spSfNELg5nbuNBCeAL+I/tYP90pdCozA==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4emb6st3x9-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 09 Jun 2026 04:16:43 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 659450VQ000702;
- Tue, 9 Jun 2026 04:16:42 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4en0jy82um-1
+ Tue, 09 Jun 2026 04:16:45 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65944sgm006099;
+ Tue, 9 Jun 2026 04:16:45 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4emwvq0g6c-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 09 Jun 2026 04:16:42 +0000 (GMT)
+ Tue, 09 Jun 2026 04:16:44 +0000 (GMT)
 Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
  [10.20.54.104])
- by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 6594GdQu48496978
+ by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 6594GfYI38404444
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 9 Jun 2026 04:16:39 GMT
+ Tue, 9 Jun 2026 04:16:41 GMT
 Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 3D91C2004B;
- Tue,  9 Jun 2026 04:16:39 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 8F37520040;
+ Tue,  9 Jun 2026 04:16:41 +0000 (GMT)
 Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 606E120040;
- Tue,  9 Jun 2026 04:16:38 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id B46EA20043;
+ Tue,  9 Jun 2026 04:16:40 +0000 (GMT)
 Received: from dhcp-9-123-11-179.bl1-in.ibm.com (unknown [9.123.11.179])
  by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Tue,  9 Jun 2026 04:16:38 +0000 (GMT)
+ Tue,  9 Jun 2026 04:16:40 +0000 (GMT)
 From: Praveen K Pandey <praveen@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Tue,  9 Jun 2026 09:46:28 +0530
-Message-ID: <20260609041632.74427-2-praveen@linux.ibm.com>
+Date: Tue,  9 Jun 2026 09:46:30 +0530
+Message-ID: <20260609041632.74427-4-praveen@linux.ibm.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20260609041632.74427-1-praveen@linux.ibm.com>
 References: <20260609041632.74427-1-praveen@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -37MAtv0VVFgFUf7YVKXCygDWfrARagO
-X-Proofpoint-GUID: -37MAtv0VVFgFUf7YVKXCygDWfrARagO
-X-Authority-Analysis: v=2.4 cv=ZbEt8MVA c=1 sm=1 tr=0 ts=6a2793ab cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+X-Proofpoint-ORIG-GUID: SwuzUy3QgZNVdg9QoNVG447e4fArmvsS
+X-Proofpoint-GUID: SwuzUy3QgZNVdg9QoNVG447e4fArmvsS
+X-Authority-Analysis: v=2.4 cv=ZbEt8MVA c=1 sm=1 tr=0 ts=6a2793ad cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
  a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=RzCfie-kr_QcCd8fBx8p:22 a=VnNF1IyMAAAA:8 a=omOdbC7AAAAA:8
- a=FC7l3Q3g1R7yOEuUkScA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA5MDAzNCBTYWx0ZWRfX/ZIg6+KFB2Y9
- HBfdRXDJe49/ELiSF0uTUBQkGVqWhIF9WyT3A+WwOVAX23yEC+aGcdcK7ew0siIE5pxlRS8qWvy
- ttzIu4z6FaYauUQY0FPJYwkokNsmw51y9R8PMT7F/kOcPq4ZI28OueMARC3ppuGZ/JlVCvZVw67
- pICIjbJEAaF/kBvGFlJq89R878cmQkGaOlc2q6CfVg+n9UHRZfV7BWu7avbJLCl2LGSf44wBSmF
- z63oF8y1Yc/laWZpwDqKDgKiqYRRhAiTZE3pUhpGwmlJy3+3WC5QnWtN/0GyhghFciN7sPgSkRk
- CgM1k2xxikwi9gPd9M5tPz61F3xbrTRJlJxKFNIjt8/bffHtzSb3UUBDOow1FXwXt2FRnMK8FyY
- GkNUs2caJBFrWP7q5vvJVzVhcKZiVdCdO4aZfBuv4N1Vg0Su69Is6+aBMUX3oJuhulpkKo3Y7I8
- PwOHULnG2cfRU8x3lMQ==
+ a=RzCfie-kr_QcCd8fBx8p:22 a=mDV3o1hIAAAA:8 a=VnNF1IyMAAAA:8 a=20KFwNOVAAAA:8
+ a=KqD7naV4so1j0J8VR08A:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA5MDAzNCBTYWx0ZWRfX81Ws8j+nMK6x
+ LOOVeorybcXe1x2bUTlN6mKd0C7uLid9dksLUuJHnWDnFBv4fg8goV4HhtvjvRDLiT3kkZLKNsM
+ 8tuu3LDnrsxrI+TeEbeBXPQ1yjsei8qDEIWA7/iUh5D6DMwPoaMrrldxAA1+qvOlMiu8wde8AfM
+ gT/rm5hhpd9GsY5VpsNKBQRA5GnHPtQR/RCzscrQLB+d2JUBd+vmVlzCBcSYqQdzabgzYUGapAf
+ /ih+6EYr1GLf+IGkq3jPcrn4fIonBkMKD8dnFhH8nSi0ZOPBn71/OQv4ggaDhmDZzFW+jXO66CO
+ wOceiFRKLUV38fwR4bvj+lili5FHyWW57ubYFqwYn+msSnVPNfp4qsTJmPVOMu4Rm6Jhzwvrosz
+ IhcxJRryr7V1N3qCtATl8+5ZQGIkqMP3KEA9fqYnprMB1Mm6p0OYJAy+zOu/tbU2UqiLsq/M/7L
+ WdPAguuEPQBtl3d6hRg==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-06-09_01,2026-06-09_01,2025-10-01_01
@@ -95,9 +94,9 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
  route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2605210000
  definitions=main-2606090034
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 1/5] ftrace: Add common library for C implementation
+Subject: [LTP] [PATCH v6 3/5] ftrace: Convert ftrace_regression02.sh to C
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,594 +113,207 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add ftrace_lib.c and ftrace_lib.h to provide common functionality
-for ftrace test cases. The library handles:
+Convert ftrace_regression02.sh to C using the new LTP test API.
+This test validates ftrace event tracing functionality, specifically
+checking for grp and res fields in signal_generate events.
 
-- Debugfs mounting and detection using tst_is_mounted()
-- Ftrace initialization and cleanup
-- Reading and writing ftrace files
-- Saving and restoring ftrace settings
-- Getting available tracers
-- Setting current tracer using SAFE_FILE_PRINTF()
+This is a regression test for commits 6c303d3 and 163566f which
+added group and result fields to signal events.
 
-The library uses LTP's SAFE_* macros for robust error handling
-and SAFE_ASPRINTF() for memory allocation. Proper NULL checks
-are included for all strdup() calls.
+Key changes:
+- Uses new LTP C API (tst_test.h)
+- Leverages ftrace_lib for common operations
+- Proper error handling with LTP macros
+- Sets .min_kver = "3.2" for kernel version requirement
+- Requires root privileges (.needs_root = 1)
 
-Also update Makefile and .gitignore to support building the new
-C tests. This ensures each commit in the series can be built
-independently (bisectability).
+The test enables event tracing, generates events, and verifies
+they are captured in the trace buffer with the expected fields.
 
 Signed-off-by: Praveen K Pandey <praveen@linux.ibm.com>
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- .../kernel/tracing/ftrace_test/.gitignore     |   4 +
- testcases/kernel/tracing/ftrace_test/Makefile |  19 +-
- .../kernel/tracing/ftrace_test/ftrace_lib.c   | 371 ++++++++++++++++++
- .../kernel/tracing/ftrace_test/ftrace_lib.h   | 136 +++++++
- 4 files changed, 528 insertions(+), 2 deletions(-)
- create mode 100644 testcases/kernel/tracing/ftrace_test/.gitignore
- create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_lib.c
- create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_lib.h
+ .../tracing/ftrace_test/ftrace_regression02.c | 101 ++++++++++++++++++
+ .../ftrace_test/ftrace_regression02.sh        |  63 -----------
+ 2 files changed, 101 insertions(+), 63 deletions(-)
+ create mode 100644 testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
+ delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
 
-diff --git a/testcases/kernel/tracing/ftrace_test/.gitignore b/testcases/kernel/tracing/ftrace_test/.gitignore
+diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
 new file mode 100644
-index 000000000..9e102074c
+index 000000000..4484ba613
 --- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/.gitignore
-@@ -0,0 +1,4 @@
-+ftrace_regression01
-+ftrace_regression02
-+ftrace_stress_test
-+
-diff --git a/testcases/kernel/tracing/ftrace_test/Makefile b/testcases/kernel/tracing/ftrace_test/Makefile
-index e4a913a56..2528b9f15 100644
---- a/testcases/kernel/tracing/ftrace_test/Makefile
-+++ b/testcases/kernel/tracing/ftrace_test/Makefile
-@@ -1,7 +1,22 @@
--top_srcdir              ?= ../../../..
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2010 FUJITSU LIMITED
-+# Copyright (c) 2024 Linux Test Project
-+# Copyright (c) IBM, 2026
-+# Converted to C by: Praveen K Pandey <praveen@linux.ibm.com>
-+
-+top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--INSTALL_TARGETS         := *.sh ftrace_stress/*
-+# Filter out ftrace_lib from standalone build targets
-+FILTER_OUT_MAKE_TARGETS := ftrace_lib
-+
-+# Only ftrace_stress_test needs pthread
-+ftrace_stress_test: LDLIBS += -lpthread
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+# C test binaries with shared library dependencies
-+ftrace_regression01:	ftrace_lib.o
-+ftrace_regression02:	ftrace_lib.o
-+ftrace_stress_test:	ftrace_lib.o
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_lib.c b/testcases/kernel/tracing/ftrace_test/ftrace_lib.c
-new file mode 100644
-index 000000000..9aad863a9
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_lib.c
-@@ -0,0 +1,371 @@
++++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.c
+@@ -0,0 +1,101 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2010 FUJITSU LIMITED
++ * Copyright (c) 2015 Red Hat Inc.
 + * Copyright (c) 2024 Linux Test Project
 + * Copyright (c) IBM, 2026
 + *
-+ * Author: Li Zefan <lizf@cn.fujitsu.com>
++ * Author: Li Wang <liwang@redhat.com>
 + * Converted to C by: Praveen K Pandey <praveen@linux.ibm.com>
 + */
 +
-+#define TST_NO_DEFAULT_MAIN
-+#include "ftrace_lib.h"
++/*\
++ * Verify that signal:signal_generate tracepoint exposes 'grp=' and 'res=' fields.
++ *
++ * This test verifies kernel commits that added more information to the
++ * signal_generate tracepoint:
++ *
++ * - Commit 6c303d3 (tracing: let trace_signal_generate() report more info...)
++ * - Commit 163566f (tracing: send_sigqueue() needs trace_signal_generate())
++ *
++ * These fields were added in kernel 3.2.
++ *
++ * Requires root to access and configure the ftrace subsystem via debugfs.
++ *
++ * [Algorithm]
++ *
++ * - Enable signal:signal_generate event
++ * - Enable tracing
++ * - Generate signals by running commands
++ * - Read trace output and search for 'grp=' and 'res=' fields
++ * - Test passes if both fields are found in the trace
++ */
++
 +#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "tst_safe_stdio.h"
-+#include "tst_safe_file_ops.h"
-+#include "tst_device.h"
++#include "ftrace_lib.h"
 +
-+char *tracing_path;
-+char *debugfs_path;
-+static int debugfs_mounted_by_us;
++#define SIGNAL_LOOP 100
 +
-+struct ftrace_saved_state saved_state;
-+
-+void ftrace_initialize(void)
++static void run_test(void)
 +{
-+	if (tst_is_mounted("/sys/kernel/debug")) {
-+		debugfs_path = strdup("/sys/kernel/debug");
-+		if (!debugfs_path)
-+			tst_brk(TBROK | TERRNO, "strdup failed");
-+	} else {
-+		char *tmpdir = tst_tmpdir_path();
++	int i;
++	char *trace_content;
++	int found = 0;
 +
-+		SAFE_ASPRINTF(&debugfs_path, "%s/debugfs", tmpdir);
-+		SAFE_MKDIR(debugfs_path, 0755);
-+		SAFE_MOUNT("debugfs", debugfs_path, "debugfs", 0, NULL);
-+		debugfs_mounted_by_us = 1;
-+	}
++	/* Set event */
++	if (ftrace_write_file("set_event", "signal:signal_generate\n") != 0)
++		tst_brk(TBROK, "Failed to set signal:signal_generate event");
 +
-+	SAFE_ASPRINTF(&tracing_path, "%s/tracing", debugfs_path);
++	/* Enable tracing */
++	ftrace_enable_tracing();
 +
-+	if (access(tracing_path, F_OK) != 0)
-+		tst_brk(TCONF, "Tracing is not supported");
-+
-+	ftrace_save_settings();
-+}
-+
-+void ftrace_cleanup(void)
-+{
-+	ftrace_restore_settings();
-+
-+	if (debugfs_mounted_by_us && debugfs_path) {
-+		tst_umount(debugfs_path);
-+		rmdir(debugfs_path);
-+	}
-+
-+	free(tracing_path);
-+	free(debugfs_path);
-+
-+	free(saved_state.trace_options);
-+	free(saved_state.tracing_on);
-+	free(saved_state.buffer_size);
-+	free(saved_state.tracing_cpumask);
-+	free(saved_state.tracing_enabled);
-+	free(saved_state.stack_tracer_enabled);
-+	free(saved_state.ftrace_enabled);
-+	free(saved_state.function_profile_enabled);
-+}
-+
-+char *ftrace_get_path(const char *filename)
-+{
-+	char *path;
-+
-+	SAFE_ASPRINTF(&path, "%s/%s", tracing_path, filename);
-+	return path;
-+}
-+
-+char *ftrace_read_file(const char *filename)
-+{
-+	char *path;
-+	FILE *fp;
-+	char *content = NULL;
-+	size_t len = 0;
-+	ssize_t read;
-+	char *line = NULL;
-+	size_t total_size = 0;
-+
-+	path = ftrace_get_path(filename);
-+	if (!path)
-+		return NULL;
-+
-+	fp = fopen(path, "r");
-+	free(path);
-+
-+	if (!fp)
-+		return NULL;
-+
-+	while ((read = getline(&line, &len, fp)) != -1) {
-+		char *new_content = realloc(content, total_size + read + 1);
-+
-+		if (!new_content) {
-+			free(content);
-+			free(line);
-+			fclose(fp);
-+			return NULL;
-+		}
-+		content = new_content;
-+		memcpy(content + total_size, line, read);
-+		total_size += read;
-+	}
-+
-+	if (content)
-+		content[total_size] = '\0';
-+
-+	free(line);
-+	fclose(fp);
-+
-+	return content;
-+}
-+
-+int ftrace_write_file(const char *filename, const char *content)
-+{
-+	char *path;
-+	FILE *fp;
-+	int ret;
-+
-+	path = ftrace_get_path(filename);
-+	if (!path)
-+		return -1;
-+
-+	fp = fopen(path, "w");
-+	free(path);
-+
-+	if (!fp)
-+		return -1;
-+
-+	ret = fprintf(fp, "%s", content);
-+	fclose(fp);
-+
-+	return (ret > 0) ? 0 : -1;
-+}
-+
-+int ftrace_file_exists(const char *filename)
-+{
-+	char *path;
-+	int ret;
-+
-+	path = ftrace_get_path(filename);
-+	if (!path)
-+		return 0;
-+
-+	ret = (access(path, F_OK) == 0);
-+	free(path);
-+
-+	return ret;
-+}
-+
-+void ftrace_save_settings(void)
-+{
-+	if (saved_state.saved)
-+		return;
-+
-+	saved_state.trace_options = ftrace_read_file("trace_options");
-+	saved_state.tracing_on = ftrace_read_file("tracing_on");
-+	saved_state.buffer_size = ftrace_read_file("buffer_size_kb");
-+
-+	if (ftrace_file_exists("tracing_cpumask"))
-+		saved_state.tracing_cpumask = ftrace_read_file("tracing_cpumask");
-+
-+	if (ftrace_file_exists("tracing_enabled"))
-+		saved_state.tracing_enabled = ftrace_read_file("tracing_enabled");
-+
-+	if (ftrace_file_exists("stack_max_size")) {
-+		FILE *fp = fopen("/proc/sys/kernel/stack_tracer_enabled", "r");
-+
-+		if (fp) {
-+			saved_state.stack_tracer_enabled = malloc(32);
-+			if (saved_state.stack_tracer_enabled)
-+				fgets(saved_state.stack_tracer_enabled, 32, fp);
-+			fclose(fp);
-+		}
-+	}
-+
-+	if (access("/proc/sys/kernel/ftrace_enabled", F_OK) == 0) {
-+		FILE *fp = fopen("/proc/sys/kernel/ftrace_enabled", "r");
-+
-+		if (fp) {
-+			saved_state.ftrace_enabled = malloc(32);
-+			if (saved_state.ftrace_enabled)
-+				fgets(saved_state.ftrace_enabled, 32, fp);
-+			fclose(fp);
-+		}
-+	}
-+
-+	if (ftrace_file_exists("function_profile_enabled"))
-+		saved_state.function_profile_enabled = ftrace_read_file("function_profile_enabled");
-+
-+	saved_state.saved = 1;
-+}
-+
-+void ftrace_restore_settings(void)
-+{
-+	if (!saved_state.saved)
-+		return;
-+
-+	ftrace_write_file("current_tracer", "nop\n");
-+	ftrace_write_file("events/enable", "0\n");
-+
-+	if (ftrace_file_exists("tracing_max_latency"))
-+		ftrace_write_file("tracing_max_latency", "0\n");
-+
-+	if (saved_state.tracing_cpumask)
-+		ftrace_write_file("tracing_cpumask", saved_state.tracing_cpumask);
-+
-+	if (ftrace_file_exists("trace_clock"))
-+		ftrace_write_file("trace_clock", "local\n");
-+
-+	if (saved_state.function_profile_enabled)
-+		ftrace_write_file("function_profile_enabled", saved_state.function_profile_enabled);
-+
-+	if (saved_state.ftrace_enabled) {
-+		FILE *fp = fopen("/proc/sys/kernel/ftrace_enabled", "w");
-+
-+		if (fp) {
-+			fprintf(fp, "%s", saved_state.ftrace_enabled);
-+			fclose(fp);
-+		}
-+	}
-+
-+	if (saved_state.stack_tracer_enabled && ftrace_file_exists("stack_max_size")) {
-+		FILE *fp = fopen("/proc/sys/kernel/stack_tracer_enabled", "w");
-+
-+		if (fp) {
-+			fprintf(fp, "%s", saved_state.stack_tracer_enabled);
-+			fclose(fp);
-+		}
-+		ftrace_write_file("stack_max_size", "0\n");
-+	}
-+
-+	if (saved_state.buffer_size)
-+		ftrace_write_file("buffer_size_kb", saved_state.buffer_size);
-+
-+	if (saved_state.tracing_on)
-+		ftrace_write_file("tracing_on", saved_state.tracing_on);
-+
-+	if (saved_state.tracing_enabled)
-+		ftrace_write_file("tracing_enabled", saved_state.tracing_enabled);
-+
-+	if (saved_state.trace_options) {
-+		char *options = strdup(saved_state.trace_options);
-+
-+		if (options) {
-+			char *token = strtok(options, "\n");
-+
-+			while (token) {
-+				ftrace_write_file("trace_options", token);
-+				token = strtok(NULL, "\n");
-+			}
-+			free(options);
-+		}
-+	}
-+
++	/* Clear trace buffer */
 +	ftrace_clear_trace();
 +
-+	if (ftrace_file_exists("set_ftrace_filter"))
-+		ftrace_write_file("set_ftrace_filter", "\n");
-+}
-+
-+char **ftrace_get_available_tracers(int *count)
-+{
-+	char *path;
-+	FILE *fp;
-+	char **tracers = NULL;
-+	char *line = NULL;
-+	size_t len = 0;
-+	int n = 0;
-+	int capacity = 16;
-+
-+	path = ftrace_get_path("available_tracers");
-+	if (!path) {
-+		*count = 0;
-+		return NULL;
++	/* Generate some signals by running commands */
++	for (i = 0; i < SIGNAL_LOOP; i++) {
++		/* Run a simple command that will generate signals */
++		if (system("ls -l /proc > /dev/null 2>&1") == -1)
++			tst_res(TINFO, "Command execution failed, continuing...");
 +	}
 +
-+	fp = fopen(path, "r");
-+	free(path);
++	/* Wait for trace to be written and contain signal events */
++	trace_content = TST_RETRY_FUNC(ftrace_read_file("trace"), TST_RETVAL_NOTNULL);
++	if (!trace_content)
++		tst_brk(TBROK, "Failed to read trace file");
 +
-+	if (!fp) {
-+		*count = 0;
-+		return NULL;
++	/* Check for 'grp=' and 'res=' fields in trace */
++	if (strstr(trace_content, "grp=") && strstr(trace_content, "res="))
++		found = 1;
++
++	free(trace_content);
++
++	if (found)
++		tst_res(TPASS, "signal_generate event contains grp and res fields");
++	else
++		tst_res(TFAIL, "signal_generate event missing grp or res fields");
++}
++
++static void setup(void)
++{
++	ftrace_initialize();
++}
++
++static void cleanup(void)
++{
++	ftrace_cleanup();
++}
++
++static struct tst_test test = {
++	.test_all = run_test,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.min_kver = "3.2",
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "6c303d3"},
++		{"linux-git", "163566f"},
++		{}
 +	}
-+
-+	tracers = malloc(sizeof(char *) * capacity);
-+	if (!tracers) {
-+		fclose(fp);
-+		*count = 0;
-+		return NULL;
-+	}
-+
-+	if (getline(&line, &len, fp) != -1) {
-+		char *token;
-+		char *saveptr;
-+
-+		token = strtok_r(line, " \n", &saveptr);
-+		while (token) {
-+			if (n >= capacity) {
-+				capacity *= 2;
-+				char **new_tracers = realloc(tracers, sizeof(char *) * capacity);
-+
-+				if (!new_tracers) {
-+					while (n > 0)
-+						free(tracers[--n]);
-+					free(tracers);
-+					free(line);
-+					fclose(fp);
-+					*count = 0;
-+					return NULL;
-+				}
-+				tracers = new_tracers;
-+			}
-+
-+			tracers[n] = strdup(token);
-+			if (!tracers[n]) {
-+				while (n > 0)
-+					free(tracers[--n]);
-+				free(tracers);
-+				free(line);
-+				fclose(fp);
-+				*count = 0;
-+				return NULL;
-+			}
-+			n++;
-+			token = strtok_r(NULL, " \n", &saveptr);
-+		}
-+	}
-+
-+	free(line);
-+	fclose(fp);
-+
-+	*count = n;
-+	return tracers;
-+}
-+
-+int ftrace_set_tracer(const char *tracer)
-+{
-+	char *path;
-+
-+	path = ftrace_get_path("current_tracer");
-+	if (!path)
-+		return -1;
-+
-+	SAFE_FILE_PRINTF(path, "%s", tracer);
-+	free(path);
-+
-+	return 0;
-+}
-+
-+void ftrace_clear_trace(void)
-+{
-+	ftrace_write_file("trace", "\n");
-+}
-+
-+void ftrace_enable_tracing(void)
-+{
-+	ftrace_write_file("tracing_on", "1\n");
-+}
-+
-+void ftrace_disable_tracing(void)
-+{
-+	ftrace_write_file("tracing_on", "0\n");
-+}
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_lib.h b/testcases/kernel/tracing/ftrace_test/ftrace_lib.h
-new file mode 100644
-index 000000000..79fdfee28
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_lib.h
-@@ -0,0 +1,136 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (c) 2010 FUJITSU LIMITED
-+ * Copyright (c) 2024 Linux Test Project
-+ * Copyright (c) IBM, 2026
-+ *
-+ * Author: Li Zefan <lizf@cn.fujitsu.com>
-+ * Converted to C by: Praveen K Pandey <praveen@linux.ibm.com>
-+ */
-+
-+#ifndef FTRACE_LIB_H
-+#define FTRACE_LIB_H
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <sys/mount.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <errno.h>
-+#include <limits.h>
-+
-+extern char *tracing_path;
-+extern char *debugfs_path;
-+
-+struct ftrace_saved_state {
-+	char *trace_options;
-+	char *tracing_on;
-+	char *buffer_size;
-+	char *tracing_cpumask;
-+	char *tracing_enabled;
-+	char *stack_tracer_enabled;
-+	char *ftrace_enabled;
-+	char *function_profile_enabled;
-+	int saved;
 +};
 +
-+extern struct ftrace_saved_state saved_state;
-+
-+/**
-+ * ftrace_initialize - Initialize ftrace test environment
-+ *
-+ * Checks if debugfs is mounted, mounts it if needed, verifies tracing
-+ * support, and saves current ftrace settings.
-+ */
-+void ftrace_initialize(void);
-+
-+/**
-+ * ftrace_cleanup - Cleanup and restore ftrace settings
-+ *
-+ * Restores all saved ftrace settings and unmounts debugfs if needed.
-+ */
-+void ftrace_cleanup(void);
-+
-+/**
-+ * ftrace_save_settings - Save current ftrace settings
-+ *
-+ * Saves all ftrace configuration to restore later.
-+ */
-+void ftrace_save_settings(void);
-+
-+/**
-+ * ftrace_restore_settings - Restore saved ftrace settings
-+ *
-+ * Restores ftrace configuration saved by ftrace_save_settings().
-+ */
-+void ftrace_restore_settings(void);
-+
-+/**
-+ * ftrace_get_path - Get full path to a tracing file
-+ * @filename: Name of the file in tracing directory
-+ *
-+ * Return: Allocated string with full path (caller must free)
-+ */
-+char *ftrace_get_path(const char *filename);
-+
-+/**
-+ * ftrace_read_file - Read content from a tracing file
-+ * @filename: Name of the file in tracing directory
-+ *
-+ * Return: Allocated string with file content (caller must free)
-+ */
-+char *ftrace_read_file(const char *filename);
-+
-+/**
-+ * ftrace_write_file - Write content to a tracing file
-+ * @filename: Name of the file in tracing directory
-+ * @content: Content to write
-+ *
-+ * Return: 0 on success, -1 on failure
-+ */
-+int ftrace_write_file(const char *filename, const char *content);
-+
-+/**
-+ * ftrace_file_exists - Check if a tracing file exists
-+ * @filename: Name of the file in tracing directory
-+ *
-+ * Return: 1 if exists, 0 otherwise
-+ */
-+int ftrace_file_exists(const char *filename);
-+
-+/**
-+ * ftrace_get_available_tracers - Get list of available tracers
-+ * @count: Pointer to store number of tracers
-+ *
-+ * Return: Array of tracer names (caller must free)
-+ */
-+char **ftrace_get_available_tracers(int *count);
-+
-+/**
-+ * ftrace_set_tracer - Set current tracer
-+ * @tracer: Name of the tracer to set
-+ *
-+ * Return: 0 on success, -1 on failure
-+ */
-+int ftrace_set_tracer(const char *tracer);
-+
-+/**
-+ * ftrace_clear_trace - Clear the trace buffer
-+ */
-+void ftrace_clear_trace(void);
-+
-+/**
-+ * ftrace_enable_tracing - Enable tracing
-+ */
-+void ftrace_enable_tracing(void);
-+
-+/**
-+ * ftrace_disable_tracing - Disable tracing
-+ */
-+void ftrace_disable_tracing(void);
-+
-+#endif /* FTRACE_LIB_H */
-+
+diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
+deleted file mode 100755
+index 3c32f219e..000000000
+--- a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
++++ /dev/null
+@@ -1,63 +0,0 @@
+-#! /bin/sh
+-
+-###########################################################################
+-##                                                                       ##
+-## Copyright (c) 2015, Red Hat Inc.                                      ##
+-##                                                                       ##
+-## This program is free software: you can redistribute it and/or modify  ##
+-## it under the terms of the GNU General Public License as published by  ##
+-## the Free Software Foundation, either version 3 of the License, or     ##
+-## (at your option) any later version.                                   ##
+-##                                                                       ##
+-## This program is distributed in the hope that it will be useful,       ##
+-## but WITHOUT ANY WARRANTY; without even the implied warranty of        ##
+-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          ##
+-## GNU General Public License for more details.                          ##
+-##                                                                       ##
+-## You should have received a copy of the GNU General Public License     ##
+-## along with this program. If not, see <http://www.gnu.org/licenses/>.  ##
+-##                                                                       ##
+-## Author: Li Wang <liwang@redhat.com>                                   ##
+-##                                                                       ##
+-###########################################################################
+-##                                                                       ##
+-## Summary: check signal:signal_generate gives 2 more fields: grp res    ##
+-##                                                                       ##
+-## This testcase is writing for signal events change:                    ##
+-##       6c303d3 tracing: let trace_signal_generate() report more info...##
+-##       163566f tracing: send_sigqueue() needs trace_signal_generate()  ##
+-##                                                                       ##
+-###########################################################################
+-
+-export TCID="ftrace_regression02"
+-export TST_TOTAL=1
+-
+-. ftrace_lib.sh
+-
+-ftrace_signal_test()
+-{
+-	# Set envent
+-	echo 'signal:signal_generate' > $TRACING_PATH/set_event
+-	echo 1 > $TRACING_PATH/tracing_on
+-	echo > $TRACING_PATH/trace
+-
+-	# just to generate trace
+-	for i in $(seq 100); do
+-		ls -l /proc > /dev/null 2>&1
+-	done
+-
+-	grep -q 'grp=[0-9] res=[0-9]' $TRACING_PATH/trace
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "finished running the test."
+-	else
+-		tst_resm TFAIL "running the test failed, please check log message."
+-	fi
+-}
+-
+-if tst_kvcmp -lt "3.2"; then
+-	tst_brkm TCONF "The test should be run in kernels >= 3.2.0 Skip the test..."
+-fi
+-
+-ftrace_signal_test
+-
+-tst_exit
 -- 
 2.50.1
 
