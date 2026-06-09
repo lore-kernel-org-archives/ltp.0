@@ -4,115 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B68B7CD8CA4
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 09:58:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA005CD8CA8
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 10:26:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C710E3C61C4
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 11:58:47 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 0B3D53E5F83
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 12:26:50 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CBDAD3C61C4
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 11:58:31 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 100C53C6F29
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 12:26:32 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4A1036009D6
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 11:58:31 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 78DF71A007FE
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 12:26:30 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8A33A6A9DE;
- Tue,  9 Jun 2026 09:58:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1780999110; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CA40775AC2;
+ Tue,  9 Jun 2026 10:26:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1781000789; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=KXo2K4aSJzAQgKEqxpjETswTU2GvgtFPA8x91DdhDCk=;
- b=w4q99KHeqRWDOFTzBWysfjTweP8OKLMHB8un0ixCogRrhD+nBbvS+4NIOGDYrBZZ8tj4Gv
- e9UdVFIQkxZUd6RkkQ9k4oRh0LaSD78TJJOrOIVsmT4Jcyml/+nPvyECdsOdSijMBvhmSS
- zUxWvNMYRtD1ubeG0BDqmhDEmuqIv4Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1780999110;
+ in-reply-to:in-reply-to:references:references;
+ bh=uXNNxtuE6hZkn1oUUSC/B0IjFeO9OtHqR8melKSJtDs=;
+ b=Us3JZ+49bv7vBDxvGdP0gIALaHeiuQLYj7kJslRH5RgvmvHk+v7SGjWQMYY2+PPYRqTdBi
+ 0j1wRY+/ABtt/jWVXUr68v67fALnE1AoRdhCAlhKcDQI5MAr/3HSc7d6x0ANFC7FCkY0QL
+ eeoXPCgfJJ0IEZel4CxN2xMtKziBUZo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1781000789;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=KXo2K4aSJzAQgKEqxpjETswTU2GvgtFPA8x91DdhDCk=;
- b=eMwN51s3Czqg7X/G/jfThq1H8ZzftizJzA0VuqVG2zwANI95U9+pwt4Rj3a1bjdnjuOMYm
- kLdZI8pdsl0UcPAw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=w4q99KHe;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=eMwN51s3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1780999110; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ in-reply-to:in-reply-to:references:references;
+ bh=uXNNxtuE6hZkn1oUUSC/B0IjFeO9OtHqR8melKSJtDs=;
+ b=Vr7bUoW5CpVdpetCOWA0lYHEhIHW7hZiFTJsDNOX+zWf8kKPpx099W2KUSJydGHHbiW4bZ
+ 7sMPGENKXY1xb9DQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1781000788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=KXo2K4aSJzAQgKEqxpjETswTU2GvgtFPA8x91DdhDCk=;
- b=w4q99KHeqRWDOFTzBWysfjTweP8OKLMHB8un0ixCogRrhD+nBbvS+4NIOGDYrBZZ8tj4Gv
- e9UdVFIQkxZUd6RkkQ9k4oRh0LaSD78TJJOrOIVsmT4Jcyml/+nPvyECdsOdSijMBvhmSS
- zUxWvNMYRtD1ubeG0BDqmhDEmuqIv4Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1780999110;
+ in-reply-to:in-reply-to:references:references;
+ bh=uXNNxtuE6hZkn1oUUSC/B0IjFeO9OtHqR8melKSJtDs=;
+ b=UlzCcsAKsysdSOUGKZIbvKybqbmS858PPJmRjBc66+qoI1TGwHcP2onNorXVVonFoBgG6I
+ LkTxuKwZ33SEwfFGzcq5kSEsmhr2tKyh2Vmtd+VvOCoXlZc8ZCzChKeFr34UXgZrK9Oyy+
+ RPA5I/hjLQHcjYUklnfRwLzeyCQec4Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1781000788;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=KXo2K4aSJzAQgKEqxpjETswTU2GvgtFPA8x91DdhDCk=;
- b=eMwN51s3Czqg7X/G/jfThq1H8ZzftizJzA0VuqVG2zwANI95U9+pwt4Rj3a1bjdnjuOMYm
- kLdZI8pdsl0UcPAw==
+ in-reply-to:in-reply-to:references:references;
+ bh=uXNNxtuE6hZkn1oUUSC/B0IjFeO9OtHqR8melKSJtDs=;
+ b=QYtXsc0Z8QDOIeIuDU7oPQmN03Z7p1UR0Ty6ACgm/L5KSE2viPx+aJqddvAauzK0npiW/m
+ yvehoGJ2NlRiyUAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F099779A7;
- Tue,  9 Jun 2026 09:58:30 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B3B3B779A7;
+ Tue,  9 Jun 2026 10:26:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 3ttcGcbjJ2oCPwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 09 Jun 2026 09:58:30 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 09 Jun 2026 11:57:31 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id rwsCKlTqJ2q1WwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 09 Jun 2026 10:26:28 +0000
+Date: Tue, 9 Jun 2026 12:26:18 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Piotr Kubaj <piotr.kubaj@intel.com>
+Message-ID: <aifqSgdF-_F5nz8-@yuki.lan>
+References: <20260514093559.125070-2-piotr.kubaj@intel.com>
 MIME-Version: 1.0
-Message-Id: <20260609-clone10_remove_checkpoint_leftover-v1-1-a2a99f71ba9f@suse.com>
-X-B4-Tracking: v=1; b=H4sIAIrjJ2oC/x2NwQqDMBAFf0X23MAaimB/pZQQNs+61CayERHEf
- 2/oceYwc1KFKSo9upMMu1YtuUF/60jmmN9wmhqTZz/wwKOTpWT0HAzfsiPIDPmsRfMWFkxbU+Z
- S9HyXUWISoRZaDZMe/8nzdV0/i2XolHQAAAA=
-X-Change-ID: 20260609-clone10_remove_checkpoint_leftover-da204c9cadcc
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1780999110; l=880;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=sQArucjVdVFuh4hppZPPr1H3sIVVQqgx2ptwcZbMKpo=;
- b=mLCw7mhJwXwX+b9RwiUHprSg2e1igEr27JBSlUPIpRNfintissGwno4JcypQGix/eGG8Pt01k
- 5fwZs+biVl7Bd70dclsIGnBhdEQFzeJJqpV3tUphmTnVdC+nd+ufXWL
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 8A33A6A9DE
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+Content-Disposition: inline
+In-Reply-To: <20260514093559.125070-2-piotr.kubaj@intel.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,suse.com:email,suse.com:mid];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- TO_DN_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DKIM_TRACE(0.00)[suse.de:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-0.995]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
  RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
- imap1.dmz-prg2.suse.org:rdns, imap1.dmz-prg2.suse.org:helo, suse.de:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[6]; RCVD_COUNT_TWO(0.00)[2];
+ URIBL_BLOCKED(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid, suse.cz:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] clone10: remove needs_checkpoints leftover
+Subject: Re: [LTP] [PATCH v13] high_freq_hwp_cap_cppc.c: new test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,39 +107,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
+ helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi!
+> +#include "tst_test.h"
+> +#include "tst_safe_prw.h"
+> +
+> +#define MSR_HWP_CAPABILITIES	0x771
+> +#define HIGHEST_PERF_MASK	0xFF
+> +
+> +static int nproc;
+> +static int fd = -1;
+> +static int *mismatch;
+> +
+> +static void setup(void)
+> +{
+> +	if (access("/dev/cpu/0/msr", F_OK) == -1)
+> +		tst_brk(TCONF | TERRNO, "msr driver not loaded");
+> +
+> +	if (access("/sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf", F_OK) == -1)
+> +		tst_brk(TCONF | TERRNO, "CPPC sysfs not available");
+> +
+> +	nproc = tst_ncpus_conf();
+> +	mismatch = SAFE_MALLOC(nproc * sizeof(int));
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd != -1)
+> +		SAFE_CLOSE(fd);
+> +
+> +	free(mismatch);
+> +}
+> +
+> +static void run(void)
+> +{
+> +	bool status = true;
+> +	char path[PATH_MAX];
+> +
+> +	memset(mismatch, 0, nproc * sizeof(*mismatch));
+> +
+> +	for (int i = 0; i < nproc; i++) {
+> +		int online = 1;
+> +		unsigned long long msr_highest_perf = 0, sysfs_highest_perf = 0;
+> +
+> +		if (i) {
+> +			snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/online", i);
+> +			SAFE_FILE_SCANF(path, "%d", &online);
+> +		}
+> +
+> +		if (!online) {
+> +			tst_res(TINFO, "CPU%d offline, skipping", i);
+> +			continue;
+> +		}
+> +
+> +		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/acpi_cppc/highest_perf", i);
+> +		SAFE_FILE_SCANF(path, "%llu", &sysfs_highest_perf);
+> +		tst_res(TDEBUG, "%s: %llu", path, sysfs_highest_perf);
+> +
+> +		snprintf(path, sizeof(path), "/dev/cpu/%d/msr", i);
+> +		fd = SAFE_OPEN(path, O_RDONLY);
+> +
+> +		SAFE_PREAD(1, fd, &msr_highest_perf, sizeof(msr_highest_perf), MSR_HWP_CAPABILITIES);
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- testcases/kernel/syscalls/clone/clone10.c | 1 -
- 1 file changed, 1 deletion(-)
+If I run the test on AMD Ryzen I get EIO here. I suppose that we need to
+limit this test to a family of CPUs that match the MSR format we expect.
 
-diff --git a/testcases/kernel/syscalls/clone/clone10.c b/testcases/kernel/syscalls/clone/clone10.c
-index 96de811ad079aad05d2014d9bc5afc5c22ca7077..d1e3ae11c5e2939bd1ac2ee7f69674363fb07dd2 100644
---- a/testcases/kernel/syscalls/clone/clone10.c
-+++ b/testcases/kernel/syscalls/clone/clone10.c
-@@ -88,7 +88,6 @@ static void cleanup(void)
- static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
--	.needs_checkpoints = 1,
- 	.test_all = verify_tls,
- 	.supported_archs = (const char *const []) {
- 		"x86_64",
-
----
-base-commit: 1efb4bb8eb4a8582284a90a70ca2adc22c4e47b0
-change-id: 20260609-clone10_remove_checkpoint_leftover-da204c9cadcc
-
-Best regards,
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
