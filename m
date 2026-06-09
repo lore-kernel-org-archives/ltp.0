@@ -4,89 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8550CD8CAC
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 07:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1780991721; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=lXyMlvt7v8pTHa3GYkXytNBAsGo11j+HnRD3o0bknCc=;
- b=NO6CoCqgZFAyx0Nxt7UBWShZ5iXugJBG7MNgKfKDpfoTMPxvwXXWwAywXickAz3CnZlc8
- /N9/xljXueX8LYz4N7uAcVOZgXul0U5zQToycK+s2bYIgWJ/R5PVDgDni/mAOpa68+0m6jG
- PzQxzLX6TQqhFtzH0sYRK+QvZ7mfdL0=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5073ECD8C85
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 08:03:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BED663E2B44
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 09:55:21 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 7B4C13E4E71
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 10:03:12 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 28AEC3C6F7C
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 09:55:02 +0200 (CEST)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
+ by picard.linux.it (Postfix) with ESMTPS id 70F4E3E2B39
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 10:02:56 +0200 (CEST)
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com
+ [IPv6:2607:f8b0:4864:20::f42])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5EA831001263
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 09:55:01 +0200 (CEST)
-Received: by mail-wm1-x32c.google.com with SMTP id
- 5b1f17b1804b1-490d1e54b3bso15074005e9.1
- for <ltp@lists.linux.it>; Tue, 09 Jun 2026 00:55:01 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1379414013B2
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 10:02:56 +0200 (CEST)
+Received: by mail-qv1-xf42.google.com with SMTP id
+ 6a1803df08f44-8ccda0ac4fcso53441006d6.2
+ for <ltp@lists.linux.it>; Tue, 09 Jun 2026 01:02:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1780991701; x=1781596501; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=jufv9IVcbPOTPj2sfoog1olThZKFTRAsJjMG4J8kYFE=;
- b=DJ5s4W9XNBnbmPUUH6OGuc5hats1RvHFdLErUbrFavIpl289080kU5GtKZuzdAM2+F
- 4t+WbTntyZfybMGeuHFvMy2/+2mBx0hFn3MTElLOmVMh+MNeuZU3+aSS2CVRZ/Sa/KyQ
- /gmNZymdb7brKho/gbK+JtqB7brNKbK8yelrKL6cOUaWvVkEyWnyQ8RxoGdg94W39MFy
- X1bkEXU3NqwQAfBggdc7+wnTUn2nyAaPI2vBvl/jsX60gjMcUiHAsIelTwO5U3LM2RZf
- mSamLvWnNfZ/fYj2a56N5hATby8jwXde4PkyWlcqs1kRyh4nfy/kvLI7hRSYqxqXgEIP
- VGdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780991701; x=1781596501;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=gmail.com; s=20251104; t=1780992175; x=1781596975; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=jufv9IVcbPOTPj2sfoog1olThZKFTRAsJjMG4J8kYFE=;
- b=mPZipDUev2Xb/ePIe0hNipgYAscM06MBMYZa26gfvuD3TS/vgIsPGyayDE6KmkPGDa
- Pi5K3PYhVA3OMOTbqLlvBrN6MHJQRqEpnCjAsO9wNdoug+9wu5+QxRe81tbo4oJi/bjw
- hstF3FJfX4oruxkH7jNN+5V+wazVFjIH1fFr9zEDX65NKksPud+j8IBBFQktlCPAz23j
- 24PvJAbhBP255PMuASSwGz+aC/ocCMfpxkDIaBiQySS4xeHkCK60E6Sdfm8WYGvP1As4
- BZmpycAc5EAVhJ1fvac0fn/h4iSHD+T1FYn0jGCPbGz3cdMyoOfu33nZbToTfI2n14mG
- 6qSQ==
-X-Gm-Message-State: AOJu0Yw9q86DV/nnxr4f+ut11LYj2xefbYfmIarnUlMYw10LspZ0B5wp
- IBilDly0pVXfHxeYjJdwOdDhGz4mdU/7ayQa5q97zz05KgXDN8bsOxJD4mmI16SY4Xs=
-X-Gm-Gg: Acq92OHuxy5fJ+XFXILAfsitNIrWOk+xwrrmAQTOxVszPsApq7LV48X5PNUnStgAUrS
- W9A5VlaRYXHT5LeCpoGAfc9HYbTOauIIQym4cMrNaNnAnZy2WG3zQg27Gal/Wf7kFOf42fIjw/5
- VPvowd4hHb6yyGoeZAFKf0ps3rdP4ofW5VhaX6mm/K6h9J+r9EIGlnObrwT1y0kynXLgI8W77BD
- UNjSYmoxjWGJ/gCOz6OhRUkFLNe2YAVJKCcGRz10Dy7PI8htqanYynE7+slRpgBVEFdJkJN5xSI
- QU2WgVNpThsZo6l7h6LhbvhsQnaGucqj4r7UIy9qb9ozl7BxnqphZ8/bBNx6Zq3edrux1Ah/AJA
- u2OTYOFK6Je/xcrbXvVZFJODVlvJHlOprNSjglINWdtGpBwzdqrhs7yyOmAoX7Kpxc0+PV3nqUY
- H4aJJe0UwIeKRCnM8l5xSNL1O+v5m/iGzSnsIQJG+0uNTt1MaEiDdN6X371DggLFY1KFhrwMXV/
- Z6+DC+EtA5rvLPdOS9GczaqYxZziHSmfjBVOyM2cGt1VA==
-X-Received: by 2002:a05:600c:8b70:b0:490:ae94:a7e6 with SMTP id
- 5b1f17b1804b1-490c25c20e0mr294181995e9.24.1780991700578; 
- Tue, 09 Jun 2026 00:55:00 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
- [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-490c2d60a7csm42297065e9.2.2026.06.09.00.54.59
+ bh=fxwjbhzdwAhLoNv+J9GWdx4xGfH4j7yjgQO3aNrl0gw=;
+ b=d3K70SO6KejP4yCAhnjSIHP4W5mkcKbM2AbnAnMI6YIfZ3gKXgCILszLbxwMhOxRp+
+ bnvfyzIwCfivvp71fovLTdr+xcinAdpHfMEgydc5VO7EHAbLbwJiIS/HDTwms2TWDUNu
+ z2sHCEX69tC3PhjkRySgxYgydybk5u1f9P+k7IIHFXtWC5DpAo/y4ryrboE+9gtibILQ
+ WM1V1BhHDKb1CRPfk4Zi1wuxJ8xI38gQo8fWJQUMSBFWmCLhBW+e009e7o8WsQX6JY2n
+ fv9X+EiW4qQ1zxUS1Yv6uz6nXwB6ds63Q/DpQe9dQFgT9tXkobsCBG2ZVBUAgSH2mQuG
+ 0Srg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1780992175; x=1781596975;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=fxwjbhzdwAhLoNv+J9GWdx4xGfH4j7yjgQO3aNrl0gw=;
+ b=X2FHEAEanWolamotdmoAiYkUgnOXQKYhv2/W8fA0e68q+VD6vOJuokltf5AicbrnRp
+ ZQ11xNkF/EHX6q2hSzq2uQSBS60oOoFlWX5yVgclpXMByW13+pfrQvZCZ6J07k1PUimY
+ y2vzcxR2wvz0qXMewsPlLgKcf5NZEX6tIAyW/4iR8Nh4Mcf4JKEFN589JhOywMSx3pPn
+ 4l5wHaOVKkbCUUWYbh9f8iS0cCVxGcxG64StZxTXKFx78ADWwnPBpc8S/4EMAAav+uiE
+ A2hiXdunrbdQlAVdQ6eLlbMLT2u5l6iZFSRG0TGlwADw5HD8ZztuGMByZZ/yilgFFPe9
+ hZ9w==
+X-Gm-Message-State: AOJu0Yxr0rz+zhMKnP2VX5QMJO6ZWNSrfx7DgPrDl/v7jaPnQb6D82FB
+ ibHv/gaHPBTDi4oXmJ0Wiw06B/cICLwQ6UxysVgALkKh/0gu4D5Akumo1/EXlIBc
+X-Gm-Gg: Acq92OFlys7Ivs+lDJlc8K2pPkFhI/icfiBBQUy65A5VXbLXPDvQf3+j/2D7oSI7zMs
+ CWntT+qwoyoiNL1h1Y/vP33PZ2vhwHDc7uU/mvP6oEOFCn8kcPBI0o6bBeu2Da4DKDTwXfYdQZl
+ 9glomUKY6KjY/KgQciXh9+kcpLLEJ+NEr4WNeHVwgdYOyh2CX/kDHkOM0c1YQOhk/vQocs0Flj7
+ 1al/RyRHSdW+Nre/4FNDrCWM16QoZJ9eYSmwW50nxBaou5H5E8qkBTxMfgzu7WKQf5GE2XnfpYW
+ aX89ftjKuiGbbU4paqFz+xbJYaSvaOKTVJOy/7Cju0Fnb6mtK5J2WRwG0CqxyK0C1VjX8xXhi8M
+ VfF48zedIyTEgI5kUwGdKMreVIzol4MQSAAdDDQZYv0fErcc/4jIDal2mqgkrOZsfB4lTJ3zbdg
+ UD5QPqeiNahRwbRM/E+t6ft1CrM2tz5nFgLZiJTLnccXrggB1h4P/LLvrb93tWTzrRC4sye2nKJ
+ Pmp5GATeMszALACQT6AbTgJNnrWpuVx078iv8lC1q6XQtOA4g==
+X-Received: by 2002:ad4:5947:0:b0:8cc:f72d:6a5 with SMTP id
+ 6a1803df08f44-8cf1dc0a68cmr20934946d6.36.1780992174676; 
+ Tue, 09 Jun 2026 01:02:54 -0700 (PDT)
+Received: from
+ runnervm3jyl0.ywgp2imo21luxe0qdw54wwlgfe.cx.internal.cloudapp.net
+ ([20.161.68.243]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8ceccdb5e92sm195920506d6.11.2026.06.09.01.02.54
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 09 Jun 2026 00:55:00 -0700 (PDT)
-Message-ID: <6a27c6d4.e3606774.7bf52.3c44@mx.google.com>
-To: Pavithra <pavrampu@linux.ibm.com>
-In-Reply-To: <20260420102339.729745-1-pavrampu@linux.ibm.com>
-Date: Tue, 09 Jun 2026 07:54:59 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ Tue, 09 Jun 2026 01:02:54 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Jinseok Kim <always.starving0@gmail.com>
+Date: Tue,  9 Jun 2026 08:02:53 +0000
+Message-ID: <20260609080253.4025-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260524154221.2064-1-always.starving0@gmail.com>
+References: <20260524154221.2064-1-always.starving0@gmail.com>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Fix hugeshmat05 test failure on lpar with 1GB
- hugepages.
+Subject: Re: [LTP] power_management: rewrite runpwtests04.sh in C
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,80 +91,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: pavrampu@linux.ibm.com, ltp@lists.linux.it
-MIME-Version: 1.0
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Pavithra,
+Hi Jinseok,
 
-> +	tst_res(TINFO, "Page size: %ld bytes", page_size);
-> +	tst_res(TINFO, "Hugepage size: %ld bytes (%ld MB)",
-> +		hpage_size, hpage_size / (1024 * 1024));
->  }
+On Mon, May 25, 2026, Jinseok Kim wrote:
+> power_management: rewrite runpwtests04.sh in C
 
-[...]
-
->  
-> -void shm_test(int size)
-> +void shm_test(long size)
->  {
->  	int shmid;
->  	char *shmaddr;
-> @@ -56,7 +60,7 @@ void shm_test(int size)
->  	}
->  
->  	shmaddr[0] = 1;
-> -	tst_res(TINFO, "allocated %d huge bytes", size);
-> +	tst_res(TINFO, "allocated %ld huge bytes", size);
->  
->  	if (shmdt((const void *)shmaddr) != 0) {
->  		shmctl(shmid, IPC_RMID, NULL);
-> @@ -69,13 +73,23 @@ void shm_test(int size)
->  static void test_hugeshmat(void)
->  {
->  	unsigned int i;
-> +	long multiplier;
-> +	long tst_sizes[4];
+> +static void verify_cpuidle(unsigned int i)
+> +{
+> +	int fd;
+> +	char path[PATH_MAX];
+> +	char buf[32];
 > +
-> +	/*
-> +	 * For large hugepage sizes (e.g., 1GB), use N/2 multiplier to avoid
-> +	 * excessive memory requirements (4GB for N=4 with 1GB pages) while
-> +	 * still testing alignment boundary conditions with multiple pages.
-> +	 */
-> +	if (hpage_size >= 1024 * 1024 * 1024)
-> +		multiplier = N / 2;
-> +	else
-> +		multiplier = N;
->  
-> -	const int tst_sizes[] = {
-> -		N * hpage_size - page_size,
-> -		N * hpage_size - page_size - 1,
-> -		hpage_size,
-> -		hpage_size + 1
-> -	};
-> +	tst_sizes[0] = multiplier * hpage_size - page_size;
-> +	tst_sizes[1] = multiplier * hpage_size - page_size - 1;
-> +	tst_sizes[2] = hpage_size;
-> +	tst_sizes[3] = hpage_size + 1;
->  
+> +	snprintf(path, sizeof(path), "%s/%s", CPUIDLE_PATH, tcases[i].name);
+> +
+> +	fd = SAFE_OPEN(path, O_RDONLY);
+> +
+> +	SAFE_READ(0, fd, buf, sizeof(buf));
+> +	SAFE_CLOSE(fd);
 
-Are you still working on this patch? If yes, please update it according
-to the agent review, before sending a v2. Also, in LTP we have TST_KB,
-TST_MB, TST_GB, so you can avoid using `1024 * 1024 ..` format.
+If SAFE_READ() triggers tst_brk(), execution jumps to cleanup but
+there is no cleanup registered, so fd is never closed.
 
-Please rebase to master and send a new version, I will move this patch
-into Changes Requested before proceeding to the proper review.
+The LTP convention is to track file descriptors in a static variable
+initialized to -1 and close them in a .cleanup handler:
+
+  static int fd = -1;
+
+  static void verify_cpuidle(unsigned int i)
+  {
+          ...
+          fd = SAFE_OPEN(path, O_RDONLY);
+          SAFE_READ(0, fd, buf, sizeof(buf));
+          SAFE_CLOSE(fd);
+
+          tst_res(TPASS, "%s read successfully", path);
+  }
+
+  static void cleanup(void)
+  {
+          if (fd != -1)
+                  SAFE_CLOSE(fd);
+  }
+
+  static struct tst_test test = {
+          .setup = setup,
+          .cleanup = cleanup,
+          ...
+  };
+
+Verdict: Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
 Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
