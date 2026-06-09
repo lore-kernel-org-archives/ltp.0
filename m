@@ -4,82 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8406CD8CA4
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 12:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59AFBCD8CA8
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 12:41:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781008901; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=/CXd11X5ENKEmpMggflmb8mEsED9ZT6rdSFORrIJMiw=;
+ b=hIwf/P6PTIk1SQVILTEEHmxP1r4ptLjWlKzJ1//d+Nx2H4Qf5386xNdhTW/H6QcPLEYqb
+ CMcvpPfm/3Sf0Yj8lE+jWVtPsQMPGlZ81YO58p0O90luoFi6xdJSC5GZTum6VLuhdQ4DxEZ
+ EZfsoKcLxxAQAz5CLXfuaf6tj08IhC4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 202A13E6EFB
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 14:39:25 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D53E43E4E71
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 14:41:41 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CAB333C1C1F
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:39:08 +0200 (CEST)
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com
- [IPv6:2607:f8b0:4864:20::844])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6CCF33C1C6B
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:41:20 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 104151A000A2
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:39:08 +0200 (CEST)
-Received: by mail-qt1-x844.google.com with SMTP id
- d75a77b69052e-5177945a22eso37314241cf.1
- for <ltp@lists.linux.it>; Tue, 09 Jun 2026 05:39:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781008747; x=1781613547; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=weRod0WgKOEzpQ10BFL4Azd6CsYbib7gVcYl6bXmDD8=;
- b=VLalZl7U5+50OqIpv8wkconHjLXrLyjouhn14FMmOOF602Hjtaxjcg8veV9IkHsbqy
- ICGRBmaFiNehBnCmntEWeUKULp3Ls1V4O6vaoEGL9pcDAFhsjCKnHLujOW0KmAG+HfaD
- +wwD6SDxQryNqhXkNTQ+cKX27l2DjbbCR5dnJSmTzgXUffBxgufeNwoQwux7uhH59BuO
- Ggk8M4NAlmUqIKpFyX+oIfEJtYa7fAAtUpCO9nJPjMu3pkPNJ0pQV/25aNYUpzbEUs19
- /r481XsDIBbYqPWzUsM9qHMcydEmitWfzPqmv3d53eQkmB977gxakzP1JEHBIX6erB20
- voSg==
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CD772600941
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:41:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1781008878;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=tBQ4DCFYI4EiR9KYTiOPM+C9DEMadGJZYYJrNklQDBw=;
+ b=bMPD5wNZu2uhJu1hK7cQLkbY9Z3/9RlGkTaXCHjIacokki9C4i2EuMciw+kLcqYtP9i7Gq
+ Nj1eOcIxbbGLgn9NT/T//eJXQ4qm9jGo1+pzK6K7x0UhPJTjGFBhngydLwskfI4d89nEg+
+ DLWxzgvfkBQxjRfdbdnDWI7G+i8iC3A=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-35-WbQxcAauPNWUEUlJhwVToA-1; Tue, 09 Jun 2026 08:41:16 -0400
+X-MC-Unique: WbQxcAauPNWUEUlJhwVToA-1
+X-Mimecast-MFC-AGG-ID: WbQxcAauPNWUEUlJhwVToA_1781008875
+Received: by mail-wr1-f71.google.com with SMTP id
+ ffacd0b85a97d-4601daf4c65so3230197f8f.2
+ for <ltp@lists.linux.it>; Tue, 09 Jun 2026 05:41:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781008747; x=1781613547;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ d=1e100.net; s=20251104; t=1781008875; x=1781613675;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=weRod0WgKOEzpQ10BFL4Azd6CsYbib7gVcYl6bXmDD8=;
- b=lO5iXSP+B+Jsgf7+XlSswxKx5VT+0l9X1d32SgEQ9qgNy0ilmojYrIBNzcozDkjK2/
- Vm2wVOv4gcgUs0vLjF6xCbxVQHjJ27ZVIp6N3X855PmxKfwWLBF70rsJG6rduxaGSfOU
- QA+M4+3MYeB6UlcwnirUNzo4xg9cVQGG4gtOKcjtho9lTnV7HMote1//BvqobfxQuZJm
- KYGXO9iR2zveKJ/ANo1QXC34PaaezmRkUpLuaQaCvUG3l40TCkagtswAHDzMFCmE59l3
- G/VyQrFp9jjAWygtUzdOMElhN1ITtYmIkLz8FOqkW42ONA3E5wFMF2gf1egqP9mINv0c
- VAHw==
-X-Gm-Message-State: AOJu0YxG6rLuKZtibhLaYKLYpLYHrj+93aCKOpMNsYOTqTmfZVZE5NK/
- BAuhAmHnN81T8Uj9q/U5hIb4g6cECXx43fiXxZ+ALNYHaBB0qUGTcbtf
-X-Gm-Gg: Acq92OEzWyVVgRUhXpwH7d6iOZeD6GvuJ+eq2K1L6U3aw8F2ccAE+fmyEphF9yoHyuq
- t7DrbeFCuiYDTpG5igNyS7eSTMFm5FYsj+BKfvUfJag/Z8fQbs9Ud5Xr9zym/0c0Ljps76oubE9
- usQsz36W8Ja0Y3nI+xJYxtCdU/0AQrcFxZGKq2j4px5hdoVrap6HeLb4Rq2CwU4abpfxRAX8rJ6
- VpaKnBODKlh7xC+QYigcY7vqxgfc6OuyoeorcS8xhGg7pPsGyuN3QCq7AZZfVzIGhSKVHQfCvy2
- vpI3cHcUkWEyVpD0ATzE2ydbJGqq/XBn2tNPPtlUC1tKmyHfAeUyvA77v5bShcWuqvazl1wj0PY
- 8oowtBtdwCxsG/bD+oRbrIDpgmwpEKSTcB8iuWO8g8wMMDeUPjEflDIHZrra6FLdbfnyYVJjgFd
- BMUDPxB85oLKbbnPWD0WIxeyMj2/imOXOtsS69tIaY7FhX9o5sYravmCgypvCMmAvfZEA++gJ9p
- jAhwJtBwK2a3UKzBNwVY0qx3dQ42gi2zNbwYpvK3RMzEPR0Zw==
-X-Received: by 2002:ac8:4815:0:b0:50e:62ba:3ff7 with SMTP id
- d75a77b69052e-51796953383mr195018121cf.26.1781008746588; 
- Tue, 09 Jun 2026 05:39:06 -0700 (PDT)
-Received: from
- runnervm3jyl0.2t524bbebovutlbh3yi03vovrh.bx.internal.cloudapp.net
- ([4.246.135.164]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-51775c2e2casm184121851cf.9.2026.06.09.05.39.06
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 09 Jun 2026 05:39:06 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue,  9 Jun 2026 12:39:05 +0000
-Message-ID: <20260609123905.3947-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260609-clone10_remove_checkpoint_leftover-v1-1-a2a99f71ba9f@suse.com>
-References: <20260609-clone10_remove_checkpoint_leftover-v1-1-a2a99f71ba9f@suse.com>
+ bh=tBQ4DCFYI4EiR9KYTiOPM+C9DEMadGJZYYJrNklQDBw=;
+ b=NNZ89Op3AP055ULFDxOZ8Wqd4/tGn4Qgo17nlqfBnyEgfXztwtm9JKmOYIJpqD46Jv
+ WVAgmgq9JLc2WuYT2IGB/pzhxd27ntBmyhGPbuGaFKtTQxGOsjIU/MMuRmTULiAu1F/W
+ tD58iEagehzRTpqKFK1DZ0aDnnxyGG6eZZU55vYAkXYGPoNw4pnUs8vRwG6+xCSD+CoT
+ VfVc9nwpEehuB85gmnRu0JtOhzx11grYi0kbZAVPhBIkxDgYZvpD85KW3SLTFNkwNFKW
+ sho9O+idfWkNAiVyAm+7qErXkGgw02sqbJvuoviissduK76lPkwYCZweD7npsqkz32TI
+ YE0w==
+X-Gm-Message-State: AOJu0YzMLCB0YG5LWIhaG1vuxm77L3/bVd5+Yw2Zux3+d5F7IoirAbKf
+ x6X/9ROsQuLtJUfw8z/tYQEijlKHQF4PIk+nLBVo56FFzuPZ/itiPFjZJ2f6Ujxw3ziCpzeU2mQ
+ ayTdf9h7283abgNfGgSeSn2VBTA21perZZIsI9GsipKmechwSNu1xPMNNnBALfUK0sSN1Zv2z81
+ qyiecVRBnNIZ4LqL3foFNV6Gln/sc=
+X-Gm-Gg: Acq92OELhb3jYqHscFipmlHRqQSZxhXjGg7TlGsUzab1yjouu38Aw0H7SE5YfOKm6xg
+ O3FSjtEURk/dvFa0FJWl6EUlcePs0JMNJhGKCfBQ5xvV+TZVpsSAOfQjgdEuS8+UJcAcRAe5l20
+ QU/qk3AR6eY//YCY1AwHm5LpoEiSx3yHZiVfrY7/RobjqaY7v+a+loAxh8qUYi/Df4T+FSGj5/b
+ GL4GkIxeG1HnNw=
+X-Received: by 2002:a05:6000:2888:b0:460:3233:beec with SMTP id
+ ffacd0b85a97d-460566db54fmr3529236f8f.40.1781008875324; 
+ Tue, 09 Jun 2026 05:41:15 -0700 (PDT)
+X-Received: by 2002:a05:6000:2888:b0:460:3233:beec with SMTP id
+ ffacd0b85a97d-460566db54fmr3529199f8f.40.1781008874901; Tue, 09 Jun 2026
+ 05:41:14 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+References: <20260609-clone10_remove_checkpoint_leftover-v1-1-a2a99f71ba9f@suse.com>
+In-Reply-To: <20260609-clone10_remove_checkpoint_leftover-v1-1-a2a99f71ba9f@suse.com>
+Date: Tue, 9 Jun 2026 14:40:58 +0200
+X-Gm-Features: AVVi8CeH-PVuK2yT9wR8upiZJuzzZDTZj2avq2wHGKHiAs2nxdg04KXWMP_O9G4
+Message-ID: <CAASaF6x20BQuu3mhTRgQ=rQqQaWosPqbCCfJf5OCTUK+rh-q_w@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: rCkAfdMy7YavzpGTlqIdU6qPNy9wuootBFDU5haGirg_1781008875
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] clone10: remove needs_checkpoints leftover
+Subject: Re: [LTP] [PATCH] clone10: remove needs_checkpoints leftover
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,35 +102,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Jan Stancek via ltp <ltp@lists.linux.it>
+Reply-To: Jan Stancek <jstancek@redhat.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
-
-On Tue, 9 Jun 2026 11:57:31 +0200, Andrea Cervesato wrote:
-> clone10: remove needs_checkpoints leftover
-
-Verdict: Reviewed
-
-Pre-existing issues (not introduced by this patch):
-
-The doc comment at the top of clone10.c has a typo on line 9:
-"writtes" should be "writes". The same sentence also reads
-"to a thread local variables" which should be
-"to thread-local variables".
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBKdW4gOSwgMjAyNiBhdCAxMTo1OeKAr0FNIEFuZHJlYSBDZXJ2ZXNhdG8KPGFuZHJl
+YS5jZXJ2ZXNhdG9Ac3VzZS5kZT4gd3JvdGU6Cj4KPiBGcm9tOiBBbmRyZWEgQ2VydmVzYXRvIDxh
+bmRyZWEuY2VydmVzYXRvQHN1c2UuY29tPgo+Cj4gU2lnbmVkLW9mZi1ieTogQW5kcmVhIENlcnZl
+c2F0byA8YW5kcmVhLmNlcnZlc2F0b0BzdXNlLmNvbT4KCkFja2VkLWJ5OiBKYW4gU3RhbmNlayA8
+anN0YW5jZWtAcmVkaGF0LmNvbT4KCj4gLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+Y2xvbmUvY2xvbmUxMC5jIHwgMSAtCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGRlbGV0aW9uKC0pCj4K
+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTEwLmMg
+Yi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25lMTAuYwo+IGluZGV4IDk2ZGU4
+MTFhZDA3OWFhZDA1ZDIwMTRkOWJjNWFmYzVjMjJjYTcwNzcuLmQxZTNhZTExYzVlMjkzOWJkMWFj
+MmVlN2Y2OTY3NDM2M2ZiMDdkZDIgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9jbG9uZS9jbG9uZTEwLmMKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Ns
+b25lL2Nsb25lMTAuYwo+IEBAIC04OCw3ICs4OCw2IEBAIHN0YXRpYyB2b2lkIGNsZWFudXAodm9p
+ZCkKPiAgc3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0ZXN0ID0gewo+ICAgICAgICAgLnNldHVwID0g
+c2V0dXAsCj4gICAgICAgICAuY2xlYW51cCA9IGNsZWFudXAsCj4gLSAgICAgICAubmVlZHNfY2hl
+Y2twb2ludHMgPSAxLAo+ICAgICAgICAgLnRlc3RfYWxsID0gdmVyaWZ5X3RscywKPiAgICAgICAg
+IC5zdXBwb3J0ZWRfYXJjaHMgPSAoY29uc3QgY2hhciAqY29uc3QgW10pIHsKPiAgICAgICAgICAg
+ICAgICAgIng4Nl82NCIsCj4KPiAtLS0KPiBiYXNlLWNvbW1pdDogMWVmYjRiYjhlYjRhODU4MjI4
+NGE5MGE3MGNhMmFkYzIyYzRlNDdiMAo+IGNoYW5nZS1pZDogMjAyNjA2MDktY2xvbmUxMF9yZW1v
+dmVfY2hlY2twb2ludF9sZWZ0b3Zlci1kYTIwNGM5Y2FkY2MKPgo+IEJlc3QgcmVnYXJkcywKPiAt
+LQo+IEFuZHJlYSBDZXJ2ZXNhdG8gPGFuZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5jb20+Cj4KPgo+IC0t
+Cj4gTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRw
+Cj4KCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGlu
+Zm8vbHRwCg==
