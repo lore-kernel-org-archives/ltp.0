@@ -4,93 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59AFBCD8CA8
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 12:41:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781008901; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=/CXd11X5ENKEmpMggflmb8mEsED9ZT6rdSFORrIJMiw=;
- b=hIwf/P6PTIk1SQVILTEEHmxP1r4ptLjWlKzJ1//d+Nx2H4Qf5386xNdhTW/H6QcPLEYqb
- CMcvpPfm/3Sf0Yj8lE+jWVtPsQMPGlZ81YO58p0O90luoFi6xdJSC5GZTum6VLuhdQ4DxEZ
- EZfsoKcLxxAQAz5CLXfuaf6tj08IhC4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE0AECD8C92
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 12:43:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D53E43E4E71
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 14:41:41 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 46DD23E6EFE
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 14:43:14 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6CCF33C1C6B
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:41:20 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id BDA453C1C6B
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:42:56 +0200 (CEST)
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com
+ [IPv6:2607:f8b0:4864:20::1042])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CD772600941
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:41:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1781008878;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=tBQ4DCFYI4EiR9KYTiOPM+C9DEMadGJZYYJrNklQDBw=;
- b=bMPD5wNZu2uhJu1hK7cQLkbY9Z3/9RlGkTaXCHjIacokki9C4i2EuMciw+kLcqYtP9i7Gq
- Nj1eOcIxbbGLgn9NT/T//eJXQ4qm9jGo1+pzK6K7x0UhPJTjGFBhngydLwskfI4d89nEg+
- DLWxzgvfkBQxjRfdbdnDWI7G+i8iC3A=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-35-WbQxcAauPNWUEUlJhwVToA-1; Tue, 09 Jun 2026 08:41:16 -0400
-X-MC-Unique: WbQxcAauPNWUEUlJhwVToA-1
-X-Mimecast-MFC-AGG-ID: WbQxcAauPNWUEUlJhwVToA_1781008875
-Received: by mail-wr1-f71.google.com with SMTP id
- ffacd0b85a97d-4601daf4c65so3230197f8f.2
- for <ltp@lists.linux.it>; Tue, 09 Jun 2026 05:41:16 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B84311400B89
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:42:55 +0200 (CEST)
+Received: by mail-pj1-x1042.google.com with SMTP id
+ 98e67ed59e1d1-36b903567fdso5477842a91.1
+ for <ltp@lists.linux.it>; Tue, 09 Jun 2026 05:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1781008974; x=1781613774; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=7KBUnHNeCZs/AzewUvEQ0GPxezF4yIncCvO/N7QbJRk=;
+ b=R2qcmB67/ck6jZTgrt2fhTByUzSEM8qa6g/A5FHE0Q49RZXA2jOhPeuN24aJqA08ea
+ IAuzYkoeB9pXwqOabi6HmBgAFMqTiV8zSLYKjJmYrlZa27oEl0g4M+tUpMQoLDYPmeT9
+ jW9LHzPa/+zcDZ35UHNN/Uup7OTMe8UAQdaade7U9BjxczK2MPAnT0ZCb65cu48STV0E
+ 0Eaet/yO6UrjJrvT+50TUgM5s9dGHAVPSJiN05F5GbzLVvDfNUDEZvCxIkN4VtRxbNc8
+ ZlytUlGP0rXiBWi8fFnzN4ojJ26rr0VS4n5cxKiB+G+zERkTCxc3urilNeEpyqhTRHQW
+ KgQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781008875; x=1781613675;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+ d=1e100.net; s=20251104; t=1781008974; x=1781613774;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=tBQ4DCFYI4EiR9KYTiOPM+C9DEMadGJZYYJrNklQDBw=;
- b=NNZ89Op3AP055ULFDxOZ8Wqd4/tGn4Qgo17nlqfBnyEgfXztwtm9JKmOYIJpqD46Jv
- WVAgmgq9JLc2WuYT2IGB/pzhxd27ntBmyhGPbuGaFKtTQxGOsjIU/MMuRmTULiAu1F/W
- tD58iEagehzRTpqKFK1DZ0aDnnxyGG6eZZU55vYAkXYGPoNw4pnUs8vRwG6+xCSD+CoT
- VfVc9nwpEehuB85gmnRu0JtOhzx11grYi0kbZAVPhBIkxDgYZvpD85KW3SLTFNkwNFKW
- sho9O+idfWkNAiVyAm+7qErXkGgw02sqbJvuoviissduK76lPkwYCZweD7npsqkz32TI
- YE0w==
-X-Gm-Message-State: AOJu0YzMLCB0YG5LWIhaG1vuxm77L3/bVd5+Yw2Zux3+d5F7IoirAbKf
- x6X/9ROsQuLtJUfw8z/tYQEijlKHQF4PIk+nLBVo56FFzuPZ/itiPFjZJ2f6Ujxw3ziCpzeU2mQ
- ayTdf9h7283abgNfGgSeSn2VBTA21perZZIsI9GsipKmechwSNu1xPMNNnBALfUK0sSN1Zv2z81
- qyiecVRBnNIZ4LqL3foFNV6Gln/sc=
-X-Gm-Gg: Acq92OELhb3jYqHscFipmlHRqQSZxhXjGg7TlGsUzab1yjouu38Aw0H7SE5YfOKm6xg
- O3FSjtEURk/dvFa0FJWl6EUlcePs0JMNJhGKCfBQ5xvV+TZVpsSAOfQjgdEuS8+UJcAcRAe5l20
- QU/qk3AR6eY//YCY1AwHm5LpoEiSx3yHZiVfrY7/RobjqaY7v+a+loAxh8qUYi/Df4T+FSGj5/b
- GL4GkIxeG1HnNw=
-X-Received: by 2002:a05:6000:2888:b0:460:3233:beec with SMTP id
- ffacd0b85a97d-460566db54fmr3529236f8f.40.1781008875324; 
- Tue, 09 Jun 2026 05:41:15 -0700 (PDT)
-X-Received: by 2002:a05:6000:2888:b0:460:3233:beec with SMTP id
- ffacd0b85a97d-460566db54fmr3529199f8f.40.1781008874901; Tue, 09 Jun 2026
- 05:41:14 -0700 (PDT)
+ bh=7KBUnHNeCZs/AzewUvEQ0GPxezF4yIncCvO/N7QbJRk=;
+ b=EppqRDdY2THvm1g5eOvF+sDRgC20QtkotDlECrHivIsx+oEbH0DsJJX+pWTgSlla29
+ tTPiCu0qYyd3q8XCAj8eQmEYEL9zFYe3CUyovHAJuPY6LPqop5+AxOfm4YPkjt4hM/Uz
+ IaujSj+k3VYnv+zruebRNXICBB8csBB0NxhnX0xRtKDXiRQ3ekShw7/KUeEn9Mz8Obb4
+ Va7pf0dY3hNqUtFpYw2ElUxxl4kLk2z3ciOim/KQppgojyXUR+AKDlIIN+ZNqV01C7dA
+ BshUHBW8xoRs4iTJ+PGcnR2wflIuW6GiE46aq5jih0CMo4FblriG6R+MZkjXCwBHaXPF
+ OyZg==
+X-Gm-Message-State: AOJu0YxuhJhKKqcWoTGgz0qXqj0A7bIERsqmKDK32SWj58HMBZSij5sL
+ yvxnAgOilc3dYH5Im7K8lqwHYECm0dkIdbvQBIrF6hPEKfTlXAHwRHXz
+X-Gm-Gg: Acq92OGxKCySGVFCgBkLQ828xJ7XdV9Vp8W6Lj7jas4U2E+a/G3dFbN0MBFX0jVq9UN
+ KDCSGBHm2mraFKMVnfcMVJUFmhVmCa+GY0/2hhu4Upmf02Zle54EtaAtiLLcU1T1YE64uO/OhqT
+ v0AM35oN9aRNvQzYetMjHQA6U0iVgZpaTXnvgM7+YJ1u/8rNj3CFGJti+rkfWI3ITS0DfBVU+ye
+ vsyNplGeTaUV6OMZpTnwj3UzGr7mDxdlilQwqieXX7khksNfchY7LUQBLXKJV5DcpZay4p0i0Gs
+ UzP0Umi9lEGAjoYY4QEaZilZnuuA568B+oBrpPshQNKqY0fLyWXKaPQHomYnUuzWsGWXz48rrox
+ HRJsONueTMxdRMTZOVF8UaHd8bERZxOaA3SFy0qW2Y7Dt4oiPPfJPaNTgb5tCSS3UY/o/fF8Oun
+ 0Q+g+11qA57lTnEUSyYz2Ob7lx8vjdt5KtG2OKsPy1fYERIpAc4IYi55TX3EGKc0xoMyf+KvEXr
+ Wq01id/lbxLy+c/1f12dgHVClaejezVr1wa8Bjd2NbW/XfJCjTLqDEcNKY=
+X-Received: by 2002:a17:903:291:b0:2c0:c940:dc32 with SMTP id
+ d9443c01a7336-2c1e821dde8mr239527025ad.16.1781008974064; 
+ Tue, 09 Jun 2026 05:42:54 -0700 (PDT)
+Received: from
+ runnervm3jyl0.bo5t1dxqcrwu5gfyvsnzvi4j2h.xx.internal.cloudapp.net
+ ([52.233.87.85]) by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-2c164f6ce98sm195153895ad.10.2026.06.09.05.42.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 09 Jun 2026 05:42:53 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Piotr Kubaj <piotr.kubaj@intel.com>
+Date: Tue,  9 Jun 2026 12:42:52 +0000
+Message-ID: <20260609124252.4112-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260609121840.61087-2-piotr.kubaj@intel.com>
+References: <20260609121840.61087-2-piotr.kubaj@intel.com>
 MIME-Version: 1.0
-References: <20260609-clone10_remove_checkpoint_leftover-v1-1-a2a99f71ba9f@suse.com>
-In-Reply-To: <20260609-clone10_remove_checkpoint_leftover-v1-1-a2a99f71ba9f@suse.com>
-Date: Tue, 9 Jun 2026 14:40:58 +0200
-X-Gm-Features: AVVi8CeH-PVuK2yT9wR8upiZJuzzZDTZj2avq2wHGKHiAs2nxdg04KXWMP_O9G4
-Message-ID: <CAASaF6x20BQuu3mhTRgQ=rQqQaWosPqbCCfJf5OCTUK+rh-q_w@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: rCkAfdMy7YavzpGTlqIdU6qPNy9wuootBFDU5haGirg_1781008875
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] clone10: remove needs_checkpoints leftover
+Subject: Re: [LTP] high_freq_hwp_cap_cppc.c: new test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,34 +91,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBKdW4gOSwgMjAyNiBhdCAxMTo1OeKAr0FNIEFuZHJlYSBDZXJ2ZXNhdG8KPGFuZHJl
-YS5jZXJ2ZXNhdG9Ac3VzZS5kZT4gd3JvdGU6Cj4KPiBGcm9tOiBBbmRyZWEgQ2VydmVzYXRvIDxh
-bmRyZWEuY2VydmVzYXRvQHN1c2UuY29tPgo+Cj4gU2lnbmVkLW9mZi1ieTogQW5kcmVhIENlcnZl
-c2F0byA8YW5kcmVhLmNlcnZlc2F0b0BzdXNlLmNvbT4KCkFja2VkLWJ5OiBKYW4gU3RhbmNlayA8
-anN0YW5jZWtAcmVkaGF0LmNvbT4KCj4gLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
-Y2xvbmUvY2xvbmUxMC5jIHwgMSAtCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGRlbGV0aW9uKC0pCj4K
-PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jbG9uZS9jbG9uZTEwLmMg
-Yi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb25lL2Nsb25lMTAuYwo+IGluZGV4IDk2ZGU4
-MTFhZDA3OWFhZDA1ZDIwMTRkOWJjNWFmYzVjMjJjYTcwNzcuLmQxZTNhZTExYzVlMjkzOWJkMWFj
-MmVlN2Y2OTY3NDM2M2ZiMDdkZDIgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9jbG9uZS9jbG9uZTEwLmMKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Ns
-b25lL2Nsb25lMTAuYwo+IEBAIC04OCw3ICs4OCw2IEBAIHN0YXRpYyB2b2lkIGNsZWFudXAodm9p
-ZCkKPiAgc3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0ZXN0ID0gewo+ICAgICAgICAgLnNldHVwID0g
-c2V0dXAsCj4gICAgICAgICAuY2xlYW51cCA9IGNsZWFudXAsCj4gLSAgICAgICAubmVlZHNfY2hl
-Y2twb2ludHMgPSAxLAo+ICAgICAgICAgLnRlc3RfYWxsID0gdmVyaWZ5X3RscywKPiAgICAgICAg
-IC5zdXBwb3J0ZWRfYXJjaHMgPSAoY29uc3QgY2hhciAqY29uc3QgW10pIHsKPiAgICAgICAgICAg
-ICAgICAgIng4Nl82NCIsCj4KPiAtLS0KPiBiYXNlLWNvbW1pdDogMWVmYjRiYjhlYjRhODU4MjI4
-NGE5MGE3MGNhMmFkYzIyYzRlNDdiMAo+IGNoYW5nZS1pZDogMjAyNjA2MDktY2xvbmUxMF9yZW1v
-dmVfY2hlY2twb2ludF9sZWZ0b3Zlci1kYTIwNGM5Y2FkY2MKPgo+IEJlc3QgcmVnYXJkcywKPiAt
-LQo+IEFuZHJlYSBDZXJ2ZXNhdG8gPGFuZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5jb20+Cj4KPgo+IC0t
-Cj4gTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRw
-Cj4KCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGlu
-Zm8vbHRwCg==
+Hi Piotr,
+
+On Tue, Jun 9 2026, Piotr Kubaj wrote:
+> high_freq_hwp_cap_cppc.c: new test
+
+> +#include "tst_test.h"
+> +#include "tst_safe_prw.h"
+> +#include "lapi/cpuid.h"
+
+lapi/cpuid.h contains #error on non-x86 architectures and
+__cpuid_count uses x86 inline assembly, so this file will not
+compile on ARM, s390x, etc.
+
+Ground rule 6 requires architecture-specific tests to still compile
+everywhere. The existing ptrace07.c shows the correct pattern:
+wrap the entire file body in
+#if defined(__i386__) || defined(__x86_64__) with a
+TST_TEST_TCONF("test requires x86") in the #else branch.
+
+> +	for (int i = 0; i < nproc; i++)
+> +		tst_res(TINFO, "cpu%d: %s", i, mismatch[i] ? "MISMATCH" : "OK");
+
+Offline CPUs are skipped during the comparison loop but the
+summary still prints "OK" for them (mismatch[i] is zero from
+memset). This is misleading -- "OK" implies the values matched
+when no check was performed. Consider skipping offline CPUs here
+too, or printing "OFFLINE" instead.
+
+> +/*\
+> + * Verify for all online logical CPUs that their highest performance value are
+> + * the same for HWP Capability MSR 0x771 and CPPC sysfs file.
+
+The test sets .needs_root = 1 but the doc comment does not explain
+why root is required. Per the LTP guidelines, the reason should be
+stated (reading /dev/cpu/N/msr needs CAP_SYS_RAWIO / root).
+
+Verdict: Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
