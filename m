@@ -4,104 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD3FCD8C92
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 12:24:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8406CD8CA4
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 12:39:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E1FB23E6EF5
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 14:24:43 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 202A13E6EFB
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 14:39:25 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9045F3C1C1F
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:24:29 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CAB333C1C1F
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:39:08 +0200 (CEST)
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com
+ [IPv6:2607:f8b0:4864:20::844])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0D186600079
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:24:28 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7ED7D75908;
- Tue,  9 Jun 2026 12:24:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1781007867; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ARGR6h6F+2Raj3Xj613COamVUISbTp5oI8R7zk/7Oco=;
- b=B2n+PsOez+0i/HV6hkcIa9ZzmTS03cO3+zUbG/525J3sSRjKamzRx5TkWqCc/3iBi9GuEG
- cgeyyWE2rR9smFM8iw7DCaTojeh6XjoAQhclBZChs+KIyWwNwFO1mzkBfCOCvpi2i3bG/Z
- ufNOkvCiZK6XRsrvWMuoKmSvqatdy/0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1781007867;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ARGR6h6F+2Raj3Xj613COamVUISbTp5oI8R7zk/7Oco=;
- b=h3RVv3Kra3n8kWvxo0iM5d3rCh6wvnNYbTCcvIJui2qKxlA6Y15fBLKSjpZ0ZPdkzX8u3Q
- D1rUtiIfI9PLlKAQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1781007867; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ARGR6h6F+2Raj3Xj613COamVUISbTp5oI8R7zk/7Oco=;
- b=B2n+PsOez+0i/HV6hkcIa9ZzmTS03cO3+zUbG/525J3sSRjKamzRx5TkWqCc/3iBi9GuEG
- cgeyyWE2rR9smFM8iw7DCaTojeh6XjoAQhclBZChs+KIyWwNwFO1mzkBfCOCvpi2i3bG/Z
- ufNOkvCiZK6XRsrvWMuoKmSvqatdy/0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1781007867;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ARGR6h6F+2Raj3Xj613COamVUISbTp5oI8R7zk/7Oco=;
- b=h3RVv3Kra3n8kWvxo0iM5d3rCh6wvnNYbTCcvIJui2qKxlA6Y15fBLKSjpZ0ZPdkzX8u3Q
- D1rUtiIfI9PLlKAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 71CC9779A7;
- Tue,  9 Jun 2026 12:24:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id S2r0GvsFKGpMUwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 09 Jun 2026 12:24:27 +0000
-Date: Tue, 9 Jun 2026 14:24:21 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: "Kubaj, Piotr" <piotr.kubaj@intel.com>
-Message-ID: <aigF9StEMr3oNPFD@yuki.lan>
-References: <20260514133446.144550-2-piotr.kubaj@intel.com>
- <20260514141912.4030-1-linuxtestproject.agent@gmail.com>
- <20260515144242.GB40164@pevik>
- <d1e90d8d94fd4cb58f34cbff4a07b49257195129.camel@intel.com>
- <21a5a4cec4cbb9a7084b8b5374fa06865a0d74d8.camel@intel.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 104151A000A2
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 14:39:08 +0200 (CEST)
+Received: by mail-qt1-x844.google.com with SMTP id
+ d75a77b69052e-5177945a22eso37314241cf.1
+ for <ltp@lists.linux.it>; Tue, 09 Jun 2026 05:39:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1781008747; x=1781613547; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=weRod0WgKOEzpQ10BFL4Azd6CsYbib7gVcYl6bXmDD8=;
+ b=VLalZl7U5+50OqIpv8wkconHjLXrLyjouhn14FMmOOF602Hjtaxjcg8veV9IkHsbqy
+ ICGRBmaFiNehBnCmntEWeUKULp3Ls1V4O6vaoEGL9pcDAFhsjCKnHLujOW0KmAG+HfaD
+ +wwD6SDxQryNqhXkNTQ+cKX27l2DjbbCR5dnJSmTzgXUffBxgufeNwoQwux7uhH59BuO
+ Ggk8M4NAlmUqIKpFyX+oIfEJtYa7fAAtUpCO9nJPjMu3pkPNJ0pQV/25aNYUpzbEUs19
+ /r481XsDIBbYqPWzUsM9qHMcydEmitWfzPqmv3d53eQkmB977gxakzP1JEHBIX6erB20
+ voSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1781008747; x=1781613547;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=weRod0WgKOEzpQ10BFL4Azd6CsYbib7gVcYl6bXmDD8=;
+ b=lO5iXSP+B+Jsgf7+XlSswxKx5VT+0l9X1d32SgEQ9qgNy0ilmojYrIBNzcozDkjK2/
+ Vm2wVOv4gcgUs0vLjF6xCbxVQHjJ27ZVIp6N3X855PmxKfwWLBF70rsJG6rduxaGSfOU
+ QA+M4+3MYeB6UlcwnirUNzo4xg9cVQGG4gtOKcjtho9lTnV7HMote1//BvqobfxQuZJm
+ KYGXO9iR2zveKJ/ANo1QXC34PaaezmRkUpLuaQaCvUG3l40TCkagtswAHDzMFCmE59l3
+ G/VyQrFp9jjAWygtUzdOMElhN1ITtYmIkLz8FOqkW42ONA3E5wFMF2gf1egqP9mINv0c
+ VAHw==
+X-Gm-Message-State: AOJu0YxG6rLuKZtibhLaYKLYpLYHrj+93aCKOpMNsYOTqTmfZVZE5NK/
+ BAuhAmHnN81T8Uj9q/U5hIb4g6cECXx43fiXxZ+ALNYHaBB0qUGTcbtf
+X-Gm-Gg: Acq92OEzWyVVgRUhXpwH7d6iOZeD6GvuJ+eq2K1L6U3aw8F2ccAE+fmyEphF9yoHyuq
+ t7DrbeFCuiYDTpG5igNyS7eSTMFm5FYsj+BKfvUfJag/Z8fQbs9Ud5Xr9zym/0c0Ljps76oubE9
+ usQsz36W8Ja0Y3nI+xJYxtCdU/0AQrcFxZGKq2j4px5hdoVrap6HeLb4Rq2CwU4abpfxRAX8rJ6
+ VpaKnBODKlh7xC+QYigcY7vqxgfc6OuyoeorcS8xhGg7pPsGyuN3QCq7AZZfVzIGhSKVHQfCvy2
+ vpI3cHcUkWEyVpD0ATzE2ydbJGqq/XBn2tNPPtlUC1tKmyHfAeUyvA77v5bShcWuqvazl1wj0PY
+ 8oowtBtdwCxsG/bD+oRbrIDpgmwpEKSTcB8iuWO8g8wMMDeUPjEflDIHZrra6FLdbfnyYVJjgFd
+ BMUDPxB85oLKbbnPWD0WIxeyMj2/imOXOtsS69tIaY7FhX9o5sYravmCgypvCMmAvfZEA++gJ9p
+ jAhwJtBwK2a3UKzBNwVY0qx3dQ42gi2zNbwYpvK3RMzEPR0Zw==
+X-Received: by 2002:ac8:4815:0:b0:50e:62ba:3ff7 with SMTP id
+ d75a77b69052e-51796953383mr195018121cf.26.1781008746588; 
+ Tue, 09 Jun 2026 05:39:06 -0700 (PDT)
+Received: from
+ runnervm3jyl0.2t524bbebovutlbh3yi03vovrh.bx.internal.cloudapp.net
+ ([4.246.135.164]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-51775c2e2casm184121851cf.9.2026.06.09.05.39.06
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 09 Jun 2026 05:39:06 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue,  9 Jun 2026 12:39:05 +0000
+Message-ID: <20260609123905.3947-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260609-clone10_remove_checkpoint_leftover-v1-1-a2a99f71ba9f@suse.com>
+References: <20260609-clone10_remove_checkpoint_leftover-v1-1-a2a99f71ba9f@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <21a5a4cec4cbb9a7084b8b5374fa06865a0d74d8.camel@intel.com>
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- SUSPICIOUS_RECIPS(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FREEMAIL_ENVRCPT(0.00)[gmail.com];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- TO_DN_EQ_ADDR_SOME(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+];
- FREEMAIL_CC(0.00)[gmail.com,suse.cz,lists.linux.it];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TAGGED_RCPT(0.00)[];
- MISSING_XM_UA(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] thermal: add new test group
+Subject: Re: [LTP] clone10: remove needs_checkpoints leftover
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,99 +91,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>,
- "linuxtestproject.agent@gmail.com" <linuxtestproject.agent@gmail.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-I've been debugging the test random failures and it all boils down to
-two things:
+Hi Andrea,
 
-- the sysfs temperature values are in mC the increment we have is way
-  too small
+On Tue, 9 Jun 2026 11:57:31 +0200, Andrea Cervesato wrote:
+> clone10: remove needs_checkpoints leftover
 
-- we need to set the trigger value in the while(sleep_time > 0) loop
-  otherwise we can end up running all the iterations with a value that
-  is too high (if we enter the function when the CPU temperature was
-  high)
+Verdict: Reviewed
 
-The test runs reliably for me with -i 100 with these changes, I can push
-the test with these changes added if you agree:
+Pre-existing issues (not introduced by this patch):
 
-diff --git a/testcases/kernel/thermal/thermal_interrupt_events.c b/testcases/kernel/thermal/thermal_interrupt_events.c
-index 42e1532f6..ed55632dc 100644
---- a/testcases/kernel/thermal/thermal_interrupt_events.c
-+++ b/testcases/kernel/thermal/thermal_interrupt_events.c
-@@ -20,10 +20,10 @@
- #include "tst_timer_test.h"
+The doc comment at the top of clone10.c has a typo on line 9:
+"writtes" should be "writes". The same sentence also reads
+"to a thread local variables" which should be
+"to thread-local variables".
 
- #define        TEST_RUNTIME    ((RUNTIME + SLEEPTIME) * (SLEEPTIME / 2) + COOLDOWN)
--#define        RUNTIME         30
-+#define        RUNTIME         10
- #define        SLEEPTIME       10
- #define        COOLDOWN        300
--#define        TEMP_INCREMENT  10
-+#define        TEMP_INCREMENT  5000
+---
+Note:
 
- static bool *x86_pkg_temp_tz;
- static char temp_path[PATH_MAX], trip_path[PATH_MAX];
-@@ -135,13 +135,8 @@ static void cpu_workload(double run_time)
-        }
- }
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
--static void test_zone(int i)
-+static void set_trippoint(void)
- {
--       int sleep_time = SLEEPTIME;
--       double run_time = RUNTIME;
--
--       snprintf(temp_path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/temp", i);
--       tst_res(TINFO, "Testing %s", temp_path);
-        SAFE_FILE_SCANF(temp_path, "%d", &temp);
-        if (temp < 0)
-                tst_brk(TBROK, "Unexpected zone temperature value %d", temp);
-@@ -150,10 +145,21 @@ static void test_zone(int i)
-
-        temp_high = temp + TEMP_INCREMENT;
-
--       snprintf(trip_path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/trip_point_1_temp", i);
--
-        tst_res(TDEBUG, "Setting new trip_point_1_temp value: %d", temp_high);
-        SAFE_FILE_PRINTF(trip_path, "%d", temp_high);
-+}
-+
-+static void test_zone(int i)
-+{
-+       int sleep_time = SLEEPTIME;
-+       double run_time = RUNTIME;
-+
-+       snprintf(temp_path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/temp", i);
-+       snprintf(trip_path, PATH_MAX, "/sys/class/thermal/thermal_zone%d/trip_point_1_temp", i);
-+
-+       tst_res(TINFO, "Testing %s", temp_path);
-+
-+       set_trippoint();
-
-        while (sleep_time > 0) {
-                tst_res(TDEBUG, "Running for %f seconds, then sleeping for %d seconds", run_time, sleep_time);
-@@ -173,7 +179,9 @@ static void test_zone(int i)
-                if (temp > temp_high)
-                        break;
-                sleep(sleep_time--);
--               run_time -= 3;
-+               run_time--;
-+
-+               set_trippoint();
-        }
- }
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
