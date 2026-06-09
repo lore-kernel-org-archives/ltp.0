@@ -4,101 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23E5CCD8CA4
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 14:18:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBEA4CD8CA4
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 14:32:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 615EC3E6F24
-	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 16:18:15 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 064153E6F34
+	for <ltp@archiver.kernel.org>; Tue,  9 Jun 2026 16:32:56 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 81D863C888C
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 16:17:58 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 8795A3C537D
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 16:32:41 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B98311000966
- for <ltp@lists.linux.it>; Tue,  9 Jun 2026 16:17:54 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 6597v8DL139779; Tue, 9 Jun 2026 14:17:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-type:date:from:in-reply-to:message-id:mime-version
- :references:subject:to; s=pp1; bh=foMX+ruVPI971+TbYF1jmRF+QRkaZh
- UYXy7VoVdDWVI=; b=Y9iwgd7J8DSlhlmhXQ1feNN6PyOpNmleN9xD7Fh5z1tSDY
- aMHQsF1i3Bab4dtB4A1c7fT+WmPCcWWEyj3myaQAXyWiPVUYwwTEqeePEwQN/V0K
- dpVcXF95J1yfoJBjP5+Xjrl4VDSHwnCZzvOmzMSN8HCyx+pMf3q8P3kXBuH+9Wzu
- ux0/otWuuRMXeMJNiY95EMlfTjjGQVm0R8/fPZ/WG2dW1Lc3/IvLW2KaRavbk++n
- egEPgtbrWxZm5UByYSDxUfqgticUxkGTQOF82PbyEYp/Rh0W42CaMASV14XsPpbN
- ka8yCaJpDiNbAwqxAGT1znjcI0OMibwlnauCBrGQ==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4emb23vm3h-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 09 Jun 2026 14:17:52 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 659E4kxl015485;
- Tue, 9 Jun 2026 14:17:50 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4en0jya328-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 09 Jun 2026 14:17:50 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
- [10.20.54.102])
- by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 659EHmgl37421472
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 9 Jun 2026 14:17:49 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id E58EA20043;
- Tue,  9 Jun 2026 14:17:48 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id A14E420040;
- Tue,  9 Jun 2026 14:17:48 +0000 (GMT)
-Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com (unknown
- [9.111.52.46]) by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Tue,  9 Jun 2026 14:17:48 +0000 (GMT)
-Date: Tue, 9 Jun 2026 16:17:47 +0200
-From: Jan Polensky <japo@linux.ibm.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <aiggi35F7Iz0dMPN@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
-References: <20260608155241.270875-1-japo@linux.ibm.com>
- <aifalyMdDVoFT3Tg@yuki.lan>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 941D260079B
+ for <ltp@lists.linux.it>; Tue,  9 Jun 2026 16:32:40 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 602CB75C5C;
+ Tue,  9 Jun 2026 14:32:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1781015559; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=3EntVLVmprW4/OLD0dKg/pTzj8klB7nrO+r4B0dbYOU=;
+ b=aeStm7k8cM/wUjkV4+l569BF2CtiAylCRFDYpaMTyr+xXPBK9qjuhqBmz+ARDShopG3dwy
+ UqV1lDiZ2SSu6HqeVUAq9De6DzdehnxBy3jp9OQz17px8t8umNgvxUAaEIemR0lGRqe3DN
+ /myCSrEdHTjPC8gxWh7gHXoDiIJPqH0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1781015559;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=3EntVLVmprW4/OLD0dKg/pTzj8klB7nrO+r4B0dbYOU=;
+ b=3uTOmBmlXGiJ/juMqrBSQ20Kx6aiPdK+rFAK04yzgZFyoUirbwrAm8d5DVWCEEdDRWgHWH
+ Boih6q8Vx/JPu9DA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1781015559; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=3EntVLVmprW4/OLD0dKg/pTzj8klB7nrO+r4B0dbYOU=;
+ b=aeStm7k8cM/wUjkV4+l569BF2CtiAylCRFDYpaMTyr+xXPBK9qjuhqBmz+ARDShopG3dwy
+ UqV1lDiZ2SSu6HqeVUAq9De6DzdehnxBy3jp9OQz17px8t8umNgvxUAaEIemR0lGRqe3DN
+ /myCSrEdHTjPC8gxWh7gHXoDiIJPqH0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1781015559;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=3EntVLVmprW4/OLD0dKg/pTzj8klB7nrO+r4B0dbYOU=;
+ b=3uTOmBmlXGiJ/juMqrBSQ20Kx6aiPdK+rFAK04yzgZFyoUirbwrAm8d5DVWCEEdDRWgHWH
+ Boih6q8Vx/JPu9DA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4ED31779A7;
+ Tue,  9 Jun 2026 14:32:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 0hWPEQckKGrTUwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 09 Jun 2026 14:32:39 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Tue,  9 Jun 2026 16:32:37 +0200
+Message-ID: <20260609143237.1246776-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <aifalyMdDVoFT3Tg@yuki.lan>
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=b4uCJNGx c=1 sm=1 tr=0 ts=6a282090 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=kj9zAlcOel0A:10 a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=VnNF1IyMAAAA:8
- a=DItb2DfyHIxjeLRjZJQA:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-ORIG-GUID: Ubl1IPEfSDbmWi0oKHiFYjw9pwa_4Bh_
-X-Proofpoint-GUID: Ubl1IPEfSDbmWi0oKHiFYjw9pwa_4Bh_
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA5MDEzNCBTYWx0ZWRfX1AxsdcO9hNwe
- mb71FH+GFzjWsrXj/Gn9JpmWevIjmnIUaZyiSXQeNrTCVTSC+FQa8lVxOyRfUuzDiIeuHGAI/jx
- nqb9L6TeikXyGOTognVs2Q9TRhj/MSj0cBztQ4JfZC8yvzZa+StySZXqMruRX2crchUt5SIgtFu
- ZfsyDyu70GEe0wsmE8+ELHcGeXehvNbfVWYHECKexWe+t6MypOWrNvXt6kFB36Acv7GdkflFOya
- nEC68eWsWgfZsRKIY2UQr+XDuXfsW/ny2BUc14ejVxftzIgdLGuzPfQxWp5mJAkH55pdJr3/L6x
- /4pguONnfpl69Q9dxbK3A0EMUrz3Mbgb6vrMQUF5JujZU2tXZLB2bQ74K1iUNP1ve3aQ9XFT7BE
- hRuqi+3+drnDXhW0Oirb36GOo9xUyOUKNTwR9qGpdXlGrbq+QSPJMAPdP7jWBMxDmfcGPE4PnBC
- PUow6bE4zWn+sw0+31Q==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
- definitions=2026-06-09_03,2026-06-09_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 spamscore=0 bulkscore=0 phishscore=0 priorityscore=1501
- lowpriorityscore=0 adultscore=0 malwarescore=0 impostorscore=0 suspectscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606090134
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.999];
+ MIME_GOOD(-0.10)[text/plain];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; TO_DN_SOME(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:mid, intel.com:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/1] swap: Add exfat to filesystems requiring
- tst_fill_file
+Subject: [LTP] [PATCH] tst_test: Add needs_cpu_vendor to struct tst_test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,72 +100,160 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Jun 09, 2026 at 11:19:19AM +0200, Cyril Hrubis wrote:
-> Hi!
-> > exfat, like XFS, requires actual data writes (not just fallocate) to
-> > fully allocate swap files. Without this, swapon(2) fails with EINVAL
-> > due to unallocated extents.
-> >
-> > This matches the kernel's requirement that swap files must be fully
-> > allocated before activation.
-> >
-> > Signed-off-by: Jan Polensky <japo@linux.ibm.com>
-> > ---
-> >  libs/swap/tse_swap.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/libs/swap/tse_swap.c b/libs/swap/tse_swap.c
-> > index ae3c193132e6..e321cb1dfe63 100644
-> > --- a/libs/swap/tse_swap.c
-> > +++ b/libs/swap/tse_swap.c
-> > @@ -177,8 +177,9 @@ int make_swapfile(const char *file, const int lineno,
-> >  	if (prealloc_contiguous_file(swapfile, blk_size, blocks) != 0)
-> >  		tst_brk_(file, lineno, TBROK, "Failed to create swapfile");
-> >
-> > -	/* Fill the file if needed (specific to old xfs filesystems) */
-> > -	if (tst_fs_type(swapfile) == TST_XFS_MAGIC) {
-> > +	/* Fill the file if needed (specific to xfs and exfat filesystems) */
-> > +	long fs_type = tst_fs_type(swapfile);
-> > +	if (fs_type == TST_XFS_MAGIC || fs_type == TST_EXFAT_MAGIC) {
-> >  		if (tst_fill_file(swapfile, 0, blk_size, blocks) != 0)
-> >  			tst_brk_(file, lineno, TBROK, "Failed to fill swapfile");
-> >  	}
->
-Hi Cyril,
-> The swapon01 works for me for exfat without this change. Where does this
-> fail (arch, kernel, OS, is exfat in kernel or FUSE, etc.)?
+This adds a generic implementaiton of needs_cpu_vendor to the tst_test
+structure that is based on parsing /proc/cpuinfo. It does not likely
+work for non-x86 CPUs since the /proc/cpuinfo format is different, but
+we do not care at the moment. For arm we would have to look at the
+implementer field instead, we will add that if/once needed.
 
-The failure occurred on:
- - Architecture: s390x
- - Kernel: 7.1.0-20260608.rc7.git374.a87737435cfa.300.fc44.s390x+next
-   (linux-next and since ~ 17 days)
- - OS: Fedora Linux 44
- - exfat: Kernel module (not FUSE)
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Piotr Kubaj <piotr.kubaj@intel.com>
+---
+ include/tst_cpu.h                  |  9 +++++++++
+ include/tst_test.h                 |  5 +++++
+ lib/newlib_tests/.gitignore        |  1 +
+ lib/newlib_tests/test_cpu_vendor.c | 16 ++++++++++++++++
+ lib/tst_cpu.c                      | 18 ++++++++++++++++++
+ lib/tst_test.c                     |  5 +++++
+ 6 files changed, 54 insertions(+)
+ create mode 100644 lib/newlib_tests/test_cpu_vendor.c
 
-The issue manifests when swapon(2) is called on an exfat swap file that was
-created using only fallocate() without actual data writes. The kernel rejects
-the swap file with EINVAL because it detects unallocated extents.
+diff --git a/include/tst_cpu.h b/include/tst_cpu.h
+index 0724975f0..31222a3e1 100644
+--- a/include/tst_cpu.h
++++ b/include/tst_cpu.h
+@@ -10,6 +10,13 @@ long tst_ncpus_conf(void);
+ long tst_ncpus_max(void);
+ long tst_ncpus_available(void);
+ 
++/**
++ * tst_cpu_vendor() - Returns CPU vendor.
++ *
++ * Return: A CPU vendor e.g. "GenuineIntel" or "AuthenticAMD".
++ */
++const char *tst_cpu_vendor(void);
++
+ #define VIRT_ANY	0	/* catch-all argument for tst_is_virt() */
+ #define VIRT_XEN	1	/* xen dom0/domU */
+ #define VIRT_KVM	2	/* only default virtual CPU */
+@@ -21,4 +28,6 @@ long tst_ncpus_available(void);
+ 
+ int tst_is_virt(int virt_type);
+ 
++
++
+ #endif	/* TST_CPU_H__ */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 9bc67cf6a..c69362485 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -391,6 +391,9 @@ struct tst_fs {
+  *
+  * @min_cpus: Minimal number of online CPUs the test needs to run.
+  *
++ * @needs_cpu_vendor: The test needs a specific CPU vendor e.g. "GenuineIntel"
++ *                    or "AuthenticAMD".
++ *
+  * @min_mem_avail: Minimal amount of available RAM memory in megabytes required
+  *                 for the test to run.
+  *
+@@ -581,6 +584,8 @@ struct tst_fs {
+ 	const char *const *skip_filesystems;
+ 
+ 	unsigned long min_cpus;
++	const char *needs_cpu_vendor;
++
+ 	unsigned long min_mem_avail;
+ 	unsigned long min_swap_avail;
+ 
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index 1586e0ad6..b85163824 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -71,3 +71,4 @@ test_brk_parent
+ test_brk_pass
+ test_brk_variant
+ test_fail_variant
++test_cpu_vendor
+diff --git a/lib/newlib_tests/test_cpu_vendor.c b/lib/newlib_tests/test_cpu_vendor.c
+new file mode 100644
+index 000000000..10b473b7e
+--- /dev/null
++++ b/lib/newlib_tests/test_cpu_vendor.c
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++ */
++
++#include "tst_test.h"
++
++static void do_test(void)
++{
++	tst_res(TPASS, "Test passed!");
++}
++
++static struct tst_test test = {
++	.test_all = do_test,
++	.needs_cpu_vendor = "Nonexistent",
++};
+diff --git a/lib/tst_cpu.c b/lib/tst_cpu.c
+index faffcba91..177661c82 100644
+--- a/lib/tst_cpu.c
++++ b/lib/tst_cpu.c
+@@ -23,6 +23,7 @@
+ #include <unistd.h>
+ #include "test.h"
+ #include "tso_safe_macros.h"
++#include "tso_safe_file_ops.h"
+ 
+ long tst_ncpus(void)
+ {
+@@ -97,3 +98,20 @@ long tst_ncpus_available(void)
+ 	return tst_ncpus();
+ #endif
+ }
++
++const char *tst_cpu_vendor(void)
++{
++	static char cpu_vendor[16];
++	int ret;
++
++	if (cpu_vendor[0])
++		return cpu_vendor;
++
++	ret = FILE_LINES_SCANF(NULL, "/proc/cpuinfo", "vendor_id : %16s[^\n]", cpu_vendor);
++	if (ret)
++		strcpy(cpu_vendor, "Unknown");
++
++	tst_resm(TDEBUG, "CPU vendor '%s'", cpu_vendor);
++
++	return cpu_vendor;
++}
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 0bebb0a3e..5f7156403 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1416,6 +1416,11 @@ static void do_setup(int argc, char *argv[])
+ 	if (tst_test->supported_archs && !tst_is_on_arch(tst_test->supported_archs))
+ 		tst_brk(TCONF, "This arch '%s' is not supported for test!", tst_arch.name);
+ 
++	if (tst_test->needs_cpu_vendor && strcmp(tst_test->needs_cpu_vendor, tst_cpu_vendor())) {
++		tst_brk(TCONF, "Tests needs '%s' CPU to continue have '%s'",
++			tst_test->needs_cpu_vendor, tst_cpu_vendor());
++	}
++
+ 	if (tst_test->sample)
+ 		tst_test = tst_timer_test_setup(tst_test);
+ 
+-- 
+2.53.0
 
-This is similar to the existing XFS behavior where tst_fill_file() is already
-required. Both filesystems need actual data writes (not just metadata
-allocation via fallocate) to ensure swap files are fully allocated before
-swapon(2) can activate them.
-
-The patch ensures consistent behavior across filesystems that have this
-requirement.
-
-Best regards,
-Jan
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
