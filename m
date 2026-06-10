@@ -4,100 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C20E9CD98C7
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 10:03:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6734CD98C7
+	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 10:06:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A29763E6E74
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 12:03:30 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id C479E3E5E9A
+	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 12:06:28 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 313593C01E9
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 12:03:11 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 15A4E3C230D
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 12:06:13 +0200 (CEST)
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
+ [IPv6:2607:f8b0:4864:20::743])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 503A4600A6A
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 12:03:10 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D740A758A9;
- Wed, 10 Jun 2026 10:03:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1781085789; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YOelChGc2w1wnaUeL+X9t/dSm1pvi1CvgC65mgyak8g=;
- b=P3WUhLPwr10CIFSev5yEO3/kphiOvfb2r/w06nDRocYAGMbNloZV9VMt0j/MHzxLzk0Get
- gH7RJ0jPfmUbze0LoC2bjreGWObrXxR4HukQaw8b3HXRGl7+ccCKhcDISZZTrTY3Frh676
- zCkA+pbMmvW9xUHagRUA7xvhWmTxQag=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1781085789;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YOelChGc2w1wnaUeL+X9t/dSm1pvi1CvgC65mgyak8g=;
- b=A+oi/GVakmX6kc4K9UmXoV2tNkCQfflpZyBTlV+Bqq+GlPnTerNbjcrUcxX5wnzDNP4k/i
- lsglI0M7mVcJFFDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1781085787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YOelChGc2w1wnaUeL+X9t/dSm1pvi1CvgC65mgyak8g=;
- b=ADxzWj3V+k314OFO9Mx6Rre0U0f3eU62HNTrvSbKSLHRIZZN3HiYhBxZoutdPY2Q9WUvcW
- YjSyQLbaudNfSmR3YAh8YMcwj6+GCZZ8Q1quagujvE/fvDQlGHU7K0D0Zybq/E5+g7nPvd
- RVHEIwSiAfqhLCd1oKcz+a1kt2+lFx4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1781085787;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YOelChGc2w1wnaUeL+X9t/dSm1pvi1CvgC65mgyak8g=;
- b=mE72FoP/wEJEM8s3snagnpOq4vJr49Yttt1zIKrVHD97oRtGtVB/Yt7xxbKHsIwtTmEOwn
- 1ufqZDIrgbbZ0hAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C93DF779A7;
- Wed, 10 Jun 2026 10:03:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id PY8tMFs2KWo1WwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 10 Jun 2026 10:03:07 +0000
-Date: Wed, 10 Jun 2026 12:03:02 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aik2VjAKb_EUYNsv@yuki.lan>
-References: <20260609-doc_add_missing_headers-v7-0-779c18caddef@suse.com>
- <20260609-doc_add_missing_headers-v7-2-779c18caddef@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5ECAB6010F5
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 12:06:13 +0200 (CEST)
+Received: by mail-qk1-x743.google.com with SMTP id
+ af79cd13be357-91591f19716so804821685a.3
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 03:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1781085972; x=1781690772; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=AgtQ6vsYmXZQz2hQh6+6gdiWcTnmelwmRV8qto/aoCI=;
+ b=Jh324YqZeyWm2QupF+dFpsJyKCpWVR5BiuP7CG0XEVjhH416M7xwnUk5tumjjxUE29
+ MmkGyxMVg8WosJ+m+hahgF6/oeNelXNkQNQ/zI9R8jnoVulIlLWMLwTp/kGsBCKudxqf
+ nW1Chrb216k1/3qmmA5X6jhPezI6WWGBSMxlj0eZadaMCSdDwQB3/4k+TYH6IiS5oI9J
+ abNQmoqnTZemfA6oTK4+vkq6XM5Tw76/FppDjYguT5zyNdlDqaTUp0dxacbzuocuido8
+ 02iDGlLRHiyRM89SRtvnjvmXR/+1JWa4gUZ6pytG2fsGdmwRpJJXq1Q+4NLppnMZ0Zl9
+ zLsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1781085972; x=1781690772;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=AgtQ6vsYmXZQz2hQh6+6gdiWcTnmelwmRV8qto/aoCI=;
+ b=OUw1ddiaejnFDpLsQcO+2gtbAhTtFfdUZeVXVBzDdwX7Ewv2ATOFHst7RiZJ4hUV+T
+ 6EQic2Eson2vmHdMKYgWw+SUjwuAipAruj+BHmrpfFwHhHe6rSjYq98jUm52asVqJBa1
+ 42I0ZO6eLsbMqeWkP7EBrszaD14uad9Mg5R6xEz68jsyDd8oFo7bKNx62/wu1RyjSCXp
+ Pk7EhR/FTmrbTQFeRMUW0k+vA01cpo0V4Ov7eZ5/GWdvKiBroFwhMtvpl+9V59i7nsRo
+ Bu7Eov1ZfwWGrDkicHtOVObLS/QFE0WEVlOowDbLEN1nW174vKBFwVAJW9Ais3ByX1bG
+ Z1iA==
+X-Gm-Message-State: AOJu0YzlCDpLa+gpFOnI4n0XxzQ8A3ph+kkj1gk63pY0OBahHx6CaDHI
+ JBQr0bb4VhOOGvJBAwXv/+w9A/RC3wbidqhV9zUbVamwgqbrb+ApqHzQ
+X-Gm-Gg: Acq92OHz5L4m+HjYbR2/CjI89CqmDgByKWK1atMnz25bLebSrmT/l8p2bFPJVAIdWKP
+ D4EJo0J7FKhPwpeJ0k79HKcZAVGRjNd9ZcCtRBaEuzJ66a+/VlbBuhjDbajL6fJ4ikX8ZZeKHC/
+ FQEG9sQFOTJuZ+z1ES7+0hmBJXtDInYLxdcZWOdNCAi4pJSz/64T7sworfJc+jG9Rv4MkfjtbOa
+ u2D+KUWgOvaWw3XVcpky0EOmAu3wKrmS1pTZcsOt20WXtu98hc4/WSMOws6jmZPRtCOO9Jm8SS8
+ TN++f3naAZtDGzjxL2LEg40YPvLvaVAWP1BC7SrVFMS4BNuj3vL53sVxJvJ6YE/xMxLhyn1h4/n
+ TZfzgkPInBsoOTvRM2Sz6xvHnvPA1sY3+HtUBrWvhl7oxAwzjlfEkxp6Z59gXx5TZt2DC+3Ub7o
+ Etwk86taYbWtGo2+JqFgvH2Emwl40dk5ZzASKTzWDu+AR10dTVc5EvL8jdcaNBLuGcsucH31WxT
+ Br6Y4kSGIyyAds719TQzp94zLY9REVFQDCg2uElhaWaR7moOA==
+X-Received: by 2002:a05:620a:f0e:b0:915:673a:62eb with SMTP id
+ af79cd13be357-915a9c4b680mr3647869885a.2.1781085971906; 
+ Wed, 10 Jun 2026 03:06:11 -0700 (PDT)
+Received: from
+ runnervm3jyl0.2xrq0wyeyqxelezmophrvlasqb.bx.internal.cloudapp.net
+ ([172.172.157.2]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-9158a37c645sm2321512385a.30.2026.06.10.03.06.11
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 10 Jun 2026 03:06:11 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Wei Gao <wegao@suse.com>
+Date: Wed, 10 Jun 2026 10:06:10 +0000
+Message-ID: <20260610100611.4082-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260610052132.2727-1-wegao@suse.com>
+References: <20260610052132.2727-1-wegao@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260609-doc_add_missing_headers-v7-2-779c18caddef@suse.com>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- TO_DN_ALL(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.cz:email,
- yuki.lan:mid]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v7 2/2] doc: Complete struct tst_test table and
- shell API docs
+Subject: Re: [LTP] fsconfig04: Check FSCONFIG_SET_PATH
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,192 +90,72 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +Shell API variables
-> +-------------------
-> +
-> +The following variables are available to shell tests. Variables marked
-> +*input* are set by the test before sourcing ``tst_run.sh``; variables
-> +marked *output* are set by the library for tests to read.
-> +
-> +Test definition (input)
-> +~~~~~~~~~~~~~~~~~~~~~~~
-> +
-> +``TST_TESTFUNC``
-> +    Name of the test function (required).
-> +
-> +``TST_CNT``
-> +    Number of test cases. When set the test function is called
-> +    ``TST_CNT`` times with a counter argument.
-> +
-> +``TST_SETUP``
-> +    Name of the setup function (called once before tests).
-> +
-> +``TST_CLEANUP``
-> +    Name of the cleanup function (called once after tests or on
-> +    ``tst_brk``).
-> +
-> +``TST_OPTS``
-> +    Extra getopts option string.
-> +
-> +``TST_PARSE_ARGS``
-> +    Name of a function to parse extra options from ``TST_OPTS``.
-> +
-> +``TST_USAGE``
-> +    Name of a function printing extra usage information.
-> +
-> +``TST_POS_ARGS``
-> +    Number of expected positional arguments.
-> +
-> +``TST_TEST_DATA``
-> +    Space-separated data passed as a second argument to the test
-> +    function.
-> +
-> +``TST_TEST_DATA_IFS``
-> +    Custom delimiter for ``TST_TEST_DATA`` (default: space).
-> +
-> +Requirements (input)
-> +~~~~~~~~~~~~~~~~~~~~
-> +
-> +``TST_NEEDS_ROOT``
-> +    Set to 1 to require root privileges.
-> +
-> +``TST_NEEDS_TMPDIR``
-> +    Set to 1 to create a temporary directory.
-> +
-> +``TST_NEEDS_DEVICE``
-> +    Set to 1 to prepare a block device.
-> +
-> +``TST_NEEDS_CMDS``
-> +    Space-separated list of required commands.
-> +
-> +``TST_NEEDS_MODULE``
-> +    Kernel module name that must be loadable.
-> +
-> +``TST_NEEDS_DRIVERS``
-> +    Space-separated list of required kernel drivers.
-> +
-> +``TST_NEEDS_KCONFIGS``
-> +    Space-separated list of required kernel config options
-> +    (e.g. ``CONFIG_NUMA=y``).
-> +
-> +``TST_NEEDS_KCONFIGS_IFS``
-> +    Custom delimiter for ``TST_NEEDS_KCONFIGS`` (default: comma).
-> +
-> +``TST_NEEDS_CHECKPOINTS``
-> +    Set to 1 to enable checkpoint support.
-> +
-> +``TST_MIN_KVER``
-> +    Minimum kernel version string (e.g. ``4.18``).
-> +
-> +Device and filesystem (input)
-> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> +
-> +``TST_FORMAT_DEVICE``
-> +    Set to 1 to format ``TST_DEVICE`` before the test.
-> +
-> +``TST_MOUNT_DEVICE``
-> +    Set to 1 to mount ``TST_DEVICE`` at ``TST_MNTPOINT``.
-> +
-> +``TST_DEV_EXTRA_OPTS``
-> +    Extra options passed to ``mkfs``.
-> +
-> +``TST_DEV_FS_OPTS``
-> +    Extra filesystem-specific ``mkfs`` options.
-> +
-> +``TST_FS_TYPE``
-> +    Filesystem type for formatting (default: ``ext2``).
-> +
-> +``TST_DEVICE_SIZE``
-> +    Device size in MB.
-> +
-> +``TST_ALL_FILESYSTEMS``
-> +    Set to 1 to repeat the test for each supported filesystem.
-> +
-> +``TST_SKIP_FILESYSTEMS``
-> +    Space-separated list of filesystems to skip.
-> +
-> +``TST_MNT_PARAMS``
-> +    Mount flags/options string.
-> +
-> +Miscellaneous (input)
-> +~~~~~~~~~~~~~~~~~~~~~
-> +
-> +``TST_SKIP_IN_LOCKDOWN``
-> +    Set to 1 to skip when kernel lockdown is active.
-> +
-> +``TST_SKIP_IN_SECUREBOOT``
-> +    Set to 1 to skip when Secure Boot is enabled.
-> +
-> +``TST_DISABLE_APPARMOR``
-> +    Set to 1 to disable AppArmor before the test runs (requires root).
-> +
-> +``TST_DISABLE_SELINUX``
-> +    Set to 1 to put SELinux in permissive mode before the test runs
-> +    (requires root).
-> +
-> +``TST_SKIP_LSM_WARNINGS``
-> +    Set to 1 to suppress the library's warnings about active LSMs
-> +    (AppArmor, SELinux) at startup.
-> +
-> +``TST_NO_DEFAULT_RUN``
-> +    Set to a non-empty value to source ``tst_test.sh`` without invoking
-> +    ``tst_run`` automatically. Useful for shell libraries that build on
-> +    top of the test API.
-> +
-> +``TST_TIMEOUT``
-> +    Test timeout in seconds.
-> +
-> +``TST_TMPDIR_RHOST``
-> +    Set to 1 to also clean up the temporary directory on the remote
-> +    host (used by network tests).
-> +
-> +Output variables
-> +~~~~~~~~~~~~~~~~
-> +
-> +``TST_TMPDIR``
-> +    Path to the temporary directory (when ``TST_NEEDS_TMPDIR=1``).
-> +
-> +``TST_STARTWD``
-> +    Original working directory before ``chdir`` to ``TST_TMPDIR``.
-> +
-> +``TST_DEVICE``
-> +    Block device path (when ``TST_NEEDS_DEVICE=1``).
-> +
-> +``TST_MNTPOINT``
-> +    Mount point path.
-> +
-> +``TST_MODPATH``
-> +    Path to the loaded kernel module.
-> +
-> +Checkpoint functions
-> +~~~~~~~~~~~~~~~~~~~~
-> +
-> +``TST_CHECKPOINT_WAIT``
-> +    Wait on checkpoint (argument: checkpoint id).
-> +
-> +``TST_CHECKPOINT_WAKE``
-> +    Wake one waiter on checkpoint (argument: checkpoint id).
-> +
-> +``TST_CHECKPOINT_WAKE2``
-> +    Wake multiple waiters (arguments: checkpoint id, count).
-> +
-> +``TST_CHECKPOINT_WAKE_AND_WAIT``
-> +    Wake one waiter and then wait (argument: checkpoint id).
+Hi Wei,
 
-This is the old shell API that is eventually going away.
+On Wed, 10 Jun 2026 05:21:25 +0000, Wei Gao wrote:
+> fsconfig04: Check FSCONFIG_SET_PATH
 
-The API that is going to stay is the JSON comment in the test.
+> +	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", dev0, 0));
+> +	if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
+> +		SAFE_CLOSE(fd);
+> +		return;
+> +	}
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+FSCONFIG_SET_STRING is not the subject of this test -- it is
+infrastructure needed before the FSCONFIG_SET_PATH call under test.
+If it fails, the test cannot proceed, so it should be reported as
+TBROK, not TFAIL.
+
+Using tst_brk(TBROK | TTERRNO, ...) would also simplify this block
+because cleanup() already closes fd, making the explicit SAFE_CLOSE
+unnecessary:
+
+	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", dev0, 0));
+	if (TST_RET == -1)
+		tst_brk(TBROK | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
+
+> +	unsigned int major, minor, device_num;
+> +	unsigned int found = 0;
+> +
+> +	SAFE_SSCANF(dev2, "/dev/%s", loop_name);
+> +
+> +	snprintf(path, sizeof(path), "/sys/block/%s/dev", loop_name);
+> +	SAFE_FILE_SCANF(path, "%u:%u", &major, &minor);
+> +	device_num = (major << 8) | minor;
+> +	snprintf(device_str, sizeof(device_str), "0x%04x", device_num);
+
+The encoding (major << 8) | minor only matches the kernel's
+new_encode_dev() when minor < 256. For minor >= 256 the kernel
+stores (minor & 0xff) | (major << 8) | ((minor & ~0xff) << 12),
+which is what tune2fs prints.
+
+On a system with many loop devices in use the test could get a
+loop device with minor >= 256, causing the computed string to
+differ from tune2fs output and producing a false TFAIL.
+
+Consider something like:
+
+	device_num = (minor & 0xff) | (major << 8)
+		| ((minor & ~0xff) << 12);
+
+Verdict: Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
