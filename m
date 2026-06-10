@@ -4,97 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB24DCD8CB9
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 09:31:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C20E9CD98C7
+	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 10:03:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EF1B83E5E98
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 11:31:34 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id A29763E6E74
+	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 12:03:30 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0DD5B3E2B09
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 11:31:17 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 313593C01E9
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 12:03:11 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 386D41A0098E
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 11:31:16 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 503A4600A6A
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 12:03:10 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B2128759B9;
- Wed, 10 Jun 2026 09:31:14 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D740A758A9;
+ Wed, 10 Jun 2026 10:03:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1781083875; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1781085789; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DY8+OrOLU5VVEjaWwL1Map0p+D3TbN6igr8HQaFP/IE=;
- b=Vt2VIZ9x8fpXHpDN0ZtpncMMij1oo4u/COLggpnb486Zgv70qLMAVR/rLI9uMcJsrT218a
- MbPtg9TaM45W0Tw4nThm3qIj0SFprAEU6VDGCYP86R64oh9FL6yzHqsZLdllEYG+Aaol+/
- 03YTyAAVc2BElqeZ4vjjT2y7GBSdvt8=
+ bh=YOelChGc2w1wnaUeL+X9t/dSm1pvi1CvgC65mgyak8g=;
+ b=P3WUhLPwr10CIFSev5yEO3/kphiOvfb2r/w06nDRocYAGMbNloZV9VMt0j/MHzxLzk0Get
+ gH7RJ0jPfmUbze0LoC2bjreGWObrXxR4HukQaw8b3HXRGl7+ccCKhcDISZZTrTY3Frh676
+ zCkA+pbMmvW9xUHagRUA7xvhWmTxQag=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1781083875;
+ s=susede2_ed25519; t=1781085789;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DY8+OrOLU5VVEjaWwL1Map0p+D3TbN6igr8HQaFP/IE=;
- b=ke7nwi895o8qFFmarD+frywhOzsCCMtrtJm/c6wx3P9C/RzBbEyj2uMHOEWNxuH4P61vZ3
- /yF1OkMEBHBtmGDg==
+ bh=YOelChGc2w1wnaUeL+X9t/dSm1pvi1CvgC65mgyak8g=;
+ b=A+oi/GVakmX6kc4K9UmXoV2tNkCQfflpZyBTlV+Bqq+GlPnTerNbjcrUcxX5wnzDNP4k/i
+ lsglI0M7mVcJFFDw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1781083874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1781085787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DY8+OrOLU5VVEjaWwL1Map0p+D3TbN6igr8HQaFP/IE=;
- b=eCQgdA3o6hZxmPuQHC+GP8eabsuGnNxkiD1fhktVOJkMMnSyoWwtpLOLrF6DnEmIrQq+qH
- hUUz7EFVNsMXrVcNJiAg9G5MZzSGlCr4V87ehMzqf7+IUKvcF+MNfUl5Pq0Bm0OlUFT5DJ
- K1VM1y7632+scuX7qjXx0knTlB207Oo=
+ bh=YOelChGc2w1wnaUeL+X9t/dSm1pvi1CvgC65mgyak8g=;
+ b=ADxzWj3V+k314OFO9Mx6Rre0U0f3eU62HNTrvSbKSLHRIZZN3HiYhBxZoutdPY2Q9WUvcW
+ YjSyQLbaudNfSmR3YAh8YMcwj6+GCZZ8Q1quagujvE/fvDQlGHU7K0D0Zybq/E5+g7nPvd
+ RVHEIwSiAfqhLCd1oKcz+a1kt2+lFx4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1781083874;
+ s=susede2_ed25519; t=1781085787;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DY8+OrOLU5VVEjaWwL1Map0p+D3TbN6igr8HQaFP/IE=;
- b=UfWl69VuayfU+AlrkQOa2+qSqir7uut4RoTeYBmophKb6HyJI7RHuCNaAmc6vnEOG7x3dv
- yr4B56Zvfts3EjDw==
+ bh=YOelChGc2w1wnaUeL+X9t/dSm1pvi1CvgC65mgyak8g=;
+ b=mE72FoP/wEJEM8s3snagnpOq4vJr49Yttt1zIKrVHD97oRtGtVB/Yt7xxbKHsIwtTmEOwn
+ 1ufqZDIrgbbZ0hAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9FD35779A7;
- Wed, 10 Jun 2026 09:31:14 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C93DF779A7;
+ Wed, 10 Jun 2026 10:03:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id QFD+JeIuKWqmPAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 10 Jun 2026 09:31:14 +0000
-Date: Wed, 10 Jun 2026 11:31:09 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id PY8tMFs2KWo1WwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 10 Jun 2026 10:03:07 +0000
+Date: Wed, 10 Jun 2026 12:03:02 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Praveen K Pandey <praveen@linux.ibm.com>
-Message-ID: <aiku3VRfJZS4dsxY@yuki.lan>
-References: <20260609041632.74427-1-praveen@linux.ibm.com>
- <20260609041632.74427-2-praveen@linux.ibm.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <aik2VjAKb_EUYNsv@yuki.lan>
+References: <20260609-doc_add_missing_headers-v7-0-779c18caddef@suse.com>
+ <20260609-doc_add_missing_headers-v7-2-779c18caddef@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260609041632.74427-2-praveen@linux.ibm.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
+In-Reply-To: <20260609-doc_add_missing_headers-v7-2-779c18caddef@suse.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
+ TO_DN_ALL(0.00)[]; ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.cz:email,
+ yuki.lan:mid]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 1/5] ftrace: Add common library for C
- implementation
+Subject: Re: [LTP] [PATCH v7 2/2] doc: Complete struct tst_test table and
+ shell API docs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,460 +109,188 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +char *ftrace_get_path(const char *filename)
-> +{
-> +	char *path;
+> +Shell API variables
+> +-------------------
 > +
-> +	SAFE_ASPRINTF(&path, "%s/%s", tracing_path, filename);
-> +	return path;
-> +}
+> +The following variables are available to shell tests. Variables marked
+> +*input* are set by the test before sourcing ``tst_run.sh``; variables
+> +marked *output* are set by the library for tests to read.
 > +
-> +char *ftrace_read_file(const char *filename)
-> +{
-> +	char *path;
-> +	FILE *fp;
-> +	char *content = NULL;
-> +	size_t len = 0;
-> +	ssize_t read;
-> +	char *line = NULL;
-> +	size_t total_size = 0;
+> +Test definition (input)
+> +~~~~~~~~~~~~~~~~~~~~~~~
 > +
-> +	path = ftrace_get_path(filename);
-> +	if (!path)
-> +		return NULL;
+> +``TST_TESTFUNC``
+> +    Name of the test function (required).
 > +
-> +	fp = fopen(path, "r");
-> +	free(path);
+> +``TST_CNT``
+> +    Number of test cases. When set the test function is called
+> +    ``TST_CNT`` times with a counter argument.
 > +
-> +	if (!fp)
-> +		return NULL;
+> +``TST_SETUP``
+> +    Name of the setup function (called once before tests).
 > +
-> +	while ((read = getline(&line, &len, fp)) != -1) {
-> +		char *new_content = realloc(content, total_size + read + 1);
+> +``TST_CLEANUP``
+> +    Name of the cleanup function (called once after tests or on
+> +    ``tst_brk``).
 > +
-> +		if (!new_content) {
-> +			free(content);
-> +			free(line);
-> +			fclose(fp);
-> +			return NULL;
-> +		}
-> +		content = new_content;
-> +		memcpy(content + total_size, line, read);
-> +		total_size += read;
-> +	}
+> +``TST_OPTS``
+> +    Extra getopts option string.
 > +
-> +	if (content)
-> +		content[total_size] = '\0';
+> +``TST_PARSE_ARGS``
+> +    Name of a function to parse extra options from ``TST_OPTS``.
 > +
-> +	free(line);
-> +	fclose(fp);
+> +``TST_USAGE``
+> +    Name of a function printing extra usage information.
 > +
-> +	return content;
-> +}
+> +``TST_POS_ARGS``
+> +    Number of expected positional arguments.
 > +
-> +int ftrace_write_file(const char *filename, const char *content)
-> +{
-> +	char *path;
-> +	FILE *fp;
-> +	int ret;
+> +``TST_TEST_DATA``
+> +    Space-separated data passed as a second argument to the test
+> +    function.
 > +
-> +	path = ftrace_get_path(filename);
-> +	if (!path)
-> +		return -1;
+> +``TST_TEST_DATA_IFS``
+> +    Custom delimiter for ``TST_TEST_DATA`` (default: space).
 > +
-> +	fp = fopen(path, "w");
-> +	free(path);
+> +Requirements (input)
+> +~~~~~~~~~~~~~~~~~~~~
 > +
-> +	if (!fp)
-> +		return -1;
+> +``TST_NEEDS_ROOT``
+> +    Set to 1 to require root privileges.
 > +
-> +	ret = fprintf(fp, "%s", content);
-> +	fclose(fp);
+> +``TST_NEEDS_TMPDIR``
+> +    Set to 1 to create a temporary directory.
 > +
-> +	return (ret > 0) ? 0 : -1;
-> +}
+> +``TST_NEEDS_DEVICE``
+> +    Set to 1 to prepare a block device.
 > +
-> +int ftrace_file_exists(const char *filename)
-> +{
-> +	char *path;
-> +	int ret;
+> +``TST_NEEDS_CMDS``
+> +    Space-separated list of required commands.
 > +
-> +	path = ftrace_get_path(filename);
-> +	if (!path)
-> +		return 0;
+> +``TST_NEEDS_MODULE``
+> +    Kernel module name that must be loadable.
 > +
-> +	ret = (access(path, F_OK) == 0);
-> +	free(path);
+> +``TST_NEEDS_DRIVERS``
+> +    Space-separated list of required kernel drivers.
 > +
-> +	return ret;
-> +}
+> +``TST_NEEDS_KCONFIGS``
+> +    Space-separated list of required kernel config options
+> +    (e.g. ``CONFIG_NUMA=y``).
 > +
-> +void ftrace_save_settings(void)
-> +{
-> +	if (saved_state.saved)
-> +		return;
+> +``TST_NEEDS_KCONFIGS_IFS``
+> +    Custom delimiter for ``TST_NEEDS_KCONFIGS`` (default: comma).
 > +
-> +	saved_state.trace_options = ftrace_read_file("trace_options");
-> +	saved_state.tracing_on = ftrace_read_file("tracing_on");
-> +	saved_state.buffer_size = ftrace_read_file("buffer_size_kb");
+> +``TST_NEEDS_CHECKPOINTS``
+> +    Set to 1 to enable checkpoint support.
 > +
-> +	if (ftrace_file_exists("tracing_cpumask"))
-> +		saved_state.tracing_cpumask = ftrace_read_file("tracing_cpumask");
+> +``TST_MIN_KVER``
+> +    Minimum kernel version string (e.g. ``4.18``).
 > +
-> +	if (ftrace_file_exists("tracing_enabled"))
-> +		saved_state.tracing_enabled = ftrace_read_file("tracing_enabled");
+> +Device and filesystem (input)
+> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > +
-> +	if (ftrace_file_exists("stack_max_size")) {
-> +		FILE *fp = fopen("/proc/sys/kernel/stack_tracer_enabled", "r");
+> +``TST_FORMAT_DEVICE``
+> +    Set to 1 to format ``TST_DEVICE`` before the test.
 > +
-> +		if (fp) {
-> +			saved_state.stack_tracer_enabled = malloc(32);
-> +			if (saved_state.stack_tracer_enabled)
-> +				fgets(saved_state.stack_tracer_enabled, 32, fp);
-> +			fclose(fp);
-> +		}
-> +	}
+> +``TST_MOUNT_DEVICE``
+> +    Set to 1 to mount ``TST_DEVICE`` at ``TST_MNTPOINT``.
 > +
-> +	if (access("/proc/sys/kernel/ftrace_enabled", F_OK) == 0) {
-> +		FILE *fp = fopen("/proc/sys/kernel/ftrace_enabled", "r");
+> +``TST_DEV_EXTRA_OPTS``
+> +    Extra options passed to ``mkfs``.
 > +
-> +		if (fp) {
-> +			saved_state.ftrace_enabled = malloc(32);
-> +			if (saved_state.ftrace_enabled)
-> +				fgets(saved_state.ftrace_enabled, 32, fp);
-> +			fclose(fp);
-> +		}
-> +	}
+> +``TST_DEV_FS_OPTS``
+> +    Extra filesystem-specific ``mkfs`` options.
 > +
-> +	if (ftrace_file_exists("function_profile_enabled"))
-> +		saved_state.function_profile_enabled = ftrace_read_file("function_profile_enabled");
+> +``TST_FS_TYPE``
+> +    Filesystem type for formatting (default: ``ext2``).
 > +
-> +	saved_state.saved = 1;
-> +}
+> +``TST_DEVICE_SIZE``
+> +    Device size in MB.
 > +
-> +void ftrace_restore_settings(void)
-> +{
-> +	if (!saved_state.saved)
-> +		return;
+> +``TST_ALL_FILESYSTEMS``
+> +    Set to 1 to repeat the test for each supported filesystem.
 > +
-> +	ftrace_write_file("current_tracer", "nop\n");
-> +	ftrace_write_file("events/enable", "0\n");
+> +``TST_SKIP_FILESYSTEMS``
+> +    Space-separated list of filesystems to skip.
 > +
-> +	if (ftrace_file_exists("tracing_max_latency"))
-> +		ftrace_write_file("tracing_max_latency", "0\n");
+> +``TST_MNT_PARAMS``
+> +    Mount flags/options string.
 > +
-> +	if (saved_state.tracing_cpumask)
-> +		ftrace_write_file("tracing_cpumask", saved_state.tracing_cpumask);
+> +Miscellaneous (input)
+> +~~~~~~~~~~~~~~~~~~~~~
 > +
-> +	if (ftrace_file_exists("trace_clock"))
-> +		ftrace_write_file("trace_clock", "local\n");
+> +``TST_SKIP_IN_LOCKDOWN``
+> +    Set to 1 to skip when kernel lockdown is active.
 > +
-> +	if (saved_state.function_profile_enabled)
-> +		ftrace_write_file("function_profile_enabled", saved_state.function_profile_enabled);
+> +``TST_SKIP_IN_SECUREBOOT``
+> +    Set to 1 to skip when Secure Boot is enabled.
 > +
-> +	if (saved_state.ftrace_enabled) {
-> +		FILE *fp = fopen("/proc/sys/kernel/ftrace_enabled", "w");
+> +``TST_DISABLE_APPARMOR``
+> +    Set to 1 to disable AppArmor before the test runs (requires root).
 > +
-> +		if (fp) {
-> +			fprintf(fp, "%s", saved_state.ftrace_enabled);
-> +			fclose(fp);
-> +		}
-> +	}
+> +``TST_DISABLE_SELINUX``
+> +    Set to 1 to put SELinux in permissive mode before the test runs
+> +    (requires root).
 > +
-> +	if (saved_state.stack_tracer_enabled && ftrace_file_exists("stack_max_size")) {
-> +		FILE *fp = fopen("/proc/sys/kernel/stack_tracer_enabled", "w");
+> +``TST_SKIP_LSM_WARNINGS``
+> +    Set to 1 to suppress the library's warnings about active LSMs
+> +    (AppArmor, SELinux) at startup.
 > +
-> +		if (fp) {
-> +			fprintf(fp, "%s", saved_state.stack_tracer_enabled);
-> +			fclose(fp);
-> +		}
-> +		ftrace_write_file("stack_max_size", "0\n");
-> +	}
+> +``TST_NO_DEFAULT_RUN``
+> +    Set to a non-empty value to source ``tst_test.sh`` without invoking
+> +    ``tst_run`` automatically. Useful for shell libraries that build on
+> +    top of the test API.
 > +
-> +	if (saved_state.buffer_size)
-> +		ftrace_write_file("buffer_size_kb", saved_state.buffer_size);
+> +``TST_TIMEOUT``
+> +    Test timeout in seconds.
 > +
-> +	if (saved_state.tracing_on)
-> +		ftrace_write_file("tracing_on", saved_state.tracing_on);
+> +``TST_TMPDIR_RHOST``
+> +    Set to 1 to also clean up the temporary directory on the remote
+> +    host (used by network tests).
 > +
-> +	if (saved_state.tracing_enabled)
-> +		ftrace_write_file("tracing_enabled", saved_state.tracing_enabled);
+> +Output variables
+> +~~~~~~~~~~~~~~~~
 > +
-> +	if (saved_state.trace_options) {
-> +		char *options = strdup(saved_state.trace_options);
+> +``TST_TMPDIR``
+> +    Path to the temporary directory (when ``TST_NEEDS_TMPDIR=1``).
 > +
-> +		if (options) {
-> +			char *token = strtok(options, "\n");
+> +``TST_STARTWD``
+> +    Original working directory before ``chdir`` to ``TST_TMPDIR``.
 > +
-> +			while (token) {
-> +				ftrace_write_file("trace_options", token);
-> +				token = strtok(NULL, "\n");
-> +			}
-> +			free(options);
-> +		}
-> +	}
+> +``TST_DEVICE``
+> +    Block device path (when ``TST_NEEDS_DEVICE=1``).
 > +
-> +	ftrace_clear_trace();
+> +``TST_MNTPOINT``
+> +    Mount point path.
 > +
-> +	if (ftrace_file_exists("set_ftrace_filter"))
-> +		ftrace_write_file("set_ftrace_filter", "\n");
-> +}
+> +``TST_MODPATH``
+> +    Path to the loaded kernel module.
 > +
-> +char **ftrace_get_available_tracers(int *count)
-> +{
-> +	char *path;
-> +	FILE *fp;
-> +	char **tracers = NULL;
-> +	char *line = NULL;
-> +	size_t len = 0;
-> +	int n = 0;
-> +	int capacity = 16;
+> +Checkpoint functions
+> +~~~~~~~~~~~~~~~~~~~~
 > +
-> +	path = ftrace_get_path("available_tracers");
-> +	if (!path) {
-> +		*count = 0;
-> +		return NULL;
-> +	}
+> +``TST_CHECKPOINT_WAIT``
+> +    Wait on checkpoint (argument: checkpoint id).
 > +
-> +	fp = fopen(path, "r");
-> +	free(path);
+> +``TST_CHECKPOINT_WAKE``
+> +    Wake one waiter on checkpoint (argument: checkpoint id).
 > +
-> +	if (!fp) {
-> +		*count = 0;
-> +		return NULL;
-> +	}
+> +``TST_CHECKPOINT_WAKE2``
+> +    Wake multiple waiters (arguments: checkpoint id, count).
 > +
-> +	tracers = malloc(sizeof(char *) * capacity);
-> +	if (!tracers) {
-> +		fclose(fp);
-> +		*count = 0;
-> +		return NULL;
-> +	}
-> +
-> +	if (getline(&line, &len, fp) != -1) {
-> +		char *token;
-> +		char *saveptr;
-> +
-> +		token = strtok_r(line, " \n", &saveptr);
-> +		while (token) {
-> +			if (n >= capacity) {
-> +				capacity *= 2;
-> +				char **new_tracers = realloc(tracers, sizeof(char *) * capacity);
-> +
-> +				if (!new_tracers) {
-> +					while (n > 0)
-> +						free(tracers[--n]);
-> +					free(tracers);
-> +					free(line);
-> +					fclose(fp);
-> +					*count = 0;
-> +					return NULL;
-> +				}
-> +				tracers = new_tracers;
-> +			}
-> +
-> +			tracers[n] = strdup(token);
-> +			if (!tracers[n]) {
-> +				while (n > 0)
-> +					free(tracers[--n]);
-> +				free(tracers);
-> +				free(line);
-> +				fclose(fp);
-> +				*count = 0;
-> +				return NULL;
-> +			}
-> +			n++;
-> +			token = strtok_r(NULL, " \n", &saveptr);
-> +		}
+> +``TST_CHECKPOINT_WAKE_AND_WAIT``
+> +    Wake one waiter and then wait (argument: checkpoint id).
 
-The loop here does not make any sense, we are reading the file line by
-line now, the strtok_r() will not split the line into tokens, there is
-going to be only a single line in the buffer.
+This is the old shell API that is eventually going away.
 
-> +	}
-> +
-> +	free(line);
-> +	fclose(fp);
-> +
-> +	*count = n;
-> +	return tracers;
-> +}
-> +
-> +int ftrace_set_tracer(const char *tracer)
-> +{
-> +	char *path;
-> +
-> +	path = ftrace_get_path("current_tracer");
-> +	if (!path)
-> +		return -1;
-> +
-> +	SAFE_FILE_PRINTF(path, "%s", tracer);
-> +	free(path);
-> +
-> +	return 0;
-
-It's way too ugly to construct the path each time we need to write to
-the tracing file.
-
-I guess that the ideal solution is to use the SAFE_FILE_PRINTFAT() that
-way we will only need to open the tracing directory with O_DIRECTORY in
-the ftrace_initialize() and then we can print to all these files
-relative to the dirfd without construction any paths, which can replace
-all the ftrace_write_file() with SAFE_FILE_PRINTFAT().
-
-For reading small files we can use SAFE_FILE_READAT().
-
-> diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_lib.h b/testcases/kernel/tracing/ftrace_test/ftrace_lib.h
-> new file mode 100644
-> index 000000000..79fdfee28
-> --- /dev/null
-> +++ b/testcases/kernel/tracing/ftrace_test/ftrace_lib.h
-> @@ -0,0 +1,136 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Copyright (c) 2010 FUJITSU LIMITED
-> + * Copyright (c) 2024 Linux Test Project
-> + * Copyright (c) IBM, 2026
-> + *
-> + * Author: Li Zefan <lizf@cn.fujitsu.com>
-> + * Converted to C by: Praveen K Pandey <praveen@linux.ibm.com>
-> + */
-> +
-> +#ifndef FTRACE_LIB_H
-> +#define FTRACE_LIB_H
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
-> +#include <sys/mount.h>
-> +#include <sys/stat.h>
-> +#include <sys/types.h>
-> +#include <errno.h>
-> +#include <limits.h>
-> +
-> +extern char *tracing_path;
-> +extern char *debugfs_path;
-> +
-> +struct ftrace_saved_state {
-> +	char *trace_options;
-> +	char *tracing_on;
-> +	char *buffer_size;
-> +	char *tracing_cpumask;
-> +	char *tracing_enabled;
-> +	char *stack_tracer_enabled;
-> +	char *ftrace_enabled;
-> +	char *function_profile_enabled;
-> +	int saved;
-> +};
-> +
-> +extern struct ftrace_saved_state saved_state;
-> +
-> +/**
-> + * ftrace_initialize - Initialize ftrace test environment
-> + *
-> + * Checks if debugfs is mounted, mounts it if needed, verifies tracing
-> + * support, and saves current ftrace settings.
-> + */
-> +void ftrace_initialize(void);
-> +
-> +/**
-> + * ftrace_cleanup - Cleanup and restore ftrace settings
-> + *
-> + * Restores all saved ftrace settings and unmounts debugfs if needed.
-> + */
-> +void ftrace_cleanup(void);
-> +
-> +/**
-> + * ftrace_save_settings - Save current ftrace settings
-> + *
-> + * Saves all ftrace configuration to restore later.
-> + */
-> +void ftrace_save_settings(void);
-> +
-> +/**
-> + * ftrace_restore_settings - Restore saved ftrace settings
-> + *
-> + * Restores ftrace configuration saved by ftrace_save_settings().
-> + */
-> +void ftrace_restore_settings(void);
-> +
-> +/**
-> + * ftrace_get_path - Get full path to a tracing file
-> + * @filename: Name of the file in tracing directory
-> + *
-> + * Return: Allocated string with full path (caller must free)
-> + */
-> +char *ftrace_get_path(const char *filename);
-> +
-> +/**
-> + * ftrace_read_file - Read content from a tracing file
-> + * @filename: Name of the file in tracing directory
-> + *
-> + * Return: Allocated string with file content (caller must free)
-> + */
-> +char *ftrace_read_file(const char *filename);
-> +
-> +/**
-> + * ftrace_write_file - Write content to a tracing file
-> + * @filename: Name of the file in tracing directory
-> + * @content: Content to write
-> + *
-> + * Return: 0 on success, -1 on failure
-> + */
-> +int ftrace_write_file(const char *filename, const char *content);
-> +
-> +/**
-> + * ftrace_file_exists - Check if a tracing file exists
-> + * @filename: Name of the file in tracing directory
-> + *
-> + * Return: 1 if exists, 0 otherwise
-> + */
-> +int ftrace_file_exists(const char *filename);
-> +
-> +/**
-> + * ftrace_get_available_tracers - Get list of available tracers
-> + * @count: Pointer to store number of tracers
-> + *
-> + * Return: Array of tracer names (caller must free)
-> + */
-> +char **ftrace_get_available_tracers(int *count);
-> +
-> +/**
-> + * ftrace_set_tracer - Set current tracer
-> + * @tracer: Name of the tracer to set
-> + *
-> + * Return: 0 on success, -1 on failure
-> + */
-> +int ftrace_set_tracer(const char *tracer);
-> +
-> +/**
-> + * ftrace_clear_trace - Clear the trace buffer
-> + */
-> +void ftrace_clear_trace(void);
-> +
-> +/**
-> + * ftrace_enable_tracing - Enable tracing
-> + */
-> +void ftrace_enable_tracing(void);
-> +
-> +/**
-> + * ftrace_disable_tracing - Disable tracing
-> + */
-> +void ftrace_disable_tracing(void);
-> +
-> +#endif /* FTRACE_LIB_H */
-> +
-> -- 
-> 2.50.1
+The API that is going to stay is the JSON comment in the test.
 
 -- 
 Cyril Hrubis
