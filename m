@@ -4,82 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8243ACD8CB2
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 17:04:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2439CD8CB9
+	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 17:07:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B4A4B3E6EA5
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 19:04:04 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 7E1543E6EA5
+	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 19:07:25 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 190283E5E99
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 19:03:47 +0200 (CEST)
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
- [IPv6:2607:f8b0:4864:20::1043])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 789F43E5E99
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 19:07:06 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6A7DC14002DA
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 19:03:47 +0200 (CEST)
-Received: by mail-pj1-x1043.google.com with SMTP id
- 98e67ed59e1d1-36b9b15af73so6514923a91.0
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 10:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781111026; x=1781715826; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=ckEwsJE9c7CkGoGtDEjZIL+xDsBETmzAFeedBHbKf5Y=;
- b=L/r/jIW2ik7z/pcKe9453iVKl/JY2Tuytv+gQtQL+D/KUC08g63RcUAbIrHPYtxO/B
- 2uKtq3Zg4dlXv68LeqonFmLpYhj+m303Dz7zkYEaKevo7S+tFs3Ho9ZbDybzomZe7uQS
- 6Hjo1cCG5zEfhadfoDEtCYbj527mussvVPn/3ES6igFRESQCCvMnNwpJ7t6i7qF2orEz
- Hw3UQvKH0CZ63wW6+r7CSisRuRwbnjkLi4Eh8tBJVwrp4NkOBqgQo4oY/qdpA7AcRa+c
- sEqWCikiYX9TSqeO32XZ/+azQJo4ZDPQeQTeCQbT/YwChckBkjPyhPixORKzVq/elah+
- 5DwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781111026; x=1781715826;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=ckEwsJE9c7CkGoGtDEjZIL+xDsBETmzAFeedBHbKf5Y=;
- b=eak15loUSvd5dKsYHLFHg3EVt+23yc6iz+8r6xchM2TEo156/YaeJU2MQOMNvv9J9p
- F5bOmtnwagIkIKOAX4/v0j+KNiJ+4esqMA5wdXOmQEKqt//xRoBsXyCbosNzAQWGere6
- bOQJWoPzwFj3od0Gjh1OPpDTo/GFV8bqkdEEvBBYarO7EIQh5yuDvJ1J7N0KL0S4rnRB
- LL/TcYKNA2aD48t5eTcLTFWyILTHAgmquC8WVVjpHenYHK9hfrVoUQUAjU5pJJWEaTKm
- L1pd9RMYL1pObUhS4wijUc6MxTyCVtcKuLYGUz6WvBvOoCNJTxC2B4kySy6Kc6MwFGh+
- TYvQ==
-X-Gm-Message-State: AOJu0YxJ07exBzxx3Ynouy7C4079CRbZ1U+wZXe9ogfpd2dj60Huxddy
- OaOOg1oxuDLd78A0TJY8RCFIi2SiDqj4t/erzt9JDpl7Z4vWDMlOdE2A
-X-Gm-Gg: Acq92OFNxvscP+KtSN4VCm7Odmk3QWghQ8i5cFwKtJ8IxtfdaI+Q8zfiHVzG40mMm/3
- tOoTdxWGOQixjiK1+1FkKO8sby1A4OYxhfegWCPrwgYwxyTFOatGF5c4rLikcs06fktVuib487F
- cG/rcZ8vjFA8UnFwQiaXnwHcOzZcOWDMyuo+aTeSAqAzLlBFLra9JOBAWqJMblmZrIvOI7hX6HA
- GmPEFzmEdoIvDE3IOCNEjrNC9I+UzxJjd+3oqiVl8LTnnpLsn0nsZhe5rpFGMpB8xrdR50gkdwA
- XP8Pe1kE5iAmC/u97iOcuUtRg3S5vlCGPtHZGPxL6MM8WH5I0jwBPHV46n9w1ZZa2IIUS4Y95KH
- 6vVssN6jofgv0E2M4uDJu6h2LEnalGHX8HfGDR8n3X/NCqn9NgLIuEoeMmLwuODDyXl0yTgmCBv
- CLYmHTJL4EHJQ+JhMVt1T9b1AdO26gLc8cz0o9pgnPa37hv/hUHYgmjpvlaj+oDtNpciMhOIYgT
- uB1Ic88k0jgw01z34M4If5lskEuTDQvOAF9W4IZ8k58SPFE
-X-Received: by 2002:a17:90a:d40b:b0:36d:6315:1de4 with SMTP id
- 98e67ed59e1d1-3774864eb5bmr86393a91.17.1781111025676; 
- Wed, 10 Jun 2026 10:03:45 -0700 (PDT)
-Received: from
- runnervm3jyl0.uhw0sbhxhnzetlooflkaa2yddd.bx.internal.cloudapp.net
- ([52.188.87.55]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-51775c4d7absm215470671cf.11.2026.06.10.10.03.44
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 10 Jun 2026 10:03:44 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 10 Jun 2026 17:03:43 +0000
-Message-ID: <20260610170343.4168-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260610-fw_load-v2-1-fca6faa237ab@suse.com>
-References: <20260610-fw_load-v2-1-fca6faa237ab@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E9B991A0064E
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 19:07:05 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E6EAB759E1;
+ Wed, 10 Jun 2026 17:07:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1781111225; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=FF6OdR1lPat37rkDoLOkGyC658fe1b3ZvpudoGAp21c=;
+ b=JQN9Su8r6HBvieVAwvymoop4yOJLYjijqPckDWHW6KPHEKvpyFq7YN3tUPWFduerT4dUrQ
+ qLkyYH/gfFmBVrs/DnEacCaVN9s69mACyrIQ2amRyMRNBe4aP9XgF5skslHAtpUWB15rnP
+ z9eJeJ+Gz7+QboOwTMdP/EkoqwXzht8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1781111225;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=FF6OdR1lPat37rkDoLOkGyC658fe1b3ZvpudoGAp21c=;
+ b=kYJ3n+joipABQeMkBELFNScPRNFgXkhmvl5WbTVf4PSYmaIYBXXYeZPkHvPMNxR3V2YJmP
+ XavQ0Ud0j88soMDw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=0h3ZjHmI;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="VBAw/vDB"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1781111224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=FF6OdR1lPat37rkDoLOkGyC658fe1b3ZvpudoGAp21c=;
+ b=0h3ZjHmI77+I5fNOMYjFRF/qiql0JjPgtxUFA1x6wBHleTeMg76u18uSp6G3xK0mBONbi6
+ nPv1vEray76S4WgsL83mXLh2itx7PcJ1OfzjKxr8eDlg4afD8oJu0WagyRPMLi1mJRnxg8
+ z1aR182C1LdAfi1k9kp5BFtzwotW0ug=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1781111224;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=FF6OdR1lPat37rkDoLOkGyC658fe1b3ZvpudoGAp21c=;
+ b=VBAw/vDB6Xbb1lxWPFgDAPbKOeGNojqsgDrrLk0CU6RDvIgCgkTv9YSO5s9V/DL4+AH5ZO
+ /NN5WYeDev+Py1Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C88A4779A7;
+ Wed, 10 Jun 2026 17:07:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id YuHfLriZKWrIAQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 10 Jun 2026 17:07:04 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 10 Jun 2026 19:07:03 +0200
+Message-Id: <20260610-fw_load-v3-0-eef32edfe8d5@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-B4-Tracking: v=1; b=H4sIALeZKWoC/3WMwQrCMBAFf6Xs2UiywZp68j9EJE02NqBNSTQqp
+ f9uWkS8eJzHmxkhUfSUYFeNECn75ENfQK4qMJ3uz8S8LQzIseY1b5h7nC5BW4ZKIVeqJaMIynu
+ I5PxzKR2OhTufbiG+lnAW8/ppCP5tZME4s66xUkmxIan26Z5obcIV5kTGPxoWzRldO61RbnX7o
+ 03T9AY2I0OW1AAAAA==
+X-Change-ID: 20260609-fw_load-2882088bec8e
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1781111224; l=2096;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=5YS34CPtkgIil8+Z5LMSHdLI8EQY7wWkgahsr6r4LbU=;
+ b=MxPOW19MPswQnJThqIFDG0rVdrT70W/iFUKRM7btpkEhaOkM4eRLXr8S+ch+4bWwVUY5/UpaD
+ thlUgxtW4GsAkQcNA3dQYggQjBX57P0CUFyG7EpCsVgzROEQM3OwToo
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: E6EAB759E1
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ ARC_NA(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DKIM_TRACE(0.00)[suse.de:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:email,suse.com:mid]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] fw_load: Modernize ltp_fw_load kernel module
+Subject: [LTP] [PATCH v3 0/3] Rewrite fw_load test using new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,55 +124,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Support immutable distribution by splitting test in two:
 
-On Wed Jun 10 15:50:44 2026 +0200, Andrea Cervesato wrote:
-> fw_load: Modernize ltp_fw_load kernel module
+- fw_load01 triggers request_firmware on /lib/firmware (read-only on
+  immutable distributions) and it doesn't support read-only filesystems
+- fw_load02 triggers request_firmware on custom path (always supported
+  by any distribution)
 
---- [PATCH 2/3] ---
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Changes in v3:
+- fix bisecting
+- fix algorithm op order
+- Link to v2: https://lore.kernel.org/r/20260610-fw_load-v2-0-fca6faa237ab@suse.com
 
-> -MAKE_TARGETS	:= ltp_fw_load.ko
-> +MAKE_TARGETS	:= fw_load01 fw_load02 ltp_fw_load.ko
-
-fw_load02.c is not created until PATCH 3/3, so building the tree at
-this commit will fail with a missing-source error. Each patch must
-compile on its own without intermediate breakage.
-
-Move fw_load02 out of MAKE_TARGETS here and add it in PATCH 3/3
-together with the source file.
-
-> +/*\
-> + * [Algorithm]
-> + *
-> + * - Create firmware files in the standard firmware search
-> + *   directories:
-> ...
-> + * - Load the helper module with ``fw_size`` matching the blob size
-
-The algorithm lists "Create firmware files" before "Load the helper
-module", but the code in setup() loads the module first (line 111)
-and creates the firmware files after (lines 114-125). Since
-request_firmware() is only triggered later via sysfs the order does
-not matter for correctness, but the algorithm block should match the
-actual code order.
-
-Verdict: Needs revision
+Changes in v2:
+- fix fw_load.h define
+- fix Makefile copyright position
+- fix year in the firmware file
+- Link to v1: https://lore.kernel.org/r/20260610-fw_load-v1-0-df9d38315e38@suse.com
 
 ---
-Note:
+Andrea Cervesato (3):
+      fw_load: Modernize ltp_fw_load kernel module
+      firmware/fw_load: rewrite firmware loading test using new LTP API
+      firmware/fw_load: add fw_load02 for custom firmware path
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+ runtest/kernel_misc                                |   3 +-
+ .../{fw_load_kernel => fw_load}/.gitignore         |   2 +
+ testcases/kernel/firmware/fw_load/Makefile         |  25 +++
+ testcases/kernel/firmware/fw_load/fw_load.h        |  18 ++
+ testcases/kernel/firmware/fw_load/fw_load01.c      | 162 ++++++++++++++++
+ testcases/kernel/firmware/fw_load/fw_load02.c      | 144 ++++++++++++++
+ testcases/kernel/firmware/fw_load/ltp_fw_load.c    | 178 +++++++++++++++++
+ testcases/kernel/firmware/fw_load_kernel/Makefile  |  35 ----
+ testcases/kernel/firmware/fw_load_kernel/README    |  16 --
+ .../kernel/firmware/fw_load_kernel/ltp_fw_load.c   | 164 ----------------
+ testcases/kernel/firmware/fw_load_user/.gitignore  |   1 -
+ testcases/kernel/firmware/fw_load_user/Makefile    |  20 --
+ testcases/kernel/firmware/fw_load_user/README      |  11 --
+ testcases/kernel/firmware/fw_load_user/fw_load.c   | 213 ---------------------
+ 14 files changed, 531 insertions(+), 461 deletions(-)
+---
+base-commit: c1b71bf7ebb6a58507e4998faf5c74154f595f96
+change-id: 20260609-fw_load-2882088bec8e
 
-Regards,
-LTP AI Reviewer
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
