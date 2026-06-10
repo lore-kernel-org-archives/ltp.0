@@ -4,107 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F185CD8CB2
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 13:51:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A316CD8CB2
+	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 14:30:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DA7EA3C230D
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 15:51:56 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 3D5BE3E6EE2
+	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 16:30:34 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AD2313E6E79
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 15:51:02 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id D809B3E183A
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 16:30:19 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 364422009A1
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 15:51:02 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1F38210005A7
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 16:30:18 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6924E6ADCC;
- Wed, 10 Jun 2026 13:50:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1781099453; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 45A906AD98;
+ Wed, 10 Jun 2026 14:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1781101817; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=n1kPzVcb643JqinwkHpjXXuqPOVCsnpha7gM32dnQqY=;
- b=cxr7P8k6NTOiU9IGukIFl2aMbn5b/stV5IzobP1ae1nGHMatwQkB7hUkb67lMHJz3s3kDL
- g3Y/tqW7m0CPdpCXw69aTGdKFvoM8ya6U6EHjjrzjmmTzawcQNs72URDIcYyjniU8UZrhF
- NkvMqTN3ZTbKHZKKqBYGIo6pGHBRgDo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1781099453;
+ bh=vJs2hiXekrvfvrxaYglRg0dlwXLSypuP0Fc6KJ8Dj8w=;
+ b=bWxVGAmSCl8r1cmpaOUDaPGBeyp+blB0/Z/ZZoKkBIp6OtB+g2KouLqJqvPXHm+vopiDIU
+ q/Mgw/PkRCmvnKjS/70TSKpRaCJzXq4VZwAvfZxx2OzZ1sUgHhbeg+Wbyt4a3i43NMVcEE
+ ncQrmybksh7T15tCnT2wU9IK4a0S1S8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1781101817;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=n1kPzVcb643JqinwkHpjXXuqPOVCsnpha7gM32dnQqY=;
- b=F7++Kt0FgLt1aa17yxegY8ZNWdxXxLpLp9aDxj8UVk0J3R4JJptw58XzXIO4/BcsU2BGXz
- cwrUp2qTBhOO1wAw==
+ bh=vJs2hiXekrvfvrxaYglRg0dlwXLSypuP0Fc6KJ8Dj8w=;
+ b=ZDY5TzDf4V2wvQUMeV6Oj4iJB5Xny1Fx65rxSGWTKSQ5ErvUfhcUTbgsS9K3lCoP1++0a3
+ aK2rpY1PNNGmYMAw==
 Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1781099453; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=bWxVGAmS;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZDY5TzDf
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1781101817; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=n1kPzVcb643JqinwkHpjXXuqPOVCsnpha7gM32dnQqY=;
- b=cxr7P8k6NTOiU9IGukIFl2aMbn5b/stV5IzobP1ae1nGHMatwQkB7hUkb67lMHJz3s3kDL
- g3Y/tqW7m0CPdpCXw69aTGdKFvoM8ya6U6EHjjrzjmmTzawcQNs72URDIcYyjniU8UZrhF
- NkvMqTN3ZTbKHZKKqBYGIo6pGHBRgDo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1781099453;
+ bh=vJs2hiXekrvfvrxaYglRg0dlwXLSypuP0Fc6KJ8Dj8w=;
+ b=bWxVGAmSCl8r1cmpaOUDaPGBeyp+blB0/Z/ZZoKkBIp6OtB+g2KouLqJqvPXHm+vopiDIU
+ q/Mgw/PkRCmvnKjS/70TSKpRaCJzXq4VZwAvfZxx2OzZ1sUgHhbeg+Wbyt4a3i43NMVcEE
+ ncQrmybksh7T15tCnT2wU9IK4a0S1S8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1781101817;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=n1kPzVcb643JqinwkHpjXXuqPOVCsnpha7gM32dnQqY=;
- b=F7++Kt0FgLt1aa17yxegY8ZNWdxXxLpLp9aDxj8UVk0J3R4JJptw58XzXIO4/BcsU2BGXz
- cwrUp2qTBhOO1wAw==
+ bh=vJs2hiXekrvfvrxaYglRg0dlwXLSypuP0Fc6KJ8Dj8w=;
+ b=ZDY5TzDf4V2wvQUMeV6Oj4iJB5Xny1Fx65rxSGWTKSQ5ErvUfhcUTbgsS9K3lCoP1++0a3
+ aK2rpY1PNNGmYMAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 51E12779A9;
- Wed, 10 Jun 2026 13:50:53 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3795A779A7;
+ Wed, 10 Jun 2026 14:30:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 4LygEr1rKWpMPgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 10 Jun 2026 13:50:53 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 10 Jun 2026 15:50:46 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MOt5DPl0KWpvZQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 10 Jun 2026 14:30:17 +0000
+Date: Wed, 10 Jun 2026 16:30:11 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Sebastian Chlad <sebastianchlad@gmail.com>
+Message-ID: <ail084ZtfQErQjuR@yuki.lan>
+References: <89e9004c-4415-4f05-8288-4f73a491d8dd@suse.cz>
+ <20260604163909.17853-1-sebastian.chlad@suse.com>
 MIME-Version: 1.0
-Message-Id: <20260610-fw_load-v2-3-fca6faa237ab@suse.com>
-References: <20260610-fw_load-v2-0-fca6faa237ab@suse.com>
-In-Reply-To: <20260610-fw_load-v2-0-fca6faa237ab@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1781099452; l=5984;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=zZRCacZ4x80kdJgUeoEALeiel3pmAVkxqFV7RgvghrQ=;
- b=ajZfJQeiFINDgl9yDpnxYy51PRyRPHZILCuPAqPN5rUivfXmIgFaKilaSiieeK5JFnLkz4i8Y
- aTo+BMvYpBmAgbf9kBD4Y7NTnorfyYf7vwqIFKBX7VjgToJgW4F8vUe
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+Content-Disposition: inline
+In-Reply-To: <20260604163909.17853-1-sebastian.chlad@suse.com>
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 45A906AD98
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid, oracle.com:email,
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FREEMAIL_TO(0.00)[gmail.com];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[3];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, yuki.lan:mid, linux.it:url,
+ suse.cz:email, suse.cz:dkim, imap1.dmz-prg2.suse.org:rdns,
  imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 3/3] firmware/fw_load: add fw_load02 for custom
- firmware path
+Subject: Re: [LTP] [PATCH v5 1/2] lapi: Add io_uring_clone_buffers and
+ RDS_CMSG_ZCOPY_COOKIE fallbacks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,201 +121,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Sebastian Chlad <sebastian.chlad@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi!
+> --- a/include/lapi/io_uring.h
+> +++ b/include/lapi/io_uring.h
+> @@ -265,6 +265,23 @@ struct io_uring_probe {
+>  
+>  #endif /* IOSQE_FIXED_FILE */
+>  
+> +/* linux/io_uring.h: IORING_REGISTER_CLONE_BUFFERS = 30 */
+> +#ifndef IORING_REGISTER_CLONE_BUFFERS
+> +# define IORING_REGISTER_CLONE_BUFFERS	30
+> +#endif
+> +
+> +/* Argument for IORING_REGISTER_CLONE_BUFFERS (linux/io_uring.h) */
+> +#ifndef HAVE_STRUCT_IO_URING_CLONE_BUFFERS
+> +struct io_uring_clone_buffers {
+> +	uint32_t src_fd;
+> +	uint32_t flags;
+> +	uint32_t src_off;
+> +	uint32_t dst_off;
+> +	uint32_t nr;
+> +	uint32_t pad[3];
+> +};
+> +#endif
+> +
+>  #ifndef IOSQE_IO_HADRLINK
+>  /* like LINK, but stronger */
+>  #define IOSQE_IO_HARDLINK_BIT	3
+> diff --git a/include/lapi/rds.h b/include/lapi/rds.h
+> new file mode 100644
+> index 000000000..7405a7f37
+> --- /dev/null
+> +++ b/include/lapi/rds.h
+> @@ -0,0 +1,16 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2026 SUSE LLC Sebastian Chlad <sebastian.chlad@suse.com>
+> + */
+> +
+> +#ifndef LAPI_RDS_H__
+> +#define LAPI_RDS_H__
+> +
+> +#include <linux/rds.h>
+> +
+> +/* Fallback for older userspace headers (e.g. openSUSE Leap 42.2). */
 
-Add fw_load02 which points the kernel firmware loader at the writable
-LTP temporary directory via /sys/module/firmware_class/parameters/path.
-Unlike fw_load01, it does not rely on a writable /lib/firmware and so
-works on read-only and immutable root filesystems while still exercising
-request_firmware() for both successful loads and the not-found case.
+Generally we do not add such comments that mostly state the obvious.
+The less comments like this we add the better, apart from adding visual
+noise they also tend to go out of sync with the code.
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- runtest/kernel_misc                           |   1 +
- testcases/kernel/firmware/fw_load/.gitignore  |   1 +
- testcases/kernel/firmware/fw_load/fw_load02.c | 144 ++++++++++++++++++++++++++
- 3 files changed, 146 insertions(+)
+Please add only the fallbacks without the comments.
 
-diff --git a/runtest/kernel_misc b/runtest/kernel_misc
-index 19caee1d81da9cf0503088138ecfda13436b96cf..cc3562cb78cfa9b657692fcbd8fb732f2879092e 100644
---- a/runtest/kernel_misc
-+++ b/runtest/kernel_misc
-@@ -1,6 +1,7 @@
- cn_pec_sh cn_pec.sh
- kmsg01 kmsg01
- fw_load01 fw_load01
-+fw_load02 fw_load02
- rtc01 rtc01
- rtc02 rtc02
- block_dev block_dev
-diff --git a/testcases/kernel/firmware/fw_load/.gitignore b/testcases/kernel/firmware/fw_load/.gitignore
-index 53c4b4634684ec7ea6deccedec34b214af4cd3a3..206028a8b2111d0db4dda5c2d5bb18e51c95760d 100644
---- a/testcases/kernel/firmware/fw_load/.gitignore
-+++ b/testcases/kernel/firmware/fw_load/.gitignore
-@@ -6,3 +6,4 @@
- /.tmp_versions/
- modules.livepatch
- /fw_load01
-+/fw_load02
-diff --git a/testcases/kernel/firmware/fw_load/fw_load02.c b/testcases/kernel/firmware/fw_load/fw_load02.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..f7c7af6c2ab7e67ae2fbdac9b56c0421057affe4
---- /dev/null
-+++ b/testcases/kernel/firmware/fw_load/fw_load02.c
-@@ -0,0 +1,144 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *	Alexey Kodanev <alexey.kodanev@oracle.com>
-+ * Copyright (c) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Verifies that the kernel firmware loader (``CONFIG_FW_LOADER``)
-+ * can find and load firmware files from a custom firmware search
-+ * path.
-+ *
-+ * A helper kernel module (``ltp_fw_load.ko``) registers a virtual
-+ * device that calls :kernel_doc:`request_firmware` for a set of
-+ * numbered firmware blobs. Each blob is verified in-kernel against
-+ * its expected size and byte pattern.
-+ *
-+ * The kernel firmware loader is pointed at the writable LTP temporary
-+ * directory through ``/sys/module/firmware_class/parameters/path``.
-+ * This avoids writing into ``/lib/firmware`` and therefore works on
-+ * read-only or immutable root filesystems. The original value is
-+ * saved and restored automatically.
-+ *
-+ * [Algorithm]
-+ *
-+ * - Set the firmware search path to the LTP temporary directory
-+ * - Create ``FW_NUM - 1`` firmware files there, each named
-+ *   ``n<i>_load_tst.fw`` and filled with a known byte pattern
-+ * - Add one fake firmware entry that has no file on disk
-+ * - Load the helper module with ``fw_size`` matching the blob size
-+ * - Write the firmware count to ``/sys/devices/ltp_fw_load/fwnum``
-+ *   to trigger :kernel_doc:`request_firmware` calls in-kernel
-+ * - Read the result bitmask from ``/sys/devices/ltp_fw_load/result``
-+ * - Verify that every real firmware file was loaded successfully
-+ *   and that the fake entry was correctly rejected
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_module.h"
-+#include "fw_load.h"
-+
-+#define MAX_NAME 64
-+
-+static int module_loaded;
-+static int fw_count;
-+
-+static struct fw_data {
-+	char file[PATH_MAX];
-+	char name[MAX_NAME];
-+	int fake;
-+} firmware[FW_NUM];
-+
-+static void create_firmware(const char *dir)
-+{
-+	struct fw_data *fw = &firmware[fw_count];
-+	char buf[FW_SIZE];
-+	int fd;
-+
-+	snprintf(fw->name, sizeof(fw->name), "n%d_%s", fw_count, FW_NAME);
-+	snprintf(fw->file, sizeof(fw->file), "%s/n%d_%s", dir, fw_count, FW_NAME);
-+	memset(buf, fw_count, FW_SIZE);
-+
-+	fd = SAFE_OPEN(fw->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, FW_SIZE);
-+	SAFE_CLOSE(fd);
-+
-+	fw_count++;
-+}
-+
-+static void run(void)
-+{
-+	struct fw_data *fw;
-+	int result = 0;
-+	int fail;
-+
-+	SAFE_FILE_PRINTF(DEV_FWNUM, "%d", fw_count);
-+	SAFE_FILE_SCANF(DEV_RESULT, "%d", &result);
-+
-+	for (int i = 0; i < fw_count; i++) {
-+		fw = &firmware[i];
-+
-+		if (fw->fake) {
-+			tst_res(result & (1 << i) ? TFAIL : TPASS,
-+				"Firmware '%s' correctly not loaded", fw->name);
-+		} else {
-+			fail = (result & (1 << i)) == 0;
-+			tst_res(fail ? TFAIL : TPASS,
-+				"Firmware '%s' loaded", fw->name);
-+		}
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	char fw_size_param[32];
-+	char *tmpdir = tst_tmpdir_path();
-+	struct tst_path_val fw_path = {
-+		.path = FW_PATH,
-+		.val = tmpdir,
-+		.flags = TST_SR_TCONF,
-+	};
-+
-+	tst_requires_module_signature_disabled();
-+
-+	/*
-+	 * Point the kernel firmware loader at our writable tmpdir so the
-+	 * test does not depend on a writable /lib/firmware. The previous
-+	 * value is restored automatically during cleanup.
-+	 */
-+	tst_sys_conf_save(&fw_path);
-+
-+	snprintf(fw_size_param, sizeof(fw_size_param), "fw_size=%d", FW_SIZE);
-+	char *const mod_params[] = {fw_size_param, NULL};
-+
-+	tst_module_load(MNAME_KO, mod_params);
-+	module_loaded = 1;
-+
-+	for (int i = 0; i < FW_NUM - 1; i++)
-+		create_firmware(tmpdir);
-+
-+	/* add a fake file that is never created on disk */
-+	snprintf(firmware[fw_count].name, sizeof(firmware[fw_count].name),
-+		 "n%d_%s", fw_count, FW_NAME);
-+	firmware[fw_count].fake = 1;
-+	fw_count++;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (module_loaded)
-+		tst_module_unload(MNAME_KO);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_FW_LOADER=y|CONFIG_FW_LOADER=m",
-+		NULL,
-+	},
-+};
+> +#ifndef RDS_CMSG_ZCOPY_COOKIE
+> +# define RDS_CMSG_ZCOPY_COOKIE	12
+> +#endif
+> +
+> +#endif /* LAPI_RDS_H__ */
+> -- 
+> 2.51.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
-2.51.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
