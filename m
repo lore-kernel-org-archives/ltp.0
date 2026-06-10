@@ -4,108 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22EEDCD8CB2
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 12:53:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43147CD8CB9
+	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 13:00:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 367303E6E72
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 14:53:06 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id D46963E5E9E
+	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 15:00:28 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CB9943E6E83
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 14:52:06 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 0A9033E183A
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 15:00:12 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7B57E2009E4
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 14:52:01 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 27FD920038D
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 15:00:09 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 35A106AD2C;
- Wed, 10 Jun 2026 12:51:57 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BF8A06AD94;
+ Wed, 10 Jun 2026 13:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1781095917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1781096409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=n1kPzVcb643JqinwkHpjXXuqPOVCsnpha7gM32dnQqY=;
- b=n9H64qU5WDqEt8870S7iQxGdlpqikCRwOmy6vPexlUli5wSizwanJ1/Kv7ZEoR3Lerl7kE
- CuEYy12Ri1pT0BwxoSp2kskVGmkYPbZxq0HfTuLAcoA6NPD8Bbug3/UhFJSt/5hcvLLJpg
- HfvLVz3EkJirXSK7ZSt8155BT0yTE4I=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=boVQmvuVnP/p6hCXrcEajjXbI4j27Y/rwRjg9WkHSt4=;
+ b=mGmZRh3LmQsVSZDMT7b7sjQ9TKLnTW5bPkKgKei558COTXTLonIDiOw0jbJbkdPxLRuwAU
+ Yd6cUgteD+7WQp9iizuBKhCyoo9clSPi7aLMDnq48hxPOiLlEj47/hpSYoY/5+ztjsLrNr
+ mKeN2iu4J1tbvENY8GkBsWTru+J9Khc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1781095917;
+ s=susede2_ed25519; t=1781096409;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=n1kPzVcb643JqinwkHpjXXuqPOVCsnpha7gM32dnQqY=;
- b=Ne7nKViCqcEidC8k0gVj77oUTVLLw8EG9SdedzNyjLs/7qiObxxJIHPX+QPRs330xvkN9W
- Sg8gcuGBVKDN4YAQ==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=boVQmvuVnP/p6hCXrcEajjXbI4j27Y/rwRjg9WkHSt4=;
+ b=omwpNvRC1iyOcJiQwjMSmDw0xO8lCUdOkGnE6gPMBFAmqw1S/jK67UZ1Z1dWE+U1FVyQc3
+ 3p95aWndLh/aWhDA==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1781095917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1781096406; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=n1kPzVcb643JqinwkHpjXXuqPOVCsnpha7gM32dnQqY=;
- b=n9H64qU5WDqEt8870S7iQxGdlpqikCRwOmy6vPexlUli5wSizwanJ1/Kv7ZEoR3Lerl7kE
- CuEYy12Ri1pT0BwxoSp2kskVGmkYPbZxq0HfTuLAcoA6NPD8Bbug3/UhFJSt/5hcvLLJpg
- HfvLVz3EkJirXSK7ZSt8155BT0yTE4I=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=boVQmvuVnP/p6hCXrcEajjXbI4j27Y/rwRjg9WkHSt4=;
+ b=bKKpuWBnmmHWhAu5/NFyLwsiI/RP0Occx6RPicdmmrvCQvAqx5JSExjrt0Ghjv4kUCZebk
+ ZINR1/eTb9zn+EHwWzTq4H0oBDI+0fFowx1Y3/2ag7wFWLLeAApfCDl0cp/KvNg8ru4L7j
+ ivLqc1VfJhIm+jtIyGrBZxwQvcPOMoI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1781095917;
+ s=susede2_ed25519; t=1781096406;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=n1kPzVcb643JqinwkHpjXXuqPOVCsnpha7gM32dnQqY=;
- b=Ne7nKViCqcEidC8k0gVj77oUTVLLw8EG9SdedzNyjLs/7qiObxxJIHPX+QPRs330xvkN9W
- Sg8gcuGBVKDN4YAQ==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=boVQmvuVnP/p6hCXrcEajjXbI4j27Y/rwRjg9WkHSt4=;
+ b=3ZmgdAqOcGErCQSXEsg2Bzg77Wy3/boyuqSBKBSs5WYHPUumpC6vDaqa9+gxoPjM+lWVoI
+ Phck61CHf6FQKZCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1C8AF779AB;
- Wed, 10 Jun 2026 12:51:57 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A41D2779A7;
+ Wed, 10 Jun 2026 13:00:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id qHaaBe1dKWrQBAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 10 Jun 2026 12:51:57 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id tNy7JtZfKWpBDAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 10 Jun 2026 13:00:06 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 10 Jun 2026 14:51:57 +0200
+Date: Wed, 10 Jun 2026 15:00:05 +0200
 MIME-Version: 1.0
-Message-Id: <20260610-fw_load-v1-3-df9d38315e38@suse.com>
-References: <20260610-fw_load-v1-0-df9d38315e38@suse.com>
-In-Reply-To: <20260610-fw_load-v1-0-df9d38315e38@suse.com>
+Message-Id: <20260610-fix_buildsystem_modules-v1-1-7f24a774d19d@suse.com>
+X-B4-Tracking: v=1; b=H4sIANRfKWoC/x2MSQqAMAwAvyI5W2hFe/ArIlJNqgE3GiuK+HeLx
+ 4GZeUAoMAnU2QOBThbe1gQmz2CY3DqSYkwMhS6stkYrz1fXR55Rbjlo6ZYN40yiXIXe2KH06Ah
+ SvQdK6n9u2vf9AJ1/QZ9pAAAA
+X-Change-ID: 20260610-fix_buildsystem_modules-a5df16c4fdae
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1781095916; l=5984;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1781096406; l=2349;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=zZRCacZ4x80kdJgUeoEALeiel3pmAVkxqFV7RgvghrQ=;
- b=jOVjR+VocLJXquOEat8B0a4yC1wXDB5HpU70i6MN5C5zHSRhZiQ/FWpD1exf5F8y5vKSWdh1O
- XTP2roGPTvGBVhPdXSWGkV21bmIKowRps6KxTmdUGNgy0a04gdbm3I6
+ bh=LqbvpPamsdqFKCtrFINoAyYfxF4IZMTXPagc/ljMhco=;
+ b=MRHdUjuPM6HKed1RWhle4WN58ZsvNXs1EvHYhaF92bxAYqqGrdsCvM8uVh5Gbl7NrfJRg7fir
+ crEeY4pmSf5DcCuUaqvT1oh5Couec1IfW2/j11vAUCjb3nagp49Fntr
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ URIBL_BLOCKED(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo,env_post.mk:url,module.mk:url];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; TO_DN_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
  FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
- imap1.dmz-prg2.suse.org:helo]
+ imap1.dmz-prg2.suse.org:helo, module.mk:url, env_post.mk:url]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] firmware/fw_load: add fw_load02 for custom
- firmware path
+Subject: [LTP] [PATCH] build: run make check on test sources in kernel
+ module directories
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,193 +122,55 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add fw_load02 which points the kernel firmware loader at the writable
-LTP temporary directory via /sys/module/firmware_class/parameters/path.
-Unlike fw_load01, it does not rely on a writable /lib/firmware and so
-works on read-only and immutable root filesystems while still exercising
-request_firmware() for both successful loads and the not-found case.
+In directories that build a kernel module, module.mk set CHECK_TARGETS
+with ':=' before env_post.mk could populate it via '?=', leaving it empty
+so 'make check' never ran sparse/checkpatch on the test sources. The filter
+also used a '%.ko' pattern that never matched any 'check-<name>' entry.
+
+Drop the broken assignment from module.mk and instead exclude the kernel
+module sources (MODULE_SOURCES) in env_post.mk once CHECK_TARGETS has been
+populated, so test sources are checked while kernel module code is skipped.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/kernel_misc                           |   1 +
- testcases/kernel/firmware/fw_load/.gitignore  |   1 +
- testcases/kernel/firmware/fw_load/fw_load02.c | 144 ++++++++++++++++++++++++++
- 3 files changed, 146 insertions(+)
+ include/mk/env_post.mk | 2 +-
+ include/mk/module.mk   | 2 --
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/runtest/kernel_misc b/runtest/kernel_misc
-index 19caee1d81da9cf0503088138ecfda13436b96cf..cc3562cb78cfa9b657692fcbd8fb732f2879092e 100644
---- a/runtest/kernel_misc
-+++ b/runtest/kernel_misc
-@@ -1,6 +1,7 @@
- cn_pec_sh cn_pec.sh
- kmsg01 kmsg01
- fw_load01 fw_load01
-+fw_load02 fw_load02
- rtc01 rtc01
- rtc02 rtc02
- block_dev block_dev
-diff --git a/testcases/kernel/firmware/fw_load/.gitignore b/testcases/kernel/firmware/fw_load/.gitignore
-index 53c4b4634684ec7ea6deccedec34b214af4cd3a3..206028a8b2111d0db4dda5c2d5bb18e51c95760d 100644
---- a/testcases/kernel/firmware/fw_load/.gitignore
-+++ b/testcases/kernel/firmware/fw_load/.gitignore
-@@ -6,3 +6,4 @@
- /.tmp_versions/
- modules.livepatch
- /fw_load01
-+/fw_load02
-diff --git a/testcases/kernel/firmware/fw_load/fw_load02.c b/testcases/kernel/firmware/fw_load/fw_load02.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..f7c7af6c2ab7e67ae2fbdac9b56c0421057affe4
---- /dev/null
-+++ b/testcases/kernel/firmware/fw_load/fw_load02.c
-@@ -0,0 +1,144 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *	Alexey Kodanev <alexey.kodanev@oracle.com>
-+ * Copyright (c) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Verifies that the kernel firmware loader (``CONFIG_FW_LOADER``)
-+ * can find and load firmware files from a custom firmware search
-+ * path.
-+ *
-+ * A helper kernel module (``ltp_fw_load.ko``) registers a virtual
-+ * device that calls :kernel_doc:`request_firmware` for a set of
-+ * numbered firmware blobs. Each blob is verified in-kernel against
-+ * its expected size and byte pattern.
-+ *
-+ * The kernel firmware loader is pointed at the writable LTP temporary
-+ * directory through ``/sys/module/firmware_class/parameters/path``.
-+ * This avoids writing into ``/lib/firmware`` and therefore works on
-+ * read-only or immutable root filesystems. The original value is
-+ * saved and restored automatically.
-+ *
-+ * [Algorithm]
-+ *
-+ * - Set the firmware search path to the LTP temporary directory
-+ * - Create ``FW_NUM - 1`` firmware files there, each named
-+ *   ``n<i>_load_tst.fw`` and filled with a known byte pattern
-+ * - Add one fake firmware entry that has no file on disk
-+ * - Load the helper module with ``fw_size`` matching the blob size
-+ * - Write the firmware count to ``/sys/devices/ltp_fw_load/fwnum``
-+ *   to trigger :kernel_doc:`request_firmware` calls in-kernel
-+ * - Read the result bitmask from ``/sys/devices/ltp_fw_load/result``
-+ * - Verify that every real firmware file was loaded successfully
-+ *   and that the fake entry was correctly rejected
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_module.h"
-+#include "fw_load.h"
-+
-+#define MAX_NAME 64
-+
-+static int module_loaded;
-+static int fw_count;
-+
-+static struct fw_data {
-+	char file[PATH_MAX];
-+	char name[MAX_NAME];
-+	int fake;
-+} firmware[FW_NUM];
-+
-+static void create_firmware(const char *dir)
-+{
-+	struct fw_data *fw = &firmware[fw_count];
-+	char buf[FW_SIZE];
-+	int fd;
-+
-+	snprintf(fw->name, sizeof(fw->name), "n%d_%s", fw_count, FW_NAME);
-+	snprintf(fw->file, sizeof(fw->file), "%s/n%d_%s", dir, fw_count, FW_NAME);
-+	memset(buf, fw_count, FW_SIZE);
-+
-+	fd = SAFE_OPEN(fw->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, FW_SIZE);
-+	SAFE_CLOSE(fd);
-+
-+	fw_count++;
-+}
-+
-+static void run(void)
-+{
-+	struct fw_data *fw;
-+	int result = 0;
-+	int fail;
-+
-+	SAFE_FILE_PRINTF(DEV_FWNUM, "%d", fw_count);
-+	SAFE_FILE_SCANF(DEV_RESULT, "%d", &result);
-+
-+	for (int i = 0; i < fw_count; i++) {
-+		fw = &firmware[i];
-+
-+		if (fw->fake) {
-+			tst_res(result & (1 << i) ? TFAIL : TPASS,
-+				"Firmware '%s' correctly not loaded", fw->name);
-+		} else {
-+			fail = (result & (1 << i)) == 0;
-+			tst_res(fail ? TFAIL : TPASS,
-+				"Firmware '%s' loaded", fw->name);
-+		}
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	char fw_size_param[32];
-+	char *tmpdir = tst_tmpdir_path();
-+	struct tst_path_val fw_path = {
-+		.path = FW_PATH,
-+		.val = tmpdir,
-+		.flags = TST_SR_TCONF,
-+	};
-+
-+	tst_requires_module_signature_disabled();
-+
-+	/*
-+	 * Point the kernel firmware loader at our writable tmpdir so the
-+	 * test does not depend on a writable /lib/firmware. The previous
-+	 * value is restored automatically during cleanup.
-+	 */
-+	tst_sys_conf_save(&fw_path);
-+
-+	snprintf(fw_size_param, sizeof(fw_size_param), "fw_size=%d", FW_SIZE);
-+	char *const mod_params[] = {fw_size_param, NULL};
-+
-+	tst_module_load(MNAME_KO, mod_params);
-+	module_loaded = 1;
-+
-+	for (int i = 0; i < FW_NUM - 1; i++)
-+		create_firmware(tmpdir);
-+
-+	/* add a fake file that is never created on disk */
-+	snprintf(firmware[fw_count].name, sizeof(firmware[fw_count].name),
-+		 "n%d_%s", fw_count, FW_NAME);
-+	firmware[fw_count].fake = 1;
-+	fw_count++;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (module_loaded)
-+		tst_module_unload(MNAME_KO);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_FW_LOADER=y|CONFIG_FW_LOADER=m",
-+		NULL,
-+	},
-+};
+diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
+index 726b9a9e7526562f4f6e8363da394485c805fa88..43983197638a2ba42a9c1a20e072fa3179e04344 100644
+--- a/include/mk/env_post.mk
++++ b/include/mk/env_post.mk
+@@ -70,7 +70,7 @@ endif # END $(filter-out install,$(MAKECMDGOALS)),$(MAKECMDGOALS)
+ endif
+ 
+ CHECK_TARGETS			?= $(addprefix check-,$(notdir $(patsubst %.c,%,$(sort $(wildcard $(abs_srcdir)/*.c)))))
+-CHECK_TARGETS			:= $(filter-out $(addprefix check-, $(FILTER_OUT_MAKE_TARGETS)), $(CHECK_TARGETS))
++CHECK_TARGETS			:= $(filter-out $(addprefix check-, $(FILTER_OUT_MAKE_TARGETS) $(notdir $(basename $(MODULE_SOURCES)))), $(CHECK_TARGETS))
+ CHECK_HEADER_TARGETS		?= $(addprefix check-,$(notdir $(sort $(wildcard $(abs_srcdir)/*.h))))
+ CHECK				?= $(abs_top_srcdir)/tools/sparse/sparse-ltp
+ CHECK_NOFLAGS			?= CHECKPATCH_CONFIG_DIR="$(abs_top_srcdir)" $(abs_top_srcdir)/scripts/checkpatch.pl -f --root $(abs_top_srcdir)
+diff --git a/include/mk/module.mk b/include/mk/module.mk
+index 3e97f01289e2eb4f5a494c55a83022860b37a835..8949d9067ca6afdb790de122ff4ff56e38a54066 100644
+--- a/include/mk/module.mk
++++ b/include/mk/module.mk
+@@ -51,8 +51,6 @@ endif
+ 
+ CLEAN_TARGETS += .dep_modules *.mod built-in.a
+ 
+-CHECK_TARGETS := $(filter-out %.ko, $(CHECK_TARGETS))
+-
+ MODULE_SOURCES := $(patsubst %.ko,%.c,$(filter %.ko, $(MAKE_TARGETS)))
+ 
+ # Ignoring the exit status of commands is done to be forward compatible with
 
+---
+base-commit: c1b71bf7ebb6a58507e4998faf5c74154f595f96
+change-id: 20260610-fix_buildsystem_modules-a5df16c4fdae
+
+Best regards,
 -- 
-2.51.0
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
