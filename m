@@ -4,95 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 568B8CD98CC
-	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 11:16:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781176608; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-transfer-encoding :
- content-type : sender : from;
- bh=mq0rWAFNQY9vVp9mb35ZbVAptzh2QAoJSrYtg+s1oN0=;
- b=f8INb9IOLwj3w8EQcI5btuwi533vgk+4x/rs3ejvbg68d6mc9Rk0vmsJcAwNnryt5bfW5
- XuPnY9Xd+ncDaZ07Y13po+vNXnpOCx6bAI28vr1RTCn6MrROMV8oQrkujlfPDGrbTiqO3DX
- KT6T9SurCnV6YAcYYFrZOaw0zZz4Uzw=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 961C3CD98D5
+	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 11:47:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4EB5F3E5E85
-	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 13:16:48 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id A9D073E5E8C
+	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 13:47:21 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AC60E3CB67D
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 13:16:26 +0200 (CEST)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id E484A3E2AC4
+ for <ltp@lists.linux.it>; Thu, 11 Jun 2026 13:47:03 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C462F6003D0
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 13:16:25 +0200 (CEST)
-Received: by mail-wm1-x32b.google.com with SMTP id
- 5b1f17b1804b1-490b9318997so57683875e9.2
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 04:16:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1781176585; x=1781781385; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=iXtENguT9/1Bb+pW3abxwEv+mAI5TUGbO/qttQu9z9Y=;
- b=QIYuj9y8K4NgLJqu3Z5ZwzVMFrhzPk62oXWAy60oGwO9Rhl4x/jCH7K8WSv/SVRcyF
- cmnsAbephZFfUKGnakr24Kq7u3UGf+X1wgquDWbv18wQzMDcbryS55k6ry9WhRj8orkB
- b4nIGzBXgvbIts1Jn2lq1VJJ/ClvUj/hUHnN8V4lB/dvPoZDBmBxSkZNvXODPjQvWWzf
- CmnPe8GKj/otGulnl/fiHWT7SRJVFE4/G9M0pgxmWHCjx1XNyU40j7/5lYs3R49jqWKo
- RQn1U1oZ+7J37Du+pzIwjrObwBDDM2+exxvrYSYOBzEFL3YQW1gXxrEGjc+/lbtiduTg
- R6Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781176585; x=1781781385;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=iXtENguT9/1Bb+pW3abxwEv+mAI5TUGbO/qttQu9z9Y=;
- b=Xrc9fz+Lgi+1zcrQ/RT84376k5iULcH8E5oJExErUVE7rFmB4LG7Cf8AQw8mVAlEet
- 5s6PZujIg8Q06dpZVyKHdS9VRo8cS9gvgBfaVFIBdm/twu5WrDD2jZKJUhGU0b9WaBDU
- tbwnKsbuSR6vZ08XD3wMMxF75jWyJJaoZFeCnV9ZUKAohnzRWHGDKv9gFUICiAHIvmO7
- 9ArA7uu7wM8hK/pKV6db4zlNkSV8IRTzw5zdcJR9jK9COyrpNhba4jqBl0hhR83kUNVM
- GLh2dJxcFO21LteSoQsKmzi8JugFx2pUQpOIsgbStt+p8YMLD/EX4egRRKpLfh7hajYf
- xrpw==
-X-Forwarded-Encrypted: i=1;
- AFNElJ8p2OpLUK/ujerxFGiJ26F7SwpHKWDtF4h3hQNT2M+bwZ5I6WVPZrscM3tGb2FYGSKgoWA=@lists.linux.it
-X-Gm-Message-State: AOJu0YxchARru257T0LivKityjNeNdAZ902NacD0nq/Hp2TcCXD8WZG4
- rOcqAUd+YuL3ih9R9G53UFDXrcn653jwMwsVVEVwMDiSKX7ynn6UsOKvZJDuuTsb0tL4v5/472W
- kHxWPeYg=
-X-Gm-Gg: Acq92OFcxffuKd+f6gLC4I4/hF4c1Sve9+zjmGYAHcePfCF/0lXOZVgaI/UvmaO//Ut
- FNh93DdKUS3dksOoTYJPynPORlNstb6x0lgE8ytSi/nMRabdMN/4PXwsXvm7jv0r9flXlBgy3wC
- AlLNHQQZvObkXhr8qfyu6tBy0B5eN3DItly8eC/LDSN8KRSYODTqn77Hfq2pynXetGiA8jJjaBx
- IjU5G8bI1O0YhBd6+vvddv3zesjcrGI95wrLrioWvRqU27k8N6XK0pyherZIVmoaJ7MJBqrsiDf
- 4DlWm527K+MN2g9KKhyO2nVJHsP4zTphbtd0GB1lvE6cnzDHYIesUNbR+h4zBrx1crHbfE+0rY1
- dspgeIYArzyjcg1fdMB1RoFTr1blWhmhzn1I07ceSRFdkQpDQi+U5f9nneFj2CAcVDopx2sDDHc
- PTd2GnLF781Gk3gnjV3rnHLTSRkZ990WDXXhJJ1sEeAWHqo0zWQCo=
-X-Received: by 2002:a05:600c:4f95:b0:490:601f:d775 with SMTP id
- 5b1f17b1804b1-490e55b8672mr29621545e9.5.1781176585060; 
- Thu, 11 Jun 2026 04:16:25 -0700 (PDT)
-Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-490e5153feesm43902415e9.0.2026.06.11.04.16.24
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 11 Jun 2026 04:16:24 -0700 (PDT)
-Message-ID: <5437cc67-8490-4a5c-9b5f-1ef31c9e72ca@suse.com>
-Date: Thu, 11 Jun 2026 13:16:22 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7037910006CC
+ for <ltp@lists.linux.it>; Thu, 11 Jun 2026 13:47:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1781178422; x=1812714422;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=LlwtN2JM8fGCW1enmuxbf1/XATQzl3VclnvqY5aKCNM=;
+ b=f94Fx3/PBIDwWR4SvSHdF46+DbBqRKvMvuoF9aVDISopbcmwe0Lkn1TQ
+ PYry6eFkNtbTx6ahGsk8RBE2rcXDpgNw0Us+lbPfGNUa0G7NZeoPsYRji
+ Cz9N86uypYIQ+jkRnMxwPaxnRQN0JqIXsBwVXO7lEDIqh11WVvxFJFsu6
+ CS66gCTA00/Kp7w/QSsOnT/YbMQR7nE+FGgEmkfdmC2u0wc4Qa9nY117C
+ wgWU+BMbsuPGOU3Pqw0CIqXbYnsCqLSgJIxNkFQar3R7JzsF3MjFLnlDO
+ 9bPdYZrgSdh9ft2Wdi+x6A88qC1GzFd3YUMjByocDKf+GFD1cOIRAAHUW g==;
+X-CSE-ConnectionGUID: O0kKjIi6SX6EPquM1Ca95Q==
+X-CSE-MsgGUID: M9Quw4hhSPKIp2oDrIo06g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11813"; a="107426230"
+X-IronPort-AV: E=Sophos;i="6.24,198,1774335600"; d="scan'208";a="107426230"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+ by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Jun 2026 04:46:59 -0700
+X-CSE-ConnectionGUID: PyVPa6m1Rw6Y0e1vPVS/vQ==
+X-CSE-MsgGUID: oQLYWs+nRTaipy6E7GtxUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,198,1774335600"; d="scan'208";a="246479922"
+Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.217.160.221])
+ by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Jun 2026 04:46:57 -0700
+From: Piotr Kubaj <piotr.kubaj@intel.com>
+To: ltp@lists.linux.it
+Date: Thu, 11 Jun 2026 13:42:20 +0200
+Message-ID: <20260611114219.146444-2-piotr.kubaj@intel.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Andrea Cervesato <andrea.cervesato@suse.de>,
- Linux Test Project <ltp@lists.linux.it>
-References: <20260611-fix_xfrm_compat_mode-v1-1-bbb80ee1ad63@suse.com>
-Content-Language: en-US
-In-Reply-To: <20260611-fix_xfrm_compat_mode-v1-1-bbb80ee1ad63@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] xfrm: Skip on EOPNOTSUPP in compat mode
+Subject: [LTP] [PATCH v9] cpufreq.c: add new test for cpufreq sysfs
+ interface validation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,95 +68,508 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Avinesh Kumar via ltp <ltp@lists.linux.it>
-Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
+Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
+ rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Runs various sanity checks for intel_pstate cpufreq sysfs interface.
 
+Checks whether intel_pstate driver is used, whether it is possible to
+switch scaling_governor to powersave and performance, whether it is
+possible to disable turbo frequency and whether it is possible to change
+scaling_min_freq and scaling_max_freq to its minimal valid and maximal
+valid values.
 
-On 6/11/26 11:37 AM, Andrea Cervesato wrote:
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-> A 32-bit binary running on a 64-bit kernel uses the XFRM netlink compat
-> layer, which is only available when CONFIG_XFRM_USER_COMPAT is enabled
-> (and its module loaded). Without it the kernel returns EOPNOTSUPP for
-> any XFRM netlink message, which is a configuration limitation rather
-> than a test failure.
-> 
-> Report TCONF instead of TBROK in that case for xfrm01, xfrm02 and
-> xfrm03.
-> 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->   testcases/network/sockets/xfrm01.c | 3 +++
->   testcases/network/sockets/xfrm02.c | 3 +++
->   testcases/network/sockets/xfrm03.c | 3 +++
->   3 files changed, 9 insertions(+)
-> 
-> diff --git a/testcases/network/sockets/xfrm01.c b/testcases/network/sockets/xfrm01.c
-> index 5490d6b8a9f7fde79478ae0484e6ea8156d07cf3..22244032a521a42331b0c1411ae33f75622e64ce 100644
-> --- a/testcases/network/sockets/xfrm01.c
-> +++ b/testcases/network/sockets/xfrm01.c
-> @@ -126,6 +126,9 @@ static void setup(void)
->   		if (TST_ERR == EPROTONOSUPPORT)
->   			tst_brk(TCONF, "xfrm ESP is not supported by kernel");
->   
-> +		if (tst_is_compat_mode() && TST_ERR == EOPNOTSUPP)
-> +			tst_brk(TCONF, "xfrm netlink unsupported in compat mode (missing CONFIG_XFRM_USER_COMPAT)");
-nit:
-should the message be more explicit for
-CONFIG_XFRM_USER_COMPAT=m
+Requires root to write to /sys/devices/system/cpu/intel_pstate/ (status,
+no_turbo) and per-CPU /sys/devices/system/cpu/cpu*\/cpufreq/ attributes
+(scaling_governor, scaling_min_freq, scaling_max_freq).
 
+Motivation: LTP has no regression coverage for the intel_pstate cpufreq
+sysfs interface, so breakage in any of these attributes (driver
+exposure, governor switching, active/passive mode transitions, no_turbo
+toggling or scaling_{min,max}_freq writes) can reach users undetected.
+This test exercises the interface end-to-end to catch such regressions.
 
-Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
-Tested-by: Avinesh Kumar <avinesh.kumar@suse.com>
+Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+---
+Addresses review from Andrea:
+1. Single goto instead of duplicating free().
+2. .save_restore for intel_pstate/status and intel_pstate/no_turbo.
+3. TCONF is necessary, because even with the driver loaded, the sysfs
+interface may not be available - e.g. when running on a VM, when using
+unsupported CPU or when intel_pstate=disable is appended to the kernel
+cmdline.
+4. Replace strstr.
+5. Use single quotes instead of escaping double quotes.
+6. Add CONFIG_CPU_FREQ_GOV_SCHEDUTIL and CONFIG_CPU_FREQ_GOV_PERFORMANCE
+to required kconfigs.
+ runtest/power_management_tests               |   1 +
+ testcases/kernel/power_management/.gitignore |   1 +
+ testcases/kernel/power_management/cpufreq.c  | 424 +++++++++++++++++++
+ 3 files changed, 426 insertions(+)
+ create mode 100644 testcases/kernel/power_management/.gitignore
+ create mode 100644 testcases/kernel/power_management/cpufreq.c
 
+diff --git a/runtest/power_management_tests b/runtest/power_management_tests
+index b670da6ec..0bc7dd0c8 100644
+--- a/runtest/power_management_tests
++++ b/runtest/power_management_tests
+@@ -1,4 +1,5 @@
+ #POWER_MANAGEMENT
++cpufreq cpufreq
+ runpwtests03 runpwtests03.sh
+ runpwtests04 runpwtests04.sh
+ runpwtests06 runpwtests06.sh
+diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
+new file mode 100644
+index 000000000..7f34e4c2f
+--- /dev/null
++++ b/testcases/kernel/power_management/.gitignore
+@@ -0,0 +1 @@
++cpufreq
+diff --git a/testcases/kernel/power_management/cpufreq.c b/testcases/kernel/power_management/cpufreq.c
+new file mode 100644
+index 000000000..11896258e
+--- /dev/null
++++ b/testcases/kernel/power_management/cpufreq.c
+@@ -0,0 +1,424 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
++ */
++
++/*\
++ * Runs various sanity checks for intel_pstate cpufreq sysfs interface.
++ *
++ * Checks whether intel_pstate driver is used, whether it is possible to switch
++ * scaling_governor to powersave and performance, whether it is possible
++ * to disable turbo frequency and whether it is possible to change
++ * scaling_min_freq and scaling_max_freq to its minimal valid and maximal valid
++ * values.
++ *
++ * Requires root to write to /sys/devices/system/cpu/intel_pstate/ (status,
++ * no_turbo) and per-CPU /sys/devices/system/cpu/cpu*\/cpufreq/ attributes
++ * (scaling_governor, scaling_min_freq, scaling_max_freq).
++ *
++ * Motivation: LTP has no regression coverage for the intel_pstate cpufreq
++ * sysfs interface, so breakage in any of these attributes (driver exposure,
++ * governor switching, active/passive mode transitions, no_turbo toggling or
++ * scaling_{min,max}_freq writes) can reach users undetected. This test
++ * exercises the interface end-to-end to catch such regressions.
++ */
++
++#include "tst_test.h"
++
++static bool *online, setup_done;
++static char (*previous_scaling_governor)[16];
++static int nproc;
++static long *previous_scaling_max_freq, *previous_scaling_min_freq;
++
++static int governor_available(const char *governors, const char *governor)
++{
++	const char *ptr = governors;
++	int len = strlen(governor);
++
++	while (*ptr) {
++		while (*ptr == ' ' || *ptr == '\t' || *ptr == '\n')
++			ptr++;
++
++		if (!strncmp(ptr, governor, len) &&
++		    (ptr[len] == '\0' || ptr[len] == ' ' || ptr[len] == '\t' || ptr[len] == '\n'))
++			return 1;
++
++		while (*ptr && *ptr != ' ' && *ptr != '\t' && *ptr != '\n')
++			ptr++;
++	}
++
++	return 0;
++}
++
++static void cleanup(void)
++{
++	char path[PATH_MAX];
++
++	if (!setup_done)
++		goto out;
++
++	SAFE_FILE_PRINTF("/sys/devices/system/cpu/intel_pstate/status", "active");
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor", i);
++		SAFE_FILE_PRINTF(path, "%s", previous_scaling_governor[i]);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_max_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", previous_scaling_max_freq[i]);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_min_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", previous_scaling_min_freq[i]);
++	}
++
++out:
++	free(online);
++	free(previous_scaling_max_freq);
++	free(previous_scaling_min_freq);
++	free(previous_scaling_governor);
++}
++
++static void setup(void)
++{
++	char path[PATH_MAX];
++
++	nproc = tst_ncpus_conf();
++	online = SAFE_CALLOC(nproc, sizeof(*online));
++	previous_scaling_max_freq = SAFE_CALLOC(nproc, sizeof(*previous_scaling_max_freq));
++	previous_scaling_min_freq = SAFE_CALLOC(nproc, sizeof(*previous_scaling_min_freq));
++	previous_scaling_governor = SAFE_CALLOC(nproc, sizeof(*previous_scaling_governor));
++	online[0] = true;
++	for (int i = 1; i < nproc; i++) {
++		int tmp;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/online", i);
++		SAFE_FILE_SCANF(path, "%d", &tmp);
++		online[i] = (bool)tmp;
++	}
++
++	SAFE_FILE_PRINTF("/sys/devices/system/cpu/intel_pstate/status", "active");
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor", i);
++		SAFE_FILE_SCANF(path, "%15s", previous_scaling_governor[i]);
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_max_freq", i);
++		SAFE_FILE_SCANF(path, "%ld", &previous_scaling_max_freq[i]);
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_min_freq", i);
++		SAFE_FILE_SCANF(path, "%ld", &previous_scaling_min_freq[i]);
++	}
++
++	setup_done = true;
++}
++
++static void run(void)
++{
++	const char * const cpufreq_nodes[] = {
++		"affected_cpus",
++		"cpuinfo_max_freq",
++		"cpuinfo_min_freq",
++		"cpuinfo_transition_latency",
++		"related_cpus",
++		"scaling_available_governors",
++		"scaling_cur_freq",
++		"scaling_driver",
++		"scaling_governor",
++		"scaling_max_freq",
++		"scaling_min_freq",
++		"scaling_setspeed",
++		NULL
++	};
++	char contents[256] = {0}, path[PATH_MAX], path_cpuinfo_min_freq[PATH_MAX];
++	int no_turbo_val;
++	long cpuinfo_max_freq = 0, cpuinfo_min_freq = 0, scaling_max_freq, scaling_min_freq;
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_driver", i);
++
++		SAFE_FILE_SCANF(path, "%255s", contents);
++		tst_res(TDEBUG, "Checking whether %s is 'intel_pstate'", path);
++		if (!strncmp(contents, "intel_pstate", sizeof("intel_pstate"))) {
++			tst_res(TPASS, "%s is intel_pstate", path);
++		} else {
++			tst_res(TINFO, "%s contains: %s", path, contents);
++			tst_res(TFAIL, "%s is not intel_pstate", path);
++		}
++
++		for (int j = 0; cpufreq_nodes[j]; j++) {
++			struct stat stats;
++
++			snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/%s", i, cpufreq_nodes[j]);
++			tst_res(TDEBUG, "Checking whether %s is a regular file", path);
++			SAFE_STAT(path, &stats);
++			if (!S_ISREG(stats.st_mode)) {
++				tst_res(TINFO, "%s mode: %o", path, stats.st_mode);
++				tst_res(TFAIL, "%s is not a regular file", path);
++			} else {
++				tst_res(TPASS, "%s is a regular file", path);
++			}
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_available_governors", i);
++		memset(contents, 0, sizeof(contents));
++		SAFE_FILE_SCANF(path, "%255[^\n]", contents);
++
++		tst_res(TDEBUG, "Checking whether %s contains 'performance' and 'powersave'", path);
++		if (governor_available(contents, "performance") && governor_available(contents, "powersave")) {
++			tst_res(TPASS, "%s contains: %s", path, contents);
++		} else {
++			tst_res(TINFO, "%s contains: %s", path, contents);
++			tst_res(TFAIL, "%s is not 'performance powersave'", path);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor", i);
++		tst_res(TDEBUG, "Checking %s", path);
++		memset(contents, 0, sizeof(contents));
++		SAFE_FILE_SCANF(path, "%255s", contents);
++		if (!strncmp(contents, "performance", sizeof("performance"))) {
++			tst_res(TDEBUG, "%s is 'performance'", path);
++			tst_res(TDEBUG, "Checking whether %s can be switched to 'powersave'", path);
++			SAFE_FILE_PRINTF(path, "powersave");
++			memset(contents, 0, sizeof(contents));
++			SAFE_FILE_SCANF(path, "%255s", contents);
++			if (!strncmp(contents, "powersave", sizeof("powersave")))
++				tst_res(TPASS, "Changing scaling_governor from performance to powersave succeeded");
++			else
++				tst_res(TFAIL, "%s: failed to change scaling_governor from performance to powersave, current scaling_governor: %s", path, contents);
++
++		} else if (!strncmp(contents, "powersave", sizeof("powersave"))) {
++			tst_res(TDEBUG, "%s is 'powersave'", path);
++			tst_res(TDEBUG, "Checking whether %s can be switched to 'performance'", path);
++			SAFE_FILE_PRINTF(path, "performance");
++			memset(contents, 0, sizeof(contents));
++			SAFE_FILE_SCANF(path, "%255s", contents);
++			if (!strncmp(contents, "performance", sizeof("performance")))
++				tst_res(TPASS, "Changing scaling_governor from powersave to performance succeeded");
++			else
++				tst_res(TFAIL, "%s: failed to change scaling_governor from powersave to performance, current scaling_governor: %s", path, contents);
++
++		} else {
++			tst_brk(TBROK, "Unknown scaling_governor: %s", contents);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_max_freq", i);
++		snprintf(path_cpuinfo_min_freq, sizeof(path_cpuinfo_min_freq), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_min_freq", i);
++		tst_res(TDEBUG, "Checking whether %s is bigger than cpuinfo_min_freq", path);
++		SAFE_FILE_SCANF(path, "%ld", &cpuinfo_max_freq);
++
++		SAFE_FILE_SCANF(path_cpuinfo_min_freq, "%ld", &cpuinfo_min_freq);
++
++		if (cpuinfo_min_freq > cpuinfo_max_freq)
++			tst_res(TFAIL, "Value in %s: %ld, should be bigger than cpuinfo_min_freq: %ld", path, cpuinfo_max_freq, cpuinfo_min_freq);
++		else
++			tst_res(TPASS, "Value in %s: %ld, is bigger than cpuinfo_min_freq: %ld", path, cpuinfo_max_freq, cpuinfo_min_freq);
++	}
++
++	snprintf(path, sizeof(path), "/sys/devices/system/cpu/intel_pstate/status");
++	tst_res(TDEBUG, "Checking whether %s contains 'active'", path);
++	memset(contents, 0, sizeof(contents));
++	SAFE_FILE_SCANF(path, "%255s", contents);
++
++	if (!strncmp(contents, "active", sizeof("active")))
++		tst_res(TPASS, "%s is 'active'", path);
++	else
++		tst_res(TFAIL, "%s is not 'active', but %s", path, contents);
++
++	tst_res(TDEBUG, "Checking whether %s can be switched to 'passive'", path);
++	SAFE_FILE_PRINTF(path, "passive");
++	memset(contents, 0, sizeof(contents));
++	SAFE_FILE_SCANF(path, "%255s", contents);
++
++	if (!strncmp(contents, "passive", sizeof("passive")))
++		tst_res(TPASS, "%s is 'passive'", path);
++	else
++		tst_res(TFAIL, "%s is not 'passive', but %s", path, contents);
++
++	tst_res(TDEBUG, "Checking whether %s can be switched back to 'active'", path);
++	SAFE_FILE_PRINTF(path, "active");
++	memset(contents, 0, sizeof(contents));
++	SAFE_FILE_SCANF(path, "%255s", contents);
++
++	if (!strncmp(contents, "active", sizeof("active")))
++		tst_res(TPASS, "%s is 'active'", path);
++	else
++		tst_res(TFAIL, "%s is not 'active', but %s", path, contents);
++
++	snprintf(path, sizeof(path), "/sys/devices/system/cpu/intel_pstate/no_turbo");
++	tst_res(TDEBUG, "Checking whether %s can be switched to 1", path);
++	SAFE_FILE_PRINTF(path, "1");
++	SAFE_FILE_SCANF(path, "%d", &no_turbo_val);
++
++	if (no_turbo_val == 1)
++		tst_res(TPASS, "%s is '1'", path);
++	else
++		tst_res(TFAIL, "%s is not '1', but %d", path, no_turbo_val);
++
++	tst_res(TDEBUG, "Checking whether %s can be switched back to 0", path);
++	SAFE_FILE_PRINTF(path, "0");
++	SAFE_FILE_SCANF(path, "%d", &no_turbo_val);
++
++	if (no_turbo_val == 0)
++		tst_res(TPASS, "%s is '0'", path);
++	else
++		tst_res(TFAIL, "%s is not '0', but %d", path, no_turbo_val);
++
++	tst_res(TDEBUG, "Checking whether scaling_available_governors contains 'performance' and 'schedutil' after switching /sys/devices/system/cpu/intel_pstate/status to 'passive'");
++	snprintf(path, sizeof(path), "/sys/devices/system/cpu/intel_pstate/status");
++	SAFE_FILE_PRINTF(path, "passive");
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_available_governors", i);
++		memset(contents, 0, sizeof(contents));
++		SAFE_FILE_SCANF(path, "%255[^\n]", contents);
++
++		tst_res(TDEBUG, "Checking whether %s contains 'performance' and 'schedutil'", path);
++		if (governor_available(contents, "performance") && governor_available(contents, "schedutil")) {
++			tst_res(TPASS, "%s contains: %s", path, contents);
++		} else {
++			tst_res(TINFO, "%s contains: %s", path, contents);
++			tst_res(TFAIL, "%s does not contain 'performance' and 'schedutil'", path);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor", i);
++		tst_res(TDEBUG, "Checking whether %s can be changed to performance", path);
++		SAFE_FILE_PRINTF(path, "performance");
++		memset(contents, 0, sizeof(contents));
++		SAFE_FILE_SCANF(path, "%255s", contents);
++
++		if (!strncmp(contents, "performance", sizeof("performance")))
++			tst_res(TPASS, "%s is 'performance'", path);
++		else
++			tst_res(TFAIL, "%s is not 'performance', but %s", path, contents);
++
++		tst_res(TDEBUG, "Checking whether %s can be changed to schedutil", path);
++		SAFE_FILE_PRINTF(path, "schedutil");
++		memset(contents, 0, sizeof(contents));
++		SAFE_FILE_SCANF(path, "%255s", contents);
++
++		if (!strncmp(contents, "schedutil", sizeof("schedutil")))
++			tst_res(TPASS, "%s is 'schedutil'", path);
++		else
++			tst_res(TFAIL, "%s is not 'schedutil', but %s", path, contents);
++	}
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_max_freq", i);
++		tst_res(TDEBUG, "Checking whether %s can be assigned to scaling_max_freq and scaling_min_freq", path);
++		SAFE_FILE_SCANF(path, "%ld", &cpuinfo_max_freq);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_min_freq", i);
++		SAFE_FILE_SCANF(path, "%ld", &cpuinfo_min_freq);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_max_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", cpuinfo_max_freq);
++		SAFE_FILE_SCANF(path, "%ld", &scaling_max_freq);
++
++		if (cpuinfo_max_freq < scaling_max_freq) {
++			tst_res(TINFO, "cpuinfo_max_freq: %ld", cpuinfo_max_freq);
++			tst_res(TINFO, "scaling_max_freq: %ld", scaling_max_freq);
++			tst_res(TFAIL, "Failure setting %s", path);
++		} else {
++			tst_res(TPASS, "Successfully set up %s", path);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_min_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", cpuinfo_max_freq);
++		SAFE_FILE_SCANF(path, "%ld", &scaling_min_freq);
++
++		if (cpuinfo_max_freq < scaling_min_freq) {
++			tst_res(TINFO, "cpuinfo_max_freq: %ld", cpuinfo_max_freq);
++			tst_res(TINFO, "scaling_min_freq: %ld", scaling_min_freq);
++			tst_res(TFAIL, "Failure setting %s", path);
++		} else {
++			tst_res(TPASS, "Successfully set up %s", path);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_min_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", previous_scaling_min_freq[i]);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_max_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", previous_scaling_max_freq[i]);
++	}
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_max_freq", i);
++		tst_res(TDEBUG, "Checking whether %s can be assigned to scaling_max_freq and scaling_min_freq", path);
++		SAFE_FILE_SCANF(path, "%ld", &cpuinfo_max_freq);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_min_freq", i);
++		SAFE_FILE_SCANF(path, "%ld", &cpuinfo_min_freq);
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_min_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", cpuinfo_min_freq);
++		SAFE_FILE_SCANF(path, "%ld", &scaling_min_freq);
++
++		if (cpuinfo_min_freq > scaling_min_freq) {
++			tst_res(TINFO, "cpuinfo_min_freq: %ld", cpuinfo_min_freq);
++			tst_res(TINFO, "scaling_min_freq: %ld", scaling_min_freq);
++			tst_res(TFAIL, "Failure setting %s", path);
++		} else {
++			tst_res(TPASS, "Successfully set up %s", path);
++		}
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_max_freq", i);
++		SAFE_FILE_PRINTF(path, "%ld", cpuinfo_min_freq);
++		SAFE_FILE_SCANF(path, "%ld", &scaling_max_freq);
++
++		if (cpuinfo_min_freq > scaling_max_freq) {
++			tst_res(TINFO, "cpuinfo_min_freq: %ld", cpuinfo_min_freq);
++			tst_res(TINFO, "scaling_max_freq: %ld", scaling_max_freq);
++			tst_res(TFAIL, "Failure setting %s", path);
++		} else {
++			tst_res(TPASS, "Successfully set up %s", path);
++		}
++	}
++
++	SAFE_FILE_PRINTF("/sys/devices/system/cpu/intel_pstate/status", "active");
++
++	for (int i = 0; i < nproc; i++) {
++		if (!online[i])
++			continue;
++
++		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor", i);
++		SAFE_FILE_PRINTF(path, "%s", previous_scaling_governor[i]);
++	}
++}
++
++static struct tst_test test = {
++	.cleanup = cleanup,
++	.needs_kconfigs = (const char *const []) {
++		"CONFIG_X86_INTEL_PSTATE",
++		"CONFIG_CPU_FREQ_GOV_SCHEDUTIL",
++		"CONFIG_CPU_FREQ_GOV_PERFORMANCE",
++		NULL
++	},
++	.needs_root = 1,
++	.save_restore = (const struct tst_path_val[]) {
++		{"/sys/devices/system/cpu/intel_pstate/status", NULL, TST_SR_TCONF},
++		{"/sys/devices/system/cpu/intel_pstate/no_turbo", NULL, TST_SR_TCONF},
++		{}
++	},
++	.setup = setup,
++	.supported_archs = (const char *const []) {
++		"x86",
++		"x86_64",
++		NULL
++	},
++	.test_all = run
++};
+-- 
+2.47.3
 
-Thanks,
-Avinesh
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
+Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
 
-> +
->   		tst_brk(TBROK | TTERRNO, "Failed to install xfrm ESP state");
->   	}
->   }
-> diff --git a/testcases/network/sockets/xfrm02.c b/testcases/network/sockets/xfrm02.c
-> index 43edb77d43c8c99e9883fc9922031d559ef31c40..376f6ebe551dd81fbc6a982503eacd68da636f93 100644
-> --- a/testcases/network/sockets/xfrm02.c
-> +++ b/testcases/network/sockets/xfrm02.c
-> @@ -126,6 +126,9 @@ static void setup(void)
->   		if (TST_ERR == EPROTONOSUPPORT)
->   			tst_brk(TCONF, "xfrm ESP is not supported by kernel");
->   
-> +		if (tst_is_compat_mode() && TST_ERR == EOPNOTSUPP)
-> +			tst_brk(TCONF, "xfrm netlink unsupported in compat mode (missing CONFIG_XFRM_USER_COMPAT)");
-> +
->   		tst_brk(TBROK | TTERRNO, "Failed to install xfrm ESP state");
->   	}
->   
-> diff --git a/testcases/network/sockets/xfrm03.c b/testcases/network/sockets/xfrm03.c
-> index 02ab95c6b7a87f8f206b30a39bb6feb097117998..fa5df9c285d540d5cad0e890a73d43ad9aeba1c2 100644
-> --- a/testcases/network/sockets/xfrm03.c
-> +++ b/testcases/network/sockets/xfrm03.c
-> @@ -202,6 +202,9 @@ static void setup(void)
->   		if (TST_ERR == EPROTONOSUPPORT)
->   			tst_brk(TCONF, "xfrm ESP is not supported by kernel");
->   
-> +		if (tst_is_compat_mode() && TST_ERR == EOPNOTSUPP)
-> +			tst_brk(TCONF, "xfrm netlink unsupported in compat mode (missing CONFIG_XFRM_USER_COMPAT)");
-> +
->   		tst_brk(TBROK | TTERRNO, "Failed to install xfrm ESP state");
->   	}
->   
-> 
-> ---
-> base-commit: c685f1b774fab694c42dfb7522bc42d999904373
-> change-id: 20260611-fix_xfrm_compat_mode-0503f1f9bb8d
-> 
-> Best regards,
+Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
+This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
 
 
 -- 
