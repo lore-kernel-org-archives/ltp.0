@@ -4,83 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29BA0CD98C5
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 19:45:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2666DCD98C5
+	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 03:09:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781147363; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=rg7wbblrf4xpOZ8pFBOa4qbdpIherNB87Va9C9JOiHk=;
+ b=fVaChL2CcLW8l5CL+dR7cIjrxDR7iHIBrCWlWwd1Vij92yKNfna6PjmpnFVF3LrYzwL9Z
+ llWYkU9Ia96z85WhBkVsMpZe8hLV6hnNfvlm3vT4Qn+kIdE2XGKeclD7AWEHmCbyVktF4AC
+ x0pH26oTXT0MAlvvr/cB6rYSe06aOvo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CA9463E6EAE
-	for <ltp@archiver.kernel.org>; Wed, 10 Jun 2026 21:45:04 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 108DA3C5E6E
+	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 05:09:23 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CB0A13CC91F
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 21:44:45 +0200 (CEST)
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
- [IPv6:2607:f8b0:4864:20::741])
+ by picard.linux.it (Postfix) with ESMTPS id 0071A3C5E6E
+ for <ltp@lists.linux.it>; Thu, 11 Jun 2026 05:09:01 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DD7F920005C
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 21:44:44 +0200 (CEST)
-Received: by mail-qk1-x741.google.com with SMTP id
- af79cd13be357-91562bf6c12so858185485a.2
- for <ltp@lists.linux.it>; Wed, 10 Jun 2026 12:44:44 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E1038600043
+ for <ltp@lists.linux.it>; Thu, 11 Jun 2026 05:09:00 +0200 (CEST)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-490b4a8e28bso62631115e9.1
+ for <ltp@lists.linux.it>; Wed, 10 Jun 2026 20:09:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781120684; x=1781725484; darn=lists.linux.it;
+ d=suse.com; s=google; t=1781147340; x=1781752140; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=cmCV3kvTdPQXSZjdCWsUwapBDVLxZGvCS5HLt6MOoPg=;
- b=ZMfj5rmw2Hwk3sqARl0SKA5GvimAI9gDanHph5u02d1BCo8Zc+sM8oa39W61RevR6i
- EivIdcVwfSiz3gNyWj/N+2Y6e9dGbpIzEPTYJbFJmMRRj7zuzBT7l9QKfpMLVt2kC0Bg
- oIUUqRZ6Et017xyYfRmL38w5XCzX6VU/WAxvSFrXHKZbNQ3yJf1VpOb6WArnZg/4ZlAw
- 6zVxm6cfa69460u4B7oYebQL7baEgKEH13lhhJqF3W9qxHiP6iksa5U3KQLX3MvOfOez
- D4ky/7qk1QqznHuOC4rAobVxKelCFOU+my990r1SrRo8TMAGGxoTwyR6qHnXKH8+Ikj4
- jcQw==
+ bh=904FMFt9mUEmLA6lCJVEV3GmPOKIWQ5JtdotGV69r3Y=;
+ b=dGTIO8UqvNSeOTEJCXXV14WEXF7uYIfMOINHdXCMDTjug1Is7XGT9SP3VPid4abfD+
+ KaBi4aYAVkXvGIgaxKj1zJmbjnKRQ/95dpXuGOxHbZJ/D3asRnJSeyE6PYdmdwE1qfyj
+ 7uBrrdY4zYyLwYw4xAokXaSIMklLz8Yh7vpY+BSU4f5TNj1I7FjB+AzVOvi7D56Etqly
+ VuuDMuk8etDKo3pd7kgm5+08LKwmTU9i9+XR7iuMM7vW+0D/AH3szEAoH5n7r76yla1l
+ Dk3DAu1lljT528P6VUDXC4ARJSSp/fOEFSjGZHf9DkGbhFylPCc7NiyWyMDh4PDot21i
+ OpSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781120684; x=1781725484;
+ d=1e100.net; s=20251104; t=1781147340; x=1781752140;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=cmCV3kvTdPQXSZjdCWsUwapBDVLxZGvCS5HLt6MOoPg=;
- b=D+YEGtsTmGe4iEwZlog5YYz7lVZzVp2iaC3sTHUCNWeYGkP7H4OsUzjbsNSzLcWkvi
- SJjpuIyJcruCfPy5/RLF5xdsydjQMKyC31OT7owe8UPjhFyqtgXGrYRzI5Ggtg0Ikblc
- nscjNwPFkea7ekuyqICf7ELyinvf2FteFBzE0wq9fTAhyxcv4F5DdpzvU+6BcYqYFMVf
- DnguM0Q25NSh//mYqh/n33rfe4rvYIRuoqrOnKYwSsugJIspXalChF/YcIZK8LQKnfPD
- Ped9v1nAyTwsyk9IQUnF5eAGhpbI7ukUJRMQU0eI7dv0dqVcInteF/Tu3modsuOefw4K
- yP/A==
-X-Gm-Message-State: AOJu0YyUmjznGtM/fx+SFimJqdKgGVz8tQ5Rgr3e1JciVTmEmvatrfNO
- IhUHqYRkNKY0jZGo0pj/7pZk350NABCWIP6AGgDbujxYGl6QU70hSMPs
-X-Gm-Gg: Acq92OG1spM+vmOock3nmetpr4CXBu1VjjK+DRTT51NcOPdG5OQ5UBsPrHnzZJBfR14
- FrreyH0lyRsLVTzEEEq/Q2x6ERllOHbazejULlUz26j6BjLjVFHO7wRbRKBr852IHCMX5zDPSpt
- Uncg5U1MzsXY96p5t00PPyIx8mDenWOgwoZrRUHCKU43Me9HyGDB2NVxcOblYaWAQ0brGF0q9XN
- /6cv+uoFpnQvKCG+law7kVhb9aTNlb0wcW19FTQWzpSGnA0PR0rpAGV5YdWV9ESQlQj0TDPHIJs
- ZcfqRbMsJMt7Yk5eupsNCIA9O8WctBOkothDqtEA7F0Dx5V6wbeTJ7qAhb8Fz33Lknqx9biHpwD
- JlDd9GwpqCjTlvftaXglFRTjZ40hGnkq7SnNJZJZbf7fL1QdyN8XodMAaUc/2TvjBqtpSHQIq9E
- u4/jVNB8U74wkz58uswHnzXQWCF/pDK95VmNgW7kLGiYJtVDGX8wtaIJvuElrjBUE+Jem4s4uzi
- UCjZAbf2vM5i8kAKK2KKz04cdGNS5hCMRTxQxEh4KdAEdVGfg==
-X-Received: by 2002:a05:620a:488c:b0:8cd:9033:1724 with SMTP id
- af79cd13be357-91606a1397emr88041785a.9.1781120683579; 
- Wed, 10 Jun 2026 12:44:43 -0700 (PDT)
-Received: from
- runnervm3jyl0.uwzlcyryxkeuzosgxp3bao2qha.ex.internal.cloudapp.net
- ([172.183.91.53]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-9158a2359ecsm2536199485a.14.2026.06.10.12.44.43
+ bh=904FMFt9mUEmLA6lCJVEV3GmPOKIWQ5JtdotGV69r3Y=;
+ b=lLSlD4rUZ65XIErOAm5VMW8a5M0zqeGdLnk3YqRLha0uYz6mfN7/Ww32CKjjq7PHgi
+ CSiJMCjQOIbW+0yr3jU6M/ongmfFBUm+iIpPbcqjW8s2TmcETpuRJ//kXKOXi7DOoveO
+ G18wMck3ZEEVB0qBqZC/ubkVWIH1lCyHAPEA34uwLVp1WY4TW2egTam00vTHLzDo4hrV
+ OuZJoav9XvUx92dGhQXVi4l8mMgX3cRNp1gmSBr7aUMIbxCCJCIzbpdaYc1azVqy61/J
+ beONPLdJDWPmAbqPus+KKFMA83CaNVk8awTO6AYLylWjSIixsQbAWZuENai16aQTRqd4
+ KowQ==
+X-Gm-Message-State: AOJu0YxUW0QjSjREuGk+kC4GfWnCoe2j3Dcgz4LlvX4TpDpGJ4+nQXye
+ Wh6yRJm+SKDuJlgO5dO+cr/xFaypNTt899G7Mo/etlIHirBpq1LyeEMuwLCgGjSFrQecUCZ6e+q
+ arSKCPg==
+X-Gm-Gg: Acq92OH6RmhhxtoSHQ5uvEGTvWEXd+2FqiGxrIC1Z2Qzwn4GT20isCNN0tddwbU7gha
+ emr1b2cIWQT4kl62X7qZF0406kSlVttRgQb8TBP/HU0BgRelT1XLhdC1p+mqlJU0kdqcN/bjslt
+ 1HDzpow+bgj0Ois4edV7BCo12X95ls3MyEaFrCg7U5k642jLsv621odgn9XSaRMipp35CUbhorj
+ ig4GFjTgSA9Q7Yw4LjcUzCSlG6ZXHRpzdejoK9SesRAXYpmfQ5XekuioSVp9eDhM5ewllG9XPsu
+ xL5gskCMEx7cRz6XmtEUB0Rmp7FOvrGb2u3MBAeUPZsdVDR31VSF/WtlUlYfGTRM7drXNmKspFW
+ t7U006XTFPBWrRjXpQJ2T1fxDFhodLAcXNi2/x+vLn4gAaoGB1h2QYBm8L2Juwbz4S/7cRXaSY4
+ MxNNWOltNStoziGzOvQQWK1MlxYzR3c5E7
+X-Received: by 2002:a7b:cc04:0:b0:48f:d5b8:5b07 with SMTP id
+ 5b1f17b1804b1-490e5619a8cmr4323575e9.20.1781147340285; 
+ Wed, 10 Jun 2026 20:09:00 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-490e532c778sm11361745e9.14.2026.06.10.20.08.59
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 10 Jun 2026 12:44:43 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Sebastian Chlad <sebastianchlad@gmail.com>
-Date: Wed, 10 Jun 2026 19:44:42 +0000
-Message-ID: <20260610194442.4062-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260610193500.30783-1-sebastian.chlad@suse.com>
-References: <20260610193500.30783-1-sebastian.chlad@suse.com>
+ Wed, 10 Jun 2026 20:08:59 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Thu, 11 Jun 2026 03:08:45 +0000
+Message-ID: <20260611030858.4109-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260608025234.1117-1-wegao@suse.com>
+References: <20260608025234.1117-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lapi: Add io_uring_clone_buffers and
- RDS_CMSG_ZCOPY_COOKIE fallbacks
+Subject: [LTP] [PATCH v6] mmapstress06: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,28 +98,274 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Sebastian,
+Convert the mmapstress06 test case from the legacy LTP API to the new
+tst_test API.
 
-On Wed, Jun 10, 2026, Sebastian Chlad wrote:
-> lapi: Add io_uring_clone_buffers and RDS_CMSG_ZCOPY_COOKIE fallbacks
+Refactor and redesign the test to be active instead of passive:
+- Replaced the passive sleep-based synchronization with an active cgroup
+  constrained memory stress test compatible with both cgroups v1 and v2.
+- Dirties all pages of a 256MB shared anonymous mapping inside the
+  child cgroup, forcing the kernel to swap out memory when hitting the
+  128MB limit.
+- Rate limits page dirtying by introducing a page-size independent
+  1ms sleep every 64KB (i.e. usleep(1000) when i % 64KB == 0) to allow the
+  kernel's asynchronous swap writeback to stably reclaim pages and prevent
+  MemCG OOM-kills on all architectures (e.g. standard 4KB or 64KB page size).
+- Added CONFIG_SWAP=y and CONFIG_MEMCG=y kernel configuration checks.
+- Utilized declarative .min_mem_avail and .min_swap_avail for framework-level
+  resource validation.
 
-Verdict: Reviewed
-
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
-Note:
+v5->v6:
+* Removed MADV_NOHUGEPAGE.
+* Added rate limit: Sleep 1ms every 64KB to limit dirtying speed, preventing MemCG OOM-kills.
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
 
-Regards,
-LTP AI Reviewer
+ runtest/mm                                    |   2 +-
+ .../kernel/mem/mmapstress/mmapstress06.c      | 186 +++++++++---------
+ 2 files changed, 97 insertions(+), 91 deletions(-)
+
+diff --git a/runtest/mm b/runtest/mm
+index 41d624ad8..7d75b65c8 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -41,7 +41,7 @@ mmapstress02 mmapstress02
+ mmapstress03 mmapstress03
+ mmapstress04 mmapstress04
+ mmapstress05 mmapstress05
+-mmapstress06 mmapstress06 20
++mmapstress06 mmapstress06
+ mmapstress07 TMPFILE=`mktemp $TMPDIR/example.XXXXXXXXXXXX`; mmapstress07 $TMPFILE
+ mmapstress08 mmapstress08
+ mmapstress09 mmapstress09 -p 20 -t 0.2
+diff --git a/testcases/kernel/mem/mmapstress/mmapstress06.c b/testcases/kernel/mem/mmapstress/mmapstress06.c
+index 37b7edc84..eaf1c9038 100644
+--- a/testcases/kernel/mem/mmapstress/mmapstress06.c
++++ b/testcases/kernel/mem/mmapstress/mmapstress06.c
+@@ -1,116 +1,122 @@
+-/* IBM Corporation */
+-/* 01/02/2003	Port to LTP	avenkat@us.ibm.com */
+-/* 06/30/2001	Port to Linux	nsharoff@us.ibm.com */
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *   Copyright (c) International Business Machines  Corp., 2003
+- *
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * Copyright (c) International Business Machines Corp., 2003
++ * Copyright (c) 2026 Linux Test Project
++ */
++
++/*\
++ * Test :manpage:`mmap(2)` with swap behavior.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
++ * Mmap a large anonymous shared region and force it to be swapped out
++ * by setting memory limits using Cgroups and dirtying all pages.
+  *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * This test requires root privileges because configuring cgroup memory
++ * limits requires administrative access.
+  */
+ 
+-/*
+- * mfile_swap:
+- * Mmap a large (> ANON_GRAN_PAGES_MAX) shared, anonymous region before
+- * swapping to use the second half of the kernel primitive mfile_swap.
+- * However, this test does _NOT_ cause swapping to occur.  Instead it should be
+- * run with waves or at the same time as a test which does cause swapping (i.e.
+- * vsswapin or vfork_swap)
+- */
+-#define _KMEMUSER
++#define _GNU_SOURCE
+ #include <sys/types.h>
+ #include <sys/mman.h>
++#include <sys/wait.h>
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <errno.h>
++#include <stdlib.h>
++#include "tst_test.h"
+ 
+-/*****  LTP Port        *****/
+-#include "test.h"
+-#define FAILED 0
+-#define PASSED 1
++static struct tst_cg_group *cg_child;
++static int page_size;
++static size_t map_size;
++static size_t mem_limit;
++static pid_t child_pid = -1;
+ 
+-int local_flag = PASSED;
+-char *TCID = "mmapstress06";	//mfile_swap
+-FILE *temp;
+-int TST_TOTAL = 1;
++static void run_test(void)
++{
++	cg_child = tst_cg_group_mk(tst_cg, "child");
+ 
+-int anyfail();
+-void ok_exit();
+-/*****	**	**	*****/
++	/* Set memory limit to force swapping of the mapping */
++	SAFE_CG_PRINTF(cg_child, "memory.max", "%lu", (unsigned long)mem_limit);
+ 
+-#define ANON_GRAN_PAGES_MAX	(32U)
++	if (TST_CG_VER_IS_V1(cg_child, "memory"))
++		SAFE_CG_PRINT(cg_child, "memory.swap.max", "-1");
++	else
++		SAFE_CG_PRINT(cg_child, "memory.swap.max", "max");
+ 
+-extern time_t time(time_t *);
+-extern char *ctime(const time_t *);
+-extern int atoi(const char *);
++	child_pid = SAFE_FORK();
++	if (!child_pid) {
++		char *mmapaddr;
++		unsigned long cg_swap_before = 0, cg_swap_after = 0;
+ 
+-#define NMFPTEPG		(1024)
+-#define ERROR(M)	(void)fprintf(stderr, "%s: errno = %d; " M "\n", \
+-				argv[0], errno);
++		/* Move child to the constrained cgroup */
++		SAFE_CG_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
+ 
+-int main(int argc, char *argv[])
+-{
+-	caddr_t mmapaddr;
+-	size_t pagesize = sysconf(_SC_PAGE_SIZE);
+-	time_t t;
+-	int sleep_time = 0;
+-
+-	if (!argc) {
+-		(void)fprintf(stderr, "argc == 0\n");
+-		anyfail();
+-	}
+-	if (argc != 2 || !(sleep_time = atoi(argv[1]))) {
+-		(void)fprintf(stderr, "usage: %s sleep_time\n", argv[0]);
+-		anyfail();
+-	}
+-	(void)time(&t);
+-//      (void)printf("%s: Started %s", argv[0], ctime(&t));  LTP Port
+-	if (sbrk(pagesize - ((ulong) sbrk(0) & (pagesize - 1))) == (char *)-1) {
+-		ERROR("couldn't round up brk");
+-		anyfail();
+-	}
+-	if ((mmapaddr = sbrk(0)) == (char *)-1) {
+-		ERROR("couldn't find top of brk");
+-		anyfail();
+-	}
+-	/* mmapaddr is now on a page boundary after the brk segment */
+-	if (mmap
+-	    (mmapaddr, (ANON_GRAN_PAGES_MAX * NMFPTEPG + 1) * pagesize,
+-	     PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, 0,
+-	     0) == (caddr_t) - 1) {
+-		ERROR("large mmap failed");
+-		printf("for this test to run, it needs a mmap space of\n");
+-		printf("%d pages\n", (ANON_GRAN_PAGES_MAX * NMFPTEPG + 1));
+-		return 1;
++		SAFE_CG_SCANF(cg_child, "memory.swap.current", "%lu", &cg_swap_before);
++
++		mmapaddr = SAFE_MMAP(NULL, map_size, PROT_READ | PROT_WRITE,
++				     MAP_ANONYMOUS | MAP_SHARED, -1, 0);
++
++		tst_res(TINFO, "Dirtying %zu bytes in child", map_size);
++
++		for (size_t i = 0; i < map_size; i += page_size) {
++			mmapaddr[i] = 'a';
++			if ((i % (64 * 1024)) == 0)
++				usleep(1000);
++		}
++
++		SAFE_CG_SCANF(cg_child, "memory.swap.current", "%lu", &cg_swap_after);
++
++		if (cg_swap_after > cg_swap_before) {
++			tst_res(TPASS, "Cgroup swap usage increased from %lu MB to %lu MB",
++				cg_swap_before / TST_MB, cg_swap_after / TST_MB);
++		} else {
++			tst_res(TFAIL, "Cgroup swap usage did not increase (before: %lu B, after: %lu B)",
++				cg_swap_before, cg_swap_after);
++		}
++
++		SAFE_MUNMAP(mmapaddr, map_size);
++		exit(0);
+ 	}
+-	(void)sleep(sleep_time);
+-	(void)time(&t);
+-//      (void)printf("%s: Finished %s", argv[0], ctime(&t)); LTP Port
+-	ok_exit();
+-	tst_exit();
++
++	SAFE_WAITPID(child_pid, NULL, 0);
++	child_pid = -1;
++
++	cg_child = tst_cg_group_rm(cg_child);
+ }
+ 
+-/*****	LTP Port	*****/
+-void ok_exit(void)
++static void setup(void)
+ {
+-	tst_resm(TPASS, "Test passed");
+-	tst_exit();
++	if (!SAFE_CG_HAS(tst_cg, "memory.swap.max"))
++		tst_brk(TCONF, "Cgroup swap controller is not enabled/supported");
++
++	page_size = getpagesize();
++
++	mem_limit = 128 * TST_MB;
++	map_size = 256 * TST_MB;
+ }
+ 
+-int anyfail(void)
++static void cleanup(void)
+ {
+-	tst_brkm(TFAIL, NULL, "Test failed");
++	if (child_pid > 0) {
++		SAFE_KILL(child_pid, SIGKILL);
++		SAFE_WAITPID(child_pid, NULL, 0);
++	}
++
++	if (cg_child)
++		cg_child = tst_cg_group_rm(cg_child);
+ }
+ 
+-/*****	**	**	*****/
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.forks_child = 1,
++	.needs_root = 1,
++	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
++	.min_mem_avail = 256,
++	.min_swap_avail = 128,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_SWAP=y",
++		"CONFIG_MEMCG=y",
++		NULL
++	},
++};
+-- 
+2.54.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
