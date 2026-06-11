@@ -4,88 +4,147 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE88BCD98CC
-	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 07:13:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781162021; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=wMfSJSPyujQAcNWDbLEZ64OBM0EmUzInBMkjIL1PtmA=;
- b=MP7KaCsdHBmw7YGBZ+T02PpfDKq7ez9wk/GAHl6axtImJSje0RUIGjGpJwj11MXVBZnIQ
- hsGd85FNKCNh6R5ChWFQo6f+k328RADKk9LrZB4dFUaGrD/wlQOgu/+IsaHNWD74ilUX14j
- JvwN0A4E/WPMTOyHMvwjib19MvfacP4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35261CD98CC
+	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 07:29:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 80A5C3CC6A7
-	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 09:13:41 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 707FF3E2AC4
+	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 09:29:14 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 99F473C1C1F
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 09:13:21 +0200 (CEST)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
- [IPv6:2a00:1450:4864:20::42c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id E54473C2180
+ for <ltp@lists.linux.it>; Thu, 11 Jun 2026 09:28:57 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 96C091A00692
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 09:13:20 +0200 (CEST)
-Received: by mail-wr1-x42c.google.com with SMTP id
- ffacd0b85a97d-45ef4223be7so4193067f8f.2
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 00:13:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1781162000; x=1781766800; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=ujjw1rABlk9UPE4+FgzFXqLJ+BaWrfTsv6p7XH+wh2g=;
- b=CxQOOq3RPUznd7TwS7Z2TXNsaGCSvIRJ8aSrLrcAuOjp6+3ZeM01L+Lhsz0g92LirI
- bwvwLETuQt4gM9exWfWl6+WSi0hgSTlgdzs98JHBLdPsGQY52CX2jaFaF61lNCgp80Az
- APhMHP4x4o0h6ne0S/sJBURBToCgvG2yrLfkqV69dt7j4ZPQox8Pc1zqKlo9zcYvl3N/
- FYKYROid6YqXL2pnG1a3G+jbhpqG1wchPFo1WB7EQMPu8JyqBnYzinDUszokZ+Xazrbk
- MjEbBDimmdCEAB1ZY8Ppic0IhddoVGF7kHWrQ8gUA1H4UWzZhq8awJqdvDMPSMPtmtzC
- 2I1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781162000; x=1781766800;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=ujjw1rABlk9UPE4+FgzFXqLJ+BaWrfTsv6p7XH+wh2g=;
- b=tFClY69oxVOA5CHBp75JZ5272F2xD78nmomMDipsDkWyRCijdXI6ljIZBR92djLFwB
- u9pI3yWjR8E+ovqm7NQloYP9uN+5MDqSD88muWxDokzsxoKpnmEhGCqySQixHUC4+oAb
- hgq0szqQn2FdXklkuVprKFOhCfoTgAz9kEXqZYHRjJzBrn3uanYXSBo4MLLJWT981mwE
- Mt1eueqyYlbrTWsz0g8ZbSPPpLUSiiY9ymjyb4xuGMosyGnfB3SLtyUenGQubU+ZnQfa
- qaPKxJsn33EbJbsSDVMdzQCBlZp8L1IoiKNwJfGhPA4rmdsbRg+OqEJsVuDd3qvUt1qp
- E21Q==
-X-Gm-Message-State: AOJu0Yz3Y43z0glLUjOTj9hAZbdT5/PYgXgscx68mCEeWQYBJV8Javdv
- q6Nswx5QjnBZoK4xNXCpqmEnz03OCha43R+QETbGxHAR2rsVUK2wPBBepBgXulO3hLg=
-X-Gm-Gg: Acq92OEu5CMmstpdQdHp0LoAVsIxZ7cm4P5rW+IN1buyQkDoP0J8D4kifXBijbKHHGn
- jAFwO+sQRIO1Rt6yA+Dm+aQf9crTW8TI2zVx2PU+qxMdS7CdfmtziYRR7iLLlpdApn5I4mbpTgZ
- LNnYJseHK0AnupxYq+0/BzpKYpat5trNXU8IikVs3xzWfN2ZuV54J5D0qthP+o0cvpNFX8y0pHD
- 9dZeDC/IuJCn7aFQBoVrzvyROw/qI9KGzY98oAKI9XLuf6n00LIMyjw2H9ua6yn3KK1xZG1+yeH
- +tZQS8TwIgdNMSQizOeRHFMheEikfvKvm89tjNDS6ajktixVH3GT4Y8iAsUP4pvlMdFkDVVjsxy
- TN+meomp9sQDph9eIwI7OAORpQMl3CMiV/YJ5jP73zdurZ5P7UVXvredEB2h/OazRqRKolWAF4T
- 7ebR1kNOjWgcCwvrV1Z3pUOPuz0W+Mi2Axf+FqqoLK52dCw85+Y+GGzBZYx26e+gCdMKdId2XVv
- VFTqTSnL86qTqtLzbehLOezysvwqZvUhYuCp7CcV4jpgQ==
-X-Received: by 2002:a5d:5d09:0:b0:45e:edc8:d440 with SMTP id
- ffacd0b85a97d-4606757a682mr2160061f8f.1.1781161999887; 
- Thu, 11 Jun 2026 00:13:19 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
- [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4601f345209sm84655294f8f.17.2026.06.11.00.13.19
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Jun 2026 00:13:19 -0700 (PDT)
-Message-ID: <6a2a600f.e130e254.13e740.627f@mx.google.com>
-To: "Piotr Kubaj" <piotr.kubaj@intel.com>
-In-Reply-To: <20260507111145.112276-2-piotr.kubaj@intel.com>
-Date: Thu, 11 Jun 2026 07:13:18 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9CC7610005FE
+ for <ltp@lists.linux.it>; Thu, 11 Jun 2026 09:28:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1781162937; x=1812698937;
+ h=date:from:to:cc:subject:message-id:mime-version;
+ bh=Uz+BXReznIKFf+sH766qqazFwqyJMTeuDku/Y01DxZc=;
+ b=M6bLOxGz228Kw8FW+aHtQtEe5YvWNVyKW2I2784ol/Fzzb6zUsi9BepA
+ JwLIlb/NVvfnaXCc2MsCPBWLCPYCbRyJ2Y/rmRpuXc/GzrI2SQngsYS2c
+ Noe92fc5ZbdSlE0sT/yqYY4i6N9WRx0MlhIbuKc6kUlYuVzYRm2Ydxn4N
+ zpRW98rBYnIEe7qDJXZBUi25xQ6XoUhZDPiNklZ/OsMTsVifLkwK+A6YY
+ wrDv2ca4f0mROx3XA0hWpDW4Ybk4pSYMQNasp/dO6LoV2vsZ3VlNAGjTg
+ kDTBjVpY0r/1qnXxWM42XPJvNoCRsrxYJ6MHkkczLimYYmHSvQl92SGyZ w==;
+X-CSE-ConnectionGUID: 5nQt6hExTJqcZEdXuFE2HA==
+X-CSE-MsgGUID: dc7ZV6Y2TE29gQpcbU5hyA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11813"; a="99546736"
+X-IronPort-AV: E=Sophos;i="6.24,198,1774335600"; d="scan'208";a="99546736"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+ by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Jun 2026 00:28:51 -0700
+X-CSE-ConnectionGUID: k9k2vU4/RtW1A4wQakeTxw==
+X-CSE-MsgGUID: HAb3QC7RRUa+66/J2Ni3Mg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,198,1774335600"; d="scan'208";a="240060198"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+ by fmviesa009.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Jun 2026 00:28:47 -0700
+Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Thu, 11 Jun 2026 00:28:46 -0700
+Received: from ORSEDG901.ED.cps.intel.com (10.7.248.11) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37 via Frontend Transport; Thu, 11 Jun 2026 00:28:46 -0700
+Received: from CO1PR03CU002.outbound.protection.outlook.com (52.101.46.16) by
+ edgegateway.intel.com (134.134.137.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Thu, 11 Jun 2026 00:28:46 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=X1Fcx1hmeQMpD+SUdim1JFWCDBufnY0D4rzVePP1m1LkQcsvajdc1Hj3JRRyYb2gZkzn+9dF045Gg041tfJ3om9T+w1xkdf5VwJ7Sjeud+oZ5PGLMUBB2pzlxRqfQSvwHDS0ipqhjJbARQ87VHVrdpJQ10Jb3/qtcz29vLA/EaeRCA9fCnhlliPSCyvW3FIGFE34VteyhEOIIvnOUXPw9UxPoic7DyOiSe//DzQPS2PIcJWtVeAewyrWrN4BduCBdJQuiG0h0yveFkVa95Elb5KEwZok2V7yJb5UMHI06WvEgVyotos8EOOeJekA7qaG4SPedBUfuYnTicHbsVwnsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mWZT221l0fYUsPVpQZXuO4F7ThFsHf3VWKxyP3f313Y=;
+ b=CmkEwnx2iaNqtuVpnmyCHMOqazP7V5js14/zohG5eT61gSaue1rNLI/F5EDe5mUiqcaEJReEaHLUdvtMWKFSpDdCWTpWeho5sF/oqbR9pXy6wn6CFhkWkH8ZYjd1OjeGzjrlIrJoKZgJuuTZYKdCPNNvWj4pZN4ZlpPTDpVOq4QMmmWWL+O8Ly4YtNfwEDmC/QARe6aWRg4WXz+V6ln25hUpkcv1BJkHebC5EcXObisxiJoqM03sTOC2IX4JC2xsIsZu+FT3ETftGDteqIfG3MOQIxkRwRFYJweNCaizhEajHT3hXGS+PJNI3lOj+aPNImrHQfBx0U+v9GiIfui89g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB5832.namprd11.prod.outlook.com (2603:10b6:510:141::7)
+ by LV3PR11MB8728.namprd11.prod.outlook.com (2603:10b6:408:218::12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.113.13; Thu, 11 Jun
+ 2026 07:28:44 +0000
+Received: from PH0PR11MB5832.namprd11.prod.outlook.com
+ ([fe80::106e:78dd:4c96:d707]) by PH0PR11MB5832.namprd11.prod.outlook.com
+ ([fe80::106e:78dd:4c96:d707%5]) with mapi id 15.21.0092.011; Thu, 11 Jun 2026
+ 07:28:43 +0000
+Date: Thu, 11 Jun 2026 15:28:35 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Namjae Jeon <linkinjeon@kernel.org>
+Message-ID: <202606110923.2d2a1a13-lkp@intel.com>
+Content-Disposition: inline
+User-Agent: s-nail v14.9.25
+X-ClientProxiedBy: SG2P153CA0004.APCP153.PROD.OUTLOOK.COM (2603:1096::14) To
+ PH0PR11MB5832.namprd11.prod.outlook.com (2603:10b6:510:141::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5832:EE_|LV3PR11MB8728:EE_
+X-MS-Office365-Filtering-Correlation-Id: 11e9b3b6-f75a-4a49-8d86-08dec78b113a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+ ARA:13230040|1800799024|366016|376014|23010399003|18002099003|5023799004|11063799006|3023799007|6133799003|56012099006;
+X-Microsoft-Antispam-Message-Info: W/ysRbY0A0sSdzCk+NzFrjS4/FvyVLYCQzVqRBqDGG2Anb6ti+TIWAMSChNNb76mbm/UNCwnBSZySEqeiCUSH0kIusUCCHY8a8oIDr/D0PetgHU598oH3lTP8tZfkn6JViObxb4pGDW+dpE5C335oZB/+21q1/lei6PMonqLSJnvegB/Np6IyktWETCHSpnITTbITIkWmlf+xEm8heGzFPi9UHqxfwBBsZaPQGQZcFF259IZ+xLK5WbI5GpDj3ShwOGjUzao3xoJ+O0JbbdIRhX3YBvEBsu6Hum1j0exkL04M5tMkpM+hBH3X+PE/c3MYFSKzyNVLXyhVZjxs6NXuPVZOrlA29ijg6FGVMQwF9TeK8MzuHPZ5qsE8J6G1MKKL0uSpq0CcyeheZINQutOQseUvjlx/RlUB7BsMpIPtDD02XPC7bdpJao9jx9srWDboke9nm2rQPQfh+RRJJerHUbeBKhoPUux5LloxBvPQJVjBLIR6SMv+OnrF8cyVs0MJGX/+n0zI9n7auzhCEsgJC4zQVKBKMmaAx5Jq0RUH39kgpfTSv2kvYeTmS0bWYz++4nuVFTFYPAVP9EYTG0QPAPjQxADhjHe+3n94w5Hb4RLZZgVj78TxZWo5jD5hgnyjxxbJkeEaBb9FROzxQ+UMuWrgmst6SXIWbKQtHewt7skmtvYu5AIF9yiaRjBPjiV0nltdftBb6i8Fphbgm38Gg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:PH0PR11MB5832.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(1800799024)(366016)(376014)(23010399003)(18002099003)(5023799004)(11063799006)(3023799007)(6133799003)(56012099006);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?h1AFtTe47K1ob2GT/4X9h+sIATEOW5eyPj7Zkok9g8J2U369SLWlXfzeKOgw?=
+ =?us-ascii?Q?gthpAgVolgJwE8Tbw8fy10HSqfVGz1n2gWD/9OsfUq7LPy6AP8gqjqzSRo/z?=
+ =?us-ascii?Q?KZkfEL5KTm6B3HlcWJnDefdeMAw3ij/JCUlxU4Nx6LO9CiwVTydPQYro2/xH?=
+ =?us-ascii?Q?Z1F7XHDWmIv9dhCF2hV7cWT9F8xsTmC5xTmN/YVWK0LuW8JppMNHGDEtfv+A?=
+ =?us-ascii?Q?6hIMHbCV3XXKYaVgL0jbB/XNXNwpeUReTJRTzc3eWWkNR8B9Z9at5uTqaJv5?=
+ =?us-ascii?Q?q0lq0bkrERuOE0LWW8flv/ohC98qW4ad/FZsVyX6MMNuF6PQkhh1NlQyuO11?=
+ =?us-ascii?Q?ogBPSqdvGK8LyoWXKyfLeeBiZkPjnLIWLqh+XI54U/sUiCdHjiAxh7ViuUiS?=
+ =?us-ascii?Q?DYjD+HP5WYGAgbTJuXT9BNyP4v8aE5l7DVUalBl+jfP2dfHfLbkxadp3MaQa?=
+ =?us-ascii?Q?TjPkkCpD5Wg3G1gDzb6reg7GqbKujhBOoYg2ytOgTmltU7S+pZgWcA1zkXQg?=
+ =?us-ascii?Q?oyhJpJDK4s/eFLew1tEcp4Tly8QE9GyjMjDm1iK12tnod//uI4s5tqycxnWf?=
+ =?us-ascii?Q?qW5ROGlY3z5OCmTEbUuD8POi5YdSFnk9b8WFbpnwpgeNM0YOHh5CvMqJuCw/?=
+ =?us-ascii?Q?+U6NMBlVYXsptrFYlp9bmaMsRFNtmaHwiFgFBiduwQWyybechMYm18QmrHPq?=
+ =?us-ascii?Q?Ogkv9qTTkS+RFs8u53T+Zf9yVr0Hpgv7ew6N9vgsUzeNWqfHVpDqZHYE1Zs5?=
+ =?us-ascii?Q?4Mi511gZYHCuxBPO/vux3oGo7xXIED5PQP7pYIp9roVus8H2aoh1xkAe3tLz?=
+ =?us-ascii?Q?2O9JY8WymQ+SjP6ViqCeLG9cJdXP9/mdcCST6n28Uk/CA1pf/lV1NoDbjFZN?=
+ =?us-ascii?Q?xK007JG/hBh4+jmE3CFlNcevRtjo/MiG//09Zrwq53eBv+HiiUa8uJ20nFoS?=
+ =?us-ascii?Q?XfSxlfWvSrgOiAuBkLW+L65HMUHAYZ4BnZ9V/GF+WwWvRPRPH4VPbDznC8+Z?=
+ =?us-ascii?Q?sdT6eAMxWDHQQ0mvBU4CN4RQSsmdRWLMcEETsYqEJQ1i+t118D8VBMzrU8Aq?=
+ =?us-ascii?Q?OIKS2D/SAg0fMKm6l0c6cllR9AMpcYnE7ztlM6SE4t8rtmnkKoVh43E8yDAM?=
+ =?us-ascii?Q?tSZPVprUZXLEzOwV3hDtJB1SCHyKUg6PsWEA5NmrqJQH7oGgVipwgnSmW0J3?=
+ =?us-ascii?Q?qrX3dhQOec8PkgJDoDcieU7bTq/JK+6cXMqUGR27YsDShEFNky5R4Hv6GtV1?=
+ =?us-ascii?Q?skKcAL49kdPbRH7ykmyuvg8VWyFvA8e+QYsEekAjP4epKY5zqlhJIn7ua1W8?=
+ =?us-ascii?Q?BP2D4eSf0maZA4RWKi2JvbjpOemw8naCrcE0ie52WZ8ziz3rLoN2DlyUZ4+I?=
+ =?us-ascii?Q?XOU5V/p+L34QojqkDo6HdZ2M1Oq+2y0020cz+VMtsbA36nk2IvskH5XsBmGu?=
+ =?us-ascii?Q?DUYy9jsGX9oSVaGya1Vwmdw1X9UYgt9t2ApvrWiNRkXiqGzfkeQedctU2v0y?=
+ =?us-ascii?Q?ucxHx5H7WLLh9Hcq1BCZ4UIP0vJfKyZsbcVD5cR6kOHzurZ3uRUsg0ZUr3o3?=
+ =?us-ascii?Q?aFPmKOprUKCKTZp6EUOROaX1XRO6LB2GQ0eh5q5mZaMmCDAzuKzqITxgSkui?=
+ =?us-ascii?Q?Dr4BKA0CMlkM3AeYX+n55AjpfaAA8hKe88FjgCd5ERJEW4QRAMU0Jg238+LK?=
+ =?us-ascii?Q?Y+xe/9HCuXpso2gIKu4kE0SScYbrUaVG7juF5PhvG9VCXUbDoLZUy88HC/sw?=
+ =?us-ascii?Q?fcc5uby+/w=3D=3D?=
+X-Exchange-RoutingPolicyChecked: W0si5jW4++pGqOpy2IbYG1F9WkJNUcAtn5Zim9CySs5oD25I+Es4otMxLp5n/9v2BwnxHXZmbCUJHwDktzzuK/ORJs3Px3beYUBH5tSj3rKmQExC87TvdeM/8TPSYesn7Kj+oau7syNtnoY5WTqJ30xgrHyz+W6CUF/LkmRkUxI/aQ1T2GLTuHq7oYDw/SKY0esISuL+SjXtKR9Q2HE/P1MOf6vt7OTJnUwkgbtNXgVsvm4ON0lkJSKWgvKgUxW+0/pDbmVwpuHrTMhSnZQdrSpPzrfaV0yqCtaWiasrT9NEevp4yikm1WcTskdiy5z3ZEIsDPuLw6/7v72EQ97N+g==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11e9b3b6-f75a-4a49-8d86-08dec78b113a
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5832.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2026 07:28:43.7712 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OOWtSwVBujfhipm5nJb6DhU8OHB9LTCl8k04cwLho4hHnu7n9XyZTzCtUp9VZ2JhEqYaXD+DOFO2QVX6tqZAPw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8728
+X-OriginatorOrg: intel.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v8] cpufreq.c: add new test for cpufreq sysfs
- interface validation
+Subject: [LTP] [linux-next:master] [exfat] 07d67f3e90:
+ invoked_oom-killer:gfp_mask=0x
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,103 +156,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: daniel.niestepski@intel.com, tomasz.ossowski@intel.com,
- helena.anna.dubel@intel.com, rafael.j.wysocki@intel.com, ltp@lists.linux.it
-MIME-Version: 1.0
+Cc: lkp@intel.com, "Darrick J. Wong" <djwong@kernel.org>,
+ linux-fsdevel@vger.kernel.org, oliver.sang@intel.com, oe-lkp@lists.linux.dev,
+ Christoph Hellwig <hch@lst.de>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Piotr,
 
-> +static void cleanup(void)
-> +{
-> +	char path[PATH_MAX];
-> +
-> +	if (!setup_done) {
-> +		free(online);
-> +		free(previous_scaling_max_freq);
-> +		free(previous_scaling_min_freq);
-> +		free(previous_scaling_governor);
 
-Better to use goto at the end of the cleanup() function, instead
-of defining free() in two different parts and duplicating code.
+Hello,
 
-> +		return;
-> +	}
-> +
-> +	SAFE_FILE_PRINTF("/sys/devices/system/cpu/intel_pstate/status", "%s", intel_pstate_status);
-> +	SAFE_FILE_PRINTF("/sys/devices/system/cpu/intel_pstate/no_turbo", "%d", no_turbo);
+kernel test robot noticed "invoked_oom-killer:gfp_mask=0x" on:
 
-For fixed sysfs files that we need to modify and restore, we should use
-.save_restore instead.
+commit: 07d67f3e9083bc976b34d5d9183f87f0afc7deed ("exfat: add iomap buffered I/O support")
+https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
 
-> +static void setup(void)
-> +{
-> +	char path[PATH_MAX];
-> +
-> +	if (access("/sys/devices/system/cpu/intel_pstate/status", F_OK) == -1)
-> +		tst_brk(TCONF, "intel_pstate driver not active");
+[test failed on linux-next/master a87737435cfa134f9cdcc696ba3080759d04cf72]
 
-Are you sure it's not a TBROK/TFAIL? We are checking for the driver
-configuration inside the kernel at tst_test level. I expect that
-.../cpu/intel_pstate/status is present at this point. If it's not,
-we are probably facing a bug in the driver, isnt it?
+in testcase: ltp
+version: 
+with following parameters:
 
-[..]
+	disk: 1SSD
+	fs: ext4
+	test: syscalls-06
 
-> +
-> +	SAFE_FILE_SCANF("/sys/devices/system/cpu/intel_pstate/no_turbo", "%d", &no_turbo);
-> +	SAFE_FILE_SCANF("/sys/devices/system/cpu/intel_pstate/status", "%15s", intel_pstate_status);
 
-And since we are scanning the status value later on, we probably don't
-need the access(.../cpu/intel_pstate/status) verification. The test will
-TBROK anyway here.
 
-We should probably use .save_restore at this point, since we can safely
-guard the test from having drivers issues at configuration level.
-In particular, we should use .save_restore with TST_SR_TBROK (or
-TST_SR_TCONF if you confirm that driver might not initialize the
-sysfs under certain circumstances). 
+config: x86_64-rhel-9.4-ltp
+compiler: gcc-14
+test machine: 8 threads Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz (Skylake) with 16G memory
 
-> +		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_available_governors", i);
-> +		memset(contents, 0, sizeof(contents));
-> +		SAFE_FILE_SCANF(path, "%255[^\n]", contents);
-> +
-> +		tst_res(TDEBUG, "Checking whether %s contains \"performance\" and \"schedutil\"", path);
+(please refer to attached dmesg/kmsg for entire log/backtrace)
 
-Please change all of these double quotes inside tst_res() message parameter
-single quotes (as Cyril mentioned already).
 
-> +		SAFE_FILE_SCANF(path, "%255s", contents);
-> +
-> +		if (strstr(contents, "schedutil"))
 
-Also, I'm a bit concern for the massive use of strstr() patterns.
-Again, if drivers are bugged and show a string with garbage
-data matching one of the "supposed" correct string, we pass the test
-while drivers are still bugged.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202606110923.2d2a1a13-lkp@intel.com
 
-You are also missing these two configurations which are needed
-by the test:
 
-- CONFIG_CPU_FREQ_GOV_SCHEDUTIL
-- CONFIG_CPU_FREQ_GOV_PERFORMANCE
 
-Otherwise, it's not possible to run:
 
-> +      SAFE_FILE_PRINTF(path, "schedutil");
+kern  :info  : [  465.291318] [  T10063] BTRFS info (device loop0): last unmount of filesystem 4c3cfb15-a618-4082-907b-517e4751b46d
+kern  :info  : [  465.335911] [  T10157] Adding 1020k swap on mntpoint/swapfile01.  Priority:-1 extents:1 across:1020k SS
+kern  :info  : [  466.585441] [  T10157] Adding 131068k swap on mntpoint/swapfile01.  Priority:-1 extents:1 across:131068k SS
+kern  :err   : [  467.591291] [  T10170] swapon: swapfile has holes
+kern  :err   : [  467.608966] [  T10170] swapon: swapfile has holes
+kern  :warn  : [  467.703015] [  T10170] swapon01 invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
+kern  :warn  : [  467.712815] [  T10170] CPU: 1 UID: 0 PID: 10170 Comm: swapon01 Tainted: G           OE       7.1.0-rc4+ #1 PREEMPT(lazy)
+kern  :warn  : [  467.712821] [  T10170] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+kern  :warn  : [  467.712822] [  T10170] Hardware name: System manufacturer System Product Name/Z170I PRO GAMING, BIOS 3805 05/16/2018
+kern  :warn  : [  467.712824] [  T10170] Call Trace:
+kern  :warn  : [  467.712826] [  T10170]  <TASK>
+kern  :warn  : [  467.712827] [  T10170]  dump_stack_lvl (kbuild/src/lib/dump_stack.c:94 kbuild/src/lib/dump_stack.c:120)
+kern  :warn  : [  467.712833] [  T10170]  dump_header (kbuild/src/mm/oom_kill.c:464)
+kern  :warn  : [  467.712836] [  T10170]  oom_kill_process.cold (kbuild/src/mm/oom_kill.c:1031)
+kern  :warn  : [  467.712839] [  T10170]  out_of_memory (kbuild/src/mm/oom_kill.c:1169 (discriminator 4))
 
-or setting CPU governor to performance.
 
-Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20260611/202606110923.2d2a1a13-lkp@intel.com
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
