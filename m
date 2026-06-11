@@ -4,115 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CE22CD98C7
-	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 09:37:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 914F3CD98D2
+	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 09:44:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781171062; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=fWQ5uK9v9861jVVeedFs8Zi9kC+CoTARjNiF245sxzc=;
+ b=fYsl/7MhQn9cnMYwAOX14X1YS4O3D2T3oi8zwTC41RgSAFYoG52GHCoucJOL9Y6MK8TxZ
+ CdM4lOFwHodRDl9o/WbbNy/fUwiDlJl4Vc7X4IQKIDUCzNhGJ/QVKhbp2rUY3+pgL4JgfY5
+ SUATYCzGB3yF7LzhGeDkOuqMWerBqfs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EA65D3E2AA4
-	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 11:37:39 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id BD88F3E2ABD
+	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 11:44:22 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C4E773CB67D
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 11:37:23 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 425623CB67D
+ for <ltp@lists.linux.it>; Thu, 11 Jun 2026 11:44:00 +0200 (CEST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D1ECB1000643
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 11:37:22 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9A84975A61;
- Thu, 11 Jun 2026 09:37:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1781170641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=6i3421mjxeChTjMXow1V/01sEtAxgVvLOgOTFnc+HCQ=;
- b=LzeuIgV1zbvAKqNcZZWBLZzaQH3xV6iwGRB+RXx+icsZ5nq34EPY0jq+JiLY6sZQxF35gO
- RI3I/jiyQ6hhMm/7KWWKci8g+YVW4uJwX61JBZ0+dzxnoEChWNQg2rvrZIIWwL7DW4Sazx
- mirQw85Y5diW+KYGZjASpdrzMmekY/A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1781170641;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=6i3421mjxeChTjMXow1V/01sEtAxgVvLOgOTFnc+HCQ=;
- b=JZXnPOxvxqxh4EmAs5D9PFM+UUEihSIGg4reVFTvhUo6a1Bcfo2rn0JJ9wromMb0O0KGRi
- HyHUniG1/UmA1SCw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=LzeuIgV1;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=JZXnPOxv
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1781170641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=6i3421mjxeChTjMXow1V/01sEtAxgVvLOgOTFnc+HCQ=;
- b=LzeuIgV1zbvAKqNcZZWBLZzaQH3xV6iwGRB+RXx+icsZ5nq34EPY0jq+JiLY6sZQxF35gO
- RI3I/jiyQ6hhMm/7KWWKci8g+YVW4uJwX61JBZ0+dzxnoEChWNQg2rvrZIIWwL7DW4Sazx
- mirQw85Y5diW+KYGZjASpdrzMmekY/A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1781170641;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=6i3421mjxeChTjMXow1V/01sEtAxgVvLOgOTFnc+HCQ=;
- b=JZXnPOxvxqxh4EmAs5D9PFM+UUEihSIGg4reVFTvhUo6a1Bcfo2rn0JJ9wromMb0O0KGRi
- HyHUniG1/UmA1SCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 81777779A7;
- Thu, 11 Jun 2026 09:37:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id EdkHHtGBKmqALQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 11 Jun 2026 09:37:21 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 11 Jun 2026 11:37:21 +0200
-MIME-Version: 1.0
-Message-Id: <20260611-fix_xfrm_compat_mode-v1-1-bbb80ee1ad63@suse.com>
-X-B4-Tracking: v=1; b=H4sIANCBKmoC/x2MQQqAIBAAvyJ7TtCiqL4SIaVr7cEUjQjEvycdB
- 2YmQ8JImGBmGSI+lMhfFWTDQJ/bdSAnUxla0Q5ikJJbetVro1Pau7DdynmDXPSis9JO+z4aqGm
- IWL1/u6ylfIPT1jVmAAAA
-X-Change-ID: 20260611-fix_xfrm_compat_mode-0503f1f9bb8d
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1781170641; l=2735;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=rc+8IRDVwUkihQsjg20iZ8Anfl/u4fDPHmOLyYFIuQ8=;
- b=A3Z66m+0wsPBYqSFjvGdfVbtkzgj0VW2aMzOtgp6XzmG/JcYmJyu5ijOdYgBOaQmD5kUqc7Rk
- LGIytEzbB6EAHaZ+SLCt94p4uOn+DHoHGsT3t3o8KNlkQ+PGdjwOhMa
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 9A84975A61
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 07B436002CF
+ for <ltp@lists.linux.it>; Thu, 11 Jun 2026 11:44:00 +0200 (CEST)
+Received: by mail-wm1-x32f.google.com with SMTP id
+ 5b1f17b1804b1-4905529b933so82350045e9.0
+ for <ltp@lists.linux.it>; Thu, 11 Jun 2026 02:43:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1781171039; x=1781775839; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=6omdAvV9cqorGKUf53JOLGfPnF8btL84kXN92zVLcYU=;
+ b=E3pT1GGSTAfX/SlliYPGNlJXCAmt30Q9AUOI9owj/X99xtL1ve71IfcIFEZnLfA3M8
+ cNkY4wkF5wxmTFXVlETknt6/XwfTA1UWzLZCF9SXRT6Gd/qAqtdFp6mU5bhQHf6+fRhW
+ 5TQmTrMv0sPBIVgeP77gm0Q4qkLZwm8c2dCOj27WUlOT7qscsCeVvBqYb8xF3g6dSY0P
+ xI21GBYoiWX1H6WzS05QAhUhRHG/Lin9uL7ODZAARlg4fV9F3nyQFo0SlVcNZmchxnMN
+ wbIVlOaGh8pPvOOtFMzRX9qRYfTGG3IL1WHv03izr2WfGcnMLhQGe1P5DI1/DP7CaYSU
+ Msxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1781171039; x=1781775839;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=6omdAvV9cqorGKUf53JOLGfPnF8btL84kXN92zVLcYU=;
+ b=ns6quYf/IWG8SMq+6l4wvFOAZ8A+AZv9WvUMS1URacBUkvI7q2Iot/8OkYiYHnOXTm
+ /p4vGnqNNANP9KNz19nnK2eRS8eIQoNCGvn+MckoVDPvHzSLDn4e/m1J9e9u73bzd4eC
+ E3Spww2a2TlAVzRGpvjjtviFrF+M/wPfvM9swnRmMFIgWjlKFuUlkBcX/WV+tdK2oTsF
+ GaYe14IBXcf31ew3khwMUKTiwEpEwi2Fck0dbzK/z0Qpp77hEAZs8CuzNzmC/bB+CKUO
+ O8HTbA4t++1TiBanrjvdbmeX8FJrbD0Uf3NLEcqhKZcdBCS4rKwwWLoOQ0i0ot6mk7L7
+ XStw==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ9gUVgZM/knizYF8llF37+Eo3Yg2wsXkmof217+7Ijct/vPLvia9vayMxKLOvQycOqDYQU=@lists.linux.it
+X-Gm-Message-State: AOJu0YxT1q+v1fRhtgE6tQ2feuw00FnjWzxU9CkPIe3h6nriI6PXiKPT
+ 2Rmjxfy+S2MUH4AS6j03WKewaOk7JQy/eleNaZLGch9oUCBYdIrIP0f/Ebevrrb0m7M=
+X-Gm-Gg: Acq92OFf8qe6ZvRYS28ieEnGTUIoROTUWg9I6pSyE51CPH0KnLrpxshxQ830axrfjO4
+ h6yfYFL0p8N2KjVfD22R6jC2cKaojdEOP7b9E1bMpvhjGArztmvfhxYaHD1Occr5ULaZHtJcrAN
+ pvxeiVaa1N0SIpUK4oSGHXccqsa9yXUxvK2CBZr3Hf7ZZGKxprkuyj87x+yPKelPoGX4Xzn0s6x
+ qbhfEk/S4mnyFEqrHGO+v0yJpVGHMaeHftLJXSWNRqx6OwnnI+EkyXP25TCXew+gtNSn0RUhsbz
+ BlVzK8MsGXJlrzCjdaXZVBVcUPwf44WIYyIqituMR/4MYhDVoof7qqhFe9M+MIlCdxic1mCNR2V
+ M7xjwD3+3Y79ewUj3TJvzK/k99gVofT5u0XEtTNOeAU8lLBaWvCq6qaqjyuJSv8QvehcBdBhyA6
+ f+Q9CmuYuIrRgTPRtfON5Hvxl41la0KwqkYtQa6/nq0TyXNV0m+uqO1kkx58WAHo/T9/7wOdhDB
+ p7H+E9hwe0g6Jqhv8+T3jPsPcDI27jnivvJD74jrgj6ZQ==
+X-Received: by 2002:a7b:c399:0:b0:490:c024:2eba with SMTP id
+ 5b1f17b1804b1-490e56172f8mr20304695e9.22.1781171039378; 
+ Thu, 11 Jun 2026 02:43:59 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
+ [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-490e422e12dsm23396755e9.0.2026.06.11.02.43.58
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 11 Jun 2026 02:43:59 -0700 (PDT)
+Message-ID: <6a2a835f.5d1dab49.20a12a.a427@mx.google.com>
+To: "Cyril Hrubis" <chrubis@suse.cz>
+In-Reply-To: <aip-qWO-Ep2WxLr0@yuki.lan>
+Date: Thu, 11 Jun 2026 09:43:58 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] xfrm: Skip on EOPNOTSUPP in compat mode
+Subject: Re: [LTP] [PATCH v5 1/2] firmware/fw_load: rewrite firmware loading
+ test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,80 +100,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Cyril,
 
-A 32-bit binary running on a 64-bit kernel uses the XFRM netlink compat
-layer, which is only available when CONFIG_XFRM_USER_COMPAT is enabled
-(and its module loaded). Without it the kernel returns EOPNOTSUPP for
-any XFRM netlink message, which is a configuration limitation rather
-than a test failure.
+> Hi!
+> > ---
+> >  runtest/kernel_misc                                |   2 +-
+> >  .../{fw_load_kernel => fw_load}/.gitignore         |   1 +
+> >  .../firmware/{fw_load_kernel => fw_load}/Makefile  |   8 +-
+> >  testcases/kernel/firmware/fw_load/fw_load.h        |  18 ++
+> >  testcases/kernel/firmware/fw_load/fw_load01.c      | 165 ++++++++++++++++
+> >  .../{fw_load_kernel => fw_load}/ltp_fw_load.c      |   0
+> >  testcases/kernel/firmware/fw_load_user/.gitignore  |   1 -
+> >  testcases/kernel/firmware/fw_load_user/Makefile    |  20 --
+> >  testcases/kernel/firmware/fw_load_user/README      |  11 --
+> >  testcases/kernel/firmware/fw_load_user/fw_load.c   | 213 ---------------------
+> 
+> This is impossible to review. If you move/rename files it's usually done
+> in a separate patch that does not change the content.
 
-Report TCONF instead of TBROK in that case for xfrm01, xfrm02 and
-xfrm03.
+I usually review with double column editor left=old, right=new :-)
+But I agree with you that diff is messed up. Should I send a new
+version?
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- testcases/network/sockets/xfrm01.c | 3 +++
- testcases/network/sockets/xfrm02.c | 3 +++
- testcases/network/sockets/xfrm03.c | 3 +++
- 3 files changed, 9 insertions(+)
-
-diff --git a/testcases/network/sockets/xfrm01.c b/testcases/network/sockets/xfrm01.c
-index 5490d6b8a9f7fde79478ae0484e6ea8156d07cf3..22244032a521a42331b0c1411ae33f75622e64ce 100644
---- a/testcases/network/sockets/xfrm01.c
-+++ b/testcases/network/sockets/xfrm01.c
-@@ -126,6 +126,9 @@ static void setup(void)
- 		if (TST_ERR == EPROTONOSUPPORT)
- 			tst_brk(TCONF, "xfrm ESP is not supported by kernel");
- 
-+		if (tst_is_compat_mode() && TST_ERR == EOPNOTSUPP)
-+			tst_brk(TCONF, "xfrm netlink unsupported in compat mode (missing CONFIG_XFRM_USER_COMPAT)");
-+
- 		tst_brk(TBROK | TTERRNO, "Failed to install xfrm ESP state");
- 	}
- }
-diff --git a/testcases/network/sockets/xfrm02.c b/testcases/network/sockets/xfrm02.c
-index 43edb77d43c8c99e9883fc9922031d559ef31c40..376f6ebe551dd81fbc6a982503eacd68da636f93 100644
---- a/testcases/network/sockets/xfrm02.c
-+++ b/testcases/network/sockets/xfrm02.c
-@@ -126,6 +126,9 @@ static void setup(void)
- 		if (TST_ERR == EPROTONOSUPPORT)
- 			tst_brk(TCONF, "xfrm ESP is not supported by kernel");
- 
-+		if (tst_is_compat_mode() && TST_ERR == EOPNOTSUPP)
-+			tst_brk(TCONF, "xfrm netlink unsupported in compat mode (missing CONFIG_XFRM_USER_COMPAT)");
-+
- 		tst_brk(TBROK | TTERRNO, "Failed to install xfrm ESP state");
- 	}
- 
-diff --git a/testcases/network/sockets/xfrm03.c b/testcases/network/sockets/xfrm03.c
-index 02ab95c6b7a87f8f206b30a39bb6feb097117998..fa5df9c285d540d5cad0e890a73d43ad9aeba1c2 100644
---- a/testcases/network/sockets/xfrm03.c
-+++ b/testcases/network/sockets/xfrm03.c
-@@ -202,6 +202,9 @@ static void setup(void)
- 		if (TST_ERR == EPROTONOSUPPORT)
- 			tst_brk(TCONF, "xfrm ESP is not supported by kernel");
- 
-+		if (tst_is_compat_mode() && TST_ERR == EOPNOTSUPP)
-+			tst_brk(TCONF, "xfrm netlink unsupported in compat mode (missing CONFIG_XFRM_USER_COMPAT)");
-+
- 		tst_brk(TBROK | TTERRNO, "Failed to install xfrm ESP state");
- 	}
- 
-
----
-base-commit: c685f1b774fab694c42dfb7522bc42d999904373
-change-id: 20260611-fix_xfrm_compat_mode-0503f1f9bb8d
-
-Best regards,
--- 
-Andrea Cervesato <andrea.cervesato@suse.com>
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
