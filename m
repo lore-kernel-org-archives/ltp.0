@@ -4,82 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D33E6CD8C9D
-	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 18:23:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2643DCD98CC
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 02:05:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781229944; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=tHdGl8pwfMKqnffjELJaPEw//T+zKakh5tL/grama8A=;
+ b=afPbNMACCK6FU+y4ynvUvyEpLkcWXahMwvLlJrhrkLzJxtOPNLsD9LGqPD/biqMkpEZ3l
+ jG3uMRed8BKWRU1Z9y/7Iigo/0MNP5klLS4Qd+2/iT4mvRJ1SDzN2JA6zpjmC8uWul4orV5
+ 39ouaFUn4ZAzZAkFZDy6GGq0pbphycI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E11CD3E1C0B
-	for <ltp@archiver.kernel.org>; Thu, 11 Jun 2026 20:23:04 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 3E9423E1EA0
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 04:05:44 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 335123CE114
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 20:22:48 +0200 (CEST)
-Received: from mail-dl1-x1241.google.com (mail-dl1-x1241.google.com
- [IPv6:2607:f8b0:4864:20::1241])
+ by picard.linux.it (Postfix) with ESMTPS id 0176C3C5593
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 04:05:23 +0200 (CEST)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A2FEB60070D
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 20:22:47 +0200 (CEST)
-Received: by mail-dl1-x1241.google.com with SMTP id
- a92af1059eb24-13832028e9fso118353c88.1
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 11:22:47 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 41610140033A
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 04:05:22 +0200 (CEST)
+Received: by mail-wr1-x42e.google.com with SMTP id
+ ffacd0b85a97d-45eee266c6cso355063f8f.1
+ for <ltp@lists.linux.it>; Thu, 11 Jun 2026 19:05:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781202166; x=1781806966; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=G+1vMWU6+IdMaz1iz8vXWkBKZdf8E2zJCxuUMkXAA94=;
- b=F2bdZssZNPMq6aNvZ7xYYizLZfXPcigp3B98spF6wBnwuF87pV8CY8NyWjZ0AJgBeK
- 9cO1hvrgHALrBWWVw2DzR93Q6DTmu42plljuwxYmKIXUk4UGnsFGaDOUmF00yeO/G6iZ
- gakPYbagVXVOBHfosGC/22IjzPPB5/JafZ9WCuL617cPJDXPEt/uCP8XiDaqY2dzduMQ
- 5i8d+JeB79YPY350r0Cn29Uu72b2UgLQdLBvembpgQ26R6+co0lxNqzh0kzaTt8HYWgA
- B80Vv+lgxaMjcsS90Z6CoLllgvXZV6cxHj9eWhy/Eg71fabvCC9HYNgt/FzSgBbye0Mo
- t0Sg==
+ d=suse.com; s=google; t=1781229921; x=1781834721; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=qttcJEsQiEfl3lWc0PlXIEYsPQbX9aFASczeCecuVNA=;
+ b=dw02NQ9ztHxpiynohAISZSvPhTa4T9Qm3uLTvpMTuGG69A1QNzs/9ijLYCykoIFxtV
+ wNtIWz4pJ3W1+5jHPA2l3FU6vckCkKSG0lW51ktodif2hASsTlSMzRUITm+9LM7fNDWa
+ bVPIMBgKBAiTtKMPgX7ZtTqEDD8tXHwaLZXH33yjoUd1rjIMUAb8sK6xpZ7/tJExohtT
+ icm+5NpVKLL6xtH+lKaQcO1jVSvN5YEI1LdKZS22anwdTO2XqsjG8n2GfENmQ+4Y1QXh
+ eKMWY4yY0q9aH5QMJ6I38BPmHogXfc035hX+VUzHaZsUdYwZVJeGoCwb+BqjtUqvaBiA
+ LuRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781202166; x=1781806966;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=G+1vMWU6+IdMaz1iz8vXWkBKZdf8E2zJCxuUMkXAA94=;
- b=CpDaeoWuENTLAcNs+8zzhtIpofMGfykKKusnVlpJpgkH9OHGhiU/SEpAJ83Z0w19Iq
- Plt2uJwA0NfCZxor35yPNqzJOnzSHH1JkuKgsWa6zrr4d5q85PjOZtPr0Zp8HRoQuKCe
- Xmje/3L5aUIbuAMPKi+W1QMt+8Jwtk/75jr8fllY6vcGDLiDqlbN31AtF92Ci0uvJAE9
- h5AbUza76OYcebmp8DK8z/amKmrHZuv2f+ACYiEiQjpMCxV8VL9zrKOtUhfnpskPWTff
- VrsDdiIN7gNoevWe573jH7XztRrRbhs91AH8ZDdLbsSbswFdN6rercjv68eceS9zzDHX
- eMaw==
-X-Gm-Message-State: AOJu0Yydi+crQbEZPlVpwt5V3N0cf0RAqZ+bGzMtfaT/28M6tCUJeZf8
- WE83Rc67L82qkFNg40QiFWg1cibbyjjsSJUjjomxZOar6JrwDwCuiEdPQbcZn0ho
-X-Gm-Gg: Acq92OG+i3Vhsh7iRv4IaSSjC3Nzapn0JLJX1n0htrmSso4XQR2L3ZuFrJz/rW1/za3
- ockgQ94dVLVHx5nO9qeo6Y7AUIK8WN2yh+txMmL5DmRuFmpFPfHLHFE29Fuib5n+0nuy5a6/MMS
- r9LOwFF46cqgQJ852+SIfvyiYIRkpovrI0aX1C1ip91/UXnkAYB0izKC0nVunNEX17blRAxz3QF
- +68N91lEGS1C55uPvnxIIBI1lSCSBIkyPp7UQNNI7hY6aCLDXyN8jovD/1Eb4WoPPMX0XEfarbS
- 5bdfCswzhjRnRU+0u8+J8InmXpWj+NcuF0z8OdlNbhu58TxaMgxPGCtWnlPrzXekE9pfX4rx1G8
- YIjw2a/S9JioITwU+JHhk+95d8vJ3QiO43dPeCeAjakfrpgboi/cjtGv4svNu+lQKYouyJOz92X
- 13of29qakl/rpg0/fDJOkmsL45ky9DAktuFfXcgK6J2exoG37NeQTwMnL19L3/vhn/bcN7UxHRc
- RdMxFAvARnl4OqcXMym2gAvfMgBollIDnhY
-X-Received: by 2002:a05:7022:7a0:b0:138:30b1:4bfc with SMTP id
- a92af1059eb24-138421355f7mr2474649c88.9.1781202165866; 
- Thu, 11 Jun 2026 11:22:45 -0700 (PDT)
-Received: from
- runnervm1li68.g3hwm4zdrdxutl2hw05zhfo4lf.dx.internal.cloudapp.net
- ([13.83.162.3]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-13842fa6ebbsm2581866c88.7.2026.06.11.11.22.45
+ d=1e100.net; s=20251104; t=1781229921; x=1781834721;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=qttcJEsQiEfl3lWc0PlXIEYsPQbX9aFASczeCecuVNA=;
+ b=a+iQ514Rjrcjg2YkmVIE4SACRGgiNuMEedPGB8I8EGV/GytbH4vgD+l3fZgEwiaeBw
+ UUzxwOZP8NeoPGuA9veqxM5tov6IxalEtH9ALpVCj9IqIsY7DzbPGSKfcMxL31vXaQuP
+ BQt4g8fRc4CrCmlaTp44rXBHVfpNOxZ+EzXxxICnFn355tFqnE9GX6xqOtGY+Yg82UNo
+ pGi2cU9K9xqLiwhiFeHWRVC0h0GMNd5cd7h5byqOOsd8WY969kgp7zosdL9Ev8AT7FBt
+ QFxKX/RNDDvmhwqsqkI0Ca3cbxMy+LaDCjG28zyqZ2Y22XO9OnflK40GtqQeT14SGyB/
+ JSAg==
+X-Gm-Message-State: AOJu0Yx1QZEA3+gQYDqEBhTSbp0lRAgdw6gP22qrYzkivKsh1GQ1BBJ4
+ a9biz/6lh4qd3Ef/+ssi7j0z6scxEm9aC9X8k852t6nGbfhHvFoNgUCNhLnralY5PA==
+X-Gm-Gg: Acq92OGiRaAjjHrCxF4EevlTNaHqjDcmCKE+fFOCi8hWTnnVzil4eXbUEQloMAj2Jx9
+ ughS5p0ZVAoHzbYJGfKQdf9GZCJuEq5yI55O0IS6FNoaz/8HG76OZXzmosVK2w4F4OWpDYDY5ii
+ ZnCwBl/KgRCic3ecnbtYDHehjuSz0hygvb35RpzhqtwpVzJj9UZ/Qt1Gt30Agatsc3qRtJAiZoE
+ vX86O3328ilZgnHuW32xvo7MWijxJypW2i4zT2USyAWeKEm4aHJll+LKDcnpAEyHrh0MF9VnGdk
+ ezILgSc+bdtBqdp6hGQa1XyoRBVqkN8IE/qq5cfaQ3iUR+7azjwVfelCNtFsop8Ws0GzZ2S8NZQ
+ gZjPreE2yu9Jd83tKVM4zlZLVJ6NjcXC9A0pfvJ5A8FGig+b+R6Qo1DUfk7YO+XmFM711A/rilj
+ PKJQesbiKUK6PxHsqNnts1DYNrrTQCYp97pYkfS5Ty
+X-Received: by 2002:adf:e102:0:b0:45e:e50e:3bc with SMTP id
+ ffacd0b85a97d-4606dba5451mr632941f8f.29.1781229921660; 
+ Thu, 11 Jun 2026 19:05:21 -0700 (PDT)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-4606f2b0d70sm1061999f8f.19.2026.06.11.19.05.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Jun 2026 11:22:45 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Thu, 11 Jun 2026 18:22:43 +0000
-Message-ID: <20260611182244.4738-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260611162932.756328-1-po-hsu.lin@canonical.com>
-References: <20260611162932.756328-1-po-hsu.lin@canonical.com>
+ Thu, 11 Jun 2026 19:05:21 -0700 (PDT)
+Date: Fri, 12 Jun 2026 02:05:19 +0000
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <aitpXwrqwKkk06xF@autotest-wegao.qe.prg2.suse.org>
+References: <20260508100101.7741-1-wegao@suse.com>
+ <20260509073921.8487-1-wegao@suse.com>
+ <0f226bbd-d348-4e73-8818-878b92902810@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <0f226bbd-d348-4e73-8818-878b92902810@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] pipe15: add min kver v4.4.281
+Subject: Re: [LTP] [PATCH v2] pthread_detach_1-2: Fix failure on modern glibc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,52 +99,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: Adhemerval Zanella <adhemerval.zanella@linaro.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Po-Hsu,
+On Thu, Jun 11, 2026 at 05:33:31PM +0200, Martin Doucha wrote:
+> Hi,
+> this looks like trying to hide a glibc bug to me. I've looked at both the
+> POSIX standard and Linux man pages and there is no mention that already
+> exited threads may be left joinable. I think we should report this as a bug
+> and wait for response from glibc maintainers.
 
-On Fri, Jun 12, 2026, Po-Hsu Lin wrote:
-> pipe15: add min kver v4.4.281
+I think is actually not a glibc bug, but correct behavior under POSIX.
 
-> This patch 46c4c9d1beb7 has been backported to stable v4.4 with
-> commit 7392701d8615 on linux-4.4.y starting from tag v4.4.281 [1]
+Link: The Open Group - pthread_detach (https://pubs.opengroup.org/onlinepubs/9699919799/functions/pthread_detach.html)
 
-"This patch 46c4c9d1beb7" is ambiguous. In the context of a patch
-submission, "this patch" reads as if it refers to the current LTP
-patch. Something like "Upstream commit 46c4c9d1beb7 has been
-backported..." would be clearer.
+Wording: 
+1)Under the DESCRIPTION section, it explicitly states:
+    > "The behavior is undefined if the value specified by the thread argument to pthread_detach() does not refer to a joinable thread."
 
-Also, the body describes the fact that a backport happened but does
-not explain *why* adding min_kver to pipe15 is needed. What problem
-does this solve? Does the test TBROK on older 4.4.x kernels because
-/proc/sys/fs/pipe-user-pages-soft is missing? Or does it hang
-because the fix is absent?
+2)Under the CHANGE HISTORY section also mention:
 
-If the sysctl was never present on 4.4.x before 4.4.281, then the
-min_kver is legitimate feature gating and the commit message should
-say so. If the sysctl did exist but the hang fix was missing, then
-skipping the test would mask the bug on those kernels, which
-conflicts with the LTP policy of not working around kernel bugs.
+Issue 6
+The pthread_detach() function is marked as part of the Threads option.
+IEEE Std 1003.1-2001/Cor 2-2004, item XSH/TC2/D6/95 is applied, updating the ERRORS section so that the [EINVAL] and [ESRCH] error cases become optional. <<<<<<
 
-Verdict: Needs revision
+Issue 7
+The pthread_detach() function is moved from the Threads option to the Base.
+Austin Group Interpretation 1003.1-2001 #142 is applied, removing the [ESRCH] error condition. <<<<<<<<
 
-Pre-existing: the tags array at line 95 is missing the required
-{} null terminator (see tst_test.h: "@tags: A {} terminated
-array").
+Also include Adhemerval Zanella who submit the glibc change.
 
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+> 
+> 
+> 
+> -- 
+> Martin Doucha   mdoucha@suse.cz
+> SW Quality Engineer
+> SUSE LINUX, s.r.o.
+> CORSO IIa
+> Krizikova 148/34
+> 186 00 Prague 8
+> Czech Republic
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
