@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F556CD98D2
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 19:13:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29E57CD98D2
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 19:22:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AD2D43E6B31
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 21:13:54 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id BFA3F3E6B37
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 21:22:07 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F2ACC3E5FC9
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 21:13:38 +0200 (CEST)
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com
- [IPv6:2607:f8b0:4864:20::c41])
+ by picard.linux.it (Postfix) with ESMTPS id E117F3E2A97
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 21:21:51 +0200 (CEST)
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
+ [IPv6:2607:f8b0:4864:20::742])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7EDD71000D31
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 21:13:38 +0200 (CEST)
-Received: by mail-oo1-xc41.google.com with SMTP id
- 006d021491bc7-69e4af5a411so943785eaf.1
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 12:13:38 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9DAE56006D4
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 21:21:45 +0200 (CEST)
+Received: by mail-qk1-x742.google.com with SMTP id
+ af79cd13be357-9157b949fc7so136894585a.3
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 12:21:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781291617; x=1781896417; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1781292104; x=1781896904; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=bAG5x564DW+nMFsT7zd6DRGDQwlKi5RXuVEjGvTtLLM=;
- b=UQwhIdo/b0t3vGXL05IAFfB5YvZcOAuPawacujOLOonP6DPwVyKrsnSpZkX+6RWUqU
- +SBaSmtZdv1Oniws6ko45C6ItDSXWSSLGeXURuByZwzU0EX10jOCcj1s6/cjGjkfmdl6
- dMRIvwkMOp9CCjEyagRYCc4+q9mfFbhyAu5NeAJQbTmLmq0ng9LbdjLnsvaevmNcXMm+
- xjz/Zzo8DoKy9OxU1gw+vM3O7RACz+i//yk0VIWSWKNuBwshsC2W5pXm+ZDt+GMiABAY
- XjuH6uJTMaPPAsOME21PH1z51oY06wbfc5nD9EZ/tuk3OK6MTE5G6G5j5H3k+OHCWp+m
- i8SA==
+ bh=8VpHNuS+9sUyuxNVwRfY5YkFJpNpJg5W14zvMFG1ieA=;
+ b=lNZveHrG/bHs99DbZ8b745DesTK65E3r8Og8MGhtoie4X8b+aUt8KTogyvzzY64lH6
+ 8nBHMWIX/ljF/mXGetfJ6ZFjqGvLTJG0qSVHLHDjYUZ5eyC788PT/4w3Aw5bGWQ7rdXz
+ qGWsm1nT/aBq8rlELo3bEDMe6n9yJ/3Abamk18FXA4t8x2Zb7I53e8vAQXCCPCROtLHl
+ R1TWVZNmC0HjQTCPaa7PY0DRCfDL47iUp0Eq3GkApkPerB60UJfi6k46+vrOlbghn3+n
+ AGsBF1xD/ZNtz932pzez1aijx1gJE1qUGGSPnP5fZ8qPBMK3niEvXtE2/kn2vYnD9fAU
+ Jk6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781291617; x=1781896417;
+ d=1e100.net; s=20251104; t=1781292104; x=1781896904;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=bAG5x564DW+nMFsT7zd6DRGDQwlKi5RXuVEjGvTtLLM=;
- b=U6QbZDxvrClGr13nS2eVnRxpPsuknyTcvnXU31PkTey31/rd+ramYhEckxSMw+0Euq
- K8nSoc/A9JI1i7FgHchPbpgXhNtsVXdmbDi0uKwWikr9RyTTEs2FX0J4W26YW/jcFB+v
- yca6Ht3HjBhCvDwF+z1yx2vJC2HOuDjNShX/c2Q/Esjg3s8MumcJ2cj8IMBAaB+jJN/2
- 4Kw4dJQhlrQtvSat9tXfv99gNL+29osG7b3tYMI8j2Z0H2/1RHwNIiWbHzwO3+6L9dU0
- oArboARnrsWzgoe6ohBJ8CJKzyzSnxX3uszFjFKTzU2Tt7yYTQtlvea+xSKTlLUno/B1
- bdLw==
-X-Gm-Message-State: AOJu0Yz8vyvQxi0tL5ihCuuAQdSeNDjCf3mwU0Q4uQsuUK4PMSR5NOUz
- RIjv+cyqiP/TQ4ojmc4IhXCdzmSZt1HcWqPFrcFDIrFkS2FbGaQls+Kj
-X-Gm-Gg: Acq92OHdWyrdYmNQ2uNRoIimjx5+uR1J16TuUp6YcxSVNTvPSdxsaEHMVlJB0NElHDh
- z1Y9jzl0wW7lFATI+KoNnVz70D1WH5i4bfYAFAEID5BPpMSRJjl3anaRSUJf5KLsk7Gn4YTLH9s
- 6bU8r4gWTLOrdsrbYxg63hH07MzXq5EyxRUTZ4HSmEzxQeDigVwK6irx1W0SKZr9zWvGuG9s/zm
- ael9GbEyJPIjWj2gEmRnGPk96RYp0g8YMPwSYK53Y7SXMQMrlqLBDj1+TRhR0OT+2MTLSMcG2du
- daYhzCmsa/Vu7bFWED4dP+u2rQyu4/Lx8BPYUnS/WRHv7y65re9Su+3JIQ+Z1jlONhbHjVUoSF1
- 6g/T/S6qMwrxQiDfmswSkj6u01d6936+GLnF93p0kvKFtpA5JHyfOGbB+SaG6VMR8Lag8z8Os7O
- 8uiaVxBjLApYYiHytlgYuAUMzgp+ANkZJ8dMG2wtQGJyHi6PkQzgIl0LMqSr1fW6PBznfLdoOQY
- IDuT1ShJWboUpuSGUM1q/WWNmq0zjwXGeV+F9I=
-X-Received: by 2002:a05:6820:60c:b0:69e:30ea:133d with SMTP id
- 006d021491bc7-69eec990ddfmr471534eaf.49.1781291617068; 
- Fri, 12 Jun 2026 12:13:37 -0700 (PDT)
+ bh=8VpHNuS+9sUyuxNVwRfY5YkFJpNpJg5W14zvMFG1ieA=;
+ b=gQkEVZKXzaO8JTV6mX00GlbNQnQqzh/9+qL1fzshbQbwDjOjFSAxCuEtocSXbEnmp0
+ j1lZdpw1ofWjTYF4x8WFecjgE9mZk9VjwZsGX12Zc9nmnNVh8HR5SWNKR+HsFK9pRxbI
+ BASrGQiPbgKZVh4w+BuwCgBIrn3qd+eKXRM2rzUEX8Iw2arZPRoF86ApyfGX2g0DVxMt
+ 3rasLFTIFPXaruuPZP9GqvxR0ZnJUQZdaAl9gYLnctC7pgl82ew/78oPxdzEQiUQJr1p
+ e7vt9Nijs71FKLniTGQg4yBSNQbEApuX/Q06p9KdIM4zB9VMaBz6b9c5htbIUM2SzZkt
+ C4Yw==
+X-Gm-Message-State: AOJu0YzLac9GS7vweUOhnBWRuTPfkbqy6n1mwwSsDr1O+XXEkixn56cg
+ IJgyOrhlcPW88BEJ9oJ5I7xeUZSprOUvgsmIWAhoy4UZ3JfPH5FkrqXYFUvDwsye
+X-Gm-Gg: Acq92OFrPEJFqwQl170cJYDAQCKNgHRO1OC/NRLAWdADZeTvyXoqjERb0VnKReIQIJS
+ DbZ/mV6Jb7IKkOKjG96mlyA5Q2m5raxVMSErWLMf9DV3spvDhDbCff/zMlDNSp4IrwGjtl0Chqb
+ 1L2RNw7DTLEZePQPCai/va/0iKdvnJ3agKMgJOQ6MB/oLJ4GN0fl6FSTjYpENbf3HXno0gRxvFI
+ +6WqgwmjdjaJlqnQa+ckI8O2uT0BfXWDD3q1aQ3YtCmQxGYJXOES6hYMIKXlKmY35N3jFtOH1qN
+ PT/E6kOmv5Y6nFrSlvTCWFaIbFVKcuOcssp+nev71HBuqYz5K/PSXzFQ97x7rW5XlgY4v/eFeyO
+ IzIp6IDBcV+b1qR46fwaIldcHMdkPUyOBphCFCHWMgIpTJp8gBiYr8ZOAj9lrBJPkGPzIZR9t2H
+ 0NIfjmyiMVYpPv9qszLIBi41Hmeqzb/cAFor5BAw9QJYJA1XpmOtgapOfruvOdrhvLtSoMM8ter
+ OVbYAAClT1/VP70LJAD8YQ15PCVt32wBHXkTr+k
+X-Received: by 2002:a05:620a:2904:b0:915:9fba:878f with SMTP id
+ af79cd13be357-9161bab4562mr608227985a.5.1781292104349; 
+ Fri, 12 Jun 2026 12:21:44 -0700 (PDT)
 Received: from
- runnervm1li68.vivxwfosngge1kbd0jgxbaewjb.gx.internal.cloudapp.net
- ([135.119.38.50]) by smtp.gmail.com with ESMTPSA id
- 006d021491bc7-69ed83694afsm2099902eaf.2.2026.06.12.12.13.36
+ runnervm1li68.ul30arpzjjae5mt5wo1entlhwg.ex.internal.cloudapp.net
+ ([64.236.153.152]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-9161a006e35sm299784585a.28.2026.06.12.12.21.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 12 Jun 2026 12:13:36 -0700 (PDT)
+ Fri, 12 Jun 2026 12:21:44 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Sachin Sant <sachinp@linux.ibm.com>
-Date: Fri, 12 Jun 2026 19:13:35 +0000
-Message-ID: <20260612191335.4231-1-linuxtestproject.agent@gmail.com>
+To: Jan Polensky <japo@linux.ibm.com>
+Date: Fri, 12 Jun 2026 19:21:42 +0000
+Message-ID: <20260612192142.4221-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260612171930.11964-2-sachinp@linux.ibm.com>
-References: <20260612171930.11964-2-sachinp@linux.ibm.com>
+In-Reply-To: <20260612171712.324175-1-japo@linux.ibm.com>
+References: <20260612171712.324175-1-japo@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] fs/acl: Add ACL_USER_OBJ permission test
+Subject: Re: [LTP] thp04: Fix PTRACE mode for CONFIG_PROC_MEM_FORCE_PTRACE=y
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,74 +97,108 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Sachin,
+Hi Jan,
 
-On Fri, 12 Jun 2026, Sachin Sant wrote:
-> fs/acl: Add ACL_USER_OBJ permission test
+On Fri, 12 Jun 2026 19:17:07 +0200, Jan Polensky wrote:
+> thp04: Fix PTRACE mode for CONFIG_PROC_MEM_FORCE_PTRACE=y
 
---- [PATCH 1/8] ---
+> -	fzsync_pair.exec_loops = 100000;
+> -	tst_fzsync_pair_init(&fzsync_pair);
+> +	child->readfd = SAFE_OPEN("/proc/self/mem", O_RDWR);
+> +	child->fzsync_pair.exec_loops = 1000;
+> +	tst_fzsync_pair_init(&child->fzsync_pair);
 
-> +static inline void reset_test_path_no_chown(void)
-> +{
-> +	SAFE_TRY_UNLINK(TESTSYMLINK);
-> +	SAFE_TRY_UNLINK(TESTFILE);
-> +	SAFE_TRY_RMDIR(TESTDIR);
+> +	/* In PROC_MEM_ALWAYS mode, child does writes itself */
+> +	if (proc_mem_mode == PROC_MEM_ALWAYS) {
 > +
-> +	SAFE_MKDIR(TESTDIR, 0755);
-> +}
+> +		/* Simplified test loop without thread */
+> +		for (i = 0; i < 1000; i++) {
+> +			/* Write via /proc/self/mem */
+> +			SAFE_LSEEK(child->writefd, (off_t)child->write_ptr, SEEK_SET);
+> +			SAFE_WRITE(SAFE_WRITE_ALL, child->writefd, &c, sizeof(int));
 > +
-> +static inline void reset_test_path(void)
-> +{
-> +	reset_test_path_no_chown();
-> +}
+> +			/* Call madvise on write page */
+> +			madvise(child->write_thp, child->thp_size, MADV_DONTNEED);
+> +
+> +			/* Call madvise on read page */
+> +			madvise(child->read_thp, child->thp_size, MADV_DONTNEED);
+> +
+> +			/* Check if read page was polluted */
+> +			if (*child->read_ptr != 0) {
+> +				tst_res(TFAIL, "Huge zero page was polluted");
+> +				return;
+> +			}
+> +
+> +			usleep(100);
+> +		}
 
-reset_test_path() and reset_test_path_no_chown() are identical.
-The "_no_chown" suffix implies that reset_test_path() performs a
-chown, but it does not. Could this cause confusion for future
-maintainers?
+The original test used tst_fzsync to race the /proc/self/mem write
+against madvise(MADV_DONTNEED) in a separate thread. That race is
+the mechanism that triggers CVE-2017-1000405: the kernel must
+handle the COW fault concurrently with page reclaim to corrupt
+the huge zero page.
 
-If both need to exist for readability, the naming should reflect
-the actual difference (which is currently none). Otherwise, one
-of them could be dropped.
+This replacement runs write, madvise, and check sequentially in a
+single thread with no concurrency. The vulnerability cannot be
+triggered without the race, so the test becomes a no-op for
+detecting the bug in PROC_MEM_ALWAYS mode (the default on most
+systems).
 
-> +/*\
-> + * Test ACL_USER_OBJ permissions using direct xattr manipulation.
-> + *
-> + * Verify that owner permissions (ACL_USER_OBJ) correctly control access
-> + * to files and directories. The test validates that:
-> + * - ACL_USER_OBJ permissions are applied directly as the owner bits
-> + * - Setting ACL_USER_OBJ=rwx via setxattr() overrides a previous
-> + *   chmod restriction
+The fzsync_pair is still initialized and cleaned up but never
+actually used for racing (no tst_fzsync_run_a/b calls), and
+readfd is opened but never read from. These are dead remnants of
+the removed race mechanism.
 
-setxattr() should use the RST manpage role for the test catalog,
-e.g. :manpage:`setxattr(2)`.
+Could the fuzzy sync race be preserved for the PROC_MEM_ALWAYS
+path while adding the new write-stop-continue cycle only for the
+PROC_MEM_PTRACE path?
 
---- [PATCH 5/8] ---
+> +	proc_mem_mode = PROC_MEM_ALWAYS;
+> +	child_setup();
+> +
+> +	TEST(lseek(child->writefd, (off_t)child->write_ptr, SEEK_SET));
+> +	if (TST_RET == -1)
+> +		tst_brk(TBROK | TTERRNO, "lseek on /proc/self/mem failed");
+> +
+> +	TEST(write(child->writefd, &test_val, sizeof(test_val)));
+> +
+> +	if (TST_RET == sizeof(test_val)) {
+> +		proc_mem_mode = PROC_MEM_ALWAYS;
+> +		return;
+> +	}
+> +
+> +	if (TST_RET == -1 && TST_ERR != EIO)
+> +		tst_brk(TBROK | TTERRNO, "test write to /proc/self/mem failed");
+> +
+> +	/* /proc/self/mem write failed, cleanup and try ptrace mode */
+> +	child_cleanup();
+> +	SAFE_MUNMAP(child, sizeof(*child));
+> +	child = NULL;
+> +
+> +	if (explicit_mode && proc_mem_mode == PROC_MEM_ALWAYS)
+> +		tst_brk(TCONF,
+> +			"Writes to /proc/self/mem disabled despite always mode");
 
-> +/*\
-> + * Test chmod and chown interaction with ACLs using direct xattr manipulation.
-> + *
-> + * Verify that standard file operations (chmod, chown) interact correctly
-> + * with ACLs:
-> + * - chmod should update ACL_USER_OBJ, ACL_GROUP_OBJ, and ACL_OTHER entries
-> + * - chown should change file owner/group without affecting ACL entries
+The unconditional assignment `proc_mem_mode = PROC_MEM_ALWAYS`
+before the probe destroys the value parsed from the kernel command
+line. When the user explicitly sets proc_mem.force_override=ptrace,
+this sequence occurs:
 
-Since the doc comment block is exported to the test catalog, chmod
-and chown should use the RST manpage role, e.g.
-:manpage:`chmod(2)` and :manpage:`chown(2)`.
+  1. Kernel cmdline parsing sets proc_mem_mode = PROC_MEM_PTRACE
+     and explicit_mode = 1.
+  2. Line 294 overwrites proc_mem_mode = PROC_MEM_ALWAYS.
+  3. The probe write to /proc/self/mem fails (expected in ptrace
+     mode).
+  4. The check `explicit_mode && proc_mem_mode == PROC_MEM_ALWAYS`
+     evaluates to true because the overwrite at step 2 lost the
+     original choice.
+  5. The test exits with TCONF "disabled despite always mode"
+     instead of falling through to the ptrace path.
 
-> +static struct tst_test test = {
-> +	.test = run,
-> +	.tcnt = 2,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +	.mount_device = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.forks_child = 1,
-
-This test never calls SAFE_FORK() or any forking helper. Is
-.forks_child = 1 needed here?
+The user's explicit ptrace choice is silently discarded. One fix
+would be to save the parsed mode in a separate variable (e.g.
+`user_mode`) before the probe and test that at line 316 instead
+of proc_mem_mode.
 
 Verdict - Needs revision
 
