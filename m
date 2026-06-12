@@ -4,105 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02BBBCD98CE
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 09:58:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F31DCD8CA8
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 10:17:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E503D3E5290
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 11:58:54 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id E6FAB3E6A54
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 12:17:26 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A79913C0848
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 11:58:39 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id D58B93E2A9D
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 12:17:09 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5217D60096F
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 11:58:38 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9ABF6200773
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 12:17:08 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 940E075DEF;
- Fri, 12 Jun 2026 09:58:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1781258317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=mF2lLysFNINUwjT6bNmvO6D0Xsw6K6lAvvDmmRF5keI=;
- b=Yh2bbbjh69M5j8CcTCE+QorViXaLdfDDCRFjo7mCbDVYnKcwzwu92zN+GUR/9FzL6ZQVk9
- sYu1CwTFEZPRvuOlLSXV2gSCKYUtrm0hsy+6LLn4eqZY/w/6wBUCI9QP3yCow2WiaVwFeX
- BWOIt2xmgWG2H4tawCnQCQA0YI70Qjo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1781258317;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=mF2lLysFNINUwjT6bNmvO6D0Xsw6K6lAvvDmmRF5keI=;
- b=P9MuWVoExaDcOqircqRuBvr7HBQgO35cPWR6I/qoaGOdEpUVaDElbdkqa6Cvv1CYujPymA
- viS0E+5K73H/8JBw==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0DF2775F8D;
+ Fri, 12 Jun 2026 10:17:07 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1781258317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=mF2lLysFNINUwjT6bNmvO6D0Xsw6K6lAvvDmmRF5keI=;
- b=Yh2bbbjh69M5j8CcTCE+QorViXaLdfDDCRFjo7mCbDVYnKcwzwu92zN+GUR/9FzL6ZQVk9
- sYu1CwTFEZPRvuOlLSXV2gSCKYUtrm0hsy+6LLn4eqZY/w/6wBUCI9QP3yCow2WiaVwFeX
- BWOIt2xmgWG2H4tawCnQCQA0YI70Qjo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1781258317;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=mF2lLysFNINUwjT6bNmvO6D0Xsw6K6lAvvDmmRF5keI=;
- b=P9MuWVoExaDcOqircqRuBvr7HBQgO35cPWR6I/qoaGOdEpUVaDElbdkqa6Cvv1CYujPymA
- viS0E+5K73H/8JBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A221779A7;
- Fri, 12 Jun 2026 09:58:37 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E7CAC779A7;
+ Fri, 12 Jun 2026 10:17:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id asNdGE3YK2qRHQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 12 Jun 2026 09:58:37 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 12 Jun 2026 11:58:26 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id tyGxNqLcK2rwLwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 12 Jun 2026 10:17:06 +0000
+Date: Fri, 12 Jun 2026 12:17:02 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <aivcnnkJVwLQIP22@yuki.lan>
+References: <20260612-doc_add_missing_headers-v8-0-a4639c49cad8@suse.com>
+ <20260612-doc_add_missing_headers-v8-1-a4639c49cad8@suse.com>
 MIME-Version: 1.0
-Message-Id: <20260612-fix_clone11_min_kver-v2-1-90cfb4b687fb@suse.com>
-X-B4-Tracking: v=1; b=H4sIAEHYK2oC/4WNUQrCMBBEr1L220g3hkr98h5SShO3dtEmJatBK
- bm7sRfw8w0zb1YQikwCp2qFSImFgy+gdxW4afA3UnwtDLrWTd0gqpHfvXsET4j9zL6/J4rq0Bo
- 3mrZ12h2hTJdIpbdpL13hieUZ4md7SfhL/wgTKlS6MaMdtK3RmrO8hPYuzNDlnL8km5nVtwAAA
- A==
-X-Change-ID: 20260611-fix_clone11_min_kver-394cf499c2c7
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1781258317; l=2342;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=nwXOKaz/rmZvZtMOpF1k+C/DPqBhLIiZINyZiH0zOUo=;
- b=Dx3cFWtYSa1240VeujTb29jIiOPPpS9OokJimgjv7LAJVp8ITKAQggqcdwozm2KWLuYm2ShS6
- vhzkMZJ4u9RCJvsOKRPLsVtsNih/edNUUIZMlUTJ/Kvl8Y65tLhoCYx
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.com:mid]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260612-doc_add_missing_headers-v8-1-a4639c49cad8@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 0DF2775F8D
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] clone11: skip CLONE_NEWCGROUP on kernels < 4.6
+Subject: Re: [LTP] [PATCH v8 1/2] doc: Add missing API references to
+ api_c_tests.rst
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,95 +73,73 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-CLONE_NEWCGROUP was added in kernel v4.6. On older kernels such as
-v4.4, the flag is unknown and clone() returns EINVAL instead of the
-expected EPERM, causing a spurious test failure.
+Hi!
+Some of the fuzzy sync struct member descriptions were simplified too
+much. Suggestions below.
 
-Add a per-test-case minimum kernel version check so that the
-CLONE_NEWCGROUP case reports TCONF on kernels older than 4.6.
+>  /**
+> - * The state of a two way synchronisation or race.
+> + * struct tst_fzsync_pair - The state of a two way synchronisation or race.
+> + * @avg_alpha: Rate at which old diff samples are forgotten (default 0.25).
+> + * @a_start: Internal; Thread A start time.
+> + * @b_start: Internal; Thread B start time.
+> + * @a_end: Internal; Thread A end time.
+> + * @b_end: Internal; Thread B end time.
+> + * @diff_ss: Internal; Avg. difference between a_start and b_start.
+> + * @diff_sa: Internal; Avg. difference between a_start and a_end.
+> + * @diff_sb: Internal; Avg. difference between b_start and b_end.
+> + * @diff_ab: Internal; Avg. difference between a_end and b_end.
+> + * @spins: Internal; Number of spins while waiting for the slower thread.
+> + * @spins_avg: Internal; Average spins stat.
+> + * @delay: Internal; Number of spins to use in the delay.
 
-Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
-Reviewed-by: Wei Gao <wegao@suse.com>
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-Changes in v2:
-- follow madvise02 pattern to recognize if test needs to be skipped
-- Link to v1: https://lore.kernel.org/r/20260611-fix_clone11_min_kver-v1-1-264fba2b01b4@suse.com
----
- testcases/kernel/syscalls/clone/clone11.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+We need to add this here (otherwise the information is lost):
 
-diff --git a/testcases/kernel/syscalls/clone/clone11.c b/testcases/kernel/syscalls/clone/clone11.c
-index 028da778158de6867a71ac3974f9c2263481d3a3..98b36c8ec2ea51d9333fcd899cb1908e2839d851 100644
---- a/testcases/kernel/syscalls/clone/clone11.c
-+++ b/testcases/kernel/syscalls/clone/clone11.c
-@@ -21,6 +21,7 @@ static int *child_pid;
- static struct tcase {
- 	uint64_t flags;
- 	const char *sflags;
-+	int skip;
- } tcases[] = {
- 	{ DESC(CLONE_NEWPID) },
- 	{ DESC(CLONE_NEWCGROUP) },
-@@ -36,10 +37,33 @@ static int child_fn(void *arg LTP_ATTRIBUTE_UNUSED)
- 	_exit(0);
- }
- 
-+static void tcases_filter(void)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
-+		struct tcase *tc = &tcases[i];
-+
-+		switch (tc->flags) {
-+		case CLONE_NEWCGROUP:
-+			if (tst_kvercmp(4, 6, 0) < 0)
-+				tc->skip = 1;
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+}
-+
- static void run(unsigned int n)
- {
- 	struct tcase *tc = &tcases[n];
- 
-+	if (tc->skip) {
-+		tst_res(TCONF, "%s is not supported", tc->sflags);
-+		return;
-+	}
-+
- 	TST_EXP_FAIL(ltp_clone(tc->flags, child_fn, NULL, CHILD_STACK_SIZE, child_stack),
- 		EPERM, "clone(%s) should fail with EPERM",
- 		tc->sflags);
-@@ -51,6 +75,8 @@ static void setup(void)
- 			PROT_READ | PROT_WRITE,
- 			MAP_SHARED | MAP_ANONYMOUS,
- 			-1, 0);
-+
-+	tcases_filter();
- }
- 
- static void cleanup(void)
+A negative value delays thread A and a positive delays thread B.
 
----
-base-commit: a3fda1dc1ce7da882a592a4877da7f214e468650
-change-id: 20260611-fix_clone11_min_kver-394cf499c2c7
+> + * @delay_bias: Internal; Bias added to delay.  + * @sampling:
+> Internal; Sampling state or remaining count.
 
-Best regards,
+			     ^ If possitive stores the number of samples
+			     left. If zero or negative stores sampling
+			     state.
+
+> + * @min_samples: Minimum samples before random delays are calculated (default 1024).
+> + * @max_dev_ratio: Maximum allowed proportional average deviation (default 0.1).
+                          ^
+
+Maximum allowed proportional average deviation, in range (0.0, 1.0),
+before random delays are applied. It's ratio of average_deviation /
+total_time (default 0.1 i.e. avg deviation at most 10%).
+
+
+> + * @a_cntr: Internal; Atomic counter used by fzsync_pair_wait().
+> + * @b_cntr: Internal; Atomic counter used by fzsync_pair_wait().
+> + * @exit: Internal; Used by tst_fzsync_pair_exit() and fzsync_pair_wait().
+> + * @exec_time_start: Internal; Test time remaining on tst_fzsync_pair_reset().
+> + * @exec_loops: Maximum number of iterations to execute.
+> + * @exec_loop: Internal; Current loop index.
+> + * @thread_b: Internal; The second thread or 0.
+> + * @yield_in_wait: Yield CPU while waiting on single-core machines.
+                         ^
+	              Yield CPU while waiting, set automatically on single-core
+		      machines.
+
+
+With these adjusted:
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
