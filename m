@@ -4,90 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2643DCD98CC
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 02:05:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A6A9CD98CC
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 02:07:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781229944; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781230072; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=tHdGl8pwfMKqnffjELJaPEw//T+zKakh5tL/grama8A=;
- b=afPbNMACCK6FU+y4ynvUvyEpLkcWXahMwvLlJrhrkLzJxtOPNLsD9LGqPD/biqMkpEZ3l
- jG3uMRed8BKWRU1Z9y/7Iigo/0MNP5klLS4Qd+2/iT4mvRJ1SDzN2JA6zpjmC8uWul4orV5
- 39ouaFUn4ZAzZAkFZDy6GGq0pbphycI=
+ bh=ue9QkHBp8BMUhYsFA4qs7Jr4VxbB5aQCNeHi2ZS3il0=;
+ b=WJOxEsjnjZPbj6dBUEEqNw4u9iU8U2EYR2jY4YRFxcPsrgSko2N7uNq6WZBSHUTWRhg9u
+ EmrMfOZ7OfemTLt8voj70nzvfpZDwjeOOU2ksM4td2xGOVesOUmsMZ5VbTCJO19lKFoLgiQ
+ id7tFDe7j3jnA3HSC8W8dEzw2zZA5oE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3E9423E1EA0
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 04:05:44 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id B60943D0613
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 04:07:52 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0176C3C5593
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 04:05:23 +0200 (CEST)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
- [IPv6:2a00:1450:4864:20::42e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3BC9C3C5593
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 04:07:31 +0200 (CEST)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 41610140033A
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 04:05:22 +0200 (CEST)
-Received: by mail-wr1-x42e.google.com with SMTP id
- ffacd0b85a97d-45eee266c6cso355063f8f.1
- for <ltp@lists.linux.it>; Thu, 11 Jun 2026 19:05:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1781229921; x=1781834721; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=qttcJEsQiEfl3lWc0PlXIEYsPQbX9aFASczeCecuVNA=;
- b=dw02NQ9ztHxpiynohAISZSvPhTa4T9Qm3uLTvpMTuGG69A1QNzs/9ijLYCykoIFxtV
- wNtIWz4pJ3W1+5jHPA2l3FU6vckCkKSG0lW51ktodif2hASsTlSMzRUITm+9LM7fNDWa
- bVPIMBgKBAiTtKMPgX7ZtTqEDD8tXHwaLZXH33yjoUd1rjIMUAb8sK6xpZ7/tJExohtT
- icm+5NpVKLL6xtH+lKaQcO1jVSvN5YEI1LdKZS22anwdTO2XqsjG8n2GfENmQ+4Y1QXh
- eKMWY4yY0q9aH5QMJ6I38BPmHogXfc035hX+VUzHaZsUdYwZVJeGoCwb+BqjtUqvaBiA
- LuRQ==
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CDE131000443
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 04:07:30 +0200 (CEST)
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E0ECD3F7BD
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 02:07:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20251003; t=1781230049;
+ bh=rvdtf3Q6Jloo9Y/Yy6oX842SuxQUlAZqocjOHaINGIA=;
+ h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+ To:Cc:Content-Type;
+ b=nsYmKZ+Sn1HxBH9yn9tM5hee/77USqR7WabOLUoIJonefE2jHF7OVAGoYZrCEqDgY
+ gGzmnlMqt1driLIYEgIRg6E30rDESUBod8+8PZmLMAh14TnKKc8XF++xjM2uYg+1zp
+ YYm75Opaq8Wmt4j+qFzozM1t8BY15oCBpRrEb2CWlBBHzY2vmSnPdcu7nwbZJbZhfl
+ 4cCoPCPCeXnREvx2WSoai/bHpwG6mt9AxQkXNASH8oOkil/S462qFCUVUvp6DVQYkl
+ amK9IrJtHqXiHSLaZV3ny8lPs6FGYaac0ynRqyrl/tmdC+rzwQTFLkcykFyH+R3JPK
+ 8WV4N6PSowPRKi99RWHwAQeoKgPFnQBGWRsIX3tCmEU+b1tZ2vSByzbPYF7w/L8llQ
+ 3cjw5ej0+93Ywf9SMEdmCWqspWC4ehUIhjrRq/sk03xiEvCoPT2htXLuWKC3fJLihf
+ dxL6Qj7PU1EaERXz+Gx19bR39i38Cgj8EG/v5orMpwJlMl1GDh+CqBiX5IRNKuYEay
+ 8l17SaabHANsf+TYl1+sVqj2SaSfus9olLjrFbMrFc8RUqbDQPFyzRBi+lmAryhLJ+
+ Y1F6DVotxtr/Fwh7E9hiIaeIg0qBSCmo8aOuYRr/EMRXO9SHQAUP7QKWiYZDX89P7b
+ YGIngp/QlDiX/RqYJZCSNo20=
+Received: by mail-ej1-f72.google.com with SMTP id
+ a640c23a62f3a-bf523a51c24so30490366b.2
+ for <ltp@lists.linux.it>; Thu, 11 Jun 2026 19:07:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781230049; cv=none;
+ d=google.com; s=arc-20240605;
+ b=QpOrpaBkUOY8BBgf0XUu3oiDH+AtJfxN1CMqfaY1BvPWbeoTte7XFS7UXfg1b65F/l
+ L4y0GFCKbqelrC8pvHyvu2F30aiRFvIyONpZaDinMh8S3+iHmzsW6gwUP280RfLZRyJf
+ Kn7EjJGlyJg5TbI9jM2wir6CQIyxHzLEjySOK0ny7sRGNV2EyeYfumXNXdwKLmhSsXjz
+ wYjhx9eEXfkqi4c+QJN1OUpl46w775pSrB75RLQMzApRQQ2k5Culn5CIIsq2As3P5KGv
+ CtaDwHB+R9h55EoXzQR2ze8Q/4K8kGjLcLG1Tc2NReIgOeKp2RlTn4Xw13rqsuVHJcds
+ YW5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version;
+ bh=rvdtf3Q6Jloo9Y/Yy6oX842SuxQUlAZqocjOHaINGIA=;
+ fh=m40UBVrR3nZgKdVqXyBfj/+kwMsS69fSxi2566YNWCw=;
+ b=EQxjn3YwcmNeSXL9RihHwe9VR3uEBtJMhVh5ZXiYMNiLxMuiyVlbk8rsPq2xnY9/yR
+ 0xzJUOVM6bZ4Lkw563sXr7Oic33ToW+4NuNCwVcEz3hmlz9FnBoNJH5l1pZ5DQGfhFmY
+ A77dRtDDcA+E/AxMg398mMH8LGhi9mDvMq4/7Qy1iBTDiu3FwzuePuB/cYQsoAEnAbr4
+ JTpVd6qQBHexeItR+jpO5FCH0mEXi3SaJh0VgM8Q/2vyozdXtxv0QmlIhd03Os6hFxpG
+ GdnXy7P28VmGNJ3wGAWyPyOaGh2RQ948w/Z2kKX8zPIRKBiVk9vQI/jaTjj8yvMZR17g
+ Q7BQ==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781229921; x=1781834721;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=qttcJEsQiEfl3lWc0PlXIEYsPQbX9aFASczeCecuVNA=;
- b=a+iQ514Rjrcjg2YkmVIE4SACRGgiNuMEedPGB8I8EGV/GytbH4vgD+l3fZgEwiaeBw
- UUzxwOZP8NeoPGuA9veqxM5tov6IxalEtH9ALpVCj9IqIsY7DzbPGSKfcMxL31vXaQuP
- BQt4g8fRc4CrCmlaTp44rXBHVfpNOxZ+EzXxxICnFn355tFqnE9GX6xqOtGY+Yg82UNo
- pGi2cU9K9xqLiwhiFeHWRVC0h0GMNd5cd7h5byqOOsd8WY969kgp7zosdL9Ev8AT7FBt
- QFxKX/RNDDvmhwqsqkI0Ca3cbxMy+LaDCjG28zyqZ2Y22XO9OnflK40GtqQeT14SGyB/
- JSAg==
-X-Gm-Message-State: AOJu0Yx1QZEA3+gQYDqEBhTSbp0lRAgdw6gP22qrYzkivKsh1GQ1BBJ4
- a9biz/6lh4qd3Ef/+ssi7j0z6scxEm9aC9X8k852t6nGbfhHvFoNgUCNhLnralY5PA==
-X-Gm-Gg: Acq92OGiRaAjjHrCxF4EevlTNaHqjDcmCKE+fFOCi8hWTnnVzil4eXbUEQloMAj2Jx9
- ughS5p0ZVAoHzbYJGfKQdf9GZCJuEq5yI55O0IS6FNoaz/8HG76OZXzmosVK2w4F4OWpDYDY5ii
- ZnCwBl/KgRCic3ecnbtYDHehjuSz0hygvb35RpzhqtwpVzJj9UZ/Qt1Gt30Agatsc3qRtJAiZoE
- vX86O3328ilZgnHuW32xvo7MWijxJypW2i4zT2USyAWeKEm4aHJll+LKDcnpAEyHrh0MF9VnGdk
- ezILgSc+bdtBqdp6hGQa1XyoRBVqkN8IE/qq5cfaQ3iUR+7azjwVfelCNtFsop8Ws0GzZ2S8NZQ
- gZjPreE2yu9Jd83tKVM4zlZLVJ6NjcXC9A0pfvJ5A8FGig+b+R6Qo1DUfk7YO+XmFM711A/rilj
- PKJQesbiKUK6PxHsqNnts1DYNrrTQCYp97pYkfS5Ty
-X-Received: by 2002:adf:e102:0:b0:45e:e50e:3bc with SMTP id
- ffacd0b85a97d-4606dba5451mr632941f8f.29.1781229921660; 
- Thu, 11 Jun 2026 19:05:21 -0700 (PDT)
-Received: from autotest-wegao.qe.prg2.suse.org
- ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4606f2b0d70sm1061999f8f.19.2026.06.11.19.05.20
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Jun 2026 19:05:21 -0700 (PDT)
-Date: Fri, 12 Jun 2026 02:05:19 +0000
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <aitpXwrqwKkk06xF@autotest-wegao.qe.prg2.suse.org>
-References: <20260508100101.7741-1-wegao@suse.com>
- <20260509073921.8487-1-wegao@suse.com>
- <0f226bbd-d348-4e73-8818-878b92902810@suse.cz>
+ d=1e100.net; s=20251104; t=1781230049; x=1781834849;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=rvdtf3Q6Jloo9Y/Yy6oX842SuxQUlAZqocjOHaINGIA=;
+ b=myQPD/P6RpO+ZrFg7oyMyDDFffz+LwlQ3GYPDYvpCYxPfo3RYPl67i4/5WQ701lnly
+ oENQhiDDF415PjvDa01q8asIZt+c09FfjF7U21gVDbq83fNKpm+otfJmZxv7f7bzRYIu
+ TqrfZNuhwz7eR+MgYwm2ZndWRRHLxb9wNeWhf8wAsCtp3Jz3AHooEIQ3icWuFz3QGbK2
+ ZNnCrK3AQD0tMHxE21J/dlQU/OyOg9hmwMpePa1CidAtHhIzFzyT3DEmNFvQ38g0/aWa
+ HiOebLCLkuSGXhn9ZBOhO1U9Kkvk8STft6qBLTAXQcluB5aPcnjg3Pge2R9nMhZLZXck
+ 1a2g==
+X-Gm-Message-State: AOJu0Yy4vsLkFKcjn3BTdJ2jhv5zDjdCdGL/Up/10xEvVwcOeRTrMkON
+ 7W3+fqbHIxXmwjDEavL1oHej4GCEBwbjVzc7HYop1quKcJqWqFeMlCDyl90DQtBs6bBmdLa2Kk8
+ wiH27JOdKVqDUxo2aEeAHjEkLmlNYt4mWIprvpGq8YwWwB4HqP8FiQaOeeRL0i4/qtYc1Q3gNd0
+ skUpyxM3D1vE3fqUntJMX7yEEK1SsZ+QfmiJ9yrwNGdQ==
+X-Gm-Gg: Acq92OHVTWWjDdm+sGI1W54wAfXDeaIMkNH5/pzLBcBegQsI13qkKKopksU20fQgDax
+ uIhO8NNQxStK2k6EeLFwEY3ShcrQI8P3dkRau4MyzS6zlW+vlfHq487STRgCzNG5urWs87QrB2k
+ LLcY0SJCxyBpvyqR6+pY1FMK1lPrdtzhuXVOjtrO7fTVpgrbqAojbH8aUanvNvcuUXFycksxLl+
+ PrfWqRGlGmuORv6anSHxgJJwcfeYhMOolkKBmEjT5sTsC/WezEcY26EgIgJ/DVr
+X-Received: by 2002:a17:907:2d21:b0:bed:5774:7c17 with SMTP id
+ a640c23a62f3a-bfe2793154emr25482966b.5.1781230049516; 
+ Thu, 11 Jun 2026 19:07:29 -0700 (PDT)
+X-Received: by 2002:a17:907:2d21:b0:bed:5774:7c17 with SMTP id
+ a640c23a62f3a-bfe2793154emr25482066b.5.1781230049135; Thu, 11 Jun 2026
+ 19:07:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <0f226bbd-d348-4e73-8818-878b92902810@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+References: <20260611162932.756328-1-po-hsu.lin@canonical.com>
+ <20260611182244.4738-1-linuxtestproject.agent@gmail.com>
+In-Reply-To: <20260611182244.4738-1-linuxtestproject.agent@gmail.com>
+Date: Fri, 12 Jun 2026 10:07:17 +0800
+X-Gm-Features: AVVi8CfDeBaUJkWRDUpBLnEs5Q1zouZhldoOAff75EXfrY_3jAF6d2NoH3xI3K0
+Message-ID: <CAMy_GT_bGKx0Kc1RLnnf5HteowzONPz0S_ssBEoD3N4D6AotpA@mail.gmail.com>
+To: linuxtestproject.agent@gmail.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] pthread_detach_1-2: Fix failure on modern glibc
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] pipe15: add min kver v4.4.281
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,52 +128,65 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: Adhemerval Zanella <adhemerval.zanella@linaro.org>, ltp@lists.linux.it
+From: Po-Hsu Lin via ltp <ltp@lists.linux.it>
+Reply-To: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Jun 11, 2026 at 05:33:31PM +0200, Martin Doucha wrote:
-> Hi,
-> this looks like trying to hide a glibc bug to me. I've looked at both the
-> POSIX standard and Linux man pages and there is no mention that already
-> exited threads may be left joinable. I think we should report this as a bug
-> and wait for response from glibc maintainers.
+On Fri, 12 Jun 2026 at 02:22, <linuxtestproject.agent@gmail.com> wrote:
 
-I think is actually not a glibc bug, but correct behavior under POSIX.
+> Hi Po-Hsu,
+>
+> On Fri, Jun 12, 2026, Po-Hsu Lin wrote:
+> > pipe15: add min kver v4.4.281
+>
+> > This patch 46c4c9d1beb7 has been backported to stable v4.4 with
+> > commit 7392701d8615 on linux-4.4.y starting from tag v4.4.281 [1]
+>
+> "This patch 46c4c9d1beb7" is ambiguous. In the context of a patch
+> submission, "this patch" reads as if it refers to the current LTP
+> patch. Something like "Upstream commit 46c4c9d1beb7 has been
+> backported..." would be clearer.
+>
+> Also, the body describes the fact that a backport happened but does
+> not explain *why* adding min_kver to pipe15 is needed. What problem
+> does this solve? Does the test TBROK on older 4.4.x kernels because
+> /proc/sys/fs/pipe-user-pages-soft is missing? Or does it hang
+> because the fix is absent?
+>
+> If the sysctl was never present on 4.4.x before 4.4.281, then the
+> min_kver is legitimate feature gating and the commit message should
+> say so. If the sysctl did exist but the hang fix was missing, then
+> skipping the test would mask the bug on those kernels, which
+> conflicts with the LTP policy of not working around kernel bugs.
+>
+> I can confirm that this sysctl, /proc/sys/fs/pipe-user-pages-soft, that
+the test is trying to access exists on 4.4.x before 4.4.281.
 
-Link: The Open Group - pthread_detach (https://pubs.opengroup.org/onlinepubs/9699919799/functions/pthread_detach.html)
+Please ignore this patch.
+Thanks.
 
-Wording: 
-1)Under the DESCRIPTION section, it explicitly states:
-    > "The behavior is undefined if the value specified by the thread argument to pthread_detach() does not refer to a joinable thread."
 
-2)Under the CHANGE HISTORY section also mention:
 
-Issue 6
-The pthread_detach() function is marked as part of the Threads option.
-IEEE Std 1003.1-2001/Cor 2-2004, item XSH/TC2/D6/95 is applied, updating the ERRORS section so that the [EINVAL] and [ESRCH] error cases become optional. <<<<<<
-
-Issue 7
-The pthread_detach() function is moved from the Threads option to the Base.
-Austin Group Interpretation 1003.1-2001 #142 is applied, removing the [ESRCH] error condition. <<<<<<<<
-
-Also include Adhemerval Zanella who submit the glibc change.
-
-> 
-> 
-> 
-> -- 
-> Martin Doucha   mdoucha@suse.cz
-> SW Quality Engineer
-> SUSE LINUX, s.r.o.
-> CORSO IIa
-> Krizikova 148/34
-> 186 00 Prague 8
-> Czech Republic
+> Verdict: Needs revision
+>
+> Pre-existing: the tags array at line 95 is missing the required
+> {} null terminator (see tst_test.h: "@tags: A {} terminated
+> array").
+>
+> ---
+> Note:
+>
+> The agent can sometimes produce false positives although often its
+> findings are genuine. If you find issues with the review, please
+> comment this email or ignore the suggestions.
+>
+> Regards,
+> LTP AI Reviewer
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
