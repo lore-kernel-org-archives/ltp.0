@@ -4,88 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6E5BCD8CA8
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 08:31:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D994CCD4F2C
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 08:32:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781253083; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781253167; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=tTVyttE0Bww9aXH4R+RWLF1JHeJIFFMC7GHA/8jF1Y8=;
- b=k1d+C337QbdiLM8ICX3XVjw3xPo5V7n16qRqXy6wcSeGUYDP8fm1YQgTnW6c8ff7ULZFn
- 9PYQCKhoeRyZe/xiX62xYimgBSm7EUEIbt5ZceF/po9k8le3FM8qvfuAb/LURShzmcAi8vM
- o9zSANtNdlVPm6Laz7XHbnlpUZug1uM=
+ bh=lVw8dt/em1Qe52yHFr3Yn+YzCSh2D+GeqPI6ExJgFSA=;
+ b=M8HGyMD9bTOPtx9jwUCNlOjI/UXD1gME2x2bn8q1QGa+2nSznU9NFP4ZE5KxTlKlFyI6J
+ +aWuT9oJpEf72EoR7fgwDCFL7ypr9mqqVqnXKNyjU4ZhM0xysEPNzQ67dKNg4qe91JdveRD
+ LidiD32zNsTwD31mE7zTgBt7QVk3w6w=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 614803E526D
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 10:31:23 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 443DE3E5E53
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 10:32:47 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6E6C63C22A5
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 10:31:03 +0200 (CEST)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
+ by picard.linux.it (Postfix) with ESMTPS id 21E303C22A5
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 10:32:28 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B24BB1400967
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 10:31:02 +0200 (CEST)
-Received: by mail-wm1-x333.google.com with SMTP id
- 5b1f17b1804b1-490b613a17bso5396055e9.3
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 01:31:02 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7DF6410009B0
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 10:32:27 +0200 (CEST)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-490ae94a89eso5530255e9.1
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 01:32:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1781253062; x=1781857862; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=SPBph18nmyfDz43tK4J8UGQ+Kg76hBnzf52Mk08ckms=;
- b=TunqH8eDZAZevRIV7xUvH0Bw2S3FyZUBSD4mNGH4j4ZL1oyvnEOmB1GdCw0LzI72h8
- jaIis1Aki4RV1N+Ege8VwvndtdR7s/qEs373rrPjixcm/H7x9Hy/KqAVbBAq2E2k6bMp
- SJXMNWQu83VdpV8WhuK4dj1tzpocxVTgMItVrv2QsflCftzFz670zYU4bP4kYu3D8sJm
- lFIfMxTQx3ZQmWXEgnB2C27uZq9CQWgkVwoa03kNagcORud4lD+G3nDdkWeO1HDZUQ96
- /B0v1xiYD+s5hLSIH05MtSsKsbN6+6v2zvv/g5608oJAOMqefwXdwyaW/YEB+8HgV21E
- ISEQ==
+ d=suse.com; s=google; t=1781253147; x=1781857947; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=qkLfSG4SjU53L4Ew7hvBqu5K1BUj1yYc8oYQbe4f9dI=;
+ b=Q0OMLMXpCdONi8lfUdB03N5/Q2k4T77oc27b85pjAULSFmy3kLNhKTxFqoHbH1Cab4
+ qgoafWqsKcZIoiQN9ddoG4s3X3RLi0Ge5OuwV+aDJHJf901voTQ4uc4jlgpBEzm9ZI9O
+ thpYSvuPzygg0F5AtccnSdYCkzbX7bN1sCaQ2qAxlAVxkYTsnRId9PehAr6Bk6k0OKqa
+ R44asiA9RqJM5fdb+HdI8szouYmzZRh2MM5UxiH16zZADsaezwpyfw1Zwo4nZuPH+oBa
+ yczQkL9TIuOPb/VNLvT6LMRXgS+ejvDgnOPt4ZP/LZ4JJtSbBtZNBZIALLYCcjo1/xWR
+ a6hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781253062; x=1781857862;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=SPBph18nmyfDz43tK4J8UGQ+Kg76hBnzf52Mk08ckms=;
- b=NTQURwAaZZf6UbWkpziAmoUupxrA+Gr/FOkmvDKKETQvEYEK0ifjUbMm72dDK8wfyE
- R5b9JMiQ74iDf0EFyBcdM0FFBih0J8Csu+n9yLnObyA3egfVwTXP5imDPHwcU1BRykln
- c/3TeN7OBpHt7Ke1X9WW+6eeWvYk8Hq03tYdiTW1VWZJVBERQrGlPLGmyA4pLQorgr97
- IP+7+M2LQhSyxoHLwxPg5MH+sn4yHLcVScWlE3hpyWi7C/8xjWeclVAOjdWa33gGi6c6
- RRmXUwiJxU48U+SjgYWH/s5xjYSCNuoE0rs2E/4jO/eyw6wuDvZey82qWMJKgLkVMMFK
- 1xsg==
-X-Gm-Message-State: AOJu0Yw+SMbrK1T0aXEPXb8/LyDrIV4CbeNPOXDGGt5Wr4eOVfNNOiI7
- QlYUupWamXppXBlT8CLqVYUl//6mNqYDTHhhSqhemdGcyvV7UkBsOCx6zbyHEbz96g==
-X-Gm-Gg: Acq92OHhlzBjBByakDoq6G7br9S2RF+C/NRpISYgNzZuUkHsd6eKdlr3oZbd2VrSS4r
- 49D0k32CNUxPAS1I3+OO0/cMExKzAOZoyn4C6YPqMRIzbxkiRqn36oYy83h0IwtCRhfHL+OX79C
- hv1WpJ5UowV1887UdQAag6OHU476O73Gp/dJ2VZ/jQG0aIyCXLK87IiZLR7Xlyoo0YRPMzkVcPE
- kIoGKDYTtfk7RmhzY91L4ezCSd08qdbVcnhVAlwyei/7mwB0FMQgQIRygVEi8qyCFxv8Qkery7l
- xPB+WFwNyESCTHY+T3F427LHSFT2XMH/26XuK81jIG9PVlkaieWiracR2lO4IUEY9LDGgtgBf9Y
- fnLrUC2QaQl1nyl1C9wQDTyaP4B2VsFGwb7iXOSQjftzkzYWeme2M1vdRGLzbdKmei5Cv30t4cI
- 2jFX1ZU1WwxCyXcGwwGfaJNa99RFuFVk5qVKKyLRvR
-X-Received: by 2002:a05:600d:6444:20b0:490:48b7:c1ff with SMTP id
- 5b1f17b1804b1-490ec501c82mr14891735e9.17.1781253061731; 
- Fri, 12 Jun 2026 01:31:01 -0700 (PDT)
-Received: from autotest-wegao.qe.prg2.suse.org
- ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ d=1e100.net; s=20251104; t=1781253147; x=1781857947;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=qkLfSG4SjU53L4Ew7hvBqu5K1BUj1yYc8oYQbe4f9dI=;
+ b=GAzkVtb3+mJ/iD+FGXVNAozN0OjQOu+553oNM+EjCI2akwDqvkaKoEsfnstzbzM2hI
+ oAc7AhpbC+dlxPFnnDWTdzie/Zbdh5OZZrOI7dC5aVQfqwxYH8NGLx8NmZvKcpQVWNbp
+ JZTNJjNZe4BBIE8Gy1R5Mt8PH++kszFRsym5subGcpiQzYTv6Y6xMC6ZZnmY/6fCFkpU
+ t8tXz9mC13Q4i7TCy9Sz00EPGxi0xayUHXVkzXETX8TttYrk9gGC6XdTh/xaJYNA/erZ
+ T1HVHS5i9PvCJXCLfut13G9D8JB52t5RRCNeQnXVHQrVCB8LmJL+sXivNwoPL2MQHqcV
+ ynlg==
+X-Gm-Message-State: AOJu0YzwHvA+ALqbEelTur64AwUzBEn3T9ia3r/rlET8vddcmnmrPFnC
+ ELkawr4tydon+ShwgRQrUMuN2uyMbWn7iviasCCqbQBYS5Xeq/iighJfQFrlhwpSRbC6Q4xgQ4j
+ S0vs86Nn4xQ==
+X-Gm-Gg: Acq92OHfxLu/6fkK/C8pfD1/62LQqA+iU+/qZUUDicKF6ZvMYrSR41ic0HCLj1+0Pnk
+ Bs3Ky429kmr8OvlwFS+chv80SHUY2uqmFVJoSI0HjmpYJZAgSMmwu8SJlPkBE78KN8QSHOGGlWw
+ BUS+5cEk5Tv+dJeA0r8a7lsGmNDuCs7TsqSYi/s8ogucPboe8EBMARXwh3ZXttxzuCIt1nd7jvJ
+ bnZiDsDVLZ+jDbLPBAWTivsmOCKvCMP0e7dTZOP4u4eqIOtOLO2DER/vCSMqf/9MXA8PyXykm4u
+ zOWi+Erag10VDbPvqFNyMQABxFEq8ATIkZRLUXxnTgn+C56ZLoZ7Gz8BqB3tAmagpsNnNip9397
+ ObrZynOpzDg6GgyHtlNBW5kVGaIWz/d+Uc+mfG2w9s02CswcbTCFIZX8daqCVGifdB0rqltQAtl
+ K1Ow9XlYf+HHVa+cOqD+1vRUuQNQzv0YQphThJtGssELd6tNrO/NPzN+gli0/SFOiSlpNqlcHuA
+ BUs/jNRf4TfanHlXXc4vx+G4uFLHKH+qfZl9aK05TgGEGdp5FxQztes4nY1ZcT1zWx0m7SSMr+c
+ zQ==
+X-Received: by 2002:a05:600c:3153:b0:490:b8e6:be40 with SMTP id
+ 5b1f17b1804b1-490ec4fed29mr21803255e9.21.1781253146903; 
+ Fri, 12 Jun 2026 01:32:26 -0700 (PDT)
+Received: from p200300ef2f13eb00017f7d76deb7e8bb.dip0.t-ipconnect.de
+ (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
+ [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4606f2e6a8fsm3617213f8f.37.2026.06.12.01.31.01
+ 5b1f17b1804b1-490ea843d6fsm49539865e9.14.2026.06.12.01.32.26
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 12 Jun 2026 01:31:01 -0700 (PDT)
-Date: Fri, 12 Jun 2026 08:31:00 +0000
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aivDxMGOaKOwmKQ2@autotest-wegao.qe.prg2.suse.org>
-References: <20260611-fix_clone11_min_kver-v1-1-264fba2b01b4@suse.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260611-fix_clone11_min_kver-v1-1-264fba2b01b4@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ Fri, 12 Jun 2026 01:32:26 -0700 (PDT)
+Message-ID: <6a2bc41a.16c38fd9.38778b.a98a@mx.google.com>
+To: Samir <samir@linux.ibm.com>
+In-Reply-To: <20260602100512.404810-1-samir@linux.ibm.com>
+Date: Fri, 12 Jun 2026 08:32:25 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] clone11: skip CLONE_NEWCGROUP on kernels < 4.6
+Subject: Re: [LTP] [PATCH v3] cfs-scheduler: Fixed "make check" warning in
+ cfs_bandwidth01.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,72 +100,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Samir <samir@linux.ibm.com>, ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Jun 11, 2026 at 04:03:15PM +0200, Andrea Cervesato wrote:
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-> CLONE_NEWCGROUP was added in kernel v4.6. On older kernels such as
-> v4.4, the flag is unknown and clone() returns EINVAL instead of the
-> expected EPERM, causing a spurious test failure.
-> 
-> Add a per-test-case minimum kernel version check so that the
-> CLONE_NEWCGROUP case reports TCONF on kernels older than 4.6.
-> 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  testcases/kernel/syscalls/clone/clone11.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/clone/clone11.c b/testcases/kernel/syscalls/clone/clone11.c
-> index 028da778158de6867a71ac3974f9c2263481d3a3..607e42585fad41784be9104be01f504218559342 100644
-> --- a/testcases/kernel/syscalls/clone/clone11.c
-> +++ b/testcases/kernel/syscalls/clone/clone11.c
-> @@ -21,9 +21,10 @@ static int *child_pid;
->  static struct tcase {
->  	uint64_t flags;
->  	const char *sflags;
-> +	int min_kver[3];
->  } tcases[] = {
->  	{ DESC(CLONE_NEWPID) },
-> -	{ DESC(CLONE_NEWCGROUP) },
-> +	{ DESC(CLONE_NEWCGROUP), .min_kver = {4, 6, 0} },
->  	{ DESC(CLONE_NEWIPC) },
->  	{ DESC(CLONE_NEWNET) },
->  	{ DESC(CLONE_NEWNS) },
-> @@ -40,6 +41,13 @@ static void run(unsigned int n)
->  {
->  	struct tcase *tc = &tcases[n];
->  
-> +	if (tc->min_kver[0] &&
-> +	    tst_kvercmp(tc->min_kver[0], tc->min_kver[1], tc->min_kver[2]) < 0) {
-> +		tst_res(TCONF, "clone(%s) needs kernel %d.%d+",
-> +			tc->sflags, tc->min_kver[0], tc->min_kver[1]);
-> +		return;
-> +	}
-> +
->  	TST_EXP_FAIL(ltp_clone(tc->flags, child_fn, NULL, CHILD_STACK_SIZE, child_stack),
->  		EPERM, "clone(%s) should fail with EPERM",
->  		tc->sflags);
-> 
-> ---
-> base-commit: a375e8deed471723f5a0114c56eb48fe6f6f45d3
-> change-id: 20260611-fix_clone11_min_kver-394cf499c2c7
-> 
-> Best regards,
-> -- 
-> Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-Reviewed-by: Wei Gao <wegao@suse.com>
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Merged, Thanks. I also fixed the commit message that was not
+following the right conventions. Please make sure this will be
+fixed the next time. In particular:
+
+- commit subject was too long and verbose
+- you added patch tracking into the commit message
+
+Fixed into:
+
+    cfs-scheduler: Fixed "make check" warning
+    
+    Fixed make check warning in cfs_bandwidth01.c to comply with LTP
+    coding style.
+
+Regards,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
