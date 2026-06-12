@@ -4,103 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A18FECD98CE
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 17:21:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3194FCD8CA8
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 17:21:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2CACE3E6B3B
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 19:21:04 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id D447C3E6A5A
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 19:21:19 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EC79E3E6B3C
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 19:19:43 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id EAB743E6B36
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 19:19:44 +0200 (CEST)
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E9D811400C5A
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 19:19:41 +0200 (CEST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 393B41400DD1
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 19:19:42 +0200 (CEST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 65CEVaYa4146518; Fri, 12 Jun 2026 17:19:39 GMT
+ 65CFKWur3872896; Fri, 12 Jun 2026 17:19:41 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=S35hjq
- ydmtC5foBiRwNdGFd8251RmKaC0LLoaBvhFeE=; b=VqG/XdyRKNebXGuAWm3wbn
- CS8A43/kTuVahp3Fke4DtJqXyO0nApnmYv6lVekE0Dv0PxG4BKcUBpmMm6CGl1Vq
- ajRlmmVZQsrHnK9lx2sW0Azj5+bKl8PHrQ6w3iTzAEAmsd9pGzggGY6vx516EXuq
- eT+ChfwKDZdpnWJia+6Se6Tn9QcYH0VQ1zFwKX3bZzsYVCYpyGbLqwPFQvyhH4ws
- IMBKcWcqpgLYTZZFviLUPEZiPCEp9CbE6DUFmD6Ngmt1duUrePyECmfIf7aHACHw
- FyPjLRlvpqdmSGCPaqWpfE5oioDLe6vJVN+e/Kg0zlmmgrHoQPdKBpYqDZzhkC4A
- ==
-Received: from ppma23.wdc07v.mail.ibm.com
- (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4eqe8ca5sr-1
+ :content-transfer-encoding:date:from:in-reply-to:message-id
+ :mime-version:references:subject:to; s=pp1; bh=VUBSZ9KBXEAU4hyD7
+ PHYROupFbs4ysydCrTCN/FAseQ=; b=PkRcgtX2EiuIHpE83keXxLiwrwLnTKTp0
+ XrrLbvzNuuVbASGgH44r2nHuxjiQznCAUldQG0KT9oFU/FhOT8WEICboBJapitwz
+ 96FPpFW03PzHrVtQmnaKeIogvVTRjQ+aC+zI0vc7Wmz1xMJyjU+7iV7YidbeSSap
+ i7L/rndXxh+lbg/i//hH0nUqCU88dMI6CfO4CQPbaW0+iJRXfjPH8xaNS7ptnERs
+ E0ERAhGeXUndXnYpEbHVESwjMZeF1RFpKyoV+lekwaCilxKNOD5pI4++OLq++kTc
+ uL2OeQj5jpSDzFzxNd3QziOD3CyRVAM0zTSni3NxT/pTo5SxuOWdA==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4eqe8f25m8-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 12 Jun 2026 17:19:39 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65CGnemE025523;
- Fri, 12 Jun 2026 17:19:38 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
- by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4eqe0a8ufd-1
+ Fri, 12 Jun 2026 17:19:41 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65CHJeHo032111;
+ Fri, 12 Jun 2026 17:19:40 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4eqe09rv40-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 12 Jun 2026 17:19:38 +0000 (GMT)
+ Fri, 12 Jun 2026 17:19:40 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
  [10.20.54.102])
- by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 65CHJaQP50397498
+ by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 65CHJcXw15401326
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 12 Jun 2026 17:19:36 GMT
+ Fri, 12 Jun 2026 17:19:38 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 64E5020040;
- Fri, 12 Jun 2026 17:19:36 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 76F242004B;
+ Fri, 12 Jun 2026 17:19:38 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id B16612004D;
- Fri, 12 Jun 2026 17:19:35 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id BC21220043;
+ Fri, 12 Jun 2026 17:19:37 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.43.87.219])
  by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Fri, 12 Jun 2026 17:19:35 +0000 (GMT)
+ Fri, 12 Jun 2026 17:19:37 +0000 (GMT)
 From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Fri, 12 Jun 2026 22:49:26 +0530
-Message-Id: <20260612171930.11964-5-sachinp@linux.ibm.com>
+Date: Fri, 12 Jun 2026 22:49:28 +0530
+Message-Id: <20260612171930.11964-7-sachinp@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20260612171930.11964-1-sachinp@linux.ibm.com>
 References: <20260612171930.11964-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNjEyMDE1OSBTYWx0ZWRfXwg6FG6PWBftF
- uw8usk2gNUPo4hg25ReUW3w887e6uLcW30fH6IXR+0XFtg6Mj7lEGeyuImVy7sh6mnkMGO00LCL
- fUCCOa+AMMzUOQv8VKgiflSzoNIxt+E=
-X-Authority-Analysis: v=2.4 cv=AYCB2XXG c=1 sm=1 tr=0 ts=6a2c3fab cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8
- a=VnNF1IyMAAAA:8 a=qaZOuUcuEhqKilkFWQkA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: wx99lJp597rcK8dTVSwctKdMu_0X6ulo
-X-Proofpoint-ORIG-GUID: wx99lJp597rcK8dTVSwctKdMu_0X6ulo
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjEyMDE1OSBTYWx0ZWRfX2XWBgmI0tsTV
- 9SCFXpTiQqxGu4baFKo/y+rEiHBM6bEGhO5TuI12ZWtHTmBL1Y21Q8hhYDz7OO3aNHMVLWNgZzw
- zZ25OD6//vzgf1BvtASHupUVmBwgpJtXTKFnnX6yrJ5YY3seQkQLoV+CRfogLx23gNr1My8Bd6l
- VLpsMzzDNc3y3Mh4UL7kqajeja8ERCoHRWlD9X+w+gwDeHSDHxPku9+YuigcQc4vChh5Bf9Vgua
- CbrTK41FIb92mMbfmyadPjj/4edIuJhO9a85b8APKHQtoyyPe+3tf2Or4hy9Iund5oaYIA+JxAH
- h+Ov77l/Poq/aHIAIZnZYQc7vr7zp6pgbngyltL7Qsk+fUP5q2Vghr+bszxbIDQ0PQPDTPaQMre
- bFONJuWeckCfF9WjLcLs9s0y8BmwAf8NR2cyxKSiCjF+BEHYTtNPiaPuCO/aUv24zxRgkJRwhzG
- Qn2+zXsPuknHCaU4WvQ==
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjEyMDE1OSBTYWx0ZWRfX5LHVuvOopK1t
+ 3m4Iov3Q4LLFkgjn8wwXJVVvqrsZXP0piM/Nuzb5fJ6IA2iy2JAqi0ABk3A8qWT66IvSV9eiWNL
+ zPUVl64SaDqQFEiC+bNVVMEC2cTk35K7b7Bu+3ULCdMoAYYzQz9FLPh78q9xtmqZDSRqQxzILNP
+ 1hKZRlshjIYc/flgiUAL5/xYDIWbozzp+EwflWo7V8ievgn2tuiJXAJGpTurZ/RBaEmvNKLYSCd
+ hGlzrgo4iUG8dFkOE73vym6j5RMiHPmt5gz/xtFxqUtyClldLHj5WwU31YgUx7mjQd+Xc6izA5J
+ 6uhB0iUYAfllyh9w6QoXu1hgrIFw5nuY+GLgm+lgaYAolr7mk1j0QzPR80s6Jp/iUJOl1XtK2yS
+ biZerCwuDgXkUqhRJHLk/Vv3bUIjaCjB6YAOuIucZc1tB0fEBbT30bv6F0MJZV9zi7lnYU8PUq+
+ ZLkPBpN4kMiq4gmWmng==
+X-Authority-Analysis: v=2.4 cv=dr7rzVg4 c=1 sm=1 tr=0 ts=6a2c3fad cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=U7nrCbtTmkRpXpFmAIza:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=srL2aDlGqOjmVkaV-s0A:9
+X-Proofpoint-ORIG-GUID: ulF07hL_dU24EMd9c-HFaauu11lo_JK6
+X-Proofpoint-GUID: ulF07hL_dU24EMd9c-HFaauu11lo_JK6
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNjEyMDE1OSBTYWx0ZWRfXw4nQb8yVnb4Q
+ xI7qnDCsD8t4IYX8TVBZokIIjKYa3pB9OmqlgN0pXQCO/js6x3080vnCJm/JMLJpNFS37Q01USi
+ d0H+hzFlaLCiwhj9/WrwxAwAXQd6pqE=
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-06-12_02,2026-06-12_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
- lowpriorityscore=0 bulkscore=0 adultscore=0 priorityscore=1501 clxscore=1015
+ spamscore=0 adultscore=0 suspectscore=0 priorityscore=1501 phishscore=0
+ clxscore=1015 bulkscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2606040000 definitions=main-2606120159
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7 4/8] fs/acl: Add default ACL inheritance test
+Subject: [LTP] [PATCH v7 6/8] fs/acl: Add ACL symlink operations test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,105 +111,321 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-QWRkIGFjbF9pbmhlcml0MDEgdGVzdCB0byB2YWxpZGF0ZSBkZWZhdWx0IEFDTCBpbmhlcml0YW5j
-ZSBmcm9tCnBhcmVudCBkaXJlY3RvcnkgdG8gbmV3bHkgY3JlYXRlZCBmaWxlcy4KClRoZSB0ZXN0
-IHZlcmlmaWVzIHRoYXQ6Ci0gRGVmYXVsdCBBQ0xzIHNldCBvbiBhIGRpcmVjdG9yeSBhcmUgaW5o
-ZXJpdGVkIGJ5IG5ldyBmaWxlcwotIE5ldyBmaWxlIHBlcm1pc3Npb25zIHJlZmxlY3QgdGhlIGRl
-ZmF1bHQgQUNMIGVudHJpZXMKLSBGaWxlIGNyZWF0ZWQgd2l0aCB1bWFzayAwIGdldHMgcGVybWlz
-c2lvbnMgZnJvbSBkZWZhdWx0IEFDTAoKVGhpcyB0ZXN0IHNldHMgZGVmYXVsdCBBQ0wgd2l0aCBy
-ZWFkLW9ubHkgcGVybWlzc2lvbnMgKHItLXItLXItLSkKb24gdGhlIHBhcmVudCBkaXJlY3Rvcnks
-IGNyZWF0ZXMgYSBuZXcgZmlsZSB3aXRoIHVtYXNrIDAsIGFuZAp2ZXJpZmllcyB0aGUgZmlsZSBo
-YXMgMDQ0NCBwZXJtaXNzaW9ucyBpbmhlcml0ZWQgZnJvbSB0aGUKZGVmYXVsdCBBQ0wuCgpTdWdn
-ZXN0ZWQtYnk6IEN5cmlsIEhydWJpcyA8Y2hydWJpc0BzdXNlLmN6PgpTaWduZWQtb2ZmLWJ5OiBT
-YWNoaW4gU2FudCA8c2FjaGlucEBsaW51eC5pYm0uY29tPgotLS0KVjcgY2hhbmdlczoKLSBObyBj
-aGFuZ2UKClY2IGNoYW5nZXM6Ci0gQWRkZWQgSEFWRV9TWVNfWEFUVFJfSCBndWFyZAotIFJlbW92
-ZWQgcmVkdW5kYW50IGVycm9yIGNoZWNraW5nLCByZWx5aW5nIG9uIGxpYnJhcnkgZnVuY3Rpb25z
-Ci0gVXBkYXRlZCBhbGdvcml0aG0gZG9jdW1lbnRhdGlvbiB3aXRoIGNvcnJlY3QgZm9ybWF0Ci0g
-djUgbGluayBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvMjAyNjA2MDgwOTIyMDAuOTI4Mjct
-MS1zYWNoaW5wQGxpbnV4LmlibS5jb20vVC8jdAoKVjUgY2hhbmdlczoKLSBTd2l0Y2ggdG8ga2Vy
-bmVsIG9ubHkgdGVzdCB2YWxpZGF0aW9uIHRvIHJlbW92ZSBkZXBlbmRlbmN5IG9uIGxpYmFjbAog
-IGFuZCB1c2VyYWRkL2RlbCBjb21tYW5kcy4KLSB2NCBsaW5rIGh0dHBzOi8vbG9yZS5rZXJuZWwu
-b3JnL2x0cC8yMDI2MDYwNDA2NTQxNy4yNTkyNC0xLXNhY2hpbnBAbGludXguaWJtLmNvbS9ULyN0
-CgpWNCBjaGFuZ2VzOgotIFJlbW92ZSB1bnVzZWTCoGFjbF9nZXRfZmlsZSgpwqBibG9jawotIGtl
-ZXAgbW9kZS1iaXQgdmFsaWRhdGlvbiB3aXRoIGV4cGxhbmF0b3J5IGNvbW1lbnQKLSB2MyBsaW5r
-IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2x0cC8yMDI2MDYwMzA2NTc0NC40NzEwNi0xLXNhY2hp
-bnBAbGludXguaWJtLmNvbS9ULyN0CgpWMyBjaGFuZ2VzOgotIFVwZGF0ZWQgY29weXJpZ2h0IGhl
-YWRlciBhcyBwZXIgTFRQIGZvcm1hdC4KLSB2MSBsaW5rIGh0dHBzOi8vbG9yZS5rZXJuZWwub3Jn
-L2x0cC8yMDI2MDYwMjEyMTk1OC4yNzQ5NC0xLXNhY2hpbnBAbGludXguaWJtLmNvbS9ULyN0CgpW
-MiBjaGFuZ2VzOgotIE5vIGNoYW5nZXMKClYxIGNoYW5nZXM6Ci0gVXNlIEhBVkVfTElCQUNMIGd1
-YXJkcyBpbiAuYyBjb2RlCi0gUmVwb3J0IFRDT05GIHdoZW4gbGliYWNsIGlzIG5vdCBhdmFpbGFi
-bGUKLSByZmMgbGluayBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvNDc3ODM2ZmQtODBjOC00
-MTY4LWJmZTYtMDBiMzc0YmIyNTM0QGxpbnV4LmlibS5jb20vVC8jdAoKLS0tCiBydW50ZXN0L2Zz
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwogdGVzdGNhc2VzL2tlcm5lbC9m
-cy9hY2wvLmdpdGlnbm9yZSAgICAgIHwgICAxICsKIHRlc3RjYXNlcy9rZXJuZWwvZnMvYWNsL2Fj
-bF9pbmhlcml0MDEuYyB8IDExMyArKysrKysrKysrKysrKysrKysrKysrKysKIDMgZmlsZXMgY2hh
-bmdlZCwgMTE1IGluc2VydGlvbnMoKykKIGNyZWF0ZSBtb2RlIDEwMDY0NCB0ZXN0Y2FzZXMva2Vy
-bmVsL2ZzL2FjbC9hY2xfaW5oZXJpdDAxLmMKCmRpZmYgLS1naXQgYS9ydW50ZXN0L2ZzIGIvcnVu
-dGVzdC9mcwppbmRleCBmMjU0ODdhMzMuLmZkMjk1ZWRjNyAxMDA2NDQKLS0tIGEvcnVudGVzdC9m
-cworKysgYi9ydW50ZXN0L2ZzCkBAIC05MiwzICs5Miw0IEBAIHNxdWFzaGZzMDEgc3F1YXNoZnMw
-MQogYWNsX3VzZXJfb2JqMDEgYWNsX3VzZXJfb2JqMDEKIGFjbF9tYXNrMDEgYWNsX21hc2swMQog
-YWNsX290aGVyMDEgYWNsX290aGVyMDEKK2FjbF9pbmhlcml0MDEgYWNsX2luaGVyaXQwMQpkaWZm
-IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvLmdpdGlnbm9yZSBiL3Rlc3RjYXNlcy9r
-ZXJuZWwvZnMvYWNsLy5naXRpZ25vcmUKaW5kZXggYzNlYzBmYWQzLi5iYzAzYmExZmQgMTAwNjQ0
-Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNsLy5naXRpZ25vcmUKKysrIGIvdGVzdGNhc2Vz
-L2tlcm5lbC9mcy9hY2wvLmdpdGlnbm9yZQpAQCAtMSwzICsxLDQgQEAKIC9hY2xfdXNlcl9vYmow
-MQogL2FjbF9tYXNrMDEKIC9hY2xfb3RoZXIwMQorL2FjbF9pbmhlcml0MDEKZGlmZiAtLWdpdCBh
-L3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNsL2FjbF9pbmhlcml0MDEuYyBiL3Rlc3RjYXNlcy9rZXJu
-ZWwvZnMvYWNsL2FjbF9pbmhlcml0MDEuYwpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAw
-MDAwMDAuLjVhZjk2YjkxMgotLS0gL2Rldi9udWxsCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMv
-YWNsL2FjbF9pbmhlcml0MDEuYwpAQCAtMCwwICsxLDExMyBAQAorLy8gU1BEWC1MaWNlbnNlLUlk
-ZW50aWZpZXI6IEdQTC0yLjAtb3ItbGF0ZXIKKy8qCisgKiBDb3B5cmlnaHQgKGMpIDIwMjYgSUJN
-CisgKgorICogT3JpZ2luYWwgc2hlbGwgdGVzdCBieSBLYWkgWmhhbyAobHRjZDNAY24uaWJtLmNv
-bSkKKyAqIENvbnZlcnRlZCB0byBDIGJ5IFNhY2hpbiBTYW50IDxzYWNoaW5wQGxpbnV4LmlibS5j
-b20+CisgKi8KKworLypcCisgKiBUZXN0IGRlZmF1bHQgQUNMIGluaGVyaXRhbmNlIHVzaW5nIGRp
-cmVjdCB4YXR0ciBtYW5pcHVsYXRpb24uCisgKgorICogVmVyaWZ5IHRoYXQgZmlsZXMgY3JlYXRl
-ZCBpbiBhIGRpcmVjdG9yeSB3aXRoIGRlZmF1bHQgQUNMcyBpbmhlcml0CisgKiB0aG9zZSBBQ0xz
-IGFzIHRoZWlyIGFjY2VzcyBBQ0xzLiBEZWZhdWx0IEFDTHMgYXJlIG9ubHkgYXBwbGljYWJsZQor
-ICogdG8gZGlyZWN0b3JpZXMgYW5kIGRlZmluZSB0aGUgYWNjZXNzIEFDTHMgdGhhdCBmaWxlcyBh
-bmQgc3ViZGlyZWN0b3JpZXMKKyAqIGNyZWF0ZWQgd2l0aGluIHRoYXQgZGlyZWN0b3J5IHdpbGwg
-aW5oZXJpdC4KKyAqCisgKiBUaGlzIHRlc3QgdXNlcyBhcmJpdHJhcnkgVUlEcyB3aXRob3V0IGNy
-ZWF0aW5nIGFjdHVhbCB1c2VycywgdGVzdGluZworICogb25seSB0aGUga2VybmVsIEFDTCBpbXBs
-ZW1lbnRhdGlvbi4KKyAqCisgKiBbQWxnb3JpdGhtXQorICoKKyAqIC0gU2V0IGRlZmF1bHQgQUNM
-IG9uIHBhcmVudCBkaXJlY3Rvcnkgd2l0aCByZWFkLW9ubHkgcGVybWlzc2lvbnMKKyAqIC0gQ3Jl
-YXRlIGEgbmV3IGZpbGUgaW4gdGhhdCBkaXJlY3Rvcnkgd2l0aCB1bWFzayAwCisgKiAtIFZlcmlm
-eSB0aGUgZmlsZSBpbmhlcml0cyB0aGUgZGVmYXVsdCBBQ0wgYXMgaXRzIGFjY2VzcyBBQ0wKKyAq
-IC0gQ2hlY2sgdGhhdCBmaWxlIHBlcm1pc3Npb25zIG1hdGNoIHRoZSBpbmhlcml0ZWQgQUNMICgw
-NDQ0KQorICovCisKKyNpbmNsdWRlICJhY2xfbGliLmgiCisKKyNpZmRlZiBIQVZFX1NZU19YQVRU
-Ul9ICisKKyNkZWZpbmUgVEVTVF9VSUQgMTAwMAorI2RlZmluZSBURVNUX0dJRCAxMDAwCisKK3N0
-YXRpYyB2b2lkIHJ1bih2b2lkKQoreworCXN0cnVjdCBhY2wgKmFjbDsKKwlzdHJ1Y3Qgc3RhdCBz
-dDsKKworCXRzdF9yZXMoVElORk8sICJUZXN0aW5nIGRlZmF1bHQgQUNMIGluaGVyaXRhbmNlIik7
-CisJcmVzZXRfdGVzdF9wYXRoKCk7CisKKwlTQUZFX0NIT1dOKFRFU1RESVIsIFRFU1RfVUlELCBU
-RVNUX0dJRCk7CisKKwlhY2wgPSBhY2xfaW5pdCgpOworCisJYWNsX2FkZF9lbnRyeShhY2wsIEFD
-TF9VU0VSX09CSiwgQUNMX1JFQUQsIDApOworCWFjbF9hZGRfZW50cnkoYWNsLCBBQ0xfR1JPVVBf
-T0JKLCBBQ0xfUkVBRCwgMCk7CisJYWNsX2FkZF9lbnRyeShhY2wsIEFDTF9PVEhFUiwgQUNMX1JF
-QUQsIDApOworCisJaWYgKGFjbF9zZXRfZmlsZShURVNURElSLCBBQ0xfVFlQRV9ERUZBVUxULCBh
-Y2wpIDwgMCkgeworCQlpZiAoZXJybm8gPT0gRU9QTk9UU1VQUCkgeworCQkJYWNsX2ZyZWUoYWNs
-KTsKKwkJCXRzdF9icmsoVENPTkYgfCBURVJSTk8sICJBQ0wgbm90IHN1cHBvcnRlZCIpOworCQl9
-CisJCWFjbF9mcmVlKGFjbCk7CisJCXRzdF9icmsoVEJST0sgfCBURVJSTk8sICJBQ0wgc2V0dXAg
-ZmFpbGVkIik7CisJfQorCisJYWNsX2ZyZWUoYWNsKTsKKworCWNyZWF0ZV93aXRoX3VtYXNrX2Fz
-KFRFU1RfVUlELCBURVNUX0dJRCwgMDY2NiwgMCwgMCk7CisKKwlTQUZFX1NUQVQoVEVTVEZJTEUs
-ICZzdCk7CisKKwkvKgorCSAqIEZvciBhIG1pbmltYWwgQUNMIChjb250YWluaW5nIG9ubHkgQUNM
-X1VTRVJfT0JKLCBBQ0xfR1JPVVBfT0JKLAorCSAqIGFuZCBBQ0xfT1RIRVIpLCB0aGUgbW9kZSBi
-aXRzIGFyZSB0aGUgY2Fub25pY2FsIHJlcHJlc2VudGF0aW9uLgorCSAqIFZlcmlmeWluZyB0aGUg
-bW9kZSBiaXRzIGNvbmZpcm1zIHRoZSBpbmhlcml0ZWQgQUNMIHdhcyBhcHBsaWVkLgorCSAqLwor
-CWlmICgoc3Quc3RfbW9kZSAmIDA3NzcpICE9IDA0NDQpIHsKKwkJdHN0X3JlcyhURkFJTCwKKwkJ
-CSJGaWxlIHBlcm1pc3Npb25zIDAlbywgZXhwZWN0ZWQgMDQ0NCBmcm9tIGRlZmF1bHQgQUNMIiwK
-KwkJCXN0LnN0X21vZGUgJiAwNzc3KTsKKwkJY2xlYW51cF90ZXN0ZmlsZSgpOworCQlyZXR1cm47
-CisJfQorCisJY2xlYW51cF90ZXN0ZmlsZSgpOworCXRzdF9yZXMoVFBBU1MsICJEZWZhdWx0IEFD
-TCBpbmhlcml0YW5jZSB3b3JrcyBjb3JyZWN0bHkiKTsKK30KKworc3RhdGljIHZvaWQgc2V0dXAo
-dm9pZCkKK3sKKwlyZXNldF90ZXN0X3BhdGgoKTsKK30KKworc3RhdGljIHZvaWQgY2xlYW51cCh2
-b2lkKQoreworCWNsZWFudXBfdGVzdF9wYXRocygpOworfQorCitzdGF0aWMgc3RydWN0IHRzdF90
-ZXN0IHRlc3QgPSB7CisJLnRlc3RfYWxsID0gcnVuLAorCS5zZXR1cCA9IHNldHVwLAorCS5jbGVh
-bnVwID0gY2xlYW51cCwKKwkubmVlZHNfcm9vdCA9IDEsCisJLm1vdW50X2RldmljZSA9IDEsCisJ
-Lm1udHBvaW50ID0gTU5UUE9JTlQsCisJLmZvcmtzX2NoaWxkID0gMSwKKwkuZmlsZXN5c3RlbXMg
-PSAoc3RydWN0IHRzdF9mc1tdKSB7CisJCXsudHlwZSA9ICJleHQyIiwgLm1udF9kYXRhID0gImFj
-bCJ9LAorCQl7LnR5cGUgPSAiZXh0MyIsIC5tbnRfZGF0YSA9ICJhY2wifSwKKwkJey50eXBlID0g
-ImV4dDQiLCAubW50X2RhdGEgPSAiYWNsIn0sCisJCXsudHlwZSA9ICJ4ZnMifSwKKwkJey50eXBl
-ID0gImJ0cmZzIn0sCisJCXt9CisJfQorfTsKKworI2Vsc2UKKwlUU1RfVEVTVF9UQ09ORigic3lz
-L3hhdHRyLmggaXMgbm90IGF2YWlsYWJsZSIpOworI2VuZGlmCi0tIAoyLjM5LjEKCgotLSAKTWFp
-bGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Add acl_link01 test to verify that ACL operations on symlinks
+follow the symlink to the target file rather than operating on
+the symlink itself.
+
+The test:
+- Creates a regular file with mode 0600
+- Creates a symlink pointing to the file
+- Sets ACL (rwxrw----) through the symlink path
+- Verifies the ACL was applied to the target file
+- Confirms reading ACL via symlink returns target's ACL
+
+This validates kernel behavior where ACL set/get operations
+on symlinks affect the target file, not the symlink.
+
+Uses direct xattr manipulation without requiring actual users,
+testing only kernel ACL implementation. Handles EOPNOTSUPP
+gracefully for filesystems without ACL support.
+
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
+---
+V7 changes:
+- No change
+
+V6 changes:
+- Added HAVE_SYS_XATTR_H guard
+- Removed redundant error checking, relying on library functions
+- Updated algorithm documentation with correct format
+- Removed unnecessary .forks_child flag
+- v5 link https://lore.kernel.org/ltp/20260608092200.92827-1-sachinp@linux.ibm.com/T/#t
+
+V5 changes:
+- Switch to kernel only test validation to remove dependency on libacl
+  and useradd/del commands.
+- v4 link https://lore.kernel.org/ltp/20260604065417.25924-1-sachinp@linux.ibm.com/T/#t
+
+V4 changes:
+- Rewrite test logic to use distinct ACL (rwxrw----) that
+  differs from initial mode.
+- Update commit message to reflect the implementation.
+- v3 link https://lore.kernel.org/ltp/20260603140147.50738-1-sachinp@linux.ibm.com/T/#t
+
+V3 changes:
+- Updated the test to read the ACL from both TESTSYMLINK
+  and TESTFILE, and verify the expected entries/permissions match.
+- Updated commit message to reflect this change.
+- Updated copyright header as per LTP format.
+- v2 link https://lore.kernel.org/ltp/20260603065744.47106-1-sachinp@linux.ibm.com/T/#t
+
+V2 changes:
+- Updated incorrect TCONF message and description text
+- Updated commit message to remove incorrect symlinks wording
+- Use reset_test_path_no_chown variant to skip chown step
+  and removed needs_cmd tag to avoid useradd/userdel dependency
+- v1 link https://lore.kernel.org/ltp/20260602121958.27494-1-sachinp@linux.ibm.com/T/#t
+
+V1 changes:
+- Use HAVE_LIBACL guards in .c code
+- Report TCONF when libacl is not available
+- rfc link https://lore.kernel.org/ltp/477836fd-80c8-4168-bfe6-00b374bb2534@linux.ibm.com/T/#t
+
+---
+ runtest/fs                           |   1 +
+ testcases/kernel/fs/acl/.gitignore   |   1 +
+ testcases/kernel/fs/acl/acl_link01.c | 215 +++++++++++++++++++++++++++
+ 3 files changed, 217 insertions(+)
+ create mode 100644 testcases/kernel/fs/acl/acl_link01.c
+
+diff --git a/runtest/fs b/runtest/fs
+index f1eea055b..64deb56e6 100644
+--- a/runtest/fs
++++ b/runtest/fs
+@@ -94,3 +94,4 @@ acl_mask01 acl_mask01
+ acl_other01 acl_other01
+ acl_inherit01 acl_inherit01
+ acl_file_ops01 acl_file_ops01
++acl_link01 acl_link01
+diff --git a/testcases/kernel/fs/acl/.gitignore b/testcases/kernel/fs/acl/.gitignore
+index eb4b4a227..4a071d516 100644
+--- a/testcases/kernel/fs/acl/.gitignore
++++ b/testcases/kernel/fs/acl/.gitignore
+@@ -3,3 +3,4 @@
+ /acl_other01
+ /acl_inherit01
+ /acl_file_ops01
++/acl_link01
+diff --git a/testcases/kernel/fs/acl/acl_link01.c b/testcases/kernel/fs/acl/acl_link01.c
+new file mode 100644
+index 000000000..7f7f6e43c
+--- /dev/null
++++ b/testcases/kernel/fs/acl/acl_link01.c
+@@ -0,0 +1,215 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 IBM
++ *
++ * Original shell test by Kai Zhao (ltcd3@cn.ibm.com)
++ * Converted to C by Sachin Sant <sachinp@linux.ibm.com>
++ */
++
++/*\
++ * Test ACL operations on symlinks using direct xattr manipulation.
++ *
++ * Verify that ACL operations on symlinks follow the symlink to the target
++ * file. When setting or getting ACLs through a symlink path, the operation
++ * should affect the target file, not the symlink itself.
++ *
++ * Note: Some filesystems may not support ACLs on the target file and will
++ * return EOPNOTSUPP, which is treated as TCONF (test not applicable).
++ *
++ * This test uses direct xattr manipulation without creating actual users,
++ * testing only the kernel ACL implementation.
++ *
++ * [Algorithm]
++ *
++ * - Create a regular file with mode 0600 (rw-------)
++ * - Create a symlink pointing to the file
++ * - Set a distinct ACL through the symlink path (rwxrw----)
++ * - Verify the ACL was set on the target file by reading it directly
++ * - Get ACL through the symlink path
++ * - Verify both ACLs match and differ from the initial 0600 mode
++ */
++
++#include "acl_lib.h"
++
++#ifdef HAVE_SYS_XATTR_H
++
++static void run(void)
++{
++	struct acl *acl, *target_acl = NULL, *symlink_acl = NULL;
++	struct acl_entry *user_obj, *group_obj, *other;
++	struct acl_entry *t, *s;
++	int fd = -1;
++	int match, count, i;
++
++	tst_res(TINFO, "Testing ACL operations on symlinks");
++	reset_test_path_no_chown();
++
++	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0600);
++	SAFE_CLOSE(fd);
++
++	SAFE_SYMLINK("testfile", TESTSYMLINK);
++
++	acl = acl_init();
++
++	acl_add_entry(acl, ACL_USER_OBJ,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE, 0);
++	acl_add_entry(acl, ACL_GROUP_OBJ, ACL_READ | ACL_WRITE, 0);
++	acl_add_entry(acl, ACL_OTHER, 0, 0);
++
++	if (acl_set_file(TESTSYMLINK, ACL_TYPE_ACCESS, acl) < 0) {
++		if (errno == EOPNOTSUPP) {
++			acl_free(acl);
++			if (unlink(TESTSYMLINK) == -1)
++				tst_res(TWARN | TERRNO, "unlink symlink failed");
++			cleanup_testfile();
++			tst_res(TCONF,
++				"ACL not supported by this filesystem");
++			return;
++		}
++		acl_free(acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_brk(TBROK | TERRNO, "ACL setup failed");
++	}
++
++	acl_free(acl);
++
++	/* Verify ACL was actually set on target file with expected values */
++	target_acl = acl_get_file(TESTFILE, ACL_TYPE_ACCESS);
++	if (!target_acl) {
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_brk(TBROK | TERRNO, "acl_get_file on target file failed");
++	}
++
++	/* Verify expected ACL entries: USER_OBJ=rwx, GROUP_OBJ=rw, OTHER=--- */
++	if (target_acl->count != 3) {
++		count = target_acl->count;
++
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_res(TFAIL, "Expected 3 ACL entries, got %d", count);
++		return;
++	}
++
++	user_obj = acl_find_entry(target_acl, ACL_USER_OBJ, 0);
++	group_obj = acl_find_entry(target_acl, ACL_GROUP_OBJ, 0);
++	other = acl_find_entry(target_acl, ACL_OTHER, 0);
++
++	if (!user_obj || !group_obj || !other) {
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_res(TFAIL, "Missing required ACL entries");
++		return;
++	}
++
++	if (user_obj->perm != (ACL_READ | ACL_WRITE | ACL_EXECUTE)) {
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_res(TFAIL, "USER_OBJ has wrong permissions: %o (expected rwx)",
++			user_obj->perm);
++		return;
++	}
++
++	if (group_obj->perm != (ACL_READ | ACL_WRITE)) {
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_res(TFAIL, "GROUP_OBJ has wrong permissions: %o (expected rw-)",
++			group_obj->perm);
++		return;
++	}
++
++	if (other->perm != 0) {
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_res(TFAIL, "OTHER has wrong permissions: %o (expected ---)",
++			other->perm);
++		return;
++	}
++
++	/* Now verify that reading via symlink gives the same result */
++	symlink_acl = acl_get_file(TESTSYMLINK, ACL_TYPE_ACCESS);
++	if (!symlink_acl) {
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_brk(TBROK | TERRNO, "acl_get_file on symlink failed");
++	}
++
++	/* Compare ACLs */
++	match = 1;
++	if (target_acl->count != symlink_acl->count) {
++		match = 0;
++	} else {
++		for (i = 0; i < target_acl->count; i++) {
++			t = &target_acl->entries[i];
++			s = &symlink_acl->entries[i];
++
++			if (t->tag != s->tag || t->perm != s->perm ||
++			    t->id != s->id) {
++				match = 0;
++				break;
++			}
++		}
++	}
++
++	acl_free(symlink_acl);
++	acl_free(target_acl);
++
++	if (unlink(TESTSYMLINK) == -1)
++		tst_res(TWARN | TERRNO, "unlink symlink failed");
++	cleanup_testfile();
++
++	if (!match) {
++		tst_res(TFAIL,
++			"ACL via symlink differs from ACL on target file");
++		return;
++	}
++
++	tst_res(TPASS,
++		"ACL set via symlink was applied to target file (rwxrw----)");
++}
++
++static void setup(void)
++{
++	reset_test_path_no_chown();
++}
++
++static void cleanup(void)
++{
++	cleanup_test_paths();
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.mount_device = 1,
++	.mntpoint = MNTPOINT,
++	.filesystems = (struct tst_fs[]) {
++		{.type = "ext2", .mnt_data = "acl"},
++		{.type = "ext3", .mnt_data = "acl"},
++		{.type = "ext4", .mnt_data = "acl"},
++		{.type = "xfs"},
++		{.type = "btrfs"},
++		{}
++	}
++};
++
++#else
++	TST_TEST_TCONF("sys/xattr.h is not available");
++#endif
+-- 
+2.39.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
