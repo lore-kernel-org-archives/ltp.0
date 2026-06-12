@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0734CD98CF
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 19:09:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02229CD98CF
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 19:11:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5D0953E6B30
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 21:09:50 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 925CC3E6B3D
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 21:11:15 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3AA9E3E2A97
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 21:09:36 +0200 (CEST)
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
- [IPv6:2607:f8b0:4864:20::743])
+ by picard.linux.it (Postfix) with ESMTPS id 87F943E2A97
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 21:11:01 +0200 (CEST)
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com
+ [IPv6:2607:f8b0:4864:20::f42])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 96D596009D5
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 21:09:35 +0200 (CEST)
-Received: by mail-qk1-x743.google.com with SMTP id
- af79cd13be357-9157b94a07aso142852885a.0
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 12:09:35 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 387262003BE
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 21:11:01 +0200 (CEST)
+Received: by mail-qv1-xf42.google.com with SMTP id
+ 6a1803df08f44-8cce87d7995so16110446d6.0
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 12:11:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781291374; x=1781896174; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1781291460; x=1781896260; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=B6/LTL/WIt3pdeFnlZh0v01xEjiFYUDBEgRd6RN8WF0=;
- b=Uc4PoJjHV2Um2Bio5XEG3qbSVegDBba+iZOkCOkYlqpjettPU2MvlhUJD/z9O+GXCX
- 7BNtQq3c2LNKSMD23FryfB38zheRutDOJiK+WXkDBVljN4AXITZfm9g/h7GjhIna1qdq
- wk5wAs0ILt7CHXLfw88s5UEnejZT38Te348KmXK5WcqyLDFu4mZRDmmenQukHkXWLYFh
- UrNdYG48MHvAlC7M7MMVy2MTBzo8+iORrdVu8DKKvbWLRoYoqJx4zFAd5OqLwjjqWbZS
- M+THHeaGaoyVfuG79dy+YStNahaVvJ0mCsHkOQsyIBb7AFZJbRV0XoumG2x30WVm7nBZ
- 2U4Q==
+ bh=3zPiDfEd46tTc0WGoVeEeYRnsMdh/Yy59/UyZqSe6SY=;
+ b=h/Aa0oJ/z1j3kJUe4iKQqTj4jBMx+BLTw1MBczohBxj6LiniC8J8+/eurSN8cC1EBA
+ dRGLYl67cgOxgn1mOMeiWcJUwGbOQkC5pEzKk6QFmRpcUwRYmdyBpOnLNncjKuPe0084
+ IJtpqosm+uv58+7arO5frtpj0fgjMXVONyVY+9d41rWJEOJKpak8Qk2ItJcpfFnYAGXt
+ HDjF5DpxJvZHG3EODetGE9DvioMt5GiD3morEG6+cbaHi3fG/E1oqlCG2/Rb6qvGYzhA
+ Ot4dIBrX+i4Sfg3IaR7DUc+Ko3RTk0a/yi5VITpqGtcGs8VEjGbO9fXHdawMJ6RP3jCw
+ vbvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781291374; x=1781896174;
+ d=1e100.net; s=20251104; t=1781291460; x=1781896260;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=B6/LTL/WIt3pdeFnlZh0v01xEjiFYUDBEgRd6RN8WF0=;
- b=MlvbOZdPNVXx29aHKC/cZbOiP0/2B8epUVS5pStOyBBrOutujTnZ0NT3VWgcK2cDnq
- /6XVS+jrcV5MbQCxs8mkwXbS7PTiVYWPwCSR0HjUOJeHrIX78QfE5EPivnm6QOyvEnjq
- M7258AjRxmjPNzHzVPdLW2Nx2AY1CtN5upxgkaAAKrhsKQwvbb2953JJ+veYPEkIL5+e
- sLK+r0Ows43rOim3S6oUjgLGoMuftPGa1HkyFZTIw9sX0H65pA+QnaZA7Q7umN8Cr30u
- Rzui5GSClfMMLlXNuwyjCptBpSP/IIdirGAe4Etje5d9hevJbsc5RrH3G8hmlOPG5DqW
- aamA==
-X-Gm-Message-State: AOJu0YzdynbSIZmBixZQgeIoHwcSGgejnOkKBgkurArj6MQ/t8L1ILQD
- jCkTwT9m9PCScj5ctQeKjJIF/tDzgILk4AXfuya3+Ibu+Rvsrs8DXtH1
-X-Gm-Gg: Acq92OFq6Nu0R8wMoyFcm2zPkSdradEp+mUpXvGlg5oXyQ8yBkNOuzKYqd0qs9b9Euo
- wCH++1U+gC6QV1FRu+BrqHB7UIQ24wgBpNCewLOl+rbP2BEm99UcqlyRO015hEWNuXTPszJ2pVQ
- U4RxNrbfBqbauBpOcPhZfcY7W54sQaEdf7NJfHVfqtgZqA7Kpi2YfEMgHw60QbEWTYtFAR7U8Jx
- gLbcRmqDIseBy+mxYFM8234kpWx25GDtro8bmIRPLQKQfFq95uFJ/EEX2gXS6qF4yNXUV7G3y52
- ssN4NWWZCVA+wTp4CHbIWlqMzcGt7UIe0mmorgq7UFVCfGuk/2LAEwa2V9W89on0PWexZB/MJRt
- cH2+ATLaEXK10qTHQCn4Bla1pjVjrc6hY8GsHOgK2E22TfpDr4M2Ck41byiWFal5MiDRUQuqaB0
- vfZFKD+OmOm4hNGnRTSzMGHXtN4N4z2FQiBZWDGVkH0CwDjXxTQlqLfqwz3naqSiolJnic0HzyG
- c4Mir8MRtxt3r1EXbmsO4lTaecJg+BEUg9uXM0bLbRKxuiuWBg=
-X-Received: by 2002:a05:620a:4042:b0:915:cf88:1e46 with SMTP id
- af79cd13be357-9161bd3c4ebmr629496385a.43.1781291374275; 
- Fri, 12 Jun 2026 12:09:34 -0700 (PDT)
+ bh=3zPiDfEd46tTc0WGoVeEeYRnsMdh/Yy59/UyZqSe6SY=;
+ b=E/DbtBYL/uvo67stC/SuYpt2vhGkpxGzlIvWQmT64A/UIABzCoccYbx1vriEIn3mZa
+ RG0aWViKvowzAIRomq5y6MwXTU1yNFYDwgVV2mglB0F14O8ArmHCfkvVkZ2uul9XBG+p
+ pRrYMqMURSxumbHuof5SZR/l5EwDkZMlUiTLoUH+rIjmmtrlt6HVWYMYOklKRGuqxZti
+ rH4O3v8jBaCRZ87kVdtYMe8j7pLWYvcHU5nOU+/5tArUWzEKJWXK44326M99b3hvmjgB
+ 3wKTK1L08s2y1clHfiPCIRKQ+pcMw2M1fwqO17DgRtINy1KvfT9im/e0dD/pSy2ZacT7
+ Dajw==
+X-Gm-Message-State: AOJu0YxfAmdcCvzh19l++Ld9fdgJomA6i6fS4x0wXlvWP6fs4h8mJMgm
+ QdilouLPQFsog6ZutvskgnXvLHnyVDycJ+eI570BEqhGc09fsJDB/F9P
+X-Gm-Gg: Acq92OGYo310Lbk3iPgsI1xikeCQGiMoVF1tUEfkRg1nPBmmtBb05+z72C7g/gmKAWl
+ 4bscneqZpRQDOEPa+2ch+KcWX5ueOmrMiGOPy7IGhg/AJJZ2U+66GpdxbcomexNTRHsze7SjqEr
+ vRfC4zSEuS01QSUy7hZj8qbVfMR7ngmOU+vIBDe6zrTPSTKOn8zdQUDlRHYJ/09CF+saJSMJisX
+ 6dfeyTZFu+kWOm7AnYqGumLpS3TbAln++fEv9xk+HpZSkjaBdv2WKrQRrLh8QzQCzsZEYr0QZRD
+ MyVhebK6leTs3BKQm3ZbN+8XrVJLOh6HPeK2dZzmsFT141sHnoEYmgLMRoES2UNIMYNcOyNi1pg
+ LBgbVSyWouP2cLnzMr5v5ohYtTaeZZ9FRMfEnbq3C2LOODh9IdQfxmrMA1Lev8dS2O/Xljze1wH
+ 4GOzOEBNmReFYXxnhdNKa7KHKJ76KzzgcdxJUh4lIcZwSXZKE/mH+KtMcY5wm1cBerHnLLf6CQ2
+ qy5JeKyUC2+EiMGzjAsjjcVoVZbhzN7/w/B2a05H2JxrfhWeEM=
+X-Received: by 2002:a05:6214:2349:b0:8bd:de6d:c331 with SMTP id
+ 6a1803df08f44-8d32c8ce195mr71356366d6.17.1781291459860; 
+ Fri, 12 Jun 2026 12:10:59 -0700 (PDT)
 Received: from
- runnervm1li68.acrcebrcupsetj21tpkunvq0he.ex.internal.cloudapp.net
- ([20.102.223.147]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-9161a04b9c6sm290834385a.36.2026.06.12.12.09.33
+ runnervm1li68.a4l5jnhyvw4elhxgcp3m1o2p0h.ex.internal.cloudapp.net
+ ([135.232.201.49]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8d301b2a79asm32238626d6.13.2026.06.12.12.10.59
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 12 Jun 2026 12:09:33 -0700 (PDT)
+ Fri, 12 Jun 2026 12:10:59 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Jinseok Kim <always.starving0@gmail.com>
-Date: Fri, 12 Jun 2026 19:09:32 +0000
-Message-ID: <20260612190932.4647-1-linuxtestproject.agent@gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Fri, 12 Jun 2026 19:10:58 +0000
+Message-ID: <20260612191058.4201-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260612171415.988-1-always.starving0@gmail.com>
-References: <20260612171415.988-1-always.starving0@gmail.com>
+In-Reply-To: <20260612-metadata_groups-v1-1-d7a24a7ac7a8@suse.com>
+References: <20260612-metadata_groups-v1-1-d7a24a7ac7a8@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] power_management: rewrite runpwtests04.sh in C
+Subject: Re: [LTP] metadata: add tests grouping support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,30 +97,30 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jinseok,
+Hi Andrea,
 
-On Sat, 13 Jun 2026 02:13:46 +0900, Jinseok Kim wrote:
-> power_management: rewrite runpwtests04.sh in C
+On 2026-06-12, Andrea Cervesato wrote:
+> metadata: add tests grouping support
 
-> The new implementation preserves the original test semantics while
-> removing shell dependencies.
+--- [PATCH 1/2] ---
 
-This claim is inaccurate in at least two ways:
+> 2. @group tags in the doc comment block, e.g.:
+>    /*    * Test description.
+>     *
+>     * @group stress
+>     */
 
-1. The original shell script calls check_arch from pm_include.sh,
-which gates the test to x86/x86_64 and reports TCONF on other
-architectures. The new C test drops this gate entirely, relying
-on runtime sysfs presence instead. That is arguably better
-(runtime detection over compile-time assumptions), but it is a
-semantic change that should be mentioned.
+The example appears malformed. metaparse only extracts @group tags
+from doc comment blocks opened with /*\, not plain /* comments.
+The test file (groups.c) correctly uses /*\ as the opening.
 
-2. When /sys/devices/system/cpu/cpuidle does not exist, the
-original script skips the loop and falls through to PASS. The
-new test calls tst_brk(TCONF) in setup. Again an improvement,
-but not "preserved semantics".
+Should this be:
 
-Consider rewording the commit body to acknowledge these
-intentional behavioral changes rather than claiming equivalence.
+   /*\
+    * Test description.
+    *
+    * @group stress
+    */
 
 Verdict - Needs revision
 
