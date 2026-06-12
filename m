@@ -4,89 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 942D0CD8CA8
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 09:17:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781255851; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=T1XRuO3t3DDSIi6DvcC6dwJzCHDLv8OGSCRtxtkrTCE=;
- b=dMLiRoK8u7zb3aFCundtUrxx0ve2uavYvDnmGM54jrng4ECGORS4OdxJAhYmdHRnb5b2e
- VivwzZdol4xwjlw4qsbZ+eSb2d0WEatqT5GUj0TO8F0SNuZodr7JBYzUSZb2ithx7Y/krq7
- 3IkAWwx5SGuXLOlbp+5rKcBSQEK53hA=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F940CD4F2C
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 09:19:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1DFC93E2C3F
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 11:17:31 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 1715E3E2C3F
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 11:19:02 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EE9833C0528
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 11:17:10 +0200 (CEST)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
- [IPv6:2a00:1450:4864:20::42f])
+ by picard.linux.it (Postfix) with ESMTPS id F3D733C0528
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 11:18:46 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 70F816008F8
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 11:17:10 +0200 (CEST)
-Received: by mail-wr1-x42f.google.com with SMTP id
- ffacd0b85a97d-45fd464d51fso367505f8f.3
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 02:17:10 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 51BD860083B
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 11:18:46 +0200 (CEST)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-490b8a97b11so8640535e9.0
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 02:18:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781255926; cv=none;
+ d=google.com; s=arc-20240605;
+ b=j3kreP7vp/Bjv+nFBi8cPdLonO+d9bBj9nzNQbUgF+omVxo8i57KprK9xpDmgm2jB5
+ 8KbOaEzgCFfv5c4vn1tKIyxeNaSF4i8fOpyEF1egysE/TvUobldg1D2MqSzl4cKeD9EJ
+ 0RUKC+zuELL0kaWj5YlLJ3MvV3EsFa/JCJ6nDfTSevFvWP9uSyKJEimd7q49p6BjRAuB
+ mEfn2n2Gh64vMHgxdZstwdBqZ7Pcj1DSeD2lr0b+DZ6ayKhvnUKynoT7+wDNlFx5D27R
+ c87fI4/ihr+rnqhoSwIfxnBk6XxWiBiNDhpwX44fy44D5AGp0GcjoqRnsOg1/tgSIi3x
+ GkCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:dkim-signature;
+ bh=3u2Mt1954Rh9R9Ex/koBLCz0OBfmAI/3k0kpmVXEaf0=;
+ fh=OUuxfE/vljMZo/un0EbICh+FDuosYtNpwvwzmv4vDSg=;
+ b=iT5N20te/2TD/zHfRy6+3SxJmotDavrzQ5ocjfuws13QxMfhSOvH44Mq+/+bxz5vzc
+ LE3jeqh2paA3WPTlz8HMyusZlFQw+J7huoqafxS3AyNQlaIg+ijsu+HnvcyAScBZC2Dx
+ pEN9EGdu24H2hyOTwU7HMr1yrOaUyKiAvknjZuBysgYB06xWQb7T7aRn+MfYbtqoWp1+
+ mqzOYaPGU4viM0ZjejTJw/iv4yA/9R9LjPEdBpjTwcJdZoCAoaJnKmoy1fUkacSWCKI1
+ ZanDZMwz0plQawcSLAvujKVNjed4aFHI0Da5/fg6dsw3TWuYnZKaym8KeeKxrsPl++Jl
+ Dazw==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1781255830; x=1781860630; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=zNGgJzI0GHdSKsqDhA+PTMn4Zaw4vOWtHXIV3Aef6rw=;
- b=NwjiRs0B38y1PGNfZUM/4b+aIVjsGuoxWpwHtDaO9fsLgbuHeZHf5S3j8sUBYtVy/0
- t5SKdD0P8zLB6GkYaNitIkeC4OSX+4kdmj5y6SVKERsEjBYGLzoqLdRas1Q5Vg18dtjp
- mVndYQzrOtmq3KN095wPLMYfQyj67/Tp2CSPg0mHha21US2nd8phu3trwYdTa4KHZHts
- qii6eerPACZrX5XQ1ut1lCIjxHGXBh/iHPanhdoV5W5wcDpz4yGVXdAPBCbPyeSCs8v6
- OTnuQNMmXy2STtgiNLc/8ubotEUJUKwc0mGPGY74kjJN2U5jeOhcCjVhGLOu0VtKQKMs
- wFSQ==
+ d=gmail.com; s=20251104; t=1781255926; x=1781860726; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=3u2Mt1954Rh9R9Ex/koBLCz0OBfmAI/3k0kpmVXEaf0=;
+ b=iDp2mRbFQk8oVOSC+wq8Dt8TDuMLR8fQOc002Ba8grPGavwL/1K04CZRsMF9w19mG8
+ 4BYpEFY9ZHppQ0eZHLesJCIKnqiaqPx5WtG94jUzGEzoz01aDiB0qzT5iKu3uIdMmhfU
+ HMNSv4Z14Jwg3eM84Ad71My1JhUlWT+KtOyOE3ksmUDNDqF3QT5Kq4qCD6OyACWj4ql6
+ bXhJeroixmRqR+r4PK+lFxgo/9agWZCbCHwHWAsVQtrqOkEWbAuTv0hprnMRTS1d5rft
+ Q4UaZdFUsgo2qpiDbcSJu8D7DzJAi1xAFSv8XJX2Qjoh9nqWivEkpL07lH9omzuEdH2D
+ wBug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781255830; x=1781860630;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=1e100.net; s=20251104; t=1781255926; x=1781860726;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=zNGgJzI0GHdSKsqDhA+PTMn4Zaw4vOWtHXIV3Aef6rw=;
- b=iixS79e072xsce/EfjvVp2/P3yU55CK1F0v3jkfEU53demHQB23NHQKPprtfRGrMoj
- xxvp5RVPeBRROmDTwJEXVvA9qjk5iBX7FRy9YjtKvUhLb8JMGVgLksN3DJSeAoVR7Bjk
- dvApUI2iwMxCh1f/VZla3KK1I8qk+3F/Q47/SEivGVE5VSonq5Jr4nNp1TxsyEMQL79o
- tNwqKyLZaJl8jgsho6OqYnohqqi8K50c+cx125KbcEQCEIqSvntnSBWnGXpIlFMQBsn2
- 0FieZWEyxwwmC0Vjt54mQOjfh6UuhFABDV6OgDPMShjfr6FTBBQcjd75sBD/4ICEHR7A
- uFKA==
-X-Gm-Message-State: AOJu0YxHubsZs7EEIVj+t88o1lO65ZUl5u3kXeIJBRqO4uT1AUba0iuK
- aOtq/ITrfzNa1THk3lxTuvZussw5xeYk+8jHm681Y6fy6KwI4cbvFMGxR4fek71TweDq76dHv4s
- Nw99f6VsXEQ==
-X-Gm-Gg: Acq92OED9TmcmlggoRSCi7Lf1kgz7D9vfgJQwbnrPbXSaLZrroZY+JqvBZbi8x8jSGM
- D1QPHj/kfQcZsa5b3Y4dGRr5Sw1wvd1Q+SrpNRfn9mES82geG5zyVh1oB98mIyDWsKpu7q50JcV
- ZBJvDsXAUMziA6fFlFr8OM+XpkrOhWYDNiR80hHE5QSocTkHURgK1McAhEQ2duZUTACsk7wfw/V
- 0gr0xmM+sIGwXzm9tAXSKq2kuG3Y2kwi2JtaFP+NYzxpeLmRQCjj2sbidK6/OPozVNB+U1aix+i
- BWbz/K3ADlDRpSKsUqFLUUCyk2OdKvNCpuBHQLB0la84l1MNcMtE05VULQk2FrZXyzyJEP9Mvrl
- lUlNnuWav/mJADwKtDbw2i8NoLMHxIVhsPhQZesAiBF4St1uVeOJMTnd1laWIlGb44O8Vx6z85n
- wUM6FdC9XXkfL4tq8A9gvZjFFOv5KB/aSnJ/u/3euLjfndYBaEJDFgZkCwoIEMxqLTg7CjT3bqO
- nW7mLaL/Y0tqcEsvEgHsMrH9w7ZfVobV/z2nHYXuWFbkf+hljVhYalSvTvUdvKVecSGA0S/qOoX
- +Q==
-X-Received: by 2002:a05:6000:2004:b0:460:f36:79b0 with SMTP id
- ffacd0b85a97d-4606da778a7mr2642899f8f.19.1781255829703; 
- Fri, 12 Jun 2026 02:17:09 -0700 (PDT)
-Received: from p200300ef2f13eb00017f7d76deb7e8bb.dip0.t-ipconnect.de
- (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
- [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4606f26f23fsm3869175f8f.9.2026.06.12.02.17.09
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 12 Jun 2026 02:17:09 -0700 (PDT)
-Message-ID: <6a2bce95.53cb9477.13cf23.7006@mx.google.com>
-To: "Jinseok Kim" <always.starving0@gmail.com>
-In-Reply-To: <20260524154221.2064-1-always.starving0@gmail.com>
-Date: Fri, 12 Jun 2026 09:17:08 +0000
+ bh=3u2Mt1954Rh9R9Ex/koBLCz0OBfmAI/3k0kpmVXEaf0=;
+ b=J0Ynxb7DBD4BhyyTMGVszgXpdf5HdpcZDlED4J/4riGpTTf/xtoQCCxnsnI9kgYto8
+ l4WAw3ROkXZRKghbAm+CPuswGFM/yvDsPLOv7vitFQA/J/y6/IaVQHYjqFRyRfETwLC2
+ b8axMPs5eH+dXR1/SeEttp87nozIMEKKMGPK7u2uUBgOp/MeWxm7k3e+X7mDz1rVGf/5
+ xldmr7YfSQpvBho3JKwzpkMJ8jlFueyCNnJHZjtZvuxZO41TSB60fxTw0r+Fc/sBFCE/
+ sZZSPW4+/mq6Pnk7guTmitI/7Wh7ZEvAn6liK1+V6KpZn/4P2V4OE6rNrWq9/0DgCZQ0
+ L6tA==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ/L9kWMG4p569USCIG5ZOw/TnyXvTnBJtTmegJSG2y8TpI0pEC3e4uT0oOSKHCWXXJ/Ao4=@lists.linux.it
+X-Gm-Message-State: AOJu0YyfY4OFMBfHidAWfL9rIKugXRC6b3PacLgr7fpaZKfxxCRec3E7
+ jLmrmfZMljZgVzcHjp9+kXdzV88tTJ3+nNZjDqFahWEJ8iPzCBu2D8dP4nxljeCG7DdnRxbzO0c
+ +Jdjfs+NvDWR07euclqnKqzG3L9RcfMc=
+X-Gm-Gg: Acq92OFPniC5oaGRwi336QjZVaduUf8g8PhZ7nnP3JpXqLsOT3xFWHGUvsvajHB3o3s
+ VLq5XCYUIBbxy0Z7pLiWY6QY86jUuydjEDfEdKrU2dQHf26JyK+0DsJYeAqHHhCMioaOuvDxMV7
+ Gh4sC8PzWyo5OeLVJlEV75Ke+jb/26YpfC7bcB/Uw/tYltVuTCCAvbmP4tf/LmjejN1XGa1RtMV
+ 6VOrg2W75cF0rp/gkdGvXmHEgbaxcsmYCqqKF4sLreRy9rZXoLtlBfghPKhnAx4bw3oXlqNH7Mg
+ T9NQJldwhNgDPcoGGrVaL3UGoHvSh2U1WjuYIA==
+X-Received: by 2002:a05:600c:8b84:b0:491:731c:892a with SMTP id
+ 5b1f17b1804b1-491731c8944mr13066375e9.35.1781255925427; Fri, 12 Jun 2026
+ 02:18:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20260611-fix_cgroup_immutable-v1-1-0bcb90faa6fe@suse.com>
+ <aivLjiPDt4TTYtG0@autotest-wegao.qe.prg2.suse.org>
+In-Reply-To: <aivLjiPDt4TTYtG0@autotest-wegao.qe.prg2.suse.org>
+From: Sebastian Chlad <sebastianchlad@gmail.com>
+Date: Fri, 12 Jun 2026 11:18:34 +0200
+X-Gm-Features: AVVi8CfM2eV4FD2tq0ODEIo01T-vssFdVRDWkDrMvnpjwt4bSI6F5B3ZXtCeJVI
+Message-ID: <CAJCsO8cqT94dF1N6yqswABJCN6+BCM4eawH6D=twnHAA9m5o0A@mail.gmail.com>
+To: Wei Gao <wegao@suse.com>
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] power_management: rewrite runpwtests04.sh in C
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] cgroup_fj: don't disable controller that was
+ already enabled
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,30 +107,88 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jinseok,
+On Fri, 12 Jun 2026 at 11:04, Wei Gao via ltp <ltp@lists.linux.it> wrote:
 
-for some reasons I didn't receive your [3] in my ML, but I have
-the CI results and the patch-set needs to be fixed because it
-doesn't apply:
+> On Thu, Jun 11, 2026 at 05:03:41PM +0200, Andrea Cervesato wrote:
+> > From: Andrea Cervesato <andrea.cervesato@suse.com>
+> >
+> > On immutable distributions (and systemd-managed systems in general)
+> > the cpuset controller is typically already enabled at the root cgroup
+> > level. The cleanup tried to unconditionally disable it via
+> > subtree_control, which failed with EBUSY because other system cgroups
+> > were still using it, producing a spurious TWARN.
+> >
+> > Save whether the controller was already enabled at root before
+> > cgroup_require and skip the root-level disable in cleanup when it
+> > was.
+> >
+> > Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> > ---
+> >  testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh | 10
+> +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+> b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+> > index
+> 153d351d7936effb15527620f565acaaed7ac747..8b5e73466ba32d2c66a2805a03f4d2136c16509b
+> 100755
+> > --- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+> > +++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+> > @@ -57,6 +57,14 @@ create_subgroup()
+> >
+> >  common_setup()
+> >  {
+> > +    # Check if the controller is already enabled at root before
+> > +    # cgroup_require potentially enables it, so that cleanup does
+> > +    # not disable a controller the system was already using.
+> > +    if [ -f /sys/fs/cgroup/cgroup.subtree_control ] && \
+> > +       grep -qw "$subsystem" /sys/fs/cgroup/cgroup.subtree_control; then
+> > +        ctrl_was_enabled=1
+> > +    fi
+> > +
+> >      cgroup_require "$subsystem"
+> >      mount_point=$(cgroup_get_mountpoint "$subsystem")
+> >      start_path=$(cgroup_get_test_path "$subsystem")
+> > @@ -77,7 +85,7 @@ common_cleanup()
+> >
+> >      cgroup_cleanup
+> >
+> > -    if [ "$cgroup_version" = "2" ]; then
+> > +    if [ "$cgroup_version" = "2" ] && [ "$ctrl_was_enabled" != "1" ];
+> then
+> >          case "$subsystem" in
+> >          cpu|io|memory|pids)
+> >              :;;
+> >
+> > ---
+> > base-commit: a375e8deed471723f5a0114c56eb48fe6f6f45d3
+> > change-id: 20260611-fix_cgroup_immutable-2259f7591f8d
+> >
+> > Best regards,
+> > --
+> > Andrea Cervesato <andrea.cervesato@suse.com>
+> Reviewed-by: Wei Gao <wegao@suse.com>
+>
 
-https://github.com/linux-test-project/ltp/actions/runs/27367707128
+Feel free to add:
+Reviewed-by: Sebastian Chlad <sebastian.chlad@suse.com>
 
-Please send v4.
 
-Thanks,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+> >
+> >
+> > --
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
