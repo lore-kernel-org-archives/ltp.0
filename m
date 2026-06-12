@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B4C5CD8CA8
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 12:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA721CD8CA8
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 12:27:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B91D23E5E55
-	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 14:22:56 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 354013E2A9D
+	for <ltp@archiver.kernel.org>; Fri, 12 Jun 2026 14:27:41 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0A98F3E1CF6
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 14:22:42 +0200 (CEST)
-Received: from mail-dy1-x1342.google.com (mail-dy1-x1342.google.com
- [IPv6:2607:f8b0:4864:20::1342])
+ by picard.linux.it (Postfix) with ESMTPS id 51FA53E1CF6
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 14:27:26 +0200 (CEST)
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com
+ [IPv6:2607:f8b0:4864:20::f41])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 917B360025C
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 14:22:42 +0200 (CEST)
-Received: by mail-dy1-x1342.google.com with SMTP id
- 5a478bee46e88-304d7f31215so874038eec.1
- for <ltp@lists.linux.it>; Fri, 12 Jun 2026 05:22:42 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 225F41400C70
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 14:27:26 +0200 (CEST)
+Received: by mail-qv1-xf41.google.com with SMTP id
+ 6a1803df08f44-8ccf887de87so10467036d6.0
+ for <ltp@lists.linux.it>; Fri, 12 Jun 2026 05:27:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781266961; x=1781871761; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1781267245; x=1781872045; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=02SHUCu2q4DnBVH2whGdjE3pq561uweOykdtSDZgams=;
- b=KjBfjQ6bNMQj79GU/Tj5cUlqxPvTbe1+7r5lMtGYPEmRea64xtqjJ/0kL5NORNdD7n
- QHIhL5Jkm64obMuxLroK/XCRdXcTnqDmQJbALvo++LfRIXwxvwhrFMxCRH3kOU3edSIZ
- Ek8FrCuA1Hi769y87Aa49ar42Rjn4WVyPXYCigxBWH+Mh4ViCryjUgjHZvUdJEFFIHsq
- WvxvTeomVwDJcrKKAYfPtts+WFawn07Lpe8nVx8BmFuu8U3MZQoKW80nt1fFtSi4iYdx
- Af+8tFtNvwh3dCGr1mR4gAr0XALjsfw95p1+EfGuBSiRnoYewYBGfJYqRKcF+TDed6b9
- +S4w==
+ bh=vPNkqSob3bHmWatJhnFGyG1LfU/BkJdHFb/ejxiDGiI=;
+ b=JsUwRXdQ9n4Kym0bm04g0guI1BPMv+HsP9/D9YRjF9/+jGM/WBRt1j2E8OH9OmwyOS
+ z5h8mTvZYcVThVxpAEhObbKYjyDOGRw81a0akAg+AOhq/UYiZS8bvVPeentGjhrFjHBU
+ 0qHPBTrGBK9tKw4mm/naCjI5BFVZsd+wenZmLilrvjygtpJUcu3bQ7l/SwzpVh3pBwe6
+ wvNIk9cVGn2v8SYDykyUr9Siym1zEz0ncdbfA7GYbM3WohMmMZIo2OiZZokgnh3pl7Fd
+ u4VSVBn19xOXqGpFbatNQKMar+qnHic4CwOJqupmEZSIZzV/sk9qhQA49zPVEISX7vtz
+ kE7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781266961; x=1781871761;
+ d=1e100.net; s=20251104; t=1781267245; x=1781872045;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=02SHUCu2q4DnBVH2whGdjE3pq561uweOykdtSDZgams=;
- b=WHxSS6h7MaVD43fbJAnSLFfuD6q/IrqXbmUBkGXIQKMYiGpztu5U++Li4/lrJ/54T+
- WYlmnOHhzc7sXydEvTIAE1NOVLqbDw+jYtyH99AvuFe56Ip3wVbJ+TVa7cVnSJPwvVzZ
- pAZcg37NP7pcqoft6KDI+c6eKFJAnabHwF+Spu58bC13WZxfCDmUbBKSY5uVs/qd2+Aw
- B3SB1nBd6cUKPOVgbQpXC30BcwHL+STsANE45RBsyRlTniT+87IyLJ6zy2EW1G4rdseZ
- CUZuKg/S5wjx7U987ccUBL89poYrpdR6B4D852Pu1SmJga7eXK2q3q0OmgBbLcZn6DKR
- eA+A==
-X-Gm-Message-State: AOJu0Yy01odSeXzJTXYt+pvc3cZCC0uoY1KOnPwJIEYzTFqKeeoduPrq
- AbeH530NUTaL9LHM3SyBG4gb8tEBNjkyuJQqirt6YaxcHr8GkwJTf5lz
-X-Gm-Gg: Acq92OFZbuwZTOrVCM8wMceaMvUzIju7cs2rtriGhNanA4Tw6zmrB2UXKe3637CUW5M
- JoiE7eIrDFFmPfkHgsAcGToCEYtu1heGWFlXjIn7fDz/VSp4W1WnzM0dWexdneKhT+9tpxZYTIN
- REplgFK6I0Hlk2NF8kA3d17et2i57YBp/o4/5IddMhYBfjFGGuWgI1YIScbus2oLt+XGtGvGm8T
- i8Jyeej+4sykDPJCJXJ+3ryTve1/lm3g1LgVu5JMjOc3BM5f/UVVbCbK1PW+F5U0GJjfZE0a8u3
- TnRoyCeDP/JdJh7GJc4hKfo9f0MP8OTqJKvWAYiThC80E+bvXSSPzJtoE9bezyPjs3UjEhkmzy/
- Pr2b7GCoJqUssHGFofcowCtDAitBmkLKaCF9ET5/UxICe0gZYOKED8QK7fKYeZpmiS2d2xwCxB1
- SKwACWDajdBVboW40q2PGBSoEAKO7hT04n0Wn/sjbE67aQRK4CmIir7YBHlJgEC2VoOVuLgxjNu
- cJsORJvSAQ5GAOOzPLMMz7P4H8CXJEZNJNDJ9lqSUA804Xp
-X-Received: by 2002:a05:7301:9c8e:b0:304:997c:d47a with SMTP id
- 5a478bee46e88-3081ff71b81mr1561883eec.10.1781266960668; 
- Fri, 12 Jun 2026 05:22:40 -0700 (PDT)
+ bh=vPNkqSob3bHmWatJhnFGyG1LfU/BkJdHFb/ejxiDGiI=;
+ b=jM7m3cusu8ae/N5GFekVao6OrbSZ1h7MnJKOTOdnIco8moAs0Sg1ITqn3867MCtfvI
+ u0hW/zgLxsSIZ3YO6lFFI/z3EmFuvNUPEIWHckS4EyKplxuMnrxAum8P2sxZ2b7E5Ajq
+ v6CJYaAuoNfHG7MevZX/D2CMQEjQlmP72p9GB1/itw2Yp0FK2F7uClN3g/r0m91aiYbM
+ IrZAY/t3iY1KCQ5XhGz2lmbZNoCL9Ou+JdzLB0j6Z9eKF+NMGxJ9SJIqNq6JcBgD0ujs
+ PtNys0G18eegKms62f0FX3z+tVs033NQg0SfWRgXfZPi5t0cGo46hIyxPw+I+nt8pX1f
+ MqOg==
+X-Gm-Message-State: AOJu0Yx2cMVEoHP9bA2nu1/IctzIia38xA1olWht3qA1+BU0cHGh0fbn
+ a0PLFBTb6VLWMYnrJcRk7FJFtT8C0GAR/wrQBbEGufqtdmLbek172AJ2
+X-Gm-Gg: Acq92OGymojTit+8Y0UUI+S7dnR+GIGUtrhtOZlcGChW0SkHFqU6Rw8Eh/QysHt8+Fb
+ fVykVPgHxMWop4VxYjiCO7Db4nzucMmYLwXCpntfZLbGnFm2BvwdEHcl5V9VjRgHd1jNAX7ppO8
+ +p/WHb0GfZs0g6pLMHrJAFy535T5dMlQ4Eb2eDBR3eqGMEjKDJ1BJ9gRFGY+bkbQuUMb9PSEOr3
+ KzsqC2yTNdarRSVj7P4vMKrJlciKrPoSQjWYs9GhixE4q2MGUVbD1WTzvFwOmEAkU1N3i18vcr2
+ WPoE2viviHMmUhE8kaHSmRtWgQ6NZaXIlvI1qRLBbbQC+n06IWiDTuGR7Q8V3qqebe1hWWi7W8B
+ 6Ov5oGWuGK4Tn4BVui4lz7EU7fFkLq1uaoYKo7m+/caWSRIeopMJWVYKK5aQYArkyqkOEhe4VDF
+ Kr6FiK/9XvTNz1KWValQQvOTzsyffy+z3H0raMzLIoPObz4TLKaC+ZHN5GuIp7nWT4NU0hg2kvU
+ p2e5qInGUDhPm/iYncvV+Qgg+97FynLU1otxKOihSZiURdB7/w=
+X-Received: by 2002:a05:6214:469e:b0:8b5:e126:e77d with SMTP id
+ 6a1803df08f44-8d32bb3c950mr43778386d6.8.1781267244730; 
+ Fri, 12 Jun 2026 05:27:24 -0700 (PDT)
 Received: from
- runnervm1li68.aygp4ywqhuguzgdq0r011xmwyc.dx.internal.cloudapp.net
- ([52.159.246.2]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3081eb9a138sm4081930eec.31.2026.06.12.05.22.39
+ runnervm1li68.fwbxogqxw2hu1gnhcu514ce0ub.bx.internal.cloudapp.net
+ ([52.188.198.104]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8d301b271e7sm21867806d6.14.2026.06.12.05.27.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 12 Jun 2026 05:22:40 -0700 (PDT)
+ Fri, 12 Jun 2026 05:27:24 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 12 Jun 2026 12:22:38 +0000
-Message-ID: <20260612122238.3910-1-linuxtestproject.agent@gmail.com>
+Date: Fri, 12 Jun 2026 12:27:23 +0000
+Message-ID: <20260612122723.4102-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260612-fix_clone11_min_kver-v2-1-90cfb4b687fb@suse.com>
-References: <20260612-fix_clone11_min_kver-v2-1-90cfb4b687fb@suse.com>
+In-Reply-To: <20260612-doc_add_missing_headers-v8-1-a4639c49cad8@suse.com>
+References: <20260612-doc_add_missing_headers-v8-1-a4639c49cad8@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] clone11: skip CLONE_NEWCGROUP on kernels < 4.6
+Subject: Re: [LTP] doc: Add missing API references to api_c_tests.rst
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,10 +98,28 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-On Fri, 12 Jun 2026 11:58:26 +0200, Andrea Cervesato wrote:
-> clone11: skip CLONE_NEWCGROUP on kernels < 4.6
+On Fri, 12 Jun 2026 10:27:20 +0200, Andrea Cervesato wrote:
+> doc: Add missing API references to api_c_tests.rst
 
-Verdict: Reviewed
+--- [PATCH 1/2] ---
+
+> +/**
+> + * struct tst_device - Block device used by a test.
+> + * @dev: Device path (e.g. /dev/loop0).
+> + * @fs_type: Filesystem type used to format the device.
+> + * @size: Device size in bytes.
+> + * @is_fuse: Set by the library when the mounted filesystem is FUSE-based.
+> + */
+
+The @size description says "in bytes", but tst_get_device_size() returns
+size/1024/1024 (megabytes), and tst_device->size is assigned from it in
+tst_test.c:
+
+    tdev.size = tst_get_device_size(tdev.dev);
+
+Should @size say "Device size in megabytes" instead?
+
+Verdict: Needs revision
 
 ---
 Note:
