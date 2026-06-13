@@ -4,102 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 281F2CD8CA8
-	for <ltp@archiver.kernel.org>; Sat, 13 Jun 2026 09:07:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7607CD98D2
+	for <ltp@archiver.kernel.org>; Sat, 13 Jun 2026 09:07:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 74A243E5E41
-	for <ltp@archiver.kernel.org>; Sat, 13 Jun 2026 11:07:08 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 564883CC87E
+	for <ltp@archiver.kernel.org>; Sat, 13 Jun 2026 11:07:27 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8A08E3E5E42
- for <ltp@lists.linux.it>; Sat, 13 Jun 2026 11:05:54 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 5144E3E5E44
+ for <ltp@lists.linux.it>; Sat, 13 Jun 2026 11:05:56 +0200 (CEST)
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 908F91000D45
- for <ltp@lists.linux.it>; Sat, 13 Jun 2026 11:05:53 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 67C342000D9
+ for <ltp@lists.linux.it>; Sat, 13 Jun 2026 11:05:55 +0200 (CEST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 65D6cELo044771; Sat, 13 Jun 2026 09:05:51 GMT
+ 65D5w3Fs031017; Sat, 13 Jun 2026 09:05:53 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=Y5J0KG
- u4XMiG3xUIN8+usUr525qAv9MhQV4lLKvBVeQ=; b=SQHIwifSJSfR+iFKtZo5wo
- HyRcvC1fCg8xoUAGQ0NCuGcFEluqa7d96BBgZZzlUMLfkocVh3YTEWNkRzl+j7kR
- gkmwfMXrYvILHzJ0/nK9ov4HTcI+MY/j2nRSZKciyZMmMxJb+xdjmHGwYvYL9RIH
- T+n4f5pke2hTCPV9YoNzgA/XnycebOz/kMNoqukp83bvM8tH7OsOpAgM+AhcPbzR
- d6f3UoaVoLMudzt1C3AOdHWcUjxwx6wYATbZeurzVkhwAW8j/Ppr9D5L+JmKmRn+
- Xfadi563BFklSfoZQB/h+kazbX/Z7yNGy8AbQAJD3QUsKAytMSRU8wrOYKrEYMuQ
- ==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4es23n891r-1
+ :content-transfer-encoding:date:from:in-reply-to:message-id
+ :mime-version:references:subject:to; s=pp1; bh=h3+CfpEbK+62YiniZ
+ b+6sf5mdIVvsMACuJVPbNpTqJs=; b=Rtif2wEozmVTuSmt9PXCHDJm51xvIY9wC
+ Wb4lcgav3H6KJMVwgfXqwAq2+GFQT99iyexE78O/RepnLYBwtjJwtA2kJJkKZ5cs
+ ayBBNfK4Rbq1zixqspTrxwtp6O7G7xKGespTMXrVfAvrnjR2fPZwLklWhWSRCw9+
+ Ye9fMrrI5tETFwIEGdAU8RPmlJTC34Ow5KQXHRbiddRC2/LtfzYMTqF5KT2g4XuY
+ ZyarcPqRTdU2ycZT8sMWk9qZx3ceo0p8/NNr3hMDlVNDe/QqCN/XZ1xiggtgXJEE
+ 4iXqqbE0vG4yRtUWKymIbH575/B5A4hzGRC6H1/61XYCrK0v3U+jg==
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4es1h7recj-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sat, 13 Jun 2026 09:05:51 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65D94alF026096;
- Sat, 13 Jun 2026 09:05:50 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4eqe0a3e81-1
+ Sat, 13 Jun 2026 09:05:53 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65D94cSV000387;
+ Sat, 13 Jun 2026 09:05:52 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4eqe0abes7-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sat, 13 Jun 2026 09:05:50 +0000 (GMT)
+ Sat, 13 Jun 2026 09:05:52 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
  [10.20.54.101])
- by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 65D95nIK49545582
+ by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 65D95o1R12058918
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sat, 13 Jun 2026 09:05:49 GMT
+ Sat, 13 Jun 2026 09:05:50 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 009C12004B;
+ by IMSVA (Postfix) with ESMTP id 0D88B20043;
+ Sat, 13 Jun 2026 09:05:50 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 4EE4920040;
  Sat, 13 Jun 2026 09:05:49 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 4452C20040;
- Sat, 13 Jun 2026 09:05:48 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.43.78.90])
  by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Sat, 13 Jun 2026 09:05:48 +0000 (GMT)
+ Sat, 13 Jun 2026 09:05:49 +0000 (GMT)
 From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Sat, 13 Jun 2026 14:35:39 +0530
-Message-Id: <20260613090543.78643-5-sachinp@linux.ibm.com>
+Date: Sat, 13 Jun 2026 14:35:40 +0530
+Message-Id: <20260613090543.78643-6-sachinp@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20260613090543.78643-1-sachinp@linux.ibm.com>
 References: <20260613090543.78643-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=XtnK/1F9 c=1 sm=1 tr=0 ts=6a2d1d6f cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=VwQbUJbxAAAA:8
- a=VnNF1IyMAAAA:8 a=qaZOuUcuEhqKilkFWQkA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjEzMDA4NyBTYWx0ZWRfX4eSS0NJMFWp0
- 95nDoEuCpe3dOsDakO7rR9LHs3nIpzkwukq/rCir8WdjPxXCZM2arjBGW3KFTkbr3VA7Z1mNviD
- G1hDVtuajqdW1Lmd8GfLj2buR099CQW1sDIzhCZy1sj+sWFf01QB1iJ0AGLKb6V/jbbisRIbsm0
- kqxafEvVkx7/XhkaDPG+aEOCol4j77lplVWBkflw6tWtpDqJ6TJLv2ezCNbqyIbocQNPqV46NMy
- xkxnx5Ok3VCpLDIaniTsEO390tAk+TPAFW3PfxvMOk3l0AVvPDr+qIbUzlPpl96PS+RlrxfzRDS
- 6dM6fg84S1iQqYGfnasDz5SZd88dII31TyttOMXd9d5//EJNfb3OE3RvHEnD0w6sgdTsjBkY542
- Y9ci0V9BKt9+MrYKa0vS2Wj44c7/sK/ODXg+RcFdqPu01kN+2c011/Bf5WekeCNxT+S1cxvdoCA
- Hr+ssl/3INwwEsNdEvw==
-X-Proofpoint-GUID: LQ1WtrzCmbh3tGK0JgRJB3rAAJVLlrQ6
-X-Proofpoint-ORIG-GUID: LQ1WtrzCmbh3tGK0JgRJB3rAAJVLlrQ6
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNjEzMDA4NyBTYWx0ZWRfXzkHaPIqbCIzi
- GweDj3Zpp8Eek1cM+zXoL3/1Q5ZhgiqQYQie5w6ekFvGfOG9zy0gdY9/AZdlwdHqkEJAk3mYZxx
- wuy0tAJICiXGiNuQBxQLAKrlZ7ZJglc=
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNjEzMDA4NyBTYWx0ZWRfX8danFaJ0EAX5
+ 2RcduJCSlZGSHG3G/i55GzXxlNxtMzf0x3Cin4X6PSzmP0/6dCV48LZmBkxQw+cD5ehCc0PwVqK
+ rbTvhaN60lbnIMJ+lFbHYShEJ7O7snA=
+X-Proofpoint-ORIG-GUID: BoutyQmPhmG8ohiW9KGbAUrabDR02TPl
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjEzMDA4NyBTYWx0ZWRfX+bBUVAalExsh
+ mcrV8S9d45/VQR0P1Vs4whnyO/ux/GDbqO97RWMVT3F+gdQ4EBtTVWVBl/DIyDTFPeDt1sRynni
+ yB7gfA2xxqnabe+exPkJWavwiTxH6jwAJBofxe8hayYYspS4HN4VBYlS9wTRfC/5guxUCz7CqfL
+ 7Os53dpzrux4zm70GrRN6oHNknsy2RMJ9BwVzr5Kc5RAWjBMMJpV69Nu50EWOa48z/4F3WkWBHg
+ xF6/PUJ04KvG0/dakJIXq8pCqzDAeRaZyWijHKPFuSBBDTsl8F7kRgPZIHYXbbF+A/PZPQl0bcJ
+ 10XLe00NP2RJLFElQENyObeVjjE8SWdGifn9ilqyT6HlP9VbUGXWyJolH245sMOouD0GtzArjc8
+ q9VgqLyAS0Xc4brAu8ts3dp2bPQv+uxEaIO32I/ie1PgYm9Z9UxHN7eLAx3jX+Vl0udWWemRmP8
+ JxJe0ZDKqEB2zMpfNew==
+X-Authority-Analysis: v=2.4 cv=U9uiy+ru c=1 sm=1 tr=0 ts=6a2d1d71 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=XdZ29zGAJf27uyTfQcwA:9
+X-Proofpoint-GUID: BoutyQmPhmG8ohiW9KGbAUrabDR02TPl
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-06-13_01,2026-06-12_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 adultscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
- suspectscore=0 clxscore=1015 malwarescore=0 spamscore=0 impostorscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606040000 definitions=main-2606130087
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 clxscore=1015 adultscore=0 malwarescore=0 suspectscore=0
+ spamscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2606040000
+ definitions=main-2606130087
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v8 4/8] fs/acl: Add default ACL inheritance test
+Subject: [LTP] [PATCH v8 5/8] fs/acl: Add chmod/chown ACL interaction tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,106 +111,351 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-QWRkIGFjbF9pbmhlcml0MDEgdGVzdCB0byB2YWxpZGF0ZSBkZWZhdWx0IEFDTCBpbmhlcml0YW5j
-ZSBmcm9tCnBhcmVudCBkaXJlY3RvcnkgdG8gbmV3bHkgY3JlYXRlZCBmaWxlcy4KClRoZSB0ZXN0
-IHZlcmlmaWVzIHRoYXQ6Ci0gRGVmYXVsdCBBQ0xzIHNldCBvbiBhIGRpcmVjdG9yeSBhcmUgaW5o
-ZXJpdGVkIGJ5IG5ldyBmaWxlcwotIE5ldyBmaWxlIHBlcm1pc3Npb25zIHJlZmxlY3QgdGhlIGRl
-ZmF1bHQgQUNMIGVudHJpZXMKLSBGaWxlIGNyZWF0ZWQgd2l0aCB1bWFzayAwIGdldHMgcGVybWlz
-c2lvbnMgZnJvbSBkZWZhdWx0IEFDTAoKVGhpcyB0ZXN0IHNldHMgZGVmYXVsdCBBQ0wgd2l0aCBy
-ZWFkLW9ubHkgcGVybWlzc2lvbnMgKHItLXItLXItLSkKb24gdGhlIHBhcmVudCBkaXJlY3Rvcnks
-IGNyZWF0ZXMgYSBuZXcgZmlsZSB3aXRoIHVtYXNrIDAsIGFuZAp2ZXJpZmllcyB0aGUgZmlsZSBo
-YXMgMDQ0NCBwZXJtaXNzaW9ucyBpbmhlcml0ZWQgZnJvbSB0aGUKZGVmYXVsdCBBQ0wuCgpTdWdn
-ZXN0ZWQtYnk6IEN5cmlsIEhydWJpcyA8Y2hydWJpc0BzdXNlLmN6PgpTaWduZWQtb2ZmLWJ5OiBT
-YWNoaW4gU2FudCA8c2FjaGlucEBsaW51eC5pYm0uY29tPgotLS0KVjggY2hhbmdlczoKLSBObyBj
-aGFuZ2UKClY3IGNoYW5nZXM6Ci0gTm8gY2hhbmdlCgpWNiBjaGFuZ2VzOgotIEFkZGVkIEhBVkVf
-U1lTX1hBVFRSX0ggZ3VhcmQKLSBSZW1vdmVkIHJlZHVuZGFudCBlcnJvciBjaGVja2luZywgcmVs
-eWluZyBvbiBsaWJyYXJ5IGZ1bmN0aW9ucwotIFVwZGF0ZWQgYWxnb3JpdGhtIGRvY3VtZW50YXRp
-b24gd2l0aCBjb3JyZWN0IGZvcm1hdAotIHY1IGxpbmsgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
-bHRwLzIwMjYwNjA4MDkyMjAwLjkyODI3LTEtc2FjaGlucEBsaW51eC5pYm0uY29tL1QvI3QKClY1
-IGNoYW5nZXM6Ci0gU3dpdGNoIHRvIGtlcm5lbCBvbmx5IHRlc3QgdmFsaWRhdGlvbiB0byByZW1v
-dmUgZGVwZW5kZW5jeSBvbiBsaWJhY2wKICBhbmQgdXNlcmFkZC9kZWwgY29tbWFuZHMuCi0gdjQg
-bGluayBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvMjAyNjA2MDQwNjU0MTcuMjU5MjQtMS1z
-YWNoaW5wQGxpbnV4LmlibS5jb20vVC8jdAoKVjQgY2hhbmdlczoKLSBSZW1vdmUgdW51c2VkwqBh
-Y2xfZ2V0X2ZpbGUoKcKgYmxvY2sKLSBrZWVwIG1vZGUtYml0IHZhbGlkYXRpb24gd2l0aCBleHBs
-YW5hdG9yeSBjb21tZW50Ci0gdjMgbGluayBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvMjAy
-NjA2MDMwNjU3NDQuNDcxMDYtMS1zYWNoaW5wQGxpbnV4LmlibS5jb20vVC8jdAoKVjMgY2hhbmdl
-czoKLSBVcGRhdGVkIGNvcHlyaWdodCBoZWFkZXIgYXMgcGVyIExUUCBmb3JtYXQuCi0gdjEgbGlu
-ayBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvMjAyNjA2MDIxMjE5NTguMjc0OTQtMS1zYWNo
-aW5wQGxpbnV4LmlibS5jb20vVC8jdAoKVjIgY2hhbmdlczoKLSBObyBjaGFuZ2VzCgpWMSBjaGFu
-Z2VzOgotIFVzZSBIQVZFX0xJQkFDTCBndWFyZHMgaW4gLmMgY29kZQotIFJlcG9ydCBUQ09ORiB3
-aGVuIGxpYmFjbCBpcyBub3QgYXZhaWxhYmxlCi0gcmZjIGxpbmsgaHR0cHM6Ly9sb3JlLmtlcm5l
-bC5vcmcvbHRwLzQ3NzgzNmZkLTgwYzgtNDE2OC1iZmU2LTAwYjM3NGJiMjUzNEBsaW51eC5pYm0u
-Y29tL1QvI3QKCi0tLQogcnVudGVzdC9mcyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
-ICAxICsKIHRlc3RjYXNlcy9rZXJuZWwvZnMvYWNsLy5naXRpZ25vcmUgICAgICB8ICAgMSArCiB0
-ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC9hY2xfaW5oZXJpdDAxLmMgfCAxMTMgKysrKysrKysrKysr
-KysrKysrKysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDExNSBpbnNlcnRpb25zKCspCiBjcmVhdGUg
-bW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvYWNsX2luaGVyaXQwMS5jCgpkaWZm
-IC0tZ2l0IGEvcnVudGVzdC9mcyBiL3J1bnRlc3QvZnMKaW5kZXggZjI1NDg3YTMzLi5mZDI5NWVk
-YzcgMTAwNjQ0Ci0tLSBhL3J1bnRlc3QvZnMKKysrIGIvcnVudGVzdC9mcwpAQCAtOTIsMyArOTIs
-NCBAQCBzcXVhc2hmczAxIHNxdWFzaGZzMDEKIGFjbF91c2VyX29iajAxIGFjbF91c2VyX29iajAx
-CiBhY2xfbWFzazAxIGFjbF9tYXNrMDEKIGFjbF9vdGhlcjAxIGFjbF9vdGhlcjAxCithY2xfaW5o
-ZXJpdDAxIGFjbF9pbmhlcml0MDEKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNs
-Ly5naXRpZ25vcmUgYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC8uZ2l0aWdub3JlCmluZGV4IGMz
-ZWMwZmFkMy4uYmMwM2JhMWZkIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC8u
-Z2l0aWdub3JlCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNsLy5naXRpZ25vcmUKQEAgLTEs
-MyArMSw0IEBACiAvYWNsX3VzZXJfb2JqMDEKIC9hY2xfbWFzazAxCiAvYWNsX290aGVyMDEKKy9h
-Y2xfaW5oZXJpdDAxCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC9hY2xfaW5o
-ZXJpdDAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC9hY2xfaW5oZXJpdDAxLmMKbmV3IGZp
-bGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMDAwLi41YWY5NmI5MTIKLS0tIC9kZXYvbnVsbAor
-KysgYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC9hY2xfaW5oZXJpdDAxLmMKQEAgLTAsMCArMSwx
-MTMgQEAKKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyCisvKgor
-ICogQ29weXJpZ2h0IChjKSAyMDI2IElCTQorICoKKyAqIE9yaWdpbmFsIHNoZWxsIHRlc3QgYnkg
-S2FpIFpoYW8gKGx0Y2QzQGNuLmlibS5jb20pCisgKiBDb252ZXJ0ZWQgdG8gQyBieSBTYWNoaW4g
-U2FudCA8c2FjaGlucEBsaW51eC5pYm0uY29tPgorICovCisKKy8qXAorICogVGVzdCBkZWZhdWx0
-IEFDTCBpbmhlcml0YW5jZSB1c2luZyBkaXJlY3QgeGF0dHIgbWFuaXB1bGF0aW9uLgorICoKKyAq
-IFZlcmlmeSB0aGF0IGZpbGVzIGNyZWF0ZWQgaW4gYSBkaXJlY3Rvcnkgd2l0aCBkZWZhdWx0IEFD
-THMgaW5oZXJpdAorICogdGhvc2UgQUNMcyBhcyB0aGVpciBhY2Nlc3MgQUNMcy4gRGVmYXVsdCBB
-Q0xzIGFyZSBvbmx5IGFwcGxpY2FibGUKKyAqIHRvIGRpcmVjdG9yaWVzIGFuZCBkZWZpbmUgdGhl
-IGFjY2VzcyBBQ0xzIHRoYXQgZmlsZXMgYW5kIHN1YmRpcmVjdG9yaWVzCisgKiBjcmVhdGVkIHdp
-dGhpbiB0aGF0IGRpcmVjdG9yeSB3aWxsIGluaGVyaXQuCisgKgorICogVGhpcyB0ZXN0IHVzZXMg
-YXJiaXRyYXJ5IFVJRHMgd2l0aG91dCBjcmVhdGluZyBhY3R1YWwgdXNlcnMsIHRlc3RpbmcKKyAq
-IG9ubHkgdGhlIGtlcm5lbCBBQ0wgaW1wbGVtZW50YXRpb24uCisgKgorICogW0FsZ29yaXRobV0K
-KyAqCisgKiAtIFNldCBkZWZhdWx0IEFDTCBvbiBwYXJlbnQgZGlyZWN0b3J5IHdpdGggcmVhZC1v
-bmx5IHBlcm1pc3Npb25zCisgKiAtIENyZWF0ZSBhIG5ldyBmaWxlIGluIHRoYXQgZGlyZWN0b3J5
-IHdpdGggdW1hc2sgMAorICogLSBWZXJpZnkgdGhlIGZpbGUgaW5oZXJpdHMgdGhlIGRlZmF1bHQg
-QUNMIGFzIGl0cyBhY2Nlc3MgQUNMCisgKiAtIENoZWNrIHRoYXQgZmlsZSBwZXJtaXNzaW9ucyBt
-YXRjaCB0aGUgaW5oZXJpdGVkIEFDTCAoMDQ0NCkKKyAqLworCisjaW5jbHVkZSAiYWNsX2xpYi5o
-IgorCisjaWZkZWYgSEFWRV9TWVNfWEFUVFJfSAorCisjZGVmaW5lIFRFU1RfVUlEIDEwMDAKKyNk
-ZWZpbmUgVEVTVF9HSUQgMTAwMAorCitzdGF0aWMgdm9pZCBydW4odm9pZCkKK3sKKwlzdHJ1Y3Qg
-YWNsICphY2w7CisJc3RydWN0IHN0YXQgc3Q7CisKKwl0c3RfcmVzKFRJTkZPLCAiVGVzdGluZyBk
-ZWZhdWx0IEFDTCBpbmhlcml0YW5jZSIpOworCXJlc2V0X3Rlc3RfcGF0aCgpOworCisJU0FGRV9D
-SE9XTihURVNURElSLCBURVNUX1VJRCwgVEVTVF9HSUQpOworCisJYWNsID0gYWNsX2luaXQoKTsK
-KworCWFjbF9hZGRfZW50cnkoYWNsLCBBQ0xfVVNFUl9PQkosIEFDTF9SRUFELCAwKTsKKwlhY2xf
-YWRkX2VudHJ5KGFjbCwgQUNMX0dST1VQX09CSiwgQUNMX1JFQUQsIDApOworCWFjbF9hZGRfZW50
-cnkoYWNsLCBBQ0xfT1RIRVIsIEFDTF9SRUFELCAwKTsKKworCWlmIChhY2xfc2V0X2ZpbGUoVEVT
-VERJUiwgQUNMX1RZUEVfREVGQVVMVCwgYWNsKSA8IDApIHsKKwkJaWYgKGVycm5vID09IEVPUE5P
-VFNVUFApIHsKKwkJCWFjbF9mcmVlKGFjbCk7CisJCQl0c3RfYnJrKFRDT05GIHwgVEVSUk5PLCAi
-QUNMIG5vdCBzdXBwb3J0ZWQiKTsKKwkJfQorCQlhY2xfZnJlZShhY2wpOworCQl0c3RfYnJrKFRC
-Uk9LIHwgVEVSUk5PLCAiQUNMIHNldHVwIGZhaWxlZCIpOworCX0KKworCWFjbF9mcmVlKGFjbCk7
-CisKKwljcmVhdGVfd2l0aF91bWFza19hcyhURVNUX1VJRCwgVEVTVF9HSUQsIDA2NjYsIDAsIDAp
-OworCisJU0FGRV9TVEFUKFRFU1RGSUxFLCAmc3QpOworCisJLyoKKwkgKiBGb3IgYSBtaW5pbWFs
-IEFDTCAoY29udGFpbmluZyBvbmx5IEFDTF9VU0VSX09CSiwgQUNMX0dST1VQX09CSiwKKwkgKiBh
-bmQgQUNMX09USEVSKSwgdGhlIG1vZGUgYml0cyBhcmUgdGhlIGNhbm9uaWNhbCByZXByZXNlbnRh
-dGlvbi4KKwkgKiBWZXJpZnlpbmcgdGhlIG1vZGUgYml0cyBjb25maXJtcyB0aGUgaW5oZXJpdGVk
-IEFDTCB3YXMgYXBwbGllZC4KKwkgKi8KKwlpZiAoKHN0LnN0X21vZGUgJiAwNzc3KSAhPSAwNDQ0
-KSB7CisJCXRzdF9yZXMoVEZBSUwsCisJCQkiRmlsZSBwZXJtaXNzaW9ucyAwJW8sIGV4cGVjdGVk
-IDA0NDQgZnJvbSBkZWZhdWx0IEFDTCIsCisJCQlzdC5zdF9tb2RlICYgMDc3Nyk7CisJCWNsZWFu
-dXBfdGVzdGZpbGUoKTsKKwkJcmV0dXJuOworCX0KKworCWNsZWFudXBfdGVzdGZpbGUoKTsKKwl0
-c3RfcmVzKFRQQVNTLCAiRGVmYXVsdCBBQ0wgaW5oZXJpdGFuY2Ugd29ya3MgY29ycmVjdGx5Iik7
-Cit9CisKK3N0YXRpYyB2b2lkIHNldHVwKHZvaWQpCit7CisJcmVzZXRfdGVzdF9wYXRoKCk7Cit9
-CisKK3N0YXRpYyB2b2lkIGNsZWFudXAodm9pZCkKK3sKKwljbGVhbnVwX3Rlc3RfcGF0aHMoKTsK
-K30KKworc3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0ZXN0ID0geworCS50ZXN0X2FsbCA9IHJ1biwK
-Kwkuc2V0dXAgPSBzZXR1cCwKKwkuY2xlYW51cCA9IGNsZWFudXAsCisJLm5lZWRzX3Jvb3QgPSAx
-LAorCS5tb3VudF9kZXZpY2UgPSAxLAorCS5tbnRwb2ludCA9IE1OVFBPSU5ULAorCS5mb3Jrc19j
-aGlsZCA9IDEsCisJLmZpbGVzeXN0ZW1zID0gKHN0cnVjdCB0c3RfZnNbXSkgeworCQl7LnR5cGUg
-PSAiZXh0MiIsIC5tbnRfZGF0YSA9ICJhY2wifSwKKwkJey50eXBlID0gImV4dDMiLCAubW50X2Rh
-dGEgPSAiYWNsIn0sCisJCXsudHlwZSA9ICJleHQ0IiwgLm1udF9kYXRhID0gImFjbCJ9LAorCQl7
-LnR5cGUgPSAieGZzIn0sCisJCXsudHlwZSA9ICJidHJmcyJ9LAorCQl7fQorCX0KK307CisKKyNl
-bHNlCisJVFNUX1RFU1RfVENPTkYoInN5cy94YXR0ci5oIGlzIG5vdCBhdmFpbGFibGUiKTsKKyNl
-bmRpZgotLSAKMi4zOS4xCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxp
-bnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Add acl_file_ops01 test to verify that standard file operations
+(chmod, chown) interact correctly with POSIX ACLs using direct
+xattr manipulation.
+
+Test coverage:
+- chmod updates ACL_USER_OBJ, ACL_GROUP_OBJ, and ACL_OTHER entries
+- chown changes file owner/group without affecting ACL permissions
+- ACL permissions are preserved after ownership changes
+
+The test uses arbitrary UIDs without creating actual users, testing
+only the kernel ACL implementation. It runs on ext2/ext3/ext4 (with
+acl mount option), XFS, and Btrfs filesystems.
+
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
+---
+V8 changes:
+- Use RST manpage documentation format for syscalls
+- remove forks_child since it is not required.
+- v7 link https://lore.kernel.org/ltp/20260612171930.11964-1-sachinp@linux.ibm.com/T/#t
+
+V7 changes:
+- No change
+
+V6 changes:
+- Added HAVE_SYS_XATTR_H guard
+- Removed redundant error checking, relying on library functions
+- Updated algorithm documentation with correct format
+- v5 link https://lore.kernel.org/ltp/20260608092200.92827-1-sachinp@linux.ibm.com/T/#t
+
+V5 changes:
+- Switch to kernel only test validation to remove dependency on libacl
+  and useradd/del commands.
+- v3 link https://lore.kernel.org/ltp/20260604065417.25924-1-sachinp@linux.ibm.com/T/#t
+
+V4 changes:
+- No change
+
+V3 changes:
+- Updated copyright header as per LTP format.
+- v1 link https://lore.kernel.org/ltp/20260602121958.27494-1-sachinp@linux.ibm.com/T/#t
+
+V2 changes:
+- No change
+
+V1 changes:
+- Use HAVE_LIBACL guards in .c code
+- Report TCONF when libacl is not available
+- rfc link https://lore.kernel.org/ltp/477836fd-80c8-4168-bfe6-00b374bb2534@linux.ibm.com/T/#t
+
+---
+ runtest/fs                               |   1 +
+ testcases/kernel/fs/acl/.gitignore       |   1 +
+ testcases/kernel/fs/acl/acl_file_ops01.c | 256 +++++++++++++++++++++++
+ 3 files changed, 258 insertions(+)
+ create mode 100644 testcases/kernel/fs/acl/acl_file_ops01.c
+
+diff --git a/runtest/fs b/runtest/fs
+index fd295edc7..f1eea055b 100644
+--- a/runtest/fs
++++ b/runtest/fs
+@@ -93,3 +93,4 @@ acl_user_obj01 acl_user_obj01
+ acl_mask01 acl_mask01
+ acl_other01 acl_other01
+ acl_inherit01 acl_inherit01
++acl_file_ops01 acl_file_ops01
+diff --git a/testcases/kernel/fs/acl/.gitignore b/testcases/kernel/fs/acl/.gitignore
+index bc03ba1fd..eb4b4a227 100644
+--- a/testcases/kernel/fs/acl/.gitignore
++++ b/testcases/kernel/fs/acl/.gitignore
+@@ -2,3 +2,4 @@
+ /acl_mask01
+ /acl_other01
+ /acl_inherit01
++/acl_file_ops01
+diff --git a/testcases/kernel/fs/acl/acl_file_ops01.c b/testcases/kernel/fs/acl/acl_file_ops01.c
+new file mode 100644
+index 000000000..323090497
+--- /dev/null
++++ b/testcases/kernel/fs/acl/acl_file_ops01.c
+@@ -0,0 +1,256 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 IBM
++ *
++ * Original shell test by Kai Zhao (ltcd3@cn.ibm.com)
++ * Converted to C by Sachin Sant <sachinp@linux.ibm.com>
++ */
++
++/*\
++ * Test :manpage:`chmod(2)` and :manpage:`chown(2)` interaction
++ * with ACLs using direct xattr manipulation.
++ *
++ * Verify that standard file operations interact correctly
++ * with ACLs:
++ * - :manpage:`chmod(2)` should update ACL_USER_OBJ, ACL_GROUP_OBJ,
++ *   and ACL_OTHER entries
++ * - :manpage:`chown(2)` should change file owner/group without
++ *   affecting ACL entries
++ * - ACL permissions should be preserved after ownership changes
++ *
++ * This test uses arbitrary UIDs without creating actual users, testing
++ * only the kernel ACL implementation.
++ *
++ * [Algorithm]
++ *
++ * Test 1 - :manpage:`chmod(2)` interaction:
++ * - Create file with read-only ACL entries
++ * - Use :manpage:`chmod(2)` to set permissions to 0777
++ * - Verify ACL entries are updated to rwx for user, group, and other
++ *
++ * Test 2 - :manpage:`chown(2)` interaction:
++ * - Create file with specific ACL entries (rw for user, r for group/other)
++ * - Use :manpage:`chown(2)` to change owner and group
++ * - Verify ownership changed correctly
++ * - Verify ACL entries preserved their permissions after
++ *   :manpage:`chown(2)`
++ */
++
++#include "acl_lib.h"
++
++#ifdef HAVE_SYS_XATTR_H
++
++#define TEST_UID 1000
++#define TEST_GID 1000
++#define USER2_UID 2000
++#define USER2_GID 2000
++
++/*
++ * Test chmod interaction with ACLs.
++ * chmod should update ACL_USER_OBJ, ACL_GROUP_OBJ, and ACL_OTHER.
++ */
++static void test_chmod_acl(void)
++{
++	struct acl *acl;
++	int fd = -1;
++	int user_ok = 0, group_ok = 0, other_ok = 0;
++
++	tst_res(TINFO, "Testing chmod interaction with ACLs");
++	reset_test_path();
++
++	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0644);
++	SAFE_CLOSE(fd);
++
++	acl = acl_init();
++
++	acl_add_entry(acl, ACL_USER_OBJ, ACL_READ, 0);
++	acl_add_entry(acl, ACL_GROUP_OBJ, ACL_READ, 0);
++	acl_add_entry(acl, ACL_OTHER, ACL_READ, 0);
++
++	if (acl_set_file(TESTFILE, ACL_TYPE_ACCESS, acl) < 0) {
++		if (errno == EOPNOTSUPP) {
++			acl_free(acl);
++			cleanup_testfile();
++			tst_brk(TCONF | TERRNO, "ACL not supported");
++		}
++		acl_free(acl);
++		cleanup_testfile();
++		tst_brk(TBROK | TERRNO, "ACL setup failed");
++	}
++
++	acl_free(acl);
++
++	SAFE_CHMOD(TESTFILE, 0777);
++
++	acl = acl_get_file(TESTFILE, ACL_TYPE_ACCESS);
++	if (!acl) {
++		cleanup_testfile();
++		tst_brk(TBROK | TERRNO, "acl_get_file failed");
++	}
++
++	/* Check if all entries have rwx permissions */
++	for (int i = 0; i < acl->count; i++) {
++		struct acl_entry *entry = &acl->entries[i];
++
++		if (entry->tag == ACL_USER_OBJ) {
++			if (acl_entry_has_rwx(entry))
++				user_ok = 1;
++		} else if (entry->tag == ACL_GROUP_OBJ) {
++			if (acl_entry_has_rwx(entry))
++				group_ok = 1;
++		} else if (entry->tag == ACL_OTHER) {
++			if (acl_entry_has_rwx(entry))
++				other_ok = 1;
++		}
++	}
++
++	acl_free(acl);
++	cleanup_testfile();
++
++	if (user_ok && group_ok && other_ok)
++		tst_res(TPASS, "chmod correctly updated ACL entries");
++	else
++		tst_res(TFAIL, "chmod did not update ACL entries correctly");
++}
++
++/*
++ * Test chown interaction with ACLs.
++ * chown should change file owner and group without affecting ACL entries.
++ */
++static void test_chown_acl(void)
++{
++	struct acl *acl;
++	struct stat st;
++	int fd = -1;
++	int found_user_obj = 0, found_group_obj = 0, found_other = 0;
++
++	tst_res(TINFO, "Testing chown interaction with ACLs");
++	reset_test_path();
++
++	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0644);
++	SAFE_CLOSE(fd);
++
++	acl = acl_init();
++
++	acl_add_entry(acl, ACL_USER_OBJ, ACL_READ | ACL_WRITE, 0);
++	acl_add_entry(acl, ACL_GROUP_OBJ, ACL_READ, 0);
++	acl_add_entry(acl, ACL_OTHER, ACL_READ, 0);
++
++	if (acl_set_file(TESTFILE, ACL_TYPE_ACCESS, acl) < 0) {
++		acl_free(acl);
++		cleanup_testfile();
++		if (errno == EOPNOTSUPP)
++			tst_brk(TCONF | TERRNO, "ACL not supported");
++		tst_brk(TBROK | TERRNO, "acl_set_file failed");
++	}
++
++	acl_free(acl);
++
++	SAFE_CHOWN(TESTFILE, USER2_UID, USER2_GID);
++
++	SAFE_STAT(TESTFILE, &st);
++
++	if (st.st_uid != USER2_UID || st.st_gid != USER2_GID) {
++		cleanup_testfile();
++		tst_res(TFAIL, "chown did not change owner/group correctly");
++		return;
++	}
++
++	/* Verify ACL entries are preserved after chown */
++	acl = acl_get_file(TESTFILE, ACL_TYPE_ACCESS);
++	if (!acl) {
++		cleanup_testfile();
++		tst_brk(TBROK | TERRNO, "acl_get_file failed");
++	}
++
++	for (int i = 0; i < acl->count; i++) {
++		struct acl_entry *entry = &acl->entries[i];
++
++		if (entry->tag == ACL_USER_OBJ) {
++			found_user_obj = 1;
++			if (!acl_entry_has_perm(entry, ACL_READ) ||
++			    !acl_entry_has_perm(entry, ACL_WRITE)) {
++				acl_free(acl);
++				cleanup_testfile();
++				tst_res(TFAIL,
++					"ACL_USER_OBJ perms changed after chown");
++				return;
++			}
++		} else if (entry->tag == ACL_GROUP_OBJ) {
++			found_group_obj = 1;
++			if (!acl_entry_has_perm(entry, ACL_READ) ||
++			    acl_entry_has_perm(entry, ACL_WRITE)) {
++				acl_free(acl);
++				cleanup_testfile();
++				tst_res(TFAIL,
++					"ACL_GROUP_OBJ perms changed after chown");
++				return;
++			}
++		} else if (entry->tag == ACL_OTHER) {
++			found_other = 1;
++			if (!acl_entry_has_perm(entry, ACL_READ) ||
++			    acl_entry_has_perm(entry, ACL_WRITE)) {
++				acl_free(acl);
++				cleanup_testfile();
++				tst_res(TFAIL,
++					"ACL_OTHER perms changed after chown");
++				return;
++			}
++		}
++	}
++
++	acl_free(acl);
++
++	if (!found_user_obj || !found_group_obj || !found_other) {
++		cleanup_testfile();
++		tst_res(TFAIL, "ACL entries missing after chown");
++		return;
++	}
++
++	cleanup_testfile();
++	tst_res(TPASS, "chown preserved ACL entries correctly");
++}
++
++static void setup(void)
++{
++	reset_test_path();
++}
++
++static void cleanup(void)
++{
++	cleanup_test_paths();
++}
++
++static void run(unsigned int n)
++{
++	switch (n) {
++	case 0:
++		test_chmod_acl();
++		break;
++	case 1:
++		test_chown_acl();
++		break;
++	}
++}
++
++static struct tst_test test = {
++	.test = run,
++	.tcnt = 2,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.mount_device = 1,
++	.mntpoint = MNTPOINT,
++	.filesystems = (struct tst_fs[]) {
++		{.type = "ext2", .mnt_data = "acl"},
++		{.type = "ext3", .mnt_data = "acl"},
++		{.type = "ext4", .mnt_data = "acl"},
++		{.type = "xfs"},
++		{.type = "btrfs"},
++		{}
++	}
++};
++
++#else
++	TST_TEST_TCONF("sys/xattr.h is not available");
++#endif
+-- 
+2.39.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
