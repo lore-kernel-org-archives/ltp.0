@@ -4,93 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 886C5CD98DA
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 16:09:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781539790; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=tjabDnAhSANUs48EPP0vslomRQO8+WNOXYBqw6Erdso=;
- b=BpJP9822yC998vLtAVJ/lCuC1LxkEDhGAjejJ5Okl6JkKKIBGnyz3qlj/HUi4FzBxQmw9
- SBmwmIx/uUSedwEP9lqrymvWdkyPKK1rzrR8yKXwMOJzxkh7Ao5E4e3r18vL34k9Q6+NWEo
- z+a7/exxuRshHx7B3o6y01ZcYD0bplQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB30DCD98DA
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 18:07:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B58913E2A2F
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 18:09:50 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id B4E373E5F8C
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 20:07:08 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D05383E235C
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 18:09:28 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 993143E2037
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 20:06:50 +0200 (CEST)
+Received: from mail-dy1-x1342.google.com (mail-dy1-x1342.google.com
+ [IPv6:2607:f8b0:4864:20::1342])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 15AAA600746
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 18:09:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1781539766;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=d9grHLKLS6BydaYcAoLToyviGmn2gGWCIXARyy3rumE=;
- b=TuNhdfnIoywmPljhn3rq8LPEZGB8iHRa1yHlRDAuePP/HcIRxZ43IQ2wQziqA/+TIgfw73
- Redox03NEXgunwY8NQfpr7ahVxnLpYlYLcNe4MidQaTIsdY7swJah9N1EthtIirJzaUL2P
- LgmH+hrFzUcHidzJ3IdVHPC/NKjDemk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-584-0ZTmWxmeNpuNe9xpYs3FtA-1; Mon, 15 Jun 2026 12:09:23 -0400
-X-MC-Unique: 0ZTmWxmeNpuNe9xpYs3FtA-1
-X-Mimecast-MFC-AGG-ID: 0ZTmWxmeNpuNe9xpYs3FtA_1781539762
-Received: by mail-wr1-f72.google.com with SMTP id
- ffacd0b85a97d-45eebc943bfso2642611f8f.0
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 09:09:23 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 352941400069
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 20:06:50 +0200 (CEST)
+Received: by mail-dy1-x1342.google.com with SMTP id
+ 5a478bee46e88-307631dbfedso7842428eec.0
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 11:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1781546808; x=1782151608; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=9f+qVTk0zv9sP3F0+XsS5kCFy3r4atfveCx7QBixd8Y=;
+ b=LufsBJZRa0GoJfkbZy0brSxEjG7j2+wPvi6vhC2atWq/uICTqHpcgJ/UnpdkgbJ7G9
+ pKiWI5qyRIDKRdoUSlIoQ6hT7+WxZlLUbPsJ38uqYpVXDLTwLWLMhWctk3RuPl7zAz2j
+ 4s5IzAVg633C3X5Yj1j5UyJmcSD16aPTocCnH7uM+bvBsPabP9IZHugXjdGluEnVv/8e
+ cyJzUaOFSL0jKopkKuqHUPi04C8eW3m+Vvwr4YanI9TgovNS46mhgT4qfMdA1OUls9oC
+ 39ifeC2Jbwp/9zzRwHUfiTzZZAWmrv0P8XuBSVV9P0S/VWJAN6FzA6p/aGCRQp1adgoi
+ 9AHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781539762; x=1782144562;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+ d=1e100.net; s=20251104; t=1781546808; x=1782151608;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=d9grHLKLS6BydaYcAoLToyviGmn2gGWCIXARyy3rumE=;
- b=jxrpfjXqNNhPRjVzhYQ+YNtpLKwelfnTBRmxkz+DzXMKfJktEO5g9wJzGijh/5kCjZ
- 0tG0HntuMFYLQZZHtHr7aw1NbzgNqHXqujiOeHJRwzfC/csTeKWuiw6nrXsxk6FOrATx
- jIEPlk4EL7tfk2ffNcZXTI6vqQVBo851jjXkREW0OvRy2XUEsAS4iSej/VykWZ2N6H+V
- f1ZZt5LezlvSB5l1gpQIAZUyIT8pgptj6OS9kdbyucTFc2wGa2HHcwJsrc/Ez5ql3dvT
- Vc2p62r+QCujaQJ2j6ZJWtE6NmD9SK7qiKhlwdxgOiyTRX4YRFTH4DHLYndn9ZIwcdoP
- G5TA==
-X-Gm-Message-State: AOJu0YyZfaHb/CTWbDWS57voRQqt+eco7ph/Xzj6MVwyIfH9Nkbxnk30
- UugsIaNCbMDW7DXWYi7qJldZgdn5CFG9uXef2FpQtv1aoVAKaFGpxCzZGKQwrRsU8VI+xridqcH
- MyH7W8p1gVMwbzxSd/VFcoDaCjzD4Hh5kYc/3jlv4Q0G9rIBzL+xtSCxF7Q46t7yd/Iow5Ba+CZ
- kybgli1dpIGnsgYUZUjkWUogqO/3ODAiIBfAsGNA==
-X-Gm-Gg: Acq92OE8I8+r3l28N3aCktYwpLPAAqat3sY9vgS4Pdc8cmYgXa3ezW3nCaf6BlTWBZg
- twt0kINK/hqxY+gu64iv5Dd5B/PxZeey2ULudZVFBcfrllVI54XrByHM79Nw4k3deUHE4DIPz7S
- j44cIJROw5/Q/B1E35ztmS7SNv3GG1/DPuKtKa4RbjHFVTDzhBecoTnuUW7ps8P9L17Kr1rxEbt
- sIQdw==
-X-Received: by 2002:a5d:4535:0:b0:45e:dd32:92fa with SMTP id
- ffacd0b85a97d-4619f2efb2bmr129951f8f.12.1781539762147; 
- Mon, 15 Jun 2026 09:09:22 -0700 (PDT)
-X-Received: by 2002:a5d:4535:0:b0:45e:dd32:92fa with SMTP id
- ffacd0b85a97d-4619f2efb2bmr129911f8f.12.1781539761749; Mon, 15 Jun 2026
- 09:09:21 -0700 (PDT)
+ bh=9f+qVTk0zv9sP3F0+XsS5kCFy3r4atfveCx7QBixd8Y=;
+ b=ZzUa8WBecHPm0vmAaxBvRF6MiJUdHfp5h6MyF3G1hLt0iZ/tSPCex3kiCgfYiNcM+8
+ S+B2PhEX4SLshVclictFU4RyOFfZIFuCW8AC1AG3pinDQaz40Ynx12nmM9rRl+zlnc6i
+ FyPMM45z0AK3zKf9zL72wUAgMKf0lRCkqLNs+BiNrvwnVdiDH3UTDwJAtG+RUf7ZFTlz
+ vKAdwTF3m4ppY70lssBSGzDeoRTs15oQbWw8vbjmfZVTG6IKHKrAaBVUS8mOYll0n4uQ
+ 3zv0udr0comSJjtpt/+pFiBlnafOmn8olQq5SYWTWiYBAQB7zGwkLk606iqffgEzRYZt
+ rJ3Q==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ+Wjo4kIHfnBDeXRmjgx/k37RZnh5OZZbTMRghbOjndoHhDMO0l/ihoKLs8Q4/QkMTrhT8=@lists.linux.it
+X-Gm-Message-State: AOJu0Yyyzdwvj+0GljFPWaLiMrSAYYWq80wa5vCLkjhGsJkpXzbb0nIJ
+ B6CFDCzwLAaPpE5MeiTm5OL+XLMgmTM8xghxp2OyWdGAebA+E1AzBkXc
+X-Gm-Gg: Acq92OFHvHuLG8FBBUQTkhrMSGPWss+pJmtwR4V3OReIlJ3PNwiW3eIN0/sFKQ1eyFq
+ 2//y9dDLhK0yq4LPi/JdoYFxWZITAqbg09TanpOJ9+twdfqo1KfO2obu8vo5RC/d05sH+I0fe4y
+ PHX8BWixsj+V6DZyAWAHjTVqf/OyC4AMOqi6xigavT6vE8YBsp92WEu4vSp8Mf7Fyk4PjpEiKmq
+ 3vbdz4WTKx6zYePUQRpvB7bU8McaK7VhfKhHhSluLIMOGJN8D1wX1oBGI3zyWCJuiYEPuJUD+7H
+ fo6cC6zQ4SaTqI1BSEEfgYdgdgFMb1saOdsPTKdGKjDOI1aKM2S7aoe/hDxU5DC9hjnYYmb0xp5
+ hFowoKa3qjk2Du66xdMWUEXK+MguzU+G+EqJuvmHVCr7tUM3d7ee/JBqYlZ4I65W1r8le0Ypmwd
+ FYRbYlZ5MsYxE5XFy5
+X-Received: by 2002:a05:7301:4b03:b0:30b:6181:4749 with SMTP id
+ 5a478bee46e88-30ba5f6515bmr182294eec.16.1781546808373; 
+ Mon, 15 Jun 2026 11:06:48 -0700 (PDT)
+Received: from cirno ([2605:52c0:2:2f27:be24:11ff:fe89:6f0f])
+ by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-3081ea4f7a0sm14352840eec.24.2026.06.15.11.06.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 15 Jun 2026 11:06:48 -0700 (PDT)
+From: AnonymeMeow <anonymemeow@gmail.com>
+To: jack@suse.cz
+Date: Tue, 16 Jun 2026 02:06:24 +0800
+Message-ID: <20260615180629.7148-1-anonymemeow@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <em6fgj3mkdyapnpi5yszfj563gwjoehyxxo6mk6cwiyyydkiah@vpunmf3gm5nt>
+References: <em6fgj3mkdyapnpi5yszfj563gwjoehyxxo6mk6cwiyyydkiah@vpunmf3gm5nt>
 MIME-Version: 1.0
-References: <20260615142526.70655-1-mdoucha@suse.cz>
-In-Reply-To: <20260615142526.70655-1-mdoucha@suse.cz>
-Date: Mon, 15 Jun 2026 18:09:04 +0200
-X-Gm-Features: AVVi8CfC5rXOPXjARbBxLZdmfOgGSYACClLZrLXX_B5J6dC1T7Asg7EMmEdjD5o
-Message-ID: <CAASaF6yLzXOOzwZkDy+C2-Jn=-EN+LBHydPNWsmB+sxOO3vmgg@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 9qxAHkY18wIMDbTw-5YhGNUH4My6MpxzCFIo4PCMpJc_1781539762
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] openposix: Remove pthread_detach_1-2
+Subject: [LTP] [PATCH 0/5] fanotify: update pidfd tests for FAN_REPORT_TID
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,25 +91,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: amir73il@gmail.com, ltp@lists.linux.it, AnonymeMeow <anonymemeow@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBKdW4gMTUsIDIwMjYgYXQgNDoyNeKAr1BNIE1hcnRpbiBEb3VjaGEgPG1kb3VjaGFA
-c3VzZS5jej4gd3JvdGU6Cj4KPiBUaGUgUE9TSVggc3BlY2lmaWNhdGlvbiBvZiBwdGhyZWFkX2pv
-aW4oKSBoYXMgY2hhbmdlZCBpbiByZWNlbnQgeWVhcnMgYW5kCj4gcHRocmVhZF9kZXRhY2hfMS0y
-IHRlc3Qgc2NlbmFyaW8gaXMgbm8gbG9uZ2VyIHZhbGlkLiBUaGUgUE9TSVggc3RhbmRhcmQKPiBp
-c3N1ZSA4IHNheXMgdGhhdCB0aGUgYmVoYXZpb3Igb2YgcHRocmVhZF9qb2luKCkgY2FsbGVkIG9u
-IGEgdGhyZWFkIElECj4gd2hpY2ggZG9lcyBub3QgcmVmZXIgdG8gYSBqb2luYWJsZSB0aHJlYWQg
-aXMgdW5kZWZpbmVkLgo+Cj4gaHR0cHM6Ly9wdWJzLm9wZW5ncm91cC5vcmcvb25saW5lcHVicy85
-Nzk5OTE5Nzk5L2Z1bmN0aW9ucy9wdGhyZWFkX2pvaW4uaHRtbAo+Cj4gVGhlIHRlc3QgY3JlYXRl
-cyBhIHRocmVhZCwgZGV0YWNoZXMgaXQgdXNpbmcgcHRocmVhZF9kZXRhY2goKSBhbmQgdGhlbgo+
-IGNhbGxzIHB0aHJlYWRfam9pbigpLCBleHBlY3RpbmcgYW4gZXJyb3IuIEFzIHN0YXRlZCBhYm92
-ZSwgdGhlIGV4cGVjdGVkCj4gYmVoYXZpb3IgaXMgbm93IHVuZGVmaW5lZC4gUmVtb3ZlIHRoZSB0
-ZXN0Lgo+Cj4gU2lnbmVkLW9mZi1ieTogTWFydGluIERvdWNoYSA8bWRvdWNoYUBzdXNlLmN6PgoK
-QWNrZWQtYnk6IEphbiBTdGFuY2VrIDxqc3RhbmNla0ByZWRoYXQuY29tPgoKCi0tIApNYWlsaW5n
-IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+This patch set updates fanotify pidfd tests for the kernel change that
+adds FAN_REPORT_PIDFD support together with FAN_REPORT_TID.
+
+Link: https://lore.kernel.org/lkml/20260607003343.425939-1-anonymemeow@gmail.com/
+
+---
+
+Sorry for the late reply, I accidentally broke my system last week,
+so I was busy repairing it. And I may not be able to respond in time
+due to final exams this week, sorry.
+
+---
+
+AnonymeMeow (5):
+  fanotify20: Allow FAN_REPORT_PIDFD with FAN_REPORT_TID on v7.2+
+  fanotify21: Stop relying on exited child for pidfd error
+  fanotify21: Simplify read_pidfd_fdinfo()
+  fanotify21: Add test variants for FAN_REPORT_TID
+  fanotify21: Add FAN_REPORT_TID pidfd coverage
+
+ include/lapi/pidfd.h                          |   4 +
+ .../kernel/syscalls/fanotify/fanotify20.c     |  19 +-
+ .../kernel/syscalls/fanotify/fanotify21.c     | 191 +++++++++++-------
+ 3 files changed, 136 insertions(+), 78 deletions(-)
+
+-- 
+2.54.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
