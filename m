@@ -4,82 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28D90CD98C5
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 06:59:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B174CD98CE
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 06:59:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D5E23E5A43
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 08:59:25 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id E5C0E3E4E3D
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 08:59:38 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1DF0D3E2744
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 19:13:04 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 638923C19F0
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 03:14:26 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B2B3360018E
- for <ltp@lists.linux.it>; Mon,  8 Jun 2026 19:13:03 +0200 (CEST)
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-490ae94a89eso38831255e9.1
- for <ltp@lists.linux.it>; Mon, 08 Jun 2026 10:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1780938783; x=1781543583; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=AUpt/EToVTToJvd7YASG+3OoKZxNxbXoqptfVbb/HeE=;
- b=nW6ucuQsloW756Uwio+MEP6hFE+T52E/otTE/fzvHjnBR9RuFfHJFdXK2gmP1Brjjw
- RG/QFqqDQ563uMiF4a1OPT9bqQ27mZXPENOwEQpVgAGyNvA/5D4Xm+D0tvBJF8gTZT7e
- np+Ko0fbzPVYq91KTGvL2gq0d9w7evMGQtLvjsrmUGjsko5c6ydVRLb7Hpe8uJLpX8t3
- XXXkYmwbKEesl7a11RKd6TKoWeL9SYRvzK7ZI5ndUtOwqUkCNAfCwvqTMuI2Vco/y8Cd
- TVa3qF0yW86X1a0w3GrOLgDi9NVwkQKWX/KWBgRTU+L0ux3dLMiH2OH60GpEyyti/kGZ
- ZnBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1780938783; x=1781543583;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=AUpt/EToVTToJvd7YASG+3OoKZxNxbXoqptfVbb/HeE=;
- b=ank2hXzcE1vcdwZmD6O7jpIEvZcRuSL+Tb69yj0zAKLiCVcHiPNubtCAuBbzLwfvMd
- z1BHM74rjYqMp5q/wRrlv4vdb/bFIR2fKDsTJ0Z3i+Ql6VI/eLt9CC00J5Y6trARJeoP
- 71hDbNdwLRSgSa7hlZ/KYFApJiY9SnNDYhjX5J55LWBF54Igp6/Rg923GME/nMnQFuAY
- 5s9pWOGSQFjz6P2YRoVLIn2za0J9zv+Y7vENBE1IJkU9vGlDPanIFmGUE8cf+rJCkE81
- SN2KLaiTzUzzZHa/+urB6ViOgFVM0OLC3zH7u6xqJNKUrsJ8tCYg665ho5V0iCiCgTLf
- c4PQ==
-X-Forwarded-Encrypted: i=1;
- AFNElJ9zpEQMgpkDVwmPyqIkUoGcX3WnHMRURCu4h8xLh8zgrReOvFCXeW1Hhc4XvBFMxzJoxsk=@lists.linux.it
-X-Gm-Message-State: AOJu0YzHFYv76wNY38cqxl530LhRE3r3+kFbjHrZXzW+T9xZPGgB2tdr
- LLaRm/9CtUoOoAt5EBUlGINYukndrHpiFSC+rvzxI2k4DQZoRvSd21nz
-X-Gm-Gg: Acq92OHboTXJ2La3srzr9U4rb5ZeIND6rYdQueoar0ozFq2+nP8Ey+tlUkRgRVRztsr
- SUyhZZGqakZeYxaJvVF2UMlhQzUS016PWWN0DN8Y+d0Enhc3SBGTxplq7O5A1rDxccby0sfjGBc
- f/+arQ9mFIok7prN0h1STNGVb6rvRZHhdRKvNzuRMXYA2GFV9/yGKAn2lUuWHLZg4Aud089IZCi
- zn7Hnb5LxlJ3RCeDdCOxjOIE3jNO4LKAnh/mJ4/vCjh+4MjbgNtXedI8JTCOHexuS/IZ43X8QAK
- wqpzs9mIndwdIsn5JGDoZaeGnurJwUpi8aoIAYfgG6cU9n1kHbmg+MizwZha2Hy3t4Aas1MVsIw
- XVjTEJDtLVvW5cL1YMdepZ31slpi3Gg7ocn3avdYwzPgefuFrYBMScZkaIkF/VF0M6s3ijJ9U74
- rPl+aWugPewNHgTamoC5Pm78mDUKyTvzlTo1Ny5Whn
-X-Received: by 2002:a05:600c:458a:b0:490:389:7644 with SMTP id
- 5b1f17b1804b1-490c25fbd78mr244360025e9.17.1780938782731; 
- Mon, 08 Jun 2026 10:13:02 -0700 (PDT)
-Received: from localhost ([212.73.77.104]) by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-4601f351ac0sm97432933f8f.27.2026.06.08.10.12.59
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 08 Jun 2026 10:13:02 -0700 (PDT)
-From: Askar Safin <safinaskar@gmail.com>
-To: andrea.cervesato@suse.com
-Date: Mon,  8 Jun 2026 20:12:31 +0300
-Message-ID: <20260608171231.1480447-1-safinaskar@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <6a26aa28.283787d8.1f1282.ba36@mx.google.com>
-References: <6a26aa28.283787d8.1f1282.ba36@mx.google.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D4534600445
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 03:14:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1781486065; x=1813022065;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=9dhE9WCJJMFac4NW8agr8xZUUZx9o6LAAmH7018m0zU=;
+ b=fLpsgYj+iDHEEJ/sAhPJVf5U7H7EGnQYj1QphNffTfVIBn76j330sYXF
+ mnQbRCQaA5qfBzJlMAXYVeycNNK2hMuRJOFHJcsdufpx4pLPvtR4GqGz6
+ fQmYYvYFyG08oPxUEFg93wO10edR+apkgQH07BCaMH/PxIN4JvuksbZ3l
+ suIVB/i7lAXu1XKGXpOqEVKmyoVPFTo4hqEh2uxMYyJSpKqZXguLiOjS5
+ lLyEn/RoJtEYcAx1GDogsI0T8ZJzQ3GzOabNS8ATnjMv57OU95oGNNolz
+ rjhq6NlHz7hTAtgX6UPVxRiOrfc7LgTyU89YrNTEGum11rBOgTAmySRsT Q==;
+X-CSE-ConnectionGUID: BhIO7DoVSd+S3Ag7JslOfQ==
+X-CSE-MsgGUID: OWyaZlYUQEWA5cIo9nhcAA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11817"; a="84789868"
+X-IronPort-AV: E=Sophos;i="6.24,205,1774335600"; d="scan'208";a="84789868"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+ by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Jun 2026 18:14:21 -0700
+X-CSE-ConnectionGUID: fLDyD29tTzqN8mKXPt4F5A==
+X-CSE-MsgGUID: /5Lqvi6STlqHwJARxl3imA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,205,1774335600"; d="scan'208";a="285442099"
+Received: from ubuntu22-04.sh.intel.com ([10.239.182.71])
+ by orviesa001.jf.intel.com with ESMTP; 14 Jun 2026 18:14:20 -0700
+From: Wenbo Ma <wenbo1.ma@intel.com>
+To: ltp@lists.linux.it
+Date: Mon, 15 Jun 2026 09:29:11 +0800
+Message-Id: <20260615012911.36607-1-wenbo1.ma@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Mon, 15 Jun 2026 08:59:10 +0200
-Subject: Re: [LTP] [PATCH 0/5] vmsplice: fix some problems in my previous
- vmsplice patchset
+Subject: [LTP] [PATCH] open_posix/pthread_sigmask/18-1: Fix race condition
+ in signal thread join
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,30 +67,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: jack@suse.cz, kernel@infinite-source.de, linux-kernel@vger.kernel.org,
- fuse-devel@lists.linux.dev, linux-mm@kvack.org, collin.funk1@gmail.com,
- joannelkoong@gmail.com, miklos@szeredi.hu, david.laight.linux@gmail.com,
- pfalcato@suse.de, willy@infradead.org, hch@infradead.org, metze@samba.org,
- rostedt@goodmis.org, viro@zeniv.linux.org.uk, david@kernel.org,
- ltp@lists.linux.it, axboe@kernel.dk, dhowells@redhat.com, brauner@kernel.org,
- netdev@vger.kernel.org, patches@lists.linux.dev, luto@amacapital.net,
- safinaskar@gmail.com, linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- akpm@linux-foundation.org, torvalds@linux-foundation.org, w@1wt.eu
+Cc: Wenbo Ma <wenbo1.ma@intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-"Andrea Cervesato" <andrea.cervesato@suse.com>:
-> Hi Askar,
-> 
-> the patch-set doesn't apply:
+When WITH_SYNCHRO is defined, the signal sender threads (th_sig1 and
+th_sig2) may block on sem_wait() after the main loop exits. This causes
+pthread_join() to hang indefinitely since those threads never wake up.
 
-This is patchset for Linux kernel.
-(It is expected it will fix some failing LTP tests, among other things.)
+Post to both semaphores before joining to ensure the signal threads
+can proceed and exit cleanly.
 
+Signed-off-by: Wenbo Ma <wenbo1.ma@intel.com>
+---
+ .../conformance/interfaces/pthread_sigmask/18-1.c            | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c
+index f303e9854..e4606813e 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c
+@@ -293,6 +293,11 @@ int main(void)
+ 	}
+ 	while (do_it);
+ 
++#ifdef WITH_SYNCHRO
++	sem_post(&semsig1);
++	sem_post(&semsig2);
++#endif
++
+ 	if ((ret = pthread_join(th_sig1, NULL))) {
+ 		UNRESOLVED(ret, "Signal 1 sender thread join failed");
+ 	}
 -- 
-Askar Safin
+2.34.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
