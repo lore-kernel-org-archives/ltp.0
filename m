@@ -4,102 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31AECCD98C5
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 05:31:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2795CD98CE
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 05:32:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A740A3E2348
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 07:31:44 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 1EDD93E237B
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 07:31:59 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 406373E4E41
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 07:30:08 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id B8A683E234E
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 07:30:10 +0200 (CEST)
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 49588600158
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 07:30:06 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AF6661000609
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 07:30:08 +0200 (CEST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 65F1mEHQ922333; Mon, 15 Jun 2026 05:30:05 GMT
+ 65F1mltE980449; Mon, 15 Jun 2026 05:30:06 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
  :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=lNJiPXoIeDFvcxxFx
- TKRuzefZShkovQIqjNOjl3V6h8=; b=J3CbSNJS6KFPeEb5bS4VTmaFlMb7IiEfC
- trFvgu7Prs5Div4EPk4/xUbb06rkb5kdqgTJFquhBXoO2xh/P0/PV5y6423eR4Dx
- XJmEOFndO13dCqav0FQPGC6ETzpuZ7eeFCJaez/RweeDsIl7cdJy+Ym9cc6BQ9hC
- VudZGmRIDeS0MjIq/td7gIERGQSv/YP5oH8R+39DqhOeoSFJv+t+jypMtJcsimnp
- n9Wg5DStUbZZXkdK6M1Z4T6abaj+EXuWs/jP43wnIwX9tfi3w9s2OqfjJrY2jgpG
- i9vP/CXj+MkCsML7xfy4iA0bfXJm7506GeNXt64lP2mSkgdS4AQYA==
-Received: from ppma23.wdc07v.mail.ibm.com
- (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4es23newys-1
+ :mime-version:references:subject:to; s=pp1; bh=mpWWSTXsmVVVNUHr0
+ cS6j6ZY4pxy0u6MiNdVkE3Tsx4=; b=n2vWSWnD3AzzBm6OQQJicxYTi3hBWR7nh
+ tGI8u0gtrL43qdTZ6cpWUdhS12hBM5dClCaKU8fNPEvjLefsASekqy+27IybD7pq
+ jeVpH9kUJFQbltQyWtRPuO5ClnbgCLuSiAa32RW/rfxU8latlAjynacP+TwGudoJ
+ DZvyWjTIuvUFNMzlfxqJE2AdkYeVZRp0uib54aKocRKhftKEMnFGkT7iQFdkFm0T
+ lDFORnQOQo1Ypvjf8jX5e7xTP7PtD1zyWf45OKEKB3xT+Bpa763NRsryN5E24llV
+ uYoiY9N5mmkYp9iUhWf0E3l5kVVuvIUD8E1nsRBE+ps8YDEoH97Og==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4es1h7y2ga-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 15 Jun 2026 05:30:06 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65F5JkOl029726;
+ Mon, 15 Jun 2026 05:30:05 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4esjhjw46h-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Mon, 15 Jun 2026 05:30:05 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65F5Jaf8022486;
- Mon, 15 Jun 2026 05:30:04 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
- by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4esk1gw2rr-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 15 Jun 2026 05:30:03 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
  [10.20.54.102])
- by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 65F5U29347841760
+ by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 65F5U3Dj47186260
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 15 Jun 2026 05:30:02 GMT
+ Mon, 15 Jun 2026 05:30:03 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 01C5820043;
+ by IMSVA (Postfix) with ESMTP id 59AC42004E;
+ Mon, 15 Jun 2026 05:30:03 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 5D7012004D;
  Mon, 15 Jun 2026 05:30:02 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 450472004E;
- Mon, 15 Jun 2026 05:30:01 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.43.52.62])
  by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Mon, 15 Jun 2026 05:30:01 +0000 (GMT)
+ Mon, 15 Jun 2026 05:30:02 +0000 (GMT)
 From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Mon, 15 Jun 2026 10:59:50 +0530
-Message-Id: <20260615052953.18183-6-sachinp@linux.ibm.com>
+Date: Mon, 15 Jun 2026 10:59:51 +0530
+Message-Id: <20260615052953.18183-7-sachinp@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20260615052953.18183-1-sachinp@linux.ibm.com>
 References: <20260615052953.18183-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=XtnK/1F9 c=1 sm=1 tr=0 ts=6a2f8ddd cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE1MDA1MyBTYWx0ZWRfX4Ok3Y7smFF8d
+ 5ertQC24rDyMoFvzctMxwsf3HgCRL339ZJllfZSilkumiYOFhGGQLEDinymrlBjkUju80A4qKBo
+ FeChrRX6xwGT4E5gorAl/6VDLUl8BMI=
+X-Proofpoint-ORIG-GUID: tRXPjPYFMcbnd0-K_gh_Twkxobpb5N1q
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE1MDA1MyBTYWx0ZWRfXx6jBZCko2ydI
+ tq8KB/zAiRWWXYHGJUQ47PITIv3O1zaJLFS1TrZ+LILKWnP1YnimSni5wvuijU+V24U4ohw7QgW
+ cUC2w0t0Gewey08ygIx2uN5oTxNlTnmSdGhW9Xpvk53ed2MayXJiCYZiLQre7UBUVrT2ceATWDf
+ ky2OY5ZojT/eCpzlU/T7GzNNfbQmQS5f3N5eDHal3j/q7DRl4bQykfsbgUXqgFHTvoOBWiShRQl
+ PH3HkPz3OkWju1l0I3wVvLgNtNIjnC6qkZqm/zCqDMthUgdP4wsm3afOVGaFp+bJokfcNcnAX5J
+ H4ElkCj11v5rPbbXBlSICj6AKBPBIiTYd7UZNyyz8rw3lDuTw+sTqPPHtLbWZ6mZzYkQ2G/ZQ7+
+ i9/Lf+l6uUeXRfDQAj1gmroQTuFJsJMagub7QNBEBpfsj/Aa8XAyilojRQ94tuv3hbtIW0o7kSU
+ 3WNpCbjd77+orUNwJoQ==
+X-Authority-Analysis: v=2.4 cv=U9uiy+ru c=1 sm=1 tr=0 ts=6a2f8dde cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
  a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=iQ6ETzBq9ecOQQE5vZCe:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
- a=XdZ29zGAJf27uyTfQcwA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE1MDA1MyBTYWx0ZWRfXyr4x4cbk0QCa
- znedwRSLGqOpspQ58qtecrd8gcEaoZ4i8aySB5UY+92wWcE3dMxQeNRY+Wj0IkaxbyRxwCFrFiP
- u0zDlL9dvXOa3yTYtPlPlE7tiaoiKAMEIqDO84YxSFh80ABbZYUmHFsxTIIDXALyRr31czF3xg8
- pjPeYmri/MLkWSbR2uOJXWU5RDJ18nGTDV453FyrJAIdxsDJJ9ZdwHoewzpzpy/GA2yg0z74FiB
- 5A/pc2OFFV21tMjzFrrthusiMgs++txlShHqYe5UsPXIE7EYJKapBwKcDf5ADGLoTf9pxIRyvfy
- /Qo6JjrjM9FL2ha4U9k4Ud1yaKSnMLZPFTnDvdDxVZawieEGWM/QhGY4YxCokyr34TLUNln1c3s
- cJ7Vq+K7svdqvFRJ650mdHAm1MCrzrpq+VWNH3kqfO291CbiqBUHHuhtyngVD/RTksMdSfCK/Y3
- zKNSPG740MS1CEL4eQg==
-X-Proofpoint-GUID: Fga9aVfBJSUr5tNPx2m89M--5WerYFGP
-X-Proofpoint-ORIG-GUID: Fga9aVfBJSUr5tNPx2m89M--5WerYFGP
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE1MDA1MyBTYWx0ZWRfX6nC+K/AZOMAH
- yaNNE2QHUlxqlSA9UG/fd3iVtJHyie3VLqbMqJpA2YTQahHK9JaBBFGwlLivj8Ovby9xhpifkuE
- FMSRPiP9UDaqj3sEiln+2W60pVEAvXU=
+ a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=srL2aDlGqOjmVkaV-s0A:9
+X-Proofpoint-GUID: tRXPjPYFMcbnd0-K_gh_Twkxobpb5N1q
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-06-15_01,2026-06-12_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 adultscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
- suspectscore=0 clxscore=1015 malwarescore=0 spamscore=0 impostorscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606040000 definitions=main-2606150053
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 clxscore=1015 adultscore=0 malwarescore=0 suspectscore=0
+ spamscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2606040000
+ definitions=main-2606150053
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v9 5/8] fs/acl: Add chmod/chown ACL interaction tests
+Subject: [LTP] [PATCH v9 6/8] fs/acl: Add ACL symlink operations test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,29 +116,32 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add acl_file_ops01 test to verify that standard file operations
-(chmod, chown) interact correctly with POSIX ACLs using direct
-xattr manipulation.
+Add acl_link01 test to verify that ACL operations on symlinks
+follow the symlink to the target file rather than operating on
+the symlink itself.
 
-Test coverage:
-- chmod updates ACL_USER_OBJ, ACL_GROUP_OBJ, and ACL_OTHER entries
-- chown changes file owner/group without affecting ACL permissions
-- ACL permissions are preserved after ownership changes
+The test:
+- Creates a regular file with mode 0600
+- Creates a symlink pointing to the file
+- Sets ACL (rwxrw----) through the symlink path
+- Verifies the ACL was applied to the target file
+- Confirms reading ACL via symlink returns target's ACL
 
-The test uses arbitrary UIDs without creating actual users, testing
-only the kernel ACL implementation. It runs on ext2/ext3/ext4 (with
-acl mount option), XFS, and Btrfs filesystems.
+This validates kernel behavior where ACL set/get operations
+on symlinks affect the target file, not the symlink.
+
+Uses direct xattr manipulation without requiring actual users,
+testing only kernel ACL implementation. Handles EOPNOTSUPP
+gracefully for filesystems without ACL support.
 
 Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
 ---
 V9 changes:
-- Use RST manpage formatted documentation
-- v8 link https://lore.kernel.org/ltp/20260613090543.78643-1-sachinp@linux.ibm.com/T/#t
+- No change
 
 V8 changes:
-- Use RST manpage documentation format for syscalls
-- remove forks_child since it is not required.
+- Use reset_test_path() instead of chown variant.
 - v7 link https://lore.kernel.org/ltp/20260612171930.11964-1-sachinp@linux.ibm.com/T/#t
 
 V7 changes:
@@ -148,22 +151,33 @@ V6 changes:
 - Added HAVE_SYS_XATTR_H guard
 - Removed redundant error checking, relying on library functions
 - Updated algorithm documentation with correct format
+- Removed unnecessary .forks_child flag
 - v5 link https://lore.kernel.org/ltp/20260608092200.92827-1-sachinp@linux.ibm.com/T/#t
 
 V5 changes:
 - Switch to kernel only test validation to remove dependency on libacl
   and useradd/del commands.
-- v3 link https://lore.kernel.org/ltp/20260604065417.25924-1-sachinp@linux.ibm.com/T/#t
+- v4 link https://lore.kernel.org/ltp/20260604065417.25924-1-sachinp@linux.ibm.com/T/#t
 
 V4 changes:
-- No change
+- Rewrite test logic to use distinct ACL (rwxrw----) that
+  differs from initial mode.
+- Update commit message to reflect the implementation.
+- v3 link https://lore.kernel.org/ltp/20260603140147.50738-1-sachinp@linux.ibm.com/T/#t
 
 V3 changes:
+- Updated the test to read the ACL from both TESTSYMLINK
+  and TESTFILE, and verify the expected entries/permissions match.
+- Updated commit message to reflect this change.
 - Updated copyright header as per LTP format.
-- v1 link https://lore.kernel.org/ltp/20260602121958.27494-1-sachinp@linux.ibm.com/T/#t
+- v2 link https://lore.kernel.org/ltp/20260603065744.47106-1-sachinp@linux.ibm.com/T/#t
 
 V2 changes:
-- No change
+- Updated incorrect TCONF message and description text
+- Updated commit message to remove incorrect symlinks wording
+- Use reset_test_path_no_chown variant to skip chown step
+  and removed needs_cmd tag to avoid useradd/userdel dependency
+- v1 link https://lore.kernel.org/ltp/20260602121958.27494-1-sachinp@linux.ibm.com/T/#t
 
 V1 changes:
 - Use HAVE_LIBACL guards in .c code
@@ -171,36 +185,36 @@ V1 changes:
 - rfc link https://lore.kernel.org/ltp/477836fd-80c8-4168-bfe6-00b374bb2534@linux.ibm.com/T/#t
 
 ---
- runtest/fs                               |   1 +
- testcases/kernel/fs/acl/.gitignore       |   1 +
- testcases/kernel/fs/acl/acl_file_ops01.c | 259 +++++++++++++++++++++++
- 3 files changed, 261 insertions(+)
- create mode 100644 testcases/kernel/fs/acl/acl_file_ops01.c
+ runtest/fs                           |   1 +
+ testcases/kernel/fs/acl/.gitignore   |   1 +
+ testcases/kernel/fs/acl/acl_link01.c | 215 +++++++++++++++++++++++++++
+ 3 files changed, 217 insertions(+)
+ create mode 100644 testcases/kernel/fs/acl/acl_link01.c
 
 diff --git a/runtest/fs b/runtest/fs
-index fd295edc7..f1eea055b 100644
+index f1eea055b..64deb56e6 100644
 --- a/runtest/fs
 +++ b/runtest/fs
-@@ -93,3 +93,4 @@ acl_user_obj01 acl_user_obj01
- acl_mask01 acl_mask01
+@@ -94,3 +94,4 @@ acl_mask01 acl_mask01
  acl_other01 acl_other01
  acl_inherit01 acl_inherit01
-+acl_file_ops01 acl_file_ops01
+ acl_file_ops01 acl_file_ops01
++acl_link01 acl_link01
 diff --git a/testcases/kernel/fs/acl/.gitignore b/testcases/kernel/fs/acl/.gitignore
-index bc03ba1fd..eb4b4a227 100644
+index eb4b4a227..4a071d516 100644
 --- a/testcases/kernel/fs/acl/.gitignore
 +++ b/testcases/kernel/fs/acl/.gitignore
-@@ -2,3 +2,4 @@
- /acl_mask01
+@@ -3,3 +3,4 @@
  /acl_other01
  /acl_inherit01
-+/acl_file_ops01
-diff --git a/testcases/kernel/fs/acl/acl_file_ops01.c b/testcases/kernel/fs/acl/acl_file_ops01.c
+ /acl_file_ops01
++/acl_link01
+diff --git a/testcases/kernel/fs/acl/acl_link01.c b/testcases/kernel/fs/acl/acl_link01.c
 new file mode 100644
-index 000000000..76da42a49
+index 000000000..5e70f36ff
 --- /dev/null
-+++ b/testcases/kernel/fs/acl/acl_file_ops01.c
-@@ -0,0 +1,259 @@
++++ b/testcases/kernel/fs/acl/acl_link01.c
+@@ -0,0 +1,215 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 IBM
@@ -210,211 +224,180 @@ index 000000000..76da42a49
 + */
 +
 +/*\
-+ * Test :manpage:`chmod(2)` and :manpage:`chown(2)` interaction
-+ * with ACLs using direct xattr manipulation.
++ * Test ACL operations on symlinks using direct xattr manipulation.
 + *
-+ * Verify that standard file operations interact correctly
-+ * with ACLs:
++ * Verify that ACL operations on symlinks follow the symlink to the target
++ * file. When setting or getting ACLs through a symlink path, the operation
++ * should affect the target file, not the symlink itself.
 + *
-+ * - :manpage:`chmod(2)` should update ACL_USER_OBJ, ACL_GROUP_OBJ,
-+ *   and ACL_OTHER entries
-+ * - :manpage:`chown(2)` should change file owner/group without
-+ *   affecting ACL entries
-+ * - ACL permissions should be preserved after ownership changes
++ * Note: Some filesystems may not support ACLs on the target file and will
++ * return EOPNOTSUPP, which is treated as TCONF (test not applicable).
 + *
-+ * This test uses arbitrary UIDs without creating actual users, testing
-+ * only the kernel ACL implementation.
++ * This test uses direct xattr manipulation without creating actual users,
++ * testing only the kernel ACL implementation.
 + *
 + * [Algorithm]
 + *
-+ * Test 1 - :manpage:`chmod(2)` interaction:
-+ *
-+ * - Create file with read-only ACL entries
-+ * - Use :manpage:`chmod(2)` to set permissions to 0777
-+ * - Verify ACL entries are updated to rwx for user, group, and other
-+ *
-+ * Test 2 - :manpage:`chown(2)` interaction:
-+ *
-+ * - Create file with specific ACL entries (rw for user, r for group/other)
-+ * - Use :manpage:`chown(2)` to change owner and group
-+ * - Verify ownership changed correctly
-+ * - Verify ACL entries preserved their permissions after
-+ *   :manpage:`chown(2)`
++ * - Create a regular file with mode 0600 (rw-------)
++ * - Create a symlink pointing to the file
++ * - Set a distinct ACL through the symlink path (rwxrw----)
++ * - Verify the ACL was set on the target file by reading it directly
++ * - Get ACL through the symlink path
++ * - Verify both ACLs match and differ from the initial 0600 mode
 + */
 +
 +#include "acl_lib.h"
 +
 +#ifdef HAVE_SYS_XATTR_H
 +
-+#define TEST_UID 1000
-+#define TEST_GID 1000
-+#define USER2_UID 2000
-+#define USER2_GID 2000
-+
-+/*
-+ * Test chmod interaction with ACLs.
-+ * chmod should update ACL_USER_OBJ, ACL_GROUP_OBJ, and ACL_OTHER.
-+ */
-+static void test_chmod_acl(void)
++static void run(void)
 +{
-+	struct acl *acl;
++	struct acl *acl, *target_acl = NULL, *symlink_acl = NULL;
++	struct acl_entry *user_obj, *group_obj, *other;
++	struct acl_entry *t, *s;
 +	int fd = -1;
-+	int user_ok = 0, group_ok = 0, other_ok = 0;
++	int match, count, i;
 +
-+	tst_res(TINFO, "Testing chmod interaction with ACLs");
++	tst_res(TINFO, "Testing ACL operations on symlinks");
 +	reset_test_path();
 +
-+	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0644);
++	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0600);
 +	SAFE_CLOSE(fd);
++
++	SAFE_SYMLINK("testfile", TESTSYMLINK);
 +
 +	acl = acl_init();
 +
-+	acl_add_entry(acl, ACL_USER_OBJ, ACL_READ, 0);
-+	acl_add_entry(acl, ACL_GROUP_OBJ, ACL_READ, 0);
-+	acl_add_entry(acl, ACL_OTHER, ACL_READ, 0);
++	acl_add_entry(acl, ACL_USER_OBJ,
++		      ACL_READ | ACL_WRITE | ACL_EXECUTE, 0);
++	acl_add_entry(acl, ACL_GROUP_OBJ, ACL_READ | ACL_WRITE, 0);
++	acl_add_entry(acl, ACL_OTHER, 0, 0);
 +
-+	if (acl_set_file(TESTFILE, ACL_TYPE_ACCESS, acl) < 0) {
++	if (acl_set_file(TESTSYMLINK, ACL_TYPE_ACCESS, acl) < 0) {
 +		if (errno == EOPNOTSUPP) {
 +			acl_free(acl);
++			if (unlink(TESTSYMLINK) == -1)
++				tst_res(TWARN | TERRNO, "unlink symlink failed");
 +			cleanup_testfile();
-+			tst_brk(TCONF | TERRNO, "ACL not supported");
++			tst_res(TCONF,
++				"ACL not supported by this filesystem");
++			return;
 +		}
 +		acl_free(acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
 +		cleanup_testfile();
 +		tst_brk(TBROK | TERRNO, "ACL setup failed");
 +	}
 +
 +	acl_free(acl);
 +
-+	SAFE_CHMOD(TESTFILE, 0777);
-+
-+	acl = acl_get_file(TESTFILE, ACL_TYPE_ACCESS);
-+	if (!acl) {
++	/* Verify ACL was actually set on target file with expected values */
++	target_acl = acl_get_file(TESTFILE, ACL_TYPE_ACCESS);
++	if (!target_acl) {
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
 +		cleanup_testfile();
-+		tst_brk(TBROK | TERRNO, "acl_get_file failed");
++		tst_brk(TBROK | TERRNO, "acl_get_file on target file failed");
 +	}
 +
-+	/* Check if all entries have rwx permissions */
-+	for (int i = 0; i < acl->count; i++) {
-+		struct acl_entry *entry = &acl->entries[i];
++	/* Verify expected ACL entries: USER_OBJ=rwx, GROUP_OBJ=rw, OTHER=--- */
++	if (target_acl->count != 3) {
++		count = target_acl->count;
 +
-+		if (entry->tag == ACL_USER_OBJ) {
-+			if (acl_entry_has_rwx(entry))
-+				user_ok = 1;
-+		} else if (entry->tag == ACL_GROUP_OBJ) {
-+			if (acl_entry_has_rwx(entry))
-+				group_ok = 1;
-+		} else if (entry->tag == ACL_OTHER) {
-+			if (acl_entry_has_rwx(entry))
-+				other_ok = 1;
-+		}
-+	}
-+
-+	acl_free(acl);
-+	cleanup_testfile();
-+
-+	if (user_ok && group_ok && other_ok)
-+		tst_res(TPASS, "chmod correctly updated ACL entries");
-+	else
-+		tst_res(TFAIL, "chmod did not update ACL entries correctly");
-+}
-+
-+/*
-+ * Test chown interaction with ACLs.
-+ * chown should change file owner and group without affecting ACL entries.
-+ */
-+static void test_chown_acl(void)
-+{
-+	struct acl *acl;
-+	struct stat st;
-+	int fd = -1;
-+	int found_user_obj = 0, found_group_obj = 0, found_other = 0;
-+
-+	tst_res(TINFO, "Testing chown interaction with ACLs");
-+	reset_test_path();
-+
-+	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0644);
-+	SAFE_CLOSE(fd);
-+
-+	acl = acl_init();
-+
-+	acl_add_entry(acl, ACL_USER_OBJ, ACL_READ | ACL_WRITE, 0);
-+	acl_add_entry(acl, ACL_GROUP_OBJ, ACL_READ, 0);
-+	acl_add_entry(acl, ACL_OTHER, ACL_READ, 0);
-+
-+	if (acl_set_file(TESTFILE, ACL_TYPE_ACCESS, acl) < 0) {
-+		acl_free(acl);
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
 +		cleanup_testfile();
-+		if (errno == EOPNOTSUPP)
-+			tst_brk(TCONF | TERRNO, "ACL not supported");
-+		tst_brk(TBROK | TERRNO, "acl_set_file failed");
-+	}
-+
-+	acl_free(acl);
-+
-+	SAFE_CHOWN(TESTFILE, USER2_UID, USER2_GID);
-+
-+	SAFE_STAT(TESTFILE, &st);
-+
-+	if (st.st_uid != USER2_UID || st.st_gid != USER2_GID) {
-+		cleanup_testfile();
-+		tst_res(TFAIL, "chown did not change owner/group correctly");
++		tst_res(TFAIL, "Expected 3 ACL entries, got %d", count);
 +		return;
 +	}
 +
-+	/* Verify ACL entries are preserved after chown */
-+	acl = acl_get_file(TESTFILE, ACL_TYPE_ACCESS);
-+	if (!acl) {
++	user_obj = acl_find_entry(target_acl, ACL_USER_OBJ, 0);
++	group_obj = acl_find_entry(target_acl, ACL_GROUP_OBJ, 0);
++	other = acl_find_entry(target_acl, ACL_OTHER, 0);
++
++	if (!user_obj || !group_obj || !other) {
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
 +		cleanup_testfile();
-+		tst_brk(TBROK | TERRNO, "acl_get_file failed");
++		tst_res(TFAIL, "Missing required ACL entries");
++		return;
 +	}
 +
-+	for (int i = 0; i < acl->count; i++) {
-+		struct acl_entry *entry = &acl->entries[i];
++	if (user_obj->perm != (ACL_READ | ACL_WRITE | ACL_EXECUTE)) {
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_res(TFAIL, "USER_OBJ has wrong permissions: %o (expected rwx)",
++			user_obj->perm);
++		return;
++	}
 +
-+		if (entry->tag == ACL_USER_OBJ) {
-+			found_user_obj = 1;
-+			if (!acl_entry_has_perm(entry, ACL_READ) ||
-+			    !acl_entry_has_perm(entry, ACL_WRITE)) {
-+				acl_free(acl);
-+				cleanup_testfile();
-+				tst_res(TFAIL,
-+					"ACL_USER_OBJ perms changed after chown");
-+				return;
-+			}
-+		} else if (entry->tag == ACL_GROUP_OBJ) {
-+			found_group_obj = 1;
-+			if (!acl_entry_has_perm(entry, ACL_READ) ||
-+			    acl_entry_has_perm(entry, ACL_WRITE)) {
-+				acl_free(acl);
-+				cleanup_testfile();
-+				tst_res(TFAIL,
-+					"ACL_GROUP_OBJ perms changed after chown");
-+				return;
-+			}
-+		} else if (entry->tag == ACL_OTHER) {
-+			found_other = 1;
-+			if (!acl_entry_has_perm(entry, ACL_READ) ||
-+			    acl_entry_has_perm(entry, ACL_WRITE)) {
-+				acl_free(acl);
-+				cleanup_testfile();
-+				tst_res(TFAIL,
-+					"ACL_OTHER perms changed after chown");
-+				return;
++	if (group_obj->perm != (ACL_READ | ACL_WRITE)) {
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_res(TFAIL, "GROUP_OBJ has wrong permissions: %o (expected rw-)",
++			group_obj->perm);
++		return;
++	}
++
++	if (other->perm != 0) {
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_res(TFAIL, "OTHER has wrong permissions: %o (expected ---)",
++			other->perm);
++		return;
++	}
++
++	/* Now verify that reading via symlink gives the same result */
++	symlink_acl = acl_get_file(TESTSYMLINK, ACL_TYPE_ACCESS);
++	if (!symlink_acl) {
++		acl_free(target_acl);
++		if (unlink(TESTSYMLINK) == -1)
++			tst_res(TWARN | TERRNO, "unlink symlink failed");
++		cleanup_testfile();
++		tst_brk(TBROK | TERRNO, "acl_get_file on symlink failed");
++	}
++
++	/* Compare ACLs */
++	match = 1;
++	if (target_acl->count != symlink_acl->count) {
++		match = 0;
++	} else {
++		for (i = 0; i < target_acl->count; i++) {
++			t = &target_acl->entries[i];
++			s = &symlink_acl->entries[i];
++
++			if (t->tag != s->tag || t->perm != s->perm ||
++			    t->id != s->id) {
++				match = 0;
++				break;
 +			}
 +		}
 +	}
 +
-+	acl_free(acl);
++	acl_free(symlink_acl);
++	acl_free(target_acl);
 +
-+	if (!found_user_obj || !found_group_obj || !found_other) {
-+		cleanup_testfile();
-+		tst_res(TFAIL, "ACL entries missing after chown");
++	if (unlink(TESTSYMLINK) == -1)
++		tst_res(TWARN | TERRNO, "unlink symlink failed");
++	cleanup_testfile();
++
++	if (!match) {
++		tst_res(TFAIL,
++			"ACL via symlink differs from ACL on target file");
 +		return;
 +	}
 +
-+	cleanup_testfile();
-+	tst_res(TPASS, "chown preserved ACL entries correctly");
++	tst_res(TPASS,
++		"ACL set via symlink was applied to target file (rwxrw----)");
 +}
 +
 +static void setup(void)
@@ -427,21 +410,8 @@ index 000000000..76da42a49
 +	cleanup_test_paths();
 +}
 +
-+static void run(unsigned int n)
-+{
-+	switch (n) {
-+	case 0:
-+		test_chmod_acl();
-+		break;
-+	case 1:
-+		test_chown_acl();
-+		break;
-+	}
-+}
-+
 +static struct tst_test test = {
-+	.test = run,
-+	.tcnt = 2,
++	.test_all = run,
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.needs_root = 1,
