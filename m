@@ -4,102 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 926BECD98D6
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 07:26:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB365CD98C5
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 07:27:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 43CDB3E59B9
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 09:26:55 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 2AFDD3E59C9
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 09:27:15 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 670913E59B4
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 09:25:27 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 8EC453E5B54
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 09:25:29 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 906F020093A
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 09:25:26 +0200 (CEST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 895AB10007BE
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 09:25:28 +0200 (CEST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 65F6Idos1613746; Mon, 15 Jun 2026 07:25:24 GMT
+ 65F6MKY21627730; Mon, 15 Jun 2026 07:25:27 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
  :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=JUFEdRxBTjOp0aUqC
- 2aRp6OKlnf7hSVx2Qscidefatc=; b=cy8dh2r3nOTRv7/wv0b6tBiLCxiud+/h2
- DD7BoCO0k8ZTuhPzgLWxq0/nl72v3G+kq4wHTFTLm4LeCyscNeVTupKSVxrNWCK4
- 7LUJRUsBtZD9JRFlY6uQe3d+qtRlddb0v4gMUT3VL1n9tdIp2Vd9kDp68Cq35sgV
- 02c0PY6QPiAJRCrUhSwimtOwIHvw9BVelUkmqT4f4Wq8hjcP20Hfy0y6cFYVVEoN
- wdCyIfPF1sn6Veps/5RR/rrmm+dvE1/OwUOF+PshJ0u4FMOmATTTcHJxwYlVdg6e
- 4VRGqR2nzJSHKt1uxOKZcYgf5Ph4BjDvD7a4njzABaPMSpYb3hnjQ==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4es1h7yerd-1
+ :mime-version:references:subject:to; s=pp1; bh=a6j/DICOzJgNRNVyT
+ 6QNmTkYEfBhKgK3vb2DIoRrFIk=; b=gy6SNJNEWgc2IMYWfRGUY69vpmGFwDmfw
+ D5edHVnEIhw/4jghn2Qn3JiLwQrPPrlgV2neXUMtC1UCJLeMLB+qzx8OdCnnvZDe
+ qe5/VPDNY2J0LfXCXXsb/FvFguGXTMVLcu/CdjNfovFrF9WLtSRA05aBySvolmML
+ dyZwjxich6Nl4Y8dq/MhRn4SrbwgefwiK3Knk4odM2dZtlQ30UpTUqY12tCc9tIf
+ T4IceuEl8+bJtl46hX3ed8k4zjfuQk8EUqOlWTOaI2E74CJp03jbDmKn2v8gfZip
+ hhACVtBqVutr9F2Ob/0FXH5LjLWlx7q0HEGTh1NYdV1t/PYEDRzfQ==
+Received: from ppma13.dal12v.mail.ibm.com
+ (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4es1efxx82-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 15 Jun 2026 07:25:24 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65F7JkJm030582;
- Mon, 15 Jun 2026 07:25:23 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4esm7xw8es-1
+ Mon, 15 Jun 2026 07:25:26 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65F7JbGd013281;
+ Mon, 15 Jun 2026 07:25:25 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4eskrg5akn-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 15 Jun 2026 07:25:23 +0000 (GMT)
+ Mon, 15 Jun 2026 07:25:25 +0000 (GMT)
 Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
  [10.20.54.105])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 65F7PLWN31654420
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 65F7POV852101556
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 15 Jun 2026 07:25:22 GMT
+ Mon, 15 Jun 2026 07:25:24 GMT
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id D891B2004B;
- Mon, 15 Jun 2026 07:25:21 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 354AA20040;
+ Mon, 15 Jun 2026 07:25:24 +0000 (GMT)
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 3A0BF20049;
- Mon, 15 Jun 2026 07:25:21 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 39CC32004D;
+ Mon, 15 Jun 2026 07:25:23 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.43.52.62])
  by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Mon, 15 Jun 2026 07:25:21 +0000 (GMT)
+ Mon, 15 Jun 2026 07:25:23 +0000 (GMT)
 From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Mon, 15 Jun 2026 12:55:11 +0530
-Message-Id: <20260615072514.53026-6-sachinp@linux.ibm.com>
+Date: Mon, 15 Jun 2026 12:55:13 +0530
+Message-Id: <20260615072514.53026-8-sachinp@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20260615072514.53026-1-sachinp@linux.ibm.com>
 References: <20260615072514.53026-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE1MDA3NSBTYWx0ZWRfX5Mgdjd2EB/aT
- Pmx5TdKeuERze7DhNbi+ONZefBJv6xVnP8PVlCCGXIMmQUjyet9mxsLdB9GkSMuZ+Eo9QgW6dHv
- kbeNygAanAazBmNIvwiEGwezapx2uDM=
-X-Proofpoint-ORIG-GUID: EGhfvDICHFnG5BEDe0SW1pbB6bRq1str
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE1MDA3NSBTYWx0ZWRfX6fgoOGWi9e6h
- PAV290Oc9DJbBnzTxCzxHMeRMJqgjfijc/rVu34v0XIyAtAO+ZIa2RfpuVY5ANNY39DeQ354gX1
- 54LNFNt85SknMK82tPxkOw3ohUS/PWphIjtLXnx3sPJRfHx0NlX8tlcVl6DIKD12vWyIH2zHUx2
- +jZzMZh22kqtpjRiNltckynaA/mGYq+E5IR2WlCjqsMPiU7UAqTF8RI6dWmttCX55SfpWAH+5bw
- go6eEas89YfjIu5C4Ux2cfxc30le/UI6o8h8/V7Bh+1/fgl/6j0OtoWmCFulXnbqWCHDtLL3lcL
- 3GVJWysxDIfox9gc8rN1HaxSvy9GtcXgz5pXeA7YJ860zbE+QNeXxMA/wt0KyV7PKyVJrnn5CJs
- leorlz4VBhhe390CwFfIsla7sJUwgUT3Le/cfMtYtGgXDJ69Lx8q9hU/dPJLWQugX87ivaPc3g+
- 4wysk8r9JpMn0iMI65A==
-X-Authority-Analysis: v=2.4 cv=U9uiy+ru c=1 sm=1 tr=0 ts=6a2fa8e4 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE1MDA3NSBTYWx0ZWRfXwzG0Z0f/nzYX
+ wbSc3SlpdRcpdBcyH+cxyV6rxz1L3Y+DV6cy2tzvNx8vG5tiX9skw1pLLiEGT91XA3hD3HOlsjx
+ b3o+1x6E7pZiCiFnOHU6LnbbQLZxIOM=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE1MDA3NSBTYWx0ZWRfX8KEe/cQy4eCu
+ X60wrcPbmwlGy6YSBJs7GBJasrbfQMeCmTyHLTQoZm0eF0ttyALA4s9+kGAwqhxQumb9kTgD88e
+ PD0qwiez9U4p/ILr/bwiMtLPOS2FsLbLmoju3IgREdu7jwClJuK5UhCdP7iGFYtJFKGkfRQCGiX
+ hTxTX+I6JGb7FKZ+w8uAWE90QJ5qa7brWY3gEi1KrfRpg95RIG7MCb4bVWpl27KALPA/InddsGL
+ kHIFxSYJFyyvO0bxjScsPuBEWtYv7qRALzCYTZLwK/v19zIdxPMl7ZJnIHqtpRkADNlz1X2KYDp
+ tN3Uya+sopXOU5gisKFThm8YicjeZYhZpStPBvJg+CJ83JWfTAzTEG2rvUBltjDKhysrVyf8hp+
+ 7xpncovbwpuTDbCcOhXgQO1D5h/M1RC5QmZIePiq3vLrfcHwck0chnQiUlOY4JwpQwVmRDg3Yv4
+ ZsmjuSZk/tQ1F8jBrFQ==
+X-Proofpoint-GUID: 6YEyy3hKfuGMqEZIi80sbtJNPCdmxOA4
+X-Authority-Analysis: v=2.4 cv=NuDhtcdJ c=1 sm=1 tr=0 ts=6a2fa8e6 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
  a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
- a=XdZ29zGAJf27uyTfQcwA:9
-X-Proofpoint-GUID: EGhfvDICHFnG5BEDe0SW1pbB6bRq1str
+ a=V8glGbnc2Ofi9Qvn3v5h:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=l0bH7frDkLAXEwbgkBoA:9
+X-Proofpoint-ORIG-GUID: 6YEyy3hKfuGMqEZIi80sbtJNPCdmxOA4
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-06-15_02,2026-06-12_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 impostorscore=0 bulkscore=0 phishscore=0
- priorityscore=1501 clxscore=1015 adultscore=0 malwarescore=0 suspectscore=0
- spamscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.22.0-2606040000
- definitions=main-2606150075
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ spamscore=0 adultscore=0 suspectscore=0 impostorscore=0 clxscore=1015
+ phishscore=0 bulkscore=0 malwarescore=0 priorityscore=1501 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606040000 definitions=main-2606150075
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v10 5/8] fs/acl: Add chmod/chown ACL interaction tests
+Subject: [LTP] [PATCH v10 7/8] fs/acl: Add extended attributes test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,18 +116,19 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add acl_file_ops01 test to verify that standard file operations
-(chmod, chown) interact correctly with POSIX ACLs using direct
-xattr manipulation.
+Add xattr_test01 to validate extended attribute operations on
+filesystems.
 
-Test coverage:
-- chmod updates ACL_USER_OBJ, ACL_GROUP_OBJ, and ACL_OTHER entries
-- chown changes file owner/group without affecting ACL permissions
-- ACL permissions are preserved after ownership changes
+The test covers:
+- Setting and retrieving extended attributes on files and directories
+- Removing extended attributes and verifying removal
+- Backing up extended attributes to a file
+- Restoring extended attributes from backup
+- Verifying restored attributes match original values
 
-The test uses arbitrary UIDs without creating actual users, testing
-only the kernel ACL implementation. It runs on ext2/ext3/ext4 (with
-acl mount option), XFS, and Btrfs filesystems.
+The test runs on ext2/ext3/ext4 (with user_xattr mount option),
+xfs, and btrfs filesystems. It properly handles EOPNOTSUPP for
+filesystems without extended attribute support.
 
 Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
@@ -136,12 +137,11 @@ V10 changes:
 - No change
 
 V9 changes:
-- Use RST manpage formatted documentation
+- Use TEST() method as appropriate.
 - v8 link https://lore.kernel.org/ltp/20260613090543.78643-1-sachinp@linux.ibm.com/T/#t
 
 V8 changes:
-- Use RST manpage documentation format for syscalls
-- remove forks_child since it is not required.
+- Use reset_test_path() instead of chown variant.
 - v7 link https://lore.kernel.org/ltp/20260612171930.11964-1-sachinp@linux.ibm.com/T/#t
 
 V7 changes:
@@ -149,8 +149,10 @@ V7 changes:
 
 V6 changes:
 - Added HAVE_SYS_XATTR_H guard
-- Removed redundant error checking, relying on library functions
+- Switched from TST_EXP_PASS_SILENT to TEST() with TTERRNO for better
+  diagnostics
 - Updated algorithm documentation with correct format
+- Removed unnecessary .forks_child flag
 - v5 link https://lore.kernel.org/ltp/20260608092200.92827-1-sachinp@linux.ibm.com/T/#t
 
 V5 changes:
@@ -163,10 +165,13 @@ V4 changes:
 
 V3 changes:
 - Updated copyright header as per LTP format.
-- v1 link https://lore.kernel.org/ltp/20260602121958.27494-1-sachinp@linux.ibm.com/T/#t
+- Updated commit message as per review comments.
+- v2 link https://lore.kernel.org/ltp/20260603065744.47106-1-sachinp@linux.ibm.com/T/#t
 
 V2 changes:
-- No change
+- Use reset_test_path_no_chown variant to skip chown step
+  and removed needs_cmd tag to avoid useradd/userdel dependency
+- v1 link https://lore.kernel.org/ltp/20260602121958.27494-1-sachinp@linux.ibm.com/T/#t
 
 V1 changes:
 - Use HAVE_LIBACL guards in .c code
@@ -174,36 +179,36 @@ V1 changes:
 - rfc link https://lore.kernel.org/ltp/477836fd-80c8-4168-bfe6-00b374bb2534@linux.ibm.com/T/#t
 
 ---
- runtest/fs                               |   1 +
- testcases/kernel/fs/acl/.gitignore       |   1 +
- testcases/kernel/fs/acl/acl_file_ops01.c | 259 +++++++++++++++++++++++
- 3 files changed, 261 insertions(+)
- create mode 100644 testcases/kernel/fs/acl/acl_file_ops01.c
+ runtest/fs                             |   1 +
+ testcases/kernel/fs/acl/.gitignore     |   1 +
+ testcases/kernel/fs/acl/xattr_test01.c | 380 +++++++++++++++++++++++++
+ 3 files changed, 382 insertions(+)
+ create mode 100644 testcases/kernel/fs/acl/xattr_test01.c
 
 diff --git a/runtest/fs b/runtest/fs
-index fd295edc7..f1eea055b 100644
+index 64deb56e6..f9acac387 100644
 --- a/runtest/fs
 +++ b/runtest/fs
-@@ -93,3 +93,4 @@ acl_user_obj01 acl_user_obj01
- acl_mask01 acl_mask01
- acl_other01 acl_other01
+@@ -95,3 +95,4 @@ acl_other01 acl_other01
  acl_inherit01 acl_inherit01
-+acl_file_ops01 acl_file_ops01
+ acl_file_ops01 acl_file_ops01
+ acl_link01 acl_link01
++xattr_test01 xattr_test01
 diff --git a/testcases/kernel/fs/acl/.gitignore b/testcases/kernel/fs/acl/.gitignore
-index bc03ba1fd..eb4b4a227 100644
+index 4a071d516..62ccd0457 100644
 --- a/testcases/kernel/fs/acl/.gitignore
 +++ b/testcases/kernel/fs/acl/.gitignore
-@@ -2,3 +2,4 @@
- /acl_mask01
- /acl_other01
+@@ -4,3 +4,4 @@
  /acl_inherit01
-+/acl_file_ops01
-diff --git a/testcases/kernel/fs/acl/acl_file_ops01.c b/testcases/kernel/fs/acl/acl_file_ops01.c
+ /acl_file_ops01
+ /acl_link01
++/xattr_test01
+diff --git a/testcases/kernel/fs/acl/xattr_test01.c b/testcases/kernel/fs/acl/xattr_test01.c
 new file mode 100644
-index 000000000..76da42a49
+index 000000000..7b86a43ed
 --- /dev/null
-+++ b/testcases/kernel/fs/acl/acl_file_ops01.c
-@@ -0,0 +1,259 @@
++++ b/testcases/kernel/fs/acl/xattr_test01.c
+@@ -0,0 +1,380 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 IBM
@@ -213,211 +218,332 @@ index 000000000..76da42a49
 + */
 +
 +/*\
-+ * Test :manpage:`chmod(2)` and :manpage:`chown(2)` interaction
-+ * with ACLs using direct xattr manipulation.
++ * Test Extended Attributes (xattr).
 + *
-+ * Verify that standard file operations interact correctly
-+ * with ACLs:
++ * Some filesystems require explicit user_xattr mount options,
++ * while others (e.g. xfs and btrfs) provide these features without
++ * mount options.
 + *
-+ * - :manpage:`chmod(2)` should update ACL_USER_OBJ, ACL_GROUP_OBJ,
-+ *   and ACL_OTHER entries
-+ * - :manpage:`chown(2)` should change file owner/group without
-+ *   affecting ACL entries
-+ * - ACL permissions should be preserved after ownership changes
-+ *
-+ * This test uses arbitrary UIDs without creating actual users, testing
-+ * only the kernel ACL implementation.
++ * This test validates:
++ * - Extended attributes set/get/remove operations
++ * - Extended attributes backup and restore operations
 + *
 + * [Algorithm]
 + *
-+ * Test 1 - :manpage:`chmod(2)` interaction:
-+ *
-+ * - Create file with read-only ACL entries
-+ * - Use :manpage:`chmod(2)` to set permissions to 0777
-+ * - Verify ACL entries are updated to rwx for user, group, and other
-+ *
-+ * Test 2 - :manpage:`chown(2)` interaction:
-+ *
-+ * - Create file with specific ACL entries (rw for user, r for group/other)
-+ * - Use :manpage:`chown(2)` to change owner and group
-+ * - Verify ownership changed correctly
-+ * - Verify ACL entries preserved their permissions after
-+ *   :manpage:`chown(2)`
++ * - Set extended attributes on directories and files
++ * - Verify attributes can be retrieved correctly
++ * - Test attribute removal
++ * - Create backup of extended attributes to a file
++ * - Remove original attributes
++ * - Restore attributes from backup file
++ * - Verify restored attributes match original values
 + */
 +
 +#include "acl_lib.h"
 +
 +#ifdef HAVE_SYS_XATTR_H
 +
-+#define TEST_UID 1000
-+#define TEST_GID 1000
-+#define USER2_UID 2000
-+#define USER2_GID 2000
-+
 +/*
-+ * Test chmod interaction with ACLs.
-+ * chmod should update ACL_USER_OBJ, ACL_GROUP_OBJ, and ACL_OTHER.
++ * Test extended attributes.
++ * Set, get, and remove extended attributes on files and directories.
 + */
-+static void test_chmod_acl(void)
++static void test_xattr(void)
 +{
-+	struct acl *acl;
++	char value[256];
 +	int fd = -1;
-+	int user_ok = 0, group_ok = 0, other_ok = 0;
++	int file_created = 0;
 +
-+	tst_res(TINFO, "Testing chmod interaction with ACLs");
++	tst_res(TINFO, "Testing extended attributes");
 +	reset_test_path();
++
++	TEST(setxattr(TESTDIR, XATTR_TEST_DIR_NAME, XATTR_TEST_DIR_VALUE,
++		      XATTR_TEST_DIR_SIZE, 0));
++	if (TST_RET == -1) {
++		if (TST_ERR == EOPNOTSUPP) {
++			tst_res(TCONF, "Extended attributes not supported");
++			return;
++		}
++		tst_res(TFAIL | TTERRNO, "setxattr on directory failed");
++		return;
++	}
++
++	TEST(getxattr(TESTDIR, XATTR_TEST_DIR_NAME, value, sizeof(value)));
++	if (TST_RET < 0) {
++		tst_res(TFAIL | TTERRNO, "getxattr on directory failed");
++		goto cleanup_dir_xattr;
++	}
++
++	if (TST_RET != XATTR_TEST_DIR_SIZE ||
++	    memcmp(value, XATTR_TEST_DIR_VALUE, XATTR_TEST_DIR_SIZE) != 0) {
++		tst_res(TFAIL, "getxattr returned wrong directory value");
++		goto cleanup_dir_xattr;
++	}
 +
 +	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0644);
 +	SAFE_CLOSE(fd);
++	file_created = 1;
 +
-+	acl = acl_init();
-+
-+	acl_add_entry(acl, ACL_USER_OBJ, ACL_READ, 0);
-+	acl_add_entry(acl, ACL_GROUP_OBJ, ACL_READ, 0);
-+	acl_add_entry(acl, ACL_OTHER, ACL_READ, 0);
-+
-+	if (acl_set_file(TESTFILE, ACL_TYPE_ACCESS, acl) < 0) {
-+		if (errno == EOPNOTSUPP) {
-+			acl_free(acl);
-+			cleanup_testfile();
-+			tst_brk(TCONF | TERRNO, "ACL not supported");
++	TEST(setxattr(TESTFILE, XATTR_TEST_FILE_NAME, XATTR_TEST_FILE_VALUE,
++		      XATTR_TEST_FILE_SIZE, 0));
++	if (TST_RET == -1) {
++		if (TST_ERR == EOPNOTSUPP) {
++			tst_res(TCONF, "Extended attributes not supported");
++			goto cleanup_file_and_dir;
 +		}
-+		acl_free(acl);
++		tst_res(TFAIL | TTERRNO, "setxattr on file failed");
++		goto cleanup_file_and_dir;
++	}
++
++	TEST(getxattr(TESTFILE, XATTR_TEST_FILE_NAME, value, sizeof(value)));
++	if (TST_RET < 0) {
++		tst_res(TFAIL | TTERRNO, "getxattr on file failed");
++		goto cleanup_file_and_dir;
++	}
++
++	if (TST_RET != XATTR_TEST_FILE_SIZE ||
++	    memcmp(value, XATTR_TEST_FILE_VALUE, XATTR_TEST_FILE_SIZE) != 0) {
++		tst_res(TFAIL, "getxattr returned wrong file value");
++		goto cleanup_file_and_dir;
++	}
++
++	TEST(removexattr(TESTFILE, XATTR_TEST_FILE_NAME));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "removexattr failed");
++		goto cleanup_file_and_dir;
++	}
++
++	TEST(getxattr(TESTFILE, XATTR_TEST_FILE_NAME, value, sizeof(value)));
++	if (TST_RET >= 0 || TST_ERR != ENODATA) {
++		tst_res(TFAIL, "getxattr after removal should fail with ENODATA");
++		goto cleanup_file_and_dir;
++	}
++
++	tst_res(TPASS, "Extended attributes work correctly");
++
++cleanup_file_and_dir:
++	if (file_created)
 +		cleanup_testfile();
-+		tst_brk(TBROK | TERRNO, "ACL setup failed");
-+	}
++cleanup_dir_xattr:
++	if (removexattr(TESTDIR, XATTR_TEST_DIR_NAME) == -1 &&
++	    errno != ENODATA)
++		tst_res(TWARN | TERRNO, "removexattr failed");
++}
 +
-+	acl_free(acl);
++#define XATTR_BACKUP_TEST_COUNT 2
 +
-+	SAFE_CHMOD(TESTFILE, 0777);
-+
-+	acl = acl_get_file(TESTFILE, ACL_TYPE_ACCESS);
-+	if (!acl) {
-+		cleanup_testfile();
-+		tst_brk(TBROK | TERRNO, "acl_get_file failed");
-+	}
-+
-+	/* Check if all entries have rwx permissions */
-+	for (int i = 0; i < acl->count; i++) {
-+		struct acl_entry *entry = &acl->entries[i];
-+
-+		if (entry->tag == ACL_USER_OBJ) {
-+			if (acl_entry_has_rwx(entry))
-+				user_ok = 1;
-+		} else if (entry->tag == ACL_GROUP_OBJ) {
-+			if (acl_entry_has_rwx(entry))
-+				group_ok = 1;
-+		} else if (entry->tag == ACL_OTHER) {
-+			if (acl_entry_has_rwx(entry))
-+				other_ok = 1;
-+		}
-+	}
-+
-+	acl_free(acl);
-+	cleanup_testfile();
-+
-+	if (user_ok && group_ok && other_ok)
-+		tst_res(TPASS, "chmod correctly updated ACL entries");
-+	else
-+		tst_res(TFAIL, "chmod did not update ACL entries correctly");
++/*
++ * Helper function to cleanup test xattrs.
++ */
++static inline void cleanup_test_xattrs(void)
++{
++	if (removexattr(TESTFILE, XATTR_TEST1_NAME) == -1 &&
++	    errno != ENODATA)
++		tst_res(TWARN | TERRNO, "removexattr XATTR_TEST1_NAME failed");
++	if (removexattr(TESTFILE, XATTR_TEST2_NAME) == -1 &&
++	    errno != ENODATA)
++		tst_res(TWARN | TERRNO, "removexattr XATTR_TEST2_NAME failed");
 +}
 +
 +/*
-+ * Test chown interaction with ACLs.
-+ * chown should change file owner and group without affecting ACL entries.
++ * Test extended attributes backup and restore.
++ * Extended attributes should be preserved through backup/restore.
 + */
-+static void test_chown_acl(void)
++static void test_xattr_backup_restore(void)
 +{
-+	struct acl *acl;
-+	struct stat st;
++	char value[256];
++	char line[512];
++	char attr_name[256];
++	char attr_value[256];
++	char list[512];
++	size_t name_len, value_len;
++	ssize_t list_size;
 +	int fd = -1;
-+	int found_user_obj = 0, found_group_obj = 0, found_other = 0;
++	FILE *fp = NULL;
++	int restored_count = 0;
++	int backup_created = 0;
++	char *attr_ptr;
 +
-+	tst_res(TINFO, "Testing chown interaction with ACLs");
++	tst_res(TINFO, "Testing extended attributes backup and restore");
 +	reset_test_path();
 +
 +	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0644);
 +	SAFE_CLOSE(fd);
 +
-+	acl = acl_init();
-+
-+	acl_add_entry(acl, ACL_USER_OBJ, ACL_READ | ACL_WRITE, 0);
-+	acl_add_entry(acl, ACL_GROUP_OBJ, ACL_READ, 0);
-+	acl_add_entry(acl, ACL_OTHER, ACL_READ, 0);
-+
-+	if (acl_set_file(TESTFILE, ACL_TYPE_ACCESS, acl) < 0) {
-+		acl_free(acl);
++	TEST(setxattr(TESTFILE, XATTR_TEST1_NAME, XATTR_TEST1_VALUE,
++		      XATTR_TEST1_SIZE, 0));
++	if (TST_RET == -1) {
 +		cleanup_testfile();
-+		if (errno == EOPNOTSUPP)
-+			tst_brk(TCONF | TERRNO, "ACL not supported");
-+		tst_brk(TBROK | TERRNO, "acl_set_file failed");
-+	}
-+
-+	acl_free(acl);
-+
-+	SAFE_CHOWN(TESTFILE, USER2_UID, USER2_GID);
-+
-+	SAFE_STAT(TESTFILE, &st);
-+
-+	if (st.st_uid != USER2_UID || st.st_gid != USER2_GID) {
-+		cleanup_testfile();
-+		tst_res(TFAIL, "chown did not change owner/group correctly");
-+		return;
-+	}
-+
-+	/* Verify ACL entries are preserved after chown */
-+	acl = acl_get_file(TESTFILE, ACL_TYPE_ACCESS);
-+	if (!acl) {
-+		cleanup_testfile();
-+		tst_brk(TBROK | TERRNO, "acl_get_file failed");
-+	}
-+
-+	for (int i = 0; i < acl->count; i++) {
-+		struct acl_entry *entry = &acl->entries[i];
-+
-+		if (entry->tag == ACL_USER_OBJ) {
-+			found_user_obj = 1;
-+			if (!acl_entry_has_perm(entry, ACL_READ) ||
-+			    !acl_entry_has_perm(entry, ACL_WRITE)) {
-+				acl_free(acl);
-+				cleanup_testfile();
-+				tst_res(TFAIL,
-+					"ACL_USER_OBJ perms changed after chown");
-+				return;
-+			}
-+		} else if (entry->tag == ACL_GROUP_OBJ) {
-+			found_group_obj = 1;
-+			if (!acl_entry_has_perm(entry, ACL_READ) ||
-+			    acl_entry_has_perm(entry, ACL_WRITE)) {
-+				acl_free(acl);
-+				cleanup_testfile();
-+				tst_res(TFAIL,
-+					"ACL_GROUP_OBJ perms changed after chown");
-+				return;
-+			}
-+		} else if (entry->tag == ACL_OTHER) {
-+			found_other = 1;
-+			if (!acl_entry_has_perm(entry, ACL_READ) ||
-+			    acl_entry_has_perm(entry, ACL_WRITE)) {
-+				acl_free(acl);
-+				cleanup_testfile();
-+				tst_res(TFAIL,
-+					"ACL_OTHER perms changed after chown");
-+				return;
-+			}
++		if (TST_ERR == EOPNOTSUPP) {
++			tst_res(TCONF, "Extended attributes not supported");
++			return;
 +		}
-+	}
-+
-+	acl_free(acl);
-+
-+	if (!found_user_obj || !found_group_obj || !found_other) {
-+		cleanup_testfile();
-+		tst_res(TFAIL, "ACL entries missing after chown");
++		tst_res(TFAIL | TTERRNO, "setxattr failed");
 +		return;
 +	}
 +
++	TEST(setxattr(TESTFILE, XATTR_TEST2_NAME, XATTR_TEST2_VALUE,
++		      XATTR_TEST2_SIZE, 0));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "setxattr failed");
++		goto cleanup_xattrs;
++	}
++
++	/* Create genuine backup by reading xattrs from filesystem */
++	fp = SAFE_FOPEN(XATTR_BACKUP_FILE, "w");
++	backup_created = 1;
++
++	if (fprintf(fp, "# file: %s\n", TESTFILE) < 0) {
++		tst_res(TFAIL | TERRNO, "fprintf failed");
++		goto cleanup_backup;
++	}
++
++	TEST(listxattr(TESTFILE, list, sizeof(list)));
++	if (TST_RET < 0) {
++		tst_res(TFAIL | TTERRNO, "listxattr failed");
++		goto cleanup_backup;
++	}
++
++	/* Save list size before it gets overwritten by subsequent TEST() calls */
++	list_size = TST_RET;
++
++	attr_ptr = list;
++	while (attr_ptr < list + list_size) {
++		/* Only backup user.* attributes for this test */
++		if (strncmp(attr_ptr, "user.", 5) != 0) {
++			attr_ptr += strlen(attr_ptr) + 1;
++			continue;
++		}
++
++		TEST(getxattr(TESTFILE, attr_ptr, value, sizeof(value)));
++		if (TST_RET < 0) {
++			tst_res(TFAIL | TTERRNO, "getxattr failed for %s",
++				attr_ptr);
++			goto cleanup_backup;
++		}
++
++		/* Write to backup file with null terminator for string values */
++		if (fprintf(fp, "%s=\"%.*s\"\n", attr_ptr, (int)TST_RET,
++			    value) < 0) {
++			tst_res(TFAIL | TERRNO, "fprintf failed");
++			goto cleanup_backup;
++		}
++
++		attr_ptr += strlen(attr_ptr) + 1;
++	}
++
++	SAFE_FCLOSE(fp);
++	fp = NULL;
++
++	/* Remove xattrs to simulate loss */
++	cleanup_test_xattrs();
++
++	/* Restore from backup file */
++	fp = SAFE_FOPEN(XATTR_BACKUP_FILE, "r");
++	while (fgets(line, sizeof(line), fp)) {
++		char *p, *q;
++
++		if (line[0] == '#' || line[0] == '\n')
++			continue;
++
++		/* Parse: attr_name="attr_value" */
++		p = strchr(line, '=');
++		if (!p)
++			continue;
++
++		/* Safe copy of attribute name with length check */
++		name_len = p - line;
++
++		if (name_len >= sizeof(attr_name)) {
++			tst_res(TWARN, "Attribute name too long, skipping");
++			continue;
++		}
++		memcpy(attr_name, line, name_len);
++		attr_name[name_len] = '\0';
++
++		/* Only restore user.* attributes for this test */
++		if (strncmp(attr_name, "user.", 5) != 0)
++			continue;
++
++		p++;
++		if (*p != '"')
++			continue;
++		p++;
++
++		q = strchr(p, '"');
++		if (!q)
++			continue;
++
++		/* Safe copy of attribute value with length check */
++		value_len = q - p;
++
++		if (value_len >= sizeof(attr_value)) {
++			tst_res(TWARN, "Attribute value too long, skipping");
++			continue;
++		}
++		memcpy(attr_value, p, value_len);
++		attr_value[value_len] = '\0';
++
++		/* Restore the xattr */
++		if (setxattr(TESTFILE, attr_name, attr_value, value_len,
++			     0) == -1) {
++			tst_res(TFAIL | TERRNO,
++				"setxattr restore failed for %s", attr_name);
++			goto cleanup_backup;
++		}
++		restored_count++;
++	}
++	SAFE_FCLOSE(fp);
++	fp = NULL;
++
++	if (restored_count != XATTR_BACKUP_TEST_COUNT) {
++		tst_res(TFAIL, "Expected %d xattrs restored, got %d",
++			XATTR_BACKUP_TEST_COUNT, restored_count);
++		goto cleanup_backup;
++	}
++
++	/* Verify restored xattrs */
++	TEST(getxattr(TESTFILE, XATTR_TEST1_NAME, value, sizeof(value)));
++	if (TST_RET < 0) {
++		tst_res(TFAIL | TTERRNO, "getxattr failed for %s",
++			XATTR_TEST1_NAME);
++		goto cleanup_backup;
++	}
++
++	if (TST_RET != XATTR_TEST1_SIZE ||
++	    memcmp(value, XATTR_TEST1_VALUE, XATTR_TEST1_SIZE) != 0) {
++		tst_res(TFAIL,
++			"Extended attribute %s restore verification failed",
++			XATTR_TEST1_NAME);
++		goto cleanup_backup;
++	}
++
++	TEST(getxattr(TESTFILE, XATTR_TEST2_NAME, value, sizeof(value)));
++	if (TST_RET < 0) {
++		tst_res(TFAIL | TTERRNO, "getxattr failed for %s",
++			XATTR_TEST2_NAME);
++		goto cleanup_backup;
++	}
++
++	if (TST_RET != XATTR_TEST2_SIZE ||
++	    memcmp(value, XATTR_TEST2_VALUE, XATTR_TEST2_SIZE) != 0) {
++		tst_res(TFAIL,
++			"Extended attribute %s restore verification failed",
++			XATTR_TEST2_NAME);
++		goto cleanup_backup;
++	}
++
++	tst_res(TPASS, "Extended attributes backup/restore work correctly");
++
++cleanup_backup:
++	if (fp)
++		SAFE_FCLOSE(fp);
++	if (backup_created) {
++		if (unlink(XATTR_BACKUP_FILE) == -1)
++			tst_res(TWARN | TERRNO, "unlink backup file failed");
++	}
++cleanup_xattrs:
++	cleanup_test_xattrs();
 +	cleanup_testfile();
-+	tst_res(TPASS, "chown preserved ACL entries correctly");
 +}
 +
 +static void setup(void)
@@ -434,10 +560,10 @@ index 000000000..76da42a49
 +{
 +	switch (n) {
 +	case 0:
-+		test_chmod_acl();
++		test_xattr();
 +		break;
 +	case 1:
-+		test_chown_acl();
++		test_xattr_backup_restore();
 +		break;
 +	}
 +}
@@ -451,9 +577,9 @@ index 000000000..76da42a49
 +	.mount_device = 1,
 +	.mntpoint = MNTPOINT,
 +	.filesystems = (struct tst_fs[]) {
-+		{.type = "ext2", .mnt_data = "acl"},
-+		{.type = "ext3", .mnt_data = "acl"},
-+		{.type = "ext4", .mnt_data = "acl"},
++		{.type = "ext2", .mnt_data = "user_xattr"},
++		{.type = "ext3", .mnt_data = "user_xattr"},
++		{.type = "ext4", .mnt_data = "user_xattr"},
 +		{.type = "xfs"},
 +		{.type = "btrfs"},
 +		{}
