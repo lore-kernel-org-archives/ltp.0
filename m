@@ -4,87 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11C42CD98DE
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 12:44:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F41CCD98DE
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 12:58:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781527465; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781528317; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=34fdjgQNrJAJRUGIWtXYUqE5GgrCLEsJhJtSlI/xQdY=;
- b=H/S/jStcludwuG87Nw7EnXQ5bCFgF73B3S1lpgbLIzTaXtBHLSh9Vwxmi/FmmG2E/dLvt
- wt7RwaDnuSUR+1UUEMMbIlMd+h167Srwx7z6TFHX6RxV9Swn1Dj5dHX5qFY9mjwbGCI/mJQ
- +H0PQrXPK5yjeT1QN6uCe4tE/ZVSbrY=
+ bh=lsT4G0QIFsxmnvjx7Vn2OGNwHyoiGlEjcS1toL2mJWI=;
+ b=VQAI6+ilv2grPG4mUd9WNVDXJJlMAcvdOPWgarBajuSt3keAMjHADP/GV1Q6YbxLt0W08
+ rWlkyGufCOXkeriu/9CflgHeoSqbUt5NXcKzhbbTUphntqRnLIunIsIkYSyd5vCK8ScYbnX
+ XHNpsI+g/+NU6LWX7SVOEOoh7TnZtc4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8966B3E5D97
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 14:44:25 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 3FBC23E5C28
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 14:58:37 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1880C3E59B9
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 14:44:05 +0200 (CEST)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
+ by picard.linux.it (Postfix) with ESMTPS id D41563C12CF
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 14:58:17 +0200 (CEST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2DC3C1400067
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 14:44:05 +0200 (CEST)
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-4921eed3fa2so19343265e9.0
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 05:44:05 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 137381A0027D
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 14:58:17 +0200 (CEST)
+Received: by mail-wm1-x32f.google.com with SMTP id
+ 5b1f17b1804b1-49222b6e871so19289515e9.3
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 05:58:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1781527444; x=1782132244; darn=lists.linux.it;
+ d=suse.com; s=google; t=1781528296; x=1782133096; darn=lists.linux.it;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
- b=V6Sd5D4UuyiwZeINg1cCKOE/MCVQHsE7DUHSLICyTeTXEDAToFk5qha35wQa6Kjiji
- ds6vRkitMgkty5ELj43F7qIhioBaDuTxCEgWhTYfsV1AFc8/RrdBIsQF7FbWChihtCdv
- cBja91J3EERhcmVPFUH/j+TtBL9qskyaQAbF1UvLklRyNJVo8Lu6536fIa506lxVth5n
- /erKK4a7X11iyvIPjAH1lhZROnkZc4+va9gvgaPegwinQVh4xI3cXLUR+KvcCoyHz1GQ
- qH4VfyV1b+2sv/2RhOuOD7I6oYKbsswoKwErvyP806aL0NsHMaMRVsF44oZi3kVgkojR
- 3Sug==
+ bh=QXXyKM5WyaUOdemDa1eK5OrkLvqYKMKZVKDyhAgiF5k=;
+ b=OMYgsSpWtm4WVQeek9iZkTGI/8uUfLl2pqhtQsyoEj488FP4RhDuEie74gczuOpUW+
+ GLKjxLJI2nqtriqsZJlmPkhWDDqSeW+Eu6tqAspXps3Cmz4iUvD0Ho0RjXIhOcCSJ5Dk
+ /HaR+Pnagpz6o/5vpHUdjMqIPHH6xysKqExf27DQ/ywOJQsSit+0z6ux3z7y03V4/FoB
+ R7T5Xw2xzlUeeBiRT9ePn2wcDamjvuCc6JVfWK9fGNDSk5nXw/pu2e4ELEAAz8jSfyZe
+ sGzWt1pzysgle7xEmANeb2bMPYbqYZWDBVXW9zC4KmBAQhI8F7oPpo8ql+NWyFCzKbuL
+ RpkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781527444; x=1782132244;
+ d=1e100.net; s=20251104; t=1781528296; x=1782133096;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
- b=YkU3YMpopzcMFy+bKCcuRdXJeG6kILyEX8pYEOYYuWsV92kSpm9yRDrCQHOj+mZ4U3
- uyRkoEIPDXhz8WqgnsKaa2LlnxL0YTQFwwP8jIPM3Ie9AD50/vPkxoLG48F1smgQHyaA
- bMkZDCpZnVPovNVulMQaSN84ElhE032mg96d4qHfJvh70Fk5KnfEd7RYW17MtxXBuKHk
- fNh6DpMfqnu+6h/j2OPJrq/6+O0lzfOQCRLmGa9p6sO6iaA9qdogclGJWqrgcqBG5Sv5
- sFv1pzhKwNOKdOpLCkcPdFDQm1MerIAqv84qUHo4zG10iUSzDvlahsTIIf23f1VMdeQA
- GBYw==
-X-Forwarded-Encrypted: i=1;
- AFNElJ/b1SdwWqf7s2ENAKnkPtgqeD6J9Wk9O7dK3+SPCXZxoT2tkW32zs0RqmPh9UVGGSm/EJA=@lists.linux.it
-X-Gm-Message-State: AOJu0YwlA7Ulnz440rOKUTTZaH27qsPA/mEyK20OJG3aUfEDLeSBDq+1
- sR5wK0kAYGmCJ6NPo+oKZVN50GSBIJvIQPHyxUoLuYbTyPgEFbUwtnZu21bvnTJT7Z8=
-X-Gm-Gg: Acq92OHLx3k8ZaquR08cahHvSBpVZCZw/dZZqjyZZWBkUU6i2xNQhceG+wIle8yKMeZ
- /ZVGEi1HYXlGox2wcunwHkysnPSjjKWpH9OqMVMj3iIbhgxSTaqtfuRmSGh0sKQJPpSK3zYmOQO
- PY19PlavGuUdYzR3r4h3ekyqetlaFS8tgMNcB5JvVZZKMflKu5Jnvm9nL4ieQ/Bu5AlTEuhDZXr
- /j/FkFt9e1C3DMXoH6MWoTvytucW0JhI1g4YIQ0R4oxUcKf88p5I1mScR8sZ6efJoEKXqOTk+HJ
- pL7gW6kEiLtmotWwx+RPRIPtoXOk+mxaR7TtBMtTRJahm1Jx0aAtF54vQoRQ3MsDL+HnZMLmPDa
- lmCWPe60P4GXUkeqziTptPjrurtfjcvZc9k/QZ3abrDEm8jenVN8NvlOvIHsAfFvWL3+jerpZ9h
- i0tmH7pN7GSYTHTMg8RNVdowB0qSH83j7JoqRWlswZUCfeQYRv2oiD9vlrFiOlBP5fdYZ1Tl6i
-X-Received: by 2002:a05:600c:524b:b0:492:1f06:ec9b with SMTP id
- 5b1f17b1804b1-4921f06ee55mr144942285e9.24.1781527444358; 
- Mon, 15 Jun 2026 05:44:04 -0700 (PDT)
+ bh=QXXyKM5WyaUOdemDa1eK5OrkLvqYKMKZVKDyhAgiF5k=;
+ b=GqdZpZc0875bFXs8khC+9/9OzH9m6T0HlwEdcBAz+MlADZoa1MrCorxhSZehTbjSa/
+ Kp2XGPxO5hyc9uKKp4AE+I4p7gI/AQvw37CmsSabxcK9UfeHLVIFiw/+mLuw2cLoQt21
+ +BNMUIpm4btPOAZ7yWvaLoBAYf6bUzr5JJndHvC5Pj50lZ72vu1bHrxDANoidrZau/C+
+ NoGpStXhK2PCYXrNc8auEADGeKzcLsQtZQNbKsdbTy5QP0q63Q9Jg8qxypQSiULpy6jm
+ 8AAVrqiuyHl8jlK9BjnHl6tEW2HnOaV4gsLv+tp9YB6PYjWwLTM20mrmFq42BCoBUwyA
+ rsIw==
+X-Gm-Message-State: AOJu0YzUp1TLiZD+NvTL7kz01ibRwCKyVM3aoj6kJsXwLAU8DR575QP1
+ tirEhhRONjQeGYbmVwDos04hjUTDZmtsMLvxmbCfml9BcJEIkr1wzEL6Egt49Pr4Af/v5u6wf3O
+ 3reTKo15eGg==
+X-Gm-Gg: Acq92OGJKpkYl8osfFpoB3PJrp3ZqrGAQz+UAOxultxABYqLfA8Chbwx/guYSybxpEv
+ Kc+O6FQ9BM6CAYgGgWBgAZahcjYCcroScrZGHV41hNOf0mVZynuY+WlcBoL38sNtYwennjVlO9e
+ 0L1ZjXAGgbcR1+NuS0XYmlUnLUXhdznVZbSzWl64RJDNrO31DFX2SEWylmAUgbMgaS06vmP2lrn
+ t2cfdtE8u37yPKZsYcchyb8aedDdcbczduhjqElKJTybRQHJjT9bCxWmdFpCr1+Jfkgj1kLbdrN
+ T1nsP0HQVbcW8Zm52yRXbASRRwDGZ+I0Hd5dVHRhlnwdrOE/7GqKBDkMs9ojkfsiil+5fjVGQOd
+ rwr1/07Zlcprk+7dZ86KLlNTQR0GymaKs3Qa5XtexxmUcUMb/2yL/SklGyra25jGBAsTI7NW+/G
+ uY1UQ+i3j6XCdORfOvfQKv4hig6dI/QTikKbXpNUDR8e51ftq6KnzGrwNuj7r2Vh8YEnXRqZj07
+ C9bEaq1Gbc=
+X-Received: by 2002:a05:600d:6454:10b0:490:be78:1861 with SMTP id
+ 5b1f17b1804b1-490ec4c61e6mr136997255e9.4.1781528296342; 
+ Mon, 15 Jun 2026 05:58:16 -0700 (PDT)
 Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
  [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-490ea9563b8sm219557985e9.2.2026.06.15.05.44.03
+ 5b1f17b1804b1-490ea9520f9sm202409815e9.1.2026.06.15.05.58.15
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 15 Jun 2026 05:44:04 -0700 (PDT)
-Message-ID: <6a2ff394.73de60af.3a056d.5618@mx.google.com>
-To: "Cyril Hrubis" <chrubis@suse.cz>
-In-Reply-To: <ai_x0tylGb7f-XHZ@yuki.lan>
-Date: Mon, 15 Jun 2026 12:44:03 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ Mon, 15 Jun 2026 05:58:16 -0700 (PDT)
+Message-ID: <6a2ff6e8.9499cc59.22cc5c.d648@mx.google.com>
+To: "Sebastian Chlad" <sebastianchlad@gmail.com>
+In-Reply-To: <20260614174759.24546-1-sebastian.chlad@suse.com>
+Date: Mon, 15 Jun 2026 12:58:15 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] build: run make check on test sources in kernel
- module directories
+Subject: Re: [LTP] [PATCH v2 1/4] io_uring: Redesign common helpers to
+ follow liburing API conventions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,14 +99,77 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Andrea Cervesato via ltp <ltp@lists.linux.it>
 Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: Sebastian Chlad <sebastian.chlad@suse.com>, ltp@lists.linux.it
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Merged, Thanks!
+Hi Sebastian,
+
+> +/*
+> + * Generic SQE fill for read/write family operations.
+> + * Does not touch user_data - caller sets it via io_uring_sqe_set_data64().
+> + */
+> +static inline void io_uring_prep_rw(struct io_uring_sqe *sqe, int opcode,
+> +				    int fd, const void *addr, unsigned int len,
+> +				    off_t offset)
+> +{
+> +	sqe->opcode = opcode;
+> +	sqe->fd = fd;
+> +	sqe->addr = (unsigned long)addr;
+> +	sqe->len = len;
+> +	sqe->off = offset;
+> +}
+> +
+> +static inline void io_uring_prep_read(struct io_uring_sqe *sqe, int fd,
+> +				      void *buf, size_t len, off_t offset)
+> +{
+> +	io_uring_prep_rw(sqe, IORING_OP_READ, fd, buf, len, offset);
+> +}
+> +
+> +static inline void io_uring_prep_write(struct io_uring_sqe *sqe, int fd,
+> +				       const void *buf, size_t len, off_t offset)
+> +{
+> +	io_uring_prep_rw(sqe, IORING_OP_WRITE, fd, buf, len, offset);
+> +}
+> +
+> +static inline void io_uring_prep_readv(struct io_uring_sqe *sqe, int fd,
+> +				       struct iovec *iovs, int nr_vecs,
+> +				       off_t offset)
+> +{
+> +	io_uring_prep_rw(sqe, IORING_OP_READV, fd, iovs, nr_vecs, offset);
+> +}
+> +
+> +static inline void io_uring_prep_writev(struct io_uring_sqe *sqe, int fd,
+> +					struct iovec *iovs, int nr_vecs,
+> +					off_t offset)
+> +{
+> +	io_uring_prep_rw(sqe, IORING_OP_WRITEV, fd, iovs, nr_vecs, offset);
+> +}
+
+I'm not an expert of liburing or io_uring in general, but aren't all
+these functions quite redundant? They mostly do what we could simply
+do inside test with 1 call and 1 argument difference.
+
+> +
+> +/*
+> + * Set the user_data field of an SQE. user_data is returned verbatim in the
+> + * corresponding CQE and must be unique per in-flight request to allow correct
+> + * correlation of completions.
+> + */
+> +static inline void io_uring_sqe_set_data64(struct io_uring_sqe *sqe,
+> +					   uint64_t data)
+> +{
+> +	sqe->user_data = data;
+> +}
+
+Uh? :-) same comment.
+
+As I said, I'm not an expert on this technology, but I see that we are
+overengineering something that is so simple as a 1-argument-difference
+or 1 pointer assignment.
 
 --
 Andrea Cervesato
