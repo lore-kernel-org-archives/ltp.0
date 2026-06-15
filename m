@@ -4,101 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72618CD98CE
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 05:32:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E12DCD98CE
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 05:32:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 994E13E4E42
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 07:32:13 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 277BE3E2354
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 07:32:34 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4E12F3E2378
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 07:30:11 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id 9AC663E2345
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 07:30:12 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DEDE61A00368
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 07:30:09 +0200 (CEST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3DA30200772
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 07:30:10 +0200 (CEST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 65F1nLmu987574; Mon, 15 Jun 2026 05:30:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=wlcjzT4IYi5Pqf+X7
- XclwDqqXc136jwPSSgXhvlSjBg=; b=fODxeicHX3A8ZiJupwPUU5+BT9AbQjOs0
- usodfENN5P8kGIj1cmRLllxwhxzC2834YX1X6BW1GQ+xrW2TJ0T5QL50J2Awa4qu
- SBZgbuSTVVtdmpgABU9JtdE93GFk4w4LeMLJQx4qO639rjR6B/7Ulv5Ocv7kO5U2
- T5CSorugGhEzdA4LNmE/gRhaWdJkt0xPDdUhUVU0RzfldgpUeOd0QYHwmSm7314M
- q3QOJDpjxW4yTvpoqOoP/9+nEBfJa5sZKQ8VKNSAX1b+ZCUsfY9GsqQL+dxOjbJi
- Q4X7ZtTGWR8giPfhTDjHigFYREkJu9B+FwHL//c6eIjAkUfGb0wYw==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4es1efxhy4-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 15 Jun 2026 05:30:07 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65F5JcU9005539;
- Mon, 15 Jun 2026 05:30:06 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4eshwvw7tp-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 15 Jun 2026 05:30:06 +0000 (GMT)
+ 65F1mQ7C932114
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 05:30:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+ content-transfer-encoding:date:from:in-reply-to:message-id
+ :mime-version:references:subject:to; s=pp1; bh=fXd0sn3FUHPrpC/6j
+ ZrnMyDVLgWJTtofuJ1WodTTclg=; b=jXuxBkKCJlaCeOio791Q+3KXz7wO9ygDy
+ lLs9aD7ddG4dl3ry5KzaV/a5BgtJEO+//wmBPzErC5Haua5cAqklufNcOT9/fOFs
+ +RViMqQ70MTjMk8WLGnhiR67trEOWJ+r0D7yEF5STnsFfeZuurbs/IUXHGX6J0MX
+ ZH6Qv5hTkp5QStm0e8vg7Q/g/O/kzEZuz6ga3hM2hbnTPBQfP/a2KGgqSZOBNja9
+ qH0IeFDmmjG6yxLVvNF6iV/9gyrkcOSU+10+/5lm63VGzkldhYQewSUD/lxOMTDB
+ xGxWRevvTj8L4ZR9jTn3nnHH1drWwRj7BcRKU7JB8Xrhe6YBmFO+A==
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4es1wkxxpw-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 05:30:08 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65F5JtrN031369
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 05:30:07 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4esm7xvvxr-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 05:30:07 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
  [10.20.54.102])
- by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 65F5U4A855247220
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 15 Jun 2026 05:30:04 GMT
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 65F5U5Vi26345736
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 05:30:05 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8DA1C20040;
- Mon, 15 Jun 2026 05:30:04 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 9190120040
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 05:30:05 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id B509D2004B;
- Mon, 15 Jun 2026 05:30:03 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id E9CF320043
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 05:30:04 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.43.52.62])
- by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Mon, 15 Jun 2026 05:30:03 +0000 (GMT)
+ by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 05:30:04 +0000 (GMT)
 From: Sachin Sant <sachinp@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Mon, 15 Jun 2026 10:59:52 +0530
-Message-Id: <20260615052953.18183-8-sachinp@linux.ibm.com>
+Date: Mon, 15 Jun 2026 10:59:53 +0530
+Message-Id: <20260615052953.18183-9-sachinp@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20260615052953.18183-1-sachinp@linux.ibm.com>
 References: <20260615052953.18183-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE1MDA1MyBTYWx0ZWRfX2yggDlFHE+5u
- s/2F5KHuFCA5KOuAhY8TYxeuknvqn6cxk3V+wjOY/0VqaxjZHoQnlabG2zlX8nVe9XXcL1V9UYt
- 3f7jc7bQ4V8hCgSJVtfYMxxO0nRaz14=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE1MDA1MyBTYWx0ZWRfX4bzRwWzRvOJx
- bwpdNqucRP2dBom1lT0G9r6el4l45Vl4d+3XF6RO3T/4ULdrJZ1pr4b1re8xHXcW2a8kGJbD7kY
- FcW/qeI92AahgBb1zjC6TyuO/V6X5pfohgd+JEGFKJgbIjcw6Bh9rBL5XmMIl7ir+CVwtaswLup
- eBmf9ljbVfVJ4Qrz0Y2oGePJaO0q9RLpD8IgOtR6Cm1Qao6HqBOcq9pU8/2E/oQpzGiXKBpesXB
- XLqr81qVbHqyX1VXjNvtLMDCBZ5E1+DCgkf7l9w0lhutMQRuAbYFC8vSfruq4zyABW+UPZgo0VF
- AcEGDRkkqUdcYRXkxnDUTQvK1jv7IpKWKmE2pkIG9ntY0i0iHYnUwSTCsQUL+YHNeZV+2D7cf5g
- u3Rr3UHSTGPoha5GRhqvShs4Ne+0iMf799T9lqfbqjiZOZJ2rReHkMpmpjb1j5g6djnJO4FxzM0
- AAUTCvR1zOqGLoQxo2Q==
-X-Proofpoint-GUID: q1vIVEUsHgQVwKwkFXwd2PdTBtwVaA5s
-X-Authority-Analysis: v=2.4 cv=NuDhtcdJ c=1 sm=1 tr=0 ts=6a2f8ddf cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE1MDA1MyBTYWx0ZWRfX5Byh0nyY42tt
+ l5Wg4MqF4GyzLhNtJEcYFAXpsMTNnSmCzQBc+FDe7ZDXrt2zYNpBz6bMMbE2M7xHnepFLhjtXlo
+ Iyjv9AF/KRUOe1u5lDFfzjHgANdR37A=
+X-Proofpoint-GUID: FUAcF_q-lgkYJD2hPnM9TXJZqrq7ncUh
+X-Authority-Analysis: v=2.4 cv=SY/HsPRu c=1 sm=1 tr=0 ts=6a2f8de0 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
  a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=V8glGbnc2Ofi9Qvn3v5h:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
- a=l0bH7frDkLAXEwbgkBoA:9
-X-Proofpoint-ORIG-GUID: q1vIVEUsHgQVwKwkFXwd2PdTBtwVaA5s
+ a=U7nrCbtTmkRpXpFmAIza:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=_stsPBeC9re_Sqp2xRwA:9 a=PukmVxxAloIhlgcn:21
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE1MDA1MyBTYWx0ZWRfX0ft+NNGlLX0t
+ ynUPah0aB3+p5vS/bxjujvtf6Y6qOH4ZTC62Hi1HyZTU6My8zNB+cqhRo3o38y5zdOOKXYp52vb
+ Ki7tNwt7wXDvgmkU3s346bVlAAx76rRABEyBsNZweq5Vhj4qFHKQ8jsatwkmXsuxsIGEo0kVjZ/
+ x1axu8589aITtMohFeZTSiI7o0Q9io8Jerzyw32hKBTz3YyeqLrNlUWQocQUNGcJ4Nfeb8IaOAk
+ rQNP2A7yRj9A38gQTXGuZ1RMEMZEoafpdGuw6hZSjczHJxCZwdoHGzNzwa0sKeFvDvkHtyp3lTW
+ 5dAEX/TGAHRfHj/nJNYacwVxQu6ab4/2xc5FImODN/L2YMfLghnmyAac49aVW16s4m3HgiJzl+h
+ wigTGxq/I39n53n2IIPBKuUI10HmOrdbqZnlcpHNQu8YP4JQQd7+hOQJ0cTRknUwLdaPsDPR+VD
+ EDJgy/KXYvRcYL4g4Xg==
+X-Proofpoint-ORIG-GUID: FUAcF_q-lgkYJD2hPnM9TXJZqrq7ncUh
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-06-15_01,2026-06-12_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 adultscore=0 suspectscore=0 impostorscore=0 clxscore=1015
- phishscore=0 bulkscore=0 malwarescore=0 priorityscore=1501 lowpriorityscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606040000 definitions=main-2606150053
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ adultscore=0 phishscore=0 suspectscore=0 spamscore=0 impostorscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015
+ priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606040000
+ definitions=main-2606150053
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v9 7/8] fs/acl: Add extended attributes test
+Subject: [LTP] [PATCH v9 8/8] fs/acl: Remove old shell-based ACL test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,476 +117,845 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add xattr_test01 to validate extended attribute operations on
-filesystems.
+Remove tacl_xattr.sh, the old shell-based ACL and extended attribute
+test script. This test has been replaced by the new modular C-based
+test suite:
 
-The test covers:
-- Setting and retrieving extended attributes on files and directories
-- Removing extended attributes and verifying removal
-- Backing up extended attributes to a file
-- Restoring extended attributes from backup
-- Verifying restored attributes match original values
+- acl_user_obj01: ACL_USER_OBJ permissions
+- acl_mask01: ACL mask interactions
+- acl_other01: ACL_OTHER permissions
+- acl_inherit01: Default ACL inheritance
+- acl_file_ops01: chmod/chown interactions
+- acl_link01: Symlink ACL operations
+- xattr_test01: Extended attributes
 
-The test runs on ext2/ext3/ext4 (with user_xattr mount option),
-xfs, and btrfs filesystems. It properly handles EOPNOTSUPP for
-filesystems without extended attribute support.
-
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Sachin Sant <sachinp@linux.ibm.com>
 ---
-V9 changes:
-- Use TEST() method as appropriate.
-- v8 link https://lore.kernel.org/ltp/20260613090543.78643-1-sachinp@linux.ibm.com/T/#t
-
-V8 changes:
-- Use reset_test_path() instead of chown variant.
-- v7 link https://lore.kernel.org/ltp/20260612171930.11964-1-sachinp@linux.ibm.com/T/#t
-
-V7 changes:
-- No change
-
-V6 changes:
-- Added HAVE_SYS_XATTR_H guard
-- Switched from TST_EXP_PASS_SILENT to TEST() with TTERRNO for better
-  diagnostics
-- Updated algorithm documentation with correct format
-- Removed unnecessary .forks_child flag
-- v5 link https://lore.kernel.org/ltp/20260608092200.92827-1-sachinp@linux.ibm.com/T/#t
-
-V5 changes:
-- Switch to kernel only test validation to remove dependency on libacl
-  and useradd/del commands.
-- v3 link https://lore.kernel.org/ltp/20260604065417.25924-1-sachinp@linux.ibm.com/T/#t
-
-V4 changes:
-- No change
-
-V3 changes:
-- Updated copyright header as per LTP format.
-- Updated commit message as per review comments.
-- v2 link https://lore.kernel.org/ltp/20260603065744.47106-1-sachinp@linux.ibm.com/T/#t
-
-V2 changes:
-- Use reset_test_path_no_chown variant to skip chown step
-  and removed needs_cmd tag to avoid useradd/userdel dependency
-- v1 link https://lore.kernel.org/ltp/20260602121958.27494-1-sachinp@linux.ibm.com/T/#t
+No changes in v2 to v9
 
 V1 changes:
-- Use HAVE_LIBACL guards in .c code
-- Report TCONF when libacl is not available
+- Updated commit message to reflect correct number of
+  test scenario in xattr_test01
 - rfc link https://lore.kernel.org/ltp/477836fd-80c8-4168-bfe6-00b374bb2534@linux.ibm.com/T/#t
 
 ---
- runtest/fs                             |   1 +
- testcases/kernel/fs/acl/.gitignore     |   1 +
- testcases/kernel/fs/acl/xattr_test01.c | 380 +++++++++++++++++++++++++
- 3 files changed, 382 insertions(+)
- create mode 100644 testcases/kernel/fs/acl/xattr_test01.c
+ testcases/kernel/fs/acl/tacl_xattr.sh | 807 --------------------------
+ 1 file changed, 807 deletions(-)
+ delete mode 100755 testcases/kernel/fs/acl/tacl_xattr.sh
 
-diff --git a/runtest/fs b/runtest/fs
-index 64deb56e6..f9acac387 100644
---- a/runtest/fs
-+++ b/runtest/fs
-@@ -95,3 +95,4 @@ acl_other01 acl_other01
- acl_inherit01 acl_inherit01
- acl_file_ops01 acl_file_ops01
- acl_link01 acl_link01
-+xattr_test01 xattr_test01
-diff --git a/testcases/kernel/fs/acl/.gitignore b/testcases/kernel/fs/acl/.gitignore
-index 4a071d516..62ccd0457 100644
---- a/testcases/kernel/fs/acl/.gitignore
-+++ b/testcases/kernel/fs/acl/.gitignore
-@@ -4,3 +4,4 @@
- /acl_inherit01
- /acl_file_ops01
- /acl_link01
-+/xattr_test01
-diff --git a/testcases/kernel/fs/acl/xattr_test01.c b/testcases/kernel/fs/acl/xattr_test01.c
-new file mode 100644
-index 000000000..7b86a43ed
---- /dev/null
-+++ b/testcases/kernel/fs/acl/xattr_test01.c
-@@ -0,0 +1,380 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 IBM
-+ *
-+ * Original shell test by Kai Zhao (ltcd3@cn.ibm.com)
-+ * Converted to C by Sachin Sant <sachinp@linux.ibm.com>
-+ */
-+
-+/*\
-+ * Test Extended Attributes (xattr).
-+ *
-+ * Some filesystems require explicit user_xattr mount options,
-+ * while others (e.g. xfs and btrfs) provide these features without
-+ * mount options.
-+ *
-+ * This test validates:
-+ * - Extended attributes set/get/remove operations
-+ * - Extended attributes backup and restore operations
-+ *
-+ * [Algorithm]
-+ *
-+ * - Set extended attributes on directories and files
-+ * - Verify attributes can be retrieved correctly
-+ * - Test attribute removal
-+ * - Create backup of extended attributes to a file
-+ * - Remove original attributes
-+ * - Restore attributes from backup file
-+ * - Verify restored attributes match original values
-+ */
-+
-+#include "acl_lib.h"
-+
-+#ifdef HAVE_SYS_XATTR_H
-+
-+/*
-+ * Test extended attributes.
-+ * Set, get, and remove extended attributes on files and directories.
-+ */
-+static void test_xattr(void)
-+{
-+	char value[256];
-+	int fd = -1;
-+	int file_created = 0;
-+
-+	tst_res(TINFO, "Testing extended attributes");
-+	reset_test_path();
-+
-+	TEST(setxattr(TESTDIR, XATTR_TEST_DIR_NAME, XATTR_TEST_DIR_VALUE,
-+		      XATTR_TEST_DIR_SIZE, 0));
-+	if (TST_RET == -1) {
-+		if (TST_ERR == EOPNOTSUPP) {
-+			tst_res(TCONF, "Extended attributes not supported");
-+			return;
-+		}
-+		tst_res(TFAIL | TTERRNO, "setxattr on directory failed");
-+		return;
-+	}
-+
-+	TEST(getxattr(TESTDIR, XATTR_TEST_DIR_NAME, value, sizeof(value)));
-+	if (TST_RET < 0) {
-+		tst_res(TFAIL | TTERRNO, "getxattr on directory failed");
-+		goto cleanup_dir_xattr;
-+	}
-+
-+	if (TST_RET != XATTR_TEST_DIR_SIZE ||
-+	    memcmp(value, XATTR_TEST_DIR_VALUE, XATTR_TEST_DIR_SIZE) != 0) {
-+		tst_res(TFAIL, "getxattr returned wrong directory value");
-+		goto cleanup_dir_xattr;
-+	}
-+
-+	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0644);
-+	SAFE_CLOSE(fd);
-+	file_created = 1;
-+
-+	TEST(setxattr(TESTFILE, XATTR_TEST_FILE_NAME, XATTR_TEST_FILE_VALUE,
-+		      XATTR_TEST_FILE_SIZE, 0));
-+	if (TST_RET == -1) {
-+		if (TST_ERR == EOPNOTSUPP) {
-+			tst_res(TCONF, "Extended attributes not supported");
-+			goto cleanup_file_and_dir;
-+		}
-+		tst_res(TFAIL | TTERRNO, "setxattr on file failed");
-+		goto cleanup_file_and_dir;
-+	}
-+
-+	TEST(getxattr(TESTFILE, XATTR_TEST_FILE_NAME, value, sizeof(value)));
-+	if (TST_RET < 0) {
-+		tst_res(TFAIL | TTERRNO, "getxattr on file failed");
-+		goto cleanup_file_and_dir;
-+	}
-+
-+	if (TST_RET != XATTR_TEST_FILE_SIZE ||
-+	    memcmp(value, XATTR_TEST_FILE_VALUE, XATTR_TEST_FILE_SIZE) != 0) {
-+		tst_res(TFAIL, "getxattr returned wrong file value");
-+		goto cleanup_file_and_dir;
-+	}
-+
-+	TEST(removexattr(TESTFILE, XATTR_TEST_FILE_NAME));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "removexattr failed");
-+		goto cleanup_file_and_dir;
-+	}
-+
-+	TEST(getxattr(TESTFILE, XATTR_TEST_FILE_NAME, value, sizeof(value)));
-+	if (TST_RET >= 0 || TST_ERR != ENODATA) {
-+		tst_res(TFAIL, "getxattr after removal should fail with ENODATA");
-+		goto cleanup_file_and_dir;
-+	}
-+
-+	tst_res(TPASS, "Extended attributes work correctly");
-+
-+cleanup_file_and_dir:
-+	if (file_created)
-+		cleanup_testfile();
-+cleanup_dir_xattr:
-+	if (removexattr(TESTDIR, XATTR_TEST_DIR_NAME) == -1 &&
-+	    errno != ENODATA)
-+		tst_res(TWARN | TERRNO, "removexattr failed");
-+}
-+
-+#define XATTR_BACKUP_TEST_COUNT 2
-+
-+/*
-+ * Helper function to cleanup test xattrs.
-+ */
-+static inline void cleanup_test_xattrs(void)
-+{
-+	if (removexattr(TESTFILE, XATTR_TEST1_NAME) == -1 &&
-+	    errno != ENODATA)
-+		tst_res(TWARN | TERRNO, "removexattr XATTR_TEST1_NAME failed");
-+	if (removexattr(TESTFILE, XATTR_TEST2_NAME) == -1 &&
-+	    errno != ENODATA)
-+		tst_res(TWARN | TERRNO, "removexattr XATTR_TEST2_NAME failed");
-+}
-+
-+/*
-+ * Test extended attributes backup and restore.
-+ * Extended attributes should be preserved through backup/restore.
-+ */
-+static void test_xattr_backup_restore(void)
-+{
-+	char value[256];
-+	char line[512];
-+	char attr_name[256];
-+	char attr_value[256];
-+	char list[512];
-+	size_t name_len, value_len;
-+	ssize_t list_size;
-+	int fd = -1;
-+	FILE *fp = NULL;
-+	int restored_count = 0;
-+	int backup_created = 0;
-+	char *attr_ptr;
-+
-+	tst_res(TINFO, "Testing extended attributes backup and restore");
-+	reset_test_path();
-+
-+	fd = SAFE_OPEN(TESTFILE, O_CREAT | O_WRONLY, 0644);
-+	SAFE_CLOSE(fd);
-+
-+	TEST(setxattr(TESTFILE, XATTR_TEST1_NAME, XATTR_TEST1_VALUE,
-+		      XATTR_TEST1_SIZE, 0));
-+	if (TST_RET == -1) {
-+		cleanup_testfile();
-+		if (TST_ERR == EOPNOTSUPP) {
-+			tst_res(TCONF, "Extended attributes not supported");
-+			return;
-+		}
-+		tst_res(TFAIL | TTERRNO, "setxattr failed");
-+		return;
-+	}
-+
-+	TEST(setxattr(TESTFILE, XATTR_TEST2_NAME, XATTR_TEST2_VALUE,
-+		      XATTR_TEST2_SIZE, 0));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "setxattr failed");
-+		goto cleanup_xattrs;
-+	}
-+
-+	/* Create genuine backup by reading xattrs from filesystem */
-+	fp = SAFE_FOPEN(XATTR_BACKUP_FILE, "w");
-+	backup_created = 1;
-+
-+	if (fprintf(fp, "# file: %s\n", TESTFILE) < 0) {
-+		tst_res(TFAIL | TERRNO, "fprintf failed");
-+		goto cleanup_backup;
-+	}
-+
-+	TEST(listxattr(TESTFILE, list, sizeof(list)));
-+	if (TST_RET < 0) {
-+		tst_res(TFAIL | TTERRNO, "listxattr failed");
-+		goto cleanup_backup;
-+	}
-+
-+	/* Save list size before it gets overwritten by subsequent TEST() calls */
-+	list_size = TST_RET;
-+
-+	attr_ptr = list;
-+	while (attr_ptr < list + list_size) {
-+		/* Only backup user.* attributes for this test */
-+		if (strncmp(attr_ptr, "user.", 5) != 0) {
-+			attr_ptr += strlen(attr_ptr) + 1;
-+			continue;
-+		}
-+
-+		TEST(getxattr(TESTFILE, attr_ptr, value, sizeof(value)));
-+		if (TST_RET < 0) {
-+			tst_res(TFAIL | TTERRNO, "getxattr failed for %s",
-+				attr_ptr);
-+			goto cleanup_backup;
-+		}
-+
-+		/* Write to backup file with null terminator for string values */
-+		if (fprintf(fp, "%s=\"%.*s\"\n", attr_ptr, (int)TST_RET,
-+			    value) < 0) {
-+			tst_res(TFAIL | TERRNO, "fprintf failed");
-+			goto cleanup_backup;
-+		}
-+
-+		attr_ptr += strlen(attr_ptr) + 1;
-+	}
-+
-+	SAFE_FCLOSE(fp);
-+	fp = NULL;
-+
-+	/* Remove xattrs to simulate loss */
-+	cleanup_test_xattrs();
-+
-+	/* Restore from backup file */
-+	fp = SAFE_FOPEN(XATTR_BACKUP_FILE, "r");
-+	while (fgets(line, sizeof(line), fp)) {
-+		char *p, *q;
-+
-+		if (line[0] == '#' || line[0] == '\n')
-+			continue;
-+
-+		/* Parse: attr_name="attr_value" */
-+		p = strchr(line, '=');
-+		if (!p)
-+			continue;
-+
-+		/* Safe copy of attribute name with length check */
-+		name_len = p - line;
-+
-+		if (name_len >= sizeof(attr_name)) {
-+			tst_res(TWARN, "Attribute name too long, skipping");
-+			continue;
-+		}
-+		memcpy(attr_name, line, name_len);
-+		attr_name[name_len] = '\0';
-+
-+		/* Only restore user.* attributes for this test */
-+		if (strncmp(attr_name, "user.", 5) != 0)
-+			continue;
-+
-+		p++;
-+		if (*p != '"')
-+			continue;
-+		p++;
-+
-+		q = strchr(p, '"');
-+		if (!q)
-+			continue;
-+
-+		/* Safe copy of attribute value with length check */
-+		value_len = q - p;
-+
-+		if (value_len >= sizeof(attr_value)) {
-+			tst_res(TWARN, "Attribute value too long, skipping");
-+			continue;
-+		}
-+		memcpy(attr_value, p, value_len);
-+		attr_value[value_len] = '\0';
-+
-+		/* Restore the xattr */
-+		if (setxattr(TESTFILE, attr_name, attr_value, value_len,
-+			     0) == -1) {
-+			tst_res(TFAIL | TERRNO,
-+				"setxattr restore failed for %s", attr_name);
-+			goto cleanup_backup;
-+		}
-+		restored_count++;
-+	}
-+	SAFE_FCLOSE(fp);
-+	fp = NULL;
-+
-+	if (restored_count != XATTR_BACKUP_TEST_COUNT) {
-+		tst_res(TFAIL, "Expected %d xattrs restored, got %d",
-+			XATTR_BACKUP_TEST_COUNT, restored_count);
-+		goto cleanup_backup;
-+	}
-+
-+	/* Verify restored xattrs */
-+	TEST(getxattr(TESTFILE, XATTR_TEST1_NAME, value, sizeof(value)));
-+	if (TST_RET < 0) {
-+		tst_res(TFAIL | TTERRNO, "getxattr failed for %s",
-+			XATTR_TEST1_NAME);
-+		goto cleanup_backup;
-+	}
-+
-+	if (TST_RET != XATTR_TEST1_SIZE ||
-+	    memcmp(value, XATTR_TEST1_VALUE, XATTR_TEST1_SIZE) != 0) {
-+		tst_res(TFAIL,
-+			"Extended attribute %s restore verification failed",
-+			XATTR_TEST1_NAME);
-+		goto cleanup_backup;
-+	}
-+
-+	TEST(getxattr(TESTFILE, XATTR_TEST2_NAME, value, sizeof(value)));
-+	if (TST_RET < 0) {
-+		tst_res(TFAIL | TTERRNO, "getxattr failed for %s",
-+			XATTR_TEST2_NAME);
-+		goto cleanup_backup;
-+	}
-+
-+	if (TST_RET != XATTR_TEST2_SIZE ||
-+	    memcmp(value, XATTR_TEST2_VALUE, XATTR_TEST2_SIZE) != 0) {
-+		tst_res(TFAIL,
-+			"Extended attribute %s restore verification failed",
-+			XATTR_TEST2_NAME);
-+		goto cleanup_backup;
-+	}
-+
-+	tst_res(TPASS, "Extended attributes backup/restore work correctly");
-+
-+cleanup_backup:
-+	if (fp)
-+		SAFE_FCLOSE(fp);
-+	if (backup_created) {
-+		if (unlink(XATTR_BACKUP_FILE) == -1)
-+			tst_res(TWARN | TERRNO, "unlink backup file failed");
-+	}
-+cleanup_xattrs:
-+	cleanup_test_xattrs();
-+	cleanup_testfile();
-+}
-+
-+static void setup(void)
-+{
-+	reset_test_path();
-+}
-+
-+static void cleanup(void)
-+{
-+	cleanup_test_paths();
-+}
-+
-+static void run(unsigned int n)
-+{
-+	switch (n) {
-+	case 0:
-+		test_xattr();
-+		break;
-+	case 1:
-+		test_xattr_backup_restore();
-+		break;
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = 2,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.mntpoint = MNTPOINT,
-+	.filesystems = (struct tst_fs[]) {
-+		{.type = "ext2", .mnt_data = "user_xattr"},
-+		{.type = "ext3", .mnt_data = "user_xattr"},
-+		{.type = "ext4", .mnt_data = "user_xattr"},
-+		{.type = "xfs"},
-+		{.type = "btrfs"},
-+		{}
-+	}
-+};
-+
-+#else
-+	TST_TEST_TCONF("sys/xattr.h is not available");
-+#endif
+diff --git a/testcases/kernel/fs/acl/tacl_xattr.sh b/testcases/kernel/fs/acl/tacl_xattr.sh
+deleted file mode 100755
+index c2383fdd9..000000000
+--- a/testcases/kernel/fs/acl/tacl_xattr.sh
++++ /dev/null
+@@ -1,807 +0,0 @@
+-#!/bin/bash
+-##############################################################
+-#
+-#  Copyright (c) International Business Machines  Corp., 2003
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation,
+-#
+-#  FILE        : tacl_xattr.sh
+-#  USAGE       : ./tacl_xattr.sh
+-#
+-#  DESCRIPTION : A script that will test ACL and Extend Attribute on Linux system.
+-#  REQUIREMENTS:
+-#                1) Kernel with loop device support
+-#                2) A spare (scratch) disk partition of 100MB or larger.
+-#                3) Kernel with ACL and Extend Attribute function support
+-#
+-#  HISTORY     :
+-#      10/23/2003 Kai Zhao (ltcd3@cn.ibm.com)
+-#      07/06/2004 Jacky Malcles enable ext3 & clean users home dir.
+-#
+-#  CODE COVERAGE:
+-#                 76.3% - fs/posix_acl.c
+-#                 80.9% - xattr_acl.c
+-#                 73.0% - xattr.c
+-#
+-##############################################################
+-
+-CUR_PATH=""
+-CONTENT=""
+-RES=""
+-USER_PERMISSION=""
+-GROUP_PERMISSION=""
+-OTHER_PERMISSION=""
+-ITEM_OWNER=""
+-ITEM_GROUP=""
+-
+-################################################################
+-#
+-# Make sure that uid=root is running this script.
+-# Make sure that loop device is built into the kernel
+-# Make sure that ACL(Access Control List) and Extended Attribute are
+-#     built into the kernel
+-#
+-################################################################
+-
+-if [ $UID != 0 ]
+-then
+-	echo "FAILED: Must have root access to execute this script"
+-	exit 1
+-fi
+-
+-#################################################################
+-#
+-# Prepare Ext2 file system for ACL and Extended Attribute test
+-# Make some directory , file and symlink for the test
+-# Add three users for the test
+-#
+-#################################################################
+-
+-if [ ! -e tacl ]
+-then
+-	mkdir -m 777 tacl
+-else
+-	echo "FAILED: Directory tacl are exist"
+-	exit 1
+-fi
+-
+-dd if=/dev/zero of=tacl/blkext2 bs=1k count=10240
+-chmod 777 tacl/blkext2
+-
+-losetup /dev/loop0 tacl/blkext2 >/dev/null 2>&1
+-if [ $? != 0 ]
+-then
+-	printf "\nFAILED:  [ losetup ] Must have loop device support by kernel\n"
+-	printf "\t to execute this script\n"
+-	exit 1
+-fi
+-
+-mount | grep ext2
+-if [ $? != 0 ]
+-then
+-	mkfs -t ext3 /dev/loop0
+-	mkdir  -m 777 tacl/mount-ext2
+-	mount -t ext3 -o defaults,acl,user_xattr /dev/loop0 tacl/mount-ext2
+-	if [ $? != 0 ]
+-	then
+-		printf "\nFAILED:  [ mount ] Make sure that ACL (Access Control List)\n"
+-		printf "\t and Extended Attribute are built into the kernel\n"
+-		printf "\t Can not mount ext2 file system with acl and user_xattr options\n"
+-		exit 1
+-	fi
+-
+-else
+-	mkfs -t ext2 /dev/loop0
+-	mkdir  -m 777 tacl/mount-ext2
+-	mount -t ext2 -o defaults,acl,user_xattr /dev/loop0 tacl/mount-ext2
+-	if [ $? != 0 ]
+-	then
+-		printf "\nFAILED:  [ mount ] Make sure that ACL (Access Control List)\n"
+-		printf "\t and Extended Attribute are built into the kernel\n"
+-		printf "\t Can not mount ext2 file system with acl and user_xattr options\n"
+-		exit 1
+-	fi
+-fi
+-
+-chmod 777 tacl/mount-ext2
+-
+-useradd -d `pwd`/tacl/tacluser1 tacluser1
+-useradd -d `pwd`/tacl/tacluser2 tacluser2
+-useradd -d `pwd`/tacl/tacluser3 tacluser3
+-useradd -d `pwd`/tacl/tacluser4 tacluser4
+-
+-if [ ! -e tacl/mount-ext2/shared ]
+-then
+-	mkdir -p -m 777 tacl/mount-ext2/shared
+-fi
+-
+-CUR_PATH=`pwd`
+-
+-su - tacluser1 << TACL_USER1
+-
+-	mkdir $CUR_PATH/tacl/mount-ext2/shared/team1
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/file1
+-
+-	cd $CUR_PATH/tacl/mount-ext2/shared/team1
+-	ln -sf file1 symlinkfile1
+-	cd $CUR_PATH
+-
+-	cd $CUR_PATH/tacl/mount-ext2/shared
+-	ln -sf team1 symlinkdir1
+-	cd $CUR_PATH
+-
+-TACL_USER1
+-
+-su - tacluser2 << TACL_USER2
+-
+-	mkdir $CUR_PATH/tacl/mount-ext2/shared/team2
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team2/file1
+-
+-	cd $CUR_PATH/tacl/mount-ext2/shared/team2
+-	ln -sf file1 symlinkfile1
+-	cd $CUR_PATH
+-
+-	cd $CUR_PATH/tacl/mount-ext2/shared
+-	ln -sf team2 symlinkdir2
+-	cd $CUR_PATH
+-
+-TACL_USER2
+-
+-#############################################################################################
+-#
+-#  The permissions bit limit user's act
+-#  lrwxrwxrwx    1 tacluser1 tacluser1        5 Jun 23 13:39 symlinkdir1 -> team1
+-#  lrwxrwxrwx    1 tacluser2 tacluser2        5 Jun 23 13:39 symlinkdir2 -> team2
+-#  dr-x------    2 tacluser1 tacluser1     1024 Jun 23 13:39 team1
+-#  drwxrwxr-x    2 tacluser2 tacluser2     1024 Jun 23 13:39 team2
+-#
+-#############################################################################################
+-
+-chmod 500 tacl/mount-ext2/shared/team1
+-
+-su - tacluser1 << TACL_USER1
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfil1 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile1 ]
+-	then
+-		printf "\nFAILED:  [ touch ] Create file must be denied by file permission bits\n"
+-		printf "\t [ Physical Directory ]\n"
+-	else
+-		printf "\nSUCCESS: Create file denied by file permission bits [ Physical directory ]\n"
+-	fi
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfil2 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile2 ]
+-	then
+-		printf "\nFAILED:  [ touch ] Create file must be denied by file permission bits\n"
+-		printf "\t [ Symlink Directory ]\n"
+-	else
+-		printf "\nSUCCESS: Create file denied by file permission bits [ Symlink directory ]\n"
+-	fi
+-
+-TACL_USER1
+-
+-#################################################################
+-#
+-# ACL_USER_OBJ are a superset of the permissions specified
+-#   by the file permission bits.
+-# The effective user ID of the process matches the user ID of
+-#   the file object owner.
+-# Owner's act are based ACL_USER_OBJ
+-#
+-#################################################################
+-
+-setfacl -m u::rx tacl/mount-ext2/shared/team1
+-su - tacluser1 << TACL_USER1
+-
+-	cd $CUR_PATH/tacl/mount-ext2/shared/team1/ 2> /dev/null
+-	if [ $? != 0 ]
+-	then
+-		printf "\nFAILED:  [ touch ] ACL_USER_OBJ  entry already contains the owner execute\n"
+-		printf "\t permissions, but operation failed [ Physical Directory ]\n"
+-	else
+-		printf "\nSUCCESS: ACL_USER_OBJ  entry contains the owner execute permissions,\n"
+-		printf "\t operation success [ Physical Directory ]\n"
+-	fi
+-
+-	cd $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/ 2> /dev/null
+-	if [ $? != 0 ]
+-	then
+-		printf "\nFAILED: [ touch ] ACL_USER_OBJ  entry already contains the owner execute\n"
+-		printf "\t permissions, but operation failed [ Symlink Directory ]\n"
+-	else
+-		printf "\nSUCCESS: ACL_USER_OBJ  entry contains the owner execute permissions,\n"
+-		printf "\t operation success [ Symlink Directory ]\n"
+-	fi
+-
+-TACL_USER1
+-
+-setfacl -m u::rwx tacl/mount-ext2/shared/team1
+-
+-su - tacluser1 << TACL_USER1
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfil1 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile1 ]
+-	then
+-		printf "\nFAILED:  [ touch ] ACL_USER_OBJ  entry already contains the owner write \n"
+-		printf "\t permissions, but operation failed [ Physical Directory ]\n"
+-	else
+-		printf "\nSUCCESS: ACL_USER_OBJ  entry contains the owner write permissions,\n"
+-		printf "\t operation success [ Physical Directory ]\n"
+-	fi
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfil2 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile2 ]
+-	then
+-		printf "\nFAILED:  [ touch ] ACL_USER_OBJ  entry already contains the owner write \n"
+-		printf "\t permissions, but operation failed [ Symlink Directory ]\n"
+-	else
+-		printf "\nSUCCESS: ACL_USER_OBJ  entry contains the owner write permissions,\n"
+-		printf "\t operation success [ Symlink Directory ]\n"
+-	fi
+-
+-TACL_USER1
+-
+-#################################################################
+-#
+-# The effective user ID of the process matches the qualifier of
+-#   any entry of type ACL_USER
+-# IF  the  matching  ACL_USER entry and the ACL_MASK
+-#   entry contain the requested permissions,#  access is granted,
+-#  ELSE access is denied.
+-#
+-#################################################################
+-
+-setfacl -m u:tacluser3:rwx tacl/mount-ext2/shared/team1
+-
+-su - tacluser3 << TACL_USER3
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfile3 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile3 ]
+-	then
+-		printf "\nSUCCESS: ACL_USER entry contains the user permissions,\n"
+-		printf "\t operation success [ Physical Directory ]\n"
+-	else
+-		printf "\nFAILED:  ACL_USER entry contains the user permissions,\n"
+-		printf "\t but operation denied [ Physical Directory ]\n"
+-	fi
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile4 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile4 ]
+-	then
+-		printf "\nSUCCESS: ACL_USER entry contains the user permissions,\n"
+-		printf "\t operation success [ Symlink Directory ]\n"
+-	else
+-		printf "\nFAILED:  ACL_USER entry contains the user permissions,\n"
+-		printf "\t but operation denied [ Symlink Directory ]\n"
+-	fi
+-
+-TACL_USER3
+-
+-setfacl -m mask:--- tacl/mount-ext2/shared/team1
+-
+-su - tacluser3 << TACL_USER3
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfile5 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile5 ]
+-	then
+-		printf "\nFAILED:  [ touch ] ACL_USER entry contains the user permissions\n"
+-		printf "\t but ACL_MASK are set --- ,\n"
+-		printf "\t operation must be denied [ Physical Directory ]\n"
+-	else
+-		printf "\nSUCCESS: ACL_USER entry contains the user permissions,\n"
+-		printf "\t but ACL_MASK are set ___ ,\n"
+-		printf "\t operation success [ Physical Directory ]\n"
+-	fi
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile6 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile6 ]
+-	then
+-		printf "\nFAILED:  [ touch ] ACL_USER entry contains the user permissions\n"
+-		printf "\t but ACL_MASK are set --- ,\n"
+-		printf "\t operation must be denied [ Symlink Directory ]\n"
+-	else
+-		printf "\nSUCCESS: ACL_USER entry contains the user permissions,\n"
+-		printf "\t but ACL_MASK are set ___ ,\n"
+-		printf "\t operation success [ Symlink Directory ]\n"
+-	fi
+-
+-TACL_USER3
+-
+-###########################################################################################
+-#
+-# The effective group ID or any of the supplementary group IDs of the process match the
+-#  qualifier of the entry of type ACL_GROUP_OBJ, or the qualifier of any entry of type
+-#  ACL_GROUP
+-#
+-# IF the ACL contains an ACL_MASK entry, THEN
+-#                 if  the ACL_MASK entry and any of the matching ACL_GROUP_OBJ
+-#                 or ACL_GROUP  entries  contain  the  requested  permissions,
+-#                 access is granted,
+-#
+-#                 else access is denied.
+-#
+-# ELSE  (note  that  there  can be no ACL_GROUP entries without an ACL_MASK entry)
+-#                 if the ACL_GROUP_OBJ entry contains  the  requested  permis-
+-#                 sions, access is granted,
+-#
+-#                 else access is denied.
+-#
+-###########################################################################################
+-
+-setfacl -m g:tacluser2:rwx tacl/mount-ext2/shared/team1
+-
+-su - tacluser2 << TACL_USER2
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfile7 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile7 ]
+-	then
+-		printf "\nSUCCESS: ACL_GROUP entry contains the group permissions,\n"
+-		printf "\t option success [ Physical Directory ]\n"
+-	else
+-		printf "\nFAILED:  [ touch ] ACL_GROUP entry already contains the group permissions,\n"
+-		printf "\t but option success [ Physical Directory ]\n"
+-	fi
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile8 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile8 ]
+-	then
+-		printf "\nSUCCESS: ACL_GROUP entry contains the group permissions,\n"
+-		printf "\t option success [ Symlink Directory ]\n"
+-	else
+-		printf "\nFAILED:  [ touch ] ACL_GROUP entry already contains the group permissions,\n"
+-		printf "\t but option success [ Symlink Directory ]\n"
+-	fi
+-
+-TACL_USER2
+-
+-setfacl -m mask:--- tacl/mount-ext2/shared/team1
+-
+-su - tacluser2 << TACL_USER2
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfile9 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile9 ]
+-	then
+-		printf "\nFAILED:  [ touch ] ACL_GROUP entry contains the group permissions\n"
+-		printf "\t and ACL_MASK entry are set ---,\n"
+-		printf "\t option must no be success [ Physical Directory ]\n"
+-	else
+-		printf "\nSUCCESS: ACL_GROUP entry already contains the group permissions\n"
+-		printf "\t and ACL_MASK entry are set ---,\n"
+-		printf "\t option success [ Physical Directory ]\n"
+-	fi
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile10 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile10 ]
+-	then
+-		printf "\nFAILED:  [ touch ] ACL_GROUP entry contains the group permissions\n"
+-		printf "\t and ACL_MASK entry are set ---,\n"
+-		printf "\t option must no be success [ Symlink Directory ]\n"
+-	else
+-		printf "\nSUCCESS: ACL_GROUP entry already contains the group permissions\n"
+-		printf "\t and ACL_MASK entry are set ---,\n"
+-		printf "\t option success [ Symlink Directory ]\n"
+-	fi
+-
+-TACL_USER2
+-
+-setfacl -m g::rwx tacl/mount-ext2/shared/team1
+-usermod -g tacluser1 tacluser2
+-
+-su - tacluser2 << TACL_USER2
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfile11 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile11 ]
+-	then
+-		printf "\nSUCCESS: ACL_GROUP_OBJ entry contains the group owner permissions,\n"
+-		printf "\t option success [ Physical Directory ]\n"
+-	else
+-		printf "\nFAILED:  [ touch ] ACL_GROUP_OBJ entry already contains the group owner,\n"
+-		printf "\t but option denied [ Physical Directory ]\n"
+-	fi
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile12 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile12 ]
+-	then
+-		printf "\nSUCCESS: ACL_GROUP_OBJ entry contains the group owner permissions,\n"
+-		printf "\t option success [ Symlink Directory ]\n"
+-	else
+-		printf "\nFAILED:  [ touch ] ACL_GROUP_OBJ entry already contains the group owner,\n"
+-		printf "\t but option denied [ Symlink Directory ]\n"
+-	fi
+-
+-TACL_USER2
+-
+-setfacl -m mask:--- tacl/mount-ext2/shared/team1
+-
+-su - tacluser2 << TACL_USER2
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfile13 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile13 ]
+-	then
+-		printf "\nFAILED:  [ touch ] ACL_GROUP_OBJ entry contains the group owner permissions\n"
+-		printf "\t and ACL_MASK entry are set ---,\n"
+-		printf "\t option must no be success [ Physical Directory ]\n"
+-	else
+-		printf "\nSUCCESS: ACL_GROUP_OBJ entry already contains the group owner permissions\n"
+-		printf "\t and ACL_MASK entry are set ---,\n"
+-		printf "\t option success [ Physical Directory ]\n"
+-	fi
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile14 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile14 ]
+-	then
+-		printf "\nFAILED:  [ touch ] ACL_GROUP_OBJ entry contains the group owner permissions\n"
+-		printf "\t and ACL_MASK entry are set ---,\n"
+-		printf "\t option must no be success [ Symlink Directory ]\n"
+-	else
+-		printf "\nSUCCESS: ACL_GROUP_OBJ entry already contains the group owner permissions\n"
+-		printf "\t and ACL_MASK entry are set ---,\n"
+-		printf "\t option success [ Symlink Directory ]\n"
+-	fi
+-
+-TACL_USER2
+-
+-usermod -g tacluser2 tacluser2
+-
+-###################################################################################
+-#
+-# IF the ACL_OTHER entry contains the requested permissions, access is granted
+-#
+-###################################################################################
+-
+-setfacl -m o::rwx tacl/mount-ext2/shared/team1
+-
+-su - tacluser4 << TACL_USER4
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfile15 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile15 ]
+-	then
+-		printf "\nSUCCESS: ACL_OTHER entry contains the user permissions,\n"
+-		printf "\t operation success [ Physical Directory ]\n"
+-	else
+-		printf "\nFAILED:  ACL_OTHER entry contains the user permissions,\n"
+-		printf "\t but operation denied [ Physical Directory ]\n"
+-	fi
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile16 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile16 ]
+-	then
+-		printf "\nSUCCESS: ACL_OTHER entry contains the user permissions,\n"
+-		printf "\t operation success [ Symlink Directory ]\n"
+-	else
+-		printf "\nFAILED:  ACL_OTHER entry contains the user permissions,\n"
+-		printf "\t but operation denied [ Symlink Directory ]\n"
+-	fi
+-
+-TACL_USER4
+-
+-setfacl -m mask:--- tacl/mount-ext2/shared/team1
+-
+-su - tacluser4 << TACL_USER4
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfile17 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/team1/newfile17 ]
+-	then
+-		printf "\nSUCCESS: [ touch ] ACL_OTHER do not strick by ACL_MASK [ Physical Directory ]\n"
+-	else
+-		printf "\nFAILED:  ACL_OTHER do not strick by ACL_MASK [ Physical Directory ]\n"
+-	fi
+-
+-	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile18 2> /dev/null
+-	if [ -e $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile18 ]
+-	then
+-		printf "\nSUCCESS: [ touch ] ACL_OTHER do not strick by ACL_MASK [ Symlink Directory ]\n"
+-	else
+-		printf "\nFAILED:  ACL_OTHER do not strick by ACL_MASK [ Symlink Directory ]\n"
+-	fi
+-
+-TACL_USER4
+-
+-############################################################################
+-#
+-# OBJECT CREATION AND DEFAULT ACLs
+-# The new object inherits the default ACL of the containing directory as its access ACL.
+-#
+-############################################################################
+-
+-rm -f tacl/mount-ext2/shared/team1/newfil*
+-
+-#
+-# Test ACL_USER_OBJ default ACLs
+-#
+-setfacl -m d:u::r -m d:g::r -m d:o::r tacl/mount-ext2/shared/team1
+-
+-su - tacluser1 << TACL_USER1
+-
+-	MASK=`umask`
+-	umask 0
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfile1
+-	umask $MASK > /dev/null
+-
+-TACL_USER1
+-
+-CONTENT=""
+-CONTENT=`ls -l tacl/mount-ext2/shared/team1/newfile1`
+-RES=`echo $CONTENT | grep ".r--r--r--" | awk '{print $1}'`
+-
+-if [ $RES != "" ]
+-then
+-	printf "\nSUCCESS: With default ACLs set, new file permission set correct.\n"
+-else
+-	printf "\nFAILED:  With default ACLs set, new file permission set not correct\n"
+-fi
+-
+-
+-
+-#
+-# Test ACL_USER and ACL_GROUP defaults ACLs
+-#
+-setfacl -m d:u:tacluser3:rw -m d:g:tacluser3:rw tacl/mount-ext2/shared/team1
+-su - tacluser3 << TACL_USER3
+-
+-	MASK=`umask`
+-	umask 0
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfile2
+-	umask $MASK > /dev/null
+-
+-TACL_USER3
+-
+-CONTENT=""
+-CONTENT=`ls -l tacl/mount-ext2/shared/team1/newfile2`
+-RES=`echo $CONTENT | grep ".r--rw-r--" | awk '{print $1}'`
+-
+-if [ $RES != "" ]
+-then
+-	printf "\nSUCCESS: With default ACLs set, new file permission set correct.\n"
+-else
+-	printf "\nFAILED:  With default ACLs set, new file permission set not correct\n"
+-fi
+-
+-#
+-# Test ACL_GROUP default ACLs
+-#
+-
+-setfacl -m d:u::rwx -m d:g::rwx -m d:o::rwx tacl/mount-ext2/shared/team1
+-su - tacluser3 << TACL_USER3
+-
+-	MASK=`umask`
+-	umask 0
+-	touch $CUR_PATH/tacl/mount-ext2/shared/team1/newfile3
+-	umask $MASK > /dev/null
+-
+-TACL_USER3
+-
+-CONTENT=""
+-CONTENT=`ls -l tacl/mount-ext2/shared/team1/newfile3`
+-RES=`echo $CONTENT | grep ".rw-rw-rw-" | awk '{print \$1}'`
+-
+-if [ $RES != "" ]
+-then
+-	printf "\nSUCCESS: With default ACLs set, new file permission set correct.\n"
+-else
+-	printf "\nFAILED:  With default ACLs set, new file permission set not correct\n"
+-fi
+-
+-
+-#################################################################################
+-#
+-# Chmod also change ACL_USER_OBJ ACL_GROUP_OBJ and ACL_OTHER permissions
+-#
+-#################################################################################
+-su - tacluser3 << TACL_USER3
+-	MASK=`umask`
+-	umask 0
+-
+-	chmod 777 $CUR_PATH/tacl/mount-ext2/shared/team1/newfile3
+-	umask $MASK > /dev/null
+-TACL_USER3
+-
+-CONTENT=""
+-CONTENT=`getfacl tacl/mount-ext2/shared/team1/newfile3`
+-
+-USER_PERMISSION=`echo $CONTENT | awk '{print \$10}'`
+-
+-GROUP_PERMISSION=`echo $CONTENT | awk '{print \$12}'`
+-OTHER_PERMISSION=`echo $CONTENT | awk '{print \$15}'`
+-
+-if [ $USER_PERMISSION = "user::rwx" ]
+-then
+-	if [ $GROUP_PERMISSION = "group::rwx" ]
+-	then
+-		if [ $OTHER_PERMISSION = "other::rwx" ]
+-		then
+-			printf "\nSUCCESS: Chmod with ACL_USER_OBJ ACL_GROUP_OBJ and ACL_OTHER are correct\n"
+-		else
+-			printf "\nFAILED:  Chmod with ACL_USER_OBJ ACL_GROUP_OBJ and ACL_OTHER are not correct\n"
+-		fi
+-	else
+-		printf "\nFAILED:  Chmod with ACL_USER_OBJ ACL_GROUP_OBJ and ACL_OTHER are not correct\n"
+-	fi
+-else
+-	printf "\nFAILED:  Chmod with ACL_USER_OBJ ACL_GROUP_OBJ and ACL_OTHER are not correct\n"
+-fi
+-
+-
+-#####################################################################################
+-#
+-# Chown only change object owner and group
+-#
+-#####################################################################################
+-
+-chown tacluser2.tacluser2 tacl/mount-ext2/shared/team1/newfile2
+-CONTENT=""
+-CONTENT=`getfacl tacl/mount-ext2/shared/team1/newfile2`
+-
+-ITEM_OWNER=`echo $CONTENT | awk '{print \$6}'`
+-ITEM_GROUP=`echo $CONTENT | awk '{print \$9}'`
+-
+-if [ $ITEM_OWNER = "tacluser2" ]
+-then
+-	if [ $ITEM_GROUP = "tacluser2" ]
+-	then
+-		printf "\nSUCCESS: Chown correct\n"
+-	else
+-		printf "\nFAILED:  Chown are not correct\n"
+-	fi
+-else
+-	echo "FAILED:  Chown are not correct"
+-fi
+-
+-#####################################################
+-#
+-# Test ACLs backup and restore
+-#
+-#####################################################
+-
+-getfacl -RL tacl/mount-ext2/ > tacl/tmp1
+-setfacl -m u::--- -m g::--- -m o::--- tacl/mount-ext2/shared/team1
+-setfacl --restore tacl/tmp1
+-getfacl -RL tacl/mount-ext2/ > tacl/tmp2
+-
+-if [ `diff tacl/tmp1 tacl/tmp2` ]
+-then
+-	printf "\nFAILED:  ACLs backup and restore are not correct\n"
+-else
+-	printf "\nSUCCESS: ACLs backup and restore are correct\n"
+-fi
+-
+-printf "\n\tEnd ACLs Test\n"
+-
+-#####################################################
+-#
+-# Now begin Extend Attribute test
+-#
+-#####################################################
+-
+-printf "\nNow begin Extend Attribute Test\n"
+-
+-# dir
+-printf "\nAttach name:value pair to object dir\n\n"
+-attr -s attrname1 -V attrvalue1 tacl/mount-ext2/shared/team2
+-if [ $? != 0 ]
+-then
+-	echo "FAILED: Attach name:value pair to object dir"
+-fi
+-
+-#file
+-echo
+-echo "Attach name:value pair to object file "
+-echo ""
+-attr -s attrname2 -V attrvalue2 tacl/mount-ext2/shared/team2/file1
+-if [ $? != 0 ]
+-then
+-	echo "FAILED: Attach name:value pair to object file"
+-fi
+-
+-#symlink file
+-echo
+-echo "Attach name:value pair to object symlink file"
+-echo ""
+-attr -s attrname3 -V attrvalue3 tacl/mount-ext2/shared/team2/symlinkfile1
+-if [ $? != 0 ]
+-then
+-	echo "INFO: Can't attach name:value pair to object symlink file"
+-fi
+-
+-echo ""
+-ls -lRt tacl/mount-ext2/shared/team2
+-
+-echo
+-echo "get extended attributes of filesystem objects"
+-echo ""
+-
+-echo "Dump the values"
+-getfattr -d tacl/mount-ext2/shared/team2
+-if [ $? != 0 ]
+-then
+-	echo "FAILED: getfattr: Dump the values"
+-fi
+-
+-echo "Recursively dump the values"
+-getfattr -dR tacl/mount-ext2/*
+-if [ $? != 0 ]
+-then
+-	echo "FAILED: getfattr: Recursively Dump the values"
+-fi
+-
+-echo "Do not follow symlinks."
+-echo "but extended user attributes are disallowed for symbolic links"
+-getfattr -h --no-dereference tacl/mount-ext2/shared/team2/symlinkfile1
+-if [ $? != 0 ]
+-then
+-        echo "FAILED: getfattr: Do not follow symlinks."
+-fi
+-echo
+-
+-echo "Logical walk, follow symbolic links"
+-getfattr -L tacl/mount-ext2/shared/team2/*
+-if [ $? != 0 ]
+-then
+-	echo "FAILED: getfattr: Logical walk"
+-fi
+-
+-echo "Physical walk, skip all symbolic links"
+-getfattr -P tacl/mount-ext2/shared/team2/*
+-if [ $? != 0 ]
+-then
+-	echo "FAILED: getfattr: Physical walk"
+-fi
+-
+-echo "attr -g to search the named object"
+-attr -g attrname1 tacl/mount-ext2/shared/team2
+-if [ $? != 0 ]
+-then
+-	echo "FAILED: attr: to search the named object"
+-fi
+-echo
+-
+-echo "attr -r to remove the named object"
+-attr -r attrname2 tacl/mount-ext2/shared/team2/file1
+-if [ $? != 0 ]
+-then
+-	echo "FAILED: attr: to remove the named object"
+-fi
+-
+-
+-#################################
+-#
+-# Backup and Restore
+-#
+-#################################
+-getfattr -dhR -m- -e hex tacl/mount-ext2 > tacl/backup.ea
+-setfattr -h --restore=tacl/backup.ea
+-
+-getfattr -dhR -m- -e hex tacl/mount-ext2 > tacl/backup.ea1
+-if [ `diff  tacl/backup.ea1  tacl/backup.ea` ]
+-then
+-        printf "\nFAILED:  EAs backup and restore are not correct\n"
+-else
+-        printf "\nSUCCESS: EAs backup and restore are correct\n"
+-fi
+-
+-printf "\n\tEnd EAs Test\n"
+-
+-
+-
+-#####################################################
+-#
+-# Clean up
+-#
+-#####################################################
+-
+-userdel tacluser1
+-userdel tacluser2
+-userdel tacluser3
+-userdel tacluser4
+-umount -d tacl/mount-ext2
+-rm -rf tacl
 -- 
 2.39.1
 
