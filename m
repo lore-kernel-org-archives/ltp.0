@@ -4,51 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CDC9CD98D2
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 08:03:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E808ECD98D2
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 08:04:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781597084; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=pBv7CAaGkd6F0fvTODg14K7n5yRA+T1LESsGcdQp71k=;
+ b=Bmj7qwEsko8SeVZkXTq6t4mFoV+AJ7/yyBTr4Ws/MxkerOhn+uUXOxUXdkG3WxWwcGWzR
+ uJrE+Pnd64dTSwANjeYnJ9pMm4HjqsMiqGoGZgopOd8XyUtlBbRvworjK5ogtN2+fPt11E7
+ 0/fI8boylKHFn2x4r7yaoYOAXM9CLns=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A7033E5967
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 10:03:53 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 866753E5966
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 10:04:44 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 791BD3C96A5
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 10:03:38 +0200 (CEST)
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::ad])
+ by picard.linux.it (Postfix) with ESMTPS id CF4333E235C
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 18:16:31 +0200 (CEST)
+Received: from tor.source.kernel.org (tor.source.kernel.org
+ [IPv6:2600:3c04:e001:324:0:1991:8:25])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id AB30C1A00CBA
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 10:03:34 +0200 (CEST)
-Date: Tue, 16 Jun 2026 16:03:14 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1781597006;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9a9zONIpFruWTmep/b6MDQB+eRynhKqZhwnY5ISxXXk=;
- b=w5PAVVItRz74qk6eENi6l9ki/aU2PPHbvsfnmjH88WQfIAtg5Vp8eYKAlUuz0+SJyTWsL0
- mDbPfuqI0wV3tDvbexaxo2p+o1EGh97IltNA54u8EGkN5/SEGEntVTJJEkmIjfPgIQtJJc
- NUikFeK/FpZvugNGY7rrN3LSvWOfIFE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
-From: Li Wang <li.wang@linux.dev>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ajEDQhmd5AJTvpg2@linux.dev>
-Mail-Followup-To: Andrea Cervesato <andrea.cervesato@suse.de>,
- Linux Test Project <ltp@lists.linux.it>
-References: <20260615-fix_pids_errors-v1-0-99a54a205180@suse.com>
- <20260615-fix_pids_errors-v1-2-99a54a205180@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3B65C1A00375
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 18:16:30 +0200 (CEST)
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+ by tor.source.kernel.org (Postfix) with ESMTP id BAE17601E4;
+ Mon, 15 Jun 2026 16:16:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 714B71F000E9;
+ Mon, 15 Jun 2026 16:16:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+ s=k20260515; t=1781540187;
+ bh=wuL7aPjgGYfluLcdyb3OIAWdQrhAPbCtC+tXlSX3CAU=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=WqvTGIXMCg6L8zEm693kCeHtEelZPz35uTL4HoToGRPwRD+fCBosq/FCdBJ+i2mwy
+ H905T4KpeL+M9c4ieX59dDxHWPiWZL1wvVwqCfEY+ivLmZ1E3KOGcFRNP58oUq7Q1/
+ YgK+5W2fnLcJ9S1RhzeGkVTdJoJaSxmAcFoU7PUWgDbDiamCyT59tfW5W+vQi17oMs
+ OxFd/NkLRLSqYs7d9c1ajX8xjBWWnKVBX6fxMbcGz984AygObT6rPWBSr0OrjM6a0t
+ 2WSi1l11FOPMvn07epFI9GQIoyJ27IaDqaYClCbv56Q0ri0d2O4QthvVaagpb+OHhM
+ wMpwH+UYsJiNQ==
+Message-ID: <91fea75a-8a00-4cfa-b4ac-dc2d198c99b5@kernel.org>
+Date: Mon, 15 Jun 2026 18:16:19 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260615-fix_pids_errors-v1-2-99a54a205180@suse.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+To: Askar Safin <safinaskar@gmail.com>, linux-fsdevel@vger.kernel.org,
+ Christian Brauner <brauner@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
+References: <20260606061031.3744880-1-safinaskar@gmail.com>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20260606061031.3744880-1-safinaskar@gmail.com>
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] tst_cgroup: tolerate ESRCH in cgroup_drain()
+X-Mailman-Approved-At: Tue, 16 Jun 2026 10:04:25 +0200
+Subject: Re: [LTP] [PATCH 0/5] vmsplice: fix some problems in my previous
+ vmsplice patchset
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -60,53 +117,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+From: "David Hildenbrand \(Arm\) via ltp" <ltp@lists.linux.it>
+Reply-To: "David Hildenbrand \(Arm\)" <david@kernel.org>
+Cc: The 8472 <kernel@infinite-source.de>, patches@lists.linux.dev,
+ David Howells <dhowells@redhat.com>, linux-mm@kvack.org,
+ Collin Funk <collin.funk1@gmail.com>, Joanne Koong <joannelkoong@gmail.com>,
+ Miklos Szeredi <miklos@szeredi.hu>,
+ David Laight <david.laight.linux@gmail.com>,
+ Matthew Wilcox <willy@infradead.org>, Christoph Hellwig <hch@infradead.org>,
+ Steven Rostedt <rostedt@goodmis.org>, fuse-devel@lists.linux.dev,
+ Pedro Falcato <pfalcato@suse.de>, ltp@lists.linux.it,
+ Jens Axboe <axboe@kernel.dk>, Stefan Metzmacher <metze@samba.org>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Andy Lutomirski <luto@amacapital.net>, linux-api@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Willy Tarreau <w@1wt.eu>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
+On 6/6/26 08:10, Askar Safin wrote:
+> This patchset is for VFS. Of course, it depends on my previous vmsplice
+> patchset.
 > 
-> A process can die between reading cgroup.procs and writing its PID
-> to the destination cgroup. When this happens, the kernel returns
-> ESRCH which is a normal race condition, not a test infrastructure
-> failure.
+> I fix some problems in my previous patchset.
 > 
-> Skip ESRCH errors instead of aborting with TBROK.
+> 1. Fix problem with CLASS(fd, f)(fd). See first patch for details.
+> This is probably not so important, but I fix it anyway.
 > 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  lib/tst_cgroup.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> 2. Change "unsigned long" back to "int". See second patch for details.
+> Again, this is probably not important, but I want to fix this anyway.
 > 
-> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-> index a37bf1516aabfbcb9a02fedd6fddb98e85ecc653..42d07912aebc0fae423b52f22c36c6beab0ee5c6 100644
-> --- a/lib/tst_cgroup.c
-> +++ b/lib/tst_cgroup.c
-> @@ -974,7 +974,7 @@ static void cgroup_drain(const enum tst_cg_ver ver,
->  	for (tok = strtok(pid_list, "\n"); tok; tok = strtok(NULL, "\n")) {
->  		ret = dprintf(fd, "%s", tok);
->  
-> -		if (ret < (ssize_t)strlen(tok))
-> +		if (ret < (ssize_t)strlen(tok) && errno != ESRCH)
+> 3. Fix that LTP vmsplice01 bug.
+> 
+> See patches for details.
+> 
+> Please, run that LTP vmsplice01 test again.
 
-errno is only meaningful after a call that actually failed (ret < 0).
-With a short but non-negative return, errno holds whatever value some
-earlier libc/syscall left there.
+How to proceed with this patch set given that, as Joanne explains [1], libfuse
+seems to modify the data in the page after splicing, so really depending on
+vmsplice() reading data that we update through the page tables -- the page
+actually being pinned.
 
-So maybe better like this:
+IIUC, reverting the patch might be required. Or maybe Christian can still simply
+drop the topic branch entirely.
 
-    if (ret < (ssize_t)strlen(tok)) {
-        if (ret < 0 && errno == ESRCH)
-            continue;
+[1]
+https://lore.kernel.org/r/CAJnrk1Y9egYizkx1H9K0cqxSYuB+7vLvQbV7Tf4C5eHFqnnC-A@mail.gmail.com
 
-        tst_brk(TBROK | TERRNO, "Failed to drain %s", tok);
-    }
 
 -- 
-Regards,
-Li Wang
+Cheers,
+
+David
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
