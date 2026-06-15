@@ -4,116 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18C8ACD98CF
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 14:17:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15041CD98C5
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 14:25:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6C5A73E5BDD
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 16:17:19 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 8516D3E5BB3
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 16:25:47 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 68B363E5C28
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 16:16:40 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 0DBCC3C5763
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 16:25:30 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D31EA60014D
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 16:16:39 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A1A7E6002D7
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 16:25:27 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B0BCE75A7F;
- Mon, 15 Jun 2026 14:16:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1781532991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=QZIW23L3/9hCj+9msbPEoT0lRCx44V2UfUVJM6z4xTI=;
- b=xlqqZbWm4GGPwOSX0kHtNfwKI/iIx85j6Pk2TVsX6n4hkJ8lFxn9GozK/XVVYQEMQ0xBND
- 3si8Y2xJHHI9j8Ze+OdfMTq/u2OlFXe+as2NJ5CgNVXPGGYN3kYyIYEgXhdf2FvXDNgeY5
- 3yu8ekjV04kjTR+OXMpNrpWsdxyDBUk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1781532991;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=QZIW23L3/9hCj+9msbPEoT0lRCx44V2UfUVJM6z4xTI=;
- b=qh1qnFoWlhHFQcsQn2OCJM7puPy4m7gXSoAYefwbg21H/3hgPM59masMoiU1kLtMlMuFVA
- uVAd0JpGG5YjiWCw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=icmd3sr6;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=CjZXCaOh
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1781532990; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=QZIW23L3/9hCj+9msbPEoT0lRCx44V2UfUVJM6z4xTI=;
- b=icmd3sr6c8BVetqSGivrJfy0h3BABjMZCv8z8EVCz111jLmyfqblqQzJQ7cYFgAVIQEP6x
- BZhuYw075HYFBQjZ7vI9D+w9gDnoli46jfrfjZxcyEPDVlX+cIOGK57Jwd57RL9Jan8FPc
- MA3Sk31glSs1ImclfJaIAzZfC6BfhTw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1781532990;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=QZIW23L3/9hCj+9msbPEoT0lRCx44V2UfUVJM6z4xTI=;
- b=CjZXCaOh2x0+36Bg98O5/i1KX7FrzjZfpaczfvLXb8XLHssKD5wxRuXzNqZJa9OA0b1jOt
- Umd2omnrmx+OpiBQ==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E21756ADA3
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 14:25:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1781533527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=1ycbv5SfU/WFMeavFjDtHwG/B9h/hI/begFa+Fh7oZs=;
+ b=mZCN0OIvMJzmZ7bypWmweDL2ggcejoxCTOpaBbIIj6Gg6p9LZZSoJV/L2+PRyLbnQd3Ln+
+ wzKy7QZk9Ot8YjIqNrG2bjYPfcQY8UjlRcQyK68s83y+3+C+YeAFgo5y6uGIc5uheU1haM
+ PnsbPUqkBdFpnL7TJolumFK/DMZx+mU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1781533527;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=1ycbv5SfU/WFMeavFjDtHwG/B9h/hI/begFa+Fh7oZs=;
+ b=h53/TqeThVOdTGYY4Fb6JT2S2N2tStI3PMdQWUGjKMOlw75t5rAYnZZNICRd99kI5d+Zi0
+ l9jjBMboH5ZR/5BQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1781533526; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=1ycbv5SfU/WFMeavFjDtHwG/B9h/hI/begFa+Fh7oZs=;
+ b=TuswMVMtm0iLx8AI+wnaWEWKNwndFa0gcngaa83UbO8sYxQRMAOQF1+Wiaxzm59PNZWMqU
+ +Kt2bBEIGybIZOirmmZhkAjrc+tjLNwao3okZyCAMOoJr4p+ZZ2xvCNB7C1TeTiXp5gXCJ
+ bMuNkEvPIr8Zv0EMYOt3bW5h32dKORg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1781533526;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=1ycbv5SfU/WFMeavFjDtHwG/B9h/hI/begFa+Fh7oZs=;
+ b=6wu9ElLfhUTyHVREFeteZBJbL5aaW0L3xganOwK/kzu84KiU++ZdLR8EzRC4NlnmNKn34R
+ xnpEvWrCvR81XLAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9AC16779A9;
- Mon, 15 Jun 2026 14:16:30 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CF4F2779A7
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 14:25:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id AJ1wJD4JMGqYYQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 15 Jun 2026 14:16:30 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 15 Jun 2026 16:16:29 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MqDQMVYLMGpBagAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 14:25:26 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 15 Jun 2026 16:25:24 +0200
+Message-ID: <20260615142526.70655-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
-Message-Id: <20260615-fix_pids_errors-v1-1-99a54a205180@suse.com>
-References: <20260615-fix_pids_errors-v1-0-99a54a205180@suse.com>
-In-Reply-To: <20260615-fix_pids_errors-v1-0-99a54a205180@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1781532990; l=1356;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=PUHCLOOEdKs2CIFPi1YFlzi0q89ARLTuXT4StH5x8yA=;
- b=Skz195b+KfSyUHzngdj0Z5JKLlfBzQ2Ks8ujTDeNQIJp82TxeRHSRGc2sJtVKGFEeGLMwmkpi
- 0KJvPVULJgfATjgPAnCACJioQzyYjq4PcAduX+LIrM28AYi46QjEQdm
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: B0BCE75A7F
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.998];
+ MIME_GOOD(-0.10)[text/plain];
  FUZZY_RATELIMITED(0.00)[rspamd.com];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,suse.com:email,suse.com:mid];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] pids: fix cleanup of orphaned pids_task1 children
+Subject: [LTP] [PATCH] openposix: Remove pthread_detach_1-2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -130,51 +106,249 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+The POSIX specification of pthread_join() has changed in recent years and
+pthread_detach_1-2 test scenario is no longer valid. The POSIX standard
+issue 8 says that the behavior of pthread_join() called on a thread ID
+which does not refer to a joinable thread is undefined.
 
-pids_task1 forks a child that calls pause(), then the parent exits.
-The orphaned child remains in the cgroup but gets reparented to init,
-so it is not a child of the test shell.
+https://pubs.opengroup.org/onlinepubs/9799919799/functions/pthread_join.html
 
-stop_pids_tasks_path() reads cgroup.procs which includes this orphan.
-kill -9 succeeds but wait fails with 'not a child of this shell'.
-Using ROD for kill also unnecessarily aborts if the process is already
-dead.
+The test creates a thread, detaches it using pthread_detach() and then
+calls pthread_join(), expecting an error. As stated above, the expected
+behavior is now undefined. Remove the test.
 
-Fix by suppressing errors from both kill and wait, and add killall
-for pids_task1 in cleanup() to catch any remaining orphans.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/controllers/pids/pids.sh | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ .../interfaces/pthread_detach/1-2.c           | 218 ------------------
+ 1 file changed, 218 deletions(-)
+ delete mode 100644 testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/1-2.c
 
-diff --git a/testcases/kernel/controllers/pids/pids.sh b/testcases/kernel/controllers/pids/pids.sh
-index 26a0c6a221ea63e683016ebfea33f2744800aaea..dd27b5616f0c4b55c625ca57efa2507325949b07 100755
---- a/testcases/kernel/controllers/pids/pids.sh
-+++ b/testcases/kernel/controllers/pids/pids.sh
-@@ -35,6 +35,7 @@ EOF
- cleanup()
- {
- 	killall -9 pids_task2 >/dev/null 2>&1
-+	killall -9 pids_task1 >/dev/null 2>&1
- 
- 	cgroup_cleanup
- }
-@@ -79,8 +80,8 @@ stop_pids_tasks_path()
- 	path=$1
- 
- 	for i in $(cat "$path/$task_list"); do
--		ROD kill -9 $i
--		wait $i
-+		kill -9 $i 2>/dev/null
-+		wait $i 2>/dev/null
- 	done
- }
- 
-
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/1-2.c
+deleted file mode 100644
+index dc5ed39d3..000000000
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/1-2.c
++++ /dev/null
+@@ -1,218 +0,0 @@
+-/*
+- * Copyright (c) 2004, Bull S.A..  All rights reserved.
+- * Created by: Sebastien Decugis
+-
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-
+- * This sample test aims to check the following assertion:
+- *
+- * pthread_detach() will indicate that the thread resources
+- * can be reclaimed as soon as the thread terminates.
+- * This means that pthread_join() will fail on such a thread.
+-
+- * The steps are:
+- *
+- * -> create a thread with a joinable state
+- * -> detach the thread, either from inside the thread or from outside
+- * -> try and join the thread, and check an error is returned.
+-
+- * The test fails if pthread_join succeeds.
+-
+- */
+-
+-/********************************************************************************************/
+-/****************************** standard includes *****************************************/
+-/********************************************************************************************/
+-#include <pthread.h>
+-#include <stdarg.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
+-
+-#include <sched.h>
+-#include <semaphore.h>
+-#include <errno.h>
+-#include <assert.h>
+-/********************************************************************************************/
+-/******************************   Test framework   *****************************************/
+-/********************************************************************************************/
+-#include "../testfrmw/testfrmw.h"
+-#include "../testfrmw/testfrmw.c"
+- /* This header is responsible for defining the following macros:
+-  * UNRESOLVED(ret, descr);
+-  *    where descr is a description of the error and ret is an int (error code for example)
+-  * FAILED(descr);
+-  *    where descr is a short text saying why the test has failed.
+-  * PASSED();
+-  *    No parameter.
+-  *
+-  * Both three macros shall terminate the calling process.
+-  * The testcase shall not terminate in any other maneer.
+-  *
+-  * The other file defines the functions
+-  * void output_init()
+-  * void output(char * string, ...)
+-  *
+-  * Those may be used to output information.
+-  */
+-
+-/********************************************************************************************/
+-/********************************** Configuration ******************************************/
+-/********************************************************************************************/
+-#ifndef VERBOSE
+-#define VERBOSE 1
+-#endif
+-
+-/********************************************************************************************/
+-/***********************************    Test cases  *****************************************/
+-/********************************************************************************************/
+-
+-#include "../testfrmw/threads_scenarii.c"
+-
+-/* This file will define the following objects:
+- * scenarii: array of struct __scenario type.
+- * NSCENAR : macro giving the total # of scenarii
+- * scenar_init(): function to call before use the scenarii array.
+- * scenar_fini(): function to call after end of use of the scenarii array.
+- */
+-
+-/********************************************************************************************/
+-/***********************************    Real Test   *****************************************/
+-/********************************************************************************************/
+-
+-static unsigned int sc;
+-
+-static void *threaded(void *arg)
+-{
+-	int ret = 0;
+-
+-	if (arg != NULL) {
+-		ret = pthread_detach(pthread_self());
+-		if (ret != 0) {
+-			UNRESOLVED(ret, "Failed to detach the thread");
+-		}
+-	}
+-
+-	/* Post the semaphore to unlock the main thread in case of a detached thread */
+-	do {
+-		ret = sem_post(&(scenarii[sc].sem));
+-	}
+-	while ((ret == -1) && (errno == EINTR));
+-	if (ret == -1) {
+-		UNRESOLVED(errno, "Failed to post the semaphore");
+-	}
+-
+-	return arg;
+-}
+-
+-int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+-{
+-	int ret = 0;
+-	pthread_t child;
+-
+-	output_init();
+-
+-	scenar_init();
+-
+-	for (sc = 0; sc < NSCENAR; sc++) {
+-#if VERBOSE > 0
+-		output("-----\n");
+-		output("Starting test with scenario (%i): %s\n", sc,
+-		       scenarii[sc].descr);
+-#endif
+-
+-		if (scenarii[sc].detached != 0) {	/* only joinable threads can be detached */
+-			ret =
+-			    pthread_attr_setdetachstate(&scenarii[sc].ta,
+-							PTHREAD_CREATE_JOINABLE);
+-			if (ret != 0) {
+-				UNRESOLVED(ret,
+-					   "Unable to set detachstate back to joinable");
+-			}
+-		}
+-
+-		/* for detached scenarii, we will call pthread_detach from inside the thread.
+-		   for joinable scenarii, we'll call pthread_detach from this thread. */
+-
+-		ret =
+-		    pthread_create(&child, &scenarii[sc].ta, threaded,
+-				   (scenarii[sc].detached != 0) ? &ret : NULL);
+-		switch (scenarii[sc].result) {
+-		case 0:	/* Operation was expected to succeed */
+-			if (ret != 0) {
+-				UNRESOLVED(ret, "Failed to create this thread");
+-			}
+-			break;
+-
+-		case 1:	/* Operation was expected to fail */
+-			if (ret == 0) {
+-				UNRESOLVED(-1,
+-					   "An error was expected but the thread creation succeeded");
+-			}
+-#if VERBOSE > 0
+-			break;
+-
+-		case 2:	/* We did not know the expected result */
+-		default:
+-			if (ret == 0) {
+-				output
+-				    ("Thread has been created successfully for this scenario\n");
+-			} else {
+-				output
+-				    ("Thread creation failed with the error: %s\n",
+-				     strerror(ret));
+-			}
+-#endif
+-		}
+-		if (ret == 0) {	/* The new thread is running */
+-			/* Just wait for the thread to terminate */
+-			do {
+-				ret = sem_wait(&(scenarii[sc].sem));
+-			}
+-			while ((ret == -1) && (errno == EINTR));
+-			if (ret == -1) {
+-				UNRESOLVED(errno,
+-					   "Failed to post the semaphore");
+-			}
+-
+-			/* If we must detach from here, we do it now. */
+-			if (scenarii[sc].detached == 0) {
+-				ret = pthread_detach(child);
+-				if (ret != 0) {
+-					UNRESOLVED(ret,
+-						   "Failed to detach the child thread.");
+-				}
+-			}
+-
+-			/* now check that the thread resources are freed. */
+-			ret = pthread_join(child, NULL);
+-			if (ret == 0) {
+-				FAILED
+-				    ("We were able to join a detached thread.");
+-			}
+-
+-			/* Let the thread an additionnal row to cleanup */
+-			sched_yield();
+-		}
+-	}
+-
+-	scenar_fini();
+-#if VERBOSE > 0
+-	output("-----\n");
+-	output("All test data destroyed\n");
+-	output("Test PASSED\n");
+-#endif
+-
+-	PASSED;
+-}
 -- 
-2.51.0
+2.54.0
 
 
 -- 
