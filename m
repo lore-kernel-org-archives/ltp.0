@@ -4,90 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54481CD98C7
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 12:13:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15735CD98C7
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 12:13:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DE8E73E5DAF
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 14:13:24 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 9ABC73E5C13
+	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 14:13:38 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D96B53E5578
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 14:12:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id E3E9A3E5B6D
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 14:12:58 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2B711600958
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 14:12:54 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1E6A9600047
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 14:12:57 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9442C75827;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7602B6BFAB;
  Mon, 15 Jun 2026 12:12:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1781525572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+W9q+/O7gQckaONJAjHu0M3/ZIvgFU3yc7mBLe7DIa0=;
- b=qpE8KXxROW/+0qY39mx58UVeoYaof/oLYSVK97pwMkYRcpTvG+wWQjIavQzc43eRTtC9yP
- kWxJXUEwIgvGLNBMB4w+8W4lc1GKy3diAe1VHtp/Md+3xsvUlKwxs85GGm/W0Ipdhg9d5+
- g2cPSS8yvCeTCYBtuCWH0gnL/Cr67Zo=
+ bh=K4PtwWKFQ16DZzVm8dwKke35STdwfRZd6LsDL0Qz17I=;
+ b=yJvVnbMVS2+vqswvbT4m09PZsydY329m8XRPYsdwPAagctPi/SHQ1pRn/UhCpGp1Rd0Qon
+ cvutPuBNXup/P/OgmwjylUcdG3nC8IKfKh4O4RQztF4gIxZmyUqJbC+BMtocNGlu1ido8a
+ ydtjJ3Kdmau5OcAkPwPjDi51k43y3Uw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1781525572;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+W9q+/O7gQckaONJAjHu0M3/ZIvgFU3yc7mBLe7DIa0=;
- b=bBeiCOcwK+RVKe/4kqfMSgVHX7zU+21WVCkSS8g5QP3ci2lZqja85ubvVR8T4LLyK/XbwU
- MwEOqceMe2mCi7Dw==
-Authentication-Results: smtp-out2.suse.de;
+ bh=K4PtwWKFQ16DZzVm8dwKke35STdwfRZd6LsDL0Qz17I=;
+ b=Szwk322wn/PpKm5QuVsoZLCRjBwA9H22zduD26iRWkfTWpYwCIUgGDbwX0amyGuzelBU9c
+ lFOBkkJDMXY+5OCQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1781525572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+W9q+/O7gQckaONJAjHu0M3/ZIvgFU3yc7mBLe7DIa0=;
- b=qpE8KXxROW/+0qY39mx58UVeoYaof/oLYSVK97pwMkYRcpTvG+wWQjIavQzc43eRTtC9yP
- kWxJXUEwIgvGLNBMB4w+8W4lc1GKy3diAe1VHtp/Md+3xsvUlKwxs85GGm/W0Ipdhg9d5+
- g2cPSS8yvCeTCYBtuCWH0gnL/Cr67Zo=
+ bh=K4PtwWKFQ16DZzVm8dwKke35STdwfRZd6LsDL0Qz17I=;
+ b=yJvVnbMVS2+vqswvbT4m09PZsydY329m8XRPYsdwPAagctPi/SHQ1pRn/UhCpGp1Rd0Qon
+ cvutPuBNXup/P/OgmwjylUcdG3nC8IKfKh4O4RQztF4gIxZmyUqJbC+BMtocNGlu1ido8a
+ ydtjJ3Kdmau5OcAkPwPjDi51k43y3Uw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1781525572;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+W9q+/O7gQckaONJAjHu0M3/ZIvgFU3yc7mBLe7DIa0=;
- b=bBeiCOcwK+RVKe/4kqfMSgVHX7zU+21WVCkSS8g5QP3ci2lZqja85ubvVR8T4LLyK/XbwU
- MwEOqceMe2mCi7Dw==
+ bh=K4PtwWKFQ16DZzVm8dwKke35STdwfRZd6LsDL0Qz17I=;
+ b=Szwk322wn/PpKm5QuVsoZLCRjBwA9H22zduD26iRWkfTWpYwCIUgGDbwX0amyGuzelBU9c
+ lFOBkkJDMXY+5OCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 795C3779AA;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 58499779A9;
  Mon, 15 Jun 2026 12:12:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id mE4lHETsL2pRZAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id SLP6E0TsL2pRZAAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Mon, 15 Jun 2026 12:12:52 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 15 Jun 2026 14:12:46 +0200
+Date: Mon, 15 Jun 2026 14:12:45 +0200
 MIME-Version: 1.0
-Message-Id: <20260615-fw_load-v7-2-d51e607f16bd@suse.com>
+Message-Id: <20260615-fw_load-v7-1-d51e607f16bd@suse.com>
 References: <20260615-fw_load-v7-0-d51e607f16bd@suse.com>
 In-Reply-To: <20260615-fw_load-v7-0-d51e607f16bd@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1781525572; l=13735;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1781525572; l=10368;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=BGSLDCOgixK3NjVeaZZpaNVmQ44FlfCGj5FE+UEWx08=;
- b=/hRQYyVwTiwzMCtk9N63lwRqypliSXo9GYxW4u6IQ+CY7hpopUwgU+wtXE8ZbbI4e2yCP7I+R
- Kkg0UcCOe77DyI0ntuzvpeE2V3F2pq/pyN9raoyhVYgmw4Jy6Of4Be8
+ bh=0fhCtynImT6RSeLGa+oEb4t+/rhgDFQnbwJm7juI8is=;
+ b=Qc8eaaOsEYzPvTsSRWkzNzAJRGO17UOp4rKemNbfVB4wVD3yWigtCpVPnPZOt5g8BFx1I/7lJ
+ zDcDxvlkkhoBXr2ziWbLoUYZ/XHujKhX/1x73ioQn/GIV0q/Q90FGBy
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -100,11 +101,11 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
  FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
- imap1.dmz-prg2.suse.org:helo]
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
+ suse.com:mid]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7 2/4] fw_load: rewrite test using new LTP API
+Subject: [LTP] [PATCH v7 1/4] fw_load: Modernize ltp_fw_load kernel module
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,23 +124,25 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Remove the obsolete user-helper and create a fw_load.h where to
-store the firmware support information.
+Fix VLA (banned since kernel v4.20), replace sscanf() with
+kstrtoint(), reset test_result between invocations, make the
+loop variable local and pass expected data explicitly.
+
+Update license headers, fix brace style, drop obsolete README
+in favour of the in-source documentation.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/firmware/fw_load_user/Makefile  |  18 +-
- testcases/kernel/firmware/fw_load_user/README    |  11 -
- testcases/kernel/firmware/fw_load_user/fw_load.c | 286 ++++++++++-------------
- testcases/kernel/firmware/fw_load_user/fw_load.h |  18 ++
- 4 files changed, 140 insertions(+), 193 deletions(-)
+ testcases/kernel/firmware/fw_load_kernel/Makefile  |  16 +--
+ testcases/kernel/firmware/fw_load_kernel/README    |  16 ---
+ .../kernel/firmware/fw_load_kernel/ltp_fw_load.c   | 114 ++++++++++++---------
+ 3 files changed, 66 insertions(+), 80 deletions(-)
 
-diff --git a/testcases/kernel/firmware/fw_load_user/Makefile b/testcases/kernel/firmware/fw_load_user/Makefile
-index effd5dae5c05e9115c391093af523ab36ebfc8d6..5b031e2eb81597689ff5eab70246fb20ad02e77d 100644
---- a/testcases/kernel/firmware/fw_load_user/Makefile
-+++ b/testcases/kernel/firmware/fw_load_user/Makefile
-@@ -1,20 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/testcases/kernel/firmware/fw_load_kernel/Makefile b/testcases/kernel/firmware/fw_load_kernel/Makefile
+index 73996996f3397fb0a7f4616457168213587e654f..e81b300faaa6b4056d4b5f3d1417c381a000256d 100644
+--- a/testcases/kernel/firmware/fw_load_kernel/Makefile
++++ b/testcases/kernel/firmware/fw_load_kernel/Makefile
+@@ -1,18 +1,6 @@
  # Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
 -#
 -# This program is free software; you can redistribute it and/or
@@ -156,390 +159,245 @@ index effd5dae5c05e9115c391093af523ab36ebfc8d6..5b031e2eb81597689ff5eab70246fb20
 -# along with this program; if not, write the Free Software Foundation,
 -# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 +# Copyright (c) Linux Test Project, 2026
++# SPDX-License-Identifier: GPL-2.0-or-later
  
--top_srcdir		?= ../../../..
-+top_srcdir	?= ../../../..
+ ifneq ($(KERNELRELEASE),)
  
- include $(top_srcdir)/include/mk/testcases.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/firmware/fw_load_user/README b/testcases/kernel/firmware/fw_load_user/README
+diff --git a/testcases/kernel/firmware/fw_load_kernel/README b/testcases/kernel/firmware/fw_load_kernel/README
 deleted file mode 100644
-index 702fac90a2ccb41612ea8dc1010b468588cd3446..0000000000000000000000000000000000000000
---- a/testcases/kernel/firmware/fw_load_user/README
+index 97507fd99aa3bead708cd4bf599f4abf9ec6e2da..0000000000000000000000000000000000000000
+--- a/testcases/kernel/firmware/fw_load_kernel/README
 +++ /dev/null
-@@ -1,11 +0,0 @@
+@@ -1,16 +0,0 @@
 -The aim of the test is to check device firmware loading. Since kernel 3.7
 -firmware loading changed to direct loading (by-pass udev). The test consists
 -of the two parts:
 - - userspace part
 - - kernelspace part
 -
--This is the userspace part, its tasks are:
-- - create firmware files in the standard firmware paths
-- - load the module and initiate firmware request procedure
-- - read device's result file and print final results
-- - unload the module.
-diff --git a/testcases/kernel/firmware/fw_load_user/fw_load.c b/testcases/kernel/firmware/fw_load_user/fw_load.c
-index 1f68f2ad67cb34af5bfe19f77482cd032bdbad3f..402e2c71f508fdbb9c3f73fcd42bf87da280137b 100644
---- a/testcases/kernel/firmware/fw_load_user/fw_load.c
-+++ b/testcases/kernel/firmware/fw_load_user/fw_load.c
-@@ -1,213 +1,165 @@
+-This is a kernel module, which is a part of the device firmware loading test.
+-It allows to call request_firmware kernel function with specified parameters.
+-Template firmware file name and expected firmware file's data size are passed
+-as the insmod command line parameters. Then, the number of firmware test files
+-should be written to sysfs file 'fwnum' (the maximum number is 32). This write
+-will initiate request firmware procedure. In the end, results can be read from
+-'result' device sysfs file. Also, some information regarding module loading,
+-can be obtained by looking at kernel log file.
+-
+-It is automatically used by userspace part of the test.
+diff --git a/testcases/kernel/firmware/fw_load_kernel/ltp_fw_load.c b/testcases/kernel/firmware/fw_load_kernel/ltp_fw_load.c
+index b7397e8f13154a16c2626517545c3c14d153a043..8aac0fc9691f85970be12fca360a17473474365b 100644
+--- a/testcases/kernel/firmware/fw_load_kernel/ltp_fw_load.c
++++ b/testcases/kernel/firmware/fw_load_kernel/ltp_fw_load.c
+@@ -1,25 +1,30 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
   * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ *	Alexey Kodanev <alexey.kodanev@oracle.com>
-+ * Copyright (c) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Verifies that the kernel firmware loader (``CONFIG_FW_LOADER``)
-+ * can find and load firmware files from the standard search paths.
++ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
   *
 - * This program is free software; you can redistribute it and/or
 - * modify it under the terms of the GNU General Public License as
 - * published by the Free Software Foundation; either version 2 of
 - * the License, or (at your option) any later version.
-+ * A helper kernel module (``ltp_fw_load.ko``) registers a virtual
-+ * device that calls :kernel_doc:`request_firmware` for a set of
-+ * numbered firmware blobs. Each blob is verified in-kernel against
-+ * its expected size and byte pattern.
++ * Copyright (c) 2023 Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*
++ * Kernel module helper for the fw_load test.
   *
 - * This program is distributed in the hope that it would be useful,
 - * but WITHOUT ANY WARRANTY; without even the implied warranty of
 - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 - * GNU General Public License for more details.
-+ * [Algorithm]
++ * Registers a virtual device (ltp_fw_load) that exposes two sysfs
++ * attributes:
   *
 - * You should have received a copy of the GNU General Public License
 - * along with this program; if not, write the Free Software Foundation,
 - * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ * - Load the helper module with ``fw_size`` matching the blob size
-+ * - Create firmware files in the standard firmware search
-+ *   directories:
++ *   fwnum  (write-only) - accepts the number of firmware files to
++ *           request (1-32). Writing triggers request_firmware() for
++ *           each file named n<i>_<fw_name> (i = 0 .. fwnum-1).
++ *           Each loaded blob is verified against the expected size
++ *           (fw_size) and byte pattern (every byte == i).
   *
 - * Author:
 - * Alexey Kodanev <alexey.kodanev@oracle.com>
-+ *   - ``/lib/firmware/``
-+ *   - ``/lib/firmware/<kernel-release>/``
-+ *   - ``/lib/firmware/updates/``
-+ *   - ``/lib/firmware/updates/<kernel-release>/``
++ *   result (read-only)  - bitmask of per-file pass/fail results.
++ *           Bit i is set when n<i>_<fw_name> was loaded and
++ *           verified successfully.
   *
-- * Test checks device firmware loading.
-+ * - Add one fake firmware entry that has no file on disk
-+ * - Write the firmware count to ``/sys/devices/ltp_fw_load/fwnum``
-+ *   to trigger :kernel_doc:`request_firmware` calls in-kernel
-+ * - Read the result bitmask from ``/sys/devices/ltp_fw_load/result``
-+ * - Verify that every real firmware file was loaded successfully
-+ *   and that the fake entry was correctly rejected
+- * This module is trying to load external test firmware files (n#_load_tst.fw).
+- * In the end, it writes results to /sys/devices/ltp_fw_load/result file.
++ * Module parameters:
++ *   fw_name  - template firmware file name (default: load_tst.fw)
++ *   fw_size  - expected firmware blob size  (default: 0x1000)
   */
  
--#define _GNU_SOURCE
- #include <sys/utsname.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <string.h>
--
--#include "test.h"
--#include "tst_security.h"
--#include "tso_safe_macros.h"
--#include "tso_module.h"
--
--/* number of test firmware files */
--#define FW_FILES	5
--
--char *TCID = "fw_load";
--int TST_TOTAL = FW_FILES;
-+#include "tst_test.h"
-+#include "tst_module.h"
-+#include "fw_load.h"
+ #include <linux/module.h>
+@@ -33,12 +38,11 @@ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Alexey Kodanev <alexey.kodanev@oracle.com>");
+ MODULE_DESCRIPTION("This module is checking device firmware loading");
  
--static int fw_size = 0x1000;
-+static int module_loaded;
-+static int fw_count;
+-#define TCID	"ltp_fw_load"
++#define MODULE_NAME	"ltp_fw_load"
++#define MAX_NAME	64
  
--static const char fw_name[]	= "load_tst.fw";
--static const char module_name[]	= "ltp_fw_load.ko";
--
--/* paths to module's sysfs files */
--static const char dev_fwnum[]	= "/sys/devices/ltp_fw_load/fwnum";
--static const char dev_result[]	= "/sys/devices/ltp_fw_load/result";
--
--struct fw_file_info {
--	char *file;
--	char *dir;
-+static struct fw_data {
-+	char dir[PATH_MAX];
-+	char file[PATH_MAX];
- 	int fake;
--	int remove_dir;
--	int remove_file;
--};
-+	int created_dir;
-+} firmware[FW_NUM];
+ static char *fw_name	= "load_tst.fw";
+ static int fw_size	= 0x1000;
+-static int max_name	= 64;
+-static int fw;
  
--static struct fw_file_info fw[FW_FILES];
--static int fw_num;
--
--/* test options */
--static char *narg;
--static int nflag;
--static int skip_cleanup;
--static int verbose;
--static const option_t options[] = {
--	{"n:", &nflag, &narg},
--	{"s", &skip_cleanup, NULL},
--	{"v", &verbose, NULL},
--	{NULL, NULL, NULL}
--};
-+static void create_firmware(const char *dir)
-+{
-+	struct fw_data *fw = &firmware[fw_count];
-+	char buf[FW_SIZE];
-+	int fd = -1;
-+
-+	snprintf(fw->dir, sizeof(fw->dir), "%s", dir);
-+	if (access(dir, X_OK) == -1) {
-+		SAFE_MKDIR(dir, 0755);
-+		fw->created_dir = 1;
-+	}
+ module_param(fw_name, charp, 0444);
+ MODULE_PARM_DESC(fw_name, "Template firmware file name: n#_name");
+@@ -54,47 +58,53 @@ static int test_result;
  
--static void help(void);
--static void setup(int argc, char *argv[]);
--static void test_run(void);
--static void cleanup(void);
-+	snprintf(fw->file, sizeof(fw->file), "%s/n%d_%s", dir, fw_count, FW_NAME);
-+	memset(buf, fw_count, FW_SIZE);
- 
--/*
-- * create firmware files in the fw_paths
-- * @fw_paths: it must be termintated by a NULL pointer
-- */
--static void create_firmware(char *const fw_paths[]);
-+	fd = SAFE_OPEN(fw->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, FW_SIZE);
-+	SAFE_CLOSE(fd);
- 
--int main(int argc, char *argv[])
-+	fw_count++;
-+}
-+
-+static void run(void)
+ static void device_release(struct device *dev)
  {
--	setup(argc, argv);
-+	struct fw_data *fw;
-+	int result = 0;
-+	int pass, offset;
- 
--	test_run();
-+	SAFE_FILE_PRINTF(DEV_FWNUM, "%d", fw_count);
-+	SAFE_FILE_SCANF(DEV_RESULT, "%d", &result);
- 
--	cleanup();
-+	for (int i = 0; i < fw_count; i++) {
-+		fw = &firmware[i];
- 
--	tst_exit();
--}
-+		pass = result & (1 << i);
-+		offset = fw->dir[0] ? strlen(fw->dir) : 0;
- 
--static void help(void)
--{
--	printf("  -n x    Write x bytes to firmware file, default is %d\n",
--		fw_size);
--	printf("  -s      Skip cleanup\n");
--	printf("  -v      Verbose\n");
-+		if (fw->fake) {
-+			tst_res(pass ? TFAIL : TPASS,
-+				"Firmware '%s' correctly not loaded",
-+				fw->file + offset);
-+		} else {
-+			tst_res(pass ? TPASS : TFAIL,
-+				"Firmware '%s' loaded",
-+				fw->file + offset);
-+		}
-+	}
+-	pr_info(TCID ": device released\n");
++	pr_info(MODULE_NAME ": device released\n");
  }
  
--void setup(int argc, char *argv[])
-+static void setup(void)
+ static struct device tdev = {
+-	.init_name	= TCID,
++	.init_name	= MODULE_NAME,
+ 	.release	= device_release,
+ };
+ 
+-/* read and print firmware data */
+-static int fw_read(const u8 *data, size_t size)
++/* read and verify firmware data */
++static int fw_read(const u8 *data, size_t size, u8 expected)
  {
--	if (tst_lockdown_enabled() > 0 || tst_secureboot_enabled() > 0)
--		tst_brkm(TCONF, NULL, "Cannot load unsigned modules in Lockdown/Secure Boot");
--
--	tst_parse_opts(argc, argv, options, help);
-+	char fw_dir[PATH_MAX];
-+	char fw_size_param[32];
-+	struct utsname name;
- 
--	if (nflag) {
--		if (sscanf(narg, "%i", &fw_size) != 1)
--			tst_brkm(TBROK, NULL, "-n option arg is not a number");
--		if (fw_size < 0)
--			tst_brkm(TBROK, NULL, "-n option arg is less than 0");
--	}
-+	if (access(LIB_PATH, W_OK) == -1)
-+		tst_brk(TCONF, "Skipping test due to read-only %s", LIB_PATH);
- 
--	tst_require_root();
- 	tst_requires_module_signature_disabled();
- 
--	char fw_size_param[19];
--	snprintf(fw_size_param, 19, "fw_size=%d", fw_size);
--	char *const mod_params[2] = { fw_size_param, NULL };
--	tst_module_load(NULL, module_name, mod_params);
-+	snprintf(fw_size_param, sizeof(fw_size_param), "fw_size=%d", FW_SIZE);
-+	char *const mod_params[] = {fw_size_param, NULL};
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	tst_module_load(MNAME_KO, mod_params);
-+	module_loaded = 1;
- 
--	/* get current Linux version and make firmware paths */
--	struct utsname uts_name;
--	uname(&uts_name);
-+	create_firmware(LIB_PATH);
- 
--	/* 4 firmware paths + NULL */
--	char *fw_paths[5] = { "/lib/firmware", "/lib/firmware/updates" };
--	SAFE_ASPRINTF(cleanup, &fw_paths[2], "%s/%s", fw_paths[0], uts_name.release);
--	SAFE_ASPRINTF(cleanup, &fw_paths[3], "%s/%s", fw_paths[1], uts_name.release);
-+	uname(&name);
- 
--	/* create firmware in the hard coded firmware search paths */
--	create_firmware(fw_paths);
-+	snprintf(fw_dir, sizeof(fw_dir), "%s/%s", LIB_PATH, name.release);
-+	create_firmware(fw_dir);
- 
--	free(fw_paths[2]);
--	free(fw_paths[3]);
-+	snprintf(fw_dir, sizeof(fw_dir), "%s/updates", LIB_PATH);
-+	create_firmware(fw_dir);
- 
--	/* make non-existent firmware file */
--	SAFE_ASPRINTF(cleanup, &fw[fw_num].file, "/n%d_%s", fw_num, fw_name);
--	fw[fw_num].fake = 1;
--	++fw_num;
--}
-+	snprintf(fw_dir, sizeof(fw_dir), "%s/updates/%s", LIB_PATH, name.release);
-+	create_firmware(fw_dir);
- 
--static void test_run(void)
--{
--	/* initiate firmware requests */
--	SAFE_FILE_PRINTF(cleanup, dev_fwnum, "%d", fw_num);
-+	/* add a fake file */
-+	snprintf(firmware[fw_count].file, sizeof(firmware[fw_count].file),
-+		 "/n%d_%s", fw_count, FW_NAME);
- 
--	/* get module results by reading result bit mask */
--	int result = 0;
--	SAFE_FILE_SCANF(cleanup, dev_result, "%d", &result);
--
--	int i, fail, offset;
--	for (i = 0; i < fw_num; ++i) {
--		fail = (result & (1 << i)) == 0 && !fw[i].fake;
--		offset = (fw[i].dir) ? strlen(fw[i].dir) : 0;
--		tst_resm((fail) ? TFAIL : TPASS,
--			"Expect: %s load firmware '...%s'",
--			(fw[i].fake) ? "can't" : "can",
--			fw[i].file + offset);
--	}
-+	firmware[fw_count].fake = 1;
-+	fw_count++;
- }
- 
- static void cleanup(void)
- {
--	if (skip_cleanup)
--		return;
--
--	int i;
--	/* remove subdirs first and then upper level dirs */
--	for (i = fw_num - 1; i >= 0; --i) {
--		if (fw[i].remove_file && remove(fw[i].file) == -1)
--			tst_resm(TWARN, "Can't remove: %s", fw[i].file);
--		free(fw[i].file);
--
--		if (fw[i].remove_dir && remove(fw[i].dir) == -1)
--			tst_resm(TWARN, "Can't remove %s", fw[i].dir);
--		free(fw[i].dir);
--	}
-+	struct fw_data *fw;
- 
--	tst_module_unload(NULL, module_name);
--}
-+	for (int i = fw_count - 1; i >= 0; i--) {
-+		fw = &firmware[i];
- 
--static void create_firmware(char *const fw_paths[])
--{
--	int i = 0;
--	while (fw_paths[i] != NULL) {
--		struct fw_file_info *fi = &fw[fw_num];
--		fi->dir = strdup(fw_paths[i]);
--		if (access(fi->dir, X_OK) == -1) {
--			/* create dir */
--			SAFE_MKDIR(cleanup, fi->dir, 0755);
--			fi->remove_dir = 1;
--		}
-+		if (access(fw->file, F_OK) != -1)
-+			SAFE_UNLINK(fw->file);
- 
--		/* create test firmware file */
--		SAFE_ASPRINTF(cleanup, &fi->file, "%s/n%d_%s", fi->dir, fw_num, fw_name);
--
--		FILE *f = SAFE_FOPEN(cleanup, fi->file, "w");
--		fi->remove_file = 1;
--		int k, byte = fw_num;
--		++fw_num;
--		for (k = 0; k < fw_size; ++k)
--			fputc(byte, f);
--		SAFE_FCLOSE(cleanup, f);
--		++i;
-+		if (fw->created_dir)
-+			remove(fw->dir);
+ 	size_t i;
+-	pr_info(TCID ": Firmware has size '%zu'\n", size);
++
++	pr_info(MODULE_NAME ": Firmware has size '%zu'\n", size);
+ 	if (size != fw_size) {
+-		pr_err(TCID ": Expected firmware size '%d'\n", fw_size);
++		pr_err(MODULE_NAME ": Expected firmware size '%d'\n", fw_size);
+ 		return -1;
  	}
 +
-+	if (module_loaded)
-+		tst_module_unload(MNAME_KO);
+ 	for (i = 0; i < size; ++i) {
+-		if (data[i] != (u8)fw) {
+-			pr_err(TCID ": Unexpected firmware data\n");
++		if (data[i] != expected) {
++			pr_err(MODULE_NAME ": Unexpected firmware data\n");
+ 			return -1;
+ 		}
+ 	}
++
+ 	return 0;
  }
+ 
+-static int try_request_fw(const char *name)
++static int try_request_fw(const char *name, u8 expected)
+ {
+ 	int err;
+ 	const struct firmware *fw_entry = NULL;
 +
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_FW_LOADER=y|CONFIG_FW_LOADER=m",
-+		NULL,
-+	},
-+};
-diff --git a/testcases/kernel/firmware/fw_load_user/fw_load.h b/testcases/kernel/firmware/fw_load_user/fw_load.h
-new file mode 100644
-index 0000000000000000000000000000000000000000..39f207cc30810e2ed9ea76176cedd98aa902d887
---- /dev/null
-+++ b/testcases/kernel/firmware/fw_load_user/fw_load.h
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
+ 	err = request_firmware(&fw_entry, name, &tdev);
+ 	if (!err) {
+-		pr_info(TCID ": firmware '%s' requested\n", name);
+-		err = fw_read(fw_entry->data, fw_entry->size);
+-	} else
+-		pr_err(TCID ": Can't request firmware '%s'\n", name);
++		pr_info(MODULE_NAME ": firmware '%s' requested\n", name);
++		err = fw_read(fw_entry->data, fw_entry->size, expected);
++	} else {
++		pr_err(MODULE_NAME ": Can't request firmware '%s'\n", name);
++	}
 +
-+#ifndef FW_LOAD_H
-+#define FW_LOAD_H
+ 	release_firmware(fw_entry);
+ 	return err;
+ }
+ 
+-/* print test result to sysfs file */
++/* Print test result to sysfs file. */
+ static ssize_t sys_result(struct device *dev,
+ 	struct device_attribute *attr, char *buf)
+ {
+@@ -102,26 +112,28 @@ static ssize_t sys_result(struct device *dev,
+ }
+ static DEVICE_ATTR(result, S_IRUSR, sys_result, NULL);
+ 
+-/*
+- * get the number of firmware files and
+- * perform firmware requests
+- */
++/* Get the number of firmware files and perform firmware requests. */
+ static ssize_t sys_fwnum(struct device *dev,
+-	struct device_attribute *attr,  const char *buf, size_t count)
++	struct device_attribute *attr, const char *buf, size_t count)
+ {
+-	int err, fw_num = 0;
++	int err, fw, fw_num;
+ 
+-	sscanf(buf, "%d", &fw_num);
+-	if (fw_num <= 0 || fw_num > 32) {
+-		pr_err(TCID ": Unexpected number of firmwares '%d'", fw_num);
+-		return count;
++	err = kstrtoint(buf, 10, &fw_num);
++	if (err || fw_num <= 0 || fw_num > 32) {
++		pr_err(MODULE_NAME ": Unexpected number of firmwares '%s'", buf);
++		return err ? err : -EINVAL;
+ 	}
 +
-+#define MNAME_KO "ltp_fw_load.ko"
-+#define FW_NAME	"load_tst.fw"
-+#define FW_SIZE	0x1000
-+#define FW_NUM 5
-+#define FW_PATH "/sys/module/firmware_class/parameters/path"
-+#define DEV_FWNUM "/sys/devices/ltp_fw_load/fwnum"
-+#define DEV_RESULT "/sys/devices/ltp_fw_load/result"
-+#define LIB_PATH "/lib/firmware"
++	test_result = 0;
 +
-+#endif
+ 	for (fw = 0; fw < fw_num; ++fw) {
+-		char name[max_name];
+-		snprintf(name, max_name, "n%d_%s", fw, fw_name);
+-		err = try_request_fw(name);
++		char name[MAX_NAME];
++
++		snprintf(name, sizeof(name), "n%d_%s", fw, fw_name);
++		err = try_request_fw(name, (u8)fw);
+ 		test_result |= (err == 0) << fw;
+ 	}
++
+ 	return count;
+ }
+ static DEVICE_ATTR(fwnum, S_IWUSR, NULL, sys_fwnum);
+@@ -132,23 +144,25 @@ static int test_init(void)
+ 
+ 	err = device_register(&tdev);
+ 	if (err) {
+-		pr_err(TCID ": Unable to register device\n");
++		pr_err(MODULE_NAME ": Unable to register device\n");
+ 		return err;
+ 	}
+-	pr_info(TCID ": device registered\n");
++	pr_info(MODULE_NAME ": device registered\n");
+ 
+ 	err = device_create_file(&tdev, &dev_attr_result);
+ 	if (err) {
+-		pr_err(TCID ": Can't create sysfs file 'result'\n");
++		pr_err(MODULE_NAME ": Can't create sysfs file 'result'\n");
+ 		device_unregister(&tdev);
+ 		return err;
+ 	}
++
+ 	err = device_create_file(&tdev, &dev_attr_fwnum);
+ 	if (err) {
+-		pr_err(TCID ": Can't create sysfs file 'fwnum'\n");
++		pr_err(MODULE_NAME ": Can't create sysfs file 'fwnum'\n");
+ 		device_remove_file(&tdev, &dev_attr_result);
+ 		device_unregister(&tdev);
+ 	}
++
+ 	return err;
+ }
+ module_init(test_init);
+@@ -159,6 +173,6 @@ static void test_exit(void)
+ 	device_remove_file(&tdev, &dev_attr_fwnum);
+ 
+ 	device_unregister(&tdev);
+-	pr_info(TCID ": module exited\n");
++	pr_info(MODULE_NAME ": module exited\n");
+ }
+ module_exit(test_exit);
 
 -- 
 2.51.0
