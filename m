@@ -4,92 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65C6DCD98CF
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 09:37:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781602646; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=kLLEMpsfHMsFD5x4gTFOiLaWaVg/pm0mzTlbWHmawoE=;
- b=D3z3AoDZLWAizV8JDLTYI8F9QGYFpx+5BCnY01OiH7RyBJMBsMDF/h2NUWrOh8fLNDuUc
- N0GI0bf3ZQAb2iiUnAUH55zmEPZ+xNky1Ygk7nw5MPT6wHBGz8sXlIiCp50kMXgF2hsaGn6
- DMIaF81NA7sAs1c9XwGON+4Iu7d2gns=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ECB6CD98CF
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 10:09:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F18B43E5977
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 11:37:25 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 9A54C3E596D
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 12:09:37 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CF3673E2026
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 11:37:06 +0200 (CEST)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
+ by picard.linux.it (Postfix) with ESMTPS id B2E283C19F0
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 12:09:22 +0200 (CEST)
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com
+ [IPv6:2607:f8b0:4864:20::f43])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 038661A00A55
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 11:37:05 +0200 (CEST)
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-490b211ee6aso32393605e9.3
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 02:37:05 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 42E3C140099A
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 12:09:22 +0200 (CEST)
+Received: by mail-qv1-xf43.google.com with SMTP id
+ 6a1803df08f44-8ccf7b7d188so51689146d6.1
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 03:09:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1781602625; x=1782207425; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=fvvASeWJ7fraR64WQFes3xN3SybjsZdeM5z+4Gz+l70=;
- b=Y7w6V1Uio5ptTBN88qylwQTGvZXRNd/cqb6wAhse5AwVA7GhJvz0oPDqNu6B7GIxLI
- 6lwaGvHtSG19WWhpWnQ0xS08Gu4Di83KgN0rybcmqhDxpiwhWKNuGOV27GSs7RqpWYNd
- JJJn0J12B39cssVHMW3EnGugziMRTkoUkesq3OvYZSaOFkWA5OkAoOAdWh4iCB9B5MbV
- G7SnKe6pmL9zIuaQib1Q3SkUvKzXZC499OzS52vMWBAtTJKCp4lmmgfHndXcF1bQn0Rh
- V269XvazEZA/+ZF6hYgYnwGt7E/8fJkMHsXoSOJ2CgnYaSII+Dm+4PQMtYUfL34d5z4u
- 9b4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781602625; x=1782207425;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=gmail.com; s=20251104; t=1781604561; x=1782209361; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=fvvASeWJ7fraR64WQFes3xN3SybjsZdeM5z+4Gz+l70=;
- b=ZQbrqKff0RLfqGX7jHGaWWuycIme5cufKs7c03jh1pSQUCyw0LQMnk8n1ice1ZggYN
- 6PKKOkSdt5B+lZFgO5ivxcn6soHbRj61vJa/NnA9yvP39000Gb6NWmjAkFoBYd1h/CWM
- mOI02ZsHCU93XyNsb4LPVcskDqVw/ew2voIoJS4SQO5NoJ4HBv4IVvZ5NZuk1IGIcAnw
- 2OBDCJJ7ydEBN0h+Y4FJ24I0T5WLCBmgCEOYXn0Kem4OGoiaY810TyAIZf+zfctaYS++
- FEDTBwYmlBdSwwQXijZGu+SzVt6ANdBY4RAYYjfgF35rR1LvFKwOYXUKhRf8dC98VIyN
- J3yQ==
-X-Forwarded-Encrypted: i=1;
- AFNElJ/lqQ8bYlEffm2j0FyNeXPTchMr/fSBCUuIAolxqZP4z14l6aiF3nHXf3Y1ca6/EhOU3NI=@lists.linux.it
-X-Gm-Message-State: AOJu0YxAxxVjdnTGepYE7U35oF1iZCjEHg5O9J27sEZOe3USHhGwkDjH
- TfWxbcSt47dx9sHENRf00Eym57pNUR8TXJ+YGazVbTXoDibHZZLjO7HbyuvnRBKA2dk9vSCUUyW
- TB/ydk1Z7rA==
-X-Gm-Gg: Acq92OGsjABg6Qe0cbC1tMjH7IHdWg55dMd3BhaL7gbf4UAT3NpanFbLUqEW9vPafcQ
- NbQPU1IEuJjAR6Z40wboAFHjkmr/2+0LVei3dMRjiprBybt+1jtlMsSh2YzGiv53KwbXWdt6ofu
- bvaMSvLZ8Z0iZeIVuNKocd9KnftSHCBZQA25pZ4iXTsYM2Q98/BthMS36yIwCk1DVs+WeMxv5bS
- GgpF30fqeTe1znIPW96sxuCFJDt/8EEwTO7JbyovM937kaH54yY8BfuLHOZ9MD5N5lAKQggqJCN
- RKiNGYq+5Oww5L6+C1XLE/yo/6mH32VpxBBZs6Sl3f3yD9EX9TqrfRL2LcUmurI7c1nOEj543Yd
- l5xq6n2/HaJhPw6m5q9dY26Gu8cye/1Pnghk13iwDSCzVfMpJxWZ1Ci8HU1mJcvgDVnyvlGgjQz
- slq44ScDtVdwFsTy9RS4qOh7ldwcHZRBOvf9i5AqSUlA5y5E9phmT585QaZIDRUst5dvpgVkOis
- uK5zAoSuFvwY7c8YXCPfZLLJnndiD7AU3OY5DfDE7BcLg==
-X-Received: by 2002:a05:600c:e557:20b0:490:c024:2eba with SMTP id
- 5b1f17b1804b1-4922ff95f5dmr29520275e9.22.1781602625016; 
- Tue, 16 Jun 2026 02:37:05 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
- [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-49230a9a399sm41682285e9.14.2026.06.16.02.37.04
+ bh=7R5ZY+VUykJD1iareLmLWAjnNvnN3+Ajq9gp6mI/F5Y=;
+ b=PonlLfO9pFhcOh+w3X0nNN1LcrqqaYeNhvwDtwvkHqs/9Xa4/rR/XI3jWWyMnBRnJ1
+ w/jgrKQA6GztDKr3GwWh6Ml7YQJwUgVwK+iJpOPSLEOoLv5RIb41i7nhdfVw4w1SBoHK
+ f8sM9GNup+RhrwsnP3tZEu+/RykIkNgHMvbdFfj4Kdv2zJ4jSL8WF2QQVSyv7pYxIotQ
+ r4v7NrxjYfNE2sSAiv2FwkpKf/P+J0b8rCOvv18aUNgX6AtxA9cgu9tY3poKGv7twWVn
+ mwaRMcT7UnP/OPNUlpkgrs+GrmOe1Km2JgK6F4Lk85NP64rVft/0RMuRVaJWYVj7QeZH
+ ur4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1781604561; x=1782209361;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=7R5ZY+VUykJD1iareLmLWAjnNvnN3+Ajq9gp6mI/F5Y=;
+ b=kpS7isFeDzgJ2kZe1IH9QTl6Ij/d7x/7RJX2aubjhW8EMJqfHEWzi3r8cXF4Qf0sLr
+ dzKPoUbGDDqRmi+VHTP0bF0r5yemhgaTa02f8yeWmBi3BBzVTGqtbP6JYlxFqPr89EDh
+ 3Fxb7nT1P1lSmksEocp0VDEm0J588MplLow7SNOqx9NeRBF8G7u4jhQtYY1y5SzmCbA1
+ xhsoxRk91jbTTtFGsAHfRLqrQSyOKyYE7rE+rl8JoumeLvGasxOywPprO2GG0JeXMra4
+ gy/xZt2v4vmg9YG+ss1mS8nU4oudwtMEOg1gJlsu6OE0E1+i3KytqXgrhRgLKd6kKvqZ
+ TgCA==
+X-Gm-Message-State: AOJu0YwdP1g3pCiUOdhhEUdZKOGRYXfDyCLlod3PzQsesafAmFa6vut1
+ JJFuKD3/pf/thgz/2IyjCxgscGQlIz6+tT2oOiDcvO+UHL9uQOin/xe4
+X-Gm-Gg: Acq92OFUd0m4p97P+7I+ePf3ivg+3F2WzEG8BD7GBsraCYFIiSAACU9lLOjFUdvLkyr
+ 6i1ssRZpA8P/MpMDfC5GI1XicJL+xzC7vFjWwpdNsxOuLRSlUKQeS6OM1YISZ377Fng77mOqCs4
+ WktLX+DnfceThu1VVu0hpNAn3jhTlnhblmAdF+mMueFfBcosnAbDiJldz7W8udoqhs7reRfhwLu
+ ZaL7vklwl9SkNLTsbvNJA2SHarzLFn/emJEtoQY7m5yjAsVQG6mMmIxDZjBqEAOH71Db39SAgqn
+ ekZARtjnmyKzpY3JDLejs28CGEZz4ZUcEB9iQ8HERHSbwL1tMl5bdu8Nu08YJ/luTm5vDruh44b
+ 3fPtAES5Nd52uWCagki46lOuYn0mjhRah07hMc0WItB0sEXuBCQwU5ABXXqxix+iUEiuJJ6+sAG
+ E9AabzwvKmhDb2QeS/1u5nNKlls6A5yQ53LLIB8SgFsxqGzQDApEeVHjnGdFZ4041+pNIUHmwHT
+ eEYxl6yAnj4AsquRntKIpb+sTxqEaizN/bV2Hg=
+X-Received: by 2002:a05:6214:5684:b0:8cc:edd2:6a59 with SMTP id
+ 6a1803df08f44-8d9fcac7db6mr60711586d6.18.1781604560863; 
+ Tue, 16 Jun 2026 03:09:20 -0700 (PDT)
+Received: from
+ runnervm1li68.nymdafkpwoiu1hemdoykmkvokg.bx.internal.cloudapp.net
+ ([52.226.124.21]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8d9f55bed3fsm27137956d6.44.2026.06.16.03.09.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 16 Jun 2026 02:37:04 -0700 (PDT)
-Message-ID: <6a311940.16c38fd9.3614ee.7013@mx.google.com>
-To: "Jan Kara" <jack@suse.cz>
-In-Reply-To: <un4jlftokjfzo7girjmf6yrpheg5nyye6wywtgmr3oxfnc3hob@uljmnxlllygu>
-Date: Tue, 16 Jun 2026 09:37:03 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ Tue, 16 Jun 2026 03:09:20 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Avinesh Kumar <avinesh.kumar@suse.com>
+Date: Tue, 16 Jun 2026 10:09:19 +0000
+Message-ID: <20260616100919.4031-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260616092300.177787-1-avinesh.kumar@suse.com>
+References: <20260616092300.177787-1-avinesh.kumar@suse.com>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 4/5] fanotify21: Add test variants for
- FAN_REPORT_TID
+Subject: Re: [LTP] tst_security.sh: Fix bug in tst_disable_selinux()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,82 +90,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: amir73il@gmail.com, jack@suse.cz, ltp@lists.linux.it,
- AnonymeMeow <anonymemeow@gmail.com>
-MIME-Version: 1.0
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+Hi Avinesh,
 
-> Hello!
-> 
-> On Tue 16-06-26 08:24:33, Andrea Cervesato wrote:
-> > the patch-set is failing to compile on our CI. Please send a new
-> > version fixing it:
-> > 
-> > https://github.com/linux-test-project/ltp/actions/runs/27572447779/job/81512172691
-> 
-> Hum, I had a look and the failure actually is:
-> 
-> parse_opts.c: In function 'usc_test_looping':
-> parse_opts.c:521:3: warning: call to function 'usc_recressive_func' without a real prototype [-Wunprototyped-calls]
->    usc_recressive_func(0, STD_LP_recfun, *STD_bigstack);
->    ^
-> parse_opts.c:107:13: note: 'usc_recressive_func' was declared here
->  static void usc_recressive_func();
->              ^
-> CC libs/numa/tse_numa.o
-> AR libltpnuma.a
-> RANLIB libltpnuma.a
-> CC lib/random_range.o
-> CC lib/parse_opts.o
-> CC lib/safe_file_ops.o
-> In file included from ../../include/tse_sigwait.h:11:0,
->                  from tse_sigwait.c:8:
-> ../../include/tst_timer.h: In function 'tst_ts_from_timespec':
-> ../../include/tst_timer.h:626:3: warning: missing initializer for field 'tv_nsec' of 'struct timespec' [-Wmissing-field-initializers]
->    .ts.libc_ts.tv_nsec = ts.tv_nsec,
->    ^
-> In file included from /usr/include/sys/select.h:43:0,
->                  from /usr/include/sys/types.h:219,
->                  from /usr/include/stdlib.h:314,
->                  from tse_sigwait.c:6:
-> /usr/include/time.h:123:23: note: 'tv_nsec' declared here
->      __syscall_slong_t tv_nsec; /* Nanoseconds.  */
->                        ^
-> CC lib/safe_pthread.o
-> 
-> So I'm a bit at loss what change in fanotify tests could have caused a
-> failure in compilation of the generic LTP library code? Any idea?
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+On Tue, 16 Jun 2026 11:22:59 +0200, Avinesh Kumar wrote:
+> tst_security.sh: Fix bug in tst_disable_selinux()
 
-Those are warnings caused by old GCC. It's possible to fix them
-by changing the explicit struct initialization with a 2 step init
-such as:
+Verdict - Reviewed
 
-struct mystruct s;
-s.item0 = i1;
-s.item1 = i2;
+---
+Note:
 
-The real issue is that fanotify21 needs to link pthread:
-
--fanotify11: CFLAGS+=-pthread
-+fanotify11 fanotify21: CFLAGS+=-pthread
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
 Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
