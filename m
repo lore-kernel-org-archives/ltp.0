@@ -4,81 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84EFECD98CF
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 18:35:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38232CD98DA
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 01:48:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781574493; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=0rrUDqJP/lUdMk+or1205gcAi1blV24P6gHLIOI7Bvw=;
+ b=orGUcnN18lH2dBC+sduguYUphRJ8KIg+VsxKhiNIfiTV//gERtJjXtWD7jvoTfqmDSpxT
+ camnStnOtP5860x2Hie0UPjnJHIF/Oi+fVNFDnXPuK3MlllhXKpYiFMB9hR2DK13IXbEAJD
+ 3BCovUFiZ5L8HKYbkLLj5O4R6BfIkuw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2547E3E5DF7
-	for <ltp@archiver.kernel.org>; Mon, 15 Jun 2026 20:35:33 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 1F7143E6CE8
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 03:48:13 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 83DB03E2204
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 20:35:18 +0200 (CEST)
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com
- [IPv6:2607:f8b0:4864:20::842])
+ by picard.linux.it (Postfix) with ESMTPS id 74DEC3E4E3E
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 03:47:52 +0200 (CEST)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 227CA1A0027B
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 20:35:18 +0200 (CEST)
-Received: by mail-qt1-x842.google.com with SMTP id
- d75a77b69052e-5176a2fd597so34035411cf.1
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 11:35:18 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 97DF31400DB6
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 03:47:51 +0200 (CEST)
+Received: by mail-wm1-x330.google.com with SMTP id
+ 5b1f17b1804b1-490b64c8311so39797525e9.3
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 18:47:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781548517; x=1782153317; darn=lists.linux.it;
+ d=suse.com; s=google; t=1781574471; x=1782179271; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=m4lKvln+i+jLSDqHjBM1nngIZk26wSxodVmpFIFyXlk=;
- b=CQtcbGqio39m8NhznqJU16dkUYOcbMFd4Qfhaizx8TTrwg1SnqZGvnh8yXweFdg2PY
- SUmLtADIRoXp8iSF8DmG505Yfef0ejYMqsHnIoq6tuxsafajrPffjWDjObegA/BdVncc
- A7N4X9zNzXk6Af6Af2Scc6CyXw7+uE0xEmITF8Bj0KzNi2EeWDdTXKqzbFHSVsir3cGg
- jOIhn5biCuf2m2iqI9GmcHOT/7QO6n0JkYNLo9y5tvmeKFwGOclOq31pvGzlu/7go39m
- 6woqjnifV3NlzJ6RppySqdf6qhx+t1tHow/tja7wEfAYc1SyCBxUlcNi7QzdJGZrOaW/
- UMag==
+ bh=6W5TVi7wC2/KDvxjfA5qCS2gOOGfEgEbjmR2fay2yXY=;
+ b=YZOVpJ+NGSN7dEi5flY2Hmzd7/yfRepVZrwT3vdXkn0n+PsQkoNvBquNAF0MfXq06J
+ gjCtRfTOsodjj4O9150IV5NXdI6kHG97828URBBAG96FOB3aZZ5EbisNZx1NN3LD/Tye
+ /+vKD2mpeV3kMcAGB/2gqS5OEgpP0xfHwqG7lD67S2to/B8K6i8WLGGd8/EDKx/f2+8g
+ wcbijXN/HNagPzQerr71x0Bs0XZznfLSJPJcQbvv/Kfhpile3oMpDh6ahmxeYAmOEPxb
+ rP0af5I5Ah6HpY3TkFRKKX1c7+AYkLWhRCxBRODVvuBtGeJEhhFFaHOiF1/+R18K3AgM
+ iPWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781548517; x=1782153317;
+ d=1e100.net; s=20251104; t=1781574471; x=1782179271;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=m4lKvln+i+jLSDqHjBM1nngIZk26wSxodVmpFIFyXlk=;
- b=nJ7/jqnVJNum2JrytKXKNQhRY+QXj6j8SVpHDUzvjrOyjZskQlizqLkWXMhwi7E7l0
- O9eAlbWPCYTksKsZQi0SeSQq4KgnEbh1h0MZJBYG79doHDJZ2PeXy8GgF0wYC2TjnLu7
- Ii2GhM/fUhkP41aJ3o/biWiojAXp+HoP9+zMPt7H6lF1dG1rmFXV9h4ek9z7crkHaEyN
- KzNFc9DE2MKkypPUvGU9Rh3IkVIDLkMuz/ijdo56NCF+qTjEBF3csA4BCbo3wg4N/jx0
- 0E+U3JOVHJqmXVON6sOoXYIaNlSt0b1EV2qmPvgxj+w0W2NQRhEjPrj3XjwbtXZcXyGo
- X8rw==
-X-Gm-Message-State: AOJu0Yy9Jmr7wrHtuVYi30HBHS2Qu1TkngVPzlLGyE8/4oiW1LUn4NcI
- 9O+sGs74uD3+KQIHWodREo/TqyQSI6SkknXlMEWYsaSvYdCnwXG/N0l7P2X8ftLr
-X-Gm-Gg: Acq92OFU9jWm7DM6Ql8q2AFl2i4CaYF8PDa1xcE1KFKGyvkJGoQ9YNEhqnb26lt13K0
- cN9nPPISTCx6ZRXy3Bl2rQ1SlCxJN+ClG+3WpcZQzvWOMxf8OepUzajrBH6HNIM/pP+yb+FTlCf
- AgCmgWuP8lv/V9uNRuTTmSZtNiLOUsmksHxwVkWXjes+ePslMym/QWyO1Td3IBddtyq5nxBU38U
- vRkjA2viUPDF38EEKAdRZCo6/5hNFM7oTcKg39MBQAwXG+W1V17dPI82RkG2r14u9ORTSIpZEMA
- bg8PivvLTKBMHkvu6EsBOVh0IRf1VD4oONqFDJQ+ThkAGn1ovAlhsCnvF5vS/qpfBk4KEVY/4kG
- EY9CIR+cVR3twEFKGNKqUTMRCn7Yj4KJv0+SACsm7KwVPC2vXfuwlGMlOhzXvkOhijuDaxwGE+w
- EaNwZRfwInwkPc/kDBLBOSBjl/RFIsli0X8K13n+HdtL2/XTO6ajaGntvQT16xTcP5sgdyAiwPK
- VEH6XamjRkTzWrYlDrXG14s4jnZCv25AL7zpvM9QP4dfws0OA==
-X-Received: by 2002:ac8:5982:0:b0:50d:7aa1:f405 with SMTP id
- d75a77b69052e-517fe17bdd8mr226352691cf.9.1781548516713; 
- Mon, 15 Jun 2026 11:35:16 -0700 (PDT)
-Received: from
- runnervm1li68.5tem4wnxuzpupadixjw3cxa4tb.cx.internal.cloudapp.net
- ([20.55.214.123]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-517fb7e8900sm130072391cf.23.2026.06.15.11.35.16
+ bh=6W5TVi7wC2/KDvxjfA5qCS2gOOGfEgEbjmR2fay2yXY=;
+ b=MkCn5aAyYW7MLEOM/yGLoCk5WrJIpOlAUpINKdeyxT+/kXWa26S2NZxF2n2Kwz8d4L
+ b1MA3eVUdA3bcKXPYktE5k7H2VAKlBbI0gq70YF0Ow8owX0sFIKY0VawE01MhEpLWBfF
+ 9RO5h3DIeA/TKeo6eR922dblFnVL0K1fHqfit1B8hfOqdPesoiEcWQDuAodyIzzbeyJV
+ ZUarXlNTKwOMAShr9RzIj4mafuKIA7B6FEF4kYH7TOUOIJyWICJPKhTf6X3SOz6fHYJw
+ ohkQ1Z9ykTV+MvEbOXySoEB6m1V3RZ1nmLL7WmHL+p1YBxz+hEtVHN5JAgYmlQXIFT8u
+ i93w==
+X-Gm-Message-State: AOJu0YxypGrjKUQvsCg6a2PiLzkzO/eEJqSMhe5F1CW9SxmkqLPEiTmH
+ lFLOduBfjnNcQ/sALo0A+O5CUo3lCuAR7Zn4qe/86SGtZAlbpDSZzpnyTUHdXt08iMhLE1Uqqnz
+ 6YO0=
+X-Gm-Gg: Acq92OEydHWbHkc9pwpLAgDVgBsMGGY9HF8HdEh+/LmRqq7LYbju22J1uaDm/lcCAkb
+ eqKuMVA4UX5eVbcvwg2Yfew7cKv5rYBnf/o6WXwnIgkFBBVZjqY41VIne4MFJlGFWXtE/oinpmw
+ wJz88tPm/PQ8tyAisRRm0K62PTRLWN+uBHB6VmjaY2AkNl7GvknOHrK1D6on4eVCvIU+hwluGqp
+ QGKc4TNKtpjf0S3JvBL7ZsVRvENnK+e/PyIkBWVwDvH+2U9QedtqdSalVuCFtXrjx4eujhHt9iF
+ geqyhxu3DUeF657Lq9KPsmHz/UV/uzOanL5cLidlH/JTSmGVyWw3+wLptxYAzgeF4HD0HTX6n68
+ BL+Sy0tNGKcfcYm1d6/4dVkughsDaI5LxbCnkxhzbLrSh3JO2psS6VqKZj0pbFESIQ98Jse7xcK
+ RUkg/9YuzwvaA=
+X-Received: by 2002:a05:600c:310f:b0:490:a646:9d77 with SMTP id
+ 5b1f17b1804b1-4922ff8eebamr21570505e9.6.1781574470997; 
+ Mon, 15 Jun 2026 18:47:50 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ ffacd0b85a97d-4606f26434dsm39863160f8f.1.2026.06.15.18.47.50
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 15 Jun 2026 11:35:16 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Sachin Sant <sachinp@linux.ibm.com>
-Date: Mon, 15 Jun 2026 18:35:15 +0000
-Message-ID: <20260615183515.4148-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260615151555.71638-2-sachinp@linux.ibm.com>
-References: <20260615151555.71638-2-sachinp@linux.ibm.com>
+ Mon, 15 Jun 2026 18:47:50 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Tue, 16 Jun 2026 01:47:32 +0000
+Message-ID: <20260616014747.8220-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260604045008.29021-2-wegao@suse.com>
+References: <20260604045008.29021-2-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] fs/acl: Add ACL_USER_OBJ permission test
+Subject: [LTP] [PATCH v5 0/2] connect01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,57 +99,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Sachin,
+v4->v5:
+- Reformat commit message body
+- Initialize all socket file descriptors to -1.
+- Use != -1  guards check fd
+- Add tst_reap_children() after the SAFE_FORK()
 
-On Mon, 15 Jun 2026 20:45:48 +0530, Sachin Sant wrote:
-> fs/acl: Add ACL_USER_OBJ permission test
+Wei Gao (2):
+  connect01: Convert to new API
+  connect01: Add negative tests
 
---- [PATCH 5/8] ---
+ testcases/kernel/syscalls/connect/connect01.c | 401 ++++++------------
+ 1 file changed, 139 insertions(+), 262 deletions(-)
 
-> fs/acl: Add ACL symlink operations test
+-- 
+2.54.0
 
-> +	if (user_obj->perm != (ACL_READ | ACL_WRITE | ACL_EXECUTE)) {
-> +		acl_free(target_acl);
-> +		if (unlink(TESTSYMLINK) == -1)
-> +			tst_res(TWARN | TERRNO, "unlink symlink failed");
-> +		cleanup_testfile();
-> +		tst_res(TFAIL, "USER_OBJ has wrong permissions: %o (expected rwx)",
-> +			user_obj->perm);
-
-Use-after-free: user_obj points into the target_acl->entries[]
-array that was just freed by acl_free(target_acl) on the line
-above. Dereferencing user_obj->perm after the free is undefined
-behavior.
-
-The same pattern repeats for group_obj->perm and other->perm in the
-two blocks that follow.
-
-One fix would be to save the perm value before freeing:
-
-    uint16_t perm = user_obj->perm;
-    acl_free(target_acl);
-    ...
-    tst_res(TFAIL, "USER_OBJ has wrong permissions: %o ...", perm);
-
-Or move acl_free(target_acl) after the tst_res() call in each block.
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
