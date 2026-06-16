@@ -4,91 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC1E4CD98DA
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 09:32:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65C6DCD98CF
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 09:37:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781602342; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781602646; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=AyMafWU0Ndm5TdPuUEHnuMT6lpWfSOaW+zffAo2rGTc=;
- b=KC21+NivXsho+dSNXLzz+nOyDQ0qhrpQWi6Pghd8OJ87JwwONzJex4gV5xaC0GOWRlSTS
- hYnJvclpyMG4mdmFZzuGkd20NWcL3qaZhDPKBKfIvuQDuaUqYmA57Qd+ZaF1rtxIWCeASTo
- urq96ZbZz5wbCTYujbNuRT9DCnuELOk=
+ bh=kLLEMpsfHMsFD5x4gTFOiLaWaVg/pm0mzTlbWHmawoE=;
+ b=D3z3AoDZLWAizV8JDLTYI8F9QGYFpx+5BCnY01OiH7RyBJMBsMDF/h2NUWrOh8fLNDuUc
+ N0GI0bf3ZQAb2iiUnAUH55zmEPZ+xNky1Ygk7nw5MPT6wHBGz8sXlIiCp50kMXgF2hsaGn6
+ DMIaF81NA7sAs1c9XwGON+4Iu7d2gns=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6C63B3E5970
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 11:32:22 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id F18B43E5977
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 11:37:25 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B67A13E5969
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 11:31:27 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
+ by picard.linux.it (Postfix) with ESMTPS id CF3673E2026
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 11:37:06 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E7AEF100077B
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 11:31:26 +0200 (CEST)
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-45ef41adbc1so3176180f8f.0
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 02:31:26 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 038661A00A55
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 11:37:05 +0200 (CEST)
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-490b211ee6aso32393605e9.3
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 02:37:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1781602286; x=1782207086; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=8lH2qScYBWwDsndh7tkYiZUrohGLIsy8piigzo/Q9+I=;
- b=W9WW4ssW+DLUgH0KRzU6O6s/53pM39cXxzZ9fmafUrQAOSb63qMtp6MInVizfOMalb
- NtaBKHtqLo8U7tpGkc056sbvVHGyO5PZdfUL3kR75r0ONnrBsHaY3QaxgMFkP3opd1P+
- yQtBSI9be4Jp6dmOWuy0cY/iVKuBI2nU3ZJccU6HqWBgkBl7SH06RNST73+CoKQRVzhe
- n5QqmQJ92lptrK8g5nzXBtL/JwQsyMewLd7nQYMP/eh9d21RwroM4pQ4LHtFvmVZDM2U
- BT18gBrlI5XN+LqOHX9V7PQSPoyfHfwPEdsipJ3Xrh1DAAkLJrHRxEpiMp5YFuPAm6JI
- QHqw==
+ d=suse.com; s=google; t=1781602625; x=1782207425; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=fvvASeWJ7fraR64WQFes3xN3SybjsZdeM5z+4Gz+l70=;
+ b=Y7w6V1Uio5ptTBN88qylwQTGvZXRNd/cqb6wAhse5AwVA7GhJvz0oPDqNu6B7GIxLI
+ 6lwaGvHtSG19WWhpWnQ0xS08Gu4Di83KgN0rybcmqhDxpiwhWKNuGOV27GSs7RqpWYNd
+ JJJn0J12B39cssVHMW3EnGugziMRTkoUkesq3OvYZSaOFkWA5OkAoOAdWh4iCB9B5MbV
+ G7SnKe6pmL9zIuaQib1Q3SkUvKzXZC499OzS52vMWBAtTJKCp4lmmgfHndXcF1bQn0Rh
+ V269XvazEZA/+ZF6hYgYnwGt7E/8fJkMHsXoSOJ2CgnYaSII+Dm+4PQMtYUfL34d5z4u
+ 9b4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781602286; x=1782207086;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=8lH2qScYBWwDsndh7tkYiZUrohGLIsy8piigzo/Q9+I=;
- b=RdjCw9LuDefohl/DvX8XLvQxB3C/H7FI+LUhYxLlsBN9K5G8VkDSgn95MRP2dtD3Af
- C/FO9Mvk612TKnHy+ma3vrk9diuWh7222WOZsETXeBd//hCiLzWQ/P8VFFY8O6T6h77m
- 5egW3DU9EO/pIZ8VI8LVdJMT87HHCPFSWLaf5Tfsc7Qbqdbo57uBrcoSiNxum9RJJeSS
- x7xUGhq4+Nhi5NZAP6R5z2wbfvm1As/NoVr8LWKRJ45G54rT8raeP2t6Ck0iPl+uScOW
- DZD4Ycp7koo4yHLx+LvAFkh6tF91vypEEmG+F1WUfvrwsD7fy3sNkPfs0cqoRxMZdzCe
- Fl7A==
-X-Gm-Message-State: AOJu0Yxku4fsCjgM/E2YZaAkJ8aI4oUpZcGrDXq7vmZo0y/ibOKb1jTd
- 6XC59kqodBA5/VT4ucEBgDPJYkzcte9Z3DzLyDvqwI3s2HhSBE9r024BeGLk+b/byldSCUYaEM4
- dHiQ=
-X-Gm-Gg: Acq92OGWhIOVUkj2/kXOvDjQ+PokQmM6aMLD1iwWdHBSsoBocuT12oMd5jpUPHX6aBz
- RQTifoWUWmu/drVgnrt9gkl2jz4pG2Xm0H7vnDG1G4vwoNcRGTN3nyH8c0et5g0KpUOS7wfhpe7
- roj4KIhQ2AX7C9ekRNUe8V7U8Oyac1laDuht8wR3CxHagMi7x6XOQj5EOmEawlstnFWn86jLWyF
- XKZsqNBHav/f7qWO/UmAo4Kvy9Bg1Rm2UWMoD+BNW7ukDC5p/WOIwLKZ7dIdRJEuP/T97jV4SER
- tiTBEnxuNZXaysovzEOZ+xEU98Y+GohDF7TMSx+GmiXQ/h/YvDH1fuQC5NeTAokY/pm17+Qpir1
- WKe4LSLOQ+SMOfpSRaEUa6VOlL9eUbMU1Oa61h4z9eqxhab3SO96uEjPL/V1kcn7gFNrc3cNIBq
- 8DHwkVxnPz9JKIeCOVoAOLJg==
-X-Received: by 2002:a05:6000:22c5:b0:45e:e50e:3bc with SMTP id
- ffacd0b85a97d-4607e261871mr19600458f8f.29.1781602286057; 
- Tue, 16 Jun 2026 02:31:26 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-4606f2e6a8fsm43281995f8f.37.2026.06.16.02.31.25
+ d=1e100.net; s=20251104; t=1781602625; x=1782207425;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=fvvASeWJ7fraR64WQFes3xN3SybjsZdeM5z+4Gz+l70=;
+ b=ZQbrqKff0RLfqGX7jHGaWWuycIme5cufKs7c03jh1pSQUCyw0LQMnk8n1ice1ZggYN
+ 6PKKOkSdt5B+lZFgO5ivxcn6soHbRj61vJa/NnA9yvP39000Gb6NWmjAkFoBYd1h/CWM
+ mOI02ZsHCU93XyNsb4LPVcskDqVw/ew2voIoJS4SQO5NoJ4HBv4IVvZ5NZuk1IGIcAnw
+ 2OBDCJJ7ydEBN0h+Y4FJ24I0T5WLCBmgCEOYXn0Kem4OGoiaY810TyAIZf+zfctaYS++
+ FEDTBwYmlBdSwwQXijZGu+SzVt6ANdBY4RAYYjfgF35rR1LvFKwOYXUKhRf8dC98VIyN
+ J3yQ==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ/lqQ8bYlEffm2j0FyNeXPTchMr/fSBCUuIAolxqZP4z14l6aiF3nHXf3Y1ca6/EhOU3NI=@lists.linux.it
+X-Gm-Message-State: AOJu0YxAxxVjdnTGepYE7U35oF1iZCjEHg5O9J27sEZOe3USHhGwkDjH
+ TfWxbcSt47dx9sHENRf00Eym57pNUR8TXJ+YGazVbTXoDibHZZLjO7HbyuvnRBKA2dk9vSCUUyW
+ TB/ydk1Z7rA==
+X-Gm-Gg: Acq92OGsjABg6Qe0cbC1tMjH7IHdWg55dMd3BhaL7gbf4UAT3NpanFbLUqEW9vPafcQ
+ NbQPU1IEuJjAR6Z40wboAFHjkmr/2+0LVei3dMRjiprBybt+1jtlMsSh2YzGiv53KwbXWdt6ofu
+ bvaMSvLZ8Z0iZeIVuNKocd9KnftSHCBZQA25pZ4iXTsYM2Q98/BthMS36yIwCk1DVs+WeMxv5bS
+ GgpF30fqeTe1znIPW96sxuCFJDt/8EEwTO7JbyovM937kaH54yY8BfuLHOZ9MD5N5lAKQggqJCN
+ RKiNGYq+5Oww5L6+C1XLE/yo/6mH32VpxBBZs6Sl3f3yD9EX9TqrfRL2LcUmurI7c1nOEj543Yd
+ l5xq6n2/HaJhPw6m5q9dY26Gu8cye/1Pnghk13iwDSCzVfMpJxWZ1Ci8HU1mJcvgDVnyvlGgjQz
+ slq44ScDtVdwFsTy9RS4qOh7ldwcHZRBOvf9i5AqSUlA5y5E9phmT585QaZIDRUst5dvpgVkOis
+ uK5zAoSuFvwY7c8YXCPfZLLJnndiD7AU3OY5DfDE7BcLg==
+X-Received: by 2002:a05:600c:e557:20b0:490:c024:2eba with SMTP id
+ 5b1f17b1804b1-4922ff95f5dmr29520275e9.22.1781602625016; 
+ Tue, 16 Jun 2026 02:37:05 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
+ [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-49230a9a399sm41682285e9.14.2026.06.16.02.37.04
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 16 Jun 2026 02:31:25 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue, 16 Jun 2026 09:31:05 +0000
-Message-ID: <20260616093119.8654-3-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260616093119.8654-1-wegao@suse.com>
-References: <20260616052452.8353-2-wegao@suse.com>
- <20260616093119.8654-1-wegao@suse.com>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ Tue, 16 Jun 2026 02:37:04 -0700 (PDT)
+Message-ID: <6a311940.16c38fd9.3614ee.7013@mx.google.com>
+To: "Jan Kara" <jack@suse.cz>
+In-Reply-To: <un4jlftokjfzo7girjmf6yrpheg5nyye6wywtgmr3oxfnc3hob@uljmnxlllygu>
+Date: Tue, 16 Jun 2026 09:37:03 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7 2/2] connect01: Add negative tests
+Subject: Re: [LTP] [PATCH 4/5] fanotify21: Add test variants for
+ FAN_REPORT_TID
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,141 +101,82 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: amir73il@gmail.com, jack@suse.cz, ltp@lists.linux.it,
+ AnonymeMeow <anonymemeow@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add negative cases for connect(), when errno is EPROTOTYPE or EACCES.
-These error paths were not exercised by the existing test.
+Hi Jan,
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- testcases/kernel/syscalls/connect/connect01.c | 54 +++++++++++++++++--
- 1 file changed, 51 insertions(+), 3 deletions(-)
+> Hello!
+> 
+> On Tue 16-06-26 08:24:33, Andrea Cervesato wrote:
+> > the patch-set is failing to compile on our CI. Please send a new
+> > version fixing it:
+> > 
+> > https://github.com/linux-test-project/ltp/actions/runs/27572447779/job/81512172691
+> 
+> Hum, I had a look and the failure actually is:
+> 
+> parse_opts.c: In function 'usc_test_looping':
+> parse_opts.c:521:3: warning: call to function 'usc_recressive_func' without a real prototype [-Wunprototyped-calls]
+>    usc_recressive_func(0, STD_LP_recfun, *STD_bigstack);
+>    ^
+> parse_opts.c:107:13: note: 'usc_recressive_func' was declared here
+>  static void usc_recressive_func();
+>              ^
+> CC libs/numa/tse_numa.o
+> AR libltpnuma.a
+> RANLIB libltpnuma.a
+> CC lib/random_range.o
+> CC lib/parse_opts.o
+> CC lib/safe_file_ops.o
+> In file included from ../../include/tse_sigwait.h:11:0,
+>                  from tse_sigwait.c:8:
+> ../../include/tst_timer.h: In function 'tst_ts_from_timespec':
+> ../../include/tst_timer.h:626:3: warning: missing initializer for field 'tv_nsec' of 'struct timespec' [-Wmissing-field-initializers]
+>    .ts.libc_ts.tv_nsec = ts.tv_nsec,
+>    ^
+> In file included from /usr/include/sys/select.h:43:0,
+>                  from /usr/include/sys/types.h:219,
+>                  from /usr/include/stdlib.h:314,
+>                  from tse_sigwait.c:6:
+> /usr/include/time.h:123:23: note: 'tv_nsec' declared here
+>      __syscall_slong_t tv_nsec; /* Nanoseconds.  */
+>                        ^
+> CC lib/safe_pthread.o
+> 
+> So I'm a bit at loss what change in fanotify tests could have caused a
+> failure in compilation of the generic LTP library code? Any idea?
+> 
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 
-diff --git a/testcases/kernel/syscalls/connect/connect01.c b/testcases/kernel/syscalls/connect/connect01.c
-index fd288559e..79aa899eb 100644
---- a/testcases/kernel/syscalls/connect/connect01.c
-+++ b/testcases/kernel/syscalls/connect/connect01.c
-@@ -5,26 +5,39 @@
-  */
- 
- /*\
-- * Verify that :manpage:`connect(2)` returns the proper errno for various failure cases.
-+ * Verify that :manpage:`connect(2)` returns the proper errno
-+ * for various failure cases.
-+ *
-+ * Requires root to test EACCES by dropping privileges to an
-+ * unprivileged user.
-  */
- 
- #include <sys/types.h>
- #include <sys/socket.h>
- #include <sys/wait.h>
-+#include <sys/un.h>
- #include <netinet/in.h>
-+#include <pwd.h>
- #include "tst_test.h"
- #include "lapi/syscalls.h"
- 
-+#define SOCK_FILE "sock_file"
-+
- static int fd_invalid = -1;
- static int fd_socket = -1;
- static int fd_null = -1;
- static int fd_connected = -1;
- static int fd_server = -1;
-+static int fd_unix_dgram = -1;
-+static int fd_unix_stream = -1;
-+static int fd_unix_server = -1;
- 
- static struct sockaddr_in sock1;
- static struct sockaddr_in sock2;
- static struct sockaddr_in sock3;
-+static struct sockaddr_un sock4;
- static void *bad_addr;
-+static struct passwd *pw;
- 
- static pid_t pid;
- 
-@@ -49,6 +62,10 @@ static struct test_case_t {
- 		"connect on a socket found no one listening on remote address"},
- 	{&fd_socket, &sock3, sizeof(sock3), EAFNOSUPPORT,
- 		"address doesn't have the correct address family in sa_family"},
-+	{&fd_unix_dgram, &sock4, sizeof(sock4), EPROTOTYPE,
-+		"socket type does not support the protocol"},
-+	{&fd_unix_stream, &sock4, sizeof(sock4), EACCES,
-+		"write permission is denied on the socket file"},
- };
- 
- static int sys_connect(int sockfd, const struct sockaddr *addr,
-@@ -103,6 +120,19 @@ static void setup(void)
- 	sock3.sin_family = 47;
- 	sock3.sin_port = 0;
- 	sock3.sin_addr.s_addr = htonl(0x0AFFFEFD);
-+
-+	sock4.sun_family = AF_UNIX;
-+	strncpy(sock4.sun_path, SOCK_FILE, sizeof(sock4.sun_path));
-+
-+	fd_unix_server = SAFE_SOCKET(AF_UNIX, SOCK_STREAM, 0);
-+	SAFE_BIND(fd_unix_server, (struct sockaddr *)&sock4, sizeof(sock4));
-+	SAFE_CHMOD(SOCK_FILE, 0700);
-+	SAFE_LISTEN(fd_unix_server, 5);
-+
-+	fd_unix_dgram = SAFE_SOCKET(AF_UNIX, SOCK_DGRAM, 0);
-+	fd_unix_stream = SAFE_SOCKET(AF_UNIX, SOCK_STREAM, 0);
-+
-+	pw = SAFE_GETPWNAM("nobody");
- }
- 
- static void cleanup(void)
-@@ -115,6 +145,12 @@ static void cleanup(void)
- 		SAFE_CLOSE(fd_connected);
- 	if (fd_server != -1)
- 		SAFE_CLOSE(fd_server);
-+	if (fd_unix_dgram != -1)
-+		SAFE_CLOSE(fd_unix_dgram);
-+	if (fd_unix_stream != -1)
-+		SAFE_CLOSE(fd_unix_stream);
-+	if (fd_unix_server != -1)
-+		SAFE_CLOSE(fd_unix_server);
- 
- 	if (pid > 0) {
- 		SAFE_KILL(pid, SIGKILL);
-@@ -127,8 +163,18 @@ static void verify_connect(unsigned int i)
- 	struct test_case_t *tc = &tcases[i];
- 	void *addr = tc->addr ? tc->addr : bad_addr;
- 
--	TST_EXP_FAIL(sys_connect(*tc->fd, addr, tc->salen),
--		     tc->exp_errno, "%s", tc->desc);
-+	if (tc->exp_errno == EACCES) {
-+		if (!SAFE_FORK()) {
-+			SAFE_SETUID(pw->pw_uid);
-+			TST_EXP_FAIL(sys_connect(*tc->fd, addr, tc->salen),
-+				     tc->exp_errno, "%s", tc->desc);
-+			exit(0);
-+		}
-+		tst_reap_children();
-+	} else {
-+		TST_EXP_FAIL(sys_connect(*tc->fd, addr, tc->salen),
-+			     tc->exp_errno, "%s", tc->desc);
-+	}
- }
- 
- static struct tst_test test = {
-@@ -137,4 +183,6 @@ static struct tst_test test = {
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.test = verify_connect,
- 	.forks_child = 1,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
- };
--- 
-2.54.0
+Those are warnings caused by old GCC. It's possible to fix them
+by changing the explicit struct initialization with a 2 step init
+such as:
 
+struct mystruct s;
+s.item0 = i1;
+s.item1 = i2;
+
+The real issue is that fanotify21 needs to link pthread:
+
+-fanotify11: CFLAGS+=-pthread
++fanotify11 fanotify21: CFLAGS+=-pthread
+
+Regards,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
