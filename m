@@ -4,108 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E808ECD98D2
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 08:04:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCA85CD98CF
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 08:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781597084; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781598297; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=pBv7CAaGkd6F0fvTODg14K7n5yRA+T1LESsGcdQp71k=;
- b=Bmj7qwEsko8SeVZkXTq6t4mFoV+AJ7/yyBTr4Ws/MxkerOhn+uUXOxUXdkG3WxWwcGWzR
- uJrE+Pnd64dTSwANjeYnJ9pMm4HjqsMiqGoGZgopOd8XyUtlBbRvworjK5ogtN2+fPt11E7
- 0/fI8boylKHFn2x4r7yaoYOAXM9CLns=
+ bh=h+eJG9gvUEdIQvliyi8Nind7IoDnaUd8n9HwonrtFKI=;
+ b=FECi4gK1kCJF3V/ESdvnEQtnrMUTwZ2vgnFi+g1/cpfi+TJeCcOg1bgHcIJPl515YHul4
+ DhlJTVHfdSHyCi0IEGb4y0EOjVI+WOrLmv90UFFI2fY2L1bTEuve2ktFKpdse/8AAyf9pXh
+ +5GRpCyu/n//vWB+9f0ZyT1ec/TSZkw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 866753E5966
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 10:04:44 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 58D123E5969
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 10:24:57 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CF4333E235C
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 18:16:31 +0200 (CEST)
-Received: from tor.source.kernel.org (tor.source.kernel.org
- [IPv6:2600:3c04:e001:324:0:1991:8:25])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 5AC983C96A5
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 10:24:36 +0200 (CEST)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
+ [IPv6:2a00:1450:4864:20::42c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3B65C1A00375
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 18:16:30 +0200 (CEST)
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
- by tor.source.kernel.org (Postfix) with ESMTP id BAE17601E4;
- Mon, 15 Jun 2026 16:16:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 714B71F000E9;
- Mon, 15 Jun 2026 16:16:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
- s=k20260515; t=1781540187;
- bh=wuL7aPjgGYfluLcdyb3OIAWdQrhAPbCtC+tXlSX3CAU=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To;
- b=WqvTGIXMCg6L8zEm693kCeHtEelZPz35uTL4HoToGRPwRD+fCBosq/FCdBJ+i2mwy
- H905T4KpeL+M9c4ieX59dDxHWPiWZL1wvVwqCfEY+ivLmZ1E3KOGcFRNP58oUq7Q1/
- YgK+5W2fnLcJ9S1RhzeGkVTdJoJaSxmAcFoU7PUWgDbDiamCyT59tfW5W+vQi17oMs
- OxFd/NkLRLSqYs7d9c1ajX8xjBWWnKVBX6fxMbcGz984AygObT6rPWBSr0OrjM6a0t
- 2WSi1l11FOPMvn07epFI9GQIoyJ27IaDqaYClCbv56Q0ri0d2O4QthvVaagpb+OHhM
- wMpwH+UYsJiNQ==
-Message-ID: <91fea75a-8a00-4cfa-b4ac-dc2d198c99b5@kernel.org>
-Date: Mon, 15 Jun 2026 18:16:19 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Askar Safin <safinaskar@gmail.com>, linux-fsdevel@vger.kernel.org,
- Christian Brauner <brauner@kernel.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
-References: <20260606061031.3744880-1-safinaskar@gmail.com>
-Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <20260606061031.3744880-1-safinaskar@gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E3C0D10009E5
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 10:24:35 +0200 (CEST)
+Received: by mail-wr1-x42c.google.com with SMTP id
+ ffacd0b85a97d-45ef4223be7so2405097f8f.2
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 01:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1781598275; x=1782203075; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=FHMZwvfwjgTVB39Jhl4dAM5FEQkv6/XWd2YbbFQ9S08=;
+ b=HXTXJUFmZ7HvHwSQgb09C50nXREqo1v46dw1iKAPE6abGtwh0o6y1hQCW4zoZ4r4O8
+ 61vB3Ibi8BpEFUTJ9CFkC6t8HiwQhP0fOg+9P66pgzivzJlXa8wEDllYXrRI2AR0f1Nw
+ Uo4kUmxoAUvwa99ABFvSOeMRa83eTRO6ORkN9gwkRcaArRBI08MSO8uQOdb2dxUqAU09
+ r+X/iyfI8jiIv8QHMv0TVTS6/6i2eqh93acSEwaDn+4evWrBx5wX1xiID5UZQGuenWk2
+ A5HlCXk6Kz1OQiSU1dC0pKAnwSTwDYO1ajjtBT/EZb/+wJIAMSOrXX8G8vmMJmj0GMKm
+ Abcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1781598275; x=1782203075;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=FHMZwvfwjgTVB39Jhl4dAM5FEQkv6/XWd2YbbFQ9S08=;
+ b=ZeQZN9mHrSm+t4BlvWtPc5QuGpZdms+x51osEb9NV648hjDvOJaYzxdGHw+nYyVlCH
+ +Xyucdu7AVYPaE/wcSKxTiec6BTsWmdmUm9AgmohzEPNh6xFzp6ZY/7PnBpz8xV0PfVg
+ IAU+dAaWvvpPidT1xU+ub3QyheqNUzo8Wcm9glqoIY7ZmNRjxeNedcKgm+mS6ocGoiT1
+ 7qfsJRFFhKNIz7Lt2id3s++97LRJqFIbrJNbhXy8J4LljQ2v0fC1xwxf/+qAEvjuBWon
+ eizZLcItrB2kb/1GuIi2J1Y1qbSV9EvjGTJv/0JrkieBh8/r+gayhqN4c3EimLPqT4xT
+ ONdQ==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ8ER5Rlzm4PugAn/n56wmNSmZWGsVnIBFCXAHmxR+jpMUv07De3CY0MNfcdHvc8hGkox4g=@lists.linux.it
+X-Gm-Message-State: AOJu0YzlSWVy8xzSlONiL3UClIpcA7OM5yGhV57ZcxzZxpfcr2XG2b9j
+ ntMWTeJp4HiwXBtvwHrxBgkbcEiLSYl2crJV99gL1utcOm1bKcrKIgZQBLBvGZJySis=
+X-Gm-Gg: Acq92OH2R3G6XxPEEbFhNeI+aE2LlZCAXezymZzSLg4k9FgsnHhwKyQW6UKOnBam7s0
+ FlBjtwE+bA/F8ickZiN5mMFiWhaefhtwmx5arFKzaenfJOAJCyzbCNDgcf+d4h+Hqf9YAEvho0o
+ bCQ9LZVIHSE6y1vlTSMxWu4WIVKNHieP6f2KCjwOxnsmurMA6LvPDStbE/9dR7moJe64lueMYPx
+ GTACiZOnTlXLzVHp54jZnZdbHVdmAmD3un27lNQYX9w7AJONxX4qWyMkTq88iYRiaeLdTA76ZAZ
+ yhXaRcBY1XVxqc1ZwnqAGgGXzHIPVEY13Fi+7MbECt8mlGyXn3xrZSBhc6M/BDtmT+bnD//gIDi
+ v2gNMZIUHj3bXbHFERUIMn4L8410zsRw5xsq52Uc4j5vzRCUQss2uiWrYOv3qpXCQRlTzlgLz8I
+ pwmzhyjV+N+YAlirmxgIR1zD4ChTONh1JFkQPvJ/TaWjdIBOG3hqNgGlKIzzmEVnlEdqNgHkFk8
+ PvFkppoTA8N3cuEJjbFCXy4yD5u8egISA0=
+X-Received: by 2002:a5d:5d06:0:b0:461:a161:b625 with SMTP id
+ ffacd0b85a97d-461a161b669mr3298850f8f.17.1781598275074; 
+ Tue, 16 Jun 2026 01:24:35 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
+ [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-4606f2b0d4fsm46130609f8f.24.2026.06.16.01.24.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 16 Jun 2026 01:24:34 -0700 (PDT)
+Message-ID: <6a310842.7d2905a5.2ed87e.3229@mx.google.com>
+To: AnonymeMeow <anonymemeow@gmail.com>
+In-Reply-To: <20260615180629.7148-5-anonymemeow@gmail.com>
+Date: Tue, 16 Jun 2026 08:24:33 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 16 Jun 2026 10:04:25 +0200
-Subject: Re: [LTP] [PATCH 0/5] vmsplice: fix some problems in my previous
- vmsplice patchset
+Subject: Re: [LTP] [PATCH 4/5] fanotify21: Add test variants for
+ FAN_REPORT_TID
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,60 +99,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "David Hildenbrand \(Arm\) via ltp" <ltp@lists.linux.it>
-Reply-To: "David Hildenbrand \(Arm\)" <david@kernel.org>
-Cc: The 8472 <kernel@infinite-source.de>, patches@lists.linux.dev,
- David Howells <dhowells@redhat.com>, linux-mm@kvack.org,
- Collin Funk <collin.funk1@gmail.com>, Joanne Koong <joannelkoong@gmail.com>,
- Miklos Szeredi <miklos@szeredi.hu>,
- David Laight <david.laight.linux@gmail.com>,
- Matthew Wilcox <willy@infradead.org>, Christoph Hellwig <hch@infradead.org>,
- Steven Rostedt <rostedt@goodmis.org>, fuse-devel@lists.linux.dev,
- Pedro Falcato <pfalcato@suse.de>, ltp@lists.linux.it,
- Jens Axboe <axboe@kernel.dk>, Stefan Metzmacher <metze@samba.org>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Andy Lutomirski <luto@amacapital.net>, linux-api@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>, Willy Tarreau <w@1wt.eu>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: amir73il@gmail.com, jack@suse.cz, ltp@lists.linux.it,
+ AnonymeMeow <anonymemeow@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 6/6/26 08:10, Askar Safin wrote:
-> This patchset is for VFS. Of course, it depends on my previous vmsplice
-> patchset.
-> 
-> I fix some problems in my previous patchset.
-> 
-> 1. Fix problem with CLASS(fd, f)(fd). See first patch for details.
-> This is probably not so important, but I fix it anyway.
-> 
-> 2. Change "unsigned long" back to "int". See second patch for details.
-> Again, this is probably not important, but I want to fix this anyway.
-> 
-> 3. Fix that LTP vmsplice01 bug.
-> 
-> See patches for details.
-> 
-> Please, run that LTP vmsplice01 test again.
+Hi,
 
-How to proceed with this patch set given that, as Joanne explains [1], libfuse
-seems to modify the data in the page after splicing, so really depending on
-vmsplice() reading data that we update through the page tables -- the page
-actually being pinned.
+the patch-set is failing to compile on our CI. Please send a new
+version fixing it:
 
-IIUC, reverting the patch might be required. Or maybe Christian can still simply
-drop the topic branch entirely.
+https://github.com/linux-test-project/ltp/actions/runs/27572447779/job/81512172691
 
-[1]
-https://lore.kernel.org/r/CAJnrk1Y9egYizkx1H9K0cqxSYuB+7vLvQbV7Tf4C5eHFqnnC-A@mail.gmail.com
-
-
--- 
-Cheers,
-
-David
+Regards,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
