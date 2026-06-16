@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F9AFCD98DA
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 08:35:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91F0ACD98DA
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 08:39:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9F4B63C96A5
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 10:35:44 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 3BBD23E596E
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 10:39:39 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F32EF3C54DA
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 10:35:28 +0200 (CEST)
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com
- [IPv6:2607:f8b0:4864:20::1041])
+ by picard.linux.it (Postfix) with ESMTPS id 5BD043C54DA
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 10:39:23 +0200 (CEST)
+Received: from mail-dy1-x1341.google.com (mail-dy1-x1341.google.com
+ [IPv6:2607:f8b0:4864:20::1341])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C2332200C7A
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 10:35:27 +0200 (CEST)
-Received: by mail-pj1-x1041.google.com with SMTP id
- 98e67ed59e1d1-36da8439078so3621634a91.2
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 01:35:27 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A79711A00938
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 10:39:22 +0200 (CEST)
+Received: by mail-dy1-x1341.google.com with SMTP id
+ 5a478bee46e88-304fb780deaso4407155eec.1
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 01:39:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781598926; x=1782203726; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1781599161; x=1782203961; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=jTawyeypQiG0yErSrsHkmQVQFuvjR472U9Kag9t6Vbk=;
- b=BEkI0D9XxcNmRkcJA4PO83ZamDCjivCU45tHCMnRunK1sKMBkHB5NIJq4tbDq+N4XL
- YB4N2byXUyYedErQtAeulGoPF0ii/wSXY+DfQyXFml5NCw9m0wYwIJQJkHPySDsnMlyB
- o97wFeXUKq1vEMZqqagpmUnKrwWLnurASkJXZdyKJbUD1vn4ebMtABfpZCfBS+GnjL/O
- YRCeaMpyaIrMqUqTl22ke+/35Iux+hIS9c5Mi6WMYwnZhk5BFMP98MWqwUCho3cWZ4GK
- u3oNnCMDEXvJyQKMOZNfDubkie2l4nFm5/QF+MgfX1FgMU7kYzeXKYIpywre+tAYE7GK
- JMqQ==
+ bh=wMIjq6n6lgFDfePBsgZDkc5Xu+K26CCvo0VdpuoDpW4=;
+ b=poQnx4Frx9Wg1eY5j7MhgeQb/dWQEksWbvXDyZocmAS65toPHx+IJA8oHBWazA2T5w
+ YwD/YU7NVCDC2cyxKzfwxd9AqeTg9437xeK+Jds+Y7b+52IFsxVDteVSeDaaxMcAE191
+ DcHh0XYRxwVwd+8LMri5xp3UlenoXc8UFMohNUKGVMkN0vEsBFGgn53YEFfSHpX3wFlb
+ HvTVKM+12FyWeMdrFeFP3hB6l+quEc9/271PsBGNTwTrn0U7DraalLnBMAEuHs50XofN
+ dj+9x/gv7R1QTJS6JmSIUm3eFgu+ovMiyhPmACwTWjIqgxPWbODxUPjIBkhFZPb/q+Rz
+ v4NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781598926; x=1782203726;
+ d=1e100.net; s=20251104; t=1781599161; x=1782203961;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=jTawyeypQiG0yErSrsHkmQVQFuvjR472U9Kag9t6Vbk=;
- b=sYDYZm7WlORuRKPTWTgFj4/kkjGfCDipWrunmXNcvY9nq16kaO4ucFriZQNBPN0thJ
- q8Q90huip2ume+v4yvrM1dD9Xtwm97h5fkWoTGtXohqPI9vs3I3TEWRGnEgH757ngCsl
- hDEPvIGIervR+NgZnGqKVKRagc3a0GVUtYq0NuenfymdNqWbcqk9lj7s217n2QKOItli
- Rz6mhuS1agRsfBWUDKGtLH+9ArgLEGySzawuzs/wrWtGRKqiu72d080eZtEecnqeYFBF
- oH8DphrdQFtPHIl5EtnwnQ3XyQH19pErvmgrOThNksFhil/uDzPXLR8jE86odwoSUzO+
- 9iAg==
-X-Gm-Message-State: AOJu0YwylZNj6NJW6lzWdKmjkgBK28dDZ2SAhrpCLhOZwBHmkA1EI1lN
- fV87xAVKYcfLAZERRb9RrIzaaMvbBugvozpCcwUDP2fbbKiWtIL4gkqVNd2awDqy
-X-Gm-Gg: Acq92OFjQ76iJ7J5rDkWqwGvcG1mdvv6EFg7H4CvN6mIQJ5SEu1ydBL8EirsdGxnFPX
- ir1Ye95UVaFE7OT8nOs3HuCFQusSq5fEp15F2raD9uqTnq3DqZ38Fnaw/88iJFnNFsp51XPszcf
- V3ioHvAVum7Yd5m9t9X9ReXSjQwFFtFB7iAfosJDmGBrqK3B/H+cVq0VltwbYc5ZXZ8LCj8oou8
- lC1N6vVTkVj+hpQAX8jdd+8y11urTIW4GxKi2HZRLKCkbS87L4K+8Kfd+iFEHrNm9QqtLsugmz0
- SwHFDkaIBn6nB4bQgggK0V+70/aBWgm9DWJP4WX/N7F/h+sXAbQ61KFjxHv9Mb6RiJf1lQ+BZ+8
- g6bGVWavw5u+vOtgw88biFRXbiOOuNFXG0x2SPtMEdoYFe1WyCj8VCGswwGHyG5mXYiOK9Lncud
- n94kaAQNk+YfjNe/pb1RsUWn8jwB0XEsvhV5CUbgMHYMwD3Rf6GQGnRaMSUmE2FhvWbrqp7GeO5
- LTdVcpwLFScy4j1QisULlLGQkew+sKfUizyB1lh5mgM8J4=
-X-Received: by 2002:a05:6a20:7fa2:b0:3aa:f9cb:d43a with SMTP id
- adf61e73a8af0-3b7e44b4598mr3309689637.5.1781598926200; 
- Tue, 16 Jun 2026 01:35:26 -0700 (PDT)
+ bh=wMIjq6n6lgFDfePBsgZDkc5Xu+K26CCvo0VdpuoDpW4=;
+ b=i46TjfBuEINxRVEsomlu8w58KZIanO3RIGFXvgWBHRYI3CGfUnQumzov5BRIbSHaQ1
+ V+U+HRIPiLSAPdoLVc/rq7XE/sLm3ks3aUEmOxw2WBiu3BgkNx6A2MoIQCFw2fQtxkYY
+ JvA9HXT/6zHxskVmmGk/Rl/v11j4RHZs2BwWKYUJlLYWjF0kGtTkTWQCLpMlxRjNdksw
+ 6l+TdBXoD+YL4844L/CGir+vptVDMOOvuka2+8xfbYACek7Jxs1tZQ/YUaEGUDyv6kUL
+ jh0mQHn9C8mb/H430a7yvQLP8kVSJcQFkZqE5ao9FTshpnhd4h1xV6gGeOmlQxTyIaVa
+ I0Fg==
+X-Gm-Message-State: AOJu0YzyWXLC6C2zPMG1C6zJW8j4DWSaWr6hRaP6XJZiLeSBc3R1TYed
+ LJHS6j04Cll5/cB/VErG5Qgdpl2dppMPlm5Ou9LRqi74tm2ozES+rJan6U49fDSO
+X-Gm-Gg: Acq92OFBLF+Xv/FMorP9ruNU4XFHexmohV6O77KzGe0mK4cEK4B59sZ69MZCcoeZlPC
+ 2pWFsgbyjCNGfyJ55MvRLsbsbzqm3kOGihYvzOqIsx46Z81E2ZZxMTlEKYcO62kV09VLEILGRWb
+ P9ssm/vnn7QTwZSd0nFKiiuojmMiiB8YYGGg2Bf1vtHDlOU2I3PChL1mjsbMgWeMF0h+4EDFodf
+ Qb1Ra+63K+J4NMGiFOJ/GP/NmGe18DHAI59e2HM1Yxr0QtOng7seF0u5phNkH+rYXC+pnBjgDoG
+ qX5uk0wZD+Io5IIU//HwvsqkN+ue5vRSPr4OjvDWLj4jWlznzJrOAJ2s8cl8yzpoiDJaRPWrRbz
+ E/YepyeXW+yEjeOCLyylsJ2CM4o+yFwFf/5O2P5HYSl/63kq1q1JuVnD1cr81pD6hpd7RX6mVRz
+ gCeYWNNsaiUgKia34gJVdGslFjRgQsokvO96M+38M3oqUq6w9/7wv5ebpsev5LKRsOs5YmbyRAB
+ S42gwn8XDLHRqmVp2QNuu70MzyVPkW8ql3YLzA=
+X-Received: by 2002:a05:7300:1344:b0:304:e7c9:b528 with SMTP id
+ 5a478bee46e88-308200d33aemr8997041eec.30.1781599160935; 
+ Tue, 16 Jun 2026 01:39:20 -0700 (PDT)
 Received: from
- runnervm1li68.atih1j5idlnuzf0a0ifstqup0a.xx.internal.cloudapp.net
- ([4.155.99.35]) by smtp.gmail.com with ESMTPSA id
- 41be03b00d2f7-c8665187d3fsm10517999a12.17.2026.06.16.01.35.25
+ runnervm1li68.5hvwskf5bazufculj5v1cfhouc.yx.internal.cloudapp.net
+ ([57.151.129.36]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-3081e5d0849sm20148755eec.7.2026.06.16.01.39.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 16 Jun 2026 01:35:25 -0700 (PDT)
+ Tue, 16 Jun 2026 01:39:20 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Tue, 16 Jun 2026 08:35:24 +0000
-Message-ID: <20260616083524.4087-1-linuxtestproject.agent@gmail.com>
+To: Sachin Sant <sachinp@linux.ibm.com>
+Date: Tue, 16 Jun 2026 08:39:19 +0000
+Message-ID: <20260616083919.4273-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260616052452.8353-2-wegao@suse.com>
-References: <20260616052452.8353-2-wegao@suse.com>
+In-Reply-To: <20260616045414.9081-2-sachinp@linux.ibm.com>
+References: <20260616045414.9081-2-sachinp@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] connect01: Convert to new API
+Subject: Re: [LTP] fs/acl: Add ACL_USER_OBJ permission test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,30 +96,12 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi Sachin,
 
-On Tue, Jun 16, 2026, Wei Gao wrote:
-> connect01: Convert to new API
+On Tue, 16 Jun 2026 10:24:07 +0530, Sachin Sant wrote:
+> fs/acl: Add ACL_USER_OBJ permission test
 
---- [PATCH 2/2] ---
-
-> +	.needs_root = 1,
-
-Ground Rule 4 requires the doc comment to explain why root is
-needed. The EACCES case drops to nobody via SAFE_SETUID, which
-requires starting as root. Could the doc block mention this?
-
-For example:
-
-  /*\
-   * Verify that :manpage:`connect(2)` returns the proper errno
-   * for various failure cases.
-   *
-   * Requires root to test EACCES by dropping privileges to an
-   * unprivileged user.
-   */
-
-Verdict - Needs revision
+Verdict - Reviewed
 
 ---
 Note:
