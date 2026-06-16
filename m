@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38232CD98DA
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 01:48:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B90CCD98DE
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 01:48:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781574493; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781574511; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=0rrUDqJP/lUdMk+or1205gcAi1blV24P6gHLIOI7Bvw=;
- b=orGUcnN18lH2dBC+sduguYUphRJ8KIg+VsxKhiNIfiTV//gERtJjXtWD7jvoTfqmDSpxT
- camnStnOtP5860x2Hie0UPjnJHIF/Oi+fVNFDnXPuK3MlllhXKpYiFMB9hR2DK13IXbEAJD
- 3BCovUFiZ5L8HKYbkLLj5O4R6BfIkuw=
+ bh=jSUl22AVkeEvtBjTjsED4AD6TAirPzO7gEiHRuAhYWo=;
+ b=OWqiPpondTJ6OgNDGN22/WgH4tqE+Km7BniEvryvPS0OopkehO+Rt8i5qTWUP/rK+UsVY
+ 3Twr1WBrTFAF7TAGBhOC29+2e0fbxX1nbRh10ao3GpMyG0rPU7Tpxh+paMlcDV3KSW0w2lv
+ LWnBuSKwD07uJPSxfVJVTEy+wJnvfzc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1F7143E6CE8
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 03:48:13 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id A09603E6CE8
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 03:48:31 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 74DEC3E4E3E
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 03:47:52 +0200 (CEST)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
+ by picard.linux.it (Postfix) with ESMTPS id BE55F3E6CE5
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 03:47:56 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 97DF31400DB6
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 03:47:51 +0200 (CEST)
-Received: by mail-wm1-x330.google.com with SMTP id
- 5b1f17b1804b1-490b64c8311so39797525e9.3
- for <ltp@lists.linux.it>; Mon, 15 Jun 2026 18:47:51 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7B70C1000524
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 03:47:55 +0200 (CEST)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-45ef616daf6so4513912f8f.3
+ for <ltp@lists.linux.it>; Mon, 15 Jun 2026 18:47:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1781574471; x=1782179271; darn=lists.linux.it;
+ d=suse.com; s=google; t=1781574475; x=1782179275; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=6W5TVi7wC2/KDvxjfA5qCS2gOOGfEgEbjmR2fay2yXY=;
- b=YZOVpJ+NGSN7dEi5flY2Hmzd7/yfRepVZrwT3vdXkn0n+PsQkoNvBquNAF0MfXq06J
- gjCtRfTOsodjj4O9150IV5NXdI6kHG97828URBBAG96FOB3aZZ5EbisNZx1NN3LD/Tye
- /+vKD2mpeV3kMcAGB/2gqS5OEgpP0xfHwqG7lD67S2to/B8K6i8WLGGd8/EDKx/f2+8g
- wcbijXN/HNagPzQerr71x0Bs0XZznfLSJPJcQbvv/Kfhpile3oMpDh6ahmxeYAmOEPxb
- rP0af5I5Ah6HpY3TkFRKKX1c7+AYkLWhRCxBRODVvuBtGeJEhhFFaHOiF1/+R18K3AgM
- iPWQ==
+ bh=qYY6/w7T2B5kON6pkQPfj4T/VLfo2M7Slcv6FtJRGU0=;
+ b=O1U3iJSiqBml83NAGrNIqm7kpWllG4QI+yHK5h1km59EuJB+io4T3ZwvzuhVC558Ns
+ Hb8MDjq9r0USPUwqiVDBlTDahzmBAKZxwliFo3wfEyr5E2I/6I3I0pzUenzPsTO8jVYS
+ NTUOXRsIR4rQL6xvQg5kN0vaaWKv9ymxwFqftmsMicSh3FUrNysqLH/I4ZCthx8Yl2Hl
+ 5071ma4AMbSgdItEBA0uTe8fT5yHpmeYpiQBQ355KR4W4KkoW5pR3yeWXM3sgff+7epq
+ GMi2PFrVZSMiVuI/BW1rK6KqfJOUJo7Lu8UI/GBBjAnWeSOqrXfSP1DCZ65KHGIrUG1d
+ eN/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781574471; x=1782179271;
+ d=1e100.net; s=20251104; t=1781574475; x=1782179275;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=6W5TVi7wC2/KDvxjfA5qCS2gOOGfEgEbjmR2fay2yXY=;
- b=MkCn5aAyYW7MLEOM/yGLoCk5WrJIpOlAUpINKdeyxT+/kXWa26S2NZxF2n2Kwz8d4L
- b1MA3eVUdA3bcKXPYktE5k7H2VAKlBbI0gq70YF0Ow8owX0sFIKY0VawE01MhEpLWBfF
- 9RO5h3DIeA/TKeo6eR922dblFnVL0K1fHqfit1B8hfOqdPesoiEcWQDuAodyIzzbeyJV
- ZUarXlNTKwOMAShr9RzIj4mafuKIA7B6FEF4kYH7TOUOIJyWICJPKhTf6X3SOz6fHYJw
- ohkQ1Z9ykTV+MvEbOXySoEB6m1V3RZ1nmLL7WmHL+p1YBxz+hEtVHN5JAgYmlQXIFT8u
- i93w==
-X-Gm-Message-State: AOJu0YxypGrjKUQvsCg6a2PiLzkzO/eEJqSMhe5F1CW9SxmkqLPEiTmH
- lFLOduBfjnNcQ/sALo0A+O5CUo3lCuAR7Zn4qe/86SGtZAlbpDSZzpnyTUHdXt08iMhLE1Uqqnz
- 6YO0=
-X-Gm-Gg: Acq92OEydHWbHkc9pwpLAgDVgBsMGGY9HF8HdEh+/LmRqq7LYbju22J1uaDm/lcCAkb
- eqKuMVA4UX5eVbcvwg2Yfew7cKv5rYBnf/o6WXwnIgkFBBVZjqY41VIne4MFJlGFWXtE/oinpmw
- wJz88tPm/PQ8tyAisRRm0K62PTRLWN+uBHB6VmjaY2AkNl7GvknOHrK1D6on4eVCvIU+hwluGqp
- QGKc4TNKtpjf0S3JvBL7ZsVRvENnK+e/PyIkBWVwDvH+2U9QedtqdSalVuCFtXrjx4eujhHt9iF
- geqyhxu3DUeF657Lq9KPsmHz/UV/uzOanL5cLidlH/JTSmGVyWw3+wLptxYAzgeF4HD0HTX6n68
- BL+Sy0tNGKcfcYm1d6/4dVkughsDaI5LxbCnkxhzbLrSh3JO2psS6VqKZj0pbFESIQ98Jse7xcK
- RUkg/9YuzwvaA=
-X-Received: by 2002:a05:600c:310f:b0:490:a646:9d77 with SMTP id
- 5b1f17b1804b1-4922ff8eebamr21570505e9.6.1781574470997; 
- Mon, 15 Jun 2026 18:47:50 -0700 (PDT)
+ bh=qYY6/w7T2B5kON6pkQPfj4T/VLfo2M7Slcv6FtJRGU0=;
+ b=RMOjweII3j8Q7iwVVceq9VOVs7zFvt/kkK6vnj/z6xavx88nZew1wEAxHOoD5lL4YU
+ amNdADqnicG2mm2eIjVGL4oK0w5lG5xJHwaliMWKFIED75OTO7auU/qiS+ythKHsjuVW
+ v+xNgYi7HhGb4hB5FaLbbBxHDJg9027xkC0l7fIB+is52BXYE2fvLKPO+Rh1Y3GlB4xH
+ oSv9uGoIPiPBXZI4eePTs8fernfOdpMCf6LtHqZAAbhplqYRkVyiL3sppjASQwX2NUXA
+ afAsE22BG72F3yDR03f6jsZQmN3lY6gY8ra4vapI/phaznBfRXzSSX3f59PusUJHlzBO
+ OCXQ==
+X-Gm-Message-State: AOJu0YzWEwyw1RXYRn1XHeKkx4rF0WkjpulZOQj6+BaMDuZ4XTyoQLzX
+ DzO/YTEUyabT0orTlmX9mQKuIqp0pPfZdVJ+Aw5xJSEFbbaZe6WBlFy+8wbq9UH5Utd3I7tE3fP
+ L3s8=
+X-Gm-Gg: Acq92OH6dvlArJmly8tLWihkq54zRtKloejrdMmt9QsjTb6tGnq1fgWE4WV3+0Vwbz0
+ 7DTQu2exLgpD2mCSKvZI46jNS6pFCAciObbT/OtRlFGGdoCAyfCnS2kPFgX4+QyiNCTP27pCiOK
+ ZFKY3yCvTDUBsD70LHYrbcSPyWzMFHUsHh1eyYVSP/VtUMYz6iaamVlMkNPHdXQmxT5GH1u/C4G
+ qjkA4hEsDWobSND2BdgFn82tTY5nrATT6+YP+3cuqtQuh2u4uC3Cesl7HaiCk/PPVYOwIOuiwfG
+ Xe9FPGd7azBb5LAUsccDrqDzua+V62CdpC1pcltWgZvhbiB3ZgBKedAnR3d/equJZRYkmoQw0br
+ 20fXHEMTnpiZU/qJSoFWi0ompkB+Q+KHWOT9UeX8VGwebOkeKv0Xial6WIl3onPjdurQ3ac+HCi
+ IYROBliuy+0Cw=
+X-Received: by 2002:a05:6000:43c5:10b0:441:1e41:19c with SMTP id
+ ffacd0b85a97d-4619f3ac5afmr1956376f8f.20.1781574474917; 
+ Mon, 15 Jun 2026 18:47:54 -0700 (PDT)
 Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
  by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-4606f26434dsm39863160f8f.1.2026.06.15.18.47.50
+ ffacd0b85a97d-4606f2e6a8fsm40022900f8f.37.2026.06.15.18.47.54
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 15 Jun 2026 18:47:50 -0700 (PDT)
+ Mon, 15 Jun 2026 18:47:54 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Tue, 16 Jun 2026 01:47:32 +0000
-Message-ID: <20260616014747.8220-1-wegao@suse.com>
+Date: Tue, 16 Jun 2026 01:47:34 +0000
+Message-ID: <20260616014747.8220-3-wegao@suse.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260604045008.29021-2-wegao@suse.com>
+In-Reply-To: <20260616014747.8220-1-wegao@suse.com>
 References: <20260604045008.29021-2-wegao@suse.com>
+ <20260616014747.8220-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 0/2] connect01: Convert to new API
+Subject: [LTP] [PATCH v5 2/2] connect01: Add negative tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,19 +106,119 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-v4->v5:
-- Reformat commit message body
-- Initialize all socket file descriptors to -1.
-- Use != -1  guards check fd
-- Add tst_reap_children() after the SAFE_FORK()
+Add negative cases for connect(), when errno is EPROTOTYPE or EACCES.
 
-Wei Gao (2):
-  connect01: Convert to new API
-  connect01: Add negative tests
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ testcases/kernel/syscalls/connect/connect01.c | 48 ++++++++++++++++++-
+ 1 file changed, 46 insertions(+), 2 deletions(-)
 
- testcases/kernel/syscalls/connect/connect01.c | 401 ++++++------------
- 1 file changed, 139 insertions(+), 262 deletions(-)
-
+diff --git a/testcases/kernel/syscalls/connect/connect01.c b/testcases/kernel/syscalls/connect/connect01.c
+index 5a3ff2fcc..6b88c5e42 100644
+--- a/testcases/kernel/syscalls/connect/connect01.c
++++ b/testcases/kernel/syscalls/connect/connect01.c
+@@ -11,20 +11,29 @@
+ #include <sys/types.h>
+ #include <sys/socket.h>
+ #include <sys/wait.h>
++#include <sys/un.h>
+ #include <netinet/in.h>
++#include <pwd.h>
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
+ 
++#define SOCK_FILE "sock_file"
++
+ static int fd_invalid = -1;
+ static int fd_socket = -1;
+ static int fd_null = -1;
+ static int fd_connected = -1;
+ static int fd_server = -1;
++static int fd_unix_dgram = -1;
++static int fd_unix_stream = -1;
++static int fd_unix_server = -1;
+ 
+ static struct sockaddr_in sock1;
+ static struct sockaddr_in sock2;
+ static struct sockaddr_in sock3;
++static struct sockaddr_un sock4;
+ static void *bad_addr;
++static struct passwd *pw;
+ 
+ static pid_t pid;
+ 
+@@ -49,6 +58,10 @@ static struct test_case_t {
+ 		"connect on a socket found no one listening on remote address"},
+ 	{&fd_socket, &sock3, sizeof(sock3), EAFNOSUPPORT,
+ 		"address doesn't have the correct address family in sa_family"},
++	{&fd_unix_dgram, &sock4, sizeof(sock4), EPROTOTYPE,
++		"socket type does not support the protocol"},
++	{&fd_unix_stream, &sock4, sizeof(sock4), EACCES,
++		"write permission is denied on the socket file"},
+ };
+ 
+ static int sys_connect(int sockfd, const struct sockaddr *addr,
+@@ -104,6 +117,19 @@ static void setup(void)
+ 	sock3.sin_family = 47;
+ 	sock3.sin_port = 0;
+ 	sock3.sin_addr.s_addr = htonl(0x0AFFFEFD);
++
++	sock4.sun_family = AF_UNIX;
++	strncpy(sock4.sun_path, SOCK_FILE, sizeof(sock4.sun_path));
++
++	fd_unix_server = SAFE_SOCKET(AF_UNIX, SOCK_STREAM, 0);
++	SAFE_BIND(fd_unix_server, (struct sockaddr *)&sock4, sizeof(sock4));
++	SAFE_CHMOD(SOCK_FILE, 0700);
++	SAFE_LISTEN(fd_unix_server, 5);
++
++	fd_unix_dgram = SAFE_SOCKET(AF_UNIX, SOCK_DGRAM, 0);
++	fd_unix_stream = SAFE_SOCKET(AF_UNIX, SOCK_STREAM, 0);
++
++	pw = SAFE_GETPWNAM("nobody");
+ }
+ 
+ static void cleanup(void)
+@@ -116,6 +142,12 @@ static void cleanup(void)
+ 		SAFE_CLOSE(fd_connected);
+ 	if (fd_server != -1)
+ 		SAFE_CLOSE(fd_server);
++	if (fd_unix_dgram != -1)
++		SAFE_CLOSE(fd_unix_dgram);
++	if (fd_unix_stream != -1)
++		SAFE_CLOSE(fd_unix_stream);
++	if (fd_unix_server != -1)
++		SAFE_CLOSE(fd_unix_server);
+ 
+ 	if (pid > 0) {
+ 		SAFE_KILL(pid, SIGKILL);
+@@ -128,8 +160,18 @@ static void verify_connect(unsigned int i)
+ 	struct test_case_t *tc = &tcases[i];
+ 	void *addr = tc->addr ? tc->addr : bad_addr;
+ 
+-	TST_EXP_FAIL(sys_connect(*tc->fd, addr, tc->salen),
+-		     tc->exp_errno, "%s", tc->desc);
++	if (tc->exp_errno == EACCES) {
++		if (!SAFE_FORK()) {
++			SAFE_SETUID(pw->pw_uid);
++			TST_EXP_FAIL(sys_connect(*tc->fd, addr, tc->salen),
++				     tc->exp_errno, "%s", tc->desc);
++			exit(0);
++		}
++		tst_reap_children();
++	} else {
++		TST_EXP_FAIL(sys_connect(*tc->fd, addr, tc->salen),
++			     tc->exp_errno, "%s", tc->desc);
++	}
+ }
+ 
+ static struct tst_test test = {
+@@ -138,4 +180,6 @@ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.test = verify_connect,
+ 	.forks_child = 1,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
+ };
 -- 
 2.54.0
 
