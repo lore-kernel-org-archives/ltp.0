@@ -4,107 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C355CD98CF
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 08:30:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED20DCD98DA
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 08:30:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A01B93E595C
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 10:30:24 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 7EA203C96A5
+	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 10:30:38 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 00CAC3C96A5
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 10:30:07 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id C269A3C96A5
+ for <ltp@lists.linux.it>; Tue, 16 Jun 2026 10:30:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6BB31600D43
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DCABC10009EC
  for <ltp@lists.linux.it>; Tue, 16 Jun 2026 10:30:07 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E482A75881;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8ECCB6C6A3;
  Tue, 16 Jun 2026 08:30:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1781598606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=E5kfjRg1AhV7jKI4pUUkY5tCa9o9ehuJutWKIyYb1pI=;
- b=ZuWQZWcMeCAAqOjZh0CBvA06XPSWXMb9x7Wxr9c/HRYrKAKp7GrQumdFHPtW7ujaZBZbG3
- xyoTckPRRcfRi0X6SqspP+n4EnPe16+oaHcfTkpgn75RxtC2eLIhyNfyMKlAfY64PJOSOA
- ai+LCmqlAK7Cp6hgPzIgxvHWqpazgjQ=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=0dJhIP9icTIqPosHXDJDXdWbLs0X1JCgOKzySzgJ/tA=;
+ b=SQtZCO5co4rHAFoNs/gJO3jGJyVR2pIeqMJp47Xa7MEdLcGq3AJk9e5GYB2QHUWOb00cg2
+ lw6aCDr2sJ+mvUdnQiWxXr8r8NjLTddSD6O8mB86yEOlcTC/SMVYNk01gxQo606Ur3rX8Q
+ VW3u8rTpI6ujGgBF2MwIpLEdUKGdaSo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1781598606;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=E5kfjRg1AhV7jKI4pUUkY5tCa9o9ehuJutWKIyYb1pI=;
- b=IZGVPhFtFXow+nQe8/1b33jjuyQb8pyKJOa+ikCDhe0FtvyJ0oVHlUZkOifpazO7n3YRcN
- el94U2Rb035TeRDQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ content-transfer-encoding:content-transfer-encoding;
+ bh=0dJhIP9icTIqPosHXDJDXdWbLs0X1JCgOKzySzgJ/tA=;
+ b=JVmbTKq6oyyIGh8bVtUlVFaF0SQWnMs0Id/cv2R4qUUrgXqtlbtP3omX8h454ZLVaAqkvD
+ KX0bIgBONIHSkICA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=SQtZCO5c;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=JVmbTKq6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1781598606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=E5kfjRg1AhV7jKI4pUUkY5tCa9o9ehuJutWKIyYb1pI=;
- b=ZuWQZWcMeCAAqOjZh0CBvA06XPSWXMb9x7Wxr9c/HRYrKAKp7GrQumdFHPtW7ujaZBZbG3
- xyoTckPRRcfRi0X6SqspP+n4EnPe16+oaHcfTkpgn75RxtC2eLIhyNfyMKlAfY64PJOSOA
- ai+LCmqlAK7Cp6hgPzIgxvHWqpazgjQ=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=0dJhIP9icTIqPosHXDJDXdWbLs0X1JCgOKzySzgJ/tA=;
+ b=SQtZCO5co4rHAFoNs/gJO3jGJyVR2pIeqMJp47Xa7MEdLcGq3AJk9e5GYB2QHUWOb00cg2
+ lw6aCDr2sJ+mvUdnQiWxXr8r8NjLTddSD6O8mB86yEOlcTC/SMVYNk01gxQo606Ur3rX8Q
+ VW3u8rTpI6ujGgBF2MwIpLEdUKGdaSo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1781598606;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=E5kfjRg1AhV7jKI4pUUkY5tCa9o9ehuJutWKIyYb1pI=;
- b=IZGVPhFtFXow+nQe8/1b33jjuyQb8pyKJOa+ikCDhe0FtvyJ0oVHlUZkOifpazO7n3YRcN
- el94U2Rb035TeRDQ==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=0dJhIP9icTIqPosHXDJDXdWbLs0X1JCgOKzySzgJ/tA=;
+ b=JVmbTKq6oyyIGh8bVtUlVFaF0SQWnMs0Id/cv2R4qUUrgXqtlbtP3omX8h454ZLVaAqkvD
+ KX0bIgBONIHSkICA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C612C779AC;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CFFA779A8;
  Tue, 16 Jun 2026 08:30:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id uC2HLo4JMWqAfAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MmLJGI4JMWqAfAAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Tue, 16 Jun 2026 08:30:06 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 16 Jun 2026 10:30:07 +0200
+Date: Tue, 16 Jun 2026 10:30:05 +0200
+Message-Id: <20260616-fix_pids_errors-v2-0-a1e1d377f8b7@suse.com>
 MIME-Version: 1.0
-Message-Id: <20260616-fix_pids_errors-v2-2-a1e1d377f8b7@suse.com>
-References: <20260616-fix_pids_errors-v2-0-a1e1d377f8b7@suse.com>
-In-Reply-To: <20260616-fix_pids_errors-v2-0-a1e1d377f8b7@suse.com>
+X-B4-Tracking: v=1; b=H4sIAI0JMWoC/3WNwQrCMBBEf6Xs2UgSm9J48j+klJCudg82ZVeDU
+ vLvxt49vmHmzQaCTChwbjZgzCSUlgr20ECcw3JHRVNlsNp2ujNO3eg9rjTJiMyJRRl/8r41Pva
+ IUFcrY63sxutQeSZ5Jv7sB9n80v+ubJRW3gfXBqud6fVFXoLHmB4wlFK+mpr6na0AAAA=
+X-Change-ID: 20260615-fix_pids_errors-19399419c8ee
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1781598606; l=1025;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1781598606; l=688;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=zo3kdVLxDfgKpl11YnlY8vZQSPSf3mlkJMfRuNM4GFI=;
- b=wKwdlj3PWPHOHT6cDu8CkN/kOMKN0eusM7+dO+tQB7QGTnBCXG9ManS1Aoz/LjyJrOeC0xudx
- /x45JUz1nq4BZKFiQBtXyiHBZaWjJbiEU8gv4tDL9XW/w7YYSzMNWMU
+ bh=gDTbcCJV8taszZkIdyCqk+40Spaer15zDLUQRgYhhrc=;
+ b=mxGgRLwN5oKqjCUj/qWGxz4pYZ91kb8j6HaUAis/FAiHXFedusI+6iMEPIs9g7l1DTJSpRgFS
+ 4Q7p350Qo9GDcSuaUi0DGhdb8XARdQcWOo3si0POHiRX6ZGE5xTXROO
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.995]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:mid,suse.de:dkim];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 8ECCB6C6A3
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] tst_cgroup: tolerate ESRCH in cgroup_drain()
+Subject: [LTP] [PATCH v2 0/2] Fix sporadic failures in pids shell tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,41 +128,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-A process can die between reading cgroup.procs and writing its PID
-to the destination cgroup. When this happens, the kernel returns
-ESRCH which is a normal race condition, not a test infrastructure
-failure.
-
-Skip ESRCH errors instead of aborting with TBROK.
-
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- lib/tst_cgroup.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Changes in v2:
+- handle ESRCH only when ret < 0
+- Link to v1: https://lore.kernel.org/r/20260615-fix_pids_errors-v1-0-99a54a205180@suse.com
 
-diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index a37bf1516aabfbcb9a02fedd6fddb98e85ecc653..f548c0e01cf60803ad4c1e898e7ec2d39dc33c84 100644
---- a/lib/tst_cgroup.c
-+++ b/lib/tst_cgroup.c
-@@ -974,8 +974,12 @@ static void cgroup_drain(const enum tst_cg_ver ver,
- 	for (tok = strtok(pid_list, "\n"); tok; tok = strtok(NULL, "\n")) {
- 		ret = dprintf(fd, "%s", tok);
- 
--		if (ret < (ssize_t)strlen(tok))
-+		if (ret < (ssize_t)strlen(tok)) {
-+			if (ret < 0 && errno == ESRCH)
-+				continue;
-+
- 			tst_brk(TBROK | TERRNO, "Failed to drain %s", tok);
-+		}
- 	}
- 	SAFE_CLOSE(fd);
- }
+---
+Andrea Cervesato (2):
+      pids: fix cleanup of orphaned pids_task1 children
+      tst_cgroup: tolerate ESRCH in cgroup_drain()
 
+ lib/tst_cgroup.c                          | 6 +++++-
+ testcases/kernel/controllers/pids/pids.sh | 5 +++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+---
+base-commit: b4d31ea5d5c16628b9c45932fc98b929ca2ceece
+change-id: 20260615-fix_pids_errors-19399419c8ee
+
+Best regards,
 -- 
-2.51.0
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
