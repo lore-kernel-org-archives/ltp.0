@@ -4,66 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44D6ECD98E2
-	for <ltp@archiver.kernel.org>; Wed, 17 Jun 2026 15:05:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46E05CD98E2
+	for <ltp@archiver.kernel.org>; Wed, 17 Jun 2026 15:19:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781709569; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=RMyXr0/0QSPVfkeFieLaIqoZWdkjqGQwiOaHls+Wn4g=;
+ b=ER1dt5FOTs5hkEN4DnSDpGN8FJ1AScOHy+WUFit0U0qe/uV7bQKtwwOI26fjb7JJgwRhm
+ qsxN9E1ed9I/AxIe+wQXptoMxKNGlTpE7UqLPoNpNP572Wk5M1yCc74IZFyJWIghCVFSht2
+ CWxlGOtZJ9pCuNftoUDF0OAIhtGtwfI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A7E6F3E59B0
-	for <ltp@archiver.kernel.org>; Wed, 17 Jun 2026 17:05:23 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 8B4963E5944
+	for <ltp@archiver.kernel.org>; Wed, 17 Jun 2026 17:19:29 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3C8D93E5920
- for <ltp@lists.linux.it>; Wed, 17 Jun 2026 17:05:06 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0F9F63E5920
+ for <ltp@lists.linux.it>; Wed, 17 Jun 2026 17:19:09 +0200 (CEST)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D59F4600F3F
- for <ltp@lists.linux.it>; Wed, 17 Jun 2026 17:05:05 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6016175E2C;
- Wed, 17 Jun 2026 15:05:05 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 56946779A8;
- Wed, 17 Jun 2026 15:05:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id XWwZFaG3MmpHRQAAD6G6ig
- (envelope-from <jack@suse.cz>); Wed, 17 Jun 2026 15:05:05 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
- id E8DB1A0EC0; Wed, 17 Jun 2026 17:04:56 +0200 (CEST)
-Date: Wed, 17 Jun 2026 17:04:56 +0200
-From: Jan Kara <jack@suse.cz>
-To: AnonymeMeow <anonymemeow@gmail.com>
-Message-ID: <5mgsr6wbxlcupaswzvuihzqjiybsbbtqyr5ckftlmnk4mxhidw@7cxkbdqpqxmk>
-References: <20260616210448.12175-1-anonymemeow@gmail.com>
- <20260616210448.12175-6-anonymemeow@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260616210448.12175-6-anonymemeow@gmail.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 6016175E2C
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 380ED1A00A2C
+ for <ltp@lists.linux.it>; Wed, 17 Jun 2026 17:19:09 +0200 (CEST)
+Received: by mail-wr1-x433.google.com with SMTP id
+ ffacd0b85a97d-4627adcf4d6so782777f8f.3
+ for <ltp@lists.linux.it>; Wed, 17 Jun 2026 08:19:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1781709548; x=1782314348; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=TpvyQctqUqRuMgM6A8gg49xgw0QOwjPq0cNSearLLHE=;
+ b=Sio21ICxpVglB9wmA/GROP1iZEj8huJRT+7Ff7QgY7fDE8hS8fGpi4IvNObxvJRsB0
+ pnoYL9eTNfC+AwM9uB+9A0d4T5uSlkQ6OSMLqamMWmOYORvkUPks46E0LsQSAsCS3mp5
+ gMISTfpevr7vOJDYWi59Vu/21aScuVj8JPGFUfUuXqYPBRoZ11KQ580QPsuc3kDrf6nX
+ MIdHh7d91p09BP9IRR9fnjV1Q3LBk6zhOetBo0zQomP/D0sc2Yy2mmDiROY2CUKXrk2a
+ K0ANFmcxFfOyDx0XPHe9mhTgPDMDn7bb82QDzbsVS+PMBBdOXFVhM3aham3YnpirKicr
+ ljrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1781709548; x=1782314348;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=TpvyQctqUqRuMgM6A8gg49xgw0QOwjPq0cNSearLLHE=;
+ b=ECrv7/aAWPNZB73SI4Cz9EzoNtwfrSqZsEDnTCnplJ93cRH5i7XgsMWUu5+N7nR+/o
+ DbHl2SseZ3yjgqCM56sKAn7G1OJfxzrXrylLph37URth2D2Q4RHkkeJRDJxu3b1CjTME
+ XdE8rsKhvjQTergvd5c+vjY+sUu7MUhxpx8AfYze3uHbqySYFJHCnBW9mM/YB3hzYTjc
+ 5l+2VQQ2NCGG3I8Nxp+zLt1BSSpp2Ja6Ze+OAdnxX0OVha/VgkZ00KkhwEhvoay286Ze
+ 31MfT76KirdJaBx2kfYOWnmp8eviPWMJZXGZMj0yLW9cKsmN4PEr74PBcZ3ayPlKxh4E
+ vFJA==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ+0b3OC2AGttYaQsNuUy9FfVslUxOWCsqiCwbeNZUOiAuTFDcWIXE4CrxoK5FPzUIWKhhE=@lists.linux.it
+X-Gm-Message-State: AOJu0YxMnDBRSLhoFFl1Cja9j4MHwEh0vCtgm/PLy/2aPnA8DFpum5jY
+ QN+Pv64+6WJfncWq4qMi/xZgQ3diMDl1nkd19ncFVlIE/PNalcyphPc0ie6fvAexcYk=
+X-Gm-Gg: AfdE7ckuXDMrNkujMgOn3mVFmI5+9T434SGwtJwUviT+QrmdNz2UhkKqtwHruchd47/
+ xWVD3Q+ed6TjbJQZTBo+91Y01H8oGe9jn0xNIGd4I1zwR/YQEKGxCgPPFp+JzV0TRlNYhF4di+G
+ ah0Jktl52U536ejV6/NUpBaBVXL4CHtcU3q5ZE/xD2iTzRAiBuc7UE9krC4zh+Ns3Yt8JglOXrP
+ AfFV/9kOXUenLVj/8288j+A6KXXX6bzAq+BE/fAqhXHOKKnnGuUhwaOfZtFRsfTGcZDzzl8mXzO
+ kgup3zoc+WDoF3LyuPughNUktk4t22brnxXKrgwiigur9xx0qdzeoiZ8eiNaEirKkEr4tkUCZTn
+ A5elWhyOp78P+vbWDoFCOUO5jsvUlw+eLrqQp8O1Xj+s/1SilNt2QzwtYJuLIaykO0qco3o4zwv
+ e6xZGstnx/MogZUqMwH6aF+1/2sjkxLIdsahU1gT8Vz0AX7kgulWTpl9fv9utF1w==
+X-Received: by 2002:a05:6000:41c7:b0:461:a169:fdbc with SMTP id
+ ffacd0b85a97d-4623627630amr7725113f8f.16.1781709548400; 
+ Wed, 17 Jun 2026 08:19:08 -0700 (PDT)
+Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
+ [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-461eaa0d1c7sm11490276f8f.7.2026.06.17.08.19.07
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 17 Jun 2026 08:19:08 -0700 (PDT)
+Message-ID: <6a32baec.95d0a0ea.22b4a3.6ffe@mx.google.com>
+To: "Andrea Cervesato" <andrea.cervesato@suse.com>
+In-Reply-To: <6a32b644.f32a6769.150c63.1270@mx.google.com>
+Date: Wed, 17 Jun 2026 15:19:07 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 5/5] fanotify21: Add FAN_REPORT_TID pidfd
- coverage
+Subject: Re: [LTP] [PATCH v1 1/1] swap: Add exfat to filesystems requiring
+ tst_fill_file
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,173 +96,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: amir73il@gmail.com, jack@suse.cz, ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed 17-06-26 05:04:48, AnonymeMeow wrote:
-> Add a test case that generates an event from a thread. Without
-> FAN_REPORT_TID, the reported pidfd is expected to refer to the thread
-> group leader. With FAN_REPORT_TID, it is expected to refer to the
-> triggering thread. Keep the event thread alive until the reported pidfd
-> is verified, because pidfd fdinfo reports Pid: -1 after the thread
-> exits.
+> I'm just wondering how to implement it better.
 > 
-> Signed-off-by: AnonymeMeow <anonymemeow@gmail.com>
+> First of all, we should mention the commit that introduced fallocate()
+> support into exfat inside the patch commit message.
+> 
+> Secondly, since the code was already working before v7.1, maybe we should
+> fill the file in exfat only for kernel >= 7.1. But I don't want to touch
+> the core library.
 
-Looks good. Feel free to add:
+Second update: .swap_activate is not implemented in the linux kernel
+for exfat and the commit causes EINVAL only for swap allocation. That
+is caused by bmap() due to the generic swap activation.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+So instead of working around the issue, we probably should have a feature
+in the kernel along with fallocate() support in exfat.
 
-								Honza
+Probably a kernel bug/missing feature.
 
-> ---
-> 
-> This patch is exactly the same as v1 except that the pthread link flag
-> is added to fanotify21 target.
-> 
-> ---
->  testcases/kernel/syscalls/fanotify/Makefile   |  2 +-
->  .../kernel/syscalls/fanotify/fanotify21.c     | 47 ++++++++++++++++++-
->  2 files changed, 47 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/fanotify/Makefile b/testcases/kernel/syscalls/fanotify/Makefile
-> index 3628094ba..b20bb50e9 100644
-> --- a/testcases/kernel/syscalls/fanotify/Makefile
-> +++ b/testcases/kernel/syscalls/fanotify/Makefile
-> @@ -2,7 +2,7 @@
->  #  Copyright (c) Jan Kara <jack@suse.cz>, 2013
->  
->  top_srcdir		?= ../../../..
-> -fanotify11: CFLAGS+=-pthread
-> +fanotify11 fanotify21: CFLAGS+=-pthread
->  include $(top_srcdir)/include/mk/testcases.mk
->  
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify21.c b/testcases/kernel/syscalls/fanotify/fanotify21.c
-> index c05c69d58..c97ec4f92 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify21.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify21.c
-> @@ -25,6 +25,7 @@
->  #include "tst_test.h"
->  #include "tst_safe_stdio.h"
->  #include "tst_safe_macros.h"
-> +#include "tst_safe_pthread.h"
->  #include "lapi/pidfd.h"
->  
->  #ifdef HAVE_SYS_FANOTIFY_H
-> @@ -47,6 +48,7 @@ struct pidfd_fdinfo_t {
->  
->  static struct test_case_t {
->  	char *name;
-> +	int event_by_thread;
->  	int want_pidfd_err;
->  	int remount_ro;
->  } test_cases[] = {
-> @@ -54,15 +56,24 @@ static struct test_case_t {
->  		"return a valid pidfd for event created by self",
->  		0,
->  		0,
-> +		0,
-> +	},
-> +	{
-> +		"return a valid pidfd for event created by thread",
-> +		1,
-> +		0,
-> +		0,
->  	},
->  	{
->  		"return invalid pidfd for reader in descendant PID namespace",
-> +		0,
->  		1,
->  		0,
->  	},
->  	{
->  		"fail to open rw fd for event created on read-only mount",
->  		0,
-> +		0,
->  		1,
->  	},
->  };
-> @@ -108,6 +119,26 @@ static void generate_event(void)
->  	SAFE_CLOSE(fd);
->  }
->  
-> +static void *generate_event_pthread(void *args LTP_ATTRIBUTE_UNUSED)
-> +{
-> +	generate_event();
-> +	TST_CHECKPOINT_WAIT(0);
-> +	return NULL;
-> +}
-> +
-> +static pthread_t event_thread_create(void)
-> +{
-> +	pthread_t pthread_id;
-> +	SAFE_PTHREAD_CREATE(&pthread_id, NULL, generate_event_pthread, NULL);
-> +	return pthread_id;
-> +}
-> +
-> +static void event_thread_join(pthread_t pthread_id)
-> +{
-> +	TST_CHECKPOINT_WAKE(0);
-> +	SAFE_PTHREAD_JOIN(pthread_id, NULL);
-> +}
-> +
->  static const char *test_variant_name(void)
->  {
->  	switch (tst_variant) {
-> @@ -165,6 +196,7 @@ static void do_test(unsigned int num)
->  	int nopidfd_err = tc->want_pidfd_err ?
->  			  (TST_VARIANT_FD_ERROR ? -ESRCH : FAN_NOPIDFD) : 0;
->  	int fd_err = (tc->remount_ro && TST_VARIANT_FD_ERROR) ? -EROFS : 0;
-> +	pthread_t event_thread;
->  	pid_t reader_pid;
->  	int reader_exit_status;
->  
-> @@ -186,7 +218,16 @@ static void do_test(unsigned int num)
->  	SAFE_MOUNT("none", MOUNT_PATH, "none", MS_BIND | MS_REMOUNT |
->  		   (tc->remount_ro ? MS_RDONLY : 0), NULL);
->  
-> -	generate_event();
-> +	/*
-> +	 * Generate the event by either self or a thread. Event generation in
-> +	 * a thread is done so that in FAN_REPORT_TID mode the pidfd can be
-> +	 * verified to refer to the tid, not the tgid. The thread waits until
-> +	 * the pidfd is verified before exiting.
-> +	 */
-> +	if (tc->event_by_thread)
-> +		event_thread = event_thread_create();
-> +	else
-> +		generate_event();
->  
->  	/*
->  	 * Read the event in either self or a child process in a descendant
-> @@ -349,6 +390,9 @@ next_event:
->  
->  	if (tc->want_pidfd_err)
->  		exit(0);
-> +
-> +	if (tc->event_by_thread)
-> +		event_thread_join(event_thread);
->  }
->  
->  static void do_cleanup(void)
-> @@ -371,6 +415,7 @@ static struct tst_test test = {
->  	.mount_device = 1,
->  	.mntpoint = MOUNT_PATH,
->  	.forks_child = 1,
-> +	.needs_checkpoints = 1,
->  };
->  
->  #else
-> -- 
-> 2.54.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
