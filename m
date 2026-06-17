@@ -4,82 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33952CD98E1
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 21:06:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2610CD98E2
+	for <ltp@archiver.kernel.org>; Wed, 17 Jun 2026 07:32:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781681545; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=XwtkNW/q4a/J41laOLNaeScdCmg01PtggRco4hS7xgQ=;
+ b=gpPEktPuwkx8IqHKGuwxrjCmCnFsw8PqDEBVMsLdUmFrIM7xwDb51z9wGCFVaEdiclVFe
+ IrFk6A8i0tAoHjZyLsLhP18Va2iKyJuw152jr2r6ohnQVrCoijtg3F66XqPj7l/fbVidwrF
+ 5/C9UQC35rrubGmlx5XdIJ+oOi3JT6U=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8A2CF3E6C76
-	for <ltp@archiver.kernel.org>; Tue, 16 Jun 2026 23:06:42 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 64F6B3E58D8
+	for <ltp@archiver.kernel.org>; Wed, 17 Jun 2026 09:32:25 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 55D483E2752
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 23:05:15 +0200 (CEST)
-Received: from mail-dl1-x1243.google.com (mail-dl1-x1243.google.com
- [IPv6:2607:f8b0:4864:20::1243])
+ by picard.linux.it (Postfix) with ESMTPS id AC1973E1FB6
+ for <ltp@lists.linux.it>; Wed, 17 Jun 2026 09:32:05 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BD4F16008F2
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 23:05:14 +0200 (CEST)
-Received: by mail-dl1-x1243.google.com with SMTP id
- a92af1059eb24-137d464c47eso198184c88.1
- for <ltp@lists.linux.it>; Tue, 16 Jun 2026 14:05:14 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 034281000D8C
+ for <ltp@lists.linux.it>; Wed, 17 Jun 2026 09:32:04 +0200 (CEST)
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-4921eed3fa2so36315215e9.0
+ for <ltp@lists.linux.it>; Wed, 17 Jun 2026 00:32:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781643913; x=1782248713; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=0Fp95wSNnZLI8ZMOWC6Yhpei61z7Bhm8Kjd9p0XFkZo=;
- b=jtca1Q1HgtA8amodvqkUY3/mtHSmd3ZhDpmKoBcU04f6D7lwE4HXFx0CEMbbMBu3sY
- AbrAEqORUTEPxZD4Ozp/33kkaQnRt6cQ+nM0hjVqD5ftcxvXXKphcQBDfdw6GCP8pGBP
- FQ2QdS/WXhnfBpJjDnCoKnbEJc2YnfyzCC3aBouXBZne6px4xq5HXMmmP3fUuXUPbvf4
- 4ZdQYIj+1ZHgGI75yEGG3cDbFEevPMpyIbIf4MPLk2rmdKQ4E6ueW+BHt8hXwIl6usBu
- D5KUnWcMLrK8nKYJh4IS2VqTsGfrjiAJoRlrjcZRzPv9UCtxg/avBggrhuwTzCo4uYZX
- X7Gg==
+ d=suse.com; s=google; t=1781681524; x=1782286324; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=/HnmBpAu4tnIt8N0gPWsVYLoU9nTHoXDHcZQn6/LdWA=;
+ b=hAF3kCzEayWelRVj8P/9dKDlP0enD98+fmSX5su4/CGE7SWT53Tg6z8eLow9TBa9CF
+ rc2mLWaLoNK3Bo9zwX2fMMkkYPc4aGxdEEDkHtIfMR8IxMUXn6iZZt/kBUFw6rPRro5D
+ mmgU+bSAQZ9z8lEJk6f5lLYAT54XvUErxL8UNoui650bV/FwidxLhqdILzy37eV2pNJn
+ XxareyEcnLl5GvYPaBNqRnSP/aSADkHfeL/MVBVLH4Q5UVtZpZduhfipGYIkIvdGZPuS
+ syohjbuD0pHp2dCFAFFoO0viNQxS51Mc3vhbXjoc6pagyVj6qijUyh9H0e+56QDruiMi
+ 2Kgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781643913; x=1782248713;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=0Fp95wSNnZLI8ZMOWC6Yhpei61z7Bhm8Kjd9p0XFkZo=;
- b=pXP4Xb0yS6wfQj+cdKPDOAI7nou44MwkLutL5ZvuvNU2l7UDrAqbZ/2JC5edcbK6ra
- KzOPByOQZ+CO1YG4GXzxhJAdRjhUu40ZfsZsGvXvrEeiTMjocqeqLHGi5o6KscXyEZlb
- WrM4BAJsj/BZfQH5KMR9cuLbfQ251k8ay3UAiVT5ygAuucQbJefRqc5HQf0CFAFerFCZ
- CUuTVy4YoBPj25bEIJ59V0XArL4GgcEzH71s8MgBxbhkVnwQwJgX6uH3CaxydJvnGNnL
- 5b9wavsbZJJet6fyypOi6MMCpX5crJ8BFLXiyXiPmy9sBuwznoDQJoSSzh8j9jh27iLG
- 7dwA==
+ d=1e100.net; s=20251104; t=1781681524; x=1782286324;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=/HnmBpAu4tnIt8N0gPWsVYLoU9nTHoXDHcZQn6/LdWA=;
+ b=HFm5/8EF+/PYLWKdUkC4mXHKx2W8oF+ZTJL4NdxFumPlqPyouxpAJE/VGWLjmXsNFH
+ slk/motOX5gZDe7tqp+CN8MudDHqdryPGVcPwRRtbCRu3NgGtqjk5bKmt0tp20sYUyBE
+ PRQs56p7K5yR2j49T+FHEP5Op11v7MuNlLIfoDw7rQE37LWCl0B9Hi5TFfhluvqgJEj9
+ 0IWJilNnkIVV6W/wcJ/VMlXq+MWAVqAdU30Dg8Sv08hIPSrAQXHCGs1e0XNyDWQ2V2Pt
+ l3Ja0m80FxOtXR6dEyRNxO7IxK1Eta/4bivgwUfsjGxbOTo6whXhh4AKB2QUH7NQetKv
+ zvCQ==
 X-Forwarded-Encrypted: i=1;
- AFNElJ/ktyez5pGHsWPs1wwiMTet8ZgSgZEE2x44cHvGyNWFqwrEGMs2WmkSMfCA490ngMfZl9o=@lists.linux.it
-X-Gm-Message-State: AOJu0YyXZ/vSsz9LGfVgL62L4yXm8gwekb9RgwAjvwSVhcGyEM1fiwTu
- 3klc8z1VJ5jjcj3IGFXdvswxa7M8tC4JMsJGKn5qS6ayaMvDQqxim3jQXEJg838SgqCsGw==
-X-Gm-Gg: AfdE7ck+A0xncWuBhr4aQ90XHIA9oroqNnfbDQItbF71e+F2ryboNX+fLZgn2KHn07F
- N2nWl5blPf2tTO9G7nkppNCoobr5gdPBGojOCDj5GQYqXuDTpxptD7tR0nqPFaV44o5P8gM+0sQ
- vx9mAur5ygTOD5xgJJHxFKYoJU6WVh3/BpkRDNA2p1rsuTMqIuMXjB9S65frzgEprX6mnhC17em
- tOStSPU4zxZTv5uxJ2n/dN2nCiB5gtTTjQZyhYjGxtvB+mBg3CFZWi925Eqa8JJPVITvP646Ysi
- REnlRP8QUNABQqGuczVMA533aZ0dchKa7xsUX7nWkQyeQgc0IAVoyoBXDMkKFnQWiOL/tE9PtYQ
- 4C68CP7ypAFlh5zwq+Bbp/RHYVohfq13mhhihG3KP6ULPCOhkQfpakS16LeNh6Ju+XgHSrfR88W
- R5IyeLmTmItvd8aa77pc3yxDw6RbM=
-X-Received: by 2002:a05:7301:578a:b0:2d9:db50:c6ce with SMTP id
- 5a478bee46e88-30bcf0d05fbmr243246eec.3.1781643912993; 
- Tue, 16 Jun 2026 14:05:12 -0700 (PDT)
-Received: from cirno ([2605:52c0:2:2f27:be24:11ff:fe89:6f0f])
+ AFNElJ+2A3sXIB3ng3LMxMtHWx1XXdJYbP1VGjqtHdChshafPGj3nGLF9/t7VZOD6c67b2Uuucc=@lists.linux.it
+X-Gm-Message-State: AOJu0YylGzkgDsOLfQXnVb4OhzDYkuOBNRBQHPqsZP2sTafzRPU8CNbW
+ EOWZ+zSI5XOKtlMBQM04z8FtZdf36Fsx1w5g7QM2oaGs2XYuDBXWUu9eep81HMCbsCM=
+X-Gm-Gg: Acq92OH62+Uq5wgUXOjGLcD5qkIclU0p294ZL8OLiV/NR35nUfjXehfXElM4BSpP55/
+ wltF89jE9d12JqjPQ4rQ4+BVL0GjeMM+eCDJZyt37Z1FqMhpszmu7nVeFVIsKiNSuxyJJDSjlW5
+ BPScbZtXx0FcrSYSwOGV/IBco3hkeK2ek0B1BpGTIFRBrPOMZGvAOuT/aiy7+AGIxQT/Yh8Y15x
+ msm3P9KZkb/bbq9OnffVkHUta+yjw7SJjUf26OWa/wIt7y7I27EyMDHQuM1aZs8GDUIAMfPSgrT
+ QZ3xBj6AU4N1n3d4aZUf4J+bzbRyU2d9b4/LqIIvGk9lSvyac4K9zmqcdywDUvtPvEzt5ywOzVQ
+ iHHuctdpWzt0jfno+Dz4xHqNhf7Thc9Hos+kQJv+dGbC511pIvMCdRBuXVjXT2Bf+mMNqO7ykxn
+ j/fy6qlABIlcVm5g9vsGVlrq9Zp9DX1cfsr9OIl4EonkoKuC5Wg89zq1yfZ0LrhGBUBu4RVNyGM
+ mZ+MBa6dA9TXeXKvre/tbz6
+X-Received: by 2002:a7b:c3d1:0:b0:490:b92f:ef5b with SMTP id
+ 5b1f17b1804b1-492341088b1mr20367315e9.13.1781681524268; 
+ Wed, 17 Jun 2026 00:32:04 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
+ [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
  by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3081e5d0828sm22231766eec.10.2026.06.16.14.05.11
+ 5b1f17b1804b1-4922fa97a07sm242622515e9.14.2026.06.17.00.32.03
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 16 Jun 2026 14:05:12 -0700 (PDT)
-From: AnonymeMeow <anonymemeow@gmail.com>
-To: jack@suse.cz
-Date: Wed, 17 Jun 2026 05:04:48 +0800
-Message-ID: <20260616210448.12175-6-anonymemeow@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260616210448.12175-1-anonymemeow@gmail.com>
-References: <20260616210448.12175-1-anonymemeow@gmail.com>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ Wed, 17 Jun 2026 00:32:03 -0700 (PDT)
+Message-ID: <6a324d73.abb839ae.15633b.80c7@mx.google.com>
+To: "Andrea Cervesato" <andrea.cervesato@suse.com>
+In-Reply-To: <6a31618c.7f42fb59.24bb2.63c5@mx.google.com>
+Date: Wed, 17 Jun 2026 07:32:03 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 5/5] fanotify21: Add FAN_REPORT_TID pidfd coverage
+Subject: Re: [LTP] [PATCH] rfim: add new test for verifying RFIM sysfs
+ interface
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,162 +99,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: amir73il@gmail.com, ltp@lists.linux.it, AnonymeMeow <anonymemeow@gmail.com>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
+ rafael.j.wysocki@intel.com, ltp@lists.linux.it, daniel.niestepski@intel.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add a test case that generates an event from a thread. Without
-FAN_REPORT_TID, the reported pidfd is expected to refer to the thread
-group leader. With FAN_REPORT_TID, it is expected to refer to the
-triggering thread. Keep the event thread alive until the reported pidfd
-is verified, because pidfd fdinfo reports Pid: -1 after the thread
-exits.
+> This function can be easily replaced by access().
+> 
+> TST_EXP_PASS(access(path, R_OK));
+> TST_EXP_FAIL(access(path, W_OK), ..);
 
-Signed-off-by: AnonymeMeow <anonymemeow@gmail.com>
----
+Thinking twice, this can be even simpler by using stat()
+and checking for .st_mode in returned struct. In this way you
+filter out all permissions, not only read or write.
 
-This patch is exactly the same as v1 except that the pthread link flag
-is added to fanotify21 target.
-
----
- testcases/kernel/syscalls/fanotify/Makefile   |  2 +-
- .../kernel/syscalls/fanotify/fanotify21.c     | 47 ++++++++++++++++++-
- 2 files changed, 47 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/fanotify/Makefile b/testcases/kernel/syscalls/fanotify/Makefile
-index 3628094ba..b20bb50e9 100644
---- a/testcases/kernel/syscalls/fanotify/Makefile
-+++ b/testcases/kernel/syscalls/fanotify/Makefile
-@@ -2,7 +2,7 @@
- #  Copyright (c) Jan Kara <jack@suse.cz>, 2013
- 
- top_srcdir		?= ../../../..
--fanotify11: CFLAGS+=-pthread
-+fanotify11 fanotify21: CFLAGS+=-pthread
- include $(top_srcdir)/include/mk/testcases.mk
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify21.c b/testcases/kernel/syscalls/fanotify/fanotify21.c
-index c05c69d58..c97ec4f92 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify21.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify21.c
-@@ -25,6 +25,7 @@
- #include "tst_test.h"
- #include "tst_safe_stdio.h"
- #include "tst_safe_macros.h"
-+#include "tst_safe_pthread.h"
- #include "lapi/pidfd.h"
- 
- #ifdef HAVE_SYS_FANOTIFY_H
-@@ -47,6 +48,7 @@ struct pidfd_fdinfo_t {
- 
- static struct test_case_t {
- 	char *name;
-+	int event_by_thread;
- 	int want_pidfd_err;
- 	int remount_ro;
- } test_cases[] = {
-@@ -54,15 +56,24 @@ static struct test_case_t {
- 		"return a valid pidfd for event created by self",
- 		0,
- 		0,
-+		0,
-+	},
-+	{
-+		"return a valid pidfd for event created by thread",
-+		1,
-+		0,
-+		0,
- 	},
- 	{
- 		"return invalid pidfd for reader in descendant PID namespace",
-+		0,
- 		1,
- 		0,
- 	},
- 	{
- 		"fail to open rw fd for event created on read-only mount",
- 		0,
-+		0,
- 		1,
- 	},
- };
-@@ -108,6 +119,26 @@ static void generate_event(void)
- 	SAFE_CLOSE(fd);
- }
- 
-+static void *generate_event_pthread(void *args LTP_ATTRIBUTE_UNUSED)
-+{
-+	generate_event();
-+	TST_CHECKPOINT_WAIT(0);
-+	return NULL;
-+}
-+
-+static pthread_t event_thread_create(void)
-+{
-+	pthread_t pthread_id;
-+	SAFE_PTHREAD_CREATE(&pthread_id, NULL, generate_event_pthread, NULL);
-+	return pthread_id;
-+}
-+
-+static void event_thread_join(pthread_t pthread_id)
-+{
-+	TST_CHECKPOINT_WAKE(0);
-+	SAFE_PTHREAD_JOIN(pthread_id, NULL);
-+}
-+
- static const char *test_variant_name(void)
- {
- 	switch (tst_variant) {
-@@ -165,6 +196,7 @@ static void do_test(unsigned int num)
- 	int nopidfd_err = tc->want_pidfd_err ?
- 			  (TST_VARIANT_FD_ERROR ? -ESRCH : FAN_NOPIDFD) : 0;
- 	int fd_err = (tc->remount_ro && TST_VARIANT_FD_ERROR) ? -EROFS : 0;
-+	pthread_t event_thread;
- 	pid_t reader_pid;
- 	int reader_exit_status;
- 
-@@ -186,7 +218,16 @@ static void do_test(unsigned int num)
- 	SAFE_MOUNT("none", MOUNT_PATH, "none", MS_BIND | MS_REMOUNT |
- 		   (tc->remount_ro ? MS_RDONLY : 0), NULL);
- 
--	generate_event();
-+	/*
-+	 * Generate the event by either self or a thread. Event generation in
-+	 * a thread is done so that in FAN_REPORT_TID mode the pidfd can be
-+	 * verified to refer to the tid, not the tgid. The thread waits until
-+	 * the pidfd is verified before exiting.
-+	 */
-+	if (tc->event_by_thread)
-+		event_thread = event_thread_create();
-+	else
-+		generate_event();
- 
- 	/*
- 	 * Read the event in either self or a child process in a descendant
-@@ -349,6 +390,9 @@ next_event:
- 
- 	if (tc->want_pidfd_err)
- 		exit(0);
-+
-+	if (tc->event_by_thread)
-+		event_thread_join(event_thread);
- }
- 
- static void do_cleanup(void)
-@@ -371,6 +415,7 @@ static struct tst_test test = {
- 	.mount_device = 1,
- 	.mntpoint = MOUNT_PATH,
- 	.forks_child = 1,
-+	.needs_checkpoints = 1,
- };
- 
- #else
--- 
-2.54.0
-
+Regards,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
