@@ -4,105 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDDCBCD98ED
-	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 11:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFA35CD98F2
+	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 11:54:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781783650; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=34fdjgQNrJAJRUGIWtXYUqE5GgrCLEsJhJtSlI/xQdY=;
+ b=W2vSHWUKCKYEoXW+3EwNYO9JBjTfdVo3sFpyO4jdY02FTx2mTj9ucwFMkCehujS8ftaeH
+ POYtc4DjlvOGo7nkqbTOr5osBVlxpvRs7fJGbZRN6eKlFKql3Tecds6NHQP6x7BFTOemHYd
+ kwmw1ptU5ZzlOFY6/AueuRqmi4rE1WY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5403A3E587C
-	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 13:53:45 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 206393E5875
+	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 13:54:10 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F35403E586C
- for <ltp@lists.linux.it>; Thu, 18 Jun 2026 13:53:29 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 420D33E5872
+ for <ltp@lists.linux.it>; Thu, 18 Jun 2026 13:53:39 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3B8A2200246
- for <ltp@lists.linux.it>; Thu, 18 Jun 2026 13:53:28 +0200 (CEST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 65IBIhnI3431119; Thu, 18 Jun 2026 11:53:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-type:date:from:in-reply-to:message-id:mime-version
- :references:subject:to; s=pp1; bh=DDCrVFJSiggxg55Yv67ELFAXcFrNBd
- 12gBLUmtWivUE=; b=jAPFPf1fhW/dxNxz4ivba8FawmhsDC2I8E81r/15XT7avK
- DhzZuUolps5E3yrW9/JY0vGil2FUsCa4docE7BfsCLt5xd2Rr4U8SbGAWqgI0yao
- kBKJCBbHzbJbe1ptZqQ1XETbUQx9IopXz/7II1Sovqo4swRZbc0UZb14IhqJjCYP
- 0HEPy4pdqKWlaTJrswYv/f3noT0ALN0HSTGpIw2bdVzxnsDSF0Z6Hy7+TzgLvT+O
- 4nvZUXO3TH27qPV9Vx8Th65PxfZgTPiewIUFL8CfILqFKSV6Aw5NtupSNc+OUtdq
- sMHJ0nuOR68vJ7DFG4hJgBBmPsiSIPsWC8AZRcKg==
-Received: from ppma23.wdc07v.mail.ibm.com
- (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4euequ7v6d-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 18 Jun 2026 11:53:26 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65IBnb4O011336;
- Thu, 18 Jun 2026 11:53:25 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4ev172bgm7-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 18 Jun 2026 11:53:25 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
- [10.20.54.103])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 65IBrNlm16843032
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 18 Jun 2026 11:53:23 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8E0FB2004B;
- Thu, 18 Jun 2026 11:53:23 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 4145520040;
- Thu, 18 Jun 2026 11:53:23 +0000 (GMT)
-Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com (unknown
- [9.111.46.88]) by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Thu, 18 Jun 2026 11:53:23 +0000 (GMT)
-Date: Thu, 18 Jun 2026 13:53:21 +0200
-From: Jan Polensky <japo@linux.ibm.com>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <ajPcMQprnR4HJfAi@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
-References: <6a32b644.f32a6769.150c63.1270@mx.google.com>
- <6a32baec.95d0a0ea.22b4a3.6ffe@mx.google.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6a32baec.95d0a0ea.22b4a3.6ffe@mx.google.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE4MDExMCBTYWx0ZWRfXw+APs15u1mma
- 5OGdPgBu0e9UHlBdmGXjJ2h80XWYX+OjWVdGMiWWwh4uCH8yh66tVsUQCCi3jC8Ev7nIFT/mic+
- fNV8XWr5B0zTD5FHK325uFtsAf40ybQ=
-X-Proofpoint-ORIG-GUID: jhfBUayhIcAaMxLZb_S_qIoEogUFtl-h
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE4MDExMCBTYWx0ZWRfX2S34BWJSBqXy
- dgoLepn/670IG0X8U4AX66x0jZw/KanZJqHFCM1GUpnejuyzBAxBzTzVQEQtTvuZE8EAhm+pZXa
- r/rRDe6J2NJby52u3ij+5LZSGIUWAGp7o7nNXgGx4CEsnC0bDygiXwI7kua6hduSYRWeG5PsJTv
- jmuDKWCKg6ZlBmXciGoZaLsjYEOZIUX4TjkfubLPC4YNdOnHkZo0EGFJqo73lux8yyMEIpxl4az
- D58THkfczsinEqNZOP7T7Hcc1YB7EWPXSsPvsoXqD6H5sWHYth25nYW3Xp0rGFz4YRD8KPg1jvl
- Izy1rcKaJQbvfttMvkdCThbHj1xKi1Do1F6eUVhbJzrIHvhBIWKRzkHY3ypjHDO8CqExTAqsMjb
- WZYUzPe3JsW02DVmq/79VvZXxiiIkIT3+fB93bsvfELOkNWf3CWv00wdDwONvIMSa+ZVKAH89Up
- jQI/wx2LZ39kdsDfGxw==
-X-Proofpoint-GUID: jhfBUayhIcAaMxLZb_S_qIoEogUFtl-h
-X-Authority-Analysis: v=2.4 cv=L9gtheT8 c=1 sm=1 tr=0 ts=6a33dc36 cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=kj9zAlcOel0A:10 a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8
- a=VnNF1IyMAAAA:8 a=iox4zFpeAAAA:8 a=Q46RfXtMypDhzTC_2doA:9 a=CjuIK1q_8ugA:10
- a=WzC6qhA0u3u7Ye7llzcV:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
- definitions=2026-06-18_01,2026-06-18_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 impostorscore=0 malwarescore=0 clxscore=1015 adultscore=0
- phishscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2606180110
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C48EC200246
+ for <ltp@lists.linux.it>; Thu, 18 Jun 2026 13:53:34 +0200 (CEST)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-4624c1409c9so636936f8f.3
+ for <ltp@lists.linux.it>; Thu, 18 Jun 2026 04:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1781783614; x=1782388414; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
+ b=M5nveGb+CfzCF05flyetvWzLXhlmmsZJ9pJ8qDxUWacJivxycfn7Cas9aC9TVuxyA/
+ +WREiJ/Hf0QGdgDtCCL8TIvq2R5UY8dc/IGqQe+wfRirltuA9JdY+6Yf1rR1xY+qcT7G
+ HXTi93zGvAV7R/OYHXZOSz8NaeAItmEmqJa0jLLmVzf4VMZC/RpU1JiK3/IyFRwkBLTE
+ qDUy+PPCM7c74qlN4o92wHRokhorUtr126KF6l5ADsQ0/r2C8L1X/wj03ZP8jZRd16bB
+ zp3wSlyJ+2eH1YrxfKy1tnsIWY3yl/ZDtIvLcyZ7Hgiu59+qUhVuHck7T4yXfB0ml+cM
+ OpUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1781783614; x=1782388414;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
+ b=KzKMaOk9f8hRvY2NhzznJHinyX1IArsiixuf4YxY0TAjPnRBXBrjyOfDwAj9sZIR/B
+ 7ZQtqNZV1uXuEYZTpSS3iXEBp7V5ibMN6n/H9ORllzuj0cLEwhqJFmgyvp3RARV1K4XH
+ qoHL0mpZwYddwOPEeDsnYY9ZiuKWtChi7/Wa2hSgjQ2omQMv3w2A8w1NhL8z4hdcYnzL
+ DjL5rJ2f0+/+X7cUqQJT27B0XKILbmm1WZT/zvgtuyU0jd8s5CEWyx6GmApaxevrmbsw
+ rpRsKvXPNUyqvaRv55GHfuKuT2GnjE8+2NH8R7E5hjytkAUfHKQi+jULiPYo/ve8sB53
+ O6zg==
+X-Gm-Message-State: AOJu0YyU39EHz/hvjSAH+GfbAqaGgmm639bq+bhzbzD2CMYocLaEd4hw
+ SLHJTWUP1XvvbhL39FJVaAf1ptX6TstpwEhGFqolC3vJ2OT+N84/LEZMf39AHM+Yjbo=
+X-Gm-Gg: AfdE7cl8cK1dzCuA8/RwdhJJ6eeAtGkpxk+7NKjxNF8mTod+3c2DNvMysnff2foWJ7Y
+ j4PrsCi1kEYdVFV0n1VFIA320eyaBQETQXxWgfKYTsHaiCGFFleu5FF7gjBwYeYK3Xx9Q251+88
+ +gsycutmyvL7zI5HX59U4ROPIH4S5GdM0wXophaaNZJvI/t8ZkIVE2uXDYEm228pwBZCctCbqwX
+ dDcb2P4VcDUiS96mXpRXc5t0KOOai6scwj/kkop6V/ANGzGw2UT6BvKQ3VoYIyGnXJ9PBBdjMK+
+ 591w2lm5E6zYgnFXOvAfyrpdvTHPwfjgR7Z84b9zmt7eeltsnPu8YXbd4hlfSqBjs5LCrSdc91j
+ IvpiM5016+++fO2vRN0TtW++sRsvy66Mu/fJCy8XQB5LwPpKzyfGiYOxq7gCXmGgHdSUArHr7Pg
+ 2HfSdjKcGw8105R0dlHDkzaCP0/FUfGUW3JCCcRzB30NMBJ9EZj3812tj13m9+4A==
+X-Received: by 2002:a05:6000:2013:b0:460:3233:beed with SMTP id
+ ffacd0b85a97d-4641db19285mr3354323f8f.41.1781783614078; 
+ Thu, 18 Jun 2026 04:53:34 -0700 (PDT)
+Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
+ [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-4606f26f4f6sm66033504f8f.16.2026.06.18.04.53.33
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 18 Jun 2026 04:53:33 -0700 (PDT)
+Message-ID: <6a33dc3d.1d29a1e2.e9ce3.e178@mx.google.com>
+To: "Avinesh Kumar" <avinesh.kumar@suse.com>
+In-Reply-To: <20260618114706.105296-1-avinesh.kumar@suse.com>
+Date: Thu, 18 Jun 2026 11:53:33 +0000
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/1] swap: Add exfat to filesystems requiring
- tst_fill_file
+Subject: Re: [LTP] [PATCH v2] fw_load0[12]: Skip on Lockdown and Secure Boot
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,47 +93,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Jun 17, 2026 at 03:19:07PM +0000, Andrea Cervesato wrote:
-> > I'm just wondering how to implement it better.
-> >
-> > First of all, we should mention the commit that introduced fallocate()
-> > support into exfat inside the patch commit message.
-> >
-> > Secondly, since the code was already working before v7.1, maybe we should
-> > fill the file in exfat only for kernel >= 7.1. But I don't want to touch
-> > the core library.
->
-> Second update: .swap_activate is not implemented in the linux kernel
-> for exfat and the commit causes EINVAL only for swap allocation. That
-> is caused by bmap() due to the generic swap activation.
->
-> So instead of working around the issue, we probably should have a feature
-> in the kernel along with fallocate() support in exfat.
->
-> Probably a kernel bug/missing feature.
->
-> --
-> Andrea Cervesato
-> SUSE QE Automation Engineer Linux
-> andrea.cervesato@suse.com
-Hi Andrea,
+Merged, Thanks!
 
-just to add some context: the regression itself was on the kernel side.
-The relevant upstream patch is
-https://lore.kernel.org/all/20260603131950.321858-1-japo@linux.ibm.com/.
-My understanding is that the kernel-side change did not resolve the issue
-for the LTP test suite, and that there was also a separate LTP-relevant
-aspect for exfat swapfiles, where actual data writes are required before
-swapon() succeeds.
-
-Best regards,
-Jan
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
