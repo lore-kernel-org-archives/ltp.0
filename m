@@ -4,82 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A875DCD98ED
-	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 04:04:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5EA0CD98ED
+	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 11:36:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1781782563; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=4j3V9eSDMmkzs5GImTfkeXgWOqphWN8fS/c6spLwuQQ=;
+ b=BNqVt6BWbq3++M11aMRWpLWtjEeebxGGdi4Gd480A+gn/HIeO6EcLje/Yvy6mCkWdIqni
+ AXSTW9yjPyU7aGVXADTeejl7IwsrsxOH9+RI1epSuzqsteGIKOI/j+9MmKfoBXwVeNC/uXr
+ o/EduEZe5vJYhXbHAyhs/pZRTyJZZFY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CF8B23E6BF9
-	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 06:04:36 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id BAD4F3E5875
+	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 13:36:03 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C99B53C537D
- for <ltp@lists.linux.it>; Thu, 18 Jun 2026 06:04:19 +0200 (CEST)
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
- [IPv6:2607:f8b0:4864:20::743])
+ by picard.linux.it (Postfix) with ESMTPS id CDDEB3E4E10
+ for <ltp@lists.linux.it>; Thu, 18 Jun 2026 13:35:41 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 73653140074F
- for <ltp@lists.linux.it>; Thu, 18 Jun 2026 06:04:19 +0200 (CEST)
-Received: by mail-qk1-x743.google.com with SMTP id
- af79cd13be357-91ae31bbaa9so54780185a.1
- for <ltp@lists.linux.it>; Wed, 17 Jun 2026 21:04:19 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B240E1400E07
+ for <ltp@lists.linux.it>; Thu, 18 Jun 2026 13:35:40 +0200 (CEST)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-4624a44e152so707088f8f.2
+ for <ltp@lists.linux.it>; Thu, 18 Jun 2026 04:35:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1781755458; x=1782360258; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=b/yJwom/BsLTtuZHCWVADwtP6Q1HPeCgN/plRQVROjs=;
- b=iE4Th5BgpCxFtTc/f824Z8cPAMolO2A9UU7lvDdouz2u/fabS1TFWZzSnSgLuvEhEw
- MTN9WwoZzTtVNtjkBouH/FazB1Lsf3qCsp+NTmxRw8EFFDh2+vIfPZwPrKVfa71jVqw0
- QltHyVojfbxXY7MxSSc6cRFeCCC3EMPd5V8sT68yX9sQp0wJ086f7MnEYP1h/3+pS5Xf
- 3K1VfvJLdJcRJtuc6e/rp+Ocz4H7LcysLJeenJ4PIHwhIUsEwKhPPd5kX1AZEBxzC1NL
- mvXZMm4/rvX0WMFMQ6jIZNM6KP368eRsDoqlFGGw7VtjNeNYmX6Ux9kAcFaU2iMwYvOo
- C7AA==
+ d=suse.com; s=google; t=1781782540; x=1782387340; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=/Vqvw2Ldw7kY32w3/xeDZNG3IGw2eKp7lfkUPbyWWjs=;
+ b=N4ov3owVmb+RgXSIEvaUzeome/lDFWLs2JK2rjzFV77rtQ7hErvH1CKuMYNykbTMEy
+ xtlPiE6XegThTz7srUuChFcPVcLXgjr1Fwb1yAVxQd29NmTevehWlI7i53yMC1070rV6
+ 4rWajrbqnFHn54GJ66V/rnt8990BkIAvx2WBdAcw81F++FnSWKecP/4VNpcSrqj7/Uwq
+ lVHwOAIjXQGJYvBMThXZ1+PC9M7+r6RePLR43ib0Vg2GAqoqpWu5OL/DV1kLD9MQg7rf
+ GdGEqLYJlvRxXqnb1j+EijZHVQcTpOc0WTJzYDFHysuHH9jxYKCyqujZnQCGmTVm66jO
+ 320g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781755458; x=1782360258;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=b/yJwom/BsLTtuZHCWVADwtP6Q1HPeCgN/plRQVROjs=;
- b=HNZ6QinzEIkAQPjHWN7XtKHxeHk0txmSEcQJ4szqySGkfkhWiixBAh29eUlngaJex/
- Kd1tYyeoPqwH24hldQ4pp/tW8ZLESHKMOa2VjEaRCJD/o2hCgJV4bxCCnOQeuOzLmVJ8
- ygiONpf4zbu80PDvs+4zbinKK9j2lUP2Ci4KEmIW79ZW5KaL+EYrJrGMvAwdEYnfEueW
- red6QgcseAgS2RjcWqBVnCUCdkkGxI34sZM85J5OnJM+AFyFflK+fLG4GdjVBbI3V76P
- S6u5AyKUYWRVPQXoIjVySYuRhLl5lUjFhxdmRGMrcqMKXg0UqhpGObeC149wzau1LCZO
- WM6A==
-X-Gm-Message-State: AOJu0Yx0NSnLhryzecpJdkFk2aKDFEspekw5mdCkACNEte55rtlu//SJ
- cDHAlR8Rqb6Jb3jm9iOSF1aC3Of2YcOCq3L71xQkcQO7pWM7AhullNxe
-X-Gm-Gg: Acq92OFLg/G8z9HrCts6DuEp6UJgKHf5ptBqpvvKtJ8anD8tdmHnXKl8m73YMIPBWA/
- 2MCoBvI7UjpWWPMkXM96FhY63QyHzgfgkBSPC0tXgQKl3rStSQJmsDIpTz9OUftp4eyxgRUKrVP
- RZ0WSauJMokfNb2mODTgBzOf2ZqbE2BwjVdjVhnIgH8CPzYvDg6kGJgZfg2Bo6lwYdcBntq9LFm
- 8QrNDcUW+OPBXB3M67Gtsomh2qPoH3IteCEoa6IVd3k18xpvOVxHRIM8nzAYgN2mbSWeJJjHm99
- 15wyksbW9TkmhpFlvEj/i1cNhHmPvW1aXHSWZAdeM2oWd1XWxcS1/OaatHWlPSJbuAN8IdFjrG9
- 5dhnjRb4hWWzpp9y8pTze7dRo6PyyiX3wQ6GXFgeTm3Z+BuSwEt+V2qp3tOrTbqU4v+k3HG2XLQ
- ADe/7RKMquog4XVdix5Dk5KV1j2MVKB0P8kuQ957EBTzZ+/1uguch9gymesQ2GOuViv42ZBjAmF
- sA65asZmpeo3kPqTEN+NLpvjZibbmowB7lFn0FY9Q==
-X-Received: by 2002:a05:622a:2611:b0:50e:a1ab:114c with SMTP id
- d75a77b69052e-519ac38fbd1mr96627571cf.32.1781755457942; 
- Wed, 17 Jun 2026 21:04:17 -0700 (PDT)
-Received: from
- runnervm1li68.i3bvc2db5o2uln5sftk5ylwv3b.ex.internal.cloudapp.net
- ([172.183.135.145]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-517fb61d948sm179301451cf.1.2026.06.17.21.04.17
+ d=1e100.net; s=20251104; t=1781782540; x=1782387340;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=/Vqvw2Ldw7kY32w3/xeDZNG3IGw2eKp7lfkUPbyWWjs=;
+ b=YDYOC+3dKNIDLZENCpbvCHYKXGy/aOxk66BNkMbRvXwMx5fUt8Suo36IrZpKlL5MUU
+ 4wV+O3Mg9enZJQfCeUuZvvX3XGkqY/8k3QKqvXWcfCfezelVERkSLBlcb4LUZy2oJsN5
+ TrKjVqqErBgY/Arps2izqxP/zChsPuZiWYX4OccpTfohxHkdXy5I5FlkKXm9pfZSksX1
+ 1I15CfmiXwtfa3nNFGdd4g5fOuS2SGyhoCuqI5iwr8XxZiyj+5NeUl5gJDVd7x9p91zg
+ uyzXWfw4Q3FaedrF3yKbVa6BrUg6liIYjaZLufKVzHRMGQbbcyJYiKCUKJjCUMd1mBXx
+ GqOA==
+X-Gm-Message-State: AOJu0YxdHkbtB6u/Ds/nYZdg1xfA7ydnimwKNAKeMjK1Nt4vhp3n3GHt
+ fqESkzrT3sMvA39nQmCtLB+f+L2mDWb4RBCmTGOLzT/CPVfaEoyMDib+pMJxqFgstF8=
+X-Gm-Gg: AfdE7clXlY/xFO2zt8Y6lyFZ1ogxZl49o2teorp01+IPnQ3PKfCEKaiWlM1uaJ7O9qo
+ s9pff7GHA29INnaO2WwkhoSDsOvrJlMyBPGjWlcIaFPKAnXAbfn5v+9WgrLImqcPZfjIyBr7Kpj
+ HpZv/xsirXx1Y47m2SPsQjVz7fIrtHnpTmCd6E7lFmEyVaQgg+ySHTI37SE7Gp+GXKN1DbXcjpO
+ Z5mc4IkG/8jHfG0A4FuLsdsQIxSvtAZmhbvZ/c+C1pKqHlcEHzGexy8ruaC0xMZRb+RTE9NdST5
+ msvkw1IuDJ1syZjiZw4HwHNBzETXTw5IB05ONJTn6vmlHGBzhKG6gwKLQJrBZznV5ftAD3xx+r9
+ HIaAB9iC3VBIwCR7wLsbZ8fhkMxnfq6jd7ZvYi2yNTrewU0Dc/3ch16WWhAzcUI+DcekJFgLWkg
+ EOB4tKfnhkhwPeIhue/x9UJHtpJDeDd5TMreJwZ8DkkoULAAUEDS7LB8C8waKD+w==
+X-Received: by 2002:adf:f488:0:b0:45e:ea65:d329 with SMTP id
+ ffacd0b85a97d-4623627634dmr10193517f8f.7.1781782539968; 
+ Thu, 18 Jun 2026 04:35:39 -0700 (PDT)
+Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
+ [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-4620b3ed0d2sm26484519f8f.22.2026.06.18.04.35.39
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 17 Jun 2026 21:04:17 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Thu, 18 Jun 2026 04:04:16 +0000
-Message-ID: <20260618040416.4044-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260618023820.9823-1-wegao@suse.com>
-References: <20260618023820.9823-1-wegao@suse.com>
-MIME-Version: 1.0
+ Thu, 18 Jun 2026 04:35:39 -0700 (PDT)
+Message-ID: <6a33d80b.cf2df9a4.12392.26f4@mx.google.com>
+To: priyama2 <priyama2@linux.ibm.com>
+In-Reply-To: <f3181c24-f3b8-4083-ac42-fb2da6cfa8a1@linux.ibm.com>
+Date: Thu, 18 Jun 2026 11:35:38 +0000
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] fsconfig04: Check FSCONFIG_SET_PATH
+Subject: Re: [LTP] RFC: Proposed cgroup v2 and openat2 test case
+ contributions for LTP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,39 +95,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi Priyama,
 
-On Thu, 18 Jun 2026 02:38:02 +0000, Wei Gao wrote:
-> fsconfig04: Check FSCONFIG_SET_PATH
+the cgroup testing suite in LTP can be a bit unstable due to the nature
+of cgroup v1 -> v2 migration. The V2 seems stable, but sometimes tests
+might produce false positives, mostly related to system configurations
+or system overload. We digged quite a lot into it in the past years and
+we ended up with a solution which "good enough" for regression testing,
+supporting both v1 and v2.
 
-> +	TEST(fsconfig(fd, FSCONFIG_SET_PATH, "journal_path", dev2, 0));
-> +	if (TST_RET == -1) {
-> +		if (TST_ERR == EOPNOTSUPP) {
-> +			tst_res(TCONF, "fsconfig(FSCONFIG_SET_PATH) not supported");
-> +		} else {
-> +			tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_PATH) failed");
-> +		}
+Also, kselftests already cover many cgroup testing scenarios and we are
+not actively investing time on it. But you and others are welcome to try
+implementing something, if you think this can be helpful.
 
-Minor: the inner if/else branches are single-statement bodies, so
-braces should be dropped per kernel coding style.
+My biggest concern is the code quality. cgroups can be a complex beast
+to handle with LTP API, which are made supporting v1 and v2.
 
-Verdict - Reviewed
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+If you are willing to implement new tests, please consider test cases
+scenarios that are not implemented in LTP and kselftests. Those are the
+most valuable at the moment.
 
 Regards,
-LTP AI Reviewer
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
