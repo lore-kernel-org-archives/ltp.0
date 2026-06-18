@@ -4,87 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1CB0CD98ED
-	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 13:45:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1781790318; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=qnSmAgkveN0vSRR/7Gv9xpDQnCunUF7635HmgeS7sdE=;
- b=PC0qBnp2wB6lAfYeCsuNGi4m+mBsS6tND3VVb4kUSpUq1kRAYAw654FVkLLsWAKtbk//F
- MM2kOIXb9j6e12WAJs6dhM9AOiXCaL4V2stLiC0vUDnEloQ/bOqg2Qsipps+q+hHGGWBt51
- FiTITL222KzubWOujYO+mzxRzHcMzJo=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5430CD98F2
+	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 14:00:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 326F43E5880
-	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 15:45:18 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 431F43E5888
+	for <ltp@archiver.kernel.org>; Thu, 18 Jun 2026 16:00:16 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 506A73C741F
- for <ltp@lists.linux.it>; Thu, 18 Jun 2026 15:44:56 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id E64FD3E14D5
+ for <ltp@lists.linux.it>; Thu, 18 Jun 2026 15:59:59 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EC3A82009C8
- for <ltp@lists.linux.it>; Thu, 18 Jun 2026 15:44:55 +0200 (CEST)
-Received: by mail-wr1-x436.google.com with SMTP id
- ffacd0b85a97d-462342ac290so1122089f8f.2
- for <ltp@lists.linux.it>; Thu, 18 Jun 2026 06:44:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1781790295; x=1782395095; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=scnpZUn6U0Dug3JpIFrCelvmHJa6eZpSVJVp9gPrJ9A=;
- b=OsOO9KKdzVvh3eTL+BfR2VnXf7G8kJBnDSqYAlGId13+szq+sPg2J+UDSaaX8CLQnX
- B57i3eSOGMqOu36mmWbQ7Jz2ETLyiS9Kv8O7MIla3FVw0iNFumHqDzxACQzqReqduKYN
- R7e4JO3hGSQNUzD4Qf7R3d7y7YMIBuBolUEEOooNYQWmnkXGxw15PozuUCBTNPLJrCHq
- Uov7o9jbMa5pwpI4TYJ6wTC8uKFJIRpCvle8xSfIYCL86w8MU1FLCZ/rVsQIxfeKNNyF
- M938rp+wZOWWEi/cVsoagF4GPUfL1qjA0EFwju9pH5kdgMp12UlKcGgcic4OttwnmaVy
- mb4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1781790295; x=1782395095;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=scnpZUn6U0Dug3JpIFrCelvmHJa6eZpSVJVp9gPrJ9A=;
- b=I1lnR/fnhJNl6GblwFK2jpRGo+t9sXzKNY/svLcd4ygpKVHrYLvT+vGc0SRI9d96UL
- rTdS6MlzqnxXrVALC8/12P90aPiAyTSfC4kqs8pPmHsbrqPT9NrJsbxrQ62IWC7djnLe
- cCJ3F7gSVM7rYrtkRWhb4C48K9hBo24Wzgz2tzTKB3QABRValFugOglLP9TiUUseNMTT
- NHx5jVjBS+plN1fTAvqA155/ceHSUasgQM01GIExkF3s/B0FvijC+UAWni9gEJOhqBEl
- 44v6Q0hUT9ss87ud/9pkf252xoBhshgMje4xxPkC6IlTlIa5+zFb71fWx+akKuriR1wP
- MyBw==
-X-Forwarded-Encrypted: i=1;
- AFNElJ+jk/CK8WtdJu6CtINBMJpWqNOM/jCzGoGICZhD8H2VCR7hGU9E16aF1mtCGQ8f/0WJlI4=@lists.linux.it
-X-Gm-Message-State: AOJu0YxO4TnTnRkChmXGI7iIdQd1PCU+iuzXTd49zzbPuWcn6ve2VTwb
- YiVpP7KB8QmOnEKj6LoAO23YExM5wNvgdqnl/aEuckBYCaHYASbQRd4PcwObW5L00xg=
-X-Gm-Gg: AfdE7cngz6cDx5HccvwQGgxxKwdEKzZUsZgNeRph0608zAOSUTewT9Qyg8uCucG5Gyb
- ULWjrtX4hZYh7/IIEjMcGexXYhwO5eJ+AZ7pqu03Grgb0Y7eWQNZQgmfHte9rVG/LU0A09Xtenc
- gykcf6c90uld4lEJzcXV4tmYyGd3NpnTXARmz+lJz3VVRunUAfm7XXPXOfgzKqD8Am0ElfRV5Pv
- EPCp8R1JMKW100DubtJb87tYLr1WyArYdoe3rO4e1PZy+auAROjXJrlHzAKZ6sSOk5sNH1aWZb2
- v+DN9QMJXiRqM5vcyy1ES2ulzNEBNFVLiRww9yc2Hpsieher8It+bd1Q23yAsl/lgkWrMg9F8qm
- ufUI82VisSIFZfHsuYxfYyH25LegH4FCmtjQzXshUXIRvu9xLqnbuwGyzoD7aOSdcXFQ5zZo+QB
- 1LeAILmKD9mzPhTgva83WRVpwKnJk529vTAwjP4wLxa/zltB6T0n3o8s7MShq9Tg==
-X-Received: by 2002:a5d:5d86:0:b0:439:c18f:5aaf with SMTP id
- ffacd0b85a97d-462415ad9f7mr13106687f8f.34.1781790295204; 
- Thu, 18 Jun 2026 06:44:55 -0700 (PDT)
-Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
- [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4606f26f309sm58453447f8f.14.2026.06.18.06.44.54
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 18 Jun 2026 06:44:54 -0700 (PDT)
-Message-ID: <6a33f656.283787d8.2dd2f2.4e3e@mx.google.com>
-To: "Cyril Hrubis" <chrubis@suse.cz>
-In-Reply-To: <ajP187rd7nSV-Krv@yuki.lan>
-Date: Thu, 18 Jun 2026 13:44:54 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8D161600810
+ for <ltp@lists.linux.it>; Thu, 18 Jun 2026 15:59:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1781791199; x=1813327199;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=l2GXr+MWWipqtJqETiqL/ebU64vVCT2CP1FFRF+iJ1A=;
+ b=GdFr8qqCraD/iUCI/rIeRsZeZSOE2z9tcYVYnqjjW12xOHfZ08M9Brip
+ rvGvwTPUCFseZ5Lp4fPXoDZ4iRkKTNw7Em5ggDaSYrKMrqPbwwH8xzrCF
+ z12PoAoytkg6oI5OALEJu5vaMdmuuCa2Ozh9CzYXfps6QK6k9SMlxWXUM
+ 74UkImpkw8SfZ3GW9jsmAJHuVjW3oDcgkYed0TgtjBI59yV0DqGTPXd2P
+ edl+qFhlYkEiUvQ88QABzp3GwHRRZyPDgCQtq3+YvR7aKHVkdGpBckFoG
+ uXvhnE8n5YkqeBukll8AEKpE/gc2GjIt65t8VlLpNSFB0BNoNLXHwJNfo A==;
+X-CSE-ConnectionGUID: +YN5+VmiRu+KuSZr0P/4Iw==
+X-CSE-MsgGUID: vr2kKQjmTNi1CJhRq/7yGw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11820"; a="82736050"
+X-IronPort-AV: E=Sophos;i="6.24,211,1774335600"; d="scan'208";a="82736050"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+ by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Jun 2026 06:59:55 -0700
+X-CSE-ConnectionGUID: g/8WynapTFeYdHszWRnY1Q==
+X-CSE-MsgGUID: pgDO1CkAQEm0aMnZ4KZhRg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,211,1774335600"; d="scan'208";a="253358738"
+Received: from jkrzyszt-mobl2.ger.corp.intel.com (HELO intel.com)
+ ([10.245.246.191])
+ by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Jun 2026 06:59:54 -0700
+From: Piotr Kubaj <piotr.kubaj@intel.com>
+To: ltp@lists.linux.it
+Date: Thu, 18 Jun 2026 15:12:04 +0200
+Message-ID: <20260618131203.87824-2-piotr.kubaj@intel.com>
+X-Mailer: git-send-email 2.47.3
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] metadata: add tests grouping support
+Subject: [LTP] [PATCH v2] rfim: add new test for verifying RFIM sysfs
+ interface
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,27 +69,245 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-MIME-Version: 1.0
+Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
+ rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> @groups foo1 foo2 foo3
-> @groups bar1 bar2 bar3
-> 
-> That would allow us to write reasonably short lines and limit the number
-> of lines to a reasonable number as well.
+Validate presence and permissions of the RFIM attributes exposed by the
+Intel processor_thermal driver under the proc_thermal PCI device.
 
-That makes sense yes
+The kernel creates the dvfs, fivr and dlvr attribute groups
+independently, each gated on its own per-device feature bit, so the test
+detects which of the three groups the hardware presents and checks only
+those. This covers platforms that expose both FIVR and DLVR (e.g. Meteor
+Lake) as well as those with FIVR but no DVFS (e.g. Tiger Lake).
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+Read-only attributes (mode 0444) must accept O_RDONLY and reject a write
+open with EACCES; read-write attributes (mode 0644) must accept O_RDWR.
+The open() itself is what exercises access, since sysfs can refuse it in
+kernfs even when the mode bits would allow it.
+
+The test works only on Intel platforms with RFIM and needs root for the
+read-write attributes, whose write bit is owner-only.
+
+Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+---
+Address feedback.
+Additionaly:
+1. I found that there are machines without DVFS, so don't require it.
+2. It's possible for both FIVR and DLVR to be present, so don't assume
+they are exclusive.
+
+Regarding TST_EXP_FAIL(), I found that TST_EXP_FD() and TST_EXP_FAIL2()
+fit better here.
+
+ runtest/power_management_tests               |   1 +
+ testcases/kernel/power_management/.gitignore |   1 +
+ testcases/kernel/power_management/rfim01.c   | 163 +++++++++++++++++++
+ 3 files changed, 165 insertions(+)
+ create mode 100644 testcases/kernel/power_management/rfim01.c
+
+diff --git a/runtest/power_management_tests b/runtest/power_management_tests
+index 4da57ee72..d05c95608 100644
+--- a/runtest/power_management_tests
++++ b/runtest/power_management_tests
+@@ -1,5 +1,6 @@
+ #POWER_MANAGEMENT
+ high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
++rfim01 rfim01
+ runpwtests03 runpwtests03.sh
+ runpwtests04 runpwtests04.sh
+ runpwtests06 runpwtests06.sh
+diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
+index 03f0c83e4..74f6df14f 100644
+--- a/testcases/kernel/power_management/.gitignore
++++ b/testcases/kernel/power_management/.gitignore
+@@ -1 +1,2 @@
+ high_freq_hwp_cap_cppc
++rfim01
+diff --git a/testcases/kernel/power_management/rfim01.c b/testcases/kernel/power_management/rfim01.c
+new file mode 100644
+index 000000000..c24ea60ff
+--- /dev/null
++++ b/testcases/kernel/power_management/rfim01.c
+@@ -0,0 +1,163 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
++ */
++
++/*\
++ * Validate presence and permissions of RFIM attributes.
++ * The kernel exposes the dvfs, fivr and dlvr attribute groups
++ * independently, gated on per-device feature bits, so the test checks
++ * whichever of the three groups the hardware presents.
++ *
++ * Permissions are verified by opening each node: read-only attributes
++ * must accept O_RDONLY and reject a write open, while read-write ones
++ * must accept O_RDWR. For sysfs nodes the mode bits alone are not
++ * authoritative - the kernel can still refuse the open in the file's
++ * own syscall handler - so open() is what actually exercises access.
++ *
++ * The test requires root because the read-write RFIM attributes are
++ * root-owned and created mode 0644, so only the owner holds the write
++ * bit. An unprivileged user could read them but would get EACCES when
++ * opening them O_RDWR, which check_read_write() would misreport as a
++ * failure rather than reflecting the actual access policy. The read-only
++ * attributes are mode 0444 and world-readable.
++ */
++
++#include "tst_test.h"
++
++#define RFIM_ROOT "/sys/bus/pci/devices/0000:00:04.0"
++
++static bool have_dvfs, have_fivr, have_dlvr;
++
++static const char * const fivr_nodes[] = {
++	RFIM_ROOT "/fivr/vco_ref_code_lo",
++	RFIM_ROOT "/fivr/vco_ref_code_hi",
++	RFIM_ROOT "/fivr/spread_spectrum_pct",
++	RFIM_ROOT "/fivr/spread_spectrum_clk_enable",
++	RFIM_ROOT "/fivr/rfi_vco_ref_code",
++	RFIM_ROOT "/fivr/fivr_fffc_rev",
++	NULL
++};
++
++static const char * const ro_dvfs_nodes[] = {
++	RFIM_ROOT "/dvfs/ddr_data_rate_point_0",
++	RFIM_ROOT "/dvfs/ddr_data_rate_point_1",
++	RFIM_ROOT "/dvfs/ddr_data_rate_point_2",
++	RFIM_ROOT "/dvfs/ddr_data_rate_point_3",
++	NULL
++};
++
++static const char * const ro_dlvr_nodes[] = {
++	RFIM_ROOT "/dlvr/dlvr_hardware_rev",
++	RFIM_ROOT "/dlvr/dlvr_freq_mhz",
++	RFIM_ROOT "/dlvr/dlvr_pll_busy",
++	NULL
++};
++
++static const char * const rw_dlvr_nodes[] = {
++	RFIM_ROOT "/dlvr/dlvr_freq_select",
++	RFIM_ROOT "/dlvr/dlvr_rfim_enable",
++	RFIM_ROOT "/dlvr/dlvr_spread_spectrum_pct",
++	RFIM_ROOT "/dlvr/dlvr_control_mode",
++	RFIM_ROOT "/dlvr/dlvr_control_lock",
++	NULL
++};
++
++static const char * const rw_dvfs_nodes[] = {
++	RFIM_ROOT "/dvfs/rfi_restriction_run_busy",
++	RFIM_ROOT "/dvfs/rfi_restriction_err_code",
++	RFIM_ROOT "/dvfs/rfi_restriction_data_rate_base",
++	RFIM_ROOT "/dvfs/rfi_restriction_data_rate",
++	NULL
++};
++
++static bool has_group(const char *name)
++{
++	char path[PATH_MAX];
++	struct stat stats;
++
++	snprintf(path, sizeof(path), "%s/%s", RFIM_ROOT, name);
++
++	if (stat(path, &stats)) {
++		if (errno == ENOENT)
++			return false;
++		tst_brk(TBROK | TERRNO, "stat(%s)", path);
++	}
++
++	if (!S_ISDIR(stats.st_mode))
++		tst_brk(TBROK, "%s exists but is not a directory", path);
++
++	return true;
++}
++
++static void setup(void)
++{
++	have_dvfs = has_group("dvfs");
++	have_fivr = has_group("fivr");
++	have_dlvr = has_group("dlvr");
++
++	if (!have_dvfs && !have_fivr && !have_dlvr)
++		tst_brk(TCONF, "No RFIM attribute groups present under %s", RFIM_ROOT);
++}
++
++static void check_read_only(const char *path)
++{
++	int fd = TST_EXP_FD(open(path, O_RDONLY));
++
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++
++	TST_EXP_FAIL2(open(path, O_WRONLY), EACCES, "%s should reject writes", path);
++}
++
++static void check_read_write(const char *path)
++{
++	int fd = TST_EXP_FD(open(path, O_RDWR));
++
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
++static void run(void)
++{
++	if (have_dvfs) {
++		tst_res(TINFO, "Checking DVFS");
++		for (int i = 0; ro_dvfs_nodes[i]; i++)
++			check_read_only(ro_dvfs_nodes[i]);
++
++		for (int i = 0; rw_dvfs_nodes[i]; i++)
++			check_read_write(rw_dvfs_nodes[i]);
++	}
++
++	if (have_dlvr) {
++		tst_res(TINFO, "Checking DLVR");
++		for (int i = 0; ro_dlvr_nodes[i]; i++)
++			check_read_only(ro_dlvr_nodes[i]);
++
++		for (int i = 0; rw_dlvr_nodes[i]; i++)
++			check_read_write(rw_dlvr_nodes[i]);
++	}
++
++	if (have_fivr) {
++		tst_res(TINFO, "Checking FIVR");
++		for (int i = 0; fivr_nodes[i]; i++)
++			check_read_write(fivr_nodes[i]);
++	}
++}
++
++static struct tst_test test = {
++	.min_kver = "6.4",
++	.needs_cpu_vendor = "GenuineIntel",
++	.needs_kconfigs = (const char *const []) {
++		"CONFIG_INT340X_THERMAL",
++		NULL
++	},
++	.needs_root = 1,
++	.supported_archs = (const char *const []) {
++		"x86",
++		"x86_64",
++		NULL
++	},
++	.setup = setup,
++	.test_all = run
++};
+-- 
+2.47.3
+
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
+Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
+
+Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
+This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
