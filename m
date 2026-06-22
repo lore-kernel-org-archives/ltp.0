@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 090A6CDB46B
-	for <ltp@archiver.kernel.org>; Mon, 22 Jun 2026 09:44:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90BB7CDB46F
+	for <ltp@archiver.kernel.org>; Mon, 22 Jun 2026 09:58:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7ADE53E54ED
-	for <ltp@archiver.kernel.org>; Mon, 22 Jun 2026 11:44:53 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id B71693E6998
+	for <ltp@archiver.kernel.org>; Mon, 22 Jun 2026 11:58:13 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 315193E53B0
- for <ltp@lists.linux.it>; Mon, 22 Jun 2026 11:44:38 +0200 (CEST)
-Received: from mail-dl1-x1241.google.com (mail-dl1-x1241.google.com
- [IPv6:2607:f8b0:4864:20::1241])
+ by picard.linux.it (Postfix) with ESMTPS id D0B543E53B0
+ for <ltp@lists.linux.it>; Mon, 22 Jun 2026 11:57:56 +0200 (CEST)
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com
+ [IPv6:2607:f8b0:4864:20::f43])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C152110006D5
- for <ltp@lists.linux.it>; Mon, 22 Jun 2026 11:44:37 +0200 (CEST)
-Received: by mail-dl1-x1241.google.com with SMTP id
- a92af1059eb24-139a5f4ca15so2655290c88.1
- for <ltp@lists.linux.it>; Mon, 22 Jun 2026 02:44:37 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8A3E0600132
+ for <ltp@lists.linux.it>; Mon, 22 Jun 2026 11:57:56 +0200 (CEST)
+Received: by mail-qv1-xf43.google.com with SMTP id
+ 6a1803df08f44-8dd94941c21so39407236d6.1
+ for <ltp@lists.linux.it>; Mon, 22 Jun 2026 02:57:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1782121476; x=1782726276; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1782122275; x=1782727075; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=LIhP8imA/RRrxd3cJhr7Ijes/AfmnbmZHsyzKMmUzbw=;
- b=F5Nq4e2hESP+ZmMclWl/FXk6mWaEhs+gmuzk2r4mZbt45hsjk01PbVfvMSDncHQW67
- wbWAidhSSgzEcxVoWyaSjDQIMCptq7VqWxo73b3YyFXl0xIZS5J2JrSVZD65HHNLmYa1
- sfcjXcKAEFNQLLLkfrbirfmvfKp6VgAVj3XGr2h3ZAGXLMMI5vEZl8v2zOcPgX+dEST+
- pYxFcbgWoHhm1Bh5u76ls+Ggtw1GMxlz2mcjgzgnSbehKDwnKDM8sndEEK1l76iq8QiZ
- ClLnmxL5h+flMyA6i0XsaR5V76PgA0m4FuI+8Bi2aDcXJht7zOqV6IUYFd1Nbuhnx8/H
- MBeQ==
+ bh=A6iCMqEzb+kPG9WseVraF7DI0ln7Xqzy5g6E4AKWpXw=;
+ b=i+MxwhtRc9zltSoyGfkP/ta1R8ojR5oDu/KLSezKi7vAUAXZOyhHrdTZpEmWYGlade
+ bzGzvf+rG1DR0gpdrbt2UjVLeQ9FjPGLeuxmSKc9hzYeNWR8VgdDXh7u8JKD1VKcI9LU
+ Cybqpj7AB5+bhJLuHRJUQYGv6tjbq5EaNSesJgbYrHBGNqIwK+dZov2Qe8uwDDqsepUf
+ kRCCR38BrKe1J1KP22Zryf7zJ7XbkpANXwoc5siVcyPpVqX2WPYOezkMWoP5hdsTRVrQ
+ urpIDCIErsP+paII8D6fd6QtAll7Q/brRe33ZK93cNDoFqjj59+F7J9F4NgIlST8B2a9
+ lYqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782121476; x=1782726276;
+ d=1e100.net; s=20251104; t=1782122275; x=1782727075;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=LIhP8imA/RRrxd3cJhr7Ijes/AfmnbmZHsyzKMmUzbw=;
- b=d2Z3ScWfCLpvvPll42rUrIz5F6Nvr1Qg2cLFHBVGbtSk7Jy2fiXbwxjanL3vM+lpQJ
- bZqhN0nrp2UHP9qaEZN6FjLoxHf7ubNrEgdeXHBTR9YL9NnhjbZ6ko8akhDlomK8U6oo
- Nt/EMSHobHTcF5XYy40bJXKjcWwpXPzdKeB5cmpqhf5uyguQRoGD9RJuZz0qD20Cmodu
- todfvZ7Jq/XNcreeFfsEcNQXdXs1ZoloByu7QJMK1HvWAIDMlhnFE0qFN88gqbJXF7iv
- Mko37lr4+5Mqna8b3wW8IZwSLP2KPHonHgPys9+PalJEJ3eR24juNKnYq4mXfz9z4MfM
- EhZA==
-X-Gm-Message-State: AOJu0Yx4Js0cBF2729SsGZZIgxb3fYmKzunf+bFVVAGBnEgyCwtKePA6
- PvrAkFnnxsgblBGGg9Tf7rwyHns+z0trNBslohJWndYaHdtx/pF/cJcA
-X-Gm-Gg: AfdE7clT7TlVtnyBm+oE18beSbkiY1CnqLwmz2oQV4G+L8J8LAhnJQBillU+RzP66av
- 9G33neJ/sY1yzsb80pQaxR9XCcF89nGGXS7C/84rI6b68EzCMMexWKzHj12ygmen+H1wmBcnM5Y
- DfT/TB2Umars5rN9dIRO8/7JRWIeZBVXTsVJRcOZSfkdTi2FxhqkElw0VYkZdKJ7NjS7FH4+6dD
- d3zUMNws4aG46DcDFmWCamj0PsJfNzIYndVcCjq5ZvvZe5lRx+HjVLIjYZ9xH0oilUtChf2KVjJ
- 2Eccl3+aMYft2ppoA7f75oLVeu/I9OK0koYhSA0hDwqGVIpXbWyNIq3Itj8Lj5etnhA+AQzLCbB
- 3eeh6IJDKckA5XUHjcQ99VUhncgIRWmY6/xMAt5xOVuQUz75K/6Q19UiQVIVX8K2ScBGZdPI1IW
- G+P0miI7RmQlSf6Q/9/tsYIcF2h1b5j6Llk3jHllkacFg2JpB7UPGo8GuYbnyylpm4R5gh68RCA
- lbzaD2wx/EQbv5s0JLniGpqO0FOiA==
-X-Received: by 2002:a05:7022:2593:b0:137:4061:8cc2 with SMTP id
- a92af1059eb24-139a369143bmr6849997c88.35.1782121475996; 
- Mon, 22 Jun 2026 02:44:35 -0700 (PDT)
+ bh=A6iCMqEzb+kPG9WseVraF7DI0ln7Xqzy5g6E4AKWpXw=;
+ b=B5IGF0gPvDci7gZEromNMchMCdGKClwd5bzOOFHJnaxsRUsdemTxzchXDrIvF2UeOV
+ wSGFXJrxJhVb+BjgmplK1JfaMd6mQnBKM7GIPmrDqqXp/0xbWxltCU5Abp7zknELtNtY
+ l8qjeVH27kfZ7YA/1bfV9K7uHef4ynh+iot8OVRqUw8d1h1He4ikqLn9HGewDCONL74S
+ x94mSwV6DjQppz5bz9DZ47E7ZZmbY2k2BRrmSxI2zN1/d3mkDpdVj/sEMa5Ilow+Yc2h
+ VqEh9KKVlWwhLR6SfDjf1lUwqx6xt4Y5J2fUOvYE0P6Va+i6ffupcF7umYRuULQaDi0n
+ mokA==
+X-Gm-Message-State: AOJu0YzfEYHMDlvlXyftcGimZShDQKWoah54HmYU5aMfPD4o2ywFZZ9b
+ FpkSvN1icxNf7Nsw4mrkVlWoltVCpyid4+tXx+6RYuv68T6uTgke6UGZ
+X-Gm-Gg: AfdE7cnqSJY0lRneeJ/kbVYkSMNJ35kQGU2PC+XYTCdAFRA3e/wlk3se0jpnabpPHZx
+ bYLbRkD8OYPoMT2CIwgJTrh9ly8S0+2WH023Kz2tBU6/hE9UDRLxiiD0aHE1L1yVkBdo7nqytsW
+ FGRkn6PSPUB9FYXRqI+vqg9/xwPa+uy3LgWv1LJWpR5oWZidz8pTvk+KTDC5piHoDe8pLPsrnha
+ HKKWkQYyolDfJ5yKomWPxX97BgVQAKcrlL3tr7Iaqv/JgSOnX7sbf9kKRwMhJkVnZbUqn+dXaLh
+ h5Bdgm5bnSGasn4tEwjleir8xH8R1gyARmtjRkocexYWhuflrKUlJokPueILHYVk09ReQBYqdnY
+ fTSIGlhU4lTVLNNj7TpSHwqop8NdR9FUdo9VWZholCOJBVxc+iYilNOZwg2ioVqU6TGM4/QnWLl
+ Rdfxhcv0hK7bHUHfpRAtobE+nKFi5nmY44vFk0vsPH4HZvBuaFYVDnQ1Nup64F+v0cIKFbIO0Jl
+ vj51jH9lBRqeJXqye4yWujudbSpIg==
+X-Received: by 2002:a05:6214:4a86:b0:8e1:aa1b:1b20 with SMTP id
+ 6a1803df08f44-8e1aa1b1e72mr76833306d6.4.1782122275314; 
+ Mon, 22 Jun 2026 02:57:55 -0700 (PDT)
 Received: from
- runnervm7b5n9.d1tc3kjhwwxe1ofz5cvxophb0g.dx.internal.cloudapp.net
- ([172.185.47.217]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-139adca1b00sm7036128c88.2.2026.06.22.02.44.35
+ runnervm7b5n9.aznx32dfifrebbvbfxy54ejxre.ex.internal.cloudapp.net
+ ([64.236.133.136]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8df8268ef00sm89068636d6.40.2026.06.22.02.57.54
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 22 Jun 2026 02:44:35 -0700 (PDT)
+ Mon, 22 Jun 2026 02:57:55 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Michael Menasherov <mmenashe@redhat.com>
-Date: Mon, 22 Jun 2026 09:44:34 +0000
-Message-ID: <20260622094434.4103-1-linuxtestproject.agent@gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Mon, 22 Jun 2026 09:57:53 +0000
+Message-ID: <20260622095753.3979-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260621150951.66407-2-mmenashe@redhat.com>
-References: <20260621150951.66407-2-mmenashe@redhat.com>
+In-Reply-To: <20260622-metadata_groups-v3-1-45651d685c3c@suse.com>
+References: <20260622-metadata_groups-v3-1-45651d685c3c@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] futex_wake05: Add EFAULT error coverage test
+Subject: Re: [LTP] metadata: add tests grouping support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,12 +96,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Michael,
+Hi Andrea,
 
-On Sun, 21 Jun 2026 18:09:50 +0300, Michael Menasherov wrote:
-> futex_wake05: Add EFAULT error coverage test
+On Mon, 22 Jun 2026, Andrea Cervesato wrote:
+> metadata: add tests grouping support
 
-Verdict - Reviewed
+--- [PATCH 1/2] ---
+
+> +static int parse_groups(struct data_node *groups, char *line)
+> +{
+> +	s += sizeof(GROUPS_TAG) - 1;
+> +	if (*s && *s != ' ' && *s != '\t') {
+> +		WARN("Empty @group");
+> +		return 1;
+> +	}
+
+Two things here:
+
+The warning says "@group" (singular) but the tag is "@groups". More
+importantly, this condition fires when "@groups" is immediately followed
+by a non-whitespace character (e.g. "@groupsfoo"), which is not an
+empty tag but a word that happens to share a prefix with the tag. The
+message should probably say something like "invalid @groups suffix".
+
+Separately, a truly empty "@groups" line (tag followed by nothing or
+only whitespace) falls through to strtok which produces zero tokens and
+returns 1 silently. Should that also warn?
+
+> +	/* inside the testcases/ folder we will always have at least one group */
+> +	data_node_hash_add(res, "groups", groups);
+
+The comment is not accurate. A file like testcases/kernel/foo.c with
+no @groups tags produces zero groups since "kernel" is the only parent
+directory and is explicitly skipped.
+
+Verdict - Needs revision
 
 ---
 Note:
