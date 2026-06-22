@@ -4,116 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 587FCCD98F2
-	for <ltp@archiver.kernel.org>; Mon, 22 Jun 2026 13:45:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D757CD98F2
+	for <ltp@archiver.kernel.org>; Mon, 22 Jun 2026 13:57:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 904E83E0DA4
-	for <ltp@archiver.kernel.org>; Mon, 22 Jun 2026 15:45:15 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id BF10B3E0E51
+	for <ltp@archiver.kernel.org>; Mon, 22 Jun 2026 15:57:10 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 789653E0DA4
- for <ltp@lists.linux.it>; Mon, 22 Jun 2026 15:44:59 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id D72B13E0DA4
+ for <ltp@lists.linux.it>; Mon, 22 Jun 2026 15:56:53 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B5CEF600715
- for <ltp@lists.linux.it>; Mon, 22 Jun 2026 15:44:58 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8A06A1A00667
+ for <ltp@lists.linux.it>; Mon, 22 Jun 2026 15:56:50 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 58562707C5;
- Mon, 22 Jun 2026 13:44:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1782135897; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=iI4SYj3Hodo20ATp8AYKXjXy65N6i5gs4Io2PdKpY7Q=;
- b=nStlyPoqv0Jx4K7P3cjmtX8ML8dLXQltU7GAS03lem2z2roVGsNb9x6Qw0PjuUKaRGwbk8
- aoVvim2D9ZZlc+MRropfaAYHmCJfge5i/nQpEb1YYRI6yAhx1BL8hAuHFJJN0ZBKiuRD6Q
- +4m1RZlslE2idJW2SIEfa9RnU4RD+Z4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1782135897;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=iI4SYj3Hodo20ATp8AYKXjXy65N6i5gs4Io2PdKpY7Q=;
- b=eW0anFEpK4d+DkYo8s0szeKaqLMNEuXQx4BQ6PQtRh0tYOJMHHZarXE/+HSVFR5cGXV+Qb
- 6vaRkR1UB+ymlNDQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=nStlyPoq;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=eW0anFEp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1782135897; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=iI4SYj3Hodo20ATp8AYKXjXy65N6i5gs4Io2PdKpY7Q=;
- b=nStlyPoqv0Jx4K7P3cjmtX8ML8dLXQltU7GAS03lem2z2roVGsNb9x6Qw0PjuUKaRGwbk8
- aoVvim2D9ZZlc+MRropfaAYHmCJfge5i/nQpEb1YYRI6yAhx1BL8hAuHFJJN0ZBKiuRD6Q
- +4m1RZlslE2idJW2SIEfa9RnU4RD+Z4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1782135897;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=iI4SYj3Hodo20ATp8AYKXjXy65N6i5gs4Io2PdKpY7Q=;
- b=eW0anFEpK4d+DkYo8s0szeKaqLMNEuXQx4BQ6PQtRh0tYOJMHHZarXE/+HSVFR5cGXV+Qb
- 6vaRkR1UB+ymlNDQ==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C5D0175CE4
+ for <ltp@lists.linux.it>; Mon, 22 Jun 2026 13:56:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1782136609; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=c+i6Asnjc4lVlCWPwyei3Zb/JC+RWNy/k7RPF1jcRLQ=;
+ b=KtW8xCgKUj8AN6DdxULZjnMMaRqfVuaaPwXmCZS8RUdtVlBwj2i246w78+iP42NpMjY0Je
+ 2Dyc7XSQMFMGOozopK6BQsduWUqZhmirIV2WzShaq2Yf8cvaGxpJfyqcSDhToZXYG1uPde
+ tBdubuy+PRXZvvKmHeoK6ZmlRfMQrw4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1782136609;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=c+i6Asnjc4lVlCWPwyei3Zb/JC+RWNy/k7RPF1jcRLQ=;
+ b=zm612gG3+54p/bbfbMQtYwCmPLwz6Svypd9xZRykO4bvttE5XHeVVS1dPzjQP9iQMIjtKk
+ 9f547KhFT4VFa2Cw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KtW8xCgK;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=zm612gG3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1782136609; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=c+i6Asnjc4lVlCWPwyei3Zb/JC+RWNy/k7RPF1jcRLQ=;
+ b=KtW8xCgKUj8AN6DdxULZjnMMaRqfVuaaPwXmCZS8RUdtVlBwj2i246w78+iP42NpMjY0Je
+ 2Dyc7XSQMFMGOozopK6BQsduWUqZhmirIV2WzShaq2Yf8cvaGxpJfyqcSDhToZXYG1uPde
+ tBdubuy+PRXZvvKmHeoK6ZmlRfMQrw4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1782136609;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=c+i6Asnjc4lVlCWPwyei3Zb/JC+RWNy/k7RPF1jcRLQ=;
+ b=zm612gG3+54p/bbfbMQtYwCmPLwz6Svypd9xZRykO4bvttE5XHeVVS1dPzjQP9iQMIjtKk
+ 9f547KhFT4VFa2Cw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3FE32779A8;
- Mon, 22 Jun 2026 13:44:57 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A0AF6779A8
+ for <ltp@lists.linux.it>; Mon, 22 Jun 2026 13:56:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id MAIRDlk8OWo4NQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 22 Jun 2026 13:44:57 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 22 Jun 2026 15:44:33 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id X4CoJSE/OWqUQQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Mon, 22 Jun 2026 13:56:49 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 22 Jun 2026 15:56:52 +0200
+Message-ID: <20260622135652.3516051-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Message-Id: <20260622-metadata_cve-v2-1-51a43dd6c4f3@suse.com>
-X-B4-Tracking: v=1; b=H4sIAEA8OWoC/3XMQQ7CIBCF4as0sxYDU2yqK+9hGkNhsCzaGgaJp
- uHuYvcu/5e8bwOmGIjh0mwQKQcO61IDDw3YySwPEsHVBpTYyQ5RzJSMM8ncbSaBJ+s1jtq3vYN
- 6eUby4b1zt6H2FDit8bPrWf3WP1BWQgnbO92SdKM605VfTEe7zjCUUr5cfFPfpwAAAA==
-X-Change-ID: 20260622-metadata_cve-25cf42b4f38d
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1782135897; l=5921;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=FdK9sam3KMxmPW9HW0tfm1M1m4DtxygUTMrQspnFtgE=;
- b=MFM/5Fq0K+FrRo3qXj6LnEHZxIFsI0OD+t3ZAj5VaOgw3PqIylVtVXj7qnKyDrSgN6Vlf8uwt
- Z7zTkG8DHRGBb1co9jA66CRczIAgvBQi4CzLm97xrfmp2z8+bZpWaiN
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_ONE(0.00)[1];
+ ARC_NA(0.00)[];
  RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]; MIME_TRACE(0.00)[0:+];
  RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:mid,suse.de:dkim];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.de:+]
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
+ imap1.dmz-prg2.suse.org:rdns, suse.cz:email, suse.cz:dkim, suse.cz:mid]
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 58562707C5
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Rspamd-Queue-Id: C5D0175CE4
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] metadata: automatically detect groups via tags
+Subject: [LTP] [PATCH] syscalls: Flatten the directory structure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -130,197 +117,686 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Move the syscall tests from syscalls/ipc/ directory to syscalls/
+directory. And the ipc/msgstress to kernel/ipc/ directory.
 
-Automatically assign a 'cve' group to test metadata when we are tagging
-it with a CVE number and assign a 'regression' group to test metadata
-when we are tagging it with a linux git commit.
+This fixes the generated metadata groups for SysV IPC tests.
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
-Changes in v2:
-- add linux-git to tags
-- Link to v1: https://lore.kernel.org/r/20260622-metadata_cve-v1-1-c8d43e0db19e@suse.com
----
- metadata/metaparse.c             | 46 +++++++++++++++++++++++++++++++++++-----
- metadata/tests/cve.c             | 12 +++++++++++
- metadata/tests/cve.c.json        | 15 +++++++++++++
- metadata/tests/regression.c      | 12 +++++++++++
- metadata/tests/regression.c.json | 15 +++++++++++++
- 5 files changed, 95 insertions(+), 5 deletions(-)
+ testcases/kernel/{syscalls => }/ipc/msgstress/.gitignore   | 0
+ testcases/kernel/{syscalls => }/ipc/msgstress/Makefile     | 2 +-
+ .../kernel/{syscalls => }/ipc/msgstress/msgstress01.c      | 0
+ testcases/kernel/syscalls/ipc/Makefile                     | 7 -------
+ testcases/kernel/syscalls/{ipc => }/msgctl/.gitignore      | 0
+ testcases/kernel/syscalls/{ipc/shmat => msgctl}/Makefile   | 2 +-
+ testcases/kernel/syscalls/{ipc => }/msgctl/msgctl01.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgctl/msgctl02.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgctl/msgctl03.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgctl/msgctl04.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgctl/msgctl05.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgctl/msgctl06.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgctl/msgctl12.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgget/.gitignore      | 0
+ testcases/kernel/syscalls/{ipc/msgctl => msgget}/Makefile  | 2 +-
+ testcases/kernel/syscalls/{ipc => }/msgget/msgget01.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgget/msgget02.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgget/msgget03.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgget/msgget04.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgget/msgget05.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgrcv/.gitignore      | 0
+ testcases/kernel/syscalls/{ipc/msgget => msgrcv}/Makefile  | 2 +-
+ testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv01.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv02.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv03.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv05.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv06.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv07.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv08.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgsnd/.gitignore      | 0
+ testcases/kernel/syscalls/{ipc => }/msgsnd/Makefile        | 2 +-
+ testcases/kernel/syscalls/{ipc => }/msgsnd/msgsnd01.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgsnd/msgsnd02.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgsnd/msgsnd05.c      | 0
+ testcases/kernel/syscalls/{ipc => }/msgsnd/msgsnd06.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semctl/.gitignore      | 0
+ testcases/kernel/syscalls/{ipc => }/semctl/Makefile        | 2 +-
+ testcases/kernel/syscalls/{ipc => }/semctl/semctl01.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semctl/semctl02.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semctl/semctl03.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semctl/semctl04.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semctl/semctl05.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semctl/semctl06.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semctl/semctl07.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semctl/semctl08.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semctl/semctl09.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semget/.gitignore      | 0
+ testcases/kernel/syscalls/{ipc => }/semget/Makefile        | 2 +-
+ testcases/kernel/syscalls/{ipc => }/semget/semget01.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semget/semget02.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semget/semget05.c      | 0
+ testcases/kernel/syscalls/{ipc => }/semop/.gitignore       | 0
+ testcases/kernel/syscalls/{ipc => }/semop/Makefile         | 2 +-
+ testcases/kernel/syscalls/{ipc => }/semop/semop.h          | 0
+ testcases/kernel/syscalls/{ipc => }/semop/semop01.c        | 0
+ testcases/kernel/syscalls/{ipc => }/semop/semop02.c        | 0
+ testcases/kernel/syscalls/{ipc => }/semop/semop03.c        | 0
+ testcases/kernel/syscalls/{ipc => }/semop/semop04.c        | 0
+ testcases/kernel/syscalls/{ipc => }/semop/semop05.c        | 0
+ testcases/kernel/syscalls/{ipc => }/shmat/.gitignore       | 0
+ testcases/kernel/syscalls/{ipc/msgrcv => shmat}/Makefile   | 2 +-
+ testcases/kernel/syscalls/{ipc => }/shmat/shmat01.c        | 0
+ testcases/kernel/syscalls/{ipc => }/shmat/shmat02.c        | 0
+ testcases/kernel/syscalls/{ipc => }/shmat/shmat03.c        | 0
+ testcases/kernel/syscalls/{ipc => }/shmat/shmat04.c        | 0
+ testcases/kernel/syscalls/{ipc => }/shmctl/.gitignore      | 0
+ testcases/kernel/syscalls/{ipc => }/shmctl/Makefile        | 2 +-
+ testcases/kernel/syscalls/{ipc => }/shmctl/shmctl01.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmctl/shmctl02.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmctl/shmctl03.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmctl/shmctl04.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmctl/shmctl05.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmctl/shmctl06.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmctl/shmctl07.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmctl/shmctl08.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmdt/.gitignore       | 0
+ testcases/kernel/syscalls/{ipc => }/shmdt/Makefile         | 2 +-
+ testcases/kernel/syscalls/{ipc => }/shmdt/shmdt01.c        | 0
+ testcases/kernel/syscalls/{ipc => }/shmdt/shmdt02.c        | 0
+ testcases/kernel/syscalls/{ipc => }/shmget/.gitignore      | 0
+ testcases/kernel/syscalls/{ipc => }/shmget/Makefile        | 2 +-
+ testcases/kernel/syscalls/{ipc => }/shmget/shmget02.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmget/shmget03.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmget/shmget04.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmget/shmget05.c      | 0
+ testcases/kernel/syscalls/{ipc => }/shmget/shmget06.c      | 0
+ 86 files changed, 12 insertions(+), 19 deletions(-)
+ rename testcases/kernel/{syscalls => }/ipc/msgstress/.gitignore (100%)
+ rename testcases/kernel/{syscalls => }/ipc/msgstress/Makefile (83%)
+ rename testcases/kernel/{syscalls => }/ipc/msgstress/msgstress01.c (100%)
+ delete mode 100644 testcases/kernel/syscalls/ipc/Makefile
+ rename testcases/kernel/syscalls/{ipc => }/msgctl/.gitignore (100%)
+ rename testcases/kernel/syscalls/{ipc/shmat => msgctl}/Makefile (85%)
+ rename testcases/kernel/syscalls/{ipc => }/msgctl/msgctl01.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgctl/msgctl02.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgctl/msgctl03.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgctl/msgctl04.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgctl/msgctl05.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgctl/msgctl06.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgctl/msgctl12.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgget/.gitignore (100%)
+ rename testcases/kernel/syscalls/{ipc/msgctl => msgget}/Makefile (85%)
+ rename testcases/kernel/syscalls/{ipc => }/msgget/msgget01.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgget/msgget02.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgget/msgget03.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgget/msgget04.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgget/msgget05.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgrcv/.gitignore (100%)
+ rename testcases/kernel/syscalls/{ipc/msgget => msgrcv}/Makefile (85%)
+ rename testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv01.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv02.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv03.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv05.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv06.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv07.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgrcv/msgrcv08.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgsnd/.gitignore (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgsnd/Makefile (85%)
+ rename testcases/kernel/syscalls/{ipc => }/msgsnd/msgsnd01.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgsnd/msgsnd02.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgsnd/msgsnd05.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/msgsnd/msgsnd06.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semctl/.gitignore (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semctl/Makefile (89%)
+ rename testcases/kernel/syscalls/{ipc => }/semctl/semctl01.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semctl/semctl02.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semctl/semctl03.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semctl/semctl04.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semctl/semctl05.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semctl/semctl06.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semctl/semctl07.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semctl/semctl08.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semctl/semctl09.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semget/.gitignore (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semget/Makefile (85%)
+ rename testcases/kernel/syscalls/{ipc => }/semget/semget01.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semget/semget02.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semget/semget05.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semop/.gitignore (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semop/Makefile (89%)
+ rename testcases/kernel/syscalls/{ipc => }/semop/semop.h (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semop/semop01.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semop/semop02.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semop/semop03.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semop/semop04.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/semop/semop05.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmat/.gitignore (100%)
+ rename testcases/kernel/syscalls/{ipc/msgrcv => shmat}/Makefile (85%)
+ rename testcases/kernel/syscalls/{ipc => }/shmat/shmat01.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmat/shmat02.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmat/shmat03.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmat/shmat04.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmctl/.gitignore (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmctl/Makefile (89%)
+ rename testcases/kernel/syscalls/{ipc => }/shmctl/shmctl01.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmctl/shmctl02.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmctl/shmctl03.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmctl/shmctl04.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmctl/shmctl05.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmctl/shmctl06.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmctl/shmctl07.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmctl/shmctl08.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmdt/.gitignore (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmdt/Makefile (85%)
+ rename testcases/kernel/syscalls/{ipc => }/shmdt/shmdt01.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmdt/shmdt02.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmget/.gitignore (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmget/Makefile (85%)
+ rename testcases/kernel/syscalls/{ipc => }/shmget/shmget02.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmget/shmget03.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmget/shmget04.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmget/shmget05.c (100%)
+ rename testcases/kernel/syscalls/{ipc => }/shmget/shmget06.c (100%)
 
-diff --git a/metadata/metaparse.c b/metadata/metaparse.c
-index a0f94511db36e42e6174774dfa8340cb4dce113a..cb141c383142142491f802e51afd29bc014f0e6e 100644
---- a/metadata/metaparse.c
-+++ b/metadata/metaparse.c
-@@ -52,12 +52,14 @@ static char *eat_asterisk_space(char *c)
- }
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/.gitignore b/testcases/kernel/ipc/msgstress/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgstress/.gitignore
+rename to testcases/kernel/ipc/msgstress/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/Makefile b/testcases/kernel/ipc/msgstress/Makefile
+similarity index 83%
+rename from testcases/kernel/syscalls/ipc/msgstress/Makefile
+rename to testcases/kernel/ipc/msgstress/Makefile
+index 442eb87d5..744f099d8 100644
+--- a/testcases/kernel/syscalls/ipc/msgstress/Makefile
++++ b/testcases/kernel/ipc/msgstress/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
  
- /*
-- * Add a group to the groups array, skipping 'kernel' as it's too generic.
-- * Returns 0 if no group was added, 1 otherwise.
-+ * Add a group to the groups array, skipping path components that are too
-+ * generic ('kernel') or assigned from a more reliable source ('cve', which
-+ * is derived from the CVE tag instead). Returns 0 if no group was added,
-+ * 1 otherwise.
-  */
- static int add_group(struct data_node *groups, const char *name)
- {
--	if (name && strcmp(name, "kernel")) {
-+	if (name && strcmp(name, "kernel") && strcmp(name, "cve")) {
- 		data_node_array_add(groups, data_node_string(name));
- 		return 1;
- 	}
-@@ -971,11 +973,11 @@ static void load_internal_macros(void)
-  * Add groups derived from the source file path.
-  *
-  * Groups are the two nearest parent directories (immediate parent
-- * first), skipping 'kernel' as it's too generic:
-+ * first), skipping 'kernel' (too generic) and 'cve' (assigned from the
-+ * CVE tag instead, see add_tag_groups()):
-  *
-  *   testcases/kernel/syscalls/clone/clone01.c  -> clone, syscalls
-  *   testcases/kernel/kvm/kvm_pagefault01.c     -> kvm
-- *   testcases/cve/cve-2017-16939.c             -> cve
-  */
- static void add_path_groups(struct data_node *groups, const char *fname)
- {
-@@ -1010,6 +1012,38 @@ static void add_path_groups(struct data_node *groups, const char *fname)
- 	free(buf);
- }
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
  
-+/*
-+ * Add group to specific test tags.
-+ */
-+static void add_tag_groups(struct data_node *groups, struct data_node *res)
-+{
-+	struct data_node *tags = data_node_hash_get(res, "tags");
-+	int has_cve = 0, has_regression = 0;
-+
-+	if (!tags || tags->type != DATA_ARRAY)
-+		return;
-+
-+	for (unsigned int i = 0; i < data_node_array_len(tags); i++) {
-+		struct data_node *tag = tags->array.array[i];
-+		struct data_node *name;
-+
-+		if (tag->type != DATA_ARRAY || !data_node_array_len(tag))
-+			continue;
-+
-+		name = tag->array.array[0];
-+		if (name->type != DATA_STRING)
-+			continue;
-+
-+		if (!has_cve && !strcmp(name->string.val, "CVE")) {
-+			data_node_array_add(groups, data_node_string("cve"));
-+			has_cve = 1;
-+		} else if (!has_regression && !strcmp(name->string.val, "linux-git")) {
-+			data_node_array_add(groups, data_node_string("regression"));
-+			has_regression = 1;
-+		}
-+	}
-+}
-+
- static struct data_node *parse_file(const char *fname)
- {
- 	int state = 0, found = 0;
-@@ -1064,6 +1098,8 @@ static struct data_node *parse_file(const char *fname)
- 		data_node_free(doc);
- 	}
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c b/testcases/kernel/ipc/msgstress/msgstress01.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
+rename to testcases/kernel/ipc/msgstress/msgstress01.c
+diff --git a/testcases/kernel/syscalls/ipc/Makefile b/testcases/kernel/syscalls/ipc/Makefile
+deleted file mode 100644
+index 7876f4bbd..000000000
+--- a/testcases/kernel/syscalls/ipc/Makefile
++++ /dev/null
+@@ -1,7 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-or-later
+-# Copyright (c) International Business Machines  Corp., 2001
+-
+-top_srcdir		?= ../../../..
+-
+-include $(top_srcdir)/include/mk/env_pre.mk
+-include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/.gitignore b/testcases/kernel/syscalls/msgctl/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgctl/.gitignore
+rename to testcases/kernel/syscalls/msgctl/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/shmat/Makefile b/testcases/kernel/syscalls/msgctl/Makefile
+similarity index 85%
+rename from testcases/kernel/syscalls/ipc/shmat/Makefile
+rename to testcases/kernel/syscalls/msgctl/Makefile
+index baa2a48e6..7f4c92d46 100644
+--- a/testcases/kernel/syscalls/ipc/shmat/Makefile
++++ b/testcases/kernel/syscalls/msgctl/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
  
-+	add_tag_groups(groups, res);
-+
- 	/*
- 	 * Always emit groups, even when empty: tests outside testcases/
- 	 * and files whose only parent dir is 'kernel' produce no groups.
-diff --git a/metadata/tests/cve.c b/metadata/tests/cve.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..c2b0e551f111ae87f3c6dcb50ef25c66967443f4
---- /dev/null
-+++ b/metadata/tests/cve.c
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/*\
-+ * Test for cve group derived from the CVE tag.
-+ */
-+
-+static struct tst_test test = {
-+	.tags = (const struct tst_tag[]) {
-+		{"CVE", "2017-16939"},
-+		{}
-+	}
-+};
-diff --git a/metadata/tests/cve.c.json b/metadata/tests/cve.c.json
-new file mode 100644
-index 0000000000000000000000000000000000000000..543d9e58a3e78d296cc4247659d1b26f2a103245
---- /dev/null
-+++ b/metadata/tests/cve.c.json
-@@ -0,0 +1,15 @@
-+  "cve": {
-+   "tags": [
-+    [
-+     "CVE",
-+     "2017-16939"
-+    ]
-+   ],
-+   "doc": [
-+    "Test for cve group derived from the CVE tag."
-+   ],
-+   "groups": [
-+    "cve"
-+   ],
-+   "fname": "cve.c"
-+  }
-\ No newline at end of file
-diff --git a/metadata/tests/regression.c b/metadata/tests/regression.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..e02683dedce13b7579ec874c64476f09f34707de
---- /dev/null
-+++ b/metadata/tests/regression.c
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/*\
-+ * Test for regression group derived from the linux-git tag.
-+ */
-+
-+static struct tst_test test = {
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "1137b5e2529a"},
-+		{}
-+	}
-+};
-diff --git a/metadata/tests/regression.c.json b/metadata/tests/regression.c.json
-new file mode 100644
-index 0000000000000000000000000000000000000000..21f818888301cd982ca9e52861f7ea0fc2e570be
---- /dev/null
-+++ b/metadata/tests/regression.c.json
-@@ -0,0 +1,15 @@
-+  "regression": {
-+   "tags": [
-+    [
-+     "linux-git",
-+     "1137b5e2529a"
-+    ]
-+   ],
-+   "doc": [
-+    "Test for regression group derived from the linux-git tag."
-+   ],
-+   "groups": [
-+    "regression"
-+   ],
-+   "fname": "regression.c"
-+  }
-\ No newline at end of file
-
----
-base-commit: b2184c0f2debb976414b294b8527298bdac0a877
-change-id: 20260622-metadata_cve-25cf42b4f38d
-
-Best regards,
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
+ 
+ LTPLIBS = newipc
+ 
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl01.c b/testcases/kernel/syscalls/msgctl/msgctl01.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgctl/msgctl01.c
+rename to testcases/kernel/syscalls/msgctl/msgctl01.c
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl02.c b/testcases/kernel/syscalls/msgctl/msgctl02.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgctl/msgctl02.c
+rename to testcases/kernel/syscalls/msgctl/msgctl02.c
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl03.c b/testcases/kernel/syscalls/msgctl/msgctl03.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgctl/msgctl03.c
+rename to testcases/kernel/syscalls/msgctl/msgctl03.c
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl04.c b/testcases/kernel/syscalls/msgctl/msgctl04.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgctl/msgctl04.c
+rename to testcases/kernel/syscalls/msgctl/msgctl04.c
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl05.c b/testcases/kernel/syscalls/msgctl/msgctl05.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgctl/msgctl05.c
+rename to testcases/kernel/syscalls/msgctl/msgctl05.c
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c b/testcases/kernel/syscalls/msgctl/msgctl06.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgctl/msgctl06.c
+rename to testcases/kernel/syscalls/msgctl/msgctl06.c
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl12.c b/testcases/kernel/syscalls/msgctl/msgctl12.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgctl/msgctl12.c
+rename to testcases/kernel/syscalls/msgctl/msgctl12.c
+diff --git a/testcases/kernel/syscalls/ipc/msgget/.gitignore b/testcases/kernel/syscalls/msgget/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgget/.gitignore
+rename to testcases/kernel/syscalls/msgget/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/Makefile b/testcases/kernel/syscalls/msgget/Makefile
+similarity index 85%
+rename from testcases/kernel/syscalls/ipc/msgctl/Makefile
+rename to testcases/kernel/syscalls/msgget/Makefile
+index baa2a48e6..7f4c92d46 100644
+--- a/testcases/kernel/syscalls/ipc/msgctl/Makefile
++++ b/testcases/kernel/syscalls/msgget/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
+ 
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
+ 
+ LTPLIBS = newipc
+ 
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget01.c b/testcases/kernel/syscalls/msgget/msgget01.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgget/msgget01.c
+rename to testcases/kernel/syscalls/msgget/msgget01.c
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget02.c b/testcases/kernel/syscalls/msgget/msgget02.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgget/msgget02.c
+rename to testcases/kernel/syscalls/msgget/msgget02.c
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c b/testcases/kernel/syscalls/msgget/msgget03.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgget/msgget03.c
+rename to testcases/kernel/syscalls/msgget/msgget03.c
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget04.c b/testcases/kernel/syscalls/msgget/msgget04.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgget/msgget04.c
+rename to testcases/kernel/syscalls/msgget/msgget04.c
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget05.c b/testcases/kernel/syscalls/msgget/msgget05.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgget/msgget05.c
+rename to testcases/kernel/syscalls/msgget/msgget05.c
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/.gitignore b/testcases/kernel/syscalls/msgrcv/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgrcv/.gitignore
+rename to testcases/kernel/syscalls/msgrcv/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/msgget/Makefile b/testcases/kernel/syscalls/msgrcv/Makefile
+similarity index 85%
+rename from testcases/kernel/syscalls/ipc/msgget/Makefile
+rename to testcases/kernel/syscalls/msgrcv/Makefile
+index baa2a48e6..7f4c92d46 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/Makefile
++++ b/testcases/kernel/syscalls/msgrcv/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
+ 
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
+ 
+ LTPLIBS = newipc
+ 
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c b/testcases/kernel/syscalls/msgrcv/msgrcv01.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
+rename to testcases/kernel/syscalls/msgrcv/msgrcv01.c
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c b/testcases/kernel/syscalls/msgrcv/msgrcv02.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgrcv/msgrcv02.c
+rename to testcases/kernel/syscalls/msgrcv/msgrcv02.c
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c b/testcases/kernel/syscalls/msgrcv/msgrcv03.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
+rename to testcases/kernel/syscalls/msgrcv/msgrcv03.c
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv05.c b/testcases/kernel/syscalls/msgrcv/msgrcv05.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgrcv/msgrcv05.c
+rename to testcases/kernel/syscalls/msgrcv/msgrcv05.c
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv06.c b/testcases/kernel/syscalls/msgrcv/msgrcv06.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgrcv/msgrcv06.c
+rename to testcases/kernel/syscalls/msgrcv/msgrcv06.c
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c b/testcases/kernel/syscalls/msgrcv/msgrcv07.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
+rename to testcases/kernel/syscalls/msgrcv/msgrcv07.c
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c b/testcases/kernel/syscalls/msgrcv/msgrcv08.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
+rename to testcases/kernel/syscalls/msgrcv/msgrcv08.c
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/.gitignore b/testcases/kernel/syscalls/msgsnd/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgsnd/.gitignore
+rename to testcases/kernel/syscalls/msgsnd/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/Makefile b/testcases/kernel/syscalls/msgsnd/Makefile
+similarity index 85%
+rename from testcases/kernel/syscalls/ipc/msgsnd/Makefile
+rename to testcases/kernel/syscalls/msgsnd/Makefile
+index 0b7b7bd40..87c93238e 100644
+--- a/testcases/kernel/syscalls/ipc/msgsnd/Makefile
++++ b/testcases/kernel/syscalls/msgsnd/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
+ 
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
+ 
+ LTPLIBS = newipc
+ 
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c b/testcases/kernel/syscalls/msgsnd/msgsnd01.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
+rename to testcases/kernel/syscalls/msgsnd/msgsnd01.c
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c b/testcases/kernel/syscalls/msgsnd/msgsnd02.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
+rename to testcases/kernel/syscalls/msgsnd/msgsnd02.c
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c b/testcases/kernel/syscalls/msgsnd/msgsnd05.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
+rename to testcases/kernel/syscalls/msgsnd/msgsnd05.c
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c b/testcases/kernel/syscalls/msgsnd/msgsnd06.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
+rename to testcases/kernel/syscalls/msgsnd/msgsnd06.c
+diff --git a/testcases/kernel/syscalls/ipc/semctl/.gitignore b/testcases/kernel/syscalls/semctl/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semctl/.gitignore
+rename to testcases/kernel/syscalls/semctl/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/semctl/Makefile b/testcases/kernel/syscalls/semctl/Makefile
+similarity index 89%
+rename from testcases/kernel/syscalls/ipc/semctl/Makefile
+rename to testcases/kernel/syscalls/semctl/Makefile
+index aa11e7003..0e7223998 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/Makefile
++++ b/testcases/kernel/syscalls/semctl/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
+ 
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
+ 
+ LTPLIBS = ipc newipc
+ 
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl01.c b/testcases/kernel/syscalls/semctl/semctl01.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semctl/semctl01.c
+rename to testcases/kernel/syscalls/semctl/semctl01.c
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl02.c b/testcases/kernel/syscalls/semctl/semctl02.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semctl/semctl02.c
+rename to testcases/kernel/syscalls/semctl/semctl02.c
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl03.c b/testcases/kernel/syscalls/semctl/semctl03.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semctl/semctl03.c
+rename to testcases/kernel/syscalls/semctl/semctl03.c
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl04.c b/testcases/kernel/syscalls/semctl/semctl04.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semctl/semctl04.c
+rename to testcases/kernel/syscalls/semctl/semctl04.c
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl05.c b/testcases/kernel/syscalls/semctl/semctl05.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semctl/semctl05.c
+rename to testcases/kernel/syscalls/semctl/semctl05.c
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl06.c b/testcases/kernel/syscalls/semctl/semctl06.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semctl/semctl06.c
+rename to testcases/kernel/syscalls/semctl/semctl06.c
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl07.c b/testcases/kernel/syscalls/semctl/semctl07.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semctl/semctl07.c
+rename to testcases/kernel/syscalls/semctl/semctl07.c
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl08.c b/testcases/kernel/syscalls/semctl/semctl08.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semctl/semctl08.c
+rename to testcases/kernel/syscalls/semctl/semctl08.c
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl09.c b/testcases/kernel/syscalls/semctl/semctl09.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semctl/semctl09.c
+rename to testcases/kernel/syscalls/semctl/semctl09.c
+diff --git a/testcases/kernel/syscalls/ipc/semget/.gitignore b/testcases/kernel/syscalls/semget/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semget/.gitignore
+rename to testcases/kernel/syscalls/semget/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/semget/Makefile b/testcases/kernel/syscalls/semget/Makefile
+similarity index 85%
+rename from testcases/kernel/syscalls/ipc/semget/Makefile
+rename to testcases/kernel/syscalls/semget/Makefile
+index d1e778f98..161c2c187 100644
+--- a/testcases/kernel/syscalls/ipc/semget/Makefile
++++ b/testcases/kernel/syscalls/semget/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
+ 
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
+ 
+ LTPLIBS = newipc
+ 
+diff --git a/testcases/kernel/syscalls/ipc/semget/semget01.c b/testcases/kernel/syscalls/semget/semget01.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semget/semget01.c
+rename to testcases/kernel/syscalls/semget/semget01.c
+diff --git a/testcases/kernel/syscalls/ipc/semget/semget02.c b/testcases/kernel/syscalls/semget/semget02.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semget/semget02.c
+rename to testcases/kernel/syscalls/semget/semget02.c
+diff --git a/testcases/kernel/syscalls/ipc/semget/semget05.c b/testcases/kernel/syscalls/semget/semget05.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semget/semget05.c
+rename to testcases/kernel/syscalls/semget/semget05.c
+diff --git a/testcases/kernel/syscalls/ipc/semop/.gitignore b/testcases/kernel/syscalls/semop/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semop/.gitignore
+rename to testcases/kernel/syscalls/semop/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/semop/Makefile b/testcases/kernel/syscalls/semop/Makefile
+similarity index 89%
+rename from testcases/kernel/syscalls/ipc/semop/Makefile
+rename to testcases/kernel/syscalls/semop/Makefile
+index 5d082e912..2775d84a9 100644
+--- a/testcases/kernel/syscalls/ipc/semop/Makefile
++++ b/testcases/kernel/syscalls/semop/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
+ 
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
+ 
+ LTPLIBS = newipc
+ 
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop.h b/testcases/kernel/syscalls/semop/semop.h
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semop/semop.h
+rename to testcases/kernel/syscalls/semop/semop.h
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop01.c b/testcases/kernel/syscalls/semop/semop01.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semop/semop01.c
+rename to testcases/kernel/syscalls/semop/semop01.c
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop02.c b/testcases/kernel/syscalls/semop/semop02.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semop/semop02.c
+rename to testcases/kernel/syscalls/semop/semop02.c
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop03.c b/testcases/kernel/syscalls/semop/semop03.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semop/semop03.c
+rename to testcases/kernel/syscalls/semop/semop03.c
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop04.c b/testcases/kernel/syscalls/semop/semop04.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semop/semop04.c
+rename to testcases/kernel/syscalls/semop/semop04.c
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop05.c b/testcases/kernel/syscalls/semop/semop05.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/semop/semop05.c
+rename to testcases/kernel/syscalls/semop/semop05.c
+diff --git a/testcases/kernel/syscalls/ipc/shmat/.gitignore b/testcases/kernel/syscalls/shmat/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmat/.gitignore
+rename to testcases/kernel/syscalls/shmat/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/Makefile b/testcases/kernel/syscalls/shmat/Makefile
+similarity index 85%
+rename from testcases/kernel/syscalls/ipc/msgrcv/Makefile
+rename to testcases/kernel/syscalls/shmat/Makefile
+index baa2a48e6..7f4c92d46 100644
+--- a/testcases/kernel/syscalls/ipc/msgrcv/Makefile
++++ b/testcases/kernel/syscalls/shmat/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
+ 
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
+ 
+ LTPLIBS = newipc
+ 
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/shmat/shmat01.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmat/shmat01.c
+rename to testcases/kernel/syscalls/shmat/shmat01.c
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat02.c b/testcases/kernel/syscalls/shmat/shmat02.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmat/shmat02.c
+rename to testcases/kernel/syscalls/shmat/shmat02.c
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat03.c b/testcases/kernel/syscalls/shmat/shmat03.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmat/shmat03.c
+rename to testcases/kernel/syscalls/shmat/shmat03.c
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat04.c b/testcases/kernel/syscalls/shmat/shmat04.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmat/shmat04.c
+rename to testcases/kernel/syscalls/shmat/shmat04.c
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/.gitignore b/testcases/kernel/syscalls/shmctl/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmctl/.gitignore
+rename to testcases/kernel/syscalls/shmctl/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/Makefile b/testcases/kernel/syscalls/shmctl/Makefile
+similarity index 89%
+rename from testcases/kernel/syscalls/ipc/shmctl/Makefile
+rename to testcases/kernel/syscalls/shmctl/Makefile
+index d4278dcd7..6bc9a2b4c 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/Makefile
++++ b/testcases/kernel/syscalls/shmctl/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
+ 
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
+ 
+ LTPLIBS = newipc
+ 
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/shmctl/shmctl01.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+rename to testcases/kernel/syscalls/shmctl/shmctl01.c
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c b/testcases/kernel/syscalls/shmctl/shmctl02.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
+rename to testcases/kernel/syscalls/shmctl/shmctl02.c
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c b/testcases/kernel/syscalls/shmctl/shmctl03.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
+rename to testcases/kernel/syscalls/shmctl/shmctl03.c
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c b/testcases/kernel/syscalls/shmctl/shmctl04.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
+rename to testcases/kernel/syscalls/shmctl/shmctl04.c
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c b/testcases/kernel/syscalls/shmctl/shmctl05.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+rename to testcases/kernel/syscalls/shmctl/shmctl05.c
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl06.c b/testcases/kernel/syscalls/shmctl/shmctl06.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmctl/shmctl06.c
+rename to testcases/kernel/syscalls/shmctl/shmctl06.c
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl07.c b/testcases/kernel/syscalls/shmctl/shmctl07.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmctl/shmctl07.c
+rename to testcases/kernel/syscalls/shmctl/shmctl07.c
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl08.c b/testcases/kernel/syscalls/shmctl/shmctl08.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmctl/shmctl08.c
+rename to testcases/kernel/syscalls/shmctl/shmctl08.c
+diff --git a/testcases/kernel/syscalls/ipc/shmdt/.gitignore b/testcases/kernel/syscalls/shmdt/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmdt/.gitignore
+rename to testcases/kernel/syscalls/shmdt/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/shmdt/Makefile b/testcases/kernel/syscalls/shmdt/Makefile
+similarity index 85%
+rename from testcases/kernel/syscalls/ipc/shmdt/Makefile
+rename to testcases/kernel/syscalls/shmdt/Makefile
+index d1e778f98..161c2c187 100644
+--- a/testcases/kernel/syscalls/ipc/shmdt/Makefile
++++ b/testcases/kernel/syscalls/shmdt/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
+ 
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
+ 
+ LTPLIBS = newipc
+ 
+diff --git a/testcases/kernel/syscalls/ipc/shmdt/shmdt01.c b/testcases/kernel/syscalls/shmdt/shmdt01.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmdt/shmdt01.c
+rename to testcases/kernel/syscalls/shmdt/shmdt01.c
+diff --git a/testcases/kernel/syscalls/ipc/shmdt/shmdt02.c b/testcases/kernel/syscalls/shmdt/shmdt02.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmdt/shmdt02.c
+rename to testcases/kernel/syscalls/shmdt/shmdt02.c
+diff --git a/testcases/kernel/syscalls/ipc/shmget/.gitignore b/testcases/kernel/syscalls/shmget/.gitignore
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmget/.gitignore
+rename to testcases/kernel/syscalls/shmget/.gitignore
+diff --git a/testcases/kernel/syscalls/ipc/shmget/Makefile b/testcases/kernel/syscalls/shmget/Makefile
+similarity index 85%
+rename from testcases/kernel/syscalls/ipc/shmget/Makefile
+rename to testcases/kernel/syscalls/shmget/Makefile
+index d1e778f98..161c2c187 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/Makefile
++++ b/testcases/kernel/syscalls/shmget/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2001
+ 
+-top_srcdir              ?= ../../../../..
++top_srcdir              ?= ../../../..
+ 
+ LTPLIBS = newipc
+ 
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c b/testcases/kernel/syscalls/shmget/shmget02.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmget/shmget02.c
+rename to testcases/kernel/syscalls/shmget/shmget02.c
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget03.c b/testcases/kernel/syscalls/shmget/shmget03.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmget/shmget03.c
+rename to testcases/kernel/syscalls/shmget/shmget03.c
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget04.c b/testcases/kernel/syscalls/shmget/shmget04.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmget/shmget04.c
+rename to testcases/kernel/syscalls/shmget/shmget04.c
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget05.c b/testcases/kernel/syscalls/shmget/shmget05.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmget/shmget05.c
+rename to testcases/kernel/syscalls/shmget/shmget05.c
+diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget06.c b/testcases/kernel/syscalls/shmget/shmget06.c
+similarity index 100%
+rename from testcases/kernel/syscalls/ipc/shmget/shmget06.c
+rename to testcases/kernel/syscalls/shmget/shmget06.c
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.53.0
 
 
 -- 
