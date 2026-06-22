@@ -4,100 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AF1BCD98F2
-	for <ltp@archiver.kernel.org>; Sun, 21 Jun 2026 15:11:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1782054663; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=zE5l96fTg2Mwv+ofXlh8Vfh8XQeBQv3zG0GrTS0Oxqg=;
- b=j4OkG1wr+ztt3C9jFm8UB6lCZ8t3IhT28LBwxnRihGDGbfe6KE6RSW0fMZaHGVVkJtBSj
- yH0K8YEuRdNJ5TLK1y7ZL/G2Xpvmwmpu53AF+71GDwG01TPitGYUjpfO4IiEbxppNpJeWBR
- YfzJSl80dK/I8Dtnt89BXMTa2bIsx9g=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 162B6CDB471
+	for <ltp@archiver.kernel.org>; Mon, 22 Jun 2026 07:21:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B2DF43E5542
-	for <ltp@archiver.kernel.org>; Sun, 21 Jun 2026 17:11:03 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id F10A53E5404
+	for <ltp@archiver.kernel.org>; Mon, 22 Jun 2026 09:21:25 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9770C3E2F58
- for <ltp@lists.linux.it>; Sun, 21 Jun 2026 17:10:05 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id C41DC3E4D8A
+ for <ltp@lists.linux.it>; Mon, 22 Jun 2026 09:21:08 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D4C7260057C
- for <ltp@lists.linux.it>; Sun, 21 Jun 2026 17:10:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1782054600;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Jt6i0qdqkmuGl7HrIvmsDuepXV3AG2PS3+Gn8SqQhBI=;
- b=ITUPA4yqg0DZoApYb85jiGYK+9A79MJ3z3HcCCgXs7At5FYh1P+f97AWN7MuG2HQlFRZwd
- AWwUbLuLqkJcctjns580ld2pdTW/QvwOzsdbHbrIpR5PbYBGwb4AQ1X+D5TayVAJirQrYs
- XIk/aGXzf820CaI+ocqbELt4nFjp7Oo=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-695-Vw12BYcLOkewAUTNIWfxVA-1; Sun, 21 Jun 2026 11:09:58 -0400
-X-MC-Unique: Vw12BYcLOkewAUTNIWfxVA-1
-X-Mimecast-MFC-AGG-ID: Vw12BYcLOkewAUTNIWfxVA_1782054597
-Received: by mail-wm1-f71.google.com with SMTP id
- 5b1f17b1804b1-49245e10b73so10209165e9.3
- for <ltp@lists.linux.it>; Sun, 21 Jun 2026 08:09:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782054597; x=1782659397;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=Jt6i0qdqkmuGl7HrIvmsDuepXV3AG2PS3+Gn8SqQhBI=;
- b=iAK93sDeTNKzeX28X6GobTPJ7xJmvv6t6w4R92QJqTNklMsUyF1cLeRZAz2/aTZqSC
- DodlguxwcU4/LaUWU8/Xc6V0VdluXehAtXoJw1So8GasvquM6v2FYJ+1A/1tSdoczRvQ
- E84I6Gzy5U/x6owj0d/7jqvYGwL0gSV19/Qs+sMxXucwHGZcN6lbAXASmMl+pN+VUni5
- L0asVPVTVS6f9lN4WNVuek4wTl4lUr3voJk80WK938lRkPO7qmrg8bAU1nzn6uDT2ZvP
- Samf09YhYizZQ159BJ4MaIhO9GjwJbd53mGA6z/9Mlx2lyDroPXIysHl0oph2Jq28hLH
- 4pMg==
-X-Gm-Message-State: AOJu0YwFcLZwO63bFZhdzH+iXRNeQTl8FwOKwvjRmxuYKs7E9m+inXEt
- g1Z06TZgLumZs60ssTcNsszaxMbEX9JKTbsSOckBZuDQB0QcA7a6lvWhbkqucFqq6jG2/RGoXWZ
- 2J7bJ83kC2lDo69dS8tfui6Nlf+76kYERNTbY7HDo9vVI7v6PmXcetvPh1DoZvv1P/TRPZHjsoA
- BnViG04BtH365lIYOiQHQj0rZqP9Rqb/BZAwNw
-X-Gm-Gg: AfdE7cl/kJZiKKMD0p/31zI9RYtp35BIOLD5GOFaxMaE+MB08FvcH7u66ryRGNvJOPc
- ih0vam50W2T2390oQy8Y/p6m8CdhNkxNG/FCGhV0Yvft9R9p/B+9JZqWQdqBFeWtAZd8ie03Zum
- KmtRI/HWl/THQG+ubG8pRcxPDhWg3IaGsWBXtjX/X+gpYCB3keZ/7u+ml23dhnVMsyHeQrFm1eC
- WwYV6AJ78/uhcLgR1GUHOco5tixZZnzqoGqrwMxoQEuUls+HI1yJMdW7kAeIEaxQocYtieVohPz
- wKZ7c2SlSNnuYs3vx0Lw4TkcwInnnImmUhMJjfr0szzVvjjzxOa/LK/BSpQnv/ekLWtqiy+S95u
- hc01AWTgtIJJwVWJ+zdWKTv+M32QNr5/+ZqS+m6Ku+CrQYPpnAmp+1b6OXQ==
-X-Received: by 2002:a05:600c:3e15:b0:492:30f2:963a with SMTP id
- 5b1f17b1804b1-49242189520mr152346955e9.0.1782054597380; 
- Sun, 21 Jun 2026 08:09:57 -0700 (PDT)
-X-Received: by 2002:a05:600c:3e15:b0:492:30f2:963a with SMTP id
- 5b1f17b1804b1-49242189520mr152346485e9.0.1782054596932; 
- Sun, 21 Jun 2026 08:09:56 -0700 (PDT)
-Received: from fedora.redhat.com (85.64.227.60.dynamic.barak-online.net.
- [85.64.227.60]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-46666788302sm15380926f8f.20.2026.06.21.08.09.56
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 21 Jun 2026 08:09:56 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3E97D200211
+ for <ltp@lists.linux.it>; Mon, 22 Jun 2026 09:21:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1782112867; x=1813648867;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=sJF6xWchmbcySw/h9pfuBQozupKA9tPCazA09DxfKk0=;
+ b=U2PwUqpuCMnj3cu4+M4AEJ1cwhLkg/F+9ECvF5eWSBuhhrmk02gVHZbH
+ eSwHgPvFM/dBs05BXFC8m200x9zutaoWDGYM54S8QwlrfV+br/t1r9iGc
+ sumrQ0hEl9SHjBT8l/jWSy6kK0TUI4EeuCEtR5HCOaQyOqDq8v/+Ef+0q
+ IKjClHNNFEqJSMiY4UhMQ+FcQe2AE3VomQKwO2eManguCTSQ9uuNx4StQ
+ HCK/pxlvkjWKC65HF5Q6Kf0Fifb6eX+YaMkp4+32aUOAODkukXluRJmr+
+ Z2My46TnQf5+0ZnKFOPeyxe+Yvr9C86sTTe+CNAZUHg9sik8NcCh17Cvk w==;
+X-CSE-ConnectionGUID: eNgFhdC6RyCqf2xCNiHNbw==
+X-CSE-MsgGUID: aMs01BgISNu3HEKrxl27OQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11824"; a="82606738"
+X-IronPort-AV: E=Sophos;i="6.24,218,1774335600"; d="scan'208";a="82606738"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+ by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Jun 2026 00:21:03 -0700
+X-CSE-ConnectionGUID: WZBk9Yz7TJyX+2Bwg3tBXg==
+X-CSE-MsgGUID: 6Ux83bq/SPGeeyUJV0YPsw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,218,1774335600"; d="scan'208";a="254237390"
+Received: from fdefranc-mobl3.ger.corp.intel.com (HELO intel.com)
+ ([10.245.246.220])
+ by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Jun 2026 00:21:01 -0700
+From: Piotr Kubaj <piotr.kubaj@intel.com>
 To: ltp@lists.linux.it
-Date: Sun, 21 Jun 2026 18:09:51 +0300
-Message-ID: <20260621150951.66407-3-mmenashe@redhat.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260621150951.66407-1-mmenashe@redhat.com>
-References: <20260621150951.66407-1-mmenashe@redhat.com>
+Date: Mon, 22 Jun 2026 09:20:45 +0200
+Message-ID: <20260622072044.141940-2-piotr.kubaj@intel.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 32PIfpjpsE05m9JOSUyjJd85sWikuhe2RCBykj8mMII_1782054597
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v16 2/2] futex_cmp_requeue03: Add EFAULT error
- coverage test
+Subject: [LTP] [PATCH v3] rfim: add new test for verifying RFIM sysfs
+ interface
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,162 +69,242 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Michael Menasherov via ltp <ltp@lists.linux.it>
-Reply-To: Michael Menasherov <mmenashe@redhat.com>
+Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
+ rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-futex(FUTEX_CMP_REQUEUE) has no existing test for EFAULT. Add coverage
-for the cases where uaddr or uaddr2 points to unmapped or inaccessible
-(PROT_NONE) memory.
+Validate presence and permissions of the RFIM attributes exposed by the
+Intel processor_thermal driver under the proc_thermal PCI device.
 
-Signed-off-by: Michael Menasherov <mmenashe@redhat.com>
+The kernel creates the dvfs, fivr and dlvr attribute groups
+independently, each gated on its own per-device feature bit, so the test
+detects which of the three groups the hardware presents and checks only
+those. This covers platforms that expose both FIVR and DLVR (e.g. Meteor
+Lake) as well as those with FIVR but no DVFS (e.g. Tiger Lake).
+
+Read-only attributes (mode 0444) must accept O_RDONLY and reject a write
+open with EACCES; read-write attributes (mode 0644) must accept O_RDWR.
+The open() itself is what exercises access, since sysfs can refuse it in
+kernfs even when the mode bits would allow it.
+
+The test works only on Intel platforms with RFIM and needs root for the
+read-write attributes, whose write bit is owner-only.
+
+Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
 ---
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/futex/.gitignore    |   1 +
- .../syscalls/futex/futex_cmp_requeue03.c      | 108 ++++++++++++++++++
- 3 files changed, 110 insertions(+)
- create mode 100644 testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
+Change to fd != -1, as recommended by the bot.
+Note: the current version is still hardcoding the PCI bus address.
+The reason is that all the devices released until now use this address,
+kernel documentation uses that address exclusively and the upcoming
+Nova Lake generation also does it. IMO there's no point to
+overcomplicate this test.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 67509826f..0cb4e3dba 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1864,6 +1864,7 @@ perf_event_open02 perf_event_open02
- 
- futex_cmp_requeue01 futex_cmp_requeue01
- futex_cmp_requeue02 futex_cmp_requeue02
-+futex_cmp_requeue03 futex_cmp_requeue03
- futex_wait01 futex_wait01
- futex_wait02 futex_wait02
- futex_wait03 futex_wait03
-diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
-index c11546e07..231b6bd25 100644
---- a/testcases/kernel/syscalls/futex/.gitignore
-+++ b/testcases/kernel/syscalls/futex/.gitignore
-@@ -16,3 +16,4 @@
- /futex_wait06
- /futex_wait07
- /futex_wake05
-+/futex_cmp_requeue03
-diff --git a/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
+ runtest/power_management_tests               |   1 +
+ testcases/kernel/power_management/.gitignore |   1 +
+ testcases/kernel/power_management/rfim01.c   | 163 +++++++++++++++++++
+ 3 files changed, 165 insertions(+)
+ create mode 100644 testcases/kernel/power_management/rfim01.c
+
+diff --git a/runtest/power_management_tests b/runtest/power_management_tests
+index 4da57ee72..d05c95608 100644
+--- a/runtest/power_management_tests
++++ b/runtest/power_management_tests
+@@ -1,5 +1,6 @@
+ #POWER_MANAGEMENT
+ high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
++rfim01 rfim01
+ runpwtests03 runpwtests03.sh
+ runpwtests04 runpwtests04.sh
+ runpwtests06 runpwtests06.sh
+diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
+index 03f0c83e4..74f6df14f 100644
+--- a/testcases/kernel/power_management/.gitignore
++++ b/testcases/kernel/power_management/.gitignore
+@@ -1 +1,2 @@
+ high_freq_hwp_cap_cppc
++rfim01
+diff --git a/testcases/kernel/power_management/rfim01.c b/testcases/kernel/power_management/rfim01.c
 new file mode 100644
-index 000000000..c71c8f4cb
+index 000000000..9898d414d
 --- /dev/null
-+++ b/testcases/kernel/syscalls/futex/futex_cmp_requeue03.c
-@@ -0,0 +1,108 @@
++++ b/testcases/kernel/power_management/rfim01.c
+@@ -0,0 +1,163 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (C) 2026 Red Hat, Inc.
-+ * Copyright (C) 2026 Michael Menasherov <mmenashe@redhat.com>
++ * Copyright (c) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
 + */
 +
 +/*\
-+ * Check that futex(FUTEX_CMP_REQUEUE) returns EFAULT when uaddr or
-+ * uaddr2 points to unmapped memory, or when uaddr or uaddr2 points to
-+ * memory without read permission (PROT_NONE).
++ * Validate presence and permissions of RFIM attributes.
++ * The kernel exposes the dvfs, fivr and dlvr attribute groups
++ * independently, gated on per-device feature bits, so the test checks
++ * whichever of the three groups the hardware presents.
 + *
-+ * The test uses opflags=0 (no FUTEX_PRIVATE_FLAG) so get_futex_key()
-+ * takes the shared-futex path and resolves the physical page; this
-+ * lookup fails with EFAULT for unmapped and PROT_NONE addresses.
-+ * get_futex_key() is called for both uaddr and uaddr2 before the
-+ * *uaddr == val check; futex_var and val are both FUTEX_INITIALIZER.
++ * Permissions are verified by opening each node: read-only attributes
++ * must accept O_RDONLY and reject a write open, while read-write ones
++ * must accept O_RDWR. For sysfs nodes the mode bits alone are not
++ * authoritative - the kernel can still refuse the open in the file's
++ * own syscall handler - so open() is what actually exercises access.
++ *
++ * The test requires root because the read-write RFIM attributes are
++ * root-owned and created mode 0644, so only the owner holds the write
++ * bit. An unprivileged user could read them but would get EACCES when
++ * opening them O_RDWR, which check_read_write() would misreport as a
++ * failure rather than reflecting the actual access policy. The read-only
++ * attributes are mode 0444 and world-readable.
 + */
 +
-+#include <errno.h>
-+#include <sys/mman.h>
++#include "tst_test.h"
 +
-+#include "futextest.h"
++#define RFIM_ROOT "/sys/bus/pci/devices/0000:00:04.0"
 +
-+static futex_t futex_var = FUTEX_INITIALIZER;
-+static futex_t *futex_ptr = &futex_var;
-+static futex_t *unmapped_addr;
-+static futex_t *prot_none_addr;
++static bool have_dvfs, have_fivr, have_dlvr;
 +
-+static struct futex_test_variants variants[] = {
-+#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
-+	{ .fntype = FUTEX_FN_FUTEX, .desc = "syscall with old kernel spec"},
-+#endif
-+
-+#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .fntype = FUTEX_FN_FUTEX64, .desc = "syscall time64 with kernel spec"},
-+#endif
++static const char * const fivr_nodes[] = {
++	RFIM_ROOT "/fivr/vco_ref_code_lo",
++	RFIM_ROOT "/fivr/vco_ref_code_hi",
++	RFIM_ROOT "/fivr/spread_spectrum_pct",
++	RFIM_ROOT "/fivr/spread_spectrum_clk_enable",
++	RFIM_ROOT "/fivr/rfi_vco_ref_code",
++	RFIM_ROOT "/fivr/fivr_fffc_rev",
++	NULL
 +};
 +
-+static struct testcase {
-+	const char *desc;
-+	futex_t **uaddr;
-+	futex_t **uaddr2;
-+	int exp_errno;
-+} testcases[] = {
-+	{
-+		.desc = "uaddr unmapped",
-+		.uaddr = &unmapped_addr,
-+		.uaddr2 = &futex_ptr,
-+		.exp_errno = EFAULT,
-+	},
-+	{
-+		.desc = "uaddr2 unmapped",
-+		.uaddr = &futex_ptr,
-+		.uaddr2 = &unmapped_addr,
-+		.exp_errno = EFAULT,
-+	},
-+	{
-+		.desc = "uaddr PROT_NONE",
-+		.uaddr = &prot_none_addr,
-+		.uaddr2 = &futex_ptr,
-+		.exp_errno = EFAULT,
-+	},
-+	{
-+		.desc = "uaddr2 PROT_NONE",
-+		.uaddr = &futex_ptr,
-+		.uaddr2 = &prot_none_addr,
-+		.exp_errno = EFAULT,
-+	},
++static const char * const ro_dvfs_nodes[] = {
++	RFIM_ROOT "/dvfs/ddr_data_rate_point_0",
++	RFIM_ROOT "/dvfs/ddr_data_rate_point_1",
++	RFIM_ROOT "/dvfs/ddr_data_rate_point_2",
++	RFIM_ROOT "/dvfs/ddr_data_rate_point_3",
++	NULL
 +};
 +
-+static void run(unsigned int n)
++static const char * const ro_dlvr_nodes[] = {
++	RFIM_ROOT "/dlvr/dlvr_hardware_rev",
++	RFIM_ROOT "/dlvr/dlvr_freq_mhz",
++	RFIM_ROOT "/dlvr/dlvr_pll_busy",
++	NULL
++};
++
++static const char * const rw_dlvr_nodes[] = {
++	RFIM_ROOT "/dlvr/dlvr_freq_select",
++	RFIM_ROOT "/dlvr/dlvr_rfim_enable",
++	RFIM_ROOT "/dlvr/dlvr_spread_spectrum_pct",
++	RFIM_ROOT "/dlvr/dlvr_control_mode",
++	RFIM_ROOT "/dlvr/dlvr_control_lock",
++	NULL
++};
++
++static const char * const rw_dvfs_nodes[] = {
++	RFIM_ROOT "/dvfs/rfi_restriction_run_busy",
++	RFIM_ROOT "/dvfs/rfi_restriction_err_code",
++	RFIM_ROOT "/dvfs/rfi_restriction_data_rate_base",
++	RFIM_ROOT "/dvfs/rfi_restriction_data_rate",
++	NULL
++};
++
++static bool has_group(const char *name)
 +{
-+	struct futex_test_variants *tv = &variants[tst_variant];
-+	struct testcase *tc = &testcases[n];
++	char path[PATH_MAX];
++	struct stat stats;
 +
-+	TST_EXP_FAIL(futex_cmp_requeue(tv->fntype, *tc->uaddr, futex_var,
-+				       *tc->uaddr2, 1, 1, 0), tc->exp_errno, "%s", tc->desc);
++	snprintf(path, sizeof(path), "%s/%s", RFIM_ROOT, name);
++
++	if (stat(path, &stats)) {
++		if (errno == ENOENT)
++			return false;
++		tst_brk(TBROK | TERRNO, "stat(%s)", path);
++	}
++
++	if (!S_ISDIR(stats.st_mode))
++		tst_brk(TBROK, "%s exists but is not a directory", path);
++
++	return true;
 +}
 +
 +static void setup(void)
 +{
-+	struct futex_test_variants *tv = &variants[tst_variant];
-+	size_t pagesize = getpagesize();
++	have_dvfs = has_group("dvfs");
++	have_fivr = has_group("fivr");
++	have_dlvr = has_group("dlvr");
 +
-+	tst_res(TINFO, "Testing variant: %s", tv->desc);
-+	futex_supported_by_kernel(tv->fntype);
-+
-+	unmapped_addr = SAFE_MMAP(NULL, pagesize, PROT_READ | PROT_WRITE,
-+				  MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	SAFE_MUNMAP((void *)unmapped_addr, pagesize);
-+
-+	prot_none_addr = SAFE_MMAP(NULL, pagesize, PROT_NONE,
-+				   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	if (!have_dvfs && !have_fivr && !have_dlvr)
++		tst_brk(TCONF, "No RFIM attribute groups present under %s", RFIM_ROOT);
 +}
 +
-+static void cleanup(void)
++static void check_read_only(const char *path)
 +{
-+	if (prot_none_addr)
-+		SAFE_MUNMAP((void *)prot_none_addr, getpagesize());
++	int fd = TST_EXP_FD(open(path, O_RDONLY));
++
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++
++	TST_EXP_FAIL2(open(path, O_WRONLY), EACCES, "%s should reject writes", path);
++}
++
++static void check_read_write(const char *path)
++{
++	int fd = TST_EXP_FD(open(path, O_RDWR));
++
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++}
++
++static void run(void)
++{
++	if (have_dvfs) {
++		tst_res(TINFO, "Checking DVFS");
++		for (int i = 0; ro_dvfs_nodes[i]; i++)
++			check_read_only(ro_dvfs_nodes[i]);
++
++		for (int i = 0; rw_dvfs_nodes[i]; i++)
++			check_read_write(rw_dvfs_nodes[i]);
++	}
++
++	if (have_dlvr) {
++		tst_res(TINFO, "Checking DLVR");
++		for (int i = 0; ro_dlvr_nodes[i]; i++)
++			check_read_only(ro_dlvr_nodes[i]);
++
++		for (int i = 0; rw_dlvr_nodes[i]; i++)
++			check_read_write(rw_dlvr_nodes[i]);
++	}
++
++	if (have_fivr) {
++		tst_res(TINFO, "Checking FIVR");
++		for (int i = 0; fivr_nodes[i]; i++)
++			check_read_write(fivr_nodes[i]);
++	}
 +}
 +
 +static struct tst_test test = {
++	.min_kver = "6.4",
++	.needs_cpu_vendor = "GenuineIntel",
++	.needs_kconfigs = (const char *const []) {
++		"CONFIG_INT340X_THERMAL",
++		NULL
++	},
++	.needs_root = 1,
++	.supported_archs = (const char *const []) {
++		"x86",
++		"x86_64",
++		NULL
++	},
 +	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(testcases),
-+	.test_variants = ARRAY_SIZE(variants),
++	.test_all = run
 +};
 -- 
-2.54.0
+2.47.3
+
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
+Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
+
+Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
+This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
 
 
 -- 
