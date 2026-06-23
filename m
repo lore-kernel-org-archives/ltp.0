@@ -4,82 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24DC0CD98F2
-	for <ltp@archiver.kernel.org>; Tue, 23 Jun 2026 12:14:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C69FECDB46F
+	for <ltp@archiver.kernel.org>; Tue, 23 Jun 2026 12:48:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782218917; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=O7n8iieQ/ZoHEIAi/PqgKqi+dity3W4b2LoysDm4Xvs=;
+ b=m3dbFCew1WVjoT/MMrOPujsRjXo1DfVQajclgtR/2E9uZnNka3QLWxSfHCU2dbxcpGXQq
+ Cz5Bme9RiydpwiHY78T9qr7cYWT6JtULUIOIvnQ/OaehSeca5Z+HVi7qFB8OhenGITG3cnF
+ A5nG6qPKTQPCeU9Onp+hq3P7B+X7gm4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8DEE63E6558
-	for <ltp@archiver.kernel.org>; Tue, 23 Jun 2026 14:14:37 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 20A993E6579
+	for <ltp@archiver.kernel.org>; Tue, 23 Jun 2026 14:48:37 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 76D853C041D
- for <ltp@lists.linux.it>; Tue, 23 Jun 2026 14:14:22 +0200 (CEST)
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com
- [IPv6:2607:f8b0:4864:20::841])
+ by picard.linux.it (Postfix) with ESMTPS id 35D723E539B
+ for <ltp@lists.linux.it>; Tue, 23 Jun 2026 14:48:14 +0200 (CEST)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 11EDB6008FB
- for <ltp@lists.linux.it>; Tue, 23 Jun 2026 14:14:22 +0200 (CEST)
-Received: by mail-qt1-x841.google.com with SMTP id
- d75a77b69052e-519eedc30a3so42957221cf.1
- for <ltp@lists.linux.it>; Tue, 23 Jun 2026 05:14:22 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 05529200089
+ for <ltp@lists.linux.it>; Tue, 23 Jun 2026 14:48:13 +0200 (CEST)
+Received: by mail-wm1-x332.google.com with SMTP id
+ 5b1f17b1804b1-4924944fe6bso21654665e9.0
+ for <ltp@lists.linux.it>; Tue, 23 Jun 2026 05:48:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1782216861; x=1782821661; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=FmLofX6+EMP3NEwoCI48w2aNkiG0CKE+w+VdCc+Q2EI=;
- b=NJE8x5j/fg2gNV8kYT6/4SwBp6q8gMY97lAkCwZYX95PHwzTEogz4L1WtaGHeTe7Xz
- 9kCSceoRPIjs4lXyrc9dSdLj66X8Rb/LtSnZR20B7p+PvXD4U/iKeMvUDKe159FCsupf
- yzf1b32eedAfH6wbjb79VLx8ZE6VPo0HDAOqmybCQymjkNAhoSsiG16uXtRqNWFE5REC
- XDsrKzPKu8vMsY4zWrI1JenLLvDtny9pSBxyF1EpdkOMFC81SgAlox4W9saP6WUOWiaK
- 8rghfJrLNd2xB/bBj2sChDMSe84fvX1BiN6SXAIS0DS4POUqzwt4AR+z5RXu4oZdT4ST
- ORLA==
+ d=suse.com; s=google; t=1782218893; x=1782823693; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to;
+ bh=qzHAz4OENzbegNsBZ8W4d48/NOXycIX+VDSen6KlTvA=;
+ b=CMAxsSlUGuEH1qAX9D5QvgQ8pZydVScDOlEuw3sP/smOdBLAkxifl8wz9WV+WKjTF2
+ U0VGyR69HKx9rDwMOhHzNx15bmFtFk0SNsd9wMKaLKu3ympxfikePWPTAN1vLheMVrLB
+ 3+5IE/dtAIDcfBtIiFtQPw1uQbx0K/wJ6MaY3ze0KQSZGT0TWtOKBrUyHTpQmxneqxbt
+ /LaYKk5AOY+Nk8pE3Yubl800t2AdcdT3QRz/k4qg3KWqBIAN+iX58ZFTaTBu82GaGeCn
+ IlL0EpHztdtyZvtCbtsuLGvHLjA4XjhgG4mu7aurm5RVABmEcr9PJveCwKKIJLOnB1ss
+ 5FVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782216861; x=1782821661;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=FmLofX6+EMP3NEwoCI48w2aNkiG0CKE+w+VdCc+Q2EI=;
- b=JwG4GhSX9JVT2sEfUH8zTe8fLDWh0kXYpIItGcd5X3Y7S06B5UeEU5ZYAT5gFsDFRQ
- 5pWONkQm4b8z3EeEosiHViiAoc/Tt3EGRPj/odeD3zbup8gJLcDwcNgk6Bs9QKS0B2aK
- 5xxCy/VOObLSSAi6xF49df4p+uOOo5dd2ZnxT3A5pkneGDKuOeR++nkovRCewW4R19jx
- JtEx9GdtpcVHE5pliwX38EnUiE9HjM0lC0ww1RF5vfbmW7o/S5QGW2aImEO5HFu0Hhoh
- l+Sf0Rp0QYq0feeG8OOp8wrO9RI6/g6V4qP2J26TZuFrFMKHBHM84dDUIbZWdkbJw9Jb
- ZxYQ==
-X-Gm-Message-State: AOJu0YyMc4LD+Lsv+Xhl5csU3Ehzcm9l5u6T2CfTZSGzG9xculi/fl6E
- Acz7kbYlpvnFKR7qpdcroUpACKB9DAlbUW7b15In73QPt4HoeWhKmx5A
-X-Gm-Gg: AfdE7clGcHfeyOPwWZr32dR4My4QPTpuK4JCMcHMAOpJuRxF/UkWntZPp792kjMCNcV
- Q2n3FGCehcwG3yGxu51Q4oSlfefSjohn3ww1cJAK0Wwj/RGU99HsPHucs8hH/uVPrvPsSBRLcWB
- 7smhOSOkuvX/i7nz2tfHm6foQfabD3MzTvKcZpDxpPCS9N4TdvrUcaVnSRQrUyZhN3ue+cYV7Oe
- +ME0JLuthcJBO3w3joZbjxEEY1NghmfeGqt0c8MPABP5Ym7rlKiuQk3Fr4ZHcrPEPkrHsGAmbgL
- Ag8/tpOvdtRz6Z59YfmtvX2TwDOoVtzpNAeG/kerfv5dREYJwI7meCFCJi/EAOKC3XAMV3pTC1K
- o6+NSoM5ISM8Ur4UETjgnS3ZDJC8Sa9j2v1b5BhwzL7dFFq3dEx+98PtYEhow9ZWcj0gVA8Vr19
- //Dx/drY5woNwNNcfQoXYXBGTY+KlGJSjQtD21tOGCY+K6g5DKpUTwVctHcW2ejeli7W0FUATfy
- zROEgjOJJSif35jKBtVSECHqTI=
-X-Received: by 2002:ac8:5883:0:b0:516:e085:b76e with SMTP id
- d75a77b69052e-51a5579e249mr33287731cf.0.1782216860808; 
- Tue, 23 Jun 2026 05:14:20 -0700 (PDT)
-Received: from
- runnervm7b5n9.5lz0t1jpl4juvdzdnrubm1g2wb.bx.internal.cloudapp.net
- ([20.119.79.65]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-51a514b50b9sm21601681cf.3.2026.06.23.05.14.20
+ d=1e100.net; s=20251104; t=1782218893; x=1782823693;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=qzHAz4OENzbegNsBZ8W4d48/NOXycIX+VDSen6KlTvA=;
+ b=CBO6O2ofRFDNTEfDMLHmoWQCTdpq3xM8cCwgoVvJPR3qHG2EXLuqOmVm8p4UtWDrMJ
+ OwPwJhwO3lK+3JRt1TikW/Ooh0RlTo+qzZUx37RVJEseGoBGw3jhLWXNf+Q6PKNc0HzJ
+ xPgfT2fBZNHkbEAvShUZpgaPS6NyL89qEGivio7lZDyulau9y2HOJnU4DHyBooVHK3Bu
+ T3yOz49GrwZhVMRZHIx5+smIDRjg0SbvZ/8NI5EmcwiwZFWy2NcEnjU3oUPJfQ4HLY1e
+ 7nXxGYCEPcGrcIrShWhUO8Vv/DLJKO2EJmCM5HYX8AKHz6bV15AHnWe57DmeHyyY2DZ1
+ EFsA==
+X-Gm-Message-State: AOJu0YwJLf3wOmgSXKxKmRY58x0lKzLYk+ChV+gp9imQA8+r7jPcONwM
+ 0mvTlUutsXnBeoaAJB/SmgQws8kanK749BWJiFM+XPcDZWTeZa5tSp6vUUt5Y0sslK2+4AK2r/j
+ tmhfEg2I=
+X-Gm-Gg: AfdE7ckUZg1SU9hO6K06LX+qNsDGp2xsxt8bVfrtaeng3wYkCXwpA2YKmdnTEHrOfue
+ IlNJmd0h19E5PGUsNyiPcpSmmv2gCB2h3f6JN9BcjHGi0ISbpqY7DUj7OFnvlmD+vnaYanUdknJ
+ VXP8GhT0gQipgPeDNuvIcwtMzdELp2nrhvRtRDIjP2ViLz/TpjCXzNyaNla4GhxZ/Oe37+2HabE
+ 7XmQkmjynJZ7ZH4YSnx/AheKl4rUQ8B1k2t+6Q2o5jlrEFlNC+c6r6l+biOJqXRHHZF2iUE55QJ
+ dbal/lfd5loyiMGf/2Vc/Oa95deD2jK5QTPizmzz5QXq/POXaRoo42e8pAdXcbU9XVZXYR2/Evx
+ zvWXif6AIpyVnPMPlDDrWnHZSAgHL3vmGJectqfjaZuHALNMzNdMVvkMaotsvUv7La3JONaYyl9
+ I=
+X-Received: by 2002:a05:600c:5493:b0:492:1ea2:6258 with SMTP id
+ 5b1f17b1804b1-49240e7b049mr286143135e9.33.1782218893219; 
+ Tue, 23 Jun 2026 05:48:13 -0700 (PDT)
+Received: from localhost ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-46666788282sm52370427f8f.17.2026.06.23.05.48.12
+ for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 23 Jun 2026 05:14:20 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Piotr Kubaj <piotr.kubaj@intel.com>
-Date: Tue, 23 Jun 2026 12:14:19 +0000
-Message-ID: <20260623121419.4156-1-linuxtestproject.agent@gmail.com>
+ Tue, 23 Jun 2026 05:48:12 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Tue, 23 Jun 2026 14:48:10 +0200
+Message-ID: <20260623124812.46022-1-avinesh.kumar@suse.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260623113422.188364-2-piotr.kubaj@intel.com>
-References: <20260623113422.188364-2-piotr.kubaj@intel.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] rfim: add new test for verifying RFIM sysfs interface
+Subject: [LTP] [PATCH] set_mempolicy05: require CONFIG_NUMA
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,28 +96,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Piotr,
+On kernels without CONFIG_NUMA=y set_mempolicy() returns ENOSYS,
+which the test misreports as TFAIL.
 
-On Tue, 23 Jun 2026, Piotr Kubaj wrote:
-> rfim: add new test for verifying RFIM sysfs interface
+set_mempolicy05.c:105: TFAIL: set_mempolicy should fail with EFAULT or EINVAL, instead returned 38
 
-Verdict - Reviewed
+Add .needs_kconfigs with CONFIG_NUMA=y
 
+Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
 ---
-Note:
+ testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
+index 65061bf3d..6c91beebc 100644
+--- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
++++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
+@@ -115,6 +115,10 @@ static struct tst_test test = {
+ 		"ppc",
+ 		NULL
+ 	},
++	.needs_kconfigs = (const char *const[]){
++		"CONFIG_NUMA=y",
++		NULL
++	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "cf01fb9985e8"},
+ 		{"CVE", "CVE-2017-7616"},
+-- 
+2.54.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
