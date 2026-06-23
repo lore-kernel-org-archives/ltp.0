@@ -4,81 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0553ECDB471
-	for <ltp@archiver.kernel.org>; Tue, 23 Jun 2026 15:51:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE86FCDB471
+	for <ltp@archiver.kernel.org>; Tue, 23 Jun 2026 16:32:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782232330; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=BpDG0l9CTRMEYLw8uEvqnqDpQrNcF/Z0iaiTXdgWbLo=;
+ b=ZhWXreDKP+E9R0Uo/3RS878YvpJO/HOpr5L2KdqkTYnvfouRyy9D0HVRRWsRV1SF1Y0db
+ l2Cebm8nAsinRVP3M2S9gNhSdcMEzNxSHu5dJ9Ua5MuWNaE0Z+0uwwEQcngd/0AW4nXNaEm
+ XTQE63W8/OYtFcUOEU/JpW538EP2tZE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2CE933E68ED
-	for <ltp@archiver.kernel.org>; Tue, 23 Jun 2026 17:51:36 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id D2C2E3E65A2
+	for <ltp@archiver.kernel.org>; Tue, 23 Jun 2026 18:32:10 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DD91D3E5872
- for <ltp@lists.linux.it>; Tue, 23 Jun 2026 17:51:20 +0200 (CEST)
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com
- [IPv6:2607:f8b0:4864:20::f43])
+ by picard.linux.it (Postfix) with ESMTPS id 79D473E2CA7
+ for <ltp@lists.linux.it>; Tue, 23 Jun 2026 18:31:47 +0200 (CEST)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 59F2F200254
- for <ltp@lists.linux.it>; Tue, 23 Jun 2026 17:51:20 +0200 (CEST)
-Received: by mail-qv1-xf43.google.com with SMTP id
- 6a1803df08f44-8db9f25c5acso1213196d6.0
- for <ltp@lists.linux.it>; Tue, 23 Jun 2026 08:51:20 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D0A061A008A9
+ for <ltp@lists.linux.it>; Tue, 23 Jun 2026 18:31:46 +0200 (CEST)
+Received: by mail-wr1-x42f.google.com with SMTP id
+ ffacd0b85a97d-4645995069bso74649f8f.1
+ for <ltp@lists.linux.it>; Tue, 23 Jun 2026 09:31:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1782229879; x=1782834679; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=uGB74m8ri0Yes0RimbG8uBym2NhQP1Vk1CZV2npWF9Q=;
- b=BFGImt25XhKb1e7LawuKBWU6fjnF/u8+EYsknHZOh/vYkJsGlVvVDYRL+dftlqEaGJ
- T/iFVBGT4VPMraE6ULYeSDIxCrGVMEtpUbsav0AzNw7Blu5Leg2OLL4d4MwIT9CxDj/Z
- lR0tamD0/1c6jyucgyq5Jk4YIOYtdQpuoEVjLQpR4Vn33zGvB22ngrbXYzq+/K/5MkBD
- KikEFWKqjF8TLGQytNrncws1I7RGRFn5nVXnbCl6XDZbqYN4q7/ZHaaFr7tMz2iWaVOM
- ey/bre24EA0eiGareC3CqD+NPHlDErmJQjXhd0GUlQcFuQPIw1acRVrfX4pi2NMsL6Vd
- FvSA==
+ d=suse.com; s=google; t=1782232306; x=1782837106; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to;
+ bh=FdepdOUcDDDOgi5hqntlkswOTAkU94iJJicwtzGQwsE=;
+ b=VxwAtG2aRBj1503tS/7zuhman8g0Gg60s7tcDF+KK/Gp6vB333ai1+3c9yRRKE7dSk
+ WetiX/Gj2aw2tyS0D/xZW773qEsujXHHj4eR8OvDymaOjMc1NQyJzZDJSYPtrqcWKXat
+ GCDmE8EU7RTl7v6hDX16JK3bNsQJ6A/hrE7G6CyoyLxypFsPkNhrNkJduw4njxjj+vsS
+ V1Z5kPIz5cRRlmaNHs7/20PrFy/8rZ6ctsB+8cGWM/K554gB1FRtrPKNbCAKK8c0WDJ3
+ qSGbs+pSaWqFjl3RZDdOEbt1eKtHXSL616bOrTI4T5zsIki0BQstY2z0ErF1iCs+KEUc
+ 59TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782229879; x=1782834679;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=uGB74m8ri0Yes0RimbG8uBym2NhQP1Vk1CZV2npWF9Q=;
- b=sgBzEvWe/Q3Lk0WY+mu2X1Yabemwa+iMtlIufiSVh1O7oRp6LsIgDkw4S8PprjdVjY
- eNf/iW7GQgUE+CSInFpx1PE9H8frODxAOyRYrJ3EO+Z0ydd2eVoxz/gQDDI2TW5np/yZ
- s6npCccJH2EskPOdVeiK4vVW5S8m76LmqT1WmEegQxIezVHO+nF2Hdv4WkPAIpbcW3Sz
- 6Cv65FVARMwM8WmiCDA5875DIQxvYW+2Os+2/zc/zC25GGUCS0UI6jo7hjCrf/d3N0wO
- PZrIzMaA9QtXQFx4Kd5YwBhh0hQLmFKQedRMIY4oQJOuzaIhPabEm7pTVzpCLDPgrELA
- MEhw==
-X-Gm-Message-State: AOJu0Yw3Z4qzHu+3jM6GCTudVT9pilLxamKb1TCEbbl5c/C0WT83SpQ0
- 3AJqfmrqiP/CIkTQw8DVvRRlGOdVnzKzfPAxWgrGmHFu7GdAmxq/H34WUzpcWtIz
-X-Gm-Gg: AfdE7cmRE5uDtj+LDaunuUFONfbUFodcAvEk5AS0ewlGwINcb+aUTrvsMpVHQ3d3qAm
- Hi4eiOgWN/o7EVJxUxyrrPsyxz8ir5b1LFPl9S6f5jL3fPomkx7P4XKkFtZ9HhNquZYCzBeuOfm
- 9e0J36OdtUdWvpCCn0+/nqb/ZJTV3HGZ+pXzo8gBH3X2CkJS/vXRPQLtGkVML/13Ku/X3BMDeb5
- DlQ+rSHY60Ina/zdPkjPZ3yYLnii0Yuj2+eSblOgtoYtb3by0mOe0X+IXuUUHxOtnzDAuTuFp1e
- xGnTD8QKZQ54I3AA8aJ8vvXIa3fIM0jp8IDhP2/qXq6/2nyaxI4ficDdGprB2NZVQE9aSSTEOSt
- dlpjL8M8xUtRygBX48SDkLWSN01c1u20Bs4EiTyQGb19B+IM4JBYMxqxqAORi+2Q6O20ynoHdUB
- BMJ1LjR7fkbXhgjGEyJ72MMQ32FvMt8DGf75wqGcSEfixFiu7iATotQjZURlVmEL9vLVsjvb/QZ
- HVRhkGgDWJt0bzuC8ZWny2vuaon
-X-Received: by 2002:a05:6214:29ed:b0:8dd:5fa6:cb31 with SMTP id
- 6a1803df08f44-8e4344aa943mr45793486d6.17.1782229879094; 
- Tue, 23 Jun 2026 08:51:19 -0700 (PDT)
-Received: from
- runnervm7b5n9.yuqz1jw5yhjepgxuxy13g0zykh.bx.internal.cloudapp.net
- ([4.236.173.170]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8df82692405sm128286576d6.39.2026.06.23.08.51.18
+ d=1e100.net; s=20251104; t=1782232306; x=1782837106;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=FdepdOUcDDDOgi5hqntlkswOTAkU94iJJicwtzGQwsE=;
+ b=kCgGtBHlXg8TfFAMQuK2k77yYDxI6SvyzTzbvrJKIPstp8PgtNdx8gKFCNNPzaakK3
+ Kc9O4uHkbyvTCOY37NnqqkJf8monpgy/mnHkt+1m6hxZZGCtOqFtZo+GyheTymtCAX6G
+ Iw5IRORH7KNKkBqF8Lk+cnE6bMy7jiLg0O2/lvemV9dWJh0pxHvQeEp5R11/dYh1etII
+ Xpw9ZMnX7q+vx+xIlwo21TiEV04iA1IZr+nZDFxmGTvzzWyQ8IAAZ67/hHZF49lEzhkx
+ MKcKscCSTi10eAST8FtRczxrEbwWGKzNUczFpbmNTd03MwMJ/BEnPtUuZ8ZoioOdySc4
+ Jrqw==
+X-Gm-Message-State: AOJu0YznJBgQdCMoQ0LakbGbxIih+logRdZynkvCAaokj3eHIyNzLZ4L
+ kTXaXS+C7kR/mIHavldQaCfAhsR2jdM/Md6Gagh7XyNnWwLdTUQiaBqHUfPYIhXN66EC4K6NfTp
+ iSEKNhso=
+X-Gm-Gg: AfdE7cnBX1D+Qi9xOkqztHryr85tfSfvdY119UEbaJbt9ttwdn/nB0LLLbmBtYr70n/
+ foJle5pxGEQ71rLmTVSBovypmTWGaaJOHoTjS8C3h7J8V9d2BMKHxDCuDb7EeBSnhpC6aBlcBe1
+ mXrisgXdY/qb+wE8mBCrkktt4N9EObrK2JlFn6n+NekdUYgOpB1UW+s3wCaZ4+I2adiCkMtzmQJ
+ gxPRd5W1GnkIBRql4Vf8jJrWWa33XWus1ZNoqRsZfQCX+Nely/uEQqapnI1EenGr5ZVIbVpvEu0
+ K5Vpn6OykdLe8mzHdBse1ZCgunyDxOetFR+qBWGsFKgDWuRDET7wmzRJyDb7f9Hnw2vr+osZK2T
+ Vz50CE7DofbCj0kc2064kJIeEkyVQKtAhW5h+2bOF2BjOFJlIxAUdlOcIkHiklJibD4pnsB7R6X
+ o=
+X-Received: by 2002:a5d:58e4:0:b0:460:2ee5:67b8 with SMTP id
+ ffacd0b85a97d-46add184506mr4416637f8f.36.1782232305995; 
+ Tue, 23 Jun 2026 09:31:45 -0700 (PDT)
+Received: from localhost ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-46666c579dfsm37881007f8f.31.2026.06.23.09.31.45
+ for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 23 Jun 2026 08:51:18 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Date: Tue, 23 Jun 2026 15:51:17 +0000
-Message-ID: <20260623155118.3998-1-linuxtestproject.agent@gmail.com>
+ Tue, 23 Jun 2026 09:31:45 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Tue, 23 Jun 2026 18:31:43 +0200
+Message-ID: <20260623163144.83028-1-avinesh.kumar@suse.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260623124812.46022-1-avinesh.kumar@suse.com>
-References: <20260623124812.46022-1-avinesh.kumar@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] set_mempolicy05: require CONFIG_NUMA
+Subject: [LTP] [PATCH] sendfile09: skip on native 32-bit kernels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,28 +96,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
+this test is already documented as 64-bit only, but
+.skip_in_compat only covers 32-bit-on-64-bit. On a native 32-bit
+kernel (e.g. i586) it still runs and setup's write() past 2GB fails
+with EFBIG (TBROK).
 
-On 23 Jun 2026, Avinesh Kumar wrote:
-> set_mempolicy05: require CONFIG_NUMA
+sendfile09.c:49: TBROK: write(3,0x4a8011,1) failed: EFBIG (27)
 
-Verdict - Reviewed
+TCONF on 32-bit kernels via tst_kernel_bits().
 
+Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
 ---
-Note:
+ testcases/kernel/syscalls/sendfile/sendfile09.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/syscalls/sendfile/sendfile09.c b/testcases/kernel/syscalls/sendfile/sendfile09.c
+index 82feaeba0..50b9c1ca7 100644
+--- a/testcases/kernel/syscalls/sendfile/sendfile09.c
++++ b/testcases/kernel/syscalls/sendfile/sendfile09.c
+@@ -40,6 +40,9 @@ static void setup(void)
+ {
+ 	int i, fd;
+ 
++	if (tst_kernel_bits() == 32)
++		tst_brk(TCONF, "Test is only supported on 64-bit kernels");
++
+ 	if (!tst_fs_has_free(".", 5, TST_GB))
+ 		tst_brk(TCONF, "Test on large file needs 5G free space");
+ 
+-- 
+2.54.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
