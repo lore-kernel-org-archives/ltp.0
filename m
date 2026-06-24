@@ -4,103 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EBCBCDB479
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 09:23:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8857CDB479
+	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 09:59:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782295198; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=RWBj789HCSiUrKB8R4V2KKfYWo3b/dWdN6e1tu5kcT0=;
+ b=dlXyRZIUTeqz4Zbi17gLa8wnHCGHwH/aPBCHce9hMZsEufyuw6ABw5W9lqViX4cTW2ui7
+ lNxUxtdkNOEbHza4b8GXLEWupUJs+NwDZPbxhskPgbZZ1O2uJCuRHwQ+R6YRl/6+Gy7zKj/
+ Yptzw3vrUKJp/I9kGyJBFXXdOfxAu7o=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 51CDB3C0302
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 11:23:10 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 292673E5335
+	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 11:59:58 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BDD803E56BA
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 11:19:36 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 13A133C9E1F
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 11:59:37 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 327696009F7
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 11:19:33 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1FA107147A
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1782292751; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=HtLcuPYP+S2BbunWkX9cyWpvbbpYHrdX4QrUXmasSpg=;
- b=JF/kiILvIYm4xg07IOMXedh2zFjkAbQB+6pmAlctzFYB5v/67F7xz/zYJw6B4Jes1YaIDp
- yvBVFQ5x9S76yJ/DvbNkfKStbEMshOvf4RVYhBVgnvaPLsszkpRPWjXWYBCd/8U1VvNqsY
- f9SOWuBoUgatDyEV0zacMKfrzHl4Iac=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1782292751;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=HtLcuPYP+S2BbunWkX9cyWpvbbpYHrdX4QrUXmasSpg=;
- b=IFy1dLZIm+LtGqavxravAh5H5vq6U4OpYOT2LnUEhRNgkeqselSFyn2/RYEO1ssG++58bP
- w3tivzkoTYbZFpBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1782292750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=HtLcuPYP+S2BbunWkX9cyWpvbbpYHrdX4QrUXmasSpg=;
- b=ZAncUvx1rnoY2d7oM7ZNA5NWczUDo0WCshTbzFRTmMgBQzTKtVvvlbruPS3iBCfYl/F+95
- nnD9qNZxHGcNuANuNx5jX3+Zim1EW60YptH0c0N3y0Y7OI17cVSOZLIOQ8ZkDc6O90khPP
- K623xpv85Q5jDere6FgT1T4FX6kjYGw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1782292750;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=HtLcuPYP+S2BbunWkX9cyWpvbbpYHrdX4QrUXmasSpg=;
- b=ERjNG6lwafcUWfDVmcXyPijf6zh8tteMaeg5BehaUzck3f+wynkydck/kO/nHNJEM2ljtl
- iE0TpOIQifnR7AAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 06B8E779A8
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id VQlzOw2hO2poAgAAD6G6ig
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:09 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed, 24 Jun 2026 11:19:00 +0200
-Message-ID: <20260624091900.4107041-14-chrubis@suse.cz>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260624091900.4107041-1-chrubis@suse.cz>
-References: <20260624091900.4107041-1-chrubis@suse.cz>
-MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.999];
- MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
- ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[val.id:url,keyctl01.sh:url,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCVD_TLS_ALL(0.00)[]
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 653F660080F
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 11:59:37 +0200 (CEST)
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-4924593f45dso8886165e9.1
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 02:59:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1782295177; x=1782899977; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
+ b=YvhQOVepzwiFiNpLrCMGctWmAtqd45oaWs2hVRXIGosX6VCMKVx7E4/XHPNMRCWb8c
+ yttOE/ocPm76ezXhlH0eecti42hI6fT/k+1sj0TqyLXGz1i/ej86UU6xjHEQT6Ow7YhE
+ hzv3iOl08HhHd8J5JUkLEiFR4cmBXDLQIhyLaCtapDZoc+ffQSSA2PwwglKPvfTIP9Ke
+ IBnCpDbKoDZ9XyR5dWhT6wKtsADI2GKGeMdA1U9xQ1Ltn3MsTH80JL+56xq+XR12+FYY
+ 5IBToGS5EjEyJR/+TXjS7zFH0oXp1JSeCrLy/hBsNz/nLq+abr5BHVZhe7Z9bII5Fine
+ 8AAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1782295177; x=1782899977;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
+ b=WJa9fOdSKEur8Bg6HYALXQW5cOO+T7J9FB79ZdVmPQ/TMjdjc9SGzQ65fko8V9LDfW
+ lxXTaJkr4KpPHBXBv732or/lzo6aJB5bt6mI03SYMz6zcyBl0ZbmE0xuqP/WhhVMY5SB
+ V/jC4cwxoPG4wpvMX95/tGNm1cWuxaIagMVesZDGpBfIIbFSvh2c+G17L4sJyupGxTSR
+ zgKR2VeB9UGwlfXZ4pwu3SUU+VRAb2K6Sqd3b9lpCF8zxJJTfI0JUn02A6Bpt/vmSi/A
+ PubE2YO9Q+yH/HB1NaIcTKrZL7ogkN5odbvhBqjRMu8NAfhJH4ts+RA7sSax/D88vDln
+ e6sQ==
+X-Gm-Message-State: AOJu0YyvWf4JdRczLHbuyNB2D0TRCy+1nsDIgc57CiIMm9Fefhfy9jK1
+ RWRvd3l73m+TNxT1rHSgaLkW0c2Vl5Q8LdKHaqKIlNp8RIxEGE1/Vb0NT8e6wgbdQWs=
+X-Gm-Gg: AfdE7cnTNqqPaNDmxXVisEPg8Yq3Qjm4KxiBGBOShcrZbFaGTu+7pLUnY9/d1c0XXZm
+ JKjJmE9WblZFHqUMXyA1E8On4JhRslEUtXWddZVfZyF4NK8AYToqjiQc7U2Dbtp5bN1FicqCK16
+ 11a+tPdafssZHjdTl5rfxiZ+19G9UQQ35m9Ok69csmCqgiVjylbpfJghGWYk1TCISyt7buUSx5n
+ pNuz0TBjDNAKmGSlHuYhuKN0d1IwiHqbcO9PegMjXUAgiFyRA3Ye70c4os4suN2PxDfXJdMYMTR
+ 5M0vy+ZwrKmwSa7SSH1oTfNSNZ1Gzdv9v579VKlRM2NOPQjSZT5ZPNvDnP9GkxZlT6ePf3NIOPb
+ RVdrYLhnJgO1UvFixWAOOCN9e0u+TktIRs9p6AqwIs/I+KnHEb08+23MDhrLYGiDVHMFi0Nedjb
+ ZczV7xnVnalEbiRiqXvt0CvK4256pfKnP+RPXtVqtkh5Nrm+vmiy9vGtcthfoxJB7qj2Yo2Ieeg
+ /W3/1bE8Okp8004liuYOJJHzaMzEYSA+Ln+S+YBY37xZVhiinj2vFMiCQV2ke5+Ndc=
+X-Received: by 2002:a05:600c:3f07:b0:492:451c:cc1c with SMTP id
+ 5b1f17b1804b1-4926086ed5fmr36532705e9.24.1782295176665; 
+ Wed, 24 Jun 2026 02:59:36 -0700 (PDT)
+Received: from p200300ef2f13eb007ed17b715703ca11.dip0.t-ipconnect.de
+ (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
+ [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-46c2279b85csm5016732f8f.28.2026.06.24.02.59.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 24 Jun 2026 02:59:36 -0700 (PDT)
+Message-ID: <6a3baa88.795e137c.374e2a.0ace@mx.google.com>
+To: "Cyril Hrubis" <chrubis@suse.cz>
+In-Reply-To: <20260624091900.4107041-3-chrubis@suse.cz>
+Date: Wed, 24 Jun 2026 09:59:35 +0000
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 13/13] metadata: Add runtest file generator
+Subject: Re: [LTP] [PATCH 02/13] keyctl01.sh: Rewrite to the new shell
+ library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,495 +97,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Now just for the runtest/cve file.
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-The changes in the file are:
-
-- request_key03 is executed once and checks for both CVEs
-  (we have many tests that check for more than one CVE and we execute
-   rest of them once as well)
-
-- if we have more than one test per CVE the suffixes are now numbered
-  (it was random before)
-
-- if test checks for more than one CVE the test tag is the oldest one
-  (the crypto_user01 test jumps up in the runtest file, but again this
-   makes it more consistent)
-
-- kvm CVE tests are included, I do not see a reason to filter them out
-  but we can add that filter if deemed necessary
-
-- the file also includes landlock07 that should have been included but
-  wasn't
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- metadata/.gitignore   |   1 +
- metadata/Makefile     |  10 +-
- metadata/genruntest.c | 292 ++++++++++++++++++++++++++++++++++++++++++
- runtest/.gitignore    |   1 +
- runtest/cve           | 100 ---------------
- 5 files changed, 302 insertions(+), 102 deletions(-)
- create mode 100644 metadata/genruntest.c
- create mode 100644 runtest/.gitignore
- delete mode 100644 runtest/cve
-
-diff --git a/metadata/.gitignore b/metadata/.gitignore
-index bb6399e5c..ae33412a6 100644
---- a/metadata/.gitignore
-+++ b/metadata/.gitignore
-@@ -1,3 +1,4 @@
- metaparse
- metaparse-sh
-+genruntest
- ltp.json
-diff --git a/metadata/Makefile b/metadata/Makefile
-index 6939b9f76..fcd63f385 100644
---- a/metadata/Makefile
-+++ b/metadata/Makefile
-@@ -6,15 +6,21 @@ top_srcdir		?= ..
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(top_srcdir)/include/mk/functions.mk
- 
--MAKE_TARGETS		:= ltp.json
--HOST_MAKE_TARGETS	:= metaparse metaparse-sh
-+MAKE_TARGETS		:= ltp.json ../runtest/cve
-+HOST_MAKE_TARGETS	:= metaparse metaparse-sh genruntest
- INSTALL_DIR		= metadata
- 
-+genruntest: genruntest.c $(addprefix $(top_srcdir)/libs/ujson/, ujson_reader.c ujson_common.c ujson_utf.c)
-+genruntest: HOST_CFLAGS+=-I$(top_srcdir)/include/
-+
- .PHONY: ltp.json
- 
- ltp.json: metaparse metaparse-sh
- 	$(abs_srcdir)/parse.sh > ltp.json
- 
-+../runtest/cve: ltp.json genruntest
-+	${top_builddir}/metadata/genruntest ltp.json cve > ../runtest/cve
-+
- test:
- 	$(MAKE) -C $(abs_srcdir)/tests/ test
- 
-diff --git a/metadata/genruntest.c b/metadata/genruntest.c
-new file mode 100644
-index 000000000..193c7fa50
---- /dev/null
-+++ b/metadata/genruntest.c
-@@ -0,0 +1,292 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+ *
-+ * Generate LTP runtest files from ltp.json metadata.
-+ *
-+ * Usage: genruntest ltp.json cve
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+#include <ujson.h>
-+
-+struct cve_entry {
-+	char name[128];
-+	char binary[128];
-+	int cve_year;
-+	int cve_seq;
-+	int may_kmemleak;
-+};
-+
-+static struct cve_entry *entries;
-+static unsigned int entry_cnt;
-+static unsigned int entry_size;
-+
-+static void add_entry(const char *cve_id, const char *binary,
-+                      int may_kmemleak)
-+{
-+	const char *id = cve_id;
-+
-+	if (entry_cnt >= entry_size) {
-+		entry_size = entry_size ? entry_size * 2 : 128;
-+		entries = realloc(entries, entry_size * sizeof(*entries));
-+		if (!entries) {
-+			fprintf(stderr, "Out of memory\n");
-+			exit(1);
-+		}
-+	}
-+
-+	struct cve_entry *e = &entries[entry_cnt++];
-+
-+	snprintf(e->name, sizeof(e->name), "cve-%s", id);
-+	snprintf(e->binary, sizeof(e->binary), "%s", binary);
-+	e->may_kmemleak = may_kmemleak;
-+
-+	if (sscanf(id, "%d-%d", &e->cve_year, &e->cve_seq) != 2) {
-+		fprintf(stderr, "ERROR: Invalid CVE id '%s' should be 'year-seq'\n", cve_id);
-+		exit(1);
-+	}
-+}
-+
-+static int cmp_entries(const void *a, const void *b)
-+{
-+	const struct cve_entry *ea = a;
-+	const struct cve_entry *eb = b;
-+
-+	if (ea->cve_year != eb->cve_year)
-+		return ea->cve_year - eb->cve_year;
-+
-+	if (ea->cve_seq != eb->cve_seq)
-+		return ea->cve_seq - eb->cve_seq;
-+
-+	return strcmp(ea->binary, eb->binary);
-+}
-+
-+/*
-+ * Count how many entries share the same CVE name.
-+ */
-+static int count_same(unsigned int idx)
-+{
-+	int cnt = 1;
-+
-+	while (idx + cnt < entry_cnt &&
-+	       !strcmp(entries[idx].name, entries[idx + cnt].name))
-+		cnt++;
-+
-+	return cnt;
-+}
-+
-+static void print_entries(int kmemleak)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < entry_cnt;) {
-+		int cnt = count_same(i);
-+		int j;
-+
-+		for (j = 0; j < cnt; j++) {
-+			struct cve_entry *e = &entries[i + j];
-+
-+			if (e->may_kmemleak != kmemleak)
-+				continue;
-+
-+			if (cnt > 1)
-+				printf("%s-%02d %s\n", e->name, j + 1, e->binary);
-+			else
-+				printf("%s %s\n", e->name, e->binary);
-+		}
-+
-+		i += cnt;
-+	}
-+}
-+
-+enum test_attr_ids {
-+	ATTR_MAY_KMEMLEAK,
-+	ATTR_TAGS,
-+};
-+
-+static ujson_obj_attr test_attrs[] = {
-+	UJSON_OBJ_ATTR_IDX(ATTR_MAY_KMEMLEAK, "may_kmemleak", UJSON_BOOL),
-+	UJSON_OBJ_ATTR_IDX(ATTR_TAGS, "tags", UJSON_ARR),
-+};
-+
-+static ujson_obj test_obj = {
-+	.attrs = test_attrs,
-+	.attr_cnt = UJSON_ARRAY_SIZE(test_attrs),
-+};
-+
-+static int parse_cve_tags(ujson_reader *reader, const char *binary,
-+                          int may_kmemleak, int do_add)
-+{
-+	char buf[256];
-+	ujson_val val = UJSON_VAL_INIT(buf, sizeof(buf));
-+	int cnt = 0;
-+	char *oldest_id = NULL;
-+	int oldest_year = 0, oldest_seq = 0;
-+
-+	UJSON_ARR_FOREACH(reader, &val) {
-+		char *name = NULL;
-+		char *value = NULL;
-+
-+		if (val.type != UJSON_ARR) {
-+			ujson_arr_skip(reader);
-+			continue;
-+		}
-+
-+		UJSON_ARR_FOREACH(reader, &val) {
-+			if (val.type != UJSON_STR)
-+				continue;
-+
-+			if (!name)
-+				name = strdup(val.val_str);
-+			else if (!value)
-+				value = strdup(val.val_str);
-+		}
-+
-+		if (name && value && !strcmp(name, "CVE")) {
-+			if (do_add) {
-+				const char *id = value;
-+				int year, seq;
-+
-+				if (!strncmp(id, "CVE-", 4))
-+					id += 4;
-+
-+				if (sscanf(id, "%d-%d", &year, &seq) == 2) {
-+					if (!oldest_id ||
-+					    year < oldest_year ||
-+					    (year == oldest_year && seq < oldest_seq)) {
-+						free(oldest_id);
-+						oldest_id = strdup(value);
-+						oldest_year = year;
-+						oldest_seq = seq;
-+					}
-+				}
-+			}
-+			cnt++;
-+		}
-+
-+		free(name);
-+		free(value);
-+	}
-+
-+	if (do_add && oldest_id)
-+		add_entry(oldest_id, binary, may_kmemleak);
-+
-+	free(oldest_id);
-+
-+	return cnt;
-+}
-+
-+static void parse_test(ujson_reader *reader, const char *binary)
-+{
-+	char buf[256];
-+	ujson_val val = UJSON_VAL_INIT(buf, sizeof(buf));
-+	int may_kmemleak = 0;
-+	int cve_cnt = 0;
-+
-+	ujson_reader_state obj_state = ujson_reader_state_save(reader);
-+
-+	UJSON_OBJ_FOREACH_FILTER(reader, &val, &test_obj, NULL) {
-+		switch ((enum test_attr_ids)val.idx) {
-+		case ATTR_MAY_KMEMLEAK:
-+			may_kmemleak = val.val_bool;
-+		break;
-+		case ATTR_TAGS:
-+			cve_cnt = parse_cve_tags(reader, NULL, 0, 0);
-+		break;
-+		}
-+	}
-+
-+	if (!cve_cnt)
-+		return;
-+
-+	ujson_reader_state_load(reader, obj_state);
-+
-+	UJSON_OBJ_FOREACH_FILTER(reader, &val, &test_obj, NULL) {
-+		switch ((enum test_attr_ids)val.idx) {
-+		case ATTR_MAY_KMEMLEAK:
-+		break;
-+		case ATTR_TAGS:
-+			parse_cve_tags(reader, binary, may_kmemleak, 1);
-+		break;
-+		}
-+	}
-+}
-+
-+enum top_attr_ids {
-+	TOP_TESTS,
-+};
-+
-+static ujson_obj_attr top_attrs[] = {
-+	UJSON_OBJ_ATTR_IDX(TOP_TESTS, "tests", UJSON_OBJ),
-+};
-+
-+static ujson_obj top_obj = {
-+	.attrs = top_attrs,
-+	.attr_cnt = UJSON_ARRAY_SIZE(top_attrs),
-+};
-+
-+static void gen_cve(ujson_reader *reader)
-+{
-+	char buf[256];
-+	ujson_val val = UJSON_VAL_INIT(buf, sizeof(buf));
-+
-+	UJSON_OBJ_FOREACH_FILTER(reader, &val, &top_obj, NULL) {
-+		if (val.idx != TOP_TESTS)
-+			continue;
-+
-+		UJSON_OBJ_FOREACH(reader, &val) {
-+			char binary[128];
-+
-+			snprintf(binary, sizeof(binary), "%s", val.id);
-+
-+			if (val.type == UJSON_OBJ)
-+				parse_test(reader, binary);
-+			else
-+				ujson_obj_skip(reader);
-+		}
-+	}
-+
-+	if (ujson_reader_err(reader)) {
-+		ujson_err_print(reader);
-+		exit(1);
-+	}
-+
-+	qsort(entries, entry_cnt, sizeof(*entries), cmp_entries);
-+
-+	printf("# Tests which check for vulnerabilities by CVE number\n");
-+	print_entries(0);
-+	printf("# Tests below may cause kernel memory leak\n");
-+	print_entries(1);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	ujson_reader *reader;
-+
-+	if (argc != 3) {
-+		fprintf(stderr, "Usage: %s ltp.json runtest_name\n", argv[0]);
-+		return 1;
-+	}
-+
-+	if (strcmp(argv[2], "cve")) {
-+		fprintf(stderr, "Unknown runtest: %s\n", argv[2]);
-+		return 1;
-+	}
-+
-+	reader = ujson_reader_load(argv[1]);
-+	if (!reader) {
-+		fprintf(stderr, "Failed to load '%s'\n", argv[1]);
-+		return 1;
-+	}
-+
-+	gen_cve(reader);
-+
-+	ujson_reader_free(reader);
-+	free(entries);
-+
-+	return 0;
-+}
-diff --git a/runtest/.gitignore b/runtest/.gitignore
-new file mode 100644
-index 000000000..290696707
---- /dev/null
-+++ b/runtest/.gitignore
-@@ -0,0 +1 @@
-+cve
-diff --git a/runtest/cve b/runtest/cve
-deleted file mode 100644
-index 5f29d1686..000000000
---- a/runtest/cve
-+++ /dev/null
-@@ -1,100 +0,0 @@
--# Tests which check for vulnerabilities by CVE number
--cve-2011-0999 thp01
--cve-2011-2183 ksm05
--cve-2011-2496 vma03
--cve-2012-0957 uname04
--cve-2014-0196 cve-2014-0196
--cve-2015-0235 gethostbyname_r01
--cve-2015-3290 cve-2015-3290
--cve-2015-7550 keyctl02
--cve-2016-4470 keyctl01.sh
--cve-2016-4997 setsockopt03
--cve-2016-5195 dirtyc0w
--cve-2016-7042 cve-2016-7042
--cve-2016-7117 cve-2016-7117
--cve-2016-8655 setsockopt06
--cve-2016-9604 keyctl08
--cve-2016-9793 setsockopt04
--cve-2016-10044 cve-2016-10044
--cve-2017-2618 cve-2017-2618
--cve-2017-2636 pty05
--cve-2017-2671 cve-2017-2671
--cve-2017-5754 meltdown
--cve-2017-6951 request_key05
--cve-2017-7308 setsockopt02
--cve-2017-7472 keyctl04
--cve-2017-7616 set_mempolicy05
--cve-2017-8890 accept02
--cve-2017-10661 timerfd_settime02
--cve-2017-12192 keyctl07
--cve-2017-12193 add_key04
--cve-2017-15274 add_key02
--cve-2017-15299 request_key03 -b cve-2017-15299
--cve-2017-15537 ptrace07
--cve-2017-15649 fanout01
--cve-2017-15951 request_key03 -b cve-2017-15951
--cve-2017-16939 cve-2017-16939
--cve-2017-16995 bpf_prog03
--cve-2017-17052 cve-2017-17052
--cve-2017-17053 cve-2017-17053
--cve-2017-17712 sendmsg03
--cve-2017-17805 af_alg02
--cve-2017-17806 af_alg01
--cve-2017-17807 request_key04
--cve-2017-18075 pcrypt_aead01
--cve-2017-18344 timer_create03
--cve-2017-1000111 setsockopt07
--cve-2017-1000112 setsockopt05
--cve-2017-1000364 stack_clash
--cve-2017-1000380 snd_timer01
--cve-2017-1000405 thp04
--cve-2018-5803 sctp_big_chunk
--cve-2018-6927 futex_cmp_requeue02
--cve-2018-7566 snd_seq01
--cve-2018-8897 ptrace09
--cve-2018-9568 connect02
--cve-2018-10124 kill13
--cve-2018-11508 adjtimex03
--cve-2018-12896 timer_settime03
--cve-2018-13405 creat09
--cve-2018-18445 bpf_prog04
--cve-2018-18559 bind06
--cve-2018-18955 userns08
--cve-2018-19854 crypto_user01
--cve-2018-1000001 realpath01
--cve-2018-1000199 ptrace08
--cve-2018-1000204 ioctl_sg01
--cve-2019-8912 af_alg07
--cve-2020-11494 pty04
--cve-2020-14386 sendto03
--cve-2020-14416 pty03
--cve-2020-25705 icmp_rate_limit01
--cve-2020-29373 io_uring02
--cve-2020-36557 pty06
--cve-2021-3444 bpf_prog05
--cve-2021-3609 can_bcm01
--cve-2021-4034 execve06
--cve-2021-4197_1 cgroup_core01
--cve-2021-4197_2 cgroup_core02
--cve-2021-4204 bpf_prog06
--cve-2021-22555 setsockopt08
--cve-2021-26708 vsock01
--cve-2021-22600 setsockopt09
--cve-2021-38604 mq_notify03
--cve-2022-0847 dirtypipe
--cve-2022-2590 dirtyc0w_shmem
--cve-2022-23222 bpf_prog07
--cve-2023-1829 tcindex01
--cve-2023-0461 setsockopt10
--cve-2023-31248 nft02
--# Tests below may cause kernel memory leak
--cve-2020-25704 perf_event_open03
--cve-2022-0185 fsconfig03
--cve-2022-4378 cve-2022-4378
--cve-2025-38236 cve-2025-38236
--cve-2025-21756 cve-2025-21756
--cve-2026-31431 af_alg08
--cve-2026-43284 xfrm01
--cve-2026-43494 io_uring04
--cve-2026-46300 xfrm02
--cve-2026-46300-skb-segment xfrm03
--- 
-2.53.0
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
