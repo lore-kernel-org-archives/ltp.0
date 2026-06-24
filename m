@@ -4,108 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 547F1CDB47F
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 12:26:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C6B0CDB471
+	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 12:28:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 875753E627B
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 14:26:07 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 0B5313E5928
+	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 14:28:47 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CC1353CD6A4
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 14:25:51 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 531A13CD6A4
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 14:28:31 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D3B8B1400C7B
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 14:25:50 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0AE8F600A5B
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 14:28:26 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 24A8576102;
- Wed, 24 Jun 2026 12:25:47 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5833176106;
+ Wed, 24 Jun 2026 12:28:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1782303948; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1782304106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5t3S2wzX/y9tW9izRbwaCkvGfokeQV3kS0RuRc5we9o=;
- b=tkmC+cofyrSjgZzeKT9h28GtwpQNe748ujie+CHPQsjSJmmw0/CJFv7uMabE6uTTRiuJKw
- +sAZSS19elpOEPAJV/zJtPznN/1jBya+lrQ1D8rANUzk7ubt9rQPCO5kxII6vh0ug8Cerv
- 6ZkjCnq7aWAcQQtGSCM82ftRPNUX6kg=
+ bh=LjJ8TV6WzNyv5iv03eZjZTC/q0Y/2ILvachOSRnZnWU=;
+ b=d+UhxWzOOESbSSi4xEzfYMZ/Z4LKWzqknGlyO8q9zWX/uYZxfZTm/76qf6m8W3dFjHx1HK
+ adKdQgCKZ4tNGgmOU80OZotdbZqhy1C3KdHasBnUT9jsShiXHx8ZKX6xf0unFlQMLZ6OV2
+ c7NSfioGeTwWvqf/+iEQ6f3+41HPcuY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1782303948;
+ s=susede2_ed25519; t=1782304106;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5t3S2wzX/y9tW9izRbwaCkvGfokeQV3kS0RuRc5we9o=;
- b=Ozvye6HT3dCRFtrycYcwzYKKfDjDa89wXW02EfCihssy22IJUT50r6LKhCptzfg2wlgJVc
- gZ3zpTKezUEFOgCA==
+ bh=LjJ8TV6WzNyv5iv03eZjZTC/q0Y/2ILvachOSRnZnWU=;
+ b=kh6dyTDmfQn51D37gU3pN9CjarOlCLTBd9jPzqNfmeW1s0ezKMyvMPrqND3V9//NXbOWfo
+ YUqWC4U2JYWzfuCA==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="dpFHy/bB";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="la28sB/2"
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1782303947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1782304106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5t3S2wzX/y9tW9izRbwaCkvGfokeQV3kS0RuRc5we9o=;
- b=dpFHy/bBhCy7uC30+USQtjfg4TqACs+6v0IHgRcWm82Q2oPfsxY+MqH92Ru6CyYq29eCTv
- pF/fY+PozXE8Cn1REq74wvk3Pmb5/6uq++jwc9rOvjRO9Uvoaj3SJWhjTTKuw6YUXnx6mK
- fwHdRG/GqsQOwNFBfOsys5c+/FcqFRQ=
+ bh=LjJ8TV6WzNyv5iv03eZjZTC/q0Y/2ILvachOSRnZnWU=;
+ b=d+UhxWzOOESbSSi4xEzfYMZ/Z4LKWzqknGlyO8q9zWX/uYZxfZTm/76qf6m8W3dFjHx1HK
+ adKdQgCKZ4tNGgmOU80OZotdbZqhy1C3KdHasBnUT9jsShiXHx8ZKX6xf0unFlQMLZ6OV2
+ c7NSfioGeTwWvqf/+iEQ6f3+41HPcuY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1782303947;
+ s=susede2_ed25519; t=1782304106;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5t3S2wzX/y9tW9izRbwaCkvGfokeQV3kS0RuRc5we9o=;
- b=la28sB/2hHI+xU9idytfXqebkzwNOK7goenSkhLC0ZJGUTIYWHgFFyssO3BxREgI1TtGHb
- Tsr4q0jfDZJwvfCQ==
+ bh=LjJ8TV6WzNyv5iv03eZjZTC/q0Y/2ILvachOSRnZnWU=;
+ b=kh6dyTDmfQn51D37gU3pN9CjarOlCLTBd9jPzqNfmeW1s0ezKMyvMPrqND3V9//NXbOWfo
+ YUqWC4U2JYWzfuCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 105A5779A8;
- Wed, 24 Jun 2026 12:25:47 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 48BFE779A8;
+ Wed, 24 Jun 2026 12:28:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id HYNKAsvMO2oKSgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 24 Jun 2026 12:25:47 +0000
-Date: Wed, 24 Jun 2026 14:25:42 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id KskaEWrNO2pMTAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 24 Jun 2026 12:28:26 +0000
+Date: Wed, 24 Jun 2026 14:28:25 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <ajvMxpufvaJe3M_w@yuki.lan>
-References: <20260624091900.4107041-14-chrubis@suse.cz>
- <6a3bca17.95d0a0ea.2222d.1271@mx.google.com>
+Message-ID: <ajvNadKNfin2Ati9@yuki.lan>
+References: <aju2jwCz8aky9FgR@yuki.lan>
+ <6a3bbc07.f844783c.da03b.06a9@mx.google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <6a3bca17.95d0a0ea.2222d.1271@mx.google.com>
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 24A8576102
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <6a3bbc07.f844783c.da03b.06a9@mx.google.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FROM_HAS_DN(0.00)[];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; TO_DN_SOME(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:dkim,
- imap1.dmz-prg2.suse.org:rdns, imap1.dmz-prg2.suse.org:helo, yuki.lan:mid]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, yuki.lan:mid,
+ suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 13/13] metadata: Add runtest file generator
+Subject: Re: [LTP] [PATCH 05/13] vma05.sh, keyctl01.sh: Add groups
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,29 +114,24 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> this is a bit controversial, because we would like to get rid of
-> runtest files.
+> > I fear that we will have a lot of typos and wrong data in there. We had
+> > quite a few wrong CVE tags already, because we weren't checking them for
+> > validity.
+> > 
+> > I'm okay with this as long as we have a checks in 'make check' that make
+> > sure that the manually assigned groups are correct. For that we would
+> > need the same heuristic we have for automatic groups to check that we
+> > didn't miss anything and a list of valid groups to check againts to
+> > guard againts typos.
+> 
+> Don't forget we also have the agent that works quite good on these
+> small tasks. We can add a rule and make sure they are always valid
+> groups.
 
-Eventually yes, but we will need this for the transition period. There
-are a lot of systems out there using runtest files, including openQA. We
-will have to keep the runtest files for a deprecation period, which will
-last at least a year or two, before we can drop them. During that period
-generating the runtest files is in my opinion the best option.
+Honestly I'm not 100% convinced that the agent would spot all issues,
+maybe it would maybe it wouldn't but would you trust it will?
 
-> Also, we should start thinking about moving tests variants inside the
-> tst_test struct first, otherwise we will always generate runtest files
-> which re not taking into account tests parameters.
-
-One step at a time. There are quite a lot of test that does not have any
-parameters. And quite a few that shouldn't have any parameters. I would
-say that the -I parameter for CVE reproduces is a hack, because the test
-is "broken" without any parameters, since the chances it triggers a bug
-is really small.
-
-There are test where the test variants needs to be encoded in the test
-structure, these are mostly the I/O stress test where we encode
-different offsets/sizes in the parameters. But that shouldn't stop us
-from automating what can be automated already.
+Also linter should be cheaper and pretty easy for this case.
 
 -- 
 Cyril Hrubis
