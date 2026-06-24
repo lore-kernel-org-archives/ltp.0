@@ -4,111 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F120CDB47C
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 09:19:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78C00CDB479
+	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 09:19:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D1B0F3E5335
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 11:19:24 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id E12383E5345
+	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 11:19:47 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7C1573E2E82
+ by picard.linux.it (Postfix) with ESMTPS id A91AA3E535A
  for <ltp@lists.linux.it>; Wed, 24 Jun 2026 11:19:06 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B72821400445
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 11:19:05 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4FF9B600A44
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 11:19:06 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 90A3E71445
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:01 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5F47176112
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1782292744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5wUbz9aM656VVV7AfQ4h2y++xKNH5lEvc+xpkgPdJY4=;
- b=d7V+XWwlxKUCewv6FB1oiL5W8l2Zq8iclcP7yTpMqwf3u6P17Ay0LmrsHtBhgK/MLDB2zX
- VmDSSODLOf81msqXXPnnBieCWHvpT8dMZt+i41TSLHPvIGEv5MZ4I3XcVMKCoGJQ+2ny7d
- HF2gD1Uyw7oE2SbDEUwK4aPZitV0ySQ=
+ bh=TUBVhrZERnsIqnWBOVSbgo3vCpk2ZhnTedtX6VhMeb8=;
+ b=kiSMllOh2Q2Qp1kaglT2EVh2MU5rnZIo3xD5lK5KayBy3VRQSEJ/QxQTOZX2xpzRG/6hjP
+ ljabYHeueoujL9881oDfYN1qLnXp4jZ9iFqXH9wX/ZwVbOQGWc3ebODnkIFEmXJm1k4qVb
+ OUU4binxCohlR3YFARidGqFOSebsCzc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1782292744;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5wUbz9aM656VVV7AfQ4h2y++xKNH5lEvc+xpkgPdJY4=;
- b=KIMevFcylR4jKitdPUlMR8ZOKfx0NkUFb72XvKiQHRXXby2gw6vbwA+txSShvhrK0tAGa+
- HL+4PKdPm+p819BA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OKx5WRUx;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ykJUvOHw
+ bh=TUBVhrZERnsIqnWBOVSbgo3vCpk2ZhnTedtX6VhMeb8=;
+ b=tonmjUC8qbk78piEMQDAn4CnJIiL1sX7SmPBYKMFPplrOU6kf/LORb371aB16XE100+dlf
+ lXcyH69mFXFpJgDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1782292741; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1782292742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5wUbz9aM656VVV7AfQ4h2y++xKNH5lEvc+xpkgPdJY4=;
- b=OKx5WRUxYpVClskjxwXKXkjOWU7iXIyOn0hnKySIL8zggbeHJUjIVjo99sxC0t3iBE1Zr2
- PqvEPk+ayVbTAHt9nE+9gox9JUcN4OHQcsH0JFc5P5xtYhzIDTHXMT6GRtWxdCt+a0GqkB
- gAu65P+Kyb9V9uQuexbKAYZxVyQZrYY=
+ bh=TUBVhrZERnsIqnWBOVSbgo3vCpk2ZhnTedtX6VhMeb8=;
+ b=pSkXPbc7WD+MuRnxfYRn+rSdEaAE0KVGiCIqHlcEb3Z64EH8LqlHWeV4TG6+sbgPRBPlxe
+ nz+vEpx+4XZ8bfnTQCNJIri87umyZBglrjpOcn6pjtwtAtQ3qwwbsWTWd5NpdomMom0YR3
+ clzOCzOtu5hf1/CYMSAHEwLZ9tYfRxU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1782292741;
+ s=susede2_ed25519; t=1782292742;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5wUbz9aM656VVV7AfQ4h2y++xKNH5lEvc+xpkgPdJY4=;
- b=ykJUvOHw1OISvUnhOrL4r8vNJmauAME14Z+lZSIU3TEUWqYAsI/3nfR8psHlzpyzH8pDkw
- gjNpp8IkfNSE7HCg==
+ bh=TUBVhrZERnsIqnWBOVSbgo3vCpk2ZhnTedtX6VhMeb8=;
+ b=RqvqCqLe2QYTHGenL7xs+Afe4e1xOamgOJFFgWFNNleQcbH1ArGpvxl8/l/0Gps2Y9wav4
+ R9tNofud/tngSoBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F9D2779AC
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4B997779AE
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id fhjvHQWhO2pGAgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id TU3KEQahO2pNAgAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:01 +0000
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:02 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 24 Jun 2026 11:18:49 +0200
-Message-ID: <20260624091900.4107041-3-chrubis@suse.cz>
+Date: Wed, 24 Jun 2026 11:18:51 +0200
+Message-ID: <20260624091900.4107041-5-chrubis@suse.cz>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260624091900.4107041-1-chrubis@suse.cz>
 References: <20260624091900.4107041-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 90A3E71445
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCPT_COUNT_ONE(0.00)[1];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.998];
+ MIME_GOOD(-0.10)[text/plain];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email,suse.cz:mid];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  RCVD_TLS_ALL(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 02/13] keyctl01.sh: Rewrite to the new shell library
+Subject: [LTP] [PATCH 04/13] tst_run_shell: Add support for groups in the
+ env JSON
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,106 +119,101 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-No functional changes.
+If present we assert that the groups is an array of strings but we don't
+use the value since it's not used by the test itself. With that we can
+add groups to the shell tests and they will end up being carried on to
+the metadata.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/commands/keyctl/keyctl01.sh | 55 +++++++++++++++------------
- 1 file changed, 30 insertions(+), 25 deletions(-)
- mode change 100644 => 100755 testcases/commands/keyctl/keyctl01.sh
+ testcases/lib/tst_run_shell.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
-old mode 100644
-new mode 100755
-index 7b357a71e..cdbb8bf8b
---- a/testcases/commands/keyctl/keyctl01.sh
-+++ b/testcases/commands/keyctl/keyctl01.sh
-@@ -2,22 +2,36 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) 2017 Fujitsu Ltd.
- # Ported: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
- #
--# This is a regression test about potential uninitialized variable,
--# the test can crash the buggy kernel, and the bug has been fixed in:
-+# ---
-+# doc
- #
--#   commit 38327424b40bcebe2de92d07312c89360ac9229a
--#   Author: Dan Carpenter <dan.carpenter@oracle.com>
--#   Date:   Thu Jun 16 15:48:57 2016 +0100
-+# This is a regression test for a potential uninitialized variable in
-+# key_reject_and_link(). The test can crash the buggy kernel.
-+# ---
- #
--#   KEYS: potential uninitialized variable
-+# ---
-+# env
-+# {
-+#  "needs_root": true,
-+#  "needs_tmpdir": true,
-+#  "needs_cmds": [
-+#   {"cmd": "keyctl"}
-+#  ],
-+#  "save_restore": [
-+#   ["/proc/sys/kernel/keys/root_maxbytes", null, "TCONF"]
-+#  ],
-+#  "tags": [
-+#   ["linux-git", "38327424b40bcebe2de92d07312c89360ac9229a"],
-+#   ["CVE", "2016-4470"]
-+#  ]
-+# }
-+# ---
+diff --git a/testcases/lib/tst_run_shell.c b/testcases/lib/tst_run_shell.c
+index 2778fb6d5..fa893304a 100644
+--- a/testcases/lib/tst_run_shell.c
++++ b/testcases/lib/tst_run_shell.c
+@@ -57,6 +57,7 @@ enum test_attr_ids {
+ 	DEV_MIN_SIZE,
+ 	FILESYSTEMS,
+ 	FORMAT_DEVICE,
++	GROUPS,
+ 	MIN_CPUS,
+ 	MIN_MEM_AVAIL,
+ 	MIN_KVER,
+@@ -91,6 +92,7 @@ static ujson_obj_attr test_attrs[] = {
+ 	UJSON_OBJ_ATTR_IDX(DEV_MIN_SIZE, "dev_min_size", UJSON_INT),
+ 	UJSON_OBJ_ATTR_IDX(FILESYSTEMS, "filesystems", UJSON_ARR),
+ 	UJSON_OBJ_ATTR_IDX(FORMAT_DEVICE, "format_device", UJSON_BOOL),
++	UJSON_OBJ_ATTR_IDX(GROUPS, "groups", UJSON_ARR),
+ 	UJSON_OBJ_ATTR_IDX(MIN_CPUS, "min_cpus", UJSON_INT),
+ 	UJSON_OBJ_ATTR_IDX(MIN_MEM_AVAIL, "min_mem_avail", UJSON_INT),
+ 	UJSON_OBJ_ATTR_IDX(MIN_KVER, "min_kver", UJSON_STR),
+@@ -125,7 +127,7 @@ static ujson_obj test_obj = {
+ 	.attr_cnt = UJSON_ARRAY_SIZE(test_attrs),
+ };
+ 
+-static const char *const *parse_strarr(ujson_reader *reader, ujson_val *val)
++static const char *const *parse_strarr(ujson_reader *reader, ujson_val *val, bool alloc)
+ {
+ 	unsigned int cnt = 0, i = 0;
+ 	char **ret;
+@@ -141,6 +143,9 @@ static const char *const *parse_strarr(ujson_reader *reader, ujson_val *val)
+ 		cnt++;
+ 	}
+ 
++	if (!alloc)
++		return NULL;
 +
-+. tst_loader.sh
+ 	ujson_reader_state_load(reader, state);
  
- TST_SETUP=setup
--TST_CLEANUP=cleanup
--TST_TESTFUNC=do_test
--TST_NEEDS_ROOT=1
--TST_NEEDS_TMPDIR=1
--TST_NEEDS_CMDS="keyctl"
- 
- check_keyctl()
- {
-@@ -53,26 +67,18 @@ setup()
- 	check_keyctl negate request2 show unlink
- 
- 	PATH_KEYSTAT="/proc/key-users"
--	PATH_KEYQUOTA="/proc/sys/kernel/keys/root_maxbytes"
- 
--	if [ ! -f "$PATH_KEYSTAT" ] || [ ! -f "$PATH_KEYQUOTA" ]; then
--		tst_brk TCONF "'${PATH_KEYSTAT}' or '${PATH_KEYQUOTA}' \
--			does not exist"
-+	if [ ! -f "$PATH_KEYSTAT" ]; then
-+		tst_brk TCONF "'${PATH_KEYSTAT}' does not exist"
- 	fi
- 
- 	ORIG_KEYSZ=`awk -F' +|/' '/ 0:/ {print $8}' $PATH_KEYSTAT`
--	ORIG_MAXKEYSZ=`cat $PATH_KEYQUOTA`
- }
- 
--cleanup()
-+tst_test()
- {
--	if [ -n "$ORIG_MAXKEYSZ" ]; then
--		echo $ORIG_MAXKEYSZ >$PATH_KEYQUOTA
--	fi
--}
-+	PATH_KEYQUOTA="/proc/sys/kernel/keys/root_maxbytes"
- 
--do_test()
--{
- 	local quota_excd=0
- 	local maxkeysz=$((ORIG_KEYSZ + 100))
- 
-@@ -108,5 +114,4 @@ do_test()
- 	tst_res TPASS "Bug not reproduced"
- }
- 
--. tst_test.sh
--tst_run
-+. tst_run.sh
+ 	ret = SAFE_MALLOC(sizeof(char *) * (cnt + 1));
+@@ -242,7 +247,7 @@ static struct tst_fs *parse_filesystems(ujson_reader *reader, ujson_val *val)
+ 		UJSON_OBJ_FOREACH_FILTER(reader, val, &fs_obj, ujson_empty_obj) {
+ 			switch ((enum fs_ids)val->idx) {
+ 			case MKFS_OPTS:
+-				ret[i].mkfs_opts = parse_strarr(reader, val);
++				ret[i].mkfs_opts = parse_strarr(reader, val, true);
+ 			break;
+ 			case MKFS_SIZE_OPT:
+ 				ret[i].mkfs_size_opt = strdup(val->val_str);
+@@ -462,6 +467,9 @@ static void parse_metadata(void)
+ 		case FORMAT_DEVICE:
+ 			test.format_device = val.val_bool;
+ 		break;
++		case GROUPS:
++			parse_strarr(&reader, &val, false);
++		break;
+ 		case MIN_CPUS:
+ 			if (val.val_int <= 0)
+ 				ujson_err(&reader, "Minimal number of cpus must be > 0");
+@@ -514,7 +522,7 @@ static void parse_metadata(void)
+ 			test.needs_hugetlbfs = val.val_bool;
+ 		break;
+ 		case NEEDS_KCONFIGS:
+-			test.needs_kconfigs = parse_strarr(&reader, &val);
++			test.needs_kconfigs = parse_strarr(&reader, &val, true);
+ 		break;
+ 		case NEEDS_ROFS:
+ 			test.needs_rofs = val.val_bool;
+@@ -538,7 +546,7 @@ static void parse_metadata(void)
+ 			test.save_restore = parse_save_restore(&reader, &val);
+ 		break;
+ 		case SKIP_FILESYSTEMS:
+-			test.skip_filesystems = parse_strarr(&reader, &val);
++			test.skip_filesystems = parse_strarr(&reader, &val, true);
+ 		break;
+ 		case SKIP_IN_COMPAT:
+ 			test.skip_in_compat = val.val_bool;
+@@ -550,7 +558,7 @@ static void parse_metadata(void)
+ 			test.skip_in_secureboot = val.val_bool;
+ 		break;
+ 		case SUPPORTED_ARCHS:
+-			test.supported_archs = parse_strarr(&reader, &val);
++			test.supported_archs = parse_strarr(&reader, &val, true);
+ 		break;
+ 		case TAGS:
+ 			test.tags = parse_tags(&reader, &val);
 -- 
 2.53.0
 
