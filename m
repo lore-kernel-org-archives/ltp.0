@@ -4,114 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70199CDB479
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 14:27:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D8FACDE001
+	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 15:42:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782315721; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=iGEbQnKX+VF4D4UB6DVXo52pS6FMGcyqVkXQsT7eUqA=;
+ b=iIAvpnyhXx2UuojZVM6LNZWI2St4zpSup8XK7f20cNjk+4t+kkIM1VHOdS1wR4VbuU503
+ KUvDCkeRJBGZ4KPLqaDmfUOQuT71m1mXADEjcwKd7dttuCjJLxfTa42J5jMNZ2p4s2YbiAy
+ 5vZ9DdBsdDgsBRCVZElzNsmjRagrvxE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BB15A3E6567
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 16:27:43 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id BE2943E909D
+	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 17:42:01 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CA9373CD5B9
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 16:27:24 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 36A903E2AA3
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 17:41:40 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E97B42005FE
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 16:27:23 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EE4FF75DE2;
- Wed, 24 Jun 2026 14:27:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1782311243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=rjQv/9uW9EE946h2BjruIiApHsNj3NDoppQv/4UilJI=;
- b=XG2mgW8XLe9gvf2OdPmZAQ9dLNNNHVPP4Xf2wjADjvyMUZTBo7p+PDJUse3oGq2SpT7dOV
- DWWyQQdoHhACAQFGjcpJMCYXVERn3el7spipB+yYJhjAycQXcV/Xa1y7bJfpvFJz7tf6ES
- Q1/YYaDPq51rRQ7pzN8w85ldeVN66hA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1782311243;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=rjQv/9uW9EE946h2BjruIiApHsNj3NDoppQv/4UilJI=;
- b=7yKJENGSAfOKeO564IF/azhk6qmlKB1O/iVTPTvqKEfF3oXfu7WsISwP8XACQO33NpVph3
- 7sGK4YSUXXUJQeAA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=CqU8qQnu;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=DMsXzXsc
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1782311241; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=rjQv/9uW9EE946h2BjruIiApHsNj3NDoppQv/4UilJI=;
- b=CqU8qQnuNiE5QlDpjvd8ub0MtAq+O2YRYfL4vQZlxGh/WkjrvDUCijeO88+myLOBCAAkm6
- jueK8+G4nMY6d9rcTRelvnmypT2cl+i5xCPQfIUXmUXRlvIJB0tPWbc0QKsW0RgET9Onjp
- WmZLvaIyNiYLGFHEdv9A7RsazPWIQ1M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1782311241;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=rjQv/9uW9EE946h2BjruIiApHsNj3NDoppQv/4UilJI=;
- b=DMsXzXsc4jXwn8vukzZHokGYD/n9/diAGsoITbLCpQKLLQD0Osxof7f5ewCHsIic90Mn9m
- 0P4n5gcqKFufKmBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D59FC779A8;
- Wed, 24 Jun 2026 14:27:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id d4SWMknpO2peQgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 24 Jun 2026 14:27:21 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 24 Jun 2026 16:27:21 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4E2BE1400422
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 17:41:40 +0200 (CEST)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-4924e6fda5dso6309695e9.0
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 08:41:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1782315699; x=1782920499; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:cc:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=Xb/zmLOhxsoaIGjJhIgc+IHs+RF8eW4onnTj6daTIjQ=;
+ b=Go5awzjQQRHbhsjKzdsjuzreFGEKTsZk0YiPUaJL32XvT/a33ujTUW3I0yCwcXLtbj
+ FvxxpOM738rp7yyjMcdpc3uYB5XWb2O8vaAh1fP/cxSw/2EpNM1omorOvF/s9/FFTL+D
+ XLvs0XimV5R6g93dNsRrhpQKKOulGriVwDJqVJHB57J/pkMJT0iPYi9T/Mm6ycOaKb5C
+ EIMAplkf6PWVbxyUwpiD3W6IlLte9Bpoplo3TDPOedxJlj52x8HAngtJfypH7jBYcZca
+ H+aG1N8LM80ZdDMHx8s+3SYBsHmgXSy0AyDp00d7DCOtfGxJxIaRJgDV0HTP5L0/mVLR
+ RFUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1782315699; x=1782920499;
+ h=content-transfer-encoding:in-reply-to:from:cc:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=Xb/zmLOhxsoaIGjJhIgc+IHs+RF8eW4onnTj6daTIjQ=;
+ b=ipsi14LNnHm81OYGsKI78RO590WlbKDV/gICRmwZcAgox4SUKvAF7qw6lXC57Rytyv
+ qaTztzLmrXo1+PInH2Wljqt8flQwKdmWuGBHawcLdkSp9INY9iegbTu7oK6MqXU5evhu
+ 2vXfAgua5S9OVyYJbv7JQ6+wNtXT46tOVvbmsMagRYRf6gEM7pixyV4QAb/p2T51Qbxn
+ 5xK/SpOS3YSIp2+1UdWc1oQXq+Z+zpUSMJARoDo8kM1PIxKp5ZDXjBcjZ1qCw6AZ+aiQ
+ 7sIsLa+vfuKSS5wYGxjPmXWZRH6ECcbbvz+g6FpzUOMmfdNU7MdIFzFq0RvHY8CvKnX+
+ X7sw==
+X-Gm-Message-State: AOJu0Yzor0Kk0/ii9wWgtO98J3VrTMkyf++NoPvq5AkzUsSKlTDtGGm4
+ d9ubQQXdfdO9SCn9hWw6CJIh7NWgsnpye0yI/AOiGHxUn5iVWr9BLr7b0vfMgNckuxU=
+X-Gm-Gg: AfdE7clnLKXZOlXOk8Ll4wIujQi+B3W8rnqIwNpMMwzjistRd5NttiX/RJvgGIlC1de
+ TfNGyPBdBTe/1EiEas/7th3xtXYF1wyOvjSrduweZxrocZwSitBEXa9Rj0ykJ1dao/i02nJLx5n
+ PGHTOIenXyXZ8Es6GPkasWRHyAQPiCSUKHNj2WoJj3paqwkNVFAdwT7Nc9tUwYuNXCLILvoSCHD
+ pjFERmeskyCAVHMH7sb0Ea0pxgnp0pbwrppQQXyv2lIsjDCkaBFHiU4M5qXFnzuM3NOswnzYfrd
+ 7HMaiJUOwucEwE4PglNMAelJ9qM6w6oeC6WHjF6DONZ5tIlzBDrr85/Ymztlvb2TK6cPsxRxMtx
+ 6RLZmCtCjyJrkbBWVsNeblJGq+5r7gY35QlFqXolvOL+vNcf0zv8OdUm0tohCFKnMLV+38ZqHtx
+ qfuIrtoxrf0oBeiVOaFlptfuLMs6uGrQ==
+X-Received: by 2002:a05:600c:a318:b0:492:4c2e:9613 with SMTP id
+ 5b1f17b1804b1-4924c2e97d2mr230475895e9.18.1782315699633; 
+ Wed, 24 Jun 2026 08:41:39 -0700 (PDT)
+Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-49264184210sm317905e9.15.2026.06.24.08.41.39
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 24 Jun 2026 08:41:39 -0700 (PDT)
+Message-ID: <e082e001-88b9-47be-952d-642e293dd229@suse.com>
+Date: Wed, 24 Jun 2026 17:41:38 +0200
 MIME-Version: 1.0
-Message-Id: <20260624-metadata_linter-v1-1-3d9506169aad@suse.com>
-X-B4-Tracking: v=1; b=H4sIAEjpO2oC/x2MWwqAIBAArxL7naAiQl0lInxstVAWKhGId0/6H
- IaZAgkjYYKxKxDxoURXaCD6DtxuwoaMfGOQXGqupWInZuNNNstBIWNkSrgmBmGdldCqO+JK73+
- c5lo/PpZ3G2EAAAA=
-X-Change-ID: 20260624-metadata_linter-41c60691bcb2
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1782311241; l=8377;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=eQ/9rGPlb8AMZBA8SWo37RTAsyyt0/F5MoCiiS5dp7o=;
- b=n7mhWUMHWG3jjvb+On8JmfNnO0qdBE3KRiKVj4pmBeyiEtbBUWivRgl8BswbKHbj0Q0cmdX/r
- zz7+98KYNBgBqghBDsMGcTXLm7hPebxFgvPuV6rhaivtZXIHBkgqVjF
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:mid,mitre.org:url,suse.de:dkim];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: EE4FF75DE2
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+References: <6a3b91e3.49afda34.2c585d.6125@mx.google.com>
+Content-Language: en-US
+In-Reply-To: <6a3b91e3.49afda34.2c585d.6125@mx.google.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] metadata: add linter for JSON file
+Subject: Re: [LTP] [PATCH] set_mempolicy05: require CONFIG_NUMA
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,293 +99,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Andrea,
 
-Add a linter to verify that metadata contains the correct data. For now
-it verifies that:
 
-- groups tag is correct, according to the parent folders
-- CVE value is well defined
-- CVE number actually exists
+On 6/24/26 10:14 AM, Andrea Cervesato via ltp wrote:
+> Hi Avinesh,
+> 
+> the patch looks good to me, but it's probably not enough. we will
+> need to implement the same concept for all set_mempolicy() tests,
+> since it's NUMA specific. We just missed this for all this time
+> apparently. Did you see the same errors for them as well?
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- .gitignore        |   1 +
- metadata/Makefile |   4 +
- metadata/lint.py  | 224 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 229 insertions(+)
+Thanks for the review. Remaining set_mempolicy tests are checking for 
+minimum two NUMA nodes and hence reports
 
-diff --git a/.gitignore b/.gitignore
-index f10cd0c80e3655ad720e465f47c12ad0d51e7cd1..3450ded24840547bfc5ce572d6a73d8ce2605f20 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -55,6 +55,7 @@ patches/
- *.run-test
- *.test
- logfile.*
-+__pycache__
- 
- /utils/benchmark/ebizzy-0.3/ebizzy
- 
-diff --git a/metadata/Makefile b/metadata/Makefile
-index 6939b9f76ccc5612e9f6b56e88bc0a2f60a03234..641b02575d10d3af60975e14733a6085317758bc 100644
---- a/metadata/Makefile
-+++ b/metadata/Makefile
-@@ -15,6 +15,10 @@ INSTALL_DIR		= metadata
- ltp.json: metaparse metaparse-sh
- 	$(abs_srcdir)/parse.sh > ltp.json
- 
-+.PHONY: lint
-+lint: ltp.json
-+	$(abs_srcdir)/lint.py ltp.json
-+
- test:
- 	$(MAKE) -C $(abs_srcdir)/tests/ test
- 
-diff --git a/metadata/lint.py b/metadata/lint.py
-new file mode 100755
-index 0000000000000000000000000000000000000000..30d5d3f84791eb2bc9ee7da8692ac7f50b059689
---- /dev/null
-+++ b/metadata/lint.py
-@@ -0,0 +1,224 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Linux Test Project
-+"""
-+Lint semantic consistency of generated metadata/ltp.json.
-+
-+This is not a schema validator; metaparse tests cover JSON shape. The linter
-+checks metadata rules that depend on the final generated test catalog:
-+
-+  * Groups derived from the source path (the two nearest parent directories,
-+    skipping 'kernel' and 'cve') must be present in test 'groups'.
-+
-+  * A CVE tag requires the 'cve' group and a linux-git tag requires the
-+    'regression' group.
-+
-+  * CVE tag values must use a valid bare YYYY-NNNN[...] identifier. With
-+    --check-cve-exists, every CVE is verified against the official CVE
-+    Services API (https://cveawg.mitre.org).
-+"""
-+
-+import argparse
-+import json
-+import os
-+import re
-+import sys
-+from typing import (
-+    Any,
-+    Dict,
-+    List,
-+    Pattern,
-+    Tuple,
-+)
-+
-+CVE_RE: Pattern[str] = re.compile(r"^[0-9]{4}-[0-9]{4,}$")
-+CVE_API: str = "https://cveawg.mitre.org/api/cve/CVE-"
-+SKIP_PATH_GROUPS: Tuple[str, ...] = ("kernel", "cve")
-+
-+
-+def path_groups(fname: str) -> List[str]:
-+    """
-+    Return groups derived from the two nearest parent directories.
-+    """
-+    prefix = "testcases/"
-+    if not fname.startswith(prefix):
-+        return []
-+
-+    dirs = fname[len(prefix) :].split("/")[:-1]
-+    return [grp for grp in reversed(dirs[-2:]) if grp not in SKIP_PATH_GROUPS]
-+
-+
-+def tag_values(tags: List[List[str]], name: str) -> List[str]:
-+    """
-+    Return all values for metadata tags matching name.
-+    """
-+    return [tag[1] for tag in tags if len(tag) >= 2 and tag[0] == name]
-+
-+
-+def has_tag(tags: List[List[str]], name: str) -> bool:
-+    """
-+    Return whether a metadata tag exists.
-+    """
-+    return any(tag and tag[0] == name for tag in tags)
-+
-+
-+def expected_groups(conf: Dict[str, Any]) -> List[str]:
-+    """
-+    Return groups expected from test path and tags.
-+    """
-+    groups: List[str] = []
-+    fname: str = conf.get("fname", "")
-+    tags: List[List[str]] = conf.get("tags", [])
-+
-+    for group in path_groups(fname):
-+        if group not in groups:
-+            groups.append(group)
-+
-+    if has_tag(tags, "CVE") and "cve" not in groups:
-+        groups.append("cve")
-+
-+    if has_tag(tags, "linux-git") and "regression" not in groups:
-+        groups.append("regression")
-+
-+    return groups
-+
-+
-+def lint_groups(name: str, conf: Dict[str, Any]) -> List[str]:
-+    """
-+    Return group lint errors for a single test.
-+    """
-+    errors: List[str] = []
-+    groups: List[str] = conf.get("groups", [])
-+    expected: List[str] = expected_groups(conf)
-+    missing: List[str] = [group for group in expected if group not in groups]
-+
-+    if missing:
-+        errors.append(f"{name}: missing groups: {', '.join(missing)}")
-+
-+    return errors
-+
-+
-+def lint_cve_format(name: str, conf: Dict[str, Any]) -> List[str]:
-+    """
-+    Return CVE format lint errors for a single test.
-+    """
-+    errors: List[str] = []
-+    tags: List[List[str]] = conf.get("tags", [])
-+
-+    for cve in tag_values(tags, "CVE"):
-+        if cve.upper().startswith("CVE-"):
-+            errors.append(
-+                f"{name}: CVE tag '{cve}' must not start with 'CVE-' prefix, "
-+                "use the bare 'YYYY-NNNN' identifier"
-+            )
-+        elif not CVE_RE.match(cve):
-+            errors.append(f"{name}: malformed CVE identifier '{cve}'")
-+
-+    return errors
-+
-+
-+def cve_exists(cve: str, cache: Dict[str, bool]) -> bool:
-+    """
-+    Query the CVE Services API and cache the answer per identifier.
-+    """
-+    import urllib.error
-+    import urllib.request
-+
-+    if cve in cache:
-+        return cache[cve]
-+
-+    req = urllib.request.Request(CVE_API + cve, method="GET")
-+    try:
-+        with urllib.request.urlopen(req, timeout=30) as resp:
-+            ok = resp.status == 200
-+    except urllib.error.HTTPError as err:
-+        if err.code == 404:
-+            ok = False
-+        else:
-+            raise
-+    except urllib.error.URLError as err:
-+        raise RuntimeError(f"cannot reach CVE API: {err}") from err
-+
-+    cache[cve] = ok
-+    return ok
-+
-+
-+def lint_cve_existence(
-+    name: str,
-+    conf: Dict[str, Any],
-+    cache: Dict[str, bool],
-+) -> List[str]:
-+    """
-+    Return CVE existence lint errors for a single test.
-+    """
-+    errors: List[str] = []
-+    tags: List[List[str]] = conf.get("tags", [])
-+
-+    for cve in tag_values(tags, "CVE"):
-+        if CVE_RE.match(cve) and not cve_exists(cve, cache):
-+            errors.append(f"{name}: CVE '{cve}' does not exist")
-+
-+    return errors
-+
-+
-+def lint_tests(tests: Dict[str, Dict[str, Any]], check_cve_exists: bool) -> List[str]:
-+    """
-+    Return all lint errors for generated test metadata.
-+    """
-+    errors: List[str] = []
-+    cache: Dict[str, bool] = {}
-+
-+    for name, conf in sorted(tests.items()):
-+        errors += lint_groups(name, conf)
-+        errors += lint_cve_format(name, conf)
-+        if check_cve_exists:
-+            errors += lint_cve_existence(name, conf, cache)
-+
-+    return errors
-+
-+
-+def main() -> int:
-+    parser = argparse.ArgumentParser(
-+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-+    )
-+    default = os.path.join(os.path.dirname(__file__), "ltp.json")
-+    parser.add_argument(
-+        "metadata",
-+        nargs="?",
-+        default=default,
-+        help="path to the ltp.json metadata file (default: %(default)s)",
-+    )
-+    parser.add_argument(
-+        "--check-cve-online",
-+        action="store_true",
-+        help="verify CVE existence against the online CVE database",
-+    )
-+    args = parser.parse_args()
-+
-+    try:
-+        with open(args.metadata, encoding="utf-8") as data:
-+            metadata: Dict[str, Any] = json.load(data)
-+    except FileNotFoundError:
-+        sys.exit(
-+            f"error: metadata file '{args.metadata}' not found "
-+            "(run 'make' in metadata/ first)"
-+        )
-+    except json.JSONDecodeError as err:
-+        sys.exit(f"error: failed to parse '{args.metadata}': {err}")
-+
-+    tests: Dict[str, Dict[str, Any]] = metadata.get("tests", {})
-+    errors: List[str] = lint_tests(tests, args.check_cve_exists)
-+
-+    for err in errors:
-+        print(err, file=sys.stderr)
-+
-+    if errors:
-+        print(f"\n{len(errors)} error(s) found in {len(tests)} tests", file=sys.stderr)
-+        return 1
-+
-+    print(f"metadata lint: {len(tests)} tests OK")
-+    return 0
-+
-+
-+if __name__ == "__main__":
-+    sys.exit(main())
+tse_numa.c:200: TINFO: Found 1 NUMA memory nodes
+tse_numa.c:141: TINFO: File '/sys/devices/system/node/node0/meminfo' 
+does not exist! NUMA not enabled?
+get_mempolicy02.c:60: TCONF: test requires at least one NUMA memory node
 
----
-base-commit: 534222c4f3908e9642f913399e37a66fdd266bbe
-change-id: 20260624-metadata_linter-41c60691bcb2
+even on systems without CONFIG_NUMA=y.
 
-Best regards,
--- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+But I also think that we should add
+CONFIG_NUMA=y check in all these tests. Please confirm, I will send 
+revised version.
 
+
+Regards,
+Avinesh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
