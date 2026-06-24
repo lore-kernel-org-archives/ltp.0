@@ -4,48 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA771CDB47C
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 09:20:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8562CDB479
+	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 09:20:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 31EE53E5334
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 11:20:19 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id D724F3E6208
+	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 11:20:34 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6B6BF3E5377
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 11:19:11 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 39CB23E4D45
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 11:19:17 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C5D12200AC6
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 11:19:10 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AB141200AC7
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 11:19:14 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CEF4C713D7
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E7FB771449
  for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1782292744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xqCyMe03HXwg5/DX8p3cK3Vz5Ym8M+UqqJe/RdIrIgw=;
- b=IuAQ6QDs+8o7ubIIObRJ+xEXS8IXeG4+SzERtjWSafpjjt3AHxH0KQIm7yNX9acoSABVVb
- JAjy/ofiXM6gXN0d7vc6bmB6DEopzoXopMZKz/JqPAJEf1qDfbEob9aACpV3Pct5zfodtX
- tJG6lZKplU2uddjbHROvp91q9IjZpKs=
+ bh=mRX9iBquXstbDzKzQfM37Esk05A/a1SULyfxr5Klstk=;
+ b=uvcho/dDaxZ7CIhNpD51aWRZRXlHxJBtw/kEBULKbr3YLPRVGgg1CWWodghaxJVhmK0R3c
+ MrNWRsfPxh2v03hShVlF626L52WX2bFvhFUpBPnYfY+mX3SbDKeVEpzhLCQ5In1COuYZxT
+ NpwEOWgc4hNtUNDJQ9TJ2cN0PQ9CE9U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1782292744;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xqCyMe03HXwg5/DX8p3cK3Vz5Ym8M+UqqJe/RdIrIgw=;
- b=rujgLMAdkwVDGrbygoicuvpoxkcag9pynBWiJADVM75X4zzhA3xODuMmakOJXCYFgJ4wGR
- eRA5JzLUDCb4b0Aw==
+ bh=mRX9iBquXstbDzKzQfM37Esk05A/a1SULyfxr5Klstk=;
+ b=Q7c4/u1b+/4DzHsn6rI9dFTwUkJdoK491kv1X2mWa9bF+ro3ynmwT8flprIHZ0EkrU5R5o
+ aXCbvFsK5zsk46BA==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
@@ -53,33 +52,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xqCyMe03HXwg5/DX8p3cK3Vz5Ym8M+UqqJe/RdIrIgw=;
- b=IuAQ6QDs+8o7ubIIObRJ+xEXS8IXeG4+SzERtjWSafpjjt3AHxH0KQIm7yNX9acoSABVVb
- JAjy/ofiXM6gXN0d7vc6bmB6DEopzoXopMZKz/JqPAJEf1qDfbEob9aACpV3Pct5zfodtX
- tJG6lZKplU2uddjbHROvp91q9IjZpKs=
+ bh=mRX9iBquXstbDzKzQfM37Esk05A/a1SULyfxr5Klstk=;
+ b=uvcho/dDaxZ7CIhNpD51aWRZRXlHxJBtw/kEBULKbr3YLPRVGgg1CWWodghaxJVhmK0R3c
+ MrNWRsfPxh2v03hShVlF626L52WX2bFvhFUpBPnYfY+mX3SbDKeVEpzhLCQ5In1COuYZxT
+ NpwEOWgc4hNtUNDJQ9TJ2cN0PQ9CE9U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1782292744;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xqCyMe03HXwg5/DX8p3cK3Vz5Ym8M+UqqJe/RdIrIgw=;
- b=rujgLMAdkwVDGrbygoicuvpoxkcag9pynBWiJADVM75X4zzhA3xODuMmakOJXCYFgJ4wGR
- eRA5JzLUDCb4b0Aw==
+ bh=mRX9iBquXstbDzKzQfM37Esk05A/a1SULyfxr5Klstk=;
+ b=Q7c4/u1b+/4DzHsn6rI9dFTwUkJdoK491kv1X2mWa9bF+ro3ynmwT8flprIHZ0EkrU5R5o
+ aXCbvFsK5zsk46BA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ACC52779AF
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:02 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B639B779B4
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id BiGWKAahO2pQAgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id iO+VKwihO2pbAgAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:02 +0000
+ for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:19:04 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 24 Jun 2026 11:18:52 +0200
-Message-ID: <20260624091900.4107041-6-chrubis@suse.cz>
+Date: Wed, 24 Jun 2026 11:18:57 +0200
+Message-ID: <20260624091900.4107041-11-chrubis@suse.cz>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260624091900.4107041-1-chrubis@suse.cz>
 References: <20260624091900.4107041-1-chrubis@suse.cz>
@@ -100,7 +99,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  RCVD_TLS_ALL(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 05/13] vma05.sh, keyctl01.sh: Add groups
+Subject: [LTP] [PATCH 10/13] testcases: Fix the CVE tags
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,48 +116,167 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Unlike the C library the shell metadata parser does not process the
-JSON, hence the tags are added manually.
-
-Since we have just a few shell tests, automatic group discovery is not
-worth the effort. If we get more shell tests we will need to rewrite the
-shell metadata parser to load the JSON into a memory, modify it, and
-then save it.
+The tags should be in the format year-seq. With the CVE prefix our
+tolling is broken e.g. tst_test.c prints wrong URLs.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/commands/keyctl/keyctl01.sh | 3 +++
- testcases/kernel/mem/vma/vma05.sh     | 3 +++
- 2 files changed, 6 insertions(+)
+ testcases/kernel/containers/userns/userns08.c                 | 2 +-
+ testcases/kernel/pty/pty04.c                                  | 2 +-
+ testcases/kernel/security/dirtypipe/dirtypipe.c               | 2 +-
+ testcases/kernel/syscalls/bpf/bpf_prog05.c                    | 2 +-
+ testcases/kernel/syscalls/bpf/bpf_prog06.c                    | 2 +-
+ testcases/kernel/syscalls/bpf/bpf_prog07.c                    | 2 +-
+ testcases/kernel/syscalls/gethostbyname_r/gethostbyname_r01.c | 2 +-
+ testcases/kernel/syscalls/kill/kill13.c                       | 2 +-
+ testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c     | 2 +-
+ testcases/kernel/syscalls/setsockopt/setsockopt03.c           | 2 +-
+ testcases/network/sockets/vsock01.c                           | 2 +-
+ 11 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
-index 514b6b8bf..2b2244fae 100755
---- a/testcases/commands/keyctl/keyctl01.sh
-+++ b/testcases/commands/keyctl/keyctl01.sh
-@@ -22,6 +22,9 @@
- #  "save_restore": [
- #   ["/proc/sys/kernel/keys/root_maxbytes", null, "TCONF"]
- #  ],
-+#  "groups": [
-+#   "keyctl", "cve", "regression"
-+#  ],
- #  "tags": [
- #   ["linux-git", "38327424b40bcebe2de92d07312c89360ac9229a"],
- #   ["CVE", "2016-4470"]
-diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
-index b9654e80c..497abf34f 100755
---- a/testcases/kernel/mem/vma/vma05.sh
-+++ b/testcases/kernel/mem/vma/vma05.sh
-@@ -34,6 +34,9 @@
- #       "cmd": "uname"
- #     }
- #   ],
-+#  "groups": [
-+#   "vsyscall", "regression"
-+#  ],
- #  "save_restore": [
- #   ["/proc/sys/kernel/core_pattern", "core", "TBROK"],
- #   ["/proc/sys/kernel/core_uses_pid", "0", "TBROK"]
+diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
+index 2ee4da558..4196bb064 100644
+--- a/testcases/kernel/containers/userns/userns08.c
++++ b/testcases/kernel/containers/userns/userns08.c
+@@ -139,7 +139,7 @@ static struct tst_test test = {
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "d2f007dbe7e4"},
+-		{"CVE", "CVE-2018-18955"},
++		{"CVE", "2018-18955"},
+ 		{}
+ 	},
+ };
+diff --git a/testcases/kernel/pty/pty04.c b/testcases/kernel/pty/pty04.c
+index 8bd1bfff5..b23cc0a9d 100644
+--- a/testcases/kernel/pty/pty04.c
++++ b/testcases/kernel/pty/pty04.c
+@@ -494,7 +494,7 @@ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.tags = (const struct tst_tag[]){
+ 		{"linux-git", "b9258a2cece4ec1f020715fe3554bc2e360f6264"},
+-		{"CVE", "CVE-2020-11494"},
++		{"CVE", "2020-11494"},
+ 		{}
+ 	}
+ };
+diff --git a/testcases/kernel/security/dirtypipe/dirtypipe.c b/testcases/kernel/security/dirtypipe/dirtypipe.c
+index 981793e64..a1bbe9465 100644
+--- a/testcases/kernel/security/dirtypipe/dirtypipe.c
++++ b/testcases/kernel/security/dirtypipe/dirtypipe.c
+@@ -164,7 +164,7 @@ static struct tst_test test = {
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "9d2231c5d74e"},
+-		{"CVE", "CVE-2022-0847"},
++		{"CVE", "2022-0847"},
+ 		{},
+ 	}
+ };
+diff --git a/testcases/kernel/syscalls/bpf/bpf_prog05.c b/testcases/kernel/syscalls/bpf/bpf_prog05.c
+index 05cb34e13..6412ca205 100644
+--- a/testcases/kernel/syscalls/bpf/bpf_prog05.c
++++ b/testcases/kernel/syscalls/bpf/bpf_prog05.c
+@@ -210,7 +210,7 @@ static struct tst_test test = {
+ 		{"linux-git", "468f6eafa6c4"},
+ 		{"linux-git", "e88b2c6e5a4d"},
+ 		{"linux-git", "9b00f1b78809"},
+-		{"CVE", "CVE-2021-3444"},
++		{"CVE", "2021-3444"},
+ 		{}
+ 	}
+ };
+diff --git a/testcases/kernel/syscalls/bpf/bpf_prog06.c b/testcases/kernel/syscalls/bpf/bpf_prog06.c
+index f701e9599..830159427 100644
+--- a/testcases/kernel/syscalls/bpf/bpf_prog06.c
++++ b/testcases/kernel/syscalls/bpf/bpf_prog06.c
+@@ -149,7 +149,7 @@ static struct tst_test test = {
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "64620e0a1e71"},
+-		{"CVE", "CVE-2021-4204"},
++		{"CVE", "2021-4204"},
+ 		{}
+ 	}
+ };
+diff --git a/testcases/kernel/syscalls/bpf/bpf_prog07.c b/testcases/kernel/syscalls/bpf/bpf_prog07.c
+index e3bf6e7cc..d82f97faf 100644
+--- a/testcases/kernel/syscalls/bpf/bpf_prog07.c
++++ b/testcases/kernel/syscalls/bpf/bpf_prog07.c
+@@ -153,7 +153,7 @@ static struct tst_test test = {
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "64620e0a1e71"},
+-		{"CVE", "CVE-2022-23222"},
++		{"CVE", "2022-23222"},
+ 		{}
+ 	}
+ };
+diff --git a/testcases/kernel/syscalls/gethostbyname_r/gethostbyname_r01.c b/testcases/kernel/syscalls/gethostbyname_r/gethostbyname_r01.c
+index e4c0cb716..73bf5da99 100644
+--- a/testcases/kernel/syscalls/gethostbyname_r/gethostbyname_r01.c
++++ b/testcases/kernel/syscalls/gethostbyname_r/gethostbyname_r01.c
+@@ -56,7 +56,7 @@ static struct tst_test test = {
+ 	.test_all = check_vulnerable,
+ 	.tags = (const struct tst_tag[]) {
+ 		{"glibc-git", "d5dd6189d506"},
+-		{"CVE", "CVE-2015-0235"},
++		{"CVE", "2015-0235"},
+ 		{}
+ 	}
+ };
+diff --git a/testcases/kernel/syscalls/kill/kill13.c b/testcases/kernel/syscalls/kill/kill13.c
+index ca281ca6c..bf6e4efeb 100644
+--- a/testcases/kernel/syscalls/kill/kill13.c
++++ b/testcases/kernel/syscalls/kill/kill13.c
+@@ -37,7 +37,7 @@ static struct tst_test test = {
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "4ea77014af0d"},
+-		{"CVE", "CVE-2018-10124"},
++		{"CVE", "2018-10124"},
+ 		{}
+ 	}
+ };
+diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
+index 65061bf3d..7481dcd8d 100644
+--- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
++++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
+@@ -117,7 +117,7 @@ static struct tst_test test = {
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "cf01fb9985e8"},
+-		{"CVE", "CVE-2017-7616"},
++		{"CVE", "2017-7616"},
+ 		{}
+ 	}
+ };
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt03.c b/testcases/kernel/syscalls/setsockopt/setsockopt03.c
+index 90d546611..134734acd 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt03.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt03.c
+@@ -79,7 +79,7 @@ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.tags = (const struct tst_tag[]){
+ 		{"linux-git", "ce683e5f9d04"},
+-		{"CVE", "CVE-2016-4997"},
++		{"CVE", "2016-4997"},
+ 		{}
+ 	}
+ };
+diff --git a/testcases/network/sockets/vsock01.c b/testcases/network/sockets/vsock01.c
+index e46f663ed..84c9f9577 100644
+--- a/testcases/network/sockets/vsock01.c
++++ b/testcases/network/sockets/vsock01.c
+@@ -118,7 +118,7 @@ static struct tst_test test = {
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "c518adafa39f"},
+-		{"CVE", "CVE-2021-26708"},
++		{"CVE", "2021-26708"},
+ 		{}
+ 	},
+ };
 -- 
 2.53.0
 
