@@ -4,89 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDA9BCDE001
-	for <ltp@archiver.kernel.org>; Thu, 25 Jun 2026 14:57:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85FE5CDB479
+	for <ltp@archiver.kernel.org>; Thu, 25 Jun 2026 15:05:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1782399465; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782399915; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=aKm3rJohTH/p4WUvSYnBEMMsW+p7Zvma7XJur2NjZ4g=;
- b=LP5S92BASV2ULUZ5d5B9H+zXopX1cbysQpDRpqDBFk+oE74oNxyGtHl9dqQqtSga2Z3C4
- nDlhxEYWjwXNQU6BEJ6ZV7Gy6FC8poOq3FMCuUJ2yIfrh2E6cYIPHsmv0l+w4yQM1ezY3Wy
- rhePBfg7d3DcGRTBO/RK4wRhCflL+J4=
+ list-subscribe : from : reply-to : content-transfer-encoding :
+ content-type : sender : from;
+ bh=C8hG6jp5ZwCA/MG6XNEYDXqK6obcIHr4oabz3ft2nSA=;
+ b=EO9enDVSbNrfOZ+EAFhOG8pHBR7NWHH6SdcrnEPMfvL0jQHWEwM2Bm11HkV6gDHNbcKk4
+ 3mJPMn2RI17U+Dk0GG5FMmXJ5x9ayFUPEPkB1XdArcJAv3SVtuEhiyd87sNeggsBalsSeoq
+ 9I7e2PLkWWbyRDmt7JCSpkD2sKJcEz0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 544EE3E61CF
-	for <ltp@archiver.kernel.org>; Thu, 25 Jun 2026 16:57:45 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id AAB2D3E61DE
+	for <ltp@archiver.kernel.org>; Thu, 25 Jun 2026 17:05:15 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2D5E93E4D94
- for <ltp@lists.linux.it>; Thu, 25 Jun 2026 16:57:26 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+ by picard.linux.it (Postfix) with ESMTPS id A74E73E4D8D
+ for <ltp@lists.linux.it>; Thu, 25 Jun 2026 17:04:56 +0200 (CEST)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
+ [IPv6:2a00:1450:4864:20::631])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 85C252005CA
- for <ltp@lists.linux.it>; Thu, 25 Jun 2026 16:57:25 +0200 (CEST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-4924593f45dso28455665e9.1
- for <ltp@lists.linux.it>; Thu, 25 Jun 2026 07:57:25 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C88B21400513
+ for <ltp@lists.linux.it>; Thu, 25 Jun 2026 17:04:55 +0200 (CEST)
+Received: by mail-ej1-x631.google.com with SMTP id
+ a640c23a62f3a-c1217010b15so68561566b.1
+ for <ltp@lists.linux.it>; Thu, 25 Jun 2026 08:04:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1782399445; x=1783004245; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
- :reply-to; bh=tBo4cS+K5zTw7i0oD+3417+vzOOYdjokEYJflePO6NM=;
- b=QROCBE1f1NE/cHyQAmQDFRithq1JQR2UUVg35EonAg8kGDl0hOxdQ0fppvb0s76/uj
- ZNjoB50v521KIT8wbl/HGFfrpypHUehdsWNTbaD+yn5ffe3xeDDcmc5UmHl9HSlh67eF
- /pnvEBU0H7/v0mfmMJiUX0bWybQXyerXb3f0G5eZqZ8rde7cuzhnCe/GkQuXKCuFPyyF
- 6nDyy/aeatfp0G0bNSxph6qDNKJihSEfRjbsuZo/Lapbp/3bGa7H9qNEMv3xJeptzxhI
- 5WiVJ7KgkZUerLYFYAPCIWZIRQP1jR9F1yUgZaZuBToc6e19vz5ht+YUMrrJE1maS1bT
- lNdw==
+ d=suse.com; s=google; t=1782399895; x=1783004695; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=z2DoqNBTyN6HGdNxKbX5/CHYbvtrAPnwxe5qaaStVJs=;
+ b=Pvlg+UTbYN6RLV3iAFDJFnGLKmheRwxuy16svKHAEvQt4HZk7gLV+w4aG0RVuGZkGQ
+ py03eX3NRFCd8KbghTdsye4k0HZFRgpsD6gbanD81z5twJIqH3a45Keb1AHI0PfdrqMD
+ HLR61ZVKqbadm7FDkwzuAey2C9Fdm0uKCIkCqQ5dOQXhPIPoJBwDa4gJrNbjsIp+g7oe
+ y/SzoPp/7VaLIIb6hVDUOS2bWqUJZi20CI6xv76WhoZzsZU9494XhengKl0olGbIV/Do
+ HrK2tc1CujuJ1WeY+ZU505fN2UtbYuJUkF0668zfuDiwriSkDJkRimgp8IE3vu6j9fUq
+ FcAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782399445; x=1783004245;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:x-gm-gg:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to;
- bh=tBo4cS+K5zTw7i0oD+3417+vzOOYdjokEYJflePO6NM=;
- b=ZKwbJkCejkrifF47p1TlUdyQhtzK5afjrVDYHCy92Gw2uGBnL/l47TDlChCVoP8VpX
- IRKt3+YKLDAtaUaTuzYH3RUJTg0L80Rw5d6ZMaNl1nP9sk752+Hs+7TRt48mJMJQgF9N
- +1Gj+4Ut1C6CuSuYU+zQctEFpGWm1V0Vv0tB3FREPcevj1Q01mIZdjOrgKpuT4XzI/Qm
- RF0vje1w170BytcCR46C5UELTP7nzPaM4JKYxn1keNITWLWEcsHPb93SsKtCLYAlu0aP
- Cu33G9dLmhgMwTLcdN8ZBtNpW0XfIbDmA3LeXcJ/7Ca2AijotKSgxa1/m1P4oKtp0ZHi
- /h/A==
-X-Gm-Message-State: AOJu0YzcodCZLJrlq9Yot++IlMpfkSF0ZcxNkbfNCaSewPhzyytG4+4M
- Sf2dKPX/oYC+IJoKnwOUcqRrnZ/44WA24Kc4sA5O94BBbLgS3S/quXcMEs3yZAfblrIAjoKHeiA
- oPqz6x6o=
-X-Gm-Gg: AfdE7cnJHQZn+GYAZ07gptCJJLQU+dJ/KkHtFs/IpQu2GDgf8TDS7z/sb5/V9+Y6WCG
- fA2NWE7rkdN904zbZON6ls//7jRM58YOlLJ9AYYOa+YIRd8ixBAx18nyWwocWbj5/3Z+ealYvrj
- k7HsS2gPAzi3XlcY3gpRWA5mPkIFDjhGTirCgS1UzLfQqws3PzRabKj2qtdPZdW2btQg6KE/y9a
- J/ijuzT/bwCe0kqFS3Hk4gVIWyocl/6MAMXQvVCZ3Pgr1SQxt+lSfuRARVrm/ePE64a3jhYP4TA
- RD9dJHXjdjlyhXA/a7Iy2JTjCxOPipr7YD9aBvvgntaiFBOXKisZy5ZHIJvElOejCqEQzTx13D6
- suHfU4vEtx/4M1iFuNdttS2ZNogh73OaP+FHfFtZJdEU6iro0Yq+FLTwVZ5Wxp/Jdoy1vrRVe0p
- A=
-X-Received: by 2002:a05:600c:1d1e:b0:492:2f3c:d0ed with SMTP id
- 5b1f17b1804b1-4926688a528mr38772665e9.30.1782399444718; 
- Thu, 25 Jun 2026 07:57:24 -0700 (PDT)
-Received: from localhost ([2a07:b241:1004:8300::1000])
+ d=1e100.net; s=20251104; t=1782399895; x=1783004695;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=z2DoqNBTyN6HGdNxKbX5/CHYbvtrAPnwxe5qaaStVJs=;
+ b=QcrQBNHZMLRpkbS9v9LApuRdoKT9VnnIiYgWUKFom+VUBt9jd3W4LNBN13+wMCvsfE
+ Ct6v85n5MVL0R7fW2HHZp5I66KvNCc9y3iHeo9TEIAzMWLhgRuIyP9Glae8X39mj5pq+
+ WO4O7fbvADLQTP12o75ojBQF5/wea4RAMRg9+1gLMzVpvreRjJ4Hcbnkv4u+9ptl+j4b
+ y5+OpEVlMYyporf5ACCKc15G09DH8os097Ks6kXsPFzLJzBWA439WBln31hmWo9TuU0u
+ Rue1z+SJ6SLwqKkw+8GdR8HmaU7FzJ9aQuWmWjLzivpMISGoStV55g5/6xvBmG0ETvNa
+ VtjA==
+X-Forwarded-Encrypted: i=1;
+ AHgh+Rp1Ol8pK2ss6yxDErpEG/5pN2mDeMlh5l+Nk3tvtiyLwCzur6T8EN5tq/IMvdY0lVJDpx8=@lists.linux.it
+X-Gm-Message-State: AOJu0YwhcPOqBzeAQHxr9jbCNPywe9ClBoV+OePs6zUfwlMKZXr0Ss47
+ +5/AxYnfq4bKO7B/hijwpjDMpNgiuGsJAo83mPN+bJF1UtqyFjQmkWVpyAyMOzprqv4=
+X-Gm-Gg: AfdE7cmtsVCfYK80XZAJuDdynKQPj9f7l8vdT50yx79Oc2yRIcAkEtiNFag8Iz664eG
+ NBJNAP2tFHtw5N1fY+2xS6wnaSDWfZtC6eqMyfCHQV2aolEv/diG87ehQEBY21zMEjyVsMOwT8p
+ mWhjwM/1Cdh3cj0w9BU1sM3TeYQrl2NVslVSASGqcbX06yBPY5Z9I5BMaCLtEqPJ0wxe/RNMRP5
+ hi/4HIuNh6R1rItYBw3d/uy4goNLw/izlccRyDkheS8i0iD9+pBAvCBSBN/470oSqs745TjAKQx
+ EjJ/c6kH7Gd3gPJubM8s0YrDZBACoLiVLG8ypx0JTxb3wdGLcxSPz45b+U+6hRIncWWRdaQJA1b
+ ZV/anQ94pBgrXa5fGGOBMXCKNElKMWVwmmacnmfZaSLJ48nbpmqSgdFF5zdFrRnvcGAoZO0WYLP
+ a252TWKBeIo0pNJuz8Yxc7DrfFhlEYEw==
+X-Received: by 2002:a17:906:7955:b0:c10:bfaf:6f73 with SMTP id
+ a640c23a62f3a-c1204495c0amr235334266b.22.1782399894973; 
+ Thu, 25 Jun 2026 08:04:54 -0700 (PDT)
+Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-49268fd9e77sm3097055e9.4.2026.06.25.07.57.23
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 25 Jun 2026 07:57:24 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Thu, 25 Jun 2026 16:57:22 +0200
-Message-ID: <20260625145722.131551-1-avinesh.kumar@suse.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <6a3cd262.453a015d.200201.5a98@mx.google.com>
-References: <6a3cd262.453a015d.200201.5a98@mx.google.com>
+ a640c23a62f3a-c11fbedf971sm223937566b.62.2026.06.25.08.04.52
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 25 Jun 2026 08:04:53 -0700 (PDT)
+Message-ID: <b1abedfe-14d0-4a34-b4b4-c7209a4748d6@suse.com>
+Date: Thu, 25 Jun 2026 17:04:51 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Andrea Cervesato <andrea.cervesato@suse.com>,
+ Avinesh Kumar via ltp <ltp@lists.linux.it>
+References: <6a3b9837.ff344046.2fa080.bca7@mx.google.com>
+Content-Language: en-US
+In-Reply-To: <6a3b9837.ff344046.2fa080.bca7@mx.google.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] set_mempolicy: require CONFIG_NUMA
+Subject: Re: [LTP] [PATCH] sendfile09: skip on native 32-bit kernels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,117 +104,29 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Avinesh Kumar via ltp <ltp@lists.linux.it>
 Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Avinesh Kumar <avinesh.kumar@suse.com>
+Hi,
 
-On kernels without CONFIG_NUMA=y set_mempolicy() returns ENOSYS,
-which the test misreports as TFAIL.
+On 6/24/26 10:41 AM, Andrea Cervesato via ltp wrote:
+ > Hi Avinesh,
+ >
+ >> +    if (tst_kernel_bits() == 32)
+ >> +            tst_brk(TCONF, "Test is only supported on 64-bit kernels");
+ >
+ > Why not .needs_abi_bits == 64?
 
-set_mempolicy05 -
+Thanks for the review.
+I switched to .needs_abi_bits check in v2
 
-set_mempolicy05.c:105: TFAIL: set_mempolicy should fail with EFAULT or EINVAL, instead returned 38
+<https://lore.kernel.org/ltp/20260623195000.110648-1-avinesh.kumar@suse.com/>
 
-remaining of these tests (set_mempolicy[01-04]) checks for minimum two
-NUMA nodes and reports TCONF, but those also should exit on CONFIG_NUMA
-check.
 
-tse_numa.c:200: TINFO: Found 1 NUMA memory nodes
-tse_numa.c:141: TINFO: File '/sys/devices/system/node/node0/meminfo' does not exist! NUMA not enabled?
-get_mempolicy02.c:60: TCONF: test requires at least one NUMA memory node
-
-Add .needs_kconfigs with CONFIG_NUMA=y
-
-Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
----
- testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c | 4 ++++
- testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c | 4 ++++
- testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c | 4 ++++
- testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c | 4 ++++
- testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c | 4 ++++
- 5 files changed, 20 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
-index a85a56332..07836cc69 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
-@@ -120,6 +120,10 @@ static struct tst_test test = {
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
- 	.timeout = 600,
-+	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_NUMA=y",
-+		NULL
-+	}
- };
- 
- #else
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
-index 94d8aa336..d98f81545 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
-@@ -109,6 +109,10 @@ static struct tst_test test = {
- 	.tcnt = 2,
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
-+	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_NUMA=y",
-+		NULL
-+	}
- };
- 
- #else
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-index bc5e03217..43e0439d4 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-@@ -103,6 +103,10 @@ static struct tst_test test = {
- 	.mntpoint = MNTPOINT,
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
-+	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_NUMA=y",
-+		NULL
-+	}
- };
- 
- #else
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
-index 672232c84..fa88385ce 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
-@@ -134,6 +134,10 @@ static struct tst_test test = {
- 	.all_filesystems = 1,
- 	.mntpoint = MNTPOINT,
- 	.needs_checkpoints = 1,
-+	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_NUMA=y",
-+		NULL
-+	}
- };
- 
- #else
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
-index 65061bf3d..6c91beebc 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy05.c
-@@ -115,6 +115,10 @@ static struct tst_test test = {
- 		"ppc",
- 		NULL
- 	},
-+	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_NUMA=y",
-+		NULL
-+	},
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "cf01fb9985e8"},
- 		{"CVE", "CVE-2017-7616"},
--- 
-2.54.0
-
+Regards,
+Avinesh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
