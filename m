@@ -4,82 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B262FCDE002
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 16:24:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DBE0CDB466
+	for <ltp@archiver.kernel.org>; Thu, 25 Jun 2026 07:02:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782370937; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=2M3Va6Dg2kMHkhC+z3/bbDaT2fhxxOoYowTlXI/0sH8=;
+ b=Duzb8YsvDrTpaCN+jS4wj5KTLBmtCRzEsLZYX3NA0WvaiwmlIDqEz5ZtmJ5n0V3fK5FRV
+ 3ac4sOHZmetn0WFM41UUWdLvWoC2YcV1MjlHX8DTS+ZWo2fncybyv4rgA4b+vWcrxqkTLse
+ OyotBRrCnsb5O9dwLxa0gHnB43fHKJs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C83373E914B
-	for <ltp@archiver.kernel.org>; Wed, 24 Jun 2026 18:24:30 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 2188D3E531E
+	for <ltp@archiver.kernel.org>; Thu, 25 Jun 2026 09:02:17 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BCBDB3C01A4
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 18:24:14 +0200 (CEST)
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com
- [IPv6:2607:f8b0:4864:20::f44])
+ by picard.linux.it (Postfix) with ESMTPS id 6FA593E1C77
+ for <ltp@lists.linux.it>; Thu, 25 Jun 2026 09:01:56 +0200 (CEST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3B1141400DA6
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 18:24:14 +0200 (CEST)
-Received: by mail-qv1-xf44.google.com with SMTP id
- 6a1803df08f44-8e5be46f663so5372076d6.0
- for <ltp@lists.linux.it>; Wed, 24 Jun 2026 09:24:14 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id AC6381A006ED
+ for <ltp@lists.linux.it>; Thu, 25 Jun 2026 09:01:55 +0200 (CEST)
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-492329c5514so2495935e9.1
+ for <ltp@lists.linux.it>; Thu, 25 Jun 2026 00:01:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1782318253; x=1782923053; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=0FgsbL+vy1fvScXyl9RYyjl3HsrAXUwIuElkjg+2v6w=;
- b=fGpAbtbtn/RsiZvT0OZ0uMIlLmfEJvrH+BCj9lFF/oVngxl0X/Y5vrYBr62Ufvvx1m
- fIOMcIzHcaLn6ArWN2cK5OwNoum5erRYPYJKuTFEzXNCwG2RXy1Sy/6iRDPeYVxIuTvr
- KARv6wUou+tXRb6vPVdRLSfLq5NMnceorSyA2xsEtB6ZgZ7bTC8H26tbuT899Es2dI7P
- zYhDPjl/UZi2Qg7gqMG6yidNhWLyIjv2ZSWbe0pDSkMC6lWeP5FBE4mHGlmNj7w1L5Os
- ek/n2vr+NIXEnzl1gn1jH5iQg6IrewiYAp/G/r5kJDQXC5y0SnBZkCyI2t71SjBbfPzO
- jzbA==
+ d=suse.com; s=google; t=1782370915; x=1782975715; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=O1J8EVGpiXP42Y/GhLgrcBF8y8Z+QV2AAuY2kZ1DJGs=;
+ b=PTarrn44/7QcME32uQCMj1yrZSuYF++y8RH+fW+AkcUjfCeLUHV+tQpKrEu67alIq1
+ hY/rPU5JJUw/nPuKuHNnjFTWBYCJVmIfLzWqcu0O+0heETr5JaSQh/zg+aqTB2CNmbVo
+ FuHe2nQsKeEuYFuKrQxg2THi73NKGBnTYBmKRaDsMfYMjC3fiTEsSAUqZm/dS6PkKN8I
+ 8CPd6B1ZLZpYaNDnS3pa8ZhOxreplYZ0gFeCQBKzAXR2fFUUr2vh2vo6I3l8GjdkGfzr
+ RDfvQ/s7kZX2yBr/7gFx++bIB2aFsEMSQ1xZwo/5PM1pzmJ2ow3lOxsMkZ9OAw6hI9ZX
+ M6sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782318253; x=1782923053;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=0FgsbL+vy1fvScXyl9RYyjl3HsrAXUwIuElkjg+2v6w=;
- b=gy7xd+u11mNwWj8huS+VoWCkZE+cJp7mC4cdyjIcKflEbgePu3/gF7K2gPQDAM/42e
- NMISoEl3QU+6irgAdLDDLbwoOdnzgpPdu/OKunzJxg7GtHc6pi79aJq02Y/b8k68eSFn
- Dh/XhWy738hOI+kmftd8T49rRz0s+vn5/4uY20G5VKYy7kZS549iKYHFOmnTNrtCgZ9p
- QR+H+yuFEnALVtz16bSPbWUfXf6rd4jSG5qqKsCgA9T2m/1l9p56WZR7W6Mfg1th/nXA
- 2rL8/oxnXsQAUuN7l4wA/0KltafEt0q0ddCGxjrNS/EIyXmQ4JdLwdPkJuqjTGQ4AMrN
- Wx+w==
-X-Gm-Message-State: AOJu0YyTERnbR3v+WOFXPImxOAe7L+dELvpFldsg2r2gMhdR2vWi9mxq
- NMke0BuoqQ4wzQJF6jcc0H5iFMUSVnL5bl76xocrbSRGQFgQbz/UGX9+
-X-Gm-Gg: AfdE7cnPgbadb8bFDwdXSaps3O+s4t+3w/f5lylbkOXJoFko/IFrjAUQIobYNRUsKPo
- EDY19gGv6MrPNu4+lPUiPhP+mlk7PzCGV6DT472NNx0d4o1ZypBAiBQGR2KUSBp0mnkw2JYpM0L
- PqlYjIz6Q/fQoqgm3zt3vZArfk0XGqj+AugJsMJzEAG2XOIWkLK6A2m75XtCbn07oD9uSW+EcOE
- xA1X5oJK/lmMyCYjn+3E7hPaVudRqBSTHAn128B+/0+za2fl1jwa/X+OaF8pDrGgRP7Y6bVucpz
- bG2+tLQ6q8tprQjRo/+T8aYS8GWLSB6b5LO9sSZ61028fYJtSqzbcMAwGQND2KQJFu+S8QpOvOQ
- GCP1aldP1KJrDZADWvk4Gz2P6p+emCov7D3RGNxjFUoaWcsc/wV8zZZrZTkQKnrpUajsaK4Ymcp
- GwB17t5oljJ9MPQyJiDYZYg/4rFuttbuAbFQiDEL466CbbZd7MJRLUHQh0BVM4fYf9VasUePbpw
- D+QqplizI57pNe4LfWC3PQlaGNolA==
-X-Received: by 2002:a05:620a:4710:b0:922:92b1:9dfc with SMTP id
- af79cd13be357-92781e031c4mr634278285a.14.1782318252631; 
- Wed, 24 Jun 2026 09:24:12 -0700 (PDT)
-Received: from
- runnervm7b5n9.asza5amywjqudnrwvdv2p0ydkb.bx.internal.cloudapp.net
- ([20.172.192.249]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-925fda626adsm590033785a.12.2026.06.24.09.24.11
+ d=1e100.net; s=20251104; t=1782370915; x=1782975715;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=O1J8EVGpiXP42Y/GhLgrcBF8y8Z+QV2AAuY2kZ1DJGs=;
+ b=pw3a9vJ0RXuEmqeaINydP5ylSjsG85On+Y68Yk57FGLKkt5SZRaIfuKozs8+raUYCF
+ KtSUAXqk8lW94pNsJDfrEn9SeDChdiqWJIJtjRXj7/UmPp1NVdy5FDSFDMTafjDfYn2w
+ UuNgWiIXqT0/cP+KI8AZqKhfMq6pFmDzoyHVpcM6apKMoxd4t2QOAguEM+IYG+bsoutI
+ uL7APRpcc0N6KAAj4N98/bMCZIxVyNlAQDg0oPxUyVKx1jEyckG9jsms8kTGLwjwN2ju
+ 5/yqtthP8LYbLcNIiwR6ydbFhtfX4kBdaidfEYCll4MfymmK+swtG+KqRhR0ZRV0LgZs
+ KmOA==
+X-Gm-Message-State: AOJu0YwJ1rlyvGrzPB1dfu5DE33QD/l9C2wfkutEmpIyquWFOytwL05S
+ sEVsgJdtP4YueIPhDIrgJBtyuMyW3hvpn2F7zACKdmzgBDqp+yUfuTLc3QJiwDByw18=
+X-Gm-Gg: AfdE7ckG3ebeuDps2BvscWgSnepOeLJ2GF9yWEr0JMCHwjx6wX+T/2QQJzM/0CFgxhk
+ Ew1sHOSOu/nxhcgxQoBDHQX6JxEdD+KiogJAOC+iYh2IC0UJR0YDnJUVtiR6pQKeibpr6Qqk8RP
+ Uil3yVTw5PeEBtZeIf8lxaYb/2wExwt5Jn/1o3ebBPNW/B6J2BnCofbBtPAyup10zJxz8R6ydl/
+ KgsjgOI33AIXIME6DbQlwm2hAcbc/96LkNIgFamFYRqHvArZHffaWn17AZXbVsKV0P2U6Th4kPE
+ g+RGfF0deV6fyPAzVU8keEZRONwOaTdP7/JCGFYfteqDRo3OOd15eBhAgP177iBJKNHyqpE4C2h
+ Gmv63X+CCIlNr0KhPGPXR+TPvxy7h3lsxknRJd2w86+AbRHfp2ZFifwbh65fjlj9GtumG11qJk3
+ Icq263G1LZ4FHLjZ0vsXhrArztUYCbFo63qqPWe8Md/aIFIGdGacqAarJmRdGvs4h8eu+Ie8WFG
+ tOWEWp/dbH81B3iazBs46Lb
+X-Received: by 2002:a05:600c:6291:b0:490:b4a8:e031 with SMTP id
+ 5b1f17b1804b1-492663d6d93mr12618435e9.4.1782370914838; 
+ Thu, 25 Jun 2026 00:01:54 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
+ [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-492660a333asm36110915e9.3.2026.06.25.00.01.54
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 24 Jun 2026 09:24:12 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 24 Jun 2026 16:24:11 +0000
-Message-ID: <20260624162411.3943-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260624-metadata_linter-v1-1-3d9506169aad@suse.com>
-References: <20260624-metadata_linter-v1-1-3d9506169aad@suse.com>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ Thu, 25 Jun 2026 00:01:54 -0700 (PDT)
+Message-ID: <6a3cd262.453a015d.200201.5a98@mx.google.com>
+To: "Avinesh Kumar" <avinesh.kumar@suse.com>
+In-Reply-To: <e082e001-88b9-47be-952d-642e293dd229@suse.com>
+Date: Thu, 25 Jun 2026 07:01:53 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] metadata: add linter for JSON file
+Subject: Re: [LTP] [PATCH] set_mempolicy05: require CONFIG_NUMA
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,44 +97,26 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+> But I also think that we should add
+> CONFIG_NUMA=y check in all these tests. Please confirm, I will send 
+> revised version.
 
-On Wed, 24 Jun 2026 16:27:21 +0200, Andrea Cervesato wrote:
-> metadata: add linter for JSON file
+Yes please, let's fix them all already.
 
-> +    parser.add_argument(
-> +        "--check-cve-online",
-> +        action="store_true",
-> +        help="verify CVE existence against the online CVE database",
-> +    )
-> +    args = parser.parse_args()
-
-> +    errors: List[str] = lint_tests(tests, args.check_cve_exists)
-
-argparse stores --check-cve-online as check_cve_online, but the code
-reads check_cve_exists. This raises AttributeError every time main()
-runs, even when the flag is not passed (the attribute simply does not
-exist on the Namespace object).
-
-Should this be args.check_cve_online?
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+Thanks,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
