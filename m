@@ -4,87 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B10BC43211
-	for <ltp@archiver.kernel.org>; Fri, 26 Jun 2026 14:48:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2026BC43458
+	for <ltp@archiver.kernel.org>; Fri, 26 Jun 2026 17:26:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1782485330; h=message-id :
- to : cc : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : mime-version : content-type : content-transfer-encoding :
- sender : from; bh=RWBj789HCSiUrKB8R4V2KKfYWo3b/dWdN6e1tu5kcT0=;
- b=G9oral+bXAo0CxseJx1qEADakjl4Tl2oIUjm/GOn9laQFyrXhwnuXw6PfGo8QnV25cG3S
- fy1QuJhogWp0cHLUsmxzG7MI2+3OBhsvh9hQ7bP6g4ReR4PUaWww8JgBzkVyVbxwm7Z3BUW
- ZtYzIaOnC2mCh16M1J4enhCDx7GALxE=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782494781; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=z90RMj/5GOr6aRClTwYP8wywzr1SZJUpRcYgFy8AvkM=;
+ b=QENz64xucwZRu4mQIm6dH+HZ8NqnuswxUw7WCNtgW5YBmZ5y8d7aEKPLpewpIrqtpoT0n
+ 3IkeMn6e6cQEne8SkG9KDfjyNNr35jwuOjVp5sWHkTtSjL52SxuS8H6LFvhkqg4iFQnK/7h
+ Aew2g3aiJvoyFv4IUEgWqRH53g1PfLg=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B97FB3E4CEE
-	for <ltp@archiver.kernel.org>; Fri, 26 Jun 2026 16:48:50 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 25C383E530D
+	for <ltp@archiver.kernel.org>; Fri, 26 Jun 2026 19:26:21 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A62113E4C1C
- for <ltp@lists.linux.it>; Fri, 26 Jun 2026 16:48:29 +0200 (CEST)
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
- [IPv6:2a00:1450:4864:20::435])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6BF833E234E
+ for <ltp@lists.linux.it>; Fri, 26 Jun 2026 19:25:57 +0200 (CEST)
+Received: from tor.source.kernel.org (tor.source.kernel.org
+ [IPv6:2600:3c04:e001:324:0:1991:8:25])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4DA76140009C
- for <ltp@lists.linux.it>; Fri, 26 Jun 2026 16:48:29 +0200 (CEST)
-Received: by mail-wr1-x435.google.com with SMTP id
- ffacd0b85a97d-4631679f204so1218198f8f.0
- for <ltp@lists.linux.it>; Fri, 26 Jun 2026 07:48:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1782485308; x=1783090108; darn=lists.linux.it;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=CKBwmjso9MZoWTi36M/USLhgnh+TvxED0cQnLJ1/v3AE71Fi3HV4pi+iWFH6+V6zPO
- 43X4rZlikUwMkK1FqpvvAufwbtvRlS7wpz0KVci2k/yOk2vCjNCOEIgFKSsuZyGMYfRy
- xwckcUXFeMc5CV8fEQoPPlFHZwoJRoaU7SL4S2cYNgi4coKw35ywjNRiTRH+K8nMISKg
- gbAxRdcapqN/bDpx3XD44faeNrojjYeNOWrutZTXaO+W0l8xAGfxFsL1jYKV3QE8DG4e
- W+7FV0Xj2XFiaCsP3zhR4gRSNQ2MpInoRGR7bIyaahT6iuqV7GBsRMpt+J2m4TVkOX90
- lKYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782485308; x=1783090108;
- h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=HjvNJ8Egx5hLj+FjvOxZPEFMpCCYWefS6zjcl3A+PuQARNW6UyiEqqOZZjG6GI+rJp
- t/iYHJfA2v/Z1hoUoOTi4ZxHDWy7Uq7P+SVJ/P2x9e53oVRtgJH/e1eqzGj9QDc9HY75
- mMDJYVuyht1V1/78nzBPHqGmaZfvcJQJ2hoO/VSVI6TqtDyNAmNaoWtY1vjgt4fTg62B
- MSSaGlvfQThQ5bn8QAvZDzMPL3OPWQTPHGtuTeqvBkTW5piCmpVfnA9Ucv5uz+aPpdk0
- iMDyX88ZrQwtlmaMFEd5DyV5opnAIDdlfAWm9rCO59FXi1i5idM1EdNP2moggF1ZJkdl
- JHfw==
-X-Gm-Message-State: AOJu0Yx18nSBnA8fmYCH1H7y0Gpc8C5AJmrj19CF6rwKAyngG/cqgEox
- YxU7x4hLZ6/uQzA8wfhALYNc2rKEaA8Nvyx/EWB38X5M8svwF68ijOrkPk8B0etGNi5eE39VOFh
- thpbTQJeZ8g==
-X-Gm-Gg: AfdE7cnqJ0D7ugAeY+W5G2c7OUL26K2EFia3I6D7RblCinJXkLfiBMHaR7MNuCDuJrP
- cu/JQuw7dP6YYL62t3rSgjYnowiLUx/OoUgKXYJUU8mT9k2xZCMGXWbRAox7FNsAZ/CWTdT+7ju
- KSVuOqimtYPrfiLeE+wCIL0uAa7zW6y5l20aRTLg3pGqv1kcXfipr2WeAg3HFJl9qMTiQAdvcNi
- 4ZWwKK5gv3K4vLJAoSgJDjqKMPLj4BOTpYF4kf64GSseIUxi3soOlygSTkZzm9jttTn6jQSVp/t
- GjVwZIdMmtqHfb21Xh/TQu8WI9a4mT5I8EmOhO+Q2FXCdG3VgfaTSwPLtTIgUtevkUoMhPgsbBT
- lwJ72nUiBiLuaDyk12cIJAfkOpeJ6R3garKgVxMB0IA1pnRdy8oNd3e48QwJG4hAVgoF6UaEz3v
- kNA1LLBad7/taqRd3vYxMZODO9S77MwWmc5unZ0UeKqdM0f0/MFsdKSlUOh4GNCA==
-X-Received: by 2002:a05:6000:2286:b0:461:a15f:7aa5 with SMTP id
- ffacd0b85a97d-46da9ad143emr10977190f8f.21.1782485308534; 
- Fri, 26 Jun 2026 07:48:28 -0700 (PDT)
-Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
- [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-46c2279b83fsm26753345f8f.29.2026.06.26.07.48.28
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 26 Jun 2026 07:48:28 -0700 (PDT)
-Message-ID: <6a3e913c.159d33f9.1ebc0d.c488@mx.google.com>
-To: "Avinesh Kumar via ltp" <ltp@lists.linux.it>
-Cc: ltp@lists.linux.it
-In-Reply-To: <20260623195000.110648-1-avinesh.kumar@suse.com>
-Date: Fri, 26 Jun 2026 14:48:27 +0000
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DB1821400207
+ for <ltp@lists.linux.it>; Fri, 26 Jun 2026 19:25:55 +0200 (CEST)
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+ by tor.source.kernel.org (Postfix) with ESMTP id BA084600D8
+ for <ltp@lists.linux.it>; Fri, 26 Jun 2026 17:25:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 286D31F000E9;
+ Fri, 26 Jun 2026 17:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+ s=k20260515; t=1782494752;
+ bh=lGLDJO2DkaoO/iqoJMHUJVTdsMDZbtXvgL6v0rCdePA=;
+ h=From:Date:Subject:To:Cc;
+ b=L8G/kfcJ6i881oWWhTuBJh2v8IWxE9kRtuKcMUwyFR40zT7mwYQKoG+5ICTWV+bWC
+ AmKJuTV1rJbp+gINgeZd4dUvXLowN8joAAzjRIGn5xDy1y6D5cpB24+tDPhrMN5PM1
+ 4Xvjw6f/2TaoyeAXb2xIrvh40PTqYuwpJ8n2WOJlnu8T5DGkOdn13l6J12pwloWYOy
+ kH1Ocp+j3ba6Ui0eQaQ9HHsnD8PnK4/cwHHbh4OmRJ62mXNz1RQFyPJJSzfY7UM88I
+ iTn46g1NWW9ZQ/jfnYqLmicwVHyfkafo6srtTidJ52YgF7OBHPnaVAURBwRGWXAy+Y
+ kTjLfynPGqY2A==
+Date: Fri, 26 Jun 2026 13:24:47 -0400
+MIME-Version: 1.0
+Message-Id: <20260626-master-v1-1-e4fcb95b232d@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIzMDMyMz3dzE4pLUIl1T0xQjSxNLk6REAzMloOKCotS0zAqwQdGxtbUAhji
+ aRlgAAAA=
+X-Change-ID: 20260626-master-55d29494ba06
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1609; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=a7is08bAMXyk12MkATp7BlgI5nKQ+0WxV7ZiOPPTuN0=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBqPrYbdvJFpB5Sh3gTRdzdf5/Zch1CMIPgTC+t+
+ /9RZ/oQSWCJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaj62GwAKCRAADmhBGVaC
+ FStnEAC7yY90RR+51swttaC5mOaubkJYqO1I4jPEQAAWHZ/c1WuRZEqI4ZOxPjyr53yVCcIPKZb
+ AcHsxDa8rEVEJJ42wnQD8ZCbWmR7bWzsnnvWpKFY3x7YHr880rQkeoV7eidN3OO00HuxkXm0efP
+ l1zYwMKck2CWvUufT1xEBYpUhBnyTQslkUubI5Xo0y1zaY3n4PezI8nRdYtvDtqRF9y7JrjRNi4
+ 8vXLfs7D4a4qHkKgMXeUN0H3scXje+houpT/NhF2PJ1YDqwoJ8oR9Wc7QLyC8kKLvr5B5vcqO+V
+ rmZitcCo60OOofvOPom3ZCSJCbUNky4bbgzNtHHHxoixUpzEMIO0AvrmRNawIS1DUHVEN7klCX1
+ 7xMqtpWYvZUQMHHUpFkskNDW7jrZW9JbFbPuxjGxTfxUROxi9QY3UVwj2IBM/Uz5aYhEAxZbRlt
+ J5moK+GMe1PzKX6aYJdgjGuq+/iQVdZUqAYIEf4TrhcGXckqRt+SbdvF/8iVB5Xi8LmF37bRtGb
+ nVpFPa8tJp4HFRM0WQCeAMx//zOwQW4QNJYuxtuOW7cRw5i8rO6RrEcwkD7R+XsfQDQMt9dqxAV
+ 8Kftist3Zbeo72g5TGl6mXazm/MoRYdw6vY2jPPNjLzq0E4ryHEUw4hE/WLy+qszETMCh+gwZeh
+ EkiQSI7fgi3ZSnA==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] sendfile09: skip on native 32-bit kernels
+Subject: [LTP] [PATCH] ioctl10: fix the sscanf() call to handle 64-bit inode
+ on 32-bit arch
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,20 +87,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-MIME-Version: 1.0
+From: Jeff Layton via ltp <ltp@lists.linux.it>
+Reply-To: Jeff Layton <jlayton@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Jeff Layton <jlayton@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+This test started failing recently on arm32, when we switched the
+kernel to displaying the full 64-bit inode number in the maps file.
+Change the testcase to allow for a full 64-bit inode number on all
+arches. The value it's compared to is already 64-bits, so widening
+this field is all that is necessary.
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+Reported-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+ testcases/kernel/syscalls/ioctl/ioctl10.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl10.c b/testcases/kernel/syscalls/ioctl/ioctl10.c
+index b668c9e93889..d7e40f3c8643 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl10.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl10.c
+@@ -35,7 +35,7 @@ struct map_entry {
+ 	unsigned long vm_pgoff;
+ 	unsigned int vm_major;
+ 	unsigned int vm_minor;
+-	unsigned long vm_inode;
++	uint64_t vm_inode;
+ 	char vm_name[256];
+ 	unsigned int vm_flags;
+ };
+@@ -68,7 +68,7 @@ static void parse_maps_file(const char *filename, const char *keyword, struct ma
+ 
+ 	while (fgets(line, sizeof(line), fp) != NULL) {
+ 		if (fnmatch(keyword, line, 0) == 0) {
+-			if (sscanf(line, "%lx-%lx %s %lx %x:%x %lu %s",
++			if (sscanf(line, "%lx-%lx %s %lx %x:%x %llu %s",
+ 						&entry->vm_start, &entry->vm_end, entry->vm_flags_str,
+ 						&entry->vm_pgoff, &entry->vm_major, &entry->vm_minor,
+ 						&entry->vm_inode, entry->vm_name) < 7)
+
+---
+base-commit: 534222c4f3908e9642f913399e37a66fdd266bbe
+change-id: 20260626-master-55d29494ba06
+
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
