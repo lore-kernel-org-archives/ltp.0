@@ -4,151 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 342B7C43458
-	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 05:19:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C708CC43458
+	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 07:17:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782803826; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=gg4NMFsVZjaqmHja8Ji1kBafOTs6Dqs8cBLDSjVZjWo=;
+ b=nbjaUmqkn39Hw3mXwK/CJqmhEC8KN43YcMhcSaQZ0BQe7R/st1o1LucygiSUIMpgHZw5r
+ If7l20HCEidm68spI3FpgJHBL6wCryWq/YKZEvm+8w9QXrrJCNwKYGT8IKRrcje7K50hIBQ
+ sUSi/ORi7A/YvQIvEABN17hNBM/V0/E=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A8A153E4ABE
-	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 07:19:33 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 353A63E4AF1
+	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 09:17:06 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ADD263C2780
- for <ltp@lists.linux.it>; Tue, 30 Jun 2026 07:19:18 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 301C83C8412
+ for <ltp@lists.linux.it>; Tue, 30 Jun 2026 09:16:44 +0200 (CEST)
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com
+ [IPv6:2607:f8b0:4864:20::44a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0C74D1A0109A
- for <ltp@lists.linux.it>; Tue, 30 Jun 2026 07:19:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1782796757; x=1814332757;
- h=date:from:to:cc:subject:message-id:references:
- in-reply-to:mime-version;
- bh=xoZpO3Nn9Xz6NEookp+SLXEVkAGySq94mDDdZS9j5mU=;
- b=SwYzTw3deMS1Qjtv6tQKp+2xUFjf+Tv2Yk8pUs0US39KL+a2Vnr3azvS
- GWecVd4SBAh8RrhIEhcmx5FhXhF4WwxGoxa/OsuT0tvYIx94wZB1xCx3f
- 2Wckeccc1mTYbMwVVv1+gtk52Yzyiq/vnyF3YNa3lfcUpriN6sJFdfXnu
- DSY0CRNKR8y/doPc7sTOCpt2z/6zmbPfD9RfNXcJPZ6ZpUBS1WYquThmJ
- WVIWEGA/6dAGhMyWsGz7gXjaO1AkTM+j8fIf/5ExAd7/YQuUvS1+zy5qL
- W0Ot6BICNdVetxbi1Yc/5H9s3aHS4RzEoH9sQRDeum41L+2y71MEMsjke Q==;
-X-CSE-ConnectionGUID: wlQB5qHuQZ2+TVNVuc2ZVw==
-X-CSE-MsgGUID: NkPTaedKTjeowcz83RBXyw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11832"; a="94883747"
-X-IronPort-AV: E=Sophos;i="6.24,233,1774335600"; d="scan'208";a="94883747"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
- by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Jun 2026 22:19:11 -0700
-X-CSE-ConnectionGUID: PXLBMhfpTUSYlrcYMLPCBQ==
-X-CSE-MsgGUID: yhdxkHjMQGyLdNzlT+MuRQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,233,1774335600"; d="scan'208";a="252304937"
-Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
- by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Jun 2026 22:19:11 -0700
-Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.43; Mon, 29 Jun 2026 22:19:10 -0700
-Received: from ORSEDG903.ED.cps.intel.com (10.7.248.13) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.43 via Frontend Transport; Mon, 29 Jun 2026 22:19:10 -0700
-Received: from PH8PR06CU001.outbound.protection.outlook.com (40.107.209.41) by
- edgegateway.intel.com (134.134.137.113) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.43; Mon, 29 Jun 2026 22:19:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=loWwHxlnluw0x0QpSSrfwlWDzNpyvQ6GMuEjOq9AZgV7qMwbf5Qowzpzu11YymvpN6fHLa2O1jO/7kcCrFknI++B6f36NdOPFHZVPOOX5K1xlwvcxw3JMNDRrU/kDrBnXl5wTVFqeqFqL4IColVpY2qJEjI6qVuxpdSIEZtrKSIG5rzn7bSRI5qOH/5pVENc7BZS9esockmYzJPX4IxQfgddRBM2g5RhuKCocs4M1TrZuCnbhB5LPi/Dt+M+UdAusMH4WMHLrXBxCEA97cWNR2AoJ/wu4VBauzch2EvN5G8hVVGw5cDDykaDB3gbGF/+oqxJOs4DKP5yGL5iXemVTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ieSHzdnRi3grpeGmjHj1k5KnI0IKjvLLfrGQo3EaKpw=;
- b=xnhdF4OT3/5RMzGyc9kRpq9Nsy0p8rd/4yU2eojjbcye1vka+bh8YVvy+1oxWVReNPjlBrzMeftQeOKqCQJ+McjfrsU8Qsc98Ahfq5CO+JQoyOZv6ltH2WpfM469YuBfEOwQL7Ap8p53YpOC7m47PRvEr4UHYzw9fml4E9HI6xLfm97Id3Efl8lItJAjz9Dll6LVqLr2QEww7JR/KnCkfzay10VW/mST02JAyYJ7PbWAl19oHd+0CqU+ZwBxCZKm6AytC8EQkMZjUQHDs9j02qqJMrkEAfVsE8mAGNo0ZPSkPCEd+Chjq+1puNpQnz9gZ6JVu1dylmEufaOzlcAP+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB5832.namprd11.prod.outlook.com (2603:10b6:510:141::7)
- by PH0PR11MB5078.namprd11.prod.outlook.com (2603:10b6:510:3e::10)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.159.19; Tue, 30 Jun
- 2026 05:19:03 +0000
-Received: from PH0PR11MB5832.namprd11.prod.outlook.com
- ([fe80::106e:78dd:4c96:d707]) by PH0PR11MB5832.namprd11.prod.outlook.com
- ([fe80::106e:78dd:4c96:d707%5]) with mapi id 15.21.0159.018; Tue, 30 Jun 2026
- 05:19:03 +0000
-Date: Tue, 30 Jun 2026 13:18:54 +0800
-From: Oliver Sang <oliver.sang@intel.com>
-To: Jan Kara <jack@suse.cz>
-Message-ID: <akNRvmJdCKALZbo6@xsang-OptiPlex-9020>
-References: <202606291514.594c4370-lkp@intel.com>
- <qvbzvyoqab7c4g6jh2rezvdemqed7omco4qgvdq3elwbrlaffn@thrhz2uqtgqt>
-Content-Disposition: inline
-In-Reply-To: <qvbzvyoqab7c4g6jh2rezvdemqed7omco4qgvdq3elwbrlaffn@thrhz2uqtgqt>
-X-ClientProxiedBy: SI2P153CA0029.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:190::16) To PH0PR11MB5832.namprd11.prod.outlook.com
- (2603:10b6:510:141::7)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB5832:EE_|PH0PR11MB5078:EE_
-X-MS-Office365-Filtering-Correlation-Id: f67042e4-3a55-4563-95bf-08ded66718bc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
- ARA:13230040|366016|376014|23010399003|1800799024|11063799006|22082099003|18002099003|56012099006|4143699003;
-X-Microsoft-Antispam-Message-Info: 8ubpTWR+EozEXBAL9QwcbLJwnnWiXO+bxMOuVRlUYMb83yWJ7o4+JJFf07/vVduPjeFHeB0iyOSY7ukOdkWmi+4jE3/rF2mQxqxz/mi8pG6kWn5zOuk6MP82sF7jN6mpOmSHDAZ3qBRspm8q2dSF36QRxsIj7uTUTMdlDjrrfy56Vy92lFhCGWWEseLo4TsQ62iqxV70uH9+9xNgZJf20R+PZfiR/yQkpzIAIqy0eAjxAD6NW/hZ7xnCOvgQJ7BFluzux8HXGZtWk9OrnHsQ0m7WSPK51P3OuWNcw42C2EfKxNXCQKdQnJoIzmQnx1YaYBtHFEGHpQ6It6DyOFkv35WecsavG+B1DPWYP2QGmK5zg+imDYch/8+GUlEKADTHdgVXwhk3ibaW9Ltdt173AJTZucUEXB1Uj6q/BeLzzrk3A7JVJBuPFdJlNqqrP5prEjH/xRjRr9slAGrJ7SjM2s8+qNnetVH7Lh4bZUS8857/4F1Yxg6FYdRXZxlqhD1T8A20185rJPXQ288TqBiiadvvqnJuGYY8ibIhqZu/N2IFTwPYULIkslbk5GPs0e2ziiwGP/fPHgWx+zUAqcL1k64V8biRB3tebpl/7swvYWUcRWgVtNcfcH6l5XDeSL1Bmvxj1WXKQSRrDUNV7Lu/6VWApmjGWjZ2irr9lq6yjhE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:PH0PR11MB5832.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230040)(366016)(376014)(23010399003)(1800799024)(11063799006)(22082099003)(18002099003)(56012099006)(4143699003);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NsFE26PWJ4mayiSR+0pp4i1NZNaudzR3pMpPVIgt2Gjr/tT2VPtNtO1o0uE/?=
- =?us-ascii?Q?HnJrjnZbSHdDY2lhuw+A3yIem04K4DhIpQhT3kNoAE2hPYdJOyZRTIrNGtFu?=
- =?us-ascii?Q?/uCHLM2QAQI4WwXfe8aSSS2cDyvY94Zku2uo3gOQ+wTUfcQSDMIE34rDgWTL?=
- =?us-ascii?Q?678k+egWyY9YBqyAk+pKrn8WWfsnYESTP5wAAqXpse/NZnYQ4m2VVawE7akR?=
- =?us-ascii?Q?igX770Z3PP+fgYhXCwoMuRvN6+A1HypEO4F/gltDVdeWGSpNJUddGQJaYbhL?=
- =?us-ascii?Q?ijafMH8lAfTg3bAqS1ddE1zIGF9xZInGEo/9h+yPJs4bbSpQbO15beYXuAPY?=
- =?us-ascii?Q?IE6UeJ3TmpdKPFJXH7XGPu4kk+NwuSW32SReNOX7qsrPuLvL0IBQTb5hyqpL?=
- =?us-ascii?Q?YrFKiXTZnsDEeDsKwS7Yg4vTKgokhpDoDEf3QxyE/D547ZsmAE44HS9YOc8d?=
- =?us-ascii?Q?NmmRum1OxYc5Y7BdvjFJiqIFgviqUHd9BTxT8mVBoCxmmPNDTnRS67Zw+koC?=
- =?us-ascii?Q?9opxqa4NFgiMZFQCr6Xzg2lj5n5pgc+UPHk+sHh8dEhY57/W8SJ19aidHnuG?=
- =?us-ascii?Q?RLmpKXchbmMrSWiHoFNvuR7+v1yehICcxOvzZ+LL+h8QXrvOEHJQCimfvAnk?=
- =?us-ascii?Q?uAEUv7i3C4lp6sEG/CRMoNMbGGV0TYJKodyBOAblYWE4SR1o6MZzgNL1we9v?=
- =?us-ascii?Q?SJdMcp6sMeMdAw6aL88gix0UifxCSfDpJviGJTbIzzIVx5RbK5P/gaSijxtI?=
- =?us-ascii?Q?dYmMSWipQzDPSDr/HSCyOF0T6WrJL80IDJ0DQtU7S0B6RSXyHYSnYY/ncvhX?=
- =?us-ascii?Q?DWOW4wnqfo7+uxHjDjE41TXMf6TKYVoFf2HBbcRd5Ozefk1r3y0GeNsbAZsu?=
- =?us-ascii?Q?n3WP8AYay2q3zxIEVddJtYZy5M9TmkpXkgU9f2dxOS+Y67J+Zvug0nlthWA4?=
- =?us-ascii?Q?mnQh7p0To7EHFMxdPuXzVgQ8OFG6qB0LZHmSkc44pP1Z6yXYL+r6U57m4EeW?=
- =?us-ascii?Q?Na8VLgZtTPk8ODMqFOHc789W+MkElzKwjPQ6fCcbe9LrBKGKOQt5uCXK16Ub?=
- =?us-ascii?Q?WL7XR9c61sRXHW0FOso+iapuzvBtjRaGUUlZN/w5OHPm4V7kjE14dldJN2rF?=
- =?us-ascii?Q?ilfNohzRpWEcfY4j0dqWxI6FAWMKzMswfurCB6KFENEHk1FtnCHUALbGU9K6?=
- =?us-ascii?Q?S9EZkVcZ36cEAeUVLEd3WIJaCtJZ1swM4+oTWvf1DuYK5zy5eWDKf/UlV4U7?=
- =?us-ascii?Q?8fpsDjtuyRoaUsor8EhodzZ53Pc7fd0y8BQtMh2GDfp7lepiYfztS5VkBwN/?=
- =?us-ascii?Q?n/KGLagXRSlxAmIz12XRLNf4Dv673Kf//2VdjQyF9Zelf5GfEve0RO53xwhB?=
- =?us-ascii?Q?EeHjwl3kGsev0XpQej4O/uloTuQXD/Euplm4ijeuSwYtp8UHv+TUNtho+0xG?=
- =?us-ascii?Q?5qCKI8iHxwhQ0byXx+XJbNo20E/K50ckkj8rmPgVgGsb91KHw5DVTpHw5Tu3?=
- =?us-ascii?Q?2ySzmNlZd4twRkMfOcHqle3IOdpIqOiwLzbmr+u7XkXn/fxlPF+XE0brWKg8?=
- =?us-ascii?Q?wRWCvG66xia9ZUE5pcvTFdSaengR/K9W1JkcSsxYNZAqA/YEzUUZ5yYqhPqG?=
- =?us-ascii?Q?PIO9usIRigcVA2sqyau9HDXiyqHRpdD6XG5Pz+VCcUf4Df5lg/dGU3rQQRgB?=
- =?us-ascii?Q?Oes/DXNAo/CjKhG2deZ1lDDKqzbUBpCseUNIzeSdQXJY46jw9sTFHDWSO5jw?=
- =?us-ascii?Q?QLg3DK4CUg=3D=3D?=
-X-Exchange-RoutingPolicyChecked: N1+eFOuru1N7+o5kw0UaRcJhwe33zVTL61hoGte4D15qfvzYOfFt46wy1/RCDRmE2aGg2RDYaTGmRd/Wi6YNsNCbGm7zfypRl07n3qDJVQHceeg2t5IEC/CueY2lQuu1kNp6Lo5lO28xdiWAxLsm4SBd4JLkksMi4dSrEe09cVRAeMQyHV3ULlkyZI+pE3J4QXsLP3yL9POIe/EcPZwWv5gkMcmF7JpwimsijuYL9xvMkaPoYF4/G7Ql2V5MpU2XolPBp4ub+CSZstt1ZihgWkoH+K3ERswV1zzoNieZszpAjrFyGdSfvZWddddbw4AiZWgN1CWEqx84TQYFA9u9wA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: f67042e4-3a55-4563-95bf-08ded66718bc
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5832.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2026 05:19:02.6699 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4wrQgcNkf7W6SB/Sc0Ac9SH2B4aobPVV+lK5JNZcSl/9A2WQNI119LyQ/EKmkW9UUpcWejJwHY6+qhdL7RAYYw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5078
-X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EE5DE1000DC7
+ for <ltp@lists.linux.it>; Tue, 30 Jun 2026 09:16:43 +0200 (CEST)
+Received: by mail-pf1-x44a.google.com with SMTP id
+ d2e1a72fcca58-845c6ab4975so2851279b3a.2
+ for <ltp@lists.linux.it>; Tue, 30 Jun 2026 00:16:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20251104; t=1782803802; x=1783408602; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=t2hVE1BjgAocto56RxolWKgNdQh9SOWtUNLm904E0bk=;
+ b=qUjHz6IX/vkEOsGH3NKT4gxgDH/lxxi92kNpi1XQHcEZ3PlG/1f+1JDdlXEjnf05Ve
+ ggvF07NV6mlobsZrJ7k4vPe2oEaidJdMgmZDvd2lLaMtkMsCR6qhPEF/Opo1lpcTpfk8
+ slkILQvnRcNRv5i+Wh0++G1BSrxdkYFHEEPG3mMedt8dFmKwmwyFrVmVcr7BjL1DHcvv
+ 1QUGlsjF7LN+On/oEOSIct6Ijc+ZYEd9lVkxW4aGqquOuIv+xuSPB5TNIzj+e0WQ2e4G
+ OfGQ4B60gh0TpOz3h8ikJyqBSKhnzxkOhtSKs8rtum+PCTv7Di5DZCz9MEfezgNViutW
+ zKcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1782803802; x=1783408602;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=t2hVE1BjgAocto56RxolWKgNdQh9SOWtUNLm904E0bk=;
+ b=mThJQfHNwLACUVwWbVqNkcA+KJrHVDVPWrFuJEm+eujsNGXofWivyQymots/vK5jZS
+ dCY8WgBZvDDoC+Rlhr11XtuucPDyn71N6Dsv0yqOD3E2a0vn9lFWnSRhvnSCFsdPH71c
+ M6SUSJN8qndjs9rr5QxJMVsLmDItkIbodA+0JRUhdmhOP1fITjxnvwKHxxrS2Oyr9uHq
+ 3XrwVOYwWIZyVcdpDvebht3u47lKKz9eAzHkUhG9JSrHkpz7RcB+wHFHje+f3RaARBNs
+ KyUT8wFhV1sRpfGSE+nKdkoYTFA6TTn+r7NAwJTn4EzC0jk62ZV2hdoTh9liKOSUKNb4
+ qwrQ==
+X-Gm-Message-State: AOJu0Yy3VZ9O44nhBnGIbKdLd7BCONTkpS69sNJcnMancC+ecn/u/5HZ
+ pSKXIftHnPxJAW+mwOn4bscEFgpzC/kQQXrEp2pAZUzK80PDTvaaL/2p2P/wW/97YrZ13j6qeR7
+ Ix/0KPOiJ9MEt53FQOHGbkjjlPjMUVllBG3oI6zgayLQTmQFdkXWHL3tmYrtV+p/LnmN0u4aH+I
+ 5G/n0f8LJbDPufxwocK0CU5unfeg==
+X-Received: from pfbgs14.prod.google.com
+ ([2002:a05:6a00:4d8e:b0:845:b941:bc97])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a00:2e15:b0:847:8650:69c7
+ with SMTP id d2e1a72fcca58-8479f19f2b9mr2180660b3a.21.1782803801798; Tue, 30
+ Jun 2026 00:16:41 -0700 (PDT)
+Date: Tue, 30 Jun 2026 07:16:39 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.55.0.rc0.799.gd6f94ed593-goog
+Message-ID: <20260630071639.2248082-1-wakel@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [linus:master] [fanotify] 82c6dd2047: ltp.fanotify21.fail
+Subject: [LTP] [PATCH] tst_test.sh: Replace GNU word boundary \b with \< in
+ grep
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -160,29 +86,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Christian Brauner <brauner@kernel.org>, lkp@intel.com,
- linux-kernel@vger.kernel.org, AnonymeMeow <anonymemeow@gmail.com>,
- linux-fsdevel@vger.kernel.org, oliver.sang@intel.com, oe-lkp@lists.linux.dev,
- ltp@lists.linux.it
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: ttritton@google.com, Wake Liu <wakel@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-hi, Jan Kara,
+From: Terence Tritton <ttritton@google.com>
 
-On Mon, Jun 29, 2026 at 11:36:25AM +0200, Jan Kara wrote:
-> On Mon 29-06-26 16:45:58, kernel test robot wrote:
-> > kernel test robot noticed "ltp.fanotify21.fail" on:
-> > 
-> > commit: 82c6dd20479bb6a9625e1d63a650c3be8865e2db ("fanotify: allow reporting pidfds for reaped tasks")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> FWIW this is expected failure. Patch to fix fanotify21 to accept success
-> in this test was submitted to LTP.
+The regex word boundary extension '\b' is a GNU extension and is not
+supported by Toybox and lightweight POSIX regex implementations
+(such as Bionic libc), causing grep to fail with:
 
-thanks a lot for information!
+    grep: bad regex '^[^#]*\bTST_': trailing backslash (\)
 
+Replace '\b' with '\<' to ensure shell tests run correctly on
+lightweight environments such as Android (Toybox).
+
+Signed-off-by: Terence Tritton <ttritton@google.com>
+Co-developed-by: Wake Liu <wakel@google.com>
+Signed-off-by: Wake Liu <wakel@google.com>
+---
+ testcases/lib/tst_test.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 1234567..89abcdef 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -679,7 +679,7 @@ tst_run()
+ 	local ret
+
+ 	if [ -n "$TST_TEST_PATH" ]; then
+-		for _tst_i in $(grep '^[^#]*\bTST_' "$TST_TEST_PATH" | sed "s/.*TST_//; s/$_tst_pattern//"); do
++		for _tst_i in $(grep '^[^#]*\<TST_' "$TST_TEST_PATH" | sed "s/.*TST_//; s/$_tst_pattern//"); do
+ 			case "$_tst_i" in
+ 			ALL_FILESYSTEMS|DISABLE_APPARMOR|DISABLE_SELINUX);;
+ 			SETUP|CLEANUP|TESTFUNC|ID|CNT|MIN_KVER);;
+@@ -701,7 +701,7 @@ tst_run()
+ 			esac
+ 		done
+
+-		for _tst_i in $(grep '^[^#]*\b_tst_' "$TST_TEST_PATH" | sed "s/.*_tst_//; s/$_tst_pattern//"); do
++		for _tst_i in $(grep '^[^#]*\<_tst_' "$TST_TEST_PATH" | sed "s/.*_tst_//; s/$_tst_pattern//"); do
+ 			tst_res TWARN "Private variable or function _tst_$_tst_i used!"
+ 		done
+ 	fi
+-- 
+2.45.2
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
