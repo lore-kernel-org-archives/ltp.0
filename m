@@ -4,87 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CF1FC43458
-	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 18:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57B1CC43458
+	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 18:39:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1782842958; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=noRmb2AhCfHz42fMuWYjh7JbgTZEsaOAeZSt1IBa5vQ=;
- b=i+dvF9nhIjB6pkZv+D0OvydG9XBvHWRH+GhGzgsYU3LGXDYu0LAv1Y7PgjWzLV6DIUqcT
- KS27ycrFV3ERbMF+i3sjyTKc1GrEqkEBj4lIs4rn2wcP0k97o18LkIqdfgXuKGK64tRM2dT
- lb0QD2dBHtiz8u18SWA/oOyp+c1E/mA=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782844784; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=DJ4JoZa4T7JJZLMQhPqh8/8LbGPK1Zo8UJqbhbEtq/w=;
+ b=A9yMXjKX0mVq/e3LXeqqG8BIGdoHLCJTFydHBDo2Y4mHU/7wApwryRx+U+eVynCimFjtD
+ eSaba1WMZmzH/amhdK7SaTwEks1ZSjb1GQoAk0moRlwYiLDrFrE2XhM8i5UU2HVPU1+Cda7
+ Wc5OzKSHdh40OUKfigGORdgdVkQLWEs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7746C3E4E57
-	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 20:09:18 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 9ABE13E4D28
+	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 20:39:44 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 807173C73A9
- for <ltp@lists.linux.it>; Tue, 30 Jun 2026 20:08:57 +0200 (CEST)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
+ by picard.linux.it (Postfix) with ESMTPS id 3E7693C0F6F
+ for <ltp@lists.linux.it>; Tue, 30 Jun 2026 20:39:24 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C13CC1400114
- for <ltp@lists.linux.it>; Tue, 30 Jun 2026 20:08:56 +0200 (CEST)
-Received: by mail-wm1-x334.google.com with SMTP id
- 5b1f17b1804b1-493a54b80a5so41459125e9.2
- for <ltp@lists.linux.it>; Tue, 30 Jun 2026 11:08:56 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 56DBA2002AE
+ for <ltp@lists.linux.it>; Tue, 30 Jun 2026 20:39:24 +0200 (CEST)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-493ae59eca6so13529695e9.1
+ for <ltp@lists.linux.it>; Tue, 30 Jun 2026 11:39:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1782842936; x=1783447736; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=EhElogdM8zPuKktCJHmqHMkDU9SL5V/y9fn6ydOUf7c=;
- b=Xn06HH5dM/Cl8bF8uOfml6jevNDo7rJ1d/wAcSE7eJi+k5YIDLI04BAicS/373av4s
- Xep9+BryNFgOk0Lwl0OnI14vPjRZBOglPK+O8iqR4jSGLS6CpCB0aaub9+j9V/qqbJK5
- jkz5DoTww2Rx9JW3qH6z0UX/dz7anjaZWilwNXibcaC8ie0ODMux+H2t6ivdBB8Xqxkn
- CUbF9Qc5CF9dqeDycb1elj6UTk2QZjvl/PxVqz92mZhuHpTBo9/JIEVR9hIuV/DL9Ij9
- ePDdwEvMO9HfXyIuRSXMrqkIkYUC2l5NYb3ccIiz5N6YsLBuZJ/fGHGqxA992jrZzf/T
- X1uA==
+ d=suse.com; s=google; t=1782844764; x=1783449564; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:cc:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=+n3U5wwSeV0LoCh2u4qLjtm5KEl+PjXBcMSOv2cFD4s=;
+ b=ZCH4eh6XawLRf6PKYCx8BUzhycA/tNf3uczDFonBtSLBEUIMu1cWSIskBdKuOjbRKP
+ KbrNOrHFP2uGZE/VDm65u8sneUkBzgy1vsoqFdiat3QVbhF8+JlIKT10gDuMJu/6YX2h
+ iVBUSGbjB89oCye3VUY18FMrsZqhcTAXtwYxaFoZpVGNbdv3+Um0534QPrSoWqyS+O7m
+ 7PlIWUnKHUSyaF2WB499amP2GrWxDTbVnLDIgKAw4WYO7o4HdVYzAyU5TDy1ZLXX9qfw
+ tpOTZMmVNi4IvjBWehMS2fELbeo4BaxqXX+QHZIYHOiWzz6ay8vL24ehYRhZr8KX0D9g
+ m2eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782842936; x=1783447736;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=EhElogdM8zPuKktCJHmqHMkDU9SL5V/y9fn6ydOUf7c=;
- b=KzjX4k8haDvxDALtB+NrEM7bdBcEctCgFHiYjrOsAwjna/028dmd2A4p9gOYcs2LQx
- jNpdEt5S9JwbeXuTBNUIf30fCD3elnWle1JD0MYj06rQ3yfAI35ahoRXcZnZgkmneBPu
- VX4kERynGvQm8WX3QOl2rK2sHQ1P5gOPPBBsRvcsWgQfKtT62WetwxFE8WoWLJnyI5AF
- ERhrbvpdReFrFoebk8pQNL5yDdryoUP+EOHkH3R3kq/IMSBHXlTKVM0xNEPyd/kFPLlf
- Vux5TMMAd7+3TbhtVo2fuuTrr965xUwALNNANCVj8xJc8M5ZftMcPyg+gCIo+vKIr1af
- pkAQ==
-X-Gm-Message-State: AOJu0YxO0tleOdzSYJ3wQK/iYTFwTx80gJWmV08MP77uAf2ARhC9d2Op
- lXXXKoqT1/YX9hNpdr4ssRmak88Uy333PfV23p2Opgfi+0V2ZnJSaMH32zh5A77rqeTbSPo8EDQ
- MK/VhsRA=
-X-Gm-Gg: AfdE7ckXIPKukuosrsriLayDuibovwHr1Bsbs6JYKYOTWqcVcPZzg/OHPk1LqbmwoN0
- 7iAyPo9f49s0dgpizWajLp9uRo6QWjxez/p4FTRvjg1sTFHnimLpmoW2PjvM8DYvZiE6MrbOw7V
- qE5afRwEjtKdoklBGoRVBzdR+r5px/lT670rpBouhHyX1mXKPujYbl7qcClEvv75/Bm4pIpUO2o
- 6bExItvLMp4vkMfdPx6hLqWUIcpkrGTTNQ5gMv3Q0kysCMqOyBPfQOwlxuJqCNggJjOuZR/3i+k
- vQuBsX3tDljLFuURvsV11xH3QXcXEdz5SfVKTvJOQCcsvCC5eIjOfrFsITz77acHwhyZZolWEhz
- H68TXbkadgLwpv5UpNpcIvwE2ZYNWgU+IFACtS/IFVtmv/2+XO8LXQL+P1VaUUyAQAQL2kurdh+
- Y=
-X-Received: by 2002:a05:600c:3b24:b0:493:a88d:28d2 with SMTP id
- 5b1f17b1804b1-493b82aeaffmr75364735e9.24.1782842936123; 
- Tue, 30 Jun 2026 11:08:56 -0700 (PDT)
-Received: from localhost ([2a07:b241:1004:8300::1000])
+ d=1e100.net; s=20251104; t=1782844764; x=1783449564;
+ h=content-transfer-encoding:in-reply-to:from:cc:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=+n3U5wwSeV0LoCh2u4qLjtm5KEl+PjXBcMSOv2cFD4s=;
+ b=b5U0wa6Nmko5fs2t/L1A872SF3rCEvFaROzXApG++vGUsxWhMJSt+AuDF3YTDGQvCq
+ rIHQCgcYlqBR9G+66pgEBPBiX6V8JtI6RtHKkKHhumWdePN2glKWi7uk1Btz++OvTK3W
+ Q7DTpgtfQrE/SQSlO9195JWijUgWcITXDCedXbtUgevv9gid4tmaaQVU9OoQyDOSoXE+
+ L7wJQuycUU/R1KLaseAwEVkLfOxEIcsRMmnyMwGHyyV193rpc/jtbJaq3kh9QGBNssjZ
+ BMUvNIwQU8/fXjSTvXYI4WcRS6wUzvvUcEw8fFlZzeEFiywiTEFK+V56T4muiilbp+K2
+ 8Xtw==
+X-Gm-Message-State: AOJu0YzXPbMyHh25OIO8+QvC7IGbdmgJOAEhh530ZktMLzzPIaQ27Djs
+ FiWePNmblPef6745MOEaJRVEdF7t1rc2Z7E1BqPAleM0V/3QzhTtlRc/ONbvNNbq+5Y=
+X-Gm-Gg: AfdE7ckjX69cH1Y/dEmLWJKELoJav7/2dewoaPjEYv6erxTgByEnjXi1CwyirA8swfT
+ Aven5JCjOAQKvFt4qqJj7aW5adZunOcQhDUMgdXmJtk+adg0P8XUK9eICkgSoyLzeuszgGGzlwc
+ +THkXACfSIeKoq+tQNjlTv1uqG+GqMCHLHJjdg2v9sKnPssLr1i6tFM6wIN+WSpFjw6I/+C4zZw
+ ktwPt4KpgakASKypVpSz+QG3GXOt23Vqc/k6MWmDeXPsu5TNZixtNEA4qn1BXvZgM2zE6RToyWz
+ fo24j3Gmoo15Ijn9uATbemAEDAfo5cTgPMmyMBYj0+w9bzH5AKq9eXnB+pFcwzuZdcX1+2Rec9j
+ dzShaZlMC89w5CBZDcwIVAlvHZgfzCJMGcQg478BwTuoe6iyqx957dsPfcwxw6JZtFh8ai967JE
+ 6u2G2nDREabK+t4VXUjfFedeR1mm8x9vXZ8PSAFjSx
+X-Received: by 2002:a05:600c:3b24:b0:493:b729:3a9 with SMTP id
+ 5b1f17b1804b1-493b82bc0a8mr79468435e9.27.1782844763660; 
+ Tue, 30 Jun 2026 11:39:23 -0700 (PDT)
+Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47560effc81sm9858849f8f.0.2026.06.30.11.08.55
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 30 Jun 2026 11:08:55 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue, 30 Jun 2026 20:08:54 +0200
-Message-ID: <20260630180855.159467-1-avinesh.kumar@suse.com>
-X-Mailer: git-send-email 2.54.0
+ 5b1f17b1804b1-493bef183e7sm5625225e9.2.2026.06.30.11.39.21
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 30 Jun 2026 11:39:22 -0700 (PDT)
+Message-ID: <54a56eb9-a2c4-48be-be7c-9ab25e2dd1ef@suse.com>
+Date: Tue, 30 Jun 2026 20:39:20 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>
+References: <20260630170611.479639-1-pvorel@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20260630170611.479639-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] tst_security.sh: quote variables in selinux helper
- functions
+Subject: Re: [LTP] [PATCH 1/1] irqbalance01: TCONF on missing interrupts
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,51 +101,18 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Avinesh Kumar via ltp <ltp@lists.linux.it>
 Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Avinesh Kumar <avinesh.kumar@suse.com>
+Hi Petr,
 
-Quote variables in tst_disable_selinux() and tst_update_selinux_state()
-to follow shell quoting best practices.
+Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
 
-Fixes: cc9206e612b2 ("tst_security.sh: Use enforce toggle to trigger SELinux measurement")
-
-Suggested-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
----
- testcases/lib/tst_security.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/lib/tst_security.sh b/testcases/lib/tst_security.sh
-index 03b744fb3d42..a7dd9de63339 100644
---- a/testcases/lib/tst_security.sh
-+++ b/testcases/lib/tst_security.sh
-@@ -119,7 +119,7 @@ tst_disable_selinux()
- 
- 	local f="$(tst_get_enforce)"
- 
--	[ -f "$f" ] && echo 0 > $f
-+	[ -f "$f" ] && echo 0 > "$f"
- }
- 
- # Get SELinux directory path
-@@ -147,8 +147,8 @@ tst_update_selinux_state()
- 	[ -n "$dir" ] || return 1
- 
- 	# Toggle enforce to trigger SELinux state measurement
--	orig_val=$(cat $dir/enforce)
-+	orig_val=$(cat "$dir/enforce")
- 	val=$((1 - orig_val))
--	echo $val > $dir/enforce
--	echo $orig_val > $dir/enforce
-+	echo "$val" > "$dir/enforce"
-+	echo "$orig_val" > "$dir/enforce"
- }
--- 
-2.54.0
+Regards,
+Avinesh
 
 
 -- 
