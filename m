@@ -4,89 +4,151 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 311A6C43327
-	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 00:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1782779414; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=cxUSneijUIEql9TxYxxLszt4YLMD1krHGXGoL42Zjyc=;
- b=KfAGjhszLdQRuts1vd5fmn6E1YpBO7ylW6FuslTTjIMEN9uVk8+lhr+3VW5/Sxmmgr18F
- /Mcpf9NgWK7h+EmwxhxXG/qI7XoBZxJ8Qp8XSrFbxA7ewl7XlVleg/8H0U4bNwLXjUZ3sAi
- QtOVuiqbViJmhB/ssNyRoEPFu+pNOoY=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 342B7C43458
+	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 05:19:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0C4933E52A5
-	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 02:30:14 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id A8A153E4ABE
+	for <ltp@archiver.kernel.org>; Tue, 30 Jun 2026 07:19:33 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B67223E4EC3
- for <ltp@lists.linux.it>; Tue, 30 Jun 2026 02:29:53 +0200 (CEST)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id ADD263C2780
+ for <ltp@lists.linux.it>; Tue, 30 Jun 2026 07:19:18 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8FA031A00904
- for <ltp@lists.linux.it>; Tue, 30 Jun 2026 02:29:52 +0200 (CEST)
-Received: by mail-wm1-x32a.google.com with SMTP id
- 5b1f17b1804b1-4938d5f86f3so377265e9.1
- for <ltp@lists.linux.it>; Mon, 29 Jun 2026 17:29:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1782779392; x=1783384192; darn=lists.linux.it;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=z+I1kOohjrIOdC138xUwgCk5Xuy0wdp7c546cTlJwSk=;
- b=CDLvJ9Zmlrrg0ao/zHBs1C2f4nBa+RqtGHejIzLpurmF4fDmVaexrcpyfRO25UUj51
- UhxEH8KHoPPcO6NpBQlhVwIOnDnJQH2DHRFtYzAVIjFxKfsYvEK0E8swhf33Ue1IH0bH
- tjV5ZMenClzRagBnMS7emRjHYmKHNlQ/NfkKhA6a7itVotg9e9K3GvvewAEUjnncYt6T
- ///yeofO+9IN/W2zSCdYWF1RiHtKrn5iTtFlL+i+/6kdOnyBZrK6ZokaXcbQAt4Otc7X
- k5U7ZcH//Wt9e85U4X9c+kMb7fRUE7PM9BjBSPSUXw7+e9pps+dB8cksa8cSsRDyXvdk
- iD2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782779392; x=1783384192;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=z+I1kOohjrIOdC138xUwgCk5Xuy0wdp7c546cTlJwSk=;
- b=ryl3ai1vUHx+pmvYKt2I9OuTNLkiEz1w/nGkt/ZNtHVGlnwTZRwp+6a4TBFbEXElO2
- l8Qp7L8PnLU3ugsphh1QWN/FBPkckNSHHGtR4SeJaYO42jEX0O8pFgylFjf3CXuyt85A
- Qba70oUJTvHxh+9Wl77qaMx8U3KiWKBHVqdJ21bKp7gfOs7XvkGMLurr5mtHvVxJwLmA
- GeeNo1hUTrO8cPBnf9/MRmuFKA1TJuwhuIKZod1UDrm3gE9eu8mr032tt4MksdqTuPtb
- ff2kKJLunENySo1c4ti288yxU3Sv54+/yoiLQcEDq5eeZ3hkEXxFFKwX6k8YM+vrK5pi
- SbVg==
-X-Gm-Message-State: AOJu0YxhGFc9EQhrux3s/lenMJRHl1r15f1I0HrckpYqXnGnsfOXMZAK
- H9+du0c2+pU9rB3pvfo6/790j1PPbzUMFsa2iI62tzgkN8nOefP0e+OaV5HSAgllkXU3HU7bExO
- lB8g=
-X-Gm-Gg: AfdE7cnBY+m2LutHQw+69HjnfdpzDvOaqbhx8TBVUPPH7/AQL/30SCHrZtpIUPtxJZK
- CqHLsV5j+6rubJZKIKkE305Euo2SO3b6RrcfNcg4QAegFwKAUPV8EsxW0EHgCxnqaK8G+DimTVk
- VfX6+7wGh7HYdTHoDd1FvIQqqOPZwbajAJKJJNghzJaAedZC1HFlgukIEGgK8/P+sLWvT8Fps1A
- iUW8z1brMc4LHP2zB95ga1PGKzngEg9LGlF1TDotEd/5CU6EJPErMW0IZM4zyWRxmCbExgYRnE0
- y84rpoltGDViG6VsjwypxlSMa7FhpEvwV3vNwx7Ed83F1j4e2WYLRbIdPEGM51dhCeCXCYfVTYd
- 5JpPAQIhXLnXClUxuTh0Q5l11l7hExCDDR6i5JX6Wuq9Np8SjpuTxX0H9s4AOGWjLOu/MQnASfV
- E1hIINd1xKgepmuP/ZOuVbHtt0SgPOig==
-X-Received: by 2002:a05:600c:8519:b0:493:a43d:6a2e with SMTP id
- 5b1f17b1804b1-493b8cd7cd4mr14133045e9.8.1782779391945; 
- Mon, 29 Jun 2026 17:29:51 -0700 (PDT)
-Received: from autotest-wegao.qe.prg2.suse.org
- ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-493b8d0afacsm30292565e9.12.2026.06.29.17.29.51
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 29 Jun 2026 17:29:51 -0700 (PDT)
-Date: Tue, 30 Jun 2026 00:29:50 +0000
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <akMN_kOtke47w0-v@autotest-wegao.qe.prg2.suse.org>
-References: <20260629-invalid_syscalls-v1-1-6276034a35c5@suse.com>
-MIME-Version: 1.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0C74D1A0109A
+ for <ltp@lists.linux.it>; Tue, 30 Jun 2026 07:19:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1782796757; x=1814332757;
+ h=date:from:to:cc:subject:message-id:references:
+ in-reply-to:mime-version;
+ bh=xoZpO3Nn9Xz6NEookp+SLXEVkAGySq94mDDdZS9j5mU=;
+ b=SwYzTw3deMS1Qjtv6tQKp+2xUFjf+Tv2Yk8pUs0US39KL+a2Vnr3azvS
+ GWecVd4SBAh8RrhIEhcmx5FhXhF4WwxGoxa/OsuT0tvYIx94wZB1xCx3f
+ 2Wckeccc1mTYbMwVVv1+gtk52Yzyiq/vnyF3YNa3lfcUpriN6sJFdfXnu
+ DSY0CRNKR8y/doPc7sTOCpt2z/6zmbPfD9RfNXcJPZ6ZpUBS1WYquThmJ
+ WVIWEGA/6dAGhMyWsGz7gXjaO1AkTM+j8fIf/5ExAd7/YQuUvS1+zy5qL
+ W0Ot6BICNdVetxbi1Yc/5H9s3aHS4RzEoH9sQRDeum41L+2y71MEMsjke Q==;
+X-CSE-ConnectionGUID: wlQB5qHuQZ2+TVNVuc2ZVw==
+X-CSE-MsgGUID: NkPTaedKTjeowcz83RBXyw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11832"; a="94883747"
+X-IronPort-AV: E=Sophos;i="6.24,233,1774335600"; d="scan'208";a="94883747"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+ by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jun 2026 22:19:11 -0700
+X-CSE-ConnectionGUID: PXLBMhfpTUSYlrcYMLPCBQ==
+X-CSE-MsgGUID: yhdxkHjMQGyLdNzlT+MuRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,233,1774335600"; d="scan'208";a="252304937"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+ by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jun 2026 22:19:11 -0700
+Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.43; Mon, 29 Jun 2026 22:19:10 -0700
+Received: from ORSEDG903.ED.cps.intel.com (10.7.248.13) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.43 via Frontend Transport; Mon, 29 Jun 2026 22:19:10 -0700
+Received: from PH8PR06CU001.outbound.protection.outlook.com (40.107.209.41) by
+ edgegateway.intel.com (134.134.137.113) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.43; Mon, 29 Jun 2026 22:19:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=loWwHxlnluw0x0QpSSrfwlWDzNpyvQ6GMuEjOq9AZgV7qMwbf5Qowzpzu11YymvpN6fHLa2O1jO/7kcCrFknI++B6f36NdOPFHZVPOOX5K1xlwvcxw3JMNDRrU/kDrBnXl5wTVFqeqFqL4IColVpY2qJEjI6qVuxpdSIEZtrKSIG5rzn7bSRI5qOH/5pVENc7BZS9esockmYzJPX4IxQfgddRBM2g5RhuKCocs4M1TrZuCnbhB5LPi/Dt+M+UdAusMH4WMHLrXBxCEA97cWNR2AoJ/wu4VBauzch2EvN5G8hVVGw5cDDykaDB3gbGF/+oqxJOs4DKP5yGL5iXemVTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ieSHzdnRi3grpeGmjHj1k5KnI0IKjvLLfrGQo3EaKpw=;
+ b=xnhdF4OT3/5RMzGyc9kRpq9Nsy0p8rd/4yU2eojjbcye1vka+bh8YVvy+1oxWVReNPjlBrzMeftQeOKqCQJ+McjfrsU8Qsc98Ahfq5CO+JQoyOZv6ltH2WpfM469YuBfEOwQL7Ap8p53YpOC7m47PRvEr4UHYzw9fml4E9HI6xLfm97Id3Efl8lItJAjz9Dll6LVqLr2QEww7JR/KnCkfzay10VW/mST02JAyYJ7PbWAl19oHd+0CqU+ZwBxCZKm6AytC8EQkMZjUQHDs9j02qqJMrkEAfVsE8mAGNo0ZPSkPCEd+Chjq+1puNpQnz9gZ6JVu1dylmEufaOzlcAP+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB5832.namprd11.prod.outlook.com (2603:10b6:510:141::7)
+ by PH0PR11MB5078.namprd11.prod.outlook.com (2603:10b6:510:3e::10)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.159.19; Tue, 30 Jun
+ 2026 05:19:03 +0000
+Received: from PH0PR11MB5832.namprd11.prod.outlook.com
+ ([fe80::106e:78dd:4c96:d707]) by PH0PR11MB5832.namprd11.prod.outlook.com
+ ([fe80::106e:78dd:4c96:d707%5]) with mapi id 15.21.0159.018; Tue, 30 Jun 2026
+ 05:19:03 +0000
+Date: Tue, 30 Jun 2026 13:18:54 +0800
+From: Oliver Sang <oliver.sang@intel.com>
+To: Jan Kara <jack@suse.cz>
+Message-ID: <akNRvmJdCKALZbo6@xsang-OptiPlex-9020>
+References: <202606291514.594c4370-lkp@intel.com>
+ <qvbzvyoqab7c4g6jh2rezvdemqed7omco4qgvdq3elwbrlaffn@thrhz2uqtgqt>
 Content-Disposition: inline
-In-Reply-To: <20260629-invalid_syscalls-v1-1-6276034a35c5@suse.com>
+In-Reply-To: <qvbzvyoqab7c4g6jh2rezvdemqed7omco4qgvdq3elwbrlaffn@thrhz2uqtgqt>
+X-ClientProxiedBy: SI2P153CA0029.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:190::16) To PH0PR11MB5832.namprd11.prod.outlook.com
+ (2603:10b6:510:141::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5832:EE_|PH0PR11MB5078:EE_
+X-MS-Office365-Filtering-Correlation-Id: f67042e4-3a55-4563-95bf-08ded66718bc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+ ARA:13230040|366016|376014|23010399003|1800799024|11063799006|22082099003|18002099003|56012099006|4143699003;
+X-Microsoft-Antispam-Message-Info: 8ubpTWR+EozEXBAL9QwcbLJwnnWiXO+bxMOuVRlUYMb83yWJ7o4+JJFf07/vVduPjeFHeB0iyOSY7ukOdkWmi+4jE3/rF2mQxqxz/mi8pG6kWn5zOuk6MP82sF7jN6mpOmSHDAZ3qBRspm8q2dSF36QRxsIj7uTUTMdlDjrrfy56Vy92lFhCGWWEseLo4TsQ62iqxV70uH9+9xNgZJf20R+PZfiR/yQkpzIAIqy0eAjxAD6NW/hZ7xnCOvgQJ7BFluzux8HXGZtWk9OrnHsQ0m7WSPK51P3OuWNcw42C2EfKxNXCQKdQnJoIzmQnx1YaYBtHFEGHpQ6It6DyOFkv35WecsavG+B1DPWYP2QGmK5zg+imDYch/8+GUlEKADTHdgVXwhk3ibaW9Ltdt173AJTZucUEXB1Uj6q/BeLzzrk3A7JVJBuPFdJlNqqrP5prEjH/xRjRr9slAGrJ7SjM2s8+qNnetVH7Lh4bZUS8857/4F1Yxg6FYdRXZxlqhD1T8A20185rJPXQ288TqBiiadvvqnJuGYY8ibIhqZu/N2IFTwPYULIkslbk5GPs0e2ziiwGP/fPHgWx+zUAqcL1k64V8biRB3tebpl/7swvYWUcRWgVtNcfcH6l5XDeSL1Bmvxj1WXKQSRrDUNV7Lu/6VWApmjGWjZ2irr9lq6yjhE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:PH0PR11MB5832.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(366016)(376014)(23010399003)(1800799024)(11063799006)(22082099003)(18002099003)(56012099006)(4143699003);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NsFE26PWJ4mayiSR+0pp4i1NZNaudzR3pMpPVIgt2Gjr/tT2VPtNtO1o0uE/?=
+ =?us-ascii?Q?HnJrjnZbSHdDY2lhuw+A3yIem04K4DhIpQhT3kNoAE2hPYdJOyZRTIrNGtFu?=
+ =?us-ascii?Q?/uCHLM2QAQI4WwXfe8aSSS2cDyvY94Zku2uo3gOQ+wTUfcQSDMIE34rDgWTL?=
+ =?us-ascii?Q?678k+egWyY9YBqyAk+pKrn8WWfsnYESTP5wAAqXpse/NZnYQ4m2VVawE7akR?=
+ =?us-ascii?Q?igX770Z3PP+fgYhXCwoMuRvN6+A1HypEO4F/gltDVdeWGSpNJUddGQJaYbhL?=
+ =?us-ascii?Q?ijafMH8lAfTg3bAqS1ddE1zIGF9xZInGEo/9h+yPJs4bbSpQbO15beYXuAPY?=
+ =?us-ascii?Q?IE6UeJ3TmpdKPFJXH7XGPu4kk+NwuSW32SReNOX7qsrPuLvL0IBQTb5hyqpL?=
+ =?us-ascii?Q?YrFKiXTZnsDEeDsKwS7Yg4vTKgokhpDoDEf3QxyE/D547ZsmAE44HS9YOc8d?=
+ =?us-ascii?Q?NmmRum1OxYc5Y7BdvjFJiqIFgviqUHd9BTxT8mVBoCxmmPNDTnRS67Zw+koC?=
+ =?us-ascii?Q?9opxqa4NFgiMZFQCr6Xzg2lj5n5pgc+UPHk+sHh8dEhY57/W8SJ19aidHnuG?=
+ =?us-ascii?Q?RLmpKXchbmMrSWiHoFNvuR7+v1yehICcxOvzZ+LL+h8QXrvOEHJQCimfvAnk?=
+ =?us-ascii?Q?uAEUv7i3C4lp6sEG/CRMoNMbGGV0TYJKodyBOAblYWE4SR1o6MZzgNL1we9v?=
+ =?us-ascii?Q?SJdMcp6sMeMdAw6aL88gix0UifxCSfDpJviGJTbIzzIVx5RbK5P/gaSijxtI?=
+ =?us-ascii?Q?dYmMSWipQzDPSDr/HSCyOF0T6WrJL80IDJ0DQtU7S0B6RSXyHYSnYY/ncvhX?=
+ =?us-ascii?Q?DWOW4wnqfo7+uxHjDjE41TXMf6TKYVoFf2HBbcRd5Ozefk1r3y0GeNsbAZsu?=
+ =?us-ascii?Q?n3WP8AYay2q3zxIEVddJtYZy5M9TmkpXkgU9f2dxOS+Y67J+Zvug0nlthWA4?=
+ =?us-ascii?Q?mnQh7p0To7EHFMxdPuXzVgQ8OFG6qB0LZHmSkc44pP1Z6yXYL+r6U57m4EeW?=
+ =?us-ascii?Q?Na8VLgZtTPk8ODMqFOHc789W+MkElzKwjPQ6fCcbe9LrBKGKOQt5uCXK16Ub?=
+ =?us-ascii?Q?WL7XR9c61sRXHW0FOso+iapuzvBtjRaGUUlZN/w5OHPm4V7kjE14dldJN2rF?=
+ =?us-ascii?Q?ilfNohzRpWEcfY4j0dqWxI6FAWMKzMswfurCB6KFENEHk1FtnCHUALbGU9K6?=
+ =?us-ascii?Q?S9EZkVcZ36cEAeUVLEd3WIJaCtJZ1swM4+oTWvf1DuYK5zy5eWDKf/UlV4U7?=
+ =?us-ascii?Q?8fpsDjtuyRoaUsor8EhodzZ53Pc7fd0y8BQtMh2GDfp7lepiYfztS5VkBwN/?=
+ =?us-ascii?Q?n/KGLagXRSlxAmIz12XRLNf4Dv673Kf//2VdjQyF9Zelf5GfEve0RO53xwhB?=
+ =?us-ascii?Q?EeHjwl3kGsev0XpQej4O/uloTuQXD/Euplm4ijeuSwYtp8UHv+TUNtho+0xG?=
+ =?us-ascii?Q?5qCKI8iHxwhQ0byXx+XJbNo20E/K50ckkj8rmPgVgGsb91KHw5DVTpHw5Tu3?=
+ =?us-ascii?Q?2ySzmNlZd4twRkMfOcHqle3IOdpIqOiwLzbmr+u7XkXn/fxlPF+XE0brWKg8?=
+ =?us-ascii?Q?wRWCvG66xia9ZUE5pcvTFdSaengR/K9W1JkcSsxYNZAqA/YEzUUZ5yYqhPqG?=
+ =?us-ascii?Q?PIO9usIRigcVA2sqyau9HDXiyqHRpdD6XG5Pz+VCcUf4Df5lg/dGU3rQQRgB?=
+ =?us-ascii?Q?Oes/DXNAo/CjKhG2deZ1lDDKqzbUBpCseUNIzeSdQXJY46jw9sTFHDWSO5jw?=
+ =?us-ascii?Q?QLg3DK4CUg=3D=3D?=
+X-Exchange-RoutingPolicyChecked: N1+eFOuru1N7+o5kw0UaRcJhwe33zVTL61hoGte4D15qfvzYOfFt46wy1/RCDRmE2aGg2RDYaTGmRd/Wi6YNsNCbGm7zfypRl07n3qDJVQHceeg2t5IEC/CueY2lQuu1kNp6Lo5lO28xdiWAxLsm4SBd4JLkksMi4dSrEe09cVRAeMQyHV3ULlkyZI+pE3J4QXsLP3yL9POIe/EcPZwWv5gkMcmF7JpwimsijuYL9xvMkaPoYF4/G7Ql2V5MpU2XolPBp4ub+CSZstt1ZihgWkoH+K3ERswV1zzoNieZszpAjrFyGdSfvZWddddbw4AiZWgN1CWEqx84TQYFA9u9wA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: f67042e4-3a55-4563-95bf-08ded66718bc
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5832.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2026 05:19:02.6699 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4wrQgcNkf7W6SB/Sc0Ac9SH2B4aobPVV+lK5JNZcSl/9A2WQNI119LyQ/EKmkW9UUpcWejJwHY6+qhdL7RAYYw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5078
+X-OriginatorOrg: intel.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscall02: add invalid syscall number test
+Subject: Re: [LTP] [linus:master] [fanotify] 82c6dd2047: ltp.fanotify21.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,118 +160,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: Christian Brauner <brauner@kernel.org>, lkp@intel.com,
+ linux-kernel@vger.kernel.org, AnonymeMeow <anonymemeow@gmail.com>,
+ linux-fsdevel@vger.kernel.org, oliver.sang@intel.com, oe-lkp@lists.linux.dev,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Jun 29, 2026 at 04:03:09PM +0200, Andrea Cervesato wrote:
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-> Add a test verifying that syscall() returns ENOSYS when called with
-> unimplemented syscall numbers. The chosen numbers stay above the syscall
-> table and below the architecture-specific private ranges, so they are
-> reliably invalid on every supported architecture.
-> 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  runtest/syscalls                              |  1 +
->  testcases/kernel/syscalls/syscall/.gitignore  |  1 +
->  testcases/kernel/syscalls/syscall/syscall02.c | 47 +++++++++++++++++++++++++++
->  3 files changed, 49 insertions(+)
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index a021c79da49d4157c33187caed2dd3f0483759e0..8a777e61da1af59ba694e0bc5b5d92bb1d63754a 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1678,6 +1678,7 @@ sync_file_range01 sync_file_range01
->  sync_file_range02 sync_file_range02
->  
->  syscall01 syscall01
-> +syscall02 syscall02
->  
->  sysconf01 sysconf01
->  
-> diff --git a/testcases/kernel/syscalls/syscall/.gitignore b/testcases/kernel/syscalls/syscall/.gitignore
-> index 74a081e40cb564e874e0f81478d3d1a0e95b6df4..fed1d81079450a7442023447285cd112924f7a10 100644
-> --- a/testcases/kernel/syscalls/syscall/.gitignore
-> +++ b/testcases/kernel/syscalls/syscall/.gitignore
-> @@ -1 +1,2 @@
->  /syscall01
-> +/syscall02
-> diff --git a/testcases/kernel/syscalls/syscall/syscall02.c b/testcases/kernel/syscalls/syscall/syscall02.c
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..3bd9fa8cdcca257e03b358749ee7a2b676d8720d
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/syscall/syscall02.c
-> @@ -0,0 +1,47 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
-> + */
-> +
-> +/*\
-> + * Verify that :manpage:`syscall(2)` fails with ENOSYS when invoked with
-> + * invalid syscall numbers.
-> + *
-> + * The syscall number is dispatched as an unsigned value on Linux. A value is
-> + * reliably unimplemented on every supported architecture when it is:
-> + *
-> + * - above the syscall table
-> + * - below the architecture-specific private syscall ranges (e.g. ARM's
-> + *   0x0f0000 base)
-> + * - without the x32 ABI bit (0x40000000) set
-> + *
-> + * Such a number is routed to sys_ni_syscall and returns ENOSYS.
-> + */
-> +
-> +#include <unistd.h>
-> +#include <sys/syscall.h>
-> +
-> +#include "tst_test.h"
-> +
-> +#define TC(x) {.scno = (long)(x), .desc = #x}
-> +
-> +static struct tcase {
-> +	long scno;
-> +	const char *desc;
-> +} tcases[] = {
-> +	TC(0x8000),
-> +	TC(0xf000),
-> +	TC(0xfffe),
-> +};
+hi, Jan Kara,
 
-I suggest add two more cases check:
-1) -1
-2) __NR_syscalls +1 (Base arch/powerpc/kernel/syscall.c)
+On Mon, Jun 29, 2026 at 11:36:25AM +0200, Jan Kara wrote:
+> On Mon 29-06-26 16:45:58, kernel test robot wrote:
+> > kernel test robot noticed "ltp.fanotify21.fail" on:
+> > 
+> > commit: 82c6dd20479bb6a9625e1d63a650c3be8865e2db ("fanotify: allow reporting pidfds for reaped tasks")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> FWIW this is expected failure. Patch to fix fanotify21 to accept success
+> in this test was submitted to LTP.
 
-> +
-> +static void verify_syscall(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +
-> +	TST_EXP_FAIL2(syscall(tc->scno), ENOSYS, "syscall(%s)", tc->desc);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test = verify_syscall,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +};
-> 
-> ---
-> base-commit: ad68429b9cfd55b233733e45e600ffafa1458ac5
-> change-id: 20260629-invalid_syscalls-0476c52d7d0c
-> 
-> Best regards,
-> -- 
-> Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+thanks a lot for information!
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
