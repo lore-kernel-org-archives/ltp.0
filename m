@@ -4,82 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0DF7C43602
-	for <ltp@archiver.kernel.org>; Wed,  1 Jul 2026 12:28:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 895A2C43458
+	for <ltp@archiver.kernel.org>; Wed,  1 Jul 2026 18:17:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782929866; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=RvsClwYHQb2Z94fUX0OVnH8Y1sAnFtAWlL8+ll0Rl+s=;
+ b=b7UMYEKp/J+1qRxF5hzG9OjnS9bhekoVVDjD6aVDR5BzCgLKzo3khEai7lz2ZwwOBoRAa
+ zcs9QInlhLgQd4iDIAw2mtkTnpr5CDwNYqfzuFYbfFm5crurbGwBPTj179NK1Z2jx5rHeP2
+ Hjt0+6YUI8UETtCXi11/qUaCDecf2VY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A4FD3E9B5A
-	for <ltp@archiver.kernel.org>; Wed,  1 Jul 2026 14:28:46 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 89A7B3EA697
+	for <ltp@archiver.kernel.org>; Wed,  1 Jul 2026 20:17:46 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3C5AF3E4AB4
- for <ltp@lists.linux.it>; Wed,  1 Jul 2026 14:28:28 +0200 (CEST)
-Received: from mail-qv2-x01.google.com (mail-qv2-x01.google.com
- [IPv6:2607:f8b0:4864:33::1])
+ by picard.linux.it (Postfix) with ESMTPS id E6EB13E9D10
+ for <ltp@lists.linux.it>; Wed,  1 Jul 2026 20:17:25 +0200 (CEST)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 90EAC10000F2
- for <ltp@lists.linux.it>; Wed,  1 Jul 2026 14:28:28 +0200 (CEST)
-Received: by mail-qv2-x01.google.com with SMTP id
- 6a1803df08f44-8f0f56c2dc9so1191926d6.0
- for <ltp@lists.linux.it>; Wed, 01 Jul 2026 05:28:28 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F25571A00A36
+ for <ltp@lists.linux.it>; Wed,  1 Jul 2026 20:17:24 +0200 (CEST)
+Received: by mail-wm1-x334.google.com with SMTP id
+ 5b1f17b1804b1-493ae59eca6so6998445e9.1
+ for <ltp@lists.linux.it>; Wed, 01 Jul 2026 11:17:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1782908907; x=1783513707; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=2MAXGM8offK+WPFH5EtDFpsikycy/cYFOcrhI7bVafo=;
- b=qlK8LkoJYcwAcA5w4vuOU4kKvo1zGVxpHixEfCSt3+4AWI+KkwZbdq1YzFTovgPTzP
- 09fedtkqcNUKckEupcoGnAg4PLAbkEx9qi4Cb1t01PZxJ8sgPzK+WLDpMvTSi16GR7Wx
- 75Do2M41NsQp2w8ZHflHeMKVLK7KhfulO12RqCNrcjXI3+ELOqn1FdOjWuZtJL9jinSy
- mV7JEOuKOrumY6tdglBj9+czo6gJOEyAPnqPqYPDLIvbZlEEMZ/kPt+PYRHg5mw84bYk
- Jup8x5rQ1e7L+l4TNgb9v7uIOcZdNBw5IlAdpAUskJglynizSI8zbYwbVqtNJKjnSF0n
- 8RqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782908907; x=1783513707;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ d=suse.com; s=google; t=1782929844; x=1783534644; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:cc:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
  :to:cc:subject:date:message-id:reply-to;
- bh=2MAXGM8offK+WPFH5EtDFpsikycy/cYFOcrhI7bVafo=;
- b=C47SB3KTB3yMeKkSNCtb/LzATVdkv+hyYk6ASQzkKf/dwr9nAdBKI0WF0XGbsmA+SH
- ss6YCUNTsNxLEekjBERP1hCTCpdE8mZR2etsZ+OJtIN24zJpHugX/3Pq1qZxBUwPsG4q
- n3cjH6+q0SMexDCOujCVS4yXJFj8fIlg0TPuh3cwuq8BkGBuTkxMHnWDR5ZSdyAjBW+f
- JPxKMR7d25FjYsSfuH6iMi31HwT/tqu+tl4gqQsJkMeg5hszJgaRQLQJEMoocoj1QdXG
- xJqK1GtAYjnkRncg4i8EX5a3JBwzWCa69m2vuFZO54EdUECIlTBWM6NaCylENly2VZ2T
- MArA==
-X-Gm-Message-State: AOJu0Yyvve2jMD0hldQ5W8DF1zCDw9RxOb3WmcajsBfSYXcE2WUvzO1X
- qvqVcm7ouKrgLZsgGRdhnVvCa6lKpDeKfXjKDUJgApu0sGlZmmPqNYpo
-X-Gm-Gg: AfdE7cksuReCoDv0DzyWlsOzuqLBB1cBjDB0+J1huyyBnzOEtkNwAwjd9H1BdVH02Mc
- 0PqZSH6oQS94rae3Vf2RJRFKuL7bnUIME4q8fhaagDFERfukbjkHvHxjmkEb20IC5n+qaXdKBXq
- zpSjDnJdhxx98mwynoF1owvnoN6o71aWryMUGDI4CA5mY50/as6MVaTVKZaLMUqHkTMDB1tctdR
- lEVVqKpNTYqIAs5gZDRxhJB3Otp0z2d3rtGq8BmOGKFFWhAyAPV6N0MvtelXkfoF5fhDvPpBxvJ
- hrv0+pxPHjHITKrtb+WDoGzRxsSdxDM45Tx4M9lXHXvhpuqzpdKOmVnfxJK318Dkxm4VyBrTrV3
- iS9UaWtaXsyMIVJLfF6nSr2X15a5k2u3p43RgUd+FjZVoYER7X/onptlG2c6ngxIAwyBqR3nOQg
- n1HX3qcqhqOu7vQJDOoHo6TNUXoCG0dTY0y+hWfwPACHfiXH6bJHWESWUwQgS+pRayCuy1dwud+
- 0wuVz1pRr5Nk2qAxcqkD57bkJ8=
-X-Received: by 2002:a0c:e704:0:b0:8ee:f81e:7927 with SMTP id
- 6a1803df08f44-8f3c99ba153mr12470916d6.48.1782908907108; 
- Wed, 01 Jul 2026 05:28:27 -0700 (PDT)
-Received: from
- runnervmmklqx.dcmqfzuzjfdufk2kvuezc4hldb.bx.internal.cloudapp.net
- ([51.8.121.165]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8f35e887af3sm20536056d6.4.2026.07.01.05.28.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 01 Jul 2026 05:28:26 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Jan Polensky <japo@linux.ibm.com>
-Date: Wed,  1 Jul 2026 12:28:26 +0000
-Message-ID: <20260701122826.4115-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260701111242.97520-1-japo@linux.ibm.com>
-References: <20260701111242.97520-1-japo@linux.ibm.com>
+ bh=DcHkyqFXT1xe36fvKxDKnxC6Rfqa1aykIxuEQiZgWLA=;
+ b=OWpPUHOhqlAgxEoTEH7gOwcmmh0OK7qcDXrFkI1QYps2sCwCIibJikDuidNIW3yKJg
+ hDBfs1FYRboPMgC5ZUOgeqPCZeaNhWJedvKkJzRoEdvM4ubhRBp5juTpGvzgajxOXhRZ
+ FCqbUsUjnAip4OihNXETvEp+ejbGiSSLwGBmG19C/D7ymEQh5TljYmHWHUaw313/FNcq
+ FDTZPXewRdgIz5kv8d3zSiBEII62C2V9Yjx3pBDEqWwU/3W/1xNDcvuLJzIIh1l67Scj
+ HDVyzthJTL/T3ke1RZDmH3kyS8PsIYSmg718kfEJI24DrO+eCUQinlVMzaL9RsGYSSIk
+ bFpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1782929844; x=1783534644;
+ h=content-transfer-encoding:in-reply-to:from:cc:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=DcHkyqFXT1xe36fvKxDKnxC6Rfqa1aykIxuEQiZgWLA=;
+ b=UxZUuZq4ekAywU9SImIIEPkeKr46x1sHpQ5iITx3eJgSvsUCwFYumIKDyUrjnD9G32
+ oJBZJX9d+WU+NkTpN0gcSGb6j1hvuQ2wfMm95PLkX+AnstGjzZ6C8T22yE6LKnS3jyvu
+ tx6vDSIU1ZHHj2nwFatVmCy0xx08gh94y/MVxgjLszhyoCmDG0y78mP2wCGw03H/1b5e
+ nVTpC2Wg20V5rLgq6Y90FslWA/LOmC065XqJ/s/R7ymrTzR/57IIVwS1ENPBr1xqOXGC
+ INnmy4AgQeggvazQaWmnMdd731pJnxVa1vQT3bkdTkT8QUWRDn0iM4zeLZBAoSOfASAg
+ lNyg==
+X-Gm-Message-State: AOJu0YxeetRRxB60NU5JeEOgCs9xUuRezRYkfTf/ICAzrGMwdKeNlx6R
+ gE5pSRQA6cKGwHrOqIQKK0uTpXLu4swSmJS7Z8AQdD0mjZogulbQ2dfOyRYFY4bjAST8OhdFSgB
+ BVsR+d48=
+X-Gm-Gg: AfdE7ckL3/jcEYbCb101iWGtKB5TUMOoa11L5CeS4JuTZFx4AIsVXIrv6vIOq/eybwA
+ 82972kOllNZuBYsic9BQmiaUH3HWCkkRmpglMCTPY1lWaWCST20qnS61D/d8npO7I1+VReYygex
+ dG/SCIpxBbp7gVQoEI6x7qArPWZk+EiP0LQdVBb24Kx6WCAfqpLoYhXSF5FWRNNsdMGpbhNgs/b
+ VZYp7KMuEVZ/xcbhoqdrPQLTX2QuYMM6NUcmcZE88PvTIlpLSnqpyEXinA0azCXhQOA8JHUPCaH
+ FbZnaYhKrOKUmFLLkDbJrSPjCmEimzhcvKT/7jE2xLL4+27S922i5WsvNziy7BlZg4slS3aMU3b
+ eI8ELkmpXhbUoR2RRXm1mqaafnt/fJrRszJ25H0xkgRmQZRSjgg0vgyvL/GRVPnO7gkMBRE2va2
+ jdOLFtgRCfY3JY77E2TR0hDhP1qIBTbw==
+X-Received: by 2002:a05:600c:3222:b0:493:bc92:2a2f with SMTP id
+ 5b1f17b1804b1-493c3cd5914mr18370505e9.1.1782929844261; 
+ Wed, 01 Jul 2026 11:17:24 -0700 (PDT)
+Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-493be810c02sm101131525e9.11.2026.07.01.11.17.23
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 01 Jul 2026 11:17:23 -0700 (PDT)
+Message-ID: <beb393df-c89c-49e6-9e68-3ab9eb0d0bf2@suse.com>
+Date: Wed, 1 Jul 2026 20:17:23 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Vasileios Almpanis <vasileios.almpanis@virtuozzo.com>
+References: <20260701110038.175976-1-vasileios.almpanis@virtuozzo.com>
+Content-Language: en-US
+In-Reply-To: <20260701110038.175976-1-vasileios.almpanis@virtuozzo.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] thp04: Fix PTRACE mode for CONFIG_PROC_MEM_FORCE_PTRACE=y
+Subject: Re: [LTP] [PATCH] df01: detect "fuse" fstype in addition to
+ "fuseblk"
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,54 +101,20 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+Hi,
 
-On Wed, Jul 1, 2026 at 13:12:38 +0200, Jan Polensky wrote:
-> thp04: Fix PTRACE mode for CONFIG_PROC_MEM_FORCE_PTRACE=y
-
-> -#include "lapi/mmap.h"
-> +#include "tst_checkpoint.h"
->  #include "tst_fuzzy_sync.h"
-> +#include "tst_kconfig.h"
-> +#include "tst_test.h"
-
-The patch drops lapi/mmap.h but the test still uses MADV_HUGEPAGE (in
-alloc_zero_page) and MADV_DONTNEED (multiple call sites). The fallback
-defines for these constants live in lapi/mmap.h. On toolchains where
-<sys/mman.h> does not provide them, this will fail to compile.
-
-> +static void run_proc_mem_ptrace_race(void)
-> +{
-> +	/* After 1000 iterations, let tracee exit cleanly */
-> +	SAFE_PTRACE(PTRACE_CONT, tracee_pid, NULL, NULL);
-> +	SAFE_WAITPID(tracee_pid, &status, 0);
-
-After run_proc_mem_ptrace_race() returns, the tracee has been reaped.
-If the framework re-invokes run() (e.g. via -i 2), the next call to
-SAFE_OPEN("/proc/<pid>/mem") will hit ENOENT and abort with TBROK.
-
-The PROC_MEM_ALWAYS path survives re-invocation because
-tst_fzsync_run_a() returns false immediately when runtime expires. The
-ptrace path could either re-spawn the tracee in run(), or guard with
-an early return when tracee_pid is no longer alive.
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
 
 Regards,
-LTP AI Reviewer
+Avinesh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
