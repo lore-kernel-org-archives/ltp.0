@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 451D8C43458
-	for <ltp@archiver.kernel.org>; Wed,  1 Jul 2026 12:24:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0DF7C43602
+	for <ltp@archiver.kernel.org>; Wed,  1 Jul 2026 12:28:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 901663E96FE
-	for <ltp@archiver.kernel.org>; Wed,  1 Jul 2026 14:24:22 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 0A4FD3E9B5A
+	for <ltp@archiver.kernel.org>; Wed,  1 Jul 2026 14:28:46 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C4A523E4AB4
- for <ltp@lists.linux.it>; Wed,  1 Jul 2026 14:24:07 +0200 (CEST)
-Received: from mail-dy2-x00.google.com (mail-dy2-x00.google.com
- [IPv6:2607:f8b0:4864:36::])
+ by picard.linux.it (Postfix) with ESMTPS id 3C5AF3E4AB4
+ for <ltp@lists.linux.it>; Wed,  1 Jul 2026 14:28:28 +0200 (CEST)
+Received: from mail-qv2-x01.google.com (mail-qv2-x01.google.com
+ [IPv6:2607:f8b0:4864:33::1])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F3DF71000924
- for <ltp@lists.linux.it>; Wed,  1 Jul 2026 14:24:06 +0200 (CEST)
-Received: by mail-dy2-x00.google.com with SMTP id
- 5a478bee46e88-30e928841a2so390480eec.0
- for <ltp@lists.linux.it>; Wed, 01 Jul 2026 05:24:06 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 90EAC10000F2
+ for <ltp@lists.linux.it>; Wed,  1 Jul 2026 14:28:28 +0200 (CEST)
+Received: by mail-qv2-x01.google.com with SMTP id
+ 6a1803df08f44-8f0f56c2dc9so1191926d6.0
+ for <ltp@lists.linux.it>; Wed, 01 Jul 2026 05:28:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1782908645; x=1783513445; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1782908907; x=1783513707; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=NEmxnJ4i/9He9xWTFTIaKTv/agaLK5sza/Ru67/k9dQ=;
- b=FJiwQ1dI4nZworF+aS2YvW3LCS3UPZgT8apIjn6Chkfnc+aS/P8WB6cE1nHs1/Om64
- nJbZRvR4+Pa9dRAgy3S+Ni73JlGG0mwJZe3rSNEqevpAtY4KghQPJs4NhUAs7GmTqjIP
- cU5+1cUUIXQT1ZtJpxzp5e/0HXAb8SZJoAa/qEz//z1RRV0zJdQr3JoT4//24jodw30Z
- ran8lj15IaAWIXK+l/FnmLgGbeXc5CJU9WdLfk+HiJ8O4IJB+eA5ivlCuRJrZ1Bb1Wse
- hbFqZd1oj4DZ43qWLh3qsZjORpxB1dnanW9WfCmKtSA5zn047qOATdgIuNbNW3ctCrVV
- azAw==
+ bh=2MAXGM8offK+WPFH5EtDFpsikycy/cYFOcrhI7bVafo=;
+ b=qlK8LkoJYcwAcA5w4vuOU4kKvo1zGVxpHixEfCSt3+4AWI+KkwZbdq1YzFTovgPTzP
+ 09fedtkqcNUKckEupcoGnAg4PLAbkEx9qi4Cb1t01PZxJ8sgPzK+WLDpMvTSi16GR7Wx
+ 75Do2M41NsQp2w8ZHflHeMKVLK7KhfulO12RqCNrcjXI3+ELOqn1FdOjWuZtJL9jinSy
+ mV7JEOuKOrumY6tdglBj9+czo6gJOEyAPnqPqYPDLIvbZlEEMZ/kPt+PYRHg5mw84bYk
+ Jup8x5rQ1e7L+l4TNgb9v7uIOcZdNBw5IlAdpAUskJglynizSI8zbYwbVqtNJKjnSF0n
+ 8RqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782908645; x=1783513445;
+ d=1e100.net; s=20251104; t=1782908907; x=1783513707;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=NEmxnJ4i/9He9xWTFTIaKTv/agaLK5sza/Ru67/k9dQ=;
- b=dFODKhEjK+nMShcqdeiK5BRZu0v4OVzmhpjz8DO4jOADqOC6EszeQjKPCDyzOddrrH
- dVuR5YVsOC406gUtipog2R0XYeRmaUsOmpArjYQ0Kbs5Ql7+TI9O5GusIQndTTIWcQSJ
- xTAgD7Ksp2kXGz+25+MkHN9N4B2PU6244jWcbnu2Qhr91jzR93EJYCPb+tpaxi0HaFI1
- aSqiyE1k3wanNykJOhDBWBxnlJBBTqUR4A8Mxmm4XWzNqdVtGg8DU2SXzn5f+TkR7RiZ
- Hyo7RGadP/H0RTVeJgbpFixmh+0H34eGoFVbCF7Y7Mx7b36p8OVHlVYumHaEGoJmDCRG
- vI8g==
-X-Gm-Message-State: AOJu0YyJTTscXV8a0I2zaRy1SA8Ukb8+rQ+zzOBUBwC2fg34GrE/qcAI
- E+YA+GsE5Gtl4/SPFhtSnzQ5ceqqI97xml2OQBhiN6a3K+BQ8P2wIivn
-X-Gm-Gg: AfdE7cmkBrhLsYo1asryTN3zdlX8bTOe4KH0G93mLH7GzmEwc/fxSg2Q3PO46CqUBDv
- 9M2Ri9OMWdEqNNhEN4JricG8x4FjOjRRiAJGaDsj7qwl1DBjbKwMxbk3E9+JTAjr2r+XYBkshQy
- Y2XAn2VuhAdYGjvkn5IkMUmGE02K7E/xAvbViOdSZWSt7xqM4slmBr4TKH9myIboUXSo4kA5jk7
- ARMnxFz1U3dmGf/fO9vyPgr4uTYgTKcS9oARrLrQDVLqWGO2p2c/Cf1kRrIUzAPZbkF4PRid6CJ
- kvVxMg56S/SeEHsm0tQpiCJbgYI32JIOQri6LoFGO4Dv1RbP6CtD66s8+HM6WkF3CEnW8izYsYX
- iAWSIchPwWEM3eCsEJRiFTNASmQ621SO4bkf+8j6gBTys8nWnNwvL4KpI4glpSFRbr4opi21IaZ
- kYEEuHk5QHRX7TGbayWuKfrFfbW7o8yPdeHEMMraX4OzWtKaSW4+0jmUsLEFXKAbpmT8z2AiMz7
- 9bx98NNGMvc+EeJAuxQFV1C7OQNWQ==
-X-Received: by 2002:a05:7301:290d:b0:30a:e531:3141 with SMTP id
- 5a478bee46e88-30eff0b7e71mr1650473eec.17.1782908644973; 
- Wed, 01 Jul 2026 05:24:04 -0700 (PDT)
+ bh=2MAXGM8offK+WPFH5EtDFpsikycy/cYFOcrhI7bVafo=;
+ b=C47SB3KTB3yMeKkSNCtb/LzATVdkv+hyYk6ASQzkKf/dwr9nAdBKI0WF0XGbsmA+SH
+ ss6YCUNTsNxLEekjBERP1hCTCpdE8mZR2etsZ+OJtIN24zJpHugX/3Pq1qZxBUwPsG4q
+ n3cjH6+q0SMexDCOujCVS4yXJFj8fIlg0TPuh3cwuq8BkGBuTkxMHnWDR5ZSdyAjBW+f
+ JPxKMR7d25FjYsSfuH6iMi31HwT/tqu+tl4gqQsJkMeg5hszJgaRQLQJEMoocoj1QdXG
+ xJqK1GtAYjnkRncg4i8EX5a3JBwzWCa69m2vuFZO54EdUECIlTBWM6NaCylENly2VZ2T
+ MArA==
+X-Gm-Message-State: AOJu0Yyvve2jMD0hldQ5W8DF1zCDw9RxOb3WmcajsBfSYXcE2WUvzO1X
+ qvqVcm7ouKrgLZsgGRdhnVvCa6lKpDeKfXjKDUJgApu0sGlZmmPqNYpo
+X-Gm-Gg: AfdE7cksuReCoDv0DzyWlsOzuqLBB1cBjDB0+J1huyyBnzOEtkNwAwjd9H1BdVH02Mc
+ 0PqZSH6oQS94rae3Vf2RJRFKuL7bnUIME4q8fhaagDFERfukbjkHvHxjmkEb20IC5n+qaXdKBXq
+ zpSjDnJdhxx98mwynoF1owvnoN6o71aWryMUGDI4CA5mY50/as6MVaTVKZaLMUqHkTMDB1tctdR
+ lEVVqKpNTYqIAs5gZDRxhJB3Otp0z2d3rtGq8BmOGKFFWhAyAPV6N0MvtelXkfoF5fhDvPpBxvJ
+ hrv0+pxPHjHITKrtb+WDoGzRxsSdxDM45Tx4M9lXHXvhpuqzpdKOmVnfxJK318Dkxm4VyBrTrV3
+ iS9UaWtaXsyMIVJLfF6nSr2X15a5k2u3p43RgUd+FjZVoYER7X/onptlG2c6ngxIAwyBqR3nOQg
+ n1HX3qcqhqOu7vQJDOoHo6TNUXoCG0dTY0y+hWfwPACHfiXH6bJHWESWUwQgS+pRayCuy1dwud+
+ 0wuVz1pRr5Nk2qAxcqkD57bkJ8=
+X-Received: by 2002:a0c:e704:0:b0:8ee:f81e:7927 with SMTP id
+ 6a1803df08f44-8f3c99ba153mr12470916d6.48.1782908907108; 
+ Wed, 01 Jul 2026 05:28:27 -0700 (PDT)
 Received: from
- runnervmkkn4f.fcndp2way23ujcxi3rzubkid2b.yx.internal.cloudapp.net
- ([52.161.180.148]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-30ee3170ef9sm33101144eec.16.2026.07.01.05.24.04
+ runnervmmklqx.dcmqfzuzjfdufk2kvuezc4hldb.bx.internal.cloudapp.net
+ ([51.8.121.165]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8f35e887af3sm20536056d6.4.2026.07.01.05.28.26
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 01 Jul 2026 05:24:04 -0700 (PDT)
+ Wed, 01 Jul 2026 05:28:26 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed,  1 Jul 2026 12:24:03 +0000
-Message-ID: <20260701122403.3847-1-linuxtestproject.agent@gmail.com>
+To: Jan Polensky <japo@linux.ibm.com>
+Date: Wed,  1 Jul 2026 12:28:26 +0000
+Message-ID: <20260701122826.4115-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260701-landlock_udp-v2-1-b1a2c71be093@suse.com>
-References: <20260701-landlock_udp-v2-1-b1a2c71be093@suse.com>
+In-Reply-To: <20260701111242.97520-1-japo@linux.ibm.com>
+References: <20260701111242.97520-1-japo@linux.ibm.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] landlock08: add UDP bind/connect test variants
+Subject: Re: [LTP] thp04: Fix PTRACE mode for CONFIG_PROC_MEM_FORCE_PTRACE=y
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,12 +97,38 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Jan,
 
-On Wed, 1 Jul 2026, Andrea Cervesato wrote:
-> landlock08: add UDP bind/connect test variants
+On Wed, Jul 1, 2026 at 13:12:38 +0200, Jan Polensky wrote:
+> thp04: Fix PTRACE mode for CONFIG_PROC_MEM_FORCE_PTRACE=y
 
-Verdict - Reviewed
+> -#include "lapi/mmap.h"
+> +#include "tst_checkpoint.h"
+>  #include "tst_fuzzy_sync.h"
+> +#include "tst_kconfig.h"
+> +#include "tst_test.h"
+
+The patch drops lapi/mmap.h but the test still uses MADV_HUGEPAGE (in
+alloc_zero_page) and MADV_DONTNEED (multiple call sites). The fallback
+defines for these constants live in lapi/mmap.h. On toolchains where
+<sys/mman.h> does not provide them, this will fail to compile.
+
+> +static void run_proc_mem_ptrace_race(void)
+> +{
+> +	/* After 1000 iterations, let tracee exit cleanly */
+> +	SAFE_PTRACE(PTRACE_CONT, tracee_pid, NULL, NULL);
+> +	SAFE_WAITPID(tracee_pid, &status, 0);
+
+After run_proc_mem_ptrace_race() returns, the tracee has been reaped.
+If the framework re-invokes run() (e.g. via -i 2), the next call to
+SAFE_OPEN("/proc/<pid>/mem") will hit ENOENT and abort with TBROK.
+
+The PROC_MEM_ALWAYS path survives re-invocation because
+tst_fzsync_run_a() returns false immediately when runtime expires. The
+ptrace path could either re-spawn the tracee in run(), or guard with
+an early return when tracee_pid is no longer alive.
+
+Verdict - Needs revision
 
 ---
 Note:
