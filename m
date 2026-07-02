@@ -4,91 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95FB9C43458
-	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 10:10:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC43EC43458
+	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 11:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1782987032; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782992614; h=message-id :
+ to : cc : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=za2SfrUhy0GeKXF4AdV3U45sQJMmMHM2HLnuAXF5WRo=;
- b=DKgLOsxWChgzmeK2bHsd7kkBrj0CnUO+GuPshWMDNlX8+kGfSWWYWtvN+SvlGCqsvRnYs
- xmj1mL4qfpfwZVe2JkJotp3TLliRpRSbos4SILSVR6o7hV5DF7ZHyntB5OUdAjEKs53+bYm
- vfLSHI3OwRirbb1Qts2WlVTuj8LodEs=
+ reply-to : mime-version : content-type : content-transfer-encoding :
+ sender : from; bh=K1q2CFjUa55T2mFIJUQi6ISMc0nT3d4nJ/Vh61I3nl8=;
+ b=FvSOVYutU9td0Zdr0j7s7K6M6848si3hL+5QVHds5OQ7BdmpHOZXw1EJkphEf5F7WPY6O
+ RlRfM4Cw81QWpupHtiDlOELPyCFysdWobwet663X8owY+82zsIC82v4XhX4Bp/oAToh23wC
+ UMr+xbRyhjyW/R4Xbnr3gmYES6RO2qo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 047FB3E4A05
-	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 12:10:32 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 30C683E4A28
+	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 13:43:34 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3988D3C5EE8
- for <ltp@lists.linux.it>; Thu,  2 Jul 2026 12:10:12 +0200 (CEST)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
- [IPv6:2a00:1450:4864:20::42c])
+ by picard.linux.it (Postfix) with ESMTPS id 052CC3E24AD
+ for <ltp@lists.linux.it>; Thu,  2 Jul 2026 13:43:13 +0200 (CEST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8F95B600141
- for <ltp@lists.linux.it>; Thu,  2 Jul 2026 12:10:11 +0200 (CEST)
-Received: by mail-wr1-x42c.google.com with SMTP id
- ffacd0b85a97d-472a14c9965so1357369f8f.1
- for <ltp@lists.linux.it>; Thu, 02 Jul 2026 03:10:11 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9D8316002A1
+ for <ltp@lists.linux.it>; Thu,  2 Jul 2026 13:43:12 +0200 (CEST)
+Received: by mail-wm1-x333.google.com with SMTP id
+ 5b1f17b1804b1-493c5220cb7so7219375e9.3
+ for <ltp@lists.linux.it>; Thu, 02 Jul 2026 04:43:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1782987011; x=1783591811; darn=lists.linux.it;
+ d=suse.com; s=google; t=1782992592; x=1783597392; darn=lists.linux.it;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=/LkirdcxMisVWei8nINXM8nKqQRMGR3iXaps2s8iLWs=;
- b=HjuJ2O9IAwPP0klXr/XzgrfrtBUL1/7V8VEqNTOYXGeYB5n3n/IKd7/7RPgVpYu4j0
- Do9SuaNIqRcLM1rlpx5ydfmSY8n4Sf5YNpMLQpgN20Qgdq3C0vl7dJzCa916fUmW1NAR
- ClGyzTmiQtzINkUFZiH6AMoSTkPseZ+HiNuyW+HFWsjSYrH/Gnm7a6kE44rqwOa3r9RX
- D8+yqmZq388SXtGom4r2DPn+UzYtDR5oj+/i8xCp07cU0iuODkdu8Say4OFHSLypftCM
- gc/XH+PVG8NY9mrYpQDKFOT2iFavhBZB+2zFwU0QA/uq8UpI+vEPNIrvIfb60GMtjeUR
- KKhQ==
+ bh=G3OSdoopGpoPNMqwmBMwQ1KjXVs5qYr98wx0c56d2FA=;
+ b=X1aawJGtCkoanDJq4jBzE52dTmOuzFxoLmXZaGRaHUS/UVdh5LTryh/Zi7mrQ1bkKN
+ k/F8O8nuCfiIwNYctkZKNk1+8IIZJKC7MT1hLcQM38EaNQ5PNMQhjvQtx7pn1z6bJM4E
+ bktuuVOvwH/b3qq51nh3IfZiyBie2RdY8Gm7y/46W05deG7I+mAuiwHqMMpaO5JfaK1D
+ XsadYRBpH2VQahNkZXsfUowAfLMooejFFDvGXrJcZLobh+Y42W5SfsWyA917ZVdrCxQi
+ wUuf84b0HGgVvWAP9+OKc5F//48g9utK3cmLa0e+568z1/z/lpGDYitCDTLiUiniDVGm
+ kPEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782987011; x=1783591811;
+ d=1e100.net; s=20251104; t=1782992592; x=1783597392;
  h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
  :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=/LkirdcxMisVWei8nINXM8nKqQRMGR3iXaps2s8iLWs=;
- b=GsV9Uo+627hlu19wfUdTfxxTJUgAwtpiSWo8sViOZ0Zy4Zj9A5StJoDhIzy96gyPQg
- 2vmdW7HNEO9PEu3cPEkgSasZBhHXoSoRzt/wLSUjroJe4JHjIEogz+iny0HcUjVJinLR
- OLbeeQw/fEzCKlkYa6Brt/JHkZFgx2Mmh97UtjOBwJ3Bt0XplGNrDZe01tNFpCSIWRV0
- A5tjFg5CamWSI42SHyKugsAVgj6uoQT07/YyaX2E6RR8Plbrbokq2re2tiS7ADXlGsp/
- uPp52dVSRDloqe+hXll2ldp1rMsYe9/B2rklbZqjBRboZsvyEaRwq+nSToZcNNwgbKf4
- zrbQ==
-X-Forwarded-Encrypted: i=1;
- AHgh+Rrmr/Zfz3P3JIKf/zoMm77lK2UN3ONf5YmCSgpDNAHn3EcPXtzTCoMy526zc2q7WcD+5cM=@lists.linux.it
-X-Gm-Message-State: AOJu0YwsgVKKZHxwJH+0NOaKh94qVTzN0IrUP3npif4BT1DALZCBNNKB
- fBkqCh9j6zJ3IRrMXG3XzeLqEO1cyqRcPRd5u/Ebeh3jvuyQazodvucmBxebEqW0S8o=
-X-Gm-Gg: AfdE7cmCAqPSTMYpBk3TCVCVJaVOY/Gm7WRcDEN2fSdh//YAvz+41u7LxWmYMVGlbWu
- tQrDipqh8mGwb7s41XPB3b5/5YoRPDITksLzFeiXZbe7wwGpmsKDHcVL8mUWAAQwW+o5PWUbKxz
- PYVNWIvbm6VLVtcdN6ZeyqlOaRkzIog5iJ5dcd8nr0840CPElUe1MoYchbDltVqkI4K5lYY19FB
- Aj0RwRMOLtaq/KZkMb2T+mDH4GRUQ7Vvuga0oU2bfRF/RIwCV1AuQjHMYnhmuCUZBUIZDZUfulH
- Csh+pNqvSjUV0KugYzPj5poQN+nC5lDo1xy01dOSYD9Spgpi4dN0q5HWAjNQRYAnbn3XyHRWoj4
- xF5ySQuqCTHqtMgAEI5QFjErqRgtQk62sEo0WOWqob2QO+yyJTFlqEkDzgfth5JDbtd+q5s5DcH
- ENpL55iKfKFHnmb0whEbr8DioY83PQPsdlx/LamqTySes+qkGIzsAVud0cWAjknu3fJH1sb3QZz
- iGi4j7VzB2TYBvRckWVv4CVH/jj12TmzY2ARxPqlk6NLGfbwtYfzTGJ7lxFQuZ90jQ=
-X-Received: by 2002:a05:6000:288b:b0:472:76ad:b329 with SMTP id
- ffacd0b85a97d-47757f4cb69mr8360915f8f.6.1782987010847; 
- Thu, 02 Jul 2026 03:10:10 -0700 (PDT)
-Received: from p200300ef2f13eb00a65561a8bfe9e52d.dip0.t-ipconnect.de
- (p200300ef2f13eb00c11aebd17f9598f1.dip0.t-ipconnect.de.
- [2003:ef:2f13:eb00:c11a:ebd1:7f95:98f1])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-477d766e0b4sm7115401f8f.0.2026.07.02.03.10.10
+ bh=G3OSdoopGpoPNMqwmBMwQ1KjXVs5qYr98wx0c56d2FA=;
+ b=pryLXT92ln1IvY/qjOlB5LwZbtJ0NZScsQzz5CiIxvHR44kY2geXYsi5YJk1h1LXfk
+ d+W6Lml0umaT/s3JlvyR4XbDnFKzAlLH2BKqr4/WUf7XF6oLpG8ekZ0UfE++Ur615ORG
+ akRImajdhojnqsu+rW4P9spvvBgjkn5oHZ3wpzWW6XqonmcEVhKLOOfdshv37l2MlcLY
+ QpbNrJ3qyIgRPyiNIwXgTafWTutWAFxeaNMhio+kbc+0zUG2YYoZhtwFaH/P1mv5Gce3
+ 19m6vySaQlGNxVpTF6X3KpQGJMS2tmho6HJbvDP7XJLfDvdQ8R/mBSqHfskrAZhXPKJI
+ 4eIQ==
+X-Gm-Message-State: AOJu0YyAnJh0eSrkTyecRBjcLfTeMgAcTNd0LYiDSw6f4Ht6iCD4Xizw
+ gXSmztKRNKGOQZnG+oB0g0MfZV/rvJqumhZXfbU10l4RzXTYBeu1AHiDvx8bdE2al2Za0LxEPl4
+ ci1Eq7PkqOw==
+X-Gm-Gg: AfdE7cnpxw/78lq/PFakllpNhIqORS41uA58O4ACm0KD9Bu3CEkjab4Ib76FcbNoQE1
+ rkJMhIoNc1m5/8KBMnaXDIPUw/CpMxO6E8HfnMOhjTAk7tmmejQxiNG9uYO4oqU2UQWy1uuxsEk
+ I95FYB16eAfic728Wf6vGqmnRxuXXaY8/z5sYETwf+KliYCtr46HBxS4VnIek4bSPlcS/CKgniC
+ NjmjGRl0h7jqXb7q49R2Wfw2wi/ixG8exr30fyQviMRV17oCbnJqYU5SucSL9Z4sOo12s5wpucD
+ oYWK6WJlj6nE3SOKJaD8QxI4nOuxUu9aebN5YavDTCCyxUB2DgYbtGtyY5aNxgIZDeH409CWXoA
+ qQdsfABN4IDAs3VWnH9QbqkloN6d33pzVpgvOEo83tzyidm7hAXgWHPIUTCOAhK2Kt85p95X0qX
+ VSFCpyq3wEEuLxI19+lYOJ11FyGwYapwzplh+uWDbpbcIt9Um1w5tUf/wIOcs91g==
+X-Received: by 2002:a05:600c:154f:b0:493:bd4f:510 with SMTP id
+ 5b1f17b1804b1-493c3cf45d2mr64966315e9.19.1782992591973; 
+ Thu, 02 Jul 2026 04:43:11 -0700 (PDT)
+Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
+ [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-493bef11338sm122721385e9.1.2026.07.02.04.43.11
+ for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Jul 2026 03:10:10 -0700 (PDT)
-Message-ID: <6a463902.41a38e5f.27f5bd.337a@mx.google.com>
-To: "Jan Polensky" <japo@linux.ibm.com>
-In-Reply-To: <ajQFErzQW4qfU_Cp@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
-Date: Thu, 02 Jul 2026 10:10:09 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ Thu, 02 Jul 2026 04:43:11 -0700 (PDT)
+Message-ID: <6a464ecf.da15fda7.265c5d.795d@mx.google.com>
+To: "Wei Gao via ltp" <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
+In-Reply-To: <20260701080324.19270-1-wegao@suse.com>
+Date: Thu, 02 Jul 2026 11:43:11 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/1] swap: Add exfat to filesystems requiring
- tst_fill_file
+Subject: Re: [LTP] [PATCH v1] statx/statx04: Skip testing casefolded
+ filesystems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,39 +98,20 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Andrea Cervesato via ltp <ltp@lists.linux.it>
 Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+Hi Wei,
 
-I seen you implemented in v7.2-rc1:
+this patch is not correct. We need to filter out via `expected_marks`
+the unsupported inode attributes only for exfat and vfat, not blindly
+TBROK when casefolder attributes are supported.
 
-commit 03a43677ca91e3997355a13b1da6e47329b025e1
-Author: Jan Polensky <japo@linux.ibm.com>
-Date:   Tue Jun 9 18:21:49 2026 +0900
-
-    exfat: add swap_activate support
-    
-    Commit 07d67f3e9083 ("exfat: add iomap buffered I/O support")
-    converted exfat buffered I/O to iomap, but did not add a
-    .swap_activate handler to the address_space_operations.
-    
-    swapon(2) on an exfat swapfile then fails with EINVAL, which causes
-    LTP swap tests to fail.
-    
-    Add exfat_iomap_swap_activate() and hook it into exfat_aops so exfat
-    uses iomap_swapfile_activate() for swapfile activation.
-    
-    Fixes: 614f71ca1bdf ("exfat: add iomap buffered I/O support")
-    Closes: https://lore.kernel.org/all/20260603110212.3020276-1-japo@linux.ibm.com/
-    Signed-off-by: Jan Polensky <japo@linux.ibm.com>
-    Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
-
-what should we do with your patch in LTP?
+   if (!strcmp(tst_device->fs_type, "vfat") || !strcmp(tst_device->fs_type, "exfat"))
+       expected_mask &= ~(STATX_ATTR_APPEND | STATX_ATTR_IMMUTABLE | STATX_ATTR_NODUMP);
 
 Regards,
 --
