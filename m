@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58A83C43458
-	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 12:31:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21A28C43602
+	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 12:39:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C64363E4B20
-	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 14:31:37 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id B41023E2F39
+	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 14:39:51 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A9DF73E2E31
- for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:31:22 +0200 (CEST)
-Received: from mail-qk2-x04.google.com (mail-qk2-x04.google.com
- [IPv6:2607:f8b0:4864:34::4])
+ by picard.linux.it (Postfix) with ESMTPS id 870083E1644
+ for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:39:35 +0200 (CEST)
+Received: from mail-pj2-x04.google.com (mail-pj2-x04.google.com
+ [IPv6:2607:f8b0:4864:39::4])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 16CEF1400044
- for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:31:22 +0200 (CEST)
-Received: by mail-qk2-x04.google.com with SMTP id
- af79cd13be357-92e7825afc5so33462485a.0
- for <ltp@lists.linux.it>; Thu, 02 Jul 2026 05:31:22 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E6B8B60064C
+ for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:39:34 +0200 (CEST)
+Received: by mail-pj2-x04.google.com with SMTP id
+ 98e67ed59e1d1-38109499830so35700a91.1
+ for <ltp@lists.linux.it>; Thu, 02 Jul 2026 05:39:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1782995481; x=1783600281; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1782995973; x=1783600773; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=dOPSGI8xPfyF2QU5Uuq8gNFXbQsbYaf1Zs/m2SnLSvI=;
- b=aYsztFUS1izoWwuHq5g0MR4yo0EPdkWI1CSTrjwFMCLULqlbZjec4/yqi9JfRv0x6F
- autbBc7deMZy9281GQKfDQC3wG+O1hcBpe/2F18ry4rfaihE9d1bOcQYekO3mmbFln9j
- 4SmxkRADNZSrD1bagm2rWJ5CSwGQTss1FL0UVPgN1qQh7T5VvClrUYkgcJyWWjC9rQmW
- W09BJF/Y6aa8MeoGHqWJAFV3FJJssRjjQh7UTW9qZy+tzGT5CoKVMPkWTREpRSLe09iw
- KumLvJdSfP/MdPZYjLK3EY7ASKfCqFPp49wp6yCDRa4U+raoB4/lOr3422Uuifi4Th6R
- 72Zg==
+ bh=zGRrq0InzswdiWPQE5i24+FDFx/CqBPGCJD7oHiTWYI=;
+ b=lAFd03VnY7U4wLlhgAQtu9Ye3Oo+wVkkHBsBO01BQNu7c07QulKkV7psVRYJx7uKzf
+ 9GTDFflQs4BrY+/pIWb725SNBd8kX72XLek3MWEmPIIIrDXeYKqEPFL+Lj7KYDcydlVU
+ fXDea1j2MDPnb7hLpfa7mhoaxA6r4ICbsztCPNMNTFt4+xmMsABDpvtB05s9XNvcw731
+ PnAlwZur9yp+nxr2rOK7yFHpQNYtgsDdK9slkziEKK8SJVIQo1s93joUtLubcOabTK3S
+ 9fU6oWx1bdvdVP9wADoP5N5Ts8Vp3CgSmLNdTnJZ3YKGPDnfIXBvDdY84KNAak/Gtbio
+ K6Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782995481; x=1783600281;
+ d=1e100.net; s=20251104; t=1782995973; x=1783600773;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=dOPSGI8xPfyF2QU5Uuq8gNFXbQsbYaf1Zs/m2SnLSvI=;
- b=swk8ItEOtZ+dLrTZuk/fPbZy4D9n+5RQYIFyqzVa++dhB62O93EJNZ1IIB2f+vzlgm
- TYkpXJ+syrnV+teiMpUJkzieB+HnvynTljfe3C+SiNJsC3KykaTGJqtAXyS5P0Jloe3t
- W0a4RtG0eTxotc3sT+o+S0OJJ+ZJa36wYo8u/EeI6cIeqBvAX9EKR/HhFEs7KPDahQkv
- sZGku3EpfG1OyxyL8Go8QOcdyeqgdHvqe7Ys6/aiECUaHT4BboBBHVd6awlAVqPi82be
- fwS/oJjk4zV3IKa9/SA/hJFHFxKfw5yLTvW4sQQnJjLYMP51u8sKerE87DU7XnslHhgZ
- 1pmA==
-X-Gm-Message-State: AOJu0YzoJAQS4SOodK1Iqwh+WTyJ+offVKs0ni6i70MAD5sIxKdcybT+
- 7pBONcCBN0N3L4pif1P1P3eJnEY3lYH/nGrFONflOCxxyVp9fQEiBpOT
-X-Gm-Gg: AfdE7cmfmA17c/6dc6ZYt+ww8WLkFQiCjS6KgbD4nfZwlUn+x07NjWXHZvE34XdyeYq
- 3UyrQnF2VysetfjSgTiNmuXw8CXC2tmuxhrEOqDrx/+opvvkBSpF7QT0gklm912k0OzUDREA8zS
- jMyZkXtQP3k0gI10gE10d5m/CbFE0qa3AnRsLSLvLzbIgsulrKzz6cmEq7m5CjVwUwm4e+aDC0q
- ZqRwu0ynckBmUvv2NMubMmTnBoN5Tb1WInr91bXCDshaAXd6SirsuzqiQiq+GzdtbcxdQreqcSR
- Hm/hi2W/GFFTyS0aNLlB9qpttSL8OiuDXVZE1qvMxl//jXpTpPJmulcKy3pOSDm3iZgLRBr0BfP
- D/sIo9HVf3NT9Z2daUCqWKMQOzYazAIgujetDzKVKlRQCWUNeU38PlfUO5SzG2dz3WN7qD76WY7
- cnggGP1gdvSl3fz7Knj0FFGBzuig+IONpP0iRqiUIMUlYWugynCsD0fwm7jxBS7V5gWb/MrCEI6
- ncw+rWvKHtz5xMoerCeIgIpugM=
-X-Received: by 2002:a05:620a:458c:b0:8ef:ca26:dcf8 with SMTP id
- af79cd13be357-92e7aec70ddmr640489885a.0.1782995480434; 
- Thu, 02 Jul 2026 05:31:20 -0700 (PDT)
+ bh=zGRrq0InzswdiWPQE5i24+FDFx/CqBPGCJD7oHiTWYI=;
+ b=LQ3+pzqwlU1AY+bMzpHjyAxTLMdZ7HdB3JDFPzezmjycFBt8Ng57Aa1GwGeK5eo+yK
+ /orqrS4GMS9Pd6g/zL31F7ayTjtURMh/Ru6ykPBw08mf/M3YGS0y6Jo7fOiWyIOefTGQ
+ YncaqshS90Ngg5wC+txGhRE3xQDho4QAmVgzC2NKCOJv73/hVPcU6hkazjkktEioH5hv
+ tSWUzJstXZHrhpBXUg3cUJAUSFVJNg+E0D7cqsRIzy30RgEF2XxP5JSuqkt2nf0jDa1I
+ lL4TItTM1g4bnLmZq672RejDVn+9kDwQO/evNE6M2hky1NMWAP2pXY3B2Qg1ff+1QCDY
+ lHhA==
+X-Gm-Message-State: AOJu0Yxa+tC5Eo9fFncf6w5tO+FzxgOW/8Tv7jECnGYR+cSRczi2dVkw
+ Tkgx6l8X3Nq2ABoug3M9+HmvtRI/ml4mjd7h1kntbmruL4ZZK9WR42Jw
+X-Gm-Gg: AfdE7clnKLK4fatHa+hYSITz8oI+bA0n+h2cpXUNqxE75YFHJhJ4tgaPKv2p3VniRrX
+ IWWdPxVVOG0TVg4aptLPXHOwwOElAuclTDChOpSwc5EfYpXLTxZgVAKWhQDq40ZBz3CPR7zJg4r
+ 6IpCBg4z48x3138ZhDkxRXgHpWG7D9IBdMG9YvacFWyl0bwq10YkQPfaqcT5rzdJrlgCPu5+6Z1
+ tpjiiTjSfDVuJiwR6Cu9IQ0oeaxVv1d/GC7nkFmHPpG5s30iRWWSHtPIa/pn9C+ippImZdBpqXq
+ NteVT8FDqWFsM9m/JkcG/GALEUZrapWHFAHNGD2CcmucWVwLkITA49VYKu9OD02hgn08n63lX7G
+ 6Y6lUSNdy0WwnvYPZ1VLgrdNLToArrpri1FMVvsFTm4c5NA6It1qokPAJgGc370+4qRuLdN5LLE
+ oYfFABc7TMrRkiItIa5KQSqAFzJ3MVmivkenMgDc22jhz8OnvYSOxqRLzFx6cUUxcxFEwAeNbyn
+ ACVJUxNRApnE5EkPOehoK4vPwUH
+X-Received: by 2002:a17:90b:52:b0:36b:b3f4:d578 with SMTP id
+ 98e67ed59e1d1-380aa0caf3bmr5941940a91.15.1782995973055; 
+ Thu, 02 Jul 2026 05:39:33 -0700 (PDT)
 Received: from
- runnervmmklqx.zlxcakwy2jjudj4ucvtnllunvd.bx.internal.cloudapp.net
- ([74.235.151.2]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-92e80009552sm203176185a.11.2026.07.02.05.31.19
+ runnervmkkn4f.cddunxfqncwu5ncfdzyn0hhfze.dx.internal.cloudapp.net
+ ([52.159.244.83]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-30f0bb84405sm12975822eec.17.2026.07.02.05.39.32
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Jul 2026 05:31:20 -0700 (PDT)
+ Thu, 02 Jul 2026 05:39:32 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Pavithra <pavrampu@linux.ibm.com>
-Date: Thu,  2 Jul 2026 12:31:18 +0000
-Message-ID: <20260702123118.3964-1-linuxtestproject.agent@gmail.com>
+Date: Thu,  2 Jul 2026 12:39:31 +0000
+Message-ID: <20260702123931.4104-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260404134815.1638618-1-pavrampu@linux.ibm.com>
-References: <20260404134815.1638618-1-pavrampu@linux.ibm.com>
+In-Reply-To: <20260404152742.1664783-1-pavrampu@linux.ibm.com>
+References: <20260404152742.1664783-1-pavrampu@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] hugemmap41: Migrate ptrace-write-hugepage from
- libhugetlbfs v3
+Subject: Re: [LTP] hugemmap37: migrated task-size-overrun.c from
+ libhugetlbfs v4
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,37 +100,58 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Pavithra,
 
-On Sat, Apr 4 2026, Pavithra wrote:
-> hugemmap41: Migrate ptrace-write-hugepage from libhugetlbfs v3
+On Sat Apr 4 2026, Pavithra wrote:
+> hugemmap37: migrated task-size-overrun.c from libhugetlbfs v4
 
-The subject ends with "v3". Is that a patch revision marker that did
-not get stripped before committing? If it refers to something like a
-libhugetlbfs variant, please rephrase the subject to make that clear.
+> +static unsigned long find_last_mapped(void)
+> +{
+> +	char line[MAPS_BUF_SZ];
+> +	...
+> +	/* Read all lines and keep the last non-special mapping */
+> +	while (fgets(line, MAPS_BUF_SZ, f)) {
+> +		/* Skip special mappings like [vsyscall], [vdso], [vvar] */
+> +		if (strstr(line, "[vsyscall]") || strstr(line, "[vdso]") ||
+> +		    strstr(line, "[vvar]"))
+> +			continue;
+> +
+> +		found = 1;
+> +	}
+> +	...
+> +	tst_res(TINFO, "Last map: %s", line);
+> +	if (sscanf(line, "%lx-%lx %*s %lx %*s %ld", &start, &end, &off, &ino) != 4)
+
+The comment says "keep the last non-special mapping" but the code does
+not do that.  fgets() overwrites `line` on every iteration, including
+iterations that immediately hit the `continue`.  After the loop, `line`
+holds the last line read overall, not the last non-special line.
+
+On x86_64 with vsyscall support, [vsyscall] appears as the final entry
+in /proc/self/maps at address 0xffffffffff600000.  In that case sscanf
+parses that address and find_last_mapped() returns 0xffffffffff601000.
+find_task_size() then starts its binary search with a low-PFN value
+already above TASK_SIZE, all probe mmaps fail, and an incorrect
+TASK_SIZE is returned -- making straddle_addr wrong and the test
+results unreliable.
+
+The fix is to copy `line` into a separate buffer when a non-special
+line is encountered, and use that saved buffer after the loop.
+
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+
+Other tests in this directory that were migrated from the same
+libhugetlbfs upstream (e.g. hugemmap34.c, which credits the same
+original authors) carry GPL-2.0-or-later.  LTP relicenses migrated
+code under GPL-2.0-or-later for consistency.
 
 > +/*
-> + * Test ptrace write to hugepage memory.
+> + * Origin: https://github.com/libhugetlbfs/...
 > + *
-> + * This test verifies that ptrace POKEDATA and PEEKDATA work correctly
-> + * on hugepage-backed memory regions. A child process maps a hugepage,
-> + * and the parent uses ptrace to write and read data from the child's
-> + * hugepage memory, ensuring that ptrace operations function properly
-> + * with hugepage mappings.
-> + */
+> + * This test verifies the behavior of mmap across the TASK_SIZE boundary.
 
-The description block must open with "/*\" (backslash after the star)
-so it is recognized as RST and rendered in the LTP test catalog.
-
-Also, .needs_root = 1 is set but the block does not explain why root
-is required. Ground Rule 4 requires documenting the reason here (e.g.,
-ptrace(PTRACE_ATTACH) requires CAP_SYS_PTRACE when ptrace_scope > 1,
-or the hugetlbfs mount operations need root).
-
-> +	SAFE_PTRACE(PTRACE_KILL, cpid, NULL, NULL);
-> +	SAFE_WAITPID(cpid, &status, 0);
-
-PTRACE_KILL is deprecated. From ptrace(2): "This operation is
-deprecated; do not use it!" The recommended replacement is to deliver
-SIGKILL directly via kill(cpid, SIGKILL) and then wait for it.
+The high-level description block must open with /*\ (backslash after
+the slash-star) so that the LTP documentation build recognises it as
+an RST-formatted block and includes it in the test catalog.  A plain
+/* comment is silently ignored by the doc toolchain.
 
 Verdict - Needs revision
 
