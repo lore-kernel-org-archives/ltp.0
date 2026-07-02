@@ -4,92 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 895A2C43458
-	for <ltp@archiver.kernel.org>; Wed,  1 Jul 2026 18:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2CC7C43458
+	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 04:25:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1782929866; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=RvsClwYHQb2Z94fUX0OVnH8Y1sAnFtAWlL8+ll0Rl+s=;
- b=b7UMYEKp/J+1qRxF5hzG9OjnS9bhekoVVDjD6aVDR5BzCgLKzo3khEai7lz2ZwwOBoRAa
- zcs9QInlhLgQd4iDIAw2mtkTnpr5CDwNYqfzuFYbfFm5crurbGwBPTj179NK1Z2jx5rHeP2
- Hjt0+6YUI8UETtCXi11/qUaCDecf2VY=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782966333; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=d0/BQ/NH+hhgtDHP/8yWJw78xZfCEldJjPDBBUZx0TY=;
+ b=C9apUNlDArhGLBLPlB/dkAO5bPHIqz8kvIQrrvdXWd73QtSS1vD2XtxCJdSAt1cOwP0c5
+ G1ITDB+yKe9rrufPydU/qDg40FZheenq/BlzJM0r+urT7KYzCTjPUpwK0XgIMVfc/Cjlnkw
+ pG2hVpwmABokPS64LDk7VEa6EXnWJq4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 89A7B3EA697
-	for <ltp@archiver.kernel.org>; Wed,  1 Jul 2026 20:17:46 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id B90703E1762
+	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 06:25:33 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E6EB13E9D10
- for <ltp@lists.linux.it>; Wed,  1 Jul 2026 20:17:25 +0200 (CEST)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
+ by picard.linux.it (Postfix) with ESMTPS id C8EE93E2256
+ for <ltp@lists.linux.it>; Thu,  2 Jul 2026 06:25:10 +0200 (CEST)
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com
+ [IPv6:2607:f8b0:4864:20::104a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F25571A00A36
- for <ltp@lists.linux.it>; Wed,  1 Jul 2026 20:17:24 +0200 (CEST)
-Received: by mail-wm1-x334.google.com with SMTP id
- 5b1f17b1804b1-493ae59eca6so6998445e9.1
- for <ltp@lists.linux.it>; Wed, 01 Jul 2026 11:17:24 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0F1F31A008A6
+ for <ltp@lists.linux.it>; Thu,  2 Jul 2026 06:25:09 +0200 (CEST)
+Received: by mail-pj1-x104a.google.com with SMTP id
+ 98e67ed59e1d1-37d4f23eb37so2451540a91.0
+ for <ltp@lists.linux.it>; Wed, 01 Jul 2026 21:25:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1782929844; x=1783534644; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:cc:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=DcHkyqFXT1xe36fvKxDKnxC6Rfqa1aykIxuEQiZgWLA=;
- b=OWpPUHOhqlAgxEoTEH7gOwcmmh0OK7qcDXrFkI1QYps2sCwCIibJikDuidNIW3yKJg
- hDBfs1FYRboPMgC5ZUOgeqPCZeaNhWJedvKkJzRoEdvM4ubhRBp5juTpGvzgajxOXhRZ
- FCqbUsUjnAip4OihNXETvEp+ejbGiSSLwGBmG19C/D7ymEQh5TljYmHWHUaw313/FNcq
- FDTZPXewRdgIz5kv8d3zSiBEII62C2V9Yjx3pBDEqWwU/3W/1xNDcvuLJzIIh1l67Scj
- HDVyzthJTL/T3ke1RZDmH3kyS8PsIYSmg718kfEJI24DrO+eCUQinlVMzaL9RsGYSSIk
- bFpw==
+ d=google.com; s=20251104; t=1782966308; x=1783571108; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=5ympKi2+Ww64RkA6BqsHliPR4eUB/h52Iks1NTTBDhA=;
+ b=WBM5EDvMwbTdCkGhc1/t0/JngxLX8EIZd493VSl45Py4+rdrAJ7Ts8f+78d2ElD69w
+ 9RUkh2JzMofMqfGt/Zr3peR2t5utWpJs/zkReSthPMXGD7SiMegvfN4wJRaPEwE4Dkj8
+ bWwniNMkW5SLvqmHhwYw0IM5RXcjpg1/SvAzUb3XcB8jIJLxTjEygpHP5hhuzhOf8Gz3
+ S6hAmRAuL4oYXOwGG9HH80Fat095jI6rhEw/RCTr19vGIW5iOnpKuntmyeEH9QLX5xW/
+ Gkqd7yhy91+cfMKTrscyRCDcntcgvdoLQng1taN3uQ1Way9GndQVoenERcU2f2v7LKb1
+ O7iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782929844; x=1783534644;
- h=content-transfer-encoding:in-reply-to:from:cc:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=DcHkyqFXT1xe36fvKxDKnxC6Rfqa1aykIxuEQiZgWLA=;
- b=UxZUuZq4ekAywU9SImIIEPkeKr46x1sHpQ5iITx3eJgSvsUCwFYumIKDyUrjnD9G32
- oJBZJX9d+WU+NkTpN0gcSGb6j1hvuQ2wfMm95PLkX+AnstGjzZ6C8T22yE6LKnS3jyvu
- tx6vDSIU1ZHHj2nwFatVmCy0xx08gh94y/MVxgjLszhyoCmDG0y78mP2wCGw03H/1b5e
- nVTpC2Wg20V5rLgq6Y90FslWA/LOmC065XqJ/s/R7ymrTzR/57IIVwS1ENPBr1xqOXGC
- INnmy4AgQeggvazQaWmnMdd731pJnxVa1vQT3bkdTkT8QUWRDn0iM4zeLZBAoSOfASAg
- lNyg==
-X-Gm-Message-State: AOJu0YxeetRRxB60NU5JeEOgCs9xUuRezRYkfTf/ICAzrGMwdKeNlx6R
- gE5pSRQA6cKGwHrOqIQKK0uTpXLu4swSmJS7Z8AQdD0mjZogulbQ2dfOyRYFY4bjAST8OhdFSgB
- BVsR+d48=
-X-Gm-Gg: AfdE7ckL3/jcEYbCb101iWGtKB5TUMOoa11L5CeS4JuTZFx4AIsVXIrv6vIOq/eybwA
- 82972kOllNZuBYsic9BQmiaUH3HWCkkRmpglMCTPY1lWaWCST20qnS61D/d8npO7I1+VReYygex
- dG/SCIpxBbp7gVQoEI6x7qArPWZk+EiP0LQdVBb24Kx6WCAfqpLoYhXSF5FWRNNsdMGpbhNgs/b
- VZYp7KMuEVZ/xcbhoqdrPQLTX2QuYMM6NUcmcZE88PvTIlpLSnqpyEXinA0azCXhQOA8JHUPCaH
- FbZnaYhKrOKUmFLLkDbJrSPjCmEimzhcvKT/7jE2xLL4+27S922i5WsvNziy7BlZg4slS3aMU3b
- eI8ELkmpXhbUoR2RRXm1mqaafnt/fJrRszJ25H0xkgRmQZRSjgg0vgyvL/GRVPnO7gkMBRE2va2
- jdOLFtgRCfY3JY77E2TR0hDhP1qIBTbw==
-X-Received: by 2002:a05:600c:3222:b0:493:bc92:2a2f with SMTP id
- 5b1f17b1804b1-493c3cd5914mr18370505e9.1.1782929844261; 
- Wed, 01 Jul 2026 11:17:24 -0700 (PDT)
-Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-493be810c02sm101131525e9.11.2026.07.01.11.17.23
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 01 Jul 2026 11:17:23 -0700 (PDT)
-Message-ID: <beb393df-c89c-49e6-9e68-3ab9eb0d0bf2@suse.com>
-Date: Wed, 1 Jul 2026 20:17:23 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Vasileios Almpanis <vasileios.almpanis@virtuozzo.com>
-References: <20260701110038.175976-1-vasileios.almpanis@virtuozzo.com>
-Content-Language: en-US
-In-Reply-To: <20260701110038.175976-1-vasileios.almpanis@virtuozzo.com>
+ d=1e100.net; s=20251104; t=1782966308; x=1783571108;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=5ympKi2+Ww64RkA6BqsHliPR4eUB/h52Iks1NTTBDhA=;
+ b=Pci00wb4Xe0iYCEuz3F1cZladgEIR9jAGfWWCOnSbU2+E4VrhNJ5xTdCBH7tL9oVYi
+ GfFU3rpP5S2IaO40tXXF5DlCC2oyPgDahcV6LIBdoDRMX6bn1iHFTHg8WmrzWfxNhu7e
+ iXV+JBRSWRhQVJVUMAmU+/rLfE18B21AqZxtzRXqQi5FNIuorrac/QuE2t3PO1eiyvtL
+ En0K4KlZa5mVEGn65lrcIRJuaSK4e3ODR6FkJpdMKcqlrPOLuhSXmCDiJ84tghXiyYZI
+ kWp6MssgGeqrga4Eqmtnx54rvDfHYQrzsG0riC4lHdoQvmuF8m7ltVUD5yKpyFXgR4Ov
+ lFyQ==
+X-Gm-Message-State: AOJu0Yyc3afIhc4gKNGhtw8kh7dCt+TcqEfT2/gLU1xdOdj76PYZPdiK
+ v2i4YvJFHnd/YpziS59lE8qYRdonuFo/VmExAxoWUkuE6KVO1M7uXT5uC56cLmN6j2qjh2xKwjR
+ WMN0dDikAtGcdOOYD5ltpkw7BG12okOzvEZqwyw9N3LfeIK0RzYeEe6v5rvxB1buHO29CxyVwjC
+ YMX/7MfaRLW9qJkCuV4Q9C6Qe3Hg==
+X-Received: from pjqu11.prod.google.com ([2002:a17:90a:ae8b:b0:37d:8595:7a08])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:574d:b0:37f:b17e:133c
+ with SMTP id 98e67ed59e1d1-380aa1d3e36mr4314656a91.25.1782966307767; Wed, 01
+ Jul 2026 21:25:07 -0700 (PDT)
+Date: Thu,  2 Jul 2026 04:25:05 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.55.0.rc0.799.gd6f94ed593-goog
+Message-ID: <20260702042505.389515-1-wakel@google.com>
+To: ltp@lists.linux.it
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] df01: detect "fuse" fstype in addition to
- "fuseblk"
+Subject: [LTP] [PATCH] syscalls/lsm_list_modules02: Log unrecognized LSM IDs
+ with TINFO instead of TBROK
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,20 +85,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Avinesh Kumar via ltp <ltp@lists.linux.it>
-Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Cc: ltp@lists.linux.it
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: Wake Liu <wakel@google.com>, r.kothari@samsung.corp-partner.google.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+When running lsm_list_modules02 on systems with newer upstream kernels
+containing newly introduced LSMs, or on vendor/OEM kernels with out-of-tree
+security modules enabled, lsm_list_modules(ids, size, 0) returns valid LSM
+IDs that might not yet be mapped in the hardcoded switch (ids[i]) table.
 
-Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
+Currently, encountering any unrecognized LSM ID causes the test to immediately
+terminate with tst_brk(TBROK, "Unsupported LSM: %lu", ids[i]). This prevents
+testing of other well-known standard LSMs present on the system.
 
-Regards,
-Avinesh
+Downgrade the unrecognized LSM ID handling from TBROK to TINFO and continue
+iterating over the remaining IDs. This improves test robustness across
+various kernel configurations while maintaining rigorous verification for all
+known standard LSM modules.
+
+Signed-off-by: Wake Liu <wakel@google.com>
+---
+ testcases/kernel/syscalls/lsm/lsm_list_modules02.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/lsm/lsm_list_modules02.c b/testcases/kernel/syscalls/lsm/lsm_list_modules02.c
+index 91e5b7fa2..ede89ee73 100644
+--- a/testcases/kernel/syscalls/lsm/lsm_list_modules02.c
++++ b/testcases/kernel/syscalls/lsm/lsm_list_modules02.c
+@@ -95,8 +95,11 @@ static void run(void)
+ 			break;
+ 		}
+ 
+-		if (!name)
+-			tst_brk(TBROK, "Unsupported LSM: %lu", ids[i]);
++		if (!name) {
++			tst_res(TINFO, "Skipping unrecognized LSM ID: %lu",
++				(unsigned long)ids[i]);
++			continue;
++		}
+ 
+ 		for (counter = 0; counter < lsm_names_count; counter++) {
+ 			if (!strcmp(name, lsm_names[counter].name)) {
+-- 
+2.55.0.rc0.799.gd6f94ed593-goog
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
