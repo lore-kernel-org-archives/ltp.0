@@ -4,59 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EBAFC43458
-	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 12:05:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59129C43458
+	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 12:11:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782994289; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=IWek4hrXxcFhmrdCSllLK8vygd+ht3ptvcIx+HYGjm0=;
+ b=GtqvNG/c6LzSyykpTwaSGv6BvU3sLZPiiOKTO0mEPFMFJLg7oe/1qVtYgFnH19EM58bBN
+ 2qhQFxBofQ3DHi5FEp/fqIu5z81I8a3Bl9Lc5aap+IT9mao27tCp+/CblBXPROE/XCg71ZV
+ eECb8DcPugDTDNQMHdTGmckm8/eH7Fw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1DA073E49D2
-	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 14:05:31 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id CC6373E4A20
+	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 14:11:29 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6B4FC3E49D2
- for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:05:17 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 509433E2F39
+ for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:11:11 +0200 (CEST)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
+ [IPv6:2a00:1450:4864:20::42b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BF666200392
- for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:05:16 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 22062741AA;
- Thu,  2 Jul 2026 12:05:15 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4D45779AA;
- Thu,  2 Jul 2026 12:05:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6hvFKvpTRmpnHAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 02 Jul 2026 12:05:14 +0000
-Date: Thu, 2 Jul 2026 14:05:09 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Wake Liu <wakel@google.com>
-Message-ID: <20260702120509.GA535731@pevik>
-References: <20260702042505.389515-1-wakel@google.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260702042505.389515-1-wakel@google.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 22062741AA
-X-Rspamd-Action: no action
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E07E12001AF
+ for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:11:10 +0200 (CEST)
+Received: by mail-wr1-x42b.google.com with SMTP id
+ ffacd0b85a97d-476a130c138so1615714f8f.0
+ for <ltp@lists.linux.it>; Thu, 02 Jul 2026 05:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1782994270; x=1783599070; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=U+B1uZC2r4GRjGdw4VPjJ5KcdVoWL04FOb5s8lHAeYQ=;
+ b=dtxOfyVVb33Z8dpCTxiGUZaonVOYBNOstDskAfcW+8Uij7CeCtnGDfZ+ySeasH4fHy
+ 0bckNddKfXt3iBvVbe/IlmuhidMkfQ1jyjV+tJ3ysFfspV9ydaSetoUD3DMjo3FyHpJ6
+ fOvxfQ9pWvoxYXSvDnWtsfHibC77iX/R9ZucEMdTXXYRl/bjzMu1+AtqGoNA6C6/IeN5
+ JXIPUdh9w6qqgB2+QLophTQ6sTc+5wDWRtqF1rZvcnRWh8P8Y7Hujw/Qdoc5OD3cjcSP
+ 4CQqMa1ZvHWr7/ApEuRHvxiYYmlUuJB87BcPrnjN1y7lI4kJohlCKUPPZlgtCUX4hBg/
+ GBXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1782994270; x=1783599070;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=U+B1uZC2r4GRjGdw4VPjJ5KcdVoWL04FOb5s8lHAeYQ=;
+ b=lYrF9fbTp0OTMXdWGCcNFSAkxzHkqlTiDJAcf50ABN5hcS2kgKn5/3/bxVz6rpsdDw
+ 8QR6NZB6DP6LAxuhgCEyFApe10O9yjhG3paHY9aINk5WPTWGMPvO0Mz6aXtB8quZtSQs
+ uMXqIL15DgdArFufw5UdQeTIDQiT2UAOE0ZJ/AeJAckuaOu3H/BAtFZI7KXubCbQ2uR7
+ yS2yAalCtr50jasasCp18fss3UBKPQX9gANHrENUha8NhpYhW5nUFu+CsMYvY/PQkoWV
+ tayb2660e6EOV4RRfAz1oeBT6SuRzmMsCGLw5QdWw92Su5cqzN+foR1C1Gb6YeyQtBtB
+ TJIg==
+X-Forwarded-Encrypted: i=1;
+ AHgh+RoarEkitTrPODBLocK5GzCX+X1y3NTuge6fJMwoYv9XhXV0akFcZ3lMMpzpS8gpm+lqUOk=@lists.linux.it
+X-Gm-Message-State: AOJu0YwyLqwxh5cW1JwE5cW5oI0vkIr+q4x8Yl0bMxvHLl8NekNXtZJs
+ +gikey4yBeLvYUZIPpRidFchIGouvil3DMeb7s9MZ6f/qYyJ43+GIuGhUV3YCluKJc8=
+X-Gm-Gg: AfdE7cnJuyIpNV1SVnDpw4k1npclN7tu8lqrN6xeibP/y+1ZHwqtYQI+ev4p2cKbKbD
+ gk6CPv9e7CotaDDYgUOAKJ5bwNC6CTfaYU4l+DZOSVNY5cVeO+qGUUfWz+7wAccjcmCKtSdrCrC
+ gheTC+dEzDgDijZXS0xJDsH54O5cOK9lPQIcjREPsDWuQK1oU5XGmaoeOsq3uX6WnVLyYpitmog
+ LpnpTQDQM25wfn7yAOvJ+99z8HbK4B+67+ySSsX8aGOMprBCoz/mL+P6j0brw4qgI2qof8fpYeq
+ Pb/Jwkh/WEOT9QOHsp4n+BtIggDL2wtFgDbmYu861Hmv4VRH5BZn95DqcBZAK3Cz0y1I16Y1gPK
+ FiCx3NB/7l8xNattUng4WHgwx/MDmSryyUW5NKKFACye+ilosarV2nfs0G0y+LSViMDlrfJazui
+ jCuFB60rWM0zgVMQ+lvJWdjID5nGlgtLFMKQ6fcduwFcod7d15TLpvCQh2q1lA5Q==
+X-Received: by 2002:adf:f30d:0:b0:477:80fa:f447 with SMTP id
+ ffacd0b85a97d-477b5677a50mr5070155f8f.43.1782994270251; 
+ Thu, 02 Jul 2026 05:11:10 -0700 (PDT)
+Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
+ [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-477db3dbc75sm8977543f8f.5.2026.07.02.05.11.09
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 02 Jul 2026 05:11:09 -0700 (PDT)
+Message-ID: <6a46555d.b7086f8d.ed78d.7df0@mx.google.com>
+To: "Petr Vorel" <pvorel@suse.cz>
+In-Reply-To: <20260702120509.GA535731@pevik>
+Date: Thu, 02 Jul 2026 12:11:09 +0000
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] syscalls/lsm_list_modules02: Log unrecognized LSM
@@ -72,61 +97,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: r.kothari@samsung.corp-partner.google.com, ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Wake Liu <wakel@google.com>, r.kothari@samsung.corp-partner.google.com,
+ ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wake,
+> How about changing this to TCONF? It would be more obvious something was
+> skipped. This can be done before merge.
 
-> When running lsm_list_modules02 on systems with newer upstream kernels
-> containing newly introduced LSMs, or on vendor/OEM kernels with out-of-tree
-> security modules enabled, lsm_list_modules(ids, size, 0) returns valid LSM
-> IDs that might not yet be mapped in the hardcoded switch (ids[i]) table.
+This makes sense, I will add it before merge.
 
-> Currently, encountering any unrecognized LSM ID causes the test to immediately
-> terminate with tst_brk(TBROK, "Unsupported LSM: %lu", ids[i]). This prevents
-> testing of other well-known standard LSMs present on the system.
-
-> Downgrade the unrecognized LSM ID handling from TBROK to TINFO and continue
-> iterating over the remaining IDs. This improves test robustness across
-> various kernel configurations while maintaining rigorous verification for all
-> known standard LSM modules.
-
-Thanks!
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-> Signed-off-by: Wake Liu <wakel@google.com>
-> ---
->  testcases/kernel/syscalls/lsm/lsm_list_modules02.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-
-> diff --git a/testcases/kernel/syscalls/lsm/lsm_list_modules02.c b/testcases/kernel/syscalls/lsm/lsm_list_modules02.c
-> index 91e5b7fa2..ede89ee73 100644
-> --- a/testcases/kernel/syscalls/lsm/lsm_list_modules02.c
-> +++ b/testcases/kernel/syscalls/lsm/lsm_list_modules02.c
-> @@ -95,8 +95,11 @@ static void run(void)
->  			break;
->  		}
-
-> -		if (!name)
-> -			tst_brk(TBROK, "Unsupported LSM: %lu", ids[i]);
-> +		if (!name) {
-> +			tst_res(TINFO, "Skipping unrecognized LSM ID: %lu",
-How about changing this to TCONF? It would be more obvious something was
-skipped. This can be done before merge.
-
-Kind regards,
-Petr
-
-> +				(unsigned long)ids[i]);
-> +			continue;
-> +		}
-
->  		for (counter = 0; counter < lsm_names_count; counter++) {
->  			if (!strcmp(name, lsm_names[counter].name)) {
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
