@@ -4,81 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4322AC43327
-	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 12:45:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75E0AC43458
+	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 12:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1782996662; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=GV3GIkh2rXduOw+16T2Bkq0GP112tWTU6sOyF1D5mR4=;
+ b=dwQgb4zoeHg/Pw2n3GzmHUIfEysu5N1KrzYkRmV0ynC7+DgmP1Lfr6PQm8klQkvuNqiak
+ dAzdQ08hP0cHcZKmNdlmfRiCAcH0Gbo+P8LzdeVNkXfRV5NgUY9zokDn1kuTNuGt8hNF+Ez
+ CJHohYvtjqMQA2nflUl0ROb3ogYIkCU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DBF4B3E4A20
-	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 14:45:09 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 036333E4A19
+	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 14:51:02 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0FCF63C9F78
- for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:44:55 +0200 (CEST)
-Received: from mail-pj2-x02.google.com (mail-pj2-x02.google.com
- [IPv6:2607:f8b0:4864:39::2])
+ by picard.linux.it (Postfix) with ESMTPS id 652913E2F39
+ for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:50:42 +0200 (CEST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C36BF600658
- for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:44:54 +0200 (CEST)
-Received: by mail-pj2-x02.google.com with SMTP id
- d9443c01a7336-2c9f52ad059so10329685ad.1
- for <ltp@lists.linux.it>; Thu, 02 Jul 2026 05:44:54 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A83C31400044
+ for <ltp@lists.linux.it>; Thu,  2 Jul 2026 14:50:41 +0200 (CEST)
+Received: by mail-wm1-x335.google.com with SMTP id
+ 5b1f17b1804b1-493c5220cb7so7735535e9.3
+ for <ltp@lists.linux.it>; Thu, 02 Jul 2026 05:50:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1782996292; x=1783601092; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=myKT/VgK8Xb+oJi9EypX0THw/JYHHp9lpb0SM57XxAg=;
- b=LfebaPi2V1nC2C60Klqeqiyj1mCC3Ds7ZVspfVGyRuYCKinSrsG6Q6DDNDztOepedk
- NShR5Uy+7h1vBgaZPzgis7j55Kq0WINyf54ishE7WSh94hfAE2UH9YVn7jgUsz/H7gZJ
- 288KoqZVDLfM5QBLsm9gnX+rh6d52dAmCP2kviCxHQZvt8jU47tLG11eieDNbnXOIIaz
- iyRbW5Y+ZWGyttXuHp9tD/jfJPA13MtWU2nJ73YcI3euqsKxbLg+2Ww+4G23Vq7IecrT
- 73+ClwWtlxsioK1q89dVPF1IU+plK6DCS44olfPfdNTr5BXnBWxLx0i7xy9McQCm9PWB
- mMxw==
+ d=suse.com; s=google; t=1782996641; x=1783601441; darn=lists.linux.it;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:from:to:cc:subject:date:message-id:reply-to;
+ bh=eijj5H+LizwFdJ6o2PBKZg/lVR3uEsYPbnzS7+KX5t8=;
+ b=EqjZilF+d7xyDZvOV6aBrC3hDqsKnxKPsRAOFpQYhoQR42mJIQ/F0eLdZruboFuToB
+ +YFtGBp8ksgbJ9f5DFpeUQQTt130YhF02nnS/ymJT46rZlBxQD+GOtOUqVa7kfgxlXP5
+ rMDd1tSLV8kkoE3lhjraLZ0UMNG2z0H7Wx5EQkF6XX27liK+IMX1oFj9jFrAfkLIETEh
+ tSFS91TWhMzp9cqldaPRXOLx11qfPEl0p8yUsfy7P08CQnXSuWW6VreMeYudSUE1HrE5
+ zbb2YNtBw/TgacmvmX06skSkMjiEuxuCBDDk6LavyhXSmZZU7qdkWoEs3r+fuGqKzlIB
+ 53gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1782996292; x=1783601092;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=myKT/VgK8Xb+oJi9EypX0THw/JYHHp9lpb0SM57XxAg=;
- b=fKDG/L7WgRHfNUyay3wjDEflFGUh/lqX8bvMVPIb1IZvHBoYyZG2yqj1ywIX1duKkH
- 8Mgu+2MA9fn7bkaZYVPUcki1Fgp7SOcdG0bnMkDfPBECChV7dV1SXbNMRwoJB6BOcQXf
- bCIn2CKgffU1Z07KZ9zjUFbQxyX1LnKpLvZAbcAMen/xJDxJDuVLIIVvTVb+LpsWjbdw
- CeXxO/KF+e08TsW+uI/H8UhGa6YLPQSzChzDWUEh2q4sMKONdcgpverz3f7wMvF5GvQR
- VdW1N059VTd/jyEOWuz/FU2sQyYgJofr4sQNe3+t06LVHMtGaRR0YE1xf4H+64oIeTUa
- w3iw==
-X-Gm-Message-State: AOJu0YwwQBfjUxuf3Y7M39ukhvV12WbgsFtLixeXwI17+cCvMdFqXfdE
- Lduh7MPvHnPM1U7joRJ7rRrd1Ciiqry6QjTIlnsfDe9bkxpx5oEA2V2r
-X-Gm-Gg: AfdE7cmLsKpfRSWrsjwkhxRrCIZTY6IH3jNNbLqQXQdJ1pAWpfAuRDjGRSo/bqShxBX
- LmL3PVYFdcl5enbMQcIHUm2zSEckL9q/LOrRKihgmCFtUw2L/l8URuJUXBSVyYkgz+rIqMOYQDn
- 4fl/rOjt6HSP4ZspxOy1D4Mzr/8ZxiW2NkqKhSOdaLS+BJd/f3VIZBvW1k2YezfU7RG3tlvInHU
- sUEWTM2xazSy/cIOCdy3UpEb4Vs4zcEgU4YYNXvSGo9MBLlnk+nRHtIrIapqRTMGHxhS/IzyweQ
- EKWQ6+jHg4nQvPLyqAUx0O2TUzkJefEpN3VeIXSvZKWQmytYab7zVtJI+3g9rYeQIVYaE5v/EZI
- wxTtyRVULJ7WGRaDtNNW5nZQjf+XX4bqUmpitb4oxlbw1J/OYkc92+i1KCoLMlPLjn/CETrnmwD
- 1ucFVXcIvCJEGN792iZsxuzZ+R+UGTNP8eR5eKro9a9ghB6hqErkAdRSshIlSBqyc8fejno38Q5
- wJhifbRgiSLiI6XhoFl44leS0PAXwU=
-X-Received: by 2002:a05:6a21:2212:b0:398:6ea8:21d2 with SMTP id
- adf61e73a8af0-3bfed1c58fdmr7650157637.19.1782996292368; 
- Thu, 02 Jul 2026 05:44:52 -0700 (PDT)
-Received: from
- runnervmmklqx.dyirjykxpvjepimzttocctglgg.yx.internal.cloudapp.net
- ([172.215.223.208]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-30f0bbd2362sm9893092eec.20.2026.07.02.05.44.51
+ d=1e100.net; s=20251104; t=1782996641; x=1783601441;
+ h=date:content-transfer-encoding:subject:in-reply-to:cc:to:from
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=eijj5H+LizwFdJ6o2PBKZg/lVR3uEsYPbnzS7+KX5t8=;
+ b=sYBB+yG0RFTpvw0rk4HPHDd4LdL8qv7IXv5NVNfMHQEFb3Y27aq1kPSkleWaOqpJzU
+ DsB+lwac6ht80yUnwZETmaTiFETyhlDO+/fzbLMUh1A7h8Afd42sEn4PSz/ZZdGJK5wW
+ PPTcH5w31yyEb1GuFjFdB1AUBfnmBl5X0mre9IQB6C/l7yWKYt+VaVoE4C7Jgnap5FLo
+ 2UJF5r3+KN5bBX4H3sP/oUU9i2ZpOXF/87XcH9WC5zmTZMDQR4JH0S8RBTKmPJfEEt6m
+ fhFlIxngp2W6a/QIKzYt2gdpNm8RTCxkAYYzI66ct/YxITB2ep6X9GYNyOu+B8nqqDzp
+ VMXA==
+X-Gm-Message-State: AOJu0YwD9GH5f6A+BOGBeFz44231Okyjh7WSPkoK2iFWR9xppKPZHSUE
+ etWiqFjH/eb5sqT4OUpxH7j4t5VoN/CnqD5ReYUJ7qvG6UE3LM3X2p0dbx/O7EilAkiES+cuYJT
+ g/bGklQLdqA==
+X-Gm-Gg: AfdE7cnhdfPCAKorlNPLECNy3zsATBAUYb1pJnTpniIfEh7mQIH2pVo3tblD6S/X+gu
+ j5ifAr/yk1YbhilDMGa9kl0FjWGo4CJ55V6foUJpayyikpK7QxwGWxziXgCl0QP09i/UdevJaYW
+ 3Y5hbxAhnujZozqM/o7Q80eHEi7nSlGUFRdH+2tC2vOa76fN2ugO/nMF1K5BRs8mlaDMJrAlQNt
+ gRRFZEF/TGTKJ30KUy2ayQEIoLM9HB4YcIx0jNU0HSVV1BBHC9E9kPbSKO76pdkzoDSQKaUa7jB
+ X3ysjaRwYMykT36N2nmnHOB1QQo0U2xXBClcpanNFFHXWEVuGTsE1CkM5GArEMhxCX6MDfbPCXh
+ Qhkbjjzsvfg8fcE2Y6myf6568FIbZTdNySXetMQ/rliEBu4ZSI0HtZGZMZd5VcI2ymV131mVFN7
+ 6pPsCBMnNJ/cFmXkGo/KvFjF8tBDXmsYTWyKN0iMLjn16QsjThr2hPrWxP8a/hwA==
+X-Received: by 2002:a05:600c:3e87:b0:493:b3ba:84b4 with SMTP id
+ 5b1f17b1804b1-493c3cfb0a3mr70053285e9.29.1782996640966; 
+ Thu, 02 Jul 2026 05:50:40 -0700 (PDT)
+Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
+ [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-477db3dbb79sm8480253f8f.2.2026.07.02.05.50.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Jul 2026 05:44:52 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
+ Thu, 02 Jul 2026 05:50:40 -0700 (PDT)
+Message-ID: <6a465ea0.464694de.1a6a30.8fb9@mx.google.com>
 To: Pavithra <pavrampu@linux.ibm.com>
-Date: Thu,  2 Jul 2026 12:44:50 +0000
-Message-ID: <20260702124450.4541-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260404121120.1611032-1-pavrampu@linux.ibm.com>
-References: <20260404121120.1611032-1-pavrampu@linux.ibm.com>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+Date: Thu, 02 Jul 2026 12:50:40 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Migrating the libhugetlbfs/testcases/quota.c - v2
+Subject: Re: [LTP] [PATCH] Migrating the libhugetlbfs/testcases/quota.c - v2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,7 +95,10 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: pavrampu@linux.ibm.com, ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -98,52 +106,19 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Pavithra,
 
-On Sat Apr  4 17:41:20 2026 +0530, Pavithra wrote:
-> Migrating the libhugetlbfs/testcases/quota.c - v2
+I run the agent to all hugelibs patches to catch the most
+obvious errors. I reviewed them and they seem positive, so feel
+free to send a new version following the indications.
 
-> Migrating the libhugetlbfs/testcases/quota.c - v2
-
-The "- v2" suffix is a patch-revision marker that must be stripped from
-the final commit subject before merging.
-
-The subject should also follow the LTP convention of naming the
-subsystem and what is being added, for example:
-
-  hugetlb/hugemmap: add hugemmap33 to test hugetlbfs quota accounting
-
-> +/*\
-> + * Test hugetlbfs quota accounting with filesystem size limits.
-> + *
-> + * The number of global huge pages available to a mounted hugetlbfs
-> + * filesystem can be limited using a quota mechanism by setting the
-> + * size attribute at mount time. Older kernels did not properly handle
-> + * quota accounting in a number of cases (e.g., for MAP_PRIVATE pages,
-> + * and with MAP_SHARED reservation).
-> + *
-> + * This test replays some scenarios on a privately mounted filesystem
-> + * with quota to check for regressions in hugetlbfs quota accounting.
-> + */
-
-Ground Rule 4 requires that when a test sets .needs_root = 1, the
-reason must be stated in the doc comment.  The test mounts a second
-hugetlbfs instance with a quota limit in setup(), which requires
-CAP_SYS_ADMIN, but the description block is silent on this.
-
-A sentence like the following should be added:
-
-  Root is required to mount the quota-limited hugetlbfs instance.
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+Please, don't append the version of the patch in the commit
+message subject. All git commits have a specific section for it,
+after the SOB and '---'
 
 Regards,
-LTP AI Reviewer
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
