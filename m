@@ -4,82 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BF28C43327
-	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 02:57:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D3F3C43458
+	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 08:23:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 28BD53E724C
-	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 04:57:23 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 3A11D3E72D0
+	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 10:23:33 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 11D833E4A28
- for <ltp@lists.linux.it>; Fri,  3 Jul 2026 04:57:00 +0200 (CEST)
-Received: from mail-pj2-x04.google.com (mail-pj2-x04.google.com
- [IPv6:2607:f8b0:4864:39::4])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DD5C73E2325
+ for <ltp@lists.linux.it>; Fri,  3 Jul 2026 10:23:16 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 99F31600A3C
- for <ltp@lists.linux.it>; Fri,  3 Jul 2026 04:57:00 +0200 (CEST)
-Received: by mail-pj2-x04.google.com with SMTP id
- 98e67ed59e1d1-38109499830so38416a91.1
- for <ltp@lists.linux.it>; Thu, 02 Jul 2026 19:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1783047419; x=1783652219; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=eJn0Z37QhncetZX71I+jNzjXHLmLcX+cWNSg/RVKPC4=;
- b=cCTLRX2ct7J2B0qJz9Zrp2SeJ1Ng8dlllkr3EbZtrkJ8iBgsgPJrqyp3WKvmydR9Jc
- quPSbn1tHSHh6eWysLS7l4YKSw7u56hNSFmjPpCSl8E6vim6zYhvH9cLRzETt9SBHPSP
- 5AzI/hJ5UL1OPmXN3fDlAryS+1bwCCYDBzX8qwmumwU4z/f0h649MZXKu7OcUWafbNxs
- u2H/S+YCrAna1EReFuNsJhGLy5lFYYrTrsr+3yetJ5zEo8+1KoM4C7sDsVPX67y2VKdu
- xGcgaUwosEbNszMKnSdq6YEX280omnvaONKu/rMt3br/xYUMJJZx4y0BBkBOnUlcsJZC
- qxCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783047419; x=1783652219;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=eJn0Z37QhncetZX71I+jNzjXHLmLcX+cWNSg/RVKPC4=;
- b=rxZXB5BsM2qwQ3S0JhZaDG/S3uogzgieOnbRnDmzhclPUsJqMHAmVYRnLU6ExlRxhP
- mclQqrts42ExjTrEZvRAIvt8EbrtimmNavqyxzg1bhoQ3FcN//v0tLQz/WDvPhPrt4ET
- m7Gh9pq69fhOJ7R5Cd1ULwqU5FOWZaXZVXLN4e5aQXDW24QYGrfiVN1+7SiCa/ShC7U0
- Fd+3uVFPlfwA47efnaJBJ6c1FtmHI6nUjrvqE+ucPgCH3lcoGQBR7ympZ3L2cpctWriO
- Uuh807wPtHux3dej+afW9CmvIXOn1+JvJjctX+3tovs2p+4jSoUePDhhUph7kEvQezt5
- vlwg==
-X-Gm-Message-State: AOJu0YwlVwcGRa1dhAFFlWPRiUSyXMTLxn2DRsvnkgSSgKZoy0/fFKX/
- 2zxB7j3zLTGG5OnDyToJIRaJiNnQQAQKxuNgEYicTlvJvmzwVzRXOjjdXrpR01e2
-X-Gm-Gg: AfdE7cn+kUDFkNK3vfdGslSNp3aguIZxBD1/lyrJPbT+8rLkW2SbToUyKeWF95AcRn7
- 461XIngX9ac8ULNEVttDNU1UBO2lwo5/BxUvqZ9AexIeZm/o0165mWz9JxU99O4ITzOphpDVzgf
- 1qPTemFI+tJUyhZ677AzKlqoFrfD5+CDqo7+vQdJLk821JV5XSYjXb5NkYnNt5uU1wF86wzZo4H
- /KKWug0UGpUffjpTW/2NTi/7/uUzTHDKIq4/NNVoCfJhLo7CQfRbcT9G8QBGcRKJy2090MaksSE
- 2fZDf+9EsPcetxFyQrD7XsoiNa3zy8vNUId0C+MwNrl1UXUvbQCi7hNgV83ltSUpib7I8u5Ivir
- 1LJ1L7/Pt1zYkHdTSud2hgvpISNdDiEQnVYkQNk7JNGRtq9wfK42q0Rh6DXY3rwtgAaPbL4YdBT
- CfRAdC10YqyToEp1kvLYHg3PljgANWeV+jZKd7mejen3F61NpYHFdqaeUVKEEnf4KhtQOtKu4U9
- smOLyDdUn0lUj3hSVA+RmjillUGU6OlIvUlMw==
-X-Received: by 2002:a05:6a20:b40b:b0:3bf:7081:9356 with SMTP id
- adf61e73a8af0-3bfed1dc2f4mr10402087637.17.1783047418672; 
- Thu, 02 Jul 2026 19:56:58 -0700 (PDT)
-Received: from
- runnervmkkn4f.asvzwpaisvpufprmrd2hncfpjb.yx.internal.cloudapp.net
- ([52.161.57.34]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-30f0b7bb8fasm14280310eec.1.2026.07.02.19.56.58
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Jul 2026 19:56:58 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Fri,  3 Jul 2026 02:56:57 +0000
-Message-ID: <20260703025657.3966-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260703015745.20728-1-wegao@suse.com>
-References: <20260703015745.20728-1-wegao@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8D4AE1400E55
+ for <ltp@lists.linux.it>; Fri,  3 Jul 2026 10:23:15 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E93B5747DA;
+ Fri,  3 Jul 2026 08:23:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1783066989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=k4Sbt/X2uAZdydPvxRx9ax8VYrK8JeZ9SoLEBD+dYx4=;
+ b=wD8HPfdQCnNCKmOhTGQZANTgkuUYREGi25mqH5RkqiArEWZJf8IIR4X7Pxi5dtBRUUyVPK
+ AiVxdfzaraE0oi7Ojc6tS7cxwE7t3Z1A3c93p3VVKoww3CkvbBj6FvQmYINq5IpuUEQV00
+ n6/4+BNfXzZ9SYeAlvFkuE/V4TtTulY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1783066989;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=k4Sbt/X2uAZdydPvxRx9ax8VYrK8JeZ9SoLEBD+dYx4=;
+ b=9r+F+6wZoHdMcI6dVXs/o4hvWD1VFe9/QsqVFQ//RvJFSEHkwAudf/6W+kfX6+mu29RukS
+ vkgznHpFWb/eL5BQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1783066988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=k4Sbt/X2uAZdydPvxRx9ax8VYrK8JeZ9SoLEBD+dYx4=;
+ b=p8UU0/jY6yLWOtptqF4n3nQaHJRC405GlFdAKyi1u4l552/qCAvxeTNBH5ca5Wm9yU0vUi
+ Ydg8iD+i3lfhbbnjmABMwBNGq5nSKt8Za/9WbNesVmY77pWmVjG3l74ZVC64dERaO8uuAn
+ THCkLoOoUk9XPlbox/9jUbXz7ZPBWFY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1783066988;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=k4Sbt/X2uAZdydPvxRx9ax8VYrK8JeZ9SoLEBD+dYx4=;
+ b=KLQREeeF67dtHwsu9KV+ISYUyaswKNUGWlJtoaA9+vdgb//FlQeFgQZdmSy6jf9JU8eFl1
+ hk9VdS2OPQe1uoAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CE0A2779AA;
+ Fri,  3 Jul 2026 08:23:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +gAzMGxxR2obMgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 03 Jul 2026 08:23:08 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Fri, 03 Jul 2026 10:23:08 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+Message-Id: <20260703-fix_memcg_stress-v1-1-93bd09a62446@suse.com>
+X-B4-Tracking: v=1; b=H4sIAGtxR2oC/x2MWwqAIBAAryL7nWBGG3WViChbbT964EYE4d2TP
+ gdm5gWhyCTQqRci3Sx87BnKQoFbpz2Q5iUzWGPRNKbSnp9xo82FUa5IIto4RGxnP9UeIWdnpOz
+ 8y35I6QNWQ3hIYgAAAA==
+X-Change-ID: 20260703-fix_memcg_stress-0c6669bfa5f6
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783066988; l=2317;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=OGcQlUrUh3eG51j4dXlkGohgY6mR0TkZAw4iFJXuelU=;
+ b=kqzn8JumTtbhm7kahRgDMdtc5a11CIS6IlG7V/xq+1QQKih9yPJdYntGjipNvkASTdWlmGU52
+ GgNX8zjb3YICr4cnV/jB75DiVUnovcpL/hEjKbv0osMvudG6xRb+ctL
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ TO_DN_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
+ suse.com:mid]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] statx/statx04: Skip vfat and exfat filesystems
+Subject: [LTP] [PATCH] memcg_stress: survive OOM by targeting the stressors
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,28 +115,65 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-On Fri, Jul 3 2026, Wei Gao wrote:
-> statx/statx04: Skip vfat and exfat filesystems
+The single-cgroup subtest intentionally lets one process fault in the
+whole memory budget to push the system to its memory ceiling, so hitting
+the OOM killer is an expected part of the stress. The problem is that the
+OOM killer could reap the driver script, turning that expected pressure
+into a spurious TBROK.
 
-Verdict - Reviewed
+Mark the stress processes as the preferred OOM victims. A killed stressor
+is already reaped and cleaned up by the test, while the driver survives
+and reports the result.
+
+Fixes: 02961a7b2bb4 ("memcg_stress_test.sh: Fix reserved mem calculate")
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+On some systems this might happens:
+
+[  244.207623][T117130] kirk[3061]: memcg_stress: start (command: memcg_stress_test.sh)
+[  244.391438][T117164] memcg_stress_te (117164): drop_caches: 3
+[ 1444.509722][T119900] kirk[3061]: memcg_stress: end (returncode: -1)
+[ 1444.629434][T119934] kirk[3061]: memcg_control: start (command: memcg_control_test.sh)
+[ 1445.856012][T120020] mem_process invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
+---
+ testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+index 47cac9af8bec970b7fb338c5469ab73d55267740..14a5ddeeaa45a1bc5e30b2fa7640bcb1effbd94b 100755
+--- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+@@ -71,8 +71,12 @@ run_stress()
+ 	for i in $(seq 0 $(($cgroups-1))); do
+ 		ROD mkdir "$test_path/$i"
+ 		memcg_process_stress $mem_size $interval &
+-		ROD echo $! \> "$test_path/$i/$task_list"
+-		pids="$pids $!"
++		pid=$!
++		ROD echo $pid \> "$test_path/$i/$task_list"
++		# Make the stress process the preferred OOM victim so that memory
++		# pressure kills a stressor rather than the driver script.
++		echo 1000 > "/proc/$pid/oom_score_adj" 2>/dev/null
++		pids="$pids $pid"
+ 	done
+ 
+ 	for pid in $pids; do
 
 ---
-Note:
+base-commit: 4898cb95b01b8a3ab5e1ea752990deca7a66ca34
+change-id: 20260703-fix_memcg_stress-0c6669bfa5f6
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+Best regards,
+-- 
+Andrea Cervesato <andrea.cervesato@suse.com>
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
