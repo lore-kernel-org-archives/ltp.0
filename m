@@ -4,81 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86B9DC43458
-	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 15:24:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28D95C43458
+	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 01:58:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1783043889; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=apikVu/Truz5wJy0JEjCAr81akvt82g//pxIvpbGHf8=;
+ b=kiOb909Lh6v358iSBA2SUl+uwx4O0B2MXyuQw5tRZe/neJeB1tG0tojJQkfUa0bQPR75X
+ 8EQK8NRUrRpiJCTNIILfwJsNtir4NxnRbnuu03KAyOE6EJwTi+/cjaWUCrYfdprq1yz9KXt
+ RyaCt8hVUd3LBggZ5zgOdU6s6QGdtFM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 66CB93E4A76
-	for <ltp@archiver.kernel.org>; Thu,  2 Jul 2026 17:24:40 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D25D73E72DB
+	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 03:58:09 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 95D4E3E16D1
- for <ltp@lists.linux.it>; Thu,  2 Jul 2026 17:24:25 +0200 (CEST)
-Received: from mail-pj2-x03.google.com (mail-pj2-x03.google.com
- [IPv6:2607:f8b0:4864:39::3])
+ by picard.linux.it (Postfix) with ESMTPS id D35833E4A2B
+ for <ltp@lists.linux.it>; Fri,  3 Jul 2026 03:57:49 +0200 (CEST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0FDB0600287
- for <ltp@lists.linux.it>; Thu,  2 Jul 2026 17:24:25 +0200 (CEST)
-Received: by mail-pj2-x03.google.com with SMTP id
- 98e67ed59e1d1-381072761d4so176253a91.0
- for <ltp@lists.linux.it>; Thu, 02 Jul 2026 08:24:24 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 313DD600A04
+ for <ltp@lists.linux.it>; Fri,  3 Jul 2026 03:57:49 +0200 (CEST)
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-493c83474ddso177555e9.3
+ for <ltp@lists.linux.it>; Thu, 02 Jul 2026 18:57:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1783005863; x=1783610663; darn=lists.linux.it;
+ d=suse.com; s=google; t=1783043868; x=1783648668; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=p5t9p2eRdamSNGwh8Mt8q9Fia3LXArJj2uGH0RZQLXY=;
- b=Rr88bEVxU3FGd3Dwmsanhis4p/ShZdSaAYIuM10XBXJNCubzJ5tlG17OGTxgLrUjyX
- ljKlS+KrAcBtLtQ+/ncdM1Dj3E/nrat+QJqkYBustNZzgds4oCh01+92w1/RKfWKsAjb
- mUC+ihJFCVEDW5l6oaXynvIt8J6uCRvuavxG9ZFW9ZuNPldLWr5r9SFpUvsdcydXc3+r
- w5jxHWzB1PKpPlx/4XCJMRJvy0mGCy0BBU+A3d/8ewpnmIk1Dk2DkDGG+jGgOti1t1Ah
- CYF+mHwuw84Ce/cHexQkMqknx84q4GnVo/grxqtwgwh9PBM/YRiL+R0p9xxTkQ6gv8qD
- lsBw==
+ bh=rgg872BBYqOZ8WuUCMp3wlLNRLeeU3mutxF6eajlVao=;
+ b=YkKf57RBLogz3bs0M36RaKOuT94vlllUrbH6I2K2ZW+8jiMBTTsrrbxWSLNkAfRDvr
+ O6Dwh0uHYW/nQMTvMyprlUkg7nPbvpvYX1/58TwnihYS3KOLvhNVizfoUwy4VEr64rsw
+ TWvYtKv/H0AUcbxHnPi5eSoq48e/Rw565Z7+JZthb/Os8mxi05Slq1ZGYmgqN0tkfY6o
+ OMKUKMLb3KRwZoH7HkQxiG7FhMzrVs6tVglXwm+r0LKgWubeixhiHk5Opc3nC0HWT/6T
+ 8QWpO4zwT2/7/Mh0ZnH7/opBI8YvDFYOAvYurXHeHJz9vN8Rt/R0XlKIjoIiWCp5k6a9
+ s5KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783005863; x=1783610663;
+ d=1e100.net; s=20251104; t=1783043868; x=1783648668;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=p5t9p2eRdamSNGwh8Mt8q9Fia3LXArJj2uGH0RZQLXY=;
- b=KNA1r2g/K+aUC+tY+9RUaW8e4CLPK+FlWtYGseo1/QoEOFOOVeDhalbNuccYlqZ+A+
- wx6Xpe4GnImakbamRqpmF97NiUogjsNn6zKafa+aMsqDxgjg+V8FasviJGCc/obpjp8j
- GiFPxGl1TcBRviNiG+CFBvWfiplTzr/6+oJ/HGf9KRwpWFj8dubLxWkEMRPBwVXe6IZN
- T9oy6mi68HlslOyAexMawzw5JMjItWjT3Dg65kISJPhcu1EoXsbcw/X9ukG8t9/TzNZT
- NGdQi+AwkV8b3oMtJsucsehypmHxJljC61OIIkOwJin6S9RraI1wViiHJwfvq2I8kgKV
- 8a1Q==
-X-Gm-Message-State: AOJu0Yz4cZ/G4o8lrlce0vAVPZM3vWiQzzTPEr6cotMm5+zfqUG1B82b
- CSp+zMmv9xk3+OrVcO+qCmRyimeiFH9mFx67tx55OE+50Xky1UnmZ/lZlQM+Rgjz
-X-Gm-Gg: AfdE7clsMFk8+UkpORdjaLCWj8lqNZbVfqcvIo6t1lY0FyCcuUOGk/h40baKAuYPTFs
- 4nWwmRtwgEsNPUQ1KbxOalWeaGsscZ77vGpeYlWoXJpFlsO6NPRFKS8anJ5Jwc3m3xImLFiRh94
- lJ9zwocKgWc2louBJZyQEABDCkC/YSKUk5S5DS9kOMS5VG2T6UyTXogRcVbSGNCzV+zfrl4CQsl
- iqrtNd5GG0u2li7Em36wlPSpP6iXy4HQ7Tiblw0bB12TnXXNMVsqadiXeBXxU6X9zyqwPLP5As6
- /iqOCV0X16Rh1NP/S4j81VZu7ZDH+a9GpsebNFo96s+jgbsYmNsYjoLQM9yzVInY3655J5xhea5
- y9rJCYdEK/NRfd+XoLptzVyY+YALs91216lypRezh3Bry7P21SHet4cTuD5uAL/4YaMmB/qUrHs
- 1cQRkc982lUN1z9Ej/8vqWqXq7BRYqSd3at0cm7RiPwT63fgdwBEX+obsaJT+NlK2Msl4tKnJOT
- sB1coXRj+v+H/yqQWlZGRhR7NZczA==
-X-Received: by 2002:a17:90b:4984:b0:37f:ee23:e44d with SMTP id
- 98e67ed59e1d1-380aa07e16amr6336967a91.3.1783005863031; 
- Thu, 02 Jul 2026 08:24:23 -0700 (PDT)
-Received: from
- runnervmmklqx.hmqk1t2ztchetnetzydz33jw3e.yx.internal.cloudapp.net
- ([57.151.137.139]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-30f0bc27e0dsm10460743eec.27.2026.07.02.08.24.21
+ bh=rgg872BBYqOZ8WuUCMp3wlLNRLeeU3mutxF6eajlVao=;
+ b=AECeMqGny+a0KXQ7LiVgjW77U4dU7GX/Fb9NQqWK/mXUmPIbCkzaL5sLS/QTRqg+E8
+ Nx+ZbZk08QeZK9VXeeTeQfi1qLLUNg1m/CMxoelGCeOIkfK4lUcq1QkNyGbK3sriC//Z
+ 8XorWoLgziv1YnHdAMOKJfGEUsbPaEa+IOlHI9mvg6DRi+ShIHDAOHhu3MVDuccuiK7H
+ F8X0WysH7wAwsU9lQwx7Uds7wCJJXauP9LmMxep9ZcCnPPZGB2w89b4+2lTLp5NUJT/2
+ EWv2A4c8/N0bgJXYGF9xpagniC1o50P0uF40AE+cDqeKvbJ9nw2VvuELs9xHborADQ/e
+ Htjg==
+X-Gm-Message-State: AOJu0YyDIxLIkdsVAOnWWnqMe4rX7WBm5lruy2JqCMJN4x2j80xqhiU0
+ ZefkDT7OKvVj7KmwDNSiTvj8CSnEtE5EdLEoN/4aKBhpoP9ShOuFMAiTfsfwNZLlte+7cu0xl1s
+ tlb0=
+X-Gm-Gg: AfdE7cmg3OBoHBxcw2Kq306Hi5zfNKo/9H0PWGSYDnin5kKodxSH5JGFfKXPChKF8hw
+ KDS2PJiGMdSb670RLSP0et7TDKUdZxa6h6gMNlxBivza0bAXJ7YY+4y7tE4gYFHYFGPBpTSmAnb
+ 8g5SI1H5X0yK7WRosObwudJ7DAsqcjvynbohNnpab5NIJNciO1uS51YVLHXzNBDNnBRlaXr63hV
+ ua/bIY4B3Bafibrt9yB/fjaG27dFBVuRF4se5XJaQYU7X9Spu9l9an3zA6uizQfyUjG+5oT/Ksz
+ D/xzkWoM5lnxQI/FMThfMRw+TSawG4R4EGz1wCht5rBCl4z6UbTNeCQMYAHRvBahRH8xv+4CSop
+ euEYhMgxRN0T5qgSv6JFf1FV2XhO2ZyE4qlqVKwy5I6Zo+1A5AAUb2Pb3MhFM9/8Ty/PRErvFoc
+ hd
+X-Received: by 2002:a05:600c:5307:b0:493:bfea:2786 with SMTP id
+ 5b1f17b1804b1-493c3df38b1mr109373965e9.32.1783043868432; 
+ Thu, 02 Jul 2026 18:57:48 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-493c637568dsm95417635e9.4.2026.07.02.18.57.46
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Jul 2026 08:24:22 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Piotr Kubaj <piotr.kubaj@intel.com>
-Date: Thu,  2 Jul 2026 15:24:14 +0000
-Message-ID: <20260702152414.4007-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260702134553.98581-2-piotr.kubaj@intel.com>
-References: <20260702134553.98581-2-piotr.kubaj@intel.com>
+ Thu, 02 Jul 2026 18:57:47 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Fri,  3 Jul 2026 01:57:24 +0000
+Message-ID: <20260703015745.20728-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260701080324.19270-1-wegao@suse.com>
+References: <20260701080324.19270-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] rfim: add new test for verifying RFIM sysfs interface
+Subject: [LTP] [PATCH v2] statx/statx04: Skip vfat and exfat filesystems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,35 +98,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Piotr,
+On newer kernels (v7.1-rc1+), vfat and exfat implement fileattr_get to
+support reporting casefolding. This causes the FS_IOC_GETFLAGS ioctl to
+return success, whereas on older kernels it returned ENOTTY.
 
-On Thu Jul  2 15:45:54 2026, Piotr Kubaj wrote:
-> rfim: add new test for verifying RFIM sysfs interface
+Since FS_IOC_GETFLAGS succeeds, statx04 assumes standard writable inode
+attributes (append, immutable, nodump) are supported on these
+filesystems. However, they are not, causing the statx() attribute check
+to fail with TFAIL.
 
-> + * so open() is what actually exercises access.
+Fix this by checking if the filesystem type is vfat or exfat and skipping
+the test with TCONF.
 
-The doc block must use the manpage-link format for syscall references.
-Should be:
+This addresses the failures introduced by the following upstream Linux
+kernel commits:
+- 27e0b573dd4a ("exfat: Implement fileattr_get for case sensitivity")
+- c92db2ca72fe ("fat: Implement fileattr_get for case sensitivity")
 
-  * so :manpage:`open(2)` is what actually exercises access.
-
-Verdict - Needs revision
-
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
-Note:
+ testcases/kernel/syscalls/statx/statx04.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
+index af30a200e..b2a2ac9cc 100644
+--- a/testcases/kernel/syscalls/statx/statx04.c
++++ b/testcases/kernel/syscalls/statx/statx04.c
+@@ -91,6 +91,15 @@ static void setup(void)
+ 	if (TST_RET)
+ 		tst_brk(TBROK | TTERRNO, "Unexpected ioctl() error");
+ 
++	/*
++	 * On newer kernels (v7.1-rc1+), vfat and exfat implement fileattr_get
++	 * to support reporting casefolding, which causes FS_IOC_GETFLAGS to
++	 * return success. However, they do not support standard writable inode
++	 * attributes (append, immutable, nodump). Skip them.
++	 */
++	if (!strcmp(tst_device->fs_type, "vfat") || !strcmp(tst_device->fs_type, "exfat"))
++		tst_brk(TCONF, "vfat and exfat do not support standard attributes");
++
+ 	for (i = 0, expected_mask = 0; i < ARRAY_SIZE(attr_list); i++)
+ 		expected_mask |= attr_list[i].attr;
+ 
+-- 
+2.54.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
