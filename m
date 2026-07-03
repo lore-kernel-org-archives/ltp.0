@@ -4,92 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1385CC43458
-	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 10:44:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 722C3C43602
+	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 13:00:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1783075489; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1783083628; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=n314vnyHN3CsKvBQ9PS+8v4mgc3lu3ef/RNFiQy8MBk=;
- b=SOKqxjiwt6Mr1ck38toVNEWOsRRXnH21gnVStLXV5ND/CDmqo7oZGClSjfP8BYSsyHzgP
- 8uUbBdFZkepttmC7Rr5Rj1K3MRFhbCWqDX8Oq9CLZamc0LgELEMcTEy5jtHgssWQQJmBhAF
- O1ySzqdGTfLjU/URBm9aBy1RzHUvKzs=
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=dvBH7UoH1yxGMW4S0yvlzFuReDEAJR4fJEEipt2aosM=;
+ b=ZnkoOmoQbscXxzTLqWqap/LnaPklZDJ01S3BcWHFJTyrgWLd8m7cniq8Umt7TMhYXU0z2
+ m2Dd4PsKyoEpnGLF4ZgilZwTaghbrNvdNmv+VstZO/OC8DuXbkqTp+eWTtMBa+PejBF7tXe
+ xPeBAZKMYEyZm9y0DkmS3+tRGZ2qUe0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6A6023E9441
-	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 12:44:49 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 99E043E9468
+	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 15:00:28 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8435D3C5F08
- for <ltp@lists.linux.it>; Fri,  3 Jul 2026 12:44:27 +0200 (CEST)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+ by picard.linux.it (Postfix) with ESMTPS id F1E4C3E1644
+ for <ltp@lists.linux.it>; Fri,  3 Jul 2026 15:00:09 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 044972003B4
- for <ltp@lists.linux.it>; Fri,  3 Jul 2026 12:44:26 +0200 (CEST)
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-493c00f74baso2578875e9.0
- for <ltp@lists.linux.it>; Fri, 03 Jul 2026 03:44:26 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7E46314010CB
+ for <ltp@lists.linux.it>; Fri,  3 Jul 2026 15:00:08 +0200 (CEST)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-493b779003fso2567055e9.3
+ for <ltp@lists.linux.it>; Fri, 03 Jul 2026 06:00:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1783075466; x=1783680266; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:cc:content-language
- :references:to:subject:user-agent:mime-version:date:message-id:from
- :to:cc:subject:date:message-id:reply-to;
- bh=1/iBNvNWAS6c1jWqLXeGnEEyLPGRnCmab56CR8HkarU=;
- b=PEip9FAzqhWgj4Clv7loif6vMWonUzTlaXyCkeUjo7qQErwD+XM6MxJM9tsUaUkwoo
- W0Lb5EjlJExoVQCObUywR55LuO41rz22FhPEMm6xDNXrOTtv6v344ApdrJOm9PgXVjOC
- vTtdoF1NWGNu2tXfsa3x4UbNnnJ8m/bbnwD7YgKI/N+yPVOQv/xeLxK/bXSJDNDTDEJ/
- 911njh1i/wM9ZKSlreRVrNKdW/jtWBU5JF36QnvOstvzuyQ89LvFBylWf1bV+bJMoQ2I
- JBOdjwYU2dgo5qSWItpWd4G4Ji//Yp1RD86zjONzcGhSq40I2UAv1fwISgVEKzRVBbWM
- /R3g==
+ d=suse.com; s=google; t=1783083608; x=1783688408; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=rA4o4zLhDpfhZmGyX+NAlQfPmTynktvQZHHhPkusDYo=;
+ b=V6fMPXrGOhUl2qmemg/2LmjxaYG0nx/QzG/GKje1S3fAG5QlmWlQMHedDFufedC42G
+ FuNCDpYNJ3sdFrMuiJThGnGq/RMe7RhqeYTvd6dMCXxc/f+yw22DDzknKvl8Qihq9SvH
+ vDvuDp40pWQVShfvsFQBSg5pg6tuh/kkFUhdOXJ+nsQyCPigwR7RYoi+VjhX/lLhCtXw
+ YQXqLDmKS9ZmUNRxUTbZpWxBGYjXFwhaFS2L5rQeuQWL8ZDCooMljLwnLtdM3kYxwhJ1
+ y+Z+4NUb7Mg0hqS7z7TesT/Y5GcuPoc73rrwL52yw6lfd/lGbBUuFyVNPa4yQ0BzAoqn
+ arTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783075466; x=1783680266;
- h=content-transfer-encoding:in-reply-to:from:cc:content-language
- :references:to:subject:user-agent:mime-version:date:message-id
- :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=1/iBNvNWAS6c1jWqLXeGnEEyLPGRnCmab56CR8HkarU=;
- b=JE2byGNAquJQI1tAaCytfJeWP4H2Z7MHF9lWwMLkCX9jrGcKO+WKjy8XPNEa7FHyrQ
- 0vPkTwyzwm5pjfQHxClUEf+3R369JyrS4pCyPtZt2GtvVSHIpEVP2OuPcI0GBCT9+luJ
- 6VKr3pcmJzBEpBlauEYjNViIY0LfDZejaE8Nux2DPPB+pv4HOt/FzMC6e1GACVb6sjFO
- F0OuebfcGLSUy/FVPHK4IKicbRppIYQghO/+ZBBeaPqqlLsN2s9O7jJ9zsJsdOsJ/N1F
- FqmTcqNDUcOfslqTWge9vqs3G/cJF8aHKO2UpGJNmiDYbhEGqqy/WW4+w2qBhnRcPOfD
- S/2g==
-X-Gm-Message-State: AOJu0Yx3MBosy3lbdNPfpX3NwIamZ3rAqbJ7T4DnGbib4yM3ukKBw5ns
- Qu1KLHSeaQx8P6I+Rhy+C2Bh6WSQeVvaTOJfDDPaPEdcVii41W+kFJHIAtyYAjNcjbKELyxDqh2
- pBhqKHto=
-X-Gm-Gg: AfdE7clAFOZUQuGERFOF1jKLtD7EP5vp5/nVFuaT7lpp8SLN7Rp3dsQExy7YG/Edrzv
- 5vjXfcJzFa8NlLBnUR32aqCPBRVDy97Q5hvuwZRM/Np0eFzRKP15vzSx30PxpJ3a54qmYmz51Tq
- 93h5q6FUEiurkfRLARosZkStc+jOVLaPeygMdhMwgNoaqNq6JW/8k9sxdQGnEMABUKDQ/6MX5p6
- Vb1R44X30jPh81LHf9XhGhcLFjs7woP2qurJ/cXvTArk2UmqSYFHOaStzzrMQI49CQj7/HrP+qa
- IlzHwfFnKNltrangEMJh/bYPdsQmMYAQpJpg7JpMSe8iBciB+GLpNrG1qnDaIfZYj3jQn/jOw0W
- ftScxw1Ag8VnnGd/AUHtrkjGRcKLQgSZMJS0ElpHwRB7ZYeorMhM1bf9e7V8ItHUbcz3j4iAxkE
- SrqDK/nm+n+kzfouugPGC+S9qVGAGjIf39mzyTUjm0
-X-Received: by 2002:a05:600d:6450:10b0:493:bdf1:fcde with SMTP id
- 5b1f17b1804b1-493c2b7c8bcmr116665415e9.19.1783075466168; 
- Fri, 03 Jul 2026 03:44:26 -0700 (PDT)
-Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-493c63bf7efsm124366485e9.14.2026.07.03.03.44.25
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 03 Jul 2026 03:44:25 -0700 (PDT)
-Message-ID: <846df469-f23e-41d2-a8d7-dbd1d0c63b6d@suse.com>
-Date: Fri, 3 Jul 2026 12:44:24 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Wei Gao <wegao@suse.com>
-References: <20260701080324.19270-1-wegao@suse.com>
- <20260703015745.20728-1-wegao@suse.com>
-Content-Language: en-US
+ d=1e100.net; s=20251104; t=1783083608; x=1783688408;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=rA4o4zLhDpfhZmGyX+NAlQfPmTynktvQZHHhPkusDYo=;
+ b=QDOj5bVfwk29flJLupKzSs9Mf8w5QFjEyWy4v2mAh7HmaDamSaFmGf9+ZHEKWbuHgU
+ MIq4Aq0XWpiLs3CIe66Lndvxoq/PfBU4jke7iCZhPFOThdvjO29iqblQBolEkRZpdULF
+ wvZzPHQgutZOTdpf82Xt2JrNN4SSSVlR0RVLb2N+sDT8zxla1UxyWJJ0QgKypA7q7DJz
+ jcIlR5bICm1+K7Noj0vEsC/9k+wSYIem5rMSYtyBAFNiBNOQH8v2rUAaHqdUu6UFWeR0
+ xcnKxuEahOoP9F8IezNnGwbldK8sTsNkhuGLKu9hOfZlw7LLqES/ufyLVwjaFnRsBYgA
+ GtHw==
+X-Gm-Message-State: AOJu0YzJYdwDyKTOkVkyzJe2l6nh/furtk8YfpDwHAtDCl88FaaB1M5B
+ mIzq1JAp7zXh+O0yaT01gSGCCLM9GRcgnEccIMlxJvI6cGqbxTq7FlKggspgj01rZTDQKVjAs8l
+ LyAo=
+X-Gm-Gg: AfdE7cmsjC1z7AdFsXti/2mg7mrnRJtmplplWV+w8dLm1pv8+tpos6+I0u9clWhuwzV
+ DWMMNjYPmxxs/eJqMnNXrhvbm9TK5l+w0f6SjG8dq6KGXoX1MDW+no9k2VjZJkEuuk6Cea8qBZI
+ +qeMBwN+ToSdwYgWv9NsJg1+4VBu42rlFc3tPBzpRbPXptCrful4rGyKsCeLxIoCiHujPlCWTFO
+ TpPPYjYy0m/MPDoVu5RRqk5OtHSxzIdc4GhtoDf9tZdvGzqycPbik02KZWRhBN66B+FkO5PD2nx
+ 8Lz90wTKiVjEcsN7ywOopJGdp4EazD+q9Jc4gQVV8JmSePOVqoMUpAYQ05pxgrHnaXlSpWC7N2T
+ 4WbrZrUQ4qAFYbgoa5Ous6+z7ZJonX/Kp0fIQXztPV4XCHTUjQXFcJQubSb2rjEiyluyoNShEqm
+ Xx
+X-Received: by 2002:a05:600c:5010:b0:493:72d3:4a81 with SMTP id
+ 5b1f17b1804b1-493c2b5161emr134908095e9.16.1783083607828; 
+ Fri, 03 Jul 2026 06:00:07 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-493cce040b4sm64840515e9.10.2026.07.03.06.00.07
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 03 Jul 2026 06:00:07 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Fri,  3 Jul 2026 12:59:29 +0000
+Message-ID: <20260703125958.21260-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260703015745.20728-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+References: <20260703015745.20728-1-wegao@suse.com>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] statx/statx04: Skip vfat and exfat filesystems
+Subject: [LTP] [PATCH v3] statx/statx04: Skip vfat and exfat filesystems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,68 +99,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Avinesh Kumar via ltp <ltp@lists.linux.it>
-Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+On newer kernels (v7.2-rc1+), vfat and exfat implement fileattr_get to
+support reporting casefolding. This causes the FS_IOC_GETFLAGS ioctl to
+return success, whereas on older kernels it returned ENOTTY.
 
+Since FS_IOC_GETFLAGS succeeds, statx04 assumes standard writable inode
+attributes (append, immutable, nodump) are supported on these
+filesystems. However, they are not, causing the statx() attribute check
+to fail with TFAIL.
 
-On 7/3/26 3:57 AM, Wei Gao via ltp wrote:
-> On newer kernels (v7.1-rc1+), vfat and exfat implement fileattr_get to
-> support reporting casefolding. This causes the FS_IOC_GETFLAGS ioctl to
-> return success, whereas on older kernels it returned ENOTTY.
-> 
-> Since FS_IOC_GETFLAGS succeeds, statx04 assumes standard writable inode
-> attributes (append, immutable, nodump) are supported on these
-> filesystems. However, they are not, causing the statx() attribute check
-> to fail with TFAIL.
-> 
-> Fix this by checking if the filesystem type is vfat or exfat and skipping
-> the test with TCONF.
-> 
-> This addresses the failures introduced by the following upstream Linux
-> kernel commits:
-> - 27e0b573dd4a ("exfat: Implement fileattr_get for case sensitivity")
-> - c92db2ca72fe ("fat: Implement fileattr_get for case sensitivity")
-> 
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->   testcases/kernel/syscalls/statx/statx04.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
-> index af30a200e..b2a2ac9cc 100644
-> --- a/testcases/kernel/syscalls/statx/statx04.c
-> +++ b/testcases/kernel/syscalls/statx/statx04.c
-> @@ -91,6 +91,15 @@ static void setup(void)
->   	if (TST_RET)
->   		tst_brk(TBROK | TTERRNO, "Unexpected ioctl() error");
->   
-> +	/*
-> +	 * On newer kernels (v7.1-rc1+), vfat and exfat implement fileattr_get
-> +	 * to support reporting casefolding, which causes FS_IOC_GETFLAGS to
-> +	 * return success. However, they do not support standard writable inode
-> +	 * attributes (append, immutable, nodump). Skip them.
-> +	 */
-> +	if (!strcmp(tst_device->fs_type, "vfat") || !strcmp(tst_device->fs_type, "exfat"))
-> +		tst_brk(TCONF, "vfat and exfat do not support standard attributes");
-> +
-If we are skipping irrespective of kernel version, why not use 
-'.skip_filesystems', that also avoids formatting and mounting.
-We can also add these two kernel commits in the test documentation and 
-maybe also in '.tags'.
+This addresses the failures introduced by the following upstream Linux
+kernel commits:
+- 27e0b573dd4a ("exfat: Implement fileattr_get for case sensitivity")
+- c92db2ca726f ("fat: Implement fileattr_get for case sensitivity")
 
->   	for (i = 0, expected_mask = 0; i < ARRAY_SIZE(attr_list); i++)
->   		expected_mask |= attr_list[i].attr;
->   
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ testcases/kernel/syscalls/statx/statx04.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-Regards,
-Avinesh
+diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
+index af30a200e..c029cd06e 100644
+--- a/testcases/kernel/syscalls/statx/statx04.c
++++ b/testcases/kernel/syscalls/statx/statx04.c
+@@ -47,6 +47,22 @@
+  *
+  *  mm/shmem: support FS_IOC_[SG]ETFLAGS in tmpfs
+  *
++ * vfat and exfat are skipped because they do not support standard writable
++ * attributes (append, immutable, nodump) even though newer kernels support
++ * casefolding which causes FS_IOC_GETFLAGS to succeed since the following commits:
++ *
++ *  commit 27e0b573dd4aa927670fbfd84732e569fde72078
++ *  Author: Chuck Lever <cel@kernel.org>
++ *  Date:   Thu May 7 04:52:57 2026 -0400
++ *
++ *  exfat: Implement fileattr_get for case sensitivity
++ *
++ *  commit c92db2ca726fe61a66580d30ecff8c192a791935
++ *  Author: Chuck Lever <cel@kernel.org>
++ *  Date:   Thu May 7 04:52:56 2026 -0400
++ *
++ *  fat: Implement fileattr_get for case sensitivity
++ *
+  */
+ 
+ #define _GNU_SOURCE
+@@ -133,6 +149,8 @@ static struct tst_test test = {
+ 	.skip_filesystems = (const char *const[]) {
+ 		"fuse",
+ 		"ntfs",
++		"vfat",
++		"exfat",
+ 		NULL
+ 	},
+ 	.tags = (const struct tst_tag[]) {
+@@ -141,6 +159,8 @@ static struct tst_test test = {
+ 		{"linux-git", "04a87e347282"},
+ 		{"linux-git", "5f955f26f3d4"},
+ 		{"linux-git", "e408e695f5f1"},
++		{"linux-git", "27e0b573dd4a"},
++		{"linux-git", "c92db2ca726f"},
+ 		{}
+ 	},
+ };
+-- 
+2.54.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
