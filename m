@@ -4,81 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E562EC43458
-	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 15:15:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F0B8C43458
+	for <ltp@archiver.kernel.org>; Sat,  4 Jul 2026 07:31:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DA2803E946D
-	for <ltp@archiver.kernel.org>; Fri,  3 Jul 2026 17:15:14 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 4FAA03E2E1C
+	for <ltp@archiver.kernel.org>; Sat,  4 Jul 2026 09:31:53 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E74B53E1A5B
- for <ltp@lists.linux.it>; Fri,  3 Jul 2026 17:14:54 +0200 (CEST)
-Received: from mail-pj2-x02.google.com (mail-pj2-x02.google.com
- [IPv6:2607:f8b0:4864:39::2])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8382E3E2100
+ for <ltp@lists.linux.it>; Sat,  4 Jul 2026 09:31:35 +0200 (CEST)
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::b4])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6843A14010F8
- for <ltp@lists.linux.it>; Fri,  3 Jul 2026 17:14:54 +0200 (CEST)
-Received: by mail-pj2-x02.google.com with SMTP id
- 98e67ed59e1d1-380a00aae61so568477a91.0
- for <ltp@lists.linux.it>; Fri, 03 Jul 2026 08:14:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1783091692; x=1783696492; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=L1iXRp+ZsojD7muHyGAONEe16OlljbN9T+o1gN6J9WQ=;
- b=htz+PVdQd/0Wg808ciTg+zjibBWDrGFsY7CqHnInI9aORW/63Hf05MPHm9islxfxdu
- eEAvCyffp4/+VRm5S2TmSet9FEqRrxLeYYgHDj+xZAeVC4sSBrqqYn00RkDs3fNJ10Ya
- Rb840aaP68xofAZeWqEjIvkJ4eVPvk2XTY11BN9BwdCSOKCvW1ETasv22/rXf2+BR2yP
- cV5C1AuYyxJ8IlB/xTKbCODP+ocUrLlymnqxME9hG6tCoMuSEaaGMSeuVQt2RhJwCrrO
- 8NEl7hBVmPrpMqBEvVCBHQMI0bzyKUwnl6vt3ROvWkF1BChzxPBSYsht1YTJ0uoysVwT
- cufw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783091692; x=1783696492;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=L1iXRp+ZsojD7muHyGAONEe16OlljbN9T+o1gN6J9WQ=;
- b=VxajrrbzD13UwUe5c51JYhsndW1Xw6oTPEP6JY4qBstqjNFNI4gVI0UMLT5XYFq0jC
- to5G/Y8Bsjn1PjC+TOw7duV0a6dfAmP9TWyaUBgG6u1AbdAkKOPFzTSZBuHDIWQv/r2+
- qa2Xy1dBaY5RbrqUfGSHwJrAt13kvBSv4ap53ZNsW3wQEPgrtqfGOijQcEzWh7hNptg/
- WqBUCEWcJYeBII1ODq596APO+2Tmkfa96xrBYqA5oF5QR33ixQvnHi4qyDGTuOFGOg0I
- QQGcGVW2mFWn+ZwIznCVksUbTj8veSCK5+LERKbILE8MlEFTHetNeS7FffUnuPSRcakx
- QZLg==
-X-Gm-Message-State: AOJu0YwZVTXAxcuc2UFGGhRq0vXReMM6c409EVLTpAb+9uW+Dn+AZgup
- WPxrAX/f68PXoEU+baom53DzgIuOkWwVw5OS0kTGK90LocYMkBL+LVcW
-X-Gm-Gg: AfdE7cml0Az2udNIdAdAZbNRzmwgzcQXe2HMyFVfPKITqY/pAtTTlTM2rWEaQO7UtBB
- DHPAwfalt0tpybP8BdruekZB3Ig8WvE3NJKuzej3VkRl7BIZelH8ColGLK/gI0intpwrpYv0rE0
- JFSyNWt6XBnOaeHHehdPPBmLFDRR7oPTN+18Tce8w+75haxqYSdeYv3M0BIfh3g1e5NnFUnNNce
- E/D6D9D6zWz3reQz9PFMJhXop9eEKqv3RcTFeNaBpIBBJDBhPXHEnpwmxYhlExnnZj461u5RyRl
- Pk33qXaDQ3mLtrtDzZ9aBm1i+98JluFlxNuJDxD2VKBrCMCdsvkUsP3WQQF1HaBJqDWs9+pHTpb
- pZJsSXKbRJkxsci7+DQn5q/ZHk/r4Y811uZ9n0rjVVuw2JVf4P7lS9s7ErpJlnHsxuImWO1cxz3
- BTTI6sHOMBTFe9X1IdoxxhIHGmjW+Uxzm6t9meyb0INW1V/X9A47GpE+WI5FUYrw0zBOEjBpNWu
- 8fMPeH9bmHqB9/i2+tn1eMOPRK25Y7y
-X-Received: by 2002:a17:90b:2c87:b0:37f:ed7e:7e42 with SMTP id
- 98e67ed59e1d1-380aa0e0512mr10938399a91.14.1783091692434; 
- Fri, 03 Jul 2026 08:14:52 -0700 (PDT)
-Received: from
- runnervmkkn4f.c41v2zfaraieda3n4uxiuojluc.phxx.internal.cloudapp.net
- ([20.168.108.226]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-30f3b252222sm1909939eec.23.2026.07.03.08.14.51
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 03 Jul 2026 08:14:52 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Fri,  3 Jul 2026 15:14:50 +0000
-Message-ID: <20260703151450.3866-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260703125958.21260-1-wegao@suse.com>
-References: <20260703125958.21260-1-wegao@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7074E1A0119E
+ for <ltp@lists.linux.it>; Sat,  4 Jul 2026 09:31:29 +0200 (CEST)
+Date: Sat, 4 Jul 2026 15:31:23 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+ t=1783150288;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VQRQe7KEqTJelePI7H1HiN269f435AAGo7utvgBBNGc=;
+ b=BXOlFswMyRWIc8u0fjycOg39GwnMf4JWKNnP3TLAMONVsX+5j5rIPaOBazzaJ2AcN5dbDh
+ RvWVmZ5d4uRb5kOdNyak4nsHCZYk3NaInTke37deVJpfIKG6VwpkBHWhzjDpXCbcrt6TME
+ yhRE9tdkeaOvauGlfum/v7pcb7eEsyE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+From: Li Wang <li.wang@linux.dev>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <aki2AjzuU7_ayxrZ@linux.dev>
+Mail-Followup-To: Andrea Cervesato <andrea.cervesato@suse.de>,
+ Linux Test Project <ltp@lists.linux.it>
+References: <20260703-fix_memcg_stress-v1-1-93bd09a62446@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260703-fix_memcg_stress-v1-1-93bd09a62446@suse.com>
+X-Migadu-Flow: FLOW_OUT
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] statx/statx04: Skip vfat and exfat filesystems
+Subject: Re: [LTP] [PATCH] memcg_stress: survive OOM by targeting the
+ stressors
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,28 +60,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi Andrea,
 
-On Fri, 3 Jul 2026 12:59:29 +0000, Wei Gao wrote:
-> statx/statx04: Skip vfat and exfat filesystems
+Andrea Cervesato wrote:
 
-Verdict - Reviewed
+> From: Andrea Cervesato <andrea.cervesato@suse.com>
+> 
+> The single-cgroup subtest intentionally lets one process fault in the
+> whole memory budget to push the system to its memory ceiling, so hitting
+> the OOM killer is an expected part of the stress. The problem is that the
+> OOM killer could reap the driver script, turning that expected pressure
+> into a spurious TBROK.
+> 
+> Mark the stress processes as the preferred OOM victims. A killed stressor
+> is already reaped and cleaned up by the test, while the driver survives
+> and reports the result.
+> 
+> Fixes: 02961a7b2bb4 ("memcg_stress_test.sh: Fix reserved mem calculate")
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+> On some systems this might happens:
+> 
+> [  244.207623][T117130] kirk[3061]: memcg_stress: start (command: memcg_stress_test.sh)
+> [  244.391438][T117164] memcg_stress_te (117164): drop_caches: 3
+> [ 1444.509722][T119900] kirk[3061]: memcg_stress: end (returncode: -1)
+> [ 1444.629434][T119934] kirk[3061]: memcg_control: start (command: memcg_control_test.sh)
+> [ 1445.856012][T120020] mem_process invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
 
----
-Note:
+I agree with the underlying goal, keep the driver alive and let the
+stressors absorb the OOM pressure, but I'd like to suggest a different
+way that mirrors what we already do in the C harness, and that fixes
+this at the lib level rather than in the individual test.
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+In lib/tst_test.c we don't raise the score of the stress/test processes.
+Instead we protect the harness and then explicitly drop that protection
+in the child before it runs the actual test:
 
+$ grep -A 8 -B 9 tst_enable_oom_protection lib/tst_test.c
+
+void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+{
+	unsigned int test_variants = 1;
+	struct utsname uval;
+
+	tst_test = self;
+
+	do_setup(argc, argv);
+	tst_enable_oom_protection(context->lib_pid);
+
+	SAFE_SIGNAL(SIGALRM, alarm_handler);
+	SAFE_SIGNAL(SIGUSR1, heartbeat_handler);
+
+	tst_res(TINFO, "LTP version: "LTP_VERSION);
+
+	uname(&uval);
+	tst_res(TINFO, "Tested kernel: %s %s %s", uval.release, uval.version, uval.machine);
+
+$ grep -A 8 -B 9 tst_disable_oom_protection lib/tst_test.c
+	alarm(context->overall_time);
+
+	show_failure_hints = 1;
+
+	test_pid = fork();
+	if (test_pid < 0)
+		tst_brk(TBROK | TERRNO, "fork()");
+
+	if (!test_pid) {
+		tst_disable_oom_protection(0);
+		SAFE_SIGNAL(SIGALRM, SIG_DFL);
+		SAFE_SIGNAL(SIGUSR1, SIG_DFL);
+		SAFE_SIGNAL(SIGTERM, SIG_DFL);
+		SAFE_SIGNAL(SIGINT, SIG_DFL);
+		SAFE_SETPGID(0, 0);
+		testrun();
+	}
+
+The important detail is that oom_score_adj is inherited across fork.
+So the model is: the library process sets itself to -1000, and child
+resets itself back to 0 before doing any real work. The harness survives,
+the workload stays a normal OOM candidate.
+
+What do you think about doing this in the shell lib so all shell
+tests benefit, rather than only memcg_stress?
+
+-- 
 Regards,
-LTP AI Reviewer
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
