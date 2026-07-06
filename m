@@ -4,106 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE039C43458
-	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 19:12:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66B72C43458
+	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 19:12:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 073223E5DE1
-	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 21:12:38 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id B7F813E5DFC
+	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 21:12:52 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9734A3E4A34
+ by picard.linux.it (Postfix) with ESMTPS id 349E53E4A34
  for <ltp@lists.linux.it>; Mon,  6 Jul 2026 21:12:20 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CBD6E10006D2
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CBCED600054
  for <ltp@lists.linux.it>; Mon,  6 Jul 2026 21:12:19 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4E99275B7E;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7445475843;
  Mon,  6 Jul 2026 19:12:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1783365138; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=OkwCfb+hYFU74vFZwJKvsdye6PXDrClxk+A8cX223Xs=;
- b=o0CRezkkBFnjy+ygmhMHYSs46+jcsO+dImnWXRK1QuC2Jzt7GOZOQbDf805yXxw7ywxp5v
- QNsHklB/OSQeEjpdG0QbfQ05pfYOCMyV2U3ADY1Uni52rmraTeMUXt7TmMcwEGfw4GOPhM
- LZ6bvy64AMpxoEhZ8EdRkaRC7P9hEVQ=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=1K6D/C/mQFtBQjlUS9ePn5wESCITUL0IYWVkZIB4IJs=;
+ b=T8cTVtM5VhYDsifNRmHL6Rb1XHE0z2ggGZNFeBQz0B2pxhUcyR/BJjRCzG/sgWPfwvAKyQ
+ WD1oM+2XR255wLFjSzCYudaVMYN5t9hZAhbqGMSArgxwCRkMXho5b65B1DSgo0T8eLttJu
+ /DZyIY+AjMbmjAN1yqZM3JDBW0zX1lo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1783365138;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=OkwCfb+hYFU74vFZwJKvsdye6PXDrClxk+A8cX223Xs=;
- b=9WG1EoAe2iD6FEHZj1phGTdwCXqmENZl1CpjzvuxASl6uTdvI6VOG0Jor3P17CyL71wxHK
- 0KrZShnV8eapvGBQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=1K6D/C/mQFtBQjlUS9ePn5wESCITUL0IYWVkZIB4IJs=;
+ b=FDvHXVL5xjEHjrXnapPYFXgRsIoDXZwxJ3LivD6wpJ6qFQgqqDXJ3vibtyzINm0OXKd5TX
+ KflsmE1ePRkpcdCw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=T8cTVtM5;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=FDvHXVL5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1783365138; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=OkwCfb+hYFU74vFZwJKvsdye6PXDrClxk+A8cX223Xs=;
- b=o0CRezkkBFnjy+ygmhMHYSs46+jcsO+dImnWXRK1QuC2Jzt7GOZOQbDf805yXxw7ywxp5v
- QNsHklB/OSQeEjpdG0QbfQ05pfYOCMyV2U3ADY1Uni52rmraTeMUXt7TmMcwEGfw4GOPhM
- LZ6bvy64AMpxoEhZ8EdRkaRC7P9hEVQ=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=1K6D/C/mQFtBQjlUS9ePn5wESCITUL0IYWVkZIB4IJs=;
+ b=T8cTVtM5VhYDsifNRmHL6Rb1XHE0z2ggGZNFeBQz0B2pxhUcyR/BJjRCzG/sgWPfwvAKyQ
+ WD1oM+2XR255wLFjSzCYudaVMYN5t9hZAhbqGMSArgxwCRkMXho5b65B1DSgo0T8eLttJu
+ /DZyIY+AjMbmjAN1yqZM3JDBW0zX1lo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1783365138;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=OkwCfb+hYFU74vFZwJKvsdye6PXDrClxk+A8cX223Xs=;
- b=9WG1EoAe2iD6FEHZj1phGTdwCXqmENZl1CpjzvuxASl6uTdvI6VOG0Jor3P17CyL71wxHK
- 0KrZShnV8eapvGBQ==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=1K6D/C/mQFtBQjlUS9ePn5wESCITUL0IYWVkZIB4IJs=;
+ b=FDvHXVL5xjEHjrXnapPYFXgRsIoDXZwxJ3LivD6wpJ6qFQgqqDXJ3vibtyzINm0OXKd5TX
+ KflsmE1ePRkpcdCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2AF8B779AA;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 525CD779AC;
  Mon,  6 Jul 2026 19:12:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id IrQ5CBL+S2poEgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id yO1aEhL+S2poEgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Mon, 06 Jul 2026 19:12:18 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 06 Jul 2026 21:12:14 +0200
-Message-Id: <20260706-cve-2026-46331-v2-0-d5e47a113a84@suse.com>
+Date: Mon, 06 Jul 2026 21:12:15 +0200
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAA7+S2oC/3XMyw7CIBCF4VdpZu0YGC6mrnwP04WBwbKwGFCia
- Xh3afcuv5Ocf4XCOXKB87BC5hpLTEsHHQZw8225M0bfDSTIipOw6CrjBtRWKYla6TCOLpCzEvr
- pmTnEzx68Tt1zLK+Uv3u/ym39m6oSBTpjvDZBEHl5Ke/CR5ceMLXWfs6KrtCrAAAA
-X-Change-ID: 20260706-cve-2026-46331-434f99cf2c61
+Message-Id: <20260706-cve-2026-46331-v2-1-d5e47a113a84@suse.com>
+References: <20260706-cve-2026-46331-v2-0-d5e47a113a84@suse.com>
+In-Reply-To: <20260706-cve-2026-46331-v2-0-d5e47a113a84@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783365138; l=1709;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783365138; l=1662;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=+XCpXN17HwrXVYwYs2P2zJ0pF27EfrLNqtikqOQjk60=;
- b=HOX6iBMi65mgZsh0YcUCzz8SuJtX2mzG9ZYgI404Madg9YBfGhWOKbcaeppZ/6ASKdwBVJFcD
- l5Wxq3nd0aOBZDjLIGcItxudtBxCYX5NROknBidNZ04zfVwIYXh9nlG
+ bh=wAanXy+qmBPWCmVEltoIwixEtSjat7KtrRlYrWYb4nk=;
+ b=uhs7zeAdb4ecncLykLBhSH8sorxgUAJmcWlFUdUHi10Q771pwsGDxg2Sy7L88O3mNUJHHP+Ig
+ GKYFHtuKummAzW/W4jsrlsLNW64vwmS8px2UiP5TqaF2DKxunBMB1QY
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.994]; MIME_GOOD(-0.10)[text/plain];
- TO_DN_ALL(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.com:mid]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 7445475843
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/2] Reproducer for cve-2026-46331
+Subject: [LTP] [PATCH v2 1/2] lapi: Add pkt_sched.h and pkt_cls.h fallbacks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,53 +131,72 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-tst_kconfig.c:90: TINFO: Parsing kernel config '/lib/modules/7.1.0-rc5-virtme/build/.config'
-tst_tmpdir.c:308: TINFO: Using /tmp/LTP_cveTzmFu2 as tmpdir (overlayfs filesystem)
-tst_test.c:2047: TINFO: LTP version: 20260529-80-g0b891ea23
-tst_test.c:2050: TINFO: Tested kernel: 7.1.0-rc5-virtme #9 SMP PREEMPT_DYNAMIC Mon Jul  6 14:50:05 CEST 2026 x86_64
-tst_kconfig.c:90: TINFO: Parsing kernel config '/lib/modules/7.1.0-rc5-virtme/build/.config'
-tst_test.c:1875: TINFO: Overall timeout per run is 0h 00m 30s
-cve-2026-46331.c:221: TFAIL: Page cache corrupted via act_pedit partial COW bypass
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-HINT: You _MAY_ be missing kernel fixes:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=899ee91156e5
-
-HINT: You _MAY_ be vulnerable to CVE(s):
-
-https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-46331
-
-Summary:
-passed   0
-failed   1
-broken   0
-skipped  0
-warnings 0
+Add lapi wrappers for <linux/pkt_sched.h> and
+<linux/pkt_cls.h> with fallback defines for
+TC_H_CLSACT, TC_H_MIN_EGRESS, TC_ACT_PIPE and
+TCA_MATCHALL_ACT.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v2:
-- remove sleep()
-- Link to v1: https://lore.kernel.org/20260706-cve-2026-46331-v1-0-c55d45f022d1@suse.com
+ include/lapi/pkt_cls.h   | 19 +++++++++++++++++++
+ include/lapi/pkt_sched.h | 19 +++++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
----
-Andrea Cervesato (2):
-      lapi: Add pkt_sched.h and pkt_cls.h fallbacks
-      cve: Add act_pedit page-cache corruption test
+diff --git a/include/lapi/pkt_cls.h b/include/lapi/pkt_cls.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..b7a6278f07e6fcedcb7c412e833cb01170f24f74
+--- /dev/null
++++ b/include/lapi/pkt_cls.h
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++#ifndef LAPI_PKT_CLS_H__
++#define LAPI_PKT_CLS_H__
++
++#include <linux/pkt_cls.h>
++
++#ifndef TC_ACT_PIPE
++# define TC_ACT_PIPE	3
++#endif
++
++#ifndef TCA_MATCHALL_ACT
++# define TCA_MATCHALL_ACT	2
++#endif
++
++#endif /* LAPI_PKT_CLS_H__ */
+diff --git a/include/lapi/pkt_sched.h b/include/lapi/pkt_sched.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..4d7b2860df4a478214385f248995361f6f1cf282
+--- /dev/null
++++ b/include/lapi/pkt_sched.h
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++#ifndef LAPI_PKT_SCHED_H__
++#define LAPI_PKT_SCHED_H__
++
++#include <linux/pkt_sched.h>
++
++#ifndef TC_H_CLSACT
++# define TC_H_CLSACT	TC_H_INGRESS
++#endif
++
++#ifndef TC_H_MIN_EGRESS
++# define TC_H_MIN_EGRESS	0xFFF3U
++#endif
++
++#endif /* LAPI_PKT_SCHED_H__ */
 
- include/lapi/pkt_cls.h         |  19 +++
- include/lapi/pkt_sched.h       |  19 +++
- runtest/cve                    |   1 +
- testcases/cve/.gitignore       |   1 +
- testcases/cve/cve-2026-46331.c | 272 +++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 312 insertions(+)
----
-base-commit: 0b891ea23ed7315afa12df92fe12f1218a420bde
-change-id: 20260706-cve-2026-46331-434f99cf2c61
-
-Best regards,
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.51.0
 
 
 -- 
