@@ -4,101 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECD75C43458
-	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 01:38:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1783301896; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=8sinEocOoowGZjM7wGrtvO/w+rPmYYH29aVH4OO1Lkw=;
- b=RkXC8NnjnX4FZJEEd3CEPTLyaHRXiBDX8fOJMpY9Le/e4WWBLWFFEXwCOxbGvT4FoA8Vl
- v8ZBK0R8aEZoe1F4mGN7k6skw+ktameGo+zxjpmdeDpzjhksf3HTGhRxBOY6nzFHiQydZhR
- Hyg9rD4HxaMRBo3ZrWb4kP4BPLI0PMQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7DDBC43458
+	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 05:15:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 08AFB3E4A3E
-	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 03:38:16 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 168813C96A5
+	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 07:15:06 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0BC913CEDDE
- for <ltp@lists.linux.it>; Mon,  6 Jul 2026 03:37:56 +0200 (CEST)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A77923C2651
+ for <ltp@lists.linux.it>; Mon,  6 Jul 2026 07:14:49 +0200 (CEST)
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
+ [IPv6:2607:f8b0:4864:20::743])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4C9CB6000E6
- for <ltp@lists.linux.it>; Mon,  6 Jul 2026 03:37:56 +0200 (CEST)
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 89CF93F0B5
- for <ltp@lists.linux.it>; Mon,  6 Jul 2026 01:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20251003; t=1783301875;
- bh=pP2p6dcgfUkQi16fkI0AAAONPn47MApZ9+hdrBr9UU8=;
- h=From:To:Subject:Date:Message-ID:MIME-Version;
- b=hmTXEJaaaszvZw/Tbi4tdtOq13nxHVF12HMiJK/7UORylWJe0XF60PZjN8CPWBNhP
- 7oi8n3FrmnVEzB9mrWlscowhSF4tHURPjfVFQx4a1z12CqQKiu4IY1B8aQwoMPPxay
- SVXJf8kUe70GKurU8tHXqVRjSJQ4LUgCszGE0tAoh3S4kvCVkr/nyCJi7iSs0NIEN7
- uppJohYaoRxfRjagY+DPFveL90SfSLrt2vAfTFRaFnmka2Y5tY82HJBuulAwN1ZEek
- efoWXY5jahMC6c9sefoizv2ha453LrT/9PQgdNh2nj04qCd2SMid2PuSFaZtHWUeFO
- Me6D6lnHR3CT5A1WSpyIi8c3ltDaM+jOna17cVO38vuhCW6mhefg/AZLJupV2H6Z+3
- rREDFbVuFxTWyd0cIBhcBNK4Vpy2CJej1Y9iA0S4Qjlin4+788CcGPWHaZVQ9GpJs5
- v9OCnq5HzZgVZuHu063xzkhl64siFY/hKt0c723qBneIjVUL0FhqZXFOTIF5Y9HGkZ
- u2dSCyjBIy1IlbqKSxlLtNw+d4YCHgYgWNQMsZlm9UWrfNhy78d+YZ7GqpgXkEJQD9
- PmM07dxuU1XQLFhKj9JI/2264g+yah3YmmCkurcqk2ZB4xMCUKgZpOm8Z92zDs4egC
- L8AgQJcszdSssdmI7b+hnMo8=
-Received: by mail-pf1-f199.google.com with SMTP id
- d2e1a72fcca58-8479cc04d8fso4150626b3a.2
- for <ltp@lists.linux.it>; Sun, 05 Jul 2026 18:37:55 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E771C1A003ED
+ for <ltp@lists.linux.it>; Mon,  6 Jul 2026 07:14:48 +0200 (CEST)
+Received: by mail-qk1-x743.google.com with SMTP id
+ af79cd13be357-92e7632b193so149498285a.2
+ for <ltp@lists.linux.it>; Sun, 05 Jul 2026 22:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1783314888; x=1783919688; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=AT3vBPKn3q1Y2xvp8ehzPqKYghBKB8ikx/UM38F49A0=;
+ b=F4Mpb71Kb7VtfsX6/BL55Fd8f4LDnyv4TfWmzIODL3qH0UFo+NxRN5+ZNwgAgAC/Vd
+ iJzL2EFa3POLMKBRKJYrw055GsimxLOuu4gqVtwJS9I1uj1lfeqKcTCAALwZBDkQSSon
+ Z0bEc/39ABE3820cLJwZTNNb2Pzh34DKTIB5dt3mx2upzDjpB2qqiqhFP/QiYelPeJQk
+ S9rOSEmFiyBG32o95MHRIcY/f95rA+86BCKwIVLUJflzESf7I8E/txv9LJQi3Mm5QKEg
+ yq8/LJNnnNTQE7cuUHwAIPhHa6jBlE/QFk1Tq5CngvYr7wGS/L2EVYZfGELfS0eQWTtH
+ whMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783301874; x=1783906674;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to:content-type;
- bh=pP2p6dcgfUkQi16fkI0AAAONPn47MApZ9+hdrBr9UU8=;
- b=H23j+ITiCAqyCyFCEtMI9+aHbKnrRaZUbtLo/VgWdUmvNG2PvV7sSuKeIJt8qqjGD0
- 4GLWnq+sm3SUDJ/x4WsvPjz7f61RaSXDljypyQ5tC43bnzCM3rAOcuGTa9Sv9OW6XYWy
- AV884JriSuF1+TTO8WHM2bo5WzISo17iL7np3BvVbuogqWc/bOBXERXZdG8+7Oyxm8jl
- XNkiKFi5kzQjji6aBabYkKFOGB03p6zB0iv6oTYrClg3QZm46x9yuM096RCv/wvWhTVs
- Y+mVBospcFVF6H2GAvngpte9FxXBg1rqkzh9RbUGGYPZQil1DyvexJH17Z7W6Ds0oSod
- Isaw==
-X-Gm-Message-State: AOJu0Yw4SyFjOOquqeCyc9dBoUPWEHFwJD64Pfm7wAyIWg9zlPjpqgQB
- dywnG+DezZw4ZBnrC+0B981EgDrN90SNIzPrPtmkCKn7y8pXF4+EUcWfiMTzTBoVoOZI964FCtX
- 1MbZY3Hi74F/VZvgVmRqMv+9DeBPjO6ZnAfabaMPz+PQE1mxm/tYbFqnfpLg0gEedtzpRTmTA/6
- l4
-X-Gm-Gg: AfdE7cmUB9L5+bcr+JYsMpufBEMs25Kq13iw5RVQ2dLFh4rVsPqcnPKuHrNLhdOEabg
- HRtHPoEcavFr3uTFWk4Qyd8Khq9u+V7GhwLn1kbJ+7Nyr+AUjJKSDFww9ev4mw/rW72TZW0qXae
- H+sM1CLmJn11DVhGO08b6/SDpXM+HLsFblMpc7oHfn559s2KsyORBwQiD3g75rHvCxkJjxjRY5y
- jaMy8PhNpfzXH0ptMmunyUhNSYm636/vwzGdC6GnhRDx9kBCDU9Xc8CvoMBgo9lifC8s7SD92z8
- bmC1skybxXgk7ti1gXbbx9GIIhuVGiiGIqvl6EufC5v8HMQkDQq5dXD3KIMD+ltQH0y8+nYgU1q
- kuSfh0LHSbUKBkkASZUh/cc9p48RmOSg8AZ3fkrb+TXiZF6k4Bqg+
-X-Received: by 2002:a05:6a00:2e1d:b0:842:57e8:1bdb with SMTP id
- d2e1a72fcca58-847f6dd4b06mr7307853b3a.20.1783301873074; 
- Sun, 05 Jul 2026 18:37:53 -0700 (PDT)
-X-Received: by 2002:a05:6a00:2e1d:b0:842:57e8:1bdb with SMTP id
- d2e1a72fcca58-847f6dd4b06mr7307277b3a.20.1783301842153; 
- Sun, 05 Jul 2026 18:37:22 -0700 (PDT)
-Received: from canonical.com (118-163-61-247.hinet-ip.hinet.net.
- [118.163.61.247]) by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-847f6b96c04sm2815597b3a.22.2026.07.05.18.37.21
- for <ltp@lists.linux.it>
+ d=1e100.net; s=20251104; t=1783314888; x=1783919688;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=AT3vBPKn3q1Y2xvp8ehzPqKYghBKB8ikx/UM38F49A0=;
+ b=i4gLT3T3bpIUR19ZeNQGZ+Ujhes3rhbHND1LpueJudWYwVHII3alQok0pbF23Q42eG
+ EhLAMejap8B5QwIJg935mAFGFHHXttZ1K6bL29JEcfwWTBx/q7/e/eMa5+gl6VjRswLA
+ xCQxFrOXYgdoHIMMgS0y6dr86bMokyYGQjkLSCfnS5V59LNWf3KL7sa6AGnnGLYs2aAy
+ 266WRmwIpBTAL/88GrH5egzynXsMHeo/6hSs7ZhsIoR+tTiCZbU2TB/Srl9le5BJ2Z12
+ tzaTGhQhAwlX8Y8Qm1kg6g6gH+PWf0nJFVAqoNjFdeQWS0SCu5WajcbVXa8ZZ4BW7cO/
+ KeyQ==
+X-Gm-Message-State: AOJu0YzRBjwaDrHAM7YP3hKee54rg7SaXRzHwj0mFVsJ3PHVwqFZisPd
+ N5VzTTd2JHAB2dioN5zXxEy9g+pwgjySOG8Eqc/VkWawdFvXDM8P1uce
+X-Gm-Gg: AfdE7cnYcpCmdFGpU7D6XrUf91y4jGhGL9E8vgJ2KCoG0A/Jzzet39kyhsXOb6MYQU/
+ x+rWR5W1LeKSSchs6rGtmXL6TAdxzIqo7Ki+fNb6TMpZWv5PQv8C+nHWAmXVwHQN6jKhXcgLGNt
+ lygz+E299mTxERRO6qa9KI2CM1MSK4vugrK/yNZ6jf2B8CdXQ1js/p8D2WMBgwiHyAGg2fllC3X
+ 4COLTm4I81rsuBPB8V/BDgSKoPNEozDZs/lOGSOKRwdazSVvVb+q6LaTKo0Nkm2s9VSLjo9XNby
+ rTpUQKvpLmQQPlxtFpEDaiOqCRy34UyzaG0vPZ/SXiGD7wm2+6oT+6GETVgF6rVhIVutLCPfZJO
+ 4qqlV/M6YJc+15h/bmRt99aPAmP7zjlecB70Pim1fpEM3DJ250rk3z6cwgp2EPxdTJ2VlrGwRr3
+ Ylv62+k5CZRHcRY3PeIPSzXiZMvFtxlrYLrcRb1SQMqn3tXFWrRY7WEhCOOj/YhQcnAijUavXk2
+ m7jtwpfC4fE2jRPMDqvcOKIHPtAAIskMP64TA==
+X-Received: by 2002:a05:620a:4041:b0:916:10f6:77c3 with SMTP id
+ af79cd13be357-92e9a3af101mr1083459285a.28.1783314887602; 
+ Sun, 05 Jul 2026 22:14:47 -0700 (PDT)
+Received: from
+ runnervmkkn4f.mdtce0mt4ome5kzwfyfkzdq1na.bx.internal.cloudapp.net
+ ([74.235.90.83]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-92e90c926ebsm858154885a.31.2026.07.05.22.14.47
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 05 Jul 2026 18:37:21 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Mon,  6 Jul 2026 09:37:19 +0800
-Message-ID: <20260706013720.450291-1-ivan.hu@canonical.com>
-X-Mailer: git-send-email 2.53.0
+ Sun, 05 Jul 2026 22:14:47 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Ivan Hu <ivan.hu@canonical.com>
+Date: Mon,  6 Jul 2026 05:14:46 +0000
+Message-ID: <20260706051446.3966-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260706013720.450291-1-ivan.hu@canonical.com>
+References: <20260706013720.450291-1-ivan.hu@canonical.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] landlock04: Skip variants unsupported by the running
+Subject: Re: [LTP] landlock04: Skip variants unsupported by the running
  Landlock ABI
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -111,67 +92,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Ivan Hu via ltp <ltp@lists.linux.it>
-Reply-To: Ivan Hu <ivan.hu@canonical.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The LANDLOCK_ACCESS_FS_TRUNCATE access right is only available from
-Landlock ABI v3 (kernel v6.2, commit b9f5ce27c8f8 "landlock: Support
-file truncation"). On older kernels (e.g. those exposing ABI v1) setup()
-passed the variant's access right, including LANDLOCK_ACCESS_FS_TRUNCATE,
-directly to landlock_add_rule(), which failed with EINVAL and broke the
-test:
+Hi Ivan,
 
-  landlock04.c: TBROK: landlock_add_rule(8, 1, ..., 0): EINVAL (22)
+On Mon, 6 Jul 2026 09:37:19 +0800, Ivan Hu wrote:
+> landlock04: Skip variants unsupported by the running Landlock ABI
 
-tester_get_all_fs_rules() already masks the rule set according to the
-running kernel's Landlock ABI. Use it in setup() to detect when a variant
-requires an unsupported access right and skip it with TCONF instead of
-breaking.
+Verdict - Reviewed
 
-Signed-off-by: Ivan Hu <ivan.hu@canonical.com>
 ---
- testcases/kernel/syscalls/landlock/landlock04.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+Note:
 
-diff --git a/testcases/kernel/syscalls/landlock/landlock04.c b/testcases/kernel/syscalls/landlock/landlock04.c
-index 737fdbf24..86dc19994 100644
---- a/testcases/kernel/syscalls/landlock/landlock04.c
-+++ b/testcases/kernel/syscalls/landlock/landlock04.c
-@@ -143,12 +143,26 @@ static void enable_exec_libs(const int ruleset_fd)
- static void setup(void)
- {
- 	struct tvariant variant = tvariants[tst_variant];
-+	int supported_rules;
- 
- 	verify_landlock_is_enabled();
- 
- 	tst_res(TINFO, "Testing %s", variant.desc);
- 
--	ruleset_attr->handled_access_fs = tester_get_all_fs_rules();
-+	supported_rules = tester_get_all_fs_rules();
-+
-+	/* Some access rights are only available from a given Landlock ABI
-+	 * version (e.g. LANDLOCK_ACCESS_FS_TRUNCATE needs ABI >= 3). Skip the
-+	 * variant when the running kernel doesn't support the tested right,
-+	 * otherwise landlock_add_rule() fails with EINVAL.
-+	 */
-+	if (variant.access & ~supported_rules) {
-+		tst_brk(TCONF,
-+			"%s is not supported by the current Landlock ABI",
-+			variant.desc);
-+	}
-+
-+	ruleset_attr->handled_access_fs = supported_rules;
- 
- 	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(
- 		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi1), 0);
--- 
-2.53.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
