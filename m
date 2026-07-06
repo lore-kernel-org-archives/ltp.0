@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6A57C43458
-	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 14:32:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AF87C43458
+	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 14:38:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 047793E4AB3
-	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 16:32:56 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 7456B3E4B25
+	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 16:38:24 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7AE1C3E2C6F
- for <ltp@lists.linux.it>; Mon,  6 Jul 2026 16:32:39 +0200 (CEST)
-Received: from mail-qk2-x00.google.com (mail-qk2-x00.google.com
- [IPv6:2607:f8b0:4864:34::])
+ by picard.linux.it (Postfix) with ESMTPS id 85E6E3E2D31
+ for <ltp@lists.linux.it>; Mon,  6 Jul 2026 16:38:09 +0200 (CEST)
+Received: from mail-qk2-x02.google.com (mail-qk2-x02.google.com
+ [IPv6:2607:f8b0:4864:34::2])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 040DA1A006E8
- for <ltp@lists.linux.it>; Mon,  6 Jul 2026 16:32:39 +0200 (CEST)
-Received: by mail-qk2-x00.google.com with SMTP id
- af79cd13be357-91d4455ff18so17510785a.0
- for <ltp@lists.linux.it>; Mon, 06 Jul 2026 07:32:38 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2C9E7600724
+ for <ltp@lists.linux.it>; Mon,  6 Jul 2026 16:38:09 +0200 (CEST)
+Received: by mail-qk2-x02.google.com with SMTP id
+ af79cd13be357-92e51e6879fso43226485a.1
+ for <ltp@lists.linux.it>; Mon, 06 Jul 2026 07:38:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1783348358; x=1783953158; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1783348688; x=1783953488; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=q1lsdntUkZ00kDHq3+7Olh/QS6E+Ntl16WxwCgyxwpg=;
- b=AfH95umuVAwhQ0y6WX0ruOkE99YqpTINctnV39XM+oyB2HmrIzXufaGCBqLuopydKD
- ISVXrWL1b92mYgW5xWZkJv8hQ3Xg3zV0zaAydAdpzErxJd7g3NqY4EliZiNBTYLHHjkV
- SCzo42GeHZQx9f24eBty/cJ7Vo4cb7fkvVIagpD7RHchbcyw/f17Uc1jV13noKl7XCOo
- iJGyQJzjgHSBkBiise9PUUQ3NI61YNYsiQm5dbfD8/GgP1NVUYrmH5A5NUtKr2VgcdEl
- J9Z4ipIYnVmkhsnrIHgIWQgIy4wVaiYDLcaUeLX1YsfMhyYLmwYmwoFXdN76TT6NJr2C
- CC9w==
+ bh=mZ0JKGvj7kI3H7YZLJVCZQB63DyzoeyN7Gw0kFgSFvY=;
+ b=XU8Yju3EzyZTAGwy4711qnxeGsZrdca+yCont22XV7Cdhicd98+b+wL61zZAdvRiMW
+ y+HHec69brRjKpbJeldp/Wi3S/CAfH5SXo1LRHqbR7gEoEi6HfVR8OpAcFsLGHbXAYyf
+ K9EUZCh8SHeuxsHOlDBrIpHPzUAH2Ua4HaRYyaZHG8bf5Xmoe0GZBPpEfon4bB9WQaBP
+ i68VeQlpupuYmVhDRHMbr7PWkSFdt1KBBa94aAYoZ2RQFxQPmRp97ma4JXf992SHd5q3
+ PKxo4956EyEeUE2pdg1WeuAwWmB2QxHapAV3nKrqV1hu1XKGL4HazdsmvVc0CdF1li9U
+ xvQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783348358; x=1783953158;
+ d=1e100.net; s=20251104; t=1783348688; x=1783953488;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=q1lsdntUkZ00kDHq3+7Olh/QS6E+Ntl16WxwCgyxwpg=;
- b=BZcNXUNYtXJp8AU5uehA3fYOijgGuUbmDVWu/ZHyQCu1Od/y7WzD+qpv9Ew06Ib6bs
- P9F33PyYoMlMBN6rIFpkYb5z4PBBIlC/lyJoOSGp9Tn+6jj45n8GephpQWSAlbOUiAcW
- YabyDC17TZVUIRL+884LML85Q7P3dB8yxVR0UbwUhE5BfsBL6aWD5hwQMsTcafssVRW8
- WPnGlLL/4Lf8ZPR/aM8eU1W1dH4Zf1JojRpc0H75+MT9BvE6F8yKDMnHAZkdWN2sN6Ft
- qzkTAZXD/VmkpOcr4HgObnSRd1r7lcD2kUF3aLlScEHaQGASIm47INC/fB3ht1RlFbfF
- JijA==
-X-Gm-Message-State: AOJu0YxYXn8SyGRI71NFt7v8rQfXY8e1J52sBCylxPFFBR11hfqZVPEd
- coD2GFNxmh8/tlAiB2UpT+R0HRqwf/+n+EC1lAPVoqi/1+/W4DTu2mf0
-X-Gm-Gg: AfdE7clr4hyqyPh9blKq5wdEwHohhh0brWtlZ/+Y9iAHO8A3LTHE7BffRZuSBjsALZK
- B30U/m3GOapt/rH70f1xDzLDNqcxrVRuqWpQ+Qzt7fIBhMkoLuAnl2Cw5BaBAhGzDRGe5BuOAJU
- aVuuMyiBBkVDLS2DACsyVL2MNvf7mq30LOZKHXdWwgfiD/2Mclc3CV3R8SOYnWs1LBqhORflwtR
- iPVmI22SqhTGM1+W1xo71xKgv1xxV6saBhzCBvk+b2MKRXTx98F8eVPFxMhG2syIRg/xTP9haSm
- /XRU1RopMVSdkDp6IlqlbGTSKXBL6U+r5etrLNPAB3ftfPsbqNNxEeVVLtoLgXRy5KRGTL+faxV
- iz/dnIVNFZlsudaqrsyWT2ZjC1jVAqGPkHHhhMCcmazv4apwiOuh2t/arNwZmsQhAfkSbY1lmAh
- E0Uwb05RbJF1e65xi3IYajPsFtzpv1wlP3QO+bW4J8WItf7dGJiAr1j0OvB2+PzxkMwsrpX5e2t
- EvfFbv4JOXPk+NnzKugOq93qVI=
-X-Received: by 2002:a05:620a:6607:b0:92e:5c57:1f1e with SMTP id
- af79cd13be357-92ebb5b7a6bmr109554685a.73.1783348357491; 
- Mon, 06 Jul 2026 07:32:37 -0700 (PDT)
+ bh=mZ0JKGvj7kI3H7YZLJVCZQB63DyzoeyN7Gw0kFgSFvY=;
+ b=TBduFS63AkmfOtpA0DtQ8y6I3Jvefk/22v60fT5fb1lJSmPHzPi5xPblvCT3b46X58
+ FtKG4vFadgx6wHh0F5kfoRXlfsG9Je3bQKFCKFnT/Io7gsCqqWRwh743ElBJWLwmD86u
+ IaH9R/fSdL0+E9/QGByitK39Lb0mcUTY7XGNwwaDBivf/nmU9ne/QXNNJhOjd7kRPKav
+ 4Zn//Fy7oxLLFvaL9c6nNcVaId+6Va/E7ATRT+3DUmP1lhe3eSh1rif2hPvPf8jkLQs0
+ NW/cKJTPGaj7kM1bfOAL6uMqZkIJ243K+CHiXH3pTKgy2KWmbOZyOM4ndJdaKcMH/tka
+ fKUg==
+X-Gm-Message-State: AOJu0YykVJJZkna6FbF7/o5rla4N1XldJooRZpmVrfYrgPV/q4aSbRZt
+ Z+CJnN/+2KtMQyGUGshV69lYkezOwAHWRrapbiBcaZAk7mzaI4dYn/DyTGf37a9n
+X-Gm-Gg: AfdE7ck0yj8P4idZpFGm0EIdJLXcu+UXyiASdGL3Atr5XjDjGI/FVyYYxN/OGtR1lOD
+ UC/ElBrMDOUDpwvr4P04LoGOUEJf+ni/zosZz/jQSgZiQI/6EI+FTFg4USher3iC6Gw/a+tboP7
+ ZrLF54kUwkf97J3hm0fMKlq8SjQwuBGdjSHmYHjJLxlyaXKCGujKwtTFaWzDH3RjWjjeRZTeT0q
+ TFQF2xYOZqA3YSe4eiOfmgzqRyOV6fS8xGVWjg0/g67heOOYcFRncKy6RUujPxb49ckE3OPUoCr
+ /miCVsK+eDc7M5/eNanKYgcY31CR6ivZQu3JaRSVHXwse7mxawvKWMKpkXwq7/DY4o4WhrqVRhx
+ SDZ4/lk7YoS011wUhtu1xiMcU54Ic/UJmLug8HDXD+5HXOAzUFdLbNI9puhYyfnOw6o3QYpreMu
+ 5DVVaGSxJCCg961gQIPdy78RR1aaPSasYbVph8d9l5h6uEMB8TTtM6OBhSRkWxRxOTqrKmyorK0
+ PMi2nqrlTNkLhz1gqP96D/hmA==
+X-Received: by 2002:a05:620a:1981:b0:92b:6805:91bf with SMTP id
+ af79cd13be357-92ebb5b87c3mr116818585a.71.1783348687666; 
+ Mon, 06 Jul 2026 07:38:07 -0700 (PDT)
 Received: from
- runnervmkkn4f.twwycwkaznxeznykkqsgfknjya.cx.internal.cloudapp.net
- ([9.234.149.83]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-92e90ba41fesm967288285a.17.2026.07.06.07.32.36
+ runnervmkkn4f.wogtp2pjreuubkqbji5x52h0da.bx.internal.cloudapp.net
+ ([20.62.207.4]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-92e90ba7e62sm961784785a.13.2026.07.06.07.38.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 06 Jul 2026 07:32:37 -0700 (PDT)
+ Mon, 06 Jul 2026 07:38:07 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon,  6 Jul 2026 14:32:36 +0000
-Message-ID: <20260706143236.4092-1-linuxtestproject.agent@gmail.com>
+Date: Mon,  6 Jul 2026 14:38:06 +0000
+Message-ID: <20260706143806.4130-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260706-cve-2026-46331-v1-1-c55d45f022d1@suse.com>
-References: <20260706-cve-2026-46331-v1-1-c55d45f022d1@suse.com>
+In-Reply-To: <20260706-fix_make_check_landlock-v1-1-46f821b20128@suse.com>
+References: <20260706-fix_make_check_landlock-v1-1-46f821b20128@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lapi: Add pkt_sched.h and pkt_cls.h fallbacks
+Subject: Re: [LTP] landlock: fix make check warnings/errors
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,43 +99,25 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-On Mon, 7 Jul 2026 14:56:11 +0200, Andrea Cervesato wrote:
-> lapi: Add pkt_sched.h and pkt_cls.h fallbacks
+On Mon, 06 Jul 2026, Andrea Cervesato wrote:
+> landlock: fix make check warnings/errors
 
---- [PATCH 2/2] ---
+> -			if (strstr(readdir_files[i], de->d_name) != NULL)
+> +			if (!strstr(readdir_files[i], de->d_name))
+>  				files_counted++;
 
-> cve: Add act_pedit page-cache corruption test
+This inverts the condition. The original incremented files_counted when
+de->d_name was found in readdir_files[i]. The patched version increments
+it when de->d_name is NOT found.
 
-> +	if (sendfile(cli_fd, file_fd, &off, DATA_SIZE) < 0)
-> +		tst_brk(TBROK | TERRNO, "sendfile() failed");
-> +
-> +	/*
-> +	 * Allow the loopback egress path to finish processing.
-> +	 * The pedit action fires synchronously on lo, but give
-> +	 * the stack a moment to drain any queued segments.
-> +	 */
-> +	usleep(100000);
-> +
-> +	SAFE_CLOSE(cli_fd);
-> +	SAFE_CLOSE(acc_fd);
+Removing the redundant != NULL comparison should produce:
 
-usleep() for synchronization is not allowed (ground rule 2).
+    if (strstr(readdir_files[i], de->d_name))
+        files_counted++;
 
-The comment itself says the pedit action fires synchronously on lo.
-If that is the case, all egress processing is complete by the time
-sendfile() returns, and the sleep buys nothing.
-
-If TCP produces multiple segments and there is a concern that not all
-of them have passed through the egress filter by the time the readback
-runs, the deterministic fix is to drain acc_fd before closing the
-sockets:
-
-    char sink[DATA_SIZE];
-    SAFE_READ(1, acc_fd, sink, sizeof(sink));
-
-That read blocks until all DATA_SIZE bytes have been received,
-guaranteeing the full egress path -- including every pedit action --
-has completed before the page-cache comparison.
+With the ! prefix the count tracks non-matches instead of matches, so
+TST_EXP_EQ_LI(files_counted, ARRAY_SIZE(readdir_files)) at the end of
+_test_readdir() will produce wrong results.
 
 Verdict - Needs revision
 
