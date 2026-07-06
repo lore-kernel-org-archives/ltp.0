@@ -4,108 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FDF6C43458
-	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 19:13:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26FB8C43458
+	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 19:18:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 618083E5DE0
-	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 21:13:07 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id AFC1F3E5DD8
+	for <ltp@archiver.kernel.org>; Mon,  6 Jul 2026 21:18:12 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E53403E6C94
- for <ltp@lists.linux.it>; Mon,  6 Jul 2026 21:12:28 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id DA5913E4A34
+ for <ltp@lists.linux.it>; Mon,  6 Jul 2026 21:17:53 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2AAEB100048B
- for <ltp@lists.linux.it>; Mon,  6 Jul 2026 21:12:24 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CDC6C10006D2
+ for <ltp@lists.linux.it>; Mon,  6 Jul 2026 21:17:52 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 95CF375BB4;
- Mon,  6 Jul 2026 19:12:18 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 00B4975C92;
+ Mon,  6 Jul 2026 19:17:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1783365138; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1783365471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=dAryr0JQuBB3B4DP4bKsLZumYSHmKue4G/JyDai7DTw=;
- b=dOoiGf8R04s4AXQTPvATHxrJZFBbFbDSLkMpAIctiyO3g+be7Fm94LetIyu4bZMCD5zOVD
- tN9KKaMUDy/m7YiQOy/bcvYZRBAXZEugNFiDfL9ueRVcawAYvPZkSvabwUdO8PYxKXKMuF
- hcLmyhjJJxNx+JtmzQ6+vlDijNwhDZI=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=vZ+Rvc51ZyLKnOqaZUAUYuncyz2NIH0QPvf93/n8N1k=;
+ b=sbldyXgZofPj+LbMsOiFlXAPsGdN9uh4uqZsK1W55sc+wlVNBeF5GEFze3vjDwhdkd5/pT
+ tUX57bRnLaqqsVl3ZE//mlqabGUcE5a7rlYI3tgX19cBXaA2lQjmMrubL48q4yeT4mVsse
+ jQM++C9zV7QNZ9mXVy99KwT5HW6HQXo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1783365138;
+ s=susede2_ed25519; t=1783365471;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=dAryr0JQuBB3B4DP4bKsLZumYSHmKue4G/JyDai7DTw=;
- b=EgxXCjwdUMysJH1VsMqjGqGeBDoYs8TW1XPn9NABvi2rskWg4uOxdc3R3jB//0V6Px96b+
- oyDtxqdbjsw06gAw==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=vZ+Rvc51ZyLKnOqaZUAUYuncyz2NIH0QPvf93/n8N1k=;
+ b=rlwugw/TPDI5XtAbBIlYB+moBRcdQyNv8T6oT/3sJm8ak1bo2uOEqQ0E5Q4hS+7x3umB26
+ JedGD7qT2TgmvdDg==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=b1sXxDUW;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=SvEDR4Jh
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1783365138; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1783365470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=dAryr0JQuBB3B4DP4bKsLZumYSHmKue4G/JyDai7DTw=;
- b=dOoiGf8R04s4AXQTPvATHxrJZFBbFbDSLkMpAIctiyO3g+be7Fm94LetIyu4bZMCD5zOVD
- tN9KKaMUDy/m7YiQOy/bcvYZRBAXZEugNFiDfL9ueRVcawAYvPZkSvabwUdO8PYxKXKMuF
- hcLmyhjJJxNx+JtmzQ6+vlDijNwhDZI=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=vZ+Rvc51ZyLKnOqaZUAUYuncyz2NIH0QPvf93/n8N1k=;
+ b=b1sXxDUWTwZ63S0sc32ixhkDEK4+zLEuymQUwIyAl0D0CbcPCxkxz+XJXgjQjpCXrwVsPc
+ wsSgDc8zJSmGX8DbT1XTQ8+CugcNi1T8NAAoALmHWVjM0pgSPQJyWRBZZ4Bgl1Gl67o3RA
+ 3yT7PId76Txt7LLwFrqBlFd6YETyhus=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1783365138;
+ s=susede2_ed25519; t=1783365470;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=dAryr0JQuBB3B4DP4bKsLZumYSHmKue4G/JyDai7DTw=;
- b=EgxXCjwdUMysJH1VsMqjGqGeBDoYs8TW1XPn9NABvi2rskWg4uOxdc3R3jB//0V6Px96b+
- oyDtxqdbjsw06gAw==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=vZ+Rvc51ZyLKnOqaZUAUYuncyz2NIH0QPvf93/n8N1k=;
+ b=SvEDR4JheZ9f/vE0KZqaMgPEl6XJhP2mwSk0a8vsflt3AUBohBzY1nVWFUzGCfUSVbM5mK
+ nBRvjR0cqLPxQHCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 79B31779AA;
- Mon,  6 Jul 2026 19:12:18 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BBFA2779AA;
+ Mon,  6 Jul 2026 19:17:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id COX7GxL+S2poEgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 06 Jul 2026 19:12:18 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 740UK13/S2reFwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 06 Jul 2026 19:17:49 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 06 Jul 2026 21:12:16 +0200
+Date: Mon, 06 Jul 2026 21:17:49 +0200
 MIME-Version: 1.0
-Message-Id: <20260706-cve-2026-46331-v2-2-d5e47a113a84@suse.com>
-References: <20260706-cve-2026-46331-v2-0-d5e47a113a84@suse.com>
-In-Reply-To: <20260706-cve-2026-46331-v2-0-d5e47a113a84@suse.com>
+Message-Id: <20260706-fix_make_check_landlock-v2-1-4949150d17e4@suse.com>
+X-B4-Tracking: v=1; b=H4sIAFz/S2oC/4WNQQ7CIBREr9L8tRhAg+jKe5iG0M+vJbTFgBJN0
+ 7uLvYDLN5l5s0Cm5CnDpVkgUfHZx7mC3DWAg53vxLyrDJJLxU9csd6/zWQDGRwIgxnt7MaIgR2
+ 07c/YWXJKQ10/EtXqZr61lQefnzF9tqMiful/ZxFMsKPqtRSd5ELqa35l2mOcoF3X9QtwUAqxv
+ QAAAA==
+X-Change-ID: 20260706-fix_make_check_landlock-38af9cbaed68
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783365138; l=10050;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783365469; l=25445;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=wL/U5e9lYD9j+2lsJLsyuMX/BFKUeFEtgLo2PADA5T4=;
- b=WJjT/Nd6ezqqO2bKBVGDnUaeAKo3T2Lhg6cKH544MXm4KzVqcMBJpDLhOgf4CyGnnp8ka0H+v
- 80abHLXkEzWBGTdXKDttL8mqOXx/QDV/QVD8/AOeMBSkoayGoGb/jCh
+ bh=CY6VSgQ/0ecogio/jgLl7f2uDHL8crANF8UzFG1aPAY=;
+ b=2yttIjQKfPlBq5EKPkua037g3bbzSHFdwrE4+oxGDaPZ7hBDGugyae8EtSxURTWCJqa498r2c
+ A25etyS4UoiB6CsCqQHEkdmOhbItH8OMchHYFG1WJvO7KxT7yX3fEZH
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 00B4975C92
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.991]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
  RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
  RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
- imap1.dmz-prg2.suse.org:helo]
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,suse.com:email,suse.com:mid];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] cve: Add act_pedit page-cache corruption test
+Subject: [LTP] [PATCH v2] landlock: fix make check warnings/errors
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,317 +131,670 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Regression test for CVE-2026-46331. The act_pedit
-action computed a stale COW range, letting a TCP-typed
-key write past it into page-cache pages placed in the
-skb by sendfile.
-
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/cve                    |   1 +
- testcases/cve/.gitignore       |   1 +
- testcases/cve/cve-2026-46331.c | 272 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 274 insertions(+)
+Changes in v2:
+- fix inverted statement
+- Link to v1: https://lore.kernel.org/20260706-fix_make_check_landlock-v1-1-46f821b20128@suse.com
+---
+ testcases/kernel/syscalls/landlock/landlock01.c    |  7 +-
+ testcases/kernel/syscalls/landlock/landlock02.c    | 17 ++---
+ testcases/kernel/syscalls/landlock/landlock03.c    |  9 +--
+ testcases/kernel/syscalls/landlock/landlock04.c    | 16 ++--
+ testcases/kernel/syscalls/landlock/landlock05.c    | 28 +++----
+ testcases/kernel/syscalls/landlock/landlock06.c    | 11 +--
+ testcases/kernel/syscalls/landlock/landlock07.c    |  5 +-
+ testcases/kernel/syscalls/landlock/landlock08.c    | 44 ++++-------
+ testcases/kernel/syscalls/landlock/landlock09.c    |  2 +-
+ .../kernel/syscalls/landlock/landlock_common.h     | 86 ++++++++--------------
+ .../kernel/syscalls/landlock/landlock_tester.h     | 60 +++++++--------
+ 11 files changed, 104 insertions(+), 181 deletions(-)
 
-diff --git a/runtest/cve b/runtest/cve
-index cc664bb9302daff9d6c1ce7c79041a8fd4ced840..f51d85552087ea1459e39229cdc22b1031008ea3 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -98,3 +98,4 @@ cve-2026-43284 xfrm01
- cve-2026-43494 io_uring04
- cve-2026-46300 xfrm02
- cve-2026-46300-skb-segment xfrm03
-+cve-2026-46331 cve-2026-46331
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index dc1dad5b0d0d02a3ab57e72516c33ee7949c8431..bc1af0dd2c8086e4f5f78a3b15b91fafbd8f5936 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -15,3 +15,4 @@ icmp_rate_limit01
- tcindex01
- cve-2025-38236
- cve-2025-21756
-+cve-2026-46331
-diff --git a/testcases/cve/cve-2026-46331.c b/testcases/cve/cve-2026-46331.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..e72131b6236d6cc1c4a3a36710990fa19d6553f0
---- /dev/null
-+++ b/testcases/cve/cve-2026-46331.c
-@@ -0,0 +1,272 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Verify that the ``act_pedit`` traffic-control action correctly COW's
-+ * all modified regions of an skb before writing, so that page-cache
-+ * pages referenced via :manpage:`sendfile(2)` are not corrupted.
-+ *
-+ * ``tcf_pedit_act()`` computed the COW range for
-+ * ``skb_ensure_writable()`` once before the key loop using
-+ * ``tcfp_off_max_hint``, but the hint did not account for the runtime
-+ * header offset added by typed keys. An egress pedit rule whose first
-+ * ``NETWORK`` key inflates the IP header length (IHL 15) pushes
-+ * subsequent ``TCP``-typed key writes past the stale COW boundary,
-+ * allowing them to scribble directly into page-cache pages that
-+ * :manpage:`sendfile(2)` placed in the skb.
-+ *
-+ * [Algorithm]
-+ *
-+ * - Create a 4 KiB file with a sequential byte pattern and set its
-+ *   permissions to read-only (0444)
-+ * - Reopen the file ``O_RDONLY``
-+ * - Add a ``clsact`` qdisc on ``lo`` and establish a TCP connection
-+ *   on loopback
-+ * - After the handshake, install a ``matchall`` egress filter carrying
-+ *   a two-key pedit action: key 0 sets IP IHL to 15 (NETWORK type),
-+ *   key 1 writes a 4-byte marker at TCP-relative offset 512
-+ * - :manpage:`sendfile(2)` the file through the TCP socket so the
-+ *   pedit action fires on the page-cache-backed skb
-+ * - Reread the file through the same ``O_RDONLY`` descriptor and
-+ *   compare with the original pattern; any difference means the
-+ *   page cache was corrupted
-+ */
-+
-+#include <sys/sendfile.h>
-+#include <linux/rtnetlink.h>
-+#include <linux/tc_act/tc_pedit.h>
-+
-+#include "tst_test.h"
-+#include "tst_net.h"
-+#include "tst_netdevice.h"
-+#include "lapi/if_ether.h"
-+#include "lapi/pkt_sched.h"
-+#include "lapi/pkt_cls.h"
-+#include "lapi/sched.h"
-+#include "lapi/tcp.h"
-+
-+#define TESTFILE	"pagecache_test"
-+#define DATA_SIZE	4096
-+#define PORT		4445
-+
-+#define NKEYS		2
-+#define IHL_VALUE	0x4fu		/* IP version 4, IHL 15 (max) */
-+#define IHL_MASK	0xffffff00u	/* keep TOS / tot_len bytes */
-+#define MARKER_OFFSET	512		/* TCP-relative key offset */
-+#define MARKER_VALUE	0xccccccccu	/* 4-byte marker written by pedit */
-+
-+/*
-+ * Pedit selector buffer: struct tc_pedit_sel followed by NKEYS keys.
-+ * sizeof(struct tc_pedit_sel) does not include the flexible array, so
-+ * the trailing keys[] array provides storage for it.
-+ */
-+static struct {
-+	struct tc_pedit_sel sel;
-+	struct tc_pedit_key keys[NKEYS];
-+} pedit_sel_buf;
-+
-+/* --- Nested attribute lists for the matchall + pedit filter config --- */
-+
-+static uint16_t key0_htype = TCA_PEDIT_KEY_EX_HDR_TYPE_NETWORK;
-+static uint16_t key0_cmd   = TCA_PEDIT_KEY_EX_CMD_SET;
-+static uint16_t key1_htype = TCA_PEDIT_KEY_EX_HDR_TYPE_TCP;
-+static uint16_t key1_cmd   = TCA_PEDIT_KEY_EX_CMD_SET;
-+
-+static const struct tst_netlink_attr_list key0_ex[] = {
-+	{TCA_PEDIT_KEY_EX_HTYPE, &key0_htype, sizeof(key0_htype), NULL},
-+	{TCA_PEDIT_KEY_EX_CMD,   &key0_cmd,   sizeof(key0_cmd),   NULL},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static const struct tst_netlink_attr_list key1_ex[] = {
-+	{TCA_PEDIT_KEY_EX_HTYPE, &key1_htype, sizeof(key1_htype), NULL},
-+	{TCA_PEDIT_KEY_EX_CMD,   &key1_cmd,   sizeof(key1_cmd),   NULL},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static const struct tst_netlink_attr_list keys_ex[] = {
-+	{TCA_PEDIT_KEY_EX, NULL, 0, key0_ex},
-+	{TCA_PEDIT_KEY_EX, NULL, 0, key1_ex},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static const struct tst_netlink_attr_list pedit_opts[] = {
-+	{TCA_PEDIT_PARMS_EX, &pedit_sel_buf, sizeof(pedit_sel_buf), NULL},
-+	{TCA_PEDIT_KEYS_EX,  NULL, 0, keys_ex},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static const struct tst_netlink_attr_list action_entry[] = {
-+	{TCA_ACT_KIND,    "pedit", sizeof("pedit"), NULL},
-+	{TCA_ACT_OPTIONS, NULL, 0, pedit_opts},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static const struct tst_netlink_attr_list action_list[] = {
-+	{1, NULL, 0, action_entry},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static const struct tst_netlink_attr_list matchall_opts[] = {
-+	{TCA_MATCHALL_ACT, NULL, 0, action_list},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static const struct tst_netlink_attr_list filter_config[] = {
-+	{TCA_OPTIONS, NULL, 0, matchall_opts},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static uint8_t original[DATA_SIZE];
-+static int file_fd = -1;
-+static int listen_fd = -1;
-+static int cli_fd = -1;
-+static int acc_fd = -1;
-+
-+static void setup(void)
-+{
-+	struct sockaddr_in addr;
-+	int i;
-+
-+	tst_setup_netns();
-+	NETDEV_SET_STATE("lo", 1);
-+
-+	listen_fd = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
-+	SAFE_SETSOCKOPT_INT(listen_fd, SOL_SOCKET, SO_REUSEADDR, 1);
-+
-+	memset(&addr, 0, sizeof(addr));
-+	addr.sin_family = AF_INET;
-+	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-+	addr.sin_port = htons(PORT);
-+
-+	SAFE_BIND(listen_fd, (struct sockaddr *)&addr, sizeof(addr));
-+	SAFE_LISTEN(listen_fd, 1);
-+
-+	for (i = 0; i < DATA_SIZE; i++)
-+		original[i] = (uint8_t)(i & 0xff);
-+
-+	memset(&pedit_sel_buf, 0, sizeof(pedit_sel_buf));
-+	pedit_sel_buf.sel.nkeys = NKEYS;
-+	pedit_sel_buf.sel.action = TC_ACT_PIPE;
-+
-+	/* Key 0: inflate IP IHL to 15 (push TCP header offset to 60) */
-+	pedit_sel_buf.keys[0].off  = 0;
-+	pedit_sel_buf.keys[0].val  = IHL_VALUE;
-+	pedit_sel_buf.keys[0].mask = IHL_MASK;
-+
-+	/* Key 1: write marker via TCP-typed offset (past stale COW) */
-+	pedit_sel_buf.keys[1].off  = MARKER_OFFSET;
-+	pedit_sel_buf.keys[1].val  = MARKER_VALUE;
-+	pedit_sel_buf.keys[1].mask = 0;
-+}
-+
-+static void run(void)
-+{
-+	struct sockaddr_in addr;
-+	uint8_t readback[DATA_SIZE];
-+	off_t off = 0;
-+	int wr_fd;
-+
-+	wr_fd = SAFE_OPEN(TESTFILE, O_WRONLY | O_CREAT, 0444);
-+	SAFE_WRITE(SAFE_WRITE_ALL, wr_fd, original, DATA_SIZE);
-+	SAFE_CLOSE(wr_fd);
-+
-+	file_fd = SAFE_OPEN(TESTFILE, O_RDONLY);
-+
-+	/*
-+	 * Clean-slate clsact qdisc so no filter is active during the
-+	 * TCP handshake (the IHL-inflating key would corrupt SYN/ACK).
-+	 */
-+	tst_netdev_remove_qdisc(__FILE__, __LINE__, 0,
-+				"lo", AF_UNSPEC, TC_H_CLSACT,
-+				TC_H_MAKE(TC_H_CLSACT, 0), "clsact");
-+	NETDEV_ADD_QDISC("lo", AF_UNSPEC, TC_H_CLSACT,
-+			 TC_H_MAKE(TC_H_CLSACT, 0), "clsact", NULL);
-+
-+	memset(&addr, 0, sizeof(addr));
-+	addr.sin_family = AF_INET;
-+	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-+	addr.sin_port = htons(PORT);
-+
-+	cli_fd = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
-+	SAFE_CONNECT(cli_fd, (struct sockaddr *)&addr, sizeof(addr));
-+	acc_fd = SAFE_ACCEPT(listen_fd, NULL, NULL);
-+
-+	/* Arm the pedit filter AFTER the handshake completes */
-+	NETDEV_ADD_TRAFFIC_FILTER("lo",
-+				  TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_EGRESS),
-+				  0, ETH_P_ALL, 1, "matchall",
-+				  filter_config);
-+
-+	SAFE_SETSOCKOPT_INT(cli_fd, IPPROTO_TCP, TCP_NODELAY, 1);
-+
-+	/*
-+	 * sendfile places page-cache pages in the skb. With
-+	 * TCP_NODELAY the 4 KiB payload fits a single segment whose
-+	 * egress path -- including the pedit action -- completes
-+	 * synchronously inside dev_queue_xmit on loopback.
-+	 */
-+	if (sendfile(cli_fd, file_fd, &off, DATA_SIZE) < 0)
-+		tst_brk(TBROK | TERRNO, "sendfile() failed");
-+
-+	SAFE_CLOSE(cli_fd);
-+	SAFE_CLOSE(acc_fd);
-+
-+	/*
-+	 * Read back through the same O_RDONLY fd that sendfile used.
-+	 * sendfile with a non-NULL offset does not change the fd's
-+	 * file position, so it is still at 0. Keeping the same fd
-+	 * guarantees we hit the same page-cache pages.
-+	 */
-+	SAFE_READ(1, file_fd, readback, sizeof(readback));
-+	SAFE_CLOSE(file_fd);
-+
-+	if (memcmp(readback, original, DATA_SIZE) != 0)
-+		tst_res(TFAIL,
-+			"Page cache corrupted via act_pedit partial COW bypass");
-+	else
-+		tst_res(TPASS, "Page cache was not corrupted");
-+
-+	SAFE_UNLINK(TESTFILE);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (cli_fd != -1)
-+		SAFE_CLOSE(cli_fd);
-+
-+	if (acc_fd != -1)
-+		SAFE_CLOSE(acc_fd);
-+
-+	if (file_fd != -1)
-+		SAFE_CLOSE(file_fd);
-+
-+	if (listen_fd != -1)
-+		SAFE_CLOSE(listen_fd);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_USER_NS=y",
-+		"CONFIG_NET_NS=y",
-+		"CONFIG_NET_SCH_INGRESS",
-+		"CONFIG_NET_CLS_MATCHALL",
-+		"CONFIG_NET_ACT_PEDIT",
-+		NULL
-+	},
-+	.save_restore = (const struct tst_path_val[]) {
-+		{PATH_USER_MAX_USER_NAMESPACES, "1024", TST_SR_SKIP},
-+		{}
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "899ee91156e5"},
-+		{"CVE", "2026-46331"},
-+		{}
-+	},
-+};
+diff --git a/testcases/kernel/syscalls/landlock/landlock01.c b/testcases/kernel/syscalls/landlock/landlock01.c
+index bf206dae7751448419407b950b2aebc3f1708211..d817d97862c98a15b055812aed3ff9ddecd3ef14 100644
+--- a/testcases/kernel/syscalls/landlock/landlock01.c
++++ b/testcases/kernel/syscalls/landlock/landlock01.c
+@@ -44,11 +44,8 @@ static void run(unsigned int n)
+ 	if (*tc->attr)
+ 		(*tc->attr)->handled_access_fs = tc->access_fs;
+ 
+-	TST_EXP_FAIL(tst_syscall(__NR_landlock_create_ruleset,
+-			*tc->attr, *tc->size, tc->flags),
+-		tc->exp_errno,
+-		"%s",
+-		tc->msg);
++	TST_EXP_FAIL(tst_syscall(__NR_landlock_create_ruleset, *tc->attr, *tc->size, tc->flags),
++		     tc->exp_errno, "%s", tc->msg);
+ 
+ 	if (TST_RET >= 0)
+ 		SAFE_CLOSE(TST_RET);
+diff --git a/testcases/kernel/syscalls/landlock/landlock02.c b/testcases/kernel/syscalls/landlock/landlock02.c
+index 37dc72d32c633a2f249c5a9ef879b6d288a63259..3edddfdeb0de2378cf312a7876247eadf102ff78 100644
+--- a/testcases/kernel/syscalls/landlock/landlock02.c
++++ b/testcases/kernel/syscalls/landlock/landlock02.c
+@@ -136,9 +136,8 @@ static void run(unsigned int n)
+ 		attr = *tc->net_attr;
+ 	}
+ 
+-	TST_EXP_FAIL(tst_syscall(__NR_landlock_add_rule,
+-		*tc->fd, tc->rule_type, attr, tc->flags),
+-		tc->exp_errno, "%s", tc->msg);
++	TST_EXP_FAIL(tst_syscall(__NR_landlock_add_rule, *tc->fd, tc->rule_type, attr, tc->flags),
++		     tc->exp_errno, "%s", tc->msg);
+ }
+ 
+ static void setup(void)
+@@ -150,14 +149,14 @@ static void setup(void)
+ 	attr_abi6->handled_access_fs = LANDLOCK_ACCESS_FS_EXECUTE;
+ 
+ 	if (abi_current < 4) {
+-		ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset,
+-			attr_abi1, sizeof(struct tst_landlock_ruleset_attr_abi1), 0));
++		ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset, attr_abi1,
++							   sizeof(struct tst_landlock_ruleset_attr_abi1), 0));
+ 	} else if (abi_current < 6) {
+-		ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset,
+-			attr_abi4, sizeof(struct tst_landlock_ruleset_attr_abi4), 0));
++		ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset, attr_abi4,
++							   sizeof(struct tst_landlock_ruleset_attr_abi4), 0));
+ 	} else {
+-		ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset,
+-			attr_abi6, sizeof(struct tst_landlock_ruleset_attr_abi6), 0));
++		ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset, attr_abi6,
++							   sizeof(struct tst_landlock_ruleset_attr_abi6), 0));
+ 	}
+ }
+ 
+diff --git a/testcases/kernel/syscalls/landlock/landlock03.c b/testcases/kernel/syscalls/landlock/landlock03.c
+index 3c0cd56b0a12d1dafece3298f585f8b8ed0abcc2..cda636688c98e04f545fbd0fa7f280a6d244e259 100644
+--- a/testcases/kernel/syscalls/landlock/landlock03.c
++++ b/testcases/kernel/syscalls/landlock/landlock03.c
+@@ -56,15 +56,14 @@ static void run_child(struct tcase *tc)
+ 	if (tc->exp_errno == E2BIG) {
+ 		for (int i = 0; i < MAX_STACKED_RULESETS; i++) {
+ 			TST_EXP_PASS_SILENT(tst_syscall(__NR_landlock_restrict_self,
+-				*tc->fd, tc->flags));
++							*tc->fd, tc->flags));
+ 			if (TST_RET == -1)
+ 				return;
+ 		}
+ 	}
+ 
+ 	TST_EXP_FAIL(tst_syscall(__NR_landlock_restrict_self, *tc->fd, tc->flags),
+-		tc->exp_errno,
+-		"%s", tc->msg);
++		     tc->exp_errno, "%s", tc->msg);
+ 
+ 	if (tc->exp_errno == EPERM)
+ 		tst_cap_action(&needadmin);
+@@ -86,8 +85,8 @@ static void setup(void)
+ 
+ 	ruleset_attr->handled_access_fs = LANDLOCK_ACCESS_FS_EXECUTE;
+ 
+-	ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset,
+-		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi1), 0));
++	ruleset_fd = TST_EXP_FD_SILENT(tst_syscall(__NR_landlock_create_ruleset, ruleset_attr,
++						   sizeof(struct tst_landlock_ruleset_attr_abi1), 0));
+ 
+ 	file_fd = SAFE_OPEN("junk.bin", O_CREAT, 0777);
+ }
+diff --git a/testcases/kernel/syscalls/landlock/landlock04.c b/testcases/kernel/syscalls/landlock/landlock04.c
+index 86dc199942bb009beb9515b3b7d5011b864fcc58..ce1d6c37aad3125d9dca0e73463da473a1c7f5e5 100644
+--- a/testcases/kernel/syscalls/landlock/landlock04.c
++++ b/testcases/kernel/syscalls/landlock/landlock04.c
+@@ -6,7 +6,7 @@
+ /*\
+  * This test verifies that all landlock filesystem rules are working properly.
+  * The way we do it is to verify that all disabled syscalls are not working but
+- * the one we enabled via specifc landlock rules.
++ * the one we enabled via specific landlock rules.
+  */
+ 
+ #include "landlock_common.h"
+@@ -104,7 +104,7 @@ static void enable_exec_libs(const int ruleset_fd)
+ 	fp = SAFE_FOPEN("/proc/self/maps", "r");
+ 
+ 	while (fgets(line, sizeof(line), fp)) {
+-		if (strstr(line, ".so") == NULL)
++		if (!strstr(line, ".so"))
+ 			continue;
+ 
+ 		SAFE_SSCANF(line, "%*x-%*x %*s %*x %*s %*d %s", path);
+@@ -131,8 +131,7 @@ static void enable_exec_libs(const int ruleset_fd)
+ 			LANDLOCK_ACCESS_FS_EXECUTE;
+ 		path_beneath_attr->parent_fd = SAFE_OPEN(path, O_PATH | O_CLOEXEC);
+ 
+-		SAFE_LANDLOCK_ADD_RULE(
+-			ruleset_fd, LANDLOCK_RULE_PATH_BENEATH,	path_beneath_attr, 0);
++		SAFE_LANDLOCK_ADD_RULE(ruleset_fd, LANDLOCK_RULE_PATH_BENEATH,	path_beneath_attr, 0);
+ 
+ 		SAFE_CLOSE(path_beneath_attr->parent_fd);
+ 	}
+@@ -164,8 +163,7 @@ static void setup(void)
+ 
+ 	ruleset_attr->handled_access_fs = supported_rules;
+ 
+-	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(
+-		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi1), 0);
++	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi1), 0);
+ 
+ 	/* since our binary is dynamically linked, we need to enable dependences
+ 	 * to be read and executed
+@@ -177,11 +175,9 @@ static void setup(void)
+ 		SAFE_MKDIR(SANDBOX_FOLDER, PERM_MODE);
+ 
+ 	path_beneath_attr->allowed_access = variant.access;
+-	path_beneath_attr->parent_fd = SAFE_OPEN(
+-		SANDBOX_FOLDER, O_PATH | O_CLOEXEC);
++	path_beneath_attr->parent_fd = SAFE_OPEN(SANDBOX_FOLDER, O_PATH | O_CLOEXEC);
+ 
+-	SAFE_LANDLOCK_ADD_RULE(
+-		ruleset_fd, LANDLOCK_RULE_PATH_BENEATH,	path_beneath_attr, 0);
++	SAFE_LANDLOCK_ADD_RULE(ruleset_fd, LANDLOCK_RULE_PATH_BENEATH,	path_beneath_attr, 0);
+ 
+ 	SAFE_CLOSE(path_beneath_attr->parent_fd);
+ }
+diff --git a/testcases/kernel/syscalls/landlock/landlock05.c b/testcases/kernel/syscalls/landlock/landlock05.c
+index ad5e932b077499e43a91c8e32ae6fdf5fedf23f3..527ddfa1b369d7c1c03f945bb7a0d2a0ff92cfb0 100644
+--- a/testcases/kernel/syscalls/landlock/landlock05.c
++++ b/testcases/kernel/syscalls/landlock/landlock05.c
+@@ -19,12 +19,12 @@
+ #include "landlock_common.h"
+ 
+ #define MNTPOINT "sandbox"
+-#define DIR1 MNTPOINT"/folder1"
+-#define DIR2 MNTPOINT"/folder2"
+-#define DIR3 MNTPOINT"/folder3"
+-#define FILENAME1 DIR1"/file"
+-#define FILENAME2 DIR2"/file"
+-#define FILENAME3 DIR3"/file"
++#define DIR1 MNTPOINT "/folder1"
++#define DIR2 MNTPOINT "/folder2"
++#define DIR3 MNTPOINT "/folder3"
++#define FILENAME1 DIR1 "/file"
++#define FILENAME2 DIR2 "/file"
++#define FILENAME3 DIR3 "/file"
+ 
+ static struct tst_landlock_ruleset_attr_abi1 *ruleset_attr;
+ static struct landlock_path_beneath_attr *path_beneath_attr;
+@@ -65,20 +65,10 @@ static void setup(void)
+ 		LANDLOCK_ACCESS_FS_WRITE_FILE |
+ 		LANDLOCK_ACCESS_FS_REFER;
+ 
+-	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(
+-		ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi1), 0);
++	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi1), 0);
+ 
+-	apply_landlock_fs_rule(
+-		path_beneath_attr,
+-		ruleset_fd,
+-		LANDLOCK_ACCESS_FS_REFER,
+-		DIR1);
+-
+-	apply_landlock_fs_rule(
+-		path_beneath_attr,
+-		ruleset_fd,
+-		LANDLOCK_ACCESS_FS_REFER,
+-		DIR2);
++	apply_landlock_fs_rule(path_beneath_attr, ruleset_fd, LANDLOCK_ACCESS_FS_REFER, DIR1);
++	apply_landlock_fs_rule(path_beneath_attr, ruleset_fd, LANDLOCK_ACCESS_FS_REFER, DIR2);
+ 
+ 	enforce_ruleset(ruleset_fd);
+ 
+diff --git a/testcases/kernel/syscalls/landlock/landlock06.c b/testcases/kernel/syscalls/landlock/landlock06.c
+index c2ac20d5939d20dd870efc6186f87d91a2476247..9d621a04791140b4d9352bee54352721e7e7717e 100644
+--- a/testcases/kernel/syscalls/landlock/landlock06.c
++++ b/testcases/kernel/syscalls/landlock/landlock06.c
+@@ -14,7 +14,7 @@
+ #include <sys/ioctl.h>
+ 
+ #define MNTPOINT "sandbox"
+-#define FILENAME MNTPOINT"/fifo"
++#define FILENAME MNTPOINT "/fifo"
+ 
+ static struct tst_landlock_ruleset_attr_abi1 *ruleset_attr;
+ static struct landlock_path_beneath_attr *path_beneath_attr;
+@@ -52,13 +52,8 @@ static void setup(void)
+ 
+ 	ruleset_attr->handled_access_fs = LANDLOCK_ACCESS_FS_IOCTL_DEV;
+ 
+-	apply_landlock_fs_layer(
+-		ruleset_attr,
+-		sizeof(struct tst_landlock_ruleset_attr_abi1),
+-		path_beneath_attr,
+-		MNTPOINT,
+-		LANDLOCK_ACCESS_FS_IOCTL_DEV
+-	);
++	apply_landlock_fs_layer(ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi1),
++				path_beneath_attr, MNTPOINT, LANDLOCK_ACCESS_FS_IOCTL_DEV);
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/landlock/landlock07.c b/testcases/kernel/syscalls/landlock/landlock07.c
+index 0dfa7ea111d8141caf6ea252f990fd0d564ceaa0..a9f8cc562dc6379ddfbb16db26c28e6a62cd841c 100644
+--- a/testcases/kernel/syscalls/landlock/landlock07.c
++++ b/testcases/kernel/syscalls/landlock/landlock07.c
+@@ -68,10 +68,7 @@ static void setup(void)
+ 	verify_landlock_is_enabled();
+ 
+ 	ruleset_attr->handled_access_fs = LANDLOCK_ACCESS_FS_WRITE_FILE;
+-	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(
+-		ruleset_attr,
+-		sizeof(struct tst_landlock_ruleset_attr_abi1),
+-		0);
++	ruleset_fd = SAFE_LANDLOCK_CREATE_RULESET(ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi1), 0);
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/landlock/landlock08.c b/testcases/kernel/syscalls/landlock/landlock08.c
+index 7e7d8470bf49662416f7c83a444876575b29fb16..c86880cd2f334780cb53b04fac99a9a557235bc2 100644
+--- a/testcases/kernel/syscalls/landlock/landlock08.c
++++ b/testcases/kernel/syscalls/landlock/landlock08.c
+@@ -58,8 +58,7 @@ static void create_server(const int addr_family)
+ 	SAFE_CLOSE(socket.fd);
+ }
+ 
+-static void test_bind(const int addr_family, const in_port_t port,
+-	const int exp_err)
++static void test_bind(const int addr_family, const in_port_t port, const int exp_err)
+ {
+ 	struct socket_data socket;
+ 	struct sockaddr *addr = NULL;
+@@ -68,20 +67,17 @@ static void test_bind(const int addr_family, const in_port_t port,
+ 	getsocket_addr(&socket, addr_family, &addr);
+ 
+ 	if (exp_err) {
+-		TST_EXP_FAIL(
+-			bind(socket.fd, addr, socket.address_size),
+-			exp_err, "bind() access on port %u", port);
++		TST_EXP_FAIL(bind(socket.fd, addr, socket.address_size),
++			     exp_err, "bind() access on port %u", port);
+ 	} else {
+-		TST_EXP_PASS(
+-			bind(socket.fd, addr, socket.address_size),
+-			"bind() access on port %u", port);
++		TST_EXP_PASS(bind(socket.fd, addr, socket.address_size),
++			     "bind() access on port %u", port);
+ 	}
+ 
+ 	SAFE_CLOSE(socket.fd);
+ }
+ 
+-static void test_connect(const int addr_family, const in_port_t port,
+-	const int exp_err)
++static void test_connect(const int addr_family, const in_port_t port, const int exp_err)
+ {
+ 	struct socket_data socket;
+ 	struct sockaddr *addr = NULL;
+@@ -90,13 +86,11 @@ static void test_connect(const int addr_family, const in_port_t port,
+ 	getsocket_addr(&socket, addr_family, &addr);
+ 
+ 	if (exp_err) {
+-		TST_EXP_FAIL(
+-			connect(socket.fd, addr, socket.address_size),
+-			exp_err, "connect() on port %u", port);
++		TST_EXP_FAIL(connect(socket.fd, addr, socket.address_size),
++			     exp_err, "connect() on port %u", port);
+ 	} else {
+-		TST_EXP_PASS(
+-			connect(socket.fd, addr, socket.address_size),
+-			"connect() on port %u", port);
++		TST_EXP_PASS(connect(socket.fd, addr, socket.address_size),
++			     "connect() on port %u", port);
+ 	}
+ 
+ 	SAFE_CLOSE(socket.fd);
+@@ -142,12 +136,8 @@ static void run(void)
+ 		tst_res(TINFO, "Enable bind() access only for port %u",
+ 			addr_port);
+ 
+-		apply_landlock_net_layer(
+-			ruleset_attr,
+-			sizeof(struct tst_landlock_ruleset_attr_abi4),
+-			net_port_attr,
+-			addr_port,
+-			LANDLOCK_ACCESS_NET_BIND_TCP);
++		apply_landlock_net_layer(ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi4),
++					 net_port_attr, addr_port, LANDLOCK_ACCESS_NET_BIND_TCP);
+ 
+ 		test_bind(addr_family, addr_port, 0);
+ 		test_bind(addr_family, addr_port + 0x80, EACCES);
+@@ -165,12 +155,8 @@ static void run(void)
+ 		tst_res(TINFO, "Enable connect() access only on port %u",
+ 			*server_port);
+ 
+-		apply_landlock_net_layer(
+-			ruleset_attr,
+-			sizeof(struct tst_landlock_ruleset_attr_abi4),
+-			net_port_attr,
+-			*server_port,
+-			LANDLOCK_ACCESS_NET_CONNECT_TCP);
++		apply_landlock_net_layer(ruleset_attr, sizeof(struct tst_landlock_ruleset_attr_abi4),
++					 net_port_attr, *server_port, LANDLOCK_ACCESS_NET_CONNECT_TCP);
+ 
+ 		test_connect(addr_family, *server_port, 0);
+ 		test_connect(addr_family, *server_port + 0x80, EACCES);
+@@ -189,7 +175,7 @@ static void setup(void)
+ 	addr_port = TST_GET_UNUSED_PORT(AF_INET, SOCK_STREAM);
+ 
+ 	server_port = SAFE_MMAP(NULL, sizeof(in_port_t), PROT_READ | PROT_WRITE,
+-		MAP_SHARED | MAP_ANONYMOUS, -1, 0);
++				MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/landlock/landlock09.c b/testcases/kernel/syscalls/landlock/landlock09.c
+index 2e7f0021299152a1dbd0d7d7594487f551f04a24..09a762bb1b41b2caaddbc7a8316c47180508af8b 100644
+--- a/testcases/kernel/syscalls/landlock/landlock09.c
++++ b/testcases/kernel/syscalls/landlock/landlock09.c
+@@ -14,7 +14,7 @@
+ #include "landlock_common.h"
+ 
+ #define SOCKET_NAME "test.sock"
+-#define ABSTRACT_SOCKET_NAME "\0"SOCKET_NAME
++#define ABSTRACT_SOCKET_NAME "\0" SOCKET_NAME
+ #define SOCKET_LENGTH (offsetof(struct sockaddr_un, sun_path) + strlen(SOCKET_NAME) + 1)
+ 
+ enum {
+diff --git a/testcases/kernel/syscalls/landlock/landlock_common.h b/testcases/kernel/syscalls/landlock/landlock_common.h
+index 8857745d6f1c1c30fc914924b8d0da381b36059f..dc63c0d86a5d0ce67abab6c23f20047402344d05 100644
+--- a/testcases/kernel/syscalls/landlock/landlock_common.h
++++ b/testcases/kernel/syscalls/landlock/landlock_common.h
+@@ -25,15 +25,11 @@ static inline int verify_landlock_is_enabled(void)
+ {
+ 	int abi;
+ 
+-	abi = tst_syscall(__NR_landlock_create_ruleset,
+-		NULL, 0, LANDLOCK_CREATE_RULESET_VERSION);
++	abi = tst_syscall(__NR_landlock_create_ruleset, NULL, 0, LANDLOCK_CREATE_RULESET_VERSION);
+ 
+ 	if (abi < 0) {
+-		if (errno == EOPNOTSUPP) {
+-			tst_brk(TCONF, "Landlock is currently disabled. "
+-				"Please enable it either via CONFIG_LSM or "
+-				"'lsm' kernel parameter.");
+-		}
++		if (errno == EOPNOTSUPP)
++			tst_brk(TCONF, "Landlock is currently disabled. Please enable it either via CONFIG_LSM or 'lsm' kernel parameter.");
+ 
+ 		tst_brk(TBROK | TERRNO, "landlock_create_ruleset error");
+ 	}
+@@ -43,38 +39,26 @@ static inline int verify_landlock_is_enabled(void)
+ 	return abi;
+ }
+ 
+-static inline void apply_landlock_fs_rule(
+-	struct landlock_path_beneath_attr *path_beneath_attr,
+-	const int ruleset_fd,
+-	const int access,
+-	const char *path)
++static inline void apply_landlock_fs_rule(struct landlock_path_beneath_attr *path_beneath_attr,
++					  const int ruleset_fd, const int access, const char *path)
+ {
+ 	path_beneath_attr->allowed_access = access;
+ 	path_beneath_attr->parent_fd = SAFE_OPEN(path, O_PATH | O_CLOEXEC);
+ 
+-	SAFE_LANDLOCK_ADD_RULE(
+-		ruleset_fd,
+-		LANDLOCK_RULE_PATH_BENEATH,
+-		path_beneath_attr,
+-		0);
++	SAFE_LANDLOCK_ADD_RULE(ruleset_fd, LANDLOCK_RULE_PATH_BENEATH,
++			       path_beneath_attr, 0);
+ 
+ 	SAFE_CLOSE(path_beneath_attr->parent_fd);
+ }
+ 
+-static inline void apply_landlock_net_rule(
+-	struct landlock_net_port_attr *net_attr,
+-	const int ruleset_fd,
+-	const uint64_t port,
+-	const uint64_t access)
++static inline void apply_landlock_net_rule(struct landlock_net_port_attr *net_attr,
++					   const int ruleset_fd, const uint64_t port,
++					   const uint64_t access)
+ {
+ 	net_attr->port = port;
+ 	net_attr->allowed_access = access;
+ 
+-	SAFE_LANDLOCK_ADD_RULE(
+-		ruleset_fd,
+-		LANDLOCK_RULE_NET_PORT,
+-		net_attr,
+-		0);
++	SAFE_LANDLOCK_ADD_RULE(ruleset_fd, LANDLOCK_RULE_NET_PORT, net_attr, 0);
+ }
+ 
+ static inline void enforce_ruleset(const int ruleset_fd)
+@@ -83,11 +67,9 @@ static inline void enforce_ruleset(const int ruleset_fd)
+ 	SAFE_LANDLOCK_RESTRICT_SELF(ruleset_fd, 0);
+ }
+ 
+-static inline void apply_landlock_fs_layer(
+-	void *ruleset_attr, size_t attr_size,
+-	struct landlock_path_beneath_attr *path_beneath_attr,
+-	const char *path,
+-	const int access)
++static inline void apply_landlock_fs_layer(void *ruleset_attr, size_t attr_size,
++					   struct landlock_path_beneath_attr *path_beneath_attr,
++					   const char *path, const int access)
+ {
+ 	int ruleset_fd;
+ 
+@@ -99,11 +81,9 @@ static inline void apply_landlock_fs_layer(
+ 	SAFE_CLOSE(ruleset_fd);
+ }
+ 
+-static inline void apply_landlock_net_layer(
+-	void *ruleset_attr, size_t attr_size,
+-	struct landlock_net_port_attr *net_port_attr,
+-	const in_port_t port,
+-	const uint64_t access)
++static inline void apply_landlock_net_layer(void *ruleset_attr, size_t attr_size,
++					    struct landlock_net_port_attr *net_port_attr,
++					    const in_port_t port, const uint64_t access)
+ {
+ 	int ruleset_fd;
+ 
+@@ -115,8 +95,7 @@ static inline void apply_landlock_net_layer(
+ 	SAFE_CLOSE(ruleset_fd);
+ }
+ 
+-static inline void apply_landlock_scoped_layer(
+-	void *ruleset_attr, size_t attr_size)
++static inline void apply_landlock_scoped_layer(void *ruleset_attr, size_t attr_size)
+ {
+ 	int ruleset_fd;
+ 
+@@ -126,8 +105,7 @@ static inline void apply_landlock_scoped_layer(
+ 	SAFE_CLOSE(ruleset_fd);
+ }
+ 
+-static inline in_port_t getsocket_port(struct socket_data *socket,
+-	const int addr_family)
++static inline in_port_t getsocket_port(struct socket_data *socket, const int addr_family)
+ {
+ 	struct sockaddr_in addr_ipv4;
+ 	struct sockaddr_in6 addr_ipv6;
+@@ -158,30 +136,24 @@ static inline in_port_t getsocket_port(struct socket_data *socket,
+ }
+ 
+ static inline void create_socket(struct socket_data *socket,
+-	const int addr_family, const in_port_t port)
++				 const int addr_family, const in_port_t port)
+ {
+ 	memset(socket, 0, sizeof(struct socket_data));
+ 
+ 	switch (addr_family) {
+ 	case AF_INET:
+-		if (!port) {
+-			tst_init_sockaddr_inet_bin(&socket->addr_ipv4,
+-				INADDR_ANY, 0);
+-		} else {
+-			tst_init_sockaddr_inet(&socket->addr_ipv4,
+-				IPV4_LOCALHOST, port);
+-		}
++		if (!port)
++			tst_init_sockaddr_inet_bin(&socket->addr_ipv4, INADDR_ANY, 0);
++		else
++			tst_init_sockaddr_inet(&socket->addr_ipv4, IPV4_LOCALHOST, port);
+ 
+ 		socket->address_size = sizeof(struct sockaddr_in);
+ 		break;
+ 	case AF_INET6:
+-		if (!port) {
+-			tst_init_sockaddr_inet6_bin(&socket->addr_ipv6,
+-				&in6addr_any, 0);
+-		} else {
+-			tst_init_sockaddr_inet6(&socket->addr_ipv6,
+-				IPV6_LOCALHOST, port);
+-		}
++		if (!port)
++			tst_init_sockaddr_inet6_bin(&socket->addr_ipv6, &in6addr_any, 0);
++		else
++			tst_init_sockaddr_inet6(&socket->addr_ipv6, IPV6_LOCALHOST, port);
+ 
+ 		socket->address_size = sizeof(struct sockaddr_in6);
+ 		break;
+@@ -194,7 +166,7 @@ static inline void create_socket(struct socket_data *socket,
+ }
+ 
+ static inline void getsocket_addr(struct socket_data *socket,
+-	const int addr_family, struct sockaddr **addr)
++				  const int addr_family, struct sockaddr **addr)
+ {
+ 	switch (addr_family) {
+ 	case AF_INET:
+diff --git a/testcases/kernel/syscalls/landlock/landlock_tester.h b/testcases/kernel/syscalls/landlock/landlock_tester.h
+index dcebc45cd785e7af284de9a8f27f048a40af2815..4e77e8a61fcdc1fe04f0a84819b68cbc0810d634 100644
+--- a/testcases/kernel/syscalls/landlock/landlock_tester.h
++++ b/testcases/kernel/syscalls/landlock/landlock_tester.h
+@@ -14,22 +14,22 @@
+ #define SANDBOX_FOLDER	"sandbox"
+ #define TESTAPP			"landlock_exec"
+ 
+-#define FILE_EXEC		SANDBOX_FOLDER"/"TESTAPP
+-#define FILE_READ		SANDBOX_FOLDER"/file_read"
+-#define FILE_WRITE		SANDBOX_FOLDER"/file_write"
+-#define FILE_REMOVE		SANDBOX_FOLDER"/file_remove"
+-#define FILE_UNLINK		SANDBOX_FOLDER"/file_unlink"
+-#define FILE_UNLINKAT	SANDBOX_FOLDER"/file_unlinkat"
+-#define FILE_TRUNCATE	SANDBOX_FOLDER"/file_truncate"
+-#define FILE_REGULAR	SANDBOX_FOLDER"/regular0"
+-#define FILE_SOCKET		SANDBOX_FOLDER"/socket0"
+-#define FILE_FIFO		SANDBOX_FOLDER"/fifo0"
+-#define FILE_SYM0		SANDBOX_FOLDER"/symbolic0"
+-#define FILE_SYM1		SANDBOX_FOLDER"/symbolic1"
+-#define DIR_READDIR		SANDBOX_FOLDER"/dir_readdir"
+-#define DIR_RMDIR		SANDBOX_FOLDER"/dir_rmdir"
+-#define DEV_CHAR0		SANDBOX_FOLDER"/chardev0"
+-#define DEV_BLK0		SANDBOX_FOLDER"/blkdev0"
++#define FILE_EXEC	SANDBOX_FOLDER "/" TESTAPP
++#define FILE_READ	SANDBOX_FOLDER "/file_read"
++#define FILE_WRITE	SANDBOX_FOLDER "/file_write"
++#define FILE_REMOVE	SANDBOX_FOLDER "/file_remove"
++#define FILE_UNLINK	SANDBOX_FOLDER "/file_unlink"
++#define FILE_UNLINKAT	SANDBOX_FOLDER "/file_unlinkat"
++#define FILE_TRUNCATE	SANDBOX_FOLDER "/file_truncate"
++#define FILE_REGULAR	SANDBOX_FOLDER "/regular0"
++#define FILE_SOCKET	SANDBOX_FOLDER "/socket0"
++#define FILE_FIFO	SANDBOX_FOLDER "/fifo0"
++#define FILE_SYM0	SANDBOX_FOLDER "/symbolic0"
++#define FILE_SYM1	SANDBOX_FOLDER "/symbolic1"
++#define DIR_READDIR	SANDBOX_FOLDER "/dir_readdir"
++#define DIR_RMDIR	SANDBOX_FOLDER "/dir_rmdir"
++#define DEV_CHAR0	SANDBOX_FOLDER "/chardev0"
++#define DEV_BLK0	SANDBOX_FOLDER "/blkdev0"
+ 
+ #define ALL_RULES (\
+ 	LANDLOCK_ACCESS_FS_EXECUTE | \
+@@ -50,9 +50,9 @@
+ 	LANDLOCK_ACCESS_FS_IOCTL_DEV)
+ 
+ static char *readdir_files[] = {
+-	DIR_READDIR"/file0",
+-	DIR_READDIR"/file1",
+-	DIR_READDIR"/file2",
++	DIR_READDIR "/file0",
++	DIR_READDIR "/file1",
++	DIR_READDIR "/file2",
+ };
+ 
+ static int dev_chr;
+@@ -63,8 +63,7 @@ static int tester_get_all_fs_rules(void)
+ 	int abi;
+ 	int all_rules = ALL_RULES;
+ 
+-	abi = SAFE_LANDLOCK_CREATE_RULESET(
+-		NULL, 0, LANDLOCK_CREATE_RULESET_VERSION);
++	abi = SAFE_LANDLOCK_CREATE_RULESET(NULL, 0, LANDLOCK_CREATE_RULESET_VERSION);
+ 
+ 	if (abi < 2)
+ 		all_rules &= ~LANDLOCK_ACCESS_FS_REFER;
+@@ -227,10 +226,10 @@ static void _test_readdir(const int result)
+ 			continue;
+ 
+ 		for (size_t i = 0; i < ARRAY_SIZE(readdir_files); i++) {
+-			if (readdir_files[i] == NULL)
++			if (!readdir_files[i])
+ 				continue;
+ 
+-			if (strstr(readdir_files[i], de->d_name) != NULL)
++			if (strstr(readdir_files[i], de->d_name))
+ 				files_counted++;
+ 		}
+ 	}
+@@ -263,11 +262,7 @@ static void _test_rmfile(const int result)
+ 	}
+ }
+ 
+-static void _test_make(
+-	const char *path,
+-	const int type,
+-	const int dev,
+-	const int result)
++static void _test_make(const char *path, const int type, const int dev, const int result)
+ {
+ 	tst_res(TINFO, "Test normal or special files creation");
+ 
+@@ -314,8 +309,7 @@ static void _test_truncate(const int result)
+ 			SAFE_CLOSE(fd);
+ 		}
+ 
+-		TST_EXP_FAIL(open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE),
+-			EACCES);
++		TST_EXP_FAIL(open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE), EACCES);
+ 
+ 		if (TST_RET != -1)
+ 			SAFE_CLOSE(TST_RET);
+@@ -346,7 +340,7 @@ static void tester_run_fs_rules(const int rules, const int result)
+ 		_test_make(FILE_REGULAR, S_IFREG, 0, result);
+ 
+ 	if (strcmp(tst_device->fs_type, "vfat") &&
+-		strcmp(tst_device->fs_type, "exfat")) {
++	    strcmp(tst_device->fs_type, "exfat")) {
+ 		if (rules & LANDLOCK_ACCESS_FS_MAKE_CHAR)
+ 			_test_make(DEV_CHAR0, S_IFCHR, dev_chr, result);
+ 
+@@ -366,9 +360,7 @@ static void tester_run_fs_rules(const int rules, const int result)
+ 	if (rules & LANDLOCK_ACCESS_FS_TRUNCATE) {
+ 		int abi;
+ 
+-		abi = SAFE_LANDLOCK_CREATE_RULESET(
+-			NULL, 0, LANDLOCK_CREATE_RULESET_VERSION);
+-
++		abi = SAFE_LANDLOCK_CREATE_RULESET(NULL, 0, LANDLOCK_CREATE_RULESET_VERSION);
+ 		if (abi < 3) {
+ 			tst_res(TINFO, "Skip truncate test. Minimum ABI version is 3");
+ 			return;
 
+---
+base-commit: 0b891ea23ed7315afa12df92fe12f1218a420bde
+change-id: 20260706-fix_make_check_landlock-38af9cbaed68
+
+Best regards,
 -- 
-2.51.0
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
