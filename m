@@ -4,78 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E3EEC43458
-	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 15:35:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C46E9C43458
+	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 15:58:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 830283E5D30
-	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 17:35:45 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 3A1B63D7C3B
+	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 17:58:24 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 98ED33C3167
- for <ltp@lists.linux.it>; Tue,  7 Jul 2026 17:35:30 +0200 (CEST)
-Received: from mail-pj2-x00.google.com (mail-pj2-x00.google.com
- [IPv6:2607:f8b0:4864:39::])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E58283CD5C6
+ for <ltp@lists.linux.it>; Tue,  7 Jul 2026 17:58:07 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1B2F2600925
- for <ltp@lists.linux.it>; Tue,  7 Jul 2026 17:35:30 +0200 (CEST)
-Received: by mail-pj2-x00.google.com with SMTP id
- d9443c01a7336-2cc6207127aso6937515ad.1
- for <ltp@lists.linux.it>; Tue, 07 Jul 2026 08:35:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1783438528; x=1784043328; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=mvwK9b1HA+/Dpa6gFO/iBJCIps8pZs2ounzfDLGp5c8=;
- b=pUrYduQTqaWW5TDqoFD34cTCc/HSGgz/ecxkJ4Lt1g9VKA/LqYEvoIurLuNX08xlJy
- +nvSfHdc2yQIWjfM9lF2xEvS0pRiu/vajfj6moZfe06JIY0hBgT580U6ZHjVai/sGVW1
- LI23vr+Oqm1d/swH6NDPjsY16gc2hPauMraMLHv7mikSWbkIVdCV+T1mYSb/dkCOEGUx
- 1+X3P2WEVhEC8xK9FL44NiwzXGyFOnTwczgMosrftCEbPiuvs7XWRaA2hn+9xnDEZb3U
- HmFFoPgMBtRNanxXtdj4Sm4C7dcsEF8GtbkRP6O7j/EyqddXlziugMgChPPWk98JanH+
- wOlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783438528; x=1784043328;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=mvwK9b1HA+/Dpa6gFO/iBJCIps8pZs2ounzfDLGp5c8=;
- b=ctfUXdizVxjKpN4Y+XrIerh2fNiZ2BalwwxA+TaRwa1ZlxC1IjirVclTfZNKro1PWh
- hs8m4KZEuDflzfuHexeVb1sZzCW2sCxyIx1we/sQSkiUwwXNkgGrQ07Wg1wzvmz80VIO
- 3jltHkPPu9MiV5g+qv8/DZOphWy9FHIP5/FgOC8T5Wck+sBB56aor7sH74mmQ3SjVtNS
- AWib2xzBvR2MTA11hi+Vcum4002Lb2sxX9bJatf7ux7J+vqFW/T5Cd0gfLxffp2Svkcq
- qaDDW6AJpp3n0IdaeKVbqQ2hgwTO9y7MYoRO5PAHf5wTUM8qTWz3SKwfbgOnW/sZ+7sq
- n0Wg==
-X-Gm-Message-State: AOJu0YybOwWOqo2ACTujZp73p8iVL72IkvVcqIwKtVg4Q9eUVu9BwMGr
- 7DeHRe3IVDLGAGpfs5WRCvBSnH9FSyAP6ksoORRB68clEMA7slRL3bE0ecSxMGa+gBpi
-X-Gm-Gg: AfdE7clchs3k68ngMerso5aFVETd4to3BM4VMt98AGhWTuaL1oS7x2FkyMZ6oVxb/qh
- ZC0JWH1kkDQodOvwtZU5jfsPt5KqELl0k0/7ujZYIGMcPR7hIXXUJAK3tIgW2pgymoMYWA9DDTY
- AmyUZBHaclZtc479J/jmy0YodoN6f3pnF5NiQ7qFLt+8/Y7lbuPthd0ALRq7tyaC8cT2Kur+pKu
- 054mx0XRiZmn+k7CnMQo3MGvJ+dicM7LK+sxlyMj5gazaf7qO4J16VRhhXUI2HgAHUdkpO6fCF3
- fG0XE1cBb1F2tci22LB+XTIEAZKf/27Mvx7oLqGXuUulsEuK2EsiHOqejrsmdTg1eJD5+hNWdJV
- CuYJPkFurh78GHaw7X/ORbpzHSWwCR10HLf6LgbxtAYbeKJPgGKDs7VMc7ccwb1EAOyFryM9tFn
- SA4C/H+UkffbFWnS3XwCA1CY42wThEbE7r3gaz55WbqTBL
-X-Received: by 2002:a17:903:2444:b0:2c9:ae0b:61e3 with SMTP id
- d9443c01a7336-2ccbe40b8efmr59685225ad.2.1783438527998; 
- Tue, 07 Jul 2026 08:35:27 -0700 (PDT)
-Received: from localhost.localdomain ([211.196.223.197])
- by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2ccc9bfe040sm14369975ad.31.2026.07.07.08.35.26
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2026 08:35:27 -0700 (PDT)
-From: Jinseok Kim <always.starving0@gmail.com>
-To: ltp@lists.linux.it
-Date: Wed,  8 Jul 2026 00:35:00 +0900
-Message-ID: <20260707153502.15421-1-always.starving0@gmail.com>
-X-Mailer: git-send-email 2.43.0
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 11AE26008CB
+ for <ltp@lists.linux.it>; Tue,  7 Jul 2026 17:58:05 +0200 (CEST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 667Fmcxf669948; Tue, 7 Jul 2026 15:58:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-type:date:from:in-reply-to:message-id:mime-version
+ :references:subject:to; s=pp1; bh=i7qCPcINysHFX4lx0i1EexkGcPMrLj
+ JSFzNyvlNSvFk=; b=TJ4BKErAvhi/GESXegWMttY8csXZFn/d0OHiifKGNxJIZe
+ ZMzlvTgRiztuG0WRtkxHXkt2ctPRKUiqt6vpVQgyljYhu9AsGyr4c+sj4UNQD1r5
+ 70VjLs5rEvGlfr4h6ZRh4ETQL9TV4o2aOAiy/Es09QMICiNaL8NwPvCFjW2U1F09
+ HYnz0TuSLQGJvB+4Op8OZZIiUjpg0GninSlVdylyA2QiFYkiCeWlOgki/EKtH1ND
+ qre12UZ4Qa3MqcdH/TEBSu9Gag0kg1yEKPqgCnx6gsse2yFDW0iBcFqR9e8plYdy
+ KDepM0P5BTYBawGV4z2EijhKnNL5sc3E4L2M2i7A==
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4f6qknfuwb-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 07 Jul 2026 15:58:03 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 667FncZe009005;
+ Tue, 7 Jul 2026 15:58:02 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4f7f6y36tv-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 07 Jul 2026 15:58:02 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
+ [10.20.54.103])
+ by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 667Fw0tD51511578
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 7 Jul 2026 15:58:00 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 563892004B;
+ Tue,  7 Jul 2026 15:58:00 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 1E21520043;
+ Tue,  7 Jul 2026 15:58:00 +0000 (GMT)
+Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com (unknown
+ [9.111.59.117])
+ by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+ Tue,  7 Jul 2026 15:58:00 +0000 (GMT)
+Date: Tue, 7 Jul 2026 17:57:58 +0200
+From: Jan Polensky <japo@linux.ibm.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>,
+ linuxtestproject.agent@gmail.com
+Message-ID: <ak0iBiwKSAgfA0bE@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
+References: <20260701122826.4115-1-linuxtestproject.agent@gmail.com>
+ <6a462831.25509765.22e979.4fe7@mx.google.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <6a462831.25509765.22e979.4fe7@mx.google.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Authority-Analysis: v=2.4 cv=Q/XiJY2a c=1 sm=1 tr=0 ts=6a4d220b cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=kj9zAlcOel0A:10 a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=Y2IxJ9c9Rs8Kov3niI8_:22 a=iox4zFpeAAAA:8
+ a=W9JIN6utTe397279cxYA:9 a=CjuIK1q_8ugA:10 a=WzC6qhA0u3u7Ye7llzcV:22
+X-Proofpoint-GUID: KtCJgaTRbVg2-on9HNpUmVJLvv31Mwh2
+X-Proofpoint-ORIG-GUID: GMyPcLjvsFhh6eFHzkIciDArApPGyHMj
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzA3MDE1NSBTYWx0ZWRfX0rwaOjIOsGP+
+ +t3qkxrkRkFMje84WJ5Cigsgo1VVWWgKU3Y31j4K2E6Xqo6m1SV5MXeedfWQ55oYc0DiG0ulXwR
+ aAG09a+AWPfgloWtrLw0W3SgZlyFj2k=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzA3MDE1NSBTYWx0ZWRfX/acJZagugtOW
+ lxuLRzU3TkYcH/dKuI82dFUcasOgKO/PjgRsVfNlU1zJA1QF8vA/JRSo/5tmvQaWhXMU94801sQ
+ rq6MCgMggXTzxORCxJ3gRTnXBtZKg2mfle4yQ16uelNqEhs+eRI7VUlG04rHiwSpNLOOLBA+4Zu
+ RsdI+zLBrnbz6cKBtB+xBYY/l9Qp9Z/IAYcOhjVktfFL1R85C8ynyabrCXkYYYSJN51cGio6cby
+ 4aOJ+H9qmLa+45ZF3JOl9bdUxji2JjXlSof1zUXNQxy1fVOwvwlDMU3f47K44WojotkKZWnEHO1
+ zt1KDPvIJZ+uLAPBf0OFlrvSRpA7CFpFdTgPudesCrJ8vEWVKDNuY+BHelwJjIuUG7/MYQOde5p
+ na4KsJzqZqFPv3WQGuVzYAtPVU9AboK10dOXCHvUkBHNN5kp9lhCp9zjLlExaPNeKPAHbKgtzKu
+ NDdBTAr1WK1xhY/d2lA==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-07_04,2026-07-06_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 impostorscore=0 spamscore=0 phishscore=0 priorityscore=1501
+ bulkscore=0 clxscore=1015 lowpriorityscore=0 suspectscore=0 malwarescore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607070155
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls: Replace getppid02 with getpid02
- implementation
+Subject: Re: [LTP] thp04: Fix PTRACE mode for CONFIG_PROC_MEM_FORCE_PTRACE=y
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,196 +114,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Remove the existing getppid02.c as its coverage is overlapped by
-getpid02.c. Then, replace it by renaming and adapting the broader checks
-from getpid02.c to serve as the new getppid02.c.
+On Thu, Jul 02, 2026 at 08:58:25AM +0000, Andrea Cervesato wrote:
+> Hi Jan,
+>
+> > The patch drops lapi/mmap.h but the test still uses MADV_HUGEPAGE (in
+> > alloc_zero_page) and MADV_DONTNEED (multiple call sites). The fallback
+> > defines for these constants live in lapi/mmap.h. On toolchains where
+> > <sys/mman.h> does not provide them, this will fail to compile.
+>
+> This is correct. Please always use lapi/mmap.h instead of the
+> sys/mman.h. In this way we are sure to fallback to an existing
+> value and LTP compiles in any machine that doesn't have those
+> definitions.
+>
+> >
+> > > +static void run_proc_mem_ptrace_race(void)
+> > > +{
+> > > +	/* After 1000 iterations, let tracee exit cleanly */
+> > > +	SAFE_PTRACE(PTRACE_CONT, tracee_pid, NULL, NULL);
+> > > +	SAFE_WAITPID(tracee_pid, &status, 0);
+> >
+> > After run_proc_mem_ptrace_race() returns, the tracee has been reaped.
+> > If the framework re-invokes run() (e.g. via -i 2), the next call to
+> > SAFE_OPEN("/proc/<pid>/mem") will hit ENOENT and abort with TBROK.
+> >
+> > The PROC_MEM_ALWAYS path survives re-invocation because
+> > tst_fzsync_run_a() returns false immediately when runtime expires. The
+> > ptrace path could either re-spawn the tracee in run(), or guard with
+> > an early return when tracee_pid is no longer alive.
+>
+> This is also correct. Always run the test with `-i` as well.
+> Also, take a look at tst_reap_children(), because it looks like
+> we are duplicating the same functionality with SAFE_WAITPID() here.
+>
+> --
+> Andrea Cervesato
+> SUSE QE Automation Engineer Linux
+> andrea.cervesato@suse.com
 
-Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
----
- runtest/syscalls                              |  1 -
- testcases/kernel/syscalls/getpid/.gitignore   |  1 -
- testcases/kernel/syscalls/getpid/getpid02.c   | 67 -------------------
- testcases/kernel/syscalls/getppid/getppid02.c | 49 +++++++++++---
- 4 files changed, 40 insertions(+), 78 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/getpid/getpid02.c
+Hi Andrea,
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index a38743ded..62a33e3a6 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -517,7 +517,6 @@ getpgid02 getpgid02
- getpgrp01 getpgrp01
+thanks, both issues are addressed in the next revision.
 
- getpid01 getpid01
--getpid02 getpid02
-
- getppid01 getppid01
- getppid02 getppid02
-diff --git a/testcases/kernel/syscalls/getpid/.gitignore b/testcases/kernel/syscalls/getpid/.gitignore
-index f44bc9eac..8e7ab0185 100644
---- a/testcases/kernel/syscalls/getpid/.gitignore
-+++ b/testcases/kernel/syscalls/getpid/.gitignore
-@@ -1,2 +1 @@
- /getpid01
--/getpid02
-diff --git a/testcases/kernel/syscalls/getpid/getpid02.c b/testcases/kernel/syscalls/getpid/getpid02.c
-deleted file mode 100644
-index 08fcd5337..000000000
---- a/testcases/kernel/syscalls/getpid/getpid02.c
-+++ /dev/null
-@@ -1,67 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (c) International Business Machines  Corp., 2001
-- */
--
--/*\
-- * Check that:
-- *
-- * - :manpage:`fork(2)` in parent returns the same pid as
-- *   :manpage:`getpid(2)` in child
-- * - :manpage:`getppid(2)` in child returns the same pid as
-- *   :manpage:`getpid(2)` in parent
-- */
--
--#include "tst_test.h"
--
--static pid_t *child_pid;
--
--static void verify_getpid(void)
--{
--	pid_t proc_id;
--	pid_t pid;
--	pid_t pproc_id;
--
--	proc_id = getpid();
--	pid = SAFE_FORK();
--
--	if (pid == 0) {
--		pproc_id = getppid();
--
--		if (pproc_id != proc_id) {
--			tst_res(TFAIL, "child getppid() (%d) != parent getpid() (%d)",
--				pproc_id, proc_id);
--		} else {
--			tst_res(TPASS, "child getppid() == parent getpid() (%d)", proc_id);
--		}
--
--		*child_pid = getpid();
--
--		return;
--	}
--
--	tst_reap_children();
--
--	if (*child_pid != pid)
--		tst_res(TFAIL, "child getpid() (%d) != parent fork() (%d)", *child_pid, pid);
--	else
--		tst_res(TPASS, "child getpid() == parent fork() (%d)", pid);
--}
--
--static void setup(void)
--{
--	child_pid = SAFE_MMAP(NULL, sizeof(pid_t), PROT_READ | PROT_WRITE,
--			      MAP_ANONYMOUS | MAP_SHARED, -1, 0);
--}
--
--static void cleanup(void)
--{
--	SAFE_MUNMAP(child_pid, sizeof(pid_t));
--}
--
--static struct tst_test test = {
--	.forks_child = 1,
--	.setup = setup,
--	.cleanup = cleanup,
--	.test_all = verify_getpid,
--};
-diff --git a/testcases/kernel/syscalls/getppid/getppid02.c b/testcases/kernel/syscalls/getppid/getppid02.c
-index 7497eba12..08fcd5337 100644
---- a/testcases/kernel/syscalls/getppid/getppid02.c
-+++ b/testcases/kernel/syscalls/getppid/getppid02.c
-@@ -4,14 +4,19 @@
-  */
-
- /*\
-- * Check that getppid() in child returns the same pid as getpid() in parent.
-+ * Check that:
-+ *
-+ * - :manpage:`fork(2)` in parent returns the same pid as
-+ *   :manpage:`getpid(2)` in child
-+ * - :manpage:`getppid(2)` in child returns the same pid as
-+ *   :manpage:`getpid(2)` in parent
-  */
-
--#include <errno.h>
--
- #include "tst_test.h"
-
--static void verify_getppid(void)
-+static pid_t *child_pid;
-+
-+static void verify_getpid(void)
- {
- 	pid_t proc_id;
- 	pid_t pid;
-@@ -19,18 +24,44 @@ static void verify_getppid(void)
-
- 	proc_id = getpid();
- 	pid = SAFE_FORK();
-+
- 	if (pid == 0) {
- 		pproc_id = getppid();
-
--		if (pproc_id != proc_id)
--			tst_res(TFAIL, "child's ppid(%d) not equal to parent's pid(%d)",
-+		if (pproc_id != proc_id) {
-+			tst_res(TFAIL, "child getppid() (%d) != parent getpid() (%d)",
- 				pproc_id, proc_id);
--		else
--			tst_res(TPASS, "getppid() returned parent pid (%d)", proc_id);
-+		} else {
-+			tst_res(TPASS, "child getppid() == parent getpid() (%d)", proc_id);
-+		}
-+
-+		*child_pid = getpid();
-+
-+		return;
- 	}
-+
-+	tst_reap_children();
-+
-+	if (*child_pid != pid)
-+		tst_res(TFAIL, "child getpid() (%d) != parent fork() (%d)", *child_pid, pid);
-+	else
-+		tst_res(TPASS, "child getpid() == parent fork() (%d)", pid);
-+}
-+
-+static void setup(void)
-+{
-+	child_pid = SAFE_MMAP(NULL, sizeof(pid_t), PROT_READ | PROT_WRITE,
-+			      MAP_ANONYMOUS | MAP_SHARED, -1, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_MUNMAP(child_pid, sizeof(pid_t));
- }
-
- static struct tst_test test = {
- 	.forks_child = 1,
--	.test_all = verify_getppid,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_getpid,
- };
---
-2.43.0
+Regards,
+Jan
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
