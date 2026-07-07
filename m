@@ -4,81 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 471AAC43458
-	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 07:48:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47365C43602
+	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 09:59:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 806603E2AE9
-	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 09:48:57 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 4F3FA3E2CDF
+	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 11:59:50 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7DA073E1775
- for <ltp@lists.linux.it>; Tue,  7 Jul 2026 09:48:42 +0200 (CEST)
-Received: from mail-qk2-x04.google.com (mail-qk2-x04.google.com
- [IPv6:2607:f8b0:4864:34::4])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C34783C746A
+ for <ltp@lists.linux.it>; Tue,  7 Jul 2026 11:59:34 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0D594200269
- for <ltp@lists.linux.it>; Tue,  7 Jul 2026 09:48:42 +0200 (CEST)
-Received: by mail-qk2-x04.google.com with SMTP id
- d75a77b69052e-51c27a12102so3161371cf.1
- for <ltp@lists.linux.it>; Tue, 07 Jul 2026 00:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1783410521; x=1784015321; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=WRXtrNJm+XFo9ca9lBhkLoA+5NgLneYCWHy+VbMWz1g=;
- b=sIk4PuWi5U5ylHh766xviTXDKmSJsTaAhs7M/O9g6bEsfif6CYqxf3JS1YeL0vJeka
- MzPk4TSCaDj0YWxFBHiX8N2xIWsd1QmLxkF4SGX3Ek3suA7ryR6Vkd8QdPcFpN2c/Mjq
- FGG48gncCMURbwB15coD7TiT2KLol8ayEn/r553sVXr00z8NoWaw6xdFAs5gGUTBmyk2
- ZRUCtANr0RiDJwW85faU5jUb6bAXZkrnCk7jLuUd04s8jCgKtd+djUmFaceCm6DPpb2r
- ovgQObE1lVZiXx3JyYopvsj9JN9E0om7i0/PqO097K8ePTOpNDuCYBiOqTRnNsAcohYc
- 6qfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783410521; x=1784015321;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to;
- bh=WRXtrNJm+XFo9ca9lBhkLoA+5NgLneYCWHy+VbMWz1g=;
- b=qqZBBtTNcj150ebaxq3F4k+r/R5UvYFAHyI5ZFdD4yB+ft9/h082uSKEAOSznWSBxV
- yiggIbYIbC+mZkxNYOFGkSSfjLnbajc6tcZL5H+agSnVISbRHmPghJ3eVMbhPmhKIRia
- 24mZOjCHGaGlNyNItqqXlGT8iYDXI8kPOTVet7LCsPSX7Hqt1PMQfUA//BTe2lmVImvv
- fNhJyKE9OnOik89DKSDUhD6RIRg0xxgQnu7gj0GMZib3IDI81HwJqVoDhcX39YfBNnNY
- rfgSNbvqHLCpPJwOM5MAl/QIdobZ6vwaMRNjQrnIhePRVuQv/QIAdHeMDzxIwtu0QvWV
- 3IUA==
-X-Gm-Message-State: AOJu0Yw9xjxVFSzGX3b2hzJpk0pDaKwYGm8NvJ4aO5Wou8YZoT2DJvW0
- lgnTKMsgB8LdKmgJM3ThChXXbHE1UAF2j6JD+yZmRsY5A5CSEuJs7G9L
-X-Gm-Gg: AfdE7clS42TAtOKWGCYYYYv3mup9YATphusKt4Agtl7op3u2vY9HBNIsoxJ+MSp7ul0
- MYX9tzcwWKwBsCiAv8rNlhe1ON1CAermb1QF4o5IpCBVkJLLKC1AHrOXc1x8PM2zlPWav7shXCj
- qPkF/qqGDqv2CX4ejBwxq2LwHKSmrzH4IAhmh1Y1km70S8GO42OJ+7zBa785u/0QNHUeIZeCiMt
- GzAMNT9JyWVsYYMwwdLoTY6im0O95rXLSWIyqs227LCxMd5G0UD15xWHlpBSzgDSyYLFJHyXcHe
- xQ/7jU3xmkrF5TQN6to7CqsUEWkkBpTsSKdEapRhlxnMoMEudniL5qMlh1q2YStj1MQHCXKSx3C
- fUUEYK9woAqv8Whwhvjgo88sgciOWIB8MIDXQXlvNEdiUohmLaaF3DUJTVLHYT7zBkTDKLRNAqb
- ZL4Sar8t5NIPu1+25oQTV+SXPeyP36ILYSZCbakpewe2WykJLnfPJEd/qkLOX4wGsW4Rhnny1Ah
- yNWrdYZQA2LGVoSGJKJdI09zNTA1A==
-X-Received: by 2002:ac8:58cd:0:b0:51a:8c97:938d with SMTP id
- d75a77b69052e-51c748eda73mr42614451cf.68.1783410520425; 
- Tue, 07 Jul 2026 00:48:40 -0700 (PDT)
-Received: from
- runnervmkkn4f.w5kyndb1gvhehekumsuunpfd1d.bx.internal.cloudapp.net
- ([172.214.104.51]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8f471fdc708sm152294446d6.38.2026.07.07.00.48.40
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2026 00:48:40 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Tue,  7 Jul 2026 07:48:39 +0000
-Message-ID: <20260707074839.4197-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260707054804.24232-2-wegao@suse.com>
-References: <20260707054804.24232-2-wegao@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 03ED81400445
+ for <ltp@lists.linux.it>; Tue,  7 Jul 2026 11:59:33 +0200 (CEST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 6678IGGC3342108; Tue, 7 Jul 2026 09:59:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-type:date:from:in-reply-to:message-id:mime-version
+ :references:subject:to; s=pp1; bh=BjZhYb2cAp9SKnW0azTo+g34dbWOly
+ sKVGlLrf1EC0g=; b=aNPdqSfjTIbEsB0PiNCxerfLteGjKiNgo9/H36TCv7egS3
+ b12w6poKuOcrgSPCEWKn0+IwgJCbr+QjifPky9Bm4oY0EE0Lzx96Ez8q/bLM9D9b
+ W+rMXNF2pT7rFlOvK51EORqUpUiYujyGOpvHxLj89FaPl2IxweAGaRz/Sx5T72Sr
+ kq2Z0tMDv5Q2wrtJyIK2onp7lzZBlTGjOSPC5YK4HypqJxC0CXJv+Evo50I+f1rZ
+ xkx1I7+z3b3T5TdJyitERpYLhU7dUSOPIhdY1r/j36OK0ZTtRLRJp7ablRGpBys5
+ fx0MS/J/25/vB8rH7qbJfbuwT+wGyO2lJR8+raxw==
+Received: from ppma13.dal12v.mail.ibm.com
+ (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4f6suqp803-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 07 Jul 2026 09:59:31 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 6679nZEl031975;
+ Tue, 7 Jul 2026 09:59:30 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4f7eqg1y8w-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 07 Jul 2026 09:59:30 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
+ [10.20.54.105])
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 6679xSxx56754620
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 7 Jul 2026 09:59:28 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 7FC712004B;
+ Tue,  7 Jul 2026 09:59:28 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 46C5120049;
+ Tue,  7 Jul 2026 09:59:28 +0000 (GMT)
+Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com (unknown
+ [9.111.59.117])
+ by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+ Tue,  7 Jul 2026 09:59:28 +0000 (GMT)
+Date: Tue, 7 Jul 2026 11:59:26 +0200
+From: Jan Polensky <japo@linux.ibm.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <akzN_iISxNTztbEw@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
+References: <ajQFErzQW4qfU_Cp@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
+ <6a463902.41a38e5f.27f5bd.337a@mx.google.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <6a463902.41a38e5f.27f5bd.337a@mx.google.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzA3MDA5NSBTYWx0ZWRfX+EDJaaElUkOq
+ VX4nha8LUAiPMREWmluXR5tllDFiAeiSFyfWPK0rJyi2VIinnUkjK8IUOlzWlO9mzdojWxTH2vV
+ sexKU/Mi313KIlbc29IOvL8hHIVE5yc=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzA3MDA5NSBTYWx0ZWRfX4BUbRNmzBJWK
+ sMiT/VXDtNTj9Xzw8RrOqmCd0djZoCpPvgNc541guGMj6ZPDxiYJA9UUc/GZbMrftdh/kAWEP36
+ eYmrFkB2FMDSDuYwz6uWfD2ZiFMGVCPfPCoaa/1iw9f8pd+uCwrXGkhsYrRL5vnzfnKtv0LRYfv
+ HRyC3x6Ovi7opgYQdOGH2iNOqmuytl+q2sAtgcMhCYwtPQiKUnFRqNbgi7LJR/PILiZo4CQ3rRn
+ u2Y3C29ys4q7ZXVguu45INXsCPpA22NVDxmLB54roCFF8n8UFMDFD9ioK6KYPE8BigOKjGJwlzT
+ HvAt8+7jJ5VjbeaTcy4HiShhtNWikp+Epy/o46zXZxjIslCBQgQg+BVUxn81+UfvRjb3lqudTGv
+ Lh6ihu3RrS0RBqaPSih9u2oXXaXXPU2+wJU8X7hbuTugs71jN8oIY6euUSIA4gnK1Qb8gvrn1nW
+ Ag/IOR9Fs8RDPstCPXg==
+X-Proofpoint-GUID: H9tuOul1T8BJh7wBXjF3tksf4LiN__pJ
+X-Authority-Analysis: v=2.4 cv=Oot/DS/t c=1 sm=1 tr=0 ts=6a4cce03 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=kj9zAlcOel0A:10 a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=iox4zFpeAAAA:8 a=d0VEmG3JA_4b86qDspUA:9 a=CjuIK1q_8ugA:10
+ a=WzC6qhA0u3u7Ye7llzcV:22
+X-Proofpoint-ORIG-GUID: H9tuOul1T8BJh7wBXjF3tksf4LiN__pJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-07_02,2026-07-06_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0 phishscore=0
+ malwarescore=0 suspectscore=0 spamscore=0 adultscore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607070095
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib: New library function tst_get_free_uid
+Subject: Re: [LTP] [PATCH v1 1/1] swap: Add exfat to filesystems requiring
+ tst_fill_file
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,51 +116,66 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgV2VpLAoKT24gVHVlLCA3IEp1bCAyMDI2IDA1OjQ3OjUzICswMDAwLCBXZWkgR2FvIHdyb3Rl
-Ogo+IGxpYjogTmV3IGxpYnJhcnkgZnVuY3Rpb24gdHN0X2dldF9mcmVlX3VpZAoKLS0tIFtQQVRD
-SCAxLzJdIC0tLQoKPiArLyoqCj4gKyAqIHRzdF9nZXRfZnJlZV91aWQoKSAtIEZpbmQgYSBVSUQg
-bm90IGFzc2lnbmVkIHRvIGFueSB1c2VyLgo+ICsgKiBAc2tpcDogVUlEIHZhbHVlIHRvIHNraXAg
-KHBhc3MgMCB0byBza2lwIG5vbmUpLgoKVGhlIHN1bW1hcnkgbGluZSBzYXlzIHRzdF9nZXRfZnJl
-ZV91aWQoKSBidXQgdGhlIHN5bWJvbCBiZWluZyBkZWNsYXJlZAppcyB0c3RfZ2V0X2ZyZWVfdWlk
-XygpLiBsaW51eGRvYyByZXF1aXJlcyB0aGUgc3VtbWFyeSBuYW1lIHRvIG1hdGNoIHRoZQpzeW1i
-b2wgZXhhY3RseSwgc28gaXQgd291bGQgZmFpbCB0byBhc3NvY2lhdGUgdGhpcyAvKiogYmxvY2sg
-d2l0aCB0aGUKaW1wbGVtZW50YXRpb24uCgpTaG91bGQgdGhpcyBiZSAidHN0X2dldF9mcmVlX3Vp
-ZF8oKSAtIC4uLiIgdG8gbWF0Y2ggdGhlIHN5bWJvbCwgb3IgaXMKdGhlIGludGVudCB0byBkb2N1
-bWVudCB0aGUgbWFjcm8gdHN0X2dldF9mcmVlX3VpZCgpIGluc3RlYWQ/CgpTYW1lIGlzc3VlIGFw
-cGxpZXMgdG8gdGhlIG1vZGlmaWVkIHRzdF9nZXRfZnJlZV9naWQoKSBzdW1tYXJ5IGJlbG93LgoK
-PiArdWlkX3QgdHN0X2dldF9mcmVlX3VpZF8oY29uc3QgY2hhciAqZmlsZSwgY29uc3QgaW50IGxp
-bmVubywgdWlkX3Qgc2tpcCk7CgpUaGUgZnVuY3Rpb24gaGFzIHRocmVlIHBhcmFtZXRlcnMgYnV0
-IHRoZSBrZXJuZWwtZG9jIGJsb2NrIG9ubHkgZG9jdW1lbnRzCkBza2lwLiBsaW51eGRvYyBleHBl
-Y3RzIGFuIEBuYW1lOiBlbnRyeSBmb3IgZXZlcnkgcGFyYW1ldGVyIGluIGRlY2xhcmF0aW9uCm9y
-ZGVyLiBAZmlsZSBhbmQgQGxpbmVubyBhcmUgbWlzc2luZy4KClNhbWUgZ2FwIGluIHRoZSBtb2Rp
-ZmllZCB0c3RfZ2V0X2ZyZWVfZ2lkXygpIGJsb2NrLgoKPiArCQlpZiAoZXJybm8gPT0gMCB8fCBl
-cnJubyA9PSBFTk9FTlQgfHwgZXJybm8gPT0gRVNSQ0gpIHsKPiArCQkJdHN0X3Jlc18oZmlsZSwg
-bGluZW5vLCBUSU5GTyB8IFRFUlJOTywKPiArCQkJCSJGb3VuZCB1bnVzZWQgVUlEICVkIiwgKGlu
-dClyZXQpOwo+ICsJCQlyZXR1cm4gcmV0OwoKV2hlbiBnZXRwd3VpZCgpIHJldHVybnMgTlVMTCB3
-aXRoIGVycm5vIHNldCB0byBFTk9FTlQgb3IgRVNSQ0gsIFRFUlJOTwphcHBlbmRzIHRoZSBlcnJu
-byBzdHJpbmcgdG8gdGhlIG1lc3NhZ2UsIHByb2R1Y2luZyBvdXRwdXQgbGlrZToKIkZvdW5kIHVu
-dXNlZCBVSUQgNTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeSIuIFRoZSBmdW5jdGlvbiBzdWNj
-ZWVkZWQsCnNvIHRoZSBlcnJvciBzdHJpbmcgaXMgbWlzbGVhZGluZy4gU2hvdWxkIFRFUlJOTyBi
-ZSBkcm9wcGVkIGhlcmUsIG9yCnNob3VsZCBpdCBiZSBjb25kaXRpb25hbGx5IG9taXR0ZWQgd2hl
-biBlcnJubyBpbmRpY2F0ZXMgIm5vdCBmb3VuZCI/CgotLS0gW1BBVENIIDIvMl0gLS0tCgo+ICtB
-ZGQgTFRQIGNvdmVyYWdlIGZvciBrZXJuZWwgY29tbWl0IDMwYWJhNjY1NmY2MSAoTGludXggNC4x
-OSksIHdoaWNoCj4gK2ludHJvZHVjZWQgcHJvdGVjdGlvbiBhZ2FpbnN0IHNwb29maW5nIGF0dGFj
-a3MgdmlhIE9fQ1JFQVQgb2YgRklGT3MgYW5kCj4gK3JlZ3VsYXIgZmlsZXMgaW4gd29ybGQtd3Jp
-dGFibGUgc3RpY2t5IGRpcmVjdG9yaWVzLgo+ICsKPiArVGhpcyBjb21taXQgYWRkcyB0ZXN0IGNh
-c2VzIHRvIHZlcmlmeSB0aGVzZSBzZWN1cml0eSByZXN0cmljdGlvbnMgZm9yCj4gK29wZW5pbmcg
-RklGT3MgYW5kIHJlZ3VsYXIgZmlsZXMgaW4gd29ybGQtd3JpdGFibGUgc3RpY2t5IGRpcmVjdG9y
-aWVzLgoKdGNhc2VbMl0gdXNlcyBkaXJfbW9kZT0wMDMwfFNWVFggKGdyb3VwLXdyaXRhYmxlIHN0
-aWNreSwgbGV2ZWwgMiksIHdoaWNoCnRoZSBjb21taXQgYm9keSBkb2Vzbid0IG1lbnRpb24uIFRo
-ZSB0ZXN0J3Mgb3duIGRvYyBibG9jayBkZXNjcmliZXMgYm90aAoid29ybGQtd3JpdGFibGUgKGxl
-dmVsIDEpIG9yIGdyb3VwLXdyaXRhYmxlIChsZXZlbCAyKSIgY29ycmVjdGx5IOKAlCBkb2VzCnRo
-ZSBib2R5IG5lZWQgdXBkYXRpbmcgdG8gbWF0Y2g/CgpWZXJkaWN0IC0gTmVlZHMgcmV2aXNpb24K
-Ci0tLQpOb3RlOgoKVGhlIGFnZW50IGNhbiBzb21ldGltZXMgcHJvZHVjZSBmYWxzZSBwb3NpdGl2
-ZXMgYWx0aG91Z2ggb2Z0ZW4gaXRzCmZpbmRpbmdzIGFyZSBnZW51aW5lLiBJZiB5b3UgZmluZCBp
-c3N1ZXMgd2l0aCB0aGUgcmV2aWV3LCBwbGVhc2UKY29tbWVudCB0aGlzIGVtYWlsIG9yIGlnbm9y
-ZSB0aGUgc3VnZ2VzdGlvbnMuCgpSZWdhcmRzLApMVFAgQUkgUmV2aWV3ZXIKCi0tIApNYWlsaW5n
-IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+On Thu, Jul 02, 2026 at 10:10:09AM +0000, Andrea Cervesato wrote:
+> Hi Jan,
+>
+> I seen you implemented in v7.2-rc1:
+>
+> commit 03a43677ca91e3997355a13b1da6e47329b025e1
+> Author: Jan Polensky <japo@linux.ibm.com>
+> Date:   Tue Jun 9 18:21:49 2026 +0900
+>
+>     exfat: add swap_activate support
+>
+>     Commit 07d67f3e9083 ("exfat: add iomap buffered I/O support")
+>     converted exfat buffered I/O to iomap, but did not add a
+>     .swap_activate handler to the address_space_operations.
+>
+>     swapon(2) on an exfat swapfile then fails with EINVAL, which causes
+>     LTP swap tests to fail.
+>
+>     Add exfat_iomap_swap_activate() and hook it into exfat_aops so exfat
+>     uses iomap_swapfile_activate() for swapfile activation.
+>
+>     Fixes: 614f71ca1bdf ("exfat: add iomap buffered I/O support")
+>     Closes: https://lore.kernel.org/all/20260603110212.3020276-1-japo@linux.ibm.com/
+>     Signed-off-by: Jan Polensky <japo@linux.ibm.com>
+>     Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
+>
+> what should we do with your patch in LTP?
+>
+> Regards,
+> --
+> Andrea Cervesato
+> SUSE QE Automation Engineer Linux
+> andrea.cervesato@suse.com
+
+Hi Andrea,
+
+Thanks for following up on this.
+
+On my side (s390x, Fedora 44, kernel v7.2-rc1), I still need both
+patches for the LTP swap tests to pass:
+ 1. The kernel fix (03a43677ca91 "exfat: add swap_activate support")
+ 2. This LTP patch (adding exfat to tst_fill_file)
+
+Without the LTP patch, the tests still fail even with the kernel fix
+applied.
+
+Could you validate on your setup whether the kernel fix alone is
+sufficient, or if you also need this LTP patch? It would be good to
+understand if this is architecture-specific or a general requirement.
+
+If you can confirm the tests pass with only the kernel fix, we can
+close this LTP patch. Otherwise, one should merge it.
+
+Best regards,
+Jan
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
