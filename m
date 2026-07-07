@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9C8BC43458
-	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 16:34:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F020C43458
+	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 16:37:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ACF5B3E5CF9
-	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 18:34:30 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id DA1C03E5DD5
+	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 18:37:11 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A5A943CFBB1
- for <ltp@lists.linux.it>; Tue,  7 Jul 2026 18:34:14 +0200 (CEST)
-Received: from mail-qv2-x00.google.com (mail-qv2-x00.google.com
- [IPv6:2607:f8b0:4864:33::])
+ by picard.linux.it (Postfix) with ESMTPS id EEAB03CFBB1
+ for <ltp@lists.linux.it>; Tue,  7 Jul 2026 18:36:50 +0200 (CEST)
+Received: from mail-qv2-x01.google.com (mail-qv2-x01.google.com
+ [IPv6:2607:f8b0:4864:33::1])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 30501200757
- for <ltp@lists.linux.it>; Tue,  7 Jul 2026 18:34:14 +0200 (CEST)
-Received: by mail-qv2-x00.google.com with SMTP id
- 6a1803df08f44-8e9c06149e2so5013416d6.1
- for <ltp@lists.linux.it>; Tue, 07 Jul 2026 09:34:14 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5F12910007DC
+ for <ltp@lists.linux.it>; Tue,  7 Jul 2026 18:36:50 +0200 (CEST)
+Received: by mail-qv2-x01.google.com with SMTP id
+ 6a1803df08f44-8db16576206so1327756d6.1
+ for <ltp@lists.linux.it>; Tue, 07 Jul 2026 09:36:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1783442053; x=1784046853; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1783442209; x=1784047009; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=KWxRJHhu9XjU1GBUQNuXVWYNYTeICT8Yiwn6vPXGMTc=;
- b=rODoe7vT1ImpYtaVhvHK79Lext6mi5jCaeAM2O/uvcpLWLWNAAR1AzGlQs2xReOTQ6
- 6j2GMXbUkd7Nn/cr7cEMGwSLUgfirm5RIlN9xS88bZGR171EwLL1Fiw4IrMEsfM3p9yW
- BycRRxwgjiNmj3LuSsGYj75A0m+JntnwWRcm9leEFbjxL9MUHe7Bls2CphluKzEBkHen
- FrAyBmIEc1Z3JaVCmZ90fbs2VUF4lkrcmcO+yy3VB//Wrruha3KNQYl+gOHwgUlv0any
- 8XQ4UQCn/Rfv1gksmFAqxnnQTb6p54dNFYo6iWnjSHxBGNRiMmCugsqSnAEqHvmO8oWw
- b+EQ==
+ bh=gXksbrBhDgwLMiUPrYSG00oqmU1NZJHrGmTe2v4f8b8=;
+ b=ESajlv3n0/5DhG0t4zAfbcRlvtLosYe/hkeKfcaezdbjn2Ix7ZNzxvM7o9w4gNzoyj
+ CTzPI6I1kRw8zkew07YFD9Br8Y57z1rwIm0rlY+CUtW0jY5aVzXesM96y3l+Z1iq0MhK
+ oOd26FL1ZL4Yxd6WwJAUb8Q1gChtZIfbeZYCzKUdeI/7TQTyMCw0hkPFgYNAIZ51X45E
+ lMbSpsLyuREXQiwK65iJDxj5+bDCyroomW4MCHPnBGD+S3lawlfrg2viowGBxhgAe1ZU
+ 3wWhXrpemVEoF5WGg0xN/pcd7YFdAwBr6+s5IzGuqEmnfJDcOVIHfNZDCibp1jnu1lPF
+ Q3xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783442053; x=1784046853;
+ d=1e100.net; s=20251104; t=1783442209; x=1784047009;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=KWxRJHhu9XjU1GBUQNuXVWYNYTeICT8Yiwn6vPXGMTc=;
- b=BPOPdXsTJHttm4h2DvMv8oT5R/pANGngCfcdwqFOEqq51iZMZ+0vLpJiw3YbXLGvnu
- VPENiJy5iLf8F30MembhdcQNjOVvHbtEc0y8qpmsrYK6SDmMPJju7lZSWwy/sP6y0CKK
- Y8AW72YHAUvHfUwpKD3e6lu1h8PwZvYRRQJ3otzD5esGYAcqrAI0wKDtJJKqGeFDL21u
- xGvgvEKkx5GcmHA+xoNVpIuTWdtlkel/2A6wEbXzmjBfjSba1teprUmCBUqMiI8/1bn6
- XqG5fkscq6kbX4HP6hAeGTTroKFxElWpEHObMsx/+X4yJFRLR/mnddS/AIpEd8ofAdzB
- xIaw==
-X-Gm-Message-State: AOJu0YzxHeauS5iyhEqx3IXQcZZdydiFyomOctOzaibXVsx06RvWOP4t
- 0cSaIqjaUsrTXGwOaTHN2MFck5S2mhJ9mqiIFXY7BYd0n7xsTpgjancV
-X-Gm-Gg: AfdE7cl97mkmgiT5k1MDW36oIQZNGPoExXuWClhTSXi5d8zTInfj43xPnsynEIjv8qD
- /V9Vmbe966d57+dzFlPApmi50tpdFlB6cF+PLkS8xIBbGACBeHKsYOL/n+Gr0AUQg4VARZKu7Pj
- 64KPJ5igxf7sNcs0rrwNHFAr7WHQkOy5YoZHp5v0xda2KzfGBG1FrRM7ACE6h3cqZ376NGySE8n
- 5Gxfjo9f49y4XuNaiHkAG+A1xL3r65NoRiV7zS66UplHUzu+70LuXZu/QUhBB3vipyZKFimEjkA
- ZRi0ZCOXn0b2PiJDiKgwhFVIQ+OHbhZqfrBR5kuIHqWpzxbYVJYzzm8Q8YEwbI99IQbHMm/iV07
- R9WQDTMlCnozdkdp3Q/fyGuLrcgnS/Hzud89h7Zy0efx8mvvK1gZ1CnLVEi+Z/PGe+i7ruTM57b
- bcV3CuGFC7hFmyjX/S+CBpdpaVStdRZTBnXT6WSc8WeOYghQ5lkSJZAcY34UEnZrAN5UFJgQtH5
- /6jwJ4H1VNeTpPReTj6jxdVsgImBKFUMxlTQ5gWUA==
-X-Received: by 2002:a05:6214:53c1:b0:8f0:9d9c:52c2 with SMTP id
- 6a1803df08f44-8fcb1dda6c9mr76668946d6.5.1783442052673; 
- Tue, 07 Jul 2026 09:34:12 -0700 (PDT)
+ bh=gXksbrBhDgwLMiUPrYSG00oqmU1NZJHrGmTe2v4f8b8=;
+ b=OiB/oi7Q3rMM/wz6C4iW359hYqsVR+Yogt1dRzomANsawK4o9kC5MrB84OJnshqgIh
+ iK15VNwPb0VXUA6SaQZa8Z3krVKo19PX/kUGLXS2ESMD3mMCQ8h9cVI/OK3iNg1F7loG
+ xUYtNfauxVpRIB5+GcRDEy5vnnYM4cPXmCZvNhFyuiPwzVplmn37cX9qiJkebeObhih9
+ NnVvbkCUPcYsB9MgKG68RksyBpWiBu1uoYpDqywMEhE09se59uPIeeFB8y6ip9FUqZkl
+ 1xPHigVePXEl+mENNWwO7VXhDC6Ka2zzvFIMj18vUqt9Ma69suU7gwJdZ1bmBqiGsL/S
+ yyBA==
+X-Gm-Message-State: AOJu0Yxb3Mw6uSJMW7+DLLbs0sgJOwvkUMMZ71FdJpgHvF27oko1P8OO
+ Lrpf7dB6vngnXu/3E9VcJlGfDQsgzH9+JbKCyH8wLFtZqmbhjdPoyq0f
+X-Gm-Gg: AfdE7ckYWu/DJPHc6GGTtgUT/hVF07xoG0VzarokFMh3o4M6iXQa7MSG53vBBge7mgr
+ 1ZxjnD22/Vf5Sh3IEU8VhQ1gLiQtfQ+eE5lW1BpyhWMazQaA7YnIpQ1TgehkfWIb8CtF70Ed/Qz
+ 4NDSBRGI1TW4dZ9fmLNO0bnbucZCFVhpOOb3x9hM4GM4HziwoRxKda9+V6TeYkGmNqyQKnT5Bwr
+ cnU009CYaaF94b8SD9vhjNDn4zjV/GwqjKBJV/A41qjJ3g/kPR3de2Jopv6GmV7OzBEI7z+hIt1
+ 0S5P7wc6x2EsF+zP1dxZVsE3jw725SnpcxY2bvvOYpxhRm23nFYAGcnXetL2+5qnEqVwV9l51qr
+ hQQQA/tQfchBfvTiSsXSeLr42X8OYlj3oHxjhUlFXr+SFlF0SPkmxvkbgVvm4zUDma4VK/CLoBi
+ dOfDHIictwiD26uFFLXOApzKAT90kupwQMmenEeZP+7lZwjGKzQnYf1FkyLjneuyIf7ljCntB+P
+ fr5MBRZnxJ5IZevZfb+xBvIki1UxW4=
+X-Received: by 2002:a05:620a:19a9:b0:92b:3203:ea70 with SMTP id
+ af79cd13be357-92ec0c79ee3mr329680985a.12.1783442209059; 
+ Tue, 07 Jul 2026 09:36:49 -0700 (PDT)
 Received: from
- runnervmkkn4f.n2quayyzdxqexjlunlns3nw2md.bx.internal.cloudapp.net
- ([172.174.125.247]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8f46f013f05sm162660066d6.16.2026.07.07.09.34.12
+ runnervmkkn4f.tuhdi32ki0sehjc0brvip54rwg.bx.internal.cloudapp.net
+ ([172.203.207.246]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-92e90ccdd5csm1241437785a.36.2026.07.07.09.36.48
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2026 09:34:12 -0700 (PDT)
+ Tue, 07 Jul 2026 09:36:48 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Jinseok Kim <always.starving0@gmail.com>
-Date: Tue,  7 Jul 2026 16:34:11 +0000
-Message-ID: <20260707163411.4006-1-linuxtestproject.agent@gmail.com>
+Date: Tue,  7 Jul 2026 16:36:48 +0000
+Message-ID: <20260707163648.4043-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260707153502.15421-1-always.starving0@gmail.com>
-References: <20260707153502.15421-1-always.starving0@gmail.com>
+In-Reply-To: <20260707150920.6489-1-always.starving0@gmail.com>
+References: <20260707150920.6489-1-always.starving0@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] syscalls: Replace getppid02 with getpid02 implementation
+Subject: Re: [LTP] power_management: rewrite runpwtests04.sh in C
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,24 +99,69 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Jinseok,
 
-On Tue, 07 Jul 2026 16:31:02 +0000, Jinseok Kim wrote:
-> syscalls: Replace getppid02 with getpid02 implementation
+On Wed, 8 Jul 2026, Jinseok Kim wrote:
+> power_management: rewrite runpwtests04.sh in C
 
-> Remove the existing getppid02.c as its coverage is overlapped by
-> getpid02.c. Then, replace it by renaming and adapting the broader checks
-> from getpid02.c to serve as the new getppid02.c.
+> The new implementation preserves the original test semantics while
+> removing shell dependencies.
 
-The commit message says "Remove the existing getppid02.c" but the file
-that is actually deleted is getpid02.c. getppid02.c is replaced, not
-removed. The sentence reads as if getppid02.c disappears, which is the
-opposite of what happens.
+The original shell test only checked current_governor_ro and
+current_driver for readability. The new test also covers
+available_governors, current_governor (read), and adds a write
+rejection check against current_governor. That is an extension,
+not a preservation of semantics. Please update the commit message
+body to reflect what is actually added.
 
-> +static void verify_getpid(void)
+> +static void verify_cpuidle(unsigned int i)
+> +{
+> +	int ret;
+> +	char path[PATH_MAX];
+> +	char buf[32];
+> +
+> +	snprintf(path, sizeof(path), "%s/%s", CPUIDLE_PATH, tcases[i].name);
+> +
+> +	if (tcases[i].is_writable)
+> +		fd = open(path, O_RDWR);
+> +	else
+> +		fd = open(path, O_RDONLY);
 
-This function is in getppid02.c but the name still says `verify_getpid`.
-The function tests both fork/getpid consistency and getppid correctness,
-but it was copied from getpid02.c without renaming. Could it be renamed
-to `verify_getppid` to match the file it now lives in?
+open() is a tested subject here -- its return code drives the
+TCONF/TFAIL decision. Bare syscalls that are the subject of the
+test must be wrapped in TEST(), not called directly. The same
+applies to read() and write() below.
+
+> +	ret = read(fd, buf, sizeof(buf));
+> +
+> +	if (ret < 0)
+> +		tst_res(TFAIL | TERRNO, "%s read() failed", path);
+> +	else if (ret == 0)
+> +		tst_res(TFAIL, "%s read() returned 0", path);
+> +	else
+> +		tst_res(TPASS, "%s read() successfully", path);
+
+read() is the primary subject of this test and must be wrapped in
+TEST() so that TST_RET and TST_ERR are populated.
+
+> +	if (tcases[i].is_writable) {
+> +		if (write(fd, "invalid_governor", 16) < 0) {
+
+Same for write().
+
+> +static struct tst_test test = {
+> +	.cleanup = cleanup,
+> +	.needs_root = 1,
+
+The doc comment only mentions readability. It does not explain why
+root is required. Ground Rule 4 requires the reason to appear in
+the /*\ ... */ block. Root is needed here for writing to
+current_governor and for the save_restore of that path; please
+document that.
+
+> + * Verify that selected cpuidle sysfs files are readable.
+
+The test also verifies that writing an invalid governor name to
+current_governor is rejected with EINVAL. The description should
+cover both aspects.
 
 Verdict - Needs revision
 
