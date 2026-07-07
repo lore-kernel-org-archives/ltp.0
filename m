@@ -4,91 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5CEEC43458
-	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 05:49:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1783403352; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=uFNedyzrz1p1CpQybonyWLHOfrw1QT0DT5Xxwqg/W8c=;
- b=Oi/iRLi/ygUVozDSvUkJF49VmYbtGN4rP6gysdPRzlTxjFN0oxeTbrvlp/a/Pb8RzkfUj
- EsNqNHy2sL4iyiq5GfNFgODfcg9Z55kp9MAQfS9mYh7EAI7kDgd13/UpGl3I/MBGVNecdyb
- oO0vNOu/X705nCxPO1mntTZ4XNtYx5M=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 471AAC43458
+	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 07:48:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 50D5C3E2A61
-	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 07:49:12 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 806603E2AE9
+	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 09:48:57 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 556243E2A5C
- for <ltp@lists.linux.it>; Tue,  7 Jul 2026 07:48:09 +0200 (CEST)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
+ by picard.linux.it (Postfix) with ESMTPS id 7DA073E1775
+ for <ltp@lists.linux.it>; Tue,  7 Jul 2026 09:48:42 +0200 (CEST)
+Received: from mail-qk2-x04.google.com (mail-qk2-x04.google.com
+ [IPv6:2607:f8b0:4864:34::4])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 22650600863
- for <ltp@lists.linux.it>; Tue,  7 Jul 2026 07:48:09 +0200 (CEST)
-Received: by mail-wm1-x330.google.com with SMTP id
- 5b1f17b1804b1-493c19bad03so34547565e9.2
- for <ltp@lists.linux.it>; Mon, 06 Jul 2026 22:48:09 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0D594200269
+ for <ltp@lists.linux.it>; Tue,  7 Jul 2026 09:48:42 +0200 (CEST)
+Received: by mail-qk2-x04.google.com with SMTP id
+ d75a77b69052e-51c27a12102so3161371cf.1
+ for <ltp@lists.linux.it>; Tue, 07 Jul 2026 00:48:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1783403288; x=1784008088; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1783410521; x=1784015321; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=9jKLfp6qp91YQux1g3q/A52Fpm82TWMJC9HPMMh7Xm8=;
- b=baS+rOPEdpd1QKr2WpV8HCse7JcVNDFE2El89YRSYSkKP5XzrBz958QZj0h3HxULV4
- swdTYWsmLU6VbvhxlGhxWFW9NFODMYFA3Ys+fdCIZN9XtkourF8ItKsuZ6zBEjvl4wKk
- cn6RkNSo0dxotXz3dGjBK8BR3kWmmmCWI2G2gzl+65Qmx8uY1m23sO2+P58ALlLB7O8D
- rBMQ/URlb7AfrULcWCmEI+/HJpvA1ewDhLLfny2bvZUjneOEPPODXbfJjtrosxqDzqP7
- aNcZHc5MI3mTypUCv91Nop8+z0XI4gNLuaFSms0jnJf2iTUg6QbT5j78Baj8Kqt3jhxk
- PfQQ==
+ bh=WRXtrNJm+XFo9ca9lBhkLoA+5NgLneYCWHy+VbMWz1g=;
+ b=sIk4PuWi5U5ylHh766xviTXDKmSJsTaAhs7M/O9g6bEsfif6CYqxf3JS1YeL0vJeka
+ MzPk4TSCaDj0YWxFBHiX8N2xIWsd1QmLxkF4SGX3Ek3suA7ryR6Vkd8QdPcFpN2c/Mjq
+ FGG48gncCMURbwB15coD7TiT2KLol8ayEn/r553sVXr00z8NoWaw6xdFAs5gGUTBmyk2
+ ZRUCtANr0RiDJwW85faU5jUb6bAXZkrnCk7jLuUd04s8jCgKtd+djUmFaceCm6DPpb2r
+ ovgQObE1lVZiXx3JyYopvsj9JN9E0om7i0/PqO097K8ePTOpNDuCYBiOqTRnNsAcohYc
+ 6qfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783403288; x=1784008088;
+ d=1e100.net; s=20251104; t=1783410521; x=1784015321;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to;
- bh=9jKLfp6qp91YQux1g3q/A52Fpm82TWMJC9HPMMh7Xm8=;
- b=TYdcMwcufmGl/fdppBgbkiKUm34pIoqCpx6Adg0d7vIDg4JcQs37Z1MUfLUMGkUiJw
- 5MdGPNMd+76T7dEpmLS0PumtXYvStxuN3aWDFhiuoWKc3IZXOnUyZzXrKOzLWMv7kaF4
- PkyCUCbyV1KffRUCnwbY++y5Q5VFhU9dg1ebtE5z+8gO6f2zb2l7w257qcVe/Mx02AvV
- lvaH/xYz5z5LIWTGXLFv4UqyV2rP+iictsouUxYygV/ojdTgRyvBoLXzRVUZwM05YF+P
- 5iDMh8DvWsazdxrhGf++xaXnzbFnJ918oQ3Fa8aWFbOGIQhwtdRzfIXvRaUvWjA8Qa5x
- FQXg==
-X-Gm-Message-State: AOJu0YzLlPfPQkPhY168e7EApw99Sc1GAFk+X0+0dhReVqhZuz4pvNXz
- bUToaG4boGFkDGmMRhZ1VjHABBbmtSj3Z10iY87/wubk6AIckBdsJchM+zUR4rzL77aVT3MXp2o
- fYwc=
-X-Gm-Gg: AfdE7cno+iAJ90hXzyt7xvhF623kHdoBT8+/nPSMgvCDV8/fXHpquMltl+PJVAbWYzr
- L0cmfs1F+fLm/Auzt3jCwMitDyEfVBkr5Qt5aBbAPS7XGkt3I4LSk8o6HXablDrxKtZYz+YRZNm
- 6VS9qFuZgq1TTk2KzTrOZ5DT+yWzuQh2SDlbrmfowMbO1IGaiy8WTKvrzrMXezr01IFZCNQO/R0
- Fvnk4UXj74WEoV6px4bxKuUuO7/cLAdm1r5InBX1cyerfW4WiIB+VV3C6duOgo+wp/KLl0EU41q
- Vae/gf5DsLfUxMklTDDw75y9EQJx3S153eBfaMZVdzUcpPc1XPczF6X02rm+hyRhsfVboFR3Q9V
- YHo943OmYrNzpt9kWm2vFbfWgpU1MXcyAWx3VxnuUIgmEOgwflvXtNx6kLpg4zozhGxQY2aL1Ar
- Zj
-X-Received: by 2002:a05:600c:8b17:b0:492:43d2:9e6e with SMTP id
- 5b1f17b1804b1-493df04a73bmr40296095e9.9.1783403288512; 
- Mon, 06 Jul 2026 22:48:08 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-47a9e4d6e4csm28821793f8f.10.2026.07.06.22.48.08
+ bh=WRXtrNJm+XFo9ca9lBhkLoA+5NgLneYCWHy+VbMWz1g=;
+ b=qqZBBtTNcj150ebaxq3F4k+r/R5UvYFAHyI5ZFdD4yB+ft9/h082uSKEAOSznWSBxV
+ yiggIbYIbC+mZkxNYOFGkSSfjLnbajc6tcZL5H+agSnVISbRHmPghJ3eVMbhPmhKIRia
+ 24mZOjCHGaGlNyNItqqXlGT8iYDXI8kPOTVet7LCsPSX7Hqt1PMQfUA//BTe2lmVImvv
+ fNhJyKE9OnOik89DKSDUhD6RIRg0xxgQnu7gj0GMZib3IDI81HwJqVoDhcX39YfBNnNY
+ rfgSNbvqHLCpPJwOM5MAl/QIdobZ6vwaMRNjQrnIhePRVuQv/QIAdHeMDzxIwtu0QvWV
+ 3IUA==
+X-Gm-Message-State: AOJu0Yw9xjxVFSzGX3b2hzJpk0pDaKwYGm8NvJ4aO5Wou8YZoT2DJvW0
+ lgnTKMsgB8LdKmgJM3ThChXXbHE1UAF2j6JD+yZmRsY5A5CSEuJs7G9L
+X-Gm-Gg: AfdE7clS42TAtOKWGCYYYYv3mup9YATphusKt4Agtl7op3u2vY9HBNIsoxJ+MSp7ul0
+ MYX9tzcwWKwBsCiAv8rNlhe1ON1CAermb1QF4o5IpCBVkJLLKC1AHrOXc1x8PM2zlPWav7shXCj
+ qPkF/qqGDqv2CX4ejBwxq2LwHKSmrzH4IAhmh1Y1km70S8GO42OJ+7zBa785u/0QNHUeIZeCiMt
+ GzAMNT9JyWVsYYMwwdLoTY6im0O95rXLSWIyqs227LCxMd5G0UD15xWHlpBSzgDSyYLFJHyXcHe
+ xQ/7jU3xmkrF5TQN6to7CqsUEWkkBpTsSKdEapRhlxnMoMEudniL5qMlh1q2YStj1MQHCXKSx3C
+ fUUEYK9woAqv8Whwhvjgo88sgciOWIB8MIDXQXlvNEdiUohmLaaF3DUJTVLHYT7zBkTDKLRNAqb
+ ZL4Sar8t5NIPu1+25oQTV+SXPeyP36ILYSZCbakpewe2WykJLnfPJEd/qkLOX4wGsW4Rhnny1Ah
+ yNWrdYZQA2LGVoSGJKJdI09zNTA1A==
+X-Received: by 2002:ac8:58cd:0:b0:51a:8c97:938d with SMTP id
+ d75a77b69052e-51c748eda73mr42614451cf.68.1783410520425; 
+ Tue, 07 Jul 2026 00:48:40 -0700 (PDT)
+Received: from
+ runnervmkkn4f.w5kyndb1gvhehekumsuunpfd1d.bx.internal.cloudapp.net
+ ([172.214.104.51]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8f471fdc708sm152294446d6.38.2026.07.07.00.48.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 06 Jul 2026 22:48:08 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue,  7 Jul 2026 05:47:53 +0000
-Message-ID: <20260707054804.24232-2-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260707054804.24232-1-wegao@suse.com>
-References: <https://patchwork.ozlabs.org/project/ltp/patch/20260707022959.24088-2-wegao@suse.com/>
- <20260707054804.24232-1-wegao@suse.com>
+ Tue, 07 Jul 2026 00:48:40 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Wei Gao <wegao@suse.com>
+Date: Tue,  7 Jul 2026 07:48:39 +0000
+Message-ID: <20260707074839.4197-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260707054804.24232-2-wegao@suse.com>
+References: <20260707054804.24232-2-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v10 1/2] lib: New library function tst_get_free_uid
+Subject: Re: [LTP] lib: New library function tst_get_free_uid
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,112 +90,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add tst_get_free_uid() to dynamically find unused UIDs for tests.
-
-Some tests need a completely unassigned, unused UID. This is used by
-open16 to verify restricted O_CREAT in sticky directories by running
-as a sandboxed user with no file ownership or privileges.
-
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- include/tst_uid.h | 27 +++++++++++++++++++++++----
- lib/tst_uid.c     | 28 ++++++++++++++++++++++++++++
- 2 files changed, 51 insertions(+), 4 deletions(-)
-
-diff --git a/include/tst_uid.h b/include/tst_uid.h
-index 2237ddcbf..2ffe84613 100644
---- a/include/tst_uid.h
-+++ b/include/tst_uid.h
-@@ -7,10 +7,29 @@
- 
- #include <sys/types.h>
- 
--/*
-- * Find unassigned gid. The skip argument can be used to ignore e.g. the main
-- * group of a specific user in case it's not listed in the group file. If you
-- * do not need to skip any specific gid, simply set it to 0.
-+/**
-+ * tst_get_free_uid() - Find a UID not assigned to any user.
-+ * @skip: UID value to skip (pass 0 to skip none).
-+ *
-+ * Scans the password database for the first unused UID starting
-+ * from 1, skipping @skip. Calls tst_brk(TBROK) if no free UID
-+ * is found or a lookup error occurs.
-+ *
-+ * Return: An unused uid_t value.
-+ */
-+uid_t tst_get_free_uid_(const char *file, const int lineno, uid_t skip);
-+#define tst_get_free_uid(skip) tst_get_free_uid_(__FILE__, __LINE__, (skip))
-+
-+/**
-+ * tst_get_free_gid() - Find a GID not assigned to any group.
-+ * @skip: GID value to skip (pass 0 to skip none).
-+ *
-+ * Scans the group database for the first unused GID starting from 1,
-+ * skipping @skip. The @skip argument can be used to ignore e.g. the main
-+ * group of a specific user in case it's not listed in the group file.
-+ * Calls tst_brk(TBROK) if no free GID is found or a lookup error occurs.
-+ *
-+ * Return: An unused gid_t value.
-  */
- gid_t tst_get_free_gid_(const char *file, const int lineno, gid_t skip);
- #define tst_get_free_gid(skip) tst_get_free_gid_(__FILE__, __LINE__, (skip))
-diff --git a/lib/tst_uid.c b/lib/tst_uid.c
-index af4ef8cf7..93c9b83d2 100644
---- a/lib/tst_uid.c
-+++ b/lib/tst_uid.c
-@@ -5,6 +5,7 @@
- 
- #include <sys/types.h>
- #include <grp.h>
-+#include <pwd.h>
- #include <errno.h>
- 
- #define TST_NO_DEFAULT_MAIN
-@@ -12,6 +13,33 @@
- #include "tst_uid.h"
- 
- #define MAX_GID 32767
-+#define MAX_UID 32767
-+
-+uid_t tst_get_free_uid_(const char *file, const int lineno, uid_t skip)
-+{
-+	uid_t ret;
-+
-+	for (ret = 1; ret < MAX_UID; ret++) {
-+		if (ret == skip)
-+			continue;
-+
-+		errno = 0;
-+		if (getpwuid(ret))
-+			continue;
-+
-+		if (errno == 0 || errno == ENOENT || errno == ESRCH) {
-+			tst_res_(file, lineno, TINFO | TERRNO,
-+				"Found unused UID %d", (int)ret);
-+			return ret;
-+		}
-+
-+		tst_brk_(file, lineno, TBROK | TERRNO, "User ID lookup failed");
-+		return (uid_t)-1;
-+	}
-+
-+	tst_brk_(file, lineno, TBROK, "No free user ID found");
-+	return (uid_t)-1;
-+}
- 
- gid_t tst_get_free_gid_(const char *file, const int lineno, gid_t skip)
- {
--- 
-2.54.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgV2VpLAoKT24gVHVlLCA3IEp1bCAyMDI2IDA1OjQ3OjUzICswMDAwLCBXZWkgR2FvIHdyb3Rl
+Ogo+IGxpYjogTmV3IGxpYnJhcnkgZnVuY3Rpb24gdHN0X2dldF9mcmVlX3VpZAoKLS0tIFtQQVRD
+SCAxLzJdIC0tLQoKPiArLyoqCj4gKyAqIHRzdF9nZXRfZnJlZV91aWQoKSAtIEZpbmQgYSBVSUQg
+bm90IGFzc2lnbmVkIHRvIGFueSB1c2VyLgo+ICsgKiBAc2tpcDogVUlEIHZhbHVlIHRvIHNraXAg
+KHBhc3MgMCB0byBza2lwIG5vbmUpLgoKVGhlIHN1bW1hcnkgbGluZSBzYXlzIHRzdF9nZXRfZnJl
+ZV91aWQoKSBidXQgdGhlIHN5bWJvbCBiZWluZyBkZWNsYXJlZAppcyB0c3RfZ2V0X2ZyZWVfdWlk
+XygpLiBsaW51eGRvYyByZXF1aXJlcyB0aGUgc3VtbWFyeSBuYW1lIHRvIG1hdGNoIHRoZQpzeW1i
+b2wgZXhhY3RseSwgc28gaXQgd291bGQgZmFpbCB0byBhc3NvY2lhdGUgdGhpcyAvKiogYmxvY2sg
+d2l0aCB0aGUKaW1wbGVtZW50YXRpb24uCgpTaG91bGQgdGhpcyBiZSAidHN0X2dldF9mcmVlX3Vp
+ZF8oKSAtIC4uLiIgdG8gbWF0Y2ggdGhlIHN5bWJvbCwgb3IgaXMKdGhlIGludGVudCB0byBkb2N1
+bWVudCB0aGUgbWFjcm8gdHN0X2dldF9mcmVlX3VpZCgpIGluc3RlYWQ/CgpTYW1lIGlzc3VlIGFw
+cGxpZXMgdG8gdGhlIG1vZGlmaWVkIHRzdF9nZXRfZnJlZV9naWQoKSBzdW1tYXJ5IGJlbG93LgoK
+PiArdWlkX3QgdHN0X2dldF9mcmVlX3VpZF8oY29uc3QgY2hhciAqZmlsZSwgY29uc3QgaW50IGxp
+bmVubywgdWlkX3Qgc2tpcCk7CgpUaGUgZnVuY3Rpb24gaGFzIHRocmVlIHBhcmFtZXRlcnMgYnV0
+IHRoZSBrZXJuZWwtZG9jIGJsb2NrIG9ubHkgZG9jdW1lbnRzCkBza2lwLiBsaW51eGRvYyBleHBl
+Y3RzIGFuIEBuYW1lOiBlbnRyeSBmb3IgZXZlcnkgcGFyYW1ldGVyIGluIGRlY2xhcmF0aW9uCm9y
+ZGVyLiBAZmlsZSBhbmQgQGxpbmVubyBhcmUgbWlzc2luZy4KClNhbWUgZ2FwIGluIHRoZSBtb2Rp
+ZmllZCB0c3RfZ2V0X2ZyZWVfZ2lkXygpIGJsb2NrLgoKPiArCQlpZiAoZXJybm8gPT0gMCB8fCBl
+cnJubyA9PSBFTk9FTlQgfHwgZXJybm8gPT0gRVNSQ0gpIHsKPiArCQkJdHN0X3Jlc18oZmlsZSwg
+bGluZW5vLCBUSU5GTyB8IFRFUlJOTywKPiArCQkJCSJGb3VuZCB1bnVzZWQgVUlEICVkIiwgKGlu
+dClyZXQpOwo+ICsJCQlyZXR1cm4gcmV0OwoKV2hlbiBnZXRwd3VpZCgpIHJldHVybnMgTlVMTCB3
+aXRoIGVycm5vIHNldCB0byBFTk9FTlQgb3IgRVNSQ0gsIFRFUlJOTwphcHBlbmRzIHRoZSBlcnJu
+byBzdHJpbmcgdG8gdGhlIG1lc3NhZ2UsIHByb2R1Y2luZyBvdXRwdXQgbGlrZToKIkZvdW5kIHVu
+dXNlZCBVSUQgNTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeSIuIFRoZSBmdW5jdGlvbiBzdWNj
+ZWVkZWQsCnNvIHRoZSBlcnJvciBzdHJpbmcgaXMgbWlzbGVhZGluZy4gU2hvdWxkIFRFUlJOTyBi
+ZSBkcm9wcGVkIGhlcmUsIG9yCnNob3VsZCBpdCBiZSBjb25kaXRpb25hbGx5IG9taXR0ZWQgd2hl
+biBlcnJubyBpbmRpY2F0ZXMgIm5vdCBmb3VuZCI/CgotLS0gW1BBVENIIDIvMl0gLS0tCgo+ICtB
+ZGQgTFRQIGNvdmVyYWdlIGZvciBrZXJuZWwgY29tbWl0IDMwYWJhNjY1NmY2MSAoTGludXggNC4x
+OSksIHdoaWNoCj4gK2ludHJvZHVjZWQgcHJvdGVjdGlvbiBhZ2FpbnN0IHNwb29maW5nIGF0dGFj
+a3MgdmlhIE9fQ1JFQVQgb2YgRklGT3MgYW5kCj4gK3JlZ3VsYXIgZmlsZXMgaW4gd29ybGQtd3Jp
+dGFibGUgc3RpY2t5IGRpcmVjdG9yaWVzLgo+ICsKPiArVGhpcyBjb21taXQgYWRkcyB0ZXN0IGNh
+c2VzIHRvIHZlcmlmeSB0aGVzZSBzZWN1cml0eSByZXN0cmljdGlvbnMgZm9yCj4gK29wZW5pbmcg
+RklGT3MgYW5kIHJlZ3VsYXIgZmlsZXMgaW4gd29ybGQtd3JpdGFibGUgc3RpY2t5IGRpcmVjdG9y
+aWVzLgoKdGNhc2VbMl0gdXNlcyBkaXJfbW9kZT0wMDMwfFNWVFggKGdyb3VwLXdyaXRhYmxlIHN0
+aWNreSwgbGV2ZWwgMiksIHdoaWNoCnRoZSBjb21taXQgYm9keSBkb2Vzbid0IG1lbnRpb24uIFRo
+ZSB0ZXN0J3Mgb3duIGRvYyBibG9jayBkZXNjcmliZXMgYm90aAoid29ybGQtd3JpdGFibGUgKGxl
+dmVsIDEpIG9yIGdyb3VwLXdyaXRhYmxlIChsZXZlbCAyKSIgY29ycmVjdGx5IOKAlCBkb2VzCnRo
+ZSBib2R5IG5lZWQgdXBkYXRpbmcgdG8gbWF0Y2g/CgpWZXJkaWN0IC0gTmVlZHMgcmV2aXNpb24K
+Ci0tLQpOb3RlOgoKVGhlIGFnZW50IGNhbiBzb21ldGltZXMgcHJvZHVjZSBmYWxzZSBwb3NpdGl2
+ZXMgYWx0aG91Z2ggb2Z0ZW4gaXRzCmZpbmRpbmdzIGFyZSBnZW51aW5lLiBJZiB5b3UgZmluZCBp
+c3N1ZXMgd2l0aCB0aGUgcmV2aWV3LCBwbGVhc2UKY29tbWVudCB0aGlzIGVtYWlsIG9yIGlnbm9y
+ZSB0aGUgc3VnZ2VzdGlvbnMuCgpSZWdhcmRzLApMVFAgQUkgUmV2aWV3ZXIKCi0tIApNYWlsaW5n
+IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
