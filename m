@@ -4,101 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44B15C43458
-	for <ltp@archiver.kernel.org>; Wed,  8 Jul 2026 11:41:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7309FC43458
+	for <ltp@archiver.kernel.org>; Wed,  8 Jul 2026 11:49:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 92E1A3E5CDD
-	for <ltp@archiver.kernel.org>; Wed,  8 Jul 2026 13:41:30 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id B79CF3E5CC7
+	for <ltp@archiver.kernel.org>; Wed,  8 Jul 2026 13:49:12 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9F9703E299C
- for <ltp@lists.linux.it>; Wed,  8 Jul 2026 13:41:14 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id DB9933E299C
+ for <ltp@lists.linux.it>; Wed,  8 Jul 2026 13:48:57 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 61A701400C74
- for <ltp@lists.linux.it>; Wed,  8 Jul 2026 13:41:13 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 386E01A0098D
+ for <ltp@lists.linux.it>; Wed,  8 Jul 2026 13:48:56 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3939076018;
- Wed,  8 Jul 2026 11:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783510873;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hHiwmo+zx+f+YpCquKzCvJjvN0vmoRwmsyXLCb/15PE=;
- b=b9SEAaJmfIErxO0X9CliC1Ry8mr16acviECabx6PW7+pFSGRqZNZA0DPsYlD4E8g0J0Lw7
- mURumpCQk9upTKewimiQ5s/jT2x5z9ihDTOLb0gPkMURcCIBxSqOmNz+mEgeH/7eJnYT17
- PXHSKuRPaXXaqjAPa7r9I81iD0SwXW8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783510873;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hHiwmo+zx+f+YpCquKzCvJjvN0vmoRwmsyXLCb/15PE=;
- b=5Dy1EpOxerMD7K4DWKg9yc0ejqzQ9VXLU92NscxHOJ4xwmZCIE7npLMk16YbzAs6uNYngN
- pDuNdLmEJ2t0Y3AA==
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0BDDE75B62;
+ Wed,  8 Jul 2026 11:48:56 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783510873;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hHiwmo+zx+f+YpCquKzCvJjvN0vmoRwmsyXLCb/15PE=;
- b=b9SEAaJmfIErxO0X9CliC1Ry8mr16acviECabx6PW7+pFSGRqZNZA0DPsYlD4E8g0J0Lw7
- mURumpCQk9upTKewimiQ5s/jT2x5z9ihDTOLb0gPkMURcCIBxSqOmNz+mEgeH/7eJnYT17
- PXHSKuRPaXXaqjAPa7r9I81iD0SwXW8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783510873;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hHiwmo+zx+f+YpCquKzCvJjvN0vmoRwmsyXLCb/15PE=;
- b=5Dy1EpOxerMD7K4DWKg9yc0ejqzQ9VXLU92NscxHOJ4xwmZCIE7npLMk16YbzAs6uNYngN
- pDuNdLmEJ2t0Y3AA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8029B779AE;
- Wed,  8 Jul 2026 11:41:12 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC862779AE;
+ Wed,  8 Jul 2026 11:48:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id S0oVFVg3Tmp6WQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 08 Jul 2026 11:41:12 +0000
-Date: Wed, 8 Jul 2026 13:41:06 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id AuMjMCc5TmpSYQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 08 Jul 2026 11:48:55 +0000
+Date: Wed, 8 Jul 2026 13:48:50 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260708114106.GA812068@pevik>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20260708114850.GB812068@pevik>
 References: <20260707-cve-2026-46331-v3-0-3f6f1d697eec@suse.com>
- <20260707-cve-2026-46331-v3-4-3f6f1d697eec@suse.com>
- <ak0LyX2MrPA_IefP@yuki.lan>
+ <20260707-cve-2026-46331-v3-1-3f6f1d697eec@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ak0LyX2MrPA_IefP@yuki.lan>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:replyto];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+In-Reply-To: <20260707-cve-2026-46331-v3-1-3f6f1d697eec@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 0BDDE75B62
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 4/4] cve: Add act_pedit page-cache corruption
- test
+Subject: Re: [LTP] [PATCH v3 1/4] lapi: Add pkt_cls.h fallback
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,63 +78,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > +static void run(void)
-> > +{
-> > +	struct sockaddr_in addr;
-> > +	uint8_t readback[DATA_SIZE];
-> > +	off_t off = 0;
-> > +	int wr_fd;
-> > +
-> > +	wr_fd = SAFE_OPEN(TESTFILE, O_WRONLY | O_CREAT, 0444);
-> > +	SAFE_WRITE(SAFE_WRITE_ALL, wr_fd, original, DATA_SIZE);
-> > +	SAFE_CLOSE(wr_fd);
-> > +
-> > +	file_fd = SAFE_OPEN(TESTFILE, O_RDONLY);
-> > +
-> > +	/*
-> > +	 * Clean-slate clsact qdisc so no filter is active during the
-> > +	 * TCP handshake (the IHL-inflating key would corrupt SYN/ACK).
-> > +	 */
-> > +	tst_netdev_remove_qdisc(__FILE__, __LINE__, 0,
-> > +				"lo", AF_UNSPEC, TC_H_CLSACT,
-> > +				TC_H_MAKE(TC_H_CLSACT, 0), "clsact");
+Hi Andrea,
 
-> This is a bit ugly. I guess that we need to add a variant for the macro
-> that would set the strict to 0 into tst_netdevice.h possibly NETDEV_MAY_REMOVE_QDISC().
+> +#include <linux/pkt_cls.h>
+> +
+> +#ifndef TC_ACT_PIPE
+> +# define TC_ACT_PIPE	3
+> +#endif
+> +
+> +#ifndef TCA_MATCHALL_ACT
+> +# define TCA_MATCHALL_ACT	2
+> +#endif
 
-+1
+include/uapi/linux/pkt_cls.h defines it as enum:
 
-BTW here I get error on all VMs I tested (wide range of kernel old and new and
-different distros):
+enum {
+	TCA_MATCHALL_UNSPEC,
+	TCA_MATCHALL_CLASSID,
+	TCA_MATCHALL_ACT,
+	TCA_MATCHALL_FLAGS,
+	TCA_MATCHALL_PCNT,
+	TCA_MATCHALL_PAD,
+	__TCA_MATCHALL_MAX,
+};
 
-> 	/* Arm the pedit filter AFTER the handshake completes */
-> 	NETDEV_ADD_TRAFFIC_FILTER("lo",
-> 				  TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_EGRESS),
-> 				  0, ETH_P_ALL, 1, "matchall",
-> 				  filter_config);
+But it should be safe to define it as you did (there is no reason the value
+would change because kernel folks add new members at the end).
 
-cve-2026-46331.c:198: TBROK: Failed to modify traffic filter: EINVAL
-
-Leading to modify_address() in lib/tst_netdevice.c
-
-	ret = tst_netlink_send_validate(file, lineno, ctx);
-	tst_netlink_destroy_context(file, lineno, ctx);
-
-	if (strict && !ret) {
-		tst_brk_(file, lineno, TBROK,
-			"Failed to modify %s network address: %s", ifname,
-			tst_strerrno(tst_netlink_errno));
-	}
-
-Any idea what's wrong?
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
-
-> For the rest (including the preparatory patches):
-
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
