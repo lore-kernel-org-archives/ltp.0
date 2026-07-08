@@ -4,82 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C50FC43602
-	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 16:43:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70070C43458
+	for <ltp@archiver.kernel.org>; Wed,  8 Jul 2026 09:12:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1783501937; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=63PYi+gsKrYkZ0WiBeqEHBf24/VkBkOq6spHg22XyNM=;
+ b=XdpcCRfeiFj1Unw5KYN7bPr4qbwU8SSgTGJZwHLFZsKDXQ1TiqGet4FTHic//2df6eH/I
+ yLDWw/motQnuKDPG3V4/mkNetVqPXLm2vBkgWrfQeuYJSV0vvVBzkuqo0AI+FZsMpRgIsWg
+ jxQJY3W3AqcJxbIBzT5I9H5Nv0vgSiA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D00303E5D3E
-	for <ltp@archiver.kernel.org>; Tue,  7 Jul 2026 18:43:23 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 524823E29AF
+	for <ltp@archiver.kernel.org>; Wed,  8 Jul 2026 11:12:17 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 594BC3DCD69
- for <ltp@lists.linux.it>; Tue,  7 Jul 2026 18:43:08 +0200 (CEST)
-Received: from mail-pj2-x03.google.com (mail-pj2-x03.google.com
- [IPv6:2607:f8b0:4864:39::3])
+ by picard.linux.it (Postfix) with ESMTPS id 78FC13E29AF
+ for <ltp@lists.linux.it>; Wed,  8 Jul 2026 11:11:56 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D215F1000488
- for <ltp@lists.linux.it>; Tue,  7 Jul 2026 18:43:07 +0200 (CEST)
-Received: by mail-pj2-x03.google.com with SMTP id
- d9443c01a7336-2ccb0e85312so9455385ad.0
- for <ltp@lists.linux.it>; Tue, 07 Jul 2026 09:43:07 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BC89160080F
+ for <ltp@lists.linux.it>; Wed,  8 Jul 2026 11:11:55 +0200 (CEST)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-493c2b3dc8bso2575355e9.2
+ for <ltp@lists.linux.it>; Wed, 08 Jul 2026 02:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1783442586; x=1784047386; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=1jUVgshPDiMkUZzpL44SWizimgvlUnRDyEJwUPVEf5o=;
- b=UfH/33FZLBqFZEkD62apeiN8pwf4jVPwbm4xltKAmpx73vhveRAZJ8On5yJEZjoN5L
- Na51PeclRWHYwcu//BA8L5TXmTEP3J9/dOEfHCazZ0pv8wfBIQ7Z9SfzqxbL2lq9Yic0
- S9Ofw8fALOTb7s71V85cwWkJDz5W/HoikhN1jv4wSP/feAs/6O4HtS5wQjZDJ/tHS2oM
- /WUj4EMqo+OJa8LZgW65nFOVszcvd0jQ8+g/XmyWfxwmja6W3nP7vG1cb5f52f57XFov
- D1rl/suqskdMERbcXZBkFNi4E5jyRdwqPgB/0CIaHPPO6yB1ObjIDeeeKlSTv7XKFJwA
- +ifg==
+ d=suse.com; s=google; t=1783501915; x=1784106715; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to;
+ bh=35/eKvRnD0CIDztgAI7EfROrkQhezoYtnaCwLIoxJgo=;
+ b=Y6kyiLB3K9yqnIxVmU9A2ab6/PyKIgGvt8ncw857wDkvPSQyNLMsldcOzHII7sx/wn
+ LknW1E5yQlJZz8wRu2uWJ55KFRx5peE8GwMLVR/86fYzdBZZniUbPCqWrgCvx72Qb/B0
+ FOYUX1eRcPw2sz8AyM5bPesDLcBPWc+LJv+LW94CBY4OQrOhARgudPtlgy02tqp3d9xO
+ anwSJxcVUjXMURQ4fagyO1DOqHX1q5yz7BxTHacTG7lmVDfT465qDbW4CWG8Ox90Nmvy
+ utu6vE9ymTTi+S7cgQbslUifhaChPYyVXLibqAgDvD3+kBPWlPMhO43nv3czN1hK7gl6
+ bTVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783442586; x=1784047386;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=1jUVgshPDiMkUZzpL44SWizimgvlUnRDyEJwUPVEf5o=;
- b=OGDSs0NBLZudtJCEjBBu7GcT12aL++vGE+cRYejUkwJBLIQIqXG+yehMTrc3sqvVyq
- 1O1/xeXwmR1nTfrTueI+7ViW6vso8iMT/+8OqFYPzLF+IaqN9tFJGal4XxJSkIWjrmnH
- JSlNpFlN3gW0vyrLBHJ7JBDfmWdfZrmEurG5L2eEHgm+PdZZxLPsbEtPXCjKoiCJjsNb
- uFlqB23Q8Ed/2pPJsKzp2BMUXxIOyc1vm/tAPYU6+5FMMHSVKZyNPbQyMVFlw2k8/Avy
- t9fkXLppQguMFpHGX0TQB3cmv056cF2KjXtzp9XUvBNRUZtekS38oKl5m4cBl3BPeoF1
- lE5w==
-X-Gm-Message-State: AOJu0YwDmPieJUVAYwY8reo1fgmo3mb6HHdAboGolcqVVH/XumErPZkr
- a/zDCC4nmm0+jkDJ++FEuSqpRD78aj9yeTEtbXHOGpJfwFbbsWC7MtOP
-X-Gm-Gg: AfdE7clsaLbcXtz5i/uQwozOt5WyVrdlFX7t6/BuUkSURtPDE+xKylZFDPaD3/xs7ff
- eyzAbqEyaQKNOo/aaTu67P/eb6RDM8j/RrtjqSmNnAAwkSqzUPRKeOetse1r41bc5c9WS8M+H9C
- yq7rFy5PPbeURqHpy2jd6C+ISLHrXNiKdwz7hIZL2/8btirZLh4NwjHahy42kmArzYa1gQzcLYu
- C0jgouVh7lP/WaoM1Re8/3TDavWMr19qmcBI1lB92uS/fAX1mLGKHYYLSHvnURzxABZEA0NPvyT
- GayNc5XvoTVHenIFhIV87ZW1zIhEDer6C+VfOiudRrk5CtOU3EITTVDwLYJcZG+/ayWUHyOWCay
- PALb6IKW361j2/h0qq0UeGiz4qD/vcQnoPDp8R83vvHhenWLl0bBhzwljevz3YcTcZyFso3myjB
- wfIjV8UtvlH7QPT555JKpblMrz34e9epqqbtasQ5QxFvb+25u93y5lWbq1QRczLeU8tv+RicVP4
- XOJn2RzQLdCIUuCDhX6UbzoOg==
-X-Received: by 2002:a05:6a20:2583:b0:3bf:e2dc:bc85 with SMTP id
- adf61e73a8af0-3c08ee88445mr7032314637.40.1783442586126; 
- Tue, 07 Jul 2026 09:43:06 -0700 (PDT)
-Received: from
- runnervmkkn4f.jugp4dghd53ezkxajpihhsqn3f.dx.internal.cloudapp.net
- ([13.83.98.83]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-13b658a99afsm10567298c88.0.2026.07.07.09.43.05
+ d=1e100.net; s=20251104; t=1783501915; x=1784106715;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=35/eKvRnD0CIDztgAI7EfROrkQhezoYtnaCwLIoxJgo=;
+ b=THUcwHJEgzEKiqro1MVwLYxpK3g9kKfIVXq1/EaMFpxcCdGaNNnidDXc7IccXMwL3x
+ eJTN7F/FM7xR60hSsjUyPzN9g4oAzPalMZvIxUuwnRVBqfjYRZbvLUUItXIivExt3LvP
+ wlNXFFrhV+/vX5j3B33p6W0A+EoNVdwAmi6M1op8+kzLoNojNm+1J+FS/aHH46VcLN+k
+ Bcrx9p3h9Ed5ZQGMGfZHia650kW0SiLGFxINm5PBfnSRizcOCDK75RQybxbZhERKL9Ao
+ tZx/jK20VmP4OiK0UYOy3NIIcFwvU9lIKldTcDoBBXuZLHeIi568Kai01DVrB2ymxk1v
+ zwpg==
+X-Gm-Message-State: AOJu0YyqDrvUl3oo7jnk+ztMFelPutGR/TH+WhVxRxdA5TKwyF4f8ivv
+ 92FNLGRhYR3rhUe85hWcbXWO9E8bMaZcwsOOy40/tmwgWqvfe0r7HbKl29vi2Lm2bzT2ZyrGxcV
+ VN38lDwc=
+X-Gm-Gg: AfdE7cnzVONlPMz583nf7DAuQT2JeFFntJwx+IQVO0Z2LL9n9f1LZCfyLN5op0mRzdR
+ MV1y3MtBmJNcWjvS0lfqKJAkuzSIW1SXx7K5kPQE8MjRFisip5XTmflvHPJ4IV4fpr8NIOJ64Y3
+ CUiuMMxLf4I1yCg2Pj30VFbkhMMff0A9jbImT93I6YJ1OhnZrB+nTXIQ5ENi5cdlTt/Ni3eIA+c
+ p0vOWvUjLh+NLgtCszWOjBGZ1zP3OPZld39JsS43zznFVW8Vrpie9qh7GIknO0rdvUx46BvUs7j
+ 6UV2pjuY46+W2dGFmr2NudD8G903EJgOcGIJF5KZmHzhnlx1OBuugk9HKulhbrt3x7L/8wfEvZx
+ RDa9mWYydXAcTLCvB7IPvghO6rtB2C3EiXJ+sBlSXDkFNH20kcAIIm6Lf3KeGKbXwFuKP2CydMo
+ A=
+X-Received: by 2002:a05:600c:3acd:b0:493:be3e:cc3 with SMTP id
+ 5b1f17b1804b1-493e68c8058mr13178885e9.21.1783501915078; 
+ Wed, 08 Jul 2026 02:11:55 -0700 (PDT)
+Received: from localhost ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-47a9e4d8410sm41579105f8f.15.2026.07.08.02.11.54
+ for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Jul 2026 09:43:05 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Jan Polensky <japo@linux.ibm.com>
-Date: Tue,  7 Jul 2026 16:43:04 +0000
-Message-ID: <20260707164304.4232-1-linuxtestproject.agent@gmail.com>
+ Wed, 08 Jul 2026 02:11:54 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Wed,  8 Jul 2026 11:11:50 +0200
+Message-ID: <20260708091154.999385-1-avinesh.kumar@suse.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260707160024.216347-1-japo@linux.ibm.com>
-References: <20260707160024.216347-1-japo@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] thp04: Add ptrace support for
- CONFIG_PROC_MEM_FORCE_PTRACE=y
+Subject: [LTP] [PATCH 0/4] syscalls/cachestat01: minor improvements
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,89 +95,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+A few small cleanups and a fix for an unchecked fsync() in cachestat01.
 
-On Tue, 7 Jul 2026 18:00:22 +0200, Jan Polensky wrote:
-> thp04: Add ptrace support for CONFIG_PROC_MEM_FORCE_PTRACE=y
+Avinesh Kumar (4):
+  syscalls/cachestat01: Remove redundant memset() on cachestat buffer
+  syscalls/cachestat01: Drop stray newline in tst_res() message
+  syscalls/cachestat01: Add spaces around '<<' operator
+  syscalls/cachestat01: Use SAFE_FSYNC() instead of fsync()
 
-> - Restores lapi/mmap.h for MADV_* fallback definitions
+ testcases/kernel/syscalls/cachestat/cachestat01.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-The diff shows lapi/mmap.h was already present in the original file
-and was not removed or re-added by this patch. "Restores" is
-inaccurate here.
+-- 
+2.54.0
 
-> +static void setup_ptrace_tracee(void)
-> +{
-> +	int status;
-> +
-> +	/* Test-loop state is initialized once and read-only afterwards. */
-> +	child = SAFE_MMAP(NULL, sizeof(*child), PROT_READ | PROT_WRITE,
-> +		MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-> +	memset(child, 0, sizeof(*child));
-> +	child->writefd = -1;
-> +	child->readfd = -1;
-> +
-> +	tracee_pid = SAFE_FORK();
-> +	if (!tracee_pid) {
-> +		tracee_main();
-> +		exit(0);
-> +	}
-> +
-> +	TST_CHECKPOINT_WAIT(0);
-> +
-> +	SAFE_PTRACE(PTRACE_SEIZE, tracee_pid, NULL, NULL);
-> +
-> +	/*
-> +	 * Tracee will run first iteration (madvise + check) and self-stop
-> +	 * with raise(SIGSTOP). Wait for that SIGSTOP - this is iteration 0.
-> +	 */
-> +	SAFE_WAITPID(tracee_pid, &status, 0);
-
-There is a race here. After TST_CHECKPOINT_WAKE(0) the tracee runs the
-for(;;) body immediately and calls raise(SIGSTOP). If that raise()
-fires before PTRACE_SEIZE executes in the parent, the SIGSTOP causes a
-job-control stop (T state), not a ptrace-stop. PTRACE_SEIZE on an
-already-T-stopped process does not generate a new ptrace event.
-
-SAFE_WAITPID(..., 0) without WUNTRACED cannot see a job-control stop,
-so the parent hangs indefinitely.
-
-The comment "Parent will PTRACE_CONT us when ready - no checkpoint
-needed" assumes PTRACE_SEIZE always wins the race, which is not
-guaranteed, especially on a loaded system.
-
-A second checkpoint (wake from parent after PTRACE_SEIZE completes,
-wait in tracee before the first loop iteration) would close the window.
-
-> +/*
->   * CVE-2017-1000405
->   *
-> [...]
-> + * Test Modes:
-> + *
-> + * PROC_MEM_ALWAYS: Direct writes to /proc/self/mem ...
-
-The patch modifies this description block. The required opening for an
-LTP high-level description block is /*\ (with a backslash), not /*.
-The block is exported to the test catalog and must use the /*\ form.
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
