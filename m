@@ -4,112 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DF36C43458
-	for <ltp@archiver.kernel.org>; Wed,  8 Jul 2026 14:02:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4F87C43458
+	for <ltp@archiver.kernel.org>; Wed,  8 Jul 2026 14:40:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6E2173E5CDE
-	for <ltp@archiver.kernel.org>; Wed,  8 Jul 2026 16:02:27 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 257083E5CE6
+	for <ltp@archiver.kernel.org>; Wed,  8 Jul 2026 16:40:30 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1CA6F3E5CA8
- for <ltp@lists.linux.it>; Wed,  8 Jul 2026 16:02:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 4FAF53E2972
+ for <ltp@lists.linux.it>; Wed,  8 Jul 2026 16:40:13 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D36192009E9
- for <ltp@lists.linux.it>; Wed,  8 Jul 2026 16:02:03 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A33E1748F1;
- Wed,  8 Jul 2026 14:01:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783519323;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0x/YYJOjpRHxX5BvjOTYHU1GfqrOTgnDfmsHfobPi88=;
- b=BSNdl9IJHqp28yeonXCuTbsVS0keP504tvmRk7ngqHNqP2LKojulq1GIXYptOBUl+QjG6m
- M3jqATwlgeWWp0qJFjS7YEuDb+mFvjigJkIJHjmS9FHmZkX5JUjpq7GcaLXv3x3+ZPAU8o
- aw9sl/PxbzWqcbsy4jEYIPC8XS6jWU8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783519323;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0x/YYJOjpRHxX5BvjOTYHU1GfqrOTgnDfmsHfobPi88=;
- b=gZ5Fp6AXlWAagcmXmAFN1f/dsHTIfKGZQztfTO3ZBMpwAgGSzXbTLGFgWYqHPV47ElIqis
- pRE24SZQOnwKIdBw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="Rq5/lV2V";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=1SVHQTQ9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783519319;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0x/YYJOjpRHxX5BvjOTYHU1GfqrOTgnDfmsHfobPi88=;
- b=Rq5/lV2VpgKl2nd4v0use0bnQJgLPPVcGSsJNXbIu4OLKAY09PYcdlIcjW72YlAaybos5e
- 4AcMbB07Xv7cT+6G6+GmClV25RBKLoo/1OBEQa8vYCtKupIjgWMSr+GdEvgmmJEJwUReIj
- OKd3VTPIyLEgMw0jFFJbG3LTLRCC1xw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783519319;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0x/YYJOjpRHxX5BvjOTYHU1GfqrOTgnDfmsHfobPi88=;
- b=1SVHQTQ9cttv0gD/nBFqrX4Zjxl6lXK5tBmTFB873fi2W8Q126wjD/rWjNX1ucVhJiRPyR
- wQefVwJHfdtE02Dw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6B9B6779AE;
- Wed,  8 Jul 2026 14:01:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id glvhFlRYTmrRZQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 08 Jul 2026 14:01:56 +0000
-Date: Wed, 8 Jul 2026 16:01:54 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Message-ID: <20260708140154.GC125128@pevik>
-References: <20260704085703.618290-1-avinesh.kumar@suse.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F29112001A7
+ for <ltp@lists.linux.it>; Wed,  8 Jul 2026 16:40:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1783521612; x=1815057612;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=dT0VohnoXpmNt1BEcbWGswlZVMnKRkVYxrRoSumm/44=;
+ b=LdGtpMCSmnLUt4QmjDyM4f7l4GV7CjN6y0I3Po6bHF6hmlHKAgDQsTFB
+ 2uxAxgOLDqc/HQ7P7/bNNDCVhhWbMjInmL1Iml0A1BYwHLXjzb9tNxo8p
+ 8+t1UBsbIgoeRGLgrcUTqWODo9hP6NkoMAHb8qebb9NKwPRGScy0xRiEe
+ bs3bl2laHFh692oVDkxAdiyOydn93eA4wA5h24+Po5Ncyyz6StYcwB30Y
+ fvlQ7W1dzPwSULK6SsIwkHHWFcq1X8XBpUO2BTcbBO7k7ClfXQDfQFW65
+ 7UcYLibTl6R3+1yTMIZg9cuu5MzuwKAclyUYj8I2CvqXz461K89ZCMa9H A==;
+X-CSE-ConnectionGUID: bbiUQVB4SJ6SAjj63+2gWA==
+X-CSE-MsgGUID: BX5QuxqQS7+8EnMsYCLOzQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11841"; a="84375746"
+X-IronPort-AV: E=Sophos;i="6.25,153,1779174000"; d="scan'208";a="84375746"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+ by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Jul 2026 07:40:10 -0700
+X-CSE-ConnectionGUID: tvqAt6LYRHSsSog9yHsAyQ==
+X-CSE-MsgGUID: qpVqbANtTXSEw56ErzI+tw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,153,1779174000"; d="scan'208";a="249864998"
+Received: from mjarzebo-mobl1.ger.corp.intel.com (HELO intel.com)
+ ([10.245.246.134])
+ by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Jul 2026 07:40:08 -0700
+From: Piotr Kubaj <piotr.kubaj@intel.com>
+To: ltp@lists.linux.it
+Date: Wed,  8 Jul 2026 16:39:34 +0200
+Message-ID: <20260708143934.118490-2-piotr.kubaj@intel.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260704085703.618290-1-avinesh.kumar@suse.com>
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.cz:replyto,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: A33E1748F1
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] tst_test.sh: TCONF on xfrm algorithms rejected
- via netlink extack
+Subject: [LTP] [PATCH] rfim: add new test for verifying RFIM sysfs interface
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,79 +68,226 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
+ rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
+Validate presence and permissions of the RFIM attributes exposed by the
+Intel processor_thermal driver under the proc_thermal PCI device.
 
-> TST_RTNL_CHK maps a kernel's "not supported" reply to TCONF by matching
-> the "RTNETLINK answers: ..." strings. Since v6.1 the kernel reports an
-> unknown/removed xfrm algorithm with -ENOSYS plus a netlink extack
-> message, which iproute2 prints as:
+The kernel creates the dvfs, fivr and dlvr attribute groups
+independently, each gated on its own per-device feature bit, so the test
+detects which of the three groups the hardware presents and checks only
+those. This covers platforms that expose both FIVR and DLVR (e.g. Meteor
+Lake) as well as those with FIVR but no DVFS (e.g. Tiger Lake).
 
-> Error: Requested AUTH algorithm not found.
+Read-only attributes (mode 0444) must accept O_RDONLY and reject a write
+open with EACCES; read-write attributes (mode 0644) must accept O_RDWR.
+The open() itself is what exercises access, since sysfs can refuse it in
+kernfs even when the mode bits would allow it.
 
-> This matches none of the existing strings, so TST_RTNL_CHK() reports
-> TBROK instead of skipping.
+The test works only on Intel platforms with RFIM and needs root for the
+read-write attributes, whose write bit is owner-only.
 
-> tcp_ipsec 1 TBROK: ip xfrm state add src 10.0.0.2 dst 10.0.0.1 spi 0x1000 proto esp enc serpent 0x81ea7757e7c71dc8f95bee692c0e8b1a2ac6e006066e74ce0024a54ee0175b70 auth hmac(rmd160) 0xf46316501051af3e3b2abd0bdfed7cf21a76fe04 mode transport sel src 10.0.0.2 dst 10.0.0.1 failed: Error: Requested AUTH algorithm not found.
+Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+---
+Correct comment according to bot review.
 
-Thanks for finding it!
+ runtest/power_management_tests               |   1 +
+ testcases/kernel/power_management/.gitignore |   1 +
+ testcases/kernel/power_management/rfim01.c   | 151 +++++++++++++++++++
+ 3 files changed, 153 insertions(+)
+ create mode 100644 testcases/kernel/power_management/rfim01.c
 
-> This surfaced with kernel v7.1 commit
-> 05d42dc8ab92 ("xfrm: Drop support for HMAC-RIPEMD-160")
-> which removed hmac(rmd160) and broke the
-> net_stress.ipsec_* "-a rmd160" variants. Match the extack form too.
+diff --git a/runtest/power_management_tests b/runtest/power_management_tests
+index 4da57ee72..d05c95608 100644
+--- a/runtest/power_management_tests
++++ b/runtest/power_management_tests
+@@ -1,5 +1,6 @@
+ #POWER_MANAGEMENT
+ high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
++rfim01 rfim01
+ runpwtests03 runpwtests03.sh
+ runpwtests04 runpwtests04.sh
+ runpwtests06 runpwtests06.sh
+diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
+index 03f0c83e4..74f6df14f 100644
+--- a/testcases/kernel/power_management/.gitignore
++++ b/testcases/kernel/power_management/.gitignore
+@@ -1 +1,2 @@
+ high_freq_hwp_cap_cppc
++rfim01
+diff --git a/testcases/kernel/power_management/rfim01.c b/testcases/kernel/power_management/rfim01.c
+new file mode 100644
+index 000000000..9388dd2f6
+--- /dev/null
++++ b/testcases/kernel/power_management/rfim01.c
+@@ -0,0 +1,151 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
++ */
++
++/*\
++ * Validate presence and permissions of RFIM attributes.
++ * The kernel exposes the dvfs, fivr and dlvr attribute groups
++ * independently, gated on per-device feature bits, so the test checks
++ * whichever of the three groups the hardware presents.
++ *
++ * Permissions are verified by opening each node: read-only attributes
++ * must accept O_RDONLY and reject a write open, while read-write ones
++ * must accept O_RDWR. For sysfs nodes the mode bits alone are not
++ * authoritative - the kernel can still refuse the open in the file's
++ * own syscall handler - so :manpage:`open(2)` is what actually
++ * exercises access.
++ *
++ * The test requires root because the read-write RFIM attributes are
++ * root-owned and created mode 0644, so only the owner holds the write
++ * bit. An unprivileged user could read them but would get EACCES when
++ * opening them O_RDWR, which the read-write check would misreport as a
++ * failure rather than reflecting the actual access policy. The read-only
++ * attributes are mode 0444 and world-readable.
++ */
++
++#include "tst_test.h"
++
++#define RFIM_ROOT "/sys/bus/pci/devices/0000:00:04.0"
++
++enum rfim_group {
++	GROUP_DVFS,
++	GROUP_FIVR,
++	GROUP_DLVR,
++};
++
++static const char * const group_name[] = {
++	[GROUP_DVFS] = "dvfs",
++	[GROUP_FIVR] = "fivr",
++	[GROUP_DLVR] = "dlvr",
++};
++
++static bool have_group[ARRAY_SIZE(group_name)];
++
++static struct tcase {
++	const char *path;
++	const bool write;
++	enum rfim_group group;
++} tcases[] = {
++	{ RFIM_ROOT "/fivr/vco_ref_code_lo", 1, GROUP_FIVR },
++	{ RFIM_ROOT "/fivr/vco_ref_code_hi", 1, GROUP_FIVR },
++	{ RFIM_ROOT "/fivr/spread_spectrum_pct", 1, GROUP_FIVR },
++	{ RFIM_ROOT "/fivr/spread_spectrum_clk_enable", 1, GROUP_FIVR },
++	{ RFIM_ROOT "/fivr/rfi_vco_ref_code", 1, GROUP_FIVR },
++	{ RFIM_ROOT "/fivr/fivr_fffc_rev", 1, GROUP_FIVR },
++
++	{ RFIM_ROOT "/dlvr/dlvr_freq_select", 1, GROUP_DLVR },
++	{ RFIM_ROOT "/dlvr/dlvr_rfim_enable", 1, GROUP_DLVR },
++	{ RFIM_ROOT "/dlvr/dlvr_spread_spectrum_pct", 1, GROUP_DLVR },
++	{ RFIM_ROOT "/dlvr/dlvr_control_mode", 1, GROUP_DLVR },
++	{ RFIM_ROOT "/dlvr/dlvr_control_lock", 1, GROUP_DLVR },
++	{ RFIM_ROOT "/dlvr/dlvr_hardware_rev", 0, GROUP_DLVR },
++	{ RFIM_ROOT "/dlvr/dlvr_freq_mhz", 0, GROUP_DLVR },
++	{ RFIM_ROOT "/dlvr/dlvr_pll_busy", 0, GROUP_DLVR },
++
++	{ RFIM_ROOT "/dvfs/rfi_restriction_run_busy", 1, GROUP_DVFS },
++	{ RFIM_ROOT "/dvfs/rfi_restriction_err_code", 1, GROUP_DVFS },
++	{ RFIM_ROOT "/dvfs/rfi_restriction_data_rate_base", 1, GROUP_DVFS },
++	{ RFIM_ROOT "/dvfs/rfi_restriction_data_rate", 1, GROUP_DVFS },
++	{ RFIM_ROOT "/dvfs/rfi_restriction", 1, GROUP_DVFS },
++	{ RFIM_ROOT "/dvfs/rfi_disable", 1, GROUP_DVFS },
++	{ RFIM_ROOT "/dvfs/ddr_data_rate_point_0", 0, GROUP_DVFS },
++	{ RFIM_ROOT "/dvfs/ddr_data_rate_point_1", 0, GROUP_DVFS },
++	{ RFIM_ROOT "/dvfs/ddr_data_rate_point_2", 0, GROUP_DVFS },
++	{ RFIM_ROOT "/dvfs/ddr_data_rate_point_3", 0, GROUP_DVFS },
++	{ RFIM_ROOT "/dvfs/ddr_data_rate", 0, GROUP_DVFS },
++};
++
++static bool has_group(const char *name)
++{
++	char path[PATH_MAX];
++	struct stat stats;
++
++	snprintf(path, sizeof(path), "%s/%s", RFIM_ROOT, name);
++
++	if (stat(path, &stats)) {
++		if (errno == ENOENT)
++			return false;
++		tst_brk(TBROK | TERRNO, "stat(%s)", path);
++	}
++
++	if (!S_ISDIR(stats.st_mode))
++		tst_brk(TBROK, "%s exists but is not a directory", path);
++
++	return true;
++}
++
++static void setup(void)
++{
++	bool any = false;
++
++	for (unsigned int i = 0; i < ARRAY_SIZE(group_name); i++) {
++		have_group[i] = has_group(group_name[i]);
++		any |= have_group[i];
++	}
++
++	if (!any)
++		tst_brk(TCONF, "No RFIM attribute groups present under %s", RFIM_ROOT);
++}
++
++static void run(unsigned int i)
++{
++	struct tcase *tc = &tcases[i];
++
++	if (!have_group[tc->group]) {
++		tst_res(TCONF, "%s: %s group not present", tc->path,
++			group_name[tc->group]);
++		return;
++	}
++
++	if (tc->write) {
++		int fd = TST_EXP_FD(open(tc->path, O_RDWR));
++
++		if (fd != -1)
++			SAFE_CLOSE(fd);
++	} else {
++		int fd = TST_EXP_FD(open(tc->path, O_RDONLY));
++
++		if (fd != -1)
++			SAFE_CLOSE(fd);
++		TST_EXP_FAIL2(open(tc->path, O_WRONLY), EACCES, "%s should reject writes", tc->path);
++	}
++}
++
++static struct tst_test test = {
++	.min_kver = "6.4",
++	.needs_cpu_vendor = "GenuineIntel",
++	.needs_kconfigs = (const char *const []) {
++		"CONFIG_INT340X_THERMAL",
++		NULL
++	},
++	.needs_root = 1,
++	.supported_archs = (const char *const []) {
++		"x86",
++		"x86_64",
++		NULL
++	},
++	.setup = setup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = run
++};
+-- 
+2.47.3
 
-+1 for documenting the change.
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
+Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
 
-> Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
-> ---
->  testcases/lib/tst_test.sh | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
+Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
+This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
 
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 2a83c17a5efb..8701bb390388 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -266,13 +266,18 @@ TST_RTNL_CHK()
->  	local msg1="RTNETLINK answers: Function not implemented"
->  	local msg2="RTNETLINK answers: Operation not supported"
->  	local msg3="RTNETLINK answers: Protocol not supported"
-> +	# Since v6.1 the kernel reports an unknown/removed xfrm algorithm via
-> +	# netlink extack (-ENOSYS + NL_SET_ERR_MSG), which iproute2 prints as
-> +	# "Error: Requested AUTH algorithm not found."
-> +	local msg4="Requested .* algorithm not found"
->  	local output="$($@ 2>&1 || echo 'LTP_ERR')"
-nit: we have in $output also "LTP_ERR" in the end (on error)...
-
-> -	local msg
-> +	local msg match
-
->  	echo "$output" | grep -q "LTP_ERR" || return 0
-
-> -	for msg in "$msg1" "$msg2" "$msg3"; do
-> -		echo "$output" | grep -q "$msg" && tst_brk TCONF "'$@': $msg"
-> +	for msg in "$msg1" "$msg2" "$msg3" "$msg4"; do
-> +		match=$(echo "$output" | grep "$msg") && \
-> +				tst_brk TCONF "'$@': $match"
-... now we print error message also with "LTP_ERR" in the end.
-I wonder if we should bother with removing it, e.g. with sed:
-
--		match=$(echo "$output" | grep "$msg") && \
-+		match=$(echo "$output" | grep "$msg" | sed 's/LTP_ERR$//') && \
-
-(untested)
-
-Both w/a this change (can be done before merge).
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
