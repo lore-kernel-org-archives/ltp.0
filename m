@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 340C5C44509
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 08:54:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 623D0C4450B
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 08:55:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 72A683E2A41
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 10:54:42 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 970493E294E
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 10:55:03 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 329E53C6F29
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 10:54:12 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 900DC3E5C67
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 10:54:17 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 95AA61A006AB
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 10:54:11 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2736620076B
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 10:54:15 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 406AE75DCA;
- Thu,  9 Jul 2026 08:54:09 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 197A275DCC;
+ Thu,  9 Jul 2026 08:54:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783587249; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1783587250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yYu1smLCTGmrh/8nHGpcT7Lb+iIEjPG+rNBurAjeN34=;
- b=kjh67SCyOMffS8tDtKKWTh3Xy8WNbugsKGZFVKFDSfHINWgO2ix/nYBHc4YbgEd0kI12A3
- cL4x9Oub8thpQ5QLAmz/pqDbGQoo21Lx75LxJYgGOFEhoKA/GCt+3+Zby797wDYqh/tANo
- J+MpgTSBgsSntpQ66jMkLU9P2UUrYvQ=
+ bh=xpvJIbx1JIiMnsXw2Ak/Pka0+y6kcD8JM+mxvyxOU0A=;
+ b=wLI/bN9/ZRiYewVLLafQTI0Za4lk/qAtSIxX/3BAQEWWasSmucfN5T34Me+Lmtgb1iyMS2
+ jdnuvTuhMeA1x6lHqccqttvC0uw/o7mOmr04VBe70wY/Qnlp5BqB9MkCIGV+ijjcJq+lR/
+ gYKRjJ4VC6Fd8kHF9MJSzXmFSwby2DU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783587249;
+ s=susede2_ed25519; t=1783587250;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yYu1smLCTGmrh/8nHGpcT7Lb+iIEjPG+rNBurAjeN34=;
- b=ClV9iAyO856GXpE0+KV3cqRHxbicbJe9VOC+itZ8FAW2GV5v971Mlb4VI+IgwT/084Mc9a
- I+LYhjOyVKUyNdCQ==
+ bh=xpvJIbx1JIiMnsXw2Ak/Pka0+y6kcD8JM+mxvyxOU0A=;
+ b=ZVCUenqSuYG7oayEONnEoOEOV/kwXxB9Hw/H/IcOTw6XrlF267HZfDuGp3wcBLBaKjAudq
+ zBa9ZKWmH+USkcCg==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783587249; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1783587250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yYu1smLCTGmrh/8nHGpcT7Lb+iIEjPG+rNBurAjeN34=;
- b=kjh67SCyOMffS8tDtKKWTh3Xy8WNbugsKGZFVKFDSfHINWgO2ix/nYBHc4YbgEd0kI12A3
- cL4x9Oub8thpQ5QLAmz/pqDbGQoo21Lx75LxJYgGOFEhoKA/GCt+3+Zby797wDYqh/tANo
- J+MpgTSBgsSntpQ66jMkLU9P2UUrYvQ=
+ bh=xpvJIbx1JIiMnsXw2Ak/Pka0+y6kcD8JM+mxvyxOU0A=;
+ b=wLI/bN9/ZRiYewVLLafQTI0Za4lk/qAtSIxX/3BAQEWWasSmucfN5T34Me+Lmtgb1iyMS2
+ jdnuvTuhMeA1x6lHqccqttvC0uw/o7mOmr04VBe70wY/Qnlp5BqB9MkCIGV+ijjcJq+lR/
+ gYKRjJ4VC6Fd8kHF9MJSzXmFSwby2DU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783587249;
+ s=susede2_ed25519; t=1783587250;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yYu1smLCTGmrh/8nHGpcT7Lb+iIEjPG+rNBurAjeN34=;
- b=ClV9iAyO856GXpE0+KV3cqRHxbicbJe9VOC+itZ8FAW2GV5v971Mlb4VI+IgwT/084Mc9a
- I+LYhjOyVKUyNdCQ==
+ bh=xpvJIbx1JIiMnsXw2Ak/Pka0+y6kcD8JM+mxvyxOU0A=;
+ b=ZVCUenqSuYG7oayEONnEoOEOV/kwXxB9Hw/H/IcOTw6XrlF267HZfDuGp3wcBLBaKjAudq
+ zBa9ZKWmH+USkcCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C15E779AD;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EF6DC779AC;
  Thu,  9 Jul 2026 08:54:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Fd+vCbFhT2oPHgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id abOgOLFhT2oWHgAAD6G6ig
  (envelope-from <chrubis@suse.cz>); Thu, 09 Jul 2026 08:54:09 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu,  9 Jul 2026 10:53:46 +0200
-Message-ID: <20260709085353.345957-3-chrubis@suse.cz>
+Date: Thu,  9 Jul 2026 10:53:48 +0200
+Message-ID: <20260709085353.345957-5-chrubis@suse.cz>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260709085353.345957-1-chrubis@suse.cz>
 References: <20260709085353.345957-1-chrubis@suse.cz>
@@ -89,14 +89,14 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MIME_GOOD(-0.10)[text/plain]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
  FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid,suse.com:email];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
  FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_TWO(0.00)[2];
  RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/9] syscalls: Add epoll_wait08
+Subject: [LTP] [PATCH v3 4/9] syscalls: Add epoll_ctl06
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,122 +113,117 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Tests that epoll_wait() can be interrupted by a signal and returns
-EINTR.
+Test that iterates over different types of file descriptors, attempts to
+add them to epoll and expects either success or a failure based on the
+type of the file descriptor.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                              |  3 +
- .../kernel/syscalls/epoll_wait/.gitignore     |  1 +
- .../kernel/syscalls/epoll_wait/epoll_wait08.c | 69 +++++++++++++++++++
- 3 files changed, 73 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait08.c
+ runtest/syscalls                              |  1 +
+ .../kernel/syscalls/epoll_ctl/.gitignore      |  1 +
+ .../kernel/syscalls/epoll_ctl/epoll_ctl06.c   | 72 +++++++++++++++++++
+ 3 files changed, 74 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 65bac761b..debe64ff9 100644
+index 727156950..b78d565fb 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
 @@ -187,6 +187,7 @@ epoll_ctl02 epoll_ctl02
  epoll_ctl03 epoll_ctl03
  epoll_ctl04 epoll_ctl04
  epoll_ctl05 epoll_ctl05
-+
++epoll_ctl06 epoll_ctl06
+ 
  epoll_wait01 epoll_wait01
  epoll_wait02 epoll_wait02
- epoll_wait03 epoll_wait03
-@@ -194,6 +195,8 @@ epoll_wait04 epoll_wait04
- epoll_wait05 epoll_wait05
- epoll_wait06 epoll_wait06
- epoll_wait07 epoll_wait07
-+epoll_wait08 epoll_wait08
-+
- epoll_pwait01 epoll_pwait01
- epoll_pwait02 epoll_pwait02
- epoll_pwait03 epoll_pwait03
-diff --git a/testcases/kernel/syscalls/epoll_wait/.gitignore b/testcases/kernel/syscalls/epoll_wait/.gitignore
-index 66ac18ae2..f3b208950 100644
---- a/testcases/kernel/syscalls/epoll_wait/.gitignore
-+++ b/testcases/kernel/syscalls/epoll_wait/.gitignore
-@@ -5,3 +5,4 @@ epoll_wait04
- epoll_wait05
- epoll_wait06
- epoll_wait07
-+epoll_wait08
-diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait08.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait08.c
+diff --git a/testcases/kernel/syscalls/epoll_ctl/.gitignore b/testcases/kernel/syscalls/epoll_ctl/.gitignore
+index 3e05f2e1f..9c555f41b 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/.gitignore
++++ b/testcases/kernel/syscalls/epoll_ctl/.gitignore
+@@ -3,3 +3,4 @@ epoll_ctl02
+ epoll_ctl03
+ epoll_ctl04
+ epoll_ctl05
++epoll_ctl06
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
 new file mode 100644
-index 000000000..9e9a88526
+index 000000000..fb33379f4
 --- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait08.c
-@@ -0,0 +1,69 @@
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
+@@ -0,0 +1,72 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Verify that :manpage:epoll_wait() fails with EINTR when a signal arrives
-+ * while waiting for events.
++ * Verify :manpage:epoll_ctl() EPOLL_CTL_ADD behavior across all file
++ * descriptor types.
 + *
-+ * [Algorithm]
++ * The test iterates over all available fd types via TST_FD_FOREACH and
++ * attempts EPOLL_CTL_ADD on each. File descriptor types that implement the
++ * poll file operation are expected to succeed. The rest must fail with:
 + *
-+ * - Create an epoll instance
-+ * - Fork a child that waits in the :manpage:epoll_wait(), parents sends
-+ *   SIGUSR1 to interrupt it.
-+ * - Verify that :manpage:epoll_wait() returns -1 with errno set to EINTR.
++ * - EPERM for fds that are valid but lack poll support (regular files,
++ *   directories, /dev/zero, /proc files, memfd).
++ * - EBADF for fds that are not usable for I/O (O_PATH, open_tree).
 + */
 +
-+#include <stdlib.h>
 +#include <sys/epoll.h>
 +
 +#include "tst_test.h"
 +#include "tst_epoll.h"
++#include "tst_fd.h"
 +
-+static int efd = -1;
-+
-+static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
++static int exp_errno(enum tst_fd_type type)
 +{
-+}
-+
-+static void setup(void)
-+{
-+	static struct sigaction sa = {
-+		.sa_handler = sighandler,
-+	};
-+
-+	SAFE_SIGEMPTYSET(&sa.sa_mask);
-+	SAFE_SIGACTION(SIGUSR1, &sa, NULL);
-+
-+	efd = SAFE_EPOLL_CREATE1(0);
++	switch (type) {
++	case TST_FD_FILE:
++	case TST_FD_DIR:
++	case TST_FD_DEV_ZERO:
++	case TST_FD_PROC_MAPS:
++	case TST_FD_MEMFD:
++	case TST_FD_MEMFD_SECRET:
++	case TST_FD_FSOPEN:
++	case TST_FD_FSPICK:
++		return EPERM;
++	case TST_FD_PATH:
++	case TST_FD_OPEN_TREE:
++		return EBADF;
++	default:
++		return 0;
++	}
 +}
 +
 +static void run(void)
 +{
-+	pid_t pid = SAFE_FORK();
++	int efd, err;
++	struct epoll_event ev = {.events = EPOLLIN};
 +
-+	if (!pid) {
-+		struct epoll_event ev;
++	TST_FD_FOREACH(fd) {
++		efd = SAFE_EPOLL_CREATE1(0);
++		ev.data.fd = fd.fd;
++		err = exp_errno(fd.type);
 +
-+		TST_EXP_FAIL(epoll_wait(efd, &ev, 1, -1), EINTR,
-+			     "epoll_wait() interrupted by signal");
-+		exit(0);
-+	}
++		if (err) {
++			TST_EXP_FAIL(epoll_ctl(efd, EPOLL_CTL_ADD,
++				     fd.fd, &ev), err,
++				     "epoll_ctl() on %s", tst_fd_desc(&fd));
++		} else {
++			TST_EXP_PASS(epoll_ctl(efd, EPOLL_CTL_ADD,
++				     fd.fd, &ev),
++				     "epoll_ctl() on %s", tst_fd_desc(&fd));
++		}
 +
-+	TST_PROCESS_STATE_WAIT(pid, 'S', 0);
-+	SAFE_KILL(pid, SIGUSR1);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (efd != -1)
 +		SAFE_CLOSE(efd);
++	}
 +}
 +
 +static struct tst_test test = {
 +	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.forks_child = 1,
++	.needs_tmpdir = 1,
 +};
 -- 
 2.53.0
